@@ -349,7 +349,7 @@ spif_charptr_t *
 spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
 {
     spif_charptr_t *slist;
-    register const spif_charptr_t pstr;
+    register spif_charptr_t pstr;
     register spif_charptr_t pdest;
     char quote = 0;
     unsigned short cnt = 0;
@@ -357,20 +357,20 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
 
     REQUIRE_RVAL(str != NULL, (spif_charptr_t *) NULL);
 
-    if ((slist = (spif_charptr_t *) MALLOC(sizeofSPIF_CAST(charptr))) == NULL) {
+    if ((slist = (spif_charptr_t *) MALLOC(sizeof(spif_charptr_t))) == NULL) {
         libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
         return ((spif_charptr_t *) NULL);
     }
 
     /* Before we do anything, skip leading "whitespace." */
-    for (pstr = str; *pstr && IS_DELIM(*pstr); pstr++);
+    for (pstr = SPIF_CAST(charptr) str; *pstr && IS_DELIM(*pstr); pstr++);
 
     /* The outermost for loop is where we traverse the string.  Each new
        word brings us back to the top where we resize our string list. */
     for (; *pstr; cnt++) {
         /* First, resize the list to two bigger than our count.  Why two?
            One for the string we're about to do, and one for a trailing NULL. */
-        if ((slist = (spif_charptr_t *) REALLOC(slist, sizeofSPIF_CAST(charptr) * (cnt + 2))) == NULL) {
+        if ((slist = (spif_charptr_t *) REALLOC(slist, sizeof(spif_charptr_t) * (cnt + 2))) == NULL) {
             libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
             return ((spif_charptr_t *) NULL);
         }
@@ -437,7 +437,7 @@ spiftool_split_regexp(const spif_charptr_t regexp, const spif_charptr_t str)
 }
 
 spif_charptr_t 
-spiftool_join(const spif_charptr_t sep, spif_charptr_t *slist)
+spiftool_join(spif_charptr_t sep, spif_charptr_t *slist)
 {
     register unsigned long i;
     size_t len, slen;
@@ -527,7 +527,7 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
 spif_charptr_t 
 spiftool_get_pword(unsigned long index, const spif_charptr_t str)
 {
-    register const spif_charptr_t tmpstr = str;
+    register spif_charptr_t tmpstr = SPIF_CAST(charptr) str;
     register unsigned long j;
 
     ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
@@ -590,7 +590,7 @@ spiftool_num_words(const spif_charptr_t str)
 spif_charptr_t 
 spiftool_chomp(spif_charptr_t s)
 {
-    register spif_charptr_t front, *back;
+    register spif_charptr_t front, back;
 
     ASSERT_RVAL(s != NULL, NULL);
     for (front = s; *front && isspace(*front); front++);
@@ -650,7 +650,7 @@ spiftool_condense_whitespace(spif_charptr_t s)
 {
 
     register unsigned char gotspc = 0;
-    register spif_charptr_t pbuff = s, *pbuff2 = s;
+    register spif_charptr_t pbuff = s, pbuff2 = s;
 
     ASSERT_RVAL(s != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     D_STRINGS(("condense_whitespace(%s) called.\n", s));
@@ -693,7 +693,7 @@ void
 spiftool_hex_dump(void *buff, register size_t count)
 {
     register unsigned long j, k, l;
-    register unsigned spif_charptr_t ptr;
+    register spif_charptr_t ptr;
     unsigned char buffr[9];
 
     ASSERT(buff != SPIF_NULL_TYPE(ptr));
@@ -718,9 +718,9 @@ spiftool_hex_dump(void *buff, register size_t count)
                                      || (isdigit(a) && isdigit(b)) \
                                      || (!isalnum(a) && !isalnum(b)))
 spif_cmp_t
-spiftool_version_compare(const spif_charptr_t v1, const spif_charptr_t v2)
+spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
 {
-    char buff1[128], buff2[128];
+    spif_char_t buff1[128], buff2[128];
 
     SPIF_COMP_CHECK_NULL(v1, v2);
 

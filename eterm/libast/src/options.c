@@ -55,7 +55,7 @@ static const char cvs_ident[] = "$Id$";
  */
 
 /** Next argument.  Proceed to parsing the next argument in the argv[] list. */
-#define NEXT_ARG()       D_OPTIONS(("NEXT_ARG()\n")); i++; opt = argv[i]; continue
+#define NEXT_ARG()       D_OPTIONS(("NEXT_ARG()\n")); i++; opt = SPIF_CHARPTR(argv[i]); continue
 /** Next letter.  Proceed to the next letter in a bundled option series. */
 #define NEXT_LETTER()    D_OPTIONS(("NEXT_LETTER(%s)\n", opt)); if (*(opt + 1)) {opt++;} else {NEXT_ARG();} continue
 /** Next loop.  Proceed to the next parsing stage (letter or word). */
@@ -90,14 +90,14 @@ spifopt_settings_t spifopt_settings;
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
-static const char *
+static spif_charptr_t 
 get_option_type_string(spif_uint16_t type)
 {
     switch (type) {
-        case SPIFOPT_FLAG_BOOLEAN: return "(bool)"; break;
-        case SPIFOPT_FLAG_INTEGER: return "(int)"; break;
-        case SPIFOPT_FLAG_ARGLIST: return "(strs)"; break;
-        default: return "(str)";
+        case SPIFOPT_FLAG_BOOLEAN: return SPIF_CHARPTR("(bool)"); break;
+        case SPIFOPT_FLAG_INTEGER: return SPIF_CHARPTR("(int)"); break;
+        case SPIFOPT_FLAG_ARGLIST: return SPIF_CHARPTR("(strs)"); break;
+        default: return SPIF_CHARPTR("(str)");
     }
     ASSERT_NOTREACHED_RVAL(NULL);
 }
@@ -160,7 +160,7 @@ spifopt_usage(void)
             printf("      ");
         }
         printf("--%s", SPIFOPT_OPT_LONG(i));
-        for (col = strlen(SPIFOPT_OPT_LONG(i)); col < l_long; col++) {
+        for (col = strlen(SPIF_CAST_C(char *) SPIFOPT_OPT_LONG(i)); col < l_long; col++) {
             printf(" ");
         }
         printf("  %-6s %s\n", get_option_type_string(SPIFOPT_OPT_TYPE(i)), SPIFOPT_OPT_DESC(i));
@@ -181,7 +181,7 @@ spifopt_usage(void)
  * @ingroup DOXGRP_OPT
  */
 static spif_int32_t
-find_long_option(char *opt)
+find_long_option(spif_charptr_t opt)
 {
     spif_int32_t j;
 
@@ -190,9 +190,10 @@ find_long_option(char *opt)
     for (j = 0; j < SPIFOPT_NUMOPTS_GET(); j++) {
         size_t l;
 
-        l = strlen(SPIFOPT_OPT_LONG(j));
+        l = strlen(SPIF_CHARPTR_C(SPIFOPT_OPT_LONG(j)));
         /* Look for matches to the part before the =, if any. */
-        if (!strncasecmp(SPIFOPT_OPT_LONG(j), opt, l) && (opt[l] == '=' || !opt[l])) {
+        if (!strncasecmp(SPIF_CHARPTR_C(SPIFOPT_OPT_LONG(j)), SPIF_CHARPTR_C(opt), l)
+            && (opt[l] == '=' || !opt[l])) {
             /* Got one. */
             D_OPTIONS(("Match found at %d:  %s == %s\n", j, SPIFOPT_OPT_LONG(j), opt));
             return j;
@@ -251,12 +252,12 @@ find_short_option(char opt)
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse()
  * @ingroup DOXGRP_OPT
  */
-static char *
-find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
+static spif_charptr_t 
+find_value_long(spif_charptr_t arg, spif_charptr_t next_arg, spif_charptr_t hasequal)
 {
-    char *val_ptr;
+    spif_charptr_t val_ptr;
 
-    if ((val_ptr = strchr(arg, '=')) != NULL) {
+    if ((val_ptr = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(arg), '='))) != NULL) {
         val_ptr++;
         *hasequal = 1;
     } else {
@@ -283,10 +284,10 @@ find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse()
  * @ingroup DOXGRP_OPT
  */
-static char *
-find_value_short(char *arg, char *next_arg)
+static spif_charptr_t 
+find_value_short(spif_charptr_t arg, spif_charptr_t next_arg)
 {
-    char *val_ptr = NULL;
+    spif_charptr_t val_ptr = NULL;
 
     if (arg[1]) {
         val_ptr = arg + 1;
@@ -310,7 +311,7 @@ find_value_short(char *arg, char *next_arg)
  * @ingroup DOXGRP_OPT
  */
 static spif_bool_t
-is_boolean_value(char *val_ptr)
+is_boolean_value(spif_charptr_t val_ptr)
 {
     if (!(val_ptr) || !(*val_ptr)) {
         return FALSE;
@@ -332,7 +333,7 @@ is_boolean_value(char *val_ptr)
  * @ingroup DOXGRP_OPT
  */
 static spif_bool_t
-is_valid_option(char *opt)
+is_valid_option(spif_charptr_t opt)
 {
     REQUIRE_RVAL(opt != NULL, FALSE);
 
@@ -371,7 +372,7 @@ is_valid_option(char *opt)
  * @ingroup DOXGRP_OPT
  */
 static spif_bool_t
-handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
+handle_boolean(spif_int32_t n, spif_charptr_t val_ptr, unsigned char islong)
 {
     D_OPTIONS(("Boolean option detected\n"));
     if (val_ptr && islong) {
@@ -423,10 +424,10 @@ handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
  * @ingroup DOXGRP_OPT
  */
 static void
-handle_integer(spif_int32_t n, char *val_ptr)
+handle_integer(spif_int32_t n, spif_charptr_t val_ptr)
 {
     D_OPTIONS(("Integer option detected\n"));
-    *((int *) SPIFOPT_OPT_VALUE(n)) = strtol(val_ptr, (char **) NULL, 0);
+    *((int *) SPIFOPT_OPT_VALUE(n)) = strtol(SPIF_CHARPTR_C(val_ptr), (char **) NULL, 0);
 }
 
 /**
@@ -444,10 +445,10 @@ handle_integer(spif_int32_t n, char *val_ptr)
  * @ingroup DOXGRP_OPT
  */
 static void
-handle_string(spif_int32_t n, char *val_ptr)
+handle_string(spif_int32_t n, spif_charptr_t val_ptr)
 {
     D_OPTIONS(("String option detected\n"));
-    *((const char **) SPIFOPT_OPT_VALUE(n)) = STRDUP(val_ptr);
+    *((const char **) SPIFOPT_OPT_VALUE(n)) = SPIF_CAST_C(char *) STRDUP(val_ptr);
 }
 
 
@@ -470,36 +471,36 @@ handle_string(spif_int32_t n, char *val_ptr)
  * @ingroup DOXGRP_OPT
  */
 static void
-handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
+handle_arglist(spif_int32_t n, spif_charptr_t val_ptr, unsigned char hasequal,
                spif_int32_t i, int argc, char *argv[])
 {
-    char **tmp;
+    spif_charptr_t *tmp;
     register unsigned short k;
 
     D_OPTIONS(("Argument list option detected\n"));
     if (hasequal) {
         /* There's an equals sign, so just parse the rest of this option into words. */
-        tmp = (char **) MALLOC(sizeof(char *) * (spiftool_num_words(val_ptr) + 1));
+        tmp = SPIF_CAST_PTR(charptr) MALLOC(sizeof(spif_charptr_t) * (spiftool_num_words(val_ptr) + 1));
 
         for (k = 0; val_ptr; k++) {
             tmp[k] = spiftool_get_word(1, val_ptr);
             val_ptr = spiftool_get_pword(2, val_ptr);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
         }
-        tmp[k] = (char *) NULL;
-        *((char ***) SPIFOPT_OPT_VALUE(n)) = tmp;
+        tmp[k] = SPIF_NULL_TYPE(charptr);
+        *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
     } else {
         unsigned short len = argc - i;
 
         /* No equals sign, so use the rest of the command line and break. */
-        tmp = (char **) MALLOC(sizeof(char *) * (argc - i + 1));
+        tmp = SPIF_CAST_PTR(charptr) MALLOC(sizeof(spif_charptr_t ) * (argc - i + 1));
 
         for (k = 0; k < len; k++) {
-            tmp[k] = STRDUP(argv[k + i]);
+            tmp[k] = SPIF_CAST(charptr) STRDUP(argv[k + i]);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
         }
-        tmp[k] = (char *) NULL;
-        *((char ***) SPIFOPT_OPT_VALUE(n)) = tmp;
+        tmp[k] = SPIF_NULL_TYPE(charptr);
+        *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
     }
 }
 
@@ -520,19 +521,19 @@ void
 spifopt_parse(int argc, char *argv[])
 {
     spif_int32_t i, j;
-    char *opt;
+    spif_charptr_t opt;
 
     REQUIRE(argc > 1);
     REQUIRE(argv != NULL);
 
     /* Process each command line arg one-by-one. */
-    for (i = 1, opt = argv[1]; i < argc; ) {
-        char *val_ptr = NULL;
-        unsigned char islong = 0, hasequal = 0;
+    for (i = 1, opt = SPIF_CHARPTR(argv[1]); i < argc; ) {
+        spif_charptr_t val_ptr = NULL;
+        spif_char_t islong = 0, hasequal = 0;
 
         D_OPTIONS(("argv[%d] == \"%s\", opt == \"%s\"\n", i, argv[i], opt));
 
-        if (opt == argv[i]) {
+        if (opt == SPIF_CHARPTR(argv[i])) {
             /* If it's not an option, skip it. */
             if (*opt != '-') {
                 NEXT_ARG();
@@ -558,9 +559,9 @@ spifopt_parse(int argc, char *argv[])
 
         /* If a value was passed to this option, set val_ptr to point to it. */
         if (islong) {
-            val_ptr = find_value_long(argv[i], argv[i + 1], &hasequal);
+            val_ptr = find_value_long(SPIF_CHARPTR(argv[i]), SPIF_CHARPTR(argv[i + 1]), &hasequal);
         } else {
-            val_ptr = find_value_short(opt, argv[i + 1]);
+            val_ptr = find_value_short(opt, SPIF_CHARPTR(argv[i + 1]));
         }
 
         /* Boolean options may or may not have a value... */
@@ -572,9 +573,9 @@ spifopt_parse(int argc, char *argv[])
             }
         }
         if (val_ptr) {
-            if (val_ptr == argv[i + 1]) {
+            if (val_ptr == SPIF_CHARPTR(argv[i + 1])) {
                 i++;
-                opt += strlen(opt);
+                opt += strlen(SPIF_CHARPTR_C(opt));
             }
         }
 
@@ -582,17 +583,17 @@ spifopt_parse(int argc, char *argv[])
         if (SPIFOPT_OPT_IS_DEPRECATED(j)) {
             spif_str_t warn;
 
-            warn = spif_str_new_from_buff("The ", 128);
+            warn = spif_str_new_from_buff(SPIF_CHARPTR("The "), 128);
             if (SPIFOPT_OPT_SHORT(j)) {
                 spif_str_append_char(warn, '-');
                 spif_str_append_char(warn, SPIFOPT_OPT_SHORT(j));
-                spif_str_append_from_ptr(warn, " / --");
+                spif_str_append_from_ptr(warn, SPIF_CHARPTR(" / --"));
             } else {
-                spif_str_append_from_ptr(warn, "--");
+                spif_str_append_from_ptr(warn, SPIF_CHARPTR("--"));
             }
             spif_str_append_from_ptr(warn, SPIFOPT_OPT_LONG(j));
-            spif_str_append_from_ptr(warn, " option is deprecated and should not be used.\n");
-            libast_print_warning(SPIF_STR_STR(warn));
+            spif_str_append_from_ptr(warn, SPIF_CHARPTR(" option is deprecated and should not be used.\n"));
+            libast_print_warning(SPIF_CHARPTR_C(SPIF_STR_STR(warn)));
             spif_str_del(warn);
         }
 

@@ -105,7 +105,7 @@ spif_regexp_init_from_str(spif_regexp_t self, spif_str_t other)
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
     self->data = SPIF_NULL_TYPE(ptr);
-    spif_regexp_set_flags(self, "");
+    spif_regexp_set_flags(self, SPIF_CHARPTR(""));
     return TRUE;
 }
 
@@ -118,7 +118,7 @@ spif_regexp_init_from_ptr(spif_regexp_t self, spif_charptr_t other)
     }
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(regexp));
     self->data = SPIF_NULL_TYPE(ptr);
-    spif_regexp_set_flags(self, "");
+    spif_regexp_set_flags(self, SPIF_CHARPTR(""));
     return TRUE;
 }
 
@@ -154,14 +154,16 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_str_t buff, size_
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_regexp_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+             "(spif_regexp_t) %s:  %10p {\n",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_REGEXP_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(tmp, sizeof(tmp), "}\n");
+    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -205,9 +207,11 @@ spif_regexp_compile(spif_regexp_t self)
         const char *errptr;
         int erroffset;
 
-        self->data = SPIF_CAST(ptr) pcre_compile(SPIF_STR_STR(SPIF_STR(self)), self->flags, &errptr, &erroffset, NULL);
-        if (self->data == SPIF_NULL_TYPE(ptr)) {
-            libast_print_error("PCRE compilation of \"%s\" failed at offset %d -- %s\n", SPIF_STR_STR(SPIF_STR(self)), erroffset, errptr);
+        self->data = SPIF_CAST(ptr) pcre_compile(SPIF_CHARPTR_C(SPIF_STR_STR(SPIF_STR(self))),
+                                                 self->flags, &errptr, &erroffset, NULL);
+        if (SPIF_PTR_ISNULL(self->data)) {
+            libast_print_error("PCRE compilation of \"%s\" failed at offset %d -- %s\n",
+                               SPIF_STR_STR(SPIF_STR(self)), erroffset, errptr);
             return FALSE;
         }
         return TRUE;
@@ -241,7 +245,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
     {
         int rc;
 
-        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, SPIF_STR_STR(subject),
+        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, SPIF_CHARPTR_C(SPIF_STR_STR(subject)),
                        spif_str_get_len(subject), 0, 0, NULL, 0);
         if (rc == 0) {
             return TRUE;
@@ -292,8 +296,8 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
     {
         int rc;
 
-        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, subject,
-                       strlen(subject), 0, 0, NULL, 0);
+        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, SPIF_CHARPTR_C(subject),
+                       strlen(SPIF_CHARPTR_C(subject)), 0, 0, NULL, 0);
         if (rc == 0) {
             return TRUE;
         } else if (rc == PCRE_ERROR_NOMATCH) {

@@ -1332,8 +1332,10 @@ extern int re_exec();
  * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
-#define BOOL_OPT_ISTRUE(s)  (!strcasecmp((s), true_vals[0]) || !strcasecmp((s), true_vals[1]) \
-                             || !strcasecmp((s), true_vals[2]) || !strcasecmp((s), true_vals[3]))
+#define BOOL_OPT_ISTRUE(s)  (!strcasecmp(SPIF_CHARPTR_C(s), true_vals[0]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[1]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[2]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), true_vals[3]))
 /**
  * Compares boolean option value to allowed false values.
  *
@@ -1345,8 +1347,10 @@ extern int re_exec();
  * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
-#define BOOL_OPT_ISFALSE(s) (!strcasecmp((s), false_vals[0]) || !strcasecmp((s), false_vals[1]) \
-                             || !strcasecmp((s), false_vals[2]) || !strcasecmp((s), false_vals[3]))
+#define BOOL_OPT_ISFALSE(s) (!strcasecmp(SPIF_CHARPTR_C(s), false_vals[0]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[1]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[2]) \
+                             || !strcasecmp(SPIF_CHARPTR_C(s), false_vals[3]))
 
 /**
  * Skip-to-end flag.
@@ -2449,7 +2453,7 @@ typedef void (*spifopt_helphandler_t)();
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
-typedef void (*spifopt_abstract_handler_t)(char *);
+typedef void (*spifopt_abstract_handler_t)(spif_charptr_t);
 
 /**
  * Option structure.
@@ -2710,7 +2714,7 @@ extern spif_bool_t spiftool_regexp_match_r(const spif_charptr_t str, const spif_
 #endif
 extern spif_charptr_t *spiftool_split(const spif_charptr_t, const spif_charptr_t);
 extern spif_charptr_t *spiftool_split_regexp(const spif_charptr_t, const spif_charptr_t);
-extern spif_charptr_t spiftool_join(const spif_charptr_t, spif_charptr_t *);
+extern spif_charptr_t spiftool_join(spif_charptr_t, spif_charptr_t *);
 extern spif_charptr_t spiftool_get_word(unsigned long, const spif_charptr_t);
 extern spif_charptr_t spiftool_get_pword(unsigned long, const spif_charptr_t);
 extern unsigned long spiftool_num_words(const spif_charptr_t);
@@ -2721,7 +2725,7 @@ extern spif_charptr_t spiftool_upcase_str(spif_charptr_t);
 extern spif_charptr_t spiftool_safe_str(spif_charptr_t, unsigned short);
 extern spif_charptr_t spiftool_condense_whitespace(spif_charptr_t);
 extern void spiftool_hex_dump(void *, size_t);
-extern spif_cmp_t spiftool_version_compare(const spif_charptr_t, const spif_charptr_t);
+extern spif_cmp_t spiftool_version_compare(spif_charptr_t, spif_charptr_t);
 #if !(HAVE_MEMMEM)
 extern void *memmem(const void *, size_t, const void *, size_t);
 #endif

@@ -119,8 +119,8 @@
  * Obtain the size of a type from its basename.
  *
  * This macro returns the size of the given type basename (such as
- * "obj" or "charptr" or "uint8").  This is primarily used for objects
- * and other structures whose types are actually struct pointers.
+ * "obj" or "str").  This is only used for objects and other
+ * structures whose types are actually struct pointers.
  *
  * @param type The type basename.
  * @return     The size of objects/structures of that type.
@@ -607,6 +607,28 @@ typedef void * (*spif_func_t)();
  * @see @link DOXGRP_TYPES Portable Data Types @endlink
  */
 typedef spif_charptr_t spif_classname_t;
+
+/**
+ * Convenience macro for typecasting to spif_charptr_t.
+ *
+ * This macro typecasts a value to a spif_charptr_t.  I got really
+ * tired of typing "SPIF_CAST(charptr)" all the time, especially for
+ * string constants. :-)
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST(), spif_charptr_t
+ */
+#define SPIF_CHARPTR(var)    (SPIF_CAST(charptr) (var))
+
+/**
+ * Convenience macro for typecasting to C's default char * type.
+ *
+ * This macro typecasts a value to whatever "char *" is on the current
+ * system.  This is used to typecast a spif_charptr_t back to the
+ * native C type for use in standard libc functions.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST(), spif_charptr_t
+ */
+#define SPIF_CHARPTR_C(var)  (SPIF_CAST_C(char *) (var))
 
 /*@}*/
 

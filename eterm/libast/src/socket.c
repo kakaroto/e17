@@ -170,7 +170,9 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     }
         
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_socket_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+             "(spif_socket_t) %s:  %10p {\n",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -179,32 +181,32 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
 
     indent += 2;
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockfd_t) fd:  %d\n", self->fd);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_sockfd_t) fd:  %d\n", self->fd);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockfamily_t) fam:  %d\n", (int) self->fam);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_sockfamily_t) fam:  %d\n", (int) self->fam);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_socktype_t) type:  %d\n", (int) self->type);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_socktype_t) type:  %d\n", (int) self->type);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockproto_t) proto:  %d\n", (int) self->proto);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_sockproto_t) proto:  %d\n", (int) self->proto);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_t) addr:  %10p\n", self->addr);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_sockaddr_t) addr:  %10p\n", SPIF_CAST(ptr) self->addr);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_sockaddr_len_t) len:  %lu\n", (unsigned long) self->len);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_sockaddr_len_t) len:  %lu\n", (unsigned long) self->len);
     spif_str_append_from_ptr(buff, tmp);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_uint32_t) flags:  0x%08x\n", (unsigned) self->flags);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_uint32_t) flags:  0x%08x\n", (unsigned) self->flags);
     spif_str_append_from_ptr(buff, tmp);
 
-    spif_url_show(self->local_url, "local_url", buff, indent);
-    spif_url_show(self->remote_url, "remote_url", buff, indent);
+    spif_url_show(self->local_url, SPIF_CHARPTR("local_url"), buff, indent);
+    spif_url_show(self->remote_url, SPIF_CHARPTR("remote_url"), buff, indent);
 
     indent -= 2;
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
 
     return buff;
@@ -482,10 +484,10 @@ spif_socket_send(spif_socket_t self, spif_str_t data)
                 {
                     spif_bool_t b;
                     spif_str_t tmp_buf;
-                    char *s;
+                    spif_charptr_t s;
                     long left;
 
-                    for (left = len, s = SPIF_STR_STR(data); left > 0; s += 1024, left -= 1024) {
+                    for (left = len, s = SPIF_CHARPTR(SPIF_STR_STR(data)); left > 0; s += 1024, left -= 1024) {
                         tmp_buf = spif_str_new_from_buff(s, 1024);
                         b = spif_socket_send(self, tmp_buf);
                         if (b == FALSE) {
@@ -651,12 +653,12 @@ spif_url_init_from_ipaddr(spif_url_t self, spif_ipsockaddr_t ipaddr)
         hinfo = gethostbyaddr(SPIF_CONST_CAST_C(char *) &(ipaddr->sin_addr), sizeof(ipaddr->sin_addr), AF_INET);
     } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
     if (hinfo == NULL || hinfo->h_name == NULL) {
-        char *buff;
+        spif_charptr_t buff;
 
-        buff = inet_ntoa(ipaddr->sin_addr);
+        buff = SPIF_CHARPTR(inet_ntoa(ipaddr->sin_addr));
         self->host = spif_str_new_from_ptr(buff);
     } else {
-        self->host = spif_str_new_from_ptr(hinfo->h_name);
+        self->host = spif_str_new_from_ptr(SPIF_CHARPTR(hinfo->h_name));
     }
 
     self->port = spif_str_new_from_num(ntohs(ipaddr->sin_port));
@@ -690,7 +692,7 @@ spif_url_init_from_unixaddr(spif_url_t self, spif_unixsockaddr_t unixaddr)
     self->query = SPIF_NULL_TYPE(str);
 
     if (unixaddr->sun_path != NULL) {
-        self->path = spif_str_new_from_ptr(unixaddr->sun_path);
+        self->path = spif_str_new_from_ptr(SPIF_CHARPTR(unixaddr->sun_path));
     } else {
         self->path = SPIF_NULL_TYPE(str);
     }
@@ -716,7 +718,7 @@ spif_url_get_ipaddr(spif_url_t self)
     tries = 0;
     do {
         tries++;
-        hinfo = gethostbyname(SPIF_STR_STR(hostname));
+        hinfo = gethostbyname(SPIF_CHARPTR_C(SPIF_STR_STR(hostname)));
     } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
     if (hinfo == NULL) {
         libast_print_error("Unable to resolve hostname \"%s\" -- %s\n", SPIF_STR_STR(hostname), hstrerror(h_errno));
@@ -749,7 +751,7 @@ spif_url_get_unixaddr(spif_url_t self)
     addr = SPIF_ALLOC(unixsockaddr);
     addr->sun_family = AF_UNIX;
     addr->sun_path[0] = 0;
-    strncat(addr->sun_path, SPIF_STR_STR(spif_url_get_path(self)), sizeof(addr->sun_path) - 1);
+    strncat(addr->sun_path, SPIF_CHARPTR_C(SPIF_STR_STR(spif_url_get_path(self))), sizeof(addr->sun_path) - 1);
     return addr;
 }
 
@@ -785,7 +787,7 @@ spif_socket_get_proto(spif_socket_t self)
 
     proto_str = spif_url_get_proto(url);
     if (!SPIF_STR_ISNULL(proto_str)) {
-        if (SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(proto_str, "raw"))) {
+        if (SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(proto_str, SPIF_CHARPTR("raw")))) {
             spif_str_t target;
 
             /* Raw socket.  Could be raw UNIX or raw IP. */
@@ -801,19 +803,19 @@ spif_socket_get_proto(spif_socket_t self)
             } else {
                 SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
             }
-        } else if (SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(proto_str, "unix"))) {
+        } else if (SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(proto_str, SPIF_CHARPTR("unix")))) {
             /* UNIX socket.  Assume stream-based. */
             SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX);
             SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_TYPE_STREAM);
         } else {
             /* IP socket.  See if they gave us a protocol name. */
             SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
-            proto = getprotobyname(SPIF_STR_STR(proto_str));
+            proto = getprotobyname(SPIF_CHARPTR_C(SPIF_STR_STR(proto_str)));
             if (proto == NULL) {
                 /* If it's not a protocol, it's probably a service. */
-                serv = getservbyname(SPIF_STR_STR(proto_str), "tcp");
+                serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(proto_str)), "tcp");
                 if (serv == NULL) {
-                    serv = getservbyname(SPIF_STR_STR(proto_str), "udp");
+                    serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(proto_str)), "udp");
                 }
                 if (serv != NULL) {
                     /* If we found one, get the protocol info too. */
