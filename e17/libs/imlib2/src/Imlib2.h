@@ -226,10 +226,9 @@ void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *
 /* FIXME: */
 /* need to add arbitary rotation routines */
 
-Imlib_Image imlib_create_rotated_image_test(double angle);
-Imlib_Image imlib_create_rotated_image_test2(double angle);
-Imlib_Image imlib_create_rotated_image_test3(double angle);
-
+Imlib_Image imlib_create_rotated_image(double angle);
+void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x1, int destination_y1, int destination_x2, int destination_y2);
+   
 /* need to add polygon fill code */
 
 #ifdef __cplusplus

@@ -2025,65 +2025,69 @@ imlib_save_image_with_error_return(const char *filename,
 Imlib_Image
 imlib_create_rotated_image(double angle)
 {
-	ImlibImage *im, *im_old;
-	DATA32 *data, *tmp;
-	int x, y, dx, dy, sz;
-	double x1, y1, d;
-
-	CHECK_PARAM_POINTER_RETURN("imlib_create_rotated_image", "image",
-			ctxt_image, NULL);
-	CAST_IMAGE(im_old, ctxt_image);
-	if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
-		im_old->loader->load(im_old, NULL, 0, 1);
-	if (!(im_old->data))
-		return NULL;
-
-	d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) / sqrt(2.0);
-
-	x1 = (double)(im_old->w) / 2.0 - sin(angle + atan(1.0)) * d;
-	y1 = (double)(im_old->h) / 2.0 - cos(angle + atan(1.0)) * d;
-
-	sz = (int)(d * sqrt(2.0));
-	x = (int)(x1 * _ROTATE_PREC_MAX);
-	y = (int)(y1 * _ROTATE_PREC_MAX);
-	dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
-	dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
-
-	if (ctxt_anti_alias) {
-		tmp = __imlib_AddTransBorders(im_old,
-				0, 0, im_old->w, im_old->h);
-		x += _ROTATE_PREC_MAX;
-		y += _ROTATE_PREC_MAX;
-	}
-
-	im = __imlib_CreateImage(sz, sz, NULL);
-	im->data = calloc(sz * sz, sizeof(DATA32));
-	if (!(im->data)) {
-		__imlib_FreeImage(im);
-		return NULL;
-	}
-
-	if (ctxt_anti_alias) {
-		__imlib_RotateAA(tmp, im->data, im_old->w + 2,
-				im_old->w + 2, im_old->h + 2,
-				im->w, sz, sz, x, y, dx, dy);
-		free(tmp);
-	} else {
-		__imlib_RotateSample(im_old->data, im->data, im_old->w,
-			im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
-	}
-	SET_FLAG(im->flags, F_HAS_ALPHA);
-
-	return (Imlib_Image)im;
+   ImlibImage *im, *im_old;
+   DATA32 *data, *tmp;
+   int x, y, dx, dy, sz;
+   double x1, y1, d;
+   
+   CHECK_PARAM_POINTER_RETURN("imlib_create_rotated_image", "image",
+			      ctxt_image, NULL);
+   CAST_IMAGE(im_old, ctxt_image);
+   if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
+      im_old->loader->load(im_old, NULL, 0, 1);
+   if (!(im_old->data))
+      return NULL;
+   
+   d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) / sqrt(2.0);
+   
+   x1 = (double)(im_old->w) / 2.0 - sin(angle + atan(1.0)) * d;
+   y1 = (double)(im_old->h) / 2.0 - cos(angle + atan(1.0)) * d;
+   
+   sz = (int)(d * sqrt(2.0));
+   x = (int)(x1 * _ROTATE_PREC_MAX);
+   y = (int)(y1 * _ROTATE_PREC_MAX);
+   dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
+   dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
+   
+   if (ctxt_anti_alias) 
+     {
+	tmp = __imlib_AddTransBorders(im_old,
+				      0, 0, im_old->w, im_old->h);
+	x += _ROTATE_PREC_MAX;
+	y += _ROTATE_PREC_MAX;
+     }
+   
+   im = __imlib_CreateImage(sz, sz, NULL);
+   im->data = calloc(sz * sz, sizeof(DATA32));
+   if (!(im->data)) 
+     {
+	__imlib_FreeImage(im);
+	return NULL;
+     }
+   
+   if (ctxt_anti_alias) 
+     {
+	__imlib_RotateAA(tmp, im->data, im_old->w + 2,
+			 im_old->w + 2, im_old->h + 2,
+			 im->w, sz, sz, x, y, dx, dy);
+	free(tmp);
+     } else 
+     {
+	__imlib_RotateSample(im_old->data, im->data, im_old->w,
+			     im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+     }
+   SET_FLAG(im->flags, F_HAS_ALPHA);
+   
+   return (Imlib_Image)im;
 }
 
 void 
 imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
-			     char merge_alpha,
-			     int source_x, int source_y,
-			     int source_width, int source_height,
-			     int destination_x1, int destination_y1,
-			     int destination_x2, int destination_y2)
+				      char merge_alpha,
+				      int source_x, int source_y,
+				      int source_width, int source_height,
+				      int destination_x1, int destination_y1,
+				      int destination_x2, int destination_y2)
 {
    ImlibImage *im_src, *im_dst;
    
@@ -2094,67 +2098,8 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImageAtAngle(im_src, im_dst, ctxt_anti_alias,
-   			ctxt_blend, merge_alpha, source_x, source_y,
-			source_width, source_height, destination_x1,
-			destination_y1, destination_x2, destination_y2,
-			ctxt_color_modifier, ctxt_operation);
-}
-
-Imlib_Image
-imlib_create_rotated_image_test3(double angle)
-{
- ImlibImage *im, *im_old, *im_tmp;
- DATA32 *data;
- int x, y, dx, dy, sz;
- double x1, y1, d;
-
- im_tmp = NULL;
-
- CHECK_PARAM_POINTER_RETURN("imlib_create_rotated_image", "image",
-   ctxt_image, NULL);
- CAST_IMAGE(im_old, ctxt_image);
- if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
-  im_old->loader->load(im_old, NULL, 0, 1);
- if (!(im_old->data))
-  return NULL;
-
- d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) * sqrt(2.0);
-
- d /= 2.0;
- x1 = (double)(im_old->w) / 2.0 - sin(angle + atan(1.0)) * d;
- y1 = (double)(im_old->h) / 2.0 - cos(angle + atan(1.0)) * d;
-
- sz = (int)(d * sqrt(2.0));
- x = (int)(x1 * _ROTATE_PREC_MAX);
- y = (int)(y1 * _ROTATE_PREC_MAX);
- dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
- dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
-
- if (ctxt_anti_alias) {
-  im_tmp = __imlib_AddTransBorders(im_old,
-    im_old->w + 2, im_old->h + 2);
-  if (!im_tmp)
-   return NULL;
-  x++;
-  y++;
- }
-
- im = __imlib_CreateImage(sz, sz, NULL);
- im->data = calloc(sz * sz, sizeof(DATA32));
- if (!(im->data)) {
-  __imlib_FreeImage(im);
-  return NULL;
- }
-
- if (ctxt_anti_alias) {
-  __imlib_RotateAA(im_tmp->data, im->data, im_tmp->w,
-    im_tmp->h, im->w, sz, sz, x, y, dx, dy);
-  __imlib_FreeImage(im_tmp);
- } else {
-  __imlib_RotateSample(im_old->data, im->data, im_old->w,
-    im_old->h, im->w, sz, sz, x, y, dx, dy);
- }
- SET_FLAG(im->flags, F_HAS_ALPHA);
-
- return (Imlib_Image)im;
+				    ctxt_blend, merge_alpha, source_x, source_y,
+				    source_width, source_height, destination_x1,
+				    destination_y1, destination_x2, destination_y2,
+				    ctxt_color_modifier, ctxt_operation);
 }
