@@ -27,13 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
-void       efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst);
-void       efsd_cmd_free(EfsdCommand *ec);
+EfsdCommand *efsd_cmd_new(void);
+void         efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst);
+void         efsd_cmd_cleanup(EfsdCommand *ecom);
+void         efsd_cmd_free(EfsdCommand *ec);
 
-void       efsd_event_duplicate(EfsdEvent *ee_src, EfsdEvent *ee_dst);
-void       efsd_event_free(EfsdEvent *ee);
-
-void       efsd_cmd_cleanup(EfsdCommand *ecom);
-void       efsd_event_cleanup(EfsdEvent *ev);
+void         efsd_event_duplicate(EfsdEvent *ee_src, EfsdEvent *ee_dst);
+void         efsd_event_cleanup(EfsdEvent *ev);
+void         efsd_event_free(EfsdEvent *ee);
 
 #endif 

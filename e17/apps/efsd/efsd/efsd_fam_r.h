@@ -22,34 +22,29 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_macros
-#define __efsd_macros
+#ifndef efsd_fam_r_h
+#define efsd_fam_r_h
 
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <fam.h>
 
-#define EFSD_META_DIR_NAME  ".e_meta"
+/* These are the usual FAM calls, wrapped by a mutex
+   lock/unlock pair when we're using threads.
+*/
 
-#ifndef	FALSE
-#define	FALSE	(0)
-#endif
+int FAMOpen_r(FAMConnection* fc);
 
-#ifndef	TRUE
-#define	TRUE	(!FALSE)
-#endif
+int FAMClose_r(FAMConnection* fc);
 
-#define NEW(X)  ((X*) malloc(sizeof(X)))
-#define FREE(X) { if (X) { free(X); X = NULL; } }
+int FAMMonitorDirectory_r(FAMConnection *fc, const char *filename,
+			  FAMRequest* fr, void* userData);
 
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 4096
-#endif
+int FAMMonitorFile_r(FAMConnection *fc, const char *filename, 
+		     FAMRequest* fr, void* userData);
 
-#if USE_THREADS
-#define READDIR(dir, de, de_ptr)  (readdir_r(dir, &de, &de_ptr))
-#else
-#define READDIR(dir, de, de_ptr)  (de_ptr = readdir(dir))
-#endif
+int FAMCancelMonitor_r(FAMConnection *fc, const FAMRequest *fr);
+
+int FAMNextEvent_r(FAMConnection *fc, FAMEvent *fe);
+
+int FAMPending_r(FAMConnection* fc);
 
 #endif

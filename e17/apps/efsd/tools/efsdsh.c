@@ -311,7 +311,7 @@ print_help(void)
 	 "startmon <file>       Starts monitoring file or dir\n"
 	 "stopmon <file>        Stops monitoring file or dir\n"
 	 "gettype <file>        Returns file type of file\n"
-	 "exit                  Guess what.\n"
+	 "exit, quit            Guess what.\n"
 	 "ln <source> <target>  Symlink source to target\n"
 	 "cp <source> <target>  Copy source to target\n"
 	 "mv <source> <target>  Move source to target\n\n"
@@ -343,7 +343,7 @@ command_line(EfsdConnection *ec)
 
       if ((tok = strtok(s, " \t\n")))
 	{
-	  if (!strcmp(tok, "exit"))
+	  if (!strcmp(tok, "exit") || !strcmp(tok, "quit"))
 	    return;
 	  else if (!strcmp(tok, "help"))
 	    print_help();

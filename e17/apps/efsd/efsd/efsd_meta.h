@@ -27,8 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
-int        efsd_meta_set(EfsdCommand *ec);
-
+void        efsd_meta_init(void);
+void        efsd_meta_cleanup(void);
+int         efsd_meta_set(EfsdCommand *ec);
 void       *efsd_meta_get(EfsdCommand *ec, int *data_len);
 
 #endif

@@ -268,12 +268,15 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
     D_RETURN_(-1);
   count2 += count;
 
-  ec->efsd_file_cmd.options = (EfsdOption*)
-    malloc(sizeof(EfsdOption) *	ec->efsd_file_cmd.num_options);
-  
-  for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
+  if (ec->efsd_file_cmd.num_options > 0)
     {
-      efsd_io_read_option(sockfd, &(ec->efsd_file_cmd.options[i]));
+      ec->efsd_file_cmd.options = (EfsdOption*)
+	malloc(sizeof(EfsdOption) *	ec->efsd_file_cmd.num_options);
+  
+      for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
+	{
+	  efsd_io_read_option(sockfd, &(ec->efsd_file_cmd.options[i]));
+	}
     }
 
   D_RETURN_(count2);
@@ -303,12 +306,15 @@ read_2file_cmd(int sockfd, EfsdCommand *ec)
     D_RETURN_(-1);
   count2 += count;
 
-  ec->efsd_2file_cmd.options = (EfsdOption*)
-    malloc(sizeof(EfsdOption) *	ec->efsd_2file_cmd.num_options);
-  
-  for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
+  if (ec->efsd_2file_cmd.num_options > 0)
     {
-      efsd_io_read_option(sockfd, &(ec->efsd_2file_cmd.options[i]));
+      ec->efsd_2file_cmd.options = (EfsdOption*)
+	malloc(sizeof(EfsdOption) *	ec->efsd_2file_cmd.num_options);
+      
+      for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
+	{
+	  efsd_io_read_option(sockfd, &(ec->efsd_2file_cmd.options[i]));
+	}
     }
 
   D_RETURN_(count2);

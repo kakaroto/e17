@@ -30,8 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 
 void         efsd_stat_init(void);
-struct stat *efsd_stat(char *filename);
-struct stat *efsd_lstat(char *filename);
+void         efsd_stat_cleanup(void);
+int          efsd_stat(char *filename, struct stat *st);
+int          efsd_lstat(char *filename, struct stat *st);
 void         efsd_stat_update(char *filename);
 void         efsd_stat_remove(char *filename);
 void         efsd_stat_change_filename(char *file1, char *file2);

@@ -37,7 +37,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
-#include <fam.h>
 
 #ifdef __EMX__
 #include <strings.h>
@@ -47,12 +46,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_io.h>
+#include <efsd_fam_r.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
 #include <efsd_filetype.h>
 #include <efsd_list.h>
+#include <efsd_lock.h>
 #include <efsd_macros.h>
 #include <efsd_main.h>
+#include <efsd_meta.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
@@ -64,143 +66,225 @@ FAMConnection        famcon;
 /* File desciptors for connected clients */
 int                  clientfd[EFSD_CLIENTS];
 
+/* Command line options: */
+char                 opt_foreground = FALSE;
+char                 opt_careful    = FALSE;
+char                 opt_debug      = FALSE;
+char                 opt_nesting    = FALSE;
+
 /* File descriptor for accepting new clients */
 static int           listen_fd;
 
-/* For options: */
-static int           opt_foreground = 0;
-static int           opt_careful    = 0;
-
-static int    efsd_handle_client_command(EfsdCommand *command, int sockfd);
-static void   efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr);
-static void   efsd_handle_fam_events(void);
-static void   efsd_handle_connections(void);
-static void   efsd_cleanup_signal_callback(int signal);
-static void   efsd_cleanup(void);
-static void   efsd_daemonize(void);
-static void   efsd_check_options(int argc, char**argv);
-
-
-static int
-efsd_handle_client_command(EfsdCommand *command, int client)
+/* We need a struct to hold all arguments
+   needed when launching a thread, because
+   we can only pass a void pointer:
+*/
+typedef struct efsd_command_client_container
 {
-  int result = (-1);
-  
+  EfsdCommand *ecmd;
+  int          client;
+  char         threaded; /* whether the contained command should
+			    be run in a thread or not */
+}
+EfsdCommandClientContainer;
+
+/* Pthread wrappers to minimize #ifdef clutter */
+static void   main_thread_launch(EfsdCommand *ecom, int client);
+static void   main_serial_launch(EfsdCommand *ecom, int client);
+static void   main_thread_detach(void);
+
+static void  *main_handle_client_command(void *container);
+static void   main_handle_listdir_options(char *filename, EfsdFamRequest *efr);
+static void   main_handle_fam_events(void);
+static void   main_handle_connections(void);
+static void   main_cleanup_signal_callback(int signal);
+static void   main_cleanup(void);
+static void   main_initialize(void);
+static void   main_daemonize(void);
+static void   main_check_permissions(void);
+static void   main_check_options(int argc, char**argv);
+
+
+static void   
+main_thread_launch(EfsdCommand *ecmd, int client)
+{
+  EfsdCommandClientContainer *container;
+
+  container = NEW(EfsdCommandClientContainer);
+  container->ecmd = ecmd;
+  container->client = client;
+  container->threaded = TRUE;
+
+#if USE_THREADS
+  {
+    pthread_t thread;
+
+    if (pthread_create(&thread, NULL, main_handle_client_command, container) != 0)
+      {
+	/* Couldn't create a thread -- run directly. */
+	container->threaded = FALSE;
+	main_handle_client_command(container);  
+      }
+  }
+#else
+  /* If we don't have threads, just execute directly ... */
+  main_handle_client_command(container);  
+#endif
+}
+
+
+static void   
+main_serial_launch(EfsdCommand *ecmd, int client)
+{
+  EfsdCommandClientContainer *container;
+
+  container = NEW(EfsdCommandClientContainer);
+  container->ecmd = ecmd;
+  container->client = client;
+  container->threaded = FALSE;
+
+  main_handle_client_command(container);  
+}
+
+
+static void
+main_thread_detach(void)
+{
   D_ENTER;
+
+#if USE_THREADS
+  if (pthread_detach(pthread_self()) != 0)
+    {
+      printf("Thread detach error -- exiting.\n");
+      exit(-1);
+    }
+#endif
+
+  D_RETURN;
+}
+
+
+static void *
+main_handle_client_command(void *data)
+{  
+  EfsdCommandClientContainer *container = (EfsdCommandClientContainer *)data;
+  EfsdCommand *command;
+  int client;
+ 
+  D_ENTER;
+
+  if (container->threaded)
+    main_thread_detach();
+
+  command = container->ecmd;
+  client = container->client;
 
   switch (command->type)
     {
     case EFSD_CMD_REMOVE:
       D(("Handling REMOVE\n"));
-      result = efsd_file_remove(command, client);
+      efsd_file_remove(command, client);
       break;
     case EFSD_CMD_MOVE:
       D(("Handling MOVE\n"));
-      result = efsd_file_move(command, client);
+      efsd_file_move(command, client);
       break;
     case EFSD_CMD_COPY:
       D(("Handling COPY\n"));
-      result = efsd_file_copy(command, client);
+      efsd_file_copy(command, client);
       break;
     case EFSD_CMD_SYMLINK:
       D(("Handling SYMLINK\n"));
-      result = efsd_file_symlink(command, client);
+      efsd_file_symlink(command, client);
       break;
     case EFSD_CMD_LISTDIR:
       D(("Handling LISTDIR\n"));
-      result = efsd_file_listdir(command, client);
+      efsd_file_listdir(command, client);
       break;
     case EFSD_CMD_MAKEDIR:
       D(("Handling MAKEDIR\n"));
-      result = efsd_file_makedir(command, client);
+      efsd_file_makedir(command, client);
       break;
     case EFSD_CMD_CHMOD:
       D(("Handling CHMOD\n"));
-      result = efsd_file_chmod(command, client);
+      efsd_file_chmod(command, client);
       break;
     case EFSD_CMD_SETMETA:
       D(("Handling SETMETA\n"));
-      result = efsd_file_set_metadata(command, client);
+      efsd_file_set_metadata(command, client);
       break;
     case EFSD_CMD_GETMETA:
       D(("Handling GETMETA\n"));
-      result = efsd_file_get_metadata(command, client);
+      efsd_file_get_metadata(command, client);
       break;
     case EFSD_CMD_STARTMON:
       D(("Handling STARTMON\n"));
-      result = efsd_file_start_monitor(command, client);
+      efsd_file_start_monitor(command, client);
       break;
     case EFSD_CMD_STOPMON:
       D(("Handling STOPMON\n"));
-      result = efsd_file_stop_monitor(command, client);
+      efsd_file_stop_monitor(command, client);
       break;
     case EFSD_CMD_STAT:
       D(("Handling STAT on %s\n", command->efsd_file_cmd.file));
-      result = efsd_file_stat(command, client, FALSE);
+      efsd_file_stat(command, client, FALSE);
       break;
     case EFSD_CMD_LSTAT:
       D(("Handling LSTAT on %s\n", command->efsd_file_cmd.file));
-      result = efsd_file_stat(command, client, TRUE);
+      efsd_file_stat(command, client, TRUE);
       break;
     case EFSD_CMD_READLINK:
       D(("Handling READLINK\n"));
-      result = efsd_file_readlink(command, client);
+      efsd_file_readlink(command, client);
       break;
     case EFSD_CMD_GETFILETYPE:
       D(("Handling GETFILETYPE\n"));
-      result = efsd_file_getfiletype(command, client);
+      efsd_file_getfiletype(command, client);
       break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
-      result = efsd_main_close_connection(client);
+      efsd_main_close_connection(client);
       break;
     default:
+      D(("Handling INVALID command\n"));
     }
 
-  D_RETURN_(result);
+  efsd_cmd_free(command);
+  FREE(container);
+
+  D_RETURN_(NULL);
 }
 
 
 static void
-efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
+main_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 {
-  EfsdCommand ec;
+  EfsdCommand *ecmd;
   int i;
 
   D_ENTER;
 
-  memset(&ec, 0, sizeof(EfsdCommand));
-  ec.efsd_file_cmd.file = filename;
-  ec.efsd_file_cmd.id = efr->id;
-  ec.efsd_file_cmd.num_options = 0;
-
   for (i = 0; i < efr->num_options; i++)
     {
+      ecmd = efsd_cmd_new();
+      ecmd->efsd_file_cmd.file = strdup(filename);
+      ecmd->efsd_file_cmd.id = efr->id;
+
       switch (efr->options[i].type)
 	{
 	case EFSD_OP_GET_STAT:
 	  D(("Trying stat option on file-exists event on '%s'...\n", filename));
-	  ec.type = EFSD_CMD_STAT;
-	  if (efsd_file_stat(&ec, efr->client, FALSE) < 0)
-	    {
-	      D(("Stat option for file-exists event failed -- queued.\n"));
-	    }
-	  else
-	    {
-	      D(("Succeeded.\n"));
-	    }
+	  ecmd->type = EFSD_CMD_STAT;
+	  
+	  /* Launch thread -- the command is freed there. */
+	  main_thread_launch(ecmd, efr->client);
 	  break;
 	case EFSD_OP_GET_FILETYPE:
 	  D(("Trying getfile option on file-exists event on '%s'...\n", filename));
-	  ec.type = EFSD_CMD_GETFILETYPE;
-	  if (efsd_file_getfiletype(&ec, efr->client) < 0)
-	    {
-	      D(("Get-file option for file-exists event failed -- queued.\n"));
-	    }
-	  else
-	    {
-	      D(("Succeeded.\n"));
-	    }
+	  ecmd->type = EFSD_CMD_GETFILETYPE;
+
+	  /* Launch thread -- the command is freed there. */
+	  main_thread_launch(ecmd, efr->client);
 	  break;
 	case EFSD_OP_GET_META:
 	  D(("Trying get-meta option on file-exists event ...\n"));
@@ -217,7 +301,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 
 
 static void 
-efsd_handle_fam_events(void)
+main_handle_fam_events(void)
 {
   FAMEvent    famev;
   EfsdEvent   ee;
@@ -226,17 +310,17 @@ efsd_handle_fam_events(void)
 
   D_ENTER;
 
-  while (FAMPending(&famcon) > 0)
+  while (FAMPending_r(&famcon) > 0)
     {
       memset(&famev, 0, sizeof(FAMEvent));
 
-      if (FAMNextEvent(&famcon, &famev) < 0)
+      if (FAMNextEvent_r(&famcon, &famev) < 0)
 	{
-	  FAMOpen(&famcon);
+	  FAMOpen_r(&famcon);
 	  D_RETURN;
 	}
 
-      if (famev.filename && strcmp(famev.filename, EFSD_META_DIR_NAME))
+      if (famev.filename)
 	{
 	  EfsdFamMonitor *m;
 	  EfsdList       *cl;
@@ -295,11 +379,11 @@ efsd_handle_fam_events(void)
 			      if (famev.filename[0] != '/')
 				{
 				  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
-				  efsd_handle_listdir_options(s, efr);
+				  main_handle_listdir_options(s, efr);
 				}
 			      else
 				{
-				  efsd_handle_listdir_options(famev.filename, efr);
+				  main_handle_listdir_options(famev.filename, efr);
 				}
 			    }
 			}		      
@@ -321,7 +405,7 @@ efsd_handle_fam_events(void)
 		  D(("Unknown EfsdFamMonitor type!\n"));
 		}
 	    }
-	  
+
 	  if (famev.code == FAMAcknowledge)
 	    efsd_fam_remove_monitor(m);
 
@@ -334,11 +418,10 @@ efsd_handle_fam_events(void)
 
 
 static void 
-efsd_handle_connections(void)
+main_handle_connections(void)
 {
   struct sockaddr_un serv_sun, cli_sun;
   int             num_read, fdsize, clilen, i, n, can_accept, sock_fd;
-  EfsdCommand     ecmd;
   fd_set          fdrset;
   fd_set          fdwset;
   fd_set         *fdwset_ptr = NULL;
@@ -436,7 +519,8 @@ efsd_handle_connections(void)
 	    }
 	}
 
-      /* Check if anything is queued to be written ... */
+      /* Check if anything is queued to be written
+         to the writable fds ... */
       if (!efsd_queue_empty())
 	{
 	  efsd_queue_process(fdwset_ptr);
@@ -445,7 +529,7 @@ efsd_handle_connections(void)
       if (FD_ISSET(famcon.fd, &fdrset))
 	{
 	  /* FAM reported something -- handle it. */
-	  efsd_handle_fam_events();
+	  main_handle_fam_events();
 	}
       
       for (i = 0; i < EFSD_CLIENTS; i++)
@@ -453,24 +537,28 @@ efsd_handle_connections(void)
 	  if (clientfd[i] >= 0 && FD_ISSET(clientfd[i], &fdrset))
 	    {
 	      /* A connected client sent something -- handle it. */
-	      memset(&ecmd, 0, sizeof(EfsdCommand));
+
+	      EfsdCommand  *ecmd;
+
+	      ecmd = efsd_cmd_new();
 	      D(("Reading command ...\n"));
-	      if ( (num_read = efsd_io_read_command(clientfd[i], &ecmd)) >= 0)
+
+	      if ( (num_read = efsd_io_read_command(clientfd[i], ecmd)) >= 0)
 		{
-		  /* handle command -- it is queued if the
-		     resulting event cannot be sent ...
+		  /* Launch a new thread that handles the command --
+		     the result is queued if the resulting event cannot
+		     be sent ...
 		  */
-		  if (efsd_handle_client_command(&ecmd, i) < 0)
-		    {
-		      D(("Failed to write command, command queued.\n"));
-		    }
+		  D(("Received command type %i\n", ecmd->type));
+
+		  main_thread_launch(ecmd, i);
 		}
 	      else
 		{
 		  efsd_main_close_connection(i);
+		  efsd_cmd_free(ecmd);
 		}
 	      D(("Done.\n"));
-	      efsd_cmd_cleanup(&ecmd);
 	    }
 	}
 
@@ -508,16 +596,16 @@ efsd_handle_connections(void)
 
 
 static void 
-efsd_cleanup_signal_callback(int signal)
+main_cleanup_signal_callback(int signal)
 {
   D_ENTER;
   D(("Received sig %i -- cleanup.\n", signal));
-  efsd_cleanup();
+  main_cleanup();
   D_RETURN;
 }
 
 static void 
-efsd_cleanup(void)
+main_cleanup(void)
 {
   int i;
   
@@ -535,6 +623,9 @@ efsd_cleanup(void)
   close(listen_fd);
   efsd_misc_remove_socket_file();
   efsd_fam_cleanup();
+  efsd_stat_cleanup();
+  efsd_meta_cleanup();
+  efsd_filetype_cleanup();
   D(("Bye bye.\n"));
 
   exit(0);
@@ -542,59 +633,51 @@ efsd_cleanup(void)
 
 
 static void 
-efsd_initialize(void)
+main_initialize(void)
 {
   D_ENTER;
 
-#ifndef __EMX__
-  if (geteuid() == 0)
-    {
-      fprintf(stderr, "Efsd is not meant to be run by root -- at least not yet :)\n");
-      exit(-1);
-    }
-#endif  
-
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
-  signal(SIGABRT,   efsd_cleanup_signal_callback);
-  signal(SIGALRM,   efsd_cleanup_signal_callback);
-  signal(SIGBUS,    efsd_cleanup_signal_callback);
+  signal(SIGABRT,   main_cleanup_signal_callback);
+  signal(SIGALRM,   main_cleanup_signal_callback);
+  signal(SIGBUS,    main_cleanup_signal_callback);
 #ifdef SIGEMT
-  signal(SIGEMT, efsd_cleanup_signal_callback);
+  signal(SIGEMT, main_cleanup_signal_callback);
 #endif
-  signal(SIGFPE,    efsd_cleanup_signal_callback);
-  signal(SIGHUP,    efsd_cleanup_signal_callback);
-  signal(SIGILL,    efsd_cleanup_signal_callback);
-  signal(SIGINT,    efsd_cleanup_signal_callback);
-  signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  //signal(SIGSEGV,   efsd_cleanup_signal_callback);
-  signal(SIGSYS,    efsd_cleanup_signal_callback);
-  signal(SIGTERM,   efsd_cleanup_signal_callback);
-  signal(SIGTRAP,   efsd_cleanup_signal_callback);
-  signal(SIGUSR1,   efsd_cleanup_signal_callback);
-  signal(SIGUSR2,   efsd_cleanup_signal_callback);
+  signal(SIGFPE,    main_cleanup_signal_callback);
+  signal(SIGHUP,    main_cleanup_signal_callback);
+  signal(SIGILL,    main_cleanup_signal_callback);
+  signal(SIGINT,    main_cleanup_signal_callback);
+  signal(SIGQUIT,   main_cleanup_signal_callback);
+  /* signal(SIGSEGV,   main_cleanup_signal_callback); */
+  signal(SIGSYS,    main_cleanup_signal_callback);
+  signal(SIGTERM,   main_cleanup_signal_callback);
+  signal(SIGTRAP,   main_cleanup_signal_callback);
+  signal(SIGUSR1,   main_cleanup_signal_callback);
+  signal(SIGUSR2,   main_cleanup_signal_callback);
 #ifndef __EMX__
-  signal(SIGIO,     efsd_cleanup_signal_callback);
-  signal(SIGIOT,    efsd_cleanup_signal_callback);
+  signal(SIGIO,     main_cleanup_signal_callback);
+  signal(SIGIOT,    main_cleanup_signal_callback);
 #ifdef SIGSTKFLT
-  signal(SIGSTKFLT, efsd_cleanup_signal_callback);
+  signal(SIGSTKFLT, main_cleanup_signal_callback);
 #endif
-  signal(SIGVTALRM, efsd_cleanup_signal_callback);
-  signal(SIGXCPU,   efsd_cleanup_signal_callback);
-  signal(SIGXFSZ,   efsd_cleanup_signal_callback);
+  signal(SIGVTALRM, main_cleanup_signal_callback);
+  signal(SIGXCPU,   main_cleanup_signal_callback);
+  signal(SIGXFSZ,   main_cleanup_signal_callback);
 #endif
   signal(SIGPIPE, SIG_IGN);
 
   atexit(efsd_misc_remove_socket_file);
 
-  efsd_misc_check_dir();
+  efsd_misc_create_efsd_dir();
 
   D_RETURN;
 }
 
 
 static void
-efsd_daemonize(void)
+main_daemonize(void)
 {
   pid_t   pid;
 
@@ -624,8 +707,21 @@ efsd_daemonize(void)
 }
 
 
+static void   
+main_check_permissions(void)
+{
+#ifndef __EMX__
+  if (geteuid() == 0)
+    {
+      fprintf(stderr, "Efsd is not meant to be run by root -- at least not yet :)\n");
+      exit(-1);
+    }
+#endif  
+}
+
+
 static void 
-efsd_check_options(int argc, char**argv)
+main_check_options(int argc, char**argv)
 {
   struct stat st;
   int i;
@@ -642,18 +738,36 @@ efsd_check_options(int argc, char**argv)
 		 "\n"
 		 "  -f, --foreground      do not fork into background on startup.\n"
 		 "  -c, --careful         don't start if socket file exists.\n"
+#ifdef DEBUG
+		 "  -d, --debug           show debugging output.\n"
+#endif
+#ifdef DEBUG_NEST
+		 "  -t, --tree            show call tree.\n"
+#endif
 		 "\n",
 		 argv[0]);
 	  exit(0);
 	}
       else if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--foreground"))
 	{
-	  opt_foreground = 1;
+	  opt_foreground = TRUE;
 	}
       else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--careful"))
 	{
-	  opt_careful = 1;
+	  opt_careful = TRUE;
 	}
+#ifdef DEBUG
+      else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug"))
+	{
+	  opt_debug = TRUE;
+	}
+#endif
+#ifdef DEBUG_NEST
+      else if (!strcmp(argv[i], "-t") || !strcmp(argv[i], "--tree"))
+	{
+	  opt_nesting = TRUE;
+	}
+#endif
     }
 
   if (stat(efsd_misc_get_socket_file(), &st) >= 0)
@@ -698,14 +812,16 @@ main(int argc, char **argv)
 {
   D_ENTER;
 
-  efsd_check_options(argc, argv);
+  main_check_permissions();
+  main_check_options(argc, argv);
 
-  efsd_daemonize();
   efsd_fam_init();
   efsd_stat_init();
+  efsd_meta_init();
   efsd_filetype_init();
-  efsd_initialize();
-  efsd_handle_connections();
+  main_initialize();
+  main_daemonize();
+  main_handle_connections();
 
   D_RETURN_(0);
 }

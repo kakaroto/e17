@@ -33,4 +33,9 @@ extern int              clientfd[EFSD_CLIENTS];
 extern int              listen_fd;
 extern mode_t           mode_755;
 
+extern char             opt_foreground;
+extern char             opt_careful;
+extern char             opt_debug;
+extern char             opt_nesting;
+
 #endif

@@ -4,9 +4,9 @@ bin_PROGRAMS = efsdsh
 bin_SCRIPTS = magic2db
 
 # A list of all the files in the current directory which can be regenerated
-MAINTAINERCLEANFILES = Makefile.in Makefile
+MAINTAINERCLEANFILES = Makefile.in Makefile magic.db pattern.db magic2db efsdsh
 
-INCLUDES = -I../efsd/
+INCLUDES = -I$(top_srcdir)/efsd
 
 efsdsh_SOURCES = efsdsh.c
 efsdsh_LDADD = -L$(top_srcdir)/efsd/.libs -lefsd

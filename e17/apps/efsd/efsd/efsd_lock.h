@@ -22,34 +22,52 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_macros
-#define __efsd_macros
+#ifndef efsd_lock_h
+#define efsd_lock_h
 
 #if HAVE_CONFIG_H
 # include <config.h>
 #endif
 
-#define EFSD_META_DIR_NAME  ".e_meta"
+/* This is a lock mechanism that implements an
+   abstraction of the multiple-read/single-write
+   paradigm. It can protect a resource by allowing
+   multiple readers of a resource to run in parallel,
+   but allowing only one writer. It also guarantees
+   that no reads are in progress when a write begins
+   and no writes are in progress when a read begins.
+*/
 
-#ifndef	FALSE
-#define	FALSE	(0)
-#endif
+#  if USE_THREADS
 
-#ifndef	TRUE
-#define	TRUE	(!FALSE)
-#endif
+#  include <pthread.h>
 
-#define NEW(X)  ((X*) malloc(sizeof(X)))
-#define FREE(X) { if (X) { free(X); X = NULL; } }
+typedef struct efsd_lock EfsdLock;
 
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 4096
-#endif
+EfsdLock *efsd_lock_new(void);
+void      efsd_lock_free(EfsdLock *l);
 
-#if USE_THREADS
-#define READDIR(dir, de, de_ptr)  (readdir_r(dir, &de, &de_ptr))
-#else
-#define READDIR(dir, de, de_ptr)  (de_ptr = readdir(dir))
-#endif
+void      efsd_lock_get_write_access(EfsdLock *l);
+void      efsd_lock_release_write_access(EfsdLock *l);
+void      efsd_lock_get_read_access(EfsdLock *l);
+void      efsd_lock_release_read_access(EfsdLock *l);
+
+#  else
+
+/* We're not using threads -- reduce EfsdLock* to
+   void pointers and hide the function calls to
+   minimize #ifdef clutter...
+*/
+
+typedef void EfsdLock;
+
+#  define efsd_lock_new() NULL
+#  define efsd_lock_free(X)
+#  define efsd_lock_get_write_access(X)
+#  define efsd_lock_release_write_access(X)
+#  define efsd_lock_get_read_access(X)
+#  define efsd_lock_release_read_access(X)
+#  endif
+
 
 #endif

@@ -5,62 +5,55 @@ bin_PROGRAMS = efsd
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
-INCLUDES = @edb_cflags@ -DDEBUG #-DDEBUG_NEST
+INCLUDES = @edb_cflags@
+
+DEBUGFLAGS = -DDEBUG -DDEBUG_NEST
+
+if USE_THREADS_FILES
+CPPFLAGS = -D_REENTRANT $(DEBUGFLAGS)
+efsd_threadstuff = efsd_lock.c
+else
+CPPFLAGS = $(DEBUGFLAGS)
+endif
+
 
 include_HEADERS = \
 	efsd.h \
 	libefsd.h
 
-efsd_SOURCES = \
-	efsd_debug.h \
-	efsd_debug.c \
-	efsd_fam.h \
-	efsd_fam.c \
-	efsd_fileops.h \
-	efsd_fileops.c \
-	efsd_filetype.h \
-	efsd_filetype.c \
-	efsd_fs.h \
-	efsd_fs.c \
-	efsd_globals.h \
-	efsd_hash.h \
-	efsd_hash.c \
-	efsd_io.h \
-	efsd_io.c \
-	efsd_main.h \
-	efsd_main.c \
-	efsd_macros.h \
-	efsd_meta.c \
-	efsd_meta.h \
-	efsd_queue.h \
-	efsd_queue.c \
-	efsd_list.h \
-	efsd_list.c \
-	efsd_misc.h \
-	efsd_misc.c \
-	efsd_options.h \
-	efsd_options.c \
-	efsd_statcache.h \
-	efsd_statcache.c \
-	efsd_types.h \
-	efsd_types.c
+efsd_SOURCES = 					\
+	efsd_debug.h efsd_debug.c		\
+	efsd_fam.h efsd_fam.c 			\
+	efsd_fam_r.c efsd_fam_r.h 		\
+	efsd_fileops.h efsd_fileops.c 		\
+	efsd_filetype.h efsd_filetype.c 	\
+	efsd_fs.h efsd_fs.c 			\
+	efsd_globals.h 				\
+	efsd_hash.h efsd_hash.c 		\
+	efsd_io.h efsd_io.c 			\
+	efsd_main.h efsd_main.c 		\
+	efsd_macros.h 				\
+	efsd_meta.c efsd_meta.h 		\
+	efsd_queue.h efsd_queue.c 		\
+	efsd_list.h efsd_list.c 		\
+	efsd_lock.h 				\
+	efsd_misc.h efsd_misc.c 		\
+	efsd_options.h efsd_options.c 		\
+	efsd_statcache.h efsd_statcache.c 	\
+	efsd_types.h efsd_types.c 		\
+	$(efsd_threadstuff)
 
 efsd_LDADD = @edb_libs@
 
 lib_LTLIBRARIES = libefsd.la
 
-libefsd_la_SOURCES   = \
-	efsd.h \
-	efsd_macros.h \
-	efsd_debug.h \
-	efsd_debug.c \
-	efsd_io.h \
-	efsd_io.c \
-	efsd_options.h \
-	efsd_options.c \
-	efsd_types.h \
-	efsd_types.c \
-	libefsd_misc.h \
-	libefsd_misc.c \
+libefsd_la_SOURCES   = 				\
+	efsd.h 					\
+	efsd_macros.h 				\
+	efsd_debug.h efsd_debug.c 		\
+	efsd_io.h efsd_io.c 			\
+	efsd_options.h efsd_options.c 		\
+	efsd_types.h efsd_types.c 		\
+	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
 

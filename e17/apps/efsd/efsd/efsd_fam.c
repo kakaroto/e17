@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_misc.h>
 #include <efsd_hash.h>
+#include <efsd_fam_r.h>
 #include <efsd_fam.h>
 
 
@@ -115,13 +116,11 @@ fam_free_monitor(EfsdFamMonitor *m)
   if (!m)
     D_RETURN;
 
-  if (m->filename)
-    free (m->filename);
-  if (m->fam_req)
-    free (m->fam_req);
+  FREE(m->filename);
+  FREE(m->fam_req);
 
   efsd_list_free(m->clients, (EfsdFunc)fam_free_request);
-  free (m);
+  FREE(m);
 
   D_RETURN;
 }
@@ -172,8 +171,7 @@ fam_free_request(EfsdFamRequest *efr)
   for (i = 0; i < efr->num_options; i++)
     efsd_option_cleanup(&efr->options[i]);
 
-  if (efr->options)
-    FREE(efr->options);
+  FREE(efr->options);
   FREE(efr);
 
   D_RETURN;
@@ -263,7 +261,7 @@ fam_del_monitor(EfsdCommand *com, int client)
 	  D(("Use count is zero -- stopping monitoring of %s.\n",
 	     com->efsd_file_cmd.file));
 	  
-	  FAMCancelMonitor(&famcon, m->fam_req);
+	  FAMCancelMonitor_r(&famcon, m->fam_req);
 	  
 	  /* Actual cleanup happens when FAMAcknowledge is seen ... */
 	}
@@ -323,7 +321,7 @@ efsd_fam_init(void)
 {
   D_ENTER;
 
-  if ((FAMOpen(&famcon)) < 0)
+  if ((FAMOpen_r(&famcon)) < 0)
     {
       fprintf(stderr, "Can not connect to fam -- exiting.\n");
       exit(-1);
@@ -342,7 +340,8 @@ efsd_fam_cleanup(void)
   D_ENTER;
 
   efsd_hash_free(monitors);
-  FAMClose(&famcon);
+  monitors = NULL;
+  FAMClose_r(&famcon);
 
   D_RETURN;
 }
@@ -368,17 +367,29 @@ efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
 	{
 	  /* Placing this in an extra case saves us the stat ... */
 	  D(("Starting monitoring file %s.\n", m->filename));
-	  FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
+	  if (FAMMonitorFile_r(&famcon, m->filename, m->fam_req, m) < 0)
+	    {
+	      D(("Starting monitoring %s FAILED.\n", m->filename));
+	      efsd_fam_remove_monitor(m);	      
+	    }
 	}
       else if (efsd_misc_file_is_dir(m->filename))
 	{
 	  D(("Starting monitoring dir %s.\n", m->filename));
-	  FAMMonitorDirectory(&famcon, m->filename, m->fam_req, m);
+	  if (FAMMonitorDirectory_r(&famcon, m->filename, m->fam_req, m) < 0)
+	    {
+	      D(("Starting monitoring %s FAILED.\n", m->filename));
+	      efsd_fam_remove_monitor(m);	      
+	    }
 	}
       else
 	{
 	  D(("Starting monitoring file %s.\n", m->filename));
-	  FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
+	  if (FAMMonitorFile_r(&famcon, m->filename, m->fam_req, m) < 0)
+	    {
+	      D(("Starting monitoring %s FAILED.\n", m->filename));
+	      efsd_fam_remove_monitor(m);	      
+	    }
 	}      
     }
   else
@@ -459,16 +470,28 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
   m = fam_new_monitor(EFSD_FAM_MONITOR_NORMAL, com, client, FALSE);
 
   if (efsd_misc_file_is_dir(m->filename))
-    FAMMonitorDirectory(&famcon, m->filename, m->fam_req, m);
+    {
+      if (FAMMonitorDirectory_r(&famcon, m->filename, m->fam_req, m) < 0)
+	{
+	  D(("Starting monitoring %s FAILED.\n", m->filename));
+	  efsd_fam_remove_monitor(m);	      
+	}
+    }
   else
-    FAMMonitorFile(&famcon, m->filename, m->fam_req, m);
+    {
+      if (FAMMonitorFile_r(&famcon, m->filename, m->fam_req, m) < 0)
+	{
+	  D(("Starting monitoring %s FAILED.\n", m->filename));
+	  efsd_fam_remove_monitor(m);	      
+	}
+    }
 
   /* This causes at least one or more file-exists events
      to be sent -- now cancel the monitor to generate
      them FAMAcknowledge event.
   */
 
-  FAMCancelMonitor(&famcon, m->fam_req);
+  FAMCancelMonitor_r(&famcon, m->fam_req);
 
   D_RETURN;
 }
@@ -528,7 +551,7 @@ efsd_fam_cleanup_client(int client)
 	    {
 	      /* Use count dropped to zero -- stop monitoring. */
 	      D(("Stopping monitoring %s.\n", m->filename));
-	      FAMCancelMonitor(&famcon, m->fam_req);
+	      FAMCancelMonitor_r(&famcon, m->fam_req);
 	    }
 	  else if (m->use_count > 0)
 	    {

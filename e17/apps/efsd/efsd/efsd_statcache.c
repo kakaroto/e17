@@ -37,13 +37,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_hash.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
+#include <efsd_lock.h>
 
 static EfsdHash  *stat_cache;
 static EfsdHash  *lstat_cache;
+EfsdLock         *stat_lock;
 
 static void         stat_hash_item_free(EfsdHashItem *it);
-static struct stat *stat_internal(char *filename, char use_lstat);
-
+static int          stat_internal(char *filename, struct stat *st, char use_lstat);
 
 static void         
 stat_hash_item_free(EfsdHashItem *it)
@@ -52,6 +53,12 @@ stat_hash_item_free(EfsdHashItem *it)
 
   if (!it)
     D_RETURN;
+
+  /* An item is removed or falling out of the hash --
+     stop the monitor. If it has already been stopped,
+     the hashtable lookup will fail anyway.
+  */
+  efsd_fam_stop_monitor_internal(it->key);
 
   /* Key is a string -- simple to free: */
   FREE(it->key);
@@ -64,53 +71,59 @@ stat_hash_item_free(EfsdHashItem *it)
 }
 
 
-static struct stat *
-stat_internal(char *filename, char use_lstat)
+static int
+stat_internal(char *filename, struct stat *st, char use_lstat)
 {
-  struct stat *st;
+  struct stat *stp;
 
   D_ENTER;
+
+  efsd_lock_get_read_access(stat_lock);
 
   /* Check if info is still in cache: */
   if (use_lstat)
     {
       D(("Looking up %s in lstat cache\n", filename));
-      st = (struct stat*)efsd_hash_find(lstat_cache, filename);
+      stp = (struct stat*)efsd_hash_find(lstat_cache, filename);
     }
   else
     {
       D(("Looking up %s in stat cache\n", filename));
-      st = (struct stat*)efsd_hash_find(stat_cache, filename);
+      stp = (struct stat*)efsd_hash_find(stat_cache, filename);
     }
-  
-  if (st)
+
+  if (stp)
     {
       D(("Cached stat for %s\n", filename));
-      D_RETURN_(st);
+      *st = *stp;
+      efsd_lock_release_read_access(stat_lock);
+      D_RETURN_(TRUE);
     }
+
+  efsd_lock_release_read_access(stat_lock);
 
   /* No -- we have to stat: */
 
-  st = NEW(struct stat);
+  stp = NEW(struct stat);
 
   if (use_lstat)
     {
-      if (lstat(filename, st) < 0)
+      if (lstat(filename, stp) < 0)
 	{
 	  D(("lstat() on %s failed.\n", filename));
-	  FREE(st);
-	  D_RETURN_(NULL);
+	  FREE(stp);
+	  D_RETURN_(FALSE);
 	}
     }
   else
     {
-      if (stat(filename, st) < 0)
+      if (stat(filename, stp) < 0)
 	{
-	  if (lstat(filename, st) < 0)
+	  if (lstat(filename, stp) < 0)
 	    {
 	      D(("stat and lstat() on %s failed.\n", filename));
-	      FREE(st);
-	      D_RETURN_(NULL);
+	      FREE(stp);
+	      D_RETURN_(FALSE);
 	    }
 	}
     }
@@ -118,16 +131,20 @@ stat_internal(char *filename, char use_lstat)
   /* Insert in cache and monitor file to be
      informed about updates:
   */
+
+  efsd_lock_get_write_access(stat_lock);
+
   if (use_lstat)
-    efsd_hash_insert(lstat_cache, (void*)strdup(filename), (void*)st);
+    efsd_hash_insert(lstat_cache, (void*)strdup(filename), (void*)stp);
   else
-    efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)st);
-  
+    efsd_hash_insert(stat_cache, (void*)strdup(filename), (void*)stp);
+
+  *st = *stp;
+
+  efsd_lock_release_write_access(stat_lock);
   efsd_fam_start_monitor_internal(filename);
 
-  /* D(("New lstat() on %s\n", filename)); */
-
-  D_RETURN_(st);
+  D_RETURN_(TRUE);
 }
 
 
@@ -142,24 +159,53 @@ efsd_stat_init(void)
 
   lstat_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
 			      (EfsdCmpFunc)strcmp, stat_hash_item_free);
+
+  stat_lock = efsd_lock_new();
   
   D_RETURN;
 }
 
 
-struct stat *
-efsd_stat(char *filename)
+void         
+efsd_stat_cleanup(void)
 {
   D_ENTER;
-  D_RETURN_(stat_internal(filename, FALSE));
+
+  efsd_hash_free(stat_cache);
+  efsd_hash_free(lstat_cache);
+  efsd_lock_free(stat_lock);
+
+  stat_cache = NULL;
+  lstat_cache = NULL;
+  stat_lock = NULL;
+
+  D_RETURN;
 }
 
 
-struct stat *
-efsd_lstat(char *filename)
+int
+efsd_stat(char *filename, struct stat *st)
 {
+  int result;
+
   D_ENTER;
-  D_RETURN_(stat_internal(filename, TRUE));
+
+  result = stat_internal(filename, st, FALSE);
+  
+  D_RETURN_(result);
+}
+
+
+int
+efsd_lstat(char *filename, struct stat *st)
+{
+  int result;
+
+  D_ENTER;
+
+  result = stat_internal(filename, st, TRUE);
+
+  D_RETURN_(result);
 }
 
 
@@ -169,6 +215,9 @@ efsd_stat_update(char *filename)
   struct stat *st;
 
   D_ENTER;
+
+  /* Make sure no cache-reads are currently in progress: */
+  efsd_lock_get_write_access(stat_lock);
 
   if ((st = (struct stat*)efsd_hash_find(stat_cache, filename)))
     {
@@ -190,6 +239,8 @@ efsd_stat_update(char *filename)
       D(("New timestamp: %i\n", (int)st->st_mtime));
     }
 
+  efsd_lock_release_write_access(stat_lock);
+
   D_RETURN;
 }
 
@@ -199,8 +250,12 @@ efsd_stat_remove(char *filename)
 {
   D_ENTER;
   
+  efsd_lock_get_write_access(stat_lock);
+
   efsd_hash_remove(stat_cache, filename);
   efsd_hash_remove(lstat_cache, filename);
+
+  efsd_lock_release_write_access(stat_lock);
 
   D_RETURN;
 }
@@ -211,8 +266,12 @@ efsd_stat_change_filename(char *file1, char *file2)
 {
   D_ENTER;
 
+  efsd_lock_get_write_access(stat_lock);
+
   efsd_hash_change_key(stat_cache, file1, file2);
   efsd_hash_change_key(lstat_cache, file1, file2);
+
+  efsd_lock_release_write_access(stat_lock);
 
   D_RETURN;
 }

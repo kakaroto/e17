@@ -39,21 +39,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_misc.h>
 #include <efsd_statcache.h>
+#include <efsd_lock.h>
 
-static unsigned int   hash_filename(char *filename);
-static int            meta_db_get_file(char *filename, char *dbfile, int len);
-static int            meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
-static void          *meta_db_get_data(EfsdGetMetadataCmd *egmc,
-				       char *dbfile, int *data_len);
-static void           get_full_key(char *filename, char* key, char *full, int len);
+static EfsdLock       *meta_lock;
+
+static unsigned int    meta_hash_filename(char *filename);
+static int             meta_db_get_file(char *filename, char *dbfile, int len);
+static int             meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
+static void           *meta_db_get_data(EfsdGetMetadataCmd *egmc,
+					char *dbfile, int *data_len);
+static void            meta_get_full_key(char *filename, char* key, char *full, int len);
 
 
 static unsigned int   
-hash_filename(char *s)
+meta_hash_filename(char *filename)
 {
+  char str[MAXPATHLEN];
+  char *s;
   unsigned int hash;
 
   D_ENTER;
+
+  snprintf(str, MAXPATHLEN, "%s:%i", filename, geteuid());
+  s = str;
 
   for (hash = 0; *s != '\0'; s++)
     hash = (32*hash + *s);
@@ -62,14 +70,14 @@ hash_filename(char *s)
 }
 
 
-int
+static int
 meta_db_get_file(char *filename, char *dbfile, int len)
 {
   char           s[MAXPATHLEN];
   char          *path, *file;
   int            use_home_dir = FALSE;
   unsigned int   h;
-  struct stat   *st;
+  struct stat    st;
 
   D_ENTER;
 
@@ -109,7 +117,7 @@ meta_db_get_file(char *filename, char *dbfile, int len)
       if (efsd_misc_file_writeable(path) &&
 	  efsd_misc_file_execable(path))
 	{
-	  if ((st = efsd_stat(path)) == NULL)
+	  if (!efsd_stat(path, &st))
 	    {
 	      use_home_dir = TRUE;
 	    }
@@ -117,7 +125,7 @@ meta_db_get_file(char *filename, char *dbfile, int len)
 	    {
 	      umask(000);
 
-	      if (mkdir(s, st->st_mode) < 0)
+	      if (mkdir(s, st.st_mode) < 0)
 		use_home_dir = TRUE;
 	      else
 		use_home_dir = FALSE;
@@ -132,16 +140,16 @@ meta_db_get_file(char *filename, char *dbfile, int len)
     }
 
   *(file-1) = '/';
-  h = hash_filename(filename);
+  h = meta_hash_filename(filename);
 
   if (use_home_dir)
     {
-      snprintf(dbfile, MAXPATHLEN, "%s/%u.db",
+      snprintf(dbfile, len, "%s/efsd_meta_%u.db",
 	       efsd_misc_get_user_dir(), h);
     }
   else
     {
-      snprintf(dbfile, MAXPATHLEN, "%s/%u.db",
+      snprintf(dbfile, len, "%s/efsd_meta_%u.db",
 	       s, h);
     }  
 
@@ -157,10 +165,14 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
 
   D_ENTER;
 
-  if ( (db = e_db_open(dbfile)) == NULL)
-    D_RETURN_(0);
+  meta_get_full_key(esmc->file, esmc->key, key, MAXPATHLEN);
+  efsd_lock_get_write_access(meta_lock);
 
-  get_full_key(esmc->file, esmc->key, key, MAXPATHLEN);
+  if ( (db = e_db_open(dbfile)) == NULL)
+    {
+      efsd_lock_release_write_access(meta_lock);
+      D_RETURN_(0);
+    }
 
   switch (esmc->datatype)
     {
@@ -182,11 +194,13 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
       D(("Unknown data type!\n"));
       e_db_close(db);
       e_db_flush();
+      efsd_lock_release_write_access(meta_lock);
       D_RETURN_(0);
     }
 
   e_db_close(db);
   e_db_flush();
+  efsd_lock_release_write_access(meta_lock);
 
   D_RETURN_(1);
 }
@@ -203,10 +217,15 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 
   D_ENTER;
 
-  if ( (db = e_db_open_read(dbfile)) == NULL)
-    D_RETURN_(0);
+  meta_get_full_key(egmc->file, egmc->key, key, MAXPATHLEN);
 
-  get_full_key(egmc->file, egmc->key, key, MAXPATHLEN);
+  efsd_lock_get_read_access(meta_lock);
+
+  if ( (db = e_db_open_read(dbfile)) == NULL)
+    {
+      efsd_lock_release_read_access(meta_lock);
+      D_RETURN_(0);
+    }
 
   switch (egmc->datatype)
     {
@@ -245,10 +264,12 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
     default:
       D(("Unknown data type!\n"));
       e_db_close(db);
+      efsd_lock_release_read_access(meta_lock);
       D_RETURN_(0);
     }
 
   e_db_close(db);
+  efsd_lock_release_read_access(meta_lock);
 
   if (!success)
     D_RETURN_(NULL);
@@ -258,11 +279,34 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 
 
 static void
-get_full_key(char *filename, char *key, char *full, int len)
+meta_get_full_key(char *filename, char *key, char *full, int len)
 {
   D_ENTER;
   
-  snprintf(full, len, "%s:%i:%s", filename, geteuid(), key);
+  snprintf(full, len, "%s:%s", filename, key);
+
+  D_RETURN;
+}
+
+
+void        
+efsd_meta_init(void)
+{
+  D_ENTER;
+
+  meta_lock = efsd_lock_new();
+
+  D_RETURN;
+}
+
+
+void        
+efsd_meta_cleanup(void)
+{
+  D_ENTER;
+
+  efsd_lock_free(meta_lock);
+  meta_lock = NULL;
 
   D_RETURN;
 }

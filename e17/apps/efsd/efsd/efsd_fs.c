@@ -41,20 +41,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fs.h>
 #include <efsd_statcache.h>
 
-static int data_copy(char *src_path, char *dst_path);
-static int file_copy(char *src_path, char *dst_path);
-static int dir_copy(char *src_path, char *dst_path);
-static int file_move(char *src_path, char *dst_path);
+static int data_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int file_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int dir_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int file_move(char *src_path, struct stat *src_st, char *dst_path);
 static int dir_move(char *src_path, char *dst_path);
-static int file_remove(char *path);
+static int file_remove(char *path, struct stat *st);
 
 
 static int
-data_copy(char *src_path, char *dst_path)
+data_copy(char *src_path, struct stat *src_st, char *dst_path)
 {
   int  src_fd, dst_fd, block_size = 4096;
-  struct stat *dst_st = NULL;
-  struct stat *src_st = NULL;
+  struct stat  dst_st;
   char *buf, hole_at_end = FALSE, check_for_holes = FALSE;
 
   D_ENTER;
@@ -66,34 +65,23 @@ data_copy(char *src_path, char *dst_path)
 
   umask(000);
 
-  if ( (src_st = efsd_stat(src_path)) != NULL)
-    {
-      D(("Using src's permissions.\n"));
+  D(("Using src's permissions.\n"));
 
-      if ( (dst_fd = open(dst_path, O_WRONLY | O_CREAT | O_TRUNC,
-			  src_st->st_mode)) < 0)
-	{
-	  close(src_fd);
-	  D_RETURN_(-1);
-	}
-    }
-  else
+  if ( (dst_fd = open(dst_path, O_WRONLY | O_CREAT | O_TRUNC,
+		      src_st->st_mode)) < 0)
     {
-      if ( (dst_fd = open(dst_path, O_WRONLY | O_CREAT | O_TRUNC,
-			  S_IRUSR | S_IWUSR)) < 0)
-	{
-	  close(src_fd);
-	  D_RETURN_(-1);
-	}
+      close(src_fd);
+      umask(077);
+      D_RETURN_(-1);
     }
 
   umask(077);
 
 #if HAVE_ST_BLKSIZE
-  if ( (dst_st = efsd_stat(dst_path)) != NULL)
-    block_size = (int)dst_st->st_blksize;
+  if (efsd_stat(dst_path, &dst_st))
+    block_size = (int)dst_st.st_blksize;
 #if HAVE_ST_BLOCKS
-  if (src_st && S_ISREG(src_st->st_mode) &&
+  if (S_ISREG(src_st->st_mode) &&
       (src_st->st_size / src_st->st_blksize > src_st->st_blocks))
     check_for_holes = TRUE;
 #endif
@@ -211,10 +199,8 @@ data_copy(char *src_path, char *dst_path)
 
 
 static int 
-file_copy(char *src_path, char *dst_path)
+file_copy(char *src_path, struct stat *src_st, char *dst_path)
 {
-  struct stat *src_st = NULL;
-
   D_ENTER;
 
   D(("Copying file %s to %s\n", src_path, dst_path));
@@ -226,9 +212,6 @@ file_copy(char *src_path, char *dst_path)
       D_RETURN_(-1);
     }
     
-  if ( (src_st = efsd_lstat(src_path)) == NULL)
-    D_RETURN_(-1);
-
   if (S_ISLNK(src_st->st_mode))
     {
       char realfile[MAXPATHLEN];
@@ -252,7 +235,7 @@ file_copy(char *src_path, char *dst_path)
 	D_RETURN_(0);
     }
   else
-    D_RETURN_(data_copy(src_path, dst_path));
+    D_RETURN_(data_copy(src_path, src_st, dst_path));
   
   /* Whatever we have here as src (e.g a directory),
      we cannot copy onto a normal file.
@@ -263,15 +246,15 @@ file_copy(char *src_path, char *dst_path)
 
 
 static int 
-dir_copy(char *src_path, char *dst_path)
+dir_copy(char *src_path, struct stat *src_st, char *dst_path)
 {
   char           src[MAXPATHLEN];
   char           dst[MAXPATHLEN];
   char          *src_ptr, *dst_ptr;
   int            src_len, dst_len;
-  struct stat   *src_st = NULL;
+  struct stat    src_st2;
   DIR           *dir;
-  struct dirent *dp;
+  struct dirent  de, *de_ptr;
 
   D_ENTER;
   D(("Copying directory %s to %s\n", src_path, dst_path));
@@ -280,13 +263,13 @@ dir_copy(char *src_path, char *dst_path)
      and dst_path doesn't exist yet.
   */
   
-  if ( (src_st = efsd_stat(src_path)) == NULL)
-    D_RETURN_(-1);
-
   umask(000);
 
   if (mkdir(dst_path, src_st->st_mode) < 0)
-    D_RETURN_(-1);
+    {
+      umask(077);
+      D_RETURN_(-1);
+    }
 
   umask(077);
 
@@ -302,21 +285,24 @@ dir_copy(char *src_path, char *dst_path)
   src_ptr = src + src_len;
   dst_ptr = dst + dst_len;
   
-  for (dp = readdir(dir); dp; dp = readdir(dir))
+  /* Read dir, using readdir_r() when we're
+     threaded, readdir() otherwise ... */
+
+  for (READDIR(dir, de, de_ptr); de_ptr; READDIR(dir, de, de_ptr))
     {
-      if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
+      if (!strcmp(de_ptr->d_name, ".") || !strcmp(de_ptr->d_name, ".."))
 	continue;
 
-      snprintf(src_ptr, MAXPATHLEN - src_len, "%s", dp->d_name);
-      snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", dp->d_name);
+      snprintf(src_ptr, MAXPATHLEN - src_len, "%s", de_ptr->d_name);
+      snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", de_ptr->d_name);
 
-      if ( (src_st = efsd_stat(src)) == NULL)
+      if (!efsd_lstat(src, &src_st2))
 	continue;
 
-      if (S_ISDIR(src_st->st_mode))
-	dir_copy(src, dst);
+      if (S_ISDIR(src_st2.st_mode))
+	dir_copy(src, &src_st2, dst);
       else
-	file_copy(src, dst);
+	file_copy(src, &src_st2, dst);
     }
 
   closedir(dir);
@@ -326,7 +312,7 @@ dir_copy(char *src_path, char *dst_path)
 
 
 static int 
-file_move(char *src_path, char *dst_path)
+file_move(char *src_path, struct stat *src_st, char *dst_path)
 {
   D_ENTER;
 
@@ -335,7 +321,7 @@ file_move(char *src_path, char *dst_path)
   if (efsd_misc_rename(src_path, dst_path) != 0)
     {
       D(("Rename failed -- copying, then removing.\n"));
-      if (file_copy(src_path, dst_path) >= 0)
+      if (file_copy(src_path, src_st, dst_path) >= 0)
 	D_RETURN_(efsd_misc_remove(src_path));
 
       D_RETURN_(-1);
@@ -352,24 +338,26 @@ dir_move(char *src_path, char *dst_path)
   char           dst[MAXPATHLEN];
   char          *src_ptr, *dst_ptr;
   int            src_len, dst_len;
-  struct stat   *src_st = NULL;
+  struct stat    src_st;
   DIR           *dir;
-  struct dirent *dp;
+  struct dirent  de, *de_ptr;
 
   D_ENTER;
   D(("Moving directory %s to %s\n", src_path, dst_path));
 
-  /* When this is called, src_path is a dir,
-     and dst_path doesn't exist yet.
-  */
-  
-  if ( (src_st = efsd_stat(src_path)) == NULL)
+  if (!efsd_stat(src_path, &src_st))
     D_RETURN_(-1);
 
   umask(000);
 
-  if (mkdir(dst_path, src_st->st_mode) < 0)
-    D_RETURN_(-1);
+  /* The dst directory should not exist yet. */
+
+  if (mkdir(dst_path, src_st.st_mode) < 0)
+    {
+      D(("Creating directory %s failed.\n", dst_path));
+      umask(077);
+      D_RETURN_(-1);
+    }
 
   umask(077);
 
@@ -385,24 +373,27 @@ dir_move(char *src_path, char *dst_path)
   src_ptr = src + src_len;
   dst_ptr = dst + dst_len;
   
-  for (dp = readdir(dir); dp; dp = readdir(dir))
+  /* Read dir, using readdir_r() when we're
+     threaded, readdir() otherwise ... */
+
+  for (READDIR(dir, de, de_ptr); de_ptr; READDIR(dir, de, de_ptr))
     {
-      if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
+      if (!strcmp(de_ptr->d_name, ".") || !strcmp(de_ptr->d_name, ".."))
 	continue;
 
-      snprintf(src_ptr, MAXPATHLEN - src_len, "%s", dp->d_name);
-      snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", dp->d_name);
+      snprintf(src_ptr, MAXPATHLEN - src_len, "%s", de_ptr->d_name);
+      snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", de_ptr->d_name);
 
-      if (file_move(src, dst) == 0)
-	continue;
-
-      if ( (src_st = efsd_stat(src)) == NULL)
+      if (!efsd_lstat(src, &src_st))
 	{
 	  closedir(dir);
 	  D_RETURN_(-1);
 	}
 
-      if (S_ISDIR(src_st->st_mode))
+      if (file_move(src, &src_st, dst) == 0)
+	continue;
+
+      if (S_ISDIR(src_st.st_mode))
 	{
 	  if (dir_move(src, dst) < 0)
 	    {
@@ -425,14 +416,14 @@ dir_move(char *src_path, char *dst_path)
 
 
 static int 
-file_remove(char *path)
+file_remove(char *path, struct stat *st)
 {
   char           s[MAXPATHLEN];
   char          *s_ptr;
   int            s_len;
   DIR           *dir;
-  struct dirent *dp;
-  struct stat   *st;
+  struct dirent  de, *de_ptr;
+  struct stat    st2;
 
   D_ENTER;
 
@@ -441,10 +432,6 @@ file_remove(char *path)
   /* Simply try if it works. */
   if (efsd_misc_remove(path) == 0)
     D_RETURN_(0);
-
-  /* No. Okay. Check if it's a directory. */
-  if ( (st = efsd_lstat(path)) == NULL)
-    D_RETURN_(-1);
 
   if (S_ISDIR(st->st_mode))
     {
@@ -459,17 +446,20 @@ file_remove(char *path)
       s_len = strlen(s);
       s_ptr = s + s_len;
       
-      for (dp = readdir(dir); dp; dp = readdir(dir))
+      /* Read dir, using readdir_r() when we're
+	 threaded, readdir() otherwise ... */
+
+      for (READDIR(dir, de, de_ptr); de_ptr; READDIR(dir, de, de_ptr))
 	{
-	  if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
+	  if (!strcmp(de_ptr->d_name, ".") || !strcmp(de_ptr->d_name, ".."))
 	    continue;
 	  
-	  snprintf(s_ptr, MAXPATHLEN - s_len, "%s", dp->d_name);
+	  snprintf(s_ptr, MAXPATHLEN - s_len, "%s", de_ptr->d_name);
 	  
 	  if (efsd_misc_remove(s) == 0)
 	    continue;
 
-	  if ( (st = efsd_lstat(s)) == NULL)
+	  if (!efsd_lstat(s, &st2))
 	    {
 	      /* We couldn't stat it and we couldn't
 		 remove it -- report error.
@@ -479,10 +469,10 @@ file_remove(char *path)
 	      D_RETURN_(-1);
 	    }
 	  
-	  if (S_ISDIR(st->st_mode))
+	  if (S_ISDIR(st2.st_mode))
 	    {
 	      /* It's a directoy -- remove recursively */
-	      if (file_remove(s) < 0)
+	      if (file_remove(s, &st2) < 0)
 		{
 		  closedir(dir);
 		  D_RETURN_(-1);
@@ -513,8 +503,9 @@ int
 efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
 {
   char s[MAXPATHLEN];
-  struct stat *dst_st = NULL;
-  struct stat *src_st = NULL;
+  struct stat  dst_st;
+  struct stat  src_st;
+  char         dst_stat_succeeded;
 
   D_ENTER;
 
@@ -537,53 +528,51 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
      (ops & EFSD_FS_OP_RECURSIVE) ? "X" : " ",
      (ops & EFSD_FS_OP_FORCE) ? "X" : " "));
      
-  if ( (src_st = efsd_stat(src_path)) == NULL)
+  if (!efsd_lstat(src_path, &src_st))
     {
       D(("Could not stat source.\n"));
       D_RETURN_(-1);
     }
 
-  dst_st = efsd_stat(dst_path);
+  dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
   
   /* If dest exists and is a dir, adjust dest by
      appending last component of file name.
   */
 
-  if (dst_st)
+  if (dst_stat_succeeded && S_ISDIR(dst_st.st_mode))
     {
-      D(("Dest exists.\n"));
-
-      if (S_ISDIR(dst_st->st_mode))
-	{
-	  snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
-		   efsd_misc_get_filename_only(src_path));
-	  dst_path = s;
-	  D(("Adjusted dest to: %s\n", dst_path));
-	}
+      D(("Dest exists as dir.\n"));
+      snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
+	       efsd_misc_get_filename_only(src_path));
+      dst_path = s;
+      D(("Adjusted dest to: %s\n", dst_path));
+      dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
+    }
   
-      /* Otherwise: Check target -- if it exists and FORCE is
-	 not used, abort. Also abort if FORCE is given but
-	 target cannot be removed.
-      */
-      else
+  /* Check target -- if it exists and FORCE is
+     not used, abort. Also abort if FORCE is given but
+     target cannot be removed.
+  */
+
+  if (dst_stat_succeeded)
+    {
+      if ((ops & EFSD_FS_OP_FORCE) == 0)
 	{
-	  if ((ops & EFSD_FS_OP_FORCE) == 0)
-	    {
-	      D(("Dest exists and no force used -- aborting.\n"));
-	      D_RETURN_(-1);
-	    }
-	  
-	  if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
-	    {
-	      D(("Could not remove existing dest.\n"));
-	      D_RETURN_(-1);
-	    }
-	  D(("Existing target removed.\n"));
+	  D(("Dest exists and no force used -- aborting.\n"));
+	  D_RETURN_(-1);
 	}
+      
+      if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
+	{
+	  D(("Could not remove existing dest.\n"));
+	  D_RETURN_(-1);
+	}
+      D(("Existing target removed.\n"));
     }
 
   /* If it's a dir and we're recursive, copy directory. */
-  if (S_ISDIR(src_st->st_mode))
+  if (S_ISDIR(src_st.st_mode))
     {
       if ((ops & EFSD_FS_OP_RECURSIVE) == 0)
 	{
@@ -591,12 +580,12 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
 	  D_RETURN_(-1);
 	}
 
-      D_RETURN_(dir_copy(src_path, dst_path));
+      D_RETURN_(dir_copy(src_path, &src_st, dst_path));
     }
 
   /* Otherwise, copy single regular file. */
       
-  D_RETURN_(file_copy(src_path, dst_path));
+  D_RETURN_(file_copy(src_path, &src_st, dst_path));
 }
 
 
@@ -604,8 +593,9 @@ int
 efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
 {
   char s[MAXPATHLEN];
-  struct stat *dst_st = NULL;
-  struct stat *src_st = NULL;
+  struct stat  dst_st;
+  struct stat  src_st;
+  char         dst_stat_succeeded;
 
   D_ENTER;
 
@@ -636,56 +626,66 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
      (ops & EFSD_FS_OP_RECURSIVE) ? "X" : " ",
      (ops & EFSD_FS_OP_FORCE) ? "X" : " "));
      
-  if ( (src_st = efsd_stat(src_path)) == NULL)
+  if (!efsd_lstat(src_path, &src_st))
     {
       D(("Could not stat source.\n"));
       D_RETURN_(-1);
     }
-
-  dst_st = efsd_stat(dst_path);
   
   /* If dest exists and is a dir, adjust dest by
      appending last component of file name.
   */
 
-  if (dst_st)
-    {
-      D(("Dest exists.\n"));
+  dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
 
-      if (S_ISDIR(dst_st->st_mode))
-	{
-	  snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
-		   efsd_misc_get_filename_only(src_path));
-	  dst_path = s;
-	  D(("Adjusted dest to: %s\n", dst_path));
-	}
+  if (dst_stat_succeeded && S_ISDIR(dst_st.st_mode))
+    {
+      D(("Dest exists as dir.\n"));
+
+      snprintf(s, MAXPATHLEN, "%s/%s", dst_path,
+	       efsd_misc_get_filename_only(src_path));
+      dst_path = s;
+      
+      D(("Adjusted dest to: %s\n", dst_path));
+
+      dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
+    }
   
-      /* Otherwise: Check target -- if it exists and FORCE is
-	 not used, abort. Also abort if FORCE is given but
-	 target cannot be removed.
-      */
-      else
+  /* Check target -- if it exists and FORCE is
+     not used, abort. Also abort if FORCE is given but
+     target cannot be removed.
+  */
+  
+  if (dst_stat_succeeded)
+    {
+      if ((ops & EFSD_FS_OP_FORCE) == 0)
 	{
-	  if ((ops & EFSD_FS_OP_FORCE) == 0)
-	    {
-	      D(("Dest exists and no force used -- aborting.\n"));
-	      D_RETURN_(-1);
-	    }
-	  
-	  if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
-	    {
-	      D(("Could not remove existing dest.\n"));
-	      D_RETURN_(-1);
-	    }
+	  D(("Dest exists and no force used -- aborting.\n"));
+	  D_RETURN_(-1);
+	}
+
+      D(("Dest %s exists, and force used. Removing.\n", dst_path));
+      
+      if (efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE) < 0)
+	{
+	  D(("Could not remove existing dest.\n"));
+	  D_RETURN_(-1);
 	}
     }
 
   /* Try and see if simple rename() is enough. */
 
+  D(("Trying simple rename() from %s to %s ...\n",
+     src_path, dst_path));
+
   if (efsd_misc_rename(src_path, dst_path) < 0)
     {
+      int result;
+
+      D(("... failed.\n"));
+
       /* If it's a dir and we're recursive, move directory. */
-      if (S_ISDIR(src_st->st_mode))
+      if (S_ISDIR(src_st.st_mode))
 	{
 	  if ((ops & EFSD_FS_OP_RECURSIVE) == 0)
 	    {
@@ -693,18 +693,24 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
 	      D_RETURN_(-1);
 	    }
 	  
-	  dir_move(src_path, dst_path);
+	  D(("Src is dir. Moving %s to %s recursively.\n",
+	     src_path, dst_path));
+	  result = dir_move(src_path, dst_path);
 	}
       else
 	{
 	  /* Otherwise, move single regular file. */
-	  file_move(src_path, dst_path);
+	  D(("Src is file. Moving single file %s to %s.\n",
+	     src_path, dst_path));
+	  result = file_move(src_path, &src_st, dst_path);
 	}
 
-      D_RETURN_(efsd_fs_rm(src_path, ops));      
+      D_RETURN_(result);
     }
 
   /* Yay! A simple rename was enough ... */
+
+  D(("... succeeded.\n"));
 
   D_RETURN_(0);
 }
@@ -713,11 +719,11 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
 int 
 efsd_fs_rm(char *path, EfsdFsOps ops)
 {
-  struct stat *st;
+  struct stat st;
 
   D_ENTER;
 
-  if ( (st = efsd_stat(path)) == NULL)
+  if (!efsd_lstat(path, &st))
     {
       /* File doesn't exist -- that's okay if we're
 	 using force, otherwise it's an error.
@@ -732,10 +738,10 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
   /* If it's a directory and we're not
      recursive, it's an error.
   */
-  if (S_ISDIR(st->st_mode) && !(ops & EFSD_FS_OP_RECURSIVE))
+  if (S_ISDIR(st.st_mode) && !(ops & EFSD_FS_OP_RECURSIVE))
     D_RETURN_(-1);
 
   /* Otherwise, try to remove and report result. */
 
-  D_RETURN_(file_remove(path));
+  D_RETURN_(file_remove(path, &st));
 }

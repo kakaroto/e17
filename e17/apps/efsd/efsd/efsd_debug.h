@@ -25,17 +25,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_debug_h
 #define __efsd_debug_h
 
+#include <unistd.h>
 #include <stdio.h>
+#include <efsd_globals.h>
 
 void efsd_debug_print_timestamp(void);
 
 #ifdef DEBUG
 #define D(msg) \
 { \
-  printf("efsd-debug: "); \
-  efsd_debug_print_timestamp(); \
-  printf msg; \
-  fflush(stdout); \
+  if (opt_debug) \
+    { \
+       printf("efsd [%i]: ", getpid()); \
+       efsd_debug_print_timestamp(); \
+       printf msg; \
+       fflush(stdout); \
+    } \
 }
 #else
 #define D(msg)
@@ -48,31 +53,40 @@ void efsd_debug_whitespace(int num);
 
 #define D_ENTER \
 { \
-  efsd_debug_nest_level++; \
-  printf("ENTER  "); \
-  efsd_debug_print_timestamp(); \
-  efsd_debug_whitespace(efsd_debug_nest_level); \
-  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-  fflush(stdout); \
+  if (opt_nesting) \
+    { \
+       efsd_debug_nest_level++; \
+       printf("ENTER  "); \
+       efsd_debug_print_timestamp(); \
+       efsd_debug_whitespace(efsd_debug_nest_level); \
+       printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+       fflush(stdout); \
+    } \
 }
 #define D_RETURN \
 { \
-  printf("RETURN "); \
-  efsd_debug_print_timestamp(); \
-  efsd_debug_whitespace(efsd_debug_nest_level); \
-  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-  fflush(stdout); \
-  efsd_debug_nest_level--; \
+  if (opt_nesting) \
+    { \
+       printf("RETURN "); \
+       efsd_debug_print_timestamp(); \
+       efsd_debug_whitespace(efsd_debug_nest_level); \
+       printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+       fflush(stdout); \
+       efsd_debug_nest_level--; \
+    } \
   return; \
 }
 #define D_RETURN_(x) \
 { \
-  printf("RETURN "); \
-  efsd_debug_print_timestamp(); \
-  efsd_debug_whitespace(efsd_debug_nest_level); \
-  printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
-  fflush(stdout); \
-  efsd_debug_nest_level--; \
+  if (opt_nesting) \
+    { \
+      printf("RETURN "); \
+      efsd_debug_print_timestamp(); \
+      efsd_debug_whitespace(efsd_debug_nest_level); \
+      printf("%s, %u %s()\n", __FILE__, __LINE__, __FUNCTION__); \
+      fflush(stdout); \
+      efsd_debug_nest_level--; \
+    } \
   return x; \
 }
 #else

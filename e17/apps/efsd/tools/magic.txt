@@ -2,8 +2,9 @@
 #
 # This is a heavily tweaked version of the magic file that came with my
 # Debian 2.2. I basically threw out anything I have never heard of or
-# don't consider important enough -- the rest is used to build Efsd's
-# mimetype magc database -- cK.
+# don't consider important enough, new things are at the end of the file.
+# This file is used to generate Efsd's magic database, magic.db
+#                                                                -- cK.
 
 
 #------------------------------------------------------------------------------
@@ -460,11 +461,11 @@
 # because it tries to uncompress it to figure out what's inside.
 
 # standard unix compress
-0	string		\037\235	application/compressed
+0	string		\037\235	archive/compressed
 >2	byte&0x80	>0		block compressed
 
 # gzip (GNU zip, not to be confused with Info-ZIP or PKWARE zip archiver)
-0       string          \037\213        application/gnu-zip
+0       string          \037\213        archive/gnu-zip
 >3	byte		&0x01		ASCII,
 >3	byte		&0x02		continuation,
 >3	byte		&0x04		extra field,
@@ -484,25 +485,25 @@
 >9	byte		=0x0B		Win-32
 
 # bzip2
-0	string		BZh		application/bzip2
+0	string		BZh		archive/bzip2
 
 # squeeze and crunch
 # Michael Haardt <michael@cantor.informatik.rwth-aachen.de>
-0	beshort		0x76FF		application/squeezed
-0	beshort		0x76FE		application/crunched
-0	beshort		0x76FD		application/LZH
+0	beshort		0x76FF		archive/squeezed
+0	beshort		0x76FE		archive/crunched
+0	beshort		0x76FD		archive/LZH
 
 # Freeze
-0	string		\037\237	application/freeze 2.1
-0	string		\037\236	application/freeze 1.0
+0	string		\037\237	archive/freeze 2.1
+0	string		\037\236	archive/freeze 1.0
 
 # SCO compress -H (LZH)
-0	string		\037\240	application/compress-SCO
+0	string		\037\240	archive/compress-SCO
 
 # bzip	a block-sorting file compressor
 #	by Julian Seward <sewardj@cs.man.ac.uk> and others
 #
-0	string		BZ		application/bzip
+0	string		BZ		archive/bzip
 >3	string		=1		 compression block size 100k
 >3	string		=2		 compression block size 200k
 >3	string		=3		 compression block size 300k
@@ -514,7 +515,7 @@
 >3	string		=9		 compression block size 900k
 
 # lzop from <markus.oberhumer@jk.uni-linz.ac.at>
-0	string		\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a	application/lzop
+0	string		\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a	archive/lzop
 
 #------------------------------------------------------------------------------
 # database:  file(1) magic for various databases
@@ -2010,3 +2011,17 @@
 >15     byte            2               character array
 >15     byte            3               memory block
 
+
+#------------------------------------------------------------------------------
+# New stuff goes here:
+#------------------------------------------------------------------------------
+
+#
+# Blender file magic
+#
+0	string		BLENDER_        document/blender
+>9      byte            49              1.x
+>9      byte            50              2.x
+>9      byte            51              3.x
+>8      byte            118             little-endian
+>8      byte            86              big-endian

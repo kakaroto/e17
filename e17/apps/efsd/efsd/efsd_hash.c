@@ -35,6 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_list.h>
 #include <efsd_hash.h>
+#include <efsd_lock.h>
 
 struct efsd_hash
 {
@@ -104,8 +105,6 @@ efsd_hash_free(EfsdHash* h)
     }
 
   FREE(h);
-
-  D(("Freed Hashtable.\n"));	  
   D_RETURN;
 }
 

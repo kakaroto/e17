@@ -333,17 +333,17 @@ efsd_file_stop_monitor(EfsdCommand *cmd, int client)
 int 
 efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
 {
-  struct stat   *st = NULL;
+  struct stat    st;
   int            result;
 
   D_ENTER;
 
   if (use_lstat)
     {
-      if ((st = efsd_lstat(cmd->efsd_file_cmd.file)) != NULL)
+      if (efsd_lstat(cmd->efsd_file_cmd.file, &st))
 	{
 	  D(("Stat suceeded, sending struct...\n"));
-	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
+	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
@@ -353,10 +353,10 @@ efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
     }
   else
     {
-      if ((st = efsd_stat(cmd->efsd_file_cmd.file)) != NULL)
+      if (efsd_stat(cmd->efsd_file_cmd.file, &st))
 	{
 	  D(("Stat suceeded, sending struct...\n"));
-	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
+	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{

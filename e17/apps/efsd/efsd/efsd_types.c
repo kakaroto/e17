@@ -38,6 +38,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_options.h>
 #include <efsd_types.h>
 
+
+EfsdCommand *
+efsd_cmd_new(void)
+{
+  EfsdCommand *cmd;
+
+  D_ENTER;
+
+  cmd = NEW(EfsdCommand);
+  memset(cmd, 0, sizeof(EfsdCommand));
+
+  D_RETURN_(cmd);
+}
+
+
 void
 efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
 {

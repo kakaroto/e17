@@ -55,14 +55,14 @@ mode_t         mode_755 = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 int    
 efsd_misc_file_exists(char *filename)
 {
-  struct stat *st;
+  struct stat st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(FALSE);
 
-  if ((st = efsd_lstat(filename)) == NULL)
+  if (!efsd_lstat(filename, &st))
     D_RETURN_(FALSE);
 
   D_RETURN_(TRUE);
@@ -72,46 +72,46 @@ efsd_misc_file_exists(char *filename)
 int 
 efsd_misc_file_is_dir(char *filename)
 {
-  struct stat *st;
+  struct stat st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(FALSE);
 
-  if ((st = efsd_stat(filename)) == NULL)
+  if (!efsd_stat(filename, &st))
     D_RETURN_(FALSE);
 
-  D_RETURN_(S_ISDIR(st->st_mode));
+  D_RETURN_(S_ISDIR(st.st_mode));
 }
 
 
 int    
 efsd_misc_file_writeable(char *filename)
 {
-  struct stat *st;
+  struct stat st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(FALSE);
 
-  if ((st = efsd_stat(filename)) == NULL)
+  if (!efsd_stat(filename, &st))
     D_RETURN_(FALSE);
 
-  if (st->st_uid == getuid())
+  if (st.st_uid == getuid())
     {
-      if (st->st_mode & S_IWUSR)
+      if (st.st_mode & S_IWUSR)
 	D_RETURN_(TRUE);
      }
-  else if (st->st_gid == getgid())
+  else if (st.st_gid == getgid())
     {
-      if (st->st_mode & S_IWGRP)
+      if (st.st_mode & S_IWGRP)
 	D_RETURN_(TRUE);
     }
   else
     {
-      if (st->st_mode & S_IWOTH)
+      if (st.st_mode & S_IWOTH)
 	D_RETURN_(TRUE);
     }
 
@@ -122,29 +122,29 @@ efsd_misc_file_writeable(char *filename)
 int    
 efsd_misc_file_execable(char *filename)
 {
-  struct stat *st = NULL;
+  struct stat st;
 
   D_ENTER;
 
   if (!filename)
     D_RETURN_(FALSE);
 
-  if ((st = efsd_stat(filename)) == NULL)
+  if (!efsd_stat(filename, &st))
     D_RETURN_(FALSE);
 
-  if (st->st_uid == getuid())
+  if (st.st_uid == getuid())
     {
-      if (st->st_mode & S_IXUSR)
+      if (st.st_mode & S_IXUSR)
 	D_RETURN_(TRUE);
      }
-  else if (st->st_gid == getgid())
+  else if (st.st_gid == getgid())
     {
-      if (st->st_mode & S_IXGRP)
+      if (st.st_mode & S_IXGRP)
 	D_RETURN_(TRUE);
     }
   else
     {
-      if (st->st_mode & S_IXOTH)
+      if (st.st_mode & S_IXOTH)
 	D_RETURN_(TRUE);
     }
 
@@ -400,7 +400,7 @@ efsd_misc_get_filename_only(char *path)
 
 
 void    
-efsd_misc_check_dir(void)
+efsd_misc_create_efsd_dir(void)
 {
   char *dir = NULL;
   char  s[MAXPATHLEN];

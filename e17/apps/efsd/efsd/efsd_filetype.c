@@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 #include <efsd_debug.h>
+#include <efsd_lock.h>
 #include <efsd_macros.h>
 #include <efsd_misc.h>
 #include <efsd_filetype.h>
@@ -168,6 +169,8 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 */
 static EfsdMagic  magic;
 
+static EfsdLock  *filetype_lock;
+
 /* The db where everything is stored. */
 static E_DB_File *magic_db = NULL;
 
@@ -206,9 +209,8 @@ static char      *get_sys_patterns_db(void);
 static char      *get_user_patterns_db(void);
 
 static void       filetype_cache_init(void);
-static void       filetype_cache_insert(const char *filename, time_t time, const char *filetype);
-static void       filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time, const char *filetype);
-static char      *filetype_cache_lookup(char *filename);
+static void       filetype_cache_update(char *filename, time_t time, const char *filetype);
+static EfsdFiletypeCacheItem *filetype_cache_lookup(char *filename);
 
 static void       filetype_hash_item_free(EfsdHashItem *it);
 
@@ -384,11 +386,8 @@ magic_free(EfsdMagic *em)
   if (!em)
     { D_RETURN; }
 
-  if (em->value)
-    FREE(em->value);
-  if (em->filetype)
-    FREE(em->value);
-
+  FREE(em->value);
+  FREE(em->value);
   FREE(em);
 
   D_RETURN;
@@ -1113,48 +1112,55 @@ filetype_cache_init(void)
 
 
 static void       
-filetype_cache_insert(const char *filename, time_t time, const char *filetype)
-{
-  EfsdFiletypeCacheItem *it;
-  char *key;
-
-  D_ENTER;
-
-  key  = strdup(filename);
-
-  it = NEW(EfsdFiletypeCacheItem);
-  it->filetype = strdup(filetype);
-  it->time = time;
-
-  if (!efsd_hash_insert(filetype_cache, key, it))
-    {
-      FREE(key);
-      FREE(it->filetype);
-      FREE(it);
-    }
-  
-  D_RETURN;
-}
-
-
-static void       
-filetype_cache_update(EfsdFiletypeCacheItem *it, time_t time,
+filetype_cache_update(char *filename, time_t time,
 		      const char *filetype)
 {
+  EfsdFiletypeCacheItem *it;
+
   D_ENTER;
 
-  FREE(it->filetype);
-  it->filetype = strdup(filetype);
-  it->time = time;
+  it = filetype_cache_lookup(filename);
+
+  efsd_lock_get_write_access(filetype_lock);
+
+  if (it)
+    {
+      FREE(it->filetype);
+      it->filetype = strdup(filetype);
+      it->time = time;
+    }
+  else
+    {
+      char *key = strdup(filename);
+
+      it = NEW(EfsdFiletypeCacheItem);
+      it->filetype = strdup(filetype);
+      it->time = time;
+
+      if (!efsd_hash_insert(filetype_cache, key, it))
+	{
+	  FREE(key);
+	  FREE(it->filetype);
+	  FREE(it);
+	}
+    }
+
+  efsd_lock_release_write_access(filetype_lock);
 
   D_RETURN;
 }
 
-static char      *
+
+static EfsdFiletypeCacheItem *
 filetype_cache_lookup(char *filename)
 {
+  EfsdFiletypeCacheItem *filetype_it;
+
   D_ENTER;
-  D_RETURN_((char*)efsd_hash_find(filetype_cache, filename));
+
+  filetype_it = efsd_hash_find(filetype_cache, filename);
+
+  D_RETURN_(filetype_it);
 }
 
 
@@ -1208,6 +1214,8 @@ efsd_filetype_init(void)
 
   filetype_cache_init();
 
+  filetype_lock = efsd_lock_new();
+
   D_RETURN_(patterns_init());
 }
 
@@ -1231,6 +1239,9 @@ efsd_filetype_cleanup(void)
   FREE(patterns);
   FREE(pattern_filetypes);
 
+  efsd_lock_free(filetype_lock);
+  filetype_lock = NULL;
+
   D_RETURN;
 }
 
@@ -1238,7 +1249,7 @@ efsd_filetype_cleanup(void)
 int
 efsd_filetype_get(char *filename, char *type, int len)
 {
-  struct stat    *st;
+  struct stat     st;
   char            realfile[MAXPATHLEN];
   EfsdFiletypeCacheItem *cached_result = NULL;
 
@@ -1251,9 +1262,8 @@ efsd_filetype_get(char *filename, char *type, int len)
      filetype is necessary.
   */
 
-  st = efsd_lstat(filename);
 
-  if (!st)
+  if (!efsd_lstat(filename, &st))
     {
       /* Ouch -- couldn't stat the file. Testing doesn't
 	 make much sense now. */
@@ -1261,14 +1271,13 @@ efsd_filetype_get(char *filename, char *type, int len)
     }
 
   /* If it's a link, get stat of link target instead */
-  if (S_ISLNK(st->st_mode))
+  if (S_ISLNK(st.st_mode))
     {
       if (realpath(filename, realfile))
 	{
 	  filename = realfile;
-	  st = efsd_stat(filename);
 
-	  if (!st)
+	  if (!efsd_stat(filename, &st))
 	    {
 	      strncpy(type, unknown_string, len);
 	      D_RETURN_(TRUE);
@@ -1282,20 +1291,19 @@ efsd_filetype_get(char *filename, char *type, int len)
 	}
     }
 
-  if ((cached_result = (EfsdFiletypeCacheItem *)
-       filetype_cache_lookup(filename)) != NULL)
+  efsd_lock_get_read_access(filetype_lock);
+  cached_result = filetype_cache_lookup(filename);
+  efsd_lock_release_read_access(filetype_lock);
+
+  if (cached_result)
     {
       D(("Cached result found for %s\n", filename));
-      /* If stat failed, regenerate anyway */
-      if (st)
+      if (cached_result->time == st.st_mtime)
 	{
-	  if (cached_result->time == st->st_mtime)
-	    {
-	      /* File has not been changed -- use cached value. */
-	      D(("Using cached filetype on %s\n", filename));
-	      strncpy(type, cached_result->filetype, len);
-	      D_RETURN_(TRUE);
-	    }
+	  /* File has not been changed -- use cached value. */
+	  D(("Using cached filetype on %s\n", filename));
+	  strncpy(type, cached_result->filetype, len);
+	  D_RETURN_(TRUE);
 	}
     }
 
@@ -1303,13 +1311,9 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   /* Filetype is not in cache or file has been modified, re-test: */
 
-  if(magic_test_fs(filename, st, type, len))
+  if(magic_test_fs(filename, &st, type, len))
     {
-      if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, type);
-      else
-	filetype_cache_insert(filename, st->st_mtime, type);
-
+      filetype_cache_update(filename, st.st_mtime, type);
       D_RETURN_(TRUE);
     }
 
@@ -1317,10 +1321,7 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   if (magic_test_data(filename, type, len))
     {
-      if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, type);
-      else
-	filetype_cache_insert(filename, st->st_mtime, type);
+      filetype_cache_update(filename, st.st_mtime, type);
       D_RETURN_(TRUE);
     }
 
@@ -1328,21 +1329,14 @@ efsd_filetype_get(char *filename, char *type, int len)
 
   if (magic_test_pattern(filename, type, len))
     {
-      if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, type);
-      else
-	filetype_cache_insert(filename, st->st_mtime, type);
+      filetype_cache_update(filename, st.st_mtime, type);      
       D_RETURN_(TRUE);
     }
 
   D(("magic: file pattern check failed.\n"));
 
   strncpy(type, unknown_string, len);
-  
-  if (cached_result)
-    filetype_cache_update(cached_result, st->st_mtime, unknown_string);
-  else
-    filetype_cache_insert(filename, st->st_mtime, unknown_string);
+  filetype_cache_update(filename, st.st_mtime, unknown_string);
 
   D_RETURN_(TRUE);
 }

@@ -49,6 +49,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <libefsd_misc.h>
 #include <libefsd.h>
 
+char opt_nesting = FALSE;
+char opt_debug   = FALSE;
+
 struct efsd_connection
 {
   int        fd;

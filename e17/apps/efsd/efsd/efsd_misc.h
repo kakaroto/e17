@@ -50,7 +50,7 @@ char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
 void   efsd_slashify(char *path);
 #endif
 
-void    efsd_misc_check_dir(void);
+void    efsd_misc_create_efsd_dir(void);
 void    efsd_misc_remove_socket_file(void);
 int     efsd_misc_close_connection(int client);
 
