@@ -146,42 +146,42 @@ void playlist_current_item_set(PlayList *pl, PlayListItem *pli) {
 		pl->cur_item = evas_list_find_list(pl->items, pli);
 }
 
-int playlist_current_item_has_next(PlayList *pl) {
-	return pl ? !!pl->cur_item->next : 0;
+bool playlist_current_item_has_next(PlayList *pl) {
+	return pl ? !!pl->cur_item->next : false;
 }
 
-int playlist_current_item_has_prev(PlayList *pl) {
-	return pl ? !!pl->cur_item->prev : 0;
+bool playlist_current_item_has_prev(PlayList *pl) {
+	return pl ? !!pl->cur_item->prev : false;
 }
 
 /**
  * Moves the current item of a PlayList to the next item.
  *
  * @param pl
- * return 1 if the current item has been set to the beginning, else 0
+ * @return true if the current item has been set to the beginning, else false
  */
-int playlist_current_item_next(PlayList *pl) {
+bool playlist_current_item_next(PlayList *pl) {
 	if (!pl)
-		return 0;
+		return false;
 	
 	if (pl->cur_item->next) {
 		pl->cur_item = pl->cur_item->next;
-		return 0;
+		return false;
 	} else { /* move to the beginning */
 		pl->cur_item = pl->items;
-		return 1;
+		return true;
 	}
 }
 
-int playlist_current_item_prev(PlayList *pl) {
+bool playlist_current_item_prev(PlayList *pl) {
 	if (!pl)
-		return 0;
+		return false;
 
 	if (playlist_current_item_has_prev(pl)) {
 		pl->cur_item = pl->cur_item->prev;
-		return 1;
+		return true;
 	} else
-		return 0;
+		return false;
 }
 
 /**
@@ -226,11 +226,11 @@ void playlist_free(PlayList *pl) {
  * @param append If 0, the old entries will be overwritten.
  * @return Boolean success or failure.
  */
-int playlist_load_file(PlayList *pl, const char *file, int append) {
+bool playlist_load_file(PlayList *pl, const char *file, bool append) {
 	PlayListItem *pli;
 	
 	if (!pl || !(pli = playlist_item_new(pl->plugins, file)))
-		return 0;
+		return false;
 
 	if (!append)
 		playlist_remove_all(pl);
@@ -243,10 +243,10 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
 	pl->num++;
 	pl->duration += pli->duration;
 
-	return 1;
+	return true;
 }
 
-static void finish_playlist(PlayList *pl, Evas_List *list, int append) {
+static void finish_playlist(PlayList *pl, Evas_List *list, bool append) {
 	list = evas_list_reverse(list);
 	
 	if (append)
@@ -267,13 +267,13 @@ static void finish_playlist(PlayList *pl, Evas_List *list, int append) {
  * @param append If 0, the old entries will be overwritten.
  * @return Boolean success or failure.
  */
-int playlist_load_dir(PlayList *pl, const char *path, int append) {
+bool playlist_load_dir(PlayList *pl, const char *path, bool append) {
 	DIR *dir;
 	struct dirent *entry;
 	char buf[PATH_MAX + 1];
 
 	if (!pl || !(dir = opendir(path)))
-		return 0;
+		return false;
 
 	while ((entry = readdir(dir))) {
 		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
@@ -288,7 +288,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	if (!pl->cur_item || !pl->cur_item->data)
 		pl->cur_item = pl->items;
 
-	return 1;
+	return true;
 }
 
 /**
@@ -299,7 +299,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
  * @param append If 0, the old entries will be overwritten.
  * @return Boolean success or failure.
  */
-int playlist_load_m3u(PlayList *pl, const char *file, int append) {
+bool playlist_load_m3u(PlayList *pl, const char *file, bool append) {
 	PlayListItem *pli = NULL;
 	Evas_List *tmp = NULL;
 	FILE *fp;
@@ -307,7 +307,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	char *ptr;
 
 	if (!pl || !(fp = fopen(file, "r")))
-		return 0;
+		return false;
 
 	if ((ptr = strrchr(file, '/'))) {
 		snprintf(dir, sizeof(dir), "%s", file);
@@ -335,7 +335,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 
 	finish_playlist(pl, tmp, append);
 	
-	return 1;
+	return true;
 }
 
 /**
@@ -343,10 +343,10 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
  *
  * @param pl
  * @param path
- * @param append If 0, the old entries will be overwritten.
+ * @param append If false, the old entries will be overwritten.
  * @return Boolean success or failure.
  */
-int playlist_load_any(PlayList *pl, const char *path, int append) {
+bool playlist_load_any(PlayList *pl, const char *path, bool append) {
 	int len;
 	
 	if (is_dir(path))

@@ -10,9 +10,21 @@ AC_PROG_CC
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_HEADER_STDC
+AC_HEADER_STDBOOL
 AC_C_BIGENDIAN
 AM_DISABLE_STATIC
 AC_PROG_LIBTOOL
+
+AH_VERBATIM([_BOOL], [
+/* Define bool on systems that don't support C99 */
+#ifdef HAVE_STDBOOL_H
+# include <stdbool.h>
+#else
+# define bool int
+# define true 1
+# define false 0
+#endif
+])
 
 ACX_PTHREAD(, AC_MSG_ERROR(Cannot find pthread library!))
 

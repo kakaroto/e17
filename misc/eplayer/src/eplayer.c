@@ -48,7 +48,7 @@ static int load_input_plugin (const char *file, lt_ptr udata) {
 	return 0;
 }
 
-static int load_input_plugins(ePlayer *player) {
+static bool load_input_plugins(ePlayer *player) {
 	char path[PATH_MAX * 2 + 1];
 
 	snprintf(path, sizeof(path), "%s/.e/apps/" PACKAGE "/plugins/input:"
@@ -68,16 +68,16 @@ static void config_init(Config *cfg) {
 	snprintf(cfg->theme, sizeof(cfg->theme), "default");
 }
 
-static int config_load(Config *cfg, const char *file) {
+static bool config_load(Config *cfg, const char *file) {
 	E_DB_File *edb;
 	char *str;
 	int val = 0;
 	
 	if (!cfg || !file || !*file)
-		return 0;
+		return false;
 
 	if (!(edb = e_db_open_read((char *) file)))
-		return 0;
+		return false;
 
 	if (e_db_int_get(edb, "/eplayer/time_display_show_left", &val))
 		cfg->time_display = !!val;
@@ -97,7 +97,7 @@ static int config_load(Config *cfg, const char *file) {
 		free(str);
 	}
 
-	return 1;
+	return true;
 }
 
 static void eplayer_free(ePlayer *player) {
@@ -124,7 +124,7 @@ static void eplayer_free(ePlayer *player) {
 	free(player);
 }
 
-static int load_output_plugin(ePlayer *player) {
+static bool load_output_plugin(ePlayer *player) {
 	char path[PATH_MAX * 2 + 2], name[64];
 
 	snprintf(path, sizeof(path), "%s/.e/apps/" PACKAGE "/plugins/output:"
@@ -231,14 +231,15 @@ static int check_playback_next(void *udata) {
  *
  * @param player
  * @param rewind_track
+ * @return boolean success or failure
  */
-int eplayer_playback_start(ePlayer *player, int rewind_track) {
+bool eplayer_playback_start(ePlayer *player, bool rewind_track) {
 	PlayListItem *pli;
 
 	assert(player);
 	
 	if (!(pli = playlist_current_item_get(player->playlist)))
-		return 0;
+		return false;
 
 	if (rewind_track)
 		track_rewind(player);
@@ -254,7 +255,7 @@ int eplayer_playback_start(ePlayer *player, int rewind_track) {
 	pthread_create(&player->playback_thread, NULL,
 	               (void *) &track_play_chunk, player);
 
-	return 1;
+	return true;
 }
 
 /**

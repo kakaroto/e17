@@ -6,10 +6,6 @@
 #include <pthread.h>
 #include "plugin.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
 	char file[PATH_MAX + 1];
 
@@ -39,10 +35,10 @@ typedef struct {
 PlayList *playlist_new(Evas_List *plugins);
 void playlist_free();
 
-int playlist_load_file(PlayList *pl, const char *file, int append);
-int playlist_load_dir(PlayList *pl, const char *dir, int append);
-int playlist_load_m3u(PlayList *pl, const char *file, int append);
-int playlist_load_any(PlayList *pl, const char *path, int append);
+bool playlist_load_file(PlayList *pl, const char *file, bool append);
+bool playlist_load_dir(PlayList *pl, const char *dir, bool append);
+bool playlist_load_m3u(PlayList *pl, const char *file, bool append);
+bool playlist_load_any(PlayList *pl, const char *path, bool append);
 
 void playlist_remove_all(PlayList *pl);
 void playlist_remove_item(PlayList *pl, PlayListItem *pli);
@@ -50,14 +46,10 @@ void playlist_remove_item(PlayList *pl, PlayListItem *pli);
 PlayListItem *playlist_current_item_get(PlayList *pl);
 void playlist_current_item_set(PlayList *pl, PlayListItem *pli);
 
-int playlist_current_item_prev(PlayList *pl);
-int playlist_current_item_next(PlayList *pl);
+bool playlist_current_item_prev(PlayList *pl);
+bool playlist_current_item_next(PlayList *pl);
 
-int playlist_current_item_has_prev(PlayList *pl);
-int playlist_current_item_has_next(PlayList *pl);
-
-#ifdef __cplusplus
-}
-#endif
+bool playlist_current_item_has_prev(PlayList *pl);
+bool playlist_current_item_has_next(PlayList *pl);
 
 #endif
