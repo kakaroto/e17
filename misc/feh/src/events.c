@@ -81,7 +81,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
    scr_width = scr->width;
    scr_height = scr->height;
 #ifdef HAVE_LIBXINERAMA
-    if (xinerama_screens) {
+    if (opt.xinerama && xinerama_screens) {
       scr_width = xinerama_screens[xinerama_screen].width;
       scr_height = xinerama_screens[xinerama_screen].height;
     }
@@ -474,7 +474,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
    scr_width = scr->width;
    scr_height = scr->height;
 #ifdef HAVE_LIBXINERAMA
-    if (xinerama_screens) {
+    if (opt.xinerama && xinerama_screens) {
       scr_width = xinerama_screens[xinerama_screen].width;
       scr_height = xinerama_screens[xinerama_screen].height;
     }

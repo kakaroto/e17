@@ -166,7 +166,7 @@ winwidget_create_window(winwidget ret,
     h = scr->height;
 
 #ifdef HAVE_LIBXINERAMA
-    if (xinerama_screens) {
+    if (opt.xinerama && xinerama_screens) {
       w = xinerama_screens[xinerama_screen].width;
       h = xinerama_screens[xinerama_screen].height;
     }
@@ -181,7 +181,7 @@ winwidget_create_window(winwidget ret,
       h = scr->height;
 
 #ifdef HAVE_LIBXINERAMA
-    if (xinerama_screens) {
+    if (opt.xinerama && xinerama_screens) {
       if (w > xinerama_screens[xinerama_screen].width)
         w = xinerama_screens[xinerama_screen].width;
       if (h > xinerama_screens[xinerama_screen].height)
@@ -359,7 +359,7 @@ winwidget_render_image(winwidget winwid,
       max_w = scr->width;
       max_h = scr->height;
 #ifdef HAVE_LIBXINERAMA
-      if (xinerama_screens) {
+      if (opt.xinerama && xinerama_screens) {
         max_w = xinerama_screens[xinerama_screen].width;
         max_h = xinerama_screens[xinerama_screen].height;
       }
@@ -729,7 +729,7 @@ winwidget_resize(winwidget winwid,
     XFlush(disp);
 
 #ifdef HAVE_LIBXINERAMA
-    if (xinerama_screens) {
+    if (opt.xinerama && xinerama_screens) {
       int i;
 
       for (i = 0; i < num_xinerama_screens; i++) {

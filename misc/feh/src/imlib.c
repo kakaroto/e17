@@ -51,6 +51,19 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif /* HAVE_LIBXINERAMA */
 
+#ifdef HAVE_LIBXINERAMA
+void
+init_xinerama(void)
+{
+  if (opt.xinerama && XineramaIsActive(disp)) {
+    int major, minor;
+    xinerama_screen = 0;
+    XineramaQueryVersion(disp, &major, &minor);
+    xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
+  }
+}
+#endif /* HAVE_LIBXINERAMA */
+
 void
 init_x_and_imlib(void)
 {
@@ -67,13 +80,7 @@ init_x_and_imlib(void)
    xid_context = XUniqueContext();
 
 #ifdef HAVE_LIBXINERAMA
-   /* initialize Xinerama */
-   if (opt.xinerama && XineramaIsActive(disp)) {
-     int major, minor;
-     xinerama_screen = 0;
-     XineramaQueryVersion(disp, &major, &minor);
-     xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
-   }
+   init_xinerama();
 #endif /* HAVE_LIBXINERAMA */
 
    imlib_context_set_display(disp);

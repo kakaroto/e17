@@ -164,7 +164,7 @@ to reload an image after NUM seconds. Useful for viewing webcams via http,
 or even on your local machine.
 .TP 5
 .B -k, --keep-http
-When viewing files using http, feh normally deletes the local copies after
+When viewing files using HTTP, feh normally deletes the local copies after
 viewing, or, if caching, on exit. This option prevents this so that you
 get to keep the local copies. They will be in /tmp with "feh" in the name.
 .TP 5
@@ -297,6 +297,9 @@ Use CTRL+Button B to blur the current image in any mode (default=1).
 .TP 5
 .B -9, --no-blur-ctrl-mask
 Don't require CTRL+Button for blurring in any mode -- just use the button (default=off).
+.TR 5
+.B     --xinerama
+Enable/disable Xinerama support.  Has no effect unless you have an Xinerama compiled in.
 .SH FORMAT SPECIFIERS
 .B %f
 image path/filename

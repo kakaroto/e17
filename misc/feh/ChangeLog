@@ -1,3 +1,13 @@
+Sun Oct 20 20:12:23 2002 EDT, Paul Duncan <pabs@pablotron.org>
+
+  * src/support.c: xinerama bugfix from Jon Bernard <jbernard@roanoke.edu>
+  * src/options.c: added 'Use Xinerama' toggle to option menu
+  * src/options.c: changed 'Keep http files' to 'Keep HTTP Files'
+    (pet peeve ;P)
+  * src/options.c: added 'Auto-Zoom' toggle to option menu
+  * feh.1: added info about --xinerama flag
+  * AUTHORS: added Jon Bernard
+
 Sun Oct 20 14:49:46 2002 EDT, Paul Duncan <pabs@pablotron.org>
   
   * New beveled, off-white background image for menus.  I made it the

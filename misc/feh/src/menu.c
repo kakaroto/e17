@@ -144,6 +144,14 @@ static feh_menu *feh_menu_func_gen_options(feh_menu * m,
 static void feh_menu_cb_edit_rotate(feh_menu * m,
                                     feh_menu_item * i,
                                     void *data);
+static void feh_menu_cb_opt_auto_zoom(feh_menu * m,
+                                      feh_menu_item * i,
+                                      void *data);
+#ifdef HAVE_LIBXINERAMA
+static void feh_menu_cb_opt_xinerama(feh_menu * m,
+                                     feh_menu_item * i,
+                                     void *data);
+#endif /* HAVE_LIBXINERAMA */
 
 
 feh_menu *
@@ -390,7 +398,7 @@ feh_menu_show_at_xy(feh_menu * m,
 #if 0 
 /* #ifdef HAVE_LIBXINERAMA */
 /* this doesn't work correctly :( -- pabs */
-  if (xinerama_screens) {
+  if (opt.xinerama && xinerama_screens) {
     if ((x + m->w) > xinerama_screens[xinerama_screen].width)
       x = xinerama_screens[xinerama_screen].width - m->w;
     if ((y + m->h) > xinerama_screens[xinerama_screen].height)
@@ -1775,17 +1783,25 @@ feh_menu_func_gen_options(feh_menu * m,
   mm = feh_menu_new();
   mm->name = estrdup("OPTIONS");
   mm->fehwin = m->fehwin;
+  feh_menu_add_toggle_entry(mm, "Auto-Zoom", NULL, NULL,
+                            feh_menu_cb_opt_auto_zoom, NULL, NULL,
+                            opt.auto_zoom);
   feh_menu_add_toggle_entry(mm, "Freeze window size", NULL, NULL,
                             feh_menu_cb_opt_freeze_window, NULL, NULL,
                             opt.geom);
   feh_menu_add_toggle_entry(mm, "Fullscreen", NULL, NULL,
                             feh_menu_cb_opt_fullscreen, NULL, NULL,
                             m->fehwin->full_screen);
+#ifdef HAVE_LIBXINERAMA
+  feh_menu_add_toggle_entry(mm, "Use Xinerama", NULL, NULL,
+                            feh_menu_cb_opt_xinerama, NULL, NULL,
+                            opt.xinerama);
+#endif /* HAVE_LIBXINERAMA */
   feh_menu_add_entry(mm, NULL, NULL, NULL, NULL, NULL, NULL);
   feh_menu_add_toggle_entry(mm, "Draw Filename", NULL, NULL,
                             feh_menu_cb_opt_draw_filename, NULL, NULL,
                             opt.draw_filename);
-  feh_menu_add_toggle_entry(mm, "Keep http files", NULL, NULL,
+  feh_menu_add_toggle_entry(mm, "Keep HTTP files", NULL, NULL,
                             feh_menu_cb_opt_keep_http, NULL, NULL,
                             opt.keep_http);
   mm->func_free = feh_menu_func_free_options;
@@ -1916,7 +1932,7 @@ feh_menu_cb_opt_fullscreen(feh_menu * m,
     m->fehwin->full_screen = FALSE;
 
 #ifdef HAVE_LIBXINERAMA
-  if (xinerama_screens) {
+  if (opt.xinerama && xinerama_screens) {
     int i, rect[4];
 
     /* FIXME: this doesn't do what it should;  XGetGeometry always
@@ -1953,12 +1969,40 @@ feh_menu_cb_opt_fullscreen(feh_menu * m,
 #ifdef HAVE_LIBXINERAMA
   /* if we have xinerama and we're using it, then full screen the window
    * on the head that the window was active on */
-  if (m->fehwin->full_screen == TRUE && xinerama_screens) {
+  if (m->fehwin->full_screen == TRUE && opt.xinerama && xinerama_screens) {
     xinerama_screen = curr_screen;
     winwidget_move(m->fehwin,
                    xinerama_screens[curr_screen].x_org,
                    xinerama_screens[curr_screen].y_org);
   }
 #endif /* HAVE_LIBXINERAMA */
-
 }
+
+static void
+feh_menu_cb_opt_auto_zoom(feh_menu * m,
+                          feh_menu_item * i,
+                          void *data)
+{
+  MENU_ITEM_TOGGLE(i);
+  opt.auto_zoom = MENU_ITEM_IS_ON(i) ? 1 : 0;
+  winwidget_rerender_all(1, 1);
+}
+
+#ifdef HAVE_LIBXINERAMA
+static void
+feh_menu_cb_opt_xinerama(feh_menu * m,
+                         feh_menu_item * i,
+                         void *data)
+{
+  MENU_ITEM_TOGGLE(i);
+  opt.xinerama = MENU_ITEM_IS_ON(i) ? 1 : 0;
+
+  if (opt.xinerama) {
+    init_xinerama();
+  } else {
+    XFree(xinerama_screens);
+    xinerama_screens = NULL;
+  }
+  winwidget_rerender_all(1, 1);
+}
+#endif /* HAVE_LIBXINERAMA */
