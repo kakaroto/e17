@@ -55,6 +55,7 @@ init_parse_options(int argc, char **argv)
    opt.thumb_w = 60;
    opt.thumb_h = 60;
    opt.menu_font = estrdup("20thcent/12");
+   opt.font = estrdup("20thcent/8");
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
    opt.next_button = 1;
    opt.zoom_button = 2;
@@ -1025,7 +1026,7 @@ feh_create_default_config(char *rcfile)
            "# Screw xscreensaver, use feh =)\n"
            "screensave --full-screen --randomize --slideshow-delay 5\n" "\n"
            "# Add <img> tags to your html with ease :-)\n"
-           "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
+           "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"%%n\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
            "\n" "# Different menus\n" "chrome --menu-bg " PREFIX
            "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg " PREFIX
            "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg " PREFIX

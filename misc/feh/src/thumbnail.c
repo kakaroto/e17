@@ -73,22 +73,13 @@ init_thumbnail_mode(void)
 
    mode = "thumbnail";
 
-   if (opt.font)
-   {
-      fn = imlib_load_font(opt.font);
-      if (!fn)
-         fn = imlib_load_font("20thcent/8");
-   }
-   else
-      fn = imlib_load_font("20thcent/8");
+   fn = feh_imlib_load_font(opt.font);
 
    if (opt.title_font)
    {
       int fh, fw;
 
-      title_fn = imlib_load_font(opt.title_font);
-      if (!fn)
-         title_fn = imlib_load_font("20thcent/22");
+      title_fn = feh_imlib_load_font(opt.title_font);
       feh_imlib_get_text_size(title_fn, "W", &fw, &fh, IMLIB_TEXT_TO_RIGHT);
       title_area_h = fh + 4;
    }
