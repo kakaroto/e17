@@ -71,6 +71,8 @@ int main (int argc, char **argv)
 	   root = 1;
 	else if (!strcmp(argv[i], "-smooth"))
 	   aa = 1;
+	else if (!strcmp(argv[i], "-blast"))
+	   interactive = 0;
 	else if (!strcmp(argv[i], "-loop"))
 	  {
 	     interactive = 0;

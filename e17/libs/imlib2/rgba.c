@@ -2862,7 +2862,7 @@ __imlib_RGBA_to_RGB8888_fast(DATA32 *src , int src_jump,
 	dest += dest_jump;
      }
 #endif
-   if (src_jump > 0 || dest_jump > 0)
+   if ((src_jump > 0) || (dest_jump > 0))
      {
 	for (y = h; y > 0; y--)
 	  {
