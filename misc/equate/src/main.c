@@ -19,6 +19,7 @@ print_usage(void)
    printf("  -s, --scientific        Use Equate in scientific mode\n");
    printf
       ("  -t, --theme       [str] Use themed (edje) mode and load specified theme\n");
+   ecore_config_exit();
    exit(0);
 }
 
@@ -32,6 +33,7 @@ exec(char *exe)
 
    equate_append(exe);
    printf("%.10g\n", equate_eval());
+   ecore_config_exit();
    exit(0);
 }
 
