@@ -68,6 +68,95 @@ anti-aliased text, smooth super and sub-sampled images, alpha-blend, as well
 as drop down to using normal X11 primitives such as pixmaps, lines and
 rectangles for speed if your CPU or graphics hardware are too slow.
 <font face=arial,helvetica,lucida size=2><p>
+Evas abstracts any need to know much abotu what the characteristics of your
+XServer's display are - what depth or what magic visuals etc, it has. The
+most you need to tell evas is how many colors (at a maximum) to use if the
+display is not a turecolor display. By default it is suggested to use 216
+colors (as this equates to a 6x6x6 colorcube - exactly the same colorcube
+netscape, mozilla, gdkrgb etc. use so colors will be shared). If evas can't
+allocate enough colors it keeps reducing the size of the colorcube until it
+reaches plain black and white. This way it can display on anything from a
+black and white only terminal to 16 color VGA to 256 color and all the way
+up through 15, 16 24 and 32bit color. Here are some screenshots of a demo
+evas app to show the rendering output in different situations
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_colors.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Colors</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+The following screenshots of a demo Evas application were taken in 8 bit
+color (256 colors) (with worse color situations down to monochrome
+simulated) using the software rendering engine in Evas.
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_depth_eg_8_216.html><img src=img/evas_depth_eg_8_216_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_128.html><img src=img/evas_depth_eg_8_128_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_64.html><img src=img/evas_depth_eg_8_64_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_32.html><img src=img/evas_depth_eg_8_32_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_16.html><img src=img/evas_depth_eg_8_16_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_8.html><img src=img/evas_depth_eg_8_8_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8_2.html><img src=img/evas_depth_eg_8_2_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+The next pictures were taken of the same application in 8 bit color
+simulating worse color depths by reducing the allocation max, and using the
+X11 rendering engine that uses X11 primitives instead of the CPU (ie
+pixmaps, lines, rectangles, masks etc.).
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_depth_eg_8x_216.html><img src=img/evas_depth_eg_8x_216_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_128.html><img src=img/evas_depth_eg_8x_128_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_64.html><img src=img/evas_depth_eg_8x_64_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_32.html><img src=img/evas_depth_eg_8x_32_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_16.html><img src=img/evas_depth_eg_8x_16_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_8.html><img src=img/evas_depth_eg_8x_8_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_8x_2.html><img src=img/evas_depth_eg_8x_2_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+The following screenshots are of the same Evas demo application in 16 bit
+color, with the shots being software, OpenGL and X11 rendering engines
+respectively.
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_depth_eg_16.html><img src=img/evas_depth_eg_16_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_16gl.html><img src=img/evas_depth_eg_16gl_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_16x.html><img src=img/evas_depth_eg_16x_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+The following screenshots are of the same Evas demo application in 24/32 bit
+color, with the shots being software, OpenGL and X11 rendering engines
+respectively.
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_depth_eg_32.html><img src=img/evas_depth_eg_32_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_32gl.html><img src=img/evas_depth_eg_32gl_thumb.png width=80 height=80 border=1></a>
+<a href=evas_depth_eg_32x.html><img src=img/evas_depth_eg_32x_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td bgcolor=#000000><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
 Evas provides a structured mode graphics API and thus provides a set of
 objects as primities to work with. As opposed to immediate mode where the 
 program actually draws the data, with structured mode the program describes 
@@ -126,7 +215,7 @@ evas_resize(evas, object, 320.0, 240.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 320.0, 240.0);
 </pre>
 <font face=arial,helvetica,lucida size=2><p>
-And it would look something like this:
+Now our canvas would look like this:
 <font face=arial,helvetica,lucida size=2><p>
 <a href=evas_image_eg_1.html><img src=img/evas_image_eg_1_thumb.png width=80 height=80 border=1></a>
 <font face=arial,helvetica,lucida size=2><p>
@@ -140,7 +229,7 @@ evas_resize(evas, object, 300.0, 200.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 20.0, 50.0);
 </pre>
 <font face=arial,helvetica,lucida size=2><p>
-And it would look something like this:
+Out result would be something like this:
 <font face=arial,helvetica,lucida size=2><p>
 <a href=evas_image_eg_2.html><img src=img/evas_image_eg_2_thumb.png width=80 height=80 border=1></a>
 <font face=arial,helvetica,lucida size=2><p>
