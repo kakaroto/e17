@@ -1264,6 +1264,9 @@ GotoDesktop(int num)
    FocusToEWin(NULL);
    BeginNewDeskFocus();
 
+   if (mode.mode == MODE_NONE)
+      mode.mode = MODE_DESKSWITCH;
+
    if (num > 0)
      {
 	if (desks.slidein)
@@ -1347,7 +1350,11 @@ GotoDesktop(int num)
 	  }
      }
 
+   if (mode.mode == MODE_DESKSWITCH)
+      mode.mode = MODE_NONE;
+
    NewDeskFocus();
+   RedrawPagersForDesktop(pdesk, 0);
    RedrawPagersForDesktop(num, 3);
    ForceUpdatePagersForDesktop(num);
    HandleDrawQueue();

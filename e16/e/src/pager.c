@@ -277,10 +277,9 @@ PagerShow(Pager * p)
    pq = queue_up;
    queue_up = 0;
    MatchToSnapInfoPager(p);
-   ewin =
-      AddInternalToFamily(p->win, 1,
-			  (p->border_name) ? p->border_name : "PAGER",
-			  EWIN_TYPE_PAGER, p);
+   ewin = AddInternalToFamily(p->win, 1,
+			      (p->border_name) ? p->border_name : "PAGER",
+			      EWIN_TYPE_PAGER, p);
    if (ewin)
      {
 	char                s[4096];
@@ -540,7 +539,7 @@ PagerRedraw(Pager * p, char newbg)
    GC                  gc;
    XGCValues           gcv;
 
-   if (!mode.show_pagers)
+   if (!mode.show_pagers || mode.mode == MODE_DESKSWITCH)
       return;
 
    if (queue_up)
@@ -706,7 +705,7 @@ PagerForceUpdate(Pager * p)
 {
    int                 ww, hh, xx, yy, ax, ay, cx, cy, i;
 
-   if (!mode.show_pagers)
+   if (!mode.show_pagers || mode.mode == MODE_DESKSWITCH)
       return;
 
    if (queue_up)
@@ -1065,222 +1064,215 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 
    pq = queue_up;
 
-   if (mode.pager_zoom)
+   p->hi_win_w = 2 * w;
+   p->hi_win_h = 2 * h;
+
+   ic = FindItem("PAGER_WIN", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   EMoveResizeWindow(disp, p->hi_win, x, y, w, h);
+   EMapRaised(disp, p->hi_win);
+   if (ewin->mini_pmm.pmap)
      {
-	p->hi_win_w = 2 * w;
-	p->hi_win_h = 2 * h;
+	Imlib_Image        *im;
+	Pixmap              pmap, mask;
+	int                 xx, yy, ww, hh, i;
 
-	ic = FindItem("PAGER_WIN", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-	EMoveResizeWindow(disp, p->hi_win, x, y, w, h);
-	EMapRaised(disp, p->hi_win);
-	if (ewin->mini_pmm.pmap)
+	imlib_context_set_drawable(ewin->mini_pmm.pmap);
+	im = imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w,
+					      ewin->mini_h, 0);
+	imlib_context_set_image(im);
+	if (w > h)
 	  {
-	     Imlib_Image        *im;
-	     Pixmap              pmap, mask;
-	     int                 xx, yy, ww, hh, i;
-
-	     imlib_context_set_drawable(ewin->mini_pmm.pmap);
-	     im = imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w,
-						   ewin->mini_h, 0);
-	     imlib_context_set_image(im);
-	     if (w > h)
+	     for (i = w; i < (w * 2); i++)
 	       {
-		  for (i = w; i < (w * 2); i++)
-		    {
-		       ww = i;
-		       hh = (i * h) / w;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-								    &mask, ww,
-								    hh);
-		       ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
-		       imlib_free_pixmap_and_mask(pmap);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
+		  ww = i;
+		  hh = (i * h) / w;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  imlib_render_pixmaps_for_whole_image_at_size(&pmap,
+							       &mask, ww, hh);
+		  ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
+		  imlib_free_pixmap_and_mask(pmap);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
+
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
 		       {
-			  int                 px, py;
-
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       imlib_free_image_and_decache();
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
+			  imlib_free_image_and_decache();
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
 		       }
-		    }
+		  }
 	       }
-	     else
-	       {
-		  for (i = h; i < (h * 2); i++)
-		    {
-		       ww = (i * w) / h;
-		       hh = i;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-								    &mask, ww,
-								    hh);
-		       ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
-		       imlib_free_pixmap_and_mask(pmap);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
-		       {
-			  int                 px, py;
-
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       imlib_free_image_and_decache();
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
-		       }
-		    }
-	       }
-	     EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2),
-			       w * 2, h * 2);
-	     imlib_context_set_image(im);
-	     imlib_context_set_drawable(p->hi_win);
-	     imlib_render_image_on_drawable_at_size(0, 0, p->hi_win_w,
-						    p->hi_win_h);
-	     imlib_free_image_and_decache();
-	  }
-	else if (ic)
-	  {
-	     int                 xx, yy, ww, hh, i;
-
-	     queue_up = 0;
-	     if (w > h)
-	       {
-		  for (i = w; i < (w * 2); i++)
-		    {
-		       ww = i;
-		       hh = (i * h) / w;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL,
-				   0);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
-		       {
-			  int                 px, py;
-
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
-		       }
-		    }
-	       }
-	     else
-	       {
-		  for (i = h; i < (h * 2); i++)
-		    {
-		       ww = (i * w) / h;
-		       hh = i;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL,
-				   0);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
-		       {
-			  int                 px, py;
-
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
-		       }
-		    }
-	       }
-	     EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
-			       h * 2);
 	  }
 	else
 	  {
-	     Pixmap              pmap;
-	     GC                  gc = 0;
-	     XGCValues           gcv;
-	     int                 xx, yy, ww, hh, i;
-
-	     pmap = ECreatePixmap(disp, p->hi_win, w * 2, h * 2, root.depth);
-	     ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
-	     if (!gc)
-		gc = XCreateGC(disp, pmap, 0, &gcv);
-	     if (w > h)
+	     for (i = h; i < (h * 2); i++)
 	       {
-		  for (i = w; i < (w * 2); i++)
-		    {
-		       ww = i;
-		       hh = (i * h) / w;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
-		       XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
-		       XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
-		       {
-			  int                 px, py;
+		  ww = (i * w) / h;
+		  hh = i;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  imlib_render_pixmaps_for_whole_image_at_size(&pmap,
+							       &mask, ww, hh);
+		  ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
+		  imlib_free_pixmap_and_mask(pmap);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
 
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       EFreePixmap(disp, pmap);
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
-		       }
-		    }
-	       }
-	     else
-	       {
-		  for (i = h; i < (h * 2); i++)
-		    {
-		       ww = (i * w) / h;
-		       hh = i;
-		       xx = x + ((w - ww) / 2);
-		       yy = y + ((h - hh) / 2);
-		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
-		       XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
-		       XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
-		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
-		       XClearWindow(disp, p->hi_win);
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
 		       {
-			  int                 px, py;
-
-			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w))
-			      || (py >= (y + h)))
-			    {
-			       EFreePixmap(disp, pmap);
-			       EUnmapWindow(disp, p->hi_win);
-			       goto exit;
-			    }
+			  imlib_free_image_and_decache();
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
 		       }
-		    }
+		  }
 	       }
-	     EFreePixmap(disp, pmap);
-	     EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
-			       h * 2);
 	  }
-	p->hi_visible = 1;
-	p->hi_ewin = ewin;
+	EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2),
+			  w * 2, h * 2);
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(p->hi_win);
+	imlib_render_image_on_drawable_at_size(0, 0, p->hi_win_w, p->hi_win_h);
+	imlib_free_image_and_decache();
      }
+   else if (ic)
+     {
+	int                 xx, yy, ww, hh, i;
+
+	queue_up = 0;
+	if (w > h)
+	  {
+	     for (i = w; i < (w * 2); i++)
+	       {
+		  ww = i;
+		  hh = (i * h) / w;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
+
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
+		       {
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
+		       }
+		  }
+	       }
+	  }
+	else
+	  {
+	     for (i = h; i < (h * 2); i++)
+	       {
+		  ww = (i * w) / h;
+		  hh = i;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
+
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
+		       {
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
+		       }
+		  }
+	       }
+	  }
+	EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
+			  h * 2);
+     }
+   else
+     {
+	Pixmap              pmap;
+	GC                  gc = 0;
+	XGCValues           gcv;
+	int                 xx, yy, ww, hh, i;
+
+	pmap = ECreatePixmap(disp, p->hi_win, w * 2, h * 2, root.depth);
+	ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
+	if (!gc)
+	   gc = XCreateGC(disp, pmap, 0, &gcv);
+	if (w > h)
+	  {
+	     for (i = w; i < (w * 2); i++)
+	       {
+		  ww = i;
+		  hh = (i * h) / w;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
+		  XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
+
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
+		       {
+			  EFreePixmap(disp, pmap);
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
+		       }
+		  }
+	       }
+	  }
+	else
+	  {
+	     for (i = h; i < (h * 2); i++)
+	       {
+		  ww = (i * w) / h;
+		  hh = i;
+		  xx = x + ((w - ww) / 2);
+		  yy = y + ((h - hh) / 2);
+		  XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
+		  XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
+		  EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
+		  XClearWindow(disp, p->hi_win);
+		  {
+		     int                 px, py;
+
+		     PointerAt(&px, &py);
+		     if ((px < x) || (py < y) || (px >= (x + w))
+			 || (py >= (y + h)))
+		       {
+			  EFreePixmap(disp, pmap);
+			  EUnmapWindow(disp, p->hi_win);
+			  goto exit;
+		       }
+		  }
+	       }
+	  }
+	EFreePixmap(disp, pmap);
+	EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
+			  h * 2);
+     }
+   p->hi_visible = 1;
+   p->hi_ewin = ewin;
+
  exit:
    queue_up = pq;
 }
@@ -1325,7 +1317,7 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
 	   PagerShowTt(NULL);
      }
 
-   if (mode.pager_zoom && (in == PAGER_EVENT_MOTION) && ewin != p->hi_ewin)	/* !!! */
+   if ((in == PAGER_EVENT_MOTION) && ewin != p->hi_ewin)
      {
 	int                 wx, wy, ww, wh, ax, ay, cx, cy;
 
