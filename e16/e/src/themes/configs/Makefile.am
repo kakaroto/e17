@@ -1,6 +1,7 @@
 SUBDIRS = pix backup
 
 configdata_DATA = \
+actionclasses.cfg \
 backup-borders.cfg \
 backup-colormodifiers.cfg \
 backup-cursors.cfg \
