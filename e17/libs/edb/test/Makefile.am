@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src -I/usr/local/include
+INCLUDES = -I$(top_srcdir)/src
 
 noinst_PROGRAMS = edb_test
 

@@ -1,5 +1,5 @@
 
-INCLUDES = -I$(top_srcdir)/src -I/usr/local/include `gtk-config --cflags`
+INCLUDES = -I$(top_srcdir)/src `gtk-config --cflags`
 
 bin_PROGRAMS = edb_gtk_ed
 

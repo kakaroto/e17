@@ -127,7 +127,7 @@ if test "$db_cv_path_strip" = missing_strip; then
 fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_TYPE(ssize_t, int)
+AC_CHECK_TYPE(size_t, int)
 AC_C_BIGENDIAN
 AC_C_CONST
 AC_STRUCT_ST_BLKSIZE

@@ -5,9 +5,9 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-LDFLAGS		     = -L/usr/local/lib
-INCLUDES	     = -I/usr/local/include \
-			-I$(includedir) \
+LDFLAGS		     =
+INCLUDES	     = -I. \
+		       -I$(top_srcdir)/src \
 			-DLIBDIR=\"$(libdir)\" \
 			-DBINDIR=\"$(bindir)\" \
 			-DDATADIR=\"$(datadir)\"

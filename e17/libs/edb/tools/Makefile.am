@@ -8,7 +8,7 @@ endif
 
 SUBDIRS =$(edb_gtk_ed_DIR)
 
-INCLUDES = -I$(top_srcdir)/src -I/usr/local/include
+INCLUDES = -I$(top_srcdir)/src
 
 bin_PROGRAMS = edb_ed $(edb_vt_ed_PROGRAM)
 
