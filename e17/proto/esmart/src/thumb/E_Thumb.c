@@ -445,7 +445,7 @@ _e_thumb_hash_uri (const char *uri)
 {
   int n;
   MD5_CTX ctx;
-  char md5out[32];
+  char md5out[(2 * MD5_HASHBYTES) + 1];
   char nn[PATH_MAX];
   struct stat thumbstatus;
   unsigned char hash[MD5_HASHBYTES];
