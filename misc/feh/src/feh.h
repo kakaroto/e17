@@ -111,7 +111,7 @@ void feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
                 int desktop, int set);
 int feh_wm_get_num_desks(void);
-char *feh_wm_get_eesh_location(void);
+int feh_wm_get_eesh_available(void);
 
 
 /* Imlib stuff */

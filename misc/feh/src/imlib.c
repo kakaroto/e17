@@ -481,7 +481,6 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    D_ENTER;
 
    snprintf(bgname, sizeof(bgname), "%d_FEHBG", num);
-   eeshloc = feh_wm_get_eesh_location();
    
    if (fil == NULL)
    {
@@ -492,8 +491,8 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    }
    D(("Setting bg %s\n", fil));
 
-   if(eeshloc != NULL)
-      eesh = popen(eeshloc, "w");
+   if(feh_wm_get_eesh_available())
+      eesh = popen("eesh", "w");
    
    if(eesh)
    {
@@ -573,55 +572,41 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    D_RETURN_;
 }
 
-char *
-feh_wm_get_eesh_location(void)
+int feh_wm_get_eesh_available(void)
 {
-   static char loc[1024];
    char *eroot;
-   struct stat st;
 
    D_ENTER;
 
-   /* is E actually running? */
+   /* check if E is actually running */
    eroot = getenv("EROOT");
    if((eroot == NULL) || (eroot[0]=='\0'))
-      D_RETURN(NULL);
+      D_RETURN(0);
 
-   snprintf(loc, sizeof(loc), "%s/eesh", getenv("EBIN"));
-
-   if ((stat(loc, &st)) == -1)
-   {
-      snprintf(loc, sizeof(loc), "%s/eesh", PREFIX "/enlightenment/bin");
-      if ((stat(loc, &st)) == -1)
-         D_RETURN(NULL);
-   }
-
-   printf("found eesh at %s\n", loc);
-   D_RETURN(loc);
+   D_RETURN(1);
 }
 
 int
 feh_wm_get_num_desks(void)
 {
    FILE *eesh;
-   char buf[1024];
-   char *eeshlocation;
+   char buf[200];
    int desks = 0;
    char *ptr;
 
    D_ENTER;
 
-   eeshlocation = feh_wm_get_eesh_location();
-   if (eeshlocation == NULL)
+   if (!feh_wm_get_eesh_available())
       D_RETURN(-1);
 
-   snprintf(buf, sizeof(buf), "%s -ewait \"num_desks ?\"", eeshlocation);
-
-   eesh = popen(buf, "r");
+   eesh = popen("eesh -ewait \"num_desks ?\"", "r");
    if (eesh == NULL)
       D_RETURN(-1);
 
    fgets(buf, sizeof(buf), eesh);
+   if(!buf)
+      D_RETURN(-1);
+   
    ptr = buf;
    while (ptr && !isdigit(*ptr))
       ptr++;
