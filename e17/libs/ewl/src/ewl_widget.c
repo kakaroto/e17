@@ -35,7 +35,6 @@ static void     __ewl_widget_mouse_down(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-static void __ewl_widget_set_obscured(Ewl_Widget *w, int val);
 
 static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w);
 static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
@@ -248,52 +247,13 @@ void ewl_widget_destroy(Ewl_Widget * w)
  */
 void ewl_widget_configure(Ewl_Widget * w)
 {
-	Ewl_Window *win;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!REALIZED(w) | !VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
 
-	win = ewl_window_find_window_by_widget(w);
-
-	/*
-	if (CURRENT_X(w) > CURRENT_W(win) ||
-	    CURRENT_X(w) + CURRENT_W(w) < CURRENT_X(win) ||
-	    CURRENT_Y(w) > CURRENT_H(win) ||
-	    CURRENT_Y(w) + CURRENT_H(w) < CURRENT_Y(win)) {
-		__ewl_widget_set_obscured(w, TRUE);
-	}
-	else {
-		__ewl_widget_set_obscured(w, FALSE);
-		*/
-		ewl_configure_request(w);
-		/*
-	}
-	*/
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void __ewl_widget_set_obscured(Ewl_Widget *w, int val)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if ((OBSCURED(w) && val) || (!OBSCURED(w) && !val))
-		DRETURN(DLEVEL_STABLE);
-
-	if (val) {
-		w->flags |= EWL_FLAGS_OBSCURED;
-		if (REALIZED(w) && VISIBLE(w))
-			evas_object_hide(w->fx_clip_box);
-		ewl_configure_cancel_request(w);
-	}
-	else {
-		w->flags &= ~EWL_FLAGS_OBSCURED;
-		if (REALIZED(w) && VISIBLE(w))
-			evas_object_hide(w->fx_clip_box);
-	}
+	ewl_configure_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -115,8 +115,8 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 	 */
 	if (t->estyle) {
 		estyle_set_text(t->estyle, t->text);
-		__ewl_text_update_size(t);
 		t->length = estyle_length(t->estyle);
+		__ewl_text_update_size(t);
 	}
 	else
 		t->length = strlen(t->text);

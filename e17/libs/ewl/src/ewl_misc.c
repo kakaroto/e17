@@ -11,8 +11,6 @@ void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
 static void     ewl_reread_config(int val, void *data);
 
-static Ewl_Widget *__ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w);
-
 /**
  * ewl_print_warning - this is used by debugging macros for breakpoints
  *
@@ -108,7 +106,8 @@ void ewl_main(void)
  */
 void ewl_idle_render(void *data)
 {
-	Ewl_Window     *w;
+	Ewl_Widget     *w;
+	Ewl_Window     *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -123,25 +122,33 @@ void ewl_idle_render(void *data)
 	/*
 	 * Configure any widgets that need it.
 	 */
-	while ((w = ewd_list_remove_first(configure_list)))
-		ewl_callback_call(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE);
+	while ((w = ewd_list_remove_first(configure_list))) {
+		/*
+		 * Remove the flag that the widget is scheduled for
+		 * configuration.
+		 */
+		w->flags &= ~EWL_FLAGS_CSCHEDULED;
+		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+	}
 
 	/*
-	 * Rerender each window and realize them as necessary.
+	 * Rerender each window and realize them as necessary. Done after
+	 * configuration to avoid multiple passes of the window list when no
+	 * new windows have been created.
 	 */
 	ewd_list_goto_first(ewl_window_list);
-	while ((w = EWL_WINDOW(ewd_list_next(ewl_window_list))) != NULL) {
+	while ((win = EWL_WINDOW(ewd_list_next(ewl_window_list))) != NULL) {
 		/*
 		 * If we have any unrealized windows at this point, we want to
 		 * realize and configure them to layout the children correct.
 		 */
-		if (VISIBLE(w) && !REALIZED(w)) {
-			ewl_widget_realize(EWL_WIDGET(w));
-			ewl_widget_configure(EWL_WIDGET(w));
+		if (VISIBLE(win) && !REALIZED(win)) {
+			ewl_widget_realize(EWL_WIDGET(win));
+			ewl_widget_configure(EWL_WIDGET(win));
 		}
 
-		if (w->evas)
-			evas_render(w->evas);
+		if (win->evas)
+			evas_render(win->evas);
 	}
 
 	DRETURN(DLEVEL_STABLE);
@@ -254,31 +261,94 @@ void ewl_configure_request(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
 
+	win = ewl_window_find_window_by_widget(w);
+
+	/*
+	 * We don't need to configure if it's outside the viewable space in
+	 * it's parent widget.
+	 */
+	if (w->parent) {
+		int x, y, width, height;
+		Ewl_Widget *p = w->parent;
+
+		ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,
+				&height);
+		if ((x + width) < CURRENT_X(p) ||
+				x > CURRENT_X(p) + CURRENT_W(p) ||
+				(y + height) < CURRENT_Y(p) ||
+				y > CURRENT_Y(p) + CURRENT_H(p) ||
+				(x + width) < CURRENT_X(win) ||
+				x > CURRENT_X(win) + CURRENT_W(win) ||
+				(y + height) < CURRENT_Y(win) ||
+				y > CURRENT_Y(win) + CURRENT_H(win)) {
+			w->flags |= EWL_FLAGS_OBSCURED;
+		}
+		else
+			w->flags &= ~EWL_FLAGS_OBSCURED;
+	}
+
+	/*
+	 * Check this first, and remove an obscured widget from the configure
+	 * list, if it's already scheduled.
+	 */
+	if (w->flags & EWL_FLAGS_OBSCURED) {
+		if (w->flags & EWL_FLAGS_CSCHEDULED) {
+			ewd_list_goto_first(configure_list);
+			while ((search = ewd_list_current(configure_list))) {
+				if (search == w) {
+					w->flags &= ~EWL_FLAGS_CSCHEDULED;
+					ewd_list_remove(configure_list);
+					break;
+				}
+				ewd_list_next(configure_list);
+			}
+		}
+
+		DRETURN(DLEVEL_TESTING);
+	}
+
+	/*
+	 * Easy case, we know this is on the list already.
+	 */
+	if (w->flags & EWL_FLAGS_CSCHEDULED)
+		DRETURN(DLEVEL_TESTING);
+
 	/*
 	 * Need to check if the window that holds w is scheduled for
 	 * configuration. This is the easiest way to test if we can avoid
 	 * adding this widget to the configuration list.
 	 */
-	win = ewl_window_find_window_by_widget(w);
+	if (EWL_WIDGET(win)->flags & EWL_FLAGS_CSCHEDULED)
+		DRETURN(DLEVEL_TESTING);
 
+	/*
+	 * Check for any parent scheduled for configuration.
+	 */
+	search = w;
+	while ((search = search->parent)) {
+		if (search->flags & EWL_FLAGS_CSCHEDULED)
+			DRETURN(DLEVEL_TESTING);
+	}
+
+	/*
+	 * No parent of this widget is queued so add it to the queue. All
+	 * children widgets should have been removed by this point.
+	 */
+	w->flags |= EWL_FLAGS_CSCHEDULED;
+	ewd_list_append(configure_list, w);
+
+	/*
+	 * Now clean off any children of this widget, they will get added
+	 * later.
+	 */
 	ewd_list_goto_first(configure_list);
 	while ((search = ewd_list_current(configure_list))) {
 		Ewl_Widget *parent;
 
-		/*
-		 * Check the window.
-		 */
-		if (search == EWL_WIDGET(win))
-			DRETURN(DLEVEL_TESTING);
-
-		/*
-		 * Queue the widget that is the parent.
-		 */
-		if ((parent = __ewl_configure_check(search, w))) {
-			if (parent == search) {
-				DRETURN(DLEVEL_TESTING);
-			}
-			else {
+		parent = search;
+		while ((parent = parent->parent)) {
+			if (parent == w) {
+				search->flags &= ~EWL_FLAGS_CSCHEDULED;
 				ewd_list_remove(configure_list);
 				break;
 			}
@@ -288,10 +358,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	}
 
 	/*
-	 * No parent of this widget is queued so add it to the queue. All
-	 * children widgets should have been removed by this point.
+	 * FIXME: Remove this once we get things stabilized a bit more.
 	 */
-	ewd_list_append(configure_list, w);
 	if (ewd_list_nodes(configure_list) > longest) {
 		longest = ewd_list_nodes(configure_list);
 		printf("SCHEDULING CONFIGURATION OF %d WIDGETS\n", longest);
@@ -317,28 +385,4 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
 		ewd_list_remove(configure_list);
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
-}
-
-/*
- * Check to see if @ppar is a parent to @w at some level.
- */
-static Ewl_Widget *__ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w)
-{
-	DENTER_FUNCTION(DLEVEL_TESTING);
-
-	if (LAYER(w) < LAYER(ppar)) {
-		Ewl_Widget *swap;
-
-		swap = ppar;
-		ppar = w;
-		w = swap;
-	}
-
-	while (w) {
-		if (w == ppar)
-			DRETURN_INT(ppar, DLEVEL_TESTING);
-		w = w->parent;
-	}
-
-	DRETURN_INT(NULL, DLEVEL_TESTING);
 }
