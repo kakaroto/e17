@@ -40,7 +40,7 @@
 #define amap_ff		0x3ff(%ebx)
 
 .global PR_(imlib_mmx_blend_rgba_to_rgb_cmod)
-	.type PT_(imlib_mmx_blendd_rgba_to_rgb_cmod,@function)
+	.type PT_(imlib_mmx_blend_rgba_to_rgb_cmod,@function)
 .global PR_(imlib_mmx_blend_rgba_to_rgba_cmod)
 	.type PT_(imlib_mmx_blend_rgba_to_rgba_cmod,@function)
 .global PR_(imlib_mmx_blend_rgb_to_rgb_cmod)
