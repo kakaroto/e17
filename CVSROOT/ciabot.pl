@@ -265,10 +265,10 @@ for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
 #    for (my $ix = 0; $ix < $pcount; $ix++) {
       #   s#^[^/]*##; # weed out the module name
 #    }
-    if ($pcount eq 2) {
-      s#^.*?/.*?/##;
-    } elsif ($pcount eq 3) {
-      s#^.*?/.*?/.*?/##;
+    if ($pcount == 3) {
+      s/.*\/.*\/.*\///;
+    } elsif ($pcount == 2) {
+      s/.*\/.*\/.*\///;
     } else {
       s#^.*?/##;
     }
