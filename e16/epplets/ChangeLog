@@ -748,3 +748,9 @@ Mon Nov 22 00:51:00 EST 1999
 
 Added an option to E-Slides config to change root bg when image changes.
 
+-------------------------------------------------------------------------------
+
+Tue Nov 23 11:03:39 PST 1999
+(KainX)
+
+Fixed a seg fault bug in E-Slides.

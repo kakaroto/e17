@@ -131,9 +131,10 @@ change_image(void *data) {
   ImlibImage *im = NULL;
 
   /* Test-load each image to make sure it's a valid image file. */
-  for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL)); idx++) {
+  for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL));) {
     /* It isn't, so NULL out its name. */
     filenames[idx] = NULL;
+    INC_PIC();
   }
   Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
 
