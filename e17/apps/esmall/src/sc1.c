@@ -389,7 +389,9 @@ parseoptions (int argc, char **argv, char *iname, char *oname,
       else
 	{
 	  strcpy (str, argv[arg]);
+/* dont lower case the file - case matters on unix
 	  strlwr (str);
+ */
 	  strcpy (iname, str);
 	  if ((ptr = strchr (str, '.')) == NULL)
 	    strcat (iname, ".sma");
