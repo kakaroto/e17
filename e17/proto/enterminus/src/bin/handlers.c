@@ -9,10 +9,8 @@ void term_handler_xterm_seq(int op, Term *term) {
    Ecore_Event *event;
    
    c = term_tcanvas_data_pop(term);
-   for(len = 0; c != '\007'; len++) {
-      
-      buf[len] = c;
-      
+   for(len = 0; c != '\007'; len++) {      
+      buf[len] = c;      
       c = term_tcanvas_data_pop(term);
    }
    buf[len] = 0;   
@@ -28,8 +26,6 @@ void term_handler_xterm_seq(int op, Term *term) {
       e->title = strdup(term->title);
       event = ecore_event_add(TERM_EVENT_TITLE_CHANGE, e, 
 			      term_event_title_change_free, NULL);
-      /* TODO: MOVE THIS TO FRONTEND CODE */
-//ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(term->ee),buf);
       break;
    }
 }
@@ -77,43 +73,79 @@ int term_handler_escape_seq(Term *term) {
 
       switch(c) {
        case 'A':
+	 /* ESC [ [ n ] A  move up n times */
+	 DPRINT((stderr, "ESC [ [ n ] A  move up n times\n"));
 	 term_cursor_move_up(term, narg ? args[0] : 1);
 	 break;
        case 'B':
+	 /* ESC [ [ n ] B  move down n times */
+	 DPRINT((stderr, "ESC [ [ n ] B  move down n times\n"));	 
 	 term_cursor_move_down(term, narg ? args[0] : 1);
 	 break;
        case 'C':
+	 /* ESC [ [ n ] C  move forward n times */
+	 DPRINT((stderr, "ESC [ [ n ] C  move forward n times\n"));	 
 	 term_cursor_move_right(term, narg ? args[0] : 1);
 	 break;
        case 'D':
+	 /* ESC [ [ n ] D  move backward n times */
+	 DPRINT((stderr, "ESC [ [ n ] D  move backward n times\n"));	 
 	 term_cursor_move_left(term, narg ? args[0] : 1);
 	 break;
+       case 'E':
+	 /* ESC [ [ n ] E  Cursor Down n times and to first col, default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] E  Cursor Down n times and to first col\n"));
+	 break;
+       case 'F':
+	 /* ESC [ [ n ] F  Cursor Up n times and to first col, default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] F  Cursor Up n times and to first col\n"));
+	 break;
        case 'G':
+	 /* ESC [ [ n ] G  Cursor to Column n (HPA) */
+	 DPRINT((stderr, "ESC [ [ n ] G  Cursor to Column n (HPA)\n"));
 	 term_cursor_move_col(term, narg ? args[0] : 1);
 	 break;
        case 'H':
+	 /* ESC [ [ r ; c ] H  Cursor Pos [row;column] (CUP), default 1;1 */
+	 DPRINT((stderr, "ESC [ [ r ; c ] H  Cursor Pos [row;column] (CUP)\n"));
 	 term_cursor_goto(term, args[1] ? args[1] : 1, args[0] ? args[0] : 1);
 	 break;
+       case 'I':
+	 /* ESC [ [ n ] I  Move forward n tab stops, default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] I  Move forward n tab stops\n"));
+	 break;
        case 'J':
+	 /* ESC [ [ n ] J  Erase in Display (ED)
+	  * n == 0: Clear Below (default)
+	  * n == 1: Clear Above
+	  * n == 2: Clear All
+	  */
+	 DPRINT((stderr, "ESC [ [ n ] J  Erase in Display (ED)\n"));
 	 if(narg) {
 	    if(args[0] == 1) {
 	       /* erase from start to cursor */
-	       term_clear_area(term, 1, 1, 
-			       term->tcanvas->cols, term->tcanvas->cur_row);
+	       term_clear_area(term, 1, 1, term->tcanvas->cols, 
+			       term->tcanvas->cur_row);
 	    }
 	    if(args[0] == 2) {
 	       /* erase whole display */
-	       term_clear_area(term, 1, 1, 
-			       term->tcanvas->cols, term->tcanvas->rows);
+	       term_clear_area(term, 1, 1, term->tcanvas->cols, 
+			       term->tcanvas->rows);
 	    }
 	 }
 	 else {
 	    /* erase from cursor to end of display */
 	    term_clear_area(term, 1, term->tcanvas->cur_row,
-		       term->tcanvas->cols, term->tcanvas->rows);	    
+			    term->tcanvas->cols, term->tcanvas->rows);	    
 	 }
 	 break;
        case 'K':
+	 /* ESC [ [ n ] K  Erase in Line (EL)
+	  * n == 0: Clear to Right (default)
+	  * n == 1: Clear to Left (EL1)
+	  * n == 2: Clear All
+	  */
+	 DPRINT((stderr, "ESC [ [ n ] K  Erase in Line (EL)\n"));
 	 if(narg) {
 	    if(args[0] == 1) {
 	       /* erase from start of line to cursor */
@@ -133,22 +165,95 @@ int term_handler_escape_seq(Term *term) {
 			    term->tcanvas->cols, term->tcanvas->cur_row);
 	 }
 	 break;
-       case 'L': /* Insert lines */
+       case 'L':
+	 /* ESC [ [ n ] L  Insert n lines (IL), default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] L  Insert n lines (IL)\n"));
 	 //insert_lines(narg ? args[0] : 1);
 	 break;
-       case 'M': /* Delete lines */
+       case 'M':
+	 /* ESC [ [ n ] M  Delete n lines (DL), default 1  */
+	 DPRINT((stderr, "ESC [ [ n ] M  Delete n lines (DL)\n"));
 	 //delete_lines(narg ? args[0] : 1);
 	 break;
-       case 'd': /* line position absolute */
-	 term_cursor_move_row(term, narg ? args[0] : 1);
-	 break;
-       case 'P': /* clear # of characters */
+       case 'P':
+	 /* ESC [ [ n ] P  Delete n characters (DCH), default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] P  Delete n characters (DCH)\n"));
 	 term_clear_area(term, term->tcanvas->cur_col, 
 			 term->tcanvas->cur_row, 
 			 term->tcanvas->cur_col + args[0], 
 			 term->tcanvas->cur_row);
 	 break;
+       case 'W':
+	 /* ESC [ [ n ] W  Tabulator functions
+	  * n == 0: Tab Set (HTS)
+	  * n == 2: Tab Clear (TBC), clear current column
+	  * n == 5: Tab Clear (TBC), clear all 
+	  */ 
+	 DPRINT((stderr, "ESC [ [ n ] W  Tabulator functions\n"));
+	 break;
+       case 'X':
+	 /* ESC [ [ n ] X  Erase n characters (ECH), default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] X  Erase n characters (ECH)\n"));
+	 break;
+       case 'Z':
+	 /* ESC [ [ n ] Z  Move backward n tabstops, default 1 */
+	 DPRINT((stderr, "ESC [ [ n ] Z  Move backward n tabstops\n"));
+	 break;
+       case '`':
+	 /* ESC [ [ n ]   Same as ESC [ n G (HPA) */
+	 DPRINT((stderr, "ESC [ [ n ]   Same as ESC [ n G (HPA)\n"));
+	 break;
+       case 'a':
+	 /* ESC [ [ n ] a  Same as ESC [ n C (CUF) */
+	 DPRINT((stderr, "ESC [ [ n ] a  Same as ESC [ n C (CUF)\n"));
+	 break;
+       case 'c':
+	 /* ESC [ [ n ] c  Send Device Attributes (DA), 
+	  * default of 0 returns "ESC[?1;2c" indicating 
+	  * a VT100 with advanced video option
+	  */
+	 DPRINT((stderr, "ESC [ [ n ] c  Send Device Attributes (DA)\n"));
+	 break;
+       case 'd':
+	 /* ESC [ [ n ] d  Cursor to line n (VPA) */
+	 DPRINT((stderr, "ESC [ [ n ] d  Cursor to line n (VPA)\n"));
+	 term_cursor_move_row(term, narg ? args[0] : 1);
+	 break;
+       case 'e':
+	 /* ESC [ [ n ] e  Same as ESC [ n A (CUU) */
+	 DPRINT((stderr, "ESC [ [ n ] e  Same as ESC [ n A (CUU)\n"));
+	 break;
+       case 'f':
+	 /* ESC [ [ r ; c ] f  Horizontal and Vertical 
+	  * Position (HVP), default 1;1 
+	  */
+	 DPRINT((stderr, "ESC [ [ r ; c ] f  Horizontal and Vertical Position (HVP)\n"));
+	 break;
+       case 'g':
+	 /* ESC [ [ n ] g  Tab Clear
+	  * n == 0: Tab Clear (TBC), clear current column (default)
+	  * n == 3: Tab Clear (TBC), clear all 
+	  */
+	 DPRINT((stderr, "ESC [ [ n ] g  Tab Clear\n"));
+	 break;
+       case 'i':
+	 /* ESC [ [ n ] i  Printing
+	  * n == 4: Disable transparent print mode (MC4)
+	  * n == 5: Enable transparent print mode (MC5) 
+	  */ 
+	 DPRINT((stderr, "ESC [ [ n ] i  Printing\n"));
+	 break;
+	 
+	 /* ESC [ n [ ; n ... ] { h | l }  
+	  * 
+	  * h: Set Mode (SM)
+	  * l: Reset Mode (RM) 
+	  * 
+	  * n == 4: Insert Mode (SMIR)/Replace Mode (RMIR)
+	  * n == 20: Automatic Newline/Normal Linefeed (LNM)
+	  */
        case 'h': /* set mode */
+	 DPRINT((stderr, "ESC [ n [ ; n ... ] h\n"));
 	 switch(args[0]) {
 	  case 1:
 	    if(questionmark) {
@@ -179,13 +284,14 @@ int term_handler_escape_seq(Term *term) {
 	    }
 	    break;
 	  default:
-	    fprintf(stderr, "Unsupported ESC [%s h mode %d\n",
+	    DPRINT((stderr, "Unsupported ESC [%s h mode %d\n",
 		    questionmark?" ?":"",
-		    args[0]);
+		    args[0]));
 	    break;
 	 }
 	 break;
        case 'l': /* reset mode */
+	 DPRINT((stderr, "ESC [ n [ ; n ... ] l\n"));	 
 	 switch(args[0]) {
 	  case 1:
 	    if(questionmark) {
@@ -213,14 +319,32 @@ int term_handler_escape_seq(Term *term) {
 	    }
 	    break;
 	  default:
-	    fprintf(stderr, "Unsupported ESC [%s l mode %d\n",
+	    DPRINT((stderr, "Unsupported ESC [%s l mode %d\n",
 		    questionmark?" ?":"",
-		    args[0]);
+		    args[0]));
 	    break;
 	 }
 	 break;
        case 'm':
-	  /* reset attrs */
+	 DPRINT((stderr, "ESC [ n [ ; n ... ] m  Character Attributes (SGR)\n"));
+	 /* ESC [ n [ ; n ... ] m  Character Attributes (SGR)
+	  * 
+	  * n == 0: Normal (default)
+	  * n == 1/22: Turn bold (bright fg) on/off
+	  * n == 4/24: Turn underline on/off
+	  * n == 5/25: Turn "blink" (bright bg) on/off
+	  * n == 7/27: Turn inverse on/off
+	  * n == 30/40: foreground/background black
+	  * n == 31/41: foreground/background red
+	  * n == 32/42: foreground/background green
+	  * n == 33/43: foreground/background yellow
+	  * n == 34/44: foreground/background blue
+	  * n == 35/45: foreground/background magenta
+	  * n == 36/46: foreground/background cyan
+	  * n == 37/47: foreground/background white
+	  * n == 39/49: foreground/background default 
+	  */ 
+	 /* reset attrs */
 	 if(!narg) {
 	    //set_buffer_attrs(0);
 	    term_tcanvas_fg_color_set(term, 7);
@@ -254,14 +378,24 @@ int term_handler_escape_seq(Term *term) {
 	      term_tcanvas_bg_color_set(term, 0);
 	    }
 	    else
-	      fprintf(stderr, "Unsupported mode %d\n", args[i]);
+	      DPRINT((stderr, "Unsupported mode %d\n", args[i]));
 	 }
 	 break;
        case 'n':
-	  /* status report */
+	 /* ESC [ [ n ] n  Device Status Report (DSR)
+	  * 
+	  * n == 5: Status Report, returns "ESC[0n" ("OK")
+	  * n == 6: Report Cursor Position (CPR) as "ESC[r;cR"
+	  * n == 7: Request display name (ignored by default for 
+	  *         security reasons)
+	  * n == 8: Request version number in window title
+	  * n == 9: Display pixmap/transparency status in window title 
+	  */
+	 DPRINT((stderr, "ESC [ [ n ] n  Device Status Report (DSR)\n"));
+	 /* status report */
 	   {
 	      char buf[20];
-
+	      
 	      switch(args[0])
 		{
 		 case 6:
@@ -274,11 +408,16 @@ int term_handler_escape_seq(Term *term) {
 		   //cmd_write(buf, strlen(buf));
 		   break;
 		 default:
-		   fprintf(stderr, "Unknown status request id %d\n", args[0]);
+		   DPRINT((stderr, "Unknown status request id %d\n", args[0]));
 		}
 	   }
 	 break;
-       case 'r': /* set scrolling region */
+       case 'r':
+	 /* ESC [ [ t ; b ] r  Set Scrolling Region (CSR), 
+	  * where t is the top row and b is the bottom row, 
+	  * defaults to the full screen
+	  */
+	 DPRINT((stderr, "ESC [ [ t ; b ] r  Set Scrolling Region (CSR)\n"));
 	 term->tcanvas->scroll_region_start = args[0] ? args[0] : 1;
 	 term->tcanvas->scroll_region_end = args[1] ? args[1] : term->tcanvas->rows;
 	 if(!narg) {
@@ -292,16 +431,17 @@ int term_handler_escape_seq(Term *term) {
 	   term->tcanvas->scroll_in_region = 1;
 
 	 break;
+	 	 
        case '[': /* echoed function key */
 	 term_tcanvas_data_pop(term);
 	 break;
        default:
-	 fprintf(stderr, "Unsupported CSI sequence ESC [");
+	 DPRINT((stderr, "Unsupported CSI sequence ESC ["));
 	 if(questionmark)
-	   fprintf(stderr, " ?");
+	   DPRINT((stderr, " ?"));
 	 for(i = 0; i < narg; i++)
-	   fprintf(stderr, " %d", args[i]);
-	 fprintf(stderr, " %c\n", c);
+	   DPRINT((stderr, " %d", args[i]));
+	 DPRINT((stderr, " %c\n", c));
       }
       break;
     case ']': /* xterm sequence */
@@ -317,27 +457,32 @@ int term_handler_escape_seq(Term *term) {
 	 c = term_tcanvas_data_pop(term);
       }
       if(c != ';' || !narg) {
-	 fprintf(stderr, "Invalid xterm sequence\n");
+	 DPRINT((stderr, "Invalid xterm sequence\n"));
 	 break;
       }
 
       term_handler_xterm_seq(args[0], term);
       break;
-    case '7': /* save cursor position */
+    case '7': /* ESC 7 (save cursor position) */
+      DPRINT((stderr, "ESC 7 (save cursor pos)\n"));
       term->tcanvas->saved_cursor_x = term->tcanvas->cur_col;
       term->tcanvas->saved_cursor_y = term->tcanvas->cur_row;
       break;
-    case '8': /* restore cursor position */
+    case '8': /* ESC 8 (restore cursor position) */
+      DPRINT((stderr, "ESC 8 (restore cursor pos)\n"));      
       term->tcanvas->cur_col = term->tcanvas->saved_cursor_x;
       term->tcanvas->cur_row = term->tcanvas->saved_cursor_y;
       break;
-    case '=': /* set application keypad mode */
+    case '=': /* ESC = (set application keypad mode) */
+      DPRINT((stderr, "ESC = (set application keypad mode)\n"));      
       term->tcanvas->app_keypad_mode = 1;
       break;
-    case '>': /* set numeric keypad mode */
+    case '>': /* ESC > (set numeric keypad mode) */
+      DPRINT((stderr, "ESC = (set numeric keypad mode)\n"));      
       term->tcanvas->app_keypad_mode = 0;
       break;
-    case 'M': /* reverse linefeed */
+    case 'M': /* ESC M (reverse linefeed) */
+      DPRINT((stderr, "ESC = (reverse linefeed)\n"));      
       term->tcanvas->cur_row--;
       if(term->tcanvas->cur_row < term->tcanvas->scroll_region_start) {
 	 term->tcanvas->cur_row = term->tcanvas->scroll_region_start;
@@ -345,7 +490,7 @@ int term_handler_escape_seq(Term *term) {
       }
       break;
     default:
-      fprintf(stderr, "Unsupported ESC sequence ESC %c\n", c);
+      DPRINT((stderr, "Unsupported ESC sequence ESC %c\n", c));
       break;
    }
    return 1;
@@ -388,7 +533,7 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
       write(term->cmd_fd.sys, buf, strlen(buf));
    } else {
       if( write(term->cmd_fd.sys, ev->string, 1) < 0) {
-	 fprintf(stderr, "Error writing to process: %m\n");
+	 DPRINT((stderr, "Error writing to process: %m\n"));
 	 //exit(2);
       }
    }
@@ -467,4 +612,3 @@ void term_event_title_change_free(void *data, void *ev) {
    free(e->title);
    free(e);
 }
-
