@@ -1355,10 +1355,8 @@ ConformEwinToDesktop(EWin * ewin)
 			ewin->y);
 	ICCCM_Configure(ewin);
 	StackDesktops();
-	HintsSetWindowDesktop(ewin);
-	EDBUG_RETURN_;
      }
-   if (ewin->floating)
+   else if (ewin->floating)
      {
 	DesktopRemoveEwin(ewin);
 	xo = desks.desk[ewin->desktop].x;
@@ -1372,10 +1370,8 @@ ConformEwinToDesktop(EWin * ewin)
 	XRaiseWindow(disp, ewin->win);
 	ShowEdgeWindows();
 	ICCCM_Configure(ewin);
-	HintsSetWindowDesktop(ewin);
-	EDBUG_RETURN_;
      }
-   if (ewin->parent != desks.desk[ewin->desktop].win)
+   else if (ewin->parent != desks.desk[ewin->desktop].win)
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
 	DesktopAddEwinToTop(ewin);
@@ -1384,13 +1380,11 @@ ConformEwinToDesktop(EWin * ewin)
 	RaiseEwin(ewin);
 /*      ShowEwin(ewin); */
 	ICCCM_Configure(ewin);
-/*	HintsSetWindowDesktop(ewin); */
-	HintsSetWindowHints(ewin);
 	StackDesktops();
 	SetEwinToCurrentArea(ewin);
      }
+   HintsSetWindowDesktop(ewin);
    EDBUG_RETURN_;
-
 }
 
 int

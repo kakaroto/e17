@@ -1670,7 +1670,7 @@ CreateEwin()
    ewin->border_new = 0;
    ewin->bits = NULL;
    ewin->sticky = 0;
-   ewin->desktop = -1;
+   ewin->desktop = desks.current;
    ewin->groups = NULL;
    ewin->num_groups = 0;
    ewin->visible = 0;
