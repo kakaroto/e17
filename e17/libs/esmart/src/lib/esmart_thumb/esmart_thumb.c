@@ -93,6 +93,8 @@ esmart_thumb_new (Evas * evas, const char *file)
 			}
 		      e->tw = imlib_image_get_width ();
 		      e->th = imlib_image_get_height ();
+		      evas_object_image_alpha_set (e->image,
+						   imlib_image_has_alpha ());
 		      evas_object_image_size_set (e->image, (int) e->tw,
 						  (int) e->th);
 		      evas_object_image_fill_set (e->image, (Evas_Coord) 0,
