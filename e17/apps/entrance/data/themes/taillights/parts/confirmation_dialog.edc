@@ -46,7 +46,6 @@
 	 {text, cmsgmsg; font,"Vera"; size, 12; fit, 0 0; align, 0.5 0.5; } \
 	 } } \
     part { name, cyes; type, IMAGE; mouse_events, 1; clip_to, cclip; \
-	 dragable { x, 1 1 0; y, 1 1 0; } \
 	 description { state, "default" 0.0; visible, 1; \
 	 rel1 { relative, 0.0 1.0; offset, 10 -50; to, cborder; } \
 	 rel2 { relative, 0.5 1.0; offset, -5 -5; to, cborder; } \
