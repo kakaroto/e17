@@ -45,7 +45,6 @@ fi
 %install
 test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
-make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
@@ -60,10 +59,3 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/X11/dm/Sessions/*
 
 %changelog
-
-* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16.7-0.59
-- Tidy ups.
-- Fix download url.
-- Use License rather than Copyright.
-- Remove Packager to avoid people creating mis-attributed packages.
-
