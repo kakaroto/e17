@@ -50,9 +50,7 @@ void load_new_menu_from_disk(char *file_to_load, GtkCTreeNode *my_parent) {
 	sprintf(buf,"%s/.enlightenment/%s",homedir(getuid()),file_to_load);
 	menufile=fopen(buf,"r");
 	if(!menufile) {
-		printf("hmm. looks like you have some \"issues\" as you don't have\n"
-				"a %s file.  Sucks to be you\n",buf);
-		exit(1);
+		return;
 	}
 
 	while(fgets(s,4096,menufile)) {
