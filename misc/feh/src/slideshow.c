@@ -40,6 +40,9 @@ init_slideshow_mode (void)
 	  success = 1;
 	  if (!opt.progressive)
 	    winwidget_show (w);
+	  if (opt.slideshow_delay > 0)
+	    feh_add_timer (cb_slide_timer, w, opt.slideshow_delay,
+			   "SLIDE_CHANGE");
 	  break;
 	}
       else
@@ -47,6 +50,13 @@ init_slideshow_mode (void)
     }
   if (!success)
     show_mini_usage ();
+}
+
+void
+cb_slide_timer (void *data)
+{
+  D (("In cb_slide_timer\n"));
+  slideshow_change_image ((winwidget) data, SLIDE_NEXT);
 }
 
 void
@@ -141,6 +151,9 @@ slideshow_change_image (winwidget winwid, int change)
        * show was deleted? */
       eprintf ("No more slides in show");
     }
+  if (opt.slideshow_delay > 0)
+    feh_add_timer (cb_slide_timer, winwid, opt.slideshow_delay,
+		   "SLIDE_CHANGE");
 }
 
 char *

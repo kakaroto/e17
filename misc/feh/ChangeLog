@@ -1,3 +1,14 @@
+Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Finally got around to adding timers to feh. Now there is a new
+	  option, -D, or --slideshow-delay NUM. NUM is the time in seconds
+	  between changing slides for you. There is a new test to
+	  demonstrate this option.
+	* The timer will pause while you zoom, and will be reset if you
+	  change slides yourself.
+	* The timers code is loosely based on raster's epplet timer
+	  code, 'cos its cool. No need to re-invent the wheel ;)
+
 Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay. feh is now capable of some minor touch-ups. Nothing major,

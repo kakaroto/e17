@@ -55,7 +55,8 @@ init_parse_options (int argc, char **argv)
   opt.font = NULL;
   opt.title_font = NULL;
   opt.progressive = 1;
-  opt.modify_mode=MODIFY_MODE_NONE;
+  opt.modify_mode = MODIFY_MODE_NONE;
+  opt.slideshow_delay = 0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -68,7 +69,7 @@ init_parse_options (int argc, char **argv)
       else if ((!strcmp (argv[i], "--version")) || (!strcmp (argv[i], "-v")))
 	show_version ();
       else if ((!strcmp (argv[i], "--montage")) || (!strcmp (argv[i], "-m")))
-	  opt.montage = 1;
+	opt.montage = 1;
       else if ((!strcmp (argv[i], "--index")) || (!strcmp (argv[i], "-i")))
 	opt.index = 1;
       else if ((!strcmp (argv[i], "--thumbs")) || (!strcmp (argv[i], "-t")))
@@ -85,10 +86,10 @@ init_parse_options (int argc, char **argv)
 	opt.aspect = 0;
       else if ((!strcmp (argv[i], "--multiwindow"))
 	       || (!strcmp (argv[i], "-w")))
-      {
+	{
 	  opt.slideshow = 0;
-	  opt.multiwindow=1;
-      }
+	  opt.multiwindow = 1;
+	}
       else if ((!strcmp (argv[i], "--recursive"))
 	       || (!strcmp (argv[i], "-r")))
 	opt.recursive = 1;
@@ -132,6 +133,13 @@ init_parse_options (int argc, char **argv)
 	{
 	  opt.thumb_h = atoi (argv[++i]);
 	}
+      else
+	if (
+	    ((!strcmp (argv[i], "--slideshow-delay"))
+	     || (!strcmp (argv[i], "-D"))) && (argc - i > 1))
+	{
+	  opt.slideshow_delay = atoi (argv[++i]);
+	}
       else if ((!strcmp (argv[i], "--alpha")) && (argc - i > 1))
 	{
 	  opt.alpha = 1;
@@ -157,7 +165,7 @@ check_options (void)
   if (opt.montage && opt.index)
     {
       weprintf ("you can't use montage mode and index mode together.\n"
-	       "   Montage mode has been disabled");
+		"   Montage mode has been disabled");
       opt.montage = 0;
     }
 
@@ -166,7 +174,7 @@ check_options (void)
       if (opt.font || opt.title_font)
 	{
 	  weprintf ("you can't use fonts without montage or index mode.\n"
-		   "   The fonts you specified will be ignored");
+		    "   The fonts you specified will be ignored");
 	  opt.font = opt.title_font = NULL;
 	}
     }
@@ -207,6 +215,8 @@ show_usage (void)
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
+	   "  -D, --slideshow-delay     For slideshow mode, specifies time delay (seconds)\n"
+	   "                            between automatically changing slides.\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

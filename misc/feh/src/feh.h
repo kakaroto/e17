@@ -72,6 +72,18 @@ struct __menuwidget
   unsigned char visible;
 };
 
+typedef struct __fehtimer _fehtimer;
+typedef _fehtimer *fehtimer;
+struct __fehtimer
+{
+  char *name;
+  void (*func) (void *data);
+  void *data;
+  double in;
+  char just_added;
+  fehtimer next;
+};
+
 enum winwidget_type
 { WINWIDGET_SINGLE_IMAGE, WINWIDGET_MULITPLE_IMAGE, WINWIDGET_MONTAGE_IMAGE,
   WINWIDGET_INDEX_IMAGE
@@ -149,6 +161,7 @@ typedef struct cmdlineoptions
   int limit_w;
   int limit_h;
   int cur_slide;
+  int slideshow_delay;
 }
 fehoptions;
 
@@ -184,6 +197,13 @@ void progress (Imlib_Image im, char percent, int update_x, int update_y,
 void winwidget_create_window (winwidget ret, int w, int h);
 void winwidget_rerender_image (winwidget winwid);
 void feh_draw_checks (winwidget win);
+void feh_handle_timer (void);
+double feh_get_time (void);
+void feh_remove_timer (char *name);
+void feh_add_timer (void (*func) (void *data), void *data, double in,
+		    char *name);
+void cb_slide_timer(void *data);
+
 
 /* Imlib stuff */
 extern Display *disp;
@@ -205,3 +225,4 @@ extern Imlib_Image *checks;
 extern int rectangles_on;
 extern Window root;
 extern XContext xid_context;
+extern fehtimer first_timer;
