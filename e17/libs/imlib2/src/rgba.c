@@ -1471,6 +1471,8 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 	  }
 	dither_a_init = 1;
      }
+   if(!rd || !gd || !bd)
+      return;
    switch (depth)
      {
      case 16:
