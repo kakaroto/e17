@@ -302,7 +302,7 @@ PagerShow(Pager * p)
    if (ewin)
      {
 	char                s[4096];
-	int                 ax, ay;
+	int                 ax, ay, w, h;
 	Snapshot           *sn;
 	double              aspect;
 
@@ -320,20 +320,24 @@ PagerShow(Pager * p)
 	p->ewin = ewin;
 	p->visible = 1;
 	sn = FindSnapshot(ewin);
+
 	/* get the size right damnit! */
+	w = ewin->client.w;
+	h = ewin->client.h;
+	ewin->client.w = 1;
+	ewin->client.h = 1;
 	if (sn)
 	  {
-	     ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	     ResizeEwin(ewin, w, h);
 	  }
 	else
 	  {
 	     /* no snapshots ? first time ? make a row on the bottom left up */
-	     MoveResizeEwin(ewin, 0,
-			    root.h - (conf.desks.num -
-				      p->desktop) * ewin->h, ewin->client.w,
-			    ewin->client.h);
+	     MoveResizeEwin(ewin, 0, root.h - (conf.desks.num -
+					       p->desktop) * ewin->h, w, h);
 	  }
 	PagerRedraw(p, 1);
+
 	/* show the pager ewin */
 	ShowEwin(ewin);
 	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))

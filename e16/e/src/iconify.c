@@ -547,23 +547,29 @@ IconboxShow(Iconbox * ib)
    if (ewin)
      {
 	Snapshot           *sn;
+	int                 w, h;
 
 	ib->ewin = ewin;
 	ewin->ibox = ib;
 	IB_Reconfigure(ib);
 	sn = FindSnapshot(ewin);
 	ConformEwinToDesktop(ewin);
-	ShowEwin(ewin);
+
+	w = ewin->client.w;
+	h = ewin->client.h;
+	ewin->client.w = 1;
+	ewin->client.h = 1;
 	if (sn)
 	  {
-	     ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	     ResizeEwin(ewin, w, h);
 	  }
 	else
 	  {
 	     MakeWindowSticky(ewin);
-	     MoveResizeEwin(ewin, root.w - 160, root.h - ewin->client.h,
-			    160, ewin->client.h);
+	     MoveResizeEwin(ewin, root.w - 160, root.h - h, 160, h);
 	  }
+
+	ShowEwin(ewin);
      }
    queue_up = pq;
 }
