@@ -63,6 +63,10 @@ EnticeThumbsScrollNextStart	""	start scrolling down the thumbnailer
 EnticeThumbsScrollPrevStart	""	start scrolling up the thumbnailer
 EnticeThumbsScrollStop		""  	stop scrolling in either direction
 
+EnticeImageModified		""	When the image in memory is no longer
+					is consistent with the disk image
+EnticeImagePreviewPrep		""	Emitted before, preview show
+					attempts loading
 EnticeImagePreviewShow		""	when we have previewed a new
 					image
 /*========================================================================*/
