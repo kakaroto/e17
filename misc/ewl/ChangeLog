@@ -982,3 +982,17 @@ beasts to ewl_widget_realize/unrealize()...  Suggestions anyone?
 - using new evas configure and expose handlers for EwlWindows -- this
 means EWL is both insanely fast and horribly broken a the same time!
 
+-----
+20000905-1421-PDT, pabs
+
+- more evasization -- there's  a render thread in ewl_main_iteration()
+now (basically it just iterates through the EwlState::window_list and
+calls evas_render(window->evas)).
+- as a temporary placeholder, i've got a window bg hardcoded in --
+wanna fingure out why i'm not getting rendering (no corruption afaict,
+callback is being referenced.
+- really messy code atm -- i'll do some housecleaning once this stuff
+works right.
+
+
+

@@ -371,12 +371,32 @@ void             ewl_set_render_method(EwlRenderMethod method)
 
 void             ewl_add_window(EwlWidget *widget)
 {
-
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_add_window");
+	if (!s)	{
+		ewl_debug("ewl_add_window", EWL_NULL_ERROR, "s");
+	} else if (!widget) {
+		ewl_debug("ewl_add_window", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		s->window_list = ewl_ll_insert_with_data(s->window_list, widget);
+	}
+	FUNC_END("ewl_add_window");
+	return;
 }
 
 void             ewl_remove_window(EwlWidget *widget)
 {
-
+	EwlState *s = ewl_state_get();
+	FUNC_BGN("ewl_add_window");
+	if (!s)	{
+		ewl_debug("ewl_add_window", EWL_NULL_ERROR, "s");
+	} else if (!widget) {
+		ewl_debug("ewl_add_window", EWL_NULL_WIDGET_ERROR, "widget");
+	} else {
+		s->window_list = ewl_ll_remove_by_data(s->window_list, widget);
+	}
+	FUNC_END("ewl_add_window");
+	return;
 }
 
 
@@ -1038,12 +1058,12 @@ void       ewl_event_queue(EwlEvent *ev)
 	return;
 }
 
-char       ewl_events_pending()
+EwlBool       ewl_events_pending()
 {
-	char      r = 0;
+	EwlBool   r = FALSE;
 	EwlState *s = ewl_state_get();
 	FUNC_BGN("ewl_events_pending");
-	r = (s->event_queue)?1:0;
+	r = (s->event_queue)?TRUE:FALSE;
 	FUNC_END("ewl_events_pending");
 	return r;
 }
@@ -1142,12 +1162,12 @@ void       ewl_widget_show(EwlWidget *widget)
 	return;
 }
 
-char       ewl_timers_pending()
+EwlBool    ewl_timers_pending()
 {
-	char r = 0;
+	EwlBool   r = 0;
 	EwlState *s = ewl_state_get();
 	FUNC_BGN("ewl_timers_pending");
-	r = s->timer_queue?1:0;
+	r = s->timer_queue?TRUE:FALSE;
 	FUNC_END("ewl_timers_pending");
 	return r;
 }
@@ -1158,6 +1178,7 @@ EwlTimer  *ewl_timer_handle(EwlTimer *t)
 	FUNC_END("ewl_timer_handle");
 	return NULL;
 }
+
 
 void       ewl_widget_hide(EwlWidget *widget)
 {
@@ -1186,8 +1207,9 @@ void       ewl_widget_hide(EwlWidget *widget)
 
 char       ewl_main_iteration()
 {
-	EwlState *s = ewl_state_get();
+	EwlState  *s   = ewl_state_get();
 	EwlEvent  *tev = NULL;
+	EwlLL     *l   = NULL;
 	XEvent     xev;
 	FUNC_BGN("ewl_main_iteration");
 	if (!s)	{
@@ -1219,6 +1241,13 @@ char       ewl_main_iteration()
 	while (ewl_timers_pending())	{
 		fprintf(stderr,"WHY THE FUCK ARE WE IN HERE GOD DAMMIT?\n");
 		s->timer_queue = ewl_timer_handle(s->timer_queue);
+	}
+
+	/* render thread -- thank goodness for evas! */
+	for (l=s->window_list; l; l=l->next)	{
+		fprintf(stderr,"ewl_main_iteration(): rendering window 0x%08x\n",
+		        (unsigned int) l->data);
+		ewl_window_render((EwlWidget*)l->data);
 	}
 
 	/*fprintf(stderr,"end ewl_main_iteration().\n");*/

@@ -16,6 +16,8 @@
 /* used in ewl_event_propagate -- defined in ewlconteiner.h */
 extern void ewl_container_event_propagate(EwlWidget  *container,
                                           EwlEvent   *ev);
+/* used in ewl_main_iteration -- defined in ewlwindow.h */
+extern void ewl_window_render(EwlWidget *widget);
 
 
 /* placeholder -- just 'till i write the timer code :) */
@@ -50,6 +52,7 @@ struct _EwlState
 	EwlLL                      *dynamic_registry;
 	
 	EwlLL                      *widget_list;
+	EwlLL                      *window_list;
 	EwlWidget                  *grabbed;
 	EwlWidget                  *focused;
 

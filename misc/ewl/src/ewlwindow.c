@@ -237,9 +237,9 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	                 _cb_ewl_window_event_handler, NULL);
 
 	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
-	                 ewl_window_handle_realize, NULL);
+	                 ewl_window_handle_expose, NULL);
 	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
-	                 ewl_window_handle_unrealize, NULL);
+	                 ewl_window_handle_configure, NULL);
 
 	ewl_callback_add(widget, EWL_EVENT_REALIZE,
 	                 ewl_window_handle_realize, NULL);
@@ -552,10 +552,31 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 		                             width, height,
 		                             window->depth);*/
 
-		evas_set_output(window->evas, ewl_get_display(),
-		                window->xwin, window->vis, window->cm);
-		evas_set_output_size(window->evas, width, height);
+		/*evas_set_output(window->evas, ewl_get_display(), window->xwin, 
+		                window->vis, window->cm);*/
 		evas_set_output_viewport(window->evas, 0, 0, width, height);
+		evas_set_output_size(window->evas, width, height);
+
+		evas_move(window->evas, widget->evas_object,
+		          /*x +*/ widget->padding[EWL_PAD_LEFT],
+		          /*y +*/ widget->padding[EWL_PAD_TOP]);
+		fprintf(stderr,"ewl_window_handle_configure(): "
+		        "moving widget->evas_object to %d, %d\n", 
+		        /*x +*/ widget->padding[EWL_PAD_LEFT],
+		        /*y +*/ widget->padding[EWL_PAD_TOP]);
+		        
+		evas_resize(window->evas, widget->evas_object,
+		            width - (widget->padding[EWL_PAD_LEFT] +
+		                     widget->padding[EWL_PAD_RIGHT]),
+		            height - (widget->padding[EWL_PAD_TOP] + 
+		                      widget->padding[EWL_PAD_BOTTOM]));
+		fprintf(stderr,"ewl_window_handle_configure(): "
+		        "resizing widget->evas_object to %d, %d\n", 
+		        width - (widget->padding[EWL_PAD_LEFT] +
+		                 widget->padding[EWL_PAD_RIGHT]),
+		        height - (widget->padding[EWL_PAD_TOP] + 
+		                  widget->padding[EWL_PAD_BOTTOM]));
+		evas_show(window->evas, widget->evas_object);
 
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
 		ewl_container_resize_children(widget);
@@ -589,9 +610,11 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
                                    EwlEvent  *ev,
                                    EwlData   *data)
 {
-	EwlWindow	*win	= (EwlWindow *) widget;
-	XGCValues             gc;
-	Atom				  wmhints;
+	EwlWindow   *win	= (EwlWindow *) widget;
+	XGCValues    gc;
+	Atom         wmhints;
+	char        *temp;
+	double       x, y, w, h;
 
 	FUNC_BGN("ewl_window_handle_realize");
 	if (!win)	{
@@ -684,7 +707,44 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 					sizeof(MWMHints)/4);
 			}
 		}
+		XMapWindow(ewl_get_display(), win->xwin);
+		XSync(ewl_get_display(), False);
 
+		w = widget->layout->req->w;
+		h = widget->layout->req->h;
+		win->evas = evas_new();
+		evas_set_output(win->evas, ewl_get_display(),
+		                win->xwin, win->vis, win->cm);
+		evas_set_output_method(win->evas, ewl_get_render_method());
+		evas_set_output_size(win->evas, w, h);
+		evas_set_output_viewport(win->evas, 0, 0, w, h);
+
+		evas_set_font_cache(win->evas, 1 * 1024 * 1024);
+		evas_set_image_cache(win->evas, 8 * 1024 * 1024);   
+   
+		temp = ewl_theme_find_file(ewl_theme_get_string("/EwlWindow/background"));
+		if (!temp)	{
+			ewl_debug("ewl_window_handle_realize", EWL_NULL_ERROR, "temp");
+		} else {
+			fprintf(stderr,"using file \"%s\".\n", temp);
+			evas_get_viewport(win->evas, &x, &y, &w, &h);
+			widget->evas_object = evas_add_image_from_file(win->evas,temp);
+			/*evas_set_layer(win->evas, widget->evas_object, 1);*/
+			evas_move(win->evas, widget->evas_object,
+			          /*x +*/ widget->padding[EWL_PAD_LEFT],
+			          /*y +*/ widget->padding[EWL_PAD_TOP]);
+			evas_resize(win->evas, widget->evas_object,
+			            w - (widget->padding[EWL_PAD_LEFT] +
+			                 widget->padding[EWL_PAD_RIGHT]),
+			            h - (widget->padding[EWL_PAD_TOP] + 
+			                 widget->padding[EWL_PAD_BOTTOM]));
+			evas_set_pass_events(win->evas, widget->evas_object, TRUE);
+			evas_show(win->evas, widget->evas_object);
+			fprintf(stderr,"/EwlWindow/background loaded okay\n");
+		}
+		
+		ewl_widget_set_flag(widget, REALIZED, TRUE);
+		ewl_add_window(widget);
 		ewl_container_realize_children(widget,NULL);
 	}
 	FUNC_END("ewl_window_handle_realize");
@@ -708,4 +768,22 @@ EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
 	}
 	FUNC_END("ewl_window_handle_unrealize");
 	return TRUE;
+}
+
+void    ewl_window_render(EwlWidget *widget)
+{
+	EwlWindow *window = (EwlWindow*) widget;
+	FUNC_BGN("ewl_window_render");
+	if (!window)	{
+		ewl_debug("ewl_window_render", EWL_NULL_WIDGET_ERROR, "window");
+	} else if (!ewl_widget_get_flag(widget,REALIZED)) {
+		ewl_debug("ewl_window_render", EWL_GENERIC_ERROR,
+		          "Window is not realized.");
+	} else {
+		fprintf(stderr,"ewl_window_render: renderin window 0x%08x\n",
+		        (unsigned int) window);
+		evas_render(window->evas);
+	}
+	FUNC_END("ewl_window_render");
+	return;
 }

@@ -105,9 +105,10 @@ EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
                                      EwlData   *data);
 
 /* private */
+void     ewl_window_render(EwlWidget *widget);
 void	 ewl_window_set_render_context(EwlWidget *widget);
 /*void	 ewl_window_realize(EwlWidget *widget);*/
-void	 ewl_window_unrealize(EwlWidget *widget);
+/*void	 ewl_window_unrealize(EwlWidget *widget);*/
 
 EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
                                      EwlData *data);
