@@ -297,8 +297,12 @@ ICCCM_Configure(EWin * ewin)
 {
    XEvent              ev;
    XWindowChanges      xwc;
+   int                 d;
 
    EDBUG(6, "ICCCM_Configure");
+   d = ewin->desktop;
+   if (d < 0)
+      d = desks.current;
    if (ewin->shaded == 0)
      {
 	xwc.x = ewin->border->border.left;
@@ -326,10 +330,8 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.display = disp;
    ev.xconfigure.event = ewin->client.win;
    ev.xconfigure.window = ewin->client.win;
-   ev.xconfigure.x = desks.desk[ewin->desktop].x + ewin->x +
-      ewin->border->border.left;
-   ev.xconfigure.y = desks.desk[ewin->desktop].y + ewin->y +
-      ewin->border->border.top;
+   ev.xconfigure.x = desks.desk[d].x + ewin->x + ewin->border->border.left;
+   ev.xconfigure.y = desks.desk[d].y + ewin->y + ewin->border->border.top;
    ev.xconfigure.width = ewin->client.w;
    ev.xconfigure.height = ewin->client.h;
    ev.xconfigure.border_width = 0;

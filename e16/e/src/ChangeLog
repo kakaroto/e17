@@ -3942,3 +3942,10 @@ Tue Nov  9 16:10:16 PST 1999
 (Raster)
 
 oops typos in non EMX code.. :) missing ;
+
+-------------------------------------------------------------------------------
+
+Mon Nov 15 09:07:28 PST 1999
+(Raster)
+
+bounds checking fix :) thanks alan strange :)
