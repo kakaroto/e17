@@ -168,36 +168,58 @@ __imlib_load_font(char *fontname)
    memcpy(name, fontname, j);
    name[j] = 0;
    /* find file if it exists */
-   for (j = 0; (j < fpath_num) && (!file); j++)
+   tmp = malloc(strlen(name) + 4 + 1);
+   if (!tmp)
      {
-	tmp = malloc(strlen(fpath[j]) + 1 + strlen(name) + 4 + 1);
-	if (!tmp)
-	  {
-	     free(name);
-	     return NULL;
-	  }
-	sprintf(tmp, "%s.ttf", name);
+	free(name);
+	return NULL;
+     }
+   sprintf(tmp, "%s.ttf", name);
+   if (__imlib_FileIsFile(tmp))
+      file = strdup(tmp);
+   else
+     {
+	sprintf(tmp, "%s.TTF", name);
 	if (__imlib_FileIsFile(tmp))
 	   file = strdup(tmp);
 	else
 	  {
-	     sprintf(tmp, "%s/%s.ttf", fpath[j], name);
+	     sprintf(tmp, "%s", name);
 	     if (__imlib_FileIsFile(tmp))
 		file = strdup(tmp);
+	  }
+     }
+   free(tmp);
+   if (!file)
+     {
+	for (j = 0; (j < fpath_num) && (!file); j++)
+	  {
+	     tmp = malloc(strlen(fpath[j]) + 1 + strlen(name) + 4 + 1);
+	     if (!tmp)
+	       {
+		  free(name);
+		  return NULL;
+	       }
 	     else
 	       {
-		  sprintf(tmp, "%s/%s.TTF", fpath[j], name);
+		  sprintf(tmp, "%s/%s.ttf", fpath[j], name);
 		  if (__imlib_FileIsFile(tmp))
 		     file = strdup(tmp);
 		  else
 		    {
-		       sprintf(tmp, "%s/%s", fpath[j], name);
+		       sprintf(tmp, "%s/%s.TTF", fpath[j], name);
 		       if (__imlib_FileIsFile(tmp))
 			  file = strdup(tmp);
+		       else
+			 {
+			    sprintf(tmp, "%s/%s", fpath[j], name);
+			    if (__imlib_FileIsFile(tmp))
+			       file = strdup(tmp);
+			 }
 		    }
 	       }
+	     free(tmp);
 	  }
-	free(tmp);
      }
    free(name);
    /* didnt find a file? abort */
