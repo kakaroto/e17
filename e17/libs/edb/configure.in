@@ -5,6 +5,7 @@ AC_CANONICAL_TARGET
 AC_ISC_POSIX
 AM_INIT_AUTOMAKE(edb, 1.0.5.002)
 AM_CONFIG_HEADER(config.h)
+
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_C_CONST
@@ -449,8 +450,14 @@ test/Makefile
 src/edb_common.h
 src/edb_int.h
 src/edb_185.h
-debian/Makefile
-edb-config],
-[
+edb-config
+README
+edb.spec
+edb.oe
+edb-native.oe
+edb.bb
+edbXnative.bb
+debian/changelog
+], [
 chmod +x edb-config
 ])
