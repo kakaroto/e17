@@ -272,7 +272,6 @@ IconifyEwin(EWin * ewin)
 	       }
 	  }
      }
-
    call_depth--;
 
    KDE_UpdateClient(ewin);
@@ -345,7 +344,6 @@ DeIconifyEwin(EWin * ewin)
 	       }
 	  }
      }
-
    call_depth--;
 
    KDE_UpdateClient(ewin);
@@ -1150,8 +1148,8 @@ SelectIconboxForEwin(EWin * ewin)
 	/* If there are no iconboxes, create one. */
 	doCreateIconbox(NULL);
 	ib = ListAllIconboxes(&num);
-	if (ib)			/* paranoia */
-	  {
+	if (ib)
+	  {			/* paranoia */
 	     ib_sel = ib[0];
 	     Efree(ib);
 	  }
@@ -1840,7 +1838,6 @@ RedrawIconbox(Iconbox * ib)
 	     was_shaded = 1;
 	     UnShadeEwin(ib->ewin);
 	  }
-
 	x = ib->ewin->x;
 	y = ib->ewin->y;
 	w = ib->ewin->client.w;
@@ -2583,25 +2580,27 @@ IconboxHandleEvent(XEvent * ev)
 		    }
 		  if (ewin != name_ewin)
 		    {
-		       tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_TOOLTIP);
-		       if (tt)
+		       if (ib[i]->shownames)
 			 {
-			    name_ewin = ewin;
-			    HideToolTip(tt);
-			    if (ewin)
+			    tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_TOOLTIP);
+			    if (tt)
 			      {
-				 if ((ewin->client.icon_name) &&
-				     (strlen(ewin->client.icon_name) > 0))
-				    ShowToolTip(tt, ewin->client.icon_name,
-						NULL, mode.x, mode.y);
-				 else
-				    ShowToolTip(tt, ewin->client.title,
-						NULL, mode.x, mode.y);
+				 name_ewin = ewin;
+				 HideToolTip(tt);
+				 if (ewin)
+				   {
+				      if ((ewin->client.icon_name) &&
+					  (strlen(ewin->client.icon_name) > 0))
+					 ShowToolTip(tt, ewin->client.icon_name,
+						     NULL, mode.x, mode.y);
+				      else
+					 ShowToolTip(tt, ewin->client.title,
+						     NULL, mode.x, mode.y);
+				   }
 			      }
 			 }
 		    }
-
 	       }
 	     else if (ev->type == LeaveNotify)
 	       {

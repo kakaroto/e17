@@ -3920,3 +3920,11 @@ Sat Nov  6 16:09:57 PST 1999
 Fixed a bug where selecting a window on another desktop using kpanel wouldn't
 change the current desktop in kpanel (workaround for kpanel bug)
 
+
+-------------------------------------------------------------------------------
+
+Sun Nov  7 18:20:16 PST 1999
+(Mandrake)
+
+fixed bug reported by ljlane@debian.org - icons still showed named when show
+names was turned off.

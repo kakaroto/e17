@@ -1341,7 +1341,6 @@ SettingsKDE(void)
 	ShowDialog(d);
 	return;
      }
-
    tmp_kde = mode.kde_support;
 
    d = CreateDialog("CONFIGURE_KDE");
