@@ -73,7 +73,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if (im->data)
       return 0;
-   f = fopen(im->file, "rb");
+   f = fopen(im->real_file, "rb");
    if (!f)
       return 0;
    cinfo.err = jpeg_std_error(&(jerr.pub));
@@ -251,7 +251,7 @@ save(ImlibImage * im, ImlibProgressFunction progress,
    buf = malloc(im->w * 3 * sizeof(DATA8));
    if (!buf)
       return 0;
-   f = fopen(im->file, "wb");
+   f = fopen(im->real_file, "wb");
    if (!f)
    {
       free(buf);

@@ -38,7 +38,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    /* already data in this image - dont load it again */
    if (im->data)
       return 0;
-   f = fopen(im->file, "rb");
+   f = fopen(im->real_file, "rb");
    if (!f)
       return 0;
    /* read header */
@@ -285,7 +285,7 @@ save(ImlibImage * im, ImlibProgressFunction progress,
    ImlibImageTag *tag;
    int quality = 75, compression = 3;
 
-   f = fopen(im->file, "wb");
+   f = fopen(im->real_file, "wb");
    if (!f)
       return 0;
    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);

@@ -63,7 +63,7 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    if (!im->file)
       return 0;
-   strcpy(file, im->file);
+   strcpy(file, im->real_file);
    if (!exists(file))    
       return 0;
    ptr = strrchr(file,'.');
@@ -78,29 +78,29 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 #endif         
        }  
    if ( (strlen(ptr+1)>=2) && (!strcmp(ptr+1,"gz")) )    
-      sprintf(str_gz,"gzip -d %s -c > %s/%s", im->file, key, pure_filename(file));
+      sprintf(str_gz,"gzip -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
    else 
    if ( (strlen(ptr+1)>=3) && (!strcmp(ptr+1,"bz2")) )      
-      sprintf(str_gz,"bzip2 -d %s -c > %s/%s", im->file, key, pure_filename(file));
+      sprintf(str_gz,"bzip2 -d %s -c > %s/%s", im->real_file, key, pure_filename(file));
    else   
       return 0; /* Eeek why we are here? */
 
    if (system(str_gz)<0) return 0;
-   free(im->file);
+   free(im->real_file);
    sprintf(str_gz,"%s/%s", key, pure_filename(file));
-   im->file = strdup(str_gz);
+   im->real_file = strdup(str_gz);
    im->format = strdup(++ptr);
-   sub_loader = __imlib_FindBestLoaderForFile(im->file);
+   sub_loader = __imlib_FindBestLoaderForFile(im->real_file);
    if (sub_loader)
         sub_loader->load(im, progress, progress_granularity,1);
    else      
-     {    unlink(im->file);                           
+     {    unlink(im->real_file);                           
      	  return 0;
      }
-   unlink(im->file);                           
-   free(im->file);
+   unlink(im->real_file);                           
+   free(im->real_file);
    *--ptr = '.';   
-   im->file=strdup(file);
+   im->real_file=strdup(real_file);
    return 1;
 }
 

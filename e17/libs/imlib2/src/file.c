@@ -16,26 +16,79 @@
 static void __imlib_FileFieldWord(char *s, int num, char *wd);
 
 char *
-__imlib_FileRealFile(const char *file)
+__imlib_FileKey(const char *file)
 {
-   char *colon;
    char *newfile;
    
-   newfile = strdup(file);
+   newfile = malloc(strlen(file) + 1);
    if (!newfile) return NULL;
-#ifndef __EMX__ 
-   colon = strrchr(newfile, ':');
-   if (!colon) return newfile;
-   *colon = 0;
+   newfile[0] = 0;
+     {
+	char *p1, *p2;
+	int go;
+	
+	go = 0;
+	p1 = file;
+	p2 = newfile;
+	while (p1[0])
+	  {
+	     if (go)
+	       {
+		  p2[0] = p1[0];
+		  p2++;
+	       }
+	     if ((p1[0] == ':') && (p1[1] != ':'))
+	       go = 1;
+	     if ((p1[0] == ':') && (p1[1] == ':'))
+	       p1++;
+	     p1++;
+	  }
+	p2[0] = p1[0];
+     }
+   if (newfile[0]) return newfile;
+   else free(newfile);
+   return NULL;
+}
+
+char *
+__imlib_FileRealFile(const char *file)
+{
+   char *newfile;
+   
+   newfile = malloc(strlen(file) + 1);
+   if (!newfile) return NULL;
+   newfile[0] = 0;
+     {
+	char *p1, *p2;
+	
+	p1 = file;
+	p2 = newfile;
+	while (p1[0])
+	  {
+	     if (p1[0] == ':')
+	       {
+		  if (p1[1] == ':')
+		    {
+		       p2[0] = ':';
+		       p2++;
+		       p1++;
+		    }
+		  else
+		    {
+		       p2[0] = 0;
+		       return newfile;
+		    }
+	       }
+	     else
+	       {
+		  p2[0] = p1[0];
+		  p2++;
+	       }
+	     p1++;
+	  }
+	p2[0] = p1[0];
+     }
    return newfile;
-#else
-   colon = strrchr(newfile, ':');
-   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
-   if ((colon - newfile) < 3) return newfile;
-   if (!colon) return newfile;
-   *colon = 0;
-   return newfile;
-#endif   
 }
 
 char               *

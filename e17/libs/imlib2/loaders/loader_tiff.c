@@ -153,7 +153,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    if (im->data)
       return 0;
    
-   file = fopen(im->file, "rb");
+   file = fopen(im->real_file, "rb");
    
    if (!file)
       return 0;
@@ -174,7 +174,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    lseek(fd, (long)0, SEEK_SET);
    fclose(file);
    
-   tif = TIFFFdOpen(fd, im->file, "r");
+   tif = TIFFFdOpen(fd, im->real_file, "r");
    
    if (!tif)
       return 0;
@@ -291,7 +291,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    if (!im->data)
       return 0;
    
-   tif = TIFFOpen(im->file, "w");
+   tif = TIFFOpen(im->real_file, "w");
    
    if (!tif)
       return 0;

@@ -84,6 +84,8 @@ struct _imlibimage
    char             *format;
    ImlibImage       *next;
    ImlibImageTag    *tags;
+   char             *real_file;
+   char             *key;
 };
 
 #ifndef X_DISPLAY_MISSING

@@ -129,7 +129,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	xpm_parse_done();
 	return 0;
      }
-   f = fopen(im->file, "rb");
+   f = fopen(im->real_file, "rb");
    if (!f)
      {
 	xpm_parse_done();

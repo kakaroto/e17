@@ -43,9 +43,9 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
   if (im->data)
       return 0;
 #ifndef __EMX__      
-  fd = open(im->file, O_RDONLY);
+  fd = open(im->real_file, O_RDONLY);
 #else  
-  fd = open(im->file, O_RDONLY | O_BINARY);
+  fd = open(im->real_file, O_RDONLY | O_BINARY);
 #endif  
   if (fd < 0)
       return 0;

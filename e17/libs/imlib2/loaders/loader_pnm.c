@@ -28,7 +28,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if (im->data)
       return 0;
-   f = fopen(im->file, "rb");
+   f = fopen(im->real_file, "rb");
    if (!f)
       return 0;
 
@@ -708,7 +708,7 @@ save(ImlibImage * im, ImlibProgressFunction progress,
    /* no image data? abort */
    if (!im->data)
       return 0;
-   f = fopen(im->file, "wb");
+   f = fopen(im->real_file, "wb");
    if (!f)
       return 0;
    /* if the image has a useful alpha channel */

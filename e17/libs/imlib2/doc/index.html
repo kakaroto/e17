@@ -314,7 +314,10 @@ and the fact that it changes really matters. Remember this will marginally
 reduce the caching performance.</font>
 <p><font color="#000000">Now what actually happens when we try and load
 an image using a filename? First the filename is broken down into 2 parts.
-the filename before a colon (:) and the key after the colon. This means
+the filename before a colon (:) and the key after the colon (note. we can
+escape all real colons up to the first single colon in the filename using
+double colons, so a file whose filename is "/path/to/blah:flum.jpg" would
+be "/path/to/blah::flum.jpg" in irder to get a literal colon in). This means
 when we have a filename like:</font>
 <p><tt><font color="#000099">/path/to/file.jpg</font></tt>
 <p><font color="#000000">the filename is:</font>

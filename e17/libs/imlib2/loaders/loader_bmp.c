@@ -78,14 +78,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    
    if (im->data)
       return 0;
-   f = fopen(im->file, "rb");
+   f = fopen(im->real_file, "rb");
    if (!f)
       return 0;
    
    /* header */
      {
         struct stat statbuf;
-        if (stat(im->file, &statbuf) == -1) {
+        if (stat(im->real_file, &statbuf) == -1) {
 	   fclose(f);
 	   return 0;
         }

@@ -93,7 +93,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    if(!im->data)
       return 0;
    
-   f = fopen(im->file, "wb");
+   f = fopen(im->real_file, "wb");
    if(!f)
       return 0;
    
@@ -218,7 +218,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    if(im->data)
       return 0;
    
-   fp = fopen(im->file, "rb"); 
+   fp = fopen(im->real_file, "rb"); 
    if(!fp)
       return 0;
    
@@ -325,7 +325,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	/* find out how much data must be read from the file */
 	/* (this is NOT simply width*height*4, due to compression) */
 	
-	stat(im->file, &ss);
+	stat(im->real_file, &ss);
 	datasize = ss.st_size - sizeof(tga_header) - header.idLength -
 	   (footer_present ? sizeof(tga_footer) : 0);
 	

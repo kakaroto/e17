@@ -85,22 +85,9 @@ load (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    if (!im->file)
       return 0;
-   strcpy(file, im->file);
-#ifdef  __EMX__   
-   ptr = strrchr(file, ':');
-   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
-   if ((ptr) && (ptr - file) < 3) ptr=strrchr(++ptr, ':');        
-#else
-   ptr = strrchr(file, ':');
-#endif   
-   if (ptr) 
-      {
-	 *ptr = 0;
-	 if (!can_read(file)) return 0;
-	 strcpy(key, &(ptr[1]));
-      }
-   else
-      return 0;
+   strcpy(file, im->real_file);
+   strcpy(key, im->key);
+   if (!can_read(file)) return 0;
    db = e_db_open_read(file);
    if (!db)
       return 0;
@@ -284,28 +271,15 @@ save (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    if (im->flags & F_HAS_ALPHA)
       alpha = 1;
-   if (!im->file)
+   if ((!im->file) || (!im->real_file) || (!im->key))
       return 0;
-   strcpy(file, im->file);
-#ifdef  __EMX__   
-   cp = strrchr(file, ':');
-   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
-   if ((cp) && (cp - file) < 3) cp = strrchr(++cp, ':');        
-#else
-   cp = strrchr(file, ':');
-#endif   
-   if (cp)
+   strcpy(file, im->real_file);
+   strcpy(key, im->key);
+   if (exists(file))
      {
-	*cp = 0;
-	if (exists(file))
-	  {
-	     if (!can_write(file)) return 0;
-	     if (!can_read(file)) return 0;
-	  }
-	strcpy(key, &(cp[1]));
+	if (!can_write(file)) return 0;
+	if (!can_read(file)) return 0;
      }
-   else
-      return 0;
    db = e_db_open(file);
    if (!db)
       return 0;

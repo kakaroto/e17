@@ -13,8 +13,8 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{ver}.ta
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Lyle Kempler <term@kempler.net>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
-Requires: freetype >= 1.2
-Requires: freetype < 2.0
+#Requires: freetype >= 1.2
+#Requires: freetype < 2.0
 Requires: XFree86
 Requires: imlib2-loader_jpeg
 Requires: imlib2-loader_png
@@ -24,8 +24,8 @@ BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: edb-devel >= 1.0.2
 BuildRequires: XFree86-devel
-BuildRequires: freetype-devel >= 1.2
-BuildRequires: freetype-devel < 2.0
+#BuildRequires: freetype-devel >= 1.2
+#BuildRequires: freetype-devel < 2.0
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
 provides many more features with much greater flexibility and speed than

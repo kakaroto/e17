@@ -144,6 +144,8 @@ __imlib_ProduceImage(void)
    memset(im, 0, sizeof(ImlibImage));
    im->data = NULL;
    im->file = NULL;
+   im->real_file = NULL;
+   im->key = NULL;
    im->flags = F_FORMAT_IRRELEVANT | F_BORDER_IRRELEVANT | F_ALPHA_IRRELEVANT;
    im->loader = NULL;
    im->next = NULL;
@@ -162,6 +164,10 @@ ImlibImagePixmap *ip;
    __imlib_FreeAllTags(im);
    if (im->file)
       free(im->file);
+   if (im->real_file)
+      free(im->real_file);
+   if (im->key)
+      free(im->key);
    if ((IMAGE_FREE_DATA(im)) && (im->data))
       free(im->data);
    if (im->format)
@@ -1055,6 +1061,8 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    /* so produce a new one and load an image into that */
    im = __imlib_ProduceImage();
    im->file = strdup(file);
+   im->real_file = __imlib_FileRealFile(file);
+   im->key = __imlib_FileKey(file);
    im->moddate = __imlib_FileModDate(file);
    /* ok - just check all our loaders are up to date */
    __imlib_RescanLoaders();
@@ -1065,49 +1073,12 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
       loader_ret =
          best_loader->load(im, progress, progress_granularity,
                            immediate_load);
-   /* if the caller wants error returns */
-   if (er)
-   {
-      /* default to no error */
-      *er = LOAD_ERROR_NONE;
-      if (errno != 0)
-      {
-         /* if theres an error default to an unknown one */
-         *er = LOAD_ERROR_UNKNOWN;
-         /* translate common fopen() etc. errno's */
-         if (errno == EEXIST)
-            *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
-         else if (errno == EISDIR)
-            *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-         else if (errno == EISDIR)
-            *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-         else if (errno == EACCES)
-            *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
-         else if (errno == ENAMETOOLONG)
-            *er = LOAD_ERROR_PATH_TOO_LONG;
-         else if (errno == ENOENT)
-            *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
-         else if (errno == ENOTDIR)
-            *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
-         else if (errno == EFAULT)
-            *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
-         else if (errno == ELOOP)
-            *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
-         else if (errno == ENOMEM)
-            *er = LOAD_ERROR_OUT_OF_MEMORY;
-         else if (errno == EMFILE)
-            *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-         /* free our struct */
-         __imlib_ConsumeImage(im);
-         return NULL;
-      }
-      errno = 0;
-   }
    /* width is still 0 - the loader didnt manage to do anything */
    if (im->w == 0)
    {
       ImlibLoader *l, *previous_l = NULL;
 
+      errno = 0;
       l = loaders;
       /* run through all loaders and try load until one succeeds */
       while ((l) && (im->w == 0))
@@ -1353,6 +1324,10 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    /* set the filename to the saved one */
    pfile = im->file;
    im->file = strdup(file);
+   if (im->real_file) free(im->real_file);
+   im->real_file = __imlib_FileRealFile(file);
+   if (im->key) free(im->key);
+   im->key = __imlib_FileKey(file);
 
    /* call the saver */
    e = l->save(im, progress, progress_granularity);
