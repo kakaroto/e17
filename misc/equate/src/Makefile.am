@@ -8,7 +8,10 @@ INCLUDES = \
 
 bin_PROGRAMS = equate
 
-equate_SOURCES = equate.c
+equate_SOURCES = \
+gui.c \
+math.c \
+main.c
 
 equate_LDADD = @ewl_libs@ 
 
