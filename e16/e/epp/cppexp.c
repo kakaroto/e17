@@ -43,7 +43,7 @@
 struct arglist
   {
      struct arglist     *next;
-     U_CHAR             *name;
+     unsigned char             *name;
      int                 length;
      int                 argno;
   };
@@ -279,7 +279,7 @@ cpp_lex(pfile)
    register struct token *toktab;
    enum cpp_token      token;
    struct operation    op;
-   U_CHAR             *tok_start, *tok_end;
+   unsigned char             *tok_start, *tok_end;
    int                 old_written;
 
  retry:
@@ -332,7 +332,7 @@ cpp_lex(pfile)
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
-	   U_CHAR             *ptr = tok_start;
+	   unsigned char             *ptr = tok_start;
 
 #ifdef MULTIBYTE_CHARS
 	   char                token_buffer[MAX_LONG_TYPE_SIZE / MAX_CHAR_TYPE_SIZE + MB_CUR_MAX];

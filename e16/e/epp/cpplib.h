@@ -29,8 +29,6 @@ extern "C" {
 
 #define STATIC_BUFFERS
 
-typedef unsigned char U_CHAR;
-
 struct parse_file;
 typedef struct cpp_reader cpp_reader;
 typedef struct cpp_buffer cpp_buffer;
@@ -170,7 +168,7 @@ struct cpp_reader {
   int errors;			/* Error counter for exit code */
   void *data;
 
-  U_CHAR *token_buffer;
+  unsigned char *token_buffer;
   int token_buffer_size;
 
   /* Line where a newline was first seen in a string constant.  */
@@ -539,7 +537,7 @@ typedef struct macrodef MACRODEF;
 struct macrodef
 {
   struct definition *defn;
-  U_CHAR *symnam;
+  unsigned char *symnam;
   int symlen;
 };
 
@@ -570,7 +568,7 @@ struct definition {
   int length;			/* length of expansion string */
   int predefined;		/* True if the macro was builtin or */
 				/* came from the command line */
-  U_CHAR *expansion;
+  unsigned char *expansion;
   int line;			/* Line number of definition */
   char *file;			/* File of definition */
   char rest_args;		/* Nonzero if last arg. absorbs the rest */
@@ -590,11 +588,11 @@ struct definition {
        with comma-space between them.
        The only use of this is that we warn on redefinition
        if this differs between the old and new definitions.  */
-    U_CHAR *argnames;
+    unsigned char *argnames;
   } args;
 };
 
-extern U_CHAR is_idchar[256];
+extern unsigned char is_idchar[256];
 
 /* Stack of conditionals currently in progress
    (including both successful and failing conditionals).  */
@@ -605,7 +603,7 @@ struct if_stack {
   int lineno;			/* similarly */
   int if_succeeded;		/* true if a leg of this if-group
 				    has been passed through rescan */
-  U_CHAR *control_macro;	/* For #ifndef at start of file,
+  unsigned char *control_macro;	/* For #ifndef at start of file,
 				   this is the macro name tested.  */
   enum node_type type;		/* type of last directive seen in this group */
 };
@@ -613,7 +611,7 @@ typedef struct if_stack IF_STACK_FRAME;
 
 extern void cpp_buf_line_and_col PARAMS((cpp_buffer*, long*, long*));
 extern cpp_buffer* cpp_file_buffer PARAMS((cpp_reader*));
-extern void cpp_define PARAMS ((cpp_reader*, U_CHAR*));
+extern void cpp_define PARAMS ((cpp_reader*, unsigned char*));
 
 extern void cpp_error ();
 extern void cpp_warning ();
@@ -628,10 +626,10 @@ extern void cpp_pfatal_with_name ();
 
 extern void cpp_grow_buffer PARAMS ((cpp_reader*, long));
 extern int cpp_parse_escape PARAMS ((cpp_reader*, char**));
-extern cpp_buffer* cpp_push_buffer PARAMS ((cpp_reader *, U_CHAR*, long));
+extern cpp_buffer* cpp_push_buffer PARAMS ((cpp_reader *, unsigned char*, long));
 extern cpp_buffer* cpp_pop_buffer PARAMS ((cpp_reader *));
 
-extern cpp_hashnode* cpp_lookup PARAMS ((cpp_reader*, const U_CHAR*,
+extern cpp_hashnode* cpp_lookup PARAMS ((cpp_reader*, const unsigned char*,
 					 int, int));
 
 #ifdef __EMX__

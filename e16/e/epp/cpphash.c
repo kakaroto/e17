@@ -26,10 +26,10 @@
 #include "cpphash.h"
 
 static HASHNODE    *hashtab[HASHSIZE];
-HASHNODE           *cpp_lookup(struct parse_file *pfile, const U_CHAR * name, int len,
+HASHNODE           *cpp_lookup(struct parse_file *pfile, const unsigned char * name, int len,
 			       int hash);
 void                delete_macro(HASHNODE * hp);
-HASHNODE           *install(U_CHAR * name, int len, enum node_type type, int ivalue,
+HASHNODE           *install(unsigned char * name, int len, enum node_type type, int ivalue,
 			    char *value, int hash);
 
 /* Define a generic NULL if one hasn't already been defined.  */
@@ -52,7 +52,7 @@ HASHNODE           *install(U_CHAR * name, int len, enum node_type type, int iva
  */
 int
 hashf(name, len, hashsize)
-     register const U_CHAR *name;
+     register const unsigned char *name;
      register int        len;
      int                 hashsize;
 {
@@ -77,11 +77,11 @@ hashf(name, len, hashsize)
 HASHNODE           *
 cpp_lookup(pfile, name, len, hash)
      struct parse_file  *pfile;
-     const U_CHAR       *name;
+     const unsigned char       *name;
      int                 len;
      int                 hash;
 {
-   register const U_CHAR *bp;
+   register const unsigned char *bp;
    register HASHNODE  *bucket;
 
    pfile = NULL;
@@ -164,7 +164,7 @@ delete_macro(hp)
  */
 HASHNODE           *
 install(name, len, type, ivalue, value, hash)
-     U_CHAR             *name;
+     unsigned char             *name;
      int                 len;
      enum node_type      type;
      int                 ivalue;
@@ -173,7 +173,7 @@ install(name, len, type, ivalue, value, hash)
 {
    register HASHNODE  *hp;
    register int        i, bucket;
-   register U_CHAR    *p, *q;
+   register unsigned char    *p, *q;
 
    if (len < 0)
      {
@@ -200,7 +200,7 @@ install(name, len, type, ivalue, value, hash)
       hp->value.ival = ivalue;
    else
       hp->value.cpval = value;
-   hp->name = ((U_CHAR *) hp) + sizeof(HASHNODE);
+   hp->name = ((unsigned char *) hp) + sizeof(HASHNODE);
    p = hp->name;
    q = name;
    for (i = 0; i < len; i++)

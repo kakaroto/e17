@@ -210,7 +210,7 @@ struct assertion_hashnode
       * of the chain and gets deleted. */
      struct assertion_hashnode **bucket_hdr;
      int                 length;	/* length of token, for quick comparison */
-     U_CHAR             *name;	/* the actual name */
+     unsigned char             *name;	/* the actual name */
      /* List of token-sequences.  */
      struct tokenlist_list *value;
   };
@@ -264,8 +264,8 @@ extern void         delete_macro();
 static int          finclude(cpp_reader * pfile, int f, char *fname,
 			  int system_header_p, struct file_name_list *dirptr);
 static void         validate_else(cpp_reader * pfile, char *directive);
-static int          comp_def_part(int first, U_CHAR * beg1, int len1,
-				  U_CHAR * beg2, int len2, int last);
+static int          comp_def_part(int first, unsigned char * beg1, int len1,
+				  unsigned char * beg2, int len2, int last);
 extern void         fancy_abort();
 static int          lookup_import(cpp_reader * pfile, char *filename,
 				  struct file_name_list *searchptr);
@@ -277,12 +277,12 @@ static struct file_name_map *read_name_map();
 static char        *read_filename_string();
 static int          open_include_file(cpp_reader * pfile, char *filename,
 				      struct file_name_list *searchptr);
-static int          check_macro_name(cpp_reader * pfile, U_CHAR * symname,
+static int          check_macro_name(cpp_reader * pfile, unsigned char * symname,
 				     char *usage);
 
 static int          compare_defs();
 static int          compare_token_lists(struct arglist *l1, struct arglist *l2);
-static HOST_WIDE_INT eval_if_expression(cpp_reader * pfile, U_CHAR * buf,
+static HOST_WIDE_INT eval_if_expression(cpp_reader * pfile, unsigned char * buf,
 					int length);
 
 static int          change_newlines();
@@ -293,7 +293,7 @@ static struct arglist *read_token_list(cpp_reader * pfile, int *error_flag);
 static void         free_token_list(struct arglist *tokens);
 static int          safe_read(int desc, char *ptr, int len);
 static void         push_macro_expansion(cpp_reader * pfile,
-					 register U_CHAR * x,
+					 register unsigned char * x,
 					 int xbuf_len,
 					 HASHNODE * hp);
 
@@ -301,7 +301,7 @@ static struct cpp_pending *nreverse_pending(struct cpp_pending *list);
 static char        *savestring(char *input);
 
 static void         conditional_skip(cpp_reader * pfile, int skip,
-				 enum node_type type, U_CHAR * control_macro);
+				 enum node_type type, unsigned char * control_macro);
 static void         skip_if_group(cpp_reader * pfile, int any);
 
 /* Last arg to output_line_command.  */
@@ -323,55 +323,55 @@ extern struct tm   *localtime();
  * are going to be placed in a table and some old compilers have trouble with
  * pointers to functions returning void.  */
 
-static int          do_define(cpp_reader * pfile, struct directive *keyword, U_CHAR * buf,
-			      U_CHAR * limit);
+static int          do_define(cpp_reader * pfile, struct directive *keyword, unsigned char * buf,
+			      unsigned char * limit);
 
 static int          do_line(cpp_reader * pfile, struct directive *keyword);
 
 static int          do_include(cpp_reader * pfile, struct directive *keyword,
-			       U_CHAR * unused1, U_CHAR * unused2);
+			       unsigned char * unused1, unsigned char * unused2);
 
 static int          do_undef(cpp_reader * pfile, struct directive *keyword,
-			     U_CHAR * buf, U_CHAR * limit);
+			     unsigned char * buf, unsigned char * limit);
 
 static int          do_error(cpp_reader * pfile, struct directive *keyword,
-			     U_CHAR * buf, U_CHAR * limit);
+			     unsigned char * buf, unsigned char * limit);
 
 static int          do_pragma(cpp_reader * pfile, struct directive *keyword,
-			      U_CHAR * buf, U_CHAR * limit);
+			      unsigned char * buf, unsigned char * limit);
 
 static int          do_ident(cpp_reader * pfile, struct directive *keyword,
-			     U_CHAR * buf, U_CHAR * limit);
+			     unsigned char * buf, unsigned char * limit);
 
 static int          do_if(cpp_reader * pfile, struct directive *keyword,
-			  U_CHAR * buf, U_CHAR * limit);
+			  unsigned char * buf, unsigned char * limit);
 
 static int          do_xifdef(cpp_reader * pfile, struct directive *keyword,
-			      U_CHAR * buf, U_CHAR * limit);
+			      unsigned char * buf, unsigned char * limit);
 
 static int          do_else(cpp_reader * pfile, struct directive *keyword,
-			    U_CHAR * buf, U_CHAR * limit);
+			    unsigned char * buf, unsigned char * limit);
 
 static int          do_elif(cpp_reader * pfile, struct directive *keyword,
-			    U_CHAR * buf, U_CHAR * limit);
+			    unsigned char * buf, unsigned char * limit);
 
 static int          do_endif(cpp_reader * pfile, struct directive *keyword,
-			     U_CHAR * buf, U_CHAR * limit);
+			     unsigned char * buf, unsigned char * limit);
 
 static int          do_once(cpp_reader * pfile);
 
 static int          do_assert(cpp_reader * pfile, struct directive *keyword,
-			      U_CHAR * buf, U_CHAR * limit);
+			      unsigned char * buf, unsigned char * limit);
 
 static int          do_unassert(cpp_reader * pfile, struct directive *keyword,
-				U_CHAR * buf, U_CHAR * limit);
+				unsigned char * buf, unsigned char * limit);
 
 static int          do_warning(cpp_reader * pfile, struct directive *keyword,
-			       U_CHAR * buf, U_CHAR * limit);
+			       unsigned char * buf, unsigned char * limit);
 
 struct arglist     *reverse_token_list(struct arglist *tokens);
 void                parse_set_mark(struct parse_marker *pmark, cpp_reader * pfile);
-int                 check_assertion(cpp_reader * pfile, U_CHAR * name, int sym_length,
+int                 check_assertion(cpp_reader * pfile, unsigned char * name, int sym_length,
 				int tokens_specified, struct arglist *tokens);
 void                parse_clear_mark(struct parse_marker *pmark);
 void                parse_goto_mark(struct parse_marker *pmark, cpp_reader * pfile);
@@ -383,7 +383,7 @@ struct file_name_list
      char               *fname;
      /* If the following is nonzero, it is a macro name.
       * Don't include the file again if that macro is defined.  */
-     U_CHAR             *control_macro;
+     unsigned char             *control_macro;
      /* If the following is nonzero, it is a C-language system include
       * directory.  */
      int                 c_system_include_path;
@@ -508,16 +508,16 @@ static struct directive directive_table[] =
 };
 
 /* table to tell if char can be part of a C identifier. */
-U_CHAR              is_idchar[256];
+unsigned char              is_idchar[256];
 
 /* table to tell if char can be first char of a c identifier. */
-U_CHAR              is_idstart[256];
+unsigned char              is_idstart[256];
 
 /* table to tell if c is horizontal space.  */
-U_CHAR              is_hor_space[256];
+unsigned char              is_hor_space[256];
 
 /* table to tell if c is horizontal or vertical space.  */
-static U_CHAR       is_space[256];
+static unsigned char       is_space[256];
 
 /* Initialize syntactic classifications of characters.  */
 
@@ -569,7 +569,7 @@ quote_string(pfile, src)
      cpp_reader         *pfile;
      char               *src;
 {
-   U_CHAR              c;
+   unsigned char              c;
 
    CPP_PUTC_Q(pfile, '\"');
    for (;;)
@@ -608,7 +608,7 @@ cpp_grow_buffer(pfile, n)
    long                old_written = CPP_WRITTEN(pfile);
 
    pfile->token_buffer_size = n + 2 * pfile->token_buffer_size;
-   pfile->token_buffer = (U_CHAR *)
+   pfile->token_buffer = (unsigned char *)
       xrealloc(pfile->token_buffer, pfile->token_buffer_size);
    CPP_SET_WRITTEN(pfile, old_written);
 }
@@ -623,9 +623,9 @@ cpp_grow_buffer(pfile, n)
 void
 cpp_define(pfile, str)
      cpp_reader         *pfile;
-     U_CHAR             *str;
+     unsigned char             *str;
 {
-   U_CHAR             *buf, *p;
+   unsigned char             *buf, *p;
 
    buf = str;
    p = str;
@@ -637,7 +637,7 @@ cpp_define(pfile, str)
    while (is_idchar[*++p]);
    if (*p == 0)
      {
-	buf = (U_CHAR *) alloca(p - buf + 4);
+	buf = (unsigned char *) alloca(p - buf + 4);
 	strcpy((char *)buf, str);
 	strcat((char *)buf, " 1");
      }
@@ -648,10 +648,10 @@ cpp_define(pfile, str)
      }
    else
      {
-	U_CHAR             *q;
+	unsigned char             *q;
 
 	/* Copy the entire option so we can modify it.  */
-	buf = (U_CHAR *) alloca(2 * strlen(str) + 1);
+	buf = (unsigned char *) alloca(2 * strlen(str) + 1);
 	strncpy(buf, str, p - str);
 	/* Change the = to a space.  */
 	buf[p - str] = ' ';
@@ -678,13 +678,13 @@ static void
 make_assertion(pfile, option, str)
      cpp_reader         *pfile;
      char               *option;
-     U_CHAR             *str;
+     unsigned char             *str;
 {
    cpp_buffer         *ip;
-   U_CHAR             *buf, *p, *q;
+   unsigned char             *buf, *p, *q;
 
    /* Copy the entire option so we can modify it.  */
-   buf = (U_CHAR *) alloca(strlen(str) + 1);
+   buf = (unsigned char *) alloca(strlen(str) + 1);
    strcpy((char *)buf, str);
    /* Scan for any backslash-newline and remove it.  */
    p = q = buf;
@@ -1111,7 +1111,7 @@ handle_directive(pfile)
    register struct directive *kt;
    int                 ident_length;
    long                after_ident = 0;
-   U_CHAR             *ident, *line_end;
+   unsigned char             *ident, *line_end;
    long                old_written = CPP_WRITTEN(pfile);
 
    cpp_skip_hspace(pfile);
@@ -1182,7 +1182,7 @@ handle_directive(pfile)
    else if (kt->type == T_DEFINE
 	    && CPP_OPTIONS(pfile)->dump_macros == dump_names)
      {
-	U_CHAR             *p = pfile->token_buffer + old_written + 7;	/* Skip "#define". */
+	unsigned char             *p = pfile->token_buffer + old_written + 7;	/* Skip "#define". */
 
 	SKIP_WHITE_SPACE(p);
 	while (is_idchar[*p])
@@ -1206,7 +1206,7 @@ handle_directive(pfile)
 
 static void
 pass_thru_directive(buf, limit, pfile, keyword)
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
      cpp_reader         *pfile;
      struct directive   *keyword;
 {
@@ -1234,7 +1234,7 @@ pass_thru_directive(buf, limit, pfile, keyword)
 struct arglist
 {
    struct arglist     *next;
-   U_CHAR             *name;
+   unsigned char             *name;
    int                 length;
    int                 argno;
    char                rest_args;
@@ -1255,19 +1255,19 @@ struct arglist
 static DEFINITION  *
 collect_expansion(pfile, buf, limit, nargs, arglist)
      cpp_reader         *pfile;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
      int                 nargs;
      struct arglist     *arglist;
 {
    DEFINITION         *defn;
-   register U_CHAR    *p, *lastp, *exp_p;
+   register unsigned char    *p, *lastp, *exp_p;
    struct reflist     *endpat = NULL;
 
    /* Pointer to first nonspace after last ## seen.  */
-   U_CHAR             *concat = 0;
+   unsigned char             *concat = 0;
 
    /* Pointer to first nonspace after last single-# seen.  */
-   U_CHAR             *stringify = 0;
+   unsigned char             *stringify = 0;
    int                 maxsize;
    int                 expected_delimiter = '\0';
 
@@ -1298,7 +1298,7 @@ collect_expansion(pfile, buf, limit, nargs, arglist)
    defn = (DEFINITION *) xcalloc(1, maxsize);
 
    defn->nargs = nargs;
-   exp_p = defn->expansion = (U_CHAR *) defn + sizeof(DEFINITION);
+   exp_p = defn->expansion = (unsigned char *) defn + sizeof(DEFINITION);
    lastp = exp_p;
 
    p = buf;
@@ -1317,7 +1317,7 @@ collect_expansion(pfile, buf, limit, nargs, arglist)
    while (p < limit)
      {
 	int                 skipped_arg = 0;
-	register U_CHAR     c = *p++;
+	register unsigned char     c = *p++;
 
 	*exp_p++ = c;
 
@@ -1435,7 +1435,7 @@ collect_expansion(pfile, buf, limit, nargs, arglist)
 	/* Handle the start of a symbol.  */
 	if (is_idchar[c] && nargs > 0)
 	  {
-	     U_CHAR             *id_beg = p - 1;
+	     unsigned char             *id_beg = p - 1;
 	     int                 id_len;
 
 	     --exp_p;
@@ -1493,7 +1493,7 @@ collect_expansion(pfile, buf, limit, nargs, arglist)
 			    tpat->argno = arg->argno;
 			    tpat->nchars = exp_p - lastp;
 			    {
-			       register U_CHAR    *p1 = p;
+			       register unsigned char    *p1 = p;
 
 			       SKIP_WHITE_SPACE(p1);
 			       if (p1 + 2 <= limit && p1[0] == '#' && p1[1] == '#')
@@ -1508,7 +1508,7 @@ collect_expansion(pfile, buf, limit, nargs, arglist)
 	     /* If this was not a macro arg, copy it into the expansion.  */
 	     if (!skipped_arg)
 	       {
-		  register U_CHAR    *lim1 = p;
+		  register unsigned char    *lim1 = p;
 
 		  p = id_beg;
 		  while (p != lim1)
@@ -1559,12 +1559,12 @@ static char         rest_extension[] = "...";
  * as for do_define. */
 static              MACRODEF
 create_definition(buf, limit, pfile, predefinition)
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
      cpp_reader         *pfile;
      int                 predefinition;
 {
-   U_CHAR             *bp;	/* temp ptr into input buffer */
-   U_CHAR             *symname;	/* remember where symbol name starts */
+   unsigned char             *bp;	/* temp ptr into input buffer */
+   unsigned char             *symname;	/* remember where symbol name starts */
    int                 sym_length;	/* and how long it is */
    int                 rest_args = 0;
    long                line, col;
@@ -1669,9 +1669,9 @@ create_definition(buf, limit, pfile, predefinition)
 		   if (temp->length == otemp->length &&
 		       strncmp(temp->name, otemp->name, temp->length) == 0)
 		     {
-			U_CHAR             *name;
+			unsigned char             *name;
 
-			name = (U_CHAR *) alloca(temp->length + 1);
+			name = (unsigned char *) alloca(temp->length + 1);
 			(void)strncpy(name, temp->name, temp->length);
 			name[temp->length] = '\0';
 			cpp_error(pfile,
@@ -1690,7 +1690,7 @@ create_definition(buf, limit, pfile, predefinition)
 	/* Now set defn->args.argnames to the result of concatenating
 	 * the argument names in reverse order
 	 * with comma-space between them.  */
-	defn->args.argnames = (U_CHAR *) xmalloc(arglengths + 1);
+	defn->args.argnames = (unsigned char *) xmalloc(arglengths + 1);
 	{
 	   struct arglist     *temp;
 	   int                 i = 0;
@@ -1763,7 +1763,7 @@ create_definition(buf, limit, pfile, predefinition)
 	  }
 	/* now everything from bp before limit is the definition. */
 	defn = collect_expansion(pfile, bp, limit, -1, NULL_PTR);
-	defn->args.argnames = (U_CHAR *) "";
+	defn->args.argnames = (unsigned char *) "";
      }
 
    defn->line = line;
@@ -1788,10 +1788,10 @@ create_definition(buf, limit, pfile, predefinition)
 static int
 check_macro_name(pfile, symname, usage)
      cpp_reader         *pfile;
-     U_CHAR             *symname;
+     unsigned char             *symname;
      char               *usage;
 {
-   U_CHAR             *p;
+   unsigned char             *p;
    int                 sym_length;
 
    for (p = symname; is_idchar[*p]; p++);
@@ -1802,9 +1802,9 @@ check_macro_name(pfile, symname, usage)
      }
    else if (!is_idstart[*symname])
      {
-	U_CHAR             *msg;	/* what pain... */
+	unsigned char             *msg;	/* what pain... */
 
-	msg = (U_CHAR *) alloca(sym_length + 1);
+	msg = (unsigned char *) alloca(sym_length + 1);
 	bcopy(symname, msg, sym_length);
 	msg[sym_length] = 0;
 	cpp_error(pfile, "invalid %s name `%s'", usage, msg);
@@ -1825,8 +1825,8 @@ compare_defs(d1, d2)
      DEFINITION         *d1, *d2;
 {
    register struct reflist *a1, *a2;
-   register U_CHAR    *p1 = d1->expansion;
-   register U_CHAR    *p2 = d2->expansion;
+   register unsigned char    *p1 = d1->expansion;
+   register unsigned char    *p2 = d2->expansion;
    int                 first = 1;
 
    if (d1->nargs != d2->nargs)
@@ -1867,12 +1867,12 @@ compare_defs(d1, d2)
 static int
 comp_def_part(first, beg1, len1, beg2, len2, last)
      int                 first;
-     U_CHAR             *beg1, *beg2;
+     unsigned char             *beg1, *beg2;
      int                 len1, len2;
      int                 last;
 {
-   register U_CHAR    *end1 = beg1 + len1;
-   register U_CHAR    *end2 = beg2 + len2;
+   register unsigned char    *end1 = beg1 + len1;
+   register unsigned char    *end2 = beg2 + len2;
 
    if (first)
      {
@@ -1918,7 +1918,7 @@ static int
 do_define(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    int                 hashcode;
    MACRODEF            mdef;
@@ -1946,14 +1946,14 @@ do_define(pfile, keyword, buf, limit)
 	/* Print the warning if it's not ok.  */
 	if (!ok)
 	  {
-	     U_CHAR             *msg;	/* what pain... */
+	     unsigned char             *msg;	/* what pain... */
 
 	     /* If we are passing through #define and #undef directives, do
 	      * that for this re-definition now.  */
 	     if (CPP_OPTIONS(pfile)->debug_output && keyword)
 		pass_thru_directive(buf, limit, pfile, keyword);
 
-	     msg = (U_CHAR *) alloca(mdef.symlen + 22);
+	     msg = (unsigned char *) alloca(mdef.symlen + 22);
 	     *msg = '`';
 	     bcopy(mdef.symnam, msg + 1, mdef.symlen);
 	     strcpy((char *)(msg + mdef.symlen + 1), "' redefined");
@@ -2009,7 +2009,7 @@ struct argdata
 cpp_buffer         *
 cpp_push_buffer(pfile, buffer, length)
      cpp_reader         *pfile;
-     U_CHAR             *buffer;
+     unsigned char             *buffer;
      long                length;
 {
 #ifdef STATIC_BUFFERS
@@ -2090,22 +2090,22 @@ cpp_scan_buffer(pfile)
 static void
 cpp_expand_to_buffer(pfile, buf, length)
      cpp_reader         *pfile;
-     U_CHAR             *buf;
+     unsigned char             *buf;
      int                 length;
 {
    register cpp_buffer *ip;
-   U_CHAR             *limit = buf + length;
-   U_CHAR             *buf1;
+   unsigned char             *limit = buf + length;
+   unsigned char             *buf1;
 
    if (length < 0)
       abort();
 
    /* Set up the input on the input stack.  */
 
-   buf1 = (U_CHAR *) alloca(length + 1);
+   buf1 = (unsigned char *) alloca(length + 1);
    {
-      register U_CHAR    *p1 = buf;
-      register U_CHAR    *p2 = buf1;
+      register unsigned char    *p1 = buf;
+      register unsigned char    *p2 = buf1;
 
       while (p1 != limit)
 	 *p2++ = *p1++;
@@ -2123,14 +2123,14 @@ cpp_expand_to_buffer(pfile, buf, length)
 
 static void
 adjust_position(buf, limit, linep, colp)
-     U_CHAR             *buf;
-     U_CHAR             *limit;
+     unsigned char             *buf;
+     unsigned char             *limit;
      long               *linep;
      long               *colp;
 {
    while (buf < limit)
      {
-	U_CHAR              ch = *buf++;
+	unsigned char              ch = *buf++;
 
 	if (ch == '\n')
 	   (*linep)++, (*colp) = 1;
@@ -2196,14 +2196,14 @@ cpp_file_buffer(pfile)
 
 static long
 count_newlines(buf, limit)
-     register U_CHAR    *buf;
-     register U_CHAR    *limit;
+     register unsigned char    *buf;
+     register unsigned char    *limit;
 {
    register long       count = 0;
 
    while (buf < limit)
      {
-	U_CHAR              ch = *buf++;
+	unsigned char              ch = *buf++;
 
 	if (ch == '\n')
 	   count++;
@@ -2365,12 +2365,12 @@ macarg(pfile, rest_args)
 
 static int
 change_newlines(start, length)
-     U_CHAR             *start;
+     unsigned char             *start;
      int                 length;
 {
-   register U_CHAR    *ibp;
-   register U_CHAR    *obp;
-   register U_CHAR    *limit;
+   register unsigned char    *ibp;
+   register unsigned char    *obp;
+   register unsigned char    *limit;
    register int        c;
 
    ibp = start;
@@ -2797,7 +2797,7 @@ macroexpand(pfile, hp)
 {
    int                 nargs;
    DEFINITION         *defn = hp->value.defn;
-   register U_CHAR    *xbuf;
+   register unsigned char    *xbuf;
    long                start_line, start_column;
    int                 xbuf_len;
    struct argdata     *args;
@@ -2864,8 +2864,8 @@ macroexpand(pfile, hp)
 	/* If we got one arg but it was just whitespace, call that 0 args.  */
 	if (i == 1)
 	  {
-	     register U_CHAR    *bp = ARG_BASE + args[0].raw;
-	     register U_CHAR    *lim = bp + args[0].raw_length;
+	     register unsigned char    *bp = ARG_BASE + args[0].raw;
+	     register unsigned char    *lim = bp + args[0].raw_length;
 
 	     /* cpp.texi says for foo ( ) we provide one argument.
 	      * However, if foo wants just 0 arguments, treat this as 0.  */
@@ -2912,7 +2912,7 @@ macroexpand(pfile, hp)
      }
    else
      {
-	register U_CHAR    *exp = defn->expansion;
+	register unsigned char    *exp = defn->expansion;
 	register int        offset;	/* offset in expansion,
 
 					 * 
@@ -3045,7 +3045,7 @@ macroexpand(pfile, hp)
 		args[ap->argno].use_count++;
 	  }
 
-	xbuf = (U_CHAR *) xmalloc(xbuf_len + 1);
+	xbuf = (unsigned char *) xmalloc(xbuf_len + 1);
 
 	/* Generate in XBUF the complete expansion
 	 * with arguments substituted in.
@@ -3086,8 +3086,8 @@ macroexpand(pfile, hp)
 	       }
 	     else if (ap->raw_before || ap->raw_after || CPP_TRADITIONAL(pfile))
 	       {
-		  U_CHAR             *p1 = ARG_BASE + arg->raw;
-		  U_CHAR             *l1 = p1 + arg->raw_length;
+		  unsigned char             *p1 = ARG_BASE + arg->raw;
+		  unsigned char             *l1 = p1 + arg->raw_length;
 
 		  if (ap->raw_before)
 		    {
@@ -3106,7 +3106,7 @@ macroexpand(pfile, hp)
 			       l1--;
 			    else if (l1[-1] == '-')
 			      {
-				 U_CHAR             *p2 = l1 - 1;
+				 unsigned char             *p2 = l1 - 1;
 
 				 /* If a `-' is preceded by an odd number of newlines then it
 				  * and the last newline are a no-reexpansion marker.  */
@@ -3128,7 +3128,7 @@ macroexpand(pfile, hp)
 	       }
 	     else
 	       {
-		  U_CHAR             *expanded = ARG_BASE + arg->expanded;
+		  unsigned char             *expanded = ARG_BASE + arg->expanded;
 
 		  if (!ap->raw_before && totlen > 0 && arg->expand_length
 		      && !CPP_TRADITIONAL(pfile)
@@ -3204,7 +3204,7 @@ macroexpand(pfile, hp)
 static void
 push_macro_expansion(pfile, xbuf, xbuf_len, hp)
      cpp_reader         *pfile;
-     register U_CHAR    *xbuf;
+     register unsigned char    *xbuf;
      int                 xbuf_len;
      HASHNODE           *hp;
 {
@@ -3281,13 +3281,13 @@ static int
 do_include(pfile, keyword, unused1, unused2)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *unused1, *unused2;
+     unsigned char             *unused1, *unused2;
 {
    int                 importing = (keyword->type == T_IMPORT);
    int                 skip_dirs = (keyword->type == T_INCLUDE_NEXT);
    char               *fname;	/* Dynamically allocated fname buffer */
    char               *pcftry;
-   U_CHAR             *fbeg, *fend;	/* Beginning and end of fname */
+   unsigned char             *fbeg, *fend;	/* Beginning and end of fname */
    enum cpp_token      token;
 
    /* Chain of dirs to search */
@@ -3725,13 +3725,13 @@ is_system_include(pfile, filename)
 static ASSERTION_HASHNODE *
 assertion_install(pfile, name, len, hash)
      cpp_reader         *pfile;
-     U_CHAR             *name;
+     unsigned char             *name;
      int                 len;
      int                 hash;
 {
    register ASSERTION_HASHNODE *hp;
    register int        i, bucket;
-   register U_CHAR    *p, *q;
+   register unsigned char    *p, *q;
 
    i = sizeof(ASSERTION_HASHNODE) + len + 1;
    hp = (ASSERTION_HASHNODE *) xmalloc(i);
@@ -3744,7 +3744,7 @@ assertion_install(pfile, name, len, hash)
       hp->next->prev = hp;
    hp->length = len;
    hp->value = 0;
-   hp->name = ((U_CHAR *) hp) + sizeof(ASSERTION_HASHNODE);
+   hp->name = ((unsigned char *) hp) + sizeof(ASSERTION_HASHNODE);
    p = hp->name;
    q = name;
    for (i = 0; i < len; i++)
@@ -3766,7 +3766,7 @@ assertion_install(pfile, name, len, hash)
 static ASSERTION_HASHNODE *
 assertion_lookup(pfile, name, len, hash)
      cpp_reader         *pfile;
-     U_CHAR             *name;
+     unsigned char             *name;
      int                 len;
      int                 hash;
 {
@@ -3816,20 +3816,20 @@ delete_assertion(hp)
  * The value returned in the end of the string written to RESULT,
  * or NULL on error.  */
 
-static U_CHAR      *
+static unsigned char      *
 convert_string(pfile, result, in, limit, handle_escapes)
      cpp_reader         *pfile;
-     register U_CHAR    *result, *in, *limit;
+     register unsigned char    *result, *in, *limit;
      int                 handle_escapes;
 {
-   U_CHAR              c;
+   unsigned char              c;
 
    c = *in++;
    if (c != '\"')
       return NULL;
    while (in < limit)
      {
-	U_CHAR              c = *in++;
+	unsigned char              c = *in++;
 
 	switch (c)
 	  {
@@ -3842,11 +3842,11 @@ convert_string(pfile, result, in, limit, handle_escapes)
 	     if (handle_escapes)
 	       {
 		  char               *bpc = (char *)in;
-		  int                 i = (U_CHAR) cpp_parse_escape(pfile, &bpc);
+		  int                 i = (unsigned char) cpp_parse_escape(pfile, &bpc);
 
-		  in = (U_CHAR *) bpc;
+		  in = (unsigned char *) bpc;
 		  if (i >= 0)
-		     *result++ = (U_CHAR) c;
+		     *result++ = (unsigned char) c;
 		  break;
 	       }
 	     /* else fall through */
@@ -3898,11 +3898,11 @@ do_line(pfile, keyword)
 
    if (token == CPP_STRING)
      {
-	U_CHAR             *fname = pfile->token_buffer + old_written;
-	U_CHAR             *end_name;
+	unsigned char             *fname = pfile->token_buffer + old_written;
+	unsigned char             *end_name;
 	static HASHNODE    *fname_table[FNAME_HASHSIZE];
 	HASHNODE           *hp, **hash_bucket;
-	U_CHAR             *p;
+	unsigned char             *p;
 	long                num_start;
 	int                 fname_length;
 
@@ -3996,11 +3996,11 @@ static int
 do_undef(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    int                 sym_length;
    HASHNODE           *hp;
-   U_CHAR             *orig_buf = buf;
+   unsigned char             *orig_buf = buf;
 
    SKIP_WHITE_SPACE(buf);
    sym_length = check_macro_name(pfile, buf, "macro");
@@ -4036,10 +4036,10 @@ static int
 do_error(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    int                 length = limit - buf;
-   U_CHAR             *copy = (U_CHAR *) xmalloc(length + 1);
+   unsigned char             *copy = (unsigned char *) xmalloc(length + 1);
 
    keyword = NULL;
    bcopy(buf, copy, length);
@@ -4059,10 +4059,10 @@ static int
 do_warning(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    int                 length = limit - buf;
-   U_CHAR             *copy = (U_CHAR *) xmalloc(length + 1);
+   unsigned char             *copy = (unsigned char *) xmalloc(length + 1);
 
    keyword = NULL;
    bcopy(buf, copy, length);
@@ -4108,7 +4108,7 @@ static int
 do_ident(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
 /*  long old_written = CPP_WRITTEN (pfile); */
 
@@ -4131,7 +4131,7 @@ static int
 do_pragma(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    while (*buf == ' ' || *buf == '\t')
       buf++;
@@ -4151,7 +4151,7 @@ do_pragma(pfile, keyword, buf, limit)
 	/* Be quiet about `#pragma implementation' for a file only if it hasn't
 	 * been included yet.  */
 	struct file_name_list *ptr;
-	U_CHAR             *p = buf + 14, *fname, *inc_fname;
+	unsigned char             *p = buf + 14, *fname, *inc_fname;
 	int                 fname_len;
 
 	SKIP_WHITE_SPACE(p);
@@ -4159,13 +4159,13 @@ do_pragma(pfile, keyword, buf, limit)
 	   return 0;
 
 	fname = p + 1;
-	p = (U_CHAR *) index(fname, '\"');
+	p = (unsigned char *) index(fname, '\"');
 	fname_len = p != NULL ? p - fname : strlen(fname);
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
 	  {
-	     inc_fname = (U_CHAR *) rindex(ptr->fname, '/');
-	     inc_fname = inc_fname ? inc_fname + 1 : (U_CHAR *) ptr->fname;
+	     inc_fname = (unsigned char *) rindex(ptr->fname, '/');
+	     inc_fname = inc_fname ? inc_fname + 1 : (unsigned char *) ptr->fname;
 	     if (inc_fname && !strncmp(inc_fname, fname, fname_len))
 		cpp_warning(pfile,
 			    "`#pragma implementation' for `%s' appears after file is included",
@@ -4194,7 +4194,7 @@ static int
 do_if(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
    HOST_WIDE_INT       value = eval_if_expression(pfile, buf, limit - buf);
 
@@ -4212,7 +4212,7 @@ static int
 do_elif(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 {
 
    keyword = NULL;
@@ -4260,7 +4260,7 @@ do_elif(pfile, keyword, buf, limit)
 static              HOST_WIDE_INT
 eval_if_expression(pfile, buf, length)
      cpp_reader         *pfile;
-     U_CHAR             *buf;
+     unsigned char             *buf;
      int                 length;
 {
    HASHNODE           *save_defined;
@@ -4291,15 +4291,15 @@ static int
 do_xifdef(pfile, keyword, unused1, unused2)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *unused1, *unused2;
+     unsigned char             *unused1, *unused2;
 {
    int                 skip;
    cpp_buffer         *ip = CPP_BUFFER(pfile);
-   U_CHAR             *ident;
+   unsigned char             *ident;
    int                 ident_length;
    enum cpp_token      token;
    int                 start_of_file = 0;
-   U_CHAR             *control_macro = 0;
+   unsigned char             *control_macro = 0;
    int                 old_written = CPP_WRITTEN(pfile);
 
    unused1 = NULL;
@@ -4329,7 +4329,7 @@ do_xifdef(pfile, keyword, unused1, unused2)
 	skip = (hp == NULL) ^ (keyword->type == T_IFNDEF);
 	if (start_of_file && !skip)
 	  {
-	     control_macro = (U_CHAR *) xmalloc(ident_length + 1);
+	     control_macro = (unsigned char *) xmalloc(ident_length + 1);
 	     bcopy(ident, control_macro, ident_length + 1);
 	  }
      }
@@ -4365,7 +4365,7 @@ conditional_skip(pfile, skip, type, control_macro)
      cpp_reader         *pfile;
      int                 skip;
      enum node_type      type;
-     U_CHAR             *control_macro;
+     unsigned char             *control_macro;
 
 {
    IF_STACK_FRAME     *temp;
@@ -4407,7 +4407,7 @@ skip_if_group(pfile, any)
    IF_STACK_FRAME     *save_if_stack = pfile->if_stack;		/* don't pop past here */
 
    register int        ident_length;
-   U_CHAR             *ident;
+   unsigned char             *ident;
    struct parse_marker line_start_mark;
 
    parse_set_mark(&line_start_mark, pfile);
@@ -4424,7 +4424,7 @@ skip_if_group(pfile, any)
    if (CPP_OPTIONS(pfile)->output_conditionals)
      {
 	cpp_buffer         *pbuf = CPP_BUFFER(pfile);
-	U_CHAR             *start_line = pbuf->buf + line_start_mark.position;
+	unsigned char             *start_line = pbuf->buf + line_start_mark.position;
 
 	CPP_PUTS(pfile, start_line, pbuf->cur - start_line);
      }
@@ -4559,7 +4559,7 @@ static int
 do_else(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 
 {
    cpp_buffer         *ip = CPP_BUFFER(pfile);
@@ -4612,7 +4612,7 @@ static int
 do_endif(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 
 {
    if (CPP_PEDANTIC(pfile))
@@ -4780,7 +4780,7 @@ cpp_get_token(pfile)
 	     if (opts->put_out_comments)
 	       {
 		  cpp_buffer         *pbuf = CPP_BUFFER(pfile);
-		  U_CHAR             *start = pbuf->buf + start_mark.position;
+		  unsigned char             *start = pbuf->buf + start_mark.position;
 		  int                 len = pbuf->cur - start;
 
 		  CPP_RESERVE(pfile, 1 + len);
@@ -5269,12 +5269,12 @@ cpp_get_token(pfile)
 		if (hp->type != T_MACRO)
 		  {
 		     int                 xbuf_len;
-		     U_CHAR             *xbuf;
+		     unsigned char             *xbuf;
 
 		     CPP_SET_WRITTEN(pfile, before_name_written);
 		     special_symbol(hp, pfile);
 		     xbuf_len = CPP_WRITTEN(pfile) - before_name_written;
-		     xbuf = (U_CHAR *) xmalloc(xbuf_len + 1);
+		     xbuf = (unsigned char *) xmalloc(xbuf_len + 1);
 		     CPP_SET_WRITTEN(pfile, before_name_written);
 		     bcopy(CPP_PWRITTEN(pfile), xbuf, xbuf_len + 1);
 		     push_macro_expansion(pfile, xbuf, xbuf_len, hp);
@@ -5763,7 +5763,7 @@ finclude(pfile, f, fname, system_header_p, dirptr)
 
    if (S_ISREG(st_mode))
      {
-	fp->buf = (U_CHAR *) xmalloc(st_size + 2);
+	fp->buf = (unsigned char *) xmalloc(st_size + 2);
 	fp->alimit = fp->buf + st_size + 2;
 	fp->cur = fp->buf;
 
@@ -5789,7 +5789,7 @@ finclude(pfile, f, fname, system_header_p, dirptr)
 	int                 bsize = 2000;
 
 	st_size = 0;
-	fp->buf = (U_CHAR *) xmalloc(bsize + 2);
+	fp->buf = (unsigned char *) xmalloc(bsize + 2);
 
 	for (;;)
 	  {
@@ -5800,7 +5800,7 @@ finclude(pfile, f, fname, system_header_p, dirptr)
 	     if (st_size != bsize)
 		break;		/* End of file */
 	     bsize *= 2;
-	     fp->buf = (U_CHAR *) xrealloc(fp->buf, bsize + 2);
+	     fp->buf = (unsigned char *) xrealloc(fp->buf, bsize + 2);
 	  }
 	length = st_size;
      }
@@ -6335,7 +6335,7 @@ init_parse_file(pfile)
    pfile->get_token = cpp_get_token;
 
    pfile->token_buffer_size = 200;
-   pfile->token_buffer = (U_CHAR *) xmalloc(pfile->token_buffer_size);
+   pfile->token_buffer = (unsigned char *) xmalloc(pfile->token_buffer_size);
    CPP_SET_WRITTEN(pfile, 0);
 
    pfile->system_include_depth = 0;
@@ -6905,7 +6905,7 @@ static int
 do_assert(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 
 {
    long                symstart;	/* remember where symbol name starts */
@@ -6956,7 +6956,7 @@ do_assert(pfile, keyword, buf, limit)
 
    {
       ASSERTION_HASHNODE *hp;
-      U_CHAR             *symname = pfile->token_buffer + symstart;
+      unsigned char             *symname = pfile->token_buffer + symstart;
       int                 hashcode = hashf(symname, sym_length, ASSERTION_HASHSIZE);
       struct tokenlist_list *value
       = (struct tokenlist_list *)xmalloc(sizeof(struct tokenlist_list));
@@ -6985,7 +6985,7 @@ static int
 do_unassert(pfile, keyword, buf, limit)
      cpp_reader         *pfile;
      struct directive   *keyword;
-     U_CHAR             *buf, *limit;
+     unsigned char             *buf, *limit;
 
 {
    long                symstart;	/* remember where symbol name starts */
@@ -7033,7 +7033,7 @@ do_unassert(pfile, keyword, buf, limit)
 
    {
       ASSERTION_HASHNODE *hp;
-      U_CHAR             *symname = pfile->token_buffer + symstart;
+      unsigned char             *symname = pfile->token_buffer + symstart;
       int                 hashcode = hashf(symname, sym_length, ASSERTION_HASHSIZE);
       struct tokenlist_list *tail, *prev;
 
@@ -7089,7 +7089,7 @@ do_unassert(pfile, keyword, buf, limit)
 int
 check_assertion(pfile, name, sym_length, tokens_specified, tokens)
      cpp_reader         *pfile;
-     U_CHAR             *name;
+     unsigned char             *name;
      int                 sym_length;
      int                 tokens_specified;
      struct arglist     *tokens;
@@ -7231,7 +7231,7 @@ read_token_list(pfile, error_flag)
 	temp = (struct arglist *)
 	   xmalloc(sizeof(struct arglist) + length + 1);
 
-	temp->name = (U_CHAR *) (temp + 1);
+	temp->name = (unsigned char *) (temp + 1);
 	bcopy((char *)(pfile->token_buffer + name_written),
 	      (char *)temp->name, length);
 	temp->name[length] = 0;

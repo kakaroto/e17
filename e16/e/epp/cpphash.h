@@ -16,7 +16,7 @@ struct hashnode {
 				   of the chain and gets deleted. */
   enum node_type type;		/* type of special token */
   int length;			/* length of token, for quick comparison */
-  U_CHAR *name;			/* the actual name */
+  unsigned char *name;			/* the actual name */
   union hashval value;		/* pointer to expansion, or whatever */
 };
 
@@ -33,4 +33,4 @@ typedef struct hashnode HASHNODE;
 #define HASHSTEP(old, c) ((old << 2) + c)
 #define MAKE_POS(v) (v & 0x7fffffff) /* make number positive */
 
-extern HASHNODE* install PARAMS ((U_CHAR*,int,enum node_type, int,char*,int));
+extern HASHNODE* install PARAMS ((unsigned char*,int,enum node_type, int,char*,int));
