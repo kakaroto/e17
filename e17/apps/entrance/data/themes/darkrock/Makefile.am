@@ -1,13 +1,24 @@
-EET = default.eet
-SCRIPT = build_theme.sh
+MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = img
 
-CLEANFILES = $(EET)
-EXTRA_DIST = $(SCRIPT) default.edc
+NAME = darkrock
 
-defaultdir = $(pkgdatadir)/themes
-default_DATA = $(EET)
+EDJE_CC = @edje_cc@
+EDJE_FLAGS = \
+-v \
+-id $(top_srcdir)/data/themes/$(NAME)/img \
+-fd $(top_srcdir)/data/themes/$(NAME)/fnt \
+@EDJE_DEF@
 
-all: $(EET)
+filesdir = $(pkgdatadir)/themes
+files_DATA = $(NAME).eet
 
-$(EET): $(SCRIPT)
-		sh $< $(top_srcdir)/data/themes/default
+EXTRA_DIST = $(NAME).edc
+
+$(NAME).eet: Makefile $(NAME).edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/themes/$(NAME)/$(NAME).edc \
+	$(top_builddir)/data/themes/$(NAME)/$(NAME).eet
+
+clean-local:
+	rm -f *.eet

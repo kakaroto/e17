@@ -1,3 +1,4 @@
+MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST =\
 bg.edc \
 confirmation_dialog.edc \

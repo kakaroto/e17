@@ -1,3 +1,4 @@
+MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST=\
 confirmation_dialog_programs.edc \
 debug_programs.edc \

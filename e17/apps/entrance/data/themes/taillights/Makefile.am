@@ -1,15 +1,24 @@
-EXTRA_DIST= taillights.edc
-SUBDIRS = parts programs fonts images
-DB = taillights.eet
-CC = edje_cc
-INCLUDES = -v -id ./images -fd ./fonts
+MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = images fonts embryo programs parts
 
-CLEANFILES = $(DB)
+NAME = taillights
 
-taillightsdir = $(pkgdatadir)/themes
-taillights_DATA = $(DB)
+EDJE_CC = @edje_cc@
+EDJE_FLAGS = \
+-v \
+-id $(top_srcdir)/data/themes/$(NAME)/images \
+-fd $(top_srcdir)/data/themes/$(NAME)/fonts \
+@EDJE_DEF@
 
-all: $(DB)
+filesdir = $(pkgdatadir)/themes
+files_DATA = $(NAME).eet
 
-$(DB): taillights.edc
-	(cd $(top_srcdir)/data/themes/taillights ; $(CC) $(INCLUDES) taillights.edc $(top_builddir)/data/themes/taillights/$@)
+EXTRA_DIST = $(NAME).edc
+
+$(NAME).eet: Makefile $(NAME).edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/themes/$(NAME)/$(NAME).edc \
+	$(top_builddir)/data/themes/$(NAME)/$(NAME).eet
+
+clean-local:
+	rm -f *.eet

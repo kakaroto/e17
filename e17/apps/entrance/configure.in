@@ -199,6 +199,22 @@ x_libs="-L/usr/X11R6/lib -lX11 -lXext"
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 
+EDJE_DEF=""
+AC_SUBST(EDJE_DEF)
+
+edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+AC_ARG_WITH(edje-cc,
+[  --with-edje-cc=PATH              specify a specific path to edje_cc],
+[
+  v=$withval;
+  edje_cc=$v
+  echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
+],[
+  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+])
+AC_SUBST(edje_cc)
+
+
 AC_OUTPUT([
 Makefile
 src/Makefile
@@ -219,9 +235,14 @@ data/users/Makefile
 data/users/default/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/default/img/Makefile
+data/themes/default/fnt/Makefile
 data/themes/darkrock/Makefile
+data/themes/darkrock/img/Makefile
 data/themes/Nebulous/Makefile
+data/themes/Nebulous/images/Makefile
 data/themes/taillights/Makefile
+data/themes/taillights/embryo/Makefile
 data/themes/taillights/parts/Makefile
 data/themes/taillights/programs/Makefile
 data/themes/taillights/fonts/Makefile

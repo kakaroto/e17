@@ -1,13 +1,8 @@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST=\
+EXTRA_DIST = \
 bg.png \
-border-bevel.png \
-bottom_bar_image.png \
 brushed_texture.png \
-close_hi2.png \
-close_wminormal.png \
-close_wmnormal.png \
-e.png \
+default_preview.png \
 e001.png \
 e002.png \
 e003.png \
@@ -128,26 +123,17 @@ e117.png \
 e118.png \
 e119.png \
 e120.png \
-entry-base.png \
-entry.png \
 entry_cursor.png \
 entry_disabled.png \
 entry_light_overlay.png \
-images.edc \
-lights.jpg \
-menu_bg_small.png \
-menu_border.png \
-metalsphere.png \
+entry.png \
+e.png \
+panel_shadow.png \
+power_button_0.png \
 power_button_1.png \
-power_button_2.png \
-power_button_3.png \
-presence_border.xcf \
-restart_button_1.png \
-restart_button_2.png \
-restart_button_3.png \
-session_button_normal.png \
-session_button_pressed.png \
+power_button_glow_0.png \
+power_button_glow_1.png \
+reflection.png \
+rockface.png \
 shading.png \
-system_chooser.png \
-taillights_preview.png \
-user_border.png 
+shadow.png
