@@ -3,6 +3,9 @@
 
 /**
  * @file ewl_colorpicker.h
+ * @defgroup Ewl_ColorPicker ColorPicker: A Simple Colour Picker widget
+ *
+ * @{
  */
 
 typedef struct Ewl_ColorPicker Ewl_ColorPicker;
@@ -24,5 +27,9 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp);
 void ewl_colorpicker_range_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_colorpicker_range_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_colorpicker_range_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+
+/**
+ * @}
+ */
 
 #endif
