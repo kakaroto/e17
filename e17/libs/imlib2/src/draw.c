@@ -1,6 +1,8 @@
 #include "common.h"
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
+#endif
 #include "colormod.h"
 #include "image.h"
 #include "blend.h"

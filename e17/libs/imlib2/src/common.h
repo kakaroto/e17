@@ -1,6 +1,8 @@
 #ifndef __COMMON
 #define __COMMON 1
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

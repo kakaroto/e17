@@ -8,9 +8,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/XShm.h>
-#include <X11/Xutil.h>
+
+#ifndef X_DISPLAY_MISSING
+#  include <X11/Xlib.h>
+#  include <X11/extensions/XShm.h>
+#  include <X11/Xutil.h>
+#endif
+
 #include "image.h"
 #include <gif_lib.h>
 

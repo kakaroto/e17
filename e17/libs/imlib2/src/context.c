@@ -1,6 +1,8 @@
 #include "common.h"
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
-#include "image.h"
+#endif
+# include "image.h"
 #include "context.h"
 #include "color.h"
 #include "rgba.h"

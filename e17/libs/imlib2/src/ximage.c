@@ -1,10 +1,12 @@
 #include "common.h"
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 #include <X11/Xutil.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include "ximage.h"
+#endif
 
 /* static private variables */
 static signed char  x_does_shm = -1;

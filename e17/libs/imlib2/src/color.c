@@ -1,7 +1,9 @@
 #include "common.h"
+#ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "color.h"
+#endif
 
 DATA8               _pal_type = 0;
 DATA16              _max_colors = 256;

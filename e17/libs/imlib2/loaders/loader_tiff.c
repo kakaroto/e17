@@ -7,9 +7,13 @@
 
 #include "common.h"
 #include <string.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/XShm.h>
-#include <X11/Xutil.h>
+
+#ifndef X_DISPLAY_MISSING
+#  include <X11/Xlib.h>
+#  include <X11/extensions/XShm.h>
+#  include <X11/Xutil.h>
+#endif
+
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
