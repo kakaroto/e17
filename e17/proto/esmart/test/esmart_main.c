@@ -127,14 +127,15 @@ main(int argc, char *argv[])
 	evas_object_color_set(o, 255, 255, 255, 0);
 	evas_object_name_set(o, "background");
 
-   image = evas_object_image_add(evas);
-   evas_object_image_file_set(image, PACKAGE_DATA_DIR"/esmart.png", NULL);
-   evas_object_image_size_get(image, &iw, &ih);
-   evas_object_resize(image, iw, ih);
-   evas_object_image_fill_set(image, 0.0, 0.0, (Evas_Coord) iw, (Evas_Coord) ih);
-   evas_object_layer_set(image, 1000);
-   evas_object_show(image);
-   
+   if (argc < 2) {
+      image = evas_object_image_add(evas);
+      evas_object_image_file_set(image, PACKAGE_DATA_DIR"/esmart.png", NULL);
+      evas_object_image_size_get(image, &iw, &ih);
+      evas_object_resize(image, iw, ih);
+      evas_object_image_fill_set(image, 0.0, 0.0, (Evas_Coord) iw, (Evas_Coord) ih);
+      evas_object_layer_set(image, 1000);
+      evas_object_show(image);
+   }
 	
 	evas_object_show(o);
 
