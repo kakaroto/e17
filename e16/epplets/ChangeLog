@@ -951,3 +951,11 @@ Sun Nov 28 20:38:33 EST 1999
 
 Make focusing between an epplet and it's gadget's work a little better. Basically added sloppy-focus. The epplet remembers which gadget last had focus and, if none currently have focus and the last_gadget was a textboxes, passes key events to it. 
 
+-------------------------------------------------------------------------------
+
+Sun Nov 28 21:05:11 EST 1999
+(StriderZ)
+
+Change to something more like ClickToFocus. The gadgets won't *keep* the focus
+unless you click them. This probably needs a little more work...
+

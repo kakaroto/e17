@@ -744,7 +744,10 @@ Epplet_handle_event(XEvent * ev)
 			 (XPointer *) & g) == XCNOENT)
 	   g = NULL;
 	if (g)
-	   Epplet_event(g, ev);
+	  {
+	     last_gadget = g;
+	     Epplet_event(g, ev);
+	  }
 	else
 	  {
 	     if (buttonrelease_func)
@@ -772,10 +775,7 @@ Epplet_handle_event(XEvent * ev)
 	   g = NULL;
 
 	if (g)
-	{
-	   last_gadget = g;
 	   Epplet_event(g, ev);
-	}
 	else
 	  {
 	     if (enter_func)
@@ -1415,7 +1415,7 @@ typedef struct
 {
    GadGeneral          general;
    int                 x, y, w, h;
-   int                 cursor_pos, text_offset;
+   unsigned int        cursor_pos, text_offset;
    char               *image;
    char               *contents;
    char                hilited;
