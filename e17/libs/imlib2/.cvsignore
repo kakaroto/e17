@@ -25,3 +25,8 @@ aclocal.m4
 autom4te*
 depcomp
 imlib2.c
+build-stamp
+configure-stamp
+config.guess
+config.sub
+ltmain.sh

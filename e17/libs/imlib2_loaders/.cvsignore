@@ -6,5 +6,9 @@ aclocal.m4
 libtool
 lt*
 stamp*
-
 configure
+build-stamp
+configure-stamp
+install-sh
+missing
+mkinstalldirs

@@ -1,3 +1,10 @@
 .deps
 Makefile
 Makefile.in
+.libs
+bumpmap.la
+colormod.la
+filter_bumpmap.lo
+filter_colormod.lo
+filter_test.lo
+testfilter.la
