@@ -18,18 +18,18 @@ edb_ed $DB add "/appearance/button/default/base" str "/appearance/button/default
 edb_ed $DB add "/appearance/button/default/base/visible" str "yes"
 edb_ed $DB add "/appearance/button/default/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/default/label/font_size" int 8
-edb_ed $DB add "/appearance/button/default/label/style" str "Default"
+edb_ed $DB add "/appearance/button/default/label/style" str "shadow"
 edb_ed $DB add "/appearance/button/check/base" str "/appearance/button/check/base.bits.db"
 edb_ed $DB add "/appearance/button/check/base/visible" str "yes"
 edb_ed $DB add "/appearance/button/check/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/check/label/font_size" int 8
-edb_ed $DB add "/appearance/button/check/label/style" str "Default"
+edb_ed $DB add "/appearance/button/check/label/style" str "shadow"
 
 edb_ed $DB add "/appearance/button/radio/base" str "/appearance/button/radio/base.bits.db"
 edb_ed $DB add "/appearance/button/radio/base/visible" str "yes"
 edb_ed $DB add "/appearance/button/radio/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/radio/label/font_size" int 8
-edb_ed $DB add "/appearance/button/radio/label/style" str "Default"
+edb_ed $DB add "/appearance/button/radio/label/style" str "shadow"
 
 # Add keys for text entry widgets
 echo -n "."
@@ -41,8 +41,8 @@ edb_ed $DB add "/appearance/selection/default/base/visible" str "yes"
 edb_ed $DB add "/appearance/entry/default/base" str "/appearance/entry/default/base.bits.db"
 edb_ed $DB add "/appearance/entry/default/base/visible" str "yes"
 edb_ed $DB add "/appearance/entry/default/text/font" str "borzoib"
-edb_ed $DB add "/appearance/entry/default/text/font_size" int 10
-edb_ed $DB add "/appearance/entry/default/text/style" str "Default"
+edb_ed $DB add "/appearance/entry/default/text/font_size" int 8
+edb_ed $DB add "/appearance/entry/default/text/style" str "shadow"
 
 # Add keys for image widget
 echo -n "."
@@ -68,7 +68,7 @@ edb_ed $DB add "/appearance/notebook/tab_button/base" str "/appearance/notebook/
 edb_ed $DB add "/appearance/notebook/tab_button/base/visible" str "yes"
 edb_ed $DB add "/appearance/notebook/tab_button/label/font" str "borzoib"
 edb_ed $DB add "/appearance/notebook/tab_button/label/font_size" int 8
-edb_ed $DB add "/appearance/notebook/tab_button/label/style" str "Default"
+edb_ed $DB add "/appearance/notebook/tab_button/label/style" str "shadow"
 
 
 # Add keys for seeker widget
@@ -119,13 +119,18 @@ edb_ed $DB add "/appearance/table/default/base/visible" str "no"
 # Add keys for text widget
 echo -n "."
 edb_ed $DB add "/appearance/text/default/font" str "borzoib"
-edb_ed $DB add "/appearance/text/default/font_size" int 10
-edb_ed $DB add "/appearance/text/default/style" str "Default"
+edb_ed $DB add "/appearance/text/default/font_size" int 8
+edb_ed $DB add "/appearance/text/default/style" str "shadow"
 
 # Add keys for the textarea widget
 echo -n "."
 edb_ed $DB add "/appearance/textarea/default/base" str "/appearance/textarea/default/base.bits.db"
 edb_ed $DB add "/appearance/textarea/default/base/visible" str "yes"
+edb_ed $DB add "/appearance/textarea/default/base/style" str "shadow"
+edb_ed $DB add "/appearance/textarea/default/base/r" int 255
+edb_ed $DB add "/appearance/textarea/default/base/g" int 255
+edb_ed $DB add "/appearance/textarea/default/base/b" int 255
+edb_ed $DB add "/appearance/textarea/default/base/a" int 255
 
 
 # Add keys for window widget
@@ -138,6 +143,11 @@ echo -n "."
 edb_ed $DB add "/theme/author" str "Christopher 'smugg' Rosendahl and Nathan 'RbdPngn' Ingersoll"
 edb_ed $DB add "/theme/licence" str "General Public Licence"
 edb_ed $DB add "/theme/name" str "Default"
+
+# Add keys for floater widget
+echo -n "."
+edb_ed $DB add "/appearance/floater/base" str "/appearance/box/horizontal/base.bits.db"
+edb_ed $DB add "/appearance/floater/base/visible" str "yes"
 
 echo
 echo "Theme regeneration complete."
