@@ -268,7 +268,7 @@ equate_quit_gui()
    default:
       ewl_main_quit();
       ewl_widget_destroy(main_win);
-      ewl_deinit();
+      ewl_shutdown();
       inited = 0;
       break;
    }
