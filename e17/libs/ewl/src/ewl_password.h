@@ -39,6 +39,8 @@ Ewl_Widget     *ewl_password_new(char *text);
 void            ewl_password_init(Ewl_Password * e, char *text);
 void            ewl_password_set_text(Ewl_Password * e, char *t);
 char           *ewl_password_get_text(Ewl_Password * e);
+void            ewl_password_set_obscure(Ewl_Password * e, char o);
+char            ewl_password_get_obscure(Ewl_Password * e);
 
 void ewl_password_insert_text(Ewl_Password * e, char *s);
 

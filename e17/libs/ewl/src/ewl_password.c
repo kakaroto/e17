@@ -39,6 +39,7 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	w = EWL_WIDGET(e);
 
 	ewl_entry_init(EWL_ENTRY(w), NULL);
+	e->obscure = '*';
 
 	/*
 	 * Attach necessary callback mechanisms 
@@ -86,7 +87,7 @@ void ewl_password_set_text(Ewl_Password * e, char *t)
 		len = strlen(t);
 		e->real_text = strdup(t);
 		vis = NEW(char, len + 1);
-		memset(vis, '*', len);
+		memset(vis, e->obscure, len);
 	}
 
 	ewl_entry_set_text(EWL_ENTRY(e), vis);
@@ -109,6 +110,34 @@ char           *ewl_password_get_text(Ewl_Password * e)
 	w = EWL_WIDGET(e);
 
 	DRETURN_PTR(strdup(e->real_text), DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the password to retrieve the obscuring character
+ * @return Returns the character value of the obscuring character.
+ * @brief Retrieves the character used to obscure the text for a password.
+ */
+char ewl_password_get_obscure(Ewl_Password * e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, 0);
+
+	DRETURN_INT(e->obscure, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: set the obscuring character for a passwords text
+ * @return Returns no value.
+ * @brief Sets the character used to obscure the text for a password.
+ */
+void ewl_password_set_obscure(Ewl_Password * e, char o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	e->obscure = o;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_password_insert_text(Ewl_Password * e, char *s)
