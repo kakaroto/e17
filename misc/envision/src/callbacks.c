@@ -1,5 +1,71 @@
 #include "envision.h"
 
+/* if the canvas is resized - resize the video too */
+void
+canvas_resize(Ecore_Evas *ee)
+{
+   Evas * evas = ecore_evas_get(ee);
+   Evas_Object * edje = evas_object_name_find(evas, "edje");
+   Evas_Object * emotion = evas_object_name_find(evas, "emotion");
+   Evas_Coord x, y, w, h;
+   int vw, vh;
+   double ratio;
+   
+   /* resize the video object AND retain aspect ratio */
+   /* get the video size in pixels */
+   emotion_object_size_get(emotion, &vw, &vh);
+   /* get the video ratio */
+   ratio = emotion_object_ratio_get(emotion);
+   /* if the ratio > 0.0 then the video wants awidth / height ratio on the */
+   /* screen as returned indicated by this ratio value. this is irrespective */
+   /* of the pixel size of the video and indicates the video wants to scale */
+   if (ratio > 0.0) {
+      x = 0;
+      y = (h - (w / ratio)) / 2;
+
+      if (y < 0) {
+	     y = 0;
+	     x = (w - (h * ratio)) / 2;
+	     w = h * ratio;
+      } else {
+         h = w / ratio;
+      }
+      
+      evas_object_resize(edje, w, h);
+   } else {
+      if (vh > 0) {
+         /* generate ratio from the pixel size */
+         ratio = (double)vw / (double)vh;
+      } else {
+         ratio = 1.0;
+      }
+      
+      x = 0;
+      y = (h - (w / ratio)) / 2;
+      
+      if (y < 0) {
+         y = 0;
+         x = (w - (h * ratio)) / 2;
+         w = h * ratio;
+      } else {
+         h = w / ratio;
+      }
+      
+      evas_object_resize(edje, w, h);
+   }
+}
+
+void
+ecore_resize(Ecore_Evas *ee)
+{
+   Evas * evas = ecore_evas_get(ee);
+   Evas_Object * edje = evas_object_name_find(evas, "edje");
+   int ws = 0, hs = 0;
+
+   ecore_evas_geometry_get(ee, NULL, NULL, &ws, &hs);
+   evas_object_resize(edje, (Evas_Coord)ws, (Evas_Coord)hs);	
+}
+
 void
 pause_callback(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
@@ -80,6 +146,7 @@ raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const 
 {
    Envision * e = data;
    double volume;
+   char vol_str[3];
 
    volume = emotion_object_audio_volume_get(e->gui.emotion);
    volume = volume + 0.10;
@@ -96,6 +163,7 @@ lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const 
 {
    Envision * e = data;
    double volume;
+   char vol_str[3];
 
    volume = emotion_object_audio_volume_get(e->gui.emotion);
    volume = volume - 0.10;
@@ -126,17 +194,6 @@ seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, con
    pos = emotion_object_position_get(e->gui.emotion);
    printf("DEBUG: Position is %2f - Forward\n", pos);
    emotion_object_position_set(e->gui.emotion, pos+60);
-}
-
-void
-ecore_resize(Ecore_Evas *ee)
-{
-   int ws = 0, hs = 0;
-   Evas * evas = ecore_evas_get(ee);
-   Evas_Object * edje = evas_object_name_find(evas, "edje");
-
-   ecore_evas_geometry_get(ee, NULL, NULL, &ws, &hs);
-   evas_object_resize(edje, (Evas_Coord)ws, (Evas_Coord)hs);	
 }
 
 void

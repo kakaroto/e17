@@ -6,8 +6,6 @@
 #include <Emotion.h>
 #include <Edje.h>
 
-char     vol_str[3];
-
 typedef struct {
    int width;
    int height;
@@ -31,6 +29,9 @@ Envision * envision_new();
 void envision_delete(Envision *e);
 
 // callbacks.c
+void canvas_resize(Ecore_Evas *ee);
+void ecore_resize(Ecore_Evas *ee);
+void update_timer(void *data, Evas_Object *obj, void *event_info);
 void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, 
       const char *source);
 void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission,
@@ -43,8 +44,6 @@ void seekforward_edjecallback(void *data, Evas_Object *obj,
       const char *emission, const char *source);
 void seekbackward_edjecallback(void *data, Evas_Object *obj,
       const char *emission, const char *source);
-void ecore_resize(Ecore_Evas *ee);
-void update_timer(void *data, Evas_Object *obj, void *event_info);
 void pause_callback(void *data, Evas_Object *obj, const char *emission,
       const char *source);
 void play_callback(void *data, Evas_Object *obj, const char *emission,

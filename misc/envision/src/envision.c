@@ -16,17 +16,17 @@ envision_delete(Envision *e)
 int
 main(int argc, char **argv)
 {
-   if(argc < 1) {
-      printf("Envision - EFL-Powered DVD Player\n");
-      printf("=================================\n");
+   if(argc < 2) {
+      printf("Envision - Enlightenment Media Player\n");
+      printf("=====================================\n");
       printf("Usage: %s [video]\n", argv[0]);
       return(1);
    }
 
    Envision * e = NULL;
    double volume, vid_len;
-   Evas_Coord minw, minh;
-   int w, h;
+   char vol_str[3];
+   Evas_Coord minw, minh, w, h;
 
    e = envision_new();
    e->config.width = 400;
@@ -41,7 +41,8 @@ main(int argc, char **argv)
    // Setup evas canvas
    e->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, e->config.width,
          e->config.height);
-   ecore_evas_title_set(e->gui.ee, "Envision DVD Player");
+   ecore_evas_title_set(e->gui.ee, "Envision Media Player");
+   ecore_evas_name_class_set(e->gui.ee, "envision", "Envision");
    ecore_evas_borderless_set(e->gui.ee, 1);
    ecore_evas_shaped_set(e->gui.ee, 1);
    ecore_evas_show(e->gui.ee);
@@ -76,6 +77,7 @@ main(int argc, char **argv)
    printf("Emotion: Playing - %s  Length: %d\n",
          argv[1], (double)emotion_object_play_length_get(e->gui.emotion));
    emotion_object_play_set(e->gui.emotion, 1);
+   evas_object_name_set(e->gui.emotion, "emotion");
 
 
    /* EDJE STUFF */
