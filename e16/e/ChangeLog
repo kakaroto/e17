@@ -3185,3 +3185,13 @@ Fri Dec 10 20:46:24 CET 2004
 
 --- 0.16.7.2 0.99.1 ---
 Add border frame action handling (enables things like auto shade/unshade).
+
+-------------------------------------------------------------------------------
+
+Tue Dec 14 22:59:25 CET 2004
+(Kim)
+
+--- 0.16.7.2 1 ---
+Fix handling of border parts where text state changes but image state doesn't.
+Fix startup position for shaded down- or right-shading windows.
+
