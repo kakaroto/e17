@@ -1,4 +1,4 @@
-# Copyright (C) 1999 Carsten Haitzler
+# Copyright (C) 1999 Carsten Haitzler and Simon Horman
 #  
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -19,26 +19,78 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-INSTALL  = install
+######################################################################
+# Change these at will
+######################################################################
+
+PACKAGE  = lvs-gui
+MAJOR    = 0
+MINOR    = 0
+PATCH    = 0
+RELEASE  = 1
 
 SRCS     = lvs-gui.c
+EXTRA_DIST = \
+  Makefile \
+  COPYING \
+  etc/rc.d/init.d/transparent_proxy \
+  etc/rc.d/init.d/ipvs
+
+######################################################################
+# No user servicable parts below here
+######################################################################
+
+DISTNAME     = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)
+RPMDISTNAME  = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)-$(RELEASE)
+DISTFILES    = $(SRCS) $(EXTRA_DIST)
+
+
+CP       = cp
+ECHO     = echo
+GZIP     = gzip --best
+INSTALL  = install
+MKDIR    = mkdir
+RM       = rm
+TAR      = tar
+
 
 OBJS     = $(SRCS:.c=.o)
-BINDIR   = /usr/local/bin
+PREFIX   = /usr
+BINDIR   = $(BUILD_ROOT)/$(PREFIX)/bin
 ETCDIR   = /etc
 BIN      = lvs-gui
 LIBS     = -L/usr/lcoal/lib `gtk-config --libs` `imlib-config --libs-gdk`
 
+.PHONY = clean install dist all
+
+all: lvs-gui
+
 lvs-gui: $(OBJS)
-	$(RM) $@
 	$(CC) -o $@ $(OBJS) $(LIBS)
 
-clean::
-	$(RM) $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"*
+clean:
+	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"*
 
 .c.o:
 	$(CC) -I/usr/local/include `gtk-config --cflags` `imlib-config --cflags-gdk` -O2 -c $< -o $@
 
-install:: 
+install: lvs-gui
+	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
 	$(INSTALL) $(BIN)      $(BINDIR)
+
+dist:
+	$(RM) -rf $(DISTNAME)/
+	$(MKDIR) $(DISTNAME)/
+	for i in $(DISTFILES); do \
+		DIR=`dirname $$i` \
+                FILE=$$(basename $$i) \
+		echo $$DIR $$FILE; \
+	done
+	$(TAR) -cf $(DISTNAME).tar $(DISTNAME)/
+	$(RM) -f $(DISTNAME).tar.gz
+	$(GZIP) $(DISTNAME).tar
+	$(RM) -rf $(DISTNAME)/
+	@$(ECHO) "############################################################"
+	@$(ECHO) "# $(DISTNAME).tar.gz is ready for distribution"
+	@$(ECHO) "############################################################"
 
