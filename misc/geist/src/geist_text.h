@@ -19,10 +19,12 @@ struct __geist_text {
    int h;
    Imlib_Image im;
    int alias;
+   int r,g,b,a;
 };
 
 geist_object *geist_text_new(void);
-geist_object *geist_text_new_with_text(int x, int y, char *fontname, char *filename);
+geist_object *
+geist_text_new_with_text(int x, int y, char *fontname, char *text, int a, int r, int g, int b);
 void geist_text_init(geist_text *txt);
 void geist_text_free(geist_object *obj);
 void geist_text_render(geist_object *obj, Imlib_Image dest);

@@ -36,7 +36,7 @@ geist_text_init(geist_text * txt)
 }
 
 geist_object *
-geist_text_new_with_text(int x, int y, char *fontname, char *text)
+geist_text_new_with_text(int x, int y, char *fontname, char *text, int a, int r, int g, int b)
 {
    geist_text *txt;
    geist_object *obj;
@@ -59,6 +59,10 @@ geist_text_new_with_text(int x, int y, char *fontname, char *text)
    txt->fontname = estrdup(fontname);
 
    txt->fn = fn;
+   txt->a = a;
+   txt->b = b;
+   txt->g = g;
+   txt->r = r;
 
    obj->x = x;
    obj->y = y;
@@ -230,8 +234,8 @@ Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
 
 
    /* todo - put offset, margin, color etc into txt struct */
-   geist_imlib_text_draw(im, txt->fn, 0, 0, txt->text, IMLIB_TEXT_TO_RIGHT, 0,
-                         0, 0, 255);
+   geist_imlib_text_draw(im, txt->fn, 0, 0, txt->text, IMLIB_TEXT_TO_RIGHT, txt->r,
+                         txt->g, txt->b, txt->a);
 
    D_RETURN(3, im);
 }
@@ -253,7 +257,7 @@ geist_object *geist_text_duplicate(geist_object *obj)
 
    txt = GEIST_TEXT(obj);
 
-   ret = geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text);
+   ret = geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text, txt->a, txt->r, txt->g, txt->b);
    if (ret)
    {
       ret->visible = obj->visible;

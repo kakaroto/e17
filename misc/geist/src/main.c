@@ -207,7 +207,7 @@ main(int argc, char *argv[])
                                                        "/share/geist/images/laet.jpg"));
    geist_document_add_object(doc,
                              geist_text_new_with_text(0, 405, "20thcent/16",
-                                                      "Some pr0n - I have to."));
+                                                      "Some pr0n - I have to.", 255, 100,100,255));
    geist_document_add_object(doc,
                              geist_image_new_from_file(220, 140,
                                                        PREFIX
@@ -242,8 +242,8 @@ main(int argc, char *argv[])
                                                        PREFIX
                                                        "/share/geist/images/paper.png"));
    geist_document_add_object(doc,
-                             geist_text_new_with_text(275, 15, "20thcent/16",
-                                                      "So this is geist..."));
+                             geist_text_new_with_text(275, 15, "20thcent/20",
+                                                      "So this is geist...", 128, 255, 100, 100));
 
 
    geist_document_render(doc);
