@@ -1416,7 +1416,24 @@ huhuhuhuh he said butter
 Editing Enlightenment's Menus
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+The first time you run enlightenment as a user after you've installed it, it
+should create a directory under your home directory called .enlightenment.  In
+this directory, there will be a file called "file.menu" - this file controls
+the contents of your left-mouse button _Menu(rootmenu) .  The very first line
+of this file contains the title for the menu, and the remainder of the file
+looks a bit something like this:
+<p>
+"Eterm" NULL exec "Eterm"
+<p>
+Where each column represents:
+<p>
+Entry title , graphic for menu (NULL if not necessary) , exec "commandline"
+<p>
+You may have several files in here, including a kde menu and a gnome menu if
+enlightenment has detected that their presence during installation.  If
+detected, your primary apps will be located in another file called
+user_apps.menu.  Each of these files is for you to edit as desired.
+
 
 <page columns=1 padding=16 name=editkeys background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
