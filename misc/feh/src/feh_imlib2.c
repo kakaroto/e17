@@ -244,6 +244,9 @@ feh_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    imlib_context_set_angle(angle);
    imlib_blend_image_onto_image_at_angle(source_image, merge_alpha, sx, sy, sw, sh, dx,
                                 dy, (int) angle, (int) angle);
+   return;
+   dw = 0;
+   dh = 0;
 }
 
 Imlib_Image feh_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
