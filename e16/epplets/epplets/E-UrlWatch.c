@@ -256,7 +256,7 @@ cb_config (void *data)
                                                   &opt.always_show_file_urls, NULL, NULL));
   Epplet_gadget_show (lbl =
                       Epplet_create_label (30, 315,
-                                           "Automatically show all new urls in watched file?", 2));
+                                           "Automatically launch every new url in watched file?", 2));
 
   Epplet_window_show (confwin);
 
