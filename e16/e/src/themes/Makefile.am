@@ -1,4 +1,3 @@
-SUBDIRS = configs
 
 ethemedir = $(ENLIGHTENMENT_ROOT)/themes
 

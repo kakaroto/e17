@@ -203,13 +203,12 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/themes/Makefile
-src/themes/configs/Makefile
-src/themes/configs/pix/Makefile
-src/themes/configs/backup/Makefile
 dox/Makefile
 eesh/Makefile
 epp/Makefile
 man/Makefile
+config/Makefile
+config/pix/Makefile
 scripts/Makefile
 scripts/enlightenment.install
 po/Makefile.in
