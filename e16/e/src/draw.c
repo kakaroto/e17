@@ -372,10 +372,10 @@ EDestroyPixImg(PixImg * pi)
 }
 
 void
-EBlendRemoveShape(EWin * ewin, Pixmap pmap)
+EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 {
    XGCValues           gcv;
-   int                 i, x, y, w, h;
+   int                 i, w, h;
    static GC           gc = 0, gcm = 0;
    static int          rn, ord;
    static XRectangle  *rl = NULL;
@@ -397,39 +397,9 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap)
 	rl = NULL;
 	return;
      }
-   if ((ewin->sticky) || (ewin->floating))
-     {
-	x = ewin->x;
-	y = ewin->y;
-     }
-   else
-     {
-	x = ewin->x + desks.desk[ewin->desktop].x;
-	y = ewin->y + desks.desk[ewin->desktop].y;
-     }
+
    w = ewin->w;
    h = ewin->h;
-
-   if (x < 0)
-     {
-	w += x;
-	x = 0;
-     }
-   if ((x + w) > root.w)
-      w -= (x + w) - root.w;
-   if (w < 0)
-      w = 0;
-   if (y < 0)
-     {
-	h += y;
-	y = 0;
-     }
-   if ((y + h) > root.h)
-      h -= (y + h) - root.h;
-   if (h < 0)
-      h = 0;
-   if ((w <= 0) || (h <= 0))
-      return;
    if (!rl)
      {
 	rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
@@ -1107,7 +1077,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     EDestroyPixImg(root_pi);
 		  if (draw_pi)
 		     EDestroyPixImg(draw_pi);
-		  EBlendRemoveShape(NULL, 0);
+		  EBlendRemoveShape(NULL, 0, 0, 0);
 		  EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
 		  ewin_pi = NULL;
 		  root_pi = NULL;
@@ -1179,7 +1149,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
 				    ewin->w, ewin->h);
 		    }
-		  EBlendRemoveShape(ewin, root_pi->pmap);
+		  EBlendRemoveShape(ewin, root_pi->pmap, x, y);
 	       }
 	     else if (firstlast == 2)
 	       {
@@ -1190,7 +1160,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     EDestroyPixImg(root_pi);
 		  if (draw_pi)
 		     EDestroyPixImg(draw_pi);
-		  EBlendRemoveShape(NULL, 0);
+		  EBlendRemoveShape(NULL, 0, 0, 0);
 		  EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
 		  ewin_pi = NULL;
 		  root_pi = NULL;

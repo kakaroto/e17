@@ -1927,7 +1927,7 @@ void                EFillPixmap(Window win, Pixmap pmap, int x, int y,
 				int w, int h);
 void                EPastePixmap(Window win, Pixmap pmap, int x, int y,
 				 int w, int h);
-void                EBlendRemoveShape(EWin * ewin, Pixmap pmap);
+void                EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y);
 PixImg             *ECreatePixImg(Window win, int w, int h);
 void                EDestroyPixImg(PixImg * pi);
 void                EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2,
