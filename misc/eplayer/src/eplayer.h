@@ -12,22 +12,29 @@ typedef enum {
 } TimeDisplay;
 
 typedef struct {
+	char evas_engine[255];
+	char output_plugin[255];
+	TimeDisplay time_display;
+} Config;
+
+typedef struct {
+	Evas *evas;
+	Evas_Object *edje;
+	Evas_Object *playlist; /* playlist container */
+	Evas_Object *playlist_col[2];
+	int playlist_font_size[2]; /* 0 -> title, 1 -> length */
+} Gui;
+
+typedef struct {
 	PlayList *playlist;
 	Ecore_Idler *play_idler;
 	Ecore_Timer *time_timer;
-	
-	struct {
-		Evas *evas;
-		Evas_Object *edje;
-		Evas_Object *playlist; /* playlist container */
-		Evas_Object *playlist_col[2];
-		int playlist_font_size[2]; /* 0 -> title, 1 -> length */
-	} gui;
-
-	TimeDisplay time_display;
 
 	OggVorbis_File current_track;
 	OutputPlugin *output;
+
+	Config cfg;
+	Gui gui;
 } ePlayer;
 
 void eplayer_playback_stop(ePlayer *player, int rewind_track);

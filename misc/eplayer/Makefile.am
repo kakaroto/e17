@@ -1,4 +1,4 @@
-SUBDIRS = data m4 src
+SUBDIRS = data etc m4 src
 
 EXTRA_DIST = TODO
 

@@ -27,7 +27,11 @@ int setup_gui(ePlayer *player) {
 	ecore_evas_init();
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
 
-	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 500, 500);
+	if (!strcasecmp(player->cfg.evas_engine, "gl"))
+		ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0, 500, 500);
+	else
+		ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 500, 500);
+	
 	ecore_evas_title_set(ee, "eVorbisPlayer");
 	ecore_evas_name_class_set(ee, "ecore_test", "test_evas");
 	ecore_evas_borderless_set(ee, 1);
@@ -35,7 +39,7 @@ int setup_gui(ePlayer *player) {
 	ecore_evas_show(ee);
 
 	player->gui.evas = ecore_evas_get(ee);
-	evas_font_path_append(player->gui.evas, DATA_DIR"/themes/fonts");
+	evas_font_path_append(player->gui.evas, DATA_DIR "/themes/fonts");
 
 	/* EDJE */
 #ifdef DEBUG
@@ -45,7 +49,7 @@ int setup_gui(ePlayer *player) {
 	player->gui.edje = edje_object_add(player->gui.evas);
 	
 	if (!(edje_object_file_set(player->gui.edje,
-	                     DATA_DIR"/themes/eplayer.eet", "eplayer"))) {
+	                     DATA_DIR "/themes/eplayer.eet", "eplayer"))) {
 		fprintf(stderr, "Cannot load theme!\n");
 		return 0;
 	}
@@ -87,12 +91,14 @@ int setup_gui(ePlayer *player) {
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PAUSE", "pause_button",
 	                                cb_pause, player);
+	
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "VOL_INCR", "vol_incr_button",
 	                                cb_volume_raise, player);
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "VOL_DECR", "vol_decr_button",
 	                                cb_volume_lower, player);
+
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "SWITCH_TIME_DISPLAY", "time_text",
 	                                cb_time_display_toggle, player);
@@ -133,7 +139,10 @@ void show_playlist(ePlayer *player) {
 		/* add the title/length items to the container */
 		for (i = 0; i < 2; i++) {
 			o = edje_object_add(player->gui.evas);
-			edje_object_file_set(o, DATA_DIR"/themes/eplayer.eet", name[i]);
+
+			edje_object_file_set(o, DATA_DIR "/themes/eplayer.eet",
+			                     name[i]);
+			
 			edje_object_part_text_set(o, "text", i ? len : title);
 			edje_object_size_min_get(o, &w, &h);
 			evas_object_resize(o, w, h);
@@ -143,7 +152,8 @@ void show_playlist(ePlayer *player) {
 			 * the edje object first, to get the width/height
 			 */
 			if (!added_cols) {
-				evas_object_geometry_get(player->gui.playlist, NULL, NULL, NULL, &h);
+				evas_object_geometry_get(player->gui.playlist,
+				                         NULL, NULL, NULL, &h);
 
 				player->gui.playlist_col[i] = 
 					playlist_column_add(player, w, h,
@@ -202,7 +212,7 @@ int refresh_time(ePlayer *player, int time) {
 	fmt[TIME_DISPLAY_ELAPSED] = "%i:%02i";
 	fmt[TIME_DISPLAY_LEFT] = "-%i:%02i";
 
-	snprintf(buf, sizeof(buf), fmt[player->time_display],
+	snprintf(buf, sizeof(buf), fmt[player->cfg.time_display],
 	         (time / 60), (time % 60));
 	
 	edje_object_part_text_set(player->gui.edje, "time_text", buf);

@@ -46,7 +46,7 @@ int vorbis_update_time(void *udata) {
 
 	cur_time = ov_time_tell(&player->current_track);
 	
-	if (player->time_display == TIME_DISPLAY_LEFT)
+	if (player->cfg.time_display == TIME_DISPLAY_LEFT)
 		cur_time = current_item->duration - cur_time;
 
 	if (cur_time == old_time) /* value didn't change, so don't update */

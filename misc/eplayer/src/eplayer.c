@@ -3,23 +3,63 @@
 
 #include <config.h>
 #include <Ecore_Evas.h>
+#include <Edb.h>
+#include <string.h>
 #include "eplayer.h"
 #include "interface.h"
 #include "vorbis.h"
+
+static void config_init(Config *cfg) {
+	snprintf(cfg->evas_engine, sizeof(cfg->evas_engine),
+	         "software");
+	snprintf(cfg->output_plugin, sizeof(cfg->output_plugin),
+	         "OSS");
+}
+
+static int config_load(Config *cfg, const char *file) {
+	E_DB_File *edb;
+	char *str;
+	int val = 0;
+	
+	if (!cfg || !file || !*file)
+		return 0;
+
+	if (!(edb = e_db_open_read((char *) file)))
+		return 0;
+
+	if (e_db_int_get(edb, "/eplayer/time_display_show_left", &val))
+		cfg->time_display = !!val;
+	
+	if ((str = e_db_str_get(edb, "/eplayer/evas_engine"))) {
+		snprintf(cfg->evas_engine, sizeof(cfg->evas_engine), str);
+		free(str);
+	}
+	
+	if ((str = e_db_str_get(edb, "/eplayer/output_plugin"))) {
+		snprintf(cfg->output_plugin, sizeof(cfg->output_plugin), str);
+		free(str);
+	}
+
+	return 1;
+}
 
 static void eplayer_free(ePlayer *player) {
 	if (!player)
 		return;
 
 	playlist_free(player->playlist);
-	output_plugin_free(player->output);
+
+	if (player->output) {
+		player->output->shutdown();
+		output_plugin_free(player->output);
+	}
 	
 	free(player);
 }
 
 static ePlayer *eplayer_new() {
 	ePlayer *player;
-	const char *plugin = PLUGIN_DIR"/output/libOSS.so";
+	char cfg_file[PATH_MAX + 1];
 
 	if (!(player = malloc(sizeof(ePlayer))))
 		return NULL;
@@ -28,11 +68,31 @@ static ePlayer *eplayer_new() {
 
 	player->playlist = playlist_new();
 
+	/* load config */
+	config_init(&player->cfg);
+	
+	snprintf(cfg_file, sizeof(cfg_file), "%s/." PACKAGE ".db",
+	         getenv("HOME"));
+	
+	if (!config_load(&player->cfg, cfg_file)) {
+		snprintf(cfg_file, sizeof(cfg_file),
+		         SYSCONF_DIR "/" PACKAGE ".db");
+
+		if (!config_load(&player->cfg, cfg_file)) {
+#ifdef DEBUG
+			printf("Cannot load config, "
+			       "falling back to default settings!\n");
+#endif
+		}
+	}
+
 	/* load the output plugin */
-	player->output = output_plugin_new(plugin);
+	player->output = output_plugin_new(player->cfg.output_plugin);
 
 	if (!player->output) {
-		fprintf(stderr, "Cannot load output plugin %s!\n", plugin);
+		fprintf(stderr, "Cannot load %s output plugin!\n",
+		        player->cfg.output_plugin);
+
 		eplayer_free(player);
 		return NULL;
 	}
@@ -90,10 +150,8 @@ int main(int argc, const char **argv) {
 	ePlayer *player;
 	int args;
 
-	if (!(player = eplayer_new())) {
-		fprintf(stderr, "Out of memory!\n");
+	if (!(player = eplayer_new()))
 		return 1;
-	}
 
 	if (argc == 1) {
 		printf("%s v%s  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n",

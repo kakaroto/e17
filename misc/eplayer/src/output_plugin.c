@@ -1,14 +1,17 @@
+#include <config.h>
 #include <stdlib.h>
 #include <dlfcn.h>
+#include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include "output_plugin.h"
 
-OutputPlugin *output_plugin_new(const char *file) {
+OutputPlugin *output_plugin_new(const char *name) {
 	OutputPlugin *op;
 	int (*init)(OutputPlugin *op);
-	char *error;
+	char *error, path[PATH_MAX + 1];
 
-	if (!file || !*file)
+	if (!name || !*name)
 		return NULL;
 
 	if (!(op = malloc(sizeof(OutputPlugin))))
@@ -16,7 +19,9 @@ OutputPlugin *output_plugin_new(const char *file) {
 
 	memset(op, 0, sizeof(OutputPlugin));
 
-	if (!(op->handle = dlopen(file, RTLD_LAZY))) {
+	snprintf(path, sizeof(path), PLUGIN_DIR "/output/lib%s.so", name);
+
+	if (!(op->handle = dlopen(path, RTLD_LAZY))) {
 		output_plugin_free(op);
 		return NULL;
 	}

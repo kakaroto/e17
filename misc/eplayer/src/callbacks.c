@@ -114,7 +114,7 @@ void cb_volume_lower(ePlayer *player, Evas_Object *obj,
 
 void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
                             const char *emission, const char *src) {
-	player->time_display = !player->time_display;
+	player->cfg.time_display = !player->cfg.time_display;
 	vorbis_update_time(player);
 }
 

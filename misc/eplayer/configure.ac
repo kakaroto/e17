@@ -21,6 +21,10 @@ AC_EXPAND_DIR(PLUGIN_DIR, "$libdir/eplayer")
 AC_DEFINE_UNQUOTED(PLUGIN_DIR, "$PLUGIN_DIR", [Directory to install plugins in])
 AC_SUBST(PLUGIN_DIR)
 
+AC_EXPAND_DIR(SYSCONF_DIR, "$sysconfdir")
+AC_DEFINE_UNQUOTED(SYSCONF_DIR, "$SYSCONF_DIR", [Directory to install configuration in])
+AC_SUBST(SYSCONF_DIR)
+
 AC_ARG_ENABLE(debug,
 	[  --enable-debug          debug build (default: no)], [
 		AC_DEFINE([DEBUG], [], [Define to 1 if you want debugging output])
@@ -61,25 +65,29 @@ AC_PATH_GENERIC(esmart, , ,
 	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
 
 dnl Check for OSS
-AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h)
-
-if test "${ac_cv_header_sys_soundcard_h}" = "yes" || test "${ac_cv_header_machine_soundcard_h}" = "yes"; then
-	have_oss="yes"
-else
-	have_oss="no"
-fi
-
+AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, [have_oss="yes"; break], have_oss="no")
 AM_CONDITIONAL(HAVE_OSS, test "$have_oss" = "yes")
 
+dnl Check for ALSA
+PKG_CHECK_MODULES(ALSA, alsa >= 0.9, have_alsa="yes", have_alsa="no")
+AM_CONDITIONAL(HAVE_ALSA, test "x$have_alsa" = "xyes")
+
+dnl Check for Solaris audio stuff
+AC_CHECK_HEADER(sys/audioio.h, have_solaris="yes", have_solaris="no")
+AM_CONDITIONAL(HAVE_SOLARIS, test "$have_solaris" = "yes")
+			   
 AC_OUTPUT([
 Makefile
 data/Makefile
 data/fonts/Makefile
 data/images/Makefile
+etc/Makefile
 m4/Makefile
 src/Makefile
 src/output/Makefile
+src/output/alsa/Makefile
 src/output/oss/Makefile
+src/output/solaris/Makefile
 ])
 
 echo
@@ -87,5 +95,7 @@ echo "$PACKAGE $VERSION"
 echo
 echo "Output Plugins"
 echo
-echo "OSS...........: ${ac_cv_header_sys_soundcard_h}"
+echo "OSS...........: $have_oss"
+echo "ALSA..........: $have_alsa"
+echo "Solaris.......: $have_solaris"
 echo

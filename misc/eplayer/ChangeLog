@@ -1,5 +1,12 @@
 $Id$
 
+2003-10-22 Tilman Sauerbeck <tilman@code-monkey.de>
+        * configure.ac: Fix OSS check, add checks for Solaris' audioio.h
+          and ALSA
+        * src/output/solaris: Added Solaris output plugin
+        * src/output/alsa: Added ALSA output plugin
+        * etc/Makefile.am, src/eplayer.c: We have a config file now
+
 2003-10-21 Tilman Sauerbeck <tilman@code-monkey.de>
         * configure.ac: check for sys/soundcard.h to determine whether
           the OSS output plugin should be built

@@ -59,29 +59,29 @@ int oss_play(unsigned char *data, int len) {
 }
 
 static int open_mixer(int rw) {
-	int fd, flags = rw ? O_RDWR : O_RDONLY;
+	int mixer, flags = rw ? O_RDWR : O_RDONLY;
 	
-	if ((fd = open("/dev/mixer", flags)) != -1)
-		return fd;
+	if ((mixer = open("/dev/mixer", flags)) != -1)
+		return mixer;
 	else
 		return open("/dev/mixer0", flags);
 }
 
 int oss_volume_get(int *left, int *right) {
-	int vol = 0, fd;
+	int vol = 0, mixer;
 
-	if ((fd = open_mixer(0)) == -1) {
+	if ((mixer = open_mixer(0)) == -1) {
 		fprintf(stderr, "OSS: Can't open mixer device\n");
 		return 0;
 	}
 
-	if (ioctl(fd, MIXER_READ(SOUND_MIXER_VOLUME), &vol) == -1) {
+	if (ioctl(mixer, MIXER_READ(SOUND_MIXER_VOLUME), &vol) == -1) {
 		fprintf(stderr, "OSS: Can't read from mixer\n");
-		close(fd);
+		close(mixer);
 		return 0;
 	}
 
-	close(fd);
+	close(mixer);
 	
 	*right = (vol & 0xFF00) >> 8;
 	*left = (vol & 0x00FF);
@@ -90,19 +90,20 @@ int oss_volume_get(int *left, int *right) {
 }
 
 int oss_volume_set(int left, int right) {
-	int fd, vol, ret;
+	int mixer, vol, ret;
 
-	if ((fd = open_mixer(1)) == -1) {
+	if ((mixer = open_mixer(1)) == -1) {
 		fprintf(stderr, "OSS: Can't open mixer device\n");
 		return 0;
 	}
 
 	vol = left | (right << 8);
 	
-	if ((ret = ioctl(fd, MIXER_WRITE(SOUND_MIXER_VOLUME), &vol)) == 1)
+	if ((ret = ioctl(mixer, MIXER_WRITE(SOUND_MIXER_VOLUME),
+	                 &vol)) == -1)
 		fprintf(stderr, "MIXER: Can't set mixer\n");
 	
-	close(fd);
+	close(mixer);
 
 	return (ret != -1);
 }
