@@ -144,6 +144,12 @@ int             ewl_widget_get_layer_sum(Ewl_Widget *w);
 void            ewl_widget_set_layer(Ewl_Widget *w, int layer);
 int             ewl_widget_get_layer(Ewl_Widget *w);
 
+void            ewl_widget_set_internal(Ewl_Widget *w, unsigned int val);
+unsigned int    ewl_widget_is_internal(Ewl_Widget *w);
+
+void            ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val);
+unsigned int    ewl_widget_is_clipped(Ewl_Widget *w);
+
 /**
  * @def LAYER(w)
  * Used to retrieve the layer of a widget.

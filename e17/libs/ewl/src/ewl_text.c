@@ -615,7 +615,8 @@ ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Adjust the clip box for the estyle and then display it.
 	 */
-	evas_object_clip_set(t->estyle, w->fx_clip_box);
+	if (w->fx_clip_box)
+		evas_object_clip_set(t->estyle, w->fx_clip_box);
 	evas_object_layer_set(t->estyle, ewl_widget_get_layer_sum(w));
 	evas_object_show(t->estyle);
 
@@ -677,7 +678,8 @@ ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 
-	evas_object_clip_set(t->estyle, w->fx_clip_box);
+	if (w->fx_clip_box)
+		evas_object_clip_set(t->estyle, w->fx_clip_box);
 	evas_object_layer_set(t->estyle, ewl_widget_get_layer_sum(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

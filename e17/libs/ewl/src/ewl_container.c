@@ -627,7 +627,7 @@ void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	if (REALIZED(w))
+	if (REALIZED(w) && w->fx_clip_box)
 		evas_object_layer_set(EWL_CONTAINER(w)->clip_box,
 				evas_object_layer_get(w->fx_clip_box));
 
@@ -669,9 +669,11 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
 	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
-	evas_object_clip_set(c->clip_box, w->fx_clip_box);
-	evas_object_layer_set(c->clip_box,
-			evas_object_layer_get(w->fx_clip_box));
+	if (w->fx_clip_box) {
+		evas_object_clip_set(c->clip_box, w->fx_clip_box);
+		evas_object_layer_set(c->clip_box,
+				evas_object_layer_get(w->fx_clip_box));
+	}
 
 	if (!c->children || ewd_list_is_empty(c->children))
 		DRETURN(DLEVEL_STABLE);

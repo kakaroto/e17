@@ -329,6 +329,8 @@ void ewl_configure_request(Ewl_Widget * w)
 					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_hide(w->fx_clip_box);
+			else if (w->theme_object)
+				evas_object_hide(w->theme_object);
 			/* FIXME: This might be a good idea.
 			if (w->theme_object)
 				edje_object_freeze(w->theme_object);
@@ -339,6 +341,8 @@ void ewl_configure_request(Ewl_Widget * w)
 					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_show(w->fx_clip_box);
+			else if (w->theme_object)
+				evas_object_show(w->theme_object);
 			/* FIXME: This might be a good idea.
 			if (w->theme_object)
 				edje_object_thaw(w->theme_object);

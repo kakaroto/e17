@@ -512,9 +512,15 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 		if (!op)
 			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 					ewl_widget_child_destroy_cb, NULL);
-		if (REALIZED(w) && VISIBLE(w)) {
-			ewl_callback_call(w, EWL_CALLBACK_REPARENT);
-			ewl_container_call_child_add(EWL_CONTAINER(p), w);
+		if (VISIBLE(w)) {
+			if (REALIZED(w)) {
+				ewl_callback_call(w, EWL_CALLBACK_REPARENT);
+				ewl_container_call_child_add(EWL_CONTAINER(p),
+							     w);
+			}
+			else {
+				ewl_realize_request(w);
+			}
 		}
 	}
 
@@ -587,7 +593,7 @@ void ewl_widget_set_layer(Ewl_Widget *w, int layer)
 	/*
 	 * Modify the current layer of the objects if realized.
 	 */
-	if (REALIZED(w)) {
+	if (REALIZED(w) && w->fx_clip_box) {
 		int temp;
 
 		temp = evas_object_layer_get(w->fx_clip_box) + layer - LAYER(w);
@@ -631,7 +637,7 @@ int ewl_widget_get_layer_sum(Ewl_Widget *w)
 		w = w->parent;
 	}
 
-	if (REALIZED(w))
+	if (REALIZED(w) && w->fx_clip_box)
 		sum += evas_object_layer_get(w->fx_clip_box);
 	else
 		sum += LAYER(w);
@@ -703,6 +709,103 @@ void ewl_widget_print(Ewl_Widget *w)
 			ewl_object_get_current_h(EWL_OBJECT(w)),
 			(VISIBLE(w) ? "visible" : "not visible"),
 			(REALIZED(w) ? "realized" : "not realized"));
+}
+
+/**
+ * @param w: the widget to mark as internally used
+ * @param val: a boolean to indicate the state of the internal flag
+ * @return Returns no value.
+ * @brief Marks a widget as one used internally to another container.
+ *
+ * Indicate whether a widget is to be used as an internal decoration on
+ * another widget. This allows for using some of the standard container
+ * functions to access the contents of complex widgets w/o fear of damaging
+ * internal layout structure.
+ */
+void ewl_widget_set_internal(Ewl_Widget *w, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (val)
+		ewl_object_add_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+				EWL_FLAGS_PROPERTY_MASK);
+	else
+		ewl_object_remove_flags(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_INTERNAL,
+				EWL_FLAGS_PROPERTY_MASK);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to query the state of the internal flag
+ * @return Returns TRUE if the widget is marked internal, otherwise FALSE.
+ * @brief Checks the widget for the internal flag.
+ */
+unsigned int ewl_widget_is_internal(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_object_has_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+				EWL_FLAGS_PROPERTY_MASK))
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to mark as unclipped
+ * @param val: the state of the clipping flag
+ * @return Returns no value.
+ * @brief Marks whether the widget should be clipped at it's boundaries.
+ */
+void ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (val)
+		ewl_object_remove_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+				EWL_FLAGS_VISIBLE_MASK);
+	else
+		ewl_object_add_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+				EWL_FLAGS_VISIBLE_MASK);
+
+	if (!REALIZED(w) || (val && w->fx_clip_box) ||
+			(!val && !w->fx_clip_box))
+		DRETURN(DLEVEL_STABLE);
+
+	if (val) {
+		Ewl_Embed *emb;
+
+		emb = ewl_embed_find_by_widget(w);
+		if (!emb || !emb->evas)
+			DRETURN(DLEVEL_STABLE);
+
+		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+		ewl_widget_configure(w);
+	}
+	else {
+		ewl_evas_object_destroy(w->fx_clip_box);
+		w->fx_clip_box = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to check if it clips it's theme object
+ * @return Returns TRUE if the widget clips, otherwise FALSE.
+ * @brief Checks if a widget clips it's theme object.
+ */
+unsigned int ewl_widget_is_clipped(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_object_has_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+			EWL_FLAGS_VISIBLE_MASK))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /*
@@ -806,15 +909,19 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the fx clip box where special fx can be drawn to affect the
 	 * entire contents of the widget
 	 */
-	w->fx_clip_box = evas_object_rectangle_add(emb->evas);
-	evas_object_layer_set(w->fx_clip_box, ewl_widget_get_layer_sum(w));
+	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP))
+		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+
+	if (w->fx_clip_box)
+		evas_object_layer_set(w->fx_clip_box,
+				ewl_widget_get_layer_sum(w));
 
 	pc = EWL_CONTAINER(w->parent);
 
 	/*
 	 * Clip the fx_clip_box to the parent clip_box.
 	 */
-	if (pc && pc->clip_box)
+	if (pc && pc->clip_box && w->fx_clip_box)
 		evas_object_clip_set(w->fx_clip_box, pc->clip_box);
 
 	/*
@@ -1009,9 +1116,9 @@ void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             layer;
-	Evas           *oevas;
 	Ewl_Container  *pc;
 	Ewl_Embed      *emb;
+	Evas           *oevas = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1024,7 +1131,11 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * If the new parent is on a different evas, we must re-realize it.
 	 */
 	if (REALIZED(w)) {
-		oevas = evas_object_evas_get(w->fx_clip_box);
+		if (w->fx_clip_box)
+			oevas = evas_object_evas_get(w->fx_clip_box);
+		else if (w->theme_object)
+			oevas = evas_object_evas_get(w->theme_object);
+
 		emb = ewl_embed_find_by_widget(w);
 		if (!emb || oevas != emb->evas)
 			ewl_widget_unrealize(w);
@@ -1039,7 +1150,8 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 			layer = ewl_widget_get_layer_sum(EWL_WIDGET(pc)) +
 				LAYER(w);
-			evas_object_layer_set(w->fx_clip_box, layer);
+			if (w->fx_clip_box)
+				evas_object_layer_set(w->fx_clip_box, layer);
 			if (w->theme_object)
 				evas_object_layer_set(w->theme_object, layer);
 		}
