@@ -49,9 +49,6 @@ main(int argc, char **argv)
    Display *disp;
    Window   win;
    Window   root_win;
-   Visual  *vis;
-   Colormap cm;
-   int      depth;
    
    char txt[4096];
    
@@ -72,14 +69,12 @@ main(int argc, char **argv)
    win = evas_get_window(e);
    
    /* tell X what events we are interested in */
-   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
-                PointerMotionMask | ExposureMask);
+   XSelectInput(disp, win, 
+		ButtonPressMask | ButtonReleaseMask | 
+                PointerMotionMask | ExposureMask | 
+		StructureNotifyMask | SubstructureNotifyMask |
+		VisibilityChangeMask);
    XMapWindow(disp, win);
-//   XSync(disp, False);
-
-   vis = evas_get_optimal_visual(e, disp);
-   cm = evas_get_optimal_colormap(e, disp);
-   depth = evas_get_colors(e);
 
    etox_style_add_path(DATADIR"/etox/style");
    etox_style_add_path("./style");
@@ -248,7 +243,16 @@ main(int argc, char **argv)
 	     XNextEvent(disp, &ev);
 	     switch(ev.type)
 	       {
-               case Expose:
+		case ConfigureNotify:
+		  /* window resized */
+		  printf("resize to %i %i\n",
+			 ev.xconfigure.width, 
+			 ev.xconfigure.height);
+		  evas_set_output_size(e, 
+				       ev.xconfigure.width, 
+				       ev.xconfigure.height);
+		  break;	       
+		case Expose:
 		  /* window rectangle was exposed - add it to the list of */
 		  /* rectangles we need to re-render */
 		  evas_update_rect(e,
@@ -266,7 +270,7 @@ main(int argc, char **argv)
 		       if (button == 1)
 			 {
 			    Evas_Object obj;
-		       
+			    
 			    obj = evas_object_at_position(e, mouse_x, mouse_y);
 
 			    if (obj == o[1])
@@ -294,7 +298,7 @@ main(int argc, char **argv)
 			    for (i=0; i<NRECTS; i++)
 			      evas_del_object(e, rect[i]);
 			    evas_del_object(e, rect_2);
-
+			    
 			    evas_free(e);
 			    exit(0);
 			 }
@@ -304,7 +308,7 @@ main(int argc, char **argv)
 		  break;
 	       }
 	  }
-
+	
 	if ((get_time() - t1) > 0.04) 
 	  {
 	     double shift;

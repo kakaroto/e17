@@ -76,9 +76,6 @@ main(int argc, char *argv[])
 
   Display *disp;
   Window win;
-  Visual *vis;
-  Colormap cm;
-  int depth;
 
   char txt[4096];
 
@@ -93,11 +90,8 @@ main(int argc, char *argv[])
 		   FNTDIR);
   win = evas_get_window(e);
   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
-	       PointerMotionMask | ExposureMask);
+	       PointerMotionMask | ExposureMask | StructureNotifyMask);
   XMapWindow(disp, win);
-  vis = evas_get_optimal_visual(e, disp);
-  cm = evas_get_optimal_colormap(e, disp);
-  depth = evas_get_colors(e);
 
   etox_style_add_path(DATADIR"/etox/style");
   etox_style_add_path("./style");
@@ -205,6 +199,13 @@ main(int argc, char *argv[])
 	  XNextEvent(disp, &ev);
 	  switch (ev.type)
 	    {
+	     case ConfigureNotify:
+	       printf("resize to %i %i\n",
+		      ev.xconfigure.width, 
+		      ev.xconfigure.height);
+	       evas_set_output_size(e, 
+				    ev.xconfigure.width, 
+				    ev.xconfigure.height);
 	      case ButtonPress:
 	        {
 		  int button, mouse_x, mouse_y;
