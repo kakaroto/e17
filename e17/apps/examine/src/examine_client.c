@@ -460,7 +460,7 @@ examine_client_get_val_cb(void)
   default:                     /* PT_STR, PT_RGB */
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
-    ewl_entry_set_text(EWL_ENTRY(prop->w), ret);
+    ewl_entry_text_set(EWL_ENTRY(prop->w), ret);
   }
 }
 
