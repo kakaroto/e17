@@ -53,21 +53,23 @@ ewl_floater_init (Ewl_Floater * f, Ewl_Widget * parent)
 
 	w = EWL_WIDGET(f);
 
+	/*
+	 * Initialize the inherited box fields, set the fill policy to
+	 * normal, and the widget to follow.
+	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy (EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
+	f->follows = parent;
 
+	/*
+	 * Setup the basic callbacks for special events.
+	 */
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_floater_configure,
 			NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE, __ewl_floater_realize,
 			NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_floater_destroy,
 			NULL);
-
-	if (parent) {
-		f->follows = parent;
-		f->x = CURRENT_X(w) = REQUEST_X(parent);
-		f->y = CURRENT_Y(w) =  REQUEST_Y(parent);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -87,14 +89,12 @@ ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 
 	DCHECK_PARAM_PTR("f", f);
 
-	if (f->follows) {
-		f->x = x + REQUEST_X(f->follows);
-		f->y = y + REQUEST_Y(f->follows);
-	}
-	else {
-		f->x = x;
-		f->y = y;
-	}
+	/*
+	 * Set the coordinates of the floater, this will be used for either
+	 * absolute or relative positioning.
+	 */
+	f->x = x;
+	f->y = y;
 
 	ewl_widget_configure(EWL_WIDGET(f));
 
@@ -116,30 +116,89 @@ ewl_floater_set_relative(Ewl_Floater *f, Ewl_Widget *w)
 
 	DCHECK_PARAM_PTR("f", f);
 
+	/*
+	 * Remove the callback attached to the configure event for the
+	 * followed widget.
+	 */
+	if (f->follows)
+		ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
+				__ewl_floater_configure);
+
+	/*
+	 * Set the widget that the floater follows.
+	 */
 	f->follows = w;
+
+	/*
+	 * Now attach a callback to the configure event for the followed
+	 * widget.
+	 */
+	if (f->follows)
+		ewl_callback_append(f->follows, EWL_CALLBACK_CONFIGURE,
+				__ewl_floater_configure, NULL);
 
 	ewl_widget_configure(EWL_WIDGET(f));
 
 	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
 }
 
+/*
+ * Configure the floater so that the positioning is relative to a followed
+ * widget if appropriate.
+ */
 void
 __ewl_floater_configure(Ewl_Widget * w, void * ev_data, void * user_data)
 {
+	int align, x, y;
 	Ewl_Floater * f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	f = EWL_FLOATER(w);
 
+	/*
+	 * Determine actual coordinates based on absolute or relative
+	 * positioning.
+	 */
 	if (f->follows) {
-		REQUEST_X(f) = REQUEST_X(f->follows) + f->x;
-		REQUEST_Y(f) = REQUEST_Y(f->follows) + f->y;
+		x = REQUEST_X(f->follows) + f->x;
+		y = REQUEST_Y(f->follows) + f->y;
 	}
 	else {
-		REQUEST_X(f) = f->x;
-		REQUEST_Y(f) = f->y;
+		x = f->x;
+		y = f->y;
 	}
+
+	/*
+	 * Store the alignment in a temporary variable for fast access to
+	 * determine positioning.
+	 */
+	align = ewl_object_get_alignment(EWL_OBJECT(w));
+
+	/*
+	 * Determine the horizontal placement of the widget based on alignment
+	 */
+	if (align & EWL_ALIGNMENT_RIGHT) {
+		x -= REQUEST_W(w);
+	}
+	else if (!(align & EWL_ALIGNMENT_LEFT)) {
+		x -= REQUEST_W(w) / 2;
+	}
+
+	/*
+	 * Determine the vertical placement of the widget based on alignment
+	 */
+	if (align & EWL_ALIGNMENT_BOTTOM) {
+		y -= REQUEST_H(w);
+	}
+	else if (!(align & EWL_ALIGNMENT_TOP)) {
+		y -= REQUEST_H(w) / 2;
+	}
+
+	/*
+	 * Now request the calculated coordinates for the floater.
+	 */
+	ewl_object_request_position(EWL_OBJECT(w), x, y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -152,7 +211,7 @@ __ewl_floater_realize(Ewl_Widget * w, void * ev_data, void * user_data)
 {
 	w->evas = w->parent->evas;
 	w->evas_window = w->parent->evas_window;
-	evas_set_color(w->evas, w->fx_clip_box, 255, 0, 0, 255);
+	/* evas_set_color(w->evas, w->fx_clip_box, 255, 0, 0, 255); */
 }
 
 /*
