@@ -4087,3 +4087,10 @@ fix some consitancies for text but peter um.. :) not all that patch was
 typos.. the original spelling was correct. I was using "English" not "American"
 :) (note Enlish spelligns for colour is coloUr not color, and initialise is 
 with an S not a Z in English) :)
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 08:23:33 PST 1999
+(Raster)
+
+patch for file finding internationalisation...
