@@ -7,6 +7,8 @@ extern Ewd_List *ewl_embed_list;
 
 static unsigned int    debug_segv = 0;
 static unsigned int    phase_status = 0;
+static Ecore_Timer    *config_timer = NULL;
+
 static Ewd_List *configure_list = NULL;
 static Ewd_List *realize_list = NULL;
 static Ewd_List *destroy_list = NULL;
@@ -91,8 +93,12 @@ void ewl_init(int argc, char **argv)
 
 	ewl_embed_list = ewd_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
-	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, __ewl_ecore_exit,
-			NULL);
+
+	/*
+	 * Call it once right away, then get it looping every half second
+	 */
+	ewl_reread_config(NULL);
+	config_timer = ecore_timer_add(0.5, ewl_reread_config, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -108,13 +114,6 @@ void ewl_main(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/*
-	 * Call it once right away, then get it looping every half second
-	 */
-	ewl_reread_config(NULL);
-	ecore_timer_add(0.5, ewl_reread_config, NULL);
-
-	ewl_idle_render(NULL);
 	ecore_main_loop_begin();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -185,6 +184,7 @@ void ewl_main_quit(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_main_loop_quit();
+	ecore_timer_del(config_timer);
 	ewl_callbacks_deinit();
 
 	ewd_list_destroy(configure_list);

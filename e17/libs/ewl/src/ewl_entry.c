@@ -289,7 +289,6 @@ void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 				EWL_TEXT(w)->text);
 	else if (ev->key_compose) {
-		printf("Received %s\n", ev->keyname);
 		__ewl_entry_insert_text(w, ev->key_compose);
 	}
 
