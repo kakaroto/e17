@@ -529,10 +529,8 @@ XMMS_CB(playback_currentid) {
 		}
 	}
 
-	if (id >= 1) {
+	if (id > 0) 
 		playlist_set_current(e->playlist, id);
-		xmmsc_playlist_get_mediainfo(e->xmms, id);
-	}
 
 	hilight_current_track(e);
 }
@@ -557,6 +555,13 @@ XMMS_CB(playlist_mediainfo) {
 		ui_fill_track_info(e, pli);
 }
 
+XMMS_CB(playlist_mediainfo_id) {
+	PlayListItem *pli;
+	unsigned int id = (unsigned int) arg;
+	
+	xmmsc_playlist_get_mediainfo(e->xmms, id);
+}
+
 XMMS_CB(playlist_list) {
 	int i, *id = arg;
 	
@@ -571,7 +576,6 @@ XMMS_CB(playlist_add) {
 	unsigned int id = (unsigned int) arg;
 
 	playlist_item_add(e->playlist, id);
-	xmmsc_playlist_get_mediainfo(e->xmms, id);
 }
 
 XMMS_CB(playlist_remove) {

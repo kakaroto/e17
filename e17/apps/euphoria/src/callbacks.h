@@ -65,6 +65,7 @@ XMMS_CB(playback_status);
 XMMS_CB(playback_playtime);
 XMMS_CB(playback_currentid);
 XMMS_CB(playlist_mediainfo);
+XMMS_CB(playlist_mediainfo_id);
 XMMS_CB(playlist_list);
 XMMS_CB(playlist_add);
 XMMS_CB(playlist_remove);

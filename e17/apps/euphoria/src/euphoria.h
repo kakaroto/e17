@@ -7,9 +7,9 @@
  */
 
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
-#include <Ecore_X.h>
 #include <xmms/xmmsclient.h>
 #include "playlist.h"
 

@@ -91,6 +91,8 @@ static bool setup_xmms(Euphoria *e) {
 	                   (XmmsCb) on_xmms_playback_currentid, e);
 	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_MEDIAINFO,
 	                   (XmmsCb) on_xmms_playlist_mediainfo, e);
+	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_MEDIAINFO_ID,
+	                   (XmmsCb) on_xmms_playlist_mediainfo_id, e);
 	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_LIST,
 	                   (XmmsCb) on_xmms_playlist_list, e);
 	xmmsc_set_callback(e->xmms, XMMS_SIGNAL_PLAYLIST_ADD,
