@@ -583,13 +583,13 @@ imlib_image_has_alpha(void)
 }
 
 void 
-imlib_image_set_never_changes_on_disk(void)
+imlib_image_set_changes_on_disk(void)
 {
    ImlibImage *im;
 
    CHECK_PARAM_POINTER("imlib_image_set_never_changes_on_disk", "image", ctxt_image);
    CAST_IMAGE(im, ctxt_image);
-   UNSET_FLAG(im->flags, F_ALWAYS_CHECK_DISK); 
+   SET_FLAG(im->flags, F_ALWAYS_CHECK_DISK); 
 }
 
 void 

@@ -148,7 +148,7 @@ DATA32     *imlib_image_get_data(void);
 DATA32     *imlib_image_get_data_for_reading_only(void);
 void        imlib_image_put_back_data(DATA32 *data);
 char        imlib_image_has_alpha(void);
-void        imlib_image_set_never_changes_on_disk(void);
+void        imlib_image_set_changes_on_disk(void);
 void        imlib_image_get_border(Imlib_Border *border);
 void        imlib_image_set_border(Imlib_Border *border);
 void        imlib_image_set_format(const char *format);
