@@ -3,18 +3,18 @@
 		signal, ""; 
 		source, ""; 
 		action, STATE_SET "default" 0.0; 
-		transition, DECELERATE 1.5; 
-		target, "EnticeToolTipClip"; in, 0.75 0.0; 
+		transition, DECELERATE 1.0; 
+		target, "EnticeToolTipClip"; in, 1.25 0.0; 
 	    } 
 	    program { 
 		name, "ToolTipShow"; 
 		signal, ""; 
 		source, ""; 
 		action, STATE_SET "visible" 0.0; 
-		transition, DECELERATE 1.5; 
+		transition, DECELERATE 1.0; 
 		target, "EnticeToolTipClip";
 	    } 
-#define TOOLTIP_CB(pname, pstate) \
+#define TOOLTIP_CB(pname, pstate, ptext) \
 	    program { name, "ToolTipKillCBS"pname; \
 		signal, "mouse,in"; source, pname; \
 		action, ACTION_STOP; target, "ToolTipHide"; } \
@@ -23,28 +23,44 @@
 			transition, ACCELERATE 0.35; \
 			target, "EnticeToolTipClip"; } \
 	    program { name, "ToolTip"pname; signal, "mouse,in"; \
-			source, pname; action, STATE_SET pstate 0.0; \
-			transition, ACCELERATE 0.25; in, 0.5 0.0; \
-			target, "EnticeToolTip"; after, "ToolTipShow"; } \
+			source, pname; \
+			script {  \
+			    set_text(PART:"EnticeToolTip", ptext); \
+			} \
+			after, "ToolTipShow"; } \
 	    program { name, "ToolTipHide"pname; signal, "mouse,out"; \
 			source, pname; action, ACTION_STOP; \
 			target, "ToolTipHide"; \
 			target, "ToolTip"pname; \
 			target, "ToolTipKillCBS"pname; \
-			after, "ToolTipHide"; }
+			after, "ToolTipHide"; in: 0.5 0.0; }
 
-	TOOLTIP_CB("ButtonDeleteImage", "delete_image")
-	TOOLTIP_CB("ButtonNextImage", "next_image")
-	TOOLTIP_CB("ButtonPrevImage", "prev_image")
-	TOOLTIP_CB("ButtonSaveImage", "save_image")
-	TOOLTIP_CB("ButtonRotateRight", "rotate_right")
-	TOOLTIP_CB("ButtonRotateLeft", "rotate_left")
-	TOOLTIP_CB("ButtonZoomNormal", "zoom_normal")
-	TOOLTIP_CB("ButtonZoomIn", "zoom_in")
-	TOOLTIP_CB("ButtonZoomOut", "zoom_out")
-	TOOLTIP_CB("ButtonExpandImage", "expand_image")
-	TOOLTIP_CB("ButtonFullScreen", "full_screen")
-	TOOLTIP_CB("ButtonExit", "exit_entice")
-	TOOLTIP_CB("ButtonSlideShowStart", "slideshow_start")
-	TOOLTIP_CB("ButtonSlideShowStop", "slideshow_stop")
+	TOOLTIP_CB("ButtonDeleteImage", "delete_image", \
+					"Delete the current Image")
+	TOOLTIP_CB("ButtonNextImage", "next_image", \
+					"Load the Next Image")
+	TOOLTIP_CB("ButtonPrevImage", "prev_image", \
+					"Load the Previous Image")
+	TOOLTIP_CB("ButtonSaveImage", "save_image", \
+					"Save the modified Image")
+	TOOLTIP_CB("ButtonRotateRight", "rotate_right", \
+					"Rotate the Image Right 90 Degrees")
+	TOOLTIP_CB("ButtonRotateLeft", "rotate_left", \
+					"Rotate the Image Left 90 Degrees")
+	TOOLTIP_CB("ButtonZoomNormal", "zoom_normal", \
+					"Show the Image with 1:1 Aspect")
+	TOOLTIP_CB("ButtonZoomIn", "zoom_in", \
+					"Zoom In Slightly")
+	TOOLTIP_CB("ButtonZoomOut", "zoom_out", \
+					"Zoom Out Slightly")
+	TOOLTIP_CB("ButtonExpandImage", "expand_image", \
+					"Scale Image to fill Area")
+	TOOLTIP_CB("ButtonFullScreen", "full_screen", \
+					"Toggle fullscreen mode")
+	TOOLTIP_CB("ButtonExit", "exit_entice", \
+				    "Leave Entice")
+	TOOLTIP_CB("ButtonSlideShowStart", "slideshow_start", \
+				    "Start a slideshow")
+	TOOLTIP_CB("ButtonSlideShowStop", "slideshow_stop", \
+				    "Stop the slideshow")
 	    
