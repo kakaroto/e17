@@ -234,7 +234,7 @@ ConfigFilePreparse(const char *path, const char *dest)
 }
 
 /* Split the process of finding the file from the process of loading it */
-static int
+int
 ConfigFileRead(FILE * fs)
 {
    int                 err;
@@ -478,6 +478,7 @@ ConfigFileLoad(const char *name, const char *themepath,
    file = ConfigFileFind(name, themepath, preparse);
    if (!file)
       goto done;
+
    fs = fopen(file, "r");
    Efree(file);
    if (!fs)
@@ -548,45 +549,13 @@ ThemeConfigLoad(void)
    if (p)
       ProgressbarDestroy(p);
 
-   /* No longer needed */
+   /* Font mappings no longer needed */
    FontConfigUnload();
 
    /* Loose ends... */
-   Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
-   ConfigFileLoad(s, NULL, ConfigFileRead, 0);
-
    BordersSetupFallback();
 
    return 0;
-}
-
-void
-SaveUserControlConfig(void)
-{
-   char                s[4096], s2[4096];
-   FILE               *fs;
-
-   /* Save the configuration parameters */
-   ConfigurationSave();
-
-   /* Save odd bits */
-   Etmp(s2);
-   fs = fopen(s2, "w");
-   if (!fs)
-      return;
-
-   fprintf(fs, "1001 0\n");
-
-   BackgroundsConfigSave(fs);
-   ButtonsConfigSave(fs);
-
-   fclose(fs);
-
-   Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
-   E_mv(s2, s);
-   if (!isfile(s))
-      Alert(_("There was an error saving your autosave data - filing\n"
-	      "system problems.\n"));
 }
 
 void

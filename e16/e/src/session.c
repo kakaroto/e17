@@ -304,7 +304,8 @@ autosave(void)
 
    Real_SaveSnapInfo(0, NULL);
 
-   SaveUserControlConfig();
+   /* Save the configuration parameters */
+   ConfigurationSave();
 }
 
 #ifdef HAVE_X11_SM_SMLIB_H

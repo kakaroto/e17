@@ -66,7 +66,8 @@ struct _button
 static struct
 {
    Button             *button;
-} Mode_button;
+   char                loading_user;
+} Mode_buttons;
 
 static void         ButtonHandleEvents(XEvent * ev, void *btn);
 
@@ -650,7 +651,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
    Window              win = ev->xbutton.window;
    ActionClass        *ac;
 
-   Mode_button.button = b;
+   Mode_buttons.button = b;
 
    GrabPointerSet(win, ECSR_GRAB, 0);
 
@@ -695,8 +696,8 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
    b->left = 0;
 
    if (Mode.mode == MODE_BUTTONDRAG)
-      ButtonDragEnd(Mode_button.button);
-   Mode_button.button = NULL;
+      ButtonDragEnd(Mode_buttons.button);
+   Mode_buttons.button = NULL;
 
    GrabPointerRelease();
 }
@@ -860,7 +861,7 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     if (!pbt)
+	     if (!pbt && !Mode_buttons.loading_user)
 	       {
 		  bt = ButtonCreate(name, 0, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr,
@@ -876,9 +877,13 @@ ButtonsConfigLoad(FILE * ConfigFile)
 		pbt->tclass = tc;
 	     break;
 	  case BUTTON_LABEL:
+	     _EFREE(label);
 	     label = Estrdup(atword(s, 2));
 	     if (pbt)
-		pbt->label = label;
+	       {
+		  _EFREE(pbt->label);
+		  pbt->label = label;
+	       }
 	     break;
 	  case BORDERPART_ONTOP:
 	     ontop = atoi(s2);
@@ -887,8 +892,7 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	     break;
 	  case CONFIG_CLASSNAME:
 	  case BUTTON_NAME:
-	     if (name)
-		Efree(name);
+	     _EFREE(name);
 	     name = Estrdup(s2);
 	     pbt = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
 	     break;
@@ -1011,23 +1015,41 @@ ButtonsConfigLoad(FILE * ConfigFile)
    err = -1;
 
  done:
-   if (name)
-      Efree(name);
+   _EFREE(name);
+   _EFREE(label);
 
    return err;
 }
 
-int
-ButtonsConfigSave(FILE * fs)
+static void
+ButtonsConfigLoadUser(void)
 {
-#if 0
+   char                s[4096];
+
+   Esnprintf(s, sizeof(s), "%s.buttons", EGetSavePrefix());
+
+   Mode_buttons.loading_user = 1;
+   ConfigFileLoad(s, NULL, ConfigFileRead, 0);
+   Mode_buttons.loading_user = 0;
+}
+
+static void
+ButtonsConfigSave(void)
+{
+   char                s[FILEPATH_LEN_MAX], st[FILEPATH_LEN_MAX];
+   FILE               *fs;
    int                 i, num;
    Button            **blst;
    int                 flags;
 
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
    if (!blst)
-      return 0;
+      return;
+
+   Etmp(st);
+   fs = fopen(st, "w");
+   if (!fs)
+      return;
 
    for (i = 0; i < num; i++)
      {
@@ -1080,12 +1102,13 @@ ButtonsConfigSave(FILE * fs)
 	  }
 	fprintf(fs, "1000\n");
      }
-   Efree(blst);
-#else
-   fs = NULL;
-#endif
 
-   return 0;
+   fclose(fs);
+
+   Esnprintf(s, sizeof(s), "%s.buttons", EGetSavePrefix());
+   E_mv(st, s);
+
+   Efree(blst);
 }
 
 /*
@@ -1097,7 +1120,16 @@ ButtonsSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
-     default:
+     case ESIGNAL_INIT:
+	memset(&Mode_buttons, 0, sizeof(Mode_buttons));
+	break;
+
+     case ESIGNAL_CONFIGURE:
+	ButtonsConfigLoadUser();
+	break;
+
+     case ESIGNAL_EXIT:
+	ButtonsConfigSave();
 	break;
      }
 }
@@ -1222,8 +1254,8 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "move", 2))
      {
-	if (Mode_button.button)
-	   ButtonDragStart(Mode_button.button);
+	if (Mode_buttons.button)
+	   ButtonDragStart(Mode_buttons.button);
      }
 }
 

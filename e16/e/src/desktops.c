@@ -1666,8 +1666,10 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
 	/* toss down the dragbar and related */
 	DesksControlsCreate();
 	DesksControlsShow();
+	break;
 
-	/* then draw all the buttons that belong on the desktop */
+     case ESIGNAL_START:
+	/* Draw all the buttons that belong on the desktop */
 	DeskShowButtons();
 	break;
      }

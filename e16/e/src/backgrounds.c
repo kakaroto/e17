@@ -1113,16 +1113,38 @@ BackgroundsConfigLoad(FILE * fs)
    return err;
 }
 
-int
-BackgroundsConfigSave(FILE * fs)
+static void
+BackgroundsConfigLoadUser(void)
 {
+   char                s[4096];
+
+   Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+   if (ConfigFileLoad(s, NULL, ConfigFileRead, 0))
+     {
+	/* FIXME - Keep around a bit, and then remove */
+	Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
+	Eprintf("Fallback - loading %s\n", s);
+	ConfigFileLoad(s, NULL, ConfigFileRead, 0);
+     }
+}
+
+static void
+BackgroundsConfigSave(void)
+{
+   char                s[FILEPATH_LEN_MAX], st[FILEPATH_LEN_MAX];
+   FILE               *fs;
    int                 i, num;
    Background        **bglist;
    int                 j, b, r, g;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (num <= 0)
-      return 0;
+      return;
+
+   Etmp(st);
+   fs = fopen(st, "w");
+   if (!fs)
+      return;
 
    for (i = num - 1; i >= 0; i--)
      {
@@ -1186,9 +1208,13 @@ BackgroundsConfigSave(FILE * fs)
 
 	fprintf(fs, "1000\n");
      }
-   Efree(bglist);
 
-   return 0;
+   fclose(fs);
+
+   Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+   E_mv(st, s);
+
+   Efree(bglist);
 }
 
 /*
@@ -1267,9 +1293,18 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 	BackgroundCreate("NONE", NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
 			 0);
 	break;
+
+     case ESIGNAL_CONFIGURE:
+	BackgroundsConfigLoadUser();
+	break;
+
      case ESIGNAL_START:
 	DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 30.0, BackgroundsTimeout, 0,
 	     NULL);
+	break;
+
+     case ESIGNAL_EXIT:
+	BackgroundsConfigSave();
 	break;
      }
 }

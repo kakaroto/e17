@@ -1206,7 +1206,6 @@ void                ArrangeEwins(const char *params);
 
 /* backgrounds.c */
 int                 BackgroundsConfigLoad(FILE * fs);
-int                 BackgroundsConfigSave(FILE * fs);
 char               *BackgroundGetUniqueString(Background * bg);
 void                BackgroundPixmapFree(Background * bg);
 void                BackgroundImagesFree(Background * bg, int free_pmap);
@@ -1259,7 +1258,6 @@ void                BordersSetupFallback(void);
 
 /* buttons.c */
 int                 ButtonsConfigLoad(FILE * fs);
-int                 ButtonsConfigSave(FILE * fs);
 Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
 				 ActionClass * aclass, TextClass * tclass,
 				 char *label, char ontop, int flags, int minw,
@@ -1332,8 +1330,8 @@ char               *ConfigFileFind(const char *name, const char *themepath,
 				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,
 				   int (*parse) (FILE * fs), int preparse);
+int                 ConfigFileRead(FILE * fs);
 int                 ThemeConfigLoad(void);
-void                SaveUserControlConfig(void);
 void                RecoverUserConfig(void);
 
 /* coords.c */
