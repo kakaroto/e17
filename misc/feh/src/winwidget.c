@@ -394,7 +394,7 @@ winwidget_show(winwidget winwid)
 
 void winwidget_resize(winwidget winwid, int w, int h)
 {
-   XEvent ev;
+/*   XEvent ev; */
    
     D_ENTER;
     if(!winwid)
