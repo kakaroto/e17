@@ -58,15 +58,19 @@ typedef struct _GtkgEvasEvHGroupSelectorClass GtkgEvasEvHGroupSelectorClass;
 struct _GtkgEvasEvHGroupSelector 
 {
 	GtkgEvasEvH evh_obj;
-	GtkgEvasObj *selected;
 	GtkgEvasObj *mark;	// object that we are attaching to
 
 	gint	tracking;	// Are we tracking the mouse move.?
+	gint	tracking_ix;	// initial location of click that started tracking.
+	gint	tracking_iy;
 	GtkgEvasObj* rect;
 
-	gint tl_top, tl_left;
+	gint tl_top, tl_left;	// deprecated... remove.
 
-	Evas_List selected_objs;
+
+
+	Evas_List selected_objs;		// the current selection
+	GtkgEvasEvHSelectable* selected_objs_lastadded;	// Last object added to selected_objs;
 };
 
 struct _GtkgEvasEvHGroupSelectorClass {
@@ -84,9 +88,14 @@ void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgE
 //package
 void gevasevh_group_selector_addtosel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
+void gevasevh_group_selector_floodtosel( 
+	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 void gevasevh_group_selector_remfromsel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 void gevasevh_group_selector_flushsel(GtkgEvasEvHGroupSelector* ev );
+void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy );
+gboolean 
+gevasevh_group_selector_isinsel(GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 
 
 //void gevasevh_group_selector_add_evh( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );

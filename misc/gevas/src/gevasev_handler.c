@@ -75,6 +75,11 @@ static void gevasevh_destroy(GtkObject * object);
 static void gevasevh_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 static void gevasevh_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
+static GEVASEV_HANDLER_PRIORITY gevasev_handler_get_priority( GtkgEvasEvH* evh )
+{
+	return GEVASEV_HANDLER_PRIORITY_NORMAL;
+}
+
 GEVASEV_HANDLER_RET
 gevasev_handler_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 						 int _x, int _y)
@@ -157,9 +162,10 @@ static void gevasevh_class_init(GtkgEvasEvHClass * klass)
 	klass->handler_mouse_down = gevasev_handler_mouse_down;
 	klass->handler_mouse_up = gevasev_handler_mouse_up;
 	klass->handler_mouse_move = gevasev_handler_mouse_move;
+	klass->get_priority = gevasev_handler_get_priority;
 
 	gtk_object_add_arg_type(GTK_GEVASEVH_GEVASOBJ,
-							GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_GEVAS_OBJ);
+		GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_GEVAS_OBJ);
 }
 
 static void gevasevh_init(GtkgEvasEvH * ev)
@@ -236,3 +242,5 @@ static void gevasevh_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 	}
 }
+
+

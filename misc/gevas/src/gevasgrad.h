@@ -69,6 +69,7 @@ extern "C" {
 	void gevasgrad_add_color(GtkgEvasObj * object, int r, int g, int b, int a,
 							 int dist);
 	void gevasgrad_seal(GtkgEvasObj * object);
+	void gevasgrad_set_angle( GtkgEvasObj* object, double angle);
 
 
 

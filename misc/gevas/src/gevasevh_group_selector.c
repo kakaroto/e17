@@ -75,7 +75,7 @@ gevasevh_group_selector_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 enum {
 	ARG_0,				/* Skip 0, an invalid argument ID */
-	ARG_SELECTED_OBJ,
+	ARG_SELECTEDb_OBJ,
 };
 
 /*
@@ -96,20 +96,120 @@ void gevasevh_group_selector_flushsel(
 	}
 	ev->selected_objs = evas_list_free( ev->selected_objs );
 	ev->selected_objs = 0;
+	ev->selected_objs_lastadded = 0;
 }
+
+void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy )
+{
+	Evas_List tl = ev->selected_objs;
+	for( ; tl ; tl = tl->next)
+	{
+		if( tl->data )
+		{
+			gevas_selectable_move( (GtkgEvasEvHSelectable*)tl->data, dx, dy );
+		}
+	}
+}
+
+gboolean gevasevh_group_selector_isinsel(
+	GtkgEvasEvHGroupSelector* ev, 
+	GtkgEvasEvHSelectable* o )
+{
+	Evas_List tl = ev->selected_objs;
+
+	if( !o ) return 0;
+	for( ; tl ; tl = tl->next)
+	{
+		if( tl->data == o )
+			return 1;
+	}
+	return 0;
+}
+
 
 void gevasevh_group_selector_addtosel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
 {
 	ev->selected_objs = evas_list_append( ev->selected_objs, o);
 	gevas_selectable_select( o , 1 );
-
+	ev->selected_objs_lastadded = o;
 }
+
+void gevasevh_group_selector_floodselect(
+	GtkgEvasEvHGroupSelector* ev,
+	double x, double y, double w, double h)
+{
+	Evas_List list;
+	void* data;
+
+	list = evas_objects_in_rect(
+		gevas_get_evas( ev->rect->gevas ), x,y,w,h);
+
+	while( list )
+	{
+		data = evas_get_data( 
+			gevas_get_evas( ev->rect->gevas ),
+			list->data,
+			GEVASEVH_SELECTABLE_KEY
+		);
+
+
+		if( data ) 
+		{
+			gevasevh_group_selector_addtosel( ev, (GtkgEvasEvHSelectable*)data );
+		}
+		
+		list = list->next;
+	}
+}
+
+void gevasevh_group_selector_floodtosel( 
+	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
+{
+	GtkgEvasEvHSelectable* la = ev->selected_objs_lastadded;
+	GtkgEvasEvHSelectable* tl = la; // top left
+	GtkgEvasEvHSelectable* br = o; // bottom right
+	double x=0,y=0,w=0,h=0,_x=0,_y=0,_w=0,_h=0;
+
+	printf("gevasevh_group_selector_floodtosel()\n");
+
+	if( !o || !la || o == la )
+		return;
+
+	printf("gevasevh_group_selector_floodtosel() la:%p o:%p\n",la,o);
+
+	gevasobj_hide( ev->rect );
+	ev->tracking = 0;
+
+	gevasobj_get_location( GTK_GEVASOBJ(gevasevh_selectable_gevasobj(tl)), &x, &y );
+	gevasobj_get_location( GTK_GEVASOBJ(gevasevh_selectable_gevasobj(br)), &_x, &_y );
+	if( x > _x && y > _y )
+	{
+		tl = br;
+		br = la;
+	}
+
+	gevasobj_get_location( GTK_GEVASOBJ(gevasevh_selectable_gevasobj(tl)), &x, &y );
+	gevasobj_get_geometry( GTK_GEVASOBJ(gevasevh_selectable_gevasobj(br)), 
+		&_x, &_y, &_w, &_h );
+
+	w = _x + _w - x;
+	h = _y + _h - y;
+
+	printf(" x:%f y:%f w:%f h:%f\n",x,y,w,h);
+
+	gevasevh_group_selector_floodselect( ev, x, y, w, h );
+
+	ev->selected_objs_lastadded = o;
+}
+
 
 void gevasevh_group_selector_remfromsel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
 {
 	gevas_selectable_select( o , 0 );
+	ev->selected_objs = evas_list_remove( ev->selected_objs, o );
+	ev->selected_objs_lastadded = 0;
 }
 
 
@@ -125,10 +225,11 @@ void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgE
 		GtkgEvasObj *ct;
 		ct = ev->rect = (GtkgEvasObj*)gevasgrad_new(gevasobj_get_gevas(
 			GTK_OBJECT(ev->mark)));
-		gevasgrad_add_color(ct, 255, 255, 255, 255, 8);
-		gevasgrad_add_color(ct, 255, 255, 0, 200, 8);
-		gevasgrad_add_color(ct, 255, 0, 0, 150, 8);
-		gevasgrad_add_color(ct, 0, 0, 0, 0, 8);
+		gevasgrad_add_color(ct, 255, 200, 200, 128, 8);
+//		gevasgrad_add_color(ct, 255, 255, 0, 200, 8);
+//		gevasgrad_add_color(ct, 255, 0, 0, 150, 8);
+		gevasgrad_add_color(ct, 200, 150, 150, 128, 8);
+		gevasgrad_set_angle(ct, 315);
 		gevasgrad_seal(ct);
 
 		gevasobj_set_layer(ct, 9999);
@@ -192,13 +293,35 @@ gevasev_group_selector_mouse_down(GtkObject * object, GtkObject * gevasobj, int 
 							   int _x, int _y)
 {
 	GtkgEvasEvHGroupSelector *ev;
+	GdkEvent *gdkev;
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
 //	gevasev_group_selector_show(ev, ev->hot_clicked[_b - 1]);
 
-	gevasevh_group_selector_flushsel( ev );
+	gdkev = gevas_get_current_event( ev->rect->gevas );
+	printf("got gdkev:%p\n", gdkev );
+	if( gdkev ) //&& gdkev->type == GDK_BUTTON_PRESS )
+	{
+		GdkEventButton* gdkbev;
+		printf("got gdkev button\n");
+		gdkbev = (GdkEventButton*)gdkev;
+
+		if( gdkbev->state & GDK_SHIFT_MASK )
+		{
+			printf("gevasev_group_selector_mouse_down shift key\n");
+
+		}
+		else if( gdkbev->state & GDK_CONTROL_MASK )
+		{
+			printf("gevasev_group_selector_mouse_down control key\n");
+		}
+		else 
+		{
+			gevasevh_group_selector_flushsel( ev );
+		}
+	}
 
 	ev->tl_top = _y;
 	ev->tl_left= _x;
@@ -209,6 +332,9 @@ gevasev_group_selector_mouse_down(GtkObject * object, GtkObject * gevasobj, int 
 	gevasobj_show( ev->rect );
 	gevasobj_queue_redraw( ev->rect );
 	ev->tracking = 1;
+	ev->tracking_ix = _x;
+	ev->tracking_iy = _y;
+
 	printf("gevasev_group_selector_mouse_down() done\n");
 
 	return GEVASEV_HANDLER_RET_NEXT;
@@ -232,37 +358,66 @@ gevasev_group_selector_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b
 	gevasobj_hide( ev->rect );
 	ev->tracking = 0;
 
+/*
 	x = ev->tl_left;
 	y = ev->tl_top;
 	w = _x - x;
 	h = _y - y;
+*/
+	gevas_group_selector_get_wh( ev, _x, _y, &x, &y, &w, &h );
 
-	printf(" x:%f y:%f w:%f h:%f\n",x,y,w,h);
-
-	list = evas_objects_in_rect(
-		gevas_get_evas( ev->rect->gevas ), x,y,w,h);
-
-	while( list )
-	{
-		data = evas_get_data( 
-			gevas_get_evas( ev->rect->gevas ),
-			list->data,
-			GEVASEVH_SELECTABLE_KEY
-		);
-
-
-		if( data ) 
-		{
-			gevasevh_group_selector_addtosel( ev, (GtkgEvasEvHSelectable*)data );
-		}
-		
-		list = list->next;
-	}
+	printf("gevasev_group_selector_mouse_up() x:%f y:%f w:%f h:%f\n",x,y,w,h);
+	gevasevh_group_selector_floodselect( ev, x, y, w, h );
+	ev->selected_objs_lastadded = 0;
 
 	printf("gevasev_group_selector_mouse_up(return)\n");
-
-
 	return GEVASEV_HANDLER_RET_NEXT;
+}
+
+//
+// Get the w & h of the selection box. This also moves the box to obscure to cx,cy.
+//
+void gevas_group_selector_get_wh( 
+	GtkgEvasEvHGroupSelector *ev, 
+	gint  cx, gint cy,
+	double* x, double* y,
+	double* rw, double* rh
+	)
+{
+	double w=0, h=0;
+	gboolean moveit = 0;
+	gint tix = ev->tracking_ix;	
+	gint tiy = ev->tracking_iy;	
+
+	gevasobj_get_location( ev->rect, x, y );
+
+	*rw = abs(cx - tix);
+	if( cx < tix ) 
+	{
+		moveit=1;
+		*x = cx;		
+	}
+
+	*rh = abs(cy - tiy);
+	if( cy < tiy ) 
+	{
+		moveit=1;
+		*y = cy;
+	}
+
+//	if( moveit )
+	{
+		w = *rw;
+		h = *rh;
+
+		if( w < 2 ) w=2;
+		if( h < 2 ) h=2;
+
+		gevasobj_move	( ev->rect , *x, *y );
+		gevasobj_resize	( ev->rect , w, h );
+
+	}
+
 }
 
 GEVASEV_HANDLER_RET
@@ -277,12 +432,35 @@ gevasev_group_selector_mouse_move(GtkObject * object, GtkObject * gevasobj, int 
 
 	if( ev->rect && ev->tracking ) 
 	{
+		double d1=0, d2=0, d3=0, d4=0;
+		gevas_group_selector_get_wh( ev, _x, _y, &d1, &d2, &d3, &d4 );
+/*
 		double w=0, h=0, x=0, y=0;
+		gboolean moveit = 0;
 
-		gevasobj_get_location( ev->rect, &x, &y );
+//		gevasobj_get_location( ev->rect, &x, &y );
+		x = ev->tl_left;
+		y = ev->tl_top;
+
 
 		w = _x - x;
 		h = _y - y;
+
+		if( w < 0 ) 
+		{
+			x = x + w;			
+			w *= -1;
+			moveit = 1;
+		}
+		if( h < 0 ) 
+		{
+			y = y + h;			
+			h *= -1;
+			moveit = 1;
+		}
+
+		if( moveit ) 
+			gevasobj_move( ev->rect , x, y);
 
 		if( w < 2 ) w=2;
 		if( h < 2 ) h=2;
@@ -290,7 +468,8 @@ gevasev_group_selector_mouse_move(GtkObject * object, GtkObject * gevasobj, int 
 		gevasobj_resize( ev->rect , w, h);
 		gevasobj_queue_redraw( ev->rect );
 
-		printf(" w:%f _x:%f x:%f h:%f _y:%f y:%f\n",w,_x,x,h,_y,y);
+		printf(" w:%f _x:%d x:%f h:%f _y:%d y:%f\n",w,_x,x,h,_y,y);
+*/
 	}
 
 	return GEVASEV_HANDLER_RET_NEXT;
@@ -347,7 +526,7 @@ static void gevasevh_group_selector_class_init(GtkgEvasEvHGroupSelectorClass * k
 
 static void gevasevh_group_selector_init(GtkgEvasEvHGroupSelector * ev)
 {
-	ev->selected = 0;
+//	ev->selected = 0;
 	ev->rect = 0;
 	ev->selected_objs =0;
 }
@@ -359,7 +538,7 @@ GtkObject *gevasevh_group_selector_new(void)
 
 	ev = gtk_type_new(gevasevh_group_selector_get_type());
 	hev = (GtkgEvasEvH *) ev;
-	ev->selected = 0;
+//	ev->selected = 0;
 	ev->rect = 0;
 	ev->selected_objs =0;
 

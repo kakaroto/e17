@@ -124,6 +124,7 @@ gevasev_drag_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
 	if (ev->dragging && _b == 1) {
+printf("gevas_evh_drag_move\n");
 		gevasobj_move(GTK_GEVASOBJ(gevasobj),
 					  _x - ev->click_x_offset, _y - ev->click_y_offset);
 		gevasobj_queue_redraw(GTK_GEVASOBJ(gevasobj));

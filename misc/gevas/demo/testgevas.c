@@ -454,11 +454,16 @@ void make_selectable( GtkgEvasObj* object )
 	ct = (GtkgEvasObj*)gevasgrad_new(gevasobj_get_gevas(
 		GTK_OBJECT(object)));
 
-	gevasgrad_add_color(ct, 255, 0, 255, 255, 8);
-	gevasgrad_add_color(ct, 255, 255, 0, 200, 8);
-	gevasgrad_add_color(ct, 255, 0, 0, 150, 8);
-	gevasgrad_add_color(ct, 0, 0, 0, 0, 8);
+	gevasgrad_add_color(ct, 180, 150, 70, 25, 8);
+	gevasgrad_add_color(ct, 180, 150, 70, 30, 8);
+	gevasgrad_add_color(ct, 180, 150, 70, 40, 8);
+	gevasgrad_add_color(ct, 180, 150, 70, 50, 8);
+	gevasgrad_add_color(ct, 180, 150, 70, 60, 8);
+	gevasgrad_add_color(ct, 200, 170, 90, 150, 8);
+//	gevasgrad_add_color(ct, 200, 170, 90, 200, 8);
+//	gevasgrad_add_color(ct, 200, 170, 90, 255, 8);
 	gevasgrad_seal(ct);
+	gevasgrad_set_angle(ct, 315);
 	gevasobj_resize( ct, 200,100);
 	gevasobj_set_layer(ct, 9999);
 
@@ -500,7 +505,7 @@ void make_text(GtkWidget * gevas)
 	gevasobj_set_layer(ct, 6);
 	gevasobj_show(ct);
 	gevasobj_set_color(ct, 140, 255, 140, 255);
-	gevasobj_add_evhandler(ct, evh);
+//	gevasobj_add_evhandler(ct, evh);
 	make_selectable( ct );
 
 	ct = t3 =

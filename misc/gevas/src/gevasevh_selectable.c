@@ -61,6 +61,7 @@
 #include "gevasevh_selectable.h"
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
+#include <gdk/gdktypes.h>
 
 static void gevasevh_selectable_class_init(GtkgEvasEvHSelectableClass * klass);
 static void gevasevh_selectable_init(GtkgEvasEvHSelectable * ev);
@@ -76,6 +77,11 @@ enum {
 	ARG_0,				/* Skip 0, an invalid argument ID */
 	ARG_SELECTED_OBJ,
 };
+
+static GEVASEV_HANDLER_PRIORITY gevasev_selectable_get_priority( GtkgEvasEvH* evh )
+{
+	return GEVASEV_HANDLER_PRIORITY_HI;
+}
 
 void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
@@ -103,17 +109,19 @@ void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* ev
 //
 void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 {
-	ev->tracking = s;
+//	ev->tracking = s;
 
 	if( s )
 	{
-		double x=0, y=0;
+		double x=0, y=0, w=0, h=0;
+		gint32 bx = ev->border_x;
+		gint32 by = ev->border_y;
 		int lay=0;
 
 		printf("showing for selectable\n");
-		gevasobj_get_location( ev->normal, &x, &y );
-		gevasobj_move( ev->selected, x, y);
-
+		gevasobj_get_geometry( ev->normal, &x, &y, &w, &h );
+		gevasobj_move( ev->selected, x - bx, y - by);
+		gevasobj_resize( ev->selected, w + 2*bx, h + 2*by);
 
 		gevasobj_set_layer( ev->selected, 
 			gevasobj_get_layer( ev->normal) - 1
@@ -127,6 +135,19 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 	}
 }
 
+void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy )
+{
+	double x=0, y=0;
+	gint32 bx = ev->border_x;
+	gint32 by = ev->border_y;
+
+	gevasobj_get_location( ev->normal, &x, &y );
+	x+=dx;	
+	y+=dy;
+	printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);
+	gevasobj_move( ev->normal, x, y );
+	gevasobj_move( ev->selected, x-bx, y-by);
+}
 
 GEVASEV_HANDLER_RET
 gevasev_selectable_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
@@ -161,16 +182,53 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 							   int _x, int _y)
 {
 	GtkgEvasEvHSelectable *ev;
+	GdkEvent *gdkev;
+
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
-	printf("selectable down\n");
-//	gevas_selectable_select( ev , 1 );
+	ev->tracking = 1;
+	ev->tracking_x = _x;
+	ev->tracking_y = _y;
 
-	gevasevh_group_selector_flushsel( ev->evh_selector );
-	gevasevh_group_selector_addtosel( ev->evh_selector, ev );
+	gdkev = gevas_get_current_event( ev->normal->gevas );
+	printf("got gdkev:%p\n", gdkev );
+	if( gdkev ) //&& gdkev->type == GDK_BUTTON_PRESS )
+	{
+		GdkEventButton* gdkbev;
+
+		printf("got gdkev button\n");
+
+		gdkbev = (GdkEventButton*)gdkev;
+
+		if( gdkbev->state & GDK_SHIFT_MASK )
+		{
+			printf("gevasev_selectable_mouse_down() shift key\n");
+			gevasevh_group_selector_floodtosel( ev->evh_selector, ev );
+//			return GEVASEV_HANDLER_RET_NEXT;
+		}
+		if( gdkbev->state & GDK_CONTROL_MASK )
+		{
+			printf("gevasev_selectable_mouse_down() control key\n");
+			if( gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
+				gevasevh_group_selector_remfromsel( ev->evh_selector, ev );
+			else
+				gevasevh_group_selector_addtosel( ev->evh_selector, ev );
+			return GEVASEV_HANDLER_RET_NEXT;
+		}
+
+	}
+
+	printf("selectable down\n");
+
+
+	if( !gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
+	{
+		gevasevh_group_selector_flushsel( ev->evh_selector );
+		gevasevh_group_selector_addtosel( ev->evh_selector, ev );
+	}
 	printf("selectable down(ret)\n");
 
 
@@ -190,6 +248,7 @@ gevasev_selectable_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 //	gevas_selectable_select( ev , 0 );
 
 //	gevasevh_group_selector_remfromsel( ev->evh_selector, ev );
+	printf("gevasev_selectable_mouse_up()\n");
 	ev->tracking = 0;
 
 	return GEVASEV_HANDLER_RET_NEXT;
@@ -207,11 +266,24 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 
 	if( ev->tracking )
 	{
-		double x=0, y=0;
-		gevasobj_get_location( ev->normal, &x, &y );
-		gevasobj_move( ev->selected, x, y);
+		gint32 dx=0, dy=0;
+
+		dx = _x - ev->tracking_x;
+		dy = _y - ev->tracking_y;
+printf("selectable_mouse_move() ev:%p  dx:%d dy:%d\n",ev, dx,dy);
+		gevasevh_group_selector_movesel( ev->evh_selector, dx, dy );
+		ev->tracking_x = _x;
+		ev->tracking_y = _y;
+
+		return GEVASEV_HANDLER_RET_CHOMP;
 	}
 
+	if( gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
+	{
+		printf("gevasev_selectable_mouse_move() is in sel...\n");
+		return GEVASEV_HANDLER_RET_CHOMP;
+	}
+	
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
@@ -258,6 +330,7 @@ static void gevasevh_selectable_class_init(GtkgEvasEvHSelectableClass * klass)
 	evh_klass->handler_mouse_down = gevasev_selectable_mouse_down;
 	evh_klass->handler_mouse_up = gevasev_selectable_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_selectable_mouse_move;
+	evh_klass->get_priority = gevasev_selectable_get_priority;
 
 	gtk_object_add_arg_type(GTK_GEVASEVH_SELECTABLE_SELECTED_OBJ,
 		GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_SELECTED_OBJ);
@@ -277,6 +350,8 @@ GtkObject *gevasevh_selectable_new(void)
 	ev = gtk_type_new(gevasevh_selectable_get_type());
 	hev = (GtkgEvasEvH *) ev;
 	ev->selected = 0;
+	ev->border_x = 5;
+	ev->border_y = 5;
 
 	return GTK_OBJECT(ev);
 }

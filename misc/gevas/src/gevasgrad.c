@@ -105,6 +105,17 @@ void gevasgrad_seal(GtkgEvasObj * object)
 	evas_set_gradient(EVAS(ev), EVASO(ev), ev->gradient);
 }
 
+void gevasgrad_set_angle( GtkgEvasObj* object, double angle)
+{
+	GtkgEvasGrad *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	ev = GTK_GEVASGRAD(object);
+
+	evas_set_angle( EVAS(ev), EVASO(ev), angle);
+}
+
+
 void gevasgrad_clear_gradient(GtkgEvasObj * object)
 {
 	GtkgEvasGrad *ev;

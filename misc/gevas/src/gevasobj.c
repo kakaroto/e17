@@ -223,10 +223,12 @@ void _gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below)
 void _gevasobj_move(GtkgEvasObj * object, double x, double y)
 {
 	evas_move(EVAS(object), EVASO(object), x, y);
+	gevasobj_queue_redraw(object);
 }
 void _gevasobj_resize(GtkgEvasObj * object, double w, double h)
 {
 	evas_resize(EVAS(object), EVASO(object), w, h);
+	gevasobj_queue_redraw(object);
 }
 void _gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
 							double *w, double *h)
@@ -274,14 +276,23 @@ int _gevasobj_get_alpha(GtkgEvasObj * object)
 
 
 /*** public members vtable versions ***/
-
+#include "gevasev_handler.h"
 void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
 	GtkgEvasObj *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
-	ev->ev_handlers = g_slist_append(ev->ev_handlers, h);
+
+	if( GEVASEV_HANDLER_PRIORITY_HI == 
+		((GtkgEvasEvHClass*)(((GtkObject*)h)->klass))
+			->get_priority(h)
+	  )
+	{
+		ev->ev_handlers = g_slist_prepend(ev->ev_handlers, h);
+	}
+	else
+		ev->ev_handlers = g_slist_append(ev->ev_handlers, h);
 }
 
 void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
