@@ -15,7 +15,7 @@ images {
 }
 
 //
-data { item, "container_layout" "Entice"; }
+data { item, "container_layout" "entice"; }
 //
 
 collections { 
