@@ -10,12 +10,16 @@ static Evas_List __bit_descriptions = NULL;
 Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name);
 static Ebits_Object_Description _ebits_find_description(char *file);
 static char *_ebits_get_file(Ebits_Object_Bit_Description d, int state);
+#ifdef EDITOR
+static int _ebits_image_state_saved(Ebits_Object_Bit_State state, int s);
+#endif
 static void _ebits_sync_bits(Ebits_Object_Bit_State state);
 static void _ebits_evaluate_fill(Ebits_Object_Bit_State state);
 static void _ebits_calculate(Ebits_Object_Bit_State state);
 static void _ebits_object_calculate(Ebits_Object o);
 
 #define EBITS_FILE_REDIRECT "%s:/images/%s"
+/* #define LENIENT 1 */
 
 Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
 {
@@ -253,8 +257,18 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
    state->syncing = 1;
    if (state->object)
      {
-	evas_set_image_file(state->o->state.evas, state->object,
-			    _ebits_get_file(state->description, state->state));
+	char buf[4096];
+
+#ifdef EDITOR	
+	if (!_ebits_image_state_saved(state, state->state))
+	   snprintf(buf, sizeof(buf), "%s", 
+		    _ebits_get_file(state->description, state->state));
+	else
+#endif	   
+	   snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT, 
+		    state->o->description->file, 
+		    _ebits_get_file(state->description, state->state));
+	evas_set_image_file(state->o->state.evas, state->object, buf);
 	_ebits_evaluate_fill(state);
      }
    for (l = state->description->sync; l; l = l->next)
@@ -326,6 +340,42 @@ _ebits_handle_mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, i
    if (state->state != 2) state->state = 0;
    _ebits_sync_bits(state);
 }
+
+#ifdef EDITOR
+static int
+_ebits_image_state_saved(Ebits_Object_Bit_State state, int s)
+{
+   if (s == 0)
+     {
+	if (state->description->normal.image) return state->normal.saved;
+	if (state->description->hilited.image) return state->hilited.saved;
+	if (state->description->clicked.image) return state->clicked.saved;
+	if (state->description->disabled.image) return state->disabled.saved;
+     }
+   if (s == 1)
+     {
+	if (state->description->hilited.image) return state->hilited.saved;
+	if (state->description->clicked.image) return state->clicked.saved;
+	if (state->description->normal.image) return state->normal.saved;
+	if (state->description->disabled.image) return state->disabled.saved;
+     }
+   if (s == 2)
+     {
+	if (state->description->clicked.image) return state->clicked.saved;
+	if (state->description->hilited.image) return state->hilited.saved;
+	if (state->description->normal.image) return state->normal.saved;
+	if (state->description->disabled.image) return state->disabled.saved;
+     }
+   if (s == 3)
+     {
+	if (state->description->disabled.image) return state->disabled.saved;
+	if (state->description->normal.image) return state->normal.saved;
+	if (state->description->hilited.image) return state->hilited.saved;
+	if (state->description->clicked.image) return state->clicked.saved;
+     }
+   return 0;
+}
+#endif
 
 static char *
 _ebits_get_file(Ebits_Object_Bit_Description d, int state)
@@ -661,9 +711,7 @@ ebits_new_bit(Ebits_Object o, char *file)
    state->o = o;
    
    bit->normal.image = strdup(file);
-   
-   state->object = evas_add_image_from_file(o->state.evas, 
-					    _ebits_get_file(state->description, state->state));
+   state->object = evas_add_image_from_file(o->state.evas, _ebits_get_file(state->description, state->state));
    evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
    evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
    evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
@@ -736,21 +784,37 @@ Ebits_Object ebits_load(char *file)
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->normal.image);
 	     state->normal.image = imlib_load_image(image);
+#ifdef LENIENT
+	     if (!state->normal.image)
+		state->normal.image = imlib_load_image(bit->normal.image);
+#endif
 	  }
 	if (bit->hilited.image)
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->hilited.image);
 	     state->hilited.image = imlib_load_image(image);
+#ifdef LENIENT
+	     if (!state->hilited.image)
+		state->hilited.image = imlib_load_image(bit->hilited.image);
+#endif
 	  }
 	if (bit->clicked.image)
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->clicked.image);
 	     state->clicked.image = imlib_load_image(image);
+#ifdef LENIENT
+	     if (!state->clicked.image)
+		state->clicked.image = imlib_load_image(bit->clicked.image);
+#endif
 	  }
 	if (bit->disabled.image)
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->disabled.image);
 	     state->disabled.image = imlib_load_image(image);
+#ifdef LENIENT
+	     if (!state->disabled.image)
+		state->disabled.image = imlib_load_image(bit->disabled.image);
+#endif
 	  }
 #endif
      }
@@ -838,9 +902,16 @@ void ebits_add_to_evas(Ebits_Object o, Evas e)
 	char buf[4096];
 	
 	state = l->data;
-	snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT, o->description->file, 
+	snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT, 
+		 state->o->description->file, 
 		 _ebits_get_file(state->description, state->state));
 	state->object = evas_add_image_from_file(o->state.evas, buf);
+#ifdef EDITOR
+	if (state->normal.image) state->normal.saved = 1;
+	if (state->hilited.image) state->hilited.saved = 1;
+	if (state->clicked.image) state->clicked.saved = 1;
+	if (state->disabled.image) state->disabled.saved = 1;
+#endif	
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
@@ -1028,6 +1099,7 @@ void ebits_save(Ebits_Object o, char *file)
 	     imlib_context_set_image(state->normal.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
+	     state->normal.saved = 1;
 	  }
 	if ((state->hilited.image) && (bit->hilited.image))
 	  {
@@ -1035,6 +1107,7 @@ void ebits_save(Ebits_Object o, char *file)
 	     imlib_context_set_image(state->hilited.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
+	     state->hilited.saved = 1;
 	  }
 	if ((state->clicked.image) && (bit->clicked.image))
 	  {
@@ -1042,6 +1115,7 @@ void ebits_save(Ebits_Object o, char *file)
 	     imlib_context_set_image(state->clicked.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
+	     state->clicked.saved = 1;
 	  }
 	if ((state->disabled.image) && (bit->disabled.image))
 	  {
@@ -1049,6 +1123,7 @@ void ebits_save(Ebits_Object o, char *file)
 	     imlib_context_set_image(state->disabled.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
+	     state->disabled.saved = 1;
 	  }
      }
    /* save bit info */

@@ -108,6 +108,7 @@ struct _Ebits_Object_Bit_State
    int                          syncing;
 #ifdef EDITOR   
    struct {
+      int                          saved;
       Imlib_Image                  image;
    } normal, hilited, clicked, disabled;
 #endif   
