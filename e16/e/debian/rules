@@ -29,7 +29,7 @@ build-stamp:
 	dh_testroot
 	./autogen.sh $(configure_options) || ./configure $(configure_options) 
 	mv econfig.h econfig.h.old
-	sed -e '^#define HAVE_LIBESD 1$$@//* \0 */@' econfig.h.old > econfig.h
+	sed -e 's@^#define HAVE_LIBESD 1$$@//* \0 */@' econfig.h.old > econfig.h
 	cp src/themes/configs/menus.cfg menus.cfg.old
 	$(MAKE)
 	touch $@
