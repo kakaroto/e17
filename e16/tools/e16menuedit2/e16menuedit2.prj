@@ -39,7 +39,7 @@ project.excluded.modules=intl
 project.config.extra.modules.before=
 project.config.extra.modules.after=
 project.config.blocked=0
-project.config.disable.overwriting=1 1 0 0 0 0 0 0 0 
+project.config.disable.overwriting=1 1 0 0 0 0 0 0 1 
 
 project.menu.entry=e16menuedit2 Version 0.2
 project.menu.group=Applications

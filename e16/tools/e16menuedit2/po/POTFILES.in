@@ -12,5 +12,5 @@ src/e16menuedit2.h
 src/file.c
 src/file.h
 src/nls.h
-
+e16menuedit2.glade
 

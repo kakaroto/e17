@@ -25,6 +25,9 @@ dnl Checks for header files.
 dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 dnl Checks for Additional stuffs.
+
+dnl Checks for gettext
+AC_PROG_INTLTOOL([0.23])
 GETTEXT_PACKAGE=e16menuedit2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])

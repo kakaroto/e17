@@ -25,6 +25,7 @@ int main (int argc, char *argv[])
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (PACKAGE);
 #endif
 
@@ -58,7 +59,7 @@ int main (int argc, char *argv[])
   gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_NEW);
   gtk_widget_show (GTK_WIDGET (toolitem1));
   gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             to_utf8(_("New Entry")), "");
+                             _("New Entry"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_new_button), treeview_menu);
 
@@ -68,7 +69,7 @@ int main (int argc, char *argv[])
   gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_CHANGE_ICON);
   gtk_widget_show (GTK_WIDGET (toolitem1));
   gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             to_utf8(_("Change Icon")), "");
+                             _("Change Icon"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_change_icon_button), treeview_menu);
 
@@ -78,7 +79,7 @@ int main (int argc, char *argv[])
   gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_SAVE);
   gtk_widget_show (GTK_WIDGET (toolitem1));
   gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             to_utf8(_("Save Menu")), "");
+                             _("Save Menu"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_save_button), treeview_menu);
 
@@ -87,7 +88,7 @@ int main (int argc, char *argv[])
   gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_DELETE);
   gtk_widget_show (GTK_WIDGET (toolitem1));
   gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             to_utf8(_("Delete Entry or Submenu")), "");
+                             _("Delete Entry or Submenu"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (on_delete_button), treeview_menu);
 
@@ -96,7 +97,7 @@ int main (int argc, char *argv[])
   gtk_toolbar_insert (GTK_TOOLBAR (toolbar1), toolitem1, TB_QUIT);
   gtk_widget_show (GTK_WIDGET (toolitem1));
   gtk_tool_item_set_tooltip (toolitem1, GTK_TOOLBAR (toolbar1)->tooltips,
-                             to_utf8(_("Quit Menu Editor")), "");
+                             _("Quit Menu Editor"), "");
   g_signal_connect (toolitem1, "clicked",
                     G_CALLBACK (gtk_main_quit), NULL);
 

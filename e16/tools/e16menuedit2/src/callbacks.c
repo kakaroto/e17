@@ -40,7 +40,7 @@ void on_new_button (GtkButton *button, gpointer user_data)
 
   if (gtk_tree_selection_get_selected (select, &model, &sibling))
   {
-    empty_desc = g_strdup (to_utf8(_("New Entry")));
+    empty_desc = g_strdup (_("New Entry"));
     empty_icon = g_strdup ("");
 
     tree_string = gtk_tree_model_get_string_from_iter (
@@ -93,7 +93,7 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
   gtk_widget_set_size_request (filechooser, 600, 400);
 
   dialog = gtk_dialog_new ();
-  gtk_window_set_title (GTK_WINDOW (dialog), to_utf8(_("Select Icon...")));
+  gtk_window_set_title (GTK_WINDOW (dialog), _("Select Icon..."));
   dialog_vbox = GTK_DIALOG(dialog)->vbox;
 
   gtk_dialog_add_button (GTK_DIALOG(dialog),
@@ -129,7 +129,7 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox),
                      resize_hbox);
   resize_combo = gtk_combo_new ();
-  resize_label = gtk_label_new (to_utf8(_("Icon size:")));
+  resize_label = gtk_label_new (_("Icon size:"));
   glist = g_list_append (glist, ICON_SIZE_AUTO_STRING);
   glist = g_list_append (glist, ICON_SIZE1_STRING);
   glist = g_list_append (glist, ICON_SIZE2_STRING);
