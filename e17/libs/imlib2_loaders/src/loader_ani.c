@@ -302,7 +302,10 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	      SET_FLAG(im->flags, F_HAS_ALPHA);
 
 	      if (! (im->data = (DATA32 *) malloc(sizeof(DATA32) * im->w * im->h)))
-		return 0;
+		{
+		  free(filename);
+		  return 0;
+		}
 
 	      memcpy(im->data, temp_im->data, sizeof(DATA32) * im->w * im->h);
 	      unlink(filename);
