@@ -50,7 +50,7 @@ void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src
       elicit_util_color_at_pointer_get(&(el->color.r), &(el->color.g), &(el->color.b));
       evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
       elicit_util_colors_set_from_rgb(el);
-      elicit_ui_update_text(el);
+      elicit_ui_update(el);
     }
   }
 }
@@ -168,8 +168,6 @@ elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *sr
                       woff ? ow + w * woff : w,
                       hoff ? oh + h * hoff : h);
   }
-
-  
 }
 
 void
@@ -180,6 +178,51 @@ elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src)
 
   ecore_x_selection_primary_set(win, el->color.hex, strlen(el->color.hex));
 }
+
+void
+elicit_cb_slider(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  double vx;
+
+  edje_object_part_drag_value_get(el->gui, src, &vx, NULL);
+
+  if (!strcmp(src, "red-slider"))
+  {
+    el->color.r = vx * 255;
+    elicit_util_colors_set_from_rgb(el);
+  }
+  else if (!strcmp(src, "green-slider"))
+  {
+    el->color.g = vx * 255;
+    elicit_util_colors_set_from_rgb(el);
+  }
+  else if (!strcmp(src, "blue-slider"))
+  {
+    el->color.b = vx * 255;
+    elicit_util_colors_set_from_rgb(el);
+  }
+  else if (!strcmp(src, "hue-slider"))
+  {
+    el->color.h = vx * 360;
+    elicit_util_colors_set_from_hsv(el);
+  }
+  else if (!strcmp(src, "sat-slider"))
+  {
+    el->color.s = vx;
+    elicit_util_colors_set_from_hsv(el);
+  }
+  else if (!strcmp(src, "val-slider"))
+  {
+    el->color.v = vx;
+    elicit_util_colors_set_from_hsv(el);
+  }
+
+  elicit_ui_update(el);
+  
+}
+
+
 
 static int
 elicit_timer_color(void *data)
@@ -275,7 +318,7 @@ elicit_timer_color(void *data)
     if (el->zoom < 1) el->zoom = 1;
   }
 
-  elicit_ui_update_text(el);
+  elicit_ui_update(el);
   evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
 
   el->flags.changed = 1;

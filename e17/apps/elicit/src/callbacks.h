@@ -11,5 +11,6 @@ void elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *s
 void elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *src);
 void elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src);
 void elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *src);
+void elicit_cb_slider(void *data, Evas_Object *o, const char *sig, const char *src);
 
 #endif

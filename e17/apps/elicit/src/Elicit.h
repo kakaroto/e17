@@ -54,8 +54,11 @@ struct _Elicit
   char *change_sig;
 };
 
-void elicit_ui_update_text(Elicit *el);
 void elicit_ui_theme_set(Elicit *el, char *name, char *group);
+
+void elicit_ui_update(Elicit *el); /* this does the next two */
+void elicit_ui_update_text(Elicit *el);
+void elicit_ui_update_sliders(Elicit *el);
 
 #endif
 

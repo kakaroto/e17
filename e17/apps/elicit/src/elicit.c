@@ -119,7 +119,7 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_show(el->draggie);
 
   elicit_ui_theme_set(el, elicit_config_theme_get(el), "elicit");
-  elicit_ui_update_text(el);
+  elicit_ui_update(el);
   return 0;
 }
 
@@ -153,7 +153,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   /* swallow and update */ 
   edje_object_part_swallow(el->gui, "shot", el->shot);
   edje_object_part_swallow(el->gui, "swatch", el->swatch);
-  elicit_ui_update_text(el);
+  elicit_ui_update(el);
 
   /* set up edje callbacks */
   edje_object_signal_callback_add(el->gui, "elicit,pick,*", "*", elicit_cb_pick, el);
@@ -166,6 +166,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   edje_object_signal_callback_add(el->gui, "elicit,switch,*", "*", elicit_cb_switch, el);
   edje_object_signal_callback_add(el->gui, "elicit,copy,*", "*", elicit_cb_copy, el);
   edje_object_signal_callback_add(el->gui, "elicit,resize,*", "*", elicit_cb_resize_sig, el);
+  edje_object_signal_callback_add(el->gui, "drag", "*-slider", elicit_cb_slider, el);
 
   evas_object_hide(el->gui);
   evas_object_show(el->gui);
@@ -204,3 +205,22 @@ elicit_ui_update_text(Elicit *el)
   edje_object_thaw(el->gui);
 }
 
+void
+elicit_ui_update_sliders(Elicit *el)
+{
+  edje_object_part_drag_value_set(el->gui, "red-slider", (double)el->color.r / 255, 1);
+  edje_object_part_drag_value_set(el->gui, "green-slider", (double)el->color.g / 255, 1);
+  edje_object_part_drag_value_set(el->gui, "blue-slider", (double)el->color.b / 255, 1);
+  edje_object_part_drag_value_set(el->gui, "hue-slider", (double)el->color.h / 360, 1);
+  edje_object_part_drag_value_set(el->gui, "sat-slider", (double)el->color.s, 1);
+  edje_object_part_drag_value_set(el->gui, "val-slider", (double)el->color.v, 1);
+}
+
+void
+elicit_ui_update(Elicit *el)
+{
+  elicit_ui_update_text(el);
+  elicit_ui_update_sliders(el);
+  
+  evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
+}
