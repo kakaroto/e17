@@ -208,6 +208,9 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	GtkgEvasEvHSelectable *ev;
 	GdkEvent *gdkev;
 
+	if( _b != 1 )
+		return GEVASEV_HANDLER_RET_NEXT;
+
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
@@ -264,6 +267,10 @@ gevasev_selectable_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
 	GtkgEvasEvHSelectable *ev;
+
+	if( _b != 1 )
+		return GEVASEV_HANDLER_RET_NEXT;
+
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);

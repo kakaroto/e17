@@ -996,6 +996,10 @@ void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h ) {
   evas_get_drawable_size( ev->evas, w, h );
 }
 
+
+
+
+
 static void gevas_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvas *ev;
@@ -1145,3 +1149,5 @@ static void gevas_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 	}
 }
+
+

@@ -78,6 +78,22 @@ enum {
 	ARG_SELECTEDb_OBJ,
 };
 
+Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev )
+{
+	Evas_List ret = 0;
+
+	Evas_List tl = ev->selected_objs;
+	while(tl)
+	{
+		if( tl->data )
+		{
+			ret = evas_list_append( ret, gevasevh_selectable_gevasobj(tl->data) );
+		}
+		tl = tl->next;
+	}
+return ret;
+}
+
 
 //
 // Flush the current selection, add selected files are first unselected.
@@ -284,10 +300,17 @@ gevasev_group_selector_mouse_down(GtkObject * object, GtkObject * gevasobj, int 
 {
 	GtkgEvasEvHGroupSelector *ev;
 	GdkEvent *gdkev;
+
+	if( _b != 1 )
+		return GEVASEV_HANDLER_RET_NEXT;
+
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
+
+	
+
 //	gevasev_group_selector_show(ev, ev->hot_clicked[_b - 1]);
 
 	gdkev = gevas_get_current_event( ev->rect->gevas );
@@ -333,6 +356,9 @@ gevasev_group_selector_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b
 	Evas_List list;
 	void* data;
 	GtkgEvasEvHGroupSelector *ev;
+
+	if( _b != 1 )
+		return GEVASEV_HANDLER_RET_NEXT;
 
 //	printf("gevasev_group_selector_mouse_up()\n");
 

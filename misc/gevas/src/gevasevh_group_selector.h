@@ -79,7 +79,7 @@ GtkObject *gevasevh_group_selector_new(void);
 
 //public
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj );
-
+Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
 
 //package
 void gevasevh_group_selector_addtosel( 

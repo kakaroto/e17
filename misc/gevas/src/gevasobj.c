@@ -596,3 +596,14 @@ static void gevasobj_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 	}
 }
+
+void  gevasobj_set_data( GtkgEvasObj* ev, const char* key, void* data )
+{
+	evas_put_data( EVAS(ev), EVASO(ev), key, data);
+}
+
+
+void* gevasobj_get_data( GtkgEvasObj* ev, const char* key )
+{
+	return evas_get_data( EVAS(ev), EVASO(ev), key);
+}

@@ -123,6 +123,9 @@ extern "C" {
 
 /** evas wrappers (public access) **/
 
+	void  gevasobj_set_data( GtkgEvasObj * object, const char* key, void* data ); 
+	void* gevasobj_get_data( GtkgEvasObj * object, const char* key ); 
+
 	void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a);
 	void gevasobj_set_alpha(GtkgEvasObj * object, int a);
 	void gevasobj_set_angle(GtkgEvasObj * object, double angle);
