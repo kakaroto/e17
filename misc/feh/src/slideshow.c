@@ -119,7 +119,7 @@ void
 slideshow_change_image (winwidget winwid, int change)
 {
   int success = 0;
-  feh_file file, last;
+  feh_file last = NULL;
   int remove_last = 0;
   int i = 0, file_num = 0;
 

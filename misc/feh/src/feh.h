@@ -105,15 +105,8 @@ enum winwidget_type
 enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST };
 
-enum modify_mode
-{ MODIFY_MODE_NONE, MODIFY_MODE_CROP, MODIFY_MODE_BRIGHTNESS,
-  MODIFY_MODE_GAMMA, MODIFY_MODE_CONTRAST
-};
-
-enum bg_type
-{
-  SCALE, CENTER, FIT, TILE
-};
+enum filelist_recuse
+{ FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
 struct __winwidget
 {
@@ -163,7 +156,6 @@ typedef struct cmdlineoptions
   unsigned char aspect;
   unsigned char stretch;
   unsigned char progressive;
-  unsigned char modify_mode;
   unsigned char keep_http;
   unsigned char borderless;
 
@@ -191,7 +183,7 @@ void init_montage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
 int feh_load_image (Imlib_Image ** im, feh_file file);
-void add_file_to_filelist_recursively (char *path, unsigned char enough);
+void add_file_to_filelist_recursively (char *path, unsigned char level);
 void show_mini_usage (void);
 void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);

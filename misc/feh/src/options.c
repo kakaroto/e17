@@ -55,7 +55,6 @@ init_parse_options (int argc, char **argv)
   opt.font = NULL;
   opt.title_font = NULL;
   opt.progressive = 1;
-  opt.modify_mode = MODIFY_MODE_NONE;
   opt.slideshow_delay = 0;
   opt.reload = 0;
   opt.keep_http = 0;
@@ -164,7 +163,7 @@ init_parse_options (int argc, char **argv)
 	  /* If recursive is NOT set, but the only argument is a
 	   * directory name, we grab all the files in there, but not
 	   * subdirs */
-	  add_file_to_filelist_recursively (argv[i], 0);
+	  add_file_to_filelist_recursively (argv[i], FILELIST_FIRST);
 	}
     }
   if (filelist_length (filelist) == 0)

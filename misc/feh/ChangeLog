@@ -1,3 +1,7 @@
+Sat Feb 19 17:11:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Reduced mem usage, tuned file handling. Tidied up.
+
 Sat Feb 19 00:55:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Added -b, --borderless option. Can you guess what it does?

@@ -123,7 +123,6 @@ winwidget_create_window (winwidget ret, int w, int h)
 {
   XSetWindowAttributes attr;
   XClassHint *xch;
-  Screen *scr;
   MWMHints mwmhints;
   Atom prop = None;
 
