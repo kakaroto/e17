@@ -33,7 +33,8 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	 * The base appearance is used for updating the appearance of the
 	 * widget
 	 */
-	w->appearance = strdup(appearance);
+	if (appearance)
+		w->appearance = strdup(appearance);
 
 	/*
 	 * Add the common callbacks that all widgets must perform

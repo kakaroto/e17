@@ -49,6 +49,10 @@ static void *theme_keys[] = {
 	"/appearance/entry/default/text/font_size", (void *) 10,
 	"/appearance/entry/default/text/style", "Default",
 
+	"/appearance/image/default/404",
+	"/appearance/image/default/404.bits.db",
+	"/appearance/image/default/404/visible", "yes",
+
 	"/appearance/list/default/base",
 	"/appearance/list/default/base.bits.db",
 	"/appearance/list/default/base/visible", "yes",
@@ -139,11 +143,7 @@ ewl_theme_init(void)
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
 
-	/*
-	 * Check the users theme dir to make sure it exists and is a dir 
-	 */
-	stat(theme_path, &st);
-	if (!S_ISDIR(st.st_mode))
+	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode))
 	  {
 
 		  /*
@@ -250,9 +250,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	else			/* Absolute path given, so return it */
 		path = strdup(data);
 
-	stat(path, &st);
-
-	if (!S_ISREG(st.st_mode))
+	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
 		printf("Couldn't stat %s\n", path);
 
 	DRETURN_PTR(path);
@@ -287,7 +285,10 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 	if (w->theme == def_theme_data)
 		w->theme = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 
-	ewd_hash_set(w->theme, k, v);
+	if (v)
+		ewd_hash_set(w->theme, k, strdup(v));
+	else
+		ewd_hash_set(w->theme, k, v);
 
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);

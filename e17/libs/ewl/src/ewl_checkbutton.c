@@ -11,7 +11,8 @@ void __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
 void __ewl_checkbutton_update_check(Ewl_Widget * w);
 
 void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-
+void __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
 void ewl_button_init(Ewl_Button * b, char *l);
 
 
@@ -97,9 +98,10 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	ewl_widget_set_appearance(w, "/appearance/button/check");
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure);
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
+			    __ewl_checkbutton_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_checkbutton_configure, NULL);
-
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_checkbutton_mouse_down, NULL);
 
@@ -107,7 +109,6 @@ ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	DLEAVE_FUNCTION;
 }
-
 
 void
 __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -212,6 +213,17 @@ __ewl_checkbutton_update_check(Ewl_Widget * w)
 			  ebits_set_named_bit_state(w->ebits_object, "Check",
 						    "normal");
 	  }
+
+	DLEAVE_FUNCTION;
+}
+
+void
+__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	__ewl_checkbutton_update_check(w);
 
 	DLEAVE_FUNCTION;
 }

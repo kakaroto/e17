@@ -385,7 +385,7 @@ ewl_set_settings(Ewl_Config * c)
 	ewl_spinner_set_value(e_conf.image_cache,
 			      (double) (c->evas.image_cache));
 
-	ewl_checkbutton_set_checked(e_conf.enable_debug, 1);
+	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
 	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
 
 	ewl_spinner_set_value(e_conf.max_fps, (double) (c->fx.max_fps));

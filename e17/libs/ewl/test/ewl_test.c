@@ -12,6 +12,9 @@ void __create_button_test_window(Ewl_Widget * w, void *ev_data,
 void __create_entry_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data);
 
+void __create_image_test_window(Ewl_Widget * w, void *ev_data,
+				void *user_data);
+
 void __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 
@@ -51,8 +54,8 @@ main(int argc, char **argv)
 			     "The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __close_main_widow, NULL);
-	ewl_window_resize(main_win, 106, 222);
-	ewl_window_set_min_size(main_win, 106, 222);
+	ewl_window_resize(main_win, 100, 216);
+	ewl_window_set_min_size(main_win, 100, 216);
 	ewl_widget_show(main_win);
 
 	main_hbox = ewl_hbox_new();
@@ -93,6 +96,8 @@ main(int argc, char **argv)
 	button[3] = ewl_button_new("Ewl_Image");
 	ewl_object_set_custom_size(EWL_OBJECT(button[3]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(vbox), button[3]);
+	ewl_callback_append(button[3], EWL_CALLBACK_CLICKED,
+			    __create_image_test_window, NULL);
 	ewl_widget_show(button[3]);
 
 	button[4] = ewl_button_new("Ewl_List");

@@ -20,6 +20,12 @@ struct _ewl_object
 	}
 	maximum, minimum;
 
+	struct
+	{
+		int l, r, t, b;
+	}
+	padd;
+
 	Ewl_Fill_Policy fill;
 	Ewl_Alignment align;
 };
@@ -61,6 +67,9 @@ void ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
 
 inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
 inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill);
+
+void ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b);
+void ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b);
 
 inline Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
 inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);

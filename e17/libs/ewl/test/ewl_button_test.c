@@ -61,7 +61,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), separator[0]);
 	ewl_widget_realize(separator[0]);
 
-	ewl_separator_set_padding(separator[0], 2, 2, 5, 5);
+	ewl_object_set_padding(separator[0], 2, 2, 5, 5);
 
 	check_button[0] = ewl_checkbutton_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), check_button[0]);
@@ -79,7 +79,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), separator[1]);
 	ewl_widget_realize(separator[1]);
 
-	ewl_separator_set_padding(separator[1], 2, 2, 5, 5);
+	ewl_object_set_padding(separator[1], 2, 2, 5, 5);
 
 	radio_button[0] = ewl_radiobutton_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), radio_button[0]);

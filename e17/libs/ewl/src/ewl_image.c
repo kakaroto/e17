@@ -8,10 +8,11 @@
 static void __ewl_image_init(Ewl_Image * i);
 static void __ewl_image_realize(Ewl_Widget * w, void *ev_data,
 				void *user_data);
-static void __ewl_image_show(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_image_hide(Ewl_Widget * w, void *ev_data, void *user_data);
 static void __ewl_image_configure(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
+void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
 
 static Ewl_Image_Type __ewl_image_get_type(const char *i);
 
@@ -37,263 +38,73 @@ ewl_image_load(const char *i)
 }
 
 void
-ewl_image_set_layer(Ewl_Widget * w, int l)
+ewl_image_set_file(Ewl_Widget * w, const char *im)
 {
 	Ewl_Image *i;
+	int ww = 0, hh = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("l", l);
+	DCHECK_PARAM_PTR("im", im);
 
 	i = EWL_IMAGE(w);
 
-	LAYER(w) = l;
+	IF_FREE(i->path);
 
-	/*
-	 * If we aren't realized.. we haven't loaded the image yet
-	 * so we'll just let the realize callback set the layer..
-	 * on realization =)
-	 */
-	if (!REALIZED(w))
-		DRETURN;
+	i->path = strdup(im);
 
-	switch (i->type)
+	if (i->image)
 	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_set_layer(w->evas, i->image, l);
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  ebits_set_layer(i->image, l);
-		  break;
-	  default:
-		  break;
+		  switch (i->type)
+		    {
+		    case EWL_IMAGE_TYPE_NORMAL:
+			    evas_hide(w->evas, i->image);
+			    evas_unset_clip(w->evas, i->image);
+			    evas_del_object(w->evas, i->image);
+			    break;
+		    case EWL_IMAGE_TYPE_EBITS:
+			    ebits_hide(i->image);
+			    ebits_unset_clip(i->image);
+			    ebits_free(i->image);
+			    break;
+		    default:
+			    break;
+		    }
 
+		  i->image = NULL;
 	  }
 
-	DLEAVE_FUNCTION;
-}
-
-int
-ewl_image_get_layer(Ewl_Widget * w)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR_RET("w", w, -1);
-
-	DRETURN_INT(LAYER(w));
-}
-
-void
-ewl_image_lower(Ewl_Widget * w)
-{
-	Ewl_Image *i;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	i = EWL_IMAGE(w);
-
-	--LAYER(w);
-
-	if (!REALIZED(w))
-		DRETURN;
+	i->type = __ewl_image_get_type(i->path);
 
 	switch (i->type)
 	  {
 	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_lower(w->evas, i->image);
+		  i->image = evas_add_image_from_file(w->evas, i->path);
+		  evas_set_layer(w->evas, i->image, LAYER(w));
+		  evas_set_clip(w->evas, i->image, w->fx_clip_box);
+		  evas_get_image_size(w->evas, i->image, &ww, &hh);
+		  evas_show(w->evas, i->image);
 		  break;
 	  case EWL_IMAGE_TYPE_EBITS:
-		  ebits_lower(i->image);
+		  i->image = ebits_load(i->path);
+		  ebits_add_to_evas(i->image, w->evas);
+		  ebits_set_layer(i->image, LAYER(w));
+		  ebits_set_clip(i->image, w->fx_clip_box);
+		  ebits_show(i->image);
 		  break;
 	  default:
 		  break;
 	  }
 
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_raise(Ewl_Widget * w)
-{
-	Ewl_Image *i;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	i = EWL_IMAGE(w);
-
-	++LAYER(w);
-
-	if (!REALIZED(w))
-		DRETURN;
-
-	switch (i->type)
+	if (ww || hh)
 	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_raise(w->evas, i->image);
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  ebits_raise(i->image);
-		  break;
-	  default:
-		  break;
+		  ewl_object_request_size(EWL_OBJECT(w), ww, hh);
+		  ewl_object_set_current_size(EWL_OBJECT(w), ww, hh);
 	  }
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_move(Ewl_Widget * w, double x, double y)
-{
-	Ewl_Image *i;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	i = EWL_IMAGE(w);
-
-	REQUEST_X(w) = x;
-	REQUEST_Y(w) = y;
-
-	if (!REALIZED(w))
-		DRETURN ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_get_position(Ewl_Widget * w, double *x, double *y)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	if (x)
-		*x = CURRENT_X(w);
-
-	if (y)
-		*y = CURRENT_Y(w);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_resize(Ewl_Widget * w, double w2, double h)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	REQUEST_W(w) = w2;
-	REQUEST_H(w) = h;
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_get_size(Ewl_Widget * w, double *w2, double *h)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	if (w2)
-		*w2 = CURRENT_W(w);
-
-	if (h)
-		*h = CURRENT_H(w);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_set_geometry(Ewl_Widget * w,
-		       double x, double y, double w2, double h)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	REQUEST_X(w) = x;
-	REQUEST_Y(w) = y;
-	REQUEST_W(w) = w2;
-	REQUEST_H(w) = h;
 
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_get_geometry(Ewl_Widget * w,
-		       double *x, double *y, double *w2, double *h)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_set_color(Ewl_Widget * w, int r, int g, int b, int a)
-{
-	Ewl_Image *i;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	i = EWL_IMAGE(w);
-
-	i->color.r = r;
-	i->color.g = g;
-	i->color.b = b;
-	i->color.a = a;
-
-	if (!REALIZED(w))
-		DRETURN;
-
-	switch (i->type)
-	  {
-	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_set_color(w->evas, i->image, r, g, b, a);
-		  break;
-	  case EWL_IMAGE_TYPE_EBITS:
-		  break;
-	  default:
-		  break;
-	  }
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
-{
-	Ewl_Image *i;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	i = EWL_IMAGE(w);
-
-	if (r)
-		*r = i->color.r;
-	if (g)
-		*g = i->color.g;
-	if (b)
-		*b = i->color.b;
-	if (a)
-		*a = i->color.a;
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_image_set_border(Ewl_Widget * w, int t, int b, int l, int r)
-{
-
-}
-
-void
-ewl_image_get_border(Ewl_Widget * w, int *t, int *b, int *l, int *r)
-{
-
 }
 
 static void
@@ -309,16 +120,17 @@ __ewl_image_init(Ewl_Image * i)
 	w = EWL_WIDGET(i);
 
 	ewl_widget_init(w, NULL);
-	ewl_callback_clear(w);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_image_show, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_image_hide, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_image_configure, NULL);
-
-	memset(&i->color, 255, sizeof(i->color));
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_image_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_image_mouse_up, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+			    __ewl_image_mouse_move, NULL);
 
 	DLEAVE_FUNCTION;
 }
@@ -327,6 +139,7 @@ static void
 __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image *i;
+	int ww = 0, hh = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -339,6 +152,7 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		  i->image = evas_add_image_from_file(w->evas, i->path);
 		  evas_set_layer(w->evas, i->image, LAYER(w));
 		  evas_set_clip(w->evas, i->image, w->fx_clip_box);
+		  evas_get_image_size(w->evas, i->image, &ww, &hh);
 		  evas_show(w->evas, i->image);
 		  break;
 	  case EWL_IMAGE_TYPE_EBITS:
@@ -352,24 +166,10 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		  break;
 	  }
 
-	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_image_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	evas_show(w->evas, w->fx_clip_box);
+	ewl_object_request_size(EWL_OBJECT(w), ww, hh);
+	ewl_object_set_current_size(EWL_OBJECT(w), ww, hh);
 
 	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_image_hide(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-
 }
 
 static void
@@ -385,21 +185,16 @@ __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	switch (i->type)
 	  {
 	  case EWL_IMAGE_TYPE_NORMAL:
-		  evas_move(w->evas, i->image, REQUEST_X(w), REQUEST_Y(w));
-		  evas_resize(w->evas, i->image, REQUEST_W(w), REQUEST_H(w));
+		  evas_move(w->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
+		  evas_resize(w->evas, i->image, CURRENT_W(w), CURRENT_H(w));
 		  break;
 	  case EWL_IMAGE_TYPE_EBITS:
-		  ebits_move(i->image, REQUEST_X(w), REQUEST_Y(w));
-		  ebits_resize(i->image, REQUEST_W(w), REQUEST_H(w));
+		  ebits_move(i->image, CURRENT_X(w), CURRENT_Y(w));
+		  ebits_resize(i->image, CURRENT_W(w), CURRENT_H(w));
 		  break;
 	  default:
-		  DERROR("__ewl_image_configure: loading an unknown image\n");
 		  break;
 	  }
-
-	ewl_object_set_current_geometry(EWL_OBJECT(w),
-					REQUEST_X(w), REQUEST_Y(w),
-					REQUEST_W(w), REQUEST_H(w));
 
 	DLEAVE_FUNCTION;
 }
@@ -424,4 +219,83 @@ __ewl_image_get_type(const char *i)
 		return EWL_IMAGE_TYPE_EBITS;
 
 	return EWL_IMAGE_TYPE_NORMAL;
+}
+
+
+void
+__ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Image *i;
+	Ev_Mouse_Down *ev;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	i = EWL_IMAGE(w);
+	ev = ev_data;
+
+	switch (i->type)
+	  {
+	  case EWL_IMAGE_TYPE_NORMAL:
+		  break;
+	  case EWL_IMAGE_TYPE_EBITS:
+		  evas_event_button_down(w->evas, ev->x, ev->y, ev->button);
+		  break;
+	  default:
+		  break;
+	  }
+
+	DLEAVE_FUNCTION;
+}
+
+void
+__ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Image *i;
+	Ev_Mouse_Up *ev;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	i = EWL_IMAGE(w);
+	ev = ev_data;
+
+	switch (i->type)
+	  {
+	  case EWL_IMAGE_TYPE_NORMAL:
+		  break;
+	  case EWL_IMAGE_TYPE_EBITS:
+		  evas_event_button_up(w->evas, ev->x, ev->y, ev->button);
+		  break;
+	  default:
+		  break;
+	  }
+
+	DLEAVE_FUNCTION;
+}
+
+void
+__ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Image *i;
+	Ev_Mouse_Move *ev;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	i = EWL_IMAGE(w);
+	ev = ev_data;
+
+	switch (i->type)
+	  {
+	  case EWL_IMAGE_TYPE_NORMAL:
+		  break;
+	  case EWL_IMAGE_TYPE_EBITS:
+		  evas_event_move(w->evas, ev->x, ev->y);
+		  break;
+	  default:
+		  break;
+	  }
+
+	DLEAVE_FUNCTION;
 }

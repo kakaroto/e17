@@ -142,6 +142,15 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 /*	ewl_widget_realize(e->selection);*/
 
+	if (w->ebits_object)
+	  {
+		  int ww, hh;
+
+		  ebits_get_max_size(w->ebits_object, &ww, &hh);
+
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	  }
+
 	DLEAVE_FUNCTION;
 }
 

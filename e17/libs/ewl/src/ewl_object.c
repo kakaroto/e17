@@ -15,7 +15,7 @@ ewl_object_init(Ewl_Object * o)
 	CURRENT_H(o) = REQUEST_H(o) = 100;
 
 	o->fill = EWL_FILL_POLICY_NORMAL;
-	o->align = EWL_ALIGNMENT_LEFT;
+	o->align = EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
 }
 
 void
@@ -250,6 +250,38 @@ ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h)
 		*w = o->maximum.w;
 	if (h)
 		*h = o->maximum.h;
+}
+
+void
+ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("o", o);
+
+	o->padd.l = l;
+	o->padd.r = r;
+	o->padd.t = t;
+	o->padd.b = b;
+
+	DLEAVE_FUNCTION;
+}
+
+void
+ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t, int *b)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("o", o);
+
+	if (l)
+		*l = o->padd.l;
+	if (r)
+		*r = o->padd.r;
+	if (t)
+		*t = o->padd.t;
+	if (b)
+		*b = o->padd.b;
+
+	DLEAVE_FUNCTION;
 }
 
 inline void

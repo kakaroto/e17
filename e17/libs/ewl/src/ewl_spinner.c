@@ -164,6 +164,7 @@ static void
 __ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
+	int ew = 0, eh = 0, biw = 0, bih = 0, bdw = 0, bdh = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -175,6 +176,17 @@ __ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(s->button_decrease);
 
 	__ewl_spinner_set_value(w, s->value);
+
+	if (s->entry->ebits_object)
+		ebits_get_max_size(s->entry->ebits_object, &ew, &eh);
+	if (s->button_increase->ebits_object)
+		ebits_get_max_size(s->button_increase->ebits_object, &biw,
+				   &bih);
+	if (s->button_decrease->ebits_object)
+		ebits_get_max_size(s->button_decrease->ebits_object, &bdw,
+				   &bdh);
+
+	ewl_object_set_maximum_size(EWL_OBJECT(w), ew + biw + bdw, eh);
 
 	DLEAVE_FUNCTION;
 }

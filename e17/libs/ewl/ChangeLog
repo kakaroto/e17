@@ -1,3 +1,19 @@
+Sun Sep  30 03:38:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a padd structure to the Ewl_Object.
+	* Made the Ewl_Box make use of the new padding in the Ewl_Object, and
+	  get rid of the old x_padding/y_padding.
+	* If the child had a minimum height that was larger then the Ewl_Box it
+	  self, it would resize it to make the children fit. Not any more.
+	* Made the Ewl_Separator set its maximum size to the ebits object
+	  when realizing it.
+	* Same goes for the Ewl_Spinner & Ewl_Entry.
+	* Made Ewl_Image work.
+	* When realizing a Ewl_CheckButton with a checked state, it didn't
+	  set the Check bit to clicked, fixed.
+	* Only check the debug enable checkbutton if its enabled.
+	* Made the Ewl_Image call evas events on mouse down, mouse up and
+	  mouse move when the image is a ebits.
+
 Sat Sep  29 07:37:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a Ewl_Position enum.
 	* Made it possible to set the label position on Ewl_CheckButton's &
