@@ -2625,6 +2625,7 @@ doFocusSet(EWin * ewin, const void *params)
       DeIconifyEwin(ewin);
    if (ewin->shaded)
       EwinUnShade(ewin);
+   RaiseEwin(ewin);
    FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN(0);
