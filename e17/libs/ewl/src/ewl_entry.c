@@ -309,7 +309,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				|| !strcmp(ev->keyname, "KP_Enter")) {
 		evd = ewl_text_text_get(EWL_TEXT(e->text));
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				EWL_TEXT(w)->text);
+				evd);
 		FREE(evd);
 	}
 	else if (ev->keyname && strlen(ev->keyname) == 1) {
