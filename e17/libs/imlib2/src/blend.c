@@ -51,8 +51,8 @@
 		
 #define LOOP_END                                     \
 	  }                                          \
-	p1 += src_jump;                              \
-	p2 += dst_jump;                              \
+	p1 += srcw - w;                              \
+	p2 += dstw - w;                              \
      }
 
 #define LOOP_END_WITH_INCREMENT                      \
@@ -62,34 +62,10 @@
 
 /* COPY OPS */
 
-#ifdef DO_MMX_ASM
-static DATA8 mmx_data[] = 
-{ 
-   255,  0,255,  0,255,  0,255,  0, /* components */
-   255,  0,  0,  0,  0,  0,  0,  0, /* mask_red */
-   0,    0,255,  0,  0,  0,  0,  0, /* mask_green */
-   0,    0,  0,  0,  255,0,  0,  0, /* mask_blue  */
-   0,    0,  0,255,  0,  0,  0,  0, /* mask_alpha */
-   255,255,255,255,255,255,  0,  0  /* mask */
-};
-#endif
-
 static void
-__imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		       int w, int h, ImlibColorModifier *cm)
 {
-#ifdef DO_MMX_ASM
-   int y;
-   
-   __imlib_toggle_mmx();
-   for (y = 0; y < h; y++)
-     {
-	__imlib_asm_blend_rgba_to_rgb(src, dst, w, mmx_data);
-	src += w + src_jump;
-	dst += w + dst_jump;
-     }
-   __imlib_toggle_mmx();
-#else
    LOOP_START_2
 
    a = A_VAL(p1);
@@ -98,26 +74,25 @@ __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    BLEND_COLOR(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
    
    LOOP_END_WITH_INCREMENT
-#endif   
 }
 
 static void
-__imlib_BlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
 
-   a = A_VAL(p1);
+   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
    BLEND_COLOR(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    BLEND_COLOR(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   SATURATE_UPPER(A_VAL(p2), a + A_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
 
    LOOP_END_WITH_INCREMENT
 }
 
 static void
-__imlib_BlendRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
@@ -128,7 +103,7 @@ __imlib_BlendRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		      int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
@@ -139,7 +114,7 @@ __imlib_CopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		      int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
@@ -150,7 +125,7 @@ __imlib_CopyRGBToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		       int w, int h, ImlibColorModifier *cm)
 {
    /* FIXME: This could be a memcpy operation. */
@@ -164,7 +139,7 @@ __imlib_CopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 /* ADD OPS */
 
 static void
-__imlib_AddBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddBlendRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -178,7 +153,7 @@ __imlib_AddBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_AddBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			   int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -193,7 +168,7 @@ __imlib_AddBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_AddCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddCopyRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -206,7 +181,7 @@ __imlib_AddCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_AddCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -222,7 +197,7 @@ __imlib_AddCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 /* SUBTRACT OPS */
 
 static void
-__imlib_SubBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubBlendRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -237,7 +212,7 @@ __imlib_SubBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_SubBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			   int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -253,7 +228,7 @@ __imlib_SubBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_SubCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubCopyRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -266,7 +241,7 @@ __imlib_SubCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_SubCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -283,7 +258,7 @@ __imlib_SubCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 /* RESHADE OPS */
 
 static void
-__imlib_ReBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReBlendRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -293,14 +268,12 @@ __imlib_ReBlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
-   
-   WRITE_RGB_PRESERVE_ALPHA(p2, nr, ng, nb);
 
    LOOP_END_WITH_INCREMENT
 }
 
 static void
-__imlib_ReBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -316,7 +289,7 @@ __imlib_ReBlendRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_ReCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReCopyRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -329,7 +302,7 @@ __imlib_ReCopyRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -341,7 +314,6 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 
    LOOP_END_WITH_INCREMENT
 }
-
 
 
 
@@ -364,7 +336,7 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 /* COPY OPS */
 
 static void
-__imlib_BlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		       int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -378,7 +350,7 @@ __imlib_BlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -393,7 +365,7 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
 }
 
 static void
-__imlib_BlendRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_BlendRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -407,7 +379,7 @@ __imlib_BlendRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		      int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
@@ -420,7 +392,7 @@ __imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		      int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START
@@ -434,7 +406,7 @@ __imlib_CopyRGBToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 }
 
 static void
-__imlib_CopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_CopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		       int w, int h, ImlibColorModifier *cm)
 {
    /* FIXME: This could be a memcpy operation. */
@@ -451,7 +423,7 @@ __imlib_CopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 /* ADD OPS */
 
 static void
-__imlib_AddBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddBlendRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -465,7 +437,7 @@ __imlib_AddBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 }
 
 static void
-__imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			   int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -480,7 +452,7 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
 }
 
 static void
-__imlib_AddCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -493,7 +465,7 @@ __imlib_AddCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jum
 }
 
 static void
-__imlib_AddCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_AddCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -509,7 +481,7 @@ __imlib_AddCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 /* SUBTRACT OPS */
 
 static void
-__imlib_SubBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubBlendRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -524,7 +496,7 @@ __imlib_SubBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 }
 
 static void
-__imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			   int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -540,7 +512,7 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
 }
 
 static void
-__imlib_SubCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -553,7 +525,7 @@ __imlib_SubCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jum
 }
 
 static void
-__imlib_SubCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_SubCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -570,7 +542,7 @@ __imlib_SubCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 /* RESHADE OPS */
 
 static void
-__imlib_ReBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReBlendRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_2
@@ -580,14 +552,12 @@ __imlib_ReBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jum
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
-   
-   WRITE_RGB_PRESERVE_ALPHA(p2, nr, ng, nb);
 
    LOOP_END_WITH_INCREMENT
 }
 
 static void
-__imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			  int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -603,7 +573,7 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
 }
 
 static void
-__imlib_ReCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_1
@@ -616,7 +586,7 @@ __imlib_ReCopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
 }
 
 static void
-__imlib_ReCopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
+__imlib_ReCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
@@ -726,6 +696,90 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
      }
    else
      {
+#ifdef DO_MMX_ASM
+	switch(op)
+	  {
+	  case OP_COPY:
+	     if (merge_alpha)
+	       {
+		  if (rgb_src)
+		    {
+		       if (blend)
+			  blender = __imlib_BlendRGBToRGBA;
+		       else
+			  blender = __imlib_mmx_copy_rgba_to_rgba;
+		    }
+		  else
+		    {
+		       if (blend)
+/* had to disable - bug - alpha value isnt saturated at full 255 - its just */
+/* a bit off */
+/*			  blender = __imlib_mmx_blend_rgba_to_rgba;*/
+			  blender = __imlib_BlendRGBAToRGBA;
+		       else
+			  blender = __imlib_mmx_copy_rgba_to_rgba;
+		    }
+	       }
+	     else
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_blend_rgba_to_rgb;
+		  else
+		     blender = __imlib_mmx_copy_rgba_to_rgb;
+	       }
+	     break;
+	  case OP_ADD:
+	     if (merge_alpha)
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_add_blend_rgba_to_rgba;
+		  else
+		     blender = __imlib_mmx_add_copy_rgba_to_rgba;
+	       }
+	     else
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_add_blend_rgba_to_rgb;
+		  else
+		     blender = __imlib_mmx_add_copy_rgba_to_rgb;
+	       }
+	     break;
+	  case OP_SUBTRACT:
+	     if (merge_alpha)
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_subtract_blend_rgba_to_rgba;
+		  else
+		     blender = __imlib_mmx_subtract_copy_rgba_to_rgba;
+	       }
+	     else
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_subtract_blend_rgba_to_rgb;
+		  else
+		     blender = __imlib_mmx_subtract_copy_rgba_to_rgb;
+	       }
+	     break;
+	  case OP_RESHADE:
+	     if (merge_alpha)
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_reshade_blend_rgba_to_rgba;
+		  else
+		     blender = __imlib_mmx_reshade_copy_rgba_to_rgba;
+	       }
+	     else
+	       {
+		  if (blend)
+		     blender = __imlib_mmx_reshade_blend_rgba_to_rgb;
+		  else
+		     blender = __imlib_mmx_reshade_copy_rgba_to_rgb;
+	       }
+	     break;
+	  default:
+	     break;
+	  }
+#else
 	switch(op)
 	  {
 	  case OP_COPY:
@@ -807,6 +861,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 	  default:
 	     break;
 	  }
+#endif
      }
 
    return blender;
@@ -859,8 +914,8 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
    
    blender = __imlib_GetBlendFunction(op, blend, merge_alpha, rgb_src, cm);
    if (blender)
-      blender(src + (sy * src_w) + sx, src_w - w, 
-	      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+      blender(src + (sy * src_w) + sx, src_w, 
+	      dst + (dy * dst_w) + dx, dst_w, w, h, cm);
 }
 
 #define LINESIZE 16
@@ -1064,9 +1119,9 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	/* setup h */
 	h = dh;
 	/* set our scaling up in x / y dir flags */
-	if (dw > sw)
+	if (dw >= sw)
 	   xup = 1;
-	if (dh > sh)
+	if (dh >= sh)
 	   yup = 1;
 	if (!IMAGE_HAS_ALPHA(im_dst))
 	   merge_alpha = 0;

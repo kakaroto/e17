@@ -1,5 +1,16 @@
 #ifndef __RGBADRAW
 #define __RGBADRAW 1
+typedef struct _imlib_filter ImlibFilter;
+
+struct _imlib_filter
+{
+   short *r, *g, *b, *a;
+   int w, h, x, y;
+};
+ImlibFilter *__imlib_CreateFilter(int w, int h, int x, int y);
+void __imlib_FreeFilter(ImlibFilter *fil);
+void __imlib_FilterImage(ImlibImage *im, ImlibFilter *fil);
+
 void __imlib_FlipImageHoriz(ImlibImage *im);
 void __imlib_FlipImageVert(ImlibImage *im);
 void __imlib_FlipImageBoth(ImlibImage *im);

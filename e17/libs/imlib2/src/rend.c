@@ -259,7 +259,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     if (!(im->flags & F_HAS_ALPHA))
 		rgb_src = 1;
 	     blender = __imlib_GetBlendFunction(op, 1, 0, rgb_src, NULL);
-	     blender(pointer, jump, back + (y * dw), 0, dw, hh, NULL);
+	     blender(pointer, jump + dw, back + (y * dw), dw, dw, hh, NULL);
 	     pointer = back + (y * dw);
 	     jump = 0;
 	  }

@@ -301,6 +301,154 @@ __imlib_SharpenImage(ImlibImage *im, int rad)
    im->data = data;
 }
 
+ImlibFilter *
+__imlib_CreateFilter(int w, int h, int x, int y)
+{
+   ImlibFilter *fil;
+
+   fil = malloc(sizeof(ImlibFilter));
+   fil->w = w;
+   fil->h = h;
+   fil->x = x;
+   fil->y = y;
+   fil->r = malloc(fil->w * fil->h * sizeof(short));
+   fil->g = malloc(fil->w * fil->h * sizeof(short));
+   fil->b = malloc(fil->w * fil->h * sizeof(short));
+   fil->a = malloc(fil->w * fil->h * sizeof(short));
+   memset(fil->r, 0, (fil->w * fil->h * sizeof(short)));
+   memset(fil->g, 0, (fil->w * fil->h * sizeof(short)));
+   memset(fil->b, 0, (fil->w * fil->h * sizeof(short)));
+   memset(fil->a, 0, (fil->w * fil->h * sizeof(short)));
+   fil->r[fil->x + fil->y * fil->w] = 256;
+   fil->g[fil->x + fil->y * fil->w] = 256;
+   fil->b[fil->x + fil->y * fil->w] = 256;
+   fil->a[fil->x + fil->y * fil->w] = 256;
+   return fil;
+}
+
+void
+__imlib_FreeFilter(ImlibFilter *fil)
+{
+   free(fil->r);
+   free(fil->g);
+   free(fil->b);
+   free(fil->a);
+   free(fil);
+}
+
+#define FILTER_ADD(p) do {		\
+	if (fil->a[fi]) a += A_VAL(p) * fil->a[fi];	\
+	if (fil->r[fi]) r += R_VAL(p) * fil->r[fi];	\
+	if (fil->g[fi]) g += G_VAL(p) * fil->g[fi];	\
+	if (fil->b[fi]) b += B_VAL(p) * fil->b[fi];	\
+	fi++; } while (0)
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+void
+__imlib_FilterImage(ImlibImage *im, ImlibFilter *fil)
+{
+   DATA32 *data, *px, *py, *p1, *p2;
+   int fi, a, r, g, b, x, y, fx, fy;
+   int fx1, fx2, fx3, fy1, fy2, fy3;
+
+   data = malloc(im->w * im->h * sizeof(DATA32));
+   p1 = im->data;
+   p2 = data;
+   for (y = 0; y < im->h; y++) {
+      /*\ Calculate vertical block sizes \*/
+      fy1 = fil->y - y;
+      if (fy1 < 0) fy1 = 0;
+      if (fy1 > fil->h) fy1 = fil->h;
+      fy2 = (im->h - (y - fil->y));
+      if (fy2 < 0) fy2 = 0;
+      if (fy2 > (fil->h - fy1)) fy2 = fil->h - fy1;
+      fy3 = fil->h - (fy1 + fy2);
+
+      for (x = 0; x < im->w; x++) {
+	 /*\ Calculate horizontal block sizes \*/
+	 fx1 = fil->x - x;
+	 if (fx1 < 0) fx1 = 0;
+	 if (fx1 > fil->w) fx1 = fil->w;
+	 fx2 = (im->w - (x - fil->x));
+	 if (fx2 < 0) fx2 = 0;
+	 if (fx2 > (fil->w - fx1)) fx2 = fil->w - fx1;
+	 fx3 = fil->w - (fx1 + fx2);
+
+	 a = r = g = b = fi = 0;
+	 py = p1;
+	 for (fy = fy1; --fy >= 0; ) {
+	    px = py;
+	    /*\ Left edge outside \*/
+	    for (fx = fx1; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	    px = py + (x - fil->x) + fx1;
+	    /*\ Middle part \*/
+	    for (fx = fx2; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	       px++;
+	    }
+	    px = py + (im->w - 1);
+	    /*\ Right edge outside \*/
+	    for (fx = fx3; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	 }
+	 /*\ Middle part \*/
+	 py = p1 + im->w * ((y - fil->y) + fy1);
+	 for (fy = fy2; --fy >= 0; ) {
+	    px = py;
+	    /*\ Left edge outside \*/
+	    for (fx = fx1; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	    px = py + (x - fil->x) + fx1;
+	    /*\ Middle part \*/
+	    for (fx = fx2; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	       px++;
+	    }
+	    px = py + (im->w - 1);
+	    /*\ Right edge outside \*/
+	    for (fx = fx3; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	    py += im->w;
+	 }
+	 /*\ Lower edge outside \*/
+	 py = p1 + (im->w * (im->h - 1));
+	 for (fy = fy3; --fy >= 0; ) {
+	    px = py;
+	    /*\ Left edge outside \*/
+	    for (fx = fx1; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	    px = py + (x - fil->x) + fx1;
+	    /*\ Middle part \*/
+	    for (fx = fx2; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	       px++;
+	    }
+	    px = py + (im->w - 1);
+	    /*\ Right edge outside \*/
+	    for (fx = fx3; --fx >= 0; ) {
+	       FILTER_ADD(px);
+	    }
+	 }
+	 a = (((a >> 8) | (-(a >> 16))) & (~(a >> 17))) & 0xff;
+	 r = (((r >> 8) | (-(r >> 16))) & (~(r >> 17))) & 0xff;
+	 g = (((g >> 8) | (-(g >> 16))) & (~(g >> 17))) & 0xff;
+	 b = (((b >> 8) | (-(b >> 16))) & (~(b >> 17))) & 0xff;
+	 *p2 = (a << 24) | (r << 16) | (g << 8) | (b);
+	 p2++;
+      }
+   }
+   free(im->data);
+   im->data = data;
+}
+
 void
 __imlib_TileImageHoriz(ImlibImage *im)
 {
