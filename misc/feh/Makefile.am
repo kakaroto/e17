@@ -49,7 +49,8 @@ src/test15_slideshow_multiple_images \
 src/test16_index_no_bg_title \
 src/test17_evil_many_many_multiple_windows \
 src/test18_slideshow_no_progressive_loading \
-src/test19_montage_background_quiet
+src/test19_montage_background_quiet \
+src/test20_stress_test_create_massive_image_save_only
 
 EXTRA_DIST = $(testimages) $(testscripts) \
 README AUTHORS ChangeLog TODO feh.spec
