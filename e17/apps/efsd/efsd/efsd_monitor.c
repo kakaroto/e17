@@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_main.h>
 #include <efsd_misc.h>
 #include <efsd_monitor.h>
-#include <efsd_queue.h>
+#include <efsd_event_queue.h>
 #include <efsd_statcache.h>
 
 static EfsdHash *monitors = NULL;
@@ -935,7 +935,7 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 	}
       else
 	{
-	  efsd_queue_add_event(clientfd[emr->client], &ee);
+	  efsd_event_queue_add_event(ev_q, clientfd[emr->client], &ee);
 	  D("write() error when writing FAM event.\n");
 	}
 

@@ -46,15 +46,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_options.h>
 #include <efsd_types.h>
+#include <efsd_queue.h>
 #include <libefsd_misc.h>
 #include <libefsd.h>
 
 char opt_nesting = FALSE;
 char opt_debug   = FALSE;
 
+
 struct efsd_connection
 {
   int        fd;
+  EfsdQueue *cmd_q;
 };
 
 struct efsd_options
@@ -65,16 +68,19 @@ struct efsd_options
   EfsdOption  *ops;
 };
 
+
 static int       send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId get_next_id(void);
+
 static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type,
 			  int num_files, char **files,
 			  int num_options, EfsdOption *ops);
 
-static EfsdCmdId      
-set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
-		      EfsdDatatype datatype, int data_len, void *data);
+static EfsdCmdId set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
+				       EfsdDatatype datatype, int data_len, void *data);
 
+static void      cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com);
+static void      cmd_queue_process(EfsdConnection *ec);
 
 static char*
 get_full_path(char *file)
@@ -117,10 +123,22 @@ send_command(EfsdConnection *ec, EfsdCommand *com)
   if (!ec || !com)
     D_RETURN_(-1);
 
-  if (efsd_io_write_command(ec->fd, com) < 0)
+  if (!efsd_queue_empty(ec->cmd_q))
     {
-      fprintf(stderr, "libefsd: couldn't write command.\n");
-      D_RETURN_(-1);
+      cmd_queue_add_command(ec, com);
+      cmd_queue_process(ec);
+    }
+  else
+    {
+      if (efsd_io_write_command(ec->fd, com) < 0)
+	{
+	  if (errno == EPIPE)
+	    {
+	      D_RETURN_(-1);	  
+	    }
+	  
+	  cmd_queue_add_command(ec, com);
+	}
     }
   
   D_RETURN_(0);
@@ -252,6 +270,54 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
 }
 
 
+static void      
+cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com)
+{
+  EfsdCommand *com_copy;
+
+  D_ENTER;
+
+  if (!ec || !com)
+    D_RETURN;
+
+  com_copy = NEW(EfsdCommand);
+  efsd_cmd_duplicate(com, com_copy);
+  efsd_queue_append_item(ec->cmd_q, com_copy);
+
+  D_RETURN;
+}
+
+
+static void      
+cmd_queue_process(EfsdConnection *ec)
+{
+  EfsdCommand *cmd;
+
+  D_ENTER;
+
+  if (!ec)
+    D_RETURN;
+
+  while (!efsd_queue_empty(ec->cmd_q))
+    {
+      cmd = (EfsdCommand*)efsd_queue_next_item(ec->cmd_q);
+      if (efsd_io_write_command(ec->fd, cmd) < 0)
+	{
+	  fprintf(stderr, "libefsd: queue NOT empty -- %i!\n", efsd_queue_size(ec->cmd_q));
+	  D_RETURN;
+	}
+
+      efsd_cmd_free(cmd);
+      efsd_queue_remove_item(ec->cmd_q);
+      fprintf(stderr, "libefsd: processed 1\n");
+    }
+
+  fprintf(stderr, "libefsd: queue empty! %i\n", efsd_queue_size(ec->cmd_q));
+
+  D_RETURN;
+}
+
+
 /* Efsd API starts here --------------------------------------------- */
 
 
@@ -259,10 +325,12 @@ EfsdConnection * efsd_open(void)
 {
   struct sockaddr_un    cli_sun;
   EfsdConnection       *ec;
+  int                   flags;
 
   D_ENTER;
 
   ec = (EfsdConnection*)malloc(sizeof(EfsdConnection));
+
   if (!ec)
     D_RETURN_(NULL);
 
@@ -280,11 +348,19 @@ EfsdConnection * efsd_open(void)
       fprintf(stderr, "libefsd: connect() error.\n"); D_RETURN_(NULL);      
     }
 
-  if (fcntl(ec->fd, F_SETFL, O_NONBLOCK) < 0)
+  if ( (flags = fcntl(ec->fd, F_GETFL, 0)) < 0)
     {
       fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
       exit(-1);
     }
+
+  if (fcntl(ec->fd, F_SETFL, flags | O_NONBLOCK) < 0)
+    {
+      fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
+      exit(-1);
+    }
+
+  ec->cmd_q = efsd_queue_new();
 
   D_RETURN_(ec);
 }
@@ -312,12 +388,16 @@ int efsd_close(EfsdConnection *ec)
 
   memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_CLOSE;
+
   if (send_command(ec, &cmd) < 0)
     {
       D_RETURN_(-1);
     }
 
   close(ec->fd);
+
+  efsd_queue_free(ec->cmd_q, (EfsdFunc)efsd_cmd_free);
+
   free(ec);
   D_RETURN_(0);
 }
@@ -339,29 +419,9 @@ efsd_events_pending(EfsdConnection *ec)
   
   tv.tv_sec = 0;
   tv.tv_usec = 0;
-  select(ec->fd + 1, &fdset, NULL, NULL, &tv);
   
-  D_RETURN_(FD_ISSET(ec->fd, &fdset));
-}
-
-
-int            
-efsd_ready(EfsdConnection *ec)
-{
-  fd_set fdset;
-  struct timeval tv;
-  
-  D_ENTER;
-
-  if (!ec || ec->fd < 0)
+  if (select(ec->fd + 1, &fdset, NULL, NULL, &tv) < 0)
     D_RETURN_(-1);
-  
-  FD_ZERO(&fdset);
-  FD_SET(ec->fd, &fdset);
-  
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
-  select(ec->fd + 1, NULL, &fdset, NULL, &tv);
   
   D_RETURN_(FD_ISSET(ec->fd, &fdset));
 }
@@ -396,12 +456,37 @@ efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
   FD_ZERO(&fdset);
   FD_SET(ec->fd, &fdset);
   if ((result = select(ec->fd+1, &fdset, NULL, NULL, NULL)) < 0)
-    {
-      D_RETURN_(-1);
-    }
+    D_RETURN_(-1);
 
   D_RETURN_(efsd_io_read_event(ec->fd, ev));
 }
+
+
+int            
+efsd_commands_pending(EfsdConnection *ec)
+{
+  D_ENTER;
+
+  if (!ec)
+    D_RETURN_(-1);
+
+  D_RETURN_(!efsd_queue_empty(ec->cmd_q));
+}
+
+
+int            
+efsd_flush(EfsdConnection *ec)
+{
+  D_ENTER;
+
+  if (!ec)
+    D_RETURN_(-1);
+
+  cmd_queue_process(ec);
+
+  D_RETURN_(efsd_queue_empty(ec->cmd_q));
+}
+
 
 
 EfsdCmdId      

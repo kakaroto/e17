@@ -101,10 +101,14 @@ efsd_list_append(EfsdList *l, void *data)
   EfsdList *lnew;
 
   D_ENTER;
+
   lnew = efsd_list_new(data);
 
-  while (l->next)
-    l = l->next;
+  if (l)
+    {
+      while (l->next)
+	l = l->next;
+    }
 
   lnew->prev = l;
 

@@ -25,32 +25,51 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_queue_h
 #define efsd_queue_h
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <efsd_list.h>
 
-#include <efsd.h>
+typedef struct efsd_queue EfsdQueue;
+typedef struct efsd_queue_iterator EfsdQueueIterator;
 
-/* FIXME: This should be cleaned up into a generic queue
-   and an instance that contains efsd commands... */
+
+/* Creates new empty queue.
+ */
+EfsdQueue *efsd_queue_new(void);
+
+/* Cleans up queue using the given destructor function
+   for the remaining items.
+*/
+void       efsd_queue_free(EfsdQueue *q, EfsdFunc free_func);
+
+/* Appends an item to the end of the queue.
+ */
+void       efsd_queue_append_item(EfsdQueue *q, void *data);
+
+/* Removes and returns the next item from the queue.
+ */
+void      *efsd_queue_remove_item(EfsdQueue *q);
+
+/* Returns next item to be processed in the queue,
+   without removing it from the queue.
+*/
+void      *efsd_queue_next_item(EfsdQueue *q);
 
 /* Returns value > 0 when items are in the queue.
  */
-int  efsd_queue_empty(void);
+int        efsd_queue_empty(EfsdQueue *q);
 
-/* Tries to process as many items in the queue as possible.
-   Returns number of items processed, 0 if none got processed.
-*/
-int  efsd_queue_process(fd_set *fdset);
 
-/* Fills an fd_set with the file descriptors of events that
-   are waiting to be sent in the queue.
-*/
-void efsd_queue_fill_fdset(fd_set *fdset, int *fdsize);
+/* Returns number of items currently queued.
+ */
+int        efsd_queue_size(EfsdQueue *q);
 
-/* Adds an event that is supposed to be delivered to SOCKFD,
-   making a copy of event EE.
-*/
-void efsd_queue_add_event(int sockfd, EfsdEvent *ee);
+/* Queue iterator -- iterates over all items
+   that are currently queued */
+
+EfsdQueueIterator *efsd_queue_it_new(EfsdQueue *h);
+void               efsd_queue_it_free(EfsdQueueIterator *it);
+void              *efsd_queue_it_item(EfsdQueueIterator *it);
+int                efsd_queue_it_remove(EfsdQueueIterator *it);
+int                efsd_queue_it_next(EfsdQueueIterator *it);
+int                efsd_queue_it_valid(EfsdQueueIterator *it);
 
 #endif 

@@ -61,10 +61,12 @@ meta_hash_filename(char *filename)
   D_ENTER;
 
   snprintf(str, MAXPATHLEN, "%i:%s", geteuid(), filename);
-  s = str;
+  s = str + strlen(str) - 1;
 
-  for (hash = 0; *s != '\0'; s++)
-    hash = (32*hash + *s);
+  for (hash = 0; s != str; s--)
+    hash = (7*hash + *s);
+
+  D("Hashed %s to %u\n", filename, hash);
 
   D_RETURN_(hash);
 }
@@ -351,6 +353,8 @@ efsd_meta_set(EfsdCommand *ec)
   esmc = &(ec->efsd_set_metadata_cmd);
   efsd_misc_remove_trailing_slashes(esmc->file);
   meta_db_get_file(esmc->file, dbfile, MAXPATHLEN, TRUE /* create */);
+
+  D("Writing to %s for %s\n", dbfile, esmc->file);
 
   D_RETURN_(meta_db_set_data(esmc, dbfile));
 }

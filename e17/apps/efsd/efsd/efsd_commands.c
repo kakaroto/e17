@@ -49,7 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_main.h>
 #include <efsd_meta.h>
 #include <efsd_misc.h>
-#include <efsd_queue.h>
+#include <efsd_event_queue.h>
 #include <efsd_statcache.h>
 #include <efsd_types.h>
 
@@ -96,7 +96,7 @@ send_reply(EfsdCommand *cmd, int errorcode,
       if (errno == EPIPE)
 	efsd_main_close_connection(client);
       else
-	efsd_queue_add_event(sockfd, &ee);
+	efsd_event_queue_add_event(ev_q, sockfd, &ee);
 
       D_RETURN_(-1);
     }

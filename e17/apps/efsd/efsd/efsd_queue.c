@@ -25,186 +25,229 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if HAVE_CONFIG_H
 # include <config.h>
 #endif
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-#include <sys/param.h>
-#include <sys/un.h>
-#include <string.h>
 #include <unistd.h>
-#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <efsd_debug.h>
-#include <efsd_globals.h>
 #include <efsd_macros.h>
-#include <efsd_io.h>
-#include <efsd_main.h>
+#include <efsd_debug.h>
 #include <efsd_misc.h>
 #include <efsd_list.h>
-#include <efsd_types.h>
 #include <efsd_queue.h>
 
-typedef struct efsd_queue_item
+
+struct efsd_queue
 {
-  int          client;
-  EfsdEvent   *ee;
-}
-EfsdQueueItem;
+  EfsdList      *q;
+  int            size;
+};
 
-EfsdList *queue      = NULL;
-EfsdList *queue_last = NULL;
-
-static EfsdQueueItem *queue_item_new(int client, EfsdEvent *ee);
-static void           queue_item_free(EfsdQueueItem *eqi);
-
-
-static EfsdQueueItem *
-queue_item_new(int client, EfsdEvent *ee)
+struct efsd_queue_iterator
 {
-  EfsdQueueItem *result;
+  EfsdQueue     *q;
+  EfsdList      *it;
+};
+
+
+EfsdQueue *
+efsd_queue_new(void)
+{
+  EfsdQueue *q;
 
   D_ENTER;
 
-  result = NEW(EfsdQueueItem);
-  result->client = client;
-  result->ee = ee;
+  q = NEW(EfsdQueue);
+  q->q = NULL;
+  q->size = 0;
+
+  D_RETURN_(q);
+}
+
+
+void       
+efsd_queue_free(EfsdQueue *q, EfsdFunc free_func)
+{
+  D_ENTER;
+
+  if (!q)
+    D_RETURN;
+
+  efsd_list_free(q->q, free_func);
+  FREE(q);
   
+  D_RETURN;
+}
+
+
+void       
+efsd_queue_append_item(EfsdQueue *q, void *data)
+{
+  D_ENTER;
+
+  if (!q || !data)
+    D_RETURN;
+
+  if (!q->q)
+    q->q = efsd_list_new(data);
+  else
+    efsd_list_append(q->q, data);
+
+  q->size++;
+  
+  D_RETURN;
+}
+
+
+void      *
+efsd_queue_remove_item(EfsdQueue *q)
+{
+  void *data = NULL;
+
+  D_ENTER;
+
+  if (!q || !q->q)
+    D_RETURN_(NULL);
+
+  data = efsd_list_data(q->q);
+  q->q = efsd_list_remove(q->q, q->q, NULL);
+  q->size--;
+
+  D_RETURN_(data);
+}
+
+
+void      *
+efsd_queue_next_item(EfsdQueue *q)
+{
+  D_ENTER;
+
+  if (!q || !q->q)
+    D_RETURN_(NULL);
+
+  D_RETURN_(efsd_list_data(q->q));
+}
+
+
+int        
+efsd_queue_empty(EfsdQueue *q)
+{
+  int result;
+
+  D_ENTER;
+
+  result = (q->q == NULL);
+
   D_RETURN_(result);
 }
 
 
-static void
-queue_item_free(EfsdQueueItem *eqi)
+int        
+efsd_queue_size(EfsdQueue *q)
 {
   D_ENTER;
 
-  if (!eqi)
-    {
-      D_RETURN;
-    }
+  if (!q)
+    D_RETURN_(0);
 
-  efsd_event_free(eqi->ee);
-  FREE(eqi);
+  D_RETURN_(q->size);
+}
+
+
+EfsdQueueIterator *
+efsd_queue_it_new(EfsdQueue *q)
+{
+  EfsdQueueIterator *qit = NULL;
+
+  D_ENTER;
+
+  qit = NEW(EfsdQueueIterator);
   
-  D_RETURN;
-}
-		     
-int 
-efsd_queue_empty(void)
-{
-  D_ENTER;
-  D_RETURN_(queue == NULL);
+  qit->q = q;
+  qit->it = q->q;
+
+  D_RETURN_(qit);
 }
 
 
-void
-efsd_queue_fill_fdset(fd_set *fdset, int *fdsize)
+void               
+efsd_queue_it_free(EfsdQueueIterator *it)
 {
-  EfsdList      *q;
-  EfsdQueueItem *eqi;
-
   D_ENTER;
 
-  for (q = queue; q; q = efsd_list_next(q))
-    {
-      eqi = (EfsdQueueItem*) efsd_list_data(q);
-      
-      FD_SET(clientfd[eqi->client], fdset);
-      if (clientfd[eqi->client] > *fdsize)
-	*fdsize = clientfd[eqi->client];
-    }
+  /* Nothing to free in the queue itself -- it's just an iterator */
+  FREE(it);
 
   D_RETURN;
 }
 
 
-int 
-efsd_queue_process(fd_set *fdset)
+void *
+efsd_queue_it_item(EfsdQueueIterator *it)
 {
-  EfsdList      *q, *qtemp;
-  EfsdQueueItem *eqi;
-  int            done = 0;
+  D_ENTER;
 
-  for (q = queue; q; )
-    {
-      eqi = (EfsdQueueItem*) efsd_list_data(q);
+  if (!it)
+    D_RETURN_(NULL);  
 
-      if (eqi->client < 0)
-	{
-	  if (q == queue_last)
-	    queue_last = NULL;
-
-	  qtemp = q;
-	  q = efsd_list_next(q);
-	  queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
-	  done++;
-	  continue;
-	}
-
-      if (FD_ISSET(clientfd[eqi->client], fdset))
-	{
-	  if (efsd_io_write_event(clientfd[eqi->client], eqi->ee) < 0)
-	    {
-	      if (errno == EPIPE)
-		{
-		  D("Client %i died -- closing connection\n", eqi->client);
-		  efsd_main_close_connection(eqi->client);
-
-		  qtemp = q;
-		  q = efsd_list_next(q);
-		  queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
-		  done++;
-		}
-	      else
-		{
-		  D("Couldn't write queued command.\n");
-		}
-	    }
-	  else
-	    {
-	      D("One queue item processed.\n");
-
-	      if (q == queue_last)
-		queue_last = NULL;
-	      
-	      qtemp = q;
-	      q = efsd_list_next(q);
-	      queue = efsd_list_remove(queue, qtemp, (EfsdFunc)queue_item_free);
-	      done++;
-	    }
-	}
-    }
-
-  D_RETURN_(done);
+  D_RETURN_(efsd_list_data(it->it));
 }
 
 
-void
-efsd_queue_add_event(int sockfd, EfsdEvent *ee)
+int                
+efsd_queue_it_remove(EfsdQueueIterator *it)
 {
-  EfsdEvent *ee_copy;
-
   D_ENTER;
 
-  ee_copy = NEW(EfsdEvent);
-  efsd_event_duplicate(ee, ee_copy);
+  if (!it)
+    D_RETURN_(FALSE);
 
-  if (!queue)
+  if (it->it)
     {
-      D("Creating job queue\n");
-      queue = efsd_list_new(queue_item_new(sockfd, ee_copy));
-      queue_last = queue;
-    }
-  else
-    {
-      D("Appending to job queue\n");
-      queue_last = efsd_list_append(queue_last, queue_item_new(sockfd, ee_copy));
+      EfsdList *next = NULL;
+
+      next = efsd_list_next(it->it);
+      it->q->q = efsd_list_remove(it->q->q, it->it, NULL);
+      it->q->size--;
+      it->it = next;
+
+      D_RETURN_(TRUE);
     }
 
-  D_RETURN;
+  D_RETURN_(FALSE);
+}
+
+
+int                
+efsd_queue_it_next(EfsdQueueIterator *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN_(FALSE);
+
+  if (it->it)
+    {
+      it->it = efsd_list_next(it->it);
+
+      if (it->it)
+	D_RETURN_(TRUE);
+    }
+
+  D_RETURN_(FALSE);
+}
+
+
+int                
+efsd_queue_it_valid(EfsdQueueIterator *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN_(FALSE);
+
+  if (it->it)
+    D_RETURN_(TRUE);
+  
+  D_RETURN_(FALSE);
 }
 

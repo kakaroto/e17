@@ -22,6 +22,7 @@ efsd_SOURCES = 					\
 	efsd_commands.h efsd_commands.c 	\
 	efsd_debug.h efsd_debug.c		\
 	efsd_dynarray.h efsd_dynarray.c 	\
+	efsd_event_queue.h efsd_event_queue.c 	\
 	efsd_fam_r.c efsd_fam_r.h 		\
 	efsd_filetype.h efsd_filetype.c 	\
 	efsd_fs.h efsd_fs.c 			\
@@ -53,6 +54,8 @@ libefsd_la_SOURCES   = 				\
 	efsd_io.h efsd_io.c 			\
 	efsd_options.h efsd_options.c 		\
 	efsd_types.h efsd_types.c 		\
+	efsd_queue.h efsd_queue.c 		\
+	efsd_list.h efsd_list.c 		\
 	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
 

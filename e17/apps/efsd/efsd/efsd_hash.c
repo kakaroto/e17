@@ -365,6 +365,7 @@ efsd_hash_it_free(EfsdHashIterator *it)
 {
   D_ENTER;
 
+  /* Nothing to free in the hash itself -- it's just an iterator */
   FREE(it);
 
   D_RETURN;
@@ -398,9 +399,7 @@ efsd_hash_it_next(EfsdHashIterator *it)
       it->it = efsd_list_next(it->it);
 
       if (it->it)
-	{
-	  D_RETURN_(TRUE);
-	}
+	D_RETURN_(TRUE);
 
       for (i = it->bucket + 1; i < it->h->num_buckets; i++)
 	{

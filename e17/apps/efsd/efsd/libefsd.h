@@ -86,7 +86,8 @@ int            efsd_get_connection_fd(EfsdConnection *ec);
  * @ec: The Efsd connection
  *
  * When there are Efsd events waiting to be read, returns value
- * other than zero, and zero when there are none.
+ * greater than zero, zero when there are none, and a value smaller
+ * than zero when there was an error.
  */
 int            efsd_events_pending(EfsdConnection *ec);
 
@@ -110,7 +111,7 @@ int            efsd_next_event(EfsdConnection *ec, EfsdEvent *ev);
  * @ev: Pointer to an allocated EfsdEvent.
  *
  * Blocks until an efsd event arrives, then returns it by filling
- * in the @ev structure. Returns -1 when called on closed connection,
+ * in the @ev structure. Returns -1 when there was an error,
  * >= 0 otherwise.
  */
 int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
@@ -129,6 +130,24 @@ int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
  * first and then simply free() the pointer.
  */
 void           efsd_event_cleanup(EfsdEvent *ev);
+
+/**
+ * efsd_commands_pending - whether there are commands still waiting to be sent to Efsd.
+ * @ec: The Efsd connection
+ *
+ * Returns value > 0 when commands are queued, 0 when the queue is empty,
+ * value < 0 when an error occured.
+ */
+int            efsd_commands_pending(EfsdConnection *ec);
+
+/**
+ * efsd_flush - tries to flush the queue of outstanding commands.
+ * @ec: The Efsd connection
+ *
+ * Returns value > 0 when the queue could be flushed, 0 otherwise,
+ * < 0 when there was an error.
+ */
+int            efsd_flush(EfsdConnection *ec);
 
 
 /* Various commands to operate on the fs.

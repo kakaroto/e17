@@ -134,7 +134,7 @@ read_data(int sockfd, void *dest, int size)
 
   if (result == 0)
     {
-      D(("Read timed out...\n"));
+      D("Read timed out... %i\n", errno);
       D_RETURN_(-1);
     }
 
@@ -165,7 +165,7 @@ read_int(int sockfd, int *dest)
    
   D_ENTER;
 
-  if ((count = read_data(sockfd, dest, sizeof(int))) != sizeof(int))
+  if ( (count = read_data(sockfd, dest, sizeof(int))) != sizeof(int))
     D_RETURN_(-1);
 
   D_RETURN_(count);
@@ -199,48 +199,28 @@ read_string(int sockfd, char **s)
 static int     
 write_data(int sockfd, struct msghdr *msg)
 {
-  int             n, result;
-  fd_set          fdset;
-  struct timeval  tv;
+  int             n;
 
   D_ENTER;
 
   if (sockfd < 0)
     D_RETURN_(-1);
 
-  tv.tv_sec  = 1;
-  tv.tv_usec = 0;
-  FD_ZERO(&fdset);
-  FD_SET(sockfd, &fdset);
-
-  while ((result = select(sockfd + 1, NULL, &fdset, NULL, &tv)) < 0)
-    {
-      if (errno == EINTR)
-	{
-	  D(("read_data select() interrupted\n"));
-	  tv.tv_sec  = 1;
-	  tv.tv_usec = 0;
-	  FD_ZERO(&fdset);
-	}
-      else
-	{
-	  fprintf(stderr, "Select error -- exiting.\n");
-	  exit(-1);
-	}
-    }
-
-  if (result == 0)
-    {
-      D(("Write timed out.\n"));
-      D_RETURN_(-1);
-    }
 #ifndef __EMX__
   if ((n = sendmsg(sockfd, msg, 0)) < 0)
 #else
   if ((n = sendmsg(_getsockhandle(sockfd), msg, 0)) < 0)
 #endif
     {
-      perror("error");      
+      if (errno == EAGAIN)
+	{
+	  D("Couldn't write data -- buffer not ready.\n");
+	}
+      else
+	{
+	  D("Sendmsg error -- %i\n", n);
+	  perror("error");      
+	}
     }
 
   D_RETURN_(n);
@@ -787,10 +767,7 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
   msg.msg_iovlen = iov.v;
 
   if ((n = write_data(sockfd, &msg)) < 0)
-    {
-      perror("Error writing command:");
-      D_RETURN_(-1);
-    }
+    D_RETURN_(-1);
 
   D_RETURN_(0);
 }
@@ -872,11 +849,8 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
   msg.msg_iovlen = iov.v;
 
   if ((n = write_data(sockfd, &msg)) < 0)
-    {
-      perror("Error writing event:");
-      D_RETURN_(-1);
-    }
-
+    D_RETURN_(-1);
+  
   D_RETURN_(0);
 }
 
@@ -935,10 +909,7 @@ efsd_io_write_option(int sockfd, EfsdOption *eo)
   msg.msg_iovlen = iov.v;
 
   if ((n = write_data(sockfd, &msg)) < 0)
-    {
-      perror("Error writing option:");
-      D_RETURN_(-1);
-    }
+    D_RETURN_(-1);
 
   D_RETURN_(0);
 }

@@ -58,7 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_main.h>
 #include <efsd_meta.h>
 #include <efsd_misc.h>
-#include <efsd_queue.h>
+#include <efsd_event_queue.h>
 #include <efsd_types.h>
 #include <efsd_statcache.h>
 
@@ -73,6 +73,8 @@ char                 opt_foreground = FALSE;
 char                 opt_careful    = FALSE;
 char                 opt_debug      = FALSE;
 char                 opt_nesting    = FALSE;
+
+EfsdQueue           *ev_q;
 
 /* File descriptor for accepting new clients */
 static int           listen_fd;
@@ -184,7 +186,7 @@ main_thread_detach(void)
 #if USE_THREADS
   if (pthread_detach(pthread_self()) != 0)
     {
-      printf("Thread detach error -- exiting.\n");
+      fprintf(stderr, "Thread detach error -- exiting.\n");
       exit(-1);
     }
 #endif
@@ -647,6 +649,8 @@ main_handle_connections(void)
 
   D_ENTER;
 
+  ev_q = efsd_queue_new();
+
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientfd[i] = -1;
     
@@ -730,9 +734,9 @@ main_handle_connections(void)
 	    fdsize = listen_fd;
 	}
 
-      if (!efsd_queue_empty())
+      if (!efsd_queue_empty(ev_q))
 	{
-	  efsd_queue_fill_fdset(&fdwset, &fdsize);
+	  efsd_event_queue_fill_fdset(ev_q, &fdwset, &fdsize);
 	  fdwset_ptr = &fdwset;
 	}
 
@@ -762,10 +766,8 @@ main_handle_connections(void)
 
       /* Check if anything is queued to be written
          to the writable fds ... */
-      if (!efsd_queue_empty())
-	{
-	  efsd_queue_process(fdwset_ptr);
-	}
+      if (!efsd_queue_empty(ev_q))
+	efsd_event_queue_process(ev_q, fdwset_ptr);
       
       if (!have_fam_thread && FD_ISSET(famcon.fd, &fdrset))
 	{
@@ -819,10 +821,18 @@ main_handle_connections(void)
 	    {
 	      if (clientfd[i] < 0)
 		{
+		  int flags;
+
 		  D("New connection -- client %i.\n", i);	  
 		  clientfd[i] = sock_fd;
 
-		  if (fcntl(sock_fd, F_SETFL, O_NONBLOCK) < 0)
+		  if ( (flags = fcntl(sock_fd, F_GETFL, 0)) < 0)
+		    {
+		      fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
+		      exit(-1);
+		    }
+
+		  if (fcntl(sock_fd, F_SETFL, flags | O_NONBLOCK) < 0)
 		    {
 		      fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
 		      exit(-1);
@@ -980,6 +990,9 @@ main_cleanup(void)
   efsd_stat_cleanup();
   efsd_meta_cleanup();
   efsd_filetype_cleanup();
+
+  /* I don't think I need to free the event queue here */
+
   D("Bye bye.\n");
 
   exit(0);

@@ -22,23 +22,29 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_globals_h
-#define __efsd_globals_h
+#ifndef efsd_event_queue_h
+#define efsd_event_queue_h
 
-#include <fam.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <efsd.h>
 #include <efsd_queue.h>
 
-extern FAMConnection    famcon;
-extern int              clientfd[EFSD_CLIENTS];
-extern int              listen_fd;
-extern mode_t           mode_755;
+/* Tries to process as many items in the queue as possible.
+   Returns number of items processed, 0 if none got processed.
+*/
+int  efsd_event_queue_process(EfsdQueue *q, fd_set *fdset);
 
-extern char             opt_foreground;
-extern char             opt_careful;
-extern char             opt_debug;
-extern char             opt_nesting;
+/* Fills an fd_set with the file descriptors of events that
+   are waiting to be sent in the queue.
+*/
+void efsd_event_queue_fill_fdset(EfsdQueue *q, fd_set *fdset, int *fdsize);
 
-extern EfsdQueue       *ev_q;
+/* Adds an event that is supposed to be delivered to SOCKFD,
+   making a copy of event EE.
+*/
+void efsd_event_queue_add_event(EfsdQueue *q, int sockfd, EfsdEvent *ee);
 
-#endif
+#endif 
