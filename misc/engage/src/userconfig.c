@@ -25,7 +25,7 @@ userconfig_mappings_load(char* fp)
 
   maplist = e_app_new(fp, 1);
   if (!maplist) {
-    printf("You should _really_ create %s and populate it\n", fp);
+    printf("You should _really_ create %s/ and populate it\n", fp);
     return;
   }
 
