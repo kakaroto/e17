@@ -37,6 +37,13 @@
 #define EDJE_TEXT_USER "EnoteUser"
 #define EDJE_TEXT_DATE "EnoteDate"
 #define EDJE_TEXT_TITLE "EnoteTitle"
+#define EDJE_VSCROLLBAR "EnoteVScrollbar"
+#define EDJE_HSCROLLBAR "EnoteHScrollbar"
+
+#define EDJE_INFO_SCROLLBARS "EnoteInfoScrollbars"
+#define EDJE_INFO_FONTNAME "EnoteInfoFontName"
+#define EDJE_INFO_FONTSIZE "EnoteInfoFontSize"
+#define EDJE_INFO_FONTSTYLE "EnoteInfoFontStyle"
 
 #define COMPARE_INTERVAL 0.01
 #define TITLE_LENGTH 20

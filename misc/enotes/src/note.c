@@ -132,6 +132,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	char           *edjefn = malloc(PATH_MAX);
 	char           *datestr;
 	char           *fcontent;
+	char           *prop;
 
 	Evas_Coord      edje_w, edje_h;
 
@@ -255,16 +256,39 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	p->pane = ewl_scrollpane_new();
 	ewl_container_child_append((Ewl_Container *) p->emb, p->pane);
+
+	if(edje_object_data_get(p->edje,EDJE_INFO_SCROLLBARS)!=NULL){
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/file",edjefn);
+
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/group",EDJE_VSCROLLBAR);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/group",EDJE_HSCROLLBAR);
+	}
+	
 	ewl_widget_show(p->pane);
 
-	p->content = ewl_text_new(fcontent);
+	p->content = ewl_entry_new("");
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
-	ewl_object_fill_policy_set((Ewl_Object *) p->content,
-				   EWL_FLAG_FILL_FILL);
+
+	ewl_theme_data_str_set(p->content,"/entry/group","none");
+
+	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTNAME);
+	if(prop!=NULL)
+		ewl_theme_data_str_set(p->content,"/entry/text/font",prop);
+
+	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTSTYLE);
+	if(prop!=NULL)
+		ewl_theme_data_str_set(p->content,"/entry/text/style",prop);
+	
+	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTSIZE);
+	if(prop!=NULL)
+		ewl_theme_data_str_set(p->content,"/entry/text/size",prop);
+
+	ewl_entry_text_set ((Ewl_Entry*)p->content,fcontent);
+	ewl_widget_show(p->content);
+
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
 			    p->pane);
-
-	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
 	ecore_evas_callback_resize_set(p->win, note_ecore_resize);
@@ -542,7 +566,7 @@ get_content_by_note(Evas_List * note)
 {
 	Note           *p = evas_list_data(note);
 
-	return ((char *) ewl_text_text_get((Ewl_Text *) p->content));
+	return ((char *) ewl_entry_text_get((Ewl_Entry *) p->content));
 }
 
 /**
@@ -553,7 +577,7 @@ get_content_by_note(Evas_List * note)
 char           *
 get_content_by_note_struct(Note * note)
 {
-	return ((char *) ewl_text_text_get((Ewl_Text *) note->content));
+	return ((char *) ewl_entry_text_get((Ewl_Entry *) note->content));
 }
 
 /**
