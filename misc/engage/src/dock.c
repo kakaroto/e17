@@ -261,6 +261,8 @@ od_dock_del_icon(OD_Icon * icon)
 {
   if (icon->appear_timer)
     ecore_timer_del(icon->appear_timer);
+  if (icon->disappear_timer)
+    ecore_timer_del(icon->disappear_timer);	
   icon->disappear_timer = ecore_timer_add(0.05, od_dock_icon_disappear, icon);
 }
 
@@ -316,11 +318,6 @@ od_dock_icon_disappear(void *data)
   double          delta = 0.0, s = 0.0;
   OD_Icon        *i = NULL;
   OD_Icon        *icon = (OD_Icon *) data;
-
-  if (icon->disappear_timer) {
-    ecore_timer_del(icon->disappear_timer);
-    icon->disappear_timer = NULL;
-  }
 
   if (!(icon->state & OD_ICON_STATE_DISAPPEARING)) {
     icon->state &= ~OD_ICON_STATE_USEABLE;
