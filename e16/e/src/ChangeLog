@@ -3094,3 +3094,11 @@ Tue Oct  5 20:58:06 PDT 1999
 (Mandrake)
 
 hide any tooltips whenever we change desktops.
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 23:59:22 EST 1999
+(Christian)
+
+Give help on the command line more easily. iirc --help
+is recommended by the GNU coding standards.

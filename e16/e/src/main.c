@@ -142,7 +142,8 @@ main(int argc, char **argv)
 	     {
 		no_overwrite = 1;
 	     }
-	   else if (!strcmp("-help", argv[j]))
+	   else if ((!strcmp("-help", argv[j])) || (!strcmp("--help", argv[j]))
+		    || (!strcmp("-h", argv[j])) || (!strcmp("-?", argv[j])))
 	     {
 		printf("enlightenment options:                      \n"
 		       "\t-theme /path/to/theme                     \n"
