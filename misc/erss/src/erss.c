@@ -11,6 +11,7 @@ Ecore_Con_Server *server;
 Evas_Object *bg;
 Evas_Object *cont;
 Evas_Object *tid;
+Ewd_List *config_files;
 
 char *main_buffer;
 char *last_time;
@@ -142,10 +143,18 @@ int handler_server_add (void *data, int type, void *event)
 	if (list) {
 		ptr = ewd_list_goto_first (list);
 		while ((ptr = ewd_list_next(list))) {
+
+			/*
+			 * Remove the evas object from the list 
+			 * and destory it.
+			 */
 			e_container_element_destroy (cont, ptr->obj);
 
 			if (ptr->url)
 				free (ptr->url);
+
+			if (ptr->description)
+				free (ptr->description);
 
 			free (ptr);
 		}
@@ -296,22 +305,137 @@ void cb_mouse_out (void *data, Evas *e, Evas_Object *obj,
 
 } 
 
+int erss_alphasort (const void *a, const void *b)
+{
+	struct dirent **ad = (struct dirent **)a;
+	struct dirent **bd = (struct dirent **)b;
+	return (strcmp((*bd)->d_name, (*ad)->d_name));
+}
 
-int main (int argc, const char **argv)
+void list_config_files ()
+{
+	char *str;
+	char *ptr;
+	Ewd_List *paths;
+	struct dirent **dentries;
+	struct stat statbuf;
+	int num, i;
+	char file[PATH_MAX];
+
+	paths = ewd_list_new ();
+	config_files = ewd_list_new ();
+
+	str = malloc (PATH_MAX);
+	snprintf (str, PATH_MAX, "%s/.%s/config", 
+			getenv("HOME"), PACKAGE);
+	ewd_list_append (paths, str);
+
+	str = malloc (PATH_MAX);
+	snprintf (str, PATH_MAX, "/usr/local/share/%s/config", 
+			PACKAGE);
+	ewd_list_append (paths, str);
+	
+	str = malloc (PATH_MAX);
+	snprintf (str, PATH_MAX, "/usr/share/%s/config",
+			PACKAGE);
+	ewd_list_append (paths, str);
+
+	printf ("\n%s processing potential dirs ...\n", PACKAGE);
+
+	ptr = ewd_list_goto_first (paths);
+	while ((ptr = ewd_list_current (paths))) {
+		printf ("\nLookin in %s:\n", ptr);
+
+		i = stat (ptr, &statbuf);
+
+		if (S_ISDIR(statbuf.st_mode)) {
+		
+			if ((num = scandir(ptr, &dentries, 0, erss_alphasort)) < 0) 
+				perror("erss - scandir");
+
+			while (num--) {
+				snprintf(file, PATH_MAX, "%s/%s", ptr, dentries[num]->d_name);
+
+				i = stat (file, &statbuf);
+				if (i == -1) {
+					perror("erss - stat 1");
+					continue;
+				}
+
+				if (S_ISDIR(statbuf.st_mode))
+					continue;
+
+				if (strstr (dentries[num]->d_name, ".cfg")) {
+					printf ("\t%s\n", file);
+					ewd_list_append (config_files, file);
+				}
+			}
+		} else {
+			printf ("\tNo such dir\n");
+		}
+		
+		ewd_list_next (paths);
+	}
+
+	/*
+	 * Finished reading and printing avaliable config files
+	 * now remove the paths list since we don't need it anyumore.
+	 */
+	ptr = ewd_list_goto_first (paths);
+	while ((ptr = ewd_list_current (paths))) {
+		if (ptr)
+			free (ptr);
+		
+		ewd_list_next (paths);
+	}
+
+	ewd_list_destroy (paths);
+}
+
+int main (int argc, const char *argv[])
 {
 	Evas_Object *header;
 	int x, y, w, h;
 	int height;
 	int width;
+	int c = 0;
+	
+	while((c = getopt (argc, argv, "cvhl")) != -1) 
+	{
+		switch (c) {
+			case 'l':
+				list_config_files ();
+				exit (-1);
+			case 'c':
+				
+				if(optind >= argc) {
+					fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
+					fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+					exit (-1);
+				} 
+				parse_config_file ((char *) argv[optind]);
 
-
-	if (argc < 2) {
-		fprintf (stderr, "Usage: erss feedconfig.cfg\n");
-		fprintf (stderr, "Example config files in the config/ folder.\n");
-		exit (-1);
+				break;
+			case 'v':
+				printf ("%s %s\n", PACKAGE, VERSION);
+				exit (-1);
+			case 'h':
+				printf ("Usage: %s [OPTION] ...\n\n", PACKAGE);
+	
+				printf ("  -c CONFIG \t specify a config file\n");
+				printf ("  -l        \t list avaliable config files\n");
+				printf ("  -h        \t display this help and exit\n");
+				printf ("  -v        \t display %s version\n\n", PACKAGE);
+				exit (-1);
+			default:
+				fprintf (stderr, "\nUsage: %s [OPTION] ...\n", PACKAGE);
+				fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+				exit (-1);
+				break;
+		}
+				
 	}
 
-	parse_config_file ((char *) argv[1]);
 	
 	if (!cfg->hostname) {		
 		fprintf (stderr, "Erss error: No hostname defined!\n");

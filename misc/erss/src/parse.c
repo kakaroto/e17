@@ -264,7 +264,7 @@ void parse_config_file (char *file)
 
 	if ((fp = fopen (file, "r")) == NULL)
 	{
-		fprintf (stderr, "ERROR: Can't open config file\n");
+		fprintf (stderr, "Erss error: Can't open config file\n");
 		exit (-1);
 	}
 
