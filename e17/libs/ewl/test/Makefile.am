@@ -22,7 +22,6 @@ ewl_test_SOURCES		=	ewl_test.c \
 					ewl_selectionbar_test.c \
 					ewl_spinner_test.c \
 					ewl_table_test.c \
-					ewl_text_test.c \
 					ewl_textarea_test.c \
 					ewl_tree_test.c
 

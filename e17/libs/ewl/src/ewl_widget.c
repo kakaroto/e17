@@ -905,6 +905,9 @@ void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	if (w->state & EWL_STATE_DISABLED)
+		DRETURN(DLEVEL_STABLE);
+
 	if (w->state & EWL_STATE_PRESSED)
 		ewl_widget_update_appearance(w, "clicked");
 	else
@@ -914,18 +917,27 @@ __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 static void
 __ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	if (w->state & EWL_STATE_DISABLED)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_widget_update_appearance(w, "normal");
 }
 
 static void
 __ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	if (w->state & EWL_STATE_DISABLED)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_widget_update_appearance(w, "clicked");
 }
 
 static void
 __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	if (w->state & EWL_STATE_DISABLED)
+		DRETURN(DLEVEL_STABLE);
+
 	if (w->state & EWL_STATE_HILITED) {
 		ewl_widget_update_appearance(w, "hilited");
 		ewl_callback_call(w, EWL_CALLBACK_CLICKED);

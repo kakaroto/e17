@@ -1,7 +1,7 @@
 #include <Ewl.h>
 #include <ewl-config.h>
 
-#define BUTTONS 18
+#define BUTTONS 17
 
 void            __close_main_widow(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
@@ -45,8 +45,6 @@ void            __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
 void            __create_table_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 
-void            __create_text_test_window(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
 void            __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
 void            __create_tree_test_window(Ewl_Widget * w, void *ev_data,
@@ -58,18 +56,6 @@ void            __create_selectionbook_test_window(Ewl_Widget * w,
 void            __create_selectionbar_test_window(Ewl_Widget * w,
 						   void *ev_data,
 						   void *user_data);
-
-void
-__focus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	printf("Button focus IN, state %s\n", w->bit_state);
-}
-
-void
-__unfocus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	printf("Button focus OUT, state %s\n", w->bit_state);
-}
 
 void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -247,14 +233,6 @@ main(int argc, char **argv)
 	i++;
 
 	/*
-	 * Create the button for the text test and add it to the box.
-	 */
-	button[i] = ewl_button_new("Ewl_Text");
-	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
-			    __create_text_test_window, NULL);
-	i++;
-
-	/*
 	 * Create the button for the text area test and add it to the box.
 	 */
 	button[i] = ewl_button_new("Ewl_TextArea");
@@ -266,10 +244,6 @@ main(int argc, char **argv)
 	 * Create the button for the text area test and add it to the box.
 	 */
 	button[i] = ewl_button_new("Ewl_Tree");
-	ewl_callback_append(button[i], EWL_CALLBACK_FOCUS_IN,
-			    __focus_tree_test_window, NULL);
-	ewl_callback_append(button[i], EWL_CALLBACK_FOCUS_OUT,
-			    __unfocus_tree_test_window, NULL);
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_tree_test_window, NULL);
 	i++;

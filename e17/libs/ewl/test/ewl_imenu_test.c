@@ -20,7 +20,6 @@ __destroy_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	user_data = NULL;
 }
 
-
 void
 __imenu_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -33,6 +32,13 @@ __imenu_select(Ewl_Widget * w, void *ev_data, void *user_data)
 	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
+}
+
+void
+__imenu_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	printf("Imenu configured to (%d, %d) %dx%d\n", CURRENT_X(w),
+			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }
 
 void
@@ -60,8 +66,6 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	imenu_box = ewl_vbox_new();
 	ewl_object_set_fill_policy(EWL_OBJECT(imenu_box), EWL_FILL_POLICY_FILL);
 	ewl_container_append_child(EWL_CONTAINER(imenu_win), imenu_box);
-	ewl_theme_data_set_str(imenu_box,
-			       "/appearance/box/vertical/base/visible", "yes");
 	ewl_widget_show(imenu_box);
 
 	/*
@@ -69,6 +73,8 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	imenu1 = ewl_imenu_new(NULL, "test menu");
 	ewl_container_append_child(EWL_CONTAINER(imenu_box), imenu1);
+	ewl_callback_append(imenu1, EWL_CALLBACK_CONFIGURE,
+			    __imenu_configure, NULL);
 	ewl_widget_show(imenu1);
 
 	/*

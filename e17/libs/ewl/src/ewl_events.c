@@ -340,31 +340,19 @@ static void ewl_ev_mouse_move(Ecore_Event * _ev)
 
 	widget = ewl_window_get_child_at(window, ev->x, ev->y);
 
-	/*
-	 * Trigger a focus out event before the next focus in, to allow
-	 * parents to capture focus in events on children.
-	 */
-	if (last_focused) {
-		if (last_focused != widget) {
-			last_focused->state &= ~EWL_STATE_HILITED;
-			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-		}
-
-		if (last_focused->state & EWL_STATE_DND)
-			dnd_widget = last_focused;
+	if (last_focused && (widget != last_focused)) {
+		last_focused->state &= ~EWL_STATE_HILITED;
+		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
 	}
 
-	if (widget && !(widget->state & EWL_STATE_DISABLED)) {
+	if (widget && !(widget->state & (EWL_STATE_DISABLED | EWL_STATE_HILITED))) {
 		widget->state |= EWL_STATE_HILITED;
-		if (last_focused != widget)
-			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
+		ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 
 		ewl_callback_call_with_event_data(widget,
 						  EWL_CALLBACK_MOUSE_MOVE, ev);
 		last_focused = widget;
 	}
-	else
-		last_focused = NULL;
 
 	if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
 		ewl_callback_call_with_event_data(dnd_widget,
