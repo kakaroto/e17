@@ -19,6 +19,7 @@ struct _Iconbar_Prefs {
     int transparent;
     int raise;
     int borderless;
+    int withdrawn;
 };
 typedef struct _Iconbar_Prefs Iconbar_Prefs;
 
@@ -64,6 +65,8 @@ iconbar_config_init(void)
 	    }
 	    if(!e_db_int_get(db, "/iconbar/raise", &ibprefs->raise))
 		ibprefs->raise = 0;
+	    if(!e_db_int_get(db, "/iconbar/withdrawn", &ibprefs->withdrawn))
+		ibprefs->withdrawn = 0;
 	    if(!e_db_int_get(db, "/iconbar/shaped", &ibprefs->shaped))
 		ibprefs->shaped = 1;
 	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->shaped))
@@ -114,6 +117,7 @@ iconbar_config_free(void)
 	    e_db_str_set(db, "/iconbar/theme", ibprefs->theme);
 	    e_db_str_set(db, "/iconbar/time_format", ibprefs->time_format);
 	    e_db_int_set(db, "/iconbar/raise", ibprefs->raise);
+	    e_db_int_set(db, "/iconbar/withdrawn", ibprefs->withdrawn);
 	    e_db_int_set(db, "/iconbar/shaped", ibprefs->shaped);
 	    e_db_int_set(db, "/iconbar/borderless", ibprefs->borderless);
 	    e_db_int_set(db, "/iconbar/x", ibprefs->x);
@@ -224,6 +228,12 @@ iconbar_config_raise_lower_set(int on)
     if(ibprefs)
 	ibprefs->raise = on;
 }
+void
+iconbar_config_withdrawn_set(int on)
+{
+    if(ibprefs)
+	ibprefs->withdrawn = on;
+}
 /* query */
 const char*
 iconbar_config_theme_get(void)
@@ -295,6 +305,13 @@ iconbar_config_borderless_get(void)
 	return(ibprefs->borderless);
     return(0);
 }
+int
+iconbar_config_withdrawn_get(void)
+{
+    if(ibprefs)
+	return(ibprefs->withdrawn);
+    return(0);
+}
 /*==========================================================================
  * Private Functions 
  *========================================================================*/
@@ -360,6 +377,7 @@ iconbar_config_generate_original_db(char *file)
 	    e_db_str_set(db, "/iconbar/theme", buf);
 
 	e_db_int_set(db, "/iconbar/raise", 0);
+	e_db_int_set(db, "/iconbar/withdrawn", 0);
 	e_db_int_set(db, "/iconbar/shaped", 1);
 	e_db_int_set(db, "/iconbar/borderless", 1);
 

@@ -17,6 +17,7 @@ void iconbar_config_theme_set(const char *theme);
 void iconbar_config_raise_lower_set(int on);
 void iconbar_config_shaped_set(int on);
 void iconbar_config_borderless_set(int on);
+void iconbar_config_withdrawn_set(int on);
 
 /* query */
 const char *iconbar_config_theme_get(void);
@@ -28,5 +29,6 @@ void iconbar_config_geometry_get(int *x, int *y, int *w, int *h);
 int iconbar_config_raise_lower_get(void);
 int iconbar_config_shaped_get(void);
 int iconbar_config_borderless_get(void);
+int iconbar_config_withdrawn_get(void);
 
 #endif

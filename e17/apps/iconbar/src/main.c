@@ -21,19 +21,11 @@ main(int argc, char **argv)
   int x, y, w, h;
   char buf[2048];
   Evas_List *l = NULL;
-  int i, withdrawn = 0;
   Evas_Object *o = NULL;
   Ecore_Evas *ee = NULL;
   Evas_Coord edjew, edjeh;
   Evas_Object *iconbar = NULL;
 
-  for (i = 1; i < argc; i++)
-  {
-    if (!strcmp(argv[i], "--withdrawn") || !strcmp(argv[i], "-w"))
-      withdrawn = 1;
-  }
-  printf("withdrawn: %d\n", withdrawn);
-  
   if(!ecore_init())
   {
     fprintf(stderr, "Unable to init Ecore, bailing out.\n");
@@ -58,9 +50,10 @@ main(int argc, char **argv)
   ecore_evas_callback_destroy_set(ee, window_delete);
   ecore_evas_name_class_set(ee, "Iconbar", "Rephorm");
   ecore_evas_title_set(ee, "Iconbar");
-  ecore_evas_borderless_set(ee, 1);
-  ecore_evas_shaped_set(ee, 1);
-  
+  ecore_evas_borderless_set(ee, iconbar_config_borderless_get());
+  ecore_evas_shaped_set(ee, iconbar_config_shaped_get());
+  ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
+
 #ifdef HAVE_TRANS_BG
   {
     ecore_evas_geometry_get(ee, &x, &y, &w, &h);
