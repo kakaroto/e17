@@ -2903,9 +2903,9 @@ imlib_image_fill_polygon(ImlibPolygon poly)
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    __imlib_draw_polygon_filled(im, poly, ctxt_cliprect.x,
-                               ctxt_cliprect.x + ctxt_cliprect.w,
+                               ctxt_cliprect.x + ctxt_cliprect.w - 1,
                                ctxt_cliprect.y,
-                               ctxt_cliprect.y + ctxt_cliprect.h,
+                               ctxt_cliprect.y + ctxt_cliprect.h - 1,
                                ctxt_color.red, ctxt_color.green,
                                ctxt_color.blue, ctxt_color.alpha,
                                ctxt_operation, ctxt_anti_alias);

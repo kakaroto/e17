@@ -2164,7 +2164,7 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    if (poly->pointcount < 3) return;
    
    /* if no clip is set or clip is outside image, clip it to the image */
-   if (clip_xmin != clip_xmax)
+   if (clip_xmin < clip_xmax)
      {
 	if (clip_xmax < 0) return;
 	if (clip_xmin >= im->w) return;
@@ -2242,6 +2242,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 	/* current point and next point - line connecting the 2 */
 	pt1 = ((j + top) % poly->pointcount);
 	pt2 = ((j + top + 1) % poly->pointcount);
+	while (pt1 < 0) pt1 += poly->pointcount;
+	while (pt2 < 0) pt2 += poly->pointcount;
 	/* conveneince for 2 points */
 	x1 = poly->points[pt1].x;
 	y1 = poly->points[pt1].y;
@@ -2369,7 +2371,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 	       }
 	     else
 	       {
-		  span(im, i + clip_ymin, x1, x1, r, g, b, a, op);
+		  if ((x1 <= clip_xmax) && (x1 >= clip_xmin))
+		     span(im, i + clip_ymin, x1, x1, r, g, b, a, op);
 		  break;
 	       }
 	  }
