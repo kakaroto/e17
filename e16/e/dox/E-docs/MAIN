@@ -391,8 +391,8 @@ middle-click in a window to _resize(resizemode) it, or use ALT and right-click t
 the _Window_Operations_Menu(windowops) .
 <p>
 You will find that holding down the ALT key whilst clicking the middle 
-mouse button on the background of your desktop will bring up a menu with
-the titles of all currently active
+mouse button on the background of your _desktop(desktops) will bring up a 
+menu with the titles of all currently active
 application windows. Selecting one of these will take you to that application.
 By using the CTRL key instead of ALT you will get a menu displaying all 
 current desktops as sub-menus, with applications on each desktop in the 
