@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
+#ifdef __EMX__
+#include <sys/types.h>
+#endif
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -195,7 +198,7 @@ __imlib_FileHomeDir(int uid)
   static char        *usr_s = NULL;
   char               *s;
   struct passwd      *pwd;
-
+#ifndef __EMX__
   s = getenv("HOME");
   if (s)
     return strdup(s);
@@ -213,8 +216,15 @@ __imlib_FileHomeDir(int uid)
 	usr_s = strdup(s);
       return(s);
     }
+#else
+  if ((s = getenv("HOME")) != NULL)
+    return strdup(s);
+  else if ((s = getenv("TMP")) != NULL)
+    return strdup(s);
+#endif
   return NULL;
 }
+
 
 /* gets word number [num] in the string [s] and copies it into [wd] */
 /* wd is NULL terminated. If word [num] does not exist wd = "" */

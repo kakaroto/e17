@@ -11,6 +11,10 @@
 #include "file.h"
 #include "loaderpath.h"
 
+#ifdef __EMX__
+extern char *__XOS2RedirRoot(const char *);
+#endif
+
 static ImlibImage        *images = NULL;
 static ImlibImagePixmap  *pixmaps = NULL;
 static ImlibLoader       *loaders = NULL;
@@ -709,9 +713,17 @@ __imlib_RescanLoaders(void)
       return;
    /* ok - was the system loaders dir contents modified ? */
    last_scan_time = current_time;
-   if (__imlib_FileIsDir(SYS_LOADERS_PATH "/image/"))
-     {
-	current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
+#ifndef __EMX__
+    if (__imlib_FileIsDir(SYS_LOADERS_PATH "/image/"))
+#else
+   if (__imlib_FileIsDir(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/")))
+#endif
+      {
+#ifndef __EMX__
+ 	current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
+#else
+	current_time = __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/"));
+#endif
 	if (current_time > last_modified_system_time)
 	  {
 	     /* yup - set the "do_reload" flag */

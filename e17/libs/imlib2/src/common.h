@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __EMX__
+#include <sys/types.h>
+#endif
 #include <unistd.h>
 #include <config.h>
 #ifdef WITH_DMALLOC

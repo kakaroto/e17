@@ -1,5 +1,15 @@
 #include <config.h>
 
+#ifdef __EMX__
+/* Due to strange behaviour of as.exe we use this macros */
+/* For all OS/2 coders - please use PGCC to compile this code */
+#define PR_(foo) ___##foo
+#define PT_(foo,func) ___##foo,##func
+#else
+#define PR_(foo) __##foo
+#define PT_(foo,func) __##foo,##func
+#endif
+
 #ifdef DO_MMX_ASM
 
 /*\ 
@@ -7,8 +17,8 @@
 |*| Written by Willem Monsuwe <willem@stack.nl>
 \*/
 
-.global __imlib_Scale_mmx_AARGBA
-	.type __imlib_Scale_mmx_AARGBA,@function
+.global PR_(imlib_Scale_mmx_AARGBA)
+	.type PT_(imlib_Scale_mmx_AARGBA,@function)
 
 .bss
 .text
@@ -48,7 +58,7 @@
 #define yapoints	12(%edx)
 #define xup_yup		16(%edx)
 
-__imlib_Scale_mmx_AARGBA:
+PR_(imlib_Scale_mmx_AARGBA):
 	pushl %ebp
 	movl %esp, %ebp
 	subl $40, %esp

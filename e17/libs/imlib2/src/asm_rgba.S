@@ -1,5 +1,15 @@
 #include <config.h>
 
+#ifdef __EMX__
+/* Due to strange behaviour of as.exe we use this macros */
+/* For all OS/2 coders - please use PGCC to compile this code */
+#define PR_(foo) ___##foo
+#define PT_(foo,func) ___##foo,##func
+#else
+#define PR_(foo) __##foo
+#define PT_(foo,func) __##foo,##func
+#endif
+
 #ifdef DO_MMX_ASM
 
 /*\ 
@@ -23,17 +33,17 @@
 #define dx	32(%ebp)
 #define dy	36(%ebp)
 
-.global __imlib_mmx_rgb565_fast
-	.type __imlib_mmx_rgb565_fast,@function
-.global __imlib_mmx_bgr565_fast
-	.type __imlib_mmx_bgr565_fast,@function
-.global __imlib_mmx_rgb555_fast
-	.type __imlib_mmx_rgb555_fast,@function
-.global __imlib_mmx_bgr555_fast
-	.type __imlib_mmx_bgr555_fast,@function
+.global PR_(imlib_mmx_rgb565_fast)
+	.type PT_(imlib_mmx_rgb565_fast,@function)
+.global PR_(imlib_mmx_bgr565_fast)
+	.type PT_(imlib_mmx_bgr565_fast,@function)
+.global PR_(imlib_mmx_rgb555_fast)
+	.type PT_(imlib_mmx_rgb555_fast,@function)
+.global PR_(imlib_mmx_bgr555_fast)
+	.type PT_(imlib_mmx_bgr555_fast,@function)
 
-.global __imlib_get_cpuid
-	.type __imlib_get_cpuid,@function
+.global PR_(imlib_get_cpuid)
+	.type PT_(imlib_get_cpuid,@function)
 
 .bss
 .text
@@ -96,11 +106,11 @@ mul_bgr555: .long 0x00082000, 0x00082000
 
 
 
-__imlib_mmx_bgr565_fast:
+PR_(imlib_mmx_bgr565_fast):
 	movq mul_bgr565, %mm7	/*\ This constant is the only difference \*/
 	jmp .rgb565_fast_entry
 
-__imlib_mmx_rgb565_fast:
+PR_(imlib_mmx_rgb565_fast):
 	movq mul_rgb565, %mm7
 .rgb565_fast_entry:
 	ENTER
@@ -172,11 +182,11 @@ __imlib_mmx_rgb565_fast:
 
 
 
-__imlib_mmx_bgr555_fast:
+PR_(imlib_mmx_bgr555_fast):
 	movq mul_bgr555, %mm7	/*\ This constant is the only difference \*/
 	jmp .rgb555_fast_entry
 
-__imlib_mmx_rgb555_fast:
+PR_(imlib_mmx_rgb555_fast):
 	movq mul_rgb555, %mm7
 .rgb555_fast_entry:
 	ENTER
@@ -244,7 +254,7 @@ __imlib_mmx_rgb555_fast:
 	LEAVE
 
 
-__imlib_get_cpuid:
+PR_(imlib_get_cpuid):
 	pushl %ebx
 	pushl %edx
 

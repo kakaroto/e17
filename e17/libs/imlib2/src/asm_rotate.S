@@ -1,5 +1,15 @@
 #include <config.h>
 
+#ifdef __EMX__
+/* Due to strange behaviour of as.exe we use this macros */
+/* For all OS/2 coders - please use PGCC to compile this code */
+#define PR_(foo) ___##foo
+#define PT_(foo,func) ___##foo,##func
+#else
+#define PR_(foo) __##foo
+#define PT_(foo,func) __##foo,##func
+#endif
+
 #ifdef DO_MMX_ASM
 
 /*\ 
@@ -7,8 +17,8 @@
 |*| Written by Willem Monsuwe <willem@stack.nl>
 \*/
 
-.global __imlib_mmx_RotateAA
-	.type __imlib_mmx_RotateAA,@function
+.global PR_(imlib_mmx_RotateAA)
+	.type PT_(imlib_mmx_RotateAA,@function)
 
 .bss
 .text
@@ -44,7 +54,7 @@
 #define m0fff	-28(%ebp)
 #define mulsow	-32(%ebp)
 
-__imlib_mmx_RotateAA:
+PR_(imlib_mmx_RotateAA):
 	pushl %ebp
 	movl %esp, %ebp
 	subl $40, %esp
