@@ -248,7 +248,7 @@ int etox_context_get_align(Etox * et)
 {
 	CHECK_PARAM_POINTER_RETURN("et", et, FALSE);
 
-	return et->context->align;
+	return et->context->flags;
 }
 
 /*
@@ -262,5 +262,58 @@ void etox_context_set_align(Etox * et, int align)
 {
 	CHECK_PARAM_POINTER("et", et);
 
-	et->context->align = align;
+	et->context->flags = align;
+}
+
+/*
+ * etox_context_set_soft_wrap - turns on soft wrapping of lines that are
+ * longer than the etox is wide
+ * @et: the etox to set for
+ * @boolean: 0 is off, anything else is on
+ * 
+ * Returns no value. changes current context alignment value.
+ */
+void etox_context_set_soft_wrap(Etox *et, int boolean)
+{
+  CHECK_PARAM_POINTER("et", et);
+
+  if (boolean)
+    et->context->flags = et->context->flags | ETOX_SOFT_WRAP;
+  else
+    et->context->flags = et->context->flags & ~ETOX_SOFT_WRAP;
+}
+
+/*
+ * etox_set_wrap_marker - sets string to mark wrapped lines
+ * @et: the etox to set for
+ * @marker: the string to mark wrapped lines
+ * @style: the style of the marker
+ *
+ * Returns nothing, changes context
+ */
+void etox_context_set_wrap_marker(Etox *et, char *marker, char *style)
+{
+  CHECK_PARAM_POINTER("et", et);
+  IF_FREE(et->context->marker.text);
+  IF_FREE(et->context->marker.style);
+  et->context->marker.text = strdup(marker);
+  et->context->marker.style = strdup(style);
+}
+
+/*
+ * etox_set_wrap_marker_color - sets color of wrap marker
+ * @et: the etox to set for
+ * @r: red value
+ * @g: green value
+ * @b: blue value
+ * @a: alpha value
+ *
+ * Returns nothing, changes context
+ */
+void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a)
+{
+  et->context->marker.r = r;
+  et->context->marker.g = g;
+  et->context->marker.b = b;
+  et->context->marker.a = a;
 }

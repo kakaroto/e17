@@ -3,6 +3,7 @@
 
 static Evas_List _etox_break_text(Etox * et, char *text);
 static void _etox_wrap_lines(Etox * et);
+static void _etox_unwrap_lines(Etox * et);
 static void _etox_layout(Etox * et, int y);
 
 /**
@@ -54,13 +55,23 @@ Etox *etox_new(Evas evas)
 	/*
 	 * Setup the default alignment
 	 */
-	et->context->align = ETOX_ALIGN_LEFT | ETOX_ALIGN_TOP;
+	et->context->flags = ETOX_ALIGN_LEFT | ETOX_ALIGN_TOP;
 
 	/*
 	 * Set the clip rectangle for the etox
 	 */
 	et->clip = evas_add_rectangle(evas);
 	evas_set_color(et->evas, et->clip, 255, 255, 255, 255);
+
+	/*
+	 * Set up a default blank wrap marker
+	 */
+	et->context->marker.text = "";
+	et->context->marker.style = "plain";
+	et->context->marker.r = 255;
+	et->context->marker.g = 255;
+	et->context->marker.b = 255;
+	et->context->marker.a = 255;
 
 	return et;
 }
@@ -91,7 +102,7 @@ Etox *etox_new_all(Evas evas, int x, int y, int w, int h, int alpha,
 	 * passed in to etox_new_all.
 	 */
 	et = etox_new(evas);
-	et->context->align = align;
+	et->context->flags = align;
 	et->x = x;
 	et->y = y;
 	et->w = w;
@@ -184,10 +195,9 @@ void etox_hide(Etox * et)
  */
 void etox_append_text(Etox * et, char *text)
 {
-	Evas_List lines, l, ll, lll, llll;
+	Evas_List lines, l, ll;
 	Etox_Line *end = NULL, *start;
-	int index;
-	int i, j;
+	int i;
 
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
@@ -231,15 +241,9 @@ void etox_append_text(Etox * et, char *text)
 	}
 
 	/*
-	 * wrap the lines, but return the list to the original position
+	 * wrap the lines
 	 */
-	/*
-	 * FIXME there has to be a more elegant way to do this
-	 */
-	for (index = 0, lll = et->lines; lll; lll = lll->next, index++);
 	_etox_wrap_lines(et);
-	for (j = 0, llll = et->lines; j <= index && llll;
-	     llll = llll->next, j++);
 
 	/*
 	 * Layout the lines on the etox starting at the newly added text.
@@ -571,6 +575,9 @@ void etox_resize(Etox * et, int w, int h)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines) {
+	        /* rewrap the lines */
+	        _etox_unwrap_lines(et);
+	        _etox_wrap_lines(et);
 		_etox_layout(et, et->y);
 	}
 
@@ -904,7 +911,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 	 * Setup the list for adding lines that will be returned to the
 	 * calling function
 	 */
-	line = etox_line_new(et->context->align);
+	line = etox_line_new(et->context->flags);
 	ret = evas_list_append(ret, line);
 	line->et = et;
 
@@ -929,6 +936,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 			estyle_set_color(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
+			estyle_set_font(bit, et->context->font, et->context->font_size);
 			etox_line_append(line, bit);
 			estyle_show(bit);
 
@@ -946,6 +954,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 					 et->context->g, et->context->b,
 					 et->context->a);
 			estyle_set_clip(bit, et->clip);
+			estyle_set_font(bit, et->context->font, et->context->font_size);
 			etox_line_append(line, bit);
 			estyle_show(bit);
 			*text = t;
@@ -969,6 +978,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 					 et->context->g, et->context->b,
 					 et->context->a);
 			estyle_set_clip(bit, et->clip);
+			estyle_set_font(bit, et->context->font, et->context->font_size);
 			etox_line_append(line, bit);
 			estyle_show(bit);
 
@@ -995,6 +1005,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 		estyle_set_color(bit, et->context->r, et->context->g,
 				 et->context->b, et->context->a);
 		estyle_set_clip(bit, et->clip);
+		estyle_set_font(bit, et->context->font, et->context->font_size);
 		etox_line_append(line, bit);
 		estyle_show(bit);
 	} else if (line->bits == NULL) {
@@ -1005,76 +1016,135 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 	return ret;
 }
 
-static void _etox_wrap_lines(Etox * et)
+/*
+ * _etox_wrap_lines - break lines that are too long if soft wrap flag is set
+ * @et: the etox to wrap
+ *
+ * Returns nothing, modifies the lines of the etox
+ */
+void _etox_wrap_lines(Etox *et)
 {
-	Etox_Line *line;
-	Etox_Line *newline;
-	Evas_List l, ll;
+  Etox_Line *line;
+  Etox_Line *newline;
+  Evas_List l, ll;
 
-	CHECK_PARAM_POINTER("et", et);
+  CHECK_PARAM_POINTER("et", et);
+  
+  /* if the soft wrap flag is not set, don't do anything */
+  if (!(et->context->flags & ETOX_SOFT_WRAP)) 
+    return;
 
-	/* if soft flag is not set, don't do anything */
-	if (!(et->context->align & ETOX_LINE_SOFT))
-		return;
+  /* iterate through the lines */
+  for (l = et->lines; l; l = l->next)
+  {
+    line = l->data;
 
-	/* go through all the lines */
-	for (l = et->lines; l; l = l->next) {
-		Estyle *bit, *split;
-		int index;
+    /* if the line is wider than the etox */
+    if (line->w > et->w)
+    {
+      Estyle *bit, *split, *marker;
+      int index = -1;
+      
+      /* iterate through the bits to find the one on the border */
+      for (ll = line->bits; ll; ll = ll->next)
+      {
+	bit = ll->data;
 
-		line = l->data;
-		if (line->w > et->w) {
-			for (ll = line->bits; ll; ll = ll->next) {
-				bit = ll->data;
-				index =
-				    estyle_text_at_position(bit,
-							    line->x +
-							    et->w, line->y,
-							    NULL, NULL,
-							    NULL, NULL);
-				if (index >= 0) {
-					/* split the bit that is on the edge */
-					split = estyle_split(bit, index);
+	/* get the index of the character on the edge */
+	index = estyle_text_at_position(bit, et->x + et->w, line->y,
+	    NULL, NULL, NULL, NULL);
+	/* if this bit contained the character on the edge, break */
+	if (index >= 0)
+	  break;
+      }
 
-					/* if split doesn't exist don't do the following */
-					if (!split)
-						break;
+      /* if we have an index */
+      if (index != -1)
+      {
+	char *tmp;
 
-					/* set up the split style and show it */
-					estyle_set_clip(bit, et->clip);
-					estyle_set_color(split,
-							 et->context->r,
-							 et->context->g,
-							 et->context->b,
-							 et->context->a);
-					estyle_show(split);
+	/* don't start a new line with a space */
+	tmp = estyle_get_text(bit);
+	while (tmp[index] == ' ')
+	  index ++;
+	FREE(tmp);
 
-					/* create the new line */
-					newline =
-					    etox_line_new(line->flags);
-					l = evas_list_prepend_relative(l,
-								       newline,
-								       l->
-								       next);
-					newline->et = et;
+	/* split the edge bit */
+	split = estyle_split(bit, index);
+      }
+     
+      /* if split successful, set up the new bit */
+      if (split)
+      {
+	/* create a marker bit. */
+	marker = estyle_new(et->evas, et->context->marker.text,
+	    et->context->marker.style);	
+	estyle_set_color(marker, et->context->marker.r, et->context->marker.g,
+	    et->context->marker.b, et->context->marker.a);
+	estyle_set_clip(marker, et->clip);
+	estyle_set_font(bit, et->context->font, et->context->font_size);
+	estyle_show(marker);
 
-					/* add the 'split' bit do the new line */
-					etox_line_append(newline, split);
+	/* create a new line, with the marker and the split bits */
+	newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
+	newline->et = et;
+	etox_line_append(newline, marker);
+	etox_line_append(newline, split);
 
-					/* move all remaining bits from line to newline */
-					for (ll = line->bits; ll;
-					     ll = ll->next) {
-						bit = ll->data;
-						etox_line_append(newline,
-								 bit);
-						ll = evas_list_remove(ll,
-								      bit);
-					}
-					break;
-				}
-			}
-		}
+	/* move the remaining bits to the new line */
+	for (ll = ll->next; ll; ll = ll->next)
+	{
+	  bit = ll->data;
+	  etox_line_remove(line, bit);
+	  etox_line_append(newline, split);
 	}
+
+	/* add the newline after the current one */
+	et->lines = evas_list_append_relative(et->lines, newline, line);
+      }
+    }
+  }
+}
+
+
+/*
+ * _etox_unwrap_lines - break lines that are too long if soft wrap flag is set
+ * @et: the etox to wrap
+ *
+ * Returns nothing, modifies the lines of the etox
+ */
+void _etox_unwrap_lines(Etox *et)
+{
+  Etox_Line *line, *prevline;
+  Evas_List l;
+  int i = 0;
+
+  CHECK_PARAM_POINTER("et", et);
+
+  prevline = et->lines->data;
+
+  for (l = et->lines->next; l; l = l->next)
+  {
+    i++;
+    line = l->data;
+    if (line->flags & ETOX_LINE_WRAPPED)
+    {
+      printf("unwrap line: %i\n", i);
+      /* remove the wrap marker bit */
+      line->bits = evas_list_remove(line->bits, line->bits->data);
+
+      /* remove the line from the list */
+      et->lines = evas_list_remove(et->lines, line);
+
+      /* merge the two lines */
+      etox_line_merge(prevline, line);
+     
+      /* skip the line we just merged */
+      l = l->next;
+    }
+    else
+      prevline = line;
+  }
 }
 
 /*

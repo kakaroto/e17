@@ -10,7 +10,8 @@
  */
 typedef enum _etox_line_flags Etox_Line_Flags;
 enum _etox_line_flags {
-	ETOX_LINE_SOFT = 0x10,
+	ETOX_SOFT_WRAP = 0x10,
+	ETOX_LINE_WRAPPED = 0x20,
 };
 
 /*

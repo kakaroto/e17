@@ -88,12 +88,22 @@ struct _etox_context {
 	/*
 	 * Default alignment of text on etox
 	 */
-	char align;
+	char flags;
 
 	/*
 	 * Padding surrounding the text
 	 */
 	int padding;
+
+	/*
+	 * A marker for wrapped lines
+	 */
+	struct
+	{
+	  char *text;
+	  char *style;
+	  int r, g, b, a;
+	} marker;
 };
 
 /*
@@ -209,6 +219,12 @@ void etox_context_set_style(Etox * et, char *stylename);
 int etox_context_get_align(Etox * et);
 void etox_context_set_align(Etox * et, int align);
 void etox_context_set_soft_wrap(Etox * et, int boolean);
+
+/* 
+ * Wrap marker functions
+ */
+void etox_context_set_wrap_marker(Etox *et, char *marker, char *style);
+void etox_context_set_wrap_marker_color(Etox *et, int r, int g, int b, int a);
 
 /*
  * Text manipulation functions
