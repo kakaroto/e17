@@ -284,7 +284,7 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, void *user_data)
 							 y);
 	}
 
-	ewl_widget_configure(p);
+	ewl_widget_configure(EWL_WIDGET(p));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
