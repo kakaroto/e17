@@ -24,9 +24,6 @@
 
 static EWin        *mode_moveresize_ewin = NULL;
 
-static int          start_move_desk = 0;
-static int          start_move_x = 0;
-static int          start_move_y = 0;
 static int          real_move_mode = 0;
 
 int
@@ -63,7 +60,6 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
    Mode.win_w = ewin->client.w;
    Mode.win_h = ewin->client.h;
    Mode.firstlast = 0;
-   start_move_desk = ewin->desktop;
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, nogroup
 				      || Mode.swapmovemode, &num);
@@ -82,8 +78,8 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
      }
    Efree(gwins);
    Mode.firstlast = 1;
-   Mode.swapcoord_x = start_move_x = ewin->x;
-   Mode.swapcoord_y = start_move_y = ewin->y;
+   Mode.swapcoord_x = ewin->x;
+   Mode.swapcoord_y = ewin->y;
    EDBUG_RETURN(0);
    params = NULL;
 }
@@ -153,23 +149,6 @@ ActionMoveEnd(EWin * ewin)
 	     gwins[i]->floating = 0;
 	  }
 
-	if ((Conf.movemode > 0) && (gwins[i]->has_transients))
-	  {
-	     EWin              **lst;
-	     int                 j, num2;
-	     int                 dx, dy;
-
-	     dx = ewin->x - start_move_x;
-	     dy = ewin->y - start_move_y;
-
-	     lst = ListTransientsFor(gwins[i]->client.win, &num2);
-	     if (lst)
-	       {
-		  for (j = 0; j < num2; j++)
-		     MoveEwin(lst[j], lst[j]->x + dx, lst[j]->y + dy);
-		  Efree(lst);
-	       }
-	  }
 	RaiseEwin(gwins[i]);
 	ICCCM_Configure(gwins[i]);
      }
