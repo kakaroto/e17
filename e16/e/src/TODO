@@ -1,5 +1,4 @@
 BUGS:
-raster:         need to investigate "The icons in the iconbox have garbage three pixels to the right of where the image doesn't have transparency exept for the part where the image has transparency." issue reported.
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 mandrake: expose events in the dialog boxes aren't handled right.
