@@ -612,7 +612,7 @@ ButtonDragEnd(Button * b)
    int                 d;
 
    Mode.mode = MODE_NONE;
-   GrabPointerRelease();
+
    if (!Mode.button_move_pending)
      {
 	d = DesktopAt(Mode.x, Mode.y);
@@ -719,6 +719,8 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
    if (Mode.mode == MODE_BUTTONDRAG)
       ButtonDragEnd(Mode_button.button);
    Mode_button.button = NULL;
+
+   GrabPointerRelease();
 }
 
 static void

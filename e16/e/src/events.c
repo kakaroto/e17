@@ -339,8 +339,6 @@ HandleEvent(XEvent * ev)
      {
      case ButtonRelease:	/*  5 */
 	/* This shouldn't be here */
-	GrabPointerRelease();
-
 	if ((Mode.slideout) && (pslideout))
 	   SlideoutHide(Mode.slideout);
 
