@@ -103,8 +103,7 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type
-geist_object_get_type(geist_object * obj)
+geist_object_type geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -240,8 +239,7 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -249,8 +247,7 @@ geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image
-geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -369,8 +366,7 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates
-geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -506,8 +502,7 @@ geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates
-geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -1205,7 +1200,6 @@ geist_object_generic_properties(geist_list * list)
          else
             sizemode_string = "";
       }
-      efree(l);
       gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
                          align_string);
       gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
@@ -1258,9 +1252,7 @@ geist_object_generic_properties(geist_list * list)
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_sizemode_cb), (gpointer) list);
 
-
    return (gen_props);
-
 }
 
 

@@ -97,6 +97,21 @@ geist_list_add_end(geist_list * root, void *data)
    }
 }
 
+unsigned char
+geist_list_has_more_than_one_item(geist_list * root)
+{
+   D_ENTER(5);
+
+   if (root->next)
+   {
+      D_RETURN(5, 1);
+   }
+   else
+   {
+      D_RETURN(5, 0);
+   }
+}
+
 geist_list *
 geist_list_pop_to_end(geist_list * root, geist_list * l)
 {

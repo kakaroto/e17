@@ -60,5 +60,6 @@ geist_list *geist_list_sort(geist_list * list, geist_compare_fn cmp);
 geist_list *geist_list_sort_merge(geist_list * l1, geist_list * l2,
                                   geist_compare_fn cmp);
 geist_list *geist_list_nth(geist_list * root, unsigned int num);
+unsigned char geist_list_has_more_than_one_item(geist_list * root);
 
 #endif
