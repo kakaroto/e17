@@ -1,5 +1,35 @@
 #include "elogin.h"
 
+struct _Elogin_Config
+{
+   char *welcome;
+   char *password;
+   char *bg;
+
+   struct
+   {
+      int size;
+      int r, g, b, a;
+      char *name;
+   }
+   font;
+
+   struct
+   {
+      int total, placed;
+   }
+   xinerama;
+
+   struct
+   {
+      char *file;
+      int h, v;
+   }
+   logo;
+};
+
+typedef struct _Elogin_Config Elogin_Config;
+
 #define WELCOME_STRING "Enter your username"
 #define PASSWORD_STRING "Enter your password..."
 
@@ -8,6 +38,8 @@
 #define TEXT_ERR_FONTSIZE 22
 
 #define ENTRY_OFFSET 30
+
+#define XINERAMA_HEADS 2
 
 #define PERCENT_LOGO_HORIZONTAL_PLACEMENT 0.5
 #define PERCENT_LOGO_VERTICAL_PLACEMENT 0.5
@@ -74,7 +106,7 @@ show_error_description(char *err_str)
       tw = evas_get_text_width(evas, o);
       th = evas_get_text_height(evas, o);
 
-      x = ((w - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+      x = (((w / XINERAMA_HEADS) - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
       y = ((h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
 
       evas_move(evas, o, x, y);
@@ -112,7 +144,7 @@ set_text_entry_text(int is_pass, char *txt)
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
 
-   x = ((w - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+   x = (((w / XINERAMA_HEADS) - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
    y = ((h - th) * PERCENT_DESC_VERTICAL_PLACEMENT + ENTRY_OFFSET);
 
    evas_move(evas, o, x, y);
@@ -150,7 +182,8 @@ intro_init(E_Login_Session e)
    evas_get_image_size(evas, o, &iw, &ih);
    evas_resize(evas, o, iw, ih);
    evas_set_image_fill(evas, o, 0.0, 0.0, (float) iw, (float) ih);
-   x = ((e->geom.w - iw) * PERCENT_LOGO_HORIZONTAL_PLACEMENT);
+   x = (((e->geom.w / XINERAMA_HEADS) -
+         iw) * PERCENT_LOGO_HORIZONTAL_PLACEMENT);
    y = ((e->geom.h - ih) * PERCENT_LOGO_VERTICAL_PLACEMENT);
    evas_set_color(evas, o, 39, 196, 255, 255);
    evas_move(evas, o, x, y);
@@ -160,7 +193,8 @@ intro_init(E_Login_Session e)
    o = evas_add_text(evas, FONTNAME, TEXT_DESC_FONTSIZE, WELCOME_STRING);
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
-   x = ((e->geom.w - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+   x = (((e->geom.w / XINERAMA_HEADS) -
+         tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
    y = ((e->geom.h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
    evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
    evas_move(evas, o, x, y);
@@ -171,7 +205,8 @@ intro_init(E_Login_Session e)
    o = evas_add_text(evas, FONTNAME, TEXT_DESC_FONTSIZE, PASSWORD_STRING);
    tw = evas_get_text_width(evas, o);
    th = evas_get_text_height(evas, o);
-   x = ((e->geom.w - tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
+   x = (((e->geom.w / XINERAMA_HEADS) -
+         tw) * PERCENT_DESC_HORIZONTAL_PLACEMENT);
    y = ((e->geom.h - th) * PERCENT_DESC_VERTICAL_PLACEMENT);
    evas_set_color(evas, o, FONT_R, FONT_G, FONT_B, FONT_A);
    evas_move(evas, o, x, y);

@@ -306,7 +306,7 @@ e_login_auth_setup_environment(E_Login_Auth e)
    setenv("SHELL", e->pam.pw->pw_shell, 1);
    setenv("USER", e->pam.pw->pw_name, 1);
    setenv("LOGNAME", e->pam.pw->pw_name, 1);
-   setenv("DISPLAY", ":0.0" , 1);
+   setenv("DISPLAY", ":0.0", 1);
 
    size = (strlen(_PATH_MAILDIR) + strlen(e->pam.pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);
