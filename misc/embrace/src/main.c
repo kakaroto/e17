@@ -67,6 +67,8 @@ int main (int argc, const char **argv)
 	if (!init ())
 		BAIL_OUT ();
 
+	ecore_app_args_set (argc, argv);
+
 	if (!(e = embrace_new ())) {
 		fprintf (stderr, "Out of memory!\n");
 		BAIL_OUT ();
