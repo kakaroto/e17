@@ -131,6 +131,7 @@ void feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im,
                         int ox, int oy);
 void feh_menu_redraw(feh_menu * m);
 void feh_menu_move(feh_menu * m, int x, int y);
+void feh_menu_slide_all_menus_relative(int dx, int dy);
 void feh_menu_init_main(void);
 void feh_menu_init_single_win(void);
 void feh_menu_init_about_win(void);

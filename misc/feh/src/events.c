@@ -451,6 +451,7 @@ static void
 feh_event_handle_MotionNotify(XEvent * ev)
 {
    winwidget winwid = NULL;
+   int dx, dy;
 
    D_ENTER(5);
    if (menu_root)
@@ -471,7 +472,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
          selected_item = feh_menu_find_selected(m);
          mouseover_item =
             feh_menu_find_at_xy(m, ev->xmotion.x, ev->xmotion.y);
-         if (selected_item != mouseover_item)
+	 
+	 if (selected_item != mouseover_item)
          {
             D(4, ("selecting a menu item\n"));
             if (selected_item)
@@ -481,6 +483,35 @@ feh_event_handle_MotionNotify(XEvent * ev)
                     || (mouseover_item->func_gen_sub)))
                feh_menu_select(m, mouseover_item);
          }
+	 /* check if we are close to the right and/or the bottom edge of the
+	  * screen. If so, and if the menu we are currently over is partially
+	  * hidden, slide the menu to the left and/or up until it is
+	  * fully visible */
+	 if ( mouseover_item && (
+	      (scr->width - (ev->xmotion.x + m->x)) < 50 ||
+              (scr->height -(ev->xmotion.y + m->y)) < 50)
+	    )
+	 {
+	    dx = scr->width - (m->x + m->w);
+	    dy = scr->height - (m->y + m->h);
+	    dx = dx<0?dx:0;
+	    dy = dy<0?dy:0;
+	    if (dx || dy)
+	       feh_menu_slide_all_menus_relative(dx, dy);
+	 }
+	 /* if a submenu is open we want to see that also */
+	 if (mouseover_item && m->next && (
+	        (scr->width - (ev->xmotion.x + m->next->x)) < 50 ||
+		(scr->height -(ev->xmotion.y + m->next->y)) < 50)
+	    )
+	 {
+	    dx = scr->width - (m->next->x + m->next->w);
+	    dy = scr->height - (m->next->y + m->next->h);
+	    dx = dx<0?dx:0;
+	    dy = dy<0?dy:0;
+	    if (dx || dy) 
+	       feh_menu_slide_all_menus_relative(dx, dy);
+	 }
       }
    }
    else if (opt.mode == MODE_ZOOM)

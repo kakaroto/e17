@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "winwidget.h"
 #include "filelist.h"
 #include "options.h"
+#include <math.h>
 
 Window menu_cover = 0;
 feh_menu *menu_root = NULL;
@@ -384,6 +385,39 @@ feh_menu_move(feh_menu * m, int x, int y)
       XMoveWindow(disp, m->win, x, y);
    m->x = x;
    m->y = y;
+   D_RETURN_(4);
+}
+
+void
+feh_menu_slide_all_menus_relative(int dx, int dy)
+{
+   int i;
+   feh_menu_list *m;
+   double vector_len = 0;
+   int stepx = 0;
+   int stepy = 0;
+   
+   D_ENTER(4);
+   vector_len =  sqrt( dx*dx + dy*dy );
+   if (vector_len)
+   {
+      if (dx)
+	 stepx = rint(dx / vector_len);
+      
+      if (dy)
+	 stepy = rint(dy / vector_len);
+
+   }
+   for (i=0; i< vector_len; i++) 
+   {
+      for (m=menus;m;m=m->next)
+      {
+	 if (m->menu->visible)
+	    feh_menu_move(m->menu, m->menu->x + stepx, m->menu->y + stepy); 
+
+      }	 
+      XWarpPointer(disp, None, None, 0, 0, 0, 0, stepx, stepy);
+   }
    D_RETURN_(4);
 }
 

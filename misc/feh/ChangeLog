@@ -1,3 +1,8 @@
+Sun Aug 12 18:13:39 2001  Till Adam  <till@adam-lilienthal.de>
+
+	* slide menus to the left and/or up if they are off the screen and the
+	cursor is close to the right and/or bottom edge of the screen
+
 Sun Aug 12 00:24:38 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Uh that's not all I changed in the last commit.
