@@ -51,6 +51,36 @@ _esmart_textarea_cb_key_down(void *data, Evas *e, Evas_Object *obj,
    _esmart_textarea_cursor_goto_cursor(t);
 }
 
+/* callback for when the mouse moves, for selection */
+void
+_esmart_textarea_cb_mouse_move(void *data, Evas *e, Evas_Object *obj,
+				void *event_info) {
+   Evas_Event_Mouse_Move *ev = event_info;
+   Esmart_Text_Area *t = data;
+      
+   if((t->mouse_modifiers & ESMART_TEXTAREA_MOUSE_MODIFIER_LEFT))
+     {
+	int pos, cx, cy;
+	evas_object_geometry_get(t->text, &cx, &cy, NULL, NULL);
+	cx = ev->cur.canvas.x - cx;
+	cy = ev->cur.canvas.y - cy;
+	pos = evas_object_textblock_char_coords_get(t->text,cx,cy,NULL,NULL,
+						    NULL,NULL);
+	if(pos > t->sel_start.pos) // moved right or down
+	  {
+	     printf("moving right / down\n");
+	  }
+	else if(pos < t->sel_start.pos) // moved left or up
+	  {
+	     printf("moving left / up\n");
+	  }
+	else // stayed on same char
+	  {
+	     printf("still in place!\n");
+	  }
+     }   
+}
+
 /* callback for when a mouse button is pressed, cursor movement + selection */
 void
 _esmart_textarea_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
@@ -60,24 +90,33 @@ _esmart_textarea_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
    int cx, cy, index;
    
    /* set mouse down modifier, needed for selection / dragging */
-   switch(ev->button) {
-    case 1:
-      t->mouse_modifiers &= ESMART_TEXTAREA_MOUSE_MODIFIER_LEFT;
-      break;
-    case 2:
-      t->mouse_modifiers &= ESMART_TEXTAREA_MOUSE_MODIFIER_RIGHT;
-      break;
-    case 3:
-      t->mouse_modifiers &= ESMART_TEXTAREA_MOUSE_MODIFIER_MIDDLE;
-      break;
-   }
-   evas_object_geometry_get(t->text, &cx, &cy, NULL, NULL);
-   cx = ev->canvas.x - cx;
-   cy = ev->canvas.y - cy;
-   index = evas_object_textblock_char_coords_get(t->text,
-						 cx,cy,NULL,NULL,NULL,NULL);
-   evas_object_textblock_cursor_pos_set(t->text, index);
-   _esmart_textarea_cursor_goto_cursor(t);   
+   switch(ev->button)
+     {
+      case 1:
+	t->mouse_modifiers |= ESMART_TEXTAREA_MOUSE_MODIFIER_LEFT;
+		
+	evas_object_geometry_get(t->text, &cx, &cy, NULL, NULL);
+	cx = ev->canvas.x - cx;
+	cy = ev->canvas.y - cy;
+	index = evas_object_textblock_char_coords_get(t->text,
+						      cx,cy,NULL,NULL,
+						      NULL,NULL);
+	evas_object_textblock_cursor_pos_set(t->text, index);
+	_esmart_textarea_cursor_goto_cursor(t);
+	
+	/* save current coord for selection */
+	t->sel_start.x = ev->canvas.x;
+	t->sel_start.y = ev->canvas.y;
+	t->sel_start.pos = index;
+	break;
+      case 2:
+	t->mouse_modifiers |= ESMART_TEXTAREA_MOUSE_MODIFIER_MIDDLE;	
+	break;
+	
+      case 3:
+	t->mouse_modifiers |= ESMART_TEXTAREA_MOUSE_MODIFIER_RIGHT;	
+	break;
+     }
 }
 
 void

@@ -24,6 +24,14 @@ enum Esmart_Textarea_Mouse_Modifiers        /* several mouse modifiers */
      ESMART_TEXTAREA_MOUSE_MODIFIER_RIGHT = 0x4,
 };
 
+struct _Esmart_Text_Area_Coord {            /* a coord, x, y and char pos */
+   Evas_Coord x;                         
+   Evas_Coord y;
+   int pos;
+};
+
+typedef struct _Esmart_Text_Area_Coord Esmart_Text_Area_Coord;
+
 struct _Esmart_Text_Area {                  /* our typical text area */   
    Evas_Object  *text;
    Evas_Object  *bg;
@@ -31,6 +39,8 @@ struct _Esmart_Text_Area {                  /* our typical text area */
    unsigned int  key_modifiers;
    unsigned int  in_selection;
    unsigned int  mouse_modifiers;
+   Esmart_Text_Area_Coord sel_start;
+   Esmart_Text_Area_Coord sel_end;   
 };
 
 typedef struct _Esmart_Text_Area Esmart_Text_Area;

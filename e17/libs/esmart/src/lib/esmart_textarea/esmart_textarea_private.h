@@ -55,6 +55,7 @@ void              _esmart_textarea_cb_key_up(void *data, Evas *e, Evas_Object *o
 void              _esmart_textarea_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void              _esmart_textarea_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void              _esmart_textarea_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void              _esmart_textarea_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /* textarea smart functions */
 Evas_Smart       *esmart_textarea_smart_get();

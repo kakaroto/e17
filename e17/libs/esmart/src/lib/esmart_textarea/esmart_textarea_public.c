@@ -129,7 +129,10 @@ esmart_textarea_bg_set(Evas_Object *o, Evas_Object *bg)
 Evas_Object *
 esmart_textarea_bg_get(Evas_Object *o)
 {
-      return _esmart_textarea_bg_get(o);
+   Esmart_Text_Area *t;
+   
+   t = evas_object_smart_data_get(o);   
+   return _esmart_textarea_bg_get(t);
 }
 
 

@@ -40,8 +40,10 @@ _esmart_textarea_init(Evas_Object *o) {
 				  _esmart_textarea_cb_key_up, t);   
    evas_object_event_callback_add(t->text, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _esmart_textarea_cb_mouse_down, t);
-   evas_object_event_callback_add(t->text, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _esmart_textarea_cb_mouse_up, t);   
+   evas_object_event_callback_add(t->text, EVAS_CALLBACK_MOUSE_UP,
+				  _esmart_textarea_cb_mouse_up, t);
+   evas_object_event_callback_add(t->text, EVAS_CALLBACK_MOUSE_MOVE,
+				  _esmart_textarea_cb_mouse_move, t);
 
    t->bg = evas_object_rectangle_add(evas);
    evas_object_color_set(t->bg, 255, 255, 255, 255);
