@@ -43,7 +43,7 @@ Estyle *estyle_new(Evas *evas, char *text, char *style)
 	memset(es, 0, sizeof(Estyle));
 
 	es->evas = evas;
-	evas_object_font_path_append(es->evas, PACKAGE_DATA_DIR"/fonts");
+	evas_font_path_append(es->evas, PACKAGE_DATA_DIR"/fonts");
 
 	/*
 	 * Create the Evas_Object and set the default font and font size.
