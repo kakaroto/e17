@@ -263,6 +263,8 @@ draw_ewl(Mode draw_mode)
 
    main_win = ewl_window_new();
    ewl_window_set_title(EWL_WINDOW(main_win), "Equate");
+   ewl_window_set_name(EWL_WINDOW(main_win), "Equate");
+   ewl_window_set_class(EWL_WINDOW(main_win), "Equate");
    ewl_object_set_minimum_size(EWL_OBJECT(main_win), width, height);
    ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                        destroy_main_window, NULL);
