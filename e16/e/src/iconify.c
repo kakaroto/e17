@@ -1047,7 +1047,7 @@ IB_CalcMax(Iconbox * ib)
 	h = 8;
 	ewin = ib->icons[i];
 	if (!ewin->icon_pmap)
-	   UpdateAppIcon(ewin, mode.icon_mode);
+	   UpdateAppIcon(ewin, ib->icon_mode);
 	if (ewin->icon_pmap)
 	  {
 	     w = ewin->icon_pmap_w;
@@ -1109,7 +1109,7 @@ IB_FindIcon(Iconbox * ib, int px, int py)
 	h = 8;
 	ewin = ib->icons[i];
 	if (!ewin->icon_pmap)
-	   UpdateAppIcon(ewin, mode.icon_mode);
+	   UpdateAppIcon(ewin, ib->icon_mode);
 	if (ewin->icon_pmap)
 	  {
 	     w = ewin->icon_pmap_w;
@@ -1877,7 +1877,7 @@ RedrawIconbox(Iconbox * ib)
 	     h = 8;
 	     ewin = ib->icons[i];
 	     if (!ewin->icon_pmap)
-		UpdateAppIcon(ewin, mode.icon_mode);
+		UpdateAppIcon(ewin, ib->icon_mode);
 	     if (ewin->icon_pmap)
 	       {
 		  w = ewin->icon_pmap_w;
@@ -2004,7 +2004,7 @@ RedrawIconbox(Iconbox * ib)
 	     h = 8;
 	     ewin = ib->icons[i];
 	     if (!ewin->icon_pmap)
-		UpdateAppIcon(ewin, mode.icon_mode);
+		UpdateAppIcon(ewin, ib->icon_mode);
 	     if (ewin->icon_pmap)
 	       {
 		  w = ewin->icon_pmap_w;

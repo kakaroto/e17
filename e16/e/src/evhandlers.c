@@ -1022,6 +1022,31 @@ HandleProperty(XEvent * ev)
 		UpdateBorderInfo(ewin);
 		CalcEwinSizes(ewin);
 	     }
+	if (ewin->iconified)
+	  {
+	     Iconbox **ib;
+	     int       i, j, num;
+	     
+	     ib = (Iconbox **)ListItemType(&num, LIST_TYPE_ICONBOX);
+	     if (ib)
+	       {
+		  for (i = 0; i < num; i++)
+		    {
+		       for (j = 0; j < ib[i]->num_icons; j++)
+			 {
+			    if (ib[i]->icons[j] == ewin)
+			      {
+				 if (ib[i]->icon_mode == 1)
+				   {
+				      UpdateAppIcon(ewin, ib[i]->icon_mode);
+				      RedrawIconbox(ib[i]);
+				   }
+			      }
+			 }
+		    }
+		  Efree(ib);
+	       }
+	  }
 	UngrabX();
      }
    else if (win == root.win)

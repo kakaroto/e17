@@ -1915,3 +1915,13 @@ Fri Sep 17 08:57:02 PDT 1999
 have erealloc call efree if size == 0 & ptr != NULL
 
 if we change desktop area size - dont reshufle sticky windows... :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 09:43:01 PDT 1999
+(Raster)
+
+handle icon property change events properly and redraw iconbox if window 
+iconfied.
+
+fixed up 2 images in brushed metal theme + add right side pager border
