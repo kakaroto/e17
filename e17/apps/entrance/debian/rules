@@ -22,6 +22,11 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
+configure: configure-stamp
+configure-stamp:
+	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
+	touch configure-stamp
+		
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
@@ -62,7 +67,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/entrance.
-	$(MAKE) install prefix=$(CURDIR)/debian/entrance/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/entrance/usr
 
 
 # Build architecture-independent files here.
