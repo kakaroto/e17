@@ -1,5 +1,4 @@
-.icons
-Makefile
 Makefile.in
+Makefile
 .deps
-dox
+edox

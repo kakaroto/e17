@@ -1,6 +1,4 @@
-.icons
 Makefile.in
 Makefile
 .deps
 epp
-*.da

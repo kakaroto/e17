@@ -1,6 +1,4 @@
-.icons
-Makefile
 Makefile.in
-eesh
+Makefile
 .deps
-*.da
+eesh
