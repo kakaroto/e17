@@ -3,7 +3,7 @@
 ## If you don't want it to overwrite it,
 ## 	Please disable it in the Anjuta project configuration
 
-SUBDIRS = intl po src
+SUBDIRS = intl po src pixmaps
 
 e16menuedit2docdir = ${prefix}/doc/e16menuedit2
 e16menuedit2doc_DATA = \
@@ -16,7 +16,7 @@ e16menuedit2doc_DATA = \
 	TODO\
 	ABOUT-NLS
 
-EXTRA_DIST = $(e16menuedit2doc_DATA)
+EXTRA_DIST = $(e16menuedit2doc_DATA) e16menuedit2.glade config.rpath
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:

@@ -82,7 +82,8 @@ module.source.files=\
 
 module.pixmap.name=pixmaps
 module.pixmap.type=
-module.pixmap.files=
+module.pixmap.files=\
+	e16menuedit2-icon.png
 
 module.data.name=data
 module.data.type=

@@ -31,7 +31,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 
 
 dnl Languages which your application supports
-ALL_LINGUAS="de"
+ALL_LINGUAS="de en"
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.10.40)
 
@@ -104,5 +104,6 @@ Makefile
 intl/Makefile
 po/Makefile.in
 src/Makefile
+pixmaps/Makefile
 ])
 
