@@ -44,6 +44,9 @@ int ewl_row_init(Ewl_Row *row)
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			ewl_row_configure_cb, NULL);
 
+	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
+			ewl_row_destroy_cb, NULL);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -66,10 +69,14 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 	if (row->header == header)
 		DRETURN(DLEVEL_STABLE);
 
-	if (row->header)
-		ewl_callback_del(EWL_WIDGET(row->header),
-				EWL_CALLBACK_CONFIGURE,
-				ewl_row_header_configure_cb);
+	if (row->header) {
+		ewl_callback_del_with_data(EWL_WIDGET(row->header),
+					   EWL_CALLBACK_CONFIGURE,
+					   ewl_row_header_configure_cb, row);
+		ewl_callback_del_with_data(EWL_WIDGET(row->header),
+					   EWL_CALLBACK_DESTROY,
+					   ewl_row_header_destroy_cb, row);
+	}
 
 	if (header) {
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
@@ -191,6 +198,12 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	ewl_row_set_header(EWL_ROW(w), NULL);
 }
 
 void

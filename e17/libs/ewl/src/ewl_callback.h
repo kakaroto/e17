@@ -108,6 +108,8 @@ void            ewl_callback_call_with_event_data(Ewl_Widget * widget,
 void            ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
 void            ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t,
 				 Ewl_Callback_Function f);
+void            ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
+				 Ewl_Callback_Function f, void *data);
 
 /**
  * @}

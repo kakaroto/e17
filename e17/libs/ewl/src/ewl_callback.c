@@ -449,6 +449,47 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: the widget to delete the callback
+ * @param t: the type of event associated with the callback
+ * @param f: the function called by the callback
+ * @param d: the data passed to the callback
+ * @brief Delete the specified callback function from the widget
+ *
+ * @return Returns no value.
+ * Delete and frees the callback that calls function @a f when event @a t occurs
+ * to widget @a w.
+ */
+void
+ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
+			   Ewl_Callback_Function f, void *d)
+{
+	Ewl_Callback   *cb;
+	Ewd_List       *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	list = EWL_CALLBACK_LIST_POINTER(w, t);
+
+	if (!list || ewd_list_is_empty(list))
+		DRETURN(DLEVEL_STABLE);
+
+	ewd_list_goto_first(list);
+
+	while ((cb = ewd_list_current(list)) != NULL) {
+		if (cb->func == f && cb->user_data == d) {
+			ewd_list_remove(list);
+			ewl_callback_unregister(cb);
+			break;
+		}
+
+		ewd_list_next(list);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * Hashes the value of a callback based on it's type, function, and user data.
  */
