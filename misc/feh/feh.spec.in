@@ -38,9 +38,13 @@ make prefix=$RPM_BUILD_ROOT%{prefix} install
 %files
 %defattr(-, root, root)
 %{prefix}/bin/*
-%{prefix}/doc/feh/*
 %{prefix}/man/man1/*
 %{prefix}/share/feh/fonts/*
 %{prefix}/share/feh/images/*
 
 %doc AUTHORS ChangeLog README TODO
+
+%changelog
+* Wed Aug 23 2000 Calum Selkirk <cselkirk@sophix.uklinux.net>
+- removed the double entry for doc
+
