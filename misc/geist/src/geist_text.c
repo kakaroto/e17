@@ -35,9 +35,13 @@ geist_object *current_obj;
 int cur = 0;
 
 /*fontstyler cb*/
-void select_row_cb(GtkWidget * clist, gint rw, gint col,
+static void select_row_cb(GtkWidget * clist, gint rw, gint col,
                    GdkEventButton * event, gpointer data);
-void spinner_changed_cb(gpointer data);
+static void spinner_changed_cb(gpointer data);
+static void save_style_cb(GtkWidget *widget);
+static void load_style_cb(GtkWidget *widget);
+static gboolean save_style_ok_cb(GtkWidget * widget, gpointer * data);
+static gboolean load_style_ok_cb(GtkWidget * widget, gpointer * data);
 
 
 /* fontstyler widgets */
@@ -1089,7 +1093,7 @@ load_style(geist_style * style)
 }
 
 
-void
+static void
 select_row_cb(GtkWidget * clist, gint rw, gint col, GdkEventButton * event,
               gpointer data)
 {
@@ -1140,7 +1144,7 @@ select_row_cb(GtkWidget * clist, gint rw, gint col, GdkEventButton * event,
 }
 
 
-void
+static void
 spinner_changed_cb(gpointer data)
 {
    geist_style_bit *bit;
@@ -1322,14 +1326,14 @@ geist_display_fontstyler_window(GtkWidget * widget, gpointer * obj)
 
    b = gtk_button_new_with_label("Load Style");
    gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
+   gtk_signal_connect(GTK_OBJECT(b), "clicked",
+                      GTK_SIGNAL_FUNC(load_style_cb), NULL);
    gtk_widget_show(b);
 
    b = gtk_button_new_with_label("Save Style");
    gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
-   gtk_widget_show(b);
-
-   b = gtk_button_new_with_label("Save Style As");
-   gtk_box_pack_start(GTK_BOX(box2), b, FALSE, FALSE, 1);
+   gtk_signal_connect(GTK_OBJECT(b), "clicked",
+                      GTK_SIGNAL_FUNC(save_style_cb), NULL);
    gtk_widget_show(b);
 
    frame = gtk_frame_new("Edit Options");
@@ -1541,3 +1545,113 @@ geist_update_fontstyler_window(geist_object * obj)
 
    D_RETURN_(3);
 }
+
+static void
+save_style_cb(GtkWidget *widget)
+{
+   GtkWidget *fs;
+   geist_style *style;
+   char *name;
+
+   D_ENTER(3);
+
+   style=working_copy;
+   fs = gtk_file_selection_new("Save style as...");
+   gtk_signal_connect(GTK_OBJECT(fs), "destroy",
+                      (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(fs));
+
+   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
+                      "clicked", (GtkSignalFunc) save_style_ok_cb, fs);
+
+   gtk_signal_connect_object(GTK_OBJECT
+                             (GTK_FILE_SELECTION(fs)->cancel_button),
+                             "clicked", (GtkSignalFunc) gtk_widget_destroy,
+                             GTK_OBJECT(fs));
+
+   if(style->name)
+      name = g_strdup_printf("%s.style", style->name);
+   else
+      name = estrdup("current.style");
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), name);
+   gtk_object_set_data(GTK_OBJECT(fs), "style", style);
+   gtk_widget_show(fs);
+
+   D_RETURN_(3);
+}
+
+static gboolean save_style_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   char *filename;
+   geist_style *style;
+
+   D_ENTER(3);
+
+   filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+   if (!filename)
+      D_RETURN(3, TRUE);
+
+   style = gtk_object_get_data(GTK_OBJECT(data), "style");
+   if (style)
+   {
+      geist_style_save_ascii(style, filename);
+   }
+   gtk_widget_destroy(GTK_WIDGET(data));
+
+   D_RETURN(3, TRUE);
+}
+
+
+static void load_style_cb(GtkWidget *widget)
+{
+   GtkWidget *fs;
+
+   D_ENTER(3);
+
+   fs = gtk_file_selection_new("Load style...");
+   gtk_signal_connect(GTK_OBJECT(fs), "destroy",
+                      (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(fs));
+
+   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
+                      "clicked", (GtkSignalFunc) load_style_ok_cb, fs);
+
+   gtk_signal_connect_object(GTK_OBJECT
+                             (GTK_FILE_SELECTION(fs)->cancel_button),
+                             "clicked", (GtkSignalFunc) gtk_widget_destroy,
+                             GTK_OBJECT(fs));
+
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), "current.style");
+   gtk_widget_show(fs);
+
+   D_RETURN_(3);
+}
+
+static gboolean load_style_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   char *filename;
+   geist_style *style;
+
+   D_ENTER(3);
+
+   filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+   if (!filename)
+      D_RETURN(3, TRUE);
+
+   style = geist_style_new_from_ascii(filename);
+   if (!style)
+   {
+      weprintf("failed to load style file %s\n", filename);
+      gtk_widget_destroy(GTK_WIDGET(data));
+      D_RETURN(3, TRUE);
+   }
+   else
+   {
+      D(2, ("style file %s loaded okay\n", filename));
+   }
+   working_copy = style;
+   load_style(working_copy);
+   render_style(working_copy);
+   gtk_widget_destroy(GTK_WIDGET(data));
+
+   D_RETURN(3, TRUE);
+}
+

@@ -55,5 +55,6 @@ geist_style *geist_style_dup(geist_style *s);
 void geist_dup_style_bit(void **dest, void *data);
 geist_style *geist_style_new_from_acsii(char *file);
 void geist_style_save_ascii(geist_style * style, char *file);
+geist_style *geist_style_new_from_ascii(char *file);
 
 #endif

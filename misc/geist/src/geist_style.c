@@ -131,8 +131,9 @@ geist_style_save_ascii(geist_style * style, char *file)
    FILE *stylefile;
    geist_list *l;
    geist_style_bit *b;
+
    D_ENTER(3);
-   if(!style || !style->bits)
+   if (!style || !style->bits)
       D_RETURN_(3);
 
    stylefile = fopen(file, "w");
@@ -141,10 +142,11 @@ geist_style_save_ascii(geist_style * style, char *file)
       fprintf(stylefile, "#Style\n");
       fprintf(stylefile, "#NAME %s\n", style->name);
       l = style->bits;
-      while(l)
+      while (l)
       {
-         b = (geist_style_bit *)l->data;
-         fprintf(stylefile, "%d %d %d %d %d %d\n", b->r, b->g, b->b, b->a, b->x_offset, b->y_offset);
+         b = (geist_style_bit *) l->data;
+         fprintf(stylefile, "%d %d %d %d %d %d\n", b->r, b->g, b->b, b->a,
+                 b->x_offset, b->y_offset);
          l = l->next;
       }
    }
@@ -154,19 +156,19 @@ geist_style_save_ascii(geist_style * style, char *file)
 }
 
 geist_style *
-geist_style_new_from_acsii(char *file)
+geist_style_new_from_ascii(char *file)
 {
    FILE *stylefile;
    char current[4096];
    char *s;
-   geist_style *ret= NULL;
+   geist_style *ret = NULL;
 
    D_ENTER(3);
 
    stylefile = fopen(file, "r");
    if (stylefile)
    {
-      int r=0, g=0, b=0, a=0, x_off=0, y_off=0;
+      int r = 0, g = 0, b = 0, a = 0, x_off = 0, y_off = 0;
 
       ret = geist_style_new(NULL);
       /* skip initial idenifier line */
@@ -182,42 +184,45 @@ geist_style_new_from_acsii(char *file)
                current[l] = '\0';
             if (l > 6)
                ret->name = estrdup(current + 6);
+            D(2, ("got style name %s\n", ret->name));
             continue;
          }
          else
          {
             /* support EFM style bits */
             s = strtok(current, " ");
-            if (!strcmp(s, "ol"))
+            if (strlen(s) == 2)
             {
-               r = g = b = 0;
-               s = strtok(NULL, " ");
-               x_off = atoi(s);
-               s = strtok(NULL, " ");
-               y_off = atoi(s);
-            }
-            else if (!strcmp(s, "sh"))
-            {
-               r = g = b = 0;
-               s = strtok(NULL, " ");
-               x_off = atoi(s);
-               s = strtok(NULL, " ");
-               y_off = atoi(s);
-               s = strtok(NULL, " ");
-               a = atoi(s);
-            }
-            else if (!strcmp(s, "fg"))
-            {
-               r = g = b = a = 0;
-               s = strtok(NULL, " ");
-               x_off = atoi(s);
-               s = strtok(NULL, " ");
-               y_off = atoi(s);
+               if (!strcmp(s, "ol"))
+               {
+                  r = g = b = 0;
+                  s = strtok(NULL, " ");
+                  x_off = atoi(s);
+                  s = strtok(NULL, " ");
+                  y_off = atoi(s);
+               }
+               else if (!strcmp(s, "sh"))
+               {
+                  r = g = b = 0;
+                  s = strtok(NULL, " ");
+                  x_off = atoi(s);
+                  s = strtok(NULL, " ");
+                  y_off = atoi(s);
+                  s = strtok(NULL, " ");
+                  a = atoi(s);
+               }
+               else if (!strcmp(s, "fg"))
+               {
+                  r = g = b = a = 0;
+                  s = strtok(NULL, " ");
+                  x_off = atoi(s);
+                  s = strtok(NULL, " ");
+                  y_off = atoi(s);
+               }
             }
             else
             {
                /* our own format */
-               s = strtok(NULL, " ");
                r = atoi(s);
                s = strtok(NULL, " ");
                g = atoi(s);
@@ -231,9 +236,11 @@ geist_style_new_from_acsii(char *file)
                y_off = atoi(s);
             }
          }
-        ret->bits = geist_list_add_end(ret->bits, geist_style_bit_new(x_off, y_off, r,g,b,a));
+         ret->bits =
+            geist_list_add_end(ret->bits,
+                               geist_style_bit_new(x_off, y_off, r, g, b, a));
       }
-   fclose(stylefile);
+      fclose(stylefile);
    }
 
    D_RETURN(3, ret);

@@ -68,7 +68,7 @@ geist_document_load(void)
 
    D_ENTER(3);
 
-   fs = gtk_file_selection_new("Load document....");
+   fs = gtk_file_selection_new("Load document...");
    gtk_signal_connect(GTK_OBJECT(fs), "destroy",
                       (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(fs));
 
@@ -124,7 +124,7 @@ geist_document_save_as(geist_document * doc)
 
    D_ENTER(3);
 
-   fs = gtk_file_selection_new("Save document as....");
+   fs = gtk_file_selection_new("Save document as...");
    gtk_signal_connect(GTK_OBJECT(fs), "destroy",
                       (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(fs));
 
