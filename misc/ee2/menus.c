@@ -109,11 +109,26 @@ menus_init(void)
   gtk_widget_show(item);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), menu);
   gtk_menu_append(GTK_MENU(RootMenu), item);
+	
+  /* view menu */
+  menu = gtk_menu_new();
+  item = gtk_tearoff_menu_item_new();
+  gtk_menu_append(GTK_MENU(menu), item);
+	gtk_widget_show(item);
+	item = gtk_menu_item_new_with_label("Image Browser");
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_signal_connect_object(GTK_OBJECT(item), "activate",
+									  GTK_SIGNAL_FUNC(browser_show), (gpointer) NULL);
+	gtk_widget_show(item);
+	item = gtk_menu_item_new_with_label("View");
+	gtk_widget_show(item);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), menu);
+	gtk_menu_append(GTK_MENU(RootMenu), item);
 
   /* The rest of the root menu */
-  item = gtk_menu_item_new_with_label("Show Browser");
+  item = gtk_menu_item_new(); /* seperator */
   gtk_menu_append(GTK_MENU(RootMenu), item);
-  gtk_signal_connect_object(GTK_OBJECT(item), "activate", GTK_SIGNAL_FUNC(browser_show), (gpointer) NULL);
+  gtk_widget_set_sensitive(item, FALSE);
   gtk_widget_show(item);
   item = gtk_menu_item_new_with_label("Exit");
   gtk_menu_append(GTK_MENU(RootMenu), item);
