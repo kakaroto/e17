@@ -98,7 +98,7 @@ static int on_server_data (void *udata, int type, void *event)
 	return 0;
 }
 
-bool imap_check (MailBox *mb)
+static bool imap_check (MailBox *mb)
 {
 	char *host;
 	int port;
@@ -122,7 +122,7 @@ static int on_timer (void *udata)
 	return 1;
 }
 
-bool imap_add_mailbox (MailBox *mb)
+static bool imap_add_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 	int interval;
@@ -139,7 +139,7 @@ bool imap_add_mailbox (MailBox *mb)
 	return true;
 }
 
-bool imap_remove_mailbox (MailBox *mb)
+static bool imap_remove_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 
@@ -156,7 +156,7 @@ bool imap_remove_mailbox (MailBox *mb)
 	return true;
 }
 
-bool imap_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool imap_load_config (MailBox *mb, E_DB_File *edb, char *root)
 {
 	char key[32], *str;
 	int val;
@@ -202,7 +202,7 @@ bool imap_load_config (MailBox *mb, E_DB_File *edb, char *root)
 	return true;
 }
 
-void imap_shutdown ()
+static void imap_shutdown ()
 {
 	ecore_con_shutdown ();
 }

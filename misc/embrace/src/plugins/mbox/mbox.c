@@ -84,7 +84,7 @@ static bool has_changed (MailBox *mb)
 	return ret;
 }
 
-bool mbox_check (MailBox *mb)
+static bool mbox_check (MailBox *mb)
 {
 	int total = 0, unseen = 0;
 
@@ -109,7 +109,7 @@ static int on_timer (void *udata)
 	return 1;
 }
 
-bool mbox_add_mailbox (MailBox *mb)
+static bool mbox_add_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 	int interval;
@@ -132,7 +132,7 @@ bool mbox_add_mailbox (MailBox *mb)
 	return true;
 }
 
-bool mbox_remove_mailbox (MailBox *mb)
+static bool mbox_remove_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 	assert (mb);
@@ -147,7 +147,7 @@ bool mbox_remove_mailbox (MailBox *mb)
 	return true;
 }
 
-bool mbox_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool mbox_load_config (MailBox *mb, E_DB_File *edb, char *root)
 {
 	char key[32], *str, *path;
 

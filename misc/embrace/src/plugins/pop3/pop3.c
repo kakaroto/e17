@@ -91,7 +91,7 @@ static int on_server_data (void *udata, int type, void *event)
 	return 0;
 }
 
-bool pop3_check (MailBox *mb)
+static bool pop3_check (MailBox *mb)
 {
 	char *host;
 	int port;
@@ -115,7 +115,7 @@ static int on_timer (void *udata)
 	return 1;
 }
 
-bool pop3_add_mailbox (MailBox *mb)
+static bool pop3_add_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 	int interval;
@@ -132,7 +132,7 @@ bool pop3_add_mailbox (MailBox *mb)
 	return true;
 }
 
-bool pop3_remove_mailbox (MailBox *mb)
+static bool pop3_remove_mailbox (MailBox *mb)
 {
 	Ecore_Timer *timer;
 
@@ -148,7 +148,7 @@ bool pop3_remove_mailbox (MailBox *mb)
 	return true;
 }
 
-bool pop3_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool pop3_load_config (MailBox *mb, E_DB_File *edb, char *root)
 {
 	char key[32], *str;
 	int val;
@@ -188,7 +188,7 @@ bool pop3_load_config (MailBox *mb, E_DB_File *edb, char *root)
 	return true;
 }
 
-void pop3_shutdown ()
+static void pop3_shutdown ()
 {
 	ecore_con_shutdown ();
 }

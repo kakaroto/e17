@@ -78,7 +78,7 @@ static int get_files (char *path)
 	return ret;
 }
 
-bool maildir_check (MailBox *mb)
+static bool maildir_check (MailBox *mb)
 {
 	char *path[2];
 	int total = 0, unseen = 0;
@@ -184,7 +184,7 @@ static bool monitor_dir (MailBox *mb, const char *path, bool is_unseen)
 	return true;
 }
 
-bool maildir_add_mailbox (MailBox *mb)
+static bool maildir_add_mailbox (MailBox *mb)
 {
 	char *str, *prop[] = {"path_cur", "path_new"};
 	int i;
@@ -215,7 +215,7 @@ static Evas_List *find_notify_data (MailBox *mb)
 }
 #endif
 
-bool maildir_remove_mailbox (MailBox *mb)
+static bool maildir_remove_mailbox (MailBox *mb)
 {
 #ifdef USE_DNOTIFY
 	NotifyData *data;
@@ -243,13 +243,14 @@ bool maildir_remove_mailbox (MailBox *mb)
 }
 
 #ifdef USE_DNOTIFY
-void maildir_shutdown ()
+static void maildir_shutdown ()
 {
 	assert (!notify_data);
 }
 #endif
 
-bool maildir_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool maildir_load_config (MailBox *mb, E_DB_File *edb,
+                                 char *root)
 {
 	char key[256], *str, *path[2], expanded[PATH_MAX + 1];
 	char *prop[2] = {"path_cur", "path_new"};
