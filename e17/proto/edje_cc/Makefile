@@ -1,4 +1,4 @@
-CC=gcc
+CC=gcc -g -O0
 LEX_FILE=edje.l
 PARSE_FILE=edje.y
 

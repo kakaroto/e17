@@ -133,6 +133,7 @@ program_cmd: name
 	| program_transition
 	| program_target
 	| program_after
+	| script
 	;
 
 name: NAME COLON STRING SEMICOLON {
@@ -157,6 +158,9 @@ program_in: IN COLON FLOAT FLOAT SEMICOLON {
 
 program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
 		printf("action %d %s %f\n", $3, $4, $5);
+	}
+	| ACTION COLON action_type SEMICOLON {
+		printf("action %d\n", $3);
 	}
 	;
 
@@ -259,7 +263,7 @@ part_preamble_entry: name
 	| text_class
     ; 
 
-type: TYPE COLON part_type {
+type: TYPE COLON part_type SEMICOLON {
 		printf("type %d\n", $3);
 	}
 	;
@@ -569,7 +573,7 @@ font_entry: FONT COLON STRING SEMICOLON {
 	;
 
 size_entry: SIZE COLON FLOAT SEMICOLON {
-		printf("size %s\n", $3);
+		printf("size %f\n", $3);
 	}
 	;
 
