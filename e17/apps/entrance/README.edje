@@ -12,91 +12,99 @@ A Complete listing of Edje parts Entrance is aware of
 -------------------------------------------------------------------------
 | Part Name(state1, state2, ... , staten)	| Type         |  Required |
 -------------------------------------------------------------------------
-| entrance.entry.pass(default) 			| TEXT	       | Yes       |
+| entrance.entry.pass(default) 			    | TEXT	       | Yes       |
 -------------------------------------------------------------------------
-| entrance.entry.user(default) 			| TEXT	       | Yes       |
+| entrance.entry.user(default) 			    | TEXT	       | Yes       |
 -------------------------------------------------------------------------
-| entrance.date(default)		       	| TEXT	       | No        |
+| entrance.date(default)		       	    | TEXT	       | No        |
 -------------------------------------------------------------------------
-| entrance.time(default)		       	| TEXT	       | No        |
+| entrance.time(default)		       	    | TEXT	       | No        |
 -------------------------------------------------------------------------
 | entrance.hostname(default)		        | TEXT	       | No        |
 -------------------------------------------------------------------------
 | entrance.xsessions.selected (default)   	| RECT	       | No        |
-| The currently selected Session is swallowed   |	       |
+| The currently selected Session is         |              |           |
+| swallowed                                 |	           |           |
 -------------------------------------------------------------------------
-| entrance.users.avatar(default)   		| RECT	       | No        |
-| The currently selected User is swallowed here | 	       |
+| entrance.users.avatar(default)   		    | RECT	       | No        |
+| The currently selected User is swallowed  |              |           |
+| here                                      | 	           |           |
 -------------------------------------------------------------------------
 | entrance.xsessions.list (default)   		| RECT	       | No        |
-| Based on system configuration information the |	       |
-| list of the other group "Sesssion" available  |	       |
-| to the system is contained here		|	       |
+| Based on system configuration information |              |           |
+| the list of the other group "Session"     |              |           |
+| available to the system is contained here	|	           |           |
 -------------------------------------------------------------------------
-| entrance.users.list(default)   		| RECT	       | No      
-| Based on system configuration information the |	       |
-| list of the users on the systems.  Each user  |	       |
-| has their own edje				|	       |
+| entrance.users.list(default)   		    | RECT	       | No        |
+| Based on system configuration information |              |           |
+| the list of the users on the systems.     |              |           |
+| Each user  has their own edje				|	           |           |
 -------------------------------------------------------------------------
 
 3. The following signals are emitted by entrance and need to be caught in
 programs.
 -------------------------------------------------------------------------
-| Signal		       | Description   		               | Req
+| Signal		                | Description   		            
 -------------------------------------------------------------------------
-| entrance,user,auth,success   | After successful authentication this  |
-|			       | signal is emitted, you can do your own|
-|			       | animation here if you want.  You must |
-| 			       | emit "entrance,user,auth,success,done" "" | 
-|			       | after it though in order for	       |	
-|			       | entrance to start your x session      | 
-|			       |"entrance,user,auth,success,done" ""       | Yes
+| entrance,user,auth,success    | After successful authentication this  
+| Required: Yes                 | signal is emitted, you can do your own
+|                               | animation here if you want.  You must 
+|                               | emit "entrance,user,auth,success,done" ""
+|                               | after it though in order for
+|                               | entrance to start your x session 
+|                               |"entrance,user,auth,success,done" ""
 ---------------------------------------------------------------------------
-| entrance,user,fail	       | When the user is unknown the system   | No
+| entrance,user,fail	        | When the user is unknown the system  
+| Required: No                  |
 ---------------------------------------------------------------------------
-| entrance,user,auth,fail      | When a user fails a login attempted   | No 
+| entrance,user,auth,fail       | When a user fails a login attempted 
+| Required: No                  |
 ---------------------------------------------------------------------------
-| entrance,user,success        | When the user is known to the system, | 
-|			       | it's time to prompt for their password|
-|			       |				       | No
+| entrance,user,success         | When the user is known to the system,
+| Required: No                  | it's time to prompt for their password
 ---------------------------------------------------------------------------
-| entrance,xsession,selected   | When the user selects a new session   | 
-|			       | The cloned Session item is swallowed  |
-|			       | into entrance.xsessions.selected      |
-| 			       |				       | No
+| entrance,xsession,selected    | When the user selects a new session
+| Required: No                  | The cloned Session item is swallowed
+|                               | into entrance.xsessions.selected
 ---------------------------------------------------------------------------
-| entrance,users,selected      | When a user is selected from the user |
-|			       | list.  The user's icon is cloned and  |
-|			       | swallowed into entrance.users.avatar  |
-| 			       |				       | No
+| entrance,user,selected        | When a user is selected from the user
+| Required: No                  | list.  The user's icon is cloned and
+|                               | swallowed into entrance.users.avatar
 ---------------------------------------------------------------------------
-| entrance,users,unselected    | When a user icon choice needs to be   |
-|			       | reset to the default.		       |
-| 			       |				       | No
+| entrance,user,unselected      | When a user icon choice needs to be
+| Required: No                  | reset to the default.
+---------------------------------------------------------------------------
+| entrance,user,xsession,set    | The current xsession was requested to be 
+| Required: No                  | saved as the user's default session
+|                               | Source should be ""
 ---------------------------------------------------------------------------
 
 4. The following signals can be emitted by your application in order
 to change states in entrance
 ---------------------------------------------------------------------------
-| Signal		        | Source			        | Req
+| Signal		                    | Description/Source
 ---------------------------------------------------------------------------
-| "In"		        	| Either entrance.entry.user or           |
-|			        | entrance.entry.pass depending on which  |
-|			        | you'd like focus on.		        | No
+| "In"                              | entrance.entry.user or
+| Required: No                      | entrance.entry.pass 
+|                                   | key input focus will go to the 
+|                                   | specified source
 ---------------------------------------------------------------------------
-| "Out"		        	| Either entrance.entry.user or           |
-|			        | entrance.entry.pass depending on which  |
-|			        | you'd like to take focus away from.   | No
+| "Out"                             | entrance.entry.user or
+| Required: No                      | entrance.entry.pass 
+|                                   | key input focus will go to the 
+|                                   | other entry 
 ---------------------------------------------------------------------------
-| entrance,system,reboot       	| When the system request being rebooted| 
-|				| Source should be ""			| No
+| entrance,system,reboot       	    | Reboot System if config allows for it
+| Required: No                      | Source should be ""
 ---------------------------------------------------------------------------
-| entrance,system,halt	        | When the system requests being halted | 
-|				| Source should be ""			| No
+| entrance,system,halt              | Halt System if config allows for it
+| Required: No                      | Source should be ""
 ---------------------------------------------------------------------------
-| entrance,user,auth,success,done| When the theme has completed its     |
-|				 | post-auth animation.			|
-|				 | Source should be ""			|Yes
+| entrance,user,auth,success,done   | When the theme wants to let the user
+| Required: Yes                     | in after succesful authentication.
+|                                   | Useful for doing neat things after 
+|                                   | success.
+|                                   | Source should be ""
 ----------------------------------------------------------------------------
 
 Example: A basic edc mockup follows.
