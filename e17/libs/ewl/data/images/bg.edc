@@ -3,6 +3,9 @@ images {
 	image, "banner-top.png" LOSSY 98;
 	image, "lilgrad.png" LOSSY 98;
 	image, "elicit.png" LOSSY 98;
+	image, "elicit1.png" LOSSY 98;
+	image, "elicit2.png" LOSSY 98;
+	image, "entrance.png" LOSSY 98;
 	image, "e-logo.png" LOSSY 98;
 }
 
@@ -115,7 +118,7 @@ collections {
 
 			part {
 				name, "display";
-				mouse_events, 0;
+				mouse_events, 1;
 
 				description {
 					state, "default" 0.0;
@@ -135,7 +138,7 @@ collections {
 				}
 
 				description {
-					state, "default" 1.0;
+					state, "elicit" 0.0;
 					aspect, 1.6 1.6;
 					align, 0.5 0.5;
 					rel1 {
@@ -151,19 +154,104 @@ collections {
 					}
 				}
 
+				description {
+					state, "elicit" 1.0;
+					aspect, 1.6 1.6;
+					align, 0.5 0.5;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -1 -1;
+					}
+					image {
+						normal, "elicit2.png";
+						tween, "elicit1.png";
+					}
+				}
+
+				description {
+					state, "entrance" 0.0;
+					aspect, 1.6 1.6;
+					align, 0.5 0.5;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -1 -1;
+					}
+					image {
+						normal, "entrance.png";
+					}
+				}
+
+				description {
+					state, "finished" 0.0;
+					aspect, 4.67 4.67;
+					align, 0.5 0.5;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -1 -1;
+					}
+					image {
+						normal, "banner-top.png";
+					}
+				}
+
 			}
 
 		}
 
 		programs {
+
 			program {
-				name:       "start_tour";
-				signal:     "start_tour";
-				source:     "*";
-				action:     STATE_SET "default" 1.0;
-				transition: LINEAR 0.0;
-				target:     "display";
+				name,       "start_tour";
+				signal,     "start_tour";
+				source,     "*";
+				action,     STATE_SET "elicit" 0.0;
+				transition, LINEAR 0.4;
+				target,     "display";
+				after,      "change_text_elicit";
+				after,      "progress_elicit";
 			}
+
+			program {
+				name,       "progress_elicit";
+				action,     STATE_SET "elicit" 1.0;
+				transition, SINUSOIDAL 10.0;
+				target,     "display";
+			}
+
+			program {
+				name,   "change_text_elicit";
+				action, SIGNAL_EMIT "elicit" "tour";
+				after,  "change_entrance";
+			}
+
+			program {
+				name,       "change_entrance";
+				action,     STATE_SET "entrance" 0.2;
+				transition, LINEAR 0.3;
+				target,     "display";
+				in,         5.0 0.0;
+				after,      "change_text_entrance";
+			}
+
+			program {
+				name,   "change_text_entrance";
+				signal, "mouse,down,1";
+				source, "*";
+				action, SIGNAL_EMIT "entrance" "tour";
+			}
+
 		}
 
 	}
