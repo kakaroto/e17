@@ -3,6 +3,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 #include <string.h>
+#include <stdarg.h>
 #include "common.h"
 #include "colormod.h"
 #include "image.h"
@@ -28,6 +29,8 @@
 #include "grad.h"
 #include "rotate.h"
 #include "filter.h"
+#include "dynamic_filters.h"
+#include "script.h"
 #include <math.h>
 
 /* convenience macros */
@@ -2427,4 +2430,32 @@ imlib_filter_divisors(int a, int r, int g, int b)
 {
    CHECK_PARAM_POINTER("imlib_filter_divisors", "filter", ctxt_filter);
    __imlib_FilterDivisors((ImlibFilter *)ctxt_filter, a, r, g, b);
+}
+
+Imlib_Image imlib_apply_filter( char *script, ... )
+{
+   Imlib_Image           im;
+   IFunction            *func = NULL, *ptr;
+   va_list               param_list;
+   pImlibExternalFilter  filter;
+   
+   __imlib_dynamic_filters_init();
+   
+   CAST_IMAGE(im, ctxt_image);
+   va_start( param_list, script );
+   func = (IFunction *)__imlib_script_parse( script, param_list );
+   va_end( param_list );
+   
+   for( ptr = func->next; ptr != NULL; ptr = ptr->next )
+   {
+      filter = __imlib_get_dynamic_filter( ptr->name );
+      if( filter != NULL )
+      {
+	 im = filter->exec_filter( ptr->name, im, ptr->params );
+	 imlib_context_set_image( im );
+      }
+   }
+   
+   __imlib_script_tidyup( func );
+   return im;
 }
