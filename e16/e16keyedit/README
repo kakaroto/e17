@@ -6,6 +6,11 @@ It's mostly done, even though I never hooked up the menus to do anything
 useful, which maybe I'll go back and do for an 0.2 release, but this 0.1 is
 pretty much everything you'll need.
 
+to build the application, use "make".
+once you've done that, copy the binary (e16keyedit) to any binary directory
+wherever you want to put it.  "make install" doesn't work, so it doesn't
+really matter, does it?  *grin*
+
 -- Mandrake
 
 Mon Feb 21 11:09:48 PST 2000
