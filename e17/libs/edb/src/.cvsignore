@@ -4,4 +4,4 @@ Makefile.in
 .libs
 .deps
 libedb.la
-e_db.lo
+*.lo

@@ -16,3 +16,4 @@ ltmain.sh
 ltconfig
 config.h.in
 libltdl
+edb-config
