@@ -94,7 +94,7 @@ def calculate_diff(filespec):
     else:
         # This /has/ to happen in the background, otherwise we'll run into CVS
         # lock contention.  What a crock.
-        diffcmd = '/usr/bin/cvs -f diff -kk -C 2 -r %s -r %s %s' % (
+        diffcmd = '/usr/bin/cvs -f diff -uc -C 2 -r %s -r %s %s' % (
             oldrev, newrev, file)
         fp = os.popen(diffcmd)
         lines = fp.readlines()
@@ -119,6 +119,8 @@ def blast_mail(mailcmd, filestodiff):
         # give up the lock you cvs thang!
         time.sleep(2)
         fp = os.popen(mailcmd, 'w')
+		fp.write(os.environ['LOGNAME'])
+		fp.write(' committed the following:\n')
         fp.write(sys.stdin.read())
         fp.write('\n')
         # append the diffs if available
