@@ -261,6 +261,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    syslog(LOG_CRIT, "Executing %s", buf);
 
    ecore_evas_free(e->ee);
+   ecore_evas_shutdown();
    e->ee = NULL;
 
    ecore_x_sync();

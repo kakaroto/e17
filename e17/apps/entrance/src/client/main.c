@@ -763,11 +763,10 @@ main(int argc, char *argv[])
       entrance_session_run(session);
 
       if (session->authed)
-      {
          entrance_session_start_user_session(session);
-      }
+      else
+	ecore_evas_shutdown();
       entrance_session_free(session);
-      ecore_evas_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();
    }
