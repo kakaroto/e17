@@ -34,6 +34,7 @@ main (int argc, char **argv)
     return 1;
   }
 
+  el->app_name = strdup(argv[0]);
   /* create an Ecore_Evas (x11 window with an evas) */
   el->ee = ecore_evas_software_x11_new(0, 0, 0, 0, 255, 255);
   if (!el->ee)

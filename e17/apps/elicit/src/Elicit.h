@@ -34,7 +34,9 @@ struct _Elicit
 
   Evas_Object *draggie;
   Evas_Object *shot, *swatch;
-  
+
+  char *app_name;
+
   struct {
     int r, g, b;
     double h, s, v;

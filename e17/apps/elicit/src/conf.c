@@ -13,16 +13,16 @@ elicit_config_init(Elicit *el)
 }
 
 void
-elicit_config_load()
+elicit_config_load(Elicit *el)
 {
   char buf[PATH_MAX + 1];
   struct stat st;
   
-  snprintf(buf, sizeof(buf), "%s/.e/apps/%s", getenv("HOME"), __app_name);
+  snprintf(buf, sizeof(buf), "%s/.e/apps/%s", getenv("HOME"), el->app_name);
   if (stat(buf, &st))
     mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR);
 
-  snprintf(buf, sizeof(buf), "%s/.e/apps/%s/config.db", getenv("HOME"), __app_name);
+  snprintf(buf, sizeof(buf), "%s/.e/apps/%s/config.db", getenv("HOME"), el->app_name);
   if (stat(buf, &st))
   {
   /*
