@@ -23,16 +23,17 @@
  *  Created by: Andreas Volz <linux@brachttal.net>
  *
  */
- 
+
 #include <stdio.h>
 #include "e16menu.h"
 #include "file.h"
 #include "e16menuedit2.h"
 #include "treeview.h"
- 
+
 int app_errno;
 char app_errno_str[APP_ERRNO_STR_LEN];
- 
+extern char *emenu_path;
+
 GtkTreeModel *load_menus_from_disk (void)
 {
 
@@ -49,8 +50,16 @@ GtkTreeModel *load_menus_from_disk (void)
                               G_TYPE_STRING,
                               G_TYPE_STRING);
 
-  /* currently hardcoded, but not a big issue to change later */
-  sprintf (buf, "%s/.enlightenment/file.menu", homedir (getuid ()));
+  if (!strcmp (emenu_path, ENLIGHTENMENT_MENU))
+    sprintf (buf, "%s/%s/file.menu", homedir (getuid ()), emenu_path);
+  else if (!strcmp (emenu_path, E16_MENU))
+    sprintf (buf, "%s/%s/%s/file.menu", homedir (getuid ()), emenu_path, "menus");
+  else
+  {
+    printf ("unknown menu definition!\n");
+    exit (1);
+  }
+
   menufile = fopen (buf, "r");
   if (!menufile)
   {
@@ -58,6 +67,9 @@ GtkTreeModel *load_menus_from_disk (void)
             "a %s file.\n", buf);
     gtk_exit (1);
   }
+#ifdef DEBUG
+  g_print ("Loading menu: %s\n", buf);
+#endif /* DEBUG */
 
   while (fgets (s, 4096, menufile))
   {
@@ -150,21 +162,24 @@ GtkTreeModel *load_menus_from_disk (void)
 void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
                               GtkTreeIter *iter)
 {
-
   FILE *menufile;
   char buf[1024];
   char first = 1;
   char s[4096];
   GtkTreeIter sub_iter;
-
+  
   if (!file_to_load)
     return;
   if (file_to_load[0] != '/')
-    sprintf (buf, "%s/.enlightenment/%s", homedir (getuid ()), file_to_load);
+    sprintf (buf, "%s/%s/%s", homedir (getuid ()), emenu_path, file_to_load);
   else
     sprintf (buf, "%s", file_to_load);
 
   menufile = fopen (buf, "r");
+
+#ifdef DEBUG
+  g_print ("Loading submenu: %s\n", buf);
+#endif /* DEBUG */   
 
   if (!menufile)
     return;
@@ -225,6 +240,7 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
   return;
 }
 
+#define WRITE_FILE /* undef this for debugging without writing menus */
 gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
                           GtkTreeIter *iter, gpointer user_data)
 {
@@ -248,8 +264,6 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   has_child = gtk_tree_model_iter_has_child (model, iter);
   depth = gtk_tree_path_get_depth (path) - 1;
 
-#define WRITE_FILE /* undef this for debugging without writing menus */
-#ifdef WRITE_FILE
   if (depth + 1 >= MAX_RECURSION)
   {
     g_print ("maximum menu recursion reached! -> %d\n", MAX_RECURSION);
@@ -260,7 +274,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   {
     /* Tarnation! A relative path */
     realfile = g_strjoin ("/", homedir (getuid ()),
-                          ".enlightenment", params, NULL);
+                          emenu_path, params, NULL);
   }
   else
   {
@@ -284,57 +298,75 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
     if (has_child)
     {
-      menu_ptr2 = fopen (menu_file[depth], "w");
+#ifdef WRITE_FILE      
+      menu_ptr2 = fopen (menu_file[depth], "w");   
       if (menu_ptr2 == NULL)
       {
         printf ("Couldn't save menu to: %s\n", menu_file[depth]);
       }
-      //g_print ("write header to \"%s\":\n", menu_file[depth]);
+#endif /* WRITE_FILE */     
+
       sprintf (buffer, "\"%s\"\n", description);
+#ifdef WRITE_FILE    
       fprintf (menu_ptr2, "%s", g_locale_from_utf8 (buffer,
                -1, NULL, NULL, NULL));
       fclose (menu_ptr2);
-
-      //g_print ("write menu to \"%s\":\n", menu_file[depth-1]);
+#else
+      g_print ("write header to: \"%s\"\n", menu_file[depth]);
+#endif /* !WRITE_FILE */    
+      
       sprintf (buffer, "\"%s\"\t%s\tmenu\t\"%s\"\n",
                description[0] == '\0' ? "NULL" : description,
                icon[0] == '\0' ? "NULL" : icon,
                params[0] == '\0' ? "" : params);
+#ifdef WRITE_FILE      
       fprintf (menu_ptr, "%s", g_locale_from_utf8 (buffer,
                -1, NULL, NULL, NULL));
+#else
+      g_print ("write menu to: \"%s\"\n", menu_file[depth-1]);
+#endif /* WRITE_FILE */     
     }
     else
     {
-      //g_print ("write exec to \"%s\":\n", menu_file[depth-1]);
       sprintf (buffer, "\"%s\"\t%s\texec\t\"%s\"\n",
                description[0] == '\0' ? "NULL" : description,
                icon[0] == '\0' ? "NULL" : icon,
                params[0] == '\0' ? "" : params);
-
+#ifdef WRITE_FILE
       fprintf (menu_ptr, "%s", g_locale_from_utf8 (buffer,
                -1, NULL, NULL, NULL));
+#else
+      g_print ("write exec to: \"%s\"\n", menu_file[depth-1]);
+#endif /*WRITE_FILE */    
     }
+#ifdef WRITE_FILE  
     fclose (menu_ptr);
+#endif /*WRITE_FILE */   
   }
   else
   {
+#ifdef WRITE_FILE    
     menu_ptr2 = fopen (menu_file[depth], "w");
     if (menu_ptr2 == NULL)
     {
       printf ("Couldn't save menu to: %s\n", menu_file[depth]);
     }
-    //g_print ("write first header to \"%s\":\n", menu_file[depth]);
+#endif /*WRITE_FILE */
+  
     sprintf (buffer, "\"%s\"\n", description);
+#ifdef WRITE_FILE  
     fprintf (menu_ptr2, "%s", g_locale_from_utf8 (buffer,
              -1, NULL, NULL, NULL));
     fclose (menu_ptr2);
+#else
+    g_print ("write first header to: \"%s\"\n", menu_file[depth]);
+#endif /* WRITE_FILE */      
   }
-#endif /* WRITE_FILE */
 
 #ifndef WRITE_FILE
   g_print ("%s | ", tree_path_str);
   g_print ("%s %s %s\n", description, icon, params);
-#endif /* WRITE_FILE */
+#endif /* !WRITE_FILE */
 
   /* end of filelist to free it later */
   menu_file[depth+1] = NULL;
@@ -349,7 +381,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 }
 
 gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
-                          GtkTreeIter *iter, gpointer user_data)
+                           GtkTreeIter *iter, gpointer user_data)
 {
   gchar *description, *icon, *params;
   gchar *tree_path_str;
@@ -380,14 +412,14 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
   if (depth > 0)
   {
     if (has_child)
-    {      
+    {
       /* some checks for submenus */
       if (!strcmp (params, ""))
       {
-	app_errno = AE_EMPTY_SUBMENU;
-	strncpy (app_errno_str, tree_path_str, APP_ERRNO_STR_LEN);
-      
-	return TRUE;
+        app_errno = AE_EMPTY_SUBMENU;
+        strncpy (app_errno_str, tree_path_str, APP_ERRNO_STR_LEN);
+
+        return TRUE;
       }
     }
     else

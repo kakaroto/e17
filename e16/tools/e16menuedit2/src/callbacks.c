@@ -305,11 +305,11 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
 
     if (help_error == 1)
     {
-      print_statusbar ("No help file found!\n");
+      print_statusbar (_("No help file found!"));
     }
     else if (help_error == 2)
     {
-      print_statusbar ("No help application found");
+      print_statusbar (_("No help application found"));
     }
   }
 }

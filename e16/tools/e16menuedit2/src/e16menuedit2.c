@@ -37,6 +37,7 @@
 int librsvg_cmp;
 char *browser;
 char *glade_file;
+char *emenu_path;
 
 int main (int argc, char *argv[])
 {
@@ -61,13 +62,14 @@ int main (int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 
+  parse_options (argc, argv);
   gtk_init (&argc, &argv);
 
   for (i = 0; i < MAX_RECURSION; i++)
   {
     menu_file[i] = NULL;
   }
-  
+
   glade_file = searchGladeFile ("e16menuedit2.glade");
   main_xml = glade_xml_new (glade_file, "main_window", NULL);
 
@@ -117,7 +119,7 @@ int main (int argc, char *argv[])
   }
 
   g_free (filename_properties);
-
+  free (emenu_path);
 
   gtk_main ();
 
@@ -183,4 +185,72 @@ gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
   g_free(tree_path_str);
 
   return FALSE;
+}
+
+void parse_options (int argc, char **argv)
+{
+  poptContext context;
+  int option;
+  char *emenu = NULL;
+
+  struct poptOption options[] =
+    {
+      {"emenu", 'e', POPT_ARG_STRING,
+        &emenu, ARG_EMENU,
+        "Enlightenment menu dir...",
+        NULL},
+      {"version", 'v', POPT_ARG_NONE, NULL, ARG_VERSION, "show version", NULL},
+      POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}
+    };
+
+  context = poptGetContext ("popt1", argc, (const char **) argv, options, 0);
+
+  /* start option handling */
+  while ((option = poptGetNextOpt (context)) > 0)
+  {
+    switch (option)
+    {
+    case ARG_EMENU:
+      g_print ("emenu case\n");
+      break;
+    case ARG_VERSION:
+      show_version ();
+      exit (0);
+      break;
+    }
+  }
+
+  if (emenu == NULL)
+  {
+    emenu_path = malloc (strlen (".enlightenment") + 1);
+    strcpy (emenu_path, ".enlightenment");
+  }
+  else
+  {
+    if (!strcmp (emenu, "enlightenment"))
+    {
+      emenu_path = malloc (strlen (ENLIGHTENMENT_MENU) + 1);
+      strcpy (emenu_path, ENLIGHTENMENT_MENU);
+    }
+    else if (!strcmp (emenu, "e16"))
+    {
+      emenu_path = malloc (strlen (E16_MENU) + 1);
+      strcpy (emenu_path, E16_MENU);
+    }
+    else
+    {
+      g_print ("Sorry, the parameter 'emenu' has only state 'enlightenment'\n"
+               "for old directory before E-0.16.7.1 and 'e16' for new\n"
+               "direcory in '.e16/menus'\n");
+      exit (0);
+    }
+  }
+}
+
+void show_version ()
+{
+  g_print ("Package name: ");
+  g_print ("%s %s\n", PACKAGE, VERSION);
+  g_print ("Build information: ");
+  g_print ("%s %s\n", __DATE__, __TIME__);
 }

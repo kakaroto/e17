@@ -29,6 +29,12 @@ PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
 
+AC_CHECK_LIB(popt,
+             poptGetContext,
+             LIBS="${PACKAGE_LIBS} -lpopt",
+             echo "*** You need to get libpopt ***";exit
+)
+
 AC_PROG_INTLTOOL([0.23])
 
 GETTEXT_PACKAGE=e16menuedit2

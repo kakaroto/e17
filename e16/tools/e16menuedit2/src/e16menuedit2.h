@@ -32,6 +32,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <popt.h>
 #include "nls.h"
 #include "libglade_support.h"
 
@@ -40,11 +41,20 @@
 
 #define APP_HOME ".e16menuedit2"
 #define ICON_DIR "icons"
+#define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
+#define ENLIGHTENMENT_MENU ".enlightenment"
+#define E16_MENU ".e16"
 
 void print_statusbar (const gchar *format, ...);
 gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
                        GtkTreeIter *iter, gpointer user_data);
+void parse_options (int argc, char **argv);
+void show_version ();
 
-#define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
+enum
+{
+  ARG_EMENU,
+  ARG_VERSION
+};
 
 #endif /* _E16MENUEDIT_H */
