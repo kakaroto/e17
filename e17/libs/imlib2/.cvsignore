@@ -21,3 +21,5 @@ Makefile
 imlib2
 loaderpath.h
 *.tar.gz
+imlib2.spec
+.icons
