@@ -59,6 +59,7 @@ Atom                _NET_CURRENT_DESKTOP;
 Atom                _NET_DESKTOP_VIEWPORT;
 Atom                _NET_WORKAREA;
 Atom                _NET_VIRTUAL_ROOTS;
+Atom                _NET_SHOWING_DESKTOP;
 
 Atom                _NET_ACTIVE_WINDOW;
 Atom                _NET_CLIENT_LIST;
@@ -186,6 +187,7 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_DESKTOP_VIEWPORT);
    _ATOM_INIT(_NET_WORKAREA);
    _ATOM_INIT(_NET_VIRTUAL_ROOTS);
+   _ATOM_INIT(_NET_SHOWING_DESKTOP);
 
    _ATOM_INIT(_NET_ACTIVE_WINDOW);
    _ATOM_INIT(_NET_CLIENT_LIST);
@@ -427,6 +429,17 @@ EWMH_SetActiveWindow(const EWin * ewin)
 	_ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, VRoot.win, &win, 1);
 	win_last_set = win;
      }
+   EDBUG_RETURN_;
+}
+
+void
+EWMH_SetShowingDesktop(int on)
+{
+   CARD32              val;
+
+   EDBUG(6, "EWMH_SetShowingDesktop");
+   val = on;
+   _ATOM_SET_CARD32(_NET_SHOWING_DESKTOP, VRoot.win, &val, 1);
    EDBUG_RETURN_;
 }
 
@@ -738,6 +751,13 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    else if (event->message_type == _NET_DESKTOP_VIEWPORT)
      {
 	SetCurrentArea(event->data.l[0] / VRoot.w, event->data.l[1] / VRoot.h);
+	goto done;
+     }
+   else if (event->message_type == _NET_SHOWING_DESKTOP)
+     {
+	Eprintf("EWMH_ProcessClientMessage: _NET_SHOWING_DESKTOP: %d\n",
+		event->data.l[0]);
+	EWMH_SetShowingDesktop(event->data.l[0]);
 	goto done;
      }
 

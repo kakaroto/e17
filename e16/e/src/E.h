@@ -2059,6 +2059,7 @@ void                EWMH_SetWorkArea(void);
 void                EWMH_SetClientList(void);
 void                EWMH_SetClientStacking(void);
 void                EWMH_SetActiveWindow(const EWin * ewin);
+void                EWMH_SetShowingDesktop(int on);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
 void                EWMH_GetWindowName(EWin * ewin);
