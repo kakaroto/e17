@@ -1,22 +1,17 @@
+<?xml version="1.0"?>
+<erss>
 
-<!-- Path to default config file -->
-<config>/usr/local/share/erss/config/slashdot.cfg</config>
+	<!-- Path to default config file -->
+	<config>/usr/local/share/erss/config/vg.cfg</config>
 
-<!-- Path to default theme -->
-<theme>/usr/local/share/erss/default.eet</theme>
+	<!-- Path to default theme -->
+	<theme>/usr/local/share/erss/default.eet</theme>
 
-<!-- Set your browser path/location for quick url access -->
-<browser>MozillaFirebird</browser>
+	<!-- Path to browser for launching urls -->
+	<browser>/usr/bin/galeon</browser>
 
-<!--  
-Set your proxy server. 
-Leave blank if none!
--->
-<proxy></proxy>
-<proxy_port>80</proxy_port>
-
-<!--
-Define what encoding to use.
--->
-<enc_to>iso-8859-1</enc_to>
-<enc_from>utf8</enc_from>
+	<!-- Set your proxy server. Leave blank if none! -->
+	<proxy></proxy>
+	<proxy_port>3128</proxy_port>
+	
+</erss>

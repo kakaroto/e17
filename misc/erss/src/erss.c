@@ -214,7 +214,7 @@ int handler_server_del (void *data, int type, void *event)
 	temp = strchr(buf, '<');
 	doc = xmlParseMemory (temp, main_bufsize - (temp - main_buffer));
 
-	parse_rss (doc);
+	erss_parse (doc);
 
 	ecore_con_server_del (e->server);
 	server = NULL;
@@ -497,40 +497,8 @@ int main (int argc, char * const argv[])
 
 	stat (cfg->theme, &statbuf);
 	if (!S_ISREG(statbuf.st_mode)) {
-		printf ("%s error: themefile '%s' does not exist!\n", PACKAGE, cfg->theme);
-		exit (-1);
-	}
-
-	if (!cfg->hostname) {		
-		fprintf (stderr, "%s error: No hostname defined!\n", PACKAGE);
-		exit (-1);
-	}
-
-	if (!cfg->url) {
-		fprintf (stderr, "%s error: No url defined!\n", PACKAGE);
-		exit (-1);
-	}
-
-	if (!cfg->num_stories) {
-		fprintf (stderr, "%s error: you need to define number "
-				"of stories to display in your config file\n", PACKAGE);
-		exit (-1);
-	}
-
-	if (!cfg->item_start) {
-		fprintf (stderr, 
-				"%s error: you need to define item_start in your config file\n", 
-				PACKAGE);
-		exit (-1);
-	}
-
-	if (!cfg->item_title) {
-		fprintf (stderr, "%s error: you need to define item_title in your config file\n", PACKAGE);
-		exit (-1);
-	}
-
-	if (!cfg->update_rate) {
-		fprintf (stderr, "%s error: you need to define update_rate in your config file\n", PACKAGE);
+		printf ("%s error: themefile '%s' does not exist!\n", 
+				PACKAGE, cfg->theme);
 		exit (-1);
 	}
 

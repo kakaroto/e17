@@ -6,112 +6,13 @@ Article *item = NULL;
 Config *cfg = NULL;
 Rc_Config *rc = NULL;
 
-char *get_element (char **buffer, char *type)
-{
-	char tmp_char;
-	char *c;
-	char *start_tmp;
-	char *end_tmp;
-	char *ret_val = NULL;
-	int size;
-
-	if (!buffer || !*buffer || !**buffer || !type)
-		goto err_clean_none;
-
-	/* Allocate string plus enough to add in "</>". */
-	size = strlen (type) + 4;
-	c = malloc (size);
-	if (!c)
-		goto err_clean_none;
-
-	/* Locate the opening tag of the type we're looking for. */
-	snprintf (c, size, "<%s", type);
-	start_tmp = strstr (*buffer, c);
-	if (!start_tmp)
-		goto err_clean_c;
-
-	/* Move to the end of the found opening tag. */
-	start_tmp = strchr(start_tmp, '>');
-	if (!start_tmp)
-		goto err_clean_c;
-	start_tmp++;
-
-	/* Locate the closing tag of the specified type. */
-	snprintf (c, size, "</%s>", type);
-	end_tmp = strstr (start_tmp, c);
-	if (!end_tmp)
-		goto err_clean_c;
-
-	/* Copy the data between the tags into a newly allocated buffer. */
-	tmp_char = *end_tmp;
-	*end_tmp = '\0';
-	ret_val = strdup (start_tmp);
-	*end_tmp = tmp_char;
-	if (!ret_val)
-		goto err_clean_c;
-
-	/* We were incrementing the buffer past the found tags, may want to do
-	 * this, but we must have a writable string passed in. */
-	/* *buffer = end_tmp + size - 1; */
-
-  err_clean_c:
-	free (c);
-  err_clean_none:
-	return ret_val;
-}
-
-int get_new_story (char *buffer)
-{
-	char c[1024];
-	char *ptr;
-
-	/*
-	 * First check for <item> cases
-	 */
-	snprintf (c, sizeof (c), "<%s>", cfg->item_start);
-
-	ptr = strstr (buffer, c);
-
-	if (ptr)
-		return TRUE;
-
-	/* 
-	 * Second check for <item ....> cases.
-	 */
-	snprintf (c, sizeof (c), "<%s ", cfg->item_start);
-	ptr = strstr (buffer, c);
-
-	if (ptr)
-		return TRUE;
-
-	/* 
-	 * The item didn't match.
-	 */
-	return FALSE;
-}
-
-int get_end_story (char *buffer)
-{
-	char c[1024];
-	char *ptr;
-
-	snprintf (c, sizeof (c), "</%s>", cfg->item_start);
-
-	ptr = strstr (buffer, c);
-
-	if (ptr)
-		return TRUE;
-	else
-		return FALSE;
-}
 
 void erss_story_new ()
 {
-		
 	item = malloc (sizeof (Article));
   item->description = NULL;
   item->url = NULL;
-  memset(item, 0, sizeof(Article));
+  memset(item, 0, sizeof (Article));
 }
 
 void erss_story_end ()
@@ -119,20 +20,22 @@ void erss_story_end ()
 	ewd_list_append (list, item);
 }
 
-void parse_story (xmlDocPtr doc, xmlNodePtr cur)
+void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 {
-	char *str, *text;
+	char *text;
+	xmlChar *str;
 	int i;
 	
 	cur = cur->xmlChildrenNode;
 
 	while (cur != NULL) {
+
 		if (ewd_list_nodes (list) >= cfg->num_stories)
 			return;
 
 		if (!strcmp(cur->name, cfg->item_start)) {
 			erss_story_new ();
-			parse_story (doc, cur);
+			erss_parse_story (doc, cur);
 			erss_story_end ();
 		} 
 		
@@ -157,6 +60,7 @@ void parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			edje_object_part_text_set (item->obj, "article", text);
 
 			free (text);
+			xmlFree (str);
 		}
 	
 		if (cfg->item_url) {
@@ -168,6 +72,8 @@ void parse_story (xmlDocPtr doc, xmlNodePtr cur)
 						cb_mouse_out_item, item);
 				edje_object_signal_emit (item->obj, "mouse,in", "article");
 				edje_object_signal_emit (item->obj, "mouse,out", "article");
+
+				xmlFree (str);
 			}
 		}
 		
@@ -175,6 +81,7 @@ void parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			if (!strcmp(cur->name, cfg->item_description) && item) {
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 				item->description = strdup (str);
+				xmlFree (str);
 			}
 		}
 
@@ -182,7 +89,7 @@ void parse_story (xmlDocPtr doc, xmlNodePtr cur)
 	}
 }
 
-void parse_rss (xmlDocPtr doc)
+void erss_parse (xmlDocPtr doc)
 {
 	xmlNodePtr cur;
 	
@@ -203,12 +110,12 @@ void parse_rss (xmlDocPtr doc)
 
 		if (cfg->item_root) {
 			if (!strcmp(cur->name, cfg->item_root)) {
-				parse_story (doc, cur);
+				erss_parse_story (doc, cur);
 			}
 		} else {
 			if (!strcmp(cur->name, cfg->item_start)) {
 				erss_story_new ();
-				parse_story (doc, cur);
+				erss_parse_story (doc, cur);
 				erss_story_end ();
 			}
 		}
@@ -219,78 +126,58 @@ void parse_rss (xmlDocPtr doc)
 	xmlFreeDoc(doc);
 }
 
-char *get_next_line (FILE * fp)
-{
-	int index = 0;
-	int bufsize = 512;
-	signed char temp;
-	char *buf = NULL;
-
-	buf = malloc (bufsize);
-
-	while ((temp = fgetc (fp)) != '\n')
-	{
-		if (feof (fp))
-			return NULL;
-
-		buf[index++] = temp;
-
-		/* Check size after incrimenting to eliminate extra check
-		 * outside of loop */
-		if (index == bufsize)
-		{
-			bufsize += 512;
-			buf = realloc (buf, bufsize);
-		}
-	}
-
-	buf[index] = '\0';
-	index = strlen(buf) + 1;
-	if (bufsize > index)
-		buf = realloc (buf, index);
-
-	return buf;
-}
-
 int parse_rc_file ()
 {
-	FILE *fp;
-	char *line, *c;
+	xmlDocPtr doc;
+	xmlNodePtr cur;
+	xmlChar *str = NULL;
 	char file[PATH_MAX];
 
 	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));
 
 	rc = malloc (sizeof (Rc_Config));
-	if (!rc)
-		return FALSE;
-
 	memset(rc, 0, sizeof(Rc_Config));
 	
-	fp = fopen (file, "r");
+	if (!rc)
+		return FALSE;
+	
+	doc = xmlParseFile (file);
 
-	while (fp && (line = get_next_line (fp)) != NULL)
-	{
-		if ((c = get_element (&line, "config")) != NULL)
-			rc->config = strdup (c);
-		else if ((c = get_element (&line, "theme")) != NULL)
-			rc->theme = strdup (c);
-		else if ((c = get_element (&line, "browser")) != NULL)
-			rc->browser = strdup (c);
-		else if ((c = get_element (&line, "proxy")) != NULL)
-			rc->proxy = strdup (c);
-		else if ((c = get_element (&line, "enc_from")) != NULL)
-			rc->enc_from = strdup (c);
-		else if ((c = get_element (&line, "enc_to")) != NULL)
-			rc->enc_to = strdup (c);
-		else if ((c = get_element (&line, "proxy_port")) != NULL)
-			rc->proxy_port = atoi (c);
+	if (doc) {
+		cur = xmlDocGetRootElement(doc);
 
-		if (c)
-			free (c);
+		cur = cur->xmlChildrenNode;
+		while (cur != NULL) {
+			if (!strcmp(cur->name, "config")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->config = strdup (str);
+			} else if (!strcmp(cur->name, "theme")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->theme = strdup (str);
+			} else if (!strcmp(cur->name, "browser")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->browser = strdup (str);
+			} else if (!strcmp(cur->name, "proxy")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->proxy = strdup (str);
+			} else if (!strcmp(cur->name, "proxy_port")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->proxy_port = atoi (str);
+			}
 
-		free(line);
+			if (str) {
+				xmlFree (str);
+				str = NULL;
+			}
+
+			cur = cur->next;
+		}
 	}
-
 
 	/*
 	 * Set sane defaults for unspecified config options.
@@ -305,40 +192,43 @@ int parse_rc_file ()
 	if (!rc->browser)
 		rc->browser = strdup("mozilla");
 
-	if (!rc->enc_from)
-		rc->enc_from = strdup("utf8");
-	if (!rc->enc_to)
-		rc->enc_to = strdup("iso-8859-1");
-	
 	/* 
 	 * If there is no rc file return false for us to know
 	 */
-	if (!fp)
+	if (!doc)
 		return FALSE;
 	
-	fclose (fp);
+	xmlFreeDoc(doc);
 
 	return TRUE;
 }
 
 void parse_config_file (char *file)
 {
-	FILE *fp;
-	char *line;
-	char *c;
-	char *str;
+	xmlDocPtr doc;
+	xmlNodePtr cur;
+	xmlChar *str = NULL;
+	char *tmp;
 	int match = FALSE;
 
-	if ((fp = fopen (file, "r")) == NULL) {
+	/*
+	 * Look in the list of config files and try to
+	 * match our argument.
+	 */
+
+	doc = xmlParseFile (file);
+	
+	if (doc == NULL) {
 		list_config_files (FALSE);
 
-		str = ewd_list_goto_first (config_files);
-		while ((str = ewd_list_current (config_files))) {
-			if (strstr (str, file))  {
+		tmp = ewd_list_goto_first (config_files);
+		while ((tmp = ewd_list_current (config_files))) {
+			if (strstr (tmp, file))  {
+				doc = xmlParseFile (tmp);
 				
-				if ((fp = fopen (str, "r")) == NULL) {
+				if (doc == NULL) {
 					fprintf (stderr, "%s error: Can't open config file %s\n",
-							PACKAGE, str);
+							PACKAGE, tmp);
 					exit (-1);
 				}
 
@@ -353,83 +243,151 @@ void parse_config_file (char *file)
 			fprintf (stderr, "%s error: No match for %s\n", PACKAGE, file);
 			exit (-1);
 		} else {
-			printf ("%s info: your string '%s' matches %s\n", PACKAGE, file, str);
-			printf ("%s info: using %s as config file\n", PACKAGE, str);
+			printf ("%s info: your string '%s' matches %s\n", PACKAGE, file, tmp);
+			printf ("%s info: using %s as config file\n", PACKAGE, tmp);
 		}
 			
 	}
 
+
+	/*
+	 * Now allocate and fill the config struct
+	 */
 	cfg = malloc (sizeof (Config));
-	memset(cfg, 0, sizeof(Config));
+	memset(cfg, 0, sizeof (Config));
 
-	while ((line = get_next_line (fp)) != NULL)
-	{
-		if ((c = get_element (&line, "header")) != NULL)
-			cfg->header = strdup (c);
-		else if ((c = get_element (&line, "hostname")) != NULL)
-			cfg->hostname = strdup (c);
-		else if ((c = get_element (&line, "url")) != NULL)
-			cfg->url = strdup (c);
-		else if ((c = get_element (&line, "item_root")) != NULL)
-			cfg->item_root = strdup (c);
-		else if ((c = get_element (&line, "item_start")) != NULL)
-			cfg->item_start = strdup (c);
-		else if ((c = get_element (&line, "item_title")) != NULL) 
-			cfg->item_title = strdup (c);
-		else if ((c = get_element (&line, "item_url")) != NULL)
-			cfg->item_url = strdup (c);
-		else if ((c = get_element (&line, "item_description")) != NULL)
-			cfg->item_description = strdup (c);
-		else if ((c = get_element (&line, "prefix")) != NULL)
-			cfg->prefix = strdup (c);
-		else if ((c = get_element (&line, "update_rate")) != NULL)
-			cfg->update_rate = atoi (c);
-		else if ((c = get_element (&line, "clock")) != NULL)
-		{
-			cfg->clock = atoi (c);
-
-			if (cfg->clock != 1 && cfg->clock != 0)
-			{
+	if (!cfg) {
+		fprintf (stderr, "%s error: out of memory\n", PACKAGE);
+		exit (-1);
+	}
+	
+	cur = xmlDocGetRootElement(doc);
+	cur = cur->xmlChildrenNode;
+	
+	while (cur != NULL) {
+		if (!strcmp(cur->name, "header")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->header = strdup (str);
+		} else if (!strcmp(cur->name, "hostname")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->hostname = strdup (str);
+		} else if (!strcmp(cur->name, "url")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->url = strdup (str);
+		} else if (!strcmp(cur->name, "item_root")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->item_root = strdup (str);
+		} else if (!strcmp(cur->name, "item_start")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->item_start = strdup (str);
+		} else if (!strcmp(cur->name, "item_title")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->item_title = strdup (str);
+		} else if (!strcmp(cur->name, "item_url")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->item_url = strdup (str);
+		} else if (!strcmp(cur->name, "item_description")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->item_description = strdup (str);
+		} else if (!strcmp(cur->name, "prefix")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->prefix = strdup (str);
+		} else if (!strcmp(cur->name, "update_rate")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->update_rate = atoi (str);
+		} else if (!strcmp(cur->name, "clock")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->clock = atoi (str);
+			if (cfg->clock != 1 && cfg->clock != 0) {
 				fprintf (stderr,
-						"%s error: Clock option has wrong value - check your config file!\n", PACKAGE);
+						"%s error: Clock option has wrong value - check your config file!\n",
+						PACKAGE);
 				exit (-1);
 			}
-		} else if ((c = get_element (&line, "stories")) != NULL)
-		{
-			cfg->num_stories = atoi (c);
+		} else if (!strcmp(cur->name, "stories")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->num_stories = atoi (str);
 
-			if (cfg->num_stories > 10)
-			{
+			if (cfg->num_stories > 10) {
 				fprintf (stderr,
-						 "%s error: Max stories to show is 10 - check your config file!\n", PACKAGE);
+						"%s error: Max stories to show is 10 - check your config file!\n",
+						PACKAGE);
 				exit (-1);
 			}
-		} else if ((c = get_element (&line, "borderless")) != NULL)
-		{
-			cfg->borderless = atoi (c);
+		} else if (!strcmp(cur->name, "borderless")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->borderless = atoi (str);
 
-			if (cfg->borderless != 1 && cfg->borderless != 0)
-			{
+			if (cfg->borderless != 1 && cfg->borderless != 0) {
 				fprintf (stderr,
-						 "%s error:: Borderless option has wrong value - check your config file!\n", PACKAGE);
+						"%s error:: Borderless option has wrong value - check your config file!\n"
+						, PACKAGE);
 				exit (-1);
 			}
-		} else if ((c = get_element (&line, "x")) != NULL)
-			cfg->x = atoi (c);
-		else if ((c = get_element (&line, "y")) != NULL)
-			cfg->y = atoi (c);
+		} else if (!strcmp(cur->name, "x")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->x = atoi (str);
+		} else if (!strcmp(cur->name, "y")) {
+			str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (str)
+				cfg->y = atoi (str);
+		}
 
-		if (c)
-			free (c);
+		if (str) {
+			xmlFree (str);
+			str = NULL;
+		}
 		
-		free (line);
+		cur = cur->next;
 	}
 
-	fclose (fp);
+	xmlFreeDoc(doc);
 
+	/*
+	 * Now start checking for sane values!
+	 */
+	if (!cfg->hostname) {
+		fprintf (stderr, "%s error: No hostname defined!\n", PACKAGE);
+		exit (-1);
+	}
+
+	if (!cfg->url) {
+		fprintf (stderr, "%s error: No url defined!\n", PACKAGE);
+		exit (-1);
+	}
+
+	if (!cfg->num_stories) {
+		fprintf (stderr,
+				"%s error: you need to define item_start in your config file\n",
+				PACKAGE);
+		exit (-1);
+	}
+
+	if (!cfg->item_title) {
+		fprintf (stderr, "%s error: no <item_title> tag defined\n", PACKAGE);
+		exit (-1);
+	}
+
+	if (!cfg->update_rate) {
+		fprintf (stderr, "%s error: you need to define update_rate in your config file\n", PACKAGE);
+		exit (-1);
+	}
+		
 	if (!cfg->prefix)
 		cfg->prefix = strdup(" . ");
 
-	if (!cfg->item_title)
-		fprintf (stderr, "%s error: no <item_title> tag defined\n", PACKAGE);
 }
