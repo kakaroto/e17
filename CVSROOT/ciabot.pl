@@ -177,7 +177,9 @@ my $sum; # _VERY_ simple hash of the log message. It is really weak, but I'm
 map { $sum += ord $_ } split(//, $logmsg);
 
 my $syncfile; # Name of the file used for syncing
-$syncfile = "/tmp/cvscia.$project.$module.$sum";
+$_ = $module;
+my $tmodulename = s/\//\./g;
+$syncfile = "/tmp/cvscia.$project.$tmodulename.$sum";
 
 
 if (-f $syncfile and -w $syncfile) {
