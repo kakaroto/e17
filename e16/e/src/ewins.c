@@ -812,7 +812,9 @@ AddToFamily(EWin * ewin, Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
      {
-	EwinBorderDraw(ewin, 1, 0);
+#if 0				/* FIXME - Remove? */
+	EwinBorderDraw(ewin, 1, 1, 0);
+#endif
 	MoveEwinToDesktopAt(ewin, desk, x, y);
 	ecore_x_ungrab();
 	ewin->state = EWIN_STATE_MAPPED;
@@ -840,7 +842,9 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->client.already_placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-	EwinBorderDraw(ewin, 1, 0);
+#if 0				/* FIXME - Remove? */
+	EwinBorderDraw(ewin, 1, 1, 0);
+#endif
 	MoveEwinToDesktop(ewin, desk);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, x, y);
@@ -878,7 +882,9 @@ AddToFamily(EWin * ewin, Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
-	EwinBorderDraw(ewin, 1, 0);
+#if 0				/* FIXME - Remove? */
+	EwinBorderDraw(ewin, 1, 1, 0);
+#endif
 	MoveEwinToDesktop(ewin, desk);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
@@ -888,7 +894,9 @@ AddToFamily(EWin * ewin, Window win)
      }
    else
      {
-	EwinBorderDraw(ewin, 1, 0);
+#if 0				/* FIXME - Remove? */
+	EwinBorderDraw(ewin, 1, 1, 0);
+#endif
 	MoveEwinToDesktopAt(ewin, desk, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -924,7 +932,9 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    if (init)
       init(ewin, ptr);		/* Type specific initialisation */
 
-   EwinBorderDraw(ewin, 1, 1);
+#if 0				/* FIXME - Remove? */
+   EwinBorderDraw(ewin, 1, 1, 1);
+#endif
 
    EwinDetermineArea(ewin);
 
@@ -1326,7 +1336,7 @@ EwinRefresh(EWin * ewin)
       return;
 
    if (TransparencyEnabled())
-      EwinBorderDraw(ewin, 0, 0);	/* Update the border */
+      EwinBorderDraw(ewin, 0, 1, 0);	/* Update the border */
 
    if (ewin->Refresh)
       ewin->Refresh(ewin);
@@ -1341,7 +1351,7 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
    EwinDetermineArea(ewin);
 
    if (TransparencyEnabled())
-      EwinBorderDraw(ewin, 1, 0);	/* Update the border */
+      EwinBorderDraw(ewin, resize, 1, 0);	/* Update the border */
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);

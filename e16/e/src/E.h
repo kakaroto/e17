@@ -1249,7 +1249,8 @@ void                BorderWinpartAdd(Border * b, ImageClass * ic,
 void                EwinBorderSelect(EWin * ewin);
 void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
-void                EwinBorderDraw(EWin * ewin, int do_shape, int queue_off);
+void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint,
+				   int queue_off);
 void                EwinBorderCalcSizes(EWin * ewin);
 void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
