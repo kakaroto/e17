@@ -13,17 +13,17 @@ cp -rf ./images/*.png $HOME/.ewl/themes/elogin/images
 
 # create the default EwlWidget db
 DB=$HOME/.ewl/themes/elogin/EwlWidget
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 # create the default EwlContainer db
 DB=$HOME/.ewl/themes/elogin/EwlContainer
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 ######################
 #   EWL CONTAINERS   #
@@ -32,44 +32,44 @@ $EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
 ###  EWL BOXES ###
 # create the default EwlBox db
 DB=$HOME/.ewl/themes/elogin/EwlBox
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 # create the default EwlHBox db
 DB=$HOME/.ewl/themes/elogin/EwlHBox
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 # create the default EwlVBox db
 DB=$HOME/.ewl/themes/elogin/EwlVBox
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 # create the default EwlLBox db
 DB=$HOME/.ewl/themes/elogin/EwlLBox
-$EWLPREFIX/bin/ewldbtool $DB  "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB  "padding/bottom" "0"
+ewldbtool $DB  "padding/left"   "0"
+ewldbtool $DB  "padding/top"    "0"
+ewldbtool $DB  "padding/right"  "0"
+ewldbtool $DB  "padding/bottom" "0"
 
 ### NON-BOX CONTAINERS ###
 # create the default EwlWindow db
 DB=$HOME/.ewl/themes/elogin/EwlWindow
-$EWLPREFIX/bin/ewldbtool $DB "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/bottom" "0"
-$EWLPREFIX/bin/ewldbtool $DB "background"     "images/box2.png"
-$EWLPREFIX/bin/ewldbtool $DB "child_padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB "child_padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB "child_padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB "child_padding/bottom" "0"
+ewldbtool $DB "padding/left"   "0"
+ewldbtool $DB "padding/top"    "0"
+ewldbtool $DB "padding/right"  "0"
+ewldbtool $DB "padding/bottom" "0"
+ewldbtool $DB "background"     "images/box2.png"
+ewldbtool $DB "child_padding/left"   "0"
+ewldbtool $DB "child_padding/top"    "0"
+ewldbtool $DB "child_padding/right"  "0"
+ewldbtool $DB "child_padding/bottom" "0"
 #$EWLPREFIX/bin/ewldbtool $DB "num_layers"     "1"
 #$EWLPREFIX/bin/ewldbtool $DB "layer-00/name"        "eLogin Logo"
 #$EWLPREFIX/bin/ewldbtool $DB "layer-00/width"       "181"
@@ -82,11 +82,11 @@ $EWLPREFIX/bin/ewldbtool $DB "child_padding/bottom" "0"
 
 # create the default EwlButton db
 DB=$HOME/.ewl/themes/elogin/EwlButton
-$EWLPREFIX/bin/ewldbtool $DB "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/bottom" "0"
-$EWLPREFIX/bin/ewldbtool $DB "background"     "images/aqua_button.png"
+ewldbtool $DB "padding/left"   "0"
+ewldbtool $DB "padding/top"    "0"
+ewldbtool $DB "padding/right"  "0"
+ewldbtool $DB "padding/bottom" "0"
+ewldbtool $DB "background"     "images/aqua_button.png"
 
 #####################
 #   OTHER WIDGETS   #
@@ -94,7 +94,7 @@ $EWLPREFIX/bin/ewldbtool $DB "background"     "images/aqua_button.png"
 
 # create the default EwlLabel db
 DB=$HOME/.ewl/themes/elogin/EwlLabel
-$EWLPREFIX/bin/ewldbtool $DB "padding/left"   "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/top"    "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/right"  "0"
-$EWLPREFIX/bin/ewldbtool $DB "padding/bottom" "0"
+ewldbtool $DB "padding/left"   "0"
+ewldbtool $DB "padding/top"    "0"
+ewldbtool $DB "padding/right"  "0"
+ewldbtool $DB "padding/bottom" "0"
