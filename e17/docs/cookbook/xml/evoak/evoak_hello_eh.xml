@@ -174,7 +174,7 @@ respectively.
 <example>
 <title>Compilation</title>
 <screen>
-zero@oberon [evoak_intro] -> gcc -o hello_evoak main.c \
+zero@oberon [evoak_intro] -&gt; gcc -o hello_evoak main.c \
  `evoak-config --cflags --libs`
 </screen>
 </example>
