@@ -2376,7 +2376,8 @@ HandleMouseUp(XEvent * ev)
 			       desks.desk[desks.current].y -
 			       ((int)p->hi_ewin->h / 2);
 			    MoveEwin(p->hi_ewin, nx, ny);
-			    MoveEwinToDesktop(p->hi_ewin, ndesk);
+			    if (!p->hi_ewin->sticky)
+			       MoveEwinToDesktop(p->hi_ewin, ndesk);
 			 }
 		       else
 			 {
@@ -2392,9 +2393,14 @@ HandleMouseUp(XEvent * ev)
 				 }
 			    for (i = 0; i < num; i++)
 			      {
-				 MoveEwinToDesktopAt(gwins[i], pp->desktop,
-						   wx + (gwin_px[i] - base_x),
-						  wy + (gwin_py[i] - base_y));
+				 if (!gwins[i]->sticky)
+				    MoveEwinToDesktopAt(gwins[i], pp->desktop,
+							wx + (gwin_px[i] - base_x),
+							wy + (gwin_py[i] - base_y));
+				 else
+				    MoveEwin(gwins[i],
+					     wx + (gwin_px[i] - base_x),
+					     wy + (gwin_py[i] - base_y));
 			      }
 			 }
 		    }
@@ -2457,7 +2463,8 @@ HandleMouseUp(XEvent * ev)
 			 {
 			    MoveEwin(gwins[i], nx + (gwin_px[i] - base_x),
 				     ny + (gwin_py[i] - base_y));
-			    MoveEwinToDesktop(gwins[i], ndesk);
+			    if (!gwins[i]->sticky)
+			       MoveEwinToDesktop(gwins[i], ndesk);
 			 }
 		    }
 		  RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
