@@ -362,7 +362,12 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
             images */
          D(("Need to convert filename %s to an absolute form\n", path));
          getcwd(cwd, sizeof(cwd));
-         temp = estrjoin("/", cwd, path, NULL);
+         if (path[0] == '.' && path[1] == '/')
+            temp = estrjoin("/", cwd, path + 2, NULL);
+         else if (path[0] == '.' && path[1] == '\0')
+            temp = estrdup(cwd);
+         else
+            temp = estrjoin("/", cwd, path, NULL);
          free(path);
          path = temp;
          D(("Converted path to %s\n", path));
@@ -392,7 +397,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
            break;
         default:
            if (!opt.quiet)
-              weprintf("couldn't open %s ", path);
+              weprintf("couldn't open %s", path);
            break;
       }
       free(path);
