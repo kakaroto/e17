@@ -84,7 +84,7 @@ static Erss_Tooltip *erss_tooltip_new (char *description)
 	evas_object_geometry_get(tt->etox, NULL, NULL, &ew, &eh);
 
 	if (eh > ew) {
-		double scale = ew / eh;
+		double scale = (double)ew / (double)eh;
 		ew = ew / scale;
 		eh *= scale;
 		evas_object_resize(tt->etox, ew, eh);
