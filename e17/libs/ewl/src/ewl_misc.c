@@ -95,13 +95,13 @@ int ewl_init(int *argc, char **argv)
 	if (!ecore_init()) {
 		DERROR("Could not init ecore....");
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
-    }
+	}
 
 	if (!edje_init()) {
 		DERROR("Could not init edje....");
 		ecore_shutdown();
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
-    }
+	}
 
 	configure_list = ecore_list_new();
 	realize_list = ecore_list_new();
@@ -338,7 +338,7 @@ static void ewl_init_parse_options(int *argc, char **argv)
 			matched++;
 		}
 		if (!strcmp(argv[i], "--ewl-theme")) {
-			if (i + 1 < argc) {
+			if (i + 1 < *argc) {
 				ewl_theme_name_set(argv[i + 1]);
 				matched++;
 			}

@@ -584,7 +584,7 @@ int ewl_ev_fb_mouse_down(void *data, int type, void *e)
 int ewl_ev_fb_mouse_up(void *data, int type, void *e)
 {
 	Ewl_Embed      *embed;
-	Ecore_X_Event_Mouse_Button_Up *ev;
+	Ecore_Fb_Event_Mouse_Button_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -366,15 +366,19 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		info = evas_engine_info_get(evas);
 	}
 
-	if (!info)
-		DRETURN(DLEVEL_STABLE);
+	if (!info) {
+		DERROR("No valid engine available\n");
+		exit(-1);
+	}
 
 	/*
 	 * Prepare the base rendering region for the evas, such as the X
 	 * window for the X11 based engines, or the surfaces for directfb.
 	 */
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	if (strstr(render, "x11")) {
+	if (strstr(render, "x11") &&
+			(ewl_get_engine_mask() & (EWL_ENGINE_SOFTWARE_X11 |
+						  EWL_ENGINE_GL_X11))) {
 		window->window = (void *)ecore_x_window_new(0, window->x,
 						window->y,
 						ewl_object_get_current_w(o),
@@ -396,7 +400,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * the drawing engine specific info it needs.
 	 */
 #ifdef HAVE_EVAS_ENGINE_GL_X11_H
-	if (!strcmp(render, "gl_x11") && ecore_x_display_get()) {
+	if (!strcmp(render, "gl_x11") &&
+			(ewl_get_engine_mask() & EWL_ENGINE_GL_X11)) {
 		Evas_Engine_Info_GL_X11 *glinfo;
 
 		glinfo = (Evas_Engine_Info_GL_X11 *)info;
@@ -416,7 +421,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 #endif
 #ifdef HAVE_EVAS_ENGINE_FB_H
-	if (!strcmp(render, "fb")) {
+	if (!strcmp(render, "fb") &&
+			(ewl_get_engine_mask() & EWL_ENGINE_FB)) {
 		Evas_Engine_Info_FB *fbinfo;
 
 		fbinfo = (Evas_Engine_Info_FB *)info;
@@ -426,11 +432,13 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		fbinfo->info.refresh = 0;
 		fbinfo->info.rotation = 0;
 		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
+		printf("Using the fb engine\n");
 	}
 	else
 #endif
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	if (!strcmp(render, "software_x11") && ecore_x_display_get()) {
+	if (!strcmp(render, "software_x11") && 
+			(ewl_get_engine_mask() & EWL_ENGINE_SOFTWARE_X11)) {
 		Evas_Engine_Info_Software_X11 *sinfo;
 
 		sinfo = (Evas_Engine_Info_Software_X11 *)info;
@@ -446,8 +454,9 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		sinfo->info.rotation = 0;
 		sinfo->info.debug = 0;
 	}
+	else
 #endif
-	else {
+	{
 		evas_free(evas);
 		DRETURN(DLEVEL_STABLE);
 	}

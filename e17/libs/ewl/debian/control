@@ -2,7 +2,7 @@ Source: ewl
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libecore1-dev, libedb1-dev, libedje0-dev, libestyle0-dev, libetox0-dev, libevas2-dev, libewd0-dev, zlib1g-dev | zlib-dev, debhelper (>> 4.0.0)
+Build-Depends: libecore1-dev, libedb1-dev, libedje0-dev, libetox0-dev, libevas2-dev, zlib1g-dev | zlib-dev, debhelper (>> 4.0.0)
 Standards-Version: 3.6.1.0
 
 Package: libewl0
@@ -16,7 +16,7 @@ Description: The Enlightened Widget Library (EWL)
 Package: libewl0-dev
 Architecture: any
 Section: devel
-Depends: libewl0 (= ${Source-Version}), libc6-dev | libc-dev, libecore1-dev, libedb1-dev, libedje0-dev, libestyle0-dev, libetox0-dev, libevas2-dev, libewd0-dev, zlib1g-dev | zlib-dev
+Depends: libewl0 (= ${Source-Version}), libc6-dev | libc-dev, libecore1-dev, libedb1-dev, libedje0-dev, libetox0-dev, libevas2-dev, zlib1g-dev | zlib-dev
 Provides: libewl-dev
 Conflicts: libewl-dev
 Description: Development files for EWL

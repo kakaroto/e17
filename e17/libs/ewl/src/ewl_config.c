@@ -201,7 +201,6 @@ float ewl_config_get_float(char *config, char *k)
  */
 char *ewl_config_get_render_method()
 {
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DRETURN_INT((ewl_config.evas.render_method ?
