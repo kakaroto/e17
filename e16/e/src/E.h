@@ -540,6 +540,12 @@ int                 Esnprintf(va_alist);
 #define SET_ON     1
 #define SET_TOGGLE 2
 
+/* ISO encodings */
+#define ENCOING_ISO_8859_1 0
+#define ENCOING_ISO_8859_2 1
+#define ENCOING_ISO_8859_3 2
+#define ENCOING_ISO_8859_4 3
+
 typedef struct _menu Menu;
 typedef struct _dialog Dialog;
 typedef struct _pager Pager;
@@ -678,6 +684,7 @@ typedef struct _efont
    int                 num_glyph;
    TT_Glyph           *glyphs;
    TT_Raster_Map     **glyphs_cached;
+   TT_CharMap          char_map;
    int                 max_descent;
    int                 max_ascent;
 }

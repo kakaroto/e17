@@ -71,6 +71,12 @@
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
 
+/* ISO encodings */
+#define ENCOING_ISO_8859_1 0
+#define ENCOING_ISO_8859_2 1
+#define ENCOING_ISO_8859_3 2
+#define ENCOING_ISO_8859_4 3
+
 #define Esetenv(var, val, overwrite) \
 { \
   static char envvar[1024]; \
@@ -87,6 +93,7 @@ typedef struct _efont
      int                 num_glyph;
      TT_Glyph           *glyphs;
      TT_Raster_Map     **glyphs_cached;
+     TT_CharMap          char_map;
      int                 max_descent;
      int                 max_ascent;
   }
