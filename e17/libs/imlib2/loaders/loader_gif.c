@@ -149,7 +149,13 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
         per += per_inc;
         if (progress && (((int) per) != last_per) && (((int) per) % progress_granularity == 0)) {
           last_per = (int) per;
-          progress(im, (int) per, 0, last_y, w, i);
+          if (!(progress(im, (int) per, 0, last_y, w, i))) {
+            /* Early termination.  Give back everything but
+               the current row, since it's incomplete. */
+            im->data = (DATA32 *) realloc(im->data, sizeof(DATA32) * w * i);
+            im->h = i;
+            return 2;
+          }
           last_y = i;
         }
       }
