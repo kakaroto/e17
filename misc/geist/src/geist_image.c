@@ -334,7 +334,7 @@ refresh_image_mods_cb(GtkWidget * widget, gpointer * type)
       }
    }
    geist_list_free(list);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
    D_RETURN_(3);
 }
 
@@ -355,7 +355,7 @@ img_load_cb(GtkWidget * widget, gpointer data)
    {
       geist_object_dirty(obj);
       geist_image_load_file(GEIST_IMAGE(obj), path);
-      geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+      geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
       geist_object_dirty(obj);
    }
    gtk_widget_destroy((GtkWidget *) ((cb_data *) data)->dialog);
@@ -414,7 +414,7 @@ gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
          geist_object_dirty(obj);
       }
       geist_list_free(list);
-      geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+      geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
    }
    D_RETURN(3, TRUE);
 }

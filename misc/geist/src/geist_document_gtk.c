@@ -34,8 +34,8 @@ geist_document_render_to_window(geist_document * doc)
    Window xwin;
 
    D_ENTER(3);
-	gtk_widget_realize(doc->darea);
-	xwin = GDK_WINDOW_XWINDOW(doc->darea->window);
+   gtk_widget_realize(doc->darea);
+   xwin = GDK_WINDOW_XWINDOW(doc->darea->window);
 
    XSetWindowBackgroundPixmap(disp, xwin, doc->pmap);
 

@@ -633,7 +633,7 @@ refresh_size_cb(GtkWidget * widget, gpointer * obj)
    fontsize = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_change_font(txt, txt->fontname, fontsize);
    geist_text_update_image(txt, TRUE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 int
@@ -684,7 +684,7 @@ refresh_font_cb(GtkWidget * widget, gpointer * obj)
    if (!geist_text_change_font(txt, fontname, txt->fontsize))
    {
       geist_text_update_image(txt, TRUE);
-      geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+      geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
    }
 }
 
@@ -700,7 +700,7 @@ refresh_just_cb(GtkWidget * widget, gpointer * obj)
 
    txt->justification = geist_text_get_justification_from_string(just);
    geist_text_update_image(txt, FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 
@@ -712,7 +712,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->r =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 void
@@ -723,7 +723,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->g =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 void
@@ -734,7 +734,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->b =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 void
@@ -745,7 +745,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
      *) (geist_list_last(GEIST_TEXT(obj)->style->bits)->data))->a =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 
@@ -755,7 +755,7 @@ refresh_text_cb(GtkWidget * widget, gpointer * obj)
    geist_text_change_text(GEIST_TEXT(obj),
                           gtk_editable_get_chars(GTK_EDITABLE(widget), 0,
                                                  -1));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 GtkWidget *
@@ -987,7 +987,7 @@ refresh_wordwrap_cb(GtkWidget * widget, gpointer * data)
    GEIST_TEXT(obj)->wordwrap =
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
    geist_text_update_image(GEIST_TEXT(obj), FALSE);
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 
    D_RETURN_(3);
 }

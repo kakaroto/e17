@@ -390,7 +390,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->r =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 static void
@@ -400,7 +400,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->g =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 static void
@@ -410,7 +410,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->b =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 static void
@@ -420,7 +420,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->a =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
 }
 
 

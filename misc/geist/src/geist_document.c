@@ -353,7 +353,7 @@ geist_document_render_full(geist_document * d, int selection)
 }
 
 void
-geist_document_render_updates(geist_document * d)
+geist_document_render_updates(geist_document * d, unsigned char clear)
 {
    D_ENTER(3);
 
@@ -369,7 +369,8 @@ geist_document_render_updates(geist_document * d)
          geist_document_render_partial(d, x, y, w, h);
          geist_document_render_selection_partial(d, x, y, w, h);
          geist_document_render_pmap_partial(d, x, y, w, h);
-         geist_document_render_to_window_partial(d, x, y, w, h);
+         if(clear)
+            geist_document_render_to_window_partial(d, x, y, w, h);
       }
       imlib_updates_free(d->up);
       d->up = NULL;
