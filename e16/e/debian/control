@@ -68,7 +68,9 @@ Replaces: enlightenment-theme (<< 0.15.0-1)
 Conflicts: enlightenment-theme (<< 0.15.0-1)
 Provides: enlightenment-theme
 Description: The BlueSteel theme for E
- This is a pleasingly hot and tempting theme. Try it ... you'll like it!
+ This theme really shows off what you can do with enlightenmnet.  It's by
+ Daniel Erat, and shows off antialiased text, extensively shaped windows, and
+ is compliant with the 0.16.0 theme spec.
 
 Package: enlightenment-theme-brushedmetal
 Architecture: all
@@ -80,4 +82,4 @@ Provides: enlightenment-theme
 Description: Tigert's BrushedMetal Theme for E
  The BrushedMetal theme, designed by gimp legend tigert, is predominately
  grey with the subtle texture of - you guessed it - brushed metal.  The
- menus in particular look superb.
+ menus in particular look superb.  This is the default theme for enlightenment.

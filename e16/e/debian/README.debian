@@ -1,7 +1,7 @@
 Enlightenment for Debian/GNU Linux
 ----------------------------------
 
-This is the Debian package of the CVS version of Enlightenment 
+This is the Debian package of the release version of Enlightenment 
 0.16.0. It's designed for the latest "unstable" Debian Potato. 
 Visit http://www.debian.org or your favorite Debian mirror site
 for the latest Debian binary and source packaging of E 0.16.0.
@@ -10,7 +10,12 @@ Thanks, Sean, Brian, Carsten, Geoff, Adam, Dale, and all that
 helped me with this project. Thanks #E and everyone helping
 Debian, Enlightenment, and Linux to thrive.
 
+Please visit http://www.enlightenment.org for more information on
+enlightenment.
+
 CVS releases will continue. Visit http://www.debian.org/~ljlane/
 for details.
 
 Laurence J. Lane <ljlane@debian.org>, Wed, 29 Sep 1999 21:14:30 -0400
+Mandrake <mandrake@mandrake.net> Sun Oct 10 11:52:59 PDT 1999
+

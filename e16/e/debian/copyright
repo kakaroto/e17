@@ -2,12 +2,9 @@ This is the Debian GNU/Linux prepackaged presentation of the Enlightenment
 window manager.  This package was originally Debianized by Sean E. Perry
 <shaleh@debian.org> and refined further Brian M. Almeida <bma@debian.org>.
 
-This package was assembled from source code obtained from the enligthenment
-CVS repository.
-
-  :pserver:anonymous@cvs.enlightenment.org:/cvs/enlightenment
-
-Visit http://www.enlightenment.org/cvs.html for additional information.
+This package was assembled from the 0.16.0 release.  Source archives can
+be retrieved from ftp://ftp.enlightenment.org.  For more information on
+Enlightenment, please go to http://www.enlightenment.org.
 
 
 Copyright Information:
