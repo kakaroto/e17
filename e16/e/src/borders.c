@@ -476,10 +476,8 @@ AddToFamily(Window win)
 	  }
      }
 
-   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
-
    /* if it hasn't been planted on a desktop - assign it the current desktop */
-   if (ewin->desktop < 0)
+   if (ewin->desktop < 0 || ewin->props.vroot)
      {
 	ewin->desktop = desks.current;
      }
@@ -488,6 +486,8 @@ AddToFamily(Window win)
 	/* assign it the desktop it asked for (modulo the number of desks) */
 	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
      }
+
+   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
    if ((!ewin->client.transient) && (Conf.place.manual)
        && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))

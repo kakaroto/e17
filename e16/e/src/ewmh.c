@@ -583,9 +583,6 @@ EWMH_GetWindowDesktop(EWin * ewin)
 
    EDBUG(6, "EWMH_GetWindowDesktop");
 
-   if (ewin->props.vroot)
-      goto done;
-
    val = AtomGet(ewin->client.win, _NET_WM_DESKTOP, XA_CARDINAL, &size);
    if (!val)
       goto done;
