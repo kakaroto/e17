@@ -1,1 +1,3 @@
 usr/lib/lib*.so.*
+usr/lib/esmart/layout/*.la
+usr/lib/esmart/layout/*.so
