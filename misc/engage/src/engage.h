@@ -33,6 +33,8 @@ int             od_config_init();
 void            od_config_menu_draw(Evas_Coord x, Evas_Coord y);
 
 void            od_window_init();
+void            od_window_hide();
+void            od_window_unhide();
 
 void            od_dock_init();
 void            od_dock_add_applnk(OD_Icon * applnk);
@@ -78,6 +80,7 @@ struct _OD_Options {
   OD_Mode         mode;
   int             grab_min_icons, grab_app_icons;
 
+  int             auto_hide;
   int             size, spacing, arrow_size;    // icon-*
   double          zoomfactor, dock_zoom_duration;
 

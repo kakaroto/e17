@@ -13,7 +13,9 @@
 Ecore_Evas     *ee;
 Evas           *evas;
 Ecore_X_Window  od_window;
+int             od_hidden;
 static Ecore_Timer *mouse_focus_timer = NULL;
+int             fullheight;
 
 static void     handle_delete_request(Ecore_Evas * _ee);
 static void     handle_pre_render_cb(Ecore_Evas * _ee);
@@ -27,18 +29,23 @@ static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
 static void     handle_menu_draw(void *data, Evas * e, Evas_Object * obj,
                                  void *event);
-
+static void     od_window_set_hidden(int hidden);
 int
 od_window_hide_timer_cb(void *data)
 {
+  int               ret;
+
+  ret = 1;
   if (mouse_focus_timer) {
     if (dock.state == zooming || dock.state == zoomed) {
       od_dock_zoom_out();
       mouse_focus_timer = NULL;
-      return (0);
+      ret = 0;
     }
   }
-  return (1);
+  if (options.auto_hide)
+    od_window_hide();
+  return (ret);
 }
 static void
 handle_pre_render_cb(Ecore_Evas * _ee)
@@ -75,6 +82,9 @@ handle_mouse_in(Ecore_Evas * _ee)
   if (mouse_focus_timer)
     ecore_timer_del(mouse_focus_timer);
   mouse_focus_timer = NULL;
+
+  if (options.auto_hide)
+    od_window_unhide();
 }
 static void
 handle_mouse_out(Ecore_Evas * _ee)
@@ -117,7 +127,9 @@ od_window_resize()
   options.width = w;
   options.height = h;
   ecore_config_int_set("engage.options.width", w);
-  ecore_config_int_set("engage.options.height", h);
+/* FIXME this cannot be stored, as mode 1 resizes the window, and will mess
+ * things up if stored 
+  ecore_config_int_set("engage.options.height", h); */
 }
 
 void
@@ -130,6 +142,7 @@ od_window_init()
   Evas_Object    *o;
   Evas_Object    *eventer;
 
+  fullheight = options.height;
   // determine the desktop size
   dsp = ecore_x_display_get();
   def = DefaultScreen(dsp);
@@ -222,6 +235,9 @@ od_window_init()
     evas_object_show(o);
 #endif
   }
+
+  if (options.auto_hide)
+    od_window_hide();
 }
 
 static void
@@ -308,4 +324,61 @@ handle_menu_draw(void *data, Evas * e, Evas_Object * obj, void *event)
   if (ev->button == 3)
     od_config_menu_draw(ev->canvas.x, ev->canvas.y);
 #endif
+}
+
+void
+od_window_hide(void) {
+  od_window_set_hidden(1);
+}
+
+void
+od_window_unhide(void) {
+  od_window_set_hidden(0);
+}
+
+static void
+od_window_set_hidden(int hidden) {
+
+  Ecore_X_Display *dsp;
+  Screen         *scr;
+  int             def;
+  int             res_x, res_y;
+  int             height;
+  Evas_Object    *o;
+  Evas_Object    *eventer;
+
+  if (od_hidden != hidden) {
+
+    od_hidden = hidden;
+
+    /* We really should use edje and just resize / hide the main object which
+       would not include the esmart background, but until then... */
+
+    if (options.mode == 1) {
+    /* cannot use the nice way below, as it will screw up the esmart bg */
+    /* hack to get round broken ecore_x calls */
+    // determine the desktop size
+    dsp = ecore_x_display_get();
+    def = DefaultScreen(dsp);
+    scr = ScreenOfDisplay(dsp, def);
+    res_x = scr->width;
+    res_y = scr->height;
+
+    if (hidden)
+      height = 2;
+    else
+      height = fullheight;
+	    
+    ecore_x_window_resize(od_window, options.width, height);
+    ecore_x_window_prop_xy_set(od_window, (res_x - options.width) / 2, res_y - height);
+    } else {
+      if (hidden)
+        height = 3000;
+      else
+        height = fullheight;
+		
+      evas_output_viewport_set(evas, 0, 0 + (fullheight - height),
+                               options.width, height);
+    }
+  }
 }

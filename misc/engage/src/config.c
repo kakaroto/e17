@@ -70,6 +70,8 @@ od_config_init(void)
   ecore_config_int_create_bound("engage.options.grab_app_icons", 1, 0, 1, 1,
                                 'G', "grab-app",
                                 "Capture the icons of all running applications");
+  ecore_config_int_create_bound("engage.options.auto_hide", 0, 0, 1, 1, 'A',
+                                "auto-hide", "Auto hide the engage bar");
 
   ecore_config_int_create("engage.options.size", 32, 's', "size",
                           "Size of icons in default state");
@@ -111,7 +113,8 @@ od_config_init(void)
     ecore_config_int_get("engage.options.grab_min_icons");
   options.grab_app_icons =
     ecore_config_int_get("engage.options.grab_app_icons");
-
+  options.auto_hide = ecore_config_int_get("engage.options.auto_hide");
+  
   options.size = ecore_config_int_get("engage.options.size");
   options.spacing = ecore_config_int_get("engage.options.spacing");
   options.zoom = ecore_config_int_get("engage.options.zoom");
