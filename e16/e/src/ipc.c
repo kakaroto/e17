@@ -351,7 +351,8 @@ IPCStruct           IPCArray[] = {
    {
     IPC_DockConfig,
     "dock",
-    "Change Data about the Dock Position and Direction",
+    "Enable/Disable dock, or change dock position and direction",
+    "use \"dock support <on/off/?>\" to test, enable, or disable the dock\n"
     "use \"dock direction <up/down/left/right/?>\" to set or "
     "test direction\n"
     "use \"dock start_pos ?\" to test the starting x y coords\n"
@@ -947,12 +948,12 @@ IPC_DockConfig(char *params, Client * c)
 		       Esnprintf(buf,sizeof(buf), "dockapp support: %s", 
 		          (mode.dockapp_support)?"enabled":"disabled");
 		    }
-		  else if (!strcmp(param2, "on"))
+		  else if ((!strcmp(param2, "on"))||(!strcmp(param2, "enable")))
 		    {
 		       mode.dockapp_support = 1;
 		       Esnprintf(buf,sizeof(buf), "dockapp support: enabled");
 		    }
-		  else if (!strcmp(param2, "off"))
+		  else if ((!strcmp(param2, "off"))||(!strcmp(param2, "disable")))
 		    {
 		       mode.dockapp_support = 0;
 		       Esnprintf(buf,sizeof(buf), "dockapp support: disabled");
