@@ -51,7 +51,11 @@ exists(char *file)
 static int
 can_read(char *file)
 {
+#ifndef __EMX__
    if (!(permissions(file) & (S_IRUSR | S_IRGRP | S_IROTH)))
+#else   
+   if (!(permissions(file)))
+#endif   
       return 0;
    return (1 + access(file, R_OK));
 }
@@ -59,7 +63,11 @@ can_read(char *file)
 static int
 can_write(char *file)
 {
+#ifndef __EMX__
    if (!(permissions(file) & (S_IWUSR | S_IWGRP | S_IWOTH)))
+#else   
+   if (!(permissions(file)))
+#endif   
       return 0;
    return (1 + access(file, W_OK));
 }
@@ -79,7 +87,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    if (!im->file)
       return 0;
    strcpy(file, im->file);
+#ifdef  __EMX__   
+   if ( (isalpha((int)file[0])) && (file[1]==':') && 
+        ((file[2]=='\\') || (file[2]=='/')))         
+   ptr = strchr(file, ':');
+   if (ptr) ptr=strrchr(++ptr, ':');        
+#else
    ptr = strrchr(file, ':');
+#endif   
    if (ptr) 
       {
 	 *ptr = 0;
@@ -245,7 +260,14 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    if (!im->file)
       return 0;
    strcpy(file, im->file);
+#ifdef  __EMX__   
+   if ( (isalpha((int)file[0])) && (file[1]==':') && 
+        ((file[2]=='\\') || (file[2]=='/')))         
+   cp = strchr(file, ':');
+   if (cp) cp=strrchr(++cp, ':');        
+#else
    cp = strrchr(file, ':');
+#endif   
    if (cp)
      {
 	*cp = 0;

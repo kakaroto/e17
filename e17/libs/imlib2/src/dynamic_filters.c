@@ -171,7 +171,11 @@ char **__imlib_ListFilters(int *num_ret)
    }
    /* same for system loader path */
    sprintf(s, SYS_LOADERS_PATH "/filter");
+#ifndef __EMX__   
    l = __imlib_FileDir(s, &num);
+#else   
+   l = __imlib_FileDir(__XOS2RedirRoot(s), &num);
+#endif   
    if (num > 0)
    {
       *num_ret += num;
@@ -179,7 +183,11 @@ char **__imlib_ListFilters(int *num_ret)
       for (i = 0; i < num; i++)
       {
 	 sprintf(s, SYS_LOADERS_PATH "/filter/%s", l[i]);
+#ifndef __EMX__	 
 	 list[pi + i] = strdup(s);
+#else	 
+	 list[pi + i] = strdup(__XOS2RedirRoot(s));
+#endif	 
       }
       __imlib_FileFreeDirList(l, num);
    }

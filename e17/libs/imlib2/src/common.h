@@ -32,4 +32,12 @@ if ((y + h) > ((yy) + (hh))) {h = (hh) - (y - yy);}
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
+#ifdef __EMX__
+extern char *__XOS2RedirRoot(const char *);
+#endif
+
+#ifdef __EMX__
+extern char *__XOS2RedirRoot(const char *);
+#endif
+
 #endif

@@ -24,10 +24,19 @@ __imlib_FileRealFile(const char *file)
    
    newfile = strdup(file);
    if (!newfile) return NULL;
+#ifndef __EMX__ 
    colon = strrchr(file, ':');
    if (!colon) return newfile;
    *colon = 0;
    return newfile;
+#else
+   colon = strrchr(file, ':');
+   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
+   if ((colon - file) < 3) return newfile;
+   if (!colon) return newfile;
+   *colon = 0;
+   return newfile;
+#endif   
 }
 
 char               *
