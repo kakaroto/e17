@@ -3899,13 +3899,7 @@ Epplet_load_config(void)
   memset(config_dict, 0, sizeof(ConfigDict));
 
   if ((f = fopen(epplet_cfg_file, "r")) == NULL)
-    {
-      char err[255];
-           
-      sprintf(err, "Unable to open config file %s for reading -- %s.\n", s, strerror(errno));
-      Epplet_dialog_ok(err);
-      return;
-    }
+    return;
   *s2 = 0;
   for (; fgets(s, sizeof(s), f);)
     {
