@@ -1238,6 +1238,24 @@ __imlib_draw_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r, DATA8 g,
 }
 
 void
+__imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
+                         int clip_xmin, int clip_xmax, int clip_ymin,
+                         int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+                         ImlibOp op)
+{
+   __imlib_draw_line_clipped(im, x, y, x + w - 1, y, clip_xmin, clip_xmax,
+                             clip_ymin, clip_ymax, r, g, b, a, op, 0);
+   __imlib_draw_line_clipped(im, x, y, x, y + h - 1, clip_xmin, clip_xmax,
+                             clip_ymin, clip_ymax, r, g, b, a, op, 0);
+   __imlib_draw_line_clipped(im, x, y + h - 1, x + w - 1, y + h - 1, clip_xmin,
+                             clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op,
+                             0);
+   __imlib_draw_line_clipped(im, x + w - 1, y, x + w - 1, y + h - 1, clip_xmin,
+                             clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op,
+                             0);
+}
+
+void
 __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
                         DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
@@ -1592,8 +1610,9 @@ __imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
    return accept;
 }
 
-ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin, double xmax,
-                                  double ymin, double ymax)
+ImlibOutCode
+__imlib_comp_outcode(double x, double y, double xmin, double xmax, double ymin,
+                     double ymax)
 {
    ImlibOutCode        code = 0;
 

@@ -760,9 +760,59 @@ int main (int argc, char **argv)
 		  
 		  imlib_context_set_color(255, 255, 255, 255);
 		  uu = imlib_image_draw_line(200, 200, x, y, 1);
+          up = imlib_updates_append_updates(up, uu);
+          
+          /* test line clipping */
+          imlib_image_draw_rectangle(50,50,100,100);
+          up = imlib_update_append_rect(up, 50,50,100,100);
+          
+          imlib_context_set_color(255, 255, 255, 255);
+		  uu = imlib_image_draw_line(0, 0, 200, 200, 1);
 		  up = imlib_updates_append_updates(up, uu);
-		  uu = imlib_image_draw_line_clipped(200, 0, 0, 200, 50, 100, 0, 300, 1);
+		  imlib_context_set_color(255, 55, 55, 255);
+		  uu = imlib_image_draw_line_clipped(0, 0, 200, 200, 50, 150, 50, 150, 1);
 		  up = imlib_updates_append_updates(up, uu);
+          
+          imlib_context_set_color(255, 255, 255, 255);
+          uu = imlib_image_draw_line(305, 25, 20, 200, 1);
+          up = imlib_updates_append_updates(up, uu);
+          imlib_context_set_color(255, 55, 55, 255);
+          uu = imlib_image_draw_line_clipped(305, 25, 20, 200, 50, 150, 50, 150, 1);
+          up = imlib_updates_append_updates(up, uu);
+
+          imlib_context_set_color(255, 255, 255, 255);
+          uu = imlib_image_draw_line(100, 5, 100, 205, 1);
+          up = imlib_updates_append_updates(up, uu);
+          imlib_context_set_color(255, 55, 55, 255);
+          uu = imlib_image_draw_line_clipped(100, 5, 100, 205, 50, 150, 50, 150, 1);
+          up = imlib_updates_append_updates(up, uu);
+
+          imlib_context_set_color(255, 255, 255, 255);
+          uu = imlib_image_draw_line(275, 5, 20, 100, 1);
+          up = imlib_updates_append_updates(up, uu);
+          imlib_context_set_color(255, 55, 55, 255);
+          uu = imlib_image_draw_line_clipped(275, 5, 20, 100, 50, 150, 50, 150, 1);
+          up = imlib_updates_append_updates(up, uu);
+
+          /* test rectangle clipping */
+          imlib_context_set_color(255, 255, 255, 255);
+          imlib_image_draw_rectangle(70,90,20,20);
+          imlib_context_set_color(255, 55, 55, 255);
+          imlib_image_draw_rectangle_clipped(70,90,20,20,50, 150, 50, 150);
+          up = imlib_update_append_rect(up, 70,90,20,20);
+          
+          imlib_context_set_color(255, 255, 255, 255);
+          imlib_image_draw_rectangle(115,70,60,30);
+          imlib_context_set_color(255, 55, 55, 255);
+          imlib_image_draw_rectangle_clipped(115,70,60,30,50, 150, 50, 150);
+          up = imlib_update_append_rect(up, 115,70,60,30);
+
+          imlib_context_set_color(255, 255, 255, 255);
+          imlib_image_draw_rectangle(30,120,50,50);
+          imlib_context_set_color(255, 55, 55, 255);
+          imlib_image_draw_rectangle_clipped(30,120,50,50,50, 150, 50, 150);
+          up = imlib_update_append_rect(up, 30,120,50,50);
+
 	       }
 	       {
 		  static Imlib_Color_Range rg = NULL;

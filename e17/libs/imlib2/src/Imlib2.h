@@ -233,6 +233,10 @@ Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_up
  * rectangle */
 Imlib_Updates imlib_image_draw_line_clipped(int x1, int y1, int x2, int y2, int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax, char make_updates);
 void imlib_image_draw_rectangle(int x, int y, int width, int height);
+void
+imlib_image_draw_rectangle_clipped(int x, int y, int width, int height,
+                                   int clip_xmin, int clip_xmax, int clip_ymin,
+                                   int clip_ymax);
 void imlib_image_fill_rectangle(int x, int y, int width, int height);
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y);
 void imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x, int y, int width, int height, int destination_x, int destination_y);

@@ -33,4 +33,9 @@ __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
                           int clip_xmin, int clip_xmax, int clip_ymin,
                           int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
                           ImlibOp op, char make_updates);
+void
+__imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
+                         int clip_xmin, int clip_xmax, int clip_ymin,
+                         int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+                         ImlibOp op);
 #endif
