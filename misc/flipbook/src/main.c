@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <libart_lgpl/libart.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libart_lgpl/art_pixbuf.h>
 #include <sys/time.h>

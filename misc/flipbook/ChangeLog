@@ -191,3 +191,11 @@ Tue Feb  1 12:03:14 PST 2000
 
 putting this back in CVS.  most of the player for gdkrgb runs now.
 you'll need gdkrgb and gdkpixbuf now though
+
+---------------------------------------------------------------------------
+
+Mon Dec  4 12:16:22 PST 2000
+(Mandrake)
+
+updated to use the new gdk-pixbuf, thanks to Bastien Nocera
+<hadess@hadess.net>

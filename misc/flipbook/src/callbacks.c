@@ -61,7 +61,7 @@ expose_func(GtkWidget * drawing_area, GdkEventExpose * event, gpointer data)
 	pixbuf =
 		(GdkPixbuf *) gtk_object_get_data(GTK_OBJECT(drawing_area), "pixbuf");
 
-	if (!pixbuf->art_pixbuf) {
+	if (!pixbuf) {
 		g_warning("art_pixbuf is NULL in expose_func!!\n");
 		return;
 	}
@@ -72,10 +72,10 @@ expose_func(GtkWidget * drawing_area, GdkEventExpose * event, gpointer data)
 			event->area.width,
 			event->area.height,
 			GDK_RGB_DITHER_NORMAL,
-			pixbuf->art_pixbuf->pixels
-			+ (event->area.y * pixbuf->art_pixbuf->rowstride)
-			+ (event->area.x * pixbuf->art_pixbuf->n_channels),
-			pixbuf->art_pixbuf->rowstride);
+			gdk_pixbuf_get_pixels(pixbuf)
+			+ (event->area.y * gdk_pixbuf_get_rowstride(pixbuf))
+			+ (event->area.x * gdk_pixbuf_get_n_channels(pixbuf)),
+			gdk_pixbuf_get_rowstride(pixbuf));
 }
 
 void on_open_from_file(GtkWidget *widget, gpointer user_data) {

@@ -141,8 +141,8 @@ void draw_next_frame(void) {
 				get_width(),
 				get_height(),
 				GDK_RGB_DITHER_NORMAL,
-				pixbuf->art_pixbuf->pixels,
-				pixbuf->art_pixbuf->rowstride);
+				gdk_pixbuf_get_pixels(pixbuf),
+				gdk_pixbuf_get_rowstride(pixbuf));
 	}
 }
 
@@ -168,8 +168,8 @@ void moved_frames(GtkWidget *widget, gpointer user_data) {
 					get_width(),
 					get_height(),
 					GDK_RGB_DITHER_NORMAL,
-					pixbuf->art_pixbuf->pixels,
-					pixbuf->art_pixbuf->rowstride);
+					gdk_pixbuf_get_pixels(pixbuf),
+					gdk_pixbuf_get_rowstride(pixbuf));
 
 		}
 	}

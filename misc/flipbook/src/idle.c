@@ -83,8 +83,8 @@ gint play_movie(gpointer data) {
 				get_width(),
 				get_height(),
 				GDK_RGB_DITHER_NORMAL,
-				pixbuf->art_pixbuf->pixels,
-				pixbuf->art_pixbuf->rowstride);
+				gdk_pixbuf_get_pixels(pixbuf),
+				gdk_pixbuf_get_rowstride(pixbuf));
 		g_mutex_unlock(gdk_threads_mutex);
 		gtk_adjustment_set_value(adjust,get_current_index()+1);
 		gtk_adjustment_changed(adjust);
