@@ -23,7 +23,7 @@ about_init(void)
                         "dphase@locnet.net\n\n"
                         "Please e-mail me with bug reports, feature\n"
                         "requests, and anything else that you might\n"
-                        "think up that I would need to know.");
+                        "think up that I would need to know.\n");
   gtk_box_pack_start(GTK_BOX(GTK_DIALOG(AboutWindow)->vbox), label, TRUE, TRUE, 0);
   gtk_widget_show(label);
 
