@@ -271,15 +271,11 @@ moddate(char *s)
    EDBUG(9, "moddate");
    if ((!s) || (!*s))
       EDBUG_RETURN(0);
-   if (!stat(s, &st) < 0)
+   if (stat(s, &st) < 0)
       EDBUG_RETURN(0);
    if (st.st_mtime > st.st_ctime)
-     {
-	EDBUG_RETURN(st.st_mtime);
-     }
-   else
-      EDBUG_RETURN(st.st_ctime);
-   EDBUG_RETURN(0);
+      EDBUG_RETURN(st.st_mtime);
+   EDBUG_RETURN(st.st_ctime);
 }
 
 int
@@ -355,7 +351,7 @@ permissions(char *s)
    EDBUG(9, "permissions");
    if ((!s) || (!*s))
       EDBUG_RETURN(0);
-   if (!stat(s, &st) < 0)
+   if (stat(s, &st) < 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN(st.st_mode);
 }
@@ -368,7 +364,7 @@ owner(char *s)
    EDBUG(9, "owner");
    if ((!s) || (!*s))
       EDBUG_RETURN(0);
-   if (!stat(s, &st) < 0)
+   if (stat(s, &st) < 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN(st.st_uid);
 }
@@ -381,7 +377,7 @@ group(char *s)
    EDBUG(9, "group");
    if ((!s) || (!*s))
       EDBUG_RETURN(0);
-   if (!stat(s, &st) < 0)
+   if (stat(s, &st) < 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN(st.st_gid);
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -1230,6 +1229,7 @@ CalcEwinSizes(EWin * ewin)
 	 CalcEwinWinpart(ewin, i);
    for (i = 0; i < ewin->border->num_winparts; i++)
       RealiseEwinWinpart(ewin, i);
+
    reshape = 0;
    for (i = 0; i < ewin->border->num_winparts; i++)
      {
@@ -1251,6 +1251,7 @@ CalcEwinSizes(EWin * ewin)
 	   PropagateShapes(ewin->win);
 	ewin->shapedone = 1;
      }
+
    EDBUG_RETURN_;
 }
 
@@ -1432,6 +1433,7 @@ CreateEwin()
    ewin->client.aspect_max = 65535.0;
    ewin->client.w_inc = 1;
    ewin->client.h_inc = 1;
+   ewin->client.grav = 0;
    ewin->client.base_w = 0;
    ewin->client.base_h = 0;
    ewin->client.width.min = 0;
@@ -1484,6 +1486,7 @@ CreateEwin()
    ewin->neverfocus = 0;
    ewin->neverraise = 0;
    ewin->focusclick = 0;
+   ewin->ewmh_flags = 0;
    ewin->menu = NULL;
    ewin->dialog = NULL;
    ewin->shownmenu = 0;
@@ -1570,11 +1573,14 @@ FreeEwin(EWin * ewin)
 	  }
      }
    if (ewin == mode.focuswin)
+     {
 #if 0				/* Clean up if OK -- Remove FocusToNone */
-      FocusToNone();
+	FocusToNone();
 #else
-      FocusToEWin(NULL);
+	mode.focuswin = NULL;
+	FocusToEWin(NULL);
 #endif
+     }
 
    if (ewin->pager)
       PagerKill(ewin->pager);

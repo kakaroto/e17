@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -217,6 +216,7 @@ SkipTillEnd(FILE * ConfigFile)
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
+	i1 = i2 = 0;
 	fields = sscanf(s, "%i %i", &i1, &i2);
 	if (i1 == CONFIG_CLOSE)
 	   return;

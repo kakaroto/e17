@@ -792,16 +792,19 @@ execApplication(void *params)
      {
 	int                 n;
 
-	n = fread(s, 1, FILEPATH_LEN_MAX, f);
+	n = fread(s, 1, FILEPATH_LEN_MAX - 1, f);
 	/* True64 bug workaround */
 	if (n == 0)
-	   fread(s, 1, FILEPATH_LEN_MAX, f);
-	s[FILEPATH_LEN_MAX - 1] = 0;
-	l = strlen(s);
-	s[l - 1] = 0;
-	sscanf(s, "%4000s", exe);
+	   n = fread(s, 1, FILEPATH_LEN_MAX - 1, f);
+	if (n > 1)
+	  {
+	     s[n] = 0;
+	     l = strlen(s);
+	     s[l - 1] = 0;
+	     sscanf(s, "%4000s", exe);
+	     runApp(exe, s);
+	  }
 	pclose(f);
-	runApp(exe, s);
      }
    EDBUG_RETURN(0);
 }
