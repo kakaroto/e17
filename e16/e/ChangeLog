@@ -2406,3 +2406,11 @@ Shuffled around some focus and event handling code.
 Attempted to fix some focus problems.
 Fixed error in placement of initially shaded windows.
 Included ENLIGHTENMENT_RELEASE in version string.
+
+-------------------------------------------------------------------------------
+
+Sat Feb  7 02:45:42 CET 2004
+(Kim)
+
+Fixed some focus stuff.
+Shuffled around some configuration parameters.
