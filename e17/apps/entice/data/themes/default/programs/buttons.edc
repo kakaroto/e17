@@ -13,7 +13,7 @@
 		signal, "mouse,out";
 		source, "ButtonMouseArea";
 		action, STATE_SET "default" 0.0;
-		transition, DECELERATE 1.0;
+		transition, ACCELERATE 1.3;
 		target, "Buttons";
 	    }
 	    
