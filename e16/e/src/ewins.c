@@ -1926,6 +1926,8 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 	if (ev->xreparent.parent != ewin->win_container)
 	   EwinEventDestroy(ewin);
 	break;
+
+     case GravityNotify:
      case ConfigureNotify:
 	break;
 
