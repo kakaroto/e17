@@ -197,18 +197,19 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    struct _xy
    {
       int                 x, y;
-   }
-                      *xy;
+   }                  *xy;
 
    EDBUG(5, "SlideWindowsBy");
-   spd = 16;
-   min = 2;
    if (num < 1)
       EDBUG_RETURN_;
+
+   spd = 16;
+   min = 2;
    xy = Emalloc(sizeof(struct _xy) * num);
 
    for (i = 0; i < num; i++)
       GetWinXY(win[i], &(xy[i].x), &(xy[i].y));
+
    for (k = 0; k <= 1024; k += spd)
      {
 	gettimeofday(&timev1, NULL);
@@ -232,10 +233,13 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 	if (spd < min)
 	   spd = min;
      }
+
    for (i = 0; i < num; i++)
       EMoveWindow(disp, win[i], xy[i].x + dx, xy[i].y + dy);
+
    if (xy)
       Efree(xy);
+
    EDBUG_RETURN_;
 }
 
@@ -260,8 +264,9 @@ SetCurrentArea(int ax, int ay)
    tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    HideToolTip(tt);
 
-   dx = ax - desks.desk[desks.current].current_area_x;
-   dy = ay - desks.desk[desks.current].current_area_y;
+   dx = root.w * (ax - desks.desk[desks.current].current_area_x);
+   dy = root.h * (ay - desks.desk[desks.current].current_area_y);
+
    if (dx < 0)
       SoundPlay("SOUND_MOVE_AREA_LEFT");
    else if (dx > 0)
@@ -276,6 +281,10 @@ SetCurrentArea(int ax, int ay)
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
    FocusNewDeskBegin();
+
+   /* set the current area up in out data structs */
+   desks.desk[desks.current].current_area_x = ax;
+   desks.desk[desks.current].current_area_y = ay;
 
    /* move all the windows around */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
@@ -306,19 +315,14 @@ SetCurrentArea(int ax, int ay)
 			 }
 		    }
 	       }
+
 	     /* slide them */
 	     if (wl)
 	       {
-		  SlideWindowsBy(wl, wnum,
-				 -(root.w *
-				   (ax -
-				    desks.desk[desks.current].current_area_x)),
-				 -(root.h *
-				   (ay -
-				    desks.desk[desks.current].current_area_y)),
-				 conf.desks.slidespeed);
+		  SlideWindowsBy(wl, wnum, -dx, -dy, conf.desks.slidespeed);
 		  Efree(wl);
 	       }
+
 	     /* move the windows to their final positions */
 	     for (i = 0; i < num; i++)
 	       {
@@ -336,17 +340,7 @@ SetCurrentArea(int ax, int ay)
 				 setflip = 1;
 				 mode.flipp = 1;
 			      }
-			    MoveEwin(lst[i],
-				     lst[i]->x -
-				     (root.w *
-				      (ax -
-				       desks.desk[desks.
-						  current].current_area_x)),
-				     lst[i]->y -
-				     (root.h *
-				      (ay -
-				       desks.desk[desks.
-						  current].current_area_y)));
+			    MoveEwin(lst[i], lst[i]->x - dx, lst[i]->y - dy);
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -358,32 +352,21 @@ SetCurrentArea(int ax, int ay)
 	  }
 	else
 	  {
-	     /* move all widnwos across.... */
+	     /* move all windows across.... */
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
 		      && (!lst[i]->fixedpos))
 		    {
 		       /* if we're moving this window and its not opaque move */
-		       /* warp it across withotu remebering the xy stuff */
+		       /* warp it across without remebering the xy stuff */
 		       /* well work out the xy stuff later when the move finishes */
 		       if (lst[i]->floating)
 			 {
 			    if (conf.movemode > 0)
 			      {
 				 GetWinXY(lst[i]->win, &x, &y);
-				 EMoveWindow(disp, lst[i]->win,
-					     x -
-					     (root.w *
-					      (ax -
-					       desks.desk[desks.
-							  current].
-					       current_area_x)),
-					     y -
-					     (root.h *
-					      (ay -
-					       desks.desk[desks.current].
-					       current_area_y)));
+				 EMoveWindow(disp, lst[i]->win, x - dx, y - dy);
 			      }
 			 }
 		       /* if we're not moving it... move it across */
@@ -398,17 +381,7 @@ SetCurrentArea(int ax, int ay)
 				 setflip = 1;
 				 mode.flipp = 1;
 			      }
-			    MoveEwin(lst[i],
-				     lst[i]->x -
-				     (root.w *
-				      (ax -
-				       desks.desk[desks.
-						  current].current_area_x)),
-				     lst[i]->y -
-				     (root.h *
-				      (ay -
-				       desks.desk[desks.
-						  current].current_area_y)));
+			    MoveEwin(lst[i], lst[i]->x - dx, lst[i]->y - dy);
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -420,10 +393,6 @@ SetCurrentArea(int ax, int ay)
 	  }
 	Efree(lst);
      }
-
-   /* set the current area up in out data structs */
-   desks.desk[desks.current].current_area_x = ax;
-   desks.desk[desks.current].current_area_y = ay;
 
    /* set hints up for it */
    HintsSetDesktopViewport();

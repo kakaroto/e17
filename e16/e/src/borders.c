@@ -1854,13 +1854,50 @@ static void
 doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
-   int                 dx = 0, dy = 0;
+   int                 dx = 0, dy = 0, sw, sh, x0, y0;
    char                move = 0, resize = 0;
 
    EDBUG(3, "MoveResizeEwin");
    if (call_depth > 256)
       EDBUG_RETURN_;
    call_depth++;
+
+   if (mode.mode == MODE_NONE)
+     {
+	/* Don't throw windows offscreen */
+	sw = root.w;
+	sh = root.h;
+	if (ewin->sticky)
+	  {
+	     x0 = y0 = 0;
+	  }
+	else
+	  {
+	     int                 ax, ay;
+
+	     ax = desks.desk[ewin->desktop].current_area_x;
+	     ay = desks.desk[ewin->desktop].current_area_y;
+	     x0 = -ax * sw;
+	     y0 = -ay * sh;
+	     sw *= conf.areas.nx;
+	     sh *= conf.areas.ny;
+	  }
+	dx = ewin->w / 4;
+	if (dx > 8)
+	   dx = 8;
+	dy = ewin->h / 4;
+	if (dy > 8)
+	   dy = 8;
+
+	if (x < x0 - ewin->w + dx)
+	   x = x0 - ewin->w + dx;
+	else if (x > x0 + sw - dx)
+	   x = x0 + sw - dx;
+	if (y < y0 - ewin->h + dy)
+	   y = y0 - ewin->h + dy;
+	else if (y > y0 + sh - dy)
+	   y = y0 + sh - dy;
+     }
 
    if (flags & MR_FLAGS_MOVE)
      {
