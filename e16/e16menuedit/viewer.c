@@ -625,7 +625,7 @@ gint write_menu (GNode * node, gchar * file)
   else
     realfile = duplicate (file);
 
-  if ((fp = fopen (file, "w")) == NULL)
+  if ((fp = fopen (realfile, "w")) == NULL)
     {
       printf ("failed to create file %s\n", file);
       return 1;
