@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 static int
 sort_compare(const void *v1, const void *v2);
@@ -58,17 +59,23 @@ unescape_string(char *str)
 		char digit;
 		char *ptr;
 		
-		ptr = str;
+		ptr = str+1;
 		
 		for (i = 0; i < 2; i++)
 		  {
 		    if (*(str+2+i) == '\0')
-		      break;
+		      {
+			--ptr;
+			break;
+		      }
 		    
 		    digit = *(str+2+i); 
 		    
 		    if (!isxdigit(digit))
-		      break;
+		      {
+			--ptr;
+			break;
+		      }
 		    
 		    val *= 16;
 		    
@@ -83,7 +90,7 @@ unescape_string(char *str)
 		    ptr++;
 		  }
 		
-		str = --ptr;
+		str = ptr;
 	      }
 	      break;
 	    case '0':       /* \nnn -- octal value */
@@ -103,12 +110,18 @@ unescape_string(char *str)
 		for (i = 0; i < 3; i++)
 		  {
 		    if (*(str+1+i) == '\0')
-		      break;
+		      {
+			--ptr;
+			break;
+		      }
 		    
 		    digit = *(str+1+i); 
 		    
 		    if (!isdigit(digit))
-		      break;
+		      {
+			--ptr;
+			break;
+		      }
 
 		    val *= 8;
 		    val += (digit - '0');
@@ -117,15 +130,14 @@ unescape_string(char *str)
 		    ptr++;
 		  }
 
-		str = --ptr;
+		str = ptr;
 	      }
 	      break;
 	    default:
 	      /* Everything else -- just write what's after backslash. */
-	      *s = *(str+1);
+	      *s = *(++str);
 	      break;
 	  }
-	  str++;
         }
       else
 	{
@@ -235,7 +247,20 @@ main(int argc, char **argv)
 	      {
 		if (!strcmp(type, "int"))
 		  {
-		    e_db_int_set(db, key, atoi(data));
+		    int val;
+		    
+		    val = strtol(data, NULL, 0);
+		    if (errno == ERANGE)
+		      {
+			errno = 0;
+			val = strtoul(data, NULL, 0);
+			if (errno == ERANGE)
+			  {
+			    fprintf(stderr, "Integer value %s invalid!\n  %s -h for details\n", data, argv[0]);
+			    exit(-1);
+			  }
+		      }
+		    e_db_int_set(db, key, val);
 		  }
 		else if (!strcmp(type, "str"))
 		  {
