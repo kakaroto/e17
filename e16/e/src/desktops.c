@@ -1319,6 +1319,11 @@ SetDesktopBg(int desk, Background * bg)
 	if (desks.desk[desk].bg != bg)
 	  {
 	     desks.desk[desk].bg->ref_count--;
+	     if (desks.desk[desk].bg->ref_count < 1)
+	       {
+		  desks.desk[desk].bg->last_viewed = 0;
+		  DesktopAccounting();
+	       }
 	     if (bg)
 		bg->ref_count++;
 	  }
