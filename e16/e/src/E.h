@@ -377,7 +377,6 @@ int                 Esnprintf(va_alist);
 
 typedef struct _eobj EObj;
 typedef struct _ewin EWin;
-typedef struct _edesk Desk;
 typedef struct _menu Menu;
 typedef struct _menuitem MenuItem;
 typedef struct _menustyle MenuStyle;

@@ -277,21 +277,21 @@ EobjListFocusDel(EObj * eo)
 }
 
 int
-EobjListStackRaise(EObj * ewin)
+EobjListStackRaise(EObj * eo)
 {
-   return EobjListRaise(&EwinListStack, ewin, 1);
+   return EobjListRaise(&EwinListStack, eo, 1);
 }
 
 int
-EobjListStackLower(EObj * ewin)
+EobjListStackLower(EObj * eo)
 {
-   return EobjListLower(&EwinListStack, ewin, 1);
+   return EobjListLower(&EwinListStack, eo, 1);
 }
 
 int
-EobjListFocusRaise(EObj * ewin)
+EobjListFocusRaise(EObj * eo)
 {
-   return EobjListRaise(&EwinListFocus, ewin, 0);
+   return EobjListRaise(&EwinListFocus, eo, 0);
 }
 
 EWin               *const *

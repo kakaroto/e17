@@ -114,6 +114,7 @@ EobjSetLayer(EObj * eo, int layer)
 	if (eo->layer > 0 && eo->sticky)
 	   eo->floating = 1;
 	break;
+     case EOBJ_TYPE_DESK:
      case EOBJ_TYPE_OVERR:
      case EOBJ_TYPE_OTHER:
 	eo->ilayer = 10 * eo->layer;
