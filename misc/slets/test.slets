@@ -10,22 +10,22 @@
 WINDOW 640 460 "This is a test theme!"
 
 # backgrounds (max 25)
-BG ./img/gail.png
-BG ./img/rows.png
+BG @img/gail.png
+BG @img/rows.png
 
 # icons (max 9)
-ICON ./img/bomb.png
-ICON ./img/book.png
-ICON ./img/spider.png
-ICON ./img/log.png
-ICON ./img/cdrom.png
-ICON ./img/clock.png
-ICON ./img/dynamite.png
-ICON ./img/floppy.png
-ICON ./img/flower.png
+ICON @img/bomb.png
+ICON @img/book.png
+ICON @img/spider.png
+ICON @img/log.png
+ICON @img/cdrom.png
+ICON @img/clock.png
+ICON @img/dynamite.png
+ICON @img/floppy.png
+ICON @img/flower.png
 
 # font path (path)
-FONT_PATH ./fnt
+FONT_PATH @fnt
 
 # text color (r g b a)
 TEXT_COLOR 0 0 0 100
@@ -85,6 +85,6 @@ POINTS_ICON 9 400 200
 POINTS_TEXT 9 450 225
 
 # sounds (filename)
-SOUND_STARTUP ./snd/startup.wav
-SOUND_MENU ./snd/menu.wav
-SOUND_SLOT ./snd/slot.wav
+SOUND_STARTUP @snd/startup.wav
+SOUND_MENU @snd/menu.wav
+SOUND_SLOT @snd/slot.wav

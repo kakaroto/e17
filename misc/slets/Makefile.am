@@ -20,4 +20,4 @@ install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/snd
 	for i in $(IMAGES); do $(INSTALL_DATA) $$i $(DESTDIR)$(pkgdatadir)/img ; done
 	for i in $(FONTS); do $(INSTALL_DATA) $$i $(DESTDIR)$(pkgdatadir)/fnt ; done
-	for i in $(IMAGES); do $(INSTALL_DATA) $$i $(DESTDIR)$(pkgdatadir)/snd ; done
+	for i in $(SOUNDS); do $(INSTALL_DATA) $$i $(DESTDIR)$(pkgdatadir)/snd ; done

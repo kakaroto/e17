@@ -142,7 +142,7 @@ void theme_set_defaults(void)
 int theme_read(int argc, char **argv)
 {
  FILE *f;
- char z[512] = "", cmd[128] = "", txt[255] = "";
+ char z[512] = "", cmd[128] = "", txt[255] = "", *p;
  static int total_bg = 0, total_icon = 0, 
         total_prevs_check, total_slots_check = 0,
         menu_check = 0, line = 0; 
@@ -208,6 +208,12 @@ int theme_read(int argc, char **argv)
             {
              strcpy(txt, strtok(strstr(z, "\""), "\""));
             }
+          if (txt[0] == '@')
+            {
+             p = txt;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(txt, z);
+            }
           strcpy(bg_files[total_bg++], txt);
           strcpy(bg_files[total_bg], "");
          }
@@ -221,6 +227,12 @@ int theme_read(int argc, char **argv)
             {
              strcpy(txt, strtok(strstr(z, "\""), "\""));
             }
+          if (txt[0] == '@')
+            {
+             p = txt;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(txt, z);
+            }
           strcpy(icon_files[total_icon++], txt);
          }
        else
@@ -230,6 +242,12 @@ int theme_read(int argc, char **argv)
           if (font_path[0] == '"')
             {
              strcpy(font_path, strtok(strstr(z, "\""), "\""));
+            }
+          if (font_path[0] == '@')
+            {
+             p = font_path;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(txt, z);
             }
          }
        else
@@ -377,6 +395,12 @@ int theme_read(int argc, char **argv)
             {
              strcpy(snd.startup, strtok(strstr(z, "\""), "\""));
             }
+          if (snd.startup[0] == '@')
+            {
+             p = snd.startup;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(snd.startup, z);
+            }
          }
        else
        if (!strcmp(cmd, "SOUND_MENU"))   
@@ -386,6 +410,12 @@ int theme_read(int argc, char **argv)
             {
              strcpy(snd.menu, strtok(strstr(z, "\""), "\""));   
             }
+          if (snd.menu[0] == '@')
+            {
+             p = snd.menu;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(snd.menu, z);
+            }
          }
        else
        if (!strcmp(cmd, "SOUND_SLOT"))
@@ -394,6 +424,12 @@ int theme_read(int argc, char **argv)
           if (snd.slot[0] == '"')
             {
              strcpy(snd.slot, strtok(strstr(z, "\""), "\""));
+            }
+          if (snd.slot[0] == '@')
+            {
+             p = snd.slot;
+             sprintf(z, "%s/%s", DATA_DIR, p+1);
+             strcpy(snd.slot, z);
             }
          }
       }

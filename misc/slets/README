@@ -23,9 +23,6 @@
 	Usage
 	"""""
 		slets [<theme file>]
-			e.g. slets test.slets
-			-> will _only_ work in this dir because themes
-			   cannot have relative paths for now..
 
 		- click in the slot you want to put the icons
 		- click on 'rehash' if all your slots are full
@@ -33,6 +30,6 @@
 
 	BTW
 	"""
-		test.slets if an example theme file.. (see above)
+		test.slets if an example theme file..
 		You can put a '.sletrc' themefile in your
 		homedir if you want.
