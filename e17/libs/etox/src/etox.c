@@ -52,6 +52,7 @@ Evas_Object *etox_new(Evas *evas)
 	 * Set the clip rectangle for the etox
 	 */
 	et->clip = evas_object_rectangle_add(evas);
+	evas_object_pass_events_set(et->clip, 1);
 	evas_object_color_set(et->clip, 255, 255, 255, 255);
 
 	return et->smart_obj;
