@@ -480,13 +480,13 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 }
 
 /**
- * entrance_session_list_add : fine the "EntranceSessionList" part in the
+ * entrance_session_xsession_list_add : fine the "EntranceSessionList" part in the
  * main edje, setup the container to hold the elements, and create session
  * edjes for the container based on our session list in the config
  * @param e - the entrance session you want to add the xsession list to
  */
 void
-entrance_session_list_add(Entrance_Session * e)
+entrance_session_xsession_list_add(Entrance_Session * e)
 {
    Evas_Coord w, h;
    Evas_List *l = NULL;
@@ -530,6 +530,23 @@ entrance_session_list_add(Entrance_Session * e)
          }
       }
       edje_object_part_swallow(e->edje, "EntranceSessionList", container);
+      e->session_container = container;
+   }
+}
+void
+entrance_session_list_direction_set(Entrance_Session * e,
+                                    Evas_Object * container,
+                                    const char *direction)
+{
+   if (!e || !e->edje || !container || !direction)
+      return;
+   if (!strcmp(direction, "horizontal"))
+   {
+      esmart_container_direction_set(container, 0);
+   }
+   else
+   {
+      esmart_container_direction_set(container, 1);
    }
 }
 
@@ -555,8 +572,8 @@ entrance_session_user_list_add(Entrance_Session * e)
                                  &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
-      esmart_container_padding_set(container, 4, 4, 4, 4);
-      esmart_container_spacing_set(container, 4);
+      esmart_container_padding_set(container, 0, 0, 0, 0);
+      esmart_container_spacing_set(container, 0);
       esmart_container_move_button_set(container, 2);
       if (w > h)
       {
@@ -581,6 +598,7 @@ entrance_session_user_list_add(Entrance_Session * e)
          }
       }
       edje_object_part_swallow(e->edje, "EntranceUserList", container);
+      e->user_container = container;
    }
 
 }

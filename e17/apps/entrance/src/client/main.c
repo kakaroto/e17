@@ -10,6 +10,7 @@
 #include <string.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Text_Entry.h>
+#include <Esmart/Esmart_Container.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
@@ -33,7 +34,7 @@ idler_after_cb(void *data)
    edje_freeze();
    return 1;
 }
-    
+
 
 /**
  * get the hostname of the machine, surrounded by the before and after
@@ -473,6 +474,36 @@ _session_set(void *data, Evas_Object * o, const char *emission,
    }
 }
 
+static void
+_container_scroll(void *data, Evas_Object * o, const char *emission,
+                  const char *source)
+{
+   double sx = 0.0, sy = 0.0;
+   Evas_Object *container = NULL;
+
+   if ((container = data))
+   {
+      double container_length = 0.0;
+
+      container_length = esmart_container_elements_length_get(container);
+      edje_object_part_drag_value_get(session->edje, source, &sx, &sy);
+      switch (esmart_container_direction_get(container))
+      {
+        case CONTAINER_DIRECTION_HORIZONTAL:
+           esmart_container_scroll_offset_set(container,
+                                              (int) (sx * container_length));
+           break;
+        case CONTAINER_DIRECTION_VERTICAL:
+           esmart_container_scroll_offset_set(container,
+                                              (int) (sy * container_length));
+           break;
+        default:
+           fprintf(stderr, "Unknown Container Orientation\n");
+           break;
+      }
+   }
+}
+
 /**
  * print the "Help" associated with the app, shows cli args etc
  * @param argv the argv that was passed from the application
@@ -578,6 +609,7 @@ main(int argc, char *argv[])
    Evas_Coord x, y, w, h;
    char *entries[] = { "EntranceUserEntry", "EntrancePassEntry" };
    int entries_count = 2;
+   const char *container_orientation = NULL;
    int c;
    struct option d_opt[] = {
       {"help", 0, 0, 'h'},
@@ -671,15 +703,18 @@ main(int argc, char *argv[])
       }
    }
 
-   if (!entrance_ipc_init(server_pid))
-      return -1;
+   if (!testing)
+      if (!entrance_ipc_init(server_pid))
+         return -1;
 
    session = entrance_session_new(config, display, testing);
 
    if (config)
       free(config);
 
+#if 0
    printf("entrance: main: XAUTHORITY = %s\n", getenv("XAUTHORITY"));
+#endif
 
 #if 1
    if (!ecore_x_init(display))
@@ -698,7 +733,7 @@ main(int argc, char *argv[])
 #endif
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
-   
+
    if (ecore_evas_init())
    {
       edje_init();
@@ -837,13 +872,36 @@ main(int argc, char *argv[])
          the session list if it exists. */
       if (edje_object_part_exists(edje, "EntranceSessionList"))
       {
-         entrance_session_list_add(session);
+         entrance_session_xsession_list_add(session);
+         if ((container_orientation =
+              edje_object_data_get(edje,
+                                   "entrance.xsessions.list.orientation")))
+         {
+            entrance_session_list_direction_set(session,
+                                                session->session_container,
+                                                container_orientation);
+         }
+         edje_object_signal_callback_add(edje, "drag",
+                                         "entrance.xsessions.list.scroller",
+                                         _container_scroll,
+                                         session->session_container);
       }
       /* See if we have an EntranceUserList part, tell the session to load
          the user list if it exists. */
       if (edje_object_part_exists(edje, "EntranceUserList"))
       {
          entrance_session_user_list_add(session);
+         if ((container_orientation =
+              edje_object_data_get(edje, "entrance.users.list.orientation")))
+         {
+            entrance_session_list_direction_set(session,
+                                                session->user_container,
+                                                container_orientation);
+         }
+         edje_object_signal_callback_add(edje, "drag",
+                                         "entrance.users.list.scroller",
+                                         _container_scroll,
+                                         session->user_container);
       }
 
       /**
@@ -884,7 +942,8 @@ main(int argc, char *argv[])
          entrance_session_free(session);
          ecore_evas_shutdown();
       }
-      entrance_ipc_shutdown();
+      if (!testing)
+         entrance_ipc_shutdown();
       edje_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();
