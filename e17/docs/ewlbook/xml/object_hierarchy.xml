@@ -1,6 +1,8 @@
 <chapter id="ch-OjbectHierarchy">
 <title>Object Hierarchy</title>
 
+<sect1 id="sec-ObjHierIntro">
+<title>Introduction</title>
 <para>
 The EWL widgets are setup in a hierarcy. The base widget that everything
 extends from is the <literal>Ewl_Object</literal>. The
@@ -45,7 +47,25 @@ The <literal>Ewl_Container</literal> object is built off of the
 widgets that are to hold other widgets. This includes anything from the main
 window, to boxes, to scrollpanes.
 </para>
+</sect1>
 
+<sect1 id="sec-ObjHierCasting">
+<title>Object Casting</title>
+<para>
+As you progress into EWL you will notice that there is a lot of casting
+between different types. To make this easier, each cast to a particular type
+has a EWL_TYPE() macro defined. So for example there is are EWL_OBJECT(o) and
+EWL_WIDGET(o) defined to make life easier.
+</para>
+
+<para>
+These macros should always be used when converting between EWL widgets so
+that you know that the right thing is being done.
+</para>
+</sect1>
+
+<sect1 id="sec-ObjHierNewWidget">
+<title>Adding new widgets</title>
 <para>
 To add new widgets into EWL you just need to create a new struct that has
 the appropriate type of subclass as the first element. This subclass object
@@ -66,6 +86,7 @@ This would create a new Ewl_Foo widget that inherits from the
 <literal>Ewl_Container</literal> so you would be able to pack other widgets
 into this new widget type.
 </para>
+</sect1>
 
 </chapter>
 

@@ -123,6 +123,27 @@ the two calls:
 </sect1>
 
 <!-- ################################### -->
+<!-- EWL CHECKBUTTON -->
+<sect1 id="sec-EwlCheckButton">
+<title>ewl_checkbutton</title>
+<para>
+ <figure>
+  <title>An Ewl Checkbutton</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/checkbutton.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL checkbutton</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect1>
+
+<!-- ################################### -->
 <!-- EWL COMBO -->
 <sect1 id="sec-EwlCombo">
 <title>ewl_combo</title>
@@ -401,7 +422,8 @@ placed in another window in the same fashion.
   <title>Creating an EWL filedialog</title>
   <programlisting role="C">
    Ewl_Widget *filedialog = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-   ewl_callback_append(filedialog, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
+   ewl_callback_append(filedialog, EWL_CALLBACK_VALUE_CHANGED, 
+							open_file_cb, NULL);
    ewl_widget_show(filedialog);
   </programlisting>
  </example>
@@ -484,6 +506,13 @@ object holding the file dialog.
 <sect1 id="sec-EwlPassword">
 <title>ewl_password</title>
 <para>
+The <literal>ewl_password</literal> widget provides similar functionality to
+the <literal>ewl_text</literal> widget, except that any text entered will
+not be displayed, instead a configurable obscuring character will be
+displayed.
+</para>
+
+<para>
  <figure>
   <title>An EWL password dialog</title>
   <inlinemediaobject>
@@ -496,7 +525,41 @@ object holding the file dialog.
   </inlinemediaobject>
  </figure>
 </para>
+
 <para>
+<example>
+<title>Creating an EWL password</title>
+<programlisting role="C">
+    Ewl_Widget *p = ewl_password_new("default");
+    ewl_password_set_obscure(EWL_PASSWORD(p), "-");
+    ewl_callback_append(p, EWL_CALLBACK_VALUE_CHANGED, passwd_cb, NULL);
+    ewl_widget_show(p);
+</programlisting>
+</example>
+The default obscuring character used is a '*' character. This can be easily
+changed by calling 
+<function>ewl_password_set_obscure(Ewl_Password *, char)</function>.
+There is also a corresponding 
+<function>char ewl_password_get_obscure(Ewl_Password *)</function> to
+retrieve the current obscuring character. As with the
+<literal>ewl_text</literal> widget there are two functions to get and set
+the text of the widget: 
+<function>ewl_password_set_text(Ewl_Password *, char *)</function> and
+<function>char *ewl_password_get_text(Ewl_Password *)</function>.
+</para>
+
+<para>
+When the user presses the enter key in the password box a
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> will be triggered.
+<example>
+<title>Ewl_Password value changed callback</title>
+<programlisting role="C">
+void passwd_cb(Ewl_Widget *, void *event, void *data) {
+    char *text = ewl_password_get_text(EWL_PASSWORD(w));
+    printf("text: %s\n", text);
+}
+</programlisting>
+</example>
 </para>
 </sect1>
 
@@ -526,6 +589,19 @@ object holding the file dialog.
 <sect1 id="sec-Ewl-RadioButton">
 <title>ewl_radiobutton</title>
 <para>
+ <figure>
+  <title>An EWL radiobutton</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/radiobutton.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL radiobutton</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
 </para>
 </sect1>
 
@@ -542,7 +618,44 @@ object holding the file dialog.
 <sect1 id="sec-EwlSeeker">
 <title>ewl_seeker</title>
 <para>
+ <figure>
+  <title>An EWL seeker</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/seeker.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL seeker</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
 </para>
+<para>
+<example>
+<title>Creating an EWL seeker</title>
+<programlisting role="C">
+    Ewl_Widget *s = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
+    ewl_seeker_set_value(EWL_SEEKER(s), 5.0);
+    ewl_seeker_set_range(EWL_SEEKER(s), 10.0);
+    ewl_seeker_set_step(EWL_SEEKER(s), 1);
+    ewl_callback_append(s, EWL_CALLBACK_VALUE_CHANGED, seeker_cb, NULL);
+    ewl_widget_show(s);
+</programlisting>
+</example>
+</para>
+
+<para>
+<example>
+<title>Ewl_Seeker callback</title>
+<programlisting role="C">
+void seeker_cb(Ewl_Widget *w, void *event, void *data) {
+    double val = ewl_seeker_get_value(EWL_SEEKER(w));
+    printf("%f\n", val);
+}
+</programlisting>
+</example>
+</para>
+
 </sect1>
 
 <!-- ################################### -->
