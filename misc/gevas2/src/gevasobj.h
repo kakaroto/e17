@@ -99,6 +99,7 @@ extern "C" {
 		int (*get_alpha) (GtkgEvasObj * object);
 		void (*set_alpha) (GtkgEvasObj * object, int a);
 		void (*get_location) (GtkgEvasObj * object, double *x, double *y);
+		void (*set_location) (GtkgEvasObj * object, double  x, double  y);
         void (*get_size)(GtkgEvasObj * object, double *w, double *h);
 
 		void (*add_evhandler) (GtkgEvasObj * object, GtkObject * h);
@@ -153,6 +154,7 @@ extern "C" {
 	void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
 							   double *w, double *h);
 	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
+	void gevasobj_set_location(GtkgEvasObj * object, double  x, double  y);
     void gevasobj_get_size(    GtkgEvasObj * object, double *w, double *h);
     void gevasobj_show(GtkgEvasObj * object);
 	void gevasobj_hide(GtkgEvasObj * object);

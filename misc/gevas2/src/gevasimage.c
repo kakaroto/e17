@@ -292,24 +292,39 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
                                       guint32* rgbadata,
                                       int w, int h )
 {
-	GtkgEvasImage *ev;
+    double x=0;
+    double y=0;
+    int layer = 0;
+    GtkgEvasImage *ev;
     g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
     ev = GTK_GEVASIMAGE(object);
-
+    
+    {
+        Evas_Object* eo = evas_object_image_add( EVAS(ev) );
+        if( eo )
+        {
+            gevasobj_get_location( GTK_GEVASOBJ(object), &x, &y );
+            layer = gevasobj_get_layer( GTK_GEVASOBJ(object) );
+        }
+    }
+    
     _gevasobj_ensure_obj_free( GTK_OBJECT(ev) );
     g_free(ev->image_filename);
     ev->image_filename = g_strdup("<na>");
     
-    Evas_Object* eo;
-    eo = evas_object_image_add( EVAS(ev) );
+    Evas_Object* eo = evas_object_image_add( EVAS(ev) );
     _gevas_set_obj( GTK_OBJECT(ev), eo);
 
 //    evas_object_resize( eo, w, h );
+    evas_object_resize( eo, w, h );
     evas_object_image_size_set( eo, w, h );
-//    evas_object_resize( eo, w, h );
     evas_object_image_data_set( eo, (int*)(rgbadata) );
     evas_object_image_fill_set( eo, 0, 0, w, h );
+
+    gevasobj_set_location( GTK_GEVASOBJ(object), x, y );
+    gevasobj_set_layer( GTK_GEVASOBJ(object), layer );
+    gevasobj_queue_redraw( GTK_GEVASOBJ( object ) );
 }
 
 

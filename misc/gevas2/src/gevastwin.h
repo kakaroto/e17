@@ -45,6 +45,10 @@ extern "C" {
 #define GTK_IS_GEVASTWIN(obj)       GTK_CHECK_TYPE (obj, gevastwin_get_type ())
 #define GTK_GEVASTWIN_MAINOBJ		"GtkgEvasTwin::main_obj"
 #define GTK_GEVASTWIN_AUXOBJ		"GtkgEvasTwin::aux_obj"
+#define GTK_GEVASTWIN_ALIGNX		"GtkgEvasTwin::align_x"
+#define GTK_GEVASTWIN_ALIGNY		"GtkgEvasTwin::align_y"
+#define GTK_GEVASTWIN_OFFSETX		"GtkgEvasTwin::offset_x"
+#define GTK_GEVASTWIN_OFFSETY		"GtkgEvasTwin::offset_y"
 #define gevastwin_set_main_obj( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
                   GTK_GEVASTWIN_MAINOBJ, (gpointer) val, NULL);
@@ -59,6 +63,9 @@ extern "C" {
 
 		GtkgEvasObj *mainobj;
 		GtkgEvasObj *auxobj;
+
+		int ox,oy;
+		int ax,ay;
 
 		void (*main_obj_move) (GtkgEvasObj * object, double x, double y);
 		void (*aux_obj_move) (GtkgEvasObj * object, double x, double y);

@@ -38,6 +38,10 @@
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
  */
+
+#include <gevasevh_selectable.h>
+#include <gevasevh_group_selector.h>
+
 #undef ENABLE_NLS
 
 #ifdef ENABLE_NLS
@@ -64,7 +68,11 @@
 enum {
 	ARG_0 = 100,				/* Skip 0, an invalid argument ID */
 	ARG_MAINOBJ,
-	ARG_AUXOBJ
+	ARG_AUXOBJ,
+	ARG_ALIGNX,
+	ARG_ALIGNY,
+	ARG_OFFSETX,
+	ARG_OFFSETY
 };
 
 static void gevastwin_class_init(GtkgEvasTwinClass * klass);
@@ -120,16 +128,29 @@ static void gevastwin_class_init(GtkgEvasTwinClass * klass)
 	object_class->set_arg = gevastwin_set_arg;
 
 	gtk_object_add_arg_type(GTK_GEVASTWIN_MAINOBJ,
-							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_MAINOBJ);
+				GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_MAINOBJ);
 	gtk_object_add_arg_type(GTK_GEVASTWIN_AUXOBJ,
-							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_AUXOBJ);
+				GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_AUXOBJ);
 
+	gtk_object_add_arg_type(GTK_GEVASTWIN_ALIGNX,
+				GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_ALIGNX);
+	gtk_object_add_arg_type(GTK_GEVASTWIN_ALIGNY,
+				GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_ALIGNY);
+
+	gtk_object_add_arg_type(GTK_GEVASTWIN_OFFSETX,
+				GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_OFFSETX);
+	gtk_object_add_arg_type(GTK_GEVASTWIN_OFFSETY,
+				GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_OFFSETY);
 }
 
 static void gevastwin_init(GtkgEvasTwin * ev)
 {
 	ev->mainobj = 0;
 	ev->auxobj = 0;
+	ev->ox = 0;
+	ev->oy = 5;
+	ev->ax = 0;
+	ev->ay = 1;
 }
 
 GtkgEvasTwin *gevastwin_new()
@@ -138,7 +159,11 @@ GtkgEvasTwin *gevastwin_new()
 
 	ev = gtk_type_new(gevastwin_get_type());
 	ev->mainobj = 0;
-	ev->auxobj  = 0;
+	ev->auxobj = 0;
+	ev->ox = 0;
+	ev->oy = 5;
+	ev->ax = 0;
+	ev->ay = 1;
 
 	return GTK_GEVASTWIN(ev);
 }
@@ -167,11 +192,10 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 	double main_x = 0, main_y = 0, main_w = 0, main_h = 0;
 
 	if (ev->mainobj && ev->auxobj) {
-
 		gevasobj_get_geometry(ev->mainobj, &main_x, &main_y, &main_w, &main_h);
-		if (obj == ev->auxobj) {
 
-			ev->aux_obj_move(ev->auxobj, main_x, main_y + main_h + 5);
+		if (obj == ev->auxobj) {
+			ev->aux_obj_move(ev->auxobj, main_x + (ev->ax?main_w:0) + ev->ox, main_y + (ev->ay?main_h:0) + ev->oy);
 			gevasobj_queue_redraw(ev->auxobj);
 		}
 
@@ -179,16 +203,14 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 			double ax = 0, ay = 0, ah = 0, aw = 0;
 
 			gevasobj_get_geometry(ev->auxobj, &ax, &ay, &aw, &ah);
-			ev->main_obj_move(ev->mainobj, ax, ay - main_h - 5);
+			ev->main_obj_move(ev->mainobj, ax - (ev->ax?main_w:0) - ev->ox, ay - (ev->ay?main_h:0) - ev->oy);
 			gevasobj_queue_redraw(ev->mainobj);
 		}
-
 	}
 }
 
 void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 {
-
 	GtkgEvasTwin *ev;
 	gpointer d;
 
@@ -196,17 +218,13 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 	if (d) {
 		ev = GTK_GEVASTWIN(d);
 		if (ev->mainobj == object) {
-
 			ev->main_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->auxobj);
 		}
-
-		if (ev->auxobj == object) {
-
+		else if (ev->auxobj == object) {
 			ev->aux_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->mainobj);
 		}
-
 	}
 }
 
@@ -229,7 +247,7 @@ static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			ev->main_obj_move = ev->mainobj->move;
 			ev->mainobj->move = _gevastwin_move_xxx;
 			gtk_object_set_data(GTK_OBJECT(ev->mainobj),
-								GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+					    GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
 			break;
 
 		case ARG_AUXOBJ:
@@ -239,8 +257,29 @@ static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			ev->auxobj->move = _gevastwin_move_xxx;
 			_gevastwin_sync_obj(ev, ev->auxobj);
 			gtk_object_set_data(GTK_OBJECT(ev->auxobj),
-								GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+					    GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
 			break;
+
+		case ARG_ALIGNX:
+			ev->ax = GTK_VALUE_INT(*arg);
+			_gevastwin_sync_obj(ev, ev->auxobj);
+			break;
+
+		case ARG_ALIGNY:
+			ev->ay = GTK_VALUE_INT(*arg);
+			_gevastwin_sync_obj(ev, ev->auxobj);
+			break;
+
+		case ARG_OFFSETX:
+			ev->ox = GTK_VALUE_INT(*arg);
+			_gevastwin_sync_obj(ev, ev->auxobj);
+			break;
+
+		case ARG_OFFSETY:
+			ev->oy = GTK_VALUE_INT(*arg);
+			_gevastwin_sync_obj(ev, ev->auxobj);
+			break;
+
 		default:
 			break;
 	}

@@ -169,16 +169,11 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
     evas_object_data_set( eobj, PRIVATE_GTK_GEVASOBJ, object);
 
     
-	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_IN,
-                                    __gevas_mouse_in, object);
-	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_OUT,
-                                   __gevas_mouse_out, object);
-	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_DOWN,
-                                   __gevas_mouse_down, object);
-	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_UP,
-                                    __gevas_mouse_up, object);
-	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_MOVE,
-                                    __gevas_mouse_move, object);
+	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_IN,  __gevas_mouse_in, object);
+	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_OUT, __gevas_mouse_out, object);
+	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_DOWN,__gevas_mouse_down, object);
+	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_UP,  __gevas_mouse_up, object);
+	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_MOVE,__gevas_mouse_move, object);
 
 }
 
@@ -309,6 +304,10 @@ void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 {
 	double w, h;
     evas_object_geometry_get( EVASO(object), x, y, &w, &h);
+}
+void _gevasobj_set_location(GtkgEvasObj * object, double x, double y)
+{
+    evas_object_move( EVASO(object), x, y );
 }
 void _gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
 {
@@ -507,6 +506,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 	klass->get_alpha = _gevasobj_get_alpha;
 	klass->set_alpha = _gevasobj_set_alpha;
 	klass->get_location = _gevasobj_get_location;
+	klass->set_location = _gevasobj_set_location;
 	klass->get_size = _gevasobj_get_size;
 
 	klass->add_evhandler = _gevasobj_add_evhandler;
@@ -725,6 +725,10 @@ void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
 void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 {
 	VTAB->get_location(object, x, y);
+}
+void gevasobj_set_location(GtkgEvasObj * object, double x, double y)
+{
+	VTAB->set_location(object, x, y);
 }
 void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
 {
