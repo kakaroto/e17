@@ -29,6 +29,8 @@
 
 MIITEM("default", "volume.png")
 MIITEM("brightness", "brightness.png")
-MIITEM("mute", "mute.png")
+MIITEM("mute", "noaudio.png")
+MIITEM("sleep", "sleep.png")
+MIITEM("battery", "battery.png")
 	    }
 

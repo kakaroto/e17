@@ -11,6 +11,8 @@ images {
     image, "mute.png" LOSSY 95;
     image, "noaudio.png" LOSSY 95;
     image, "brightness.png" LOSSY 95;
+    image, "sleep.png" LOSSY 95;
+    image, "battery.png" LOSSY 95;
 }
 
 collections {
@@ -51,6 +53,20 @@ collections {
 		signal, "MUTED";
 		source, "";
 		action, STATE_SET "mute" 0.0;
+		target, "mainimage";
+	    }
+	    program {
+		name, "BatteryWarning";
+		signal, "BATTERY_WARNING";
+		source, "";
+		action, STATE_SET "battery" 0.0;
+		target, "mainimage";
+	    }
+	    program {
+		name, "SleepWarning";
+		signal, "SLEEP_WARNING";
+		source, "";
+		action, STATE_SET "sleep" 0.0;
 		target, "mainimage";
 	    }
 	}
