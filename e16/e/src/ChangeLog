@@ -4336,3 +4336,11 @@ Tue Feb 29 19:44:59 GMT 2000
 Hehe. Typo stopped the list skip thing being loaded from the .snaps.x file.
 Fixed.
 
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 18:57:38 CET 2000
+(Christian)
+
+Small fix for people who want to pop up
+menus using their keyboard.
