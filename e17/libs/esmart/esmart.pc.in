@@ -1,6 +1,6 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-libdir=@libdir@
+libdir=@libdir@/@PACKAGE@
 includedir=@includedir@
 
 Name: esmart
