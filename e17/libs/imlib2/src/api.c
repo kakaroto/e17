@@ -1098,6 +1098,8 @@ imlib_clone_image(void)
      }
    memcpy(im->data, im_old->data, im->w * im->h *sizeof(DATA32));
    im->flags = im_old->flags;
+   SET_FLAG(im->flags, F_UNCACHEABLE);
+   SET_FLAG(im->flags, F_UNCACHEABLE);
    im->moddate = im_old->moddate;
    im->border = im_old->border;
    im->loader = im_old->loader;
