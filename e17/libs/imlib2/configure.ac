@@ -307,7 +307,7 @@ AC_SUBST(x_libs)
 AC_SUBST(dlopen_libs)
 
 AC_OUTPUT(imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
-          filters/Makefile demo/Makefile doc/Makefile imlib2.spec \
+          filters/Makefile demo/Makefile doc/Makefile \
 	  ,
 [
 test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h;
