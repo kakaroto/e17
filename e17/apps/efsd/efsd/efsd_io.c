@@ -68,7 +68,7 @@ static int     write_reply_event(int sockfd, EfsdEvent *ee);
 int 
 read_data(int sockfd, void *dest, int size)
 {
-  int             num_left, num_read;
+  int             num_left, num_read, result;
   fd_set          fdset;
   char           *ptr;
   struct timeval  tv;
@@ -89,7 +89,7 @@ read_data(int sockfd, void *dest, int size)
     {
       FD_SET(sockfd, &fdset);
 
-      while (select(sockfd + 1, &fdset, NULL, NULL, &tv) < 0)
+      while ((result = select(sockfd + 1, &fdset, NULL, NULL, &tv)) < 0)
 	{
 	  if (errno == EINTR)
 	    {
@@ -103,6 +103,11 @@ read_data(int sockfd, void *dest, int size)
 	      fprintf(stderr, "Select error -- exiting.\n");
 	      exit(-1);
 	    }
+	}
+
+      if (result == 0)
+	{
+	  D_RETURN_(-1);
 	}
 
       if ((num_read = read(sockfd, ptr, num_left)) < 0)
@@ -162,7 +167,7 @@ read_string(int sockfd, char **s)
 static int     
 write_data(int sockfd, void *data, int size)
 {
-  int             num_left, num_written;
+  int             num_left, num_written, result;
   fd_set          fdset;
   char           *ptr;
   struct timeval  tv;
@@ -183,7 +188,7 @@ write_data(int sockfd, void *data, int size)
     {
       FD_SET(sockfd, &fdset);
 
-      while (select(sockfd + 1, NULL, &fdset, NULL, &tv) < 0)
+      while ((result = select(sockfd + 1, NULL, &fdset, NULL, &tv)) < 0)
 	{
 	  if (errno == EINTR)
 	    {
@@ -197,6 +202,11 @@ write_data(int sockfd, void *data, int size)
 	      fprintf(stderr, "Select error -- exiting.\n");
 	      exit(-1);
 	    }
+	}
+
+      if (result == 0)
+	{
+	  D_RETURN_(-1);
 	}
 
       if ((num_written = write(sockfd, ptr, num_left)) < 0)
