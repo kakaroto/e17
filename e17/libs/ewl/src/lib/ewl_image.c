@@ -152,6 +152,7 @@ void ewl_image_file_set(Ewl_Image * i, char *im, char *key)
 		 * Now draw the new image
 		 */
 		ewl_image_realize_cb(w, NULL, NULL);
+		ewl_widget_configure(w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -229,26 +230,10 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 
-	/*
-	 * Scale the image to be proportional inside the available space.
-	 */
-	if (i->ow && i->oh && i->proportional) {
-		double wp, hp;
-
-		wp = (double)w / (double)i->ow;
-		hp = (double)h / (double)i->oh;
-
-		if (wp < hp)
-			hp = wp;
-		else
-			wp = hp;
-
-		w = wp * i->ow;
-		h = hp * i->oh;
-	}
-
 	i->sw = 1.0;
 	i->sh = 1.0;
+	i->aw = w;
+	i->ah = h;
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(i), w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -272,6 +257,7 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 
+	i->tile.set = 1;
 	i->tile.x = x;
 	i->tile.y = y;
 	i->tile.w = w;
@@ -284,7 +270,6 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
-	int             width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -325,11 +310,8 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->oh)
 		i->oh = 1;
 
-	width = ewl_object_preferred_inner_w_get(EWL_OBJECT(i));
-	height = ewl_object_preferred_inner_h_get(EWL_OBJECT(i));
-
-	if ((width > EWL_OBJECT_MIN_SIZE) && (height > EWL_OBJECT_MIN_SIZE)) {
-		ewl_image_scale_to(i, width, height);
+	if (i->aw || i->ah) {
+		ewl_image_scale_to(i, i->aw, i->ah);
 	}
 	else {
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
@@ -386,23 +368,23 @@ void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	hh = CURRENT_H(w);
 
 	if (i->proportional) {
-		double op, np;
+		double op;
 
 		op = (double)i->ow / (double)i->oh;
-		np = (double)ww / (double)hh;
 
-		if (op < np) {
-			hh *= op;
+		if (i->ow < i->oh) {
+			ww /= op;
 		}
 		else {
-			ww *= np;
+			hh *= op;
 		}
 	}
 
 	/*
 	 * set the tile width and height if not set already
 	*/
-	if ((i->tile.w == 0) || (i->tile.h == 0)) {
+	if (!i->tile.set) {
+		i->tile.x = i->tile.y = 0;
 		i->tile.w = i->sw * ww;
 		i->tile.h = i->sh * hh;
 	}
