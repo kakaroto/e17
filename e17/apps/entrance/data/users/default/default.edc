@@ -13,8 +13,8 @@ collections
 {
     group
     {
-	min, 120 48;
-	max, 150 60;
+//	min, 120 48;
+//	max, 150 60;
 	name, "User";
 	parts
 	{
