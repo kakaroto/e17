@@ -907,6 +907,8 @@ ewl_text_op_text_apply(Ewl_Text *ta, Ewl_Text_Op *op)
 	else if (op->type == EWL_TEXT_OP_TYPE_TEXT_INSERT)
 		etox_insert_text(ta->etox, opt->text, opt->index);
 
+	ewl_text_update_size(ta);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
