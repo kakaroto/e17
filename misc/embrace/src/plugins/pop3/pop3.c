@@ -112,6 +112,7 @@ static int on_server_data (void *udata, int type, void *event)
 
 				ecore_con_server_send (ev->server, "QUIT", 4);
 				ecore_con_server_del (ev->server);
+				mailbox_property_set (mb, "server", NULL);
 			}
 
 			break;
@@ -140,6 +141,7 @@ static int on_server_del (void *udata, int type, void *event)
 	}
 
 	ecore_con_server_del (ev->server);
+	mailbox_property_set (mb, "server", NULL);
 
 	return 0;
 }
@@ -147,8 +149,14 @@ static int on_server_del (void *udata, int type, void *event)
 static bool pop3_check (MailBox *mb)
 {
 	Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
+	Ecore_Con_Server *server;
 	char *host;
 	int port;
+
+	if (mailbox_property_get (mb, "server")) {
+		fprintf (stderr, "[pop3] already connected!\n");
+		return false;
+	}
 
 	host = mailbox_property_get (mb, "host"),
 	port = (int) mailbox_property_get (mb, "port");
@@ -161,8 +169,10 @@ static bool pop3_check (MailBox *mb)
 		type |= ECORE_CON_USE_SSL;
 #endif
 
+	server = ecore_con_server_connect (type, host, port, mb);
+
 	mailbox_property_set (mb, "state", STATE_DISCONNECTED);
-	ecore_con_server_connect (type, host, port, mb);
+	mailbox_property_set (mb, "server", server);
 
 	return true;
 }
@@ -181,7 +191,7 @@ static bool pop3_add_mailbox (MailBox *mb)
 
 	assert (mb);
 
-	interval = MAX(mailbox_poll_interval_get (mb), MAX_INTERVAL);
+	interval = MAX (mailbox_poll_interval_get (mb), MAX_INTERVAL);
 
 	if (!(timer = ecore_timer_add (interval, on_timer, mb)))
 		return false;
@@ -197,7 +207,7 @@ static bool pop3_remove_mailbox (MailBox *mb)
 
 	assert (mb);
 
-	if (!(timer = mailbox_property_get (mb, "timer")))
+	if ((timer = mailbox_property_get (mb, "timer")))
 		ecore_timer_del (timer);
 
 	free (mailbox_property_get (mb, "host"));

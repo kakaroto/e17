@@ -134,7 +134,7 @@ static bool imap_add_mailbox (MailBox *mb)
 
 	assert (mb);
 
-	interval = MAX(mailbox_poll_interval_get (mb), MAX_INTERVAL);
+	interval = MAX (mailbox_poll_interval_get (mb), MAX_INTERVAL);
 
 	if (!(timer = ecore_timer_add (interval, on_timer, mb)))
 		return false;
@@ -150,7 +150,7 @@ static bool imap_remove_mailbox (MailBox *mb)
 
 	assert (mb);
 
-	if (!(timer = mailbox_property_get (mb, "timer")))
+	if ((timer = mailbox_property_get (mb, "timer")))
 		ecore_timer_del (timer);
 
 	free (mailbox_property_get (mb, "host"));

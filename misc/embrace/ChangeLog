@@ -1,5 +1,11 @@
 $Id$
 
+2004-04-17 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/plugins/pop3/pop3.c: Don't connect twice to the same
+          server.
+        * src/plugins/maildir/maildir.c: Added timer-based checking
+          to support systems that don't have dnotify.
+
 2004-04-09 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/plugins/pop3/pop3.c: The POP3 plugin will now tell you
           about connection problems. ERR messages from the server will

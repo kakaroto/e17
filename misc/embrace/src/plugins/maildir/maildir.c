@@ -30,8 +30,6 @@
 #ifdef __linux__
 # define USE_DNOTIFY
 # include <fcntl.h>
-#else
-# error Linux 2.4+ is required at the moment (yeah, this sucks)
 #endif
 
 #include <embrace_plugin.h>
@@ -177,22 +175,47 @@ static bool monitor_dir (MailBox *mb, const char *path, bool is_unseen)
 
 	return true;
 }
+#endif
+
+#ifndef USE_DNOTIFY
+static int on_timer (void *udata)
+{
+	maildir_check (udata);
+
+	return 1;
+}
+#endif
 
 static bool maildir_add_mailbox (MailBox *mb)
 {
+#ifdef USE_DNOTIFY
 	char *str, *prop[] = {"path_cur", "path_new"};
 	int i;
+#else
+	Ecore_Timer *timer;
+	int interval;
+#endif
 
 	assert (mb);
 
+#ifdef USE_DNOTIFY
 	for (i = 0; i < 2; i++) {
 		str = mailbox_property_get (mb, prop[i]);
 		monitor_dir (mb, str, !!i);
 	}
+#else
+	interval = mailbox_poll_interval_get (mb);
+
+	if (!(timer = ecore_timer_add (interval, on_timer, mb)))
+		return false;
+
+	mailbox_property_set (mb, "timer", timer);
+#endif
 
 	return true;
 }
 
+#ifdef USE_DNOTIFY
 static Evas_List *find_notify_data (MailBox *mb, int signal)
 {
 	NotifyData *data;
@@ -214,6 +237,8 @@ static bool maildir_remove_mailbox (MailBox *mb)
 #ifdef USE_DNOTIFY
 	NotifyData *data;
 	Evas_List *l;
+#else
+	Ecore_Timer *timer;
 #endif
 
 	assert (mb);
@@ -231,6 +256,9 @@ static bool maildir_remove_mailbox (MailBox *mb)
 
 		notify_data = evas_list_remove_list (notify_data, l);
 	}
+#else
+	if ((timer = mailbox_property_get (mb, "timer")))
+		ecore_timer_del (timer);
 #endif
 
 	return true;
@@ -284,9 +312,9 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 
 #ifdef USE_DNOTIFY
 	ep->shutdown = maildir_shutdown;
-	ep->add_mailbox = maildir_add_mailbox;
 #endif
 
+	ep->add_mailbox = maildir_add_mailbox;
 	ep->remove_mailbox = maildir_remove_mailbox;
 
 #ifdef USE_DNOTIFY
