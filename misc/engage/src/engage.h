@@ -68,6 +68,7 @@ struct _OD_Options {
   int             width, height;
   char           *icon_path;
   OD_Mode         mode;
+  int             grab_icons;
 
   int             size, spacing, arrow_size;    // icon-*
   double          zoomfactor, dock_zoom_duration;

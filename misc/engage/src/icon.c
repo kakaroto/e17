@@ -67,15 +67,15 @@ od_icon_new_minwin(Ecore_X_Window win)
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   char           *icon_path = od_icon_path_get(icon_name);
-#if 1
-#  ifdef HAVE_IMLIB
-  OD_Icon        *ret = od_icon_grab(title, win);
+  OD_Icon        *ret;
+#ifdef HAVE_IMLIB
+  if (options.grab_icons == 0) 
+    ret = od_icon_new(title, icon_path);
+  else
+    ret = od_icon_grab(title, win);
 #  else
-  OD_Icon        *ret = od_icon_new(title, icon_path);
+  ret = od_icon_new(title, icon_path);
 #  endif
-#else
-  OD_Icon        *ret = od_icon_new(title, icon_path);
-#endif
   fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
   ret->type = minimised_window;
   ret->data.minwin.window = win;
@@ -105,15 +105,15 @@ od_icon_grab(const char *name, Ecore_X_Window win)
   imlib_context_set_dither_mask(0);
   imlib_context_set_drawable(hints->icon_pixmap);
   
-  printf("size is %d, %d, %d, %d\n", x, y, w, h);
-  //XSync(dsp, False);
-//img = imlib_create_image_from_drawable(hints->icon_mask, x, y, w, h, 0);
   img = imlib_create_image_from_drawable(0, x, y, w, h, 0);
   imlib_context_set_image(img);
+  imlib_context_set_mask(hints->icon_mask);
 
-  evas_object_image_pixels_import(ret->icon, imlib_image_get_data());
+  imlib_image_set_format("argb");
+  evas_object_image_size_set(ret->icon, w, h);
+  evas_object_image_data_copy_set(ret->icon, imlib_image_get_data_for_reading_only());
+
   imlib_free_image();
-
   XFree(hints);
   return ret;
 }

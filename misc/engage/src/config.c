@@ -13,6 +13,7 @@ od_config_init()
   ecore_config_default_int("engage.options.height", 100);
   options.icon_path = PACKAGE_DATA_DIR "/icons/";
   ecore_config_default_int_bound("engage.options.mode", OM_ONTOP, 0, 1, 1);
+  ecore_config_default_int_bound("engage.options.grab_icons", 1, 0, 1, 1);
 
   ecore_config_default_int("engage.options.size", 32);
   ecore_config_default_int("engage.options.spacing", 4);
@@ -32,6 +33,7 @@ od_config_init()
   options.width = ecore_config_get_int("engage.options.width");
   options.height = ecore_config_get_int("engage.options.height");
   options.mode = ecore_config_get_int("engage.options.mode");
+  options.grab_icons = ecore_config_get_int("engage.options.grab_icons");
 
   options.size = ecore_config_get_int("engage.options.size");
   options.spacing = ecore_config_get_int("engage.options.spacing");
