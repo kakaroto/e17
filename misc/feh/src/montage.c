@@ -236,13 +236,24 @@ init_montage_mode(void)
             yyy = y;
          }
 
+         if (opt.alpha && opt.alpha_level)
+         {
+            Imlib_Color_Modifier cm;
+            DATA8               atab[256];
+
+            D(("Applying alpha options\n"));
+            cm = imlib_create_color_modifier();
+            imlib_context_set_color_modifier(cm);
+            imlib_context_set_image(im_temp);
+            imlib_context_set_blend(1);
+            imlib_image_set_has_alpha(1);
+            memset(atab, opt.alpha_level, sizeof(atab));
+            imlib_set_color_modifier_tables(NULL, NULL, NULL, atab);
+            imlib_apply_color_modifier_to_rectangle(0, 0, ww, hh);
+            imlib_free_color_modifier();
+         }
          imlib_context_set_image(im_main);
 
-         if (opt.alpha & opt.alpha_level)
-         {
-            /* TODO */
-            D(("Applying alpha options\n"));
-         }
          imlib_blend_image_onto_image(im_temp, 0, 0, 0, ww, hh, xxx, yyy, www,
                                       hhh);
          imlib_context_set_image(im_temp);

@@ -299,9 +299,9 @@ init_index_mode(void)
    else
    {
       /* Colour the background */
-      imlib_context_set_color(0,0,0,255);
-      imlib_image_fill_rectangle(0,0,w, h + title_area_h);
-      imlib_context_set_color(255,255,255,255);
+      imlib_context_set_color(0, 0, 0, 255);
+      imlib_image_fill_rectangle(0, 0, w, h + title_area_h);
+      imlib_context_set_color(255, 255, 255, 255);
    }
 
    for (file = filelist; file; file = file->next)
@@ -348,13 +348,24 @@ init_index_mode(void)
             hhh = hh;
          }
 
+         if (opt.alpha && opt.alpha_level)
+         {
+            Imlib_Color_Modifier cm;
+            DATA8 atab[256];
+
+            D(("Applying alpha options\n"));
+            cm = imlib_create_color_modifier();
+            imlib_context_set_color_modifier(cm);
+            imlib_context_set_image(im_temp);
+            imlib_context_set_blend(1);
+            imlib_image_set_has_alpha(1);
+            memset(atab, opt.alpha_level, sizeof(atab));
+            imlib_set_color_modifier_tables(NULL, NULL, NULL, atab);
+            imlib_apply_color_modifier_to_rectangle(0, 0, ww, hh);
+            imlib_free_color_modifier();
+         }
          imlib_context_set_image(im_main);
 
-         if (opt.alpha & opt.alpha_level)
-         {
-            /* TODO */
-            D(("Applying alpha options\n"));
-         }
          text_area_w = opt.thumb_w;
          /* Now draw on the info text */
          if (opt.index_show_name)

@@ -437,7 +437,7 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'a':
            opt.alpha = 1;
-           opt.alpha_level = atoi(optarg);
+           opt.alpha_level = 255 - atoi(optarg);
            break;
         case 'e':
            opt.filelistfile = estrdup(optarg);
@@ -666,6 +666,8 @@ show_usage(void)
            "                            this option specified, the size of the montage will\n"
            "                            default to the size of FILE if no size restrictions\n"
            "                            are specified.\n"
+           "  -a, --alpha NUM           When drawing thumbnails onto the background, apply\n"
+           "                            them with a transparency level of NUM (0-255).\n"
            "  -o FILE                   Save the created montage to FILE\n"
            "  -O FILE                   Just save the created montage to FILE\n"
            "                            WITHOUT displaying it (use in scripts)\n"

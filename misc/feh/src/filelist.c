@@ -318,7 +318,9 @@ filelist_remove_file(feh_file * list, feh_file * file)
    if (list == file)
       list = list->next;
    feh_file_free(file);
-   D(("returning list %p, list->next %p, list->name %s\n", list, list->next, list->name));
+   D(
+     ("returning list %p, list->next %p, list->name %s\n", list, list->next,
+      list->name));
    D_RETURN(list);
 }
 
@@ -406,45 +408,40 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       D_RETURN_;
    }
 
-   if (S_ISDIR(st.st_mode))
+   if ((S_ISDIR(st.st_mode)) && (level != FILELIST_LAST))
    {
+      struct dirent *de;
+      DIR *dir;
       D(("It is a directory\n"));
-      if (level != FILELIST_LAST)
-      {
-         struct dirent *de;
-         DIR *dir;
 
-         if ((dir = opendir(path)) == NULL)
+      if ((dir = opendir(path)) == NULL)
+      {
+         if (!opt.quiet)
+            weprintf("couldn't open directory %s:", path);
+         free(path);
+         D_RETURN_;
+      }
+      de = readdir(dir);
+      while (de != NULL)
+      {
+         if (strcmp(de->d_name, ".") && strcmp(de->d_name, ".."))
          {
-            if (!opt.quiet)
-               weprintf("couldn't open directory %s, errno:%d :", path,
-                        errno);
-            free(path);
-            D_RETURN_;
+            char *newfile;
+
+            newfile = estrjoin("", path, "/", de->d_name, NULL);
+
+            /* This ensures we go down one level even if not fully recursive
+               - this way "feh some_dir" expands to some_dir's contents */
+            if (opt.recursive)
+               add_file_to_filelist_recursively(newfile, FILELIST_CONTINUE);
+            else
+               add_file_to_filelist_recursively(newfile, FILELIST_LAST);
+
+            free(newfile);
          }
          de = readdir(dir);
-         while (de != NULL)
-         {
-            if (strcmp(de->d_name, ".") && strcmp(de->d_name, ".."))
-            {
-               char *file;
-
-               file = estrjoin("", path, "/", de->d_name, NULL);
-
-               /* This ensures we go down one level even if not * fully
-                  recursive - this way "feh some_dir" expands to * some_dir's 
-                  contents */
-               if (opt.recursive)
-                  add_file_to_filelist_recursively(file, FILELIST_CONTINUE);
-               else
-                  add_file_to_filelist_recursively(file, FILELIST_LAST);
-
-               free(file);
-            }
-            de = readdir(dir);
-         }
-         closedir(dir);
       }
+      closedir(dir);
    }
    else if (S_ISREG(st.st_mode))
    {

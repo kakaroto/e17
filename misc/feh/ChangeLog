@@ -1,3 +1,15 @@
+Mon May  8 22:08:41 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Made --alpha actually do stuff. I finally grokked color
+	modifiers, and now they're fun ;-) Imlib2.h is really gonna need
+	some comments at some point though - I had proper trial-and-error
+	fun and games there for a while ;-)
+
+Mon May  8 21:58:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* D'oh! if(foo & bar) isn't quite the same as if(foo &&
+	bar). Stupid cheap keyboards ;-)
+
 Mon May  8 13:12:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Fun with dmalloc
