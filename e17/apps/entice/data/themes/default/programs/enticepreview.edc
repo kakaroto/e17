@@ -1,0 +1,74 @@
+	    program
+	    {
+		name, "preview_show";
+		signal, "show";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "entice.preview.clip";
+	    }
+	    program
+	    {
+		name, "preview_shown";
+		signal, "show";
+		source, "";
+		action, DRAG_VAL_SET 0.0 0.0;
+		target, "entice.preview";
+	    }
+	    program
+	    {
+		name, "preview_shown";
+		signal, "show";
+		source, "";
+		script {
+		    set_int(preview_state, 0);
+		}
+	    }
+	    program
+	    {
+		name, 	"JustImage";
+		signal, "mouse,in";
+		source, "entice.image";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.5;
+		target, "entice.preview.clip";
+	    }
+	    program
+	    {
+		name, "ShowPreview";
+		signal, "entice,preview,before";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "entice.preview.clip";
+	    }
+	    program
+	    {
+		name, "ShowPreviewAfter";
+		signal, "entice,preview,show";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.35;
+		target, "entice.preview.clip";
+		in, 0.2 0.0;
+	    }
+	    program
+	    {
+		name, "ShowPreviewAfterScripties";
+		signal, "entice,preview,show";
+		source, "";
+		script {
+		    new i = get_int(preview_state);
+		    anim(0.5, "preview_animate", i);
+		    if(i == 0) {
+			set_int(preview_state, 1);
+		    }
+		    else if(i == 1) {
+			set_int(preview_state, 2);
+		    }
+		    else if(i == 2) {
+			set_int(preview_state, 3);
+		    }
+		    else {
+			set_int(preview_state, 0);
+		    }
+		}
+	    }

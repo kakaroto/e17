@@ -14,15 +14,6 @@
 	    }
 	    program
 	    {
-		name, 	"JustImage";
-		signal, "mouse,in";
-		source, "entice.image";
-		action, STATE_SET "default" 0.0;
-		transition, LINEAR 0.15;
-		target, "entice.preview";
-	    }
-	    program
-	    {
 		name, "IncomingImageShow";
 		signal, "entice,image,display";
 		source, "";
@@ -30,25 +21,7 @@
 		transition, DECELERATE 0.1;
 		target, "EnticeImageClip";
 		target, "entice.image";
-		target, "entice.preview";
+		target, "entice.preview.clip";
 		target, "ButtonSaveImage";
 		after, "KillSaveImagePulsing";
-	    }
-	    program
-	    {
-		name, "ShowPreview";
-		signal, "entice,preview,before";
-		source, "";
-		action, STATE_SET "default" 0.0;
-		transition, ACCELERATE 0.1;
-		target, "entice.preview";
-	    }
-	    program
-	    {
-		name, "ShowPreviewAfter";
-		signal, "entice,preview,show";
-		source, "";
-		action, STATE_SET "visible" 0.0;
-		transition, ACCELERATE 0.25;
-		target, "entice.preview";
 	    }
