@@ -9,7 +9,7 @@
     int col = 0;
     static int comment = 0, cpp_comment = 0;
     static int script_level = 0;
-    static char *script;
+    static char *script = NULL;
 
     #define COMMENT_START() BEGIN(SC_COMMENT); comment++; 
 
@@ -29,10 +29,10 @@
 
     #define SCRIPT_PIECE()  if (script == NULL) { \
 								script = strdup(yytext); \
-							} else { \
+							/*} else { \
 								realloc(script, strlen(script) + yyleng + 1); \
 								strncat(script, yytext, yyleng); \
-							} 
+							*/} 
 
     #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
 

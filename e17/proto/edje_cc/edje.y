@@ -159,6 +159,12 @@ program_in: IN COLON FLOAT FLOAT SEMICOLON {
 program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
 		printf("action %d %s %f\n", $3, $4, $5);
 	}
+	| ACTION COLON action_type STRING STRING SEMICOLON {
+		printf("action %d %s %s\n", $3, $4, $5);
+	}
+	| ACTION COLON action_type FLOAT FLOAT SEMICOLON {
+		printf("action %d %f %f\n", $3, $4, $5);
+	}
 	| ACTION COLON action_type SEMICOLON {
 		printf("action %d\n", $3);
 	}
