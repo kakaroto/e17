@@ -312,6 +312,26 @@ main(int argc, char **argv)
    for (i = 0; i < child_count; i++)
       kill(e_children[i], SIGCONT);
 
+   if (FindItem("", 0, LIST_FINDBY_NONE,
+		LIST_TYPE_COLORMODIFIER))
+     {
+	DIALOG_OK("Disabled Feature...",
+		  "The theme you are using contains COLOR MODIFIERS.\n"
+		  "They have been disabled for 0.16 due to them causing\n"
+		  "a mysterious memory leak that cannot be found.\n"
+		  "Please do not try and get them re-eanabled by mailing the\n"
+		  "Enlightenment Authors - either help us find the leak\n"
+		  "and fix it, or use another theme, or contact the\n"
+		  "author of the theme you are using and have them modify\n"
+		  "their theme so it does not require Color Modifiers.\n"
+		  "\n"
+		"It is unfortunate this has to be done but we cannot devote\n"
+		  "any mroe time and resources to this problem that can be\n"
+		"worked around by pre-generating modified images instead of\n"
+		  "using Color Modifiers.\n"
+	   );
+     }
+
    /* The primary event loop */
    for (;;)
       WaitEvent();

@@ -2277,3 +2277,12 @@ Thu Sep 23 14:40:50 PDT 1999
 
 Woops.  Width and height of 0 doesn't make for a happy pixmap.  Let
 E figure it out.  This fixes Eterm's auto mode.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:52:38 PDT 1999
+(Raster)
+
+ok- theres a memeory leak if you use color modifiers in yout theme.. and thus
+color modifiers have been disabled - spent too many hours looking for the leak
+and cannot find it anywhere.

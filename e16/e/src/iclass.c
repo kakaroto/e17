@@ -635,15 +635,18 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
 			  Imlib_set_image_border(id, is->im, is->border);
 		       if (is->transp)
 			  Imlib_set_image_shape(id, is->im, is->transp);
-		       if (is->colmod)
-			 {
-			    Imlib_set_image_red_curve(id, is->im,
-						      is->colmod->red.map);
-			    Imlib_set_image_green_curve(id, is->im,
-							is->colmod->green.map);
-			    Imlib_set_image_blue_curve(id, is->im,
-						       is->colmod->blue.map);
-			 }
+/* disabled - no idea what causes this but it causes a memory leak somewhere */
+/* and thus will be disabled - there is no time to debug this any further */
+/*                     if (is->colmod)
+ * {
+ * Imlib_set_image_red_curve(id, is->im,
+ * is->colmod->red.map);
+ * Imlib_set_image_green_curve(id, is->im,
+ * is->colmod->green.map);
+ * Imlib_set_image_blue_curve(id, is->im,
+ * is->colmod->blue.map);
+ * }
+ */ 
 		    }
 		  if (is->im)
 		    {
