@@ -2,7 +2,7 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 
 #include <unistd.h>
 #include <string.h>
