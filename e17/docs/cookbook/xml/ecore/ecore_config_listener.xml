@@ -134,6 +134,8 @@ int listener_cb(const char *key, const Ecore_Config_Type type,
 The <literal>key</literal> is the key name that was being listen on. The
 <literal>type</literal> parameter will contain the Ecore_Config type. This
 can be one of:
+</para>
+
 <variablelist mark="bullet" spacing="compact" termlength="15">
  <varlistentry>
   <term>PT_NIL</term>
@@ -160,6 +162,8 @@ can be one of:
   <listitem><para>Theme property</para></listitem>
  </varlistentry>
 </variablelist>
+
+<para>
 The <literal>tag</literal> parameter is the value that was given in the
 listener creation call above. Finally, the <literal>data</literal> is any
 user data attached to the listener when it was created.

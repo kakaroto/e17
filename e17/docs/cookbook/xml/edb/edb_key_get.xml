@@ -1,0 +1,73 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>27 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: EDB key retrieval</title>
+
+<para>
+The EDB API makes it a simple task to retrieve all of the available
+keys into the database. These keys can then be used to determine the
+types of the object in the database, or to just retrieve the object
+if required.
+</para>
+
+<para>
+<example>
+<title>EDB key retrieval</title>
+<programlisting>
+#include &lt;Edb.h&gt;
+
+int main(int argc, char ** argv) {
+    char ** keys;
+    int num_keys, i;
+
+    if (argc &lt; 2) 
+        return 0;
+
+    keys = e_db_dump_key_list(argv[1], &amp;num_keys);
+    for(i = 0; i &lt; num_keys; i++) {
+        printf("key: %s\n", keys[i]);
+        free(keys[i]); 
+    }
+    free(keys);
+    return 1;
+}
+</programlisting>
+</example>
+Retrieving the keys is done simply through the call to 
+<function>e_db_dump_key_list()</function>. This will return a char ** array
+of key strings. These strings, and the array itself, must be freed by the 
+application. <function>e_db_dump_key_list()</function> will also return
+the number of keys in the array in the <literal>num_keys</literal> parameter.
+</para>
+
+<para>
+You'll notice we do not need to open the db in order to call the
+<function>e_db_dump_key_list()</function>. This function works on the
+file itself instead of a db object.
+</para>
+
+<para>
+<example>
+<title>Compiling</title>
+<screen>
+zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
+	`edb-config --cflags --libs`
+</screen>
+</example>
+Executing the program should produce a listing of all the keys in the 
+given database. This can be verified by viewing the db through an external
+tool like, <command>edb_gtk_ed</command>.
+</para>
+
+</section>
+
+

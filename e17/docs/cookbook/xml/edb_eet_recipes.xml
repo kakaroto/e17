@@ -53,6 +53,7 @@ and can be written and read by any architecture.
 
 &edb_shell_file_create;
 &edb_intro;
+&edb_key_get;
 
 </chapter>
 

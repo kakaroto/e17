@@ -52,6 +52,7 @@
  <!-- edb -->
  <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.xml">
  <!ENTITY edb_intro SYSTEM "xml/edb/edb_intro.xml">
+ <!ENTITY edb_key_get SYSTEM "xml/edb/edb_key_get.xml">
 
  <!-- edje edc -->
  <!ENTITY edje_embryo_toggle SYSTEM "xml/edje_edc/edje_embryo_toggle.xml">
