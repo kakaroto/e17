@@ -389,13 +389,17 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	     if (e_app_is_parent(e->apps, a))
 	       {
 		  Engage_Icon *ic;
+		  Evas_List *extras;
 
 		  e_box_freeze(eb->box_object);
 		  ic = _engage_icon_find(eb, a);
+		  extras = ic->extra_icons;
+		  ic->extra_icons = NULL;
 		  if (ic) _engage_icon_free(ic);
 		  evas_image_cache_flush(eb->evas);
 		  evas_image_cache_reload(eb->evas);
 		  ic = _engage_icon_new(eb, a);
+		  ic->extra_icons = extras;
 		  if (ic)
 		    {
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
