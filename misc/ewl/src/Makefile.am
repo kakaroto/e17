@@ -11,6 +11,11 @@ INCLUDES          = -I/usr/X11R6/include $(X_CFLAGS) \
 lib_LTLIBRARIES = libewl.la
 bin_PROGRAMS = ewltest ewldbtool
 
+installed_headers_DATA = \
+ewl.h ewlcore.h ewlcontainer.h ewlbox.h ewlwindow.h ewlbutton.h
+
+installed_headersdir = $(prefix)/include/ewl
+
 libewl_la_SOURCES = \
 debug.c debug.h \
 event.c event.h \
