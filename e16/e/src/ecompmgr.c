@@ -342,6 +342,9 @@ DeskBackgroundPictureGet(Desk * d)
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
+   if (cmdi->bgpict)
+      return cmdi->bgpict;
+
    fill = False;
    pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
    D1printf("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx\n", d->num,
