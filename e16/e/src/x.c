@@ -1140,14 +1140,25 @@ PointerAt(int *x, int *y)
 }
 
 Display            *
-EDisplayOpen(const char *dstr)
+EDisplayOpen(const char *dstr, int scr)
 {
+   char                dbuf[256], *s;
    Display            *dpy;
 
-   if (!dstr)
-      dstr = getenv("DISPLAY");
-   if (!dstr)
-      dstr = ":0";
+   if (scr >= 0)
+     {
+	/* Override screen */
+	Esnprintf(dbuf, sizeof(dbuf) - 10, dstr);
+	s = strchr(dbuf, ':');
+	if (s)
+	  {
+	     s = strchr(s, '.');
+	     if (s)
+		*s = '\0';
+	  }
+	Esnprintf(dbuf + strlen(dbuf), 10, ".%d", scr);
+	dstr = dbuf;
+     }
 
 #ifdef USE_ECORE_X
    ecore_x_init(dstr);

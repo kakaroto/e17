@@ -328,54 +328,25 @@ static int          stale_sm_file = 0;
 static void
 set_save_props(SmcConn smc_conn, int master_flag)
 {
-   char               *user = NULL;
-   const char         *program = NULL;
-   const char         *pristr = "_GSM_Priority";
-   const char         *sm_file;
-   const char         *smid = "-smid";
-   const char         *single = "-single";
-
-#if 0
-   const char         *smfile = "-smfile";
-#endif
-   const char         *econfdir = "-econfdir";
-   const char         *e_conf_dir;
-   const char         *ecachedir = "-ecachedir";
-   const char         *e_cache_dir;
-
-#ifdef USE_EXT_INIT_WIN
-   const char         *extinitwin = "-ext_init_win";
-   char                buf[512];
-#endif
+   const char         *s;
+   char               *user;
+   const char         *program;
    char                priority = 10;
    char                style;
-   int                 n;
-   SmPropValue         programVal = { 0, NULL };
-   SmPropValue         userIDVal = { 0, NULL };
+   int                 i, n;
+   SmPropValue         programVal;
+   SmPropValue         userIDVal;
+
 #if USE_DISCARD_PROPERTY
-   char               *sh = "sh";
-   char               *c = "-c";
-   SmPropValue         discardVal[] = {
-      {0, NULL},
-      {0, NULL},
-      {0, NULL}
-   };
+   const char         *sh = "sh";
+   const char         *c = "-c";
+   const char         *sm_file;
+   SmPropValue         discardVal[3];
    SmProp              discardProp;
 #endif
-   SmPropValue         restartVal[] = {
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL},
-      {0, NULL}
-   };
-   SmPropValue         styleVal = { 0, NULL };
-   SmPropValue         priorityVal = { 0, NULL };
+   SmPropValue         restartVal[32];
+   SmPropValue         styleVal;
+   SmPropValue         priorityVal;
    SmProp              programProp;
    SmProp              userIDProp;
    SmProp              restartProp;
@@ -383,6 +354,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    SmProp              styleProp;
    SmProp              priorityProp;
    SmProp             *props[7];
+   char                bufs[32], bufm[32], bufx[32];
 
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("set_save_props\n");
@@ -417,7 +389,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    styleProp.num_vals = 1;
    styleProp.vals = (SmPropValue *) & styleVal;
 
-   priorityProp.name = (char *)pristr;
+   priorityProp.name = (char *)"_GSM_Priority";
    priorityProp.type = (char *)SmCARD8;
    priorityProp.num_vals = 1;
    priorityProp.vals = (SmPropValue *) & priorityVal;
@@ -430,12 +402,9 @@ set_save_props(SmcConn smc_conn, int master_flag)
       style = SmRestartNever;
 
    user = username(getuid());
-   e_conf_dir = EDirUser();
-   e_cache_dir = EDirUserCache();
    /* The SM specs state that the SmProgram should be the argument passed
     * to execve. Passing argv[0] is close enough. */
    program = Mode.wm.exec_name;
-   sm_file = EGetSavePrefix();
 
    userIDVal.length = strlen(user);
    userIDVal.value = user;
@@ -448,6 +417,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
 
 #if USE_DISCARD_PROPERTY
    /* Tell session manager how to clean up our old data */
+   sm_file = EGetSavePrefix();
    Esnprintf(buf, sizeof(buf), "rm %s*.clients.*", sm_file);
 
    discardVal[0].length = strlen(sh);
@@ -459,52 +429,65 @@ set_save_props(SmcConn smc_conn, int master_flag)
 #endif
 
    n = 0;
-   restartVal[n].length = strlen(program);
    restartVal[n++].value = (char *)program;
    if (Mode.wm.single)
      {
-	restartVal[n].length = strlen(single);
-	restartVal[n++].value = (char *)single;
+	Esnprintf(bufs, sizeof(bufs), "%i", Mode.wm.master_screen);
+	restartVal[n++].value = (char *)"-s";
+	restartVal[n++].value = (char *)bufs;
+     }
+   else if (restarting && !Mode.wm.master)
+     {
+	Esnprintf(bufm, sizeof(bufm), "%i", Mode.wm.master_screen);
+	restartVal[n++].value = (char *)"-m";
+	restartVal[n++].value = bufm;
      }
 #ifdef USE_EXT_INIT_WIN
    if (restarting)
      {
-	Esnprintf(buf, sizeof(buf), "%li", new_init_win_ext);
-
-	restartVal[n].length = strlen(extinitwin);
-	restartVal[n++].value = (char *)extinitwin;
-	restartVal[n].length = strlen(buf);
-	restartVal[n++].value = buf;
+	Esnprintf(bufx, sizeof(bufx), "%#lx", new_init_win_ext);
+	restartVal[n++].value = (char *)"-X";
+	restartVal[n++].value = bufx;
      }
 #endif
 #if 0
-   restartVal[n].length = strlen(smfile);
    restartVal[n++].value = (char *)smfile;
-   restartVal[n].length = strlen(sm_file);
    restartVal[n++].value = (char *)sm_file;
 #endif
-   restartVal[n].length = strlen(econfdir);
-   restartVal[n++].value = (char *)econfdir;
-   restartVal[n].length = strlen(e_conf_dir);
-   restartVal[n++].value = (char *)e_conf_dir;
-   restartVal[n].length = strlen(ecachedir);
-   restartVal[n++].value = (char *)ecachedir;
-   restartVal[n].length = strlen(e_cache_dir);
-   restartVal[n++].value = (char *)e_cache_dir;
-   restartVal[n].length = strlen(smid);
-   restartVal[n++].value = (char *)smid;
-   restartVal[n].length = strlen(sm_client_id);
-   restartVal[n++].value = sm_client_id;
+   s = Mode.conf.name;
+   if (s)
+     {
+	restartVal[n++].value = (char *)"-p";
+	restartVal[n++].value = (char *)s;
+     }
+   s = Mode.conf.dir;
+   if (s)
+     {
+	restartVal[n++].value = (char *)"-P";
+	restartVal[n++].value = (char *)s;
+     }
+   s = Mode.conf.cache_dir;
+   if (s)
+     {
+	restartVal[n++].value = (char *)"-Q";
+	restartVal[n++].value = (char *)s;
+     }
+   s = sm_client_id;
+   restartVal[n++].value = (char *)"-S";
+   restartVal[n++].value = (char *)s;
+
+   for (i = 0; i < n; i++)
+      restartVal[i].length = strlen(restartVal[i].value);
 
    restartProp.num_vals = n;
 
-   /* SM specs require SmCloneCommand excludes "-smid" option */
+   /* SM specs require SmCloneCommand excludes "--sm-client-id" option */
    cloneProp.num_vals = restartProp.num_vals - 2;
 
    if (EventDebug(EDBUG_TYPE_SESSION))
-      for (n = 0; n < restartProp.num_vals; n++)
-	 Eprintf("restartVal[i]: %2d: %s\n", restartVal[n].length,
-		 (char *)restartVal[n].value);
+      for (i = 0; i < restartProp.num_vals; i++)
+	 Eprintf("restartVal[i]: %2d: %s\n", restartVal[i].length,
+		 (char *)restartVal[i].value);
 
    n = 0;
    props[n++] = &programProp;
@@ -568,32 +551,36 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data __UNUSED__,
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself\n");
 
+#if 0				/* FIXME - Unused - Remove? */
    if (Mode.wm.master)
      {
+#if 0
 	char                s[4096];
-
-/*      int                 fd; */
+	int                 fd;
 
 	Esnprintf(s, sizeof(s), "sm_file %s", EGetSavePrefix());
-/*      fd = Emkstemp(s + 8);
- * if (fd < 0)
- * {
- * SmcSaveYourselfDone(smc_conn, False);
- * return;
- * }
- * SetSMFile(s + 8); */
+	fd = Emkstemp(s + 8);
+	if (fd < 0)
+	  {
+	     SmcSaveYourselfDone(smc_conn, False);
+	     return;
+	  }
+	SetSMFile(s + 8);
+#endif
+
 	CommsBroadcastToSlaveWMs(EGetSavePrefix());
 	/* dont need */
 	/* autosave(); */
-/*      
- * if (strcmp(GetSMFile(), GetGenericSMFile()))
- * {
- * if (exists(GetGenericSMFile()))
- * E_rm(GetGenericSMFile());
- * symlink(GetSMFile(), GetGenericSMFile());
- * }
- */
+#if 0
+	if (strcmp(GetSMFile(), GetGenericSMFile()))
+	  {
+	     if (exists(GetGenericSMFile()))
+		E_rm(GetGenericSMFile());
+	     symlink(GetSMFile(), GetGenericSMFile());
+	  }
+#endif
      }
+#endif
 
 #if 0				/* Unused */
    SaveWindowStates();
@@ -883,16 +870,19 @@ doSMExit(int mode, const char *params)
 	EDisplayClose();
 
 	l = 0;
-	l +=
-	   Esnprintf(s + l, sizeof(s) - l, "exec %s -s -f", Mode.wm.exec_name);
+	l += Esnprintf(s + l, sizeof(s) - l, "exec %s -f", Mode.wm.exec_name);
+	if (Mode.wm.single)
+	   l += Esnprintf(s + l, sizeof(s) - l, " -s %d", VRoot.scr);
+	else if (!Mode.wm.master)
+	   l +=
+	      Esnprintf(s + l, sizeof(s) - l, " -m %d", Mode.wm.master_screen);
 #ifdef HAVE_X11_SM_SMLIB_H
 	if (sm_client_id)
-	   l += Esnprintf(s + l, sizeof(s) - l, " -smid %s", sm_client_id);
+	   l += Esnprintf(s + l, sizeof(s) - l, " -S %s", sm_client_id);
 #endif
 #ifdef USE_EXT_INIT_WIN
 	if (new_init_win_ext != None)
-	   l += Esnprintf(s + l, sizeof(s) - l, " -ext_init_win %li",
-			  new_init_win_ext);
+	   l += Esnprintf(s + l, sizeof(s) - l, " -X %li", new_init_win_ext);
 #endif
 	if (ss)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);

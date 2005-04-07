@@ -49,21 +49,50 @@ EMode               Mode;
 Window              init_win_ext = None;
 #endif
 
+static int          EoptGet(int argc, char **argv);
+static void         EoptHelp(void);
 static void         ECheckEprog(const char *name);
 static void         EDirUserSet(const char *dir);
 static void         EConfNameSet(const char *dir);
 static void         EDirUserCacheSet(const char *dir);
 static void         EDirsSetup(void);
-static void         ESetSavePrefix(const char *path);
 static void         RunInitPrograms(void);
-static const char  *EConfName(void);
+
+static int          eoptind = 0;
+const char         *eoptarg = NULL;
+
+typedef struct
+{
+   char                sopt;
+   char                arg;
+   const char         *lopt;
+   const char         *oarg;
+   const char         *desc;
+} EOpt;
+
+static const EOpt   Eopts[] = {
+   {'d', 1, "display", "display", "Set display"},
+   {'f', 0, "fast", NULL, "Fast startup"},
+   {'h', 0, "help", NULL, "Show help"},
+   {'m', 1, NULL, NULL, NULL},
+   {'p', 1, "config-prefix", "prefix", "Configuration file name prefix"},
+   {'P', 1, "econfdir", "path", "Set user configuration directory"},
+   {'Q', 1, "ecachedir", "path", "Set user cache directory"},
+   {'s', 1, "single", "screen", "Run only on given screen"},
+   {'S', 1, "sm-client-id", "session id", "Set session manager ID"},
+   {'t', 1, "theme", "name", "Select theme"},
+   {'v', 0, "verbose", NULL, "Show additional info"},
+   {'V', 0, "version", NULL, "Show version"},
+   {'w', 1, "window", "WxH", "Run in window"},
+   {'X', 1, NULL, NULL, NULL},
+};
 
 int
 main(int argc, char **argv)
 {
-   int                 i;
+   int                 ch, i, loop;
    struct utsname      ubuf;
-   char               *str, *dstr;
+   const char         *str, *dstr;
 
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
@@ -71,9 +100,16 @@ main(int argc, char **argv)
 
    /* Init state variable struct */
    memset(&Mode, 0, sizeof(EMode));
-   Mode.mode = MODE_NONE;
+
+   Mode.wm.master = 1;
+   Mode.wm.pid = getpid();
    Mode.wm.exec_name = argv[0];
    Mode.wm.startup = 1;
+
+   memset(&VRoot, 0, sizeof(VRoot));
+   VRoot.scr = -1;
+
+   Mode.mode = MODE_NONE;
    Mode.move.check = 1;
 
    str = getenv("EDEBUG");
@@ -83,12 +119,12 @@ main(int argc, char **argv)
    if (str)
       Mode.wm.coredump = 1;
 
-   str = getenv("ECONFDIR");
-   if (str)
-      EDirUserSet(str);
    str = getenv("ECONFNAME");
    if (str)
       EConfNameSet(str);
+   str = getenv("ECONFDIR");
+   if (str)
+      EDirUserSet(str);
    str = getenv("ECACHEDIR");
    if (str)
       EDirUserCacheSet(str);
@@ -111,93 +147,83 @@ main(int argc, char **argv)
    Mode.theme.path = NULL;
    dstr = NULL;
 
-   for (i = 1; i < argc; i++)
+   for (loop = 1; loop;)
      {
-	if ((!strcmp("-t", argv[i]) ||
-	     !strcmp("-theme", argv[i])) && (argc - i > 1))
-	  {
-	     i++;
-	     Mode.theme.path = Estrdup(argv[i]);
-	  }
-	else if ((!strcmp("-econfdir", argv[i])) && (argc - i > 1))
-	  {
-	     EDirUserSet(argv[++i]);
-	  }
-	else if ((!strcmp("-ecachedir", argv[i])) && (argc - i > 1))
-	  {
-	     EDirUserCacheSet(argv[++i]);
-	  }
-	else if ((!strcmp("-display", argv[i])) && (argc - i > 1))
-	  {
-	     dstr = argv[++i];
-	  }
-	else if (!strcmp("-f", argv[i]))
-	  {
-	     Mode.wm.restart = 1;
-	  }
-	else if (!strcmp("-s", argv[i]) || !strcmp("-single", argv[i]))
-	  {
-	     Mode.wm.single = 1;
-	  }
-	else if ((!strcmp("-smid", argv[i]) ||
-		  !strcmp("-clientId", argv[i]) ||
-		  !strcmp("--sm-client-id", argv[i])) && (argc - i > 1))
-	  {
-	     SetSMID(argv[++i]);
-	  }
-	else if ((!strcmp("-p", argv[i]) || !strcmp("--config-prefix", argv[i]))
-		 && (argc - i > 1))
-	  {
-	     EConfNameSet(argv[++i]);
-	  }
-#ifdef USE_EXT_INIT_WIN
-	else if ((!strcmp("-ext_init_win", argv[i])) && (argc - i > 1))
-	  {
-	     init_win_ext = atoi(argv[++i]);
-	     Mode.wm.restart = 1;
-	  }
+	ch = EoptGet(argc, argv);
+	if (ch <= 0)
+	   break;
+#if 0
+	Eprintf("Opt: %c: %d - %s\n", ch, eoptind, eoptarg);
 #endif
-	else if ((!strcmp("-w", argv[i]) || !strcmp("-window", argv[i])) &&
-		 (argc - i > 1))
+	switch (ch)
 	  {
-	     sscanf(argv[++i], "%dx%d", &VRoot.w, &VRoot.h);
-	     Mode.wm.window = 1;
-	     Mode.wm.single = 1;
-	  }
-	else if ((!strcmp("-h", argv[i])) || (!strcmp("-help", argv[i])) ||
-		 (!strcmp("-?", argv[i])) || (!strcmp("--help", argv[i])))
-	  {
-	     printf("enlightenment options:\n"
-		    "\t-display display_name\n"
-		    "\t-ecachedir /path/to/cached/dir\n"
-		    "\t-econfdir /path/to/config/dir\n"
-		    "\t-ext_init_win window_id\n"
-		    "\t[-p | --config-prefix] config_file_prefix\n"
-		    "\t[-s | -single]\n"
-		    "\t[-smid | -clientId | --sm-client-id] id\n"
-		    "\t[-t | -theme] theme\n"
-		    "\t[-v | -verbose]\n"
-		    "\t[-V | -version | --version]\n" "\t-w WxH\n");
+	  default:
+	  case '?':
+	     printf("e16: Ignoring: ");
+	     for (i = eoptind; i < argc; i++)
+		printf("%s ", argv[i]);
+	     printf("\n");
+	     loop = 0;
+	     break;
+	  case 'h':
+	     EoptHelp();
 	     exit(0);
-	  }
-	else if ((!strcmp("-V", argv[i])) ||
-		 (!strcmp("-version", argv[i])) ||
-		 (!strcmp("--version", argv[i])))
-	  {
+	     break;
+	  case 'd':
+	     dstr = eoptarg;
+	     break;
+	  case 'f':
+	     Mode.wm.restart = 1;
+	     break;
+	  case 'p':
+	     EConfNameSet(eoptarg);
+	     break;
+	  case 'P':
+	     EDirUserSet(eoptarg);
+	     break;
+	  case 'Q':
+	     EDirUserCacheSet(eoptarg);
+	     break;
+	  case 's':
+	     Mode.wm.single = 1;
+	     VRoot.scr = strtoul(eoptarg, NULL, 10);
+	     break;
+	  case 'S':
+	     SetSMID(eoptarg);
+	     break;
+	  case 't':
+	     Mode.theme.path = Estrdup(eoptarg);
+	     break;
+	  case 'V':
 	     printf("Enlightenment %s - %s\n",
 		    ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 	     exit(0);
-	  }
-	else if ((!strcmp("-v", argv[i])) || (!strcmp("-verbose", argv[i])))
-	  {
+	     break;
+	  case 'v':
 	     EventDebugSet(EDBUG_TYPE_VERBOSE, 1);
-	  }
-#if USE_COMPOSITE
-	else if ((!strcmp("-C", argv[i])))
-	  {
-	     ECompMgrParseArgs(argv[++i]);
-	  }
+	     break;
+	  case 'w':
+	     sscanf(eoptarg, "%dx%d", &VRoot.w, &VRoot.h);
+	     Mode.wm.window = 1;
+	     Mode.wm.single = 1;
+	     Mode.wm.master = 0;
+	     break;
+#ifdef USE_EXT_INIT_WIN
+	  case 'X':
+	     init_win_ext = strtoul(eoptarg, NULL, 0);
+	     Mode.wm.restart = 1;
+	     break;
 #endif
+	  case 'm':
+	     Mode.wm.master = 0;
+	     Mode.wm.master_screen = strtoul(eoptarg, NULL, 10);
+	     break;
+#if USE_COMPOSITE
+	  case 'C':
+	     ECompMgrParseArgs(eoptarg);
+	     break;
+#endif
+	  }
      }
 
    /* Initialise internationalisation */
@@ -212,9 +238,6 @@ main(int argc, char **argv)
    ECheckEprog("epp");
    ECheckEprog("eesh");
    EDirsSetup();
-
-   /* Set default save file prefix if not already set */
-   ESetSavePrefix(NULL);
 
    /* So far nothing should rely on a selected settings or theme. */
    ConfigurationLoad();		/* Load settings */
@@ -252,7 +275,7 @@ main(int argc, char **argv)
 
 #ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */
-   if (Mode.wm.master && init_win_ext)
+   if (init_win_ext)
      {
 	if (EventDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("Kill init window %#lx\n", init_win_ext);
@@ -297,6 +320,146 @@ main(int argc, char **argv)
    /* Of course, we should NEVER get to this point */
 
    return 1;
+}
+
+void
+EExit(int exitcode)
+{
+   int                 i;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("EExit(%d)\n", exitcode);
+
+   if (disp)
+     {
+	ecore_x_ungrab();
+	GrabPointerRelease();
+	XAllowEvents(disp, AsyncBoth, CurrentTime);
+
+	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
+	/* I think this is a better way to release the grabs: (felix) */
+	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
+	XSelectInput(disp, VRoot.win, 0);
+	EDisplayClose();
+     }
+
+   SignalsRestore();
+
+   if (Mode.wm.master)
+     {
+	for (i = 0; i < Mode.wm.child_count; i++)
+	   kill(Mode.wm.children[i], SIGINT);
+     }
+   else
+     {
+	exitcode = 0;
+     }
+
+   exit(exitcode);
+}
+
+/*
+ * Command line parsing.
+ * Not entirely standard compliant, but close enough.
+ */
+static int
+EoptGet(int argc, char **argv)
+{
+   const char         *s;
+   unsigned int        i, len;
+   int                 lopt;
+   const EOpt         *eopt;
+
+   eoptind++;
+   if (eoptind >= argc)
+      return 0;
+
+   s = argv[eoptind];
+   if (*s++ != '-')
+      return 0;
+
+   lopt = 0;
+   if (*s == '-')
+     {
+	lopt = 1;
+	s++;
+     }
+
+   eoptarg = NULL;
+   eopt = NULL;
+   for (i = 0; i < sizeof(Eopts) / sizeof(EOpt); i++)
+     {
+	eopt = &Eopts[i];
+
+	/* Short option */
+	if (!lopt)
+	  {
+	     if (!eopt->sopt || eopt->sopt != s[0])
+		continue;
+	     if (eopt->arg)
+	       {
+		  if (s[1])
+		    {
+		       eoptarg = s + 1;
+		       goto found;
+		    }
+		  goto found;
+	       }
+	     if (s[1])
+		break;
+	     goto found;
+	  }
+
+	if (!eopt->lopt)
+	   continue;
+
+	/* Long option */
+	len = strlen(eopt->lopt);
+	if (strncmp(eopt->lopt, s, len))
+	   continue;
+	if (eopt->arg)
+	  {
+	     if (s[len] == '\0')
+		goto found;
+	     if (s[len] != '=')
+		break;
+	     eoptarg = s + len + 1;
+	  }
+	goto found;
+     }
+   return '?';
+
+ found:
+   if (!eopt->arg || eoptarg)
+      return eopt->sopt;
+
+   if (eoptind >= argc - 1)
+      return '?';		/* Missing param */
+
+   eoptind++;
+   eoptarg = argv[eoptind];
+   return eopt->sopt;
+}
+
+static void
+EoptHelp(void)
+{
+   unsigned int        i;
+   const EOpt         *eopt;
+   char                buf[256];
+
+   printf("e16 options:\n");
+   for (i = 0; i < sizeof(Eopts) / sizeof(EOpt); i++)
+     {
+	eopt = &Eopts[i];
+	if (!eopt->desc)
+	   continue;
+	if (eopt->oarg)
+	   Esnprintf(buf, sizeof(buf), "--%s <%s>", eopt->lopt, eopt->oarg);
+	else
+	   Esnprintf(buf, sizeof(buf), "--%s", eopt->lopt);
+	printf("  -%c  %-30s\t%s\n", eopt->sopt, buf, eopt->desc);
+     }
 }
 
 static void
@@ -355,46 +518,6 @@ RunInitPrograms(void)
      }
 }
 
-void
-EExit(int exitcode)
-{
-   int                 i;
-
-   if (EventDebug(EDBUG_TYPE_SESSION))
-      Eprintf("EExit(%d)\n", exitcode);
-
-   if (disp)
-     {
-	ecore_x_ungrab();
-	GrabPointerRelease();
-	XAllowEvents(disp, AsyncBoth, CurrentTime);
-
-	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
-	/* I think this is a better way to release the grabs: (felix) */
-	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XSelectInput(disp, VRoot.win, 0);
-	EDisplayClose();
-     }
-
-   SignalsRestore();
-
-   if (Mode.wm.master)
-     {
-	for (i = 0; i < Mode.wm.child_count; i++)
-	   kill(Mode.wm.children[i], SIGINT);
-     }
-   else
-     {
-	exitcode = 0;
-     }
-
-   exit(exitcode);
-}
-
-static char        *userDir = NULL;
-static char        *userConf = NULL;
-static char        *cacheDir = NULL;
-
 const char         *
 EDirBin(void)
 {
@@ -410,11 +533,30 @@ EDirRoot(void)
 static void
 EConfNameSet(const char *name)
 {
-   if (userConf)
-      Efree(userConf);
-   userConf = Estrdup(name);
+   if (Mode.conf.name)
+      Efree(Mode.conf.name);
+   Mode.conf.name = Estrdup(name);
+   Esetenv("ECONFNAME", Mode.conf.name, 1);
+}
 
-   Esetenv("ECONFNAME", userConf, 1);
+static void
+EDirUserSet(const char *dir)
+{
+   if (!strcmp(dir, EDirUser()))
+      return;
+   if (Mode.conf.dir)
+      Efree(Mode.conf.dir);
+   Mode.conf.dir = Estrdup(dir);
+}
+
+static void
+EDirUserCacheSet(const char *dir)
+{
+   if (!strcmp(dir, EDirUser()))
+      return;
+   if (Mode.conf.cache_dir)
+      Efree(Mode.conf.cache_dir);
+   Mode.conf.cache_dir = Estrdup(dir);
 }
 
 static const char  *
@@ -426,47 +568,35 @@ EConfNameDefault(void)
 static const char  *
 EConfName(void)
 {
-   return (userConf) ? userConf : EConfNameDefault();
-}
-
-static void
-EDirUserSet(const char *dir)
-{
-   if (userDir)
-      Efree(userDir);
-   userDir = Estrdup(dir);
-}
-
-static void
-EDirUserCacheSet(const char *dir)
-{
-   if (cacheDir)
-      Efree(cacheDir);
-   cacheDir = Estrdup(dir);
+   return (Mode.conf.name) ? Mode.conf.name : EConfNameDefault();
 }
 
 const char         *
 EDirUser(void)
 {
+   static char        *user_dir;
    char               *home, buf[4096];
 
-   if (userDir)
-      return userDir;
+   if (Mode.conf.dir)
+      return Mode.conf.dir;
+
+   if (user_dir)
+      return user_dir;
 
    home = homedir(getuid());
    Esnprintf(buf, sizeof(buf), "%s/.e16", home);
    Efree(home);
-   userDir = Estrdup(buf);
+   user_dir = Estrdup(buf);
 
-   return userDir;
+   return user_dir;
 }
 
 const char         *
 EDirUserCache(void)
 {
-   if (!cacheDir)
-      cacheDir = Estrdup(EDirUser());
-   return cacheDir;
+   if (Mode.conf.cache_dir)
+      return Mode.conf.cache_dir;
+   return EDirUser();
 }
 
 static void
@@ -556,8 +686,8 @@ EDirsSetup(void)
  * The client data appends ".clients" onto this filename and the snapshot data
  * appends ".snapshots".
  */
-static char        *
-default_save_prefix(void)
+const char         *
+EGetSavePrefix(void)
 {
    static char        *def_prefix = NULL;
    char               *s, buf[1024];
@@ -565,7 +695,7 @@ default_save_prefix(void)
    if (def_prefix)
       return def_prefix;
 
-   if (userConf)
+   if (Mode.conf.name)
       Esnprintf(buf, sizeof(buf), "%s/%s-%d", EDirUser(), EConfName(),
 		VRoot.scr);
    else if (Mode.wm.window)
@@ -579,29 +709,6 @@ default_save_prefix(void)
    for (s = def_prefix; (s = strchr(s, ':')); *s = '-');
 
    return def_prefix;
-}
-
-static char        *save_prefix = NULL;
-
-static void
-ESetSavePrefix(const char *path)
-{
-   if (save_prefix && path == NULL)
-      return;
-
-   if (save_prefix)
-      Efree(save_prefix);
-
-   if (!path)
-      save_prefix = Estrdup(default_save_prefix());
-   else
-      save_prefix = Estrdup(path);
-}
-
-const char         *
-EGetSavePrefix(void)
-{
-   return save_prefix;
 }
 
 const char         *

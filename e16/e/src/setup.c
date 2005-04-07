@@ -119,12 +119,13 @@ SetupX(const char *dstr)
    char                buf[128];
    long                mask;
 
-   /* In case we are going to fork, set up the master pid */
-   Mode.wm.master = 1;
-   Mode.wm.master_pid = Mode.wm.pid = getpid();
+   if (!dstr)
+      dstr = getenv("DISPLAY");
+   if (!dstr)
+      dstr = ":0";
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
-   disp = EDisplayOpen(dstr);
+   disp = EDisplayOpen(dstr, VRoot.scr);
    if (!disp)
      {
 	Alert(_("Enlightenment cannot connect to the display nominated by\n"
@@ -143,18 +144,18 @@ SetupX(const char *dstr)
    VRoot.scr = DefaultScreen(disp);
    Mode.display.screens = ScreenCount(disp);
 
-   Mode.wm.master_screen = VRoot.scr;
+   if (Mode.wm.master ||
+       Mode.wm.master_screen < 0 ||
+       Mode.wm.master_screen >= Mode.display.screens)
+      Mode.wm.master_screen = VRoot.scr;
 
    /* Start up on multiple heads, if appropriate */
-   if ((Mode.display.screens > 1) && (!Mode.wm.single))
+   if (Mode.display.screens > 1 && !Mode.wm.single && !Mode.wm.restart)
      {
 	int                 i;
-	char                subdisplay[255];
 	char               *dispstr;
 
 	dispstr = DisplayString(disp);
-
-	strcpy(subdisplay, DisplayString(disp));
 
 	for (i = 0; i < Mode.display.screens; i++)
 	  {
@@ -180,20 +181,11 @@ SetupX(const char *dstr)
 		  Mode.wm.master = 0;
 		  Mode.wm.pid = getpid();
 		  VRoot.scr = i;
+		  init_win_ext = None;
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);
 #endif
-		  /* Find the point to concatenate the screen onto */
-		  dispstr = strchr(subdisplay, ':');
-		  if (NULL != dispstr)
-		    {
-		       dispstr = strchr(dispstr, '.');
-		       if (NULL != dispstr)
-			  *dispstr = '\0';
-		    }
-		  Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
-		  dstr = Estrdup(subdisplay);
-		  disp = EDisplayOpen(dstr);
+		  disp = EDisplayOpen(dstr, i);
 		  /* Terminate the loop as I am the child process... */
 		  break;
 	       }

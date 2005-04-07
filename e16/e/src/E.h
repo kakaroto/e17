@@ -984,6 +984,12 @@ typedef struct
    struct
    {
       char               *name;
+      char               *dir;
+      char               *cache_dir;
+   } conf;
+   struct
+   {
+      char               *name;
       int                 screens;
 #ifdef HAS_XINERAMA
       char                xinerama_active;
@@ -1026,7 +1032,6 @@ typedef struct
       char                single;	/* No slaves */
       char                window;	/* Running in virtual root window */
       pid_t               pid;
-      pid_t               master_pid;
       int                 master_screen;
       char                session_start;
       char                startup;
@@ -2222,7 +2227,7 @@ const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);
 
 /* x.c */
-Display            *EDisplayOpen(const char *dstr);
+Display            *EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
 
