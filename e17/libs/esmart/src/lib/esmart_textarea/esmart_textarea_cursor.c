@@ -156,6 +156,7 @@ void _esmart_textarea_cursor_delete_right(Esmart_Text_Area *t) {
 }
 
 /* delete left, backspace, one character from current location */
+/* TODO: Fix BS on white lines */
 void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *t) {
    int pos, start;
    pos = evas_object_textblock_cursor_pos_get(t->text);
@@ -163,9 +164,19 @@ void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *t) {
    if(pos == 0) return;
    if(pos == start)
      {
-	/* we need to remove the formatting!! we cant though because
-	 * of current limitations in textblock, bug raster to fix
-	 */
+	int formats = evas_object_textblock_format_prev_count_get(t->text);
+	while(formats >= 0)
+	  {	     
+	     char format[100];
+	     sprintf(format,"%s",evas_object_textblock_format_prev_get(t->text, formats));
+	     if(!strcmp(format,"\n"))
+	       {
+		  evas_object_textblock_cursor_pos_set(t->text, pos-1);
+		  evas_object_textblock_format_next_del(t->text, formats);
+		  break;
+	       }
+	     formats--;
+	  }
      }
    evas_object_textblock_cursor_pos_set(t->text, pos - 1);
    evas_object_textblock_text_del(t->text, 1);   
