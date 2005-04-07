@@ -152,6 +152,23 @@ void _esmart_textarea_cursor_delete_right(Esmart_Text_Area *t) {
    pos = evas_object_textblock_cursor_pos_get(t->text);
    len = evas_object_textblock_length_get(t->text);
    if(pos == len) return;
+   len = evas_object_textblock_line_end_pos_get(t->text);
+   if(pos == len)
+     {
+	int formats = evas_object_textblock_format_next_count_get(t->text);
+	while(formats >= 0)
+	  {
+	     char format[100];
+	     sprintf(format,"%s",evas_object_textblock_format_next_get(t->text, formats));
+	     if(!strcmp(format,"\n"))
+	       {
+		  evas_object_textblock_cursor_pos_set(t->text, pos+1);
+		  evas_object_textblock_format_prev_del(t->text, formats);
+		  break;
+	       }
+	     formats--;	     
+	  }
+     }
    evas_object_textblock_text_del(t->text, 1);
 }
 
