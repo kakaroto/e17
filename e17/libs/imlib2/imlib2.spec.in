@@ -147,6 +147,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root, 0755)
 %{_libdir}/*.so
 %{_libdir}/*.a
+%{_libdir}/imlib2/*/*.a
+%{_libdir}/imlib2/*/*.la
 %{_bindir}/imlib2-config
 %{_libdir}/pkgconfig/*
 %{_includedir}/*

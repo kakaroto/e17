@@ -121,7 +121,7 @@ fi
 
 V=`$EVAS_CONFIG --version`
 VV=`vser $V`
-VM="1.0.0_pre13"
+VM="0.9.9.004"
 VVM=`vser $VM`
 if test $VV -lt $VVM; then
   echo "Error. Evas is not at least "$VM". It is "$V". Abort."
