@@ -26,13 +26,14 @@
 #define SCREEN_W 1600
 #define SCREEN_H 1200
 
-static int emblem_load_bgs(Emblem *em);
+static int emblem_load_bgs(Emblem *em, char *dir_path);
 static Evas_Object *emblem_evas_object_get(Emblem *em, const char *fname,
                                                 Evas_Coord w, Evas_Coord h);
 static int emblem_ui_e_bg_get(void *data, int type, void *ev);
+static int emblem_ui_e_bg_dirs_list(void *data, int type, void *ev);
 static void emblem_current_bg_set(Emblem *em, char *file);
 
-static void emblem_ui_init_job_cb(void *data);
+static void emblem_ui_init_dir(Emblem *em, char *dir);
 static void emblem_ui_resize_cb(Ecore_Evas *ee);
 
 static void emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj,
@@ -92,9 +93,10 @@ emblem_ui_init(Emblem *em)
 
     ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, 
                                 emblem_ui_e_bg_get, em);
+    ecore_event_handler_add(E_RESPONSE_BACKGROUND_DIRS_LIST,
+                                emblem_ui_e_bg_dirs_list, em);
     e_background_get();
-
-    ecore_job_add(emblem_ui_init_job_cb, em);
+    e_background_dirs_list();
 
     return 1;
 }
@@ -166,14 +168,12 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
 }
 
 static void
-emblem_ui_init_job_cb(void *data)
+emblem_ui_init_dir(Emblem *em, char *dir)
 {
-    Emblem *em;
     Evas_Coord w;
     double l;
 
-    em = data;
-    emblem_load_bgs(em);
+    emblem_load_bgs(em, dir);
 
     edje_object_part_geometry_get(em->gui.edje, "menu_bar", NULL, NULL, &w, NULL);
     l = esmart_container_elements_length_get(em->gui.menu);
@@ -194,14 +194,13 @@ emblem_ui_init_job_cb(void *data)
 }
 
 static int
-emblem_load_bgs(Emblem *em)
+emblem_load_bgs(Emblem *em, char *dir_path)
 {
     DIR *dir;
     struct dirent *entry;
     char path[PATH_MAX];
 
-    snprintf(path, PATH_MAX, "%s/.e/e/backgrounds", getenv("HOME"));
-    dir = opendir(path);
+    dir = opendir(dir_path);
     if (!dir) return 0;
 
     while ((entry = readdir(dir)))
@@ -212,9 +211,7 @@ emblem_load_bgs(Emblem *em)
         if (!strcmp(entry->d_name, ".")) continue;
         if (!strstr(entry->d_name, ".edj")) continue;
 
-        snprintf(path, PATH_MAX, "%s/.e/e/backgrounds/%s", 
-                                getenv("HOME"), entry->d_name);
-
+        snprintf(path, PATH_MAX, "%s/%s", dir_path, entry->d_name);
         o = emblem_evas_object_get(em, path, THUMB_W, THUMB_H);
         evas_object_resize(o, 64, 48);
         
@@ -223,6 +220,7 @@ emblem_load_bgs(Emblem *em)
 
         esmart_container_element_append(em->gui.menu, o);
     }
+    closedir(dir);
     return 1;
 }
 
@@ -300,10 +298,26 @@ emblem_ui_e_bg_get(void *data, int type, void *ev)
 
     e = ev;
     em = data;
-    emblem_current_bg_set(em, e->data);
+    emblem_current_bg_set(em, e->file);
 
     return 1;
-    data = NULL;
+    type = 0;
+}
+
+static int
+emblem_ui_e_bg_dirs_list(void *data, int type, void *ev)
+{
+    Emblem *em;
+    E_Response_Background_Dirs_List *e;
+    int i;
+
+    e = ev;
+    em = data;
+
+    for (i = 0; i < e->count; i++)
+        emblem_ui_init_dir(em, e->dirs[i]);
+
+    return 1;
     type = 0;
 }
 
