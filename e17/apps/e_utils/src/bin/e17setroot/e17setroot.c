@@ -49,7 +49,7 @@ void _e_bg_bg_help() {
 static int _e_bg_bg_get(void *data, int type, void *event) {   
    E_Response_Background_Get *bg;   
    bg = event;   
-   printf("Current bg file: %s\n", bg->data);
+   printf("Current bg file: %s\n", bg->file);
    ecore_main_loop_quit();      
 }
 
