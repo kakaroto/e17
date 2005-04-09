@@ -74,15 +74,25 @@ asm_rgba.S \
 asm_rotate.S \
 asm_scale.S
 
-EXTRA_libImlib2_la_SOURCES = $(MMX_SRCS)
+AMD64_SRCS = \
+amd64_blend.S
 
 MMX_OBJS = $(MMX_SRCS:.S=.lo)
+AMD64_OBJS = $(AMD64_SRCS:.S=.lo)
+
 
 if BUILD_MMX
 libImlib2_la_LIBADD       = $(MMX_OBJS) @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(MMX_OBJS)
+EXTRA_libImlib2_la_SOURCES = $(MMX_SRCS) 
+else
+if BUILD_AMD64
+libImlib2_la_LIBADD       = $(AMD64_OBJS) @my_libs@
+libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(AMD64_OBJS)
+EXTRA_libImlib2_la_SOURCES = $(AMD64_SOURCES)
 else
 libImlib2_la_LIBADD       = @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
+endif
 endif
 libImlib2_la_LDFLAGS      = -version-info 3:0:2
