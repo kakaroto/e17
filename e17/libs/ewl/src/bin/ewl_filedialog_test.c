@@ -25,7 +25,6 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_window_title_set (EWL_WINDOW (win), "File Dialog Foo");
 	ewl_window_name_set (EWL_WINDOW (win), "EWL Test Application");
 	ewl_window_class_set (EWL_WINDOW (win), "EFL Test Application");
-	ewl_object_size_request (EWL_OBJECT (win), 500, 450);
 
 	if (w)
 		ewl_callback_append (win, EWL_CALLBACK_DELETE_WINDOW,
