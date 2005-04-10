@@ -15,6 +15,17 @@
  */
 
 /**
+ * Callback chain container a list and bitmask of chain properties.
+ */
+typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
+
+struct Ewl_Callback_Chain
+{
+	Ecore_List *list;
+	unsigned int mask;
+};
+
+/**
  * The class that all widgets should inherit. Provides reference to a parent
  * widget/container, callbacks, and appearance information.
  */
@@ -36,7 +47,7 @@ struct Ewl_Widget
 	Ewl_Object      object; /**< Inherit the base Object class */
 	Ewl_Widget     *parent; /**< The parent widget, actually a container */
 
-	Ecore_List       *callbacks[EWL_CALLBACK_MAX]; /**< Callback list array */
+	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX]; /**< Callback chain array */
 
 	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
 

@@ -21,16 +21,18 @@ typedef struct Ewl_Callback Ewl_Callback;
 #define EWL_CALLBACK(callback) ((Ewl_Callback *) callback)
 
 /**
+ * A shortcut for declaring functions that take a callback funciton pointer.
+ */
+typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
+					  void *user_data);
+
+
+/**
  * @def EWL_CALLBACK_FUNCTION(cb_func)
  * Typecasts a pointer to an Ewl_Callback_Function pointer.
  */
 #define EWL_CALLBACK_FUNCTION(cb_func) ((Ewl_Callback_Function) cb_func)
 
-/**
- * A shortcut for declaring functions that take a callback funciton pointer.
- */
-typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
-					  void *user_data);
 struct Ewl_Callback
 {
 	Ewl_Callback_Function func; /**< Function executed */
@@ -49,52 +51,40 @@ struct Ewl_Callback
  * @def EWL_CALLBACK_LIST_POINTER(w, t)
  * Retrives the callback list from a widget for a certain event type.
  */
-#define EWL_CALLBACK_LIST_POINTER(w, t) \
-		(void *)((long)(w->callbacks[t]) & \
-					~EWL_CALLBACK_NOTIFY_MASK)
+#define EWL_CALLBACK_LIST_POINTER(w, t) (w->callbacks[t].list)
 
 /**
  * @def EWL_CALLBACK_FLAGS(w, t)
  * Retrives the callback flags from a widget for a certain event type.
  */
-#define EWL_CALLBACK_FLAGS(w, t) \
-		((long)(w->callbacks[t]) & \
-					EWL_CALLBACK_NOTIFY_MASK)
+#define EWL_CALLBACK_FLAGS(w, t) (w->callbacks[t].mask)
 /**
  * @def EWL_CALLBACK_FLAG_INTERCEPT(w, t)
  * Sets the callback intercept flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_INTERCEPT(w, t) \
-		w->callbacks[t] = \
-			 (void *)((long)EWL_CALLBACK_LIST_POINTER(w, t) | \
-			 EWL_CALLBACK_NOTIFY_INTERCEPT)
+		w->callbacks[t].mask |= EWL_CALLBACK_NOTIFY_INTERCEPT
 
 /**
  * @def EWL_CALLBACK_FLAG_NOINTERCEPT(w, t)
  * Clears the callback intercept flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_NOINTERCEPT(w, t) \
-		w->callbacks[t] = \
-		 	 (void *)((long)EWL_CALLBACK_LIST_POINTER(w, t) & \
-			 EWL_CALLBACK_NOTIFY_MASK & ~EWL_CALLBACK_NOTIFY_INTERCEPT)
+		w->callbacks[t].mask = w->callbacks[t].mask & ~EWL_CALLBACK_NOTIFY_INTERCEPT
 
 /**
  * @def EWL_CALLBACK_FLAG_NOTIFY(w, t)
  * Sets the callback notify flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_NOTIFY(w, t) \
-		w->callbacks[t] = \
-			 (void *)((long)EWL_CALLBACK_LIST_POINTER(w, t) | \
-			 EWL_CALLBACK_NOTIFY_NOTIFY)
+		w->callbacks[t].mask |= EWL_CALLBACK_NOTIFY_NOTIFY
 
 /**
  * @def EWL_CALLBACK_LIST_ASSIGN(w, t, l)
  * Sets the callback list for a widget for a certain event type.
  */
 #define EWL_CALLBACK_LIST_ASSIGN(w, t, l) \
-		w->callbacks[t] = (void *)((long)l | \
-			((long)w->callbacks[t] & \
-			 EWL_CALLBACK_NOTIFY_MASK))
+		w->callbacks[t].list = l
 
 void            ewl_callbacks_init(void);
 void            ewl_callbacks_shutdown(void);
