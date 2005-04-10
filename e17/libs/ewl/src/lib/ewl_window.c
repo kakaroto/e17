@@ -334,6 +334,38 @@ ewl_window_lower(Ewl_Window * win)
 }
 
 /**
+ * @param win: window to set transient
+ * @param forwin: the window to be transient for
+ * @return Returns no value.
+ * @brief Sets a window to be transient for another window.
+ */
+void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	win->transient = forwin;
+
+	if (forwin && REALIZED(win)) {
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+		if (REALIZED(forwin))
+			ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
+							(Ecore_X_Window)forwin->window);
+		else
+			ewl_callback_append(EWL_WIDGET(forwin),
+					    EWL_CALLBACK_REALIZE,
+					    ewl_window_realize_transient_cb,
+					    win);
+#endif
+	}
+	else if (REALIZED(win)) {
+		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param w: the window to be initialized to default values and callbacks
  * @return Returns TRUE or FALSE depending on if initialization succeeds.
  * @brief Initialize a window to default values and callbacks
@@ -549,6 +581,30 @@ void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	evas_object_pass_events_set(EWL_EMBED(w)->ev_clip, 1);
+	if (EWL_WINDOW(w)->transient)
+		ewl_window_transient_for(EWL_WINDOW(w),
+					 EWL_WINDOW(w)->transient);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_window_realize_transient_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+				     void *user_data)
+{
+	Ewl_Window *win = EWL_WINDOW(user_data);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Make sure the window is still transient for the realized window.
+	 */
+	if (EWL_WIDGET(win->transient) == w)
+		ewl_window_transient_for(win, EWL_WINDOW(w));
+
+	/*
+	 * Both windows realized so no need to keep the callback.
+	 */
+	ewl_callback_del(EWL_WIDGET(win), EWL_CALLBACK_REALIZE,
+			 ewl_window_realize_transient_cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

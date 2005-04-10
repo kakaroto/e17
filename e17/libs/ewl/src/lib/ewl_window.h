@@ -38,6 +38,7 @@ struct Ewl_Window
 	Ewl_Embed       embed; /**< Inherits from the Ewl_Embed class */
 
 	void           *window; /**< Provides a window for drawing */
+	Ewl_Window     *transient; /**< Window to be transient for */
 
 	char           *title; /**< The current title on the provided window */
 	char           *name; /**< Current name on the provided window */
@@ -65,6 +66,7 @@ void            ewl_window_move(Ewl_Window * win, int x, int y);
 void            ewl_window_position_get(Ewl_Window * win, int *x, int *y);
 void            ewl_window_raise(Ewl_Window * win);
 void            ewl_window_lower(Ewl_Window * win);
+void            ewl_window_transient_for(Ewl_Window * win, Ewl_Window * forwin);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -73,6 +75,8 @@ void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+void            ewl_window_realize_transient_cb(Ewl_Widget * w, void *ev_data,
+					        void *user_data);
 void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
