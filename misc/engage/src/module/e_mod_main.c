@@ -403,9 +403,9 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  evas_image_cache_flush(eb->evas);
 		  evas_image_cache_reload(eb->evas);
 		  ic = _engage_icon_new(eb, a);
-		  ic->extra_icons = extras;
 		  if (ic)
 		    {
+		       ic->extra_icons = extras;
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
 			 {
 			    E_App *a2;
@@ -1011,19 +1011,23 @@ _engage_cb_event_border_add(void *data, int type, void *event)
    if (!ic)
      {
 	ic = _engage_icon_new(eb, app);
-	ic->temp = 1;
-	_engage_bar_frame_resize(eb);
+	if (ic)
+	  {
+	     ic->temp = 1;
+	     _engage_bar_frame_resize(eb);
+	  }
      }
    if (ic)
      {
 	ai = _engage_app_icon_new(ic, e->border, 0);
-	if (e->border->iconic)
+	if (ai && e->border->iconic)
 	  {
 	     ai->min = 1;
 	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
 	     edje_object_signal_emit(ai->bg_object, "iconify", "");
 	  }				       
      }
+   return 1;
 }
 
 static int
@@ -1066,6 +1070,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
 	  }
 	icons = icons->next;
      }
+   return 1;
 }
 
 static int
@@ -1091,11 +1096,14 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    if (!ic)
      {
 	ic = _engage_icon_new(eb, app);
-	ic->temp = 1;
-	_engage_bar_frame_resize(eb);
+	if (ic)
+	  {
+	     ic->temp = 1;
+	     _engage_bar_frame_resize(eb);
+	  }
      }
    if (!ic)
-     return 0;
+     return 1;
 
    icons = ic->extra_icons;
    while (icons)
@@ -1110,8 +1118,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	  }
 	icons = icons->next;
      }
-   /* fallback, is this needed? */
-//   ai = _engage_app_icon_new(ic, e->border, 1);
+   return 1;
 }
 
 static int
@@ -1136,7 +1143,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
    if (!ic)
-     return 0;
+     return 1;
 
    icons = ic->extra_icons;
    while (icons)
@@ -1151,8 +1158,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	  }
 	icons = icons->next;
      }
-   /* fallback, is this needed? */
-//   ai = _engage_app_icon_new(ic, e->border, 0);
+   return 1;
 }
 
 
@@ -2149,12 +2155,13 @@ _engage_border_ignore(E_Border *bd)
    static char *ignores[] = { "Gkrellm2", "trayer", NULL};
    char       **cur;
    
+   if (ecore_x_window_prop_state_isset(bd->win,
+				       ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
+     return 1;
+   
    for (cur = ignores; *cur; cur++)
      if (bd->client.icccm.class && strcmp(bd->client.icccm.class, *cur) == 0)
        return 1;
    
-   if (ecore_x_window_prop_state_isset(bd->win,
-				       ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
-     return 1;
    return 0;
 }
