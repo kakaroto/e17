@@ -12,6 +12,11 @@
  */
 
 /**
+ * @themekey /media/file
+ * @themekey /media/group
+ */
+
+/**
  */
 typedef struct Ewl_Media Ewl_Media;
 

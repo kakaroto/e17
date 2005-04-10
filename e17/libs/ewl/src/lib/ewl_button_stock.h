@@ -11,6 +11,47 @@
  * @{
  */
 
+/**
+ * @themekey /stock_ok/file
+ * @themekey /stock_ok/group
+ *
+ * @themekey /stock_apply/file
+ * @themekey /stock_apply/group
+ *
+ * @themekey /stock_cancel/file
+ * @themekey /stock_cancel/group
+ *
+ * @themekey /stock_open/file
+ * @themekey /stock_open/group
+ *
+ * @themekey /stock_pause/file
+ * @themekey /stock_pause/group
+ *
+ * @themekey /stock_play/file
+ * @themekey /stock_play/group
+ *
+ * @themekey /stock_save/file
+ * @themekey /stock_save/group
+ *
+ * @themekey /stock_stop/file
+ * @themekey /stock_stop/group
+ *
+ * @themekey /stock_rewind/file
+ * @themekey /stock_rewind/group
+ *
+ * @themekey /stock_fastforward/file
+ * @themekey /stock_fastforward/group
+ *
+ * @themekey /stock_quit/file
+ * @themekey /stock_quit/group
+ *
+ * @themekey /stock_arrow_up/file
+ * @themekey /stock_arrow_up/group
+ *
+ * @themekey /stock_home/file
+ * @themekey /stock_home/group
+ */
+
   /* Stock Id */
   
 #define EWL_STOCK_OK          "stock_ok"

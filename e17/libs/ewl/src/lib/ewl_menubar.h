@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /menubar/file
+ * @themekey /menubar/group
+ */
+
+/**
  */
 typedef struct Ewl_Menubar Ewl_Menubar;
 

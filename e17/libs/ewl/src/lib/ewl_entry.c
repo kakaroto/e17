@@ -735,7 +735,6 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 
 	evas_object_textblock_char_pos_get(e->textobj, index, &tx, &ty,
 			&tw, &th);
-	printf("char %d at %d, %d size %dx%d\n", index, tx, ty, tw, th);
 	if (x)
 		*x = (int)(tx + CURRENT_X(e));
 	if (y)
@@ -2081,6 +2080,10 @@ ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 	len = evas_object_textblock_length_get(e->textobj);
 	if (op->type == EWL_ENTRY_OP_TYPE_TEXT_SET) {
 		char *nf;
+		/*
+		 * Get the initial formatting of the textblock
+		 */
+		evas_object_textblock_cursor_pos_set(e->textobj, 1);
 		nf = ewl_entry_op_format_current_get(e);
 		evas_object_textblock_cursor_pos_set(e->textobj, 0);
 		evas_object_textblock_text_del(e->textobj, len);

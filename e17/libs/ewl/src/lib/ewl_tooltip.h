@@ -17,7 +17,8 @@ typedef struct _ewl_tooltip Ewl_Tooltip;
 #define EWL_TOOLTIP(tt) ((Ewl_Tooltip *) tt)
 #define EWL_TOOLTIP_OFFSET 15
 
-struct _ewl_tooltip {
+struct _ewl_tooltip
+{
 	Ewl_Box      box;    /**< the floating box container */
 
 	Ewl_Widget  *text;  /**< the text displaying in the tooltip */

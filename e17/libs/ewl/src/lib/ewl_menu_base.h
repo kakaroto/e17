@@ -11,6 +11,14 @@
  */
 
 /**
+ * @themekey /menuitem/file
+ * @themekey /menuitem/group
+ *
+ * @themekey /menu_base/file
+ * @themekey /menu_base/group
+ */
+
+/**
  * This serves as a basis for all menu related entries. It provides the most
  * basic layout facilities for items in a menu.
  */
@@ -108,6 +116,8 @@ void ewl_menu_base_popup_show_cb(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 void ewl_menu_base_popup_hide_cb(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
+void ewl_menu_base_popbox_key_down_cb(Ewl_Widget * w, void *ev_data,
+				      void *user_data);
 
 /**
  * @}

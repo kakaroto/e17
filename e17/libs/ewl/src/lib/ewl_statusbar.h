@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /statusbar/file
+ * @themekey /statusbar/group
+ */
+
+/**
  */
 typedef struct Ewl_Statusbar Ewl_Statusbar;
 

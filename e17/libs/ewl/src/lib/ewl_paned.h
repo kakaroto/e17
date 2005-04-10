@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /paned/file
+ * @themekey /paned/group
+ */
+
+/**
  */
 typedef struct Ewl_Paned Ewl_Paned;
 

@@ -44,6 +44,8 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	menu->popbox = ewl_vbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(menu->popbox),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+	ewl_callback_append(menu->popbox, EWL_CALLBACK_KEY_DOWN,
+			    ewl_menu_base_popbox_key_down_cb, NULL);
 	ewl_widget_show(menu->popbox);
 
 	/*
@@ -355,6 +357,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 
 	ewl_widget_show(menu->popup);
+	ewl_widget_focus_send(menu->popbox);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -363,13 +366,16 @@ void
 ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Menu_Base      *menu;
+	Ewl_Menu_Base *menu;
+	Ewl_Widget    *focused;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	menu = EWL_MENU_BASE(w);
 
-	ewl_widget_hide(menu->popup);
+	focused = ewl_widget_focused_get();
+	if (focused && !ewl_container_parent_of(menu->popbox, focused))
+		ewl_widget_hide(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -394,6 +400,29 @@ ewl_menu_base_popup_show_cb(Ewl_Widget * w __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_widget_show(ppop);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Event_Key_Down *ev = ev_data;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	printf("Menu item: %s\n", ev->keyname);
+	if (!strcmp(ev->keyname, "Down")) {
+		printf("Menu item down\n");
+	}
+	else if (!strcmp(ev->keyname, "Up")) {
+		printf("Menu item up\n");
+	}
+	else if (!strcmp(ev->keyname, "Left")) {
+		printf("Menu item collapse\n");
+	}
+	else if (!strcmp(ev->keyname, "Right")) {
+		printf("Menu item expand\n");
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
