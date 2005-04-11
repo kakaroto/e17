@@ -398,8 +398,9 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 
 		if (!ret) {
 			ret = edje_file_data_get(theme_path, temp);
-
 		}
+		else
+			ret = strdup(ret);
 		temp++;
 		temp = strchr(temp, '/');
 		if (!temp && w && w->parent) {
@@ -416,6 +417,7 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 				cached_theme_data = ecore_hash_new(ecore_str_hash,
 							   ecore_str_compare);
 			ecore_hash_set(cached_theme_data, temp, strdup(ret));
+			ret = strdup(ret);
 		}
 	}
 
