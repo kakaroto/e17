@@ -973,7 +973,7 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
    ev = event;
    eb = data;
 
-   if (!ev->selection == ECORE_X_SELECTION_XDND)
+   if (ev->selection != ECORE_X_SELECTION_XDND)
      return 1;
    files = ev->data;
    for (i = 0; i < files->num_files; i++)
