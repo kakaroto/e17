@@ -966,20 +966,25 @@ int
 _engage_cb_event_dnd_selection(void *data, int type, void *event)
 {
    Ecore_X_Event_Selection_Notify *ev;
+   Ecore_X_Selection_Data_Files   *files;
    int i;
    Engage_Bar *eb;
-
+   
    ev = event;
    eb = data;
-   for (i = 0; i < ev->num_files; i++)
+
+   if (!ev->selection == ECORE_X_SELECTION_XDND)
+     return 1;
+   files = ev->data;
+   for (i = 0; i < files->num_files; i++)
      {
 	char *name, *path, *ext;
-	ext = strstr(ev->files[i], ".eapp");
+	ext = strstr(files->files[i], ".eapp");
 	if (!ext)
 	  continue;
-	path = ecore_file_get_dir(ev->files[i]);
+	path = ecore_file_get_dir(files->files[i]);
 	/* FIXME test here, we might need to copy it to .../all/ */
-	name = ecore_file_get_file(ev->files[i]);
+	name = ecore_file_get_file(files->files[i]);
 
 	_engage_dotorder_app_add(eb->engage, name);
      }
