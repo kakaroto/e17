@@ -34,7 +34,7 @@ static E_Config_DD *_notes_config_faces_edd = NULL;
 
 /* public module routines. all modules must have these */
 void *
-init (E_Module *m)
+e_modapi_init (E_Module *m)
 {
    Note *n;
    
@@ -58,7 +58,7 @@ init (E_Module *m)
 }
 
 int
-shutdown (E_Module *m)
+e_modapi_shutdown (E_Module *m)
 {
    Note *n;
    
@@ -76,7 +76,7 @@ shutdown (E_Module *m)
 }
 
 int
-save (E_Module *m)
+e_modapi_save (E_Module *m)
 {
    Note *n;
    Evas_List *l, *l2;
@@ -104,7 +104,7 @@ save (E_Module *m)
 }
 
 int
-info (E_Module *m)
+e_modapi_info (E_Module *m)
 {
    m->label = strdup("Notes");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/notes/module_icon.png");
@@ -113,7 +113,7 @@ info (E_Module *m)
 }
 
 int
-about (E_Module *m)
+e_modapi_about (E_Module *m)
 {
    e_error_dialog_show ("Enlightenment Notes Module",
 			"A desktop sticky notes module.");

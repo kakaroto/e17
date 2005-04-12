@@ -33,10 +33,10 @@ struct _Snow_Flake
    int             speed;
 };
 
-EAPI void *init     (E_Module *m);
-EAPI int   shutdown (E_Module *m);
-EAPI int   save     (E_Module *m);
-EAPI int   info     (E_Module *m);
-EAPI int   about    (E_Module *m);
+EAPI void *e_modapi_init     (E_Module *m);
+EAPI int   e_modapi_shutdown (E_Module *m);
+EAPI int   e_modapi_save     (E_Module *m);
+EAPI int   e_modapi_info     (E_Module *m);
+EAPI int   e_modapi_about    (E_Module *m);
 
 #endif

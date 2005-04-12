@@ -23,7 +23,7 @@ static void        _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 void *
-init(E_Module *m)
+e_modapi_init(E_Module *m)
 {
    Snow *snow;
    
@@ -44,7 +44,7 @@ init(E_Module *m)
 }
 
 int
-shutdown(E_Module *m)
+e_modapi_shutdown(E_Module *m)
 {
    Snow *snow;
    
@@ -63,7 +63,7 @@ shutdown(E_Module *m)
 }
 
 int
-save(E_Module *m)
+e_modapi_save(E_Module *m)
 {
    Snow *snow;
    
@@ -74,7 +74,7 @@ save(E_Module *m)
 }
 
 int
-info(E_Module *m)
+e_modapi_info(E_Module *m)
 {
    m->label = strdup("Snow");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png");
@@ -82,7 +82,7 @@ info(E_Module *m)
 }
 
 int
-about(E_Module *m)
+e_modapi_about(E_Module *m)
 {
    e_error_dialog_show("Enlightenment Snow Module",
 		       "This is a snow module that may replace xsnow.");

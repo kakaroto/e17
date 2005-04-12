@@ -41,7 +41,7 @@ char          *_flame_module_dir;
 
 /* public module routines. all modules must have these */
 void *
-init (E_Module *m)
+e_modapi_init (E_Module *m)
 {
    Flame *f;
    
@@ -64,7 +64,7 @@ init (E_Module *m)
 }
 
 int
-shutdown (E_Module *m)
+e_modapi_shutdown (E_Module *m)
 {
    Flame *f;
    
@@ -84,7 +84,7 @@ shutdown (E_Module *m)
 }
 
 int
-save (E_Module *m)
+e_modapi_save (E_Module *m)
 {
    Flame *f;
    
@@ -96,7 +96,7 @@ save (E_Module *m)
 }
 
 int
-info (E_Module *m)
+e_modapi_info (E_Module *m)
 {
    m->label = strdup("Flame");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/flame/module_icon.png");
@@ -105,7 +105,7 @@ info (E_Module *m)
 }
 
 int
-about (E_Module *m)
+e_modapi_about (E_Module *m)
 {
    e_error_dialog_show ("Enlightenment Flame Module",
 			"A simple module to display flames.");
