@@ -49,14 +49,11 @@ struct _button
    TextClass          *tclass;
    char               *label;
    int                 flags;
-   char                visible;
    char                internal;
    char                default_show;
    char                used;
 
-   int                 cx, cy, cw, ch;
    int                 state;
-   char                expose;
    Window              inside_win;
    Window              event_win;
    char                destroy_inside_win;
@@ -108,7 +105,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
       b->tclass->ref_count++;
 
    b->flags = flags;
-   b->visible = 0;
    b->geom.width.min = minw;
    b->geom.width.max = maxw;
    b->geom.height.min = minh;
@@ -131,12 +127,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->default_show = 1;
    b->used = 0;
    b->left = 0;
-   b->cx = -10;
-   b->cy = -10;
-   b->cw = -10;
-   b->ch = -10;
    b->state = 0;
-   b->expose = 0;
    b->ref_count = 0;
 
    EoSetWin(b, ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0));
@@ -255,34 +246,14 @@ ButtonCalc(Button * b)
 void
 ButtonShow(Button * b)
 {
-   char                move, resize;
-
    ButtonCalc(b);
-
-   move = 0;
-   resize = 0;
-   if ((EoGetX(b) != b->cx) || (EoGetY(b) != b->cy))
-      move = 1;
-   if ((EoGetW(b) != b->cw) || (EoGetH(b) != b->ch))
-      resize = 1;
-
-   if ((move) && (resize))
-      EMoveResizeWindow(EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
-			EoGetH(b));
-   else if (move)
-      EMoveWindow(EoGetWin(b), EoGetX(b), EoGetY(b));
-   else if (resize)
-      EResizeWindow(EoGetWin(b), EoGetW(b), EoGetH(b));
+   EoMoveResize(b, EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b));
+#if 0				/* Why? */
    if (EoIsSticky(b))
       ERaiseWindow(EoGetWin(b));
-
+#endif
    ButtonDraw(b);
-   b->visible = 1;
-   EMapWindow(EoGetWin(b));
-   b->cx = EoGetX(b);
-   b->cy = EoGetY(b);
-   b->cw = EoGetW(b);
-   b->ch = EoGetH(b);
+   EoMap(b);
 }
 
 void
@@ -305,8 +276,7 @@ ButtonMoveToDesktop(Button * b, int desk)
 void
 ButtonHide(Button * b)
 {
-   EUnmapWindow(EoGetWin(b));
-   b->visible = 0;
+   EoUnmap(b);
 }
 
 void
@@ -315,7 +285,7 @@ ButtonToggle(Button * b)
    if (b->used)
       return;
 
-   if (b->visible)
+   if (EoIsShown(b))
       ButtonHide(b);
    else
       ButtonShow(b);
@@ -324,17 +294,8 @@ ButtonToggle(Button * b)
 void
 ButtonDraw(Button * b)
 {
-#if 0				/* FIXME - Remove? */
-   ImageclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0, b->state,
-		   0, ST_BUTTON);
-
-   if (b->label)
-      TextclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0,
-		     b->state, 0, b->tclass, b->label);
-#else
    ITApply(EoGetWin(b), b->iclass, NULL, EoGetW(b), EoGetH(b),
 	   b->state, 0, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
-#endif
 }
 
 void
@@ -348,7 +309,6 @@ void
 ButtonMoveToCoord(Button * b, int x, int y)
 {
    int                 rx, ry, relx, rely, absx, absy;
-   char                move, resize;
 
    if (b->flags & FLAG_FIXED)
       return;
@@ -381,26 +341,13 @@ ButtonMoveToCoord(Button * b, int x, int y)
 	b->geom.yabs = absy;
 	b->geom.yrel = rely;
      }
+
    ButtonCalc(b);
-   move = 0;
-   resize = 0;
-   if ((EoGetX(b) != b->cx) || (EoGetY(b) != b->cy))
-      move = 1;
-   if ((EoGetW(b) != b->cw) || (EoGetH(b) != b->ch))
-      resize = 1;
-   if ((move) && (resize))
-      EMoveResizeWindow(EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
-			EoGetH(b));
-   else if (move)
-      EMoveWindow(EoGetWin(b), EoGetX(b), EoGetY(b));
-   else if (resize)
-      EResizeWindow(EoGetWin(b), EoGetW(b), EoGetH(b));
+   EoMoveResize(b, EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b));
+#if 0				/* Why? */
    if (EoIsSticky(b))
       ERaiseWindow(EoGetWin(b));
-   b->cx = EoGetX(b);
-   b->cy = EoGetY(b);
-   b->cw = EoGetW(b);
-   b->ch = EoGetH(b);
+#endif
 }
 
 void
@@ -450,24 +397,10 @@ ButtonGetDesk(const Button * b)
    return EoGetDesk(b);
 }
 
-void
-ButtonGetGeometry(const Button * b, int *x, int *y, unsigned int *w,
-		  unsigned int *h)
-{
-   if (x)
-      *x = EoGetX(b);
-   if (y)
-      *y = EoGetY(b);
-   if (w)
-      *w = EoGetW(b);
-   if (h)
-      *h = EoGetH(b);
-}
-
 int
 ButtonGetInfo(const Button * b, RectBox * r, int desk)
 {
-   if (!b->visible || b->internal)
+   if (!EoIsShown(b) || b->internal)
       return -1;
    if (!EoIsSticky(b) && EoGetDesk(b) != desk)
       return -1;
@@ -576,7 +509,8 @@ ButtonDragStart(Button * b)
    Mode.button_move_pending = 1;
    Mode.start_x = Mode.x;
    Mode.start_y = Mode.y;
-   ButtonGetGeometry(b, &Mode.win_x, &Mode.win_y, NULL, NULL);
+   Mode.win_x = EoGetX(b);
+   Mode.win_y = EoGetY(b);
 }
 
 static void
@@ -1062,7 +996,7 @@ ButtonsConfigSave(void)
 	fprintf(fs, "538 %i\n", blst[i]->geom.size_from_image);
 	fprintf(fs, "539 %i\n", EoGetDesk(blst[i]));
 	fprintf(fs, "540 %i\n", EoIsSticky(blst[i]));
-	fprintf(fs, "542 %i\n", blst[i]->visible);
+	fprintf(fs, "542 %i\n", EoIsShown(blst[i]));
 
 	if (blst[i]->flags)
 	  {

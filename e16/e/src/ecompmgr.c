@@ -2064,7 +2064,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
      case MapNotify:
 	eo = EobjListStackFind(ev->xmap.window);
 	if (!eo)
-	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_OVERR);
+	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_EXT);
 	else
 	   EobjListStackRaise(eo);	/* FIXME - Use Configure/CirculateNotify */
 	if (eo)

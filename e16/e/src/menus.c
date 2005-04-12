@@ -1001,7 +1001,7 @@ MenuShowMasker(Menu * m)
 	Mode_menus.cover_win =
 	   ECreateEventWindow(ewin->parent, 0, 0, VRoot.w, VRoot.h);
 	Mode_menus.win_covered = EoGetWin(ewin);
-	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_OVERR);
+	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_MISC);
 	EobjSetDesk(eo, EoGetDesk(ewin));
 	EobjSetLayer(eo, 2);
 	EobjSetFloating(eo, 1);
@@ -1621,7 +1621,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    ewin = FindItem(NULL, m->win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (!ewin)
       return;
-   if (!ewin->shown)
+   if (!EoIsShown(ewin))
       return;
 
    mi = data->mi;

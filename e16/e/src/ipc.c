@@ -1012,7 +1012,7 @@ EwinShowInfo1(const EWin * ewin)
 	     border->border.top, border->border.bottom,
 	     EoGetDesk(ewin),
 	     ewin->num_groups, ewin->docked, EoIsSticky(ewin),
-	     ewin->shown, ewin->iconified, ewin->shaded,
+	     EoIsShown(ewin), ewin->iconified, ewin->shaded,
 	     ewin->active, EoGetLayer(ewin), ewin->never_use_area,
 	     EoIsFloating(ewin), ewin->client.w, ewin->client.h,
 	     ewin->client.icon_win,
@@ -1118,7 +1118,7 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->never_use_area, ewin->fixedpos, EoGetDesk(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
 	     ewin->iconified, EoIsSticky(ewin), ewin->shaded,
-	     ewin->docked, ewin->state, ewin->shown, ewin->active,
+	     ewin->docked, ewin->state, EoIsShown(ewin), ewin->active,
 	     EoIsFloating(ewin), ewin->num_groups, ewin->ewmh.opacity
 #if USE_COMPOSITE
 	     , EoGetOpacity(ewin), EoGetShadow(ewin)
@@ -1183,6 +1183,30 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
 	   EwinShowInfo2(ewin);
 	else
 	   IpcPrintf("No matching EWin found\n");
+     }
+}
+
+static void
+IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
+{
+   int                 i, num;
+   EObj               *const *lst, *eo;
+
+   lst = EobjListStackGet(&num);
+
+   IpcPrintf("Num   window T   L  D     pos       size    S F C Name\n");
+   for (i = 0; i < num; i++)
+     {
+	eo = lst[i];
+	IpcPrintf(" %2d %#lx %d %3d %2d %5d,%5d %4dx%4d %d %d %d %s\n", i,
+		  eo->win, eo->type, eo->ilayer, eo->desk,
+		  eo->x, eo->y, eo->w, eo->h, eo->sticky, eo->floating,
+#if USE_COMPOSITE
+		  (eo->cmhook) ? 1 : 0,
+#else
+		  0,
+#endif
+		  EobjGetName(eo));
      }
 }
 
@@ -1466,6 +1490,8 @@ IpcItem             IPCArray[] = {
     IPC_EwinInfo, "get_client_info", NULL, "Show client window info", NULL},
    {
     IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
+   {
+    IPC_ObjInfo, "obj_info", "oi", "Show window object info", NULL},
    {
     IPC_Reparent,
     "reparent", "rep",

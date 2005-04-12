@@ -501,6 +501,7 @@ struct _eobj
    int                 w, h;
    char                sticky;
    char                floating;
+   char                shown;
 #if USE_COMPOSITE
    char                shadow;	/* Enable shadows */
    unsigned int        opacity;
@@ -512,8 +513,8 @@ struct _eobj
 #define EOBJ_TYPE_EWIN      0
 #define EOBJ_TYPE_BUTTON    1
 #define EOBJ_TYPE_DESK      2
-#define EOBJ_TYPE_OVERR     3
-#define EOBJ_TYPE_OTHER     4
+#define EOBJ_TYPE_MISC      3
+#define EOBJ_TYPE_EXT       4
 
 #define EoGetWin(eo)            ((eo)->o.win)
 #define EoGetType(eo)           ((eo)->o.type)
@@ -523,6 +524,7 @@ struct _eobj
 #define EoGetH(eo)              ((eo)->o.h)
 #define EoIsSticky(eo)          ((eo)->o.sticky)
 #define EoIsFloating(eo)        ((eo)->o.floating)
+#define EoIsShown(eo)           ((eo)->o.shown)
 #define EoGetDesk(eo)           ((eo)->o.desk)
 #define EoGetLayer(eo)          ((eo)->o.layer)
 #define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
@@ -536,6 +538,9 @@ struct _eobj
 #define EoSetFloating(eo, _f)   EobjSetFloating(&((eo)->o), (_f))
 #define EoSetDesk(eo, _d)       EobjSetDesk(&((eo)->o), (_d))
 #define EoSetLayer(eo, _l)      EobjSetLayer(&((eo)->o), (_l))
+#define EoMap(eo)               EobjMap(&((eo)->o))
+#define EoUnmap(eo)             EobjUnmap(&((eo)->o))
+#define EoMoveResize(eo, x, y, w, h) EobjMoveResize(&((eo)->o), x, y, w, h)
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoGetOpacity(eo)        ((eo)->o.opacity)
@@ -708,7 +713,6 @@ struct _ewin
    Group             **groups;
    char                visibility;
    char                docked;
-   char                shown;
    char                iconified;
    char                shaded;
    char                active;
@@ -1305,8 +1309,6 @@ void                ButtonSetSwallowed(Button * b);
 const char         *ButtonGetName(const Button * b);
 int                 ButtonGetRefcount(const Button * b);
 int                 ButtonGetDesk(const Button * b);
-void                ButtonGetGeometry(const Button * b, int *x, int *y,
-				      unsigned int *w, unsigned int *h);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
 ActionClass        *ButtonGetAClass(const Button * b);
 Window              ButtonGetWindow(const Button * b);
@@ -1528,6 +1530,9 @@ void                EobjInit(EObj * eo, int type, int x, int y, int w, int h);
 
 EObj               *EobjRegister(Window win, int type);
 void                EobjUnregister(Window win);
+void                EobjMap(EObj * eo);
+void                EobjUnmap(EObj * eo);
+void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);

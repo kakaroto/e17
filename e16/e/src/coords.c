@@ -22,9 +22,7 @@
  */
 #include "E.h"
 
-static char         coords_visible = 0;
-static Window       c_win = 0;
-static int          cx = 0, cy = 0, cw = 0, ch = 0;
+static EObj        *coord_eo = NULL;
 
 void
 CoordsShow(EWin * ewin)
@@ -34,6 +32,9 @@ CoordsShow(EWin * ewin)
    char                s[256], pq;
    int                 md;
    int                 x, y, w, h;
+   int                 cx, cy, cw, ch;
+   Window              win;
+   EObj               *eo = coord_eo;
 
    if (!Conf.movres.mode_info)
       return;
@@ -45,6 +46,8 @@ CoordsShow(EWin * ewin)
    if ((!ic) || (!tc))
       return;
 
+   cx = cy = cw = ch = 0;
+
    x = ewin->shape_x;
    y = ewin->shape_y;
    w = (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc;
@@ -52,59 +55,63 @@ CoordsShow(EWin * ewin)
 
    Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
-   cw += (ic->padding.left + ic->padding.right);
-   ch += (ic->padding.top + ic->padding.bottom);
+   cw += ic->padding.left + ic->padding.right;
+   ch += ic->padding.top + ic->padding.bottom;
 
-   cx = 0;
-   cy = 0;
-   if (ewin)
+   if (Mode.mode == MODE_MOVE)
+      md = Conf.movres.mode_move;
+   else
+      md = Conf.movres.mode_resize;
+
+   if ((md == 0) || ((cw < ewin->client.w) && (ch < ewin->client.h)))
      {
-	if (Mode.mode == MODE_MOVE)
-	   md = Conf.movres.mode_move;
-	else
-	   md = Conf.movres.mode_resize;
-
-	if ((md == 0) || ((cw < ewin->client.w) && (ch < ewin->client.h)))
+	if (Conf.movres.mode_info == 1)
 	  {
-	     if (Conf.movres.mode_info == 1)
+	     switch (md)
 	       {
-		  switch (md)
-		    {
-		    case 0:
-		    case 1:
-		    case 2:
-		       cx = x + ((EoGetW(ewin) - cw) / 2) +
-			  DeskGetX(EoGetDesk(ewin));
-		       cy = y + ((EoGetH(ewin) - ch) / 2) +
-			  DeskGetY(EoGetDesk(ewin));
-		       break;
-		    }
+	       case 0:
+	       case 1:
+	       case 2:
+		  cx = x + ((EoGetW(ewin) - cw) / 2) +
+		     DeskGetX(EoGetDesk(ewin));
+		  cy = y + ((EoGetH(ewin) - ch) / 2) +
+		     DeskGetY(EoGetDesk(ewin));
+		  break;
 	       }
 	  }
      }
 
-   if (!c_win)
-      c_win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
+   if (!eo)
+     {
+	win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
+	eo = EobjRegister(win, EOBJ_TYPE_MISC);
+	if (!eo)
+	   return;
+	EobjSetLayer(eo, 10);
+	EobjSetFloating(eo, 1);
+	EobjListStackRaise(eo);
+	coord_eo = eo;
+     }
 
-   EMoveResizeWindow(c_win, cx, cy, cw, ch);
-   ERaiseWindow(c_win);
+   EobjMoveResize(eo, cx, cy, cw, ch);
 
-   if (!coords_visible)
-      EMapWindow(c_win);
-   coords_visible = 1;
+   if (!eo->shown)
+      EobjMap(eo);
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   ImageclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   TextclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
+   ImageclassApply(ic, eo->win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
+   TextclassApply(ic, eo->win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
    Mode.queue_up = pq;
+
    XFlush(disp);
 }
 
 void
 CoordsHide(void)
 {
-   if (c_win)
-      EUnmapWindow(c_win);
-   coords_visible = 0;
+   EObj               *eo = coord_eo;
+
+   if (eo && eo->shown)
+      EobjUnmap(eo);
 }

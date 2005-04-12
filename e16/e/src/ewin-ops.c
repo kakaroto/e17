@@ -320,12 +320,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	  }
      }
 
-   if (EventDebug(250))
-      EDrawableDumpImage(ewin->o.win, "Win1");
-   ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-		      EoGetW(ewin), EoGetH(ewin));
-   if (EventDebug(250))
-      EDrawableDumpImage(ewin->o.win, "Win2");
+   EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin));
 
    if (ewin->shaded == 0)
      {

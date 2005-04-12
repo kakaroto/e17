@@ -95,10 +95,10 @@ StartupWindowsCreate(void)
    EMapRaised(w1);
    EMapRaised(w2);
 
-   eo = EobjRegister(w1, EOBJ_TYPE_OTHER);
+   eo = EobjRegister(w1, EOBJ_TYPE_MISC);
    EobjSetFloating(eo, 1);
    EobjListStackRaise(eo);
-   eo = EobjRegister(w2, EOBJ_TYPE_OTHER);
+   eo = EobjRegister(w2, EOBJ_TYPE_MISC);
    EobjSetFloating(eo, 1);
    EobjListStackRaise(eo);
 }

@@ -432,7 +432,7 @@ PagerRedraw(Pager * p, char newbg)
 	     int                 wx, wy, ww, wh;
 
 	     ewin = lst[i];
-	     if (!ewin->iconified && ewin->shown)
+	     if (!ewin->iconified && EoIsShown(ewin))
 	       {
 		  wx = ((EoGetX(ewin) +
 			 (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
@@ -883,7 +883,7 @@ EwinInPagerAt(Pager * p, int x, int y)
 	EWin               *ewin;
 
 	ewin = lst[i];
-	if (!ewin->iconified && ewin->shown)
+	if (!ewin->iconified && EoIsShown(ewin))
 	  {
 	     wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
 	     wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;

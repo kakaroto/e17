@@ -34,7 +34,8 @@ EobjGetName(const EObj * eo)
 	return EwinGetName((EWin *) eo);
      case EOBJ_TYPE_BUTTON:
 	return ButtonGetName((Button *) eo);
-     case EOBJ_TYPE_OVERR:
+     case EOBJ_TYPE_MISC:
+     case EOBJ_TYPE_EXT:
 	return eo->name;
      }
 }
@@ -113,8 +114,8 @@ EobjSetLayer(EObj * eo, int layer)
 	   eo->floating = 1;
 	break;
      case EOBJ_TYPE_DESK:
-     case EOBJ_TYPE_OVERR:
-     case EOBJ_TYPE_OTHER:
+     case EOBJ_TYPE_MISC:
+     case EOBJ_TYPE_EXT:
 	eo->ilayer = 10 * eo->layer;
 	break;
      }
@@ -219,7 +220,7 @@ EobjRegister(Window win, int type)
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjRegister: %#lx %s\n", win, eo->name);
 
-   if (type == EOBJ_TYPE_OVERR)
+   if (type == EOBJ_TYPE_EXT)
       EobjSetFloating(eo, 1);
    EobjSetLayer(eo, 4);
    EobjListStackAdd(eo, 1);
@@ -236,7 +237,7 @@ EobjUnregister(Window win)
    if (!eo)
       return;
 #if 0
-   if (eo->type != EOBJ_TYPE_OVERR)
+   if (eo->type != EOBJ_TYPE_EXT)
       return;
 #endif
 
@@ -246,6 +247,47 @@ EobjUnregister(Window win)
    EobjListStackDel(eo);
 
    EobjDestroy(eo);
+}
+
+void
+EobjMap(EObj * eo)
+{
+   if (eo->shown)
+      return;
+   eo->shown = 1;
+
+   EMapWindow(eo->win);
+}
+
+void
+EobjUnmap(EObj * eo)
+{
+   if (!eo->shown)
+      return;
+   eo->shown = 0;
+
+   EUnmapWindow(eo->win);
+}
+
+void
+EobjMoveResize(EObj * eo, int x, int y, int w, int h)
+{
+   eo->x = x;
+   eo->y = y;
+   eo->w = w;
+   eo->h = h;
+   if (eo->type == EOBJ_TYPE_EWIN)
+     {
+	if (EventDebug(250))
+	   EDrawableDumpImage(eo->win, "Win1");
+	ExMoveResizeWindow(eo, x, y, w, h);
+	if (EventDebug(250))
+	   EDrawableDumpImage(eo->win, "Win2");
+     }
+   else
+     {
+	EMoveResizeWindow(eo->win, x, y, w, h);
+     }
 }
 
 #if USE_COMPOSITE

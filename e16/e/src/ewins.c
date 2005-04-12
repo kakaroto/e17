@@ -1092,7 +1092,7 @@ EwinEventUnmap(EWin * ewin)
       ewin->state = EWIN_STATE_ICONIC;
    else
       ewin->state = EWIN_STATE_WITHDRAWN;
-   ewin->shown = 0;
+   ewin->o.shown = 0;		/* FIXME - TBD */
 
    ActionsEnd(ewin);
 
@@ -1548,35 +1548,33 @@ LowerEwin(EWin * ewin)
 void
 ShowEwin(EWin * ewin)
 {
-   if (ewin->shown)
+   if (EoIsShown(ewin))
       return;
-   ewin->shown = 1;
 
    if (ewin->client.win)
      {
+#if 0				/* FIXME - Why? */
 	if (ewin->shaded)
 	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
+#endif
 	EMapWindow(ewin->client.win);
      }
 
-   if (EoGetWin(ewin))
-      EMapWindow(EoGetWin(ewin));
+   EoMap(ewin);
 }
 
 void
 HideEwin(EWin * ewin)
 {
-   if (!ewin->shown || !EwinIsMapped(ewin))
+   if (!EoIsShown(ewin) || !EwinIsMapped(ewin))
       return;
-   ewin->shown = 0;
 
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
    EUnmapWindow(ewin->client.win);
 
-   if (EoGetWin(ewin))
-      EUnmapWindow(EoGetWin(ewin));
+   EoUnmap(ewin);
 }
 
 Window
@@ -1764,7 +1762,8 @@ EwinsEventsConfigure(int mode)
 
 	/* This is a hack. Maybe we should do something with expose events. */
 	if (mode)
-	   if (Mode.mode == MODE_DESKSWITCH && EoIsSticky(ewin) && ewin->shown)
+	   if (Mode.mode == MODE_DESKSWITCH && EoIsSticky(ewin) &&
+	       EoIsShown(ewin))
 	      EwinRefresh(ewin);
      }
 }
