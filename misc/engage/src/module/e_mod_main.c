@@ -128,7 +128,7 @@ E_App         *_engage_unmatched_app;
 
 /* public module routines. all modules must have these */
 void *
-init(E_Module *m)
+e_modapi_init(E_Module *m)
 {
    Engage *e;
 
@@ -151,7 +151,7 @@ init(E_Module *m)
 }
 
 int
-shutdown(E_Module *m)
+e_modapi_shutdown(E_Module *m)
 {
    Engage *e;
 
@@ -165,7 +165,7 @@ shutdown(E_Module *m)
 }
 
 int
-save(E_Module *m)
+e_modapi_save(E_Module *m)
 {
    Engage *e;
 
@@ -175,7 +175,7 @@ save(E_Module *m)
 }
 
 int
-info(E_Module *m)
+e_modapi_info(E_Module *m)
 {
    m->label = strdup("Engage");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/engage/module/module_icon.png");
@@ -183,7 +183,7 @@ info(E_Module *m)
 }
 
 int
-about(E_Module *m)
+e_modapi_about(E_Module *m)
 {
    e_error_dialog_show("Enlightenment Engage Module",
 		       "This is the Engage module for Enlightenment.\n"
