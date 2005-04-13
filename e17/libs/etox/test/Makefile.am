@@ -15,11 +15,11 @@ panel.c \
 panel.h \
 Etox_test.h \
 tests.h
-etox_test_LDFLAGS	=	-static
+#etox_test_LDFLAGS	=	-static
 etox_test_LDADD = $(top_builddir)/src/libetox.la @evas_libs@ @ecore_libs@ @edb_libs@
 
 etox_selections_DEPENDENCIES = $(top_builddir)/src/libetox.la
 etox_selections_SOURCES = selections.c 
-etox_selections_LDFLAGS	=	-static
+#etox_selections_LDFLAGS	=	-static
 etox_selections_LDADD = $(top_builddir)/src/libetox.la @evas_libs@ @ecore_libs@ @edb_libs@
 endif
