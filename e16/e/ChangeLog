@@ -3387,3 +3387,14 @@ Clean up when exiting Alert().
 Remove broken -smfile command line option.
 Add -p (--config-prefix) command line option to set the configuration file prefix.
 Fix initial border assignment for internal windows.
+
+-------------------------------------------------------------------------------
+
+Thu Apr 14 22:47:03 CEST 2005
+(Kim)
+
+--- 0.16.8 0.09 ---
+Fix major picture leak.
+Clean up command line option handling.
+Fix various issues with options and restarting/session management.
+Simplify handling of top-level windows - part 1.
