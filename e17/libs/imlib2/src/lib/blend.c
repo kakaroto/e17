@@ -1402,6 +1402,7 @@ __imlib_ReCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 #define __imlib_amd64_blend_rgb_to_rgba		__imlib_amd64_copy_rgb_to_rgba
 #define __imlib_CopyRGBToRGBCmod		__imlib_CopyRGBAToRGBCmod
 #define __imlib_mmx_copy_rgb_to_rgb_cmod	__imlib_mmx_copy_rgba_to_rgb_cmod
+#define __imlib_amd64_copy_rgb_to_rgb_cmod	__imlib_amd64_copy_rgba_to_rgb_cmod
 
 #define __imlib_AddCopyRGBToRGB			__imlib_AddCopyRGBAToRGB
 #define __imlib_AddBlendRGBToRGB		__imlib_AddCopyRGBToRGB
@@ -1414,6 +1415,7 @@ __imlib_ReCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 #define __imlib_amd64_add_blend_rgb_to_rgba	__imlib_amd64_add_copy_rgb_to_rgba
 #define __imlib_AddCopyRGBToRGBCmod		__imlib_AddCopyRGBAToRGBCmod
 #define __imlib_mmx_add_copy_rgb_to_rgb_cmod	__imlib_mmx_add_copy_rgb_to_rgba_cmod
+#define __imlib_amd64_add_copy_rgb_to_rgb_cmod	__imlib_amd64_add_copy_rgb_to_rgba_cmod
 
 #define __imlib_SubCopyRGBToRGB			__imlib_SubCopyRGBAToRGB
 #define __imlib_SubBlendRGBToRGB		__imlib_SubCopyRGBToRGB
@@ -1427,6 +1429,7 @@ __imlib_ReCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 #define __imlib_amd64_subtract_blend_rgb_to_rgba	__imlib_amd64_subtract_copy_rgb_to_rgba
 #define __imlib_SubCopyRGBToRGBCmod		__imlib_SubCopyRGBAToRGBCmod
 #define __imlib_mmx_subtract_copy_rgb_to_rgb_cmod	__imlib_mmx_subtract_copy_rgb_to_rgba_cmod
+#define __imlib_amd64_subtract_copy_rgb_to_rgb_cmod	__imlib_amd64_subtract_copy_rgb_to_rgba_cmod
 
 #define __imlib_ReCopyRGBToRGB			__imlib_ReCopyRGBAToRGB
 #define __imlib_ReBlendRGBToRGB			__imlib_ReCopyRGBToRGB
@@ -1440,6 +1443,7 @@ __imlib_ReCopyRGBToRGBACmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
 #define __imlib_amd64_reshade_blend_rgb_to_rgba	__imlib_amd64_reshade_copy_rgb_to_rgba
 #define __imlib_ReCopyRGBToRGBCmod		__imlib_ReCopyRGBAToRGBCmod
 #define __imlib_mmx_reshade_copy_rgb_to_rgb_cmod	__imlib_mmx_reshade_copy_rgb_to_rgba_cmod
+#define __imlib_amd64_reshade_copy_rgb_to_rgb_cmod	__imlib_amd64_reshade_copy_rgb_to_rgba_cmod
 
 
 ImlibBlendFunction
@@ -1570,10 +1574,14 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
          {{__imlib_amd64_copy_rgba_to_rgba, __imlib_amd64_blend_rgba_to_rgba },
 	  {__imlib_amd64_copy_rgb_to_rgba, __imlib_amd64_blend_rgb_to_rgba}}},
 
-        {{{__imlib_CopyRGBAToRGBCmod, __imlib_BlendRGBAToRGBCmod},
-          {__imlib_CopyRGBToRGBCmod, __imlib_BlendRGBToRGBCmod}},
-         {{__imlib_CopyRGBAToRGBACmod, __imlib_BlendRGBAToRGBACmod},
-	 {__imlib_CopyRGBToRGBACmod, __imlib_BlendRGBToRGBACmod}}}},
+        {{{__imlib_amd64_copy_rgba_to_rgb_cmod,
+	   __imlib_amd64_blend_rgba_to_rgb_cmod},
+          {__imlib_amd64_copy_rgb_to_rgb_cmod,
+	   __imlib_amd64_blend_rgb_to_rgb_cmod}},
+         {{__imlib_amd64_copy_rgba_to_rgba_cmod,
+	   __imlib_amd64_blend_rgba_to_rgba_cmod},
+	  {__imlib_amd64_copy_rgb_to_rgba_cmod,
+	   __imlib_amd64_blend_rgb_to_rgba_cmod}}}},
        /*\ OP_ADD \ */
        {{{{__imlib_amd64_add_copy_rgba_to_rgb, 
 	   __imlib_amd64_add_blend_rgba_to_rgb},
@@ -1584,10 +1592,14 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
           {__imlib_amd64_add_copy_rgb_to_rgba, 
 	  __imlib_amd64_add_blend_rgb_to_rgba}}},
 
-        {{{__imlib_AddCopyRGBAToRGBCmod, __imlib_AddBlendRGBAToRGBCmod},
-          {__imlib_AddCopyRGBToRGBCmod, __imlib_AddBlendRGBToRGBCmod}},
-         {{__imlib_AddCopyRGBAToRGBACmod, __imlib_AddBlendRGBAToRGBACmod},
-          {__imlib_AddCopyRGBToRGBACmod, __imlib_AddBlendRGBToRGBACmod}}}},
+        {{{__imlib_amd64_add_copy_rgba_to_rgb_cmod, 
+	   __imlib_amd64_add_blend_rgba_to_rgb_cmod},
+          {__imlib_amd64_add_copy_rgb_to_rgb_cmod, 
+	   __imlib_amd64_add_blend_rgb_to_rgb_cmod}},
+         {{__imlib_amd64_add_copy_rgba_to_rgba_cmod, 
+	   __imlib_amd64_add_blend_rgba_to_rgba_cmod},
+          {__imlib_amd64_add_copy_rgb_to_rgba_cmod, 
+	   __imlib_amd64_add_blend_rgb_to_rgba_cmod}}}},
        /*\ OP_SUBTRACT \ */
        {{{{__imlib_amd64_subtract_copy_rgba_to_rgb,
            __imlib_amd64_subtract_blend_rgba_to_rgb},
@@ -1598,10 +1610,14 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
           {__imlib_amd64_subtract_copy_rgb_to_rgba,
 	  __imlib_amd64_subtract_blend_rgb_to_rgba}}},
 
-        {{{__imlib_SubCopyRGBAToRGBCmod, __imlib_SubBlendRGBAToRGBCmod},
-          {__imlib_SubCopyRGBToRGBCmod, __imlib_SubBlendRGBToRGBCmod}},
-         {{__imlib_SubCopyRGBAToRGBACmod, __imlib_SubBlendRGBAToRGBACmod},
-          {__imlib_SubCopyRGBToRGBACmod, __imlib_SubBlendRGBToRGBACmod}}}},
+        {{{__imlib_amd64_subtract_copy_rgba_to_rgb_cmod,
+           __imlib_amd64_subtract_blend_rgba_to_rgb_cmod},
+          {__imlib_amd64_subtract_copy_rgb_to_rgb_cmod,
+           __imlib_amd64_subtract_blend_rgb_to_rgb_cmod}},
+         {{__imlib_amd64_subtract_copy_rgba_to_rgba_cmod,
+           __imlib_amd64_subtract_blend_rgba_to_rgba_cmod},
+          {__imlib_amd64_subtract_copy_rgb_to_rgba_cmod,
+	  __imlib_amd64_subtract_blend_rgb_to_rgba_cmod}}}},
        /*\ OP_RESHADE \ */
        {{{{__imlib_amd64_reshade_copy_rgba_to_rgb,
            __imlib_amd64_reshade_blend_rgba_to_rgb},
@@ -1612,10 +1628,14 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
           {__imlib_amd64_reshade_copy_rgb_to_rgba,
 	  __imlib_amd64_reshade_blend_rgb_to_rgba}}},
 
-        {{{__imlib_ReCopyRGBAToRGBCmod, __imlib_ReBlendRGBAToRGBCmod},
-          {__imlib_ReCopyRGBToRGBCmod, __imlib_ReBlendRGBToRGBCmod}},
-         {{__imlib_ReCopyRGBAToRGBACmod, __imlib_ReBlendRGBAToRGBACmod},
-          {__imlib_ReCopyRGBToRGBACmod, __imlib_ReBlendRGBToRGBACmod}}}}},
+        {{{__imlib_amd64_reshade_copy_rgba_to_rgb_cmod,
+           __imlib_amd64_reshade_blend_rgba_to_rgb_cmod},
+          {__imlib_amd64_reshade_copy_rgb_to_rgb_cmod,
+           __imlib_amd64_reshade_blend_rgb_to_rgb_cmod}},
+         {{__imlib_amd64_reshade_copy_rgba_to_rgba_cmod,
+           __imlib_amd64_reshade_blend_rgba_to_rgba_cmod},
+          {__imlib_amd64_reshade_copy_rgb_to_rgba_cmod,
+	   __imlib_amd64_reshade_blend_rgb_to_rgba_cmod}}}}},
 #endif
    };
 

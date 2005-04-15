@@ -75,7 +75,8 @@ asm_rotate.S \
 asm_scale.S
 
 AMD64_SRCS = \
-amd64_blend.S
+amd64_blend.S \
+amd64_blend_cmod.S
 
 MMX_OBJS = $(MMX_SRCS:.S=.lo)
 AMD64_OBJS = $(AMD64_SRCS:.S=.lo)
