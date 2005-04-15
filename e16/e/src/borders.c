@@ -889,10 +889,10 @@ BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
 #endif
    BorderWinpartChange(ewin, part, 0);
 
+   FocusHandleClick(ewin, wbit->win);
+
    if (ewin->border->part[part].aclass)
       EventAclass(ev, ewin, ewin->border->part[part].aclass);
-
-   FocusHandleClick(ewin, wbit->win);
 }
 
 static void
