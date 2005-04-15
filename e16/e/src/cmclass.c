@@ -23,6 +23,8 @@
 #include "E.h"
 #include "conf.h"
 
+#if ENABLE_COLOR_MODIFIERS
+
 void
 CreateCurve(ModCurve * c)
 {
@@ -669,3 +671,5 @@ IpcItem             CmClassIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(CmClassIpcArray)/sizeof(IpcItem))
 
 #endif
+
+#endif /* ENABLE_COLOR_MODIFIERS */

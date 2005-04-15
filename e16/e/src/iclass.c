@@ -110,7 +110,9 @@ ImagestateCreate(void)
    ESetColor(&(is->hihi), 255, 255, 255);
    ESetColor(&(is->lolo), 64, 64, 64);
    is->bevelstyle = BEVEL_NONE;
+#if ENABLE_COLOR_MODIFIERS
    is->colmod = NULL;
+#endif
 
    return is;
 }
@@ -128,11 +130,14 @@ FreeImageState(ImageState * i)
 	imlib_free_image();
 	i->im = NULL;
      }
+
    if (i->border)
       Efree(i->border);
 
+#if ENABLE_COLOR_MODIFIERS
    if (i->colmod)
       i->colmod->ref_count--;
+#endif
 }
 
 static void
@@ -219,7 +224,9 @@ ImageclassCreate(const char *name)
    ic->padding.right = 0;
    ic->padding.top = 0;
    ic->padding.bottom = 0;
+#if ENABLE_COLOR_MODIFIERS
    ic->colmod = NULL;
+#endif
    ic->ref_count = 0;
 
    return ic;
@@ -247,8 +254,10 @@ ImageclassDestroy(ImageClass * ic)
    FreeImageStateArray(&(ic->sticky));
    FreeImageStateArray(&(ic->sticky_active));
 
+#if ENABLE_COLOR_MODIFIERS
    if (ic->colmod)
       ic->colmod->ref_count--;
+#endif
 }
 
 ImageClass         *
@@ -272,16 +281,20 @@ ImageclassFind(const char *name, int fallback)
    if (ic->which) ImagestatePopulate(ic->which); \
    else ic->which = ic->fallback;
 
+#if ENABLE_COLOR_MODIFIERS
 #define ISTATE_SET_CM(which, fallback) \
    if (!ic->which->colmod) { \
       ic->which->colmod = fallback; \
       if (fallback) fallback->ref_count++; \
      }
+#endif
 
 static void
 ImageclassPopulate(ImageClass * ic)
 {
+#if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *cm;
+#endif
 
    if (!ic)
       return;
@@ -309,6 +322,7 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_STATE(sticky_active.clicked, sticky_active.normal);
    ISTATE_SET_STATE(sticky_active.disabled, sticky_active.normal);
 
+#if ENABLE_COLOR_MODIFIERS
    if (!ic->colmod)
      {
 	cm = (ColorModifierClass *) FindItem("ICLASS", 0, LIST_FINDBY_NAME,
@@ -358,6 +372,7 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_CM(sticky_active.hilited, cm);
    ISTATE_SET_CM(sticky_active.clicked, cm);
    ISTATE_SET_CM(sticky_active.disabled, cm);
+#endif
 }
 
 int
@@ -367,11 +382,14 @@ ImageclassConfigLoad(FILE * fs)
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
-   ImageClass         *ic = 0;
-   ImageState         *ICToRead = 0;
-   ColorModifierClass *cm = 0;
+   ImageClass         *ic = NULL;
+   ImageState         *ICToRead = NULL;
    int                 fields;
    int                 l, r, t, b;
+
+#if ENABLE_COLOR_MODIFIERS
+   ColorModifierClass *cm = NULL;
+#endif
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -429,11 +447,14 @@ ImageclassConfigLoad(FILE * fs)
 		ic->sticky = ICToInherit->sticky;
 		ic->sticky_active = ICToInherit->sticky_active;
 		ic->padding = ICToInherit->padding;
+#if ENABLE_COLOR_MODIFIERS
 		ic->colmod = ICToInherit->colmod;
+#endif
 	     }
 	     break;
 	  case CONFIG_COLORMOD:
 	  case ICLASS_COLORMOD:
+#if ENABLE_COLOR_MODIFIERS
 	     cm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
 	     if (cm)
 	       {
@@ -447,6 +468,7 @@ ImageclassConfigLoad(FILE * fs)
 		    }
 		  cm->ref_count++;
 	       }
+#endif
 	     break;
 	  case ICLASS_PADDING:
 	     {

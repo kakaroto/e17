@@ -352,7 +352,7 @@ ConfigFileRead(FILE * fs)
 			  ConfigAlertLoad(_("Window match"));
 		       break;
 		    case CONFIG_COLORMOD:
-#if 0				/* FIXME - ? */
+#if ENABLE_COLOR_MODIFIERS
 		       Config_ColorModifier(fs);
 #endif
 		       break;

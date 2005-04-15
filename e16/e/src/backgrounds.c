@@ -43,7 +43,9 @@ struct _background
    char                bg_tile;
    BgPart              bg;
    BgPart              top;
+#if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *cmclass;
+#endif
    char                keepim;
    unsigned int        ref_count;
 };
@@ -298,7 +300,9 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    bg->top.xperc = txperc;
    bg->top.yperc = typerc;
 
+#if ENABLE_COLOR_MODIFIERS
    bg->cmclass = NULL;
+#endif
    bg->keepim = 0;
    bg->ref_count = 0;
 
@@ -394,12 +398,14 @@ BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
    return updated;
 }
 
+#if ENABLE_COLOR_MODIFIERS
 static void
 BackgroundSetColorMofifier(Background * bg, ColorModifierClass * cm)
 {
    cm->ref_count++;
    bg->cmclass = cm;
 }
+#endif
 
 static void
 BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
@@ -480,7 +486,10 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	unsigned int        w, h, x, y;
 	char                hasbg, hasfg;
 	Pixmap              pmap, mask;
+
+#if ENABLE_COLOR_MODIFIERS
 	ColorModifierClass *cm;
+#endif
 
 	if (bg->bg.file && !bg->bg.im)
 	  {
@@ -496,6 +505,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	     bg->top.im = ELoadImage(bg->top.real_file);
 	  }
 
+#if ENABLE_COLOR_MODIFIERS
 	cm = bg->cmclass;
 	if (cm)
 	   cm->ref_count--;
@@ -528,6 +538,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	       }
 #endif
 	  }
+#endif
 
 	hasbg = hasfg = 0;
 	if (bg->top.im)
@@ -893,8 +904,11 @@ BackgroundsConfigLoad(FILE * fs)
    char               *bg2 = 0;
    char               *name = 0;
    char                ignore = 0;
-   ColorModifierClass *cm = NULL;
    int                 fields;
+
+#if ENABLE_COLOR_MODIFIERS
+   ColorModifierClass *cm = NULL;
+#endif
 
    ESetColor(&xclr, 0, 0, 0);
 
@@ -965,8 +979,10 @@ BackgroundsConfigLoad(FILE * fs)
 			    bg = BackgroundCreate(name, &xclr, bg1, i1, i2, i3,
 						  i4, i5, i6, bg2, j1, j2, j3,
 						  j4, j5);
+#if ENABLE_COLOR_MODIFIERS
 			    if (cm)
 			       BackgroundSetColorMofifier(bg, cm);
+#endif
 			 }
 		    }
 	       }
@@ -974,7 +990,9 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case CONFIG_COLORMOD:
 	  case ICLASS_COLORMOD:
+#if ENABLE_COLOR_MODIFIERS
 	     cm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
+#endif
 	     break;
 
 	  case CONFIG_CLASSNAME:
@@ -1176,10 +1194,12 @@ BackgroundsConfigSave(void)
 		     bglist[i]->top.xperc, bglist[i]->top.yperc);
 	  }
 
+#if ENABLE_COLOR_MODIFIERS
 	if (bglist[i]->cmclass)
 	  {
 	     fprintf(fs, "370 %s\n", bglist[i]->cmclass->name);
 	  }
+#endif
 
 	for (j = 0; j < (DesksGetNumber()); j++)
 	  {
@@ -2668,7 +2688,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
    autosave();
 }
 
-#if 0				/* I doubt this is used */
+#if ENABLE_COLOR_MODIFIERS
 static void
 IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 {
@@ -2745,7 +2765,7 @@ IpcItem             BackgroundsIpcArray[] = {
    {
     IPC_BackgroundUse, "use_bg", NULL, "Deprecated - do not use", NULL}
    ,
-#if 0				/* I doubt this is used */
+#if ENABLE_COLOR_MODIFIERS
    {IPC_BackgroundColormodifierSet, "set_bg_colmod", NULL, "TBD", NULL}
    ,
    {IPC_BackgroundColormodifierGet, "get_bg_colmod", NULL, "TBD", NULL}

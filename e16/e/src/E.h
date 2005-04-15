@@ -60,6 +60,8 @@
 
 #include <Imlib2.h>
 
+#define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
+
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
@@ -393,6 +395,7 @@ typedef struct
 }
 VirtRoot;
 
+#if ENABLE_COLOR_MODIFIERS
 typedef struct _modcurve
 {
    int                 num;
@@ -409,6 +412,7 @@ typedef struct _colormodifierclass
    unsigned int        ref_count;
 }
 ColorModifierClass;
+#endif
 
 typedef struct _imagestate
 {
@@ -421,7 +425,9 @@ typedef struct _imagestate
    int                 pixmapfillstyle;
    XColor              bg, hi, lo, hihi, lolo;
    int                 bevelstyle;
+#if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *colmod;
+#endif
 }
 ImageState;
 
@@ -439,7 +445,9 @@ typedef struct _imageclass
    char               *name;
    ImageStateArray     norm, active, sticky, sticky_active;
    Imlib_Border        padding;
+#if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *colmod;
+#endif
    unsigned int        ref_count;
 }
 ImageClass;
@@ -1318,6 +1326,7 @@ int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
 /* cmclass.c */
+#if ENABLE_COLOR_MODIFIERS
 void                CreateCurve(ModCurve * c);
 void                FreeModCurve(ModCurve * c);
 void                FreeCMClass(ColorModifierClass * cm);
@@ -1332,6 +1341,7 @@ void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
 				  int bnum, unsigned char *bpx,
 				  unsigned char *bpy);
 int                 ColorModifierConfigLoad(FILE * fs);
+#endif
 
 /* comms.c */
 void                CommsInit(void);
