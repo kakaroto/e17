@@ -802,9 +802,6 @@ AddToFamily(EWin * ewin, Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
      {
-#if 0				/* FIXME - Remove? */
-	EwinBorderDraw(ewin, 1, 1, 0);
-#endif
 	MoveEwinToDesktopAt(ewin, desk, x, y);
 	ecore_x_ungrab();
 	ewin->state = EWIN_STATE_MAPPED;
@@ -834,9 +831,6 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->client.already_placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-#if 0				/* FIXME - Remove? */
-	EwinBorderDraw(ewin, 1, 1, 0);
-#endif
 	MoveEwinToDesktop(ewin, desk);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, x, y);
@@ -874,9 +868,6 @@ AddToFamily(EWin * ewin, Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
-#if 0				/* FIXME - Remove? */
-	EwinBorderDraw(ewin, 1, 1, 0);
-#endif
 	MoveEwinToDesktop(ewin, desk);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
@@ -886,9 +877,6 @@ AddToFamily(EWin * ewin, Window win)
      }
    else
      {
-#if 0				/* FIXME - Remove? */
-	EwinBorderDraw(ewin, 1, 1, 0);
-#endif
 	MoveEwinToDesktopAt(ewin, desk, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -918,10 +906,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    Eprintf("Desk=%d, layer=%d, sticky=%d, floating=%d\n",
 	   EoGetDesk(ewin), EoGetLayer(ewin), EoIsSticky(ewin),
 	   EoIsFloating(ewin));
-#endif
-
-#if 0				/* FIXME - Remove? */
-   EwinBorderDraw(ewin, 1, 1, 1);
 #endif
 
    EwinConformToDesktop(ewin);

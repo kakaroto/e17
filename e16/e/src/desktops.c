@@ -692,14 +692,6 @@ DesksControlsDestroy(void)
 
    for (i = 0; i < Conf.desks.num; i++)
       DeskControlsDestroy(_DeskGet(i));
-#if 0
-   while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
-			  LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-      ButtonDestroy(b);
-   while ((b = RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0,
-			  LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-      ButtonDestroy(b);
-#endif
 }
 
 static void

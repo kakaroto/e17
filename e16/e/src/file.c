@@ -869,14 +869,3 @@ findLocalizedFile(char *fname)
 
    return 0;
 }
-
-#if 0				/* Not used */
-void
-rmrf(const char *path)
-{
-   char                s[FILEPATH_LEN_MAX];
-
-   Esnprintf(s, sizeof(s), "/bin/rm -rf %s", path);
-   system(s);
-}
-#endif

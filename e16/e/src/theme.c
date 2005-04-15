@@ -27,7 +27,6 @@
 
 static char        *badtheme = NULL;
 static char        *badreason = NULL;
-static char         mustdel = 0;
 
 static const char  *const theme_files[] = {
 #if ENABLE_THEME_SANITY_CHECKING
@@ -260,13 +259,7 @@ ThemeGetDefault(void)
 static void
 ThemeCleanup(void)
 {
-   if (!mustdel)
-      return;
-
-   /* We don't ever get here because mustdel is never set */
-#if 0				/* Don't do recursive theme removal (risky?) */
-   rmrf(themepath);
-#endif
+   /* TBD */
 }
 
 static char        *
@@ -278,8 +271,6 @@ ThemeExtract(const char *theme)
    unsigned char       buf[320];
    const char         *oktheme = NULL;
    char               *name;
-
-   mustdel = 0;
 
    /* its a directory - just use it "as is" */
    if (isdir(theme))

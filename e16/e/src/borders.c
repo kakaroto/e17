@@ -110,20 +110,9 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ewb->is = is;
    ewb->ts = ts;
 
-#if 0				/* FIXME - Remove? */
-   ImageclassApply(ewin->border->part[i].iclass, ewb->win,
-		   ewb->w, ewb->h, ewin->active,
-		   EoIsSticky(ewin), ewb->state, ewb->expose, ST_BORDER);
-   if (ts)
-      TextclassApply(ewin->border->part[i].iclass, ewb->win,
-		     ewb->w, ewb->h, ewin->active,
-		     EoIsSticky(ewin), ewb->state, ewb->expose,
-		     ewin->border->part[i].tclass, txt);
-#else
    ITApply(ewb->win, ewin->border->part[i].iclass, is, ewb->w, ewb->h,
 	   ewb->state, ewin->active, EoIsSticky(ewin), ewb->expose, ST_BORDER,
 	   ewin->border->part[i].tclass, ts, txt);
-#endif
 }
 
 static int
@@ -961,32 +950,6 @@ BorderWinpartEventLeave(EWinBit * wbit, XEvent * ev)
      }
 }
 
-#if 0				/* FIXME */
-/* This was in HandleMouseUp() */
-
-{
-
-#if 0
-   if ((Mode.last_bpress) && (Mode.last_bpress != win))
-     {
-	ev->xbutton.window = Mode.last_bpress;
-	BordersEventMouseOut2(ev);
-	ev->xbutton.window = win;
-     }
-#endif
-}
-
-static void
-BorderWinpartEventLeave2(EWinBit * wbit, XEvent * ev, EWin * ewin, int j)
-{
-   ewin->bits[j].left = 0;
-   ewin->bits[j].state = STATE_NORMAL;
-   BorderWinpartChange(ewin, j, 0);
-   return;
-   ev = NULL;
-}
-#endif
-
 static void
 BorderFrameHandleEvents(XEvent * ev, void *prm)
 {
@@ -1009,10 +972,6 @@ BorderWinpartHandleEvents(XEvent * ev, void *prm)
 
    switch (ev->type)
      {
-#if 0
-     case KeyPress:
-	break;
-#endif
      case ButtonPress:
 	BorderWinpartEventMouseDown(wbit, ev);
 	break;

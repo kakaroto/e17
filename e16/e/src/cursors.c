@@ -28,9 +28,6 @@
 struct _ecursor
 {
    char               *name;
-#if 0				/* Not used */
-   Imlib_Color         fg, bg;
-#endif
    char               *file;
    Cursor              cursor;
    unsigned int        ref_count;
@@ -92,10 +89,6 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
    ec = Emalloc(sizeof(ECursor));
    ec->name = Estrdup(name);
    ec->file = Estrdup(image);
-#if 0				/* Not used */
-   ec->fg = *fg;
-   ec->bg = *bg;
-#endif
    ec->cursor = curs;
    ec->ref_count = 0;
 #if 0				/* Not used */

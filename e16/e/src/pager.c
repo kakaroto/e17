@@ -1906,20 +1906,6 @@ PagersReArea(void)
    Efree(pl);
 }
 
-#if 0
-static int
-PagersCountForDesktop(int desk)
-{
-   Pager             **pl;
-   int                 num;
-
-   pl = PagersForDesktop(desk, &num);
-   if (pl)
-      Efree(pl);
-   return num;
-}
-#endif
-
 /*
  * Configuration dialog
  */

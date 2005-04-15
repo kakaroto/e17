@@ -60,9 +60,6 @@
 
 #include <Imlib2.h>
 
-#define EAllocColor(pxc) \
-	XAllocColor(disp, VRoot.cmap, pxc)
-
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
@@ -1067,9 +1064,6 @@ typedef struct
    Colormap            current_cmap;
    Slideout           *slideout;
    Window              context_win;
-#if 1				/* Should be removed */
-   int                 context_w, context_h;
-#endif
    char                constrained;
    char                nogroup;
    char                keybinds_changed;
@@ -1735,7 +1729,6 @@ char               *field(char *s, int fieldno);
 int                 fillfield(char *s, int fieldno, char *buf);
 void                fword(char *s, int num, char *wd);
 int                 findLocalizedFile(char *fname);
-void                rmrf(const char *s);
 
 /* finders.c */
 EWin               *FindEwinByBase(Window win);
@@ -2297,6 +2290,8 @@ Pixmap              EWindowGetShapePixmap(Window win);
 GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
 int                 EFreeGC(GC gc);
 
+#define EAllocColor(pxc) \
+	XAllocColor(disp, VRoot.cmap, pxc)
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
