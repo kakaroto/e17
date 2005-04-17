@@ -519,7 +519,8 @@ struct _eobj
 #define EOBJ_TYPE_BUTTON    1
 #define EOBJ_TYPE_DESK      2
 #define EOBJ_TYPE_MISC      3
-#define EOBJ_TYPE_EXT       4
+#define EOBJ_TYPE_EVENT     4
+#define EOBJ_TYPE_EXT       5
 
 #define EoGetWin(eo)            ((eo)->o.win)
 #define EoGetName(eo)           ((eo)->o.name)

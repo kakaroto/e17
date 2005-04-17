@@ -80,6 +80,7 @@ EobjSetLayer(EObj * eo, int layer)
 	if (eo->ilayer == 0)
 	   eo->ilayer = 3;
 	break;
+
      case EOBJ_TYPE_BUTTON:
 	if (eo->layer > 0)
 	   eo->ilayer = 75;	/* Ontop */
@@ -90,9 +91,8 @@ EobjSetLayer(EObj * eo, int layer)
 	if (eo->layer > 0 && eo->sticky)
 	   eo->floating = 1;
 	break;
-     case EOBJ_TYPE_DESK:
-     case EOBJ_TYPE_MISC:
-     case EOBJ_TYPE_EXT:
+
+     default:
 	eo->ilayer = 10 * eo->layer;
 	break;
      }
@@ -207,7 +207,10 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 
    eo = Ecalloc(1, sizeof(EObj));
 
-   eo->win = ECreateWindow(VRoot.win, x, y, w, h, su);
+   if (type == EOBJ_TYPE_EVENT)
+      eo->win = ECreateEventWindow(VRoot.win, x, y, w, h);
+   else
+      eo->win = ECreateWindow(VRoot.win, x, y, w, h, su);
    if (eo->win == None)
      {
 	Efree(eo);

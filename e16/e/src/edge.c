@@ -23,7 +23,9 @@
  */
 #include "E.h"
 
-static Window       w1 = 0, w2 = 0, w3 = 0, w4 = 0;
+/* FIXME: Screen resizing not handled. */
+
+static EObj        *w1 = NULL, *w2 = NULL, *w3 = NULL, *w4 = NULL;
 
 static void
 EdgeTimeout(int val, void *data __UNUSED__)
@@ -183,48 +185,50 @@ EdgeWindowsShow(void)
 
    if (!w1)
      {
-	w1 = ECreateEventWindow(VRoot.win, 0, 0, 1, VRoot.h);
-	w2 = ECreateEventWindow(VRoot.win, VRoot.w - 1, 0, 1, VRoot.h);
-	w3 = ECreateEventWindow(VRoot.win, 0, 0, VRoot.w, 1);
-	w4 = ECreateEventWindow(VRoot.win, 0, VRoot.h - 1, VRoot.w, 1);
-	ESelectInput(w1, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w2, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w3, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w4, EnterWindowMask | LeaveWindowMask);
-	EventCallbackRegister(w1, 0, EdgeHandleEvents, (void *)0);
-	EventCallbackRegister(w2, 0, EdgeHandleEvents, (void *)1);
-	EventCallbackRegister(w3, 0, EdgeHandleEvents, (void *)2);
-	EventCallbackRegister(w4, 0, EdgeHandleEvents, (void *)3);
+	w1 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, 1, VRoot.h, 0, "Edge-L");
+	w2 = EobjWindowCreate(EOBJ_TYPE_EVENT, VRoot.w - 1, 0, 1, VRoot.h, 0,
+			      "Edge-R");
+	w3 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, VRoot.w, 1, 0, "Edge-T");
+	w4 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, VRoot.h - 1, VRoot.w, 1, 0,
+			      "Edge-B");
+	ESelectInput(w1->win, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w2->win, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w3->win, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w4->win, EnterWindowMask | LeaveWindowMask);
+	EventCallbackRegister(w1->win, 0, EdgeHandleEvents, (void *)0);
+	EventCallbackRegister(w2->win, 0, EdgeHandleEvents, (void *)1);
+	EventCallbackRegister(w3->win, 0, EdgeHandleEvents, (void *)2);
+	EventCallbackRegister(w4->win, 0, EdgeHandleEvents, (void *)3);
      }
    DeskGetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
    if (cx == 0 && !Conf.desks.areas_wraparound)
-      EUnmapWindow(w1);
+      EobjUnmap(w1);
    else
-      EMapRaised(w1);
+      EobjMap(w1, 1);
    if (cx == (ax - 1) && !Conf.desks.areas_wraparound)
-      EUnmapWindow(w2);
+      EobjUnmap(w2);
    else
-      EMapRaised(w2);
+      EobjMap(w2, 1);
    if (cy == 0 && !Conf.desks.areas_wraparound)
-      EUnmapWindow(w3);
+      EobjUnmap(w3);
    else
-      EMapRaised(w3);
+      EobjMap(w3, 1);
    if (cy == (ay - 1) && !Conf.desks.areas_wraparound)
-      EUnmapWindow(w4);
+      EobjUnmap(w4);
    else
-      EMapRaised(w4);
+      EobjMap(w4, 1);
 }
 
 void
 EdgeWindowsHide(void)
 {
-   if (w1)
-     {
-	EUnmapWindow(w1);
-	EUnmapWindow(w2);
-	EUnmapWindow(w3);
-	EUnmapWindow(w4);
-     }
+   if (!w1)
+      return;
+
+   EobjUnmap(w1);
+   EobjUnmap(w2);
+   EobjUnmap(w3);
+   EobjUnmap(w4);
 }

@@ -1335,7 +1335,6 @@ StackDesktop(int desk)
      }
 
    XRestackWindows(disp, wl, tot);
-   EdgeWindowsShow();
    HintsSetClientStacking();
 
    if (wl)

@@ -130,12 +130,11 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->ref_count = 0;
 
    win = ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0);
-   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
-
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
+   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
 
    ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
    EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);

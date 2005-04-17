@@ -127,6 +127,7 @@ SetAreaSize(int aw, int ah)
    Conf.desks.areas_nx = area_w = aw;
    Conf.desks.areas_ny = area_h = ah;
    HintsSetViewportConfig();
+   EdgeWindowsShow();
    ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
 }
 

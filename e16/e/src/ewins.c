@@ -972,7 +972,6 @@ EwinConformToDesktop(EWin * ewin)
 	  }
 	RaiseEwin(ewin);
 	ICCCM_Configure(ewin);
-	EdgeWindowsShow();
      }
    else if (ewin->parent != dwin)
      {
