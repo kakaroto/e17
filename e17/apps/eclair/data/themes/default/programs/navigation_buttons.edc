@@ -1,0 +1,200 @@
+program {
+   name: "button_play_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_play";
+   action: SIGNAL_EMIT "eclair_play" "";
+}
+program {
+   name: "button_play_down";
+   signal: "mouse,down,1";
+   source: "button_play";
+   action: STATE_SET "down" 0.0;
+   target: "button_play";
+}
+program {
+   name: "button_play_up";
+   signal: "mouse,up,1";
+   source: "button_play";
+   action: STATE_SET "default" 0.0;
+   target: "button_play";
+}
+program {
+   name: "button_pause_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_pause";
+   action: SIGNAL_EMIT "eclair_pause" "";
+}
+program {
+   name: "button_pause_down";
+   signal: "mouse,down,1";
+   source: "button_pause";
+   action: STATE_SET "down" 0.0;
+   target: "button_pause";
+}
+program {
+   name: "button_pause_up";
+   signal: "mouse,up,1";
+   source: "button_pause";
+   action: STATE_SET "play" 0.0;
+   target: "button_pause";
+}
+program {
+   name: "button_play_over_in";
+   signal: "mouse,in";
+   source: "button_play_over";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_play_over";
+}
+program {
+   name: "button_play_over_out";
+   signal: "mouse,out";
+   source: "button_play_over";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_play_over";
+}
+program {
+   name: "button_open_in";
+   signal: "mouse,in";
+   source: "button_open";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_open";
+}
+program {
+   name: "button_open_out";
+   signal: "mouse,out";
+   source: "button_open";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_open";
+}
+program {
+   name: "button_open_down";
+   signal: "mouse,down,1";
+   source: "button_open";
+   action: STATE_SET "down" 0.0;
+   target: "button_open";
+}
+program {
+   name: "button_open_up";
+   signal: "mouse,up,1";
+   source: "button_open";
+   action: STATE_SET "over" 0.0;
+   target: "button_open";
+}
+program {
+   name: "button_open_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_open";
+   action: SIGNAL_EMIT "eclair_open" "";
+}
+program {
+   name: "button_stop_in";
+   signal: "mouse,in";
+   source: "button_stop";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_stop";
+}
+program {
+   name: "button_stop_out";
+   signal: "mouse,out";
+   source: "button_stop";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_stop";
+}
+program {
+   name: "button_stop_down";
+   signal: "mouse,down,1";
+   source: "button_stop";
+   action: STATE_SET "down" 0.0;
+   target: "button_stop";
+}
+program {
+   name: "button_stop_up";
+   signal: "mouse,up,1";
+   source: "button_stop";
+   action: STATE_SET "over" 0.0;
+   target: "button_stop";
+}
+program {
+   name: "button_stop_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_stop";
+   action: SIGNAL_EMIT "eclair_stop" "";
+}
+program {
+   name: "button_prev_in";
+   signal: "mouse,in";
+   source: "button_prev";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_prev";
+}
+program {
+   name: "button_prev_out";
+   signal: "mouse,out";
+   source: "button_prev";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_prev";
+}
+program {
+   name: "button_prev_down";
+   signal: "mouse,down,1";
+   source: "button_prev";
+   action: STATE_SET "down" 0.0;
+   target: "button_prev";
+}
+program {
+   name: "button_prev_up";
+   signal: "mouse,up,1";
+   source: "button_prev";
+   action: STATE_SET "over" 0.0;
+   target: "button_prev";
+}
+program {
+   name: "button_prev_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_prev";
+   action: SIGNAL_EMIT "eclair_prev" "";
+}
+program {
+   name: "button_next_in";
+   signal: "mouse,in";
+   source: "button_next";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_next";
+}
+program {
+   name: "button_next_out";
+   signal: "mouse,out";
+   source: "button_next";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_next";
+}
+program {
+   name: "button_next_down";
+   signal: "mouse,down,1";
+   source: "button_next";
+   action: STATE_SET "down" 0.0;
+   target: "button_next";
+}
+program {
+   name: "button_next_up";
+   signal: "mouse,up,1";
+   source: "button_next";
+   action: STATE_SET "over" 0.0;
+   target: "button_next";
+}
+program {
+   name: "button_next_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_next";
+   action: SIGNAL_EMIT "eclair_next" "";
+}

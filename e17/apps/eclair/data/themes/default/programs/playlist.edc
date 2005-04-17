@@ -1,0 +1,40 @@
+program {
+   name: "open_playlist";
+   signal: "mouse,clicked,1";
+   source: "playlist_button";
+   action: STATE_SET "open" 0.0;
+   transition: DECELERATE 1;
+   target: "playlist_button";
+   target: "playlist_button_close";
+   target: "playlist_bottom";
+   target: "playlist_background";
+   target: "playlist_box";
+   target: "playlist_container";
+   target: "playlist_shadow";
+}
+program {
+   name: "close_playlist";
+   signal: "mouse,clicked,1";
+   source: "playlist_button_close";
+   action: STATE_SET "default" 0.0;
+   transition: DECELERATE 1;
+   target: "playlist_button";
+   target: "playlist_button_close";
+   target: "playlist_bottom";
+   target: "playlist_background";
+   target: "playlist_box";
+   target: "playlist_container";
+   target: "playlist_shadow";
+}
+program {
+   name: "playlist_wheel_down";
+   source: "playlist_rect";
+   signal: "mouse,wheel,0,1";
+   action: SIGNAL_EMIT "playlist_scroll_down" "";
+}
+program {
+   name: "playlist_wheel_up";
+   source: "playlist_rect";
+   signal: "mouse,wheel,0,-1";
+   action: SIGNAL_EMIT "playlist_scroll_up" "";
+}

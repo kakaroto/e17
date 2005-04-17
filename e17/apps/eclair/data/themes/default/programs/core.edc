@@ -1,0 +1,28 @@
+program {
+   name: "play";
+   signal: "signal_play";
+   source: "eclair_bin";
+   action: STATE_SET "play" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_play";
+   target: "button_pause";
+   target: "progress_bar_drag";
+}
+program {
+   name: "pause";
+   signal: "signal_pause";
+   source: "eclair_bin";
+   action: STATE_SET "pause" 0.0;
+   target: "button_play";
+   target: "button_pause";
+}
+program {
+   name: "stop";
+   signal: "signal_stop";
+   source: "eclair_bin";
+   action: STATE_SET "stop" 0.0;
+   transition: LINEAR 0.25;
+   target: "button_play";
+   target: "button_pause";
+   target: "progress_bar_drag";
+}
