@@ -158,8 +158,6 @@ static void
 EwinCleanup(EWin * ewin)
 {
    EwinBorderDetach(ewin);
-   EobjListFocusDel(&ewin->o);
-   EobjFini(&ewin->o);
 }
 
 static void
@@ -203,6 +201,8 @@ EwinDestroy(EWin * ewin)
       Efree(lst);
 
    EwinCleanup(ewin);
+   EobjListFocusDel(&ewin->o);
+   EobjFini(&ewin->o);
 
    if (ewin->icccm.wm_name)
       Efree(ewin->icccm.wm_name);
