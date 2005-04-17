@@ -495,8 +495,10 @@ ThemeConfigLoad(void)
       "init.cfg",
       "textclasses.cfg",
       "backup-textclasses.cfg",
+#if ENABLE_COLOR_MODIFIERS
       "colormodifiers.cfg",
       "backup-colormodifiers.cfg",
+#endif
       "imageclasses.cfg",
       "backup-imageclasses.cfg",
       "desktops.cfg",
