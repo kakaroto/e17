@@ -23,29 +23,6 @@
 #include "E.h"
 #include "ecompmgr.h"
 
-const char         *
-EobjGetName(const EObj * eo)
-{
-   switch (eo->type)
-     {
-     default:
-	return "?";
-     case EOBJ_TYPE_EWIN:
-	return EwinGetName((EWin *) eo);
-     case EOBJ_TYPE_BUTTON:
-	return ButtonGetName((Button *) eo);
-     case EOBJ_TYPE_MISC:
-     case EOBJ_TYPE_EXT:
-	return eo->name;
-     }
-}
-
-int
-EobjGetDesk(const EObj * eo)
-{
-   return (eo->sticky) ? DesksGetCurrent() : eo->desk;
-}
-
 int
 EobjSetDesk(EObj * eo, int desk)
 {
@@ -158,17 +135,39 @@ EobjIsShaped(const EObj * eo)
 }
 
 void
-EobjInit(EObj * eo, int type, int x, int y, int w, int h)
+EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
+	 const char *name)
 {
    eo->type = type;
+   eo->win = win;
    eo->x = x;
    eo->y = y;
    eo->w = w;
    eo->h = h;
+   if (name)
+      eo->name = Estrdup(name);
 #if USE_COMPOSITE
-   eo->opacity = 0xFFFFFFFF;
+   if (eo->opacity == 0)
+      eo->opacity = 0xFFFFFFFF;
    eo->shadow = 1;
 #endif
+   if (eo->win != VRoot.win)
+      EobjListStackAdd(eo, 1);
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EobjInit: %#lx %s\n", eo->win, eo->name);
+}
+
+void
+EobjFini(EObj * eo)
+{
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
+
+   EobjListStackDel(eo);
+
+   if (eo->name)
+      Efree(eo->name);
 }
 
 static EObj        *
@@ -179,25 +178,54 @@ EobjCreate(Window win, int type)
 
    if (!XGetWindowAttributes(disp, win, &attr))
       return NULL;
-#if 0
-   if (!attr.override_redirect)
-      return NULL;
-#endif
 
    eo = Ecalloc(1, sizeof(EObj));
+   if (!eo)
+      return eo;
 
-   eo->win = win;
-
-   EobjInit(eo, type, attr.x, attr.y, attr.width, attr.height);
+   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, NULL);
+   eo->name = ecore_x_icccm_title_get(win);
 
    return eo;
 }
 
-static void
+void
 EobjDestroy(EObj * eo)
 {
-   _EFREE(eo->name);
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EobjDestroy: %#lx %s\n", eo->win, eo->name);
+
+   EobjFini(eo);
+
    Efree(eo);
+}
+
+EObj               *
+EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
+{
+   EObj               *eo;
+
+   eo = Ecalloc(1, sizeof(EObj));
+
+   eo->win = ECreateWindow(VRoot.win, x, y, w, h, su);
+   if (eo->win == None)
+     {
+	Efree(eo);
+	return NULL;
+     }
+
+   eo->floating = 1;
+   EobjSetLayer(eo, 20);
+   EobjInit(eo, type, eo->win, x, y, w, h, name);
+
+   return eo;
+}
+
+void
+EobjWindowDestroy(EObj * eo)
+{
+   EDestroyWindow(eo->win);
+   EobjDestroy(eo);
 }
 
 EObj               *
@@ -213,17 +241,14 @@ EobjRegister(Window win, int type)
    if (!eo)
       return eo;
 
-#if 1				/* Just for debug */
-   eo->name = ecore_x_icccm_title_get(win);
-#endif
-
-   if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjRegister: %#lx %s\n", win, eo->name);
-
+#if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)
-      EobjSetFloating(eo, 1);
-   EobjSetLayer(eo, 4);
-   EobjListStackAdd(eo, 1);
+     {
+	EobjSetFloating(eo, 1);
+	EobjSetLayer(eo, 4);
+	EobjListStackRaise(eo);
+     }
+#endif
 
    return eo;
 }
@@ -236,25 +261,19 @@ EobjUnregister(Window win)
    eo = EobjListStackFind(win);
    if (!eo)
       return;
-#if 0
-   if (eo->type != EOBJ_TYPE_EXT)
-      return;
-#endif
-
-   if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjUnregister: %#lx %s\n", win, eo->name);
-
-   EobjListStackDel(eo);
 
    EobjDestroy(eo);
 }
 
 void
-EobjMap(EObj * eo)
+EobjMap(EObj * eo, int raise)
 {
    if (eo->shown)
       return;
    eo->shown = 1;
+
+   if (raise)
+      EobjListStackRaise(eo);
 
    EMapWindow(eo->win);
 }
@@ -288,6 +307,18 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
      {
 	EMoveResizeWindow(eo->win, x, y, w, h);
      }
+}
+
+void
+EobjMove(EObj * eo, int x, int y)
+{
+   EobjMoveResize(eo, x, y, eo->w, eo->h);
+}
+
+void
+EobjResize(EObj * eo, int w, int h)
+{
+   EobjMoveResize(eo, eo->x, eo->y, w, h);
 }
 
 #if USE_COMPOSITE

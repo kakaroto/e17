@@ -39,83 +39,67 @@ static struct
 
 struct _tooltip
 {
-   char               *name;
-
-   ImageClass         *iclass;
-   ImageClass         *s_iclass[4];
+   ImageClass         *iclass[5];
    TextClass          *tclass;
    int                 dist;
-   Window              win;
    Window              iwin;
-   Window              s_win[4];
+   EObj               *win[5];
    char                visible;
    ImageClass         *tooltippic;
    unsigned int        ref_count;
 };
+
+#define TTWIN win[4]
+#define TTICL iclass[4]
 
 static ToolTip     *
 TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 	      ImageClass * ic2, ImageClass * ic3, ImageClass * ic4,
 	      TextClass * tclass, int dist, ImageClass * tooltippic)
 {
-   int                 i;
+   int                 i, wh;
    ToolTip            *tt;
-
-#if USE_COMPOSITE
    EObj               *eo;
-#endif
 
-   if (ic0 == NULL || ic1 == NULL || ic2 == NULL || ic3 == NULL || ic4 == NULL
-       || tclass == NULL)
+   if (ic0 == NULL || tclass == NULL)
       return NULL;
 
-   tt = Emalloc(sizeof(ToolTip));
-   tt->name = Estrdup(name);
-   tt->iclass = ic0;
-   if (ic0)
-      ic0->ref_count++;
-   tt->s_iclass[0] = ic1;
-   tt->s_iclass[1] = ic2;
-   tt->s_iclass[2] = ic3;
-   tt->s_iclass[3] = ic4;
+   tt = Ecalloc(1, sizeof(ToolTip));
+
+   tt->iclass[0] = ic1;
+   tt->iclass[1] = ic2;
+   tt->iclass[2] = ic3;
+   tt->iclass[3] = ic4;
+   tt->iclass[4] = ic0;
+   ic0->ref_count++;
    tt->tclass = tclass;
-   if (tclass)
-      tclass->ref_count++;
+   tclass->ref_count++;
    tt->tooltippic = tooltippic;
    if (tooltippic)
       tooltippic->ref_count++;
 
    tt->dist = dist;
-   tt->win = ECreateWindow(VRoot.win, -10, -100, 1, 1, 1);
-   tt->iwin = ECreateWindow(tt->win, -10, -100, 1, 1, 1);
-#if USE_COMPOSITE
-   eo = EobjRegister(tt->win, EOBJ_TYPE_MISC);
-   eo->opacity = OpacityExt(Conf_tooltips.opacity);
-#endif
 
-   for (i = 0; i < 4; i++)
+   for (i = 0; i < 5; i++)
      {
-	Window              win;
+	if (!tt->iclass[i])
+	   continue;
 
-	win = 0;
-	if (tt->s_iclass[i])
-	  {
-	     int                 wh = (i + 1) * 8;
+	wh = (i + 1) * 8;
 
-	     win = ECreateWindow(VRoot.win, -10, -100, wh, wh, 1);
-	     tt->s_iclass[i]->ref_count++;
+	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, NULL);
+	tt->iclass[i]->ref_count++;
 #if USE_COMPOSITE
-	     eo = EobjRegister(win, EOBJ_TYPE_MISC);
-	     eo->opacity = OpacityExt(Conf_tooltips.opacity);
+	eo->opacity = OpacityExt(Conf_tooltips.opacity);
 #endif
-	  }
-	tt->s_win[i] = win;
+	tt->win[i] = eo;
      }
+   tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);
+   tt->TTWIN->name = Estrdup(name);
 
-   tt->visible = 0;
    tt->ref_count = 0;
 
-   AddItem(tt, tt->name, 0, LIST_TYPE_TOOLTIP);
+   AddItem(tt, name, 0, LIST_TYPE_TOOLTIP);
 
    return tt;
 }
@@ -258,7 +242,7 @@ TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
       return;
 
    imlib_context_set_image(ic->norm.normal->im);
-   imlib_context_set_drawable(tt->win);
+   imlib_context_set_drawable(tt->TTWIN->win);
    imlib_context_set_blend(1);
    imlib_render_image_on_drawable(x, y);
    imlib_context_set_blend(0);
@@ -269,26 +253,24 @@ TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
 void
 TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 {
-   int                 i, w = 0, h = 0, ix, iy, iw, ih, dx, dy, xx, yy;
+   int                 i, w, h, ix, iy, iw, ih, dx, dy, xx, yy;
    int                 ww, hh, adx, ady, dist;
    int                 headline_h = 0, headline_w = 0, icons_width =
-      0, labels_width = 0, double_w = 0, temp_w, temp_h;
+      0, labels_width = 0, double_w = 0;
    Imlib_Image        *im;
-   char                pq;
    int                *heights = NULL;
-   ImageClass         *ic = NULL;
+   ImageClass         *ic;
    int                 cols[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    int                 num, modifiers;
    Action             *aa;
    const char         *tts;
+   EObj               *eo;
 
    if (!tt || Mode.mode != MODE_NONE)
       return;
 
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-
    /* if we get an actionclass, look for tooltip action texts */
+   h = 0;
    if (ac)
      {
 	num = ActionclassGetActionCount(ac);
@@ -296,6 +278,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	for (i = 0; i < num; i++)
 	  {
+	     int                 temp_w, temp_h;
+
 	     temp_w = 0;
 	     temp_h = 0;
 
@@ -412,6 +396,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    else
       w = headline_w;
    h += headline_h;
+
+   ic = tt->TTICL;
    iw = 0;
    ih = 0;
    if (tt->tooltippic)
@@ -430,12 +416,12 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	if (h < ih)
 	   h = ih;
      }
-   w += tt->iclass->padding.left + tt->iclass->padding.right;
-   h += tt->iclass->padding.top + tt->iclass->padding.bottom;
+   w += ic->padding.left + ic->padding.right;
+   h += ic->padding.top + ic->padding.bottom;
 
    if ((tt->tooltippic) && (iw > 0) && (ih > 0))
      {
-	ix = tt->iclass->padding.left;
+	ix = ic->padding.left;
 	iy = (h - ih) / 2;
 	EMoveResizeWindow(tt->iwin, ix, iy, iw, ih);
 	EMapWindow(tt->iwin);
@@ -470,32 +456,40 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	dist = tt->dist;
 	ady = ady / dy;
 
-	yy = y - ((ady * 10 * dist) / 100);
-	xx = x - (dist * 10 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(tt->s_win[0], xx - 4, yy - 4);
+	if (tt->win[0])
+	  {
+	     yy = y - ((ady * 10 * dist) / 100);
+	     xx = x - (dist * 10 * dx) / (100 * VRoot.w / 2);
+	     EobjMove(tt->win[0], xx - 4, yy - 4);
+	  }
 
-	yy = y - ((ady * 30 * dist) / 100);
-	xx = x - (dist * 30 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(tt->s_win[1], xx - 8, yy - 8);
+	if (tt->win[1])
+	  {
+	     yy = y - ((ady * 30 * dist) / 100);
+	     xx = x - (dist * 30 * dx) / (100 * VRoot.w / 2);
+	     EobjMove(tt->win[1], xx - 8, yy - 8);
+	  }
 
-	yy = y - ((ady * 50 * dist) / 100);
-	xx = x - (dist * 50 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(tt->s_win[2], xx - 12, yy - 12);
+	if (tt->win[2])
+	  {
+	     yy = y - ((ady * 50 * dist) / 100);
+	     xx = x - (dist * 50 * dx) / (100 * VRoot.w / 2);
+	     EobjMove(tt->win[2], xx - 12, yy - 12);
+	  }
 
-	yy = y - ((ady * 80 * dist) / 100);
-	xx = x - (dist * 80 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(tt->s_win[3], xx - 16, yy - 16);
+	if (tt->win[3])
+	  {
+	     yy = y - ((ady * 80 * dist) / 100);
+	     xx = x - (dist * 80 * dx) / (100 * VRoot.w / 2);
+	     EobjMove(tt->win[3], xx - 16, yy - 16);
+	  }
 
 	yy = y - ((ady * 100 * dist) / 100);
 	xx = x - (dist * 100 * dx) / (100 * VRoot.w / 2);
 	if (ady < 0)
-	  {
-	     hh = 0;
-	  }
+	   hh = 0;
 	else
-	  {
-	     hh = h;
-	  }
+	   hh = h;
 	ww = (w / 2) + ((dx * w) / (VRoot.w / 2));
      }
    else
@@ -515,62 +509,72 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	  }
 	dist = tt->dist;
 	adx = adx / dx;
-	xx = x - ((adx * 10 * dist) / 100);
-	yy = y - (dist * 10 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(tt->s_win[0], xx - 4, yy - 4);
-	xx = x - ((adx * 30 * dist) / 100);
-	yy = y - (dist * 30 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(tt->s_win[1], xx - 8, yy - 8);
-	xx = x - ((adx * 50 * dist) / 100);
-	yy = y - (dist * 50 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(tt->s_win[2], xx - 12, yy - 12);
-	xx = x - ((adx * 80 * dist) / 100);
-	yy = y - (dist * 80 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(tt->s_win[3], xx - 16, yy - 16);
+
+	if (tt->win[0])
+	  {
+	     xx = x - ((adx * 10 * dist) / 100);
+	     yy = y - (dist * 10 * dy) / (100 * VRoot.h / 2);
+	     EobjMove(tt->win[0], xx - 4, yy - 4);
+	  }
+
+	if (tt->win[1])
+	  {
+	     xx = x - ((adx * 30 * dist) / 100);
+	     yy = y - (dist * 30 * dy) / (100 * VRoot.h / 2);
+	     EobjMove(tt->win[1], xx - 8, yy - 8);
+	  }
+
+	if (tt->win[2])
+	  {
+	     xx = x - ((adx * 50 * dist) / 100);
+	     yy = y - (dist * 50 * dy) / (100 * VRoot.h / 2);
+	     EobjMove(tt->win[2], xx - 12, yy - 12);
+	  }
+
+	if (tt->win[3])
+	  {
+	     xx = x - ((adx * 80 * dist) / 100);
+	     yy = y - (dist * 80 * dy) / (100 * VRoot.h / 2);
+	     EobjMove(tt->win[3], xx - 16, yy - 16);
+	  }
+
 	xx = x - ((adx * 100 * dist) / 100);
 	yy = y - (dist * 100 * dy) / (100 * VRoot.h / 2);
 	if (adx < 0)
-	  {
-	     ww = 0;
-	  }
+	   ww = 0;
 	else
-	  {
-	     ww = w;
-	  }
+	   ww = w;
 	hh = (h / 2) + ((dy * h) / (VRoot.h / 2));
      }
 
-   EMoveResizeWindow(tt->win, xx - ww, yy - hh, w, h);
+   EobjMoveResize(tt->TTWIN, xx - ww, yy - hh, w, h);
 
-   ImageclassApply(tt->s_iclass[0], tt->s_win[0], 8, 8, 0, 0, STATE_NORMAL, 0,
-		   ST_TOOLTIP);
-   ImageclassApply(tt->s_iclass[1], tt->s_win[1], 16, 16, 0, 0, STATE_NORMAL, 0,
-		   ST_TOOLTIP);
-   ImageclassApply(tt->s_iclass[2], tt->s_win[2], 24, 24, 0, 0, STATE_NORMAL, 0,
-		   ST_TOOLTIP);
-   ImageclassApply(tt->s_iclass[3], tt->s_win[3], 32, 32, 0, 0, STATE_NORMAL, 0,
-		   ST_TOOLTIP);
-   ImageclassApply(tt->iclass, tt->win, w, h, 0, 0, STATE_NORMAL, 0,
-		   ST_TOOLTIP);
-   EMapRaised(tt->s_win[0]);
-   EMapRaised(tt->s_win[1]);
-   EMapRaised(tt->s_win[2]);
-   EMapRaised(tt->s_win[3]);
-   EMapRaised(tt->win);
+   for (i = 0; i < 5; i++)
+     {
+	eo = tt->win[i];
+	if (eo)
+	   ImageclassApply(tt->iclass[i], eo->win, eo->w, eo->h, 0, 0,
+			   STATE_NORMAL, 0, ST_TOOLTIP);
+     }
+
+   for (i = 0; i < 5; i++)
+      if (tt->win[i])
+	 EobjMap(tt->win[i], 1);
+
    ecore_x_sync();
 
-   xx = tt->iclass->padding.left + iw;
+   xx = ic->padding.left + iw;
 
    /* draw the ordinary tooltip text */
-   TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, text, xx,
-	    tt->iclass->padding.top, headline_w, headline_h, 17, 512);
+   TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, text, xx,
+	    ic->padding.top, headline_w, headline_h, 17, 512);
 
    /* draw the icons and labels, if any */
    if (ac)
      {
 	num = ActionclassGetActionCount(ac);
-	y = tt->iclass->padding.top + headline_h;
-	xx = tt->iclass->padding.left + double_w;
+	y = ic->padding.top + headline_h;
+	xx = ic->padding.left + double_w;
 
 	for (i = 0; i < num; i++)
 	  {
@@ -586,7 +590,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	     if (ActionGetEvent(aa) == EVENT_DOUBLE_DOWN)
 	       {
-		  TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
+		  TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, "2x",
 			   xx + iw - double_w, y, double_w, heights[i], 17, 0);
 	       }
 
@@ -637,16 +641,14 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		     TooltipIclassPaste(tt, "TOOLTIP_KEY_MOD5", x, y, &x);
 	       }
 
-	     TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, tts,
-		      tt->iclass->padding.left + icons_width + iw, y,
+	     TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, tts,
+		      ic->padding.left + icons_width + iw, y,
 		      labels_width, heights[i], 17, 0);
 	     y += heights[i];
 
 	  }
      }
 
-   Mode.queue_up = pq;
-   tt->visible = 1;
    if (heights)
       Efree(heights);
 }
@@ -654,18 +656,18 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 void
 TooltipHide(ToolTip * tt)
 {
+   int                 i;
+
    if (!tt)
       return;
 
-   if (!tt->visible)
+   if (!tt->TTWIN->shown)
       return;
 
-   tt->visible = 0;
-   EUnmapWindow(tt->win);
-   EUnmapWindow(tt->s_win[0]);
-   EUnmapWindow(tt->s_win[1]);
-   EUnmapWindow(tt->s_win[2]);
-   EUnmapWindow(tt->s_win[3]);
+   for (i = 4; i >= 0; i--)
+      if (tt->win[i])
+	 EobjUnmap(tt->win[i]);
+
    ecore_x_sync();
 }
 

@@ -24,15 +24,11 @@
 
 struct _progressbar
 {
-   char               *name;
+   EObj               *win;
+   EObj               *n_win;
+   EObj               *p_win;
+   int                 w, h;
    int                 value;
-   int                 x;
-   int                 y;
-   int                 w;
-   int                 h;
-   Window              win;
-   Window              n_win;
-   Window              p_win;
    ImageClass         *ic, *inc, *ipc;
    TextClass          *tc, *tnc;
 };
@@ -41,25 +37,32 @@ static int          pnum = 0;
 static Progressbar **plist = NULL;
 
 Progressbar        *
-ProgressbarCreate(char *name, int width, int height)
+ProgressbarCreate(char *name, int w, int h)
 {
    Progressbar        *p;
+   int                 x, y;
 
-   p = Emalloc(sizeof(Progressbar));
+   p = Ecalloc(1, sizeof(Progressbar));
    pnum++;
    plist = Erealloc(plist, pnum * sizeof(Progressbar *));
    plist[pnum - 1] = p;
-   p->name = Estrdup(name);
-   p->x = (VRoot.w - width) / 2;
-   p->y = 32 + (pnum * height * 2);
-   p->w = width;
-   p->h = height;
-   p->win = ECreateWindow(VRoot.win, p->x, p->y, p->w - (p->h * 5), p->h, 1);
+
+   p->w = w;
+   p->h = h;
+   p->value = 0;
+
+   x = (VRoot.w - w) / 2;
+   y = 32 + (pnum * h * 2);
+
+   p->win = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, w - (h * 5), h, 1, name);
    p->n_win =
-      ECreateWindow(VRoot.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
-		    p->h, 1);
-   p->p_win = ECreateWindow(VRoot.win, p->x, p->y + p->h, 1, p->h, 1);
-   /* FIXME: need to use other image and textclasses */
+      EobjWindowCreate(EOBJ_TYPE_MISC, x + w - (h * 5), y, (h * 5), h, 1, "pn");
+   p->p_win = EobjWindowCreate(EOBJ_TYPE_MISC, x, y + h, 1, h, 1, "pp");
+   if (!p->win || !p->n_win || !p->p_win)
+     {
+	ProgressbarDestroy(p);
+	return NULL;
+     }
 
    p->ic = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ic)
@@ -81,41 +84,36 @@ ProgressbarCreate(char *name, int width, int height)
    if (p->tnc)
       p->tnc->ref_count++;
 
-   p->value = 0;
-
    return p;
 }
 
 void
 ProgressbarDestroy(Progressbar * p)
 {
-   int                 i, j;
+   int                 i, j, dy;
 
-   if (p->name)
-      Efree(p->name);
-   if (p->win)
-      EDestroyWindow(p->win);
-   if (p->win)
-      EDestroyWindow(p->n_win);
-   if (p->win)
-      EDestroyWindow(p->p_win);
+   dy = 2 * p->h;
+   EobjWindowDestroy(p->win);
+   EobjWindowDestroy(p->n_win);
+   EobjWindowDestroy(p->p_win);
 
    for (i = 0; i < pnum; i++)
      {
-	if (plist[i] == p)
+	if (plist[i] != p)
+	   continue;
+
+	for (j = i; j < pnum - 1; j++)
 	  {
-	     for (j = i; j < (pnum - 1); j++)
-	       {
-		  plist[j] = plist[j + 1];
-		  plist[j]->y -= p->h;
-		  EMoveWindow(p->win, plist[j]->x, plist[j]->y);
-		  EMoveWindow(p->n_win,
-			      plist[j]->x + plist[j]->w - (plist[j]->h * 5),
-			      plist[j]->y);
-		  EMoveWindow(p->p_win, plist[j]->x, plist[j]->y + plist[j]->h);
-	       }
-	     i = pnum;
+	     Progressbar        *pp;
+
+	     pp = plist[j + 1];
+	     plist[j] = pp;
+	     EobjMove(pp->win, pp->win->x, pp->win->y - dy);
+	     EobjMove(pp->n_win, pp->n_win->x, pp->n_win->y - dy);
+	     EobjMove(pp->p_win, pp->p_win->x, pp->p_win->y - dy);
 	  }
+	break;
+
      }
 
    if (p->ic)
@@ -137,9 +135,7 @@ ProgressbarDestroy(Progressbar * p)
    if (pnum <= 0)
      {
 	pnum = 0;
-	if (plist)
-	   Efree(plist);
-	plist = NULL;
+	_EFREE(plist);
      }
    else
      {
@@ -151,7 +147,7 @@ void
 ProgressbarSet(Progressbar * p, int progress)
 {
    int                 w;
-   char                s[64], pq;
+   char                s[64];
 
    if (progress == p->value)
       return;
@@ -163,13 +159,14 @@ ProgressbarSet(Progressbar * p, int progress)
    if (w > p->w)
       w = p->w;
    Esnprintf(s, sizeof(s), "%i%%", p->value);
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   TextclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
+
+   TextclassApply(p->inc, p->n_win->win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
 		  p->tnc, s);
-   ImageclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EResizeWindow(p->p_win, w, p->h);
-   Mode.queue_up = pq;
+   ImageclassApply(p->inc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, 0,
+		   ST_UNKNWN);
+
+   EobjResize(p->p_win, w, p->h);
+
    XFlush(disp);
 }
 
@@ -177,71 +174,32 @@ void
 ProgressbarShow(Progressbar * p)
 {
    int                 w;
-   char                pq;
 
    w = (p->value * p->w) / 100;
    if (w < 1)
       w = 1;
    if (w > p->w)
       w = p->w;
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   ImageclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL,
+
+   ImageclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
+		   STATE_NORMAL, 0, ST_UNKNWN);
+   ImageclassApply(p->inc, p->n_win->win, (p->h * 5), p->h, 0, 0, STATE_CLICKED,
 		   0, ST_UNKNWN);
-   ImageclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0,
+   ImageclassApply(p->ipc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, 0,
 		   ST_UNKNWN);
-   ImageclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EMapRaised(p->win);
-   EMapRaised(p->n_win);
-   EMapRaised(p->p_win);
+
+   EobjMap(p->win, 1);
+   EobjMap(p->n_win, 1);
+   EobjMap(p->p_win, 1);
    ecore_x_sync();
-   TextclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
-		  p->tc, p->name);
-   Mode.queue_up = pq;
+   TextclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
+		  STATE_NORMAL, 0, p->tc, p->win->name);
 }
 
 void
 ProgressbarHide(Progressbar * p)
 {
-   EUnmapWindow(p->win);
-   EUnmapWindow(p->n_win);
-   EUnmapWindow(p->p_win);
-}
-
-Window             *
-ProgressbarsListWindows(int *num)
-{
-   int                 i, j;
-   Window             *wl;
-
-   *num = pnum * 3;
-   if (pnum > 0)
-     {
-	j = 0;
-	wl = Emalloc(sizeof(Window) * pnum * 3);
-	for (i = 0; i < pnum; i++)
-	  {
-	     wl[j++] = plist[i]->win;
-	     wl[j++] = plist[i]->n_win;
-	     wl[j++] = plist[i]->p_win;
-	  }
-	return wl;
-     }
-
-   return NULL;
-}
-
-void
-ProgressbarsRaise(void)
-{
-   int                 i;
-
-   for (i = 0; i < pnum; i++)
-     {
-	ERaiseWindow(plist[i]->win);
-	ERaiseWindow(plist[i]->n_win);
-	ERaiseWindow(plist[i]->p_win);
-     }
-
-   return;
+   EobjUnmap(p->win);
+   EobjUnmap(p->n_win);
+   EobjUnmap(p->p_win);
 }

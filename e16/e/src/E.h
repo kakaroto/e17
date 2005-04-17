@@ -522,6 +522,7 @@ struct _eobj
 #define EOBJ_TYPE_EXT       4
 
 #define EoGetWin(eo)            ((eo)->o.win)
+#define EoGetName(eo)           ((eo)->o.name)
 #define EoGetType(eo)           ((eo)->o.type)
 #define EoGetX(eo)              ((eo)->o.x)
 #define EoGetY(eo)              ((eo)->o.y)
@@ -534,7 +535,7 @@ struct _eobj
 #define EoGetLayer(eo)          ((eo)->o.layer)
 #define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
 
-#define EoSetWin(eo, _x)        (eo)->o.win = (_x)
+#define EoSetName(eo, _x)       (eo)->o.name = (_x)
 #define EoSetX(eo, _x)          (eo)->o.x = (_x)
 #define EoSetY(eo, _y)          (eo)->o.y = (_y)
 #define EoSetW(eo, _w)          (eo)->o.w = (_w)
@@ -543,9 +544,6 @@ struct _eobj
 #define EoSetFloating(eo, _f)   EobjSetFloating(&((eo)->o), (_f))
 #define EoSetDesk(eo, _d)       EobjSetDesk(&((eo)->o), (_d))
 #define EoSetLayer(eo, _l)      EobjSetLayer(&((eo)->o), (_l))
-#define EoMap(eo)               EobjMap(&((eo)->o))
-#define EoUnmap(eo)             EobjUnmap(&((eo)->o))
-#define EoMoveResize(eo, x, y, w, h) EobjMoveResize(&((eo)->o), x, y, w, h)
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoGetOpacity(eo)        ((eo)->o.opacity)
@@ -558,6 +556,12 @@ struct _eobj
 #define EoSetShadow(eo, _x)
 #define EoGetShadow(eo)         0
 #endif
+
+#define EoMap(eo, raise)                EobjMap(&((eo)->o), (raise))
+#define EoUnmap(eo)                     EobjUnmap(&((eo)->o))
+#define EoMove(eo, x, y)                EobjMove(&((eo)->o), x, y)
+#define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
+#define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(&((eo)->o), x, y, w, h)
 
 typedef struct
 {
@@ -1308,7 +1312,6 @@ void                ButtonMoveRelative(Button * b, int dx, int dy);
 void                ButtonIncRefcount(Button * b);
 void                ButtonDecRefcount(Button * b);
 void                ButtonSetSwallowed(Button * b);
-const char         *ButtonGetName(const Button * b);
 int                 ButtonGetRefcount(const Button * b);
 int                 ButtonGetDesk(const Button * b);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
@@ -1530,20 +1533,26 @@ void                EdgeWindowsShow(void);
 void                EdgeWindowsHide(void);
 
 /* eobj.c */
-void                EobjInit(EObj * eo, int type, int x, int y, int w, int h);
+void                EobjInit(EObj * eo, int type, Window win, int x, int y,
+			     int w, int h, const char *name);
+void                EobjFini(EObj * eo);
+void                EobjDestroy(EObj * eo);
+EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
+				     int su, const char *name);
+void                EobjWindowDestroy(EObj * eo);
 
 EObj               *EobjRegister(Window win, int type);
 void                EobjUnregister(Window win);
-void                EobjMap(EObj * eo);
+void                EobjMap(EObj * eo, int raise);
 void                EobjUnmap(EObj * eo);
+void                EobjMove(EObj * eo, int x, int y);
+void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #endif
-const char         *EobjGetName(const EObj * eo);
-int                 EobjGetDesk(const EObj * eo);
 int                 EobjSetDesk(EObj * eo, int desk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
@@ -2057,8 +2066,6 @@ void                ProgressbarDestroy(Progressbar * p);
 void                ProgressbarSet(Progressbar * p, int progress);
 void                ProgressbarShow(Progressbar * p);
 void                ProgressbarHide(Progressbar * p);
-Window             *ProgressbarsListWindows(int *num);
-void                ProgressbarsRaise(void);
 
 /* regex.c */
 int                 matchregexp(const char *rx, const char *s);

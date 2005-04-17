@@ -42,7 +42,6 @@ BGeometry;
 struct _button
 {
    EObj                o;
-   char               *name;
    BGeometry           geom;
    ImageClass         *iclass;
    ActionClass        *aclass;
@@ -77,6 +76,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 	     int ysr, int ysa, char simg, int desk, char sticky)
 {
    Button             *b;
+   Window              win;
 
    if (desk < 0 || desk >= DesksGetNumber())
       return NULL;
@@ -85,7 +85,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 
    b = Ecalloc(1, sizeof(Button));
 
-   b->name = Estrdup(name);
    b->label = Estrdup(label);
 
    b->iclass = iclass;
@@ -130,19 +129,18 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->state = 0;
    b->ref_count = 0;
 
-   EoSetWin(b, ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0));
-   ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
-   EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
+   win = ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0);
+   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
 
-   EobjInit(&b->o, EOBJ_TYPE_BUTTON, -1, -1, -1, -1);
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
 
-   EobjListStackAdd(&b->o, 1);
+   ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
+   EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
 
-   AddItemEnd(b, b->name, id, LIST_TYPE_BUTTON);
+   AddItemEnd(b, EoGetName(b), id, LIST_TYPE_BUTTON);
 
    return b;
 }
@@ -161,10 +159,7 @@ ButtonDestroy(Button * b)
 
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
 
-   EobjListStackDel(&b->o);
-
-   if (b->name)
-      Efree(b->name);
+   EobjFini(&b->o);
 
    if (EoGetWin(b))
       EDestroyWindow(EoGetWin(b));
@@ -237,23 +232,16 @@ ButtonCalc(Button * b)
    yo = (h * b->geom.yorigin) >> 10;
    x = ((b->geom.xrel * VRoot.w) >> 10) + b->geom.xabs - xo;
    y = ((b->geom.yrel * VRoot.h) >> 10) + b->geom.yabs - yo;
-   EoSetX(b, x);
-   EoSetY(b, y);
-   EoSetW(b, w);
-   EoSetH(b, h);
+
+   EoMoveResize(b, x, y, w, h);
 }
 
 void
 ButtonShow(Button * b)
 {
    ButtonCalc(b);
-   EoMoveResize(b, EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b));
-#if 0				/* Why? */
-   if (EoIsSticky(b))
-      ERaiseWindow(EoGetWin(b));
-#endif
    ButtonDraw(b);
-   EoMap(b);
+   EoMap(b, 0);
 }
 
 void
@@ -343,11 +331,6 @@ ButtonMoveToCoord(Button * b, int x, int y)
      }
 
    ButtonCalc(b);
-   EoMoveResize(b, EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b));
-#if 0				/* Why? */
-   if (EoIsSticky(b))
-      ERaiseWindow(EoGetWin(b));
-#endif
 }
 
 void
@@ -379,10 +362,10 @@ ButtonSetSwallowed(Button * b)
    EobjListStackDel(&b->o);
 }
 
-const char         *
+static const char  *
 ButtonGetName(const Button * b)
 {
-   return b->name;
+   return EoGetName(b);
 }
 
 int
@@ -972,7 +955,7 @@ ButtonsConfigSave(void)
 	   continue;
 
 	fprintf(fs, "4 999\n");
-	fprintf(fs, "100 %s\n", blst[i]->name);
+	fprintf(fs, "100 %s\n", EoGetName(blst[i]));
 	if (blst[i]->iclass)
 	   fprintf(fs, "12 %s\n", blst[i]->iclass->name);
 	if (blst[i]->aclass)

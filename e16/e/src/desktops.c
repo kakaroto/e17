@@ -397,6 +397,7 @@ DeskCreate(int desk, int configure)
 {
    Desk               *d;
    Window              win;
+   char                buf[64];
 
    if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       return NULL;
@@ -412,14 +413,14 @@ DeskCreate(int desk, int configure)
    else
       win = ECreateWindow(VRoot.win, -VRoot.w, -VRoot.h, VRoot.w, VRoot.h, 0);
 
-   EobjInit(&d->o, EOBJ_TYPE_DESK, 0, 0, VRoot.w, VRoot.h);
-   EoSetWin(d, win);
-   EoSetLayer(d, 0);
+   Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
+   EobjInit(&d->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, buf);
    EoSetShadow(d, 0);
+   EoSetLayer(d, 0);
    if (desk > 0)
      {
 	EoSetFloating(d, 1);
-	EobjListStackAdd(&d->o, 0);
+	EobjListStackRaise(&d->o);
 #if 0				/* TBD */
 	d->event_mask = EDESK_EVENT_MASK;
 	DeskEventsConfigure(d, 1);
@@ -472,9 +473,9 @@ DeskDestroy(Desk * d)
    if (d->bg)
       BackgroundDecRefcount(d->bg);
 
-   EobjListStackDel(&d->o);
-
    EDestroyWindow(EoGetWin(d));
+
+   EobjFini(&d->o);
 
    desks.desk[d->num] = NULL;
    Efree(d);
@@ -484,14 +485,14 @@ static void
 DeskResize(int desk, int w, int h)
 {
    Desk               *d;
+   int                 x;
 
    d = _DeskGet(desk);
 
    if (desk > 0)
      {
-	EResizeWindow(EoGetWin(d), w, h);
-	if (!d->viewable)
-	   EMoveWindow(EoGetWin(d), VRoot.w, 0);
+	x = (d->viewable) ? EoGetX(d) : VRoot.w;
+	EoMoveResize(d, x, 0, w, h);
      }
    BackgroundPixmapFree(d->bg);
    DeskRefresh(desk);
@@ -1133,7 +1134,7 @@ DeskMove(int desk, int x, int y)
 	  }
      }
 
-   EMoveWindow(EoGetWin(d), x, y);
+   EoMove(d, x, y);
 
    if (d->tag)
       ButtonMoveRelative(d->tag, dx, dy);
@@ -1160,7 +1161,7 @@ UncoverDesktop(int desk)
    d->viewable = 1;
    DeskRefresh(desk);
    if (desk != 0)
-      EMapWindow(EoGetWin(d));
+      EoMap(d, 0);
 }
 
 static void
@@ -1191,7 +1192,7 @@ DeskRaise(int desk)
      }
    else
      {
-	EMapWindow(EoGetWin(d));
+	EoMap(d, 0);
      }
 
    StackDesktops();
@@ -1252,7 +1253,7 @@ DeskHide(int desk)
    if (d->viewable)
       BackgroundTouch(d->bg);
    d->viewable = 0;
-   EMoveWindow(EoGetWin(d), VRoot.w, 0);
+   EoMove(d, VRoot.w, 0);
 }
 
 void
@@ -1278,7 +1279,7 @@ DeskShow(int desk)
    else
      {
 	StackDesktops();
-	EMapWindow(EoGetWin(d));
+	EoMap(d, 0);
      }
 }
 
@@ -1297,40 +1298,14 @@ void
 StackDesktop(int desk)
 {
    Window             *wl;
-
-#if 1				/* FIXME - Somehow */
-   Window             *wl2;
-#endif
    int                 i, num, tot;
    EObj               *const *lst, *eo;
 
+   /* Build the window stack, top to bottom */
+
    tot = 0;
    wl = NULL;
-
-   /*
-    * Build the window stack, top to bottom
-    */
-
-#if 1				/* FIXME - Somehow */
-   if (desk == 0)
-     {
-	wl2 = ProgressbarsListWindows(&num);
-	if (wl2)
-	  {
-	     for (i = 0; i < num; i++)
-		_APPEND_TO_WIN_LIST(wl2[i]);
-	     Efree(wl2);
-	  }
-	if (init_win_ext)
-	  {
-	     _APPEND_TO_WIN_LIST(init_win_ext);
-	  }
-     }
-#endif
-
    lst = EobjListStackGetForDesk(&num, desk);
-
-   /* Make the X window list */
 
    /* Floating objects */
    for (i = 0; i < num; i++)
@@ -1361,9 +1336,6 @@ StackDesktop(int desk)
 
    XRestackWindows(disp, wl, tot);
    EdgeWindowsShow();
-#if 0				/* FIXME Is this necessary? */
-   ProgressbarsRaise();
-#endif
    HintsSetClientStacking();
 
    if (wl)

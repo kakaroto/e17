@@ -34,77 +34,69 @@ MapUnmap(int start)
     */
 
    static Window      *wlist = NULL;
+   static unsigned int num = 0;
    Window              par;
    Window              rt;
    XWindowAttributes   attr;
-   static unsigned int num = 0;
-   int                 i;
+   unsigned int        i;
 
    switch (start)
      {
      case 0:
 	ecore_x_grab();
 	XQueryTree(disp, VRoot.win, &rt, &par, &wlist, &num);
-	if (wlist)
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < (int)num; i++)
-	       {
 #ifdef USE_EXT_INIT_WIN
-		  if ((init_win_ext) && (init_win_ext == wlist[i]))
-		    {
-		       wlist[i] = 0;
-		    }
-		  else
-#endif
-		    {
-		       XGetWindowAttributes(disp, wlist[i], &attr);
-		       if (attr.map_state == IsUnmapped)
-			 {
-			    wlist[i] = 0;
-			 }
-		       else
-			 {
-			    XUnmapWindow(disp, wlist[i]);
-			 }
-		    }
+	     if ((init_win_ext) && (init_win_ext == wlist[i]))
+	       {
+		  wlist[i] = 0;
+		  continue;
 	       }
+#endif
+	     XGetWindowAttributes(disp, wlist[i], &attr);
+	     if (attr.map_state == IsUnmapped)
+		wlist[i] = 0;
+	     else
+		XUnmapWindow(disp, wlist[i]);
 	  }
 	/* Flush (get rid of unmap events) */
 	XSync(disp, True);
 	ecore_x_ungrab();
 	break;
+
      case 1:
-	if (wlist)
+	if (!wlist)
+	   break;
+
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < (int)num; i++)
+	     if (!wlist[i])
+		continue;
+
+	     if (!XGetWindowAttributes(disp, wlist[i], &attr))
+		continue;
+
+	     if (attr.override_redirect)
 	       {
-		  if (wlist[i])
-		    {
-		       if (XGetWindowAttributes(disp, wlist[i], &attr))
-			 {
-			    if (attr.override_redirect)
-			      {
 #ifdef USE_EXT_INIT_WIN
-				 if (init_win_ext)
-				    XRaiseWindow(disp, init_win_ext);
+		  if (init_win_ext)
+		     XRaiseWindow(disp, init_win_ext);
 #endif
-				 ProgressbarsRaise();
-				 XMapWindow(disp, wlist[i]);
-			      }
-			    else
-			      {
-				 if (Mode.wm.exiting)
-				    XMapWindow(disp, wlist[i]);
-				 else
-				    AddToFamily(NULL, wlist[i]);
-			      }
-			 }
-		    }
+		  XMapWindow(disp, wlist[i]);
 	       }
-	     XFree(wlist);
-	     wlist = NULL;
+	     else
+	       {
+		  if (Mode.wm.exiting)
+		     XMapWindow(disp, wlist[i]);
+		  else
+		     AddToFamily(NULL, wlist[i]);
+	       }
 	  }
+	XFree(wlist);
+	wlist = NULL;
 	break;
+
      default:
 	break;
      }

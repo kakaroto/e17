@@ -65,6 +65,7 @@ EwinCreate(Window win, int type)
 {
    EWin               *ewin;
    XSetWindowAttributes att;
+   Window              frame;
 
    ewin = Ecalloc(1, sizeof(EWin));
 
@@ -97,11 +98,6 @@ EwinCreate(Window win, int type)
    ewin->client.mwm_func_minimize = 1;
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
-
-   ewin->ewmh.opacity = 0;	/* If 0, ignore */
-
-   EoSetWin(ewin, ECreateWindow(VRoot.win, -10, -10, 1, 1, 1));
-   ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
 #if 0				/* ENABLE_GNOME - Not actually used */
    ewin->expanded_width = -1;
    ewin->expanded_height = -1;
@@ -109,10 +105,16 @@ EwinCreate(Window win, int type)
    ewin->area_x = -1;
    ewin->area_y = -1;
 
-   EobjInit(&ewin->o, EOBJ_TYPE_EWIN, -1, -1, -1, -1);
+   ewin->ewmh.opacity = 0;	/* If 0, ignore */
+
+   frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+   EobjInit(&ewin->o, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, NULL);
    EoSetDesk(ewin, DesksGetCurrent());
    EoSetLayer(ewin, 4);
+   EoSetShadow(ewin, 1);
+   EobjListFocusAdd(&ewin->o, 0);
 
+   ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    EChangeWindowAttributes(ewin->win_container,
@@ -122,11 +124,9 @@ EwinCreate(Window win, int type)
    att.event_mask = EWIN_TOP_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
+
    ewin->client.win = win;
    FocusEwinSetGrabs(ewin);
-
-   EobjListStackAdd(&ewin->o, 0);
-   EobjListFocusAdd(&ewin->o, 0);
 
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
    AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
@@ -158,6 +158,8 @@ static void
 EwinCleanup(EWin * ewin)
 {
    EwinBorderDetach(ewin);
+   EobjListFocusDel(&ewin->o);
+   EobjFini(&ewin->o);
 }
 
 static void
@@ -183,9 +185,6 @@ EwinDestroy(EWin * ewin)
    EventCallbackUnregister(ewin->client.win, 0, EwinHandleEventsClient, ewin);
    if (!EwinIsInternal(ewin))
       EUnregisterWindow(ewin->client.win);
-
-   EobjListStackDel(&ewin->o);
-   EobjListFocusDel(&ewin->o);
 
    HintsSetClientList();
 
@@ -530,9 +529,11 @@ Adopt(EWin * ewin, Window win)
    if (Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
 
+   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));	/* FIXME */
    if (ewin->ewmh.opacity == 0)
       ewin->ewmh.opacity = 0xffffffff;
-   EoSetOpacity(ewin, ewin->ewmh.opacity);
+   EoChangeOpacity(ewin, ewin->ewmh.opacity);
+
    if (!ewin->no_button_grabs)
       GrabButtonGrabs(ewin);
 
@@ -584,9 +585,11 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
 
+   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));	/* FIXME */
    if (ewin->ewmh.opacity == 0)
       ewin->ewmh.opacity = 0xffffffff;
-   EoSetOpacity(ewin, ewin->ewmh.opacity);
+   EoChangeOpacity(ewin, ewin->ewmh.opacity);
+
    GrabButtonGrabs(ewin);
 
    ICCCM_MatchSize(ewin);
@@ -1544,7 +1547,7 @@ ShowEwin(EWin * ewin)
 	EMapWindow(ewin->client.win);
      }
 
-   EoMap(ewin);
+   EoMap(ewin, 0);
 }
 
 void

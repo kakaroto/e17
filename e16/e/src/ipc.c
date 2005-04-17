@@ -1194,19 +1194,19 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 
    lst = EobjListStackGet(&num);
 
-   IpcPrintf("Num   window T   L  D     pos       size    S F C Name\n");
+   IpcPrintf("Num   window T V  D   L     pos       size    S F C Name\n");
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
-	IpcPrintf(" %2d %#lx %d %3d %2d %5d,%5d %4dx%4d %d %d %d %s\n", i,
-		  eo->win, eo->type, eo->ilayer, eo->desk,
+	IpcPrintf(" %2d %#lx %d %d %2d %3d %5d,%5d %4dx%4d %d %d %d %s\n", i,
+		  eo->win, eo->type, eo->shown, eo->desk, eo->ilayer,
 		  eo->x, eo->y, eo->w, eo->h, eo->sticky, eo->floating,
 #if USE_COMPOSITE
 		  (eo->cmhook) ? 1 : 0,
 #else
 		  0,
 #endif
-		  EobjGetName(eo));
+		  eo->name);
      }
 }
 

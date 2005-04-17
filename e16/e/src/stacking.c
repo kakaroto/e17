@@ -56,7 +56,7 @@ EobjListShow(const char *txt, EobjList * ewl)
      {
 	eo = ewl->list[i];
 	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, eo->win,
-		EobjGetCwin(eo), eo->desk, eo->ilayer, EobjGetName(eo));
+		EobjGetCwin(eo), eo->desk, eo->ilayer, eo->name);
      }
 }
 #else

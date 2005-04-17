@@ -29,11 +29,10 @@ CoordsShow(EWin * ewin)
 {
    TextClass          *tc;
    ImageClass         *ic;
-   char                s[256], pq;
+   char                s[256];
    int                 md;
    int                 x, y, w, h;
    int                 cx, cy, cw, ch;
-   Window              win;
    EObj               *eo = coord_eo;
 
    if (!Conf.movres.mode_info)
@@ -83,26 +82,19 @@ CoordsShow(EWin * ewin)
 
    if (!eo)
      {
-	win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
-	eo = EobjRegister(win, EOBJ_TYPE_MISC);
+	eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, 1, 1, 2, "Coord");
 	if (!eo)
 	   return;
-	EobjSetLayer(eo, 10);
-	EobjSetFloating(eo, 1);
-	EobjListStackRaise(eo);
 	coord_eo = eo;
      }
 
    EobjMoveResize(eo, cx, cy, cw, ch);
 
    if (!eo->shown)
-      EobjMap(eo);
+      EobjMap(eo, 1);
 
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
    ImageclassApply(ic, eo->win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    TextclassApply(ic, eo->win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
-   Mode.queue_up = pq;
 
    XFlush(disp);
 }

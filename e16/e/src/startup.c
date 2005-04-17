@@ -24,8 +24,8 @@
 #include "E.h"
 #include <time.h>
 
-static Window       init_win1 = None;
-static Window       init_win2 = None;
+static EObj        *init_win1 = NULL;
+static EObj        *init_win2 = NULL;
 static char         bg_sideways = 0;
 
 void
@@ -34,8 +34,8 @@ StartupWindowsCreate(void)
    Window              w1, w2, win1, win2, b1, b2;
    Background         *bg;
    ImageClass         *ic;
+   int                 x, y, bx, by, bw, bh;
    EObj               *eo;
-   char                pq;
 
    if (!Conf.startup.animate)
       return;
@@ -56,51 +56,54 @@ StartupWindowsCreate(void)
 
    if (bg_sideways)
      {
-	w1 = ECreateWindow(VRoot.win, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
-	w2 = ECreateWindow(VRoot.win, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
-	win1 = ECreateWindow(w1, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
-	win2 = ECreateWindow(w2, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
+	x = VRoot.w / 2;
+	y = 0;
+	bx = VRoot.w - Conf.desks.dragbar_width;
+	by = 0;
+	bw = Conf.desks.dragbar_width;
+	bh = VRoot.h;
      }
    else
      {
-	w1 = ECreateWindow(VRoot.win, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 1);
-	w2 = ECreateWindow(VRoot.win, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 1);
-	win1 = ECreateWindow(w1, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 0);
-	win2 = ECreateWindow(w2, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 0);
+	x = 0;
+	y = VRoot.h / 2;
+	bx = 0;
+	by = VRoot.h - Conf.desks.dragbar_width;
+	bw = VRoot.w;
+	bh = Conf.desks.dragbar_width;
      }
+
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC, -x, -y, VRoot.w, VRoot.h, 1, "Init-1");
+   if (!eo)
+      return;
+   init_win1 = eo;
+   w1 = eo->win;
+   win1 = ECreateWindow(w1, x, y, VRoot.w, VRoot.h, 0);
+
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, VRoot.w, VRoot.h, 1, "Init-2");
+   if (!eo)
+      return;
+   init_win2 = eo;
+   w2 = eo->win;
+   win2 = ECreateWindow(w2, -x, -y, VRoot.w, VRoot.h, 0);
 
    EMapWindow(win1);
    EMapWindow(win2);
 
-   b1 = ECreateWindow(w1, 0, VRoot.h - Conf.desks.dragbar_width, VRoot.w,
-		      Conf.desks.dragbar_width, 0);
-   b2 = ECreateWindow(w2, 0, 0, VRoot.w, Conf.desks.dragbar_width, 0);
+   b1 = ECreateWindow(w1, bx, by, bw, bh, 0);
+   b2 = ECreateWindow(w2, 0, 0, bw, bh, 0);
    EMapRaised(b1);
    EMapRaised(b2);
 
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   ImageclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-		   ST_UNKNWN);
-   ImageclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-		   ST_UNKNWN);
-   Mode.queue_up = pq;
+   ImageclassApply(ic, b1, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
+   ImageclassApply(ic, b2, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
 
    BackgroundApply(bg, win1, 1);
    BackgroundApply(bg, win2, 1);
    BackgroundImagesFree(bg, 1);
 
-   init_win1 = w1;
-   init_win2 = w2;
-   EMapRaised(w1);
-   EMapRaised(w2);
-
-   eo = EobjRegister(w1, EOBJ_TYPE_MISC);
-   EobjSetFloating(eo, 1);
-   EobjListStackRaise(eo);
-   eo = EobjRegister(w2, EOBJ_TYPE_MISC);
-   EobjSetFloating(eo, 1);
-   EobjListStackRaise(eo);
+   EobjMap(init_win1, 0);
+   EobjMap(init_win2, 0);
 }
 
 void
@@ -133,19 +136,17 @@ StartupWindowsOpen(void)
 	     y = ty;
 	  }
 
-	EMoveWindow(init_win1, x + xOffset, -y - yOffset);
-	EMoveWindow(init_win2, -x - xOffset, y + yOffset);
+	EobjMove(init_win1, -x - xOffset, -y - yOffset);
+	EobjMove(init_win2, x + xOffset, y + yOffset);
 	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
 
-   EobjUnregister(init_win1);
-   EobjUnregister(init_win2);
-   EDestroyWindow(init_win1);
-   EDestroyWindow(init_win2);
-   init_win1 = None;
-   init_win2 = None;
+   EobjWindowDestroy(init_win1);
+   EobjWindowDestroy(init_win2);
+   init_win1 = NULL;
+   init_win2 = NULL;
 
    BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
    BackgroundDestroyByName("STARTUP_BACKGROUND");
