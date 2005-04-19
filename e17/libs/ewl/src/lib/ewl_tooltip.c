@@ -109,13 +109,26 @@ void ewl_tooltip_delay_set (Ewl_Tooltip *t, double delay)
 
 int ewl_tooltip_focus_timer (void *data)
 {
+	int dx, dy;
+	Ewl_Embed *em;
 	Ewl_Tooltip *t = data;
 
 	if (t->hide)
 		return FALSE;
 
-	ewl_object_position_request (EWL_OBJECT(t), t->x + EWL_TOOLTIP_OFFSET,
-						    t->y + EWL_TOOLTIP_OFFSET);
+	em = ewl_embed_widget_find(EWL_WIDGET(t));
+	if ((t->x + CURRENT_W(t) + EWL_TOOLTIP_OFFSET) >
+			(CURRENT_X(em) + CURRENT_W(em)))
+		dx = t->x - CURRENT_W(t) - EWL_TOOLTIP_OFFSET;
+	else
+		dx = t->x + EWL_TOOLTIP_OFFSET;
+
+	if ((t->y + CURRENT_H(t) + EWL_TOOLTIP_OFFSET) >
+			(CURRENT_Y(em) + CURRENT_H(em)))
+		dy = t->y - CURRENT_H(t) - EWL_TOOLTIP_OFFSET;
+	else
+		dy = t->y + EWL_TOOLTIP_OFFSET;
+	ewl_object_position_request (EWL_OBJECT(t), dx, dy);
 	ewl_widget_show (EWL_WIDGET (t));
 
 	t->timer = NULL;
