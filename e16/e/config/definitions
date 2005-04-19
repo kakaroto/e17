@@ -664,7 +664,7 @@ __MATCH_WINDOW __BGN;\
   __USE_ICON image"_ICLASS";\
   __HAS_TITLE title;\
 __END
-	      
+
 #define USE_ICON_IMAGES_FOR_CLIENT_NAME(name, image, image2, image3) \
 __ICLASS __BGN;\
   __NAME image"_ICLASS";\
@@ -854,6 +854,14 @@ __TOOLTIP __BGN;\
   __DISTANCE distance;\
 __END
 
+#define DEFINE_TOOLTIP_SIMPLE(name, iclass, tclass, distance) \
+__TOOLTIP __BGN;\
+  __NAME name;\
+  __ICLASS iclass;\
+  __TCLASS tclass;\
+  __DISTANCE distance;\
+__END
+
 /*********** Sound creation macros *******************************/
 #define BEGIN_SOUND \
 __SOUND __BGN
@@ -897,7 +905,7 @@ __END
   __BACKGROUND_LAYER file 1 0 0 0 0 1024
 
 #define ADD_BACKGROUND_TILED_SCALED_HORIZONTALLY(file)\
-  __BACKGROUND_LAYER file 1 0 0 0 1024 0 
+  __BACKGROUND_LAYER file 1 0 0 0 1024 0
 
 #define ADD_BACKGROUND_CENTERED(file)\
   __BACKGROUND_LAYER file 0 1 512 512 0 0
@@ -910,7 +918,7 @@ __END
 
 #define ADD_BACKGROUND_TILED_SCALED_RETAIN_ASPECT(file)\
   __BACKGROUND_LAYER file 1 1 512 512 1024 1024
-  
+
 #define ADD_OVERLAY_IMAGE_CENTERED(file) \
   __FORGROUND_LAYER file 1 512 512 0 0
 
