@@ -25,8 +25,9 @@ _sort_cb(void *d1, void *d2)
    
    o = ((Container_Element *) d1)->obj;
    oo = ((Container_Element *) d2)->obj;
-   if (_sort_func) return 0;
-   return _sort_func(d1, d2);
+
+   /* _sort_func is checked for NULL below */
+   return _sort_func(o, oo);
 }
 
 void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *$))
@@ -35,6 +36,8 @@ void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Ev
   
    cont = _container_fetch(container);
    if (!cont) return;
+
+   if (!func) return;
     
    _sort_func = func;
    cont->elements = evas_list_sort(cont->elements,
