@@ -575,9 +575,6 @@ typedef struct
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
-#if USE_COMPOSITE
-   void               *cmhook;
-#endif
 } Desk;
 
 typedef struct _constraints
@@ -1216,8 +1213,6 @@ void                MoveCurrentAreaBy(int ax, int ay);
 void                SetCurrentLinearArea(int a);
 int                 GetCurrentLinearArea(void);
 void                MoveCurrentLinearAreaBy(int a);
-void                SlideWindowsBy(Window * win, int num, int dx, int dy,
-				   int speed);
 void                MoveEwinToLinearArea(EWin * ewin, int a);
 void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 
@@ -1406,8 +1401,6 @@ int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
 void                DesksResize(int w, int h);
 
-void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
-				  int speed);
 void                DeskRefresh(int num);
 void                DesksRefresh(void);
 void                DeskAssignBg(int desk, Background * bg);
@@ -1558,6 +1551,10 @@ int                 EobjSetDesk(EObj * eo, int desk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);
+void                EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty,
+				int speed);
+void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
+				 int speed);
 
 /* events.c */
 /* Re-mapped X-events */

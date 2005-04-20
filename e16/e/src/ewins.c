@@ -173,9 +173,6 @@ EwinDestroy(EWin * ewin)
       Eprintf("EwinDestroy %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
 
-   /* FIXME - Fading */
-   ECompMgrWinDel(&ewin->o, True, False);
-
    RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,

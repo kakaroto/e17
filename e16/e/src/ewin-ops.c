@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ecompmgr.h"		/* FIXME - Resize hack - to be removed */
 #include "ewin-ops.h"
 #include "snaps.h"
 #include <sys/time.h>
@@ -627,8 +626,7 @@ EwinInstantShade(EWin * ewin, int force)
      }
 
    ewin->shaded = 2;
-   ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-		      EoGetW(ewin), EoGetH(ewin));
+   EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin));
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin);
    ecore_x_sync();
@@ -761,8 +759,8 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -802,8 +800,8 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -840,8 +838,8 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -883,8 +881,8 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -973,8 +971,8 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top,
 				    EoGetW(ewin) - ewin->border->border.left -
 				    ewin->border->border.right, ewin->client.h);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -1023,8 +1021,8 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top,
 				    EoGetW(ewin) - ewin->border->border.left -
 				    ewin->border->border.right, ewin->client.h);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -1065,8 +1063,8 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top, ewin->client.w,
 				    EoGetH(ewin) - ewin->border->border.top -
 				    ewin->border->border.bottom);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
@@ -1115,8 +1113,8 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top, ewin->client.w,
 				    EoGetH(ewin) - ewin->border->border.top -
 				    ewin->border->border.bottom);
-		  ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-				     EoGetW(ewin), EoGetH(ewin));
+		  EoMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+			       EoGetW(ewin), EoGetH(ewin));
 		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,

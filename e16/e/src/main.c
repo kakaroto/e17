@@ -26,9 +26,6 @@
 #include <sys/utsname.h>
 #include <signal.h>
 #include <time.h>
-#if USE_COMPOSITE
-#include "ecompmgr.h"
-#endif
 
 const char          e_wm_name[] = "Enlightenment";
 const char          e_wm_version[] =
@@ -218,11 +215,6 @@ main(int argc, char **argv)
 	     Mode.wm.master = 0;
 	     Mode.wm.master_screen = strtoul(eoptarg, NULL, 10);
 	     break;
-#if USE_COMPOSITE
-	  case 'C':
-	     ECompMgrParseArgs(eoptarg);
-	     break;
-#endif
 	  }
      }
 

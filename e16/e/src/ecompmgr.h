@@ -35,6 +35,10 @@ void                ECompMgrParseArgs(const char *args);
 
 void                ECompMgrWinNew(EObj * eo);
 void                ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade);
+void                ECompMgrWinMap(EObj * eo);
+void                ECompMgrWinUnmap(EObj * eo);
+void                ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h,
+					  int bw);
 void                ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity);
 Pixmap              ECompMgrWinGetPixmap(const EObj * eo);
 void                ECompMgrConfigGet(cfg_composite * cfg);

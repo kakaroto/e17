@@ -150,6 +150,7 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
    eo->shadow = 1;
+   ECompMgrWinNew(eo);
 #endif
    if (eo->win != VRoot.win)
       EobjListStackAdd(eo, 1);
@@ -163,6 +164,10 @@ EobjFini(EObj * eo)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
+
+#if USE_COMPOSITE
+   ECompMgrWinDel(eo, False, False);
+#endif
 
    EobjListStackDel(eo);
 
@@ -279,6 +284,9 @@ EobjMap(EObj * eo, int raise)
       EobjListStackRaise(eo);
 
    EMapWindow(eo->win);
+#if USE_COMPOSITE
+   ECompMgrWinMap(eo);
+#endif
 }
 
 void
@@ -286,9 +294,13 @@ EobjUnmap(EObj * eo)
 {
    if (!eo->shown)
       return;
-   eo->shown = 0;
 
    EUnmapWindow(eo->win);
+#if USE_COMPOSITE
+   if (eo->cmhook)
+      ECompMgrWinUnmap(eo);
+#endif
+   eo->shown = 0;
 }
 
 void
@@ -310,6 +322,10 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
      {
 	EMoveResizeWindow(eo->win, x, y, w, h);
      }
+#if USE_COMPOSITE
+   if (eo->cmhook)
+      ECompMgrWinMoveResize(eo, x, y, w, h, 0);
+#endif
 }
 
 void
@@ -341,3 +357,67 @@ EobjChangeOpacity(EObj * eo, unsigned int opacity)
    ECompMgrWinChangeOpacity(eo, opacity);
 }
 #endif
+
+void
+EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
+{
+   int                 k, x, y;
+
+   ecore_x_grab();
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
+	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	EobjMove(eo, x, y);
+	ecore_x_sync();
+
+	k = ETimedLoopNext();
+     }
+   EobjMove(eo, tx, ty);
+
+   ecore_x_ungrab();
+}
+
+void
+EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
+{
+   int                 i, k, x, y;
+   struct _xy
+   {
+      int                 x, y;
+   }                  *xy;
+
+   if (num <= 0)
+      return;
+
+   xy = Emalloc(sizeof(struct _xy) * num);
+   if (!xy)
+      return;
+
+   for (i = 0; i < num; i++)
+     {
+	xy[i].x = peo[i]->x;
+	xy[i].y = peo[i]->y;
+     }
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
+	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
+	     EobjMove(peo[i], x, y);
+	  }
+	ecore_x_sync();
+
+	k = ETimedLoopNext();
+     }
+
+   for (i = 0; i < num; i++)
+      EobjMove(peo[i], xy[i].x + dx, xy[i].y + dy);
+
+   Efree(xy);
+}

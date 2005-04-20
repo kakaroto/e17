@@ -89,9 +89,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, NULL);
 	tt->iclass[i]->ref_count++;
-#if USE_COMPOSITE
-	eo->opacity = OpacityExt(Conf_tooltips.opacity);
-#endif
+	EobjChangeOpacity(eo, OpacityExt(Conf_tooltips.opacity));
 	tt->win[i] = eo;
      }
    tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);

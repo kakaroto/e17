@@ -817,28 +817,6 @@ MoveToDeskBottom(int num)
 }
 
 void
-SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
-{
-   int                 k, x, y;
-
-   ecore_x_grab();
-
-   ETimedLoopInit(0, 1024, speed);
-   for (k = 0; k <= 1024;)
-     {
-	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
-	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-	EMoveWindow(win, x, y);
-	ecore_x_sync();
-
-	k = ETimedLoopNext();
-     }
-   EMoveWindow(win, tx, ty);
-
-   ecore_x_ungrab();
-}
-
-void
 DeskRefresh(int desk)
 {
    Desk               *d;
@@ -1018,26 +996,26 @@ DeskGoto(int desk)
 		    case 0:
 		       DeskMove(desk, VRoot.w, 0);
 		       DeskRaise(desk);
-		       SlideWindowTo(EoGetWin(d), VRoot.w, 0, 0, 0,
-				     Conf.desks.slidespeed);
+		       EobjSlideTo(&d->o, VRoot.w, 0, 0, 0,
+				   Conf.desks.slidespeed);
 		       break;
 		    case 1:
 		       DeskMove(desk, -VRoot.w, 0);
 		       DeskRaise(desk);
-		       SlideWindowTo(EoGetWin(d), -VRoot.w, 0, 0, 0,
-				     Conf.desks.slidespeed);
+		       EobjSlideTo(&d->o, -VRoot.w, 0, 0, 0,
+				   Conf.desks.slidespeed);
 		       break;
 		    case 2:
 		       DeskMove(desk, 0, VRoot.h);
 		       DeskRaise(desk);
-		       SlideWindowTo(EoGetWin(d), 0, VRoot.h, 0, 0,
-				     Conf.desks.slidespeed);
+		       EobjSlideTo(&d->o, 0, VRoot.h, 0, 0,
+				   Conf.desks.slidespeed);
 		       break;
 		    case 3:
 		       DeskMove(desk, 0, -VRoot.h);
 		       DeskRaise(desk);
-		       SlideWindowTo(EoGetWin(d), 0, -VRoot.h, 0, 0,
-				     Conf.desks.slidespeed);
+		       EobjSlideTo(&d->o, 0, -VRoot.h, 0, 0,
+				   Conf.desks.slidespeed);
 		       break;
 		    default:
 		       break;
@@ -1045,8 +1023,8 @@ DeskGoto(int desk)
 	       }
 	     else
 	       {
-		  SlideWindowTo(EoGetWin(d), EoGetX(d), EoGetY(d), 0, 0,
-				Conf.desks.slidespeed);
+		  EobjSlideTo(&d->o, EoGetX(d), EoGetY(d), 0, 0,
+			      Conf.desks.slidespeed);
 		  DeskRaise(desk);
 	       }
 	     StackDesktops();

@@ -164,45 +164,6 @@ MoveCurrentLinearAreaBy(int a)
 }
 
 void
-SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
-{
-   int                 i, k, x, y;
-   struct _xy
-   {
-      int                 x, y;
-   }                  *xy;
-
-   if (num < 1)
-      return;
-
-   xy = Emalloc(sizeof(struct _xy) * num);
-
-   for (i = 0; i < num; i++)
-      EGetGeometry(win[i], NULL, &(xy[i].x), &(xy[i].y), NULL, NULL, NULL,
-		   NULL);
-
-   ETimedLoopInit(0, 1024, speed);
-   for (k = 0; k <= 1024;)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
-	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
-	     EMoveWindow(win[i], x, y);
-	  }
-	ecore_x_sync();
-
-	k = ETimedLoopNext();
-     }
-
-   for (i = 0; i < num; i++)
-      EMoveWindow(win[i], xy[i].x + dx, xy[i].y + dy);
-
-   if (xy)
-      Efree(xy);
-}
-
-void
 SetCurrentArea(int ax, int ay)
 {
    EWin               *const *lst, *ewin;
@@ -249,7 +210,7 @@ SetCurrentArea(int ax, int ay)
    if (Conf.desks.slidein)
      {
 	int                 wnum = 0;
-	Window             *wl = NULL;
+	EObj              **wl = NULL;
 
 	/* create the list of windwos to move */
 	for (i = 0; i < num; i++)
@@ -263,20 +224,21 @@ SetCurrentArea(int ax, int ay)
 	     if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
 	       {
 		  wnum++;
-		  wl = Erealloc(wl, sizeof(Window) * wnum);
-		  wl[wnum - 1] = EoGetWin(ewin);
+		  wl = Erealloc(wl, sizeof(EObj *) * wnum);
+		  wl[wnum - 1] = &ewin->o;
 	       }
 	  }
 
 	/* slide them */
 	if (wl)
 	  {
-	     SlideWindowsBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
+	     EobjsSlideBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
 	     Efree(wl);
 	  }
      }
 
    /* move all windows to their final positions */
+   Mode.move.check = 0;
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
@@ -288,8 +250,9 @@ SetCurrentArea(int ax, int ay)
 	   continue;
 
 	if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
-	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
+	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
      }
+   Mode.move.check = 1;
 
    /* set hints up for it */
    HintsSetDesktopViewport();
