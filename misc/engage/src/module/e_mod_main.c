@@ -800,6 +800,7 @@ _engage_icon_find(Engage_Bar *eb, E_App *a)
 
 	ic = l->data;
 	if (ic->app == a) return ic;
+	if (((E_App *)ic->app)->orig == a) return ic;
      }
    return NULL;
 }
