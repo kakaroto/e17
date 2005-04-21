@@ -127,6 +127,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	Ewl_Object *child;
 	Ewl_Object *align;
 	int x;
+	int remains, nodes;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -134,6 +135,9 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	c = EWL_CONTAINER(w);
 
 	x = CURRENT_X(w);
+	remains = CURRENT_W(w);
+
+	nodes = ecore_list_nodes(c->children);
 
 	ecore_list_goto_first(c->children);
 
@@ -142,7 +146,6 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * for forming a table.
 	 */
 	if (row->header) {
-		int i = 0;
 		int width;
 		Ewl_Container *hdr;
 
@@ -159,13 +162,21 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			align = ecore_list_next(EWL_CONTAINER(hdr)->children);
 			if (align)
 				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
+			else if (nodes)
+				width = remains / nodes;
 			else
-				width = CURRENT_W(w) /
-					ecore_list_nodes(c->children);
+				width = remains;
+
+			/*
+			 * Request the necessary geometry then check what was
+			 * accepted to calculate remaining steps.
+			 */
 			ewl_object_place(child, x, CURRENT_Y(w), width,
-				CURRENT_H(w));
+					 CURRENT_H(w));
+			width = ewl_object_current_w_get(child);
 			x += width;
-			i++;
+			remains -= width;
+			nodes--;
 		}
 	}
 	/*
@@ -173,34 +184,44 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * space.
 	 */
 	else {
-		int remains, nodes;
-
-		remains = CURRENT_W(w);
-		nodes = ecore_list_nodes(c->children);
+		int tx = x;
 		while ((child = ecore_list_next(c->children))) {
 			int portion;
 
 			/*
-			 * Attempt to divvy up remaining space equally among
-			 * remaining children.
+			 * Ask for the child to stay the current size for now.
 			 */
-			portion = remains / nodes; /* MAX(ewl_object_preferred_w_get(child),
-					remains / nodes); */
-			ewl_object_position_request(child, x, CURRENT_Y(w));
+			portion = ewl_object_current_w_get(child);
+			ewl_object_position_request(child, tx, CURRENT_Y(w));
 			ewl_object_w_request(child, portion);
-
 			ewl_object_h_request(child, CURRENT_H(w));
-			x = ewl_object_current_x_get(child) +
-				ewl_object_current_w_get(child);
 
-			remains -= ewl_object_current_w_get(child);
-			nodes--;
+			remains -= portion;
+			portion = ewl_object_current_w_get(child);
+			tx = ewl_object_current_x_get(child) + portion;
 		}
 
-		if (remains > 0 && (child = ecore_list_goto_last(c->children)))
-			ewl_object_w_request(child,
-					ewl_object_current_w_get(child) +
-					remains);
+		/* Divvy up remaining space */
+		if (remains) {
+			tx = x;
+			nodes = ecore_list_nodes(c->children);
+		       	ecore_list_goto_first(c->children);
+			while ((child = ecore_list_next(c->children))) {
+				int portion;
+				int width = ewl_object_current_w_get(child);
+
+				if (nodes)
+					portion = remains / nodes;
+				else
+					portion = remains;
+				ewl_object_x_request(child, tx);
+				ewl_object_w_request(child, portion + width);
+				remains -= portion;
+				portion = ewl_object_current_w_get(child);
+				tx += portion;
+				nodes--;
+			}
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -226,7 +247,7 @@ ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	row = EWL_ROW(user_data);
-	ewl_object_preferred_inner_w_set(EWL_OBJECT(w), CURRENT_W(row->header));
+	/* ewl_object_preferred_inner_w_set(EWL_OBJECT(w), CURRENT_W(row->header)); */
 	ewl_widget_configure(EWL_WIDGET(row));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
