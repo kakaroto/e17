@@ -33,8 +33,7 @@ struct
    Menu               *list[256];
    char                clicked;
    char                just_shown;
-   Window              cover_win;
-   Window              win_covered;
+   EObj               *cover_win;
 } Mode_menus;
 
 struct _menustyle
@@ -992,42 +991,45 @@ static void
 MenuShowMasker(Menu * m)
 {
    EWin               *ewin;
+   EObj               *eo = Mode_menus.cover_win;
 
    ewin = FindEwinByMenu(m);
-   if ((ewin) && (!Mode_menus.cover_win))
-     {
-	EObj               *eo;
+   if (!ewin)
+      return;
 
-	Mode_menus.cover_win =
-	   ECreateEventWindow(ewin->parent, 0, 0, VRoot.w, VRoot.h);
-	Mode_menus.win_covered = EoGetWin(ewin);
-	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_MISC);
-	EobjSetDesk(eo, EoGetDesk(ewin));
-	EobjSetLayer(eo, 2);
+   if (!eo)
+     {
+	eo = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, VRoot.w, VRoot.h, 0,
+			      "Masker");
+	if (!eo)
+	   return;
+
 	EobjSetFloating(eo, 1);
+	EobjSetLayer(eo, 2);
 	EobjListStackLower(eo);
-	ESelectInput(Mode_menus.cover_win,
-		     ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
-		     LeaveWindowMask);
-	EMapWindow(Mode_menus.cover_win);
-	EventCallbackRegister(Mode_menus.cover_win, 0, MenuMaskerHandleEvents,
-			      NULL);
+	ESelectInput(eo->win, ButtonPressMask | ButtonReleaseMask |
+		     EnterWindowMask | LeaveWindowMask);
+	EventCallbackRegister(eo->win, 0, MenuMaskerHandleEvents, NULL);
 #if 1				/* FIXME - Too expensive */
 	StackDesktop(EoGetDesk(ewin));
 #endif
+	Mode_menus.cover_win = eo;
      }
+
+   EobjMap(eo, 1);
 }
 
 static void
 MenuHideMasker(void)
 {
-   if (Mode_menus.cover_win)
-     {
-	EobjUnregister(Mode_menus.cover_win);
-	EDestroyWindow(Mode_menus.cover_win);
-	Mode_menus.cover_win = 0;
-	Mode_menus.win_covered = 0;
-     }
+   EObj               *eo = Mode_menus.cover_win;
+
+   if (!eo)
+      return;
+
+   EventCallbackUnregister(eo->win, 0, MenuMaskerHandleEvents, NULL);
+   EobjWindowDestroy(eo);
+   Mode_menus.cover_win = NULL;
 }
 
 static void

@@ -227,8 +227,7 @@ WarpFocusHide(void)
 #if 0				/* We might as well keep it around */
 	EventCallbackUnregister(warpFocusWindow->win, 0, WarpFocusHandleEvent,
 				NULL);
-	EDestroyWindow(warpFocusWindow->win);
-	EobjDestroy(warpFocusWindow);
+	EobjWindowDestroy(warpFocusWindow);
 	warpFocusWindow = None;
 #endif
 
