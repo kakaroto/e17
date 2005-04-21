@@ -23,6 +23,11 @@
  */
 #include "E.h"
 
+struct
+{
+   int                 zoom;
+} Mode_pagers;
+
 struct _pager
 {
    char               *name;
@@ -1103,11 +1108,130 @@ PagerHiwinShow(Pager * p, EWin * ewin, int px, int py)
    Mode.mode = MODE_PAGER_DRAG_PENDING;
 }
 
+typedef struct
+{
+   void                (*init) (PagerHiwin * phi, void *data);
+   void                (*draw) (PagerHiwin * phi, void *data);
+   void                (*fini) (PagerHiwin * phi, void *data, int shown);
+} PagerZoom;
+
+static void
+PagerZoomImageInit(PagerHiwin * phi __UNUSED__, void *data)
+{
+   EWin               *ewin = data;
+   Imlib_Image        *im;
+
+   imlib_context_set_drawable(ewin->mini_pmm.pmap);
+   im = imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w,
+					 ewin->mini_h, 0);
+   imlib_context_set_image(im);
+}
+
+static void
+PagerZoomImageDraw(PagerHiwin * phi, void *data __UNUSED__)
+{
+   Pixmap              pmap, mask;
+
+   imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, EoGetW(phi),
+						EoGetH(phi));
+   ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
+   imlib_free_pixmap_and_mask(pmap);
+   EClearWindow(EoGetWin(phi));
+}
+
+static void
+PagerZoomImageFini(PagerHiwin * phi, void *data __UNUSED__, int shown)
+{
+   if (shown)
+     {
+	imlib_context_set_drawable(EoGetWin(phi));
+	imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
+     }
+   imlib_free_image_and_decache();
+}
+
+static const PagerZoom PagerZoomImage = {
+   PagerZoomImageInit, PagerZoomImageDraw, PagerZoomImageFini
+};
+
+static void
+PagerZoomIclassInit(PagerHiwin * phi __UNUSED__, void *data __UNUSED__)
+{
+}
+
+static void
+PagerZoomIclassDraw(PagerHiwin * phi, void *data)
+{
+   ImageclassApply(data, EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0, 0,
+		   STATE_NORMAL, 0, ST_PAGER);
+   EClearWindow(EoGetWin(phi));
+}
+
+static void
+PagerZoomIclassFini(PagerHiwin * phi __UNUSED__, void *data __UNUSED__,
+		    int shown __UNUSED__)
+{
+}
+
+static const PagerZoom PagerZoomIclass = {
+   PagerZoomIclassInit, PagerZoomIclassDraw, PagerZoomIclassFini
+};
+
+typedef struct
+{
+   Pixmap              pmap;
+   GC                  gc;
+} PagerZoomPixmapData;
+
+static void
+PagerZoomPixmapInit(PagerHiwin * phi, void *data)
+{
+   PagerZoomPixmapData *pd = data;
+
+   pd->pmap = ECreatePixmap(EoGetWin(phi), 2 * EoGetW(phi), 2 * EoGetH(phi),
+			    VRoot.depth);
+   ESetWindowBackgroundPixmap(EoGetWin(phi), pd->pmap);
+   pd->gc = ECreateGC(pd->pmap, 0, NULL);
+}
+
+static void
+PagerZoomPixmapDraw(PagerHiwin * phi, void *data)
+{
+   PagerZoomPixmapData *pd = data;
+
+   XSetForeground(disp, pd->gc, BlackPixel(disp, VRoot.scr));
+   XFillRectangle(disp, pd->pmap, pd->gc, 0, 0, EoGetW(phi), EoGetH(phi));
+   XSetForeground(disp, pd->gc, WhitePixel(disp, VRoot.scr));
+   XFillRectangle(disp, pd->pmap, pd->gc, 1, 1, EoGetW(phi) - 2,
+		  EoGetH(phi) - 2);
+   EClearWindow(EoGetWin(phi));
+}
+
+static void
+PagerZoomPixmapFini(PagerHiwin * phi __UNUSED__, void *data,
+		    int shown __UNUSED__)
+{
+   PagerZoomPixmapData *pd = data;
+
+   PagerZoomPixmapDraw(phi, data);
+
+   EFreePixmap(pd->pmap);
+   EFreeGC(pd->gc);
+}
+
+static const const PagerZoom PagerZoomPixmap = {
+   PagerZoomPixmapInit, PagerZoomPixmapDraw, PagerZoomPixmapFini
+};
+
 static void
 PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
 {
-   ImageClass         *ic = NULL;
+   ImageClass         *ic;
    PagerHiwin         *phi = hiwin;
+   const PagerZoom    *pz;
+   int                 xx, yy, ww, hh, i, px, py;
+   XID                 pzd[2];
+   void               *data;
 
    if (MenusActive())		/* Don't show HiWin when menu is up */
       return;
@@ -1119,215 +1243,82 @@ PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	   return;
      }
 
-   ic = ImageclassFind("PAGER_WIN", 0);
-   EoMoveResize(phi, x, y, w, h);
-   EoMap(phi, 1);
-
    if (ewin->mini_pmm.pmap)
      {
-	Imlib_Image        *im;
-	Pixmap              pmap, mask;
-	int                 xx, yy, ww, hh, i;
-
-	imlib_context_set_drawable(ewin->mini_pmm.pmap);
-	im = imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w,
-					      ewin->mini_h, 0);
-	imlib_context_set_image(im);
-	if (w > h)
-	  {
-	     for (i = w; i < (w * 2); i++)
-	       {
-		  ww = i;
-		  hh = (i * h) / w;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-							       &mask, ww, hh);
-		  ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-		  imlib_free_pixmap_and_mask(pmap);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
-
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  imlib_free_image_and_decache();
-			  EoUnmap(phi);
-			  goto done;
-		       }
-		  }
-	       }
-	  }
-	else
-	  {
-	     for (i = h; i < (h * 2); i++)
-	       {
-		  ww = (i * w) / h;
-		  hh = i;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-							       &mask, ww, hh);
-		  ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-		  imlib_free_pixmap_and_mask(pmap);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
-
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  imlib_free_image_and_decache();
-			  EoUnmap(phi);
-			  goto done;
-		       }
-		  }
-	       }
-	  }
-	EoMoveResize(phi, x - (w / 2), y - (h / 2), w * 2, h * 2);
-	imlib_context_set_image(im);
-	imlib_context_set_drawable(EoGetWin(phi));
-	imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
-	imlib_free_image_and_decache();
-     }
-   else if (ic)
-     {
-	int                 xx, yy, ww, hh, i;
-
-	if (w > h)
-	  {
-	     for (i = w; i < (w * 2); i++)
-	       {
-		  ww = i;
-		  hh = (i * h) / w;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  ImageclassApply(ic, EoGetWin(phi), ww, hh, 0, 0, STATE_NORMAL,
-				  0, ST_PAGER);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
-
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  EoUnmap(phi);
-			  goto done;
-		       }
-		  }
-	       }
-	  }
-	else
-	  {
-	     for (i = h; i < (h * 2); i++)
-	       {
-		  ww = (i * w) / h;
-		  hh = i;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  ImageclassApply(ic, EoGetWin(phi), ww, hh, 0, 0, STATE_NORMAL,
-				  0, ST_PAGER);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
-
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  EoUnmap(phi);
-			  goto done;
-		       }
-		  }
-	       }
-	  }
-	EoMoveResize(phi, x - (w / 2), y - (h / 2), w * 2, h * 2);
+	pz = &PagerZoomImage;
+	data = ewin;
      }
    else
      {
-	Pixmap              pmap;
-	GC                  gc;
-	int                 xx, yy, ww, hh, i;
-
-	pmap = ECreatePixmap(EoGetWin(phi), w * 2, h * 2, VRoot.depth);
-	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-	gc = ECreateGC(pmap, 0, NULL);
-
-	if (w > h)
+	ic = ImageclassFind("PAGER_WIN", 0);
+	if (ic)
 	  {
-	     for (i = w; i < (w * 2); i++)
-	       {
-		  ww = i;
-		  hh = (i * h) / w;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
-		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
-
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  EFreePixmap(pmap);
-			  EoUnmap(phi);
-			  goto done1;
-		       }
-		  }
-	       }
+	     pz = &PagerZoomIclass;
+	     data = ic;
 	  }
 	else
 	  {
-	     for (i = h; i < (h * 2); i++)
-	       {
-		  ww = (i * w) / h;
-		  hh = i;
-		  xx = x + ((w - ww) / 2);
-		  yy = y + ((h - hh) / 2);
-		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-		  XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
-		  XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
-		  EoMoveResize(phi, xx, yy, ww, hh);
-		  EClearWindow(EoGetWin(phi));
-		  {
-		     int                 px, py;
+	     pz = &PagerZoomPixmap;
+	     data = pzd;
+	  }
+     }
 
-		     PointerAt(&px, &py);
-		     if ((px < x) || (py < y) || (px >= (x + w))
-			 || (py >= (y + h)))
-		       {
-			  EFreePixmap(pmap);
-			  EoUnmap(phi);
-			  goto done1;
-		       }
-		  }
+   EoMoveResize(phi, x, y, w, h);
+   EoMap(phi, 1);
+   pz->init(phi, data);
+
+   if (w > h)
+     {
+	for (i = w; i < Mode_pagers.zoom * w; i++)
+	  {
+	     ww = i;
+	     hh = (ww * h) / w;
+	     xx = x + ((w - ww) / 2);
+	     yy = y + ((h - hh) / 2);
+	     EoMoveResize(phi, xx, yy, ww, hh);
+	     pz->draw(phi, data);
+
+	     PointerAt(&px, &py);
+	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+	       {
+		  pz->fini(phi, data, 0);
+		  EoUnmap(phi);
+		  return;
 	       }
 	  }
-	EFreePixmap(pmap);
-	EoMoveResize(phi, x - (w / 2), y - (h / 2), w * 2, h * 2);
-      done1:
-	EFreeGC(gc);
+	ww = Mode_pagers.zoom * w;
+	hh = (ww * h) / w;
      }
+   else
+     {
+	for (i = h; i < Mode_pagers.zoom * h; i++)
+	  {
+	     hh = i;
+	     ww = (hh * w) / h;
+	     xx = x + ((w - ww) / 2);
+	     yy = y + ((h - hh) / 2);
+	     EoMoveResize(phi, xx, yy, ww, hh);
+	     pz->draw(phi, data);
+
+	     PointerAt(&px, &py);
+	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+	       {
+		  pz->fini(phi, data, 0);
+		  EoUnmap(phi);
+		  return;
+	       }
+	  }
+	hh = Mode_pagers.zoom * h;
+	ww = (hh * w) / h;
+     }
+
+   xx = x + ((w - ww) / 2);
+   yy = y + ((h - hh) / 2);
+   EoMoveResize(phi, xx, yy, ww, hh);
+   pz->fini(phi, data, 1);
 
    phi->ewin = ewin;
    phi->p = p;
-
- done:
-   ;
 }
 
 static EWin        *
@@ -2240,6 +2231,8 @@ PagersSighan(int sig, void *prm)
    switch (sig)
      {
      case ESIGNAL_INIT:
+	memset(&Mode_pagers, 0, sizeof(Mode_pagers));
+	Mode_pagers.zoom = 2;
 	EDirMake(EDirUserCache(), "cached/pager");
 	break;
      case ESIGNAL_CONFIGURE:
