@@ -1546,6 +1546,8 @@ void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
+#else
+#define             EobjChangeOpacity(eo, opacity)
 #endif
 int                 EobjSetDesk(EObj * eo, int desk);
 void                EobjSetLayer(EObj * eo, int layer);

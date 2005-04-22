@@ -46,12 +46,6 @@ void                ECompMgrConfigSet(const cfg_composite * cfg);
 
 void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 					  int h);
-#define ExMoveResizeWindow ECompMgrMoveResizeFix
-
-#else
-
-#define ECompMgrWinDel(eo, gone, do_fade)
-#define ExMoveResizeWindow(eo, x, y, w, h) EMoveResizeWindow((eo)->win, x, y, w, h)
 
 #endif
 
