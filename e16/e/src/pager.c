@@ -26,6 +26,7 @@
 struct
 {
    int                 zoom;
+   int                 zoom_old;
 } Mode_pagers;
 
 struct _pager
@@ -1070,6 +1071,7 @@ PagerHiwinHide(Pager * p __UNUSED__)
 	phi->ewin = NULL;
 	phi->p = NULL;
 	Mode.mode = MODE_NONE;
+	Mode_pagers.zoom_old = 0;
      }
 
    PagerShowTt(NULL);
@@ -1219,7 +1221,7 @@ PagerZoomPixmapFini(PagerHiwin * phi __UNUSED__, void *data,
    EFreeGC(pd->gc);
 }
 
-static const const PagerZoom PagerZoomPixmap = {
+static const PagerZoom PagerZoomPixmap = {
    PagerZoomPixmapInit, PagerZoomPixmapDraw, PagerZoomPixmapFini
 };
 
@@ -1229,7 +1231,7 @@ PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
    ImageClass         *ic;
    PagerHiwin         *phi = hiwin;
    const PagerZoom    *pz;
-   int                 xx, yy, ww, hh, i, px, py;
+   int                 xx, yy, ww, hh, i, i1, i2, step, px, py, z0;
    XID                 pzd[2];
    void               *data;
 
@@ -1263,55 +1265,70 @@ PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	  }
      }
 
-   EoMoveResize(phi, x, y, w, h);
-   EoMap(phi, 1);
-   pz->init(phi, data);
-
-   if (w > h)
+   z0 = Mode_pagers.zoom_old;
+   if (z0 <= 0)
      {
-	for (i = w; i < Mode_pagers.zoom * w; i++)
-	  {
-	     ww = i;
-	     hh = (ww * h) / w;
-	     xx = x + ((w - ww) / 2);
-	     yy = y + ((h - hh) / 2);
-	     EoMoveResize(phi, xx, yy, ww, hh);
-	     pz->draw(phi, data);
+	z0 = 1;
+	Mode_pagers.zoom_old = z0 = 1;
+	Mode_pagers.zoom = 2;
 
-	     PointerAt(&px, &py);
-	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
-	       {
-		  pz->fini(phi, data, 0);
-		  EoUnmap(phi);
-		  return;
-	       }
-	  }
-	ww = Mode_pagers.zoom * w;
-	hh = (ww * h) / w;
+	EoMoveResize(phi, x, y, w, h);
+	EoMap(phi, 1);
      }
    else
      {
-	for (i = h; i < Mode_pagers.zoom * h; i++)
+	w = EoGetW(phi) / z0;
+	h = EoGetH(phi) / z0;
+	x = EoGetX(phi) + w * (z0 - 1) / 2;
+	y = EoGetY(phi) + h * (z0 - 1) / 2;
+     }
+#if 0
+   Eprintf("Zoom %d->%d\n", Mode_pagers.zoom_old, Mode_pagers.zoom);
+#endif
+
+   if (w > h)
+     {
+	i1 = w * z0;
+	i2 = w * Mode_pagers.zoom;
+     }
+   else
+     {
+	i1 = h * z0;
+	i2 = h * Mode_pagers.zoom;
+     }
+   step = Mode_pagers.zoom - Mode_pagers.zoom_old;
+   Mode_pagers.zoom_old = Mode_pagers.zoom;
+
+   pz->init(phi, data);
+
+   for (i = i1; i != i2; i += step)
+     {
+	if (w > h)
+	  {
+	     ww = i;
+	     hh = (ww * h) / w;
+	  }
+	else
 	  {
 	     hh = i;
 	     ww = (hh * w) / h;
-	     xx = x + ((w - ww) / 2);
-	     yy = y + ((h - hh) / 2);
-	     EoMoveResize(phi, xx, yy, ww, hh);
-	     pz->draw(phi, data);
-
-	     PointerAt(&px, &py);
-	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
-	       {
-		  pz->fini(phi, data, 0);
-		  EoUnmap(phi);
-		  return;
-	       }
 	  }
-	hh = Mode_pagers.zoom * h;
-	ww = (hh * w) / h;
+	xx = x + ((w - ww) / 2);
+	yy = y + ((h - hh) / 2);
+	EoMoveResize(phi, xx, yy, ww, hh);
+	pz->draw(phi, data);
+
+	PointerAt(&px, &py);
+	if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+	  {
+	     pz->fini(phi, data, 0);
+	     EoUnmap(phi);
+	     return;
+	  }
      }
 
+   hh = h * Mode_pagers.zoom;
+   ww = w * Mode_pagers.zoom;
    xx = x + ((w - ww) / 2);
    yy = y + ((h - hh) / 2);
    EoMoveResize(phi, xx, yy, ww, hh);
@@ -1319,6 +1336,29 @@ PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
 
    phi->ewin = ewin;
    phi->p = p;
+}
+
+static void
+PagerZoomChange(int delta)
+{
+   PagerHiwin         *phi = hiwin;
+
+   if (delta == 0)
+      return;
+
+   if (delta > 0)
+     {
+	if (Mode_pagers.zoom >= 16)
+	   return;
+	Mode_pagers.zoom++;
+     }
+   else
+     {
+	if (Mode_pagers.zoom <= 2)
+	   return;
+	Mode_pagers.zoom--;
+     }
+   PagerHiwinZoom(phi->p, phi->ewin, 0, 0, 0, 0);
 }
 
 static EWin        *
@@ -1826,7 +1866,18 @@ PagerHiwinEvent(XEvent * ev, void *prm)
    switch (ev->type)
      {
      case ButtonPress:
-	PagerEventMouseDown(p, ev);
+	switch (ev->xbutton.button)
+	  {
+	  case 4:
+	     PagerZoomChange(1);
+	     break;
+	  case 5:
+	     PagerZoomChange(-1);
+	     break;
+	  default:
+	     PagerEventMouseDown(p, ev);
+	     break;
+	  }
 	break;
      case ButtonRelease:
 	PagerEventMouseUp(p, ev);
@@ -2232,7 +2283,6 @@ PagersSighan(int sig, void *prm)
      {
      case ESIGNAL_INIT:
 	memset(&Mode_pagers, 0, sizeof(Mode_pagers));
-	Mode_pagers.zoom = 2;
 	EDirMake(EDirUserCache(), "cached/pager");
 	break;
      case ESIGNAL_CONFIGURE:
