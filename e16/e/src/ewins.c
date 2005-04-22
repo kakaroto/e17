@@ -342,7 +342,7 @@ GetContextEwin(void)
 {
    EWin               *ewin;
 
-#if 0
+#if 0				/* FIXME - Remove? */
    ewin = Mode.mouse_over_ewin;
    if (ewin && ewin->type != EWIN_TYPE_MENU)
       return ewin;
@@ -352,9 +352,11 @@ GetContextEwin(void)
    if (ewin)
       goto done;
 
+#if 0				/* FIXME - Remove? */
    ewin = Mode.focuswin;
    if (ewin && ewin->type != EWIN_TYPE_MENU)
       goto done;
+#endif
 
    ewin = NULL;
 
