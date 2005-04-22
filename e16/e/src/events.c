@@ -224,7 +224,7 @@ HandleEvent(XEvent * ev)
 	     if (lst)
 	       {
 		  for (i = 0; i < num; i++)
-		     EventAclass(ev, NULL, (ActionClass *) lst[i]);
+		     EventAclass(ev, GetFocusEwin(), (ActionClass *) lst[i]);
 		  Efree(lst);
 	       }
 	  }
