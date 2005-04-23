@@ -456,7 +456,7 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
 void
 BackgroundApply(Background * bg, Window win, int setbg)
 {
-   unsigned int        rw, rh, depth;
+   int                 rw, rh, depth;
    Pixmap              dpmap;
    GC                  gc;
    int                 rt;
@@ -483,7 +483,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
    dpmap = (setbg) ? bg->pmap : None;
    if (!dpmap)
      {
-	unsigned int        w, h, x, y;
+	int                 w, h, x, y;
 	char                hasbg, hasfg;
 	Pixmap              pmap, mask;
 

@@ -1384,13 +1384,14 @@ static void
 PagerHandleMotion(Pager * p, Window win __UNUSED__, int x, int y, int in)
 {
    int                 hx, hy;
+   unsigned int        mr;
    Window              rw, cw;
-   EWin               *ewin = NULL;
+   EWin               *ewin;
 
    if (!Conf.pagers.enable)
       return;
 
-   XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &hx);
+   XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &mr);
 
    if (x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);

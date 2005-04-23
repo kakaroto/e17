@@ -1144,7 +1144,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
    pmm->type = 0;
    pmm->pmap = pmm->mask = 0;
 
-   if ((!ic) || (!win) || (w < 1) || (h < 1))
+   if ((!ic) || (!win) || (w <= 0) || (h <= 0))
       return;
 
    is = ImageclassGetImageState(ic, state, active, sticky);

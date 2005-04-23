@@ -1377,8 +1377,7 @@ PropagateShapes(Window win)
 {
    Window              rt, par, *list = NULL;
    int                 k, i, num = 0, num_rects = 0, rn = 0, ord;
-   int                 x, y;
-   unsigned int        ww, hh, w, h, d;
+   int                 x, y, ww, hh, w, h, d;
    XRectangle         *rects = NULL, *rl = NULL;
    XWindowAttributes   att;
 

@@ -748,8 +748,7 @@ EMapRaised(Window win)
 
 int
 EGetGeometry(Window win, Window * root_return, int *x, int *y,
-	     unsigned int *w, unsigned int *h, unsigned int *bw,
-	     unsigned int *depth)
+	     int *w, int *h, int *bw, int *depth)
 {
    int                 ok;
    EXID               *xid;
@@ -1006,8 +1005,7 @@ int
 GetWinDepth(Window win)
 {
    Window              w1;
-   unsigned int        w, h, b, d;
-   int                 x, y;
+   int                 x, y, w, h, b, d;
 
    EGetGeometry(win, &w1, &x, &y, &w, &h, &b, &d);
    return d;
@@ -1017,9 +1015,7 @@ int
 WinExists(Window win)
 {
    Window              w1;
-   int                 x, y;
-   unsigned int        w, h;
-   unsigned int        b, d;
+   int                 x, y, w, h, b, d;
 
    if (EGetGeometry(win, &w1, &x, &y, &w, &h, &b, &d))
       return 1;

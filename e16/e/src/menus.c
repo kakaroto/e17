@@ -265,7 +265,7 @@ MenuShow(Menu * m, char noshow)
    EWin               *ewin;
    int                 x, y;
    int                 wx = 0, wy = 0;	/* wx, wy added to stop menus */
-   unsigned int        w, h, mw, mh;	/* from appearing offscreen */
+   int                 w, h, mw, mh;	/* from appearing offscreen */
    int                 head_num = 0;
 
    if ((m->num <= 0) || (!m->style))
@@ -656,7 +656,7 @@ MenuRealize(Menu * m)
 {
    int                 i, maxh, maxw, nmaxy;
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
-   unsigned int        iw, ih;
+   int                 iw, ih;
    Imlib_Image        *im;
    char                pq, has_i, has_s;
 
@@ -918,8 +918,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    if (!mi_pmm->pmap)
      {
 	GC                  gc;
-	unsigned int        w, h;
-	int                 x, y;
+	int                 x, y, w, h;
 	int                 item_type;
 	ImageClass         *ic;
 
@@ -1343,8 +1342,7 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 
    if (mi->child && mi->child->shown == 0)
      {
-	int                 mx, my;
-	unsigned int        mw, mh;
+	int                 mx, my, mw, mh;
 	EWin               *ewin2;
 
 	ewin = FindEwinByMenu(m);
@@ -1599,8 +1597,7 @@ MenusSetEvents(int on)
 static void
 SubmenuShowTimeout(int val __UNUSED__, void *dat)
 {
-   int                 mx, my, my2, xo, yo;
-   unsigned int        mw;
+   int                 mx, my, my2, xo, yo, mw;
    Menu               *m;
    MenuItem           *mi;
    EWin               *ewin2, *ewin;

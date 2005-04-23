@@ -90,7 +90,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    Window              dw;
    char                pdir;
    XSetWindowAttributes att;
-   unsigned int        w, h, d;
+   int                 w, h, d;
 
    /* Don't ever show more than one slideout */
    if (Mode.slideout)

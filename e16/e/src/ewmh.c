@@ -204,12 +204,12 @@ EWMH_SetDesktopSize(void)
 void
 EWMH_SetWorkArea(void)
 {
-   int                *p_coord;
+   unsigned int       *p_coord;
    int                 n_coord, i, n_desks;
 
    n_desks = DesksGetNumber();
    n_coord = 4 * n_desks;
-   p_coord = Emalloc(n_coord * sizeof(int));
+   p_coord = Emalloc(n_coord * sizeof(unsigned int));
    if (!p_coord)
       return;
 
@@ -235,12 +235,12 @@ EWMH_SetCurrentDesktop(void)
 void
 EWMH_SetDesktopViewport(void)
 {
-   int                *p_coord;
+   unsigned int       *p_coord;
    int                 n_coord, i, ax, ay, n_desks;
 
    n_desks = DesksGetNumber();
    n_coord = 2 * n_desks;
-   p_coord = Emalloc(n_coord * sizeof(int));
+   p_coord = Emalloc(n_coord * sizeof(unsigned int));
    if (!p_coord)
       return;
 
@@ -393,7 +393,7 @@ EWMH_SetWindowState(const EWin * ewin)
 void
 EWMH_SetWindowBorder(const EWin * ewin)
 {
-   int                 val[4];
+   unsigned int        val[4];
 
    if (ewin->border)
      {

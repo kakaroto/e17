@@ -461,7 +461,7 @@ int
 ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 {
 
-   unsigned int        w, h;
+   int                 w, h;
 
    EReparentWindow(WindowToEmbed, EoGetWin(b), 0, 0);
    b->inside_win = WindowToEmbed;

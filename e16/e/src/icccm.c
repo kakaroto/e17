@@ -356,8 +356,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    XSizeHints          hint;
    Window              ww;
    long                mask;
-   unsigned int        dummy, w, h, bw;
-   int                 x, y;
+   int                 x, y, w, h, bw, dummy;
 
    if (atom_change && atom_change != ECORE_X_ATOM_WM_NORMAL_HINTS)
       return;
@@ -767,8 +766,7 @@ ICCCM_GetShapeInfo(EWin * ewin)
 {
    XRectangle         *rl = NULL;
    int                 rn = 0, ord;
-   int                 x, y;
-   unsigned int        w, h, d;
+   int                 x, y, w, h, d;
    Window              rt;
 
    ecore_x_grab();

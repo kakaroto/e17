@@ -1860,7 +1860,8 @@ void                HintsDelWindowHints(EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
 void                HintsSetRootHints(Window win);
-void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
+void                HintsSetRootInfo(Window win, Pixmap pmap,
+				     unsigned int color);
 
 void                EHintsSetInfo(const EWin * ewin);
 int                 EHintsGetInfo(EWin * ewin);
@@ -2284,9 +2285,8 @@ XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
 					int *ord);
 void                EReparentWindow(Window win, Window parent, int x, int y);
 int                 EGetGeometry(Window win, Window * root_return,
-				 int *x, int *y, unsigned int *w,
-				 unsigned int *h, unsigned int *bw,
-				 unsigned int *depth);
+				 int *x, int *y, int *w, int *h, int *bw,
+				 int *depth);
 void                EConfigureWindow(Window win, unsigned int mask,
 				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);

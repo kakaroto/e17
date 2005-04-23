@@ -285,7 +285,7 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 }
 
 void
-HintsSetRootInfo(Window win, Pixmap pmap, int color)
+HintsSetRootInfo(Window win, Pixmap pmap, unsigned int color)
 {
    static Atom         a = 0, aa = 0;
    Ecore_X_Pixmap      pm;
@@ -329,7 +329,7 @@ EHintsSetInfo(const EWin * ewin)
    c[7] = ewin->client.h;
    c[8] = ewin->docked;
 
-   ecore_x_window_prop_card32_set(ewin->client.win, a, c, 9);
+   ecore_x_window_prop_card32_set(ewin->client.win, a, (unsigned int *)c, 9);
 
    ecore_x_window_prop_string_set(ewin->client.win, aa,
 				  ewin->normal_border->name);
@@ -356,7 +356,8 @@ EHintsGetInfo(EWin * ewin)
    if (!aa)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 
-   num = ecore_x_window_prop_card32_get(ewin->client.win, a, c, 9);
+   num =
+      ecore_x_window_prop_card32_get(ewin->client.win, a, (unsigned int *)c, 9);
    if (num < 8)
       return 0;
 
