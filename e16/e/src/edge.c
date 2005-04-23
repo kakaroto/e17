@@ -206,19 +206,19 @@ EdgeWindowsShow(void)
    if (cx == 0 && !Conf.desks.areas_wraparound)
       EobjUnmap(w1);
    else
-      EobjMap(w1, 1);
+      EobjMap(w1, 0);
    if (cx == (ax - 1) && !Conf.desks.areas_wraparound)
       EobjUnmap(w2);
    else
-      EobjMap(w2, 1);
+      EobjMap(w2, 0);
    if (cy == 0 && !Conf.desks.areas_wraparound)
       EobjUnmap(w3);
    else
-      EobjMap(w3, 1);
+      EobjMap(w3, 0);
    if (cy == (ay - 1) && !Conf.desks.areas_wraparound)
       EobjUnmap(w4);
    else
-      EobjMap(w4, 1);
+      EobjMap(w4, 0);
 }
 
 void

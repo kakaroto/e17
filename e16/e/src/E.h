@@ -504,6 +504,7 @@ struct _eobj
    short               desk;	/* Belongs on desk */
    int                 x, y;
    int                 w, h;
+   signed char         stacked;
    char                sticky;
    char                floating;
    char                shown;
@@ -512,7 +513,7 @@ struct _eobj
    unsigned int        opacity;
    void               *cmhook;
 #endif
-   char               *name;	/* Debug only */
+   char               *name;
 };
 
 #define EOBJ_TYPE_EWIN      0
@@ -558,7 +559,7 @@ struct _eobj
 #define EoGetShadow(eo)         0
 #endif
 
-#define EoMap(eo, raise)                EobjMap(&((eo)->o), (raise))
+#define EoMap(eo, raise)                EobjMap(&((eo)->o), raise)
 #define EoUnmap(eo)                     EobjUnmap(&((eo)->o))
 #define EoMove(eo, x, y)                EobjMove(&((eo)->o), x, y)
 #define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
@@ -1407,10 +1408,8 @@ void                DeskAssignBg(int desk, Background * bg);
 void                DeskSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
 void                DeskGoto(int num);
-void                DeskMove(int num, int x, int y);
 void                DeskHide(int num);
 void                DeskShow(int num);
-void                StackDesktops(void);
 void                StackDesktop(int num);
 void                DeskGotoByEwin(EWin * ewin);
 void                DesksEventsConfigure(int mode);
@@ -1549,7 +1548,7 @@ void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #else
 #define             EobjChangeOpacity(eo, opacity)
 #endif
-int                 EobjSetDesk(EObj * eo, int desk);
+void                EobjSetDesk(EObj * eo, int desk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);

@@ -145,7 +145,6 @@ ActionMoveEnd(EWin * ewin)
 	EoChangeOpacity(ewin, ewin->ewmh.opacity);
 	RaiseEwin(gwins[i]);
      }
-   StackDesktop(EoGetDesk(ewin));	/* Restack to "un-float" */
 
    ecore_x_sync();
    if (Conf.movres.mode_move > 0)

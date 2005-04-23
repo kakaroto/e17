@@ -41,6 +41,7 @@ typedef struct _desktops
 }
 Desktops;
 
+static void         DeskMove(Desk * d, int x, int y);
 static void         DeskRaise(int num);
 static void         DeskLower(int num);
 static void         DesktopHandleEvents(XEvent * ev, void *prm);
@@ -300,9 +301,6 @@ DeskControlsCreate(Desk * d)
      }
 #endif
 
-   /* Restack buttons - Hmmm. */
-   StackDesktop(d->num);
-
    d->tag = b;
 }
 
@@ -416,11 +414,10 @@ DeskCreate(int desk, int configure)
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EobjInit(&d->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, buf);
    EoSetShadow(d, 0);
-   EoSetLayer(d, 0);
    if (desk > 0)
      {
 	EoSetFloating(d, 1);
-	EobjListStackRaise(&d->o);
+	EoSetLayer(d, 0);
 #if 0				/* TBD */
 	d->event_mask = EDESK_EVENT_MASK;
 	DeskEventsConfigure(d, 1);
@@ -572,6 +569,8 @@ DeskSetDirtyStack(int desk)
       return;
 
    d->dirty_stack++;
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskSetDirtyStack %d (%d)\n", desk, d->dirty_stack);
 }
 
 Window
@@ -727,7 +726,6 @@ DeskShowTabs(void)
 	for (i = 0; i < num; i++)
 	   ButtonShow(blst[i]);
 	Efree(blst);
-	StackDesktops();
      }
 }
 
@@ -743,7 +741,6 @@ DeskHideTabs(void)
 	for (i = 0; i < num; i++)
 	   ButtonHide(blst[i]);
 	Efree(blst);
-	StackDesktops();
      }
 }
 #endif
@@ -994,25 +991,25 @@ DeskGoto(int desk)
 		  switch (Conf.desks.dragdir)
 		    {
 		    case 0:
-		       DeskMove(desk, VRoot.w, 0);
+		       DeskMove(d, VRoot.w, 0);
 		       DeskRaise(desk);
 		       EobjSlideTo(&d->o, VRoot.w, 0, 0, 0,
 				   Conf.desks.slidespeed);
 		       break;
 		    case 1:
-		       DeskMove(desk, -VRoot.w, 0);
+		       DeskMove(d, -VRoot.w, 0);
 		       DeskRaise(desk);
 		       EobjSlideTo(&d->o, -VRoot.w, 0, 0, 0,
 				   Conf.desks.slidespeed);
 		       break;
 		    case 2:
-		       DeskMove(desk, 0, VRoot.h);
+		       DeskMove(d, 0, VRoot.h);
 		       DeskRaise(desk);
 		       EobjSlideTo(&d->o, 0, VRoot.h, 0, 0,
 				   Conf.desks.slidespeed);
 		       break;
 		    case 3:
-		       DeskMove(desk, 0, -VRoot.h);
+		       DeskMove(d, 0, -VRoot.h);
 		       DeskRaise(desk);
 		       EobjSlideTo(&d->o, 0, -VRoot.h, 0, 0,
 				   Conf.desks.slidespeed);
@@ -1027,14 +1024,12 @@ DeskGoto(int desk)
 			      Conf.desks.slidespeed);
 		  DeskRaise(desk);
 	       }
-	     StackDesktops();
 	  }
 	else
 	  {
 	     DeskRaise(desk);
-	     StackDesktops();
 	  }
-	DeskMove(desk, 0, 0);
+	DeskMove(d, 0, 0);
      }
    else
      {
@@ -1052,29 +1047,25 @@ DeskGoto(int desk)
    HandleDrawQueue();
 }
 
-void
-DeskMove(int desk, int x, int y)
+static void
+DeskMove(Desk * d, int x, int y)
 {
-   Desk               *d, *dd;
+   Desk               *dd;
    int                 i;
    EWin               *const *lst;
    int                 n, v, dx, dy;
-
-   if (desk <= 0 || desk >= Conf.desks.num)
-      return;
 
    n = -1;
    i = 0;
    while (n < 0 && i < Conf.desks.num)
      {
-	if (desks.order[i] == desk)
+	if (desks.order[i] == d->num)
 	   n = i;
 	i++;
      }
    if (n < 0)			/* Should not be possible */
       return;
 
-   d = _DeskGet(desk);
    dx = x - EoGetX(d);
    dy = y - EoGetY(d);
 
@@ -1122,8 +1113,25 @@ DeskMove(int desk, int x, int y)
 
    lst = EwinListGetAll(&n);
    for (i = 0; i < n; i++)
-      if (EoGetDesk(lst[i]) == desk)
+      if (EoGetDesk(lst[i]) == d->num)
 	 ICCCM_Configure(lst[i]);
+}
+
+static void
+DesksStackingCheck(void)
+{
+   Desk               *d;
+   int                 i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+     {
+	d = DeskGet(i);
+	if (i && !d->viewable)
+	   continue;
+	if (!d->dirty_stack)
+	   continue;
+	StackDesktop(i);
+     }
 }
 
 static void
@@ -1173,10 +1181,9 @@ DeskRaise(int desk)
 	EoMap(d, 0);
      }
 
-   StackDesktops();
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
-   StackDesktop(DesksGetCurrent());
+   DesksStackingCheck();
    FocusNewDesk();
    if (Mode.mode == MODE_NONE)
      {
@@ -1204,10 +1211,9 @@ DeskLower(int desk)
    UncoverDesktop(desks.order[0]);
    DeskHide(desk);
 
-   StackDesktops();
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
-   StackDesktop(DesksGetCurrent());
+   DesksStackingCheck();
    FocusNewDesk();
    if (Mode.mode == MODE_NONE)
      {
@@ -1256,15 +1262,8 @@ DeskShow(int desk)
      }
    else
      {
-	StackDesktops();
 	EoMap(d, 0);
      }
-}
-
-void
-StackDesktops(void)
-{
-   StackDesktop(0);
 }
 
 #define _APPEND_TO_WIN_LIST(win) \
@@ -1275,6 +1274,7 @@ StackDesktops(void)
 void
 StackDesktop(int desk)
 {
+   Desk               *d = DeskGet(desk);
    Window             *wl;
    int                 i, num, tot;
    EObj               *const *lst, *eo;
@@ -1285,24 +1285,12 @@ StackDesktop(int desk)
    wl = NULL;
    lst = EobjListStackGetForDesk(&num, desk);
 
-   /* Floating objects */
-   for (i = 0; i < num; i++)
-     {
-	eo = lst[i];
-	if (!eo->floating)
-	   continue;
-
-	_APPEND_TO_WIN_LIST(eo->win);
-     }
-
    /* Normal objects */
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
-	if (eo->floating)
-	   continue;
-
 	_APPEND_TO_WIN_LIST(eo->win);
+	eo->stacked = 1;
      }
 
    if (EventDebug(EDBUG_TYPE_STACKING))
@@ -1317,6 +1305,10 @@ StackDesktop(int desk)
 
    if (wl)
       Efree(wl);
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("StackDesktop %d (%d)\n", d->num, d->dirty_stack);
+   d->dirty_stack = 0;
 }
 
 void
@@ -1371,24 +1363,24 @@ DeskDragMotion(void)
      case 0:
 	if ((EoGetX(d) + dx) < 0)
 	   dx = -EoGetX(d);
-	DeskMove(Mode.deskdrag, EoGetX(d) + dx, EoGetY(d));
+	DeskMove(d, EoGetX(d) + dx, EoGetY(d));
 	break;
      case 1:
 	if ((EoGetX(d) + dx) > 0)
-	   DeskMove(Mode.deskdrag, 0, EoGetY(d));
+	   DeskMove(d, 0, EoGetY(d));
 	else
-	   DeskMove(Mode.deskdrag, EoGetX(d) + dx, EoGetY(d));
+	   DeskMove(d, EoGetX(d) + dx, EoGetY(d));
 	break;
      case 2:
 	if ((EoGetY(d) + dy) < 0)
 	   dy = -EoGetY(d);
-	DeskMove(Mode.deskdrag, EoGetX(d), EoGetY(d) + dy);
+	DeskMove(d, EoGetX(d), EoGetY(d) + dy);
 	break;
      case 3:
 	if ((EoGetY(d) + dy) > 0)
-	   DeskMove(Mode.deskdrag, EoGetX(d), 0);
+	   DeskMove(d, EoGetX(d), 0);
 	else
-	   DeskMove(Mode.deskdrag, EoGetX(d), EoGetY(d) + dy);
+	   DeskMove(d, EoGetX(d), EoGetY(d) + dy);
 	break;
      default:
 	break;
@@ -1469,9 +1461,13 @@ DeskDragdirSet(const char *params)
    if (pd != Conf.desks.dragdir)
      {
 	int                 i;
+	Desk               *d;
 
 	for (i = 0; i < Conf.desks.num; i++)
-	   DeskMove(i, 0, 0);
+	  {
+	     d = _DeskGet(i);
+	     EoMove(d, (d->viewable) ? 0 : VRoot.w, 0);
+	  }
 	DesksControlsRefresh();
      }
 }
@@ -1618,6 +1614,10 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_START:
 	/* Draw all the buttons that belong on the desktop */
 	DeskShowButtons();
+	break;
+
+     case ESIGNAL_IDLE:
+	DesksStackingCheck();
 	break;
      }
 }

@@ -153,7 +153,7 @@ WarpFocusShow(EWin * ewin)
 	  }
 
 	PropagateShapes(warpFocusWindow->win);
-	EobjMap(warpFocusWindow, 1);
+	EobjMap(warpFocusWindow, 0);
 
 	/*
 	 * Grab the keyboard. The grab is automatically released when

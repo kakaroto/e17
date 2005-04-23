@@ -988,14 +988,9 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 }
 
 static void
-MenuShowMasker(Menu * m)
+MenuShowMasker(Menu * m __UNUSED__)
 {
-   EWin               *ewin;
    EObj               *eo = Mode_menus.cover_win;
-
-   ewin = FindEwinByMenu(m);
-   if (!ewin)
-      return;
 
    if (!eo)
      {
@@ -1010,13 +1005,11 @@ MenuShowMasker(Menu * m)
 	ESelectInput(eo->win, ButtonPressMask | ButtonReleaseMask |
 		     EnterWindowMask | LeaveWindowMask);
 	EventCallbackRegister(eo->win, 0, MenuMaskerHandleEvents, NULL);
-#if 1				/* FIXME - Too expensive */
-	StackDesktop(EoGetDesk(ewin));
-#endif
+
 	Mode_menus.cover_win = eo;
      }
 
-   EobjMap(eo, 1);
+   EobjMap(eo, 0);
 }
 
 static void
@@ -1768,10 +1761,6 @@ MenuItemEventMouseIn(MenuItem * mi, XEvent * ev)
    Menu               *m;
 
    m = mi->menu;
-
-#if 0				/* FIXME - TBD */
-   PagerHideAllHi();
-#endif
 
    if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
       goto done;

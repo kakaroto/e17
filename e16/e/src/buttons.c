@@ -132,9 +132,9 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    win = ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0);
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
+   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
-   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
 
    ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
    EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
@@ -635,11 +635,13 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	if (b)
 	  {
 	     ButtonMoveRelative(b, dx, dy);
+#if 0				/* FIXME - Not active */
 	     if (Conf.deskmode == MODE_DESKRAY)
 	       {
 		  DeskMove(Mode.deskdrag, DeskGetX(Mode.deskdrag),
 			   DeskGetY(Mode.deskdrag) + dy);
 	       }
+#endif
 	  }
      }
 }
@@ -1109,7 +1111,6 @@ doHideShowButton(const char *params)
      }
 
  done:
-   StackDesktops();
    autosave();
 }
 

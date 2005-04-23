@@ -23,14 +23,17 @@
 #include "E.h"
 #include "ecompmgr.h"
 
-int
+void
 EobjSetDesk(EObj * eo, int desk)
 {
+   int                 pdesk = eo->desk;
+
    switch (eo->type)
      {
      default:
 	eo->desk = desk;
 	break;
+
      case EOBJ_TYPE_EWIN:
 	if (eo->floating)
 	   eo->desk = 0;
@@ -39,17 +42,17 @@ EobjSetDesk(EObj * eo, int desk)
 	else
 	   eo->desk = desk % Conf.desks.num;
 	break;
-     case EOBJ_TYPE_BUTTON:
-	eo->desk = desk;
-	break;
      }
 
-   return eo->desk;
+   if (eo->desk != pdesk && eo->stacked > 0)
+      DeskSetDirtyStack(eo->desk);
 }
 
 void
 EobjSetLayer(EObj * eo, int layer)
 {
+   int                 ilayer = eo->ilayer;
+
    eo->layer = layer;
    /*
     * For usual EWin's the internal layer is the "old" E-layer * 10.
@@ -101,6 +104,9 @@ EobjSetLayer(EObj * eo, int layer)
       eo->ilayer |= 512;
    else
       eo->ilayer &= ~512;
+
+   if (eo->ilayer != ilayer)
+      EobjListStackRaise(eo);
 }
 
 void
@@ -254,7 +260,6 @@ EobjRegister(Window win, int type)
      {
 	EobjSetFloating(eo, 1);
 	EobjSetLayer(eo, 4);
-	EobjListStackRaise(eo);
      }
 #endif
 
@@ -282,6 +287,13 @@ EobjMap(EObj * eo, int raise)
 
    if (raise)
       EobjListStackRaise(eo);
+
+   if (eo->stacked <= 0)
+     {
+	if (eo->stacked < 0)
+	   DeskSetDirtyStack(eo->desk);
+	StackDesktop(eo->desk);
+     }
 
    EMapWindow(eo->win);
 #if USE_COMPOSITE

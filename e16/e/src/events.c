@@ -216,10 +216,6 @@ HandleEvent(XEvent * ev)
 	else
 #endif
 	  {
-#if 0				/* FIXME - TBD */
-	     if (ev->type == KeyPress)
-		PagerHideAllHi();
-#endif
 	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
 	     if (lst)
 	       {

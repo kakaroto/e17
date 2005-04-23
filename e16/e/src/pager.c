@@ -1046,10 +1046,10 @@ PagerHiwinCreate(void)
       return NULL;
 
    win = ECreateWindow(VRoot.win, 0, 0, 3, 3, 1);
+   EobjInit(&phi->o, EOBJ_TYPE_MISC, win, 0, 0, 3, 3, "HiWin");
    EoSetShadow(phi, 0);
    EoSetFloating(phi, 1);
    EoSetLayer(phi, 19);
-   EobjInit(&phi->o, EOBJ_TYPE_MISC, win, 0, 0, 3, 3, "HiWin");
    EventCallbackRegister(EoGetWin(phi), 0, PagerHiwinEvent, phi);
    ESelectInput(EoGetWin(phi),
 		ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
@@ -1273,7 +1273,7 @@ PagerHiwinZoom(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	Mode_pagers.zoom = 2;
 
 	EoMoveResize(phi, x, y, w, h);
-	EoMap(phi, 1);
+	EoMap(phi, 0);
      }
    else
      {

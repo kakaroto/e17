@@ -557,7 +557,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
    for (i = 0; i < 5; i++)
       if (tt->win[i])
-	 EobjMap(tt->win[i], 1);
+	 EobjMap(tt->win[i], 0);
 
    ecore_x_sync();
 

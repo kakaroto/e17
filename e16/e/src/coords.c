@@ -91,7 +91,7 @@ CoordsShow(EWin * ewin)
    EobjMoveResize(eo, cx, cy, cw, ch);
 
    if (!eo->shown)
-      EobjMap(eo, 1);
+      EobjMap(eo, 0);
 
    ImageclassApply(ic, eo->win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    TextclassApply(ic, eo->win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);

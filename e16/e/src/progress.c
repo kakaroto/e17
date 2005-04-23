@@ -188,9 +188,9 @@ ProgressbarShow(Progressbar * p)
    ImageclassApply(p->ipc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, 0,
 		   ST_UNKNWN);
 
-   EobjMap(p->win, 1);
-   EobjMap(p->n_win, 1);
-   EobjMap(p->p_win, 1);
+   EobjMap(p->win, 0);
+   EobjMap(p->n_win, 0);
+   EobjMap(p->p_win, 0);
    ecore_x_sync();
    TextclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
 		  STATE_NORMAL, 0, p->tc, p->win->name);

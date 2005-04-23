@@ -108,6 +108,7 @@ EwinCreate(Window win, int type)
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
    frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+   ewin->o.stacked = -1;	/* Not placed on desk yet */
    EobjInit(&ewin->o, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, NULL);
    EoSetDesk(ewin, DesksGetCurrent());
    EoSetLayer(ewin, 4);
@@ -798,9 +799,6 @@ AddToFamily(EWin * ewin, Window win)
 	  }
      }
 
-   /* Force reparent if not on desk 0 */
-   EoSetDesk(ewin, 0);
-
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
      {
@@ -833,10 +831,8 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->client.already_placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-	MoveEwinToDesktop(ewin, desk);
-	RaiseEwin(ewin);
+	MoveEwinToDesktopAt(ewin, desk, x, y);
 	MoveEwin(ewin, x, y);
-	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.have_place_grab = 1;
@@ -848,7 +844,6 @@ AddToFamily(EWin * ewin, Window win)
      }
    else if ((doslide) && (!Mode.doingslide))
      {
-	MoveEwin(ewin, VRoot.w, VRoot.h);
 	k = rand() % 4;
 	if (k == 0)
 	  {
@@ -870,9 +865,7 @@ AddToFamily(EWin * ewin, Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
-	MoveEwinToDesktop(ewin, desk);
-	RaiseEwin(ewin);
-	MoveEwin(ewin, fx, fy);
+	MoveEwinToDesktopAt(ewin, desk, fx, fy);
 	ShowEwin(ewin);
 	SlideEwinTo(ewin, fx, fy, x, y, Conf.slidespeedmap);
 	MoveEwinToDesktopAt(ewin, desk, x, y);
@@ -880,7 +873,6 @@ AddToFamily(EWin * ewin, Window win)
    else
      {
 	MoveEwinToDesktopAt(ewin, desk, x, y);
-	RaiseEwin(ewin);
 	ShowEwin(ewin);
      }
 
@@ -984,11 +976,6 @@ EwinConformToDesktop(EWin * ewin)
 	RaiseEwin(ewin);
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
      }
-
-   /* FIXME - This should not be necessary. It is when a new window is added as
-    * the only one in the lowest layer (e.g. desktop type).
-    * In stead EobjListStackAdd() should mark the object stack dirty. */
-   StackDesktop(EoGetDesk(ewin));
 
    EwinDetermineArea(ewin);
    HintsSetWindowDesktop(ewin);
