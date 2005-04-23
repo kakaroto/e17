@@ -218,3 +218,29 @@ ExtInitWinCreate(void)
    /* We will never get here */
    return None;
 }
+
+static Window       init_win_ext = None;
+
+void
+ExtInitWinSet(Window win)
+{
+   init_win_ext = win;
+}
+
+Window
+ExtInitWinGet(void)
+{
+   return init_win_ext;
+}
+
+void
+ExtInitWinKill(void)
+{
+   if (!disp || init_win_ext == None)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("Kill init window %#lx\n", init_win_ext);
+   XKillClient(disp, init_win_ext);
+   init_win_ext = None;
+}

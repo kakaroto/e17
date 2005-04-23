@@ -1707,7 +1707,9 @@ void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* extinitwin.c */
 Window              ExtInitWinCreate(void);
-void                ExtInitWinCheck(void);
+void                ExtInitWinSet(Window win);
+Window              ExtInitWinGet(void);
+void                ExtInitWinKill(void);
 
 /* file.c */
 void                Etmp(char *s);
@@ -2339,7 +2341,6 @@ extern RealRoot     RRoot;
 extern VirtRoot     VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
-extern Window       init_win_ext;
 
 #define FILEPATH_LEN_MAX 4096
 

@@ -42,10 +42,6 @@ VirtRoot            VRoot;
 EConf               Conf;
 EMode               Mode;
 
-#ifdef USE_EXT_INIT_WIN
-Window              init_win_ext = None;
-#endif
-
 static int          EoptGet(int argc, char **argv);
 static void         EoptHelp(void);
 static void         ECheckEprog(const char *name);
@@ -207,7 +203,7 @@ main(int argc, char **argv)
 	     break;
 #ifdef USE_EXT_INIT_WIN
 	  case 'X':
-	     init_win_ext = strtoul(eoptarg, NULL, 0);
+	     ExtInitWinSet(strtoul(eoptarg, NULL, 0));
 	     Mode.wm.restart = 1;
 	     break;
 #endif
@@ -267,13 +263,7 @@ main(int argc, char **argv)
 
 #ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */
-   if (init_win_ext)
-     {
-	if (EventDebug(EDBUG_TYPE_SESSION))
-	   Eprintf("Kill init window %#lx\n", init_win_ext);
-	XKillClient(disp, init_win_ext);
-	init_win_ext = 0;
-     }
+   ExtInitWinKill();
 #endif
 
    /* sync just to make sure */

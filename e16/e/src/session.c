@@ -838,10 +838,7 @@ doSMExit(int mode, const char *params)
    if (disp)
      {
 	XSelectInput(disp, VRoot.win, 0);
-#if 0				/* FIXME */
-	if (Mode.wm.master && init_win_ext)
-	   XKillClient(disp, init_win_ext);
-#endif
+	ExtInitWinKill();
 	XSync(disp, False);
      }
 

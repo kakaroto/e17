@@ -35,10 +35,13 @@ MapUnmap(int start)
 
    static Window      *wlist = NULL;
    static unsigned int num = 0;
-   Window              par;
-   Window              rt;
+   Window              par, rt;
    XWindowAttributes   attr;
    unsigned int        i;
+
+#ifdef USE_EXT_INIT_WIN
+   Window              init_win = ExtInitWinGet();
+#endif
 
    switch (start)
      {
@@ -48,15 +51,15 @@ MapUnmap(int start)
 	for (i = 0; i < num; i++)
 	  {
 #ifdef USE_EXT_INIT_WIN
-	     if ((init_win_ext) && (init_win_ext == wlist[i]))
+	     if (init_win == wlist[i])
 	       {
-		  wlist[i] = 0;
+		  wlist[i] = None;
 		  continue;
 	       }
 #endif
 	     XGetWindowAttributes(disp, wlist[i], &attr);
 	     if (attr.map_state == IsUnmapped)
-		wlist[i] = 0;
+		wlist[i] = None;
 	     else
 		XUnmapWindow(disp, wlist[i]);
 	  }
@@ -80,8 +83,8 @@ MapUnmap(int start)
 	     if (attr.override_redirect)
 	       {
 #ifdef USE_EXT_INIT_WIN
-		  if (init_win_ext)
-		     XRaiseWindow(disp, init_win_ext);
+		  if (init_win)
+		     XRaiseWindow(disp, init_win);
 #endif
 		  XMapWindow(disp, wlist[i]);
 	       }
@@ -173,7 +176,7 @@ SetupX(const char *dstr)
 		  Mode.wm.master = 0;
 		  Mode.wm.pid = getpid();
 		  VRoot.scr = i;
-		  init_win_ext = None;
+		  ExtInitWinSet(None);
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);
 #endif
