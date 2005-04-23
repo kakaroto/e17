@@ -363,12 +363,20 @@ WarplistInit(void)
  */
 
 static void
+WarplistCfgValidate(void)
+{
+   if (Conf.warplist.icon_mode < 0 || Conf.warplist.icon_mode > 3)
+      Conf.warplist.icon_mode = 3;
+}
+
+static void
 WarplistSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
      case ESIGNAL_INIT:
 	WarplistInit();
+	WarplistCfgValidate();
 	break;
      }
 }
