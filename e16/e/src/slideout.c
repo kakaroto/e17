@@ -53,7 +53,6 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
 	h = ((fh * (1024 - k)) + (th * k)) >> 10;
 	EMoveResizeWindow(win, x, y, w, h);
-	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }

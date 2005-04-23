@@ -1920,46 +1920,6 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	EwinEventVisibility(ewin, ev->xvisibility.state);
 	break;
 
-#if 0				/* FIXME - Remove? */
-     case DestroyNotify:
-	EwinEventDestroy(ewin);
-	break;
-     case UnmapNotify:
-#if 0
-	if (ewin->state == EWIN_STATE_NEW)
-	  {
-	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
-		     ewin->client.win);
-	     break;
-	  }
-#endif
-	EwinEventUnmap(ewin);
-	break;
-     case MapNotify:
-	EwinEventMap(ewin);
-	break;
-     case ReparentNotify:
-	/* Check if window parent hasn't changed already (compress?) */
-	if (WinGetParent(ev->xreparent.window) != ev->xreparent.parent)
-	   break;
-	if (ev->xreparent.parent == VRoot.win)
-	   EwinEventDestroy(ewin);
-	break;
-#endif
-
-#if 0
-     case ConfigureRequest:
-	if (ev->xconfigurerequest.window == ewin->client.win)
-	   EwinEventConfigureRequest(ewin, ev);
-	break;
-     case ResizeRequest:
-	if (ev->xresizerequest.window == ewin->client.win)
-	   EwinEventResizeRequest(ewin, ev);
-	break;
-     case CirculateRequest:
-	EwinEventCirculateRequest(ewin, ev);
-	break;
-#endif
      case PropertyNotify:
 	EwinEventPropertyNotify(ewin, ev);
 	break;

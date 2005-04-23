@@ -111,13 +111,12 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	tmpx = x;
 	tmpy = y;
 	if (Conf.slidemode == 0)
-	   EMoveWindow(EoGetWin(ewin), tmpx, tmpy);
+	   EoMove(ewin, tmpx, tmpy);
 	else
 	   DrawEwinShape(ewin, Conf.slidemode, tmpx, tmpy,
 			 ewin->client.w, ewin->client.h, firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
-	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
@@ -166,12 +165,11 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	     tmpw = ewin[i]->client.w;
 	     tmph = ewin[i]->client.h;
 	     if (ewin[i]->type == EWIN_TYPE_MENU)
-		EMoveWindow(EoGetWin(ewin[i]), tmpx, tmpy);
+		EoMove(ewin[i], tmpx, tmpy);
 	     else
 		DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
 	     if (firstlast == 0)
 		firstlast = 1;
-	     ecore_x_sync();
 	  }
 	/* We may loop faster here than originally intended */
 	k = ETimedLoopNext();

@@ -138,7 +138,6 @@ StartupWindowsOpen(void)
 
 	EobjMove(init_win1, -x - xOffset, -y - yOffset);
 	EobjMove(init_win2, x + xOffset, y + yOffset);
-	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }

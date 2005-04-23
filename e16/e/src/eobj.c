@@ -385,7 +385,6 @@ EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
 	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	EobjMove(eo, x, y);
-	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
@@ -425,7 +424,6 @@ EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
 	     EobjMove(peo[i], x, y);
 	  }
-	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }

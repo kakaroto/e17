@@ -1120,13 +1120,7 @@ BackgroundsConfigLoadUser(void)
    char                s[4096];
 
    Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
-   if (ConfigFileLoad(s, NULL, ConfigFileRead, 0))
-     {
-	/* FIXME - Keep around a bit, and then remove */
-	Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
-	Eprintf("Fallback - loading %s\n", s);
-	ConfigFileLoad(s, NULL, ConfigFileRead, 0);
-     }
+   ConfigFileLoad(s, NULL, ConfigFileRead, 0);
 }
 
 static void
