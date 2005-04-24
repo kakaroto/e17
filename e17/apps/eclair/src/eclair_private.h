@@ -91,6 +91,7 @@ struct _Eclair
    pthread_mutex_t meta_tag_mutex;
    pthread_cond_t meta_tag_cond;
    pthread_t meta_tag_thread;
+   Evas_Bool meta_tag_delete_thread;
    
    Eclair_State state;
    Eclair_Playlist playlist;

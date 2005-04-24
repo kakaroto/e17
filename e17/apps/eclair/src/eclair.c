@@ -43,6 +43,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->gui_engine = ECLAIR_SOFTWARE;
    eclair->meta_tag_files_to_scan = NULL;
+   eclair->meta_tag_delete_thread = 0;
 
    if (!eclair_args_parse(eclair, *argc, argv, &filenames))
       return 0;
@@ -61,8 +62,9 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
       eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
    evas_list_free(filenames);
 
-   //TODO
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", emotion_object_audio_volume_get(eclair->video_object), 0);
+
+   ecore_evas_show(eclair->gui_window);
 
    return 1;
 }
@@ -74,6 +76,9 @@ void eclair_shutdown(Eclair *eclair)
    {
       eclair_playlist_empty(&eclair->playlist);
       eclair_subtitles_free(&eclair->subtitles);
+
+      eclair->meta_tag_delete_thread = 1;
+      pthread_cond_broadcast(&eclair->meta_tag_cond);      
    }
 
    ecore_main_loop_quit();
@@ -282,8 +287,6 @@ void eclair_play_file(Eclair *eclair, const char *path)
    if (!eclair->video_window || !eclair->video_object)
       return;
 
-   ecore_evas_show(eclair->video_window);
-
    emotion_object_file_set(eclair->video_object, path);
    emotion_object_play_set(eclair->video_object, 0);
    eclair_progress_rate_set(eclair, 0.0);
@@ -292,9 +295,15 @@ void eclair_play_file(Eclair *eclair, const char *path)
 
    eclair_subtitles_load_from_media_file(&eclair->subtitles, path);
 
-   emotion_object_size_get(eclair->video_object, &video_width, &video_height);
-   ecore_evas_resize(eclair->video_window, video_width, video_height);
-   eclair_video_window_resize_cb(eclair->video_window);
+   if (emotion_object_video_handled_get(eclair->video_object))
+   {
+      ecore_evas_show(eclair->video_window);
+      emotion_object_size_get(eclair->video_object, &video_width, &video_height);
+      ecore_evas_resize(eclair->video_window, video_width, video_height);
+      eclair_video_window_resize_cb(eclair->video_window);
+   }
+   else
+      ecore_evas_hide(eclair->video_window);
 }
 
 //Play the active file from the playlist
@@ -401,49 +410,59 @@ void *_eclair_meta_tag_thread(void *param)
 
    pthread_mutex_lock(&eclair->meta_tag_mutex);
 
-   //TODO: delete thread, counter?
    for (;;)
    {
       pthread_cond_wait(&eclair->meta_tag_cond, &eclair->meta_tag_mutex);
-      for (l = eclair->meta_tag_files_to_scan; l; l = next)
+      while (eclair->meta_tag_files_to_scan || eclair->meta_tag_delete_thread)
       {
-         next = l->next;
-         if ((current_file = (Eclair_Playlist_Media_File *)l->data))
+         for (l = eclair->meta_tag_files_to_scan; l; l = next)
          {
-            TagLib_File *tag_file;
-            TagLib_Tag *tag;
-            const TagLib_AudioProperties *tag_audio_props;
+            next = l->next;
+            current_file = (Eclair_Playlist_Media_File *)evas_list_data(l);
+            eclair->meta_tag_files_to_scan = evas_list_remove_list(eclair->meta_tag_files_to_scan, l);
 
-            if (!current_file->path)
-               continue;
-            if (!(tag_file = taglib_file_new(current_file->path)))
-               continue;
-            if (!(tag = taglib_file_tag(tag_file)))
+            if (current_file)
             {
+               TagLib_File *tag_file;
+               TagLib_Tag *tag;
+               const TagLib_AudioProperties *tag_audio_props;
+   
+               if (!current_file->path)
+                  continue;
+               if (!(tag_file = taglib_file_new(current_file->path)))
+                  continue;
+               if (!(tag = taglib_file_tag(tag_file)))
+               {
+                  taglib_file_free(tag_file);
+                  continue;
+               }
+               current_file->artist = strdup(taglib_tag_artist(tag));
+               current_file->title = strdup(taglib_tag_title(tag));
+               current_file->album = strdup(taglib_tag_album(tag));
+               current_file->genre = strdup(taglib_tag_genre(tag));
+               current_file->comment = strdup(taglib_tag_comment(tag));
+               current_file->year = taglib_tag_year(tag);
+               current_file->track = taglib_tag_track(tag);
+   
+               if (!(tag_audio_props = taglib_file_audioproperties(tag_file)))
+               {
+                  taglib_file_free(tag_file);
+                  continue;
+               }
+               current_file->length = taglib_audioproperties_length(tag_audio_props);
+     
+               eclair_playlist_media_file_entry_update(current_file, eclair);
                taglib_file_free(tag_file);
-               continue;
             }
-            current_file->artist = strdup(taglib_tag_artist(tag));
-            current_file->title = strdup(taglib_tag_title(tag));
-            current_file->album = strdup(taglib_tag_album(tag));
-            current_file->genre = strdup(taglib_tag_genre(tag));
-            current_file->comment = strdup(taglib_tag_comment(tag));
-            current_file->year = taglib_tag_year(tag);
-            current_file->track = taglib_tag_track(tag);
-
-            if (!(tag_audio_props = taglib_file_audioproperties(tag_file)))
-            {
-               taglib_file_free(tag_file);
-               continue;
-            }
-            current_file->length = taglib_audioproperties_length(tag_audio_props);
-
-            taglib_file_free(tag_file);
-
-            eclair_playlist_media_file_entry_update(current_file);
+            taglib_tag_free_strings();
          }
-         eclair->meta_tag_files_to_scan = evas_list_remove_list(eclair->meta_tag_files_to_scan, l);
-         taglib_tag_free_strings();
+
+         if (eclair->meta_tag_delete_thread)
+         {
+            eclair->meta_tag_files_to_scan = evas_list_free(eclair->meta_tag_files_to_scan);
+            eclair->meta_tag_delete_thread = 0;
+            return NULL;
+         }
       }
    }
 
@@ -467,6 +486,7 @@ static void _eclair_gui_create_window(Eclair *eclair)
    ecore_evas_name_class_set(eclair->gui_window, "eclair", "eclair");
    ecore_evas_borderless_set(eclair->gui_window, 1);
    ecore_evas_shaped_set(eclair->gui_window, 1);
+   ecore_evas_hide(eclair->gui_window);
 
    evas = ecore_evas_get(eclair->gui_window);
    eclair->gui_object = edje_object_add(evas);
@@ -485,7 +505,7 @@ static void _eclair_gui_create_window(Eclair *eclair)
 
    if (edje_object_part_exists(eclair->gui_object, "playlist_container"))
    {
-      eclair->playlist_container = esmart_container_new(evas_object_evas_get(eclair->gui_object)); 
+      eclair->playlist_container = esmart_container_new(evas); 
       esmart_container_direction_set(eclair->playlist_container, CONTAINER_DIRECTION_VERTICAL);
       esmart_container_fill_policy_set(eclair->playlist_container, CONTAINER_FILL_POLICY_FILL_X);
       esmart_container_spacing_set(eclair->playlist_container, 0);
@@ -506,10 +526,12 @@ static void _eclair_gui_create_window(Eclair *eclair)
    edje_object_signal_callback_add(eclair->gui_object, "eclair_prev", "*", eclair_gui_prev_cb, eclair);  
    edje_object_signal_callback_add(eclair->gui_object, "eclair_next", "*", eclair_gui_next_cb, eclair);  
    edje_object_signal_callback_add(eclair->gui_object, "drag,stop", "progress_bar_drag", eclair_gui_progress_bar_drag_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "drag", "playlist_scrollbar_button", eclair_gui_playlist_scrollbar_button_drag_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "drag", "volume_bar_drag", eclair_gui_volume_bar_cb, eclair);
-
-   ecore_evas_show(eclair->gui_window);
+   edje_object_signal_callback_add(eclair->gui_object, "drag", "playlist_scrollbar_button", eclair_gui_playlist_scrollbar_button_drag_cb, eclair);
+   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_start", "", eclair_gui_playlist_scroll_cb, eclair);
+   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_stop", "", eclair_gui_playlist_scroll_cb, eclair);
+   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_start", "", eclair_gui_playlist_scroll_cb, eclair);
+   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_stop", "", eclair_gui_playlist_scroll_cb, eclair);
 }
 
 //Create the video window and object
@@ -549,7 +571,8 @@ static void _eclair_video_create_window(Eclair *eclair)
    evas_object_focus_set(eclair->video_object, 1);
    evas_object_event_callback_add(eclair->video_object, EVAS_CALLBACK_KEY_DOWN, eclair_key_press_cb, eclair);
    evas_object_smart_callback_add(eclair->video_object, "frame_decode", eclair_video_frame_decode_cb, eclair);
-   evas_object_smart_callback_add(eclair->video_object, "playback_finished", eclair_video_playback_finished_cb, eclair);   
+   evas_object_smart_callback_add(eclair->video_object, "playback_finished", eclair_video_playback_finished_cb, eclair);
+   evas_object_smart_callback_add(eclair->video_object, "audio_level_change", eclair_video_audio_level_change_cb, eclair);
 }
 
 int main(int argc, char *argv[])

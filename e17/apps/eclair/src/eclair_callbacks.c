@@ -24,6 +24,19 @@ void eclair_video_playback_finished_cb(void *data, Evas_Object *obj, void *event
    eclair_play_next((Eclair *)data);
 }
 
+//Called when the audio volume is changed by an external application
+void eclair_video_audio_level_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Eclair *eclair = (Eclair *)data;
+
+   if (!eclair)
+      return;
+   if (!eclair->gui_object || !eclair->video_object)
+      return;
+
+   edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", emotion_object_audio_volume_get(eclair->video_object), 0);
+}
+
 //Called when the video window is resized:
 //Resize the video object and the black background object
 void eclair_video_window_resize_cb(Ecore_Evas *window)
@@ -257,6 +270,22 @@ void eclair_gui_playlist_scrollbar_button_drag_cb(void *data, Evas_Object *edje_
 
    edje_object_part_drag_value_get(eclair->gui_object, "playlist_scrollbar_button", NULL, &y);
    eclair_playlist_container_scroll_percent_set(eclair, y);
+}
+
+//Called when the user wants to scroll the playlist
+void eclair_gui_playlist_scroll_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair *eclair = (Eclair *)data;
+
+   if (!eclair->playlist_container)
+      return;
+
+   if (strcmp(emission, "playlist_scroll_down_start") == 0)
+      esmart_container_scroll_start(eclair->playlist_container, -1.0);
+   else if (strcmp(emission, "playlist_scroll_up_start") == 0)
+      esmart_container_scroll_start(eclair->playlist_container, 1.0);
+   else
+      esmart_container_scroll_stop(eclair->playlist_container);
 }
 
 //Called when user uses wheel mouse over playlist container

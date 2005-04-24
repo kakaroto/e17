@@ -27,14 +27,26 @@ program {
    target: "playlist_shadow";
 }
 program {
-   name: "playlist_wheel_down";
-   source: "playlist_rect";
-   signal: "mouse,wheel,0,1";
-   action: SIGNAL_EMIT "playlist_scroll_down" "";
+   name: "playlist_scroll_down_start";
+   source: "playlist_scrollbar_down";
+   signal: "mouse,down,1";
+   action: SIGNAL_EMIT "playlist_scroll_down_start" "";
 }
 program {
-   name: "playlist_wheel_up";
-   source: "playlist_rect";
-   signal: "mouse,wheel,0,-1";
-   action: SIGNAL_EMIT "playlist_scroll_up" "";
+   name: "playlist_scroll_down_stop";
+   source: "playlist_scrollbar_down";
+   signal: "mouse,up,1";
+   action: SIGNAL_EMIT "playlist_scroll_down_stop" "";
+}
+program {
+   name: "playlist_scroll_up_start";
+   source: "playlist_scrollbar_up";
+   signal: "mouse,down,1";
+   action: SIGNAL_EMIT "playlist_scroll_up_start" "";
+}
+program {
+   name: "playlist_scroll_up_stop";
+   source: "playlist_scrollbar_up";
+   signal: "mouse,up,1";
+   action: SIGNAL_EMIT "playlist_scroll_up_stop" "";
 }

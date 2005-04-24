@@ -31,12 +31,13 @@ group {
             }
             rel2 {
                relative: 1 1;
+               offset: -30 0;
                to: playlist_entry_length;
             }
             text {
                text: "Filename";
                font: "Edje Vera";
-               size: 11;
+               size: 10;
                align: 0 0.4;
             }
          }
@@ -58,7 +59,7 @@ group {
             text {
                text: "0:00";
                font: "Edje Vera";
-               size: 11;
+               size: 10;
                align: 1 0.4;
             }
          }

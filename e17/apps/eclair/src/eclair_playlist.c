@@ -51,7 +51,7 @@ void eclair_playlist_media_file_free(Eclair_Playlist_Media_File *media_file)
 }
 
 //Update the entry of the media file in the playlist with tag infos
-void eclair_playlist_media_file_entry_update(Eclair_Playlist_Media_File *media_file)
+void eclair_playlist_media_file_entry_update(Eclair_Playlist_Media_File *media_file, Eclair *eclair)
 {
    char length[10] = "";
    char *artist_title_string;
@@ -76,9 +76,15 @@ void eclair_playlist_media_file_entry_update(Eclair_Playlist_Media_File *media_f
       free(artist_title_string);
    }
    else if ((filename = eclair_utils_path_to_filename(media_file->path)))
-      edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_length", filename);
+      edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_name", filename);
    else
-      edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_length", "Media");
+      edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_name", "Media");
+
+   if (!eclair)
+      return;
+
+   if (media_file == evas_list_data(eclair->playlist.current))
+      eclair_current_file_set(eclair, media_file);
 }
 
 //Return the active media file
@@ -125,8 +131,8 @@ Eclair_Playlist_Media_File *eclair_playlist_add_media_file(Eclair_Playlist *play
       {
          new_media_file->playlist_entry = edje_object_add(evas_object_evas_get(eclair->playlist_container));
          edje_object_file_set(new_media_file->playlist_entry, PACKAGE_DATA_DIR "/themes/default.edj", "eclair_playlist_entry");
-         //TODO: useless?
          evas_object_data_set(new_media_file->playlist_entry, "media_file", new_media_file);
+         evas_object_data_set(new_media_file->playlist_entry, "media_filen", new_media_file->path);
          if (eclair->playlist_entry_height <= 0)
          {
             edje_object_size_min_get(new_media_file->playlist_entry, NULL, &min_height);
@@ -147,7 +153,7 @@ Eclair_Playlist_Media_File *eclair_playlist_add_media_file(Eclair_Playlist *play
    playlist->playlist = evas_list_append(playlist->playlist, new_media_file);
    if (!playlist->current)
       eclair_playlist_current_set_list(playlist, playlist->playlist);
-   
+
    return (Eclair_Playlist_Media_File *)evas_list_data(playlist->playlist->last);   
 }
 

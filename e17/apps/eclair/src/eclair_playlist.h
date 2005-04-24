@@ -6,7 +6,7 @@
 void eclair_playlist_init(Eclair *eclair, Eclair_Playlist *playlist);
 void eclair_playlist_empty(Eclair_Playlist *playlist);
 void eclair_playlist_media_file_free(Eclair_Playlist_Media_File *media_file);
-void eclair_playlist_media_file_entry_update(Eclair_Playlist_Media_File *media_file);
+void eclair_playlist_media_file_entry_update(Eclair_Playlist_Media_File *media_file, Eclair *eclair);
 
 Eclair_Playlist_Media_File *eclair_playlist_current_media_file(Eclair_Playlist *playlist);
 Eclair_Playlist_Media_File *eclair_playlist_prev_media_file(Eclair_Playlist *playlist);
