@@ -792,7 +792,7 @@ static void
 canon_custom(struct exifprop *prop, char *off, enum order o,
     struct ccstm *table)
 {
-	int i, j;
+	int i, j = -1;
 	const char *cn;
 	char *cv = NULL;
 	u_int16_t v;
