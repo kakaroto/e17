@@ -1,0 +1,331 @@
+#!/usr/bin/ruby -w
+
+# $Id$
+
+require "ecore"
+require "ecore_x"
+require "ecore_evas"
+require "edje"
+require "esmart"
+require "esmart_draggies"
+require "esmart_container"
+require "xmmsclient"
+require "singleton"
+
+require "euphoria/playlist"
+require "euphoria/playlist_item"
+require "euphoria/slider"
+require "euphoria/playtime_updater"
+require "euphoria/playback_status_handler"
+
+class Euphoria
+	DATA_DIR = "/usr/local/share/euphoria"
+
+	include Singleton
+
+	attr_reader :xmms, :edje
+
+	def initialize
+		@edje = nil
+		@xmms = nil
+
+		# settings
+		@time_display_elapsed = true
+		@theme_name = "multipass"
+
+		init_xmms
+		init_gui
+
+		@playlist = Playlist.new(@xmms)
+
+		setup_callbacks
+
+		@playtime_updater = PlaytimeUpdater.new(xmms) do |current_pos|
+			ui_refresh_time(current_pos)
+
+			# refresh the seeker
+			if !@playlist.current_item.nil?
+				d = @playlist.current_item.duration
+				if d > 0
+					ui_refresh_seeker(current_pos / d.to_f)
+				end
+			end
+		end
+
+		PlaybackStatusHandler.new(xmms) do |state|
+			@playback_state = state
+
+			signal_playback_state
+			@playtime_updater.enabled =
+				(@playback_state == XmmsClient::XmmsClient::PLAY)
+		end
+
+		# is repeat enabled?
+		s = @xmms.configval_get("playlist.repeat_all").wait.string
+		@repeat = (s == "1")
+		@edje.emit_signal("TOGGLE_REPEAT_MODE", "Euphoria") if @repeat
+
+		@sliders = {}
+
+		unless @edje.data("has_volume_slider").nil?
+			p = "player.slider.volume"
+			k = "output.volume"
+			@sliders[k] = VolumeSlider.new(@edje, @xmms, p, k)
+		end
+
+		unless @edje.data("has_eq_slider").nil?
+			1.upto(10) do |i|
+				p = "player.slider.eq.band%02i" % i
+				k = "effect.equalizer.gain#{i - 1}"
+				@sliders[k] = EqSlider.new(@edje, @xmms, p, k)
+			end
+		end
+
+		handle_current_pos(@xmms.playlist_current_pos.wait)
+	end
+
+private
+	def init_gui
+		@ee = Ecore::Evas::SoftwareX11.new
+		@ee.title = "Euphoria"
+		@ee.borderless = true
+
+		#@ee.evas.font_path_append("/usr/X11R6/lib/X11/fonts/TTF")
+		#@ee.evas.font_path_append(ENV["HOME"] + "/.fonts")
+
+		@ee.on_pre_render { Edje::thaw }
+		@ee.on_post_render { Edje::freeze }
+
+		@ee.on_resize do
+			x, y, w, h = @ee.geometry
+
+			@edje.resize(w, h)
+			@dragger.resize(w, h)
+		end
+
+		@dragger = Esmart::Draggies.new(@ee)
+		@dragger.name = "dragger"
+		@dragger.button = 1
+		@dragger.show
+
+		@theme = find_theme(@theme_name)
+		raise "Cannot find theme - #{edj}" if @theme.nil?
+
+		@edje = Edje::Edje.new(@ee.evas)
+		@edje.load(@theme, "euphoria")
+		@edje.name = "edje"
+		@edje.show
+
+		w, h = @edje.get_size_max
+		@ee.set_size_max(w, h)
+
+		w, h = @edje.get_size_min
+		@ee.set_size_min(w, h)
+
+		@ee.resize(w, h)
+		@ee.show
+
+		@ee.shaped = !@edje.data("shaped").nil?
+
+		ui_refresh_seeker(0)
+	end
+
+	def init_xmms
+		@xmms = XmmsClient::XmmsClient.new
+
+		raise "xmms2d not running" unless @xmms.connect("Euphoria")
+		@xmms.setup_with_ecore
+	end
+
+	def setup_callbacks
+		@edje.on_signal("quit") do
+			Ecore::main_loop_quit
+		end
+
+		@edje.on_signal("close") do
+			Ecore::main_loop_quit
+		end
+
+		@edje.on_signal("playback.play") do
+			case @playback_state
+				when XmmsClient::XmmsClient::PLAY
+					@xmms.playback_stop.wait
+					sleep(0.5) # evil hack, fix xmms2d instead
+					@xmms.playback_start.wait
+				else
+					@xmms.playback_start.wait
+			end
+		end
+
+		@edje.on_signal("playback.stop") do
+			@xmms.playback_stop.wait
+		end
+
+		@edje.on_signal("playback.pause") do
+			case @playback_state
+				when XmmsClient::XmmsClient::PLAY
+					@xmms.playback_pause.wait
+				when XmmsClient::XmmsClient::PAUSE
+					@xmms.playback_start.wait
+			end
+		end
+
+		@edje.on_signal("playback.next") do
+			@xmms.playlist_set_next_rel(1).wait
+			@xmms.playback_tickle.wait
+
+			if @playback_state != XmmsClient::XmmsClient::PLAY
+				@xmms.playback_start.wait
+			end
+		end
+
+		@edje.on_signal("playback.prev") do
+			@xmms.playlist_set_next_rel(-1).wait
+			@xmms.playback_tickle.wait
+
+			if @playback_state != XmmsClient::XmmsClient::PLAY
+				@xmms.playback_start.wait
+			end
+		end
+
+		@edje.on_signal("TOGGLE_TIME_DISPLAY_MODE") do
+			@time_display_elapsed = !@time_display_elapsed
+		end
+
+		@edje.on_signal("DEBUG") do |sig, source|
+			puts source
+		end
+
+		@edje.on_signal("playlist.open") { @playlist.show(@theme) }
+
+		@edje.on_signal("TOGGLE_REPEAT_MODE") do |sig, source|
+			# don't react on our own emission
+			next if source == "Euphoria"
+
+			@repeat = !@repeat
+
+			v = @repeat ? "1" : "0"
+			@xmms.configval_set("playlist.repeat_all", v).wait
+		end
+
+		@xmms.broadcast_configval_changed.notifier do |res|
+			k, v = res.stringlist
+
+			case k
+				when "playlist.repeat_all"
+					tmp = (v == "1")
+					if tmp != @repeat
+						@repeat = tmp
+						@edje.emit_signal("TOGGLE_REPEAT_MODE", "Euphoria")
+					end
+				when "output.volume"
+					@sliders[k].value = v
+				when /effect\.equalizer\.gain(\d+)/
+					@sliders[k].value = v.to_f
+			end
+		end
+
+		@xmms.playlist_list.notifier do |res|
+			res.value.each do |id|
+				@playlist << id
+			end
+		end
+
+		@xmms.broadcast_playlist_changed.notifier do |res|
+			type, id, arg = res.playlist_change
+
+			case type
+				when XmmsClient::Result::PLAYLIST_CHANGED_ADD
+					@playlist << id
+				when XmmsClient::Result::PLAYLIST_CHANGED_REMOVE
+					# the daemon sends the position of the song, not the
+					# unique mlib id
+					@playlist.delete(@playlist[id])
+				when XmmsClient::Result::PLAYLIST_CHANGED_CLEAR
+					@playlist.clear
+			end
+		end
+
+		@xmms.broadcast_playlist_current_pos.notifier do |res|
+			handle_current_pos(res)
+		end
+
+=begin
+		@xmms.broadcast_medialib_entry_changed.notifier do |res|
+			@xmms.medialib_get_info(res.uint).notifier do |res2|
+				on_mlib_info(res2)
+			end
+		end
+=end
+	end
+
+=begin
+	def on_mlib_info(res)
+		props = res.value
+
+		id = props[:id].to_i
+
+		item = @playlist[id]
+		unless item.nil?
+			item.properties = props
+
+			# hack: if this item is current item,
+			#       refresh the edje parts
+			if item == @playlist.current_item
+				ui_fill_track_info(item)
+			end
+		end
+	end
+=end
+
+	def handle_current_pos(res)
+		ui_fill_track_info(@playlist[res.value])
+	end
+
+	def ui_fill_track_info(item)
+		buf = "%s - %s" % [item.artist, item.title]
+		@edje.send_message(Edje::StringMessage.new(buf))
+	end
+
+	def ui_refresh_time(time)
+		return unless @edje.part_exists?("player.time")
+
+		fmt = "%i:%02i"
+
+		unless @time_display_elapsed
+			time = @playlist.current_item.duration - time
+			fmt = "-" + fmt
+		end
+
+		tmp = fmt % [time / 60, time % 60]
+		@edje.part("player.time").text = tmp
+	end
+
+	def ui_refresh_seeker(pos)
+		if @edje.part_exists?("seeker")
+			@edje.part("seeker").set_drag_value(pos, 0.1)
+			#@edje.thaw
+			#@edje.evas.render
+		end
+	end
+
+	def signal_playback_state
+		case @playback_state
+			when XmmsClient::XmmsClient::PAUSE
+				sig = "PLAYBACK_STATE_PAUSED"
+			when XmmsClient::XmmsClient::PLAY
+				sig = "PLAYBACK_STATE_PLAYING"
+			else
+				sig = "PLAYBACK_STATE_STOPPED"
+		end
+
+		@edje.emit_signal(sig, "Euphoria")
+	end
+
+	def find_theme(name)
+		DATA_DIR + "/themes/#{name}.edj"
+	end
+end
+
+$x = Euphoria.instance
+Ecore::main_loop_begin
