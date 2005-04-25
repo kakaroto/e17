@@ -356,10 +356,10 @@ void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 					    EWL_CALLBACK_REALIZE,
 					    ewl_window_realize_transient_cb,
 					    win);
-#endif
 	}
 	else if (REALIZED(win)) {
 		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
+#endif
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
