@@ -81,8 +81,7 @@ AC_PATH_PROG(TAGLIB_CONFIG, $PROG, "", $PATH)
 if [ test -z $TAGLIB_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 taglib_libs=`$TAGLIB_CONFIG --libs`
 taglib_cflags=`$TAGLIB_CONFIG --cflags`
@@ -96,8 +95,7 @@ AC_PATH_PROG(PKG_CONFIG, $PROG, "", $PATH)
 if [ test -z $PKG_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 AC_SUBST(PKG_CONFIG)
 
@@ -112,8 +110,7 @@ AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
 if [ test -z $EVAS_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 evas_libs=`$EVAS_CONFIG --libs`
 evas_cflags=`$EVAS_CONFIG --cflags`
@@ -125,8 +122,7 @@ AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
 if [ test -z $ECORE_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 ecore_libs=`$ECORE_CONFIG --libs`
 ecore_cflags=`$ECORE_CONFIG --cflags`
@@ -138,8 +134,7 @@ AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
 if [ test -z $EDJE_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 edje_libs=`$EDJE_CONFIG --libs`
 edje_cflags=`$EDJE_CONFIG --cflags`
@@ -151,8 +146,7 @@ AC_PATH_PROG(EMOTION_CONFIG, $PROG, "", $PATH)
 if [ test -z $EMOTION_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 emotion_libs=`$EMOTION_CONFIG --libs`
 emotion_cflags=`$EMOTION_CONFIG --cflags`
@@ -164,8 +158,7 @@ AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
 if [ test -z $ESMART_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 esmart_libs=`$ESMART_CONFIG --libs`
 esmart_cflags=`$ESMART_CONFIG --cflags`
