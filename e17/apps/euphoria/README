@@ -2,7 +2,7 @@ $Id$
 
 Euphoria v0.8.0
 
-Written by Ben Rockwood, Tilman Sauerbeck and various contributors.
+Written by Tilman Sauerbeck and various contributors.
 See AUTHORS for details/the complete list.
 
 
@@ -11,11 +11,13 @@ DEPENDENCIES
 
 Euphoria requires the following:
 
-EVAS CVS
-Ecore CVS with EVAS module
-Edje CVS
-Esmart CVS
-XMMS2 BK
+Evas
+Ecore
+Edje
+Esmart
+XMMS2
+Ruby-EFL
+Rake
 
 
 ABOUT
@@ -27,44 +29,13 @@ It acts as a frontend to XMMS2.
 INSTALLATION OF EUPHORIA & XMMS2
 --------------------------------
  
-To use build Euphoria you will need to first install XMMS2,
-to do so:
-1) Get the XMMS2 code from BitKeeper:
-	$ bk clone bk://genesis.xmms.se:5555/xmms2 
-2) Configure XMMS2. In the xmms2 top source directory run
-	the command: scons
-3) Build XMMS2. In the same directory run "scons" again.
-4) Install XMMS2.  In the same directory after the source
-	finished building use the command (probly as root):
-	# scons /usr/local
-	This assumes that you want to install in /usr/local,
-	change the patch accordingly.
-5) You must manually install the headers, do this by
-	copying the src/include/xmms and src/include/internal
-	directories to the proper header location (probly /usr/local/include)
-6) Done.  XMMS2 is ready to fly, start the daemon via "xmms2d"
-	and use the CLI interface with the "xmms2" command.
+To use build Euphoria you will need to first install XMMS2.
+See http://wiki.xmms2.xmms.se for instructions.
 
-Now you can build Euphoria.  Before you start make sure your
-EFL installation is current (Gentoo users only get updated
-every week, that may not be current enough).  If you have problems
-it is likely due to old EFL installs, remember this is live
-development code so even an hour can be too old.  Assuming
-everything has been done properly as outlined above Euphoria
-should build like you expect it to:
-1) Bootstrap the build enviroment using the command "./autogen.sh"
-2) Configure the build enviroment using "./configure".  Make sure
-	you look at the avalible build options ala "./configure --help"
-3) Build Euphoria ala "make".
-4) Install Euphoria ala "make install" as root most likely.
-	Note that Euphoria will not function if it is not installed.
-
+Now install Euphoria by running "rake install".
 
 At this point your ready to rock.  Start Euphoria but make sure
-the XMMS2 Daemon is running (start via: "xmms2d").  You may want
-to install the Euphoria config database by following the instructions
-in the following section (there is a sample/default euphoria.db in the etc/
-directory).
+the XMMS2 Daemon is running (start via: "xmms2d").
 
 RUNNING EUPHORIA
 ----------------
