@@ -235,6 +235,7 @@ SetCurrentArea(int ax, int ay)
 	     EobjsSlideBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
 	     Efree(wl);
 	  }
+	dx = dy = 0;
      }
 
    /* move all windows to their final positions */
@@ -250,7 +251,7 @@ SetCurrentArea(int ax, int ay)
 	   continue;
 
 	if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
-	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
      }
    Mode.move.check = 1;
 
