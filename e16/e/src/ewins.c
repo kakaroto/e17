@@ -182,8 +182,6 @@ EwinDestroy(EWin * ewin)
    if (!EwinIsInternal(ewin))
       EUnregisterWindow(ewin->client.win);
 
-   HintsSetClientList();
-
    SnapshotEwinUnmatch(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_DESTROY, ewin);
@@ -201,6 +199,8 @@ EwinDestroy(EWin * ewin)
    EwinCleanup(ewin);
    EobjListFocusDel(&ewin->o);
    EobjFini(&ewin->o);
+
+   HintsSetClientList();
 
    if (ewin->icccm.wm_name)
       Efree(ewin->icccm.wm_name);
@@ -1087,7 +1087,7 @@ EwinEventUnmap(EWin * ewin)
 
    /* FIXME - This is to sync the client.win EXID mapped state */
    EUnmapWindow(ewin->client.win);
-   EUnmapWindow(EoGetWin(ewin));
+   EoUnmap(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 

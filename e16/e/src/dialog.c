@@ -178,6 +178,7 @@ typedef struct
 
 struct _dialog
 {
+   EWin               *ewin;
    char               *name;
    char               *title;
    char               *text;
@@ -538,6 +539,7 @@ DialogEwinInit(EWin * ewin, void *ptr)
    Dialog             *d = ptr;
 
    ewin->data = ptr;
+   d->ewin = ewin;
 
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Refresh = DialogEwinRefresh;
@@ -660,7 +662,7 @@ DialogClose(Dialog * d)
    if (d->exit_func)
       d->exit_func(d, d->exit_val, NULL);
 
-   EUnmapWindow(d->win);
+   HideEwin(d->ewin);
 }
 
 DItem              *

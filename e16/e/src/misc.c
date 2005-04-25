@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include <sys/time.h>
+#include <time.h>
 
 /* This is a general quicksort algorithm, using median-of-three strategy.
  * 
@@ -184,11 +185,15 @@ ETimedLoopNext(void)
 void
 Eprintf(const char *fmt, ...)
 {
+   static time_t       t0 = 0;
    va_list             args;
    struct timeval      tv;
 
+   if (t0 == 0)
+      t0 = time(NULL);
+
    gettimeofday(&tv, NULL);
-   fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec, tv.tv_usec);
+   fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec - t0, tv.tv_usec);
    va_start(args, fmt);
    vfprintf(stdout, fmt, args);
    va_end(args);

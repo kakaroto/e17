@@ -38,7 +38,6 @@ struct _pager
    int                 desktop;
    int                 w, h;
    int                 dw, dh;
-   char                visible;
    int                 update_phase;
    EWin               *ewin;
    Window              sel_win;
@@ -95,7 +94,6 @@ PagerCreate(void)
    p->pmap = ECreatePixmap(p->win, p->w, p->h, VRoot.depth);
    ESetWindowBackgroundPixmap(p->win, p->pmap);
    p->desktop = 0;
-   p->visible = 0;
    p->update_phase = 0;
    p->ewin = NULL;
    p->sel_win = ECreateWindow(p->win, 0, 0, p->w / ax, p->h / ay, 0);
@@ -161,6 +159,7 @@ static void
 PagerUpdateTimeout(int val __UNUSED__, void *data)
 {
    Pager              *p;
+   EWin               *ewin;
    char                s[4096];
    static double       last_time = 0.0;
    double              cur_time, in;
@@ -186,11 +185,12 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
       DoIn(s, in, PagerUpdateTimeout, 0, p);
    if (!Conf.pagers.snap)
       return;
-   if (!p->visible)
+   ewin = p->ewin;
+   if (!ewin || !EoIsShown(ewin))
       return;
    if (p->desktop != DesksGetCurrent())
       return;
-   if (p->ewin && p->ewin->visibility == VisibilityFullyObscured)
+   if (ewin->visibility == VisibilityFullyObscured)
       return;
    if (Mode.mode != MODE_NONE)
       return;
@@ -560,7 +560,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    p->dw = w / ax;
    p->dh = h / ay;
    p->pmap = ECreatePixmap(p->win, p->w, p->h, VRoot.depth);
-   if (p->visible)
+   if (EoIsShown(ewin))
       PagerRedraw(p, 1);
    ESetWindowBackgroundPixmap(p->win, p->pmap);
    EClearWindow(p->win);
@@ -667,7 +667,6 @@ PagerShow(Pager * p)
 	ewin->client.height.max = 240 * ay;
 
 	p->ewin = ewin;
-	p->visible = 1;
 
 	/* get the size right damnit! */
 	w = ewin->client.w;
@@ -974,7 +973,7 @@ PagerMenuShow(Pager * p, int x, int y)
 static void
 PagerClose(Pager * p)
 {
-   EUnmapWindow(p->win);
+   HideEwin(p->ewin);
 }
 
 static void
@@ -1946,9 +1945,9 @@ PagersShow(int enable)
      }
    else if (!enable && Conf.pagers.enable)
      {
-	Conf.pagers.enable = 0;
 	for (i = 0; i < Conf.desks.num; i++)
 	   PagersDisableForDesktop(i);
+	Conf.pagers.enable = 0;
      }
 }
 
