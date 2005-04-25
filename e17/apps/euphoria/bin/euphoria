@@ -278,7 +278,12 @@ private
 =end
 
 	def handle_current_pos(res)
-		ui_fill_track_info(@playlist[res.value])
+		begin
+			pos = res.uint
+		rescue XmmsClient::ValueError
+		else
+			ui_fill_track_info(@playlist[pos])
+		end
 	end
 
 	def ui_fill_track_info(item)
