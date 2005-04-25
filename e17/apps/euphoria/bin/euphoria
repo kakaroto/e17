@@ -131,9 +131,8 @@ private
 	end
 
 	def init_xmms
-		@xmms = XmmsClient::XmmsClient.new
-
-		raise "xmms2d not running" unless @xmms.connect("Euphoria")
+		@xmms = XmmsClient::XmmsClient.new("Euphoria")
+		@xmms.connect
 		@xmms.setup_with_ecore
 	end
 
