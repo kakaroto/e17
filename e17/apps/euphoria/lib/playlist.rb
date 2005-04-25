@@ -85,6 +85,12 @@ class Playlist < Array
 			@ee = nil
 		end
 
+		@edje.on_signal("drag", "playlist.scrollbar.handle") do
+			@container.scroll_percent =
+				@edje.part("playlist.scrollbar.handle").
+				get_drag_value.last
+		end
+
 		each { |i| i.show(eet, @container) }
 
 		current_item && current_item.hilight
