@@ -98,7 +98,7 @@ e_modapi_save (E_Module *m)
       l = l->next;
       l2 = l2->next;
    }
-   
+      
    e_config_domain_save("module.note", n->conf_edd, n->conf);   
    return 1;
 }
@@ -535,6 +535,7 @@ _note_face_init (Note_Face *face)
    
    face->gmc =  e_gadman_client_new(face->con->gadman);
    e_gadman_client_domain_set(face->gmc, "module.note.face", _note_count);
+   
    e_gadman_client_policy_set(face->gmc,
 			      E_GADMAN_POLICY_ANYWHERE |
 			      E_GADMAN_POLICY_HMOVE |
@@ -545,7 +546,7 @@ _note_face_init (Note_Face *face)
    e_gadman_client_max_size_set(face->gmc, 512, 512);
    e_gadman_client_auto_size_set(face->gmc, 320, 240);
    e_gadman_client_align_set(face->gmc, 0.0, 1.0);
-   e_gadman_client_resize(face->gmc, 40, 40);
+   e_gadman_client_resize(face->gmc, 256, 256);
    e_gadman_client_change_func_set(face->gmc, _note_face_cb_gmc_change, face);
    e_gadman_client_load(face->gmc);
    
@@ -619,7 +620,25 @@ _note_face_menu_del(void *data, E_Menu *m, E_Menu_Item *mi)
       Note_Face *f = l->data;
       if(f == face) {
 	 f->note->faces = evas_list_remove(f->note->faces, l->data);
+	 face->note->conf->faces = evas_list_remove(face->note->conf->faces, face->conf);
+	 e_config_save_queue();
 	 e_config_domain_save("module.note", f->note->conf_edd, f->note->conf);
+	 
+	 /* this is a fucked up attempt at defaulting gadman settings, change */	 
+	 e_gadman_client_policy_set(face->gmc,
+				    E_GADMAN_POLICY_ANYWHERE |
+				    E_GADMAN_POLICY_HMOVE |
+				    E_GADMAN_POLICY_VMOVE |
+				    E_GADMAN_POLICY_HSIZE |
+				    E_GADMAN_POLICY_VSIZE);
+	 e_gadman_client_min_size_set(face->gmc, 4, 4);
+	 e_gadman_client_max_size_set(face->gmc, 512, 512);
+	 e_gadman_client_auto_size_set(face->gmc, 320, 240);
+	 e_gadman_client_align_set(face->gmc, 0.0, 1.0);
+	 e_gadman_client_resize(face->gmc, 256, 256);
+	 e_gadman_client_change_func_set(face->gmc, _note_face_cb_gmc_change, face);
+	 e_gadman_client_save(face->gmc);
+	 
 	 break;
       }
       l = l->next;
@@ -630,9 +649,7 @@ _note_face_menu_del(void *data, E_Menu *m, E_Menu_Item *mi)
 static void
 _note_face_free(Note_Face *face)
 {   
-   //e_gadman_client_save(face->gmc);
-   e_object_del(E_OBJECT(face->gmc));
-   
+   e_object_del(E_OBJECT(face->gmc));   
    evas_object_del (face->note_object);
    evas_object_del (face->event_object);   
    _note_count--;
