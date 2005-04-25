@@ -1,0 +1,15 @@
+# $Id$
+
+require "rbconfig"
+
+sitelibdir = Config::CONFIG["sitelibdir"]
+destdir = "#{ENV["DESTDIR"]}"
+prefix = ENV["PREFIX"] || "/usr/local"
+
+task :install do |t|
+	ddir = destdir + prefix + "/bin"
+	FileUtils::Verbose.install("bin/euphoria", ddir, :mode => 0755)
+
+	ddir = destdir + sitelibdir + "/euphoria"
+	FileUtils::Verbose.install(Dir["lib/*.rb"], ddir, :mode => 0644)
+end
