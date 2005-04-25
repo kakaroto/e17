@@ -11,5 +11,6 @@ task :install do |t|
 	FileUtils::Verbose.install("bin/euphoria", ddir, :mode => 0755)
 
 	ddir = destdir + sitelibdir + "/euphoria"
+	FileUtils::Verbose.mkdir(ddir) unless File.directory?(ddir)
 	FileUtils::Verbose.install(Dir["lib/*.rb"], ddir, :mode => 0644)
 end
