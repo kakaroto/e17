@@ -58,11 +58,11 @@ const EModule      *p_modules[] = {
    &ModAclass,
    &ModBackgrounds,
    &ModButtons,
-   &ModDesktops,
 #if USE_COMPOSITE
    &ModCompMgr,
 #endif
    &ModCursors,
+   &ModDesktops,
    &ModEwins,
    &ModEffects,
    &ModFocus,

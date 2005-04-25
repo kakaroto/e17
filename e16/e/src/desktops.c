@@ -835,6 +835,9 @@ DeskRefresh(int desk)
       return;
 
    BackgroundApply(bg, EoGetWin(d), 1);
+#if USE_COMPOSITE
+   d->pmap = None;
+#endif
    HintsSetRootInfo(EoGetWin(d),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
 }
@@ -1054,6 +1057,9 @@ DeskMove(Desk * d, int x, int y)
    int                 i;
    EWin               *const *lst;
    int                 n, v, dx, dy;
+
+   if (d->num <= 0)
+      return;
 
    n = -1;
    i = 0;

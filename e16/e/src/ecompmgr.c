@@ -192,15 +192,20 @@ ERegionShow(const char *txt, XserverRegion rgn)
    XRectangle         *pr;
 
    pr = XFixesFetchRegion(disp, rgn, &nr);
-   if (!pr)
-      return;
+   if (!pr || nr <= 0)
+     {
+	Eprintf(" - region: %s %#lx is empty\n", txt, rgn);
+	goto done;
+     }
 
-   Eprintf("ERegionShow: %s %#lx:\n", txt, rgn);
+   Eprintf(" - region: %s %#lx:\n", txt, rgn);
    for (i = 0; i < nr; i++)
       Eprintf("%4d: %4d+%4d %4dx%4d\n", i, pr[i].x, pr[i].y, pr[i].width,
 	      pr[i].height);
 
-   XFree(pr);
+ done:
+   if (pr)
+      XFree(pr);
 }
 
 /*
@@ -302,11 +307,6 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
    XRenderComposite(disp, PictOpSrc, pict, None, cw->picture,
 		    0, 0, 0, 0, 0, 0, w, h);
    XRenderFreePicture(disp, pict);
-
-#if 0				/* FIXME - the screen update seems to be delayed? */
-   if (cw->extents != None)
-      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
-#endif
 }
 
 /*
@@ -323,8 +323,20 @@ DeskBackgroundPictureGet(Desk * d)
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
+   if (!cw)
+     {
+	ECompMgrWinNew(&d->o);
+	cw = d->o.cmhook;
+	if (!cw)
+	   return None;
+     }
+
    if (cw->picture != None)
-      return cw->picture;
+     {
+	if (d->pmap)
+	   return cw->picture;
+	XRenderFreePicture(disp, cw->picture);
+     }
 
    fill = False;
    pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
@@ -350,9 +362,12 @@ DeskBackgroundPictureGet(Desk * d)
 	XRenderFillRectangle(disp, PictOpSrc, pict, &c, 0, 0, 1, 1);
      }
 
+#if 0				/* FIXME - Not in window mode? */
    /* New background, all must be repainted */
    ECompMgrDamageAll();
+#endif
 
+   d->pmap = pmap;
    cw->picture = pict;
 
    return pict;
@@ -370,7 +385,7 @@ DeskBackgroundPictureFree(Desk * d)
 
    D1printf("DeskBackgroundPictureFree: Desk %d: pict=%#lx\n", d->num, pict);
 
-   XClearArea(disp, EoGetWin(d), 0, 0, 0, 0, True);
+   XClearArea(disp, EoGetWin(d), 0, 0, 0, 0, False);
    XRenderFreePicture(disp, pict);
 
    cw->picture = None;
@@ -778,6 +793,8 @@ border_size(EObj * eo)
    XFixesTranslateRegion(disp, border, x, y);
 
    D2printf("border_size %#lx: %d %d\n", eo->win, x, y);
+   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+      ERegionShow("borderSize", border);
 
    return border;
 }
@@ -853,7 +870,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 
    if ((what & (INV_GEOM | INV_SHADOW)) && cw->extents != None)
      {
-#if 0				/* FIXME - ??? */
+#if 0				/* FIXME - Not necessary? */
 	ECompMgrDamageMerge(cw->extents, 1);
 #else
 	XFixesDestroyRegion(dpy, cw->extents);
@@ -913,14 +930,17 @@ ECompMgrWinMap(EObj * eo)
 	   return;
      }
 
+   D1printf("ECompMgrWinMap %#lx\n", eo->win);
+
    cw->a.map_state = IsViewable;
    cw->visible = 1;
 
-   D1printf("ECompMgrWinMap %#lx\n", eo->win);
 #if CAN_DO_USABLE
    cw->damage_bounds.x = cw->damage_bounds.y = 0;
    cw->damage_bounds.width = cw->damage_bounds.height = 0;
 #endif
+   if (cw->extents == None)
+      cw->extents = win_extents(disp, eo);
    ECompMgrDamageMerge(eo->desk, cw->extents, 0);
 }
 
@@ -1081,7 +1101,7 @@ ECompMgrWinNew(EObj * eo)
    cw->shadow_height = 0;
 #endif
 
-#if 1
+#if 0				/* FIXME - Do we need this? */
    if (Conf_compmgr.mode == ECM_MODE_WINDOW)
       ESelectInputAdd(eo->win, StructureNotifyMask);
 #endif
@@ -1089,14 +1109,14 @@ ECompMgrWinNew(EObj * eo)
    cw->opacity = 0xdeadbeef;
    ECompMgrWinChangeOpacity(eo, eo->opacity);
 
-#if 1				/* FIXME - Do we need this? */
+#if 0				/* FIXME - Do we need this? */
    /* Find new window region */
    cw->extents = win_extents(disp, eo);
 #endif
 
    EventCallbackRegister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
-#if 0
+#if 0				/* FIXME - Not necessary? */
    if (cw->a.map_state == IsViewable)
       ECompMgrWinMap(eo, cw->damage_sequence - 1, False);
 #endif
@@ -1109,7 +1129,8 @@ ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h, int bw)
    XserverRegion       damage = None;
    int                 change_xy, change_wh, change_bw, invalidate;
 
-   D1printf("ECompMgrWinMoveResize %#lx %#lx\n", eo->win, cw->extents);
+   D1printf("ECompMgrWinMoveResize %#lx %#lx %d %d %d %d %d\n",
+	    eo->win, cw->extents, x, y, w, h, bw);
 
    /* Invalidate old window region */
 #if CAN_DO_USABLE
@@ -1121,7 +1142,7 @@ ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h, int bw)
 	   if (cw->extents != None)
 	      XFixesCopyRegion(disp, damage, cw->extents);
 	   if (EventDebug(EDBUG_TYPE_COMPMGR3))
-	      ERegionShow("ECompMgrWinConfigure old-extents:", damage);
+	      ERegionShow("old-extents:", damage);
 	}
 
    change_xy = cw->a.x != x || cw->a.y != y;
@@ -1152,26 +1173,35 @@ ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h, int bw)
 	   cw->extents = win_extents(disp, eo);
      }
 
+#if 0
    if (eo->shown)		/* FIXME - ??? */
      {
 	/* Hmmm. Why if not changed? */
 	/* Invalidate new window region */
 	XFixesUnionRegion(disp, damage, damage, cw->extents);
-	ECompMgrDamageMerge(eo->desk, damage, 1);
      }
+#endif
+
+   if (damage != None)
+      ECompMgrDamageMerge(eo->desk, damage, 1);
 }
 
 static void
 ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 {
    ECmWinInfo         *cw = eo->cmhook;
+   int                 x, y, w, h, bw;
 
    /* Can this change ?!? */
    cw->a.override_redirect = ev->xconfigure.override_redirect;
 
-   ECompMgrWinMoveResize(eo, ev->xconfigure.x, ev->xconfigure.y,
-			 ev->xconfigure.width, ev->xconfigure.height,
-			 ev->xconfigure.border_width);
+   eo->x = x = ev->xconfigure.x;
+   eo->y = y = ev->xconfigure.y;
+   eo->w = w = ev->xconfigure.width;
+   eo->h = h = ev->xconfigure.height;
+   bw = ev->xconfigure.border_width;
+
+   ECompMgrWinMoveResize(eo, x, y, w, h, bw);
 }
 
 static void
@@ -1208,7 +1238,7 @@ finish_destroy_win(EObj * eo, Bool gone)
 }
 
 void
-ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade)
+ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
@@ -1216,14 +1246,18 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade)
       return;
 
    D1printf("ECompMgrWinDel %#lx\n", eo->win);
-   finish_destroy_win(eo, gone);
-   do_fade = False;
 
-   if (eo->type != EOBJ_TYPE_DESK)
+   if (eo->type == EOBJ_TYPE_DESK)
+     {
+	DeskBackgroundPictureFree((Desk *) eo);
+     }
+   else
      {
 	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
+
+   finish_destroy_win(eo, gone);
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 }
@@ -1347,7 +1381,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
      {
 	eo = lst[i];
 
-	if (eo->desk != desk)
+	if (!eo->shown || eo->desk != desk)
 	   continue;
 
 	D4printf(" - %#lx desk=%d shown=%d\n", eo->win, eo->desk, eo->shown);
@@ -1378,7 +1412,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 	cw = eo->cmhook;
 
-	if (!cw /* || !eo->shown */ )
+	if (!cw)
 	   continue;
 
 	D4printf(" - %#lx desk=%d shown=%d vis=%d dam=%d pict=%#lx\n",
@@ -1423,12 +1457,32 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 }
 
 static void
+ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
+{
+   Display            *dpy = disp;
+   XserverRegion       reg;
+
+   if (dx == 0 && dy == 0)
+     {
+	reg = src;
+     }
+   else
+     {
+	reg = XFixesCreateRegion(dpy, 0, 0);
+	XFixesCopyRegion(dpy, reg, src);
+	XFixesTranslateRegion(dpy, reg, dx, dy);
+     }
+   XFixesSubtractRegion(dpy, dst, dst, reg);
+   if (reg != src)
+      XFixesDestroyRegion(dpy, reg);
+}
+
+static void
 ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
    Display            *dpy = disp;
    ECmWinInfo         *cw;
    Desk               *d = DeskGet(eo->desk);
-   XserverRegion       breg;	/* Border region in screen coordinates */
    int                 x, y;
 
    cw = eo->cmhook;
@@ -1437,20 +1491,19 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
    ECompMgrWinSetPicts(eo);
 #endif
 
-   D2printf("ECompMgrRepaintObj %d %#lx %d %#lx\n", mode, eo->win, cw->mode,
-	    cw->picture);
+   D2printf("ECompMgrRepaintObj mode=%d %#lx %s\n", mode, eo->win, eo->name);
 
    /* Region of shaped window in screen coordinates */
    if (!cw->borderSize)
       cw->borderSize = border_size(eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("Window borderSize", cw->borderSize);
+      ERegionShow("borderSize", cw->borderSize);
 
    /* Region of window in screen coordinates, including shadows */
    if (!cw->extents)
       cw->extents = win_extents(dpy, eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("Window extents", cw->extents);
+      ERegionShow("extents", cw->extents);
 
    x = EoGetX(d);
    y = EoGetY(d);
@@ -1465,24 +1518,13 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	switch (cw->mode)
 	  {
 	  case WINDOW_SOLID:
-	     D2printf("ECompMgrRepaintObj %d %#lx %d %#lx d=%d l=%d: %s\n",
-		      mode, eo->win, cw->mode, cw->picture, eo->desk,
-		      eo->ilayer, eo->name);
+	     D2printf(" * solid pict=%#lx d=%d l=%d\n",
+		      cw->picture, eo->desk, eo->ilayer);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
 			      cw->rch);
-	     if (x == 0 && y == 0)
-	       {
-		  breg = cw->borderSize;
-	       }
-	     else
-	       {
-		  breg = XFixesCreateRegion(dpy, 0, 0);
-		  XFixesCopyRegion(dpy, breg, cw->borderSize);
-		  XFixesTranslateRegion(disp, breg, x, y);
-	       }
-	     XFixesSubtractRegion(dpy, region, region, breg);
+	     ERegionSubtractOffset(region, x, y, cw->borderSize);
 	     break;
 	  }
      }
@@ -1494,9 +1536,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  {
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
-	     D2printf("ECompMgrRepaintObj %d %#lx %d %#lx d=%d l=%d: %s\n",
-		      mode, eo->win, cw->mode, cw->picture, eo->desk,
-		      eo->ilayer, eo->name);
+	     D2printf(" * trans pict=%#lx d=%d l=%d\n",
+		      cw->picture, eo->desk, eo->ilayer);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     ECompMgrCheckAlphaMask(cw);
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->alphaPict, pbuf,
@@ -1515,26 +1556,26 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 		cw->shadowPict = EPictureCreateSolid(True,
 						     (double)cw->opacity /
 						     OPAQUE * 0.3, 0, 0, 0);
-	     XFixesSubtractRegion(dpy, cw->clip, cw->clip, cw->borderSize);
+	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     XRenderComposite(dpy, PictOpOver,
 			      cw->shadowPict ? cw->
 			      shadowPict : transBlackPicture, cw->picture, pbuf,
-			      0, 0, 0, 0, cw->a.x + cw->shadow_dx,
-			      cw->a.y + cw->shadow_dy, cw->shadow_width,
+			      0, 0, 0, 0, x + cw->rcx + cw->shadow_dx,
+			      y + cw->rcy + cw->shadow_dy, cw->shadow_width,
 			      cw->shadow_height);
 	     break;
 	  case ECM_SHADOWS_BLURRED:
-	     if (cw->shadow)
-	       {
-		  XFixesSubtractRegion(dpy, cw->clip, cw->clip, cw->borderSize);
-		  XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
-		  XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow,
-				   pbuf, 0, 0, 0, 0,
-				   cw->a.x + cw->shadow_dx,
-				   cw->a.y + cw->shadow_dy, cw->shadow_width,
-				   cw->shadow_height);
-	       }
+	     if (cw->shadow == None)
+		break;
+
+	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
+	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow,
+			      pbuf, 0, 0, 0, 0,
+			      x + cw->rcx + cw->shadow_dx,
+			      y + cw->rcy + cw->shadow_dy, cw->shadow_width,
+			      cw->shadow_height);
 	     break;
 	  }
 #endif
@@ -1559,7 +1600,7 @@ ECompMgrRepaint(void)
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("ECompMgrRepaint", region);
+      ERegionShow("allDamage", region);
 
    if (!rootBuffer)
       rootBuffer = EPictureCreateBuffer(VRoot.win, VRoot.w, VRoot.h,
@@ -1578,28 +1619,15 @@ ECompMgrRepaint(void)
 	eo = ((ECmWinInfo *) (eo->cmhook))->next)
       ECompMgrRepaintObj(pbuf, region, eo, 0);
 
-#if 1				/* FIXME- New code+?? */
    if (EventDebug(EDBUG_TYPE_COMPMGR2))
-      ERegionShow("ECompMgrRepaint-2", region);
-   {
-      /* Draw desktop background picture */
-      pict = DeskBackgroundPictureGet(d);
-      D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
-#if 1
-      XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
-      XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
-		       0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
-#endif
-   }
+      ERegionShow("after opaque", region);
 
-#else /* FIXME - ??? */
    /* Repaint background, clipped by damage region and opaque windows */
    pict = DeskBackgroundPictureGet(d);
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
-#endif /* FIXME - ??? */
 
    /* Paint trans windows and shadows bottom up */
    for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
@@ -1638,6 +1666,7 @@ ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
    return;
 }
 
+#if 0				/* FIXME - Need this? */
 static void
 ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 {
@@ -1682,6 +1711,7 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 	n_expose = 0;
      }
 }
+#endif
 
 static void
 ECompMgrDeskChanged(int desk)
@@ -1789,8 +1819,6 @@ ECompMgrStart(void)
      }
 
    EventCallbackRegister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
-
-   ECompMgrWinNew(&DeskGet(0)->o);
 
    lst = EobjListStackGet(&num);
    for (i = 0; i < num; i++)
@@ -1912,7 +1940,11 @@ ECompMgrHandleWindowEvent(XEvent * ev, void *prm)
 	ECompMgrWinMap(eo);
 	break;
      case UnmapNotify:
-	ECompMgrWinUnmap(eo);
+	if (eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	  {
+	     ECompMgrWinUnmap(eo);
+	     eo->shown = 0;
+	  }
 	break;
 
      case CirculateNotify:
@@ -1945,9 +1977,11 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
      case DestroyNotify:
 	eo = EobjListStackFind(ev->xdestroywindow.window);
-	if (eo && eo->cmhook)
-	   ECompMgrWinDel(eo, True, True);
-	EobjUnregister(ev->xdestroywindow.window);
+	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	  {
+	     ECompMgrWinDel(eo, True, True);
+	     EobjUnregister(ev->xdestroywindow.window);
+	  }
 	break;
 
 #if 0
@@ -1976,28 +2010,30 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	else
 	  {
 	     eo = EobjListStackFind(ev->xconfigure.window);
-	     if (eo && eo->cmhook)
-		ECompMgrWinConfigure(eo, ev);
+	     if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	       {
+		  ECompMgrWinConfigure(eo, ev);
+	       }
 	  }
 	break;
 
      case MapNotify:
-#if 0				/* FIXME */
 	eo = EobjListStackFind(ev->xmap.window);
 	if (!eo)
 	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_EXT);
-	else
-	   EobjListStackRaise(eo);	/* FIXME - Use Configure/CirculateNotify */
-	if (eo)
-	   ECompMgrWinMap(eo);
-#endif
+	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	  {
+	     eo->shown = 1;
+	     ECompMgrWinMap(eo);
+	  }
 	break;
      case UnmapNotify:
-#if 0				/* FIXME */
 	eo = EobjListStackFind(ev->xunmap.window);
-	if (eo && eo->cmhook)
-	   ECompMgrWinUnmap(eo);
-#endif
+	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	  {
+	     ECompMgrWinUnmap(eo);
+	     eo->shown = 0;
+	  }
 	break;
 
      case CirculateNotify:
@@ -2007,7 +2043,9 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
 
      case Expose:
+#if 0				/* FIXME - Need this? */
 	ECompMgrRootExpose(prm, ev);
+#endif
 	break;
      }
 }

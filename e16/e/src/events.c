@@ -652,6 +652,8 @@ WaitEvent(void)
    evq_num = 0;
    count = EventsProcess(&evq_ptr, &evq_num);
 
+   ModulesSignal(ESIGNAL_IDLE, NULL);
+
    if (count > 0)
       XFlush(disp);
 
@@ -663,8 +665,6 @@ WaitEvent(void)
 	Efree(evq_ptr);
 	evq_ptr = NULL;
      }
-
-   ModulesSignal(ESIGNAL_IDLE, NULL);
 
    FD_ZERO(&fdset);
    FD_SET(xfd, &fdset);
