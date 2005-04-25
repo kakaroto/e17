@@ -7,6 +7,9 @@ class PlaytimeUpdater
 		@xmms = xmms
 		@block = block
 		@timer = nil
+		@current_pos = nil
+
+		on_timer
 	end
 
 	def enabled=(v)
