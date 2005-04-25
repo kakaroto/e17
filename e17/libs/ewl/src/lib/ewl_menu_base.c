@@ -28,6 +28,9 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu_base");
 
+	ewl_callback_del(EWL_WIDGET(menu), EWL_CALLBACK_CLICKED,
+			 ewl_menu_item_clicked_cb);
+
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_menu_base_expand_cb, NULL);
 
@@ -108,18 +111,13 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
 			    ewl_menu_item_configure_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED,
+			    ewl_menu_item_clicked_cb, NULL);
 
 	/*
-	 * Intercept mouse events this will cause callbacks to on this widget.
+	 * Intercept mouse events this will cause callbacks to children of
+	 * this widget.
 	 */
-	ewl_container_callback_intercept(EWL_CONTAINER(item),
-					 EWL_CALLBACK_CLICKED);
-	ewl_container_callback_intercept(EWL_CONTAINER(item),
-					 EWL_CALLBACK_MOUSE_DOWN);
-	ewl_container_callback_intercept(EWL_CONTAINER(item),
-					 EWL_CALLBACK_MOUSE_UP);
-	ewl_container_callback_intercept(EWL_CONTAINER(item),
-					 EWL_CALLBACK_MOUSE_MOVE);
 	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_SELECT);
 	ewl_container_callback_intercept(EWL_CONTAINER(item),
@@ -312,6 +310,19 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 void
+ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	Ewl_Menu_Item *item = EWL_MENU_ITEM(w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (item->inmenu)
+		ewl_widget_hide(item->inmenu);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
 ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
@@ -374,7 +385,7 @@ ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	menu = EWL_MENU_BASE(w);
 
 	focused = ewl_widget_focused_get();
-	if (focused && !ewl_container_parent_of(menu->popbox, focused))
+	if (!focused || !ewl_container_parent_of(menu->popbox, focused))
 		ewl_widget_hide(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

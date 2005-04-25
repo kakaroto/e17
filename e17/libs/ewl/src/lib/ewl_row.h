@@ -13,13 +13,13 @@
  * @themekey /row/group
  */
 
-typedef struct _ewl_row Ewl_Row;
+typedef struct Ewl_Row Ewl_Row;
 #define EWL_ROW(t) ((Ewl_Row *)t)
 
 /*
  * Tree rows layout cells in a left to right fashion.
  */
-struct _ewl_row
+struct Ewl_Row
 {
 	Ewl_Container container;
 	Ewl_Row *header;

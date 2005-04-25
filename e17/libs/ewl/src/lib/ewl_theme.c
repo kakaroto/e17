@@ -29,7 +29,7 @@ int ewl_theme_init(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
-	 * Alloacte and clear the default theme 
+	 * Allocate and clear the default theme 
 	 */
 	def_theme_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	if (!def_theme_data)
@@ -49,7 +49,7 @@ int ewl_theme_init(void)
 	/*
 	 * Fall back to the default theme.
 	 */	
-	if(!theme_path) {
+	if (!theme_path) {
 		theme_name = strdup("default");
 		theme_path = ewl_theme_path_find(theme_name);
 	}

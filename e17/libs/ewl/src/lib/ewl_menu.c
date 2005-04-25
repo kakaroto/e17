@@ -45,6 +45,8 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_menu_expand_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_REALIZE,
+			    ewl_menu_realize_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
 			    ewl_menu_configure_cb, NULL);
 
@@ -66,6 +68,20 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+		    void *user_data __UNUSED__)
+{
+	Ewl_Menu *menu = EWL_MENU(w);
+
+	/*
+	 * Position the popup menu relative to the menu.
+	 */
+	ewl_callback_append(EWL_WIDGET(EWL_WINDOW(menu->base.popup)),
+				       EWL_CALLBACK_CONFIGURE,
+				       ewl_menu_popup_move_cb, w);
+}
+
 void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
@@ -80,13 +96,6 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
 	menu->popup_x = x + CURRENT_X(w);
 	menu->popup_y = y + CURRENT_Y(w);
-
-	/*
-	 * Position the popup menu relative to the menu.
-	 */
-	ewl_callback_append(EWL_WIDGET(EWL_WINDOW(menu->base.popup)),
-				       EWL_CALLBACK_REALIZE,
-				       ewl_menu_popup_move_cb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

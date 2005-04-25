@@ -200,8 +200,18 @@ int ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	window->x = ev->x;
-	window->y = ev->y;
+	/*
+	 * Save coords and queue a configure event if the window is moved.
+	 */
+	if (ev->x && ev->x != window->x) {
+		window->x = ev->x;
+		ewl_widget_configure(EWL_WIDGET(window));
+	}
+
+	if (ev->y && ev->y != window->y) {
+		window->y = ev->y;
+		ewl_widget_configure(EWL_WIDGET(window));
+	}
 
 	/*
 	 * Configure events really only need to occur on resize.

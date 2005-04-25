@@ -466,19 +466,20 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			(ewl_engine_mask_get() & (EWL_ENGINE_SOFTWARE_X11 |
 						  EWL_ENGINE_GL_X11))) {
 		int width, height;
-		window->window = (void *)ecore_x_window_new(0, window->x,
-						window->y,
-						ewl_object_current_w_get(o),
-						ewl_object_current_h_get(o));
+		Ecore_X_Window xwin;
+		xwin = ecore_x_window_new(0, window->x,
+					  window->y,
+					  ewl_object_current_w_get(o),
+					  ewl_object_current_h_get(o));
 
-		ecore_x_window_prop_name_class_set((Ecore_X_Window)window->window, window->name,
-					   window->classname);
-		ecore_x_window_prop_title_set((Ecore_X_Window)window->window, window->title);
-		ecore_x_window_prop_protocol_set((Ecore_X_Window)window->window,
+		ecore_x_window_prop_name_class_set(xwin, window->name,
+						   window->classname);
+		ecore_x_window_prop_title_set(xwin, window->title);
+		ecore_x_window_prop_protocol_set(xwin,
 					ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
 
 		if (window->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_window_prop_borderless_set((Ecore_X_Window)window->window, 1);
+			ecore_x_window_prop_borderless_set(xwin, 1);
 
 		width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 		height = ewl_object_maximum_h_get(EWL_OBJECT(window));
@@ -487,9 +488,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 						    &height);
 			ewl_object_maximum_size_set(EWL_OBJECT(window),
 						    width, height);
-			printf("Setting maximum window size to %dx%d\n",
-					width, height);
 		}
+		window->window = (void *)xwin;
 	}
 #endif
 

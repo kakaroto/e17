@@ -48,6 +48,9 @@ void            ewl_menu_init (Ewl_Menu *menu,
 /*
  * Internally used callbacks, override at your own risk.
  */
+void            ewl_menu_realize_cb  (Ewl_Widget *w,
+				      void       *ev_data,
+				      void       *user_data);
 void            ewl_menu_configure_cb  (Ewl_Widget *w,
 					void       *ev_data,
 					void       *user_data);

@@ -108,6 +108,7 @@ void ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child);
 void ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
 			     int size, Ewl_Orientation o);
