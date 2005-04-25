@@ -19,7 +19,7 @@ class Playlist < Array
 	end
 
 	def current_item
-		self[@current_pos]
+		@current_pos && self[@current_pos]
 	end
 
 	def show(eet)
@@ -82,7 +82,7 @@ class Playlist < Array
 
 		each { |i| i.show(eet, @container) }
 
-		current_item.hilight
+		current_item && current_item.hilight
 	end
 
 	def <<(id)

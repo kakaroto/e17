@@ -282,8 +282,10 @@ private
 	end
 
 	def ui_fill_track_info(item)
-		buf = "%s - %s" % [item.artist, item.title]
-		@edje.send_message(Edje::StringMessage.new(buf))
+		unless item.nil?
+			buf = "%s - %s" % [item.artist, item.title]
+			@edje.send_message(Edje::StringMessage.new(buf))
+		end
 	end
 
 	def ui_refresh_time(time)
