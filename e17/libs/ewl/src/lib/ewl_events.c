@@ -203,12 +203,12 @@ int ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *
 	/*
 	 * Save coords and queue a configure event if the window is moved.
 	 */
-	if (ev->x && ev->x != window->x) {
+	if (ev->x && (ev->x != window->x)) {
 		window->x = ev->x;
 		ewl_widget_configure(EWL_WIDGET(window));
 	}
 
-	if (ev->y && ev->y != window->y) {
+	if (ev->y && (ev->y != window->y)) {
 		window->y = ev->y;
 		ewl_widget_configure(EWL_WIDGET(window));
 	}
@@ -216,7 +216,7 @@ int ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *
 	/*
 	 * Configure events really only need to occur on resize.
 	 */
-	if (CURRENT_W(window) != ev->w || CURRENT_H(window) != ev->h) {
+	if ((CURRENT_W(window) != ev->w) || (CURRENT_H(window) != ev->h)) {
 		window->flags |= EWL_WINDOW_USER_CONFIGURE;
 		ewl_object_geometry_request(EWL_OBJECT(window), 0, 0, ev->w,
 					    ev->h);
