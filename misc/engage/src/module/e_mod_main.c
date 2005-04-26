@@ -4,6 +4,7 @@
 #include <e.h>
 #include "e_mod_main.h"
 #include "math.h"
+#include <unistd.h>
 
 #include "config.h"
 
@@ -123,6 +124,8 @@ static void    _engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item 
 
 static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 static int     _engage_border_ignore(E_Border *bd);
+
+static void    _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_Item *mi);
 
 E_App         *_engage_unmatched_app;
 
@@ -348,7 +351,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 {
    Engage *e;
    Evas_List *l, *ll;
-
+   printf("CHANGE: %d",ch);
    e = data;
    for (l = e->bars; l; l = l->next)
      {
@@ -457,7 +460,7 @@ _engage_dotorder_locate(Engage *e)
    if (homedir)
      {
 	snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s/.order", homedir,
-	    e->conf->appdir);
+		 e->conf->appdir);
 	free(homedir);
 	return strdup(buf);
      }
@@ -505,7 +508,9 @@ _engage_bar_new(Engage *e, E_Container *con)
    eb->con = con;
    e_object_ref(E_OBJECT(con));
    eb->evas = con->bg_evas;
-
+   
+   eb->contexts = NULL;
+   
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
    eb->zooming = 0;
@@ -592,6 +597,37 @@ _engage_bar_new(Engage *e, E_Container *con)
    ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _engage_cb_event_dnd_drop , eb);
    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _engage_cb_event_dnd_position, eb);
    ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _engage_cb_event_dnd_selection, eb);
+
+   /* search for available contexts to switch to */
+   if(e->conf->appdir)
+     {
+	Ecore_List *cons = NULL;
+	char buf[4096];
+	char *homedir;
+	char *dir;
+	
+	homedir = e_user_homedir_get();
+	if (homedir)
+	  {
+	     snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s", homedir, e->conf->appdir);
+	     free(homedir);
+	  }	
+	cons = ecore_file_ls(buf);
+	while((dir = ecore_list_next(cons)))
+	  {
+	     char context[4096];
+	     snprintf(context, sizeof(context), "%s/%s", buf, dir);
+	     if(ecore_file_is_dir(context))
+	       {
+		  char dotorder[4096];
+		  snprintf(dotorder, sizeof(dotorder), "%s/%s", context, ".order");
+		  if(ecore_file_exists(dotorder))
+		    {
+		       eb->contexts = evas_list_append(eb->contexts, dir);
+		    }
+	       }
+	  }
+     }
    
    return eb;
 }
@@ -632,7 +668,8 @@ _engage_bar_menu_new(Engage_Bar *eb)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
-
+   Evas_List *l;
+   
    mn = e_menu_new();
    eb->zoom_menu = mn;
    
@@ -651,7 +688,7 @@ _engage_bar_menu_new(Engage_Bar *eb)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Huge");
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_huge, eb);
-   
+
    mn = e_menu_new();
    eb->menu = mn;
 
@@ -679,6 +716,33 @@ _engage_bar_menu_new(Engage_Bar *eb)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Edit Mode");
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit, eb);
+
+   
+   l = eb->contexts;
+   if(l)
+     {
+	mi = e_menu_item_new(mn); 
+	e_menu_item_separator_set(mi, 1);
+	
+	eb->context_menu = e_menu_new();   
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, "Context");
+	e_menu_item_submenu_set(mi, eb->context_menu);      
+	
+	
+	while(l)
+	  {	   
+	     char *context;
+	     context = l->data;
+	     if(context[0] == '.')
+	       context = &context[1];
+	     mi = e_menu_item_new(eb->context_menu);
+	     e_menu_item_label_set(mi, context);
+	     e_menu_item_callback_set(mi, _engage_bar_cb_menu_context_change, eb);
+	     l = l->next;
+	  }      
+     }
+   
 }
 
 static void
@@ -2065,6 +2129,30 @@ _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi)
    eb = data;
    eb->conf->zoom = e_menu_item_toggle_get(mi);
    e_config_save_queue();
+}
+
+static void
+_engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_Item *mi)
+{  
+   Engage_Bar *eb;
+   char *homedir;
+   char buf[4096];
+   char dotorder[4096];
+   char context[4096];
+   
+   eb = data;
+   homedir = e_user_homedir_get();
+   if (homedir)
+     {
+	snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s", homedir,
+		 eb->engage->conf->appdir);
+	free(homedir);
+     }   
+   
+   snprintf(dotorder, sizeof(dotorder), "%s/.order", buf);
+   snprintf(context, sizeof(context), "%s/.%s/.order", buf, mi->label);
+   unlink(dotorder);
+   link(context, dotorder);
 }
 
 static void

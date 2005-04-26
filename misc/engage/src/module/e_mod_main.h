@@ -46,13 +46,15 @@ struct _Engage_Bar
    Evas        *evas;
    E_Menu      *menu;
    E_Menu      *zoom_menu;
+   E_Menu      *context_menu;   
    
    Evas_Object *bar_object;
    Evas_Object *box_object;
    Evas_Object *event_object;
    Evas_Coord   mouse_out;
    
-   Evas_List   *icons;
+   Evas_List   *icons;   
+   Evas_List   *contexts;
    
    double          align, align_req;
    
