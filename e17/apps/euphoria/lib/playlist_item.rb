@@ -70,6 +70,12 @@ class PlaylistItem
 		@edje.emit_signal("playlist_item.selected", "") unless @edje.nil?
 	end
 
+	def visible?
+		# since we don't actually hide the edje, but just delete it,
+		# we don't need to check @edje.visible? here
+		!@edje.nil?
+	end
+
 	def hide
 		@edje.delete
 		@edje = nil
