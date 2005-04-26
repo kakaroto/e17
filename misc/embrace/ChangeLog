@@ -2,6 +2,7 @@ $Id$
 
 2005-04-26 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugins/pop3/pop3.c: Send CRLF after QUIT, too
+        * src/plugins/pop3/pop3.c: Send QUIT on error
 
 2005-03-25 Tilman Sauerbeck (tilman at code-monkey de)
         * README: documented the force-mailbox-check feature

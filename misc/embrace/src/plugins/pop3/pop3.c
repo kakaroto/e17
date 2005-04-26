@@ -38,6 +38,10 @@ typedef enum {
 } State;
 
 #define MIN_INTERVAL 60
+#define QUIT() \
+	ecore_con_server_send (ev->server, "QUIT\r\n", 6); \
+	ecore_con_server_del (ev->server); \
+	mailbox_property_set (mb, "server", NULL);
 
 static EmbracePlugin *plugin = NULL;
 
@@ -84,6 +88,7 @@ static int on_server_data (void *udata, int type, void *event)
 
 	if (!strncmp (inbuf, "-ERR", 4)) {
 		fprintf (stderr, "[pop3] error: %s\n", &inbuf[5]);
+		QUIT ();
 		return 0;
 	} else if (strncmp (inbuf, "+OK", 3)) {
 		assert (false);
@@ -112,9 +117,7 @@ static int on_server_data (void *udata, int type, void *event)
 				mailbox_unseen_set (mb, num);
 				mailbox_total_set (mb, num);
 
-				ecore_con_server_send (ev->server, "QUIT\r\n", 6);
-				ecore_con_server_del (ev->server);
-				mailbox_property_set (mb, "server", NULL);
+				QUIT ();
 			}
 
 			break;
