@@ -112,7 +112,7 @@ static int on_server_data (void *udata, int type, void *event)
 				mailbox_unseen_set (mb, num);
 				mailbox_total_set (mb, num);
 
-				ecore_con_server_send (ev->server, "QUIT", 4);
+				ecore_con_server_send (ev->server, "QUIT\r\n", 6);
 				ecore_con_server_del (ev->server);
 				mailbox_property_set (mb, "server", NULL);
 			}
