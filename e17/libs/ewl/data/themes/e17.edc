@@ -23,8 +23,8 @@ collections {
 data {
     item, "/button/group" "button";
     item, "/cell/group" "button";
-    item, "/radio/group" "radiobutton";
-    item, "/check/group" "checkbutton";
+    item, "/radio/group" "radio";
+    item, "/check/group" "checkbox";
 
     item, "/entry/group" "entry";
     item, "/entry/color/a" "255";

@@ -22,7 +22,7 @@ BUTTON_PROG("mouse,in", "mouse,out")
 }
 
 group {
-    name, "radiobutton";
+    name, "radio";
     data {
         item, "inset/left" "5";
         item, "inset/right" "5";
@@ -35,7 +35,7 @@ BUTTON_IM_PROGS();
 }
 
 group {
-    name, "checkbutton";
+    name, "checkbox";
     data {
         item, "inset/left" "2";
         item, "inset/right" "2";
