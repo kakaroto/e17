@@ -45,8 +45,9 @@ struct Ewl_Fileselector
 	Ewl_Widget    *entry_file;
 	Ewl_Widget    *entry_filter;
   
-	char          *path;  /* current fileselector path */
-	char          *file;  /* current selected item in the fileselector */
+	char          *path;    /* current fileselector path */
+	char          *file;    /* current selected item in the fileselector */
+	char          *dfilter; /* current filter to apply to directories */
 };
 
 
