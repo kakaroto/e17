@@ -28,22 +28,25 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
-TESTS = testgevas gwinmaptest imagesize rawimage gevasanim
+TESTS = testgevas gwinmaptest imagesize rawimage gevasanim signalconnect
 bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
-testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 gwinmaptest_SOURCES = gwinmaptest.c
-gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 imagesize_SOURCES = imagesize.c
-imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 rawimage_SOURCES = rawimage.c
-rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 gevasanim_SOURCES = gevasanim.c
-gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+
+signalconnect_SOURCES = signalconnect.c
+signalconnect_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 

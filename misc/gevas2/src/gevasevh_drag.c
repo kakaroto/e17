@@ -91,6 +91,9 @@ gevasev_drag_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
+
+    printf("gevasev_drag_mouse_down() b:%d\n", _b );
+    
 	if (_b == 1) {
 		Evas_Coord x = 0, y = 0, w = 0, h = 0;
 		gevasobj_get_geometry(GTK_GEVASOBJ(gevasobj), &x, &y, &w, &h);

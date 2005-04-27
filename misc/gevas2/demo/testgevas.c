@@ -290,7 +290,7 @@ void _mouse_down(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
 			gtk_widget_show_all(GTK_WIDGET(menu));
 
             /**  To keep evas happy about the mouse state **/
-            evas_event_feed_mouse_up( _e, _b );
+            evas_event_feed_mouse_up( _e, _b, EVAS_BUTTON_NONE, 0 );
 
 			gtk_menu_popup(menu, NULL, NULL, NULL, NULL, _b, gev->button.time);
 		}

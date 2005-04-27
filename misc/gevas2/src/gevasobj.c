@@ -175,8 +175,12 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_DOWN,__gevas_mouse_down, object);
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_UP,  __gevas_mouse_up, object);
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_MOVE,__gevas_mouse_move, object);
-
+    
+/*     evas_object_pass_events_set( eobj, 1 ); */
+/*     evas_object_repeat_events_set( eobj, 1 ); */
 }
+
+
 
 Evas_Object* _gevas_get_obj(GtkObject * object)
 {

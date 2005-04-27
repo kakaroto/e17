@@ -282,6 +282,8 @@ __gevas_mouse_down(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->output.x;
     int _y = ev->output.y;
 
+    printf("__gevas_mouse_down() _b:%d\n",_b);
+    
 	__HANDLE_EVENT_DISPATCH(handler_mouse_down)
 }
 void
@@ -302,6 +304,8 @@ __gevas_mouse_move(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->cur.output.x;
     int _y = ev->cur.output.y;
 
+    printf("__gevas_mouse_move() _b:%d\n",_b);
+    
 	__HANDLE_EVENT_DISPATCH(handler_mouse_move)
 }
 
@@ -680,10 +684,10 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					}
 
 				} else {
-                    evas_event_feed_mouse_move(ev->evas, x, y);
+                    evas_event_feed_mouse_move(ev->evas, x, y, 0);
 
 
-/*                    printf("evas_event_move() x:%d y:%d \n",x,y);*/
+/*                     printf("evas_event_move() x:%d y:%d \n",x,y); */
                     
                     /*
                     {
@@ -745,14 +749,17 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 					if( ev->middleb_scrolls_pgate_event )
 					{
-                        evas_event_feed_mouse_move( ev->evas, x, y );
-                        evas_event_feed_mouse_down( ev->evas, b );
+                        evas_event_feed_mouse_move( ev->evas, x, y, 0 );
+                        evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, 0 );
 					}
 				}
 				else 
 				{
-                    evas_event_feed_mouse_move( ev->evas, x, y );
-                    evas_event_feed_mouse_down( ev->evas, b );
+                    printf("GDK_BUTTON_PRESS: x:%d y:%d b:%d frez:%d \n",x,y,b,
+                           evas_event_freeze_get( ev->evas )
+                        );
+                    evas_event_feed_mouse_move( ev->evas, x, y, 0 );
+                    evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, 0  );
 				}
 			}
 			break;
@@ -775,14 +782,14 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					ev->scrolling = 0;
 					if( ev->middleb_scrolls_pgate_event )
 					{
-                        evas_event_feed_mouse_move(ev->evas, x, y);
-						evas_event_feed_mouse_up(ev->evas, b);
+                        evas_event_feed_mouse_move(ev->evas, x, y, 0 );
+						evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, 0 );
 					}
 				}
 				else 
 				{
-                    evas_event_feed_mouse_move(ev->evas, x, y);
-                    evas_event_feed_mouse_up(ev->evas, b);
+                    evas_event_feed_mouse_move(ev->evas, x, y, 0 );
+                    evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, 0 );
 				}
 			break;
 			}
