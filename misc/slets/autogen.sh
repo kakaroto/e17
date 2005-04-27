@@ -31,6 +31,8 @@ autoconf
 
 set +x
 
+if [ -z "$NOCONFIGURE" ]; then
+
 if [ -x config.status -a -z "$*" ]; then
   ./config.status --recheck
 else
@@ -52,3 +54,4 @@ echo "make install"
 echo
 echo "have fun."
 
+fi

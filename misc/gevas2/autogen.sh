@@ -19,6 +19,8 @@ if test -z "$*"; then
         echo "to pass any to it, please specify them on the $0 command line."
 fi
 
+if [ -z "$NOCONFIGURE" ]; then
+
 cd "$THEDIR"
 
 $srcdir/configure "$@"
@@ -32,3 +34,4 @@ echo "make install"
 echo
 echo "have fun."
 
+fi

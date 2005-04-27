@@ -48,7 +48,8 @@ automake --add-missing
 autoconf
 cd $rootme
 
-$srcdir/configure "$@"
-
-echo 
-echo "Now type 'make' to compile libaudiofile."
+if [ -z "$NOCONFIGURE" ]; then
+	$srcdir/configure "$@"
+	echo 
+	echo "Now type 'make' to compile libaudiofile."
+fi

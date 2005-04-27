@@ -20,5 +20,6 @@ fi
 
 cd "$THEDIR"
 
-$srcdir/configure "$@"
-
+if [ -z "$NOCONFIGURE" ]; then
+	$srcdir/configure "$@"
+fi

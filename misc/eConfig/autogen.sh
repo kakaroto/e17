@@ -45,7 +45,8 @@ automake --add-missing $am_opt
 autoconf
 cd $THEDIR
 
-$srcdir/configure "$@"
-
-echo 
-echo "Now type 'make' to compile eConfig."
+if [ -z "$NOCONFIGURE" ]; then
+	$srcdir/configure "$@"
+	echo 
+	echo "Now type 'make' to compile eConfig."
+fi
