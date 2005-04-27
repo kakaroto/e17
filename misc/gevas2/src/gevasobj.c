@@ -169,6 +169,8 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
 
     evas_object_data_set( eobj, PRIVATE_GTK_GEVASOBJ, object);
 
+/*     evas_object_pass_events_set( eobj, 1 ); */
+/*     evas_object_repeat_events_set( eobj, 1 ); */
     
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_IN,  __gevas_mouse_in, object);
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_OUT, __gevas_mouse_out, object);
@@ -176,8 +178,6 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_UP,  __gevas_mouse_up, object);
 	evas_object_event_callback_add( eobj, EVAS_CALLBACK_MOUSE_MOVE,__gevas_mouse_move, object);
     
-/*     evas_object_pass_events_set( eobj, 1 ); */
-/*     evas_object_repeat_events_set( eobj, 1 ); */
 }
 
 
@@ -720,7 +720,10 @@ void gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below)
 }
 void gevasobj_move(GtkgEvasObj * object, double x, double y)
 {
-    EMIT_2( object, SIG_MOVE_ABSOLUTE, &x, &y )
+//    printf("gevasobj_move() x:%f y:%f\n",x,y);
+    Evas_Coord ex = x;
+    Evas_Coord ey = y;
+    EMIT_2( object, SIG_MOVE_ABSOLUTE, &ex, &ey )
         object->move(object, x, y);
 }
 

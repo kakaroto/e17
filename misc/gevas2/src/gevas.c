@@ -627,14 +627,21 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 	ev->current_event = event;
 	switch (event->type) {
 
-    case GDK_LEAVE_NOTIFY:
-    {
-        GdkEventCrossing* e = (GdkEventCrossing*)event;
 
-/*        printf("GDK_LEAVE_NOTIFY\n");*/
-        
+    case GDK_ENTER_NOTIFY:
+    {
+        evas_event_feed_mouse_in( ev->evas, 0 );
         break;
     }
+    
+    case GDK_LEAVE_NOTIFY:
+    {
+/*         GdkEventCrossing* e = (GdkEventCrossing*)event; */
+        evas_event_feed_mouse_out( ev->evas, 0 );
+        break;
+    }
+    
+    
     
 		case GDK_MOTION_NOTIFY:
 			{
