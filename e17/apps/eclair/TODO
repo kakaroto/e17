@@ -1,0 +1,16 @@
+TODO list:
+
+*Finish config file implementation
+*Finish cover implementation
+*Change play/pause 'on over' animation in the default theme
+*Improve playlist perfs (by improving esmart_container or by get rid of esmart_container)
+*Add a popup menu
+*Store media files collection into a database (SqlLite3?) to perform fast search
+*improve behavior of file selection
+*improve behavior of fullscreen mode
+*fix some bugs of emotion (autoplay, seek_thread close, wmv segv...)
+*Add a visualisation system (need to modify emotion)
+*Add an audio equalizer system (need to modify emotion)
+
+*DREAMS* Make an ID3 editor
+*DREAMS* Make a converter to convert Winamp3 themes to edj
