@@ -351,7 +351,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 {
    Engage *e;
    Evas_List *l, *ll;
-   printf("CHANGE: %d",ch);
+
    e = data;
    for (l = e->bars; l; l = l->next)
      {
