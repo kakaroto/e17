@@ -155,26 +155,6 @@ FindMenu(Window win)
    return menu;
 }
 
-#if 0
-static EWin        *
-FindEwinByMenu(Menu * m)
-{
-   EWin               *const *ewins;
-   int                 i, num;
-
-   ewins = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (ewins[i]->data == (void *)m)
-	   return ewins[i];
-     }
-
-   return NULL;
-}
-#else
-#define FindEwinByMenu(m) (m->ewin)
-#endif
-
 void
 MenuHide(Menu * m)
 {
@@ -182,7 +162,7 @@ MenuHide(Menu * m)
 
    MenuActivateItem(m, NULL);
 
-   ewin = FindEwinByMenu(m);
+   ewin = m->ewin;
    if (ewin)
      {
 	HideEwin(ewin);
@@ -280,7 +260,7 @@ MenuShow(Menu * m, char noshow)
    if (!m->win)
       MenuRealize(m);
 
-   ewin = FindEwinByMenu(m);
+   ewin = m->ewin;
    if (ewin)
      {
 #if 0				/* FIXME - Why? */
@@ -629,7 +609,7 @@ MenuRepack(Menu * m)
    if (m->win)
       MenuRealize(m);
 
-   ewin = FindEwinByMenu(m);
+   ewin = m->ewin;
    if (ewin)
      {
 	w = m->w;
@@ -1070,7 +1050,7 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
 
    if (m)
      {
-	ewin = FindEwinByMenu(m);
+	ewin = m->ewin;
 	if ((m->win) && (ewin))
 	  {
 	     lx = EoGetX(ewin);
@@ -1089,7 +1069,7 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
      {
 	m->internal = 1;
 	MenuShow(m, 1);
-	ewin = FindEwinByMenu(m);
+	ewin = m->ewin;
 	if (ewin)
 	  {
 	     MoveEwin(ewin, lx, ly);
@@ -1110,11 +1090,11 @@ MenusShowNamed(const char *name)
       MenusHide();
 
    m = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
-   if (m)
-     {
-	if (!FindEwinByMenu(m))	/* Don't show if already shown */
-	   MenuShow(m, 0);
-     }
+   if (!m)
+      return;
+
+   if (!m->ewin)		/* Don't show if already shown */
+      MenuShow(m, 0);
 }
 
 void
@@ -1139,11 +1119,11 @@ ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
      }
 
    *pm = m = RefreshInternalMenu(m, ms, mcf);
-   if (m)
-     {
-	if (!FindEwinByMenu(m))
-	   MenuShow(m, 0);
-     }
+   if (!m)
+      return;
+
+   if (!m->ewin)
+      MenuShow(m, 0);
 }
 
 int
@@ -1299,7 +1279,7 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	m = mi->child;
 	if (!m || m->num <= 0)
 	   break;
-	ewin = FindEwinByMenu(m);
+	ewin = m->ewin;
 	if (ewin == NULL || !EwinIsMapped(ewin))
 	   break;
 	mi = m->items[0];
@@ -1345,13 +1325,13 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 	int                 mx, my, mw, mh;
 	EWin               *ewin2;
 
-	ewin = FindEwinByMenu(m);
+	ewin = m->ewin;
 	if (ewin)
 	  {
 	     EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
 #if 1				/* Whatgoesonhere ??? */
 	     MenuShow(mi->child, 1);
-	     ewin2 = FindEwinByMenu(mi->child);
+	     ewin2 = mi->child->ewin;
 	     if (ewin2)
 	       {
 		  MoveEwin(ewin2,
@@ -1365,7 +1345,7 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 		  Mode_menus.list[Mode_menus.current_depth++] = mi->child;
 	       }
 #else
-	     ewin2 = FindEwinByMenu(mi->child);
+	     ewin2 = mi->child->ewin;
 	     if (!ewin2)
 		MenuShow(mi->child, 1);
 #endif
@@ -1470,7 +1450,7 @@ MenusHandleMotion(void)
 	       {
 		  if (Mode_menus.list[i])
 		    {
-		       ewin = FindEwinByMenu(Mode_menus.list[i]);
+		       ewin = Mode_menus.list[i]->ewin;
 		       if (ewin)
 			 {
 			    if (EoGetX(ewin) < x1)
@@ -1531,7 +1511,7 @@ MenusHandleMotion(void)
 		  if (Mode_menus.current_depth)
 		    {
 #ifdef HAS_XINERAMA
-		       ewin = FindEwinByMenu(Mode_menus.list[0]);
+		       ewin = Mode_menus.list[0]->ewin;
 		       if (ewin->head == head_num)
 			 {
 #endif
@@ -1540,7 +1520,7 @@ MenusHandleMotion(void)
 				 menus[i] = NULL;
 				 if (Mode_menus.list[i])
 				   {
-				      ewin = FindEwinByMenu(Mode_menus.list[i]);
+				      ewin = Mode_menus.list[i]->ewin;
 				      if (ewin)
 					{
 					   menus[i] = ewin;
@@ -1660,7 +1640,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 		  menus[i] = NULL;
 		  if (Mode_menus.list[i])
 		    {
-		       ewin = FindEwinByMenu(Mode_menus.list[i]);
+		       ewin = Mode_menus.list[i]->ewin;
 		       if (ewin)
 			 {
 			    menus[i] = ewin;
@@ -1741,7 +1721,7 @@ MenuActivateItem(Menu * m, MenuItem * mi)
 	EWin               *ewin;
 
 	mi->child->parent = m;
-	ewin = FindEwinByMenu(m);
+	ewin = m->ewin;
 	if (ewin)
 	  {
 	     mdata.m = m;
