@@ -608,7 +608,7 @@ static char *read_file(char *file) {
     st_ret = stat(file, &amp;s);
 
     if (st_ret != 0) {
-        if (st_ret == ENOENT)
+        if (errno == ENOENT)
             printf("not a file %s\n", file); 
         return NULL;
     }
