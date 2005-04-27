@@ -3,11 +3,13 @@
 #include <Emotion.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Esmart/Esmart_Container.h>
+#include <tag_c.h>
 #include "eclair_args.h"
 #include "eclair_utils.h"
 #include "eclair_callbacks.h"
 #include "eclair_subtitles.h"
-#include <tag_c.h>
+#include "eclair_cover.h"
+#include "eclair_config.h"
 
 static void _eclair_gui_create_window(Eclair *eclair);
 static void _eclair_video_create_window(Eclair *eclair);
@@ -48,12 +50,14 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    if (!eclair_args_parse(eclair, *argc, argv, &filenames))
       return 0;
 
+   eclair_config_init(&eclair->config);
    _eclair_gui_create_window(eclair);
    _eclair_video_create_window(eclair);
    eclair_playlist_init(eclair, &eclair->playlist);
    eclair_current_file_set(eclair, NULL);
    eclair_subtitles_init(&eclair->subtitles);
-   
+   eclair_cover_init();
+
    pthread_cond_init(&eclair->meta_tag_cond, NULL);
    pthread_mutex_init(&eclair->meta_tag_mutex, NULL);
    pthread_create(&eclair->meta_tag_thread, NULL, _eclair_meta_tag_thread, eclair);
@@ -76,6 +80,8 @@ void eclair_shutdown(Eclair *eclair)
    {
       eclair_playlist_empty(&eclair->playlist);
       eclair_subtitles_free(&eclair->subtitles);
+      eclair_cover_shutdown();
+      eclair_config_shutdown(&eclair->config);
 
       eclair->meta_tag_delete_thread = 1;
       pthread_cond_broadcast(&eclair->meta_tag_cond);      

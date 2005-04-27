@@ -165,6 +165,17 @@ esmart_cflags=`$ESMART_CONFIG --cflags`
 AC_SUBST(esmart_libs)
 AC_SUBST(esmart_cflags)
 
+PROG="xml2-config";
+AC_PATH_PROG(LIBXML2_CONFIG, $PROG, "", $PATH)
+if [ test -z $LIBXML2_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  AC_MSG_ERROR(Cannot find $PROG)
+fi
+libxml2_libs=`$LIBXML2_CONFIG --libs`
+libxml2_cflags=`$LIBXML2_CONFIG --cflags`
+AC_SUBST(libxml2_libs)
+AC_SUBST(libxml2_cflags)
 
 AC_OUTPUT([
 Makefile

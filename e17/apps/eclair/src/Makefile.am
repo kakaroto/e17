@@ -7,7 +7,8 @@ INCLUDES = \
 @edje_cflags@ \
 @emotion_cflags@ \
 @esmart_cflags@ \
-@taglib_cflags@
+@taglib_cflags@ \
+@libxml2_cflags@
 
 AM_CFLAGS = \
 -Wall \
@@ -23,7 +24,9 @@ eclair_utils.c eclair_utils.h \
 eclair_callbacks.c eclair_callbacks.h \
 eclair_playlist.c eclair_playlist.h \
 eclair_private.h \
-eclair_subtitles.c eclair_subtitles.h
+eclair_subtitles.c eclair_subtitles.h \
+eclair_cover.c eclair_cover.h \
+eclair_config.c eclair_config.h
 
 eclair_LDADD = \
 @gtk_libs@ \
@@ -32,4 +35,5 @@ eclair_LDADD = \
 @edje_libs@ \
 @emotion_libs@ \
 @esmart_libs@ -lesmart_container -lesmart_draggies \
-@taglib_libs@ -ltag_c
+@taglib_libs@ -ltag_c \
+@libxml2_libs@

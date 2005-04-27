@@ -1,6 +1,7 @@
 #ifndef _ECLAIR_PRIVATE_H_
 #define _ECLAIR_PRIVATE_H_
 
+#include <stdio.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
@@ -14,6 +15,22 @@ typedef struct _Eclair_Playlist_Media_File Eclair_Playlist_Media_File;
 typedef struct _Eclair_Playlist Eclair_Playlist;
 typedef struct _Eclair_Subtitle Eclair_Subtitle;
 typedef struct _Eclair_Subtitles Eclair_Subtitles;
+typedef struct _Eclair_Packet_Chunk Eclair_Packet_Chunk;
+typedef struct _Eclair_Config Eclair_Config;
+
+struct _Eclair_Config
+{
+   char config_dir_path[256];
+   char covers_dir_path[256];
+   char config_file_path[256];
+   FILE *config_file;
+};
+
+struct _Eclair_Packet_Chunk
+{
+   int size;
+   char *data;
+};
 
 struct _Eclair_Playlist_Media_File
 {
@@ -92,11 +109,12 @@ struct _Eclair
    pthread_cond_t meta_tag_cond;
    pthread_t meta_tag_thread;
    Evas_Bool meta_tag_delete_thread;
-   
+
+   //Core vars
    Eclair_State state;
    Eclair_Playlist playlist;
    Eclair_Subtitles subtitles;
-
+   Eclair_Config config;
 };
 
 #endif
