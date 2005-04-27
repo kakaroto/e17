@@ -1,7 +1,7 @@
 # $Id$
 
 class PlaytimeUpdater
-	INTERVAL = 0.5
+	INTERVAL = 0.25
 
 	def initialize(xmms, &block)
 		@xmms = xmms
