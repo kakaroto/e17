@@ -11,6 +11,8 @@ class Playlist < Array
 		@eet = nil
 		@container = nil
 
+		@xmms.playlist_list.notifier { |res| push(*res.value) }
+
 		begin
 			@current_pos = @xmms.playlist_current_pos.wait.value
 		rescue XmmsClient::ValueError
@@ -20,6 +22,21 @@ class Playlist < Array
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
 			@current_pos = res.value
 			current_item.hilight
+		end
+
+		@xmms.broadcast_playlist_changed.notifier do |res|
+			type, id, arg = res.playlist_change
+
+			case type
+				when XmmsClient::Result::PLAYLIST_CHANGED_ADD
+					self << id
+				when XmmsClient::Result::PLAYLIST_CHANGED_REMOVE
+					# the daemon sends the position of the song, not the
+					# unique mlib id
+					delete(self[id])
+				when XmmsClient::Result::PLAYLIST_CHANGED_CLEAR
+					clear
+			end
 		end
 
 		@xmms.broadcast_medialib_entry_changed.notifier do |res|
