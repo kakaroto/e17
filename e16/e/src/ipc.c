@@ -625,7 +625,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	else
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
-	     MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
+	     MoveEwin(ewin, a, b);
 	  }
 	break;
 
@@ -656,7 +656,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	else
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
-	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), a, b);
+	     ResizeEwin(ewin, a, b);
 	  }
 	break;
 
@@ -667,7 +667,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	sscanf(params, "%*s %*s %i %i", &a, &b);
 	a += EoGetX(ewin);
 	b += EoGetY(ewin);
-	MoveResizeEwin(ewin, a, b, ewin->client.w, ewin->client.h);
+	MoveEwin(ewin, a, b);
 	break;
 
      case EWIN_OP_SIZE_REL:
@@ -677,7 +677,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	sscanf(params, "%*s %*s %i %i", &a, &b);
 	a += ewin->client.w;
 	b += ewin->client.h;
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), a, b);
+	ResizeEwin(ewin, a, b);
 	break;
 
      case EWIN_OP_FOCUS:
