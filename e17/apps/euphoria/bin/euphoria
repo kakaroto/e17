@@ -225,9 +225,7 @@ private
 		end
 
 		@xmms.playlist_list.notifier do |res|
-			res.value.each do |id|
-				@playlist << id
-			end
+			@playlist.push(*res.value)
 		end
 
 		@xmms.broadcast_playlist_changed.notifier do |res|

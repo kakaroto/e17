@@ -97,10 +97,18 @@ class Playlist < Array
 	end
 
 	def <<(id)
-		item = PlaylistItem.new(id, @xmms, self)
-		super(item)
+		push(id)
+	end
 
-		item.show(@eet, @container) unless @container.nil?
+	def push(*args)
+		args.each do |id|
+			item = PlaylistItem.new(id, @xmms, self)
+			super(item)
+
+			item.show(@eet, @container) unless @container.nil?
+		end
+
+		self
 	end
 
 	def delete(item)
