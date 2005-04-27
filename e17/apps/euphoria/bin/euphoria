@@ -295,13 +295,13 @@ private
 	end
 
 	def signal_playback_state
-		case @playback_state
+		sig = case @playback_state
 			when XmmsClient::XmmsClient::PAUSE
-				sig = "PLAYBACK_STATE_PAUSED"
+				"PLAYBACK_STATE_PAUSED"
 			when XmmsClient::XmmsClient::PLAY
-				sig = "PLAYBACK_STATE_PLAYING"
+				"PLAYBACK_STATE_PLAYING"
 			else
-				sig = "PLAYBACK_STATE_STOPPED"
+				"PLAYBACK_STATE_STOPPED"
 		end
 
 		@edje.emit_signal(sig, "Euphoria")
