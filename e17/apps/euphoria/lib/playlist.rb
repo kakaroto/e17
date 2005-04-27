@@ -42,7 +42,7 @@ class Playlist < Array
 
 		@xmms.broadcast_medialib_entry_changed.notifier do |res|
 			@xmms.medialib_get_info(res.value).notifier do |res2|
-				props = res.value
+				props = res2.value
 				find_all { |i| i.id == props[:id] }.each do |item|
 					item.properties = props
 
