@@ -23,8 +23,6 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
    strcat(config->covers_dir_path, "covers/");
    mkdir(config->covers_dir_path, 0755);
 
-   printf("%s\n", config->covers_dir_path);
-
    strcat(config->config_file_path, config->config_dir_path);
    strcat(config->config_file_path, "eclair.cfg");
    config->config_file = fopen(config->config_file_path, "a+t");
