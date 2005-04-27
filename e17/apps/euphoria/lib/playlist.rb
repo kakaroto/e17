@@ -3,10 +3,11 @@
 require "euphoria/playlist_item"
 
 class Playlist < Array
-	def initialize(xmms)
+	def initialize(xmms, on_cur_item_changed)
 		super()
 
 		@xmms = xmms
+		@on_cur_item_changed = on_cur_item_changed
 		@ee = nil
 		@eet = nil
 		@container = nil
@@ -44,6 +45,10 @@ class Playlist < Array
 				props = res.value
 				find_all { |i| i.id == props[:id] }.each do |item|
 					item.properties = props
+
+					if current_item && current_item.id == item.id
+						@on_cur_item_changed.call(item)
+					end
 				end
 			end
 		end

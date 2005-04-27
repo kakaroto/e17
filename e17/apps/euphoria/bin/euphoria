@@ -36,7 +36,8 @@ class Euphoria
 		init_xmms
 		init_gui
 
-		@playlist = Playlist.new(@xmms)
+		blk = lambda { |item| ui_fill_track_info(item) }
+		@playlist = Playlist.new(@xmms, blk)
 
 		setup_callbacks
 
@@ -227,34 +228,7 @@ private
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
 			handle_current_pos(res)
 		end
-
-=begin
-		@xmms.broadcast_medialib_entry_changed.notifier do |res|
-			@xmms.medialib_get_info(res.uint).notifier do |res2|
-				on_mlib_info(res2)
-			end
-		end
-=end
 	end
-
-=begin
-	def on_mlib_info(res)
-		props = res.value
-
-		id = props[:id].to_i
-
-		item = @playlist[id]
-		unless item.nil?
-			item.properties = props
-
-			# hack: if this item is current item,
-			#       refresh the edje parts
-			if item == @playlist.current_item
-				ui_fill_track_info(item)
-			end
-		end
-	end
-=end
 
 	def handle_current_pos(res)
 		begin
