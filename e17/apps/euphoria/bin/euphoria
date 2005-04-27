@@ -282,7 +282,13 @@ private
 	end
 
 	def find_theme(name)
-		DATA_DIR + "/themes/#{name}.edj"
+		dirs = [File.expand_path("~/.e/apps/euphoria"), DATA_DIR]
+		dirs.each do |dir|
+			tmp = File.join(dir, "/themes/#{name}.edj")
+			return tmp if File.exist?(tmp)
+		end
+
+		nil
 	end
 end
 
