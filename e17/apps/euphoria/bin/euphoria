@@ -11,12 +11,15 @@ require "esmart_draggies"
 require "esmart_container"
 require "xmmsclient"
 require "singleton"
+require "yaml"
 
 require "euphoria/playlist"
 require "euphoria/playlist_item"
 require "euphoria/slider"
 require "euphoria/playtime_updater"
 require "euphoria/playback_status_handler"
+
+Config = Struct.new("Config", :ipc_path, :theme)
 
 class Euphoria
 	DATA_DIR = "/usr/local/share/euphoria"
@@ -30,9 +33,10 @@ class Euphoria
 		@xmms = nil
 
 		# settings
-		@time_display_elapsed = true
-		@theme_name = "multipass"
+		@config_file =
+			File.expand_path("~/.xmms2/clients/euphoria/config.yaml")
 
+		load_config
 		init_xmms
 		init_gui
 
@@ -93,6 +97,10 @@ class Euphoria
 		@ee.show
 	end
 
+	def save_config
+		File.open(@config_file, "w") { |fo| YAML.dump(@config, fo) }
+	end
+
 private
 	def init_gui
 		@ee = Ecore::Evas::SoftwareX11.new
@@ -117,8 +125,8 @@ private
 		@dragger.button = 1
 		@dragger.show
 
-		@theme = find_theme(@theme_name)
-		raise "Cannot find theme - #{edj}" if @theme.nil?
+		@theme = find_theme(@config.theme)
+		raise "Cannot find theme - #{@config.theme}" if @theme.nil?
 
 		@edje = Edje::Edje.new(@ee.evas)
 		@edje.load(@theme, "euphoria")
@@ -140,7 +148,7 @@ private
 
 	def init_xmms
 		@xmms = XmmsClient::XmmsClient.new("Euphoria")
-		@xmms.connect
+		@xmms.connect(@config.ipc_path)
 		@xmms.setup_with_ecore
 	end
 
@@ -196,7 +204,7 @@ private
 		end
 
 		@edje.on_signal("TOGGLE_TIME_DISPLAY_MODE") do
-			@time_display_elapsed = !@time_display_elapsed
+			@config.time_display_elapsed = !@config.time_display_elapsed
 		end
 
 		@edje.on_signal("DEBUG") do |sig, source|
@@ -258,7 +266,7 @@ private
 
 		fmt = "%i:%02i"
 
-		unless @time_display_elapsed
+		unless @config.time_display_elapsed
 			time = @playlist.current_item.duration - time
 			fmt = "-" + fmt
 		end
@@ -288,6 +296,21 @@ private
 		@edje.emit_signal(sig, "Euphoria")
 	end
 
+	def load_config
+		@config = nil
+
+		if File.exist?(@config_file)
+			File.open(@config_file) { |fo| @config = YAML.load(fo) }
+		end
+
+		if @config.nil? || !@config.is_a?(Config)
+			@config = Config.new
+			@config.ipc_path = nil
+			@config.theme = "multipass"
+			@config.time_display_elapsed = true
+		end
+	end
+
 	def find_theme(name)
 		dirs = [File.expand_path("~/.xmms2/clients/euphoria"), DATA_DIR]
 		dirs.each do |dir|
@@ -302,3 +325,4 @@ end
 $x = Euphoria.instance
 Euphoria.instance.show
 Ecore::main_loop_begin
+Euphoria.instance.save_config
