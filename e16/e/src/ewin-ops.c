@@ -1287,53 +1287,6 @@ MoveEwinToArea(EWin * ewin, int ax, int ay)
 }
 
 void
-MoveEwinToDesktop(EWin * ewin, int desk)
-{
-   MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
-}
-
-void
-MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
-{
-   EWin              **lst;
-   int                 i, num;
-   int                 pdesk, dx, dy;
-
-   EoSetFloating(ewin, 0);
-
-#if 0
-   Eprintf("MoveEwinToDesktopAt: %#lx %d->%d\n", ewin->client.win,
-	   EoGetDesk(ewin), desk);
-#endif
-
-   pdesk = ewin->ld;
-   desk = desk % Conf.desks.num;
-   EoSetDesk(ewin, desk);
-
-   if (desk != pdesk && !EoIsSticky(ewin))
-     {
-	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
-	if (pdesk >= 0)
-	   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
-     }
-
-   dx = x - EoGetX(ewin);
-   dy = y - EoGetY(ewin);
-   EoSetX(ewin, x);
-   EoSetY(ewin, y);
-   EwinConformToDesktop(ewin);
-
-   lst = EwinListTransients(ewin, &num, 0);
-   for (i = 0; i < num; i++)
-      MoveEwinToDesktopAt(lst[i], desk, EoGetX(lst[i]) + dx,
-			  EoGetY(lst[i]) + dy);
-   if (lst)
-      Efree(lst);
-
-   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)desk);
-}
-
-void
 EwinOpClose(EWin * ewin)
 {
    EWin              **gwins;
