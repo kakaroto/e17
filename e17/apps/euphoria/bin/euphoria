@@ -19,7 +19,7 @@ require "euphoria/slider"
 require "euphoria/playtime_updater"
 require "euphoria/playback_status_handler"
 
-Config = Struct.new("Config", :ipc_path, :theme)
+Config = Struct.new("Config", :ipc_path, :theme, :time_display_elapsed)
 
 class Euphoria
 	DATA_DIR = "/usr/local/share/euphoria"
