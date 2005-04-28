@@ -22,7 +22,7 @@
                                 name, "quit_button_click";
                                 signal, "mouse,clicked,1";
                                 source, "quit";
-                                action, SIGNAL_EMIT "QUIT" "quit";
+                                action, SIGNAL_EMIT "close" "quit";
                         }
 
                         /* switch to "small" mode */

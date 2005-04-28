@@ -10,7 +10,7 @@ BUTTON_PROG("next", "PLAY_NEXT")
 
 
 BUTTON_PROG("pl", "")
-BUTTON_PROG("x", "QUIT")
+BUTTON_PROG("x", "close")
 
 
 BUTTON_PROG("plus", "PLAYLIST_ADD")

@@ -138,5 +138,5 @@ program { name, "_quit_unclicked"; signal, "mouse,down"; source, "_quit";
 	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "_quit";
 }
 program { name, "_quit_exit"; signal, "mouse,down,1"; source, "_quit";
-	action, SIGNAL_EMIT "QUIT" "quit";
+	action, SIGNAL_EMIT "close" "quit";
 }

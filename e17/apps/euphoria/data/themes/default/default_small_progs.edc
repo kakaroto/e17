@@ -123,7 +123,7 @@
                                 name,       "quit_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "quit_button";
-                                action,     SIGNAL_EMIT "QUIT" "quit";
+                                action,     SIGNAL_EMIT "close" "quit";
                         }
                         /* Volume Button Proggies */
                         /* Raise Volume */
