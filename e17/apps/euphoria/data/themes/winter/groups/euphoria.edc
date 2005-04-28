@@ -2,6 +2,11 @@
         name, "euphoria";
 	min, 200 300;
 	max, 99999 99999;
+
+	data {
+		item, "shaped" "hell yeah";
+	}
+
 	parts {
 #include "../parts/main.edc"
 #include "../parts/playlist.edc"
