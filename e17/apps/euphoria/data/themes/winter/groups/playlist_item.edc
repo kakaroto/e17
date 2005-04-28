@@ -25,7 +25,7 @@
 			offset, 5 0;
 		    }
 		    rel2 {
-		        to_x, "length";
+		        to_x, "duration";
 		        relative, 0.0 1.0;
 			offset, -5 0;
 		    }
@@ -44,7 +44,7 @@
 			offset, 5 0;
 		    }
 		    rel2 {
-		        to_x, "length";
+		        to_x, "duration";
 		        relative, 0.0 1.0;
 			offset, -5 0;
 		    }
@@ -57,7 +57,7 @@
 		}
 	    } //part
 	    part {
-	        name, "length";
+	        name, "duration";
 		type, TEXT;
 		mouse_events, 1;
 		description {
@@ -117,7 +117,7 @@
 		action, STATE_SET "selected" 0.0;
 		transition, DECELERATE 0.5;
 		target, "title";
-		target, "length";
+		target, "duration";
 	    } 
 	    program {
 	        name, "unselected";
@@ -126,7 +126,7 @@
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.5;
 		target, "title";
-		target, "length";
+		target, "duration";
 	    } 
 	    program {
 	        name, "play_it";
