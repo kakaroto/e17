@@ -17,7 +17,7 @@
 	rel2 { to, BG; relative, 1.0 1.0; offset, -25 2; } 
 	text { text, "title"; font, "Edje.visitor1"; size, 9; align, 0.0 0.0; } } }
 //	
-	part { name, "length"; type, TEXT; mouse_events, 1;
+	part { name, "duration"; type, TEXT; mouse_events, 1;
 	description { state, "default" 0.0; color,  31 31 55 128;
 	text { text, "00:00"; font, "Edje.visitor1"; size, 9; align, 1.0 1.0; } }
 

@@ -339,7 +339,7 @@
 	rel1 { to, RIGHT"lcd"; relative, 0 1; offset, 8 0; }
 	rel2 { to, RIGHT"border"; relative, 0 0; offset, -8 -1; } } }
 
-	part { name, "playlist"; type, RECT; mouse_events, 1; repeat_events, 1; clip_to, "playlistPanel";
+	part { name, "playlist.container"; type, RECT; mouse_events, 1; repeat_events, 1; clip_to, "playlistPanel";
 	description { state, "default" 0.0; min, 0 62; max, 120 62;
 	rel1 { to, "playlistPanel"; relative, 0.0 0.0; offset, 0 -10; }
 	rel2 { to, "playlistPanel"; relative, 1.0 1.0; offset, 0 1; }
