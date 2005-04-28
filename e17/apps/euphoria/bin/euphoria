@@ -23,7 +23,7 @@ class Euphoria
 
 	include Singleton
 
-	attr_reader :xmms, :edje
+	attr_reader :xmms, :ee, :edje
 
 	def initialize
 		@edje = nil
@@ -85,6 +85,14 @@ class Euphoria
 		handle_current_pos(@xmms.playlist_current_pos.wait)
 	end
 
+	def show
+		if @edje.data("has_separate_playlist").nil?
+			@playlist.show(@theme, false)
+		end
+
+		@ee.show
+	end
+
 private
 	def init_gui
 		@ee = Ecore::Evas::SoftwareX11.new
@@ -124,7 +132,6 @@ private
 		@ee.set_size_min(w, h)
 
 		@ee.resize(w, h)
-		@ee.show
 
 		@ee.shaped = !@edje.data("shaped").nil?
 
@@ -196,7 +203,7 @@ private
 			puts source
 		end
 
-		@edje.on_signal("playlist.open") { @playlist.show(@theme) }
+		@edje.on_signal("playlist.open") { @playlist.show(@theme, true) }
 
 		@edje.on_signal("TOGGLE_REPEAT_MODE") do |sig, source|
 			# don't react on our own emission
@@ -293,4 +300,5 @@ private
 end
 
 $x = Euphoria.instance
+Euphoria.instance.show
 Ecore::main_loop_begin

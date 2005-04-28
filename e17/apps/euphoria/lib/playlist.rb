@@ -58,46 +58,19 @@ class Playlist < Array
 		@current_pos && self[@current_pos]
 	end
 
-	def show(eet)
+	def show(eet, is_separate)
 		return unless @ee.nil?
 
 		@eet = eet
-		@ee = Ecore::Evas::SoftwareX11.new
-		@ee.title = "Euphoria Playlist"
-		@ee.borderless = true
 
-		@ee.on_pre_render { Edje::thaw }
-		@ee.on_post_render { Edje::freeze }
-
-		@ee.on_resize do
-			x, y, w, h = @ee.geometry
-
-			@edje.resize(w, h)
-			@dragger.resize(w, h)
+		if is_separate
+			setup_ee
+		else
+			@ee = Euphoria.instance.ee
+			@edje = Euphoria.instance.edje
 		end
 
-		@dragger = Esmart::Draggies.new(@ee)
-		@dragger.name = "dragger"
-		@dragger.button = 1
-		@dragger.show
-
-		@edje = Edje::Edje.new(@ee.evas)
-		@edje.load(eet, "playlist")
-		@edje.name = "edje"
-		@edje.show
-
-		w, h = @edje.get_size_max
-		@ee.set_size_max(w, h)
-
-		w, h = @edje.get_size_min
-		@ee.set_size_min(w, h)
-
-		@ee.resize(w, h)
-		@ee.show
-
-		@ee.shaped = !@edje.data("shaped").nil?
-
-		@container = Esmart::Container.new(@ee.evas)
+		@container = Esmart::Container.new(@edje.evas)
 		@container.name = "playlist"
 		@container.direction = Esmart::Container::VERTICAL
 		@container.spacing = 0
@@ -106,14 +79,16 @@ class Playlist < Array
 
 		@edje.part("playlist.container").swallow(@container)
 
-		@edje.on_signal("close") do
-			each { |i| i.hide }
+		if is_separate
+			@edje.on_signal("close") do
+				each { |i| i.hide }
 
-			@edje = nil
-			@container = nil
-			@dragger = nil
-			@ee.delete
-			@ee = nil
+				@edje = nil
+				@container = nil
+				@dragger = nil
+				@ee.delete
+				@ee = nil
+			end
 		end
 
 		@edje.on_signal("drag", "playlist.scrollbar.handle") do
@@ -154,5 +129,43 @@ class Playlist < Array
 	def clear
 		each { |i| i.hide if i.visible? }
 		super
+	end
+
+	private
+	def setup_ee
+		@ee = Ecore::Evas::SoftwareX11.new
+		@ee.title = "Euphoria Playlist"
+		@ee.borderless = true
+
+		@ee.on_pre_render { Edje::thaw }
+		@ee.on_post_render { Edje::freeze }
+
+		@ee.on_resize do
+			x, y, w, h = @ee.geometry
+
+			@edje.resize(w, h)
+			@dragger.resize(w, h)
+		end
+
+		@dragger = Esmart::Draggies.new(@ee)
+		@dragger.name = "dragger"
+		@dragger.button = 1
+		@dragger.show
+
+		@edje = Edje::Edje.new(@ee.evas)
+		@edje.load(@eet, "playlist")
+		@edje.name = "edje"
+		@edje.show
+
+		w, h = @edje.get_size_max
+		@ee.set_size_max(w, h)
+
+		w, h = @edje.get_size_min
+		@ee.set_size_min(w, h)
+
+		@ee.resize(w, h)
+		@ee.show
+
+		@ee.shaped = !@edje.data("shaped").nil?
 	end
 end

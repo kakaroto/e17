@@ -6,6 +6,19 @@ sitelibdir = Config::CONFIG["sitelibdir"]
 destdir = "#{ENV["DESTDIR"]}"
 prefix = ENV["PREFIX"] || "/usr/local"
 
+themes = ["default", "iio", "streamline", "winter"].map do |t|
+	"data/themes/#{t}/#{t}.edj"
+end
+
+task :themes => themes
+
+rule ".edj" => [".edc"] do |t|
+	Dir.chdir(File.dirname(t.source)) do
+		sh "edje_cc -id img -id images " +
+		   "-fd ../../fonts -fd fonts #{File.basename(t.source)}"
+	end
+end
+
 task :install do |t|
 	ddir = destdir + prefix + "/bin"
 	FileUtils::Verbose.install("bin/euphoria", ddir, :mode => 0755)
