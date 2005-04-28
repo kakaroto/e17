@@ -472,20 +472,22 @@ EwinGetPosition(const EWin * ewin, int *px, int *py)
 static void
 EwinGetGeometry(EWin * ewin)
 {
-   int                 x, y;
+   int                 x, y, l, r, t, b;
 
    EwinGetPosition(ewin, &x, &y);
 
-   ewin->client.x = x + ewin->border->border.left;
-   ewin->client.y = y + ewin->border->border.top;
+   l = ewin->border->border.left;
+   r = ewin->border->border.right;
+   t = ewin->border->border.top;
+   b = ewin->border->border.bottom;
 
-   EoSetX(ewin, ewin->shape_x = x);
-   EoSetY(ewin, ewin->shape_y = y);
+   ewin->client.x = x + l;
+   ewin->client.y = y + t;
 
-   EoSetW(ewin, ewin->client.w +
-	  ewin->border->border.left + ewin->border->border.right);
-   EoSetH(ewin, ewin->client.h +
-	  ewin->border->border.top + ewin->border->border.bottom);
+   ewin->shape_x = x;
+   ewin->shape_y = y;
+
+   EoMoveResize(ewin, x, y, ewin->client.w + l + r, ewin->client.h + t + b);
 }
 
 void
@@ -789,8 +791,8 @@ AddToFamily(EWin * ewin, Window win)
 	     newWinY = MAX(newWinY, 0);
 
 	     /* this works for me... */
-	     EoSetX(ewin, x = newWinX);
-	     EoSetY(ewin, y = newWinY);
+	     x = newWinX;
+	     y = newWinY;
 	  }
 	else
 	  {

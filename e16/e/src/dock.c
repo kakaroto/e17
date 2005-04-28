@@ -118,8 +118,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 	y = VRoot.h - h / 2;
      }
 
-   EoSetX(eapp, x);
-   EoSetY(eapp, y);
+   EoMove(eapp, x, y);
 }
 
 void

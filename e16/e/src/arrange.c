@@ -789,17 +789,21 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 void
 ArrangeEwin(EWin * ewin)
 {
+   int                 x, y;
+
    ewin->client.already_placed = 1;
-   ArrangeEwinXY(ewin, &EoGetX(ewin), &EoGetY(ewin));
-   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+   ArrangeEwinXY(ewin, &x, &y);
+   MoveEwin(ewin, x, y);
 }
 
 void
 ArrangeEwinCentered(EWin * ewin, int focus)
 {
+   int                 x, y;
+
    ewin->client.already_placed = 1;
-   ArrangeEwinCenteredXY(ewin, &EoGetX(ewin), &EoGetY(ewin));
-   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+   ArrangeEwinCenteredXY(ewin, &x, &y);
+   MoveEwin(ewin, x, y);
    if (focus)
       FocusToEWin(ewin, FOCUS_SET);
 }
