@@ -592,7 +592,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 	 _engage_cb_event_border_uniconify, eb);
    
    /* xdnd alpha code - this shouldnt hurt or break anything */
-   e_hints_window_visible_set(eb->con->bg_win);   
+   //e_hints_window_visible_set(eb->con->bg_win);   
    ecore_x_dnd_aware_set(eb->con->bg_win, 1);
    ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _engage_cb_event_dnd_drop , eb);
    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _engage_cb_event_dnd_position, eb);
