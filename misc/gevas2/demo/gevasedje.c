@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002 Ben Martin
+ * Copyright (C) 2005 Ben Martin
  *
  * See COPYING for full details of copying & use of this software.
  *
@@ -19,10 +19,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "config.h"
 
 #include <gevas.h>
 #include <gevasimage.h>
+#include <gevasedje.h>
 #include <gevastext.h>
 #include <gevasevh_alpha.h>
 #include <gevasevh_drag.h>
@@ -42,70 +42,14 @@
 
 GtkgEvasImage* gimage = 0;
 GtkWidget *gevas;
-GtkProgressBar*   x_coord_tracker = 0;
-GtkWidget*        y_coord_tracker = 0;
 GtkWidget*        e_logo_label = 0;
 
 int CANVAS_WIDTH = 1000;
 int CANVAS_HEIGHT = 1000;
 
-
 static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
 {
 	gtk_main_quit();
-	return FALSE;
-}
-
-
-
-static gint raptor_moved(
-    GtkgEvasObj* o,
-    Evas_Coord* x, Evas_Coord* y,
-	gpointer user_data )
-{
-    g_return_val_if_fail(o     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
-    g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
-
-/*     printf("raptor_moved() x:%d y:%d\n", *x, *y ); */
-    gtk_progress_bar_set_fraction( x_coord_tracker, (1.0 * (*x)) / CANVAS_WIDTH ); 
-    gtk_range_set_value( GTK_RANGE(y_coord_tracker), *y );
-    
-    return GEVASOBJ_SIG_OK;
-}
-
-void y_coord_changed( GtkRange *range, gpointer user_data )
-{
-    GtkgEvasObj* go = (GtkgEvasObj*)user_data;
-    gint v = (gint)gtk_range_get_value( range );
-
-    Evas_Coord x;
-    Evas_Coord y;
-
-    gevasobj_get_location( go, &x, &y );
-	gevasobj_move( go, x, v );
-    
-}
-
-static gboolean
-gtk_mouse_down_cb(GtkObject * object,
-				  GtkObject * gevasobj, gint _b, gint _x, gint _y,
-				  gpointer data)
-{
-    char buffer[1024];
-	snprintf(buffer,1000,"gtk_mouse_down_cb b:%d x:%d y:%d", _b, _x, _y);
-    gtk_label_set_text( e_logo_label, buffer );
-	return FALSE;
-}
-
-static gboolean
-gtk_mouse_up_cb(GtkObject * object,
-				GtkObject * gevasobj, gint _b, gint _x, gint _y, gpointer data)
-{
-    char buffer[1024];
-	snprintf(buffer,1000,"gtk_mouse_up_cb b:%d x:%d y:%d", _b, _x, _y);
-    gtk_label_set_text( e_logo_label, buffer );
 	return FALSE;
 }
 
@@ -121,28 +65,14 @@ GtkWidget* createAndShowWindow()
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gevas_new_gtkscrolledwindow( (GtkgEvas**)(&gevas), &wtoy );
 
-    gevas_add_fontpath( GTK_GEVAS(gevas), PACKAGE_DATA_DIR );
     gevas_add_fontpath( GTK_GEVAS(gevas), g_get_current_dir() );
     gevas_add_fontpath( GTK_GEVAS(gevas), "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
 
-    x_coord_tracker = GTK_PROGRESS_BAR(gtk_progress_bar_new());
-    w = GTK_WIDGET( x_coord_tracker );
-    gtk_widget_set_name( w, "x_coord_tracker" );
-    gtk_progress_bar_set_orientation( x_coord_tracker, GTK_PROGRESS_LEFT_TO_RIGHT );
-    gtk_progress_bar_set_text(     x_coord_tracker, "X position" ); 
-
-    y_coord_tracker = gtk_hscale_new_with_range( 0, CANVAS_HEIGHT, 1 );
-    w = GTK_WIDGET( y_coord_tracker );
-    gtk_widget_set_name( w, "y_coord_tracker" );
-//    gtk_progress_bar_set_text(     y_coord_tracker, "Y position" ); 
-
-    e_logo_label = GTK_LABEL(gtk_label_new("Click E logo..."));
+    e_logo_label = GTK_WIDGET(gtk_label_new("Click E logo..."));
     w = GTK_WIDGET( e_logo_label );
     gtk_widget_set_name( w, "ELogoLabel" );
     
     pane = GTK_WIDGET(gtk_vbox_new(0,0));
-    gtk_box_pack_start(GTK_BOX(pane), x_coord_tracker, 0, 0, 0 );
-    gtk_box_pack_start(GTK_BOX(pane), y_coord_tracker, 0, 0, 0 );
     gtk_box_pack_start(GTK_BOX(pane), e_logo_label,    0, 0, 0 );
     gtk_box_pack_start(GTK_BOX(pane), wtoy,  1, 1, 0 );
     
@@ -176,16 +106,6 @@ GtkWidget* createAndShowWindow()
 	GtkObject *evh = gevasevh_drag_new();
 	gevasobj_add_evhandler( GTK_GEVASOBJ( gi ), evh );
 
-    gtk_signal_connect( go, "move_absolute",
-                        GTK_SIGNAL_FUNC( raptor_moved ), go );
-    gtk_signal_connect(GTK_OBJECT (w), "value-changed",
-                       GTK_SIGNAL_FUNC(y_coord_changed), go );
-
-/*     gtk_signal_connect_swapped( go, "move_absolute", */
-/*                                 GTK_SIGNAL_FUNC( gtk_range_set_value ), y_coord_tracker ); */
-/*     void        gtk_range_set_value             (GtkRange *range, */
-/*                                                  gdouble value); */
-
     gi = gimage = gevasimage_new();
     gevasobj_set_gevas( gi, gevas );
     go = GTK_GEVASOBJ( gi );
@@ -194,28 +114,39 @@ GtkWidget* createAndShowWindow()
     gevasobj_set_layer( go, 2 );
     gevasobj_show(      go );
 
-    evh = gevasevh_to_gtk_signal_new();
-	gevasobj_add_evhandler( GTK_GEVASOBJ( gi ), evh );
-    
-	gtk_signal_connect(GTK_OBJECT(evh), "mouse_down",
-					   GTK_SIGNAL_FUNC(gtk_mouse_down_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(evh), "mouse_up",
-					   GTK_SIGNAL_FUNC(gtk_mouse_up_cb), NULL);
+
+	GtkgEvasEdje* gedje = gevasedje_new_with_canvas( gevas );
+    gevasedje_set_file( gedje, "e_logo.eet", "test" );
+    go = GTK_GEVASOBJ(gedje);
+    gevasobj_move(      go, 300, 300 );
+    gevasobj_resize(    go, 370, 350 );
+    gevasobj_set_layer( go, 10 );
+    gevasobj_show(      go );
+
     
     
     gtk_widget_show_all(window);
+    gevas_setup_ecore( (GtkgEvas*)gevas );
+    
     return window;
 }
 
+
+/********************************************************************************/
+/********************************************************************************/
+/********************************************************************************/
+/********************************************************************************/
 
 int main(int argc, char *argv[])
 {
     GtkWidget* win1;
     
+    ecore_init();
+    edje_init();
     gtk_init(&argc, &argv);
 
     win1 = createAndShowWindow();
-//    g_timeout_add( 2000, scaleImage, &win1);
+
     gtk_main();
     return 0;
 }

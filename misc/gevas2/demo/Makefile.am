@@ -20,7 +20,7 @@ cell4.png \
 cell5.png \
 cell6.png \
 bg.png \
-e_logo.png
+e_logo.png e_logo.eet
 
 FONTS = \
 andover.ttf
@@ -28,7 +28,7 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
-TESTS = testgevas gwinmaptest imagesize rawimage gevasanim signalconnect
+TESTS = testgevas gwinmaptest imagesize rawimage gevasanim signalconnect gevasedje
 bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
@@ -48,5 +48,8 @@ gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 signalconnect_SOURCES = signalconnect.c
 signalconnect_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
+
+gevasedje_SOURCES = gevasedje.c
+gevasedje_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@
 
 
