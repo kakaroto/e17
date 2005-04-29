@@ -1,3 +1,5 @@
+#include "../common.inc"
+
 #include "macros/vpanel.edc"
 #include "macros/fd_entity.edc"
 
@@ -19,6 +21,30 @@
 
 	collections { 
 	group { name, "euphoria"; min, 413 94; max, 413 94;
+
+	script {
+		public message (Msg_Type:type, id, ...)
+		{
+			switch (id) {
+				case MSG_ID_SET_SONGNAME: {
+					new buf[128];
+
+					if (type != MSG_STRING_SET || numargs () < 5)
+						return;
+
+					getsarg (2, buf, 128);
+					set_text (PART:"artist_name", buf);
+
+					getsarg (3, buf, 128);
+					set_text (PART:"song_name", buf);
+
+					getsarg (4, buf, 128);
+					set_text (PART:"album_name", buf);
+				}
+			}
+		}
+	}
+
 	    parts { 
 #include "collections/base_to.edc" 
 	    }
