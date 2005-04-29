@@ -829,18 +829,20 @@ doSMExit(int mode, const char *params)
    if (!params)
       SessionSave(1);
    Real_SaveSnapInfo(0, NULL);
-   EHintsSetInfoOnAll();
-   EwinsSetFree();
-   ModulesSignal(ESIGNAL_EXIT, NULL);
-   if (Mode.wm.startup && Mode.wm.exiting)
-      MapUnmap(1);
 
    if (disp)
      {
+	/* We may get here from HandleXIOError */
+	EHintsSetInfoOnAll();
+	EwinsSetFree();
+	if (Mode.wm.startup && Mode.wm.exiting)
+	   MapUnmap(1);
 	XSelectInput(disp, VRoot.win, 0);
 	ExtInitWinKill();
 	XSync(disp, False);
      }
+
+   ModulesSignal(ESIGNAL_EXIT, NULL);
 
    ss = NULL;
    switch (mode)
