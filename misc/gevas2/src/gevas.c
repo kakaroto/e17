@@ -1233,7 +1233,7 @@ static gint gevas_focus_out(GtkWidget * widget, GdkEventFocus * event)
 
 static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 {
-	GtkWidget *widget;
+    GtkWidget *widget;
 
 	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
@@ -1283,7 +1283,6 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 
 
 
-    
     evas_render(ev->evas);
 
 
@@ -1336,7 +1335,7 @@ static gint gevas_view_redraw_cb(gpointer data)
     
 //    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
 
-//    evas_obscured_clear(ev->evas);
+    evas_obscured_clear(ev->evas);
     evas_render(ev->evas);
 
     
