@@ -7,4 +7,7 @@ Just the stuff I can think of...
 * directory renaming?
 * if an eapp is under the arrows in the left menu it will be clicked when
   you click the arrow
+* need to handle directories that aren't in the .order file. They come at
+  the end of the list
+
 
