@@ -109,6 +109,8 @@ GEVASEV_HANDLER_RET
 gevasev_to_gtk_signal_mouse_down(GtkObject * object, GtkObject * gevasobj,
 								 int _b, int _x, int _y)
 {
+    printf("gevasev_to_gtk_signal_mouse_down()\n");
+    
 	gboolean return_val;
 	return_val = FALSE;
 	gtk_signal_emit(GTK_OBJECT(object),

@@ -33,8 +33,9 @@
 #define INC_GTK_GEVASEDJE_H
 
 #include <gtk/gtkobject.h>
-#include "gevasobj.h"
-#include "gevas.h"
+#include <gevasobj.h>
+#include <gevas.h>
+#include <Edje.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,6 +73,9 @@ typedef struct _GtkgEvasEdjeClass GtkgEvasEdjeClass;
 
 	guint gevasedje_get_type(void);
 	GtkgEvasEdje *gevasedje_new(void);
+	GtkgEvasEdje *gevasedje_new_with_canvas( gpointer gevas );
+    void gevasedje_set_file( GtkgEvasEdje* gedje, const char* filename, const char* part );
+    
     void gevasedje_set_edje( GtkgEvasEdje* ev, Evas_Object* e );
     Evas_Object* gevasedje_get_edje( GtkgEvasEdje* ev );
 

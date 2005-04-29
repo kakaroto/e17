@@ -139,14 +139,38 @@ static void gevasedje_init(GtkgEvasEdje * ev)
     ev->m_edje = 0;
 }
 
-GtkgEvasEdje *gevasedje_new(void)
+GtkgEvasEdje *
+gevasedje_new(void)
 {
 	GtkgEvasEdje *ev;
 
 	ev = gtk_type_new(gevasedje_get_type());
+    ev->m_edje = 0;
 
 	return GTK_GEVASEDJE(ev);
 }
+
+GtkgEvasEdje *
+gevasedje_new_with_canvas( gpointer gevas )
+{
+	GtkgEvasEdje *ev;
+
+	ev = gtk_type_new(gevasedje_get_type());
+    gevasobj_set_gevas( ev, gevas );
+    Evas* evas = gevas_get_evas(GTK_GEVAS(gevas));
+    Evas_Object* edje = edje_object_add( evas );
+    ev->m_edje = edje;
+    _gevas_set_obj( GTK_OBJECT(ev), ev->m_edje );
+
+    return GTK_GEVASEDJE(ev);
+}
+
+void gevasedje_set_file( GtkgEvasEdje* gedje, const char* filename, const char* part )
+{
+    edje_object_file_set(gedje->m_edje, filename, part );
+}
+
+
 
 /* GtkObject functions */
 

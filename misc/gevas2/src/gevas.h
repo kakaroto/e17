@@ -33,6 +33,8 @@
 
 #include <gtk/gtkwidget.h>
 #include <Evas.h>
+#include <Ecore.h>
+#include <Ecore_X.h>
 
 
 
@@ -147,7 +149,9 @@ struct _GtkgEvas {
 
     // Place to find images
     GList* image_prefix_list;
-    
+
+    // for using edjies
+    guint ecore_timer_id;
 	};
 
 struct _GtkgEvasClass {
@@ -193,6 +197,7 @@ struct _GtkgEvasClass {
 	guint gevas_get_type(void);
 	GtkWidget *gevas_new(void);
 
+	void gevas_setup_ecore(GtkgEvas * gevas);
 	void gevas_queue_redraw(GtkgEvas * gevas);
 
 	GdkEvent *gevas_get_current_event(GtkgEvas * gevas);

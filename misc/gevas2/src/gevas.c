@@ -60,7 +60,10 @@
 
 #include "Evas_Engine_Software_X11.h"
 
-#define EVAS_FREE_HAS_BUGS
+#include <Ecore_X.h>
+#include <Ecore_Evas.h>
+
+//#define EVAS_FREE_HAS_BUGS
 
 
 /* Always disable NLS, since we have no config.h; 
@@ -234,7 +237,7 @@ void _show_evas_checked_bg(GtkWidget * widget, GtkgEvas * ev)
 }
 
 /* FIXME: find a better iterator for glist. */
-#define __HANDLE_EVENT_DISPATCH( func_to_call ) { \
+#define __HANDLE_EVENT_DISPATCH( func_to_call ) if( _data ) { \
 		GSList* hans;  \
 		int i=0,size=0; \
 		hans = gevasobj_get_evhandlers( GTK_GEVASOBJ(_data) ); \
@@ -282,7 +285,36 @@ __gevas_mouse_down(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->output.x;
     int _y = ev->output.y;
 
-    printf("__gevas_mouse_down() _b:%d\n",_b);
+    // _data lags one click for some reason.
+    Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
+    _data = EVASO_TO_GTKO(topobj);
+    
+/*     { */
+/*         GSList* hans; */
+/* 		int i=0,size=0; */
+/* 		hans = gevasobj_get_evhandlers( GTK_GEVASOBJ(_data) ); */
+/* 		size = g_slist_length( hans ); */
+/*         printf("__gevas_mouse_down() _b:%d sz:%d\n",_b,size); */
+/*         if( size ) */
+/*         { */
+/*             gpointer hdata = g_slist_nth_data( hans, 0 ); */
+/*             GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); */
+/*             printf("__gevas_mouse_down() _b:%d sz:%d evh:%x\n",_b,size,k); */
+/*         } */
+/*         Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 ); */
+/*         printf("__gevas_mouse_down(2) _b:%d sz:%d top:%x\n",_b,size,topobj); */
+/* 		hans = gevasobj_get_evhandlers( GTK_GEVASOBJ(EVASO_TO_GTKO(topobj)) ); */
+/* 		size = g_slist_length( hans ); */
+/*         if( size ) */
+/*         { */
+/*             gpointer hdata = g_slist_nth_data( hans, 0 ); */
+/*             GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); */
+/*             printf("__gevas_mouse_down(2) _b:%d sz:%d evh:%x\n",_b,size,k); */
+/*         } */
+        
+        
+/*     } */
+    
     
 	__HANDLE_EVENT_DISPATCH(handler_mouse_down)
 }
@@ -294,6 +326,10 @@ __gevas_mouse_up(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->output.x;
     int _y = ev->output.y;
 
+    // _data lags one click for some reason.
+    Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
+    _data = EVASO_TO_GTKO(topobj);
+    
 	__HANDLE_EVENT_DISPATCH(handler_mouse_up)
 }
 void
@@ -304,7 +340,10 @@ __gevas_mouse_move(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->cur.output.x;
     int _y = ev->cur.output.y;
 
-    printf("__gevas_mouse_move() _b:%d\n",_b);
+/*     printf("__gevas_mouse_move() _b:%d\n",_b); */
+    // _data lags one click for some reason.
+    Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
+    _data = EVASO_TO_GTKO(topobj);
     
 	__HANDLE_EVENT_DISPATCH(handler_mouse_move)
 }
@@ -522,6 +561,7 @@ static void gevas_init(GtkgEvas * ev)
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
 /*     printf("gevas_init() 1\n"); */
 
+    ev->ecore_timer_id  = 0;
     ev->scrolledwindow  = 0;
 	ev->evas            = evas_new();
     ev->show_checked_bg = 0;
@@ -570,6 +610,9 @@ static void gevas_destroy(GtkObject*  object)
 
 //	printf("gevas_destroy() 2\n"); 
 
+    if( ev->ecore_timer_id )
+        g_source_remove( ev->ecore_timer_id );
+        
     /* Chain up */
 	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
 		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
@@ -876,6 +919,37 @@ static void gevas_realize(GtkWidget * widget)
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
 
 #if 0
+    /* We can't go this way because it's not easy to
+       convert a Window into a gdk_window
+    */
+    Ecore_X_Window parent_ewin = GDK_WINDOW_XID(gtk_widget_get_parent_window(widget));
+    Ecore_Evas* ee = ecore_evas_software_x11_new(
+        0, parent_ewin, 
+        widget->allocation.x, widget->allocation.y,
+        widget->allocation.width, widget->allocation.height );
+//    ecore_evas_show(ee);
+    evas = ecore_evas_get( ee );
+    ev->evas = evas;
+    
+    Ecore_X_Window ewin = ecore_evas_software_x11_window_get( ee );
+    GdkWindow* gwin = gdk_window_foreign_new( ewin );
+    printf("ecore_evas:%lx evas:%lx ewin:%lx gwin:%lx\n",ee,evas,ewin,gwin);
+    widget->window = gwin;
+	gdk_window_set_user_data(widget->window, widget);
+	evas = ev->evas;
+
+	widget->style = gtk_style_attach(widget->style, widget->window);
+	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
+
+/* 	gdk_window_set_back_pixmap(widget->window, NULL, FALSE); */
+
+/*     // FIXME: Maybe we can do something better than single buffering? */
+/*     gtk_widget_set_double_buffered( widget, 0); */
+    return;
+#endif
+    
+    
+#if 0
 	Visual *vis;
 	Colormap cmap;
 	GdkVisual *gdk_vis;
@@ -920,11 +994,12 @@ static void gevas_realize(GtkWidget * widget)
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
 
-	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget),
+ 	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget),
 									&attributes, attributes_mask);
 	gdk_window_set_user_data(widget->window, widget);
 	evas = ev->evas;
 
+    
   /** ** **/
 
 	/* Style */
@@ -956,7 +1031,7 @@ static void gevas_realize(GtkWidget * widget)
         
         einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
 
-//        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
+        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
         
         /* the following is specific to the engine */
         einfo->info.display  = GDK_WINDOW_XDISPLAY(widget->window);
@@ -1292,7 +1367,7 @@ static gint gevas_view_redraw_cb(gpointer data)
     
 //    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
 
-    evas_obscured_clear(ev->evas);
+//    evas_obscured_clear(ev->evas);
     evas_render(ev->evas);
 
     
@@ -1324,7 +1399,33 @@ static gint gevas_view_redraw_cb(gpointer data)
 	return FALSE;
 }
 
+gint gevas_edje_animate_timer_cb( gpointer data )
+{
+    if (!GTK_WIDGET_MAPPED(GTK_WIDGET(data)))
+        return 1;
 
+    ecore_main_loop_iterate();
+    gevas_queue_redraw( GTK_GEVAS(data) );
+    return 1; // call again
+}
+
+void gevas_setup_ecore(GtkgEvas * gevas)
+{
+    GtkgEvas * ev = gevas;
+
+    if( ev->ecore_timer_id )
+        g_source_remove( ev->ecore_timer_id );
+
+    int fps = 15;
+    if( ecore_animator_frametime_get() )
+    {
+        fps = 1.0/ecore_animator_frametime_get();
+    }
+    
+    ev->ecore_timer_id  = g_timeout_add( 1000.0 / fps,
+                                         gevas_edje_animate_timer_cb,
+                                         gevas );
+}
 
 void gevas_queue_redraw(GtkgEvas * gevas)
 {
@@ -1337,10 +1438,13 @@ void gevas_queue_redraw(GtkgEvas * gevas)
     /* This call seems to be much slower to use.*/
     /*gtk_widget_queue_draw( gevas );*/
 
-	if (gevas->current_idle)
-		gtk_idle_remove(gevas->current_idle);
+	if (!gevas->current_idle)
+        gevas->current_idle = gtk_idle_add(gevas_view_redraw_cb, gevas);
+    
+/* 	if (gevas->current_idle) */
+/* 		gtk_idle_remove(gevas->current_idle); */
 
-	gevas->current_idle = gtk_idle_add(gevas_view_redraw_cb, gevas);
+/* 	gevas->current_idle = gtk_idle_add(gevas_view_redraw_cb, gevas); */
 
 }
 
