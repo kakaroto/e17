@@ -146,6 +146,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, memory_paranoia, 1),
    CFG_ITEM_BOOL(Conf, save_under, 0),
    CFG_ITEM_INT(Conf, edge_flip_resistance, 25),
+   CFG_ITEM_BOOL(Conf, argb_clients_borderless, 1),
 };
 #define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 

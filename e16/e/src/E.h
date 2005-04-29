@@ -978,6 +978,7 @@ typedef struct
    char                memory_paranoia;
    char                save_under;
    int                 edge_flip_resistance;
+   char                argb_clients_borderless;
 
    /* Not used */
 #ifdef HAS_XINERAMA

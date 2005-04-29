@@ -70,6 +70,14 @@ EwinCreate(Window win, int type)
    XWindowAttributes   win_attr;
 
    require_argb = 0;
+   if (type == EWIN_TYPE_NORMAL)
+     {
+	if (!XGetWindowAttributes(disp, win, &win_attr))
+	   return NULL;
+	if (win_attr.depth == 32)
+	   require_argb = 1;
+     }
+
    ewin = Ecalloc(1, sizeof(EWin));
 
    ewin->type = type;
@@ -110,17 +118,10 @@ EwinCreate(Window win, int type)
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
-   {
-      Status              s = XGetWindowAttributes(disp, win, &win_attr);
-
-      if (s != BadDrawable && s != BadWindow && win_attr.depth == 32)
-	{
-	   frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
-	   require_argb = 1;
-	}
-      else
-	 frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
-   }
+   if (require_argb)
+      frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
+   else
+      frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
 
    ewin->o.stacked = -1;	/* Not placed on desk yet */
    EobjInit(&ewin->o, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, NULL);
@@ -167,6 +168,10 @@ EwinCreate(Window win, int type)
 	XSetWindowBorderWidth(disp, win, 0);
 	ewin->client.bw = 0;
      }
+
+   if (require_argb && Conf.argb_clients_borderless)
+      ewin->border =
+	 FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    ModulesSignal(ESIGNAL_EWIN_CREATE, ewin);
 
@@ -530,6 +535,8 @@ Adopt(EWin * ewin, Window win)
       EwinCleanup(ewin);
    else
       ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
+   if (!ewin)
+      return NULL;
 
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
@@ -590,6 +597,8 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
    EWin               *ewin;
 
    ewin = EwinCreate(win, type);
+   if (!ewin)
+      return NULL;
 
    ewin->border = border;
 
@@ -642,15 +651,13 @@ AddToFamily(EWin * ewin, Window win)
 
    ecore_x_grab();
 
-   if (!WinExists(win))
-     {
-	Eprintf("Window is gone %#lx\n", win);
-	ecore_x_ungrab();
-	return;
-     }
-
    /* adopt the new baby */
    ewin = Adopt(ewin, win);
+   if (!ewin)
+     {
+	Eprintf("Window is gone %#lx\n", win);
+	goto done;
+     }
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    desk = EoGetDesk(ewin);
@@ -753,8 +760,7 @@ AddToFamily(EWin * ewin, Window win)
 	EwinSetFullscreen(ewin, 1);
 	ewin->client.already_placed = 1;
 	ShowEwin(ewin);
-	ecore_x_ungrab();
-	return;
+	goto done;
      }
 
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
@@ -823,11 +829,10 @@ AddToFamily(EWin * ewin, Window win)
    if (ewin->client.start_iconified)
      {
 	MoveEwinToDesktopAt(ewin, desk, x, y);
-	ecore_x_ungrab();
 	ewin->state = EWIN_STATE_MAPPED;
 	EwinIconify(ewin);
 	ewin->state = EWIN_STATE_ICONIC;
-	return;
+	goto done;
      }
 
    /* if we should slide it in and are not currently in the middle of a slide */
@@ -857,10 +862,9 @@ AddToFamily(EWin * ewin, Window win)
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.have_place_grab = 1;
 	Mode.place = 1;
-	ecore_x_ungrab();
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	ActionMoveStart(ewin, 1, 0, 0);
-	return;
+	goto done;
      }
    else if ((doslide) && (!Mode.doingslide))
      {
@@ -896,6 +900,7 @@ AddToFamily(EWin * ewin, Window win)
 	ShowEwin(ewin);
      }
 
+ done:
    ecore_x_ungrab();
 }
 
@@ -913,6 +918,8 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
       b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    ewin = AdoptInternal(win, b, type, init, ptr);
+   if (!ewin)
+      goto done;
 
 #if 0
    Eprintf("Desk=%d, layer=%d, sticky=%d, floating=%d\n",
@@ -922,6 +929,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 
    EwinConformToDesktop(ewin);
 
+ done:
    ecore_x_ungrab();
 
    return ewin;
