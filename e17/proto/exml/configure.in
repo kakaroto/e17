@@ -63,8 +63,7 @@ AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
 if [ test -z $ECORE_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 ecore_cflags=`$ECORE_CONFIG --cflags`
 ecore_libs=`$ECORE_CONFIG --libs`
@@ -76,8 +75,7 @@ AC_PATH_PROG(XML2_CONFIG, $PROG, "", $PATH)
 if [ test -z $XML2_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 xml2_cflags=`$XML2_CONFIG --cflags`
 xml2_libs=`$XML2_CONFIG --libs`

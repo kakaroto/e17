@@ -63,8 +63,7 @@ AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
 if [ test -z $ESMART_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 esmart_cflags=`$ESMART_CONFIG --cflags`
 esmart_libs=`$ESMART_CONFIG --libs`
@@ -76,8 +75,7 @@ AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
 if [ test -z $EVAS_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 evas_cflags=`$EVAS_CONFIG --cflags`
 evas_libs=`$EVAS_CONFIG --libs`
@@ -89,8 +87,7 @@ AC_PATH_PROG(EDB_CONFIG, $PROG, "", $PATH)
 if [ test -z $EDB_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 edb_cflags=`$EDB_CONFIG --cflags`
 edb_libs=`$EDB_CONFIG --libs`
@@ -102,8 +99,7 @@ AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
 if [ test -z $ECORE_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 ecore_cflags=`$ECORE_CONFIG --cflags`
 ecore_libs=`$ECORE_CONFIG --libs`
@@ -115,8 +111,7 @@ AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
 if [ test -z $EDJE_CONFIG ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR(Cannot find $PROG)
 fi
 edje_cflags=`$EDJE_CONFIG --cflags`
 edje_libs=`$EDJE_CONFIG --libs`

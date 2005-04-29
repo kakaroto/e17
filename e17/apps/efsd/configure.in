@@ -55,8 +55,8 @@ You can download FAM at:
 http://oss.sgi.com/projects/fam
 ------------------------------------------------------
 EOF
-exit 1;
-fi;
+AC_MSG_ERROR(FAM not found)
+fi
 
 
 dnl Check for pthreads. Make sure we have both

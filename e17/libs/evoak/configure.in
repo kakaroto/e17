@@ -115,8 +115,7 @@ VV=`vser $V`
 VM="0.9.9"
 VVM=`vser $VM`
 if test $VV -lt $VVM; then
-  echo "Error. Eet is not at least "$VM". It is "$V". Abort."
-  exit -1
+  AC_MSG_ERROR(Eet is not at least "$VM". It is "$V".)
 fi
 
 V=`$EVAS_CONFIG --version`
@@ -124,8 +123,7 @@ VV=`vser $V`
 VM="0.9.9.004"
 VVM=`vser $VM`
 if test $VV -lt $VVM; then
-  echo "Error. Evas is not at least "$VM". It is "$V". Abort."
-  exit -1
+  AC_MSG_ERROR(Evas is not at least "$VM". It is "$V".)
 fi
 
 my_cflags=`$EVAS_CONFIG --cflags`" "`$ECORE_CONFIG --cflags`" "`$EDJE_CONFIG --cflags`" "`$EET_CONFIG --cflags`" "`$EMBRYO_CONFIG --cflags`
@@ -156,5 +154,4 @@ echo ""
 echo ""
 echo "###################################################"
 echo ""
-exit -1
-
+AC_MSG_ERROR(Please fix evoak for us)

@@ -59,7 +59,6 @@ AC_ARG_WITH(edb-config,
       echo "was not found.  Please check the path and make sure "
       echo "the script exists and is executable."
       AC_MSG_ERROR([Fatal Error: no edb-config detected.])
-      exit;
    fi
 ],
 [
@@ -77,7 +76,6 @@ AC_ARG_WITH(edb-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-edb-config."
     AC_MSG_ERROR([Fatal Error: no edb-config detected.])
-    exit;
   fi
 ])  
 
@@ -94,7 +92,6 @@ AC_ARG_WITH(evas-config,
       echo "was not found.  Please check the path and make sure "
       echo "the script exists and is executable."
       AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-      exit;
    fi
 ],
 [
@@ -112,7 +109,6 @@ AC_ARG_WITH(evas-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-evas-config."
     AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-    exit;
   fi
 ])  
 
@@ -129,7 +125,6 @@ AC_ARG_WITH(ecore-config,
       echo "was not found.  Please check the path and make sure "
       echo "the script exists and is executable."
       AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
-      exit;
    fi
    ],
 [
@@ -147,7 +142,6 @@ AC_ARG_WITH(ecore-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-ecore-config."
     AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
-    exit;
   fi
 ])
 
