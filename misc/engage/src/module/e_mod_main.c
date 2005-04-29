@@ -210,7 +210,7 @@ _engage_new()
    
    _engage_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eapp", 0);
    if (!_engage_unmatched_app)
-     printf("Error, engage cannot find default icon - you need to make isntall\n");
+     printf("ERROR: Engage could not locate default icon xapp.eapp - please make install\n");
 
    conf_bar_edd = E_CONFIG_DD_NEW("Engage_Config_Bar", Config_Bar);
 #undef T
