@@ -4,6 +4,8 @@
 
 #define WINTER_COLOR WINTER_BLUE
 
+#include "../common.inc"
+
 #include "macros/macros.inc"
 #include "macros/toggle.inc"
 
