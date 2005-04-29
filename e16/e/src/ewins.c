@@ -66,7 +66,10 @@ EwinCreate(Window win, int type)
    EWin               *ewin;
    XSetWindowAttributes att;
    Window              frame;
+   int                 require_argb;
+   XWindowAttributes   win_attr;
 
+   require_argb = 0;
    ewin = Ecalloc(1, sizeof(EWin));
 
    ewin->type = type;
@@ -107,7 +110,18 @@ EwinCreate(Window win, int type)
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
-   frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+   {
+      Status              s = XGetWindowAttributes(disp, win, &win_attr);
+
+      if (s != BadDrawable && s != BadWindow && win_attr.depth == 32)
+	{
+	   frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
+	   require_argb = 1;
+	}
+      else
+	 frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+   }
+
    ewin->o.stacked = -1;	/* Not placed on desk yet */
    EobjInit(&ewin->o, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, NULL);
    EoSetDesk(ewin, DesksGetCurrent());
@@ -115,7 +129,11 @@ EwinCreate(Window win, int type)
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 0);
 
-   ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
+   if (require_argb)
+      ewin->win_container =
+	 ECreateVisualWindow(EoGetWin(ewin), 0, 0, 1, 1, 0, &win_attr);
+   else
+      ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    EChangeWindowAttributes(ewin->win_container,

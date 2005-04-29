@@ -266,7 +266,36 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    else
       attr.save_under = False;
    win = XCreateWindow(disp, parent, x, y, w, h, 0,
-		       CopyFromParent, InputOutput, CopyFromParent,
+		       VRoot.depth, InputOutput, VRoot.vis,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
+   EXidSet(win, parent, x, y, w, h, VRoot.depth);
+
+   return win;
+}
+
+/* Creates a window, but takes the visual, depth and the colormap from c_attr. */
+Window
+ECreateVisualWindow(Window parent, int x, int y, int w, int h, int saveunder,
+		    XWindowAttributes * c_attr)
+{
+   Window              win;
+   XSetWindowAttributes attr;
+
+   attr.backing_store = NotUseful;
+   attr.override_redirect = True;
+   attr.border_pixel = 0;
+   attr.colormap = c_attr->colormap;
+/*   attr.background_pixel = 0; */
+   attr.background_pixmap = None;
+   if ((saveunder == 1) && (Conf.save_under))
+      attr.save_under = True;
+   else if (saveunder == 2)
+      attr.save_under = True;
+   else
+      attr.save_under = False;
+   win = XCreateWindow(disp, parent, x, y, w, h, 0,
+		       c_attr->depth, InputOutput, c_attr->visual,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
    EXidSet(win, parent, x, y, w, h, VRoot.depth);

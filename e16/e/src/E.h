@@ -2263,6 +2263,9 @@ void                EventCallbacksProcess(XEvent * ev);
 
 Window              ECreateWindow(Window parent, int x, int y, int w, int h,
 				  int saveunder);
+Window              ECreateVisualWindow(Window parent, int x, int y, int w,
+					int h, int saveunder,
+					XWindowAttributes * child_attr);
 Window              ECreateEventWindow(Window parent, int x, int y, int w,
 				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
