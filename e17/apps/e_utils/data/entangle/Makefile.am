@@ -1,5 +1,4 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = emblem \
-entangle
+SUBDIRS = default
 

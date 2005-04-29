@@ -1,0 +1,110 @@
+ program {
+     name, "go_active_pre";
+     signal, "mouse,in";
+     source, "*";
+     action, STATE_SET "default" 0.0;
+     target, "title_outline";
+     target, "title_bar";
+     target, "title_shadow1";
+     target, "title_shadow2";
+     after, "go_active";
+ }
+ program {
+     name, "go_active";
+     action, STATE_SET "active" 0.0;
+     target, "title_outline";
+     target, "title_bar";
+     transition, LINEAR 0.05;
+     after, "go_active2";
+ }
+ program {
+     name, "go_active2";
+     action, STATE_SET "active" 0.0;
+     target, "title_shadow1";
+     transition, LINEAR 0.05;
+     after, "go_active3";
+     after, "go_active3b";
+ }
+ program {
+     name, "go_active3";
+     action, STATE_SET "active" 0.0;
+     target, "title_shadow2";
+     transition, LINEAR 0.05;
+ }
+ program {
+     name, "go_active3b";
+     action, STATE_SET "active" 0.0;
+     target, "title_glint_1";
+     target, "title_glint_2";
+     transition, LINEAR 0.05;
+     after, "go_active4";
+     after, "go_active4b";
+ }
+ program {
+     name, "go_active4";
+     action, STATE_SET "active2" 0.0;
+     target, "title_glint_2";
+     transition, LINEAR 0.2;
+     after, "go_active5";
+     after, "go_active5b";
+ }  
+ program {
+     name, "go_active4b";
+     action, STATE_SET "active" 0.0;
+     target, "title_glint_3";
+     transition, LINEAR 0.2;
+ }  
+ program {
+     name, "go_active5";
+     action, STATE_SET "active3" 0.0;
+     target, "title_glint_2";
+     transition, LINEAR 0.05;
+ }
+ program {
+     name, "go_active5b";
+     action, STATE_SET "default" 0.0;
+     target, "title_glint_3";
+     transition, LINEAR 0.1;
+     after, "go_active6";
+ }  
+ program {
+     name, "go_active6";
+     action, STATE_SET "default" 0.0;
+     target, "title_glint_1";
+     target, "title_glint_2";
+     target, "title_glint_3";
+ }
+
+ program {   
+     name, "go_passive_pre";
+     signal, "mouse,out";
+     source, "*";
+     action, STATE_SET "active" 0.0;
+     target, "title_outline";
+     target, "title_bar";
+     target, "title_shadow1";
+     target, "title_shadow2";
+     after, "go_passive";
+ }
+ program {
+     name, "go_passive";
+     action, STATE_SET "default" 0.0;
+     target, "title_shadow2";
+     transition, LINEAR 0.1;
+     after, "go_passive2";
+ }
+ program {
+     name, "go_passive2";
+     action, STATE_SET "default" 0.0;
+     target, "title_shadow1";
+     transition, LINEAR 0.1;
+     after, "go_passive3";
+ }
+ program {
+     name, "go_passive3";
+     action, STATE_SET "default" 0.0;
+     target, "title_outline";
+     target, "title_bar";
+     transition, LINEAR 0.1;
+ }
+

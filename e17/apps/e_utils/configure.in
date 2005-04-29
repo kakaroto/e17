@@ -14,6 +14,7 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
+AC_C___ATTRIBUTE__
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
@@ -215,11 +216,14 @@ Makefile
 data/Makefile
 data/emblem/Makefile
 data/emblem/default/Makefile
+data/entangle/Makefile
+data/entangle/default/Makefile
 src/Makefile
 src/bin/Makefile
 src/bin/eapp_edit/Makefile
 src/bin/e17setroot/Makefile
 src/bin/emblem/Makefile
+src/bin/entangle/Makefile
 ],[
 ])
 

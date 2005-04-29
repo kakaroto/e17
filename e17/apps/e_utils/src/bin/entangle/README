@@ -1,0 +1,17 @@
+Entangle
+--------
+
+Entangle is a simple menu editor for E17.
+
+If you want to add an eapp to your menu just drag it from the bar on the
+left onto the menu where you want to place it.
+
+Subdirectories are marked with an arrow, you can click on them to traverse
+into that directory to work on its menu.
+
+You can delete items and directories by middle clicking on the menu. Note,
+if you middle click on a directory it will be erased along with anything in
+it.
+
+Right click and dragging something already in the menu to move it around.
+
