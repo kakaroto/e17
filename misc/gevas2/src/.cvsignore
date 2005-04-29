@@ -1,4 +1,5 @@
 *~
+libgevas.la
 .libs
 .deps
 *.lo

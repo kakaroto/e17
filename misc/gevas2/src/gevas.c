@@ -919,37 +919,6 @@ static void gevas_realize(GtkWidget * widget)
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
 
 #if 0
-    /* We can't go this way because it's not easy to
-       convert a Window into a gdk_window
-    */
-    Ecore_X_Window parent_ewin = GDK_WINDOW_XID(gtk_widget_get_parent_window(widget));
-    Ecore_Evas* ee = ecore_evas_software_x11_new(
-        0, parent_ewin, 
-        widget->allocation.x, widget->allocation.y,
-        widget->allocation.width, widget->allocation.height );
-//    ecore_evas_show(ee);
-    evas = ecore_evas_get( ee );
-    ev->evas = evas;
-    
-    Ecore_X_Window ewin = ecore_evas_software_x11_window_get( ee );
-    GdkWindow* gwin = gdk_window_foreign_new( ewin );
-    printf("ecore_evas:%lx evas:%lx ewin:%lx gwin:%lx\n",ee,evas,ewin,gwin);
-    widget->window = gwin;
-	gdk_window_set_user_data(widget->window, widget);
-	evas = ev->evas;
-
-	widget->style = gtk_style_attach(widget->style, widget->window);
-	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
-
-/* 	gdk_window_set_back_pixmap(widget->window, NULL, FALSE); */
-
-/*     // FIXME: Maybe we can do something better than single buffering? */
-/*     gtk_widget_set_double_buffered( widget, 0); */
-    return;
-#endif
-    
-    
-#if 0
 	Visual *vis;
 	Colormap cmap;
 	GdkVisual *gdk_vis;
