@@ -256,8 +256,8 @@ private
 
 	def ui_fill_track_info(item)
 		unless item.nil?
-			buf = "%s - %s" % [item.artist, item.title]
-			@edje.send_message(Edje::Message.new(buf))
+			msg = Edje::Message.new(0, item.artist, item.title)
+			@edje.send_message(msg)
 		end
 	end
 
