@@ -404,6 +404,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       /* Tell PAM that session has begun */
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
+	 syslog(LOG_NOTICE, "Cannot open pam session for user \"%s\".", e->auth->user);
          if (!e->config->autologin.mode)
          {
             syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
@@ -425,6 +426,7 @@ entrance_session_start_user_session(Entrance_Session * e)
            syslog(LOG_CRIT, "Unable to set user id.");
         shell = strdup(e->auth->pw->pw_shell);
         entrance_session_free(e);
+        syslog(LOG_NOTICE, "Exec session \"%s\".", buf);
         execl(shell, "-", "-c", buf, NULL);
         exit(0);
         break;
@@ -441,6 +443,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    sleep(10);
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
+   syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
    snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
             (int) pid);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
