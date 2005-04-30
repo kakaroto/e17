@@ -83,7 +83,7 @@
       } //part
 
       part {
-        name, "time_text";
+        name, "player.time";
 	type, TEXT;
 	mouse_events, 1;
 	description {

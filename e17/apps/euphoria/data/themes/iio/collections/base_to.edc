@@ -243,7 +243,7 @@
 	image { normal, "h_arrow.png"; }
 	fill { smooth, 1; } } }
 
-	part { name, "time_text"; type, TEXT; mouse_events, 0; clip_to, "trans_Rect";	                  
+	part { name, "player.time"; type, TEXT; mouse_events, 0; clip_to, "trans_Rect";	                  
 	description { state, "default" 0.0; visible, 1;
 	rel1 { to, "trans_Rect"; relative, 0 0; offset, 10 14; }
 	rel2 { to, "trans_Rect"; relative, 0.5 0; offset, 0 0; }
