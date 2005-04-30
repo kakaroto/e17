@@ -143,12 +143,12 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
       else if (strcmp(ev->key, "Home") == 0)
          eclair->seek_to_pos = 0.0; 
 
-      eclair->dont_update_progressbar = 1;
-      emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
       if (eclair->seek_to_pos < 0.0)
          eclair->seek_to_pos = 0.0;
       else if (eclair->seek_to_pos > emotion_object_play_length_get(eclair->video_object))
-         eclair->seek_to_pos = emotion_object_play_length_get(eclair->video_object) - 1;
+         eclair->seek_to_pos = emotion_object_play_length_get(eclair->video_object);
+      eclair->dont_update_progressbar = 1;
+      emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
    }
    else if (strcmp(ev->key, "KP_Divide") == 0 || strcmp(ev->key, "slash") == 0 
       || strcmp(ev->key, "KP_Multiply") == 0 || strcmp(ev->key, "asterisk") == 0)
