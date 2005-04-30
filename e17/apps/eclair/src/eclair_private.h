@@ -1,21 +1,22 @@
 #ifndef _ECLAIR_PRIVATE_H_
 #define _ECLAIR_PRIVATE_H_
 
-#include <stdio.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <gtk/gtk.h>
 #include <pthread.h>
+#include <netdb.h>
 
 typedef struct _Eclair Eclair;
 typedef enum _Eclair_State Eclair_State;
 typedef enum _Eclair_Engine Eclair_Engine;
-typedef struct _Eclair_Playlist_Media_File Eclair_Playlist_Media_File;
+typedef struct _Eclair_Media_File Eclair_Media_File;
 typedef struct _Eclair_Playlist Eclair_Playlist;
 typedef struct _Eclair_Subtitle Eclair_Subtitle;
 typedef struct _Eclair_Subtitles Eclair_Subtitles;
-typedef struct _Eclair_Packet_Chunk Eclair_Packet_Chunk;
+typedef struct _Eclair_Meta_Tag_Manager Eclair_Meta_Tag_Manager;
+typedef struct _Eclair_Cover_Manager Eclair_Cover_Manager;
 typedef struct _Eclair_Config Eclair_Config;
 
 struct _Eclair_Config
@@ -26,14 +27,29 @@ struct _Eclair_Config
    FILE *config_file;
 };
 
-struct _Eclair_Packet_Chunk
+struct _Eclair_Cover_Manager
 {
-   int size;
-   char *data;
+   Evas_List *cover_files_to_treat;
+   struct hostent *amazon_he;
+   Eclair *eclair;
+   Evas_Bool cover_delete_thread;
+   pthread_cond_t cover_cond;
+   pthread_mutex_t cover_mutex;
+   pthread_t cover_thread;
 };
 
-struct _Eclair_Playlist_Media_File
+struct _Eclair_Meta_Tag_Manager
 {
+   Evas_List *meta_tag_files_to_scan;
+   Evas_Bool meta_tag_delete_thread;
+   pthread_cond_t meta_tag_cond;
+   pthread_mutex_t meta_tag_mutex;
+   pthread_t meta_tag_thread;
+};
+
+struct _Eclair_Media_File
+{
+   unsigned int id;
    char *path;
    char *artist;
    char *title;
@@ -91,6 +107,7 @@ struct _Eclair
    Ecore_Evas *gui_window;
    Evas_Object *gui_object;
    Evas_Object *gui_draggies;
+   Evas_Object *gui_cover;
    Evas_Object *playlist_container;
    int playlist_entry_height;
    double seek_to_pos;
@@ -100,20 +117,14 @@ struct _Eclair
    //File chooser related vars
    GtkWidget *file_chooser_widget;
    Evas_Bool file_chooser_th_created;
-   pthread_mutex_t file_chooser_mutex;
    pthread_t file_chooser_thread;
-
-   //Metatag related vars
-   Evas_List *meta_tag_files_to_scan;
-   pthread_mutex_t meta_tag_mutex;
-   pthread_cond_t meta_tag_cond;
-   pthread_t meta_tag_thread;
-   Evas_Bool meta_tag_delete_thread;
 
    //Core vars
    Eclair_State state;
    Eclair_Playlist playlist;
    Eclair_Subtitles subtitles;
+   Eclair_Meta_Tag_Manager meta_tag_manager;
+   Eclair_Cover_Manager cover_manager;
    Eclair_Config config;
 };
 

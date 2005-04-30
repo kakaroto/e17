@@ -128,7 +128,6 @@ void eclair_subtitles_sort(Eclair_Subtitles *subtitles)
 {
    if (!subtitles)
       return;
-
    if (!subtitles->subtitles)
       return;
 
@@ -148,17 +147,12 @@ Evas_Bool eclair_subtitles_load_from_media_file(Eclair_Subtitles *subtitles, con
    if (!(extension_start = rindex(media_file, '.')))
       return 0;
    
-   //ugly... :(
    extension_start_id = extension_start - media_file + 1;
-
    subtitles_filename = (char *)malloc(strlen(media_file) + 10);
    strcpy(subtitles_filename, media_file);
 
    //Try to load srt subtitles
-   subtitles_filename[extension_start_id] = 's';
-   subtitles_filename[extension_start_id + 1] = 'r';
-   subtitles_filename[extension_start_id + 2] = 't';
-   subtitles_filename[extension_start_id + 3] = 0;
+   sprintf(&subtitles_filename[extension_start_id], "srt");
    subtitles->enable = eclair_subtitles_load_srt(subtitles, subtitles_filename);
 
    free(subtitles_filename);
@@ -198,6 +192,7 @@ Evas_Bool eclair_subtitles_load_srt(Eclair_Subtitles *subtitles, const char *pat
          {
             if (new_subtitle)
             {
+               //TODO: improve
                if (new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\n' ||
                   new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] == '\r')
                   new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] = 0;

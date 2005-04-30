@@ -1,8 +1,13 @@
 #include "eclair_callbacks.h"
+#include <string.h>
 #include <Emotion.h>
+#include <Edje.h>
+#include <Ecore_Evas.h>
 #include <Esmart/Esmart_Container.h>
 #include <gtk/gtk.h>
+#include <pthread.h>
 #include "eclair.h"
+#include "eclair_playlist.h"
 
 //Called when eclair is closed
 int eclair_exit_cb(void *data, int type, void *event)
@@ -163,7 +168,6 @@ void eclair_gui_open_cb(void *data, Evas_Object *edje_object, const char *emissi
    else
    {
       eclair->file_chooser_th_created = 1;
-      pthread_mutex_init(&eclair->file_chooser_mutex, NULL);
       pthread_create(&eclair->file_chooser_thread, NULL, eclair_file_chooser_thread, eclair);
    }
 }
@@ -221,7 +225,7 @@ void eclair_gui_minimize_cb(void *data, Evas_Object *edje_object, const char *em
 void eclair_gui_play_entry_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
    Eclair *eclair = (Eclair *)data;
-   Eclair_Playlist_Media_File *media_file = evas_object_data_get(edje_object, "media_file");
+   Eclair_Media_File *media_file = evas_object_data_get(edje_object, "media_file");
 
    if (!eclair)
       return;

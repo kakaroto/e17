@@ -11,6 +11,10 @@ TODO list:
 *fix some bugs of emotion (autoplay, seek_thread close, wmv segv...)
 *Add a visualisation system (need to modify emotion)
 *Add an audio equalizer system (need to modify emotion)
+*Allow vertical or horizontal progressbar, volumebar, ...
+*Allow a theme to "swallow" the video object instead of having a seperate window for video
+*Drag and Drop for Playlist and cover
+*Support different encodings for subtitles 
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj

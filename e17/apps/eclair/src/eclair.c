@@ -1,19 +1,24 @@
 #include "eclair.h"
 #include "../config.h"
+#include <Ecore_Evas.h>
+#include <Edje.h>
 #include <Emotion.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Esmart/Esmart_Container.h>
-#include <tag_c.h>
-#include "eclair_args.h"
-#include "eclair_utils.h"
+#include <gtk/gtk.h>
+#include <pthread.h>
+#include "eclair_playlist.h"
+#include "eclair_media_file.h"
 #include "eclair_callbacks.h"
 #include "eclair_subtitles.h"
+#include "eclair_meta_tag.h"
 #include "eclair_cover.h"
+#include "eclair_utils.h"
 #include "eclair_config.h"
+#include "eclair_args.h"
 
 static void _eclair_gui_create_window(Eclair *eclair);
 static void _eclair_video_create_window(Eclair *eclair);
-static void *_eclair_meta_tag_thread(void *param);
 
 //Initialize eclair
 Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
@@ -35,6 +40,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->gui_window = NULL;
    eclair->gui_object = NULL;
    eclair->gui_draggies = NULL;
+   eclair->gui_cover = NULL;
    eclair->playlist_container = NULL;
    eclair->playlist_entry_height = -1;
    eclair->file_chooser_widget = NULL;
@@ -44,8 +50,6 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->file_chooser_th_created = 0;
    eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->gui_engine = ECLAIR_SOFTWARE;
-   eclair->meta_tag_files_to_scan = NULL;
-   eclair->meta_tag_delete_thread = 0;
 
    if (!eclair_args_parse(eclair, *argc, argv, &filenames))
       return 0;
@@ -53,21 +57,17 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair_config_init(&eclair->config);
    _eclair_gui_create_window(eclair);
    _eclair_video_create_window(eclair);
-   eclair_playlist_init(eclair, &eclair->playlist);
+   eclair_playlist_init(&eclair->playlist, eclair);
    eclair_current_file_set(eclair, NULL);
    eclair_subtitles_init(&eclair->subtitles);
-   eclair_cover_init();
-
-   pthread_cond_init(&eclair->meta_tag_cond, NULL);
-   pthread_mutex_init(&eclair->meta_tag_mutex, NULL);
-   pthread_create(&eclair->meta_tag_thread, NULL, _eclair_meta_tag_thread, eclair);
-
+   eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
+   eclair_cover_init(&eclair->cover_manager, eclair);
+   
    for (l = filenames; l; l = l->next)
       eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
    evas_list_free(filenames);
 
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", emotion_object_audio_volume_get(eclair->video_object), 0);
-
    ecore_evas_show(eclair->gui_window);
 
    return 1;
@@ -80,11 +80,9 @@ void eclair_shutdown(Eclair *eclair)
    {
       eclair_playlist_empty(&eclair->playlist);
       eclair_subtitles_free(&eclair->subtitles);
-      eclair_cover_shutdown();
+      eclair_meta_tag_shutdown(&eclair->meta_tag_manager);
+      eclair_cover_shutdown(&eclair->cover_manager);
       eclair_config_shutdown(&eclair->config);
-
-      eclair->meta_tag_delete_thread = 1;
-      pthread_cond_broadcast(&eclair->meta_tag_cond);      
    }
 
    ecore_main_loop_quit();
@@ -139,7 +137,7 @@ void eclair_update(Eclair *eclair)
 }
 
 //Set the file as current
-void eclair_current_file_set(Eclair *eclair, const Eclair_Playlist_Media_File *file)
+void eclair_current_file_set(Eclair *eclair, const Eclair_Media_File *file)
 {   
    char *window_title;
    char *artist_title_string;
@@ -173,8 +171,7 @@ void eclair_current_file_set(Eclair *eclair, const Eclair_Playlist_Media_File *f
          if (file->path)
          {
             window_title = (char *)malloc(strlen(file->path) + strlen("eclair: ") + 1);
-            strcpy(window_title, "eclair: ");
-            strcat(window_title, file->path);
+            sprintf(window_title, "eclair: %s", file->path);
             ecore_evas_title_set(eclair->video_window, window_title);
             free(window_title);
          }
@@ -184,6 +181,7 @@ void eclair_current_file_set(Eclair *eclair, const Eclair_Playlist_Media_File *f
       else
          ecore_evas_title_set(eclair->video_window, "eclair");
    }
+   eclair_cover_add_file_to_treat(&eclair->cover_manager, file);
 }
 
 //Set media progress rate
@@ -246,8 +244,6 @@ void *eclair_file_chooser_thread(void *param)
 
    if (!eclair)
       return NULL;
-
-   pthread_mutex_lock(&eclair->file_chooser_mutex);
 
    eclair->file_chooser_widget = gtk_file_chooser_dialog_new("Open files...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
@@ -315,7 +311,7 @@ void eclair_play_file(Eclair *eclair, const char *path)
 //Play the active file from the playlist
 void eclair_play_current(Eclair *eclair)
 {
-   Eclair_Playlist_Media_File *current_media_file;
+   Eclair_Media_File *current_media_file;
 
    if (!eclair)
       return;
@@ -404,75 +400,28 @@ void eclair_stop(Eclair *eclair)
    eclair->state = ECLAIR_STOP;
 }
 
-//Read the meta tags of the files stocked in meta_tag_files_to_scan
-void *_eclair_meta_tag_thread(void *param)
+//Set the cover displayed on the GUI
+//Remove it if cover_path == NULL
+void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 {
-   Eclair *eclair = (Eclair *)param;
-   Evas_List *l, *next;
-   Eclair_Playlist_Media_File *current_file;
+   Evas_Coord cover_width, cover_height;
 
    if (!eclair)
-      return NULL;
+      return;
+   if (!eclair->gui_object || !eclair->gui_cover)
+      return;
 
-   pthread_mutex_lock(&eclair->meta_tag_mutex);
-
-   for (;;)
+   edje_object_part_unswallow(eclair->gui_object, eclair->gui_cover);
+   if (!cover_path)
+      evas_object_hide(eclair->gui_cover);
+   else
    {
-      pthread_cond_wait(&eclair->meta_tag_cond, &eclair->meta_tag_mutex);
-      while (eclair->meta_tag_files_to_scan || eclair->meta_tag_delete_thread)
-      {
-         for (l = eclair->meta_tag_files_to_scan; l; l = next)
-         {
-            next = l->next;
-            current_file = (Eclair_Playlist_Media_File *)evas_list_data(l);
-            eclair->meta_tag_files_to_scan = evas_list_remove_list(eclair->meta_tag_files_to_scan, l);
-
-            if (current_file)
-            {
-               TagLib_File *tag_file;
-               TagLib_Tag *tag;
-               const TagLib_AudioProperties *tag_audio_props;
-   
-               if (!current_file->path)
-                  continue;
-               if (!(tag_file = taglib_file_new(current_file->path)))
-                  continue;
-               if (!(tag = taglib_file_tag(tag_file)))
-               {
-                  taglib_file_free(tag_file);
-                  continue;
-               }
-               current_file->artist = strdup(taglib_tag_artist(tag));
-               current_file->title = strdup(taglib_tag_title(tag));
-               current_file->album = strdup(taglib_tag_album(tag));
-               current_file->genre = strdup(taglib_tag_genre(tag));
-               current_file->comment = strdup(taglib_tag_comment(tag));
-               current_file->year = taglib_tag_year(tag);
-               current_file->track = taglib_tag_track(tag);
-   
-               if (!(tag_audio_props = taglib_file_audioproperties(tag_file)))
-               {
-                  taglib_file_free(tag_file);
-                  continue;
-               }
-               current_file->length = taglib_audioproperties_length(tag_audio_props);
-     
-               eclair_playlist_media_file_entry_update(current_file, eclair);
-               taglib_file_free(tag_file);
-            }
-            taglib_tag_free_strings();
-         }
-
-         if (eclair->meta_tag_delete_thread)
-         {
-            eclair->meta_tag_files_to_scan = evas_list_free(eclair->meta_tag_files_to_scan);
-            eclair->meta_tag_delete_thread = 0;
-            return NULL;
-         }
-      }
+      evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
+      edje_object_part_geometry_get(eclair->gui_object, "cover", NULL, NULL, &cover_width, &cover_height);
+      evas_object_image_fill_set(eclair->gui_cover, 0, 0, cover_width, cover_height);
+      edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
+      evas_object_show(eclair->gui_cover);
    }
-
-   return NULL;
 }
 
 //Create the gui window and load the interface
@@ -519,6 +468,11 @@ static void _eclair_gui_create_window(Eclair *eclair)
       edje_object_part_swallow(eclair->gui_object, "playlist_container", eclair->playlist_container);
       evas_object_event_callback_add(eclair->playlist_container, EVAS_CALLBACK_MOUSE_WHEEL, eclair_gui_playlist_container_wheel_cb, eclair);
       evas_object_show(eclair->playlist_container);
+   }
+   if (edje_object_part_exists(eclair->gui_object, "cover"))
+   {
+      eclair->gui_cover = evas_object_image_add(evas);
+      evas_object_hide(eclair->gui_cover);
    }
 
    evas_object_focus_set(eclair->gui_object, 1);

@@ -8,23 +8,18 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
    if (!config)
       return 0;
 
-   config->config_dir_path[0] = 0;
-   config->covers_dir_path[0] = 0;
-   config->config_file_path[0] = 0;
    config->config_file = NULL;
    
    if (!(home = getenv("HOME")))
       return 0;
-   strcat(config->config_dir_path, home);
-   strcat(config->config_dir_path, "/.eclair/");
+
+   sprintf(config->config_dir_path, "%s/.eclair/", home);
    mkdir(config->config_dir_path, 0755);
 
-   strcat(config->covers_dir_path, config->config_dir_path);
-   strcat(config->covers_dir_path, "covers/");
+   sprintf(config->covers_dir_path, "%scovers/", config->config_dir_path);
    mkdir(config->covers_dir_path, 0755);
 
-   strcat(config->config_file_path, config->config_dir_path);
-   strcat(config->config_file_path, "eclair.cfg");
+   sprintf(config->config_file_path, "%seclair.cfg", config->config_dir_path);
    config->config_file = fopen(config->config_file_path, "a+t");
    if (!config->config_file)
       return 0;

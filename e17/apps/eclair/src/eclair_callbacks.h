@@ -1,7 +1,7 @@
 #ifndef _ECLAIR_CALLBACKS_H_
 #define _ECLAIR_CALLBACKS_H_
 
-#include <Ecore_Evas.h>
+#include <eclair_private.h>
 
 int eclair_exit_cb(void *data, int type, void *event);
 void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
