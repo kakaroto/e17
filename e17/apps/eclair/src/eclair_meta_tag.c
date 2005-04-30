@@ -91,7 +91,6 @@ static void *_eclair_meta_tag_thread(void *param)
    pthread_mutex_lock(&meta_tag_manager->meta_tag_mutex);
    for (;;)
    {
-      printf("Tag fini\n");
       pthread_cond_wait(&meta_tag_manager->meta_tag_cond, &meta_tag_manager->meta_tag_mutex);
       while (meta_tag_manager->meta_tag_files_to_scan || meta_tag_manager->meta_tag_delete_thread)
       {

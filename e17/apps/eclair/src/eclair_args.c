@@ -12,14 +12,14 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
          if (strcmp(argv[i], "--help") == 0)
          {
             //TODO: Display help message
-            printf("Help: (TODO)\n--gui-engine [software|gl]\n--video-engine [software|gl]\n");
+            fprintf(stderr, "Help: (TODO)\n--gui-engine [software|gl]\n--video-engine [software|gl]\n");
             return 0;
          }
          else if (strcmp(argv[i], "--gui-engine") == 0)
          {
             if (argc <= i + 1)
             {
-               printf("Correct gui engines are: software gl\nDefault is: software\n\n");
+               fprintf(stderr, "Correct gui engines are: software gl\nDefault is: software\n\n");
                return 0;
             }
             else
@@ -31,7 +31,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
                   eclair->gui_engine = ECLAIR_GL;
                else
                {
-                  printf("Correct gui engines are: software gl\nDefault is: software\n\n");
+                  fprintf(stderr, "Correct gui engines are: software gl\nDefault is: software\n\n");
                   return 0;
                }
             }
@@ -40,7 +40,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
          {
             if (argc <= i + 1)
             {
-               printf("Correct video engines are: software gl\nDefault is: software\n\n");
+               fprintf(stderr, "Correct video engines are: software gl\nDefault is: software\n\n");
                return 0;
             }
             else
@@ -52,13 +52,13 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
                   eclair->video_engine = ECLAIR_GL;
                else
                {
-                  printf("Correct video engines are: software gl\nDefault is: software\n\n");
+                  fprintf(stderr, "Correct video engines are: software gl\nDefault is: software\n\n");
                   return 0;
                }
             }
          }
          else
-            printf("Unknown option: %s\nTry `eclair --help' for more information.\n\n", argv[i]);
+            fprintf(stderr, "Unknown option: %s\nTry `eclair --help' for more information.\n\n", argv[i]);
       }
       else
          *filenames = evas_list_append(*filenames, argv[i]);

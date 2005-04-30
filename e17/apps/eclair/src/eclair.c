@@ -136,6 +136,7 @@ void eclair_update(Eclair *eclair)
    eclair_subtitles_display_current_subtitle(&eclair->subtitles, position, eclair->subtitles_object);
 }
 
+//TODO:
 //Set the file as current
 void eclair_current_file_set(Eclair *eclair, const Eclair_Media_File *file)
 {   
@@ -184,15 +185,28 @@ void eclair_current_file_set(Eclair *eclair, const Eclair_Media_File *file)
    eclair_cover_add_file_to_treat(&eclair->cover_manager, file);
 }
 
-//Set media progress rate
-void eclair_progress_rate_set(Eclair *eclair, double progress_rate)
+//Set the cover displayed on the GUI
+//Remove it if cover_path == NULL
+void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 {
+   Evas_Coord cover_width, cover_height;
+
    if (!eclair)
       return;
-   if (!eclair->video_object)
+   if (!eclair->gui_object || !eclair->gui_cover)
       return;
 
-   emotion_object_position_set(eclair->video_object, emotion_object_play_length_get(eclair->video_object) * progress_rate);
+   edje_object_part_unswallow(eclair->gui_object, eclair->gui_cover);
+   if (!cover_path)
+      evas_object_hide(eclair->gui_cover);
+   else
+   {
+      evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
+      edje_object_part_geometry_get(eclair->gui_object, "cover", NULL, NULL, &cover_width, &cover_height);
+      evas_object_image_fill_set(eclair->gui_cover, 0, 0, cover_width, cover_height);
+      edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
+      evas_object_show(eclair->gui_cover);
+   }
 }
 
 //Set the scroll percent of the playlist container
@@ -400,28 +414,27 @@ void eclair_stop(Eclair *eclair)
    eclair->state = ECLAIR_STOP;
 }
 
-//Set the cover displayed on the GUI
-//Remove it if cover_path == NULL
-void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
+//Set audio level
+void eclair_audio_level_set(Eclair *eclair, double audio_level)
 {
-   Evas_Coord cover_width, cover_height;
-
    if (!eclair)
       return;
-   if (!eclair->gui_object || !eclair->gui_cover)
+
+   if (eclair->video_object)
+      emotion_object_audio_volume_set(eclair->video_object, audio_level);
+   if (eclair->gui_object)
+      edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", audio_level, 0);
+}
+
+//Set media progress rate
+void eclair_progress_rate_set(Eclair *eclair, double progress_rate)
+{
+   if (!eclair)
+      return;
+   if (!eclair->video_object)
       return;
 
-   edje_object_part_unswallow(eclair->gui_object, eclair->gui_cover);
-   if (!cover_path)
-      evas_object_hide(eclair->gui_cover);
-   else
-   {
-      evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
-      edje_object_part_geometry_get(eclair->gui_object, "cover", NULL, NULL, &cover_width, &cover_height);
-      evas_object_image_fill_set(eclair->gui_cover, 0, 0, cover_width, cover_height);
-      edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
-      evas_object_show(eclair->gui_cover);
-   }
+   emotion_object_position_set(eclair->video_object, emotion_object_play_length_get(eclair->video_object) * progress_rate);
 }
 
 //Create the gui window and load the interface

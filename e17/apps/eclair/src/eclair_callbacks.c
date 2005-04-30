@@ -103,24 +103,24 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
    if (!eclair)
       return;
 
-   if (strcmp(ev->keyname, "f") == 0)
+   if (strcmp(ev->key, "f") == 0)
    {
-      if (!eclair->video_window)
-         return;
-
-      ecore_evas_fullscreen_set(eclair->video_window, !ecore_evas_fullscreen_get(eclair->video_window));
+      if (eclair->video_window)
+         ecore_evas_fullscreen_set(eclair->video_window, !ecore_evas_fullscreen_get(eclair->video_window));
    }
-   else if (strcmp(ev->keyname, "space") == 0)
+   else if (strcmp(ev->key, "space") == 0 || strcmp(ev->key, "p") == 0)
    {
       if (eclair->state == ECLAIR_PLAYING)
          eclair_pause(eclair);
       else
          eclair_play(eclair);
    }
-   else if (strcmp(ev->keyname, "escape") == 0)
+   else if (strcmp(ev->key, "escape") == 0 || strcmp(ev->key, "q") == 0)
       eclair_shutdown(eclair);
-   else if (strcmp(ev->keyname, "Left") == 0 || strcmp(ev->keyname, "Right") == 0
-      || strcmp(ev->keyname, "Down") == 0 || strcmp(ev->keyname, "Up") == 0)
+   else if (strcmp(ev->key, "Left") == 0 || strcmp(ev->key, "Right") == 0
+      || strcmp(ev->key, "Down") == 0 || strcmp(ev->key, "Up") == 0
+      || strcmp(ev->key, "Prior") == 0 || strcmp(ev->key, "Next") == 0
+      || strcmp(ev->key, "Home") == 0)
    {
       if (!eclair->video_object)
          return;
@@ -128,21 +128,46 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
       if (eclair->seek_to_pos < 0.0)
          eclair->seek_to_pos = emotion_object_position_get(eclair->video_object);
    
-      if (strcmp(ev->keyname, "Left") == 0)
+      if (strcmp(ev->key, "Left") == 0)
          eclair->seek_to_pos -= 15.0;
-      else if (strcmp(ev->keyname, "Right") == 0)
+      else if (strcmp(ev->key, "Right") == 0)
          eclair->seek_to_pos += 15.0;
-      else if (strcmp(ev->keyname, "Down") == 0)
+      else if (strcmp(ev->key, "Down") == 0)
          eclair->seek_to_pos -= 60.0;
-      else if (strcmp(ev->keyname, "Up") == 0)
+      else if (strcmp(ev->key, "Up") == 0)
          eclair->seek_to_pos += 60.0;
+      else if (strcmp(ev->key, "Prior") == 0)
+         eclair->seek_to_pos -= 600.0; 
+      else if (strcmp(ev->key, "Next") == 0)
+         eclair->seek_to_pos += 600.0; 
+      else if (strcmp(ev->key, "Home") == 0)
+         eclair->seek_to_pos = 0.0; 
 
       eclair->dont_update_progressbar = 1;
       emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
       if (eclair->seek_to_pos < 0.0)
          eclair->seek_to_pos = 0.0;
-      if (eclair->seek_to_pos > emotion_object_play_length_get(eclair->video_object))
-         eclair->seek_to_pos = emotion_object_play_length_get(eclair->video_object);
+      else if (eclair->seek_to_pos > emotion_object_play_length_get(eclair->video_object))
+         eclair->seek_to_pos = emotion_object_play_length_get(eclair->video_object) - 1;
+   }
+   else if (strcmp(ev->key, "KP_Divide") == 0 || strcmp(ev->key, "slash") == 0 
+      || strcmp(ev->key, "KP_Multiply") == 0 || strcmp(ev->key, "asterisk") == 0)
+   {
+      double volume;
+
+      if (!eclair->gui_object)
+         return;
+
+      edje_object_part_drag_value_get(eclair->gui_object, "volume_bar_drag", &volume, 0);
+      if (strcmp(ev->key, "KP_Divide") == 0 || strcmp(ev->key, "slash") == 0)
+         volume -= (1.0 / 100);
+      else if (strcmp(ev->key, "KP_Multiply") == 0 || strcmp (ev->key, "asterisk") == 0)
+         volume += (1.0 / 100);
+      if (volume < 0.0)
+         volume = 0.0;
+      else if (volume > 1.0)
+         volume = 1.0;
+      eclair_audio_level_set(eclair, volume);
    }
 }
 
@@ -252,13 +277,13 @@ void eclair_gui_progress_bar_drag_cb(void *data, Evas_Object *edje_object, const
 void eclair_gui_volume_bar_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
    Eclair *eclair = (Eclair *)data;
-   double x;
+   double volume;
 
    if (!eclair)
       return;
 
-   edje_object_part_drag_value_get(eclair->gui_object, "volume_bar_drag", &x, NULL);
-   emotion_object_audio_volume_set(eclair->video_object, x);
+   edje_object_part_drag_value_get(eclair->gui_object, "volume_bar_drag", &volume, NULL);
+   eclair_audio_level_set(eclair, volume);
 }
 
 //Called when the user drag the scrollbar button of the playlist
