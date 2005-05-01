@@ -538,10 +538,6 @@ struct _eobj
 #define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
 
 #define EoSetName(eo, _x)       (eo)->o.name = (_x)
-#define EoSetX(eo, _x)          (eo)->o.x = (_x)
-#define EoSetY(eo, _y)          (eo)->o.y = (_y)
-#define EoSetW(eo, _w)          (eo)->o.w = (_w)
-#define EoSetH(eo, _h)          (eo)->o.h = (_h)
 #define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
 #define EoSetFloating(eo, _f)   EobjSetFloating(&((eo)->o), (_f))
 #define EoSetDesk(eo, _d)       EobjSetDesk(&((eo)->o), (_d))
@@ -564,6 +560,7 @@ struct _eobj
 #define EoMove(eo, x, y)                EobjMove(&((eo)->o), x, y)
 #define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
 #define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(&((eo)->o), x, y, w, h)
+#define EoReparent(eo, d, x, y)         EobjReparent(&((eo)->o), d, x, y)
 
 typedef struct
 {
@@ -709,7 +706,6 @@ struct _ewin
    EObj                o;
    char                type;
    char                state;
-   int                 ld;	/* Last desk */
    int                 lx, ly;	/* Last pos */
    int                 lw, lh;	/* Last size */
    int                 ll;	/* Last layer */
@@ -785,7 +781,7 @@ struct _ewin
       char               *wm_icon_name;
       unsigned int        opacity;
    } ewmh;
-   int                 shape_x, shape_y;
+   int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
    void                (*MoveResize) (EWin * ewin, int resize);
    void                (*Refresh) (EWin * ewin);
@@ -1545,6 +1541,7 @@ void                EobjUnmap(EObj * eo);
 void                EobjMove(EObj * eo, int x, int y);
 void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
+void                EobjReparent(EObj * eo, int desk, int x, int y);
 
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);
@@ -1626,7 +1623,6 @@ void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
-void                EwinConformToDesktop(EWin * ewin);
 void                EwinReparent(EWin * ewin, Window parent);
 void                SyncBorderToEwin(EWin * ewin);
 Window              EwinGetClientWin(const EWin * ewin);

@@ -192,7 +192,7 @@ EwinBorderUpdateInfo(EWin * ewin)
 }
 
 static void
-BorderWinpartCalc(EWin * ewin, int i)
+BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 {
    int                 x, y, w, h, ox, oy, max, min;
    int                 topleft, bottomright;
@@ -200,18 +200,16 @@ BorderWinpartCalc(EWin * ewin, int i)
    topleft = ewin->border->part[i].geom.topleft.originbox;
    bottomright = ewin->border->part[i].geom.bottomright.originbox;
    if (topleft >= 0)
-      BorderWinpartCalc(ewin, topleft);
+      BorderWinpartCalc(ewin, topleft, ww, hh);
    if (bottomright >= 0)
-      BorderWinpartCalc(ewin, bottomright);
+      BorderWinpartCalc(ewin, bottomright, ww, hh);
    x = y = 0;
    if (topleft == -1)
      {
 	x = ((ewin->border->part[i].geom.topleft.x.percent *
-	      EoGetW(ewin)) >> 10) +
-	   ewin->border->part[i].geom.topleft.x.absolute;
+	      ww) >> 10) + ewin->border->part[i].geom.topleft.x.absolute;
 	y = ((ewin->border->part[i].geom.topleft.y.percent *
-	      EoGetH(ewin)) >> 10) +
-	   ewin->border->part[i].geom.topleft.y.absolute;
+	      hh) >> 10) + ewin->border->part[i].geom.topleft.y.absolute;
      }
    else if (topleft >= 0)
      {
@@ -228,10 +226,10 @@ BorderWinpartCalc(EWin * ewin, int i)
    if (bottomright == -1)
      {
 	ox = ((ewin->border->
-	       part[i].geom.bottomright.x.percent * EoGetW(ewin)) >> 10) +
+	       part[i].geom.bottomright.x.percent * ww) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
 	oy = ((ewin->border->
-	       part[i].geom.bottomright.y.percent * EoGetH(ewin)) >> 10) +
+	       part[i].geom.bottomright.y.percent * hh) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -373,7 +371,7 @@ BorderWinpartCalc(EWin * ewin, int i)
 void
 EwinBorderCalcSizes(EWin * ewin)
 {
-   int                 i;
+   int                 i, ww, hh;
    char                reshape;
 
    if (!ewin)
@@ -381,11 +379,14 @@ EwinBorderCalcSizes(EWin * ewin)
    if (!ewin->border)
       return;
 
+   ww = EoGetW(ewin);
+   hh = EoGetH(ewin);
+
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].w = -2;
    for (i = 0; i < ewin->border->num_winparts; i++)
       if (ewin->bits[i].w == -2)
-	 BorderWinpartCalc(ewin, i);
+	 BorderWinpartCalc(ewin, i, ww, hh);
    for (i = 0; i < ewin->border->num_winparts; i++)
       BorderWinpartRealise(ewin, i);
 
@@ -749,7 +750,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
       ewin->bits[i].w = -2;
    for (i = 0; i < ewin->border->num_winparts; i++)
       if (ewin->bits[i].w == -2)
-	 BorderWinpartCalc(ewin, i);
+	 BorderWinpartCalc(ewin, i, pw, ph);
 
    switch (ewin->border->shadedir)
      {
@@ -772,7 +773,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 	     if (rightborderwidth < w)
 		rightborderwidth = w;
 	  }
-	EoSetW(ewin, rightborderwidth + leftborderwidth);
+	pw = rightborderwidth + leftborderwidth;
 	break;
      case 2:
      case 3:
@@ -791,7 +792,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 	     if (bottomborderwidth < h)
 		bottomborderwidth = h;
 	  }
-	EoSetH(ewin, bottomborderwidth + topborderwidth);
+	ph = bottomborderwidth + topborderwidth;
 	break;
      default:
 	break;
@@ -801,7 +802,7 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
       ewin->bits[i].w = -2;
    for (i = 0; i < ewin->border->num_winparts; i++)
       if (ewin->bits[i].w == -2)
-	 BorderWinpartCalc(ewin, i);
+	 BorderWinpartCalc(ewin, i, pw, ph);
 
    min_w = 0;
    min_h = 0;
@@ -818,9 +819,6 @@ EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh)
 	if (min_h < h)
 	   min_h = h;
      }
-
-   EoSetW(ewin, pw);
-   EoSetH(ewin, ph);
 
  done:
    *mw = min_w;

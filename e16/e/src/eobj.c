@@ -26,26 +26,27 @@
 void
 EobjSetDesk(EObj * eo, int desk)
 {
-   int                 pdesk = eo->desk;
-
    switch (eo->type)
      {
      default:
-	eo->desk = desk;
 	break;
 
      case EOBJ_TYPE_EWIN:
-	if (eo->floating)
-	   eo->desk = 0;
+	if (eo->floating > 1)
+	   desk = 0;
 	else if (eo->sticky || eo->desk < 0)
-	   eo->desk = DesksGetCurrent();
+	   desk = DesksGetCurrent();
 	else
-	   eo->desk = desk % Conf.desks.num;
+	   desk = desk % Conf.desks.num;
 	break;
      }
 
-   if (eo->desk != pdesk && eo->stacked > 0)
-      DeskSetDirtyStack(eo->desk);
+   if (desk != eo->desk)
+     {
+	if (eo->stacked > 0)
+	   DeskSetDirtyStack(desk);
+	eo->desk = desk;
+     }
 }
 
 void
@@ -352,6 +353,26 @@ void
 EobjResize(EObj * eo, int w, int h)
 {
    EobjMoveResize(eo, eo->x, eo->y, w, h);
+}
+
+void
+EobjReparent(EObj * eo, int desk, int x, int y)
+{
+   Desk               *d;
+
+   d = DeskGet(desk);
+   if (!d)
+      return;
+
+   eo->x = x;
+   eo->y = y;
+
+   EReparentWindow(eo->win, EoGetWin(d), x, y);
+#if USE_COMPOSITE
+   if (eo->cmhook)
+      ECompMgrWinReparent(eo, desk, x, y);
+#endif
+   EobjSetDesk(eo, desk);
 }
 
 #if USE_COMPOSITE

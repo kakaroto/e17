@@ -130,16 +130,21 @@ ActionMoveEnd(EWin * ewin)
 	if ((EoIsFloating(gwins[i])) || (Conf.movres.mode_move > 0))
 	  {
 	     if (EoIsFloating(gwins[i]))
-		MoveEwinToDesktopAt(gwins[i], d,
-				    gwins[i]->shape_x -
-				    (DeskGetX(d) -
-				     DeskGetX(EoGetDesk(gwins[i]))),
-				    gwins[i]->shape_y -
-				    (DeskGetY(d) -
-				     DeskGetY(EoGetDesk(gwins[i]))));
+	       {
+		  EoSetFloating(gwins[i], 0);
+		  MoveEwinToDesktopAt(gwins[i], d,
+				      gwins[i]->shape_x -
+				      (DeskGetX(d) -
+				       DeskGetX(EoGetDesk(gwins[i]))),
+				      gwins[i]->shape_y -
+				      (DeskGetY(d) -
+				       DeskGetY(EoGetDesk(gwins[i]))));
+	       }
 	     else
-		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->shape_x,
-				    gwins[i]->shape_y);
+	       {
+		  MoveEwinToDesktopAt(gwins[i], d, gwins[i]->shape_x,
+				      gwins[i]->shape_y);
+	       }
 	  }
 
 	EoChangeOpacity(ewin, ewin->ewmh.opacity);

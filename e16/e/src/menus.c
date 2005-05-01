@@ -349,7 +349,6 @@ MenuShow(Menu * m, char noshow)
 	if (!noshow)
 	  {
 	     ICCCM_Cmap(NULL);
-	     MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
 	     FloatEwinAt(ewin, EoGetX(ewin), EoGetY(ewin));
 	     ShowEwin(ewin);
 	     if (Conf.menus.animate)

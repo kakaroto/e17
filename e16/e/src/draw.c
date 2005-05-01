@@ -938,8 +938,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      {
      case 0:
 	MoveResizeEwin(ewin, x, y, w, h);
-	ewin->shape_x = x;
-	ewin->shape_y = y;
 	if (Mode.mode != MODE_NONE)
 	   CoordsShow(ewin);
 	break;
@@ -963,10 +961,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	x1 = ewin->shape_x + dx;
 	y1 = ewin->shape_y + dy;
 
-	w1 = EoGetW(ewin) - (ewin->border->border.left +
-			     ewin->border->border.right);
-	h1 = EoGetH(ewin) - (ewin->border->border.top +
-			     ewin->border->border.bottom);
+	w1 = ewin->shape_w;
+	h1 = ewin->shape_h;
 
 	ewin->shape_x = x;
 	ewin->shape_y = y;
@@ -978,15 +974,15 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     ewin->client.w = w;
 	     ewin->client.h = h;
 	     ICCCM_MatchSize(ewin);
-	     EoSetW(ewin, ewin->client.w + ewin->border->border.left +
-		    ewin->border->border.right);
-	     EoSetH(ewin, ewin->client.h + ewin->border->border.top +
-		    ewin->border->border.bottom);
+	     if (!ewin->shaded)
+	       {
+		  ewin->shape_w = ewin->client.w;
+		  ewin->shape_h = ewin->client.h;
+	       }
 	  }
-	w = EoGetW(ewin) - (ewin->border->border.left +
-			    ewin->border->border.right);
-	h = EoGetH(ewin) - (ewin->border->border.top +
-			    ewin->border->border.bottom);
+	w = ewin->shape_w;
+	h = ewin->shape_h;
+
 	if (!gc)
 	  {
 	     gcv.function = GXxor;

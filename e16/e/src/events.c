@@ -178,8 +178,11 @@ HandleEvent(XEvent * ev)
      case KeyPress:
 	Mode.last_keycode = ev->xkey.keycode;
      case KeyRelease:
+	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
+	goto do_stuff;
      case ButtonPress:
      case ButtonRelease:
+	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	goto do_stuff;
      case EnterNotify:
 	Mode.context_win = ev->xany.window;
@@ -231,7 +234,6 @@ HandleEvent(XEvent * ev)
      {
      case KeyPress:		/*  2 */
      case KeyRelease:		/*  3 */
-	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 	/* Unfreeze keyboard in case we got here by keygrab */
 	XAllowEvents(disp, AsyncKeyboard, CurrentTime);
 	break;
@@ -248,12 +250,9 @@ HandleEvent(XEvent * ev)
 
 	if (Mode.double_click)
 	   ev->xbutton.time = 0;
-	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	break;
      case ButtonRelease:	/*  5 */
 	SoundPlay("SOUND_BUTTON_RAISE");
-
-	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 
 #if 0				/* FIXME - TBD */
 	/* DON'T handle clicks whilst moving/resizing things */

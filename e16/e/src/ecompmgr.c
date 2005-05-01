@@ -1204,6 +1204,35 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
    ECompMgrWinMoveResize(eo, x, y, w, h, bw);
 }
 
+void
+ECompMgrWinReparent(EObj * eo, int desk, int x, int y)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   D1printf("ECompMgrWinReparent %#lx %#lx d=%d x,y=%d,%d\n",
+	    eo->win, cw->extents, desk, x, y);
+
+   /* Invalidate old window region */
+   if (eo->shown)
+     {
+	if (EventDebug(EDBUG_TYPE_COMPMGR3))
+	   ERegionShow("old-extents:", cw->extents);
+	ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+     }
+
+   if (cw->a.x != x || cw->a.y != y)
+     {
+	ECompMgrWinInvalidate(eo, INV_POS);
+
+	cw->a.x = x;
+	cw->a.y = y;
+
+	/* Find new window region */
+	if (eo->shown)		/* FIXME - ??? */
+	   cw->extents = win_extents(disp, eo);
+     }
+}
+
 static void
 ECompMgrWinCirculate(EObj * eo, XEvent * ev)
 {

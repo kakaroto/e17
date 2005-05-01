@@ -636,6 +636,7 @@ ShowDialog(Dialog * d)
 	  }
 	else
 	  {
+	     ResizeEwin(ewin, w, h);
 	     if (FindADialog() > 1)
 		ArrangeEwin(ewin);
 	     else

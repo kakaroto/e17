@@ -296,6 +296,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	   move = 1;
 	ewin->client.x = x + ewin->border->border.left;
 	ewin->client.y = y + ewin->border->border.top;
+	ewin->shape_x = x;
+	ewin->shape_y = y;
      }
    else
      {
@@ -317,6 +319,10 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	  {
 	     w = EoGetW(ewin);
 	     h = EoGetH(ewin);
+	     ewin->shape_w = w -
+		(ewin->border->border.left + ewin->border->border.right);
+	     ewin->shape_h = h -
+		(ewin->border->border.top + ewin->border->border.bottom);
 	  }
 	else
 	  {
@@ -324,6 +330,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 		ewin->border->border.right;
 	     h = ewin->client.h + ewin->border->border.top +
 		ewin->border->border.bottom;
+	     ewin->shape_w = ewin->client.w;
+	     ewin->shape_h = ewin->client.h;
 	  }
      }
    else
@@ -362,11 +370,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
      }
 
    if ((Mode.mode == MODE_NONE) /* && (move || resize) */ )
-     {
-	ewin->shape_x = x;
-	ewin->shape_y = y;
-	EwinUpdateAfterMoveResize(ewin, resize);
-     }
+      EwinUpdateAfterMoveResize(ewin, resize);
 
    call_depth--;
 }

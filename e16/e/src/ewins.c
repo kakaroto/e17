@@ -82,7 +82,6 @@ EwinCreate(Window win, int type)
 
    ewin->type = type;
    ewin->state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
-   ewin->ld = -1;
    ewin->lx = -1;
    ewin->ly = -1;
    ewin->lw = -1;
@@ -759,6 +758,7 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->st.fullscreen = 0;
 	EwinSetFullscreen(ewin, 1);
 	ewin->client.already_placed = 1;
+	MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);
 	goto done;
      }
@@ -927,7 +927,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 	   EoIsFloating(ewin));
 #endif
 
-   EwinConformToDesktop(ewin);
+   MoveEwinToDesktopAt(ewin, EoGetDesk(ewin), EoGetX(ewin), EoGetY(ewin));
 
  done:
    ecore_x_ungrab();
@@ -962,101 +962,6 @@ EwinWithdraw(EWin * ewin)
 
    if (EwinIsInternal(ewin))
       EwinDestroy(ewin);
-}
-
-void
-EwinConformToDesktop(EWin * ewin)
-{
-   Window              dwin;
-
-   dwin = DeskGetWin(EoGetDesk(ewin));
-   if ((ewin->iconified) && (ewin->parent != dwin))
-     {
-	ewin->parent = dwin;
-	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
-	RaiseEwin(ewin);
-	ICCCM_Configure(ewin);
-     }
-   else if (EoIsFloating(ewin))
-     {
-	if ((ewin->parent != VRoot.win) && (EoIsFloating(ewin) == 2))
-	  {
-	     ewin->parent = VRoot.win;
-	     EReparentWindow(EoGetWin(ewin), VRoot.win, EoGetX(ewin),
-			     EoGetY(ewin));
-	     EoSetDesk(ewin, 0);
-	  }
-	RaiseEwin(ewin);
-	ICCCM_Configure(ewin);
-     }
-   else if (ewin->parent != dwin)
-     {
-	ewin->parent = dwin;
-	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
-	RaiseEwin(ewin);
-	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
-     }
-   else
-     {
-	RaiseEwin(ewin);
-	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
-     }
-
-   EwinDetermineArea(ewin);
-   HintsSetWindowDesktop(ewin);
-}
-
-void
-MoveEwinToDesktop(EWin * ewin, int desk)
-{
-   MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
-}
-
-void
-MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
-{
-   EWin              **lst;
-   int                 i, num;
-   int                 pdesk, dx, dy;
-
-   EoSetFloating(ewin, 0);
-
-#if 0
-   Eprintf("MoveEwinToDesktopAt: %#lx %d->%d\n", ewin->client.win,
-	   EoGetDesk(ewin), desk);
-#endif
-
-   pdesk = ewin->ld;
-   desk = desk % Conf.desks.num;
-   EoSetDesk(ewin, desk);
-
-   if (desk != pdesk && !EoIsSticky(ewin))
-     {
-	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
-	if (pdesk >= 0)
-	   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
-     }
-
-   dx = x - EoGetX(ewin);
-   dy = y - EoGetY(ewin);
-   EoSetX(ewin, x);
-   EoSetY(ewin, y);
-   EwinConformToDesktop(ewin);
-
-   lst = EwinListTransients(ewin, &num, 0);
-   for (i = 0; i < num; i++)
-      MoveEwinToDesktopAt(lst[i], desk, EoGetX(lst[i]) + dx,
-			  EoGetY(lst[i]) + dy);
-   if (lst)
-      Efree(lst);
-
-   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)desk);
-}
-
-void
-EwinReparent(EWin * ewin, Window parent)
-{
-   EReparentWindow(ewin->client.win, parent, 0, 0);
 }
 
 static void
@@ -1395,32 +1300,114 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }
 
-#if 0				/* Unused */
+#if 0				/* FIXME - Remove */
 void
-FloatEwin(EWin * ewin)
+EwinConformToDesktop(EWin * ewin)
 {
-   static int          call_depth = 0;
+   Window              dwin;
+
+   dwin = DeskGetWin(EoGetDesk(ewin));
+   if ((ewin->iconified) && (ewin->parent != dwin))
+     {
+	ewin->parent = dwin;
+	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
+	RaiseEwin(ewin);
+	ICCCM_Configure(ewin);
+     }
+   else if (EoIsFloating(ewin))
+     {
+	if ((ewin->parent != VRoot.win) && (EoIsFloating(ewin) == 2))
+	  {
+	     ewin->parent = VRoot.win;
+	     EReparentWindow(EoGetWin(ewin), VRoot.win, EoGetX(ewin),
+			     EoGetY(ewin));
+	     EoSetDesk(ewin, 0);
+	  }
+	RaiseEwin(ewin);
+	ICCCM_Configure(ewin);
+     }
+   else if (ewin->parent != dwin)
+     {
+	ewin->parent = dwin;
+	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
+	RaiseEwin(ewin);
+	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+     }
+   else
+     {
+	RaiseEwin(ewin);
+	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+     }
+
+   EwinDetermineArea(ewin);
+   HintsSetWindowDesktop(ewin);
+}
+#endif
+
+void
+MoveEwinToDesktop(EWin * ewin, int desk)
+{
+   MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
+}
+
+void
+MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
+{
    EWin              **lst;
    int                 i, num;
+   int                 pdesk, dx, dy;
 
-   call_depth++;
-   if (call_depth > 256)
-      return;
+#if 0
+   Eprintf("MoveEwinToDesktopAt: %#lx %d->%d\n", ewin->client.win,
+	   EoGetDesk(ewin), desk);
+#endif
 
-   EoSetFloating(ewin, 1);
-   EoSetDesk(ewin, 0);
-   EwinConformToDesktop(ewin);
-   RaiseEwin(ewin);
+   pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : 0;
+   desk = desk % Conf.desks.num;
+
+   if (desk != pdesk && !EoIsSticky(ewin))
+     {
+	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
+	if (EoIsShown(ewin))
+	   ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
+     }
+
+   dx = x - EoGetX(ewin);
+   dy = y - EoGetY(ewin);
+   if (desk != pdesk)
+     {
+	EoReparent(ewin, desk, x, y);
+	RaiseEwin(ewin);
+	if (ewin->iconified)
+	   ICCCM_Configure(ewin);
+	else
+	   MoveEwin(ewin, x, y);
+     }
+   else
+     {
+	RaiseEwin(ewin);
+	MoveEwin(ewin, x, y);
+     }
+
+   EwinDetermineArea(ewin);
+   HintsSetWindowDesktop(ewin);
 
    lst = EwinListTransients(ewin, &num, 0);
    for (i = 0; i < num; i++)
-      FloatEwin(lst[i]);
+      MoveEwinToDesktopAt(lst[i], desk, EoGetX(lst[i]) + dx,
+			  EoGetY(lst[i]) + dy);
    if (lst)
       Efree(lst);
 
-   call_depth--;
+   if (EoIsShown(ewin))
+      ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)desk);
 }
-#endif
+
+void
+EwinReparent(EWin * ewin, Window parent)
+{
+   EReparentWindow(ewin->client.win, parent, 0, 0);
+}
 
 void
 FloatEwinAt(EWin * ewin, int x, int y)
@@ -1428,11 +1415,13 @@ FloatEwinAt(EWin * ewin, int x, int y)
    static int          call_depth = 0;
    int                 dx, dy;
    EWin              **lst;
-   int                 i, num;
+   int                 i, num, desk, pdesk;
 
    call_depth++;
    if (call_depth > 256)
       return;
+
+   pdesk = EoGetDesk(ewin);
 
    if (EoIsFloating(ewin))
      {
@@ -1444,18 +1433,31 @@ FloatEwinAt(EWin * ewin, int x, int y)
 	ewin->req_x += dx;
 	ewin->req_y += dy;
 	EoSetFloating(ewin, 2);
+	desk = 0;
      }
    else
      {
-	ewin->ld = EoGetDesk(ewin);
 	EoSetFloating(ewin, 1);
+	desk = pdesk;
      }
 
    dx = x - EoGetX(ewin);
    dy = y - EoGetY(ewin);
-   EoSetX(ewin, x);
-   EoSetY(ewin, y);
-   EwinConformToDesktop(ewin);
+
+   if (desk != pdesk)
+     {
+	ewin->o.desk = pdesk;	/* FIXME */
+	EoReparent(ewin, desk, x, y);
+	ICCCM_Configure(ewin);
+	HintsSetWindowDesktop(ewin);
+     }
+   else
+     {
+	RaiseEwin(ewin);
+	MoveEwin(ewin, x, y);
+     }
+
+   EwinDetermineArea(ewin);
 
    lst = EwinListTransients(ewin, &num, 0);
    for (i = 0; i < num; i++)
