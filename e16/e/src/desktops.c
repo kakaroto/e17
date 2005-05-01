@@ -930,10 +930,7 @@ MoveStickyWindowsToCurrentDesk(void)
 	if (!EoIsSticky(ewin))
 	   continue;
 
-	EoSetDesk(ewin, desk);
-	ewin->parent = EoGetWin(d);
-	EReparentWindow(EoGetWin(ewin), ewin->parent, VRoot.w, VRoot.h);
-	EMoveWindow(EoGetWin(ewin), EoGetX(ewin), EoGetY(ewin));
+	EoReparent(ewin, desk, EoGetX(ewin), EoGetY(ewin));
 	HintsSetWindowArea(ewin);
 	HintsSetWindowDesktop(ewin);
      }

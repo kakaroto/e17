@@ -53,8 +53,6 @@
 #define CAN_DO_USABLE 0
 
 #define ENABLE_SHADOWS 1
-#if HAS_NAME_WINDOW_PIXMAP
-#endif
 
 #define ENABLE_DEBUG   1
 #if ENABLE_DEBUG
@@ -85,7 +83,14 @@ typedef struct
 #if HAS_NAME_WINDOW_PIXMAP
    Pixmap              pixmap;
 #endif
-   XWindowAttributes   a;
+   struct
+   {
+      int                 class;	/* FIXME - Remove? */
+      int                 map_state;	/* FIXME - Remove? */
+      int                 depth;	/* FIXME - Remove? */
+      Visual             *visual;	/* FIXME - Remove? */
+      int                 border_width;
+   } a;
    int                 rcx, rcy, rcw, rch;
 #if CAN_DO_USABLE
    Bool                usable;	/* mapped and all damaged at one point */
@@ -162,6 +167,7 @@ static XserverRegion allDamage;
 #define WINDOW_TRANS    1
 #define WINDOW_ARGB     2
 
+static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
@@ -706,16 +712,21 @@ win_extents(Display * dpy, EObj * eo)
    XRectangle          r;
 
 #if HAS_NAME_WINDOW_PIXMAP
-   cw->rcx = cw->a.x;
-   cw->rcy = cw->a.y;
-   cw->rcw = cw->a.width + cw->a.border_width * 2;
-   cw->rch = cw->a.height + cw->a.border_width * 2;
-#else
-   cw->rcx = cw->a.x + cw->a.border_width;
-   cw->rcy = cw->a.y + cw->a.border_width;
-   cw->rcw = cw->a.width;
-   cw->rch = cw->a.height;
+   if (Mode_compmgr.use_pixmap)
+     {
+	cw->rcx = eo->x;
+	cw->rcy = eo->y;
+	cw->rcw = eo->w + cw->a.border_width * 2;
+	cw->rch = eo->h + cw->a.border_width * 2;
+     }
+   else
 #endif
+     {
+	cw->rcx = eo->x + cw->a.border_width;
+	cw->rcy = eo->y + cw->a.border_width;
+	cw->rcw = eo->w;
+	cw->rch = eo->h;
+     }
 
    r.x = cw->rcx;
    r.y = cw->rcy;
@@ -895,19 +906,15 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    D1printf("ECompMgrWinChangeOpacity: %#lx opacity=%#x\n", eo->win,
 	    cw->opacity);
 
-   /* Invalidate stuff changed by opacity */
-   ECompMgrWinInvalidate(eo, INV_OPACITY);
-
    if (eo->shown)		/* FIXME - ??? */
       /* Extents may be unchanged, however, we must repaint */
       if (cw->extents != None)
 	 ECompMgrDamageMerge(eo->desk, cw->extents, 0);
 
-   if (cw->a.class == InputOnly)
-      pictfmt = NULL;
-   else
-      pictfmt = XRenderFindVisualFormat(dpy, cw->a.visual);
+   /* Invalidate stuff changed by opacity */
+   ECompMgrWinInvalidate(eo, INV_OPACITY);
 
+   pictfmt = XRenderFindVisualFormat(dpy, cw->a.visual);
    if (pictfmt && pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask)
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
@@ -942,6 +949,8 @@ ECompMgrWinMap(EObj * eo)
    if (cw->extents == None)
       cw->extents = win_extents(disp, eo);
    ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+
+   ECompMgrWinSetPicts(eo);
 }
 
 static void
@@ -984,8 +993,15 @@ ECompMgrWinSetPicts(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (cw->a.class == InputOnly)
-      return;
+   if (eo->type == EOBJ_TYPE_DESK)
+     {
+	if (cw->picture == None)
+	  {
+	     cw->picture = DeskBackgroundPictureGet((Desk *) eo);
+	     cw->damaged = 1;	/* FIXME - ??? */
+	  }
+	return;
+     }
 
 #if HAS_NAME_WINDOW_PIXMAP
    if (cw->pixmap != None)
@@ -997,40 +1013,26 @@ ECompMgrWinSetPicts(EObj * eo)
 	     XRenderFreePicture(disp, cw->picture);
 	     cw->picture = None;
 	  }
+	Eprintf("*** ECompMgrWinSetPicts pixmap set!!!\n");
      }
    if (Mode_compmgr.use_pixmap)
       cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
 #endif
 
-#if 0
-   if (cw->picture != None)
-     {
-	XRenderFreePicture(disp, cw->picture);
-	cw->picture = None;
-     }
-#endif
    if (cw->picture == None)
      {
-	if (eo->type == EOBJ_TYPE_DESK)
-	  {
-	     cw->picture = DeskBackgroundPictureGet((Desk *) eo);
-	     cw->damaged = 1;	/* FIXME - ??? */
-	  }
-	else
-	  {
-	     XRenderPictFormat  *pictfmt;
-	     XRenderPictureAttributes pa;
-	     Drawable            draw = eo->win;
+	XRenderPictFormat  *pictfmt;
+	XRenderPictureAttributes pa;
+	Drawable            draw = eo->win;
 
 #if HAS_NAME_WINDOW_PIXMAP
-	     if (cw->pixmap)
-		draw = cw->pixmap;
+	if (cw->pixmap)
+	   draw = cw->pixmap;
 #endif
-	     pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
-	     pa.subwindow_mode = IncludeInferiors;
-	     cw->picture = XRenderCreatePicture(disp, draw,
-						pictfmt, CPSubwindowMode, &pa);
-	  }
+	pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
+	pa.subwindow_mode = IncludeInferiors;
+	cw->picture = XRenderCreatePicture(disp, draw,
+					   pictfmt, CPSubwindowMode, &pa);
 	D2printf("New picture %#lx\n", cw->picture);
      }
 }
@@ -1039,9 +1041,14 @@ void
 ECompMgrWinNew(EObj * eo)
 {
    ECmWinInfo         *cw;
-   Status              ok;
+   XWindowAttributes   attr;
 
    if (!Conf_compmgr.enable)	/* FIXME - Here? */
+      return;
+
+   if (!XGetWindowAttributes(disp, eo->win, &attr))
+      return;
+   if (attr.class == InputOnly)
       return;
 
    cw = Ecalloc(1, sizeof(ECmWinInfo));
@@ -1052,27 +1059,16 @@ ECompMgrWinNew(EObj * eo)
 
    eo->cmhook = cw;
 
-   ok = XGetWindowAttributes(disp, eo->win, &cw->a);
-   if (!ok || cw->a.class == InputOnly)
-     {
-	free(cw);
-	eo->cmhook = NULL;
-	return;
-     }
-
    cw->damaged = 0;
 #if CAN_DO_USABLE
    cw->usable = False;
 #endif
 
-#if 0
-   if (cw->a.class == InputOnly)
-     {
-	cw->damage_sequence = 0;
-	cw->damage = None;
-     }
-   else
-#endif
+   cw->a.class = attr.class;	/* FIXME - remove */
+   cw->a.map_state = attr.map_state;	/* FIXME - remove */
+   cw->a.depth = attr.depth;
+   cw->a.visual = attr.visual;
+   cw->a.border_width = attr.border_width;
 
    if (eo->type != EOBJ_TYPE_DESK)
      {
@@ -1086,7 +1082,9 @@ ECompMgrWinNew(EObj * eo)
 #if HAS_NAME_WINDOW_PIXMAP
    cw->pixmap = None;
 #endif
+#if 0				/* FIXME - Remove? */
    ECompMgrWinSetPicts(eo);
+#endif
 
    cw->alphaPict = None;
    cw->borderSize = None;
@@ -1123,31 +1121,14 @@ ECompMgrWinNew(EObj * eo)
 }
 
 void
-ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h, int bw)
+ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
 {
    ECmWinInfo         *cw = eo->cmhook;
    XserverRegion       damage = None;
-   int                 change_xy, change_wh, change_bw, invalidate;
+   int                 invalidate;
 
-   D1printf("ECompMgrWinMoveResize %#lx %#lx %d %d %d %d %d\n",
-	    eo->win, cw->extents, x, y, w, h, bw);
-
-   /* Invalidate old window region */
-#if CAN_DO_USABLE
-   if (cw->usable)
-#endif
-      if (eo->shown)		/* FIXME - ??? */
-	{
-	   damage = XFixesCreateRegion(disp, 0, 0);
-	   if (cw->extents != None)
-	      XFixesCopyRegion(disp, damage, cw->extents);
-	   if (EventDebug(EDBUG_TYPE_COMPMGR3))
-	      ERegionShow("old-extents:", damage);
-	}
-
-   change_xy = cw->a.x != x || cw->a.y != y;
-   change_wh = cw->a.width != w || cw->a.height != h;
-   change_bw = cw->a.border_width != bw;
+   D1printf("ECompMgrWinMoveResize %#lx xy=%d wh=%d bw=%d\n",
+	    eo->win, change_xy, change_wh, change_bw);
 
    invalidate = 0;
    if (change_xy || change_bw)
@@ -1155,31 +1136,34 @@ ECompMgrWinMoveResize(EObj * eo, int x, int y, int w, int h, int bw)
    if (change_wh || change_bw)
       invalidate |= INV_SIZE;
 
-   if (invalidate)
+   if (!invalidate)
+      return;
+
+   if (!eo->shown)
      {
 	ECompMgrWinInvalidate(eo, invalidate);
-	if (eo->shown)		/* FIXME - ??? */
-	   if (invalidate & INV_SIZE)
-	      ECompMgrWinSetPicts(eo);
-
-	cw->a.x = x;
-	cw->a.y = y;
-	cw->a.width = w;
-	cw->a.height = h;
-	cw->a.border_width = bw;
-
-	/* Find new window region */
-	if (eo->shown)		/* FIXME - ??? */
-	   cw->extents = win_extents(disp, eo);
+	return;
      }
 
-#if 0
-   if (eo->shown)		/* FIXME - ??? */
-     {
-	/* Hmmm. Why if not changed? */
-	/* Invalidate new window region */
-	XFixesUnionRegion(disp, damage, damage, cw->extents);
-     }
+   /* Invalidate old window region */
+   damage = XFixesCreateRegion(disp, 0, 0);
+   if (cw->extents != None)
+      XFixesCopyRegion(disp, damage, cw->extents);
+   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+      ERegionShow("old-extents:", damage);
+
+   ECompMgrWinInvalidate(eo, invalidate);
+
+   if (invalidate & INV_SIZE)	/* FIXME - ??? */
+      ECompMgrWinSetPicts(eo);
+
+   /* Find new window region */
+   cw->extents = win_extents(disp, eo);
+
+#if 1
+   /* Hmmm. Why if not changed? - To get shadows painted. */
+   /* Invalidate new window region */
+   XFixesUnionRegion(disp, damage, damage, cw->extents);
 #endif
 
    if (damage != None)
@@ -1191,45 +1175,48 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 {
    ECmWinInfo         *cw = eo->cmhook;
    int                 x, y, w, h, bw;
+   int                 change_xy, change_wh, change_bw;
 
-   /* Can this change ?!? */
-   cw->a.override_redirect = ev->xconfigure.override_redirect;
-
-   eo->x = x = ev->xconfigure.x;
-   eo->y = y = ev->xconfigure.y;
-   eo->w = w = ev->xconfigure.width;
-   eo->h = h = ev->xconfigure.height;
+   x = ev->xconfigure.x;
+   y = ev->xconfigure.y;
+   w = ev->xconfigure.width;
+   h = ev->xconfigure.height;
    bw = ev->xconfigure.border_width;
 
-   ECompMgrWinMoveResize(eo, x, y, w, h, bw);
+   change_xy = eo->x != x || eo->y != y;
+   change_wh = eo->w != w || eo->h != h;
+   change_bw = cw->a.border_width != bw;
+
+   eo->x = x;
+   eo->y = y;
+   eo->w = w;
+   eo->h = h;
+   cw->a.border_width = bw;
+
+   ECompMgrWinMoveResize(eo, change_xy, change_wh, change_bw);
 }
 
 void
-ECompMgrWinReparent(EObj * eo, int desk, int x, int y)
+ECompMgrWinReparent(EObj * eo, int desk, int change_xy)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinReparent %#lx %#lx d=%d x,y=%d,%d\n",
-	    eo->win, cw->extents, desk, x, y);
+   D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
+	    eo->win, cw->extents, eo->desk, desk, eo->x, eo->y, change_xy);
 
    /* Invalidate old window region */
-   if (eo->shown)
-     {
-	if (EventDebug(EDBUG_TYPE_COMPMGR3))
-	   ERegionShow("old-extents:", cw->extents);
-	ECompMgrDamageMerge(eo->desk, cw->extents, 0);
-     }
+   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+      ERegionShow("old-extents:", cw->extents);
+   ECompMgrDamageMerge(eo->desk, cw->extents, change_xy);
 
-   if (cw->a.x != x || cw->a.y != y)
+   if (change_xy)
      {
+	cw->extents = None;
 	ECompMgrWinInvalidate(eo, INV_POS);
 
-	cw->a.x = x;
-	cw->a.y = y;
-
 	/* Find new window region */
-	if (eo->shown)		/* FIXME - ??? */
-	   cw->extents = win_extents(disp, eo);
+	cw->extents = win_extents(disp, eo);
+	ECompMgrDamageMerge(desk, cw->extents, 0);
      }
 }
 
@@ -1340,8 +1327,8 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 #endif
 	if (cw->damage_bounds.x <= 0 &&
 	    cw->damage_bounds.y <= 0 &&
-	    cw->a.width <= cw->damage_bounds.x + cw->damage_bounds.width &&
-	    cw->a.height <= cw->damage_bounds.y + cw->damage_bounds.height)
+	    eo->width <= cw->damage_bounds.x + cw->damage_bounds.width &&
+	    eo->height <= cw->damage_bounds.y + cw->damage_bounds.height)
 	  {
 	     cw->usable = True;
 	  }
@@ -1590,9 +1577,10 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XRenderComposite(dpy, PictOpOver,
 			      cw->shadowPict ? cw->
 			      shadowPict : transBlackPicture, cw->picture, pbuf,
-			      0, 0, 0, 0, x + cw->rcx + cw->shadow_dx,
-			      y + cw->rcy + cw->shadow_dy, cw->shadow_width,
-			      cw->shadow_height);
+			      0, 0, 0, 0,
+			      x + cw->rcx + cw->shadow_dx,
+			      y + cw->rcy + cw->shadow_dy,
+			      cw->shadow_width, cw->shadow_height);
 	     break;
 	  case ECM_SHADOWS_BLURRED:
 	     if (cw->shadow == None)
@@ -1600,11 +1588,11 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
 	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
-	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow,
-			      pbuf, 0, 0, 0, 0,
+	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow, pbuf,
+			      0, 0, 0, 0,
 			      x + cw->rcx + cw->shadow_dx,
-			      y + cw->rcy + cw->shadow_dy, cw->shadow_width,
-			      cw->shadow_height);
+			      y + cw->rcy + cw->shadow_dy,
+			      cw->shadow_width, cw->shadow_height);
 	     break;
 	  }
 #endif

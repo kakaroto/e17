@@ -182,25 +182,6 @@ EobjFini(EObj * eo)
       Efree(eo->name);
 }
 
-static EObj        *
-EobjCreate(Window win, int type)
-{
-   EObj               *eo;
-   XWindowAttributes   attr;
-
-   if (!XGetWindowAttributes(disp, win, &attr))
-      return NULL;
-
-   eo = Ecalloc(1, sizeof(EObj));
-   if (!eo)
-      return eo;
-
-   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, NULL);
-   eo->name = ecore_x_icccm_title_get(win);
-
-   return eo;
-}
-
 void
 EobjDestroy(EObj * eo)
 {
@@ -247,14 +228,21 @@ EObj               *
 EobjRegister(Window win, int type)
 {
    EObj               *eo;
+   XWindowAttributes   attr;
 
    eo = EobjListStackFind(win);
    if (eo)
       return eo;
 
-   eo = EobjCreate(win, type);
+   if (!XGetWindowAttributes(disp, win, &attr))
+      return NULL;
+
+   eo = Ecalloc(1, sizeof(EObj));
    if (!eo)
       return eo;
+
+   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, NULL);
+   eo->name = ecore_x_icccm_title_get(win);
 
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)
@@ -319,6 +307,10 @@ EobjUnmap(EObj * eo)
 void
 EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 {
+   int                 move, resize;
+
+   move = x != eo->x || y != eo->y;
+   resize = w != eo->w || h != eo->h;
    eo->x = x;
    eo->y = y;
    eo->w = w;
@@ -339,7 +331,7 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
      }
 #if USE_COMPOSITE
    if (eo->cmhook)
-      ECompMgrWinMoveResize(eo, x, y, w, h, 0);
+      ECompMgrWinMoveResize(eo, move, resize, 0);
 #endif
 }
 
@@ -359,18 +351,20 @@ void
 EobjReparent(EObj * eo, int desk, int x, int y)
 {
    Desk               *d;
+   int                 move;
 
    d = DeskGet(desk);
    if (!d)
       return;
 
+   move = x != eo->x || y != eo->y;
    eo->x = x;
    eo->y = y;
 
    EReparentWindow(eo->win, EoGetWin(d), x, y);
 #if USE_COMPOSITE
-   if (eo->cmhook)
-      ECompMgrWinReparent(eo, desk, x, y);
+   if (eo->shown && eo->cmhook)
+      ECompMgrWinReparent(eo, desk, move);
 #endif
    EobjSetDesk(eo, desk);
 }

@@ -246,18 +246,14 @@ ButtonShow(Button * b)
 void
 ButtonMoveToDesktop(Button * b, int desk)
 {
-   int                 pdesk;
-
    if (desk < 0 || desk >= DesksGetNumber())
       return;
 
    if (EoIsSticky(b) && EoGetLayer(b) == 1)
       desk = 0;
-   pdesk = EoGetDesk(b);
-   EoSetDesk(b, desk);
 
-   if (desk != pdesk)
-      EReparentWindow(EoGetWin(b), DeskGetWin(desk), EoGetX(b), EoGetY(b));
+   if (desk != EoGetDesk(b))
+      EoReparent(b, desk, EoGetX(b), EoGetY(b));
 }
 
 void

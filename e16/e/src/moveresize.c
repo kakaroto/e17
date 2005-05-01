@@ -108,7 +108,7 @@ ActionMoveEnd(EWin * ewin)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &num);
 
-#if 1				/* Is this OK? */
+#if 0				/* FIXME - Remove? */
    if (Conf.movres.mode_move == 0)
       for (i = 0; i < num; i++)
 	 DetermineEwinFloat(gwins[i], 0, 0);
@@ -125,6 +125,8 @@ ActionMoveEnd(EWin * ewin)
 
    d = DesktopAt(Mode.x, Mode.y);
 
+   if (Conf.movres.mode_move == 0)
+      EoChangeOpacity(ewin, ewin->ewmh.opacity);
    for (i = 0; i < num; i++)
      {
 	if ((EoIsFloating(gwins[i])) || (Conf.movres.mode_move > 0))
@@ -147,7 +149,6 @@ ActionMoveEnd(EWin * ewin)
 	       }
 	  }
 
-	EoChangeOpacity(ewin, ewin->ewmh.opacity);
 	RaiseEwin(gwins[i]);
      }
 
@@ -415,7 +416,8 @@ ActionMoveHandleMotion(void)
 			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0);
 	  }
 	Mode.mode = MODE_MOVE;
-	EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
+	if (Conf.movres.mode_move == 0)
+	   EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
      }
 
    dx = Mode.x - Mode.px;

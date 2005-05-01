@@ -724,7 +724,6 @@ struct _ewin
    char                shaded;
    char                active;
    char                never_use_area;
-   Window              parent;
    char                shapedone;
    char                fixedpos;
    char                ignorearrange;
