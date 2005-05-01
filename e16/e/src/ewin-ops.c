@@ -464,6 +464,30 @@ EwinIconify(EWin * ewin)
    call_depth--;
 }
 
+static void
+GetOnScreenPos(int x, int y, int w, int h, int *px, int *py)
+{
+   int                 dx, dy;
+
+   if (x + w > 4 && x <= VRoot.w - 4 && y + h > 4 && y <= VRoot.h - 4)
+      goto done;
+
+   dx = w / 2;
+   dy = h / 2;
+   x = (x + dx) % VRoot.w;
+   if (x < 0)
+      x += VRoot.w;
+   x -= dx;
+   y = (y + dy) % VRoot.h;
+   if (y < 0)
+      y += VRoot.h;
+   y -= dy;
+
+ done:
+   *px = x;
+   *py = y;
+}
+
 void
 EwinDeIconify(EWin * ewin)
 {
@@ -483,24 +507,9 @@ EwinDeIconify(EWin * ewin)
    x = ox;
    y = oy;
 
+   /* If we iconified an offscreen window, get it back on screen */
    if (!ewin->st.showingdesk)
-     {
-	/* If we iconified an offscreen window, get it back on screen */
-	if (x + EoGetW(ewin) <= 4 || x > VRoot.w - 4 ||
-	    y + EoGetH(ewin) <= 4 || y > VRoot.h - 4)
-	  {
-	     dx = EoGetW(ewin) / 2;
-	     dy = EoGetH(ewin) / 2;
-	     x = (EoGetX(ewin) + dx) % VRoot.w;
-	     if (x < 0)
-		x += VRoot.w;
-	     x -= dx;
-	     y = (EoGetY(ewin) + dy) % VRoot.h;
-	     if (y < 0)
-		y += VRoot.h;
-	     y -= dy;
-	  }
-     }
+      GetOnScreenPos(x, y, EoGetW(ewin), EoGetH(ewin), &x, &y);
 
    dx = x - ox;
    dy = y - oy;
@@ -1188,7 +1197,20 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
 	ewin->ll = EoGetLayer(ewin);
-	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
+	if (on > 1)
+	  {
+	     /* Fullscreen at startup */
+	     on = 1;
+
+	     x = EoGetX(ewin);
+	     y = EoGetY(ewin);
+	     w = ewin->client.w;
+	     h = ewin->client.h;
+	  }
+	else
+	  {
+	     ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
+	  }
 
 	/* Fixup if available space doesn't match ICCCM size constraints */
 	ICCCM_SizeMatch(ewin, w, h, &ww, &hh);
@@ -1230,6 +1252,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	y = ewin->ly;
 	w = ewin->lw;
 	h = ewin->lh;
+	GetOnScreenPos(x, y, w, h, &x, &y);
 	ewin->fixedpos = 0;	/* Yeah - well */
 	b = ewin->normal_border;
 

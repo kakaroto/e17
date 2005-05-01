@@ -755,8 +755,7 @@ AddToFamily(EWin * ewin, Window win)
 
    if (ewin->st.fullscreen)
      {
-	ewin->st.fullscreen = 0;
-	EwinSetFullscreen(ewin, 1);
+	EwinSetFullscreen(ewin, 2);
 	ewin->client.already_placed = 1;
 	MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);
