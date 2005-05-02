@@ -1,6 +1,7 @@
 #include "Entangle.h"
 
 static Ecore_List *entangle_apps_bar = NULL;
+static Ecore_List *entangle_apps_engage = NULL;
 static Ecore_List *entangle_apps_favorite = NULL;
 static Ecore_List *entangle_apps_restart = NULL;
 static Ecore_List *entangle_apps_startup = NULL;
@@ -25,18 +26,21 @@ entangle_apps_init(void)
     }
 
     entangle_apps_bar = ecore_list_new();
+    entangle_apps_engage = ecore_list_new();
     entangle_apps_favorite = ecore_list_new();
     entangle_apps_restart = ecore_list_new();
     entangle_apps_startup = ecore_list_new();
     entangle_apps_deleted_dirs = ecore_list_new();
 
     ecore_list_set_free_cb(entangle_apps_bar, entangle_apps_free_cb);
+    ecore_list_set_free_cb(entangle_apps_engage, entangle_apps_free_cb);
     ecore_list_set_free_cb(entangle_apps_favorite, entangle_apps_free_cb);
     ecore_list_set_free_cb(entangle_apps_restart, entangle_apps_free_cb);
     ecore_list_set_free_cb(entangle_apps_startup, entangle_apps_free_cb);
     ecore_list_set_free_cb(entangle_apps_deleted_dirs, entangle_apps_free_cb);
 
     entangle_apps_dir_init(entangle_apps_bar, "bar");
+    entangle_apps_dir_init(entangle_apps_engage, "engage");
     entangle_apps_dir_init(entangle_apps_favorite, "favorite");
     entangle_apps_dir_init(entangle_apps_restart, "restart");
     entangle_apps_dir_init(entangle_apps_startup, "startup");
@@ -49,6 +53,7 @@ entangle_apps_shutdown(void)
 {
     if (entangle_apps_deleted_dirs) ecore_list_destroy(entangle_apps_deleted_dirs);
     if (entangle_apps_bar) ecore_list_destroy(entangle_apps_bar);
+    if (entangle_apps_engage) ecore_list_destroy(entangle_apps_engage);
     if (entangle_apps_favorite) ecore_list_destroy(entangle_apps_favorite);
     if (entangle_apps_restart) ecore_list_destroy(entangle_apps_restart);
     if (entangle_apps_startup) ecore_list_destroy(entangle_apps_startup);
@@ -67,6 +72,7 @@ entangle_apps_save(void)
     }
 
     entangle_apps_dir_save(entangle_apps_bar, "bar");
+    entangle_apps_dir_save(entangle_apps_engage, "engage");
     entangle_apps_dir_save(entangle_apps_favorite, "favorite");
     entangle_apps_dir_save(entangle_apps_restart, "restart");
     entangle_apps_dir_save(entangle_apps_startup, "startup");
@@ -224,6 +230,9 @@ entangle_apps_dump(void)
     printf("\niBar\n");
     entangle_apps_dir_dump(entangle_apps_bar, "");
 
+    printf("\nEngage\n");
+    entangle_apps_dir_dump(entangle_apps_engage, "");
+
     printf("\nStartup\n");
     entangle_apps_dir_dump(entangle_apps_startup, "");
 
@@ -256,6 +265,7 @@ entangle_apps_list_get(const char *list)
 {
     if (!strcmp(list, "favorite")) return entangle_apps_favorite;
     if (!strcmp(list, "bar")) return entangle_apps_bar;
+    if (!strcmp(list, "engage")) return entangle_apps_engage;
     if (!strcmp(list, "startup")) return entangle_apps_startup;
     if (!strcmp(list, "restart")) return entangle_apps_restart;
     if (!strcmp(list, "deleted_dirs")) return entangle_apps_deleted_dirs;

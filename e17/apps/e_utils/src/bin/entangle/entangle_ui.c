@@ -673,6 +673,9 @@ entangle_ui_button_bar_init(Evas_Object *container)
     o = entangle_ui_button_get(evas, "iBar", "bar");
     esmart_container_element_append(container, o);
 
+    o = entangle_ui_button_get(evas, "Engage", "engage");
+    esmart_container_element_append(container, o);
+
     o = entangle_ui_button_get(evas, "Startup", "startup");
     esmart_container_element_append(container, o);
 
