@@ -24,11 +24,10 @@ part {
    }
 }
 part {
-   name: "cover";
+   name: "cover_background";
    description {
       state: "default" 0.0;
-      visible: 0;
-      color: 255 255 255 0;
+      visible: 1;
       rel1 {
          relative: 0 0;
          offset: 18 11;
@@ -43,11 +42,55 @@ part {
          normal: "cover.png";
       }
    }
+}
+part {
+   name: "cover_border";
    description {
-      state: "open" 0.0;
-      inherit: "default" 0.0;
+      state: "default" 0.0;
       visible: 1;
-      color: 255 255 255 255;
+      rel1 {
+         to: "cover_background";
+      }
+      rel2 {
+         to: "cover_background";
+      }
+      image {
+         normal: "cover_border.png";
+      }
+   }
+}
+part {
+   name: "cover";
+   type: SWALLOW;
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      color: 255 255 255 0;
+      rel1 {
+         relative: 0 0;
+         offset: 1 1;
+         to: "cover_border";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: -2 -2;
+         to: "cover_border";
+      }
+   }
+}
+part {
+   name: "previous_cover";
+   type: SWALLOW;
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      color: 255 255 255 0;
+      rel1 {
+         to: "cover";
+      }
+      rel2 {
+         to: "cover";
+      }
    }
 }
 part {

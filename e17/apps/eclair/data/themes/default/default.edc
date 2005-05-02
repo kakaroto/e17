@@ -2,6 +2,7 @@ images {
    image: "body.png" COMP;
    image: "glass.png" COMP;
    image: "cover.png" COMP;
+   image: "cover_border.png" COMP;
    image: "right_border.png" COMP;
    image: "right_shadow.png" COMP;
    image: "left_border.png" COMP;
@@ -45,6 +46,9 @@ collections {
       name: "eclair_body";
       min: 591 260;
       max: 591 260;
+      script {
+         #include "scripts/body_script.edc"
+      }
       parts {
          #include "parts/left_side_back.edc"
          #include "parts/right_side_back.edc"

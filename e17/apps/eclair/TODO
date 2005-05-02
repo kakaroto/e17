@@ -14,7 +14,8 @@ TODO list:
 *Allow vertical or horizontal progressbar, volumebar, ...
 *Allow a theme to "swallow" the video object instead of having a seperate window for video
 *Drag and Drop for Playlist and cover
-*Support different encodings for subtitles 
+*Support different encodings for subtitles
+*Support .m3u playlist 
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj

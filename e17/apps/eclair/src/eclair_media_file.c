@@ -4,17 +4,10 @@
 #include "eclair_cover.h"
 #include "eclair_utils.h"
 
-static unsigned int _eclair_media_file_next_id = 0;
-
 //Create a new media file
 Eclair_Media_File *eclair_media_file_new()
 {
-   Eclair_Media_File *new_media_file;
-
-   new_media_file = (Eclair_Media_File *)calloc(1, sizeof(Eclair_Media_File));
-   new_media_file->id = _eclair_media_file_next_id++;
-
-   return new_media_file;
+   return (Eclair_Media_File *)calloc(1, sizeof(Eclair_Media_File));
 }
 
 //Free a media file
@@ -66,8 +59,8 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
    if (!eclair)
       return;
 
-   //TODO: Prioritize current file
-   eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
    if (media_file == evas_list_data(eclair->playlist.current))
       eclair_current_file_set(eclair, media_file);
+   else
+      eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file, 0);
 }

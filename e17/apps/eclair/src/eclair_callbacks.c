@@ -9,6 +9,11 @@
 #include "eclair.h"
 #include "eclair_playlist.h"
 
+typedef enum _Eclair_Gui_Message_Id
+{
+   COVER_ALPHA_CHANGED = 0
+} Eclair_Gui_Message_Id;
+
 //Called when eclair is closed
 int eclair_exit_cb(void *data, int type, void *event)
 {
@@ -122,33 +127,27 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
       || strcmp(ev->key, "Prior") == 0 || strcmp(ev->key, "Next") == 0
       || strcmp(ev->key, "Home") == 0)
    {
+      double media_position;
+
       if (!eclair->video_object)
          return;
 
-      if (eclair->seek_to_pos < 0.0)
-         eclair->seek_to_pos = emotion_object_position_get(eclair->video_object);
-   
+      media_position = eclair_position_get(eclair);   
       if (strcmp(ev->key, "Left") == 0)
-         eclair->seek_to_pos -= 15.0;
+         media_position -= 15.0;
       else if (strcmp(ev->key, "Right") == 0)
-         eclair->seek_to_pos += 15.0;
+         media_position += 15.0;
       else if (strcmp(ev->key, "Down") == 0)
-         eclair->seek_to_pos -= 60.0;
+         media_position -= 60.0;
       else if (strcmp(ev->key, "Up") == 0)
-         eclair->seek_to_pos += 60.0;
-      else if (strcmp(ev->key, "Prior") == 0)
-         eclair->seek_to_pos -= 600.0; 
+         media_position += 60.0;
       else if (strcmp(ev->key, "Next") == 0)
-         eclair->seek_to_pos += 600.0; 
+         media_position -= 600.0;
+      else if (strcmp(ev->key, "Prior") == 0)
+         media_position += 600.0;
       else if (strcmp(ev->key, "Home") == 0)
-         eclair->seek_to_pos = 0.0; 
-
-      if (eclair->seek_to_pos < 0.0)
-         eclair->seek_to_pos = 0.0;
-      else if (eclair->seek_to_pos > emotion_object_play_length_get(eclair->video_object))
-         eclair->seek_to_pos = emotion_object_play_length_get(eclair->video_object);
-      eclair->dont_update_progressbar = 1;
-      emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
+         media_position = 0.0;
+      eclair_position_set(eclair, media_position);
    }
    else if (strcmp(ev->key, "KP_Divide") == 0 || strcmp(ev->key, "slash") == 0 
       || strcmp(ev->key, "KP_Multiply") == 0 || strcmp(ev->key, "asterisk") == 0)
@@ -163,6 +162,7 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
          volume -= (1.0 / 100);
       else if (strcmp(ev->key, "KP_Multiply") == 0 || strcmp (ev->key, "asterisk") == 0)
          volume += (1.0 / 100);
+
       if (volume < 0.0)
          volume = 0.0;
       else if (volume > 1.0)
@@ -263,14 +263,19 @@ void eclair_gui_play_entry_cb(void *data, Evas_Object *edje_object, const char *
 void eclair_gui_progress_bar_drag_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
    Eclair *eclair = (Eclair *)data;
-   double x;
+   double progress_rate;
 
    if (!eclair)
       return;
 
-   edje_object_part_drag_value_get(eclair->gui_object, "progress_bar_drag", &x, NULL);
-   eclair_progress_rate_set(eclair, x);
-   eclair->dont_update_progressbar = 1;
+   if (strcmp(emission, "drag,start") == 0)
+      eclair->use_progress_bar_drag_for_time = 1;      
+   else if (strcmp(emission, "drag,stop") == 0)
+   {
+      eclair->use_progress_bar_drag_for_time = 0;
+      edje_object_part_drag_value_get(eclair->gui_object, "progress_bar_drag", &progress_rate, NULL);
+      eclair_progress_rate_set(eclair, progress_rate);
+   }
 }
 
 //Called when the user drags the volume bar button
@@ -324,4 +329,32 @@ void eclair_gui_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object 
    Evas_Event_Mouse_Wheel *event = (Evas_Event_Mouse_Wheel *)event_info;
 
    eclair_playlist_container_scroll(eclair, event->z);  
+}
+
+//Called when the gui send a message
+void eclair_gui_message_cb(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
+{
+   Eclair *eclair = (Eclair *)data;
+   
+   if (!eclair)
+      return;
+
+   switch (id)
+   {
+      case COVER_ALPHA_CHANGED:
+      {
+         Edje_Message_Int_Set *message;
+         if (type != EDJE_MESSAGE_INT_SET || !(message = (Edje_Message_Int_Set *)msg))
+            break;
+         if (message->count != 2)
+            break;
+         if (eclair->gui_cover)
+            evas_object_color_set(eclair->gui_cover, 255, 255, 255, message->val[0]);
+         if (eclair->gui_previous_cover)     
+            evas_object_color_set(eclair->gui_previous_cover, 255, 255, 255, message->val[1]);
+         break;
+      }
+      default:
+         break;
+   }
 }

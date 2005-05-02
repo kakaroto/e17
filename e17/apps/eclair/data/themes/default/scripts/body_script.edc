@@ -1,0 +1,74 @@
+#define COVER_ALPHA_SPEED 10
+#define COVER_ALPHA_MESSAGE 0
+
+public cover_alpha = 0;
+public previous_cover_alpha = 0;
+public cover_timer = 0;
+
+public cover_set() {
+   new ca;
+
+   ca = get_int(cover_alpha);
+   set_int(previous_cover_alpha, ca);   
+
+   cover_change_cb(1);
+}
+
+public cover_unset() {
+   cover_change_cb(0);
+}
+
+public cover_change_cb(set) {
+   new ca, pca, id;
+
+   if ((id = get_int(cover_timer)))
+   {
+      cancel_timer(id);
+      set_int(cover_timer, 0);
+   }
+
+   ca = get_int(cover_alpha);
+   pca = get_int(previous_cover_alpha);
+
+   if (set == 1)
+   {
+      if (ca < 255)
+      {
+         ca += COVER_ALPHA_SPEED;
+         if (ca > 255)
+            ca = 255;
+      }
+   }
+   else
+   {
+      if (ca > 0)
+      {
+         ca -= COVER_ALPHA_SPEED;
+         if (ca < 0)
+            ca = 0;
+      }
+   }
+
+   if (pca > 0)
+   {
+      pca -= COVER_ALPHA_SPEED;
+      if (pca < 0)
+         pca = 0;
+   }
+   
+   if (set == 1)
+   {
+      if (ca != 255 || pca != 0)
+         timer(0.05, "cover_change_cb", set);
+   }
+   else
+   {
+      if (ca != 0 || pca != 0)
+         timer(0.05, "cover_change_cb", set);
+   }
+
+   set_int(cover_alpha, ca);
+   set_int(previous_cover_alpha, pca);
+
+   send_message(MSG_INT_SET, COVER_ALPHA_MESSAGE, ca, pca);
+}

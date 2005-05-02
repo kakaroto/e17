@@ -26,3 +26,19 @@ program {
    target: "button_pause";
    target: "progress_bar_drag";
 }
+program {
+   name: "cover_set";
+   signal: "signal_cover_set";
+   source: "eclair_bin";
+   script {
+      cover_set();
+   }
+}
+program {
+   name: "cover_unset";
+   signal: "signal_cover_unset";
+   source: "eclair_bin";
+   script {
+      cover_unset();
+   }
+}

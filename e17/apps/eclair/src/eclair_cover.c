@@ -15,11 +15,17 @@
 #define PACKET_CHUNK_SIZE 1024
 #define MAX_REQUEST_SIZE 1024
 
-typedef struct _Eclair_Packet_Chunk
+typedef struct _Eclair_Cover_Packet_Chunk
 {
    int size;
    char *data;
-} Eclair_Packet_Chunk;
+} Eclair_Cover_Packet_Chunk;
+
+typedef struct _Eclair_Cover_Not_In_DB_Album
+{
+   char *artist;
+   char *album;
+} Eclair_Cover_Not_In_DB_Album;
 
 const char *amazon_hostname = "webservices.amazon.com";
 const char *amazon_license_key = "0P1862RFDFSF4KYZQNG2";
@@ -37,6 +43,7 @@ static void _eclair_cover_build_url_for_item_images(const char *ASIN, char url[M
 static char *_eclair_cover_convert_to_url_format(const char *string);
 static xmlNode *_eclair_cover_get_node_xml_tree(xmlNode *root_node, const char *prop);
 static xmlChar *_eclair_cover_get_prop_value_from_xml_tree(xmlNode *root_node, const char *prop);
+static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, const char *artist, const char *album);
 
 static void *_eclair_cover_thread(void *param);
 
@@ -47,6 +54,7 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
       return;
 
    cover_manager->cover_files_to_treat = NULL;
+   cover_manager->not_in_amazon_db = NULL;
    cover_manager->eclair = eclair;
    cover_manager->amazon_he = NULL;
    cover_manager->cover_delete_thread = 0;
@@ -58,40 +66,52 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
 //Shutdown the cover module
 void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
 {
+   Evas_List *l;
+   Eclair_Cover_Not_In_DB_Album *album;
+
    if (!cover_manager)
       return;
 
    free(cover_manager->amazon_he);   
-   printf("Cover: Debug: Destroying cover thread\n");
+   for (l = cover_manager->not_in_amazon_db; l; l = l->next)
+   {
+      if ((album = (Eclair_Cover_Not_In_DB_Album *)l->data))
+      {
+         free(album->artist);
+         free(album->album);
+         free(album);
+      }
+   }
+   evas_list_free(cover_manager->not_in_amazon_db);
+
+   fprintf(stderr, "Cover: Debug: Destroying cover thread\n");
    cover_manager->cover_delete_thread = 1;
-   pthread_cond_broadcast(&cover_manager->cover_cond); 
-   pthread_join(cover_manager->cover_thread, NULL); 
-   printf("Cover: Debug: Cover thread destroyed\n"); 
+   pthread_cond_broadcast(&cover_manager->cover_cond);
+   pthread_join(cover_manager->cover_thread, NULL);
+   fprintf(stderr, "Cover: Debug: Cover thread destroyed\n");
 }
 
 //Add a media file to the list of files to treat
-void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, const Eclair_Media_File *media_file)
+void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_Media_File *media_file, Evas_Bool high_priority)
 {
    if (!cover_manager || !media_file)
       return;
  
-   cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, media_file);
+   if (high_priority)
+      cover_manager->cover_files_to_treat = evas_list_prepend(cover_manager->cover_files_to_treat, media_file);
+   else
+      cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, media_file);
    pthread_cond_broadcast(&cover_manager->cover_cond); 
 }
 
-//TODO: amazon_he and comment
-//CODE:
-/*if ((he = gethostbyname(amazon_hostname)))
-{
-cover_manager->amazon_he = (struct hostent *)malloc(sizeof(struct hostent));
-memcpy(cover_manager->amazon_he, he, sizeof(struct hostent));
-}*/
+//Fetch from amazon the covers of the files stored in the list cover_files_to_treat
 static void *_eclair_cover_thread(void *param)
 {
    Eclair_Cover_Manager *cover_manager = (Eclair_Cover_Manager *)param;
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
    char *cover_path;
+   struct hostent *he;
 
    if (!cover_manager)
       return NULL;
@@ -100,29 +120,36 @@ static void *_eclair_cover_thread(void *param)
    for (;;)
    {
       pthread_cond_wait(&cover_manager->cover_cond, &cover_manager->cover_mutex);
+      if (!cover_manager->amazon_he)
+      {
+         if ((he = gethostbyname(amazon_hostname)))
+         {
+            cover_manager->amazon_he = (struct hostent *)malloc(sizeof(struct hostent));
+            memcpy(cover_manager->amazon_he, he, sizeof(struct hostent));
+         }
+      }
       while (cover_manager->cover_files_to_treat || cover_manager->cover_delete_thread)
       {
-         for (l = cover_manager->cover_files_to_treat; l; l = next)
+         for (l = cover_manager->cover_files_to_treat; l || cover_manager->cover_delete_thread; l = next)
          {
+            if (cover_manager->cover_delete_thread)
+            {
+               cover_manager->cover_files_to_treat = evas_list_free(cover_manager->cover_files_to_treat);
+               cover_manager->cover_delete_thread = 0;
+               return NULL;
+            }
+
             next = l->next;
             current_file = (Eclair_Media_File *)l->data;
             cover_manager->cover_files_to_treat = evas_list_remove_list(cover_manager->cover_files_to_treat, l);
-            if ((cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path)))
+            
+            cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
+            if (cover_manager->eclair)
             {
-               if (cover_manager->eclair)
-               {
-                  if (current_file == evas_list_data(cover_manager->eclair->playlist.current))
-                     eclair_gui_cover_set(cover_manager->eclair, cover_path);
-               }
-               free(cover_path);
+               if (current_file == evas_list_data(cover_manager->eclair->playlist.current))
+                  eclair_gui_cover_set(cover_manager->eclair, cover_path);
             }
-         }
-
-         if (cover_manager->cover_delete_thread)
-         {
-            cover_manager->cover_files_to_treat = evas_list_free(cover_manager->cover_files_to_treat);
-            cover_manager->cover_delete_thread = 0;
-            return NULL;
+            free(cover_path);
          }
       }
    }
@@ -134,6 +161,9 @@ static void *_eclair_cover_thread(void *param)
 char *eclair_cover_file_get(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, const char *file_path)
 {
    char *path;
+
+   if (!cover_manager)
+      return NULL;
 
    if ((path = eclair_cover_file_get_from_local(cover_manager, artist, album, file_path)))
       return path;   
@@ -184,9 +214,24 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    char url[MAX_REQUEST_SIZE];
    char *keywords, *converted_keywords;
    FILE *cover_file;
+   Evas_List *l;
+   Eclair_Cover_Not_In_DB_Album *not_in_db_album;
 
    if (!cover_manager || !artist || !album)
       return NULL;
+   if (strlen(artist) <= 0 || strlen(album) <= 0)
+      return NULL;
+
+   //Check if we already perform a search on this album and if amazon answered it doesn't have this album in database
+   for (l = cover_manager->not_in_amazon_db; l; l = l->next)
+   {
+      if (!(not_in_db_album = l->data))
+         continue;
+      if (!not_in_db_album->artist || !not_in_db_album->album)
+         continue;
+      if (strcmp(not_in_db_album->artist, artist) == 0 && strcmp(not_in_db_album->album, album) == 0)
+         return NULL;
+   }
 
    //Get the ASIN of the album
    keywords = (char *)malloc(strlen(artist) + strlen(album) + 2);
@@ -196,10 +241,12 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
 
    _eclair_cover_build_url_for_item_search(converted_keywords, url);
    free(converted_keywords);
+   if (cover_manager->cover_delete_thread)
+      return NULL;
    body_length = _eclair_cover_fetch(url, cover_manager->amazon_he, &body);
    if (body_length <= 0)
    {
-      free(body);
+      fprintf(stderr, "Cover: Unable to download cover from amazon.com\n");
       return NULL;
    }
 
@@ -207,14 +254,15 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    free(body);
    if (!doc)
    {
-      printf("Cover: Amazon.com webservices sent a non xml response\n");
+      fprintf(stderr, "Cover: Amazon.com webservices sent a non xml response\n");
       return NULL;
    }
    ASIN = _eclair_cover_get_prop_value_from_xml_tree(xmlDocGetRootElement(doc), "ASIN");
    xmlFreeDoc(doc);
    if (!ASIN)
    {
-      printf("Cover: Unable to find the item \"%s - %s\" on amazon\n", artist, album);
+      fprintf(stderr, "Cover: Unable to find the item \"%s - %s\" on amazon\n", artist, album);
+      _eclair_cover_add_file_to_not_in_amazon_db_list(&cover_manager->not_in_amazon_db, artist, album);
       return NULL;
    }
 
@@ -222,10 +270,12 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    //Get cover url from the ASIN
    _eclair_cover_build_url_for_item_images((char *)ASIN, url);
    xmlFree(ASIN);
+   if (cover_manager->cover_delete_thread)
+      return NULL;
    body_length = _eclair_cover_fetch(url, cover_manager->amazon_he, &body);
    if (body_length <= 0)
    {
-      free(body);
+      fprintf(stderr, "Cover: Unable to download cover from amazon.com\n");
       return NULL;
    }
 
@@ -233,35 +283,45 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    free(body);
    if (!doc)
    {
-      printf("Cover: Amazon.com webservices sent a non xml response\n");
+      fprintf(stderr, "Cover: Amazon.com webservices sent a non xml response\n");
       return NULL;
    }
-   image_node = _eclair_cover_get_node_xml_tree(xmlDocGetRootElement(doc), "LargeImage");
+   if (!(image_node = _eclair_cover_get_node_xml_tree(xmlDocGetRootElement(doc), "LargeImage")))
+   {
+      if (!(image_node = _eclair_cover_get_node_xml_tree(xmlDocGetRootElement(doc), "MediumImage")))
+         image_node = _eclair_cover_get_node_xml_tree(xmlDocGetRootElement(doc), "SmallImage");
+   }
    cover_url = _eclair_cover_get_prop_value_from_xml_tree(image_node, "URL");
    xmlFreeDoc(doc);
    if (!cover_url)
    {
-      printf("Cover: Unable to find the cover for %s - %s\n", artist, album);
+      fprintf(stderr, "Cover: Unable to find the cover for %s - %s\n", artist, album);
+      _eclair_cover_add_file_to_not_in_amazon_db_list(&cover_manager->not_in_amazon_db, artist, album);
       return NULL;
    }
 
 
    //Fetch the cover
-   cover_path = _eclair_cover_build_path_from_artist_album(cover_manager, artist, album, "jpg");
+   if (cover_manager->cover_delete_thread)
+   {
+      xmlFree(cover_url);
+      return NULL;
+   }
    body_length = _eclair_cover_fetch(cover_url, NULL, &body);
    xmlFree(cover_url);
    if (body_length <= 0)
    {
-      free(body);
-      printf("Cover: Unable to download cover from amazon.com\n");
+      fprintf(stderr, "Cover: Unable to download cover from amazon.com\n");
       return NULL;
    }
 
    //Save the file and return the path
+   cover_path = _eclair_cover_build_path_from_artist_album(cover_manager, artist, album, "jpg");
    cover_file = fopen(cover_path, "wb");
    if (!cover_file)
    {
-      printf("Cover: Unable to open the file \"%s\" to save the cover\n", cover_path);
+      fprintf(stderr, "Cover: Unable to open the file \"%s\" to save the cover\n", cover_path);
+      free(cover_path);
       free(body);
       return NULL;
    }
@@ -284,7 +344,7 @@ static int _eclair_cover_connect_to_hostname(const char *hostname)
 
    if (!(he = gethostbyname(hostname)))
    {
-      printf("Cover: Unable to find IP of %s\n", hostname);
+      fprintf(stderr, "Cover: Unable to find IP of %s\n", hostname);
       return -1;
    }
    return _eclair_cover_connect_to_host(he);
@@ -303,7 +363,7 @@ static int _eclair_cover_connect_to_host(const struct hostent *host)
 
    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
    {
-      printf("Cover: Unable to create an Internet socket\n");
+      fprintf(stderr, "Cover: Unable to create an Internet socket\n");
       return 0;
    }
 
@@ -313,7 +373,7 @@ static int _eclair_cover_connect_to_host(const struct hostent *host)
    memcpy(&adress.sin_addr, host->h_addr, host->h_length);
    if (connect(socket_fd, (struct sockaddr *)&adress, sizeof(struct sockaddr)) != 0)
    {
-      printf("Cover: Unable to connect to %s\n", inet_ntoa(adress.sin_addr));
+      fprintf(stderr, "Cover: Unable to connect to %s\n", inet_ntoa(adress.sin_addr));
       close(socket_fd);
       return -1;
    }
@@ -339,14 +399,14 @@ static int _eclair_cover_fetch(const char *url, const struct hostent *he, char *
 
    if (strncmp(url, "http://", 7) != 0)
    {
-      printf("Cover: Invalid URL\n");
+      fprintf(stderr, "Cover: Invalid URL\n");
       return -1;
    }
    host_start = url + 7;
    url_abs_path = index(host_start, '/');
    if (!url_abs_path)
    {
-      printf("Cover: Invalid URL\n");
+      fprintf(stderr, "Cover: Invalid URL\n");
       return -1;
    }
 
@@ -375,7 +435,7 @@ static int _eclair_cover_fetch(const char *url, const struct hostent *he, char *
    sprintf(request, "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: eclair\r\n\r\n", url_abs_path, host);
    if (send(socket_fd, request, strlen(request), 0) <= 0)
    {
-      printf("Cover: Unable to send request to host: %s\n", host);
+      fprintf(stderr, "Cover: Unable to send request to host: %s\n", host);
       free(host);
       close(socket_fd);
       return -1;
@@ -386,7 +446,7 @@ static int _eclair_cover_fetch(const char *url, const struct hostent *he, char *
    free(host);
    if (body_length <= 0)
    {
-      printf("Unable to fetch the file stored at %s\n", url);
+      fprintf(stderr, "Cover: Unable to fetch the file stored at %s\n", url);
       free(packet);
       return body_length;
    }
@@ -403,7 +463,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
 {
    char packet_chunk[PACKET_CHUNK_SIZE];
    int num_bytes_read, pos;
-   Eclair_Packet_Chunk *chunk;
+   Eclair_Cover_Packet_Chunk *chunk;
    Evas_List *l, *chunks = NULL;
 
    if (socket_fd < 0 || !packet || !length)
@@ -412,7 +472,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
    *length = 0;
    while ((num_bytes_read = read(socket_fd, packet_chunk, PACKET_CHUNK_SIZE)) > 0)
    {
-      chunk = (Eclair_Packet_Chunk *)malloc(sizeof(Eclair_Packet_Chunk));
+      chunk = (Eclair_Cover_Packet_Chunk *)malloc(sizeof(Eclair_Cover_Packet_Chunk));
       chunk->size = num_bytes_read;
       chunk->data = (char *)malloc(num_bytes_read * sizeof(char));
       memcpy(chunk->data, packet_chunk, num_bytes_read);
@@ -431,7 +491,7 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
    *packet = (char *)malloc(*length * sizeof(char));
    for (l = chunks; l; l = l->next)
    {
-      if (!(chunk = (Eclair_Packet_Chunk *)l->data))
+      if (!(chunk = (Eclair_Cover_Packet_Chunk *)l->data))
          continue;
       memcpy(*packet + pos, chunk->data, chunk->size);
       free(chunk->data);
@@ -588,4 +648,18 @@ static xmlChar *_eclair_cover_get_prop_value_from_xml_tree(xmlNode *root_node, c
    if (!(node = _eclair_cover_get_node_xml_tree(root_node, prop)))
       return NULL;
    else return xmlNodeGetContent(node);
+}
+
+//Add the album to the list of albums which amazon doesn't have in its database
+static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, const char *artist, const char *album)
+{
+   Eclair_Cover_Not_In_DB_Album *new_album;
+   
+   if (!artist || !album || !list)
+      return;
+
+   new_album = (Eclair_Cover_Not_In_DB_Album *)malloc(sizeof(Eclair_Cover_Not_In_DB_Album));
+   new_album->artist = strdup(artist);
+   new_album->album = strdup(album);
+   *list = evas_list_prepend(*list, new_album);
 }

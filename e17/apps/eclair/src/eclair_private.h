@@ -30,6 +30,7 @@ struct _Eclair_Config
 struct _Eclair_Cover_Manager
 {
    Evas_List *cover_files_to_treat;
+   Evas_List *not_in_amazon_db;
    struct hostent *amazon_he;
    Eclair *eclair;
    Evas_Bool cover_delete_thread;
@@ -49,7 +50,6 @@ struct _Eclair_Meta_Tag_Manager
 
 struct _Eclair_Media_File
 {
-   unsigned int id;
    char *path;
    char *artist;
    char *title;
@@ -107,10 +107,11 @@ struct _Eclair
    Ecore_Evas *gui_window;
    Evas_Object *gui_object;
    Evas_Object *gui_draggies;
-   Evas_Object *gui_cover;
+   Evas_Object *gui_cover, *gui_previous_cover;
    Evas_Object *playlist_container;
    int playlist_entry_height;
    double seek_to_pos;
+   Evas_Bool use_progress_bar_drag_for_time;
    Evas_Bool dont_update_progressbar;
    Eclair_Engine gui_engine;
 

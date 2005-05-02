@@ -26,11 +26,11 @@ void eclair_meta_tag_shutdown(Eclair_Meta_Tag_Manager *meta_tag_manager)
    if (!meta_tag_manager)
       return;
    
-   printf("Meta tag: Debug: Destroying meta tag thread\n");
+   fprintf(stderr, "Meta tag: Debug: Destroying meta tag thread\n");
    meta_tag_manager->meta_tag_delete_thread = 1;
    pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond); 
    pthread_join(meta_tag_manager->meta_tag_thread, NULL); 
-   printf("Meta tag: Debug: Meta tag thread destroyed\n");  
+   fprintf(stderr, "Meta tag: Debug: Meta tag thread destroyed\n");  
 }
 
 //Add a media file to the list of files to scan for meta tag
@@ -38,7 +38,7 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
 {
    if (!meta_tag_manager || !media_file)
       return;
-   
+
    meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, media_file);
    pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond); 
 }
@@ -70,8 +70,8 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    }   
    if ((tag_audio_props = taglib_file_audioproperties(tag_file)))
       media_file->length = taglib_audioproperties_length(tag_audio_props);
-   taglib_file_free(tag_file);
    taglib_tag_free_strings();
+   taglib_file_free(tag_file);
 
    eclair_media_file_update(eclair, media_file);
 }
@@ -94,19 +94,19 @@ static void *_eclair_meta_tag_thread(void *param)
       pthread_cond_wait(&meta_tag_manager->meta_tag_cond, &meta_tag_manager->meta_tag_mutex);
       while (meta_tag_manager->meta_tag_files_to_scan || meta_tag_manager->meta_tag_delete_thread)
       {
-         for (l = meta_tag_manager->meta_tag_files_to_scan; l; l = next)
+         for (l = meta_tag_manager->meta_tag_files_to_scan; l || meta_tag_manager->meta_tag_delete_thread; l = next)
          {
+            if (meta_tag_manager->meta_tag_delete_thread)
+            {
+               meta_tag_manager->meta_tag_files_to_scan = evas_list_free(meta_tag_manager->meta_tag_files_to_scan);
+               meta_tag_manager->meta_tag_delete_thread = 0;
+               return NULL;
+            }
+
             next = l->next;
             current_file = (Eclair_Media_File *)l->data;
             meta_tag_manager->meta_tag_files_to_scan = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_scan, l);
             eclair_meta_tag_read(eclair, current_file);
-         }
-
-         if (meta_tag_manager->meta_tag_delete_thread)
-         {
-            meta_tag_manager->meta_tag_files_to_scan = evas_list_free(meta_tag_manager->meta_tag_files_to_scan);
-            meta_tag_manager->meta_tag_delete_thread = 0;
-            return NULL;
          }
       }
    }
