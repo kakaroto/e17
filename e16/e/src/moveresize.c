@@ -126,7 +126,9 @@ ActionMoveEnd(EWin * ewin)
    d = DesktopAt(Mode.x, Mode.y);
 
    if (Conf.movres.mode_move == 0)
-      EoChangeOpacity(ewin, ewin->ewmh.opacity);
+     {
+	EoChangeOpacity(ewin, ewin->ewmh.opacity);
+     }
    for (i = 0; i < num; i++)
      {
 	if ((EoIsFloating(gwins[i])) || (Conf.movres.mode_move > 0))
@@ -417,7 +419,9 @@ ActionMoveHandleMotion(void)
 	  }
 	Mode.mode = MODE_MOVE;
 	if (Conf.movres.mode_move == 0)
-	   EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
+	  {
+	     EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
+	  }
      }
 
    dx = Mode.x - Mode.px;

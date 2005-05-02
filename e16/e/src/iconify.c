@@ -715,7 +715,10 @@ IconboxesEwinDeIconify(EWin * ewin)
 
    ib = SelectIconboxForEwin(ewin);
    if (ib && ib->animate && !ewin->st.showingdesk)
-      IB_Animate(0, ewin, ib->ewin);
+     {
+	CheckEvent();
+	IB_Animate(0, ewin, ib->ewin);
+     }
 }
 
 static void
@@ -1963,6 +1966,8 @@ IconboxRedraw(Iconbox * ib)
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
    EwinPropagateShapes(ib->ewin);
+   if (ib->nobg)
+      EoChangeShape(ib->ewin);
 
    Mode.queue_up = pq;
 }

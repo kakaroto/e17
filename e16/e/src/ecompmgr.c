@@ -1228,6 +1228,20 @@ ECompMgrWinCirculate(EObj * eo, XEvent * ev)
    /* FIXME - Check if stacking was changed */
 }
 
+void
+ECompMgrWinChangeShape(EObj * eo)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   if (cw->extents != None)
+     {
+	ECompMgrDamageMerge(eo->desk, cw->extents, 1);
+	cw->extents = None;
+     }
+
+   ECompMgrWinInvalidate(eo, INV_SIZE);
+}
+
 static void
 finish_destroy_win(EObj * eo, Bool gone)
 {
@@ -1683,7 +1697,7 @@ ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
    return;
 }
 
-#if 0				/* FIXME - Need this? */
+#if 1				/* FIXME - Need this? */
 static void
 ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 {
@@ -2060,8 +2074,9 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
 
      case Expose:
-#if 0				/* FIXME - Need this? */
-	ECompMgrRootExpose(prm, ev);
+#if 1				/* FIXME - Need this? */
+	if (Conf_compmgr.shadow != ECM_SHADOWS_OFF)
+	   ECompMgrRootExpose(prm, ev);
 #endif
 	break;
      }

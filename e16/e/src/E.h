@@ -561,6 +561,7 @@ struct _eobj
 #define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
 #define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(&((eo)->o), x, y, w, h)
 #define EoReparent(eo, d, x, y)         EobjReparent(&((eo)->o), d, x, y)
+#define EoChangeShape(eo)               EobjChangeShape(&((eo)->o))
 
 typedef struct
 {
@@ -1541,6 +1542,7 @@ void                EobjMove(EObj * eo, int x, int y);
 void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 void                EobjReparent(EObj * eo, int desk, int x, int y);
+void                EobjChangeShape(EObj * eo);
 
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);

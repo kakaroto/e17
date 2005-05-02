@@ -40,6 +40,7 @@ void                ECompMgrWinUnmap(EObj * eo);
 void                ECompMgrWinMoveResize(EObj * eo, int change_xy,
 					  int change_wh, int change_bw);
 void                ECompMgrWinReparent(EObj * eo, int desk, int change_xy);
+void                ECompMgrWinChangeShape(EObj * eo);
 
 void                ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity);
 Pixmap              ECompMgrWinGetPixmap(const EObj * eo);

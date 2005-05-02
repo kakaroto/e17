@@ -369,6 +369,17 @@ EobjReparent(EObj * eo, int desk, int x, int y)
    EobjSetDesk(eo, desk);
 }
 
+void
+EobjChangeShape(EObj * eo)
+{
+#if USE_COMPOSITE
+   if (eo->shown && eo->cmhook)
+      ECompMgrWinChangeShape(eo);
+#else
+   eo = NULL;
+#endif
+}
+
 #if USE_COMPOSITE
 Pixmap
 EobjGetPixmap(const EObj * eo)
