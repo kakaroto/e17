@@ -44,8 +44,8 @@ rake
 cp multipass.edj /usr/local/share/euphoria/themes
 
 If you didn't install Euphoria to /usr/local, you will have to change
-that path, or you can copy the edj file to ~/.e/apps/euphoria/themes
-instead.
+that path, or you can copy the edj file to
+~/.xmms2/clients/euphoria/themes instead.
 
 At this point your ready to rock.  Start Euphoria but make sure
 the XMMS2 Daemon is running (start via: "xmms2d").
@@ -64,38 +64,6 @@ play list using the CLI client.  An example session would be:
 	$ xmms2 list
 	(now the playlist has stuff in it)
 3) Start Euphoria with no options.
-
-You can change themes using the euphoria.db explained below.
-
-
-CREATING A PERSONAL EUPHORIA CONFIG
------------------------------------
-
-Euphoria can get some configuration information from a personal
-configuration file thanks to EDB.  To create one follow 
-these sets:
-
- 1) Create the directory ~/.e/apps/euphoria
- 2) Using the EDB tool of choice create a euphoria.db
-	(ie: "edb_gtk_ed euphoria")
- 3) Add the following keys:
-	/euphoria/evas_engine
-	/euphoria/output_plugin
-	/euphoria/theme	
- 4) If you wish to use GL or FB: 
-  a)	Set evas_engine to a string type with the value "gl" or "fb".
- 5) If you wish to use a non-default theme:
-  a)    Create the directory: ~/.e/apps/euphoria/themes
-  b)    Copy the EETs for the themes you want to use there.
-  c)    Set theme to a string type with the name of the theme minus the .eet
-		(ie: iio.eet is put in the edb as just "iio")
-
-If you do not with to over-ride the default setting for Euphoria,
-simply don't create the key, or leave the type as int.
-
-You can also use the following directories:
- ~/.e/apps/euphoria/fonts      Fonts for use by Euphoria themes
-
 
 REPORTING BUGS
 ---------------
