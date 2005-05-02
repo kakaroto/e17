@@ -12,6 +12,7 @@ require "esmart_container"
 require "xmmsclient"
 require "singleton"
 require "yaml"
+require "find"
 
 require "euphoria/playlist"
 require "euphoria/playlist_item"
@@ -216,7 +217,15 @@ private
 
 		@edje.on_signal("file_dialog.open") do
 			fd = File.expand_path("~/.xmms2/clients/euphoria/themes/fd.eet")
-			FileDialog.open(fd) { |file| @xmms.playlist_add(file).wait }
+			FileDialog.open(fd) do |sel|
+				if File.directory?(sel)
+					Find.find(sel) do |f|
+						@xmms.playlist_add("file://" + f).wait
+					end
+				elsif File.exists?(sel)
+					@xmms.playlist_add("file://" + file).wait
+				end
+			end
 		end
 
 		@edje.on_signal("TOGGLE_REPEAT_MODE") do |sig, source|

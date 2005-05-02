@@ -13,7 +13,7 @@ class FileDialog
 			case op
 			when :ok
 				@fd.selections.each do |sel|
-					yield "file://" + File.join(@fd.current_directory, sel)
+					yield File.join(@fd.current_directory, sel)
 				end
 			when :cancel
 				close
