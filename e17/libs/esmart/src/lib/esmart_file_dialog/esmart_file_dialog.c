@@ -35,7 +35,7 @@
     char *path;			/* the cwd for the dialog */
 
     /* the client callback for intercepting file dialog specific stuff */
-    void (*func) (void *data, Evas_Object * edje, int type);
+    void (*func) (void *data, Evas_Object * edje, Esmart_File_Dialog_Op type);
     /* the data that's passed to the file dialog callback */
     void *fdata;
 
@@ -268,7 +268,7 @@ esmart_file_dialog_edje_get (Evas_Object * efd)
 void
 esmart_file_dialog_callback_add (Evas_Object * efd,
 				 void (*func) (void *data, Evas_Object * edje,
-					       int type), void *data)
+					       Esmart_File_Dialog_Op type), void *data)
 {
   Esmart_File_Dialog *fddata;
 
@@ -524,7 +524,7 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 			}
 		      fddata->selections =
 			evas_list_append (fddata->selections, txt);
-		      fddata->func (fddata->fdata, obj, FILE_OK);
+		      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_OK);
 		      fddata->selections =
 			evas_list_free (fddata->selections);
 		    }
@@ -581,7 +581,7 @@ _esmart_file_dialog_file_cb (void *data, Evas_Object * o,
 	    {
 	      fprintf (stderr, "Load Request: %s\n", txt);
 	      fddata->selections = evas_list_append (fddata->selections, txt);
-	      fddata->func (fddata->fdata, obj, FILE_OK);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_OK);
 	      fddata->selections = evas_list_free (fddata->selections);
 	    }
 	}
@@ -606,14 +606,14 @@ _esmart_file_dialog_global_button_cb (void *data, Evas_Object * o,
 	{
 	  if (fddata->func)
 	    {
-	      fddata->func (fddata->fdata, obj, FILE_CANCEL);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_CANCEL);
 	    }
 	}
       else if (!strcmp (emission, "e,fd,button,global,ok"))
 	{
 	  if (fddata->func)
 	    {
-	      fddata->func (fddata->fdata, obj, FILE_OK);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_OK);
 	    }
 	}
       else
@@ -638,21 +638,21 @@ _esmart_file_dialog_file_button_cb (void *data, Evas_Object * o,
 	{
 	  if (fddata->func)
 	    {
-	      fddata->func (fddata->fdata, obj, FILE_NEW);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_NEW);
 	    }
 	}
       else if (!strcmp (emission, "e,fd,button,file,rename"))
 	{
 	  if (fddata->func)
 	    {
-	      fddata->func (fddata->fdata, obj, FILE_RENAME);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_RENAME);
 	    }
 	}
       else if (!strcmp (emission, "e,fd,button,file,delete"))
 	{
 	  if (fddata->func)
 	    {
-	      fddata->func (fddata->fdata, obj, FILE_DELETE);
+	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_DELETE);
 	    }
 	}
       else
@@ -1014,7 +1014,7 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 	  closedir (dir);
 	  esmart_container_sort (data->files, sort_cb);
 	  esmart_container_sort (data->directories, sort_cb);
-	  data->func (data->fdata, o, DIR_CHANGED);
+	  data->func (data->fdata, o, ESMART_FILE_DIALOG_DIR_CHANGED);
 	}
       else
 	{

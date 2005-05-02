@@ -23,41 +23,41 @@
  * @param type the event type that the file dialog dispatched
  */
 void
-file_dialog_cb (void *data, Evas_Object * efd, int type)
+file_dialog_cb (void *data, Evas_Object * efd, Esmart_File_Dialog_Op type)
 {
   Evas_List *l = NULL;
   Ecore_Evas *ee = (Ecore_Evas *) data;
 
   switch (type)
     {
-    case FILE_CANCEL:
+    case ESMART_FILE_DIALOG_CANCEL:
       fprintf (stderr, "Cancel Clicked\n");
       ecore_main_loop_quit ();
       break;
-    case FILE_OK:
+    case ESMART_FILE_DIALOG_OK:
       for (l = esmart_file_dialog_selections_get (efd); l; l = l->next)
 	{
 	  fprintf (stderr, "%s\n", (char *) l->data);
 	}
       fprintf (stderr, "OK Clicked\n");
       break;
-    case FILE_DELETE:
+    case ESMART_FILE_DIALOG_DELETE:
       /* FIXME: selectionslist should be one or more directories to delete */
       fprintf (stderr, "Delete Clicked\n");
       break;
-    case FILE_NEW:
+	case ESMART_FILE_DIALOG_NEW:
       /* FIXME I guess this should be DIR_NEW, selections list should be of
        * length 1, the name of the new directory to make
        */
       fprintf (stderr, "New Clicked\n");
       break;
-    case FILE_RENAME:
+    case ESMART_FILE_DIALOG_RENAME:
       /* FIXME selection list should be of length two, the first is the
        * current file we'd like to rename to the second
        */
       fprintf (stderr, "Rename Clicked\n");
       break;
-    case DIR_CHANGED:
+    case ESMART_FILE_DIALOG_DIR_CHANGED:
       fprintf (stderr, "Directory Changed %s\n",
 	       esmart_file_dialog_current_directory_get (efd));
       ecore_evas_title_set (ee,

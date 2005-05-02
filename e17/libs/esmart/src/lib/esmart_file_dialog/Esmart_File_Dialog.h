@@ -9,12 +9,14 @@ extern "C"
 {
 #endif
 
-#define FILE_NEW 1
-#define FILE_RENAME 2
-#define FILE_DELETE 3
-#define FILE_OK 4
-#define FILE_CANCEL 5
-#define DIR_CHANGED 6
+typedef enum {
+	ESMART_FILE_DIALOG_NEW = 1,
+	ESMART_FILE_DIALOG_RENAME,
+	ESMART_FILE_DIALOG_DELETE,
+	ESMART_FILE_DIALOG_OK,
+	ESMART_FILE_DIALOG_CANCEL,
+	ESMART_FILE_DIALOG_DIR_CHANGED,
+} Esmart_File_Dialog_Op;
 
 /**
  * esmart_file_dialog_new 
@@ -26,7 +28,7 @@ extern "C"
   void esmart_file_dialog_callback_add (Evas_Object * efd,
 					void (*func) (void *data,
 						      Evas_Object * edje,
-						      int type), void *data);
+						      Esmart_File_Dialog_Op op), void *data);
   Evas_Object *esmart_file_dialog_edje_get (Evas_Object * efd);
   Evas_List *esmart_file_dialog_selections_get (Evas_Object * efd);
   const char *esmart_file_dialog_current_directory_get (Evas_Object * efd);
