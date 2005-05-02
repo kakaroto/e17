@@ -83,6 +83,8 @@ class PlaylistItem
 
 	def properties=(hash)
 		@props = hash || {}
+		@props.default = "unknown"
+
 		set_parts_text unless @edje.nil?
 	end
 
