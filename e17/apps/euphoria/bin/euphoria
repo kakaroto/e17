@@ -18,6 +18,7 @@ require "euphoria/playlist_item"
 require "euphoria/slider"
 require "euphoria/playtime_updater"
 require "euphoria/playback_status_handler"
+require "euphoria/file_dialog"
 
 Config = Struct.new("Config", :ipc_path, :theme, :time_display_elapsed)
 
@@ -212,6 +213,11 @@ private
 		end
 
 		@edje.on_signal("playlist.open") { @playlist.show(@theme, true) }
+
+		@edje.on_signal("file_dialog.open") do
+			fd = File.expand_path("~/.xmms2/clients/euphoria/themes/fd.eet")
+			FileDialog.open(fd) { |file| @xmms.playlist_add(file).wait }
+		end
 
 		@edje.on_signal("TOGGLE_REPEAT_MODE") do |sig, source|
 			# don't react on our own emission
