@@ -1312,7 +1312,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	  }
 	if (firstlast == 2)
 	  {
-#if 0				/* FIXME - Remove? */
+#if 1				/* FIXME - Here? */
 	     /* If we're moving a group, don't do this,
 	      * otherwise we have a lot of garbage onscreen */
 	     if (!EoIsFloating(ewin) || !ewin->groups
