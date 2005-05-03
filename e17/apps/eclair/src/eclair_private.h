@@ -51,6 +51,7 @@ struct _Eclair_Meta_Tag_Manager
 struct _Eclair_Media_File
 {
    char *path;
+   char *cover_path;
    char *artist;
    char *title;
    char *album;

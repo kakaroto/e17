@@ -174,17 +174,35 @@ void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
       else
          ecore_evas_title_set(eclair->video_window, "eclair");
    }
-   eclair_cover_add_file_to_treat(&eclair->cover_manager, file, 1);
+   if (file)
+      eclair_gui_cover_set(eclair, file->cover_path);
+   else
+      eclair_gui_cover_set(eclair, NULL);
 }
 
 //Set the cover displayed on the GUI
 //Remove it if cover_path == NULL
 void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 {
+   char *previous_path = NULL;
+
+   printf("Cover: Set: %s\n", cover_path);
+
    if (!eclair)
       return;
    if (!eclair->gui_object || !eclair->gui_cover)
       return;
+
+   evas_object_image_file_get(eclair->gui_cover, &previous_path, NULL);
+   if (!previous_path && !cover_path)
+      return;
+   if (previous_path && cover_path)
+   {
+      if (strcmp(previous_path, cover_path) == 0)
+         return;
+   }
+
+   printf("Cover: Really Set: %s\n", cover_path);
 
    if (eclair->gui_previous_cover)
    {
@@ -206,6 +224,11 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
       evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
       edje_object_signal_emit(eclair->gui_object, "signal_cover_set", "eclair_bin");
    }
+
+   evas_object_image_file_get(eclair->gui_cover, &previous_path, NULL);
+   printf("Cover: Cover: %s\n", previous_path);
+   evas_object_image_file_get(eclair->gui_previous_cover, &previous_path, NULL);
+   printf("Cover: Previous Cover: %s\n", previous_path);
 }
 
 //Set the scroll percent of the playlist container

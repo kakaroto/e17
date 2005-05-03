@@ -4,6 +4,7 @@
 public cover_alpha = 0;
 public previous_cover_alpha = 0;
 public cover_timer = 0;
+public cover_is_set = 0;
 
 public cover_set() {
    new ca;
@@ -15,37 +16,36 @@ public cover_set() {
 }
 
 public cover_unset() {
+   new ca;
+
+   ca = get_int(cover_alpha);
+   set_int(previous_cover_alpha, ca); 
+
    cover_change_cb(0);
 }
 
 public cover_change_cb(set) {
    new ca, pca, id;
 
-   if ((id = get_int(cover_timer)))
+   if ((id = get_int(cover_timer)) && (set != get_int(cover_is_set)))
    {
       cancel_timer(id);
       set_int(cover_timer, 0);
+      set_int(cover_is_set, set);
    }
 
    ca = get_int(cover_alpha);
    pca = get_int(previous_cover_alpha);
 
-   if (set == 1)
+   if (set == 0)
+      ca = 0;
+   else
    {
       if (ca < 255)
       {
          ca += COVER_ALPHA_SPEED;
          if (ca > 255)
             ca = 255;
-      }
-   }
-   else
-   {
-      if (ca > 0)
-      {
-         ca -= COVER_ALPHA_SPEED;
-         if (ca < 0)
-            ca = 0;
       }
    }
 
@@ -56,15 +56,19 @@ public cover_change_cb(set) {
          pca = 0;
    }
    
-   if (set == 1)
+   if (set == 0)
    {
-      if (ca != 255 || pca != 0)
-         timer(0.05, "cover_change_cb", set);
+      if (pca != 0)
+         set_int(cover_timer, timer(0.05, "cover_change_cb", set));
+      else
+         set_int(cover_timer, 0);
    }
    else
    {
-      if (ca != 0 || pca != 0)
-         timer(0.05, "cover_change_cb", set);
+      if (ca != 255 || pca != 0)
+         set_int(cover_timer, timer(0.05, "cover_change_cb", set));
+      else
+         set_int(cover_timer, 0);
    }
 
    set_int(cover_alpha, ca);

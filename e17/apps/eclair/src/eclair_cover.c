@@ -110,8 +110,6 @@ static void *_eclair_cover_thread(void *param)
    Eclair_Cover_Manager *cover_manager = (Eclair_Cover_Manager *)param;
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
-   char *cover_path;
-   struct hostent *he;
 
    if (!cover_manager)
       return NULL;
@@ -120,14 +118,6 @@ static void *_eclair_cover_thread(void *param)
    for (;;)
    {
       pthread_cond_wait(&cover_manager->cover_cond, &cover_manager->cover_mutex);
-      if (!cover_manager->amazon_he)
-      {
-         if ((he = gethostbyname(amazon_hostname)))
-         {
-            cover_manager->amazon_he = (struct hostent *)malloc(sizeof(struct hostent));
-            memcpy(cover_manager->amazon_he, he, sizeof(struct hostent));
-         }
-      }
       while (cover_manager->cover_files_to_treat || cover_manager->cover_delete_thread)
       {
          for (l = cover_manager->cover_files_to_treat; l || cover_manager->cover_delete_thread; l = next)
@@ -143,13 +133,12 @@ static void *_eclair_cover_thread(void *param)
             current_file = (Eclair_Media_File *)l->data;
             cover_manager->cover_files_to_treat = evas_list_remove_list(cover_manager->cover_files_to_treat, l);
             
-            cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
+            current_file->cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
             if (cover_manager->eclair)
             {
                if (current_file == evas_list_data(cover_manager->eclair->playlist.current))
-                  eclair_gui_cover_set(cover_manager->eclair, cover_path);
+                  eclair_gui_cover_set(cover_manager->eclair, current_file->cover_path);
             }
-            free(cover_path);
          }
       }
    }
@@ -231,6 +220,17 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
          continue;
       if (strcmp(not_in_db_album->artist, artist) == 0 && strcmp(not_in_db_album->album, album) == 0)
          return NULL;
+   }
+
+   //Resolve amazone hostname
+   if (!cover_manager->amazon_he)
+   {
+      struct hostent *he;
+      if ((he = gethostbyname(amazon_hostname)))
+      {
+         cover_manager->amazon_he = (struct hostent *)malloc(sizeof(struct hostent));
+         memcpy(cover_manager->amazon_he, he, sizeof(struct hostent));
+      }
    }
 
    //Get the ASIN of the album
@@ -508,13 +508,27 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
 static int _eclair_cover_extract_http_body(char *packet, int packet_length, char **body)
 {
    char *body_start;
-   int body_length;
+   int body_length, response_code, http_version;
 
    if (!packet || packet_length <= 0)
       return -1;
 
-   if (!(body_start = strstr(packet, "\r\n\r\n")))
+   if (sscanf(packet, "HTTP/1.%d %d", &http_version, &response_code) != 2)
+   {
+      fprintf(stderr, "Cover: Invalid HTTP response\n");
       return -1;
+   }
+   if (response_code != 200)
+   {
+      fprintf(stderr, "Cover: Invalid response code: %d\n", response_code);
+      return -1;
+   }
+
+   if (!(body_start = strstr(packet, "\r\n\r\n")))
+   {
+      fprintf(stderr, "Cover: Invalid HTTP response\n");
+      return -1;
+   }
    body_start += 4;
    *body = body_start;
    body_length = packet_length - (body_start - packet);

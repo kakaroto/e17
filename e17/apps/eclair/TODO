@@ -1,5 +1,6 @@
 TODO list:
 
+*Use non blocking socket to close cover thread faster in case of Internet deconnection
 *Synchronize meta tag and cover threads to fix some bugs
 *Finish config file implementation
 *Change play/pause 'on over' animation in the default theme

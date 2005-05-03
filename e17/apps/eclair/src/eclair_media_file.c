@@ -17,6 +17,7 @@ void eclair_media_file_free(Eclair_Media_File *media_file)
       return;
 
    free(media_file->path);
+   free(media_file->cover_path);
    free(media_file->artist);
    free(media_file->title);
    free(media_file->album);
@@ -61,6 +62,5 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
 
    if (media_file == evas_list_data(eclair->playlist.current))
       eclair_current_file_set(eclair, media_file);
-   else
-      eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file, 0);
+   eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file, 0);
 }
