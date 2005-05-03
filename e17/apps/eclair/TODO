@@ -1,8 +1,8 @@
 TODO list:
 
+*Initialize emotion on startup, in a thread
 *Why sometimes amazon.com send a http code '400'?
 *Use non blocking socket to close cover thread faster in case of Internet deconnection
-*Synchronize meta tag and cover threads to fix some bugs
 *Finish config file implementation
 *Change play/pause 'on over' animation in the default theme
 *Improve playlist perfs (by improving esmart_container or by get rid of esmart_container)
