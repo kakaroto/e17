@@ -1,5 +1,6 @@
 TODO list:
 
+*Why sometimes amazon.com send a http code '400'?
 *Use non blocking socket to close cover thread faster in case of Internet deconnection
 *Synchronize meta tag and cover threads to fix some bugs
 *Finish config file implementation

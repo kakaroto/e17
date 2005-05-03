@@ -1,3 +1,9 @@
+//TODO: edje bug
+program {
+   name: "update";
+   action: STATE_SET "default" 0.0;
+   target: "body";
+}
 program {
    name: "play";
    signal: "signal_play";

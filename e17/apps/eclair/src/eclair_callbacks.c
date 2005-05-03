@@ -2,17 +2,13 @@
 #include <string.h>
 #include <Emotion.h>
 #include <Edje.h>
+#include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Esmart/Esmart_Container.h>
 #include <gtk/gtk.h>
 #include <pthread.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
-
-typedef enum _Eclair_Gui_Message_Id
-{
-   COVER_ALPHA_CHANGED = 0
-} Eclair_Gui_Message_Id;
 
 //Called when eclair is closed
 int eclair_exit_cb(void *data, int type, void *event)
@@ -341,19 +337,6 @@ void eclair_gui_message_cb(void *data, Evas_Object *obj, Edje_Message_Type type,
 
    switch (id)
    {
-      case COVER_ALPHA_CHANGED:
-      {
-         Edje_Message_Int_Set *message;
-         if (type != EDJE_MESSAGE_INT_SET || !(message = (Edje_Message_Int_Set *)msg))
-            break;
-         if (message->count != 2)
-            break;
-         if (eclair->gui_cover)
-            evas_object_color_set(eclair->gui_cover, 255, 255, 255, message->val[0]);
-         if (eclair->gui_previous_cover)     
-            evas_object_color_set(eclair->gui_previous_cover, 255, 255, 255, message->val[1]);
-         break;
-      }
       default:
          break;
    }

@@ -5,12 +5,12 @@ part {
       visible: 1;
       rel1 {
          relative: 0 0;
-         offset: 182 78;
+         offset: 186 79;
          to: "body";
       }
       rel2 {
          relative: 0 0;
-         offset: 271 100;
+         offset: 271 101;
          to: "body";
       }
       image {

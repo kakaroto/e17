@@ -53,6 +53,8 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
    if (!cover_manager)
       return;
 
+   cover_manager->cover_add_state = ECLAIR_IDLE;
+   cover_manager->cover_files_to_add = NULL;
    cover_manager->cover_files_to_treat = NULL;
    cover_manager->not_in_amazon_db = NULL;
    cover_manager->eclair = eclair;
@@ -92,15 +94,18 @@ void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
 }
 
 //Add a media file to the list of files to treat
-void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_Media_File *media_file, Evas_Bool high_priority)
+void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_Media_File *media_file)
 {
    if (!cover_manager || !media_file)
       return;
- 
-   if (high_priority)
-      cover_manager->cover_files_to_treat = evas_list_prepend(cover_manager->cover_files_to_treat, media_file);
-   else
-      cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, media_file);
+   if (cover_manager->cover_delete_thread)
+      return;
+
+   while (cover_manager->cover_add_state != ECLAIR_IDLE);
+   cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
+   cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
+   cover_manager->cover_add_state = ECLAIR_IDLE;
+   
    pthread_cond_broadcast(&cover_manager->cover_cond); 
 }
 
@@ -108,37 +113,52 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
 static void *_eclair_cover_thread(void *param)
 {
    Eclair_Cover_Manager *cover_manager = (Eclair_Cover_Manager *)param;
+   Eclair *eclair;
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
 
    if (!cover_manager)
+      return NULL;
+   if (!(eclair = cover_manager->eclair))
       return NULL;
 
    pthread_mutex_lock(&cover_manager->cover_mutex);
    for (;;)
    {
       pthread_cond_wait(&cover_manager->cover_cond, &cover_manager->cover_mutex);
-      while (cover_manager->cover_files_to_treat || cover_manager->cover_delete_thread)
+      while (cover_manager->cover_files_to_treat || cover_manager->cover_files_to_add || cover_manager->cover_delete_thread)
       {
+         if (cover_manager->cover_delete_thread)
+         {
+            cover_manager->cover_files_to_treat = evas_list_free(cover_manager->cover_files_to_treat);
+            cover_manager->cover_files_to_add = evas_list_free(cover_manager->cover_files_to_add);
+            cover_manager->cover_delete_thread = 0;
+            return NULL;
+         }
+         //Add the new files to the list of files to treat
+         if (cover_manager->cover_files_to_add)
+         {
+            while (cover_manager->cover_add_state != ECLAIR_IDLE);
+            cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
+            for (l = cover_manager->cover_files_to_add; l; l = next)
+            {
+               next = l->next;
+               current_file = (Eclair_Media_File *)l->data;
+               cover_manager->cover_files_to_add = evas_list_remove_list(cover_manager->cover_files_to_add, l);
+               cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, current_file);
+            }
+            cover_manager->cover_add_state = ECLAIR_IDLE;
+         }
+         //Treat the files in the list
          for (l = cover_manager->cover_files_to_treat; l || cover_manager->cover_delete_thread; l = next)
          {
-            if (cover_manager->cover_delete_thread)
-            {
-               cover_manager->cover_files_to_treat = evas_list_free(cover_manager->cover_files_to_treat);
-               cover_manager->cover_delete_thread = 0;
-               return NULL;
-            }
-
+            if (cover_manager->cover_delete_thread || cover_manager->cover_files_to_add)
+               break;
             next = l->next;
             current_file = (Eclair_Media_File *)l->data;
             cover_manager->cover_files_to_treat = evas_list_remove_list(cover_manager->cover_files_to_treat, l);
-            
             current_file->cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
-            if (cover_manager->eclair)
-            {
-               if (current_file == evas_list_data(cover_manager->eclair->playlist.current))
-                  eclair_gui_cover_set(cover_manager->eclair, current_file->cover_path);
-            }
+            eclair_media_file_update(eclair, current_file);
          }
       }
    }

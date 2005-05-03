@@ -5,6 +5,7 @@
 #include <Evas.h>
 #include <Edje.h>
 #include "eclair.h"
+#include "eclair_cover.h"
 #include "eclair_media_file.h"
 #include "eclair_meta_tag.h"
 #include "eclair_callbacks.h"
@@ -157,7 +158,7 @@ void eclair_playlist_current_set(Eclair_Playlist *playlist, Eclair_Media_File *m
    eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, media_file));
 }
 
-//Set the media file pointed by the list as the active media file  
+//Set the media file stored in the list as the active media file  
 void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list)
 {
    Eclair_Media_File *media_file;
@@ -178,18 +179,16 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
          edje_object_signal_emit(media_file->playlist_entry, "signal_set_current", "eclair_bin");
          if (playlist->eclair)
          {
+            //TODO: doesn't work?
             if (playlist->eclair->playlist_container)
                esmart_container_scroll_to(playlist->eclair->playlist_container, media_file->playlist_entry);
          }
       }
       if (playlist->eclair)
-         eclair_current_file_set(playlist->eclair, media_file);
+         eclair_update_current_file_info(playlist->eclair, media_file);
    }
-   else
-   {
-      if (playlist->eclair)
-         eclair_current_file_set(playlist->eclair, NULL);
-   }
+   else if (playlist->eclair)      
+      eclair_update_current_file_info(playlist->eclair, NULL);
    
    playlist->current = list;
 } 

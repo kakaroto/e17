@@ -3,6 +3,7 @@
 #include <string.h>
 #include <Evas.h>
 #include "eclair.h"
+#include "eclair_cover.h"
 #include "eclair_media_file.h"
 
 static void *_eclair_meta_tag_thread(void *param);
@@ -13,6 +14,8 @@ void eclair_meta_tag_init(Eclair_Meta_Tag_Manager *meta_tag_manager, Eclair *ecl
    if (!meta_tag_manager || !eclair)
       return;
 
+   meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
+   meta_tag_manager->meta_tag_files_to_add = NULL;
    meta_tag_manager->meta_tag_files_to_scan = NULL;
    meta_tag_manager->meta_tag_delete_thread = 0;
    pthread_cond_init(&meta_tag_manager->meta_tag_cond, NULL);
@@ -38,9 +41,14 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
 {
    if (!meta_tag_manager || !media_file)
       return;
+   if (meta_tag_manager->meta_tag_delete_thread)
+      return;
 
-   meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, media_file);
-   pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond); 
+   while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+   meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
+   meta_tag_manager->meta_tag_files_to_add = evas_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
+   meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
+   pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond);
 }
 
 //Read the meta tags of media_file and update eclair with the new data
@@ -73,7 +81,12 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    taglib_tag_free_strings();
    taglib_file_free(tag_file);
 
-   eclair_media_file_update(eclair, media_file);
+   //Try to load the cover
+   if (tag)
+   {
+      if (!(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
+         eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
+   }
 }
 
 //Scan the files stored in the list of files to scan
@@ -92,21 +105,39 @@ static void *_eclair_meta_tag_thread(void *param)
    for (;;)
    {
       pthread_cond_wait(&meta_tag_manager->meta_tag_cond, &meta_tag_manager->meta_tag_mutex);
-      while (meta_tag_manager->meta_tag_files_to_scan || meta_tag_manager->meta_tag_delete_thread)
+      while (meta_tag_manager->meta_tag_files_to_scan || meta_tag_manager->meta_tag_files_to_add || meta_tag_manager->meta_tag_delete_thread)
       {
+         if (meta_tag_manager->meta_tag_delete_thread)
+         {
+            meta_tag_manager->meta_tag_files_to_scan = evas_list_free(meta_tag_manager->meta_tag_files_to_scan);
+            meta_tag_manager->meta_tag_files_to_add = evas_list_free(meta_tag_manager->meta_tag_files_to_add);
+            meta_tag_manager->meta_tag_delete_thread = 0;
+            return NULL;
+         }
+         //Add the new files to the list of files to treat
+         if (meta_tag_manager->meta_tag_files_to_add)
+         {
+            while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+            meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
+            for (l = meta_tag_manager->meta_tag_files_to_add; l; l = next)
+            {
+               next = l->next;
+               current_file = (Eclair_Media_File *)l->data;
+               meta_tag_manager->meta_tag_files_to_add = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_add, l);
+               meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, current_file);
+            }
+            meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE; 
+         }
+         //Treat the files in the list
          for (l = meta_tag_manager->meta_tag_files_to_scan; l || meta_tag_manager->meta_tag_delete_thread; l = next)
          {
-            if (meta_tag_manager->meta_tag_delete_thread)
-            {
-               meta_tag_manager->meta_tag_files_to_scan = evas_list_free(meta_tag_manager->meta_tag_files_to_scan);
-               meta_tag_manager->meta_tag_delete_thread = 0;
-               return NULL;
-            }
-
+            if (meta_tag_manager->meta_tag_delete_thread || meta_tag_manager->meta_tag_files_to_add)
+               break;
             next = l->next;
             current_file = (Eclair_Media_File *)l->data;
             meta_tag_manager->meta_tag_files_to_scan = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_scan, l);
             eclair_meta_tag_read(eclair, current_file);
+            eclair_media_file_update(eclair, current_file);
          }
       }
    }

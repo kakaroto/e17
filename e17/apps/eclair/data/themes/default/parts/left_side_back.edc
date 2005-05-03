@@ -30,12 +30,12 @@ part {
       visible: 1;
       rel1 {
          relative: 0 0;
-         offset: 18 11;
+         offset: 17 10;
          to: "left_side";
       }
       rel2 {
          relative: 0 0;
-         offset: 104 97;
+         offset: 104 96;
          to: "left_side";
       }
       image {
@@ -44,15 +44,31 @@ part {
    }
 }
 part {
-   name: "cover_border";
+   name: "cover_clip";
+   type: RECT;
    description {
       state: "default" 0.0;
       visible: 1;
+      color: 255 255 255 0;
       rel1 {
          to: "cover_background";
       }
       rel2 {
          to: "cover_background";
+      }
+   }
+}
+part {
+   name: "cover_border";
+   clip_to: "cover_clip";
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         to: "cover_clip";
+      }
+      rel2 {
+         to: "cover_clip";
       }
       image {
          normal: "cover_border.png";
@@ -61,11 +77,11 @@ part {
 }
 part {
    name: "cover";
+   clip_to: "cover_clip";
    type: SWALLOW;
    description {
       state: "default" 0.0;
       visible: 1;
-      color: 255 255 255 0;
       rel1 {
          relative: 0 0;
          offset: 1 1;
@@ -79,17 +95,53 @@ part {
    }
 }
 part {
-   name: "previous_cover";
-   type: SWALLOW;
+   name: "previous_cover_clip";
+   type: RECT;
    description {
       state: "default" 0.0;
       visible: 1;
       color: 255 255 255 0;
       rel1 {
-         to: "cover";
+         to: "cover_background";
       }
       rel2 {
-         to: "cover";
+         to: "cover_background";
+      }
+   }
+}
+part {
+   name: "previous_cover_border";
+   clip_to: "previous_cover_clip";
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         to: "previous_cover_clip";
+      }
+      rel2 {
+         to: "previous_cover_clip";
+      }
+      image {
+         normal: "cover_border.png";
+      }
+   }
+}
+part {
+   name: "previous_cover";
+   clip_to: "previous_cover_clip";
+   type: SWALLOW;
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         relative: 0 0;
+         offset: 1 1;
+         to: "previous_cover_border";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: -2 -2;
+         to: "previous_cover_border";
       }
    }
 }

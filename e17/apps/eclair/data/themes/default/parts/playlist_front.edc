@@ -4,12 +4,12 @@ part {
       state: "default" 0.0;
       rel1 {
          relative: 0 0;
-         offset: 103 101;
+         offset: 105 101;
          to: "body";
       }
       rel2 {
          relative: 0 0;
-         offset: 175 119;
+         offset: 177 119;
          to: "body";
       }
       image {

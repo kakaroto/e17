@@ -15,6 +15,7 @@ typedef struct _Eclair_Media_File Eclair_Media_File;
 typedef struct _Eclair_Playlist Eclair_Playlist;
 typedef struct _Eclair_Subtitle Eclair_Subtitle;
 typedef struct _Eclair_Subtitles Eclair_Subtitles;
+typedef enum _Eclair_Add_File_State Eclair_Add_File_State;
 typedef struct _Eclair_Meta_Tag_Manager Eclair_Meta_Tag_Manager;
 typedef struct _Eclair_Cover_Manager Eclair_Cover_Manager;
 typedef struct _Eclair_Config Eclair_Config;
@@ -27,13 +28,22 @@ struct _Eclair_Config
    FILE *config_file;
 };
 
+enum _Eclair_Add_File_State
+{
+   ECLAIR_IDLE = 0,
+   ECLAIR_ADDING_FILE_TO_ADD,
+   ECLAIR_ADDING_FILE_TO_TREAT
+};
+
 struct _Eclair_Cover_Manager
 {
+   Eclair_Add_File_State cover_add_state;
+   Evas_List *cover_files_to_add;
    Evas_List *cover_files_to_treat;
    Evas_List *not_in_amazon_db;
-   struct hostent *amazon_he;
-   Eclair *eclair;
    Evas_Bool cover_delete_thread;
+   Eclair *eclair;
+   struct hostent *amazon_he;
    pthread_cond_t cover_cond;
    pthread_mutex_t cover_mutex;
    pthread_t cover_thread;
@@ -41,6 +51,8 @@ struct _Eclair_Cover_Manager
 
 struct _Eclair_Meta_Tag_Manager
 {
+   Eclair_Add_File_State meta_tag_add_state;
+   Evas_List *meta_tag_files_to_add;
    Evas_List *meta_tag_files_to_scan;
    Evas_Bool meta_tag_delete_thread;
    pthread_cond_t meta_tag_cond;

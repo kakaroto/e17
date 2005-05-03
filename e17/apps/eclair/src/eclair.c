@@ -60,10 +60,10 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    _eclair_gui_create_window(eclair);
    _eclair_video_create_window(eclair);
    eclair_playlist_init(&eclair->playlist, eclair);
-   eclair_current_file_set(eclair, NULL);
    eclair_subtitles_init(&eclair->subtitles);
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
    eclair_cover_init(&eclair->cover_manager, eclair);
+   eclair_update_current_file_info(eclair, NULL);
    
    for (l = filenames; l; l = l->next)
       eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
@@ -129,8 +129,8 @@ void eclair_update(Eclair *eclair)
    eclair_subtitles_display_current_subtitle(&eclair->subtitles, position, eclair->subtitles_object);
 }
 
-//Set the file as current
-void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
+//Update the gui infos about the current media file
+void eclair_update_current_file_info(Eclair *eclair, Eclair_Media_File *current_file)
 {   
    char *window_title;
    char *artist_title_string;
@@ -139,16 +139,17 @@ void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
    if (!eclair)
       return;
    
+   //Update the name of the current file
    if (eclair->gui_object)
    {
-      if (file)
+      if (current_file)
       {
-         if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(file)))
+         if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(current_file)))
          {
             edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
             free(artist_title_string);
          }
-         else if ((filename = eclair_utils_path_to_filename(file->path)))
+         else if ((filename = eclair_utils_path_to_filename(current_file->path)))
             edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
          else
             edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
@@ -157,14 +158,15 @@ void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
          edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
    }
 
+   //Update the title of the video window
    if (eclair->video_window)
    {
-      if (file)
+      if (current_file)
       {
-         if (file->path)
+         if (current_file->path)
          {
-            window_title = (char *)malloc(strlen(file->path) + strlen("eclair: ") + 1);
-            sprintf(window_title, "eclair: %s", file->path);
+            window_title = (char *)malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
+            sprintf(window_title, "eclair: %s", current_file->path);
             ecore_evas_title_set(eclair->video_window, window_title);
             free(window_title);
          }
@@ -174,8 +176,10 @@ void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
       else
          ecore_evas_title_set(eclair->video_window, "eclair");
    }
-   if (file)
-      eclair_gui_cover_set(eclair, file->cover_path);
+
+   //Update the current cover
+   if (current_file)
+      eclair_gui_cover_set(eclair, current_file->cover_path);
    else
       eclair_gui_cover_set(eclair, NULL);
 }
@@ -184,25 +188,21 @@ void eclair_current_file_set(Eclair *eclair, Eclair_Media_File *file)
 //Remove it if cover_path == NULL
 void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 {
-   char *previous_path = NULL;
-
-   printf("Cover: Set: %s\n", cover_path);
+   char *current_path = NULL;
 
    if (!eclair)
       return;
    if (!eclair->gui_object || !eclair->gui_cover)
       return;
 
-   evas_object_image_file_get(eclair->gui_cover, &previous_path, NULL);
-   if (!previous_path && !cover_path)
+   evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
+   if (!current_path && !cover_path)
       return;
-   if (previous_path && cover_path)
+   if (current_path && cover_path)
    {
-      if (strcmp(previous_path, cover_path) == 0)
+      if (strcmp(current_path, cover_path) == 0)
          return;
    }
-
-   printf("Cover: Really Set: %s\n", cover_path);
 
    if (eclair->gui_previous_cover)
    {
@@ -217,18 +217,20 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
       edje_object_part_swallow(eclair->gui_object, "previous_cover", eclair->gui_previous_cover);
    }
 
-   if (!cover_path)
-      edje_object_signal_emit(eclair->gui_object, "signal_cover_unset", "eclair_bin");
+   evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
    if (cover_path)
    {
-      evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
       edje_object_signal_emit(eclair->gui_object, "signal_cover_set", "eclair_bin");
+      evas_object_show(eclair->gui_cover);
+   }
+   else
+   {
+      edje_object_signal_emit(eclair->gui_object, "signal_cover_unset", "eclair_bin");
+      evas_object_hide(eclair->gui_cover);
    }
 
-   evas_object_image_file_get(eclair->gui_cover, &previous_path, NULL);
-   printf("Cover: Cover: %s\n", previous_path);
-   evas_object_image_file_get(eclair->gui_previous_cover, &previous_path, NULL);
-   printf("Cover: Previous Cover: %s\n", previous_path);
+   evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
+   evas_object_image_file_get(eclair->gui_previous_cover, &current_path, NULL);
 }
 
 //Set the scroll percent of the playlist container
@@ -556,7 +558,7 @@ static void _eclair_gui_create_window(Eclair *eclair)
       edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
       edje_object_part_geometry_get(eclair->gui_object, "cover", NULL, NULL, &cover_width, &cover_height);
       evas_object_image_fill_set(eclair->gui_cover, 0, 0, cover_width, cover_height);
-      evas_object_show(eclair->gui_cover);
+      evas_object_hide(eclair->gui_cover);
    }
    if (edje_object_part_exists(eclair->gui_object, "previous_cover"))
    {
