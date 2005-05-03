@@ -664,6 +664,7 @@ entangle_ui_button_bar_init(Evas_Object *container)
 {
     Evas_Object *o;
     Evas *evas;
+    char path[PATH_MAX];
 
     evas = evas_object_evas_get(container);
 
@@ -673,8 +674,12 @@ entangle_ui_button_bar_init(Evas_Object *container)
     o = entangle_ui_button_get(evas, "iBar", "bar");
     esmart_container_element_append(container, o);
 
-    o = entangle_ui_button_get(evas, "Engage", "engage");
-    esmart_container_element_append(container, o);
+    snprintf(path, PATH_MAX, "%s/.e/e/applications/engage", getenv("HOME"));
+    if (ecore_file_exists(path))
+    {
+        o = entangle_ui_button_get(evas, "Engage", "engage");
+        esmart_container_element_append(container, o);
+    }
 
     o = entangle_ui_button_get(evas, "Startup", "startup");
     esmart_container_element_append(container, o);
