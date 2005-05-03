@@ -66,16 +66,15 @@ EwinCreate(Window win, int type)
    EWin               *ewin;
    XSetWindowAttributes att;
    Window              frame;
-   int                 require_argb;
+   int                 use_argb;
    XWindowAttributes   win_attr;
 
-   require_argb = 0;
+   use_argb = 0;
    if (type == EWIN_TYPE_NORMAL)
      {
 	if (!XGetWindowAttributes(disp, win, &win_attr))
 	   return NULL;
-	if (win_attr.depth == 32)
-	   require_argb = 1;
+	use_argb = Conf.argb_client_mode > 0 && EVisualIsARGB(win_attr.visual);
      }
 
    ewin = Ecalloc(1, sizeof(EWin));
@@ -117,7 +116,7 @@ EwinCreate(Window win, int type)
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
-   if (require_argb)
+   if (use_argb)
       frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
    else
       frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
@@ -129,7 +128,7 @@ EwinCreate(Window win, int type)
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 0);
 
-   if (require_argb)
+   if (use_argb)
       ewin->win_container =
 	 ECreateVisualWindow(EoGetWin(ewin), 0, 0, 1, 1, 0, &win_attr);
    else
@@ -168,7 +167,7 @@ EwinCreate(Window win, int type)
 	ewin->client.bw = 0;
      }
 
-   if (require_argb && Conf.argb_clients_borderless)
+   if (use_argb && Conf.argb_client_mode < 2)
       ewin->border =
 	 FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 

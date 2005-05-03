@@ -52,6 +52,10 @@ void                ECompMgrConfigSet(const cfg_composite * cfg);
 void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 					  int h);
 
+#else
+
+#define EVisualIsARGB(vis)      0
+
 #endif
 
 #endif /* _ECOMPMGR_H */
