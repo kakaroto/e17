@@ -1146,17 +1146,17 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	if (evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
+	if (evas_key_modifier_is_set(ev->modifiers, "Shift"))
 		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
-	else if (evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
+	else if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
 		key_modifiers |= EWL_KEY_MODIFIER_ALT;
-	else if (evas_key_modifier_is_set_get(ev->modifiers, "Control"))
+	else if (evas_key_modifier_is_set(ev->modifiers, "Control"))
 		key_modifiers |= EWL_KEY_MODIFIER_CTRL;
-	else if (evas_key_modifier_is_set_get(ev->modifiers, "Meta"))
+	else if (evas_key_modifier_is_set(ev->modifiers, "Meta"))
 		key_modifiers |= EWL_KEY_MODIFIER_MOD;
-	else if (evas_key_modifier_is_set_get(ev->modifiers, "Super"))
+	else if (evas_key_modifier_is_set(ev->modifiers, "Super"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
-	else if (evas_key_modifier_is_set_get(ev->modifiers, "Hyper"))
+	else if (evas_key_modifier_is_set(ev->modifiers, "Hyper"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 
 	ewl_ev_set_modifiers(key_modifiers);
@@ -1194,17 +1194,17 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 	key_modifiers = ewl_ev_get_modifiers();
-	if (!evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
+	if (!evas_key_modifier_is_set(ev->modifiers, "Shift"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_SHIFT;
-	else if (!evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
+	else if (!evas_key_modifier_is_set(ev->modifiers, "Alt"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_ALT;
-	else if (!evas_key_modifier_is_set_get(ev->modifiers, "Control"))
+	else if (!evas_key_modifier_is_set(ev->modifiers, "Control"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_CTRL;
-	else if (!evas_key_modifier_is_set_get(ev->modifiers, "Meta"))
+	else if (!evas_key_modifier_is_set(ev->modifiers, "Meta"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_MOD;
-	else if (!evas_key_modifier_is_set_get(ev->modifiers, "Super"))
+	else if (!evas_key_modifier_is_set(ev->modifiers, "Super"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
-	else if (!evas_key_modifier_is_set_get(ev->modifiers, "Hyper"))
+	else if (!evas_key_modifier_is_set(ev->modifiers, "Hyper"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
 
 	ewl_ev_set_modifiers(key_modifiers);

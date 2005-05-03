@@ -218,8 +218,8 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
   entry = evas_object_smart_data_get (data);
 
   /* handle modifiers */
-   if (evas_key_modifier_is_set_get (down->modifiers, "Control_L")
-       || evas_key_modifier_is_set_get (down->modifiers, "Control_R"))
+   if (evas_key_modifier_is_set (down->modifiers, "Control_L")
+       || evas_key_modifier_is_set (down->modifiers, "Control_R"))
      {
 	switch ((int) down->keyname[0])
 	  {

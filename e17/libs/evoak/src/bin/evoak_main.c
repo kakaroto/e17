@@ -392,19 +392,19 @@ main_delete_request(Ecore_Evas *ee)
 #define SETMODS(m) \
 { \
    m = 0; \
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Shift")) m |= EVOAK_MODIFIER_MASK_SHIFT; \
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Control")) m |= EVOAK_MODIFIER_MASK_CTRL; \
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Alt")) m |= EVOAK_MODIFIER_MASK_ALT; \
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Super")) m |= EVOAK_MODIFIER_MASK_SUPER; \
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Hyper")) m |= EVOAK_MODIFIER_MASK_HYPER; \
+   if (evas_key_modifier_is_set(ev->modifiers, "Shift")) m |= EVOAK_MODIFIER_MASK_SHIFT; \
+   if (evas_key_modifier_is_set(ev->modifiers, "Control")) m |= EVOAK_MODIFIER_MASK_CTRL; \
+   if (evas_key_modifier_is_set(ev->modifiers, "Alt")) m |= EVOAK_MODIFIER_MASK_ALT; \
+   if (evas_key_modifier_is_set(ev->modifiers, "Super")) m |= EVOAK_MODIFIER_MASK_SUPER; \
+   if (evas_key_modifier_is_set(ev->modifiers, "Hyper")) m |= EVOAK_MODIFIER_MASK_HYPER; \
 }
 
 #define SETLOCKS(m) \
 { \
    m = 0; \
-   if (evas_key_lock_is_set_get(ev->locks, "Caps_Lock")) m |= EVOAK_LOCK_MASK_CAPS; \
-   if (evas_key_lock_is_set_get(ev->locks, "Scroll_Lock")) m |= EVOAK_LOCK_MASK_SCROLL; \
-   if (evas_key_lock_is_set_get(ev->locks, "Num_Lock")) m |= EVOAK_LOCK_MASK_NUM; \
+   if (evas_key_lock_is_set(ev->locks, "Caps_Lock")) m |= EVOAK_LOCK_MASK_CAPS; \
+   if (evas_key_lock_is_set(ev->locks, "Scroll_Lock")) m |= EVOAK_LOCK_MASK_SCROLL; \
+   if (evas_key_lock_is_set(ev->locks, "Num_Lock")) m |= EVOAK_LOCK_MASK_NUM; \
 }
 
 static void
