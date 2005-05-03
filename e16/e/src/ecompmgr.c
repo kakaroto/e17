@@ -173,6 +173,26 @@ static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
 
 /*
+ * Visuals
+ */
+
+int
+EVisualIsARGB(Visual * vis)
+{
+   XRenderPictFormat  *pictfmt;
+
+   pictfmt = XRenderFindVisualFormat(disp, vis);
+   if (!pictfmt)
+      return 0;
+
+#if 0
+   Eprintf("Visual ID=%#lx Type=%d, alphamask=%d\n", vis->visualid,
+	   pictfmt->type, pictfmt->direct.alphaMask);
+#endif
+   return pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask;
+}
+
+/*
  * Regions
  */
 
@@ -894,9 +914,7 @@ void
 ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
 {
    ECmWinInfo         *cw = eo->cmhook;
-   Display            *dpy = disp;
    int                 mode;
-   XRenderPictFormat  *pictfmt;
 
    if (!cw || cw->opacity == opacity)
       return;
@@ -914,8 +932,7 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    /* Invalidate stuff changed by opacity */
    ECompMgrWinInvalidate(eo, INV_OPACITY);
 
-   pictfmt = XRenderFindVisualFormat(dpy, cw->a.visual);
-   if (pictfmt && pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask)
+   if (EVisualIsARGB(cw->a.visual))
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
       mode = WINDOW_TRANS;

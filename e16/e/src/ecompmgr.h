@@ -31,6 +31,8 @@ typedef struct
    int                 shadow;
 } cfg_composite;
 
+int                 EVisualIsARGB(Visual * vis);
+
 void                ECompMgrParseArgs(const char *args);
 
 void                ECompMgrWinNew(EObj * eo);
