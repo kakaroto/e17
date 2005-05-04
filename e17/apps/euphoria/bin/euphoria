@@ -321,7 +321,7 @@ private
 		if @config.nil? || !@config.is_a?(Config)
 			@config = Config.new
 			@config.ipc_path = nil
-			@config.theme = "multipass"
+			@config.theme = "winter"
 			@config.time_display_elapsed = true
 		end
 	end
