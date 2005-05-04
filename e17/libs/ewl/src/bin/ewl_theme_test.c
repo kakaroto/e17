@@ -357,14 +357,18 @@ __create_theme_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 		len = strlen (name);
 		if ((len >= 4) && (strcmp (name + len - 4, ".edj") == 0)) {
 		        char *str;
-			
-			str = strndup (name, len - 4);
-			row = ewl_tree_text_row_add (EWL_TREE (list), NULL, &str);
-			ewl_callback_append (row,
-					     EWL_CALLBACK_CLICKED,
-					     EWL_CALLBACK_FUNCTION (__select_theme),
-					     NULL);
-			free (str);
+
+			str = malloc(len - 3);
+			if (str) {
+				snprintf(str, len - 3, "%s", name);
+				row = ewl_tree_text_row_add(EWL_TREE (list),
+							    NULL, &str);
+				ewl_callback_append(row,
+						    EWL_CALLBACK_CLICKED,
+						    EWL_CALLBACK_FUNCTION(__select_theme),
+						    NULL);
+				free (str);
+			}
 		}
 	}
 	
