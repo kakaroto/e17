@@ -91,6 +91,7 @@ main(int argc, char **argv)
 		{ "Statusbar",   __create_statusbar_test_window,   "ewl_statusbar_test.c" },
 		{ "Table",       __create_table_test_window,       "ewl_table_test.c" },
 		{ "Textarea",    __create_textarea_test_window,    "ewl_textarea_test.c" },
+		{ "Theme",       __create_theme_test_window,       "ewl_theme_test.c" },
 		{ "Tooltip",     __create_tooltip_test_window,     "ewl_tooltip_test.c" },
 		{ "Tree",        __create_tree_test_window,        "ewl_tree_test.c" },
 		{ 0, 0, 0 }
@@ -143,6 +144,8 @@ main(int argc, char **argv)
 		        "laying out Ewl_Widget's in an array.",
 		"Defines a class for multi-line text layout\n"
 			"and formatting.",
+		"Shows the utilization of themes\n"
+			"inside a EWL application.",
 		"Defines a widget for displaying short\n"
 			"messages after a delay.",
 		"Defines a widget for laying out other\n"

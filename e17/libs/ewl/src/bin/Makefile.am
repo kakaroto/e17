@@ -40,6 +40,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_statusbar_test.c \
 					ewl_table_test.c \
 					ewl_textarea_test.c \
+					ewl_theme_test.c \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
 
