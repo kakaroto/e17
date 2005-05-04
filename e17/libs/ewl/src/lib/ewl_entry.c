@@ -695,6 +695,8 @@ int ewl_entry_wrap_get(Ewl_Entry *e)
 int ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y)
 {
 	int index;
+	int cursor;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, 0);
 
@@ -704,6 +706,20 @@ int ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y)
 	index = evas_object_textblock_char_coords_get(e->textobj,
 			(Evas_Coord)(x - CURRENT_X(e)),
 			(Evas_Coord)(y - CURRENT_Y(e)), NULL, NULL, NULL, NULL);
+	if (index < 0)
+		index = 0;
+
+	/*
+	 * FIXME: Correct for the textblock not considering newlines as
+	 * character data. This only works for non-wrapped text.
+	 */
+	cursor = evas_object_textblock_cursor_pos_get(e->textobj);
+	evas_object_textblock_cursor_pos_set(e->textobj, index);
+	index += evas_object_textblock_cursor_line_get(e->textobj);
+	printf("Index %d Cursor on line %d\n", index,
+			evas_object_textblock_cursor_line_get(e->textobj));
+	evas_object_textblock_cursor_pos_set(e->textobj, cursor);
+
 	DRETURN_INT(index, DLEVEL_STABLE);
 }
 
@@ -725,6 +741,7 @@ int ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y)
 void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 				  int *w, int *h)
 {
+	int cursor;
 	Evas_Coord tx, ty, tw, th;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -732,6 +749,15 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 
 	if (!e->textobj)
 		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * FIXME: Account for the newlines stripped out of the text. Only
+	 * works on non-wrapped entry.
+	 */
+	cursor = evas_object_textblock_cursor_pos_get(e->textobj);
+	evas_object_textblock_cursor_pos_set(e->textobj, index);
+	index -= evas_object_textblock_cursor_line_get(e->textobj);
+	evas_object_textblock_cursor_pos_set(e->textobj, cursor);
 
 	evas_object_textblock_char_pos_get(e->textobj, index, &tx, &ty,
 			&tw, &th);
