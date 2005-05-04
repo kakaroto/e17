@@ -34,21 +34,8 @@ See http://wiki.xmms2.xmms.se for instructions.
 
 Now install Euphoria by running "rake install".
 
-The only theme Euphoria currently works with is Multipass, which isn't
-shipped with the Euphoria sources.
-
-To build the Multipass theme:
-svn co http://code-monkey.de/svn/multipass-eu/trunk multipass-eu
-cd multipass-eu
-rake
-cp multipass.edj /usr/local/share/euphoria/themes
-
-If you didn't install Euphoria to /usr/local, you will have to change
-that path, or you can copy the edj file to
-~/.xmms2/clients/euphoria/themes instead.
-
-At this point your ready to rock.  Start Euphoria but make sure
-the XMMS2 Daemon is running (start via: "xmms2d").
+At this point you're ready to rock.  Start Euphoria but make sure
+the XMMS2 Daemon is running.
 
 RUNNING EUPHORIA
 ----------------
