@@ -2,24 +2,35 @@
 TODO
 ----
 
-Entry Multiline edit (in progress)
 
-Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE)
-	- Highlight on mouse over
+IMPROVEMENTS
+------------
+
+* Entry Multiline edit (in progress)
+
+* Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE)
 	- Invert on mouse click (behavior depends upon select mode)
 	- determination of whether a row is selected or not (ewl_[tree_]row_selected)
 
-Enabled/Disabled status for ALL applicable widgets
+* Enabled/Disabled status for ALL applicable widgets
 
-Fix Box cutoff of elements with padding/insets (?) > 0
-
-In the ewl_fileselector there are a couple of buttons with hard coded
+* In the ewl_fileselector there are a couple of buttons with hard coded
   image paths. These image buttons should be made into stock buttons.
 
-In the ewl_entry, need to make the text scroll over as you type past
+* In the ewl_entry, need to make the text scroll over as you type past
   the end of the entry box.
 
-Text wrap in the ewl_entry.
+* Text wrap in the ewl_entry.
+
+
+
+BUGS
+----
+
+* Fix Box cutoff of elements with padding/insets (?) > 0
+* Fix left padding of the radio button
+* Fix size of the seeker
+
 
 
 0.0.1 goals
