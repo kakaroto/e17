@@ -17,6 +17,7 @@
 #include "eclair_config.h"
 #include "eclair_args.h"
 
+static void *_eclair_video_init_thread(void *param);
 static void _eclair_gui_create_window(Eclair *eclair);
 static void _eclair_video_create_window(Eclair *eclair);
 
@@ -63,7 +64,10 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair_subtitles_init(&eclair->subtitles);
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
    eclair_cover_init(&eclair->cover_manager, eclair);
-   eclair_update_current_file_info(eclair, NULL);
+   eclair_update_current_file_info(eclair);
+
+   eclair->video_initialized = 0;
+   pthread_create(&eclair->video_init_thread, NULL, _eclair_video_init_thread, eclair);
    
    for (l = filenames; l; l = l->next)
       eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
@@ -100,9 +104,7 @@ void eclair_update(Eclair *eclair)
    char time_elapsed[10] = "";
    double position, length;
 
-   if (!eclair)
-      return;
-   if (!eclair->video_object || !eclair->gui_object)
+   if (!eclair || !eclair->video_object || !eclair->gui_object)
       return;
 
    length = emotion_object_play_length_get(eclair->video_object);
@@ -130,17 +132,20 @@ void eclair_update(Eclair *eclair)
 }
 
 //Update the gui infos about the current media file
-void eclair_update_current_file_info(Eclair *eclair, Eclair_Media_File *current_file)
+void eclair_update_current_file_info(Eclair *eclair)
 {   
    char *window_title;
    char *artist_title_string;
    const char *filename;
+   Eclair_Media_File *current_file;
 
    if (!eclair)
       return;
-   
+
+   current_file = eclair_playlist_current_media_file(&eclair->playlist);
+
    //Update the name of the current file
-   if (eclair->gui_object)
+   if (eclair->gui_object && eclair->video_initialized)
    {
       if (current_file)
       {
@@ -161,17 +166,12 @@ void eclair_update_current_file_info(Eclair *eclair, Eclair_Media_File *current_
    //Update the title of the video window
    if (eclair->video_window)
    {
-      if (current_file)
+      if (current_file && current_file->path)
       {
-         if (current_file->path)
-         {
-            window_title = (char *)malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
-            sprintf(window_title, "eclair: %s", current_file->path);
-            ecore_evas_title_set(eclair->video_window, window_title);
-            free(window_title);
-         }
-         else
-            ecore_evas_title_set(eclair->video_window, "eclair");
+         window_title = (char *)malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
+         sprintf(window_title, "eclair: %s", current_file->path);
+         ecore_evas_title_set(eclair->video_window, window_title);
+         free(window_title);
       }
       else
          ecore_evas_title_set(eclair->video_window, "eclair");
@@ -190,19 +190,14 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 {
    char *current_path = NULL;
 
-   if (!eclair)
-      return;
-   if (!eclair->gui_object || !eclair->gui_cover)
+   if (!eclair || !eclair->gui_object || !eclair->gui_cover)
       return;
 
    evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
    if (!current_path && !cover_path)
       return;
-   if (current_path && cover_path)
-   {
-      if (strcmp(current_path, cover_path) == 0)
+   if (current_path && cover_path && (strcmp(current_path, cover_path) == 0))
          return;
-   }
 
    if (eclair->gui_previous_cover)
    {
@@ -236,9 +231,7 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
 //Set the scroll percent of the playlist container
 void eclair_playlist_container_scroll_percent_set(Eclair *eclair, double percent)
 {
-   if (!eclair)
-      return;
-   if (!eclair->playlist_container)
+   if (!eclair || !eclair->playlist_container)
       return;
 
    esmart_container_scroll_percent_set(eclair->playlist_container, percent);
@@ -254,7 +247,7 @@ void eclair_playlist_container_scroll(Eclair *eclair, int num_entries)
    Evas_Coord container_height;
    float hidden_items;
    
-   if (!eclair || !eclair->playlist_container || !eclair->gui_object || eclair->playlist_entry_height <= 0)
+   if (!eclair || !eclair->playlist_container || !eclair->gui_object || (eclair->playlist_entry_height <= 0))
       return;
 
    entries_list = esmart_container_elements_get(eclair->playlist_container);
@@ -268,7 +261,7 @@ void eclair_playlist_container_scroll(Eclair *eclair, int num_entries)
       percent += num_entries / hidden_items;
    if (percent > 1.0)
       percent = 1.0;
-   if (percent < 0.0)
+   else if (percent < 0.0)
       percent = 0.0;
    eclair_playlist_container_scroll_percent_set(eclair, percent);
 }
@@ -322,9 +315,7 @@ void eclair_play_file(Eclair *eclair, const char *path)
 {
    int video_width, video_height;
 
-   if (!eclair || !path)
-      return;
-   if (!eclair->video_window || !eclair->video_object)
+   if (!eclair || !path || !eclair->video_window || !eclair->video_object)
       return;
 
    emotion_object_file_set(eclair->video_object, path);
@@ -386,9 +377,7 @@ void eclair_play_next(Eclair *eclair)
 //Pause the playback
 void eclair_pause(Eclair *eclair)
 {
-   if (!eclair)
-      return;
-   if (eclair->state != ECLAIR_PLAYING)
+   if (!eclair || (eclair->state != ECLAIR_PLAYING))
       return;
 
    emotion_object_play_set(eclair->video_object, 0);
@@ -399,9 +388,7 @@ void eclair_pause(Eclair *eclair)
 //Play the current file if state is STOP or resume if state is PAUSE
 void eclair_play(Eclair *eclair)
 {
-   if (!eclair)
-      return;
-   if (!eclair->video_window)
+   if (!eclair || !eclair->video_window)
       return;
 
    if (eclair->state == ECLAIR_PAUSE)
@@ -453,20 +440,16 @@ void eclair_audio_level_set(Eclair *eclair, double audio_level)
 //Get the media progress rate
 double eclair_progress_rate_get(Eclair *eclair)
 {
-   if (!eclair)
-      return 0.0;
-   if (!eclair->video_object)
+   if (!eclair || !eclair->video_object)
       return 0.0;
    
-   return eclair_position_get(eclair) / emotion_object_play_length_get(eclair->video_object);
+   return (eclair_position_get(eclair) / emotion_object_play_length_get(eclair->video_object));
 }
 
 //Set the media progress rate
 void eclair_progress_rate_set(Eclair *eclair, double progress_rate)
 {
-   if (!eclair)
-      return;
-   if (!eclair->video_object)
+   if (!eclair || !eclair->video_object)
       return;
    
    eclair_position_set(eclair, progress_rate * emotion_object_play_length_get(eclair->video_object));
@@ -475,9 +458,7 @@ void eclair_progress_rate_set(Eclair *eclair, double progress_rate)
 //Get the media position in seconds
 double eclair_position_get(Eclair *eclair)
 {
-   if (!eclair)
-      return 0.0;
-   if (!eclair->video_object)
+   if (!eclair || !eclair->video_object)
       return 0.0;
 
    if (eclair->seek_to_pos < 0.0)
@@ -491,9 +472,7 @@ void eclair_position_set(Eclair *eclair, double position)
 {
    double media_length;
 
-   if (!eclair)
-      return;
-   if (!eclair->video_object)
+   if (!eclair || !eclair->video_object)
       return;
 
    media_length = emotion_object_play_length_get(eclair->video_object);
@@ -504,6 +483,25 @@ void eclair_position_set(Eclair *eclair, double position)
    eclair->dont_update_progressbar = 1;
    eclair->seek_to_pos = position;
    emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
+}
+
+//Initialize the video object
+static void *_eclair_video_init_thread(void *param)
+{
+   Eclair *eclair = (Eclair *)param;
+
+   if (!eclair || !eclair->video_object)
+      return NULL;
+
+   if (eclair->gui_object)
+      edje_object_part_text_set(eclair->gui_object, "current_media_name", "Initializing...");
+
+   emotion_object_init(eclair->video_object);
+   eclair->video_initialized = 1;
+
+   eclair_update_current_file_info(eclair);
+
+   return NULL;
 }
 
 //Create the gui window and load the interface

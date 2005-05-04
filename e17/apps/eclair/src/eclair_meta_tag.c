@@ -44,7 +44,8 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
    if (meta_tag_manager->meta_tag_delete_thread)
       return;
 
-   while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+   while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
+      printf("meta tag: Waiting IDLE %d\n", meta_tag_manager->meta_tag_add_state);
    meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    meta_tag_manager->meta_tag_files_to_add = evas_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
    meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
@@ -117,7 +118,8 @@ static void *_eclair_meta_tag_thread(void *param)
          //Add the new files to the list of files to treat
          if (meta_tag_manager->meta_tag_files_to_add)
          {
-            while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+            while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
+               printf("meta tag: Waiting IDLE2 %d\n", meta_tag_manager->meta_tag_add_state);
             meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = meta_tag_manager->meta_tag_files_to_add; l; l = next)
             {

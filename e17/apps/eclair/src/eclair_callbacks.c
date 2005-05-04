@@ -35,9 +35,7 @@ void eclair_video_audio_level_change_cb(void *data, Evas_Object *obj, void *even
 {
    Eclair *eclair = (Eclair *)data;
 
-   if (!eclair)
-      return;
-   if (!eclair->gui_object || !eclair->video_object)
+   if (!eclair || !eclair->gui_object || !eclair->video_object)
       return;
 
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", emotion_object_audio_volume_get(eclair->video_object), 0);
@@ -86,7 +84,6 @@ void eclair_video_window_resize_cb(Ecore_Evas *window)
       evas_object_move(eclair->video_object, X, Y);
       evas_object_resize(eclair->video_object, video_width, video_height);
    }
-   
    if (eclair->black_background)
    {
       evas_object_move(eclair->black_background, 0, 0);
@@ -234,9 +231,7 @@ void eclair_gui_minimize_cb(void *data, Evas_Object *edje_object, const char *em
 {
    Eclair *eclair = (Eclair *)data;
    
-   if (!eclair)
-      return;
-   if (!eclair->gui_window)
+   if (!eclair || !eclair->gui_window)
       return;
 
    ecore_evas_iconified_set(eclair->gui_window, 1);
@@ -293,9 +288,7 @@ void eclair_gui_playlist_scrollbar_button_drag_cb(void *data, Evas_Object *edje_
    Eclair *eclair = (Eclair *)data;
    double y;
 
-   if (!eclair)
-      return;  
-   if (!eclair->gui_object)
+   if (!eclair || !eclair->gui_object)
       return;
 
    edje_object_part_drag_value_get(eclair->gui_object, "playlist_scrollbar_button", NULL, &y);
@@ -307,7 +300,7 @@ void eclair_gui_playlist_scroll_cb(void *data, Evas_Object *edje_object, const c
 {
    Eclair *eclair = (Eclair *)data;
 
-   if (!eclair->playlist_container)
+   if (!eclair || !eclair->playlist_container)
       return;
 
    if (strcmp(emission, "playlist_scroll_down_start") == 0)
@@ -324,7 +317,7 @@ void eclair_gui_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object 
    Eclair *eclair = (Eclair *)data;
    Evas_Event_Mouse_Wheel *event = (Evas_Event_Mouse_Wheel *)event_info;
 
-   eclair_playlist_container_scroll(eclair, event->z);  
+   eclair_playlist_container_scroll(eclair, event->z);
 }
 
 //Called when the gui send a message

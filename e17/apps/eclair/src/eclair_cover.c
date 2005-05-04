@@ -34,7 +34,7 @@ static int _eclair_cover_connect_to_hostname(const char *hostname);
 static int _eclair_cover_connect_to_host(const struct hostent *host);
 static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet, int *length);
 static int _eclair_cover_extract_http_body(char *packet, int packet_length, char **body);
-static int _eclair_cover_fetch(const char *url, const struct hostent *he, char **data);
+static int _eclair_cover_fetch(const char *url, char **data);
 
 static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_manager, const char *file_path, const char *cover_extension);
 static char *_eclair_cover_build_path_from_artist_album(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, const char *cover_extension);
@@ -58,7 +58,6 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
    cover_manager->cover_files_to_treat = NULL;
    cover_manager->not_in_amazon_db = NULL;
    cover_manager->eclair = eclair;
-   cover_manager->amazon_he = NULL;
    cover_manager->cover_delete_thread = 0;
    pthread_cond_init(&cover_manager->cover_cond, NULL);
    pthread_mutex_init(&cover_manager->cover_mutex, NULL);
@@ -74,7 +73,6 @@ void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
    if (!cover_manager)
       return;
 
-   free(cover_manager->amazon_he);   
    for (l = cover_manager->not_in_amazon_db; l; l = l->next)
    {
       if ((album = (Eclair_Cover_Not_In_DB_Album *)l->data))
@@ -96,12 +94,11 @@ void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
 //Add a media file to the list of files to treat
 void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_Media_File *media_file)
 {
-   if (!cover_manager || !media_file)
-      return;
-   if (cover_manager->cover_delete_thread)
+   if (!cover_manager || !media_file || cover_manager->cover_delete_thread)
       return;
 
-   while (cover_manager->cover_add_state != ECLAIR_IDLE);
+   while (cover_manager->cover_add_state != ECLAIR_IDLE)
+      printf("cover: Waiting IDLE: %d\n", cover_manager->cover_add_state);
    cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
    cover_manager->cover_add_state = ECLAIR_IDLE;
@@ -117,9 +114,7 @@ static void *_eclair_cover_thread(void *param)
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
 
-   if (!cover_manager)
-      return NULL;
-   if (!(eclair = cover_manager->eclair))
+   if (!cover_manager || !(eclair = cover_manager->eclair))
       return NULL;
 
    pthread_mutex_lock(&cover_manager->cover_mutex);
@@ -138,7 +133,8 @@ static void *_eclair_cover_thread(void *param)
          //Add the new files to the list of files to treat
          if (cover_manager->cover_files_to_add)
          {
-            while (cover_manager->cover_add_state != ECLAIR_IDLE);
+            while (cover_manager->cover_add_state != ECLAIR_IDLE)
+               printf("cover: Waiting IDLE2: %d\n", cover_manager->cover_add_state);
             cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = cover_manager->cover_files_to_add; l; l = next)
             {
@@ -226,9 +222,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    Evas_List *l;
    Eclair_Cover_Not_In_DB_Album *not_in_db_album;
 
-   if (!cover_manager || !artist || !album)
-      return NULL;
-   if (strlen(artist) <= 0 || strlen(album) <= 0)
+   if (!cover_manager || !artist || !album || !(strlen(artist) <= 0) || !(strlen(album) <= 0))
       return NULL;
 
    //Check if we already perform a search on this album and if amazon answered it doesn't have this album in database
@@ -242,17 +236,6 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
          return NULL;
    }
 
-   //Resolve amazone hostname
-   if (!cover_manager->amazon_he)
-   {
-      struct hostent *he;
-      if ((he = gethostbyname(amazon_hostname)))
-      {
-         cover_manager->amazon_he = (struct hostent *)malloc(sizeof(struct hostent));
-         memcpy(cover_manager->amazon_he, he, sizeof(struct hostent));
-      }
-   }
-
    //Get the ASIN of the album
    keywords = (char *)malloc(strlen(artist) + strlen(album) + 2);
    sprintf(keywords, "%s %s", artist, album);
@@ -263,7 +246,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    free(converted_keywords);
    if (cover_manager->cover_delete_thread)
       return NULL;
-   body_length = _eclair_cover_fetch(url, cover_manager->amazon_he, &body);
+   body_length = _eclair_cover_fetch(url, &body);
    if (body_length <= 0)
    {
       fprintf(stderr, "Cover: Unable to download cover from amazon.com\n");
@@ -292,7 +275,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    xmlFree(ASIN);
    if (cover_manager->cover_delete_thread)
       return NULL;
-   body_length = _eclair_cover_fetch(url, cover_manager->amazon_he, &body);
+   body_length = _eclair_cover_fetch(url, &body);
    if (body_length <= 0)
    {
       fprintf(stderr, "Cover: Unable to download cover from amazon.com\n");
@@ -327,7 +310,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
       xmlFree(cover_url);
       return NULL;
    }
-   body_length = _eclair_cover_fetch(cover_url, NULL, &body);
+   body_length = _eclair_cover_fetch(cover_url, &body);
    xmlFree(cover_url);
    if (body_length <= 0)
    {
@@ -404,14 +387,13 @@ static int _eclair_cover_connect_to_host(const struct hostent *host)
 //Try to fetch the file stored at url on host he (may be NULL) and put the data into data
 //data has to be freed if success
 //Return the length of the data (negative if failed) 
-static int _eclair_cover_fetch(const char *url, const struct hostent *he, char **data)
+static int _eclair_cover_fetch(const char *url, char **data)
 {
    const char *host_start;
    const char *url_abs_path;
    char request[MAX_REQUEST_SIZE];
    char *host, *packet, *body;
    int packet_length, body_length;
-   struct in_addr in;
    int socket_fd;
 
    if (!url || !data)
@@ -430,26 +412,13 @@ static int _eclair_cover_fetch(const char *url, const struct hostent *he, char *
       return -1;
    }
 
-   if (!he)
+   host = (char *)malloc(url_abs_path - host_start + 1);
+   strncpy(host, host_start, url_abs_path - host_start);
+   host[url_abs_path - host_start] = 0;
+   if ((socket_fd = _eclair_cover_connect_to_hostname(host)) < 0)
    {
-      host = (char *)malloc(url_abs_path - host_start + 1);
-      strncpy(host, host_start, url_abs_path - host_start);
-      host[url_abs_path - host_start] = 0;
-      if ((socket_fd = _eclair_cover_connect_to_hostname(host)) < 0)
-      {
-         free(host);
-         return -1;
-      }
-   }
-   else
-   {
-      memcpy(&in, he->h_addr, he->h_length);      
-      host = strdup(inet_ntoa(in));
-      if ((socket_fd = _eclair_cover_connect_to_host(he)) < 0)
-      {
-         free(host);
-         return -1;
-      }
+      free(host);
+      return -1;
    }
    
    sprintf(request, "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: eclair\r\n\r\n", url_abs_path, host);
@@ -562,9 +531,7 @@ static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_
    char *cover_path, *ext_start, *filename_without_ext;
    const char *filename;
 
-   if (!cover_manager || !file_path || !cover_extension)
-      return NULL;
-   if (!cover_manager->eclair)
+   if (!cover_manager || !file_path || !cover_extension || !cover_manager->eclair)
       return NULL;
 
    filename = eclair_utils_path_to_filename(file_path);
@@ -585,10 +552,8 @@ static char *_eclair_cover_build_path_from_artist_album(Eclair_Cover_Manager *co
 {
    char *filename, *path, *c;
 
-   if (!cover_manager || !artist || !album || !cover_extension)
+   if (!cover_manager || !artist || !album || !cover_extension || !cover_manager->eclair)
       return NULL; 
-   if (!cover_manager->eclair)
-      return NULL;
 
    filename = (char *)malloc(strlen(artist) + strlen(album) + strlen(cover_extension) + 3);
    sprintf(filename, "%s_%s.%s", artist, album, cover_extension);

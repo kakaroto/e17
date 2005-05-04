@@ -64,5 +64,5 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
 
    //If the media file is the current, we also update gui infos
    if (media_file == eclair_playlist_current_media_file(&eclair->playlist))
-      eclair_update_current_file_info(eclair, media_file);
+      eclair_update_current_file_info(eclair);
 }

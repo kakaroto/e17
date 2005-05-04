@@ -43,7 +43,6 @@ struct _Eclair_Cover_Manager
    Evas_List *not_in_amazon_db;
    Evas_Bool cover_delete_thread;
    Eclair *eclair;
-   struct hostent *amazon_he;
    pthread_cond_t cover_cond;
    pthread_mutex_t cover_mutex;
    pthread_t cover_thread;
@@ -69,7 +68,8 @@ struct _Eclair_Media_File
    char *album;
    char *genre;
    char *comment;
-   int length, year, track;
+   int length, track;
+   short year;
    Evas_Object *playlist_entry;
 };
 
@@ -115,6 +115,8 @@ struct _Eclair
    Evas_Object *black_background;
    Evas_Object *subtitles_object;
    Eclair_Engine video_engine;
+   pthread_t video_init_thread;
+   Evas_Bool video_initialized;
 
    //Gui related vars
    Ecore_Evas *gui_window;

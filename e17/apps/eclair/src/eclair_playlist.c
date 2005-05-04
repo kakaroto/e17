@@ -166,31 +166,22 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
    if (!playlist)
       return;
 
-   if ((media_file = eclair_playlist_current_media_file(playlist)))
-   {
-      if (media_file->playlist_entry)
-         edje_object_signal_emit(media_file->playlist_entry, "signal_unset_current", "eclair_bin");
-   }
+   if ((media_file = eclair_playlist_current_media_file(playlist)) && media_file->playlist_entry)
+      edje_object_signal_emit(media_file->playlist_entry, "signal_unset_current", "eclair_bin");
 
-   if ((media_file = evas_list_data(list)))
+   if ((media_file = evas_list_data(list)) && media_file->playlist_entry)
    {
-      if (media_file->playlist_entry)
-      {
-         edje_object_signal_emit(media_file->playlist_entry, "signal_set_current", "eclair_bin");
-         if (playlist->eclair)
-         {
-            //TODO: doesn't work?
-            if (playlist->eclair->playlist_container)
-               esmart_container_scroll_to(playlist->eclair->playlist_container, media_file->playlist_entry);
-         }
-      }
+      edje_object_signal_emit(media_file->playlist_entry, "signal_set_current", "eclair_bin");
       if (playlist->eclair)
-         eclair_update_current_file_info(playlist->eclair, media_file);
+      {
+         //TODO: doesn't work?
+         if (playlist->eclair->playlist_container)
+            esmart_container_scroll_to(playlist->eclair->playlist_container, media_file->playlist_entry);
+      }
    }
-   else if (playlist->eclair)      
-      eclair_update_current_file_info(playlist->eclair, NULL);
    
    playlist->current = list;
+   eclair_update_current_file_info(playlist->eclair);
 } 
 
 //Set the media file which is just before the active media file as the active media file 
