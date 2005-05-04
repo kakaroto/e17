@@ -152,7 +152,10 @@ struct _GtkgEvas {
 
     // for using edjies
     guint ecore_timer_id;
-	};
+
+    // how many evas_render()s were called
+    long evas_render_call_count;
+};
 
 struct _GtkgEvasClass {
 
@@ -191,6 +194,7 @@ struct _GtkgEvasClass {
     void gevas_add_image_prefix( GtkgEvas * ev, const char* p );
     void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p );
 
+    long gevas_get_evas_render_call_count( GtkgEvas * ev );
 
 /** protected **/
 

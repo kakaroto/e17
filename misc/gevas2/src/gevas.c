@@ -212,8 +212,7 @@ void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 /* internal functions */
 void _show_evas_checked_bg(GtkWidget * widget, GtkgEvas * ev)
 {
-
-	if (!ev->show_checked_bg)
+    if (!ev->show_checked_bg)
 		return;
 
 	if (GTK_WIDGET_REALIZED(widget)
@@ -561,6 +560,8 @@ static void gevas_init(GtkgEvas * ev)
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
 /*     printf("gevas_init() 1\n"); */
 
+	ev->current_idle = 0;
+    ev->evas_render_call_count = 0;
     ev->ecore_timer_id  = 0;
     ev->scrolledwindow  = 0;
 	ev->evas            = evas_new();
@@ -918,7 +919,7 @@ static void gevas_realize(GtkWidget * widget)
 	/* Set realized flag */
 	GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
 
-#if 0
+#if 1
 	Visual *vis;
 	Colormap cmap;
 	GdkVisual *gdk_vis;
@@ -934,11 +935,14 @@ static void gevas_realize(GtkWidget * widget)
 	cmap = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget));
 /*     evas_get_optimal_colormap(ev->evas, */
 /* 								  GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())); */
-	gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
+	gdk_vis  = gdkx_visual_get(XVisualIDFromVisual(vis));
 	gdk_cmap = gdkx_colormap_get(cmap);
 
-    attributes.visual = gdk_vis;	/*gtk_widget_get_visual (widget); */
+    attributes.visual   = gdk_vis;	/*gtk_widget_get_visual (widget); */
 	attributes.colormap = gdk_cmap;	/*gtk_widget_get_colormap (widget); */
+#else
+    attributes.visual      = gtk_widget_get_visual (widget);
+    attributes.colormap    = gtk_widget_get_colormap (widget);
 #endif
   
 	/* Evas window */
@@ -949,8 +953,6 @@ static void gevas_realize(GtkWidget * widget)
 	attributes.width       = widget->allocation.width;
 	attributes.height      = widget->allocation.height;
 	attributes.wclass      = GDK_INPUT_OUTPUT;
-    attributes.visual      = gtk_widget_get_visual (widget);
-    attributes.colormap    = gtk_widget_get_colormap (widget);
 	attributes.event_mask  = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
 	attributes.event_mask |= GDK_EXPOSURE_MASK
         | GDK_BUTTON_PRESS_MASK
@@ -975,17 +977,7 @@ static void gevas_realize(GtkWidget * widget)
 
 	widget->style = gtk_style_attach(widget->style, widget->window);
 	gtk_style_set_background(widget->style, widget->window, GTK_STATE_NORMAL);
-
-	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
-/* 	evas_set_output(ev->evas, */
-/* 					GDK_WINDOW_XDISPLAY(widget->window), */
-/* 					GDK_WINDOW_XWINDOW(widget->window), */
-/* 					GDK_VISUAL_XVISUAL(gtk_widget_get_visual(widget)), */
-/* 					GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget))); */
-/* 	evas_output_size_set(ev->evas, widget->allocation.width, */
-/* 						 widget->allocation.height); */
-/* 	evas_output_viewport_set(ev->evas, 0, 0, widget->allocation.width, */
-/* 							 widget->allocation.height); */
+    gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
 
     evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
     evas_output_size_set(evas,
@@ -1015,13 +1007,11 @@ static void gevas_realize(GtkWidget * widget)
     }
     
 
-
 	/* only shows if the user has requested it */
 	_show_evas_checked_bg(widget, ev);
 
     // FIXME: Maybe we can do something better than single buffering?
-    gtk_widget_set_double_buffered( widget, 0);
-    
+    gtk_widget_set_double_buffered( widget, 0 );
 
     
 //    printf("gevas_realize() end\n");
@@ -1283,6 +1273,7 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 
 
 
+    ev->evas_render_call_count++;
     evas_render(ev->evas);
 
 
@@ -1322,6 +1313,12 @@ void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* 
 }
 
 
+long
+gevas_get_evas_render_call_count( GtkgEvas * ev )
+{
+    return ev->evas_render_call_count;
+}
+
 static gint gevas_view_redraw_cb(gpointer data)
 {
     GtkgEvas* 	  gevas = GTK_GEVAS( data );
@@ -1332,9 +1329,11 @@ static gint gevas_view_redraw_cb(gpointer data)
     /* prevent evas from breaking if window isn't mapped */
     if(!GTK_WIDGET_MAPPED(ev))  
         return FALSE;
+
     
 //    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
 
+    ev->evas_render_call_count++;
     evas_obscured_clear(ev->evas);
     evas_render(ev->evas);
 
@@ -1554,6 +1553,8 @@ static void gevas_set_arg(GtkObject*  object, GtkArg * arg, guint arg_id)
 				gboolean oldv = ev->show_checked_bg;
 				ev->show_checked_bg = GTK_VALUE_BOOL(*arg);
 
+//                printf("gevas_checked_bg old:%d new:%d\n", oldv, ev->show_checked_bg );
+                
 				if (oldv) {
 					evas_object_hide( ev->checked_bg );
 				} else {

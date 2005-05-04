@@ -166,6 +166,18 @@ void gevasimage_set_image_size(  GtkgEvasObj * object, int  w, int  h)
 }
 
 
+void
+gevasimage_set_smooth_scale( GtkgEvasObj* object, int v )
+{
+    evas_object_image_smooth_scale_set(EVASO(object), v);
+}
+
+int
+gevasimage_get_smooth_scale( GtkgEvasObj* object )
+{
+    return evas_object_image_smooth_scale_get(EVASO(object));
+}
+
 
 void
 gevasimage_get_image_border(GtkgEvasObj * object, int *l, int *r, int *t,
