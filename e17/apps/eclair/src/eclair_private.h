@@ -115,8 +115,7 @@ struct _Eclair
    Evas_Object *black_background;
    Evas_Object *subtitles_object;
    Eclair_Engine video_engine;
-   pthread_t video_init_thread;
-   Evas_Bool video_initialized;
+   pthread_t video_create_thread;
 
    //Gui related vars
    Ecore_Evas *gui_window;
