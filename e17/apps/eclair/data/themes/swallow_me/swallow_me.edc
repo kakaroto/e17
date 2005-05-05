@@ -1,0 +1,22 @@
+images {
+   image: "body_bottom.png" COMP;
+   image: "body_bottom_left.png" COMP;
+   image: "body_bottom_right.png" COMP;
+   image: "body_left.png" COMP;
+   image: "body_right.png" COMP;
+   image: "body_top.png" COMP;
+   image: "body_top_left.png" COMP;
+   image: "body_top_right.png" COMP;
+}
+fonts {
+   font: "Vera.ttf" "Edje Vera";
+}
+collections {
+   group {
+      name: "eclair_body";
+      min: 250 67;
+      parts {
+         #include "parts/body.edc"
+      }
+   }
+}

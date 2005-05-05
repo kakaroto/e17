@@ -1,0 +1,144 @@
+part {
+   name: "body_top_left";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 0;
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 12 18;
+      }
+      image {
+         normal: "body_top_left.png";
+      }
+   }            
+}
+part {
+   name: "body_top_right";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 1 0;
+         offset: -12 0;
+      }
+      rel2 {
+         relative: 1 0;
+         offset: -1 18;
+      }
+      image {
+         normal: "body_top_right.png";
+      }
+   }            
+}
+part {
+   name: "body_top";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 1 0;
+         to: "body_top_left";
+      }
+      rel2 {
+         relative: 0 1;
+         to: "body_top_right";
+      }
+      image {
+         normal: "body_top.png";
+      }
+   }            
+}
+part {
+   name: "body_bottom_left";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 1;
+         offset: 0 -48;
+      }
+      rel2 {
+         relative: 0 1;
+         offset: 27 -1;
+      }
+      image {
+         normal: "body_bottom_left.png";
+      }
+   }            
+}
+part {
+   name: "body_bottom_right";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 1 1;
+         offset: -27 -48;
+      }
+      rel2 {
+         relative: 1 1;
+      }
+      image {
+         normal: "body_bottom_right.png";
+      }
+   }            
+}
+part {
+   name: "body_bottom";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 1 0;
+         to: "body_bottom_left";
+      }
+      rel2 {
+         relative: 0 1;
+         to: "body_bottom_right";
+      }
+      image {
+         normal: "body_bottom.png";
+      }
+   }            
+}
+part {
+   name: "body_left";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 1;
+         to: "body_top_left";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 12 0;
+         to: "body_bottom_left";
+      }
+      image {
+         normal: "body_left.png";
+      }
+   }            
+}
+part {
+   name: "body_right";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 1 1;
+         offset: -12 0;
+         to: "body_top_right";
+      }
+      rel2 {
+         relative: 1 0;
+         to: "body_bottom_right";
+      }
+      image {
+         normal: "body_right.png";
+      }
+   }            
+}
