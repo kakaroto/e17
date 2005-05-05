@@ -159,7 +159,7 @@ void _esmart_textarea_cursor_delete_right(Esmart_Text_Area *t) {
 	while(formats >= 0)
 	  {
 	     char format[4096];
-	     snprintf(format,"%s",evas_object_textblock_format_next_get(t->text, formats));
+	     snprintf(format, sizeof(format), "%s",evas_object_textblock_format_next_get(t->text, formats));
 	     if(!strcmp(format,"\n"))
 	       {
 		  evas_object_textblock_cursor_pos_set(t->text, pos+1);
@@ -185,7 +185,7 @@ void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *t) {
 	while(formats >= 0)
 	  {	     
 	     char format[4096];
-	     snprintf(format,4096,"%s",evas_object_textblock_format_prev_get(t->text, formats));
+	     snprintf(format, sizeof(format),"%s",evas_object_textblock_format_prev_get(t->text, formats));
 	     if(!strcmp(format,"\n"))
 	       {
 		  evas_object_textblock_cursor_pos_set(t->text, pos-1);
