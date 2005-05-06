@@ -10,6 +10,7 @@ require "esmart"
 require "esmart_draggies"
 require "esmart_container"
 require "xmmsclient"
+require "xmmsclient_ecore"
 require "singleton"
 require "yaml"
 require "find"
@@ -151,7 +152,7 @@ private
 	def init_xmms
 		@xmms = XmmsClient::XmmsClient.new("Euphoria")
 		@xmms.connect(@config.ipc_path)
-		@xmms.setup_with_ecore
+		@xmms.add_to_ecore_mainloop
 	end
 
 	def setup_callbacks
