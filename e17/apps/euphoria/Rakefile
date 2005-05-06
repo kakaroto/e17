@@ -6,7 +6,7 @@ sitelibdir = Config::CONFIG["sitelibdir"]
 destdir = "#{ENV["DESTDIR"]}"
 prefix = ENV["PREFIX"] || "/usr/local"
 
-themes = ["default", "iio", "streamline", "winter"].map do |t|
+themes = ["iio", "winter"].map do |t|
 	"data/themes/#{t}/#{t}.edj"
 end
 
