@@ -26,4 +26,8 @@ task :install do |t|
 	ddir = destdir + sitelibdir + "/euphoria"
 	FileUtils::Verbose.mkdir(ddir) unless File.directory?(ddir)
 	FileUtils::Verbose.install(Dir["lib/*.rb"], ddir, :mode => 0644)
+
+	ddir = destdir + prefix + "/share/euphoria"
+	FileUtils::Verbose.mkdir(ddir) unless File.directory?(ddir)
+	FileUtils::Verbose.install(themes, ddir, :mode => 0644)
 end
