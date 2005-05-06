@@ -27,7 +27,7 @@ task :install do |t|
 	FileUtils::Verbose.mkdir(ddir) unless File.directory?(ddir)
 	FileUtils::Verbose.install(Dir["lib/*.rb"], ddir, :mode => 0644)
 
-	ddir = destdir + prefix + "/share/euphoria"
+	ddir = destdir + prefix + "/share/euphoria/themes"
 	FileUtils::Verbose.mkdir(ddir) unless File.directory?(ddir)
 	FileUtils::Verbose.install(themes, ddir, :mode => 0644)
 end
