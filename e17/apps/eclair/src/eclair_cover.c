@@ -97,7 +97,8 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
    if (!cover_manager || !media_file || cover_manager->cover_delete_thread)
       return;
 
-   while (cover_manager->cover_add_state != ECLAIR_IDLE);
+   while (cover_manager->cover_add_state != ECLAIR_IDLE)
+      usleep(10000);
    cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
    cover_manager->cover_add_state = ECLAIR_IDLE;
@@ -132,7 +133,8 @@ static void *_eclair_cover_thread(void *param)
          //Add the new files to the list of files to treat
          if (cover_manager->cover_files_to_add)
          {
-            while (cover_manager->cover_add_state != ECLAIR_IDLE);
+            while (cover_manager->cover_add_state != ECLAIR_IDLE)
+               usleep(10000);
             cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = cover_manager->cover_files_to_add; l; l = next)
             {

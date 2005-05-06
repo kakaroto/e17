@@ -1,6 +1,7 @@
 #include "eclair_meta_tag.h"
 #include <tag_c.h>
 #include <string.h>
+#include <unistd.h>
 #include <Evas.h>
 #include "eclair.h"
 #include "eclair_cover.h"
@@ -44,7 +45,8 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
    if (meta_tag_manager->meta_tag_delete_thread)
       return;
 
-   while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+   while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
+      usleep(10000);
    meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    meta_tag_manager->meta_tag_files_to_add = evas_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
    meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
@@ -82,11 +84,8 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    taglib_file_free(tag_file);
 
    //Try to load the cover
-   if (tag)
-   {
-      if (!(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
-         eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
-   }
+   if (tag && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
+      eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
 }
 
 //Scan the files stored in the list of files to scan
@@ -117,7 +116,8 @@ static void *_eclair_meta_tag_thread(void *param)
          //Add the new files to the list of files to treat
          if (meta_tag_manager->meta_tag_files_to_add)
          {
-            while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE);
+            while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
+               usleep(10000);
             meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = meta_tag_manager->meta_tag_files_to_add; l; l = next)
             {
