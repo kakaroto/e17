@@ -8,7 +8,7 @@ TODO list:
 *Store media files collection into a database (SqlLite3?) to perform fast search
 *improve behavior of file selection
 *improve behavior of fullscreen mode
-*fix some bugs of emotion (autoplay, seek_thread close, wmv segv...)
+*fix some bugs of emotion (seek_thread close, wmv segv...)
 *Add a visualisation system (need to modify emotion)
 *Add an audio equalizer system (need to modify emotion)
 *Allow vertical or horizontal progressbar, volumebar, ...

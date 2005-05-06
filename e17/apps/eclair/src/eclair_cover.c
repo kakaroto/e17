@@ -97,8 +97,7 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
    if (!cover_manager || !media_file || cover_manager->cover_delete_thread)
       return;
 
-   while (cover_manager->cover_add_state != ECLAIR_IDLE)
-      printf("cover: Waiting IDLE: %d\n", cover_manager->cover_add_state);
+   while (cover_manager->cover_add_state != ECLAIR_IDLE);
    cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
    cover_manager->cover_add_state = ECLAIR_IDLE;
@@ -133,8 +132,7 @@ static void *_eclair_cover_thread(void *param)
          //Add the new files to the list of files to treat
          if (cover_manager->cover_files_to_add)
          {
-            while (cover_manager->cover_add_state != ECLAIR_IDLE)
-               printf("cover: Waiting IDLE2: %d\n", cover_manager->cover_add_state);
+            while (cover_manager->cover_add_state != ECLAIR_IDLE);
             cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
             for (l = cover_manager->cover_files_to_add; l; l = next)
             {
@@ -222,7 +220,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    Evas_List *l;
    Eclair_Cover_Not_In_DB_Album *not_in_db_album;
 
-   if (!cover_manager || !artist || !album || !(strlen(artist) <= 0) || !(strlen(album) <= 0))
+   if (!cover_manager || !artist || !album || (strlen(artist) <= 0) || (strlen(album) <= 0))
       return NULL;
 
    //Check if we already perform a search on this album and if amazon answered it doesn't have this album in database
