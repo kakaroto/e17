@@ -2,7 +2,7 @@
 
 require "rbconfig"
 
-sitelibdir = Config::CONFIG["sitelibdir"]
+sitelibdir = ENV["RUBYLIBDIR"] || Config::CONFIG["sitelibdir"]
 destdir = "#{ENV["DESTDIR"]}"
 prefix = ENV["PREFIX"] || "/usr/local"
 
