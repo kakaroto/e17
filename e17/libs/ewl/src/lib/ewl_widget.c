@@ -7,6 +7,8 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
+Ecore_Hash *name_table = NULL;
+
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
@@ -103,6 +105,59 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_widget_appearance_set(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to name
+ * @param name: the new name for the widget
+ * @return Returns no value.
+ * @brief Name the specified widget.
+ */
+void ewl_widget_name_set(Ewl_Widget * w, char *name)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!name_table)
+		name_table = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	IF_FREE(w->name);
+	w->name = strdup(name);
+	if (name_table)
+		ecore_hash_set(name_table, w->name, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to retrieve the name
+ * @return Returns an pointer to an allocated name string on success.
+ * @brief Get the name for the specified widget.
+ */
+char *ewl_widget_name_get(Ewl_Widget * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	DRETURN_PTR(w->name ? strdup(w->name) : NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @param name: the name of the widget to retrieve
+ * @return Returns an pointer a matched widget on success.
+ * @brief Find a widget identified by a name.
+ */
+Ewl_Widget *ewl_widget_name_find(char * name)
+{
+	Ewl_Widget *match = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("name", name, NULL);
+
+	if (name_table)
+		match = ecore_hash_get(name_table, name);
+
+	DRETURN_PTR(match, DLEVEL_STABLE);
 }
 
 /**
@@ -951,6 +1006,7 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Free up appearance related information
 	 */
 	ewl_theme_widget_shutdown(w);
+	IF_FREE(w->name);
 	IF_FREE(w->appearance);
 
 	/*

@@ -243,8 +243,8 @@ void ewl_entry_text_set(Ewl_Entry * e, char *text)
 
 	op = ewl_entry_op_text_set_new(text);
 	ewl_entry_op_prune_list(e, EWL_ENTRY_OP_TYPE_TEXT_SET,
-			EWL_ENTRY_OP_TYPE_TEXT_DELETE, 
-			EWL_ENTRY_OP_TYPE_NONE, EWL_ENTRY_OP_TYPE_NONE);
+				EWL_ENTRY_OP_TYPE_TEXT_DELETE, 
+				EWL_ENTRY_OP_TYPE_NONE, EWL_ENTRY_OP_TYPE_NONE);
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
@@ -253,7 +253,8 @@ void ewl_entry_text_set(Ewl_Entry * e, char *text)
 	if (text) {
 		e->text = strdup(text);
 		e->length = strlen(text);
-	} else
+	}
+	else
 		e->length = 0;
 
 	if (e->cursor)
@@ -479,6 +480,35 @@ void ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a)
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to retrieve the current color
+ * @brief Retrieve the color of the currently used font.
+ * @return Returns no value.
+ */
+void ewl_entry_color_get(Ewl_Entry *e, int *a, int *r, int *g, int *b)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Color *opc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_COLOR_SET);
+	opc = (Ewl_Entry_Op_Color *)op;
+	if (opc) {
+		if (a)
+			*a = opc->a;
+		if (r)
+			*r = opc->r;
+		if (g)
+			*g = opc->g;
+		if (b)
+			*b = opc->b;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2198,6 +2228,8 @@ ewl_entry_op_prune_list(Ewl_Entry *e, Ewl_Entry_Op_Type rstart,
 			Ewl_Entry_Op_Type bend)
 {
 	Ewl_Entry_Op *op;
+	if (!e->ops)
+		DRETURN(DLEVEL_STABLE);
 
 	ecore_dlist_goto_last(e->ops);
 	while ((op = ecore_dlist_current(e->ops))) {
