@@ -49,36 +49,6 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO;
 
 #define _ecore_x_disp disp
 
-#define ecore_x_init(dstr) \
-	disp = XOpenDisplay(dstr)
-#define ecore_x_shutdown() \
-	XCloseDisplay(disp)
-#define ecore_x_display_get() \
-	disp
-
-#define ecore_x_sync() \
-	XSync(disp, False)
-
-#define ecore_x_window_move(win, x, y) \
-	XMoveWindow(disp, win, x, y)
-#define ecore_x_window_resize(win, w, h) \
-	XResizeWindow(disp, win, w, h)
-#define ecore_x_window_move_resize(win, x, y, w, h) \
-	XMoveResizeWindow(disp, win, x, y, w, h)
-
-#define ecore_x_pixmap_new(draw, w, h, dep) \
-	XCreatePixmap(disp, draw, w, h, dep)
-#define ecore_x_pixmap_del(pmap) \
-	XFreePixmap(disp, pmap)
-
-#define ecore_x_gc_new(draw) \
-	XCreateGC(disp, draw, 0, NULL);
-#define ecore_x_gc_del(gc) \
-	XFreeGC(disp, gc)
-
-void                ecore_x_grab(void);
-void                ecore_x_ungrab(void);
-
 int                 ecore_x_client_message32_send(Ecore_X_Window win,
 						  Ecore_X_Atom type,
 						  long mask,

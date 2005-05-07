@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ecore-e16.h"
 #include <math.h>
 
 typedef enum
@@ -146,7 +147,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    if (Mode.wm.startup)
       return;
 
-   ecore_x_grab();
+   EGrabServer();
    spd = 0.00001;
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
@@ -206,7 +207,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
 	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
-	     ecore_x_sync();
+	     ESync();
 	     t2 = GetTime();
 	     t = t2 - t1;
 	     t1 = t2;
@@ -276,7 +277,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
 	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
-	     ecore_x_sync();
+	     ESync();
 	     t2 = GetTime();
 	     t = t2 - t1;
 	     t1 = t2;
@@ -299,7 +300,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	  }
      }
    EFreeGC(gc);
-   ecore_x_ungrab();
+   EUngrabServer();
 }
 
 static Iconbox     *
@@ -785,7 +786,8 @@ IB_SnapEWin(EWin * ewin)
 	mask = EWindowGetShapePixmap(EoGetWin(ewin));
 	imlib_context_set_drawable(draw);
 	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, ww, hh,
-						     w, h, 1, 0);
+						     w, h, !EServerIsGrabbed(),
+						     0);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
@@ -795,7 +797,8 @@ IB_SnapEWin(EWin * ewin)
 	draw = EoGetWin(ewin);
 	imlib_context_set_drawable(draw);
 	im = imlib_create_scaled_image_from_drawable(None, 0, 0, ww, hh,
-						     w, h, 1, 1);
+						     w, h, !EServerIsGrabbed(),
+						     1);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
@@ -824,7 +827,8 @@ IB_GetAppIcon(EWin * ewin)
 
    imlib_context_set_colormap(None);
    imlib_context_set_drawable(ewin->client.icon_pmap);
-   im = imlib_create_image_from_drawable(ewin->client.icon_mask, 0, 0, w, h, 1);
+   im = imlib_create_image_from_drawable(ewin->client.icon_mask, 0, 0, w, h,
+					 !EServerIsGrabbed());
    imlib_context_set_image(im);
    imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
    imlib_context_set_colormap(VRoot.cmap);

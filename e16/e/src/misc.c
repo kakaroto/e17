@@ -154,7 +154,7 @@ ETimedLoopInit(int k1, int k2, int speed)
    etl_fac = (k2 - k1) * speed / 1000.;
 
    gettimeofday(&etl_tv_start, NULL);
-   ecore_x_sync();
+   ESync();
 }
 
 int
@@ -173,7 +173,7 @@ ETimedLoopNext(void)
    etl_k = etl_k1 + tm * etl_fac;
    y = ETimeCurve(etl_k1, etl_k2, etl_k, 2, 1.0);
 
-   ecore_x_sync();
+   ESync();
    CheckEvent();
 
    return y;

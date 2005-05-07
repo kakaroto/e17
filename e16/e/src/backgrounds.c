@@ -654,7 +654,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	     XSetForeground(disp, gc, bg->bg_solid.pixel);
 	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
 	  }
-	ecore_x_sync();
+	ESync();
      }
 
    if (gc)

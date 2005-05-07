@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ecore-e16.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -839,7 +840,7 @@ doSMExit(int mode, const char *params)
 	   MapUnmap(1);
 	XSelectInput(disp, VRoot.win, 0);
 	ExtInitWinKill();
-	XSync(disp, False);
+	ESync();
      }
 
    ModulesSignal(ESIGNAL_EXIT, NULL);

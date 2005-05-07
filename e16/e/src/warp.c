@@ -208,7 +208,7 @@ WarpFocusShow(EWin * ewin)
 
    PropagateShapes(warpFocusWindow->win);
    Mode.queue_up = pq;
-   XFlush(disp);
+   EFlush();
 }
 
 static void

@@ -67,9 +67,6 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    SoundPlay("SOUND_MOVE_START");
    ModulesSignal(ESIGNAL_MOVE_START, NULL);
 
-   if (Conf.movres.mode_move > 0)
-      ecore_x_grab();
-
    if (grab)
      {
 	GrabPointerRelease();
@@ -120,7 +117,7 @@ ActionMoveEnd(EWin * ewin)
    if (!ewin)
      {
 	if (Conf.movres.mode_move > 0)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	if (Mode.mode == MODE_MOVE)
 	   Conf.movres.mode_move = move_mode_real;
 	return 0;
@@ -158,9 +155,9 @@ ActionMoveEnd(EWin * ewin)
 			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
      }
 
-   ecore_x_sync();
+   ESync();
    if (Conf.movres.mode_move > 0)
-      ecore_x_ungrab();
+      EUngrabServer();
 
    Efree(gwins);
    Conf.movres.mode_move = move_mode_real;
@@ -190,6 +187,8 @@ ActionMoveSuspend(void)
    /* If non opaque undraw our boxes */
    if (Conf.movres.mode_move > 0)
      {
+	EUngrabServer();
+
 	lst =
 	   ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup,
 				      &num);
@@ -223,6 +222,9 @@ ActionMoveResume(void)
 	Mode.mode = MODE_MOVE;
 	fl = 0;			/* This is the first time we draw it */
      }
+
+   if (Conf.movres.mode_move > 0)
+      EGrabServer();
 
    DeskGetCurrentArea(&ax, &ay);
 
@@ -266,7 +268,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    ModulesSignal(ESIGNAL_RESIZE_START, NULL);
 
    if (Conf.movres.mode_resize > 0)
-      ecore_x_grab();
+      EGrabServer();
 
    Mode.queue_up = 0;
 
@@ -371,7 +373,7 @@ ActionResizeEnd(EWin * ewin)
    if (!ewin)
      {
 	if (Conf.movres.mode_resize > 0)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	return 0;
      }
    Mode.queue_up = DRAW_QUEUE_ENABLE;
@@ -381,9 +383,9 @@ ActionResizeEnd(EWin * ewin)
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
 
-   ecore_x_sync();
+   ESync();
    if (Conf.movres.mode_resize > 0)
-      ecore_x_ungrab();
+      EUngrabServer();
 
    ModulesSignal(ESIGNAL_RESIZE_DONE, NULL);
 
@@ -412,6 +414,9 @@ ActionMoveHandleMotion(void)
 
    if (Mode.mode == MODE_MOVE_PENDING)
      {
+	if (Conf.movres.mode_move > 0)
+	   EGrabServer();
+
 	for (i = 0; i < num; i++)
 	  {
 	     ewin1 = gwins[i];

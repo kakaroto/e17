@@ -559,7 +559,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
       if (tt->win[i])
 	 EobjMap(tt->win[i], 0);
 
-   ecore_x_sync();
+   ESync();
 
    xx = ic->padding.left + iw;
 
@@ -666,7 +666,7 @@ TooltipHide(ToolTip * tt)
       if (tt->win[i])
 	 EobjUnmap(tt->win[i]);
 
-   ecore_x_sync();
+   ESync();
 }
 
 /*

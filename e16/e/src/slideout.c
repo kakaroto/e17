@@ -43,7 +43,7 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 {
    int                 k, x, y, w, h;
 
-   ecore_x_grab();
+   EGrabServer();
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
@@ -58,7 +58,7 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
      }
    EMoveResizeWindow(win, tx, ty, tw, th);
 
-   ecore_x_ungrab();
+   EUngrabServer();
 }
 
 static Slideout    *
@@ -180,7 +180,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
 	EMoveResizeWindow(s->win, xx, yy, 1, 1);
-	ecore_x_sync();
+	ESync();
 	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
 			  Conf.slidespeedmap);
@@ -193,7 +193,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
 	EMoveResizeWindow(s->win, xx, yy, 1, 1);
-	ecore_x_sync();
+	ESync();
 	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
 			  Conf.slidespeedmap);
@@ -206,7 +206,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
 	EMoveResizeWindow(s->win, xx, yy, 1, 1);
-	ecore_x_sync();
+	ESync();
 	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
 			  Conf.slidespeedmap);
@@ -219,7 +219,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
 	EMoveResizeWindow(s->win, xx, yy, 1, 1);
-	ecore_x_sync();
+	ESync();
 	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
 			  Conf.slidespeedmap);

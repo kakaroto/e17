@@ -1194,7 +1194,7 @@ DeskRaise(int desk)
 	HandleDrawQueue();
      }
    HintsSetCurrentDesktop();
-   ecore_x_sync();
+   ESync();
 }
 
 static void
@@ -1224,7 +1224,7 @@ DeskLower(int desk)
 	HandleDrawQueue();
      }
    HintsSetCurrentDesktop();
-   ecore_x_sync();
+   ESync();
 }
 
 void

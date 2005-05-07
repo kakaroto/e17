@@ -379,7 +379,7 @@ EDestroyPixImg(PixImg * pi)
 {
    if (!pi)
       return;
-   ecore_x_sync();
+   ESync();
    XShmDetach(disp, pi->shminfo);
    shmdt(pi->shminfo->shmaddr);
    shmctl(pi->shminfo->shmid, IPC_RMID, 0);
@@ -515,7 +515,9 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
      }
    if ((w <= 0) || (h <= 0))
       return;
-   ecore_x_sync();
+
+   ESync();
+
    if (dst)
      {
 	switch (dst->xim->bits_per_pixel)
@@ -1196,7 +1198,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		    {
 		       Conf.movres.mode_move = 0;
-		       ecore_x_ungrab();
+		       EUngrabServer();
 		       DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
 				     firstlast);
 		       goto done;

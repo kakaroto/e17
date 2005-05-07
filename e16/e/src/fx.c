@@ -411,7 +411,7 @@ FX_raindrops_timeout(int val, void *data)
 	XShmPutImage(disp, fx_raindrops_win, gc1, fx_raindrops_draw->xim, 0, 0,
 		     fx_raindrops[i].x, fx_raindrops[i].y, fx_raindrop_size,
 		     fx_raindrop_size, False);
-	ecore_x_sync();
+	ESync();
      }
    DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
 	FX_raindrops_timeout, 0, NULL);

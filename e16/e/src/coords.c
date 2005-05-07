@@ -100,7 +100,7 @@ CoordsShow(EWin * ewin)
    ImageclassApply(ic, eo->win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
    TextclassApply(ic, eo->win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
 
-   XFlush(disp);
+   EFlush();
 }
 
 void

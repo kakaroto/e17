@@ -142,7 +142,7 @@ main(int argc, char **argv)
    win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0,
 			     0, 0);
    XMapWindow(disp, win);
-   ecore_x_sync();
+   ESync();
 
    gcv.subwindow_mode = IncludeInferiors;
    gc = ECreateGC(disp, win, GCSubwindowMode, &gcv);
@@ -166,13 +166,13 @@ main(int argc, char **argv)
 
 #ifndef USE_ECORE_X
 void
-ecore_x_grab(void)
+EGrabServer(void)
 {
    XGrabServer(disp);
 }
 
 void
-ecore_x_ungrab(void)
+EUngrabServer(void)
 {
    XUngrabServer(disp);
    XFlush(disp);

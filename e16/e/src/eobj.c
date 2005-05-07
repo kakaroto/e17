@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "ecompmgr.h"
+#include "ecore-e16.h"
 
 void
 EobjSetDesk(EObj * eo, int desk)
@@ -408,7 +409,7 @@ EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
 {
    int                 k, x, y;
 
-   ecore_x_grab();
+   EGrabServer();
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
@@ -421,7 +422,7 @@ EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
      }
    EobjMove(eo, tx, ty);
 
-   ecore_x_ungrab();
+   EUngrabServer();
 }
 
 void

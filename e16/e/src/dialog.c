@@ -649,7 +649,7 @@ ShowDialog(Dialog * d)
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
 
-   ecore_x_sync();
+   ESync();
    DialogRedraw(d);
    Mode.queue_up = pq;
 }

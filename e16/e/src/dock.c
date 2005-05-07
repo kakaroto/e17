@@ -143,8 +143,6 @@ DockIt(EWin * ewin)
 	XMapWindow(disp, ewin->client.icon_win);
      }
 
-   ecore_x_ungrab();
-
    ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
 		   0, 0, STATE_NORMAL, 0, ST_BUTTON);
 }

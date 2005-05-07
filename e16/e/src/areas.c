@@ -258,7 +258,7 @@ SetCurrentArea(int ax, int ay)
 
    /* set hints up for it */
    HintsSetDesktopViewport();
-   ecore_x_sync();
+   ESync();
 
    ActionsResume();
 

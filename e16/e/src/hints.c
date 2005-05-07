@@ -24,6 +24,7 @@
  * Feeble attempt to collect hint stuff in one place
  */
 #include "E.h"
+#include "ecore-e16.h"
 
 /*
  * Functions that set X11-properties from E-internals

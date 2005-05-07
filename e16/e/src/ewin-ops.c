@@ -101,7 +101,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (Conf.slidemode > 0)
-      ecore_x_grab();
+      EGrabServer();
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
@@ -125,7 +125,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    Mode.doingslide = 0;
 
    if (Conf.slidemode > 0)
-      ecore_x_ungrab();
+      EUngrabServer();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");
 }
@@ -148,7 +148,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (Conf.slidemode > 0)
-      ecore_x_grab();
+      EGrabServer();
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
@@ -187,7 +187,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 
    Mode.doingslide = 0;
    if (Conf.slidemode > 0)
-      ecore_x_ungrab();
+      EUngrabServer();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");
 
@@ -798,7 +798,7 @@ EwinInstantShade(EWin * ewin, int force)
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin);
-   ecore_x_sync();
+   ESync();
 
    EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
@@ -864,7 +864,7 @@ EwinInstantUnShade(EWin * ewin)
 
    ewin->shaded = 0;
    MoveResizeEwin(ewin, x, y, ewin->client.w, ewin->client.h);
-   ecore_x_sync();
+   ESync();
 
    EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
@@ -902,7 +902,7 @@ EwinShade(EWin * ewin)
 
 #if 0
    Eprintf("EwinShade-B\n");
-   ecore_x_grab();
+   EGrabServer();
 #endif
 
    switch (ewin->border->shadedir)
@@ -1066,10 +1066,10 @@ EwinShade(EWin * ewin)
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin);
    MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
-   ecore_x_sync();
+   ESync();
 
 #if 0
-   ecore_x_ungrab();
+   EUngrabServer();
    Eprintf("EwinShade-E\n");
 #endif
 
@@ -1109,7 +1109,7 @@ EwinUnShade(EWin * ewin)
 
 #if 0
    Eprintf("EwinUnShade-B\n");
-   ecore_x_grab();
+   EGrabServer();
 #endif
 
    switch (ewin->border->shadedir)
@@ -1301,10 +1301,10 @@ EwinUnShade(EWin * ewin)
 
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
-   ecore_x_sync();
+   ESync();
 
 #if 0
-   ecore_x_ungrab();
+   EUngrabServer();
    Eprintf("EwinUnShade-E\n");
 #endif
 

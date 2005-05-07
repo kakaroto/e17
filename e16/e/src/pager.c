@@ -137,7 +137,8 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 
    imlib_context_set_drawable(src);
    im = imlib_create_scaled_image_from_drawable(None, sx, sy, sw, sh,
-						scale * dw, scale * dh, 1, 0);
+						scale * dw, scale * dh,
+						!EServerIsGrabbed(), 0);
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(1);
    imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);

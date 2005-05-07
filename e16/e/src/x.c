@@ -366,11 +366,11 @@ EMoveWindow(Window win, int x, int y)
 	  {
 	     xid->x = x;
 	     xid->y = y;
-	     ecore_x_window_move(win, x, y);
+	     XMoveWindow(disp, win, x, y);
 	  }
      }
    else
-      ecore_x_window_move(win, x, y);
+      XMoveWindow(disp, win, x, y);
 }
 
 void
@@ -385,11 +385,11 @@ EResizeWindow(Window win, int w, int h)
 	  {
 	     xid->w = w;
 	     xid->h = h;
-	     ecore_x_window_resize(win, w, h);
+	     XResizeWindow(disp, win, w, h);
 	  }
      }
    else
-      ecore_x_window_resize(win, w, h);
+      XResizeWindow(disp, win, w, h);
 }
 
 void
@@ -410,11 +410,11 @@ EMoveResizeWindow(Window win, int x, int y, int w, int h)
 	     xid->y = y;
 	     xid->w = w;
 	     xid->h = h;
-	     ecore_x_window_move_resize(win, x, y, w, h);
+	     XMoveResizeWindow(disp, win, x, y, w, h);
 	  }
      }
    else
-      ecore_x_window_move_resize(win, x, y, w, h);
+      XMoveResizeWindow(disp, win, x, y, w, h);
 }
 
 void
@@ -740,7 +740,7 @@ EReparentWindow(Window win, Window parent, int x, int y)
 	       {
 		  xid->x = x;
 		  xid->y = y;
-		  ecore_x_window_move(win, x, y);
+		  XMoveWindow(disp, win, x, y);
 	       }
 	  }
 	else
@@ -995,9 +995,8 @@ EWindowGetShapePixmap(Window win)
    return mask;
 }
 
-#ifndef USE_ECORE_X
 void
-ecore_x_grab(void)
+EGrabServer(void)
 {
    if (Mode.server_grabbed <= 0)
       XGrabServer(disp);
@@ -1005,7 +1004,7 @@ ecore_x_grab(void)
 }
 
 void
-ecore_x_ungrab(void)
+EUngrabServer(void)
 {
    if (Mode.server_grabbed == 1)
      {
@@ -1016,7 +1015,24 @@ ecore_x_ungrab(void)
    if (Mode.server_grabbed < 0)
       Mode.server_grabbed = 0;
 }
-#endif
+
+int
+EServerIsGrabbed(void)
+{
+   return Mode.server_grabbed;
+}
+
+void
+EFlush(void)
+{
+   XFlush(disp);
+}
+
+void
+ESync(void)
+{
+   XSync(disp, False);
+}
 
 Window
 GetWinParent(Window win)
@@ -1119,10 +1135,10 @@ WindowAtXY(int x, int y)
    unsigned int        num;
    int                 i;
 
-   ecore_x_grab();
+   EGrabServer();
    if (!XQueryTree(disp, VRoot.win, &root_win, &parent_win, &list, &num))
      {
-	ecore_x_ungrab();
+	EUngrabServer();
 	return VRoot.win;
      }
    if (list)
@@ -1140,13 +1156,13 @@ WindowAtXY(int x, int y)
 		continue;
 
 	     XFree(list);
-	     ecore_x_ungrab();
+	     EUngrabServer();
 	     return child;
 	  }
 	while (--i > 0);
 	XFree(list);
      }
-   ecore_x_ungrab();
+   EUngrabServer();
    return VRoot.win;
 }
 
@@ -1239,7 +1255,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    if (w <= 0 || h <= 0)
       return;
    imlib_context_set_drawable(draw);
-   im = imlib_create_image_from_drawable(None, 0, 0, w, h, 1);
+   im = imlib_create_image_from_drawable(None, 0, 0, w, h, !EServerIsGrabbed());
    imlib_context_set_image(im);
    imlib_image_set_format("png");
    sprintf(buf, "%s-%#lx-%d", txt, draw, seqn++);

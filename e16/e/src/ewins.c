@@ -625,7 +625,7 @@ AddToFamily(EWin * ewin, Window win)
    int                 i, k, num, fx, fy, x, y, desk;
    char                doslide, manplace;
 
-   ecore_x_grab();
+   EGrabServer();
 
    /* adopt the new baby */
    ewin = Adopt(ewin, win);
@@ -877,7 +877,7 @@ AddToFamily(EWin * ewin, Window win)
      }
 
  done:
-   ecore_x_ungrab();
+   EUngrabServer();
 }
 
 EWin               *
@@ -887,7 +887,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    EWin               *ewin;
    Border             *b;
 
-   ecore_x_grab();
+   EGrabServer();
 
    b = NULL;
    if (bname)
@@ -906,7 +906,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    MoveEwinToDesktopAt(ewin, EoGetDesk(ewin), EoGetX(ewin), EoGetY(ewin));
 
  done:
-   ecore_x_ungrab();
+   EUngrabServer();
 
    return ewin;
 }
@@ -921,7 +921,7 @@ EwinWithdraw(EWin * ewin)
       Eprintf("EwinWithdraw %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
 
-   ecore_x_grab();
+   EGrabServer();
 
    /* Park the client window on the root */
    x = ewin->client.x;
@@ -933,8 +933,8 @@ EwinWithdraw(EWin * ewin)
    ICCCM_Withdraw(ewin);
    HintsDelWindowHints(ewin);
 
-   ecore_x_sync();
-   ecore_x_ungrab();
+   ESync();
+   EUngrabServer();
 
    if (EwinIsInternal(ewin))
       EwinDestroy(ewin);
@@ -1216,7 +1216,7 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
 static void
 EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 {
-   ecore_x_grab();
+   EGrabServer();
    EwinChangesStart(ewin);
 
    HintsProcessPropertyChange(ewin, ev->xproperty.atom);
@@ -1224,7 +1224,7 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
    SyncBorderToEwin(ewin);
 
    EwinChangesProcess(ewin);
-   ecore_x_ungrab();
+   EUngrabServer();
 }
 
 static void

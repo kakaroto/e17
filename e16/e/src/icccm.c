@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ecore-e16.h"
 
 void
 ICCCM_Init(void)
@@ -769,10 +770,10 @@ ICCCM_GetShapeInfo(EWin * ewin)
    int                 x, y, w, h, d;
    Window              rt;
 
-   ecore_x_grab();
+   EGrabServer();
    EGetGeometry(ewin->client.win, &rt, &x, &y, &w, &h, &d, &d);
    rl = EShapeGetRectangles(ewin->client.win, ShapeBounding, &rn, &ord);
-   ecore_x_ungrab();
+   EUngrabServer();
 
    if (rn < 1)
      {

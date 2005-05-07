@@ -267,12 +267,12 @@ main(int argc, char **argv)
 #endif
 
    /* sync just to make sure */
-   ecore_x_sync();
+   ESync();
    Mode.queue_up = DRAW_QUEUE_ENABLE;
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());
-   ecore_x_sync();
+   ESync();
 
 #ifdef SIGCONT
    for (i = 0; i < Mode.wm.child_count; i++)
@@ -314,7 +314,7 @@ EExit(int exitcode)
 
    if (disp)
      {
-	ecore_x_ungrab();
+	EUngrabServer();
 	GrabPointerRelease();
 	XAllowEvents(disp, AsyncBoth, CurrentTime);
 

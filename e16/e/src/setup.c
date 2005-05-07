@@ -46,7 +46,7 @@ MapUnmap(int start)
    switch (start)
      {
      case 0:
-	ecore_x_grab();
+	EGrabServer();
 	XQueryTree(disp, VRoot.win, &rt, &par, &wlist, &num);
 	for (i = 0; i < num; i++)
 	  {
@@ -65,7 +65,7 @@ MapUnmap(int start)
 	  }
 	/* Flush (get rid of unmap events) */
 	XSync(disp, True);
-	ecore_x_ungrab();
+	EUngrabServer();
 	break;
 
      case 1:
@@ -276,7 +276,7 @@ SetupX(const char *dstr)
       mask |= StructureNotifyMask;
    XSelectInput(disp, VRoot.win, mask);
 
-   ecore_x_sync();
+   ESync();
    Mode.wm.xselect = 0;
 
    /* warn, if necessary about X version problems */

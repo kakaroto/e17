@@ -24,6 +24,7 @@
  * Extended Window Manager Hints.
  */
 #include "E.h"
+#include "ecore-e16.h"
 
 /*
  * _NET_WM_MOVERESIZE client message actions

@@ -212,7 +212,7 @@ HandleEvent(XEvent * ev)
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
 			    CurrentTime);
-	     ecore_x_sync();
+	     ESync();
 	     ev->xkey.time = CurrentTime;
 	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
 	  }

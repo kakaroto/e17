@@ -56,7 +56,7 @@ SignalHandler(int sig)
 
      case SIGILL:
 	if (disp)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	DialogAlert(_
 		    ("Enlightenment performed an Illegal Instruction.\n" "\n"
 		     "This most likely is due to you having installed an run a\n"
@@ -70,7 +70,7 @@ SignalHandler(int sig)
 
      case SIGFPE:
 	if (disp)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	DialogAlert(_
 		    ("Enlightenment caused a Floating Point Exception.\n" "\n"
 		     "This means that Enlightenment or support library routines it calls\n"
@@ -89,7 +89,7 @@ SignalHandler(int sig)
 	   abort();
 	loop_count++;
 	if (disp)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	DialogAlert(_
 		    ("Enlightenment caused Segment Violation (Segfault)\n" "\n"
 		     "This means that Enlightenment or support library routines it calls\n"
@@ -105,7 +105,7 @@ SignalHandler(int sig)
 
      case SIGBUS:
 	if (disp)
-	   ecore_x_ungrab();
+	   EUngrabServer();
 	DialogAlert(_
 		    ("Enlightenment caused Bus Error.\n" "\n"
 		     "It is suggested you check your hardware and OS installation.\n"

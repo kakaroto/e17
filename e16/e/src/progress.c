@@ -167,7 +167,7 @@ ProgressbarSet(Progressbar * p, int progress)
 
    EobjResize(p->p_win, w, p->h);
 
-   XFlush(disp);
+   EFlush();
 }
 
 void
@@ -191,7 +191,7 @@ ProgressbarShow(Progressbar * p)
    EobjMap(p->win, 0);
    EobjMap(p->n_win, 0);
    EobjMap(p->p_win, 0);
-   ecore_x_sync();
+   ESync();
    TextclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
 		  STATE_NORMAL, 0, p->tc, p->win->name);
 }

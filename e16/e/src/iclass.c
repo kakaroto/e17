@@ -772,7 +772,8 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
 		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
-	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
+	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h,
+						   !EServerIsGrabbed());
 	     imlib_context_set_image(ii);
 	     imlib_context_set_drawable(win);
 	  }
@@ -981,7 +982,7 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 	XSetForeground(disp, gc, is->lolo.pixel);
 	XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
 	XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
-	ecore_x_sync();
+	ESync();
 	break;
      case BEVEL_THICKPOINT:
 	XSetForeground(disp, gc, is->hi.pixel);

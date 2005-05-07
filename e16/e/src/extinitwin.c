@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ecore-e16.h"
 #include <X11/keysym.h>
 #include <sys/time.h>
 
@@ -39,10 +40,9 @@ ExtInitWinMain(void)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain enter\n");
 
-   ecore_x_init(NULL);
-   disp = ecore_x_display_get();
+   disp = EDisplayOpen(NULL, -1);
 
-   ecore_x_grab();
+   EGrabServer();
 
 #if 0
    imlib_set_cache_size(2048 * 1024);
@@ -79,8 +79,8 @@ ExtInitWinMain(void)
 
    XSelectInput(disp, win, StructureNotifyMask);
 
-   ecore_x_ungrab();
-   ecore_x_sync();
+   EUngrabServer();
+   ESync();
 
    {
       Window              w2, ww;
@@ -152,14 +152,14 @@ ExtInitWinMain(void)
 	   tv.tv_sec = 0;
 	   tv.tv_usec = 50000;
 	   select(0, NULL, NULL, NULL, &tv);
-	   ecore_x_sync();
+	   ESync();
 	}
    }
 
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain exit\n");
 
-   ecore_x_shutdown();
+   EDisplayClose();
 
    exit(0);
 }
@@ -175,12 +175,12 @@ ExtInitWinCreate(void)
       Eprintf("ExtInitWinCreate\n");
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
-   ecore_x_sync();
+   ESync();
 
    if (fork())
      {
 	/* Parent */
-	ecore_x_ungrab();
+	EUngrabServer();
 
 	for (;;)
 	  {

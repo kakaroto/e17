@@ -2248,6 +2248,11 @@ void                WindowMatchEwinOps(EWin * ewin);
 Display            *EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
+void                EGrabServer(void);
+void                EUngrabServer(void);
+int                 EServerIsGrabbed(void);
+void                EFlush(void);
+void                ESync(void);
 
 void                ERegisterWindow(Window win);
 void                EUnregisterWindow(Window win);
@@ -2349,4 +2354,3 @@ extern EMode        Mode;
 #define FILEPATH_LEN_MAX 4096
 
 #include "emodule.h"
-#include "ecore-e16.h"

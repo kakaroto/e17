@@ -510,9 +510,9 @@ FocusHandleClick(EWin * ewin, Window win)
 	   Eprintf("FocusHandleClick %#lx %#lx\n", win, ewin->win_container);
 	if (win == ewin->win_container)
 	  {
-	     ecore_x_sync();
+	     ESync();
 	     XAllowEvents(disp, ReplayPointer, CurrentTime);
-	     ecore_x_sync();
+	     ESync();
 	  }
      }
    else if (ewin->focusclick)

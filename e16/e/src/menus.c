@@ -371,7 +371,7 @@ MenuShow(Menu * m, char noshow)
 	Eprintf("Mode_menus.context_ewin set %s\n",
 		EwinGetName(Mode_menus.context_ewin));
 #endif
-	ecore_x_sync();
+	ESync();
 #if 1				/* ??? */
 	Mode_menus.list[0] = m;
 	Mode_menus.current_depth = 1;
