@@ -386,7 +386,7 @@
                                 name,       "add_signal";
                                 signal,     "mouse,up,1";
                                 source,     "add_button";
-                                action,     SIGNAL_EMIT "PLAYLIST_ADD" "add_button";
+                                action,     SIGNAL_EMIT "file_dialog.open" "add_button";
                         }
 
 

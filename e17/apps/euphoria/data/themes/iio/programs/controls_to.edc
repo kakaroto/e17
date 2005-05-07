@@ -195,7 +195,7 @@ program { name, "addFile_unclicked"; signal, "mouse,down"; source, ADD;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR 0.1; target, ADD;
 }
 program { name, "AddFile"; signal,  "mouse,up,1"; source, ADD;
-	action, SIGNAL_EMIT "PLAYLIST_ADD" ADD; }
+	action, SIGNAL_EMIT "file_dialog.open" ADD; }
 //
 program { name, "deleteFile_hilited"; signal, "mouse,in"; source, DELETE;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, DELETE;
