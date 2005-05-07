@@ -5,7 +5,8 @@ part {
       state: "default" 0.0;
       min: 306 120;
       max: 306 120;
-      align: 0.4 0.0;
+      //align: 0.4 0.0;
+      align: .92 0.0;
       image {
          normal: "body.png";
       }

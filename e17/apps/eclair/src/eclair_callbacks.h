@@ -27,8 +27,8 @@ void eclair_gui_playlist_scrollbar_button_drag_cb(void *data, Evas_Object *edje_
 void eclair_gui_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object *playlist_container, void *event_info);
 void eclair_gui_playlist_scroll_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 int eclair_gui_dnd_position_cb(void *data, int type, void *event);
-int eclair_gui_dnd_selection_cb(void *data, int type, void *event);
 int eclair_gui_dnd_drop_cb(void *data, int type, void *event);
+int eclair_gui_dnd_selection_cb(void *data, int type, void *event);
 void eclair_gui_message_cb(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg);
 
 #endif

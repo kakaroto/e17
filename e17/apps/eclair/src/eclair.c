@@ -2,6 +2,7 @@
 #include "../config.h"
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_File.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <Emotion.h>
@@ -35,6 +36,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
       return 0;
 
 	ecore_init();
+   ecore_file_init();
    ecore_evas_init();
    edje_init();
    gtk_init(argc, &argv);
@@ -43,7 +45,6 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->video_object = NULL;
    eclair->black_background = NULL;
    eclair->subtitles_object = NULL;
-
    eclair->gui_window = NULL;
    eclair->gui_object = NULL;
    eclair->gui_draggies = NULL;
@@ -59,6 +60,8 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->file_chooser_th_created = 0;
    eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->gui_engine = ECLAIR_SOFTWARE;
+   eclair->gui_theme_file = strdup(PACKAGE_DATA_DIR "/themes/default.edj");
+   eclair->gui_drop_object = ECLAIR_DROP_NONE;
 
    if (!eclair_args_parse(eclair, *argc, argv, &filenames))
       return 0;
@@ -73,7 +76,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair_update_current_file_info(eclair);
    
    for (l = filenames; l; l = l->next)
-      eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
+      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data);
    evas_list_free(filenames);
 
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", 1.0, 0.0);
@@ -94,12 +97,10 @@ void eclair_shutdown(Eclair *eclair)
       eclair_cover_shutdown(&eclair->cover_manager);
       eclair_playlist_empty(&eclair->playlist);
       eclair_config_shutdown(&eclair->config);
+      free(eclair->gui_theme_file);
    }
 
    ecore_main_loop_quit();
-
-   edje_shutdown();
-   ecore_evas_shutdown();
 }
 
 //Update text objects, progress bar...
@@ -295,7 +296,7 @@ void *eclair_file_chooser_thread(void *param)
    {
       filenames = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(eclair->file_chooser_widget));
       for (l = filenames; l; l = l->next)
-         eclair_playlist_add_media_file(&eclair->playlist, (char *)l->data);
+         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data);
 
       g_slist_foreach(filenames, (GFunc)g_free, NULL);
       g_slist_free(filenames);
@@ -525,7 +526,7 @@ static void _eclair_gui_create_window(Eclair *eclair)
 
    evas = ecore_evas_get(eclair->gui_window);
    eclair->gui_object = edje_object_add(evas);
-   edje_object_file_set(eclair->gui_object, PACKAGE_DATA_DIR "/themes/default.edj", "eclair_body");
+   edje_object_file_set(eclair->gui_object, eclair->gui_theme_file, "eclair_body");
    edje_object_size_min_get(eclair->gui_object, &gui_width, &gui_height);
    evas_object_resize(eclair->gui_object, (int)gui_width, (int)gui_height);
    evas_object_show(eclair->gui_object);
@@ -654,7 +655,6 @@ static void *_eclair_create_video_object_thread(void *param)
    return NULL; 
 }
 
-
 //Handle segvs
 static void _eclair_sig_pregest()
 {
@@ -692,6 +692,11 @@ int main(int argc, char *argv[])
       return 1;
    
    ecore_main_loop_begin();
+
+   edje_shutdown();
+   ecore_file_shutdown();
+   ecore_evas_shutdown();
+   ecore_shutdown();
 
    return 0;
 }

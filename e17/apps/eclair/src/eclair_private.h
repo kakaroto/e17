@@ -20,6 +20,7 @@ typedef enum _Eclair_Add_File_State Eclair_Add_File_State;
 typedef struct _Eclair_Meta_Tag_Manager Eclair_Meta_Tag_Manager;
 typedef struct _Eclair_Cover_Manager Eclair_Cover_Manager;
 typedef struct _Eclair_Config Eclair_Config;
+typedef enum _Eclair_Drop_Object Eclair_Drop_Object;
 
 struct _Eclair_Config
 {
@@ -108,6 +109,13 @@ struct _Eclair_Subtitles
    Evas_Bool enable;
 };
 
+enum _Eclair_Drop_Object
+{
+   ECLAIR_DROP_NONE = 0,
+   ECLAIR_DROP_COVER,
+   ECLAIR_DROP_PLAYLIST
+};
+
 struct _Eclair
 {
    //Video related vars
@@ -130,6 +138,8 @@ struct _Eclair
    Evas_Bool use_progress_bar_drag_for_time;
    Evas_Bool dont_update_progressbar;
    Eclair_Engine gui_engine;
+   char *gui_theme_file;
+   Eclair_Drop_Object gui_drop_object;
 
    //File chooser related vars
    GtkWidget *file_chooser_widget;

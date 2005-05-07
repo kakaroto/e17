@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
+#include "eclair_cover.h"
 
 //Called when eclair is closed
 int eclair_exit_cb(void *data, int type, void *event)
@@ -325,7 +326,6 @@ int eclair_gui_dnd_position_cb(void *data, int type, void *event)
 {
    Evas *evas;
    Evas_Coord gui_window_x, gui_window_y, x, y;
-   Evas_Object *top_object;
    Ecore_X_Rectangle rect;
    Ecore_X_Event_Xdnd_Position *ev = (Ecore_X_Event_Xdnd_Position *)event;
    Eclair *eclair = (Eclair *)data;
@@ -337,42 +337,37 @@ int eclair_gui_dnd_position_cb(void *data, int type, void *event)
    ecore_evas_geometry_get(eclair->gui_window, &gui_window_x, &gui_window_y, NULL, NULL);
    x = ev->position.x - gui_window_x;
    y = ev->position.y - gui_window_y;
-   top_object = evas_object_top_at_xy_get(evas, x, y, 1, 1);
-   if (top_object &&
-      (top_object == eclair->gui_cover || top_object == eclair->gui_previous_cover || top_object == eclair->playlist_container))
+
+   if (eclair->playlist_container && evas_object_visible_get(eclair->playlist_container))
    {
-      evas_object_geometry_get(top_object, &rect.x, &rect.y, &rect.width, &rect.height);
-      rect.x += gui_window_x;
-      rect.y += gui_window_y;
-      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-      return 1;
+      evas_object_geometry_get(eclair->playlist_container, &rect.x, &rect.y, &rect.width, &rect.height);
+      if (x >= rect.x && x <= (rect.x + rect.width) && y >= rect.y && y <= (rect.y + rect.height))
+      {
+         rect.x += gui_window_x;
+         rect.y += gui_window_y;
+         ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+         eclair->gui_drop_object = ECLAIR_DROP_PLAYLIST;
+         return 1;
+      }
    }
+   if (eclair->gui_cover && evas_object_visible_get(eclair->gui_cover))
+   {
+      evas_object_geometry_get(eclair->gui_cover, &rect.x, &rect.y, &rect.width, &rect.height);
+      if (x >= rect.x && x <= (rect.x + rect.width) && y >= rect.y && y <= (rect.y + rect.height))
+      {
+         rect.x += gui_window_x;
+         rect.y += gui_window_y;
+         ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+         eclair->gui_drop_object = ECLAIR_DROP_COVER;
+         return 1;
+      }
+   }  
 
    ecore_evas_geometry_get(eclair->gui_window, &rect.x, &rect.y, &rect.width, &rect.height);
    rect.x += gui_window_x;
    rect.y += gui_window_y;
    ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-   return 1;
-}
-
-int eclair_gui_dnd_selection_cb(void *data, int type, void *event)
-{
-   Eclair *eclair = (Eclair *)data;
-   Ecore_X_Event_Selection_Notify *ev = (Ecore_X_Event_Selection_Notify *)event;
-   Ecore_X_Selection_Data_Files *files;
-   int i;
-
-   if (!eclair || ev->selection != ECORE_X_SELECTION_XDND)
-     return 1;
-
-   files = ev->data;
-   for (i = 0; i < files->num_files; i++)
-   {
-      printf("%s\n", files->files[i]);
-   }
-
-   ecore_x_dnd_send_finished();
-
+   eclair->gui_drop_object = ECLAIR_DROP_NONE;
    return 1;
 }
 
@@ -385,6 +380,34 @@ int eclair_gui_dnd_drop_cb(void *data, int type, void *event)
       return 1;
 
    ecore_x_selection_xdnd_request(eclair->gui_x_window, "text/uri-list");
+   return 1;
+}
+
+//Treat the files dropped
+int eclair_gui_dnd_selection_cb(void *data, int type, void *event)
+{
+   Ecore_X_Event_Selection_Notify *ev = (Ecore_X_Event_Selection_Notify *)event;
+   Eclair *eclair = (Eclair *)data;
+   Ecore_X_Selection_Data_Files *files;
+   int i;
+
+   if (!eclair || !eclair->gui_window || eclair->gui_drop_object == ECLAIR_DROP_NONE
+      || ev->selection != ECORE_X_SELECTION_XDND || !(files = ev->data) || files->num_files <= 0)
+   {
+      ecore_x_dnd_send_finished();
+      return 1;
+   }
+
+   if (eclair->gui_drop_object == ECLAIR_DROP_PLAYLIST)
+   {
+      for (i = 0; i < files->num_files; i++)
+         eclair_playlist_add_uri(&eclair->playlist, files->files[i]);
+   }
+   else if (eclair->gui_drop_object == ECLAIR_DROP_COVER)
+      eclair_cover_current_set(&eclair->cover_manager, files->files[0]);
+
+   ecore_x_dnd_send_finished();
+
    return 1;
 }
 

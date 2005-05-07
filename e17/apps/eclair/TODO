@@ -13,8 +13,8 @@ TODO list:
 *Add an audio equalizer system (need to modify emotion)
 *Allow vertical or horizontal progressbar, volumebar, ...
 *Allow a theme to "swallow" the video object instead of having a seperate window for video
-*Drag and Drop for Playlist and cover
 *Support different encodings for subtitles
+*Why is it so slow to scan id3 tag?
 *Support .m3u playlist 
 
 *DREAMS* Make an ID3 editor

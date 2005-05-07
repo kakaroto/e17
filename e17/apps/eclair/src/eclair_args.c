@@ -17,6 +17,9 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
       { NULL,           0,                      NULL,    0 }
    };
 
+   if (!eclair)
+      return 0;
+
    while ((c = getopt_long(argc, argv, "ht:g:v:", long_options, NULL)) != -1)
    {
       switch (c)
@@ -28,8 +31,8 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
             return 0;
             break;
          case 't':
-            //TODO
-            fprintf(stderr, "Not yet implemented...\n");
+            free(eclair->gui_theme_file);
+            eclair->gui_theme_file = strdup(optarg);
             break;
          case 'g':
             if (strcmp(optarg, "software") == 0) 

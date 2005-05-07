@@ -1,0 +1,15 @@
+stamp-h.in
+stamp-h
+ltmain.sh
+libtool
+configure
+config.sub
+config.status
+config.log
+config.h.in
+config.h
+config.guess
+autom4te.cache
+aclocal.m4
+Makefile.in
+Makefile

@@ -30,6 +30,43 @@ const char *eclair_utils_path_to_filename(const char *path)
       return path;
 }
 
+//Remove uri special chars (e.g. "%20" -> ' ')
+//The returned string has to be freed
+char *eclair_utils_remove_uri_special_chars(const char *uri)
+{
+   int uri_length;
+   char *clean_uri;
+   int i, j;
+   char hex_code[3];
+   int hex_to_char;
+
+   if (!uri)
+      return NULL;
+
+   uri_length = strlen(uri);
+   clean_uri = (char *)malloc(strlen(uri) + 1);
+   for (i = 0, j = 0; i < uri_length; i++, j++)
+   {
+      if ((uri[i] == '%') && (i < (uri_length - 2)))
+      {
+         strncpy(hex_code, &uri[i + 1], 2);
+         hex_code[2] = 0;
+         if (sscanf(hex_code, "%x", &hex_to_char) == 1)
+         {
+            clean_uri[j] = hex_to_char;
+            i += 2;
+         }
+         else
+            clean_uri[j] = uri[i];
+      }
+      else
+         clean_uri[j] = uri[i];
+   }
+   clean_uri[j] = 0;
+
+   return clean_uri;
+}
+
 //Return the string "artist - title"
 //NULL if the media file doesn't have tag
 //This string has to be freed

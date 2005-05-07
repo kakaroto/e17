@@ -8,7 +8,9 @@
 #include <netdb.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <Ecore_File.h>
 #include "eclair.h"
+#include "eclair_playlist.h"
 #include "eclair_media_file.h"
 #include "eclair_utils.h"
 
@@ -661,4 +663,53 @@ static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, co
    new_album->artist = strdup(artist);
    new_album->album = strdup(album);
    *list = evas_list_prepend(*list, new_album);
+}
+
+//Set the cover of the file
+void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *uri)
+{
+   char *clean_uri, *cover_path, *new_path;
+   Eclair_Media_File *current_file;
+
+   if (!cover_manager || !cover_manager->eclair || !uri)
+      return;
+
+   if (!(current_file = eclair_playlist_current_media_file(&cover_manager->eclair->playlist)))
+      return;
+
+   if (strstr(uri, "://"))
+   {
+      if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
+         return;
+   
+      if ((strlen(uri) <= 7) || (strncmp(uri, "file://", 7) != 0))
+      {
+         free(clean_uri);
+         return;
+      }
+      cover_path = strdup(&clean_uri[7]);
+      free(clean_uri);
+   }
+   else
+      cover_path = strdup(uri);
+
+   //TODO: extract extension
+   if (!(new_path = _eclair_cover_build_path_from_artist_album(cover_manager, current_file->artist, current_file->album, "jpg")))
+   {
+      //TODO:
+      //if (!(new_path = _eclair_cover_build_path_from_filepath(cover_manager)))
+      free(cover_path);
+      free(new_path);
+      return;
+   }
+   if (!ecore_file_cp(cover_path, new_path))
+   {
+      free(cover_path);
+      free(new_path);
+      return;
+   }
+
+   free(cover_path);
+   current_file->cover_path = new_path;
+   eclair_update_current_file_info(cover_manager->eclair);
 }

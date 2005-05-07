@@ -47,7 +47,7 @@ char *eclair_subtitles_get_current_subtitle(Eclair_Subtitles *subtitles, double 
 
    for (l = subtitles->subtitles; l; l = l->next)
    {
-      if (!(subtitle = (Eclair_Subtitle *)evas_list_data(l)))
+      if (!(subtitle = (Eclair_Subtitle *)l->data))
          continue;
 
       if (subtitle->start <= current_time && subtitle->end >= current_time)

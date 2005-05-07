@@ -44,8 +44,9 @@ fonts {
 collections {
    group {
       name: "eclair_body";
-      min: 591 260;
-      max: 591 260;
+      //591
+      min: 438 260;
+      max: 438 260;
       script {
          #include "scripts/body_script.edc"
       }

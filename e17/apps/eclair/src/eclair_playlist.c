@@ -67,17 +67,33 @@ Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
    return (Eclair_Media_File *)evas_list_data(evas_list_next(playlist->current));
 }
 
-//Add a new media file to the playlist
-Eclair_Media_File *eclair_playlist_add_media_file(Eclair_Playlist *playlist, char *path)
+Eclair_Media_File *eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
 {
    Eclair_Media_File *new_media_file;
    Evas_Coord min_height;
    Eclair *eclair;
+   char *clean_uri;
 
-   if (!playlist || !path)
+   if (!playlist || !uri)
       return NULL;
+
    new_media_file = eclair_media_file_new();
-   new_media_file->path = strdup(path);
+
+   if (strstr(uri, "://"))
+   {
+      if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
+         return NULL;
+
+      if ((strlen(clean_uri) <= 7) || (strncmp(clean_uri, "file://", 7) != 0))
+         new_media_file->path = clean_uri;
+      else
+      {
+         new_media_file->path = strdup(&clean_uri[7]);
+         free(clean_uri);
+      }
+   }
+   else
+      new_media_file->path = strdup(uri);
 
    if ((eclair = playlist->eclair))
    {
@@ -92,14 +108,15 @@ Eclair_Media_File *eclair_playlist_add_media_file(Eclair_Playlist *playlist, cha
             eclair->playlist_entry_height = (int)min_height;
          }
          evas_object_resize(new_media_file->playlist_entry, 1, eclair->playlist_entry_height);
-         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_name", eclair_utils_path_to_filename(path));
+         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_name", eclair_utils_path_to_filename(new_media_file->path));
          edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_length", "");
          edje_object_signal_callback_add(new_media_file->playlist_entry, "eclair_play_entry", "*", eclair_gui_play_entry_cb, eclair);
          esmart_container_element_append(eclair->playlist_container, new_media_file->playlist_entry);
          evas_object_show(new_media_file->playlist_entry);
       }
       
-      eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
+      if (!strstr(new_media_file->path, "://"))
+         eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
    }
 
    playlist->playlist = evas_list_append(playlist->playlist, new_media_file);
