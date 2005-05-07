@@ -1,6 +1,7 @@
 # $Id$
 
 require "rbconfig"
+require "rake/clean"
 
 sitelibdir = ENV["RUBYLIBDIR"] || Config::CONFIG["sitelibdir"]
 destdir = "#{ENV["DESTDIR"]}"
@@ -10,6 +11,9 @@ themes = ["iio", "winter"].map do |t|
 	"data/themes/#{t}/#{t}.edj"
 end
 
+CLOBBER.include(themes)
+
+task :default => :themes
 task :themes => themes
 
 rule ".edj" => [".edc"] do |t|
