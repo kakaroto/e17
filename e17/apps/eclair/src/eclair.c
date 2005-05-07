@@ -22,6 +22,8 @@
 static void *_eclair_create_video_object_thread(void *param);
 static void _eclair_gui_create_window(Eclair *eclair);
 static void _eclair_video_create_window(Eclair *eclair);
+static void _eclair_sig_pregest();
+static void _eclair_on_segv(int num);
 
 //Initialize eclair
 Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
@@ -75,7 +77,6 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    evas_list_free(filenames);
 
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", 1.0, 0.0);
-   ecore_evas_show(eclair->gui_window);
 
    return 1;
 }
@@ -514,10 +515,9 @@ static void _eclair_gui_create_window(Eclair *eclair)
    }
    ecore_evas_title_set(eclair->gui_window, "eclair");
    ecore_evas_name_class_set(eclair->gui_window, "eclair", "eclair");
-	ecore_evas_layer_set(eclair->gui_window, 999);
    ecore_evas_borderless_set(eclair->gui_window, 1);
    ecore_evas_shaped_set(eclair->gui_window, 1);
-   ecore_evas_hide(eclair->gui_window);
+   ecore_evas_show(eclair->gui_window);
 
    eclair->gui_x_window = ecore_evas_software_x11_window_get(eclair->gui_window);
 	ecore_x_dnd_aware_set(eclair->gui_x_window, 1);
@@ -584,8 +584,8 @@ static void _eclair_gui_create_window(Eclair *eclair)
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_start", "", eclair_gui_playlist_scroll_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_stop", "", eclair_gui_playlist_scroll_cb, eclair);
 	ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
 	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
    edje_object_message_handler_set(eclair->gui_object, eclair_gui_message_cb, eclair);
 }
 
@@ -654,9 +654,39 @@ static void *_eclair_create_video_object_thread(void *param)
    return NULL; 
 }
 
+
+//Handle segvs
+static void _eclair_sig_pregest()
+{
+	struct sigaction sa;
+
+	sa.sa_handler = _eclair_on_segv;
+	sigaction(SIGSEGV, &sa, (struct sigaction *)0);
+}
+
+//Display a message on segvs
+static void _eclair_on_segv(int num)
+{
+	fprintf (stderr, "\n\n");	
+	fprintf (stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
+	fprintf (stderr, "\n");
+	fprintf (stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
+	fprintf (stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
+	fprintf (stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
+	fprintf (stderr, "\n");
+	fprintf (stderr, "With that, devs will be able to correct bugs faster and easier\n");
+	fprintf (stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
+	fprintf (stderr, "\n");
+	fprintf (stderr, "Thanks :)\n");
+   
+	exit(20);
+}
+
 int main(int argc, char *argv[])
 {
    Eclair eclair;
+
+   _eclair_sig_pregest();
 
    if (!eclair_init(&eclair, &argc, argv))
       return 1;
