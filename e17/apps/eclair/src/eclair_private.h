@@ -2,6 +2,7 @@
 #define _ECLAIR_PRIVATE_H_
 
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <gtk/gtk.h>
@@ -118,6 +119,7 @@ struct _Eclair
    pthread_t video_create_thread;
 
    //Gui related vars
+   Ecore_X_Window gui_x_window;
    Ecore_Evas *gui_window;
    Evas_Object *gui_object;
    Evas_Object *gui_draggies;

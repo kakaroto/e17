@@ -1,5 +1,7 @@
 #include "eclair.h"
 #include "../config.h"
+#include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <Emotion.h>
@@ -30,6 +32,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    if (!eclair)
       return 0;
 
+	ecore_init();
    ecore_evas_init();
    edje_init();
    gtk_init(argc, &argv);
@@ -500,14 +503,25 @@ static void _eclair_gui_create_window(Eclair *eclair)
       return;
 
    if (eclair->gui_engine == ECLAIR_GL)
+   {
       eclair->gui_window = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 32, 32);
+      eclair->gui_x_window = ecore_evas_gl_x11_window_get(eclair->gui_window);
+   }
    else
+   {
       eclair->gui_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 32, 32);
+      eclair->gui_x_window = ecore_evas_software_x11_window_get(eclair->gui_window);
+   }
    ecore_evas_title_set(eclair->gui_window, "eclair");
    ecore_evas_name_class_set(eclair->gui_window, "eclair", "eclair");
+	ecore_evas_layer_set(eclair->gui_window, 999);
    ecore_evas_borderless_set(eclair->gui_window, 1);
    ecore_evas_shaped_set(eclair->gui_window, 1);
    ecore_evas_hide(eclair->gui_window);
+
+   eclair->gui_x_window = ecore_evas_software_x11_window_get(eclair->gui_window);
+	ecore_x_dnd_aware_set(eclair->gui_x_window, 1);
+	ecore_x_dnd_type_set(eclair->gui_x_window, "*", 1);
 
    evas = ecore_evas_get(eclair->gui_window);
    eclair->gui_object = edje_object_add(evas);
@@ -569,6 +583,9 @@ static void _eclair_gui_create_window(Eclair *eclair)
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_stop", "", eclair_gui_playlist_scroll_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_start", "", eclair_gui_playlist_scroll_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_stop", "", eclair_gui_playlist_scroll_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
    edje_object_message_handler_set(eclair->gui_object, eclair_gui_message_cb, eclair);
 }
 

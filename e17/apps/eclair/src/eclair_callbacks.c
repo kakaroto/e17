@@ -320,6 +320,74 @@ void eclair_gui_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object 
    eclair_playlist_container_scroll(eclair, event->z);
 }
 
+//Called when an object is dragged over the gui
+int eclair_gui_dnd_position_cb(void *data, int type, void *event)
+{
+   Evas *evas;
+   Evas_Coord gui_window_x, gui_window_y, x, y;
+   Evas_Object *top_object;
+   Ecore_X_Rectangle rect;
+   Ecore_X_Event_Xdnd_Position *ev = (Ecore_X_Event_Xdnd_Position *)event;
+   Eclair *eclair = (Eclair *)data;
+
+   if (!eclair || !eclair->gui_window)
+      return 1;
+
+   evas = ecore_evas_get(eclair->gui_window);
+   ecore_evas_geometry_get(eclair->gui_window, &gui_window_x, &gui_window_y, NULL, NULL);
+   x = ev->position.x - gui_window_x;
+   y = ev->position.y - gui_window_y;
+   top_object = evas_object_top_at_xy_get(evas, x, y, 1, 1);
+   if (top_object &&
+      (top_object == eclair->gui_cover || top_object == eclair->gui_previous_cover || top_object == eclair->playlist_container))
+   {
+      evas_object_geometry_get(top_object, &rect.x, &rect.y, &rect.width, &rect.height);
+      rect.x += gui_window_x;
+      rect.y += gui_window_y;
+      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+      return 1;
+   }
+
+   ecore_evas_geometry_get(eclair->gui_window, &rect.x, &rect.y, &rect.width, &rect.height);
+   rect.x += gui_window_x;
+   rect.y += gui_window_y;
+   ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+   return 1;
+}
+
+int eclair_gui_dnd_selection_cb(void *data, int type, void *event)
+{
+   Eclair *eclair = (Eclair *)data;
+   Ecore_X_Event_Selection_Notify *ev = (Ecore_X_Event_Selection_Notify *)event;
+   Ecore_X_Selection_Data_Files *files;
+   int i;
+
+   if (!eclair || ev->selection != ECORE_X_SELECTION_XDND)
+     return 1;
+
+   files = ev->data;
+   for (i = 0; i < files->num_files; i++)
+   {
+      printf("%s\n", files->files[i]);
+   }
+
+   ecore_x_dnd_send_finished();
+
+   return 1;
+}
+
+//Called when an object is dropped on the gui
+int eclair_gui_dnd_drop_cb(void *data, int type, void *event)
+{
+   Eclair *eclair = (Eclair *)data;
+
+   if (!eclair)
+      return 1;
+
+   ecore_x_selection_xdnd_request(eclair->gui_x_window, "text/uri-list");
+   return 1;
+}
+
 //Called when the gui send a message
 void eclair_gui_message_cb(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg)
 {

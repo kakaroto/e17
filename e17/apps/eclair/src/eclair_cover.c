@@ -421,7 +421,7 @@ static int _eclair_cover_fetch(const char *url, char **data)
       return -1;
    }
    
-   sprintf(request, "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: eclair\r\n\r\n", url_abs_path, host);
+   sprintf(request, "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n", url_abs_path, host);
    if (send(socket_fd, request, strlen(request), 0) <= 0)
    {
       fprintf(stderr, "Cover: Unable to send request to host: %s\n", host);
