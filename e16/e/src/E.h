@@ -1605,10 +1605,10 @@ void                EventShow(const XEvent * ev);
 #define EWIN_CHANGE_LAYER       (1<<4)
 #define EWIN_CHANGE_OPACITY     (1<<5)
 
+void                EwinShapeSet(EWin * ewin);
 void                EwinRefresh(EWin * ewin);
-void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
-void                FloatEwin(EWin * ewin);
-void                FloatEwinAt(EWin * ewin, int x, int y);
+void                EwinFloatAt(EWin * ewin, int x, int y);
+void                EwinUnfloatAt(EWin * ewin, int desk, int x, int y);
 void                RaiseEwin(EWin * ewin);
 void                LowerEwin(EWin * ewin);
 void                ShowEwin(EWin * ewin);

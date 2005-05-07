@@ -1048,7 +1048,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	   ts = TextclassGetTextState(tc, state, active, sticky);
      }
 
-   if (!expose)			// FIXME - Hmmm
+   if (!expose)			/* FIXME - Hmmm */
      {
 	if (is->im == NULL && is->im_file)
 	   ImagestateRealize(is);

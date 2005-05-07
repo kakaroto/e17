@@ -71,9 +71,13 @@ CoordsShow(EWin * ewin)
 	       case 0:
 	       case 1:
 	       case 2:
-		  cx = x + ((EoGetW(ewin) - cw) / 2) +
+		  cx =
+		     x + (ewin->shape_w + ewin->border->border.left +
+			  ewin->border->border.right - cw) / 2 +
 		     DeskGetX(EoGetDesk(ewin));
-		  cy = y + ((EoGetH(ewin) - ch) / 2) +
+		  cy =
+		     y + (ewin->shape_h + ewin->border->border.top +
+			  ewin->border->border.bottom - ch) / 2 +
 		     DeskGetY(EoGetDesk(ewin));
 		  break;
 	       }

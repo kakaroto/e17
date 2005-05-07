@@ -28,6 +28,25 @@ static int          move_swapcoord_x = 0;
 static int          move_swapcoord_y = 0;
 static int          move_mode_real = 0;
 
+void
+EwinShapeSet(EWin * ewin)
+{
+   ewin->shape_x = EoGetX(ewin);
+   ewin->shape_y = EoGetY(ewin);
+   if (ewin->shaded)
+     {
+	ewin->shape_w = EoGetW(ewin) -
+	   (ewin->border->border.left + ewin->border->border.right);
+	ewin->shape_h = EoGetH(ewin) -
+	   (ewin->border->border.top + ewin->border->border.bottom);
+     }
+   else
+     {
+	ewin->shape_w = ewin->client.w;
+	ewin->shape_h = ewin->client.h;
+     }
+}
+
 int
 ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 {
@@ -73,7 +92,8 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 				      || Mode.move.swap, &num);
    for (i = 0; i < num; i++)
      {
-	FloatEwinAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
+	EwinShapeSet(ewin);
+	EwinFloatAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
      }
    Efree(gwins);
    move_swapcoord_x = EoGetX(ewin);
@@ -86,7 +106,8 @@ int
 ActionMoveEnd(EWin * ewin)
 {
    EWin              **gwins;
-   int                 d, num, i;
+   int                 num, i, desk;
+   Desk               *d1, *d2;
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
@@ -108,12 +129,6 @@ ActionMoveEnd(EWin * ewin)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &num);
 
-#if 0				/* FIXME - Remove? */
-   if (Conf.movres.mode_move == 0)
-      for (i = 0; i < num; i++)
-	 DetermineEwinFloat(gwins[i], 0, 0);
-#endif
-
    if (Mode.mode == MODE_MOVE)
      {
 	for (i = 0; i < num; i++)
@@ -123,35 +138,24 @@ ActionMoveEnd(EWin * ewin)
      }
    Mode.mode = MODE_NONE;
 
-   d = DesktopAt(Mode.x, Mode.y);
+   desk = DesktopAt(Mode.x, Mode.y);
+   d2 = DeskGet(desk);
 
    if (Conf.movres.mode_move == 0)
      {
 	EoChangeOpacity(ewin, ewin->ewmh.opacity);
      }
+
    for (i = 0; i < num; i++)
      {
-	if ((EoIsFloating(gwins[i])) || (Conf.movres.mode_move > 0))
-	  {
-	     if (EoIsFloating(gwins[i]))
-	       {
-		  EoSetFloating(gwins[i], 0);
-		  MoveEwinToDesktopAt(gwins[i], d,
-				      gwins[i]->shape_x -
-				      (DeskGetX(d) -
-				       DeskGetX(EoGetDesk(gwins[i]))),
-				      gwins[i]->shape_y -
-				      (DeskGetY(d) -
-				       DeskGetY(EoGetDesk(gwins[i]))));
-	       }
-	     else
-	       {
-		  MoveEwinToDesktopAt(gwins[i], d, gwins[i]->shape_x,
-				      gwins[i]->shape_y);
-	       }
-	  }
-
-	RaiseEwin(gwins[i]);
+	ewin = gwins[i];
+	d1 = DeskGet(EoGetDesk(ewin));
+	if (desk == d1->num)
+	   EwinUnfloatAt(ewin, desk, ewin->shape_x, ewin->shape_y);
+	else
+	   EwinUnfloatAt(ewin, desk,
+			 ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
+			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
      }
 
    ecore_x_sync();
@@ -166,8 +170,6 @@ ActionMoveEnd(EWin * ewin)
    Mode.place = 0;
 
    ModulesSignal(ESIGNAL_MOVE_DONE, NULL);
-
-   EwinUpdateAfterMoveResize(ewin, 0);
 
    return 0;
 }
@@ -346,6 +348,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    Mode.win_y = EoGetY(ewin);
    Mode.win_w = ewin->client.w;
    Mode.win_h = ewin->client.h;
+   EwinShapeSet(ewin);
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),
 		 ewin->client.w, ewin->client.h, 0);
 
@@ -383,8 +386,6 @@ ActionResizeEnd(EWin * ewin)
       ecore_x_ungrab();
 
    ModulesSignal(ESIGNAL_RESIZE_DONE, NULL);
-
-   EwinUpdateAfterMoveResize(ewin, 1);
 
    return 0;
 }
@@ -527,7 +528,19 @@ ActionMoveHandleMotion(void)
 	/* if its opaque move mode check to see if we have to float */
 	/* the window above all desktops (reparent to root) */
 	if (Conf.movres.mode_move == 0)
-	   DetermineEwinFloat(ewin1, ndx, ndy);
+	  {
+	     int                 desk;
+
+	     desk = EoGetDesk(ewin1);
+	     DetermineEwinFloat(ewin1, ndx, ndy);
+	     if (desk != EoGetDesk(ewin1))
+	       {
+		  ewin1->shape_x += DeskGetX(desk);
+		  ewin1->shape_y += DeskGetY(desk);
+		  ewin1->req_x += DeskGetX(desk);
+		  ewin1->req_y += DeskGetY(desk);
+	       }
+	  }
 
 	/* draw the new position of the window */
 	DrawEwinShape(ewin1, Conf.movres.mode_move,

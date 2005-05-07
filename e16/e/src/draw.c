@@ -896,22 +896,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   break;
      }
 
-   if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
-       || (Mode.mode == MODE_RESIZE_V))
-     {
-	w1 = ewin->client.w;
-	h1 = ewin->client.h;
-	ewin->client.w = w;
-	ewin->client.h = h;
-	ICCCM_MatchSize(ewin);
-	i = (x - ewin->shape_x) / ewin->client.w_inc;
-	j = (y - ewin->shape_y) / ewin->client.h_inc;
-	x = ewin->shape_x + (i * ewin->client.w_inc);
-	y = ewin->shape_y + (j * ewin->client.h_inc);
-	ewin->client.w = w1;
-	ewin->client.h = h1;
-     }
-
    if ((md == 5)
        && ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
 	   || (Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
@@ -938,6 +922,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      {
      case 0:
 	MoveResizeEwin(ewin, x, y, w, h);
+	EwinShapeSet(ewin);
 	if (Mode.mode != MODE_NONE)
 	   CoordsShow(ewin);
 	break;
@@ -955,6 +940,22 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if (!b3)
 	   b3 = XCreateBitmapFromData(disp, VRoot.win, gray3_bits, gray3_width,
 				      gray3_height);
+
+	if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
+	    || (Mode.mode == MODE_RESIZE_V))
+	  {
+	     w1 = ewin->client.w;
+	     h1 = ewin->client.h;
+	     ewin->client.w = w;
+	     ewin->client.h = h;
+	     ICCCM_MatchSize(ewin);
+	     i = (x - ewin->shape_x) / ewin->client.w_inc;
+	     j = (y - ewin->shape_y) / ewin->client.h_inc;
+	     x = ewin->shape_x + (i * ewin->client.w_inc);
+	     y = ewin->shape_y + (j * ewin->client.h_inc);
+	     ewin->client.w = w1;
+	     ewin->client.h = h1;
+	  }
 
 	dx = DeskGetX(EoGetDesk(ewin));
 	dy = DeskGetY(EoGetDesk(ewin));

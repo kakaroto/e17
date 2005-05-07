@@ -221,15 +221,51 @@ EwinFixPosition(EWin * ewin)
       MoveEwin(ewin, x, y);
 }
 
-#define MR_FLAGS_MOVE   1
-#define MR_FLAGS_RESIZE 2
+void
+EwinRefresh(EWin * ewin)
+{
+   if (!ewin)
+      return;
+
+   if (TransparencyEnabled())
+      EwinBorderDraw(ewin, 0, 1, 0);	/* Update the border */
+
+   if (ewin->Refresh)
+      ewin->Refresh(ewin);
+}
 
 static void
-doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
+EwinDetermineArea(EWin * ewin)
+{
+   int                 ax, ay;
+
+   DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+   ax = (EoGetX(ewin) + (EoGetW(ewin) / 2) + (ax * VRoot.w)) / VRoot.w;
+   ay = (EoGetY(ewin) + (EoGetH(ewin) / 2) + (ay * VRoot.h)) / VRoot.h;
+
+   AreaFix(&ax, &ay);
+
+   if (ax != ewin->area_x || ay != ewin->area_y)
+     {
+	ewin->area_x = ax;
+	ewin->area_y = ay;
+	HintsSetWindowArea(ewin);
+     }
+}
+
+#define MRF_DESK	(1<<0)
+#define MRF_MOVE	(1<<1)
+#define MRF_RESIZE	(1<<2)
+#define MRF_RAISE	(1<<3)
+#define MRF_FLOAT	(1<<4)
+#define MRF_UNFLOAT	(1<<5)
+
+static void
+doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
-   int                 dx, dy, sw, sh, x0, y0;
-   char                move = 0, resize = 0;
+   int                 dx, dy, sw, sh, x0, y0, pdesk;
+   char                move, resize, reparent, raise, floating;
    EWin              **lst;
    int                 i, num;
 
@@ -238,8 +274,48 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
-      Eprintf("doMoveResizeEwin(%d) %#lx %d+%d %d*%d %d %s\n", call_depth,
-	      ewin->client.win, x, y, w, h, flags, EwinGetName(ewin));
+      Eprintf("doMoveResizeEwin(%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
+	      call_depth, ewin->client.win, flags, desk, x, y, w, h,
+	      EwinGetName(ewin));
+
+   pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : -1;
+   desk = desk % Conf.desks.num;
+   reparent = move = resize = raise = 0;
+   floating = EoIsFloating(ewin);
+
+   if (flags & (MRF_DESK | MRF_FLOAT | MRF_UNFLOAT))
+     {
+	if (flags & MRF_FLOAT)
+	  {
+	     if (EoIsFloating(ewin) == 0)
+	       {
+		  desk = (pdesk < 0) ? EoGetDesk(ewin) : pdesk;
+		  floating = 1;
+	       }
+	     else if (EoIsFloating(ewin) == 1)
+	       {
+		  desk = 0;
+		  floating = 2;
+	       }
+	     flags |= MRF_RAISE;
+	  }
+	else if (flags & MRF_UNFLOAT)
+	  {
+	     floating = 0;
+	     flags |= MRF_RAISE;
+	  }
+	else
+	  {
+	     if (EoIsSticky(ewin) && !EoIsFloating(ewin))
+		desk = DesksGetCurrent();
+	  }
+	if (desk != pdesk)
+	   reparent = 1;
+     }
+   else
+     {
+	desk = EoGetDesk(ewin);
+     }
 
    if (Mode.mode == MODE_NONE && Mode.move.check)
      {
@@ -254,7 +330,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	  {
 	     int                 ax, ay;
 
-	     DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	     DeskGetArea(desk, &ax, &ay);
 	     x0 = -ax * sw;
 	     y0 = -ay * sh;
 	     sw *= Conf.desks.areas_nx;
@@ -288,7 +364,10 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	   y = y0 + sh - dy;
      }
 
-   if (flags & MR_FLAGS_MOVE)
+   if (flags & MRF_RAISE)
+      raise = 1;
+
+   if (flags & MRF_MOVE)
      {
 	dx = x - EoGetX(ewin);
 	dy = y - EoGetY(ewin);
@@ -296,8 +375,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	   move = 1;
 	ewin->client.x = x + ewin->border->border.left;
 	ewin->client.y = y + ewin->border->border.top;
-	ewin->shape_x = x;
-	ewin->shape_y = y;
      }
    else
      {
@@ -306,7 +383,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	y = EoGetY(ewin);
      }
 
-   if (flags & MR_FLAGS_RESIZE)
+   if (flags & MRF_RESIZE)
      {
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	   resize = 2;
@@ -319,10 +396,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	  {
 	     w = EoGetW(ewin);
 	     h = EoGetH(ewin);
-	     ewin->shape_w = w -
-		(ewin->border->border.left + ewin->border->border.right);
-	     ewin->shape_h = h -
-		(ewin->border->border.top + ewin->border->border.bottom);
 	  }
 	else
 	  {
@@ -330,8 +403,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 		ewin->border->border.right;
 	     h = ewin->client.h + ewin->border->border.top +
 		ewin->border->border.bottom;
-	     ewin->shape_w = ewin->client.w;
-	     ewin->shape_h = ewin->client.h;
 	  }
      }
    else
@@ -340,7 +411,24 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	h = EoGetH(ewin);
      }
 
-   EoMoveResize(ewin, x, y, w, h);
+#if 0
+   Eprintf("repa=%d float=%d raise=%d move=%d resz=%d\n",
+	   reparent, floating, raise, move, resize);
+#endif
+
+   if (reparent)
+     {
+	EoReparent(ewin, desk, x, y);
+	HintsSetWindowDesktop(ewin);
+     }
+   else
+      EoMoveResize(ewin, x, y, w, h);
+
+   if (raise)
+     {
+	EoSetFloating(ewin, floating);
+	RaiseEwin(ewin);
+     }
 
    if (ewin->shaded == 0)
      {
@@ -360,17 +448,45 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
       ICCCM_Configure(ewin);
 
-   if (move)
+   if (flags & (MRF_DESK | MRF_MOVE))
      {
 	lst = EwinListTransients(ewin, &num, 0);
 	for (i = 0; i < num; i++)
-	   MoveEwin(lst[i], EoGetX(lst[i]) + dx, EoGetY(lst[i]) + dy);
+	   doMoveResizeEwin(lst[i], desk, EoGetX(lst[i]) + dx,
+			    EoGetY(lst[i]) + dy, 0, 0,
+			    flags & (MRF_DESK | MRF_MOVE));
 	if (lst)
 	   Efree(lst);
      }
 
+   EwinDetermineArea(ewin);
+
    if ((Mode.mode == MODE_NONE) /* && (move || resize) */ )
-      EwinUpdateAfterMoveResize(ewin, resize);
+     {
+	if (TransparencyEnabled())
+	   EwinBorderDraw(ewin, resize, 1, 0);	/* Update the border */
+
+	if (ewin->MoveResize)
+	   ewin->MoveResize(ewin, resize);
+
+	SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);
+
+	ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+     }
+
+   if (Mode.mode == MODE_NONE && desk != pdesk)
+     {
+	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
+	if (call_depth == 1)
+	  {
+	     if (EoIsShown(ewin))
+	       {
+		  if (pdesk >= 0)
+		     ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
+		  ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)desk);
+	       }
+	  }
+     }
 
    call_depth--;
 }
@@ -378,19 +494,43 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 void
 MoveEwin(EWin * ewin, int x, int y)
 {
-   doMoveResizeEwin(ewin, x, y, 0, 0, MR_FLAGS_MOVE);
+   doMoveResizeEwin(ewin, 0, x, y, 0, 0, MRF_MOVE);
 }
 
 void
 ResizeEwin(EWin * ewin, int w, int h)
 {
-   doMoveResizeEwin(ewin, 0, 0, w, h, MR_FLAGS_RESIZE);
+   doMoveResizeEwin(ewin, 0, 0, 0, w, h, MRF_RESIZE);
 }
 
 void
 MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 {
-   doMoveResizeEwin(ewin, x, y, w, h, MR_FLAGS_MOVE | MR_FLAGS_RESIZE);
+   doMoveResizeEwin(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+}
+
+void
+MoveEwinToDesktop(EWin * ewin, int desk)
+{
+   doMoveResizeEwin(ewin, desk, 0, 0, 0, 0, MRF_DESK);
+}
+
+void
+MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
+{
+   doMoveResizeEwin(ewin, desk, x, y, 0, 0, MRF_DESK | MRF_MOVE);
+}
+
+void
+EwinFloatAt(EWin * ewin, int x, int y)
+{
+   doMoveResizeEwin(ewin, 0, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+}
+
+void
+EwinUnfloatAt(EWin * ewin, int desk, int x, int y)
+{
+   doMoveResizeEwin(ewin, desk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
 }
 
 void

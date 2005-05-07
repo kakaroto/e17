@@ -927,12 +927,12 @@ MoveStickyWindowsToCurrentDesk(void)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	if (!EoIsSticky(ewin))
+	if (!EoIsSticky(ewin) && !EoIsFloating(ewin))
+	   continue;
+	if (ewin->client.transient > 0)
 	   continue;
 
-	EoReparent(ewin, desk, EoGetX(ewin), EoGetY(ewin));
-	HintsSetWindowArea(ewin);
-	HintsSetWindowDesktop(ewin);
+	MoveEwinToDesktop(ewin, desk);
      }
 }
 

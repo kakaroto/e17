@@ -221,12 +221,12 @@ SetCurrentArea(int ax, int ay)
 	     if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 		continue;
 
-	     if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
-	       {
-		  wnum++;
-		  wl = Erealloc(wl, sizeof(EObj *) * wnum);
-		  wl[wnum - 1] = &ewin->o;
-	       }
+	     if (EoIsFloating(ewin) && Conf.movres.mode_move == 0)
+		continue;
+
+	     wnum++;
+	     wl = Erealloc(wl, sizeof(EObj *) * wnum);
+	     wl[wnum - 1] = &ewin->o;
 	  }
 
 	/* slide them */
@@ -235,7 +235,6 @@ SetCurrentArea(int ax, int ay)
 	     EobjsSlideBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
 	     Efree(wl);
 	  }
-	dx = dy = 0;
      }
 
    /* move all windows to their final positions */
@@ -243,14 +242,16 @@ SetCurrentArea(int ax, int ay)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	if (EoIsSticky(ewin))
-	   continue;
 	if (ewin->client.transient > 0)
 	   continue;
 	if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 	   continue;
 
-	if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
+	if (EoIsSticky(ewin) ||
+	    (EoIsFloating(ewin) && Conf.movres.mode_move == 0) ||
+	    (!ewin->iconified && Conf.desks.slidein))
+	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	else
 	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
      }
    Mode.move.check = 1;

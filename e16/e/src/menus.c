@@ -349,7 +349,7 @@ MenuShow(Menu * m, char noshow)
 	if (!noshow)
 	  {
 	     ICCCM_Cmap(NULL);
-	     FloatEwinAt(ewin, EoGetX(ewin), EoGetY(ewin));
+	     EwinFloatAt(ewin, EoGetX(ewin), EoGetY(ewin));
 	     ShowEwin(ewin);
 	     if (Conf.menus.animate)
 		EwinUnShade(ewin);
@@ -1666,7 +1666,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    Mode.move.check = 0;		/* Bypass on-screen checks */
    MoveEwin(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
    Mode.move.check = 1;
-   FloatEwinAt(ewin2, EoGetX(ewin2), EoGetY(ewin2));
+   EwinFloatAt(ewin2, EoGetX(ewin2), EoGetY(ewin2));
    RaiseEwin(ewin2);
    ShowEwin(ewin2);
 
