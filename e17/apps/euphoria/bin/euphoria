@@ -109,9 +109,9 @@ class Euphoria
 		FileDialog.open(fd) do |sel|
 			if File.directory?(sel)
 				files = []
-				Find.find(sel) { |f| files.unshift(f) if File.file?(f) }
+				Find.find(sel) { |f| files << f if File.file?(f) }
 
-				files.each do |f|
+				files.sort.each do |f|
 					@xmms.playlist_add("file://" + f).wait
 				end
 			elsif File.exists?(sel)
