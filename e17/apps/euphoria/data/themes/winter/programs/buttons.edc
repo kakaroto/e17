@@ -1,12 +1,12 @@
-BUTTON_PROG("prev", "PLAY_PREVIOUS")
+BUTTON_PROG("prev", "playback.prev")
 //BUTTON_PROG("rew", "SEEK_BACK")
 BUTTON_PROG3("rew", "SEEK_BACK_START", "SEEK_BACK_STOP")
-//BUTTON_PROG("play", "PLAY")
-//BUTTON_PROG("pause", "PAUSE")
-TOGGLE_BUTTON_PROG("play", "PLAY", "PAUSE")
+//BUTTON_PROG("play", "playback.play")
+//BUTTON_PROG("pause", "playback.pause")
+TOGGLE_BUTTON_PROG("play", "playback.play", "playback.pause")
 //BUTTON_PROG("ff", "SEEK_FORWARD")
 BUTTON_PROG3("ff", "SEEK_FORWARD_START", "SEEK_FORWARD_STOP")
-BUTTON_PROG("next", "PLAY_NEXT")
+BUTTON_PROG("next", "playback.next")
 
 
 BUTTON_PROG("pl", "")

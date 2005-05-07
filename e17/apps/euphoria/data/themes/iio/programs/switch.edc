@@ -31,7 +31,7 @@ program { name, "_play_unclick"; signal, "mouse,down"; source, "_play_button";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "_play_button";
 }
 program { name, "_play_click"; signal, "mouse,down,1"; source, "_play_button";
-	action, SIGNAL_EMIT "PLAY" "play_button"; 
+	action, SIGNAL_EMIT "playback.play" "play_button"; 
 }
 
 //
@@ -48,7 +48,7 @@ program { name, "_prev_unclicked"; signal, "mouse,down"; source, "_prev_button";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "_prev_button";
 }
 program { name, "_previous_click"; signal, "mouse,down,1"; source, "_prev_button";
-	action, SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
+	action, SIGNAL_EMIT "playback.prev" "previous_button";
 }
 	
 //
@@ -65,7 +65,7 @@ program { name, "_next_unclick"; signal, "mouse,down"; source, "_next_button";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "_next_button";
 }
 program { name, "_next_click"; signal, "mouse,down,1"; source, "_next_button";
-	action, SIGNAL_EMIT "PLAY_NEXT" "next_button";
+	action, SIGNAL_EMIT "playback.next" "next_button";
 }
 
 //

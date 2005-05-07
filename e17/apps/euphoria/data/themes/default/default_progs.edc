@@ -57,8 +57,8 @@
                                 source,     "previous_button";
                                 /* Emit signal to handler "previous file", from part/sender "previous_button" */
                                 /* Catch with the following Edje code in your app */
-                                /* edje_object_signal_callback_add(edje, "PLAY_PREVIOUS", "previous_button", function) */
-                                action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
+                                /* edje_object_signal_callback_add(edje, "playback.prev", "previous_button", function) */
+                                action,     SIGNAL_EMIT "playback.prev" "previous_button";
                         }
 
                         program {
@@ -149,7 +149,7 @@
                                 name,       "play_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "play_button";
-                                action,     SIGNAL_EMIT "PLAY" "play_button";
+                                action,     SIGNAL_EMIT "playback.play" "play_button";
                         }
 
                         /**************** Pause ****************/
@@ -193,7 +193,7 @@
                                 name,       "pause_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "pause_button";
-                                action,     SIGNAL_EMIT "PAUSE" "pause_button";
+                                action,     SIGNAL_EMIT "playback.pause" "pause_button";
                         }
 
                         /**************** Seek Forward ********************/
@@ -251,7 +251,7 @@
                                 name,       "next_click_emission";
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
-                                action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
+                                action,     SIGNAL_EMIT "playback.next" "next_button";
                         }
 
                         /* Volume Button Proggies */
