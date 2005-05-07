@@ -220,7 +220,10 @@ private
 			fd = File.expand_path("~/.xmms2/clients/euphoria/themes/fd.eet")
 			FileDialog.open(fd) do |sel|
 				if File.directory?(sel)
-					Find.find(sel) do |f|
+					files = []
+					Find.find(sel) { |f| files.unshift(f) if File.file?(f) }
+
+					files.each do |f|
 						@xmms.playlist_add("file://" + f).wait
 					end
 				elsif File.exists?(sel)
