@@ -98,8 +98,10 @@ class Playlist < Array
 				get_drag_value.last
 		end
 
-		@edje.on_signal("file_dialog.open") do
-			Euphoria.instance.show_file_dialog
+		if is_separate
+			@edje.on_signal("file_dialog.open") do
+				Euphoria.instance.show_file_dialog
+			end
 		end
 
 		each { |i| i.show(eet, @container) }
