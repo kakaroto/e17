@@ -87,9 +87,13 @@ program { name, "switch_exec"; signal,  "mouse,down,*"; source, "switch_stance";
 
 program { name, "play_hilited"; signal, "mouse,in"; source, PLAY;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, PLAY;
-	after, "play_unhilited"; in, 0.15 0.0;
+	/*after, "play_unhilited";*/ in, 0.15 0.0;
 }
 program { name, "play_unhilited"; signal, "mouse,out"; source, PLAY;
+	action, ACTION_STOP; target, "play_hilited";
+	after, "play_unhilited_real";
+}	
+program { name, "play_unhilited_real";
 	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, PLAY;
 }	
 program { name, "play_click"; signal, "mouse,down,*";source, PLAY;
@@ -106,9 +110,13 @@ program { name, "play_click_emission"; signal, "mouse,down,*"; source, PLAY;
 
 program { name, "prev_button_hilited"; signal, "mouse,in"; source, PREV;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, PREV;
-	after, "prev_button_unhilited"; in, 0.15 0.0;
+	/*after, "prev_button_unhilited";*/ in, 0.15 0.0;
 }
 program { name, "prev_button_unhilited"; signal, "mouse,out"; source, PREV;
+	action, ACTION_STOP; target, "prev_button_hilited";
+	after, "prev_button_unhilited_real";
+}
+program { name, "prev_button_unhilited_real";
 	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, PREV;
 }
 program { name, "prev_clicked"; signal, "mouse,down,*"; source, PREV;
@@ -125,9 +133,13 @@ program { name, "previous_click"; signal, "mouse,down,*"; source, PREV;
 
 program { name, "next_hilited"; signal, "mouse,in"; source, NEXT;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, NEXT;
-	after, "next_unhilited"; in, 0.15 0.0;
+	/*after, "next_unhilited";*/ in, 0.15 0.0;
 }
 program { name, "next_unhilited"; signal, "mouse,out"; source, NEXT;
+	action, ACTION_STOP; target, "next_hilited";
+	after, "next_unhilited_real";
+}
+program { name, "next_unhilited_real";
 	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, NEXT;
 }
 program { name, "next_click"; signal, "mouse,down,*"; source, NEXT;
@@ -144,9 +156,13 @@ program { name, "next_click_emission"; signal, "mouse,down,*"; source, NEXT;
 
 program { name, "pause_hilited"; signal, "mouse,in"; source, PAUSE;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, PAUSE;
-	after, "pause_unhilited"; in, 0.15 0.0;
+	/*after, "pause_unhilited";*/ in, 0.15 0.0;
 }
 program { name, "pause_unhilited"; signal, "mouse,out"; source, PAUSE;
+	action, ACTION_STOP; target, "pause_hilited";
+	after, "pause_unhilited_real";
+}
+program { name, "pause_unhilited_real";
 	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, PAUSE;
 }
 program { name, "pause_click"; signal, "mouse,down,*"; source, PAUSE;
@@ -162,11 +178,15 @@ program { name, "pause_click_emission"; signal, "mouse,down,*"; source, PAUSE;
 
 program { name, "stop_hilited"; signal, "mouse,in"; source, STOP;
 	action, STATE_SET "hilited" 0.0; transition, LINEAR 0.1; target, STOP;
-	after, "stop_unhilited"; in, 0.15 0.0;
+	/*after, "stop_unhilited";*/ in, 0.15 0.0;
 } 
 program { name, "stop_unhilited"; signal, "mouse,out"; source, STOP;
-	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, STOP;
+	action, ACTION_STOP; target, "stop_hilited";
+	after, "stop_unhilited_real";
 }	
+program { name, "stop_unhilited_real";
+	action, STATE_SET "default" 0.0; transition, LINEAR 0.1; target, STOP;
+}
 program { name, "stop_click"; signal, "mouse,down,*"; source, STOP;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR 0.1; target, STOP;
 	after, "stop_unclick"; in, 0.15 0.0;
