@@ -800,7 +800,6 @@ EwinInstantShade(EWin * ewin, int force)
    EwinBorderCalcSizes(ewin);
    ESync();
 
-   EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
 
    HintsSetWindowState(ewin);
@@ -866,7 +865,6 @@ EwinInstantUnShade(EWin * ewin)
    MoveResizeEwin(ewin, x, y, ewin->client.w, ewin->client.h);
    ESync();
 
-   EwinPropagateShapes(ewin);
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
@@ -930,14 +928,13 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, -(ewin->client.w - ww),
 					0, ewin->client.win, ShapeBounding,
 					ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -970,13 +967,12 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0, 0, ewin->client.win,
 					ShapeBounding, ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1006,15 +1002,14 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0,
 					-(ewin->client.h - hh),
 					ewin->client.win, ShapeBounding,
 					ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1048,13 +1043,13 @@ EwinShade(EWin * ewin)
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top, ww, hh);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0, 0, ewin->client.win,
 					ShapeBounding, ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
+
 		  k = ETimedLoopNext();
 	       }
 	  }
@@ -1064,7 +1059,9 @@ EwinShade(EWin * ewin)
 
    ewin->shaded = 2;
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
-   EwinBorderCalcSizes(ewin);
+   if (ewin->client.shaped)
+      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
+			 ewin->client.win, ShapeBounding, ShapeSet);
    MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
    ESync();
 
@@ -1072,11 +1069,6 @@ EwinShade(EWin * ewin)
    EUngrabServer();
    Eprintf("EwinShade-E\n");
 #endif
-
-   if (ewin->client.shaped)
-      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-			 ewin->client.win, ShapeBounding, ShapeSet);
-   EwinPropagateShapes(ewin);
 
    Mode.queue_up = pq;
 
@@ -1142,8 +1134,6 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top,
 				    w - ewin->border->border.left -
 				    ewin->border->border.right, ewin->client.h);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding,
@@ -1153,7 +1143,8 @@ EwinUnShade(EWin * ewin)
 					   ewin->border->border.right)), 0,
 					ewin->client.win, ShapeBounding,
 					ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1191,13 +1182,12 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top,
 				    w - ewin->border->border.left -
 				    ewin->border->border.right, ewin->client.h);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0, 0, ewin->client.win,
 					ShapeBounding, ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1231,8 +1221,6 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top, ewin->client.w,
 				    h - ewin->border->border.top -
 				    ewin->border->border.bottom);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0,
@@ -1242,7 +1230,8 @@ EwinUnShade(EWin * ewin)
 					   ewin->border->border.bottom)),
 					ewin->client.win, ShapeBounding,
 					ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1280,13 +1269,12 @@ EwinUnShade(EWin * ewin)
 				    ewin->border->border.top, ewin->client.w,
 				    h - ewin->border->border.top -
 				    ewin->border->border.bottom);
-		  EoMoveResize(ewin, x, y, w, h);
-		  EwinBorderCalcSizes(ewin);
 		  if (ewin->client.shaped)
 		     EShapeCombineShape(ewin->win_container,
 					ShapeBounding, 0, 0, ewin->client.win,
 					ShapeBounding, ShapeSet);
-		  EwinPropagateShapes(ewin);
+		  EoMoveResize(ewin, x, y, w, h);
+		  EwinBorderCalcSizes(ewin);
 
 		  k = ETimedLoopNext();
 	       }
@@ -1299,6 +1287,10 @@ EwinUnShade(EWin * ewin)
    att.win_gravity = NorthWestGravity;
    EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 
+   if (ewin->client.shaped)
+      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
+			 ewin->client.win, ShapeBounding, ShapeSet);
+
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
    ESync();
@@ -1307,11 +1299,6 @@ EwinUnShade(EWin * ewin)
    EUngrabServer();
    Eprintf("EwinUnShade-E\n");
 #endif
-
-   if (ewin->client.shaped)
-      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-			 ewin->client.win, ShapeBounding, ShapeSet);
-   EwinPropagateShapes(ewin);
 
    Mode.queue_up = pq;
 

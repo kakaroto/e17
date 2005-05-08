@@ -153,7 +153,6 @@ BorderWinpartChange(EWin * ewin, int i, int force)
 
    if (!ewin->shapedone || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
-   ewin->shapedone = 1;
 }
 
 void
@@ -173,7 +172,6 @@ EwinBorderDraw(EWin * ewin, int do_shape, int do_paint, int queue_off)
 
    if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
-   ewin->shapedone = 1;
 
    if (queue_off)
       Mode.queue_up = pq;
@@ -397,20 +395,10 @@ EwinBorderCalcSizes(EWin * ewin)
 	ewin->bits[i].no_expose = 1;
      }
 
-   if ((reshape) || (Mode.have_place_grab))
+   if (reshape)
      {
-	if (Mode.have_place_grab)
-	  {
-	     char                pq;
-
-	     pq = Mode.queue_up;
-	     Mode.queue_up = 0;
-	     EwinPropagateShapes(ewin);
-	     Mode.queue_up = pq;
-	  }
-	else
-	   EwinPropagateShapes(ewin);
-	ewin->shapedone = 1;
+	ewin->shapedone = 0;
+	EwinPropagateShapes(ewin);
      }
 }
 
@@ -580,7 +568,6 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
       EMoveWindow(ewin->win_container, b->border.left, b->border.top);
 
    EwinBorderCalcSizes(ewin);
-   EwinPropagateShapes(ewin);
 
    SnapshotEwinUpdate(ewin, SNAP_USE_BORDER);
 }

@@ -57,7 +57,36 @@ HandleDrawQueue()
      {
 	already = 0;
 
-	if (dq->shape_propagate)
+	if (dq->d)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->d == dq->d) && DialogItem(dq->d) &&
+		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
+		    {
+		       if (dq->x < lst[i]->x)
+			 {
+			    lst[i]->w += (lst[i]->x - dq->x);
+			    lst[i]->x = dq->x;
+			 }
+		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
+			  lst[i]->w +=
+			     (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
+		       if (dq->y < lst[i]->y)
+			 {
+			    lst[i]->h += (lst[i]->y - dq->y);
+			    lst[i]->y = dq->y;
+			 }
+		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
+			  lst[i]->h +=
+			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
+		       already = 1;
+		       break;
+		    }
+	       }
+	  }
+#if USE_DQ_SHAPE
+	else if (dq->shape_propagate)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -68,6 +97,7 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#endif
 #if USE_DQ_TCLASS
 	else if (dq->text)
 	  {
@@ -101,34 +131,6 @@ HandleDrawQueue()
 	       {
 		  if ((lst[i]->win == dq->win) && (lst[i]->pager))
 		    {
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-	else if (dq->d)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->d == dq->d) && DialogItem(dq->d) &&
-		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
-		    {
-		       if (dq->x < lst[i]->x)
-			 {
-			    lst[i]->w += (lst[i]->x - dq->x);
-			    lst[i]->x = dq->x;
-			 }
-		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
-			  lst[i]->w +=
-			     (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
-		       if (dq->y < lst[i]->y)
-			 {
-			    lst[i]->h += (lst[i]->y - dq->y);
-			    lst[i]->y = dq->y;
-			 }
-		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
-			  lst[i]->h +=
-			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
 		       already = 1;
 		       break;
 		    }
@@ -203,12 +205,23 @@ HandleDrawQueue()
 	for (i = num - 1; i >= 0; i--)
 	  {
 	     dq = lst[i];
-	     if (dq->shape_propagate)
+
+	     if (dq->d)
+	       {
+/*            printf("D %x\n", dq->d->ewin->client.win); */
+		  if (FindItem
+		      ((char *)(dq->d), 0, LIST_FINDBY_POINTER,
+		       LIST_TYPE_DIALOG))
+		     DialogDrawItems(dq->d, dq->di, dq->x, dq->y, dq->w, dq->h);
+	       }
+#if USE_DQ_SHAPE
+	     else if (dq->shape_propagate)
 	       {
 /*            printf("S %x\n", dq->win); */
 		  if (WinExists(dq->win))
 		     PropagateShapes(dq->win);
 	       }
+#endif
 #if USE_DQ_TCLASS
 	     else if (dq->text)
 	       {
@@ -237,14 +250,6 @@ HandleDrawQueue()
 		      ((char *)(dq->pager), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_PAGER))
 		     dq->func(dq);
-	       }
-	     else if (dq->d)
-	       {
-/*            printf("D %x\n", dq->d->ewin->client.win); */
-		  if (FindItem
-		      ((char *)(dq->d), 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_DIALOG))
-		     DialogDrawItems(dq->d, dq->di, dq->x, dq->y, dq->w, dq->h);
 	       }
 	     else if (dq->redraw_pager)
 	       {
@@ -1382,6 +1387,10 @@ PropagateShapes(Window win)
    XRectangle         *rects = NULL, *rl = NULL;
    XWindowAttributes   att;
 
+#if 0
+   Eprintf("PropagateShapes(%d): %#lx\n", Mode.queue_up, win);
+#endif
+#if USE_DQ_SHAPE
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
@@ -1392,7 +1401,10 @@ PropagateShapes(Window win)
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
-   EGetGeometry(win, &rt, &x, &y, &w, &h, &d, &d);
+#endif
+
+   if (!EGetGeometry(win, &rt, &x, &y, &w, &h, &d, &d))
+      return;
    if ((w <= 0) || (h <= 0))
       return;
 

@@ -1125,6 +1125,7 @@ Qentry;
 /* Disable, but Keep around a bit longer */
 #define USE_DQ_ICLASS 0
 #define USE_DQ_TCLASS 0
+#define USE_DQ_SHAPE  0
 
 typedef struct _drawqueue
 {
@@ -1140,7 +1141,9 @@ typedef struct _drawqueue
    TextClass          *tclass;
    char               *text;
 #endif
+#if USE_DQ_SHAPE
    char                shape_propagate;
+#endif
    Pager              *pager;
    Pager              *redraw_pager;
    char                newbg;

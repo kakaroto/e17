@@ -492,8 +492,22 @@ EwinGetGeometry(EWin * ewin)
 void
 EwinPropagateShapes(EWin * ewin)
 {
-   if (!ewin->docked)
-      PropagateShapes(EoGetWin(ewin));
+   if (!EoIsShown(ewin))
+      return;
+
+   if (ewin->docked)
+      return;
+
+#if 0
+   Eprintf("EwinPropagateShapes %#lx %#lx %s\n", EoGetWin(ewin),
+	   ewin->client.win, EoGetName(ewin));
+#endif
+   if (!ewin->shapedone)
+     {
+	PropagateShapes(EoGetWin(ewin));
+	EoChangeShape(ewin);
+	ewin->shapedone = 1;
+     }
 }
 
 static void
@@ -1391,6 +1405,13 @@ ShowEwin(EWin * ewin)
 	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
 #endif
 	EMapWindow(ewin->client.win);
+     }
+
+   if (!ewin->shapedone)
+     {
+	ewin->o.shown = 1;
+	EwinPropagateShapes(ewin);
+	ewin->o.shown = 0;
      }
 
    EoMap(ewin, 0);
