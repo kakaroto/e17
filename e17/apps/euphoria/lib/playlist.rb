@@ -3,6 +3,8 @@
 require "euphoria/playlist_item"
 
 class Playlist < Array
+	attr_reader :container
+
 	def initialize(xmms, on_cur_item_changed)
 		super()
 
@@ -129,12 +131,12 @@ class Playlist < Array
 			item = find { |i| i.id == item }
 		end
 
-		item.hide(@container) if i.visible?
+		item.hide if i.visible?
 		super(item)
 	end
 
 	def clear
-		each { |i| i.hide(@container) if i.visible? }
+		each { |i| i.hide if i.visible? }
 		super
 	end
 

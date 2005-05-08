@@ -76,8 +76,8 @@ class PlaylistItem
 		!@edje.nil?
 	end
 
-	def hide(container)
-		container.remove_element(@edje)
+	def hide
+		@playlist.container.remove_element(@edje)
 		@edje = nil
 	end
 
