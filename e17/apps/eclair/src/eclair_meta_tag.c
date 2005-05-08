@@ -84,7 +84,7 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    taglib_file_free(tag_file);
 
    //Try to load the cover
-   if (tag && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
+   if (tag && !media_file->cover_path && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
       eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
 }
 

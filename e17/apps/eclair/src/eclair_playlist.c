@@ -3,6 +3,7 @@
 #include <string.h>
 #include <Esmart/Esmart_Container.h>
 #include <Evas.h>
+#include <Ecore_File.h>
 #include <Edje.h>
 #include "eclair.h"
 #include "eclair_cover.h"
@@ -67,40 +68,74 @@ Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
    return (Eclair_Media_File *)evas_list_data(evas_list_next(playlist->current));
 }
 
-Eclair_Media_File *eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
+//Add recursively a directory
+Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir)
+{
+   Ecore_List *files;
+   Ecore_List_Node *l;
+   char *filename, *filepath;
+
+   if (!playlist || !dir || !ecore_file_is_dir(dir))
+      return 0;
+
+   if ((files = ecore_file_ls(dir)))
+   {
+      for (l = files->first; l; l = l->next)
+      {
+         if (!(filename = (char *)l->data))
+            continue;
+         filepath = (char *)malloc(strlen(dir) + strlen(filename) + 2);
+         sprintf(filepath, "%s/%s", dir, filename);
+         eclair_playlist_add_uri(playlist, filepath);
+         free(filepath);
+      }
+      ecore_list_destroy(files);
+   }
+   return 1;
+}
+
+//Add the media file located at the uri
+Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
 {
    Eclair_Media_File *new_media_file;
    Evas_Coord min_height;
    Eclair *eclair;
-   char *clean_uri;
+   char *clean_uri, *new_path;
 
    if (!playlist || !uri)
-      return NULL;
-
-   new_media_file = eclair_media_file_new();
+      return 0;
 
    if (strstr(uri, "://"))
    {
       if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
-         return NULL;
+         return 0;
 
-      if ((strlen(clean_uri) <= 7) || (strncmp(clean_uri, "file://", 7) != 0))
-         new_media_file->path = clean_uri;
+      if (strlen(clean_uri) <= 7 || strncmp(clean_uri, "file://", 7) != 0)
+         new_path = clean_uri;
       else
       {
-         new_media_file->path = strdup(&clean_uri[7]);
+         new_path = strdup(&clean_uri[7]);
          free(clean_uri);
       }
    }
    else
-      new_media_file->path = strdup(uri);
+      new_path = strdup(uri);
+
+   if (eclair_playlist_add_dir(playlist, new_path))
+   {
+      free(new_path);
+      return 1;
+   }
+   
+   new_media_file = eclair_media_file_new();
+   new_media_file->path = new_path;
 
    if ((eclair = playlist->eclair))
    {
       if (eclair->playlist_container)
       {
          new_media_file->playlist_entry = edje_object_add(evas_object_evas_get(eclair->playlist_container));
-         edje_object_file_set(new_media_file->playlist_entry, PACKAGE_DATA_DIR "/themes/default.edj", "eclair_playlist_entry");
+         edje_object_file_set(new_media_file->playlist_entry, eclair->gui_theme_file, "eclair_playlist_entry");
          evas_object_data_set(new_media_file->playlist_entry, "media_file", new_media_file);
          if (eclair->playlist_entry_height <= 0)
          {
@@ -108,7 +143,7 @@ Eclair_Media_File *eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
             eclair->playlist_entry_height = (int)min_height;
          }
          evas_object_resize(new_media_file->playlist_entry, 1, eclair->playlist_entry_height);
-         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_name", eclair_utils_path_to_filename(new_media_file->path));
+         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_name", ecore_file_get_file(new_media_file->path));
          edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_length", "");
          edje_object_signal_callback_add(new_media_file->playlist_entry, "eclair_play_entry", "*", eclair_gui_play_entry_cb, eclair);
          esmart_container_element_append(eclair->playlist_container, new_media_file->playlist_entry);
@@ -123,7 +158,7 @@ Eclair_Media_File *eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
    if (!playlist->current)
       eclair_playlist_current_set_list(playlist, playlist->playlist);
 
-   return (Eclair_Media_File *)evas_list_data(playlist->playlist->last);   
+   return 1;   
 }
 
 //Remove the media file from the playlist
@@ -198,7 +233,7 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
    }
    
    playlist->current = list;
-   eclair_update_current_file_info(playlist->eclair);
+   eclair_update_current_file_info(playlist->eclair, 0);
 } 
 
 //Set the media file which is just before the active media file as the active media file 

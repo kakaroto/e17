@@ -16,6 +16,7 @@
 
 #define PACKET_CHUNK_SIZE 1024
 #define MAX_REQUEST_SIZE 1024
+#define NUM_EXTENSIONS 3
 
 typedef struct _Eclair_Cover_Packet_Chunk
 {
@@ -31,6 +32,7 @@ typedef struct _Eclair_Cover_Not_In_DB_Album
 
 const char *amazon_hostname = "webservices.amazon.com";
 const char *amazon_license_key = "0P1862RFDFSF4KYZQNG2";
+const char *cover_extensions[NUM_EXTENSIONS] = { "jpg", "jpeg", "png" };
 
 static int _eclair_cover_connect_to_hostname(const char *hostname);
 static int _eclair_cover_connect_to_host(const struct hostent *host);
@@ -38,11 +40,10 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
 static int _eclair_cover_extract_http_body(char *packet, int packet_length, char **body);
 static int _eclair_cover_fetch(const char *url, char **data);
 
-static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_manager, const char *file_path, const char *cover_extension);
+static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_manager, char *file_path, const char *cover_extension);
 static char *_eclair_cover_build_path_from_artist_album(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, const char *cover_extension);
 static void _eclair_cover_build_url_for_item_search(const char *keywords, char url[MAX_REQUEST_SIZE]);
 static void _eclair_cover_build_url_for_item_images(const char *ASIN, char url[MAX_REQUEST_SIZE]);
-static char *_eclair_cover_convert_to_url_format(const char *string);
 static xmlNode *_eclair_cover_get_node_xml_tree(xmlNode *root_node, const char *prop);
 static xmlChar *_eclair_cover_get_prop_value_from_xml_tree(xmlNode *root_node, const char *prop);
 static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, const char *artist, const char *album);
@@ -165,7 +166,7 @@ static void *_eclair_cover_thread(void *param)
 
 //Return the path of the file of the album cover
 //NULL if failed. The returned path will have to be freed if success
-char *eclair_cover_file_get(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, const char *file_path)
+char *eclair_cover_file_get(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, char *file_path)
 {
    char *path;
 
@@ -181,30 +182,32 @@ char *eclair_cover_file_get(Eclair_Cover_Manager *cover_manager, const char *art
 
 //Try to open the cover file on the disk if it exists
 //NULL if failed. The returned path will have to be freed if success
-char *eclair_cover_file_get_from_local(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, const char *file_path)
+char *eclair_cover_file_get_from_local(Eclair_Cover_Manager *cover_manager, const char *artist, const char *album, char *file_path)
 {
    char *cover_path;
-   FILE *cover_file;
+   int i;
 
-   if ((cover_path = _eclair_cover_build_path_from_filepath(cover_manager, file_path, "jpg")))
+   for (i = 0; i < NUM_EXTENSIONS; i++)
    {
-      if ((cover_file = fopen(cover_path, "rb")))
+      if ((cover_path = _eclair_cover_build_path_from_filepath(cover_manager, file_path, cover_extensions[i])))
       {
-         fclose(cover_file);
-         return cover_path;
+         if (ecore_file_exists(cover_path))
+            return cover_path;
+         free(cover_path);
       }
    }
-   free(cover_path);
 
-   if ((cover_path = _eclair_cover_build_path_from_artist_album(cover_manager, artist, album, "jpg")))
+   for (i = 0; i < NUM_EXTENSIONS; i++)
    {
-      if ((cover_file = fopen(cover_path, "rb")))
+      if ((cover_path = _eclair_cover_build_path_from_artist_album(cover_manager, artist, album, cover_extensions[i])))
       {
-         fclose(cover_file);
-         return cover_path;
+         if (ecore_file_exists(cover_path))
+            return cover_path;
+         free(cover_path);
       }
    }
-   free(cover_path);
+
+   //TODO: search if there is cover.jpg, or such file, in the directory of the file
 
    return NULL;
 }
@@ -241,7 +244,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    //Get the ASIN of the album
    keywords = (char *)malloc(strlen(artist) + strlen(album) + 2);
    sprintf(keywords, "%s %s", artist, album);
-   converted_keywords = _eclair_cover_convert_to_url_format(keywords);
+   converted_keywords = eclair_utils_add_uri_special_chars(keywords);
    free(keywords);
 
    _eclair_cover_build_url_for_item_search(converted_keywords, url);
@@ -528,19 +531,14 @@ static int _eclair_cover_extract_http_body(char *packet, int packet_length, char
 
 //Build the cover file path from file_path and cover_extension
 //The returned path has to be freed by the caller
-static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_manager, const char *file_path, const char *cover_extension)
+static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_manager, char *file_path, const char *cover_extension)
 {
-   char *cover_path, *ext_start, *filename_without_ext;
-   const char *filename;
+   char *cover_path, *filename_without_ext;
 
    if (!cover_manager || !file_path || !cover_extension || !cover_manager->eclair)
       return NULL;
 
-   filename = eclair_utils_path_to_filename(file_path);
-   filename_without_ext = strdup(filename);
-   if ((ext_start = rindex(filename_without_ext, '.')))
-      *ext_start = 0;
-
+   filename_without_ext = eclair_utils_file_get_filename_without_ext(file_path);
    cover_path = (char *)malloc(strlen(cover_manager->eclair->config.covers_dir_path) + strlen(filename_without_ext) + strlen(cover_extension) + 2);
    sprintf(cover_path, "%s%s.%s", cover_manager->eclair->config.covers_dir_path, filename_without_ext, cover_extension);
    free(filename_without_ext);
@@ -554,7 +552,8 @@ static char *_eclair_cover_build_path_from_artist_album(Eclair_Cover_Manager *co
 {
    char *filename, *path, *c;
 
-   if (!cover_manager || !artist || !album || !cover_extension || !cover_manager->eclair)
+   if (!cover_manager || !artist || !album || !cover_extension || !cover_manager->eclair
+      || strlen(artist) <= 0 || strlen(album) <= 0 || strlen(cover_extension) <= 0)
       return NULL; 
 
    filename = (char *)malloc(strlen(artist) + strlen(album) + strlen(cover_extension) + 3);
@@ -582,44 +581,6 @@ static void _eclair_cover_build_url_for_item_images(const char *ASIN, char url[M
 {
    sprintf(url, "http://%s/onca/xml?Service=AWSECommerceService&SubscriptionId=%s&Operation=ItemLookup&ItemId=%s&ResponseGroup=Images",
       amazon_hostname, amazon_license_key, ASIN);
-}
-
-
-
-//Convert a string to URL format (eg. 'space' -> "%20"...)
-//The returned string has to be freed by the caller
-static char *_eclair_cover_convert_to_url_format(const char *string)
-{
-   char *new_string;
-   int i, j, string_length;
-
-   if (!string)
-      return NULL;
-
-   string_length = strlen(string);
-   new_string = (char *)malloc(string_length * 3 * sizeof(char) + 1);
-
-   for (i = 0, j = 0; i < string_length; i++, j++)
-   {
-      if (string[i] == ' ' || string[i] == ';'  || string[i] == '&'  || string[i] == '='  ||
-         string[i] == '<'  || string[i] == '>'  || string[i] == '?'  || string[i] == '@'  ||
-         string[i] == '\"' || string[i] == '['  || string[i] == '#'  || string[i] == '\\' ||
-         string[i] == '$'  || string[i] == ']'  || string[i] == '%'  || string[i] == '^'  ||
-         string[i] == '\'' || string[i] == '¨'  || string[i] == '+'  || string[i] == '{'  ||
-         string[i] == ','  || string[i] == '|'  || string[i] == '/'  || string[i] == '}'  ||
-         string[i] == ':'  || string[i] == '~')
-      {
-         new_string[j] = '%';
-         j++;
-         sprintf(&new_string[j], "%X", string[i]);
-         j++;
-      }
-      else
-         new_string[j] = string[i];
-   }
-   new_string[j] = 0;
-
-   return new_string;
 }
 
 //Search recursively the node called prop in the xml tree and return its value
@@ -671,10 +632,8 @@ void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *u
    char *clean_uri, *cover_path, *new_path;
    Eclair_Media_File *current_file;
 
-   if (!cover_manager || !cover_manager->eclair || !uri)
-      return;
-
-   if (!(current_file = eclair_playlist_current_media_file(&cover_manager->eclair->playlist)))
+   if (!cover_manager || !cover_manager->eclair || !uri
+      || !(current_file = eclair_playlist_current_media_file(&cover_manager->eclair->playlist)))
       return;
 
    if (strstr(uri, "://"))
@@ -682,7 +641,7 @@ void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *u
       if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
          return;
    
-      if ((strlen(uri) <= 7) || (strncmp(uri, "file://", 7) != 0))
+      if (strlen(uri) <= 7 || strncmp(uri, "file://", 7) != 0)
       {
          free(clean_uri);
          return;
@@ -693,13 +652,10 @@ void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *u
    else
       cover_path = strdup(uri);
 
-   //TODO: extract extension
-   if (!(new_path = _eclair_cover_build_path_from_artist_album(cover_manager, current_file->artist, current_file->album, "jpg")))
+   if (!(new_path = _eclair_cover_build_path_from_artist_album(cover_manager, current_file->artist, current_file->album, eclair_utils_file_get_extension(cover_path)))
+      && !(new_path = _eclair_cover_build_path_from_filepath(cover_manager, current_file->path, eclair_utils_file_get_extension(cover_path))))
    {
-      //TODO:
-      //if (!(new_path = _eclair_cover_build_path_from_filepath(cover_manager)))
       free(cover_path);
-      free(new_path);
       return;
    }
    if (!ecore_file_cp(cover_path, new_path))
@@ -710,6 +666,7 @@ void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *u
    }
 
    free(cover_path);
+   free(current_file->cover_path);
    current_file->cover_path = new_path;
-   eclair_update_current_file_info(cover_manager->eclair);
+   eclair_update_current_file_info(cover_manager->eclair, 1);
 }

@@ -73,7 +73,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair_subtitles_init(&eclair->subtitles);
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
    eclair_cover_init(&eclair->cover_manager, eclair);
-   eclair_update_current_file_info(eclair);
+   eclair_update_current_file_info(eclair, 0);
    
    for (l = filenames; l; l = l->next)
       eclair_playlist_add_uri(&eclair->playlist, (char *)l->data);
@@ -140,7 +140,7 @@ void eclair_update(Eclair *eclair)
 }
 
 //Update the gui infos about the current media file
-void eclair_update_current_file_info(Eclair *eclair)
+void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_update)
 {   
    char *window_title;
    char *artist_title_string;
@@ -162,7 +162,7 @@ void eclair_update_current_file_info(Eclair *eclair)
             edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
             free(artist_title_string);
          }
-         else if ((filename = eclair_utils_path_to_filename(current_file->path)))
+         else if ((filename = ecore_file_get_file(current_file->path)))
             edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
          else
             edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
@@ -187,14 +187,19 @@ void eclair_update_current_file_info(Eclair *eclair)
 
    //Update the current cover
    if (current_file)
-      eclair_gui_cover_set(eclair, current_file->cover_path);
+   {
+      if (current_file->cover_path || (current_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, current_file->artist, current_file->album, current_file->path)))
+         eclair_gui_cover_set(eclair, current_file->cover_path, force_cover_update);
+      else
+         eclair_gui_cover_set(eclair, NULL, force_cover_update);
+   }
    else
-      eclair_gui_cover_set(eclair, NULL);
+      eclair_gui_cover_set(eclair, NULL, force_cover_update);
 }
 
 //Set the cover displayed on the GUI
 //Remove it if cover_path == NULL
-void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
+void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool force_cover_update)
 {
    char *current_path = NULL;
 
@@ -204,7 +209,7 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
    evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
    if (!current_path && !cover_path)
       return;
-   if (current_path && cover_path && (strcmp(current_path, cover_path) == 0))
+   if (!force_cover_update && current_path && cover_path && (strcmp(current_path, cover_path) == 0))
          return;
 
    if (eclair->gui_previous_cover)
@@ -221,6 +226,12 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path)
    }
 
    evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
+   //TODO: evas_object_image_reload bug? need to do two reloads to really reload the image?!
+   if (current_path && cover_path && (strcmp(current_path, cover_path) == 0))
+   {
+      evas_object_image_reload(eclair->gui_cover);
+      evas_object_image_reload(eclair->gui_cover);
+   }
    if (cover_path)
    {
       edje_object_signal_emit(eclair->gui_object, "signal_cover_set", "eclair_bin");
@@ -650,7 +661,7 @@ static void *_eclair_create_video_object_thread(void *param)
 
    eclair_audio_level_set(eclair, emotion_object_audio_volume_get(new_video_object));
    eclair->video_object = new_video_object;
-   eclair_update_current_file_info(eclair);
+   eclair_update_current_file_info(eclair, 0);
 
    return NULL; 
 }
@@ -667,17 +678,17 @@ static void _eclair_sig_pregest()
 //Display a message on segvs
 static void _eclair_on_segv(int num)
 {
-	fprintf (stderr, "\n\n");	
-	fprintf (stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
-	fprintf (stderr, "\n");
-	fprintf (stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
-	fprintf (stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
-	fprintf (stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
-	fprintf (stderr, "\n");
-	fprintf (stderr, "With that, devs will be able to correct bugs faster and easier\n");
-	fprintf (stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
-	fprintf (stderr, "\n");
-	fprintf (stderr, "Thanks :)\n");
+	fprintf(stderr, "\n\n");	
+	fprintf(stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
+	fprintf(stderr, "\n");
+	fprintf(stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
+	fprintf(stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
+	fprintf(stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "With that, devs will be able to correct bugs faster and easier\n");
+	fprintf(stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "Thanks :)\n");
    
 	exit(20);
 }

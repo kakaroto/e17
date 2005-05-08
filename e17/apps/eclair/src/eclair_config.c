@@ -1,6 +1,5 @@
 #include "eclair_config.h"
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <Ecore_File.h>
 #include <stdio.h>
 
 Evas_Bool eclair_config_init(Eclair_Config *config)
@@ -16,10 +15,10 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
       return 0;
 
    sprintf(config->config_dir_path, "%s/.eclair/", home);
-   mkdir(config->config_dir_path, 0755);
+   ecore_file_mkdir(config->config_dir_path);
 
    sprintf(config->covers_dir_path, "%scovers/", config->config_dir_path);
-   mkdir(config->config_dir_path, 0755);
+   ecore_file_mkdir(config->covers_dir_path);
 
    sprintf(config->config_file_path, "%seclair.cfg", config->config_dir_path);
    config->config_file = fopen(config->config_file_path, "a+t");

@@ -1,5 +1,6 @@
 #include "eclair_media_file.h"
 #include <Edje.h>
+#include <Ecore_File.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
 #include "eclair_cover.h"
@@ -45,7 +46,7 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
          edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_name", artist_title_string);
          free(artist_title_string);
       }
-      else if ((filename = eclair_utils_path_to_filename(media_file->path)))
+      else if ((filename = ecore_file_get_file(media_file->path)))
          edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_name", filename);
       else
          edje_object_part_text_set(media_file->playlist_entry, "playlist_entry_name", "Media");
@@ -64,5 +65,5 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
 
    //If the media file is the current, we also update gui infos
    if (media_file == eclair_playlist_current_media_file(&eclair->playlist))
-      eclair_update_current_file_info(eclair);
+      eclair_update_current_file_info(eclair, 0);
 }
