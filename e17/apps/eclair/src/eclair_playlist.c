@@ -1,6 +1,7 @@
 #include "eclair_playlist.h"
 #include "../config.h"
 #include <string.h>
+#include <stdio.h>
 #include <Esmart/Esmart_Container.h>
 #include <Evas.h>
 #include <Ecore_File.h>
@@ -11,6 +12,8 @@
 #include "eclair_meta_tag.h"
 #include "eclair_callbacks.h"
 #include "eclair_utils.h"
+
+#define MAX_PATH_LEN 1024
 
 //Initialize the playlist
 void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
@@ -94,6 +97,41 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir)
    return 1;
 }
 
+//Add files stored in the m3u file
+Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path)
+{
+   FILE *m3u_file;
+   char line[MAX_PATH_LEN], *path, *c, *m3u_dir;
+
+   if (!playlist || !m3u_path || !(m3u_file = fopen(m3u_path, "rt")))
+      return 0;
+
+   m3u_dir = ecore_file_get_dir(m3u_path);
+
+   while (fgets(line, MAX_PATH_LEN, m3u_file))
+   {
+      if (line[0] == '#')
+         continue;
+
+      for (c = strpbrk(line, "\r\n"); c; c = strpbrk(c, "\r\n"))
+         *c = 0;
+   
+      if (line[0] == '/')
+         eclair_playlist_add_uri(playlist, line);
+      else if (m3u_dir)
+      {
+         path = (char *)malloc(strlen(m3u_dir) + strlen(line) + 2);
+         sprintf(path, "%s/%s", m3u_dir, line);
+         eclair_playlist_add_uri(playlist, path);
+         free(path);
+      }
+   }
+
+   free(m3u_dir);
+   fclose(m3u_file);
+   return 1;
+}
+
 //Add the media file located at the uri
 Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
 {
@@ -121,10 +159,19 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
    else
       new_path = strdup(uri);
 
-   if (eclair_playlist_add_dir(playlist, new_path))
+   if (!strstr(new_path, "://"))
    {
-      free(new_path);
-      return 1;
+      if (eclair_playlist_add_dir(playlist, new_path))
+      {
+         free(new_path);
+         return 1;
+      }
+      if (strcmp(eclair_utils_file_get_extension(new_path), "m3u") == 0)
+      {
+         eclair_playlist_add_m3u(playlist, new_path);
+         free(new_path);
+         return 1;  
+      }
    }
    
    new_media_file = eclair_media_file_new();

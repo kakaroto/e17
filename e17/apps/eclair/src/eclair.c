@@ -690,7 +690,7 @@ static void _eclair_on_segv(int num)
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Thanks :)\n");
    
-	exit(20);
+	exit(128 + num);
 }
 
 int main(int argc, char *argv[])
