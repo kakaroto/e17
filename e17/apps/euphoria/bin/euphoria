@@ -26,6 +26,7 @@ Config = Struct.new("Config", :ipc_path, :theme, :time_display_elapsed)
 
 class Euphoria
 	DATA_DIR = "/usr/local/share/euphoria"
+	DATA_DIR_PRIV = File.expand_path("~/.xmms2/clients/euphoria")
 
 	include Singleton
 
@@ -36,8 +37,7 @@ class Euphoria
 		@xmms = nil
 
 		# settings
-		@config_file =
-			File.expand_path("~/.xmms2/clients/euphoria/config.yaml")
+		@config_file = DATA_DIR_PRIV + "/config.yaml"
 
 		load_config
 		init_xmms
@@ -105,8 +105,7 @@ class Euphoria
 	end
 
 	def show_file_dialog
-		fd = File.expand_path("~/.xmms2/clients/euphoria/themes/fd.eet")
-		FileDialog.open(fd) do |sel|
+		FileDialog.open(@file_dialog_theme) do |sel|
 			if File.directory?(sel)
 				files = []
 				Find.find(sel) { |f| files << f if File.file?(f) }
@@ -146,6 +145,12 @@ private
 
 		@theme = find_theme(@config.theme)
 		raise "Cannot find theme - #{@config.theme}" if @theme.nil?
+
+		if Edje.collections(@theme).include?("esmart.filedialog")
+			@file_dialog_theme = @theme
+		else
+			@file_dialog_theme = DATA_DIR_PRIV + "/themes/fd.eet"
+		end
 
 		@edje = Edje::Edje.new(@ee.evas)
 		@edje.load(@theme, "euphoria")
@@ -335,9 +340,9 @@ private
 	end
 
 	def find_theme(name)
-		dirs = [File.expand_path("~/.xmms2/clients/euphoria"), DATA_DIR]
+		dirs = [DATA_DIR_PRIV, DATA_DIR]
 		dirs.each do |dir|
-			tmp = File.join(dir, "/themes/#{name}.edj")
+			tmp = File.join(dir, "themes/#{name}.edj")
 			return tmp if File.exist?(tmp)
 		end
 
