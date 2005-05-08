@@ -106,7 +106,7 @@ class Playlist < Array
 			end
 		end
 
-		each { |i| i.show(eet, @container) }
+		each { |i| i.show(eet) }
 
 		current_item && current_item.hilight
 	end
@@ -120,7 +120,7 @@ class Playlist < Array
 			item = PlaylistItem.new(id, @xmms, self)
 			super(item)
 
-			item.show(@eet, @container) unless @container.nil?
+			item.show(@eet) unless @container.nil?
 		end
 
 		self

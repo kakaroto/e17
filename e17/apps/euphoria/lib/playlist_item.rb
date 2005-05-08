@@ -28,8 +28,8 @@ class PlaylistItem
 		@props[:duration].to_i / 1000
 	end
 
-	def show(eet, container)
-		@edje = Edje::Edje.new(container.evas)
+	def show(eet)
+		@edje = Edje::Edje.new(@playlist.container.evas)
 		@edje.load(eet, "playlist_item")
 		w, @height = @edje.get_size_min
 
@@ -38,7 +38,7 @@ class PlaylistItem
 		w, h = @edje.get_size_min
 		@edje.resize(w, h)
 
-		container.append_element(@edje)
+		@playlist.container.append_element(@edje)
 
 		# if a playlist item gets hilighted, un-hilight all other items
 		@edje.on_signal("playlist_item.selected") do
@@ -57,11 +57,11 @@ class PlaylistItem
 
 =begin
 		@edje.on_signal("PLAYLIST_SCROLL_UP", "") do
-			@container.scroll(@height * 3)
+			@playlist.container.scroll(@height * 3)
 		end
 
 		@edje.on_signal("PLAYLIST_SCROLL_DOWN", "") do
-			@container.scroll(@height * -3)
+			@playlist.container.scroll(@height * -3)
 		end
 =end
 	end
