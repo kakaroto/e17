@@ -129,12 +129,12 @@ class Playlist < Array
 			item = find { |i| i.id == item }
 		end
 
-		item.hide if i.visible?
+		item.hide(@container) if i.visible?
 		super(item)
 	end
 
 	def clear
-		each { |i| i.hide if i.visible? }
+		each { |i| i.hide(@container) if i.visible? }
 		super
 	end
 
