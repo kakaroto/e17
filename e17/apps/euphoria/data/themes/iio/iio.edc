@@ -22,6 +22,10 @@
 	collections { 
 	group { name, "euphoria"; min, 413 94; max, 413 94;
 
+	data {
+		item, "shaped" "you bet";
+	}
+
 	script {
 		public message (Msg_Type:type, id, ...)
 		{
