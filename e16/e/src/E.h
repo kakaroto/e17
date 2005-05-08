@@ -561,6 +561,8 @@ struct _eobj
 #define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
 #define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(&((eo)->o), x, y, w, h)
 #define EoReparent(eo, d, x, y)         EobjReparent(&((eo)->o), d, x, y)
+#define EoRaise(eo)                     EobjRaise(&((eo)->o))
+#define EoLower(eo)                     EobjLower(&((eo)->o))
 #define EoChangeShape(eo)               EobjChangeShape(&((eo)->o))
 
 typedef struct
@@ -1542,6 +1544,8 @@ void                EobjMove(EObj * eo, int x, int y);
 void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
 void                EobjReparent(EObj * eo, int desk, int x, int y);
+int                 EobjRaise(EObj * eo);
+int                 EobjLower(EObj * eo);
 void                EobjChangeShape(EObj * eo);
 
 #if USE_COMPOSITE
@@ -2164,8 +2168,6 @@ EWin               *const *EwinListGetForDesk(int *num, int desk);
 EWin               *EwinListStackGetTop(void);
 
 #define EwinListGetAll EwinListStackGet
-#define EwinListStackRaise(ewin) EobjListStackRaise(&(ewin->o))
-#define EwinListStackLower(ewin) EobjListStackLower(&(ewin->o))
 #define EwinListFocusRaise(ewin) EobjListFocusRaise(&(ewin->o))
 #define EwinListFocusLower(ewin) EobjListFocusLower(&(ewin->o))
 

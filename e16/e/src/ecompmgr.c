@@ -1124,17 +1124,7 @@ ECompMgrWinNew(EObj * eo)
    cw->opacity = 0xdeadbeef;
    ECompMgrWinChangeOpacity(eo, eo->opacity);
 
-#if 0				/* FIXME - Do we need this? */
-   /* Find new window region */
-   cw->extents = win_extents(disp, eo);
-#endif
-
    EventCallbackRegister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
-
-#if 0				/* FIXME - Not necessary? */
-   if (cw->a.map_state == IsViewable)
-      ECompMgrWinMap(eo, cw->damage_sequence - 1, False);
-#endif
 }
 
 void
@@ -1257,6 +1247,18 @@ ECompMgrWinChangeShape(EObj * eo)
      }
 
    ECompMgrWinInvalidate(eo, INV_SIZE);
+}
+
+void
+ECompMgrWinChangeStacking(EObj * eo)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   if (Conf_compmgr.shadow == ECM_SHADOWS_OFF)
+      return;
+
+   if (cw->extents != None)
+      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
 }
 
 static void

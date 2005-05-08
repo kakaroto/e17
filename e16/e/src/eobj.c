@@ -110,7 +110,7 @@ EobjSetLayer(EObj * eo, int layer)
       eo->ilayer &= ~512;
 
    if (eo->ilayer != ilayer)
-      EobjListStackRaise(eo);
+      EobjRaise(eo);
 }
 
 void
@@ -373,6 +373,36 @@ EobjReparent(EObj * eo, int desk, int x, int y)
       ECompMgrWinReparent(eo, desk, move);
 #endif
    EobjSetDesk(eo, desk);
+}
+
+int
+EobjRaise(EObj * eo)
+{
+   int                 num;
+
+   num = EobjListStackRaise(eo);
+   if (num == 0)
+      return num;
+#if USE_COMPOSITE
+   if (eo->shown && eo->cmhook)
+      ECompMgrWinChangeStacking(eo);
+#endif
+   return num;
+}
+
+int
+EobjLower(EObj * eo)
+{
+   int                 num;
+
+   num = EobjListStackLower(eo);
+   if (num == 0)
+      return num;
+#if USE_COMPOSITE
+   if (eo->shown && eo->cmhook)
+      ECompMgrWinChangeStacking(eo);
+#endif
+   return num;
 }
 
 void

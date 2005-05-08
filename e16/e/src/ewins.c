@@ -1303,33 +1303,34 @@ RaiseEwin(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
+   if (EoGetWin(ewin) == None)
+      return;
+
    if (call_depth > 256)
       return;
    call_depth++;
 
+   num = EoRaise(ewin);
+
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      Eprintf("RaiseEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	      EwinGetName(ewin));
+      Eprintf("RaiseEwin(%d) %#lx %s n=%d\n", call_depth, ewin->client.win,
+	      EwinGetName(ewin), num);
 
-   if (EoGetWin(ewin))
+   if (num == 0)		/* Quit if stacking is unchanged */
+      goto done;
+
+   lst = EwinListTransients(ewin, &num, 1);
+   for (i = 0; i < num; i++)
+      RaiseEwin(lst[i]);
+   if (lst)
+      Efree(lst);
+
+   if (call_depth == 1)
      {
-	num = EwinListStackRaise(ewin);
-	if (num == 0)		/* Quit if stacking is unchanged */
-	   goto done;
-
-	lst = EwinListTransients(ewin, &num, 1);
-	for (i = 0; i < num; i++)
-	   RaiseEwin(lst[i]);
-	if (lst)
-	   Efree(lst);
-
-	if (call_depth == 1)
-	  {
-	     if (num > 0)
-		StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
-	     else
-		RestackEwin(ewin);	/* Restack this one only */
-	  }
+	if (num > 0)
+	   StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
+	else
+	   RestackEwin(ewin);	/* Restack this one only */
      }
 
  done:
@@ -1343,33 +1344,34 @@ LowerEwin(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
+   if (EoGetWin(ewin) == None)
+      return;
+
    if (call_depth > 256)
       return;
    call_depth++;
 
+   num = EoLower(ewin);
+
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      Eprintf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	      EwinGetName(ewin));
+      Eprintf("LowerEwin(%d) %#lx %s n=%d\n", call_depth, ewin->client.win,
+	      EwinGetName(ewin), num);
 
-   if (EoGetWin(ewin))
+   if (num == 0)		/* Quit if stacking is unchanged */
+      goto done;
+
+   lst = EwinListTransientFor(ewin, &num);
+   for (i = 0; i < num; i++)
+      LowerEwin(lst[i]);
+   if (lst)
+      Efree(lst);
+
+   if (call_depth == 1)
      {
-	num = EwinListStackLower(ewin);
-	if (num == 0)		/* Quit if stacking is unchanged */
-	   goto done;
-
-	lst = EwinListTransientFor(ewin, &num);
-	for (i = 0; i < num; i++)
-	   LowerEwin(lst[i]);
-	if (lst)
-	   Efree(lst);
-
-	if (call_depth == 1)
-	  {
-	     if (num > 0)
-		StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
-	     else
-		RestackEwin(ewin);	/* Restack this one only */
-	  }
+	if (num > 0)
+	   StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
+	else
+	   RestackEwin(ewin);	/* Restack this one only */
      }
 
  done:
