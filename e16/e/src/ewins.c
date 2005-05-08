@@ -1614,11 +1614,13 @@ EwinsEventsConfigure(int mode)
 
 	EwinEventsConfigure(lst[i], mode);
 
+#if 0				/* FIXME - Remove? (obsoletes EwinRefresh) */
 	/* This is a hack. Maybe we should do something with expose events. */
 	if (mode)
 	   if (Mode.mode == MODE_DESKSWITCH && EoIsSticky(ewin) &&
 	       EoIsShown(ewin))
 	      EwinRefresh(ewin);
+#endif
      }
 }
 

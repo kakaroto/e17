@@ -461,7 +461,8 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    EwinDetermineArea(ewin);
 
-   if ((Mode.mode == MODE_NONE) /* && (move || resize) */ )
+   if ((Mode.mode == MODE_NONE ||
+	Mode.mode == MODE_DESKSWITCH) /* && (move || resize) */ )
      {
 	if (TransparencyEnabled())
 	   EwinBorderDraw(ewin, resize, 1, 0);	/* Update the border */

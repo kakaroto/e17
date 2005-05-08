@@ -759,18 +759,27 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 
    if (trans)
      {
-	Window              cr;
-	Pixmap              bg;
+	Window              cr, dummy;
+	Drawable            bg;
 	int                 xx, yy;
 
-	XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &xx, &yy, &cr);
-/*	Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
+	bg = BackgroundGetPixmap(DeskGetBackground(DesksGetCurrent()));
+	if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
+	  {
+	     cr = VRoot.win;
+	     bg = VRoot.win;
+	  }
+	else
+	  {
+	     cr = DeskGetCurrentRoot();
+	  }
+	XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
+#if 0
+	Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h);
+#endif
 	if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
 	  {
 	     /* Create the background base image */
-	     bg = BackgroundGetPixmap(DeskGetBackground(DesksGetCurrent()));
-	     if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
-		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
 	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h,
 						   !EServerIsGrabbed());
@@ -780,7 +789,9 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      }
    else
      {
-/*	Eprintf("ImagestateMakePmapMask %#lx %d %d\n", win, w, h); */
+#if 0
+	Eprintf("ImagestateMakePmapMask %#lx %d %d\n", win, w, h);
+#endif
      }
 #else
    trans = 0;
