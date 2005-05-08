@@ -224,7 +224,7 @@ program { name, "editFile_clicked"; signal, "mouse,down,1"; source, EDIT;
 program { name, "editFile_unclicked"; signal, "mouse,down"; source, EDIT;
 	action, STATE_SET "clicked" 0.0; transition, LINEAR 0.1; target, EDIT;
 }
-program { name, "editFile"; signal,  "mouse,up,1"; source, "*";
+program { name, "editFile"; signal,  "mouse,up,1"; source, EDIT;
 	action, SIGNAL_EMIT "PLAYLIST_EDIT" EDIT; }
 
 ///////////////////////////////////////////////////////////////////////
