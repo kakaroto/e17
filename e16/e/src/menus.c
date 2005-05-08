@@ -1300,6 +1300,7 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	if (!mi->params)
 	   break;
 	MenusHide();
+	CheckEvent();
 	SetContextEwin(Mode_menus.context_ewin);
 	EFunc(mi->params);
 	SetContextEwin(NULL);
@@ -1374,6 +1375,7 @@ MenuItemEventMouseUp(MenuItem * mi, XEvent * ev __UNUSED__)
 	if ((mi->params) /* && (!Mode_menus.just_shown) */ )
 	  {
 	     MenusHide();
+	     CheckEvent();
 	     SetContextEwin(Mode_menus.context_ewin);
 	     EFunc(mi->params);
 	     SetContextEwin(NULL);
