@@ -55,15 +55,13 @@ class PlaylistItem
 			@xmms.playback_start.wait
 		end
 
-=begin
 		@edje.on_signal("PLAYLIST_SCROLL_UP", "") do
-			@playlist.container.scroll(@height * 3)
+			@playlist.container.scroll(h * 3)
 		end
 
 		@edje.on_signal("PLAYLIST_SCROLL_DOWN", "") do
-			@playlist.container.scroll(@height * -3)
+			@playlist.container.scroll(h * -3)
 		end
-=end
 	end
 
 	def hilight
