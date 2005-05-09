@@ -8,12 +8,12 @@ group {
          description {
             state: "default" 0.0;
             visible: 1;
-            color: 206 206 206 0;
+            color: 118 146 169 0;
          }
          description {
             state: "current" 0.0;
             visible: 1;
-            color: 230 200 126 180;
+            color: 118 146 169 180;
          }
       }
       part {
@@ -24,7 +24,7 @@ group {
          description {
             state: "default" 0.0;
             color: 220 220 220 255;
-            color3: 255 0 0 220;
+            color3: 0 0 0 220;
             rel1 {
                relative: 0 0;
                to: playlist_entry_length;
