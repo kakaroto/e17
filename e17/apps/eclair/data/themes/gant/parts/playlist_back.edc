@@ -1,0 +1,245 @@
+part {
+   name: "playlist_background";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 0 1;
+         offset: 27 0;
+         to: "body";
+      }
+      rel2 {
+         relative: 1 0;
+         offset: -1 -1;
+         to: "playlist_bottom";
+      }
+      image {
+         normal: "playlist_background.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+   }
+}
+part {
+   name: "playlist_bottom";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 0 0;
+         offset: 27 2;
+         to_x: "body";
+         to_y: "playlist_button";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 286 18;
+         to_x: "body";
+         to_y: "playlist_button";
+      }
+      image {
+         normal: "playlist_bottom.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+   }
+}
+part {
+   name: "playlist_clip";
+   type: "RECT";
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         relative: 0 0;
+         to: "playlist_background";
+      }
+      rel2 {
+         relative: 1 1;
+         to: "playlist_bottom";
+      }
+   }
+}
+part {
+   name: "playlist_box";
+   clip_to: "playlist_clip";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 1 1;
+         offset: -249 -122;
+         to: "playlist_background";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: -9 0;
+         to: "playlist_background";
+      }
+      image {
+         normal: "playlist_box.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+   }
+}
+part {
+   name: "playlist_container";
+   type: SWALLOW;
+   clip_to: "playlist_clip";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 0 0;
+         offset: 13 13;
+         to: "playlist_box";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 214 111;
+         to: "playlist_box";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" "0.0";
+      visible: 1;
+   }
+}
+part {
+   name: "playlist_rect";
+   type: RECT;
+   clip_to: "playlist_clip";
+   repeat_events: 1;
+   description {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1 {
+         relative: 0 0;
+         to: "playlist_box";
+      }
+      rel2 {
+         relative: 1 1;
+         to: "playlist_box";
+      }
+   }
+}
+part {
+   name: "playlist_shadow";
+   clip_to: "playlist_clip";
+   mouse_events: 0;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      color: 255 255 255 0;
+      rel1 {
+         relative: 0 0;
+         offset: 0 0;
+         to: "playlist_background";
+      }
+      rel2 {
+         relative: 1 0;
+         offset: 0 9;
+         to: "playlist_background";
+      }
+      image {
+         normal: "playlist_shadow.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+      color: 255 255 255 255;
+   }
+}
+part {
+   name: "playlist_scrollbar_confine";
+   type: RECT;
+   clip_to: "playlist_clip";
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 0 0;
+         offset: 228 21;
+         to: "playlist_box";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 228 100;
+         to: "playlist_box";
+      }
+   }
+}
+part {
+   name: "playlist_scrollbar_button";
+   dragable {
+      confine: "playlist_scrollbar_confine";
+      x: 0 0 0;
+      y: 1 1 1;
+   }
+   description {
+      state: "default" 0.0;
+      min: 11 6;
+      max: 11 6;
+      visible: 1;
+      image {
+         normal: "playlist_scrollbar_button.png";
+      }
+   }
+}
+part {
+   name: "playlist_scrollbar_up";
+   clip_to: "playlist_clip";
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 0;
+         offset: 218 12;
+         to: "playlist_box";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 228 17;
+         to: "playlist_box";
+      }
+      image {
+         normal: "playlist_scrollbar_up.png";
+      }
+   }
+}
+part {
+   name: "playlist_scrollbar_down";
+   clip_to: "playlist_clip";
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 0;
+         offset: 218 104;
+         to: "playlist_box";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 228 109;
+         to: "playlist_box";
+      }
+      image {
+         normal: "playlist_scrollbar_down.png";
+      }
+   }
+}

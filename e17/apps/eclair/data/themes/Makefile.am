@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = default swallow_me
+SUBDIRS = default swallow_me gant

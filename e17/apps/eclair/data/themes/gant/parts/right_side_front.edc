@@ -1,0 +1,59 @@
+part {
+   name: "right_border";
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 0;
+         offset: 298 7;
+         to: "body";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 314 112;
+         to: "body";
+      }
+      image {
+         normal: "right_border.png";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      rel1 {
+         relative: 0 0;
+         offset: 459 7;
+         to: "body";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 475 112;
+         to: "body";
+      }
+      image {
+         normal: "right_border.png";
+      }
+   }
+}
+part {
+   name: "right_border_close";
+   type: RECT;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      color: 0 0 0 0;
+      rel1 {
+         relative: 0 0;
+         offset: 0 0;
+         to: "right_border";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: 0 0;
+         to: "right_border";
+      }
+   }
+   description {
+      state: "open" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+   }
+}

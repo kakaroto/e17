@@ -1,0 +1,23 @@
+/*program {
+   name: "open_right_side";
+   signal: "mouse,clicked,1";
+   source: "right_border";
+   action: STATE_SET "open" 0.0;
+   transition: DECELERATE 1;
+   target: "right_border";
+   target: "right_border_close";
+   target: "right_side";
+   target: "right_shadow";
+}
+program {
+   name: "close_right_side";
+   signal: "mouse,clicked,1";
+   source: "right_border_close";
+   action: STATE_SET "default" 0.0;
+   transition: DECELERATE 1;
+   target: "right_border";
+   target: "right_border_close";
+   target: "right_side";
+   target: "right_shadow";
+}
+*/

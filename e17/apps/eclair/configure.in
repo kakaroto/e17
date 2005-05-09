@@ -184,6 +184,7 @@ data/Makefile
 data/fonts/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/gant/Makefile
 data/themes/swallow_me/Makefile
 ],[
 ])

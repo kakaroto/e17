@@ -1,0 +1,40 @@
+program {
+   name: "button_minimize_down";
+   signal: "mouse,down,1";
+   source: "button_minimize";
+   action: STATE_SET "down" 0.0;
+   target: "button_minimize";
+}
+program {
+   name: "button_minimize_up";
+   signal: "mouse,up,1";
+   source: "button_minimize";
+   action: STATE_SET "default" 0.0;
+   target: "button_minimize";
+}
+program {
+   name: "button_minimize_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_minimize";
+   action: SIGNAL_EMIT "eclair_minimize" "";
+}
+program {
+   name: "button_close_down";
+   signal: "mouse,down,1";
+   source: "button_close";
+   action: STATE_SET "down" 0.0;
+   target: "button_close";
+}
+program {
+   name: "button_close_up";
+   signal: "mouse,up,1";
+   source: "button_close";
+   action: STATE_SET "default" 0.0;
+   target: "button_close";
+}
+program {
+   name: "button_close_clicked";
+   signal: "mouse,clicked,1";
+   source: "button_close";
+   action: SIGNAL_EMIT "eclair_close" "";
+}

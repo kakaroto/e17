@@ -1,0 +1,61 @@
+part {
+   name: "volume_bar";
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         relative: 0 0;
+         offset: 186 79;
+         to: "body";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 271 101;
+         to: "body";
+      }
+      image {
+         normal: "volume_bar.png";
+      }
+   }
+}
+part {
+   name: "volume_bar_confine";
+   type: RECT;
+   description {
+      state: "default" 0.0;
+      visible: 0;
+      rel1 {
+         relative: 0 0;
+         offset: -2 22;
+         to: "volume_bar";
+      }
+      rel2 {
+         relative: 1 0;
+         offset: 2 23;
+         to: "volume_bar";
+      }
+   }
+}
+part {
+   name: "volume_bar_drag";
+   dragable {
+      confine: "volume_bar_confine";
+      x: 1 1 1;
+      y: 0 0 0;
+   }
+   description {
+      state: "default" 0.0;
+      min: 28 26;
+      max: 28 26;
+      image {
+         normal: "progress_bar_drag.png";
+      }
+   }
+   description {
+      state: "down" 0.0;
+      inherit: "default" 0.0;
+      image {
+         normal: "progress_bar_drag_down.png";
+      }
+   }
+}

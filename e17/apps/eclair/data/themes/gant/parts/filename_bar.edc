@@ -1,0 +1,65 @@
+part {
+   name: "filename_bar";
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         relative: 0 0;
+         offset: 120 15;
+         to: "body";
+      }
+      rel2 {
+         relative: 0 0;
+         offset: 297 51;
+         to: "body";
+      }
+      image {
+         normal: "filename_bar.png";
+      }
+   }
+}
+part {
+   name: "filename_bar_clip";
+   type: RECT;
+   description {
+      state: "default" 0.0;
+      visible: 1;
+      rel1 {
+         relative: 0 0;
+         offset: 15 1;
+         to: "filename_bar";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: -15 0;
+         to: "filename_bar";
+      }
+   }
+}
+part {
+   name: "current_media_name";
+   type: TEXT;
+   effect: SHADOW;
+   clip_to: "filename_bar_clip";
+   description {
+      state: "default" 0.0;
+      rel1 {
+         relative: 0 0;
+         offset: 0 0;
+         to: "filename_bar_clip";
+      }
+      rel2 {
+         relative: 1 1;
+         offset: 0 0;
+         to: "filename_bar_clip";
+      }
+      color: 220 220 220 255;
+      color3: 0 0 0 220;
+      text {
+         text:     "Media name";
+         font:     "Edje Vera";
+         size:     11;
+         align: 0 0.5; 
+      }
+   }
+}
