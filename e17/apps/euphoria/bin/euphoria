@@ -114,7 +114,7 @@ class Euphoria
 					@xmms.playlist_add("file://" + f).wait
 				end
 			elsif File.exists?(sel)
-				@xmms.playlist_add("file://" + file).wait
+				@xmms.playlist_add("file://" + sel).wait
 			end
 		end
 	end
