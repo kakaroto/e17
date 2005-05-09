@@ -149,7 +149,7 @@ private
 		if Edje.collections(@theme).include?("esmart.filedialog")
 			@file_dialog_theme = @theme
 		else
-			@file_dialog_theme = DATA_DIR_PRIV + "/themes/fd.eet"
+			@file_dialog_theme = find_theme("file_dialog")
 		end
 
 		@edje = Edje::Edje.new(@ee.evas)
