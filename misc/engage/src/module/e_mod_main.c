@@ -1068,7 +1068,7 @@ _engage_cb_event_border_add(void *data, int type, void *event)
 
    e = event;
    eb = data;
-   if (e->border->container != eb->con)
+   if (e->border->zone->container != eb->con)
      return;
 
    if (_engage_border_ignore(e->border))
@@ -1113,7 +1113,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    e = event;
    eb = data;
 
-   if (e->border->container != eb->con)
+   if (e->border->zone->container != eb->con)
      return;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
@@ -1155,7 +1155,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 
    e = event;
    eb = data;
-   if (e->border->container != eb->con)
+   if (e->border->zone->container != eb->con)
      return;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
@@ -1204,7 +1204,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    e = event;
    eb = data;
 
-   if (e->border->container != eb->con)
+   if (e->border->zone->container != eb->con)
      return;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
