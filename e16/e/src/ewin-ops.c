@@ -417,10 +417,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 #endif
 
    if (reparent)
-     {
-	EoReparent(ewin, desk, x, y);
-	HintsSetWindowDesktop(ewin);
-     }
+      EoReparent(ewin, desk, x, y);
    else
       EoMoveResize(ewin, x, y, w, h);
 
@@ -477,7 +474,9 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    if (Mode.mode == MODE_NONE && desk != pdesk)
      {
+	HintsSetWindowDesktop(ewin);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
+
 	if (call_depth == 1)
 	  {
 	     if (EoIsShown(ewin))
@@ -710,6 +709,8 @@ EwinUnStick(EWin * ewin)
    MoveEwinToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
+   HintsSetWindowDesktop(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
 void
@@ -732,10 +733,12 @@ EwinStick(EWin * ewin)
       y += VRoot.h;
    y -= dy;
 
-   MoveEwinToDesktopAt(ewin, DesksGetCurrent(), x, y);
    EoSetSticky(ewin, 1);
+   MoveEwinToDesktopAt(ewin, DesksGetCurrent(), x, y);
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
+   HintsSetWindowDesktop(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
 void
@@ -1581,7 +1584,6 @@ EwinOpStick(EWin * ewin, int on)
 	     SoundPlay("SOUND_WINDOW_STICK");
 	     EwinStick(gwins[i]);
 	  }
-	SnapshotEwinUpdate(gwins[i], SNAP_USE_STICKY);
      }
    if (gwins)
       Efree(gwins);
@@ -1784,9 +1786,12 @@ EwinOpSetOpacity(EWin * ewin, int opacity)
 void
 EwinOpMoveToDesk(EWin * ewin, int desk)
 {
+   EoSetSticky(ewin, 0);
    MoveEwinToDesktop(ewin, desk);
    RaiseEwin(ewin);
-   EoSetSticky(ewin, 0);
+   EwinBorderUpdateState(ewin);
+   HintsSetWindowState(ewin);
+   HintsSetWindowDesktop(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
