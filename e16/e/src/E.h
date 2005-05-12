@@ -2255,6 +2255,7 @@ void                EUngrabServer(void);
 int                 EServerIsGrabbed(void);
 void                EFlush(void);
 void                ESync(void);
+Time                EGetTimestamp(void);
 
 void                ERegisterWindow(Window win);
 void                EUnregisterWindow(Window win);

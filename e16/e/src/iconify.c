@@ -429,10 +429,10 @@ IconboxDestroy(Iconbox * ib, int exiting)
 	  }
      }
 
+   EDestroyWindow(ib->win);
+
    if (ib->objs)
       Efree(ib->objs);
-
-   EDestroyWindow(ib->win);
 
    Efree(ib);
 
@@ -3014,6 +3014,8 @@ static Atom         E_XA__XEMBED_INFO = 0;
 static Atom         _NET_SYSTEM_TRAY_Sx = 0;
 static Atom         _NET_SYSTEM_TRAY_OPCODE = 0;
 static Atom         _NET_SYSTEM_TRAY_MESSAGE_DATA = 0;
+static Window       systray_sel_win = None;
+static Time         systray_sel_time = 0;
 
 static void         SystrayEvent(XEvent * ev, void *prm);
 
@@ -3184,6 +3186,7 @@ IconboxObjSwinFree(Iconbox * ib, SWin * swin)
 
 	XUnmapWindow(disp, swin->win);
 	XReparentWindow(disp, swin->win, VRoot.win, 0, 0);
+	ESync();
      }
 
    Efree(swin);
@@ -3280,27 +3283,46 @@ SystrayInit(Iconbox * ib, Window win, int screen)
       XInternAtom(disp, "_NET_SYSTEM_TRAY_MESSAGE_DATA", False);
 
    /* Acquire selection */
-   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, win, CurrentTime);
-
-   if (XGetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx) != win)
+   if (systray_sel_win != None)
      {
-	Eprintf("Failed to acquire selection %s\n", buf);
+	DialogOK(_("Systray Error!"), _("Only one systray is allowed"));
 	return;
      }
-
+   systray_sel_win = ECreateEventWindow(VRoot.win, -100, -100, 1, 1);
+   systray_sel_time = EGetTimestamp();
+   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, systray_sel_win,
+		      systray_sel_time);
+   if (XGetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx) != systray_sel_win)
+     {
+	DialogOK(_("Systray Error!"), _("Could not activate systray"));
+	Eprintf("Failed to acquire selection %s\n", buf);
+	EDestroyWindow(systray_sel_win);
+	systray_sel_win = None;
+	return;
+     }
    if (EventDebug(EDBUG_TYPE_ICONBOX))
-      Eprintf("Window %#lx is now system tray\n", win);
+      Eprintf("Window %#lx is now %s owner, time=%ld\n",
+	      systray_sel_win, buf, systray_sel_time);
+
+   ESelectInput(systray_sel_win,
+		SubstructureRedirectMask | SubstructureNotifyMask);
+   EventCallbackRegister(systray_sel_win, 0, SystrayEvent, ib);
 
    ESelectInputAdd(win, SubstructureRedirectMask | ResizeRedirectMask |
 		   SubstructureNotifyMask);
    EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    ecore_x_client_message32_send(VRoot.win, E_XA_MANAGER, StructureNotifyMask,
-				 CurrentTime, _NET_SYSTEM_TRAY_Sx, win, 0, 0);
+				 CurrentTime, _NET_SYSTEM_TRAY_Sx,
+				 systray_sel_win, 0, 0);
 }
 
 static void
 SystrayExit(Iconbox * ib)
 {
+   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, None, systray_sel_time);
+   EventCallbackUnregister(systray_sel_win, 0, SystrayEvent, ib);
    EventCallbackUnregister(ib->win, 0, SystrayEvent, ib);
+   EDestroyWindow(systray_sel_win);
+   systray_sel_win = None;
 }

@@ -1245,6 +1245,29 @@ EDisplayDisconnect(void)
    disp = NULL;
 }
 
+Time
+EGetTimestamp(void)
+{
+   static Window       win_ts = None;
+   XSetWindowAttributes attr;
+   XEvent              ev;
+
+   if (win_ts == None)
+     {
+	attr.override_redirect = 1;
+	win_ts = XCreateWindow(disp, VRoot.win, -100, -100, 1, 1, 0,
+			       CopyFromParent, InputOnly, CopyFromParent,
+			       CWOverrideRedirect, &attr);
+	XSelectInput(disp, win_ts, PropertyChangeMask);
+     }
+
+   XChangeProperty(disp, win_ts, XA_WM_NAME, XA_STRING, 8,
+		   PropModeAppend, (unsigned char *)"", 0);
+   XWindowEvent(disp, win_ts, PropertyChangeMask, &ev);
+
+   return ev.xproperty.time;
+}
+
 void
 EDrawableDumpImage(Drawable draw, const char *txt)
 {
