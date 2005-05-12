@@ -104,7 +104,7 @@ ICCCM_Delete(const EWin * ewin)
 {
    if (EwinIsInternal(ewin))
      {
-	EUnmapWindow(ewin->client.win);
+	HideEwin((EWin *) ewin);
 	return;
      }
 

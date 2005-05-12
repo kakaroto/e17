@@ -165,8 +165,9 @@ MenuHide(Menu * m)
    ewin = m->ewin;
    if (ewin)
      {
-	HideEwin(ewin);
+	EUnmapWindow(m->win);
 	EReparentWindow(m->win, VRoot.win, ewin->client.x, ewin->client.y);
+	HideEwin(ewin);
      }
    m->ewin = NULL;
 

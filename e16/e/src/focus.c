@@ -42,7 +42,7 @@ FocusEwinValid(EWin * ewin, int on_screen)
    if (!ewin->client.need_input)
       return 0;
 
-   if (!EwinIsMapped(ewin))
+   if (!EwinIsMapped(ewin) || !EoIsShown(ewin))
       return 0;
 
    return !on_screen || EwinIsOnScreen(ewin);

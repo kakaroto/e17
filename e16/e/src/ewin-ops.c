@@ -562,6 +562,7 @@ EwinIconify(EWin * ewin)
    if (!ewin->client.transient)
       ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
+   ewin->iconified = 3;
    HideEwin(ewin);
 
    /* Save position at which the window was iconified */
@@ -577,7 +578,6 @@ EwinIconify(EWin * ewin)
 	goto done;
      }
 
-   ewin->iconified = 3;
    ICCCM_Iconify(ewin);
 
    lst = EwinListTransients(ewin, &num, 0);
@@ -587,8 +587,8 @@ EwinIconify(EWin * ewin)
 	if (e->iconified)
 	   continue;
 
-	HideEwin(e);
 	e->iconified = 4;
+	HideEwin(e);
 	EwinRememberPositionSet(e);
      }
    if (lst)

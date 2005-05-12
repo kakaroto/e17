@@ -926,10 +926,46 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 }
 
 static void
+EwinUnmap1(EWin * ewin)
+{
+   /* The client may have been unmapped but the frame is not yet */
+
+   if (GetZoomEWin() == ewin)
+      Zoom(NULL);
+
+   ActionsEnd(ewin);
+
+   if (Mode.doingslide)
+     {
+	DrawEwinShape(ewin, Conf.slidemode, ewin->shape_x, ewin->shape_y,
+		      ewin->client.w, ewin->client.h, 2);
+	Mode.doingslide = 0;
+     }
+
+   if (ewin == GetContextEwin())
+      SlideoutsHide();
+}
+
+static void
+EwinUnmap2(EWin * ewin)
+{
+   /* The frame has been unmapped */
+
+   if (ewin == Mode.focuswin)
+      FocusToEWin(ewin, FOCUS_EWIN_GONE);
+   if (ewin == Mode.mouse_over_ewin)
+      Mode.mouse_over_ewin = NULL;
+   if (ewin == Mode.context_ewin)
+      Mode.context_ewin = NULL;
+}
+
+static void
 EwinWithdraw(EWin * ewin)
 {
    Window              win;
    int                 x, y;
+
+   /* Only external clients should go here */
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinWithdraw %#lx %s state=%d\n", ewin->client.win,
@@ -949,9 +985,6 @@ EwinWithdraw(EWin * ewin)
 
    ESync();
    EUngrabServer();
-
-   if (EwinIsInternal(ewin))
-      EwinDestroy(ewin);
 }
 
 static void
@@ -1017,9 +1050,6 @@ EwinEventMap(EWin * ewin)
 static void
 EwinEventUnmap(EWin * ewin)
 {
-   if (GetZoomEWin() == ewin)
-      Zoom(NULL);
-
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventUnmap %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
@@ -1031,38 +1061,27 @@ EwinEventUnmap(EWin * ewin)
       ewin->state = EWIN_STATE_ICONIC;
    else
       ewin->state = EWIN_STATE_WITHDRAWN;
-   ewin->o.shown = 0;		/* FIXME - TBD */
 
-   ActionsEnd(ewin);
+   EwinUnmap1(ewin);
 
-   if (ewin == GetContextEwin())
-      SlideoutsHide();
-
-   if (ewin == Mode.focuswin)
-      FocusToEWin(ewin, FOCUS_EWIN_GONE);
-   if (ewin == Mode.mouse_over_ewin)
-      Mode.mouse_over_ewin = NULL;
-   if (ewin == Mode.context_ewin)
-      Mode.context_ewin = NULL;
-
-   if (Mode.doingslide)
-     {
-	DrawEwinShape(ewin, Conf.slidemode, ewin->shape_x, ewin->shape_y,
-		      ewin->client.w, ewin->client.h, 2);
-	Mode.doingslide = 0;
-     }
-
-   /* FIXME - This is to sync the client.win EXID mapped state */
    EUnmapWindow(ewin->client.win);
    EoUnmap(ewin);
+
+   EwinUnmap2(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
    if (ewin->iconified)
       return;
 
-   if (ewin->Close)
-      ewin->Close(ewin);
+   if (EwinIsInternal(ewin))
+     {
+#if 1				/* FIXME - Remove? */
+	/* We should never get here */
+	Eprintf("FIXME: This cannot happen (%s)\n", EoGetName(ewin));
+#endif
+	return;
+     }
 
    if (WinGetParent(ewin->client.win) == ewin->win_container)
       EwinWithdraw(ewin);
@@ -1420,15 +1439,23 @@ ShowEwin(EWin * ewin)
 void
 HideEwin(EWin * ewin)
 {
-   if (!EoIsShown(ewin) || !EwinIsMapped(ewin))
+   if (!EwinIsInternal(ewin) && (!EoIsShown(ewin) || !EwinIsMapped(ewin)))
       return;
 
-   if (GetZoomEWin() == ewin)
-      Zoom(NULL);
+   EwinUnmap1(ewin);
 
    EUnmapWindow(ewin->client.win);
-
    EoUnmap(ewin);
+
+   EwinUnmap2(ewin);
+
+   if (!EwinIsInternal(ewin) || ewin->iconified)
+      return;
+
+   if (ewin->Close)
+      ewin->Close(ewin);
+
+   EwinDestroy(ewin);
 }
 
 Window
