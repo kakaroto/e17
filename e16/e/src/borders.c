@@ -437,6 +437,7 @@ EwinBorderSelect(EWin * ewin)
       goto done;
 
    ICCCM_GetShapeInfo(ewin);
+   ewin->shapedone = 0;
 
    if ((!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border) ||
        (Conf.dock.enable && ewin->docked))
