@@ -55,7 +55,6 @@ struct _button
    int                 state;
    Window              inside_win;
    Window              event_win;
-   char                destroy_inside_win;
    char                left;
    unsigned int        ref_count;
 };
@@ -121,7 +120,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->geom.size_from_image = simg;
    b->inside_win = 0;
    b->event_win = 0;
-   b->destroy_inside_win = 0;
    b->internal = 0;
    b->default_show = 1;
    b->used = 0;
@@ -427,24 +425,6 @@ int
 ButtonIsInternal(const Button * b)
 {
    return b->internal;
-}
-
-int
-ButtonIsAbove(const Button * b, int desk)
-{
-   return !b->internal && EoGetDesk(b) == desk && EoGetLayer(b) > 0;
-}
-
-int
-ButtonIsNormal(const Button * b, int desk)
-{
-   return !b->internal && EoGetDesk(b) == desk && EoGetLayer(b) == 0;
-}
-
-int
-ButtonIsBelow(const Button * b, int desk)
-{
-   return !b->internal && EoGetDesk(b) == desk && EoGetLayer(b) < 0;
 }
 
 int

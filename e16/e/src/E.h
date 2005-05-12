@@ -1323,9 +1323,6 @@ int                 ButtonGetWidth(const Button * b);
 int                 ButtonGetHeight(const Button * b);
 int                 ButtonIsFixed(const Button * b);
 int                 ButtonIsInternal(const Button * b);
-int                 ButtonIsAbove(const Button * b, int desk);
-int                 ButtonIsNormal(const Button * b, int desk);
-int                 ButtonIsBelow(const Button * b, int desk);
 int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
