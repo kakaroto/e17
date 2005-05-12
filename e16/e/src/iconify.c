@@ -1969,8 +1969,7 @@ IconboxRedraw(Iconbox * ib)
       PropagateShapes(ib->icon_win);
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
-   if (ib->nobg)
-      ib->ewin->shapedone = 0;
+   ib->ewin->shapedone = 0;
    EwinPropagateShapes(ib->ewin);
 
    Mode.queue_up = pq;

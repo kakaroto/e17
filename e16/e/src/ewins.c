@@ -1248,11 +1248,11 @@ EwinEventShapeChange(EWin * ewin)
 
    b = ewin->border;
    SyncBorderToEwin(ewin);
+#if 0
    if (ewin->border == b)
-      EwinPropagateShapes(ewin);
-#if 0				/* FIXME - Here? */
-   EoChangeShape(ewin);
 #endif
+      ewin->shapedone = 0;
+   EwinPropagateShapes(ewin);
 }
 
 static void
