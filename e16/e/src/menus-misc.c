@@ -281,7 +281,6 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		       icc = ImageclassFind(wd, 0);
 		       if (!icc)
 			  icc = ImageclassCreateSimple(wd, icon);
-		       Efree(icon);
 		    }
 		  if ((act) && (!strcmp(act, "exec")) && (params))
 		    {
@@ -313,6 +312,8 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		    }
 		  if (txt)
 		     Efree(txt);
+		  if (icon)
+		     Efree(icon);
 		  if (act)
 		     Efree(act);
 		  if (params)

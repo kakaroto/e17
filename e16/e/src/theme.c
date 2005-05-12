@@ -412,7 +412,7 @@ ThemePathFind(void)
       Efree(Conf.theme.name);
    Conf.theme.name = fullfileof(theme);
 
-   Mode.theme.path = Estrdup(theme);
+   Mode.theme.path = theme;
 }
 
 static void

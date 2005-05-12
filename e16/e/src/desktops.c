@@ -951,6 +951,8 @@ MoveStickyButtonsToCurrentDesk(void)
 
 	ButtonMoveToDesktop(btn, desks.current);
      }
+   if (lst)
+      Efree(lst);
 }
 
 void

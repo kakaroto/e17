@@ -433,7 +433,7 @@ ecore_x_window_prop_xid_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 			  &bytes_after, &prop_ret) != Success)
       return -1;
 
-   if (type_ret == None)
+   if (type_ret == None || num_ret == 0)
      {
 	num = 0;
      }

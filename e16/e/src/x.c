@@ -1077,6 +1077,9 @@ WinGetParent(Window win)
    if (!XQueryTree(disp, win, &rt, &parent, &pch, &nch))
       return None;
 
+   if (pch)
+      XFree(pch);
+
    return parent;
 }
 
