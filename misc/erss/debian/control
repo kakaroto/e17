@@ -2,7 +2,7 @@ Source: erss
 Section: x11
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libedb1-dev, libevas0-dev, libecore0-dev, libedje0-dev, libewl0-dev, debhelper (>> 4.0.0)
+Build-Depends: libedb-dev, libevas-dev, libecore-dev, libedje-dev, libetox-dev, debhelper (>> 4.0.0), libxml2-dev
 Standards-Version: 3.6.1.0
 
 Package: erss
