@@ -51,27 +51,27 @@ struct Ewl_Entry
 	int           wrap;           /**< Enable wrapping of the text */
 };
 
-Ewl_Widget     *ewl_entry_new(char *text);
-Ewl_Widget     *ewl_entry_multiline_new(char *text);
-int             ewl_entry_init(Ewl_Entry * e, char *text);
-void            ewl_entry_text_set(Ewl_Entry * e, char *t);
+Ewl_Widget     *ewl_entry_new(const char *text);
+Ewl_Widget     *ewl_entry_multiline_new(const char *text);
+int             ewl_entry_init(Ewl_Entry * e, const char *text);
+void            ewl_entry_text_set(Ewl_Entry * e, const char *t);
 char           *ewl_entry_text_get(Ewl_Entry * e);
 void            ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit);
 void            ewl_entry_multiline_set(Ewl_Entry * e, int m);
 int             ewl_entry_multiline_get(Ewl_Entry * e);
 
-void            ewl_entry_text_prepend(Ewl_Entry * e, char *text);
-void            ewl_entry_text_append(Ewl_Entry * e, char *text);
-void            ewl_entry_text_insert(Ewl_Entry * e, char *text, int index);
-void		ewl_entry_text_at_cursor_insert(Ewl_Entry * e, char *text);
+void            ewl_entry_text_prepend(Ewl_Entry * e, const char *text);
+void            ewl_entry_text_append(Ewl_Entry * e, const char *text);
+void            ewl_entry_text_insert(Ewl_Entry * e, const char *text, int index);
+void            ewl_entry_text_at_cursor_insert(Ewl_Entry * e, const char *text);
 
 int             ewl_entry_length_get(Ewl_Entry *e);
 
-void            ewl_entry_font_set(Ewl_Entry *e, char *font, int size);
+void            ewl_entry_font_set(Ewl_Entry *e, const char *font, int size);
 char           *ewl_entry_font_get(Ewl_Entry *e);
 int             ewl_entry_font_size_get(Ewl_Entry *e);
 
-void            ewl_entry_style_set(Ewl_Entry *e, char *style);
+void            ewl_entry_style_set(Ewl_Entry *e, const char *style);
 char           *ewl_entry_style_get(Ewl_Entry *e);
 
 void            ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a);

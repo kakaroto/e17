@@ -113,7 +113,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
  * @return Returns no value.
  * @brief Name the specified widget.
  */
-void ewl_widget_name_set(Ewl_Widget * w, char *name)
+void ewl_widget_name_set(Ewl_Widget * w, const char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -134,7 +134,7 @@ void ewl_widget_name_set(Ewl_Widget * w, char *name)
  * @return Returns an pointer to an allocated name string on success.
  * @brief Get the name for the specified widget.
  */
-char *ewl_widget_name_get(Ewl_Widget * w)
+const char *ewl_widget_name_get(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -147,7 +147,7 @@ char *ewl_widget_name_get(Ewl_Widget * w)
  * @return Returns an pointer a matched widget on success.
  * @brief Find a widget identified by a name.
  */
-Ewl_Widget *ewl_widget_name_find(char * name)
+Ewl_Widget *ewl_widget_name_find(const char * name)
 {
 	Ewl_Widget *match = NULL;
 

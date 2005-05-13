@@ -70,17 +70,17 @@ int             ewl_widget_init(Ewl_Widget * w, char *appearance);
 /*
  * Assign the given name to a widget
  */
-void            ewl_widget_name_set(Ewl_Widget * w, char *name);
+void            ewl_widget_name_set(Ewl_Widget * w, const char *name);
 
 /*
  * Retrieve the given name of a widget
  */
-char *          ewl_widget_name_get(Ewl_Widget * w);
+const char *    ewl_widget_name_get(Ewl_Widget * w);
 
 /*
  * Find the widget identified by a given name.
  */
-Ewl_Widget *    ewl_widget_name_find(char *name);
+Ewl_Widget *    ewl_widget_name_find(const char *name);
 
 /*
  * Signal the widget that it's parent has changed.

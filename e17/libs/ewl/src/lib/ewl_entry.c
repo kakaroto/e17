@@ -21,21 +21,21 @@ static Ewl_Entry_Op *ewl_entry_op_relevant_find(Ewl_Entry *e,
 static Ewl_Entry_Op *ewl_entry_op_color_new(int r, int g, int b, int a);
 static void ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 
-static Ewl_Entry_Op *ewl_entry_op_font_new(char *font, int size);
+static Ewl_Entry_Op *ewl_entry_op_font_new(const char *font, int size);
 static void ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_font_free(void *op);
 
-static Ewl_Entry_Op *ewl_entry_op_style_new(char *style);
+static Ewl_Entry_Op *ewl_entry_op_style_new(const char *style);
 static void ewl_entry_op_style_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 static void ewl_entry_op_style_free(void *op);
 
 static Ewl_Entry_Op *ewl_entry_op_align_new(unsigned int align);
 static void ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
 
-static Ewl_Entry_Op * ewl_entry_op_text_set_new(char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_append_new(char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_prepend_new(char *text);
-static Ewl_Entry_Op *ewl_entry_op_text_insert_new(char *text, int index);
+static Ewl_Entry_Op * ewl_entry_op_text_set_new(const char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_append_new(const char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_prepend_new(const char *text);
+static Ewl_Entry_Op *ewl_entry_op_text_insert_new(const char *text, int index);
 static Ewl_Entry_Op *ewl_entry_op_text_delete_new(unsigned int start,
 						  unsigned int len);
 static void ewl_entry_op_text_apply(Ewl_Entry *e, Ewl_Entry_Op *op);
@@ -49,7 +49,7 @@ static void ewl_entry_update_size(Ewl_Entry * e);
  * @return Returns a new entry widget on success, NULL on failure.
  * @brief Allocate and initialize a new multiline input entry widget
  */
-Ewl_Widget *ewl_entry_multiline_new(char *text)
+Ewl_Widget *ewl_entry_multiline_new(const char *text)
 {
 	Ewl_Widget *w;
 
@@ -69,7 +69,7 @@ Ewl_Widget *ewl_entry_multiline_new(char *text)
  * @return Returns a new entry widget on success, NULL on failure.
  * @brief Allocate and initialize a new entry widget
  */
-Ewl_Widget *ewl_entry_new(char *text)
+Ewl_Widget *ewl_entry_new(const char *text)
 {
 	Ewl_Entry      *e;
 
@@ -92,7 +92,7 @@ Ewl_Widget *ewl_entry_new(char *text)
  *
  * Initializes the entry widget @a e to it's default values and callbacks.
  */
-int ewl_entry_init(Ewl_Entry * e, char *text)
+int ewl_entry_init(Ewl_Entry * e, const char *text)
 {
 	char       *tmp;
 	int         r, g, b, a;
@@ -234,7 +234,7 @@ int ewl_entry_multiline_get(Ewl_Entry * e)
  *
  * Change the text of the entry widget @a e to the string @a t.
  */
-void ewl_entry_text_set(Ewl_Entry * e, char *text)
+void ewl_entry_text_set(Ewl_Entry * e, const char *text)
 {
 	Ewl_Entry_Op *op;
 
@@ -295,7 +295,7 @@ char *ewl_entry_text_get(Ewl_Entry * e)
  *
  * Appends text to the entry widget @a e.
  */
-void ewl_entry_text_append(Ewl_Entry * e, char *text)
+void ewl_entry_text_append(Ewl_Entry * e, const char *text)
 {
 	int len = 0;
 	Ewl_Entry_Op *op;
@@ -332,7 +332,7 @@ void ewl_entry_text_append(Ewl_Entry * e, char *text)
  *
  * Prepends text to the entry widget @a e.
  */
-void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
+void ewl_entry_text_prepend(Ewl_Entry * e, const char *text)
 {
 	Ewl_Entry_Op *op;
 
@@ -357,7 +357,7 @@ void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
  *
  * Inserts text to the entry widget @a e.
  */
-void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
+void ewl_entry_text_insert(Ewl_Entry * e, const char *text, int index)
 {
 	Ewl_Entry_Op *op;
 	int len = 0;
@@ -390,7 +390,7 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
  * Inserts text to the entry widget @a e at the current cursor position.
  */
 void
-ewl_entry_text_at_cursor_insert(Ewl_Entry * e, char *text)
+ewl_entry_text_at_cursor_insert(Ewl_Entry * e, const char *text)
 {
 	int pos = 0;
 
@@ -520,7 +520,7 @@ void ewl_entry_color_get(Ewl_Entry *e, int *a, int *r, int *g, int *b)
  * @brief Changes the currently applied font of the text to specified values
  * @return Returns no value.
  */
-void ewl_entry_font_set(Ewl_Entry *e, char *font, int size)
+void ewl_entry_font_set(Ewl_Entry *e, const char *font, int size)
 {
 	Ewl_Entry_Op *op;
 
@@ -589,7 +589,7 @@ int ewl_entry_font_size_get(Ewl_Entry *e)
  * @brief Changes the currently applied style of the text to specified values
  * @return Returns no value.
  */
-void ewl_entry_style_set(Ewl_Entry *e, char *style)
+void ewl_entry_style_set(Ewl_Entry *e, const char *style)
 {
 	Ewl_Entry_Op *op;
 
@@ -1872,7 +1872,7 @@ ewl_entry_op_color_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_font_new(char *font, int size)
+ewl_entry_op_font_new(const char *font, int size)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Font *opf;
@@ -1920,7 +1920,7 @@ ewl_entry_op_font_free(void *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_style_new(char *style)
+ewl_entry_op_style_new(const char *style)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Style *ops;
@@ -2023,7 +2023,7 @@ ewl_entry_op_align_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_set_new(char *text)
+ewl_entry_op_text_set_new(const char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2043,7 +2043,7 @@ ewl_entry_op_text_set_new(char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_append_new(char *text)
+ewl_entry_op_text_append_new(const char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2063,7 +2063,7 @@ ewl_entry_op_text_append_new(char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_prepend_new(char *text)
+ewl_entry_op_text_prepend_new(const char *text)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;
@@ -2083,7 +2083,7 @@ ewl_entry_op_text_prepend_new(char *text)
 }
 
 static Ewl_Entry_Op *
-ewl_entry_op_text_insert_new(char *text, int index)
+ewl_entry_op_text_insert_new(const char *text, int index)
 {
 	Ewl_Entry_Op *op;
 	Ewl_Entry_Op_Text *ops;

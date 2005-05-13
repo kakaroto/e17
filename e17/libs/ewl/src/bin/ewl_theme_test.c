@@ -392,5 +392,7 @@ __create_theme_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	
 	ewl_widget_show (theme_win);
 	
-	return 0;
+	return;
+	ev_data = NULL;
+	user_data = NULL;
 }
