@@ -469,7 +469,8 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
 	SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);
 
-	ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+	if (call_depth == 1)	/* FIXME - Remove */
+	   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
      }
 
    if (Mode.mode == MODE_NONE && desk != pdesk)
@@ -477,7 +478,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	HintsSetWindowDesktop(ewin);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
 
-	if (call_depth == 1)
+	if (call_depth == 1)	/* FIXME - Remove */
 	  {
 	     if (EoIsShown(ewin))
 	       {
@@ -798,16 +799,15 @@ EwinInstantShade(EWin * ewin, int force)
 	break;
      }
 
+   Mode.queue_up = pq;
+
    ewin->shaded = 2;
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin);
    ESync();
 
-   Mode.queue_up = pq;
-
    HintsSetWindowState(ewin);
-   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }
 
 void
@@ -861,6 +861,8 @@ EwinInstantUnShade(EWin * ewin)
 	break;
      }
 
+   Mode.queue_up = pq;
+
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
    EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
@@ -869,9 +871,7 @@ EwinInstantUnShade(EWin * ewin)
    MoveResizeEwin(ewin, x, y, ewin->client.w, ewin->client.h);
    ESync();
 
-   Mode.queue_up = pq;
    HintsSetWindowState(ewin);
-   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }
 
 void
@@ -1061,6 +1061,8 @@ EwinShade(EWin * ewin)
 	break;
      }
 
+   Mode.queue_up = pq;
+
    ewin->shaded = 2;
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    if (ewin->client.shaped)
@@ -1074,10 +1076,7 @@ EwinShade(EWin * ewin)
    Eprintf("EwinShade-E\n");
 #endif
 
-   Mode.queue_up = pq;
-
    HintsSetWindowState(ewin);
-   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }
 
 void
@@ -1287,6 +1286,8 @@ EwinUnShade(EWin * ewin)
 	break;
      }
 
+   Mode.queue_up = pq;
+
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
    EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
@@ -1304,10 +1305,7 @@ EwinUnShade(EWin * ewin)
    Eprintf("EwinUnShade-E\n");
 #endif
 
-   Mode.queue_up = pq;
-
    HintsSetWindowState(ewin);
-   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 }
 
 void
