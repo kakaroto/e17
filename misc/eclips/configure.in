@@ -90,8 +90,8 @@ AC_CHECK_LIB(curl, curl_easy_init, [
 AC_CHECK_HEADERS(curl/curl.h ,,
     AC_MSG_ERROR(Cannot find curl headers!))
 
-my_includes=`evas-config --cflags`" "`ecore-config --cflags`" "`imlib2-config --cflags`" "`etox-config --cflags`" "`edb-config --cflags`" "`ewl-config --cflags`
-my_libs=`evas-config --libs`" "`ecore-config --libs`" "`imlib2-config --libs`" "`etox-config --libs`" "`edb-config --libs`" "`ewl-config --libs`" "${LIBS}
+my_includes=`evas-config --cflags`" "`ecore-config --cflags`" "`imlib2-config --cflags`" "`etox-config --cflags`
+my_libs=`evas-config --libs`" "`ecore-config --libs`" "`imlib2-config --libs`" "`etox-config --libs`" "${LIBS}
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 
