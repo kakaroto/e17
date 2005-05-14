@@ -835,26 +835,15 @@ PagerEwinOutsideAreaUpdate(EWin * ewin)
    if (!Conf.pagers.enable)
       return;
 
-   if (EoIsSticky(ewin))
-     {
-	int                 i;
-
-	for (i = 0; i < Conf.desks.num; i++)
-	   RedrawPagersForDesktop(i, 0);
-	ForceUpdatePagersForDesktop(EoGetDesk(ewin));
-     }
-   else if (EoGetDesk(ewin) != DesksGetCurrent())
-     {
-	RedrawPagersForDesktop(EoGetDesk(ewin), 0);
-	ForceUpdatePagersForDesktop(EoGetDesk(ewin));
-     }
-   else
-     {
-	if ((EoGetX(ewin) < 0) || (EoGetY(ewin) < 0)
-	    || ((EoGetX(ewin) + EoGetW(ewin)) > VRoot.w)
-	    || ((EoGetY(ewin) + EoGetH(ewin)) > VRoot.h))
-	   RedrawPagersForDesktop(EoGetDesk(ewin), 3);
-     }
+#if 0
+   /* We could save a bit of time by checking if other areas are affected */
+   if ((EoGetX(ewin) < 0) || (EoGetY(ewin) < 0)
+       || ((EoGetX(ewin) + EoGetW(ewin)) > VRoot.w)
+       || ((EoGetY(ewin) + EoGetH(ewin)) > VRoot.h))
+      RedrawPagersForDesktop(EoGetDesk(ewin), 3);
+#else
+   RedrawPagersForDesktop(EoGetDesk(ewin), 3);
+#endif
 
    ForceUpdatePagersForDesktop(EoGetDesk(ewin));
 }
