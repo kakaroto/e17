@@ -228,7 +228,7 @@ EwinRefresh(EWin * ewin)
       return;
 
    if (TransparencyEnabled())
-      EwinBorderDraw(ewin, 0, 1, 0);	/* Update the border */
+      EwinBorderDraw(ewin, 0, 1);	/* Update the border */
 
    if (ewin->Refresh)
       ewin->Refresh(ewin);
@@ -462,7 +462,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	Mode.mode == MODE_DESKSWITCH) /* && (move || resize) */ )
      {
 	if (TransparencyEnabled())
-	   EwinBorderDraw(ewin, resize, 1, 0);	/* Update the border */
+	   EwinBorderDraw(ewin, resize, 1);	/* Update the border */
 
 	if (ewin->MoveResize)
 	   ewin->MoveResize(ewin, resize);
@@ -748,7 +748,6 @@ EwinInstantShade(EWin * ewin, int force)
    XSetWindowAttributes att;
    int                 x, y, w, h;
    int                 b, d;
-   char                pq;
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
@@ -757,9 +756,6 @@ EwinInstantShade(EWin * ewin, int force)
       return;
    if (ewin->shaded && !force)
       return;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
@@ -799,8 +795,6 @@ EwinInstantShade(EWin * ewin, int force)
 	break;
      }
 
-   Mode.queue_up = pq;
-
    ewin->shaded = 2;
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
@@ -815,15 +809,11 @@ EwinInstantUnShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 x, y, w, h;
-   char                pq;
 
    if (GetZoomEWin() == ewin)
       return;
    if (!ewin->shaded)
       return;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
@@ -861,8 +851,6 @@ EwinInstantUnShade(EWin * ewin)
 	break;
      }
 
-   Mode.queue_up = pq;
-
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
    EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
@@ -880,7 +868,6 @@ EwinShade(EWin * ewin)
    XSetWindowAttributes att;
    int                 x, y, w, h;
    int                 i, j, k, speed, a, b, c, d, ww, hh;
-   char                pq;
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
@@ -891,9 +878,6 @@ EwinShade(EWin * ewin)
       return;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    speed = Conf.shadespeed;
 
@@ -1061,8 +1045,6 @@ EwinShade(EWin * ewin)
 	break;
      }
 
-   Mode.queue_up = pq;
-
    ewin->shaded = 2;
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    if (ewin->client.shaped)
@@ -1085,15 +1067,11 @@ EwinUnShade(EWin * ewin)
    XSetWindowAttributes att;
    int                 x, y, w, h;
    int                 i, j, k, speed, a, b, c, d;
-   char                pq;
 
    if (GetZoomEWin() == ewin)
       return;
    if (!ewin->shaded || ewin->iconified)
       return;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    speed = Conf.shadespeed;
 
@@ -1285,8 +1263,6 @@ EwinUnShade(EWin * ewin)
 	EoMoveResize(ewin, x, d, w, b);
 	break;
      }
-
-   Mode.queue_up = pq;
 
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;

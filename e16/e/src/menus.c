@@ -638,7 +638,7 @@ MenuRealize(Menu * m)
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    int                 iw, ih;
    Imlib_Image        *im;
-   char                pq, has_i, has_s;
+   char                has_i, has_s;
 
    if (!m->style)
       return;
@@ -752,8 +752,6 @@ MenuRealize(Menu * m)
 
    mmw = 0;
    mmh = 0;
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    nmaxy = 3 * VRoot.h / (4 * maxh + 1);
    if (m->style->maxy && nmaxy > m->style->maxy)
@@ -843,8 +841,6 @@ MenuRealize(Menu * m)
    m->w = mmw;
    m->h = mmh;
    EResizeWindow(m->win, mmw, mmh);
-
-   Mode.queue_up = pq;
 }
 
 static void
@@ -888,10 +884,6 @@ static void
 MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 {
    PmapMask           *mi_pmm;
-   char                pq;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
 
@@ -962,8 +954,6 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	     GrabKeyboard(m->win);
 	  }
      }
-
-   Mode.queue_up = pq;
 }
 
 static void

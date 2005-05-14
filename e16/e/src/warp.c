@@ -62,7 +62,6 @@ WarpFocusShow(EWin * ewin)
 {
    TextClass          *tc;
    ImageClass         *ic;
-   char                pq;
    int                 i, x, y, w, h, num, ww, hh;
    static int          mw, mh, tw, th;
    char                s[1024];
@@ -92,9 +91,6 @@ WarpFocusShow(EWin * ewin)
 
 	TooltipsEnable(0);
      }
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    if (!warpFocusWindow->shown)
      {
@@ -207,7 +203,6 @@ WarpFocusShow(EWin * ewin)
      }
 
    PropagateShapes(warpFocusWindow->win);
-   Mode.queue_up = pq;
    EFlush();
 }
 

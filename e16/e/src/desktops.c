@@ -1045,8 +1045,6 @@ DeskGoto(int desk)
       Mode.mode = MODE_NONE;
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-
-   HandleDrawQueue();
 }
 
 static void
@@ -1191,10 +1189,7 @@ DeskRaise(int desk)
    DesksStackingCheck();
    FocusNewDesk();
    if (Mode.mode == MODE_NONE)
-     {
-	ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-	HandleDrawQueue();
-     }
+      ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
    HintsSetCurrentDesktop();
    ESync();
 }
@@ -1221,10 +1216,7 @@ DeskLower(int desk)
    DesksStackingCheck();
    FocusNewDesk();
    if (Mode.mode == MODE_NONE)
-     {
-	ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-	HandleDrawQueue();
-     }
+      ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
    HintsSetCurrentDesktop();
    ESync();
 }

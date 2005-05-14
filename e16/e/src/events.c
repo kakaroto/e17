@@ -646,15 +646,14 @@ WaitEvent(void)
    evq_num = 0;
    count = EventsProcess(&evq_ptr, &evq_num);
 
-   HandleDrawQueue();
    DialogsCheckUpdate();
+   ModulesSignal(ESIGNAL_IDLE, NULL);
+
    XFlush(disp);
    pcount = count;
 
    evq_num = 0;
    count = EventsProcess(&evq_ptr, &evq_num);
-
-   ModulesSignal(ESIGNAL_IDLE, NULL);
 
    if (count > 0)
       XFlush(disp);

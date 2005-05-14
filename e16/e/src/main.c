@@ -268,7 +268,6 @@ main(int argc, char **argv)
 
    /* sync just to make sure */
    ESync();
-   Mode.queue_up = DRAW_QUEUE_ENABLE;
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());

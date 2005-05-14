@@ -990,9 +990,6 @@ typedef struct
 }
 EConf;
 
-/* State parameters */
-#define DRAW_QUEUE_ENABLE 1
-
 typedef struct
 {
    struct
@@ -1087,7 +1084,6 @@ typedef struct
    unsigned int        last_button;
    unsigned int        last_keycode;
    char                double_click;
-   char                queue_up;
 }
 EMode;
 
@@ -1121,42 +1117,6 @@ Qentry;
 #define DIALOG_BUTTON_CANCEL 2
 #define DIALOG_BUTTON_APPLY  3
 #define DIALOG_BUTTON_CLOSE  4
-
-/* Disable, but Keep around a bit longer */
-#define USE_DQ_ICLASS 0
-#define USE_DQ_TCLASS 0
-#define USE_DQ_SHAPE  0
-#define USE_DQ_DIALOG 0
-#define USE_DQ_PAGER  0
-
-typedef struct _drawqueue
-{
-   void                (*func) (struct _drawqueue *);
-   Window              win;
-   int                 x, y, w, h;
-#if USE_DQ_ICLASS
-   ImageClass         *iclass;
-   int                 image_type;
-   int                 active, sticky, state, expose;
-#endif
-#if USE_DQ_TCLASS
-   TextClass          *tclass;
-   char               *text;
-#endif
-#if USE_DQ_SHAPE
-   char                shape_propagate;
-#endif
-#if USE_DQ_PAGER
-   Pager              *pager;
-   Pager              *redraw_pager;
-   char                newbg;
-#endif
-#if USE_DQ_DIALOG
-   Dialog             *d;
-   DItem              *di;
-#endif
-}
-DrawQueue;
 
 typedef struct _rectbox
 {
@@ -1283,8 +1243,7 @@ void                BorderWinpartAdd(Border * b, ImageClass * ic,
 void                EwinBorderSelect(EWin * ewin);
 void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
-void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint,
-				   int queue_off);
+void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint);
 void                EwinBorderCalcSizes(EWin * ewin);
 void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
@@ -1514,10 +1473,6 @@ int                 FindADialog(void);
 /* dock.c */
 void                DockIt(EWin * ewin);
 void                DockDestroy(EWin * ewin);
-
-/* draw.c */
-void                HandleDrawQueue(void);
-char                IsPropagateEwinOnQueue(EWin * ewin);
 
 Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,

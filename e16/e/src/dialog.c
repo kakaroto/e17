@@ -562,7 +562,6 @@ DialogEwinInit(EWin * ewin, void *ptr)
 void
 ShowDialog(Dialog * d)
 {
-   char                pq;
    int                 i, w, h, mw, mh;
    EWin               *ewin;
 
@@ -627,9 +626,6 @@ ShowDialog(Dialog * d)
    d->h = h;
    EResizeWindow(d->win, w, h);
 
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
    if (ewin)
@@ -657,7 +653,6 @@ ShowDialog(Dialog * d)
 
    ESync();
    DialogRedraw(d);
-   Mode.queue_up = pq;
 }
 
 void
@@ -1765,15 +1760,10 @@ DialogsCheckUpdate(void)
 static void
 DialogItemsRealize(Dialog * d)
 {
-   char                pq;
-
    if (!d->item)
       return;
    DialogRealizeItem(d, d->item);
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
    DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
-   Mode.queue_up = pq;
    d->w = d->item->w + d->iclass->padding.left + d->iclass->padding.right;
    d->h = d->item->h + d->iclass->padding.top + d->iclass->padding.bottom;
 }

@@ -24,273 +24,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-void
-HandleDrawQueue()
-{
-   DrawQueue         **lst = NULL, *dq;
-   int                 i, num;
-   char                already, p_queue;
-
-   switch (Mode.mode)
-     {
-     case MODE_MOVE_PENDING:
-     case MODE_MOVE:
-	if (Conf.movres.mode_move > 0)
-	   return;
-	break;
-     case MODE_RESIZE:
-     case MODE_RESIZE_H:
-     case MODE_RESIZE_V:
-	if (Conf.movres.mode_resize > 0)
-	   return;
-	break;
-     }
-
-   p_queue = Mode.queue_up;
-   Mode.queue_up = 0;
-   num = 0;
-   /* find all DRAW queue entries most recent first and add them to the */
-   /* end of the draw list array if there are no previous entries for that */
-   /* draw type and that window in the array */
-   while ((dq =
-	   (DrawQueue *) RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_DRAW)))
-     {
-	already = 0;
-
-#if USE_DQ_DIALOG
-	if (dq->d)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->d == dq->d) && DialogItem(dq->d) &&
-		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
-		    {
-		       if (dq->x < lst[i]->x)
-			 {
-			    lst[i]->w += (lst[i]->x - dq->x);
-			    lst[i]->x = dq->x;
-			 }
-		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
-			  lst[i]->w +=
-			     (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
-		       if (dq->y < lst[i]->y)
-			 {
-			    lst[i]->h += (lst[i]->y - dq->y);
-			    lst[i]->y = dq->y;
-			 }
-		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
-			  lst[i]->h +=
-			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-#endif
-#if USE_DQ_SHAPE
-	else if (dq->shape_propagate)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->win == dq->win) && (lst[i]->shape_propagate))
-		    {
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-#endif
-#if USE_DQ_TCLASS
-	else if (dq->text)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->win == dq->win) && (lst[i]->text))
-		    {
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-#endif
-#if USE_DQ_ICLASS
-	else if (dq->iclass)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->win == dq->win) && (!lst[i]->shape_propagate)
-		      && (!lst[i]->text))
-		    {
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-#endif
-#if USE_DQ_PAGER
-	if (dq->pager)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->win == dq->win) && (lst[i]->pager))
-		    {
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-	else if (dq->redraw_pager)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->win == dq->win) && (lst[i]->redraw_pager))
-		    {
-		       switch (lst[i]->newbg)
-			 {
-			 case 0:
-			    if (dq->newbg == 1)
-			       lst[i]->newbg = 1;
-			    else if (dq->newbg == 2)
-			       lst[i]->newbg = 1;
-			    break;
-			 case 1:
-			    break;
-			 case 2:
-			    if (dq->newbg == 1)
-			       lst[i]->newbg = 1;
-			    else if (dq->newbg == 0)
-			       lst[i]->newbg = 1;
-			    break;
-			 case 3:
-			    if (dq->newbg == 1)
-			       lst[i]->newbg = 1;
-			    else if (dq->newbg == 0)
-			       lst[i]->newbg = 0;
-			    else if (dq->newbg == 2)
-			       lst[i]->newbg = 2;
-			    break;
-			 default:
-			    break;
-			 }
-		       already = 1;
-		       break;
-		    }
-	       }
-	  }
-#endif
-
-	if (already)
-	  {
-	     if (dq)
-	       {
-#if USE_DQ_ICLASS
-		  if (dq->iclass)
-		     dq->iclass->ref_count--;
-#endif
-#if USE_DQ_TCLASS
-		  if (dq->tclass)
-		     dq->tclass->ref_count--;
-		  if (dq->text)
-		     Efree(dq->text);
-#endif
-		  Efree(dq);
-	       }
-	  }
-	else
-	  {
-	     num++;
-	     lst = Erealloc(lst, num * sizeof(DrawQueue *));
-	     lst[num - 1] = dq;
-	  }
-     }
-   /* go thru the list in chronological order (ie reverse) and do the draws */
-   if (lst)
-     {
-	for (i = num - 1; i >= 0; i--)
-	  {
-	     dq = lst[i];
-
-#if USE_DQ_DIALOG
-	     if (dq->d)
-	       {
-/*            printf("D %x\n", dq->d->ewin->client.win); */
-		  if (FindItem
-		      ((char *)(dq->d), 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_DIALOG))
-		     DialogDrawItems(dq->d, dq->di, dq->x, dq->y, dq->w, dq->h);
-	       }
-#endif
-#if USE_DQ_SHAPE
-	     else if (dq->shape_propagate)
-	       {
-/*            printf("S %x\n", dq->win); */
-		  if (WinExists(dq->win))
-		     PropagateShapes(dq->win);
-	       }
-#endif
-#if USE_DQ_TCLASS
-	     else if (dq->text)
-	       {
-/*            printf("T %x\n", dq->win); */
-		  if (WinExists(dq->win))
-		     TextclassApply(dq->iclass, dq->win, dq->w, dq->h,
-				    dq->active, dq->sticky, dq->state,
-				    dq->expose, dq->tclass, dq->text);
-		  Efree(dq->text);
-	       }
-#endif
-#if USE_DQ_ICLASS
-	     else if (dq->iclass)
-	       {
-/*            printf("I %x\n", dq->win); */
-		  if (WinExists(dq->win))
-		     ImageclassApply(dq->iclass, dq->win, dq->w, dq->h,
-				     dq->active, dq->sticky, dq->state, 0,
-				     dq->image_type);
-	       }
-#endif
-#if USE_DQ_PAGER
-	     if (dq->pager)
-	       {
-/*            printf("P %x\n", dq->win); */
-		  if (FindItem
-		      ((char *)(dq->pager), 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_PAGER))
-		     dq->func(dq);
-	       }
-	     else if (dq->redraw_pager)
-	       {
-/*            printf("p %x\n", dq->win); */
-		  if (FindItem
-		      ((char *)(dq->redraw_pager), 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_PAGER))
-		     dq->func(dq);
-	       }
-#endif
-#if USE_DQ_ICLASS
-	     if (dq->iclass)
-		dq->iclass->ref_count--;
-#endif
-#if USE_DQ_TCLASS
-	     if (dq->tclass)
-		dq->tclass->ref_count--;
-#endif
-	     Efree(dq);
-	  }
-	Efree(lst);
-     }
-
-   Mode.queue_up = p_queue;
-}
-
-char
-IsPropagateEwinOnQueue(EWin * ewin)
-{
-   if (FindItem(NULL, EoGetWin(ewin), LIST_FINDBY_ID, LIST_TYPE_DRAW))
-      return 1;
-   return 0;
-}
-
 static void
 EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
 {
@@ -901,7 +634,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
    int                 bpp;
-   char                str[32], pq;
+   char                str[32];
    char                check_move = 0;
 
    for (i = 0; i < ewin->num_groups; i++)
@@ -930,8 +663,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
    pw = w;
    ph = h;
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    switch (md)
      {
@@ -1214,7 +945,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       EUngrabServer();
 		       DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
 				     firstlast);
-		       goto done;
+		       return;
 		    }
 		  EFillPixmap(VRoot.win, root_pi->pmap, x1, y1, EoGetW(ewin),
 			      EoGetH(ewin));
@@ -1355,9 +1086,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if (firstlast == 2)
 	   CoordsHide();
      }
-
- done:
-   Mode.queue_up = pq;
 }
 
 Imlib_Image        *
@@ -1396,19 +1124,7 @@ PropagateShapes(Window win)
    XWindowAttributes   att;
 
 #if 0
-   Eprintf("PropagateShapes(%d): %#lx\n", Mode.queue_up, win);
-#endif
-#if USE_DQ_SHAPE
-   if (Mode.queue_up)
-     {
-	DrawQueue          *dq;
-
-	dq = Ecalloc(1, sizeof(DrawQueue));
-	dq->win = win;
-	dq->shape_propagate = 1;
-	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	return;
-     }
+   Eprintf("PropagateShapes: %#lx\n", win);
 #endif
 
    if (!EGetGeometry(win, &rt, &x, &y, &w, &h, &d, &d))

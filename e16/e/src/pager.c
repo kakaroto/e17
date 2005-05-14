@@ -56,9 +56,6 @@ typedef struct
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
 
-#if USE_DQ_PAGER
-static void         PagerDrawQueueCallback(DrawQueue * dq);
-#endif
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(Pager * p);
 static void         PagerEventMainWin(XEvent * ev, void *prm);
@@ -71,7 +68,6 @@ PagerCreate(void)
 {
    Pager              *p;
    int                 ax, ay;
-   char                pq;
    ImageClass         *ic;
    XSetWindowAttributes attr;
    static char         did_dialog = 0;
@@ -101,13 +97,10 @@ PagerCreate(void)
    p->update_phase = 0;
    p->ewin = NULL;
    p->sel_win = ECreateWindow(p->win, 0, 0, p->w / ax, p->h / ay, 0);
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
    ic = ImageclassFind("PAGER_SEL", 0);
    if (ic)
       ImageclassApply(ic, p->sel_win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL,
 		      0, ST_PAGER);
-   Mode.queue_up = pq;
    return p;
 }
 
@@ -336,21 +329,6 @@ doPagerRedraw(Pager * p, char newbg)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
-#if USE_DQ_PAGER
-   if (Mode.queue_up)
-     {
-	DrawQueue          *dq;
-
-	dq = Ecalloc(1, sizeof(DrawQueue));
-	dq->func = PagerDrawQueueCallback;
-	dq->win = p->win;
-	dq->redraw_pager = p;
-	dq->newbg = newbg;
-	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	return;
-     }
-#endif
-
    /* Desk may be gone */
    if (p->desktop >= DesksGetNumber())
       return;
@@ -511,20 +489,6 @@ doPagerForceUpdate(Pager * p)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
-#if USE_DQ_PAGER
-   if (Mode.queue_up)
-     {
-	DrawQueue          *dq;
-
-	dq = Ecalloc(1, sizeof(DrawQueue));
-	dq->func = PagerDrawQueueCallback;
-	dq->win = p->win;
-	dq->pager = p;
-	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	return;
-     }
-#endif
-
    /* Desk may be gone */
    if (p->desktop >= DesksGetNumber())
       return;
@@ -552,24 +516,12 @@ doPagerForceUpdate(Pager * p)
       PagerEwinUpdateFromPager(p, lst[i]);
 }
 
-#if USE_DQ_PAGER
-static void
-PagerDrawQueueCallback(DrawQueue * dq)
-{
-   if (dq->pager)
-      PagerForceUpdate(dq->pager);
-   else if (dq->redraw_pager)
-      PagerRedraw(dq->redraw_pager, dq->newbg);
-}
-#endif
-
 static void
 PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Pager              *p = ewin->data;
    int                 w, h;
    int                 ax, ay, cx, cy;
-   char                pq;
    ImageClass         *ic;
    EWin               *const *lst;
    int                 i, num;
@@ -605,8 +557,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 	p->ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
 	p->ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
      }
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
+
    ic = ImageclassFind("PAGER_SEL", 0);
    if (ic)
      {
@@ -615,7 +566,6 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 	ImageclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0,
 			ST_PAGER);
      }
-   Mode.queue_up = pq;
 
    lst = EwinListGetForDesk(&num, p->desktop);
    for (i = 0; i < num; i++)
@@ -658,7 +608,6 @@ PagerShow(Pager * p)
 {
    EWin               *ewin = NULL;
    char                s[4096];
-   char                pq;
 
    if (!Conf.pagers.enable)
       return;
@@ -671,9 +620,6 @@ PagerShow(Pager * p)
 
    Esnprintf(s, sizeof(s), "%i", p->desktop);
    HintsSetWindowClass(p->win, s, "Enlightenment_Pager");
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    ewin =
       AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
@@ -728,8 +674,6 @@ PagerShow(Pager * p)
 	  }
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
      }
-
-   Mode.queue_up = pq;
 }
 
 static Pager      **
@@ -2350,9 +2294,7 @@ PagersSighan(int sig, void *prm)
 	if (!Conf.pagers.enable)
 	   break;
 	Conf.pagers.enable = 0;
-	Mode.queue_up = 0;
 	PagersShow(1);
-	Mode.queue_up = DRAW_QUEUE_ENABLE;
 	break;
 
      case ESIGNAL_IDLE:

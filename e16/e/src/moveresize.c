@@ -270,8 +270,6 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    if (Conf.movres.mode_resize > 0)
       EGrabServer();
 
-   Mode.queue_up = 0;
-
    if (grab)
      {
 	GrabPointerRelease();
@@ -376,7 +374,6 @@ ActionResizeEnd(EWin * ewin)
 	   EUngrabServer();
 	return 0;
      }
-   Mode.queue_up = DRAW_QUEUE_ENABLE;
    Mode.mode = MODE_NONE;
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->client.w, ewin->client.h, 2);

@@ -561,11 +561,8 @@ IconboxEwinInit(EWin * ewin, void *ptr)
 static void
 IconboxShow(Iconbox * ib)
 {
-   EWin               *ewin = NULL;
-   char                pq;
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
+   EWin               *ewin;
+   int                 w, h;
 
    if (ib->type == IB_TYPE_ICONBOX)
      {
@@ -580,32 +577,29 @@ IconboxShow(Iconbox * ib)
 
    ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
-   if (ewin)
+   if (!ewin)
+      return;
+
+   ib->ewin = ewin;
+
+   IB_Reconfigure(ib);
+
+   w = ewin->client.w;
+   h = ewin->client.h;
+   ewin->client.w = 1;
+   ewin->client.h = 1;
+   if (ewin->client.already_placed)
      {
-	int                 w, h;
-
-	ib->ewin = ewin;
-
-	IB_Reconfigure(ib);
-
-	w = ewin->client.w;
-	h = ewin->client.h;
-	ewin->client.w = 1;
-	ewin->client.h = 1;
-	if (ewin->client.already_placed)
-	  {
-	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
-	  }
-	else
-	  {
-	     EwinStick(ewin);
-	     ResizeEwin(ewin, w, h);
-	     MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
-	  }
-
-	ShowEwin(ewin);
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
-   Mode.queue_up = pq;
+   else
+     {
+	EwinStick(ewin);
+	ResizeEwin(ewin, w, h);
+	MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
+     }
+
+   ShowEwin(ewin);
 }
 
 #if 0
@@ -1734,7 +1728,6 @@ IB_FixPos(Iconbox * ib)
 static void
 IconboxRedraw(Iconbox * ib)
 {
-   char                pq;
    char                was_shaded = 0;
    int                 i, x, y, w, h;
    ImageClass         *ib_ic_cover;
@@ -1820,9 +1813,6 @@ IconboxRedraw(Iconbox * ib)
 
    if (was_shaded)
       EwinShade(ib->ewin);
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
 
    IB_FixPos(ib);
    IB_DrawScroll(ib);
@@ -1971,8 +1961,6 @@ IconboxRedraw(Iconbox * ib)
    ICCCM_GetShapeInfo(ib->ewin);
    ib->ewin->shapedone = 0;
    EwinPropagateShapes(ib->ewin);
-
-   Mode.queue_up = pq;
 }
 
 static void

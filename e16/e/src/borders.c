@@ -47,7 +47,7 @@ SyncBorderToEwin(EWin * ewin)
 void
 EwinBorderUpdateState(EWin * ewin)
 {
-   EwinBorderDraw(ewin, 0, 0, 0);
+   EwinBorderDraw(ewin, 0, 0);
 }
 
 static void
@@ -156,31 +156,24 @@ BorderWinpartChange(EWin * ewin, int i, int force)
 }
 
 void
-EwinBorderDraw(EWin * ewin, int do_shape, int do_paint, int queue_off)
+EwinBorderDraw(EWin * ewin, int do_shape, int do_paint)
 {
-   int                 i, pq;
+   int                 i;
 
    if (!ewin)
       return;
 
 #if 0				/* Debug */
-   Eprintf("EwinBorderDraw %#lx %s d=%d s=%d p=%d q=%d\n",
+   Eprintf("EwinBorderDraw %#lx %s d=%d s=%d p=%d\n",
 	   EwinGetClientWin(ewin), EoGetName(ewin), EoGetDesk(ewin), do_shape,
-	   do_paint, queue_off);
+	   do_paint);
 #endif
-
-   pq = Mode.queue_up;
-   if (queue_off)
-      Mode.queue_up = 0;
 
    for (i = 0; i < ewin->border->num_winparts; i++)
       BorderWinpartITclassApply(ewin, i, do_shape || do_paint);
 
    if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
-
-   if (queue_off)
-      Mode.queue_up = pq;
 }
 
 void

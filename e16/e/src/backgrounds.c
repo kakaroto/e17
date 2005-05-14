@@ -1388,7 +1388,6 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	BackgroundImagesKeep(tmp_bg, 0);
      }
 
-   HandleDrawQueue();
    autosave();
 }
 

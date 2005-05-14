@@ -1018,37 +1018,6 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
    if (w <= 0 || h <= 0)
       return;
 
-#if USE_DQ_ICLASS		/* Try not using the draw queue here. */
-   if (Mode.queue_up)
-     {
-	DrawQueue          *dq;
-
-	dq = Emalloc(sizeof(DrawQueue));
-	dq->win = win;
-	dq->iclass = ic;
-	if (dq->iclass)
-	   dq->iclass->ref_count++;
-	dq->w = w;
-	dq->h = h;
-	dq->active = active;
-	dq->sticky = sticky;
-	dq->state = state;
-	dq->expose = expose;
-	dq->tclass = NULL;
-	dq->text = NULL;
-	dq->shape_propagate = 0;
-	dq->pager = NULL;
-	dq->redraw_pager = NULL;
-	dq->d = NULL;
-	dq->di = NULL;
-	dq->x = 0;
-	dq->y = 0;
-	dq->image_type = image_type;
-	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	return;
-     }
-#endif
-
    if (!is)
       is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
@@ -1362,7 +1331,6 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
    char                param3[FILEPATH_LEN_MAX];
-   char                pq;
    ImageClass         *ic;
 
    if (!params)
@@ -1477,10 +1445,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
 	       }
-	     pq = Mode.queue_up;
-	     Mode.queue_up = 0;
 	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_UNKNWN);
-	     Mode.queue_up = pq;
 	  }
      }
    else if (!strcmp(param2, "apply_copy"))
@@ -1512,11 +1477,8 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
-		  pq = Mode.queue_up;
-		  Mode.queue_up = 0;
 		  ImageclassApplyCopy(ic, win, w, h, 0, 0, st,
 				      &pmm, 1, ST_UNKNWN);
-		  Mode.queue_up = pq;
 		  IpcPrintf("0x%08x 0x%08x\n",
 			    (unsigned)pmm.pmap, (unsigned)pmm.mask);
 /*			    FreePmapMask(&pmm);		??? */

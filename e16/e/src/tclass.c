@@ -439,42 +439,6 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       return;
 
-#if USE_DQ_TCLASS		/* Try not using the draw queue here. */
-   if (Mode.queue_up)
-     {
-	DrawQueue          *dq;
-
-	dq = Emalloc(sizeof(DrawQueue));
-	dq->win = win;
-	dq->iclass = iclass;
-	if (dq->iclass)
-	   dq->iclass->ref_count++;
-	dq->w = w;
-	dq->h = h;
-	dq->active = active;
-	dq->sticky = sticky;
-	dq->state = state;
-	dq->expose = expose;
-	dq->tclass = tclass;
-	if (dq->tclass)
-	   dq->tclass->ref_count++;
-	if (text)
-	   dq->text = Estrdup(text);
-	else
-	   dq->text = NULL;
-	dq->w = w;
-	dq->shape_propagate = 0;
-	dq->pager = NULL;
-	dq->redraw_pager = NULL;
-	dq->d = NULL;
-	dq->di = NULL;
-	dq->x = 0;
-	dq->y = 0;
-	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	return;
-     }
-#endif
-
    XClearWindow(disp, win);
 
    TextDraw(tclass, win, active, sticky, state, text, iclass->padding.left,
@@ -514,7 +478,6 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
    char                param3[FILEPATH_LEN_MAX];
-   char                pq;
    TextClass          *tc;
 
    if (!params)
@@ -593,11 +556,8 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	     else if (!strcmp(param3, "disabled"))
 		state = STATE_DISABLED;
 	     txt = atword(params, 7);
-	     pq = Mode.queue_up;
-	     Mode.queue_up = 0;
 	     if (txt)
 		TextDraw(tc, win, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
-	     Mode.queue_up = pq;
 	  }
      }
    else if (!strcmp(param2, "query_size"))
