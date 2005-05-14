@@ -1644,6 +1644,9 @@ ECompMgrRepaint(void)
    Picture             pict, pbuf;
    Desk               *d = DeskGet(0);
 
+   if (!Conf_compmgr.enable)
+      return;
+
    region = XFixesCreateRegion(disp, 0, 0);
    XFixesCopyRegion(disp, region, allDamage);
 
