@@ -41,6 +41,8 @@ struct _pager
    int                 update_phase;
    EWin               *ewin;
    Window              sel_win;
+   char                update;
+   char                redraw;
 };
 
 typedef struct
@@ -54,7 +56,9 @@ typedef struct
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
 
+#if USE_DQ_PAGER
 static void         PagerDrawQueueCallback(DrawQueue * dq);
+#endif
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(Pager * p);
 static void         PagerEventMainWin(XEvent * ev, void *prm);
@@ -304,6 +308,26 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 static void
 PagerRedraw(Pager * p, char newbg)
 {
+   static const char   pager_mode_map[5][4] = {
+      {0, 1, 2, 3},
+      {0, 1, 1, 0},
+      {1, 1, 1, 1},
+      {1, 1, 2, 2},
+      {0, 1, 2, 3},
+   };
+
+   p->redraw = pager_mode_map[(int)p->redraw][(int)newbg] + 1;
+}
+
+static void
+PagerForceUpdate(Pager * p)
+{
+   p->update = 1;
+}
+
+static void
+doPagerRedraw(Pager * p, char newbg)
+{
    int                 x, y, ax, ay, cx, cy;
    GC                  gc;
    EWin               *const *lst;
@@ -312,6 +336,7 @@ PagerRedraw(Pager * p, char newbg)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
+#if USE_DQ_PAGER
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
@@ -324,6 +349,7 @@ PagerRedraw(Pager * p, char newbg)
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
+#endif
 
    /* Desk may be gone */
    if (p->desktop >= DesksGetNumber())
@@ -476,7 +502,7 @@ PagerRedraw(Pager * p, char newbg)
 }
 
 static void
-PagerForceUpdate(Pager * p)
+doPagerForceUpdate(Pager * p)
 {
    int                 ww, hh, xx, yy, ax, ay, cx, cy;
    EWin               *const *lst;
@@ -485,6 +511,7 @@ PagerForceUpdate(Pager * p)
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
+#if USE_DQ_PAGER
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
@@ -496,6 +523,7 @@ PagerForceUpdate(Pager * p)
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
+#endif
 
    /* Desk may be gone */
    if (p->desktop >= DesksGetNumber())
@@ -524,6 +552,7 @@ PagerForceUpdate(Pager * p)
       PagerEwinUpdateFromPager(p, lst[i]);
 }
 
+#if USE_DQ_PAGER
 static void
 PagerDrawQueueCallback(DrawQueue * dq)
 {
@@ -532,6 +561,7 @@ PagerDrawQueueCallback(DrawQueue * dq)
    else if (dq->redraw_pager)
       PagerRedraw(dq->redraw_pager, dq->newbg);
 }
+#endif
 
 static void
 PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
@@ -758,6 +788,34 @@ ForceUpdatePagersForDesktop(int d)
    pl = PagersForDesktop(d, &num);
    for (i = 0; i < num; i++)
       PagerForceUpdate(pl[i]);
+   if (pl)
+      Efree(pl);
+}
+
+static void
+PagersCheckUpdate(void)
+{
+   Pager              *p, **pl;
+   int                 i, num;
+
+   if (!Conf.pagers.enable)
+      return;
+
+   pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
+   for (i = 0; i < num; i++)
+     {
+	p = pl[i];
+	if (p->redraw)
+	  {
+	     doPagerRedraw(p, p->redraw - 1);
+	     p->redraw = 0;
+	  }
+	if (p->update)
+	  {
+	     doPagerForceUpdate(p);
+	     p->update = 0;
+	  }
+     }
    if (pl)
       Efree(pl);
 }
@@ -1668,7 +1726,7 @@ PagerEventMouseDown(Pager * p, XEvent * ev)
       XTranslateCoordinates(disp, win, p->win, px, py, &px, &py, &child);
    in_pager = (px >= 0 && py >= 0 && px < p->w && py < p->h);
    if (!in_pager)
-      return;			// OK?
+      return;
 
    if ((int)ev->xbutton.button == Conf.pagers.menu_button)
      {
@@ -2278,6 +2336,7 @@ PagersSighan(int sig, void *prm)
 {
    static int          pdesk = -1;	/* Last desk */
    int                 desk;
+   EWin               *ewin;
 
    switch (sig)
      {
@@ -2295,6 +2354,11 @@ PagersSighan(int sig, void *prm)
 	PagersShow(1);
 	Mode.queue_up = DRAW_QUEUE_ENABLE;
 	break;
+
+     case ESIGNAL_IDLE:
+	PagersCheckUpdate();
+	break;
+
      case ESIGNAL_AREA_CONFIGURED:
 	PagersReArea();
 	break;
@@ -2346,12 +2410,16 @@ PagersSighan(int sig, void *prm)
 	PagersReArea();
 	break;
      case ESIGNAL_EWIN_UNMAP:
-	PagerEwinOutsideAreaUpdate((EWin *) prm);
+	ewin = prm;
+	PagerEwinOutsideAreaUpdate(ewin);
 	break;
      case ESIGNAL_EWIN_CHANGE:
 	if (Mode.mode != MODE_NONE)
 	   break;
-	PagerEwinOutsideAreaUpdate((EWin *) prm);
+	ewin = prm;
+	if (!EoIsShown(ewin))
+	   break;
+	PagerEwinOutsideAreaUpdate(ewin);
 	break;
      }
 }

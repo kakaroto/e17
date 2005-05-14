@@ -127,6 +127,7 @@ HandleDrawQueue()
 	       }
 	  }
 #endif
+#if USE_DQ_PAGER
 	if (dq->pager)
 	  {
 	     for (i = 0; i < num; i++)
@@ -176,6 +177,7 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#endif
 
 	if (already)
 	  {
@@ -247,6 +249,7 @@ HandleDrawQueue()
 				     dq->image_type);
 	       }
 #endif
+#if USE_DQ_PAGER
 	     if (dq->pager)
 	       {
 /*            printf("P %x\n", dq->win); */
@@ -263,6 +266,7 @@ HandleDrawQueue()
 		       LIST_TYPE_PAGER))
 		     dq->func(dq);
 	       }
+#endif
 #if USE_DQ_ICLASS
 	     if (dq->iclass)
 		dq->iclass->ref_count--;

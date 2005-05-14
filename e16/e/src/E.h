@@ -1127,6 +1127,7 @@ Qentry;
 #define USE_DQ_TCLASS 0
 #define USE_DQ_SHAPE  0
 #define USE_DQ_DIALOG 0
+#define USE_DQ_PAGER  0
 
 typedef struct _drawqueue
 {
@@ -1145,9 +1146,11 @@ typedef struct _drawqueue
 #if USE_DQ_SHAPE
    char                shape_propagate;
 #endif
+#if USE_DQ_PAGER
    Pager              *pager;
    Pager              *redraw_pager;
    char                newbg;
+#endif
 #if USE_DQ_DIALOG
    Dialog             *d;
    DItem              *di;
