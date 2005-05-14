@@ -216,6 +216,7 @@ Makefile
 data/Makefile
 data/emblem/Makefile
 data/emblem/default/Makefile
+data/emblem/gant/Makefile
 data/entangle/Makefile
 data/entangle/default/Makefile
 src/Makefile
