@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ecore-e16.h"
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 

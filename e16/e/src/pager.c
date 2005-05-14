@@ -2295,6 +2295,7 @@ PagersSighan(int sig, void *prm)
 	   break;
 	Conf.pagers.enable = 0;
 	PagersShow(1);
+	PagersCheckUpdate();
 	break;
 
      case ESIGNAL_IDLE:

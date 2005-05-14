@@ -1474,6 +1474,7 @@ int                 FindADialog(void);
 void                DockIt(EWin * ewin);
 void                DockDestroy(EWin * ewin);
 
+/* draw.c */
 Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
