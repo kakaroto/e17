@@ -44,16 +44,49 @@ main(int argc, char ** argv)
                 printf("Missing argument to -display\n");
                 goto ECORE_SHUTDOWN;
             }
-        }        
+        }      
+
+       if (!strcmp(argv[i], "-theme"))
+       {
+	   if (++i < argc)
+	       em->theme = strdup(argv[i]);
+	   else
+	   {
+	        printf("Missing argument to -theme\n");
+	        goto ECORE_SHUTDOWN;
+	   }
+       }
     }
 
+    if (!em->theme)
+    {
+    	em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
+    }
+    else
+    {
+    	if(!ecore_file_exists(em->theme))
+	{
+		char theme[PATH_MAX];
+		snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s", em->theme);
+		if(ecore_file_exists(theme))
+		{
+			em->theme = strdup(theme);
+		}
+		else
+		{
+			em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
+			fprintf(stderr, "Theme does not exist! Falling back to default theme\n");
+		}
+	}
+	
+    }
     /* if no display given grab the env var */
     if (!em->display)
     {
         char *tmp = getenv("DISPLAY");
         if (tmp) em->display = strdup(tmp);
     }
-
+   
     /* make sure the display var is of the form name:0.0 or :0.0 */
     if (em->display)
     {

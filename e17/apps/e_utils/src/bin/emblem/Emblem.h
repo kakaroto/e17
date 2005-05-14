@@ -18,7 +18,8 @@ typedef struct Emblem Emblem;
 struct Emblem
 {
     char *display;
-
+    char *theme;
+   
     struct {
         Ecore_Evas *ee;
         Evas *evas;
