@@ -57,6 +57,7 @@ HandleDrawQueue()
      {
 	already = 0;
 
+#if USE_DQ_DIALOG
 	if (dq->d)
 	  {
 	     for (i = 0; i < num; i++)
@@ -85,6 +86,7 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#endif
 #if USE_DQ_SHAPE
 	else if (dq->shape_propagate)
 	  {
@@ -125,7 +127,7 @@ HandleDrawQueue()
 	       }
 	  }
 #endif
-	else if (dq->pager)
+	if (dq->pager)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -206,6 +208,7 @@ HandleDrawQueue()
 	  {
 	     dq = lst[i];
 
+#if USE_DQ_DIALOG
 	     if (dq->d)
 	       {
 /*            printf("D %x\n", dq->d->ewin->client.win); */
@@ -214,6 +217,7 @@ HandleDrawQueue()
 		       LIST_TYPE_DIALOG))
 		     DialogDrawItems(dq->d, dq->di, dq->x, dq->y, dq->w, dq->h);
 	       }
+#endif
 #if USE_DQ_SHAPE
 	     else if (dq->shape_propagate)
 	       {
@@ -243,7 +247,7 @@ HandleDrawQueue()
 				     dq->image_type);
 	       }
 #endif
-	     else if (dq->pager)
+	     if (dq->pager)
 	       {
 /*            printf("P %x\n", dq->win); */
 		  if (FindItem

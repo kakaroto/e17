@@ -647,6 +647,7 @@ WaitEvent(void)
    count = EventsProcess(&evq_ptr, &evq_num);
 
    HandleDrawQueue();
+   DialogsCheckUpdate();
    XFlush(disp);
    pcount = count;
 

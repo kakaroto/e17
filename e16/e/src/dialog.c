@@ -152,6 +152,8 @@ struct _ditem
       DItemArea           area;
    }
    item;
+
+   char                update;
 };
 
 typedef struct
@@ -194,6 +196,9 @@ struct _dialog
    int                 num_bindings;
    DKeyBind           *keybindings;
    void               *data;
+
+   char                update;
+   int                 xu1, yu1, xu2, yu2;
 };
 
 static Dialog      *FindDialog(Window win);
@@ -203,6 +208,8 @@ static void         DButtonHandleEvents(XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
+
+static char         dialog_update_pending = 0;
 
 void
 DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val)
@@ -738,6 +745,7 @@ DialogAddItem(DItem * dii, int type)
    di->hilited = 0;
    di->clicked = 0;
    di->win = 0;
+
    switch (di->type)
      {
      case DITEM_NONE:
@@ -1530,195 +1538,228 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
      }
 }
 
-#define INTERSECTS(x, y, w, h, xx, yy, ww, hh) \
-((x < (xx + ww)) && \
- (y < (yy + hh)) && \
- ((x + w) > xx) && \
- ((y + h) > yy))
-
 void
 DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 {
+   d->update = 1;
+   di->update = 1;
+
+   if (d->xu1 > x)
+      d->xu1 = x;
+   if (d->yu1 > y)
+      d->yu1 = y;
+   x += w;
+   y += h;
+   if (d->xu2 < x)
+      d->xu2 = x;
+   if (d->yu2 < y)
+      d->yu2 = y;
+
+   dialog_update_pending = 1;
+}
+
+static void
+DialogDrawItem(Dialog * d, DItem * di)
+{
    int                 state;
 
-   if (Mode.queue_up)
+   if (!di->update && di->type != DITEM_TABLE)
+      return;
+
+   if (di->x > d->xu2 || di->y > d->yu2 ||
+       di->x + di->w <= d->xu1 || di->y + di->h <= d->yu1)
+      return;
+
+   switch (di->type)
      {
-	DrawQueue          *dq;
+     case DITEM_TABLE:
+	{
+	   int                 i;
+	   DItem              *dii;
 
-	dq = Ecalloc(1, sizeof(DrawQueue));
-	dq->w = w;
-	dq->h = h;
-	dq->d = d;
-	dq->di = di;
-	dq->x = x;
-	dq->y = y;
-	AddItem(dq, "DRAW", 0, LIST_TYPE_DRAW);
-	return;
-     }
+	   for (i = 0; i < di->item.table.num_items; i++)
+	     {
+		dii = di->item.table.items[i];
+		if (di->update)
+		   dii->update = 1;
+		DialogDrawItem(d, dii);
+	     }
+	}
+	break;
 
-   if (di->type == DITEM_TABLE)
-     {
-	int                 i;
-
-	if (INTERSECTS(x, y, w, h, di->x, di->y, di->w, di->h))
+     case DITEM_SLIDER:
+	if (di->item.slider.horizontal)
 	  {
-	     for (i = 0; i < di->item.table.num_items; i++)
-		DialogDrawItems(d, di->item.table.items[i], x, y, w, h);
+	     di->item.slider.knob_x =
+		di->item.slider.base_x +
+		(((di->item.slider.base_w -
+		   di->item.slider.knob_w) * (di->item.slider.val -
+					      di->item.slider.lower)) /
+		 (di->item.slider.upper - di->item.slider.lower));
+	     di->item.slider.knob_y =
+		di->item.slider.base_y +
+		((di->item.slider.base_h - di->item.slider.knob_h) / 2);
 	  }
-	return;
+	else
+	  {
+	     di->item.slider.knob_y =
+		(di->item.slider.base_y + di->item.slider.base_h -
+		 di->item.slider.knob_h) -
+		(((di->item.slider.base_h -
+		   di->item.slider.knob_h) * (di->item.slider.val -
+					      di->item.slider.lower)) /
+		 (di->item.slider.upper - di->item.slider.lower));
+	     di->item.slider.knob_x =
+		di->item.slider.base_x +
+		((di->item.slider.base_w - di->item.slider.knob_w) / 2);
+	  }
+	if (di->item.slider.knob_win)
+	   EMoveResizeWindow(di->item.slider.knob_win,
+			     di->x + di->item.slider.knob_x,
+			     di->y + di->item.slider.knob_y,
+			     di->item.slider.knob_w, di->item.slider.knob_h);
+	if (di->item.slider.base_win)
+	   ImageclassApply(di->item.slider.ic_base,
+			   di->item.slider.base_win,
+			   di->item.slider.base_w, di->item.slider.base_h,
+			   0, 0, STATE_NORMAL, 0, ST_WIDGET);
+	if (di->item.slider.border_win)
+	   ImageclassApply(di->item.slider.ic_border,
+			   di->item.slider.border_win,
+			   di->item.slider.border_w,
+			   di->item.slider.border_h, 0, 0, STATE_NORMAL, 0,
+			   ST_WIDGET);
+	state = STATE_NORMAL;
+	if ((di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	else if ((di->hilited) && (!di->clicked))
+	   state = STATE_HILITED;
+	else if (!(di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	if (di->item.slider.knob_win)
+	   ImageclassApply(di->item.slider.ic_knob,
+			   di->item.slider.knob_win,
+			   di->item.slider.knob_w, di->item.slider.knob_h,
+			   0, 0, state, 0, ST_WIDGET);
+	break;
+     case DITEM_BUTTON:
+	state = STATE_NORMAL;
+	if ((di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	else if ((di->hilited) && (!di->clicked))
+	   state = STATE_HILITED;
+	else if (!(di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
+			ST_WIDGET);
+	TextclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
+		       di->tclass, di->item.button.text);
+	break;
+     case DITEM_AREA:
+	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			STATE_NORMAL, 0, ST_DIALOG);
+	break;
+     case DITEM_CHECKBUTTON:
+	state = STATE_NORMAL;
+	if ((di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	else if ((di->hilited) && (!di->clicked))
+	   state = STATE_HILITED;
+	else if (!(di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	if (di->item.check_button.onoff)
+	   ImageclassApply(di->iclass, di->item.check_button.check_win,
+			   di->item.check_button.check_orig_w,
+			   di->item.check_button.check_orig_h, 1, 0, state,
+			   0, ST_WIDGET);
+	else
+	   ImageclassApply(di->iclass, di->item.check_button.check_win,
+			   di->item.check_button.check_orig_w,
+			   di->item.check_button.check_orig_h, 0, 0, state,
+			   0, ST_WIDGET);
+	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
+		 di->item.check_button.text,
+		 di->x + di->item.check_button.check_orig_w +
+		 di->iclass->padding.left, di->y,
+		 di->w - di->item.check_button.check_orig_w -
+		 di->iclass->padding.left, 99999, 17,
+		 di->tclass->justification);
+	break;
+     case DITEM_TEXT:
+	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
+		 di->item.text.text, di->x, di->y, di->w, 99999, 17,
+		 di->tclass->justification);
+	break;
+     case DITEM_IMAGE:
+	break;
+     case DITEM_SEPARATOR:
+	if (di->item.separator.horizontal)
+	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			   STATE_NORMAL, 0, ST_WIDGET);
+	else
+	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			   STATE_CLICKED, 0, ST_WIDGET);
+	break;
+     case DITEM_RADIOBUTTON:
+	state = STATE_NORMAL;
+	if ((di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	else if ((di->hilited) && (!di->clicked))
+	   state = STATE_HILITED;
+	else if (!(di->hilited) && (di->clicked))
+	   state = STATE_CLICKED;
+	if (di->item.radio_button.onoff)
+	   ImageclassApply(di->iclass, di->item.radio_button.radio_win,
+			   di->item.radio_button.radio_orig_w,
+			   di->item.radio_button.radio_orig_h, 1, 0, state,
+			   0, ST_WIDGET);
+	else
+	   ImageclassApply(di->iclass, di->item.radio_button.radio_win,
+			   di->item.radio_button.radio_orig_w,
+			   di->item.radio_button.radio_orig_w, 0, 0, state,
+			   0, ST_WIDGET);
+	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
+		 di->item.radio_button.text,
+		 di->x + di->item.radio_button.radio_orig_w +
+		 di->iclass->padding.left, di->y,
+		 di->w - di->item.radio_button.radio_orig_w -
+		 di->iclass->padding.left, 99999, 17,
+		 di->tclass->justification);
+	break;
+     default:
+	break;
      }
 
-   if (INTERSECTS(x, y, w, h, di->x, di->y, di->w, di->h))
+   di->update = 0;
+}
+
+void
+DialogsCheckUpdate(void)
+{
+   Dialog             *d, **ds;
+   int                 i, num;
+
+   if (!dialog_update_pending)
+      return;
+   dialog_update_pending = 0;
+
+   ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
+   for (i = 0; i < num; i++)
      {
-	switch (di->type)
-	  {
-	  case DITEM_SLIDER:
-	     if (di->item.slider.horizontal)
-	       {
-		  di->item.slider.knob_x =
-		     di->item.slider.base_x +
-		     (((di->item.slider.base_w -
-			di->item.slider.knob_w) * (di->item.slider.val -
-						   di->item.slider.lower)) /
-		      (di->item.slider.upper - di->item.slider.lower));
-		  di->item.slider.knob_y =
-		     di->item.slider.base_y +
-		     ((di->item.slider.base_h - di->item.slider.knob_h) / 2);
-	       }
-	     else
-	       {
-		  di->item.slider.knob_y =
-		     (di->item.slider.base_y + di->item.slider.base_h -
-		      di->item.slider.knob_h) -
-		     (((di->item.slider.base_h -
-			di->item.slider.knob_h) * (di->item.slider.val -
-						   di->item.slider.lower)) /
-		      (di->item.slider.upper - di->item.slider.lower));
-		  di->item.slider.knob_x =
-		     di->item.slider.base_x +
-		     ((di->item.slider.base_w - di->item.slider.knob_w) / 2);
-	       }
-	     if (di->item.slider.knob_win)
-		EMoveResizeWindow(di->item.slider.knob_win,
-				  di->x + di->item.slider.knob_x,
-				  di->y + di->item.slider.knob_y,
-				  di->item.slider.knob_w,
-				  di->item.slider.knob_h);
-	     if (di->item.slider.base_win)
-		ImageclassApply(di->item.slider.ic_base,
-				di->item.slider.base_win,
-				di->item.slider.base_w, di->item.slider.base_h,
-				0, 0, STATE_NORMAL, 0, ST_WIDGET);
-	     if (di->item.slider.border_win)
-		ImageclassApply(di->item.slider.ic_border,
-				di->item.slider.border_win,
-				di->item.slider.border_w,
-				di->item.slider.border_h, 0, 0, STATE_NORMAL, 0,
-				ST_WIDGET);
-	     state = STATE_NORMAL;
-	     if ((di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     else if ((di->hilited) && (!di->clicked))
-		state = STATE_HILITED;
-	     else if (!(di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     if (di->item.slider.knob_win)
-		ImageclassApply(di->item.slider.ic_knob,
-				di->item.slider.knob_win,
-				di->item.slider.knob_w, di->item.slider.knob_h,
-				0, 0, state, 0, ST_WIDGET);
-	     break;
-	  case DITEM_BUTTON:
-	     state = STATE_NORMAL;
-	     if ((di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     else if ((di->hilited) && (!di->clicked))
-		state = STATE_HILITED;
-	     else if (!(di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
-			     ST_WIDGET);
-	     TextclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
-			    di->tclass, di->item.button.text);
-	     break;
-	  case DITEM_AREA:
-	     ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			     STATE_NORMAL, 0, ST_DIALOG);
-	     break;
-	  case DITEM_CHECKBUTTON:
-	     state = STATE_NORMAL;
-	     if ((di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     else if ((di->hilited) && (!di->clicked))
-		state = STATE_HILITED;
-	     else if (!(di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     if (di->item.check_button.onoff)
-		ImageclassApply(di->iclass, di->item.check_button.check_win,
-				di->item.check_button.check_orig_w,
-				di->item.check_button.check_orig_h, 1, 0, state,
-				0, ST_WIDGET);
-	     else
-		ImageclassApply(di->iclass, di->item.check_button.check_win,
-				di->item.check_button.check_orig_w,
-				di->item.check_button.check_orig_h, 0, 0, state,
-				0, ST_WIDGET);
-	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		      di->item.check_button.text,
-		      di->x + di->item.check_button.check_orig_w +
-		      di->iclass->padding.left, di->y,
-		      di->w - di->item.check_button.check_orig_w -
-		      di->iclass->padding.left, 99999, 17,
-		      di->tclass->justification);
-	     break;
-	  case DITEM_TEXT:
-	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		      di->item.text.text, di->x, di->y, di->w, 99999, 17,
-		      di->tclass->justification);
-	     break;
-	  case DITEM_IMAGE:
-	     break;
-	  case DITEM_SEPARATOR:
-	     if (di->item.separator.horizontal)
-		ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-				STATE_NORMAL, 0, ST_WIDGET);
-	     else
-		ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-				STATE_CLICKED, 0, ST_WIDGET);
-	     break;
-	  case DITEM_RADIOBUTTON:
-	     state = STATE_NORMAL;
-	     if ((di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     else if ((di->hilited) && (!di->clicked))
-		state = STATE_HILITED;
-	     else if (!(di->hilited) && (di->clicked))
-		state = STATE_CLICKED;
-	     if (di->item.radio_button.onoff)
-		ImageclassApply(di->iclass, di->item.radio_button.radio_win,
-				di->item.radio_button.radio_orig_w,
-				di->item.radio_button.radio_orig_h, 1, 0, state,
-				0, ST_WIDGET);
-	     else
-		ImageclassApply(di->iclass, di->item.radio_button.radio_win,
-				di->item.radio_button.radio_orig_w,
-				di->item.radio_button.radio_orig_w, 0, 0, state,
-				0, ST_WIDGET);
-	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		      di->item.radio_button.text,
-		      di->x + di->item.radio_button.radio_orig_w +
-		      di->iclass->padding.left, di->y,
-		      di->w - di->item.radio_button.radio_orig_w -
-		      di->iclass->padding.left, 99999, 17,
-		      di->tclass->justification);
-	     break;
-	  default:
-	     break;
-	  }
+	d = ds[i];
+	if (!d->update)
+	   continue;
+
+	DialogDrawItem(d, d->item);
+	d->update = 0;
+	d->xu1 = d->yu1 = 99999;
+	d->xu2 = d->yu2 = 0;
      }
+   if (ds)
+      Efree(ds);
 }
 
 static void

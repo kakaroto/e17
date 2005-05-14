@@ -1126,6 +1126,7 @@ Qentry;
 #define USE_DQ_ICLASS 0
 #define USE_DQ_TCLASS 0
 #define USE_DQ_SHAPE  0
+#define USE_DQ_DIALOG 0
 
 typedef struct _drawqueue
 {
@@ -1147,8 +1148,10 @@ typedef struct _drawqueue
    Pager              *pager;
    Pager              *redraw_pager;
    char                newbg;
+#if USE_DQ_DIALOG
    Dialog             *d;
    DItem              *di;
+#endif
 }
 DrawQueue;
 
@@ -1494,6 +1497,8 @@ void                DialogItemAreaSetEventFunc(DItem * di,
 					       DialogItemCallbackFunc * func);
 
 void                DialogCallbackClose(Dialog * d, int val, void *data);
+
+void                DialogsCheckUpdate(void);
 
 void                DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
