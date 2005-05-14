@@ -34,6 +34,7 @@ typedef struct
 int                 EVisualIsARGB(Visual * vis);
 
 void                ECompMgrParseArgs(const char *args);
+void                ECompMgrRepaint(void);
 
 void                ECompMgrWinNew(EObj * eo);
 void                ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade);

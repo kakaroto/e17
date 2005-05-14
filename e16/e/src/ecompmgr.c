@@ -1635,7 +1635,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
      }
 }
 
-static void
+void
 ECompMgrRepaint(void)
 {
    Display            *dpy = disp;

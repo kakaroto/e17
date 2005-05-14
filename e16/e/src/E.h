@@ -1547,6 +1547,7 @@ void                EobjReparent(EObj * eo, int desk, int x, int y);
 int                 EobjRaise(EObj * eo);
 int                 EobjLower(EObj * eo);
 void                EobjChangeShape(EObj * eo);
+void                EobjsRepaint(void);
 
 #if USE_COMPOSITE
 Pixmap              EobjGetPixmap(const EObj * eo);

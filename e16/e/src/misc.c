@@ -173,8 +173,7 @@ ETimedLoopNext(void)
    etl_k = etl_k1 + tm * etl_fac;
    y = ETimeCurve(etl_k1, etl_k2, etl_k, 2, 1.0);
 
-   ESync();
-   CheckEvent();
+   EobjsRepaint();
 
    return y;
 }

@@ -717,7 +717,7 @@ IconboxesEwinDeIconify(EWin * ewin)
    ib = SelectIconboxForEwin(ewin);
    if (ib && ib->animate && !ewin->st.showingdesk)
      {
-	CheckEvent();
+	EobjsRepaint();
 	IB_Animate(0, ewin, ib->ewin);
      }
 }
@@ -3133,13 +3133,18 @@ static void
 IconboxObjSwinDel(Iconbox * ib, Window win)
 {
    int                 i;
+   SWin               *swin;
 
    i = IconboxObjSwinFind(ib, win);
    if (i < 0)
       return;
 
-   if (IconboxObjectDel(ib, ib->objs[i].u.swin) == 0)
+   swin = ib->objs[i].u.swin;
+
+   if (IconboxObjectDel(ib, swin) == 0)
       IconboxRedraw(ib);
+
+   Efree(swin);
 }
 
 static void

@@ -560,6 +560,7 @@ EventsProcess(XEvent ** evq_p, int *evq_n)
    return qsz;
 }
 
+#if 0				/* FIXME - Remove? */
 void
 CheckEvent(void)
 {
@@ -602,6 +603,7 @@ CheckEvent(void)
 
    ModulesSignal(ESIGNAL_IDLE, NULL);
 }
+#endif
 
 /*
  * This is the primary event loop.  Everything that is going to happen in the

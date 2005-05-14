@@ -495,3 +495,12 @@ EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 
    Efree(xy);
 }
+
+void
+EobjsRepaint(void)
+{
+#if USE_COMPOSITE
+   ECompMgrRepaint();
+   ESync();
+#endif
+}
