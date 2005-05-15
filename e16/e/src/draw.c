@@ -1118,95 +1118,107 @@ void
 PropagateShapes(Window win)
 {
    Window              rt, par, *list = NULL;
-   int                 k, i, num = 0, num_rects = 0, rn = 0, ord;
-   int                 x, y, ww, hh, w, h, d;
-   XRectangle         *rects = NULL, *rl = NULL;
+   unsigned int        i, num, num_rects;
+   int                 k, rn, ord;
+   int                 x, y, xx, yy, ww, hh, d;
+   XRectangle         *rects, *rl;
    XWindowAttributes   att;
 
+   if (!EGetGeometry(win, &rt, &xx, &yy, &ww, &hh, &d, &d))
+      return;
+   if ((ww <= 0) || (hh <= 0))
+      return;
+
 #if 0
-   Eprintf("PropagateShapes: %#lx\n", win);
+   Eprintf("PropagateShapes %#lx %d,%d %dx%d\n", win, xx, yy, ww, hh);
 #endif
 
-   if (!EGetGeometry(win, &rt, &x, &y, &w, &h, &d, &d))
-      return;
-   if ((w <= 0) || (h <= 0))
+   XQueryTree(disp, win, &rt, &par, &list, &num);
+   if (!list)
       return;
 
-   ww = w;
-   hh = h;
+   num_rects = 0;
+   rects = NULL;
 
-   XQueryTree(disp, win, &rt, &par, &list, (unsigned int *)&num);
-   if (list)
+   /* go through all child windows and create/inset spans */
+   for (i = 0; i < num; i++)
      {
-	/* go through all child windows and create/inset spans */
-	for (i = 0; i < num; i++)
+	XGetWindowAttributes(disp, list[i], &att);
+	x = att.x;
+	y = att.y;
+	if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
 	  {
-	     XGetWindowAttributes(disp, list[i], &att);
-	     x = att.x;
-	     y = att.y;
-	     w = att.width;
-	     h = att.height;
-	     if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
-	       {
-		  rl = NULL;
-		  rl = EShapeGetRectangles(list[i], ShapeBounding, &rn, &ord);
-		  if (rl)
-		    {
-		       num_rects += rn;
-		       if (rn > 0)
-			 {
-			    rects =
-			       Erealloc(rects, num_rects * sizeof(XRectangle));
-			    /* go through all clip rects in thsi window's shape */
-			    for (k = 0; k < rn; k++)
-			      {
-				 /* for each clip rect, add it to the rect list */
-				 rects[num_rects - rn + k].x = x + rl[k].x;
-				 rects[num_rects - rn + k].y = y + rl[k].y;
-				 rects[num_rects - rn + k].width = rl[k].width;
-				 rects[num_rects - rn + k].height =
-				    rl[k].height;
-			      }
-			 }
-		       Efree(rl);
-		    }
-		  else
-		    {
-		       num_rects++;
-		       rects = Erealloc(rects, num_rects * sizeof(XRectangle));
-
-		       rects[num_rects - 1].x = x;
-		       rects[num_rects - 1].y = y;
-		       rects[num_rects - 1].width = w;
-		       rects[num_rects - 1].height = h;
-		    }
-	       }
-	  }
-	/* set the rects as the shape mask */
-	if (rects)
-	  {
-	     EShapeCombineRectangles(win, ShapeBounding, 0, 0, rects,
-				     num_rects, ShapeSet, Unsorted);
-	     Efree(rects);
-	     rl = NULL;
-	     rl = EShapeGetRectangles(win, ShapeBounding, &rn, &ord);
+	     rl = EShapeGetRectangles(list[i], ShapeBounding, &rn, &ord);
 	     if (rl)
 	       {
-		  if (rn < 1)
-		     EShapeCombineMask(win, ShapeBounding, 0, 0, None,
-				       ShapeSet);
-		  else if (rn == 1)
+		  if (rn > 0)
 		    {
-		       if ((rl[0].x == 0) && (rl[0].y == 0)
-			   && (rl[0].width == ww) && (rl[0].height == hh))
-			  EShapeCombineMask(win, ShapeBounding, 0, 0,
-					    None, ShapeSet);
+		       rects = Erealloc(rects,
+					(num_rects + rn) * sizeof(XRectangle));
+		       /* go through all clip rects in thsi window's shape */
+		       for (k = 0; k < rn; k++)
+			 {
+			    /* for each clip rect, add it to the rect list */
+			    rects[num_rects + k].x = x + rl[k].x;
+			    rects[num_rects + k].y = y + rl[k].y;
+			    rects[num_rects + k].width = rl[k].width;
+			    rects[num_rects + k].height = rl[k].height;
+			 }
+		       num_rects += rn;
 		    }
 		  Efree(rl);
 	       }
 	     else
-		EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
+	       {
+		  rects = Erealloc(rects, (num_rects + 1) * sizeof(XRectangle));
+
+		  rects[num_rects].x = x;
+		  rects[num_rects].y = y;
+		  rects[num_rects].width = att.width;
+		  rects[num_rects].height = att.height;
+		  num_rects++;
+	       }
 	  }
-	XFree(list);
      }
+
+#if 0
+   for (i = 0; i < num_rects; i++)
+      Eprintf("%3d %4d,%4d %4dx%4d\n", i, rects[i].x, rects[i].y,
+	      rects[i].width, rects[i].height);
+#endif
+
+   /* set the rects as the shape mask */
+   if (rects)
+     {
+	EShapeCombineRectangles(win, ShapeBounding, 0, 0, rects,
+				num_rects, ShapeSet, Unsorted);
+
+	/* Limit shape to window extents */
+	rects[0].x = 0;
+	rects[0].y = 0;
+	rects[0].width = ww;
+	rects[0].height = hh;
+	XShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
+				1, ShapeIntersect, Unsorted);
+
+	Efree(rects);
+	rl = NULL;
+	rl = EShapeGetRectangles(win, ShapeBounding, &rn, &ord);
+	if (rl)
+	  {
+	     if (rn < 1)
+		EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
+	     else if (rn == 1)
+	       {
+		  if ((rl[0].x == 0) && (rl[0].y == 0)
+		      && (rl[0].width == ww) && (rl[0].height == hh))
+		     EShapeCombineMask(win, ShapeBounding, 0, 0,
+				       None, ShapeSet);
+	       }
+	     Efree(rl);
+	  }
+	else
+	   EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
+     }
+   XFree(list);
 }
