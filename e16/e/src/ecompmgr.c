@@ -2030,7 +2030,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
      case DestroyNotify:
 	eo = EobjListStackFind(ev->xdestroywindow.window);
-	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
+	if (eo && eo->type == EOBJ_TYPE_EXT)
 	  {
 	     ECompMgrWinDel(eo, True, True);
 	     EobjUnregister(ev->xdestroywindow.window);
