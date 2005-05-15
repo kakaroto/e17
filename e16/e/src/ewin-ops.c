@@ -660,10 +660,9 @@ EwinDeIconify(EWin * ewin)
    else
       MoveEwinToDesktopAt(ewin, DesksGetCurrent(), x, y);
 
-   ewin->iconified = 0;
-
    ModulesSignal(ESIGNAL_EWIN_DEICONIFY, ewin);
 
+   ewin->iconified = 0;
    ewin->st.showingdesk = 0;
 
    RaiseEwin(ewin);
