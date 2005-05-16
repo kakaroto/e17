@@ -79,12 +79,12 @@ static void entangle_ui_cb_directory_add(void *data, Evas_Object *obj,
 static void entangle_ui_dir_add_name(void *data, const char *str);
 
 int
-entangle_ui_init(void)
+entangle_ui_init(const char *display, const char *theme)
 {
     Evas *evas;
     Evas_Object *o, *edje;
 
-    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
+    ee = ecore_evas_software_x11_new(display, 0, 0, 0, WIDTH, HEIGHT);
     ecore_evas_title_set(ee, "entangle");
     ecore_evas_name_class_set(ee, "entangle", "entangle");
     ecore_evas_callback_resize_set(ee, entangle_ui_cb_resize);
@@ -93,8 +93,7 @@ entangle_ui_init(void)
     evas = ecore_evas_get(ee);
 
     edje = edje_object_add(evas);
-    if (!edje_object_file_set(edje,
-            PACKAGE_DATA_DIR"/data/entangle/default.edj", "Main"))
+    if (!edje_object_file_set(edje, theme, "Main"))
     {
         fprintf(stderr, "Unable to locate theme.\n");
         return 0;
@@ -438,7 +437,7 @@ entangle_ui_menu_populate_list(const char *rel_path, Ecore_List *apps,
     {
         Entangle_App *app;
         Evas_Object *obj;
-        Evas_Object *o;
+        Evas_Object *o = NULL;
 
         app = ecore_list_goto_index(apps, i);
         obj = edje_object_add(evas);
@@ -830,7 +829,7 @@ entangle_ui_dir_add_name(void *data, const char *str)
     Evas *evas;
     Entangle_App *app;
     Ecore_List *list;
-    char path[PATH_MAX], exe[PATH_MAX], *p;
+    char path[PATH_MAX], exe[PATH_MAX];
     const char *rel_path;
 
     o = data;

@@ -57,7 +57,7 @@ void entangle_apps_save(void);
 void entangle_apps_dump(void);
 Ecore_List *entangle_apps_list_get(const char *list);
 
-int entangle_ui_init(void);
+int entangle_ui_init(const char *display, const char *theme);
 void entangle_ui_shutdown(void);
 
 #endif
