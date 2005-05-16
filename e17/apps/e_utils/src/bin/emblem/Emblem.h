@@ -8,11 +8,19 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Job.h>
+#include <Ecore_File.h>
 #include <Evas.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
 
 #include "config.h"
+
+#undef __UNUSED__
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
 
 typedef struct Emblem Emblem;
 struct Emblem

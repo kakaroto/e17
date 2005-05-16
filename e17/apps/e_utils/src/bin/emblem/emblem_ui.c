@@ -290,7 +290,7 @@ emblem_current_bg_set(Emblem *em, char *file)
 }
 
 static int
-emblem_ui_e_bg_get(void *data, int type, void *ev)
+emblem_ui_e_bg_get(void *data, int type __UNUSED__, void *ev)
 {
     Emblem *em;
     E_Response_Background_Get *e;
@@ -298,13 +298,11 @@ emblem_ui_e_bg_get(void *data, int type, void *ev)
     e = ev;
     em = data;
     emblem_current_bg_set(em, e->file);
-
     return 1;
-    type = 0;
 }
 
 static int
-emblem_ui_e_bg_dirs_list(void *data, int type, void *ev)
+emblem_ui_e_bg_dirs_list(void *data, int type __UNUSED__, void *ev)
 {
     Emblem *em;
     E_Response_Background_Dirs_List *e;
@@ -317,25 +315,21 @@ emblem_ui_e_bg_dirs_list(void *data, int type, void *ev)
         emblem_ui_init_dir(em, e->dirs[i]);
 
     return 1;
-    type = 0;
 }
 
 static void
-emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
+emblem_current_sel_cb(void *data __UNUSED__, Evas *evas __UNUSED__, 
+                        Evas_Object *obj, void *ev __UNUSED__)
 {
     char *name; 
-
     name = evas_object_data_get(obj, "file");
     e_background_set(name);
-
     return;
-    evas = NULL;
-    data = NULL;
-    ev = NULL;
 }
 
 static void
-emblem_menu_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
+emblem_menu_sel_cb(void *data __UNUSED__, Evas *evas __UNUSED__, 
+                    Evas_Object *obj, void *ev __UNUSED__)
 {
     Emblem *em;
     char *name;
@@ -343,75 +337,47 @@ emblem_menu_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
     em = data;
     name = evas_object_data_get(obj, "file");
     emblem_current_bg_set(em, name);
-
     return;
-    evas = NULL;
-    data = NULL;
-    ev = NULL;
 }
 
 static void
-emblem_left_scroll_down_cb(void *data, Evas_Object *obj, 
-        const char *emission, const char *src)
+emblem_left_scroll_down_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, 
+                const char *emission __UNUSED__, const char *src __UNUSED__)
 {
     Emblem *em;
-
     em = data;
     esmart_container_scroll_start(em->gui.menu, -2);
-
     return;
-    data = NULL;
-    obj = NULL;
-    emission = NULL;
-    src = NULL;
 }
 
 static void
-emblem_right_scroll_down_cb(void *data, Evas_Object *obj, 
-        const char *emission, const char *src)
+emblem_right_scroll_down_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, 
+                const char *emission __UNUSED__, const char *src __UNUSED__)
 {
     Emblem *em;
-
     em = data;
     esmart_container_scroll_start(em->gui.menu, 2);
-
     return;
-    data = NULL;
-    obj = NULL;
-    emission = NULL;
-    src = NULL;
 }
 
 static void
-emblem_left_scroll_up_cb(void *data, Evas_Object *obj,
-        const char *emission, const char *src)
+emblem_left_scroll_up_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+                const char *emission __UNUSED__, const char *src __UNUSED__)
 {
     Emblem *em;
-
     em = data;
     esmart_container_scroll_stop(em->gui.menu);
-
     return;
-    data = NULL;
-    obj = NULL;
-    emission = NULL;
-    src = NULL;
 }
 
 static void
-emblem_right_scroll_up_cb(void *data, Evas_Object *obj,
-        const char *emission, const char *src)
+emblem_right_scroll_up_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+                const char *emission __UNUSED__, const char *src __UNUSED__)
 {
     Emblem *em;
-
     em = data;
     esmart_container_scroll_stop(em->gui.menu);
-
     return;
-    data = NULL;
-    obj = NULL;
-    emission = NULL;
-    src = NULL;
 }
 
 

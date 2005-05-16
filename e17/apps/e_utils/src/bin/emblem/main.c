@@ -3,14 +3,10 @@
 static void usage(void);
 
 static int
-exit_cb(void *data, int type, void *ev)
+exit_cb(void *data __UNUSED__, int type __UNUSED__, void *ev __UNUSED__)
 {
     ecore_main_loop_quit();
-
     return 0;
-    data = NULL;
-    type = 0;
-    ev = NULL;
 }
 
 int
