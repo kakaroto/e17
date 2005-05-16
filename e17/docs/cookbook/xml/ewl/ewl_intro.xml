@@ -57,7 +57,7 @@ static void mk_gui(void);
 </example>
 
 <para>
-The only required include to write an Ewl application is the &lt;Ewl.h&gt; declaration.
+The only include needed for an Ewl application is &lt;Ewl.h&gt;.
 We make the main window and the file dialog window global to facilitate easier
 access in the callback functions. They do not need to be global, but for the 
 purposes of this example, its simpler if they are.
@@ -481,7 +481,7 @@ static void file_menu_open_cb(Ewl_Widget *win, void *ev, void *data) {
 </programlisting>
 </example>
 <para>
-If a use clicks on the open entry in the file menu, the
+If a user clicks on the open entry in the file menu, the
 <function>file_menu_open_cb()</function> will
 be executed. When that happens we need to create the file dialog for the 
 use to select the file to view.
@@ -567,7 +567,7 @@ of the given text object.
 </para>
 
 <para>
-As the user has now finished their selection they file dialog is hidden
+As the user has now finished their selection the file dialog is hidden
 from view.
 </para>
 
@@ -577,7 +577,7 @@ from view.
 /* the fd home button is clicked */
 static void home_cb(Ewl_Widget *win, void *ev, void *data) {
     char *home = NULL;
-    Ewl_Filedialog *fd = (Ewl_Filedialog *)data;
+    Ewl_Filedialog *fd = data;
     
     home = getenv("HOME");
     if (home)
