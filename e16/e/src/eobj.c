@@ -501,6 +501,6 @@ EobjsRepaint(void)
 {
 #if USE_COMPOSITE
    ECompMgrRepaint();
-   ESync();
 #endif
+   ESync();
 }
