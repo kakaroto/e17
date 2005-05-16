@@ -1,5 +1,7 @@
 #include "Emblem.h"
 
+static void usage(void);
+
 static int
 exit_cb(void *data, int type, void *ev)
 {
@@ -35,51 +37,71 @@ main(int argc, char ** argv)
     /* arg handling */
     for (i = 1; i < argc; i++)
     {
-        if (!strcmp(argv[i], "-display"))
+        if ((!strcmp(argv[i], "-display")) || (!strcmp(argv[i], "-d")))
         {
             if (++i < argc)
+            {
                 em->display = strdup(argv[i]);
+            }
             else
             {
                 printf("Missing argument to -display\n");
                 goto ECORE_SHUTDOWN;
             }
         }      
-
-       if (!strcmp(argv[i], "-theme"))
-       {
-	   if (++i < argc)
-	       em->theme = strdup(argv[i]);
-	   else
-	   {
-	        printf("Missing argument to -theme\n");
-	        goto ECORE_SHUTDOWN;
-	   }
-       }
+        else if ((!strcmp(argv[i], "-theme")) || (!strcmp(argv[i], "-t")))
+        {
+            if (++i < argc)
+            {
+                em->theme = strdup(argv[i]);
+            }
+            else
+            {
+                printf("Missing argument to -theme\n");
+                goto ECORE_SHUTDOWN;
+            }
+        }
+        else if ((!strcmp(argv[i], "-help")) || (!strcmp(argv[i], "-h")))
+        {
+            usage();
+            return 0;
+        }
     }
-
+    
+    /* make sure theme exists */
     if (!em->theme)
     {
-    	em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
+        em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
     }
     else
     {
-    	if(!ecore_file_exists(em->theme))
-	{
-		char theme[PATH_MAX];
-		snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s", em->theme);
-		if(ecore_file_exists(theme))
-		{
-			em->theme = strdup(theme);
-		}
-		else
-		{
-			em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
-			fprintf(stderr, "Theme does not exist! Falling back to default theme\n");
-		}
-	}
-	
+        if (!ecore_file_exists(em->theme))
+        {
+            char theme[PATH_MAX];
+            snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s", em->theme);
+            if (ecore_file_exists(theme))
+            {
+                FREE(em->theme);
+                em->theme = strdup(theme);
+            }
+            else
+            {
+                snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s.edj", em->theme);
+                if (ecore_file_exists(theme))
+                {
+                    FREE(em->theme);
+                    em->theme = strdup(theme);
+                }
+                else
+                {
+                    IF_FREE(em->theme);
+                    em->theme = strdup(PACKAGE_DATA_DIR"/data/emblem/default.edj");
+                    fprintf(stderr, "Theme does not exist! Falling back to default theme\n");
+                }
+            }
+        }
     }
+
     /* if no display given grab the env var */
     if (!em->display)
     {
@@ -99,7 +121,6 @@ main(int argc, char ** argv)
             snprintf(buf, sizeof(buf), "%s:0.0", em->display);
             free(em->display);
             em->display = strdup(buf);
-
         }
         else
         {
@@ -160,4 +181,17 @@ ECORE_SHUTDOWN:
 EXIT:
     return ret;
 }
+
+static
+void usage(void)
+{
+    printf("Emblem - Set the Enlightenment 17 Background\n\n"
+           "Usage: emblem [OPTIONS]\n\n"
+           "\tOPTIONS\n"
+           "  -theme <THEME>    \t - Use the given theme\n"
+           "  -display <STR>    \t - Use the given X display\n"
+           "  -help             \t - This help text\n"
+           "\n");
+}
+
 
