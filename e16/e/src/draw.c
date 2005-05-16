@@ -1198,7 +1198,7 @@ PropagateShapes(Window win)
 	rects[0].y = 0;
 	rects[0].width = ww;
 	rects[0].height = hh;
-	XShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
+	EShapeCombineRectangles(win, ShapeBounding, 0, 0, rects,
 				1, ShapeIntersect, Unsorted);
 
 	Efree(rects);

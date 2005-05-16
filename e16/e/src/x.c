@@ -611,7 +611,7 @@ EShapeCombineRectangles(Window win, int dest, int x, int y,
    xid = EXidFind(win);
    if (xid)
      {
-	if (n_rects == 1)
+	if (n_rects == 1 && op == ShapeSet)
 	  {
 	     if ((rect[0].x == 0) && (rect[0].y == 0)
 		 && (rect[0].width == xid->w) && (rect[0].height == xid->h))
