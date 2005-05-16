@@ -17,6 +17,12 @@ images {
     image, "e17_titlebar_outline.png" COMP;
     image, "e17_titlebar_shadow1.png" COMP;
     image, "e17_titlebar_shadow2.png" COMP;
+    image: "e17_button.png" LOSSY 90;
+    image: "e17_button2.png" LOSSY 90;
+    image: "e17_ibar_bg_h.png" LOSSY 90;
+    image: "e17_ibar_over_h.png" LOSSY 90;
+    image: "e17_ibar_bg_v.png" LOSSY 90;
+    image: "e17_ibar_over_v.png" LOSSY 90;
 }
 
 fonts {
@@ -81,12 +87,12 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, -11 2;
+                        offset, -9 2;
                         to, "title";
                     }
                     rel2 {
                         relative, 0.0 0.0;
-                        offset, 0 16;
+                        offset, 3 17;
                         to, "title";
                     }
                     image {
@@ -131,6 +137,7 @@ collections {
                 name, "eapps_bar_body";
                 description {
                     state, "default" 0.0;
+		    color, 255 255 255 220;
                     rel1 {
                         relative, 0.0 0.0;
                         offset, 28 0;
@@ -140,21 +147,26 @@ collections {
                         offset, 80 -80;
                     }
                     image {
-                        normal, "panel.png";
-                        border, 3 3 3 3;
+			normal, "e17_ibar_bg_v.png";
+                        border, 13 13 13 13;
                     }
-                    fill {
-                        origin {
-                            relative, 0.0 0.0;
-                            offset, 0 0;
-                        }
-                        size {
-                            relative, 1.0 1.0;
-                            offset, 0 0;
-                        }
-                    }
-                }
-            }
+		}
+	    }
+    	    part {
+		name: "eapps_bar_body_overlay";
+		mouse_events:  0;
+		description {
+		    state:    "default" 0.0;
+		    color, 255 255 255 255;
+		    rel1.to, "eapps_bar_body";
+		    rel2.to, "eapps_bar_body";
+		    
+		    image {
+			normal: "e17_ibar_over_v.png";
+			border: 13 13 13 13;
+		    }
+		}
+	    }
             part {
                 name, "eapps_bar";
                 type, SWALLOW;
@@ -162,11 +174,11 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         to, "eapps_bar_body";
-                        offset, 0 24;
+                        offset, 0 28;
                     }
                     rel2 {
                         to, "eapps_bar_body";
-                        offset, 0 -24;
+                        offset, 0 -28;
                     }
                 }
             }
@@ -178,14 +190,15 @@ collections {
                     state, "default" 0.0;
                     min, 29 21;
                     max, 29 21;
+		    color, 255 255 255 180;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 0 4;
+                        offset, 0 6;
                         to, "eapps_bar_body";
                     }
                     rel2 {
                         relative, 1.0 0.0;
-                        offset, 0 24;
+                        offset, 0 27;
                         to, "eapps_bar_body";
                     }
                     image {
@@ -221,14 +234,15 @@ collections {
                     state, "default" 0.0;
                     min, 29 21;
                     max, 29 21;
+		    color, 255 255 255 180;
                     rel1 {
                         relative, 0.0 1.0;
-                        offset, 0 -4;
+                        offset, 0 -6;
                         to, "eapps_bar_body";
                     }
                     rel2 {
                         relative, 1.0 1.0;
-                        offset, 0 -24;
+                        offset, 0 -27;
                         to, "eapps_bar_body";
                     }
                     image {
@@ -265,25 +279,15 @@ collections {
                     visible, 0;
                     rel1 {
                         relative, 0.0 1.0;
-                        offset, 28 -75;
+                        offset, 28 -79;
                     }
                     rel2 {
                         relative, 0.0 1.0;
-                        offset, 200 -46;
+                        offset, 200 -40;
                     }
-                    image {
-                        normal, "panel.png";
-                        border, 3 3 3 3;
-                    }
-                    fill {
-                        origin {
-                            relative, 0.0 0.0;
-                            offset, 0 0;
-                        }
-                        size {
-                            relative, 1.0 1.0;
-                            offset, 0 0;
-                        }
+		    image {
+			normal, "e17_ibar_bg_v.png";
+                        border, 13 13 13 13;
                     }
                 }
                 description {
@@ -292,6 +296,26 @@ collections {
                     visible, 1;
                 }
             }
+	    part {
+		name:          "eapp_info_overlay";
+		mouse_events:  0;
+		description {
+		    state:    "default" 0.0;
+		    visible, 0;
+		    rel1.to, "eapp_info";
+		    rel2.to, "eapp_info";
+		    
+		    image {
+			normal: "e17_ibar_over_v.png";
+			border: 13 13 13 13;
+		    }
+		}
+		description {
+                    state, "show" 0.0;
+                    inherit, "default" 0.0;
+                    visible, 1;
+                }
+	    }
             part {
                 name, "eapp_info_name";
                 type, TEXT;
@@ -300,7 +324,7 @@ collections {
                     visible, 0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 2 2;
+                        offset, 2 14;
                         to, "eapp_info";
                     }
                     rel2 {
@@ -329,12 +353,12 @@ collections {
                     visible, 0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 2 16;
+                        offset, 2 20;
                         to, "eapp_info";
                     }
                     rel2 {
                         relative, 1.0 0.0;
-                        offset, 2 28;
+                        offset, 2 32;
                         to, "eapp_info";
                     }
                     text {
@@ -372,12 +396,13 @@ collections {
             }
             part {
                 name, "button_bar";
-                type, SWALLOW;
+                type, RECT;
                 description {
                     state, "default" 0.0;
+		    color, 0 0 0 0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 0 0;
+                        offset, 5 0;
                         to, "button_bar_body";
                     }
                     rel2 {
@@ -397,15 +422,15 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 1 0;
+                        offset, 4 4;
                         to, "menu_base";
                     }
                     rel2 {
                         relative, 1.0 1.0;
-                        offset, -2 -2;
+                        offset, -4 -4;
                         to, "menu_base";
                     }
-                    color, 221 221 221 225;
+                    color, 221 221 221 0;
                 }
             }
             part {
@@ -425,13 +450,27 @@ collections {
                         to_y, "eapps_bar_body";
                     }
                     image {
-                        normal, "e17_menu_bg.png";
-                    }
-                    fill {
-                        smooth: 0;
+                        normal, "e17_ibar_bg_h.png";
+			border, 6 6 6 6;
                     }
                 }
             }
+	    part {
+		name:          "menu_base_overlay";
+		mouse_events:  0;
+		description {
+		    state:    "default" 0.0;
+		    color, 255 255 255 255;
+		    rel1.to, "menu_base";
+		    rel2.to, "menu_base";
+		    
+		    image {
+			normal: "e17_ibar_over_h.png";
+			border: 13 13 13 13;
+		    }
+		}
+	    }
+	    
             part {
                 name, "base3";
                 mouse_events, 0;
@@ -460,20 +499,20 @@ collections {
             part {
                 name, "menu_items";
                 mouse_events, 0;
-                type, SWALLOW;
+                type, RECT;
                 description {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 1 1;
+                        offset, 13 13;
                         to, "menu_base";
                     }
                     rel2 {
                         relative, 1.0 1.0;
-                        offset, -1 -1;
+                        offset, -13 -13;
                         to, "menu_base";
                     }
-                    color, 0 0 0 255;
+                    color, 0 0 0 0;
                 }
             }
 
@@ -485,7 +524,7 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         relative, 1.0 1.0;
-                        offset, 120 0;
+                        offset, 125 0;
                         to, "eapps_bar_body";
                     }
                     rel2 {
@@ -573,6 +612,7 @@ collections {
                 signal, "eapp,info,hide";
                 action, STATE_SET "default" 0.0;
                 target, "eapp_info";
+		target, "eapp_info_overlay";
                 target, "eapp_info_name";
                 target, "eapp_info_class";
                 transition, LINEAR 0.25;
@@ -583,6 +623,7 @@ collections {
                 signal, "eapp,info,show";
                 action, STATE_SET "show" 0.0;
                 target, "eapp_info";
+		target, "eapp_info_overlay";
                 target, "eapp_info_name";
                 target, "eapp_info_class";
                 transition, LINEAR 0.25;
@@ -609,7 +650,7 @@ collections {
                 }
             }
 
-#include "button.edc"
+#include "menu_item.edc"
 
             part {
                 name, "arrow";
@@ -685,7 +726,7 @@ collections {
                 signal, "mouse,down,3";
                 action, SIGNAL_EMIT "move,start" "*";
             }
-#include "button_progs.edc"
+#include "menu_item_progs.edc"
         }
     }
 

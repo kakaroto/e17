@@ -138,7 +138,7 @@ entangle_ui_init(void)
 
     o = esmart_container_new(evas);
     esmart_container_direction_set(o, CONTAINER_DIRECTION_HORIZONTAL);
-    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_NONE);
+    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_FILL_X);
     esmart_container_spacing_set(o, 10);
     esmart_container_padding_set(o, 0, 0, 0, 0);
     edje_object_part_swallow(edje, "button_bar", o);
@@ -149,7 +149,7 @@ entangle_ui_init(void)
     o = esmart_container_new(evas);
     esmart_container_direction_set(o, CONTAINER_DIRECTION_HORIZONTAL);
     esmart_container_alignment_set(o, CONTAINER_ALIGN_RIGHT);
-    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_NONE);
+    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_FILL_X);
     esmart_container_spacing_set(o, 10);
     esmart_container_padding_set(o, 0, 0, 0, 0);
     edje_object_part_swallow(edje, "cmd_bar", o);
@@ -630,7 +630,7 @@ static void entangle_ui_cmd_bar_init(Evas_Object *container)
     Evas *evas;
 
     evas = evas_object_evas_get(container);
-    o = entangle_ui_cmd_bar_button_get(evas, "Add Directory", 
+    o = entangle_ui_cmd_bar_button_get(evas, "Add Dir", 
                                     entangle_ui_cb_directory_add);
     esmart_container_element_append(container, o);
 
