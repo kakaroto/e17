@@ -649,9 +649,13 @@ entangle_ui_cmd_bar_button_get(Evas *evas, const char *label,
                                                     const char *source))
 {
     Evas_Object *o;
+    const char *file;
+
+    o = evas_object_name_find(evas, "edje");
+    edje_object_file_get(o, &file, NULL);
 
     o = edje_object_add(evas);
-    edje_object_file_set(o, PACKAGE_DATA_DIR"/data/entangle/default.edj", "button");
+    edje_object_file_set(o, file, "button");
     edje_object_part_text_set(o, "text", label);
     edje_object_signal_callback_add(o, "button,clicked", "*", func, NULL);
     evas_object_show(o);
@@ -692,9 +696,13 @@ static Evas_Object *
 entangle_ui_button_get(Evas *evas, const char *label, const char *name)
 {
     Evas_Object *o;
+    const char *file;
+
+    o = evas_object_name_find(evas, "edje");
+    edje_object_file_get(o, &file, NULL);
 
     o = edje_object_add(evas);
-    edje_object_file_set(o, PACKAGE_DATA_DIR"/data/entangle/default.edj", "button");
+    edje_object_file_set(o, file, "button");
     edje_object_part_text_set(o, "text", label);
     edje_object_signal_callback_add(o, "button,clicked", "*", 
                                     entangle_ui_cb_menu_change, (void *)name);
