@@ -209,6 +209,7 @@ static void         DButtonHandleEvents(XEvent * ev, void *prm);
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
 
+static void         DialogUpdate(Dialog * d);
 static char         dialog_update_pending = 0;
 
 void
@@ -628,31 +629,31 @@ ShowDialog(Dialog * d)
 
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
-   if (ewin)
+   if (!ewin)
+      return;
+
+   ewin->client.event_mask |= KeyPressMask | ExposureMask;
+   ESelectInput(d->win, ewin->client.event_mask);
+
+   if (ewin->client.already_placed)
      {
-	ewin->client.event_mask |= KeyPressMask | ExposureMask;
-	ESelectInput(d->win, ewin->client.event_mask);
-
-	if (ewin->client.already_placed)
-	  {
-	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
-	  }
-	else
-	  {
-	     ResizeEwin(ewin, w, h);
-	     if (FindADialog() > 1)
-		ArrangeEwin(ewin);
-	     else
-		ArrangeEwinCentered(ewin, 0);
-	  }
-	ShowEwin(ewin);
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
-
+   else
+     {
+	ResizeEwin(ewin, w, h);
+	if (FindADialog() > 1)
+	   ArrangeEwin(ewin);
+	else
+	   ArrangeEwinCentered(ewin, 0);
+     }
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
 
-   ESync();
    DialogRedraw(d);
+   DialogUpdate(d);
+   ShowEwin(ewin);
+   ESync();
 }
 
 void
@@ -1563,7 +1564,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 
    if (di->x > d->xu2 || di->y > d->yu2 ||
        di->x + di->w <= d->xu1 || di->y + di->h <= d->yu1)
-      return;
+      goto done;
 
    switch (di->type)
      {
@@ -1728,7 +1729,17 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
      }
 
+ done:
    di->update = 0;
+}
+
+static void
+DialogUpdate(Dialog * d)
+{
+   DialogDrawItem(d, d->item);
+   d->update = 0;
+   d->xu1 = d->yu1 = 99999;
+   d->xu2 = d->yu2 = 0;
 }
 
 void
@@ -1747,11 +1758,7 @@ DialogsCheckUpdate(void)
 	d = ds[i];
 	if (!d->update)
 	   continue;
-
-	DialogDrawItem(d, d->item);
-	d->update = 0;
-	d->xu1 = d->yu1 = 99999;
-	d->xu2 = d->yu2 = 0;
+	DialogUpdate(d);
      }
    if (ds)
       Efree(ds);
@@ -2207,7 +2214,7 @@ DialogEventMotion(Dialog * d, XEvent * ev)
 		(di->func) (d, di->val, di->data);
 	  }
 
-	DialogDrawItems(d, di, 0, 0, 99999, 99999);
+	DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
 	break;
      }
 }
@@ -2292,7 +2299,7 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 
    di->clicked = 1;
 
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
 }
 
 static void
@@ -2333,7 +2340,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	     if (dii->item.radio_button.onoff)
 	       {
 		  dii->item.radio_button.onoff = 0;
-		  DialogDrawItems(d, dii, 0, 0, 99999, 99999);
+		  DialogDrawItems(d, dii, dii->x, dii->y, dii->w, dii->h);
 	       }
 	     dii = dii->item.radio_button.next;
 	  }
@@ -2347,7 +2354,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	break;
      }
 
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
 
    if (di->func)
       di->func(d, di->val, di->data);
@@ -2378,7 +2385,7 @@ DialogEventMouseIn(Dialog * d, XEvent * ev)
 
    di->hilited = 1;
 
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
 }
 
 static void
@@ -2406,7 +2413,7 @@ DialogEventMouseOut(Dialog * d, XEvent * ev)
 
    di->hilited = 0;
 
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+   DialogDrawItems(d, di, di->x, di->y, di->w, di->h);
 }
 
 static void
