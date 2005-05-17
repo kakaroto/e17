@@ -1736,7 +1736,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 static void
 DialogUpdate(Dialog * d)
 {
-   DialogDrawItem(d, d->item);
+   if (d->item)
+      DialogDrawItem(d, d->item);
    d->update = 0;
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;
