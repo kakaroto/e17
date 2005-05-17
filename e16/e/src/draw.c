@@ -677,6 +677,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      case 3:
      case 4:
      case 5:
+	if (firstlast == 0)
+	   EwinShapeSet(ewin);
+
 	if (!b1)
 	   b1 = XCreateBitmapFromData(disp, VRoot.win, flipped_gray_bits,
 				      flipped_gray_width, flipped_gray_height);
