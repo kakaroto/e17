@@ -3398,3 +3398,19 @@ Fix major picture leak.
 Clean up command line option handling.
 Fix various issues with options and restarting/session management.
 Simplify handling of top-level windows - part 1.
+
+-------------------------------------------------------------------------------
+
+Tue May 17 19:06:57 CEST 2005
+(Kim)
+
+Major changes:
+- Top-level window handling adapted for composite manager.
+- Composite manager now (mostly) works on all desktops.
+French translation update (Ludwig Noujarret).
+Initial ARGB client support (Rajsekar Manokaran).
+Fix cruft left some times after non-opaque resizing.
+Fix fullscreen window positioning after restart.
+Systray fixes (avoid crashing certain clients on close).
+Window shape fixes related to composite mode.
+Draw queue has been eliminated.
