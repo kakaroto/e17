@@ -91,7 +91,8 @@ static int on_server_data (void *udata, int type, void *event)
 		QUIT ();
 		return 0;
 	} else if (strncmp (inbuf, "+OK", 3)) {
-		assert (false);
+		fprintf (stderr, "[pop3] unexpected reply: %s\n", inbuf);
+		QUIT ();
 		return 0;
 	}
 

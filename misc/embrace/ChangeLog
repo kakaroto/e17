@@ -1,5 +1,8 @@
 $Id$
 
+2005-05-17 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/plugins/pop3/pop3.c: Don't die on unexpected input data
+
 2005-04-26 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugins/pop3/pop3.c: Send CRLF after QUIT, too
         * src/plugins/pop3/pop3.c: Send QUIT on error
