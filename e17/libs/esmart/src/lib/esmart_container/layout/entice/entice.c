@@ -7,7 +7,7 @@
 static int _entice_current = 0;
 static int _entice_scroll_timer (void *data);
 
-void
+static void
 _entice_layout (Container * cont)
 {
   Container_Element *el;
@@ -214,7 +214,7 @@ _entice_layout (Container * cont)
     }
 }
 
-void
+static void
 _entice_scroll_start (Container * cont, double velocity)
 {
   cont->scroll.velocity = velocity;
@@ -223,7 +223,7 @@ _entice_scroll_start (Container * cont, double velocity)
   cont->scroll.timer = ecore_timer_add (.02, _entice_scroll_timer, cont);
 }
 
-void
+static void
 _entice_scroll_stop (Container * cont)
 {
   /* FIXME: decelerate on stop? */
@@ -234,7 +234,7 @@ _entice_scroll_stop (Container * cont)
     }
 }
 
-void
+static void
 _entice_scroll_to (Container * cont, Container_Element * el)
 {
   if (cont && el)
@@ -253,7 +253,7 @@ _entice_scroll_to (Container * cont, Container_Element * el)
     }
 }
 
-void
+static void
 _entice_shutdown ()
 {
 }
@@ -270,7 +270,7 @@ plugin_init (Container_Layout_Plugin * p)
   return 1;
 }
 
-int
+static int
 _entice_scroll_timer (void *data)
 {
   Container *cont = data;

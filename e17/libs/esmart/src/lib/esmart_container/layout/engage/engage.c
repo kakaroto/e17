@@ -16,20 +16,20 @@ static Evas_Object *grabber = NULL;
 static Ecore_Timer *zoom_timer = NULL;
 static int zoom_state = CONTAINER_UNZOOMED;
 
-int _container_scroll_timer (void *data);
+static int _container_scroll_timer (void *data);
 static void engage_zoom_in (Container * cont);
 static void engage_zoom_out (Container * cont);
 static int engage_zoom_in_slave (void *data);
 static int engage_zoom_out_slave (void *data);
 
-void
+static void
 _engage_mouse_grabber_mouse_move_cb (void *data, Evas * evas,
 				     Evas_Object * obj, void *ev)
 {
   fprintf (stderr, "Mouse move area\n");
 }
 
-void
+static void
 _engage_mouse_grabber_mouse_in_cb (void *data, Evas * evas, Evas_Object * obj,
 				   void *ev)
 {
@@ -38,7 +38,7 @@ _engage_mouse_grabber_mouse_in_cb (void *data, Evas * evas, Evas_Object * obj,
     engage_zoom_in ((Container *) data);
 }
 
-void
+static void
 _engage_mouse_grabber_mouse_out_cb (void *data, Evas * evas,
 				    Evas_Object * obj, void *ev)
 {
@@ -47,7 +47,7 @@ _engage_mouse_grabber_mouse_out_cb (void *data, Evas * evas,
     engage_zoom_out ((Container *) data);
 }
 
-void
+static void
 _engage_grabber_init (Container * cont)
 {
   Evas_Object *obj = NULL;
@@ -66,7 +66,7 @@ _engage_grabber_init (Container * cont)
   grabber = obj;
 }
 
-void
+static void
 _engage_layout (Container * cont)
 {
   Evas_List *l;
@@ -287,7 +287,7 @@ _engage_layout (Container * cont)
     }
 }
 
-void
+static void
 _engage_scroll_start (Container * cont, double velocity)
 {
   double length, size;
@@ -307,7 +307,7 @@ _engage_scroll_start (Container * cont, double velocity)
   cont->scroll.timer = ecore_timer_add (.02, _container_scroll_timer, cont);
 }
 
-void
+static void
 _engage_scroll_stop (Container * cont)
 {
   /* FIXME: decelerate on stop? */
@@ -318,13 +318,13 @@ _engage_scroll_stop (Container * cont)
     }
 }
 
-void
+static void
 _engage_scroll_to (Container * cont, Container_Element * el)
 {
   return;
 }
 
-void
+static void
 _engage_shutdown ()
 {
   return;
@@ -332,7 +332,7 @@ _engage_shutdown ()
 
 
 /*** internal plugin functions ***/
-int
+static int
 _container_scroll_timer (void *data)
 {
   Container *cont = data;

@@ -4,9 +4,9 @@
 #include "../../Esmart_Container.h"
 #include "../../esmart_container_private.h"
 
-int _container_scroll_timer(void *data);
+static int _container_scroll_timer(void *data);
 
-void
+static void
 _default_layout(Container *cont)
 {
   Evas_List *l;
@@ -214,7 +214,7 @@ _default_layout(Container *cont)
   }
 }
 
-void _default_scroll_start(Container *cont, double velocity)
+static void _default_scroll_start(Container *cont, double velocity)
 {
   double length, size;
 
@@ -231,7 +231,7 @@ void _default_scroll_start(Container *cont, double velocity)
   cont->scroll.timer = ecore_timer_add(.02, _container_scroll_timer, cont);
 }
 
-void _default_scroll_stop(Container *cont)
+static void _default_scroll_stop(Container *cont)
 {
   /* FIXME: decelerate on stop? */
   if (cont->scroll.timer)
@@ -241,12 +241,12 @@ void _default_scroll_stop(Container *cont)
   }
 }
 
-void _default_scroll_to(Container *cont, Container_Element *el)
+static void _default_scroll_to(Container *cont, Container_Element *el)
 {
   return;
 }
 
-void
+static void
 _default_shutdown()
 {
   return;
@@ -254,7 +254,7 @@ _default_shutdown()
 
 
 /*** internal plugin functions ***/
-int
+static int
 _container_scroll_timer(void *data)
 {
   Container *cont = data;
