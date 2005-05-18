@@ -1,7 +1,8 @@
 EWL README
 ----------
-Enlightened Widget Library (EWL)  provides a widget abstraction to creating
-GUI's using Evas and Edje. The use of edje allows for easy creation of fairly
-advanced themes.
+The Enlightened Widget Library (EWL) provides a widget abstraction for creating
+GUI's using Evas and Edje. The use of Edje allows for easy creation of fairly
+advanced EWL themes.
 
-More information can be found at http://www.enlightenment.org/pages/ewl.html
+More information can be found at http://www.enlightenment.org/pages/ewl.html.
+

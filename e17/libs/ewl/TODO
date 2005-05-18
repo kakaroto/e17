@@ -1,68 +1,42 @@
+EWL TODO
+========
 
-TODO
-----
+- Ewl_Entry 
+    - Multiline edit (in progress).
+      - This requires some re-working of the evas_object_textblock as there
+        are currently some issues with the interaction.
+    - Text wrap fixups.
+    - Need to make the text scroll over as you type past the end of the entry box.
+    - when you remove all text from an entry its size becomes quite small.
+- Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
+	- Invert on mouse click (behavior depends upon select mode).
+	- determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
+- Enabled/Disabled status for ALL applicable widgets.
 
-IMPROVEMENTS
-------------
+- Need to return a context when items are pushed onto the status bar so that
+  a context can be removed without popping off the stack
 
-* Entry Multiline edit (in progress)
+- [BUG] Fix Box cutoff of elements with padding/insets (?) > 0.
+- [BUG] Fix left padding of the radio button.
+- [BUG] Fix size of the seeker.
+- [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
+        only at the moment.
+- [BUG] The default theme puts a strange blue line down the center of the
+        ewl_test.
+- [BUG] Radio buttons seem to get padded in a bit more then they should.
+        Look at the 'Button' test for an example.
+- [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
+        mouse over.
+- [BUG] When using the menu clicking on the label a second time dosen't
+        close the menu.
+- [BUG] Spinner seems to resize itself slightly larger even when it dosen't
+        have too.
+- [BUG] The arrows for the spinner need to be smaller.
+- [BUG] Colour selector is very messedup.
+- [BUG] The table test dosen't look correct...
+- [BUG] The ewl_test seems to get a small gap between the right edje of the
+        test and the trough for the scrollbar. Should be flush.
+        - The 'Password' test seems to make this gap grow.
 
-* Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE)
-	- Invert on mouse click (behavior depends upon select mode)
-	- determination of whether a row is selected or not (ewl_[tree_]row_selected)
-
-* Enabled/Disabled status for ALL applicable widgets
-
-* In the ewl_fileselector there are a couple of buttons with hard coded
-  image paths. These image buttons should be made into stock buttons.
-
-* In the ewl_entry, need to make the text scroll over as you type past
-  the end of the entry box.
-
-* Text wrap in the ewl_entry.
-
-
-
-BUGS
-----
-
-* Fix Box cutoff of elements with padding/insets (?) > 0
-* Fix left padding of the radio button
-* Fix size of the seeker
-
-
-
-0.0.1 goals
------------
- + Object class (complete)
- + Widget class (complete)
- + Container class (complete)
- + Event loop (complete)
-
-0.0.2 goals
------------
- + Flexible theme support (complete)
- + Box widget (complete)
- + Button widget (complete)
- + Text widget (complete)
- + Spinner widget (complete)
- + Seeker/scrollbar widgets (complete)
- + Scrollarea widget (complete)
-
-0.0.3 goals
------------
- + Entry widget (revision in progrss)
- + Embed widgets in pre-existing evas (complete)
- + Notebook widget (complete)
-
-0.0.4 goals:
------------
- + Tree widget (in progress)
- + Menu widgets (in progress)
- + Table widget (unknown)
-
-0.0.5 goals:
-------------
- + Fully functional textarea
 

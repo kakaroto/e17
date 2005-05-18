@@ -1,0 +1,36 @@
+EWL ROADMAP
+===========
+
+0.0.1 Goals
+-----------
+ + Object class (complete)
+ + Widget class (complete)
+ + Container class (complete)
+ + Event loop (complete)
+
+0.0.2 Goals
+-----------
+ + Flexible theme support (complete)
+ + Box widget (complete)
+ + Button widget (complete)
+ + Text widget (complete)
+ + Spinner widget (complete)
+ + Seeker/scrollbar widgets (complete)
+ + Scrollarea widget (complete)
+
+0.0.3 Goals
+-----------
+ + Entry widget (revision in progrss)
+ + Embed widgets in pre-existing evas (complete)
+ + Notebook widget (complete)
+
+0.0.4 Goals:
+-----------
+ + Tree widget (in progress)
+ + Menu widgets (in progress)
+ + Table widget (unknown)
+
+0.0.5 Goals:
+------------
+ + Fully functional textarea
+
