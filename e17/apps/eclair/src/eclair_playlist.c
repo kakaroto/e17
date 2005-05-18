@@ -2,11 +2,11 @@
 #include "../config.h"
 #include <string.h>
 #include <stdio.h>
-#include <Esmart/Esmart_Container.h>
 #include <Evas.h>
 #include <Ecore_File.h>
 #include <Edje.h>
 #include "eclair.h"
+#include "eclair_playlist_container.h"
 #include "eclair_cover.h"
 #include "eclair_media_file.h"
 #include "eclair_meta_tag.h"
@@ -28,20 +28,10 @@ void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
    playlist->eclair = eclair;
 }
 
-//Empty the playlist and destroy all the media_file
-void eclair_playlist_empty(Eclair_Playlist *playlist)
+//Shutdown the playlist
+void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 {
-   Evas_List *l;
-
-   if (!playlist)
-      return;
-
-   for (l = playlist->playlist; l; )
-      l = eclair_playlist_remove_media_file_list(playlist, l);
-
-   evas_list_free(playlist->playlist);
-   playlist->playlist = NULL;
-   playlist->current = NULL;
+   eclair_playlist_empty(playlist);
 }
 
 //Return the active media file
@@ -72,7 +62,7 @@ Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
 }
 
 //Add recursively a directory
-Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir)
+Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Bool update_container)
 {
    Ecore_List *files;
    Ecore_List_Node *l;
@@ -89,7 +79,7 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir)
             continue;
          filepath = (char *)malloc(strlen(dir) + strlen(filename) + 2);
          sprintf(filepath, "%s/%s", dir, filename);
-         eclair_playlist_add_uri(playlist, filepath);
+         eclair_playlist_add_uri(playlist, filepath, update_container);
          free(filepath);
       }
       ecore_list_destroy(files);
@@ -98,7 +88,7 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir)
 }
 
 //Add files stored in the m3u file
-Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path)
+Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Evas_Bool update_container)
 {
    FILE *m3u_file;
    char line[MAX_PATH_LEN], *path, *c, *m3u_dir;
@@ -117,12 +107,12 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path)
          *c = 0;
    
       if (line[0] == '/')
-         eclair_playlist_add_uri(playlist, line);
+         eclair_playlist_add_uri(playlist, line, update_container);
       else if (m3u_dir)
       {
          path = (char *)malloc(strlen(m3u_dir) + strlen(line) + 2);
          sprintf(path, "%s/%s", m3u_dir, line);
-         eclair_playlist_add_uri(playlist, path);
+         eclair_playlist_add_uri(playlist, path, update_container);
          free(path);
       }
    }
@@ -133,12 +123,11 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path)
 }
 
 //Add the media file located at the uri
-Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
+Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Bool update_container)
 {
    Eclair_Media_File *new_media_file;
-   Evas_Coord min_height;
    Eclair *eclair;
-   char *clean_uri, *new_path;
+   char *clean_uri, *new_path, *ext;
 
    if (!playlist || !uri)
       return 0;
@@ -161,14 +150,14 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
 
    if (!strstr(new_path, "://"))
    {
-      if (eclair_playlist_add_dir(playlist, new_path))
+      if (eclair_playlist_add_dir(playlist, new_path, update_container))
       {
          free(new_path);
          return 1;
       }
-      if (strcmp(eclair_utils_file_get_extension(new_path), "m3u") == 0)
+      if ((ext = eclair_utils_file_get_extension(new_path)) && strcmp(ext, "m3u") == 0)
       {
-         eclair_playlist_add_m3u(playlist, new_path);
+         eclair_playlist_add_m3u(playlist, new_path, update_container);
          free(new_path);
          return 1;  
       }
@@ -176,76 +165,113 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri)
    
    new_media_file = eclair_media_file_new();
    new_media_file->path = new_path;
-
-   if ((eclair = playlist->eclair))
-   {
-      if (eclair->playlist_container)
-      {
-         new_media_file->playlist_entry = edje_object_add(evas_object_evas_get(eclair->playlist_container));
-         edje_object_file_set(new_media_file->playlist_entry, eclair->gui_theme_file, "eclair_playlist_entry");
-         evas_object_data_set(new_media_file->playlist_entry, "media_file", new_media_file);
-         if (eclair->playlist_entry_height <= 0)
-         {
-            edje_object_size_min_get(new_media_file->playlist_entry, NULL, &min_height);
-            eclair->playlist_entry_height = (int)min_height;
-         }
-         evas_object_resize(new_media_file->playlist_entry, 1, eclair->playlist_entry_height);
-         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_name", ecore_file_get_file(new_media_file->path));
-         edje_object_part_text_set(new_media_file->playlist_entry, "playlist_entry_length", "");
-         edje_object_signal_callback_add(new_media_file->playlist_entry, "eclair_play_entry", "*", eclair_gui_play_entry_cb, eclair);
-         esmart_container_element_append(eclair->playlist_container, new_media_file->playlist_entry);
-         evas_object_show(new_media_file->playlist_entry);
-      }
-      
-      if (!strstr(new_media_file->path, "://"))
-         eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
-   }
-
    playlist->playlist = evas_list_append(playlist->playlist, new_media_file);
    if (!playlist->current)
       eclair_playlist_current_set_list(playlist, playlist->playlist);
 
+   if ((eclair = playlist->eclair))
+   {
+      if (update_container)
+         eclair_playlist_container_update(eclair->playlist_container);
+      if (!strstr(new_media_file->path, "://"))
+         eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
+   }
    return 1;   
 }
 
 //Remove the media file from the playlist
-void eclair_playlist_remove_media_file(Eclair_Playlist *playlist, Eclair_Media_File *media_file)
+void eclair_playlist_remove_media_file(Eclair_Playlist *playlist, Eclair_Media_File *media_file, Evas_Bool update_container)
 {
    if (!playlist || !media_file)
       return;
 
-   eclair_playlist_remove_media_file_list(playlist, evas_list_find_list(playlist->playlist, media_file));
+   eclair_playlist_remove_media_file_list(playlist, evas_list_find_list(playlist->playlist, media_file), update_container);
 }
 
 //Remove the media file pointed by the list from the playlist
 //Return the next media file
-Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Evas_List *list)
+Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Evas_List *list, Evas_Bool update_container)
 {
    Eclair_Media_File *remove_media_file;
    Evas_List *next;
 
    if (!playlist || !list)
       return NULL;
-/*
+
    if (playlist->current == list)
-   {
-      if (playlist->current->next)
-         eclair_playlist_next_as_current(playlist);
-      else
-         eclair_playlist_prev_as_current(playlist);            
-   }*/
+      eclair_playlist_current_set_list(playlist, NULL);
 
    if ((remove_media_file = evas_list_data(list)))
-   {
-      if (remove_media_file->playlist_entry && playlist->eclair)
-         esmart_container_element_destroy(playlist->eclair->playlist_container, remove_media_file->playlist_entry);
       eclair_media_file_free(remove_media_file);
-   }
 
    next = list->next;
    playlist->playlist = evas_list_remove_list(playlist->playlist, list);
 
+   if (update_container && playlist->eclair && playlist->eclair->playlist_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+
    return next;
+}
+
+//Remove the selected media files
+void eclair_playlist_remove_selected_media_files(Eclair_Playlist *playlist)
+{
+   Evas_List *l;
+   Eclair_Media_File *media_file;
+
+   if (!playlist)
+      return;
+
+   for (l = playlist->playlist; l; )
+   {
+      if ((media_file = l->data) && media_file->selected)
+         l = eclair_playlist_remove_media_file_list(playlist, l, 0);
+      else
+         l = l->next;
+   }
+
+   if (playlist->eclair && playlist->eclair->playlist_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+}
+
+//Remove the unselected media files
+void eclair_playlist_remove_unselected_media_files(Eclair_Playlist *playlist)
+{
+   Evas_List *l;
+   Eclair_Media_File *media_file;
+
+   if (!playlist)
+      return;
+
+   for (l = playlist->playlist; l; )
+   {
+      if ((media_file = l->data) && !media_file->selected)
+         l = eclair_playlist_remove_media_file_list(playlist, l, 0);
+      else
+         l = l->next;
+   }
+
+   if (playlist->eclair && playlist->eclair->playlist_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+}
+
+//Empty the playlist and destroy all the media_file
+void eclair_playlist_empty(Eclair_Playlist *playlist)
+{
+   Evas_List *l;
+
+   printf("Rohhhh\n");
+
+   if (!playlist)
+      return;
+
+   for (l = playlist->playlist; l; l = eclair_playlist_remove_media_file_list(playlist, l, 0));
+   playlist->playlist = evas_list_free(playlist->playlist);
+   playlist->current = NULL;
+   printf("playlist->playlist: %p\n", playlist->playlist);
+
+   if (playlist->eclair && playlist->eclair->playlist_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
 }
 
 //Set the media file as the active media file  
@@ -254,33 +280,26 @@ void eclair_playlist_current_set(Eclair_Playlist *playlist, Eclair_Media_File *m
    if (!playlist)
       return;
 
-   eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, media_file));
+   if (media_file)
+      eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, media_file));
+   else
+      eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, NULL));
 }
 
 //Set the media file stored in the list as the active media file  
 void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list)
 {
-   Eclair_Media_File *media_file;
+   Eclair_Media_File *previous_media_file;
 
    if (!playlist)
       return;
 
-   if ((media_file = eclair_playlist_current_media_file(playlist)) && media_file->playlist_entry)
-      edje_object_signal_emit(media_file->playlist_entry, "signal_unset_current", "eclair_bin");
-
-   if ((media_file = evas_list_data(list)) && media_file->playlist_entry)
-   {
-      edje_object_signal_emit(media_file->playlist_entry, "signal_set_current", "eclair_bin");
-      if (playlist->eclair)
-      {
-         //TODO: doesn't work?
-         if (playlist->eclair->playlist_container)
-            esmart_container_scroll_to(playlist->eclair->playlist_container, media_file->playlist_entry);
-      }
-   }
-   
+   previous_media_file = evas_list_data(playlist->current);
    playlist->current = list;
-   eclair_update_current_file_info(playlist->eclair, 0);
+   eclair_media_file_update(playlist->eclair, previous_media_file);
+   eclair_media_file_update(playlist->eclair, evas_list_data(playlist->current));
+
+   //TODO: eclair_playlist_container scroll_to
 } 
 
 //Set the media file which is just before the active media file as the active media file 

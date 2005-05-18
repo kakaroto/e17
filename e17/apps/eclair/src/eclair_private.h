@@ -1,13 +1,14 @@
 #ifndef _ECLAIR_PRIVATE_H_
 #define _ECLAIR_PRIVATE_H_
 
+#include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <gtk/gtk.h>
 #include <pthread.h>
-#include <netdb.h>
+#include <libxml/tree.h>
 
 typedef struct _Eclair Eclair;
 typedef enum _Eclair_State Eclair_State;
@@ -20,14 +21,51 @@ typedef enum _Eclair_Add_File_State Eclair_Add_File_State;
 typedef struct _Eclair_Meta_Tag_Manager Eclair_Meta_Tag_Manager;
 typedef struct _Eclair_Cover_Manager Eclair_Cover_Manager;
 typedef struct _Eclair_Config Eclair_Config;
+typedef enum _Eclair_Config_Type Eclair_Config_Type;
 typedef enum _Eclair_Drop_Object Eclair_Drop_Object;
+typedef struct _Eclair_Dialogs_Manager Eclair_Dialogs_Manager;
+typedef struct _Eclair_Playlist_Container Eclair_Playlist_Container;
+typedef struct _Eclair_Playlist_Container_Object Eclair_Playlist_Container_Object;
+typedef struct _Eclair_Color Eclair_Color;
+
+struct _Eclair_Color
+{
+   int r, g, b, a;
+};
+
+struct _Eclair_Playlist_Container_Object
+{
+   Evas_Object *rect;
+   Evas_Object *text;
+};
+
+struct _Eclair_Playlist_Container
+{
+   Evas_Object *clip;
+   Evas_Object *grabber;
+   Evas_List *entry_objects;
+   Evas_List **entries;
+   Eclair_Media_File *last_selected;
+   int entry_height;
+   double scroll_percent;
+   Ecore_Timer *scroll_timer;
+   double scroll_speed;
+   double scroll_start_time;
+   char *entry_theme_path;
+   Eclair_Color selected_entry_bg_color;
+   Eclair_Color selected_entry_fg_color;
+   Eclair_Color current_entry_bg_color;
+   Eclair_Color current_entry_fg_color;
+   Eclair *eclair;
+};
 
 struct _Eclair_Config
 {
    char config_dir_path[256];
    char covers_dir_path[256];
    char config_file_path[256];
-   FILE *config_file;
+   xmlDocPtr config_doc;
+   xmlNodePtr root_node;
 };
 
 enum _Eclair_Add_File_State
@@ -35,6 +73,16 @@ enum _Eclair_Add_File_State
    ECLAIR_IDLE = 0,
    ECLAIR_ADDING_FILE_TO_ADD,
    ECLAIR_ADDING_FILE_TO_TREAT
+};
+
+struct _Eclair_Dialogs_Manager
+{
+   GtkWidget *file_chooser_dialog;
+   GtkWidget *menu_widget;
+   gboolean should_popup_menu;
+   gboolean should_open_file_chooser;
+   pthread_t dialogs_thread;
+   Eclair *eclair;
 };
 
 struct _Eclair_Cover_Manager
@@ -72,7 +120,8 @@ struct _Eclair_Media_File
    char *comment;
    int length, track;
    short year;
-   Evas_Object *playlist_entry;
+   Eclair_Playlist_Container_Object *container_object;
+   Evas_Bool selected;
 };
 
 struct _Eclair_Playlist
@@ -141,18 +190,18 @@ struct _Eclair
    char *gui_theme_file;
    Eclair_Drop_Object gui_drop_object;
 
-   //File chooser related vars
-   GtkWidget *file_chooser_widget;
-   Evas_Bool file_chooser_th_created;
-   pthread_t file_chooser_thread;
-
    //Core vars
    Eclair_State state;
    Eclair_Playlist playlist;
    Eclair_Subtitles subtitles;
+   Eclair_Dialogs_Manager dialogs_manager;
    Eclair_Meta_Tag_Manager meta_tag_manager;
    Eclair_Cover_Manager cover_manager;
    Eclair_Config config;
+
+   //Arguments
+   int *argc;
+   char ***argv;
 };
 
 #endif

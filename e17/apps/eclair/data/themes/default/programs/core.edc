@@ -1,3 +1,12 @@
+program {
+   name: "init";
+   signal: "load";
+   source: "";
+   script {
+      run_program(PROGRAM:"open_left_side");
+      run_program(PROGRAM:"open_playlist");
+   }   
+}
 //TODO: edje bug
 program {
    name: "update";

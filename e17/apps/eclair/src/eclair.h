@@ -4,13 +4,10 @@
 #include "eclair_private.h"
 
 //core functions
-Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[]);
+Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv);
 void eclair_shutdown(Eclair *eclair);
 void eclair_update(Eclair *eclair);
-void *eclair_file_chooser_thread(void *param);
 void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_update);
-void eclair_playlist_container_scroll(Eclair *eclair, int num_entries);
-void eclair_playlist_container_scroll_percent_set(Eclair *eclair, double percent);
 void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool force_cover_update);
 
 //navigation functions

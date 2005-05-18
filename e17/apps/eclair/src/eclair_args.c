@@ -4,9 +4,11 @@
 static void _eclair_args_print_usage();
 
 //Parse the arguments of the application and stock the filenames to load in the list
-Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **filenames)
+Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
 {
    int c, i;
+   int argc;
+   char **argv;
 
    static struct option long_options[] =
    {
@@ -17,7 +19,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, int argc, char *argv[], Evas_List **
       { NULL,           0,                      NULL,    0 }
    };
 
-   if (!eclair)
+   if (!eclair || (argc = *eclair->argc) <= 0 || !(argv = *eclair->argv))
       return 0;
 
    while ((c = getopt_long(argc, argv, "ht:g:v:", long_options, NULL)) != -1)

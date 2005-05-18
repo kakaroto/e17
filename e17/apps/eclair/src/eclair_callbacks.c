@@ -9,7 +9,9 @@
 #include <pthread.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
+#include "eclair_playlist_container.h"
 #include "eclair_cover.h"
+#include "eclair_dialogs.h"
 
 //Called when eclair is closed
 int eclair_exit_cb(void *data, int type, void *event)
@@ -46,11 +48,10 @@ void eclair_video_audio_level_change_cb(void *data, Evas_Object *obj, void *even
 //Resize the video object and the black background object
 void eclair_video_window_resize_cb(Ecore_Evas *window)
 {
-   Eclair *eclair;
+   Eclair *eclair = (Eclair *)ecore_evas_data_get(window, "eclair");
    Evas_Coord window_width, window_height, video_width, video_height, X, Y;
    double ratio;
 
-   eclair = (Eclair *)ecore_evas_data_get(window, "eclair");
    if (!eclair)
       return;
 
@@ -59,7 +60,7 @@ void eclair_video_window_resize_cb(Ecore_Evas *window)
    if (eclair->video_object)
    {
       ratio = emotion_object_ratio_get(eclair->video_object);
-      //FIXME: emotion: ratio is sometimes 0?!
+      //TODO: emotion bug? ratio is sometimes 0?!
       if (ratio <= -0.01 || ratio >= 0.01)
       {
          if (window_width / ratio > window_height)
@@ -91,7 +92,6 @@ void eclair_video_window_resize_cb(Ecore_Evas *window)
       evas_object_resize(eclair->black_background, window_width, window_height);
    }
 }
-
 
 //Called when a key is pressed
 void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
@@ -163,6 +163,10 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
          volume = 1.0;
       eclair_audio_level_set(eclair, volume);
    }
+   else if (strcmp(ev->key, "Delete") == 0)
+   {
+      eclair_playlist_remove_selected_media_files(&eclair->playlist);
+   }
 }
 
 //Called when the video window is closed
@@ -176,19 +180,10 @@ void eclair_gui_open_cb(void *data, Evas_Object *edje_object, const char *emissi
 {
    Eclair *eclair = (Eclair *)data;
 
-   if (eclair->file_chooser_th_created)
-   {
-      if (eclair->file_chooser_widget)
-      {
-         //TODO: make sure that it also raises the file dialog on other WMs than e17
-         gtk_window_deiconify(GTK_WINDOW(eclair->file_chooser_widget));
-      }
-   }
-   else
-   {
-      eclair->file_chooser_th_created = 1;
-      pthread_create(&eclair->file_chooser_thread, NULL, eclair_file_chooser_thread, eclair);
-   }
+   if (!eclair)
+      return;
+
+   eclair_dialogs_open_file_dialog(&eclair->dialogs_manager);
 }
 
 //Called when the user clicks on play button
@@ -238,17 +233,23 @@ void eclair_gui_minimize_cb(void *data, Evas_Object *edje_object, const char *em
    ecore_evas_iconified_set(eclair->gui_window, 1);
 }
 
-//Called when the user activates an entry in the playlist
-void eclair_gui_play_entry_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+//Called when the user clicks on an entry in the playlist 
+void eclair_gui_entry_down_cb(void *data, Evas *evas, Evas_Object *entry, void *event_info)
 {
    Eclair *eclair = (Eclair *)data;
-   Eclair_Media_File *media_file = evas_object_data_get(edje_object, "media_file");
+   Eclair_Media_File *media_file = evas_object_data_get(entry, "media_file");
+   Evas_Event_Mouse_Down *event = (Evas_Event_Mouse_Down *)event_info;
 
-   if (!eclair)
+   if (!eclair || !media_file || event->button != 1)
       return;
 
-   eclair_playlist_current_set(&eclair->playlist, media_file);
-   eclair_play_current(eclair);
+   if (event->flags == EVAS_BUTTON_NONE)
+      eclair_playlist_container_select_file(eclair->playlist_container, media_file, event->modifiers);
+   else if (event->flags == EVAS_BUTTON_DOUBLE_CLICK)
+   {
+      eclair_playlist_current_set(&eclair->playlist, media_file);
+      eclair_play_current(eclair);
+   }
 }
 
 //Called when the user drag the progress bar button
@@ -293,7 +294,18 @@ void eclair_gui_playlist_scrollbar_button_drag_cb(void *data, Evas_Object *edje_
       return;
 
    edje_object_part_drag_value_get(eclair->gui_object, "playlist_scrollbar_button", NULL, &y);
-   eclair_playlist_container_scroll_percent_set(eclair, y);
+   eclair_playlist_container_scroll_percent_set(eclair->playlist_container, y);
+}
+
+//Called when the scroll percent of the playlist container is changed
+void eclair_gui_playlist_container_scroll_percent_changed(void *data, Evas_Object *obj, void *event_info)
+{
+   Eclair *eclair = (Eclair *)data;
+
+   if (!eclair || !eclair->gui_object)
+      return;
+
+   edje_object_part_drag_value_set(eclair->gui_object, "playlist_scrollbar_button", 0, eclair_playlist_container_scroll_percent_get(obj));
 }
 
 //Called when the user wants to scroll the playlist
@@ -305,11 +317,11 @@ void eclair_gui_playlist_scroll_cb(void *data, Evas_Object *edje_object, const c
       return;
 
    if (strcmp(emission, "playlist_scroll_down_start") == 0)
-      esmart_container_scroll_start(eclair->playlist_container, -1.0);
+      eclair_playlist_container_scroll_start(eclair->playlist_container, 2.0);
    else if (strcmp(emission, "playlist_scroll_up_start") == 0)
-      esmart_container_scroll_start(eclair->playlist_container, 1.0);
+      eclair_playlist_container_scroll_start(eclair->playlist_container, -2.0);
    else
-      esmart_container_scroll_stop(eclair->playlist_container);
+      eclair_playlist_container_scroll_stop(eclair->playlist_container);
 }
 
 //Called when user uses wheel mouse over playlist container
@@ -318,7 +330,7 @@ void eclair_gui_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object 
    Eclair *eclair = (Eclair *)data;
    Evas_Event_Mouse_Wheel *event = (Evas_Event_Mouse_Wheel *)event_info;
 
-   eclair_playlist_container_scroll(eclair, event->z);
+   eclair_playlist_container_scroll(eclair->playlist_container, event->z);
 }
 
 //Called when an object is dragged over the gui
@@ -401,12 +413,29 @@ int eclair_gui_dnd_selection_cb(void *data, int type, void *event)
    if (eclair->gui_drop_object == ECLAIR_DROP_PLAYLIST)
    {
       for (i = 0; i < files->num_files; i++)
-         eclair_playlist_add_uri(&eclair->playlist, files->files[i]);
+         eclair_playlist_add_uri(&eclair->playlist, files->files[i], 0);
+      eclair_playlist_container_update(eclair->playlist_container);
    }
    else if (eclair->gui_drop_object == ECLAIR_DROP_COVER)
       eclair_cover_current_set(&eclair->cover_manager, files->files[0]);
 
    ecore_x_dnd_send_finished();
+
+   return 1;
+}
+
+//Called when the user clicks on on of the ecore windows
+int eclair_mouse_up_cb(void *data, int type, void *event)
+{
+   Eclair *eclair = (Eclair *)data;
+   Ecore_X_Event_Mouse_Button_Up *mouse_event = (Ecore_X_Event_Mouse_Button_Up *)event;
+
+   if (!eclair || !mouse_event)
+      return 1;
+
+   //TODO:Ecore event bug? mouse_event win and video x window doesn't match but they should have
+   if (mouse_event->button == 3/* && (mouse_event->event_win == eclair->gui_x_window || mouse_event->win == eclair->video_x_window)*/)
+      eclair_popup_menu(&eclair->dialogs_manager);
 
    return 1;
 }

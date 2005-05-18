@@ -8,18 +8,12 @@ group {
          description {
             state: "default" 0.0;
             visible: 1;
-            color: 206 206 206 0;
-         }
-         description {
-            state: "current" 0.0;
-            visible: 1;
-            color: 230 200 126 180;
+            color: 255 255 255 0;
          }
       }
       part {
          name: "playlist_entry_name";
          type: TEXT;
-         effect: SOFT_SHADOW;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -50,7 +44,6 @@ group {
       part {
          name: "playlist_entry_length";
          type: TEXT;
-         effect: SOFT_SHADOW;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -88,28 +81,6 @@ group {
          transition: LINEAR 0.5;
          target: "playlist_entry_name";
          target: "playlist_entry_length";
-      }
-      program {
-         name: "entry_rect_double_click";
-         signal: "mouse,down,1,double";
-         source: "entry_rect";
-         action: SIGNAL_EMIT "eclair_play_entry" "";
-      }
-      program {
-         name: "entry_set_current";
-         signal: "signal_set_current";
-         source: "eclair_bin";         
-         action: STATE_SET "current" 0.0;
-         transition: LINEAR 0.5;
-         target: "entry_rect";
-      }
-      program {
-         name: "entry_unset_current";
-         signal: "signal_unset_current";
-         source: "eclair_bin";         
-         action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "entry_rect";
       }
    }
 }

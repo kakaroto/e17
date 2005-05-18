@@ -8,6 +8,7 @@
 #include "eclair_media_file.h"
 
 static void *_eclair_meta_tag_thread(void *param);
+static void _eclair_meta_tag_set_field_string(char **field, const char *value);
 
 //Initialize meta tag manager
 void eclair_meta_tag_init(Eclair_Meta_Tag_Manager *meta_tag_manager, Eclair *eclair)
@@ -70,11 +71,11 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
 
    if ((tag = taglib_file_tag(tag_file)))
    {
-      media_file->artist = strdup(taglib_tag_artist(tag));
-      media_file->title = strdup(taglib_tag_title(tag));
-      media_file->album = strdup(taglib_tag_album(tag));
-      media_file->genre = strdup(taglib_tag_genre(tag));
-      media_file->comment = strdup(taglib_tag_comment(tag));
+      _eclair_meta_tag_set_field_string(&media_file->artist, taglib_tag_artist(tag));
+      _eclair_meta_tag_set_field_string(&media_file->title, taglib_tag_title(tag));
+      _eclair_meta_tag_set_field_string(&media_file->album, taglib_tag_album(tag));
+      _eclair_meta_tag_set_field_string(&media_file->genre, taglib_tag_genre(tag));
+      _eclair_meta_tag_set_field_string(&media_file->comment, taglib_tag_comment(tag));
       media_file->year = taglib_tag_year(tag);
       media_file->track = taglib_tag_track(tag);
    }   
@@ -142,4 +143,26 @@ static void *_eclair_meta_tag_thread(void *param)
       }
    }
    return NULL;
+}
+
+//Set the value of a meta tag field string
+static void _eclair_meta_tag_set_field_string(char **field, const char *value)
+{
+   const char *c1;
+   char *c2;
+
+   if (!field)
+      return;
+
+   free(*field);
+   if (!value)
+      *field = NULL;
+   else
+   {
+      //We remove the blanks before and after the meta tag value
+      for (c1 = value; *c1 != 0 && *c1 <= 32; c1++);
+      *field = strdup(c1);
+      for (c2 = *field + strlen(*field); c2 >= *field && *c2 <= 32; c2--)
+         *c2 = 0;
+   }
 }

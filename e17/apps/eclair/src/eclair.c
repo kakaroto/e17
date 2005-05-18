@@ -7,10 +7,9 @@
 #include <Edje.h>
 #include <Emotion.h>
 #include <Esmart/Esmart_Draggies.h>
-#include <Esmart/Esmart_Container.h>
-#include <gtk/gtk.h>
 #include <pthread.h>
 #include "eclair_playlist.h"
+#include "eclair_playlist_container.h"
 #include "eclair_media_file.h"
 #include "eclair_callbacks.h"
 #include "eclair_subtitles.h"
@@ -19,6 +18,7 @@
 #include "eclair_utils.h"
 #include "eclair_config.h"
 #include "eclair_args.h"
+#include "eclair_dialogs.h"
 
 static void *_eclair_create_video_object_thread(void *param);
 static void _eclair_gui_create_window(Eclair *eclair);
@@ -27,7 +27,7 @@ static void _eclair_sig_pregest();
 static void _eclair_on_segv(int num);
 
 //Initialize eclair
-Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
+Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
 {
    Evas_List *filenames, *l;
    filenames = NULL;
@@ -39,8 +39,9 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    ecore_file_init();
    ecore_evas_init();
    edje_init();
-   gtk_init(argc, &argv);
 
+   eclair->argc = argc;
+   eclair->argv = argv;
    eclair->video_window = NULL;
    eclair->video_object = NULL;
    eclair->black_background = NULL;
@@ -52,50 +53,63 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char *argv[])
    eclair->gui_previous_cover = NULL;
    eclair->playlist_container = NULL;
    eclair->playlist_entry_height = -1;
-   eclair->file_chooser_widget = NULL;
    eclair->state = ECLAIR_STOP;
    eclair->seek_to_pos = -1.0;
    eclair->use_progress_bar_drag_for_time = 0;
    eclair->dont_update_progressbar = 0;
-   eclair->file_chooser_th_created = 0;
    eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->gui_engine = ECLAIR_SOFTWARE;
    eclair->gui_theme_file = strdup(PACKAGE_DATA_DIR "/themes/default.edj");
    eclair->gui_drop_object = ECLAIR_DROP_NONE;
 
-   if (!eclair_args_parse(eclair, *argc, argv, &filenames))
+   if (!eclair_args_parse(eclair, &filenames))
       return 0;
 
    eclair_config_init(&eclair->config);
    _eclair_gui_create_window(eclair);
    _eclair_video_create_window(eclair);
+   eclair_dialogs_init(&eclair->dialogs_manager, eclair);
    eclair_playlist_init(&eclair->playlist, eclair);
+   eclair_playlist_container_set_media_list(eclair->playlist_container, &eclair->playlist.playlist);
    eclair_subtitles_init(&eclair->subtitles);
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
    eclair_cover_init(&eclair->cover_manager, eclair);
    eclair_update_current_file_info(eclair, 0);
    
    for (l = filenames; l; l = l->next)
-      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data);
+      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0);
    evas_list_free(filenames);
+   eclair_playlist_container_update(eclair->playlist_container);
 
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, eclair_mouse_up_cb, eclair);
    edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", 1.0, 0.0);
 
    return 1;
 }
 
-//Shutdown eclair and the EFL
+//Shutdown eclair
 void eclair_shutdown(Eclair *eclair)
 {
    if (eclair)
    {
+      if (eclair->gui_window)
+      {
+         int gui_x, gui_y;
+         ecore_evas_geometry_get(eclair->gui_window, &gui_x, &gui_y, NULL, NULL);
+         eclair_config_set_prop_int(&eclair->config, "gui_window", "x", gui_x);
+         eclair_config_set_prop_int(&eclair->config, "gui_window", "y", gui_y);
+      }
+
       fprintf(stderr, "Eclair: Debug: Destroying create video object thread\n");
       pthread_join(eclair->video_create_thread, NULL); 
       fprintf(stderr, "Eclair: Debug: Create video object thread destroyed\n");
       eclair_subtitles_free(&eclair->subtitles);
       eclair_meta_tag_shutdown(&eclair->meta_tag_manager);
       eclair_cover_shutdown(&eclair->cover_manager);
-      eclair_playlist_empty(&eclair->playlist);
+      eclair_playlist_shutdown(&eclair->playlist);
       eclair_config_shutdown(&eclair->config);
       free(eclair->gui_theme_file);
    }
@@ -162,7 +176,9 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
             edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
             free(artist_title_string);
          }
-         else if ((filename = ecore_file_get_file(current_file->path)))
+         else if (current_file->path && strstr(current_file->path, "://"))
+            edje_object_part_text_set(eclair->gui_object, "current_media_name", current_file->path);
+         else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
             edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
          else
             edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
@@ -245,83 +261,6 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool forc
 
    evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
    evas_object_image_file_get(eclair->gui_previous_cover, &current_path, NULL);
-}
-
-//Set the scroll percent of the playlist container
-void eclair_playlist_container_scroll_percent_set(Eclair *eclair, double percent)
-{
-   if (!eclair || !eclair->playlist_container)
-      return;
-
-   esmart_container_scroll_percent_set(eclair->playlist_container, percent);
-   if (eclair->gui_object)
-      edje_object_part_drag_value_set(eclair->gui_object, "playlist_scrollbar_button", 0, percent);
-}
-
-//Scroll the playlist
-void eclair_playlist_container_scroll(Eclair *eclair, int num_entries)
-{
-   double percent;
-   Evas_List *entries_list;
-   Evas_Coord container_height;
-   float hidden_items;
-   
-   if (!eclair || !eclair->playlist_container || (eclair->playlist_entry_height <= 0))
-      return;
-
-   entries_list = esmart_container_elements_get(eclair->playlist_container);
-   if (!entries_list)
-      return;
-
-   evas_object_geometry_get(eclair->playlist_container, NULL, NULL, NULL, &container_height);
-   hidden_items = entries_list->count - ((float)container_height / eclair->playlist_entry_height);
-   percent = esmart_container_scroll_percent_get(eclair->playlist_container);
-   if (hidden_items > 0)
-      percent += num_entries / hidden_items;
-   if (percent > 1.0)
-      percent = 1.0;
-   else if (percent < 0.0)
-      percent = 0.0;
-   eclair_playlist_container_scroll_percent_set(eclair, percent);
-}
-
-//Thread for file selection
-//Open a file selection dialog and add the files selected 
-void *eclair_file_chooser_thread(void *param)
-{
-   Eclair *eclair = (Eclair *)param;
-   GSList *filenames, *l;
-
-   if (!eclair)
-      return NULL;
-
-   eclair->file_chooser_widget = gtk_file_chooser_dialog_new("Open files...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-	gtk_dialog_set_default_response(GTK_DIALOG(eclair->file_chooser_widget), GTK_RESPONSE_ACCEPT);
-	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(eclair->file_chooser_widget), 1);
-	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(eclair->file_chooser_widget), 0);
-
-   gtk_widget_show(eclair->file_chooser_widget);
-
-   if (gtk_dialog_run(GTK_DIALOG(eclair->file_chooser_widget)) == GTK_RESPONSE_ACCEPT)
-   {
-      filenames = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(eclair->file_chooser_widget));
-      for (l = filenames; l; l = l->next)
-         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data);
-
-      g_slist_foreach(filenames, (GFunc)g_free, NULL);
-      g_slist_free(filenames);
-   }
-
-   gtk_widget_destroy(eclair->file_chooser_widget);
-
-   while (gtk_events_pending())
-	  gtk_main_iteration();
-
-   eclair->file_chooser_widget = NULL;
-   eclair->file_chooser_th_created = 0;
-   
-   return NULL;
 }
 
 //Play a new file
@@ -510,6 +449,7 @@ static void _eclair_gui_create_window(Eclair *eclair)
 {
    Evas *evas;
    Evas_Coord gui_width, gui_height;
+   int gui_x, gui_y;
    Evas_Coord cover_width, cover_height;
 
    if (!eclair)
@@ -542,6 +482,11 @@ static void _eclair_gui_create_window(Eclair *eclair)
    evas_object_resize(eclair->gui_object, (int)gui_width, (int)gui_height);
    evas_object_show(eclair->gui_object);
    ecore_evas_resize(eclair->gui_window, (int)gui_width, (int)gui_height);
+   if (eclair_config_get_prop_int(&eclair->config, "gui_window", "x", &gui_x) &&
+      eclair_config_get_prop_int(&eclair->config, "gui_window", "y", &gui_y))
+      ecore_evas_move(eclair->gui_window, gui_x, gui_y);
+   else
+      ecore_evas_move(eclair->gui_window, 0, 0);
 
    eclair->gui_draggies = esmart_draggies_new(eclair->gui_window);
    esmart_draggies_button_set(eclair->gui_draggies, 1);
@@ -552,13 +497,11 @@ static void _eclair_gui_create_window(Eclair *eclair)
 
    if (edje_object_part_exists(eclair->gui_object, "playlist_container"))
    {
-      eclair->playlist_container = esmart_container_new(evas); 
-      esmart_container_direction_set(eclair->playlist_container, CONTAINER_DIRECTION_VERTICAL);
-      esmart_container_fill_policy_set(eclair->playlist_container, CONTAINER_FILL_POLICY_FILL_X);
-      esmart_container_spacing_set(eclair->playlist_container, 0);
-      esmart_container_padding_set(eclair->playlist_container, 0, 0, 0, 0);
+      eclair->playlist_container = eclair_playlist_container_object_add(evas, eclair);
+      eclair_playlist_container_set_entry_theme_path(eclair->playlist_container, eclair->gui_theme_file);
       edje_object_part_swallow(eclair->gui_object, "playlist_container", eclair->playlist_container);
       evas_object_event_callback_add(eclair->playlist_container, EVAS_CALLBACK_MOUSE_WHEEL, eclair_gui_playlist_container_wheel_cb, eclair);
+      evas_object_smart_callback_add(eclair->playlist_container, "eclair_playlist_container_scroll_percent_changed", eclair_gui_playlist_container_scroll_percent_changed, eclair);
       evas_object_show(eclair->playlist_container);
    }
    if (edje_object_part_exists(eclair->gui_object, "cover"))
@@ -595,9 +538,6 @@ static void _eclair_gui_create_window(Eclair *eclair)
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_stop", "", eclair_gui_playlist_scroll_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_start", "", eclair_gui_playlist_scroll_cb, eclair);
    edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_stop", "", eclair_gui_playlist_scroll_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
    edje_object_message_handler_set(eclair->gui_object, eclair_gui_message_cb, eclair);
 }
 
@@ -699,7 +639,7 @@ int main(int argc, char *argv[])
 
    _eclair_sig_pregest();
 
-   if (!eclair_init(&eclair, &argc, argv))
+   if (!eclair_init(&eclair, &argc, &argv))
       return 1;
    
    ecore_main_loop_begin();
