@@ -108,7 +108,7 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
    FILE               *f;
 
    int                 pc, c, i, j, k, w, h, ncolors, cpp, comment, transp,
-       quote, context, len, done, r, g, b;
+       quote, context, len, done, r, g, b, backslash;
    char               *line, s[256], tok[128], col[256];
    int                 lsz = 256;
    struct _cmap {
@@ -163,6 +163,7 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
    pixels = 0;
    count = 0;
    line = malloc(lsz);
+   backslash = 0;
    memset(lookup, 0, sizeof(lookup));
    while (!done)
      {
@@ -645,7 +646,18 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                 c = 32;
              else if (c > 127)
                 c = 127;
-             line[i++] = c;
+	     if ( c=='\\' ) {
+	       if ( ++backslash<2 ) {
+		 line[i++] = c;
+	       }
+	       else {
+		 backslash = 0;
+	       }
+	     }
+	     else {
+	       backslash = 0;
+	       line[i++] = c;
+	     }
           }
         if (i >= lsz)
           {
