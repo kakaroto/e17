@@ -66,7 +66,7 @@ main(int argc, char **argv)
 	Ewl_Widget     *main_box;
 	Ewl_Widget     *main_tree;
 	Ewl_Widget     *main_area;
-        Ewl_Widget     *separator;
+        /* Ewl_Widget     *separator; */
         Ewl_Widget     *tooltip;
 	Ewl_Widget     *prow[BUTTONS];
 	static test_set       tests[] = {
@@ -186,7 +186,8 @@ main(int argc, char **argv)
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
 
 	main_win = ewl_window_new();
-	ewl_object_size_request(EWL_OBJECT(main_win), 400, 400);
+	ewl_object_fill_policy_set(EWL_OBJECT(main_win), EWL_FLAG_FILL_ALL);
+	/* ewl_object_size_request(EWL_OBJECT(main_win), 400, 400); */
 	ewl_window_title_set(EWL_WINDOW(main_win),
 			     "The Enlightenment Widget Library");
 	ewl_window_name_set(EWL_WINDOW(main_win), "EWL Test Application");
@@ -214,9 +215,11 @@ main(int argc, char **argv)
 				     EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(main_tree);
 
+	/*
 	separator = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(main_box), separator);
 	ewl_widget_show(separator);
+	*/
 
 	main_area = ewl_scrollpane_new();
 	ewl_widget_show(main_area);

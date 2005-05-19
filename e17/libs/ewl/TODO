@@ -22,8 +22,6 @@ EWL TODO
 - [BUG] Fix size of the seeker.
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
         only at the moment.
-- [BUG] The default theme puts a strange blue line down the center of the
-        ewl_test.
 - [BUG] Radio buttons seem to get padded in a bit more then they should.
         Look at the 'Button' test for an example.
 - [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
