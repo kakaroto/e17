@@ -186,8 +186,7 @@ main(int argc, char **argv)
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
 
 	main_win = ewl_window_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(main_win), EWL_FLAG_FILL_ALL);
-	/* ewl_object_size_request(EWL_OBJECT(main_win), 400, 400); */
+	ewl_object_size_request(EWL_OBJECT(main_win), 400, 400);
 	ewl_window_title_set(EWL_WINDOW(main_win),
 			     "The Enlightenment Widget Library");
 	ewl_window_name_set(EWL_WINDOW(main_win), "EWL Test Application");
