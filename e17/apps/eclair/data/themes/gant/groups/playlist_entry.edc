@@ -8,12 +8,7 @@ group {
          description {
             state: "default" 0.0;
             visible: 1;
-            color: 118 146 169 0;
-         }
-         description {
-            state: "current" 0.0;
-            visible: 1;
-            color: 118 146 169 180;
+            color: 255 255 255 0;
          }
       }
       part {
@@ -88,28 +83,6 @@ group {
          transition: LINEAR 0.5;
          target: "playlist_entry_name";
          target: "playlist_entry_length";
-      }
-      program {
-         name: "entry_rect_double_click";
-         signal: "mouse,down,1,double";
-         source: "entry_rect";
-         action: SIGNAL_EMIT "eclair_play_entry" "";
-      }
-      program {
-         name: "entry_set_current";
-         signal: "signal_set_current";
-         source: "eclair_bin";         
-         action: STATE_SET "current" 0.0;
-         transition: LINEAR 0.5;
-         target: "entry_rect";
-      }
-      program {
-         name: "entry_unset_current";
-         signal: "signal_unset_current";
-         source: "eclair_bin";         
-         action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "entry_rect";
       }
    }
 }
