@@ -183,7 +183,7 @@ void eclair_gui_open_cb(void *data, Evas_Object *edje_object, const char *emissi
    if (!eclair)
       return;
 
-   eclair_dialogs_open_add_files_fc(&eclair->dialogs_manager);
+   eclair_dialogs_add_files_file_chooser(&eclair->dialogs_manager);
 }
 
 //Called when the user clicks on play button
