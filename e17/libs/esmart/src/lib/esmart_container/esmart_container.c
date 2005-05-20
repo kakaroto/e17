@@ -347,7 +347,7 @@ esmart_container_scroll_percent_get(Evas_Object *container)
   double length, size, offset;
 
   cont = _container_fetch(container);
-  if (!cont) return;
+  if (!cont) return 0.0;
 
 
   length = esmart_container_elements_length_get(container);
