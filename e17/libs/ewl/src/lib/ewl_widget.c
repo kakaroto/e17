@@ -155,7 +155,7 @@ Ewl_Widget *ewl_widget_name_find(const char * name)
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
 	if (name_table)
-		match = ecore_hash_get(name_table, name);
+		match = EWL_WIDGET(ecore_hash_get(name_table, (void *)name));
 
 	DRETURN_PTR(match, DLEVEL_STABLE);
 }
@@ -1216,6 +1216,11 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		 */
 		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
 		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+
+		i_l = CURRENT_X(w);
+		i_t = CURRENT_Y(w);
+		ewl_object_x_request(EWL_OBJECT(w), i_l);
+		ewl_object_y_request(EWL_OBJECT(w), i_t);
 
 		if (ewl_object_state_has(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))

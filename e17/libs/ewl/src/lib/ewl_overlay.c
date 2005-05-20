@@ -98,8 +98,9 @@ void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	size = ewl_object_current_x_get(EWL_OBJECT(child)) +
-		ewl_object_preferred_w_get(EWL_OBJECT(child)) - CURRENT_X(o);
+	size = ewl_object_current_x_get(EWL_OBJECT(child));
+       	size += ewl_object_preferred_w_get(EWL_OBJECT(child));
+       	size -= CURRENT_X(o);
 	if (size > PREFERRED_W(o))
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(o), size);
 
