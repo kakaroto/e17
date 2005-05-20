@@ -23,6 +23,7 @@ typedef struct _Eclair_Cover_Manager Eclair_Cover_Manager;
 typedef struct _Eclair_Config Eclair_Config;
 typedef enum _Eclair_Config_Type Eclair_Config_Type;
 typedef enum _Eclair_Drop_Object Eclair_Drop_Object;
+typedef enum _Eclair_Dialog_Open_FC_Type Eclair_Dialog_Open_FC_Type;
 typedef struct _Eclair_Dialogs_Manager Eclair_Dialogs_Manager;
 typedef struct _Eclair_Playlist_Container Eclair_Playlist_Container;
 typedef struct _Eclair_Playlist_Container_Object Eclair_Playlist_Container_Object;
@@ -64,6 +65,7 @@ struct _Eclair_Config
    char config_dir_path[256];
    char covers_dir_path[256];
    char config_file_path[256];
+   char default_playlist_path[256];
    xmlDocPtr config_doc;
    xmlNodePtr root_node;
 };
@@ -75,12 +77,33 @@ enum _Eclair_Add_File_State
    ECLAIR_ADDING_FILE_TO_TREAT
 };
 
+enum _Eclair_Dialog_Open_FC_Type
+{
+   ECLAIR_FC_NONE = 0,
+   ECLAIR_FC_ADD_FILES,
+   ECLAIR_FC_LOAD_PLAYLIST
+};
+
 struct _Eclair_Dialogs_Manager
 {
-   GtkWidget *file_chooser_dialog;
+   GtkWidget *open_fc_all_button;
+   GtkWidget *open_fc_none_button;
+   GtkWidget *open_fc_ok_button;
+   GtkWidget *open_fc_close_button;
+   GtkWidget *open_fc_widget;
+   GtkWidget *open_fc_dialog;
+
+   GtkWidget *save_fc_ok_button;
+   GtkWidget *save_fc_close_button;
+   GtkWidget *save_fc_widget;
+   GtkWidget *save_fc_dialog;
+
    GtkWidget *menu_widget;
+
    gboolean should_popup_menu;
-   gboolean should_open_file_chooser;
+   Eclair_Dialog_Open_FC_Type should_open_open_fc;
+   gboolean should_quit;
+
    pthread_t dialogs_thread;
    Eclair *eclair;
 };

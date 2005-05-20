@@ -5,6 +5,7 @@
 
 void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair);
 void eclair_playlist_shutdown(Eclair_Playlist *playlist);
+Evas_Bool eclair_playlist_save(Eclair_Playlist *playlist, const char *path);
 
 Eclair_Media_File *eclair_playlist_current_media_file(Eclair_Playlist *playlist);
 Eclair_Media_File *eclair_playlist_prev_media_file(Eclair_Playlist *playlist);

@@ -73,7 +73,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
 
 static void _eclair_args_print_usage()
 {
-  printf("Usage: eclair [arguments] file(s)\n"
+   fprintf(stdout, "Usage: eclair [arguments] file(s)\n"
       "\n"
       "Available arguments:\n"
       "-h, --help                            Print this message and exit\n"

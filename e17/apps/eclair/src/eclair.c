@@ -76,10 +76,15 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair_cover_init(&eclair->cover_manager, eclair);
    eclair_update_current_file_info(eclair, 0);
    
-   for (l = filenames; l; l = l->next)
-      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0);
-   evas_list_free(filenames);
-   eclair_playlist_container_update(eclair->playlist_container);
+   if ((l = filenames))
+   {
+      for (; l; l = l->next)
+         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0);
+      evas_list_free(filenames);
+      eclair_playlist_container_update(eclair->playlist_container);
+   }
+   else
+      eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 0);
 
    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
 	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
@@ -106,9 +111,11 @@ void eclair_shutdown(Eclair *eclair)
       fprintf(stderr, "Eclair: Debug: Destroying create video object thread\n");
       pthread_join(eclair->video_create_thread, NULL); 
       fprintf(stderr, "Eclair: Debug: Create video object thread destroyed\n");
+      eclair_dialogs_shutdown(&eclair->dialogs_manager);
       eclair_subtitles_free(&eclair->subtitles);
       eclair_meta_tag_shutdown(&eclair->meta_tag_manager);
       eclair_cover_shutdown(&eclair->cover_manager);
+      eclair_playlist_save(&eclair->playlist, eclair->config.default_playlist_path);
       eclair_playlist_shutdown(&eclair->playlist);
       eclair_config_shutdown(&eclair->config);
       free(eclair->gui_theme_file);

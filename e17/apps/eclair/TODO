@@ -3,8 +3,6 @@ TODO list:
 *Use non blocking socket to close cover thread faster in case of Internet deconnection
 *Finish config file implementation
 *Change play/pause 'on over' animation in the default theme
-*Improve playlist perfs (by improving esmart_container or by get rid of esmart_container)
-*Add a popup menu
 *Store media files collection into a database (SqlLite3?) to perform fast search
 *improve behavior of file selection
 *improve behavior of fullscreen mode
@@ -15,6 +13,7 @@ TODO list:
 *Allow a theme to "swallow" the video object instead of having a seperate window for video
 *Support different encodings for subtitles
 *Why is it so slow to scan id3 tag?
+*When removing a media file from the playlist, remove it also from the cover and meta_tag files to treat list
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj

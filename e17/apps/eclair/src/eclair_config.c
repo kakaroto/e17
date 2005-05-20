@@ -17,6 +17,7 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
    config->config_dir_path[0] = 0;
    config->covers_dir_path[0] = 0;
    config->config_file_path[0] = 0;
+   config->default_playlist_path[0] = 0;
    
    if (!(home = getenv("HOME")))
       return 0;
@@ -26,6 +27,7 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
    sprintf(config->covers_dir_path, "%scovers/", config->config_dir_path);
    ecore_file_mkdir(config->covers_dir_path);
    sprintf(config->config_file_path, "%seclair.cfg", config->config_dir_path);
+   sprintf(config->default_playlist_path, "%splaylist.m3u", config->config_dir_path);
 
    eclair_config_load(config);
 

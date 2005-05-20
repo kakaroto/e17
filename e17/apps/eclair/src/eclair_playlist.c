@@ -34,6 +34,30 @@ void eclair_playlist_shutdown(Eclair_Playlist *playlist)
    eclair_playlist_empty(playlist);
 }
 
+//Save the playlist
+//0 if failed
+Evas_Bool eclair_playlist_save(Eclair_Playlist *playlist, const char *path)
+{
+   Evas_List *l;
+   FILE *playlist_file;
+   Eclair_Media_File *media_file;
+
+   if (!playlist || !path)
+      return 0;
+   
+   if (!(playlist_file = fopen(path, "wt")))
+      return 0;
+
+   for (l = playlist->playlist; l; l = l->next)
+   {
+      if (!(media_file = (Eclair_Media_File *)l->data) || !media_file->path || strlen(media_file->path) <= 0)
+         continue;
+      fprintf(playlist_file, "%s\n", media_file->path);
+   }
+   fclose(playlist_file);
+   return 1;
+}
+
 //Return the active media file
 Eclair_Media_File *eclair_playlist_current_media_file(Eclair_Playlist *playlist)
 {
@@ -79,11 +103,15 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Boo
             continue;
          filepath = (char *)malloc(strlen(dir) + strlen(filename) + 2);
          sprintf(filepath, "%s/%s", dir, filename);
-         eclair_playlist_add_uri(playlist, filepath, update_container);
+         eclair_playlist_add_uri(playlist, filepath, 0);
          free(filepath);
       }
       ecore_list_destroy(files);
    }
+
+   if (playlist->eclair && update_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+
    return 1;
 }
 
@@ -107,18 +135,22 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
          *c = 0;
    
       if (line[0] == '/')
-         eclair_playlist_add_uri(playlist, line, update_container);
+         eclair_playlist_add_uri(playlist, line, 0);
       else if (m3u_dir)
       {
          path = (char *)malloc(strlen(m3u_dir) + strlen(line) + 2);
          sprintf(path, "%s/%s", m3u_dir, line);
-         eclair_playlist_add_uri(playlist, path, update_container);
+         eclair_playlist_add_uri(playlist, path, 0);
          free(path);
       }
    }
 
    free(m3u_dir);
    fclose(m3u_file);
+
+   if (playlist->eclair && update_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+
    return 1;
 }
 
@@ -150,14 +182,14 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
 
    if (!strstr(new_path, "://"))
    {
-      if (eclair_playlist_add_dir(playlist, new_path, update_container))
+      if (eclair_playlist_add_dir(playlist, new_path, 0))
       {
          free(new_path);
          return 1;
       }
       if ((ext = eclair_utils_file_get_extension(new_path)) && strcmp(ext, "m3u") == 0)
       {
-         eclair_playlist_add_m3u(playlist, new_path, update_container);
+         eclair_playlist_add_m3u(playlist, new_path, 0);
          free(new_path);
          return 1;  
       }
@@ -260,15 +292,12 @@ void eclair_playlist_empty(Eclair_Playlist *playlist)
 {
    Evas_List *l;
 
-   printf("Rohhhh\n");
-
    if (!playlist)
       return;
 
    for (l = playlist->playlist; l; l = eclair_playlist_remove_media_file_list(playlist, l, 0));
    playlist->playlist = evas_list_free(playlist->playlist);
    playlist->current = NULL;
-   printf("playlist->playlist: %p\n", playlist->playlist);
 
    if (playlist->eclair && playlist->eclair->playlist_container)
       eclair_playlist_container_update(playlist->eclair->playlist_container);
