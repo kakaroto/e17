@@ -1,19 +1,19 @@
 TODO list:
 
-*Use non blocking socket to close cover thread faster in case of Internet deconnection
-*Finish config file implementation
-*Change play/pause 'on over' animation in the default theme
-*Store media files collection into a database (SqlLite3?) to perform fast search
-*improve behavior of file selection
-*improve behavior of fullscreen mode
-*fix some bugs of emotion (seek_thread close, wmv segv...)
-*Add a visualisation system (need to modify emotion)
-*Add an audio equalizer system (need to modify emotion)
-*Allow vertical or horizontal progressbar, volumebar, ...
-*Allow a theme to "swallow" the video object instead of having a seperate window for video
-*Support different encodings for subtitles
-*Why is it so slow to scan id3 tag?
-*When removing a media file from the playlist, remove it also from the cover and meta_tag files to treat list
+* Use non blocking socket to close cover thread faster in case of Internet deconnection
+* Change play/pause 'on over' animation in the default theme [In Progress]
+* Store media files collection into a database (SqlLite3?) to perform fast search
+* improve behavior of fullscreen mode
+* fix some bugs of emotion (seek_thread close, wmv segv...)
+* Add a visualisation system (need to modify emotion)
+* Add an audio equalizer system (need to modify emotion)
+* Allow vertical or horizontal progressbar, volumebar, ...
+* Allow a theme to "swallow" the video object instead of having a seperate window for video
+* Support different encodings for subtitles
+* Why is it so slow to scan id3 tag?
+* FIX segv: When removing a media file from the playlist, remove it also from the cover and meta_tag files to treat list [In Progress]
+* Add the autoplay thing [In Progress]
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj
+*DREAMS* Edje-ify (or Ewl-ify) the dialogs
