@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = fonts themes
+SUBDIRS = fonts themes glade

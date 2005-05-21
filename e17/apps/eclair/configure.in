@@ -105,6 +105,12 @@ gtk_cflags=`$PKG_CONFIG --cflags gtk+-2.0`
 AC_SUBST(gtk_libs)
 AC_SUBST(gtk_cflags)
 
+PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.2)
+libglade_libs=`$PKG_CONFIG --libs libglade-2.0`
+libglade_cflags=`$PKG_CONFIG --cflags libglade-2.0`
+AC_SUBST(libglade_libs)
+AC_SUBST(libglade_cflags)
+
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
 if [ test -z $EVAS_CONFIG ]; then
@@ -182,6 +188,7 @@ Makefile
 src/Makefile
 data/Makefile
 data/fonts/Makefile
+data/glade/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/gant/Makefile

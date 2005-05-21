@@ -2,6 +2,7 @@
 
 INCLUDES = \
 @gtk_cflags@ \
+@libglade_cflags@ \
 @evas_cflags@ \
 @ecore_cflags@ \
 @edje_cflags@ \
@@ -34,6 +35,7 @@ eclair_dialogs.c eclair_dialogs.h
 
 eclair_LDADD = \
 @gtk_libs@ \
+@libglade_libs@ \
 @evas_libs@ \
 @ecore_libs@ \
 @edje_libs@ \

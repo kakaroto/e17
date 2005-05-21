@@ -7,6 +7,7 @@
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 #include <pthread.h>
 #include <libxml/tree.h>
 
@@ -87,14 +88,16 @@ enum _Eclair_Dialog_File_Chooser_Type
 
 struct _Eclair_Dialogs_Manager
 {
+   GladeXML *file_chooser_xml;
    GtkWidget *file_chooser_all_button;
    GtkWidget *file_chooser_none_button;
-   GtkWidget *file_chooser_ok_button;
-   GtkWidget *file_chooser_close_button;
-   GtkWidget *file_chooser_widget;
+   GtkWidget *file_chooser_save_playlist_button;
+   GtkWidget *file_chooser_load_playlist_button;
+   GtkWidget *file_chooser_add_files_button;
+   GtkWidget *file_chooser_cancel_button;
    GtkWidget *file_chooser_dialog;
-   gulong file_chooser_ok_handler;
 
+   GladeXML *menu_xml;
    GtkWidget *menu_widget;
 
    gboolean should_popup_menu;
