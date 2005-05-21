@@ -61,15 +61,6 @@ You can report bugs here: http://xcomputerman.com/bugs/
 FAQ
 -------
 
-Q: Why another damned audio player?
-A: -> The purpose of Euphoria has always been to be used as a vehicle
-by which to better learn the EFL components.
-
-An audio player was chosen because it's interesting, the OggVorbis
-API is very simple and can easily drawn on Ecore's strengths
-(ie: idlers and timers) and provides a number of interesting interface
-possibilities.
-
 Q: Will you support WinAmp skins?
 A: -> Nope.... go use XMMS(1) if you want traditional skins.
 Refer to the first question.
