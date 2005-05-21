@@ -765,46 +765,14 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 void
 ICCCM_GetShapeInfo(EWin * ewin)
 {
-   XRectangle         *rl = NULL;
-   int                 rn = 0, ord;
-   int                 x, y, w, h, d;
-   Window              rt;
-
    EGrabServer();
-   EGetGeometry(ewin->client.win, &rt, &x, &y, &w, &h, &d, &d);
-   rl = EShapeGetRectangles(ewin->client.win, ShapeBounding, &rn, &ord);
+   ewin->client.shaped = EShapeCopy(ewin->win_container, ewin->client.win);
    EUngrabServer();
 
-   if (rn < 1)
-     {
-	ewin->client.shaped = 0;
-	EShapeCombineMask(ewin->win_container, ShapeBounding, 0, 0, None,
-			  ShapeSet);
-     }
-   else if (rn == 1)
-     {
-	if ((rl[0].x <= 0) && (rl[0].y <= 0) && (rl[0].width >= w)
-	    && (rl[0].height >= h))
-	  {
-	     ewin->client.shaped = 0;
-	     EShapeCombineMask(ewin->win_container, ShapeBounding, 0, 0,
-			       None, ShapeSet);
-	  }
-	else
-	  {
-	     ewin->client.shaped = 1;
-	     EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-				ewin->client.win, ShapeBounding, ShapeSet);
-	  }
-     }
-   else
-     {
-	ewin->client.shaped = 1;
-	EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-			   ewin->client.win, ShapeBounding, ShapeSet);
-     }
-   if (rl)
-      XFree(rl);
+#if 0				/* Debug */
+   Eprintf("ICCCM_GetShapeInfo %#lx cont=%#lx shaped=%d\n",
+	   ewin->client.win, ewin->win_container, ewin->client.shaped);
+#endif
 }
 
 void

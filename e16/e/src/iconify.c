@@ -1654,13 +1654,13 @@ IB_DrawScroll(Iconbox * ib)
      }
 
 #if 0				/* FIXME - Remove? */
-   PropagateShapes(ib->win);
+   EShapePropagate(ib->win);
    if (ib->ewin)
      {
 	const Border       *b;
 
 	b = ib->ewin->border;
-	SyncBorderToEwin(ib->ewin);
+	ICCCM_GetShapeInfo(ib->ewin);
 	if (ib->ewin->border == b)
 	   EwinPropagateShapes(ib->ewin);
      }
@@ -1918,14 +1918,14 @@ IconboxRedraw(Iconbox * ib)
 	EClearWindow(ib->icon_win);
 
 	if (ib->type == IB_TYPE_SYSTRAY && ib->nobg && !ib->draw_icon_base)
-	   PropagateShapes(ib->icon_win);
+	   EShapePropagate(ib->icon_win);
      }
    else
      {
 	/* Transparent and no objects */
 	EUnmapWindow(ib->icon_win);
      }
-   PropagateShapes(ib->win);
+   EShapePropagate(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
    ib->ewin->shapedone = 0;
    EwinPropagateShapes(ib->ewin);

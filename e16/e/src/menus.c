@@ -876,7 +876,7 @@ MenuRedraw(Menu * m)
      {
 	for (i = 0; i < m->num; i++)
 	   MenuDrawItem(m, m->items[i], 0);
-	PropagateShapes(m->win);
+	EShapePropagate(m->win);
      }
 }
 
@@ -942,7 +942,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    EClearWindow(mi->win);
 
    if ((shape) && (m->style->use_item_bg))
-      PropagateShapes(m->win);
+      EShapePropagate(m->win);
 
    if (mi->state == STATE_HILITED)
      {

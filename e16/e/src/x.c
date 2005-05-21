@@ -537,191 +537,6 @@ EUnmapWindow(Window win)
 }
 
 void
-EShapeCombineMask(Window win, int dest, int x, int y, Pixmap pmap, int op)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-     {
-	char                wasshaped = 0;
-
-	if (xid->rects)
-	  {
-	     xid->num_rect = 0;
-	     XFree(xid->rects);
-	     xid->rects = NULL;
-	     wasshaped = 1;
-	  }
-	if (pmap)
-	  {
-	     XShapeCombineMask(disp, win, dest, x, y, pmap, op);
-	     xid->rects =
-		XShapeGetRectangles(disp, win, dest, &(xid->num_rect),
-				    &(xid->ord));
-	     if (xid->rects)
-	       {
-		  if (xid->num_rect == 1)
-		    {
-		       if ((xid->rects[0].x == 0) && (xid->rects[0].y == 0)
-			   && (xid->rects[0].width == xid->w)
-			   && (xid->rects[0].height == xid->h))
-			 {
-			    xid->num_rect = 0;
-			    XFree(xid->rects);
-			    xid->rects = NULL;
-			 }
-		    }
-	       }
-	  }
-	else if ((!pmap) && (wasshaped))
-	   XShapeCombineMask(disp, win, dest, x, y, pmap, op);
-     }
-   else
-      XShapeCombineMask(disp, win, dest, x, y, pmap, op);
-}
-
-void
-EShapeCombineMaskTiled(Window win, int dest, int x, int y,
-		       Pixmap pmap, int op, int w, int h)
-{
-   XGCValues           gcv;
-   GC                  gc;
-   Window              tm;
-
-   gcv.fill_style = FillTiled;
-   gcv.tile = pmap;
-   gcv.ts_x_origin = 0;
-   gcv.ts_y_origin = 0;
-   tm = ECreatePixmap(win, w, h, 1);
-   gc = ECreateGC(tm, GCFillStyle | GCTile |
-		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
-   XFillRectangle(disp, tm, gc, 0, 0, w, h);
-   EFreeGC(gc);
-   EShapeCombineMask(win, dest, x, y, tm, op);
-   EFreePixmap(tm);
-}
-
-void
-EShapeCombineRectangles(Window win, int dest, int x, int y,
-			XRectangle * rect, int n_rects, int op, int ordering)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-     {
-	if (n_rects == 1 && op == ShapeSet)
-	  {
-	     if ((rect[0].x == 0) && (rect[0].y == 0)
-		 && (rect[0].width == xid->w) && (rect[0].height == xid->h))
-	       {
-		  xid->num_rect = 0;
-		  XFree(xid->rects);
-		  xid->rects = NULL;
-		  XShapeCombineMask(disp, win, dest, x, y, None, op);
-		  return;
-	       }
-	  }
-	xid->num_rect = 0;
-	if (xid->rects)
-	   XFree(xid->rects);
-	XShapeCombineRectangles(disp, win, dest, x, y, rect, n_rects, op,
-				ordering);
-	xid->rects =
-	   XShapeGetRectangles(disp, win, dest, &(xid->num_rect), &(xid->ord));
-	if (xid->rects)
-	  {
-	     if (xid->num_rect == 1)
-	       {
-		  if ((xid->rects[0].x == 0) && (xid->rects[0].y == 0)
-		      && (xid->rects[0].width == xid->w)
-		      && (xid->rects[0].height == xid->h))
-		    {
-		       xid->num_rect = 0;
-		       XFree(xid->rects);
-		       xid->rects = NULL;
-		    }
-	       }
-	  }
-     }
-   else
-      XShapeCombineRectangles(disp, win, dest, x, y, rect, n_rects, op,
-			      ordering);
-}
-
-void
-EShapeCombineShape(Window win, int dest, int x, int y,
-		   Window src_win, int src_kind, int op)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-     {
-	xid->num_rect = 0;
-	if (xid->rects)
-	   XFree(xid->rects);
-	XShapeCombineShape(disp, win, dest, x, y, src_win, src_kind, op);
-	xid->rects =
-	   XShapeGetRectangles(disp, win, dest, &(xid->num_rect), &(xid->ord));
-	if (xid->rects)
-	  {
-	     if (xid->num_rect == 1)
-	       {
-		  if ((xid->rects[0].x == 0) && (xid->rects[0].y == 0)
-		      && (xid->rects[0].width == xid->w)
-		      && (xid->rects[0].height == xid->h))
-		    {
-		       xid->num_rect = 0;
-		       XFree(xid->rects);
-		       xid->rects = NULL;
-		    }
-	       }
-	  }
-     }
-   else
-      XShapeCombineShape(disp, win, dest, x, y, src_win, src_kind, op);
-}
-
-XRectangle         *
-EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid && !xid->attached)
-     {
-	XRectangle         *r;
-
-	*rn = xid->num_rect;
-	*ord = xid->ord;
-	if (xid->num_rect > 0)
-	  {
-	     r = Emalloc(sizeof(XRectangle) * xid->num_rect);
-	     memcpy(r, xid->rects, sizeof(XRectangle) * xid->num_rect);
-	     return r;
-	  }
-	else
-	   return NULL;
-     }
-   else
-     {
-	XRectangle         *r, *rr;
-
-	r = XShapeGetRectangles(disp, win, dest, rn, ord);
-	if (r)
-	  {
-	     rr = Emalloc(sizeof(XRectangle) * *rn);
-	     memcpy(rr, r, sizeof(XRectangle) * *rn);
-	     XFree(r);
-	     return rr;
-	  }
-     }
-   return NULL;
-}
-
-void
 EReparentWindow(Window win, Window parent, int x, int y)
 {
    EXID               *xid;
@@ -920,6 +735,364 @@ ESelectInputAdd(Window win, long mask)
    XGetWindowAttributes(disp, win, &xwa);
    xwa.your_event_mask |= mask;
    XSelectInput(disp, win, xwa.your_event_mask);
+}
+
+#define DEBUG_SHAPE_OPS 0
+#define DEBUG_SHAPE_PROPAGATE 0
+
+#if DEBUG_SHAPE_OPS
+static void
+EShapeShow(const char *txt, XRectangle * pr, int nr)
+{
+   int                 i;
+
+   Eprintf("%s nr=%d\n", txt, nr);
+   for (i = 0; i < nr; i++)
+      Eprintf(" %d - %4d,%4d %4dx%4d\n", i,
+	      pr[i].x, pr[i].y, pr[i].width, pr[i].height);
+}
+#endif
+
+static void
+EXidShapeUpdate(EXID * xid)
+{
+   if (xid->rects)
+     {
+	XFree(xid->rects);
+	xid->num_rect = 0;
+     }
+
+   xid->rects =
+      XShapeGetRectangles(disp, xid->win, ShapeBounding, &(xid->num_rect),
+			  &(xid->ord));
+   if (xid->rects)
+     {
+	if (xid->num_rect == 1)
+	  {
+	     if ((xid->rects[0].x == 0) && (xid->rects[0].y == 0)
+		 && (xid->rects[0].width == xid->w)
+		 && (xid->rects[0].height == xid->h))
+	       {
+		  xid->num_rect = 0;
+		  XFree(xid->rects);
+		  xid->rects = NULL;
+	       }
+	  }
+     }
+   else
+     {
+	xid->num_rect = -1;
+     }
+#if DEBUG_SHAPE_OPS
+   EShapeShow("EXidShapeUpdate", xid->rects, xid->num_rect);
+#endif
+}
+
+void
+EShapeCombineMask(Window win, int dest, int x, int y, Pixmap pmap, int op)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (xid)
+     {
+	char                wasshaped = 0;
+
+	if (xid->rects)
+	  {
+	     xid->num_rect = 0;
+	     XFree(xid->rects);
+	     xid->rects = NULL;
+	     wasshaped = 1;
+	  }
+#if DEBUG_SHAPE_OPS
+	Eprintf("EShapeCombineMask %#lx wassh=%d\n", win, wasshaped);
+#endif
+	if (pmap)
+	  {
+	     XShapeCombineMask(disp, win, dest, x, y, pmap, op);
+	     EXidShapeUpdate(xid);
+	  }
+	else if (wasshaped)
+	   XShapeCombineMask(disp, win, dest, x, y, pmap, op);
+     }
+   else
+      XShapeCombineMask(disp, win, dest, x, y, pmap, op);
+}
+
+void
+EShapeCombineMaskTiled(Window win, int dest, int x, int y,
+		       Pixmap pmap, int op, int w, int h)
+{
+   XGCValues           gcv;
+   GC                  gc;
+   Window              tm;
+
+   gcv.fill_style = FillTiled;
+   gcv.tile = pmap;
+   gcv.ts_x_origin = 0;
+   gcv.ts_y_origin = 0;
+   tm = ECreatePixmap(win, w, h, 1);
+   gc = ECreateGC(tm, GCFillStyle | GCTile |
+		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+   XFillRectangle(disp, tm, gc, 0, 0, w, h);
+   EFreeGC(gc);
+   EShapeCombineMask(win, dest, x, y, tm, op);
+   EFreePixmap(tm);
+}
+
+void
+EShapeCombineRectangles(Window win, int dest, int x, int y,
+			XRectangle * rect, int n_rects, int op, int ordering)
+{
+   EXID               *xid;
+
+#if DEBUG_SHAPE_OPS
+   Eprintf("EShapeCombineRectangles %#lx %d\n", win, n_rects);
+#endif
+
+   xid = EXidFind(win);
+   if (xid)
+     {
+	if (n_rects == 1 && op == ShapeSet)
+	  {
+	     if ((rect[0].x == 0) && (rect[0].y == 0) &&
+		 (rect[0].width == xid->w) && (rect[0].height == xid->h))
+	       {
+		  xid->num_rect = 0;
+		  XFree(xid->rects);
+		  xid->rects = NULL;
+		  XShapeCombineMask(disp, win, dest, x, y, None, op);
+		  return;
+	       }
+	  }
+	XShapeCombineRectangles(disp, win, dest, x, y, rect, n_rects, op,
+				ordering);
+	if (n_rects > 1)
+	  {
+	     /* Limit shape to window extents */
+	     XRectangle          r;
+
+	     r.x = r.y = 0;
+	     r.width = xid->w;
+	     r.height = xid->h;
+	     XShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, &r,
+				     1, ShapeIntersect, Unsorted);
+	  }
+	EXidShapeUpdate(xid);
+     }
+   else
+      XShapeCombineRectangles(disp, win, dest, x, y, rect, n_rects, op,
+			      ordering);
+}
+
+void
+EShapeCombineShape(Window win, int dest, int x, int y,
+		   Window src_win, int src_kind, int op)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (xid)
+     {
+	XShapeCombineShape(disp, win, dest, x, y, src_win, src_kind, op);
+	EXidShapeUpdate(xid);
+     }
+   else
+      XShapeCombineShape(disp, win, dest, x, y, src_win, src_kind, op);
+}
+
+XRectangle         *
+EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (xid && !xid->attached)
+     {
+	XRectangle         *r;
+
+#if DEBUG_SHAPE_OPS
+	Eprintf("EShapeGetRectangles-A %#lx nr=%d\n", win, xid->num_rect);
+#endif
+	*rn = xid->num_rect;
+	*ord = xid->ord;
+	if (xid->num_rect > 0)
+	  {
+	     r = Emalloc(sizeof(XRectangle) * xid->num_rect);
+	     memcpy(r, xid->rects, sizeof(XRectangle) * xid->num_rect);
+	     return r;
+	  }
+     }
+   else
+     {
+	XRectangle         *r, *rr;
+
+#if DEBUG_SHAPE_OPS
+	Eprintf("EShapeGetRectangles-B %#lx nr=%d\n", win, xid->num_rect);
+#endif
+	r = XShapeGetRectangles(disp, win, dest, rn, ord);
+	if (r)
+	  {
+	     rr = Emalloc(sizeof(XRectangle) * *rn);
+	     memcpy(rr, r, sizeof(XRectangle) * *rn);
+	     XFree(r);
+	     return rr;
+	  }
+     }
+   return NULL;
+}
+
+int
+EShapeCopy(Window dst, Window src)
+{
+   XRectangle         *rl;
+   int                 rn = 0, ord;
+   int                 x, y, w, h, d;
+   Window              rt;
+
+   EGrabServer();
+   EGetGeometry(src, &rt, &x, &y, &w, &h, &d, &d);
+   rl = EShapeGetRectangles(src, ShapeBounding, &rn, &ord);
+   EUngrabServer();
+
+   if (rn < 0)
+     {
+	/* Source has empty shape */
+	EShapeCombineShape(dst, ShapeBounding, 0, 0,
+			   src, ShapeBounding, ShapeSet);
+     }
+   else if (rn == 0)
+     {
+	/* Source has default shape (no shape) */
+	EShapeCombineMask(dst, ShapeBounding, 0, 0, None, ShapeSet);
+     }
+   else if (rn == 1)
+     {
+	if ((rl[0].x <= 0) && (rl[0].y <= 0) && (rl[0].width >= w)
+	    && (rl[0].height >= h))
+	  {
+	     rn = 0;
+	     EShapeCombineMask(dst, ShapeBounding, 0, 0, None, ShapeSet);
+	  }
+	else
+	  {
+	     EShapeCombineShape(dst, ShapeBounding, 0, 0,
+				src, ShapeBounding, ShapeSet);
+	  }
+     }
+   else
+     {
+	EShapeCombineShape(dst, ShapeBounding, 0, 0,
+			   src, ShapeBounding, ShapeSet);
+     }
+   if (rl)
+      XFree(rl);
+
+   return rn != 0;
+}
+
+void
+EShapePropagate(Window win)
+{
+   Window              rt, par, *list = NULL;
+   unsigned int        i, num, num_rects;
+   int                 k, rn, ord;
+   int                 x, y, w, h, xx, yy, ww, hh, d;
+   XRectangle         *rects, *rl;
+   XWindowAttributes   att;
+
+   if (!EGetGeometry(win, &rt, &xx, &yy, &ww, &hh, &d, &d))
+      return;
+   if ((ww <= 0) || (hh <= 0))
+      return;
+
+#if DEBUG_SHAPE_PROPAGATE
+   Eprintf("EShapePropagate %#lx %d,%d %dx%d\n", win, xx, yy, ww, hh);
+#endif
+
+   XQueryTree(disp, win, &rt, &par, &list, &num);
+   if (!list)
+      return;
+
+   num_rects = 0;
+   rects = NULL;
+
+   /* go through all child windows and create/inset spans */
+   for (i = 0; i < num; i++)
+     {
+	XGetWindowAttributes(disp, list[i], &att);
+#if DEBUG_SHAPE_PROPAGATE > 1
+	Eprintf("%3d %#lx(%d): %4d,%4d %4dx%4d\n", i, list[i], att.map_state,
+		att.x, att.y, att.width, att.height);
+#endif
+	if ((att.class != InputOutput) || (att.map_state == IsUnmapped))
+	   continue;
+
+	x = att.x;
+	y = att.y;
+	w = att.width;
+	h = att.height;
+	if (x >= ww || y >= hh || x + w < 0 || y + h < 0)
+	   continue;
+
+	rl = EShapeGetRectangles(list[i], ShapeBounding, &rn, &ord);
+
+	if (rn > 0)
+	  {
+	     rects = Erealloc(rects, (num_rects + rn) * sizeof(XRectangle));
+	     /* go through all clip rects in thsi window's shape */
+	     for (k = 0; k < rn; k++)
+	       {
+		  /* for each clip rect, add it to the rect list */
+		  rects[num_rects + k].x = x + rl[k].x;
+		  rects[num_rects + k].y = y + rl[k].y;
+		  rects[num_rects + k].width = rl[k].width;
+		  rects[num_rects + k].height = rl[k].height;
+#if DEBUG_SHAPE_PROPAGATE > 1
+		  Eprintf(" - %d: %4d,%4d %4dx%4d\n", k,
+			  rects[num_rects + k].x,
+			  rects[num_rects + k].y, rects[num_rects + k].width,
+			  rects[num_rects + k].height);
+#endif
+	       }
+	     num_rects += rn;
+	     Efree(rl);
+	  }
+	else if (rn == 0)
+	  {
+	     /* Unshaped */
+	     rects = Erealloc(rects, (num_rects + 1) * sizeof(XRectangle));
+
+	     rects[num_rects].x = x;
+	     rects[num_rects].y = y;
+	     rects[num_rects].width = w;
+	     rects[num_rects].height = h;
+	     num_rects++;
+	  }
+     }
+
+#if DEBUG_SHAPE_PROPAGATE > 1
+   Eprintf("EShapePropagate %#lx nr=%d\n", win, num_rects);
+   for (i = 0; i < num_rects; i++)
+      Eprintf("%3d %4d,%4d %4dx%4d\n", i, rects[i].x, rects[i].y,
+	      rects[i].width, rects[i].height);
+#endif
+
+   /* set the rects as the shape mask */
+   if (rects)
+     {
+	EShapeCombineRectangles(win, ShapeBounding, 0, 0, rects,
+				num_rects, ShapeSet, Unsorted);
+	Efree(rects);
+     }
+   else
+     {
+	/* Empty shape */
+	EShapeCombineRectangles(win, ShapeBounding, 0, 0, NULL, 0, ShapeSet,
+				Unsorted);
+     }
+   XFree(list);
 }
 
 GC

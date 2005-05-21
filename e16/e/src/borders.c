@@ -35,16 +35,6 @@ static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(XEvent * ev, void *prm);
 
 void
-SyncBorderToEwin(EWin * ewin)
-{
-   const Border       *b;
-
-   b = ewin->border;
-   ICCCM_GetShapeInfo(ewin);
-   EwinSetBorder(ewin, b, 1);
-}
-
-void
 EwinBorderUpdateState(EWin * ewin)
 {
    EwinBorderDraw(ewin, 0, 0);
@@ -366,7 +356,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 }
 
 void
-EwinBorderCalcSizes(EWin * ewin)
+EwinBorderCalcSizes(EWin * ewin, int propagate)
 {
    int                 i, ww, hh;
    char                reshape;
@@ -394,10 +384,14 @@ EwinBorderCalcSizes(EWin * ewin)
 	ewin->bits[i].no_expose = 1;
      }
 
+#if 0				/* Debug */
+   Eprintf("EwinBorderCalcSizes prop=%d reshape=%d\n", propagate, reshape);
+#endif
    if (reshape)
      {
 	ewin->shapedone = 0;
-	EwinPropagateShapes(ewin);
+	if (propagate)
+	   EwinPropagateShapes(ewin);
      }
 }
 
@@ -428,9 +422,6 @@ EwinBorderSelect(EWin * ewin)
    b = ewin->border;
    if (b && strncmp(b->name, "__", 2))
       goto done;
-
-   ICCCM_GetShapeInfo(ewin);
-   ewin->shapedone = 0;
 
    if ((!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border) ||
        (Conf.dock.enable && ewin->docked))
@@ -567,7 +558,8 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    if (!ewin->shaded)
       EMoveWindow(ewin->win_container, b->border.left, b->border.top);
 
-   EwinBorderCalcSizes(ewin);
+   ewin->shapedone = 0;
+   EwinBorderCalcSizes(ewin, 0);
 
    SnapshotEwinUpdate(ewin, SNAP_USE_BORDER);
 }
@@ -581,7 +573,6 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
    if (apply)
      {
 	EwinBorderSetTo(ewin, b);
-	ICCCM_MatchSize(ewin);
 	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin),
 		       ewin->client.w, ewin->client.h);
      }

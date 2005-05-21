@@ -315,7 +315,7 @@ SlideoutCalcSize(Slideout * s)
 	     break;
 	  }
      }
-   PropagateShapes(s->win);
+   EShapePropagate(s->win);
 }
 
 static void

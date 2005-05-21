@@ -148,7 +148,7 @@ WarpFocusShow(EWin * ewin)
 				0, ST_WARPLIST);
 	  }
 
-	PropagateShapes(warpFocusWindow->win);
+	EShapePropagate(warpFocusWindow->win);
 	EobjMap(warpFocusWindow, 0);
 
 	/*
@@ -202,7 +202,7 @@ WarpFocusShow(EWin * ewin)
 	  }
      }
 
-   PropagateShapes(warpFocusWindow->win);
+   EShapePropagate(warpFocusWindow->win);
    EFlush();
 }
 

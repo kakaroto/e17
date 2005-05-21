@@ -1244,7 +1244,7 @@ void                EwinBorderSelect(EWin * ewin);
 void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
 void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint);
-void                EwinBorderCalcSizes(EWin * ewin);
+void                EwinBorderCalcSizes(EWin * ewin, int propagate);
 void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderUpdateState(EWin * ewin);
@@ -1478,7 +1478,6 @@ void                DockDestroy(EWin * ewin);
 Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
-void                PropagateShapes(Window win);
 
 /* econfig.c */
 void                ConfigurationLoad(void);
@@ -1594,7 +1593,6 @@ EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
 void                EwinReparent(EWin * ewin, Window parent);
-void                SyncBorderToEwin(EWin * ewin);
 Window              EwinGetClientWin(const EWin * ewin);
 const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
@@ -2251,6 +2249,25 @@ void                EDestroyWindow(Window win);
 void                EMapWindow(Window win);
 void                EMapRaised(Window win);
 void                EUnmapWindow(Window win);
+void                EReparentWindow(Window win, Window parent, int x, int y);
+int                 EGetGeometry(Window win, Window * root_return,
+				 int *x, int *y, int *w, int *h, int *bw,
+				 int *depth);
+void                EConfigureWindow(Window win, unsigned int mask,
+				     XWindowChanges * wc);
+void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);
+void                ESetWindowBackground(Window win, int col);
+
+#define ESelectInput(win, mask) XSelectInput(disp, win, mask)
+#define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
+#define EChangeWindowAttributes(win, mask, attr) XChangeWindowAttributes(disp, win, mask, attr)
+#define ERaiseWindow(win) XRaiseWindow(disp, win)
+#define ELowerWindow(win) XLowerWindow(disp, win)
+#define EClearWindow(win) XClearWindow(disp, win)
+#define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
+#define ECreatePixmap(draw, w, h, dep) XCreatePixmap(disp, draw, w, h, dep)
+#define EFreePixmap(pmap) XFreePixmap(disp, pmap)
+
 void                EShapeCombineMask(Window win, int dest, int x, int y,
 				      Pixmap pmap, int op);
 void                EShapeCombineMaskTiled(Window win, int dest, int x, int y,
@@ -2262,25 +2279,9 @@ void                EShapeCombineShape(Window win, int dest, int x, int y,
 				       Window src_win, int src_kind, int op);
 XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
 					int *ord);
-void                EReparentWindow(Window win, Window parent, int x, int y);
-int                 EGetGeometry(Window win, Window * root_return,
-				 int *x, int *y, int *w, int *h, int *bw,
-				 int *depth);
-void                EConfigureWindow(Window win, unsigned int mask,
-				     XWindowChanges * wc);
-void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);
-void                ESetWindowBackground(Window win, int col);
+int                 EShapeCopy(Window dst, Window src);
+void                EShapePropagate(Window win);
 Pixmap              EWindowGetShapePixmap(Window win);
-
-#define ESelectInput(win, mask) XSelectInput(disp, win, mask)
-#define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
-#define EChangeWindowAttributes(win, mask, attr) XChangeWindowAttributes(disp, win, mask, attr)
-#define ERaiseWindow(win) XRaiseWindow(disp, win)
-#define ELowerWindow(win) XLowerWindow(disp, win)
-#define EClearWindow(win) XClearWindow(disp, win)
-#define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
-#define ECreatePixmap(draw, w, h, dep) XCreatePixmap(disp, draw, w, h, dep)
-#define EFreePixmap(pmap) XFreePixmap(disp, pmap)
 
 GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
 int                 EFreeGC(GC gc);

@@ -149,8 +149,6 @@ EwinCreate(Window win, int type)
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
    AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
 
-   XShapeSelectInput(disp, win, ShapeNotifyMask);
-
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinCreate %#lx frame=%#lx state=%d\n", ewin->client.win,
 	      EoGetWin(ewin), ewin->state);
@@ -163,6 +161,7 @@ EwinCreate(Window win, int type)
 
    if (!EwinIsInternal(ewin))
      {
+	XShapeSelectInput(disp, win, ShapeNotifyMask);
 	XSetWindowBorderWidth(disp, win, 0);
 	ewin->client.bw = 0;
      }
@@ -504,7 +503,7 @@ EwinPropagateShapes(EWin * ewin)
 #endif
    if (!ewin->shapedone)
      {
-	PropagateShapes(EoGetWin(ewin));
+	EShapePropagate(EoGetWin(ewin));
 	EoChangeShape(ewin);
 	ewin->shapedone = 1;
      }
@@ -1164,7 +1163,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	Mode.move.check = 0;	/* Don't restrict client requests */
 	MoveResizeEwin(ewin, x, y, w, h);
 	Mode.move.check = 1;
-
+#if 0				/* FIXME - Remove? */
 	{
 	   char                pshaped;
 
@@ -1172,10 +1171,11 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	   ICCCM_GetShapeInfo(ewin);
 	   if (pshaped != ewin->client.shaped)
 	     {
-		SyncBorderToEwin(ewin);
+		ewin->shapedone = 0;
 		EwinPropagateShapes(ewin);
 	     }
 	}
+#endif
 	ReZoom(ewin);
      }
    else
@@ -1204,6 +1204,7 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
 	w = ev->xresizerequest.width;
 	h = ev->xresizerequest.height;
 	ResizeEwin(ewin, w, h);
+#if 0				/* FIXME - Remove? */
 	{
 	   char                pshaped;
 
@@ -1211,10 +1212,11 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
 	   ICCCM_GetShapeInfo(ewin);
 	   if (pshaped != ewin->client.shaped)
 	     {
-		SyncBorderToEwin(ewin);
+		ewin->shapedone = 0;
 		EwinPropagateShapes(ewin);
 	     }
 	}
+#endif
 	ReZoom(ewin);
      }
    else
@@ -1254,7 +1256,6 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 
    HintsProcessPropertyChange(ewin, ev->xproperty.atom);
    SessionGetInfo(ewin, ev->xproperty.atom);
-   SyncBorderToEwin(ewin);
 
    EwinChangesProcess(ewin);
    EUngrabServer();
@@ -1263,14 +1264,8 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 static void
 EwinEventShapeChange(EWin * ewin)
 {
-   const Border       *b;
-
-   b = ewin->border;
-   SyncBorderToEwin(ewin);
-#if 0
-   if (ewin->border == b)
-#endif
-      ewin->shapedone = 0;
+   ICCCM_GetShapeInfo(ewin);
+   ewin->shapedone = 0;
    EwinPropagateShapes(ewin);
 }
 
@@ -1598,7 +1593,7 @@ EwinChangesProcess(EWin * ewin)
    if (EWinChanges.flags & EWIN_CHANGE_NAME)
      {
 	EwinBorderUpdateInfo(ewin);
-	EwinBorderCalcSizes(ewin);
+	EwinBorderCalcSizes(ewin, 1);
      }
 
    if (EWinChanges.flags & EWIN_CHANGE_DESKTOP)
