@@ -131,7 +131,7 @@ class Playlist < Array
 			item = find { |i| i.id == item }
 		end
 
-		item.hide if i.visible?
+		item.hide if item.visible?
 		super(item)
 	end
 
