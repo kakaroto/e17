@@ -513,21 +513,6 @@ IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-IconboxEwinRefresh(EWin * ewin)
-{
-   Iconbox            *ib = ewin->data;
-
-   if (!ib)
-      return;
-
-   if (!TransparencyEnabled())
-      return;
-
-   ib->force_update = 1;
-   IconboxRedraw(ib);
-}
-
-static void
 IconboxEwinClose(EWin * ewin)
 {
    IconboxDestroy(ewin->data, 0);
@@ -540,7 +525,6 @@ IconboxEwinInit(EWin * ewin, void *ptr)
    ewin->data = (Iconbox *) ptr;
 
    ewin->MoveResize = IconboxEwinMoveResize;
-   ewin->Refresh = IconboxEwinRefresh;
    ewin->Close = IconboxEwinClose;
 
    ewin->skiptask = 1;

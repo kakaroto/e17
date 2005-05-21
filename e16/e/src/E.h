@@ -786,7 +786,6 @@ struct _ewin
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
    void                (*MoveResize) (EWin * ewin, int resize);
-   void                (*Refresh) (EWin * ewin);
    void                (*Close) (EWin * ewin);
 };
 
@@ -1574,7 +1573,6 @@ void                EventShow(const XEvent * ev);
 #define EWIN_CHANGE_OPACITY     (1<<5)
 
 void                EwinShapeSet(EWin * ewin);
-void                EwinRefresh(EWin * ewin);
 void                EwinFloatAt(EWin * ewin, int x, int y);
 void                EwinUnfloatAt(EWin * ewin, int desk, int x, int y);
 void                RaiseEwin(EWin * ewin);
@@ -2293,7 +2291,6 @@ void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
 int                 GetWinDepth(Window win);
 Window              GetWinParent(Window win);
-int                 WinExists(Window win);
 Window              WinGetParent(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);

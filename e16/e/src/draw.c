@@ -61,17 +61,7 @@ static PixImg      *
 ECreatePixImg(Window win, int w, int h)
 {
    XGCValues           gcv;
-   int                 bpp;
    PixImg             *pi;
-
-   if (VRoot.depth <= 8)
-      bpp = 1;
-   else if (VRoot.depth <= 16)
-      bpp = 2;
-   else if (VRoot.depth <= 24)
-      bpp = 3;
-   else
-      bpp = 4;
 
    pi = Emalloc(sizeof(PixImg));
    if (!pi)
@@ -633,7 +623,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    int                 x1, y1, w1, h1, i, j, pw, ph, dx, dy;
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
-   int                 bpp;
    char                str[32];
    char                check_move = 0;
 
@@ -644,22 +633,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   break;
      }
 
-   if ((md == 5)
-       && ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
-	   || (Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
+   if ((md == 5) &&
+       ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H) ||
+	(Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
-
-   if (md == 5)
-     {
-	if (VRoot.depth <= 8)
-	   bpp = 1;
-	else if (VRoot.depth <= 16)
-	   bpp = 2;
-	else if (VRoot.depth <= 24)
-	   bpp = 3;
-	else
-	   bpp = 4;
-     }
 
    pw = w;
    ph = h;

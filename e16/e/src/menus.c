@@ -191,12 +191,6 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-MenuEwinRefresh(EWin * ewin)
-{
-   MenuEwinMoveResize(ewin, 0);
-}
-
-static void
 MenuEwinClose(EWin * ewin)
 {
    if ((Menu *) (ewin->data) == active_menu)
@@ -217,7 +211,6 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->data = ptr;
 
    ewin->MoveResize = MenuEwinMoveResize;
-   ewin->Refresh = MenuEwinRefresh;
    ewin->Close = MenuEwinClose;
 
    ewin->skiptask = 1;

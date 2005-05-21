@@ -1230,17 +1230,6 @@ GetWinDepth(Window win)
    return d;
 }
 
-int
-WinExists(Window win)
-{
-   Window              w1;
-   int                 x, y, w, h, b, d;
-
-   if (EGetGeometry(win, &w1, &x, &y, &w, &h, &b, &d))
-      return 1;
-   return 0;
-}
-
 Window
 WinGetParent(Window win)
 {

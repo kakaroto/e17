@@ -221,19 +221,6 @@ EwinFixPosition(EWin * ewin)
       MoveEwin(ewin, x, y);
 }
 
-void
-EwinRefresh(EWin * ewin)
-{
-   if (!ewin)
-      return;
-
-   if (TransparencyEnabled())
-      EwinBorderDraw(ewin, 0, 1);	/* Update the border */
-
-   if (ewin->Refresh)
-      ewin->Refresh(ewin);
-}
-
 static void
 EwinDetermineArea(EWin * ewin)
 {

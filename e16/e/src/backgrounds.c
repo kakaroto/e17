@@ -461,10 +461,8 @@ BackgroundApply(Background * bg, Window win, int setbg)
    GC                  gc;
    int                 rt;
 
-   if (!WinExists(win))
+   if (!EGetGeometry(win, NULL, NULL, NULL, &rw, &rh, NULL, &depth))
       return;
-
-   EGetGeometry(win, NULL, NULL, NULL, &rw, &rh, NULL, &depth);
 
    imlib_context_set_drawable(win);
 

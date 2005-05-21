@@ -573,11 +573,6 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-PagerEwinRefresh(EWin * ewin __UNUSED__)
-{
-}
-
-static void
 PagerEwinClose(EWin * ewin)
 {
    PagerDestroy(ewin->data);
@@ -590,7 +585,6 @@ PagerEwinInit(EWin * ewin, void *ptr)
    ewin->data = ptr;
 
    ewin->MoveResize = PagerEwinMoveResize;
-   ewin->Refresh = PagerEwinRefresh;
    ewin->Close = PagerEwinClose;
 
    ewin->skiptask = 1;

@@ -529,12 +529,6 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-DialogEwinRefresh(EWin * ewin)
-{
-   DialogEwinMoveResize(ewin, 0);
-}
-
-static void
 DialogEwinClose(EWin * ewin)
 {
    DialogDestroy(ewin->data);
@@ -550,7 +544,6 @@ DialogEwinInit(EWin * ewin, void *ptr)
    d->ewin = ewin;
 
    ewin->MoveResize = DialogEwinMoveResize;
-   ewin->Refresh = DialogEwinRefresh;
    ewin->Close = DialogEwinClose;
 
    ewin->client.width.min = ewin->client.width.max = ewin->client.w = d->w;
