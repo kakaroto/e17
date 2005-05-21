@@ -61,6 +61,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->gui_engine = ECLAIR_SOFTWARE;
    eclair->gui_theme_file = strdup(PACKAGE_DATA_DIR "/themes/default.edj");
    eclair->gui_drop_object = ECLAIR_DROP_NONE;
+   eclair->start_playing = 0;
 
    if (!eclair_args_parse(eclair, &filenames))
       return 0;
@@ -79,12 +80,12 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    if ((l = filenames))
    {
       for (; l; l = l->next)
-         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0);
+         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0, 1);
       evas_list_free(filenames);
       eclair_playlist_container_update(eclair->playlist_container);
    }
    else
-      eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 0);
+      eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 0, 0);
 
    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
 	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
@@ -275,8 +276,14 @@ void eclair_play_file(Eclair *eclair, const char *path)
 {
    int video_width, video_height;
 
-   if (!eclair || !eclair->video_object)
+   if (!eclair)
       return;
+
+   if (!eclair->video_object)
+   {
+      eclair->start_playing = 1;
+      return;
+   }
 
    if (path)
    {
@@ -350,11 +357,18 @@ void eclair_pause(Eclair *eclair)
    eclair->state = ECLAIR_PAUSE;
 }
 
+//TODO: redundant with play_current?
 //Play the current file if state is STOP or resume if state is PAUSE
 void eclair_play(Eclair *eclair)
 {
-   if (!eclair || !eclair->video_object)
+   if (!eclair)
       return;
+
+   if (!eclair->video_object)
+   {
+      eclair->start_playing = 1;
+      return;
+   }
 
    if (eclair->state == ECLAIR_PAUSE)
    {
@@ -609,6 +623,9 @@ static void *_eclair_create_video_object_thread(void *param)
    eclair_audio_level_set(eclair, emotion_object_audio_volume_get(new_video_object));
    eclair->video_object = new_video_object;
    eclair_update_current_file_info(eclair, 0);
+
+   if (eclair->start_playing)
+      eclair_play_current(eclair);
 
    return NULL; 
 }

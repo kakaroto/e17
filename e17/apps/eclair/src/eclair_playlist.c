@@ -86,7 +86,7 @@ Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
 }
 
 //Add recursively a directory
-Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Bool update_container)
+Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Bool update_container, Evas_Bool autoplay)
 {
    Ecore_List *files;
    Ecore_List_Node *l;
@@ -103,7 +103,7 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Boo
             continue;
          filepath = (char *)malloc(strlen(dir) + strlen(filename) + 2);
          sprintf(filepath, "%s/%s", dir, filename);
-         eclair_playlist_add_uri(playlist, filepath, 0);
+         eclair_playlist_add_uri(playlist, filepath, 0, autoplay);
          free(filepath);
       }
       ecore_list_destroy(files);
@@ -116,7 +116,7 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Boo
 }
 
 //Add files stored in the m3u file
-Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Evas_Bool update_container)
+Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Evas_Bool update_container, Evas_Bool autoplay)
 {
    FILE *m3u_file;
    char line[MAX_PATH_LEN], *path, *c, *m3u_dir;
@@ -135,12 +135,12 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
          *c = 0;
    
       if (line[0] == '/')
-         eclair_playlist_add_uri(playlist, line, 0);
+         eclair_playlist_add_uri(playlist, line, 0, autoplay);
       else if (m3u_dir)
       {
          path = (char *)malloc(strlen(m3u_dir) + strlen(line) + 2);
          sprintf(path, "%s/%s", m3u_dir, line);
-         eclair_playlist_add_uri(playlist, path, 0);
+         eclair_playlist_add_uri(playlist, path, 0, autoplay);
          free(path);
       }
    }
@@ -155,13 +155,13 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
 }
 
 //Add the media file located at the uri
-Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Bool update_container)
+Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Bool update_container, Evas_Bool autoplay)
 {
    Eclair_Media_File *new_media_file;
    Eclair *eclair;
    char *clean_uri, *new_path, *ext;
 
-   if (!playlist || !uri)
+   if (!playlist || !uri || !(eclair = playlist->eclair))
       return 0;
 
    if (strstr(uri, "://"))
@@ -182,14 +182,14 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
 
    if (!strstr(new_path, "://"))
    {
-      if (eclair_playlist_add_dir(playlist, new_path, 0))
+      if (eclair_playlist_add_dir(playlist, new_path, 0, autoplay))
       {
          free(new_path);
          return 1;
       }
       if ((ext = eclair_utils_file_get_extension(new_path)) && strcmp(ext, "m3u") == 0)
       {
-         eclair_playlist_add_m3u(playlist, new_path, 0);
+         eclair_playlist_add_m3u(playlist, new_path, 0, autoplay);
          free(new_path);
          return 1;  
       }
@@ -199,15 +199,17 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
    new_media_file->path = new_path;
    playlist->playlist = evas_list_append(playlist->playlist, new_media_file);
    if (!playlist->current)
-      eclair_playlist_current_set_list(playlist, playlist->playlist);
-
-   if ((eclair = playlist->eclair))
    {
-      if (update_container)
-         eclair_playlist_container_update(eclair->playlist_container);
-      if (!strstr(new_media_file->path, "://"))
-         eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
+      eclair_playlist_current_set_list(playlist, playlist->playlist);
+      if (autoplay)
+         eclair_play_current(eclair);
    }
+
+   if (update_container)
+      eclair_playlist_container_update(eclair->playlist_container);
+   if (!strstr(new_media_file->path, "://"))
+      eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
+
    return 1;   
 }
 

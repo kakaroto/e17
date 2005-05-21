@@ -28,6 +28,7 @@ program {
    signal: "signal_pause";
    source: "eclair_bin";
    action: STATE_SET "pause" 0.0;
+   transition: LINEAR 0.25;
    target: "button_play";
    target: "button_pause";
 }

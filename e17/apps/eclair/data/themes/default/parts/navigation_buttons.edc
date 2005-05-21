@@ -1,5 +1,6 @@
 part {
-   name: "button_play";
+   name: "play_pause_clip";
+   type: RECT;
    description {
       state: "default" 0.0;
       color: 255 255 255 255;
@@ -12,6 +13,24 @@ part {
          relative: 0 0;
          offset: 93 84;
          to: "body";
+      }      
+   }
+   description {
+      state: "over" 0.0;
+      inherit: "default" 0.0;
+      color: 255 247 217 255;
+   }
+}
+part {
+   name: "button_play";
+   clip_to: "play_pause_clip";
+   description {
+      state: "default" 0.0;
+      rel1 {
+         to: "play_pause_clip";
+      }
+      rel2 {
+         to: "play_pause_clip";
       }
       image {
          normal: "button_play.png";
@@ -33,16 +52,15 @@ part {
    }
    description {
       state: "down" 0.0;
-      color: 255 255 255 255;
       rel1 {
          relative: 0 0;
-         offset: 52 43;
-         to: "body";
+         offset: 8 8;
+         to: "play_pause_clip";
       }
       rel2 {
-         relative: 0 0;
-         offset: 85 76;
-         to: "body";
+         relative: 1 1;
+         offset: -8 -8;
+         to: "play_pause_clip";
       }
       image {
          normal: "button_play_down.png";
@@ -51,19 +69,17 @@ part {
 }
 part {
    name: "button_pause";
+   repeat_events: 1;
+   clip_to: "play_pause_clip";
    description {
       state: "default" 0.0;
       color: 255 255 255 0;
       visible: 0;
       rel1 {
-         relative: 0 0;
-         offset: 44 35;
-         to: "body";
+         to: "play_pause_clip";
       }
       rel2 {
-         relative: 0 0;
-         offset: 93 84;
-         to: "body";
+         to: "play_pause_clip";
       }
       image {
          normal: "button_pause.png";
@@ -88,43 +104,17 @@ part {
       color: 255 255 255 255;
       rel1 {
          relative: 0 0;
-         offset: 52 43;
-         to: "body";
+         offset: 8 8;
+         to: "play_pause_clip";
       }
       rel2 {
-         relative: 0 0;
-         offset: 85 76;
-         to: "body";
+         relative: 1 1;
+         offset: -8 -8;
+         to: "play_pause_clip";
       }
       image {
          normal: "button_pause_down.png";
       }
-   }
-}
-part {
-   name: "button_play_over";
-   repeat_events: 1;
-   description {
-      state: "default" 0.0;
-      color: 255 255 255 0;
-      rel1 {
-         relative: 0 0;
-         offset: 52 43;
-         to: "body";
-      }
-      rel2 {
-         relative: 0 0;
-         offset: 85 76;
-         to: "body";
-      }
-      image {
-         normal: "button_play_pause_over.png";
-      }
-   }
-   description {
-      state: "over" 0.0;
-      inherit: "default" 0.0;
-      color: 255 255 255 255;
    }
 }
 part {

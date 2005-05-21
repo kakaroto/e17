@@ -19,7 +19,6 @@ images {
    image: "button_play_down.png" COMP;
    image: "button_pause.png" COMP;
    image: "button_pause_down.png" COMP;
-   image: "button_play_pause_over.png" COMP;
    image: "button_prev.png" COMP;
    image: "button_prev_down.png" COMP;
    image: "button_next.png" COMP;

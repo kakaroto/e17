@@ -413,7 +413,7 @@ int eclair_gui_dnd_selection_cb(void *data, int type, void *event)
    if (eclair->gui_drop_object == ECLAIR_DROP_PLAYLIST)
    {
       for (i = 0; i < files->num_files; i++)
-         eclair_playlist_add_uri(&eclair->playlist, files->files[i], 0);
+         eclair_playlist_add_uri(&eclair->playlist, files->files[i], 0, 1);
       eclair_playlist_container_update(eclair->playlist_container);
    }
    else if (eclair->gui_drop_object == ECLAIR_DROP_COVER)

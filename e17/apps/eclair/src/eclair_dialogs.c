@@ -270,7 +270,7 @@ static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpo
 
 
    for (l = filenames; l; l = l->next)
-      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0);
+      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0, 1);
    eclair_playlist_container_update(eclair->playlist_container);
    g_slist_foreach(filenames, (GFunc)g_free, NULL);
    g_slist_free(filenames);

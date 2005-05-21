@@ -1,4 +1,20 @@
 program {
+   name: "button_play_in";
+   signal: "mouse,in";
+   source: "button_play";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "play_pause_clip";   
+}
+program {
+   name: "button_play_out";
+   signal: "mouse,out";
+   source: "button_play";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "play_pause_clip";   
+}
+program {
    name: "button_play_clicked";
    signal: "mouse,clicked,1";
    source: "button_play";
@@ -19,6 +35,22 @@ program {
    target: "button_play";
 }
 program {
+   name: "button_pause_in";
+   signal: "mouse,in";
+   source: "button_pause";
+   action: STATE_SET "over" 0.0;
+   transition: LINEAR 0.25;
+   target: "play_pause_clip";   
+}
+program {
+   name: "button_pause_out";
+   signal: "mouse,out";
+   source: "button_pause";
+   action: STATE_SET "default" 0.0;
+   transition: LINEAR 0.25;
+   target: "play_pause_clip";   
+}
+program {
    name: "button_pause_clicked";
    signal: "mouse,clicked,1";
    source: "button_pause";
@@ -37,22 +69,6 @@ program {
    source: "button_pause";
    action: STATE_SET "play" 0.0;
    target: "button_pause";
-}
-program {
-   name: "button_play_over_in";
-   signal: "mouse,in";
-   source: "button_play_over";
-   action: STATE_SET "over" 0.0;
-   transition: LINEAR 0.25;
-   target: "button_play_over";
-}
-program {
-   name: "button_play_over_out";
-   signal: "mouse,out";
-   source: "button_play_over";
-   action: STATE_SET "default" 0.0;
-   transition: LINEAR 0.25;
-   target: "button_play_over";
 }
 program {
    name: "button_open_in";

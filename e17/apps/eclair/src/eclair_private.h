@@ -221,6 +221,7 @@ struct _Eclair
    Eclair_Meta_Tag_Manager meta_tag_manager;
    Eclair_Cover_Manager cover_manager;
    Eclair_Config config;
+   Evas_Bool start_playing;
 
    //Arguments
    int *argc;
