@@ -859,8 +859,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 	   EoIsFloating(ewin));
 #endif
 
-   MoveEwinToDesktopAt(ewin, EoGetDesk(ewin), EoGetX(ewin), EoGetY(ewin));
-
  done:
    EUngrabServer();
 

@@ -650,6 +650,8 @@ PagerShow(Pager * p)
 	MoveResizeEwin(ewin, 0, VRoot.h - (Conf.desks.num -
 					   p->desktop) * EoGetH(ewin), w, h);
      }
+   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+
    PagerRedraw(p, 1);
 
    /* show the pager ewin */

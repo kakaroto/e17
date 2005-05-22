@@ -628,6 +628,8 @@ ShowDialog(Dialog * d)
    ewin->client.event_mask |= KeyPressMask | ExposureMask;
    ESelectInput(d->win, ewin->client.event_mask);
 
+   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+
    if (ewin->client.already_placed)
      {
 	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);

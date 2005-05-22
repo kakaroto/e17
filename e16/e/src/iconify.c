@@ -89,7 +89,6 @@ struct _iconbox
    ImageClass         *ic_item_base;
    Imlib_Image        *im_item_base;
 
-   char                force_update;
    char                arrow1_hilited;
    char                arrow1_clicked;
    char                arrow2_hilited;
@@ -117,11 +116,16 @@ struct _iconbox
    int                 bar_thickness;
    int                 knob_length;
 
+   /* State flags */
+   char                do_update;
 };
 
 /* Silly hack to avoid name clash warning when using -Wshadow */
 #define y1 y1_
 
+static void         IconboxLayout(Iconbox * ib, int *px, int *py, int *pw,
+				  int *ph);
+static void         IconboxDraw(Iconbox * ib);
 static void         IconboxRedraw(Iconbox * ib);
 static void         IboxEventScrollWin(XEvent * ev, void *prm);
 static void         IboxEventScrollbarWin(XEvent * ev, void *prm);
@@ -334,7 +338,6 @@ IconboxCreate(const char *name)
    ib->h = 0;
    ib->pos = 0;
    ib->max = 1;
-   ib->force_update = 1;
    ib->arrow1_hilited = 0;
    ib->arrow1_clicked = 0;
    ib->arrow2_hilited = 0;
@@ -343,6 +346,9 @@ IconboxCreate(const char *name)
    ib->scrollbar_hilited = 0;
    ib->scrollbar_clicked = 0;
    ib->scrollbox_clicked = 0;
+
+   ib->do_update = 1;
+
    ib->win = ECreateWindow(VRoot.win, 0, 0, 128, 32, 0);
    ib->icon_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    EventCallbackRegister(ib->icon_win, 0, IboxEventIconWin, ib);
@@ -437,14 +443,14 @@ IconboxDestroy(Iconbox * ib, int exiting)
 }
 
 static void
-IB_Reconfigure(Iconbox * ib)
+IconboxReconfigure(Iconbox * ib)
 {
    ImageClass         *ic, *ic2;
    EWin               *ewin;
    int                 extra;
 
    ewin = ib->ewin;
-   ib->force_update = 1;
+
    ewin->client.width.min = 8;
    ewin->client.height.min = 8;
    ewin->client.width.max = 16384;
@@ -485,31 +491,26 @@ IB_Reconfigure(Iconbox * ib)
 	ewin->client.no_resize_v = 1;
 	ib->max_min = ewin->client.width.min;
      }
+}
 
-   ICCCM_MatchSize(ewin);
+static void
+IconboxEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
+{
+   Iconbox            *ib = ewin->data;
+
+   IconboxLayout(ib, px, py, pw, ph);
 }
 
 static void
 IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
-   static int          call_depth = 0;	/* Ugly! */
    Iconbox            *ib = ewin->data;
 
-   if (!ib || call_depth > 0)
+   if (!resize && !ib->do_update && !TransparencyEnabled())
       return;
-   call_depth++;
 
-   if (!TransparencyEnabled() &&
-       ib->w == ewin->client.w && ib->h == ewin->client.h && !ib->force_update)
-      goto done;
-
-   ib->w = ewin->client.w;
-   ib->h = ewin->client.h;
-   ib->force_update = 1;
-   IconboxRedraw(ib);
-
- done:
-   call_depth--;
+   IconboxDraw(ib);
+   ib->do_update = 0;
 }
 
 static void
@@ -524,6 +525,7 @@ IconboxEwinInit(EWin * ewin, void *ptr)
 {
    ewin->data = (Iconbox *) ptr;
 
+   ewin->Layout = IconboxEwinLayout;
    ewin->MoveResize = IconboxEwinMoveResize;
    ewin->Close = IconboxEwinClose;
 
@@ -562,7 +564,7 @@ IconboxShow(Iconbox * ib)
 
    ib->ewin = ewin;
 
-   IB_Reconfigure(ib);
+   IconboxReconfigure(ib);
 
    w = ewin->client.w;
    h = ewin->client.h;
@@ -578,6 +580,7 @@ IconboxShow(Iconbox * ib)
 	ResizeEwin(ewin, w, h);
 	MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
      }
+   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
 
    ShowEwin(ewin);
 }
@@ -1668,36 +1671,22 @@ IB_FixPos(Iconbox * ib)
 }
 
 static void
-IconboxRedraw(Iconbox * ib)
+IconboxLayout(Iconbox * ib, int *px, int *py, int *pw, int *ph)
 {
-   char                was_shaded = 0;
-   int                 i, x, y, w, h;
-   ImageClass         *ib_ic_cover;
-   int                 ib_xlt, ib_ylt, ib_ww, ib_hh;
-   int                 ib_x0, ib_y0, ib_w0, ib_h0;
-   Imlib_Image        *im, *im2;
-   int                 ww, hh;
-   Pixmap              pmap, mask;
+   int                 x, y, w, h;
+   EWin               *ewin = ib->ewin;
 
-   if (!ib || !ib->ewin)
-      return;
-
-   x = EoGetX(ib->ewin);
-   y = EoGetY(ib->ewin);
-   w = ib->w;
-   h = ib->h;
+   x = *px;
+   y = *py;
+   w = *pw;
+   h = *ph;
+   ICCCM_SizeMatch(ewin, w, h, &w, &h);
 
    IconboxLayoutImageWin(ib);
 
    if (ib->auto_resize)
      {
 	int                 add = 0;
-
-	if (ib->ewin->shaded)
-	  {
-	     was_shaded = 1;
-	     EwinUnShade(ib->ewin);
-	  }
 
 	if (ib->orientation)
 	  {
@@ -1743,27 +1732,37 @@ IconboxRedraw(Iconbox * ib)
 	  }
      }
 
-   if (ib->force_update ||
-       (x != EoGetX(ib->ewin)) || (y != EoGetY(ib->ewin)) ||
-       (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
-     {
-	ib->w = w;
-	ib->h = h;
-	MoveResizeEwin(ib->ewin, x, y, w, h);
-	ib->force_update = 0;
-     }
-
-   if (was_shaded)
-      EwinShade(ib->ewin);
-
    IB_FixPos(ib);
+
+   *px = x;
+   *py = y;
+   *pw = ib->w = w;
+   *ph = ib->h = h;
+}
+
+static void
+IconboxDraw(Iconbox * ib)
+{
+   int                 i, x, y, w, h;
+   ImageClass         *ib_ic_cover;
+   int                 ib_xlt, ib_ylt, ib_ww, ib_hh;
+   int                 ib_x0, ib_y0, ib_w0, ib_h0;
+   Imlib_Image        *im, *im2;
+   int                 ww, hh;
+   Pixmap              pmap, mask;
+
+   x = EoGetX(ib->ewin);
+   y = EoGetY(ib->ewin);
+   w = ib->w;
+   h = ib->h;
+
    IB_DrawScroll(ib);
 
    /* Geometry of iconbox window, excluding scrollbar */
    ib_xlt = 0;
    ib_ylt = 0;
-   ib_ww = ib->w;
-   ib_hh = ib->h;
+   ib_ww = w;
+   ib_hh = h;
    if (ib->orientation)
      {
 	ib_ic_cover = ImageclassFind("ICONBOX_COVER_VERTICAL", 0);
@@ -1916,11 +1915,26 @@ IconboxRedraw(Iconbox * ib)
 }
 
 static void
+IconboxRedraw(Iconbox * ib)
+{
+   EWin               *ewin = ib->ewin;
+
+   ib->do_update = 1;
+   ResizeEwin(ib->ewin, ewin->client.w, ewin->client.h);
+}
+
+static void
 IB_Scroll(Iconbox * ib, int dir)
 {
+   int                 ppos;
+
+   ppos = ib->pos;
    ib->pos += dir;
    IB_FixPos(ib);
-   IconboxRedraw(ib);
+   if (ib->pos == ppos)
+      return;
+
+   IconboxDraw(ib);
 }
 
 static void
@@ -1964,13 +1978,6 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 
 	EFunc("menus show __TRAY_MENU");
      }
-}
-
-static void
-IB_CompleteRedraw(Iconbox * ib)
-{
-   IB_Reconfigure(ib);
-   IconboxRedraw(ib);
 }
 
 static void
@@ -2054,7 +2061,7 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 {
    Iconbox            *ib = (Iconbox *) prm;
    static int          px, py, pos0;
-   int                 bs, dp, ppos;
+   int                 bs, dp;
    ImageClass         *ic;
 
    switch (ev->type)
@@ -2108,12 +2115,10 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 		bs = 1;
 	     dp = ev->xmotion.x_root - px;
 	  }
-	ppos = ib->pos;
-	ib->pos = pos0 + (dp * ib->max) / bs;
-	IB_FixPos(ib);
-	if (ib->pos != ppos)
-	   IconboxRedraw(ib);
-	break;
+	dp = pos0 + (dp * ib->max) / bs - ib->pos;
+	if (dp)
+	   IB_Scroll(ib, dp);
+	return;
      }
    IB_DrawScroll(ib);
 }
@@ -2152,7 +2157,7 @@ IboxEventArrow1Win(XEvent * ev, void *prm)
 	   break;
 	ib->arrow1_clicked = 0;
 	IB_Scroll(ib, -8);
-	break;
+	return;
 
      case EnterNotify:
 	ib->arrow1_hilited = 1;
@@ -2184,7 +2189,7 @@ IboxEventArrow2Win(XEvent * ev, void *prm)
 	   break;
 	ib->arrow2_clicked = 0;
 	IB_Scroll(ib, 8);
-	break;
+	return;
 
      case EnterNotify:
 	ib->arrow2_hilited = 1;
@@ -2319,8 +2324,9 @@ CB_ConfigureIconbox(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	ib->cover_hide = tmp_ib_cover_hide;
 	ib->auto_resize_anchor = tmp_ib_autoresize_anchor;
 	ib->animate = tmp_ib_animate;
-	IB_CompleteRedraw(ib);
 
+	IconboxReconfigure(ib);
+	IconboxRedraw(ib);
 	IconboxesConfigSave();
      }
 }

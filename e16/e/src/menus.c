@@ -338,8 +338,12 @@ MenuShow(Menu * m, char noshow)
 	ESelectInput(m->win, ewin->client.event_mask);
 
 	ewin->head = head_num;
+
+	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+
 	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);
+
 	if (!noshow)
 	  {
 	     ICCCM_Cmap(NULL);
