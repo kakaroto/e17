@@ -1,7 +1,7 @@
 # $Id$
 
 class PlaylistItem
-	attr_reader :id, :edje
+	attr_reader :id, :edje, :position
 
 	def initialize(id, xmms, playlist)
 		@id = id
@@ -84,6 +84,11 @@ class PlaylistItem
 		@props = hash || {}
 		@props.default = "unknown"
 
+		set_parts_text unless @edje.nil?
+	end
+
+	def position=(pos)
+		@position = pos
 		set_parts_text unless @edje.nil?
 	end
 

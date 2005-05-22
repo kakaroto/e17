@@ -133,6 +133,11 @@ class Playlist < Array
 
 		item.hide if item.visible?
 		super
+
+		# fix up positions of the remaining items
+		self[item.position..-1].each do |item|
+			item.position -= 1
+		end
 	end
 
 	def clear
