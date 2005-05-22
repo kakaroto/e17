@@ -1,4 +1,4 @@
-program {
+/*program {
    name: "init";
    signal: "load";
    source: "";
@@ -6,7 +6,7 @@ program {
       run_program(PROGRAM:"open_left_side");
       run_program(PROGRAM:"open_playlist");
    }   
-}
+}*/
 //TODO: edje bug
 program {
    name: "update";
