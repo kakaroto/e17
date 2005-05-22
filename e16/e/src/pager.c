@@ -326,7 +326,7 @@ doPagerRedraw(Pager * p, char newbg)
    EWin               *const *lst;
    int                 i, num;
 
-   if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
+   if (!Conf.pagers.enable)
       return;
 
    /* Desk may be gone */
@@ -482,7 +482,7 @@ doPagerForceUpdate(Pager * p)
    EWin               *const *lst;
    int                 i, num;
 
-   if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
+   if (!Conf.pagers.enable)
       return;
 
    /* Desk may be gone */

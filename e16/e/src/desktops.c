@@ -41,7 +41,6 @@ typedef struct _desktops
 }
 Desktops;
 
-static void         DeskMove(Desk * d, int x, int y);
 static void         DeskRaise(int num);
 static void         DeskLower(int num);
 static void         DesktopHandleEvents(XEvent * ev, void *prm);
@@ -955,96 +954,21 @@ MoveStickyButtonsToCurrentDesk(void)
       Efree(lst);
 }
 
-void
-DeskGoto(int desk)
+static void
+DesksStackingCheck(void)
 {
    Desk               *d;
+   int                 i;
 
-   if (Conf.desks.desks_wraparound)
+   for (i = 0; i < Conf.desks.num; i++)
      {
-	if (desk >= Conf.desks.num)
-	   desk = 0;
-	else if (desk < 0)
-	   desk = Conf.desks.num - 1;
+	d = DeskGet(i);
+	if (i && !d->viewable)
+	   continue;
+	if (!d->dirty_stack)
+	   continue;
+	StackDesktop(i);
      }
-   if (desk < 0 || desk >= Conf.desks.num || desk == desks.previous)
-      return;
-
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskGoto %d\n", desk);
-
-   ModulesSignal(ESIGNAL_DESK_SWITCH_START, NULL);
-
-   ActionsSuspend();
-
-   FocusNewDeskBegin();
-
-   if (Mode.mode == MODE_NONE)
-      Mode.mode = MODE_DESKSWITCH;
-
-   if (desk > 0)
-     {
-	d = _DeskGet(desk);
-
-	if (Conf.desks.slidein)
-	  {
-	     if (!d->viewable)
-	       {
-		  switch (Conf.desks.dragdir)
-		    {
-		    case 0:
-		       DeskMove(d, VRoot.w, 0);
-		       DeskRaise(desk);
-		       EobjSlideTo(&d->o, VRoot.w, 0, 0, 0,
-				   Conf.desks.slidespeed);
-		       break;
-		    case 1:
-		       DeskMove(d, -VRoot.w, 0);
-		       DeskRaise(desk);
-		       EobjSlideTo(&d->o, -VRoot.w, 0, 0, 0,
-				   Conf.desks.slidespeed);
-		       break;
-		    case 2:
-		       DeskMove(d, 0, VRoot.h);
-		       DeskRaise(desk);
-		       EobjSlideTo(&d->o, 0, VRoot.h, 0, 0,
-				   Conf.desks.slidespeed);
-		       break;
-		    case 3:
-		       DeskMove(d, 0, -VRoot.h);
-		       DeskRaise(desk);
-		       EobjSlideTo(&d->o, 0, -VRoot.h, 0, 0,
-				   Conf.desks.slidespeed);
-		       break;
-		    default:
-		       break;
-		    }
-	       }
-	     else
-	       {
-		  EobjSlideTo(&d->o, EoGetX(d), EoGetY(d), 0, 0,
-			      Conf.desks.slidespeed);
-		  DeskRaise(desk);
-	       }
-	  }
-	else
-	  {
-	     DeskRaise(desk);
-	  }
-	DeskMove(d, 0, 0);
-     }
-   else
-     {
-	DeskRaise(desk);
-     }
-
-   ActionsResume();
-   FocusNewDesk();
-
-   if (Mode.mode == MODE_DESKSWITCH)
-      Mode.mode = MODE_NONE;
-
-   ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 }
 
 static void
@@ -1121,20 +1045,111 @@ DeskMove(Desk * d, int x, int y)
 }
 
 static void
-DesksStackingCheck(void)
+DeskEnter(Desk * d)
 {
-   Desk               *d;
    int                 i;
 
-   for (i = 0; i < Conf.desks.num; i++)
+   d->viewable = 1;
+   DeskRefresh(d->num);
+   MoveToDeskTop(d->num);
+
+   desks.previous = desks.current = d->num;
+
+   if (d->num == 0)
      {
-	d = DeskGet(i);
-	if (i && !d->viewable)
-	   continue;
-	if (!d->dirty_stack)
-	   continue;
-	StackDesktop(i);
+	for (i = Conf.desks.num - 1; i > 0; i--)
+	   DeskHide(desks.order[i]);
      }
+   else
+     {
+	EoMap(d, 0);
+     }
+
+   MoveStickyWindowsToCurrentDesk();
+   MoveStickyButtonsToCurrentDesk();
+   DesksStackingCheck();
+   HintsSetCurrentDesktop();
+}
+
+void
+DeskGoto(int desk)
+{
+   Desk               *d;
+
+   if (Conf.desks.desks_wraparound)
+     {
+	if (desk >= Conf.desks.num)
+	   desk = 0;
+	else if (desk < 0)
+	   desk = Conf.desks.num - 1;
+     }
+   if (desk < 0 || desk >= Conf.desks.num || desk == desks.previous)
+      return;
+
+   d = _DeskGet(desk);
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskGoto %d\n", desk);
+
+   ModulesSignal(ESIGNAL_DESK_SWITCH_START, NULL);
+
+   ActionsSuspend();
+   FocusNewDeskBegin();
+
+   if (desk > 0)
+     {
+	if (Conf.desks.slidein)
+	  {
+	     if (!d->viewable)
+	       {
+		  int                 x, y;
+
+		  switch (Conf.desks.dragdir)
+		    {
+		    default:
+		    case 0:
+		       x = VRoot.w;
+		       y = 0;
+		       break;
+		    case 1:
+		       x = -VRoot.w;
+		       y = 0;
+		       break;
+		    case 2:
+		       x = 0;
+		       y = VRoot.h;
+		       break;
+		    case 3:
+		       x = 0;
+		       y = -VRoot.h;
+		       break;
+		    }
+		  DeskMove(d, x, y);
+		  DeskEnter(d);
+		  EobjSlideTo(&d->o, x, y, 0, 0, Conf.desks.slidespeed);
+	       }
+	     else
+	       {
+		  EobjSlideTo(&d->o, EoGetX(d), EoGetY(d), 0, 0,
+			      Conf.desks.slidespeed);
+		  DeskEnter(d);
+	       }
+	  }
+	else
+	  {
+	     DeskEnter(d);
+	  }
+	DeskMove(d, 0, 0);
+     }
+   else
+     {
+	DeskEnter(d);
+     }
+
+   ActionsResume();
+   FocusNewDesk();
+
+   ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 }
 
 static void
@@ -1157,40 +1172,21 @@ static void
 DeskRaise(int desk)
 {
    Desk               *d;
-   int                 i;
 
    if (desk < 0 || desk >= Conf.desks.num)
       return;
 
    d = _DeskGet(desk);
 
-   FocusNewDeskBegin();
-   d->viewable = 1;
-   DeskRefresh(desk);
-   MoveToDeskTop(desk);
-
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRaise(%d) current=%d\n", desk, desks.current);
 
-   desks.previous = desks.current = desk;
-
-   if (desk == 0)
-     {
-	for (i = Conf.desks.num - 1; i > 0; i--)
-	   DeskHide(desks.order[i]);
-     }
-   else
-     {
-	EoMap(d, 0);
-     }
-
-   MoveStickyWindowsToCurrentDesk();
-   MoveStickyButtonsToCurrentDesk();
-   DesksStackingCheck();
+   FocusNewDeskBegin();
+   DeskEnter(d);
    FocusNewDesk();
-   if (Mode.mode == MODE_NONE)
-      ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-   HintsSetCurrentDesktop();
+
+   ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
+
    ESync();
 }
 

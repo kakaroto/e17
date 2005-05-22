@@ -276,7 +276,6 @@ int                 Esnprintf(va_alist);
 #define MODE_DESKRAY              8
 #define MODE_PAGER_DRAG_PENDING   9
 #define MODE_PAGER_DRAG          10
-#define MODE_DESKSWITCH          11
 
 #define EVENT_MOUSE_DOWN  0
 #define EVENT_MOUSE_UP    1

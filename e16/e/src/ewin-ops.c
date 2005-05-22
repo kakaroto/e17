@@ -261,8 +261,8 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
-      Eprintf("doMoveResizeEwin(%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
-	      call_depth, ewin->client.win, flags, desk, x, y, w, h,
+      Eprintf("doMoveResizeEwin(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
+	      call_depth, Mode.mode, ewin->client.win, flags, desk, x, y, w, h,
 	      EwinGetName(ewin));
 
    pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : -1;
@@ -456,8 +456,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    EwinDetermineArea(ewin);
 
-   if ((Mode.mode == MODE_NONE ||
-	Mode.mode == MODE_DESKSWITCH) /* && (move || resize) */ )
+   if (Mode.mode == MODE_NONE)
      {
 	if (TransparencyEnabled())
 	   EwinBorderDraw(ewin, resize, 1);	/* Update the border */
