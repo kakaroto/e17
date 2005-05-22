@@ -146,6 +146,18 @@ edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(edje_cflags)
 AC_SUBST(edje_libs)
 
+edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+AC_ARG_WITH(edje-cc,
+[  --with-edje-cc=PATH              specify a specific path to edje_cc],
+[
+  v=$withval;
+  edje_cc=$v
+  echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
+],[
+  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+])
+AC_SUBST(edje_cc)
+
 AC_ARG_WITH(eet-config,
 [  --with-eet-config=EET_CONFIG      use eet-config specified ],
 [
@@ -185,6 +197,7 @@ src/modules/Makefile
 src/modules/snow/Makefile
 src/modules/notes/Makefile
 src/modules/flame/Makefile
+src/modules/monitor/Makefile
 ],[
 ])
 
