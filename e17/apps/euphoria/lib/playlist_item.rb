@@ -76,6 +76,7 @@ class PlaylistItem
 
 	def hide
 		@playlist.container.remove_element(@edje)
+		@edje.delete
 		@edje = nil
 	end
 
