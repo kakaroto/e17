@@ -354,29 +354,27 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    if (flags & MRF_RAISE)
       raise = 1;
 
-   if (flags & MRF_MOVE)
+   if (!(flags & MRF_MOVE))
      {
-	dx = x - EoGetX(ewin);
-	dy = y - EoGetY(ewin);
-	if ((dx != 0) || (dy != 0))
-	   move = 1;
-	ewin->client.x = x + ewin->border->border.left;
-	ewin->client.y = y + ewin->border->border.top;
-     }
-   else
-     {
-	dx = dy = 0;
 	x = EoGetX(ewin);
 	y = EoGetY(ewin);
      }
 
    if (flags & MRF_RESIZE)
      {
+	if (ewin->Layout)
+	  {
+	     ewin->Layout(ewin, &x, &y, &w, &h);
+	  }
+	else
+	  {
+	     ICCCM_SizeMatch(ewin, w, h, &w, &h);
+	  }
+
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	   resize = 2;
 	ewin->client.w = w;
 	ewin->client.h = h;
-	ICCCM_MatchSize(ewin);
 
 	/* Don't touch frame size while shaded */
 	if (ewin->shaded)
@@ -397,6 +395,13 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	w = EoGetW(ewin);
 	h = EoGetH(ewin);
      }
+
+   dx = x - EoGetX(ewin);
+   dy = y - EoGetY(ewin);
+   if ((dx != 0) || (dy != 0))
+      move = 1;
+   ewin->client.x = x + ewin->border->border.left;
+   ewin->client.y = y + ewin->border->border.top;
 
 #if 0
    Eprintf("repa=%d float=%d raise=%d move=%d resz=%d\n",

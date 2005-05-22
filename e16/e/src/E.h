@@ -785,6 +785,8 @@ struct _ewin
    } ewmh;
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
+   void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
+				  int *ph);
    void                (*MoveResize) (EWin * ewin, int resize);
    void                (*Close) (EWin * ewin);
 };
