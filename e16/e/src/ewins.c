@@ -510,42 +510,32 @@ EwinPropagateShapes(EWin * ewin)
 }
 
 static void
-EwinAdopt(EWin * ewin)
+Adopt(EWin * ewin)
 {
-   /* We must reparent after getting original window position */
-   EReparentWindow(ewin->client.win, ewin->win_container, 0, 0);
-   ICCCM_Adopt(ewin);
-}
-
-static EWin        *
-Adopt(EWin * ewin, Window win)
-{
-   if (ewin)
-      EwinCleanup(ewin);
-   else
-      ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
-   if (!ewin)
-      return NULL;
-
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
-   ICCCM_GetHints(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
-   ICCCM_GetColormap(ewin);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
-   HintsGetWindowHints(ewin);
-   SessionGetInfo(ewin, 0);
+   if (!EwinIsInternal(ewin))
+     {
+	ICCCM_GetHints(ewin, 0);
+	ICCCM_GetColormap(ewin);
+	HintsGetWindowHints(ewin);
+	SessionGetInfo(ewin, 0);
+     }
 
 #if 0				/* Do we want this? */
-   MatchEwinToSM(ewin);
+   if (!EwinIsInternal(ewin))
+      MatchEwinToSM(ewin);
 #endif
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
-   if (Mode.wm.startup)
+   if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
 
    EoSetName(ewin, Estrdup(ewin->icccm.wm_name));	/* FIXME */
+
    if (ewin->ewmh.opacity == 0)
       ewin->ewmh.opacity = 0xffffffff;
    EoChangeOpacity(ewin, ewin->ewmh.opacity);
@@ -553,9 +543,9 @@ Adopt(EWin * ewin, Window win)
    if (!ewin->no_button_grabs)
       GrabButtonGrabs(ewin);
 
-   ICCCM_MatchSize(ewin);
-
-   EwinAdopt(ewin);
+   /* We must reparent after getting original window position */
+   EReparentWindow(ewin->client.win, ewin->win_container, 0, 0);
+   ICCCM_Adopt(ewin);
 
    EwinBorderSelect(ewin);	/* Select border before calculating geometry */
    EwinGetGeometry(ewin);	/* Calculate window geometry before border parts */
@@ -573,61 +563,6 @@ Adopt(EWin * ewin, Window win)
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("Adopt %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
-
-   return ewin;
-}
-
-static EWin        *
-AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
-								   ewin,
-								   void *ptr),
-	      void *ptr)
-{
-   EWin               *ewin;
-
-   ewin = EwinCreate(win, type);
-   if (!ewin)
-      return NULL;
-
-   ewin->border = border;
-
-   if (init)
-      init(ewin, ptr);		/* Type specific initialisation */
-
-   ICCCM_AdoptStart(ewin);
-   ICCCM_GetTitle(ewin, 0);
-   ICCCM_GetInfo(ewin, 0);
-   ICCCM_GetShapeInfo(ewin);
-   ICCCM_GetGeoms(ewin, 0);
-
-   WindowMatchEwinOps(ewin);	/* Window matches */
-   SnapshotEwinMatch(ewin);	/* Saved settings */
-
-   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));	/* FIXME */
-   if (ewin->ewmh.opacity == 0)
-      ewin->ewmh.opacity = 0xffffffff;
-   EoChangeOpacity(ewin, ewin->ewmh.opacity);
-
-   GrabButtonGrabs(ewin);
-
-   ICCCM_MatchSize(ewin);
-
-   EwinAdopt(ewin);
-
-   EwinBorderSelect(ewin);
-   EwinGetGeometry(ewin);
-   EwinBorderSetTo(ewin, NULL);
-
-   EwinEventsConfigure(ewin, 1);
-
-   if (ewin->shaded)
-      EwinInstantShade(ewin, 1);
-
-   HintsSetWindowState(ewin);
-   HintsSetWindowOpacity(ewin);
-   HintsSetClientList();
-
-   return ewin;
 }
 
 void
@@ -640,13 +575,18 @@ AddToFamily(EWin * ewin, Window win)
 
    EGrabServer();
 
-   /* adopt the new baby */
-   ewin = Adopt(ewin, win);
+   if (ewin)
+      EwinCleanup(ewin);
+   else
+      ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
    if (!ewin)
      {
 	Eprintf("Window is gone %#lx\n", win);
 	goto done;
      }
+
+   /* adopt the new baby */
+   Adopt(ewin);
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    desk = EoGetDesk(ewin);
@@ -898,17 +838,20 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 		    void (*init) (EWin * ewin, void *ptr))
 {
    EWin               *ewin;
-   Border             *b;
 
    EGrabServer();
 
-   b = NULL;
-   if (bname)
-      b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-   ewin = AdoptInternal(win, b, type, init, ptr);
+   ewin = EwinCreate(win, type);
    if (!ewin)
       goto done;
+
+   if (bname)
+      ewin->border = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   if (init)
+      init(ewin, ptr);		/* Type specific initialisation */
+
+   Adopt(ewin);
 
 #if 0
    Eprintf("Desk=%d, layer=%d, sticky=%d, floating=%d\n",
@@ -956,6 +899,8 @@ EwinUnmap2(EWin * ewin)
       Mode.mouse_over_ewin = NULL;
    if (ewin == Mode.context_ewin)
       Mode.context_ewin = NULL;
+
+   ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 }
 
 static void
@@ -1067,8 +1012,6 @@ EwinEventUnmap(EWin * ewin)
    EoUnmap(ewin);
 
    EwinUnmap2(ewin);
-
-   ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
    if (ewin->iconified)
       return;
@@ -1635,14 +1578,6 @@ EwinsEventsConfigure(int mode)
 	ewin = lst[i];
 
 	EwinEventsConfigure(lst[i], mode);
-
-#if 0				/* FIXME - Remove? (obsoletes EwinRefresh) */
-	/* This is a hack. Maybe we should do something with expose events. */
-	if (mode)
-	   if (Mode.mode == MODE_DESKSWITCH && EoIsSticky(ewin) &&
-	       EoIsShown(ewin))
-	      EwinRefresh(ewin);
-#endif
      }
 }
 
