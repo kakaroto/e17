@@ -132,7 +132,7 @@ class Playlist < Array
 		end
 
 		item.hide if item.visible?
-		super(item)
+		super
 	end
 
 	def clear
