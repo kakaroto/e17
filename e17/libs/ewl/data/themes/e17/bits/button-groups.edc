@@ -6,10 +6,10 @@ group {
         item, "inset/top" "5";
         item, "inset/bottom" "5";
 
-        item, "pad/left" "0";
-        item, "pad/right" "0";
-        item, "pad/top" "0";
-        item, "pad/bottom" "0";
+        item, "pad/left" "-3";
+        item, "pad/right" "-3";
+        item, "pad/top" "-3";
+        item, "pad/bottom" "-3";
     }
 
     parts {
