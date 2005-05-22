@@ -338,73 +338,55 @@ doPagerRedraw(Pager * p, char newbg)
    DeskGetArea(p->desktop, &cx, &cy);
 
    gc = ECreateGC(p->pmap, 0, NULL);
-   if (gc)
+   if (gc == None)
+      return;
+
+   if ((newbg > 0) && (newbg < 3))
      {
-	if ((newbg > 0) && (newbg < 3))
+	FreePmapMask(&p->bgpmap);
+
+	if (!Conf.pagers.snap)
 	  {
-	     FreePmapMask(&p->bgpmap);
+	     ImageClass         *ic = NULL;
 
-	     if (!Conf.pagers.snap)
+	     ic = ImageclassFind("PAGER_BACKGROUND", 0);
+	     if (ic)
+		ImageclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0,
+				    STATE_NORMAL, &p->bgpmap, 0, ST_PAGER);
+	  }
+	else
+	  {
+	     Background         *bg;
+
+	     bg = DeskGetBackground(p->desktop);
+	     if (bg)
 	       {
-		  ImageClass         *ic = NULL;
+		  char                s[4096];
+		  char               *uniq;
+		  Imlib_Image        *im;
 
-		  ic = ImageclassFind("PAGER_BACKGROUND", 0);
-		  if (ic)
-		     ImageclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0,
-					 STATE_NORMAL, &p->bgpmap, 0, ST_PAGER);
-	       }
-	     else
-	       {
-		  Background         *bg;
+		  uniq = BackgroundGetUniqueString(bg);
+		  Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
+			    EDirUserCache(), BackgroundGetName(bg),
+			    (p->w / ax), (p->h / ay), uniq);
+		  Efree(uniq);
 
-		  bg = DeskGetBackground(p->desktop);
-		  if (bg)
+		  im = imlib_load_image(s);
+		  if (im)
 		    {
-		       char                s[4096];
-		       char               *uniq;
-		       Imlib_Image        *im;
-
-		       uniq = BackgroundGetUniqueString(bg);
-		       Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
-				 EDirUserCache(), BackgroundGetName(bg),
-				 (p->w / ax), (p->h / ay), uniq);
-		       Efree(uniq);
-
-		       im = imlib_load_image(s);
-		       if (im)
-			 {
-			    imlib_context_set_image(im);
-			    p->bgpmap.type = 1;
-			    imlib_render_pixmaps_for_whole_image_at_size(&p->
-									 bgpmap.
-									 pmap,
-									 &p->
-									 bgpmap.
-									 mask,
-									 (p->w /
-									  ax),
-									 (p->h /
-									  ay));
-			    imlib_free_image_and_decache();
-			 }
-		       else
-			 {
-			    p->bgpmap.type = 0;
-			    p->bgpmap.pmap =
-			       ECreatePixmap(p->win, p->w / ax, p->h / ay,
-					     VRoot.depth);
-			    p->bgpmap.mask = None;
-			    BackgroundApply(bg, p->bgpmap.pmap, 0);
-			    imlib_context_set_drawable(p->bgpmap.pmap);
-			    im =
-			       imlib_create_image_from_drawable(0, 0, 0,
-								(p->w / ax),
-								(p->h / ay), 0);
-			    imlib_context_set_image(im);
-			    imlib_image_set_format("png");
-			    imlib_save_image(s);
-			    imlib_free_image_and_decache();
-			 }
+		       imlib_context_set_image(im);
+		       p->bgpmap.type = 1;
+		       imlib_render_pixmaps_for_whole_image_at_size(&p->
+								    bgpmap.
+								    pmap,
+								    &p->
+								    bgpmap.
+								    mask,
+								    (p->w /
+								     ax),
+								    (p->h /
+								     ay));
+		       imlib_free_image_and_decache();
 		    }
 		  else
 		    {
@@ -413,70 +395,84 @@ doPagerRedraw(Pager * p, char newbg)
 			  ECreatePixmap(p->win, p->w / ax, p->h / ay,
 					VRoot.depth);
 		       p->bgpmap.mask = None;
-		       XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-		       XDrawRectangle(disp, p->bgpmap.pmap, gc, 0, 0, p->dw,
-				      p->dh);
-		       XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
-		       XFillRectangle(disp, p->bgpmap.pmap, gc, 1, 1, p->dw - 2,
-				      p->dh - 2);
+		       BackgroundApply(bg, p->bgpmap.pmap, 0);
+		       imlib_context_set_drawable(p->bgpmap.pmap);
+		       im =
+			  imlib_create_image_from_drawable(0, 0, 0,
+							   (p->w / ax),
+							   (p->h / ay), 0);
+		       imlib_context_set_image(im);
+		       imlib_image_set_format("png");
+		       imlib_save_image(s);
+		       imlib_free_image_and_decache();
 		    }
 	       }
-	  }
-
-	for (y = 0; y < ay; y++)
-	  {
-	     for (x = 0; x < ax; x++)
-		XCopyArea(disp, p->bgpmap.pmap, p->pmap, gc, 0, 0, p->w / ax,
-			  p->h / ay, x * (p->w / ax), y * (p->h / ay));
-	  }
-
-	lst = EwinListGetForDesk(&num, p->desktop);
-	for (i = num - 1; i >= 0; i--)
-	  {
-	     EWin               *ewin;
-	     int                 wx, wy, ww, wh;
-
-	     ewin = lst[i];
-	     if (!ewin->iconified && EoIsShown(ewin))
+	     else
 	       {
-		  wx = ((EoGetX(ewin) +
-			 (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-		  wy = ((EoGetY(ewin) +
-			 (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-		  ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-		  wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
-		  PagerEwinUpdateMini(p, ewin);
-		  if (ewin->mini_pmm.pmap)
-		    {
-		       if (ewin->mini_pmm.mask)
-			 {
-			    XSetClipMask(disp, gc, ewin->mini_pmm.mask);
-			    XSetClipOrigin(disp, gc, wx, wy);
-			 }
-		       XCopyArea(disp, ewin->mini_pmm.pmap, p->pmap, gc, 0, 0,
-				 ww, wh, wx, wy);
-		       if (ewin->mini_pmm.mask)
-			  XSetClipMask(disp, gc, None);
-		    }
-		  else
-		    {
-		       XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1,
-				      wh + 1);
-		       XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
-		       XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
-		    }
+		  p->bgpmap.type = 0;
+		  p->bgpmap.pmap =
+		     ECreatePixmap(p->win, p->w / ax, p->h / ay, VRoot.depth);
+		  p->bgpmap.mask = None;
+		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+		  XDrawRectangle(disp, p->bgpmap.pmap, gc, 0, 0, p->dw, p->dh);
+		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
+		  XFillRectangle(disp, p->bgpmap.pmap, gc, 1, 1, p->dw - 2,
+				 p->dh - 2);
 	       }
 	  }
-
-	if (newbg < 2)
-	  {
-	     ESetWindowBackgroundPixmap(p->win, p->pmap);
-	     EClearWindow(p->win);
-	  }
-
-	EFreeGC(gc);
      }
+
+   for (y = 0; y < ay; y++)
+     {
+	for (x = 0; x < ax; x++)
+	   XCopyArea(disp, p->bgpmap.pmap, p->pmap, gc, 0, 0, p->w / ax,
+		     p->h / ay, x * (p->w / ax), y * (p->h / ay));
+     }
+
+   lst = EwinListGetForDesk(&num, p->desktop);
+   for (i = num - 1; i >= 0; i--)
+     {
+	EWin               *ewin;
+	int                 wx, wy, ww, wh;
+
+	ewin = lst[i];
+	if (EoIsShown(ewin))
+	  {
+	     wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
+	     wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
+	     ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
+	     wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+	     PagerEwinUpdateMini(p, ewin);
+	     if (ewin->mini_pmm.pmap)
+	       {
+		  if (ewin->mini_pmm.mask)
+		    {
+		       XSetClipMask(disp, gc, ewin->mini_pmm.mask);
+		       XSetClipOrigin(disp, gc, wx, wy);
+		    }
+		  XCopyArea(disp, ewin->mini_pmm.pmap, p->pmap, gc, 0, 0,
+			    ww, wh, wx, wy);
+		  if (ewin->mini_pmm.mask)
+		     XSetClipMask(disp, gc, None);
+	       }
+	     else
+	       {
+		  XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+		  XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1,
+				 wh + 1);
+		  XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
+		  XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
+	       }
+	  }
+     }
+
+   if (newbg < 2)
+     {
+	ESetWindowBackgroundPixmap(p->win, p->pmap);
+	EClearWindow(p->win);
+     }
+
+   EFreeGC(gc);
 }
 
 static void
@@ -602,6 +598,8 @@ PagerShow(Pager * p)
 {
    EWin               *ewin = NULL;
    char                s[4096];
+   int                 ax, ay, w, h;
+   double              aspect;
 
    if (!Conf.pagers.enable)
       return;
@@ -617,57 +615,55 @@ PagerShow(Pager * p)
 
    ewin =
       AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
-   if (ewin)
+   if (!ewin)
+      return;
+
+   ewin->client.event_mask |=
+      ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
+   ESelectInput(p->win, ewin->client.event_mask);
+
+   aspect = ((double)VRoot.w) / ((double)VRoot.h);
+   GetAreaSize(&ax, &ay);
+   ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
+   ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
+   ewin->client.w_inc = ax * 4;
+   ewin->client.h_inc = ay * 8;
+   ewin->client.width.min = 10 * ax;
+   ewin->client.height.min = 8 * ay;
+   ewin->client.width.max = 320 * ax;
+   ewin->client.height.max = 240 * ay;
+
+   p->ewin = ewin;
+
+   /* get the size right damnit! */
+   w = ewin->client.w;
+   h = ewin->client.h;
+   ewin->client.w = 1;
+   ewin->client.h = 1;
+   if (ewin->client.already_placed)
      {
-	int                 ax, ay, w, h;
-	double              aspect;
-
-	ewin->client.event_mask |=
-	   ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
-	ESelectInput(p->win, ewin->client.event_mask);
-
-	aspect = ((double)VRoot.w) / ((double)VRoot.h);
-	GetAreaSize(&ax, &ay);
-	ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
-	ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
-	ewin->client.w_inc = ax * 4;
-	ewin->client.h_inc = ay * 8;
-	ewin->client.width.min = 10 * ax;
-	ewin->client.height.min = 8 * ay;
-	ewin->client.width.max = 320 * ax;
-	ewin->client.height.max = 240 * ay;
-
-	p->ewin = ewin;
-
-	/* get the size right damnit! */
-	w = ewin->client.w;
-	h = ewin->client.h;
-	ewin->client.w = 1;
-	ewin->client.h = 1;
-	if (ewin->client.already_placed)
-	  {
-	     MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
-	  }
-	else
-	  {
-	     /* no snapshots ? first time ? make a row on the bottom left up */
-	     MoveResizeEwin(ewin, 0, VRoot.h - (Conf.desks.num -
-						p->desktop) * EoGetH(ewin), w,
-			    h);
-	  }
-	PagerRedraw(p, 1);
-
-	/* show the pager ewin */
-	ShowEwin(ewin);
-	if (Conf.pagers.snap)
-	  {
-	     Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-	     if (Conf.pagers.scanspeed > 0)
-		DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout,
-		     0, p);
-	  }
-	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
+   else
+     {
+	/* no snapshots ? first time ? make a row on the bottom left up */
+	MoveResizeEwin(ewin, 0, VRoot.h - (Conf.desks.num -
+					   p->desktop) * EoGetH(ewin), w, h);
+     }
+   PagerRedraw(p, 1);
+
+   /* show the pager ewin */
+   ShowEwin(ewin);
+
+   if (Conf.pagers.snap)
+     {
+	Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
+	if (Conf.pagers.scanspeed > 0)
+	   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout,
+		0, p);
+     }
+
+   AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
 }
 
 static Pager      **
@@ -682,19 +678,18 @@ PagersForDesktop(int d, int *num)
 
    *num = 0;
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
-   if (pl)
+   for (i = 0; i < pnum; i++)
      {
-	for (i = 0; i < pnum; i++)
+	if (pl[i]->desktop == d)
 	  {
-	     if (pl[i]->desktop == d)
-	       {
-		  (*num)++;
-		  pp = Erealloc(pp, sizeof(Pager *) * (*num));
-		  pp[(*num) - 1] = pl[i];
-	       }
+	     (*num)++;
+	     pp = Erealloc(pp, sizeof(Pager *) * (*num));
+	     pp[(*num) - 1] = pl[i];
 	  }
-	Efree(pl);
      }
+   if (pl)
+      Efree(pl);
+
    return pp;
 }
 
@@ -1436,13 +1431,13 @@ NewPagerForDesktop(int desk)
    char                s[1024];
 
    p = PagerCreate();
-   if (p)
-     {
-	p->desktop = desk;
-	Esnprintf(s, sizeof(s), "%i", desk);
-	HintsSetWindowName(p->win, s);
-	PagerShow(p);
-     }
+   if (!p)
+      return;
+
+   p->desktop = desk;
+   Esnprintf(s, sizeof(s), "%i", desk);
+   HintsSetWindowName(p->win, s);
+   PagerShow(p);
 }
 
 static void
@@ -1470,6 +1465,8 @@ PagerSetHiQ(char onoff)
      }
    if (pl)
       Efree(pl);
+
+   autosave();
 }
 
 static void
@@ -1505,6 +1502,8 @@ PagerSetSnap(char onoff)
      }
    if (pl)
       Efree(pl);
+
+   autosave();
 }
 
 /*
@@ -2434,7 +2433,7 @@ IpcItem             PagersIpcArray[] = {
     "  pager <#> <on/off/?>   Toggle or test any desktop's pager\n"
     "  pager cfg              Configure pagers\n"
     "  pager hiq <on/off>     Toggle high quality pager\n"
-    "  pager scanrate <#>     Toggle number of line update " "per second"
+    "  pager scanrate <#>     Toggle number of line updates per second\n"
     "  pager snap <on/off>    Toggle snapshotting in the pager\n"
     "  pager title <on/off>   Toggle title display in the pager\n"
     "  pager zoom <on/off>    Toggle zooming in the pager\n"}
