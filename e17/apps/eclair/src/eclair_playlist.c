@@ -322,15 +322,14 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
 {
    Eclair_Media_File *previous_media_file;
 
-   if (!playlist)
+   if (!playlist || !playlist->eclair)
       return;
 
    previous_media_file = evas_list_data(playlist->current);
    playlist->current = list;
+   eclair_playlist_container_scroll_to_list(playlist->eclair->playlist_container, list);
    eclair_media_file_update(playlist->eclair, previous_media_file);
    eclair_media_file_update(playlist->eclair, evas_list_data(playlist->current));
-
-   //TODO: eclair_playlist_container scroll_to
 } 
 
 //Set the media file which is just before the active media file as the active media file 

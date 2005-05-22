@@ -267,7 +267,7 @@ static int _eclair_playlist_container_scroll_timer(void *data)
    Eclair_Playlist_Container *playlist_container;
    double dt, dx;
 
-   if (!(obj = data) || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)))
+   if (!(obj = (Evas_Object *)data) || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)))
       return 0;
 
    dt = ecore_time_get() - playlist_container->scroll_start_time;
@@ -277,6 +277,98 @@ static int _eclair_playlist_container_scroll_timer(void *data)
    
    return 1;
 }
+
+//Scroll the playlist container upto the element
+void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Evas_List *element)
+{
+   Eclair_Playlist_Container *playlist_container;
+   Evas_List *l;
+   Evas_Coord container_height;
+   int i, start_offset, element_offset;
+
+   if (!obj || !element || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)) ||
+      playlist_container->entry_height <= 0 || !playlist_container->entries)
+      return;
+
+   for (l = *playlist_container->entries, i = 0; l; l = l->next, i++)
+   {
+      if (l == element)
+      {
+         if (eclair_playlist_container_nth_element_is_visible(obj, i, 1))
+            return;
+
+         element_offset = i * playlist_container->entry_height;
+         start_offset = eclair_playlist_container_offset_get(obj);
+         if (element_offset < start_offset)
+         {
+            eclair_playlist_container_offset_set(obj, element_offset);
+         }
+         else
+         {
+            evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
+            eclair_playlist_container_offset_set(obj, element_offset - container_height + playlist_container->entry_height);
+         }
+      }
+   }
+}
+
+//Return the offset of the playlist container
+int eclair_playlist_container_offset_get(Evas_Object *obj)
+{
+   Eclair_Playlist_Container *playlist_container;
+   Evas_Coord container_height;
+   int hidden_height;
+
+   if (!obj || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)) ||
+      !playlist_container->entries || playlist_container->entry_height <= 0)
+      return 0;
+
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
+   hidden_height = (playlist_container->entry_height * evas_list_count(*playlist_container->entries)) - container_height;
+
+   if (hidden_height <= 0)
+      return 0;
+   else
+      return (int)(playlist_container->scroll_percent * hidden_height);
+}
+
+//Set the offset of the playlist container
+void eclair_playlist_container_offset_set(Evas_Object *obj, int offset)
+{
+   Eclair_Playlist_Container *playlist_container;
+   double scroll_percent;
+   Evas_Coord container_height;
+   int hidden_height;
+
+   if (!obj || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)) ||
+      !playlist_container->entries || playlist_container->entry_height <= 0)
+      return;
+
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
+   hidden_height = (playlist_container->entry_height * evas_list_count(*playlist_container->entries)) - container_height;
+   scroll_percent = (double)offset / hidden_height;
+   eclair_playlist_container_scroll_percent_set(obj, scroll_percent);
+}
+
+//Return 1 if the nth element is visible in the playlist container (if it is entirely visible if entirely == 1)
+Evas_Bool eclair_playlist_container_nth_element_is_visible(Evas_Object *obj, int n, Evas_Bool entirely)
+{
+   int start_offset, element_offset;
+   Evas_Coord container_height;
+   Eclair_Playlist_Container *playlist_container;
+
+   if (!obj || !(playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(obj)) || playlist_container->entry_height <= 0)
+      return 0;
+   
+   start_offset = eclair_playlist_container_offset_get(obj);
+   element_offset = n * playlist_container->entry_height;
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &container_height);
+   if (entirely)
+      return (element_offset >= start_offset && (element_offset + playlist_container->entry_height) <= (start_offset + container_height));
+   else
+      return (element_offset - playlist_container->entry_height > start_offset && element_offset < (start_offset + container_height));
+}
+
 
 //Select the files in the playlist container according to the media_file selected and the modifiers
 void eclair_playlist_container_select_file(Evas_Object *obj, Eclair_Media_File *media_file, Evas_Modifier *modifiers)
