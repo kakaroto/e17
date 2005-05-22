@@ -31,6 +31,7 @@ static Evas_Object *emblem_evas_object_get(Emblem *em, const char *fname,
                                                 Evas_Coord w, Evas_Coord h);
 static int emblem_ui_e_bg_get(void *data, int type, void *ev);
 static int emblem_ui_e_bg_dirs_list(void *data, int type, void *ev);
+static int emblem_ui_e_theme_dirs_list(void *data, int type, void *ev);
 static void emblem_current_bg_set(Emblem *em, char *file);
 
 static void emblem_ui_init_dir(Emblem *em, char *dir);
@@ -94,7 +95,10 @@ emblem_ui_init(Emblem *em)
                                 emblem_ui_e_bg_get, em);
     ecore_event_handler_add(E_RESPONSE_BACKGROUND_DIRS_LIST,
                                 emblem_ui_e_bg_dirs_list, em);
+    ecore_event_handler_add(E_RESPONSE_THEME_DIRS_LIST,
+                                emblem_ui_e_theme_dirs_list, em);
     e_background_get();
+    e_theme_dirs_list();
     e_background_dirs_list();
 
     return 1;
@@ -306,6 +310,22 @@ emblem_ui_e_bg_dirs_list(void *data, int type __UNUSED__, void *ev)
 {
     Emblem *em;
     E_Response_Background_Dirs_List *e;
+    int i;
+
+    e = ev;
+    em = data;
+
+    for (i = 0; i < e->count; i++)
+        emblem_ui_init_dir(em, e->dirs[i]);
+
+    return 1;
+}
+
+static int
+emblem_ui_e_theme_dirs_list(void *data, int type __UNUSED__, void *ev)
+{
+    Emblem *em;
+    E_Response_Theme_Dirs_List *e;
     int i;
 
     e = ev;
