@@ -457,18 +457,20 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 		 * alignment. First check for top/left alignment.
 		 */
 		if (VISIBLE(child)) {
+			unsigned int policy;
 
 			/*
 			 * Set the initial fill size to the preferred size.
 			 */
 			ewl_box_info->fill_set(child, initial);
 
+			change = ewl_box_info->fill_ask(child);
+
 			/*
 			 * Figure out how much extra space is available for
 			 * filling widgets.
 			 */
-			change = *fill_size;
-			*fill_size -= ewl_box_info->fill_ask(child) + b->spacing;
+			*fill_size -= change + b->spacing;
 
 			/*
 			 * Attempt to give the widget the full size, this will
@@ -480,7 +482,9 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 * If it has a fill policy for a direction we're
 			 * concerned with, add it to the fill list.
 			 */
-			if (ewl_object_fill_policy_get(child) & ewl_box_info->f_policy)
+			policy = ewl_object_fill_policy_get(child);
+			policy &= ewl_box_info->f_policy;
+			if (policy || change == initial)
 				ecore_list_append(ewl_box_spread, child);
 		}
 	}
@@ -535,7 +539,7 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 			 * If the child did not accept any of the size, then
 			 * it's at it's max/min and is no longer useful.
 			 */
-			if (!temp || (*fill_size - temp < 0))
+			if (!temp)
 				ecore_list_remove(ewl_box_spread);
 			else {
 				*fill_size -= temp;
@@ -676,7 +680,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
  * When a child gets added to the box update it's size.
  */
 void
-ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__)
+ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int nodes, space = 0;
 
