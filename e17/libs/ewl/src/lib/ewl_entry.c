@@ -1036,7 +1036,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data,
 			evd = ewl_entry_text_get(e);
 			ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
 					evd);
-			FREE(evd);
+			IF_FREE(evd);
 		} else {
 			ewl_entry_text_insert(e, "\n",
 				ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
@@ -1169,20 +1169,22 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data,
 
 	if (ev->clicks == 2) {
 		char   *s;
-		int 	start, end;
+		int 	start = 0, end = 0;
 
 		start = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
 		s = ewl_entry_text_get(e);
 
-		while ((s[start] != ' ') && (s[start] != '\t')
-				&& (s[start] != '\n') && (--start > 0));
+		if (s)
+			while ((s[start] != ' ') && (s[start] != '\t')
+					&& (s[start] != '\n') && (--start > 0));
 
 		if (start < 0) start++;
 		end = start;
 
-		while ((s[end + 1] != ' ') && (s[end + 1] != '\t')
-				&& (s[end + 1] != '\n') && (++end < len));
+		if (s)
+			while ((s[end + 1] != ' ') && (s[end + 1] != '\t')
+					&& (s[end + 1] != '\n') && (++end < len));
 
 		ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), end);
 
@@ -1258,6 +1260,8 @@ void ewl_entry_cursor_right_move(Ewl_Entry * e)
 
 	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	str = ewl_entry_text_get(e);
+	if (!str)
+		DRETURN(DLEVEL_STABLE);
 
 	len = strlen(str);
 	FREE(str);
@@ -1286,23 +1290,27 @@ void ewl_entry_cursor_down_move(Ewl_Entry * e)
 
 	if (e->multiline) {
 		len = ewl_entry_length_get(e);
-		nline = start = bp =
-			ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+		bp = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+		nline = start = bp;
 
 		s = ewl_entry_text_get(e);
 
-		while (--start > 1 && s[start] != '\n');
+		if (s) {
+			while (--start > 1 && s[start] != '\n');
 
-		if( s[start] == '\n' )
-			start++;
+			if( s[start] == '\n' )
+				start++;
+		}
 
 		lpos = bp - start - 1;
 
-		while (nline < len && s[nline++] != '\n');
+		if (s)
+			while (nline < len && s[nline++] != '\n');
 
 		nend = nline;
 
-		while (nend < len && s[nend++] != '\n');
+		if (s)
+			while (nend < len && s[nend++] != '\n');
 
 		nlen = nend - nline;
 
