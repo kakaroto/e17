@@ -348,7 +348,7 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Adjust the step and width dependant on scrollbar visibility.
 	 */
 	if (VISIBLE(s->hscrollbar)) {
-		content_w -= vs_width;
+		content_h -= hs_height;
 		if (content_h < b_height)
 			vstep = (double)content_h / (double)b_height;
 	}
