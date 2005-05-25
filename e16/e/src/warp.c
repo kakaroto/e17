@@ -37,6 +37,7 @@
  *  selected one.
  */
 #include "E.h"
+#include "icons.h"
 #include <X11/keysym.h>
 
 typedef struct
@@ -65,6 +66,7 @@ WarpFocusShow(EWin * ewin)
    int                 i, x, y, w, h, num, ww, hh;
    static int          mw, mh, tw, th;
    char                s[1024];
+   WarplistItem       *wl;
 
    tc = TextclassFind("WARPFOCUS", 0);
    if (!tc)
@@ -106,13 +108,13 @@ WarpFocusShow(EWin * ewin)
 		  warplist_num++;
 		  warplist = Erealloc(warplist,
 				      warplist_num * sizeof(WarplistItem));
-		  warplist[warplist_num - 1].win =
-		     ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
-		  EMapWindow(warplist[warplist_num - 1].win);
-		  warplist[warplist_num - 1].ewin = lst[i];
+		  wl = warplist + warplist_num - 1;
+		  wl->win = ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
+		  EMapWindow(wl->win);
+		  wl->ewin = lst[i];
 		  Esnprintf(s, sizeof(s), (lst[i]->iconified) ? "[%s]" : "%s",
 			    EwinGetName(lst[i]));
-		  warplist[warplist_num - 1].txt = strdup(s);
+		  wl->txt = strdup(s);
 		  TextSize(tc, 0, 0, 0, warplist[warplist_num - 1].txt, &ww,
 			   &hh, 17);
 		  if (ww > w)
@@ -161,33 +163,35 @@ WarpFocusShow(EWin * ewin)
 
    for (i = 0; i < warplist_num; i++)
      {
-	if (!FindItem((char *)warplist[i].ewin, 0, LIST_FINDBY_POINTER,
-		      LIST_TYPE_EWIN))
-	   warplist[i].ewin = NULL;
-	if (warplist[i].ewin)
+	wl = warplist + i;
+
+	if (!FindItem((char *)wl->ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	   wl->ewin = NULL;
+	if (wl->ewin)
 	  {
 	     int                 state;
 
-	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
+	     state = (ewin == wl->ewin) ? STATE_CLICKED : STATE_NORMAL;
 
-	     ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
-			     ST_WARPLIST);
+	     ImageclassApply(ic, wl->win, mw, mh, 0, 0, state, 0, ST_WARPLIST);
 
 	     /* New icon stuff */
 	     if (Conf.warplist.icon_mode != 0)
 	       {
 		  int                 icon_size = mh - 2 * ICON_PAD;
+		  Imlib_Image        *im;
 
-		  TextDraw(tc, warplist[i].win, 0, 0, state, warplist[i].txt,
+		  TextDraw(tc, wl->win, 0, 0, state, wl->txt,
 			   ic->padding.left + mh, ic->padding.top,
 			   tw, th, 0, 0);
 
-		  UpdateAppIcon(warplist[i].ewin, Conf.warplist.icon_mode);
-		  if (!warplist[i].ewin->icon_image)
+		  im = EwinIconImageGet(wl->ewin, icon_size,
+					Conf.warplist.icon_mode, 1);
+		  if (!im)
 		     continue;
 
-		  imlib_context_set_image(warplist[i].ewin->icon_image);
-		  imlib_context_set_drawable(warplist[i].win);
+		  imlib_context_set_image(im);
+		  imlib_context_set_drawable(wl->win);
 		  imlib_context_set_blend(1);
 		  imlib_render_image_on_drawable_at_size(ic->padding.left +
 							 ICON_PAD, ICON_PAD,
@@ -196,8 +200,8 @@ WarpFocusShow(EWin * ewin)
 	       }
 	     else
 	       {
-		  TextclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
-				 tc, warplist[i].txt);
+		  TextclassApply(ic, wl->win, mw, mh, 0, 0, state, 0,
+				 tc, wl->txt);
 	       }
 	  }
      }

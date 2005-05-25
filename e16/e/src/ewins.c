@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ecompmgr.h"
+#include "icons.h"
 #include "snaps.h"
 #include <sys/time.h>
 
@@ -249,11 +250,7 @@ EwinDestroy(EWin * ewin)
    if (ewin->session_id)
       Efree(ewin->session_id);
    FreePmapMask(&ewin->mini_pmm);
-   if (ewin->icon_image)
-     {
-	imlib_context_set_image(ewin->icon_image);
-	imlib_free_image_and_decache();
-     }
+   EwinIconImageFree(ewin);
    GroupsEwinRemove(ewin);
    Efree(ewin);
 }

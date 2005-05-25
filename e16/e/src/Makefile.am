@@ -22,6 +22,7 @@ e16_SOURCES = \
 	ecore-e16.h		\
 	emodule.h		\
 	ewin-ops.h		\
+	icons.h			\
 	snaps.h			\
 	timestamp.h		\
 	aclass.c		\
@@ -63,6 +64,7 @@ e16_SOURCES = \
 	icccm.c			\
 	iclass.c		\
 	iconify.c		\
+	icons.c			\
 	ipc.c			\
 	lang.c			\
 	lists.c			\

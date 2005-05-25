@@ -23,14 +23,8 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "icons.h"
 #include <math.h>
-
-typedef enum
-{
-   EWIN_ICON_TYPE_APP,
-   EWIN_ICON_TYPE_IMG,
-   EWIN_ICON_TYPE_SNAP
-} ewin_icon_e;
 
 typedef struct _iconbox Iconbox;
 
@@ -675,13 +669,14 @@ IconboxesEwinIconify(EWin * ewin)
    SoundPlay("SOUND_ICONIFY");
 
    ib = SelectIconboxForEwin(ewin);
-   if (ib)
-     {
-	if (ib->animate && !ewin->st.showingdesk)
-	   IB_Animate(1, ewin, ib->ewin);
-	UpdateAppIcon(ewin, ib->icon_mode);
-	IconboxObjEwinAdd(ib, ewin);
-     }
+   if (!ib)
+      return;
+
+   EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 1);
+   IconboxObjEwinAdd(ib, ewin);
+
+   if (ib->animate && !ewin->st.showingdesk)
+      IB_Animate(1, ewin, ib->ewin);
 }
 
 static void
@@ -708,130 +703,6 @@ RemoveMiniIcon(EWin * ewin)
    ib = SelectIconboxForEwin(ewin);
    if (ib)
       IconboxObjEwinDel(ib, ewin);
-}
-
-static void
-IB_SnapEWin(EWin * ewin)
-{
-   /* Make snapshot of window */
-   int                 w, h, ww, hh, scale;
-   Iconbox            *ib;
-   Imlib_Image        *im;
-   Drawable            draw;
-
-   if (!EwinIsMapped(ewin))
-      return;
-
-   ww = EoGetW(ewin);
-   hh = EoGetH(ewin);
-   if (ww <= 0 || hh <= 0)
-      return;
-
-   w = 40;
-   h = 40;
-   ib = SelectIconboxForEwin(ewin);
-   if (ib)
-     {
-	w = ib->iconsize;
-	h = ib->iconsize;
-     }
-
-   /* Oversample for nicer snapshots */
-   scale = 4;
-   w *= scale;
-   h *= scale;
-
-   if (ww > hh)
-      h = (w * hh) / ww;
-   else
-      w = (h * ww) / hh;
-   if (w < 4)
-      w = 4;
-   if (h < 4)
-      h = 4;
-   if (w > ww || h > hh)
-     {
-	w = ww;
-	h = hh;
-     }
-
-#if USE_COMPOSITE
-   draw = EoGetPixmap(ewin);
-   if (draw != None)
-     {
-	Pixmap              mask;
-
-	mask = EWindowGetShapePixmap(EoGetWin(ewin));
-	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, ww, hh,
-						     w, h, !EServerIsGrabbed(),
-						     0);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
-     }
-   else
-#endif
-     {
-	draw = EoGetWin(ewin);
-	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(None, 0, 0, ww, hh,
-						     w, h, !EServerIsGrabbed(),
-						     1);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
-     }
-   ewin->icon_image = im;
-   ewin->icon_type = EWIN_ICON_TYPE_SNAP;
-}
-
-static void
-IB_GetAppIcon(EWin * ewin)
-{
-   /* Get the applications icon pixmap/mask */
-   int                 x, y;
-   unsigned int        w, h, depth, bw;
-   Window              rt;
-   Imlib_Image         im;
-
-   if (!ewin->client.icon_pmap)
-      return;
-
-   w = 0;
-   h = 0;
-   XGetGeometry(disp, ewin->client.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
-
-   if (w < 1 || h < 1)
-      return;
-
-   imlib_context_set_colormap(None);
-   imlib_context_set_drawable(ewin->client.icon_pmap);
-   im = imlib_create_image_from_drawable(ewin->client.icon_mask, 0, 0, w, h,
-					 !EServerIsGrabbed());
-   imlib_context_set_image(im);
-   imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
-   imlib_context_set_colormap(VRoot.cmap);
-   imlib_context_set_drawable(VRoot.win);
-   ewin->icon_image = im;
-   ewin->icon_type = EWIN_ICON_TYPE_APP;
-}
-
-static void
-IB_GetEIcon(EWin * ewin)
-{
-   /* get the icon defined for this window in E's iconf match file */
-   const char         *file;
-   Imlib_Image        *im;
-
-   file = WindowMatchEwinIcon(ewin);
-   if (!file)
-      return;
-
-   im = ELoadImage(file);
-   if (!im)
-      return;
-
-   ewin->icon_image = im;
-   ewin->icon_type = EWIN_ICON_TYPE_IMG;
 }
 
 static Iconbox    **
@@ -915,7 +786,7 @@ IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
    if (IconboxObjEwinFind(ib, ewin) < 0)
       return;
 
-   UpdateAppIcon(ewin, icon_mode);
+   EwinIconImageGet(ewin, ib->iconsize, icon_mode, 1);
    IconboxRedraw(ib);
 }
 
@@ -932,80 +803,6 @@ IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
    for (i = 0; i < num; i++)
       IconboxUpdateEwinIcon(ib[i], ewin, icon_mode);
    Efree(ib);
-}
-
-void
-UpdateAppIcon(EWin * ewin, int imode)
-{
-   /* free whatever we had before */
-   if (ewin->icon_image)
-     {
-	imlib_context_set_image(ewin->icon_image);
-	imlib_free_image();
-	ewin->icon_image = NULL;
-     }
-
-   switch (imode)
-     {
-     case 0:
-	/* snap first - if fails try app, then e */
-	if (!ewin->icon_image)
-	  {
-	     if (ewin->shaded)
-		EwinInstantUnShade(ewin);
-	     RaiseEwin(ewin);
-	     IB_SnapEWin(ewin);
-	  }
-	if (!ewin->icon_image)
-	   IB_GetAppIcon(ewin);
-	if (!ewin->icon_image)
-	   IB_GetEIcon(ewin);
-	break;
-     case 1:
-	/* try app first, then e, then snap */
-	if (!ewin->icon_image)
-	   IB_GetAppIcon(ewin);
-	if (!ewin->icon_image)
-	   IB_GetEIcon(ewin);
-	if (!ewin->icon_image)
-	  {
-	     if (ewin->shaded)
-		EwinInstantUnShade(ewin);
-	     RaiseEwin(ewin);
-	     IB_SnapEWin(ewin);
-	  }
-	break;
-     case 2:
-	/* try E first, then snap, then app */
-	if (!ewin->icon_image)
-	   IB_GetEIcon(ewin);
-	if (!ewin->icon_image)
-	  {
-	     if (ewin->shaded)
-		EwinInstantUnShade(ewin);
-	     RaiseEwin(ewin);
-	     IB_SnapEWin(ewin);
-	  }
-	if (!ewin->icon_image)
-	   IB_GetAppIcon(ewin);
-	break;
-     case 3:
-	/* try E first, then app */
-	if (!ewin->icon_image)
-	   IB_GetEIcon(ewin);
-	if (!ewin->icon_image)
-	   IB_GetAppIcon(ewin);
-	break;
-     case 4:
-	/* try app first, then E */
-	if (!ewin->icon_image)
-	   IB_GetAppIcon(ewin);
-	if (!ewin->icon_image)
-	   IB_GetEIcon(ewin);
-	break;
-     default:
-	break;
-     }
 }
 
 static void
@@ -1091,13 +888,13 @@ IconboxLayoutImageWin(Iconbox * ib)
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     EWin               *ewin;
+	     Imlib_Image        *im;
 
 	     ewin = ibo->u.ewin;
-	     if (!ewin->icon_image)
-		UpdateAppIcon(ewin, ib->icon_mode);
+	     im = EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 0);
 	     wi = hi = 8;
-	     if (ewin->icon_image)
-		IconboxFindIconSize(ewin->icon_image, &wi, &hi, ib->iconsize);
+	     if (im)
+		IconboxFindIconSize(im, &wi, &hi, ib->iconsize);
 	  }
 	else
 	  {
@@ -1857,19 +1654,20 @@ IconboxDraw(Iconbox * ib)
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     EWin               *ewin;
+	     Imlib_Image        *ii;
 
 	     ewin = ib->objs[i].u.ewin;
 
-	     if (ewin->icon_image)
+	     ii = EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 0);
+	     if (ii)
 	       {
-		  imlib_context_set_image(ewin->icon_image);
+		  imlib_context_set_image(ii);
 		  ww = imlib_image_get_width();
 		  hh = imlib_image_get_height();
 		  imlib_context_set_image(im);
 		  imlib_context_set_anti_alias(1);
 		  imlib_context_set_blend(1);
-		  imlib_blend_image_onto_image(ewin->icon_image, 1,
-					       0, 0, ww, hh,
+		  imlib_blend_image_onto_image(ii, 1, 0, 0, ww, hh,
 					       ibo->xi, ibo->yi, ibo->wi,
 					       ibo->hi);
 		  imlib_context_set_blend(0);

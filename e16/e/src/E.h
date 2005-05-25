@@ -745,7 +745,7 @@ struct _ewin
    PmapMask            mini_pmm;
    int                 mini_w, mini_h;
    Snapshot           *snap;
-   Imlib_Image        *icon_image;
+   Imlib_Image        *icon_image[3];
    int                 icon_type;
    int                 head;
    struct
@@ -1886,9 +1886,6 @@ void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 			    int h, int state, int active, int sticky,
 			    char expose, int image_type, TextClass * tc,
 			    TextState * ts, const char *text);
-
-/* iconify.c */
-void                UpdateAppIcon(EWin * ewin, int imode);
 
 /* ipc.c */
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
