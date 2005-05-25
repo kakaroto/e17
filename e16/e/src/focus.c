@@ -336,6 +336,8 @@ FocusToEWin(EWin * ewin, int why)
    if (do_raise)
       RaiseEwin(ewin);
 
+   if (Conf.focus.warp_always)
+      do_warp = 1;
    if (do_warp && ewin != Mode.mouse_over_ewin)
       XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0, EoGetW(ewin) / 2,
 		   EoGetH(ewin) / 2);
@@ -521,6 +523,333 @@ FocusHandleClick(EWin * ewin, Window win)
      }
 }
 
+/*      
+ * Configuration dialog
+ */
+static int          tmp_focus;
+static char         tmp_clickalways;
+static char         tmp_new_focus;
+static char         tmp_popup_focus;
+static char         tmp_owner_popup_focus;
+static char         tmp_raise_focus;
+static char         tmp_warp_focus;
+static char         tmp_warp_always;
+
+static char         tmp_display_warp;
+static char         tmp_warp_after_focus;
+static char         tmp_raise_after_focus;
+static char         tmp_showsticky;
+static char         tmp_showshaded;
+static char         tmp_showiconified;
+static char         tmp_warpfocused;
+static int          tmp_warp_icon_mode;
+
+static void
+CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	Conf.focus.mode = tmp_focus;
+	Conf.focus.all_new_windows_get_focus = tmp_new_focus;
+	Conf.focus.new_transients_get_focus = tmp_popup_focus;
+	Conf.focus.new_transients_get_focus_if_group_focused =
+	   tmp_owner_popup_focus;
+	Conf.focus.raise_on_next = tmp_raise_focus;
+	Conf.focus.warp_on_next = tmp_warp_focus;
+	Conf.focus.warp_always = tmp_warp_always;
+
+	Conf.warplist.enable = tmp_display_warp;
+	Conf.warplist.warp_on_select = tmp_warp_after_focus;
+	Conf.warplist.raise_on_select = tmp_raise_after_focus;
+	Conf.warplist.showsticky = tmp_showsticky;
+	Conf.warplist.showshaded = tmp_showshaded;
+	Conf.warplist.showiconified = tmp_showiconified;
+	Conf.warplist.warpfocused = tmp_warpfocused;
+	Conf.warplist.icon_mode = tmp_warp_icon_mode;
+
+	Conf.focus.clickraises = tmp_clickalways;
+	FocusFix();
+     }
+   autosave();
+}
+
+static void
+SettingsFocus(void)
+{
+   Dialog             *d;
+   DItem              *table, *di, *radio, *radio2;
+
+   if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_FOCUS");
+
+   tmp_focus = Conf.focus.mode;
+   tmp_new_focus = Conf.focus.all_new_windows_get_focus;
+   tmp_popup_focus = Conf.focus.new_transients_get_focus;
+   tmp_owner_popup_focus = Conf.focus.new_transients_get_focus_if_group_focused;
+   tmp_raise_focus = Conf.focus.raise_on_next;
+   tmp_warp_focus = Conf.focus.warp_on_next;
+   tmp_warp_always = Conf.focus.warp_always;
+
+   tmp_raise_after_focus = Conf.warplist.raise_on_select;
+   tmp_warp_after_focus = Conf.warplist.warp_on_select;
+   tmp_display_warp = Conf.warplist.enable;
+   tmp_showsticky = Conf.warplist.showsticky;
+   tmp_showshaded = Conf.warplist.showshaded;
+   tmp_showiconified = Conf.warplist.showiconified;
+   tmp_warpfocused = Conf.warplist.warpfocused;
+   tmp_warp_icon_mode = Conf.warplist.icon_mode;
+
+   tmp_clickalways = Conf.focus.clickraises;
+
+   d = DialogCreate("CONFIGURE_FOCUS");
+   DialogSetTitle(d, _("Focus Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/focus.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Focus\n" "Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("Focus follows pointer"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("Focus follows pointer sloppily"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 1);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("Focus follows mouse clicks"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 2);
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_focus);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Clicking in a window always raises it"));
+   DialogItemCheckButtonSetState(di, tmp_clickalways);
+   DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("All new windows first get the focus"));
+   DialogItemCheckButtonSetState(di, tmp_new_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Only new dialog windows get the focus"));
+   DialogItemCheckButtonSetState(di, tmp_popup_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di,
+				_
+				("Only new dialogs whose owner is focused get the focus"));
+   DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Raise windows while switching focus"));
+   DialogItemCheckButtonSetState(di, tmp_raise_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_raise_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di,
+				_
+				("Send mouse pointer to window while switching focus"));
+   DialogItemCheckButtonSetState(di, tmp_warp_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di,
+				_
+				("Always send mouse pointer to window on focus switch"));
+   DialogItemCheckButtonSetState(di, tmp_warp_always);
+   DialogItemCheckButtonSetPtr(di, &tmp_warp_always);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Display and use focus list"));
+   DialogItemCheckButtonSetState(di, tmp_display_warp);
+   DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Include sticky windows in focus list"));
+   DialogItemCheckButtonSetState(di, tmp_showsticky);
+   DialogItemCheckButtonSetPtr(di, &tmp_showsticky);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Include shaded windows in focus list"));
+   DialogItemCheckButtonSetState(di, tmp_showshaded);
+   DialogItemCheckButtonSetPtr(di, &tmp_showshaded);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di,
+				_("Include iconified windows in focus list"));
+   DialogItemCheckButtonSetState(di, tmp_showiconified);
+   DialogItemCheckButtonSetPtr(di, &tmp_showiconified);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Focus windows while switching"));
+   DialogItemCheckButtonSetState(di, tmp_warpfocused);
+   DialogItemCheckButtonSetPtr(di, &tmp_warpfocused);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Raise windows after focus switch"));
+   DialogItemCheckButtonSetState(di, tmp_raise_after_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_raise_after_focus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di,
+				_
+				("Send mouse pointer to window after focus switch"));
+   DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
+   DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetColSpan(di, 2);
+   DialogItemTextSetText(di,
+			 _
+			 ("Focuslist image display policy (if one operation fails, try the next):"));
+
+   radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("First E Icon, then App Icon"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 3);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("First App Icon, then E Icon"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 4);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemRadioButtonSetText(di, _("None"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureFocus, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFocus, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureFocus, 1, DIALOG_BUTTON_CLOSE);
+   DialogSetExitFunction(d, CB_ConfigureFocus, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ConfigureFocus, 0);
+   ShowDialog(d);
+}
+
 /*
  * Focus Module
  */
@@ -667,6 +996,7 @@ static const CfgItem FocusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.focus, new_transients_get_focus_if_group_focused, 1),
    CFG_ITEM_BOOL(Conf.focus, raise_on_next, 1),
    CFG_ITEM_BOOL(Conf.focus, warp_on_next, 0),
+   CFG_ITEM_BOOL(Conf.focus, warp_always, 0),
 
    CFG_ITEM_BOOL(Conf, autoraise.enable, 0),
    CFG_ITEM_INT(Conf, autoraise.delay, 500),

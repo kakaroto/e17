@@ -863,6 +863,7 @@ typedef struct
       char                new_transients_get_focus_if_group_focused;
       char                raise_on_next;
       char                warp_on_next;
+      char                warp_always;
    } focus;
    struct
    {
@@ -2066,7 +2067,6 @@ void                MatchEwinToSM(EWin * ewin);
 void                autosave(void);
 
 /* settings.c */
-void                SettingsFocus(void);
 void                SettingsMoveResize(void);
 void                SettingsDesktops(void);
 void                SettingsArea(void);
