@@ -211,6 +211,8 @@ EwinIconImageFree(EWin * ewin)
 
    for (i = 0; i < sizeof(ewin->icon_image) / sizeof(Imlib_Image *); i++)
      {
+	if (!ewin->icon_image[i])
+	   continue;
 	imlib_context_set_image(ewin->icon_image[i]);
 	imlib_free_image_and_decache();
 	ewin->icon_image[i] = NULL;
