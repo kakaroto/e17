@@ -6,5 +6,11 @@ Just the stuff I can think of...
   you click the arrow
 * need to handle directories that aren't in the .order file. They come at
   the end of the list
-
+* can also ahve .eapps in the directory that aren't in the .order file (I
+  think).
+* E17 will look for the .eapp in the directory first before checking the all
+  directory (i think).
+* need to add monitoring of the .order files and the top directories
+  - if something changes need to popup a warning to the user and ask if
+    they want to reload the .order file
 
