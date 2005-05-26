@@ -1,0 +1,43 @@
+part {
+    name, "eapps_bar_body";
+    description {
+        state, "default" 0.0;
+        color, 255 255 255 220;
+        rel1 {
+            relative, 0.0 0.0;
+            offset, 28 0;
+        }
+
+        rel2 {
+            relative, 0.0 1.0;
+            offset, 80 -80;
+        }
+        image {
+            normal, "e17_ibar_bg_v.png";
+            border, 13 13 13 13;
+        }
+    }
+}
+ITEM_OVERLAY("eapps_bar_body","v");
+
+part {
+    name, "eapps_bar";
+    type, SWALLOW;
+    description {
+        state, "default" 0.0;
+        rel1 {
+            to, "eapps_bar_body";
+            offset, 0 28;
+        }
+        rel2 {
+            to, "eapps_bar_body";
+            offset, 0 -28;
+        }
+    }
+}
+
+ARROW("up",0.0,0.0,0,6,1.0,0.0,0,27);
+ARROW("down",0.0,1.0,0,-6,1.0,1.0,0,-27);
+
+
+     

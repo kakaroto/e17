@@ -43,10 +43,9 @@
      target, "title_glint_1";
      target, "title_glint_2";
      target, "title_glint_3";
- }
+}
 
-program 
-{
+program {
     name, "button_down";
     signal, "mouse,down,1";
     source, "overlay";
@@ -54,9 +53,7 @@ program
     target, "button";
     
 }
-
-program 
-{
+program {
     name, "button_up";
     signal, "mouse,up,1";
     source, "overlay";
@@ -64,3 +61,4 @@ program
     target, "button";
     
 }
+

@@ -1,0 +1,37 @@
+part {
+    name, "button_bar_body";
+    type, RECT;
+    description {
+        state, "default" 0.0;
+        rel1 {
+            relative, 1.0 0.0;
+            offset, 0 0;
+            to, "eapps_bar_body";
+        }
+        rel2 {
+            relative, 1.0 0.0;
+            offset, 0 0;
+            to, "menu_base";
+        }
+        color, 0 0 0 0;
+    }
+}
+part {
+    name, "button_bar";
+    type, RECT;
+    description {
+        state, "default" 0.0;
+        color, 0 0 0 0;
+        rel1 {
+            relative, 0.0 0.0;
+            offset, 5 0;
+            to, "button_bar_body";
+        }
+        rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+            to, "button_bar_body";
+        }
+    }
+}
+

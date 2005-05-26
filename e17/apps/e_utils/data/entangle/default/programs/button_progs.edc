@@ -1,0 +1,35 @@
+program {
+    name, "button,clicked";
+    source, "*";
+    signal, "mouse,up,1";
+    action, SIGNAL_EMIT "button,clicked" "*";
+}
+
+program 
+{
+    name, "button_down";
+    signal, "mouse,down,1";
+    source, "button_overlay";
+    action, STATE_SET "clicked" 0.0;
+    target, "button_title_bar";
+}
+
+program 
+{
+    name, "button_up";
+    signal, "mouse,up,1";
+    source, "button_overlay";
+    action, STATE_SET "default" 0.0;
+    target, "button_title_bar";
+}
+
+program { 
+    name, "button_go_active_pre"; 
+    signal, "mouse,in"; 
+    source, "button_overlay";
+    after, "button_go_active3b"; 
+} 
+
+GLINTING_EFFECT_GLINT_PROGS("button")
+
+     

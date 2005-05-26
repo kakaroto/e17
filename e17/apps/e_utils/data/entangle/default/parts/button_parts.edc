@@ -1,0 +1,70 @@
+part {
+    name: "button_title_outline";
+    mouse_events,  0;
+    type, RECT;
+    description {
+        color: 0 0 0 0;
+        rel1.to, "button_title_bar";
+        rel2.to, "button_title_bar";
+    }
+}
+part {
+    name: "button_title_bar";
+    mouse_events,  0;
+
+    description {
+        state,    "default" 0.0;
+        rel1 {
+            relative, 0.0 0.0;
+            offset, -8 -2;
+            to, "text";
+        }
+        
+        rel2 {
+            relative, 1.0 1.0;
+            offset, 6 -1;
+            to, "text";
+        }        
+        image {
+            normal, "e17_button.png";
+            border, 8 8 8 8;
+        }
+    }
+    description {
+        state,    "clicked" 0.0;
+        inherit,  "default" 0.0;
+        image {
+            normal, "e17_button2.png";
+        }
+    }
+}
+part {
+    name, "text";
+    type, TEXT;
+    effect, SHADOW;
+    mouse_events, 0;
+    description {
+        state, "default" 0.0;
+        rel1 {
+            relative, 0.0 0.0;
+            offset, 8 2;
+        }  
+        rel2 {
+            relative, 1.0 1.0;
+            offset, -6 -2;
+        }  
+        color, 0 0 0 255;
+        color3, 255 255 255 128;
+        text {
+            text, "Item Label";
+            font, "Vera";
+            size, 10;
+            min, 1 1;
+            align, 0.5 0.5;
+        }
+    }
+}
+
+GLINTING_ITEM_GLINT_PARTS("button")
+GLINTING_ITEM_OVERLAY_PART("button")
+

@@ -23,6 +23,18 @@ static void entangle_ui_cb_down_pressed(void *data, Evas_Object *obj,
 static void entangle_ui_cb_down_released(void *data, Evas_Object *obj,
                                 const char *emission, const char *src);
 
+
+static void entangle_ui_cb_menu_up_pressed(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+static void entangle_ui_cb_menu_up_released(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+static void entangle_ui_cb_menu_down_pressed(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+static void entangle_ui_cb_menu_down_released(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+static void entangle_ui_cb_menu_drag(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+
 /* container element mouse over/out callbacks */
 static void entangle_ui_cb_mouse_in(void *data, Evas *evas, 
                                     Evas_Object *obj, void *ev);
@@ -102,7 +114,18 @@ entangle_ui_init(const char *display, const char *theme)
     evas_object_resize(edje, WIDTH, HEIGHT);
     evas_object_name_set(edje, "edje");
     evas_object_show(edje);
-
+    
+    edje_object_signal_callback_add(edje, "menu,down,clicked",
+                    "*", entangle_ui_cb_menu_down_pressed, NULL);
+    edje_object_signal_callback_add(edje, "menu,down,release",
+                    "*", entangle_ui_cb_menu_down_released, NULL);    
+    edje_object_signal_callback_add(edje, "menu,up,clicked",
+                    "*", entangle_ui_cb_menu_up_pressed, NULL);
+    edje_object_signal_callback_add(edje, "menu,up,release",
+                    "*", entangle_ui_cb_menu_up_released, NULL);
+    edje_object_signal_callback_add(edje, "drag", 
+                    "scroll_title_outline", entangle_ui_cb_menu_drag, NULL);
+    
     o = esmart_container_new(evas);
     esmart_container_direction_set(o, CONTAINER_DIRECTION_VERTICAL);
     esmart_container_alignment_set(o, CONTAINER_ALIGN_CENTER);
@@ -214,8 +237,27 @@ entangle_ui_cb_resize(Ecore_Evas *ee)
                                             entangle_ui_cb_down_released, NULL);
         }
     }
+
+    bar = evas_object_name_find(evas, "menu");
+    edje_object_part_geometry_get(edje, "menu_items", NULL, NULL, NULL, &h);
+    l = esmart_container_elements_length_get(bar);
+    state = edje_object_part_state_get(edje, "scroll_title_outline", NULL);
+
+    if (l < h)
+    {
+        if (!strcmp(state, "default"))
+            edje_object_signal_emit(edje, "scroll,buttons,hide", "*");
+    }
+    else
+    {
+        if (!strcmp(state, "hidden"))
+            edje_object_signal_emit(edje, "scroll,buttons,show", "*");
+    }
 }
 
+    
+            
+                
 static int
 entangle_ui_eapps_bar_populate(Evas_Object *container)
 {
@@ -278,7 +320,8 @@ entangle_ui_eapps_bar_populate(Evas_Object *container)
     l = esmart_container_elements_length_get(container);
     state = edje_object_part_state_get(edje, "up_arrow", NULL);
 
-    if (l < h) edje_object_signal_emit(edje, "arrows,hide", "*");
+    if (l < h) 
+        edje_object_signal_emit(edje, "arrows,hide", "*");
     else  
     {
         edje_object_signal_emit(edje, "arrows,show", "*");
@@ -340,6 +383,93 @@ entangle_ui_cb_down_released(void *data __UNUSED__, Evas_Object *obj,
     evas = evas_object_evas_get(obj);
     o = evas_object_name_find(evas, "eapps_bar");
     esmart_container_scroll_stop(o);
+}
+
+
+static void
+entangle_ui_cb_menu_up_pressed(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o, *o2;
+
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "menu");
+
+    esmart_container_scroll_start(o, 2);        
+}
+
+static void
+entangle_ui_cb_menu_up_released(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o;
+    double y;
+    
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "menu");
+
+    esmart_container_scroll_stop(o);
+
+    y =  esmart_container_scroll_percent_get(o);
+
+    o = evas_object_name_find(evas, "edje");
+    edje_object_part_drag_value_set(o, "scroll_title_outline", 0, y);
+
+}
+
+static void
+entangle_ui_cb_menu_down_pressed(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o;
+
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "menu");
+    esmart_container_scroll_start(o, -2);
+}
+
+static void
+entangle_ui_cb_menu_down_released(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o;
+    double y;
+
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "menu");
+
+    esmart_container_scroll_stop(o);
+
+    y =  esmart_container_scroll_percent_get(o);
+
+    o = evas_object_name_find(evas, "edje");
+    edje_object_part_drag_value_set(o, "scroll_title_outline", 0, y);
+}
+
+static void
+entangle_ui_cb_menu_drag(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o; 
+    double y;
+    
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "edje");
+
+    edje_object_part_drag_value_get(o, "scroll_title_outline", NULL, &y);
+
+    o = evas_object_name_find(evas, "menu");
+    esmart_container_scroll_percent_set(o, y);
 }
 
 static void
@@ -423,13 +553,15 @@ entangle_ui_menu_populate_list(const char *rel_path, Ecore_List *apps,
     Evas *evas;
     int i;
     const char *file;
+    Evas_Coord h;
+    double l;
+    Evas_Object *o;
 
     evas = evas_object_evas_get(container);
-    {
-        Evas_Object *o;
-        o = evas_object_name_find(evas, "edje");
-        edje_object_file_get(o, &file, NULL);
-    }
+
+    o = evas_object_name_find(evas, "edje");
+    edje_object_file_get(o, &file, NULL);
+
     evas_object_data_set(container, "list", apps);
     evas_object_data_set(container, "list_rel_path", rel_path);
 
@@ -477,6 +609,20 @@ entangle_ui_menu_populate_list(const char *rel_path, Ecore_List *apps,
                                         entangle_ui_cb_menu_item_free, o);
 
         esmart_container_element_append(container, obj);
+    }
+    
+    o = evas_object_name_find(evas, "edje");
+    edje_object_part_geometry_get(o, "menu_items", NULL, NULL, NULL, &h);
+
+    l = esmart_container_elements_length_get(container);
+
+    if (l < h) 
+        edje_object_signal_emit(o, "scroll,buttons,hide", "*");
+    else
+    {
+        l =  esmart_container_scroll_percent_get(o);
+        edje_object_part_drag_value_set(o, "scroll_title_outline", 0, l);
+        edje_object_signal_emit(o, "scroll,buttons,show", "*");
     }
     return 1;
 }
@@ -638,7 +784,6 @@ static void entangle_ui_cmd_bar_init(Evas_Object *container)
 
     o = entangle_ui_cmd_bar_button_get(evas, "Quit", entangle_ui_cb_quit);
     esmart_container_element_append(container, o);
-
 }
 
 static Evas_Object *
@@ -978,6 +1123,5 @@ entangle_ui_cb_menu_item_move(void *data __UNUSED__, Evas *evas __UNUSED__,
     y = e->cur.canvas.y - e->prev.canvas.y;
     evas_object_move(obj, cur_x + x, cur_y + y);
 }
-
 
 

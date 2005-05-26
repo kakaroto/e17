@@ -1,0 +1,19 @@
+part {
+    name, "cmd_bar";
+    type, SWALLOW;
+    description {
+        state, "default" 0.0;
+        rel1 {
+            relative, 1.0 1.0;
+            offset, 125 0;
+            to, "eapps_bar_body";
+        }
+        rel2 {
+            relative, 1.0 0.0;
+            offset, -1 -1;
+            to, "title";
+        }
+        color, 0 0 0 0;
+    }
+}
+

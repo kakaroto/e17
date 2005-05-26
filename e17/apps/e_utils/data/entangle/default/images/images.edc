@@ -1,0 +1,29 @@
+images {
+    image, "e.png" COMP;
+    image, "logo.png" COMP;
+    image, "bg.png" COMP;
+    image, "up.png" COMP;
+    image, "down.png" COMP;
+    image, "e17_menu_bg.png" COMP;
+    image, "e17_menu_arrow.png" COMP;
+    image, "e17_menu_bg_border.png" COMP;
+    image, "e17_titlebar.png" COMP;
+    image, "e17_titlebar_glint1.png" COMP;
+    image, "e17_titlebar_glint2.png" COMP;
+    image, "e17_titlebar_glint3.png" COMP;
+    image, "e17_titlebar_outline.png" COMP;
+    image, "e17_titlebar_shadow1.png" COMP;
+    image, "e17_titlebar_shadow2.png" COMP;
+    image: "e17_button.png" LOSSY 90;
+    image: "e17_button2.png" LOSSY 90;
+    image: "e17_ibar_bg_h.png" LOSSY 90;
+    image: "e17_ibar_over_h.png" LOSSY 90;
+    image: "e17_ibar_bg_v.png" LOSSY 90;
+    image: "e17_ibar_over_v.png" LOSSY 90;
+    image, "e17_mini_button.png" LOSSY 95;
+    image, "e17_mini_button_shadow1.png" LOSSY 95;
+    image, "e17_mini_button_shadow2.png" LOSSY 95;
+    image, "e17_button_detail_up.png" LOSSY 95;
+    image, "e17_button_detail_down.png" LOSSY 95;
+}
+

@@ -1,0 +1,27 @@
+program {
+    name, "arrow,show";
+    source, "*";
+    signal, "arrow,show";
+    action, STATE_SET "show" 0.0;
+    target, "arrow";
+}
+program {
+    name, "dir,clicked";
+    source, "*";
+    signal, "mouse,up,1";
+    action, SIGNAL_EMIT "dir,clicked" "*";
+}
+program {
+    name, "del,clicked";
+    source, "*";
+    signal, "mouse,up,2";
+    action, SIGNAL_EMIT "del,clicked" "*";
+}
+program {
+    name, "move,down";
+    source, "*";
+    signal, "mouse,down,3";
+    action, SIGNAL_EMIT "move,start" "*";
+}
+GLINTING_EFFECT_PROGS("menu_item")
+

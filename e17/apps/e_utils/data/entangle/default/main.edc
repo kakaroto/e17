@@ -1,0 +1,15 @@
+group {
+    name, "Main";
+
+    parts {
+#include "parts/bg_parts.edc"
+#include "parts/eapps_parts.edc"
+#include "parts/eapps_info_parts.edc"
+#include "parts/button_bar_parts.edc"
+#include "parts/menu_parts.edc"
+#include "parts/cmd_buttons_parts.edc"	    
+    }
+    programs {
+#include "programs/main_programs.edc"
+    }
+}

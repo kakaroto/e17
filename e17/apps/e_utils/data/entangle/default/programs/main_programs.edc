@@ -1,0 +1,86 @@
+EAPPS_ARROW_PROGS("up");
+EAPPS_ARROW_PROGS("down");
+
+program {
+    name, "hide";
+    source, "*";
+    signal, "arrows,hide";
+    action, STATE_SET "hidden" 0.0;
+    target, "up_arrow";
+    target, "down_arrow";
+}
+program {
+    name, "show";
+    source, "*";
+    signal, "arrows,show";
+    action, STATE_SET "default" 0.0;
+    target, "up_arrow";
+    target, "down_arrow";
+}
+program {
+    name, "eapp,info,hide";
+    source, "*";
+    signal, "eapp,info,hide";
+    action, STATE_SET "default" 0.0;
+    target, "eapp_info";
+    target, "eapp_info_overlay";
+    target, "eapp_info_name";
+    target, "eapp_info_class";
+    transition, LINEAR 0.25;
+}
+program {
+    name, "eapp,info,show";
+    source, "*";
+    signal, "eapp,info,show";
+    action, STATE_SET "show" 0.0;
+    target, "eapp_info";
+    target, "eapp_info_overlay";
+    target, "eapp_info_name";
+    target, "eapp_info_class";
+    transition, LINEAR 0.25;
+}
+
+SCROLL_BUTTON_PROG("up");
+SCROLL_BUTTON_PROG("down");
+GLINTING_EFFECT_PROGS("scroll");
+
+program {
+    name, "scroll,controls,hide";
+    signal, "scroll,buttons,hide"; 
+    action, STATE_SET "hidden" 0.0;
+    source, "*";
+    target, "up_shadow1"; 
+    target, "up_shadow2"; 
+    target, "up_bg"; 
+    target, "up_detail";
+
+    target, "down_shadow1"; 
+    target, "down_shadow2"; 
+    target, "down_bg"; 
+    target, "down_detail";
+
+    
+    target, "scroll_title_outline";
+    target, "scroll_overlay";
+}
+
+program {
+    name, "scroll,controls,show";
+    signal, "scroll,buttons,show"; 
+    source, "*";
+    action, STATE_SET "default" 0.0;
+
+    target, "up_shadow1"; 
+    target, "up_shadow2"; 
+    target, "up_bg"; 
+    target, "up_detail"; 
+
+    target, "down_shadow1"; 
+    target, "down_shadow2"; 
+    target, "down_bg"; 
+    target, "down_detail";
+
+    target, "scroll_title_outline";
+    target, "scroll_overlay";
+}
+
