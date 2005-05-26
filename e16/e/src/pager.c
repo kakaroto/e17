@@ -499,7 +499,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 
    w = ewin->client.w;
    h = ewin->client.h;
-   if ((w == p->w) && (h == p->h))
+   if ((w == p->w && h == p->h) || w <= 1 || h <= 1)
       return;
 
    GetAreaSize(&ax, &ay);

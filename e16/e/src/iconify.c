@@ -502,6 +502,8 @@ IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 
    if (!resize && !ib->do_update && !TransparencyEnabled())
       return;
+   if (ib->w <= 0 || ib->h <= 0)
+      return;
 
    IconboxDraw(ib);
    ib->do_update = 0;
