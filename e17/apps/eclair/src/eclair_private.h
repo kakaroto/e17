@@ -100,6 +100,7 @@ struct _Eclair_Dialogs_Manager
    GtkWidget *file_chooser_load_playlist_button;
    GtkWidget *file_chooser_add_files_button;
    GtkWidget *file_chooser_cancel_button;
+   GtkWidget *file_chooser_widget;
    GtkWidget *file_chooser_dialog;
 
    //Menu widget vars
