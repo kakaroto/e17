@@ -10,28 +10,73 @@
 #include "eclair_cover.h"
 #include "eclair_media_file.h"
 #include "eclair_meta_tag.h"
+#include "eclair_cover.h"
 #include "eclair_callbacks.h"
 #include "eclair_utils.h"
 
 #define MAX_PATH_LEN 1024
 
+static int eclair_playlist_media_files_destructor(void *data);
+
 //Initialize the playlist
 void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
 {
    if (!playlist)
-      return;   
+      return;
 
    playlist->playlist = NULL;
    playlist->current = NULL;
+   playlist->removed_media_files = NULL;
    playlist->shuffle = 0;
    playlist->repeat = 0;
    playlist->eclair = eclair;
+   playlist->media_files_destructor_timer = ecore_timer_add(0.05, eclair_playlist_media_files_destructor, playlist);
 }
 
 //Shutdown the playlist
 void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 {
-   eclair_playlist_empty(playlist);
+   Evas_List *l;
+
+   if (!playlist)
+      return;
+
+   ecore_timer_del(playlist->media_files_destructor_timer);
+   for (l = playlist->playlist; l; l = l->next)
+      eclair_media_file_free(l->data);
+   for (l = playlist->removed_media_files; l; l = l->next)
+      eclair_media_file_free(l->data);
+   playlist->playlist = evas_list_free(playlist->playlist);
+   playlist->removed_media_files = evas_list_free(playlist->removed_media_files);
+   playlist->current = NULL;
+
+   if (playlist->eclair && playlist->eclair->playlist_container)
+      eclair_playlist_container_update(playlist->eclair->playlist_container);
+}
+
+//Called every 50ms and destroy the removed media files
+int eclair_playlist_media_files_destructor(void *data)
+{
+   Eclair_Playlist *playlist;
+   Evas_List *l, *next;
+   Eclair_Media_File *current_file;
+
+   if (!(playlist = data))
+      return 0;
+
+   for (l = playlist->removed_media_files; l; l = next)
+   {
+      next = l->next;
+      if (!(current_file = l->data))
+         playlist->removed_media_files = evas_list_remove_list(playlist->removed_media_files, l);
+      else if (!current_file->in_meta_tag_process && !current_file->in_cover_process)
+      {
+         eclair_media_file_free(current_file);
+         playlist->removed_media_files = evas_list_remove_list(playlist->removed_media_files, l);
+      }
+   }
+
+   return 1;
 }
 
 //Save the playlist
@@ -50,7 +95,7 @@ Evas_Bool eclair_playlist_save(Eclair_Playlist *playlist, const char *path)
 
    for (l = playlist->playlist; l; l = l->next)
    {
-      if (!(media_file = (Eclair_Media_File *)l->data) || !media_file->path || strlen(media_file->path) <= 0)
+      if (!(media_file = l->data) || !media_file->path || strlen(media_file->path) <= 0)
          continue;
       fprintf(playlist_file, "%s\n", media_file->path);
    }
@@ -73,7 +118,7 @@ Eclair_Media_File *eclair_playlist_prev_media_file(Eclair_Playlist *playlist)
    if (!playlist)
       return NULL;
 
-   return (Eclair_Media_File *)evas_list_data(evas_list_prev(playlist->current));
+   return evas_list_data(evas_list_prev(playlist->current));
 }
 
 //Return the media file just after the active media file
@@ -82,7 +127,7 @@ Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
    if (!playlist)
       return NULL;
 
-   return (Eclair_Media_File *)evas_list_data(evas_list_next(playlist->current));
+   return evas_list_data(evas_list_next(playlist->current));
 }
 
 //Add recursively a directory
@@ -99,9 +144,9 @@ Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Boo
    {
       for (l = files->first; l; l = l->next)
       {
-         if (!(filename = (char *)l->data))
+         if (!(filename = l->data))
             continue;
-         filepath = (char *)malloc(strlen(dir) + strlen(filename) + 2);
+         filepath = malloc(strlen(dir) + strlen(filename) + 2);
          sprintf(filepath, "%s/%s", dir, filename);
          eclair_playlist_add_uri(playlist, filepath, 0, autoplay);
          free(filepath);
@@ -138,7 +183,7 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
          eclair_playlist_add_uri(playlist, line, 0, autoplay);
       else if (m3u_dir)
       {
-         path = (char *)malloc(strlen(m3u_dir) + strlen(line) + 2);
+         path = malloc(strlen(m3u_dir) + strlen(line) + 2);
          sprintf(path, "%s/%s", m3u_dir, line);
          eclair_playlist_add_uri(playlist, path, 0, autoplay);
          free(path);
@@ -235,8 +280,11 @@ Evas_List *eclair_playlist_remove_media_file_list(Eclair_Playlist *playlist, Eva
    if (playlist->current == list)
       eclair_playlist_current_set_list(playlist, NULL);
 
-   if ((remove_media_file = evas_list_data(list)))
-      eclair_media_file_free(remove_media_file);
+   if ((remove_media_file = list->data))
+   {
+      remove_media_file->delete_me = 1;
+      playlist->removed_media_files = evas_list_append(playlist->removed_media_files, remove_media_file);
+   }
 
    next = list->next;
    playlist->playlist = evas_list_remove_list(playlist->playlist, list);
@@ -314,7 +362,7 @@ void eclair_playlist_current_set(Eclair_Playlist *playlist, Eclair_Media_File *m
    if (media_file)
       eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, media_file));
    else
-      eclair_playlist_current_set_list(playlist, evas_list_find_list(playlist->playlist, NULL));
+      eclair_playlist_current_set_list(playlist, NULL);
 }
 
 //Set the media file stored in the list as the active media file  
@@ -327,17 +375,18 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
 
    previous_media_file = evas_list_data(playlist->current);
    playlist->current = list;
-   eclair_playlist_container_scroll_to_list(playlist->eclair->playlist_container, list);
    eclair_media_file_update(playlist->eclair, previous_media_file);
-   eclair_media_file_update(playlist->eclair, evas_list_data(playlist->current));
+   if (list)
+   {
+      eclair_playlist_container_scroll_to_list(playlist->eclair->playlist_container, list);
+      eclair_media_file_update(playlist->eclair, list->data);
+   }
 } 
 
 //Set the media file which is just before the active media file as the active media file 
 void eclair_playlist_prev_as_current(Eclair_Playlist *playlist)
 {
-   if (!playlist)
-      return;
-   if (!playlist->current)
+   if (!playlist || !playlist->current)
       return;
 
    eclair_playlist_current_set_list(playlist,  playlist->current->prev);
@@ -346,9 +395,7 @@ void eclair_playlist_prev_as_current(Eclair_Playlist *playlist)
 //Set the media file which is just after the active media file as the active media file 
 void eclair_playlist_next_as_current(Eclair_Playlist *playlist)
 {
-   if (!playlist)
-      return;
-   if (!playlist->current)
+   if (!playlist || !playlist->current)
       return;
 
    eclair_playlist_current_set_list(playlist,  playlist->current->next);

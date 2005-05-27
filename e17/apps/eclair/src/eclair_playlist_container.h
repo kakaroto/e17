@@ -14,6 +14,8 @@ double eclair_playlist_container_scroll_percent_get(Evas_Object *obj);
 void eclair_playlist_container_scroll_start(Evas_Object *obj, double speed);
 void eclair_playlist_container_scroll_stop(Evas_Object *obj);
 void eclair_playlist_container_scroll_to_list(Evas_Object *obj, Evas_List *element);
+int eclair_playlist_container_offset_get_from_percent(Evas_Object *obj, double scroll_percent);
+double eclair_playlist_container_percent_get_from_offset(Evas_Object *obj, int offset);
 int eclair_playlist_container_offset_get(Evas_Object *obj);
 void eclair_playlist_container_offset_set(Evas_Object *obj, int offset);
 Evas_Bool eclair_playlist_container_nth_element_is_visible(Evas_Object *obj, int n, Evas_Bool entirely);

@@ -41,11 +41,10 @@ void eclair_meta_tag_shutdown(Eclair_Meta_Tag_Manager *meta_tag_manager)
 //Add a media file to the list of files to scan for meta tag
 void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager, Eclair_Media_File *media_file)
 {
-   if (!meta_tag_manager || !media_file)
-      return;
-   if (meta_tag_manager->meta_tag_delete_thread)
+   if (!meta_tag_manager || !media_file || meta_tag_manager->meta_tag_delete_thread)
       return;
 
+   media_file->in_meta_tag_process = 1;
    while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
       usleep(10000);
    meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
@@ -61,11 +60,9 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    TagLib_Tag *tag;
    const TagLib_AudioProperties *tag_audio_props;
 
-   if (!eclair || !media_file)
+   if (!eclair || !media_file || !media_file->path)
       return;
 
-   if (!media_file->path)
-      return;
    if (!(tag_file = taglib_file_new(media_file->path)))
       return;
 
@@ -80,7 +77,11 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
       media_file->track = taglib_tag_track(tag);
    }   
    if ((tag_audio_props = taglib_file_audioproperties(tag_file)))
+   {
       media_file->length = taglib_audioproperties_length(tag_audio_props);
+      media_file->bitrate = taglib_audioproperties_bitrate(tag_audio_props);
+      media_file->samplerate = taglib_audioproperties_samplerate(tag_audio_props);
+   }
    taglib_tag_free_strings();
    taglib_file_free(tag_file);
 
@@ -92,7 +93,7 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
 //Scan the files stored in the list of files to scan
 static void *_eclair_meta_tag_thread(void *param)
 {
-   Eclair *eclair = (Eclair *)param;
+   Eclair *eclair = param;
    Eclair_Meta_Tag_Manager *meta_tag_manager;
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
@@ -100,6 +101,7 @@ static void *_eclair_meta_tag_thread(void *param)
    if (!eclair)
       return NULL;
 
+   next = NULL;
    meta_tag_manager = &eclair->meta_tag_manager;
    pthread_mutex_lock(&meta_tag_manager->meta_tag_mutex);
    for (;;)
@@ -120,13 +122,9 @@ static void *_eclair_meta_tag_thread(void *param)
             while (meta_tag_manager->meta_tag_add_state != ECLAIR_IDLE)
                usleep(10000);
             meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
-            for (l = meta_tag_manager->meta_tag_files_to_add; l; l = next)
-            {
-               next = l->next;
-               current_file = (Eclair_Media_File *)l->data;
-               meta_tag_manager->meta_tag_files_to_add = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_add, l);
-               meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, current_file);
-            }
+            for (l = meta_tag_manager->meta_tag_files_to_add; l; l = l->next)
+               meta_tag_manager->meta_tag_files_to_scan = evas_list_append(meta_tag_manager->meta_tag_files_to_scan, l->data);
+            meta_tag_manager->meta_tag_files_to_add = evas_list_free(meta_tag_manager->meta_tag_files_to_add);
             meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE; 
          }
          //Treat the files in the list
@@ -135,10 +133,19 @@ static void *_eclair_meta_tag_thread(void *param)
             if (meta_tag_manager->meta_tag_delete_thread || meta_tag_manager->meta_tag_files_to_add)
                break;
             next = l->next;
-            current_file = (Eclair_Media_File *)l->data;
+            current_file = l->data;
             meta_tag_manager->meta_tag_files_to_scan = evas_list_remove_list(meta_tag_manager->meta_tag_files_to_scan, l);
-            eclair_meta_tag_read(eclair, current_file);
-            eclair_media_file_update(eclair, current_file);
+            if (current_file)
+            {
+               if (current_file->delete_me)
+               {
+                  current_file->in_meta_tag_process = 0;
+                  continue;
+               }
+               eclair_meta_tag_read(eclair, current_file);
+               eclair_media_file_update(eclair, current_file);
+               current_file->in_meta_tag_process = 0;
+            }
          }
       }
    }

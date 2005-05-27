@@ -80,7 +80,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    if ((l = filenames))
    {
       for (; l; l = l->next)
-         eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0, 1);
+         eclair_playlist_add_uri(&eclair->playlist, l->data, 0, 1);
       evas_list_free(filenames);
       eclair_playlist_container_update(eclair->playlist_container);
    }
@@ -129,7 +129,7 @@ void eclair_shutdown(Eclair *eclair)
 //Called when an new frame is decoded
 void eclair_update(Eclair *eclair)
 {
-   char time_elapsed[10] = "";
+   char time_elapsed[10];
    double position, length;
 
    if (!eclair)
@@ -168,31 +168,59 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
    char *artist_title_string;
    const char *filename;
    Eclair_Media_File *current_file;
+   char string[10];
 
    if (!eclair)
       return;
 
    current_file = eclair_playlist_current_media_file(&eclair->playlist);
 
-   //Update the name of the current file only if video is created 
-   if (eclair->gui_object && eclair->video_object)
+   if (eclair->gui_object)
    {
-      if (current_file)
+      //Update the name of the current file only if video is created 
+      if (eclair->video_object)
       {
-         if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(current_file)))
+         if (current_file)
          {
-            edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
-            free(artist_title_string);
+            if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(current_file)))
+            {
+               edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
+               free(artist_title_string);
+            }
+            else if (current_file->path && strstr(current_file->path, "://"))
+               edje_object_part_text_set(eclair->gui_object, "current_media_name", current_file->path);
+            else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
+               edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
+            else
+               edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
          }
-         else if (current_file->path && strstr(current_file->path, "://"))
-            edje_object_part_text_set(eclair->gui_object, "current_media_name", current_file->path);
-         else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
-            edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
          else
             edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
       }
+      //Update current media file data
+      if (current_file)
+      {
+         if (current_file->samplerate > 0)
+         {
+            snprintf(string, 10, "%d", current_file->samplerate / 1000);
+            edje_object_part_text_set(eclair->gui_object, "samplerate", string);
+         }
+         else
+            edje_object_part_text_set(eclair->gui_object, "samplerate", "-");
+
+         if (current_file->bitrate > 0)
+         {
+            snprintf(string, 10, "%d", current_file->bitrate);
+            edje_object_part_text_set(eclair->gui_object, "bitrate", string);
+         }
+         else
+            edje_object_part_text_set(eclair->gui_object, "bitrate", "-");
+      }
       else
-         edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
+      {
+         edje_object_part_text_set(eclair->gui_object, "samplerate", "-");
+         edje_object_part_text_set(eclair->gui_object, "bitrate", "-");
+      }
    }
 
    //Update the title of the video window
@@ -200,7 +228,7 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
    {
       if (current_file && current_file->path)
       {
-         window_title = (char *)malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
+         window_title = malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
          sprintf(window_title, "eclair: %s", current_file->path);
          ecore_evas_title_set(eclair->video_window, window_title);
          free(window_title);
@@ -225,16 +253,17 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
 //Remove it if cover_path == NULL
 void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool force_cover_update)
 {
-   char *current_path = NULL;
+   char *current_path;
 
    if (!eclair || !eclair->gui_object || !eclair->gui_cover)
       return;
 
+   current_path = NULL;
    evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
    if (!current_path && !cover_path)
       return;
    if (!force_cover_update && current_path && cover_path && (strcmp(current_path, cover_path) == 0))
-         return;
+      return;
 
    if (eclair->gui_previous_cover)
    {
@@ -598,11 +627,11 @@ static void _eclair_video_create_window(Eclair *eclair)
 //Initialize the video object
 static void *_eclair_create_video_object_thread(void *param)
 {
-   Eclair *eclair = (Eclair *)param;
+   Eclair *eclair;
    Evas *evas;
    Evas_Object *new_video_object;
 
-   if (!eclair)
+   if (!(eclair = param))
       return NULL;
 
    if (eclair->gui_object)

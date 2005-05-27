@@ -9,7 +9,7 @@
 //Create a new media file
 Eclair_Media_File *eclair_media_file_new()
 {
-   return (Eclair_Media_File *)calloc(1, sizeof(Eclair_Media_File));
+   return calloc(1, sizeof(Eclair_Media_File));
 }
 
 //Free a media file
@@ -31,7 +31,7 @@ void eclair_media_file_free(Eclair_Media_File *media_file)
 //Update the media file with tag and cover infos
 void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
 {
-   char length[10] = "";
+   char length[10];
    char *artist_title_string;
    const char *filename;
    Eclair_Playlist_Container *playlist_container;
@@ -45,7 +45,7 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
    {
       //Update playlist entry
       if ((container_object = media_file->container_object) && eclair->playlist_container &&
-         (playlist_container = (Eclair_Playlist_Container *)evas_object_smart_data_get(eclair->playlist_container)))
+         (playlist_container = evas_object_smart_data_get(eclair->playlist_container)))
       {   
          if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(media_file)))
          {

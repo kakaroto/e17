@@ -134,7 +134,7 @@ int eclair_config_get_prop_string(Eclair_Config *config, const char *node_name, 
       return 0;
    if (!(value = xmlGetProp(node, prop_name)))
       return 0;
-   *prop_value = strdup((char *)value);
+   *prop_value = strdup(value);
    xmlFree(value);
    return 1;
 }

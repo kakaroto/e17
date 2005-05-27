@@ -78,12 +78,11 @@ void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager)
 
    for (l = cover_manager->not_in_amazon_db; l; l = l->next)
    {
-      if ((album = (Eclair_Cover_Not_In_DB_Album *)l->data))
-      {
-         free(album->artist);
-         free(album->album);
-         free(album);
-      }
+      if (!(album = l->data))
+         continue;
+      free(album->artist);
+      free(album->album);
+      free(album);
    }
    evas_list_free(cover_manager->not_in_amazon_db);
 
@@ -100,6 +99,7 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
    if (!cover_manager || !media_file || cover_manager->cover_delete_thread)
       return;
 
+   media_file->in_cover_process = 1;
    while (cover_manager->cover_add_state != ECLAIR_IDLE)
       usleep(10000);
    cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_ADD;
@@ -112,12 +112,12 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
 //Fetch from amazon the covers of the files stored in the list cover_files_to_treat
 static void *_eclair_cover_thread(void *param)
 {
-   Eclair_Cover_Manager *cover_manager = (Eclair_Cover_Manager *)param;
+   Eclair_Cover_Manager *cover_manager;
    Eclair *eclair;
    Evas_List *l, *next;
    Eclair_Media_File *current_file;
 
-   if (!cover_manager || !(eclair = cover_manager->eclair))
+   if (!(cover_manager = param) || !(eclair = cover_manager->eclair))
       return NULL;
 
    pthread_mutex_lock(&cover_manager->cover_mutex);
@@ -139,13 +139,9 @@ static void *_eclair_cover_thread(void *param)
             while (cover_manager->cover_add_state != ECLAIR_IDLE)
                usleep(10000);
             cover_manager->cover_add_state = ECLAIR_ADDING_FILE_TO_TREAT;
-            for (l = cover_manager->cover_files_to_add; l; l = next)
-            {
-               next = l->next;
-               current_file = (Eclair_Media_File *)l->data;
-               cover_manager->cover_files_to_add = evas_list_remove_list(cover_manager->cover_files_to_add, l);
-               cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, current_file);
-            }
+            for (l = cover_manager->cover_files_to_add; l; l = l->next)
+               cover_manager->cover_files_to_treat = evas_list_append(cover_manager->cover_files_to_treat, l->data);
+            cover_manager->cover_files_to_add = evas_list_free(cover_manager->cover_files_to_add);
             cover_manager->cover_add_state = ECLAIR_IDLE;
          }
          //Treat the files in the list
@@ -154,10 +150,19 @@ static void *_eclair_cover_thread(void *param)
             if (cover_manager->cover_delete_thread || cover_manager->cover_files_to_add)
                break;
             next = l->next;
-            current_file = (Eclair_Media_File *)l->data;
+            current_file = l->data;
             cover_manager->cover_files_to_treat = evas_list_remove_list(cover_manager->cover_files_to_treat, l);
-            current_file->cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
-            eclair_media_file_update(eclair, current_file);
+            if (current_file)
+            {
+               if (current_file->delete_me)
+               {
+                  current_file->in_cover_process = 0;
+                  continue;
+               }
+               current_file->cover_path = eclair_cover_file_get(cover_manager, current_file->artist, current_file->album, current_file->path);
+               eclair_media_file_update(eclair, current_file);
+               current_file->in_cover_process = 0;
+            }
          }
       }
    }
@@ -242,7 +247,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
    }
 
    //Get the ASIN of the album
-   keywords = (char *)malloc(strlen(artist) + strlen(album) + 2);
+   keywords = malloc(strlen(artist) + strlen(album) + 2);
    sprintf(keywords, "%s %s", artist, album);
    converted_keywords = eclair_utils_add_uri_special_chars(keywords);
    free(keywords);
@@ -276,7 +281,7 @@ char *eclair_cover_file_get_from_amazon(Eclair_Cover_Manager *cover_manager, con
 
 
    //Get cover url from the ASIN
-   _eclair_cover_build_url_for_item_images((char *)ASIN, url);
+   _eclair_cover_build_url_for_item_images(ASIN, url);
    xmlFree(ASIN);
    if (cover_manager->cover_delete_thread)
       return NULL;
@@ -417,7 +422,7 @@ static int _eclair_cover_fetch(const char *url, char **data)
       return -1;
    }
 
-   host = (char *)malloc(url_abs_path - host_start + 1);
+   host = malloc(url_abs_path - host_start + 1);
    strncpy(host, host_start, url_abs_path - host_start);
    host[url_abs_path - host_start] = 0;
    if ((socket_fd = _eclair_cover_connect_to_hostname(host)) < 0)
@@ -445,8 +450,8 @@ static int _eclair_cover_fetch(const char *url, char **data)
       return body_length;
    }
 
-   *data = (char *)malloc(body_length * sizeof(char));
-   memcpy(*data, body, body_length * sizeof(char));
+   *data = malloc(body_length);
+   memcpy(*data, body, body_length);
    free(packet);
    return body_length;
 }
@@ -466,9 +471,9 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
    *length = 0;
    while ((num_bytes_read = read(socket_fd, packet_chunk, PACKET_CHUNK_SIZE)) > 0)
    {
-      chunk = (Eclair_Cover_Packet_Chunk *)malloc(sizeof(Eclair_Cover_Packet_Chunk));
+      chunk = malloc(sizeof(Eclair_Cover_Packet_Chunk));
       chunk->size = num_bytes_read;
-      chunk->data = (char *)malloc(num_bytes_read * sizeof(char));
+      chunk->data = malloc(num_bytes_read);
       memcpy(chunk->data, packet_chunk, num_bytes_read);
       chunks = evas_list_append(chunks, chunk);
       *length += num_bytes_read;
@@ -482,10 +487,10 @@ static Evas_Bool _eclair_cover_receive_next_packet(int socket_fd, char **packet,
    }
 
    pos = 0;
-   *packet = (char *)malloc(*length * sizeof(char));
+   *packet = malloc(*length);
    for (l = chunks; l; l = l->next)
    {
-      if (!(chunk = (Eclair_Cover_Packet_Chunk *)l->data))
+      if (!(chunk = l->data))
          continue;
       memcpy(*packet + pos, chunk->data, chunk->size);
       free(chunk->data);
@@ -535,11 +540,12 @@ static char *_eclair_cover_build_path_from_filepath(Eclair_Cover_Manager *cover_
 {
    char *cover_path, *filename_without_ext;
 
-   if (!cover_manager || !file_path || !cover_extension || !cover_manager->eclair)
+   if (!cover_manager || !file_path || !cover_extension || !cover_manager->eclair
+      || strlen(file_path) <= 0 || strlen(cover_extension) <= 0)
       return NULL;
 
    filename_without_ext = eclair_utils_file_get_filename_without_ext(file_path);
-   cover_path = (char *)malloc(strlen(cover_manager->eclair->config.covers_dir_path) + strlen(filename_without_ext) + strlen(cover_extension) + 2);
+   cover_path = malloc(strlen(cover_manager->eclair->config.covers_dir_path) + strlen(filename_without_ext) + strlen(cover_extension) + 2);
    sprintf(cover_path, "%s%s.%s", cover_manager->eclair->config.covers_dir_path, filename_without_ext, cover_extension);
    free(filename_without_ext);
 
@@ -556,13 +562,13 @@ static char *_eclair_cover_build_path_from_artist_album(Eclair_Cover_Manager *co
       || strlen(artist) <= 0 || strlen(album) <= 0 || strlen(cover_extension) <= 0)
       return NULL; 
 
-   filename = (char *)malloc(strlen(artist) + strlen(album) + strlen(cover_extension) + 3);
+   filename = malloc(strlen(artist) + strlen(album) + strlen(cover_extension) + 3);
    sprintf(filename, "%s_%s.%s", artist, album, cover_extension);
    //Remove forbidden '/' in the filename
    for (c = index(filename, '/'); c; c = index(c, '/'))
       *c = '_';
 
-   path = (char *)malloc(strlen(cover_manager->eclair->config.covers_dir_path) + strlen(filename) + 1);
+   path = malloc(strlen(cover_manager->eclair->config.covers_dir_path) + strlen(filename) + 1);
    sprintf(path, "%s%s", cover_manager->eclair->config.covers_dir_path, filename);
    free(filename);
 
@@ -590,11 +596,8 @@ static xmlNode *_eclair_cover_get_node_xml_tree(xmlNode *root_node, const char *
 
    for (n = root_node; n; n = n->next)
    {
-      if (n->type == XML_ELEMENT_NODE)
-      {
-         if (xmlStrcmp((const xmlChar *)prop, n->name) == 0)
-            return n;
-      }
+      if (n->type == XML_ELEMENT_NODE && xmlStrcmp(prop, n->name) == 0)
+         return n;
       if ((children_node = _eclair_cover_get_node_xml_tree(n->children, prop)))
          return children_node;
    }
@@ -620,7 +623,7 @@ static void _eclair_cover_add_file_to_not_in_amazon_db_list(Evas_List **list, co
    if (!artist || !album || !list)
       return;
 
-   new_album = (Eclair_Cover_Not_In_DB_Album *)malloc(sizeof(Eclair_Cover_Not_In_DB_Album));
+   new_album = malloc(sizeof(Eclair_Cover_Not_In_DB_Album));
    new_album->artist = strdup(artist);
    new_album->album = strdup(album);
    *list = evas_list_prepend(*list, new_album);

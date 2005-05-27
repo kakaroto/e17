@@ -112,9 +112,9 @@ void eclair_popup_menu(Eclair_Dialogs_Manager *dialogs_manager)
 //Called each 50ms and check if we must do something (popup menu, open file selection dialog...)
 static gint _eclair_dialogs_update(gpointer data)
 {
-   Eclair_Dialogs_Manager *dialogs_manager = (Eclair_Dialogs_Manager *)data;
+   Eclair_Dialogs_Manager *dialogs_manager;
 
-   if (!dialogs_manager)
+   if (!(dialogs_manager = data))
       return 1;
 
    if (dialogs_manager->should_quit)
@@ -141,9 +141,9 @@ static gint _eclair_dialogs_update(gpointer data)
 static void *_eclair_dialogs_thread(void *param)
 {
    Eclair_Dialogs_Manager *dialogs_manager;
-   Eclair *eclair = (Eclair *)param;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = param))
       return NULL;
 
    gtk_init(eclair->argc, eclair->argv);
@@ -258,19 +258,18 @@ static void _eclair_dialogs_file_chooser_open(Eclair_Dialogs_Manager *dialogs_ma
 //Add the files to the playlist
 static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
    GtkWidget *file_chooser;
    GSList *filenames, *l;
 
-   if (!eclair || !(file_chooser = eclair->dialogs_manager.file_chooser_dialog))
+   if (!(eclair = data) || !(file_chooser = eclair->dialogs_manager.file_chooser_dialog))
       return FALSE;
 
    if (!(filenames = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(file_chooser))))
       return FALSE;
 
-
    for (l = filenames; l; l = l->next)
-      eclair_playlist_add_uri(&eclair->playlist, (char *)l->data, 0, 1);
+      eclair_playlist_add_uri(&eclair->playlist, l->data, 0, 1);
    eclair_playlist_container_update(eclair->playlist_container);
    g_slist_foreach(filenames, (GFunc)g_free, NULL);
    g_slist_free(filenames);
@@ -283,22 +282,20 @@ static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpo
 //Save the playlist
 static gboolean _eclair_dialogs_file_chooser_on_save_playlist(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair = data;
    GtkWidget *file_chooser;
    gchar *filename;
    char *ext, *new_filename;
 
-   if (!eclair || !(file_chooser = eclair->dialogs_manager.file_chooser_dialog))
-      return FALSE;
-
-   if (!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser))) || strlen(filename) <= 0)
+   if (!(eclair = data) || !(file_chooser = eclair->dialogs_manager.file_chooser_dialog) ||
+      !(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser))) || strlen(filename) <= 0)
       return FALSE;
 
    if ((ext = eclair_utils_file_get_extension(filename)) && strcmp(ext, "m3u") == 0)
       eclair_playlist_save(&eclair->playlist, filename);
    else
    {
-      new_filename = (char *)malloc(strlen(filename) + 5);
+      new_filename = malloc(strlen(filename) + 5);
       sprintf(new_filename, "%s.m3u", filename);
       eclair_playlist_save(&eclair->playlist, new_filename);
       free(new_filename);      
@@ -313,9 +310,9 @@ static gboolean _eclair_dialogs_file_chooser_on_save_playlist(GtkWidget *widget,
 //Do not delete the open file chooser, just hide it
 static gboolean _eclair_dialogs_file_chooser_on_delete(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return FALSE;
 
    gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(widget));
@@ -329,9 +326,9 @@ static gboolean _eclair_dialogs_file_chooser_on_delete(GtkWidget *widget, GdkEve
 
 static void _eclair_dialogs_menu_on_add_files(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_dialogs_add_files_file_chooser(&eclair->dialogs_manager);
@@ -339,9 +336,9 @@ static void _eclair_dialogs_menu_on_add_files(GtkWidget *widget, gpointer data)
 
 static void _eclair_dialogs_menu_on_load_playlist(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_dialogs_load_playlist_file_chooser(&eclair->dialogs_manager);
@@ -349,9 +346,9 @@ static void _eclair_dialogs_menu_on_load_playlist(GtkWidget *widget, gpointer da
 
 static void _eclair_dialogs_menu_on_save_playlist(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_dialogs_save_playlist_file_chooser(&eclair->dialogs_manager);
@@ -359,9 +356,9 @@ static void _eclair_dialogs_menu_on_save_playlist(GtkWidget *widget, gpointer da
 
 static void _eclair_dialogs_menu_on_select_all(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_container_select_all(eclair->playlist_container);
@@ -369,9 +366,9 @@ static void _eclair_dialogs_menu_on_select_all(GtkWidget *widget, gpointer data)
 
 static void _eclair_dialogs_menu_on_select_none(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_container_select_none(eclair->playlist_container);
@@ -379,9 +376,9 @@ static void _eclair_dialogs_menu_on_select_none(GtkWidget *widget, gpointer data
 
 static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_container_invert_selection(eclair->playlist_container);
@@ -389,9 +386,9 @@ static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer
 
 static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_remove_selected_media_files(&eclair->playlist);
@@ -399,9 +396,9 @@ static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer 
 
 static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_remove_unselected_media_files(&eclair->playlist);
@@ -409,9 +406,9 @@ static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointe
 
 static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data)
 {
-   Eclair *eclair = (Eclair *)data;
+   Eclair *eclair;
 
-   if (!eclair)
+   if (!(eclair = data))
       return;
 
    eclair_playlist_empty(&eclair->playlist);

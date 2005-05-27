@@ -43,21 +43,32 @@ struct _Eclair_Playlist_Container_Object
 
 struct _Eclair_Playlist_Container
 {
+   //Container vars
    Evas_Object *clip;
    Evas_Object *grabber;
    Evas_List *entry_objects;
    Evas_List **entries;
    Eclair_Media_File *last_selected;
-   int entry_height;
    double scroll_percent;
-   Ecore_Timer *scroll_timer;
-   double scroll_speed;
+
+   //Scroll vars
    double scroll_start_time;
+   double scroll_speed;
+   Ecore_Timer *scroll_timer;
+
+   //Scroll_To vars
+   double scroll_to_percent;
+   double scroll_to_speed;
+   Ecore_Timer *scroll_to_timer;
+
+   //Theme vars
    char *entry_theme_path;
+   int entry_height;
    Eclair_Color selected_entry_bg_color;
    Eclair_Color selected_entry_fg_color;
    Eclair_Color current_entry_bg_color;
    Eclair_Color current_entry_fg_color;
+
    Eclair *eclair;
 };
 
@@ -71,13 +82,6 @@ struct _Eclair_Config
    xmlNodePtr root_node;
 };
 
-enum _Eclair_Add_File_State
-{
-   ECLAIR_IDLE = 0,
-   ECLAIR_ADDING_FILE_TO_ADD,
-   ECLAIR_ADDING_FILE_TO_TREAT
-};
-
 enum _Eclair_Dialog_File_Chooser_Type
 {
    ECLAIR_FC_NONE = 0,
@@ -88,6 +92,7 @@ enum _Eclair_Dialog_File_Chooser_Type
 
 struct _Eclair_Dialogs_Manager
 {
+   //File chooser widget vars
    GladeXML *file_chooser_xml;
    GtkWidget *file_chooser_all_button;
    GtkWidget *file_chooser_none_button;
@@ -97,6 +102,7 @@ struct _Eclair_Dialogs_Manager
    GtkWidget *file_chooser_cancel_button;
    GtkWidget *file_chooser_dialog;
 
+   //Menu widget vars
    GladeXML *menu_xml;
    GtkWidget *menu_widget;
 
@@ -105,7 +111,15 @@ struct _Eclair_Dialogs_Manager
    gboolean should_quit;
 
    pthread_t dialogs_thread;
+
    Eclair *eclair;
+};
+
+enum _Eclair_Add_File_State
+{
+   ECLAIR_IDLE = 0,
+   ECLAIR_ADDING_FILE_TO_ADD,
+   ECLAIR_ADDING_FILE_TO_TREAT
 };
 
 struct _Eclair_Cover_Manager
@@ -114,11 +128,13 @@ struct _Eclair_Cover_Manager
    Evas_List *cover_files_to_add;
    Evas_List *cover_files_to_treat;
    Evas_List *not_in_amazon_db;
+
    Evas_Bool cover_delete_thread;
-   Eclair *eclair;
    pthread_cond_t cover_cond;
    pthread_mutex_t cover_mutex;
    pthread_t cover_thread;
+
+   Eclair *eclair;
 };
 
 struct _Eclair_Meta_Tag_Manager
@@ -126,6 +142,7 @@ struct _Eclair_Meta_Tag_Manager
    Eclair_Add_File_State meta_tag_add_state;
    Evas_List *meta_tag_files_to_add;
    Evas_List *meta_tag_files_to_scan;
+
    Evas_Bool meta_tag_delete_thread;
    pthread_cond_t meta_tag_cond;
    pthread_mutex_t meta_tag_mutex;
@@ -134,6 +151,7 @@ struct _Eclair_Meta_Tag_Manager
 
 struct _Eclair_Media_File
 {
+   //Meta tags
    char *path;
    char *cover_path;
    char *artist;
@@ -141,18 +159,28 @@ struct _Eclair_Media_File
    char *album;
    char *genre;
    char *comment;
-   int length, track;
-   short year;
+   int length;
+   int track;
+   int year;
+   int bitrate;
+   int samplerate;
+
    Eclair_Playlist_Container_Object *container_object;
-   Evas_Bool selected;
+   char selected : 1;
+   char in_meta_tag_process : 1;
+   char in_cover_process : 1;
+   char delete_me : 1;
 };
 
 struct _Eclair_Playlist
 {
    Evas_List *playlist;
    Evas_List *current;
+   Evas_List *removed_media_files;
    Evas_Bool shuffle;
    Evas_Bool repeat;
+   Ecore_Timer *media_files_destructor_timer;
+
    Eclair *eclair;
 };
 
@@ -203,7 +231,8 @@ struct _Eclair
    Ecore_Evas *gui_window;
    Evas_Object *gui_object;
    Evas_Object *gui_draggies;
-   Evas_Object *gui_cover, *gui_previous_cover;
+   Evas_Object *gui_previous_cover;
+   Evas_Object *gui_cover;
    Evas_Object *playlist_container;
    int playlist_entry_height;
    double seek_to_pos;

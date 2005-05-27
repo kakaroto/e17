@@ -9,12 +9,10 @@ TODO list:
 * Allow vertical or horizontal progressbar, volumebar, ...
 * Support different encodings for subtitles
 * Why is it so slow to scan id3 tag?
-* FIX segv: When removing a media file from the playlist, remove it also from the cover and meta_tag files to treat list [In Progress]
-* FIX default theme bug:
+* FIX default theme bug which happens if we open the playlist panel at startup:
    "EDJE ERROR: Circular dependency when calculating part "playlist_background"
             Already calculating XY [03] axes
             Need to calculate XY [03] axes"
-* Automatically scroll to the current entry in the playlist container [In Progress]
 * Allow themes to have separated playlist, non shaded window, or to "swallow" the video object 
 * Make a converter to convert Winamp2 themes to edj [In Progress]
 

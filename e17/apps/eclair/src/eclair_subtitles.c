@@ -24,12 +24,8 @@ void eclair_subtitles_free(Eclair_Subtitles *subtitles)
    if (!subtitles)
       return;
 
-   for (l = subtitles->subtitles; l; l = l->next)
-   {
-      sub = (Eclair_Subtitle *)l->data;
-      if (sub)
-         free(sub->subtitle);
-   }
+   for (l = subtitles->subtitles; l && (sub = l->data); l = l->next)
+      free(sub->subtitle);
    evas_list_free(subtitles->subtitles);
    subtitles->subtitles = NULL;
 }
@@ -40,16 +36,11 @@ char *eclair_subtitles_get_current_subtitle(Eclair_Subtitles *subtitles, double 
    Evas_List *l;
    Eclair_Subtitle *subtitle;
 
-   if (!subtitles)
-      return NULL;
-   if (!subtitles->subtitles)
+   if (!subtitles || !subtitles->subtitles)
       return NULL;
 
-   for (l = subtitles->subtitles; l; l = l->next)
+   for (l = subtitles->subtitles; l && (subtitle = l->data); l = l->next)
    {
-      if (!(subtitle = (Eclair_Subtitle *)l->data))
-         continue;
-
       if (subtitle->start <= current_time && subtitle->end >= current_time)
          return subtitle->subtitle;
    }
@@ -63,10 +54,7 @@ void eclair_subtitles_display_current_subtitle(Eclair_Subtitles *subtitles, doub
    char *current_subtitle, *sub, *new_line, *end_of_line;
    Evas_Coord subtitle_height, evas_width, evas_height;
 
-   if (!subtitles || !subtitles_object)
-      return;
-
-   if (!subtitles->enable)
+   if (!subtitles || !subtitles_object || !subtitles->enable)
       return;
 
    evas_object_textblock_clear(subtitles_object);
@@ -108,13 +96,10 @@ int _eclair_subtitles_sort_cb(void *data1, void *data2)
 {
    Eclair_Subtitle *sub1, *sub2;
 
-   if (!data1)
+   if (!(sub1 = data1))
       return 1;
-   if (!data2)
+   if (!(sub2 = data2))
       return -1;
-
-   sub1 = (Eclair_Subtitle *)data1;
-   sub2 = (Eclair_Subtitle *)data2;
 
    if (sub1->start < sub2->start)
       return 1;
@@ -126,9 +111,7 @@ int _eclair_subtitles_sort_cb(void *data1, void *data2)
 //Sort subtitles by start time
 void eclair_subtitles_sort(Eclair_Subtitles *subtitles)
 {
-   if (!subtitles)
-      return;
-   if (!subtitles->subtitles)
+   if (!subtitles || !subtitles->subtitles)
       return;
 
    subtitles->subtitles = evas_list_sort(subtitles->subtitles, evas_list_count(subtitles->subtitles), _eclair_subtitles_sort_cb);
@@ -141,14 +124,11 @@ Evas_Bool eclair_subtitles_load_from_media_file(Eclair_Subtitles *subtitles, con
    char *extension_start;
    int extension_start_id;
 
-   if (!subtitles || !media_file)
-      return 0;
-
-   if (!(extension_start = rindex(media_file, '.')))
+   if (!subtitles || !media_file || !(extension_start = rindex(media_file, '.')))
       return 0;
    
    extension_start_id = extension_start - media_file + 1;
-   subtitles_filename = (char *)malloc(strlen(media_file) + 10);
+   subtitles_filename = malloc(strlen(media_file) + 10);
    strcpy(subtitles_filename, media_file);
 
    //Try to load srt subtitles
@@ -201,7 +181,7 @@ Evas_Bool eclair_subtitles_load_srt(Eclair_Subtitles *subtitles, const char *pat
                   new_subtitle->subtitle[strlen(new_subtitle->subtitle) - 1] = 0;
                subtitles->subtitles = evas_list_append(subtitles->subtitles, new_subtitle);
             }
-            new_subtitle = (Eclair_Subtitle *)calloc(1, sizeof(Eclair_Subtitle));
+            new_subtitle = calloc(1, sizeof(Eclair_Subtitle));
             have_time = have_text = 0;
             have_num = 1;
             continue;
@@ -226,7 +206,7 @@ Evas_Bool eclair_subtitles_load_srt(Eclair_Subtitles *subtitles, const char *pat
 
       if (new_subtitle->subtitle)
       {
-         new_subtitle->subtitle = (char *)realloc(new_subtitle->subtitle, strlen(new_subtitle->subtitle) + strlen(line) + 1);
+         new_subtitle->subtitle = realloc(new_subtitle->subtitle, strlen(new_subtitle->subtitle) + strlen(line) + 1);
          strcat(new_subtitle->subtitle, line);
       }
       else
