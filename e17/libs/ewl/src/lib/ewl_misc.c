@@ -173,7 +173,6 @@ int ewl_init(int *argc, char **argv)
 	}
 
 	ewl_embed_list = ecore_list_new();
-	ecore_list_set_free_cb(ewl_embed_list, ewl_widget_destroy);
 	ewl_window_list = ecore_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
@@ -196,9 +195,15 @@ int ewl_shutdown()
 	/*
 	 * Destroy all existing widgets.
 	 */
-	if (ewl_embed_list)
+	if (ewl_embed_list) {
+		Ewl_Widget *emb;
+
+		while ((emb = ecore_list_remove_first(ewl_embed_list)))
+			ewl_widget_destroy(emb);
+		ewl_garbage_collect();
 		ecore_list_destroy(ewl_embed_list);
-	ewl_garbage_collect();
+		ewl_embed_list = NULL;
+	}
 
 	/*
 	 * Shut down the various EWL subsystems cleanly.
@@ -210,14 +215,22 @@ int ewl_shutdown()
 	/*
 	 * Free internal accounting lists.
 	 */
-	if (ewl_window_list)
+	if (ewl_window_list) {
 		ecore_list_destroy(ewl_window_list);
+		ewl_window_list = NULL;
+	}
 	ecore_list_destroy(configure_list);
+	configure_list = NULL;
 	ecore_list_destroy(realize_list);
+	realize_list = NULL;
 	ecore_list_destroy(destroy_list);
+	destroy_list = NULL;
 	ecore_list_destroy(free_evas_list);
+	free_evas_list = NULL;
 	ecore_list_destroy(free_evas_object_list);
+	free_evas_object_list = NULL;
 	ecore_list_destroy(child_add_list);
+	child_add_list = NULL;
 
 	edje_shutdown();
 
