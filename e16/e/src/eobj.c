@@ -262,14 +262,8 @@ EobjRegister(Window win, int type)
 }
 
 void
-EobjUnregister(Window win)
+EobjUnregister(EObj * eo)
 {
-   EObj               *eo;
-
-   eo = EobjListStackFind(win);
-   if (!eo)
-      return;
-
    EobjDestroy(eo);
 }
 

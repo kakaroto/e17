@@ -1291,10 +1291,14 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
+#if 0
    if (!cw)
       return;
+#endif
 
    D1printf("ECompMgrWinDel %#lx\n", eo->win);
+
+   EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
    if (eo->type == EOBJ_TYPE_DESK)
      {
@@ -1306,9 +1310,8 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 
-   finish_destroy_win(eo, gone);
-
-   EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
+   if (cw)
+      finish_destroy_win(eo, gone);
 }
 
 static void
@@ -1885,7 +1888,7 @@ ECompMgrStart(void)
 static void
 ECompMgrStop(void)
 {
-   EObj               *const *lst;
+   EObj               *const *lst1, **lst;
    int                 i, num;
 
    if (!Mode_compmgr.active)
@@ -1904,9 +1907,20 @@ ECompMgrStop(void)
 
    ECompMgrShadowsInit(ECM_SHADOWS_OFF, 0);
 
-   lst = EobjListStackGet(&num);
-   for (i = 0; i < num; i++)
-      ECompMgrWinDel(lst[i], False, False);
+   lst1 = EobjListStackGet(&num);
+   if (num > 0)
+     {
+	lst = Emalloc(num * sizeof(EObj *));
+	memcpy(lst, lst1, num * sizeof(EObj *));
+	for (i = 0; i < num; i++)
+	  {
+	     if (lst[i]->type == EOBJ_TYPE_EXT)
+		EobjUnregister(lst[i]);	/* Modifies the object stack! */
+	     else
+		ECompMgrWinDel(lst[i], False, False);
+	  }
+	Efree(lst);
+     }
 
    if (allDamage)
       XFixesDestroyRegion(disp, allDamage);
@@ -2031,10 +2045,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
      case DestroyNotify:
 	eo = EobjListStackFind(ev->xdestroywindow.window);
 	if (eo && eo->type == EOBJ_TYPE_EXT)
-	  {
-	     ECompMgrWinDel(eo, True, True);
-	     EobjUnregister(ev->xdestroywindow.window);
-	  }
+	   EobjUnregister(eo);
 	break;
 
 #if 0
