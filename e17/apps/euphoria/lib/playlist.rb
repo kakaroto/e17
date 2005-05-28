@@ -24,7 +24,7 @@ class Playlist < Array
 
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
 			@current_pos = res.value
-			current_item.hilight
+			current_item.hilighted = true
 		end
 
 		@xmms.broadcast_playlist_changed.notifier do |res|
@@ -114,7 +114,7 @@ class Playlist < Array
 
 		each { |i| i.show(eet) }
 
-		current_item && current_item.hilight
+		current_item && (current_item.hilighted = true)
 	end
 
 	def <<(id)
@@ -127,7 +127,7 @@ class Playlist < Array
 			super(item)
 
 			item.show(@eet) unless @container.nil?
-			item.select if size == 1
+			(item.selected = true) if size == 1
 		end
 
 		self

@@ -41,25 +41,22 @@ class PlaylistItem
 
 		@playlist.container.append_element(@edje)
 
-		if @selected
-			@edje.emit_signal("playlist_item.selected", "")
-		end
+		self.selected = @selected
 
-		# if a playlist item gets hilighted, un-hilight all other items
-		# same for selected/unselected
-		["selected", "hilighted"].each do |state|
-			@edje.on_signal("playlist_item.#{state}") do
-				@playlist.each do |item|
-					if item != self
-						sig = "playlist_item.un#{state}"
-						item.edje.emit_signal(sig, "")
-					end
-				end
+		@edje.on_signal("playlist_item.selected") do |sig, src|
+			next if src == "Euphoria"
+
+			@playlist.each do |item|
+				item.selected = (item == self)
 			end
 		end
 
-		@edje.on_signal("playlist_item.selected") do
-			@selected = !@selected
+		@edje.on_signal("playlist_item.hilighted") do |sig, src|
+			next if src == "Euphoria"
+
+			@playlist.each do |item|
+				item.hilighted = (item == self)
+			end
 		end
 
 		@edje.on_signal("playlist_item.play") do
@@ -77,15 +74,19 @@ class PlaylistItem
 		end
 	end
 
-	def hilight
-		@edje.emit_signal("playlist_item.hilighted", "") unless @edje.nil?
+	def hilighted=(b)
+		sig = b ? "hilighted" : "unhilighted"
+		unless @edje.nil?
+			@edje.emit_signal("playlist_item.#{sig}", "Euphoria")
+		end
 	end
 
-	def select
-		if @edje.nil?
-			@selected = true
-		else
-			@edje.emit_signal("playlist_item.selected", "")
+	def selected=(b)
+		@selected = b
+
+		sig = b ? "selected" : "unselected"
+		unless @edje.nil?
+			@edje.emit_signal("playlist_item.#{sig}", "Euphoria")
 		end
 	end
 
