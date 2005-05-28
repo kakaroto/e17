@@ -432,27 +432,6 @@ EventsCompress(XEvent * evq, int count)
 #endif
 	     break;
 
-#if 1				/* FIXME - Do this? */
-	  case ReparentNotify:
-	     n = 0;
-	     for (j = i - 1; j >= 0; j--)
-	       {
-		  ev2 = evq + j;
-		  if (ev2->type == ev->type &&
-		      ev2->xreparent.window == ev->xreparent.window)
-		    {
-		       n++;
-		       ev2->type = 0;
-		    }
-	       }
-#if ENABLE_DEBUG_EVENTS
-	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		Eprintf("EventsCompress n=%4d %s %#lx\n",
-			n, EventName(ev->type), ev->xreparent.window);
-#endif
-	     break;
-#endif
-
 	  case EX_EVENT_SHAPE_NOTIFY:
 	     n = 0;
 	     for (j = i - 1; j >= 0; j--)
