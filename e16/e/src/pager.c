@@ -1042,7 +1042,7 @@ PagerHiwinShow(Pager * p, EWin * ewin, int px, int py)
    EoMoveResize(phi, px + wx, py + wy, ww, wh);
    ESetWindowBackgroundPixmap(EoGetWin(phi), ewin->mini_pmm.pmap);
    EoMap(phi, 0);
-   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, 1);
+   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, !Mode.wm.window);
    phi->ewin = ewin;
    phi->p = p;
    Mode.mode = MODE_PAGER_DRAG_PENDING;
@@ -1843,6 +1843,8 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 #endif
 	break;
      case LeaveNotify:
+	if (Mode.mode != MODE_NONE)
+	   break;
 	PagerHandleMotion(p, ev->xany.window, ev->xcrossing.x, ev->xcrossing.y,
 			  PAGER_EVENT_MOUSE_OUT);
 	break;

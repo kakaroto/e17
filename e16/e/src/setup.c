@@ -232,8 +232,6 @@ SetupX(const char *dstr)
 	HintsSetWindowName(VRoot.win, "Enlightenment");
 	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
 
-	EMapWindow(VRoot.win);
-
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
 	Esetenv("ENL_WM_ROOT", buf, 1);

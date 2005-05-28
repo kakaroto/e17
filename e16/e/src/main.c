@@ -266,6 +266,9 @@ main(int argc, char **argv)
    ExtInitWinKill();
 #endif
 
+   if (Mode.wm.window)
+      EMapWindow(VRoot.win);
+
    /* sync just to make sure */
    ESync();
 
