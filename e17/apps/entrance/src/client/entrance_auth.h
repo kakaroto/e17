@@ -62,6 +62,10 @@ struct _Entrance_Auth
 };
 typedef struct _Entrance_Auth Entrance_Auth;
 
+#ifdef HAVE_PAM
+int entrance_auth_pam_initialize(Entrance_Auth * e, const char *display);
+#endif
+
 Entrance_Auth *entrance_auth_new(void);
 void entrance_auth_free(Entrance_Auth * e);
 void entrance_auth_session_end(Entrance_Auth * e);

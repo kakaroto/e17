@@ -364,6 +364,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    pid_t pid;
    char buf[PATH_MAX];
    char *shell = NULL;
+   struct passwd *pwent = NULL;
 
    entrance_auth_setup_environment(e->auth, e->display);
    if ((e->session) && (strlen(e->session) > 0))
@@ -392,6 +393,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       ecore_evas_free(e->ee);
       e->ee = NULL;
    }
+   edje_shutdown();
    ecore_evas_shutdown();
    ecore_x_sync();
    entrance_ipc_shutdown();
@@ -404,49 +406,67 @@ entrance_session_start_user_session(Entrance_Session * e)
       /* Tell PAM that session has begun */
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
-	 syslog(LOG_NOTICE, "Cannot open pam session for user \"%s\".", e->auth->user);
+         syslog(LOG_NOTICE, "Cannot open pam session for user \"%s\".", e->auth->user);
          if (!e->config->autologin.mode)
          {
             syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
             return;
          }
       }
+      syslog(LOG_INFO, "Opened PAM session. %s : %s.", e->auth->pw->pw_name,
+             e->display);
    }
 #endif
-
+   /* avoid doubling up pam handles before the fork */
+   pwent = struct_passwd_dup(e->auth->pw);
+   entrance_auth_free(e->auth);
+   e->auth = NULL;
    switch ((pid = fork()))
    {
      case 0:
-        if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
+        if (initgroups(pwent->pw_name, pwent->pw_gid))
            syslog(LOG_CRIT,
                   "Unable to initialize group (is entrance running as root?).");
-        if (setgid(e->auth->pw->pw_gid))
+        if (setgid(pwent->pw_gid))
            syslog(LOG_CRIT, "Unable to set group id.");
-        if (setuid(e->auth->pw->pw_uid))
+        if (setuid(pwent->pw_uid))
            syslog(LOG_CRIT, "Unable to set user id.");
-        shell = strdup(e->auth->pw->pw_shell);
-        entrance_session_free(e);
-        syslog(LOG_NOTICE, "Exec session \"%s\".", buf);
-        execl(shell, "-", "-c", buf, NULL);
-        exit(0);
+        shell = strdup(pwent->pw_shell);
         break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
         exit(0);
      default:
+        syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
+#ifdef HAVE_PAM
+        if (e->config->auth == ENTRANCE_USE_PAM)
+        {
+           snprintf(buf, sizeof(buf), "%s/entrance_login %i %s %s",
+                    PACKAGE_BIN_DIR, (int) pid, pwent->pw_name, e->display);
+        }
+        else
+#endif
+        {
+           snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
+                    (int) pid);
+        }
+        _entrance_session_user_list_fix(e);
+        shell = strdup("/bin/sh");
+        /* this bypasses a race condition where entrance loses its x
+           connection before the wm gets it and x goes and resets itself */
+        sleep(10);
+        /*
+         * FIXME These should be called!
+        ecore_x_shutdown();
+        ecore_shutdown();
+        */
         break;
    }
-   _entrance_session_user_list_fix(e);
+   struct_passwd_free(pwent);
    entrance_session_free(e);
-   /* this bypasses a race condition where entrance loses its x connection */
-   /* before the wm gets it and x goes and resets itself */
-   sleep(10);
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
-   syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
-   snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
-            (int) pid);
-   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+   execl(shell, shell, "-c", buf, NULL);
 }
 
 

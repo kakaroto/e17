@@ -2,7 +2,7 @@
 @file entrance_auth.c
 @brief Variables and data relating to system authentication
 */
-#include"entrance_auth.h"
+#include "entrance_auth.h"
 #include "util.h"
 
 static char *
@@ -87,7 +87,6 @@ entrance_auth_session_end(Entrance_Auth * e)
 #if HAVE_PAM
    if (e->pam.handle)
    {
-      pam_close_session(e->pam.handle, 0);
       pam_end(e->pam.handle, PAM_SUCCESS);
       e->pam.handle = NULL;
    }
@@ -144,15 +143,14 @@ entrance_auth_reset(Entrance_Auth * e)
    memset(e->pass, 0, sizeof(e->pass));
 }
 
-
 #if HAVE_PAM
 /**
- * _entrance_auth_pam_initialize - initialize PAM session, structures etc.
+ * entrance_auth_pam_initialize - initialize PAM session, structures etc.
  * This function will call pam_start() and set the conversation
  * function and others.
  */
-static int
-_entrance_auth_pam_initialize(Entrance_Auth * e, const char *display)
+int
+entrance_auth_pam_initialize(Entrance_Auth * e, const char *display)
 {
    int pamerr;
 
@@ -213,7 +211,7 @@ entrance_auth_cmp_pam(Entrance_Auth * e, const char *display)
    int result = AUTH_FAIL;
    int pamerr;
 
-   if (_entrance_auth_pam_initialize(e, display) != E_SUCCESS)
+   if (entrance_auth_pam_initialize(e, display) != E_SUCCESS)
       return ERROR_NO_PAM_INIT;
 
    if ((pamerr = pam_authenticate(e->pam.handle, 0)) == PAM_SUCCESS)

@@ -488,6 +488,10 @@ main(int argc, char **argv)
       exit(1);
    }
 
+   /* Init IPC */
+   if (!entranced_ipc_init(getpid()))
+      exit(1);
+
    /* Daemonize */
    if (!nodaemon)
    {
@@ -501,9 +505,6 @@ main(int argc, char **argv)
       freopen("/dev/null", "w", stdout);
       freopen("/dev/null", "w", stderr);
    }
-   /* Init IPC */
-   if (!entranced_ipc_init(getpid()))
-      exit(1);
 
    /* Event filter */
    _e_filter =

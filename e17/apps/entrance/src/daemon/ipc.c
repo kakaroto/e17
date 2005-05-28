@@ -107,7 +107,7 @@ entranced_ipc_init(pid_t pid)
    
    if (!(server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, ipc_title, 0, NULL)))
    {
-      entranced_debug("entranced_ipc_init: Failed to open socket.\n");
+      entranced_debug("entranced_ipc_init: Failed to open socket %s.\n", ipc_title);
       return FALSE;
    }
 
