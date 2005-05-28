@@ -1,3 +1,5 @@
+#include <Ecore_File.h>
+
 #include "ipc.h"
 #include "auth.h"
 #include "util.h"
@@ -91,6 +93,9 @@ entranced_ipc_init(pid_t pid)
 
    if (!(ecore_ipc_init()))
       return FALSE;
+
+   /* Make sure this path exists */
+   ecore_file_mkpath(PACKAGE_STATE_DIR);
 
    memset(buf, 0, sizeof(buf));
    snprintf(buf, PATH_MAX, "%s_%d", PACKAGE_STATE_DIR"/"IPC_TITLE, pid);
