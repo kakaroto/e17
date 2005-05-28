@@ -699,7 +699,8 @@ PagerCheckUpdate(Pager * p)
      {
 	if (p->do_redraw)
 	   doPagerRedraw(p);
-	if (p->do_update)
+	/* FIXME - We should update only if current area has changed. */
+	if (p->do_redraw || p->do_update)
 	   doPagerUpdate(p);
      }
    else
@@ -779,6 +780,9 @@ PagersUpdateEwin(EWin * ewin, int gone)
    if (!Conf.pagers.enable)
       return;
 
+#if 1				/* FIXME - Can be optimized - Later */
+   gone = 1;
+#endif
    if (gone)
      {
 	RedrawPagersForDesktop(EoGetDesk(ewin));
