@@ -17,7 +17,7 @@ group {
                 }
             }
         }
-        ITEM_OVERLAY("entry_bg", "h");
+        ITEM_OVERLAY("entry_bg","h");
 
         part {
             name, "entry";
