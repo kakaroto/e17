@@ -2,34 +2,42 @@
 #include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Ewl.h>
+#include <ewl-config.h>
 
-Ewl_Widget *text = NULL;
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
 
-void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+static Ewl_Widget *text = NULL;
+
+static void
+print_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+					void *user_data)
 {
-	Ewl_Widget *entry = user_data;
-	char *txt = ewl_entry_text_get(EWL_ENTRY(entry));
+	Ewl_Widget *entry;
+	char *txt;
+	
+	entry = user_data;
+	txt = ewl_entry_text_get(EWL_ENTRY(entry));
 	printf("%s\n", txt);
 
 	ewl_entry_text_set(EWL_ENTRY(entry), "do it");
 	ewl_text_text_set(EWL_TEXT(text), txt);
 	free(txt);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void move_embed_contents_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+move_embed_contents_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data)
 {
 	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-	return;
-	ev_data = NULL;
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	Ecore_Evas *ee;
 	Evas_Object *embobj;

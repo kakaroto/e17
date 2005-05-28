@@ -2,21 +2,18 @@
 
 static Ewl_Widget *box_button = NULL;
 
-void
-__destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_box_test_window(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(box_button, EWL_CALLBACK_CLICKED,
 			    __create_box_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__toggle_child_fill(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	unsigned int f;
 
@@ -29,14 +26,11 @@ __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 		ewl_button_label_set(EWL_BUTTON(w), "None");
 	}
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__toggle_child_shrink(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	unsigned int f;
 
@@ -52,14 +46,11 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_button_label_set(EWL_BUTTON(w),
 				     "Don't shrink this box at all");
 	}
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	unsigned int   a;
 	char            l[10];
@@ -78,16 +69,12 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_button_label_set(EWL_BUTTON(w), l);
-
 	ewl_object_alignment_set(EWL_OBJECT(w), a);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__toggle_child_vertical_align(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	unsigned int   a;
 	char            l[10];
@@ -106,16 +93,12 @@ __toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_button_label_set(EWL_BUTTON(w), l);
-
 	ewl_object_alignment_set(EWL_OBJECT(w), a);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_box_test_window(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *box_win;
 	Ewl_Widget     *box_box;
@@ -159,7 +142,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/******************************************************************/
 	/* Create a box for holding the horizontal alignment test buttons */
-
 	/******************************************************************/
 	vbox[0] = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox[0]), vbox[0]);
@@ -206,7 +188,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/****************************************************************/
 	/* Create a box for holding the Fill test buttons               */
-
 	/****************************************************************/
 	vbox[1] = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox[0]), vbox[1]);
@@ -259,7 +240,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/****************************************************************/
 	/* Create a box for holding the vertical alignment test buttons */
-
 	/****************************************************************/
 	hbox[1] = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(box_box), hbox[1]);
@@ -307,7 +287,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 	/* Create a box for holding the Shrink test buttons             */
 	/****************************************************************/
-
 	hbox[2] = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(box_box), hbox[2]);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox[2]), EWL_FLAG_FILL_HFILL);
@@ -349,7 +328,5 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox_button[1][2]);
 
 	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

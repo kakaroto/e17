@@ -2,23 +2,18 @@
 
 static Ewl_Widget *sbook_button = NULL;
 
-void
-__destroy_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
-				    void *user_data)
+static void
+__destroy_selectionbook_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				    void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(sbook_button, EWL_CALLBACK_CLICKED,
 			    __create_selectionbook_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
-				   void *user_data)
+__create_selectionbook_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				   void *user_data __UNUSED__)
 {
 	Ewl_Widget     *sbook;
 	Ewl_Widget     *sbook_win;
@@ -57,7 +52,6 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_object_alignment_set(EWL_OBJECT(tab[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_custom_size_set(EWL_OBJECT(tab[1]), 100, 17);
 
-
 	panel[0] = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(panel[0]), EWL_FLAG_FILL_FILL);
 	ewl_object_alignment_set(EWL_OBJECT(panel[0]), EWL_FLAG_ALIGN_LEFT);
@@ -70,23 +64,15 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_theme_data_str_set(panel[1],
 			       "/appearance/box/vertical/base/visible", "yes");
 
-
 	spinner = ewl_spinner_new();
 	ewl_container_child_append(EWL_CONTAINER(panel[0]), spinner);
 	ewl_widget_show(spinner);
-
 
 	separator = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(panel[1]), separator);
 	ewl_widget_show(separator);
 
-
 	ewl_selectionbook_page_add(EWL_SELECTIONBOOK(sbook), tab[0], panel[0]);
 	ewl_selectionbook_page_add(EWL_SELECTIONBOOK(sbook), tab[1], panel[1]);
-
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

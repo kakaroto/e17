@@ -1,52 +1,43 @@
 #include "ewl_test.h"
 
-#define FONTSIZE 12
-
 static Ewl_Widget *textarea_button;
 
-void
-__destroy_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_textarea_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(textarea_button, EWL_CALLBACK_CLICKED,
 			    __create_textarea_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__font_get(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__font_get(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 	int size;
-	Ewl_Widget *spinner = user_data;
-
+	Ewl_Widget *spinner;
+	
+	spinner = user_data;
 	size = ewl_entry_font_size_get(EWL_ENTRY(w));
 	ewl_spinner_value_set(EWL_SPINNER(spinner), (double)(size));
-
-	return;
-	ev_data = NULL;
 }
 
-void
-__font_set(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__font_set(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 	double size;
 	char *font;
-	Ewl_Widget *textarea = user_data;
-
+	Ewl_Widget *textarea;
+	
+	textarea = user_data;
 	font = ewl_entry_font_get(EWL_ENTRY(textarea));
 	size = ewl_spinner_value_get(EWL_SPINNER(w));
 	ewl_entry_font_set(EWL_ENTRY(textarea), font, (int)(size));
-
-	return;
-	ev_data = NULL;
 }
 
 void
-__create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_textarea_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *button_box;
 	Ewl_Widget     *scrollpane;
@@ -134,8 +125,6 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_callback_append(spinner, EWL_CALLBACK_VALUE_CHANGED, __font_set,
 			    textarea);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+
+

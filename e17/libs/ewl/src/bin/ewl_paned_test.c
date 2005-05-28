@@ -2,21 +2,18 @@
 
 static Ewl_Widget *paned_button;
 
-void
-__destroy_paned_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(paned_button, EWL_CALLBACK_CLICKED,
 			    __create_paned_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_paned_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *paned_win, *box, *pane, *o;
 
@@ -55,10 +52,6 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	o = ewl_text_new("right");
 	ewl_paned_second_pane_append(EWL_PANED(pane), o);
 	ewl_widget_show(o);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 

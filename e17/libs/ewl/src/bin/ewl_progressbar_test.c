@@ -1,22 +1,22 @@
 #include "ewl_test.h"
 
-int __increment_progress(void *data);
-void __destroy_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data);
-void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data);
-void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data);
+static void __rerun_progressbars (Ewl_Widget * w, void *ev_data,
+							void *user_data);
 
 static Ewl_Widget *progressbar_button = NULL;
 static Ecore_Timer *progress_timer[3];
-Ewl_Widget     *progressbar[3];
+static Ewl_Widget *progressbar[3];
 
-int __increment_progress(void *data)
+static int
+__increment_progress(void *data)
 {
 	double val;
 	double value, range;
 	char c[30];
 	int i;
-	Ewl_Progressbar *p = EWL_PROGRESSBAR(data);
-
+	Ewl_Progressbar *p;
+	
+	p = EWL_PROGRESSBAR(data);
 	val = ewl_progressbar_value_get(p);
 
 	if (val >= p->range) {
@@ -55,7 +55,9 @@ int __increment_progress(void *data)
 	return 1;
 }
 
-void __destroy_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_progressbar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int i;
 
@@ -68,19 +70,16 @@ void __destroy_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user
 	ewl_widget_destroy(w);
 	ewl_callback_append(progressbar_button, EWL_CALLBACK_CLICKED,
 			__create_progressbar_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__set_new_range (Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	int i;
 	int j;
 
 	j = rand() % 500;
-
 	printf ("New random value: %d\n", j);
 	
 	for (i = 0; i < 3; i++) {
@@ -89,14 +88,11 @@ void __set_new_range (Ewl_Widget * w, void *ev_data, void *user_data)
 		if (ewl_progressbar_value_get (EWL_PROGRESSBAR (progressbar[i])) >= j)
 			__rerun_progressbars (EWL_WIDGET (progressbar[i]), NULL, NULL);
 	}
-	
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__rerun_progressbars (Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	int i;
 
@@ -117,14 +113,11 @@ void __rerun_progressbars (Ewl_Widget * w, void *ev_data, void *user_data)
 		progress_timer[i] = ecore_timer_add(0.1, __increment_progress,
 				        (Ewl_Progressbar *) progressbar[i]);
 	}
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__create_progressbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *progressbar_win;
 	Ewl_Widget     *progressbar_box;
@@ -212,9 +205,5 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 			__set_new_range, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

@@ -1,4 +1,11 @@
 #include <Ewl.h>
+#include <ewl-config.h>
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
 
 static Ewl_Widget *video;
 static Ewl_Widget *fd_win;
@@ -9,104 +16,97 @@ typedef struct {
     Ewl_Callback_Function func;
 } Control;
 
-void del_cb(Ewl_Widget *w, void *event, void *data) {
+static void
+del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__) 
+{
     ewl_widget_hide(w);
     ewl_widget_destroy(w);
     ewl_main_quit();
-
-    return;
-    event = NULL;
-    data = NULL;
 }
 
-void play_cb(Ewl_Widget *w, void *event, void *data ) {
+static void
+play_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
+					void *data __UNUSED__) 
+{
     ewl_media_play_set(EWL_MEDIA(video), 1);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void stop_cb(Ewl_Widget *w, void *event, void *data ) {
+static void
+stop_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
+					void *data __UNUSED__)
+{
     ewl_media_play_set(EWL_MEDIA(video), 0);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void ff_cb(Ewl_Widget *w, void *event, void *data ) {
-    double p = ewl_media_position_get(EWL_MEDIA(video));
-    ewl_media_position_set(EWL_MEDIA(video), p + 10.0);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
-}
-
-void rew_cb(Ewl_Widget *w, void *event, void *data ) {
-    double p = ewl_media_position_get(EWL_MEDIA(video));
-    ewl_media_position_set(EWL_MEDIA(video), p - 10.0);
+static void
+ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
+					void *data __UNUSED__) 
+{
+    double p;
     
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
+    p = ewl_media_position_get(EWL_MEDIA(video));
+    ewl_media_position_set(EWL_MEDIA(video), p + 10.0);
 }
 
-void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
-    double len = ewl_media_length_get(EWL_MEDIA(video));
+static void
+rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
+					void *data __UNUSED__)
+{
+    double p;
+    
+    p = ewl_media_position_get(EWL_MEDIA(video));
+    ewl_media_position_set(EWL_MEDIA(video), p - 10.0);
+}
+
+static void
+video_realize_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
+					void *data __UNUSED__)
+{
+    double len;
+    
+    len = ewl_media_length_get(EWL_MEDIA(video));
     ewl_seeker_range_set(EWL_SEEKER(seeker), len);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void video_change_cb(Ewl_Widget *w, void *event, void *data) {
+static void
+video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
+{
     char buf[512];
     int h, m;
     double s;
-    Ewl_Text *t = (Ewl_Text *)data;
-    double pos = ewl_media_position_get(EWL_MEDIA(video));
+    Ewl_Text *t;
+    double pos;
+
+    t = data;
+    pos = ewl_media_position_get(EWL_MEDIA(video));
 
     ewl_seeker_value_set(EWL_SEEKER(seeker), pos);
     ewl_media_position_time_get(EWL_MEDIA(video), &h, &m, &s);
     snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
     ewl_text_text_set(t, buf);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void seeker_move_cb(Ewl_Widget *w, void *event, void *data) {
-    double val = ewl_seeker_value_get(EWL_SEEKER(seeker));
+static void
+seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
+					void *data __UNUSED__) 
+{
+    double val;
+    
+    val = ewl_seeker_value_get(EWL_SEEKER(seeker));
     if (ewl_media_seekable_get(EWL_MEDIA(video)))
 	    ewl_media_position_set(EWL_MEDIA(video), val);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void fd_win_del_cb(Ewl_Widget *w, void *event, void *data) {
+static void
+fd_win_del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
+{
     ewl_widget_hide(w);
     ewl_widget_destroy(w);
-    
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void open_file_cb(Ewl_Widget *w, void *event, void *data) {
+static void
+open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
+{
     int *response = (int *)event;
     char *file = NULL;
 
@@ -120,12 +120,12 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 
     if (file) 
         ewl_media_media_set(EWL_MEDIA(video), file);
-    
-    return;
-    data = NULL;
 }
 
-void open_cb(Ewl_Widget *w, void *event, void *data ) {
+static void
+open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
+				void *data __UNUSED__)
+{
     Ewl_Widget *fd = NULL;
 
     if (fd_win) {
@@ -145,14 +145,11 @@ void open_cb(Ewl_Widget *w, void *event, void *data ) {
     ewl_container_child_append(EWL_CONTAINER(fd_win), fd);
     ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
     ewl_widget_show(fd);
-
-    return;
-    w = NULL;
-    event = NULL;
-    data = NULL;
 }
 
-void key_up_cb(Ewl_Widget *w, void *event, void *data) {
+static void
+key_up_cb(Ewl_Widget *w, void *event, void *data)
+{
     Ewl_Event_Key_Up *e = (Ewl_Event_Key_Up *)event;
 
     if (!strcmp(e->keyname, "p"))
@@ -165,7 +162,9 @@ void key_up_cb(Ewl_Widget *w, void *event, void *data) {
 	del_cb(w, event, data);
 }
 
-int main(int argc, char ** argv) {
+int
+main(int argc, char ** argv) 
+{
     Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
     Ewl_Widget *controls = NULL, *time = NULL;
     char * file = NULL;

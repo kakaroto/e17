@@ -2,23 +2,18 @@
 
 static Ewl_Widget *scrollpane_button;
 
-void
-__destroy_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
-				 void *user_data)
+static void
+__destroy_scrollpane_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				 void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(scrollpane_button, EWL_CALLBACK_CLICKED,
 			    __create_scrollpane_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+__create_scrollpane_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	Ewl_Widget *scrollpane_win;
 	Ewl_Widget *scrollpane;
@@ -51,8 +46,5 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_object_set_padding(EWL_OBJECT(button), 20, 20, 20, 20);
 	ewl_container_child_append(EWL_CONTAINER(scrollpane), button);
 	ewl_widget_show(button);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

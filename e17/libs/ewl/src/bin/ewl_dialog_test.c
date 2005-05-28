@@ -1,26 +1,23 @@
-
 #include "ewl_test.h"
 
-void
-__destroy_test_window (Ewl_Widget *w, void *ev, void *data)
+static void
+__destroy_test_window(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
-  ewl_widget_destroy (EWL_WIDGET (w));
-  w = NULL;
-
-  return;
-  ev = NULL;
-  data = NULL;
+  ewl_widget_destroy(EWL_WIDGET(w));
 }
 
 void
-__create_window_response (Ewl_Widget *w, int *id, void *data)
+__create_window_response(Ewl_Widget *w __UNUSED__, int *id, 
+					void *data __UNUSED__)
 {
-  static Ewl_Widget *win_ok     = NULL;
-  static Ewl_Widget *win_cancel = NULL;
-  Ewl_Widget        *label;
-  char               str[100];
-  int                response = (int)*id;
-
+  Ewl_Widget *win_ok     = NULL;
+  Ewl_Widget *win_cancel = NULL;
+  Ewl_Widget *label;
+  char        str[100];
+  int         response;
+  
+  response = (int)*id;
   switch (response)
     {
     case EWL_RESPONSE_OK:
@@ -75,29 +72,18 @@ __create_window_response (Ewl_Widget *w, int *id, void *data)
 	break;
       }
     }
-
-  return;
-
-  w = NULL;
-  id = NULL;
-  data = NULL;
 }
 
-void
-__destroy_dialog_test_window (Ewl_Widget *w, void *ev, void *data)
+static void
+__destroy_dialog_test_window (Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
   ewl_widget_destroy (EWL_WIDGET (w));
-
-  return;
-  w = NULL;
-  ev = NULL;
-  data = NULL;
 }
 
 void
-__create_dialog_test_window (Ewl_Widget * w, 
-			     void *ev,
-			     void *data)
+__create_dialog_test_window (Ewl_Widget * w, void *ev __UNUSED__,
+					     void *data __UNUSED__)
 {
   Ewl_Widget *dialog_win;
   Ewl_Widget *hbox;
@@ -143,10 +129,5 @@ __create_dialog_test_window (Ewl_Widget * w,
   ewl_widget_show (button);
   
   ewl_widget_show (dialog_win);
-
-  return;
-
-  w = NULL;
-  ev = NULL;
-  data = NULL;
 }
+

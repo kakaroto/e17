@@ -1,22 +1,18 @@
 #include "ewl_test.h"
 
-
 static Ewl_Widget *notebook;
-static char       *theme_list_dir = PACKAGE_DATA_DIR "/themes/";
+static char *theme_list_dir = PACKAGE_DATA_DIR "/themes/";
 
-void
-__destroy_theme_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_theme_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy (w);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__select_theme (Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__select_theme (Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
         Ewl_Widget *cell;
 	Ewl_Widget *text;
@@ -51,15 +47,10 @@ __select_theme (Ewl_Widget * w, void *ev_data, void *user_data)
 				"/file", theme_filename);
 	
 	free (theme_filename);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-widgets_build ()
+static void
+widgets_build(void)
 {
         Ewl_Widget *misc;
 	Ewl_Widget *item;
@@ -302,7 +293,8 @@ widgets_build ()
 }
 
 void
-__create_theme_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_theme_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
         Ewl_Widget    *theme_win;
         Ewl_Widget    *hbox;
@@ -391,8 +383,6 @@ __create_theme_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show (notebook);
 	
 	ewl_widget_show (theme_win);
-	
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+
+

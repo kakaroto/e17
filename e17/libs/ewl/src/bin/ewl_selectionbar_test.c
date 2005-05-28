@@ -2,23 +2,18 @@
 
 static Ewl_Widget *sbar_button = NULL;
 		
-void
-__destroy_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
-				    void *user_data)
+static void
+__destroy_selectionbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				    void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(sbar_button, EWL_CALLBACK_CLICKED,
 			    __create_selectionbar_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
-				   void *user_data)
+__create_selectionbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				   void *user_data __UNUSED__)
 {
 	Ewl_Widget *sbar;
 	Ewl_Widget *sbar_win;
@@ -72,9 +67,5 @@ __create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
 	child[2] = ewl_button_new("child 3");
 	ewl_container_child_append(EWL_CONTAINER(sbar), child[2]);
 	ewl_widget_show(child[2]);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

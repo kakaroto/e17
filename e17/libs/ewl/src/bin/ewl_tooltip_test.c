@@ -1,19 +1,19 @@
 #include "ewl_test.h"
 
-Ewl_Widget *tooltip_button;
+static Ewl_Widget *tooltip_button;
 
-void __destroy_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_tooltip_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
 	ewl_callback_append(tooltip_button, EWL_CALLBACK_CLICKED,
 			__create_tooltip_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__create_tooltip_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *tooltip_win;
 	Ewl_Widget     *tooltip_vbox;
@@ -51,9 +51,5 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	tooltip = ewl_tooltip_new (button);
 	ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 2.5);
 	ewl_container_child_append(EWL_CONTAINER (tooltip_win), tooltip);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

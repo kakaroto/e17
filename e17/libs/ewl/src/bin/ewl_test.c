@@ -4,33 +4,24 @@
 static Ewl_Widget     *main_text;
 
 void
-__close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__close_main_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_main_quit();
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__realize_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__realize_main_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	printf("Main window realized with theme_object %p\n", w->theme_object);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__fill_main_text(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__fill_main_text(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data)
 {
-#define MAXLINELENGTH 1024
         FILE *file;
 	struct stat buf;
 	char *str;
@@ -52,10 +43,6 @@ __fill_main_text(Ewl_Widget * w, void *ev_data, void *user_data)
 	    ewl_text_text_set (EWL_TEXT (main_text), str);
 	  }
 	free (filename);
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 int
@@ -271,3 +258,4 @@ main(int argc, char **argv)
 
 	return 0;
 }
+

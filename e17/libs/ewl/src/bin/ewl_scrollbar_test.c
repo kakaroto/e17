@@ -2,22 +2,18 @@
 
 static Ewl_Widget *scrollbar_button;
 
-void
-__destroy_scrollbar_test_window(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+static void
+__destroy_scrollbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(scrollbar_button, EWL_CALLBACK_CLICKED,
 			    __create_scrollbar_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_scrollbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget *scrollbar_win;
 	Ewl_Widget *hscrollbar, *vscrollbar;
@@ -48,8 +44,5 @@ __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_padding(EWL_OBJECT(vscrollbar), 10, 10, 10, 10);
 	ewl_container_child_append(EWL_CONTAINER(scrollbar_win), vscrollbar);
 	ewl_widget_show(vscrollbar);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

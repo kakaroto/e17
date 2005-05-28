@@ -5,26 +5,22 @@ Ewl_Widget     *tmp_win;
 static Ewl_Widget *spinner_button;
 static Ewl_Widget *spinner[4];
 
-void __spinner_window_configure(Ewl_Widget * w, void *ev_data,
+static void __spinner_window_configure(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 
-void
-__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(spinner_button, EWL_CALLBACK_CLICKED,
 			    __create_spinner_test_window, NULL);
-
 	ewl_widget_destroy(tmp_win);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__spinner_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__spinner_value_changed(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int             xx, yy, ww, hh;
 
@@ -40,17 +36,13 @@ __spinner_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
 			    __spinner_window_configure, NULL);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__spinner_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__spinner_window_configure(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
-	int             xx, yy, ww, hh;
+	int xx, yy, ww, hh;
 
 	ewl_window_position_get(EWL_WINDOW(tmp_win), &xx, &yy);
 	ewl_object_current_size_get(EWL_OBJECT(tmp_win), &ww, &hh);
@@ -77,15 +69,11 @@ __spinner_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			    __spinner_value_changed, NULL);
 	ewl_callback_append(spinner[3], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *spinner_win;
 	Ewl_Widget     *spinner_box;
@@ -223,8 +211,5 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(spinner[3], EWL_CALLBACK_VALUE_CHANGED,
 			    __spinner_value_changed, NULL);
 	ewl_widget_show(spinner[3]);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

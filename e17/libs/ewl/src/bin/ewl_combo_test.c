@@ -1,47 +1,38 @@
 #include "ewl_test.h"
 
 static Ewl_Widget *combo_button = NULL;
+static void __item_down(Ewl_Widget * w, void *ev_data, void *user_data);
 
-void            __item_down(Ewl_Widget * w, void *ev_data, void *user_data);
-
-void
-__destroy_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_combo_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(combo_button, EWL_CALLBACK_CLICKED,
 			    __create_combo_test_window, NULL);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__combo_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__combo_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data, 
+					void *user_data __UNUSED__)
 {
-	char           *text = ev_data;
-
+	char *text;
+	
+	text = ev_data;
 	printf("value changed to %s\n", text);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__combo_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__combo_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	printf("Combo configured to (%d, %d) %dx%d\n", CURRENT_X(w),
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *combo_win;
 	Ewl_Widget     *combo_box;
@@ -81,7 +72,7 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(combo1, EWL_CALLBACK_CONFIGURE,
 			    __combo_configure, NULL);
 	ewl_callback_append(combo1, EWL_CALLBACK_VALUE_CHANGED,
-											__combo_value_changed, NULL);
+				__combo_value_changed, NULL);
 	ewl_widget_show(combo1);
 
 	/*
@@ -102,9 +93,5 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	item = ewl_menu_item_new(NULL, "button");
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

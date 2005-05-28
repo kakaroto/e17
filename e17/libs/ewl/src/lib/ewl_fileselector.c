@@ -302,7 +302,7 @@ void ewl_fileselector_multiselect_set(Ewl_Fileselector *fs,
 
 	if (val > 1) val = 1;
 	fs->multi_select = val;
-		
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

@@ -3,13 +3,11 @@
 static void __create_fdm_window_response(Ewl_Widget *w, void *ev, void *data);
 static void __fdm_print(void *value, void *data);
 
-void
-__destroy_filedialog_multi_test_window(Ewl_Widget *w, 
-					void *ev_data __UNUSED__,
+static void
+__destroy_filedialog_multi_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-	return;
 }
 
 void
@@ -37,16 +35,15 @@ __create_filedialog_multi_test_window(Ewl_Widget *w __UNUSED__,
 			    __create_fdm_window_response, NULL);
 	ewl_container_child_append(EWL_CONTAINER(win), fd);
 	ewl_widget_show(fd);
-
-	return;
 }
 
 static void
 __create_fdm_window_response (Ewl_Widget *w __UNUSED__, void *ev, 
 					void *data __UNUSED__)
 {
-  int *response = (int *)ev;
-
+  int *response;
+  
+  response = (int *)ev;
   switch (*response) {
     case EWL_RESPONSE_OPEN:
       {
@@ -62,8 +59,6 @@ __create_fdm_window_response (Ewl_Widget *w __UNUSED__, void *ev,
         break;
       }
     }
-
-  return;
 }
 
 static void

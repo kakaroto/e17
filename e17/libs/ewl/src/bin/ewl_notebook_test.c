@@ -2,33 +2,29 @@
 
 static Ewl_Widget *notebook_button;
 
-void            __notebook_append_page(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __notebook_prepend_page(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-void
-                __notebook_remove_visible_page(Ewl_Widget * w, void *ev_data,
-					       void *user_data);
+static void __notebook_append_page(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+static void __notebook_prepend_page(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+static void __notebook_remove_visible_page(Ewl_Widget * w, void *ev_data,
+						void *user_data);
 
-Ewl_Widget     *button_aleft, *button_acenter, *button_aright, *button_atop,
-	*button_abottom;
-Ewl_Widget     *button_pleft, *button_pright, *button_ptop, *button_pbottom;
+static Ewl_Widget *button_aleft, *button_acenter, *button_aright;
+static Ewl_Widget *button_atop, *button_abottom;
+static Ewl_Widget *button_pleft, *button_pright, *button_ptop, *button_pbottom;
 
-void
-__destroy_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_notebook_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(notebook_button, EWL_CALLBACK_CLICKED,
 			    __create_notebook_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__notebook_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__notebook_change_alignment(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	if (!ewl_radiobutton_is_checked(EWL_RADIOBUTTON(w)))
 		return;
@@ -45,15 +41,11 @@ __notebook_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (w == button_abottom)
 		ewl_notebook_tabs_alignment_set(user_data,
 						EWL_FLAG_ALIGN_BOTTOM);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__notebook_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__notebook_change_position(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	if (!ewl_radiobutton_is_checked(w))
 		return;
@@ -66,13 +58,10 @@ __notebook_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_notebook_tabs_position_set(user_data, EWL_POSITION_TOP);
 	else if (w == button_pbottom)
 		ewl_notebook_tabs_position_set(user_data, EWL_POSITION_BOTTOM);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void __notebook_create_main_page(Ewl_Widget * notebook)
+static void
+__notebook_create_main_page(Ewl_Widget * notebook)
 {
 	Ewl_Widget     *main_vbox;
 	Ewl_Widget     *tab;
@@ -182,12 +171,10 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_pbottom);
 
 	ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), tab, main_vbox);
-
-	return;
 }
 
-void
-__notebook_generate_page(Ewl_Widget * notebook, int type)
+static void
+__notebook_generate_page(Ewl_Widget *notebook, int type)
 {
 	Ewl_Widget     *main_vbox, *hbox;
 	Ewl_Widget     *tab;
@@ -240,45 +227,32 @@ __notebook_generate_page(Ewl_Widget * notebook, int type)
 		ewl_notebook_page_append(EWL_NOTEBOOK(notebook), tab, main_vbox);
 	else
 		ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), tab, main_vbox);
-
-	return;
 }
 
-void
-__notebook_append_page(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__notebook_append_page(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	__notebook_generate_page(user_data, 0);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__notebook_prepend_page(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__notebook_prepend_page(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	__notebook_generate_page(user_data, 1);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__notebook_remove_visible_page(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__notebook_remove_visible_page(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+							void *user_data)
 {
 	ewl_notebook_visible_page_remove(EWL_NOTEBOOK(user_data));
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_notebook_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *notebook_win;
 	Ewl_Widget     *notebook_box;
@@ -320,8 +294,5 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	__notebook_append_page(NULL, NULL, notebook);
 
 	__notebook_create_main_page(notebook);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

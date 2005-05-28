@@ -2,20 +2,18 @@
 
 static Ewl_Widget *menubar_button;
 
-void
-__destroy_menubar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__destroy_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(menubar_button, EWL_CALLBACK_CLICKED,
-							__create_menubar_test_window, NULL);
-	return;
-	ev_data = NULL;
-	user_data = NULL;
+					__create_menubar_test_window, NULL);
 }
 
 void
-__create_menubar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+__create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget *menubar_win = NULL, *box = NULL;
 	Ewl_Widget *h_menubar = NULL, *v_menubar = NULL;
@@ -96,10 +94,6 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
 	}
 	ewl_container_child_append(EWL_CONTAINER(box), v_menubar);
 	ewl_widget_show(v_menubar);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 

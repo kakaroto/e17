@@ -2,34 +2,26 @@
 
 static Ewl_Widget *colorpicker_button = NULL;
 
-void
-__destroy_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_colorpicker_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
 	ewl_callback_append(colorpicker_button, EWL_CALLBACK_CLICKED,
 			    __create_colorpicker_test_window, NULL);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__color_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__color_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data, 
+						void *user_data __UNUSED__)
 {
-	char           *text = ev_data;
-
+	char *text = ev_data;
 	printf("value changed to %s\n", text);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_colorpicker_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *colorpicker_win;
 	Ewl_Widget     *colorpicker_box;
@@ -74,7 +66,5 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(colorpicker1);
 
 	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

@@ -2,34 +2,28 @@
 
 static Ewl_Widget *seeker_button;
 
-void
-__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(seeker_button, EWL_CALLBACK_CLICKED,
 			    __create_seeker_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__print_value(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__print_value(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s;
 
 	s = EWL_SEEKER(w);
-
 	printf("Seeker set to %g\n", ewl_seeker_value_get(s));
-    return;
-    ev_data = NULL;
-    user_data = NULL;
 }
 
 void
-__create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_seeker_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget *seeker_win;
 	Ewl_Widget *hseeker, *vseeker;
@@ -65,8 +59,5 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 			NULL);
 	ewl_container_child_append(EWL_CONTAINER(seeker_win), vseeker);
 	ewl_widget_show(vseeker);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

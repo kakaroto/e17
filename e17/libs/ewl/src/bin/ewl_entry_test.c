@@ -3,23 +3,20 @@
 static Ewl_Widget *entry_button;
 static Ewl_Widget *entry[2];
 
-void
-__destroy_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_entry_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(entry_button, EWL_CALLBACK_CLICKED,
 			    __create_entry_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
 {
-	char           *s;
+	char *s;
 
 	s = ewl_entry_text_get(EWL_ENTRY(entry[0]));
 	printf("First entry covers: %s\n", s);
@@ -28,16 +25,11 @@ __fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 	s = ewl_entry_text_get(EWL_ENTRY(entry[1]));
 	printf("Second entry covers: %s\n", s);
 	FREE(s);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
-
 }
 
-void
-__set_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	ewl_entry_color_set(EWL_ENTRY(entry[0]), 0, 0, 0, 255);
 	ewl_entry_color_set(EWL_ENTRY(entry[1]), 0, 0, 0, 255);
@@ -45,15 +37,11 @@ __set_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_entry_text_set(EWL_ENTRY(entry[1]), "E W L ! ! !");
 	ewl_entry_color_set(EWL_ENTRY(entry[0]), 255, 0, 0, 255);
 	ewl_entry_color_set(EWL_ENTRY(entry[1]), 255, 0, 0, 255);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *entry_win;
 	Ewl_Widget     *entry_box;
@@ -118,8 +106,6 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_entry_text, NULL);
 	ewl_widget_show(button[1]);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+
+

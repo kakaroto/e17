@@ -1,23 +1,17 @@
 #include "ewl_test.h"
 
-void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data);
-void __destroy_fd_window (Ewl_Widget *w, void *ev, void *data);
-void __create_fd_window_response (Ewl_Widget *w, void *ev, void *data);
+static void __create_fd_window_response (Ewl_Widget *w, void *ev, void *data);
 
-void
-__destroy_filedialog_test_window(Ewl_Widget * w, void *ev_data,
-				    void *user_data)
+static void
+__destroy_filedialog_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				    void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
-				   void *user_data)
+__create_filedialog_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+				   void *user_data __UNUSED__)
 {
 	Ewl_Widget *fd = NULL, *win = NULL;
 
@@ -39,18 +33,14 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 			    __create_fd_window_response, NULL);
 	ewl_container_child_append(EWL_CONTAINER(win), fd);
 	ewl_widget_show(fd);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__create_fd_window_response (Ewl_Widget *w, void *ev, void *data)
+static void
+__create_fd_window_response (Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-  int *response = (int *)ev;
-
+  int *response;
+  
+  response = (int *)ev;
   switch (*response)
     {
     case EWL_RESPONSE_OPEN:
@@ -65,9 +55,5 @@ __create_fd_window_response (Ewl_Widget *w, void *ev, void *data)
         break;
       }
     }
-
-  return;
-
-  w = NULL;
-  data = NULL;
 }
+

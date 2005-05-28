@@ -6,21 +6,18 @@ static Ewl_Widget *button_pleft, *button_pright, *button_ptop, *button_pbottom;
 
 static Ewl_Widget *border_button = NULL;
 
-void
-__destroy_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_border_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(border_button, EWL_CALLBACK_CLICKED,
 			    __create_border_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__border_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__border_change_alignment(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	if (!ewl_radiobutton_is_checked(EWL_RADIOBUTTON(w)))
 		return;
@@ -41,13 +38,11 @@ __border_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_border_label_alignment_set(user_data, EWL_FLAG_ALIGN_BOTTOM);
 
 	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__border_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__border_change_position(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	if (!ewl_radiobutton_is_checked(w))
 		return;
@@ -65,12 +60,11 @@ __border_change_position(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_border_label_position_set(user_data, EWL_POSITION_BOTTOM);
 
 	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_border_test_window(Ewl_Widget * w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget *border_win;
 	Ewl_Widget *border_box;
@@ -189,7 +183,5 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(button_pbottom);
 
 	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 

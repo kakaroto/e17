@@ -2,21 +2,18 @@
 
 static Ewl_Widget *floater_button = NULL;
 
-void
-__destroy_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_floater_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(floater_button, EWL_CALLBACK_CLICKED,
 			    __create_floater_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_floater_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *floater;
 	Ewl_Widget     *floater_win;
@@ -95,9 +92,5 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[1]);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

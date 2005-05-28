@@ -2,21 +2,19 @@
 
 static Ewl_Widget *button_button = NULL;
 
-void
-__delete_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__delete_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
 
 	ewl_callback_append(button_button, EWL_CALLBACK_CLICKED,
 			    __create_button_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *button_win;
 	Ewl_Widget     *button_box;
@@ -116,7 +114,5 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(radio_button[1]);
 
 	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

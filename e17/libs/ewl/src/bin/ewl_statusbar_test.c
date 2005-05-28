@@ -4,7 +4,8 @@ static Ewl_Widget *statusbar_button;
 static int current_num = 0;
 
 static void
-__button_push_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+__button_push_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	Ewl_Statusbar *sb;
 	char msg[20];
@@ -13,39 +14,30 @@ __button_push_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	snprintf(msg, 20, "at %d", current_num++);
 	ewl_statusbar_push(sb, msg);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
 }
 
 static void
-__button_pop_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+__button_pop_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	Ewl_Statusbar *sb;
 
 	sb = user_data;
 	ewl_statusbar_pop(sb);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
 }
 
-void
-__destroy_statusbar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__destroy_statusbar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(statusbar_button, EWL_CALLBACK_CLICKED,
 					__create_statusbar_test_window, NULL);
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_statusbar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+__create_statusbar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget *statusbar_win = NULL, *box = NULL;
 	Ewl_Widget *statusbar = NULL, *button = NULL;
@@ -90,10 +82,6 @@ __create_statusbar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_widget_show(button);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 

@@ -3,23 +3,20 @@
 static Ewl_Widget *password_button;
 static Ewl_Widget *password[2];
 
-void
-__destroy_password_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(password_button, EWL_CALLBACK_CLICKED,
 			    __create_password_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__fetch_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__fetch_password_text(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	char           *s;
+	char *s;
 
 	s = ewl_password_text_get(EWL_PASSWORD(password[0]));
 	printf("First password covers: %s\n", s);
@@ -28,28 +25,19 @@ __fetch_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
 	s = ewl_password_text_get(EWL_PASSWORD(password[1]));
 	printf("Second password covers: %s\n", s);
 	FREE(s);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
-
 }
 
-void
-__set_password_text(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__set_password_text(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_password_text_set(EWL_PASSWORD(password[0]), "Play with me ?");
 	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_password_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
 	Ewl_Widget     *password_win;
 	Ewl_Widget     *password_box;
@@ -112,8 +100,5 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_password_text, NULL);
 	ewl_widget_show(button[1]);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

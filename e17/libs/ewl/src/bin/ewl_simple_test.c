@@ -2,9 +2,9 @@
 #include <Ewl.h>
 #include "ewl_macros.h"
 
-void
-entice_text(void *data, Evas_Object *obj, const char *emission,
-		const char *source)
+static void
+entice_text(void *data, Evas_Object *obj __UNUSED__, 
+		const char *emission __UNUSED__, const char *source __UNUSED__)
 {
 	Ewl_Widget *label = data;
 	char *text = "\nEntice is an image viewer that\n"
@@ -24,16 +24,11 @@ entice_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
-
-    return;
-    obj = NULL;
-    emission = NULL;
-    source = NULL;
 }
 
-void
-entrance_text(void *data, Evas_Object *obj, const char *emission,
-		const char *source)
+static void
+entrance_text(void *data, Evas_Object *obj __UNUSED__,
+		const char *emission __UNUSED__, const char *source __UNUSED__)
 {
 	Ewl_Widget *label = data;
 	char *text = "\nEntrance [en-'trans], v.\n"
@@ -53,16 +48,11 @@ entrance_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
-    
-    return;
-    obj = NULL;
-    emission = NULL;
-    source = NULL;
 }
 
-void
-elicit_text(void *data, Evas_Object *obj, const char *emission,
-		const char *source)
+static void
+elicit_text(void *data, Evas_Object *obj __UNUSED__,
+		const char *emission __UNUSED__, const char *source __UNUSED__)
 {
 	Ewl_Widget *label = data;
 	char *text = "\nElicit is a tool for examining\n"
@@ -83,16 +73,11 @@ elicit_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
-    
-    return;
-    obj = NULL;
-    emission = NULL;
-    source = NULL;
 }
 
-void
-evidence_text(void *data, Evas_Object *obj, const char *emission,
-              const char *source)
+static void
+evidence_text(void *data, Evas_Object *obj __UNUSED__,
+		const char *emission __UNUSED__, const char *source __UNUSED__)
 {
         Ewl_Widget *label = data;
         char *text = "\nEvidence is a file-manager\n"
@@ -113,16 +98,11 @@ evidence_text(void *data, Evas_Object *obj, const char *emission,
         ewl_text_style_set(EWL_TEXT(label), "none");
         ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
         ewl_text_text_append(EWL_TEXT(label), text);
-    
-    return;
-    obj = NULL;
-    emission = NULL;
-    source = NULL;
 }
 
-void
-edje_text(void *data, Evas_Object *obj, const char *emission,
-              const char *source)
+static void
+edje_text(void *data, Evas_Object *obj __UNUSED__,
+		const char *emission, const char *source)
 {
         char *text;
         Ewl_Widget *label = data;
@@ -142,12 +122,11 @@ edje_text(void *data, Evas_Object *obj, const char *emission,
         ewl_text_style_set(EWL_TEXT(label), "none");
         ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
         ewl_text_text_append(EWL_TEXT(label), text);
-    
-	return;
-	obj = NULL;
 }
 
-void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+start_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data)
 {
 	Ewl_Widget *label = user_data;
 
@@ -163,61 +142,46 @@ void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);
 	ewl_text_text_append(EWL_TEXT(label), "http://www.enlightenment.org/");
 	ewl_text_color_set(EWL_TEXT(label), 0, 0, 0, 255);
-    
-    return;
-    w = NULL;
-    ev_data = NULL;
 }
 
-void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+realize_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 	edje_object_signal_callback_add(w->theme_object, "Present*", "*",
 			edje_text, user_data);
-
-	return;
-	ev_data = NULL;
 }
 
-void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+test_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 	printf("%s at: %d, %d (%d x %d)\n", (char *)user_data, CURRENT_X(w),
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-
-    return;
-    ev_data = NULL;
 }
 
-void close_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+close_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_main_quit();
-
-    return;
-    w = NULL;
-    ev_data = NULL;
-    user_data = NULL;
 }
 
-void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+button_down(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+				void *user_data)
 {
 	Ewl_Widget *logo = user_data;
 	ewl_widget_state_set(logo, "start_tour");
-
-    return;
-    w = NULL;
-    ev_data = NULL;
 }
 
-void quit_demo(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+quit_demo(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	ewl_main_quit();
-
-    return;
-    w = NULL;
-    ev_data = NULL;
-    user_data = NULL;
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	Ewl_Widget *win;
 	Ewl_Widget *vbox;
@@ -291,6 +255,6 @@ int main(int argc, char **argv)
 	ewl_widget_configure(win);
 
 	ewl_main();
-
 	return 0;
 }
+

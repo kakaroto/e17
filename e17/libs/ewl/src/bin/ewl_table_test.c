@@ -2,24 +2,18 @@
 
 static Ewl_Widget *table_button = NULL;
 
-void            __create_table_test_window(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
-
-void
-__destroy_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_table_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(table_button, EWL_CALLBACK_CLICKED,
 			    __create_table_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_table_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *table_win;
 	Ewl_Widget     *table_box;
@@ -146,8 +140,5 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 */
 
 	ewl_widget_configure(table);
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

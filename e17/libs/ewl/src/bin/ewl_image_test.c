@@ -1,18 +1,19 @@
 #include "ewl_test.h"
 
-static Ewl_Widget *image_button;
-Ewl_Widget     *image_win;
-Ewl_Widget     *image_box;
-Ewl_Widget     *image;
-Ecore_DList      *images;
-Ewl_Widget     *entry_path;
-Ewl_Widget	*note_box;
-Ewl_Widget	*note;
+static Ewl_Widget     *image_button;
+static Ewl_Widget     *image_win;
+static Ewl_Widget     *image_box;
+static Ewl_Widget     *image;
+static Ecore_DList    *images;
+static Ewl_Widget     *entry_path;
+static Ewl_Widget     *note_box;
+static Ewl_Widget     *note;
 
-void
-__destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
-	char           *str;
+	char *str;
 
 	ecore_dlist_goto_first(images);
 
@@ -20,21 +21,15 @@ __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 		FREE(str);
 
 	ecore_dlist_destroy(images);
-
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(image_button, EWL_CALLBACK_CLICKED,
 			    __create_image_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-int
+static int
 __image_exists(char *i)
 {
-	struct stat     st;
+	struct stat st;
 
 	if (!i || !strlen(i))
 		return -1;
@@ -45,32 +40,28 @@ __image_exists(char *i)
 	return 1;
 }
 
-void
-__image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	char           *img = NULL;
+	char *img = NULL;
 
 	ecore_dlist_previous(images);
 	img = ecore_dlist_current(images);
 
-	if (!img)
-		img = ecore_dlist_goto_last(images);
+	if (!img) img = ecore_dlist_goto_last(images);
 
 	ewl_entry_text_set(EWL_ENTRY(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 
 	ewl_widget_configure(image_win);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__image_load_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
 {
-	char           *img = NULL;
+	char *img = NULL;
 
 	img = ewl_entry_text_get(EWL_ENTRY(entry_path));
 
@@ -81,19 +72,14 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	} else
 		printf("ERROR: %s does not exist\n", img);
 
-
 	ewl_widget_configure(image_win);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	char           *img = NULL;
+	char *img = NULL;
 
 	ecore_dlist_next(images);
 	img = ecore_dlist_current(images);
@@ -105,15 +91,11 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 
 	ewl_widget_configure(image_win);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *scrollpane;
 	Ewl_Widget     *button_hbox;
@@ -121,7 +103,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	char           *image_file = NULL;
 
 	image_button = w;
-
 	images = ecore_dlist_new();
 
 	image_win = ewl_window_new();
@@ -183,12 +164,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	button_prev = ewl_button_new("Previous");
 	button_load = ewl_button_new("Load");
 	button_next = ewl_button_new("Next");
-
-/*
-	ewl_object_set_custom_size(EWL_OBJECT(button_prev), 32, NULL);
-	ewl_object_set_custom_size(EWL_OBJECT(button_load), 32, NULL);
-	ewl_object_set_custom_size(EWL_OBJECT(button_next), 32, NULL);
-*/
 
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
@@ -277,10 +252,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (image_file)
 		ecore_dlist_append(images, image_file);
 
-	        ewl_widget_show(image);
-
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
+        ewl_widget_show(image);
 }
+

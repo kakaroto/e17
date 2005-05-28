@@ -6,38 +6,30 @@
 
 static Ewl_Widget *tree_button;
 
-void
-__destroy_tree_test_window(Ewl_Widget * w, void *ev_data,
-				 void *user_data)
+static void
+__destroy_tree_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				 void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(tree_button, EWL_CALLBACK_CLICKED,
 			    __create_tree_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__get_rows(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__get_rows(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data)
 {
 	Ecore_List *selected;
-	Ewl_Tree *tree = user_data;
-
+	Ewl_Tree *tree;
+	
+	tree = user_data;
 	selected = ewl_tree_selected_get(tree);
-
 	printf("Selected %d rows\n", ecore_list_nodes(selected));
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_tree_test_window(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+__create_tree_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	int row, col;
 	char buf[PATH_MAX];
@@ -141,8 +133,5 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	}
 
 	printf("Tree setup complete!!!\n");
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

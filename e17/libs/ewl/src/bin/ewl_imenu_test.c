@@ -2,49 +2,36 @@
 
 static Ewl_Widget *imenu_button = NULL;
 
-void            __item_down(Ewl_Widget * w, void *ev_data, void *user_data);
-
-void
-__destroy_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__destroy_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(imenu_button, EWL_CALLBACK_CLICKED,
 			    __create_imenu_test_window, NULL);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__imenu_select(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__imenu_select(Ewl_Widget * w, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
 {
-	char           *text;
+	char *text;
 
 	text = ewl_text_text_get(EWL_TEXT(EWL_MENU_ITEM(w)->text));
 	printf("%s item down\n", text);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__imenu_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__imenu_configure(Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	printf("Imenu configured to (%d, %d) %dx%d\n", CURRENT_X(w),
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
-    return;
-    w = NULL;
-    ev_data = NULL;
-    user_data = NULL;
 }
 
 void
-__create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Widget     *imenu_win;
 	Ewl_Widget     *imenu_box;
@@ -124,9 +111,5 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+

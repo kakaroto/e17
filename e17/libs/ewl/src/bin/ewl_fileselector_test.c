@@ -2,25 +2,20 @@
 
 static Ewl_Widget *fs_button = NULL;
 
-void            __file_clicked(Ewl_Widget *, void *ev_data, void *user_data);
+static void __file_clicked(Ewl_Widget *, void *ev_data, void *user_data);
 
-void
-__destroy_fileselector_test_window(Ewl_Widget * w, void *ev_data,
-				   void *user_data)
+static void
+__destroy_fileselector_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
+				   void *user_data __UNUSED__)
 {
 	ewl_widget_destroy(w);
-
 	ewl_callback_append(fs_button, EWL_CALLBACK_CLICKED,
 			    __create_fileselector_test_window, NULL);
-
-	return;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
 void
-__create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
-				  void *user_data)
+__create_fileselector_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
+				  void *user_data __UNUSED__)
 {
 	Ewl_Widget     *fs;
 	Ewl_Widget     *fs_win;
@@ -46,24 +41,15 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_object_fill_policy_set(EWL_OBJECT(fs), EWL_FLAG_FILL_FILL);
 	ewl_container_child_append(EWL_CONTAINER(fs_win), fs);
 	ewl_widget_show(fs);
-
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
 
-void
-__file_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__file_clicked(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
 {
 	Ewl_Fileselector *fs;
 	
 	printf("file clicked: %s\n", 
 			ewl_fileselector_file_get (EWL_FILESELECTOR (fs)));
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
 }
+
