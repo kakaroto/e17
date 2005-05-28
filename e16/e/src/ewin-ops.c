@@ -443,13 +443,14 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
       ICCCM_Configure(ewin);
 
-   if (flags & (MRF_DESK | MRF_MOVE))
+   if (flags & (MRF_DESK | MRF_MOVE | MRF_FLOAT | MRF_UNFLOAT))
      {
 	lst = EwinListTransients(ewin, &num, 0);
 	for (i = 0; i < num; i++)
 	   doMoveResizeEwin(lst[i], desk, EoGetX(lst[i]) + dx,
 			    EoGetY(lst[i]) + dy, 0, 0,
-			    flags & (MRF_DESK | MRF_MOVE));
+			    flags & (MRF_DESK | MRF_MOVE |
+				     MRF_FLOAT | MRF_UNFLOAT));
 	if (lst)
 	   Efree(lst);
      }
