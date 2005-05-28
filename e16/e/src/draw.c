@@ -620,7 +620,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 {
    static GC           gc = 0;
    XGCValues           gcv;
-   int                 x1, y1, w1, h1, i, j, pw, ph, dx, dy;
+   int                 x1, y1, w1, h1, i, j, dx, dy;
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
    char                str[32];
@@ -637,9 +637,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
        ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H) ||
 	(Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
-
-   pw = w;
-   ph = h;
 
    switch (md)
      {
@@ -670,17 +667,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
 	    || (Mode.mode == MODE_RESIZE_V))
 	  {
-	     w1 = ewin->client.w;
-	     h1 = ewin->client.h;
-	     ewin->client.w = w;
-	     ewin->client.h = h;
-	     ICCCM_MatchSize(ewin);
 	     i = (x - ewin->shape_x) / ewin->client.w_inc;
 	     j = (y - ewin->shape_y) / ewin->client.h_inc;
 	     x = ewin->shape_x + (i * ewin->client.w_inc);
 	     y = ewin->shape_y + (j * ewin->client.h_inc);
-	     ewin->client.w = w1;
-	     ewin->client.h = h1;
 	  }
 
 	dx = DeskGetX(EoGetDesk(ewin));
@@ -698,15 +688,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	  {
-	     ewin->client.w = w;
-	     ewin->client.h = h;
-	     ICCCM_MatchSize(ewin);
 	     if (!ewin->shaded)
-	       {
-		  ewin->shape_w = ewin->client.w;
-		  ewin->shape_h = ewin->client.h;
-	       }
+		ICCCM_SizeMatch(ewin, w, h, &ewin->shape_w, &ewin->shape_h);
 	  }
+
 	w = ewin->shape_w;
 	h = ewin->shape_h;
 
@@ -1048,7 +1033,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  if (ewin->shaded)
 		     MoveEwin(ewin, ewin->shape_x, ewin->shape_y);
 		  else
-		     MoveResizeEwin(ewin, ewin->shape_x, ewin->shape_y, pw, ph);
+		     MoveResizeEwin(ewin, ewin->shape_x, ewin->shape_y,
+				    ewin->shape_w, ewin->shape_h);
 	       }
 #endif
 	     EFreeGC(gc);
