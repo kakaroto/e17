@@ -33,6 +33,8 @@ static void ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *entry,
 static void ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *entry, 
 					void *ev_data, void *user_data);
 
+static void ewl_fileselector_files_free_cb(void *data);
+
 /**
  * @return Returns NULL on failure, or the new fileselector on success.
  * @brief Create a new fileselector
@@ -44,8 +46,9 @@ Ewl_Widget *ewl_fileselector_new()
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	fs = NEW(Ewl_Fileselector, 1);
-	if (!fs)
+	if (!fs) {
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
 	if (!ewl_fileselector_init(fs)) {
 		FREE(fs);
@@ -109,7 +112,6 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 		ewl_container_child_prepend(EWL_CONTAINER(hbox),
 					    fs->entry_dir);
 		ewl_widget_show(fs->entry_dir);
-		// ewl_object_custom_w_set(EWL_OBJECT(fs->entry_dir), 200);
 
 		misc = ewl_spacer_new();
 		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
@@ -213,6 +215,9 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 	tmp = getenv("HOME");
 	fs->path = strdup((tmp ? tmp : "/"));
 
+	fs->files = ecore_list_new();
+	ecore_list_set_free_cb(fs->files, ewl_fileselector_files_free_cb);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -240,21 +245,27 @@ char *ewl_fileselector_path_get(Ewl_Fileselector * fs)
  */
 char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 {
-	char *entry_file;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
 
-	entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
-	IF_FREE(fs->file);
-	fs->file = entry_file;
+	if (ecore_list_is_empty(fs->files)) {
+		char *entry_file;
 
-	if (!fs->file || !fs->path) {
+		entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
+		if (entry_file && fs->path) {
+			char *f2;
+
+			f2 = ewl_fileselector_str_append(fs->path, entry_file);
+			ecore_list_append(fs->files, f2);
+			FREE(entry_file);
+		}
+	}
+
+	if (ecore_list_is_empty(fs->files)) {
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
-	entry_file = ewl_fileselector_str_append(fs->path, fs->file);
 
-	DRETURN_PTR(entry_file, DLEVEL_STABLE);
+	DRETURN_PTR(ecore_list_goto_first(fs->files), DLEVEL_STABLE);
 }
 
 /**
@@ -275,6 +286,50 @@ void ewl_fileselector_path_set(Ewl_Fileselector * fs, char *path)
 		fs->path = strdup(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fs: The fileselector
+ * @param val: Set selector multiselect (0|1)
+ * @return Returns no value
+ * @brief Sets the selector multi or single select
+ */
+void ewl_fileselector_multiselect_set(Ewl_Fileselector *fs, 
+						unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fs", fs);
+
+	if (val > 1) val = 1;
+	fs->multi_select = val;
+		
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fs: The fileselector
+ * @return Returns the multiselect status of the selector
+ * @brief Gets the multiselect status of the selector
+ */
+unsigned int ewl_fileselector_multiselect_get(Ewl_Fileselector *fs)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fs", fs, 0);
+
+	DRETURN_INT(fs->multi_select, DLEVEL_STABLE);
+}
+
+/**
+ * @param fs: The fileselector
+ * @return Returns the selections
+ * @brief Returns the files selected in the selector
+ */
+Ecore_List *ewl_fileselector_select_list_get(Ewl_Fileselector *fs)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
+
+	DRETURN_PTR(fs->files, DLEVEL_STABLE);
 }
 
 /*
@@ -530,7 +585,7 @@ ewl_fileselector_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 {
 	Ewl_Fileselector *fs = EWL_FILESELECTOR(w);
 	IF_FREE(fs->path);
-	IF_FREE(fs->file);
+	ecore_list_destroy(fs->files);
 	IF_FREE(fs->dfilter);
 }
 
@@ -546,15 +601,49 @@ ewl_fileselector_tooltip_destroy_cb(Ewl_Widget *w __UNUSED__,
 void ewl_fileselector_select_file_cb(Ewl_Widget *w,
 					void *ev_data __UNUSED__, void *data)
 {
+	Ewl_Event_Mouse_Up *ev;
 	Ewl_Fileselector *fs;
 	char *name = NULL;
+	char *full_name = NULL;
 
+	ev = ev_data;
 	fs = data;
 	name = ewl_widget_data_get(w, "FILESELECTOR_FILE");
 
-	IF_FREE(fs->file);
-	fs->file = strdup(name);
-	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), name);
+	full_name = ewl_fileselector_str_append(fs->path, name);
+	if (!full_name) {
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+
+	if ((fs->multi_select) && (ev->modifiers & EWL_KEY_MODIFIER_CTRL)) {
+		int i, found = 0;
+
+		for (i = 0; i < ecore_list_nodes(fs->files); i++) {
+			char *cur;
+
+			/* see if this selection is already in the list and
+			 * remove if so */
+			cur = ecore_list_goto_index(fs->files, i);
+			if (!strcmp(cur, full_name))
+			{
+				ecore_list_remove(fs->files);
+				found = 1;
+				break;
+			}
+		}
+		if (!found) ecore_list_append(fs->files, full_name);
+	} else {
+		ecore_list_clear(fs->files);
+		ecore_list_append(fs->files, full_name);
+	}
+
+	/* only set the name if there is a single selection */
+	if (ecore_list_nodes(fs->files) == 1)
+		ewl_entry_text_set(EWL_ENTRY(fs->entry_file), name);
+	else
+		ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -619,6 +708,9 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
 
+	/* clear the selection list */
+	ecore_list_clear(fs->files);
+
 	/*
 	 * Setup a regex for matching files.
 	 */
@@ -634,7 +726,6 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	}
 
 	fs->path = path2;
-	fs->file = NULL;
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_dir), path2);
 
 	files = ecore_list_new();
@@ -800,3 +891,15 @@ ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	v = ewl_widget_data_get(w, "FILESELECTOR_DIR");
 	IF_FREE(v);
 }
+
+static void
+ewl_fileselector_files_free_cb(void *data)
+{
+	char *v;
+
+	v = data;
+	IF_FREE(v);
+}
+
+
+

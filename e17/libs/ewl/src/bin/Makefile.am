@@ -23,6 +23,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_dialog_test.c \
 					ewl_entry_test.c \
 					ewl_filedialog_test.c \
+					ewl_filedialog_multi_test.c \
 					ewl_fileselector_test.c \
 					ewl_floater_test.c \
 					ewl_image_test.c \

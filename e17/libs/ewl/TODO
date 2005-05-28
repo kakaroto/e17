@@ -36,5 +36,7 @@ EWL TODO
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
         test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.
-
+- [BUG] The first time a tooltip popps up in the ewl_test (tooltip test) it
+        appears over the button, instead of off the end of the mouse. Subsequent
+        activations are in the correct spot
 

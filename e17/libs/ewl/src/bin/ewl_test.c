@@ -78,6 +78,7 @@ main(int argc, char **argv)
 		{ "Dialog",      __create_dialog_test_window,      "ewl_dialog_test.c" },
 		{ "Entry",       __create_entry_test_window,       "ewl_entry_test.c" },
 		{ "Filedialog",  __create_filedialog_test_window,  "ewl_filedialog_test.c" },
+		{ "Filedialog MultiSelect",  __create_filedialog_multi_test_window,  "ewl_filedialog_multi_test.c" },
 		{ "Floater",     __create_floater_test_window,     "ewl_floater_test.c" },
 		{ "Image",       __create_image_test_window,       "ewl_image_test.c" },
 		{ "IMenu",       __create_imenu_test_window,       "ewl_imenu_test.c" },

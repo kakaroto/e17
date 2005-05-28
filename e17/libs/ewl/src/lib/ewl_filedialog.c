@@ -9,6 +9,25 @@
 #include <string.h>
 
 /**
+ * @return Returns a new open filedialog if successful, NULL on failure.
+ * @brief Create a new open filedialog
+ */
+Ewl_Widget *ewl_filedialog_multiselect_new(void)
+{
+	Ewl_Widget *fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+	if (!fd) {
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+	ewl_filedialog_multiselect_set(EWL_FILEDIALOG(fd), TRUE);
+
+	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
+}
+
+/**
  * @param type: type of dialog to display
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
@@ -140,6 +159,56 @@ void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
 	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog
+ * @param val: 1 to set multiselect, 0 otherwise
+ * @return Returns no value.
+ * @brief Sets the dialog to multiselect or single select
+ */
+void ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+
+	ewl_fileselector_multiselect_set(EWL_FILESELECTOR(fd->fs), val);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog
+ * @return Returns the multi select setting (0|1)
+ * @brief gets the multiselect setting of the filedialog
+ */
+unsigned int ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
+{
+	unsigned int val;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, 0);
+
+	val = ewl_fileselector_multiselect_get(EWL_FILESELECTOR(fd->fs));
+
+	DRETURN_INT(val, DLEVEL_STABLE);	
+}
+
+/**
+ * @param fd: The filedialog
+ * @return Returns an Ecore_List of selected items
+ * @brief returns all the elements selected by the user
+ */
+Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
+{
+	Ecore_List *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+
+	list = ewl_fileselector_select_list_get(EWL_FILESELECTOR(fd->fs));
+
+	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
 /*

@@ -42,19 +42,25 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
  */
 struct Ewl_Filedialog
 {
-	Ewl_Box     box; /**< the overlay containing the fileselector */
-	Ewl_Widget    *fs;     /**< Ewl_Fileselector */
+	Ewl_Box	       box; /**< the overlay containing the fileselector */
+	Ewl_Widget    *fs; /**< Ewl_Fileselector */
 };
 
 
-Ewl_Widget *ewl_filedialog_new      (Ewl_Filedialog_Type type);
+Ewl_Widget *ewl_filedialog_multiselect_new(void);
+Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type);
 
-int         ewl_filedialog_init     (Ewl_Filedialog *fd, 
-					    Ewl_Filedialog_Type type);
-char       *ewl_filedialog_path_get (Ewl_Filedialog *fd);
-char       *ewl_filedialog_file_get (Ewl_Filedialog *fd);
-void        ewl_filedialog_path_set (Ewl_Filedialog *fd,
-					     char   *path);
+int         ewl_filedialog_init(Ewl_Filedialog *fd, 
+                                            Ewl_Filedialog_Type type);
+char       *ewl_filedialog_path_get(Ewl_Filedialog *fd);
+char       *ewl_filedialog_file_get(Ewl_Filedialog *fd);
+void        ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path);
+
+void        ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, 
+					     unsigned int val);
+unsigned int ewl_filedialog_multiselect_get(Ewl_Filedialog *fd);
+
+Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd);
 
 /*
  * Internally used callbacks, override at your own risk.

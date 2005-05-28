@@ -46,10 +46,10 @@ struct Ewl_Fileselector
 	Ewl_Widget    *entry_filter;
   
 	char          *path;    /* current fileselector path */
-	char          *file;    /* current selected item in the fileselector */
+	Ecore_List    *files;   /* current selected items in the fileselector */
 	char          *dfilter; /* current filter to apply to directories */
+	unsigned int   multi_select; /* is the selector multi select or not */
 };
-
 
 Ewl_Widget 	*ewl_fileselector_new();
 int  		 ewl_fileselector_init(Ewl_Fileselector *fs);
@@ -58,6 +58,12 @@ char 		*ewl_fileselector_path_get(Ewl_Fileselector *fs);
 char 		*ewl_fileselector_file_get(Ewl_Fileselector *fs);
 
 void 		 ewl_fileselector_path_set(Ewl_Fileselector *fs, char *path);
+
+void		 ewl_fileselector_multiselect_set(Ewl_Fileselector *fs, 
+							unsigned int val);
+unsigned int	 ewl_fileselector_multiselect_get(Ewl_Fileselector *fs);
+
+Ecore_List	*ewl_fileselector_select_list_get(Ewl_Fileselector *fs);
 
 /*
  * Internally used callbacks, override at your own risk.
