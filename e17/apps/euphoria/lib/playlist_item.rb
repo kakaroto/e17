@@ -41,10 +41,14 @@ class PlaylistItem
 		@playlist.container.append_element(@edje)
 
 		# if a playlist item gets hilighted, un-hilight all other items
-		@edje.on_signal("playlist_item.selected") do
-			@playlist.each do |item|
-				if item != self
-					item.edje.emit_signal("playlist_item.unselected", "")
+		# same for selected/unselected
+		["selected", "hilighted"].each do |state|
+			@edje.on_signal("playlist_item.#{state}") do
+				@playlist.each do |item|
+					if item != self
+						sig = "playlist_item.un#{state}"
+						item.edje.emit_signal(sig, "")
+					end
 				end
 			end
 		end
@@ -65,7 +69,7 @@ class PlaylistItem
 	end
 
 	def hilight
-		@edje.emit_signal("playlist_item.selected", "") unless @edje.nil?
+		@edje.emit_signal("playlist_item.hilighted", "") unless @edje.nil?
 	end
 
 	def visible?
