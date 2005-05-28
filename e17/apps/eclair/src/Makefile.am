@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
+@gthread_cflags@ \
 @gtk_cflags@ \
 @libglade_cflags@ \
 @evas_cflags@ \
@@ -13,8 +14,7 @@ INCLUDES = \
 
 AM_CFLAGS = \
 -Wall \
--O1 \
--g
+-O1
 
 bin_PROGRAMS = eclair
 
@@ -34,6 +34,7 @@ eclair_config.c eclair_config.h \
 eclair_dialogs.c eclair_dialogs.h
 
 eclair_LDADD = \
+@gthread_libs@ \
 @gtk_libs@ \
 @libglade_libs@ \
 @evas_libs@ \
@@ -42,5 +43,4 @@ eclair_LDADD = \
 @emotion_libs@ \
 @esmart_libs@ -lesmart_draggies \
 @taglib_libs@ -ltag_c \
-@libxml2_libs@ \
--lpthread
+@libxml2_libs@

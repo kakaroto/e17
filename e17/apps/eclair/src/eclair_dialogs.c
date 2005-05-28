@@ -1,4 +1,5 @@
 #include "eclair_dialogs.h"
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include "../config.h"
@@ -9,7 +10,7 @@
 #include "eclair_utils.h"
 
 static void *_eclair_dialogs_thread(void *param);
-static gint _eclair_dialogs_update(gpointer data);
+static gboolean _eclair_dialogs_update(gpointer data);
 
 static void _eclair_dialogs_file_chooser_open(Eclair_Dialogs_Manager *dialogs_manager, Eclair_Dialog_File_Chooser_Type file_chooser_type);
 static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpointer data);
@@ -31,6 +32,9 @@ void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair
 {
    if (!dialogs_manager || !eclair)
       return;
+
+   g_thread_init(NULL);
+   gtk_init(eclair->argc, eclair->argv);
 
    dialogs_manager->eclair = eclair;
 
@@ -110,7 +114,7 @@ void eclair_popup_menu(Eclair_Dialogs_Manager *dialogs_manager)
 }
 
 //Called each 50ms and check if we must do something (popup menu, open file selection dialog...)
-static gint _eclair_dialogs_update(gpointer data)
+static gboolean _eclair_dialogs_update(gpointer data)
 {
    Eclair_Dialogs_Manager *dialogs_manager;
 
@@ -134,7 +138,7 @@ static gint _eclair_dialogs_update(gpointer data)
       dialogs_manager->should_open_file_chooser = ECLAIR_FC_NONE;
    }
 
-   return 1;
+   return TRUE;
 }
 
 //Init and start the eclair dialogs main loop
@@ -145,8 +149,6 @@ static void *_eclair_dialogs_thread(void *param)
 
    if (!(eclair = param))
       return NULL;
-
-   gtk_init(eclair->argc, eclair->argv);
 
    dialogs_manager = &eclair->dialogs_manager;
 
@@ -163,7 +165,7 @@ static void *_eclair_dialogs_thread(void *param)
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_unselected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_unselected), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_all_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_all), eclair);
 
-   g_timeout_add(50, _eclair_dialogs_update, dialogs_manager);
+   g_idle_add(_eclair_dialogs_update, dialogs_manager);
 
    gtk_main();
 
