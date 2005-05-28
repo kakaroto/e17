@@ -127,6 +127,7 @@ class Playlist < Array
 			super(item)
 
 			item.show(@eet) unless @container.nil?
+			item.select if size == 1
 		end
 
 		self
