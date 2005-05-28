@@ -521,7 +521,7 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Dialog             *d = ewin->data;
 
-   if (!d)
+   if (!d || Mode.mode != MODE_NONE)
       return;
 
    if (TransparencyEnabled() || ImageclassIsTransparent(d->iclass))

@@ -341,8 +341,6 @@ IconboxCreate(const char *name)
    ib->scrollbar_clicked = 0;
    ib->scrollbox_clicked = 0;
 
-   ib->do_update = 1;
-
    ib->win = ECreateWindow(VRoot.win, 0, 0, 128, 32, 0);
    ib->icon_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    EventCallbackRegister(ib->icon_win, 0, IboxEventIconWin, ib);
@@ -493,17 +491,21 @@ IconboxEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
    Iconbox            *ib = ewin->data;
 
    IconboxLayout(ib, px, py, pw, ph);
+
+   if (*pw != ewin->client.w || *ph != ewin->client.h)
+      ib->do_update = 1;
 }
 
 static void
-IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
+IconboxEwinMoveResize(EWin * ewin, int resize)
 {
    Iconbox            *ib = ewin->data;
 
    if (!resize && !ib->do_update && !TransparencyEnabled())
       return;
-   if (ib->w <= 0 || ib->h <= 0)
-      return;
+
+   ib->w = ewin->client.w;
+   ib->h = ewin->client.h;
 
    IconboxDraw(ib);
    ib->do_update = 0;
@@ -540,7 +542,6 @@ static void
 IconboxShow(Iconbox * ib)
 {
    EWin               *ewin;
-   int                 w, h;
 
    if (ib->type == IB_TYPE_ICONBOX)
      {
@@ -562,33 +563,22 @@ IconboxShow(Iconbox * ib)
 
    IconboxReconfigure(ib);
 
-   w = ewin->client.w;
-   h = ewin->client.h;
-   ewin->client.w = 1;
-   ewin->client.h = 1;
    if (ewin->client.already_placed)
      {
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
+	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+		       ewin->client.h);
      }
    else
      {
 	EwinStick(ewin);
-	ResizeEwin(ewin, w, h);
+	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+	ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 	MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
      }
-   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
 
    ShowEwin(ewin);
 }
-
-#if 0
-static void
-IconboxHide(Iconbox * ib)
-{
-   if (ib->ewin)
-      HideEwin(ib->ewin);
-}
-#endif
 
 /*
  * Return index, -1 if not found.
@@ -1535,8 +1525,8 @@ IconboxLayout(Iconbox * ib, int *px, int *py, int *pw, int *ph)
 
    *px = x;
    *py = y;
-   *pw = ib->w = w;
-   *ph = ib->h = h;
+   *pw = w;
+   *ph = h;
 }
 
 static void

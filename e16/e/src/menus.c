@@ -180,7 +180,7 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Menu               *m = ewin->data;
 
-   if (!m)
+   if (!m || Mode.mode != MODE_NONE)
       return;
 
    if (TransparencyEnabled())

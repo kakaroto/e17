@@ -456,13 +456,13 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    EwinDetermineArea(ewin);
 
+   if (ewin->MoveResize)
+      ewin->MoveResize(ewin, resize);
+
    if (Mode.mode == MODE_NONE)
      {
 	if (TransparencyEnabled())
 	   EwinBorderDraw(ewin, resize, 1);	/* Update the border */
-
-	if (ewin->MoveResize)
-	   ewin->MoveResize(ewin, resize);
 
 	SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);
 
