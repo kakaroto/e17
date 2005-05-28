@@ -341,7 +341,7 @@ IconboxCreate(const char *name)
    ib->scrollbar_clicked = 0;
    ib->scrollbox_clicked = 0;
 
-   ib->win = ECreateWindow(VRoot.win, 0, 0, 128, 32, 0);
+   ib->win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 0);
    ib->icon_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
    EventCallbackRegister(ib->icon_win, 0, IboxEventIconWin, ib);
    ib->cover_win = ECreateWindow(ib->win, 0, 0, 128, 26, 0);
@@ -492,7 +492,7 @@ IconboxEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 
    IconboxLayout(ib, px, py, pw, ph);
 
-   if (*pw != ewin->client.w || *ph != ewin->client.h)
+   if (*pw != ib->w || *ph != ib->h)
       ib->do_update = 1;
 }
 
@@ -571,9 +571,10 @@ IconboxShow(Iconbox * ib)
      }
    else
      {
+	/* The first one */
 	EwinStick(ewin);
 	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
-	ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	ResizeEwin(ewin, 128, 32);
 	MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
      }
 
