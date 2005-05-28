@@ -1,7 +1,7 @@
 # $Id$
 
 class PlaylistItem
-	attr_reader :id, :edje, :position
+	attr_reader :id, :edje, :position, :selected
 
 	def initialize(id, xmms, playlist)
 		@id = id
@@ -12,6 +12,7 @@ class PlaylistItem
 
 		@edje = nil
 		@height = 0
+		@selected = false
 
 		@props = {}
 
@@ -51,6 +52,10 @@ class PlaylistItem
 					end
 				end
 			end
+		end
+
+		@edje.on_signal("playlist_item.selected") do
+			@selected = !@selected
 		end
 
 		@edje.on_signal("playlist_item.play") do

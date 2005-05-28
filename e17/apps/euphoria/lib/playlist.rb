@@ -106,6 +106,12 @@ class Playlist < Array
 			end
 		end
 
+		@edje.on_signal("playlist_item.remove") do
+			find_all { |i| i.selected }.each do |i|
+				@xmms.playlist_remove(i.position)
+			end
+		end
+
 		each { |i| i.show(eet) }
 
 		current_item && current_item.hilight
