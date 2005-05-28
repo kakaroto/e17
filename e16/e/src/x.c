@@ -475,6 +475,39 @@ EWindowSync(Window win)
 }
 
 void
+EWindowSetMapped(Window win, int mapped)
+{
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (!xid)
+      return;
+
+   xid->mapped = mapped;
+}
+
+Window
+EWindowGetParent(Window win)
+{
+   EXID               *xid;
+   Window              parent, rt;
+   Window             *pch = NULL;
+   unsigned int        nch = 0;
+
+   parent = None;
+   if (!XQueryTree(disp, win, &rt, &parent, &pch, &nch))
+      parent = None;
+   else if (pch)
+      XFree(pch);
+
+   xid = EXidFind(win);
+   if (xid)
+      xid->parent = parent;
+
+   return parent;
+}
+
+void
 ERegisterWindow(Window win)
 {
    EXID               *xid;
@@ -1208,18 +1241,6 @@ ESync(void)
    XSync(disp, False);
 }
 
-Window
-GetWinParent(Window win)
-{
-   EXID               *xid;
-
-   xid = EXidFind(win);
-   if (xid)
-      return xid->parent;
-
-   return 0;
-}
-
 int
 GetWinDepth(Window win)
 {
@@ -1228,22 +1249,6 @@ GetWinDepth(Window win)
 
    EGetGeometry(win, &w1, &x, &y, &w, &h, &b, &d);
    return d;
-}
-
-Window
-WinGetParent(Window win)
-{
-   Window              parent, rt;
-   Window             *pch = NULL;
-   unsigned int        nch = 0;
-
-   if (!XQueryTree(disp, win, &rt, &parent, &pch, &nch))
-      return None;
-
-   if (pch)
-      XFree(pch);
-
-   return parent;
 }
 
 Window

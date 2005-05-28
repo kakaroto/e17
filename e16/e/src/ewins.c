@@ -151,8 +151,8 @@ EwinCreate(Window win, int type)
    AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinCreate %#lx frame=%#lx state=%d\n", ewin->client.win,
-	      EoGetWin(ewin), ewin->state);
+      Eprintf("EwinCreate %#lx frame=%#lx cont=%#lx st=%d\n", ewin->client.win,
+	      EoGetWin(ewin), ewin->win_container, ewin->state);
 
    EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackRegister(ewin->win_container, 0, EwinHandleEventsContainer,
@@ -192,8 +192,8 @@ EwinDestroy(EWin * ewin)
       return;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinDestroy %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("EwinDestroy %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+	      EwinGetName(ewin));
 
    RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
@@ -558,8 +558,8 @@ Adopt(EWin * ewin)
    HintsSetClientList();
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("Adopt %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("Adopt %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+	      EwinGetName(ewin));
 }
 
 void
@@ -907,8 +907,8 @@ EwinWithdraw(EWin * ewin)
    /* Only external clients should go here */
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinWithdraw %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("EwinWithdraw %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+	      EwinGetName(ewin));
 
    EGrabServer();
 
@@ -936,8 +936,11 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	if (ewin->state == EWIN_STATE_WITHDRAWN)
 	   AddToFamily(ewin, win);
 	else
-	   Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
-		   ewin->client.win);
+	  {
+	     Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
+		     ewin->client.win);
+	     EReparentWindow(ewin->client.win, ewin->win_container, 0, 0);
+	  }
      }
    else
      {
@@ -949,6 +952,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	  {
 	     Eprintf("AddToFamily: Already managing %s %#lx\n", "B",
 		     ewin->client.win);
+	     EReparentWindow(ewin->client.win, ewin->win_container, 0, 0);
 	     ShowEwin(ewin);
 	  }
 	else
@@ -960,10 +964,28 @@ static void
 EwinEventDestroy(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventDestroy %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("EwinEventDestroy %#lx st=%d: %s\n", ewin->client.win,
+	      ewin->state, EwinGetName(ewin));
 
    EwinDestroy(ewin);
+}
+
+static void
+EwinEventReparent(EWin * ewin)
+{
+   Window              parent;
+
+   EGrabServer();
+
+   /* Refetch parent window. We cannot rely on the one in the event. */
+   parent = EWindowGetParent(ewin->client.win);
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
+	      ewin->client.win, ewin->state, parent, EwinGetName(ewin));
+   if (parent != ewin->win_container)
+      EwinDestroy(ewin);
+
+   EUngrabServer();
 }
 
 static void
@@ -974,8 +996,8 @@ EwinEventMap(EWin * ewin)
    ewin->state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventMap %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("EwinEventMap %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+	      EwinGetName(ewin));
 
    /* If first time we may want to focus it (unless during startup) */
    if (old_state == EWIN_STATE_NEW)
@@ -990,25 +1012,23 @@ static void
 EwinEventUnmap(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventUnmap %#lx %s state=%d\n", ewin->client.win,
-	      EwinGetName(ewin), ewin->state);
+      Eprintf("EwinEventUnmap %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+	      EwinGetName(ewin));
 
    if (ewin->state == EWIN_STATE_WITHDRAWN)
       return;
 
-   if (ewin->iconified)
-      ewin->state = EWIN_STATE_ICONIC;
-   else
+   if (ewin->state == EWIN_STATE_ICONIC || !ewin->iconified)
       ewin->state = EWIN_STATE_WITHDRAWN;
+   else
+      ewin->state = EWIN_STATE_ICONIC;
 
    EwinUnmap1(ewin);
-
-   EUnmapWindow(ewin->client.win);
+   EWindowSetMapped(ewin->client.win, 0);
    EoUnmap(ewin);
-
    EwinUnmap2(ewin);
 
-   if (ewin->iconified)
+   if (ewin->state == EWIN_STATE_ICONIC)
       return;
 
    if (EwinIsInternal(ewin))
@@ -1020,7 +1040,7 @@ EwinEventUnmap(EWin * ewin)
 	return;
      }
 
-   if (WinGetParent(ewin->client.win) == ewin->win_container)
+   if (EWindowGetParent(ewin->client.win) == ewin->win_container)
       EwinWithdraw(ewin);
 }
 
@@ -1612,7 +1632,7 @@ EwinsSetFree(void)
 
 	/* This makes E determine the client window stacking at exit */
 	EwinInstantUnShade(ewin);
-	EReparentWindow(ewin->client.win, VRoot.win,
+	EReparentWindow(ewin->client.win, RRoot.win,
 			ewin->client.x, ewin->client.y);
      }
 }
@@ -1717,11 +1737,7 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 	EwinEventMap(ewin);
 	break;
      case ReparentNotify:
-	/* Check if window parent hasn't changed already (compress?) */
-	if (WinGetParent(ev->xreparent.window) != ev->xreparent.parent)
-	   break;
-	if (ev->xreparent.parent != ewin->win_container)
-	   EwinEventDestroy(ewin);
+	EwinEventReparent(ewin);
 	break;
 
      case GravityNotify:
@@ -1818,10 +1834,19 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	/* Catch clients destroyed after MapRequest but before being reparented */
 	ewin = FindItem(NULL, ev->xdestroywindow.window, LIST_FINDBY_ID,
 			LIST_TYPE_EWIN);
+#if 0				/* FIXME - Should not be here - Remove? */
 	if (!ewin)
 	   ewin = FindEwinByBase(ev->xdestroywindow.window);
+#endif
 	if (ewin)
 	   EwinEventDestroy(ewin);
+	break;
+
+     case ReparentNotify:
+	ewin = FindItem(NULL, ev->xreparent.window, LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
+	if (ewin)
+	   EwinEventReparent(ewin);
 	break;
 
      default:

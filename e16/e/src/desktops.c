@@ -1290,7 +1290,8 @@ StackDesktop(int desk)
      {
 	Eprintf("StackDesktop %d:\n", desk);
 	for (i = 0; i < tot; i++)
-	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i], GetWinParent(wl[i]));
+	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i],
+		   EWindowGetParent(wl[i]));
      }
 
    XRestackWindows(disp, wl, tot);
