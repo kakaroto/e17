@@ -57,6 +57,9 @@ Imlib_Image        *im_next1, *im_next2;
 Imlib_Image        *im_exit1, *im_exit2;
 char               *docdir = NULL;
 
+static Atom         ATOM_WM_DELETE_WINDOW = None;
+static Atom         ATOM_WM_PROTOCOLS = None;
+
 static              Window
 FindRootWindow(Display * dpy)
 {
@@ -152,6 +155,10 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
    hnt.min_height = hh;
    hnt.max_height = hh;
    XSetWMNormalHints(disp, win, &hnt);
+
+   ATOM_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);
+   ATOM_WM_DELETE_WINDOW = XInternAtom(disp, "WM_DELETE_WINDOW", False);
+   XSetWMProtocols(disp, win, &ATOM_WM_DELETE_WINDOW, 1);
 
    return win;
 }
@@ -664,10 +671,17 @@ main(int argc, char **argv)
 		  }
 	     }
 	     break;
+	  case ClientMessage:
+	     if (ev.xclient.message_type == ATOM_WM_PROTOCOLS &&
+		 (Atom) ev.xclient.data.l[0] == ATOM_WM_DELETE_WINDOW)
+		goto done;
+	     break;
 	  default:
 	     break;
 	  }
      }
+ done:
+   return 0;
 }
 
 void
