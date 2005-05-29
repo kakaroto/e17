@@ -877,9 +877,15 @@ EwinUnmap1(EWin * ewin)
 
    if (Mode.place.doing_slide)
      {
+#if 0				/* No event processing during slides - No use doing this here */
 	DrawEwinShape(ewin, Conf.slidemode, ewin->shape_x, ewin->shape_y,
 		      ewin->client.w, ewin->client.h, 2);
+#endif
+#if 0				/* FIXME - Do this right */
+	RemoveTimerEvent("Slide");
 	Mode.place.doing_slide = 0;
+	FocusEnable(1);
+#endif
      }
 
    if (ewin == GetContextEwin())
@@ -891,8 +897,7 @@ EwinUnmap2(EWin * ewin)
 {
    /* The frame has been unmapped */
 
-   if (ewin == Mode.focuswin)
-      FocusToEWin(ewin, FOCUS_EWIN_GONE);
+   FocusToEWin(ewin, FOCUS_EWIN_GONE);
    if (ewin == Mode.mouse_over_ewin)
       Mode.mouse_over_ewin = NULL;
    if (ewin == Mode.context_ewin)
@@ -1528,8 +1533,15 @@ EwinSlideIn(int val __UNUSED__, void *data)
 {
    EWin               *ewin = data;
 
+   /* May be gone */
+   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+      goto done;
+
    SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
 	       Conf.slidespeedmap);
+
+ done:
+   Mode.place.doing_slide = 0;
    FocusEnable(1);
 }
 

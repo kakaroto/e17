@@ -841,9 +841,10 @@ doSMExit(int mode, const char *params)
 	XSelectInput(disp, VRoot.win, 0);
 	ExtInitWinKill();
 	ESync();
-     }
 
-   ModulesSignal(ESIGNAL_EXIT, NULL);
+	/* Forget about cleaning up if no disp */
+	ModulesSignal(ESIGNAL_EXIT, NULL);
+     }
 
    ss = NULL;
    switch (mode)
