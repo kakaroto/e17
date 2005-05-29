@@ -192,9 +192,11 @@ AC_SUBST(libxml2_cflags)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/eclair_wsz2edj/Makefile
 data/Makefile
 data/fonts/Makefile
 data/glade/Makefile
+data/wsz2edj/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/gant/Makefile

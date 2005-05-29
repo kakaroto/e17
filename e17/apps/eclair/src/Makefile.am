@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = eclair_wsz2edj
+
 INCLUDES = \
 @gthread_cflags@ \
 @gtk_cflags@ \
