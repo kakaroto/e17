@@ -1,7 +1,7 @@
 # $Id$
 
 class PlaylistItem
-	attr_reader :id, :edje, :position, :selected
+	attr_reader :id, :edje, :position, :selected, :hilighted
 
 	def initialize(id, xmms, playlist)
 		@id = id
@@ -13,6 +13,7 @@ class PlaylistItem
 		@edje = nil
 		@height = 0
 		@selected = false
+		@hilighted = false
 
 		@props = {}
 
@@ -75,6 +76,8 @@ class PlaylistItem
 	end
 
 	def hilighted=(b)
+		@hilighted = b
+
 		sig = b ? "hilighted" : "unhilighted"
 		unless @edje.nil?
 			@edje.emit_signal("playlist_item.#{sig}", "Euphoria")
