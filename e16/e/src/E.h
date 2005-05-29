@@ -1734,17 +1734,18 @@ EWin              **EwinListTransientFor(EWin * ewin, int *num);
 EWin              **ListGroupMembers(Window win, int *num);
 
 /* focus.c */
-#define FOCUS_SET         0
-#define FOCUS_NONE        1
-#define FOCUS_ENTER       2
-#define FOCUS_LEAVE       3
-#define FOCUS_EWIN_NEW    4
-#define FOCUS_EWIN_GONE   5
-#define FOCUS_DESK_ENTER  6
-#define FOCUS_DESK_LEAVE  7
-#define FOCUS_NEXT        8
-#define FOCUS_PREV        9
-#define FOCUS_CLICK      10
+#define FOCUS_NOP         0
+#define FOCUS_SET         1
+#define FOCUS_NONE        2
+#define FOCUS_ENTER       3
+#define FOCUS_LEAVE       4
+#define FOCUS_EWIN_NEW    5
+#define FOCUS_EWIN_GONE   6
+#define FOCUS_DESK_ENTER  7
+#define FOCUS_DESK_LEAVE  8
+#define FOCUS_NEXT        9
+#define FOCUS_PREV       10
+#define FOCUS_CLICK      11
 
 void                FocusEnable(int on);
 void                FocusGetNextEwin(void);

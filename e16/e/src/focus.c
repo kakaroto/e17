@@ -24,7 +24,9 @@
 #include "E.h"
 
 static int          focus_inhibit = 1;
-static int          focus_new_desk_nesting = 0;
+static int          focus_pending_why = 0;
+static EWin        *focus_pending_ewin = NULL;
+static EWin        *focus_pending_new = NULL;
 
 void
 FocusEnable(int on)
@@ -48,10 +50,16 @@ FocusEnable(int on)
  * on_screen: Require window to be on-screen now
  */
 static int
-FocusEwinValid(EWin * ewin, int on_screen)
+FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
 {
    if (!ewin)
       return 0;
+
+#if 0
+   Eprintf("FocusEwinValid %#lx %s: cl=%d(%d) vis=%d(%d)\n", ewin->client.win,
+	   EwinGetName(ewin), click, ewin->focusclick, want_visible,
+	   ewin->visibility);
+#endif
 
    if (ewin->neverfocus || ewin->iconified)
       return 0;
@@ -62,7 +70,13 @@ FocusEwinValid(EWin * ewin, int on_screen)
    if (!EwinIsMapped(ewin) || !EoIsShown(ewin))
       return 0;
 
-   return !on_screen || EwinIsOnScreen(ewin);
+   if (ewin->focusclick && !click)
+      return 0;
+
+   if (want_visible && ewin->visibility == VisibilityFullyObscured)
+      return 0;
+
+   return !want_on_screen || EwinIsOnScreen(ewin);
 }
 
 /*
@@ -83,7 +97,7 @@ FocusEwinSelect(void)
 
      case MODE_FOCUS_SLOPPY:
 	ewin = GetEwinPointerInClient();
-	if (ewin && FocusEwinValid(ewin, 1) && !ewin->focusclick)
+	if (ewin && FocusEwinValid(ewin, 1, 0, 1))
 	   break;
 	goto do_select;
 
@@ -95,8 +109,7 @@ FocusEwinSelect(void)
 	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1) || lst[i]->skipfocus ||
-		 lst[i]->focusclick)
+	     if (!FocusEwinValid(lst[i], 1, 0, 1) || lst[i]->skipfocus)
 		continue;
 	     ewin = lst[i];
 	     break;
@@ -144,7 +157,7 @@ FocusGetNextEwin(void)
    ewin = NULL;
    for (i = num - 1; i >= 0; i--)
      {
-	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1))
+	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1, 0, 0))
 	   continue;
 	ewin = lst[i];
 	break;
@@ -168,7 +181,7 @@ FocusGetPrevEwin(void)
    ewin = NULL;
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1))
+	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1, 0, 0))
 	   continue;
 	ewin = lst[i];
 	break;
@@ -227,8 +240,8 @@ FocusFix(void)
      }
 }
 
-void
-FocusToEWin(EWin * ewin, int why)
+static void
+doFocusToEwin(EWin * ewin, int why)
 {
    int                 do_follow = 0;
    int                 do_raise = 0, do_warp = 0;
@@ -237,13 +250,9 @@ FocusToEWin(EWin * ewin, int why)
       return;
 
    if (EventDebug(EDBUG_TYPE_FOCUS))
-     {
-	if (ewin)
-	   Eprintf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-		   EwinGetName(ewin), why);
-	else
-	   Eprintf("FocusToEWin None why=%d\n", why);
-     }
+      Eprintf("doFocusToEWin %#lx %s why=%d\n",
+	      (ewin) ? ewin->client.win : 0,
+	      (ewin) ? EwinGetName(ewin) : "None", why);
 
    switch (why)
      {
@@ -263,7 +272,7 @@ FocusToEWin(EWin * ewin, int why)
 	   return;
 	if (ewin == NULL)	/* Unfocus */
 	   break;
-	if (!FocusEwinValid(ewin, 1))
+	if (!FocusEwinValid(ewin, 1, why == FOCUS_CLICK, 0))
 	   return;
 	break;
 
@@ -316,7 +325,7 @@ FocusToEWin(EWin * ewin, int why)
 	   return;
 	if (ewin == Mode.focuswin)
 	   return;
-	if (!FocusEwinValid(ewin, 0))
+	if (!FocusEwinValid(ewin, 0, 0, 0))
 	   return;
 	break;
      }
@@ -394,6 +403,49 @@ FocusToEWin(EWin * ewin, int why)
 }
 
 void
+FocusToEWin(EWin * ewin, int why)
+{
+   if (EventDebug(EDBUG_TYPE_FOCUS))
+      Eprintf("FocusToEWin(%d) %#lx %s why=%d\n", focus_inhibit,
+	      (ewin) ? ewin->client.win : 0,
+	      (ewin) ? EwinGetName(ewin) : "None", why);
+
+   switch (why)
+     {
+     case FOCUS_EWIN_NEW:
+	focus_pending_new = ewin;
+	/* Fall-thru */
+     default:
+	focus_pending_why = why;
+	focus_pending_ewin = ewin;
+	break;
+
+     case FOCUS_EWIN_GONE:
+	focus_pending_why = FOCUS_DESK_ENTER;
+	if (ewin == Mode.focuswin)
+	   Mode.focuswin = NULL;
+	if (ewin == focus_pending_ewin)
+	   focus_pending_ewin = NULL;
+	if (ewin == focus_pending_new)
+	   focus_pending_new = NULL;
+	break;
+     }
+}
+
+static void
+FocusSet(void)
+{
+   if (focus_pending_new && Conf.focus.all_new_windows_get_focus)
+      doFocusToEwin(focus_pending_new, FOCUS_EWIN_NEW);
+   else
+      doFocusToEwin(focus_pending_ewin, focus_pending_why);
+   focus_pending_why = 0;
+   focus_pending_ewin = focus_pending_new = NULL;
+}
+
+static int          focus_new_desk_nesting = 0;	/* Obsolete? */
+
+void
 FocusNewDeskBegin(void)
 {
    if (focus_new_desk_nesting++)
@@ -405,6 +457,25 @@ FocusNewDeskBegin(void)
     * temporarily */
    EwinsEventsConfigure(0);
    DesksEventsConfigure(0);
+}
+
+void
+FocusNewDesk(void)
+{
+   EWin               *ewin;
+
+   if (--focus_new_desk_nesting)
+      return;
+
+   /* we flipped - re-enable enter and leave events */
+   EwinsEventsConfigure(1);
+   DesksEventsConfigure(1);
+
+   /* Set the mouse-over window */
+   ewin = GetEwinByCurrentPointer();
+   Mode.mouse_over_ewin = ewin;
+
+   FocusToEWin(NULL, FOCUS_DESK_ENTER);
 }
 
 static void
@@ -428,25 +499,6 @@ FocusInit(void)
 static void
 FocusExit(void)
 {
-}
-
-void
-FocusNewDesk(void)
-{
-   EWin               *ewin;
-
-   if (--focus_new_desk_nesting)
-      return;
-
-   /* we flipped - re-enable enter and leave events */
-   EwinsEventsConfigure(1);
-   DesksEventsConfigure(1);
-
-   /* Set the mouse-over window */
-   ewin = GetEwinByCurrentPointer();
-   Mode.mouse_over_ewin = ewin;
-
-   FocusToEWin(NULL, FOCUS_DESK_ENTER);
 }
 
 /*
@@ -478,14 +530,12 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
      case MODE_FOCUS_CLICK:
 	break;
      case MODE_FOCUS_SLOPPY:
-	if (!ewin || ewin->focusclick)
-	   break;
-	FocusToEWin(ewin, FOCUS_ENTER);
+	if (FocusEwinValid(ewin, 1, 0, 0))
+	   FocusToEWin(ewin, FOCUS_ENTER);
 	break;
      case MODE_FOCUS_POINTER:
-	if (ewin && ewin->focusclick)
-	   break;
-	FocusToEWin(ewin, FOCUS_ENTER);
+	if (!ewin || FocusEwinValid(ewin, 1, 0, 0))
+	   FocusToEWin(ewin, FOCUS_ENTER);
 	break;
      }
 }
@@ -888,6 +938,12 @@ FocusSighan(int sig, void *prm __UNUSED__)
 
      case ESIGNAL_EXIT:
 	FocusExit();
+	break;
+
+     case ESIGNAL_IDLE:
+	if (focus_inhibit || !focus_pending_why)
+	   break;
+	FocusSet();
 	break;
      }
 }
