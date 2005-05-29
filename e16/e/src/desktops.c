@@ -2301,18 +2301,6 @@ DesktopsIpcArea(const char *params, Client * c __UNUSED__)
      }
 }
 
-static void
-IPC_NumDesks(const char *params, Client * c __UNUSED__)
-{
-   if (!params)
-      return;
-
-   if (!strcmp(params, "?"))
-     {
-	IpcPrintf("Number of Desks: %d\n", Conf.desks.num);
-     }
-}
-
 IpcItem             DesktopsIpcArray[] = {
    {
     DesktopsIpcDesk,
@@ -2342,9 +2330,6 @@ IpcItem             DesktopsIpcArray[] = {
     "  area move <dx> <dy>  Move relative to current area\n"
     "  area lgoto <al>      Goto specified linear area\n"
     "  area lmove <dl>      Move relative to current linear area\n"}
-   ,
-   {
-    IPC_NumDesks, "num_desks", NULL, "Deprecated - do not use", NULL}
    ,
 };
 #define N_IPC_FUNCS (sizeof(DesktopsIpcArray)/sizeof(IpcItem))

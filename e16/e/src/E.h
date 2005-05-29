@@ -1193,8 +1193,6 @@ void                MoveCurrentLinearAreaBy(int a);
 void                MoveEwinToLinearArea(EWin * ewin, int a);
 void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 
-int                 Emkstemp(char *template);
-
 /* arrange.c */
 #define ARRANGE_VERBATIM    0
 #define ARRANGE_BY_SIZE     1
@@ -1726,7 +1724,6 @@ int                 findLocalizedFile(char *fname);
 EWin               *FindEwinByBase(Window win);
 EWin               *FindEwinByChildren(Window win);
 EWin               *FindEwinByPartial(const char *win, int type);
-EWin               *FindEwinByDecoration(Window win);
 Button             *FindButton(Window win);
 ActionClass        *FindActionClass(Window win);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);

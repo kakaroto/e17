@@ -108,7 +108,7 @@ FindEwinByPartial(const char *match, int type)
    return ewin;
 }
 
-EWin               *
+static EWin        *
 FindEwinByDecoration(Window win)
 {
    EWin               *const *ewins;

@@ -1073,7 +1073,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "NeverUseArea %i   FixedPos     %i\n"
 	     "Desktop      %i   Layer        %i(%i)\n"
 	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
-	     "State        %i   Shown        %i   Active       %i   Floating     %i\n"
+	     "State        %i   Shown        %i   Visibility   %i   Active       %i\n"
 	     "Member of groups        %i\n"
 #if USE_COMPOSITE
 	     "Opacity    %3i(%x)  Shadow       %i\n"
@@ -1118,8 +1118,8 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->never_use_area, ewin->fixedpos, EoGetDesk(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
 	     ewin->iconified, EoIsSticky(ewin), ewin->shaded,
-	     ewin->docked, ewin->state, EoIsShown(ewin), ewin->active,
-	     EoIsFloating(ewin), ewin->num_groups, ewin->ewmh.opacity
+	     ewin->docked, ewin->state, EoIsShown(ewin), ewin->visibility,
+	     ewin->active, ewin->num_groups, ewin->ewmh.opacity
 #if USE_COMPOSITE
 	     , EoGetOpacity(ewin), EoGetShadow(ewin)
 #endif
@@ -1309,6 +1309,11 @@ IPC_Compat(const char *params)
      {
 	if (*p == '?')
 	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrent());
+     }
+   else if (!strcmp(param1, "num_desks"))
+     {
+	if (*p == '?')
+	   IpcPrintf("Number of Desks: %d\n", DesksGetNumber());
      }
    else
      {
