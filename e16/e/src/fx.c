@@ -90,7 +90,7 @@ FX_ripple_timeout(int val, void *data)
 
 	fx_ripple_above =
 	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
-			 GetWinDepth(fx_ripple_win));
+			 VRoot.depth);
 	if (gc)
 	   EFreeGC(gc);
 	if (gc1)
@@ -534,8 +534,7 @@ FX_Wave_timeout(int val, void *data)
 	fx_wave_win = DeskGetCurrentRoot();
 
 	fx_wave_above =
-	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
-			 GetWinDepth(fx_wave_win));
+	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, VRoot.depth);
 	if (gc)
 	   EFreeGC(gc);
 	if (gc1)

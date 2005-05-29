@@ -2289,7 +2289,6 @@ int                 EFreeGC(GC gc);
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
-int                 GetWinDepth(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
 Bool                PointerAt(int *x, int *y);

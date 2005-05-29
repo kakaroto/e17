@@ -1241,16 +1241,6 @@ ESync(void)
    XSync(disp, False);
 }
 
-int
-GetWinDepth(Window win)
-{
-   Window              w1;
-   int                 x, y, w, h, b, d;
-
-   EGetGeometry(win, &w1, &x, &y, &w, &h, &b, &d);
-   return d;
-}
-
 Window
 WindowAtXY_0(Window base, int bx, int by, int x, int y)
 {

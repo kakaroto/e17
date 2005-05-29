@@ -384,7 +384,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
 		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+				 VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
@@ -525,8 +525,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(VRoot.win, ret2.width + 2,
-				 ret2.height + 2, GetWinDepth(win));
+		   ECreatePixmap(VRoot.win, ret2.width + 2, ret2.height + 2,
+				 VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1,
@@ -622,7 +622,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
 		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+				 VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -718,7 +718,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
 		   ECreatePixmap(VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+				 VRoot.depth);
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
