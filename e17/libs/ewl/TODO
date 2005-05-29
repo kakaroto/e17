@@ -17,7 +17,6 @@ EWL TODO
 - Need to return a context when items are pushed onto the status bar so that
   a context can be removed without popping off the stack
 
-- [BUG] Fix Box cutoff of elements with padding/insets (?) > 0.
 - [BUG] Fix left padding of the radio button.
 - [BUG] Fix size of the seeker.
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
