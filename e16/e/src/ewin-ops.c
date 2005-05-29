@@ -98,6 +98,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 
    firstlast = 0;
    Mode.doingslide = 1;
+   FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (Conf.slidemode > 0)
@@ -122,7 +123,9 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
      }
    DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
    MoveEwin(ewin, tx, ty);
+
    Mode.doingslide = 0;
+   FocusEnable(1);
 
    if (Conf.slidemode > 0)
       EUngrabServer();
@@ -134,17 +137,20 @@ void
 SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	     int speed)
 {
-   int                 k, *x = NULL, *y = NULL, tmpx, tmpy, tmpw, tmph, i;
+   int                 k, *x, *y, tmpx, tmpy, tmpw, tmph, i;
    char                firstlast;
 
-   if (num_wins)
-     {
-	x = Emalloc(sizeof(int) * num_wins);
-	y = Emalloc(sizeof(int) * num_wins);
-     }
+   if (num_wins <= 0)
+      return;
+
+   x = Emalloc(sizeof(int) * num_wins);
+   y = Emalloc(sizeof(int) * num_wins);
+   if (!x || !y)
+      goto done;
 
    firstlast = 0;
    Mode.doingslide = 1;
+   FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (Conf.slidemode > 0)
@@ -186,11 +192,14 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
      }
 
    Mode.doingslide = 0;
+   FocusEnable(1);
+
    if (Conf.slidemode > 0)
       EUngrabServer();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");
 
+ done:
    if (x)
       Efree(x);
    if (y)

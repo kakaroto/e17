@@ -1745,6 +1745,7 @@ EWin              **ListGroupMembers(Window win, int *num);
 #define FOCUS_PREV        9
 #define FOCUS_CLICK      10
 
+void                FocusEnable(int on);
 void                FocusGetNextEwin(void);
 void                FocusGetPrevEwin(void);
 void                FocusEwinSetGrabs(EWin * ewin);

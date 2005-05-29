@@ -23,8 +23,25 @@
  */
 #include "E.h"
 
-static int          focus_enable = 0;
+static int          focus_inhibit = 1;
 static int          focus_new_desk_nesting = 0;
+
+void
+FocusEnable(int on)
+{
+   if (on)
+     {
+	if (focus_inhibit > 0)
+	   focus_inhibit--;
+     }
+   else
+     {
+	focus_inhibit++;
+     }
+
+   if (EventDebug(EDBUG_TYPE_FOCUS))
+      Eprintf("FocusEnable inhibit=%d\n", focus_inhibit);
+}
 
 /*
  * Return !0 if it is OK to focus ewin.
@@ -216,6 +233,9 @@ FocusToEWin(EWin * ewin, int why)
    int                 do_follow = 0;
    int                 do_raise = 0, do_warp = 0;
 
+   if (focus_inhibit)
+      return;
+
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
@@ -224,9 +244,6 @@ FocusToEWin(EWin * ewin, int why)
 	else
 	   Eprintf("FocusToEWin None why=%d\n", why);
      }
-
-   if (!focus_enable)
-      return;
 
    switch (why)
      {
@@ -272,10 +289,6 @@ FocusToEWin(EWin * ewin, int why)
 	break;
 
      case FOCUS_EWIN_NEW:
-	/* Don't chase around after the windows at startup */
-	if (Mode.wm.startup || Mode.doingslide)
-	   return;
-
 	if (Conf.focus.all_new_windows_get_focus)
 	  {
 	     do_follow = 2;
@@ -400,7 +413,7 @@ FocusInit(void)
    EWin               *ewin;
 
    /* Start focusing windows */
-   focus_enable = 1;
+   FocusEnable(1);
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();
@@ -867,7 +880,7 @@ FocusSighan(int sig, void *prm __UNUSED__)
      {
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
-	DoIn("FOCUS_INIT_TIMEOUT", 1., FocusInitTimeout, 0, NULL);
+	DoIn("FOCUS_INIT_TIMEOUT", 0.5, FocusInitTimeout, 0, NULL);
 	break;
 
      case ESIGNAL_EXIT:

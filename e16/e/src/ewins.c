@@ -42,6 +42,8 @@
    /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
+static void         EwinSlideIn(int val __UNUSED__, void *data);
+
 static void         EwinChangesStart(EWin * ewin);
 static void         EwinChangesProcess(EWin * ewin);
 
@@ -815,10 +817,12 @@ AddToFamily(EWin * ewin, Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
+	FocusEnable(0);
 	MoveEwinToDesktopAt(ewin, desk, fx, fy);
 	ShowEwin(ewin);
-	SlideEwinTo(ewin, fx, fy, x, y, Conf.slidespeedmap);
-	MoveEwinToDesktopAt(ewin, desk, x, y);
+	ewin->req_x = x;
+	ewin->req_y = y;
+	DoIn("Slide", 0.05, EwinSlideIn, 0, ewin);
      }
    else
      {
@@ -1515,6 +1519,19 @@ EwinRememberPositionGet(EWin * ewin, int *px, int *py)
 
    *px = x;
    *py = y;
+}
+
+/*
+ * Slidein
+ */
+static void
+EwinSlideIn(int val __UNUSED__, void *data)
+{
+   EWin               *ewin = data;
+
+   SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
+	       Conf.slidespeedmap);
+   FocusEnable(1);
 }
 
 /*
