@@ -40,8 +40,8 @@ int decompress_wsz(const char *filename, const char *destination_dir)
    if (!filename || !destination_dir)
       return 0;
 
-   command = (char *)malloc(strlen("unzip -q -d ") + strlen(destination_dir) + strlen(" -o ") + strlen(filename) + 1);
-   sprintf(command, "unzip -q -d %s -o %s", destination_dir, filename);
+   command = (char *)malloc(strlen("unzip -q -d \"\"") + strlen(destination_dir) + strlen(" -o \"\"") + strlen(filename) + 1);
+   sprintf(command, "unzip -q -d \"%s\" -o \"%s\"", destination_dir, filename);
    if (system(command) != 0)
    {
       printf("Error: Unable to decompress source skin \"%s\"\n", filename);
@@ -101,16 +101,14 @@ int extract_image_part(const char *source_file, int x, int y, int w, int h, cons
    if (!source_file || !dest_file)
       return 0;
 
-   len = strlen("montage ") + strlen(source_file) + strlen(" -gravity NorthWest -transparent \"#d32b2b\" -crop ") +
-      strlen(" -geometry ") + strlen(" -background none ") + strlen(dest_file) + 50;
+   len = strlen("montage \"") + strlen(source_file) + strlen("\" -gravity NorthWest -transparent \"#d32b2b\" -crop ") +
+      strlen(" -geometry ") + strlen(" -background none \"\"") + strlen(dest_file) + 50;
    command = malloc(len);
-   snprintf(command, len, "montage %s -gravity NorthWest -transparent \"#d32b2b\" -crop %dx%d+%d+%d -geometry %dx%d -background none %s",
+   snprintf(command, len, "montage \"%s\" -gravity NorthWest -transparent \"#d32b2b\" -crop %dx%d+%d+%d -geometry %dx%d -background none \"%s\"",
       source_file, w, h, x, y, w, h, dest_file);
-   printf("%s\n", command);
    if (system(command) != 0)
    {
       printf("Error: Unable to extract image part \"%s\" from \"%s\"\n", dest_file, source_file);
-      printf("You need montage from ImageMagick\n");
       free(command);
       return 0;
    }
@@ -126,6 +124,7 @@ int main(int argc, char *argv[])
    char *root_dir;
    char *image_file;
    char *command;
+   int extract_result;
 
    if (argc != 3)
    {
@@ -153,6 +152,7 @@ int main(int argc, char *argv[])
    else
       root_dir = strdup(argv[1]);
 
+   extract_result = 1;
    printf("Extracting image parts...\n");
    if (!make_dir(EXTRACTION_DIR"/images"))
       return 1; 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 0, 0, 275, 116, EXTRACTION_DIR"/images/body.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 275, 116, EXTRACTION_DIR"/images/body.png");
    free(image_file);
 
    //cbuttons.bmp
@@ -173,18 +173,19 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 0, 0, 23, 18, EXTRACTION_DIR"/images/prev.png");
-   extract_image_part(image_file, 0, 18, 23, 18, EXTRACTION_DIR"/images/prev_down.png");
-   extract_image_part(image_file, 23, 0, 23, 18, EXTRACTION_DIR"/images/play.png");
-   extract_image_part(image_file, 23, 18, 23, 18, EXTRACTION_DIR"/images/play_down.png");
-   extract_image_part(image_file, 46, 0, 23, 18, EXTRACTION_DIR"/images/pause.png");
-   extract_image_part(image_file, 46, 18, 23, 18, EXTRACTION_DIR"/images/pause_down.png");
-   extract_image_part(image_file, 69, 0, 23, 18, EXTRACTION_DIR"/images/stop.png");
-   extract_image_part(image_file, 69, 18, 23, 18, EXTRACTION_DIR"/images/stop_down.png");
-   extract_image_part(image_file, 92, 0, 22, 18, EXTRACTION_DIR"/images/next.png");
-   extract_image_part(image_file, 92, 18, 22, 18, EXTRACTION_DIR"/images/next_down.png");
-   extract_image_part(image_file, 114, 0, 22, 16, EXTRACTION_DIR"/images/open.png");
-   extract_image_part(image_file, 114, 16, 22, 16, EXTRACTION_DIR"/images/open_down.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 136, 36, EXTRACTION_DIR"/images/cbuttons.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 0, 0, 23, 18, EXTRACTION_DIR"/images/prev.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 0, 18, 23, 18, EXTRACTION_DIR"/images/prev_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 23, 0, 23, 18, EXTRACTION_DIR"/images/play.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 23, 18, 23, 18, EXTRACTION_DIR"/images/play_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 46, 0, 23, 18, EXTRACTION_DIR"/images/pause.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 46, 18, 23, 18, EXTRACTION_DIR"/images/pause_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 69, 0, 23, 18, EXTRACTION_DIR"/images/stop.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 69, 18, 23, 18, EXTRACTION_DIR"/images/stop_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 92, 0, 22, 18, EXTRACTION_DIR"/images/next.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 92, 18, 22, 18, EXTRACTION_DIR"/images/next_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 114, 0, 22, 16, EXTRACTION_DIR"/images/open.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/cbuttons.png", 114, 16, 22, 16, EXTRACTION_DIR"/images/open_down.png");
    
    free(image_file);
 
@@ -195,22 +196,23 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 0, 0, 28, 15, EXTRACTION_DIR"/images/repeat_off.png");
-   extract_image_part(image_file, 0, 15, 28, 15, EXTRACTION_DIR"/images/repeat_off_down.png");
-   extract_image_part(image_file, 0, 30, 28, 15, EXTRACTION_DIR"/images/repeat_on.png");
-   extract_image_part(image_file, 0, 45, 28, 15, EXTRACTION_DIR"/images/repeat_on_down.png");
-   extract_image_part(image_file, 28, 0, 47, 15, EXTRACTION_DIR"/images/shuffle_off.png");
-   extract_image_part(image_file, 28, 15, 47, 15, EXTRACTION_DIR"/images/shuffle_off_down.png");
-   extract_image_part(image_file, 28, 30, 47, 15, EXTRACTION_DIR"/images/shuffle_on.png");
-   extract_image_part(image_file, 28, 45, 47, 15, EXTRACTION_DIR"/images/shuffle_on_down.png");
-   extract_image_part(image_file, 0, 61, 23, 12, EXTRACTION_DIR"/images/equalizer_off.png");
-   extract_image_part(image_file, 46, 61, 23, 12, EXTRACTION_DIR"/images/equalizer_off_down.png");
-   extract_image_part(image_file, 0, 73, 23, 12, EXTRACTION_DIR"/images/equalizer_on.png");
-   extract_image_part(image_file, 46, 73, 23, 12, EXTRACTION_DIR"/images/equalizer_on_down.png");
-   extract_image_part(image_file, 23, 61, 23, 12, EXTRACTION_DIR"/images/playlist_off.png");
-   extract_image_part(image_file, 69, 61, 23, 12, EXTRACTION_DIR"/images/playlist_off_down.png");
-   extract_image_part(image_file, 23, 73, 23, 12, EXTRACTION_DIR"/images/playlist_on.png");
-   extract_image_part(image_file, 69, 73, 23, 12, EXTRACTION_DIR"/images/playlist_on_down.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 92, 85, EXTRACTION_DIR"/images/shufrep.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 0, 28, 15, EXTRACTION_DIR"/images/repeat_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 15, 28, 15, EXTRACTION_DIR"/images/repeat_off_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 30, 28, 15, EXTRACTION_DIR"/images/repeat_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 45, 28, 15, EXTRACTION_DIR"/images/repeat_on_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 28, 0, 47, 15, EXTRACTION_DIR"/images/shuffle_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 28, 15, 47, 15, EXTRACTION_DIR"/images/shuffle_off_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 28, 30, 47, 15, EXTRACTION_DIR"/images/shuffle_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 28, 45, 47, 15, EXTRACTION_DIR"/images/shuffle_on_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 61, 23, 12, EXTRACTION_DIR"/images/equalizer_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 46, 61, 23, 12, EXTRACTION_DIR"/images/equalizer_off_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 0, 73, 23, 12, EXTRACTION_DIR"/images/equalizer_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 46, 73, 23, 12, EXTRACTION_DIR"/images/equalizer_on_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 23, 61, 23, 12, EXTRACTION_DIR"/images/playlist_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 69, 61, 23, 12, EXTRACTION_DIR"/images/playlist_off_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 23, 73, 23, 12, EXTRACTION_DIR"/images/playlist_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/shufrep.png", 69, 73, 23, 12, EXTRACTION_DIR"/images/playlist_on_down.png");
    free(image_file);
 
    //posbar.bmp
@@ -220,9 +222,10 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 0, 0, 248, 10, EXTRACTION_DIR"/images/progress_bar.png");
-   extract_image_part(image_file, 248, 0, 29, 10, EXTRACTION_DIR"/images/progress_bar_drag.png");
-   extract_image_part(image_file, 278, 0, 29, 10, EXTRACTION_DIR"/images/progress_bar_drag_down.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 307, 10, EXTRACTION_DIR"/images/posbar.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/posbar.png", 0, 0, 248, 10, EXTRACTION_DIR"/images/progress_bar.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/posbar.png", 248, 0, 29, 10, EXTRACTION_DIR"/images/progress_bar_drag.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/posbar.png", 278, 0, 29, 10, EXTRACTION_DIR"/images/progress_bar_drag_down.png");
    free(image_file);
 
    //titlebar.bmp
@@ -232,11 +235,12 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 27, 0, 275, 14, EXTRACTION_DIR"/images/body_titlebar.png");
-   extract_image_part(image_file, 9, 0, 9, 9, EXTRACTION_DIR"/images/minimize.png");
-   extract_image_part(image_file, 9, 9, 9, 9, EXTRACTION_DIR"/images/minimize_down.png");
-   extract_image_part(image_file, 18, 0, 9, 9, EXTRACTION_DIR"/images/close.png");
-   extract_image_part(image_file, 18, 9, 9, 9, EXTRACTION_DIR"/images/close_down.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 344, 87, EXTRACTION_DIR"/images/titlebar.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/titlebar.png", 27, 0, 275, 14, EXTRACTION_DIR"/images/body_titlebar.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/titlebar.png", 9, 0, 9, 9, EXTRACTION_DIR"/images/minimize.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/titlebar.png", 9, 9, 9, 9, EXTRACTION_DIR"/images/minimize_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/titlebar.png", 18, 0, 9, 9, EXTRACTION_DIR"/images/close.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/titlebar.png", 18, 9, 9, 9, EXTRACTION_DIR"/images/close_down.png");
    free(image_file);
 
    //volume.bmp
@@ -246,16 +250,25 @@ int main(int argc, char *argv[])
       free(root_dir);
       return 1;
    }
-   extract_image_part(image_file, 0, 0, 68, 13, EXTRACTION_DIR"/images/volume_bar.png");
-   extract_image_part(image_file, 15, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag.png");
-   extract_image_part(image_file, 0, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag_down.png");
+   extract_result &= extract_image_part(image_file, 0, 0, 68, 433, EXTRACTION_DIR"/images/volume.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 0, 0, 68, 13, EXTRACTION_DIR"/images/volume_bar.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 15, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 0, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag_down.png");
    free(image_file);
+
+   if (!extract_result)
+   {
+      printf("Error: an error happened while extracting the image parts\n");
+      printf("Maybe it\'s because you do not have \"montage\" from ImageMagick\n");
+      free(root_dir);
+      return 1;
+   }
    printf("Image parts extracted\n\n");
 
 
    //Decompress the edc template
    printf("Decompressing edc template\n");
-   if (system("tar -xzf " PACKAGE_DATA_DIR "/wsz2edj/wsz2edj_edc.tar.gz -C " EXTRACTION_DIR) != 0)
+   if (system("tar -xzf \"" PACKAGE_DATA_DIR "/wsz2edj/wsz2edj_edc.tar.gz\" -C \"" EXTRACTION_DIR "\"") != 0)
    {
       printf("Error: Unable to decompress the edc template \"" PACKAGE_DATA_DIR "/wsz2edj/wsz2edj_edc.tar.gz\"\n");
       free(root_dir);
@@ -264,9 +277,9 @@ int main(int argc, char *argv[])
    printf("Edc template decompressed\n\n");
 
    //Compile the edje theme
-   command = malloc(strlen("edje_cc -id " EXTRACTION_DIR "/images -fd " EXTRACTION_DIR "/edje/fonts " EXTRACTION_DIR "/edje/main.edc ") +
+   command = malloc(strlen("edje_cc -id \"" EXTRACTION_DIR "/images\" -fd \"" EXTRACTION_DIR "/edje/fonts\" \"" EXTRACTION_DIR "/edje/main.edc\" \"\"") +
       strlen(argv[2]) + 1);
-   sprintf(command, "edje_cc -id " EXTRACTION_DIR "/images -fd " EXTRACTION_DIR "/edje/fonts " EXTRACTION_DIR "/edje/main.edc %s", argv[2]);
+   sprintf(command, "edje_cc -id \"" EXTRACTION_DIR "/images\" -fd \"" EXTRACTION_DIR "/edje/fonts\" \"" EXTRACTION_DIR "/edje/main.edc\" \"%s\"", argv[2]);
    if (system(command) != 0)
    {
       printf("Error: Unable to compile the edje theme\n");
