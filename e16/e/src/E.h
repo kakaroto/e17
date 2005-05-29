@@ -909,6 +909,7 @@ typedef struct
    {
       char                manual;
       char                manual_mouse_pointer;
+      char                slidein;
       char                ignore_struts;
       char                raise_fullscreen;
    } place;
@@ -967,7 +968,6 @@ typedef struct
    int                 deskmode;
    int                 slidemode;
    char                cleanupslide;
-   char                mapslide;
    int                 slidespeedmap;
    int                 slidespeedcleanup;
    char                animate_shading;
@@ -1030,6 +1030,12 @@ typedef struct
    } move;
    struct
    {
+      char                enable_features;
+      char                doing_manual;
+      char                doing_slide;
+   } place;
+   struct
+   {
       char                utf8_int;	/* Use UTF-8 internally */
       char                utf8_loc;	/* Locale is UTF-8 */
    } text;
@@ -1057,7 +1063,6 @@ typedef struct
       char               *machine_name;
    } wm;
    int                 mode;
-   char                place;
    char                flipp;
    int                 resize_detail;
    int                 win_x, win_y, win_w, win_h;
@@ -1068,7 +1073,6 @@ typedef struct
    EWin               *mouse_over_ewin;
    EWin               *context_ewin;
    int                 px, py, x, y;
-   char                doingslide;
    int                 server_grabbed;
    int                 deskdrag;
    char                button_move_pending;

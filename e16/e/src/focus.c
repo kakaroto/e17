@@ -307,7 +307,7 @@ FocusToEWin(EWin * ewin, int why)
 	     if ((ewin2) && (Mode.focuswin == ewin2))
 		do_follow = 2;
 	  }
-	else if (Mode.place)
+	else if (Mode.place.doing_manual)
 	  {
 	     do_follow = 1;
 	  }
@@ -420,6 +420,9 @@ FocusInit(void)
    Mode.mouse_over_ewin = ewin;
 
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
+
+   /* Enable window placement features */
+   Mode.place.enable_features = 1;
 }
 
 static void

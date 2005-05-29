@@ -598,11 +598,6 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->focusclick = 1;
      }
 
-   doslide = Conf.mapslide && !Mode.wm.startup;
-   /* if set for borderless then dont slide it in */
-   if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
-      doslide = 0;
-
    ewin2 = NULL;
    if (ewin->client.transient)
      {
@@ -693,15 +688,20 @@ AddToFamily(EWin * ewin, Window win)
 
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
-   manplace = 0;
-   if ((!ewin->client.transient) && (Conf.place.manual)
-       && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
+   doslide = manplace = 0;
+   if (Mode.place.enable_features)
      {
-	char                cangrab;
+	/* if set for borderless then dont slide it in */
+	if (Conf.place.slidein && !Mode.place.doing_slide &&
+	    (ewin->client.mwm_decor_title || ewin->client.mwm_decor_border))
+	   doslide = 1;
 
-	cangrab = GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
-	if (cangrab == GrabSuccess)
-	   manplace = 1;
+	if (Conf.place.manual && !Mode.place.doing_manual &&
+	    !ewin->client.already_placed && !ewin->client.transient)
+	  {
+	     if (GrabPointerSet(VRoot.win, ECSR_GRAB, 0) == GrabSuccess)
+		manplace = 1;
+	  }
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
@@ -770,12 +770,10 @@ AddToFamily(EWin * ewin, Window win)
 	unsigned int        mask;
 	Window              junk, root_return;
 
-#if 0				/* FIXME: Disable for now */
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
 	DeskGoto(desk);
-#endif
 
 	XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx, &wy,
 		      &mask);
@@ -789,12 +787,12 @@ AddToFamily(EWin * ewin, Window win)
 	ShowEwin(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.have_place_grab = 1;
-	Mode.place = 1;
+	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	ActionMoveStart(ewin, 1, 0, 0);
 	goto done;
      }
-   else if ((doslide) && (!Mode.doingslide))
+   else if (doslide)
      {
 	k = rand() % 4;
 	if (k == 0)
@@ -817,6 +815,7 @@ AddToFamily(EWin * ewin, Window win)
 	     fx = VRoot.w;
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
+	Mode.place.doing_slide = 1;
 	FocusEnable(0);
 	MoveEwinToDesktopAt(ewin, desk, fx, fy);
 	ShowEwin(ewin);
@@ -876,11 +875,11 @@ EwinUnmap1(EWin * ewin)
 
    ActionsEnd(ewin);
 
-   if (Mode.doingslide)
+   if (Mode.place.doing_slide)
      {
 	DrawEwinShape(ewin, Conf.slidemode, ewin->shape_x, ewin->shape_y,
 		      ewin->client.w, ewin->client.h, 2);
-	Mode.doingslide = 0;
+	Mode.place.doing_slide = 0;
      }
 
    if (ewin == GetContextEwin())

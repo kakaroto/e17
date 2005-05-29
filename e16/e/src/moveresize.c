@@ -164,7 +164,7 @@ ActionMoveEnd(EWin * ewin)
    Mode.nogroup = 0;
    Mode.move.swap = 0;
    Mode.have_place_grab = 0;
-   Mode.place = 0;
+   Mode.place.doing_manual = 0;
 
    ModulesSignal(ESIGNAL_MOVE_DONE, NULL);
 

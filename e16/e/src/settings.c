@@ -837,7 +837,7 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.menus.warp = tmp_warpmenus;
 	Conf.menus.animate = tmp_animated_menus;
 	Conf.menus.onscreen = tmp_menusonscreen;
-	Conf.mapslide = tmp_map_slide;
+	Conf.place.slidein = tmp_map_slide;
 	Conf.cleanupslide = tmp_cleanup_slide;
 	Conf.desks.slidein = tmp_desktop_slide;
 	Conf.animate_shading = tmp_animate_shading;
@@ -868,7 +868,7 @@ SettingsSpecialFX(void)
    tmp_warpmenus = Conf.menus.warp;
    tmp_animated_menus = Conf.menus.animate;
    tmp_menusonscreen = Conf.menus.onscreen;
-   tmp_map_slide = Conf.mapslide;
+   tmp_map_slide = Conf.place.slidein;
    tmp_cleanup_slide = Conf.cleanupslide;
    tmp_desktop_slide = Conf.desks.slidein;
    tmp_animate_shading = Conf.animate_shading;

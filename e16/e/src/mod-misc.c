@@ -116,6 +116,7 @@ static const CfgItem MiscCfgItems[] = {
 
    CFG_ITEM_BOOL(Conf, place.manual, 0),
    CFG_ITEM_BOOL(Conf, place.manual_mouse_pointer, 0),
+   CFG_ITEM_BOOL(Conf, place.slidein, 0),
    CFG_ITEM_BOOL(Conf, place.ignore_struts, 0),
    CFG_ITEM_BOOL(Conf, place.raise_fullscreen, 0),
 
@@ -136,7 +137,6 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, deskmode, MODE_NONE),
    CFG_ITEM_INT(Conf, slidemode, 0),
    CFG_ITEM_BOOL(Conf, cleanupslide, 1),
-   CFG_ITEM_BOOL(Conf, mapslide, 0),
    CFG_ITEM_INT(Conf, slidespeedmap, 6000),
    CFG_ITEM_INT(Conf, slidespeedcleanup, 8000),
    CFG_ITEM_BOOL(Conf, animate_shading, 1),

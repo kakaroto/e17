@@ -340,6 +340,7 @@ MenuShow(Menu * m, char noshow)
 	ewin->head = head_num;
 
 	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+	ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
 	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);

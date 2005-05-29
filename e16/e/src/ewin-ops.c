@@ -24,6 +24,7 @@
 #include "E.h"
 #include "ewin-ops.h"
 #include "snaps.h"
+#include <math.h>
 #include <sys/time.h>
 
 static const WinOp  winops[] = {
@@ -97,12 +98,16 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    char                firstlast;
 
    firstlast = 0;
-   Mode.doingslide = 1;
+   Mode.place.doing_slide = 1;
    FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
    if (Conf.slidemode > 0)
       EGrabServer();
+
+   tmpx = abs(tx - fx) + abs(ty - fy);
+   tmpx = (tmpx > 0) ? (VRoot.w + VRoot.h) / tmpx : 100;
+   speed *= tmpx;
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
@@ -124,7 +129,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
    MoveEwin(ewin, tx, ty);
 
-   Mode.doingslide = 0;
+   Mode.place.doing_slide = 0;
    FocusEnable(1);
 
    if (Conf.slidemode > 0)
@@ -149,7 +154,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
       goto done;
 
    firstlast = 0;
-   Mode.doingslide = 1;
+   Mode.place.doing_slide = 1;
    FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
@@ -191,7 +196,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	  }
      }
 
-   Mode.doingslide = 0;
+   Mode.place.doing_slide = 0;
    FocusEnable(1);
 
    if (Conf.slidemode > 0)
@@ -260,7 +265,7 @@ static void
 doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
-   int                 dx, dy, sw, sh, x0, y0, pdesk;
+   int                 dx, dy, sw, sh, xo, yo, pdesk;
    char                move, resize, reparent, raise, floating;
    EWin              **lst;
    int                 i, num;
@@ -320,15 +325,15 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	sh = VRoot.h;
 	if (EoIsSticky(ewin))
 	  {
-	     x0 = y0 = 0;
+	     xo = yo = 0;
 	  }
 	else
 	  {
 	     int                 ax, ay;
 
 	     DeskGetArea(desk, &ax, &ay);
-	     x0 = -ax * sw;
-	     y0 = -ay * sh;
+	     xo = -ax * sw;
+	     yo = -ay * sh;
 	     sw *= Conf.desks.areas_nx;
 	     sh *= Conf.desks.areas_ny;
 	  }
@@ -350,14 +355,14 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 		dy = 8;
 	  }
 
-	if (x < x0 - EoGetW(ewin) + dx)
-	   x = x0 - EoGetW(ewin) + dx;
-	else if (x > x0 + sw - dx)
-	   x = x0 + sw - dx;
-	if (y < y0 - EoGetH(ewin) + dy)
-	   y = y0 - EoGetH(ewin) + dy;
-	else if (y > y0 + sh - dy)
-	   y = y0 + sh - dy;
+	if (x < xo - EoGetW(ewin) + dx)
+	   x = xo - EoGetW(ewin) + dx;
+	else if (x > xo + sw - dx)
+	   x = xo + sw - dx;
+	if (y < yo - EoGetH(ewin) + dy)
+	   y = yo - EoGetH(ewin) + dy;
+	else if (y > yo + sh - dy)
+	   y = yo + sh - dy;
      }
 
    if (flags & MRF_RAISE)
@@ -422,21 +427,18 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    else
       EoMoveResize(ewin, x, y, w, h);
 
-#if 1				/* FIXME - Should be done when shading/unshading */
-   if (ewin->shaded == 0)
-     {
-	EMoveResizeWindow(ewin->win_container,
-			  ewin->border->border.left, ewin->border->border.top,
-			  ewin->client.w, ewin->client.h);
-     }
-   else
-     {
-	EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
-     }
-#endif
-
    if (flags & MRF_RESIZE)
      {
+	if (!ewin->shaded)
+	   EMoveResizeWindow(ewin->win_container,
+			     ewin->border->border.left,
+			     ewin->border->border.top,
+			     ewin->client.w, ewin->client.h);
+#if 0
+	else
+	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
+#endif
+
 	EMoveResizeWindow(ewin->client.win, 0, 0, ewin->client.w,
 			  ewin->client.h);
 	EwinBorderCalcSizes(ewin, 0);
