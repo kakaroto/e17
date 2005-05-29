@@ -177,7 +177,7 @@ private
 
 	def init_xmms
 		@xmms = XmmsClient::XmmsClient.new("Euphoria")
-		@xmms.connect(@config.ipc_path)
+		@xmms.connect(ENV["XMMS_PATH"] || @config.ipc_path)
 		@xmms.add_to_ecore_mainloop
 
 		@xmms.on_disconnect do
