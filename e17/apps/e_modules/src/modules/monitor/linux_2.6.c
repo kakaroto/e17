@@ -1,6 +1,28 @@
 
 #include "linux_2.6.h"
 
+static int __monitor_cpu_count = -1;
+
+int
+count_cpus(void)
+{
+  char tmp[4];
+  FILE     *stat;
+  int       cpu = -1;
+	
+  if ( !(stat = fopen ("/proc/stat", "r")) )
+    return -1;
+
+  while (fscanf (stat, "cp%s %*lu %*lu %*lu %*lu %*lu %*lu %*lu %*lu\n", &tmp) == 1)
+    {
+	cpu++;
+    }
+  fclose (stat);
+
+  __monitor_cpu_count = cpu;
+  return cpu;
+}
+
 int
 four_cpu_numbers(int *uret, int *nret, int *sret, int *iret)
 {
@@ -65,10 +87,11 @@ cpu_usage_get(void)
 
   if ( four_cpu_numbers( &u, &n, &s, &i ) == -1 )
     return -1;
+  if (__monitor_cpu_count == -1)
+    count_cpus();
 
   load = u + n + s;
-
-  return load;
+  return load / __monitor_cpu_count;
 }
 
 char *net_dev = "eth0";
