@@ -199,10 +199,7 @@ fi
 AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession", [Xsession script])
 AC_SUBST(xsession)
 
-x_cflags="-I/usr/X11R6/include"
-x_libs="-L/usr/X11R6/lib -lX11 -lXext"
-AC_SUBST(x_cflags)
-AC_SUBST(x_libs)
+AC_PATH_XTRA
 
 EDJE_DEF=""
 AC_SUBST(EDJE_DEF)
