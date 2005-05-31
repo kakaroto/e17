@@ -97,7 +97,7 @@ FocusEwinSelect(void)
 
      case MODE_FOCUS_SLOPPY:
 	ewin = GetEwinPointerInClient();
-	if (ewin && FocusEwinValid(ewin, 1, 0, 1))
+	if (ewin && FocusEwinValid(ewin, 1, 0, 0))
 	   break;
 	goto do_select;
 
@@ -109,7 +109,7 @@ FocusEwinSelect(void)
 	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1, 0, 1) || lst[i]->skipfocus)
+	     if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->skipfocus)
 		continue;
 	     ewin = lst[i];
 	     break;
