@@ -15,6 +15,9 @@
  *    for each container, you select the active one and it wills et the bg
  *    on that container?
  *  * disable the scroll arrow when your at the edge
+ *  * The calculation to turn on the scroll arrows seems to be a bit off.
+ *    Make the arrows diappear and then slowly resize down, seems to be
+ *    about a 10px delay before the arrows kick in
  */
 
 #define WIDTH 600
