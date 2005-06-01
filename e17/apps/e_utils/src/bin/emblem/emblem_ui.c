@@ -96,10 +96,10 @@ emblem_ui_init(Emblem *em)
 
     ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, 
                                 emblem_ui_e_bg_get, em);
-    ecore_event_handler_add(E_RESPONSE_BACKGROUND_DIRS_LIST,
-                                emblem_ui_e_bg_dirs_list, em);
-    ecore_event_handler_add(E_RESPONSE_THEME_DIRS_LIST,
-                                emblem_ui_e_theme_dirs_list, em);
+//    ecore_event_handler_add(E_RESPONSE_BACKGROUND_DIRS_LIST,
+//                                emblem_ui_e_bg_dirs_list, em);
+//    ecore_event_handler_add(E_RESPONSE_THEME_DIRS_LIST,
+//                                emblem_ui_e_theme_dirs_list, em);
     e_background_get();
     e_theme_dirs_list();
     e_background_dirs_list();
