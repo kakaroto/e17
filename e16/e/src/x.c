@@ -434,14 +434,18 @@ EDestroyWindow(Window win)
 	int                 i, num;
 
 	EXidDelete(win);
-	XDestroyWindow(disp, win);
+	if (xid->parent != None)
+	   XDestroyWindow(disp, win);
+
 	lst = (EXID **) ListItemType(&num, LIST_TYPE_XID);
 	if (lst)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i]->parent == win)
-		     EDestroyWindow(lst[i]->win);
+		  if (lst[i]->parent != win)
+		     continue;
+		  lst[i]->parent = None;
+		  EDestroyWindow(lst[i]->win);
 	       }
 	     Efree(lst);
 	  }

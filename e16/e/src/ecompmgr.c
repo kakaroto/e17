@@ -1291,7 +1291,7 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-#if 0
+#if 0				/* FIXME - Why? */
    if (!cw)
       return;
 #endif
@@ -1306,7 +1306,7 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
      }
    else
      {
-	if (!eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
+	if (cw && !eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 

@@ -48,7 +48,7 @@ BorderWinpartRealise(EWin * ewin, int i)
    if ((ewb->cx != ewb->x) || (ewb->cy != ewb->y) ||
        (ewb->cw != ewb->w) || (ewb->ch != ewb->h))
      {
-	if ((ewb->w < 0) || (ewb->h < 0))
+	if ((ewb->w <= 0) || (ewb->h <= 0))
 	  {
 	     EUnmapWindow(ewb->win);
 	  }
