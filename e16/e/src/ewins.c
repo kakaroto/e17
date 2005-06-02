@@ -1606,6 +1606,11 @@ EwinChangesProcess(EWin * ewin)
 	SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
      }
 
+   if (EWinChanges.flags & EWIN_CHANGE_ATTENTION)
+     {
+	HintsSetWindowState(ewin);
+     }
+
    EWinChanges.flags = 0;
 }
 

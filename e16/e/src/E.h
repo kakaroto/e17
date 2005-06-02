@@ -656,10 +656,11 @@ typedef struct _winclient
    Colormap            cmap;
    Window              icon_win;
    Pixmap              icon_pmap, icon_mask;
-   char                start_iconified;
    Window              group;
    Window              client_leader;
+   char                start_iconified;
    char                need_input;
+   char                urgency;
    char                take_focus;
    char                delete_window;
    signed char         transient;
@@ -766,6 +767,7 @@ struct _ewin
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
       unsigned            showingdesk:1;	/* Iconified by show desktop */
+      unsigned            attention:1;
    } st;
    struct
    {
@@ -1576,6 +1578,7 @@ void                EventShow(const XEvent * ev);
 #define EWIN_CHANGE_DESKTOP     (1<<3)
 #define EWIN_CHANGE_LAYER       (1<<4)
 #define EWIN_CHANGE_OPACITY     (1<<5)
+#define EWIN_CHANGE_ATTENTION   (1<<6)
 
 void                EwinShapeSet(EWin * ewin);
 void                EwinFloatAt(EWin * ewin, int x, int y);

@@ -223,6 +223,12 @@ FocusEwinSetActive(EWin * ewin, int active)
    EwinBorderUpdateState(ewin);
 
    FocusEwinSetGrabs(ewin);
+
+   if (active && ewin->st.attention)
+     {
+	ewin->st.attention = 0;
+	HintsSetWindowState(ewin);
+     }
 }
 
 void

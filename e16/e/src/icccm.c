@@ -632,73 +632,47 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	       }
 	  }
 
-	if (hint->flags & InputHint)
-	  {
-	     if (hint->input)
-	       {
-		  ewin->client.need_input = 1;
-	       }
-	     else
-	       {
-		  ewin->client.need_input = 0;
-	       }
-	  }
-	else
-	  {
-	     ewin->client.need_input = 1;
-	  }
+	ewin->client.need_input =
+	   ((hint->flags & InputHint) && (!hint->input)) ? 0 : 1;
 
-	if (hint->flags & StateHint)
-	  {
-	     if (hint->initial_state == IconicState)
-	       {
-		  ewin->client.start_iconified = 1;
-	       }
-	     else
-	       {
-		  ewin->client.start_iconified = 0;
-	       }
-	  }
-	else
-	  {
-	     ewin->client.start_iconified = 0;
-	  }
+	ewin->client.start_iconified =
+	   ((hint->flags & StateHint) &&
+	    (hint->initial_state == IconicState)) ? 1 : 0;
 
 	if (hint->flags & IconPixmapHint)
 	  {
-	     ewin->client.icon_pmap = hint->icon_pixmap;
-	     EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
+	     if (ewin->client.icon_pmap != hint->icon_pixmap)
+	       {
+		  ewin->client.icon_pmap = hint->icon_pixmap;
+		  EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
+	       }
 	  }
 	else
 	  {
-	     ewin->client.icon_pmap = 0;
+	     ewin->client.icon_pmap = None;
 	  }
 
-	if (hint->flags & IconMaskHint)
-	  {
-	     ewin->client.icon_mask = hint->icon_mask;
-	  }
-	else
-	  {
-	     ewin->client.icon_mask = 0;
-	  }
+	ewin->client.icon_mask =
+	   (hint->flags & IconMaskHint) ? hint->icon_mask : None;
 
-	if (hint->flags & IconWindowHint)
-	  {
-	     ewin->client.icon_win = hint->icon_window;
-	  }
-	else
-	  {
-	     ewin->client.icon_win = 0;
-	  }
+	ewin->client.icon_win =
+	   (hint->flags & IconWindowHint) ? hint->icon_window : None;
 
-	if (hint->flags & WindowGroupHint)
+	ewin->client.group =
+	   (hint->flags & WindowGroupHint) ? hint->window_group : None;
+
+	if (hint->flags & XUrgencyHint)
 	  {
-	     ewin->client.group = hint->window_group;
+	     if (!ewin->client.urgency)
+	       {
+		  ewin->client.urgency = 1;
+		  EwinChange(ewin, EWIN_CHANGE_ATTENTION);
+	       }
+	     ewin->st.attention = 1;
 	  }
 	else
 	  {
-	     ewin->client.group = 0;
+	     ewin->client.urgency = 0;
 	  }
 
 	XFree(hint);

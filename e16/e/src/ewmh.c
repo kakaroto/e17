@@ -142,9 +142,7 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_ABOVE;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_BELOW;
-#if 0
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
-#endif
 
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
@@ -383,10 +381,10 @@ EWMH_SetWindowState(const EWin * ewin)
 		 EoGetLayer(ewin) >= 6);
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_BELOW,
 		 EoGetLayer(ewin) <= 2);
-#if 0
    atom_list_set(atom_list, len, &atom_count,
-		 ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION, TBD);
-#endif
+		 ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION,
+		 ewin->st.attention);
+
    ecore_x_window_prop_atom_set(ewin->client.win, ECORE_X_ATOM_NET_WM_STATE,
 				atom_list, atom_count);
 }
@@ -494,7 +492,7 @@ EWMH_GetWindowState(EWin * ewin)
    ewin->shaded = 0;
    ewin->skiptask = ewin->skip_ext_pager = 0;
    ewin->st.maximized_horz = ewin->st.maximized_vert = 0;
-   ewin->st.fullscreen = 0;
+   ewin->st.fullscreen = ewin->st.attention = 0;
 /* ewin->layer = No ... TBD */
 
    for (i = 0; i < n_atoms; i++)
@@ -520,10 +518,8 @@ EWMH_GetWindowState(EWin * ewin)
 	   EoSetLayer(ewin, 6);
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	   EoSetLayer(ewin, 2);
-#if 0
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
-	   TBD;
-#endif
+	   ewin->st.attention = 1;
      }
    Efree(p_atoms);
 }
@@ -817,13 +813,13 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  {
 	     action = do_set(ewin->skiptask, action);
 	     ewin->skiptask = action;
-	     /* Set ECORE_X_ATOM_NET_WM_STATE ? */
+	     EWMH_SetWindowState(ewin);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER)
 	  {
 	     action = do_set(ewin->skip_ext_pager, action);
 	     ewin->skip_ext_pager = action;
-	     /* Set ECORE_X_ATOM_NET_WM_STATE ? */
+	     EWMH_SetWindowState(ewin);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
 		 atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
@@ -889,11 +885,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     else
 		EwinOpSetLayer(ewin, 4);
 	  }
-#if 0
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
 	  {
+	     action = do_set(ewin->st.attention, action);
+	     ewin->st.attention = action;
+	     EWMH_SetWindowState(ewin);
 	  }
-#endif
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {
