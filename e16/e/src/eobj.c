@@ -227,6 +227,7 @@ void
 EobjWindowDestroy(EObj * eo)
 {
    EDestroyWindow(eo->win);
+   eo->gone = 1;
    EobjDestroy(eo);
 }
 

@@ -1306,7 +1306,7 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
      }
    else
      {
-	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
+	if (!eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 

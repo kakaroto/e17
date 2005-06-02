@@ -507,6 +507,7 @@ struct _eobj
    char                sticky;
    char                floating;
    char                shown;
+   char                gone;
 #if USE_COMPOSITE
    char                shadow;	/* Enable shadows */
    unsigned int        opacity;
