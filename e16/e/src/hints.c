@@ -47,6 +47,12 @@ HintsInit(void)
 #endif
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
    ecore_x_window_prop_string_set(VRoot.win, atom, e_wm_version);
+
+   if (Mode.wm.window)
+     {
+	HintsSetWindowName(VRoot.win, "Enlightenment");
+	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
+     }
 }
 
 void

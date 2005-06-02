@@ -229,9 +229,6 @@ SetupX(const char *dstr)
 				  CWBorderPixel, &attr);
 	ERegisterWindow(VRoot.win);
 
-	HintsSetWindowName(VRoot.win, "Enlightenment");
-	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
-
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
 	Esetenv("ENL_WM_ROOT", buf, 1);
