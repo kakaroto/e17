@@ -136,6 +136,9 @@ SetupX(const char *dstr)
 	EExit(1);
      }
 
+   if (getenv("ESYNCHRONIZE"))
+      XSynchronize(disp, True);
+
    VRoot.scr = DefaultScreen(disp);
    Mode.display.screens = ScreenCount(disp);
 
