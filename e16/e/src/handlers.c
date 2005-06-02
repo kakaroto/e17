@@ -175,7 +175,7 @@ SignalsRestore(void)
 void
 EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 {
-/*  char                buf[64]; */
+   char                buf[64];
 
    if ((ev->request_code == X_ChangeWindowAttributes)
        && (ev->error_code == BadAccess))
@@ -191,10 +191,13 @@ EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 	  }
      }
 
-#if 0
-   XGetErrorText(disp, ev->error_code, buf, 63);
-   fprintf(stderr, "Whee %i: %s : %i\n", time(NULL), buf, ev->request_code);
-#endif
+   if (EventDebug(1))
+     {
+	XGetErrorText(disp, ev->error_code, buf, 63);
+	Eprintf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",
+		ev->resourceid, ev->error_code,
+		ev->request_code, ev->minor_code, buf);
+     }
 }
 
 void
