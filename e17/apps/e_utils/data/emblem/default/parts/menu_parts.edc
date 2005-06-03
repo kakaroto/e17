@@ -1,0 +1,43 @@
+part {
+    name, "menu_body";
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    relative, 0.0 1.0;
+	    offset, 2 -84;
+	} 
+	rel2 {
+	    relative, 1.0 1.0;
+	    offset, -3 -26;
+	}
+	image {
+	    normal, "e17_ibar_bg_h.png";
+            border, 13 13 13 13;
+	}
+    }
+}
+ITEM_OVERLAY("menu_body","h");
+
+part {
+    name, "menu_bar";
+    type, SWALLOW;
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    to, "menu_body";
+	    offset, 26 4;
+	} 
+	rel2 {
+	    to, "menu_body";
+	    offset, -26 -8;
+	}
+    }
+}
+
+ARROW("left","menu",0.0,0.0,6,0,0.0,1.0,27,0);
+
+ARROW("right","menu",1.0,0.0,-27,0,1.0,1.0,-6,0);
+
+

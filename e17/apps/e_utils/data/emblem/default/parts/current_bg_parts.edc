@@ -1,0 +1,51 @@
+part {
+    name, "current_bg";
+
+    description {
+	state, "default" 0.0;
+
+	rel1 {
+	    relative, 0.0 0.0;
+	    offset, -10 -10;
+	    to, "current";
+	}
+	rel2 {
+	    relative, 1.0 1.0;
+	    offset, 10 10;
+	    to, "current";
+	}
+	image {
+	    normal, "text_sel.png";
+	    border, 10 10 10 10;
+	}
+	fill {
+	    origin {
+		relative, 0.0 0.0;
+		offset, 0 0;
+	    }
+	    size {
+		relative, 1.0 1.0;
+		offset, 0 0;
+	    }
+	} 
+    }
+}
+
+part {
+    name, "current";
+    type, SWALLOW;
+
+    description {
+	state, "default" 0.0;
+	aspect, 1 1.333333;
+
+	rel1 {
+	    relative, 0 0;
+	    offset, 36 36;
+	}
+	rel2 {
+	    relative, 1.0 1.0;
+	    offset, -36 -100;
+	}
+    }
+}

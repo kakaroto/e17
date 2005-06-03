@@ -1,0 +1,102 @@
+part {
+    name, "background";
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    relative, 0.0 0.0;
+	    offset, 0 0;
+	} 
+	rel2 {
+	    relative, 1.0 1.0;
+	    offset, -1 -1;
+	}
+	image {
+	    normal, "bg.png";
+	}
+	fill {
+	    origin {
+		relative, 0.0 0.0;
+		offset, 0 0;
+	    }
+	    size {
+		relative, 1.0 1.0;
+		offset, 0 0;
+	    }
+	}
+    }
+}
+
+part {
+    name, "e_logo";
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    relative, 0.0 0.0;
+	    offset, -30 -40;
+	}
+	rel2 {
+	    relative, 0.0 0.0;
+	    offset, 90 120;
+	}
+	image {
+	    normal, "logo.png";
+	}
+	color, 255 255 255 64;
+    }
+}
+
+part {
+    name, "title";
+    type, TEXT;
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    relative, 1.0 1.0;
+	    offset, -60 -24;
+	}
+	rel2 {
+	    relative, 1.0 1.0;
+	    offset, -5 -2;
+	}
+	text {
+	    text, "MBLEM";
+	    font, "VeraBold";
+	    size, 12;
+	}
+	color, 0 0 0 255;
+    }
+}
+
+part {
+    name, "e";
+
+    description {
+	state, "default" 0.0;
+	rel1 {
+	    relative, 0.0 0.0;
+	    offset, -11 2;
+	    to, "title";
+	}
+	rel2 {
+	    relative, 0.0 0.0;
+	    offset, 0 16;
+	    to, "title";
+	}
+	image {
+	    normal, "e.png";
+	}
+	fill {
+	    origin {
+		relative, 0.0 0.0;
+		offset, 0 0;
+	    }
+	    size {
+		relative, 1.0 1.0;
+		offset, 0 0;
+	    }
+	}
+    }
+}

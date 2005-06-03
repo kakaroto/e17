@@ -1,0 +1,21 @@
+
+BGS_ARROW_PROGS("left");
+BGS_ARROW_PROGS("right");
+
+program {
+    name, "hide";
+    source, "*";
+    signal, "arrows,hide";
+    action, STATE_SET "hidden" 0.0;
+    target, "left_arrow";
+    target, "right_arrow";
+}
+
+program {
+    name, "show";
+    source, "*";
+    signal, "arrows,show";
+    action, STATE_SET "default" 0.0;
+    target, "left_arrow";
+    target, "right_arrow";
+}
