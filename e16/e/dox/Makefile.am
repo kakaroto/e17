@@ -1,3 +1,5 @@
+SUBDIRS = E-docs
+
 EXTRA_DIST = README
 
 bin_PROGRAMS = edox

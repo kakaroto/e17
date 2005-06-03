@@ -300,7 +300,7 @@ main(int argc, char **argv)
    sprintf(s, "%s/%s", docdir, docfile);
    findLocalizedFile(s);
 
-   im_title = LoadImage("title.xpm");
+   im_title = LoadImage("title.png");
    imlib_context_set_image(im_title);
 
    ibd.left = 50;
@@ -309,12 +309,12 @@ main(int argc, char **argv)
    ibd.bottom = 2;
    imlib_image_set_border(&ibd);
 
-   im_prev1 = LoadImage("prev1.xpm");
-   im_prev2 = LoadImage("prev2.xpm");
-   im_next1 = LoadImage("next1.xpm");
-   im_next2 = LoadImage("next2.xpm");
-   im_exit1 = LoadImage("exit1.xpm");
-   im_exit2 = LoadImage("exit2.xpm");
+   im_prev1 = LoadImage("prev1.png");
+   im_prev2 = LoadImage("prev2.png");
+   im_next1 = LoadImage("next1.png");
+   im_next2 = LoadImage("next2.png");
+   im_exit1 = LoadImage("exit1.png");
+   im_exit2 = LoadImage("exit2.png");
 
    f = fopen(s, "r");
    if (!f)

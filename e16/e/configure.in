@@ -223,6 +223,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 dox/Makefile
+dox/E-docs/Makefile
 eesh/Makefile
 epp/Makefile
 man/Makefile
