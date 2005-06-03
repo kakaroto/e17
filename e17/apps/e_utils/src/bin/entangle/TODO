@@ -2,14 +2,11 @@ Just the stuff I can think of...
 
 * someway to attach .directory.eapp files to directories
 * directory renaming?
-* if an eapp is under the arrows in the left menu it will be clicked when
-  you click the arrow
 * need to handle directories that aren't in the .order file. They come at
   the end of the list
-* can also ahve .eapps in the directory that aren't in the .order file (I
-  think).
+* need to handle eapps that aren't in the .order file too
 * E17 will look for the .eapp in the directory first before checking the all
-  directory (i think).
+  directory.
 * need to add monitoring of the .order files and the top directories
   - if something changes need to popup a warning to the user and ask if
     they want to reload the .order file

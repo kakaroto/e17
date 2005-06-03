@@ -676,25 +676,30 @@ entangle_ui_cb_mouse_down(void *data, Evas *evas,
     Evas_Object *o;
     Evas_Event_Mouse_Down *e;
     Entangle_Eapp *eapp;
+    Evas_Coord y, h;
 
     e = ev;
     eapp = data;
 
-    /* XXX check we're not over the arrows */
+    o = evas_object_name_find(evas, "edje");
+    edje_object_part_geometry_get(o, "eapps_bar", NULL, &y, NULL, &h);
 
-    o = edje_object_add(evas);
-    edje_object_file_set(o, eapp->path, "icon");
-    evas_object_move(o, e->canvas.x - 18, e->canvas.y - 18);
-    evas_object_resize(o, 36, 36);
-    evas_object_layer_set(o, 2);
-    evas_object_color_set(o, 255, 255, 255, 198);
-    evas_object_show(o);
+    if ((e->canvas.y > y) && (e->canvas.y < (y + h)))
+    {
+        o = edje_object_add(evas);
+        edje_object_file_set(o, eapp->path, "icon");
+        evas_object_move(o, e->canvas.x - 18, e->canvas.y - 18);
+        evas_object_resize(o, 36, 36);
+        evas_object_layer_set(o, 2);
+        evas_object_color_set(o, 255, 255, 255, 198);
+        evas_object_show(o);
 
-    evas_object_data_set(o, "eapp", eapp);
-    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                        entangle_ui_cb_mouse_move, o);
-    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP,
-                                        entangle_ui_cb_mouse_up, o);
+        evas_object_data_set(o, "eapp", eapp);
+        evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                            entangle_ui_cb_mouse_move, o);
+        evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP,
+                                            entangle_ui_cb_mouse_up, o);
+    }
 }
 
 static void
