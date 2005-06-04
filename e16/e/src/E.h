@@ -189,21 +189,15 @@ int                 Esnprintf(va_alist);
 #define LIST_TYPE_BORDER         3
 #define LIST_TYPE_ICLASS         4
 #define LIST_TYPE_ACLASS         5
-#define LIST_TYPE_AWAIT_ICLASS   6
 #define LIST_TYPE_ACLASS_GLOBAL  7
-#define LIST_TYPE_ACLASS_DESK    8
 #define LIST_TYPE_TCLASS         9
 #define LIST_TYPE_BACKGROUND    10
 #define LIST_TYPE_BUTTON        11
 #define LIST_TYPE_SCLASS        12
 #define LIST_TYPE_WINDOWMATCH   13
 #define LIST_TYPE_COLORMODIFIER 14
-#define LIST_TYPE_ICONIFIEDS    15
 #define LIST_TYPE_SLIDEOUT      16
-#define LIST_TYPE_DRAW          17
 #define LIST_TYPE_TOOLTIP       18
-#define LIST_TYPE_CONTAINER     19
-#define LIST_TYPE_QUEUE_ENTRY   20
 #define LIST_TYPE_MENU          21
 #define LIST_TYPE_MENU_STYLE    22
 #define LIST_TYPE_ECURSOR       23
@@ -214,7 +208,6 @@ int                 Esnprintf(va_alist);
 #define LIST_TYPE_ICONBOX       28
 #define LIST_TYPE_WARP_RING     29
 #define LIST_TYPE_XID           30
-#define LIST_TYPE_ICONDEF       31
 #define LIST_TYPE_GROUP         32
 
 #define LIST_TYPE_COUNT         33
@@ -1811,7 +1804,7 @@ void                SaveGroups(void);
 /* handlers.c */
 void                SignalsSetup(void);
 void                SignalsRestore(void);
-void                EHandleXError(Display * d, XErrorEvent * ev);
+void                HandleXError(Display * d, XErrorEvent * ev);
 void                HandleXIOError(Display * d);
 
 /* hints.c */

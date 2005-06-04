@@ -194,7 +194,7 @@ SetupX(const char *dstr)
    Esetenv("DISPLAY", Mode.display.name, 1);
 
    /* set up an error handler for then E would normally have fatal X errors */
-   XSetErrorHandler((XErrorHandler) EHandleXError);
+   XSetErrorHandler((XErrorHandler) HandleXError);
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
@@ -260,7 +260,7 @@ SetupX(const char *dstr)
 
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */
-   XSetErrorHandler((XErrorHandler) EHandleXError);
+   XSetErrorHandler((XErrorHandler) HandleXError);
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 

@@ -130,7 +130,6 @@ ICCCM_Iconify(const EWin * ewin)
 {
    EUnmapWindow(ewin->client.win);
    ecore_x_icccm_state_set_iconic(ewin->client.win);
-   AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
 }
 
 void
@@ -138,7 +137,6 @@ ICCCM_DeIconify(const EWin * ewin)
 {
    EMapWindow(ewin->client.win);
    ecore_x_icccm_state_set_normal(ewin->client.win);
-   RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
 }
 
 void

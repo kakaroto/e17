@@ -173,7 +173,7 @@ SignalsRestore(void)
 }
 
 void
-EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
+HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 {
    char                buf[64];
 
