@@ -24,7 +24,10 @@ class Playlist < Array
 
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
 			@current_pos = res.value
-			find { |i| i.hilighted }.hilighted = false
+
+			tmp = find { |i| i.hilighted }
+			tmp.hilighted = false unless tmp.nil?
+
 			current_item.hilighted = true
 		end
 
