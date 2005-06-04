@@ -72,11 +72,11 @@ EXidCreate(void)
 static void
 EXidDestroy(EXID * xid)
 {
-   if (xid->rects)
-      XFree(xid->rects);
 #if 0
    Eprintf("EXidDestroy: %p %#lx\n", xid, xid->win);
 #endif
+   if (xid->rects)
+      XFree(xid->rects);
    if (xid->cbl.lst)
       Efree(xid->cbl.lst);
    Efree(xid);
@@ -97,16 +97,13 @@ EXidDelete(Window win)
 {
    EXID               *xid;
 
-   if (xid_context == 0)
-      xid_context = XUniqueContext();
-
+#if 0
+   Eprintf("EXidDelete: %p %#lx\n", xid, xid->win);
+#endif
    xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
    if (!xid)
       return;
 
-#if 0
-   Eprintf("EXidDelete: %p %#lx\n", xid, xid->win);
-#endif
    XDeleteContext(disp, win, xid_context);
    if (xid->in_use)
       xid->do_del = 1;
@@ -127,6 +124,7 @@ EXidFind(Window win)
    if (XFindContext(disp, win, xid_context, &xp) == XCNOENT)
       xp = NULL;
    xid = (EXID *) xp;
+
    return xid;
 }
 
@@ -433,9 +431,9 @@ EDestroyWindow(Window win)
 	EXID              **lst;
 	int                 i, num;
 
-	EXidDelete(win);
 	if (xid->parent != None)
 	   XDestroyWindow(disp, win);
+	EXidDelete(win);
 
 	lst = (EXID **) ListItemType(&num, LIST_TYPE_XID);
 	if (lst)
