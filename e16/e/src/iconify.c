@@ -501,7 +501,7 @@ IconboxEwinMoveResize(EWin * ewin, int resize)
 {
    Iconbox            *ib = ewin->data;
 
-   if (!resize && !ib->do_update && !TransparencyEnabled())
+   if (!resize && !ib->do_update && !TransparencyUpdateNeeded())
       return;
 
    ib->w = ewin->client.w;

@@ -71,6 +71,7 @@ typedef enum
    ESIGNAL_EWIN_DEICONIFY,
    ESIGNAL_EWIN_CHANGE_ICON,
    ESIGNAL_EWIN_CHANGE,
+   ESIGNAL_THEME_TRANS_CHANGE,
 } e_signal_t;
 
 #if 0				/* Maybe later */

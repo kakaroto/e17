@@ -524,7 +524,7 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (!d || Mode.mode != MODE_NONE)
       return;
 
-   if (TransparencyEnabled() || ImageclassIsTransparent(d->iclass))
+   if (TransparencyUpdateNeeded() || ImageclassIsTransparent(d->iclass))
       DialogRedraw(d);
 }
 

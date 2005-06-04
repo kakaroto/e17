@@ -1905,6 +1905,10 @@ EwinsInit(void)
 static void
 EwinsSighan(int sig, void *prm __UNUSED__)
 {
+   EWin               *ewin;
+   EWin              **ewin_lst;
+   int                 win_cnt, i;
+
    switch (sig)
      {
      case ESIGNAL_INIT:
@@ -1922,6 +1926,18 @@ EwinsSighan(int sig, void *prm __UNUSED__)
 #endif
      case ESIGNAL_DESK_RESIZE:
 	EwinsTouch();
+	break;
+     case ESIGNAL_THEME_TRANS_CHANGE:
+     case ESIGNAL_BACKGROUND_CHANGE:
+	/* FIXME - Only visible windows */
+	/* FIXME - BG: Only affected desk */
+	ewin_lst = (EWin **) EwinListStackGet(&win_cnt);
+	for (i = 0; i < win_cnt; i++)
+	  {
+	     ewin = ewin_lst[i];
+	     if (EwinIsMapped(ewin))
+		ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	  }
 	break;
      }
 }

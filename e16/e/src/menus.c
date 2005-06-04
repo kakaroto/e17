@@ -183,7 +183,7 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (!m || Mode.mode != MODE_NONE)
       return;
 
-   if (TransparencyEnabled())
+   if (TransparencyUpdateNeeded())
       m->redraw = 1;
 
    if ((!m->style->use_item_bg && m->pmm.pmap == 0) || m->redraw)

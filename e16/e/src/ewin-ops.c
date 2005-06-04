@@ -473,7 +473,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    if (Mode.mode == MODE_NONE)
      {
-	if (TransparencyEnabled())
+	if (TransparencyUpdateNeeded())
 	   EwinBorderDraw(ewin, resize, 1);	/* Update the border */
 
 	SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);

@@ -24,17 +24,28 @@
 #include "E.h"
 #include "conf.h"
 
+#ifdef ENABLE_THEME_TRANSPARENCY
+
+static Imlib_Color_Modifier *icm = NULL;
+static DATA8        gray[256];
+static DATA8        alpha[256];
+
+static int          prev_alpha = -1;
+
 int
 TransparencyEnabled(void)
 {
    return Conf.trans.alpha;
 }
 
-#ifdef ENABLE_THEME_TRANSPARENCY
-
-static Imlib_Color_Modifier *icm = NULL;
-static DATA8        gray[256];
-static DATA8        alpha[256];
+int
+TransparencyUpdateNeeded(void)
+{
+   /*  For this to work right prev_alpha needs set to zero on initialization  */
+   /*    if transparency is disabled (by being set to zero).  */
+   /* FIXME - Check this. We call TransparencySet(Conf.trans.alpha) at startup */
+   return Conf.trans.alpha || prev_alpha;
+}
 
 static void
 TransparencyMakeColorModifier(void)
@@ -69,14 +80,24 @@ TransparencySet(int transparency)
    else if (transparency > 255)
       transparency = 255;
 
-   changed = Conf.trans.alpha != transparency;
-   Conf.trans.alpha = transparency;
-
-   /* Generate the color modifier tables */
-   TransparencyMakeColorModifier();
-
-   if (changed)
-      DesksRefresh();
+   /*  This will render the initial startup stuff correctly since !changed  */
+   if (prev_alpha == -1)
+     {
+	prev_alpha = Conf.trans.alpha = transparency;
+	/* Generate the color modifier tables */
+	TransparencyMakeColorModifier();
+	ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
+     }
+   else
+     {
+	changed = Conf.trans.alpha != transparency;
+	prev_alpha = Conf.trans.alpha;
+	Conf.trans.alpha = transparency;
+	/* Generate the color modifier tables */
+	TransparencyMakeColorModifier();
+	if (changed)
+	   ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
+     }
 }
 
 #else

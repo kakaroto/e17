@@ -1866,13 +1866,17 @@ void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* iclass.c */
 int                 ImageclassConfigLoad(FILE * fs);
+
+#ifdef ENABLE_THEME_TRANSPARENCY
 void                TransparencySet(int transparency);
 int                 TransparencyEnabled(void);
+int                 TransparencyUpdateNeeded(void);
+int                 ImageclassIsTransparent(ImageClass * ic);
+#endif
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 					    int active, int sticky);
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
 ImageClass         *ImageclassFind(const char *name, int fallback);
-int                 ImageclassIsTransparent(ImageClass * ic);
 Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
 void                ImageclassApply(ImageClass * ic, Window win, int w, int h,

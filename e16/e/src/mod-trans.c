@@ -87,6 +87,9 @@ CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 	     tmp_theme_transparency);
    DialogItemTextSetText(di, s);
    DialogDrawItems(tr_sel_dialog, di, 0, 0, 99999, 99999);
+
+   /* FIXME - We may not want to do this unless things are speeded up */
+   TransparencySet(tmp_theme_transparency);
 }
 
 static void
