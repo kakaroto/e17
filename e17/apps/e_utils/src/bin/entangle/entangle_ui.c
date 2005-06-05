@@ -486,13 +486,12 @@ entangle_ui_cb_mouse_in(void *data, Evas *evas,
     edje_object_part_geometry_get(edje, "eapps_bar", NULL, &y, NULL, &h);
     
     if ((e->canvas.y > y) && (e->canvas.y < (y + h)))
-	{
-	    eapp = data;
-
-	    edje_object_part_text_set(edje, "eapp_info_name", eapp->name);
-	    edje_object_part_text_set(edje, "eapp_info_class", eapp->class);
-	    edje_object_signal_emit(edje, "eapp,info,show", "*");
-	}
+    {
+        eapp = data;
+        edje_object_part_text_set(edje, "eapp_info_name", eapp->name);
+        edje_object_part_text_set(edje, "eapp_info_class", eapp->class);
+        edje_object_signal_emit(edje, "eapp,info,show", "*");
+    }
 }
 
 static void
