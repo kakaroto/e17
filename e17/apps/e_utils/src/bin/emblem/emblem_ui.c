@@ -100,9 +100,9 @@ emblem_ui_init(Emblem *em)
                                 emblem_ui_e_bg_dirs_list, em);
     ecore_event_handler_add(E_RESPONSE_THEME_DIRS_LIST,
                                 emblem_ui_e_theme_dirs_list, em);
-    e_background_get();
-    e_theme_dirs_list();
-    e_background_dirs_list();
+    e_lib_background_get();
+    e_lib_theme_dirs_list();
+    e_lib_background_dirs_list();
 
     return 1;
 }
@@ -346,7 +346,7 @@ emblem_current_sel_cb(void *data __UNUSED__, Evas *evas __UNUSED__,
 {
     char *name; 
     name = evas_object_data_get(obj, "file");
-    e_background_set(name);
+    e_lib_background_set(name);
     return;
 }
 

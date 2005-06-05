@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include <E.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Job.h>
@@ -12,6 +11,7 @@
 #include <Evas.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
+#include <E_Lib.h>
 
 #include "config.h"
 

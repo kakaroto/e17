@@ -144,7 +144,7 @@ main(int argc, char ** argv)
         goto ECORE_EVAS_SHUTDOWN;
     }
 
-    if (!e_init(em->display))
+    if (!e_lib_init(em->display))
     {
         printf("Can't connect to e17, exiting\n");
         goto EDJE_SHUTDOWN;
@@ -163,7 +163,7 @@ main(int argc, char ** argv)
     emblem_ui_shutdown();
 
 ENLIGHTENMENT_SHUTDOWN:
-    e_shutdown();
+    e_lib_shutdown();
 
 EDJE_SHUTDOWN:
     edje_shutdown();
