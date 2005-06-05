@@ -364,14 +364,21 @@ sub FindIcon {
 # Make the Epplets menu
 sub MakeEppsMenu {
 	local $f = shift;
-	@el = grep /\.epplet$/, ReadDir($EdirBin);
+	local $d;
+	local %done;
 	open(FD, ">$EdirMenus/$f");
 	print FD "\"Enlightenment Epplets\"\n";
-	foreach $e (@el) {
-		$e =~ s/\.epplet$//;
-		$i = "$EdirRoot/epplet_icons/$e.icon";
-		$i = ScaleIcon("$i") if -f "$i";
-		print FD "\"$e\" \"$i\" exec \"$EdirBin/$e.epplet\"\n";
+	foreach $d (split(':', $ENV{'PATH'})) {
+		next if ($done{$d});
+		$done{$d} = 1;
+		print "Looking for epplets in $d\n" if $dbg ge 1;
+		@el = grep /\.epplet$/, ReadDir($d);
+		foreach $e (@el) {
+			$e =~ s/\.epplet$//;
+			$i = "$EdirRoot/epplet_icons/$e.icon";
+			$i = ScaleIcon("$i") if -f "$i";
+			print FD "\"$e\" \"$i\" exec \"$d/$e.epplet\"\n";
+		}
 	}
 	close(FD);
 }
