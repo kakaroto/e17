@@ -43,7 +43,7 @@ Ewl_Widget	*ewl_statusbar_new(void);
 int		 ewl_statusbar_init(Ewl_Statusbar *sb);
 
 void		 ewl_statusbar_left_hide(Ewl_Statusbar *sb);
-void		 ewl_statsbar_left_show(Ewl_Statusbar *sb);
+void		 ewl_statusbar_left_show(Ewl_Statusbar *sb);
 void		 ewl_statusbar_right_hide(Ewl_Statusbar *sb);
 void		 ewl_statusbar_right_show(Ewl_Statusbar *sb);
 

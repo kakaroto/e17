@@ -113,7 +113,7 @@ void ewl_statusbar_left_hide(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief show the box on the left of the status bar
  */
-void ewl_statsbar_left_show(Ewl_Statusbar *sb)
+void ewl_statusbar_left_show(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
