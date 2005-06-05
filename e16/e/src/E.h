@@ -703,6 +703,7 @@ struct _ewin
    EObj                o;
    char                type;
    char                state;
+   int                 vx, vy;	/* Position in virtual root */
    int                 lx, ly;	/* Last pos */
    int                 lw, lh;	/* Last size */
    int                 ll;	/* Last layer */
@@ -761,6 +762,7 @@ struct _ewin
       unsigned            fullscreen:1;
       unsigned            showingdesk:1;	/* Iconified by show desktop */
       unsigned            attention:1;
+      unsigned            animated:1;
    } st;
    struct
    {

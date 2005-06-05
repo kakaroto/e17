@@ -23,6 +23,11 @@
  */
 #include "E.h"
 
+#define EwinGetVX(ew) (ew->vx)
+#define EwinGetVY(ew) (ew->vy)
+#define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
+#define EwinGetVY2(ew) (ew->vy + EoGetH(ew))
+
 struct
 {
    int                 zoom;
@@ -45,7 +50,7 @@ struct _pager
    /* State flags */
    char                do_newbg;
    char                do_update;
-   char                do_redraw;
+   int                 x1, y1, x2, y2;
 };
 
 typedef struct
@@ -149,7 +154,7 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
    static double       last_time = 0.0;
    double              cur_time, in;
    static int          calls = 0;
-   int                 y, y2, phase, ax, ay, cx, cy, ww, hh, xx, yy;
+   int                 y, y2, phase, cx, cy, ww, hh, xx, yy;
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
    p = (Pager *) data;
@@ -180,10 +185,9 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
    if (Mode.mode != MODE_NONE)
       return;
 
-   GetAreaSize(&ax, &ay);
    DeskGetCurrentArea(&cx, &cy);
-   ww = p->w / ax;
-   hh = p->h / ay;
+   ww = p->dw;
+   hh = p->dh;
    xx = cx * ww;
    yy = cy * hh;
    phase = p->update_phase;
@@ -243,21 +247,16 @@ PagerHiwinUpdate(PagerHiwin * phi, Pager * p __UNUSED__, EWin * ewin)
 static void
 PagerEwinUpdateMini(Pager * p, EWin * ewin)
 {
-   int                 w, h, ax, ay, cx, cy;
+   int                 w, h;
 
-   if (!Conf.pagers.enable)
-      return;
-
-   GetAreaSize(&ax, &ay);
-   DeskGetArea(p->desktop, &cx, &cy);
-
-   w = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-   h = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+   w = (EoGetW(ewin) * p->dw) / VRoot.w;
+   h = (EoGetH(ewin) * p->dh) / VRoot.h;
 
    if (w < 1)
       w = 1;
    if (h < 1)
       h = 1;
+
    if ((ewin->mini_w != w) || (ewin->mini_h != h))
      {
 	FreePmapMask(&ewin->mini_pmm);
@@ -265,8 +264,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	ewin->mini_w = w;
 	ewin->mini_h = h;
 
-	if ((EoGetDesk(ewin) != DesksGetCurrent()) || (ewin->area_x != cx)
-	    || (ewin->area_y != cy) || (!Conf.pagers.snap))
+	if (!Conf.pagers.snap || !EwinIsOnScreen(ewin))
 	  {
 	     ImageClass         *ic = NULL;
 
@@ -275,7 +273,6 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 		ImageclassApplyCopy(ic, EoGetWin(ewin), w, h, 0, 0,
 				    STATE_NORMAL, &ewin->mini_pmm, 1,
 				    ST_UNKNWN);
-
 	  }
 	else
 	  {
@@ -291,40 +288,51 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 }
 
 static void
-PagerRedraw(Pager * p)
+doPagerUpdate(Pager * p)
 {
-   p->do_redraw = 1;
-   pager_update_pending = 1;
-}
-
-static void
-PagerUpdate(Pager * p)
-{
-   p->do_update = 1;
-   pager_update_pending = 1;
-}
-
-static void
-doPagerRedraw(Pager * p)
-{
-   int                 x, y, ax, ay, cx, cy;
+   int                 x, y, ax, ay, cx, cy, vx, vy;
    GC                  gc;
    EWin               *const *lst;
-   int                 i, num;
+   int                 i, num, update_screen_included, update_screen_only;
 
    p->update_phase = 0;
    GetAreaSize(&ax, &ay);
    DeskGetArea(p->desktop, &cx, &cy);
+   vx = cx * VRoot.w;
+   vy = cy * VRoot.h;
 
    gc = ECreateGC(p->pmap, 0, NULL);
    if (gc == None)
       return;
 
+   update_screen_included = update_screen_only = 0;
+   if (Conf.pagers.snap && p->desktop == DesksGetCurrent())
+     {
+	/* Update from screen unless update area is entirely off-screen */
+	if (!(p->x2 <= vx || p->y2 <= vy ||
+	      p->x1 >= vx + VRoot.w || p->y1 >= vy + VRoot.h))
+	   update_screen_included = 1;
+
+	/* Check if update area is entirely on-screen */
+	if (p->x1 >= vx && p->y1 >= vy &&
+	    p->x2 <= vx + VRoot.w && p->y2 <= vy + VRoot.h)
+	   update_screen_only = 1;
+     }
+
+   if (update_screen_only)
+      goto do_screen_update;
+
    for (y = 0; y < ay; y++)
      {
 	for (x = 0; x < ax; x++)
-	   XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->dw, p->dh,
-		     x * p->dw, y * p->dh);
+	  {
+#if 0				/* Skip? */
+	     if (update_screen_included && x == cx && y == cy)
+		continue;
+#endif
+	     XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->dw, p->dh,
+		       x * p->dw, y * p->dh);
+	  }
      }
 
    lst = EwinListGetForDesk(&num, p->desktop);
@@ -337,11 +345,13 @@ doPagerRedraw(Pager * p)
 	if (!EoIsShown(ewin))
 	   continue;
 
-	wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-	wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-	ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-	wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+	wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
+	wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
+	ww = (EoGetW(ewin) * p->dw) / VRoot.w;
+	wh = (EoGetH(ewin) * p->dh) / VRoot.h;
+
 	PagerEwinUpdateMini(p, ewin);
+
 	if (ewin->mini_pmm.pmap)
 	  {
 	     if (ewin->mini_pmm.mask)
@@ -363,30 +373,46 @@ doPagerRedraw(Pager * p)
 	  }
      }
 
-   EClearWindow(p->win);
+   if (!update_screen_included)
+     {
+	EClearWindow(p->win);
+	goto done;
+     }
 
-   EFreeGC(gc);
-}
-
-static void
-doPagerUpdate(Pager * p)
-{
-   int                 cx, cy;
-   EWin               *const *lst;
-   int                 i, num;
-
-   p->update_phase = 0;
-   DeskGetArea(p->desktop, &cx, &cy);
-
+ do_screen_update:
    /* Update pager area by snapshotting entire screen */
    ScaleRect(VRoot.win, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, cx * p->dw,
 	     cy * p->dh, p->dw, p->dh, Conf.pagers.hiq);
+   p->update_phase = 0;
+
    EClearWindow(p->win);
 
    /* Update ewin snapshots */
    lst = EwinListGetForDesk(&num, p->desktop);
    for (i = 0; i < num; i++)
       PagerEwinUpdateFromPager(p, lst[i]);
+
+ done:
+   p->x1 = p->y1 = 99999;
+   p->x2 = p->y2 = -99999;
+
+   EFreeGC(gc);
+}
+
+static void
+PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
+{
+   if (p->x1 > x1)
+      p->x1 = x1;
+   if (p->y1 > y1)
+      p->y1 = y1;
+   if (p->x2 < x2)
+      p->x2 = x2;
+   if (p->y2 < y2)
+      p->y2 = y2;
+
+   p->do_update = 1;
+   pager_update_pending = 1;
 }
 
 static void
@@ -417,6 +443,9 @@ PagerUpdateBg(Pager * p)
    Pixmap              pmap;
    GC                  gc;
    Background         *bg;
+
+   p->x1 = p->y1 = 0;
+   p->x2 = p->y2 = 99999;
 
    pmap = p->bgpmap;
    if (pmap != None)
@@ -649,39 +678,17 @@ PagersForDesktop(int d, int *num)
 }
 
 static void
-RedrawPagersForDesktop(int d)
+PagersUpdate(int d, int x1, int y1, int x2, int y2)
 {
    Pager             **pl;
    int                 i, num;
-
-   if (!Conf.pagers.enable)
-      return;
 
    pl = PagersForDesktop(d, &num);
    if (!pl)
       return;
 
    for (i = 0; i < num; i++)
-      PagerRedraw(pl[i]);
-
-   Efree(pl);
-}
-
-static void
-UpdatePagersForDesktop(int d)
-{
-   Pager             **pl;
-   int                 i, num;
-
-   if (!Conf.pagers.enable)
-      return;
-
-   pl = PagersForDesktop(d, &num);
-   if (!pl)
-      return;
-
-   for (i = 0; i < num; i++)
-      PagerUpdate(pl[i]);
+      PagerUpdate(pl[i], x1, y1, x2, y2);
 
    Efree(pl);
 }
@@ -689,27 +696,19 @@ UpdatePagersForDesktop(int d)
 static void
 PagerCheckUpdate(Pager * p)
 {
+   if (Mode.mode != MODE_NONE)
+      return;
+
    if (p->do_newbg)
      {
 	PagerUpdateBg(p);
-	p->do_update = p->do_redraw = 1;
+	p->do_update = 1;
      }
 
-   if (p->desktop == DesksGetCurrent() && Conf.pagers.snap)
-     {
-	if (p->do_redraw)
-	   doPagerRedraw(p);
-	/* FIXME - We should update only if current area has changed. */
-	if (p->do_redraw || p->do_update)
-	   doPagerUpdate(p);
-     }
-   else
-     {
-	if (p->do_redraw || p->do_update)
-	   doPagerRedraw(p);
-     }
+   if (p->do_update)
+      doPagerUpdate(p);
 
-   p->do_newbg = p->do_redraw = p->do_update = 0;
+   p->do_newbg = p->do_update = 0;
 }
 
 static void
@@ -734,23 +733,21 @@ PagersCheckUpdate(void)
 static void
 PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 {
-   int                 x, y, w, h, ax, ay, cx, cy;
+   int                 x, y, w, h;
    static GC           gc = 0;
 
-   if (!Conf.pagers.snap)
-     {
-	PagerEwinUpdateMini(p, ewin);
-	return;
-     }
-   if (!Conf.pagers.enable)
+   if (!EoIsShown(ewin) || !EwinIsOnScreen(ewin))
       return;
 
-   GetAreaSize(&ax, &ay);
-   DeskGetArea(p->desktop, &cx, &cy);
-   x = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-   y = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-   w = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-   h = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+   x = EwinGetVX(ewin);
+   y = EwinGetVY(ewin);
+   w = EoGetW(ewin);
+   h = EoGetH(ewin);
+   x = (x * p->dw) / VRoot.w;
+   y = (y * p->dh) / VRoot.h;
+   w = (w * p->dw) / VRoot.w;
+   h = (h * p->dh) / VRoot.h;
+
    if (!gc)
       gc = ECreateGC(p->pmap, 0, NULL);
 
@@ -768,6 +765,10 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 	ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, VRoot.depth);
 	ewin->mini_pmm.mask = None;
      }
+
+   if (!ewin->mini_pmm.pmap)
+      return;
+
    XCopyArea(disp, p->pmap, ewin->mini_pmm.pmap, gc, x, y, w, h, 0, 0);
 
    if (hiwin && ewin == hiwin->ewin)
@@ -777,41 +778,30 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 static void
 PagersUpdateEwin(EWin * ewin, int gone)
 {
+   int                 desk;
+
    if (!Conf.pagers.enable)
       return;
 
-#if 1				/* FIXME - Can be optimized - Later */
-   gone = 1;
-#endif
-   if (gone)
-     {
-	RedrawPagersForDesktop(EoGetDesk(ewin));
-	return;
-     }
-
-   if (Mode.mode != MODE_NONE || !EoIsShown(ewin))
+   if (!gone && (!EoIsShown(ewin) || ewin->st.animated))
       return;
 
-   if ((EoGetX(ewin) < 0) || (EoGetY(ewin) < 0)
-       || ((EoGetX(ewin) + EoGetW(ewin)) > VRoot.w)
-       || ((EoGetY(ewin) + EoGetH(ewin)) > VRoot.h))
-      RedrawPagersForDesktop(EoGetDesk(ewin));
-   else
-      UpdatePagersForDesktop(EoGetDesk(ewin));
+   desk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
+   PagersUpdate(desk, EwinGetVX(ewin), EwinGetVY(ewin),
+		EwinGetVX2(ewin), EwinGetVY2(ewin));
 }
 
 static EWin        *
 EwinInPagerAt(Pager * p, int x, int y)
 {
-   int                 wx, wy, ww, wh, ax, ay, cx, cy;
    EWin               *const *lst;
    int                 i, num;
 
    if (!Conf.pagers.enable)
       return NULL;
 
-   GetAreaSize(&ax, &ay);
-   DeskGetArea(p->desktop, &cx, &cy);
+   x = (x * VRoot.w) / p->dw;
+   y = (y * VRoot.h) / p->dh;
 
    lst = EwinListGetForDesk(&num, p->desktop);
    for (i = 0; i < num; i++)
@@ -819,31 +809,15 @@ EwinInPagerAt(Pager * p, int x, int y)
 	EWin               *ewin;
 
 	ewin = lst[i];
-	if (!ewin->iconified && EoIsShown(ewin))
-	  {
-	     wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-	     wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-	     ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-	     wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
-	     if ((x >= wx) && (y >= wy) && (x < (wx + ww)) && (y < (wy + wh)))
-		return ewin;
-	  }
+	if (!EoIsShown(ewin))
+	   continue;
+
+	if (x >= EwinGetVX(ewin) && y >= EwinGetVY(ewin) &&
+	    x < EwinGetVX2(ewin) && y < EwinGetVY2(ewin))
+	   return ewin;
      }
 
    return NULL;
-}
-
-static void
-PagerAreaAt(Pager * p, int x, int y, int *ax, int *ay)
-{
-   int                 asx, asy;
-
-   if (!Conf.pagers.enable)
-      return;
-
-   GetAreaSize(&asx, &asy);
-   *ax = x / (p->w / asx);
-   *ay = y / (p->h / asy);
 }
 
 static void
@@ -853,7 +827,6 @@ PagerMenuShow(Pager * p, int x, int y)
    MenuItem           *mi;
    EWin               *ewin;
    char                s[1024];
-   int                 ax, ay;
 
    if (!Conf.pagers.enable)
       return;
@@ -887,7 +860,6 @@ PagerMenuShow(Pager * p, int x, int y)
 	return;
      }
 
-   PagerAreaAt(p, x, y, &ax, &ay);
    if (p_menu)
       MenuDestroy(p_menu);
    p_menu = MenuCreate("__DESK_MENU", _("Desktop Options"), NULL, NULL);
@@ -1024,7 +996,7 @@ PagerHiwinShow(Pager * p, EWin * ewin, int px, int py)
 {
    PagerHiwin         *phi = hiwin;
    Window              dw;
-   int                 wx, wy, ww, wh, ax, ay, cx, cy;
+   int                 wx, wy, ww, wh;
 
    PagerHiwinHide(p);
 
@@ -1035,13 +1007,10 @@ PagerHiwinShow(Pager * p, EWin * ewin, int px, int py)
 	   return;
      }
 
-   GetAreaSize(&ax, &ay);
-   DeskGetArea(p->desktop, &cx, &cy);
-
-   wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-   wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-   ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-   wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+   wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
+   wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
+   ww = (EoGetW(ewin) * p->dw) / VRoot.w;
+   wh = (EoGetH(ewin) * p->dh) / VRoot.h;
    XTranslateCoordinates(disp, p->win, VRoot.win, 0, 0, &px, &py, &dw);
    EoMoveResize(phi, px + wx, py + wy, ww, wh);
    ESetWindowBackgroundPixmap(EoGetWin(phi), ewin->mini_pmm.pmap);
@@ -1366,16 +1335,14 @@ PagerHandleMotion(Pager * p, Window win __UNUSED__, int x, int y, int in)
      }
    else if ((in == PAGER_EVENT_MOTION) && (!hiwin || ewin != hiwin->ewin))
      {
-	int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
+	int                 wx, wy, ww, wh, px, py;
 
 	PagerHiwinHide(p);
-	GetAreaSize(&ax, &ay);
-	DeskGetArea(p->desktop, &cx, &cy);
 
-	wx = ((EoGetX(ewin) + (cx * VRoot.w)) * (p->w / ax)) / VRoot.w;
-	wy = ((EoGetY(ewin) + (cy * VRoot.h)) * (p->h / ay)) / VRoot.h;
-	ww = ((EoGetW(ewin)) * (p->w / ax)) / VRoot.w;
-	wh = ((EoGetH(ewin)) * (p->h / ay)) / VRoot.h;
+	wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
+	wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
+	ww = (EoGetW(ewin) * p->dw) / VRoot.w;
+	wh = (EoGetH(ewin) * p->dh) / VRoot.h;
 	XTranslateCoordinates(disp, p->win, VRoot.win, 0, 0, &px, &py, &cw);
 	PagerHiwinZoom(p, ewin, px + wx, py + wy, ww, wh);
 	PagerShowTt(ewin);
@@ -1563,11 +1530,10 @@ static void
 PagerEwinMove(Pager * p __UNUSED__, Pager * pd)
 {
    int                 x, y, dx, dy, px, py;
-   int                 ax, ay, cx, cy;
+   int                 cx, cy;
    Window              child;
    PagerHiwin         *phi = hiwin;
 
-   GetAreaSize(&ax, &ay);
    DeskGetArea(pd->desktop, &cx, &cy);
 
    /* Delta in pager coords */
@@ -1582,8 +1548,8 @@ PagerEwinMove(Pager * p __UNUSED__, Pager * pd)
 
    /* Find real window position */
    XTranslateCoordinates(disp, EoGetWin(phi), pd->win, 0, 0, &px, &py, &child);
-   x = (px * ax * VRoot.w) / pd->w - cx * VRoot.w;
-   y = (py * ay * VRoot.h) / pd->h - cy * VRoot.h;
+   x = (px * VRoot.w) / pd->dw - cx * VRoot.w;
+   y = (py * VRoot.h) / pd->dh - cy * VRoot.h;
 
    /* Move all group members */
    EwinGroupMove(phi->ewin, pd->desktop, x, y);
@@ -1658,7 +1624,7 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
    Window              win = ev->xbutton.window, child;
    int                 i, num, px, py, in_pager, in_vroot;
    EWin               *ewin, *ewin2, **gwins;
-   int                 x, y, pax, pay;
+   int                 x, y;
    int                 mode_was;
 
    mode_was = Mode.mode;
@@ -1681,16 +1647,13 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
      {
 	if (win != Mode.last_bpress || !in_pager)
 	   goto done;
-	PagerAreaAt(p, px, py, &pax, &pay);
 	DeskGoto(p->desktop);
 	if (p->desktop != DesksGetCurrent())
 	   SoundPlay("SOUND_DESKTOP_SHUT");
-	SetCurrentArea(pax, pay);
+	SetCurrentArea(px / p->dw, py / p->dh);
      }
    else if (((int)ev->xbutton.button == Conf.pagers.win_button))
      {
-	int                 prev_desk = -1;
-
 	ewin = PagerHiwinEwin(1);
 
 	switch (mode_was)
@@ -1698,9 +1661,6 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 	  case MODE_PAGER_DRAG:
 	     if (!ewin)
 		break;
-
-	     /* Remember old desk for the dragged window */
-	     prev_desk = EoGetDesk(ewin);
 
 	     /* Find which pager or iconbox we are in (if any) */
 	     ewin2 = GetEwinPointerInClient();
@@ -1753,9 +1713,8 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 	  default:
 	     if (!in_pager)
 		break;
-	     PagerAreaAt(p, px, py, &pax, &pay);
 	     DeskGoto(p->desktop);
-	     SetCurrentArea(pax, pay);
+	     SetCurrentArea(px / p->dw, py / p->dh);
 	     ewin2 = EwinInPagerAt(p, px, py);
 	     if (ewin2)
 	       {
@@ -2261,9 +2220,10 @@ PagersSighan(int sig, void *prm)
 	PagersReconfigure();
 	break;
      case ESIGNAL_AREA_SWITCH_DONE:
-	RedrawPagersForDesktop((int)prm);
+	PagersUpdate(DesksGetCurrent(), 0, 0, 99999, 99999);
 	UpdatePagerSel();
 	break;
+
      case ESIGNAL_DESK_ADDED:
 	NewPagerForDesktop((int)(prm));
 	break;
@@ -2273,16 +2233,14 @@ PagersSighan(int sig, void *prm)
      case ESIGNAL_DESK_SWITCH_DONE:
 	UpdatePagerSel();
 	break;
-     case ESIGNAL_BACKGROUND_CHANGE:
-	PagersUpdateBackground((int)prm);
-	break;
-     case ESIGNAL_DESK_CHANGE:
-	RedrawPagersForDesktop((int)prm);
-	UpdatePagerSel();
-	break;
      case ESIGNAL_DESK_RESIZE:
 	PagersReconfigure();
 	break;
+
+     case ESIGNAL_BACKGROUND_CHANGE:
+	PagersUpdateBackground((int)prm);
+	break;
+
      case ESIGNAL_EWIN_UNMAP:
 	PagersUpdateEwin(prm, 1);
 	break;

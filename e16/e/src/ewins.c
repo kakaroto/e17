@@ -816,7 +816,9 @@ AddToFamily(EWin * ewin, Window win)
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
 	Mode.place.doing_slide = 1;
+	ewin->st.animated = 1;
 	FocusEnable(0);
+
 	MoveEwinToDesktopAt(ewin, desk, fx, fy);
 	ShowEwin(ewin);
 	ewin->req_x = x;

@@ -126,11 +126,16 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 
 	k = ETimedLoopNext();
      }
-   DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
-   MoveEwin(ewin, tx, ty);
 
+   ewin->st.animated = 0;
    Mode.place.doing_slide = 0;
    FocusEnable(1);
+
+   if (Conf.slidemode == 0)
+      MoveEwin(ewin, tx, ty);
+   else
+      DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h,
+		    2);
 
    if (Conf.slidemode > 0)
       EUngrabServer();
@@ -238,14 +243,16 @@ EwinFixPosition(EWin * ewin)
 static void
 EwinDetermineArea(EWin * ewin)
 {
+   Desk               *d;
    int                 ax, ay;
 
-   DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-   ax = (EoGetX(ewin) + (EoGetW(ewin) / 2) + (ax * VRoot.w)) / VRoot.w;
-   ay = (EoGetY(ewin) + (EoGetH(ewin) / 2) + (ay * VRoot.h)) / VRoot.h;
+   d = DeskGet(EoGetDesk(ewin));
+   ewin->vx = d->current_area_x * EoGetW(d) + EoGetX(ewin);
+   ewin->vy = d->current_area_y * EoGetH(d) + EoGetY(ewin);
 
+   ax = (ewin->vx + EoGetW(ewin) / 2) / EoGetW(d);
+   ay = (ewin->vy + EoGetH(ewin) / 2) / EoGetH(d);
    AreaFix(&ax, &ay);
-
    if (ax != ewin->area_x || ay != ewin->area_y)
      {
 	ewin->area_x = ax;
@@ -421,6 +428,8 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    Eprintf("repa=%d float=%d raise=%d move=%d resz=%d\n",
 	   reparent, floating, raise, move, resize);
 #endif
+   if (EoIsShown(ewin) && (move || reparent))
+      ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
    if (reparent)
       EoReparent(ewin, desk, x, y);
@@ -478,7 +487,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
 	SnapshotEwinUpdate(ewin, SNAP_USE_POS | SNAP_USE_SIZE);
 
-	if (call_depth == 1)	/* FIXME - Remove */
+	if (EoIsShown(ewin))
 	   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
      }
 
@@ -486,16 +495,6 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
      {
 	HintsSetWindowDesktop(ewin);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
-
-	if (call_depth == 1)	/* FIXME - Remove */
-	  {
-	     if (EoIsShown(ewin))
-	       {
-		  if (pdesk >= 0)
-		     ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)pdesk);
-		  ModulesSignal(ESIGNAL_DESK_CHANGE, (void *)desk);
-	       }
-	  }
      }
 
    call_depth--;
