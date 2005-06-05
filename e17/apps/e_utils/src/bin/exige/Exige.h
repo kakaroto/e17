@@ -7,7 +7,6 @@
 #include <Ecore_Evas.h>
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Edje.h>
-#include <Emotion.h>
 #include <Ecore_Config.h>
 #include "config.h"
 
