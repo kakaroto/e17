@@ -128,6 +128,7 @@ private
 	def init_gui
 		@ee = Ecore::Evas::SoftwareX11.new
 		@ee.title = "Euphoria"
+		@ee.name_class = ["Euphoria", "Euphoria"]
 		@ee.borderless = true
 
 		#@ee.evas.font_path_append("/usr/X11R6/lib/X11/fonts/TTF")
