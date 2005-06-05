@@ -37,7 +37,7 @@ void                ECompMgrParseArgs(const char *args);
 void                ECompMgrRepaint(void);
 
 void                ECompMgrWinNew(EObj * eo);
-void                ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade);
+void                ECompMgrWinDel(EObj * eo);
 void                ECompMgrWinMap(EObj * eo);
 void                ECompMgrWinUnmap(EObj * eo);
 void                ECompMgrWinMoveResize(EObj * eo, int change_xy,

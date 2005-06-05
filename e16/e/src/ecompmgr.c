@@ -970,39 +970,21 @@ ECompMgrWinMap(EObj * eo)
    ECompMgrWinSetPicts(eo);
 }
 
-static void
-finish_unmap_win(EObj * eo)
-{
-   ECmWinInfo         *cw = eo->cmhook;
-
-   cw->visible = 0;
-
-#if 0
-   cw->damaged = 0;
-
-#if CAN_DO_USABLE
-   cw->usable = False;
-#endif
-
-   ECompMgrWinInvalidate(eo, INV_SIZE);
-
-   if (cw->extents != None)
-     {
-	ECompMgrDamageMerge(eo->desk, cw->extents, 1);
-	cw->extents = None;
-     }
-#else
-   if (cw->extents != None)
-      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
-#endif
-}
-
 void
 ECompMgrWinUnmap(EObj * eo)
 {
+   ECmWinInfo         *cw = eo->cmhook;
+
    D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
 
-   finish_unmap_win(eo);
+   cw->visible = 0;
+
+   if (cw->extents != None)
+      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+
+#if 0				/* FIXME - Invalidate stuff? */
+   ECompMgrWinInvalidate(eo, INV_SIZE);
+#endif
 }
 
 static void
@@ -1261,33 +1243,8 @@ ECompMgrWinChangeStacking(EObj * eo)
       ECompMgrDamageMerge(eo->desk, cw->extents, 0);
 }
 
-static void
-finish_destroy_win(EObj * eo, Bool gone)
-{
-   ECmWinInfo         *cw = eo->cmhook;
-
-   if (!gone)
-      finish_unmap_win(eo);
-
-   ECompMgrWinInvalidate(eo, INV_ALL);
-
-   if (cw->picture != None)
-     {
-	XRenderFreePicture(disp, cw->picture);
-	cw->picture = None;
-     }
-
-   if (cw->damage != None)
-     {
-	XDamageDestroy(disp, cw->damage);
-	cw->damage = None;
-     }
-
-   _EFREE(eo->cmhook);
-}
-
 void
-ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
+ECompMgrWinDel(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
@@ -1311,7 +1268,20 @@ ECompMgrWinDel(EObj * eo, Bool gone, Bool do_fade __UNUSED__)
      }
 
    if (cw)
-      finish_destroy_win(eo, gone);
+     {
+	ECompMgrWinInvalidate(eo, INV_ALL);
+
+	if (!eo->gone)
+	  {
+	     if (cw->picture != None)
+		XRenderFreePicture(disp, cw->picture);
+
+	     if (cw->damage != None)
+		XDamageDestroy(disp, cw->damage);
+	  }
+
+	_EFREE(eo->cmhook);
+     }
 }
 
 static void
@@ -1647,7 +1617,7 @@ ECompMgrRepaint(void)
    Picture             pict, pbuf;
    Desk               *d = DeskGet(0);
 
-   if (!Conf_compmgr.enable)
+   if (!Conf_compmgr.enable || allDamage == None)
       return;
 
    region = XFixesCreateRegion(disp, 0, 0);
@@ -1917,7 +1887,7 @@ ECompMgrStop(void)
 	     if (lst[i]->type == EOBJ_TYPE_EXT)
 		EobjUnregister(lst[i]);	/* Modifies the object stack! */
 	     else
-		ECompMgrWinDel(lst[i], False, False);
+		ECompMgrWinDel(lst[i]);
 	  }
 	Efree(lst);
      }
@@ -2061,7 +2031,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	   goto case_CreateNotify;
 	eo = EobjListStackFind(ev->xreparent.window);
 	if (eo)
-	   ECompMgrWinDel(eo, False, True);
+	   ECompMgrWinDel(eo);
 #endif
 	break;
 #endif
