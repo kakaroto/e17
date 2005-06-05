@@ -1,0 +1,28 @@
+images {
+#include "images/images.edc"
+}
+
+fonts {
+    font: "Vera.ttf"   "Edje Vera";
+}
+
+#include "macros/macros.inc"
+
+collections {
+    group {
+	name: "Exige";
+	min: 250 100;
+	parts {
+#include "parts/interface.edc"
+#include "parts/bg.edc"
+#include "parts/logo.edc"
+#include "parts/instruction.edc"
+#include "parts/entry.edc"
+#include "parts/button_bar.edc"
+#include "parts/buttons.edc"
+	}
+	programs {
+#include "programs/button_progs.edc"
+	}   
+    }
+}
