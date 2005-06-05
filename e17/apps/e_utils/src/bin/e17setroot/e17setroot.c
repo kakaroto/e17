@@ -7,7 +7,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
-#include <E.h>
+#include <E_Lib.h>
 #include <Engrave.h>
 #include <Ecore.h>
 
@@ -196,7 +196,7 @@ char *_e_bg_bg_file_stripext(char *path) {
 
 int _e_bg_bg_set(char *filename) {
 
-   e_background_set(filename);
+   e_lib_background_set(filename);
    return 1;
 }
 
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
    _e_bg_bg_parseargs(argc, argv);
 
    if (!e_bg_no_load) {
-      if (!e_init(getenv("DISPLAY"))) {
+      if (!e_lib_init(getenv("DISPLAY"))) {
          printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
          return 0;
       }
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
    if (e_bg_type == E_BG_GET) {
       ecore_init();
       ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, _e_bg_bg_get, NULL);
-      e_background_get();
+      e_lib_background_get();
       ecore_main_loop_begin();
       ecore_shutdown();
    } else if(!e_bg_type) {
@@ -329,7 +329,7 @@ int main(int argc, char **argv)
      _e_bg_bg_edj_gen(e_bg_img_file);
    
    if (!e_bg_no_load)
-      e_shutdown();
+      e_lib_shutdown();
 
    return 0;
 }
