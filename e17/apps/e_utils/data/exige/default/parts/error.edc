@@ -1,0 +1,32 @@
+part
+{
+    name: "error_text";
+    type: TEXT;
+    
+    description
+	{
+	    state: "default" 0.0;
+	    color: 255 0 0 0;
+	    
+	    rel1.relative: 0.0 0.0;
+	    rel1.offset: 4 0;
+	    rel1.to: "button_bar";
+	    
+	    rel2.relative: 0.5 1.0;
+	    rel2.to: "button_bar";
+	    
+	    text {
+		text: "Can't launch the app";
+		font: "Edje Vera";
+		size:  10;
+		min:   1 0;
+		align: 0.0 0.5;
+	    }
+	}   
+    description
+	{
+	    state: "active" 0.0;
+	    inherit: "default" 0.0;
+	    color : 255 0 0 255;
+	}
+}

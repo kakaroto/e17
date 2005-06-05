@@ -1,0 +1,14 @@
+image: "e17_menu_bg.png" COMP;
+image: "entry_bg2.png" COMP;
+image: "entry_overlay.png" COMP;
+image: "entry_cursor.png" COMP;
+image: "logo.png" COMP;
+image, "e17_titlebar.png" COMP;
+image, "e17_titlebar_glint1.png" COMP;
+image, "e17_titlebar_glint2.png" COMP;
+image, "e17_titlebar_glint3.png" COMP;
+image, "e17_titlebar_outline.png" COMP;
+image, "e17_titlebar_shadow1.png" COMP;
+image, "e17_titlebar_shadow2.png" COMP;
+image: "e17_button.png" LOSSY 90;
+image: "e17_button2.png" LOSSY 90;

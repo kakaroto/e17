@@ -1,0 +1,25 @@
+part
+{
+    name: "instruction";
+    type: TEXT;
+    clip_to:"interface";
+    description
+	{
+	    state: "default" 0.0;
+
+	    rel1.relative: 0.5 0.0;
+	    rel1.offset: 0 10;
+	    rel2.relative: 0.7 0.0;
+	    rel2.offset: 0 20;
+	    color: 0 0 0 255;
+	    
+	    text {
+		text:     "Type in your command :";
+		font:     "Edje Vera";
+		size:     10;
+		min:      1 0;
+		align:   0.0 0.5;
+	    }
+	    
+	}   
+}

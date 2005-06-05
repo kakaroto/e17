@@ -1,0 +1,38 @@
+part
+{
+    name: "base";
+    clip_to: "interface";
+    description
+	{
+	    state: "default" 0.0;
+	    rel1.to: "interface";
+	    rel2.to: "interface";
+	    
+	    image.normal: "e17_menu_bg.png";
+	}
+    
+}
+
+part
+{
+    name: "bg";
+    clip_to: "interface";
+    description
+	{
+	    state: "default" 0.0;
+	    
+	    rel1.relative: 0.0 0.0;
+	    rel1.to:"interface";
+	    
+	    rel2.relative: 1.0 1.0;
+	    rel2.to:"interface";
+	    rel2.offset: -1 -1;
+	    
+	    image.normal: "e17_menu_bg.png";
+	    image.border: 1 1 1 1;
+	    image.middle: 0;
+	    fill {
+		smooth: 0;
+	    }
+	}
+}//part

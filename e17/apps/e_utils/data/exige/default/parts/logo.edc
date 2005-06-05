@@ -1,0 +1,18 @@
+part
+{
+    name: "logo";
+    type: IMAGE;
+    clip_to: "interface";
+    description
+	{
+	    state: "default" 0.0;
+	    rel1.relative: 0.0 0.0;
+	    rel1.offset: -50 -60;
+	 
+	    rel2.relative: 0.0 0.0;
+	    rel2.offset: 70 100;
+	    image.normal: "logo.png";
+	    color: 255 255 255 64;
+	    
+	}   
+}

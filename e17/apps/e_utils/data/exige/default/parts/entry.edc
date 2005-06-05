@@ -1,0 +1,125 @@
+part {
+    name:          "entry_bg";
+    mouse_events:  0;
+    clip_to: "interface";
+    description {
+	state:    "default" 0.0;
+	min:      200 22;
+	align:    0.5 0.0;
+	rel1 {
+	    relative: 0.345  0.28;
+	    offset:   12   8;
+	    to_x:       "interface";
+	    to_y:       "interface";
+	}
+	rel2 {
+	    relative: 0.8  0.35;
+	    offset:   -13  8;
+	    to_x:     "interface";
+	    to_y:     "interface";
+	}
+	image {
+	    normal: "entry_bg2.png";
+	    border:    8 8 8 8;
+	}
+    }
+}
+
+part {
+    name: "entry_clip";
+    type: RECT;
+    mouse_events: 0;
+    clip_to: "interface";
+    description {
+	state: "default" 0.0;
+	visible: 1;
+	rel1 {
+	    relative: 0.0  0.0;
+	    offset:   2    2;
+	    to:       "entry_bg";
+	}
+	rel2 {
+	    relative: 1.0  1.0;
+	    offset:   -3  -3;
+	    to:       "entry_bg";
+	}
+	color:       255 255 255 255;
+    }
+}
+part {
+    name:   "entry";
+    type:   TEXT;
+    effect: NONE;
+    clip_to: "entry_clip";
+    description {
+	state:    "default" 0.0;
+	align:    0.0 0.0;
+	rel1 {
+	    relative: 0.0  0.0;
+	    offset:   4    2;
+	    to:       "entry_clip";
+	}
+	rel2 {
+	    relative: 0.0  1.0;
+	    offset:   -5   -2;
+	    to:       "entry_clip";
+	}
+	color: 0 0 0 255;
+	text {
+	    font:     "Edje Vera";
+	    size:     10;
+	    min:      1 0;
+	    align:   0.5 0.5;
+	}
+    }
+}
+part {
+    name:          "entry_cursor";
+    mouse_events:  0;
+    clip_to:       "entry_clip";
+    description {
+	state:    "default" 0.0;
+	visible:  1;
+	color:    255 255 255 255;
+	min:      18 18;
+	max:      18 18;
+	rel1 {
+	    relative: 1.0  0.5;
+	    offset:   1    0;
+	    to:       "entry";
+	}
+	rel2 {
+	    relative: 1.0  0.5;
+	    offset:   18    0;
+	    to:       "entry";
+	}
+	image {
+	    normal: "entry_cursor.png";
+	}
+    }
+    description {
+	state:    "active" 0.0;
+	inherit:  "default" 0.0;
+	visible:  1;
+	color:    255 255 255 255;
+    }
+}
+part {
+    name: "entry_overlay";
+    mouse_events: 0;
+    clip_to: "interface";
+    description {
+	state: "default" 0.0;
+	visible: 1;
+	rel1 {
+	    to:       "entry_bg";
+	}
+	rel2 {
+	    to:       "entry_bg";
+	}
+	image {
+	    normal: "entry_overlay.png";
+	    border:    8 8 8 8;
+	}
+    }
+}

@@ -219,12 +219,15 @@ data/emblem/default/Makefile
 data/emblem/gant/Makefile
 data/entangle/Makefile
 data/entangle/default/Makefile
+data/exige/Makefile
+data/exige/default/Makefile
 src/Makefile
 src/bin/Makefile
 src/bin/eapp_edit/Makefile
 src/bin/e17setroot/Makefile
 src/bin/emblem/Makefile
 src/bin/entangle/Makefile
+src/bin/exige/Makefile
 ],[
 ])
 
