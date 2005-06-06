@@ -5,7 +5,7 @@ ENLIGHTENMENT_MINOR=16
 ENLIGHTENMENT_MICRO=8
 ENLIGHTENMENT_VERSION=$ENLIGHTENMENT_MAJOR.$ENLIGHTENMENT_MINOR.$ENLIGHTENMENT_MICRO
 
-AM_INIT_AUTOMAKE(e16, $ENLIGHTENMENT_VERSION-0.10)
+AM_INIT_AUTOMAKE(e16, $ENLIGHTENMENT_VERSION-0.11)
 AM_MAINTAINER_MODE
 
 dnl reasonable guesses for where stuff is installed
@@ -242,3 +242,8 @@ if test "x$have_good_imlib2" != "xyes"; then
   echo "*** WARNING: If you indeed do not have this, expect trouble ***"
   echo "***************************************************************"
 fi
+
+echo "***************************************************************"
+echo "*** NOTE: If this is your first trip with version 0.16.8    ***"
+echo "*** NOTE: you may want to take a look in README-0.16.8      ***"
+echo "***************************************************************"

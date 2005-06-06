@@ -3414,3 +3414,21 @@ Fix fullscreen window positioning after restart.
 Systray fixes (avoid crashing certain clients on close).
 Window shape fixes related to composite mode.
 Draw queue has been eliminated.
+
+-------------------------------------------------------------------------------
+
+Mon Jun  6 19:57:21 CEST 2005
+(Kim)
+
+--- 0.16.8 0.11 ---
+Fix segv in dialogs.
+Shape fixes.
+Fix focuslist icons interfering with iconbox ones.
+Add "warp always" focus option.
+Attempt to make client handling more solid.
+Attempt to improve focusing of new windows.
+Pager update fixes.
+Fix various window slidein issues.
+Composite manager fixes.
+Initial urgency and DEMANDS_ATTENTION support.
+Pseudo-trans update fixes (Tres Melton).

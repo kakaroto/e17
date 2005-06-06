@@ -78,7 +78,7 @@ Application Window Properties
     [+] _NET_WM_STATE_FULLSCREEN
     [+] _NET_WM_STATE_ABOVE
     [+] _NET_WM_STATE_BELOW
-    [ ] _NET_WM_STATE_DEMANDS_ATTENTION
+    [+] _NET_WM_STATE_DEMANDS_ATTENTION
 [ ] _NET_WM_ALLOWED_ACTIONS
     The property is not set but the actions are supported as shown under
     _NET_WM_STATE.
