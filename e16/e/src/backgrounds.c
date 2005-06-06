@@ -2398,6 +2398,9 @@ BackgroundSet1(const char *name, const char *params)
    int                 len;
    Background         *bg;
 
+   if (!p)
+      return;
+
    bg = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
    if (!bg)
      {
