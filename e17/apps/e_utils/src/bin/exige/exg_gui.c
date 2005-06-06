@@ -11,7 +11,6 @@ char * exg_gui_theme_path_get()
     return edj_file;
 }
 
-
 void 
 exg_gui_init(Exige *exg)
 {    
@@ -71,11 +70,14 @@ exg_window_geometry_set(Exige *exg)
     
     ecore_evas_show(exg->ee);
 
-    /* get the coords. of the mouse */
-    win = ecore_evas_software_x11_window_get(exg->ee);
-    ecore_x_pointer_xy_get(win, &mouse_x, &mouse_y);
-    ecore_evas_move(exg->ee, mouse_x - (w / 2), mouse_y - (h / 2));
-   
+    if(exg_conf_on_mouse_get())
+    {
+        /* ge't the coords. of the mouse */
+        win = ecore_evas_software_x11_window_get(exg->ee);
+        ecore_x_pointer_xy_get(win, &mouse_x, &mouse_y);
+        ecore_evas_move(exg->ee, mouse_x - (w / 2), mouse_y - (h / 2));
+    }
+    
     evas_object_move(exg->gui,0,0);
     evas_object_resize(exg->gui,w,h);
 }
