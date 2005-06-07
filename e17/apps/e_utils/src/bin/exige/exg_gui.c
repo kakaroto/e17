@@ -68,14 +68,17 @@ exg_window_geometry_set(Exige *exg)
     ecore_evas_size_min_set(exg->ee,w,h);
     ecore_evas_size_max_set(exg->ee,w,h);
     
-    ecore_evas_show(exg->ee);
+    
 
     if(exg_conf_on_mouse_get())
     {
         /* ge't the coords. of the mouse */
         win = ecore_evas_software_x11_window_get(exg->ee);
         ecore_x_pointer_xy_get(win, &mouse_x, &mouse_y);
+        ecore_evas_show(exg->ee);
         ecore_evas_move(exg->ee, mouse_x - (w / 2), mouse_y - (h / 2));
+    } else {
+        ecore_evas_show(exg->ee);
     }
     
     evas_object_move(exg->gui,0,0);
