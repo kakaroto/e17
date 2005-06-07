@@ -741,3 +741,8 @@ Cleaner "make maintainer-clean"
 Finally found and fixed that stupid "Config file is designed for a
 newer version of FOO" bullshit warning.
 ----------------------------------------------------------------------
+Tue Jun  7 16:28:43 2005                        Michael Jennings (mej)
+
+Force STRICT_ISO_C99 to be defined when using gcc >= 4.0.  Suggestions
+and partial patch from John Ellson <ellson@research.att.com>.
+----------------------------------------------------------------------

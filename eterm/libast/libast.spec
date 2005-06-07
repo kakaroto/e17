@@ -1,3 +1,8 @@
+%define __os_install_post /usr/lib/rpm/brp-compress
+%if %{?optflags:1}0
+%define optflags ${RPM_OPT_FLAGS}
+%endif
+
 Summary: Library of Assorted Spiffy Things
 Name: libast
 Version: 0.7
@@ -23,6 +28,10 @@ version number that begins with 0.
 %setup -q
 
 %build
+#CFLAGS="-O0 -g3"
+CFLAGS="%{optflags}"
+export CFLAGS
+
 %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} \
              --includedir=%{_includedir} --datadir=%{_datadir} %{?acflags}
 %{__make} %{?_smp_mflags} %{?mflags}

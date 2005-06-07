@@ -80,9 +80,14 @@
 # endif
 #endif
 
-#ifndef __GNUC__
+#ifdef __GNUC__
+#  if __GNUC__ >= 4
+#    define STRICT_ISO_C99
+#  endif
+#else
 #  define __attribute__(x)
 #  define __extension__(x)
+#  define __volatile__(x)
 #endif
 
 #if LIBAST_REGEXP_SUPPORT_PCRE

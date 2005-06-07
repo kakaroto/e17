@@ -61,4 +61,4 @@ fi
 (set -x && $AUTOMAKE -a -c)
 
 # Run configure.
-./configure "$@"
+(set -x && ./configure "$@")

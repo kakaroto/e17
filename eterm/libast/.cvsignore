@@ -27,3 +27,5 @@ lib*.la
 *.da
 *.lo
 libast-config
+autom4te*
+depcomp
