@@ -1,6 +1,6 @@
 AC_INIT(etheme-Ganymede.spec)
 
-AM_INIT_AUTOMAKE(e16-theme-Ganymede, 0.16.8-0.01)
+AM_INIT_AUTOMAKE(e16-theme-Ganymede, 0.16.8-0.02)
 AM_MAINTAINER_MODE
 
 THEME=Ganymede
