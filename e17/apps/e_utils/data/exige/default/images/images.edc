@@ -12,3 +12,5 @@ image, "e17_titlebar_shadow1.png" COMP;
 image, "e17_titlebar_shadow2.png" COMP;
 image: "e17_button.png" LOSSY 90;
 image: "e17_button2.png" LOSSY 90;
+image: "e17_menu_check1.png" LOSSY 90;
+image: "e17_menu_check2.png" LOSSY 90;

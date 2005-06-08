@@ -7,12 +7,11 @@ part
 	{
 	    state: "default" 0.0;
 	    rel1.relative: 0.0 0.0;
-	    rel1.offset: -50 -60;
+	    rel1.offset: -30 -80;
 	 
 	    rel2.relative: 0.0 0.0;
-	    rel2.offset: 70 100;
+	    rel2.offset: 90 80;
 	    image.normal: "logo.png";
 	    color: 255 255 255 64;
-	    
 	}   
 }

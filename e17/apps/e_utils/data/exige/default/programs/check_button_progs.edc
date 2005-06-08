@@ -1,0 +1,41 @@
+program
+{
+    name: "toggle_init";
+    signal: "load";
+    source: "";
+    script {
+	set_int(check_toggle_state, 0);
+    }	    
+}
+
+program
+{
+    name : "check_toggle";
+    signal: "mouse,clicked,1";
+    source: "check_button";
+    script
+	{
+	    if(get_int(check_toggle_state)==1) {
+		set_int(check_toggle_state,0);
+		run_program(PROGRAM:"check_toggle_off");
+	    }
+	    else{
+		set_int(check_toggle_state,1);
+		run_program(PROGRAM:"check_toggle_on");
+	    }
+	}
+}
+
+program
+{
+    name: "check_toggle_on";
+    action: STATE_SET "on" 0.0;
+    target: "check_button";
+}
+
+program
+{
+    name: "check_toggle_off";
+    action: STATE_SET "default" 0.0;
+    target: "check_button";
+}

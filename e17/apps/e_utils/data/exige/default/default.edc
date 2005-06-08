@@ -12,6 +12,9 @@ collections {
     group {
 	name: "Exige";
 	min: 250 100;
+	script {
+          public check_toggle_state;
+        }
 	parts {
 #include "parts/interface.edc"
 #include "parts/bg.edc"
@@ -20,9 +23,11 @@ collections {
 #include "parts/entry.edc"
 #include "parts/button_bar.edc"
 #include "parts/buttons.edc"
+#include "parts/run_in_term.edc"
 	}
 	programs {
 #include "programs/button_progs.edc"
-	}   
+#include "programs/check_button_progs.edc"
+	}
     }
 }

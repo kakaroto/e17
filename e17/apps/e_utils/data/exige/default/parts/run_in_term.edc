@@ -1,0 +1,56 @@
+part
+{
+    name, "check_button";
+    
+    description
+	{
+	    state:"default" 0.0;
+	    
+	    rel1.relative:  0.0 0.5;
+	    rel1.offset: 4 -6;
+	    rel1.to: "button_bar";
+	    
+	    rel2.relative: 0.0 0.5;
+	    rel2.offset: 16 6;
+	    rel2.to: "button_bar";
+	    
+	    image.normal: "e17_menu_check1.png";
+	    
+	}
+    description
+	{
+	    state: "on" 0.0;
+	    inherit: "default" 0.0;
+	    image.normal: "e17_menu_check2.png";
+	}   
+}
+
+part
+{
+    name: "run_in_term_text";
+    type: TEXT;
+    
+    description
+	{
+	    state: "default" 0.0;
+	    
+	    rel1.relative: 1.0 0.0;
+	    rel1.offset: 3 0;
+	    rel1.to: "check_button";
+	    
+	    rel2.relative: 1.0 1.0;
+	    rel2.offset: 80 0;
+	    rel2.to: "check_button";
+
+	    color: 0 0 0 255;
+	    
+	     text {
+		text:     "Run in terminal";
+		font:     "Edje Vera";
+		size:     10;
+		min:      1 0;
+		align:   0.0 0.5;
+	    }
+	}
+}
+
