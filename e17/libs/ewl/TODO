@@ -30,6 +30,7 @@ EWL TODO
 - [BUG] Spinner seems to resize itself slightly larger even when it dosen't
         have too.
 - [BUG] The arrows for the spinner need to be smaller.
+- [BUG] The arrows for the spinner need to appear on e17 & zero theme
 - [BUG] Colour selector is very messedup.
 - [BUG] The table test dosen't look correct...
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
@@ -38,4 +39,5 @@ EWL TODO
 - [BUG] The first time a tooltip popps up in the ewl_test (tooltip test) it
         appears over the button, instead of off the end of the mouse. Subsequent
         activations are in the correct spot
-
+- [BUG] Filedialog does not space out if resized "south"
+- [BUG] Dialog text bounds are not considered when packing the window
