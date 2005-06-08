@@ -44,12 +44,12 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	{
 		int i;
 		Ewl_Widget *item;
+		Ewl_Widget *foo;
 		char *m_items[] = {"File",
-							"Test",
-							"About",
-							NULL};
+				   "Test",
+				   "About",
+				   NULL};
 		for(i = 0; m_items[i] != NULL; i++) {
-			Ewl_Widget *foo;
 			item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, m_items[i]);
 
 			foo = ewl_menu_item_new(NULL, "foo");
@@ -63,6 +63,21 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			if (i != 0 && (i % 1) == 0) 
 				ewl_menubar_seperator_add(EWL_MENUBAR(h_menubar));
 		}
+
+		item = ewl_spacer_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_ALL);
+		ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
+		ewl_widget_show(item);
+
+		item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, "Help");
+
+		foo = ewl_menu_item_new(NULL, "foo");
+		ewl_container_child_append(EWL_CONTAINER(item), foo);
+		ewl_widget_show(foo);
+
+		foo = ewl_menu_item_new(NULL, "foobar");
+		ewl_container_child_append(EWL_CONTAINER(item), foo);
+		ewl_widget_show(foo);
 	}
 	ewl_container_child_append(EWL_CONTAINER(box), h_menubar);
 	ewl_widget_show(h_menubar);
@@ -72,10 +87,10 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		int i;
 		Ewl_Widget *item;
 		char *m_items[] = {"About",
-				"Left",
-				"Right",
-				"foo",
-				NULL};
+				   "Left",
+				   "Right",
+				   "foo",
+				   NULL};
 		for(i = 0; m_items[i] != NULL; i++) {
 			Ewl_Widget *foo;
 			item = ewl_menubar_menu_add(EWL_MENUBAR(v_menubar), NULL, m_items[i]);

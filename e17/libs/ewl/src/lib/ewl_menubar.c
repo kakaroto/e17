@@ -48,17 +48,23 @@ int ewl_menubar_init(Ewl_Menubar *mb, Ewl_Orientation orientation)
 		ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 		mb->inner_box = EWL_BOX(ewl_hbox_new());
+		ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
 	} else if (orientation == EWL_ORIENTATION_VERTICAL) {
 		ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
 		mb->inner_box = EWL_BOX(ewl_vbox_new());
+		ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
 	}
 	ewl_container_child_append(EWL_CONTAINER(mb),
 					EWL_WIDGET(mb->inner_box));
 
+	/*
 	ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box), 
 					EWL_FLAG_FILL_SHRINK);
+					*/
 	ewl_widget_internal_set(EWL_WIDGET(mb->inner_box), TRUE);
 	ewl_container_redirect_set(EWL_CONTAINER(mb),
 					EWL_CONTAINER(mb->inner_box));
@@ -88,6 +94,7 @@ Ewl_Widget *ewl_menubar_menu_add(Ewl_Menubar *mb, char *img, char *title)
 
 	menu = ewl_imenu_new(img, title);
 	ewl_container_child_append(EWL_CONTAINER(mb), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);
