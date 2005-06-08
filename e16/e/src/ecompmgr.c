@@ -2166,7 +2166,7 @@ ECompMgrSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:
-	ECompMgrDeskChanged((int)prm);
+	ECompMgrDeskChanged((long)prm);
 	break;
 
      case ESIGNAL_IDLE:

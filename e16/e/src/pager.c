@@ -2225,10 +2225,10 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_DESK_ADDED:
-	NewPagerForDesktop((int)(prm));
+	NewPagerForDesktop((long)(prm));
 	break;
      case ESIGNAL_DESK_REMOVED:
-	PagersDisableForDesktop((int)(prm));
+	PagersDisableForDesktop((long)(prm));
 	break;
      case ESIGNAL_DESK_SWITCH_DONE:
 	UpdatePagerSel();
@@ -2238,7 +2238,7 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:
-	PagersUpdateBackground((int)prm);
+	PagersUpdateBackground((long)prm);
 	break;
 
      case ESIGNAL_EWIN_UNMAP:

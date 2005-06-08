@@ -126,7 +126,7 @@ EdgeHandleEvents(XEvent * ev, void *prm)
    int                 dir;
    unsigned long       dt;
 
-   dir = (int)prm;
+   dir = (long)prm;
 
    switch (ev->type)
      {

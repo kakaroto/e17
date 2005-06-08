@@ -386,7 +386,7 @@ DeskConfigure(Desk * d)
      }
    DeskSetBg(d->num, bg, 0);
 
-   ModulesSignal(ESIGNAL_DESK_ADDED, (void *)(d->num));
+   ModulesSignal(ESIGNAL_DESK_ADDED, ((void *)(long)(d->num)));
 }
 
 static Desk        *
@@ -444,7 +444,7 @@ DeskDestroy(Desk * d)
    if (d->num <= 0)
       return;
 
-   ModulesSignal(ESIGNAL_DESK_REMOVED, (void *)(d->num));
+   ModulesSignal(ESIGNAL_DESK_REMOVED, ((void *)(long)(d->num)));
 
    EventCallbackUnregister(EoGetWin(d), 0, DesktopHandleEvents, d);
 
@@ -893,7 +893,7 @@ DeskSetBg(int desk, Background * bg, int refresh)
    if (d->viewable)
       DeskRefresh(desk);
 
-   ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, (void *)desk);
+   ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, ((void *)(long)desk));
 }
 
 int
