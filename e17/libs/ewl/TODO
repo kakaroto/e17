@@ -39,5 +39,5 @@ EWL TODO
 - [BUG] The first time a tooltip popps up in the ewl_test (tooltip test) it
         appears over the button, instead of off the end of the mouse. Subsequent
         activations are in the correct spot
-- [BUG] Filedialog does not space out if resized "south"
 - [BUG] Dialog text bounds are not considered when packing the window
+- [BUG] Grid and Table layouts do not pack or resize correctly
