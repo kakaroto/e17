@@ -265,8 +265,8 @@ draw_tree(examine_prop * prop_item)
     free(key_tmp);
     if (prop_item->type == PT_STR) {
       entries[1] = ewl_entry_new("");
-      ewl_callback_append(EWL_ENTRY(entries[1])->text,
-                          EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
+      ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
+                          prop_item);
     } else if (prop_item->type == PT_INT) {
       entries[1] = ewl_spinner_new();
 
@@ -295,8 +295,8 @@ draw_tree(examine_prop * prop_item)
                           prop_item);
     } else if (prop_item->type == PT_RGB) {
       entries[1] = ewl_entry_new("");
-      ewl_callback_append(EWL_ENTRY(entries[1])->text,
-                          EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
+      ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
+                          prop_item);
 				
     } else if (prop_item->type == PT_THM) {
       struct stat     st;
@@ -354,7 +354,7 @@ draw_tree(examine_prop * prop_item)
             strcat(file, next->d_name);
 
             tmp = ewl_image_new(file, (char *) prop_item->data);
-            ewl_object_preferred_inner_size_set(EWL_OBJECT(tmp), 60, 60);
+            ewl_object_minimum_size_set(EWL_OBJECT(tmp), 60, 60);
             ewl_object_fill_policy_set(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
             ewl_object_alignment_set(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
             ewl_widget_show(tmp);
