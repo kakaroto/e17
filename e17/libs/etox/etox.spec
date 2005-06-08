@@ -2,7 +2,7 @@
 
 Summary: Enlightened Text Object Library
 Name: etox
-Version: 0.9.0.002
+Version: 0.9.0.003
 Release: 1
 License: BSD
 Group: User Interface/X

@@ -2,7 +2,7 @@
 
 Summary: Enlightenment Widget Library
 Name: ewl
-Version: 0.0.4.002
+Version: 0.0.4.003
 Release: 1
 License: BSD
 Group: User Interface/X
