@@ -90,7 +90,7 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 	ewl_object_size_request(EWL_OBJECT(w), 500, 450);
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
 				   EWL_FLAG_FILL_SHRINK |
-				   EWL_FLAG_FILL_HFILL);
+				   EWL_FLAG_FILL_FILL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW,
 			    ewl_fileselector_show_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
