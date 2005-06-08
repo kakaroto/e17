@@ -13,4 +13,6 @@ void _run_cb(void *data , Evas_Object *obj,
 	     const char *emission, 
 	     const char *src);
 
+void  exg_run(Exige *exg, const char *str);
+
 #endif

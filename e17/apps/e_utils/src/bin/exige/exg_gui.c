@@ -46,7 +46,7 @@ exg_text_entry_create(Exige *exg)
     exg->txt=esmart_text_entry_new(exg->evas);
 
     esmart_text_entry_edje_part_set(exg->txt,exg->gui,"entry");    
-    esmart_text_entry_return_key_callback_set(exg->txt,_enter_cb,NULL);
+    esmart_text_entry_return_key_callback_set(exg->txt,_enter_cb,exg);
     esmart_text_entry_is_password_set(exg->txt, 0);
     
     evas_object_focus_set(exg->txt, 1);
