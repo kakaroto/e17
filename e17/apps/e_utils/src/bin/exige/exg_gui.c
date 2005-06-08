@@ -14,8 +14,9 @@ char * exg_gui_theme_path_get()
 void 
 exg_gui_init(Exige *exg)
 {    
-     exg->ee = ecore_evas_software_x11_new(NULL,0,0,0,0,0);
-     ecore_evas_title_set(exg->ee,"Exige");
+     exg->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+     ecore_evas_title_set(exg->ee, "Exige");
+     ecore_evas_name_class_set(exg->ee, "Exige", "Exige");
      
      exg->evas = ecore_evas_get(exg->ee);
      ecore_evas_data_set(exg->ee, "Exige", exg);
