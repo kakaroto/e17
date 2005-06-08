@@ -39,7 +39,6 @@ else
   fi
 fi
 
-if test "x{libdir}" = "xNONE";then
   if test "x${exec_prefix}" = "xNONE"; then
     if test "x${prefix}" = "xNONE"; then
       libdir="${ac_default_prefix}/lib";
@@ -53,7 +52,6 @@ if test "x{libdir}" = "xNONE";then
       libdir="${prefix}/lib";
     fi
   fi
-fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
