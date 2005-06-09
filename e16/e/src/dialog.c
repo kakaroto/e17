@@ -2255,7 +2255,46 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 	break;
 
      case DITEM_SLIDER:
-	if (win == di->item.slider.base_win)
+	if ((ev->xbutton.button == 2) ||
+	    (ev->xbutton.button == 4) || (ev->xbutton.button == 5))
+	  {
+	     int                 wheel_jump = di->item.slider.jump / 2;
+
+	     if (!wheel_jump)
+		wheel_jump++;
+	     if (ev->xbutton.button == 5)
+	       {
+		  di->item.slider.val -= wheel_jump;
+		  if (di->item.slider.val < di->item.slider.lower)
+		     di->item.slider.val = di->item.slider.lower;
+	       }
+	     else if (ev->xbutton.button == 4)
+	       {
+		  di->item.slider.val += wheel_jump;
+		  if (di->item.slider.val > di->item.slider.upper)
+		     di->item.slider.val = di->item.slider.upper;
+	       }
+	     else
+	       {
+		  if (di->item.slider.horizontal)
+		    {
+		       di->item.slider.val = ev->xbutton.x *
+			  (di->item.slider.upper - di->item.slider.lower) /
+			  di->w;
+		    }
+		  else
+		    {
+		       di->item.slider.val = ((di->h - ev->xbutton.y) *
+					      (di->item.slider.upper -
+					       di->item.slider.lower) / di->h);
+		    }
+	       }
+	     if (di->item.slider.val_ptr)
+		*di->item.slider.val_ptr = di->item.slider.val;
+	     if (di->func)
+		(di->func) (d, di->val, di->data);
+	  }
+	else if (win == di->item.slider.base_win)
 	  {
 	     if (di->item.slider.horizontal)
 	       {
