@@ -1,6 +1,9 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
+filesdir = @e_config_apps_dir@
+files_DATA = emblem.eapp
+
 AM_CFLAGS = \
 	@e_cflags@ \
 	@ecore_cflags@ \

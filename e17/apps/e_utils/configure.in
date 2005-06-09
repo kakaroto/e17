@@ -207,8 +207,10 @@ AC_ARG_WITH(enlightenment-config,
 ])
 e_cflags=`$E_CONFIG --cflags`
 e_libs=`$E_CONFIG --libs`
+e_config_apps_dir=`$E_CONFIG --config-apps-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
+AC_SUBST(e_config_apps_dir)
 	
 
 AC_OUTPUT([

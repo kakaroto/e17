@@ -1,6 +1,9 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
+filesdir = @e_config_apps_dir@
+files_DATA = entangle.eapp
+
 AM_CFLAGS = \
 @ecore_cflags@ \
 @eet_cflags@ \
