@@ -1190,23 +1190,6 @@ MenuFindParentItem(Menu * m)
    return NULL;
 }
 
-#if 0
-static EWin        *
-MenuFindContextEwin(Menu * m __UNUSED__)
-{
-#if 0
-   while (m && m->parent)
-      m = m->parent;
-
-   if (!m)
-      return NULL;
-
-   return FindEwinSpawningMenu(m);
-#endif
-   return Mode_menus.context_ewin;
-}
-#endif
-
 static              KeySym
 MenuKeyPressConversion(KeySym key)
 {
@@ -1290,9 +1273,7 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	   break;
 	MenusHide();
 	EobjsRepaint();
-	SetContextEwin(Mode_menus.context_ewin);
-	EFunc(mi->params);
-	SetContextEwin(NULL);
+	EFunc(Mode_menus.context_ewin, mi->params);
 	break;
      }
 }
@@ -1365,9 +1346,7 @@ MenuItemEventMouseUp(MenuItem * mi, XEvent * ev __UNUSED__)
 	  {
 	     MenusHide();
 	     EobjsRepaint();
-	     SetContextEwin(Mode_menus.context_ewin);
-	     EFunc(mi->params);
-	     SetContextEwin(NULL);
+	     EFunc(Mode_menus.context_ewin, mi->params);
 	     return;
 	  }
      }

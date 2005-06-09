@@ -1231,22 +1231,6 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Slideout(const char *params, Client * c __UNUSED__)
-{
-   Slideout           *s;
-
-   if (!params)
-      return;
-
-   s = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SLIDEOUT);
-   if (s)
-     {
-	SoundPlay("SOUND_SLIDEOUT_SHOW");
-	SlideoutShow(s, GetContextEwin(), Mode.context_win);
-     }
-}
-
-static void
 IPC_Warp(const char *params, Client * c __UNUSED__)
 {
    int                 x, y;
@@ -1503,8 +1487,6 @@ IpcItem             IPCArray[] = {
     "Reparent window",
     "  reparent <windowid> <new parent>\n"},
    {
-    IPC_Slideout, "slideout", NULL, "Show slideout", NULL},
-   {
     IPC_Remember,
     "remember", NULL,
     "Remembers parameters for client windows (obsolete)",
@@ -1599,9 +1581,15 @@ HandleIPC(const char *params, Client * c)
 }
 
 int
-EFunc(const char *params)
+EFunc(EWin * ewin, const char *params)
 {
-   return HandleIPC(params, NULL);
+   int                 err;
+
+   SetContextEwin(ewin);
+   err = HandleIPC(params, NULL);
+   SetContextEwin(NULL);
+
+   return err;
 }
 
 static int

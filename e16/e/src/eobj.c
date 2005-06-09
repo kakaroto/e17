@@ -492,6 +492,34 @@ EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 }
 
 void
+EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty, int fw, int fh,
+		int tw, int th, int speed)
+{
+   int                 k, x, y, w, h;
+
+#if 0				/* FIXME - Need this? */
+   EGrabServer();
+#endif
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
+	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
+	h = ((fh * (1024 - k)) + (th * k)) >> 10;
+	EobjMoveResize(eo, x, y, w, h);
+
+	k = ETimedLoopNext();
+     }
+   EobjMoveResize(eo, tx, ty, tw, th);
+
+#if 0				/* FIXME - Need this? */
+   EUngrabServer();
+#endif
+}
+
+void
 EobjsRepaint(void)
 {
 #if USE_COMPOSITE

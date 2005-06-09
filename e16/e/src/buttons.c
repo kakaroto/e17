@@ -63,6 +63,7 @@ static struct
 {
    Button             *button;
    char                loading_user;
+   char                move_pending;
 } Mode_buttons;
 
 static void         ButtonHandleEvents(XEvent * ev, void *btn);
@@ -398,7 +399,7 @@ ButtonGetAClass(const Button * b)
 }
 
 Window
-ButtonGetWindow(const Button * b)
+ButtonGetWin(const Button * b)
 {
    return EoGetWin(b);
 }
@@ -433,6 +434,13 @@ ButtonDoShowDefault(const Button * b)
    return !b->internal && b->default_show;
 }
 
+void
+ButtonDoAction(Button * b, EWin * ewin, XEvent * ev)
+{
+   if (b->aclass)
+      EventAclass(ev, ewin, b->aclass);
+}
+
 int
 ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 {
@@ -464,7 +472,7 @@ ButtonDragStart(Button * b)
 
    GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
-   Mode.button_move_pending = 1;
+   Mode_buttons.move_pending = 1;
    Mode.start_x = Mode.x;
    Mode.start_y = Mode.y;
    Mode.win_x = EoGetX(b);
@@ -478,7 +486,7 @@ ButtonDragEnd(Button * b)
 
    Mode.mode = MODE_NONE;
 
-   if (!Mode.button_move_pending)
+   if (!Mode_buttons.move_pending)
      {
 	d = DesktopAt(Mode.x, Mode.y);
 	ButtonMoveToDesktop(b, d);
@@ -486,7 +494,7 @@ ButtonDragEnd(Button * b)
 	ButtonMoveRelative(b, -DeskGetX(d), -DeskGetY(d));
      }
    else
-      Mode.button_move_pending = 0;
+      Mode_buttons.move_pending = 0;
 
    autosave();
 }
@@ -543,9 +551,14 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
    b->state = STATE_CLICKED;
    ButtonDraw(b);
 
-   ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
-   if (ac)
-      EventAclass(ev, NULL, ac);
+   if (!b->internal)
+     {
+	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
+		      LIST_TYPE_ACLASS);
+	if (ac)
+	   EventAclass(ev, NULL, ac);
+     }
+
    if (b->aclass)
       EventAclass(ev, NULL, b->aclass);
 }
@@ -568,6 +581,10 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
       b->state = STATE_NORMAL;
    ButtonDraw(b);
 
+#if 1				/* FIXME - Here? */
+   GrabPointerRelease();
+#endif
+
    if (b->aclass && !b->left)
       EventAclass(ev, NULL, b->aclass);
 
@@ -577,7 +594,9 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
       ButtonDragEnd(Mode_buttons.button);
    Mode_buttons.button = NULL;
 
+#if 0				/* FIXME - Move? */
    GrabPointerRelease();
+#endif
 }
 
 static void
@@ -591,7 +610,7 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
    dx = Mode.x - Mode.px;
    dy = Mode.y - Mode.py;
 
-   if (Mode.button_move_pending)
+   if (Mode_buttons.move_pending)
      {
 	int                 x, y;
 
@@ -603,10 +622,10 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	   y = -y;
 	if ((x > Conf.button_move_resistance) ||
 	    (y > Conf.button_move_resistance))
-	   Mode.button_move_pending = 0;
+	   Mode_buttons.move_pending = 0;
 	Mode.action_inhibit = 1;
      }
-   if (!Mode.button_move_pending)
+   if (!Mode_buttons.move_pending)
      {
 	if (b)
 	  {

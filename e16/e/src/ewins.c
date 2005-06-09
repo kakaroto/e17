@@ -889,9 +889,6 @@ EwinUnmap1(EWin * ewin)
 	FocusEnable(1);
 #endif
      }
-
-   if (ewin == GetContextEwin())
-      SlideoutsHide();
 }
 
 static void

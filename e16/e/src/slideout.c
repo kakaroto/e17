@@ -23,91 +23,71 @@
  */
 #include "E.h"
 
-struct _slideout
+typedef struct
 {
-   char               *name;
+   EObj               *win;
    char                direction;
    int                 num_buttons;
    Button            **button;
-   int                 w, h;
-   Window              win;
-   Window              from_win;
    unsigned int        ref_count;
-};
+   EWin               *context_ewin;
+} Slideout;
 
 static void         SlideoutCalcSize(Slideout * s);
 
-static void
-SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
-		  int tw, int th, int speed)
+struct
 {
-   int                 k, x, y, w, h;
+   Slideout           *active;
+} Mode_slideouts =
+{
+NULL};
 
-   EGrabServer();
-
-   ETimedLoopInit(0, 1024, speed);
-   for (k = 0; k <= 1024;)
-     {
-	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
-	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
-	h = ((fh * (1024 - k)) + (th * k)) >> 10;
-	EMoveResizeWindow(win, x, y, w, h);
-
-	k = ETimedLoopNext();
-     }
-   EMoveResizeWindow(win, tx, ty, tw, th);
-
-   EUngrabServer();
-}
+static void         SlideoutHandleEvent(XEvent * ev, void *prm);
 
 static Slideout    *
 SlideoutCreate(char *name, char dir)
 {
    Slideout           *s;
 
-   s = Emalloc(sizeof(Slideout));
+   s = Ecalloc(1, sizeof(Slideout));
    if (!s)
       return NULL;
 
-   s->name = Estrdup(name);
+   s->win = EobjWindowCreate(EOBJ_TYPE_MISC, -10, -10, 1, 1, 1, name);
    s->direction = dir;
-   s->num_buttons = 0;
-   s->button = NULL;
-   s->w = 0;
-   s->h = 0;
-   s->win = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
-   s->from_win = 0;
-   s->ref_count = 0;
+   EventCallbackRegister(s->win->win, 0, SlideoutHandleEvent, s);
 
    return s;
 }
 
-void
+static void
 SlideoutShow(Slideout * s, EWin * ewin, Window win)
 {
-   int                 x, y, i, xx, yy, di;
+   int                 x, y, i, xx, yy, sw, sh;
    Window              dw;
    char                pdir;
    XSetWindowAttributes att;
-   int                 w, h, d;
+   int                 w, h;
+   Desk               *d;
 
    /* Don't ever show more than one slideout */
-   if (Mode.slideout)
+   if (Mode_slideouts.active)
       return;
 
    SlideoutCalcSize(s);
-   EGetGeometry(win, &dw, &di, &di, &w, &h, &d, &d);
+   EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
    XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &x, &y, &dw);
 
+   sw = s->win->w;
+   sh = s->win->h;
    xx = 0;
    yy = 0;
    switch (s->direction)
      {
      case 2:
-	xx = x + ((w - s->w) >> 1);
-	yy = y - s->h;
-	if ((yy < 0) && (s->h < VRoot.h))
+	xx = x + ((w - sw) >> 1);
+	yy = y - sh;
+	if ((yy < 0) && (sh < VRoot.h))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -117,9 +97,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	  }
 	break;
      case 3:
-	xx = x + ((w - s->w) >> 1);
+	xx = x + ((w - sw) >> 1);
 	yy = y + h;
-	if (((yy + s->h) > VRoot.h) && (s->h < VRoot.h))
+	if (((yy + sh) > VRoot.h) && (sh < VRoot.h))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
@@ -129,9 +109,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	  }
 	break;
      case 0:
-	xx = x - s->w;
-	yy = y + ((h - s->h) >> 1);
-	if ((xx < 0) && (s->w < VRoot.w))
+	xx = x - sw;
+	yy = y + ((h - sh) >> 1);
+	if ((xx < 0) && (sw < VRoot.w))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -142,8 +122,8 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	break;
      case 1:
 	xx = x + w;
-	yy = y + ((h - s->h) >> 1);
-	if (((xx + s->w) > VRoot.w) && (s->w < VRoot.w))
+	yy = y + ((h - sh) >> 1);
+	if (((xx + sw) > VRoot.w) && (sw < VRoot.w))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
@@ -156,107 +136,113 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	break;
      }
 
-   /* If the slideout is associated with an ewin,
-    * put it on the same virtual desktop. */
-   dw = VRoot.win;
-   if (ewin && BorderWinpartIndex(ewin, win) >= 0 &&
-       !EoIsFloating(ewin) /* && !ewin->sticky */ )
+   if (ewin)
      {
-	int                 desk = EoGetDesk(ewin);
-
-	xx -= DeskGetX(desk);
-	yy -= DeskGetY(desk);
-	dw = DeskGetWin(desk);
+	/* If the slideout is associated with an ewin,
+	 * put it on the same virtual desktop. */
+	d = DeskGet(EoGetDesk(ewin));
+	if (BorderWinpartIndex(ewin, win) >= 0 &&
+	    !EoIsFloating(ewin) /* && !ewin->sticky */ )
+	  {
+	     xx -= EoGetX(d);
+	     yy -= EoGetY(d);
+	  }
      }
-   EReparentWindow(s->win, dw, xx, yy);
+   else
+     {
+	d = DeskGet(0);
+     }
+   EobjReparent(s->win, d->num, xx, yy);
 
    switch (s->direction)
      {
      case 0:
 	att.win_gravity = SouthEastGravity;
-	EChangeWindowAttributes(s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(s->win, xx, yy, 1, 1);
+	EobjMoveResize(s->win, xx, yy, 1, 1);
 	ESync();
-	EMapRaised(s->win);
-	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
-			  Conf.slidespeedmap);
+	EobjMap(s->win, 1);
+	EobjSlideSizeTo(s->win, xx + sw, yy, xx, yy, 0, sh, sw, sh,
+			Conf.slidespeedmap);
 	break;
      case 1:
 	att.win_gravity = NorthWestGravity;
-	EChangeWindowAttributes(s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(s->win, xx, yy, 1, 1);
+	EobjMoveResize(s->win, xx, yy, 1, 1);
 	ESync();
-	EMapRaised(s->win);
-	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
-			  Conf.slidespeedmap);
+	EobjMap(s->win, 1);
+	EobjSlideSizeTo(s->win, xx, yy, xx, yy, 0, sh, sw, sh,
+			Conf.slidespeedmap);
 	break;
      case 2:
 	att.win_gravity = SouthEastGravity;
-	EChangeWindowAttributes(s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(s->win, xx, yy, 1, 1);
+	EobjMoveResize(s->win, xx, yy, 1, 1);
 	ESync();
-	EMapRaised(s->win);
-	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
-			  Conf.slidespeedmap);
+	EobjMap(s->win, 1);
+	EobjSlideSizeTo(s->win, xx, yy + sh, xx, yy, sw, 0, sw, sh,
+			Conf.slidespeedmap);
 	break;
      case 3:
 	att.win_gravity = NorthWestGravity;
-	EChangeWindowAttributes(s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(s->win, xx, yy, 1, 1);
+	EobjMoveResize(s->win, xx, yy, 1, 1);
 	ESync();
-	EMapRaised(s->win);
-	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
-			  Conf.slidespeedmap);
+	EobjMap(s->win, 1);
+	EobjSlideSizeTo(s->win, xx, yy, xx, yy, sw, 0, sw, sh,
+			Conf.slidespeedmap);
 	break;
      default:
 	break;
      }
-   s->from_win = win;
    s->ref_count++;
+   s->context_ewin = ewin;
 
-   Mode.slideout = s;
+   GrabPointerSet(s->win->win, ECSR_ROOT, 0);
+
+   Mode_slideouts.active = s;
 }
 
-void
+static void
 SlideoutHide(Slideout * s)
 {
    if (!s)
       return;
 
-   EUnmapWindow(s->win);
-   s->from_win = 0;
+   GrabPointerRelease();
+   EobjUnmap(s->win);
+   s->context_ewin = NULL;
    s->ref_count--;
-   Mode.slideout = NULL;
+   Mode_slideouts.active = NULL;
 }
 
 static void
 SlideoutCalcSize(Slideout * s)
 {
-   int                 i;
-   int                 mx, my, x, y;
-   int                 bw, bh;
+   int                 i, x, y;
+   int                 sw, sh, bw, bh;
 
    if (!s)
       return;
 
-   mx = 0;
-   my = 0;
+   sw = 0;
+   sh = 0;
    x = 0;
    y = 0;
    for (i = 0; i < s->num_buttons; i++)
@@ -268,24 +254,22 @@ SlideoutCalcSize(Slideout * s)
 	  {
 	  case 2:
 	  case 3:
-	     if (bw > mx)
-		mx = bw;
-	     my += bh;
+	     if (bw > sw)
+		sw = bw;
+	     sh += bh;
 	     break;
 	  case 0:
 	  case 1:
-	     if (bh > my)
-		my = bh;
-	     mx += bw;
+	     if (bh > sh)
+		sh = bh;
+	     sw += bw;
 	     break;
 	  default:
 	     break;
 	  }
      }
 
-   EResizeWindow(s->win, mx, my);
-   s->w = mx;
-   s->h = my;
+   EobjResize(s->win, sw, sh);
 
    for (i = 0; i < s->num_buttons; i++)
      {
@@ -296,26 +280,24 @@ SlideoutCalcSize(Slideout * s)
 	  {
 	  case 2:
 	     y += bh;
-	     EMoveWindow(ButtonGetWindow(s->button[i]),
-			 (s->w - bw) >> 1, s->h - y);
+	     EMoveWindow(ButtonGetWin(s->button[i]), (sw - bw) >> 1, sh - y);
 	     break;
 	  case 3:
-	     EMoveWindow(ButtonGetWindow(s->button[i]), (s->w - bw) >> 1, y);
+	     EMoveWindow(ButtonGetWin(s->button[i]), (sw - bw) >> 1, y);
 	     y += bh;
 	     break;
 	  case 0:
 	     x += bw;
-	     EMoveWindow(ButtonGetWindow(s->button[i]), s->w - x,
-			 (s->h - bh) >> 1);
+	     EMoveWindow(ButtonGetWin(s->button[i]), sw - x, (sh - bh) >> 1);
 	     break;
 	  case 1:
-	     EMoveWindow(ButtonGetWindow(s->button[i]), x, (s->h - bh) >> 1);
+	     EMoveWindow(ButtonGetWin(s->button[i]), x, (sh - bh) >> 1);
 	     x += bw;
 	  default:
 	     break;
 	  }
      }
-   EShapePropagate(s->win);
+   EShapePropagate(s->win->win);
 }
 
 static void
@@ -329,7 +311,7 @@ SlideoutAddButton(Slideout * s, Button * b)
    s->num_buttons++;
    s->button = Erealloc(s->button, sizeof(Button *) * s->num_buttons);
    s->button[s->num_buttons - 1] = b;
-   EReparentWindow(ButtonGetWindow(b), s->win, 0, 0);
+   EReparentWindow(ButtonGetWin(b), s->win->win, 0, 0);
    ButtonSetSwallowed(b);
    ButtonShow(b);
    SlideoutCalcSize(s);
@@ -347,35 +329,57 @@ SlideoutRemoveButton(Slideout * s, Button * b)
 static const char  *
 SlideoutGetName(Slideout * s)
 {
-   return s->name;
+   return s->win->name;
 }
 
-#if 0
-static EWin        *
-SlideoutsGetContextEwin(void)
+static void
+SlideoutCheckButtonEvent(Slideout * s, XEvent * ev)
 {
-   if (Mode.slideout)
-      return FindEwinByChildren(Mode.slideout->from_win);
+   int                 i, x, y, bx, by, bw, bh;
+   Button             *b;
 
-   return NULL;
+   x = ev->xbutton.x;
+   y = ev->xbutton.y;
+
+   if (x < 0 || y < 0 || x > s->win->w || y >= s->win->h)
+      return;
+
+   for (i = 0; i < s->num_buttons; i++)
+     {
+	b = s->button[i];
+	EGetGeometry(ButtonGetWin(b), NULL, &bx, &by, &bw, &bh, NULL, NULL);
+	if (x < bx || y < by || x >= bx + bw || y >= by + bh)
+	   continue;
+	ButtonDoAction(b, s->context_ewin, ev);
+     }
 }
-#endif
 
-void
+static void
+SlideoutHandleEvent(XEvent * ev, void *prm)
+{
+   Slideout           *s = prm;
+
+   switch (ev->type)
+     {
+     case KeyPress:
+     case KeyRelease:
+	SlideoutHide(s);
+	break;
+     case ButtonPress:
+     case ButtonRelease:
+	SlideoutCheckButtonEvent(s, ev);
+	if (ev->type == ButtonRelease)
+	   SlideoutHide(s);
+	break;
+     }
+}
+
+static void
 SlideoutsHide(void)
 {
-   if (Mode.slideout)
-      SlideoutHide(Mode.slideout);
+   if (Mode_slideouts.active)
+      SlideoutHide(Mode_slideouts.active);
 }
-
-#if 0
-static void
-SlideoutsHideIfContextWin(Window win)
-{
-   if ((Mode.slideout) && (Mode.slideout->from_win == win))
-      SlideoutHide(Mode.slideout);
-}
-#endif
 
 /*
  * Configuration load/save
@@ -460,7 +464,7 @@ SlideoutsConfigLoad(FILE * fs)
  */
 
 static void
-SlideoutsSighan(int sig, void *prm __UNUSED__)
+SlideoutsSighan(int sig, void *prm)
 {
    switch (sig)
      {
@@ -468,8 +472,36 @@ SlideoutsSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_DESK_SWITCH_START:
 	SlideoutsHide();
 	break;
+
+     case ESIGNAL_EWIN_UNMAP:
+	if (Mode_slideouts.active
+	    && Mode_slideouts.active->context_ewin == (EWin *) prm)
+	   SlideoutsHide();
+	break;
      }
 }
+
+static void
+IPC_Slideout(const char *params, Client * c __UNUSED__)
+{
+   Slideout           *s;
+
+   if (!params)
+      return;
+
+   s = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SLIDEOUT);
+   if (!s)
+      return;
+
+   SoundPlay("SOUND_SLIDEOUT_SHOW");
+   SlideoutShow(s, GetContextEwin(), Mode.context_win);
+}
+
+static IpcItem      SlideoutsIpcArray[] = {
+   {
+    IPC_Slideout, "slideout", NULL, "Show slideout", NULL},
+};
+#define N_IPC_FUNCS (sizeof(SlideoutsIpcArray)/sizeof(IpcItem))
 
 /*
  * Module descriptor
@@ -477,7 +509,6 @@ SlideoutsSighan(int sig, void *prm __UNUSED__)
 EModule             ModSlideouts = {
    "slideouts", "slideout",
    SlideoutsSighan,
-   {0, NULL}
-   ,
+   {N_IPC_FUNCS, SlideoutsIpcArray},
    {0, NULL}
 };

@@ -1753,7 +1753,7 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 	mi = MenuItemCreate(_("Create New Iconbox"), NULL, "ibox new", NULL);
 	MenuAddItem(p_menu, mi);
 
-	EFunc("menus show __IBOX_MENU");
+	EFunc(NULL, "menus show __IBOX_MENU");
      }
    else
      {
@@ -1767,7 +1767,7 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 	mi = MenuItemCreate(_("Close Systray"), NULL, s, NULL);
 	MenuAddItem(p_menu, mi);
 
-	EFunc("menus show __TRAY_MENU");
+	EFunc(NULL, "menus show __TRAY_MENU");
      }
 }
 

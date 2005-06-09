@@ -165,7 +165,6 @@ HandleEvent(XEvent * ev)
 {
    void              **lst;
    int                 i, num;
-   Slideout           *pslideout = NULL;
 
 #if ENABLE_DEBUG_EVENTS
    if (EventDebug(ev->type))
@@ -265,8 +264,6 @@ HandleEvent(XEvent * ev)
 	  }
 #endif
 
-	pslideout = Mode.slideout;
-
 	ActionsEnd(NULL);
 	break;
      case MotionNotify:	/*  6 */
@@ -329,10 +326,6 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case ButtonRelease:	/*  5 */
-	/* This shouldn't be here */
-	if ((Mode.slideout) && (pslideout))
-	   SlideoutHide(Mode.slideout);
-
 	Mode.last_bpress = 0;
 	Mode.action_inhibit = 0;
 	break;

@@ -821,9 +821,7 @@ ActionGetModifiers(Action * aa)
 static void
 handleAction(EWin * ewin, ActionType * action)
 {
-   SetContextEwin(ewin);
-   EFunc(action->params);
-   SetContextEwin(NULL);
+   EFunc(ewin, action->params);
 
    /* Did we just hose ourselves? if so, we'd best not stick around here */
    if (mode_action_destroy)

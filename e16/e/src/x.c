@@ -421,10 +421,6 @@ EDestroyWindow(Window win)
 {
    EXID               *xid;
 
-#if 0				/* FIXME */
-   SlideoutsHideIfContextWin(win);
-#endif
-
    xid = EXidFind(win);
    if (xid)
      {

@@ -856,7 +856,7 @@ PagerMenuShow(Pager * p, int x, int y)
 	mi = MenuItemCreate(_("Stick / Unstick"), NULL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	EFunc("menus show __DESK_WIN_MENU");
+	EFunc(NULL, "menus show __DESK_WIN_MENU");
 	return;
      }
 
@@ -882,7 +882,7 @@ PagerMenuShow(Pager * p, int x, int y)
 	MenuAddItem(p_menu, mi);
      }
 
-   EFunc("menus show __DESK_MENU");
+   EFunc(NULL, "menus show __DESK_MENU");
 }
 
 static void

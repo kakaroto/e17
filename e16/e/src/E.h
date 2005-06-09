@@ -335,7 +335,6 @@ typedef struct _pager Pager;
 typedef struct _snapshot Snapshot;
 typedef struct _group Group;
 typedef struct _button Button;
-typedef struct _slideout Slideout;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
 typedef struct _efont Efont;
@@ -1073,9 +1072,7 @@ typedef struct
    int                 px, py, x, y;
    int                 server_grabbed;
    int                 deskdrag;
-   char                button_move_pending;
    Colormap            current_cmap;
-   Slideout           *slideout;
    Window              context_win;
    char                constrained;
    char                nogroup;
@@ -1284,12 +1281,13 @@ int                 ButtonGetRefcount(const Button * b);
 int                 ButtonGetDesk(const Button * b);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
 ActionClass        *ButtonGetAClass(const Button * b);
-Window              ButtonGetWindow(const Button * b);
+Window              ButtonGetWin(const Button * b);
 int                 ButtonGetWidth(const Button * b);
 int                 ButtonGetHeight(const Button * b);
 int                 ButtonIsFixed(const Button * b);
 int                 ButtonIsInternal(const Button * b);
 int                 ButtonDoShowDefault(const Button * b);
+void                ButtonDoAction(Button * b, EWin * ewin, XEvent * ev);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
@@ -1527,6 +1525,8 @@ void                EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty,
 				int speed);
 void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
 				 int speed);
+void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
+				    int fw, int fh, int tw, int th, int speed);
 
 /* events.c */
 /* Re-mapped X-events */
@@ -1898,7 +1898,7 @@ void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
 int                 HandleIPC(const char *params, Client * c);
 void                ButtonIPC(int val, void *data);
-int                 EFunc(const char *params);
+int                 EFunc(EWin * ewin, const char *params);
 
 /* lang.c */
 void                LangInit(void);
@@ -2094,10 +2094,6 @@ void                MaxHeight(EWin * ewin, const char *resize_type);
 
 /* slideouts.c */
 int                 SlideoutsConfigLoad(FILE * fs);
-void                SlideoutShow(Slideout * s, EWin * ewin, Window win);
-void                SlideoutHide(Slideout * s);
-
-void                SlideoutsHide(void);
 
 /* snaps.c */
 void                Real_SaveSnapInfo(int dumval, void *dumdat);
