@@ -117,6 +117,7 @@ static void    _engage_bar_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *m
 static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_zoom_stretch(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_zoom_small(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_zoom_medium(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_zoom_large(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -220,6 +221,7 @@ _engage_new()
    E_CONFIG_VAL(D, T, enabled, INT);
    E_CONFIG_VAL(D, T, zoom, INT);
    E_CONFIG_VAL(D, T, zoom_factor, DOUBLE);
+   E_CONFIG_VAL(D, T, zoom_stretch, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Engage_Config", Config);
 #undef T
@@ -295,6 +297,7 @@ _engage_new()
 		       eb->conf->enabled = 1;
 		       eb->conf->zoom = 1;
 		       eb->conf->zoom_factor = 2.0;
+		       eb->conf->zoom_stretch = 0;
 		       e->conf->bars = evas_list_append(e->conf->bars, eb->conf);
 		    }
 		  else
@@ -304,6 +307,7 @@ _engage_new()
 		    }
 		  E_CONFIG_LIMIT(eb->conf->zoom, 0, 1);
 		  E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
+		  E_CONFIG_LIMIT(eb->conf->zoom_stretch, 0, 1);
 		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
 		  _engage_bar_menu_new(eb);
@@ -695,12 +699,20 @@ _engage_bar_menu_new(Engage_Bar *eb)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Zoom Icons");
    e_menu_item_check_set(mi, 1);
-   if (eb->conf->zoom == 1) e_menu_item_toggle_set(mi, 1);
-     e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom, eb);
+   if (eb->conf->zoom == 1)
+     e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom, eb);
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Zoom Level");
    e_menu_item_submenu_set(mi, eb->zoom_menu);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Stretch Bar");
+   e_menu_item_check_set(mi, 1);
+   if (eb->conf->zoom_stretch)
+     e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_stretch, eb);
 
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
@@ -1473,7 +1485,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
      {
 	Engage_Icon *icon;
 	double       distance, new_zoom, relative, size, halfsize;
-	int          do_zoom;
+	int          do_zoom, offset;
 	Evas_Coord   cx, cy;
 
 	icon = (Engage_Icon *) items->data;
@@ -1488,20 +1500,34 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
 	evas_object_resize(icon->bg_object, size, size);
+
 	xx = x;
 	yy = y;
+
+	if (eb->conf->zoom_stretch)
+	  {
+	     if (eb->mouse_out == -1)
+	       offset = md + relative;
+	     else
+	       offset = eb->mouse_out + relative;
+	  }
+	else
+	  {
+	     offset = counter;
+	  }
+
 	if (edge == E_GADMAN_EDGE_LEFT)
-	  yy = counter - halfsize;
+	  yy = offset - halfsize;
 	else if (edge == E_GADMAN_EDGE_RIGHT)
 	  {
 	     xx = x + w - size;
-	     yy = counter - halfsize;
+	     yy = offset - halfsize;
 	  }
 	else if (edge == E_GADMAN_EDGE_TOP)
-	  xx = counter - halfsize;
+	  xx = offset - halfsize;
 	else
 	  {
-	     xx = counter - halfsize;
+	     xx = offset - halfsize;
 	     yy = y + h - size;
 	  }
 	evas_object_move(icon->bg_object, xx, yy);
@@ -2132,6 +2158,16 @@ _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void
+_engage_bar_cb_menu_zoom_stretch(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   eb->conf->zoom_stretch = e_menu_item_toggle_get(mi);
+   e_config_save_queue();
+}
+
+static void
 _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_Item *mi)
 {  
    Engage_Bar *eb;
@@ -2201,7 +2237,14 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    double          range, f, x;
    double          ff, sqrt_ffxx, sqrt_ff_1;
 
-   range = 1.0;
+   if (eb->conf->zoom_stretch)
+     {
+	range = 2.5;
+     }
+   else
+     {
+	range = 1.0;
+     }
    f = 1.5;
    x = d / range;
 
@@ -2221,23 +2264,25 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
      {
 	*zoom = (eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	    ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0;
-/* disp is not currently used, so free up some cycles */
-#if 0
-	*disp = (eb->engage->iconbordersize) *
-	    ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
-	    (range * (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
-		ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))) + d);
-#endif
+
+	if (eb->conf->zoom_stretch)
+	  {
+	     *disp = (eb->engage->iconbordersize) *
+	       ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
+	         (range * (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
+		   ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))) + d);
+	  }
       } else {
 	*zoom = 1.0;
-#if 0
-	*disp = (eb->engage->iconbordersize) *
-	    ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
-	        (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
-	        (2.0 * (sqrt_ff_1 - f))) + range + fabs(d) - range);
-	if (d < 0.0)
-	   *disp = -(*disp);
-#endif
+	if (eb->conf->zoom_stretch)
+	  {
+	     *disp = (eb->engage->iconbordersize) *
+	       ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
+	         (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
+		   (2.0 * (sqrt_ff_1 - f))) + range + fabs(d) - range);
+	     if (d < 0.0)
+	       *disp = -(*disp);
+	  }
       }
    return 1;
 }

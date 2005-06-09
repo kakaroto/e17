@@ -27,6 +27,7 @@ struct _Config_Bar
    unsigned char enabled;
    int           zoom;
    double        zoom_factor;
+   int           zoom_stretch;
 };
 
 struct _Engage
