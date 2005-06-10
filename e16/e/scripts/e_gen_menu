@@ -369,6 +369,7 @@ sub MakeEppsMenu {
 	open(FD, ">$EdirMenus/$f");
 	print FD "\"Enlightenment Epplets\"\n";
 	foreach $d (split(':', $ENV{'PATH'})) {
+		next unless -d $d;
 		next if ($done{$d});
 		$done{$d} = 1;
 		print "Looking for epplets in $d\n" if $dbg ge 1;
