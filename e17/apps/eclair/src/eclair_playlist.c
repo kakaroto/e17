@@ -87,10 +87,10 @@ void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
    }
    playlist->shuffle_list = evas_list_free(playlist->shuffle_list);
 
-   if (playlist->current)
+   if (playlist->current && (media_file = playlist->current->data))
    {
-      evas_list_append(playlist->shuffle_list, playlist->current);
-      playlist->current->shuffle_node = evas_list_last(playlist->shuffle_list);
+      playlist->shuffle_list = evas_list_append(playlist->shuffle_list, media_file);
+      media_file->shuffle_node = evas_list_last(playlist->shuffle_list);
    }
 }
 
