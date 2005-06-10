@@ -77,7 +77,7 @@ void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
    Eclair_Media_File *media_file;
    Evas_List *l;
 
-   if (!playlist)
+   if (!playlist || !playlist->shuffle)
       return;
    
    for (l = playlist->playlist; l; l = l->next)
@@ -86,6 +86,12 @@ void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist)
          media_file->shuffle_node = NULL;
    }
    playlist->shuffle_list = evas_list_free(playlist->shuffle_list);
+
+   if (playlist->current)
+   {
+      evas_list_append(playlist->shuffle_list, playlist->current);
+      playlist->current->shuffle_node = evas_list_last(playlist->shuffle_list);
+   }
 }
 
 //Called every 50ms and destroy the removed media files
@@ -145,24 +151,6 @@ Eclair_Media_File *eclair_playlist_current_media_file(Eclair_Playlist *playlist)
 
    return evas_list_data(playlist->current);
 }
-/*
-//Return the media file just before the active media file
-Eclair_Media_File *eclair_playlist_prev_media_file(Eclair_Playlist *playlist)
-{
-   if (!playlist)
-      return NULL;
-
-   return evas_list_data(evas_list_prev(playlist->current));
-}*/
-/*
-//Return the media file just after the active media file
-Eclair_Media_File *eclair_playlist_next_media_file(Eclair_Playlist *playlist)
-{
-   if (!playlist)
-      return NULL;
-
-   return evas_list_data(evas_list_next(playlist->current));
-}*/
 
 //Add recursively a directory
 Evas_Bool eclair_playlist_add_dir(Eclair_Playlist *playlist, char *dir, Evas_Bool update_container, Evas_Bool autoplay)
@@ -348,6 +336,8 @@ void eclair_playlist_remove_selected_media_files(Eclair_Playlist *playlist)
          l = l->next;
    }
 
+   eclair_playlist_reset_shuffle_list(playlist);
+
    if (playlist->eclair && playlist->eclair->playlist_container)
       eclair_playlist_container_update(playlist->eclair->playlist_container);
 }
@@ -369,6 +359,8 @@ void eclair_playlist_remove_unselected_media_files(Eclair_Playlist *playlist)
          l = l->next;
    }
 
+   eclair_playlist_reset_shuffle_list(playlist);
+
    if (playlist->eclair && playlist->eclair->playlist_container)
       eclair_playlist_container_update(playlist->eclair->playlist_container);
 }
@@ -384,6 +376,8 @@ void eclair_playlist_empty(Eclair_Playlist *playlist)
    for (l = playlist->playlist; l; l = eclair_playlist_remove_media_file_list(playlist, l, 0));
    playlist->playlist = evas_list_free(playlist->playlist);
    playlist->current = NULL;
+
+   eclair_playlist_reset_shuffle_list(playlist);
 
    if (playlist->eclair && playlist->eclair->playlist_container)
       eclair_playlist_container_update(playlist->eclair->playlist_container);
@@ -410,11 +404,12 @@ void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list
       return;
 
    previous_media_file = evas_list_data(playlist->current);
+   if (!playlist->current)
+      eclair_playlist_reset_shuffle_list(playlist);
    playlist->current = list;
    eclair_media_file_update(playlist->eclair, previous_media_file);
    if (list)
    {
-      printf("Scroll_to %p %p!\n", list, playlist->eclair->playlist_container);
       eclair_playlist_container_scroll_to_list(playlist->eclair->playlist_container, list);
       eclair_media_file_update(playlist->eclair, list->data);
       if ((new_current_file = list->data) && !new_current_file->shuffle_node && playlist->shuffle)

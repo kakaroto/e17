@@ -26,6 +26,7 @@ static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer
 static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data);
+static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data);
 
 //Initialize dialogs manager
 void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair)
@@ -164,6 +165,7 @@ static void *_eclair_dialogs_thread(void *param)
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_selected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_selected), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_unselected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_unselected), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_all_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_all), eclair);
+   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "shuffle_mode_handler", G_CALLBACK(_eclair_dialogs_menu_on_shuffle_mode), eclair);
 
    g_timeout_add(50, _eclair_dialogs_update, dialogs_manager);
 
@@ -403,4 +405,12 @@ static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data)
 
    if ((eclair = data))
       eclair_playlist_empty(&eclair->playlist);
+}
+
+static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data)
+{
+   Eclair *eclair;
+
+   if ((eclair = data))
+      eclair_playlist_set_shuffle(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
 }

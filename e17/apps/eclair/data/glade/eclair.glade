@@ -13,7 +13,7 @@
       <signal name="activate" handler="_eclair_dialogs_menu_on_add_files" last_modification_time="Fri, 20 May 2005 21:00:27 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image73">
+	<widget class="GtkImage" id="image83">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-open</property>
 	  <property name="icon_size">1</property>
@@ -35,7 +35,7 @@
 	      <signal name="activate" handler="add_files_handler" last_modification_time="Fri, 20 May 2005 21:13:27 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image74">
+		<widget class="GtkImage" id="image84">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-add</property>
 		  <property name="icon_size">1</property>
@@ -60,7 +60,7 @@
       <signal name="activate" handler="on_playlist1_activate" last_modification_time="Fri, 20 May 2005 20:55:47 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image75">
+	<widget class="GtkImage" id="image85">
 	  <property name="visible">True</property>
 	  <property name="pixbuf">playlist.png</property>
 	  <property name="xalign">0.5</property>
@@ -81,7 +81,7 @@
 	      <signal name="activate" handler="load_playlist_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image76">
+		<widget class="GtkImage" id="image86">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-open</property>
 		  <property name="icon_size">1</property>
@@ -102,7 +102,7 @@
 	      <signal name="activate" handler="save_playlist_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image77">
+		<widget class="GtkImage" id="image87">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-save</property>
 		  <property name="icon_size">1</property>
@@ -129,7 +129,7 @@
 	      <signal name="activate" handler="select_all_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image78">
+		<widget class="GtkImage" id="image88">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">select_all.png</property>
 		  <property name="xalign">0.5</property>
@@ -149,7 +149,7 @@
 	      <signal name="activate" handler="select_none_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image79">
+		<widget class="GtkImage" id="image89">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">select_none.png</property>
 		  <property name="xalign">0.5</property>
@@ -169,7 +169,7 @@
 	      <signal name="activate" handler="invert_selection_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image80">
+		<widget class="GtkImage" id="image90">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">invert_selection.png</property>
 		  <property name="xalign">0.5</property>
@@ -195,7 +195,7 @@
 	      <signal name="activate" handler="remove_selected_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image81">
+		<widget class="GtkImage" id="image91">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-remove</property>
 		  <property name="icon_size">1</property>
@@ -216,7 +216,7 @@
 	      <signal name="activate" handler="remove_unselected_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image82">
+		<widget class="GtkImage" id="image92">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-remove</property>
 		  <property name="icon_size">1</property>
@@ -237,7 +237,7 @@
 	      <signal name="activate" handler="remove_all_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image83">
+		<widget class="GtkImage" id="image93">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-delete</property>
 		  <property name="icon_size">1</property>
@@ -247,6 +247,22 @@
 		  <property name="ypad">0</property>
 		</widget>
 	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkSeparatorMenuItem" id="separator4">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCheckMenuItem" id="shuffle_mode1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Shuffle Mode</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <signal name="activate" handler="shuffle_mode_handler" last_modification_time="Fri, 10 Jun 2005 20:56:36 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
