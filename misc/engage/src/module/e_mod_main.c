@@ -2293,10 +2293,13 @@ _engage_border_ignore(E_Border *bd)
    /* FIXME - this needs to be saved in config */
    static char *ignores[] = { "Gkrellm2", "trayer", NULL};
    char       **cur;
+   Ecore_X_Window_State *state, *tmp;
+   unsigned int num;
    
-   if (ecore_x_window_prop_state_isset(bd->win,
-				       ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
-     return 1;
+   ecore_x_netwm_window_state_get(bd->win, &state, &num);
+   for (tmp = state; tmp; tmp++)
+     if (tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
+       return 1;
    
    for (cur = ignores; *cur; cur++)
      if (bd->client.icccm.class && strcmp(bd->client.icccm.class, *cur) == 0)
