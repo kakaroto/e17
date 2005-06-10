@@ -81,6 +81,7 @@ amd64_blend_cmod.S
 MMX_OBJS = $(MMX_SRCS:.S=.lo)
 AMD64_OBJS = $(AMD64_SRCS:.S=.lo)
 
+EXTRA_DIST = $(MMX_SRCS) $(AMD64_SRCS)
 
 if BUILD_MMX
 libImlib2_la_LIBADD       = $(MMX_OBJS) @my_libs@
@@ -96,5 +97,5 @@ libImlib2_la_LIBADD       = @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
 endif
 endif
-libImlib2_la_LDFLAGS      = -version-info 3:0:2
+libImlib2_la_LDFLAGS      = -version-info 3:1:2
 
