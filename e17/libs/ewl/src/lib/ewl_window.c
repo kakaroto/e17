@@ -94,8 +94,10 @@ void ewl_window_title_set(Ewl_Window * win, char *title)
 		return;
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	if (strstr(win->render, "x11"))
-		ecore_x_window_prop_title_set((Ecore_X_Window)win->window, title);
+	if (strstr(win->render, "x11")) {
+		ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
+		ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
+	}
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -143,8 +145,8 @@ void ewl_window_name_set(Ewl_Window * win, char *name)
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11"))
-		ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window,
-						   name, win->name);
+		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
+					     name, win->name);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -192,8 +194,8 @@ void ewl_window_class_set(Ewl_Window * win, char *classname)
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11"))
-		ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window,
-				classname, win->classname);
+		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
+					     classname, win->classname);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -231,8 +233,8 @@ void ewl_window_borderless_set(Ewl_Window * win)
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (REALIZED(win) && strstr(win->render, "x11"))
-		ecore_x_window_prop_borderless_set((Ecore_X_Window)win->window,
-						   TRUE);
+		ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
+					   TRUE);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -257,7 +259,7 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 		DRETURN(DLEVEL_STABLE);
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11"))
-		ecore_x_window_prop_xy_set((Ecore_X_Window)win->window, x, y);
+		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -472,14 +474,15 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					  ewl_object_current_w_get(o),
 					  ewl_object_current_h_get(o));
 
-		ecore_x_window_prop_name_class_set(xwin, window->name,
-						   window->classname);
-		ecore_x_window_prop_title_set(xwin, window->title);
-		ecore_x_window_prop_protocol_set(xwin,
-					ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
+		ecore_x_icccm_name_class_set(xwin, window->name,
+					     window->classname);
+		ecore_x_icccm_title_set(xwin, window->title);
+		ecore_x_netwm_name_set(xwin, window->title);
+		ecore_x_icccm_protocol_set(xwin,
+					   ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
 
 		if (window->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_window_prop_borderless_set(xwin, 1);
+			ecore_x_mwm_borderless_set(xwin, 1);
 
 		width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 		height = ewl_object_maximum_h_get(EWL_OBJECT(window));
@@ -650,8 +653,8 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(EWL_WINDOW(w)->render, "x11")) {
 		if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_window_prop_borderless_set((Ecore_X_Window)
-					EWL_WINDOW(w)->window, 1);
+			ecore_x_mwm_borderless_set((Ecore_X_Window)
+						   EWL_WINDOW(w)->window, 1);
 
 		ecore_x_window_show((Ecore_X_Window)EWL_WINDOW(w)->window);
 		ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
@@ -752,12 +755,15 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 */
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11")) {
-		ecore_x_window_prop_min_size_set((Ecore_X_Window)win->window,
-				ewl_object_minimum_w_get(EWL_OBJECT(w)),
-				ewl_object_minimum_h_get(EWL_OBJECT(w)));
-		ecore_x_window_prop_max_size_set((Ecore_X_Window)win->window,
-				ewl_object_maximum_w_get(EWL_OBJECT(w)),
-				ewl_object_maximum_h_get(EWL_OBJECT(w)));
+		ecore_x_icccm_size_pos_hints_set((Ecore_X_Window)win->window,
+						 0, ECORE_X_GRAVITY_NW,
+						 ewl_object_minimum_w_get(EWL_OBJECT(w)),
+						 ewl_object_minimum_h_get(EWL_OBJECT(w)),
+						 ewl_object_maximum_w_get(EWL_OBJECT(w)),
+						 ewl_object_maximum_h_get(EWL_OBJECT(w)),
+						 0, 0, /* base */
+						 0, 0, /* step */
+						 0, 0); /* aspect */
 	}
 #endif
 
