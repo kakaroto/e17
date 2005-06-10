@@ -134,7 +134,7 @@ userconfig_sysicons_load(void)
 
   if (!dp)
     return;
-  while (next = readdir(dp)) {
+  while ((next = readdir(dp))) {
     if (!strstr(next->d_name + strlen(next->d_name) - 4, ".edj"))
       continue; 
     

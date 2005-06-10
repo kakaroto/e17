@@ -62,7 +62,9 @@ od_tray_add(Ecore_X_Window win) {
   
   new = malloc(sizeof(Window_List));
   new->win = win;
-  new->title = strdup(ecore_x_window_prop_title_get(win));
+  ecore_x_netwm_name_get(win, &new->title);
+  if (!new->title)
+    new->title = ecore_x_icccm_title_get(win);
   new->next = NULL;
 
   /* we want to insert at the end, so as not to move all icons on each add */
@@ -118,7 +120,6 @@ od_tray_msg_cb(void *data, int type, void *event)
 
   if (type == ECORE_X_EVENT_CLIENT_MESSAGE) {
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
-      XEvent xevent;
 
       od_tray_add((Ecore_X_Window) ev->data.l[2]);
       
@@ -158,7 +159,6 @@ od_tray_init()
 {
   char buf[32];
   Atom selection_atom;
-  int scr;
 
   tray_init = 1;
   display = ecore_x_display_get();

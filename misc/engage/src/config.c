@@ -29,8 +29,10 @@ zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
               void *data)
 {
   options.zoom = ecore_config_boolean_get(key);
+  return 1;
 }
 
+int
 theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
                void *data)
 {
@@ -48,6 +50,7 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
     od_icon_reload((OD_Icon *) icons->data);
     icons = evas_list_next(icons);
   }
+  return 1;
 }
 
 unsigned
@@ -59,6 +62,7 @@ od_argb_to_colour(char *argb)
   return tmp;
 }
 
+int
 colour_listener(const char *key, const Ecore_Config_Type type, const int tag, 
                 void *data)
 {
@@ -74,6 +78,7 @@ colour_listener(const char *key, const Ecore_Config_Type type, const int tag,
       options.bg_back = colour;
       break;
   }
+  return 1;
 }
 
 int

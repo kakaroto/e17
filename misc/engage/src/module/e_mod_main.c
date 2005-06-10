@@ -1081,10 +1081,10 @@ _engage_cb_event_border_add(void *data, int type, void *event)
    e = event;
    eb = data;
    if (e->border->zone->container != eb->con)
-     return;
+     return 1;
 
    if (_engage_border_ignore(e->border))
-     return;
+     return 1;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
@@ -1126,7 +1126,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    eb = data;
 
    if (e->border->zone->container != eb->con)
-     return;
+     return 1;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
@@ -1134,7 +1134,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
    if (!ic)
-     return;
+     return 1;
 
    icons = ic->extra_icons;
    while (icons)
@@ -1168,7 +1168,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    e = event;
    eb = data;
    if (e->border->zone->container != eb->con)
-     return;
+     return 1;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
@@ -1217,7 +1217,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    eb = data;
 
    if (e->border->zone->container != eb->con)
-     return;
+     return 1;
 
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
@@ -1236,7 +1236,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	      ai->min = 0;
 	      edje_object_signal_emit(ai->overlay_object, "uniconify", "");
 	      edje_object_signal_emit(ai->bg_object, "uniconify", "");
-	      return;
+	      return 1;
 	  }
 	icons = icons->next;
      }
@@ -1431,7 +1431,7 @@ static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
    Evas_Coord x, y, w, h, md, md2, xx, yy, app_size, halfapp_size;
-   double relx, rely, left, right, dummy;
+   double relx, rely;
    Evas_List *items, *extras;
    int bordersize, counter;
    Engage_Icon *prev;
@@ -2087,7 +2087,6 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 {
    Evas_List *l;
    Evas_Coord border;
-   int done_mins;
 
    e_box_freeze(eb->box_object);
    for (l = eb->icons; l; l = l->next)
@@ -2299,7 +2298,7 @@ _engage_border_ignore(E_Border *bd)
    ecore_x_netwm_window_state_get(bd->win, &state, &num);
    counter = 0;
    for (tmp = state; counter < num; tmp++ && counter++)
-     if (tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
+     if (*tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
        return 1;
    
    for (cur = ignores; *cur; cur++)

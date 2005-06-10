@@ -20,7 +20,6 @@ int             od_hidden;
 static Ecore_Timer *mouse_focus_timer = NULL;
 int             fullheight;
 
-static void     handle_delete_request(Ecore_Evas * _ee);
 static void     handle_pre_render_cb(Ecore_Evas * _ee);
 static void     handle_post_render_cb(Ecore_Evas * _ee);
 static void     handle_mouse_in(Ecore_Evas * _ee);
@@ -144,6 +143,7 @@ od_window_init()
   int             res_x, res_y;
   Evas_Object    *o;
   Evas_Object    *eventer;
+  Ecore_X_Window_State state[2];
 
   xinerama = 1;
   fullheight = options.height;
@@ -194,7 +194,7 @@ od_window_init()
   else {
     if (strcmp(options.engine, "software")) {
       fprintf(stderr,
-              "Warning: Invalid engine type \"%s\" specified in config.\n");
+              "Warning: Invalid engine type specified in config.\n");
       fprintf(stderr, "         Defaulting to software engine.\n");
     }
     ee = ecore_evas_software_x11_new(NULL, 0,
@@ -235,11 +235,10 @@ od_window_init()
                                  handle_mouse_move, NULL);
 
   od_window = ecore_evas_software_x11_window_get(ee);
-  ecore_x_window_prop_xy_set(od_window,
-                             (int) ((res_x - options.width) / 2.0 + x),
-                             (int) (res_y - options.height + y));
-  ecore_x_window_prop_window_type_set(od_window, ECORE_X_WINDOW_TYPE_DOCK);
-  ecore_x_window_prop_sticky_set(od_window, 1);
+  ecore_x_window_move(od_window,
+                      (int) ((res_x - options.width) / 2.0 + x),
+                      (int) (res_y - options.height + y));
+  ecore_x_netwm_window_type_set(od_window, ECORE_X_WINDOW_TYPE_DOCK);
 
   // Reserve a strut
   if(options.reserve > 0) {
@@ -283,10 +282,12 @@ od_window_init()
 #endif
   }
   
+  state[0] = ECORE_X_WINDOW_STATE_STICKY;
   if (options.mode == OM_ONTOP)
-    ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_ABOVE);
+    state[1] = ECORE_X_WINDOW_STATE_ABOVE;
   else
-    ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_BELOW);
+    state[1] = ECORE_X_WINDOW_STATE_BELOW;
+  ecore_x_netwm_window_state_set(od_window, state, 2);
 
   ecore_evas_show(ee);
   ecore_evas_callback_move_set(ee, od_window_move);
@@ -419,8 +420,6 @@ od_window_set_hidden(int hidden) {
   int             def;
   int             res_x, res_y;
   int             height;
-  Evas_Object    *o;
-  Evas_Object    *eventer;
 
   if (od_hidden != hidden) {
 
@@ -445,7 +444,7 @@ od_window_set_hidden(int hidden) {
       height = fullheight;
 	    
     ecore_x_window_resize(od_window, options.width, height);
-    ecore_x_window_prop_xy_set(od_window, (res_x - options.width) / 2, res_y - height);
+    ecore_x_window_move(od_window, (res_x - options.width) / 2, res_y - height);
     } else {
       if (hidden)
         height = 3000;

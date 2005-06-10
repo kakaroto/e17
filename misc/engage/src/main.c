@@ -1,5 +1,6 @@
 #include "engage.h"
 #include "Ecore_X.h"
+#include "Ewl.h"
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif

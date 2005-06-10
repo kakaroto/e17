@@ -34,7 +34,6 @@ OD_Window      *
 od_wm_window_current_by_window_class_get(const char *name)
 {
   Evas_List      *l = NULL;
-  Evas_List      *tmp = NULL;
   OD_Window      *win = NULL;
   OD_Window      *result = NULL;
   OD_Window      *current = NULL;
@@ -182,7 +181,7 @@ od_wm_get_winclass(Ecore_X_Window win)
 {
   char           *ret = NULL;
 
-  ecore_x_window_prop_name_class_get(win, NULL, &ret);
+  ecore_x_icccm_name_class_get(win, NULL, &ret);
   if (ret)
     return ret;
   else
@@ -192,7 +191,11 @@ od_wm_get_winclass(Ecore_X_Window win)
 char           *
 od_wm_get_title(Ecore_X_Window win)
 {
-  char           *ret = ecore_x_window_prop_title_get(win);
+  char *ret;
+  
+  ecore_x_netwm_name_get(win, &ret);
+  if (!ret)
+    ret = ecore_x_icccm_title_get(win);
 
   if (ret)
     return ret;
@@ -274,7 +277,6 @@ od_sync_clients(void *data)
   char           *winclass = NULL;
   char            buf[32];
   OD_Window      *owd = NULL;
-  OD_Window      *owd_tmp = NULL;
   Evas_List      *dirty = NULL;
   Evas_List      *fresh = NULL;
   Evas_List      *item = NULL;
@@ -427,6 +429,8 @@ od_wm_ignored(Ecore_X_Window win)
   static char    *ignore[] = { "engage", "kicker", "trayer", "", NULL };
   char          **cur = ignore;
   char           *winclass = od_wm_get_winclass(win);
+  Ecore_X_Window_State *state, *tmp;
+  unsigned int num, counter;
 
   while (*cur) {
     if (strcmp(*cur, winclass) == 0)
@@ -434,8 +438,12 @@ od_wm_ignored(Ecore_X_Window win)
     cur++;
   }
 
-  if (ecore_x_window_prop_state_isset(win, ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
-    result = true;
+  ecore_x_netwm_window_state_get(win, &state, &num);
+  counter = 0;
+  for (tmp = state; counter < num; tmp++ && counter++)
+    if (*tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
+      result = true;
+
   if (winclass)
     free(winclass);
   return result;
@@ -452,5 +460,5 @@ void
 od_wm_deactivate_window(Ecore_X_Window win)
 {
   ecore_x_window_lower(win);
-  ecore_x_window_prop_state_request(win, ECORE_X_WINDOW_STATE_ICONIFIED, 1);
+  ecore_x_icccm_iconic_request_send(win, 0);
 }
