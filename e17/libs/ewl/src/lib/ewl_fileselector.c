@@ -568,6 +568,16 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 	return;
 }
 
+void
+ewl_fileselector_set_filter(Ewl_Fileselector *fs,
+					char *filter)
+{
+
+	fs->dfilter = filter;
+	ewl_fileselector_path_setup(fs, ewl_fileselector_path_get(fs));
+
+}
+
 /*
  * Internally used callbacks, override at your own risk.
  */

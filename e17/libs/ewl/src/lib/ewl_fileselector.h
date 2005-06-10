@@ -64,6 +64,8 @@ void		 ewl_fileselector_multiselect_set(Ewl_Fileselector *fs,
 unsigned int	 ewl_fileselector_multiselect_get(Ewl_Fileselector *fs);
 
 Ecore_List	*ewl_fileselector_select_list_get(Ewl_Fileselector *fs);
+void		ewl_fileselector_filter_set(Ewl_Fileselector *fs,
+							char *filter);
 
 /*
  * Internally used callbacks, override at your own risk.
