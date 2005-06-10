@@ -30,23 +30,23 @@ program {
    name: "playlist_scroll_down_start";
    source: "playlist_scrollbar_down";
    signal: "mouse,down,1";
-   action: SIGNAL_EMIT "playlist_scroll_down_start" "";
+   action: SIGNAL_EMIT "eclair_playlist_scroll_down_start" "";
 }
 program {
    name: "playlist_scroll_down_stop";
    source: "playlist_scrollbar_down";
    signal: "mouse,up,1";
-   action: SIGNAL_EMIT "playlist_scroll_down_stop" "";
+   action: SIGNAL_EMIT "eclair_playlist_scroll_down_stop" "";
 }
 program {
    name: "playlist_scroll_up_start";
    source: "playlist_scrollbar_up";
    signal: "mouse,down,1";
-   action: SIGNAL_EMIT "playlist_scroll_up_start" "";
+   action: SIGNAL_EMIT "eclair_playlist_scroll_up_start" "";
 }
 program {
    name: "playlist_scroll_up_stop";
    source: "playlist_scrollbar_up";
    signal: "mouse,up,1";
-   action: SIGNAL_EMIT "playlist_scroll_up_stop" "";
+   action: SIGNAL_EMIT "eclair_playlist_scroll_up_stop" "";
 }

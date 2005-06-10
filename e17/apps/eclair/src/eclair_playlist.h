@@ -21,6 +21,12 @@ void eclair_playlist_remove_selected_media_files(Eclair_Playlist *playlist);
 void eclair_playlist_remove_unselected_media_files(Eclair_Playlist *playlist);
 void eclair_playlist_empty(Eclair_Playlist *playlist);
 
+void eclair_playlist_set_shuffle(Eclair_Playlist *playlist, Evas_Bool shuffle);
+void eclair_playlist_reset_shuffle_list(Eclair_Playlist *playlist);
+
+Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist);
+Evas_List *eclair_playlist_get_prev_list(Eclair_Playlist *playlist);
+
 void eclair_playlist_current_set(Eclair_Playlist *playlist, Eclair_Media_File *media_file);
 void eclair_playlist_current_set_list(Eclair_Playlist *playlist, Evas_List *list);
 void eclair_playlist_prev_as_current(Eclair_Playlist *playlist);

@@ -7,6 +7,7 @@
 #include "../../config.h"
 
 #define EXTRACTION_DIR "wsz2edj_temp"
+#define MAX_LINE_SIZE 512
 
 //Build the dir. Return 0 if failed
 int make_dir(const char *dir)
@@ -54,7 +55,7 @@ int decompress_wsz(const char *filename, const char *destination_dir)
 }
 
 //Search a file recursively, ignoring case
-//Return NULL if not found
+//Return NULL if not found. Returned string has to be freed
 char *get_case_filename(const char *filename, const char *root_dir)
 {
    struct dirent **namelist;
@@ -104,7 +105,8 @@ int extract_image_part(const char *source_file, int x, int y, int w, int h, cons
    len = strlen("montage \"") + strlen(source_file) + strlen("\" -gravity NorthWest -transparent \"#d32b2b\" -crop ") +
       strlen(" -geometry ") + strlen(" -background none \"\"") + strlen(dest_file) + 50;
    command = malloc(len);
-   snprintf(command, len, "montage \"%s\" -gravity NorthWest -transparent \"#d32b2b\" -crop %dx%d+%d+%d -geometry %dx%d -background none \"%s\"",
+   // -transparent \"#d32b2b\"
+   snprintf(command, len, "montage \"%s\" -gravity NorthWest -crop %dx%d+%d+%d -geometry %dx%d -background none \"%s\"",
       source_file, w, h, x, y, w, h, dest_file);
    if (system(command) != 0)
    {
@@ -117,14 +119,93 @@ int extract_image_part(const char *source_file, int x, int y, int w, int h, cons
    return 1;
 }
 
+//Read the file containing the skin infos (pledit.txt) and write the interesting data to edje/defines.inc
+int read_skin_infos(const char *text_file)
+{
+   FILE *pledit_file, *header_file;
+   char line[MAX_LINE_SIZE];
+   char *value;
+   int r, g, b;
+   int selected_bg_color[4] = { 255, 255, 255, 0 };
+   int normal_bg_color[4] = { 128, 128, 128, 255 };
+   int normal_color[4] = { 0, 0, 0, 255 };
+   int current_color[4] = { 255, 255, 255, 0 };
+
+   if (!text_file)
+      return 0;
+
+   if (!(pledit_file = fopen(text_file, "rt")))
+   {
+      printf("Error: unable to open file \"%s\" for reading\n", text_file);
+      return 1;
+   }
+   if (!(header_file = fopen(EXTRACTION_DIR "/edje/header.inc", "wt")))
+   {
+      printf("Error: unable to open file \"" EXTRACTION_DIR "/edje/defines.inc\" for reading\n");
+      fclose(pledit_file);
+      return 1;
+   }
+
+   while (fgets(line, MAX_LINE_SIZE, pledit_file))
+   {
+      if (strncasecmp(line, "SelectedBG", 10) == 0 && (value = rindex(line, '#')) && sscanf(value, "#%2x%2x%2x", &r, &g, &b) == 3)
+      {
+         selected_bg_color[0] = r;
+         selected_bg_color[1] = g;
+         selected_bg_color[2] = b;
+         selected_bg_color[3] = 255;
+      }
+      else if (strncasecmp(line, "NormalBG", 8) == 0 && (value = rindex(line, '#')) && sscanf(value, "#%2x%2x%2x", &r, &g, &b) == 3)
+      {
+         normal_bg_color[0] = r;
+         normal_bg_color[1] = g;
+         normal_bg_color[2] = b;
+         normal_bg_color[3] = 255;
+      }
+      else if (strncasecmp(line, "Normal", 6) == 0 && (value = rindex(line, '#')) && sscanf(value, "#%2x%2x%2x", &r, &g, &b) == 3)
+      {
+         normal_color[0] = r;
+         normal_color[1] = g;
+         normal_color[2] = b;
+         normal_color[3] = 255;
+      }
+      else if (strncasecmp(line, "Current", 7) == 0 && (value = rindex(line, '#')) && sscanf(value, "#%2x%2x%2x", &r, &g, &b) == 3)
+      {
+         current_color[0] = r;
+         current_color[1] = g;
+         current_color[2] = b;
+         current_color[3] = 255;
+      }
+   }
+
+   fprintf(header_file, "#define SELECTED_BG_COLOR %d %d %d %d\n", selected_bg_color[0], selected_bg_color[1], selected_bg_color[2], selected_bg_color[3]);
+   fprintf(header_file, "#define PLAYLIST_BG_COLOR %d %d %d %d\n", normal_bg_color[0], normal_bg_color[1], normal_bg_color[2], normal_bg_color[3]);
+   fprintf(header_file, "#define ENTRY_COLOR %d %d %d %d\n", normal_color[0], normal_color[1], normal_color[2], normal_color[3]);
+   fprintf(header_file, "#define CURRENT_ENTRY_COLOR %d %d %d %d\n\n", current_color[0], current_color[1], current_color[2], current_color[3]);
+
+   fprintf(header_file, "data {\n");
+   fprintf(header_file, "   item: \"normal_entry_fg_color\" \"%d %d %d %d\";\n", normal_color[0], normal_color[1], normal_color[2], normal_color[3]);
+   fprintf(header_file, "   item: \"selected_entry_bg_color\" \"%d %d %d %d\";\n", selected_bg_color[0], selected_bg_color[1], selected_bg_color[2], selected_bg_color[3]);
+   fprintf(header_file, "   item: \"current_entry_fg_color\" \"%d %d %d %d\";\n", current_color[0], current_color[1], current_color[2], current_color[3]);
+   fprintf(header_file, "}\n");
+
+   fclose(pledit_file);
+   fclose(header_file);
+
+   return 1;
+}
+
 //Convert the skin!
 int main(int argc, char *argv[])
 {
    struct stat st;
    char *root_dir;
    char *image_file;
+   char *text_file;
    char *command;
+   char *volume_file;
    int extract_result;
+   int i;
 
    if (argc != 3)
    {
@@ -164,6 +245,7 @@ int main(int argc, char *argv[])
       return 1;
    }
    extract_result &= extract_image_part(image_file, 0, 0, 275, 116, EXTRACTION_DIR"/images/body.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/body.png", 71, 26, 5, 13, EXTRACTION_DIR"/images/num_separator.png");
    free(image_file);
 
    //cbuttons.bmp
@@ -251,10 +333,121 @@ int main(int argc, char *argv[])
       return 1;
    }
    extract_result &= extract_image_part(image_file, 0, 0, 68, 433, EXTRACTION_DIR"/images/volume.png");
-   extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 0, 0, 68, 13, EXTRACTION_DIR"/images/volume_bar.png");
+   volume_file = malloc(strlen(EXTRACTION_DIR"/images/volume_bar_.png") + 3);
+   for (i = 0; i < 28; i++)
+   {
+      sprintf(volume_file, EXTRACTION_DIR"/images/volume_bar_%d.png", i);
+      extract_result &= extract_image_part(image_file, 0, i * 15, 68, 13, volume_file);
+   }
+   free(volume_file);
    extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 15, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag.png");
    extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 0, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag_down.png");
    free(image_file);
+
+   //pledit.bmp
+   if (!(image_file = get_case_filename("pledit.bmp", root_dir)))
+   {
+      printf("Error: File \"%s\" is not a valid winamp skin: can\'t find file pledit.bmp\n", argv[1]);
+      free(root_dir);
+      return 1;
+   }
+   extract_result &= extract_image_part(image_file, 0, 0, 280, 186, EXTRACTION_DIR"/images/pledit.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 0, 25, 20, EXTRACTION_DIR"/images/playlist_top_left.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 26, 0, 100, 20, EXTRACTION_DIR"/images/playlist_title.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 127, 0, 25, 20, EXTRACTION_DIR"/images/playlist_top.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 153, 0, 25, 20, EXTRACTION_DIR"/images/playlist_top_right.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 72, 125, 38, EXTRACTION_DIR"/images/playlist_bottom_left.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 179, 0, 25, 38, EXTRACTION_DIR"/images/playlist_bottom.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 126, 72, 150, 38, EXTRACTION_DIR"/images/playlist_bottom_right.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 42, 25, 29, EXTRACTION_DIR"/images/playlist_left.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 26, 42, 25, 29, EXTRACTION_DIR"/images/playlist_right.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 52, 53, 8, 18, EXTRACTION_DIR"/images/playlist_scrollbar_drag.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 61, 53, 8, 18, EXTRACTION_DIR"/images/playlist_scrollbar_drag_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 52, 42, 9, 9, EXTRACTION_DIR"/images/playlist_close_down.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 62, 42, 9, 9, EXTRACTION_DIR"/images/playlist_shade_down.png");
+
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 48, 111, 3, 54, EXTRACTION_DIR"/images/playlist_add_border.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 111, 22, 18, EXTRACTION_DIR"/images/playlist_add_url_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 23, 111, 22, 18, EXTRACTION_DIR"/images/playlist_add_url_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 130, 22, 18, EXTRACTION_DIR"/images/playlist_add_dir_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 23, 130, 22, 18, EXTRACTION_DIR"/images/playlist_add_dir_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 0, 149, 22, 18, EXTRACTION_DIR"/images/playlist_add_file_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 23, 149, 22, 18, EXTRACTION_DIR"/images/playlist_add_file_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 100, 111, 3, 72, EXTRACTION_DIR"/images/playlist_remove_border.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 54, 111, 22, 18, EXTRACTION_DIR"/images/playlist_remove_all_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 77, 111, 22, 18, EXTRACTION_DIR"/images/playlist_remove_all_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 54, 130, 22, 18, EXTRACTION_DIR"/images/playlist_remove_unselected_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 77, 130, 22, 18, EXTRACTION_DIR"/images/playlist_remove_unselected_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 54, 149, 22, 18, EXTRACTION_DIR"/images/playlist_remove_selected_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 77, 149, 22, 18, EXTRACTION_DIR"/images/playlist_remove_selected_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 54, 168, 22, 18, EXTRACTION_DIR"/images/playlist_remove_misc_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 77, 168, 22, 18, EXTRACTION_DIR"/images/playlist_remove_misc_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 150, 111, 3, 54, EXTRACTION_DIR"/images/playlist_select_border.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 104, 111, 22, 18, EXTRACTION_DIR"/images/playlist_select_inverse_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 127, 111, 22, 18, EXTRACTION_DIR"/images/playlist_select_inverse_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 104, 130, 22, 18, EXTRACTION_DIR"/images/playlist_select_none_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 127, 130, 22, 18, EXTRACTION_DIR"/images/playlist_select_none_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 104, 149, 22, 18, EXTRACTION_DIR"/images/playlist_select_all_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 127, 149, 22, 18, EXTRACTION_DIR"/images/playlist_select_all_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 200, 111, 3, 54, EXTRACTION_DIR"/images/playlist_misc_border.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 154, 111, 22, 18, EXTRACTION_DIR"/images/playlist_misc_sort_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 177, 111, 22, 18, EXTRACTION_DIR"/images/playlist_misc_sort_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 154, 130, 22, 18, EXTRACTION_DIR"/images/playlist_misc_info_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 177, 130, 22, 18, EXTRACTION_DIR"/images/playlist_misc_info_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 154, 149, 22, 18, EXTRACTION_DIR"/images/playlist_misc_opts_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 177, 149, 22, 18, EXTRACTION_DIR"/images/playlist_misc_opts_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 250, 111, 3, 54, EXTRACTION_DIR"/images/playlist_playlist_border.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 204, 111, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_new_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 227, 111, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_new_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 204, 130, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_save_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 227, 130, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_save_on.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 204, 149, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_load_off.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/pledit.png", 227, 149, 22, 18, EXTRACTION_DIR"/images/playlist_playlist_load_on.png");
+   
+
+   free(image_file);
+
+   //nums_ex.bmp or numbers.bmp
+   if ((image_file = get_case_filename("nums_ex.bmp", root_dir)))
+   {
+      extract_result &= extract_image_part(image_file, 0, 0, 108, 13, EXTRACTION_DIR"/images/nums_ex.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 0, 0, 9, 13, EXTRACTION_DIR"/images/num_0.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 9, 0, 9, 13, EXTRACTION_DIR"/images/num_1.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 18, 0, 9, 13, EXTRACTION_DIR"/images/num_2.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 27, 0, 9, 13, EXTRACTION_DIR"/images/num_3.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 36, 0, 9, 13, EXTRACTION_DIR"/images/num_4.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 45, 0, 9, 13, EXTRACTION_DIR"/images/num_5.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 54, 0, 9, 13, EXTRACTION_DIR"/images/num_6.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 63, 0, 9, 13, EXTRACTION_DIR"/images/num_7.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 72, 0, 9, 13, EXTRACTION_DIR"/images/num_8.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 81, 0, 9, 13, EXTRACTION_DIR"/images/num_9.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 90, 0, 9, 13, EXTRACTION_DIR"/images/num_none.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/nums_ex.png", 99, 0, 9, 13, EXTRACTION_DIR"/images/num_minus.png");
+      free(image_file);
+   }
+   else if ((image_file = get_case_filename("numbers.bmp", root_dir)))
+   {
+      extract_result &= extract_image_part(image_file, 0, 0, 99, 13, EXTRACTION_DIR"/images/numbers.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 0, 0, 9, 13, EXTRACTION_DIR"/images/num_0.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 9, 0, 9, 13, EXTRACTION_DIR"/images/num_1.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 18, 0, 9, 13, EXTRACTION_DIR"/images/num_2.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 27, 0, 9, 13, EXTRACTION_DIR"/images/num_3.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 36, 0, 9, 13, EXTRACTION_DIR"/images/num_4.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 45, 0, 9, 13, EXTRACTION_DIR"/images/num_5.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 54, 0, 9, 13, EXTRACTION_DIR"/images/num_6.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 63, 0, 9, 13, EXTRACTION_DIR"/images/num_7.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 72, 0, 9, 13, EXTRACTION_DIR"/images/num_8.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 81, 0, 9, 13, EXTRACTION_DIR"/images/num_9.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 90, 0, 9, 13, EXTRACTION_DIR"/images/num_none.png");
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/numbers.png", 20, 6, 5, 1, EXTRACTION_DIR"/images/num_minus.png");
+      free(image_file);
+   }
+   else
+   {
+      printf("Error: File \"%s\" is not a valid winamp skin: can\'t find file num_ex.bmp or numbers.bmp\n", argv[1]);
+      free(root_dir);
+      return 1;
+   }
 
    if (!extract_result)
    {
@@ -267,7 +460,7 @@ int main(int argc, char *argv[])
 
 
    //Decompress the edc template
-   printf("Decompressing edc template\n");
+   printf("Decompressing edc template...\n");
    if (system("tar -xzf \"" PACKAGE_DATA_DIR "/wsz2edj/wsz2edj_edc.tar.gz\" -C \"" EXTRACTION_DIR "\"") != 0)
    {
       printf("Error: Unable to decompress the edc template \"" PACKAGE_DATA_DIR "/wsz2edj/wsz2edj_edc.tar.gz\"\n");
@@ -275,6 +468,18 @@ int main(int argc, char *argv[])
       return 1;
    }
    printf("Edc template decompressed\n\n");
+
+   //Read skin infos
+   printf("Reading skin infos...\n");
+   if (!(text_file = get_case_filename("pledit.txt", root_dir)))
+   {
+      printf("Error: File \"%s\" is not a valid winamp skin: can\'t find file pledit.txt\n", argv[1]);
+      free(root_dir);
+      return 1;
+   }
+   if (!read_skin_infos(text_file));
+   free(text_file);
+   printf("Skin infos read\n\n");
 
    //Compile the edje theme
    command = malloc(strlen("edje_cc -id \"" EXTRACTION_DIR "/images\" -fd \"" EXTRACTION_DIR "/edje/fonts\" \"" EXTRACTION_DIR "/edje/main.edc\" \"\"") +

@@ -1,20 +1,18 @@
 TODO list:
 
-* Use non blocking socket to close cover thread faster in case of Internet deconnection
+* Find a clean way to destroy cover thread to avoid freeze at exit in case of Internet deconnection
 * Store media files collection into a database (SqlLite3?) to perform fast search
 * improve behavior of fullscreen mode
-* fix some bugs of emotion (seek_thread close, wmv segv...)
+* fix some bugs of emotion (wmv segv...)
 * Add a visualisation system (need to modify emotion)
 * Add an audio equalizer system (need to modify emotion)
 * Allow vertical or horizontal progressbar, volumebar, ...
 * Support different encodings for subtitles
-* Why is it so slow to scan id3 tag?
 * FIX default theme bug which happens if we open the playlist panel at startup:
    "EDJE ERROR: Circular dependency when calculating part "playlist_background"
             Already calculating XY [03] axes
             Need to calculate XY [03] axes"
-* Allow themes to have separated playlist, non shaded window, or to "swallow" the video object 
-* Make a converter to convert Winamp2 themes to edj [In Progress]
+* Allow themes to "swallow" the video object
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj

@@ -29,6 +29,7 @@ typedef struct _Eclair_Dialogs_Manager Eclair_Dialogs_Manager;
 typedef struct _Eclair_Playlist_Container Eclair_Playlist_Container;
 typedef struct _Eclair_Playlist_Container_Object Eclair_Playlist_Container_Object;
 typedef struct _Eclair_Color Eclair_Color;
+typedef struct _Eclair_Window Eclair_Window;
 
 struct _Eclair_Color
 {
@@ -64,6 +65,8 @@ struct _Eclair_Playlist_Container
    //Theme vars
    char *entry_theme_path;
    int entry_height;
+   Eclair_Color normal_entry_bg_color;
+   Eclair_Color normal_entry_fg_color;
    Eclair_Color selected_entry_bg_color;
    Eclair_Color selected_entry_fg_color;
    Eclair_Color current_entry_bg_color;
@@ -130,6 +133,7 @@ struct _Eclair_Cover_Manager
    Evas_List *cover_files_to_treat;
    Evas_List *not_in_amazon_db;
 
+   Evas_Bool cover_should_treat_files;
    Evas_Bool cover_delete_thread;
    pthread_cond_t cover_cond;
    pthread_mutex_t cover_mutex;
@@ -144,6 +148,7 @@ struct _Eclair_Meta_Tag_Manager
    Evas_List *meta_tag_files_to_add;
    Evas_List *meta_tag_files_to_scan;
 
+   Evas_Bool meta_tag_should_scan_files;
    Evas_Bool meta_tag_delete_thread;
    pthread_cond_t meta_tag_cond;
    pthread_mutex_t meta_tag_mutex;
@@ -166,17 +171,19 @@ struct _Eclair_Media_File
    int bitrate;
    int samplerate;
 
+   Evas_List *shuffle_node;
    Eclair_Playlist_Container_Object *container_object;
-   char selected : 1;
-   char in_meta_tag_process : 1;
-   char in_cover_process : 1;
-   char delete_me : 1;
+   unsigned char selected : 1;
+   unsigned char in_meta_tag_process : 1;
+   unsigned char in_cover_process : 1;
+   unsigned char delete_me : 1;
 };
 
 struct _Eclair_Playlist
 {
    Evas_List *playlist;
    Evas_List *current;
+   Evas_List *shuffle_list;
    Evas_List *removed_media_files;
    Evas_Bool shuffle;
    Evas_Bool repeat;
@@ -217,6 +224,28 @@ enum _Eclair_Drop_Object
    ECLAIR_DROP_PLAYLIST
 };
 
+struct _Eclair_Window
+{
+   Ecore_X_Window x_window;
+   Ecore_Evas *ecore_window;
+   Evas *evas;
+   Evas_Object *edje_object;
+   Evas_Object *draggies;
+   Evas_Coord min_width;
+   Evas_Coord min_height;
+   Evas_Coord max_width;
+   Evas_Coord max_height;
+   char *window_name;
+   int x, y;
+   Eclair *eclair;
+
+   unsigned char should_resize : 1;
+   unsigned char borderless : 1;
+   unsigned char shaded : 1;
+   unsigned char resizable : 1;
+   unsigned char main_window : 1;
+};
+
 struct _Eclair
 {
    //Video related vars
@@ -228,20 +257,22 @@ struct _Eclair
    pthread_t video_create_thread;
 
    //Gui related vars
-   Ecore_X_Window gui_x_window;
-   Ecore_Evas *gui_window;
-   Evas_Object *gui_object;
-   Evas_Object *gui_draggies;
-   Evas_Object *gui_previous_cover;
-   Evas_Object *gui_cover;
+   Eclair_Window *gui_window;
+   Eclair_Window *playlist_window;
+   Eclair_Window *cover_window;
    Evas_Object *playlist_container;
-   int playlist_entry_height;
-   double seek_to_pos;
+   Eclair_Window *playlist_container_owner;
+   Evas_Object *previous_cover;
+   Evas_Object *cover;
+   Eclair_Window *cover_owner;
+
    Evas_Bool use_progress_bar_drag_for_time;
    Evas_Bool dont_update_progressbar;
-   Eclair_Engine gui_engine;
    char *gui_theme_file;
-   Eclair_Drop_Object gui_drop_object;
+   int playlist_entry_height;
+   Eclair_Engine gui_engine;
+   Eclair_Drop_Object drop_object;
+   Eclair_Window *drop_window;
 
    //Core vars
    Eclair_State state;
@@ -252,6 +283,7 @@ struct _Eclair
    Eclair_Cover_Manager cover_manager;
    Eclair_Config config;
    Evas_Bool start_playing;
+   double seek_to_pos;
 
    //Arguments
    int *argc;

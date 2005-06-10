@@ -19,6 +19,7 @@ void eclair_meta_tag_init(Eclair_Meta_Tag_Manager *meta_tag_manager, Eclair *ecl
    meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
    meta_tag_manager->meta_tag_files_to_add = NULL;
    meta_tag_manager->meta_tag_files_to_scan = NULL;
+   meta_tag_manager->meta_tag_should_scan_files = 0;
    meta_tag_manager->meta_tag_delete_thread = 0;
    pthread_cond_init(&meta_tag_manager->meta_tag_cond, NULL);
    pthread_mutex_init(&meta_tag_manager->meta_tag_mutex, NULL);
@@ -50,6 +51,7 @@ void eclair_meta_tag_add_file_to_scan(Eclair_Meta_Tag_Manager *meta_tag_manager,
    meta_tag_manager->meta_tag_add_state = ECLAIR_ADDING_FILE_TO_ADD;
    meta_tag_manager->meta_tag_files_to_add = evas_list_append(meta_tag_manager->meta_tag_files_to_add, media_file);
    meta_tag_manager->meta_tag_add_state = ECLAIR_IDLE;
+   meta_tag_manager->meta_tag_should_scan_files = 1;
    pthread_cond_broadcast(&meta_tag_manager->meta_tag_cond);
 }
 
@@ -106,7 +108,10 @@ static void *_eclair_meta_tag_thread(void *param)
    pthread_mutex_lock(&meta_tag_manager->meta_tag_mutex);
    for (;;)
    {
-      pthread_cond_wait(&meta_tag_manager->meta_tag_cond, &meta_tag_manager->meta_tag_mutex);
+      if (meta_tag_manager->meta_tag_should_scan_files || meta_tag_manager->meta_tag_delete_thread)
+         meta_tag_manager->meta_tag_should_scan_files = 0;
+      else
+         pthread_cond_wait(&meta_tag_manager->meta_tag_cond, &meta_tag_manager->meta_tag_mutex);
       while (meta_tag_manager->meta_tag_files_to_scan || meta_tag_manager->meta_tag_files_to_add || meta_tag_manager->meta_tag_delete_thread)
       {
          if (meta_tag_manager->meta_tag_delete_thread)

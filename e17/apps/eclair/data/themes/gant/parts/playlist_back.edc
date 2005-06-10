@@ -187,7 +187,7 @@ part {
    }
 }
 part {
-   name: "playlist_scrollbar_button";
+   name: "playlist_scrollbar_drag";
    dragable {
       confine: "playlist_scrollbar_confine";
       x: 0 0 0;

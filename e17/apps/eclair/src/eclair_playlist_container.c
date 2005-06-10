@@ -58,7 +58,7 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
    Evas_Object *entry;
    Evas_Coord entry_height;
    char *color_string;
-   Eclair_Color *color;
+   Eclair_Color *color, *color2;
 
    if (!obj || !(playlist_container = evas_object_smart_data_get(obj)))
       return;
@@ -71,26 +71,76 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
    edje_object_size_min_get(entry, NULL, &entry_height);
    playlist_container->entry_height = (int)entry_height;
 
+   //Load color values
+   color = &playlist_container->normal_entry_bg_color;
+   color_string = edje_file_data_get(entry_theme_path, "normal_entry_bg_color");
+   if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
+   {
+      color->r = 255;
+      color->g = 255;
+      color->b = 255;
+      color->a = 0;
+   }
+   free(color_string);
+
+   color = &playlist_container->normal_entry_fg_color;
+   color_string = edje_file_data_get(entry_theme_path, "normal_entry_fg_color");
+   if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
+   {
+      color->r = 255;
+      color->g = 255;
+      color->b = 255;
+      color->a = 255;
+   }
+   free(color_string);
+
    color = &playlist_container->selected_entry_bg_color;
+   color2 = &playlist_container->normal_entry_bg_color;
    color_string = edje_file_data_get(entry_theme_path, "selected_entry_bg_color");
    if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
-   {   color->r = 255; color->g = 255; color->b = 255; color->a = 0; }
+   {
+      color->r = color2->r;
+      color->g = color2->g;
+      color->b = color2->b;
+      color->a = color2->a;
+   }
+   free(color_string);
 
    color = &playlist_container->selected_entry_fg_color;
+   color2 = &playlist_container->normal_entry_fg_color;
    color_string = edje_file_data_get(entry_theme_path, "selected_entry_fg_color");
    if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
-   {   color->r = 255; color->g = 255; color->b = 255; color->a = 255; }
+   {
+      color->r = color2->r;
+      color->g = color2->g;
+      color->b = color2->b;
+      color->a = color2->a;
+   }
+   free(color_string);
 
    color = &playlist_container->current_entry_bg_color;
+   color2 = &playlist_container->normal_entry_bg_color;
    color_string = edje_file_data_get(entry_theme_path, "current_entry_bg_color");
    if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
-   {   color->r = 255; color->g = 255; color->b = 255; color->a = 0; }
+   {
+      color->r = color2->r;
+      color->g = color2->g;
+      color->b = color2->b;
+      color->a = color2->a;
+   }
+   free(color_string);
 
    color = &playlist_container->current_entry_fg_color;
+   color2 = &playlist_container->normal_entry_fg_color;
    color_string = edje_file_data_get(entry_theme_path, "current_entry_fg_color");
    if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
-   {   color->r = 255; color->g = 255; color->b = 255; color->a = 255; }
-
+   {
+      color->r = color2->r;
+      color->g = color2->g;
+      color->b = color2->b;
+      color->a = color2->a;
+   }
+   free(color_string);
 
    evas_object_del(entry);
    eclair_playlist_container_update(obj);
@@ -747,16 +797,18 @@ static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord
          entry = malloc(sizeof(Eclair_Playlist_Container_Object));
          entry->rect = evas_object_rectangle_add(evas);
          evas_object_clip_set(entry->rect, playlist_container->clip);
-         evas_object_event_callback_add(entry->rect, EVAS_CALLBACK_MOUSE_DOWN, eclair_gui_entry_down_cb, playlist_container->eclair);
+         evas_object_event_callback_add(entry->rect, EVAS_CALLBACK_MOUSE_DOWN, eclair_playlist_container_entry_down_cb, playlist_container->eclair);
          evas_object_repeat_events_set(entry->rect, 1);
          evas_object_smart_member_add(entry->rect, obj);
+         evas_object_stack_above(entry->rect, obj);
 
          entry->text = edje_object_add(evas);
          edje_object_file_set(entry->text, playlist_container->entry_theme_path, "eclair_playlist_entry");
          evas_object_clip_set(entry->text, playlist_container->clip);
          evas_object_repeat_events_set(entry->text, 1);
-         evas_object_event_callback_add(entry->text, EVAS_CALLBACK_MOUSE_DOWN, eclair_gui_entry_down_cb, playlist_container->eclair);
+         evas_object_event_callback_add(entry->text, EVAS_CALLBACK_MOUSE_DOWN, eclair_playlist_container_entry_down_cb, playlist_container->eclair);
          evas_object_smart_member_add(entry->text, obj);
+         evas_object_stack_above(entry->text, entry->rect);
          playlist_container->entry_objects = evas_list_append(playlist_container->entry_objects, entry);
       }
       while(evas_list_count(playlist_container->entry_objects) > num_entries)

@@ -49,7 +49,7 @@ fonts {
 }
 collections {
    group {
-      name: "eclair_body";
+      name: "eclair_main_body";
       //591
       min: 438 260;
       max: 438 260;

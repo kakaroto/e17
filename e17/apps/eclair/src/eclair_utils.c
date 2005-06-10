@@ -18,7 +18,6 @@ void eclair_utils_second_to_string(double position, double length, char *string)
 
 //TODO:
 /*srand((unsigned int)time(NULL));
-return (int)((float)rand() / (float)RAND_MAX * (Max - Min) + 0.5f) + Min;
 return (float)rand() / (float)RAND_MAX * (Max - Min) + Min;
 */
 
@@ -146,4 +145,10 @@ char *eclair_utils_file_get_filename_without_ext(char *file)
       *ext_start = 0;
 
    return file_without_ext;
+}
+
+//TODO:
+int eclair_utils_get_random_int(int min, int max)
+{
+   return (int)(((float)rand() / RAND_MAX) * (max - min) + 0.5f) + min;
 }

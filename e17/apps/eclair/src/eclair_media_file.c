@@ -92,8 +92,10 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
          }
          else
          {
-            evas_object_color_set(container_object->rect, 255, 255, 255, 0);
-            evas_object_color_set(container_object->text, 255, 255, 255, 255);
+            color = &playlist_container->normal_entry_bg_color;
+            evas_object_color_set(container_object->rect, color->r, color->g, color->b, color->a);
+            color = &playlist_container->normal_entry_fg_color;
+            evas_object_color_set(container_object->text, color->r, color->g, color->b, color->a);
          }
       }
    }

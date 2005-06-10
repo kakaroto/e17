@@ -9,6 +9,8 @@ void eclair_shutdown(Eclair *eclair);
 void eclair_update(Eclair *eclair);
 void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_update);
 void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool force_cover_update);
+void eclair_send_signal_to_all_windows(Eclair *eclair, const char *signal);
+void eclair_all_windows_text_set(Eclair *eclair, const char *field_name, const char *text);
 
 //navigation functions
 void eclair_play_file(Eclair *eclair, const char *path);

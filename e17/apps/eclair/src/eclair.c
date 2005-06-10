@@ -19,10 +19,16 @@
 #include "eclair_config.h"
 #include "eclair_args.h"
 #include "eclair_dialogs.h"
+#include "eclair_window.h"
 
 static void *_eclair_create_video_object_thread(void *param);
-static void _eclair_gui_create_window(Eclair *eclair);
-static void _eclair_video_create_window(Eclair *eclair);
+static Evas_Bool _eclair_create_gui_window(Eclair *eclair);
+static Evas_Bool _eclair_create_playlist_window(Eclair *eclair);
+static Evas_Bool _eclair_create_cover_window(Eclair *eclair);
+static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window);
+static Evas_Bool _eclair_create_cover_object(Eclair *eclair, Eclair_Window *window);
+static void _eclair_add_inter_windows_callbacks(Eclair *eclair);
+static void _eclair_create_video_window(Eclair *eclair);
 static void _eclair_sig_pregest();
 static void _eclair_on_segv(int num);
 
@@ -47,28 +53,39 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->black_background = NULL;
    eclair->subtitles_object = NULL;
    eclair->gui_window = NULL;
-   eclair->gui_object = NULL;
-   eclair->gui_draggies = NULL;
-   eclair->gui_cover = NULL;
-   eclair->gui_previous_cover = NULL;
+   eclair->cover = NULL;
+   eclair->previous_cover = NULL;
+   eclair->playlist_window = NULL;
    eclair->playlist_container = NULL;
+   eclair->playlist_container_owner = NULL;
    eclair->playlist_entry_height = -1;
+   eclair->cover_window = NULL;
+   eclair->cover_owner = NULL;   
    eclair->state = ECLAIR_STOP;
    eclair->seek_to_pos = -1.0;
    eclair->use_progress_bar_drag_for_time = 0;
    eclair->dont_update_progressbar = 0;
-   eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->gui_engine = ECLAIR_SOFTWARE;
    eclair->gui_theme_file = strdup(PACKAGE_DATA_DIR "/themes/default.edj");
-   eclair->gui_drop_object = ECLAIR_DROP_NONE;
+   eclair->drop_object = ECLAIR_DROP_NONE;
+   eclair->drop_window = NULL;
+   eclair->video_engine = ECLAIR_SOFTWARE;
    eclair->start_playing = 0;
 
    if (!eclair_args_parse(eclair, &filenames))
       return 0;
 
    eclair_config_init(&eclair->config);
-   _eclair_gui_create_window(eclair);
-   _eclair_video_create_window(eclair);
+   if (!_eclair_create_gui_window(eclair))
+   {
+      eclair_config_shutdown(&eclair->config);
+      fprintf(stderr, "Error: Unable to create the gui window\n");
+      return 0;
+   }
+   _eclair_create_playlist_window(eclair);
+   _eclair_create_cover_window(eclair);
+   _eclair_create_video_window(eclair);
+   _eclair_add_inter_windows_callbacks(eclair);
    eclair_dialogs_init(&eclair->dialogs_manager, eclair);
    eclair_playlist_init(&eclair->playlist, eclair);
    eclair_playlist_container_set_media_list(eclair->playlist_container, &eclair->playlist.playlist);
@@ -85,13 +102,13 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
       eclair_playlist_container_update(eclair->playlist_container);
    }
    else
-      eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 0, 0);
+      eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 1, 0);
 
-   ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_gui_dnd_position_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_gui_dnd_drop_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_gui_dnd_selection_cb, eclair);
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_dnd_position_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_dnd_drop_cb, eclair);
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_dnd_selection_cb, eclair);
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, eclair_mouse_up_cb, eclair);
-   edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", 1.0, 0.0);
+   edje_object_part_drag_value_set(eclair->gui_window->edje_object, "volume_bar_drag", 1.0, 0.0);
 
    return 1;
 }
@@ -101,13 +118,9 @@ void eclair_shutdown(Eclair *eclair)
 {
    if (eclair)
    {
-      if (eclair->gui_window)
-      {
-         int gui_x, gui_y;
-         ecore_evas_geometry_get(eclair->gui_window, &gui_x, &gui_y, NULL, NULL);
-         eclair_config_set_prop_int(&eclair->config, "gui_window", "x", gui_x);
-         eclair_config_set_prop_int(&eclair->config, "gui_window", "y", gui_y);
-      }
+      eclair_window_del(eclair->gui_window);
+      eclair_window_del(eclair->playlist_window);
+      eclair_window_del(eclair->cover_window);
 
       fprintf(stderr, "Eclair: Debug: Destroying create video object thread\n");
       pthread_join(eclair->video_create_thread, NULL); 
@@ -140,25 +153,25 @@ void eclair_update(Eclair *eclair)
    //Display subtitles
    eclair_subtitles_display_current_subtitle(&eclair->subtitles, eclair_position_get(eclair), eclair->subtitles_object);
 
-   if (!eclair->video_object || !eclair->gui_object)
+   if (!eclair->video_object || !eclair->gui_window)
       return;
 
    //Update time text
    length = emotion_object_play_length_get(eclair->video_object);
    if (eclair->use_progress_bar_drag_for_time)
    {
-      edje_object_part_drag_value_get(eclair->gui_object, "progress_bar_drag", &position, NULL);
+      edje_object_part_drag_value_get(eclair->gui_window->edje_object, "progress_bar_drag", &position, NULL);
       position *= length;
    }
    eclair_utils_second_to_string(position, length, time_elapsed);
-   edje_object_part_text_set(eclair->gui_object, "time_elapsed", time_elapsed);
+   eclair_all_windows_text_set(eclair, "time_elapsed", time_elapsed);
 
    //Update progress bar
    if (eclair->dont_update_progressbar)
       eclair->dont_update_progressbar = 0;
    else if (eclair->seek_to_pos >= 0.0)
       eclair->seek_to_pos = -1.0;
-   edje_object_part_drag_value_set(eclair->gui_object, "progress_bar_drag", position / length, 0.0);
+   edje_object_part_drag_value_set(eclair->gui_window->edje_object, "progress_bar_drag", position / length, 0.0);
 }
 
 //Update the gui infos about the current media file
@@ -175,53 +188,51 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
 
    current_file = eclair_playlist_current_media_file(&eclair->playlist);
 
-   if (eclair->gui_object)
+   //Update the name of the current file only if video is created 
+   if (eclair->video_object)
    {
-      //Update the name of the current file only if video is created 
-      if (eclair->video_object)
-      {
-         if (current_file)
-         {
-            if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(current_file)))
-            {
-               edje_object_part_text_set(eclair->gui_object, "current_media_name", artist_title_string);
-               free(artist_title_string);
-            }
-            else if (current_file->path && strstr(current_file->path, "://"))
-               edje_object_part_text_set(eclair->gui_object, "current_media_name", current_file->path);
-            else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
-               edje_object_part_text_set(eclair->gui_object, "current_media_name", filename);
-            else
-               edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
-         }
-         else
-            edje_object_part_text_set(eclair->gui_object, "current_media_name", "No media opened");
-      }
-      //Update current media file data
       if (current_file)
       {
-         if (current_file->samplerate > 0)
+         if ((artist_title_string = eclair_utils_mediafile_to_artist_title_string(current_file)))
          {
-            snprintf(string, 10, "%d", current_file->samplerate / 1000);
-            edje_object_part_text_set(eclair->gui_object, "samplerate", string);
+            eclair_all_windows_text_set(eclair, "current_media_name", artist_title_string);
+            free(artist_title_string);
          }
+         else if (current_file->path && strstr(current_file->path, "://"))
+            eclair_all_windows_text_set(eclair, "current_media_name", current_file->path);
+         else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
+            eclair_all_windows_text_set(eclair, "current_media_name", filename);
          else
-            edje_object_part_text_set(eclair->gui_object, "samplerate", "-");
-
-         if (current_file->bitrate > 0)
-         {
-            snprintf(string, 10, "%d", current_file->bitrate);
-            edje_object_part_text_set(eclair->gui_object, "bitrate", string);
-         }
-         else
-            edje_object_part_text_set(eclair->gui_object, "bitrate", "-");
+            eclair_all_windows_text_set(eclair, "current_media_name", "No media opened");
       }
       else
-      {
-         edje_object_part_text_set(eclair->gui_object, "samplerate", "-");
-         edje_object_part_text_set(eclair->gui_object, "bitrate", "-");
-      }
+         eclair_all_windows_text_set(eclair, "current_media_name", "No media opened");
    }
+   //Update current media file data
+   if (current_file)
+   {
+      if (current_file->samplerate > 0)
+      {
+         snprintf(string, 10, "%d", current_file->samplerate / 1000);
+         eclair_all_windows_text_set(eclair, "samplerate", string);
+      }
+      else
+         eclair_all_windows_text_set(eclair, "samplerate", "-");
+
+      if (current_file->bitrate > 0)
+      {
+         snprintf(string, 10, "%d", current_file->bitrate);
+         eclair_all_windows_text_set(eclair, "bitrate", string);
+      }
+      else
+         eclair_all_windows_text_set(eclair, "bitrate", "-");
+   }
+   else
+   {
+      eclair_all_windows_text_set(eclair, "samplerate", "-");
+      eclair_all_windows_text_set(eclair, "bitrate", "-");
+   }
+   
 
    //Update the title of the video window
    if (eclair->video_window)
@@ -255,50 +266,77 @@ void eclair_gui_cover_set(Eclair *eclair, const char *cover_path, Evas_Bool forc
 {
    char *current_path;
 
-   if (!eclair || !eclair->gui_object || !eclair->gui_cover)
+   if (!eclair || !eclair->cover_owner || !eclair->cover)
       return;
 
    current_path = NULL;
-   evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
+   evas_object_image_file_get(eclair->cover, &current_path, NULL);
    if (!current_path && !cover_path)
       return;
    if (!force_cover_update && current_path && cover_path && (strcmp(current_path, cover_path) == 0))
       return;
 
-   if (eclair->gui_previous_cover)
+   if (eclair->previous_cover)
    {
       Evas_Object *tmp;
 
-      edje_object_part_unswallow(eclair->gui_object, eclair->gui_cover);
-      edje_object_part_unswallow(eclair->gui_object, eclair->gui_previous_cover);
-      tmp = eclair->gui_previous_cover;
-      eclair->gui_previous_cover = eclair->gui_cover;
-      eclair->gui_cover = tmp;
-      edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
-      edje_object_part_swallow(eclair->gui_object, "previous_cover", eclair->gui_previous_cover);
+      edje_object_part_unswallow(eclair->cover_owner->edje_object, eclair->cover);
+      edje_object_part_unswallow(eclair->cover_owner->edje_object, eclair->previous_cover);
+      tmp = eclair->previous_cover;
+      eclair->previous_cover = eclair->cover;
+      eclair->cover = tmp;
+      edje_object_part_swallow(eclair->cover_owner->edje_object, "cover", eclair->cover);
+      edje_object_part_swallow(eclair->cover_owner->edje_object, "previous_cover", eclair->previous_cover);
    }
 
-   evas_object_image_file_set(eclair->gui_cover, cover_path, NULL);
+   evas_object_image_file_set(eclair->cover, cover_path, NULL);
    //TODO: evas_object_image_reload bug? need to do two reloads to really reload the image?!
    if (current_path && cover_path && (strcmp(current_path, cover_path) == 0))
    {
-      evas_object_image_reload(eclair->gui_cover);
-      evas_object_image_reload(eclair->gui_cover);
+      evas_object_image_reload(eclair->cover);
+      evas_object_image_reload(eclair->cover);
    }
    if (cover_path)
    {
-      edje_object_signal_emit(eclair->gui_object, "signal_cover_set", "eclair_bin");
-      evas_object_show(eclair->gui_cover);
+      edje_object_signal_emit(eclair->cover_owner->edje_object, "signal_cover_set", "eclair_bin");
+      evas_object_show(eclair->cover);
    }
    else
    {
-      edje_object_signal_emit(eclair->gui_object, "signal_cover_unset", "eclair_bin");
-      evas_object_hide(eclair->gui_cover);
+      edje_object_signal_emit(eclair->cover_owner->edje_object, "signal_cover_unset", "eclair_bin");
+      evas_object_hide(eclair->cover);
    }
-
-   evas_object_image_file_get(eclair->gui_cover, &current_path, NULL);
-   evas_object_image_file_get(eclair->gui_previous_cover, &current_path, NULL);
 }
+
+//Send a signal to the edje object of all the windows
+void eclair_send_signal_to_all_windows(Eclair *eclair, const char *signal)
+{
+   if (!eclair || !signal)
+      return;
+
+   if (eclair->gui_window)
+      edje_object_signal_emit(eclair->gui_window->edje_object, signal, "eclair_bin");
+   if (eclair->playlist_window)
+      edje_object_signal_emit(eclair->playlist_window->edje_object, signal, "eclair_bin");
+   if (eclair->cover_window)
+      edje_object_signal_emit(eclair->cover_window->edje_object, signal, "eclair_bin");
+}
+
+//Set the text value of a field for all the windows
+void eclair_all_windows_text_set(Eclair *eclair, const char *field_name, const char *text)
+{
+   if (!eclair || !field_name || !text)
+      return;
+
+   if (eclair->gui_window)
+      edje_object_part_text_set(eclair->gui_window->edje_object, field_name, text);
+   if (eclair->playlist_window)
+      edje_object_part_text_set(eclair->playlist_window->edje_object, field_name, text);
+   if (eclair->cover_window)
+      edje_object_part_text_set(eclair->cover_window->edje_object, field_name, text);
+}
+
+//TODO: drag_get and and drag_set all windows
 
 //Play a new file
 void eclair_play_file(Eclair *eclair, const char *path)
@@ -382,7 +420,7 @@ void eclair_pause(Eclair *eclair)
       return;
 
    emotion_object_play_set(eclair->video_object, 0);
-   edje_object_signal_emit(eclair->gui_object, "signal_pause", "eclair_bin");
+   eclair_send_signal_to_all_windows(eclair, "signal_pause");
    eclair->state = ECLAIR_PAUSE;
 }
 
@@ -402,8 +440,7 @@ void eclair_play(Eclair *eclair)
    if (eclair->state == ECLAIR_PAUSE)
    {
       emotion_object_play_set(eclair->video_object, 1);
-      if (eclair->gui_object)
-         edje_object_signal_emit(eclair->gui_object, "signal_play", "eclair_bin");
+      eclair_send_signal_to_all_windows(eclair, "signal_play");
       eclair->state = ECLAIR_PLAYING;
    }
    else if (eclair->state == ECLAIR_STOP)
@@ -422,11 +459,8 @@ void eclair_stop(Eclair *eclair)
       eclair_progress_rate_set(eclair, 0.0);
    }
    
-   if (eclair->gui_object)
-   {
-      edje_object_part_text_set(eclair->gui_object, "time_elapsed", "0:00");
-      edje_object_signal_emit(eclair->gui_object, "signal_stop", "eclair_bin");
-   }
+   eclair_all_windows_text_set(eclair, "time_elapsed", "0:00");
+   eclair_send_signal_to_all_windows(eclair, "signal_stop");
    
    if (eclair->video_window)
       ecore_evas_hide(eclair->video_window);
@@ -440,10 +474,15 @@ void eclair_audio_level_set(Eclair *eclair, double audio_level)
    if (!eclair)
       return;
 
+      if (audio_level < 0.0)
+         audio_level = 0.0;
+      else if (audio_level > 1.0)
+         audio_level = 1.0;
+
    if (eclair->video_object)
       emotion_object_audio_volume_set(eclair->video_object, audio_level);
-   if (eclair->gui_object)
-      edje_object_part_drag_value_set(eclair->gui_object, "volume_bar_drag", audio_level, 0);
+   if (eclair->gui_window)
+      edje_object_part_drag_value_set(eclair->gui_window->edje_object, "volume_bar_drag", audio_level, 0);
 }
 
 //Get the media progress rate
@@ -494,105 +533,61 @@ void eclair_position_set(Eclair *eclair, double position)
    emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
 }
 
-//Create the gui window and load the interface
-static void _eclair_gui_create_window(Eclair *eclair)
+//Create the gui window and load the edje theme
+static Evas_Bool _eclair_create_gui_window(Eclair *eclair)
 {
-   Evas *evas;
-   Evas_Coord gui_width, gui_height;
-   int gui_x, gui_y;
-   Evas_Coord cover_width, cover_height;
-
    if (!eclair)
-      return;
+      return 0;
 
-   if (eclair->gui_engine == ECLAIR_GL)
+   if ((eclair->gui_window = eclair_window_create(eclair->gui_theme_file, "main", "eclair", eclair->gui_engine, eclair, 1)))
    {
-      eclair->gui_window = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 32, 32);
-      eclair->gui_x_window = ecore_evas_gl_x11_window_get(eclair->gui_window);
-   }
-   else
-   {
-      eclair->gui_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 32, 32);
-      eclair->gui_x_window = ecore_evas_software_x11_window_get(eclair->gui_window);
-   }
-   ecore_evas_title_set(eclair->gui_window, "eclair");
-   ecore_evas_name_class_set(eclair->gui_window, "eclair", "eclair");
-   ecore_evas_borderless_set(eclair->gui_window, 1);
-   ecore_evas_shaped_set(eclair->gui_window, 1);
-   ecore_evas_show(eclair->gui_window);
-
-   eclair->gui_x_window = ecore_evas_software_x11_window_get(eclair->gui_window);
-	ecore_x_dnd_aware_set(eclair->gui_x_window, 1);
-	ecore_x_dnd_type_set(eclair->gui_x_window, "*", 1);
-
-   evas = ecore_evas_get(eclair->gui_window);
-   eclair->gui_object = edje_object_add(evas);
-   edje_object_file_set(eclair->gui_object, eclair->gui_theme_file, "eclair_body");
-   edje_object_size_min_get(eclair->gui_object, &gui_width, &gui_height);
-   evas_object_resize(eclair->gui_object, (int)gui_width, (int)gui_height);
-   evas_object_show(eclair->gui_object);
-   ecore_evas_resize(eclair->gui_window, (int)gui_width, (int)gui_height);
-   if (eclair_config_get_prop_int(&eclair->config, "gui_window", "x", &gui_x) &&
-      eclair_config_get_prop_int(&eclair->config, "gui_window", "y", &gui_y))
-      ecore_evas_move(eclair->gui_window, gui_x, gui_y);
-   else
-      ecore_evas_move(eclair->gui_window, 0, 0);
-
-   eclair->gui_draggies = esmart_draggies_new(eclair->gui_window);
-   esmart_draggies_button_set(eclair->gui_draggies, 1);
-   evas_object_move(eclair->gui_draggies, 0, 0);
-   evas_object_resize (eclair->gui_draggies, gui_width, gui_height);
-   evas_object_layer_set (eclair->gui_draggies, -1);
-   evas_object_show(eclair->gui_draggies);
-
-   if (edje_object_part_exists(eclair->gui_object, "playlist_container"))
-   {
-      eclair->playlist_container = eclair_playlist_container_object_add(evas, eclair);
-      eclair_playlist_container_set_entry_theme_path(eclair->playlist_container, eclair->gui_theme_file);
-      edje_object_part_swallow(eclair->gui_object, "playlist_container", eclair->playlist_container);
-      evas_object_event_callback_add(eclair->playlist_container, EVAS_CALLBACK_MOUSE_WHEEL, eclair_gui_playlist_container_wheel_cb, eclair);
-      evas_object_smart_callback_add(eclair->playlist_container, "eclair_playlist_container_scroll_percent_changed", eclair_gui_playlist_container_scroll_percent_changed, eclair);
-      evas_object_show(eclair->playlist_container);
-   }
-   if (edje_object_part_exists(eclair->gui_object, "cover"))
-   {
-      eclair->gui_cover = evas_object_image_add(evas);
-      edje_object_part_swallow(eclair->gui_object, "cover", eclair->gui_cover);
-      edje_object_part_geometry_get(eclair->gui_object, "cover", NULL, NULL, &cover_width, &cover_height);
-      evas_object_image_fill_set(eclair->gui_cover, 0, 0, cover_width, cover_height);
-      evas_object_hide(eclair->gui_cover);
-   }
-   if (edje_object_part_exists(eclair->gui_object, "previous_cover"))
-   {
-      eclair->gui_previous_cover = evas_object_image_add(evas);
-      edje_object_part_swallow(eclair->gui_object, "previous_cover", eclair->gui_previous_cover);
-      edje_object_part_geometry_get(eclair->gui_object, "previous_cover", NULL, NULL, &cover_width, &cover_height);
-      evas_object_image_fill_set(eclair->gui_previous_cover, 0, 0, cover_width, cover_height);
-      evas_object_show(eclair->gui_previous_cover);
+      _eclair_create_playlist_container_object(eclair, eclair->gui_window);
+      _eclair_create_cover_object(eclair, eclair->gui_window);
+      eclair_window_add_default_callbacks(eclair->gui_window, eclair);
+      return 1;
    }
 
-   evas_object_focus_set(eclair->gui_object, 1);
-   evas_object_event_callback_add(eclair->gui_object, EVAS_CALLBACK_KEY_DOWN, eclair_key_press_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_close", "*", eclair_gui_close_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_minimize", "*", eclair_gui_minimize_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_open", "*", eclair_gui_open_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_play", "*", eclair_gui_play_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_pause", "*", eclair_gui_pause_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_stop", "*", eclair_gui_stop_cb, eclair);  
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_prev", "*", eclair_gui_prev_cb, eclair);  
-   edje_object_signal_callback_add(eclair->gui_object, "eclair_next", "*", eclair_gui_next_cb, eclair);  
-   edje_object_signal_callback_add(eclair->gui_object, "drag*", "progress_bar_drag", eclair_gui_progress_bar_drag_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "drag", "volume_bar_drag", eclair_gui_volume_bar_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "drag", "playlist_scrollbar_button", eclair_gui_playlist_scrollbar_button_drag_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_start", "", eclair_gui_playlist_scroll_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_down_stop", "", eclair_gui_playlist_scroll_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_start", "", eclair_gui_playlist_scroll_cb, eclair);
-   edje_object_signal_callback_add(eclair->gui_object, "playlist_scroll_up_stop", "", eclair_gui_playlist_scroll_cb, eclair);
-   edje_object_message_handler_set(eclair->gui_object, eclair_gui_message_cb, eclair);
+   //TODO: try to load default theme
+   fprintf(stderr, "Error: Unable to load the theme \"%s\"\n", eclair->gui_theme_file);
+   return 0;
+}
+
+//Create the playlist window and load the edje theme for the playlist
+static Evas_Bool _eclair_create_playlist_window(Eclair *eclair)
+{
+   if (!eclair)
+      return 0;
+
+   if ((eclair->playlist_window = eclair_window_create(eclair->gui_theme_file, "playlist", "eclair: playlist", eclair->gui_engine, eclair, 0)))
+   {
+      _eclair_create_playlist_container_object(eclair, eclair->playlist_window);
+      _eclair_create_cover_object(eclair, eclair->playlist_window);      
+      eclair_window_add_default_callbacks(eclair->playlist_window, eclair);
+      return 1;
+   }
+
+   return 0;
+}
+
+//Create the cover window
+static Evas_Bool _eclair_create_cover_window(Eclair *eclair)
+{
+   if (!eclair)
+      return 0;
+
+   if ((eclair->cover_window = eclair_window_create(eclair->gui_theme_file, "cover", "eclair: cover", eclair->gui_engine, eclair, 0)))
+   {
+      _eclair_create_playlist_container_object(eclair, eclair->cover_window);
+      _eclair_create_cover_object(eclair, eclair->cover_window);
+      eclair_window_add_default_callbacks(eclair->cover_window, eclair);
+      return 1;
+   }
+
+   return 0;
 }
 
 //Create the video window and object
-static void _eclair_video_create_window(Eclair *eclair)
+static void _eclair_create_video_window(Eclair *eclair)
 {
    Evas *evas;
 
@@ -600,9 +595,9 @@ static void _eclair_video_create_window(Eclair *eclair)
       return;
 
    if (eclair->video_engine == ECLAIR_GL)
-      eclair->video_window = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 32, 32);
+      eclair->video_window = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
    else
-      eclair->video_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 32, 32);
+      eclair->video_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    ecore_evas_title_set(eclair->video_window, "eclair");
    ecore_evas_name_class_set(eclair->video_window, "eclair", "eclair");
    ecore_evas_data_set(eclair->video_window, "eclair", eclair);
@@ -634,8 +629,8 @@ static void *_eclair_create_video_object_thread(void *param)
    if (!(eclair = param))
       return NULL;
 
-   if (eclair->gui_object)
-      edje_object_part_text_set(eclair->gui_object, "current_media_name", "Initializing - Please wait...");
+   if (eclair->gui_window)
+      edje_object_part_text_set(eclair->gui_window->edje_object, "current_media_name", "Initializing - Please wait...");
 
    evas = ecore_evas_get(eclair->video_window);
    new_video_object = emotion_object_add(evas);
@@ -657,6 +652,98 @@ static void *_eclair_create_video_object_thread(void *param)
       eclair_play_current(eclair);
 
    return NULL; 
+}
+
+//Create the playlist container and swallow it into the window
+//Return 0 if failed
+static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window)
+{
+   if (!eclair || !window)
+      return 0;
+
+   if (edje_object_part_exists(window->edje_object, "playlist_container"))
+   {
+      if (eclair->playlist_container)
+         evas_object_del(eclair->playlist_container);
+      eclair->playlist_container = eclair_playlist_container_object_add(window->evas, eclair);
+      eclair_playlist_container_set_entry_theme_path(eclair->playlist_container, eclair->gui_theme_file);
+      edje_object_part_swallow(window->edje_object, "playlist_container", eclair->playlist_container);
+      evas_object_event_callback_add(eclair->playlist_container, EVAS_CALLBACK_MOUSE_WHEEL, eclair_playlist_container_wheel_cb, eclair);
+      evas_object_smart_callback_add(eclair->playlist_container, "eclair_playlist_container_scroll_percent_changed", eclair_playlist_container_scroll_percent_changed, eclair);
+      evas_object_show(eclair->playlist_container);
+      eclair->playlist_container_owner = window;
+      return 1;
+   }
+   return 0;
+}
+
+//Create the cover object and swallow it into the window
+//Return 0 if failed
+static Evas_Bool _eclair_create_cover_object(Eclair *eclair, Eclair_Window *window)
+{
+   Evas_Coord cover_width, cover_height;
+
+   if (!eclair || !window)
+      return 0;
+
+   if (edje_object_part_exists(window->edje_object, "cover"))
+   {
+      if (eclair->cover)
+         evas_object_del(eclair->cover);
+      if (eclair->previous_cover)
+      {
+         evas_object_del(eclair->previous_cover);
+         eclair->previous_cover = NULL;
+      }
+      eclair->cover = evas_object_image_add(window->evas);
+      evas_object_repeat_events_set(eclair->cover, 1);
+      edje_object_part_swallow(window->edje_object, "cover", eclair->cover);
+      edje_object_part_geometry_get(window->edje_object, "cover", NULL, NULL, &cover_width, &cover_height);
+      evas_object_image_fill_set(eclair->cover, 0, 0, cover_width, cover_height);
+      evas_object_hide(eclair->cover);
+      if (edje_object_part_exists(window->edje_object, "previous_cover"))
+      {
+         eclair->previous_cover = evas_object_image_add(window->evas);
+         evas_object_repeat_events_set(eclair->previous_cover, 1);
+         edje_object_part_swallow(window->edje_object, "previous_cover", eclair->previous_cover);
+         edje_object_part_geometry_get(window->edje_object, "previous_cover", NULL, NULL, &cover_width, &cover_height);
+         evas_object_image_fill_set(eclair->previous_cover, 0, 0, cover_width, cover_height);
+         evas_object_show(eclair->previous_cover);
+      }
+      eclair->cover_owner = window;
+      return 1;
+   }
+   return 0;
+}
+
+//Add the callbacks used to control interaction between the windows
+//(the equalizer window should be able to open the playlist window for example)
+static void _eclair_add_inter_windows_callbacks(Eclair *eclair)
+{
+   if (!eclair)
+      return;
+
+   if (eclair->gui_window)
+   {
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_cover_close", "*", eclair_window_close_cb, eclair->cover_window);
+   }
+   if (eclair->playlist_window)
+   {
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_main_open", "*", eclair_window_open_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_main_close", "*", eclair_window_close_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_cover_close", "*", eclair_window_close_cb, eclair->cover_window);
+   }
+   if (eclair->cover_window)
+   {
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_main_open", "*", eclair_window_open_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_main_close", "*", eclair_window_close_cb, eclair->gui_window);
+   }
 }
 
 //Handle segvs

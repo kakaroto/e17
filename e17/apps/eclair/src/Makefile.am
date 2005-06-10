@@ -33,7 +33,8 @@ eclair_subtitles.c eclair_subtitles.h \
 eclair_cover.c eclair_cover.h \
 eclair_meta_tag.c eclair_meta_tag.h \
 eclair_config.c eclair_config.h \
-eclair_dialogs.c eclair_dialogs.h
+eclair_dialogs.c eclair_dialogs.h \
+eclair_window.c eclair_window.h
 
 eclair_LDADD = \
 @gthread_libs@ \

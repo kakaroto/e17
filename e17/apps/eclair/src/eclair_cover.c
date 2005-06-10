@@ -61,6 +61,7 @@ void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair)
    cover_manager->cover_files_to_treat = NULL;
    cover_manager->not_in_amazon_db = NULL;
    cover_manager->eclair = eclair;
+   cover_manager->cover_should_treat_files = 0;
    cover_manager->cover_delete_thread = 0;
    pthread_cond_init(&cover_manager->cover_cond, NULL);
    pthread_mutex_init(&cover_manager->cover_mutex, NULL);
@@ -106,6 +107,7 @@ void eclair_cover_add_file_to_treat(Eclair_Cover_Manager *cover_manager, Eclair_
    cover_manager->cover_files_to_add = evas_list_append(cover_manager->cover_files_to_add, media_file);
    cover_manager->cover_add_state = ECLAIR_IDLE;
    
+   cover_manager->cover_should_treat_files = 1;
    pthread_cond_broadcast(&cover_manager->cover_cond); 
 }
 
@@ -123,7 +125,10 @@ static void *_eclair_cover_thread(void *param)
    pthread_mutex_lock(&cover_manager->cover_mutex);
    for (;;)
    {
-      pthread_cond_wait(&cover_manager->cover_cond, &cover_manager->cover_mutex);
+      if (cover_manager->cover_should_treat_files || cover_manager->cover_delete_thread)
+         cover_manager->cover_should_treat_files = 0;
+      else
+         pthread_cond_wait(&cover_manager->cover_cond, &cover_manager->cover_mutex);
       while (cover_manager->cover_files_to_treat || cover_manager->cover_files_to_add || cover_manager->cover_delete_thread)
       {
          if (cover_manager->cover_delete_thread)
