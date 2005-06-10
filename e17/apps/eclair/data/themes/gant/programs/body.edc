@@ -16,7 +16,7 @@ program {
    name: "button_minimize_clicked";
    signal: "mouse,clicked,1";
    source: "button_minimize";
-   action: SIGNAL_EMIT "eclair_minimize" "";
+   action: SIGNAL_EMIT "eclair_main_minimize" "";
 }
 program {
    name: "button_close_down";
@@ -36,5 +36,5 @@ program {
    name: "button_close_clicked";
    signal: "mouse,clicked,1";
    source: "button_close";
-   action: SIGNAL_EMIT "eclair_close" "";
+   action: SIGNAL_EMIT "eclair_main_close" "";
 }
