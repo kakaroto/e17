@@ -2294,10 +2294,11 @@ _engage_border_ignore(E_Border *bd)
    static char *ignores[] = { "Gkrellm2", "trayer", NULL};
    char       **cur;
    Ecore_X_Window_State *state, *tmp;
-   unsigned int num;
+   unsigned int num, counter;
    
    ecore_x_netwm_window_state_get(bd->win, &state, &num);
-   for (tmp = state; tmp; tmp++)
+   counter = 0;
+   for (tmp = state; counter < num; tmp++ && counter++)
      if (tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
        return 1;
    
