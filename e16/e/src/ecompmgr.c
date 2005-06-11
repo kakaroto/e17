@@ -1447,8 +1447,10 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (!cw->usable)
 	   continue;
 #endif
+#if 0				/* FIXME - Need this? */
 	if (!cw->damaged)
 	   continue;
+#endif
 	if (!cw->picture)
 	   continue;
 
