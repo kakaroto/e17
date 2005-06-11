@@ -1014,7 +1014,6 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 	XSetForeground(disp, gc, is->lolo.pixel);
 	XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
 	XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
-	ESync();
 	break;
      case BEVEL_THICKPOINT:
 	XSetForeground(disp, gc, is->hi.pixel);

@@ -806,7 +806,9 @@ EwinInstantShade(EWin * ewin, int force)
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    EwinBorderCalcSizes(ewin, 1);
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 
    HintsSetWindowState(ewin);
 }
@@ -864,7 +866,9 @@ EwinInstantUnShade(EWin * ewin)
 
    ewin->shaded = 0;
    MoveResizeEwin(ewin, x, y, ewin->client.w, ewin->client.h);
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 
    HintsSetWindowState(ewin);
 }
@@ -1060,7 +1064,9 @@ EwinShade(EWin * ewin)
 
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 
 #if 0
    EUngrabServer();
@@ -1288,7 +1294,9 @@ EwinUnShade(EWin * ewin)
 
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 
 #if 0
    EUngrabServer();
