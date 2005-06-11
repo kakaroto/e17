@@ -62,6 +62,7 @@ ecore_config_ipc_server_sent(void *data, int type, void *event)
 {
   Ecore_Ipc_Event_Server_Data *e;
 
+  examine_client_buf = NULL;
   e = (Ecore_Ipc_Event_Server_Data *) event;
   if (e->data && *((char *) e->data))
     examine_client_buf = strdup(e->data);
@@ -321,7 +322,8 @@ examine_client_list_props_cb(void)
       start++;
     }
   }
-  free(examine_client_buf);
+  if (examine_client_buf)
+    free(examine_client_buf);
 
   draw_tree(prop_list);
 }
@@ -449,6 +451,10 @@ examine_client_get_val_cb(void)
 
 /* printf("|%s|\n",examine_client_buf); */
 
+  if (!examine_client_buf) {
+    printf("NULL STRING\n");
+    return;
+  }
   if ((ret = strchr(examine_client_buf, '=')) == NULL) {
     if(strcasecmp(examine_client_buf,"<undefined>"))
       printf("OFFENDING STRING: %s\n", examine_client_buf);
