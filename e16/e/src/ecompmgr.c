@@ -1042,7 +1042,7 @@ ECompMgrWinNew(EObj * eo)
    ECmWinInfo         *cw;
    XWindowAttributes   attr;
 
-   if (!Conf_compmgr.enable)	/* FIXME - Here? */
+   if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
    if (!XGetWindowAttributes(disp, eo->win, &attr))
@@ -1619,7 +1619,7 @@ ECompMgrRepaint(void)
    Picture             pict, pbuf;
    Desk               *d = DeskGet(0);
 
-   if (!Conf_compmgr.enable || allDamage == None)
+   if (!Mode_compmgr.active || allDamage == None)
       return;
 
    region = XFixesCreateRegion(disp, 0, 0);
@@ -1807,9 +1807,9 @@ ECompMgrStart(void)
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
-   if (!Conf_compmgr.enable || Mode_compmgr.active)
+   if (Mode_compmgr.active || Conf_compmgr.mode == ECM_MODE_OFF)
       return;
-   Mode_compmgr.active = 1;
+   Conf_compmgr.enable = Mode_compmgr.active = 1;
 
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
@@ -1865,7 +1865,7 @@ ECompMgrStop(void)
 
    if (!Mode_compmgr.active)
       return;
-   Mode_compmgr.active = 0;
+   Conf_compmgr.enable = Mode_compmgr.active = 0;
 
    if (rootPicture)
       XRenderFreePicture(disp, rootPicture);
@@ -1946,15 +1946,9 @@ ECompMgrConfigSet(const cfg_composite * cfg)
 	       }
 	  }
      }
-}
 
-#if 0				/* FIXME - Remove */
-int
-ECompMgrActive(void)
-{
-   return Mode_compmgr.active;
+   autosave();
 }
-#endif
 
 /*
  * Event handlers
@@ -2164,7 +2158,8 @@ ECompMgrSighan(int sig, void *prm)
      {
      case ESIGNAL_INIT:
 	ECompMgrInit();
-	ECompMgrStart();
+	if (Conf_compmgr.enable)
+	   ECompMgrStart();
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:
@@ -2208,10 +2203,12 @@ CompMgrIpc(const char *params, Client * c __UNUSED__)
    else if (!strcmp(cmd, "start"))
      {
 	ECompMgrStart();
+	autosave();
      }
    else if (!strcmp(cmd, "stop"))
      {
 	ECompMgrStop();
+	autosave();
      }
    else if (!strncmp(cmd, "list", 2))
      {

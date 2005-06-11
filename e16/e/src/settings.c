@@ -1150,8 +1150,6 @@ CB_ConfigureComposite(Dialog * d, int val, void *data __UNUSED__)
    cfg = DialogGetData(d);
    ECompMgrConfigSet(cfg);
    ECompMgrConfigGet(cfg);
-
-   autosave();
 }
 
 void
