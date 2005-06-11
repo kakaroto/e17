@@ -57,6 +57,6 @@ void exg_conf_term_set(char *term)
 
 static int exg_conf_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data)
 {
-    ecore_config_save();   
+    printf("config change!\n");
     return 1;
 }

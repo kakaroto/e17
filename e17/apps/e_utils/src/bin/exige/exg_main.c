@@ -31,8 +31,9 @@ int main(int argc, const char **argv)
 
     edje_shutdown();
     ecore_evas_shutdown();
+    ecore_config_save();
+    ecore_config_shutdown();
     ecore_shutdown();
 
     return 1;
-    
 }
