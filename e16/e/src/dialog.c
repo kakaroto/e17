@@ -232,19 +232,10 @@ DialogCreate(const char *name)
 {
    Dialog             *d;
 
-   d = Emalloc(sizeof(Dialog));
+   d = Ecalloc(1, sizeof(Dialog));
    d->name = Estrdup(name);
-   d->title = NULL;
-   d->text = NULL;
-   d->num_buttons = 0;
-   d->win = 0;
-   d->button = NULL;
    d->win = ECreateWindow(VRoot.win, -20, -20, 2, 2, 0);
    EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
-
-   d->item = NULL;
-   d->exit_func = NULL;
-   d->exit_val = 0;
 
    d->tclass = TextclassFind("DIALOG", 1);
    if (d->tclass)
@@ -254,8 +245,8 @@ DialogCreate(const char *name)
    if (d->iclass)
       d->iclass->ref_count++;
 
-   d->num_bindings = 0;
-   d->keybindings = NULL;
+   d->xu1 = d->yu1 = 99999;
+   d->xu2 = d->yu2 = 0;
 
    return d;
 }
@@ -648,7 +639,9 @@ ShowDialog(Dialog * d)
    DialogRedraw(d);
    DialogUpdate(d);
    ShowEwin(ewin);
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 }
 
 void
@@ -666,44 +659,27 @@ DialogClose(Dialog * d)
 DItem              *
 DialogInitItem(Dialog * d)
 {
-   if (!d->item)
-     {
-	DItem              *di;
+   DItem              *di;
 
-	di = Emalloc(sizeof(DItem));
-	d->item = di;
-	di->type = DITEM_TABLE;
-	di->func = NULL;
-	di->val = 0;
-	di->data = NULL;
-	di->iclass = NULL;
-	di->tclass = NULL;
-	di->padding.left = 0;
-	di->padding.right = 0;
-	di->padding.top = 0;
-	di->padding.bottom = 0;
-	di->fill_h = 0;
-	di->fill_v = 0;
-	di->align_h = 512;
-	di->align_v = 512;
-	di->row_span = 1;
-	di->col_span = 1;
-	di->x = 0;
-	di->y = 0;
-	di->w = 0;
-	di->h = 0;
-	di->hilited = 0;
-	di->clicked = 0;
-	di->win = 0;
-	di->item.table.num_columns = 1;
-	di->item.table.border = 0;
-	di->item.table.homogenous_h = 0;
-	di->item.table.homogenous_v = 0;
-	di->item.table.num_items = 0;
-	di->item.table.items = NULL;
-	return di;
-     }
-   return NULL;
+   if (d->item)
+      return NULL;
+
+   di = Ecalloc(1, sizeof(DItem));
+   d->item = di;
+
+   di->type = DITEM_TABLE;
+   di->align_h = 512;
+   di->align_v = 512;
+   di->row_span = 1;
+   di->col_span = 1;
+   di->item.table.num_columns = 1;
+   di->item.table.border = 0;
+   di->item.table.homogenous_h = 0;
+   di->item.table.homogenous_v = 0;
+   di->item.table.num_items = 0;
+   di->item.table.items = NULL;
+
+   return di;
 }
 
 DItem              *
@@ -711,31 +687,15 @@ DialogAddItem(DItem * dii, int type)
 {
    DItem              *di;
 
-   di = Emalloc(sizeof(DItem));
+   di = Ecalloc(1, sizeof(DItem));
+
    di->type = type;
-   di->func = NULL;
-   di->val = 0;
-   di->data = NULL;
-   di->iclass = NULL;
-   di->tclass = NULL;
-   di->padding.left = 0;
-   di->padding.right = 0;
-   di->padding.top = 0;
-   di->padding.bottom = 0;
    di->fill_h = 1;
    di->fill_v = 1;
    di->align_h = 512;
    di->align_v = 512;
    di->row_span = 1;
    di->col_span = 1;
-
-   di->x = 0;
-   di->y = 0;
-   di->w = 0;
-   di->h = 0;
-   di->hilited = 0;
-   di->clicked = 0;
-   di->win = 0;
 
    switch (di->type)
      {
@@ -841,6 +801,7 @@ DialogAddItem(DItem * dii, int type)
 		    sizeof(DItem *) * dii->item.table.num_items);
 	dii->item.table.items[dii->item.table.num_items - 1] = di;
      }
+
    return di;
 }
 
@@ -2138,8 +2099,10 @@ DialogEventKeyPress(Dialog * d, XEvent * ev)
 
    for (i = 0; i < d->num_bindings; i++)
      {
-	if (ev->xkey.keycode == d->keybindings[i].key)
-	   (d->keybindings[i].func) (d, d->keybindings[i].val, NULL);
+	if (ev->xkey.keycode != d->keybindings[i].key)
+	   continue;
+	d->keybindings[i].func(d, d->keybindings[i].val, NULL);
+	break;
      }
 }
 
