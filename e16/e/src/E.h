@@ -1874,6 +1874,10 @@ void                TransparencySet(int transparency);
 int                 TransparencyEnabled(void);
 int                 TransparencyUpdateNeeded(void);
 int                 ImageclassIsTransparent(ImageClass * ic);
+#else
+#define TransparencyEnabled() 0
+#define TransparencyUpdateNeeded() 0
+#define ImageclassIsTransparent(ic) 0
 #endif
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 					    int active, int sticky);

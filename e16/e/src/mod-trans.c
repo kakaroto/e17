@@ -23,6 +23,7 @@
  */
 #include "E.h"
 
+#ifdef ENABLE_THEME_TRANSPARENCY
 /*
  * Theme transparency settings
  */
@@ -426,3 +427,5 @@ EModule             ModTransparency = {
    {N_IPC_FUNCS, TransIpcArray},
    {N_CFG_ITEMS, TransCfgItems}
 };
+
+#endif /* ENABLE_THEME_TRANSPARENCY */

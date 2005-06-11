@@ -50,7 +50,10 @@ extern EModule      ModSound;
 extern EModule      ModTextclass;
 extern EModule      ModTheme;
 extern EModule      ModTooltips;
+
+#ifdef ENABLE_THEME_TRANSPARENCY
 extern EModule      ModTransparency;
+#endif
 extern EModule      ModWarplist;
 extern EModule      ModWindowMatch;
 
@@ -77,7 +80,9 @@ const EModule      *p_modules[] = {
    &ModTextclass,
    &ModTheme,
    &ModTooltips,
+#ifdef ENABLE_THEME_TRANSPARENCY
    &ModTransparency,
+#endif
    &ModWarplist,
    &ModWindowMatch,
 };

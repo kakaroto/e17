@@ -41,9 +41,6 @@ TransparencyEnabled(void)
 int
 TransparencyUpdateNeeded(void)
 {
-   /*  For this to work right prev_alpha needs set to zero on initialization  */
-   /*    if transparency is disabled (by being set to zero).  */
-   /* FIXME - Check this. We call TransparencySet(Conf.trans.alpha) at startup */
    return Conf.trans.alpha || prev_alpha;
 }
 
@@ -84,27 +81,18 @@ TransparencySet(int transparency)
    if (prev_alpha == -1)
      {
 	prev_alpha = Conf.trans.alpha = transparency;
-	/* Generate the color modifier tables */
-	TransparencyMakeColorModifier();
-	ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
+	changed = 1;
      }
    else
      {
 	changed = Conf.trans.alpha != transparency;
 	prev_alpha = Conf.trans.alpha;
 	Conf.trans.alpha = transparency;
-	/* Generate the color modifier tables */
-	TransparencyMakeColorModifier();
-	if (changed)
-	   ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
      }
-}
-
-#else
-
-void
-TransparencySet(int transparency __UNUSED__)
-{
+   /* Generate the color modifier tables */
+   TransparencyMakeColorModifier();
+   if (changed)
+      ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
 }
 
 #endif /* ENABLE_THEME_TRANSPARENCY */
@@ -620,11 +608,13 @@ ImageclassCreateSimple(const char *name, const char *image)
    return ic;
 }
 
+#ifdef ENABLE_THEME_TRANSPARENCY
 int
 ImageclassIsTransparent(ImageClass * ic)
 {
    return ic && ic->norm.normal && ic->norm.normal->transparent;
 }
+#endif
 
 static ImageState  *
 ImageclassGetImageState1(ImageStateArray * pisa, int state)
