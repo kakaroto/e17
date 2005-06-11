@@ -128,7 +128,11 @@ static int     _engage_border_ignore(E_Border *bd);
 
 static void    _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_Item *mi);
 
+static int      _engage_zoom_in_slave(void *data);
+static int      _engage_zoom_out_slave(void *data);
+
 E_App         *_engage_unmatched_app;
+Ecore_Timer   *_engage_zoom_timer;
 
 /* public module routines. all modules must have these */
 void *
@@ -221,6 +225,7 @@ _engage_new()
    E_CONFIG_VAL(D, T, enabled, INT);
    E_CONFIG_VAL(D, T, zoom, INT);
    E_CONFIG_VAL(D, T, zoom_factor, DOUBLE);
+   E_CONFIG_VAL(D, T, zoom_duration, DOUBLE);
    E_CONFIG_VAL(D, T, zoom_stretch, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Engage_Config", Config);
@@ -297,6 +302,7 @@ _engage_new()
 		       eb->conf->enabled = 1;
 		       eb->conf->zoom = 1;
 		       eb->conf->zoom_factor = 2.0;
+		       eb->conf->zoom_duration = 1.0;
 		       eb->conf->zoom_stretch = 0;
 		       e->conf->bars = evas_list_append(e->conf->bars, eb->conf);
 		    }
@@ -307,6 +313,7 @@ _engage_new()
 		    }
 		  E_CONFIG_LIMIT(eb->conf->zoom, 0, 1);
 		  E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
+		  E_CONFIG_LIMIT(eb->conf->zoom_duration, 0.1, 0.3);
 		  E_CONFIG_LIMIT(eb->conf->zoom_stretch, 0, 1);
 		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
@@ -1964,8 +1971,9 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    eb = data;
 
-   eb->zoom = eb->conf->zoom_factor;
-   eb->zooming = 1;
+   if (_engage_zoom_timer)
+     ecore_timer_del(_engage_zoom_timer);
+   _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_in_slave, eb);
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    edge = e_gadman_client_edge_get(eb->gmc);
 
@@ -1992,7 +2000,7 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
 	evas_object_move(eb->event_object, x, y - h * multiplier);
      }
-//   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
+  _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
 
 static void
@@ -2005,14 +2013,71 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
    ev = event_info;
    eb = data;
 
-   eb->zoom = 1.0;
-   eb->zooming = 0;
+   if (_engage_zoom_timer)
+     ecore_timer_del(_engage_zoom_timer);
+   _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_out_slave, eb);
    eb->mouse_out = -1;
-   evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
-   evas_object_move(eb->event_object, x, y);
-   evas_object_resize(eb->event_object, w, h);
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
+
+static int
+_engage_zoom_in_slave(void *data)
+{
+   Evas_Coord x, y;
+   static double start_time = 0;
+   Engage_Bar *eb;
+
+   eb = data;
+   if (start_time == 0) {
+     eb->zooming = 1;
+     start_time = ecore_time_get();
+   }
+
+   eb->zoom = (eb->conf->zoom_factor - 1.0) * ((ecore_time_get() - start_time)
+              / eb->conf->zoom_duration) + 1.0;
+
+   evas_pointer_canvas_xy_get(eb->evas, &x, &y);
+   if (eb->zoom >= eb->conf->zoom_factor)
+     {
+	eb->zoom = eb->conf->zoom_factor;
+	_engage_zoom_timer = NULL;
+	start_time = 0;
+	_engage_bar_motion_handle(eb, x, y);
+	return 0;
+     }
+   _engage_bar_motion_handle(eb, x, y);
+   return 1;
+}
+
+static int
+_engage_zoom_out_slave(void *data)
+{
+   Evas_Coord x, y;
+   static double start_time = 0;
+   Engage_Bar *eb;
+
+   eb = data;
+   if (start_time == 0)
+     start_time = ecore_time_get();
+
+   eb->zoom = (eb->conf->zoom_factor - 1.0) * (1.0 - (ecore_time_get()
+			   - start_time) / eb->conf->zoom_duration) + 1.0;
+
+   
+   evas_pointer_canvas_xy_get(eb->evas, &x, &y);
+   if (eb->zoom <= 1.0)
+     {
+	eb->zoom = 1.0;
+	_engage_zoom_timer = NULL;
+	start_time = 0;
+	_engage_bar_motion_handle(eb, x, y);
+	eb->zooming = 0;
+	return 0;
+     }
+   _engage_bar_motion_handle(eb, x, y);
+   return 1;
+}
+
 
 static void
 _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
