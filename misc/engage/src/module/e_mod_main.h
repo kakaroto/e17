@@ -8,6 +8,7 @@ typedef struct _Config      Config;
 typedef struct _Config_Bar  Config_Bar;
 typedef struct _Engage        Engage;
 typedef struct _Engage_Bar    Engage_Bar;
+typedef struct _Engage_Tray   Engage_Tray;
 typedef struct _Engage_Icon   Engage_Icon;
 typedef struct _Engage_App_Icon Engage_App_Icon;
 
@@ -40,6 +41,15 @@ struct _Engage
    Evas_Coord   iconbordersize;
 };
 
+struct _Engage_Tray
+{
+   Evas_Object *tray;
+   int          w, h;
+   int          icons;
+   Evas_List   *wins;
+   Ecore_X_Window tray_container;
+};
+
 struct _Engage_Bar
 {
    Engage        *engage;
@@ -70,6 +80,8 @@ struct _Engage_Bar
    Ecore_Event_Handler *remove_handler;
    Ecore_Event_Handler *iconify_handler;
    Ecore_Event_Handler *uniconify_handler;
+
+   Engage_Tray     *tray;
 };
 
 struct _Engage_Icon

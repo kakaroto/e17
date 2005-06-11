@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+
 /* TODO List:
  *
  * immediate fixes needed:
@@ -16,12 +17,7 @@
  *
  * * pick up apps on enable (startup OK, disable then enable not)
  * * When a window gets focus move the selected_app pointer
- * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
  * * bounce icons on click ( following e_app exec hints? )
- *
- * * maybe add system tray
- * 
- * * Fix menu
  *
  * * description bubbles/tooltips for icons
  * * app subdirs - need to somehow handle these...
@@ -84,6 +80,7 @@ static Engage_App_Icon *_engage_app_icon_find(Engage_Icon *ic, E_Border *bd);
 static void    _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 static void    _engage_bar_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void    _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
+
 static void    _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -127,6 +124,10 @@ static int     _engage_zoom_function(double d, double *zoom, double *disp, Engag
 static int     _engage_border_ignore(E_Border *bd);
 
 static void    _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_Item *mi);
+
+extern void    _engage_tray_init(Engage_Bar *eb);
+extern void    _engage_tray_shutdown(Engage_Bar *eb);
+
 
 static int      _engage_zoom_in_slave(void *data);
 static int      _engage_zoom_out_slave(void *data);
@@ -520,6 +521,19 @@ _engage_bar_new(Engage *e, E_Container *con)
    e_object_ref(E_OBJECT(con));
    eb->evas = con->bg_evas;
    
+   o = e_box_add(eb->evas);
+   eb->box_object = o;
+
+   _engage_tray_init(eb);
+
+   e_box_pack_end(eb->box_object, eb->tray->tray);
+   e_box_pack_options_set(o,
+			  1, 1, /* fill */
+			  0, 0, /* expand */
+			  0.5, 0.5, /* align */
+			  eb->tray->w, eb->tray->h, /* min */
+			  eb->tray->w, eb->tray->h /* max */
+			  );
    eb->contexts = NULL;
    
    eb->x = eb->y = eb->w = eb->h = -1;
@@ -545,8 +559,8 @@ _engage_bar_new(Engage *e, E_Container *con)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _engage_bar_cb_mouse_move, eb);
    evas_object_show(o);
 
-   o = e_box_add(eb->evas);
-   eb->box_object = o;
+   o = eb->box_object;
+
    evas_object_intercept_move_callback_add(o, _engage_bar_cb_intercept_move, eb);
    evas_object_intercept_resize_callback_add(o, _engage_bar_cb_intercept_resize, eb);
    e_box_freeze(o);
@@ -657,6 +671,7 @@ _engage_bar_free(Engage_Bar *eb)
    evas_object_del(eb->bar_object);
    evas_object_del(eb->box_object);
    evas_object_del(eb->event_object);
+   _engage_tray_shutdown(eb);
 
    e_gadman_client_save(eb->gmc);
    e_object_del(E_OBJECT(eb->gmc));
@@ -771,6 +786,7 @@ _engage_bar_enable(Engage_Bar *eb)
    evas_object_show(eb->bar_object);
    evas_object_show(eb->box_object);
    evas_object_show(eb->event_object);
+   evas_object_show(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -781,6 +797,7 @@ _engage_bar_disable(Engage_Bar *eb)
    evas_object_hide(eb->bar_object);
    evas_object_hide(eb->box_object);
    evas_object_hide(eb->event_object);
+   evas_object_hide(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -838,7 +855,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 
    evas_object_raise(ic->event_object);
 
-   e_box_pack_end(eb->box_object, ic->bg_object);
+   e_box_pack_before(eb->box_object, ic->bg_object, eb->tray->tray);
    e_box_pack_options_set(ic->bg_object,
 			  1, 1, /* fill */
 			  0, 0, /* expand */
@@ -1298,7 +1315,7 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
    else
      {
 	ic->eb->icons = evas_list_append(ic->eb->icons, ic);
-	e_box_pack_end(ic->eb->box_object, ic->bg_object);
+	e_box_pack_before(ic->eb->box_object, ic->bg_object, ic->eb->tray->tray);
      }
    edje_object_size_min_calc(ic->bg_object, &bw, &bh);
    e_box_pack_options_set(ic->bg_object,
@@ -1329,7 +1346,7 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
 
    e_gadman_client_resize(eb->gmc, w, h);
-   evas_object_resize(eb->event_object, w, h);
+   evas_object_resize(eb->event_object, w - eb->tray->w, h);
    evas_object_move(eb->event_object, x, y);
    e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
@@ -1789,7 +1806,7 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
    eb = data;
 
    evas_object_resize(o, w, h);
-   evas_object_resize(eb->event_object, w, h);
+   evas_object_resize(eb->event_object, w - eb->tray->w, h);
    edje_extern_object_min_size_set(eb->box_object, w, h);
    
    if (eb->gmc)
@@ -1984,20 +2001,20 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h);
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h);
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
 	evas_object_move(eb->event_object, x - w * multiplier, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
      }
    else
      {
-	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
 	evas_object_move(eb->event_object, x, y - h * multiplier);
      }
   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);

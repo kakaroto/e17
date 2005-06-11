@@ -16,6 +16,7 @@ INCLUDES               = -I. \
 pkgdir                 = @e_modules@/engage/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
+                         tray.c \
 		         e_mod_main.h
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
