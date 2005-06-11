@@ -235,6 +235,8 @@ od_window_init()
                                  handle_mouse_move, NULL);
 
   od_window = ecore_evas_software_x11_window_get(ee);
+  printf("move %d %d\n", (int) ((res_x - options.width) / 2.0 + x),
+		                        (int) (res_y - options.height + y));
   ecore_x_window_move(od_window,
                       (int) ((res_x - options.width) / 2.0 + x),
                       (int) (res_y - options.height + y));
@@ -288,6 +290,8 @@ od_window_init()
   else
     state[1] = ECORE_X_WINDOW_STATE_BELOW;
   ecore_x_netwm_window_state_set(od_window, state, 2);
+  ecore_x_icccm_size_pos_hints_set(od_window, 1, ECORE_X_GRAVITY_FORGET, 0, 0,
+                                   res_x, res_y, 0, 0, 1, 1, 0.0, 0.0);
 
   ecore_evas_show(ee);
   ecore_evas_callback_move_set(ee, od_window_move);
