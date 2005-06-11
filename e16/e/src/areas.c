@@ -234,6 +234,7 @@ SetCurrentArea(int ax, int ay)
 	  {
 	     EobjsSlideBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
 	     Efree(wl);
+	     EobjsRepaint();
 	  }
      }
 
@@ -256,9 +257,11 @@ SetCurrentArea(int ax, int ay)
      }
    Mode.move.check = 1;
 
+   if (!Conf.desks.slidein)
+      EobjsRepaint();
+
    /* set hints up for it */
    HintsSetDesktopViewport();
-   ESync();
 
    ActionsResume();
 
