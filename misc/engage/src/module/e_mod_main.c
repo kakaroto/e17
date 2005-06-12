@@ -2025,7 +2025,6 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
 {
    Evas_Event_Mouse_Out *ev;
    Engage_Bar *eb;
-   Evas_Coord x, y, w, h;
 
    ev = event_info;
    eb = data;
@@ -2069,7 +2068,7 @@ _engage_zoom_in_slave(void *data)
 static int
 _engage_zoom_out_slave(void *data)
 {
-   Evas_Coord x, y;
+   Evas_Coord x, y, bx, by, bw, bh;
    static double start_time = 0;
    Engage_Bar *eb;
 
@@ -2087,8 +2086,12 @@ _engage_zoom_out_slave(void *data)
 	eb->zoom = 1.0;
 	_engage_zoom_timer = NULL;
 	start_time = 0;
-	_engage_bar_motion_handle(eb, x, y);
+	evas_object_geometry_get(eb->box_object, &bx, &by, &bw, &bh);
+	evas_object_move(eb->event_object, bx, by);
+	evas_object_resize(eb->event_object, bw, bh);
+
 	eb->zooming = 0;
+	_engage_bar_motion_handle(eb, x, y);
 	return 0;
      }
    _engage_bar_motion_handle(eb, x, y);
