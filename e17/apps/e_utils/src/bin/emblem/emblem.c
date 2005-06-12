@@ -15,6 +15,7 @@ emblem_free(Emblem *em)
     if (!em) return;
 
     if (em->display) free(em->display);
+    if (em->theme) free(em->theme);
     free(em);
 }
 
