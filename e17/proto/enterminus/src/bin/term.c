@@ -244,7 +244,7 @@ Term
    term->bg = NULL;
    strcpy(term->font.path, DATADIR);
    strcpy(term->font.face, "VeraMono");
-   term->font.size = 9;
+   term->font.size = 10;
    term->data_ptr = 0;
    term->font.width = term_font_get_width(term);
    term->font.height = term_font_get_height(term);
