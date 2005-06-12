@@ -47,7 +47,7 @@ struct _Engage_Tray
    int          w, h;
    int          icons;
    Evas_List   *wins;
-   Ecore_X_Window tray_container;
+   Ecore_X_Window win;
 
    Ecore_Event_Handler *msg_handler;
    Ecore_Event_Handler *dst_handler;
