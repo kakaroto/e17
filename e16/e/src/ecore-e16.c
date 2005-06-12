@@ -939,16 +939,16 @@ ecore_x_netwm_desk_count_set(Ecore_X_Window root, unsigned int n_desks)
 }
 
 void
-ecore_x_netwm_desk_roots_set(Ecore_X_Window root, unsigned int n_desks,
-			     Ecore_X_Window * vroots)
+ecore_x_netwm_desk_roots_set(Ecore_X_Window root, Ecore_X_Window * vroots,
+			     unsigned int n_desks)
 {
    ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_VIRTUAL_ROOTS, vroots,
 				  n_desks);
 }
 
 void
-ecore_x_netwm_desk_names_set(Ecore_X_Window root, unsigned int n_desks,
-			     const char **names)
+ecore_x_netwm_desk_names_set(Ecore_X_Window root, const char **names,
+			     unsigned int n_desks)
 {
    char                ss[32], *buf;
    const char         *s;
@@ -994,8 +994,8 @@ ecore_x_netwm_desk_size_set(Ecore_X_Window root, unsigned int width,
 }
 
 void
-ecore_x_netwm_desk_workareas_set(Ecore_X_Window root, unsigned int n_desks,
-				 unsigned int *areas)
+ecore_x_netwm_desk_workareas_set(Ecore_X_Window root, unsigned int *areas,
+				 unsigned int n_desks)
 {
    ecore_x_window_prop_card32_set(root, ECORE_X_ATOM_NET_WORKAREA, areas,
 				  4 * n_desks);
@@ -1009,8 +1009,8 @@ ecore_x_netwm_desk_current_set(Ecore_X_Window root, unsigned int desk)
 }
 
 void
-ecore_x_netwm_desk_viewports_set(Ecore_X_Window root, unsigned int n_desks,
-				 unsigned int *origins)
+ecore_x_netwm_desk_viewports_set(Ecore_X_Window root, unsigned int *origins,
+				 unsigned int n_desks)
 {
    ecore_x_window_prop_card32_set(root, ECORE_X_ATOM_NET_DESKTOP_VIEWPORT,
 				  origins, 2 * n_desks);
@@ -1032,8 +1032,8 @@ ecore_x_netwm_showing_desktop_set(Ecore_X_Window root, int on)
 
 /* Mapping order */
 void
-ecore_x_netwm_client_list_set(Ecore_X_Window root, unsigned int n_clients,
-			      Ecore_X_Window * p_clients)
+ecore_x_netwm_client_list_set(Ecore_X_Window root, Ecore_X_Window * p_clients,
+			      unsigned int n_clients)
 {
    ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_CLIENT_LIST, p_clients,
 				  n_clients);
@@ -1042,8 +1042,8 @@ ecore_x_netwm_client_list_set(Ecore_X_Window root, unsigned int n_clients,
 /* Stacking order */
 void
 ecore_x_netwm_client_list_stacking_set(Ecore_X_Window root,
-				       unsigned int n_clients,
-				       Ecore_X_Window * p_clients)
+				       Ecore_X_Window * p_clients,
+				       unsigned int n_clients)
 {
    ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_CLIENT_LIST_STACKING,
 				  p_clients, n_clients);
@@ -1066,10 +1066,15 @@ ecore_x_netwm_name_set(Ecore_X_Window win, const char *name)
    _ecore_x_window_prop_string_utf8_set(win, ECORE_X_ATOM_NET_WM_NAME, name);
 }
 
-char               *
-ecore_x_netwm_name_get(Ecore_X_Window win)
+int
+ecore_x_netwm_name_get(Ecore_X_Window win, char **name)
 {
-   return _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_WM_NAME);
+   char               *s;
+
+   s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_WM_NAME);
+   *name = s;
+
+   return s != NULL;
 }
 
 void
@@ -1079,11 +1084,16 @@ ecore_x_netwm_visible_name_set(Ecore_X_Window win, const char *name)
 					name);
 }
 
-char               *
-ecore_x_netwm_visible_name_get(Ecore_X_Window win)
+int
+ecore_x_netwm_visible_name_get(Ecore_X_Window win, char **name)
 {
-   return _ecore_x_window_prop_string_utf8_get(win,
-					       ECORE_X_ATOM_NET_WM_VISIBLE_NAME);
+   char               *s;
+
+   s = _ecore_x_window_prop_string_utf8_get(win,
+					    ECORE_X_ATOM_NET_WM_VISIBLE_NAME);
+   *name = s;
+
+   return s != NULL;
 }
 
 void
@@ -1093,11 +1103,15 @@ ecore_x_netwm_icon_name_set(Ecore_X_Window win, const char *name)
 					name);
 }
 
-char               *
-ecore_x_netwm_icon_name_get(Ecore_X_Window win)
+int
+ecore_x_netwm_icon_name_get(Ecore_X_Window win, char **name)
 {
-   return _ecore_x_window_prop_string_utf8_get(win,
-					       ECORE_X_ATOM_NET_WM_ICON_NAME);
+   char               *s;
+
+   s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_WM_ICON_NAME);
+   *name = s;
+
+   return s != NULL;
 }
 
 void
@@ -1108,11 +1122,16 @@ ecore_x_netwm_visible_icon_name_set(Ecore_X_Window win, const char *name)
 					name);
 }
 
-char               *
-ecore_x_netwm_visible_icon_name_get(Ecore_X_Window win)
+int
+ecore_x_netwm_visible_icon_name_get(Ecore_X_Window win, char **name)
 {
-   return _ecore_x_window_prop_string_utf8_get(win,
-					       ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME);
+   char               *s;
+
+   s = _ecore_x_window_prop_string_utf8_get(win,
+					    ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME);
+   *name = s;
+
+   return s != NULL;
 }
 
 void

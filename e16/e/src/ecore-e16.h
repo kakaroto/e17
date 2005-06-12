@@ -198,47 +198,50 @@ void                ecore_x_netwm_wm_identify(Ecore_X_Window root,
 void                ecore_x_netwm_desk_count_set(Ecore_X_Window root,
 						 unsigned int n_desks);
 void                ecore_x_netwm_desk_roots_set(Ecore_X_Window root,
-						 unsigned int n_desks,
-						 Ecore_X_Window * vroots);
+						 Ecore_X_Window * vroots,
+						 unsigned int n_desks);
 void                ecore_x_netwm_desk_names_set(Ecore_X_Window root,
-						 unsigned int n_desks,
-						 const char **names);
+						 const char **names,
+						 unsigned int n_desks);
 void                ecore_x_netwm_desk_size_set(Ecore_X_Window root,
 						unsigned int width,
 						unsigned int height);
 void                ecore_x_netwm_desk_workareas_set(Ecore_X_Window root,
-						     unsigned int n_desks,
-						     unsigned int *areas);
+						     unsigned int *areas,
+						     unsigned int n_desks);
 void                ecore_x_netwm_desk_current_set(Ecore_X_Window root,
 						   unsigned int desk);
 void                ecore_x_netwm_desk_viewports_set(Ecore_X_Window root,
-						     unsigned int n_desks,
-						     unsigned int *origins);
+						     unsigned int *origins,
+						     unsigned int n_desks);
 void                ecore_x_netwm_showing_desktop_set(Ecore_X_Window root,
 						      int on);
 
 void                ecore_x_netwm_client_list_set(Ecore_X_Window root,
-						  unsigned int n_clients,
-						  Ecore_X_Window * p_clients);
+						  Ecore_X_Window * p_clients,
+						  unsigned int n_clients);
 void                ecore_x_netwm_client_list_stacking_set(Ecore_X_Window root,
-							   unsigned int
-							   n_clients,
 							   Ecore_X_Window *
-							   p_clients);
+							   p_clients,
+							   unsigned int
+							   n_clients);
 void                ecore_x_netwm_client_active_set(Ecore_X_Window root,
 						    Ecore_X_Window win);
 void                ecore_x_netwm_name_set(Ecore_X_Window win,
 					   const char *name);
-char               *ecore_x_netwm_name_get(Ecore_X_Window win);
+int                 ecore_x_netwm_name_get(Ecore_X_Window win, char **name);
 void                ecore_x_netwm_icon_name_set(Ecore_X_Window win,
 						const char *name);
-char               *ecore_x_netwm_icon_name_get(Ecore_X_Window win);
+int                 ecore_x_netwm_icon_name_get(Ecore_X_Window win,
+						char **name);
 void                ecore_x_netwm_visible_name_set(Ecore_X_Window win,
 						   const char *name);
-char               *ecore_x_netwm_visible_name_get(Ecore_X_Window win);
+int                 ecore_x_netwm_visible_name_get(Ecore_X_Window win,
+						   char **name);
 void                ecore_x_netwm_visible_icon_name_set(Ecore_X_Window win,
 							const char *name);
-char               *ecore_x_netwm_visible_icon_name_get(Ecore_X_Window win);
+int                 ecore_x_netwm_visible_icon_name_get(Ecore_X_Window win,
+							char **name);
 
 void                ecore_x_netwm_desktop_set(Ecore_X_Window win,
 					      unsigned int desk);

@@ -179,7 +179,7 @@ EWMH_SetDesktopRoots(void)
    for (i = 0; i < n_desks; i++)
       wl[i] = DeskGetWin(i);
 
-   ecore_x_netwm_desk_roots_set(VRoot.win, n_desks, wl);
+   ecore_x_netwm_desk_roots_set(VRoot.win, wl, n_desks);
 
    Efree(wl);
 }
@@ -188,7 +188,7 @@ void
 EWMH_SetDesktopNames(void)
 {
    /* Fall back to defaults */
-   ecore_x_netwm_desk_names_set(VRoot.win, DesksGetNumber(), NULL);
+   ecore_x_netwm_desk_names_set(VRoot.win, NULL, DesksGetNumber());
 }
 
 void
@@ -220,7 +220,7 @@ EWMH_SetWorkArea(void)
 	p_coord[4 * i + 3] = VRoot.h;
      }
 
-   ecore_x_netwm_desk_workareas_set(VRoot.win, n_desks, p_coord);
+   ecore_x_netwm_desk_workareas_set(VRoot.win, p_coord, n_desks);
 
    Efree(p_coord);
 }
@@ -250,7 +250,7 @@ EWMH_SetDesktopViewport(void)
 	p_coord[2 * i + 1] = ay * VRoot.h;
      }
 
-   ecore_x_netwm_desk_viewports_set(VRoot.win, n_desks, p_coord);
+   ecore_x_netwm_desk_viewports_set(VRoot.win, p_coord, n_desks);
 
    Efree(p_coord);
 }
@@ -279,12 +279,12 @@ EWMH_SetClientList(void)
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
 	   wl[i] = lst[num - i - 1]->client.win;
-	ecore_x_netwm_client_list_set(VRoot.win, num, wl);
+	ecore_x_netwm_client_list_set(VRoot.win, wl, num);
 	Efree(wl);
      }
    else
      {
-	ecore_x_netwm_client_list_set(VRoot.win, 0, NULL);
+	ecore_x_netwm_client_list_set(VRoot.win, NULL, 0);
      }
    if (lst)
       Efree(lst);
@@ -304,12 +304,12 @@ EWMH_SetClientStacking(void)
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
 	   wl[i] = lst[num - i - 1]->client.win;
-	ecore_x_netwm_client_list_stacking_set(VRoot.win, num, wl);
+	ecore_x_netwm_client_list_stacking_set(VRoot.win, wl, num);
 	Efree(wl);
      }
    else
      {
-	ecore_x_netwm_client_list_stacking_set(VRoot.win, 0, NULL);
+	ecore_x_netwm_client_list_stacking_set(VRoot.win, NULL, 0);
      }
 }
 
@@ -426,7 +426,7 @@ EWMH_GetWindowName(EWin * ewin)
 
    _EFREE(ewin->ewmh.wm_name);
 
-   val = ecore_x_netwm_name_get(ewin->client.win);
+   ecore_x_netwm_name_get(ewin->client.win, &val);
    if (!val)
       return;
    ewin->ewmh.wm_name = EstrUtf82Int(val, 0);
@@ -442,7 +442,7 @@ EWMH_GetWindowIconName(EWin * ewin)
 
    _EFREE(ewin->ewmh.wm_icon_name);
 
-   val = ecore_x_netwm_icon_name_get(ewin->client.win);
+   ecore_x_netwm_icon_name_get(ewin->client.win, &val);
    if (!val)
       return;
    ewin->ewmh.wm_icon_name = EstrUtf82Int(val, 0);
