@@ -48,14 +48,12 @@ static Slideout    *
 SlideoutCreate(char *name, char dir)
 {
    Slideout           *s;
-   Window              win;
 
    s = Ecalloc(1, sizeof(Slideout));
    if (!s)
       return NULL;
 
-   win = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
-   EobjInit(EoObj(s), EOBJ_TYPE_MISC, win, -10, -10, 1, 1, name);
+   EobjInit(EoObj(s), EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
    s->direction = dir;
    EventCallbackRegister(EoGetWin(s), 0, SlideoutHandleEvent, s);
 

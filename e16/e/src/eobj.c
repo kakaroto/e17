@@ -149,8 +149,15 @@ EobjIsShaped(const EObj * eo)
 
 void
 EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
-	 const char *name)
+	 int su, const char *name)
 {
+   if (win == None)
+     {
+	if (type == EOBJ_TYPE_EVENT)
+	   win = ECreateEventWindow(VRoot.win, x, y, w, h);
+	else
+	   win = ECreateWindow(DeskGetWin(eo->desk), x, y, w, h, su);
+     }
    eo->type = type;
    eo->win = win;
    eo->x = x;
@@ -206,19 +213,14 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 
    eo = Ecalloc(1, sizeof(EObj));
 
-   if (type == EOBJ_TYPE_EVENT)
-      eo->win = ECreateEventWindow(VRoot.win, x, y, w, h);
-   else
-      eo->win = ECreateWindow(VRoot.win, x, y, w, h, su);
+   eo->floating = 1;
+   EobjSetLayer(eo, 20);
+   EobjInit(eo, type, eo->win, x, y, w, h, su, name);
    if (eo->win == None)
      {
 	Efree(eo);
-	return NULL;
+	eo = NULL;
      }
-
-   eo->floating = 1;
-   EobjSetLayer(eo, 20);
-   EobjInit(eo, type, eo->win, x, y, w, h, name);
 
    return eo;
 }
@@ -248,7 +250,7 @@ EobjRegister(Window win, int type)
    if (!eo)
       return eo;
 
-   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, NULL);
+   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
    eo->name = ecore_x_icccm_title_get(win);
 
 #if 1				/* FIXME - TBD */

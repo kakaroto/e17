@@ -122,11 +122,11 @@ EwinCreate(Window win, int type)
    if (use_argb)
       frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
    else
-      frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+      frame = None;
 
    ewin->o.stacked = -1;	/* Not placed on desk yet */
-   EobjInit(&ewin->o, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, NULL);
    EoSetDesk(ewin, DesksGetCurrent());
+   EobjInit(EoObj(ewin), EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
    EoSetLayer(ewin, 4);
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 0);

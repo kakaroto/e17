@@ -953,14 +953,12 @@ static PagerHiwin  *
 PagerHiwinCreate(void)
 {
    PagerHiwin         *phi;
-   Window              win;
 
    phi = Ecalloc(1, sizeof(PagerHiwin));
    if (!phi)
       return NULL;
 
-   win = ECreateWindow(VRoot.win, 0, 0, 3, 3, 1);
-   EobjInit(&phi->o, EOBJ_TYPE_MISC, win, 0, 0, 3, 3, "HiWin");
+   EobjInit(EoObj(phi), EOBJ_TYPE_MISC, None, 0, 0, 3, 3, 1, "HiWin");
    EoSetShadow(phi, 0);
    EoSetFloating(phi, 1);
    EoSetLayer(phi, 19);

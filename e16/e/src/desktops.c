@@ -405,13 +405,9 @@ DeskCreate(int desk, int configure)
    d->num = desk;
    desks.order[desk] = desk;
 
-   if (desk == 0)
-      win = VRoot.win;
-   else
-      win = ECreateWindow(VRoot.win, -VRoot.w, -VRoot.h, VRoot.w, VRoot.h, 0);
-
+   win = (desk == 0) ? VRoot.win : None;
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
-   EobjInit(&d->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, buf);
+   EobjInit(&d->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
    EoSetShadow(d, 0);
    if (desk > 0)
      {
@@ -422,7 +418,7 @@ DeskCreate(int desk, int configure)
 	DeskEventsConfigure(d, 1);
 #endif
      }
-   EventCallbackRegister(win, 0, DesktopHandleEvents, d);
+   EventCallbackRegister(EoGetWin(d), 0, DesktopHandleEvents, d);
 
    HintsSetRootHints(EoGetWin(d));
 

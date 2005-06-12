@@ -76,7 +76,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 	     int ysr, int ysa, char simg, int desk, char sticky)
 {
    Button             *b;
-   Window              win;
 
    if (desk < 0 || desk >= DesksGetNumber())
       return NULL;
@@ -128,10 +127,9 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->state = 0;
    b->ref_count = 0;
 
-   win = ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0);
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
-   EobjInit(&b->o, EOBJ_TYPE_BUTTON, win, -100, -100, 50, 50, name);
+   EobjInit(EoObj(b), EOBJ_TYPE_BUTTON, None, -100, -100, 50, 50, 0, name);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
 

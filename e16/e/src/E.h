@@ -1492,7 +1492,7 @@ void                EdgeWindowsHide(void);
 
 /* eobj.c */
 void                EobjInit(EObj * eo, int type, Window win, int x, int y,
-			     int w, int h, const char *name);
+			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
 void                EobjDestroy(EObj * eo);
 EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
