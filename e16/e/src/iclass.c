@@ -1044,7 +1044,8 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	if (is->im == NULL && is->im_file)
 	   ImagestateRealize(is);
 
-	if (is->im)
+	/* Imlib2 will not render pixmaps with dimensions > 8192 */
+	if (is->im && w <= 8192 && h <= 8192)
 	  {
 	     PmapMask            pmm;
 	     int                 decache = 1;
@@ -1145,7 +1146,8 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
    if (is->im == NULL && is->im_file)
       ImagestateRealize(is);
 
-   if (is->im)
+   /* Imlib2 will not render pixmaps with dimensions > 8192 */
+   if (is->im && w <= 8192 && h <= 8192)
      {
 	ImagestateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
 
@@ -1193,12 +1195,8 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	     imlib_free_image();
 	     is->im = NULL;
 	  }
-
-	return;
      }
-
-   /* if there is a bevel to draw, draw it */
-   if (is->bevelstyle != BEVEL_NONE)
+   else
      {
 	Pixmap              pmap;
 
@@ -1214,8 +1212,11 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	/* bg color */
 	XSetForeground(disp, gc, is->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	ImagestateDrawBevel(is, pmap, gc, w, h);
+	/* if there is a bevel to draw, draw it */
+	if (is->bevelstyle != BEVEL_NONE)
+	   ImagestateDrawBevel(is, pmap, gc, w, h);
 	EFreeGC(gc);
+	/* FIXME - No text */
      }
 }
 

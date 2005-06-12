@@ -754,6 +754,7 @@ struct _ewin
       unsigned            vroot:1;	/* Virtual root window */
       unsigned            inhibit_iconify:1;
       unsigned            autosave:1;
+      unsigned            no_border:1;	/* Never apply border */
    } props;
    struct
    {
@@ -1249,8 +1250,7 @@ void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderUpdateState(EWin * ewin);
 void                EwinBorderEventsConfigure(EWin * ewin, int mode);
 void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
-void                EwinSetBorderByName(EWin * ewin, const char *name,
-					int apply);
+void                EwinSetBorderByName(EWin * ewin, const char *name);
 void                BorderWinpartChange(EWin * ewin, int i, int force);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 Border             *BorderCreateFiller(int left, int right, int top,

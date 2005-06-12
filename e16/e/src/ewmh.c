@@ -546,7 +546,7 @@ EWMH_GetWindowType(EWin * ewin)
 #endif
 	ewin->skipfocus = 1;
 	ewin->fixedpos = 1;
-	EwinSetBorderByName(ewin, "BORDERLESS", 0);
+	EwinSetBorderByName(ewin, "BORDERLESS");
 	ewin->props.donthide = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)

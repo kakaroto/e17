@@ -1436,7 +1436,7 @@ SnapshotEwinMatch(EWin * ewin)
       ewin->shaded = sn->shaded;
 
    if (sn->use_flags & SNAP_USE_BORDER)
-      EwinSetBorderByName(ewin, sn->border_name, 0);
+      EwinSetBorderByName(ewin, sn->border_name);
 
    if (sn->groups)
      {

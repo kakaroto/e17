@@ -418,13 +418,19 @@ EwinBorderSelect(EWin * ewin)
 {
    const Border       *b;
 
-   /* Quit if we allready have a border that isn't an internal one */
+#if 0				/* Handled in iclass.c */
+   /* Imlib2 will not render pixmaps with dimensions > 8192 */
+   if (ewin->client.w > 8000 || ewin->client.h > 8000)
+      ewin->props.no_border = 1;
+#endif
+
+   /* Quit if we already have a border that isn't an internal one */
    b = ewin->border;
-   if (b && strncmp(b->name, "__", 2))
+   if (b && strncmp(b->name, "__", 2) && !ewin->props.no_border)
       goto done;
 
-   if ((!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border) ||
-       (Conf.dock.enable && ewin->docked))
+   if (ewin->props.no_border || ewin->docked ||
+       (!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border))
       b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    else
       b = WindowMatchEwinBorder(ewin);
@@ -567,7 +573,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 void
 EwinSetBorder(EWin * ewin, const Border * b, int apply)
 {
-   if (!b || ewin->border == b)
+   if (!b || ewin->border == b || ewin->props.no_border)
       return;
 
    if (apply)
@@ -590,13 +596,13 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
 }
 
 void
-EwinSetBorderByName(EWin * ewin, const char *name, int apply)
+EwinSetBorderByName(EWin * ewin, const char *name)
 {
    Border             *b;
 
    b = (Border *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
-   EwinSetBorder(ewin, b, apply);
+   EwinSetBorder(ewin, b, 0);
 }
 
 Border             *

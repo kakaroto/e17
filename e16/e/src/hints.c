@@ -389,7 +389,7 @@ EHintsGetInfo(EWin * ewin)
 
    str = ecore_x_window_prop_string_get(ewin->client.win, aa);
    if (str)
-      EwinSetBorderByName(ewin, str, 0);
+      EwinSetBorderByName(ewin, str);
    Efree(str);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
