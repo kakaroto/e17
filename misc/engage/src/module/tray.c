@@ -83,15 +83,11 @@ _engage_tray_shutdown(Engage_Bar *eb)
 static void
 _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win) {
 
-  Display *display;
-
-  display = ecore_x_display_get();
-    
   /* we want to insert at the end, so as not to move all icons on each add */
   eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
   ecore_x_window_resize(win, 24, 24);
-  XReparentWindow (display, win, eb->tray->win, 0, 0);
+  ecore_x_window_reparent(win, eb->tray->win, 0, 0);
 
   ecore_x_window_show(win);
 
@@ -173,7 +169,6 @@ _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 static void
 _engage_tray_layout(Engage_Bar *eb)
 {
-   Display *display;
    Evas_Coord w, h;
    int x, y;
    Evas_List *wins;
@@ -184,7 +179,6 @@ _engage_tray_layout(Engage_Bar *eb)
    w = eb->tray->icons * 24;
    evas_object_resize(eb->tray->tray, w, h);
    
-   display = ecore_x_display_get();
    x = 0;
    y = 0;
    for (wins = eb->tray->wins; wins; wins = wins->next)
