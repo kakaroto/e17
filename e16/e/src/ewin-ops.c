@@ -432,7 +432,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
       ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
    if (reparent)
-      EoReparent(ewin, desk, x, y);
+      EoReparent(ewin, EoObj(DeskGet(desk)), x, y);
    else
       EoMoveResize(ewin, x, y, w, h);
 

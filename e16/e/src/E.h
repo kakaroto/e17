@@ -515,6 +515,7 @@ struct _eobj
 #define EOBJ_TYPE_EVENT     4
 #define EOBJ_TYPE_EXT       5
 
+#define EoObj(eo)               (&((eo)->o))
 #define EoGetWin(eo)            ((eo)->o.win)
 #define EoGetName(eo)           ((eo)->o.name)
 #define EoGetType(eo)           ((eo)->o.type)
@@ -527,17 +528,17 @@ struct _eobj
 #define EoIsShown(eo)           ((eo)->o.shown)
 #define EoGetDesk(eo)           ((eo)->o.desk)
 #define EoGetLayer(eo)          ((eo)->o.layer)
-#define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
+#define EoGetPixmap(eo)         EobjGetPixmap(EoObj(eo))
 
 #define EoSetName(eo, _x)       (eo)->o.name = (_x)
 #define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
-#define EoSetFloating(eo, _f)   EobjSetFloating(&((eo)->o), (_f))
-#define EoSetDesk(eo, _d)       EobjSetDesk(&((eo)->o), (_d))
-#define EoSetLayer(eo, _l)      EobjSetLayer(&((eo)->o), (_l))
+#define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
+#define EoSetDesk(eo, _d)       EobjSetDesk(EoObj(eo), (_d))
+#define EoSetLayer(eo, _l)      EobjSetLayer(EoObj(eo), (_l))
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoGetOpacity(eo)        ((eo)->o.opacity)
-#define EoChangeOpacity(eo, _o) EobjChangeOpacity(&((eo)->o), _o)
+#define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
 #define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #define EoGetShadow(eo)         ((eo)->o.shadow)
 #else
@@ -547,15 +548,15 @@ struct _eobj
 #define EoGetShadow(eo)         0
 #endif
 
-#define EoMap(eo, raise)                EobjMap(&((eo)->o), raise)
-#define EoUnmap(eo)                     EobjUnmap(&((eo)->o))
-#define EoMove(eo, x, y)                EobjMove(&((eo)->o), x, y)
-#define EoResize(eo, w, h)              EobjResize(&((eo)->o), w, h)
-#define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(&((eo)->o), x, y, w, h)
-#define EoReparent(eo, d, x, y)         EobjReparent(&((eo)->o), d, x, y)
-#define EoRaise(eo)                     EobjRaise(&((eo)->o))
-#define EoLower(eo)                     EobjLower(&((eo)->o))
-#define EoChangeShape(eo)               EobjChangeShape(&((eo)->o))
+#define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)
+#define EoUnmap(eo)                     EobjUnmap(EoObj(eo))
+#define EoMove(eo, x, y)                EobjMove(EoObj(eo), x, y)
+#define EoResize(eo, w, h)              EobjResize(EoObj(eo), w, h)
+#define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(EoObj(eo), x, y, w, h)
+#define EoReparent(eo, d, x, y)         EobjReparent(EoObj(eo), d, x, y)
+#define EoRaise(eo)                     EobjRaise(EoObj(eo))
+#define EoLower(eo)                     EobjLower(EoObj(eo))
+#define EoChangeShape(eo)               EobjChangeShape(EoObj(eo))
 
 typedef struct
 {
@@ -1505,7 +1506,7 @@ void                EobjUnmap(EObj * eo);
 void                EobjMove(EObj * eo, int x, int y);
 void                EobjResize(EObj * eo, int w, int h);
 void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
-void                EobjReparent(EObj * eo, int desk, int x, int y);
+void                EobjReparent(EObj * eo, EObj * dst, int x, int y);
 int                 EobjRaise(EObj * eo);
 int                 EobjLower(EObj * eo);
 void                EobjChangeShape(EObj * eo);
@@ -2133,8 +2134,8 @@ EWin               *const *EwinListGetForDesk(int *num, int desk);
 EWin               *EwinListStackGetTop(void);
 
 #define EwinListGetAll EwinListStackGet
-#define EwinListFocusRaise(ewin) EobjListFocusRaise(&(ewin->o))
-#define EwinListFocusLower(ewin) EobjListFocusLower(&(ewin->o))
+#define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))
+#define EwinListFocusLower(ewin) EobjListFocusLower(EoObj(ewin))
 
 /* startup.c */
 void                StartupWindowsCreate(void);

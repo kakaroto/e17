@@ -349,25 +349,33 @@ EobjResize(EObj * eo, int w, int h)
 }
 
 void
-EobjReparent(EObj * eo, int desk, int x, int y)
+EobjReparent(EObj * eo, EObj * dst, int x, int y)
 {
-   Desk               *d;
    int                 move;
-
-   d = DeskGet(desk);
-   if (!d)
-      return;
 
    move = x != eo->x || y != eo->y;
    eo->x = x;
    eo->y = y;
 
-   EReparentWindow(eo->win, EoGetWin(d), x, y);
+   EReparentWindow(eo->win, dst->win, x, y);
+   if (dst->type == EOBJ_TYPE_DESK)
+     {
+	Desk               *d = (Desk *) dst;
+
 #if USE_COMPOSITE
-   if (eo->shown && eo->cmhook)
-      ECompMgrWinReparent(eo, desk, move);
+	if (eo->shown && eo->cmhook)
+	   ECompMgrWinReparent(eo, d->num, move);
 #endif
-   EobjSetDesk(eo, desk);
+	EobjSetDesk(eo, d->num);
+     }
+   else
+     {
+	EobjListStackDel(eo);
+#if USE_COMPOSITE
+	if (eo->cmhook)
+	   ECompMgrWinDel(eo);
+#endif
+     }
 }
 
 int

@@ -243,16 +243,32 @@ ButtonShow(Button * b)
 }
 
 void
+ButtonSetSwallowed(Button * b)
+{
+   b->internal = 1;
+   b->default_show = 0;
+   b->flags |= FLAG_FIXED;
+   b->used = 1;
+   b->ref_count++;
+   ButtonCalc(b);
+   ButtonDraw(b);
+   EMapWindow(EoGetWin(b));
+}
+
+void
 ButtonMoveToDesktop(Button * b, int desk)
 {
-   if (desk < 0 || desk >= DesksGetNumber())
-      return;
+   Desk               *d;
 
    if (EoIsSticky(b) && EoGetLayer(b) == 1)
       desk = 0;
 
-   if (desk != EoGetDesk(b))
-      EoReparent(b, desk, EoGetX(b), EoGetY(b));
+   d = DeskGet(desk);
+   if (!d)
+      return;
+
+   if (EoGetDesk(b) != d->num)
+      EoReparent(b, EoObj(d), EoGetX(b), EoGetY(b));
 }
 
 void
@@ -343,17 +359,6 @@ void
 ButtonDecRefcount(Button * b)
 {
    b->ref_count--;
-}
-
-void
-ButtonSetSwallowed(Button * b)
-{
-   b->internal = 1;
-   b->default_show = 0;
-   b->flags |= FLAG_FIXED;
-   b->used = 1;
-   b->ref_count++;
-   EobjListStackDel(&b->o);
 }
 
 static const char  *
