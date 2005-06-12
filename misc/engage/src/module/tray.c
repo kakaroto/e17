@@ -45,25 +45,25 @@ _engage_tray_init(Engage_Bar *eb)
 
   snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", DefaultScreen(display));
   selection_atom = ecore_x_atom_get(buf);
-  XSetSelectionOwner (display, selection_atom, None, CurrentTime);
+  XSetSelectionOwner (display, selection_atom, eb->con->manager->win, CurrentTime);
 
-  if (XGetSelectionOwner (display, selection_atom) == eb->con->win) {
+  if (XGetSelectionOwner (display, selection_atom) == eb->con->manager->win) {
     printf("am a system tray :) :)\n");
 
     ecore_x_client_message32_send(root, ecore_x_atom_get("MANAGER"),
                                 ECORE_X_EVENT_MASK_WINDOW_CONFIGURE, CurrentTime
 ,
-                                selection_atom, eb->con->win, 0, 0);
+                                selection_atom, eb->con->manager->win, 0, 0);
   }
 
   evas_object_geometry_get(eb->tray->tray, &x, &y, &w, &h);
-  eb->tray->tray_container = ecore_x_window_new(eb->con->win, x, y, w, h);
+  eb->tray->tray_container = ecore_x_window_new(eb->con->manager->win, x, y, w, h);
   ecore_x_window_container_manage(eb->tray->tray_container);
   ecore_x_window_background_color_set(eb->tray->tray_container, 0xcccc, 0xcccc, 0xcccc);
   ecore_x_window_show(eb->tray->tray_container);
   
-  ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, _engage_tray_msg_cb, eb);
-  ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _engage_tray_msg_cb, eb);
+  eb->tray->msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, _engage_tray_msg_cb, eb);
+  eb->tray->dst_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _engage_tray_msg_cb, eb);
 
 }
 
@@ -73,6 +73,8 @@ _engage_tray_shutdown(Engage_Bar *eb)
    evas_list_free(eb->tray->wins);
    evas_object_del(eb->tray->tray);
 
+   ecore_event_handler_del(eb->tray->msg_handler);
+   ecore_event_handler_del(eb->tray->dst_handler);
 }
 
 static void
@@ -122,7 +124,7 @@ printf("add\n");
       /* Should proto be set according to clients _XEMBED_INFO? */
       ecore_x_client_message32_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
                                   ECORE_X_EVENT_MASK_NONE, CurrentTime,
-                                  XEMBED_EMBEDDED_NOTIFY, 0, eb->con->win, /*proto*/1);                              
+                                  XEMBED_EMBEDDED_NOTIFY, 0, eb->con->manager->win, /*proto*/1);                              
 
     } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");

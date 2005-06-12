@@ -48,6 +48,9 @@ struct _Engage_Tray
    int          icons;
    Evas_List   *wins;
    Ecore_X_Window tray_container;
+
+   Ecore_Event_Handler *msg_handler;
+   Ecore_Event_Handler *dst_handler;
 };
 
 struct _Engage_Bar
