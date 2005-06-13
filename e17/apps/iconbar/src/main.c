@@ -61,7 +61,7 @@ main(int argc, char **argv)
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
   ecore_evas_avoid_damage_set(ee, 1);
-  ecore_x_window_prop_xy_set(win, x, y);
+  ecore_evas_move(ee, x, y);
   //ecore_x_window_prop_layer_set(win, 1);
 
   iconbar_config_ecore_evas_set(ee);
