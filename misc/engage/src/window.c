@@ -143,7 +143,6 @@ od_window_init()
   int             res_x, res_y;
   Evas_Object    *o;
   Evas_Object    *eventer;
-  Ecore_X_Window_State state[2];
 
   xinerama = 1;
   fullheight = options.height;
@@ -284,12 +283,10 @@ od_window_init()
 #endif
   }
   
-  state[0] = ECORE_X_WINDOW_STATE_STICKY;
   if (options.mode == OM_ONTOP)
-    state[1] = ECORE_X_WINDOW_STATE_ABOVE;
+    ecore_evas_layer_set(ee, 7);
   else
-    state[1] = ECORE_X_WINDOW_STATE_BELOW;
-  ecore_x_netwm_window_state_set(od_window, state, 2);
+    ecore_evas_layer_set(ee, 2);
   ecore_x_icccm_size_pos_hints_set(od_window, 1, ECORE_X_GRAVITY_FORGET, 0, 0,
                                    res_x, res_y, 0, 0, 1, 1, 0.0, 0.0);
 
