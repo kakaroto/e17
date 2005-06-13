@@ -272,7 +272,7 @@ int erss_gui_init (char *winname, Erss_Config *cfg) {
 	ecore_evas_name_class_set (ee, "Erss", "Erss");
 	snprintf(title, PATH_MAX, "erss - %s", winname);
 	ecore_evas_title_set (ee, title);
-	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
+	ecore_evas_layer_set (ee, 2);
 	ecore_evas_show (ee);
 	
 	/* ecore_x_window_lower(win); */

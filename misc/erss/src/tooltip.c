@@ -47,7 +47,7 @@ static Erss_Tooltip *erss_tooltip_new (char *description)
 	ecore_evas_override_set(tt->ee, 1);
 	ecore_evas_borderless_set (tt->ee, TRUE);
 	tt->win = ecore_evas_software_x11_window_get(ee);
-	ecore_x_window_prop_window_type_set (tt->win, ECORE_X_WINDOW_TYPE_UTILITY);
+	ecore_x_netwm_window_type_set (tt->win, ECORE_X_WINDOW_TYPE_UTILITY);
 	ecore_evas_geometry_get (tt->ee, &x, &y, &w, &h);
 
 	tt->evas = ecore_evas_get (tt->ee);
