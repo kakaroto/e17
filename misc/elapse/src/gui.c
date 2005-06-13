@@ -70,7 +70,7 @@ void elapse_gui_init(Elapse *elapse, int argc, const char **argv)
     win = ecore_evas_software_x11_window_get(elapse->ee);
 
     if (elapse->conf.below)
-        ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
+        ecore_evas_layer_set(elapse->ee,2);
 
     if (elapse->conf.alpha == TRANSPARENT)
     {
