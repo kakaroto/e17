@@ -287,7 +287,7 @@ od_window_init()
     ecore_evas_layer_set(ee, 7);
   else
     ecore_evas_layer_set(ee, 2);
-  ecore_x_icccm_size_pos_hints_set(od_window, 1, ECORE_X_GRAVITY_FORGET, 0, 0,
+  ecore_x_icccm_size_pos_hints_set(od_window, 1, ECORE_X_GRAVITY_NW, 0, 0,
                                    res_x, res_y, 0, 0, 1, 1, 0.0, 0.0);
 
   ecore_evas_show(ee);
