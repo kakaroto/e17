@@ -680,12 +680,15 @@ IconboxesEwinDeIconify(EWin * ewin)
    SoundPlay("SOUND_DEICONIFY");
 
    ib = SelectIconboxForEwin(ewin);
-   if (ib && ib->animate && !ewin->st.showingdesk)
+   if (!ib)
+      return;
+
+   if (ib->animate && !ewin->st.showingdesk)
      {
 	EobjsRepaint();
 	IB_Animate(0, ewin, ib->ewin);
-	IconboxObjEwinDel(ib, ewin);
      }
+   IconboxObjEwinDel(ib, ewin);
 }
 
 static void
