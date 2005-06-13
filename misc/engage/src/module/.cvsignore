@@ -2,6 +2,6 @@
 .libs
 Makefile
 Makefile.in
-e_mod_main.lo
+*.lo
 module.la
 

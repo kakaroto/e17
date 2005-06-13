@@ -62,7 +62,7 @@ static void    _engage_bar_free(Engage_Bar *eb);
 static void    _engage_bar_menu_new(Engage_Bar *eb);
 static void    _engage_bar_enable(Engage_Bar *eb);
 static void    _engage_bar_disable(Engage_Bar *eb);
-static void    _engage_bar_frame_resize(Engage_Bar *eb);
+void           _engage_bar_frame_resize(Engage_Bar *eb);
 static void    _engage_bar_edge_change(Engage_Bar *eb, int edge);
 static void    _engage_bar_update_policy(Engage_Bar *eb);
 static void    _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my);
@@ -1328,7 +1328,7 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
    e_box_thaw(ic->eb->box_object);
 }
 
-static void
+void
 _engage_bar_frame_resize(Engage_Bar *eb)
 {
    Evas_Coord x, y, w, h;

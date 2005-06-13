@@ -18,7 +18,7 @@ static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Ev
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 
 static void    _engage_tray_layout(Engage_Bar *eb);
-
+extern void    _engage_bar_frame_resize(Engage_Bar *eb);
 
 void
 _engage_tray_init(Engage_Bar *eb)
@@ -87,11 +87,12 @@ _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win) {
   eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
   ecore_x_window_resize(win, 24, 24);
+
   ecore_x_window_reparent(win, eb->tray->win, 0, 0);
+  _engage_tray_layout(eb);
+  _engage_bar_frame_resize(eb);
 
   ecore_x_window_show(win);
-
-  _engage_tray_layout(eb);
 
 }
 
@@ -106,6 +107,7 @@ _engage_tray_remove(Engage_Bar *eb, Ecore_X_Window win) {
   eb->tray->wins = evas_list_remove(eb->tray->wins, (void *)win);
   eb->tray->icons--;
   _engage_tray_layout(eb);
+  _engage_bar_frame_resize(eb);
 }
 
 static int
