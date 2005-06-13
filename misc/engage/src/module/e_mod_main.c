@@ -527,12 +527,12 @@ _engage_bar_new(Engage *e, E_Container *con)
    _engage_tray_init(eb);
 
    e_box_pack_end(eb->box_object, eb->tray->tray);
-   e_box_pack_options_set(o,
+   e_box_pack_options_set(eb->tray->tray,
 			  1, 1, /* fill */
-			  0, 0, /* expand */
-			  0.5, 0.5, /* align */
-			  eb->tray->w, eb->tray->h, /* min */
-			  eb->tray->w, eb->tray->h /* max */
+			  0, 1, /* expand */
+			  0.0, 0.0, /* align */
+			  1, 1, /* min */
+			  100, 100 /* max */
 			  );
    eb->contexts = NULL;
    

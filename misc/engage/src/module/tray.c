@@ -158,35 +158,50 @@ _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
    eb = data;
    evas_object_resize(o, w, h);
 
-   e_box_pack_options_set(o,
-			  1, 1, /* fill */
-			  0, 0, /* expand */
-			  0.5, 0.5, /* align */
-			  w, h, /* min */
-			  w, h /* max */
-			  );
-   ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
+   _engage_tray_layout(eb);
 }
 
 static void
 _engage_tray_layout(Engage_Bar *eb)
 {
-   Evas_Coord w, h;
+   Evas_Coord w, h, c, d;
    int x, y;
    Evas_List *wins;
    
-   /* FIXME - this is a simple placeholder - need to check the height of the
-    * bar and the orientation... */
-   h = 24;
-   w = eb->tray->icons * 24;
+   h = eb->engage->conf->iconsize;
+   if (h < 24)
+     h = 24;
+   c = (h - (h % 24)) / 24;
+   w = ((eb->tray->icons + (eb->tray->icons % c)) / c) * 24;
+   if (w == 0)
+     w = 1;
+   
    evas_object_resize(eb->tray->tray, w, h);
+   ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
+
+   e_box_pack_options_set(eb->tray->tray,
+			  1, 1, /* fill */
+			  0, 1, /* expand */
+			  0.0, 0.0, /* align */
+			  w, h, /* min */
+			  w, h /* max */
+			  );
    
    x = 0;
-   y = 0;
+   y = eb->h - 24;
+   d = 0;
    for (wins = eb->tray->wins; wins; wins = wins->next)
      {
 	ecore_x_window_move((Ecore_X_Window) wins->data, x, y);
 
-	x += 24;
+	d++;
+	if (d % c == 0)
+	  {
+	     x += 24;
+	     y = eb->h - 24;
+	  }
+	else
+	  y -= 24;
+	  
      }
 }
