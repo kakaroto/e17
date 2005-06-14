@@ -2,8 +2,6 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
-static void  ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
-				     int *r, int *g, int *b);
 static void ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y, 
 					   int *r, int *g, int *b, int *a);
 static void ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x, int y, 
@@ -321,6 +319,43 @@ ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
 		*_b = b;
 }
 
+void
+ewl_spectrum_rgb_to_hsv(int r, int g, int b,
+			float *h, float *s, float *v)
+{
+        int min, max, delta;
+
+#undef MIN
+#undef MAX
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+        min = MIN(r,MIN(g,b));
+        max = MAX(r,MAX(g,b));
+        *v = (float)max / 255.0;                               // v
+
+        delta = max - min;
+
+        if( max != 0 )
+                *s = (float)delta / (float)max;               // s
+        else {
+                // r = g = b = 0                // s = 0, v is undefined
+                *s = 0;
+                *h = 0;
+                return;
+        }
+
+        if( r == max )
+                *h = (float)( g - b ) / (float)delta;         // between yellow & magenta
+        else if( g == max )
+                *h = 2.0 + (float)( b - r ) / (float)delta;     // between cyan & yellow
+        else
+                *h = 4.0 + (float)( r - g ) / (float)delta;     // between magenta & cyan
+
+        *h *= 60;                               // degrees
+        if( *h < 0 )
+                *h += 360;
+}
+
 static void
 ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y, 
 				int *r, int *g, int *b, int *a)
@@ -354,7 +389,7 @@ ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y,
 		if (b)
 			*b = blue;
 	} else {
-		int h, s, v;
+		float h, s, v;
 
 		h = sp->h;
 		s = sp->s;
@@ -372,7 +407,7 @@ ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y,
 			s = 1 - (float) y / (float) height;
 		}
 
-		ewl_spectrum_hsv_to_rgb(h, s, v, r, g, b);
+                ewl_spectrum_hsv_to_rgb(h, s, v, r, g, b);
 	}
 }
 
@@ -414,4 +449,3 @@ ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x __UNUSED__, int y,
 		ewl_spectrum_hsv_to_rgb(h, s, v, r, g, b);
 	}
 }
-

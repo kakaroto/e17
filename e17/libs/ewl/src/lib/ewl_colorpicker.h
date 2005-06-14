@@ -10,21 +10,28 @@
 
 typedef struct Ewl_ColorPicker Ewl_ColorPicker;
 
+/**
+ * @def EWL_COLORPICKER(cp)
+ * Typecast a pointer to an Ewl_ColorPicker pointer.
+ */
+#define EWL_COLORPICKER(cp) ((Ewl_ColorPicker *) cp)
+
 struct Ewl_ColorPicker
 {
 	Ewl_Box box;
-	Ewl_Widget *preview;
 	Ewl_Widget *spectrum;
 	Ewl_Widget *range;
 	int drag;
-        struct color
+        struct _ewl_colorpicker_color
         {
             int r, g, b, a;
         } selected;
 };
 
 Ewl_Widget 	*ewl_colorpicker_new();
-int 		 ewl_colorpicker_init(Ewl_ColorPicker *cp);
+int 		ewl_colorpicker_init(Ewl_ColorPicker *cp);
+void            ewl_colorpicker_color_set(Ewl_ColorPicker *cp, int r, int g, int b);
+void ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h);
 
 /*
  * Internal callbacks, override at your own risk.
