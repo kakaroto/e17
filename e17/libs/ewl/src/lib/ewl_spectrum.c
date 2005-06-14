@@ -325,10 +325,6 @@ ewl_spectrum_rgb_to_hsv(int r, int g, int b,
 {
         int min, max, delta;
 
-#undef MIN
-#undef MAX
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
         min = MIN(r,MIN(g,b));
         max = MAX(r,MAX(g,b));
         *v = (float)max / 255.0;                               // v
