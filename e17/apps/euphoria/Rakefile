@@ -23,7 +23,7 @@ rule ".edj" => [".edc"] do |t|
 	end
 end
 
-task :install do |t|
+task :install => :themes do |t|
 	ddir = destdir + prefix + "/bin"
 	FileUtils::Verbose.install("bin/euphoria", ddir, :mode => 0755)
 
