@@ -1562,7 +1562,6 @@ void                EventDebugSet(unsigned int type, int value);
 #define             EventDebugSet(type, value)
 #endif
 void                EventsInit(void);
-void                CheckEvent(void);
 void                WaitEvent(void);
 void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);

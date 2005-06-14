@@ -57,13 +57,6 @@ static int          event_base_render = 0;
 static int          error_base_render = 0;
 #endif
 
-static int          evq_num = 0;
-static XEvent      *evq_ptr = NULL;
-
-static int          evq_num2 = 0;
-static int          evq_cur2 = 0;
-static XEvent      *evq_ptr2 = NULL;
-
 #define DOUBLE_CLICK_TIME 250	/* Milliseconds */
 
 static void
@@ -473,7 +466,7 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
    int                 qsz = *evq_n;
 
    /* Fetch the entire event queue */
-   for (i = count = qsz; (n = XPending(disp)) > 0;)
+   for (i = count = 0; (n = XPending(disp)) > 0;)
      {
 	count += n;
 	if (count > qsz)
@@ -509,94 +502,39 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 }
 
 static int
-EventsProcess(XEvent ** evq_p, int *evq_n)
+EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
 {
-   int                 i;
+   int                 i, n, count;
    XEvent             *evq;
-   int                 qsz;
 
    /* Fetch the entire event queue */
-   EventsFetch(evq_p, evq_n);
+   n = EventsFetch(evq_p, evq_n);
    evq = *evq_p;
-   qsz = *evq_n;
 
- again:
    if (EventDebug(EDBUG_TYPE_EVENTS))
-      Eprintf("EventsProcess-B %d\n", qsz);
+      Eprintf("EventsProcess-B %d\n", n);
 
-   for (i = 0; i < qsz; i++)
+   for (i = count = 0; i < n; i++)
      {
 	if (evq[i].type == 0)
 	   continue;
 
-	if (EventDebug(EDBUG_TYPE_EVENTS))
+	if (EventDebug(EDBUG_TYPE_EVENTS) > 1)
 	   Eprintf("EventsProcess %d type=%d\n", i, evq[i].type);
 
+	count++;
 	HandleEvent(evq + i);
 	evq[i].type = 0;
      }
 
-   if (evq_num2)
-     {
-	/* Process leftovers */
-	Efree(evq_ptr);
-	evq = evq_ptr = evq_ptr2;
-	qsz = evq_num = evq_num2;
-	evq_ptr2 = 0;
-	evq_num2 = evq_cur2 = 0;
-	goto again;
-     }
-
    if (EventDebug(EDBUG_TYPE_EVENTS))
-      Eprintf("EventsProcess-E %d\n", qsz);
+      Eprintf("EventsProcess-E %d/%d\n", count, n);
 
-   return qsz;
+   if (n > *evq_f)
+      *evq_f = n;
+
+   return count;
 }
-
-#if 0				/* FIXME - Remove? */
-void
-CheckEvent(void)
-{
-   int                 i;
-   XEvent             *evq;
-   int                 qsz;
-
-   /* Fetch the entire event queue */
-   EventsFetch(&evq_ptr2, &evq_num2);
-   evq = evq_ptr2;
-   qsz = evq_num2;
-
-   if (EventDebug(EDBUG_TYPE_EVENTS))
-      Eprintf("CheckEvent-B %d/%d\n", evq_cur2, evq_num2);
-
-   for (i = evq_cur2; i < qsz; i++)
-     {
-	evq_cur2 = i;
-	switch (evq[i].type)
-	  {
-	  case CreateNotify:
-	  case DestroyNotify:
-	  case ReparentNotify:
-	  case UnmapNotify:
-	  case MapNotify:
-	  case ConfigureNotify:
-	  case Expose:
-	  case EX_EVENT_DAMAGE_NOTIFY:
-	     if (EventDebug(EDBUG_TYPE_EVENTS))
-		Eprintf("CheckEvent %d type=%d\n", i, evq[i].type);
-
-	     HandleEvent(evq + i);
-	     evq[i].type = 0;
-	     break;
-	  }
-     }
-
-   if (EventDebug(EDBUG_TYPE_EVENTS))
-      Eprintf("CheckEvent-E\n");
-
-   ModulesSignal(ESIGNAL_IDLE, NULL);
-}
-#endif
 
 /*
  * This is the primary event loop.  Everything that is going to happen in the
@@ -606,12 +544,15 @@ CheckEvent(void)
 void
 WaitEvent(void)
 {
+   static int          evq_alloc = 0;
+   static int          evq_fetch = 0;
+   static XEvent      *evq_ptr = NULL;
    fd_set              fdset;
    struct timeval      tval;
    static struct timeval tval_last = { 0, 0 };
    double              time1, time2;
    Qentry             *qe;
-   int                 count, pcount;
+   int                 count, pcount, pfetch;
    int                 fdsize;
    int                 xfd, smfd;
 
@@ -636,28 +577,40 @@ WaitEvent(void)
       time2 = 0.0;
    /* time2 = time spent since we last were here */
 
-   evq_num = 0;
-   count = EventsProcess(&evq_ptr, &evq_num);
-
-   DialogsCheckUpdate();
-   ModulesSignal(ESIGNAL_IDLE, NULL);
-
-   XFlush(disp);
-   pcount = count;
-
-   evq_num = 0;
-   count = EventsProcess(&evq_ptr, &evq_num);
-
-   if (count > 0)
-      XFlush(disp);
-
-   if (pcount > count)
-      count = pcount;
-   if ((evq_ptr) && ((evq_num - count) > 64))
+   pcount = pfetch = 0;
+   for (;;)
      {
-	evq_num = 0;
-	Efree(evq_ptr);
-	evq_ptr = NULL;
+	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
+
+	if (count > pcount)
+	   pcount = count;
+	if (!pcount)
+	   break;
+	if (XPending(disp))
+	   continue;
+
+	if (EventDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("WaitEvent - Idlers\n");
+	DialogsCheckUpdate();	/* FIXME - Shouldn't be here */
+	ModulesSignal(ESIGNAL_IDLE, NULL);
+
+	if (!XPending(disp))
+	   break;
+     }
+
+   if (pfetch)
+     {
+	evq_fetch =
+	   (pfetch > evq_fetch) ? pfetch : (3 * evq_fetch + pfetch) / 4;
+	if (EventDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("WaitEvent - Alloc/fetch/pfetch/peak=%d/%d/%d/%d)\n",
+		   evq_alloc, evq_fetch, pfetch, pcount);
+	if ((evq_ptr) && ((evq_alloc - evq_fetch) > 64))
+	  {
+	     evq_alloc = 0;
+	     Efree(evq_ptr);
+	     evq_ptr = NULL;
+	  }
      }
 
    FD_ZERO(&fdset);
@@ -691,11 +644,19 @@ WaitEvent(void)
       return;
 
    if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
-      ProcessICEMSGS();
+     {
+	if (EventDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("WaitEvent - ICE\n");
+	ProcessICEMSGS();
+     }
 
    if ((!(FD_ISSET(xfd, &fdset))) && (qe) && (count == 0)
        && (((smfd >= 0) && (!(FD_ISSET(smfd, &fdset)))) || (smfd < 0)))
-      HandleTimerEvent();
+     {
+	if (EventDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("WaitEvent - Timers (%s)\n", qe->name);
+	HandleTimerEvent();
+     }
 }
 
 #if ENABLE_DEBUG_EVENTS
@@ -729,7 +690,12 @@ EventDebugInit(const char *param)
 	if (ix < 0)
 	   ix = -ix;
 	if (ix < N_DEBUG_FLAGS)
-	   ev_debug_flags[ix] = onoff;
+	  {
+	     if (onoff)
+		ev_debug_flags[ix]++;
+	     else
+		ev_debug_flags[ix] = 0;
+	  }
 	if (!s)
 	   break;
 	param = s + 1;
@@ -739,7 +705,8 @@ EventDebugInit(const char *param)
 int
 EventDebug(unsigned int type)
 {
-   return ev_debug && (type < sizeof(ev_debug_flags)) && ev_debug_flags[type];
+   return (ev_debug &&
+	   (type < sizeof(ev_debug_flags))) ? ev_debug_flags[type] : 0;
 }
 
 void
@@ -749,7 +716,7 @@ EventDebugSet(unsigned int type, int value)
       return;
 
    ev_debug = 1;
-   ev_debug_flags[type] = value;
+   ev_debug_flags[type] += value;
 }
 
 static const char  *const TxtEventNames[] = {
