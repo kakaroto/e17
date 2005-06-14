@@ -186,7 +186,8 @@ EobjFini(EObj * eo)
       Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
 
 #if USE_COMPOSITE
-   ECompMgrWinDel(eo);
+   if (eo->cmhook)
+      ECompMgrWinDel(eo);
 #endif
 
    EobjListStackDel(eo);

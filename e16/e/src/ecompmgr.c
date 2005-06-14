@@ -1248,10 +1248,8 @@ ECompMgrWinDel(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-#if 0				/* FIXME - Why? */
    if (!cw)
       return;
-#endif
 
    D1printf("ECompMgrWinDel %#lx\n", eo->win);
 
@@ -1263,12 +1261,9 @@ ECompMgrWinDel(EObj * eo)
      }
    else
      {
-	if (cw && !eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
+	if (!eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
-     }
 
-   if (cw)
-     {
 	ECompMgrWinInvalidate(eo, INV_ALL);
 
 	if (!eo->gone)
@@ -1279,9 +1274,9 @@ ECompMgrWinDel(EObj * eo)
 	     if (cw->damage != None)
 		XDamageDestroy(disp, cw->damage);
 	  }
-
-	_EFREE(eo->cmhook);
      }
+
+   _EFREE(eo->cmhook);
 }
 
 static void
