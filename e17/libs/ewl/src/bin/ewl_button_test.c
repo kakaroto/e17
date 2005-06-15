@@ -22,6 +22,7 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Widget     *button[2];
 	Ewl_Widget     *check_button[2];
 	Ewl_Widget     *radio_button[2];
+	Ewl_Widget     *label;
 
 	button_button = w;
 
@@ -112,6 +113,10 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[1]);
+
+	label = ewl_label_new("A label");
+	ewl_container_child_append(EWL_CONTAINER(button_box), label);
+	ewl_widget_show(label);
 
 	return;
 }
