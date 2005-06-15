@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS 		= 1.4 foreign
+AUTOMAKE_OPTIONS	= 1.5 foreign
 MAINTAINERCLEANFILES 	= Makefile.in
 
 CFLAGS		= -g -W -Wall -Wno-implicit
