@@ -12,6 +12,8 @@ EWL TODO
 	- Invert on mouse click (behavior depends upon select mode).
 	- determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
+- ColorChooser needs a slider for choosing alpha too, and an int a parameter for
+  get / set to match
 - Enabled/Disabled status for ALL applicable widgets.
 
 - Need to return a context when items are pushed onto the status bar so that
