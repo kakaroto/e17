@@ -636,12 +636,9 @@ ShowDialog(Dialog * d)
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
 
+   ShowEwin(ewin);
    DialogRedraw(d);
    DialogUpdate(d);
-   ShowEwin(ewin);
-#if 0				/* FIXME - Remove? */
-   ESync();
-#endif
 }
 
 void
@@ -1521,6 +1518,11 @@ DialogDrawItem(Dialog * d, DItem * di)
    if (di->x > d->xu2 || di->y > d->yu2 ||
        di->x + di->w <= d->xu1 || di->y + di->h <= d->yu1)
       goto done;
+
+#if 0
+   Eprintf("DialogDrawItem t=%d u=%d - %d,%d -> %d,%d\n", di->type, di->update,
+	   d->xu1, d->yu1, d->xu2, d->yu2);
+#endif
 
    switch (di->type)
      {
