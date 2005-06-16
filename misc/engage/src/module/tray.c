@@ -83,6 +83,8 @@ _engage_tray_shutdown(Engage_Bar *eb)
 static void
 _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win) {
 
+  if (evas_list_find(eb->tray->wins, (void *)win))
+    return;
   /* we want to insert at the end, so as not to move all icons on each add */
   eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
@@ -188,7 +190,7 @@ _engage_tray_layout(Engage_Bar *eb)
 			  );
    
    x = 0;
-   y = eb->h - 24;
+   y = h - 24;
    d = 0;
    for (wins = eb->tray->wins; wins; wins = wins->next)
      {
@@ -198,7 +200,7 @@ _engage_tray_layout(Engage_Bar *eb)
 	if (d % c == 0)
 	  {
 	     x += 24;
-	     y = eb->h - 24;
+	     y = h - 24;
 	  }
 	else
 	  y -= 24;
