@@ -1893,7 +1893,7 @@ ewl_entry_op_font_new(const char *font, int size)
 		op->type = EWL_ENTRY_OP_TYPE_FONT_SET;
 		op->apply = ewl_entry_op_font_apply;
 		op->free = ewl_entry_op_font_free;
-		opf->font = strdup(font);
+		opf->font = strdup((font ? font : ""));
 		opf->size = size;
 	}
 
