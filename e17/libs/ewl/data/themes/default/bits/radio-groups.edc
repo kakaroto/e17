@@ -1,7 +1,7 @@
    group {
       name, "radio";
       data {
-          item, "inset/left" "5";
+          item, "inset/left" "4";
           item, "inset/right" "5";
           item, "inset/top" "3";
           item, "inset/bottom" "3";
