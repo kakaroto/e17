@@ -1,10 +1,10 @@
    group {
       name, "label";
       data {
-          item, "inset/left" "5";
-          item, "inset/right" "5";
-          item, "inset/top" "3";
-          item, "inset/bottom" "3";
+          item, "inset/left" "0";
+          item, "inset/right" "0";
+          item, "inset/top" "0";
+          item, "inset/bottom" "0";
           item, "pad/left" "0";
           item, "pad/right" "0";
           item, "pad/top" "0";
@@ -18,7 +18,7 @@
 
               description {
                   state, "default" 0.0;
-                  align, 1.0 0.0;
+                  align, 0.5 0.0;
                   rel1 {
                       relative, 0.0 0.0;
                       offset, 0 0;
@@ -34,7 +34,7 @@
                       font, "Vera";
                       size, 10;
                       min, 1 1;
-                      align, 1.0 0.0;
+                      align, 0.5 0.0;
                   }
               }
           }
