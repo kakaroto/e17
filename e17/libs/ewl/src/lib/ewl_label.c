@@ -83,6 +83,7 @@ static void
 ewl_label_apply(Ewl_Label *la)
 {
 	Ewl_Widget *w;
+	Evas_Coord nw, nh;
 
 	w = EWL_WIDGET(la);
 	if (!w->theme_object) return;
@@ -92,5 +93,9 @@ ewl_label_apply(Ewl_Label *la)
 	printf(" NO PART\n");
 	*/
 	edje_object_part_text_set(w->theme_object, "text", la->text);
+	edje_object_size_min_calc(w->theme_object, &nw, &nh);
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(la), (int)nw, (int)nh);
 }
+
 

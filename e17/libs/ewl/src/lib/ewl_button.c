@@ -49,7 +49,7 @@ int ewl_button_init(Ewl_Button * b, char *label)
 	 * Create and setup the label for the button if it's desired.
 	 */
 	if (label)
-		b->label_object = ewl_text_new(label);
+		b->label_object = ewl_label_new(label);
 
 	if (b->label_object) {
 		ewl_object_alignment_set(EWL_OBJECT(b->label_object),
@@ -81,12 +81,12 @@ void ewl_button_label_set(Ewl_Button * b, char *l)
 		b->label_object = NULL;
 	}
 	else if (!b->label_object) {
-		b->label_object = ewl_text_new(l);
+		b->label_object = ewl_label_new(l);
 		ewl_widget_show(b->label_object);
 		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 	}
 	else
-		ewl_text_text_set(EWL_TEXT(b->label_object), l);
+		ewl_label_text_set(EWL_LABEL(b->label_object), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -103,7 +103,7 @@ char *ewl_button_label_get(Ewl_Button *b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (b->label_object)
-		val = ewl_text_text_get(EWL_TEXT(b->label_object));
+		val = ewl_label_text_get(EWL_LABEL(b->label_object));
 
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }
