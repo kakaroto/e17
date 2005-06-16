@@ -1045,6 +1045,8 @@ DeskEnter(Desk * d)
 {
    int                 i;
 
+   EGrabServer();
+
    d->viewable = 1;
    DeskRefresh(d->num);
    MoveToDeskTop(d->num);
@@ -1065,6 +1067,8 @@ DeskEnter(Desk * d)
    MoveStickyButtonsToCurrentDesk();
    DesksStackingCheck();
    HintsSetCurrentDesktop();
+
+   EUngrabServer();
 }
 
 void
@@ -1200,6 +1204,8 @@ DeskLower(int desk)
 
    desks.previous = desks.current = desks.order[0];
 
+   EGrabServer();
+
    UncoverDesktop(desks.order[0]);
    DeskHide(desk);
 
@@ -1210,6 +1216,8 @@ DeskLower(int desk)
    if (Mode.mode == MODE_NONE)
       ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
    HintsSetCurrentDesktop();
+
+   EUngrabServer();
    ESync();
 }
 
