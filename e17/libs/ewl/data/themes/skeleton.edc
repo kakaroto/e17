@@ -24,7 +24,7 @@ data {
 	item, "/cell/group" "cell";
 	item, "/embed/group" "embed";
 	item, "/entry/group" "entry";
-	item, "/entry/text/font" "Vera";
+	item, "/entry/font" "Vera";
 	item, "/filedialog/group" "filedialog";
 	item, "/hscrollbar/button_decrement/group" "hscroll-left";
 	item, "/hscrollbar/button_increment/group" "hscroll-right";
@@ -60,7 +60,11 @@ data {
 	item, "/window/group" "window";
 	item, "/button/label/font_size" "10";
 	item, "/button/text/font_size" "10";
-	item, "/entry/text/font_size" "10";
+	item, "/entry/font_size" "10";
+	item, "/entry/color/r" "128";
+	item, "/entry/color/g" "128";
+	item, "/entry/color/b" "128";
+	item, "/entry/color/a" "255";
 	item, "/hscrollbar/velocity" "5";
 	item, "/notebook/tab_button/label/font_size" "12";
 	item, "/progressbar/text/font_size" "8";

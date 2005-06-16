@@ -37,6 +37,48 @@
                       align, 0.5 0.0;
                   }
               }
+
+              description {
+                  state, "highlight" 0.0;
+                  align, 0.5 0.0;
+                  rel1 {
+                      relative, 0.0 0.0;
+                      offset, 0 0;
+                  }
+                  rel2 {
+                      relative, 1.0 1.0;
+                      offset, -1 -1;
+                  }
+                  color, 0 0 0 255;
+                  color3, 255 255 255 32;
+                  text {
+                      text, "text";
+                      font, "Vera";
+                      size, 10;
+                      min, 1 1;
+                      align, 0.5 0.0;
+                  }
+              }
+
           }
-      }  
+      }
+
+      programs {
+	  program {
+	      name, "normal";
+	      signal, "mouse,out";
+	      source, "*";
+	      action, STATE_SET "default" 0.0;
+	      transition, LINEAR 0.0;
+	      target, "text";
+	  }
+          program {
+	      name, "highlight";
+	      signal, "mouse,in";
+	      source, "*";
+	      action, STATE_SET "highlight" 0.0;
+	      transition, LINEAR 0.0;
+	      target, "text";
+	  }
+      }
    }
