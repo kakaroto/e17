@@ -15,6 +15,7 @@ images {
 }
 
 data {
+    item, "/label/group" "label";
     item, "/button/group" "button";
     item, "/button/text/font" "vio";
     item, "/button/text/font_size" "12";
@@ -103,6 +104,7 @@ data {
 }
 
 collections {
+#include "zero/bits/label-groups.edc"
 #include "zero/bits/button-groups.edc"
 #include "zero/bits/checkbox-groups.edc"
 #include "zero/bits/entry-groups.edc"

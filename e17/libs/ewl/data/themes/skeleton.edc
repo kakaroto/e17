@@ -15,6 +15,7 @@ images {
 }
 
 data {
+	item, "/label/group" "label";
 	item, "/button/group" "button";
 	item, "/button/label/font" "Vera";
 	item, "/button/text/font" "Vera";
@@ -70,6 +71,7 @@ data {
 }
 
 collections {
+#include "skeleton/bits/label-groups.edc"
 #include "skeleton/bits/button-groups.edc"
 #include "skeleton/bits/cell-groups.edc"
 #include "skeleton/bits/checkbox-groups.edc"

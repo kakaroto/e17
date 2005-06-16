@@ -9,6 +9,7 @@ images {
 }
 
 collections {
+#include "e17/bits/label-groups.edc"
 #include "e17/bits/button-groups.edc"
 #include "e17/bits/entry-groups.edc"
 #include "e17/bits/menu-groups.edc"
@@ -21,6 +22,7 @@ collections {
 }
 
 data {
+    item, "/label/group" "label";
     item, "/button/group" "button";
     item, "/cell/group" "button";
     item, "/radio/group" "radio";
