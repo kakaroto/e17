@@ -741,6 +741,10 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    y = (y * p->dh) / VRoot.h;
    w = (w * p->dw) / VRoot.w;
    h = (h * p->dh) / VRoot.h;
+   if (w <= 0)
+      w = 1;
+   if (h <= 0)
+      h = 1;
 
    if (!gc)
       gc = ECreateGC(p->pmap, 0, NULL);
