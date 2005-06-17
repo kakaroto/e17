@@ -248,7 +248,7 @@ ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
         Ewl_ColorDialog_Color col;
         float h, s, v;
 
-	DENTER_FUNCITON(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	cd = user_data;
