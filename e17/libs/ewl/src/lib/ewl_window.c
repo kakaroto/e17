@@ -558,6 +558,10 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	else
 #endif
 	{
+		fprintf(stderr, "No render engine found!!\n"
+				"Please check your configuration if you "
+				"or the config.log from your build to verify "
+				"that some Evas headers were detected.\n");
 		ewl_evas_destroy(evas);
 		DRETURN(DLEVEL_STABLE);
 	}
