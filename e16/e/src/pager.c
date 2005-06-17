@@ -48,6 +48,7 @@ struct _pager
    Window              sel_win;
 
    /* State flags */
+   char                timeout_pending;
    char                do_newbg;
    char                do_update;
    int                 x1, y1, x2, y2;
@@ -64,6 +65,7 @@ typedef struct
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
 
+static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(Pager * p);
@@ -126,8 +128,7 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 
    imlib_context_set_drawable(src);
    im = imlib_create_scaled_image_from_drawable(None, sx, sy, sw, sh,
-						scale * dw, scale * dh,
-						!EServerIsGrabbed(), 0);
+						scale * dw, scale * dh, 0, 0);
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(1);
    imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
@@ -146,35 +147,32 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 }
 
 static void
+PagerScanTrig(Pager * p)
+{
+   char                s[128];
+
+   if (p->timeout_pending || Conf.pagers.scanspeed <= 0)
+      return;
+
+   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
+   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout, 0, p);
+   p->timeout_pending = 1;
+}
+
+static void
 PagerUpdateTimeout(int val __UNUSED__, void *data)
 {
    Pager              *p;
    EWin               *ewin;
-   char                s[4096];
-   static double       last_time = 0.0;
-   double              cur_time, in;
-   static int          calls = 0;
    int                 y, y2, phase, cx, cy, ww, hh, xx, yy;
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
-   p = (Pager *) data;
-   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-   /* prevent runaway pager timeouts - dont knwo how it happens - but hack */
-   /* around to stop it */
-   cur_time = GetTime();
-   if ((cur_time - last_time) < 0.05)
-      calls++;
-   last_time = cur_time;
-   in = 1 / ((double)Conf.pagers.scanspeed);
-   if (calls > 50)
-     {
-	calls = 0;
-	in = 0.25;
-     }
-   if (Conf.pagers.scanspeed > 0)
-      DoIn(s, in, PagerUpdateTimeout, 0, p);
    if (!Conf.pagers.snap)
       return;
+
+   p = (Pager *) data;
+   p->timeout_pending = 0;
+
    ewin = p->ewin;
    if (!ewin || !EoIsShown(ewin))
       return;
@@ -182,6 +180,10 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
       return;
    if (ewin->visibility == VisibilityFullyObscured)
       return;
+
+   if (Conf.pagers.scanspeed > 0)
+      PagerScanTrig(p);
+
    if (Mode.mode != MODE_NONE)
       return;
 
@@ -635,14 +637,6 @@ PagerShow(Pager * p)
      }
 
    ShowEwin(ewin);
-
-   if (Conf.pagers.snap)
-     {
-	Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-	if (Conf.pagers.scanspeed > 0)
-	   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout,
-		0, p);
-     }
 
    AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
 }
@@ -1418,7 +1412,6 @@ PagerSetSnap(char onoff)
    Pager             **pl;
    EWin               *const *lst;
    int                 i, num;
-   char                s[256];
 
    Conf.pagers.snap = onoff;
 
@@ -1439,10 +1432,9 @@ PagerSetSnap(char onoff)
 
 	for (i = 0; i < num; i++)
 	  {
-	     Esnprintf(s, sizeof(s), "__.%x", (unsigned)pl[i]->win);
-	     if (Conf.pagers.scanspeed > 0)
-		DoIn(s, 1 / ((double)Conf.pagers.scanspeed),
-		     PagerUpdateTimeout, 0, pl[i]);
+	     if (Conf.pagers.scanspeed > 0
+		 && pl[i]->desktop == DesksGetCurrent())
+		PagerScanTrig(pl[i]);
 	  }
 
 	Efree(pl);
@@ -1747,9 +1739,11 @@ PagerEventMainWin(XEvent * ev, void *prm)
      case ButtonRelease:
 	PagerEventMouseUp(p, ev);
 	break;
+
      case MotionNotify:
 	PagerEventMotion(p, ev);
 	break;
+
      case EnterNotify:
 #if 0				/* Nothing done here */
 	PagerHandleMotion(p, ev->xany.window, ev->xcrossing.x, ev->xcrossing.y,
@@ -1757,11 +1751,19 @@ PagerEventMainWin(XEvent * ev, void *prm)
 #endif
 	break;
      case LeaveNotify:
+	if (Mode.mode != MODE_NONE)
+	   break;
 	PagerHandleMotion(p, ev->xany.window, ev->xcrossing.x, ev->xcrossing.y,
 			  PAGER_EVENT_MOUSE_OUT);
 	break;
+
      case UnmapNotify:
 	PagerEventUnmap(p);
+	break;
+
+     case VisibilityNotify:
+	if (ev->xvisibility.state != VisibilityFullyObscured)
+	   PagerScanTrig(p);
 	break;
      }
 }
