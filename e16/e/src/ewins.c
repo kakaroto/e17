@@ -646,6 +646,8 @@ AddToFamily(EWin * ewin, Window win)
 	  }
      }
 
+   x = EoGetX(ewin);
+   y = EoGetY(ewin);
    if (ewin->client.transient && Conf.focus.transientsfollowleader)
      {
 	EWin               *const *lst2;
@@ -705,8 +707,6 @@ AddToFamily(EWin * ewin, Window win)
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
-   x = EoGetX(ewin);
-   y = EoGetY(ewin);
    if ((!ewin->client.already_placed) && (!manplace))
      {
 	/* Place the window below the mouse pointer */
