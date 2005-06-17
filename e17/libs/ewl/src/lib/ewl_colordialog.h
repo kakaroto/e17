@@ -8,6 +8,13 @@
  * @{
  */
 
+typedef struct Ewl_ColorDialog_Color Ewl_ColorDialog_Color;
+
+struct Ewl_ColorDialog_Color
+{
+	int r, g, b, a;
+};
+
 typedef struct Ewl_ColorDialog Ewl_ColorDialog;
 
 /**
@@ -19,7 +26,7 @@ typedef struct Ewl_ColorDialog Ewl_ColorDialog;
 struct Ewl_ColorDialog
 {
 	Ewl_Box box;
-        Ewl_Widget *preview;
+	Ewl_Widget *preview;
         Ewl_Widget *picker;
         Ewl_Widget *red_entry;
         Ewl_Widget *green_entry;
@@ -27,10 +34,7 @@ struct Ewl_ColorDialog
         Ewl_Widget *hue_entry;
         Ewl_Widget *saturation_entry;
         Ewl_Widget *value_entry;
-        struct _ewl_colordialog_color
-        {
-                int r, g, b;
-        } selected;
+	Ewl_ColorDialog_Color selected;
 };
 
 Ewl_Widget 	*ewl_colordialog_new(int r, int g, int b);

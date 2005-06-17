@@ -35,6 +35,7 @@ int ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
         Ewl_Widget *hbox;
         Ewl_Widget *button;
         Ewl_Widget *label;
+        Ewl_ColorDialog_Color col;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
@@ -161,7 +162,6 @@ int ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 
 	ewl_widget_show(vbox);
 
-        struct { int r, g, b; } col;
         col.r = r; col.g = g; col.b = b;
         ewl_colordialog_color_valuechanged_cb(EWL_WIDGET(cd), &col, cd);
 
@@ -178,7 +178,7 @@ void ewl_colordialog_color_get(Ewl_ColorDialog *cd, int *r, int *g, int *b)
 void ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         col.r = strtol(ev_data, NULL, 10);
         col.g = cd->selected.g;
@@ -198,7 +198,7 @@ void ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_d
 void ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         col.r = cd->selected.r;
         col.g = strtol(ev_data, NULL, 10);
@@ -218,7 +218,7 @@ void ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user
 void ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         col.r = cd->selected.r;
         col.g = cd->selected.g;
@@ -238,7 +238,7 @@ void ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_
 void ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b, &h, &s, &v);
         h = strtod(ev_data, NULL);
@@ -255,7 +255,7 @@ void ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_d
 void ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b, &h, &s, &v);
         s = strtod(ev_data, NULL);
@@ -272,7 +272,7 @@ void ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void 
 void ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct { int r, g, b; } col;
+        Ewl_ColorDialog_Color col;
         float h, s, v;
         ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b, &h, &s, &v);
         v = strtod(ev_data, NULL);
@@ -289,7 +289,7 @@ void ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user
 void ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
         Ewl_ColorDialog *cd = EWL_COLORDIALOG(user_data);
-        struct _ewl_colordialog_color *col = ev_data;
+        Ewl_ColorDialog_Color *col = ev_data;
         cd->selected.r = col->r;
         cd->selected.g = col->g;
         cd->selected.b = col->b;
