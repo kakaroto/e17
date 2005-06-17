@@ -249,7 +249,7 @@ FocusFix(void)
 static void
 doFocusToEwin(EWin * ewin, int why)
 {
-   int                 do_follow = 0;
+   int                 do_focus = 0;
    int                 do_raise = 0, do_warp = 0;
 
    if (focus_inhibit)
@@ -306,32 +306,36 @@ doFocusToEwin(EWin * ewin, int why)
      case FOCUS_EWIN_NEW:
 	if (Conf.focus.all_new_windows_get_focus)
 	  {
-	     do_follow = 2;
-	  }
-	else if (Conf.focus.new_transients_get_focus)
-	  {
-	     if (ewin->client.transient)
-		do_follow = 2;
-	  }
-	else if (Conf.focus.new_transients_get_focus_if_group_focused)
-	  {
-	     EWin               *ewin2;
-
-	     ewin2 = FindItem(NULL, ewin->client.transient_for,
-			      LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     if ((ewin2) && (Mode.focuswin == ewin2))
-		do_follow = 2;
+	     do_focus = 1;
 	  }
 	else if (Mode.place.doing_manual)
 	  {
-	     do_follow = 1;
+	     do_focus = 1;
 	  }
 
-	if (!do_follow)
+	if (ewin->client.transient)
+	  {
+	     if (Conf.focus.new_transients_get_focus)
+	       {
+		  do_focus = 2;
+	       }
+	     else if (Conf.focus.new_transients_get_focus_if_group_focused)
+	       {
+		  EWin               *ewin2;
+
+		  ewin2 = FindItem(NULL, ewin->client.transient_for,
+				   LIST_FINDBY_ID, LIST_TYPE_EWIN);
+		  if ((ewin2) && (Mode.focuswin == ewin2))
+		     do_focus = 2;
+	       }
+
+	     if (do_focus == 2)
+		DeskGotoByEwin(ewin);
+	  }
+
+	if (!do_focus)
 	   return;
-	if (ewin == Mode.focuswin)
-	   return;
-	if (!FocusEwinValid(ewin, 0, 0, 0))
+	if (!FocusEwinValid(ewin, 1, 0, 0))
 	   return;
 	break;
      }
@@ -348,9 +352,6 @@ doFocusToEwin(EWin * ewin, int why)
 
    if (why != FOCUS_CLICK && ewin->focusclick)
       return;
-
-   if (do_follow)
-      DeskGotoByEwin(ewin);
 
    if (Conf.autoraise.enable)
      {
@@ -496,7 +497,10 @@ FocusInit(void)
    ewin = GetEwinByCurrentPointer();
    Mode.mouse_over_ewin = ewin;
 
+   focus_pending_why = 0;
+   focus_pending_ewin = focus_pending_new = NULL;
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
+   FocusSet();
 
    /* Enable window placement features */
    Mode.place.enable_features = 1;
