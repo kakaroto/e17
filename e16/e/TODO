@@ -2,14 +2,9 @@
 - Composite manager
   - Don't paint unredirected windows where not necessary.
   - Enable not redirecting certain clients.
-  - Fix slideouts.
   - Redirect override-redirect windows at create in stead of map?
 
-- Problems with stacking on desk switch?
-
 - Speed up window stacking.
-
-- Very long windows cause crash.
 
 - Handle _NET_WM_ICON.
 

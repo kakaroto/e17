@@ -3432,3 +3432,28 @@ Fix various window slidein issues.
 Composite manager fixes.
 Initial urgency and DEMANDS_ATTENTION support.
 Pseudo-trans update fixes (Tres Melton).
+
+-------------------------------------------------------------------------------
+
+Sat Jun 18 02:22:33 CEST 2005
+(Kim)
+
+--- 0.16.8 0.12 ---
+Scale default background. Cleanups (winter theme).
+Fix warnings on x86-64 (Tres Melton).
+Make dialog sliders behave when using mouse wheel (Tres Melton).
+Fix slideouts.
+Fix menu generation when PATH contains non-existing directories.
+Improve viewport switching with composite enabled.
+Remove some XSync's.
+Composite manager tweaks.
+Fix dialog segv and other issues.
+Fix starting/stopping composite manager.
+Fix crash on large client windows (dimension > 8192 pixels).
+Shape speedups, sanity check.
+Fix delay in main event loop, cleanups.
+Fix segv when lowering number of desktops.
+Speed up initial rendering of certain dialogs.
+Fix dragging pagers. Make pager scanning a bit more efficient.
+Fix transient placement.
+Focus tweaks.
