@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-17 00:28+0200\n"
+"POT-Creation-Date: 2005-06-18 01:59+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -19,26 +19,26 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "TextClass 오류!"
 
-#: src/aclass.c:184 src/backgrounds.c:216 src/borders.c:637 src/buttons.c:153
-#: src/cmclass.c:84 src/cursors.c:111 src/iclass.c:243 src/tclass.c:92
+#: src/aclass.c:184 src/backgrounds.c:216 src/borders.c:634 src/buttons.c:152
+#: src/cmclass.c:84 src/cursors.c:111 src/iclass.c:252 src/tclass.c:92
 #: src/tooltips.c:114
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
 
-#: src/aclass.c:239 src/backgrounds.c:930 src/borders.c:1013
-#: src/borders.c:1137 src/buttons.c:724 src/cmclass.c:201 src/config.c:267
-#: src/cursors.c:150 src/iclass.c:405 src/iconify.c:2701 src/menus.c:1852
-#: src/menus.c:1965 src/slideout.c:408 src/tclass.c:219 src/tooltips.c:148
+#: src/aclass.c:239 src/backgrounds.c:927 src/borders.c:1010
+#: src/borders.c:1134 src/buttons.c:746 src/cmclass.c:201 src/config.c:267
+#: src/cursors.c:150 src/iclass.c:414 src/iconify.c:2485 src/menus.c:1829
+#: src/menus.c:1942 src/slideout.c:405 src/tclass.c:219 src/tooltips.c:148
 #: src/windowmatch.c:145
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 
-#: src/aclass.c:247 src/backgrounds.c:938 src/borders.c:1019
-#: src/borders.c:1143 src/buttons.c:732 src/cmclass.c:209 src/config.c:275
-#: src/cursors.c:156 src/iclass.c:410 src/menus.c:1857 src/menus.c:1971
-#: src/slideout.c:414 src/tclass.c:225 src/tooltips.c:154
+#: src/aclass.c:247 src/backgrounds.c:935 src/borders.c:1016
+#: src/borders.c:1140 src/buttons.c:754 src/cmclass.c:209 src/config.c:275
+#: src/cursors.c:156 src/iclass.c:419 src/menus.c:1834 src/menus.c:1948
+#: src/slideout.c:411 src/tclass.c:225 src/tooltips.c:154
 #: src/windowmatch.c:150
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -198,13 +198,13 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/actions.c:326 src/backgrounds.c:2369 src/desktops.c:1899
-#: src/desktops.c:2132 src/dialog.c:2106 src/dialog.c:2131 src/fx.c:1058
-#: src/groups.c:666 src/groups.c:969 src/groups.c:1146 src/handlers.c:186
-#: src/iconify.c:2659 src/mod-trans.c:363 src/pager.c:2254 src/settings.c:330
-#: src/settings.c:715 src/settings.c:907 src/settings.c:1005
-#: src/settings.c:1118 src/settings.c:1436 src/settings.c:1579 src/snaps.c:862
-#: src/snaps.c:1062 src/sound.c:281 src/sound.c:486 src/tooltips.c:902
+#: src/actions.c:326 src/backgrounds.c:2366 src/desktops.c:1900
+#: src/desktops.c:2133 src/dialog.c:2065 src/dialog.c:2090 src/focus.c:920
+#: src/fx.c:1057 src/groups.c:666 src/groups.c:969 src/groups.c:1146
+#: src/handlers.c:186 src/iconify.c:2443 src/mod-trans.c:367 src/pager.c:2187
+#: src/settings.c:403 src/settings.c:595 src/settings.c:693 src/settings.c:806
+#: src/settings.c:1124 src/settings.c:1265 src/snaps.c:862 src/snaps.c:1062
+#: src/sound.c:281 src/sound.c:486 src/tooltips.c:902
 msgid "OK"
 msgstr "확인"
 
@@ -236,7 +236,7 @@ msgstr "무시"
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/alert.c:587 src/alert.c:611 src/events.c:94 src/setup.c:286
+#: src/alert.c:587 src/alert.c:611 src/events.c:87 src/setup.c:284
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -244,11 +244,11 @@ msgstr "인라이튼먼트 종료"
 msgid "Background Error!"
 msgstr "배경 오류!"
 
-#: src/backgrounds.c:1460
+#: src/backgrounds.c:1457
 msgid "-NONE-"
 msgstr "-없음-"
 
-#: src/backgrounds.c:1462
+#: src/backgrounds.c:1459
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -259,7 +259,7 @@ msgstr ""
 "이름: %s\n"
 "파일: %s\n"
 
-#: src/backgrounds.c:1661 src/backgrounds.c:1663
+#: src/backgrounds.c:1658 src/backgrounds.c:1660
 msgid ""
 "No\n"
 "Background"
@@ -267,16 +267,16 @@ msgstr ""
 "배경\n"
 "없음"
 
-#: src/backgrounds.c:1786 src/backgrounds.c:2258
+#: src/backgrounds.c:1783 src/backgrounds.c:2255
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "사용되지 않는 배경은 %2i:%2i:%2i후에 해제"
 
-#: src/backgrounds.c:2019
+#: src/backgrounds.c:2016
 msgid "Desktop Background Settings"
 msgstr "데스크탑 배경 설정"
 
-#: src/backgrounds.c:2035
+#: src/backgrounds.c:2032
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -284,51 +284,51 @@ msgstr ""
 "인라이튼먼트 데스크탑\n"
 "배경 설정 대화상자\n"
 
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2045
 msgid "BG Colour\n"
 msgstr "배경 색\n"
 
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2056
 msgid "Move to Front\n"
 msgstr "앞으로 이동\n"
 
-#: src/backgrounds.c:2066
+#: src/backgrounds.c:2063
 msgid "Duplicate\n"
 msgstr "복제\n"
 
-#: src/backgrounds.c:2072
+#: src/backgrounds.c:2069
 msgid "Unlist\n"
 msgstr "목록에서 삭제\n"
 
-#: src/backgrounds.c:2078
+#: src/backgrounds.c:2075
 msgid "Delete File\n"
 msgstr "파일 삭제\n"
 
-#: src/backgrounds.c:2087
+#: src/backgrounds.c:2084
 msgid "Red:\n"
 msgstr "적색:\n"
 
-#: src/backgrounds.c:2101
+#: src/backgrounds.c:2098
 msgid "Use background image"
 msgstr "배경 이미지 사용"
 
-#: src/backgrounds.c:2109
+#: src/backgrounds.c:2106
 msgid "Green:\n"
 msgstr "녹색:\n"
 
-#: src/backgrounds.c:2123
+#: src/backgrounds.c:2120
 msgid "Keep aspect on scale"
 msgstr "크기조정시 모양 유지"
 
-#: src/backgrounds.c:2131
+#: src/backgrounds.c:2128
 msgid "Blue:\n"
 msgstr "청색:\n"
 
-#: src/backgrounds.c:2145
+#: src/backgrounds.c:2142
 msgid "Tile image across background"
 msgstr "배경에 사용할 타일 이미지"
 
-#: src/backgrounds.c:2161
+#: src/backgrounds.c:2158
 msgid ""
 "Background\n"
 "Image\n"
@@ -342,54 +342,53 @@ msgstr ""
 "그리고\n"
 "위치조정\n"
 
-#: src/backgrounds.c:2242
+#: src/backgrounds.c:2239
 msgid "Use dithering in Hi-Colour"
 msgstr "고색상에서 디더링 사용"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2246
 msgid "Background overrides theme"
 msgstr "테마의 배경 사용않함"
 
-#: src/backgrounds.c:2305
+#: src/backgrounds.c:2302
 msgid "Pre-scan BG's"
 msgstr "배경 미리 스캔"
 
-#: src/backgrounds.c:2315
+#: src/backgrounds.c:2312
 msgid "Sort by File"
 msgstr "파일로 정렬"
 
-#: src/backgrounds.c:2321
+#: src/backgrounds.c:2318
 msgid "Sort by Attr."
 msgstr "속성으로 정렬"
 
-#: src/backgrounds.c:2327
+#: src/backgrounds.c:2324
 msgid "Sort by Image"
 msgstr "이미지로 정렬"
 
-#: src/backgrounds.c:2370 src/desktops.c:1900 src/desktops.c:2133
-#: src/fx.c:1059 src/groups.c:970 src/groups.c:1148 src/iconify.c:2660
-#: src/mod-trans.c:364 src/pager.c:2255 src/settings.c:331 src/settings.c:716
-#: src/settings.c:908 src/settings.c:1006 src/settings.c:1119
-#: src/settings.c:1437 src/settings.c:1580 src/snaps.c:863 src/sound.c:487
+#: src/backgrounds.c:2367 src/desktops.c:1901 src/desktops.c:2134
+#: src/focus.c:921 src/fx.c:1058 src/groups.c:970 src/groups.c:1148
+#: src/iconify.c:2444 src/mod-trans.c:368 src/pager.c:2188 src/settings.c:404
+#: src/settings.c:596 src/settings.c:694 src/settings.c:807
+#: src/settings.c:1125 src/settings.c:1266 src/snaps.c:863 src/sound.c:487
 #: src/tooltips.c:903
 msgid "Apply"
 msgstr "적용"
 
-#: src/backgrounds.c:2371 src/desktops.c:1901 src/desktops.c:2134
-#: src/fx.c:1060 src/groups.c:667 src/groups.c:971 src/groups.c:1150
-#: src/iconify.c:2661 src/mod-trans.c:365 src/pager.c:923 src/pager.c:2256
-#: src/settings.c:332 src/settings.c:718 src/settings.c:910
-#: src/settings.c:1008 src/settings.c:1121 src/settings.c:1438
-#: src/settings.c:1582 src/snaps.c:864 src/snaps.c:1063 src/sound.c:488
-#: src/tooltips.c:904
+#: src/backgrounds.c:2368 src/desktops.c:1902 src/desktops.c:2135
+#: src/focus.c:922 src/fx.c:1059 src/groups.c:667 src/groups.c:971
+#: src/groups.c:1150 src/iconify.c:2445 src/mod-trans.c:369 src/pager.c:846
+#: src/pager.c:2189 src/settings.c:406 src/settings.c:598 src/settings.c:696
+#: src/settings.c:809 src/settings.c:1126 src/settings.c:1268 src/snaps.c:864
+#: src/snaps.c:1063 src/sound.c:488 src/tooltips.c:904
 msgid "Close"
 msgstr "닫기"
 
-#: src/borders.c:637
+#: src/borders.c:634
 msgid "Border Error!"
 msgstr "테두리 오류!"
 
-#: src/buttons.c:153
+#: src/buttons.c:152
 msgid "Button Error!"
 msgstr "버튼 오류!"
 
@@ -539,7 +538,7 @@ msgstr "테두리"
 msgid "Button"
 msgstr "아래"
 
-#: src/config.c:347 src/mod-trans.c:249
+#: src/config.c:347 src/mod-trans.c:253
 msgid "Background"
 msgstr "배경화면"
 
@@ -606,7 +605,7 @@ msgstr "ECursor 오류!"
 msgid "Cursor"
 msgstr "ECursor 오류!"
 
-#: src/desktops.c:99
+#: src/desktops.c:98
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -624,7 +623,7 @@ msgstr ""
 "현재 실행중인 모든 응용프로그램들을 보시려면\n"
 "가운데 마우스 버튼을 클릭하세요.\n"
 
-#: src/desktops.c:110
+#: src/desktops.c:109
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -640,7 +639,7 @@ msgstr ""
 "현재 실행중인 모든 응용프로그램들을 보시려면\n"
 "가운데 마우스 버튼을 클릭하세요.\n"
 
-#: src/desktops.c:130
+#: src/desktops.c:129
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -648,7 +647,7 @@ msgstr ""
 "데스크탑을 제일 위로 올리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:144
+#: src/desktops.c:143
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -656,21 +655,21 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:1735 src/desktops.c:1803
+#: src/desktops.c:1736 src/desktops.c:1804
 #, c-format
 msgid "%i Desktops"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:1737 src/desktops.c:1805
+#: src/desktops.c:1738 src/desktops.c:1806
 #, c-format
 msgid "%i Desktop"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:1767
+#: src/desktops.c:1768
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:1782
+#: src/desktops.c:1783
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -678,39 +677,39 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:1796
+#: src/desktops.c:1797
 msgid "Number of virtual desktops:\n"
 msgstr "가상 데스크탑 수:\n"
 
-#: src/desktops.c:1835
+#: src/desktops.c:1836
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:1849
+#: src/desktops.c:1850
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:1858
+#: src/desktops.c:1859
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:1864
+#: src/desktops.c:1865
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:1872
+#: src/desktops.c:1873
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:1880 src/pager.c:2163 src/pager.c:2195 src/pager.c:2227
+#: src/desktops.c:1881 src/pager.c:2096 src/pager.c:2128 src/pager.c:2160
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:1888 src/pager.c:2179 src/pager.c:2211 src/pager.c:2243
+#: src/desktops.c:1889 src/pager.c:2112 src/pager.c:2144 src/pager.c:2176
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:1984 src/desktops.c:2053
+#: src/desktops.c:1985 src/desktops.c:2054
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -719,7 +718,7 @@ msgstr ""
 "%i x %i\n"
 "화면 크기"
 
-#: src/desktops.c:1987 src/desktops.c:2056
+#: src/desktops.c:1988 src/desktops.c:2057
 msgid ""
 "1\n"
 "Screen in size"
@@ -727,11 +726,11 @@ msgstr ""
 "1\n"
 "화면 크기"
 
-#: src/desktops.c:2017
+#: src/desktops.c:2018
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2035
+#: src/desktops.c:2036
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -739,31 +738,31 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:2047
+#: src/desktops.c:2048
 msgid "Virtual Desktop size:\n"
 msgstr "가상 데스크탑 크기:\n"
 
-#: src/desktops.c:2101
+#: src/desktops.c:2102
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2108
+#: src/desktops.c:2109
 msgid "Enable edge flip"
 msgstr "에지 플립 사용"
 
-#: src/desktops.c:2115
+#: src/desktops.c:2116
 msgid "Resistance at edge of screen:\n"
 msgstr "스크린 변두리에서의 저항감:\n"
 
-#: src/dialog.c:2131
+#: src/dialog.c:2090
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/events.c:93
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "X 서버 설정 오류"
 
-#: src/events.c:95
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -782,6 +781,106 @@ msgstr ""
 "X 서버가 너무 오래된 것이거나 환경설정이 잘못되었을 것입니다.\n"
 "\n"
 "종료.\n"
+
+#: src/focus.c:686
+msgid "Focus Settings"
+msgstr "포커스 설정"
+
+#: src/focus.c:701
+msgid ""
+"Enlightenment Focus\n"
+"Settings Dialog\n"
+msgstr ""
+"인라이튼먼트 포커스\n"
+"설정 대화상자\n"
+
+#: src/focus.c:714
+msgid "Focus follows pointer"
+msgstr "포커스가 포인터 따라감"
+
+#: src/focus.c:722
+msgid "Focus follows pointer sloppily"
+msgstr "포커스가 포인터를 적당히 따라감"
+
+#: src/focus.c:730
+msgid "Focus follows mouse clicks"
+msgstr "포커스가 마우스 클릭을 따라감"
+
+#: src/focus.c:745
+msgid "Clicking in a window always raises it"
+msgstr "창안에서 클릭하면 항상 창을 위로 올림"
+
+#: src/focus.c:759
+msgid "All new windows first get the focus"
+msgstr "모든 새로운 창이 먼저 포커스를 가짐"
+
+#: src/focus.c:767
+msgid "Only new dialog windows get the focus"
+msgstr "오직 새로운 대화상자 창만 포커스 가짐"
+
+#: src/focus.c:777
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr "오직 포커스를 가진 창의 새로운 대화상자만 포커스 가짐"
+
+#: src/focus.c:785
+#, fuzzy
+msgid "Raise windows while switching focus"
+msgstr "바꾸는 동안에 창 포커스"
+
+#: src/focus.c:795
+#, fuzzy
+msgid "Send mouse pointer to window while switching focus"
+msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
+
+#: src/focus.c:805
+#, fuzzy
+msgid "Always send mouse pointer to window on focus switch"
+msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
+
+#: src/focus.c:819
+msgid "Display and use focus list"
+msgstr "포커스 목록을 표시하고 사용"
+
+#: src/focus.c:827
+msgid "Include sticky windows in focus list"
+msgstr "포커스 목록에 스틱키 창 포함"
+
+#: src/focus.c:835
+msgid "Include shaded windows in focus list"
+msgstr "포커스 목록에 음영 창 포함"
+
+#: src/focus.c:844
+msgid "Include iconified windows in focus list"
+msgstr "포커스 목록에 아이콘 창 포함"
+
+#: src/focus.c:852
+msgid "Focus windows while switching"
+msgstr "바꾸는 동안에 창 포커스"
+
+#: src/focus.c:860
+msgid "Raise windows after focus switch"
+msgstr "포커스가 바뀐 후에 창 올리기"
+
+#: src/focus.c:870
+msgid "Send mouse pointer to window after focus switch"
+msgstr "포커스가 바뀐 후 마우스 포인터를 그 창으로 보냄"
+
+#: src/focus.c:887
+#, fuzzy
+msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
+
+#: src/focus.c:893
+msgid "First E Icon, then App Icon"
+msgstr ""
+
+#: src/focus.c:901
+msgid "First App Icon, then E Icon"
+msgstr ""
+
+#: src/focus.c:909 src/iconify.c:2433
+msgid "None"
+msgstr "없음"
 
 #: src/fx.c:65
 msgid "Starting up Ripples FX..."
@@ -864,11 +963,11 @@ msgstr ""
 "이 효과를 사용하지 않으려면 이 옵션을 다시 선택하시면\n"
 "됩니다.\n"
 
-#: src/fx.c:692
+#: src/fx.c:691
 msgid "Starting up imagespinners FX..."
 msgstr "이미지스피너 특수효과 시작..."
 
-#: src/fx.c:693
+#: src/fx.c:692
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -882,12 +981,12 @@ msgstr ""
 "이 효과를 사용하지 않으려면 이 옵션을 다시 선택하시면\n"
 "됩니다.\n"
 
-#: src/fx.c:1002
+#: src/fx.c:1001
 #, fuzzy
 msgid "Miscellaneous Effects Settings"
 msgstr "기타 설정"
 
-#: src/fx.c:1017
+#: src/fx.c:1016
 #, fuzzy
 msgid ""
 "Enlightenment Miscellaneous Effects\n"
@@ -896,19 +995,19 @@ msgstr ""
 "인라이튼먼트 기타\n"
 "설정 대화상자\n"
 
-#: src/fx.c:1030
+#: src/fx.c:1029
 msgid "Effects"
 msgstr "효과"
 
-#: src/fx.c:1035
+#: src/fx.c:1034
 msgid "Enable Effect: Raindrops"
 msgstr "효과 사용: 빗방울"
 
-#: src/fx.c:1042
+#: src/fx.c:1041
 msgid "Ripples"
 msgstr "잔물결"
 
-#: src/fx.c:1049
+#: src/fx.c:1048
 msgid "Waves"
 msgstr "물결"
 
@@ -1195,12 +1294,12 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/iclass.c:243
+#: src/iclass.c:252
 #, fuzzy
 msgid "Imageclass Error!"
 msgstr "ImageClass 오류!"
 
-#: src/iclass.c:572
+#: src/iclass.c:581
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -1213,51 +1312,51 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/iconify.c:1954
+#: src/iconify.c:1746
 msgid "Iconbox Options"
 msgstr "아이콘상자 옵션"
 
-#: src/iconify.c:1957
+#: src/iconify.c:1749
 msgid "This Iconbox Settings..."
 msgstr "이 아이콘상자 설정..."
 
-#: src/iconify.c:1961
+#: src/iconify.c:1753
 msgid "Close Iconbox"
 msgstr "아이콘상자 닫기"
 
-#: src/iconify.c:1964
+#: src/iconify.c:1756
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/iconify.c:1971
+#: src/iconify.c:1763
 #, fuzzy
 msgid "Systray Options"
 msgstr "데스크탑 옵션"
 
-#: src/iconify.c:1974
+#: src/iconify.c:1766
 #, fuzzy
 msgid "Systray Settings..."
 msgstr "자동올리기 설정"
 
-#: src/iconify.c:1978
+#: src/iconify.c:1770
 msgid "Close Systray"
 msgstr ""
 
-#: src/iconify.c:2351 src/iconify.c:2550
+#: src/iconify.c:2135 src/iconify.c:2334
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "아이콘 크기"
 
-#: src/iconify.c:2395
+#: src/iconify.c:2179
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/iconify.c:2397
+#: src/iconify.c:2181
 #, fuzzy
 msgid "Systray Settings"
 msgstr "자동올리기 설정"
 
-#: src/iconify.c:2415
+#: src/iconify.c:2199
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -1265,108 +1364,104 @@ msgstr ""
 "인라이튼먼트 아이콘상자\n"
 "설정 대화상자\n"
 
-#: src/iconify.c:2426
+#: src/iconify.c:2210
 msgid "Transparent background"
 msgstr "투명 배경"
 
-#: src/iconify.c:2433
+#: src/iconify.c:2217
 msgid "Hide inner border"
 msgstr ""
 
-#: src/iconify.c:2442
+#: src/iconify.c:2226
 msgid "Show icon names"
 msgstr "아이콘 이름 보여주기"
 
-#: src/iconify.c:2450
+#: src/iconify.c:2234
 msgid "Draw base image behind Icons"
 msgstr "아이콘 뒤에 기본 이미지 그리기"
 
-#: src/iconify.c:2457
+#: src/iconify.c:2241
 msgid "Hide scrollbar when not needed"
 msgstr "필요없을 때 스크롤바 숨기기"
 
-#: src/iconify.c:2464
+#: src/iconify.c:2248
 msgid "Automatically resize to fit Icons"
 msgstr "아이콘에 맞추기 위해 자동으로 크기조정"
 
-#: src/iconify.c:2475
+#: src/iconify.c:2259
 msgid "Animate when iconifying to this Iconbox"
 msgstr "이 아이콘상자로 아이콘화할 때 에니메이트"
 
-#: src/iconify.c:2486
+#: src/iconify.c:2270
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "자동으로 크기조정시 정렬:"
 
-#: src/iconify.c:2510
+#: src/iconify.c:2294
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
 
-#: src/iconify.c:2517
+#: src/iconify.c:2301
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "창 스냅샷, 응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용"
 
-#: src/iconify.c:2526
+#: src/iconify.c:2310
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/iconify.c:2535
+#: src/iconify.c:2319
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/iconify.c:2575
+#: src/iconify.c:2359
 msgid "Orientation:"
 msgstr "방위:"
 
-#: src/iconify.c:2581
+#: src/iconify.c:2365
 msgid "Scrollbar side:"
 msgstr "스크롤바 사이드:"
 
-#: src/iconify.c:2587
+#: src/iconify.c:2371
 msgid "Scrollbar arrows:"
 msgstr "스크롤바 방향:"
 
-#: src/iconify.c:2592
+#: src/iconify.c:2376
 msgid "Horizontal"
 msgstr "수평"
 
-#: src/iconify.c:2599
+#: src/iconify.c:2383
 msgid "Left / Top"
 msgstr "왼쪽 / 위"
 
-#: src/iconify.c:2606
+#: src/iconify.c:2390
 msgid "Start"
 msgstr "시작"
 
-#: src/iconify.c:2613
+#: src/iconify.c:2397
 msgid "Vertical"
 msgstr "수직"
 
-#: src/iconify.c:2621
+#: src/iconify.c:2405
 msgid "Right / Bottom"
 msgstr "오른쪽 / 아래"
 
-#: src/iconify.c:2629
+#: src/iconify.c:2413
 msgid "Both ends"
 msgstr "양쪽 끝"
 
-#: src/iconify.c:2639
+#: src/iconify.c:2423
 msgid "End"
 msgstr "끝"
 
-#: src/iconify.c:2649 src/settings.c:319
-msgid "None"
-msgstr "없음"
-
-#: src/iconify.c:3248 src/iconify.c:3257
+#: src/iconify.c:3032 src/iconify.c:3041
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor 오류!"
 
-#: src/iconify.c:3248
+#: src/iconify.c:3032
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/iconify.c:3257
+#: src/iconify.c:3041
 msgid "Could not activate systray"
 msgstr ""
 
@@ -1383,12 +1478,12 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
-#: src/ipc.c:1617
+#: src/ipc.c:1610
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1621
+#: src/ipc.c:1614
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1399,28 +1494,28 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1623 src/ipc.c:1643 src/ipc.c:1655
+#: src/ipc.c:1616 src/ipc.c:1636 src/ipc.c:1648
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1641
+#: src/ipc.c:1634
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1642
+#: src/ipc.c:1635
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1644 src/ipc.c:1656
+#: src/ipc.c:1637 src/ipc.c:1649
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
 
-#: src/main.c:588
+#: src/main.c:593
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1431,7 +1526,7 @@ msgstr ""
 "이것은 심각한 상황입니다.\n"
 "이 파일을 삭제하십시오\n"
 
-#: src/main.c:595
+#: src/main.c:600
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1444,7 +1539,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/main.c:603
+#: src/main.c:608
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1457,7 +1552,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/main.c:610
+#: src/main.c:615
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1470,7 +1565,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/main.c:719
+#: src/main.c:724
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1499,7 +1594,7 @@ msgstr ""
 "손으로 프로그램을 지웠든 지 아니면 인라이튼먼트 인스톨이\n"
 "잘못된 것입니다.\n"
 
-#: src/main.c:733
+#: src/main.c:738
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1520,7 +1615,7 @@ msgstr ""
 "이 문제를 고치시기를 바라며 dox가 인스톨이 제대로 되었는\n"
 "지를 확인하시기 바랍니다.\n"
 
-#: src/menus.c:2129
+#: src/menus.c:2106
 #, fuzzy
 msgid "Menu"
 msgstr "메뉴:"
@@ -1548,16 +1643,16 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/mod-trans.c:86 src/mod-trans.c:341
+#: src/mod-trans.c:87 src/mod-trans.c:345
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "테마 투명도: %2d"
 
-#: src/mod-trans.c:119
+#: src/mod-trans.c:123
 msgid "Selective Transparency Settings"
 msgstr "테마 투명도 설정"
 
-#: src/mod-trans.c:131
+#: src/mod-trans.c:135
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
@@ -1565,99 +1660,99 @@ msgstr ""
 "인라이튼먼트 테마 투명도 설정\n"
 "설정 대화상자\n"
 
-#: src/mod-trans.c:146
+#: src/mod-trans.c:150
 msgid "Changes Might Require Restart:"
 msgstr "설정을 변경하려면 재시작 해야 합니다:"
 
-#: src/mod-trans.c:164
+#: src/mod-trans.c:168
 #, fuzzy
 msgid "Borders:"
 msgstr "테두리"
 
-#: src/mod-trans.c:171
+#: src/mod-trans.c:175
 #, fuzzy
 msgid "Menus:"
 msgstr "메뉴:"
 
-#: src/mod-trans.c:178
+#: src/mod-trans.c:182
 msgid "Hilights:"
 msgstr "활성화:"
 
-#: src/mod-trans.c:185
+#: src/mod-trans.c:189
 msgid "E Widgets:"
 msgstr "E 위젯:"
 
-#: src/mod-trans.c:192
+#: src/mod-trans.c:196
 msgid "E Dialogs:"
 msgstr "E 대화상자:"
 
-#: src/mod-trans.c:199
+#: src/mod-trans.c:203
 #, fuzzy
 msgid "Tooltips:"
 msgstr "도움말:"
 
-#: src/mod-trans.c:206 src/settings.c:568 src/settings.c:576
-#: src/settings.c:1245
+#: src/mod-trans.c:210 src/settings.c:256 src/settings.c:264
+#: src/settings.c:933
 msgid "Opaque"
 msgstr "불투명"
 
-#: src/mod-trans.c:295
+#: src/mod-trans.c:299
 msgid "Glass"
 msgstr "유리효과"
 
-#: src/pager.c:916
+#: src/pager.c:839
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:919
+#: src/pager.c:842
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:927
+#: src/pager.c:850
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:931
+#: src/pager.c:854
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:941
+#: src/pager.c:863
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:943
+#: src/pager.c:865
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:946
+#: src/pager.c:868
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:949
+#: src/pager.c:871
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:954
+#: src/pager.c:876
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:957
+#: src/pager.c:879
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/pager.c:2014 src/pager.c:2137
+#: src/pager.c:1947 src/pager.c:2070
 msgid "Pager scanning speed:"
 msgstr "페이저 스캐닝 속도:"
 
-#: src/pager.c:2015 src/pager.c:2138
+#: src/pager.c:1948 src/pager.c:2071
 msgid "lines per second"
 msgstr "초당 줄수"
 
-#: src/pager.c:2051
+#: src/pager.c:1984
 msgid "Pager Settings"
 msgstr "페이저 설정"
 
-#: src/pager.c:2066
+#: src/pager.c:1999
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1665,43 +1760,43 @@ msgstr ""
 "인라이튼먼트 데스크탑과 영역\n"
 "페이저 설정 대화상자\n"
 
-#: src/pager.c:2080
+#: src/pager.c:2013
 msgid "Enable pager display"
 msgstr "페이저 표시 가능"
 
-#: src/pager.c:2089
+#: src/pager.c:2022
 msgid "Make miniature snapshots of the screen"
 msgstr "축소된 화면의 스냅샷 만들기"
 
-#: src/pager.c:2099
+#: src/pager.c:2032
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "스냅샷 모드에서 부드러운 고해상도 스냅샷"
 
-#: src/pager.c:2109
+#: src/pager.c:2042
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 확대"
 
-#: src/pager.c:2119
+#: src/pager.c:2052
 msgid "Pop up window title when mouse is over the window"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 제목 보여주기"
 
-#: src/pager.c:2128
+#: src/pager.c:2061
 msgid "Continuously scan screen to update pager"
 msgstr "페이저를 갱신하기 위해 연속적으로 화면 스캔"
 
-#: src/pager.c:2157
+#: src/pager.c:2090
 msgid "Mouse button to select and drag windows:"
 msgstr "창을 선택하고 끌기 위한 마우스 버튼:"
 
-#: src/pager.c:2171 src/pager.c:2203 src/pager.c:2235
+#: src/pager.c:2104 src/pager.c:2136 src/pager.c:2168
 msgid "Middle"
 msgstr "중간"
 
-#: src/pager.c:2189
+#: src/pager.c:2122
 msgid "Mouse button to select desktops:"
 msgstr "데스크탑을 선택할 마우스 버튼"
 
-#: src/pager.c:2221
+#: src/pager.c:2154
 msgid "Mouse button to display pager menu:"
 msgstr "페이저 메뉴를 표시할 마우스 버튼:"
 
@@ -1741,11 +1836,11 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:960
+#: src/session.c:961
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:961
+#: src/session.c:962
 msgid ""
 "\n"
 "\n"
@@ -1759,118 +1854,29 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:966
+#: src/session.c:967
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:968
+#: src/session.c:969
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:971
+#: src/session.c:972
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:973
+#: src/session.c:974
 msgid "  No  "
 msgstr "  아니오  "
 
-#: src/settings.c:106
-msgid "Focus Settings"
-msgstr "포커스 설정"
-
-#: src/settings.c:121
-msgid ""
-"Enlightenment Focus\n"
-"Settings Dialog\n"
-msgstr ""
-"인라이튼먼트 포커스\n"
-"설정 대화상자\n"
-
-#: src/settings.c:134
-msgid "Focus follows pointer"
-msgstr "포커스가 포인터 따라감"
-
-#: src/settings.c:142
-msgid "Focus follows pointer sloppily"
-msgstr "포커스가 포인터를 적당히 따라감"
-
-#: src/settings.c:150
-msgid "Focus follows mouse clicks"
-msgstr "포커스가 마우스 클릭을 따라감"
-
-#: src/settings.c:165
-msgid "Clicking in a window always raises it"
-msgstr "창안에서 클릭하면 항상 창을 위로 올림"
-
-#: src/settings.c:179
-msgid "All new windows first get the focus"
-msgstr "모든 새로운 창이 먼저 포커스를 가짐"
-
-#: src/settings.c:187
-msgid "Only new dialog windows get the focus"
-msgstr "오직 새로운 대화상자 창만 포커스 가짐"
-
-#: src/settings.c:197
-msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "오직 포커스를 가진 창의 새로운 대화상자만 포커스 가짐"
-
-#: src/settings.c:205
-msgid "Raise windows on focus switch"
-msgstr "포커스가 바뀔 때 창 올리기"
-
-#: src/settings.c:215
-msgid "Send mouse pointer to window on focus switch"
-msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
-
-#: src/settings.c:229
-msgid "Display and use focus list"
-msgstr "포커스 목록을 표시하고 사용"
-
-#: src/settings.c:237
-msgid "Include sticky windows in focus list"
-msgstr "포커스 목록에 스틱키 창 포함"
-
-#: src/settings.c:245
-msgid "Include shaded windows in focus list"
-msgstr "포커스 목록에 음영 창 포함"
-
-#: src/settings.c:254
-msgid "Include iconified windows in focus list"
-msgstr "포커스 목록에 아이콘 창 포함"
-
-#: src/settings.c:262
-msgid "Focus windows while switching"
-msgstr "바꾸는 동안에 창 포커스"
-
-#: src/settings.c:270
-msgid "Raise windows after focus switch"
-msgstr "포커스가 바뀐 후에 창 올리기"
-
-#: src/settings.c:280
-msgid "Send mouse pointer to window after focus switch"
-msgstr "포커스가 바뀐 후 마우스 포인터를 그 창으로 보냄"
-
-#: src/settings.c:297
-#, fuzzy
-msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
-
-#: src/settings.c:303
-msgid "First E Icon, then App Icon"
-msgstr ""
-
-#: src/settings.c:311
-msgid "First App Icon, then E Icon"
-msgstr ""
-
-#: src/settings.c:528
+#: src/settings.c:216
 msgid "Move & Resize Settings"
 msgstr "이동과 크기조정 설정"
 
-#: src/settings.c:543
+#: src/settings.c:231
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1878,60 +1884,60 @@ msgstr ""
 "인라이튼먼트 이동과 크기조정\n"
 "방법 설정 대화상자\n"
 
-#: src/settings.c:557
+#: src/settings.c:245
 msgid "Move Methods:"
 msgstr "이동 방법:"
 
-#: src/settings.c:563
+#: src/settings.c:251
 msgid "Resize Methods:"
 msgstr "크기조정 방법:"
 
-#: src/settings.c:584 src/settings.c:592 src/settings.c:1260
+#: src/settings.c:272 src/settings.c:280 src/settings.c:948
 msgid "Technical"
 msgstr "공예"
 
-#: src/settings.c:600 src/settings.c:608 src/settings.c:1275
+#: src/settings.c:288 src/settings.c:296 src/settings.c:963
 msgid "Box"
 msgstr "상자"
 
-#: src/settings.c:616 src/settings.c:624 src/settings.c:1290
+#: src/settings.c:304 src/settings.c:312 src/settings.c:978
 msgid "Shaded"
 msgstr "음영"
 
-#: src/settings.c:632 src/settings.c:640 src/settings.c:1305
+#: src/settings.c:320 src/settings.c:328 src/settings.c:993
 msgid "Semi-Solid"
 msgstr "반고체"
 
-#: src/settings.c:649
+#: src/settings.c:337
 msgid "Translucent"
 msgstr "반투명"
 
-#: src/settings.c:668
+#: src/settings.c:356
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "이동/크기변경 위치 정보:"
 
-#: src/settings.c:674
+#: src/settings.c:362
 msgid "Window Center (O/T/B Methods)"
 msgstr "화면 가운데 (O/T/B 메소드)"
 
-#: src/settings.c:682
+#: src/settings.c:370
 msgid "Always Screen corner"
 msgstr "항상 화면의 가장자리"
 
-#: src/settings.c:690
+#: src/settings.c:378
 msgid "Don't show"
 msgstr "보이지 않음"
 
-#: src/settings.c:705
+#: src/settings.c:393
 #, fuzzy
 msgid "Update window while moving"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/settings.c:810
+#: src/settings.c:498
 msgid "Window Placement Settings"
 msgstr "창 배치 설정"
 
-#: src/settings.c:825
+#: src/settings.c:513
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1939,39 +1945,39 @@ msgstr ""
 "인라이튼먼트 창 위치\n"
 "설정 대화상자\n"
 
-#: src/settings.c:841
+#: src/settings.c:529
 msgid "Dialog windows appear together with their owner"
 msgstr "대화상자는 그 소유자와 함께 나타남"
 
-#: src/settings.c:850
+#: src/settings.c:538
 msgid "Switch to desktop where dialog appears"
 msgstr "대화상자가 나타난 데스크탑으로 전환"
 
-#: src/settings.c:858
+#: src/settings.c:546
 msgid "Place windows manually"
 msgstr "창을 수동으로 배치"
 
-#: src/settings.c:866
+#: src/settings.c:554
 msgid "Place windows under mouse"
 msgstr "창을 마우스 아래에 배치"
 
-#: src/settings.c:874
+#: src/settings.c:562
 msgid "Ignore struts"
 msgstr "무시"
 
-#: src/settings.c:882
+#: src/settings.c:570
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:895
+#: src/settings.c:583
 msgid "Place windows on another head when full"
 msgstr "다른창 보다 위에 배치"
 
-#: src/settings.c:951
+#: src/settings.c:639
 msgid "Autoraise Settings"
 msgstr "자동올리기 설정"
 
-#: src/settings.c:966
+#: src/settings.c:654
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1979,19 +1985,19 @@ msgstr ""
 "인라이튼먼트 창 자동 올리기\n"
 "설정 대화상자\n"
 
-#: src/settings.c:980
+#: src/settings.c:668
 msgid "Raise Windows Automatically"
 msgstr "창을 자동으로 올리기"
 
-#: src/settings.c:988
+#: src/settings.c:676
 msgid "Autoraise delay:"
 msgstr "자동올리기 지연:"
 
-#: src/settings.c:1055
+#: src/settings.c:743
 msgid "Miscellaneous Settings"
 msgstr "기타 설정"
 
-#: src/settings.c:1070
+#: src/settings.c:758
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1999,29 +2005,29 @@ msgstr ""
 "인라이튼먼트 기타\n"
 "설정 대화상자\n"
 
-#: src/settings.c:1084
+#: src/settings.c:772
 msgid "Enable Dialog Headers"
 msgstr "대화상자 머리 사용"
 
-#: src/settings.c:1092
+#: src/settings.c:780
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "사운드 사용"
 
-#: src/settings.c:1100
+#: src/settings.c:788
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "대화상자 머리 사용"
 
-#: src/settings.c:1108
+#: src/settings.c:796
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/settings.c:1194
+#: src/settings.c:882
 msgid "Special FX Settings"
 msgstr "특수효과 설정"
 
-#: src/settings.c:1209
+#: src/settings.c:897
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2029,69 +2035,69 @@ msgstr ""
 "인라이튼먼트 특수 효과\n"
 "설정 대화상자\n"
 
-#: src/settings.c:1232
+#: src/settings.c:920
 msgid "Slide Method:"
 msgstr "미끄러짐 방법:"
 
-#: src/settings.c:1238
+#: src/settings.c:926
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/settings.c:1253
+#: src/settings.c:941
 msgid "Slide windows around when cleaning up"
 msgstr "깨끗하게 할 때 창 미끄러짐"
 
-#: src/settings.c:1268
+#: src/settings.c:956
 msgid "Slide windows in when they appear"
 msgstr "창이 나타날 때 미끄러짐"
 
-#: src/settings.c:1283
+#: src/settings.c:971
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/settings.c:1298
+#: src/settings.c:986
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/settings.c:1314
+#: src/settings.c:1002
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/settings.c:1323
+#: src/settings.c:1011
 msgid "Use saveunders to reduce window exposures"
 msgstr "창 노출을 줄이기 위해 세이브언더 사용"
 
-#: src/settings.c:1332
+#: src/settings.c:1020
 msgid "Animate shading and unshading of windows"
 msgstr "창 접고 펼칠 때 에니메이트"
 
-#: src/settings.c:1346
+#: src/settings.c:1034
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "데스크탑 미끄러짐 속도: (느림)\n"
 
-#: src/settings.c:1362 src/settings.c:1384 src/settings.c:1406
-#: src/settings.c:1428
+#: src/settings.c:1050 src/settings.c:1072 src/settings.c:1094
+#: src/settings.c:1116
 msgid "(fast)\n"
 msgstr "(빠름)\n"
 
-#: src/settings.c:1368
+#: src/settings.c:1056
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "청소 미끄러짐 속도: (느림)\n"
 
-#: src/settings.c:1390
+#: src/settings.c:1078
 msgid "Appear Slide speed: (slow)\n"
 msgstr "나타남 미끄러짐 속도: (느림)\n"
 
-#: src/settings.c:1412
+#: src/settings.c:1100
 msgid "Window Shading speed: (slow)\n"
 msgstr "창 접기 속도: (느림)\n"
 
-#: src/settings.c:1486
+#: src/settings.c:1172
 #, fuzzy
 msgid "Composite Settings"
 msgstr "툴팁 설정"
 
-#: src/settings.c:1507
+#: src/settings.c:1193
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -2100,24 +2106,24 @@ msgstr ""
 "인라이튼먼트 툴팁\n"
 "설정 대화상자\n"
 
-#: src/settings.c:1521
+#: src/settings.c:1207
 #, fuzzy
 msgid "Enable Composite"
 msgstr "사운드 사용"
 
-#: src/settings.c:1535
+#: src/settings.c:1221
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:1543
+#: src/settings.c:1229
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:1551
+#: src/settings.c:1237
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:1561
+#: src/settings.c:1247
 msgid "Fading Speed:\n"
 msgstr ""
 
@@ -2145,15 +2151,15 @@ msgstr ""
 "시스템 관리자 혹은 X 서버 제작사에 연락하거나 X, xdm과\n"
 "startx 등의 도움말을 미리 읽어보시기 바랍니다.\n"
 
-#: src/setup.c:285
+#: src/setup.c:283
 msgid "X server version error"
 msgstr "X 서버 버전 오류"
 
-#: src/setup.c:285
+#: src/setup.c:283
 msgid "Ignore this error"
 msgstr "이 오류 무시"
 
-#: src/setup.c:287
+#: src/setup.c:285
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2170,7 +2176,7 @@ msgstr ""
 "인라이튼먼트의 저자가 들어보지도 못했거나 사용해 보지\n"
 "못한 것임에 분명합니다.\n"
 
-#: src/slideout.c:446 src/tclass.c:421
+#: src/slideout.c:442 src/tclass.c:421
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2583,6 +2589,9 @@ msgstr "이 데스크탑으로 가기"
 #, fuzzy
 msgid "Go Forward a Desktop"
 msgstr "이 데스크탑으로 가기"
+
+#~ msgid "Raise windows on focus switch"
+#~ msgstr "포커스가 바뀔 때 창 올리기"
 
 #~ msgid ""
 #~ "There was an error saving your autosave data - filing\n"

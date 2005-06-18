@@ -12,6 +12,7 @@ src/cursors.c
 src/desktops.c
 src/dialog.c
 src/events.c
+src/focus.c
 src/fx.c
 src/groups.c
 src/handlers.c
