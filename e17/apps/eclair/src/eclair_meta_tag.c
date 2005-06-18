@@ -6,9 +6,9 @@
 #include "eclair.h"
 #include "eclair_cover.h"
 #include "eclair_media_file.h"
+#include "eclair_database.h"
 
 static void *_eclair_meta_tag_thread(void *param);
-static void _eclair_meta_tag_set_field_string(char **field, const char *value);
 
 //Initialize meta tag manager
 void eclair_meta_tag_init(Eclair_Meta_Tag_Manager *meta_tag_manager, Eclair *eclair)
@@ -61,8 +61,12 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    TagLib_File *tag_file;
    TagLib_Tag *tag;
    const TagLib_AudioProperties *tag_audio_props;
+   Evas_Bool need_to_update;
 
    if (!eclair || !media_file || !media_file->path)
+      return;
+
+   if (eclair_database_search(&eclair->database, media_file, &need_to_update) && !need_to_update)
       return;
 
    if (!(tag_file = taglib_file_new(media_file->path)))
@@ -70,11 +74,11 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
 
    if ((tag = taglib_file_tag(tag_file)))
    {
-      _eclair_meta_tag_set_field_string(&media_file->artist, taglib_tag_artist(tag));
-      _eclair_meta_tag_set_field_string(&media_file->title, taglib_tag_title(tag));
-      _eclair_meta_tag_set_field_string(&media_file->album, taglib_tag_album(tag));
-      _eclair_meta_tag_set_field_string(&media_file->genre, taglib_tag_genre(tag));
-      _eclair_meta_tag_set_field_string(&media_file->comment, taglib_tag_comment(tag));
+      eclair_media_file_set_field_string(&media_file->artist, taglib_tag_artist(tag));
+      eclair_media_file_set_field_string(&media_file->title, taglib_tag_title(tag));
+      eclair_media_file_set_field_string(&media_file->album, taglib_tag_album(tag));
+      eclair_media_file_set_field_string(&media_file->genre, taglib_tag_genre(tag));
+      eclair_media_file_set_field_string(&media_file->comment, taglib_tag_comment(tag));
       media_file->year = taglib_tag_year(tag);
       media_file->track = taglib_tag_track(tag);
    }   
@@ -86,6 +90,9 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    }
    taglib_tag_free_strings();
    taglib_file_free(tag_file);
+
+   //Insert the new tag infos in the database
+   eclair_database_insert_media_file(&eclair->database, media_file);
 
    //Try to load the cover
    if (tag && !media_file->cover_path && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
@@ -155,26 +162,4 @@ static void *_eclair_meta_tag_thread(void *param)
       }
    }
    return NULL;
-}
-
-//Set the value of a meta tag field string
-static void _eclair_meta_tag_set_field_string(char **field, const char *value)
-{
-   const char *c1;
-   char *c2;
-
-   if (!field)
-      return;
-
-   free(*field);
-   if (!value)
-      *field = NULL;
-   else
-   {
-      //We remove the blanks before and after the meta tag value
-      for (c1 = value; *c1 != 0 && *c1 <= 32; c1++);
-      *field = strdup(c1);
-      for (c2 = *field + strlen(*field); c2 >= *field && *c2 <= 32; c2--)
-         *c2 = 0;
-   }
 }

@@ -104,3 +104,25 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
    if (media_file == eclair_playlist_current_media_file(&eclair->playlist))
       eclair_update_current_file_info(eclair, 0);
 }
+
+//Set the value of a meta tag field string of the media file
+void eclair_media_file_set_field_string(char **field, const char *value)
+{
+   const char *c1;
+   char *c2;
+
+   if (!field)
+      return;
+
+   free(*field);
+   if (!value)
+      *field = NULL;
+   else
+   {
+      //We remove the blanks before and after the meta tag value
+      for (c1 = value; *c1 != 0 && *c1 <= 32; c1++);
+      *field = strdup(c1);
+      for (c2 = *field + strlen(*field); c2 >= *field && *c2 <= 32; c2--)
+         *c2 = 0;
+   }
+}

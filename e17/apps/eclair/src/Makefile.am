@@ -12,7 +12,8 @@ INCLUDES = \
 @emotion_cflags@ \
 @esmart_cflags@ \
 @taglib_cflags@ \
-@libxml2_cflags@
+@libxml2_cflags@ \
+@sqlite_cflags@
 
 AM_CFLAGS = \
 -Wall \
@@ -34,7 +35,8 @@ eclair_cover.c eclair_cover.h \
 eclair_meta_tag.c eclair_meta_tag.h \
 eclair_config.c eclair_config.h \
 eclair_dialogs.c eclair_dialogs.h \
-eclair_window.c eclair_window.h
+eclair_window.c eclair_window.h \
+eclair_database.c eclair_database.h
 
 eclair_LDADD = \
 @gthread_libs@ \
@@ -46,4 +48,5 @@ eclair_LDADD = \
 @emotion_libs@ \
 @esmart_libs@ -lesmart_draggies \
 @taglib_libs@ -ltag_c \
-@libxml2_libs@
+@libxml2_libs@ \
+@sqlite_libs@

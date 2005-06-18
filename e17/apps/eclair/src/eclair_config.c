@@ -28,6 +28,7 @@ Evas_Bool eclair_config_init(Eclair_Config *config)
    ecore_file_mkdir(config->covers_dir_path);
    sprintf(config->config_file_path, "%seclair.cfg", config->config_dir_path);
    sprintf(config->default_playlist_path, "%splaylist.m3u", config->config_dir_path);
+   sprintf(config->database_path, "%seclair.db", config->config_dir_path);
 
    eclair_config_load(config);
 

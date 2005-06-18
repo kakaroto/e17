@@ -105,6 +105,12 @@ gthread_cflags=`$PKG_CONFIG --cflags gthread-2.0`
 AC_SUBST(gthread_libs)
 AC_SUBST(gthread_cflags)
 
+PKG_CHECK_MODULES(SQLITE, sqlite3)
+sqlite_libs=`$PKG_CONFIG --libs sqlite3`
+sqlite_cflags=`$PKG_CONFIG --cflags sqlite3`
+AC_SUBST(sqlite_libs)
+AC_SUBST(sqlite_cflags)
+
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4)
 gtk_libs=`$PKG_CONFIG --libs gtk+-2.0`
 gtk_cflags=`$PKG_CONFIG --cflags gtk+-2.0`

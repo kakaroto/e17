@@ -10,6 +10,7 @@
 #include <glade/glade.h>
 #include <pthread.h>
 #include <libxml/tree.h>
+#include <sqlite3.h>
 
 typedef struct _Eclair Eclair;
 typedef enum _Eclair_State Eclair_State;
@@ -30,6 +31,13 @@ typedef struct _Eclair_Playlist_Container Eclair_Playlist_Container;
 typedef struct _Eclair_Playlist_Container_Object Eclair_Playlist_Container_Object;
 typedef struct _Eclair_Color Eclair_Color;
 typedef struct _Eclair_Window Eclair_Window;
+typedef struct _Eclair_Database Eclair_Database;
+
+struct _Eclair_Database
+{
+   sqlite3 *db;
+   Eclair *eclair;
+};
 
 struct _Eclair_Color
 {
@@ -81,6 +89,7 @@ struct _Eclair_Config
    char covers_dir_path[256];
    char config_file_path[256];
    char default_playlist_path[256];
+   char database_path[256];
    xmlDocPtr config_doc;
    xmlNodePtr root_node;
 };
@@ -282,6 +291,7 @@ struct _Eclair
    Eclair_Meta_Tag_Manager meta_tag_manager;
    Eclair_Cover_Manager cover_manager;
    Eclair_Config config;
+   Eclair_Database database;
    Evas_Bool start_playing;
    double seek_to_pos;
 

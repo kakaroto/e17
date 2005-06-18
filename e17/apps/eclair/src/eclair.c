@@ -20,6 +20,7 @@
 #include "eclair_args.h"
 #include "eclair_dialogs.h"
 #include "eclair_window.h"
+#include "eclair_database.h"
 
 static void *_eclair_create_video_object_thread(void *param);
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair);
@@ -76,6 +77,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
       return 0;
 
    eclair_config_init(&eclair->config);
+   eclair_utils_init();
    if (!_eclair_create_gui_window(eclair))
    {
       eclair_config_shutdown(&eclair->config);
@@ -86,6 +88,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    _eclair_create_cover_window(eclair);
    _eclair_create_video_window(eclair);
    _eclair_add_inter_windows_callbacks(eclair);
+   eclair_database_init(&eclair->database, eclair);
    eclair_dialogs_init(&eclair->dialogs_manager, eclair);
    eclair_playlist_init(&eclair->playlist, eclair);
    eclair_playlist_container_set_media_list(eclair->playlist_container, &eclair->playlist.playlist);
@@ -93,7 +96,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
    eclair_cover_init(&eclair->cover_manager, eclair);
    eclair_update_current_file_info(eclair, 0);
-   
+
    if ((l = filenames))
    {
       for (; l; l = l->next)

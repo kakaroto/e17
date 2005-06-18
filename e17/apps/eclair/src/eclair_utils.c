@@ -2,6 +2,12 @@
 #include <Ecore_File.h>
 #include <string.h>
 
+//Need to be called for the random generation
+void eclair_utils_init()
+{
+   srand((unsigned int)time(NULL));
+}
+
 //Convert the progress rate in seconds to a string depending to the length of the media
 void eclair_utils_second_to_string(double position, double length, char *string)
 {
@@ -17,7 +23,7 @@ void eclair_utils_second_to_string(double position, double length, char *string)
 }
 
 //TODO:
-/*srand((unsigned int)time(NULL));
+/*
 return (float)rand() / (float)RAND_MAX * (Max - Min) + Min;
 */
 
