@@ -91,37 +91,20 @@ AC_SUBST(taglib_cflags)
 AC_CHECK_HEADER(taglib/tag_c.h)
 
 PROG="pkg-config";
-AC_PATH_PROG(PKG_CONFIG, $PROG, "", $PATH)
-if [ test -z $PKG_CONFIG ]; then
+PKG_PROG_PKG_CONFIG
+if [ test -z "$PKG_CONFIG" ]; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
 fi
-AC_SUBST(PKG_CONFIG)
 
 PKG_CHECK_MODULES(GTHREAD, gthread-2.0)
-gthread_libs=`$PKG_CONFIG --libs gthread-2.0`
-gthread_cflags=`$PKG_CONFIG --cflags gthread-2.0`
-AC_SUBST(gthread_libs)
-AC_SUBST(gthread_cflags)
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
-sqlite_libs=`$PKG_CONFIG --libs sqlite3`
-sqlite_cflags=`$PKG_CONFIG --cflags sqlite3`
-AC_SUBST(sqlite_libs)
-AC_SUBST(sqlite_cflags)
 
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4)
-gtk_libs=`$PKG_CONFIG --libs gtk+-2.0`
-gtk_cflags=`$PKG_CONFIG --cflags gtk+-2.0`
-AC_SUBST(gtk_libs)
-AC_SUBST(gtk_cflags)
 
 PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.2)
-libglade_libs=`$PKG_CONFIG --libs libglade-2.0`
-libglade_cflags=`$PKG_CONFIG --cflags libglade-2.0`
-AC_SUBST(libglade_libs)
-AC_SUBST(libglade_cflags)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
@@ -183,17 +166,7 @@ esmart_cflags=`$ESMART_CONFIG --cflags`
 AC_SUBST(esmart_libs)
 AC_SUBST(esmart_cflags)
 
-PROG="xml2-config";
-AC_PATH_PROG(LIBXML2_CONFIG, $PROG, "", $PATH)
-if [ test -z $LIBXML2_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-libxml2_libs=`$LIBXML2_CONFIG --libs`
-libxml2_cflags=`$LIBXML2_CONFIG --cflags`
-AC_SUBST(libxml2_libs)
-AC_SUBST(libxml2_cflags)
+PKG_CHECK_MODULES(XML2, libxml-2.0)
 
 AC_OUTPUT([
 Makefile

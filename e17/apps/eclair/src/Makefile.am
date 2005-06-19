@@ -3,17 +3,17 @@
 SUBDIRS = eclair_wsz2edj
 
 INCLUDES = \
-@gthread_cflags@ \
-@gtk_cflags@ \
-@libglade_cflags@ \
+@GTHREAD_CFLAGS@ \
+@GTK_CFLAGS@ \
+@GLADE_CFLAGS@ \
 @evas_cflags@ \
 @ecore_cflags@ \
 @edje_cflags@ \
 @emotion_cflags@ \
 @esmart_cflags@ \
 @taglib_cflags@ \
-@libxml2_cflags@ \
-@sqlite_cflags@
+@XML2_CFLAGS@ \
+@SQLITE_CFLAGS@
 
 AM_CFLAGS = \
 -Wall \
@@ -39,14 +39,14 @@ eclair_window.c eclair_window.h \
 eclair_database.c eclair_database.h
 
 eclair_LDADD = \
-@gthread_libs@ \
-@gtk_libs@ \
-@libglade_libs@ \
+@GTHREAD_LIBS@ \
+@GTK_LIBS@ \
+@GLADE_LIBS@ \
 @evas_libs@ \
 @ecore_libs@ \
 @edje_libs@ \
 @emotion_libs@ \
 @esmart_libs@ -lesmart_draggies \
 @taglib_libs@ -ltag_c \
-@libxml2_libs@ \
-@sqlite_libs@
+@XML2_LIBS@ \
+@SQLITE_LIBS@
