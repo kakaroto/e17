@@ -334,13 +334,14 @@ ewl_spectrum_rgb_to_hsv(int r, int g, int b,
         if( max != 0 )
                 *s = (float)delta / (float)max;               // s
         else {
-                // r = g = b = 0                // s = 0, v is undefined
                 *s = 0;
                 *h = 0;
                 return;
         }
 
-        if( r == max )
+        if(delta == 0)
+                *h = 0;
+        else if( r == max )
                 *h = (float)( g - b ) / (float)delta;         // between yellow & magenta
         else if( g == max )
                 *h = 2.0 + (float)( b - r ) / (float)delta;     // between cyan & yellow
