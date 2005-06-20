@@ -56,3 +56,5 @@ ewl_tree.lo
 ewl_widget.lo
 ewl_window.lo
 libewl.la
+ewl_label.lo
+ewl_colordialog.lo
