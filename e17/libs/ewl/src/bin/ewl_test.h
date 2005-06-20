@@ -7,14 +7,13 @@
 #define __UNUSED__
 #endif
 
-#define BUTTONS 19
-
 typedef struct _test_set test_set;
 struct _test_set
 {
 	char *name;
 	Ewl_Callback_Function func;
 	char *filename;
+	char *tip;
 };
 
 void __close_main_window                (Ewl_Widget * w, void *ev_data, void *user_data);
