@@ -78,7 +78,7 @@ fi
 
 PROG="taglib-config";
 AC_PATH_PROG(TAGLIB_CONFIG, $PROG, "", $PATH)
-if [ test -z $TAGLIB_CONFIG ]; then
+if test -z "$TAGLIB_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -92,7 +92,7 @@ AC_CHECK_HEADER(taglib/tag_c.h)
 
 PROG="pkg-config";
 PKG_PROG_PKG_CONFIG
-if [ test -z "$PKG_CONFIG" ]; then
+if test -z "$PKG_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -108,7 +108,7 @@ PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.2)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if [ test -z $EVAS_CONFIG ]; then
+if test -z "$EVAS_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -120,7 +120,7 @@ AC_SUBST(evas_cflags)
 
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
+if test -z "$ECORE_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -132,7 +132,7 @@ AC_SUBST(ecore_cflags)
 
 PROG="edje-config";
 AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if [ test -z $EDJE_CONFIG ]; then
+if test -z "$EDJE_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -144,7 +144,7 @@ AC_SUBST(edje_cflags)
 
 PROG="emotion-config";
 AC_PATH_PROG(EMOTION_CONFIG, $PROG, "", $PATH)
-if [ test -z $EMOTION_CONFIG ]; then
+if test -z "$EMOTION_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -156,7 +156,7 @@ AC_SUBST(emotion_cflags)
 
 PROG="esmart-config";
 AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
-if [ test -z $ESMART_CONFIG ]; then
+if test -z "$ESMART_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
