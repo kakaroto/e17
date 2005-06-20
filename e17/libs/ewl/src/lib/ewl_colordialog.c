@@ -207,7 +207,10 @@ ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	cd = user_data;
-	col.r = strtol(ev_data, NULL, 10);
+	if (ev_data)
+		col.r = strtol(ev_data, NULL, 10);
+	else
+		col.r = 0;
 	col.g = cd->selected.g;
 	col.b = cd->selected.b;
 
@@ -236,7 +239,10 @@ ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 
 	cd = user_data;
 	col.r = cd->selected.r;
-	col.g = strtol(ev_data, NULL, 10);
+	if (ev_data)
+		col.g = strtol(ev_data, NULL, 10);
+	else
+		col.g = 0;
 	col.b = cd->selected.b;
 
 	if(col.g > 255) col.g = 255;
@@ -264,7 +270,10 @@ ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	cd = user_data;
 	col.r = cd->selected.r;
 	col.g = cd->selected.g;
-	col.b = strtol(ev_data, NULL, 10);
+	if (ev_data)
+		col.b = strtol(ev_data, NULL, 10);
+	else
+		col.b = 0;
 
 	if(col.b > 255) col.b = 255;
 	if(col.b < 0) col.b = 0;
@@ -291,7 +300,10 @@ ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	cd  = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
 				&h, &s, &v);
-	h = strtod(ev_data, NULL);
+	if (ev_data)
+		h = strtod(ev_data, NULL);
+	else
+		h = 0;
 	if(h > 360) h = 360;
 	if(h < 0) h = 0;
 	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
@@ -315,7 +327,10 @@ ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user
 	cd  = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
 				&h, &s, &v);
-	s = strtod(ev_data, NULL);
+	if (ev_data)
+		s = strtod(ev_data, NULL);
+	else
+		s = 0;
 	if(s > 1) s = 1;
 	if(s < 0) s = 0;
 	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
@@ -339,7 +354,10 @@ ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 	cd = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
 				&h, &s, &v);
-	v = strtod(ev_data, NULL);
+	if (ev_data)
+		v = strtod(ev_data, NULL);
+	else
+		v = 0;
 	if(v > 1) v = 1;
 	if(v < 0) v = 0;
 	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
