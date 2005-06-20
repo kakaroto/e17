@@ -1440,6 +1440,9 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), sp);
 	ewl_widget_configure(EWL_WIDGET(e));
 
+	if (!sp)
+		ewl_entry_text_set(e, NULL);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1468,6 +1471,9 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 		ewl_entry_ops_apply(e);
 
 	e->length --;
+
+	if (!sp)
+		ewl_entry_text_set(e, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1594,6 +1600,7 @@ ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
+	pos = ((pos < 0) ? 0 : pos);
 	c->position = pos;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
