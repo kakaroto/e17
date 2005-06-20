@@ -37,7 +37,7 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	Ewl_Widget *hbox;
 	Ewl_Widget *button;
 	Ewl_Widget *label;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
@@ -200,7 +200,7 @@ void
 ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -230,7 +230,7 @@ void
 ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -261,7 +261,7 @@ void
 ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -291,7 +291,7 @@ void
 ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -318,7 +318,7 @@ void
 ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -345,7 +345,7 @@ void
 ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color col;
+	Ewl_Color_Set col;
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -372,7 +372,7 @@ void
 ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
-	Ewl_ColorDialog_Color *col;
+	Ewl_Color_Set *col;
 	float h, s, v;
 	char redtext[8], greentext[8], bluetext[8];
 	char huetext[8], saturationtext[8], valuetext[8];

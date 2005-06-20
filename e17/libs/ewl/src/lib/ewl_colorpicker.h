@@ -8,6 +8,13 @@
  * @{
  */
 
+typedef struct Ewl_Color_Set Ewl_Color_Set;
+
+struct Ewl_Color_Set
+{
+	int r, g, b, a;
+};
+
 typedef struct Ewl_ColorPicker Ewl_ColorPicker;
 
 /**
@@ -22,10 +29,7 @@ struct Ewl_ColorPicker
 	Ewl_Widget *spectrum;
 	Ewl_Widget *range;
 	int drag;
-        struct _ewl_colorpicker_color
-        {
-            int r, g, b, a;
-        } selected;
+        Ewl_Color_Set selected;
 };
 
 Ewl_Widget 	*ewl_colorpicker_new();
