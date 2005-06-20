@@ -60,6 +60,7 @@ main(int argc, char **argv)
 		{ "Border",      __create_border_test_window,      "ewl_border_test.c" },
 		{ "Box",         __create_box_test_window,         "ewl_box_test.c" },
 		{ "Button",      __create_button_test_window,      "ewl_button_test.c" },
+		{ "ColorDialog", __create_colordialog_test_window, "ewl_colordialog_test.c" },
 		{ "ColorPicker", __create_colorpicker_test_window, "ewl_colorpicker_test.c" },
 		{ "Combo",       __create_combo_test_window,       "ewl_combo_test.c" },
 		{ "Dialog",      __create_dialog_test_window,      "ewl_dialog_test.c" },

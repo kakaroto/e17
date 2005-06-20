@@ -18,6 +18,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_border_test.c \
 					ewl_box_test.c \
 					ewl_button_test.c \
+					ewl_colordialog_test.c \
 					ewl_colorpicker_test.c \
 					ewl_combo_test.c \
 					ewl_dialog_test.c \
