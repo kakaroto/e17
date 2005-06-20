@@ -8,13 +8,6 @@
  * @{
  */
 
-typedef struct Ewl_Color_Set Ewl_Color_Set;
-
-struct Ewl_Color_Set
-{
-	int r, g, b, a;
-};
-
 typedef struct Ewl_ColorPicker Ewl_ColorPicker;
 
 /**

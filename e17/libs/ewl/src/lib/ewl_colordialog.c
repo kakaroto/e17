@@ -75,11 +75,13 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_object_minimum_size_set(EWL_OBJECT(vbox), 60, 100);
 	ewl_container_child_append(EWL_CONTAINER(cd), vbox);
 
-	cd->preview = ewl_coloredrect_new(r, g, b, 255);
+	cd->preview = NEW(Ewl_Widget, 1);
+	ewl_widget_init(cd->preview, "coloured_rect");
 	ewl_object_fill_policy_set(EWL_OBJECT(cd->preview), EWL_FLAG_FILL_ALL);
 	ewl_object_alignment_set(EWL_OBJECT(cd->preview),
 				 EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(vbox), cd->preview);
+	ewl_widget_color_set(cd->preview, r, g, b, 255);
 	ewl_widget_show(cd->preview);
 
 	hbox = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
@@ -405,8 +407,7 @@ ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_d
 	ewl_entry_text_set(EWL_ENTRY(cd->value_entry), valuetext);
 
 	// Update the preview
-	ewl_coloredrect_color_set(EWL_COLOREDRECT(cd->preview), col->r,
-				  col->g, col->b, 255);
+	ewl_widget_color_set(cd->preview, col->r, col->g, col->b, 255);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

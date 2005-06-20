@@ -25,6 +25,13 @@ struct Ewl_Callback_Chain
 	unsigned int mask;
 };
 
+typedef struct Ewl_Color_Set Ewl_Color_Set;
+
+struct Ewl_Color_Set
+{
+	int r, g, b, a;
+};
+
 /**
  * The class that all widgets should inherit. Provides reference to a parent
  * widget/container, callbacks, and appearance information.
@@ -57,6 +64,8 @@ struct Ewl_Widget
 	char           *appearance; /**< Key to lookup appearance in theme */
 	char           *inheritance; /**< Key to lookup inhertiance of widget */
 	int             layer; /**< Current layer of widget on canvas */
+
+	Ewl_Color_Set   color;
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */
@@ -198,6 +207,11 @@ unsigned int    ewl_widget_clipped_is(Ewl_Widget *w);
 void            ewl_widget_focus_send(Ewl_Widget *w);
 Ewl_Widget     *ewl_widget_focused_get(void);
 void            ewl_widget_tab_order_push(Ewl_Widget *w);
+
+void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, 
+						int b, int a);
+void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, 
+						int *b, int *a);
 
 /**
  * @def LAYER(w)

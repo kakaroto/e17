@@ -104,6 +104,8 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_widget_inherit(w, "widget");
 	ewl_widget_appearance_set(w, appearance);
 
+	ewl_widget_color_set(w, 255, 255, 255, 255);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -980,6 +982,55 @@ Ewl_Widget *ewl_widget_focused_get()
 	DRETURN_PTR(last_key, DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to set the color of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @return Returns no value
+ * @brief sets the colour of the widget
+ */
+void
+ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	w->color.r = r;
+	w->color.g = g;
+	w->color.b = b;
+	w->color.a = a;
+
+	if (REALIZED(w))
+		evas_object_color_set(w->fx_clip_box, r, g, b, a);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to get the colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @parma a: Where to put the alpha value
+ * @return Returns no value
+ * @brief Gets the colour settings of the widget
+ */
+void
+ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (r) *r = w->color.r;
+	if (g) *g = w->color.g;
+	if (b) *b = w->color.b;
+	if (a) *a = w->color.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * Perform the series of operations common to every widget when
  * they are destroyed. This should ALWAYS be the the last callback
@@ -1129,6 +1180,9 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		if (sum > ewl_embed_max_layer_get(emb))
 			ewl_embed_max_layer_set(emb, sum);
 		evas_object_layer_set(w->fx_clip_box, sum);
+
+		evas_object_color_set(w->fx_clip_box, w->color.r, w->color.g, 
+							w->color.b, w->color.a);
 	}
 
 	pc = EWL_CONTAINER(w->parent);

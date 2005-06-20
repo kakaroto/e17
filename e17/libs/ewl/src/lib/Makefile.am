@@ -20,8 +20,7 @@ EWLHEADERS = \
 	ewl_cell.h \
 	ewl_check.h \
 	ewl_checkbutton.h \
-        ewl_colordialog.h \
-	ewl_coloredrect.h \
+	ewl_colordialog.h \
 	ewl_colorpicker.h \
 	ewl_combo.h \
 	ewl_config.h \
@@ -84,8 +83,7 @@ EWLSOURCES= \
 	ewl_cell.c \
 	ewl_check.c \
 	ewl_checkbutton.c \
-        ewl_colordialog.c \
-	ewl_coloredrect.c \
+	ewl_colordialog.c \
 	ewl_colorpicker.c \
 	ewl_combo.c \
 	ewl_config.c \

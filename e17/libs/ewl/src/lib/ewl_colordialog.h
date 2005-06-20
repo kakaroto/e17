@@ -20,13 +20,13 @@ struct Ewl_ColorDialog
 {
 	Ewl_Box box;
 	Ewl_Widget *preview;
-        Ewl_Widget *picker;
-        Ewl_Widget *red_entry;
-        Ewl_Widget *green_entry;
-        Ewl_Widget *blue_entry;
-        Ewl_Widget *hue_entry;
-        Ewl_Widget *saturation_entry;
-        Ewl_Widget *value_entry;
+	Ewl_Widget *picker;
+	Ewl_Widget *red_entry;
+	Ewl_Widget *green_entry;
+	Ewl_Widget *blue_entry;
+	Ewl_Widget *hue_entry;
+	Ewl_Widget *saturation_entry;
+	Ewl_Widget *value_entry;
 	Ewl_Color_Set selected;
 };
 
