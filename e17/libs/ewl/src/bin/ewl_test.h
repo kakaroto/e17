@@ -7,7 +7,7 @@
 #define __UNUSED__
 #endif
 
-#define BUTTONS 18
+#define BUTTONS 19
 
 typedef struct _test_set test_set;
 struct _test_set
@@ -21,6 +21,7 @@ void __close_main_window                (Ewl_Widget * w, void *ev_data, void *us
 void __create_border_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_box_test_window           (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_button_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_colordialog_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_colorpicker_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_combo_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_dialog_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
