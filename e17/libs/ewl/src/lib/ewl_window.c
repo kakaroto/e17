@@ -184,9 +184,9 @@ void ewl_window_class_set(Ewl_Window * win, char *classname)
 	if (!classname)
 		classname = "";
 
-	if (strcmp(win->classname, classname)) {
+	if (win->classname && strcmp(win->classname, classname)) {
 		IF_FREE(win->classname);
-		win->classname = strdup(classname);
+		win->classname = strdup((classname ? classname : ""));
 	}
 
 	if (!REALIZED(win))
