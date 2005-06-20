@@ -90,9 +90,12 @@ void ewl_colorpicker_color_set(Ewl_ColorPicker *cp, int r, int g, int b)
 
 void ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h)
 {
-        int ref_r, ref_g, ref_b;
-        ewl_spectrum_hsv_to_rgb(h, 1, 1, &ref_r, &ref_g, &ref_b);
-        ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->spectrum), ref_r, ref_g, ref_b);
+        if(h != 0)
+        {
+          int ref_r, ref_g, ref_b;
+          ewl_spectrum_hsv_to_rgb(h, 1, 1, &ref_r, &ref_g, &ref_b);
+          ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->spectrum), ref_r, ref_g, ref_b);
+        }
 }
 
 void ewl_colorpicker_range_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
