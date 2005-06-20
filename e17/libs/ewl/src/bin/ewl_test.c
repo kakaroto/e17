@@ -95,6 +95,7 @@ main(int argc, char **argv)
 			"with a label. This class inherits from\n"
 			"the Ewl_Box to allow for placing any\n"
 			"other widget inside the button.",
+	   	"Defines a dialog with a color picker.",
 	   	"Defines a color picker.",
 		"Defines a combo box used internally.\n"
 			"The contents on the box are not drawn\n"
@@ -104,6 +105,7 @@ main(int argc, char **argv)
 			"for single line editable text.",
 		"The filedialog is intended to be used\n"
 			"for a simple file chooser.",
+		"The filedialog with multiple selections enabled",
 		"Defines a widget for layering above other\n "
 			"widgets in EWL's drawing area, with\n"
 			"the ability to follow the movement of\n"
