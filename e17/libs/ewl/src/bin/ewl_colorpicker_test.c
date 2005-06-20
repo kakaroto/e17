@@ -15,8 +15,8 @@ static void
 __color_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data, 
 						void *user_data __UNUSED__)
 {
-	char *text = ev_data;
-	printf("value changed to %s\n", text);
+	Ewl_Color_Set *col = ev_data;
+	printf("value changed to (%i, %i, %i)\n", col->r, col->g, col->b);
 }
 
 void
