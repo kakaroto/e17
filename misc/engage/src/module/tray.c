@@ -78,6 +78,7 @@ _engage_tray_shutdown(Engage_Bar *eb)
 
    ecore_event_handler_del(eb->tray->msg_handler);
    ecore_event_handler_del(eb->tray->dst_handler);
+   ecore_x_window_del(eb->tray->win);
 }
 
 static void
@@ -169,7 +170,11 @@ _engage_tray_layout(Engage_Bar *eb)
    Evas_Coord w, h, c, d;
    int x, y;
    Evas_List *wins;
-   
+   E_Gadman_Edge edge;
+
+   if (!eb->gmc)
+     return;
+   edge = e_gadman_client_edge_get(eb->gmc); 
    h = eb->engage->conf->iconsize;
    if (h < 24)
      h = 24;
@@ -178,32 +183,53 @@ _engage_tray_layout(Engage_Bar *eb)
    if (w == 0)
      w = 1;
    
-   evas_object_resize(eb->tray->tray, w, h);
-   ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
+   if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_TOP) {
+     evas_object_resize(eb->tray->tray, w, h);
+     ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
 
-   e_box_pack_options_set(eb->tray->tray,
-			  1, 1, /* fill */
-			  0, 1, /* expand */
-			  0.0, 0.0, /* align */
-			  w, h, /* min */
-			  w, h /* max */
-			  );
+     e_box_pack_options_set(eb->tray->tray,
+			    1, 1, /* fill */
+			    0, 1, /* expand */
+			    0.0, 0.0, /* align */
+			    w, h, /* min */
+			    w, h /* max */
+			    );
+   } else {
+     evas_object_resize(eb->tray->tray, h, w);
+     ecore_x_window_resize(eb->tray->win, (int) h, (int) w);
+
+     e_box_pack_options_set(eb->tray->tray,
+			    1, 1, /* fill */
+			    0, 1, /* expand */
+			    0.0, 0.0, /* align */
+			    h, w, /* min */
+			    h, w /* max */
+			    );
+   }
    
    x = 0;
-   y = h - 24;
+   if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_RIGHT)
+     y = h - 24;
+   else
+     y = 0;
    d = 0;
-   for (wins = eb->tray->wins; wins; wins = wins->next)
-     {
-	ecore_x_window_move((Ecore_X_Window) wins->data, x, y);
+   for (wins = eb->tray->wins; wins; wins = wins->next) {
+     if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_TOP)
+       ecore_x_window_move((Ecore_X_Window) wins->data, x, y);
+     else
+       ecore_x_window_move((Ecore_X_Window) wins->data, y, x);
 
-	d++;
-	if (d % c == 0)
-	  {
-	     x += 24;
-	     y = h - 24;
-	  }
-	else
-	  y -= 24;
-	  
-     }
+     d++;
+     if (d % c == 0) {
+       x += 24;
+       if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_RIGHT)
+         y = h - 24;
+       else
+         y = 0;
+     } else
+       if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_RIGHT)
+         y -= 24;
+       else
+         y += 24;
+   }
 }
