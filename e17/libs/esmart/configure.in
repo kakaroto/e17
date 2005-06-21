@@ -46,6 +46,9 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
+AC_CHECK_HEADER(ltdl.h,,
+                AC_MSG_ERROR(Cannot find ltdl.h. Please make sure you have the libltdl-dev package installed.))
+
 AC_ARG_WITH(evas,
         [  --with-evas=DIR          use evas in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
