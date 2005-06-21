@@ -29,6 +29,7 @@ struct _Config_Bar
    int           zoom;
    double        zoom_factor, zoom_duration;
    int           zoom_stretch;
+	 int           tray;
 };
 
 struct _Engage

@@ -120,6 +120,8 @@ static void    _engage_bar_cb_menu_zoom_medium(void *data, E_Menu *m, E_Menu_Ite
 static void    _engage_bar_cb_menu_zoom_large(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item *mi);
 
+static void    _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi);
+
 static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 static int     _engage_border_ignore(E_Border *bd);
 
@@ -228,6 +230,7 @@ _engage_new()
    E_CONFIG_VAL(D, T, zoom_factor, DOUBLE);
    E_CONFIG_VAL(D, T, zoom_duration, DOUBLE);
    E_CONFIG_VAL(D, T, zoom_stretch, INT);
+   E_CONFIG_VAL(D, T, tray, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Engage_Config", Config);
 #undef T
@@ -305,6 +308,7 @@ _engage_new()
 		       eb->conf->zoom_factor = 2.0;
 		       eb->conf->zoom_duration = 1.0;
 		       eb->conf->zoom_stretch = 0;
+		       eb->conf->tray = 1;
 		       e->conf->bars = evas_list_append(e->conf->bars, eb->conf);
 		    }
 		  else
@@ -316,10 +320,27 @@ _engage_new()
 		  E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
 		  E_CONFIG_LIMIT(eb->conf->zoom_duration, 0.1, 0.3);
 		  E_CONFIG_LIMIT(eb->conf->zoom_stretch, 0, 1);
+		  E_CONFIG_LIMIT(eb->conf->tray, 0, 1);
 		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
 		  _engage_bar_menu_new(eb);
 
+		  /*add tray*/
+		  if (eb->conf->tray)
+		    {
+		       _engage_tray_init(eb);
+
+		       e_box_pack_end(eb->box_object, eb->tray->tray);
+		       e_box_pack_options_set(eb->tray->tray,
+					      1, 1, /* fill */
+					      0, 1, /* expand */
+					      0.0, 0.0, /* align */
+					      1, 1, /* min */
+					      100, 100 /* max */
+					      );
+		    }
+
+		 
 		  /* Add main menu to bar menu */
 
 		  mi = e_menu_item_new(e->config_menu);
@@ -524,17 +545,8 @@ _engage_bar_new(Engage *e, E_Container *con)
    o = e_box_add(eb->evas);
    eb->box_object = o;
 
-   _engage_tray_init(eb);
-
-   e_box_pack_end(eb->box_object, eb->tray->tray);
-   e_box_pack_options_set(eb->tray->tray,
-			  1, 1, /* fill */
-			  0, 1, /* expand */
-			  0.0, 0.0, /* align */
-			  1, 1, /* min */
-			  100, 100 /* max */
-			  );
    eb->contexts = NULL;
+   eb->tray = NULL;
    
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
@@ -671,7 +683,12 @@ _engage_bar_free(Engage_Bar *eb)
    evas_object_del(eb->bar_object);
    evas_object_del(eb->box_object);
    evas_object_del(eb->event_object);
-   _engage_tray_shutdown(eb);
+	 
+   if (eb->tray)
+     {
+	_engage_tray_shutdown(eb);
+	eb->tray = NULL;
+     }
 
    e_gadman_client_save(eb->gmc);
    e_object_del(E_OBJECT(eb->gmc));
@@ -736,6 +753,14 @@ _engage_bar_menu_new(Engage_Bar *eb)
      e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_stretch, eb);
 
+	 
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "System Tray");
+   e_menu_item_check_set(mi, 1);
+   if (eb->conf->tray)
+     e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_tray, eb);
+
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
 	 
@@ -786,7 +811,8 @@ _engage_bar_enable(Engage_Bar *eb)
    evas_object_show(eb->bar_object);
    evas_object_show(eb->box_object);
    evas_object_show(eb->event_object);
-   evas_object_show(eb->tray->tray);
+   if (eb->tray)
+     evas_object_show(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -797,7 +823,8 @@ _engage_bar_disable(Engage_Bar *eb)
    evas_object_hide(eb->bar_object);
    evas_object_hide(eb->box_object);
    evas_object_hide(eb->event_object);
-   evas_object_hide(eb->tray->tray);
+   if (eb->tray)
+     evas_object_hide(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -855,7 +882,10 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 
    evas_object_raise(ic->event_object);
 
-   e_box_pack_before(eb->box_object, ic->bg_object, eb->tray->tray);
+   if (eb->tray)
+     e_box_pack_before(eb->box_object, ic->bg_object, eb->tray->tray);
+   else
+     e_box_pack_end(eb->box_object, ic->bg_object);
    e_box_pack_options_set(ic->bg_object,
 			  1, 1, /* fill */
 			  0, 0, /* expand */
@@ -1315,7 +1345,11 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
    else
      {
 	ic->eb->icons = evas_list_append(ic->eb->icons, ic);
-	e_box_pack_before(ic->eb->box_object, ic->bg_object, ic->eb->tray->tray);
+
+	if (ic->eb->tray)
+	  e_box_pack_before(ic->eb->box_object, ic->bg_object, ic->eb->tray->tray);
+	else
+	  e_box_pack_end(ic->eb->box_object, ic->bg_object);
      }
    edje_object_size_min_calc(ic->bg_object, &bw, &bh);
    e_box_pack_options_set(ic->bg_object,
@@ -1346,7 +1380,11 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
 
    e_gadman_client_resize(eb->gmc, w, h);
-   evas_object_resize(eb->event_object, w - eb->tray->w, h);
+
+   if (eb->tray)
+     evas_object_resize(eb->event_object, w - eb->tray->w, h);
+   else
+     evas_object_resize(eb->event_object, w, h);
    evas_object_move(eb->event_object, x, y);
    e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
@@ -1806,7 +1844,11 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
    eb = data;
 
    evas_object_resize(o, w, h);
-   evas_object_resize(eb->event_object, w - eb->tray->w, h);
+	 
+   if (eb->tray)
+     evas_object_resize(eb->event_object, w - eb->tray->w, h);
+   else
+     evas_object_resize(eb->event_object, w, h);
    edje_extern_object_min_size_set(eb->box_object, w, h);
    
    if (eb->gmc)
@@ -2001,23 +2043,35 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
+	if (eb->tray)
+	  evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
+	else
+	  evas_object_resize(eb->event_object, w * (multiplier + 1), h );
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
+	if (eb->tray)
+	  evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
+	else
+	  evas_object_resize(eb->event_object, w * (multiplier + 1), h );
 	evas_object_move(eb->event_object, x - w * multiplier, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
+	if (eb->tray)
+	  evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
+	else
+	  evas_object_resize(eb->event_object, w , h * (multiplier + 1));
      }
    else
      {
-	evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
+	if (eb->tray)
+	  evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
+	else
+	  evas_object_resize(eb->event_object, w , h * (multiplier + 1));
 	evas_object_move(eb->event_object, x, y - h * multiplier);
      }
-  _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
+   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
 
 static void
@@ -2248,6 +2302,34 @@ _engage_bar_cb_menu_zoom_stretch(void *data, E_Menu *m, E_Menu_Item *mi)
 
    eb = data;
    eb->conf->zoom_stretch = e_menu_item_toggle_get(mi);
+   e_config_save_queue();
+}
+
+static void
+_engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   eb->conf->tray = e_menu_item_toggle_get(mi);
+   if (eb->conf->tray)
+     {
+	_engage_tray_init(eb);
+	e_box_pack_end(eb->box_object, eb->tray->tray);
+	e_box_pack_options_set(eb->tray->tray,
+			       1, 1, /* fill */
+			       0, 1, /* expand */
+			       0.0, 0.0, /* align */
+			       1, 1, /* min */
+			       100, 100 /* max */
+			       );
+     }
+   else
+     {
+	_engage_tray_shutdown(eb);
+	eb->tray = NULL;
+	_engage_bar_frame_resize(eb);
+     }
    e_config_save_queue();
 }
 
