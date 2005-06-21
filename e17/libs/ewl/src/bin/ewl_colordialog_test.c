@@ -18,6 +18,8 @@ __create_colordialog_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Widget *colordialog_win;
 	Ewl_Widget *colordialog;
 
+	colordialog_button = w;
+
 	colordialog_win = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(colordialog_win), "Colordialog Test");
 	ewl_window_name_set(EWL_WINDOW(colordialog_win), "EWL Test Application");
