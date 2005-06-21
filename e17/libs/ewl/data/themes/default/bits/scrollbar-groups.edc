@@ -260,7 +260,7 @@ BUTTON_PROG()
 
    group {
       name, "htrough";
-      min, 14 14;
+      min, 14 15;
       parts {
 	 part {
 	    name,          "base";
