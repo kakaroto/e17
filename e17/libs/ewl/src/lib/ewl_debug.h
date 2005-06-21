@@ -1,8 +1,6 @@
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
-#include "ewl-config.h"
-
 #define DLEVEL_UNSTABLE 1
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
