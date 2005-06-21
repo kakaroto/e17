@@ -65,7 +65,7 @@ struct Ewl_Widget
 	char           *inheritance; /**< Key to lookup inhertiance of widget */
 	int             layer; /**< Current layer of widget on canvas */
 
-	Ewl_Color_Set   color;
+	Ewl_Color_Set   color; /**< The colour of the widget */
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */

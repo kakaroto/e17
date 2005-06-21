@@ -16,18 +16,22 @@ static void
 __combo_value_changed(Ewl_Widget *w __UNUSED__, void *ev_data, 
 					void *user_data __UNUSED__)
 {
+	Ewl_Widget *entry;
 	char *text;
-	
-	text = ev_data;
-	printf("value changed to %s\n", text);
-}
 
-static void
-__combo_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
-					void *user_data __UNUSED__)
-{
-	printf("Combo configured to (%d, %d) %dx%d\n", CURRENT_X(w),
-			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+	entry = EWL_WIDGET(ev_data);
+	text = ewl_menu_item_text_get(EWL_MENU_ITEM(entry));
+
+	printf("value changed to %s\n", text);
+    
+	if (!strcmp(text, "button"))
+	{
+		char *t2;
+		t2 = ewl_widget_data_get(entry, "dummy");
+		printf("with data: %s\n", t2);
+	}
+
+	IF_FREE(text);
 }
 
 void
@@ -69,8 +73,6 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 */
 	combo1 = ewl_combo_new("test menu");
 	ewl_container_child_append(EWL_CONTAINER(combo_box), combo1);
-	ewl_callback_append(combo1, EWL_CALLBACK_CONFIGURE,
-			    __combo_configure, NULL);
 	ewl_callback_append(combo1, EWL_CALLBACK_VALUE_CHANGED,
 				__combo_value_changed, NULL);
 	ewl_widget_show(combo1);
@@ -91,6 +93,7 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new(NULL, "button");
+	ewl_widget_data_set(item, "dummy", "data");
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 }

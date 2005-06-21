@@ -4,6 +4,11 @@
 
 static void ewl_label_apply(Ewl_Label *la);
 
+/**
+ * @param text: The text to set into the label
+ * @return Returns a new Ewl_Widget if successful, NULL on failure
+ * @brief Creates a new Ewl_Label widget with the @a text text in it
+ */
 Ewl_Widget *
 ewl_label_new(char *text)
 {
@@ -23,6 +28,12 @@ ewl_label_new(char *text)
 	DRETURN_PTR(EWL_WIDGET(label), DLEVEL_STABLE);
 }
 
+/**
+ * @param la: The Ewl_Label to initialize
+ * @param text: The text to initialize into the widget
+ * @return Returns TRUE on success, FALSE on falure
+ * @brief Initializes the @a la widget
+ */
 int
 ewl_label_init(Ewl_Label *la, char *text)
 {
@@ -44,6 +55,12 @@ ewl_label_init(Ewl_Label *la, char *text)
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+/**
+ * @param la: The Ewl_Widget to set the text on
+ * @param text: The text to set into the widget
+ * @return Returns no value
+ * @brief Sets the given @a text into the widget @a la
+ */
 void
 ewl_label_text_set(Ewl_Label *la, char *text)
 {
@@ -59,6 +76,11 @@ ewl_label_text_set(Ewl_Label *la, char *text)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param la: The Ewl_Label to get the text from
+ * @return Returns no value.
+ * @brief Gets the current text set into the label
+ */
 char *
 ewl_label_text_get(Ewl_Label *la)
 {

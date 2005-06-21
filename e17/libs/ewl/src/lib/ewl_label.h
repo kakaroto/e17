@@ -27,8 +27,8 @@ typedef struct Ewl_Label Ewl_Label;
  */
 struct Ewl_Label
 {
-	Ewl_Widget widget;
-	char * text;
+	Ewl_Widget widget;      /**< Inherit from Ewl_Widget */
+	char * text;            /**< The text set into the widget */
 };
 
 Ewl_Widget *ewl_label_new(char *text);

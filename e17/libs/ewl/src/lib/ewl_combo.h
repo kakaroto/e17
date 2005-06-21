@@ -41,8 +41,8 @@ struct Ewl_Combo
 
 Ewl_Widget     *ewl_combo_new(char *title);
 void            ewl_combo_init(Ewl_Combo * combo, char *title);
-char           *ewl_combo_selected_get(Ewl_Combo * combo );
-void            ewl_combo_selected_set(Ewl_Combo * combo, char *item );
+Ewl_Widget     *ewl_combo_selected_get(Ewl_Combo * combo);
+void            ewl_combo_selected_set(Ewl_Combo * combo, Ewl_Widget *item);
 
 /*
  * Internally used callbacks, override at your own risk.
