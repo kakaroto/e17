@@ -429,6 +429,8 @@ void ewl_scrollpane_hscroll_cb(Ewl_Widget * w __UNUSED__,
 				void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
