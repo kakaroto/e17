@@ -41,6 +41,7 @@ int ewl_row_init(Ewl_Row *row)
 	ewl_widget_inherit(EWL_WIDGET(row), "row");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(row), ewl_row_child_hide_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(row), ewl_row_resize_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
@@ -279,6 +280,22 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
+			ewl_object_preferred_w_get(EWL_OBJECT(w)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
+{
+	Ewl_Row *row;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	row = EWL_ROW(c);
+
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) -
 			ewl_object_preferred_w_get(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

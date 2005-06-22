@@ -42,6 +42,7 @@ void ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
 
 void ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		       Ewl_Orientation o);
 
