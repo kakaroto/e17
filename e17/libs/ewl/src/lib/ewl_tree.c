@@ -78,7 +78,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 				EWL_FLAG_FILL_HSHRINK |
 				EWL_FLAG_FILL_HFILL);
 		ewl_container_child_append(EWL_CONTAINER(row), button);
-		ewl_widget_show(button);
+
+    		ewl_widget_show(button);
 	}
 
 	tree->header = row;
@@ -93,6 +94,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_container_redirect_set(EWL_CONTAINER(tree),
 				   EWL_CONTAINER(tree->scrollarea));
+
+	ewl_tree_headers_visible_set(tree, 1);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -123,10 +126,62 @@ void ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 	button = ecore_list_next(EWL_CONTAINER(row)->children);
 	for (i = 0; i < tree->ncols && button; i++) {
 		ewl_button_label_set(EWL_BUTTON(button), headers[i]);
+
+		if (!tree->headers_visible && VISIBLE(button))
+			ewl_widget_hide(button);
+		else if (tree->headers_visible && HIDDEN(button))
+			ewl_widget_show(button);
+
 		button = ecore_list_next(EWL_CONTAINER(row)->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to set the header visibleity
+ * @param visible: The visiblity to set
+ * @return Returns no value.
+ * @brief Sets the visiblity of the headers in the tree
+ */
+void
+ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
+{
+	unsigned short i;
+	Ewl_Widget *button;
+	Ewl_Widget *row;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+
+	tree->headers_visible = visible;
+
+	row = ecore_list_goto_first(EWL_CONTAINER(tree)->children);
+	ecore_list_goto_first(EWL_CONTAINER(row)->children);
+
+	button = ecore_list_next(EWL_CONTAINER(row)->children);
+	for (i = 0; i < tree->ncols && button; i++) {
+		if ((visible) && (HIDDEN(button))) ewl_widget_show(button);
+		else if ((!visible) && (VISIBLE(button))) ewl_widget_hide(button);
+
+		button = ecore_list_next(EWL_CONTAINER(row)->children);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree the get the header visiblity
+ * @return Returns the header visibliity of the tree
+ * @brief Gets the header visibility of the tree
+ */
+unsigned int
+ewl_tree_headers_visible_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, 0);
+
+	DRETURN_INT(tree->headers_visible, DLEVEL_STABLE);
 }
 
 /**

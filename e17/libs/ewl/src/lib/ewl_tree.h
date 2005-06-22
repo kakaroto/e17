@@ -46,6 +46,7 @@ struct Ewl_Tree
 	Ewl_Widget    *scrollarea; /**< Scrollable area of rows */
 	Ecore_List    *selected;   /**< The currently selected rows */
 	Ewl_Tree_Mode  mode;       /**< Mode for selecting rows */
+	unsigned int   headers_visible; /**< Are the headers visible */
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;
@@ -89,6 +90,10 @@ int 		 ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 
 void 		 ewl_tree_headers_set(Ewl_Tree *tree, char **headers);
 void  		 ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
+
+void		ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible);
+unsigned int	ewl_tree_headers_visible_get(Ewl_Tree *tree);
+
 
 Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);
 void 		 ewl_tree_selected_clear(Ewl_Tree *tree);
