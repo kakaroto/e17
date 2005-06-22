@@ -43,3 +43,14 @@ EWL TODO
         activations are in the correct spot
 - [BUG] Dialog text bounds are not considered when packing the window
 - [BUG] Grid and Table layouts do not pack or resize correctly
+
+- Need to do some work on the tree.
+  - add ability to wrap text in tree nodes
+  - add ability to clear all rows under a parent row
+  - add ability to set row to expand when item clicked (ie
+    ewl_tree_row_expand_on_click_set())
+  - horizontal scrolling is wacked
+  - add ability to turn highlight off for certain rows/nodes
+  - scrollbar dosen't always appear when expected using the tree
+
+
