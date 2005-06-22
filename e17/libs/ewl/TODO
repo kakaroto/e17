@@ -52,5 +52,8 @@ EWL TODO
   - horizontal scrolling is wacked
   - add ability to turn highlight off for certain rows/nodes
   - scrollbar dosen't always appear when expected using the tree
-
+  - if you have the tree so it has the scroll bar appear, if your at the
+    bottom of the scrollarea and you expand a row, the text shoudln't shift
+    up. The scrollpane should be adjusted so the line you expanded stays
+    where it is and everything shifts down.
 
