@@ -564,6 +564,8 @@ void ewl_widget_state_set(Ewl_Widget * w, char *state)
 	if (w->theme_object)
 		edje_object_signal_emit(w->theme_object, state, "EWL");
 
+	ewl_callback_call(w, EWL_CALLBACK_STATE_CHANGED);
+
 	DRETURN(DLEVEL_STABLE);
 }
 
