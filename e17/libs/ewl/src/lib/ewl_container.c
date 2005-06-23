@@ -327,16 +327,18 @@ ewl_container_child_count_get(Ewl_Container *c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
 
+	/*
+	 * Find the container where children are actually added.
+	 */
+	container = c;
+	while (container->redirect) container = container->redirect;
+
 	ecore_list_goto_first(c->children);
 	while ((child = ecore_list_next(c->children)))
 	{
 		if (ewl_widget_internal_is(child)) continue;
-		count ++;
+		count++;
 	}
-
-	container = c->redirect;
-	while (container->redirect) container = container->redirect;
-	count += ewl_container_child_count_get(container);
 
 	DRETURN_INT(count, DLEVEL_STABEL);
 }
