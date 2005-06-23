@@ -117,6 +117,7 @@ void            ewl_container_child_iterate_begin(Ewl_Container *c);
 Ewl_Widget     *ewl_container_child_next(Ewl_Container *c);
 void            ewl_container_child_iterator_set(Ewl_Container *c,
 						 Ewl_Container_Iterator i);
+int             ewl_container_child_count_get(Ewl_Container *c);
 
 void            ewl_container_destroy(Ewl_Container * c);
 void            ewl_container_reset(Ewl_Container * c);

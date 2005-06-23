@@ -313,6 +313,35 @@ void ewl_container_child_remove(Ewl_Container * pc, Ewl_Widget * child)
 }
 
 /**
+ * @param c: The container to get the child count from
+ * @return Returns the number of child widgets
+ * @brief Returns the number of child widgets in the container
+ */
+int
+ewl_container_child_count_get(Ewl_Container *c)
+{
+	Ewl_Widget *child = NULL;
+	Ewl_Container *container = NULL;
+	int count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+
+	ecore_list_goto_first(c->children);
+	while ((child = ecore_list_next(c->children)))
+	{
+		if (ewl_widget_internal_is(child)) continue;
+		count ++;
+	}
+
+	container = c->redirect;
+	while (container->redirect) container = container->redirect;
+	count += ewl_container_child_count_get(container);
+
+	DRETURN_INT(count, DLEVEL_STABEL);
+}
+
+/**
  * @param w: the child widget that has had it's preferred size changed
  * @param size: the amount of change in size
  * @param o: the orientation of the size change
