@@ -333,8 +333,8 @@ ewl_container_child_count_get(Ewl_Container *c)
 	container = c;
 	while (container->redirect) container = container->redirect;
 
-	ecore_list_goto_first(c->children);
-	while ((child = ecore_list_next(c->children)))
+	ecore_list_goto_first(container->children);
+	while ((child = ecore_list_next(container->children)))
 	{
 		if (ewl_widget_internal_is(child)) continue;
 		count++;
