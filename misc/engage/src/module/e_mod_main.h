@@ -29,7 +29,7 @@ struct _Config_Bar
    int           zoom;
    double        zoom_factor, zoom_duration;
    int           zoom_stretch;
-	 int           tray;
+   int           tray;
 };
 
 struct _Engage
@@ -56,7 +56,7 @@ struct _Engage_Tray
 
 struct _Engage_Bar
 {
-   Engage        *engage;
+   Engage      *engage;
    E_Container *con;
    Evas        *evas;
    E_Menu      *menu;
@@ -71,21 +71,22 @@ struct _Engage_Bar
    Evas_List   *icons;   
    Evas_List   *contexts;
    
-   double          align, align_req;
+   double       align, align_req;
    
-   Evas_Coord      x, y, w, h;
-   double          zoom;
-   int             zooming;
+   Evas_Coord   x, y, w, h;
+   double       zoom;
+   int          zooming;
    
    E_Gadman_Client *gmc;
 
-   Config_Bar     *conf;
+   Config_Bar  *conf;
    Ecore_Event_Handler *add_handler;
    Ecore_Event_Handler *remove_handler;
    Ecore_Event_Handler *iconify_handler;
    Ecore_Event_Handler *uniconify_handler;
 
-   Engage_Tray     *tray;
+   Engage_Tray *tray;
+   Engage_Icon *selected_ic;
 };
 
 struct _Engage_Icon

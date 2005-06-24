@@ -122,6 +122,8 @@ static void    _engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item 
 
 static void    _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi);
 
+static void    _engage_bar_cb_menu_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi);
+
 static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 static int     _engage_border_ignore(E_Border *bd);
 
@@ -547,6 +549,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 
    eb->contexts = NULL;
    eb->tray = NULL;
+   eb->selected_ic = NULL;
    
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
@@ -760,6 +763,13 @@ _engage_bar_menu_new(Engage_Bar *eb)
    if (eb->conf->tray)
      e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_tray, eb);
+
+   mi = e_menu_item_new(mn); 
+   e_menu_item_separator_set(mi, 1);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Edit Icon");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
 
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
@@ -1955,6 +1965,12 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	edje_object_signal_emit(ic->overlay_object, "start", "");
 	e_app_exec(ic->app);
      }
+   else if (ev->button == 3)
+     {
+	//set selected icon so we can access it
+	//with the context menu
+	ic->eb->selected_ic = ic;
+     }
 }
 
 static void
@@ -1975,46 +1991,46 @@ _engage_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info
 static void
 _engage_icon_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-  Evas_Event_Mouse_Wheel *ev;
-  Engage_Icon *ic;
-  Engage_App_Icon *ai;
+   Evas_Event_Mouse_Wheel *ev;
+   Engage_Icon *ic;
+   Engage_App_Icon *ai;
   
-  ev = event_info;
-  ic = data;
+   ev = event_info;
+   ic = data;
 
-  if(!ic->extra_icons)
-    return;
+   if(!ic->extra_icons)
+     return;
 
-  if(ev->z > 0) // Wheel Down, traverse clockwise
-    {
-      if(!ic->selected_app)
-	ic->selected_app = ic->extra_icons;
-      else
-	{
-	  if(ic->selected_app->next)
-	    ic->selected_app = ic->selected_app->next;
-	}
-    }
-  else // Wheel Up, traverse counterclockwise
-    {
-      if(!ic->selected_app)
-	ic->selected_app = evas_list_last(ic->extra_icons);
-      else
-	{
-	  if(ic->selected_app->prev)
-	    ic->selected_app = ic->selected_app->prev;
-	}
+   if (ev->z > 0) // Wheel Down, traverse clockwise
+     {
+	if (!ic->selected_app)
+	  ic->selected_app = ic->extra_icons;
+	else
+	  {
+	     if (ic->selected_app->next)
+	       ic->selected_app = ic->selected_app->next;
+	  }
+     }
+   else // Wheel Up, traverse counterclockwise
+     {
+	if (!ic->selected_app)
+	  ic->selected_app = evas_list_last(ic->extra_icons);
+	else
+	  {
+	     if (ic->selected_app->prev)
+	       ic->selected_app = ic->selected_app->prev;
+	  }
     }
   
-   ai = ic->selected_app->data;
-   edje_object_signal_emit(ai->bg_object, "start", "");
-   edje_object_signal_emit(ai->overlay_object, "start", "");
-   if (ai->min)
-     e_border_uniconify(ai->border);
-   e_border_raise(ai->border);
-   e_desk_show(ai->border->desk);
+    ai = ic->selected_app->data;
+    edje_object_signal_emit(ai->bg_object, "start", "");
+    edje_object_signal_emit(ai->overlay_object, "start", "");
+    if (ai->min)
+      e_border_uniconify(ai->border);
+    e_border_raise(ai->border);
+    e_desk_show(ai->border->desk);
 
-   _engage_bar_motion_handle(ic->eb, ev->canvas.x, ev->canvas.y);
+    _engage_bar_motion_handle(ic->eb, ev->canvas.x, ev->canvas.y);
 }
 
 
@@ -2098,10 +2114,11 @@ _engage_zoom_in_slave(void *data)
    Engage_Bar *eb;
 
    eb = data;
-   if (start_time == 0) {
-     eb->zooming = 1;
-     start_time = ecore_time_get();
-   }
+   if (start_time == 0)
+     {
+	eb->zooming = 1;
+	start_time = ecore_time_get();
+     }
 
    eb->zoom = (eb->conf->zoom_factor - 1.0) * ((ecore_time_get() - start_time)
               / eb->conf->zoom_duration) + 1.0;
@@ -2199,25 +2216,25 @@ _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
    eb = data;
    switch (change)
      {
-      case E_GADMAN_CHANGE_MOVE_RESIZE:
-	 e_gadman_client_geometry_get(eb->gmc, &eb->x, &eb->y, &eb->w, &eb->h);
+	case E_GADMAN_CHANGE_MOVE_RESIZE:
+	  e_gadman_client_geometry_get(eb->gmc, &eb->x, &eb->y, &eb->w, &eb->h);
 
-	 edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
-	 edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
+	  edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
+	  edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
 
-	 evas_object_move(eb->bar_object, eb->x, eb->y);
-	 evas_object_resize(eb->bar_object, eb->w, eb->h);
+	  evas_object_move(eb->bar_object, eb->x, eb->y);
+	  evas_object_resize(eb->bar_object, eb->w, eb->h);
 
-	 break;
-      case E_GADMAN_CHANGE_EDGE:
-	 _engage_bar_edge_change(eb, e_gadman_client_edge_get(eb->gmc));
-	 break;
-      case E_GADMAN_CHANGE_RAISE:
-      case E_GADMAN_CHANGE_ZONE:
-	 /* FIXME
-	  * Must we do something here?
-	  */
-	 break;
+	  break;
+	case E_GADMAN_CHANGE_EDGE:
+	  _engage_bar_edge_change(eb, e_gadman_client_edge_get(eb->gmc));
+	  break;
+	case E_GADMAN_CHANGE_RAISE:
+	case E_GADMAN_CHANGE_ZONE:
+	  /* FIXME
+	   * Must we do something here?
+	   */
+	  break;
      }
 }
 
@@ -2331,6 +2348,38 @@ _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi)
 	_engage_bar_frame_resize(eb);
      }
    e_config_save_queue();
+}
+
+static void
+_engage_bar_cb_menu_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+   eb = data;
+
+   // the following is stolen from e17/e/src/bin/e_border.c
+   char *file;
+   char *command;
+   char *full;
+   Ecore_Exe *process;
+   
+   if (eb->selected_ic)
+     {
+
+	file = eb->selected_ic->app->path;
+	command = "e_util_eapp_edit ";
+	full = malloc(strlen(file) + strlen(command) + 1);
+	strcpy(full, command);
+	strcat(full, file);
+     
+	process = ecore_exe_run(full, NULL);
+	if (!process || !ecore_exe_pid_get(process))
+	  {
+	     e_error_dialog_show(_("Icon Edit Error"),
+				 _("Error starting icon editor\n\n"
+				   "please install e_util_eapp_edit\n"
+				   "or make sure it is in your PATH\n"));
+	  }
+     }
 }
 
 static void
