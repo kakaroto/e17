@@ -359,7 +359,7 @@ main(int argc, char **argv) {
 static void
 _eapp_edit_help(void) {
   printf("USAGE:\n"
-      "e_util_eapp_edit [options] file.eapp\n\n"
+      "e_util_eapp_edit [options] file.eap\n\n"
       "if file.eapp does not exist a new icon file will be created\n\n"
       "options:\n"
       "  -h --help	View this screen\n"
