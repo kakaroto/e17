@@ -422,7 +422,7 @@ static Ewl_Image_Type ewl_image_type_get(const char *i)
 	if ((l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
 	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eet", 4)))
 	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".edj", 4)))
-	    || (l >= 4 && !(strncasecmp((char *) i + l - 5, ".eap", 5))))
+	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eap", 5))))
 		return EWL_IMAGE_TYPE_EDJE;
 
 	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
