@@ -218,9 +218,9 @@ _engage_new()
    e = E_NEW(Engage, 1);
    if (!e) return NULL;
    
-   _engage_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eapp", 0);
+   _engage_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eap", 0);
    if (!_engage_unmatched_app)
-     printf("ERROR: Engage could not locate default icon xapp.eapp - please make install\n");
+     printf("ERROR: Engage could not locate default icon xapp.eap - please make install\n");
 
    conf_bar_edd = E_CONFIG_DD_NEW("Engage_Config_Bar", Config_Bar);
 #undef T
@@ -1120,7 +1120,7 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
    for (i = 0; i < files->num_files; i++)
      {
 	char *name, *path, *ext;
-	ext = strstr(files->files[i], ".eapp");
+	ext = strstr(files->files[i], ".eap");
 	if (!ext)
 	  continue;
 	path = ecore_file_get_dir(files->files[i]);

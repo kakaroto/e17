@@ -19,7 +19,7 @@ in ~/.e/e/applications/all.
 In ~/.e/e/applications/engage you need to place a .order file or however you
 like to manage your icon lists in e17.
 
-Unmatched windows will pick up the xapp.eapp in the shared directory which has
+Unmatched windows will pick up the xapp.eap in the shared directory which has
 no icon - _unless_ the theme overrides this icon!
 
 Try using the "none" theme to start with and the "gentoo" theme for a nice

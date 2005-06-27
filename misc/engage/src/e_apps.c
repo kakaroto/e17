@@ -2,7 +2,7 @@
 
 /* TODO List:
  * 
- * * if a application .eapp file is added in a different location in a monitored app tree but has the same filename as an existing one somewhere else, the existing one gets a changed callback, not an dded callback for the new one
+ * * if a application .eap file is added in a different location in a monitored app tree but has the same filename as an existing one somewhere else, the existing one gets a changed callback, not an dded callback for the new one
  * * track app execution state, visibility state etc. and call callbacks
  * * calls to execute an app or query its runing/starting state etc.
  */
@@ -101,7 +101,7 @@ e_app_new(char *path, int scan_subdirs)
 	char buf[4096];
 	
 	a->path = strdup(path);
-	snprintf(buf, sizeof(buf), "%s/.directory.eapp", path);
+	snprintf(buf, sizeof(buf), "%s/.directory.eap", path);
 	a->directory_mod_time = e_file_mod_time(buf);
 	if (e_file_exists(buf))
 	  _e_app_fields_fill(a, buf);
@@ -113,7 +113,7 @@ e_app_new(char *path, int scan_subdirs)
      {
 	char *p;
 	
-	/* check if file ends in .eapp */
+	/* check if file ends in .eap */
 	p = strrchr(path, '.');
 	if (!p)
 	  {
@@ -121,7 +121,7 @@ e_app_new(char *path, int scan_subdirs)
 	     return NULL;
 	  }
 	p++;
-	if ((strcasecmp(p, "eapp")))
+	if ((strcasecmp(p, "eap")))
 	  {
 	     free(a);
 	     return NULL;
@@ -703,7 +703,7 @@ _e_app_check_each(Evas_Hash *hash, const char *key, void *data, void *fdata)
 	mod_time = e_file_mod_time(a->path);
 	snprintf(buf, sizeof(buf), "%s/.order", a->path);
 	order_mod_time = e_file_mod_time(buf);
-	snprintf(buf, sizeof(buf), "%s/.directory.eapp", a->path);
+	snprintf(buf, sizeof(buf), "%s/.directory.eap", a->path);
 	directory_mod_time = e_file_mod_time(buf);
 	if ((mod_time != a->mod_time) ||
 	    (order_mod_time != a->order_mod_time) ||
@@ -730,7 +730,7 @@ _e_app_check_each(Evas_Hash *hash, const char *key, void *data, void *fdata)
 		    }
 		  if (directory_mod_time != a->directory_mod_time)
 		    {
-		       snprintf(buf, sizeof(buf), "%s/.directory.eapp", a->path);
+		       snprintf(buf, sizeof(buf), "%s/.directory.eap", a->path);
 		       _e_app_fields_empty(a);
 		       _e_app_fields_fill(a, buf);
 		       ch = calloc(1, sizeof(E_App_Change_Info));

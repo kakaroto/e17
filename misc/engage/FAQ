@@ -2,7 +2,7 @@ Q; Why do I have no icons?
 A: You need to create some! - use the e_util_eapp_edit application in e17 cvs to create them for you.
 
 Q: Why are my icons question marks?
-A: You have no mapping for the running application - you need a .eapp file
+A: You have no mapping for the running application - you need a .eap file
 that has a matching window class for the icon it represents - try xprop for a
 hint as to your windows class.
 

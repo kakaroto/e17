@@ -1,6 +1,5 @@
 0.1.0:
 Finish callbacks for E_App and handle mappings more memory-efficiently
-move to new e17 .eapp icons
 Properly handle ordering - only works on startup
 Seperate behaviour edje from iconsets.
 

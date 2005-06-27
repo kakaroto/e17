@@ -16,16 +16,16 @@ userconfig_mappings_load(char* fp)
 {
   Evas_List      *l;
 
-  od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eapp", 0);
+  od_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eap", 0);
   if (!od_unmatched_app) {
-    printf("ERROR: Engage could not locate default icon xapp.eapp - please make install\n");
+    printf("ERROR: Engage could not locate default icon xapp.eap - please make install\n");
     ecore_main_loop_quit();
     exit(1);
   }
 
   maplist = e_app_new(fp, 1);
   if (!maplist) {
-    printf("You must create the %s/ directory and populate it with .eapp files or a .order file\n", fp);
+    printf("You must create the %s/ directory and populate it with .eap files or a .order file\n", fp);
     return;
   }
 
