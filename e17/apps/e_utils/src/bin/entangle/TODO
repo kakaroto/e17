@@ -1,11 +1,11 @@
 Just the stuff I can think of...
 
-* someway to attach .directory.eapp files to directories
+* someway to attach .directory.eap files to directories
 * directory renaming?
 * need to handle directories that aren't in the .order file. They come at
   the end of the list
 * need to handle eapps that aren't in the .order file too
-* E17 will look for the .eapp in the directory first before checking the all
+* E17 will look for the .eap in the directory first before checking the all
   directory.
 * need to add monitoring of the .order files and the top directories
   - if something changes need to popup a warning to the user and ask if

@@ -597,7 +597,7 @@ entangle_ui_menu_populate_list(const char *rel_path, Ecore_List *apps,
             edje_object_signal_callback_add(obj, "dir,clicked",
                     "*", entangle_ui_cb_dir_clicked, app);
 
-            snprintf(path, PATH_MAX, "%s/.directory.eapp", app->eapp->path);
+            snprintf(path, PATH_MAX, "%s/.directory.eap", app->eapp->path);
             if (ecore_file_exists(path))
             {
                 o = edje_object_add(evas);

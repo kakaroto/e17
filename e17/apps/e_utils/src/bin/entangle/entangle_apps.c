@@ -165,7 +165,7 @@ entangle_apps_dir_init(Ecore_List *dir, const char *name)
 
             if (!ecore_file_is_dir(dir_path))
             {
-                fprintf(stderr, "ERROR found %s in the %s order file. There is no .eapp "
+                fprintf(stderr, "ERROR found %s in the %s order file. There is no .eap "
                                 "for it, and it isn't a directory. Skipping...\n", buf, name);
                 FREE(app);
                 continue;
