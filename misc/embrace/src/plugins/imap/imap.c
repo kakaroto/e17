@@ -22,6 +22,7 @@
 # include <config.h>
 #endif
 
+#include <Ecore.h>
 #include <Ecore_Con.h>
 #include <assert.h>
 #include <string.h>

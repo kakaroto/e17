@@ -1,5 +1,9 @@
 $Id$
 
+2005-06-29 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/plugins/{pop3,imap}/{pop3/imap}.c: Fixed compilation with
+          latest ecore_con
+
 2005-05-17 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugins/pop3/pop3.c: Don't die on unexpected input data
 
