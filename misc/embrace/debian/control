@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Blake Barnett <shadoi@soulmachine.net>
 Build-Depends: debhelper (>= 4.0.0)
-Build-Depends: libedje0-dev, libecore1-dev, libedb1-dev, debhelper (>> 4.0.0)
+Build-Depends: libedje-dev, libecore-dev, libedb-dev, debhelper (>> 4.0.0)
 Standards-Version: 3.6.1.0
 
 Package: embrace
