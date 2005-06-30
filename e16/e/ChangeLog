@@ -3457,3 +3457,18 @@ Speed up initial rendering of certain dialogs.
 Fix dragging pagers. Make pager scanning a bit more efficient.
 Fix transient placement.
 Focus tweaks.
+
+-------------------------------------------------------------------------------
+
+Thu Jun 30 15:23:58 CEST 2005
+(Kim)
+
+--- 0.16.8 0.13 ---
+Handle _NET_WM_ICON.
+Focus handling tweaks.
+Initial _NET_WM_ALLOWED_ACTIONS handling, cleanups.
+Action/grab tweaks, cleanups (should fix focus list lockup).
+Trivial stuff (function renaming, avoid referencing ewin list, eliminate
+ unnecessary casts).
+Eliminate xid list (now linked within struct).
+
