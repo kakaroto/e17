@@ -340,7 +340,7 @@ ewl_container_child_count_get(Ewl_Container *c)
 		count++;
 	}
 
-	DRETURN_INT(count, DLEVEL_STABEL);
+	DRETURN_INT(count, DLEVEL_STABLE);
 }
 
 /**

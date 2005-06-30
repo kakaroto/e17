@@ -17,12 +17,14 @@ entice_text(void *data, Evas_Object *obj __UNUSED__,
 			"while viewing.";
 
 	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
 	ewl_text_text_set(EWL_TEXT(label), "Entice");
 
-	ewl_text_style_set(EWL_TEXT(label), "none");
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
@@ -41,12 +43,14 @@ entrance_text(void *data, Evas_Object *obj __UNUSED__,
 			"and customization to new levels\n";
 
 	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
 	ewl_text_text_set(EWL_TEXT(label), "Entrance");
 
-	ewl_text_style_set(EWL_TEXT(label), "none");
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
@@ -66,12 +70,14 @@ elicit_text(void *data, Evas_Object *obj __UNUSED__,
 		     "examinations and color checks.";
 
 	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
 	ewl_text_text_set(EWL_TEXT(label), "Elicit");
 
-	ewl_text_style_set(EWL_TEXT(label), "none");
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
@@ -91,12 +97,14 @@ evidence_text(void *data, Evas_Object *obj __UNUSED__,
 		     "complete this slightly different browser.";
 
         ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-        ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+        ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
         ewl_text_text_set(EWL_TEXT(label), "Evidence");
 
-        ewl_text_style_set(EWL_TEXT(label), "none");
-        ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+        ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
         ewl_text_text_append(EWL_TEXT(label), text);
 }
 
@@ -115,12 +123,14 @@ edje_text(void *data, Evas_Object *obj __UNUSED__,
 	text = (char *)emission + strlen("Present");
 
         ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-        ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+        ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
         ewl_text_text_set(EWL_TEXT(label), (char *)source);
 
-        ewl_text_style_set(EWL_TEXT(label), "none");
-        ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+        ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
         ewl_text_text_append(EWL_TEXT(label), text);
 }
 
@@ -132,11 +142,13 @@ start_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
 	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
-	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 12);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
 	ewl_text_text_append(EWL_TEXT(label), "Welcome to Enlightenment!\n");
-	ewl_text_style_set(EWL_TEXT(label), "none");
-	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(label), "Vera");
+	ewl_text_font_size_set(EWL_TEXT(label), 7);
 	ewl_text_text_append(EWL_TEXT(label), "We hope you enjoy your stay.\n"
 					      "Please visit us at:\n");
 	ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);

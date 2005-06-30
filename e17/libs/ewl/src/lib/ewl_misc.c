@@ -176,6 +176,8 @@ int ewl_init(int *argc, char **argv)
 	ewl_window_list = ecore_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
+	ewl_text_context_init();
+
 	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 }
 

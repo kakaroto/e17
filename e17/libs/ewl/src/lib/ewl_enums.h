@@ -298,6 +298,19 @@ enum Ewl_Pick_Mode {
 };
 typedef enum Ewl_Pick_Mode Ewl_Pick_Mode;
 
+enum Ewl_Text_Style {
+	EWL_TEXT_STYLE_NONE = 0x00,
+	EWL_TEXT_STYLE_UNDERLINE = 0x01,
+	EWL_TEXT_STYLE_DOUBLE_UNDERLINE = 0x02,
+	EWL_TEXT_STYLE_STRIKETHROUGH = 0x04,
+	EWL_TEXT_STYLE_SHADOW = 0x08,
+	EWL_TEXT_STYLE_SOFT_SHADOW = 0x10,
+	EWL_TEXT_STYLE_FAR_SHADOW = 0x20,
+	EWL_TEXT_STYLE_OUTLINE = 0x40,
+	EWL_TEXT_STYLE_GLOW = 0x80
+};
+typedef enum Ewl_Text_Style Ewl_Text_Style;
+
 /**
  * @}
  */
