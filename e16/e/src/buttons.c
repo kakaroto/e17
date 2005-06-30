@@ -64,6 +64,7 @@ static struct
    Button             *button;
    char                loading_user;
    char                move_pending;
+   char                action_inhibit;
 } Mode_buttons;
 
 static void         ButtonHandleEvents(XEvent * ev, void *btn);
@@ -440,10 +441,11 @@ ButtonDoShowDefault(const Button * b)
 void
 ButtonDoAction(Button * b, EWin * ewin, XEvent * ev)
 {
-   if (b->aclass)
-      EventAclass(ev, ewin, b->aclass);
+   if (b->aclass && !Mode_buttons.action_inhibit)
+      ActionclassEvent(b->aclass, ev, ewin);
 }
 
+#if 1				/* Unused */
 int
 ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 {
@@ -466,6 +468,7 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 
    return 0;
 }
+#endif
 
 static void
 ButtonDragStart(Button * b)
@@ -558,12 +561,12 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
      {
 	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ACLASS);
-	if (ac)
-	   EventAclass(ev, NULL, ac);
+	if (ac && !Mode_buttons.action_inhibit)
+	   ActionclassEvent(ac, ev, NULL);
      }
 
-   if (b->aclass)
-      EventAclass(ev, NULL, b->aclass);
+   if (b->aclass && !Mode_buttons.action_inhibit)
+      ActionclassEvent(b->aclass, ev, NULL);
 }
 
 static void
@@ -571,7 +574,7 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
 
-   if (b->inside_win && !Mode.action_inhibit)
+   if (b->inside_win && !Mode_buttons.action_inhibit)
      {
 	ev->xbutton.window = b->inside_win;
 	XSendEvent(disp, b->inside_win, False, ButtonReleaseMask, ev);
@@ -588,8 +591,8 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
    GrabPointerRelease();
 #endif
 
-   if (b->aclass && !b->left)
-      EventAclass(ev, NULL, b->aclass);
+   if (b->aclass && !b->left && !Mode_buttons.action_inhibit)
+      ActionclassEvent(b->aclass, ev, NULL);
 
    b->left = 0;
 
@@ -600,6 +603,7 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
 #if 0				/* FIXME - Move? */
    GrabPointerRelease();
 #endif
+   Mode_buttons.action_inhibit = 0;
 }
 
 static void
@@ -626,7 +630,7 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	if ((x > Conf.button_move_resistance) ||
 	    (y > Conf.button_move_resistance))
 	   Mode_buttons.move_pending = 0;
-	Mode.action_inhibit = 1;
+	Mode_buttons.action_inhibit = 1;
      }
    if (!Mode_buttons.move_pending)
      {
@@ -653,8 +657,8 @@ ButtonEventMouseIn(Button * b, XEvent * ev)
      {
 	b->state = STATE_HILITED;
 	ButtonDraw(b);
-	if (b->aclass)
-	   EventAclass(ev, NULL, b->aclass);
+	if (b->aclass && !Mode_buttons.action_inhibit)
+	   ActionclassEvent(b->aclass, ev, NULL);
      }
 }
 
@@ -667,8 +671,8 @@ ButtonEventMouseOut(Button * b, XEvent * ev)
      {
 	b->state = STATE_NORMAL;
 	ButtonDraw(b);
-	if (b->aclass)
-	   EventAclass(ev, NULL, b->aclass);
+	if (b->aclass && !Mode_buttons.action_inhibit)
+	   ActionclassEvent(b->aclass, ev, NULL);
      }
 }
 

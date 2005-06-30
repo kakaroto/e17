@@ -23,20 +23,32 @@
  */
 #include "E.h"
 
-#if 0				/* Unused */
-void
-GrabButtonsSet(Window win, unsigned int csr)
+int
+GrabKeyboardSet(Window win)
 {
-   if (Mode.grabs.pointer_grab_active)
-      return;
+   int                 rc;
 
-   XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None, ECsrGet(csr), CurrentTime);
+   rc = XGrabKeyboard(disp, win, False, GrabModeAsync, GrabModeAsync,
+		      CurrentTime);
 
-   Mode.grabs.pointer_grab_window = win;
-   Mode.grabs.pointer_grab_active = 1;
-}
+#if 0
+   Eprintf("GrabKeyboardSet %#lx %d\n", win, rc);
 #endif
+   return rc;
+}
+
+int
+GrabKeyboardRelease(void)
+{
+   int                 rc;
+
+   rc = XUngrabKeyboard(disp, CurrentTime);
+
+#if 0
+   Eprintf("GrabKeyboardRelease %d\n", rc);
+#endif
+   return rc;
+}
 
 int
 GrabPointerSet(Window win, unsigned int csr, int confine)

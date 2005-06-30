@@ -111,29 +111,6 @@ static void         MenusHide(void);
 static Menu        *active_menu = NULL;
 static MenuItem    *active_item = NULL;
 
-static void
-GrabKeyboard(Window win)
-{
-   int                 rc;
-
-   rc = XGrabKeyboard(disp, win, False, GrabModeAsync, GrabModeAsync,
-		      CurrentTime);
-#if DEBUG_MENU_EVENTS
-   Eprintf("GrabKeyboard %#lx %d\n", win, rc);
-#endif
-}
-
-static void
-UngrabKeyboard(void)
-{
-   int                 rc;
-
-   rc = XUngrabKeyboard(disp, CurrentTime);
-#if DEBUG_MENU_EVENTS
-   Eprintf("UngrabKeyboard %d\n", rc);
-#endif
-}
-
 static Menu        *
 FindMenu(Window win)
 {
@@ -195,7 +172,7 @@ MenuEwinClose(EWin * ewin)
 {
    if ((Menu *) (ewin->data) == active_menu)
      {
-	UngrabKeyboard();
+	GrabKeyboardRelease();
 	active_menu = NULL;
 	active_item = NULL;
      }
@@ -377,7 +354,7 @@ MenuShow(Menu * m, char noshow)
 	MenuShowMasker(m);
 #endif
 	TooltipsEnable(0);
-	GrabKeyboard(m->win);
+	GrabKeyboardSet(m->win);
      }
    m->ref_count++;
 }
@@ -948,8 +925,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	if (active_menu != m)
 	  {
 	     active_menu = m;
-	     UngrabKeyboard();
-	     GrabKeyboard(m->win);
+	     GrabKeyboardRelease();
+	     GrabKeyboardSet(m->win);
 	  }
      }
 }
@@ -1140,7 +1117,7 @@ MenusHide(void)
 
 #if 0
    /* If all done properly this shouldn't be necessary... */
-   UngrabKeyboard();
+   GrabKeyboardRelease();
    active_menu = NULL;
    active_item = NULL;
 #endif
@@ -1754,7 +1731,7 @@ MenuHandleEvents(XEvent * ev, void *prm)
      case ButtonRelease:
 	break;
      case EnterNotify:
-	GrabKeyboard(m->win);
+	GrabKeyboardSet(m->win);
 	break;
      }
 }

@@ -1399,7 +1399,7 @@ DesktopEventButtonPress(Desk * d __UNUSED__, XEvent * ev)
    ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
    if (ac)
      {
-	if (!EventAclass(ev, NULL, ac))
+	if (!ActionclassEvent(ac, ev, NULL))
 	   ButtonProxySendEvent(ev);
      }
 }

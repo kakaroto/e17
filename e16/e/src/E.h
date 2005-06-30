@@ -1078,7 +1078,6 @@ typedef struct
    char                nogroup;
    char                keybinds_changed;
    Window              button_proxy_win;
-   const XEvent       *current_event;
    Time                last_time;
    Window              last_bpress;
    unsigned int        last_button;
@@ -1147,12 +1146,15 @@ const char         *ActionclassGetName(ActionClass * ac);
 const char         *ActionclassGetTooltipString(ActionClass * ac);
 int                 ActionclassGetActionCount(ActionClass * ac);
 Action             *ActionclassGetAction(ActionClass * ac, int ix);
+int                 ActionclassEvent(ActionClass * ac, XEvent * ev,
+				     EWin * ewin);
+int                 ActionclassesEvent(XEvent * ev, EWin * ewin);
+
 const char         *ActionGetTooltipString(Action * aa);
 int                 ActionGetAnybutton(Action * aa);
 int                 ActionGetEvent(Action * aa);
 int                 ActionGetButton(Action * aa);
 int                 ActionGetModifiers(Action * aa);
-int                 EventAclass(XEvent * ev, EWin * ewin, ActionClass * a);
 
 void                GrabButtonGrabs(EWin * ewin);
 void                UnGrabButtonGrabs(EWin * ewin);
@@ -1781,7 +1783,8 @@ void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
 
 /* grabs.c */
-void                GrabButtonsSet(Window win, unsigned int csr);
+int                 GrabKeyboardSet(Window win);
+int                 GrabKeyboardRelease(void);
 int                 GrabPointerSet(Window win, unsigned int csr, int confine);
 void                GrabPointerRelease(void);
 void                GrabButtonSet(unsigned int button, unsigned int modifiers,

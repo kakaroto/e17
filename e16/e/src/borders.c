@@ -863,7 +863,7 @@ BorderWinpartEventMouseDown(EWinBit * wbit, XEvent * ev)
    FocusHandleClick(ewin, wbit->win);
 
    if (ewin->border->part[part].aclass)
-      EventAclass(ev, ewin, ewin->border->part[part].aclass);
+      ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 }
 
 static void
@@ -885,7 +885,7 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
 
    if (wbit->win == Mode.last_bpress && !wbit->left &&
        ewin->border->part[part].aclass)
-      EventAclass(ev, ewin, ewin->border->part[part].aclass);
+      ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 
    wbit->left = 0;
 }
@@ -908,7 +908,7 @@ BorderWinpartEventEnter(EWinBit * wbit, XEvent * ev)
 	wbit->state = STATE_HILITED;
 	BorderWinpartChange(ewin, part, 0);
 	if (ewin->border->part[part].aclass)
-	   EventAclass(ev, ewin, ewin->border->part[part].aclass);
+	   ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
      }
 }
 
@@ -928,7 +928,7 @@ BorderWinpartEventLeave(EWinBit * wbit, XEvent * ev)
 	wbit->state = STATE_NORMAL;
 	BorderWinpartChange(ewin, part, 0);
 	if (ewin->border->part[part].aclass)
-	   EventAclass(ev, ewin, ewin->border->part[part].aclass);
+	   ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
      }
 }
 
@@ -942,7 +942,7 @@ BorderFrameHandleEvents(XEvent * ev, void *prm)
      case EnterNotify:
      case LeaveNotify:
 	if (ewin->border->aclass)
-	   EventAclass(ev, ewin, ewin->border->aclass);
+	   ActionclassEvent(ewin->border->aclass, ev, ewin);
 	break;
      }
 }

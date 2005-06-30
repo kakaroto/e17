@@ -143,8 +143,8 @@ WarpFocusShow(EWin * ewin)
 	 * Grab the keyboard. The grab is automatically released when
 	 * WarpFocusHide unmaps warpFocusWindow.
 	 */
-	XGrabKeyboard(disp, warpFocusWindow->win, False, GrabModeAsync,
-		      GrabModeAsync, CurrentTime);
+	GrabKeyboardSet(warpFocusWindow->win);
+	GrabPointerSet(warpFocusWindow->win, None, 0);
      }
 
    for (i = 0; i < warplist_num; i++)

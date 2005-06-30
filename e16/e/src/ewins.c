@@ -1693,7 +1693,7 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
    else if (ev->type == ButtonRelease)
       GrabPointerRelease();
 
-   return EventAclass(ev, ewin, ac);
+   return ActionclassEvent(ac, ev, ewin);
 }
 
 #define DEBUG_EWIN_EVENTS 0

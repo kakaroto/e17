@@ -156,14 +156,10 @@ ModeGetXY(Window rwin, int rx, int ry)
 static void
 HandleEvent(XEvent * ev)
 {
-   void              **lst;
-   int                 i, num;
-
 #if ENABLE_DEBUG_EVENTS
    if (EventDebug(ev->type))
       EventShow(ev);
 #endif
-   Mode.current_event = ev;
 
    switch (ev->type)
      {
@@ -171,6 +167,17 @@ HandleEvent(XEvent * ev)
 	Mode.last_keycode = ev->xkey.keycode;
      case KeyRelease:
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
+#if 0				/* FIXME - Why? */
+	if (ev->xkey.root != VRoot.win)
+	  {
+	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
+			    CurrentTime);
+	     ESync();
+	     ev->xkey.time = CurrentTime;
+	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
+	     return;
+	  }
+#endif
 	goto do_stuff;
      case ButtonPress:
      case ButtonRelease:
@@ -197,28 +204,7 @@ HandleEvent(XEvent * ev)
 
       do_stuff:
 	TooltipsHandleEvent();	/* TBD */
-
-#if 0				/* FIXME - Why? */
-	if (((ev->type == KeyPress) || (ev->type == KeyRelease))
-	    && (ev->xkey.root != VRoot.win))
-	  {
-	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
-			    CurrentTime);
-	     ESync();
-	     ev->xkey.time = CurrentTime;
-	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
-	  }
-	else
-#endif
-	  {
-	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
-	     if (lst)
-	       {
-		  for (i = 0; i < num; i++)
-		     EventAclass(ev, GetFocusEwin(), (ActionClass *) lst[i]);
-		  Efree(lst);
-	       }
-	  }
+	ActionclassesEvent(ev, GetFocusEwin());
 	break;
      }
 
@@ -229,6 +215,7 @@ HandleEvent(XEvent * ev)
 	/* Unfreeze keyboard in case we got here by keygrab */
 	XAllowEvents(disp, AsyncKeyboard, CurrentTime);
 	break;
+
      case ButtonPress:		/*  4 */
 	SoundPlay("SOUND_BUTTON_CLICK");
 
@@ -245,20 +232,9 @@ HandleEvent(XEvent * ev)
 	break;
      case ButtonRelease:	/*  5 */
 	SoundPlay("SOUND_BUTTON_RAISE");
-
-#if 0				/* FIXME - TBD */
-	/* DON'T handle clicks whilst moving/resizing things */
-	if ((Mode.mode != MODE_NONE) &&
-	    (!((Mode.place) &&
-	       (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE))))
-	  {
-	     if ((int)Mode.last_button != (int)ev->xbutton.button)
-		return;
-	  }
-#endif
-
 	ActionsEnd(NULL);
 	break;
+
      case MotionNotify:	/*  6 */
 	TooltipsHandleEvent();	/* TBD */
 
@@ -267,15 +243,7 @@ HandleEvent(XEvent * ev)
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
 
 	DesksSetCurrent(DesktopAt(Mode.x, Mode.y));
-#if 0				/* FIXME - TBD */
-	if ((!(ev->xmotion.state
-	       & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
-		  Button5Mask)) && (!Mode.place)))
-	  {
-	     if (ActionsEnd(NULL))
-		return;
-	  }
-#endif
+
 	ActionsHandleMotion();
 	break;
      case EnterNotify:		/*  7 */

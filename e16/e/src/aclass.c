@@ -835,7 +835,7 @@ handleAction(EWin * ewin, ActionType * action)
 }
 
 int
-EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
+ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 {
    KeyCode             key;
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
@@ -968,6 +968,25 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
    mode_action_destroy = 0;
 
    return val;
+}
+
+int
+ActionclassesEvent(XEvent * ev, EWin * ewin)
+{
+   ActionClass       **lst;
+   int                 i, num, match;
+
+   lst = (ActionClass **) ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
+   if (!lst)
+      return 0;
+
+   match = 0;
+   for (i = 0; i < num; i++)
+      match |= ActionclassEvent(lst[i], ev, ewin);
+
+   Efree(lst);
+
+   return match;
 }
 
 static void
