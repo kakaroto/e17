@@ -445,7 +445,7 @@ GNOME_GetHint(EWin * ewin, Atom atom_change)
 }
 
 void
-GNOME_SetHint(EWin * ewin)
+GNOME_SetHint(const EWin * ewin)
 {
    static Atom         atom_set = 0;
    unsigned int        val;
@@ -465,7 +465,7 @@ GNOME_SetHint(EWin * ewin)
 }
 
 void
-GNOME_SetEwinArea(EWin * ewin)
+GNOME_SetEwinArea(const EWin * ewin)
 {
    static Atom         atom_set = 0;
    unsigned int        val[2];
@@ -480,7 +480,7 @@ GNOME_SetEwinArea(EWin * ewin)
 }
 
 void
-GNOME_SetEwinDesk(EWin * ewin)
+GNOME_SetEwinDesk(const EWin * ewin)
 {
    static Atom         atom_set = 0;
    unsigned int        val;
@@ -685,9 +685,9 @@ GNOME_SetWMNameVer(void)
 }
 
 void
-GNOME_DelHints(EWin * ewin)
+GNOME_DelHints(const EWin * ewin)
 {
-   static Atom         atom_get[7] = { 0, 0, 0, 0, 0, 0, 0 };
+   static Atom         atom_get[6] = { 0, 0, 0, 0, 0, 0 };
 
    if (!atom_get[0])
      {
@@ -696,8 +696,7 @@ GNOME_DelHints(EWin * ewin)
 	atom_get[2] = XInternAtom(disp, XA_WIN_STATE, False);
 	atom_get[3] = XInternAtom(disp, XA_WIN_HINTS, False);
 	atom_get[4] = XInternAtom(disp, XA_WIN_APP_STATE, False);
-	atom_get[5] = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-	atom_get[6] = XInternAtom(disp, XA_WIN_AREA, False);
+	atom_get[5] = XInternAtom(disp, XA_WIN_AREA, False);
      }
    XDeleteProperty(disp, ewin->client.win, atom_get[0]);
    XDeleteProperty(disp, ewin->client.win, atom_get[1]);
@@ -705,7 +704,6 @@ GNOME_DelHints(EWin * ewin)
    XDeleteProperty(disp, ewin->client.win, atom_get[3]);
    XDeleteProperty(disp, ewin->client.win, atom_get[4]);
    XDeleteProperty(disp, ewin->client.win, atom_get[5]);
-   XDeleteProperty(disp, ewin->client.win, atom_get[6]);
 }
 
 void

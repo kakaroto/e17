@@ -1666,6 +1666,7 @@ void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
 void                EWMH_SetWindowBorder(const EWin * ewin);
 void                EWMH_SetWindowOpacity(const EWin * ewin);
+void                EWMH_SetWindowMiscHints(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
@@ -1765,16 +1766,16 @@ const char         *FontLookup(const char *name);
 #if ENABLE_GNOME
 /* gnome.c */
 void                GNOME_SetCurrentDesk(void);
-void                GNOME_SetEwinArea(EWin * ewin);
 void                GNOME_SetDeskCount(void);
 void                GNOME_SetDeskNames(void);
 void                GNOME_SetClientList(void);
-void                GNOME_SetHint(EWin * ewin);
-void                GNOME_SetEwinDesk(EWin * ewin);
+void                GNOME_SetEwinDesk(const EWin * ewin);
+void                GNOME_SetEwinArea(const EWin * ewin);
+void                GNOME_SetHint(const EWin * ewin);
 void                GNOME_SetCurrentArea(void);
 void                GNOME_SetAreaCount(void);
 void                GNOME_GetHints(EWin * ewin, Atom atom_change);
-void                GNOME_DelHints(EWin * ewin);
+void                GNOME_DelHints(const EWin * ewin);
 void                GNOME_SetHints(Window win_wm_check);
 void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
@@ -1820,16 +1821,17 @@ void                HintsSetActiveWindow(Window win);
 void                HintsSetWindowName(Window win, const char *name);
 void                HintsSetWindowClass(Window win, const char *name,
 					const char *clss);
-void                HintsSetWindowDesktop(EWin * ewin);
-void                HintsSetWindowArea(EWin * ewin);
-void                HintsSetWindowState(EWin * ewin);
-void                HintsSetWindowOpacity(EWin * ewin);
-void                HintsSetWindowHints(EWin * ewin);
-void                HintsSetWindowBorder(EWin * ewin);
+void                HintsSetWindowDesktop(const EWin * ewin);
+void                HintsSetWindowArea(const EWin * ewin);
+void                HintsSetWindowState(const EWin * ewin);
+void                HintsSetWindowOpacity(const EWin * ewin);
+void                HintsSetWindowMiscHints(const EWin * ewin);
+void                HintsSetWindowBorder(const EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);
-void                HintsDelWindowHints(EWin * ewin);
+void                HintsDelWindowHints(const EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
+
 void                HintsSetRootHints(Window win);
 void                HintsSetRootInfo(Window win, Pixmap pmap,
 				     unsigned int color);

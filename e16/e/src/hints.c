@@ -161,7 +161,7 @@ HintsSetWindowClass(Window win, const char *name, const char *clss)
 }
 
 void
-HintsSetWindowDesktop(EWin * ewin)
+HintsSetWindowDesktop(const EWin * ewin)
 {
 #if ENABLE_GNOME
    GNOME_SetEwinDesk(ewin);
@@ -172,7 +172,7 @@ HintsSetWindowDesktop(EWin * ewin)
 }
 
 void
-HintsSetWindowArea(EWin * ewin __UNUSED__)
+HintsSetWindowArea(const EWin * ewin __UNUSED__)
 {
 #if ENABLE_GNOME
    GNOME_SetEwinArea(ewin);
@@ -180,7 +180,7 @@ HintsSetWindowArea(EWin * ewin __UNUSED__)
 }
 
 void
-HintsSetWindowState(EWin * ewin)
+HintsSetWindowState(const EWin * ewin)
 {
 #if ENABLE_GNOME
    GNOME_SetHint(ewin);
@@ -191,7 +191,7 @@ HintsSetWindowState(EWin * ewin)
 }
 
 void
-HintsSetWindowOpacity(EWin * ewin)
+HintsSetWindowOpacity(const EWin * ewin)
 {
 #if ENABLE_EWMH
    EWMH_SetWindowOpacity(ewin);
@@ -199,17 +199,18 @@ HintsSetWindowOpacity(EWin * ewin)
 }
 
 void
-HintsSetWindowHints(EWin * ewin)
-{
-   HintsSetWindowDesktop(ewin);
-   HintsSetWindowState(ewin);
-}
-
-void
-HintsSetWindowBorder(EWin * ewin)
+HintsSetWindowBorder(const EWin * ewin)
 {
 #if ENABLE_EWMH
    EWMH_SetWindowBorder(ewin);
+#endif
+}
+
+void
+HintsSetWindowMiscHints(const EWin * ewin)
+{
+#if ENABLE_EWMH
+   EWMH_SetWindowMiscHints(ewin);
 #endif
 }
 
@@ -233,7 +234,7 @@ HintsGetWindowHints(EWin * ewin)
  */
 
 void
-HintsDelWindowHints(EWin * ewin)
+HintsDelWindowHints(const EWin * ewin)
 {
 #if ENABLE_GNOME
    GNOME_DelHints(ewin);

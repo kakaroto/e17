@@ -144,6 +144,18 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_BELOW;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
 
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_MOVE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_RESIZE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_SHADE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_STICK;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
+
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
@@ -684,6 +696,34 @@ EWMH_GetWindowStrut(EWin * ewin)
    ewin->strut.right = val[1];
    ewin->strut.top = val[2];
    ewin->strut.bottom = val[3];
+}
+
+void
+EWMH_SetWindowMiscHints(const EWin * ewin)
+{
+   static Ecore_X_Atom aa[10];
+
+   /*
+    * We'll just set them all on all windows for now.
+    * Should be done a bit more selectively.
+    */
+
+   if (aa[0] == None)
+     {
+	aa[0] = ECORE_X_ATOM_NET_WM_ACTION_MOVE;
+	aa[1] = ECORE_X_ATOM_NET_WM_ACTION_RESIZE;
+	aa[2] = ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE;
+	aa[3] = ECORE_X_ATOM_NET_WM_ACTION_SHADE;
+	aa[4] = ECORE_X_ATOM_NET_WM_ACTION_STICK;
+	aa[5] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ;
+	aa[6] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT;
+	aa[7] = ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
+	aa[8] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
+	aa[9] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
+     }
+
+   ecore_x_window_prop_atom_set(ewin->client.win,
+				ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS, aa, 10);
 }
 
 void

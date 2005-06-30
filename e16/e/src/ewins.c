@@ -557,7 +557,9 @@ Adopt(EWin * ewin)
       EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
+   HintsSetWindowMiscHints(ewin);
    HintsSetWindowOpacity(ewin);
+
    HintsSetClientList();
 
    if (EventDebug(EDBUG_TYPE_EWINS))
