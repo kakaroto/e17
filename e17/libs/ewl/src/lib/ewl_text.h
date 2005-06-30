@@ -37,12 +37,12 @@ typedef struct Ewl_Text Ewl_Text;
 
 /**
  * @struct Ewl_Text
- * Inherits from the Ewl_Widget class and extends it to provide text layout
+ * Inherits from the Ewl_Container class and extends it to provide text layout
  * and formatting
  */
 struct Ewl_Text
 {
-	Ewl_Widget 	 	 widget;	  /**< Inherit from Ewl_Widget */
+	Ewl_Container 	 	 container;	  /**< Inherit from Ewl_Container */
 	Evas_Object		*textblock;	  /**< The Evas_Object_Textblock */ 
 
 	char 			*text;		  /**< The text itself */

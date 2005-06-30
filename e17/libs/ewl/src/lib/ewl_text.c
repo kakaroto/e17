@@ -81,7 +81,7 @@ ewl_text_init(Ewl_Text *t, const char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
 
-	if (!ewl_widget_init(EWL_WIDGET(t), "text"))
+	if (!ewl_container_init(EWL_WIDGET(t), "text"))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
