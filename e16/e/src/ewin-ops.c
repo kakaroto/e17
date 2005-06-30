@@ -1713,7 +1713,7 @@ EwinOpSetBorder(EWin * ewin, const char *name)
    Border             *b;
    char                shadechange = 0;
 
-   b = (Border *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   b = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    if (!b)
       return;
 

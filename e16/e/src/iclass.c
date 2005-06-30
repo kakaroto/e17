@@ -334,16 +334,14 @@ ImageclassPopulate(ImageClass * ic)
 #if ENABLE_COLOR_MODIFIERS
    if (!ic->colmod)
      {
-	cm = (ColorModifierClass *) FindItem("ICLASS", 0, LIST_FINDBY_NAME,
-					     LIST_TYPE_COLORMODIFIER);
+	cm = FindItem("ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
 	if (!cm)
-	   cm = (ColorModifierClass *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
-						LIST_TYPE_COLORMODIFIER);
+	   cm =
+	      FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
 	ic->colmod = cm;
      }
 
-   cm = (ColorModifierClass *) FindItem("NORMAL", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem("NORMAL", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = ic->colmod;
 
@@ -352,8 +350,7 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_CM(norm.clicked, cm);
    ISTATE_SET_CM(norm.disabled, cm);
 
-   cm = (ColorModifierClass *) FindItem("ACTIVE", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem("ACTIVE", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = ic->colmod;
 
@@ -362,8 +359,7 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_CM(active.clicked, cm);
    ISTATE_SET_CM(active.disabled, cm);
 
-   cm = (ColorModifierClass *) FindItem("STICKY", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem("STICKY", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = ic->colmod;
 
@@ -372,8 +368,7 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_CM(sticky.clicked, cm);
    ISTATE_SET_CM(sticky.disabled, cm);
 
-   cm = (ColorModifierClass *) FindItem("STICKY_ACTIVE", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem("STICKY_ACTIVE", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if (!cm)
       cm = ic->colmod;
 

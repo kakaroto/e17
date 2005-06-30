@@ -600,7 +600,7 @@ EwinSetBorderByName(EWin * ewin, const char *name)
 {
    Border             *b;
 
-   b = (Border *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   b = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    EwinSetBorder(ewin, b, 0);
 }

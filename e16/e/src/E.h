@@ -1721,9 +1721,12 @@ void                fword(char *s, int num, char *wd);
 int                 findLocalizedFile(char *fname);
 
 /* finders.c */
-EWin               *FindEwinByBase(Window win);
-EWin               *FindEwinByChildren(Window win);
-EWin               *FindEwinByPartial(const char *win, int type);
+EWin               *EwinFindByPtr(const EWin * ewin);
+EWin               *EwinFindByFrame(Window win);
+EWin               *EwinFindByClient(Window win);
+EWin               *EwinFindByChildren(Window win);
+EWin               *EwinFindByString(const char *win, int type);
+
 Button             *FindButton(Window win);
 ActionClass        *FindActionClass(Window win);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
@@ -1731,7 +1734,6 @@ EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
 					       char nogroup, int *num);
 EWin              **EwinListTransients(EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(EWin * ewin, int *num);
-EWin              **ListGroupMembers(Window win, int *num);
 
 /* focus.c */
 #define FOCUS_NOP         0
@@ -1917,13 +1919,13 @@ void                EstrInt2EncFree(const char *str, int want_utf8);
 
 /* lists.c */
 void                ListsInit(int num);
-void               *FindItem(const char *name, int id, int find_by, int type);
+void               *FindItem(const void *name, int id, int find_by, int type);
 void                AddItem(const void *item, const char *name, int id,
 			    int type);
 void                AddItemEnd(const void *item, const char *name, int id,
 			       int type);
-void               *RemoveItem(const char *name, int id, int find_by, int type);
-void               *RemoveItemByPtr(const void *ptritem, int type);
+void               *RemoveItem(const void *name, int id, int find_by, int type);
+void               *RemoveItemByPtr(const void *item, int type);
 void              **ListItemType(int *num, int type);
 char              **ListItems(int *num, int type);
 void              **ListItemTypeID(int *num, int type, int id);

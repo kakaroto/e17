@@ -432,8 +432,7 @@ SlideoutsConfigLoad(FILE * fs)
 	     {
 		Button             *b;
 
-		b = (Button *) FindItem(s2, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_BUTTON);
+		b = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
 		if (b)
 		   SlideoutAddButton(slideout, b);
 	     }

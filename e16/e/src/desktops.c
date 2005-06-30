@@ -372,7 +372,7 @@ DeskConfigure(Desk * d)
 
    bg = desks.bg[d->num];
    if (bg)
-      bg = FindItem((char *)bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
+      bg = FindItem(bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
    if (!bg)
      {
 	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);

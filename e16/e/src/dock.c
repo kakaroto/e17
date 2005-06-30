@@ -26,7 +26,7 @@
 static void
 DockappFindEmptySpotFor(EWin * eapp)
 {
-   EWin              **lst, *ewin;
+   EWin               *const *lst, *ewin;
    int                 num, i, j, x, y, w, h, done;
    int                 step_right, step_down;
 
@@ -52,7 +52,7 @@ DockappFindEmptySpotFor(EWin * eapp)
    step_right = Conf.dock.startx < VRoot.w;
    step_down = Conf.dock.starty < VRoot.h;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGetAll(&num);
    for (j = 0; j < num; j++)
       for (i = 0; i < num; i++)
 	{
@@ -109,8 +109,6 @@ DockappFindEmptySpotFor(EWin * eapp)
 		  }
 	     }
 	}
-   if (lst)
-      Efree(lst);
 
    if (x < 0 || y < 0 || x + w >= VRoot.w || y + h >= VRoot.h)
      {

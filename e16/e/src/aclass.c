@@ -720,8 +720,7 @@ AclassConfigSave(void)
    if (!Mode.keybinds_changed)
       return;
 
-   ac = (ActionClass *) FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS_GLOBAL);
+   ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
    if (!ac || ac->num <= 0)
       return;
 
@@ -1092,8 +1091,7 @@ IPC_KeybindingsGet(const char *params __UNUSED__, Client * c __UNUSED__)
    Action             *aa;
    int                 i, mod;
 
-   ac = (ActionClass *) FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS_GLOBAL);
+   ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
    if (!ac)
       return;
 
@@ -1295,9 +1293,7 @@ GrabButtonGrabs(EWin * ewin)
    Action             *aa;
    unsigned int        mod, button, mask;
 
-   ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS);
-
+   ac = FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
    if (!ac)
       return;
 
@@ -1349,9 +1345,7 @@ UnGrabButtonGrabs(EWin * ewin)
    Action             *aa;
    unsigned int        mod, button;
 
-   ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS);
-
+   ac = FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
    if (!ac)
       return;
 

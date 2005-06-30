@@ -813,7 +813,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
    /*
     * The ones that do target an application window
     */
-   ewin = FindItem(NULL, ev->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(ev->window);
    if (ewin == NULL)
      {
 	/* Some misbehaving clients go here */

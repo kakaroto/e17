@@ -71,7 +71,7 @@ static void
 SnapshotDestroy(Snapshot * sn)
 {
    /* Just making sure */
-   sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+   sn = RemoveItemByPtr(sn, LIST_TYPE_SNAPSHOT);
    if (!sn)
       return;
 
@@ -483,7 +483,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
    if (val >= 2 || !sd)
       goto done;
 
-   ewin = FindItem("", sd->client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(sd->client);
    if (!ewin)
       goto done;
 
@@ -929,7 +929,7 @@ CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
    rd = (RememberWinList *) data;
 
    /* Make sure its still there */
-   sn = FindItem((char *)rd->snap, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+   sn = FindItem(rd->snap, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
 
    if (!sn || !sn->used)
       return;
@@ -1444,8 +1444,7 @@ SnapshotEwinMatch(EWin * ewin)
 	  {
 	     Group              *g;
 
-	     g = (Group *) FindItem(NULL, sn->groups[i], LIST_FINDBY_ID,
-				    LIST_TYPE_GROUP);
+	     g = FindItem(NULL, sn->groups[i], LIST_FINDBY_ID, LIST_TYPE_GROUP);
 	     if (!g)
 	       {
 		  BuildWindowGroup(&ewin, 1);

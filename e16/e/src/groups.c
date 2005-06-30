@@ -221,8 +221,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 		   Erealloc(g->members, sizeof(EWin *) * g->num_members);
 	     else
 	       {
-		  RemoveItem((char *)g, 0,
-			     LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
+		  RemoveItemByPtr(g, LIST_TYPE_GROUP);
 		  GroupDestroy(g);
 	       }
 
@@ -309,9 +308,8 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = (Border *) FindItem(gwins[i]->border->group_border_name,
-					  0, LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
+		  b = FindItem(gwins[i]->border->group_border_name,
+			       0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 		  if (b)
 		     gwins[i]->previous_border = gwins[i]->border;
 	       }
@@ -327,9 +325,8 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = (Border *) FindItem(gwins[i]->border->group_border_name,
-					  0, LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
+		  b = FindItem(gwins[i]->border->group_border_name,
+			       0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 		  if (b)
 		     gwins[i]->previous_border = gwins[i]->border;
 	       }
@@ -1000,9 +997,8 @@ SettingsDefaultGroupControl(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d =
-	FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1359,7 +1355,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
    if (!strcmp(windowid, "*"))
       ewin = GetContextEwin();
    else
-      ewin = FindEwinByChildren(win);
+      ewin = EwinFindByChildren(win);
    if (!ewin)
      {
 	IpcPrintf("Error: no such window: %8x", win);

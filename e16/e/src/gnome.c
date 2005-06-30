@@ -766,7 +766,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
      }
    if (event->message_type == a4)
      {
-	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(event->window);
 	if (ewin)
 	  {
 	     unsigned int        val;
@@ -780,7 +780,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
      }
    if (event->message_type == a5)
      {
-	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(event->window);
 	if (!ewin)
 	   return;
 	if (event->data.l[0] & WIN_STATE_FIXED_POSITION)

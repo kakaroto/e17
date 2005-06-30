@@ -161,7 +161,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    for (i = 0; i < 12; i++)
       s[i] = ev->data.b[i + 8];
    sscanf(s2, "%lx", &win);
-   cl = (Client *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
+   cl = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
    if (!cl)
      {
 	cl = ClientCreate(win);
@@ -364,7 +364,7 @@ CommsBroadcast(const char *s)
       return;
    for (i = 0; i < num; i++)
      {
-	c = (Client *) FindItem(l[i], 0, LIST_FINDBY_NAME, LIST_TYPE_CLIENT);
+	c = FindItem(l[i], 0, LIST_FINDBY_NAME, LIST_TYPE_CLIENT);
 	if (c)
 	   CommsSend(c, s);
      }

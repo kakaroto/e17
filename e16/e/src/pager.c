@@ -1279,8 +1279,7 @@ PagerHiwinEwin(int check)
    if (!check || !phi->ewin)
       return phi->ewin;
 
-   ewin = FindItem((char *)phi->ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN);
-
+   ewin = EwinFindByPtr(phi->ewin);
    if (!ewin)
       phi->ewin = NULL;
 

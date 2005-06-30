@@ -48,7 +48,7 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 
    if (event->message_type == ECORE_X_ATOM_WM_CHANGE_STATE)
      {
-	ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(event->window);
 	if (ewin == NULL)
 	   return;
 

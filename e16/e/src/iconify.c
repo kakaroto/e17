@@ -397,7 +397,7 @@ IconboxDestroy(Iconbox * ib, int exiting)
 {
    int                 i;
 
-   RemoveItem((char *)ib, 0, LIST_FINDBY_POINTER, LIST_TYPE_ICONBOX);
+   RemoveItemByPtr(ib, LIST_TYPE_ICONBOX);
 
    if (ib->name)
       Efree(ib->name);

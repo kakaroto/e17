@@ -79,16 +79,16 @@ IpcFindEwin(const char *windowid)
    if (isdigit(windowid[0]))
      {
 	sscanf(windowid, "%x", &win);
-	return FindEwinByChildren(win);
+	return EwinFindByChildren(win);
      }
 
    if (windowid[0] == '+')
-      return FindEwinByPartial(windowid + 1, '+');
+      return EwinFindByString(windowid + 1, '+');
 
    if (windowid[0] == '=')
-      return FindEwinByPartial(windowid + 1, '=');
+      return EwinFindByString(windowid + 1, '=');
 
-   return FindEwinByPartial(windowid, '=');
+   return EwinFindByString(windowid, '=');
 }
 
 static int
@@ -736,7 +736,7 @@ IPC_Remember(const char *params, Client * c __UNUSED__)
 
    window = 0;
    sscanf(params, "%x", &window);
-   ewin = FindItem(NULL, window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(window);
    if (!ewin)
      {
 	IpcPrintf("Error: Window not found: %#x\n", window);

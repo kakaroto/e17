@@ -197,7 +197,7 @@ EwinDestroy(EWin * ewin)
       Eprintf("EwinDestroy %#lx st=%d: %s\n", ewin->client.win, ewin->state,
 	      EwinGetName(ewin));
 
-   RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   RemoveItemByPtr(ewin, LIST_TYPE_EWIN);
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
 			   ewin);
@@ -317,7 +317,7 @@ GetEwinByCurrentPointer(void)
    XQueryPointer(disp, DeskGetWin(DesksGetCurrent()), &rt, &ch, &x, &y, &dum,
 		 &dum, &mr);
 
-   return FindEwinByBase(ch);
+   return EwinFindByFrame(ch);
 }
 
 EWin               *
@@ -656,8 +656,7 @@ AddToFamily(EWin * ewin, Window win)
 	EWin               *const *lst2;
 
 	if (!ewin2)
-	   ewin2 = FindItem(NULL, ewin->client.group, LIST_FINDBY_ID,
-			    LIST_TYPE_EWIN);
+	   ewin2 = EwinFindByClient(ewin->client.group);
 
 	if (!ewin2)
 	  {
@@ -955,7 +954,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
    else
      {
 	/* Check if we are already managing it */
-	ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(win);
 
 	/* Some clients MapRequest more than once ?!? */
 	if (ewin)
@@ -1083,7 +1082,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	   winrel = ev->xconfigurerequest.above;
 	if (ev->xconfigurerequest.value_mask & CWStackMode)
 	  {
-	     ewin2 = FindItem(NULL, winrel, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	     ewin2 = EwinFindByClient(winrel);
 	     if (ewin2)
 		winrel = EoGetWin(ewin2);
 	     xwc.sibling = winrel;
@@ -1536,7 +1535,7 @@ EwinSlideIn(int val __UNUSED__, void *data)
    EWin               *ewin = data;
 
    /* May be gone */
-   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+   if (!EwinFindByPtr(ewin))
       goto done;
 
    SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
@@ -1836,8 +1835,7 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	Eprintf("EwinHandleEventsRoot ConfigureRequest %#lx\n",
 		ev->xconfigurerequest.window);
 #endif
-	ewin = FindItem(NULL, ev->xconfigurerequest.window, LIST_FINDBY_ID,
-			LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(ev->xconfigurerequest.window);
 	EwinEventConfigureRequest(ewin, ev);
 	break;
      case ResizeRequest:
@@ -1845,8 +1843,7 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	Eprintf("EwinHandleEventsRoot ResizeRequest %#lx\n",
 		ev->xresizerequest.window);
 #endif
-	ewin = FindItem(NULL, ev->xresizerequest.window, LIST_FINDBY_ID,
-			LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(ev->xresizerequest.window);
 	EwinEventResizeRequest(ewin, ev);
 	break;
      case CirculateRequest:
@@ -1859,27 +1856,24 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 
      case UnmapNotify:
 	/* Catch clients unmapped after MapRequest but before being reparented */
-	ewin = FindItem(NULL, ev->xunmap.window, LIST_FINDBY_ID,
-			LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(ev->xunmap.window);
 	if (ewin)
 	   EwinEventUnmap(ewin);
 	break;
 
      case DestroyNotify:
 	/* Catch clients destroyed after MapRequest but before being reparented */
-	ewin = FindItem(NULL, ev->xdestroywindow.window, LIST_FINDBY_ID,
-			LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(ev->xdestroywindow.window);
 #if 0				/* FIXME - Should not be here - Remove? */
 	if (!ewin)
-	   ewin = FindEwinByBase(ev->xdestroywindow.window);
+	   ewin = EwinFindByFrame(ev->xdestroywindow.window);
 #endif
 	if (ewin)
 	   EwinEventDestroy(ewin);
 	break;
 
      case ReparentNotify:
-	ewin = FindItem(NULL, ev->xreparent.window, LIST_FINDBY_ID,
-			LIST_TYPE_EWIN);
+	ewin = EwinFindByClient(ev->xreparent.window);
 	if (ewin)
 	   EwinEventReparent(ewin);
 	break;

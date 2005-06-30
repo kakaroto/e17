@@ -236,8 +236,7 @@ MenuShow(Menu * m, char noshow)
      {
 #if 0				/* FIXME - Why? */
 	if ((Mode.button) &&
-	    FindItem((char *)Mode.button, 0, LIST_FINDBY_POINTER,
-		     LIST_TYPE_BUTTON))
+	    FindItem(Mode.button, 0, LIST_FINDBY_POINTER, LIST_TYPE_BUTTON))
 	  {
 	     ButtonDrawWithState(Mode.button, STATE_NORMAL);
 	  }
@@ -261,8 +260,8 @@ MenuShow(Menu * m, char noshow)
      {
 	Border             *b;
 
-	b = (Border *) FindItem(m->style->border_name, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
+	b = FindItem(m->style->border_name, 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_BORDER);
 	if (b)
 	  {
 	     int                 width;
@@ -501,7 +500,7 @@ MenuDestroy(Menu * m)
 
    Esnprintf(s, sizeof(s), "__.%s", m->name);
    RemoveTimerEvent(s);
-   RemoveItem((char *)m, 0, LIST_FINDBY_POINTER, LIST_TYPE_MENU);
+   RemoveItemByPtr(m, LIST_TYPE_MENU);
    if (m->name)
       Efree(m->name);
    if (m->title)
@@ -513,9 +512,8 @@ MenuDestroy(Menu * m)
 	  {
 	     if (m->items[i]->child)
 	       {
-		  if (FindItem
-		      ((char *)m->items[i]->child, 0, LIST_FINDBY_POINTER,
-		       LIST_TYPE_MENU))
+		  if (FindItem(m->items[i]->child, 0, LIST_FINDBY_POINTER,
+			       LIST_TYPE_MENU))
 		     MenuDestroy(m->items[i]->child);
 	       }
 	     if (m->items[i]->text)
@@ -1536,7 +1534,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
       return;
 
    m = data->m;
-   ewin = FindItem(NULL, m->win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(m->win);
    if (!ewin)
       return;
    if (!EoIsShown(ewin))
@@ -1544,7 +1542,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
    mi = data->mi;
    MenuShow(mi->child, 1);
-   ewin2 = FindItem(NULL, mi->child->win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin2 = EwinFindByClient(mi->child->win);
    if (!ewin2)
       return;
 
@@ -1868,8 +1866,8 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 
 		ms->border_name = Estrdup(s2);
 
-		b = (Border *) FindItem(ms->border_name, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_BORDER);
+		b = FindItem(ms->border_name, 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_BORDER);
 		if (b)
 		   b->ref_count++;
 	     }

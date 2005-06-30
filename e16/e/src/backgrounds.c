@@ -218,7 +218,7 @@ BackgroundDestroy(Background * bg)
 	return -1;
      }
 
-   RemoveItem((char *)bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
+   RemoveItemByPtr(bg, LIST_TYPE_BACKGROUND);
    BackgroundImagesRemove(bg);
 
    if (bg->name)
@@ -508,9 +508,8 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	if (cm)
 	   cm->ref_count--;
 	else
-	   cm = (ColorModifierClass *) FindItem("BACKGROUND", 0,
-						LIST_FINDBY_NAME,
-						LIST_TYPE_COLORMODIFIER);
+	   cm = FindItem("BACKGROUND", 0, LIST_FINDBY_NAME,
+			 LIST_TYPE_COLORMODIFIER);
 
 	if (cm)
 	  {
@@ -1893,8 +1892,7 @@ CB_BGSortFile(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		 LIST_TYPE_BACKGROUND);
+      RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
    Quicksort((void **)bglist, 0, num - 1,
 	     (int (*)(void *d1, void *d2))BG_SortFileCompare);
    for (i = 0; i < num; i++)
@@ -1924,8 +1922,7 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		 LIST_TYPE_BACKGROUND);
+      RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
    for (i = 0; i < num; i++)
      {
 	Background         *bg;
@@ -1967,8 +1964,7 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
      {
 	/* remove them all from the list */
 	for (i = 0; i < num; i++)
-	   RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		      LIST_TYPE_BACKGROUND);
+	   RemoveItemByPtr(bglist[i], LIST_TYPE_BACKGROUND);
 	for (i = 0; i < num; i++)
 	  {
 	     Background         *bg;
@@ -2729,8 +2725,7 @@ IPC_BackgroundColormodifierGet(const char *params, Client * c)
       return;
 
    sscanf(params, "%1000s", param1);
-   bg = (Background *) FindItem(param1, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BACKGROUND);
+   bg = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
    Esnprintf(buf, sizeof(buf), "(null)");
    if ((bg) && (bg->cmclass))
       Esnprintf(buf, sizeof(buf), "%s", bg->cmclass->name);

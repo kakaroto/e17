@@ -23,7 +23,22 @@
 #include "E.h"
 
 EWin               *
-FindEwinByBase(Window win)
+EwinFindByPtr(const EWin * ewin)
+{
+   EWin               *const *ewins;
+   int                 i, num;
+
+   ewins = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	if (ewin == ewins[i])
+	   return ewins[i];
+     }
+   return NULL;
+}
+
+EWin               *
+EwinFindByFrame(Window win)
 {
    EWin               *const *ewins;
    int                 i, num;
@@ -38,7 +53,22 @@ FindEwinByBase(Window win)
 }
 
 EWin               *
-FindEwinByChildren(Window win)
+EwinFindByClient(Window win)
+{
+   EWin               *const *ewins;
+   int                 i, num;
+
+   ewins = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	if (win == ewins[i]->client.win)
+	   return ewins[i];
+     }
+   return NULL;
+}
+
+EWin               *
+EwinFindByChildren(Window win)
 {
    EWin               *const *ewins;
    int                 i, j, num;
@@ -63,7 +93,7 @@ FindEwinByChildren(Window win)
 }
 
 EWin               *
-FindEwinByPartial(const char *match, int type)
+EwinFindByString(const char *match, int type)
 {
    EWin               *ewin = NULL;
    EWin               *const *ewins;
@@ -408,26 +438,3 @@ EwinListTransientFor(EWin * ewin, int *num)
    *num = j;
    return lst;
 }
-
-#if 0				/* Not used */
-EWin              **
-ListGroupMembers(Window win, int *num)
-{
-   EWin               *const *ewins, **lst = NULL;
-   int                 i, j, n;
-
-   ewins = EwinListGetAll(&n);
-   j = 0;
-   for (i = 0; i < n; i++)
-     {
-	if (win == ewins[i]->client.group)
-	  {
-	     j++;
-	     lst = Erealloc(lst, sizeof(EWin *) * j);
-	     lst[j - 1] = ewins[i];
-	  }
-     }
-   *num = j;
-   return lst;
-}
-#endif

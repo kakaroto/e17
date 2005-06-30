@@ -212,8 +212,7 @@ ColorModifierConfigLoad(FILE * fs)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     cm = (ColorModifierClass *) FindItem(name, 0, LIST_FINDBY_NAME,
-						  LIST_TYPE_COLORMODIFIER);
+	     cm = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
 	     if (cm)
 	       {
 		  ModifyCMClass(name, rnum, rx, ry, gnum, gx, gy, bnum, bx, by);
@@ -363,8 +362,7 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
 {
    ColorModifierClass *cm;
 
-   cm = (ColorModifierClass *) FindItem(name, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    if (!cm)
       return;
 
@@ -462,9 +460,8 @@ IPC_ColorModifierClass(const char *params, Client * c)
 	       {
 		  ColorModifierClass *cm;
 
-		  cm = (ColorModifierClass *) FindItem(param1, 0,
-						       LIST_FINDBY_NAME,
-						       LIST_TYPE_COLORMODIFIER);
+		  cm = FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     FreeCMClass(cm);
 	       }
@@ -475,9 +472,8 @@ IPC_ColorModifierClass(const char *params, Client * c)
 	       {
 		  ColorModifierClass *cm;
 
-		  cm = (ColorModifierClass *) FindItem(param1, 0,
-						       LIST_FINDBY_NAME,
-						       LIST_TYPE_COLORMODIFIER);
+		  cm = FindItem(param1, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       cm->ref_count);
@@ -512,8 +508,7 @@ IPC_ColormodifierDelete(const char *params, Client * c __UNUSED__)
       return;
 
    sscanf(params, "%1000s", param1);
-   cm = (ColorModifierClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    Esnprintf(buf, sizeof(buf), "(null)");
    if (cm)
       FreeCMClass(cm);
@@ -531,8 +526,7 @@ IPC_ColormodifierGet(const char *params, Client * c)
       return;
 
    sscanf(params, "%1000s", param1);
-   cm = (ColorModifierClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    Esnprintf(buf, sizeof(buf), "(null)");
    if (cm)
      {
@@ -582,8 +576,7 @@ IPC_ColormodifierSet(const char *params, Client * c __UNUSED__)
       return;
 
    sscanf(params, "%1000s", w);
-   cm = (ColorModifierClass *) FindItem(w, 0, LIST_FINDBY_NAME,
-					LIST_TYPE_COLORMODIFIER);
+   cm = FindItem(w, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
    name = Estrdup(w);
    i = 2;
    word(params, i++, w);

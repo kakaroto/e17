@@ -151,7 +151,7 @@ WarpFocusShow(EWin * ewin)
      {
 	wl = warplist + i;
 
-	if (!FindItem((char *)wl->ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	if (!EwinFindByPtr(wl->ewin))
 	   wl->ewin = NULL;
 	if (wl->ewin)
 	  {
@@ -278,7 +278,7 @@ WarpFocus(int delta)
 
    warpFocusIndex = (warpFocusIndex + warplist_num + delta) % warplist_num;
    ewin = warplist[warpFocusIndex].ewin;
-   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+   if (!EwinFindByPtr(ewin))
       ewin = NULL;
    if (!ewin)
       return;
@@ -303,7 +303,7 @@ WarpFocusClick(int ix)
       return;
 
    ewin = warplist[ix].ewin;
-   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+   if (!EwinFindByPtr(ewin))
       return;
 
    RaiseEwin(ewin);

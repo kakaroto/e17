@@ -40,7 +40,7 @@ ListsInit(int num)
 }
 
 void               *
-FindItem(const char *name, int id, int find_by, int type)
+FindItem(const void *name, int id, int find_by, int type)
 {
    List               *ptr;
 
@@ -76,7 +76,7 @@ FindItem(const char *name, int id, int find_by, int type)
      {
 	while (ptr)
 	  {
-	     if (ptr->item == (void *)name)
+	     if (ptr->item == name)
 		return ptr->item;
 	     ptr = ptr->next;
 	  }
@@ -203,7 +203,7 @@ MoveItemToListBottom(const void *item, int type)
 }
 
 void               *
-RemoveItem(const char *name, int id, int find_by, int type)
+RemoveItem(const void *name, int id, int find_by, int type)
 {
    List               *ptr, *pptr;
    void               *p;
@@ -274,7 +274,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
      {
 	while (ptr)
 	  {
-	     if (ptr->item == (void *)name)
+	     if (ptr->item == name)
 	       {
 		  if (pptr)
 		     pptr->next = ptr->next;

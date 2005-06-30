@@ -336,7 +336,7 @@ FileMenuUpdate(int val __UNUSED__, void *data)
    if (!m)
       return;
 
-   if (!FindItem((char *)m, 0, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
+   if (!FindItem(m, 0, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
       return;
 
    /* if the menu is up dont update */

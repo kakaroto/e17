@@ -131,7 +131,7 @@ AutoraiseTimeout(int val, void *data __UNUSED__)
    if (Conf.focus.mode == MODE_FOCUS_CLICK)
       return;
 
-   ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(val);
    if (ewin)
       RaiseEwin(ewin);
 }
@@ -141,7 +141,7 @@ ReverseTimeout(int val, void *data __UNUSED__)
 {
    EWin               *ewin;
 
-   ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = EwinFindByClient(val);
    if (ewin)
       EwinListFocusRaise(ewin);
 }
@@ -325,8 +325,7 @@ doFocusToEwin(EWin * ewin, int why)
 	       {
 		  EWin               *ewin2;
 
-		  ewin2 = FindItem(NULL, ewin->client.transient_for,
-				   LIST_FINDBY_ID, LIST_TYPE_EWIN);
+		  ewin2 = EwinFindByClient(ewin->client.transient_for);
 		  if ((ewin2) && (Mode.focuswin == ewin2))
 		     do_focus = 2;
 	       }
@@ -570,9 +569,9 @@ FocusHandleClick(EWin * ewin, Window win)
 #if 0
    EWin               *ewin;
 
-   ewin = FindEwinByChildren(win);
+   ewin = EwinFindByChildren(win);
    if (!ewin)
-      ewin = FindEwinByBase(win);
+      ewin = EwinFindByFrame(win);
    if (!ewin)
       return;
 #endif
