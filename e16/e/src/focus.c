@@ -23,6 +23,9 @@
  */
 #include "E.h"
 
+#define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))
+#define EwinListFocusLower(ewin) EobjListFocusLower(EoObj(ewin))
+
 static int          focus_inhibit = 1;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
@@ -282,10 +285,9 @@ doFocusToEwin(EWin * ewin, int why)
 	   return;
 	break;
 
+     case FOCUS_INIT:
      case FOCUS_DESK_ENTER:
 	ewin = FocusEwinSelect();
-	if (!ewin)
-	   goto done;
 	break;
 
      case FOCUS_NONE:
@@ -296,7 +298,7 @@ doFocusToEwin(EWin * ewin, int why)
 	break;
 
      case FOCUS_EWIN_GONE:
-	if (ewin != Mode.focuswin)
+	if (Mode.focuswin)
 	   return;
 	ewin = FocusEwinSelect();
 	if (ewin == Mode.focuswin)
@@ -381,6 +383,7 @@ doFocusToEwin(EWin * ewin, int why)
 	break;
      case FOCUS_DESK_ENTER:
 	break;
+     case FOCUS_INIT:
      case FOCUS_NEXT:
 	EwinListFocusRaise(ewin);
 	break;
@@ -428,11 +431,10 @@ FocusToEWin(EWin * ewin, int why)
 	break;
 
      case FOCUS_EWIN_GONE:
-	focus_pending_why = FOCUS_DESK_ENTER;
+	focus_pending_why = why;
+	focus_pending_ewin = NULL;
 	if (ewin == Mode.focuswin)
 	   Mode.focuswin = NULL;
-	if (ewin == focus_pending_ewin)
-	   focus_pending_ewin = NULL;
 	if (ewin == focus_pending_new)
 	   focus_pending_new = NULL;
 	break;
@@ -499,7 +501,7 @@ FocusInit(void)
 
    focus_pending_why = 0;
    focus_pending_ewin = focus_pending_new = NULL;
-   FocusToEWin(NULL, FOCUS_DESK_ENTER);
+   FocusToEWin(NULL, FOCUS_INIT);
    FocusSet();
 
    /* Enable window placement features */

@@ -30,11 +30,6 @@
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- *  TODO: The Warp Focus Title Window could list all windows in the
- *  warp ring with pretty window icons, and display which one is
- *  currently selected instead of just the title of the currently
- *  selected one.
  */
 #include "E.h"
 #include "icons.h"
@@ -63,10 +58,14 @@ WarpFocusShow(EWin * ewin)
 {
    TextClass          *tc;
    ImageClass         *ic;
-   int                 i, x, y, w, h, num, ww, hh;
+   int                 i, x, y, w, h, ww, hh;
    static int          mw, mh, tw, th;
    char                s[1024];
+   const char         *fmt;
    WarplistItem       *wl;
+
+   if (!warplist)
+      return;
 
    tc = TextclassFind("WARPFOCUS", 0);
    if (!tc)
@@ -90,39 +89,33 @@ WarpFocusShow(EWin * ewin)
 	warpFocusWindow = eo;
 
 	EventCallbackRegister(eo->win, 0, WarpFocusHandleEvent, NULL);
+	ESelectInput(eo->win, ButtonReleaseMask);
 
 	TooltipsEnable(0);
      }
 
    if (!warpFocusWindow->shown)
      {
-	EWin              **lst;
-
 	w = 0;
 	h = 0;
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-	if (lst)
+	for (i = 0; i < warplist_num; i++)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  warplist_num++;
-		  warplist = Erealloc(warplist,
-				      warplist_num * sizeof(WarplistItem));
-		  wl = warplist + warplist_num - 1;
-		  wl->win = ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
-		  EMapWindow(wl->win);
-		  wl->ewin = lst[i];
-		  Esnprintf(s, sizeof(s), (lst[i]->iconified) ? "[%s]" : "%s",
-			    EwinGetName(lst[i]));
-		  wl->txt = strdup(s);
-		  TextSize(tc, 0, 0, 0, warplist[warplist_num - 1].txt, &ww,
-			   &hh, 17);
-		  if (ww > w)
-		     w = ww;
-		  if (hh > h)
-		     h = hh;
-	       }
-	     Efree(lst);
+	     wl = warplist + i;
+	     wl->win = ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
+	     EMapWindow(wl->win);
+	     if (wl->ewin->iconified)
+		fmt = "[%s]";
+	     else if (wl->ewin->shaded)
+		fmt = "=%s=";
+	     else
+		fmt = "%s";
+	     Esnprintf(s, sizeof(s), fmt, EwinGetName(wl->ewin));
+	     wl->txt = strdup(s);
+	     TextSize(tc, 0, 0, 0, wl->txt, &ww, &hh, 17);
+	     if (ww > w)
+		w = ww;
+	     if (hh > h)
+		h = hh;
 	  }
 
 	tw = w;			/* Text size */
@@ -142,15 +135,8 @@ WarpFocusShow(EWin * ewin)
 	for (i = 0; i < warplist_num; i++)
 	  {
 	     EMoveResizeWindow(warplist[i].win, 0, (h * i), mw, mh);
-	     if (ewin == warplist[i].ewin)
-		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0,
-				STATE_CLICKED, 0, ST_WARPLIST);
-	     else
-		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL,
-				0, ST_WARPLIST);
 	  }
 
-	EShapePropagate(warpFocusWindow->win);
 	EobjMap(warpFocusWindow, 0);
 
 	/*
@@ -243,23 +229,21 @@ WarpFocusHide(void)
 void
 WarpFocus(int delta)
 {
-   EWin               *const *lst0;
-   EWin              **lst, *ewin;
-   int                 i, num0, num;
+   EWin               *const *lst;
+   EWin               *ewin;
+   int                 i, num;
+   WarplistItem       *wl;
 
    /* Remember invoking keycode (ugly hack) */
    if (!warpFocusWindow || !warpFocusWindow->shown)
       warpFocusKey = Mode.last_keycode;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-   if (!lst)
+   if (!warplist)
      {
-	lst0 = EwinListFocusGet(&num0);
-	num = 0;
-	lst = NULL;
-	for (i = num0 - 1; i >= 0; --i)
+	lst = EwinListFocusGet(&num);
+	for (i = 0; i < num; i++)
 	  {
-	     ewin = lst0[i];
+	     ewin = lst[i];
 	     if (		/* Either visible or iconified */
 		   ((EwinIsOnScreen(ewin)) || (ewin->iconified)) &&
 		   /* Exclude windows that explicitely say so */
@@ -270,65 +254,87 @@ WarpFocus(int delta)
 		   ((!EoIsSticky(ewin)) || (Conf.warplist.showsticky)) &&
 		   /* Keep iconified windows if conf say so */
 		   ((!ewin->iconified) || (Conf.warplist.showiconified)))
-		AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
+	       {
+		  warplist_num++;
+		  warplist = Erealloc(warplist,
+				      warplist_num * sizeof(WarplistItem));
+		  wl = warplist + warplist_num - 1;
+		  wl->ewin = ewin;
+	       }
 	  }
-	MoveItemToListBottom(GetFocusEwin(), LIST_TYPE_WARP_RING);
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-	warpFocusIndex = num - 1;
+
+	/* Hmmm. Hack... */
+	if (warplist_num >= 2 && warplist[1].ewin == GetFocusEwin())
+	  {
+	     warplist[1].ewin = warplist[0].ewin;
+	     warplist[0].ewin = GetFocusEwin();
+	  }
+
+	warpFocusIndex = 0;
      }
 
-   if (lst)
-     {
-	warpFocusIndex = (warpFocusIndex + num + delta) % num;
-	ewin = lst[warpFocusIndex];
-	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-	   ewin = NULL;
-	if (ewin)
-	  {
-	     if (Conf.focus.raise_on_next)
-		RaiseEwin(ewin);
-	     if (Conf.focus.warp_on_next)
-		if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
-		   XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
-				EoGetW(ewin) / 2, EoGetH(ewin) / 2);
-	     if (Conf.warplist.warpfocused)
-		FocusToEWin(ewin, FOCUS_SET);
-	     WarpFocusShow(ewin);
-	  }
-	Efree(lst);
-     }
+   if (!warplist)
+      return;
+
+   warpFocusIndex = (warpFocusIndex + warplist_num + delta) % warplist_num;
+   ewin = warplist[warpFocusIndex].ewin;
+   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+      ewin = NULL;
+   if (!ewin)
+      return;
+
+   if (Conf.focus.raise_on_next)
+      RaiseEwin(ewin);
+   if (Conf.focus.warp_on_next)
+      if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
+	 XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
+		      EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+   if (Conf.warplist.warpfocused)
+      FocusToEWin(ewin, FOCUS_SET);
+   WarpFocusShow(ewin);
+}
+
+static void
+WarpFocusClick(int ix)
+{
+   EWin               *ewin;
+
+   if (!warplist)
+      return;
+
+   ewin = warplist[ix].ewin;
+   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+      return;
+
+   RaiseEwin(ewin);
+   if (ewin->iconified)
+      EwinDeIconify(ewin);
+   FocusToEWin(ewin, FOCUS_SET);
 }
 
 static void
 WarpFocusFinish(void)
 {
-   EWin              **lst, *ewin;
-   int                 num;
+   EWin               *ewin;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-   if (!lst)
-      return;
-
-   ewin = lst[warpFocusIndex];
+   ewin = warplist[warpFocusIndex].ewin;
 
    WarpFocusHide();
-   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-      ewin = NULL;
-   if (ewin)
-     {
-	if (Conf.warplist.showiconified && ewin->iconified)
-	   EwinDeIconify(ewin);
-	if (Conf.warplist.raise_on_select)
-	   RaiseEwin(ewin);
-	if (Conf.warplist.warp_on_select)
-	   if (ewin != Mode.mouse_over_ewin)
-	      XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
-			   EoGetW(ewin) / 2, EoGetH(ewin) / 2);
-	FocusToEWin(ewin, FOCUS_SET);
-     }
-   Efree(lst);
 
-   while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
+   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+      return;
+
+   if (ewin->iconified)
+      EwinDeIconify(ewin);
+   if (ewin->shaded)
+      EwinUnShade(ewin);
+   if (Conf.warplist.raise_on_select)
+      RaiseEwin(ewin);
+   if (Conf.warplist.warp_on_select)
+      if (ewin != Mode.mouse_over_ewin)
+	 XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
+		      EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+   FocusToEWin(ewin, FOCUS_SET);
 }
 
 static void
@@ -345,6 +351,10 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
      case KeyRelease:
 	if (warpFocusWindow->shown && ev->xkey.keycode != warpFocusKey)
 	   WarpFocusFinish();
+	break;
+
+     case ButtonRelease:
+	WarpFocusClick((ev->xbutton.y * warplist_num) / warpFocusWindow->h);
 	break;
      }
 }
