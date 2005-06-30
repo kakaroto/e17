@@ -741,8 +741,6 @@ struct _ewin
    PmapMask            mini_pmm;
    int                 mini_w, mini_h;
    Snapshot           *snap;
-   Imlib_Image        *icon_image[3];
-   int                 icon_type;
    int                 head;
    struct
    {
@@ -779,6 +777,7 @@ struct _ewin
    {
       char               *wm_name;
       char               *wm_icon_name;
+      unsigned int       *wm_icon, wm_icon_len;
       unsigned int        opacity;
    } ewmh;
    int                 shape_x, shape_y, shape_w, shape_h;

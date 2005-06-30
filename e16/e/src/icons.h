@@ -30,6 +30,4 @@ typedef enum
    EWIN_ICON_TYPE_NONE,
 } ewin_icon_e;
 
-Imlib_Image        *EwinIconImageGet(EWin * ewin, int size, int mode,
-				     int update);
-void                EwinIconImageFree(EWin * ewin);
+Imlib_Image        *EwinIconImageGet(EWin * ewin, int size, int mode);

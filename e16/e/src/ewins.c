@@ -227,6 +227,8 @@ EwinDestroy(EWin * ewin)
 
    if (ewin->icccm.wm_name)
       Efree(ewin->icccm.wm_name);
+   if (ewin->icccm.wm_icon_name)
+      Efree(ewin->icccm.wm_icon_name);
    if (ewin->icccm.wm_res_class)
       Efree(ewin->icccm.wm_res_class);
    if (ewin->icccm.wm_res_name)
@@ -242,9 +244,9 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->ewmh.wm_name);
    if (ewin->ewmh.wm_icon_name)
       Efree(ewin->ewmh.wm_icon_name);
+   if (ewin->ewmh.wm_icon)
+      Efree(ewin->ewmh.wm_icon);
 #endif
-   if (ewin->icccm.wm_icon_name)
-      Efree(ewin->icccm.wm_icon_name);
    if (EoGetWin(ewin))
       EDestroyWindow(EoGetWin(ewin));
    if (ewin->bits)
@@ -252,7 +254,6 @@ EwinDestroy(EWin * ewin)
    if (ewin->session_id)
       Efree(ewin->session_id);
    FreePmapMask(&ewin->mini_pmm);
-   EwinIconImageFree(ewin);
    GroupsEwinRemove(ewin);
    Efree(ewin);
 }

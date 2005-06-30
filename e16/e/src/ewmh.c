@@ -588,6 +588,51 @@ EWMH_GetWindowType(EWin * ewin)
 }
 
 static void
+EWMH_GetWindowIcons(EWin * ewin)
+{
+   unsigned int       *val;
+   int                 i, num;
+
+   if (ewin->ewmh.wm_icon)
+     {
+	Efree(ewin->ewmh.wm_icon);
+	ewin->ewmh.wm_icon = NULL;
+     }
+
+   num = ecore_x_window_prop_card32_list_get(ewin->client.win,
+					     ECORE_X_ATOM_NET_WM_ICON, &val);
+   ewin->ewmh.wm_icon_len = num;
+   if (num <= 0)
+      return;
+
+   if (num < (int)(2 + val[0] * val[1]))
+     {
+	Eprintf
+	   ("*** EWMH_GetWindowIcons Icon data/size mismatch (ignoring): %s: N=%d WxH=%dx%d\n",
+	    EwinGetName(ewin), num, val[0], val[1]);
+	Efree(val);
+	return;
+     }
+
+   for (i = 0; i < num - 1;)
+     {
+#if 0
+	Eprintf("App %s: Icon %d-%4d - %dx%d\n",
+		EwinGetName(ewin), num, i, val[i], val[i + 1]);
+#endif
+	i += 2 + val[i] * val[i + 1];
+     }
+   if (i != num)
+      Eprintf
+	 ("*** EWMH_GetWindowIcons Icon data/size mismatch: %s: %d!=%d\n",
+	  EwinGetName(ewin), i, num);
+
+   ewin->ewmh.wm_icon = val;
+
+   EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
+}
+
+static void
 EWMH_GetWindowMisc(EWin * ewin)
 {
    int                 num;
@@ -651,7 +696,7 @@ EWMH_GetWindowHints(EWin * ewin)
    EWMH_GetWindowDesktop(ewin);
    EWMH_GetWindowState(ewin);
    EWMH_GetWindowType(ewin);
-/*  EWMH_GetWindowIcons(ewin);  TBD */
+   EWMH_GetWindowIcons(ewin);
    EWMH_GetWindowStrut(ewin);
 }
 

@@ -30,6 +30,7 @@ typedef struct _iconbox Iconbox;
 
 static void         IconboxesConfigSave(void);
 static Iconbox     *SelectIconboxForEwin(EWin * ewin);
+static void         IconboxObjEwinDel(Iconbox * ib, EWin * ewin);
 
 /* Systray stuff */
 typedef struct
@@ -52,6 +53,7 @@ typedef struct
    } u;
    int                 xo, yo, wo, ho;	/* Outer */
    int                 xi, yi, wi, hi;	/* Inner */
+   Imlib_Image        *im;
 } IboxOject;
 
 struct _iconbox
@@ -416,6 +418,7 @@ IconboxDestroy(Iconbox * ib, int exiting)
 	  case IB_TYPE_ICONBOX:
 	     if (!exiting)
 		EwinDeIconify(ib->objs[i].u.ewin);
+	     IconboxObjEwinDel(ib, ib->objs[i].u.ewin);
 	     break;
 	  case IB_TYPE_SYSTRAY:
 	     IconboxObjSwinFree(ib, ib->objs[i].u.swin);
@@ -607,7 +610,7 @@ IconboxObjectAdd(Iconbox * ib, void *obj)
    ib->objs = Erealloc(ib->objs, sizeof(IboxOject) * ib->num_objs);
    ib->objs[ib->num_objs - 1].u.obj = obj;
 
-   return 0;			/* Success */
+   return ib->num_objs - 1;	/* Success */
 }
 
 static int
@@ -643,15 +646,31 @@ IconboxObjEwinFind(Iconbox * ib, EWin * ewin)
 static void
 IconboxObjEwinAdd(Iconbox * ib, EWin * ewin)
 {
-   if (IconboxObjectAdd(ib, ewin) == 0)
-      IconboxRedraw(ib);
+   int                 i;
+
+   i = IconboxObjectAdd(ib, ewin);
+   if (i < 0)
+      return;
+
+   ib->objs[i].im = EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode);
+   IconboxRedraw(ib);
 }
 
 static void
 IconboxObjEwinDel(Iconbox * ib, EWin * ewin)
 {
-   if (IconboxObjectDel(ib, ewin) == 0)
-      IconboxRedraw(ib);
+   int                 i;
+
+   i = IconboxObjEwinFind(ib, ewin);
+   if (i < 0)
+      return;
+
+   if (ib->objs[i].im)
+     {
+	imlib_context_set_image(ib->objs[i].im);
+	imlib_free_image();
+     }
+   IconboxObjectDel(ib, ewin);
 }
 
 static void
@@ -665,7 +684,6 @@ IconboxesEwinIconify(EWin * ewin)
    if (!ib)
       return;
 
-   EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 1);
    IconboxObjEwinAdd(ib, ewin);
 
    if (ib->animate && !ewin->st.showingdesk)
@@ -689,6 +707,7 @@ IconboxesEwinDeIconify(EWin * ewin)
 	IB_Animate(0, ewin, ib->ewin);
      }
    IconboxObjEwinDel(ib, ewin);
+   IconboxRedraw(ib);
 }
 
 static void
@@ -697,8 +716,11 @@ RemoveMiniIcon(EWin * ewin)
    Iconbox            *ib;
 
    ib = SelectIconboxForEwin(ewin);
-   if (ib)
-      IconboxObjEwinDel(ib, ewin);
+   if (!ib)
+      return;
+
+   IconboxObjEwinDel(ib, ewin);
+   IconboxRedraw(ib);
 }
 
 static Iconbox    **
@@ -776,13 +798,22 @@ SelectIconboxForEwin(EWin * ewin)
 static void
 IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
 {
+   int                 i;
+
    if (ib->icon_mode != icon_mode)
       return;
 
-   if (IconboxObjEwinFind(ib, ewin) < 0)
+   i = IconboxObjEwinFind(ib, ewin);
+   if (i < 0)
       return;
 
-   EwinIconImageGet(ewin, ib->iconsize, icon_mode, 1);
+   if (ib->objs[i].im)
+     {
+	imlib_context_set_image(ib->objs[i].im);
+	imlib_free_image();
+     }
+   ib->objs[i].im = EwinIconImageGet(ewin, ib->iconsize, icon_mode);
+
    IconboxRedraw(ib);
 }
 
@@ -883,14 +914,9 @@ IconboxLayoutImageWin(Iconbox * ib)
 	/* Inner size */
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
-	     EWin               *ewin;
-	     Imlib_Image        *im;
-
-	     ewin = ibo->u.ewin;
-	     im = EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 0);
 	     wi = hi = 8;
-	     if (im)
-		IconboxFindIconSize(im, &wi, &hi, ib->iconsize);
+	     if (ibo->im)
+		IconboxFindIconSize(ibo->im, &wi, &hi, ib->iconsize);
 	  }
 	else
 	  {
@@ -1649,21 +1675,15 @@ IconboxDraw(Iconbox * ib)
 
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
-	     EWin               *ewin;
-	     Imlib_Image        *ii;
-
-	     ewin = ib->objs[i].u.ewin;
-
-	     ii = EwinIconImageGet(ewin, ib->iconsize, ib->icon_mode, 0);
-	     if (ii)
+	     if (ibo->im)
 	       {
-		  imlib_context_set_image(ii);
+		  imlib_context_set_image(ibo->im);
 		  ww = imlib_image_get_width();
 		  hh = imlib_image_get_height();
 		  imlib_context_set_image(im);
 		  imlib_context_set_anti_alias(1);
 		  imlib_context_set_blend(1);
-		  imlib_blend_image_onto_image(ii, 1, 0, 0, ww, hh,
+		  imlib_blend_image_onto_image(ibo->im, 1, 0, 0, ww, hh,
 					       ibo->xi, ibo->yi, ibo->wi,
 					       ibo->hi);
 		  imlib_context_set_blend(0);
@@ -1672,9 +1692,9 @@ IconboxDraw(Iconbox * ib)
 	  }
 	else
 	  {
-	     if (ib->objs[i].u.swin->mapped)
+	     if (ibo->u.swin->mapped)
 	       {
-		  EMoveResizeWindow(ib->objs[i].u.swin->win,
+		  EMoveResizeWindow(ibo->u.swin->win,
 				    ibo->xi, ibo->yi, ibo->wi, ibo->hi);
 	       }
 	  }

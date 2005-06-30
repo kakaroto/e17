@@ -186,7 +186,7 @@ WarpFocusShow(EWin * ewin)
 			   tw, th, 0, 0);
 
 		  im = EwinIconImageGet(wl->ewin, icon_size,
-					Conf.warplist.icon_mode, 1);
+					Conf.warplist.icon_mode);
 		  if (!im)
 		     continue;
 
@@ -196,6 +196,7 @@ WarpFocusShow(EWin * ewin)
 		  imlib_render_image_on_drawable_at_size(ic->padding.left +
 							 ICON_PAD, ICON_PAD,
 							 icon_size, icon_size);
+		  imlib_free_image();
 		  imlib_context_set_blend(0);
 	       }
 	     else

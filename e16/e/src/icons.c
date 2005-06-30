@@ -24,6 +24,45 @@
 #include "E.h"
 #include "icons.h"
 
+static int
+NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
+{
+   unsigned int        i, j, sj, sbest, sz;
+   int                 k = -1;
+
+   sz = (unsigned int)size;
+   sj = sbest = 0;
+   for (i = 0; i < len;)
+     {
+	j = i;
+	i += 2 + val[i] * val[i + 1];
+	if (i > len)
+	   break;
+	/* Valid */
+	sj = val[j];
+	if (sj == sz)
+	  {
+	     k = j;
+	     break;		/* First exact match */
+	  }
+	/* FIXME - Size selection is not correct */
+	if (sj < sz)
+	  {
+	     if (sj <= sbest)
+		continue;
+	  }
+	else
+	  {
+	     if (sbest && sj >= sbest)
+		continue;
+	  }
+	k = j;
+	sbest = sj;
+     }
+
+   return k;
+}
+
 static Imlib_Image *
 IB_SnapEWin(EWin * ewin, int size)
 {
@@ -95,13 +134,30 @@ IB_SnapEWin(EWin * ewin, int size)
 }
 
 static Imlib_Image *
-IB_GetAppIcon(EWin * ewin)
+IB_GetAppIcon(EWin * ewin, int size)
 {
    /* Get the applications icon pixmap/mask */
    int                 x, y;
    unsigned int        w, h, depth, bw;
    Window              rt;
    Imlib_Image         im;
+
+   if (ewin->ewmh.wm_icon)
+     {
+	x = NetwmIconFindBestSize(ewin->ewmh.wm_icon, ewin->ewmh.wm_icon_len,
+				  size);
+	if (x >= 0)
+	  {
+	     im = imlib_create_image_using_copied_data(ewin->ewmh.wm_icon[x],
+						       ewin->ewmh.wm_icon[x +
+									  1],
+						       ewin->ewmh.wm_icon + x +
+						       2);
+	     imlib_context_set_image(im);
+	     imlib_image_set_has_alpha(1);
+	     return im;
+	  }
+     }
 
    if (!ewin->client.icon_pmap)
       return NULL;
@@ -152,7 +208,7 @@ static const char   ewin_icon_modes[N_MODES][N_TYPES] = {
 };
 
 Imlib_Image        *
-EwinIconImageGet(EWin * ewin, int size, int mode, int update)
+EwinIconImageGet(EWin * ewin, int size, int mode)
 {
    Imlib_Image        *im = NULL;
    int                 i, type;
@@ -166,17 +222,6 @@ EwinIconImageGet(EWin * ewin, int size, int mode, int update)
 	if (type >= N_TYPES)
 	   continue;
 
-	im = ewin->icon_image[type];
-	if (im)
-	  {
-	     if (!update)
-		return im;
-
-	     imlib_context_set_image(im);
-	     imlib_free_image();
-	     im = NULL;
-	  }
-
 	switch (type)
 	  {
 	  default:
@@ -187,7 +232,7 @@ EwinIconImageGet(EWin * ewin, int size, int mode, int update)
 	     break;
 
 	  case EWIN_ICON_TYPE_APP:
-	     im = IB_GetAppIcon(ewin);
+	     im = IB_GetAppIcon(ewin, size);
 	     break;
 
 	  case EWIN_ICON_TYPE_IMG:
@@ -199,22 +244,5 @@ EwinIconImageGet(EWin * ewin, int size, int mode, int update)
      }
 
  done:
-   if (im)
-      ewin->icon_image[type] = im;
    return im;
-}
-
-void
-EwinIconImageFree(EWin * ewin)
-{
-   unsigned int        i;
-
-   for (i = 0; i < sizeof(ewin->icon_image) / sizeof(Imlib_Image *); i++)
-     {
-	if (!ewin->icon_image[i])
-	   continue;
-	imlib_context_set_image(ewin->icon_image[i]);
-	imlib_free_image_and_decache();
-	ewin->icon_image[i] = NULL;
-     }
 }

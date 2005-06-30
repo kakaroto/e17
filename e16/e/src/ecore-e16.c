@@ -151,7 +151,7 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
 			  &bytes_after, &prop_ret) != Success)
       return -1;
 
-   if (type_ret == None)
+   if (type_ret == None || num_ret == 0)
      {
 	num = 0;
      }
@@ -166,6 +166,54 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
    else
      {
 	num = -1;
+     }
+   if (prop_ret)
+      XFree(prop_ret);
+
+   return num;
+}
+
+/*
+ * Get CARD32 (array) property of any length
+ *
+ * If the property was successfully fetched the number of items stored in
+ * val is returned, otherwise -1 is returned.
+ * Note: Return value 0 means that the property exists but has no elements.
+ */
+int
+ecore_x_window_prop_card32_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
+				    unsigned int **plst)
+{
+   unsigned char      *prop_ret;
+   Atom                type_ret;
+   unsigned long       bytes_after, num_ret;
+   int                 format_ret;
+   unsigned int        i, *val;
+   int                 num;
+
+   prop_ret = NULL;
+   if (XGetWindowProperty(_ecore_x_disp, win, atom, 0, 0x7fffffff, False,
+			  XA_CARDINAL, &type_ret, &format_ret, &num_ret,
+			  &bytes_after, &prop_ret) != Success)
+      return -1;
+
+   if (type_ret == None || num_ret == 0)
+     {
+	num = 0;
+	*plst = NULL;
+     }
+   else if (prop_ret && type_ret == XA_CARDINAL && format_ret == 32)
+     {
+	val = malloc(num_ret * sizeof(unsigned int));
+	for (i = 0; i < num_ret; i++)
+	   val[i] = ((unsigned long *)prop_ret)[i];
+	num = num_ret;
+	*plst = val;
+     }
+   else
+     {
+	num = -1;
+	*plst = NULL;
      }
    if (prop_ret)
       XFree(prop_ret);
@@ -782,11 +830,12 @@ Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STRUT;
 Ecore_X_Atom        ECORE_X_ATOM_NET_FRAME_EXTENTS;
 
+Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON;
+
 #if 0				/* Not used */
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON_GEOMETRY;
-Ecore_X_Atom        ECORE_X_ATOM_NET_WM_ICON;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_PID;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
 Ecore_X_Atom        ECORE_X_ATOM_NET_WM_USER_TIME;
@@ -880,11 +929,12 @@ ecore_x_netwm_init(void)
    ECORE_X_ATOM_NET_WM_STRUT = _ATOM_GET("_NET_WM_STRUT");
    ECORE_X_ATOM_NET_FRAME_EXTENTS = _ATOM_GET("_NET_FRAME_EXTENTS");
 
+   ECORE_X_ATOM_NET_WM_ICON = _ATOM_GET("_NET_WM_ICON");
+
 #if 0				/* Not used */
    ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS = _ATOM_GET("_NET_WM_ALLOWED_ACTIONS");
    ECORE_X_ATOM_NET_WM_STRUT_PARTIAL = _ATOM_GET("_NET_WM_STRUT_PARTIAL");
    ECORE_X_ATOM_NET_WM_ICON_GEOMETRY = _ATOM_GET("_NET_WM_ICON_GEOMETRY");
-   ECORE_X_ATOM_NET_WM_ICON = _ATOM_GET("_NET_WM_ICON");
    ECORE_X_ATOM_NET_WM_PID = _ATOM_GET("_NET_WM_PID");
    ECORE_X_ATOM_NET_WM_HANDLED_ICONS = _ATOM_GET("_NET_WM_HANDLED_ICONS");
    ECORE_X_ATOM_NET_WM_USER_TIME = _ATOM_GET("_NET_WM_USER_TIME");

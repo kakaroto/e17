@@ -63,6 +63,9 @@ int                 ecore_x_window_prop_card32_get(Ecore_X_Window win,
 						   Ecore_X_Atom atom,
 						   unsigned int *val,
 						   unsigned int len);
+int                 ecore_x_window_prop_card32_list_get(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							unsigned int **plst);
 
 void                ecore_x_window_prop_string_set(Ecore_X_Window win,
 						   Ecore_X_Atom atom,
@@ -160,11 +163,12 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STRUT;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_FRAME_EXTENTS;
 
+extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON;
+
 #if 0				/* Not used */
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON_GEOMETRY;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PID;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_USER_TIME;
