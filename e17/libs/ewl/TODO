@@ -1,6 +1,9 @@
 EWL TODO
 ========
 
+- Theme key caching for non-existent keys to avoid hitting the edje
+  unecessarily.
+
 - Ewl_Entry 
     - Multiline edit (in progress).
       - This requires some re-working of the evas_object_textblock as there
