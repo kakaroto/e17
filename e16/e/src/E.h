@@ -206,7 +206,6 @@ int                 Esnprintf(va_alist);
 #define LIST_TYPE_FONT          26
 #define LIST_TYPE_PAGER         27
 #define LIST_TYPE_ICONBOX       28
-#define LIST_TYPE_XID           30
 #define LIST_TYPE_GROUP         32
 
 #define LIST_TYPE_COUNT         33

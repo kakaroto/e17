@@ -26,6 +26,8 @@
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 
+#define DEBUG_XWIN 0
+
 typedef struct
 {
    EventCallbackFunc  *func;
@@ -40,13 +42,15 @@ typedef struct
 
 typedef struct _exid
 {
+   struct _exid       *next;
+   struct _exid       *prev;
    EventCallbackList   cbl;
    Window              parent;
    Window              win;
    int                 x, y, w, h;
    char                mapped;
    char                in_use;
-   char                do_del;
+   signed char         do_del;
    char                attached;
    int                 num_rect;
    int                 ord;
@@ -57,6 +61,9 @@ typedef struct _exid
 } EXID;
 
 static XContext     xid_context = 0;
+
+static EXID        *xid_first = NULL;
+static EXID        *xid_last = NULL;
 
 static EXID        *
 EXidCreate(void)
@@ -72,7 +79,7 @@ EXidCreate(void)
 static void
 EXidDestroy(EXID * xid)
 {
-#if 0
+#if DEBUG_XWIN
    Eprintf("EXidDestroy: %p %#lx\n", xid, xid->win);
 #endif
    if (xid->rects)
@@ -85,26 +92,56 @@ EXidDestroy(EXID * xid)
 static void
 EXidAdd(EXID * xid)
 {
+#if DEBUG_XWIN
+   Eprintf("EXidAdd: %p %#lx\n", xid, xid->win);
+#endif
    if (!xid_context)
       xid_context = XUniqueContext();
 
    XSaveContext(disp, xid->win, xid_context, (XPointer) xid);
-   AddItem(xid, "", xid->win, LIST_TYPE_XID);
+
+   if (!xid_first)
+     {
+	xid_first = xid_last = xid;
+     }
+   else
+     {
+	xid->prev = xid_last;
+	xid_last->next = xid;
+	xid_last = xid;
+     }
 }
 
 static void
-EXidDelete(Window win)
+EXidDel(EXID * xid)
 {
-   EXID               *xid;
-
-#if 0
-   Eprintf("EXidDelete: %p %#lx\n", xid, xid->win);
+#if DEBUG_XWIN
+   Eprintf("EXidDel: %p %#lx\n", xid, xid->win);
 #endif
-   xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
-   if (!xid)
-      return;
+   if (xid == xid_first)
+     {
+	if (xid == xid_last)
+	  {
+	     xid_first = xid_last = NULL;
+	  }
+	else
+	  {
+	     xid_first = xid->next;
+	     xid->next->prev = NULL;
+	  }
+     }
+   else if (xid == xid_last)
+     {
+	xid_last = xid->prev;
+	xid->prev->next = NULL;
+     }
+   else
+     {
+	xid->prev->next = xid->next;
+	xid->next->prev = xid->prev;
+     }
 
-   XDeleteContext(disp, win, xid_context);
+   XDeleteContext(disp, xid->win, xid_context);
    if (xid->in_use)
       xid->do_del = 1;
    else
@@ -117,8 +154,8 @@ EXidFind(Window win)
    EXID               *xid;
    XPointer            xp;
 
-   if (xid_context == 0)
-      xid_context = XUniqueContext();
+   if (!xid_context)
+      return NULL;
 
    xp = NULL;
    if (XFindContext(disp, win, xid_context, &xp) == XCNOENT)
@@ -141,7 +178,7 @@ EXidSet(Window win, Window parent, int x, int y, int w, int h, int depth)
    xid->w = w;
    xid->h = h;
    xid->depth = depth;
-#if 0
+#if DEBUG_XWIN
    Eprintf("EXidSet: %#lx\n", xid->win);
 #endif
    EXidAdd(xid);
@@ -177,7 +214,6 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
    eci->prm = prm;
 }
 
-/* Not used/tested */
 void
 EventCallbackUnregister(Window win, int type __UNUSED__,
 			EventCallbackFunc * func, void *prm)
@@ -416,6 +452,57 @@ EMoveResizeWindow(Window win, int x, int y, int w, int h)
       XMoveResizeWindow(disp, win, x, y, w, h);
 }
 
+static int
+ExDelTree(EXID * xid)
+{
+   Window              win;
+   int                 nsub;
+
+   xid->do_del = -1;
+
+   nsub = 0;
+   win = xid->win;
+   for (xid = xid_first; xid; xid = xid->next)
+     {
+	if (xid->parent != win)
+	   continue;
+	ExDelTree(xid);
+	nsub++;
+     }
+
+   return nsub;
+}
+
+static void
+ExDestroyWindow(EXID * xid)
+{
+   EXID               *next;
+   int                 nsub;
+
+#if DEBUG_XWIN
+   Eprintf("ExDestroyWindow: %p %#lx\n", xid, xid->win);
+#endif
+   if (xid->parent != None)
+      XDestroyWindow(disp, xid->win);
+
+   /* Mark the ones to be deleted */
+   nsub = ExDelTree(xid);
+   if (nsub == 0)
+     {
+	/* No children */
+	EXidDel(xid);
+	return;
+     }
+
+   /* Delete entire tree */
+   for (xid = xid_first; xid; xid = next)
+     {
+	next = xid->next;
+	if (xid->do_del < 0)
+	   EXidDel(xid);
+     }
+}
+
 void
 EDestroyWindow(Window win)
 {
@@ -423,27 +510,7 @@ EDestroyWindow(Window win)
 
    xid = EXidFind(win);
    if (xid)
-     {
-	EXID              **lst;
-	int                 i, num;
-
-	if (xid->parent != None)
-	   XDestroyWindow(disp, win);
-	EXidDelete(win);
-
-	lst = (EXID **) ListItemType(&num, LIST_TYPE_XID);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (lst[i]->parent != win)
-		     continue;
-		  lst[i]->parent = None;
-		  EDestroyWindow(lst[i]->win);
-	       }
-	     Efree(lst);
-	  }
-     }
+      ExDestroyWindow(xid);
    else
       XDestroyWindow(disp, win);
 }
@@ -528,7 +595,11 @@ ERegisterWindow(Window win)
 void
 EUnregisterWindow(Window win)
 {
-   EXidDelete(win);
+   EXID               *xid;
+
+   xid = EXidFind(win);
+   if (xid)
+      EXidDel(xid);
 }
 
 void
