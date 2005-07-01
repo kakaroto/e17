@@ -8,10 +8,7 @@
 
 /*
  * TODO
- * - need to add api to set/get colours of things like underline, bg,
- *   strikethrough etc
  * - need a way to handle fonts that aren't in the theme .edj
- * - add missing doxygen
  * - need to setup the styles/align/wrap data from the theme in 
  *   ewl_text_context_default_create
  *   - new theme keys for the align/wrap stuff
@@ -27,16 +24,11 @@
 static Ecore_Hash *context_hash = NULL;
 static int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 static void ewl_text_context_print(Ewl_Text_Context *tx, char *indent);
-static char *ewl_text_context_name_get(const char *font, unsigned int size, 
-			unsigned int styles, unsigned int align, 
-			unsigned int wrap, unsigned int r, 
-			unsigned int g, unsigned int b,
-			unsigned int a);
-static Ewl_Text_Context *ewl_text_context_find(const char *font, 
-			unsigned int size, unsigned int styles, 
-			unsigned int align, unsigned int wrap, 
-			unsigned int r, unsigned int g, 
-			unsigned int b, unsigned int a);
+static Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
+static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
+			unsigned int context_mask, Ewl_Text_Context *tx_change);
+static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
+			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
@@ -44,6 +36,8 @@ static void ewl_text_btree_walk(Ewl_Text *t);
 static void ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, 
 						unsigned int text_pos);
 static void ewl_text_btree_shrink(Ewl_Text_BTree *tree);
+static void ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, 
+						Ewl_Text_Context *tx_change);
 
 /**
  * @param text: The text to set into the widget
@@ -81,7 +75,7 @@ ewl_text_init(Ewl_Text *t, const char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
 
-	if (!ewl_container_init(EWL_WIDGET(t), "text"))
+	if (!ewl_container_init(EWL_CONTAINER(t), "text"))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
@@ -333,6 +327,32 @@ ewl_text_cursor_position_get(Ewl_Text *t)
 	DRETURN_INT(t->cursor_position, DLEVEL_STABLE);
 }
 
+static void
+ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_change)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* do we have a current context? */
+	if (t->current_context)
+	{
+		Ewl_Text_Context *ctx;
+
+		ctx = t->current_context;
+		t->current_context = ewl_text_context_find(t->current_context, context_mask, tx_change);
+		ctx->ref_count --;
+	}
+	else
+	{
+		Ewl_Text_Context *ctx;
+
+		ctx = ewl_text_context_default_create(t);
+		t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
+		ctx->ref_count --;
+	}
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /**
  * @param t: The Ewl_Widget to set the font into
  * @param font: The font to set
@@ -342,47 +362,19 @@ ewl_text_cursor_position_get(Ewl_Text *t)
 void
 ewl_text_font_set(Ewl_Text *t, const char *font)
 {
-	char *tmp;
+	Ewl_Text_Context *change;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
+	change = ewl_text_context_new();
+
 	/* null font will go back to the theme default */
-	if (!font) tmp = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	else tmp = strdup(font);
+	if (!font) change->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	else change->font = strdup(font);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if font is the same as the current font, done */
-		if ((t->current_context->font) && (!strcmp(t->current_context->font, tmp)))
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
-
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(tmp, ctx->size,
-						ctx->styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(tmp, ctx->size,
-						ctx->styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-		ctx->ref_count --;
-	}
-	IF_FREE(tmp);
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -447,40 +439,16 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 void
 ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
 {
+	Ewl_Text_Context *change;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if size is the same as the current size, done */
-		if (t->current_context->size == size)
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
+	change = ewl_text_context_new();
+	change->size = size;
 
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(ctx->font, size,
-						ctx->styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx->font, size,
-						ctx->styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-		ctx->ref_count --;
-	}
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SIZE, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -543,41 +511,19 @@ void
 ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g, 
 				unsigned int b, unsigned int a)
 {
+	Ewl_Text_Context *change;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if colour is the same as the current colour, done */
-		if ((t->current_context->color.r == r) 
-					&& (t->current_context->color.g == g)
-					&& (t->current_context->color.b == b) 
-					&& (t->current_context->color.a == a))
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
+	change = ewl_text_context_new();
+	change->color.r = r;
+	change->color.g = g;
+	change->color.b = b;
+	change->color.a = a;
 
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, ctx->align, ctx->wrap,
-						r, g, b, a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, ctx->align, ctx->wrap,
-						r, g, b, a);
-		ctx->ref_count --;
-	}
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_COLOR, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -659,40 +605,16 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 void
 ewl_text_align_set(Ewl_Text *t, unsigned int align)
 {
+	Ewl_Text_Context *change;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if alignment is the same as the current font, done */
-		if ((t->current_context->align == align) )
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
+	change = ewl_text_context_new();
+	change->align = align;
 
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, align, ctx->wrap,
-						ctx->color.r, ctx->color.g, 
-						ctx->color.b, ctx->color.a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-		ctx->ref_count --;
-	}
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_ALIGN, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -751,40 +673,16 @@ ewl_text_align_get(Ewl_Text *t, unsigned int idx)
 void
 ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
 {
+	Ewl_Text_Context *change;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if style is the same as the current font, done */
-		if ((t->current_context->styles == styles) )
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
+	change = ewl_text_context_new();
+	change->styles = styles;
 
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g, 
-						ctx->color.b, ctx->color.a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						styles, ctx->align, ctx->wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-		ctx->ref_count --;
-	}
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STYLES, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -843,41 +741,16 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
 void
 ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
 {
+	Ewl_Text_Context *change;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* do we have a current context? */
-	if (t->current_context)
-	{
-		/* if wrap is the same as the current font, done */
-		if ((t->current_context->wrap == wrap) )
-		{
-			/* nop, no change to the context */
-		}
-		else
-		{
-			Ewl_Text_Context *ctx;
+	change = ewl_text_context_new();
+	change->wrap = wrap;
 
-			ctx = t->current_context;
-			t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, ctx->align, wrap,
-						ctx->color.r, ctx->color.g, 
-						ctx->color.b, ctx->color.a);
-			ctx->ref_count --;
-		}
-	}
-	else
-	{
-		Ewl_Text_Context *ctx;
-
-		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx->font, ctx->size,
-						ctx->styles, ctx->align, wrap,
-						ctx->color.r, ctx->color.g,
-						ctx->color.b, ctx->color.a);
-		ctx->ref_count --;
-	}
-
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
+	ewl_text_context_free(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -927,6 +800,692 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
 	tx = ewl_text_btree_context_get(t->formatting, idx);
 
 	DRETURN_INT(tx->wrap, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text background colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+					unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.bg.r = r;
+	change->style_colors.bg.g = g;
+	change->style_colors.bg.b = b;
+	change->style_colors.bg.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text background colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the bg colour over
+ *
+ * This will set the bg colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+					unsigned int b, unsigned int a,
+					unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.bg.r = r;
+	tx->style_colors.bg.g = g;
+	tx->style_colors.bg.b = b;
+	tx->style_colors.bg.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_BG_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text background colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+					unsigned int *b, unsigned int *a,
+					unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.bg.r;
+		if (g) *g = tx->style_colors.bg.g;
+		if (b) *b = tx->style_colors.bg.b;
+		if (a) *a = tx->style_colors.bg.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text glow colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+					unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.glow.r = r;
+	change->style_colors.glow.g = g;
+	change->style_colors.glow.b = b;
+	change->style_colors.glow.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text glow colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the glow colour over
+ *
+ * This will set the glow colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+					unsigned int b, unsigned int a,
+					unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.glow.r = r;
+	tx->style_colors.glow.g = g;
+	tx->style_colors.glow.b = b;
+	tx->style_colors.glow.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text glow colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+					unsigned int *b, unsigned int *a,
+					unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.glow.r;
+		if (g) *g = tx->style_colors.glow.g;
+		if (b) *b = tx->style_colors.glow.b;
+		if (a) *a = tx->style_colors.glow.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text outline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.outline.r = r;
+	change->style_colors.outline.g = g;
+	change->style_colors.outline.b = b;
+	change->style_colors.outline.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text outline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the outline colour over
+ *
+ * This will set the outline colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a,
+						unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.outline.r = r;
+	tx->style_colors.outline.g = g;
+	tx->style_colors.outline.b = b;
+	tx->style_colors.outline.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text outline colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.outline.r;
+		if (g) *g = tx->style_colors.outline.g;
+		if (b) *b = tx->style_colors.outline.b;
+		if (a) *a = tx->style_colors.outline.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text shadow colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.shadow.r = r;
+	change->style_colors.shadow.g = g;
+	change->style_colors.shadow.b = b;
+	change->style_colors.shadow.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text shadow colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the shadow colour over
+ *
+ * This will set the shadow colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a,
+						unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.shadow.r = r;
+	tx->style_colors.shadow.g = g;
+	tx->style_colors.shadow.b = b;
+	tx->style_colors.shadow.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text shadow colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.shadow.r;
+		if (g) *g = tx->style_colors.shadow.g;
+		if (b) *b = tx->style_colors.shadow.b;
+		if (a) *a = tx->style_colors.shadow.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text strikethrough colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.strikethrough.r = r;
+	change->style_colors.strikethrough.g = g;
+	change->style_colors.strikethrough.b = b;
+	change->style_colors.strikethrough.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text strikethrough colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the strikethrough colour over
+ *
+ * This will set the strikethrough colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a,
+						unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.strikethrough.r = r;
+	tx->style_colors.strikethrough.g = g;
+	tx->style_colors.strikethrough.b = b;
+	tx->style_colors.strikethrough.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text strikethrough colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.strikethrough.r;
+		if (g) *g = tx->style_colors.strikethrough.g;
+		if (b) *b = tx->style_colors.strikethrough.b;
+		if (a) *a = tx->style_colors.strikethrough.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text underline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.underline.r = r;
+	change->style_colors.underline.g = g;
+	change->style_colors.underline.b = b;
+	change->style_colors.underline.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text underline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the underline colour over
+ *
+ * This will set the underline colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a,
+						unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.underline.r = r;
+	tx->style_colors.underline.g = g;
+	tx->style_colors.underline.b = b;
+	tx->style_colors.underline.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text underline colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.outline.r;
+		if (g) *g = tx->style_colors.outline.g;
+		if (b) *b = tx->style_colors.outline.b;
+		if (a) *a = tx->style_colors.outline.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text double underline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ */
+void
+ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	change = ewl_text_context_new();
+	change->style_colors.double_underline.r = r;
+	change->style_colors.double_underline.g = g;
+	change->style_colors.double_underline.b = b;
+	change->style_colors.double_underline.a = a;
+
+	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, change);
+	ewl_text_context_free(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the text double underline colour of
+ * @param r: The red value
+ * @param g: The green value
+ * @param b: The blue value
+ * @param a: The alpha value
+ * @param length: The length of text to apply the double underline colour over
+ *
+ * This will set the double_underline colour of the text from the current cursor position
+ * to the given length.
+ */
+void
+ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* set this into the b-tree if we have length */
+	if (length == 0)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	tx = ewl_text_context_new();
+	tx->style_colors.double_underline.r = r;
+	tx->style_colors.double_underline.g = g;
+	tx->style_colors.double_underline.b = b;
+	tx->style_colors.double_underline.a = a;
+
+	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, 
+							t->cursor_position, length);
+	ewl_text_context_free(tx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the text double underline colour from
+ * @param r: Where to put the red value
+ * @param g: Where to put the green value
+ * @param b: Where to put the blue value
+ * @param a: Where to put the alpha value
+ * @param idx: The index to get the colour from
+ */
+void
+ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	tx = ewl_text_btree_context_get(t->formatting, idx);
+	if (tx)
+	{
+		if (r) *r = tx->style_colors.double_underline.r;
+		if (g) *g = tx->style_colors.double_underline.g;
+		if (b) *b = tx->style_colors.double_underline.b;
+		if (a) *a = tx->style_colors.double_underline.a;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -1032,26 +1591,27 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data)
 static Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
-	char *tmp;
-	int size, r, g, b, a;
-	Ewl_Text_Context *tx = NULL;
+	Ewl_Text_Context *tx = NULL, *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
+	tmp = ewl_text_context_new();
+
 	/* handle default values */
-	tmp = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	size = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
+	tmp->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	tmp->size = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
 
-	r = ewl_theme_data_int_get(EWL_WIDGET(t), "color/r");
-	g = ewl_theme_data_int_get(EWL_WIDGET(t), "color/g");
-	b = ewl_theme_data_int_get(EWL_WIDGET(t), "color/b");
-	a = ewl_theme_data_int_get(EWL_WIDGET(t), "color/a");
+	tmp->color.r = ewl_theme_data_int_get(EWL_WIDGET(t), "color/r");
+	tmp->color.g = ewl_theme_data_int_get(EWL_WIDGET(t), "color/g");
+	tmp->color.b = ewl_theme_data_int_get(EWL_WIDGET(t), "color/b");
+	tmp->color.a = ewl_theme_data_int_get(EWL_WIDGET(t), "color/a");
 
-	/* XXX grap the style, alignment and wrap data from the theme here */
+	/* XXX grap the style, alignment and wrap data from the theme here 
+	 *     and all the bg values */
 
-	tx = ewl_text_context_find(tmp, size, 0, 0, 0, r, g, b, a);
-	IF_FREE(tmp);
+	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
+	ewl_text_context_free(tmp);
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
@@ -1070,53 +1630,218 @@ ewl_text_context_init(void)
 }
 
 static char *
-ewl_text_context_name_get(const char *font, unsigned int size, unsigned int styles, 
-			unsigned int align, unsigned int wrap, unsigned int r, 
-			unsigned int g, unsigned int b, unsigned int a)
+ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
+						Ewl_Text_Context *tx_change)
 {
 	char name[2048];
-	char *t;
+	char *t = NULL, *t2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
+	
+	if (context_mask > 0)
+	{
+		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
+		if (!tx_change->font) t2 = "";
+		else t2 = tx_change->font;
+	}
 
-	if (!font) t = "";
-	else t = (char *)font;
+	if (!tx->font) t = "";
+	else t = tx->font;
 
-	snprintf(name, sizeof(name), "f%ss%ds%da%dw%dr%dg%db%da%d", t, size, styles, 
-							align, wrap, r, g, b, a);
+	snprintf(name, sizeof(name), "f%ss%ds%da%dw%dr%dg%db%da%dcbg%d%d%d%dcg%d%d%d%d"
+				"co%d%d%d%dcs%d%d%d%dcst%d%d%d%dcu%d%d%d%dcdu%d%d%d%d", 
+		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? t2: t),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx_change->size : tx->size),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx_change->styles : tx->styles),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx_change->align : tx->align),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_WRAP) ? tx_change->wrap : tx->wrap),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.r : tx->color.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.g : tx->color.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.b : tx->color.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.a : tx->color.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.r : tx->style_colors.bg.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.g : tx->style_colors.bg.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.b : tx->style_colors.bg.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.a : tx->style_colors.bg.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.r : tx->style_colors.glow.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.g : tx->style_colors.glow.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.b : tx->style_colors.glow.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.a : tx->style_colors.glow.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.r : tx->style_colors.outline.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.g : tx->style_colors.outline.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.b : tx->style_colors.outline.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.a : tx->style_colors.outline.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.r : tx->style_colors.shadow.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.g : tx->style_colors.shadow.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.b : tx->style_colors.shadow.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.a : tx->style_colors.shadow.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.r : tx->style_colors.strikethrough.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.g : tx->style_colors.strikethrough.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.b : tx->style_colors.strikethrough.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.a : tx->style_colors.strikethrough.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.r : tx->style_colors.underline.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.g : tx->style_colors.underline.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.b : tx->style_colors.underline.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.a : tx->style_colors.underline.a),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.r : tx->style_colors.double_underline.r),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.g : tx->style_colors.double_underline.g),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.b : tx->style_colors.double_underline.b),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.a : tx->style_colors.double_underline.a));
+
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
 
 static Ewl_Text_Context *
-ewl_text_context_find(const char *font, unsigned int size, unsigned int styles, 
-			unsigned int align, unsigned int wrap, unsigned int r, 
-			unsigned int g, unsigned int b, unsigned int a)
+ewl_text_context_dup(Ewl_Text_Context *old)
 {
-	char *t;
 	Ewl_Text_Context *tx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("old", old, NULL);
 
-	t = ewl_text_context_name_get(font, size, styles, align, wrap, r, g, b, a);
-	tx = ecore_hash_get(context_hash, t);
-	if (!tx)
-	{
-		if ((tx = ewl_text_context_new()))
-		{
-			if (font) ewl_text_context_font_set(tx, font);
-			ewl_text_context_font_size_set(tx, size);
-			ewl_text_context_styles_set(tx, styles);
-			ewl_text_context_align_set(tx, align);
-			ewl_text_context_wrap_set(tx, wrap);
-			ewl_text_context_color_set(tx, r, g, b, a);
+	tx = ewl_text_context_new();
+	memcpy(tx, old, sizeof(Ewl_Text_Context));
 
-			ecore_hash_set(context_hash, strdup(t), tx);
-		}
-	}
-	if (tx) tx->ref_count ++;
-	FREE(t);
+	/* make sure we get our own pointer to the font so it dosen't get
+	 * free'd behind our back */
+	tx->font = ((old->font) ? strdup(old->font) : NULL);
+	tx->ref_count = 0;
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Context *
+ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
+					Ewl_Text_Context *tx_change)
+{
+	char *t;
+	Ewl_Text_Context *new_tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
+
+	/* only need the tx_change if we have a context mask */
+	if (context_mask > 0)
+	{
+		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
+	}
+
+	t = ewl_text_context_name_get(tx, context_mask, tx_change);
+	new_tx = ecore_hash_get(context_hash, t);
+	if (!new_tx)
+	{
+		if ((new_tx = ewl_text_context_dup(tx)))
+		{
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_FONT)
+			{
+				IF_FREE(new_tx->font);
+				new_tx->font = strdup(tx_change->font);
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_SIZE)
+				new_tx->size = tx_change->size;
+
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_STYLES)
+				new_tx->styles = tx_change->styles;
+
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN)
+				new_tx->align = tx_change->align;
+
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_WRAP)
+				new_tx->wrap = tx_change->wrap;
+
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_COLOR)
+			{
+				new_tx->color.r = tx_change->color.r;
+				new_tx->color.g = tx_change->color.g;
+				new_tx->color.b = tx_change->color.b;
+				new_tx->color.a = tx_change->color.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR)
+			{
+				new_tx->style_colors.bg.r = tx_change->style_colors.bg.r;
+				new_tx->style_colors.bg.g = tx_change->style_colors.bg.g;
+				new_tx->style_colors.bg.b = tx_change->style_colors.bg.b;
+				new_tx->style_colors.bg.a = tx_change->style_colors.bg.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR)
+			{
+				new_tx->style_colors.glow.r = tx_change->style_colors.glow.r;
+				new_tx->style_colors.glow.g = tx_change->style_colors.glow.g;
+				new_tx->style_colors.glow.b = tx_change->style_colors.glow.b;
+				new_tx->style_colors.glow.a = tx_change->style_colors.glow.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR)
+			{
+				new_tx->style_colors.outline.r = tx_change->style_colors.outline.r;
+				new_tx->style_colors.outline.g = tx_change->style_colors.outline.g;
+				new_tx->style_colors.outline.b = tx_change->style_colors.outline.b;
+				new_tx->style_colors.outline.a = tx_change->style_colors.outline.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR)
+			{
+				new_tx->style_colors.shadow.r = tx_change->style_colors.shadow.r;
+				new_tx->style_colors.shadow.g = tx_change->style_colors.shadow.g;
+				new_tx->style_colors.shadow.b = tx_change->style_colors.shadow.b;
+				new_tx->style_colors.shadow.a = tx_change->style_colors.shadow.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR)
+			{
+				new_tx->style_colors.strikethrough.r = tx_change->style_colors.strikethrough.r;
+				new_tx->style_colors.strikethrough.g = tx_change->style_colors.strikethrough.g;
+				new_tx->style_colors.strikethrough.b = tx_change->style_colors.strikethrough.b;
+				new_tx->style_colors.strikethrough.a = tx_change->style_colors.strikethrough.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR)
+			{
+				new_tx->style_colors.underline.r = tx_change->style_colors.underline.r;
+				new_tx->style_colors.underline.g = tx_change->style_colors.underline.g;
+				new_tx->style_colors.underline.b = tx_change->style_colors.underline.b;
+				new_tx->style_colors.underline.a = tx_change->style_colors.underline.a;
+			}
+			else if (context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR)
+			{
+				new_tx->style_colors.double_underline.r = tx_change->style_colors.double_underline.r;
+				new_tx->style_colors.double_underline.g = tx_change->style_colors.double_underline.g;
+				new_tx->style_colors.double_underline.b = tx_change->style_colors.double_underline.b;
+				new_tx->style_colors.double_underline.a = tx_change->style_colors.double_underline.a;
+			}
+
+			ecore_hash_set(context_hash, strdup(t), new_tx);
+		}
+	}
+	if (new_tx) new_tx->ref_count ++;
+	FREE(t);
+
+	DRETURN_PTR(new_tx, DLEVEL_STABLE);
 }
 
 /*
@@ -1183,9 +1908,7 @@ ewl_text_context_free(Ewl_Text_Context *tx)
 
 	if (tx->ref_count > 0) return;
 
-	t = ewl_text_context_name_get(tx->font, tx->size, tx->styles, tx->align,
-					tx->wrap, tx->color.r, tx->color.g,
-					tx->color.b, tx->color.a);
+	t = ewl_text_context_name_get(tx, 0, NULL);
 	ecore_hash_remove(context_hash, t);
 
 	IF_FREE(tx->font);
@@ -1323,6 +2046,216 @@ ewl_text_context_color_get(Ewl_Text_Context *tx, unsigned int *r,
 	if (g) *g = tx->color.g;
 	if (b) *b = tx->color.b;
 	if (a) *a = tx->color.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_bg_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.bg.r = ((r < 255) ? r : 255);
+	tx->style_colors.bg.g = ((g < 255) ? g : 255);
+	tx->style_colors.bg.b = ((b < 255) ? b : 255);
+	tx->style_colors.bg.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_bg_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.bg.r;
+	if (g) *g = tx->style_colors.bg.g;
+	if (b) *b = tx->style_colors.bg.b;
+	if (a) *a = tx->style_colors.bg.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_glow_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.glow.r = ((r < 255) ? r : 255);
+	tx->style_colors.glow.g = ((g < 255) ? g : 255);
+	tx->style_colors.glow.b = ((b < 255) ? b : 255);
+	tx->style_colors.glow.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_glow_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.glow.r;
+	if (g) *g = tx->style_colors.glow.g;
+	if (b) *b = tx->style_colors.glow.b;
+	if (a) *a = tx->style_colors.glow.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_outline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.outline.r = ((r < 255) ? r : 255);
+	tx->style_colors.outline.g = ((g < 255) ? g : 255);
+	tx->style_colors.outline.b = ((b < 255) ? b : 255);
+	tx->style_colors.outline.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_outline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.outline.r;
+	if (g) *g = tx->style_colors.outline.g;
+	if (b) *b = tx->style_colors.outline.b;
+	if (a) *a = tx->style_colors.outline.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_shadow_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.shadow.r = ((r < 255) ? r : 255);
+	tx->style_colors.shadow.g = ((g < 255) ? g : 255);
+	tx->style_colors.shadow.b = ((b < 255) ? b : 255);
+	tx->style_colors.shadow.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_shadow_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.shadow.r;
+	if (g) *g = tx->style_colors.shadow.g;
+	if (b) *b = tx->style_colors.shadow.b;
+	if (a) *a = tx->style_colors.shadow.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_strikethrough_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.strikethrough.r = ((r < 255) ? r : 255);
+	tx->style_colors.strikethrough.g = ((g < 255) ? g : 255);
+	tx->style_colors.strikethrough.b = ((b < 255) ? b : 255);
+	tx->style_colors.strikethrough.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_strikethrough_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.strikethrough.r;
+	if (g) *g = tx->style_colors.strikethrough.g;
+	if (b) *b = tx->style_colors.strikethrough.b;
+	if (a) *a = tx->style_colors.strikethrough.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.underline.r = ((r < 255) ? r : 255);
+	tx->style_colors.underline.g = ((g < 255) ? g : 255);
+	tx->style_colors.underline.b = ((b < 255) ? b : 255);
+	tx->style_colors.underline.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.underline.r;
+	if (g) *g = tx->style_colors.underline.g;
+	if (b) *b = tx->style_colors.underline.b;
+	if (a) *a = tx->style_colors.underline.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_double_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->style_colors.double_underline.r = ((r < 255) ? r : 255);
+	tx->style_colors.double_underline.g = ((g < 255) ? g : 255);
+	tx->style_colors.double_underline.b = ((b < 255) ? b : 255);
+	tx->style_colors.double_underline.a = ((a < 255) ? a : 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_double_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	if (r) *r = tx->style_colors.double_underline.r;
+	if (g) *g = tx->style_colors.double_underline.g;
+	if (b) *b = tx->style_colors.double_underline.b;
+	if (a) *a = tx->style_colors.double_underline.a;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1559,16 +2492,7 @@ ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 		Ewl_Text_Context *new_tx, *ctx;
 
 		ctx = tree->tx;
-		new_tx = ewl_text_context_find(
-			((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? tx->font : ctx->font),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx->size : ctx->size),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx->styles : ctx->styles),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx->align : ctx->align),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_WRAP) ? tx->wrap : ctx->wrap),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx->color.r : ctx->color.r),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx->color.g : ctx->color.g),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx->color.b : ctx->color.b),
-			((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx->color.a : ctx->color.a));
+		new_tx = ewl_text_context_find(ctx, context_mask, tx);
 
 		/* apply covers entire node */
 		if ((idx == 0) && ((idx + len) >= tree->length))
@@ -1918,10 +2842,18 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 					(ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE))
 			{
 				snprintf(ptr, sizeof(style) - strlen(style), 
-						"underline=%s underline_color=#000000ff "
-						"double_underline_color=#000000ff ",
+						"underline=%s underline_color=#%02x%02x%02x%02x "
+						"double_underline_color=#%02x%02x%02x%02x",
 						((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) ?
-						  "on" : "double"));
+						  "on" : "double"),
+						ctx->style_colors.underline.r,
+						ctx->style_colors.underline.g,
+						ctx->style_colors.underline.b,
+						ctx->style_colors.underline.a,
+						ctx->style_colors.double_underline.r,
+						ctx->style_colors.double_underline.g,
+						ctx->style_colors.double_underline.b,
+						ctx->style_colors.double_underline.a);
 			}
 			else
 				snprintf(ptr, sizeof(style) - strlen(style), "underline=off ");
@@ -1929,7 +2861,11 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 
 			if (ctx->styles & EWL_TEXT_STYLE_STRIKETHROUGH)
 				snprintf(ptr, sizeof(style) - strlen(style), 
-						"strkethrough=on strikethrough_color=#000000ff ");
+						"strkethrough=on strikethrough_color=#%02x%02x%02x%02x ",
+						ctx->style_colors.strikethrough.r,
+						ctx->style_colors.strikethrough.g,
+						ctx->style_colors.strikethrough.b,
+						ctx->style_colors.strikethrough.a);
 			else
 				snprintf(ptr, sizeof(style) - strlen(style), "strkethrough=off ");
 			ptr = style + strlen(style);
@@ -1942,7 +2878,11 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 			{
 				if (ctx->styles & EWL_TEXT_STYLE_GLOW)
 					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=glow glow_color=#ff0000ff ");
+							"style=glow glow_color=#%02x%02x%02x%02x ",
+							ctx->style_colors.glow.r,
+							ctx->style_colors.glow.g,
+							ctx->style_colors.glow.b,
+							ctx->style_colors.glow.a);
 
 				else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
 				{
@@ -1957,7 +2897,11 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 								"style=outline ");
 					ptr = style + strlen(style);
 					snprintf(ptr, sizeof(style) - strlen(style),
-							"outline_color=#aaaaaaff ");
+							"outline_color=#%02x%02x%02x%02x ", 
+							ctx->style_colors.outline.r,
+							ctx->style_colors.outline.g,
+							ctx->style_colors.outline.b,
+							ctx->style_colors.outline.a);
 				}
 				else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
 						snprintf(ptr, sizeof(style) - strlen(style), 
@@ -1979,7 +2923,11 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 				}
 				ptr = style + strlen(style);
 				snprintf(ptr, sizeof(style) - strlen(style),
-							"shadow_color=#444444ff ");
+							"shadow_color=#%02x%02x%02x%02x ",
+							ctx->style_colors.shadow.r,
+							ctx->style_colors.shadow.g,
+							ctx->style_colors.shadow.b,
+							ctx->style_colors.shadow.a);
 			}
 			else
 				snprintf(ptr, sizeof(style) - strlen(style), "style=off ");
@@ -2007,8 +2955,11 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 
 		/* create the formatting string */
 		snprintf(fmt, sizeof(fmt), "font=fonts/%s source=%s size=%d "
-					"color=#%02x%02x%02x%02x %s wrap=%s %s", ctx->font, 
+					"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
+					"%s wrap=%s %s", ctx->font, 
 					ewl_theme_path_get(), ctx->size,
+					ctx->style_colors.bg.r, ctx->style_colors.bg.g,
+					ctx->style_colors.bg.b, ctx->style_colors.bg.a,
 					ctx->color.r, ctx->color.g,
 					ctx->color.b, ctx->color.a, style, 
 					((ctx->wrap) ? "on" : "off"), align);

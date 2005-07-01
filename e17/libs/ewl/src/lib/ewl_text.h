@@ -105,6 +105,69 @@ void		 ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap,
 							unsigned int length);
 unsigned int	 ewl_text_wrap_get(Ewl_Text *t, unsigned int idx);
 
+void		 ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a);
+void		 ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a,
+						unsigned int length);
+void		 ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+						unsigned int *b, unsigned int *a,
+						unsigned int idx);
+
+void		 ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+						unsigned int b, unsigned int a);
+void		 ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void		 ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
+void		 ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a);
+void		 ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void		 ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
+void		 ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a);
+void		 ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void 	 	 ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
+void		 ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a);
+void		 ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void		 ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
+void		 ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a);
+void		 ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void		 ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
+void		 ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a);
+void		 ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
+							unsigned int b, unsigned int a,
+							unsigned int length);
+void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
+							unsigned int *b, unsigned int *a,
+							unsigned int idx);
+
 /*
  * Internal stuff
  */
@@ -125,6 +188,17 @@ struct Ewl_Text_Context
 	unsigned int align;
 	unsigned int wrap;
 	Ewl_Color_Set color;
+
+	struct
+	{
+		Ewl_Color_Set bg;
+		Ewl_Color_Set glow;
+		Ewl_Color_Set outline;
+		Ewl_Color_Set shadow;
+		Ewl_Color_Set strikethrough;
+		Ewl_Color_Set underline;
+		Ewl_Color_Set double_underline;
+	} style_colors;
 
 	unsigned int ref_count;
 };
@@ -152,6 +226,41 @@ void ewl_text_context_color_set(Ewl_Text_Context *tx, unsigned int r,
 void ewl_text_context_color_get(Ewl_Text_Context *tx, unsigned int *r,
 			unsigned int *g, unsigned int *b, unsigned int *a);
 
+void ewl_text_context_bg_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_bg_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_glow_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_glow_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_outline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_outline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_shadow_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_shadow_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_strikethrough_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_strikethrough_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
+void ewl_text_context_double_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
+			unsigned int g, unsigned int b, unsigned int a);
+void ewl_text_context_double_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
+			unsigned int *g, unsigned int *b, unsigned int *a);
+
 enum Ewl_Text_Context_Mask
 {
 	EWL_TEXT_CONTEXT_MASK_NONE = 0x00,
@@ -160,7 +269,14 @@ enum Ewl_Text_Context_Mask
 	EWL_TEXT_CONTEXT_MASK_STYLES = 0x04,
 	EWL_TEXT_CONTEXT_MASK_ALIGN = 0x08,
 	EWL_TEXT_CONTEXT_MASK_WRAP = 0x10,
-	EWL_TEXT_CONTEXT_MASK_COLOR = 0x20
+	EWL_TEXT_CONTEXT_MASK_COLOR = 0x20,
+	EWL_TEXT_CONTEXT_MASK_BG_COLOR = 0x40,
+	EWL_TEXT_CONTEXT_MASK_GLOW_COLOR = 0x80,
+	EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR = 0x100,
+	EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR = 0x200,
+	EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR = 0x400,
+	EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR = 0x800,
+	EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR = 0x1000
 };
 typedef enum Ewl_Text_Context_Mask Ewl_Text_Context_Mask;
 
