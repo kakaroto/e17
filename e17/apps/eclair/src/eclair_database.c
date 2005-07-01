@@ -137,6 +137,43 @@ Evas_Bool eclair_database_search(Eclair_Database *database, Eclair_Media_File *m
    return 1;
 }
 
+//Search a file from its path (media_file->path should not be NULL)
+Evas_Bool eclair_database_search2(Eclair_Database *database, const char *keyword)
+{
+   int result;
+   char *error_msg;
+   char *query;
+   char **table_result;
+   int nrows, ncols, i, j;
+
+   if (!database || !keyword)
+      return 0;
+
+   query = sqlite3_mprintf("SELECT * FROM media_files WHERE artist LIKE '%q%%'", keyword);
+   printf("%s\n", query);
+   result = sqlite3_get_table(database->db, query, &table_result, &nrows, &ncols, &error_msg);
+   if (result != SQLITE_OK)
+   {
+      fprintf(stderr, "Database: Unable to select data from \"media_files\" table: %s\n", error_msg);
+      sqlite3_free(error_msg);
+      sqlite3_free(query);
+      return 0;
+   }
+   sqlite3_free(query);
+
+   for (i = 0; i <= nrows; i++)
+   {
+      for (j = 0; j < ncols; j++)
+         printf("%s | ", table_result[ncols * i + j]);
+      printf("\n");
+   }
+   printf("\n");
+
+   sqlite3_free_table(table_result);
+
+   return 1;
+}
+
 //Close the database
 void eclair_database_shutdown(Eclair_Database *database)
 {

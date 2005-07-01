@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
    char *image_file;
    char *text_file;
    char *command;
-   char *volume_file;
+   char *extracted_file;
    int extract_result;
    int i;
 
@@ -333,13 +333,13 @@ int main(int argc, char *argv[])
       return 1;
    }
    extract_result &= extract_image_part(image_file, 0, 0, 68, 433, EXTRACTION_DIR"/images/volume.png");
-   volume_file = malloc(strlen(EXTRACTION_DIR"/images/volume_bar_.png") + 3);
+   extracted_file = malloc(strlen(EXTRACTION_DIR"/images/volume_bar_.png") + 3);
    for (i = 0; i < 28; i++)
    {
-      sprintf(volume_file, EXTRACTION_DIR"/images/volume_bar_%d.png", i);
-      extract_result &= extract_image_part(image_file, 0, i * 15, 68, 13, volume_file);
+      sprintf(extracted_file, EXTRACTION_DIR"/images/volume_bar_%d.png", i);
+      extract_result &= extract_image_part(image_file, 0, i * 15, 68, 13, extracted_file);
    }
-   free(volume_file);
+   free(extracted_file);
    extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 15, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag.png");
    extract_result &= extract_image_part(EXTRACTION_DIR"/images/volume.png", 0, 422, 14, 11, EXTRACTION_DIR"/images/volume_bar_drag_down.png");
    free(image_file);
@@ -449,6 +449,26 @@ int main(int argc, char *argv[])
       return 1;
    }
 
+   //titlebar.bmp
+   if (!(image_file = get_case_filename("eqmain.bmp", root_dir)))
+   {
+      printf("Error: File \"%s\" is not a valid winamp skin: can\'t find file eqmain.bmp\n", argv[1]);
+      free(root_dir);
+      return 1;
+   }
+   extract_result &= extract_image_part(image_file, 0, 0, 275, 293, EXTRACTION_DIR"/images/eqmain.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/eqmain.png", 0, 0, 275, 116, EXTRACTION_DIR"/images/equalizer_main.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/eqmain.png", 0, 164, 11, 11, EXTRACTION_DIR"/images/equalizer_drag.png");
+   extract_result &= extract_image_part(EXTRACTION_DIR"/images/eqmain.png", 0, 176, 11, 11, EXTRACTION_DIR"/images/equalizer_drag_down.png");
+   extracted_file = malloc(strlen(EXTRACTION_DIR"/images/equalizer_bar_.png") + 3);
+   for (i = 0; i < 28; i++)
+   {
+      sprintf(extracted_file, EXTRACTION_DIR"/images/equalizer_bar_%d.png", i);
+      extract_result &= extract_image_part(EXTRACTION_DIR"/images/eqmain.png", 13 + (i % 14) * 15, 164 + (i / 14) * 65, 14, 63, extracted_file);
+   }
+   free(extracted_file);
+   free(image_file);
+
    if (!extract_result)
    {
       printf("Error: an error happened while extracting the image parts\n");
@@ -493,6 +513,7 @@ int main(int argc, char *argv[])
    }
 
    printf("Conversion has been a success\n");
+   printf("The \"wsz2edj_temp\" is not needed anymore, you can remove it\n");
    printf("You can now launch eclair with this command:\neclair -t %s\n", argv[2]);
 
    free(command);

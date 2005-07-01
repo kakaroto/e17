@@ -25,6 +25,7 @@
 static void *_eclair_create_video_object_thread(void *param);
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_window(Eclair *eclair);
+static Evas_Bool _eclair_create_equalizer_window(Eclair *eclair);
 static Evas_Bool _eclair_create_cover_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window);
 static Evas_Bool _eclair_create_cover_object(Eclair *eclair, Eclair_Window *window);
@@ -42,7 +43,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    if (!eclair)
       return 0;
 
-	ecore_init();
+   ecore_init();
    ecore_file_init();
    ecore_evas_init();
    edje_init();
@@ -56,6 +57,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->gui_window = NULL;
    eclair->cover = NULL;
    eclair->previous_cover = NULL;
+   eclair->equalizer_window = NULL;
    eclair->playlist_window = NULL;
    eclair->playlist_container = NULL;
    eclair->playlist_container_owner = NULL;
@@ -85,6 +87,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
       return 0;
    }
    _eclair_create_playlist_window(eclair);
+   _eclair_create_equalizer_window(eclair);
    _eclair_create_cover_window(eclair);
    _eclair_create_video_window(eclair);
    _eclair_add_inter_windows_callbacks(eclair);
@@ -108,9 +111,9 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
       eclair_playlist_add_uri(&eclair->playlist, eclair->config.default_playlist_path, 1, 0);
 
    ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, eclair_dnd_position_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_dnd_drop_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_dnd_selection_cb, eclair);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, eclair_mouse_up_cb, eclair);
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, eclair_dnd_drop_cb, eclair);
+   ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, eclair_dnd_selection_cb, eclair);
+   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, eclair_mouse_up_cb, eclair);
    edje_object_part_drag_value_set(eclair->gui_window->edje_object, "volume_bar_drag", 1.0, 0.0);
 
    return 1;
@@ -123,6 +126,7 @@ void eclair_shutdown(Eclair *eclair)
    {
       eclair_window_del(eclair->gui_window);
       eclair_window_del(eclair->playlist_window);
+      eclair_window_del(eclair->equalizer_window);
       eclair_window_del(eclair->cover_window);
 
       fprintf(stderr, "Eclair: Debug: Destroying create video object thread\n");
@@ -536,6 +540,13 @@ void eclair_position_set(Eclair *eclair, double position)
    emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
 }
 
+static void testff(void *data, Evas_Object *obj, const char *part)
+{
+   Evas_Coord x, y, w, h;
+   edje_object_part_geometry_get(obj, part, &x, &y, &w, &h);
+   printf("%s %p %s -> %d %d %d %d\n", part, obj, edje_object_part_text_get(obj, part), x, y, w, h);
+}
+
 //Create the gui window and load the edje theme
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair)
 {
@@ -547,6 +558,8 @@ static Evas_Bool _eclair_create_gui_window(Eclair *eclair)
       _eclair_create_playlist_container_object(eclair, eclair->gui_window);
       _eclair_create_cover_object(eclair, eclair->gui_window);
       eclair_window_add_default_callbacks(eclair->gui_window, eclair);
+      edje_object_text_change_cb_set(eclair->gui_window->edje_object, testff, NULL);
+      printf("%p\n", eclair->gui_window->edje_object);
       return 1;
    }
 
@@ -566,6 +579,23 @@ static Evas_Bool _eclair_create_playlist_window(Eclair *eclair)
       _eclair_create_playlist_container_object(eclair, eclair->playlist_window);
       _eclair_create_cover_object(eclair, eclair->playlist_window);      
       eclair_window_add_default_callbacks(eclair->playlist_window, eclair);
+      return 1;
+   }
+
+   return 0;
+}
+
+//Create the equalizer window and load the edje theme for the equalizer
+static Evas_Bool _eclair_create_equalizer_window(Eclair *eclair)
+{
+   if (!eclair)
+      return 0;
+
+   if ((eclair->equalizer_window = eclair_window_create(eclair->gui_theme_file, "equalizer", "eclair: equalizer", eclair->gui_engine, eclair, 0)))
+   {
+      _eclair_create_playlist_container_object(eclair, eclair->equalizer_window);
+      _eclair_create_cover_object(eclair, eclair->equalizer_window);      
+      eclair_window_add_default_callbacks(eclair->equalizer_window, eclair);
       return 1;
    }
 
@@ -729,51 +759,66 @@ static void _eclair_add_inter_windows_callbacks(Eclair *eclair)
    if (eclair->gui_window)
    {
       edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
-      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
       edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_equalizer_open", "*", eclair_window_open_cb, eclair->equalizer_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_equalizer_close", "*", eclair_window_close_cb, eclair->equalizer_window);
+      edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
       edje_object_signal_callback_add(eclair->gui_window->edje_object, "eclair_cover_close", "*", eclair_window_close_cb, eclair->cover_window);
    }
    if (eclair->playlist_window)
    {
       edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_main_open", "*", eclair_window_open_cb, eclair->gui_window);
-      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
       edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_main_close", "*", eclair_window_close_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_equalizer_open", "*", eclair_window_open_cb, eclair->equalizer_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_equalizer_close", "*", eclair_window_close_cb, eclair->equalizer_window);
+      edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
       edje_object_signal_callback_add(eclair->playlist_window->edje_object, "eclair_cover_close", "*", eclair_window_close_cb, eclair->cover_window);
+   }
+   if (eclair->equalizer_window)
+   {
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_main_open", "*", eclair_window_open_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_main_close", "*", eclair_window_close_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_cover_open", "*", eclair_window_open_cb, eclair->cover_window);
+      edje_object_signal_callback_add(eclair->equalizer_window->edje_object, "eclair_cover_close", "*", eclair_window_close_cb, eclair->cover_window);
    }
    if (eclair->cover_window)
    {
-      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
       edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_main_open", "*", eclair_window_open_cb, eclair->gui_window);
-      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
       edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_main_close", "*", eclair_window_close_cb, eclair->gui_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_open", "*", eclair_window_open_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_playlist_close", "*", eclair_window_close_cb, eclair->playlist_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_equalizer_open", "*", eclair_window_open_cb, eclair->equalizer_window);
+      edje_object_signal_callback_add(eclair->cover_window->edje_object, "eclair_equalizer_close", "*", eclair_window_close_cb, eclair->equalizer_window);
    }
 }
 
 //Handle segvs
 static void _eclair_sig_pregest()
 {
-	struct sigaction sa;
+   struct sigaction sa;
 
-	sa.sa_handler = _eclair_on_segv;
-	sigaction(SIGSEGV, &sa, (struct sigaction *)0);
+   sa.sa_handler = _eclair_on_segv;
+   sigaction(SIGSEGV, &sa, (struct sigaction *)0);
 }
 
 //Display a message on segvs
 static void _eclair_on_segv(int num)
 {
-	fprintf(stderr, "\n\n");	
-	fprintf(stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
-	fprintf(stderr, "\n");
-	fprintf(stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
-	fprintf(stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
-	fprintf(stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "With that, devs will be able to correct bugs faster and easier\n");
-	fprintf(stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "Thanks :)\n");
+   fprintf(stderr, "\n\n");   
+   fprintf(stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
+   fprintf(stderr, "\n");
+   fprintf(stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
+   fprintf(stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
+   fprintf(stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
+   fprintf(stderr, "\n");
+   fprintf(stderr, "With that, devs will be able to correct bugs faster and easier\n");
+   fprintf(stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
+   fprintf(stderr, "\n");
+   fprintf(stderr, "Thanks :)\n");
    
-	exit(128 + num);
+   exit(128 + num);
 }
 
 int main(int argc, char *argv[])

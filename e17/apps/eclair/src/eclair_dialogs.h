@@ -9,5 +9,6 @@ void eclair_dialogs_add_files_file_chooser(Eclair_Dialogs_Manager *dialogs_manag
 void eclair_dialogs_load_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager);
 void eclair_dialogs_save_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager);
 void eclair_popup_menu(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_search_window(Eclair_Dialogs_Manager *dialogs_manager);
 
 #endif

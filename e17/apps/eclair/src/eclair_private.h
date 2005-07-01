@@ -119,8 +119,13 @@ struct _Eclair_Dialogs_Manager
    GladeXML *menu_xml;
    GtkWidget *menu_widget;
 
+   //Search window vars
+   GladeXML *search_window_xml;
+   GtkWidget *search_window_window;
+
    gboolean should_popup_menu;
    Eclair_Dialog_File_Chooser_Type should_open_file_chooser;
+   gboolean should_open_search_window;
    gboolean should_quit;
 
    pthread_t dialogs_thread;
@@ -268,6 +273,7 @@ struct _Eclair
    //Gui related vars
    Eclair_Window *gui_window;
    Eclair_Window *playlist_window;
+   Eclair_Window *equalizer_window;
    Eclair_Window *cover_window;
    Evas_Object *playlist_container;
    Eclair_Window *playlist_container_owner;
