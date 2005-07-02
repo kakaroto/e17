@@ -348,8 +348,6 @@ void eclair_all_windows_text_set(Eclair *eclair, const char *field_name, const c
 //Play a new file
 void eclair_play_file(Eclair *eclair, const char *path)
 {
-   int video_width, video_height;
-
    if (!eclair)
       return;
 
@@ -372,12 +370,7 @@ void eclair_play_file(Eclair *eclair, const char *path)
       if (eclair->video_window)
       {
          if (emotion_object_video_handled_get(eclair->video_object))
-         {
             ecore_evas_show(eclair->video_window);
-            emotion_object_size_get(eclair->video_object, &video_width, &video_height);
-            ecore_evas_resize(eclair->video_window, video_width, video_height);
-            eclair_video_window_resize_cb(eclair->video_window);
-         }
          else
             ecore_evas_hide(eclair->video_window);
       }
@@ -667,6 +660,7 @@ static void *_eclair_create_video_object_thread(void *param)
    evas_object_smart_callback_add(new_video_object, "frame_decode", eclair_video_frame_decode_cb, eclair);
    evas_object_smart_callback_add(new_video_object, "playback_finished", eclair_video_playback_finished_cb, eclair);
    evas_object_smart_callback_add(new_video_object, "audio_level_change", eclair_video_audio_level_change_cb, eclair);
+   evas_object_smart_callback_add(new_video_object, "frame_resize", eclair_video_frame_resize_change_cb, eclair);
 
    eclair_audio_level_set(eclair, emotion_object_audio_volume_get(new_video_object));
    eclair->video_object = new_video_object;

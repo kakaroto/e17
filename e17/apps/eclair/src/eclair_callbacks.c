@@ -56,7 +56,10 @@ void eclair_key_press_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
          eclair_play(eclair);
    }
    else if (strcmp(ev->key, "escape") == 0 || strcmp(ev->key, "q") == 0)
+   {
       eclair_shutdown(eclair);
+      return;
+   }
    else if (eclair->video_object && (strcmp(ev->key, "Left") == 0 ||
       strcmp(ev->key, "Right") == 0 || strcmp(ev->key, "Down") == 0 ||
       strcmp(ev->key, "Up") == 0 || strcmp(ev->key, "Prior") == 0 ||
@@ -138,6 +141,24 @@ void eclair_video_audio_level_change_cb(void *data, Evas_Object *obj, void *even
    edje_object_part_drag_value_set(eclair->gui_window->edje_object, "volume_bar_drag", emotion_object_audio_volume_get(eclair->video_object), 0);
 }
 
+//Called when the video has to be resized
+void eclair_video_frame_resize_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Eclair *eclair;
+   int w, h;
+   double ratio;
+
+   if (!(eclair = data) || !eclair->video_window || !eclair->video_object)
+      return;
+
+   emotion_object_size_get(eclair->video_object, &w, &h);
+   ratio = emotion_object_ratio_get(eclair->video_object);
+   if (ratio > 0.0)
+      ecore_evas_resize(eclair->video_window, h * ratio, h);
+   else
+      ecore_evas_resize(eclair->video_window, w, h);
+}
+
 //Called when the video window is resized:
 //Resize the video object and the black background object
 void eclair_video_window_resize_cb(Ecore_Evas *window)
@@ -154,8 +175,7 @@ void eclair_video_window_resize_cb(Ecore_Evas *window)
    if (eclair->video_object)
    {
       ratio = emotion_object_ratio_get(eclair->video_object);
-      //TODO: emotion bug? ratio is sometimes 0?!
-      if (ratio <= -0.01 || ratio >= 0.01)
+      if (ratio > 0.0)
       {
          if (window_width / ratio > window_height)
          {

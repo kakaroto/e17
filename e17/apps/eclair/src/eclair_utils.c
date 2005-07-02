@@ -157,10 +157,9 @@ char *eclair_utils_search_file(const char *filename, const char *root_dir)
    char *file;
    char *result = NULL;
 
-   if (!filename || !root_dir)
+   if (!filename || !root_dir || !(files = ecore_file_ls(root_dir)))
       return NULL;
 
-   files = ecore_file_ls(root_dir);
    ecore_list_goto_first(files);
    while ((file = ecore_list_next(files)))
    {

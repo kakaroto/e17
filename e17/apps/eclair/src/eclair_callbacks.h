@@ -17,6 +17,7 @@ void eclair_video_window_close_cb(Ecore_Evas *window);
 void eclair_video_frame_decode_cb(void *data, Evas_Object *obj, void *event_info);
 void eclair_video_playback_finished_cb(void *data, Evas_Object *obj, void *event_info);
 void eclair_video_audio_level_change_cb(void *data, Evas_Object *obj, void *event_info);
+void eclair_video_frame_resize_change_cb(void *data, Evas_Object *obj, void *event_info);
 
 void eclair_open_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_play_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);

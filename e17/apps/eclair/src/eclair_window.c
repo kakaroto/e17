@@ -154,7 +154,6 @@ void eclair_window_del(Eclair_Window *window)
 
    evas_object_del(window->draggies);
    evas_object_del(window->edje_object);
-   ecore_evas_free(window->ecore_window);
 }
 
 //Add the default callbacks to the window
