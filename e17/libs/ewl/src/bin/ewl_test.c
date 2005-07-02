@@ -215,9 +215,9 @@ main(int argc, char **argv)
 				"laying out Ewl_Widget's in an array."
 		},
 		{
-			"Textarea",
-		     	__create_textarea_test_window,
-		     	"ewl_textarea_test.c",
+			"Text",
+		     	__create_text_test_window,
+		     	"ewl_text_test.c",
 			"Defines a class for multi-line text layout\n"
 				"and formatting."
 		},

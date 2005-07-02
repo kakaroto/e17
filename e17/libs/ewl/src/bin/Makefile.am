@@ -41,7 +41,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_spinner_test.c \
 					ewl_statusbar_test.c \
 					ewl_table_test.c \
-					ewl_textarea_test.c \
+					ewl_text_test.c \
 					ewl_theme_test.c \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
