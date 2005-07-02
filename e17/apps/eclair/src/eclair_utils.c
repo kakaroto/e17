@@ -22,11 +22,6 @@ void eclair_utils_second_to_string(double position, double length, char *string)
    }
 }
 
-//TODO:
-/*
-return (float)rand() / (float)RAND_MAX * (Max - Min) + Min;
-*/
-
 //Remove uri special chars (e.g. "%20" -> ' ')
 //The returned string has to be freed
 char *eclair_utils_remove_uri_special_chars(const char *uri)
@@ -153,8 +148,41 @@ char *eclair_utils_file_get_filename_without_ext(char *file)
    return file_without_ext;
 }
 
-//TODO:
+//Search for a file in the dir root_dir with the name filename, regardless to the case
+//Return NULL if no file found, otherwise, the path of the file
+//Returned value has to be freed
+char *eclair_utils_search_file(const char *filename, const char *root_dir)
+{
+   Ecore_List *files;
+   char *file;
+   char *result = NULL;
+
+   if (!filename || !root_dir)
+      return NULL;
+
+   files = ecore_file_ls(root_dir);
+   ecore_list_goto_first(files);
+   while ((file = ecore_list_next(files)))
+   {
+      if (strcasecmp(file, filename) == 0)
+      {
+         result = malloc(strlen(root_dir) + strlen(file) + 2);
+         sprintf(result, "%s/%s", root_dir, file);
+         break;
+      }
+   }
+   ecore_list_destroy(files);
+   return result;
+}
+
+//Return a random integer between min and max
 int eclair_utils_get_random_int(int min, int max)
 {
-   return (int)(((float)rand() / RAND_MAX) * (max - min) + 0.5f) + min;
+   return (int)((float)rand() / RAND_MAX * (max - min) + 0.5f) + min;
+}
+
+//Return a random float between min and max
+int eclair_utils_get_random_float(float min, float max)
+{
+   return (float)rand() / RAND_MAX * (max - min) + min;
 }

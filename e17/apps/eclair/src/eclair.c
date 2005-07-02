@@ -540,13 +540,6 @@ void eclair_position_set(Eclair *eclair, double position)
    emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
 }
 
-static void testff(void *data, Evas_Object *obj, const char *part)
-{
-   Evas_Coord x, y, w, h;
-   edje_object_part_geometry_get(obj, part, &x, &y, &w, &h);
-   printf("%s %p %s -> %d %d %d %d\n", part, obj, edje_object_part_text_get(obj, part), x, y, w, h);
-}
-
 //Create the gui window and load the edje theme
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair)
 {
@@ -558,8 +551,6 @@ static Evas_Bool _eclair_create_gui_window(Eclair *eclair)
       _eclair_create_playlist_container_object(eclair, eclair->gui_window);
       _eclair_create_cover_object(eclair, eclair->gui_window);
       eclair_window_add_default_callbacks(eclair->gui_window, eclair);
-      edje_object_text_change_cb_set(eclair->gui_window->edje_object, testff, NULL);
-      printf("%p\n", eclair->gui_window->edje_object);
       return 1;
    }
 
