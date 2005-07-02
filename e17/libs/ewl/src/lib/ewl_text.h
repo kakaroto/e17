@@ -60,6 +60,10 @@ int 		 ewl_text_init(Ewl_Text *t, const char *text);
 
 int		 ewl_text_length_get(Ewl_Text *t);
 
+void		 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx,
+					int *x, int *y, int *w, int *h);
+unsigned int	 ewl_text_coord_index_map(Ewl_Text *t, int x, int y);
+
 char 		*ewl_text_text_get(Ewl_Text *t);
 void		 ewl_text_text_set(Ewl_Text *t, const char *text);
 void		 ewl_text_text_prepend(Ewl_Text *t, const char *text);

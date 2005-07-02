@@ -119,6 +119,147 @@ ewl_text_length_get(Ewl_Text *t)
 }
 
 /**
+ * @param t: The Ewl_Text to get the geometry from
+ * @param idx: The index to get the geometry for
+ * @param x: Where to put the x value
+ * @param y: Where to put the y value
+ * @param w: Where to put the w value
+ * @param h: Where to put the h value
+ */
+void
+ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y, 
+							int *w, int *h)
+{
+	Evas_Coord tx, ty, tw, th;
+	char *ptr;
+	unsigned int tb_idx = 0;
+	int i, fiddled = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	/* make sure we are in the text */
+	if (idx > t->length) idx = t->length;
+
+	/* if we have no text then use the default font size */
+	if ((!t->textblock) || (!t->text))
+	{
+		if (x) *x = 0;
+		if (y) *y = 0;
+		if (w) *w = 0;
+		if (h)
+		{
+			if (t->current_context)
+				*h = t->current_context->size;
+			else
+				*h = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
+		}
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* we need to remove the \n \r \t from the index count so that the
+	 * textblock number will be right */
+	ptr = t->text;
+	for (i = 0; i < idx; i++)
+	{
+		if ((*ptr != '\n') && (*ptr != '\r') && (*ptr != '\t')) 
+			tb_idx ++;
+		ptr ++;
+	}
+
+	/* length is one after the end of the text, so make sure we take one
+	 * less as tb won't recognize length itself, it will return the same
+	 * as if you clicked off the start */
+	if (tb_idx == t->length)
+	{
+		tb_idx --;
+		fiddled = 1;
+	}
+
+	evas_object_textblock_char_pos_get(t->textblock, tb_idx, &tx, &ty, 
+								&tw, &th);
+
+	/* we had to add the width of the last char into the x value given
+	 * by tb in order to get stuck at the end of the text */
+	if (fiddled)
+		tx += tw;
+
+	if (x) *x = (int)(tx + CURRENT_X(t));
+	if (y) *y = (int)(ty + CURRENT_Y(t));
+	if (w) *w = (int)tw;
+	if (h) *h = (int)th;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to mapp the coords into
+ * @param x: The x coord to map
+ * @param y: The y coord to map
+ * @return Returns the index of the given coordinates
+ */
+unsigned int
+ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
+{
+	int tb_idx, i;
+	unsigned int idx = 0;
+	char *ptr;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
+
+	if ((!t->textblock) || (!t->text))
+	{
+		DRETURN_INT(0, DLEVEL_STABLE);
+	}
+
+	tb_idx = evas_object_textblock_char_coords_get(t->textblock,
+			(Evas_Coord)(x - CURRENT_X(t)),
+			(Evas_Coord)(y - CURRENT_Y(t)), 
+			NULL, NULL, NULL, NULL);
+
+	/* if this is less then 0 then we clicked off of one end of the
+	 * textblock or the other. if the click position is inside the size
+	 * of a char we are at the start, else we are at the end */
+	if (tb_idx < 0)
+	{
+		int cx, size;
+
+		size = ewl_text_font_size_get(t, 0);
+		cx = x - CURRENT_X(t);
+
+		if (cx < size)
+		{
+			DRETURN_INT(0, DLEVEL_STABLE);
+		}
+		else
+		{
+			DRETURN_INT(t->length, DLEVEL_STABLE);
+		}
+	}
+
+	idx = tb_idx;
+
+	/* need to add \n \r \t stuff back into the count */
+	ptr = t->text;
+	for (i = 0; i < tb_idx; i++)
+	{
+		if ((ptr) && ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t'))) 
+		{
+			idx ++;
+
+			/* drop this down one as we didn't hit a tb recognized value */
+			tb_idx --;
+		}
+		ptr ++;
+
+		if (!ptr) break;
+	}
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
+}
+
+/**
  * @param t: The Ewl_Text to get the text from
  * @return Returns the text in the widget @a t or NULL if no text is set
  */
@@ -241,6 +382,9 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->cursor_position += len;
 	}
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -292,6 +436,9 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		t->delete_count = 0;
 	}
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -303,6 +450,8 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 void
 ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 {
+	Ewl_Text_Context *tx;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
@@ -310,7 +459,19 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 	 * text */
 	if (pos > t->length) pos = t->length;
 	t->cursor_position = pos;
-	
+
+	/* switch the current context to the context at the given position */
+	tx = t->current_context;
+
+	t->current_context = ewl_text_btree_context_get(t->formatting, pos);
+	if (t->current_context)
+	{
+		tx->ref_count --;
+		t->current_context->ref_count ++;
+	}
+	else
+		t->current_context = tx;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -407,6 +568,9 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -479,6 +643,9 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SIZE, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -565,6 +732,9 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -646,6 +816,9 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -714,6 +887,9 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -781,6 +957,9 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_WRAP, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -866,6 +1045,9 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_BG_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -965,6 +1147,9 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1062,6 +1247,9 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1161,6 +1349,9 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1258,6 +1449,9 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1357,6 +1551,9 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
 
+	if (REALIZED(t))
+		ewl_text_display(t);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1454,6 +1651,9 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 	ewl_text_btree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_free(tx);
+
+	if (REALIZED(t))
+		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2748,6 +2948,7 @@ ewl_text_display(Ewl_Text *t)
 {
 	Evas_Coord w = 0, h = 0;
 
+	evas_object_textblock_clear(t->textblock);
 	ewl_text_btree_walk(t);
 
 	evas_object_textblock_native_size_get(t->textblock, &w, &h);
