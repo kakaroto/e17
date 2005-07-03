@@ -1141,6 +1141,7 @@ _engage_cb_event_border_add(void *data, int type, void *event)
    Engage_App_Icon *ai;
    E_Event_Border_Add *e;
    E_App *app;
+   char *title;
 
    e = event;
    eb = data;
@@ -1149,8 +1150,12 @@ _engage_cb_event_border_add(void *data, int type, void *event)
 
    if (_engage_border_ignore(e->border))
      return 1;
-   app = e_app_window_name_class_find(e->border->client.icccm.name,
-				      e->border->client.icccm.class);
+   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
+   else title = e->border->client.icccm.title;
+   app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
+						 e->border->client.icccm.class,
+						 title,
+						 e->border->client.icccm.window_role);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
@@ -1185,6 +1190,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    E_Event_Border_Remove *e;
    E_App *app;
    Evas_List *icons;
+   char *title;
 
    e = event;
    eb = data;
@@ -1192,8 +1198,12 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    if (e->border->zone->container != eb->con)
      return 1;
 
-   app = e_app_window_name_class_find(e->border->client.icccm.name,
-				      e->border->client.icccm.class);
+   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
+   else title = e->border->client.icccm.title;
+   app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
+						 e->border->client.icccm.class,
+						 title,
+						 e->border->client.icccm.window_role);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
@@ -1228,14 +1238,19 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    E_Event_Border_Hide *e;
    E_App *app;
    Evas_List *icons;
+   char *title;
 
    e = event;
    eb = data;
    if (e->border->zone->container != eb->con)
      return 1;
 
-   app = e_app_window_name_class_find(e->border->client.icccm.name,
-				      e->border->client.icccm.class);
+   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
+   else title = e->border->client.icccm.title;
+   app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
+						 e->border->client.icccm.class,
+						 title,
+						 e->border->client.icccm.window_role);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
@@ -1276,6 +1291,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    E_Event_Border_Show *e;
    E_App *app;
    Evas_List *icons;
+   char *title;
 
    e = event;
    eb = data;
@@ -1283,8 +1299,12 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    if (e->border->zone->container != eb->con)
      return 1;
 
-   app = e_app_window_name_class_find(e->border->client.icccm.name,
-				      e->border->client.icccm.class);
+   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
+   else title = e->border->client.icccm.title;
+   app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
+						 e->border->client.icccm.class,
+						 title,
+						 e->border->client.icccm.window_role);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
