@@ -14,6 +14,7 @@
 #include "eclair_callbacks.h"
 #include "eclair_utils.h"
 #include "eclair_config.h"
+#include "eclair_dialogs.h"
 
 #define MAX_PATH_LEN 1024
 
@@ -36,7 +37,7 @@ void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
    playlist->eclair = eclair;
    playlist->media_files_destructor_timer = ecore_timer_add(0.05, eclair_playlist_media_files_destructor, playlist);
 
-   if (eclair && eclair_config_get_prop_int(&eclair->config, "suffle", "enabled", &shuffle))
+   if (eclair && eclair_config_get_prop_int(&eclair->config, "suffle", "enabled", &shuffle) && shuffle)
       eclair_playlist_set_shuffle(playlist, 1);
 }
 
@@ -69,20 +70,18 @@ void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 //Set the shuffle mode
 void eclair_playlist_set_shuffle(Eclair_Playlist *playlist, Evas_Bool shuffle)
 {
-   if (!playlist)
+   if (!playlist || !playlist->eclair)
       return;
 
    if (shuffle)
    {
-      playlist->shuffle = 1;
       eclair_playlist_reset_shuffle_list(playlist);
       eclair_send_signal_to_all_windows(playlist->eclair, "signal_shuffle_enabled");
    }
    else
-   {
-      playlist->shuffle = 0;
       eclair_send_signal_to_all_windows(playlist->eclair, "signal_shuffle_disabled");
-   }
+
+   playlist->shuffle = shuffle;
 }
 
 //Reset the shuffle list (should be called each time items are added or removed from the playlist)

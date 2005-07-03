@@ -149,6 +149,10 @@ static gint _eclair_dialogs_update(gpointer data)
       dialogs_manager->should_open_search_window = FALSE;
    }
 
+   if (dialogs_manager->eclair)
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(glade_xml_get_widget(dialogs_manager->menu_xml, "shuffle_mode1")),
+         dialogs_manager->eclair->playlist.shuffle);
+
    return 1;
 }
 

@@ -54,6 +54,9 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->video_object = NULL;
    eclair->black_background = NULL;
    eclair->subtitles_object = NULL;
+   eclair->previous_video_width = 0;
+   eclair->previous_video_height = 0;
+   eclair->previous_video_ratio = 0.0;
    eclair->gui_window = NULL;
    eclair->cover = NULL;
    eclair->previous_cover = NULL;

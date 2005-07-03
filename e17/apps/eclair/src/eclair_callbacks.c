@@ -153,10 +153,18 @@ void eclair_video_frame_resize_change_cb(void *data, Evas_Object *obj, void *eve
 
    emotion_object_size_get(eclair->video_object, &w, &h);
    ratio = emotion_object_ratio_get(eclair->video_object);
+
+   if (eclair->previous_video_width == w && eclair->previous_video_height == h && eclair->previous_video_ratio == ratio)
+      return;
+
    if (ratio > 0.0)
       ecore_evas_resize(eclair->video_window, h * ratio, h);
    else
       ecore_evas_resize(eclair->video_window, w, h);
+
+   eclair->previous_video_width = w;
+   eclair->previous_video_height = h;
+   eclair->previous_video_ratio = ratio;
 }
 
 //Called when the video window is resized:

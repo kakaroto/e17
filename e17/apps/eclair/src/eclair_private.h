@@ -269,6 +269,8 @@ struct _Eclair
    Evas_Object *subtitles_object;
    Eclair_Engine video_engine;
    pthread_t video_create_thread;
+   int previous_video_width, previous_video_height;
+   double previous_video_ratio;
 
    //Gui related vars
    Eclair_Window *gui_window;
