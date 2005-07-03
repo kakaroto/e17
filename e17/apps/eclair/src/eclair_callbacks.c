@@ -348,6 +348,20 @@ void eclair_stop_cb(void *data, Evas_Object *edje_object, const char *emission, 
    eclair_stop(data);
 }
 
+//Called when user enables or disables shuffling
+void eclair_shuffle_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair *eclair;
+
+   if (!(eclair = data))
+      return;
+
+   if (strcmp(emission, "eclair_shuffle_enable") == 0)
+      eclair_playlist_set_shuffle(&eclair->playlist, 1);
+   else
+      eclair_playlist_set_shuffle(&eclair->playlist, 0);
+}
+
 //Called when the user clicks of the "load playlist" button  
 void eclair_playlist_load_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {

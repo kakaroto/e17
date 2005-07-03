@@ -189,6 +189,8 @@ void eclair_window_add_default_callbacks(Eclair_Window *window, Eclair *eclair)
    edje_object_signal_callback_add(window->edje_object, "eclair_playlist_scroll_down_stop", "*", eclair_playlist_container_scroll_cb, eclair);
    edje_object_signal_callback_add(window->edje_object, "eclair_playlist_scroll_up_start", "*", eclair_playlist_container_scroll_cb, eclair);
    edje_object_signal_callback_add(window->edje_object, "eclair_playlist_scroll_up_stop", "*", eclair_playlist_container_scroll_cb, eclair);
+   edje_object_signal_callback_add(window->edje_object, "eclair_shuffle_enable", "*", eclair_shuffle_cb, eclair);
+   edje_object_signal_callback_add(window->edje_object, "eclair_shuffle_disable", "*", eclair_shuffle_cb, eclair);
    if (window->window_name)
    {
       signal_name = malloc(strlen("eclair_") + strlen(window->window_name) + strlen("_close") + 1);

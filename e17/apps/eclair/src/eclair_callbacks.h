@@ -25,6 +25,7 @@ void eclair_pause_cb(void *data, Evas_Object *edje_object, const char *emission,
 void eclair_stop_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_prev_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_next_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
+void eclair_shuffle_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_playlist_load_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_playlist_save_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
 void eclair_remove_all_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
