@@ -3,19 +3,19 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 
 INCLUDES             = -I. \
                        -I$(top_srcdir) \
-		       -I$(top_srcdir)/src/modules/loaders \
-		       @my_includes@
+                       -I$(top_srcdir)/src/modules/loaders \
+                       @my_includes@
 
 pkgdir               = $(libdir)/imlib2/loaders
 
 if BUILD_EDB_LOADER
-EDB_L               = db.la
+EDB_L                = db.la
 endif
 if BUILD_EET_LOADER
-EET_L               = eet.la
+EET_L                = eet.la
 endif
 if BUILD_XCF_LOADER
-XCF_L               = xcf.la
+XCF_L                = xcf.la
 endif
 
 pkg_LTLIBRARIES      = \
@@ -25,10 +25,10 @@ $(XCF_L) \
 ico.la \
 ani.la
 
-db_la_SOURCES      = loader_db.c common.h image.h
-db_la_INCLUDES     = @EDB_CFLAGS@
-db_la_LDFLAGS      = -module -avoid-version
-db_la_LIBADD       = @EDB_LIBS@
+db_la_SOURCES       = loader_db.c common.h image.h
+db_la_INCLUDES      = @EDB_CFLAGS@
+db_la_LDFLAGS       = -module -avoid-version
+db_la_LIBADD        = @EDB_LIBS@
 
 eet_la_SOURCES      = loader_eet.c common.h image.h
 eet_la_INCLUDES     = @EET_CFLAGS@
