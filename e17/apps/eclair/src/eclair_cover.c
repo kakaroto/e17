@@ -669,7 +669,7 @@ void eclair_cover_current_set(Eclair_Cover_Manager *cover_manager, const char *u
       || !(current_file = eclair_playlist_current_media_file(&cover_manager->eclair->playlist)))
       return;
 
-   if (strstr(uri, "://"))
+   if (eclair_utils_uri_is_mrl(uri))
    {
       if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
          return;

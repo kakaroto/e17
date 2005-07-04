@@ -1,24 +1,27 @@
 TODO list:
 
-* Find a clean way to destroy cover thread to avoid freeze at exit in case of Internet deconnection
-* Store media files collection into a database (SqlLite3?) to perform fast search
+* Use curl or ecore_download_file to fetch cover
 * improve behavior of fullscreen mode
 * fix some bugs of emotion (wmv segv...)
 * Add a visualisation system (need to modify emotion)
 * Add an audio equalizer system (need to modify emotion)
 * Allow vertical or horizontal progressbar, volumebar, ...
 * Support different encodings for subtitles
-* FIX default theme bug which happens if we open the playlist panel at startup:
+* Allow themes to "swallow" the video object
+* Get rid of taglib
+* Get rid of gtk/glade by Edje-ifing (or Ewl-ifing) the dialogs
+* Add more item in the popup menu
+* Make a dialog to perform searchs in the database
+* Add streaming support [In progress]
+* Add a "Play this file continuosly" option that will keep on playing the same song over and over
+* Add a "repeat mode"
+* Remove automatically unsupported/"removed from the disk" media files from the playlist
+* FIX default theme bug (or edje bug?) which happens sometimes if we open the playlist panel at startup:
    "EDJE ERROR: Circular dependency when calculating part "playlist_background"
             Already calculating XY [03] axes
             Need to calculate XY [03] axes"
-* Allow themes to "swallow" the video object
 
 *DREAMS* Make an ID3 editor
 *DREAMS* Make a converter to convert Winamp3 themes to edj
-*DREAMS* Edje-ify (or Ewl-ify) the dialogs
 
 Wishlist:
-
-* add a "Play this file continuosly" option that will keep on playing the
-  same song over and over

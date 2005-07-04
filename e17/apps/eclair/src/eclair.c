@@ -208,7 +208,7 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
             eclair_all_windows_text_set(eclair, "current_media_name", artist_title_string);
             free(artist_title_string);
          }
-         else if (current_file->path && strstr(current_file->path, "://"))
+         else if (current_file->path && eclair_utils_uri_is_mrl(current_file->path))
             eclair_all_windows_text_set(eclair, "current_media_name", current_file->path);
          else if (current_file->path && (filename = ecore_file_get_file(current_file->path)))
             eclair_all_windows_text_set(eclair, "current_media_name", filename);

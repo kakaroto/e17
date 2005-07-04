@@ -70,7 +70,7 @@ void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 //Set the shuffle mode
 void eclair_playlist_set_shuffle(Eclair_Playlist *playlist, Evas_Bool shuffle)
 {
-   if (!playlist || !playlist->eclair)
+   if (!playlist)
       return;
 
    if (shuffle)
@@ -214,7 +214,7 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
       for (c = strpbrk(line, "\r\n"); c; c = strpbrk(c, "\r\n"))
          *c = 0;
    
-      if (line[0] == '/')
+      if (eclair_utils_uri_is_mrl(line) || line[0] == '/')
          eclair_playlist_add_uri(playlist, line, 0, autoplay);
       else if (m3u_dir)
       {
@@ -244,7 +244,7 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
    if (!playlist || !uri || !(eclair = playlist->eclair))
       return 0;
 
-   if (strstr(uri, "://"))
+   if (eclair_utils_uri_is_mrl(uri))
    {
       if (!(clean_uri = eclair_utils_remove_uri_special_chars(uri)))
          return 0;
@@ -260,13 +260,13 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
    else
       new_path = strdup(uri);
 
-   if (!strstr(new_path, "://") && eclair_playlist_add_dir(playlist, new_path, 0, autoplay))
+   if (!eclair_utils_uri_is_mrl(new_path) && eclair_playlist_add_dir(playlist, new_path, 0, autoplay))
    {
       free(new_path);
       if (update_container)
          eclair_playlist_container_update(eclair->playlist_container);
    }
-   else if (!strstr(new_path, "://") && (ext = eclair_utils_file_get_extension(new_path)) && strcmp(ext, "m3u") == 0)
+   else if (!eclair_utils_uri_is_mrl(new_path) && (ext = eclair_utils_file_get_extension(new_path)) && strcmp(ext, "m3u") == 0)
    {
       eclair_playlist_add_m3u(playlist, new_path, 0, autoplay);
       free(new_path);
@@ -284,7 +284,7 @@ Evas_Bool eclair_playlist_add_uri(Eclair_Playlist *playlist, char *uri, Evas_Boo
          if (autoplay)
             eclair_play_current(eclair);
       }
-      if (!strstr(new_media_file->path, "://"))
+      if (!eclair_utils_uri_is_mrl(new_media_file->path))
          eclair_meta_tag_add_file_to_scan(&eclair->meta_tag_manager, new_media_file);
    }
 

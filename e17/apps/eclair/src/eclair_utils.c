@@ -148,6 +148,21 @@ char *eclair_utils_file_get_filename_without_ext(char *file)
    return file_without_ext;
 }
 
+//TODO: Do we suppport all the mrl possible?
+//Return 1 if the uri is a mrl (e.g. "dvd://", "http://www.domain.com/file.mp3")
+Evas_Bool eclair_utils_uri_is_mrl(char *uri)
+{
+   if (!uri)
+      return 0;
+
+   if (strstr(uri, "://"))
+      return 1;
+   if (strlen(uri) >= 6 && strncmp(uri, "cdda:/", 6) == 0)
+      return 1;
+
+   return 0;
+}
+
 //Search for a file in the dir root_dir with the name filename, regardless to the case
 //Return NULL if no file found, otherwise, the path of the file
 //Returned value has to be freed
