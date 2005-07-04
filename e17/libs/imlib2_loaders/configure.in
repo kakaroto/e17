@@ -86,19 +86,25 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
 
+edb=auto
 AC_ARG_ENABLE(edb,
 [  --disable-edb           disable building the edb loader],
 [
  if test x$enableval = xno; then
-   edb=no;
+   edb=no
+ else
+   edb=yes
  fi
 ])
 
+eet=auto
 AC_ARG_ENABLE(eet,
 [  --disable-eet           disable building the eet loader],
 [
  if test x$enableval = xno; then
-   eet=no;
+   eet=no
+ else
+   eet=yes
  fi
 ])
 
@@ -110,6 +116,7 @@ AC_ARG_ENABLE(xcf,
  fi
 ])
 
+
 AC_ARG_WITH(imlib2-config, [  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-config specified ],
 [ IMLIB2_CONFIG=$withval;
   echo "using "$IMLIB2_CONFIG" for imlib2-config"; ],
@@ -119,34 +126,67 @@ AC_ARG_WITH(imlib2-config, [  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-c
 ])
 my_includes=`$IMLIB2_CONFIG --cflags`
 
-AC_ARG_WITH(edb-config, [  --with-edb-config=EDB_CONFIG    use edb-config specified ],
-[ EDB_CONFIG=$withval;
-  echo "using "$EDB_CONFIG" for edb-config"; ],
-[ if test -z "$EDB_CONFIG"; then
-    AC_PATH_PROG(EDB_CONFIG, "edb-config", "", $PATH)
-  fi
-])
-EDB_CFLAGS=`$EDB_CONFIG --cflags`
-EDB_LIBS=`$EDB_CONFIG --libs`
+
+found_edb=no
+if test "x$edb" != "xno" ; then
+	AC_ARG_WITH(edb-config, [  --with-edb-config=EDB_CONFIG    use edb-config specified ],
+	[ EDB_CONFIG=$withval;
+	  echo "using "$EDB_CONFIG" for edb-config"; ],
+	[ if test -z "$EDB_CONFIG"; then
+	    AC_PATH_PROG(EDB_CONFIG, "edb-config", "", $PATH)
+	  fi
+	])
+	if test "x$EDB_CONFIG" != "x" ; then
+		EDB_CFLAGS=`$EDB_CONFIG --cflags`
+		EDB_LIBS=`$EDB_CONFIG --libs`
+
+		SAVE_CFLAGS=$CFLAGS
+		CFLAGS="$CFLAGS $EDB_CFLAGS"
+		AC_CHECK_HEADER([Edb.h],[found_edb=yes])
+		CFLAGS=$SAVE_CFLAGS
+	fi
+fi
+if test "x$edb$found_edb" = "xyesno" ; then
+	AC_MSG_ERROR(Edb support was requested but not found)
+elif test "x$found_edb" = "xno" ; then
+	edb=no
+	EDB_CFLAGS=""
+	EDB_LIBS=""
+fi
 
 
-AC_ARG_WITH(eet-config, [  --with-eet-config=EET_CONFIG    use eet-config specified ],
-[ EET_CONFIG=$withval;
-  echo "using "$EET_CONFIG" for eet-config"; ],
-[ if test -z "$EET_CONFIG"; then
-    AC_PATH_PROG(EET_CONFIG, "eet-config", "", $PATH)
-  fi
-])
-EET_CFLAGS=`$EET_CONFIG --cflags`
-EET_LIBS=`$EET_CONFIG --libs`
+found_eet=no
+if test "x$eet" != "xno" ; then
+	AC_ARG_WITH(eet-config, [  --with-eet-config=EET_CONFIG    use eet-config specified ],
+	[ EET_CONFIG=$withval;
+	  echo "using "$EET_CONFIG" for eet-config"; ],
+	[ if test -z "$EET_CONFIG"; then
+	    AC_PATH_PROG(EET_CONFIG, "eet-config", "", $PATH)
+	  fi
+	])
+	if test "x$EET_CONFIG" != "x" ; then
+		EET_CFLAGS=`$EET_CONFIG --cflags`
+		EET_LIBS=`$EET_CONFIG --libs`
+
+		SAVE_CFLAGS=$CFLAGS
+		CFLAGS="$CFLAGS $EET_CFLAGS"
+		AC_CHECK_HEADER([Eet.h],[found_eet=yes])
+		CFLAGS=$SAVE_CFLAGS
+	fi
+fi
+if test "x$eet$found_eet" = "xyesno" ; then
+	AC_MSG_ERROR(Eet support was requested but not found)
+elif test "x$found_eet" = "xno" ; then
+	eet=no
+	EET_CFLAGS=""
+	EET_LIBS=""
+fi
 
 AC_SUBST(my_includes)
 AC_SUBST(EDB_CFLAGS)
 AC_SUBST(EDB_LIBS)
 AC_SUBST(EET_CFLAGS)
 AC_SUBST(EET_LIBS)
-
-
 
 AM_CONDITIONAL(BUILD_EDB_LOADER, test x$edb != xno)
 AM_CONDITIONAL(BUILD_EET_LOADER, test x$eet != xno)
@@ -171,22 +211,15 @@ if test x$edb = xno ; then
 else
   echo    "Enabled "
 fi
-
-echo -e "\nBuild summary:"
-echo    "------------------------"
 echo -n " EET: "
 if test x$eet = xno ; then
   echo    "Disabled "
 else
   echo    "Enabled "
 fi
-
-echo -e "\nBuild summary:"
-echo    "------------------------"
 echo -n " XCF: "
 if test x$xcf = xno ; then
   echo    "Disabled "
 else
   echo    "Enabled "
 fi
-      
