@@ -23,7 +23,7 @@ static int eclair_playlist_media_files_destructor(void *data);
 //Initialize the playlist
 void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
 {
-   int shuffle;
+   int shuffle, repeat;
 
    if (!playlist)
       return;
@@ -37,8 +37,13 @@ void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair)
    playlist->eclair = eclair;
    playlist->media_files_destructor_timer = ecore_timer_add(0.05, eclair_playlist_media_files_destructor, playlist);
 
-   if (eclair && eclair_config_get_prop_int(&eclair->config, "suffle", "enabled", &shuffle) && shuffle)
-      eclair_playlist_set_shuffle(playlist, 1);
+   if (eclair)
+   {
+      if (eclair_config_get_prop_int(&eclair->config, "shuffle", "enabled", &shuffle) && shuffle)
+         eclair_playlist_set_shuffle(playlist, 1);
+      if (eclair_config_get_prop_int(&eclair->config, "repeat", "enabled", &repeat) && repeat)
+         eclair_playlist_set_repeat(playlist, 1);
+   }
 }
 
 //Shutdown the playlist
@@ -61,7 +66,8 @@ void eclair_playlist_shutdown(Eclair_Playlist *playlist)
 
    if (playlist->eclair)
    {
-      eclair_config_set_prop_int(&playlist->eclair->config, "suffle", "enabled", playlist->shuffle);
+      eclair_config_set_prop_int(&playlist->eclair->config, "shuffle", "enabled", playlist->shuffle);
+      eclair_config_set_prop_int(&playlist->eclair->config, "repeat", "enabled", playlist->repeat);
       if (playlist->eclair->playlist_container)
          eclair_playlist_container_update(playlist->eclair->playlist_container);
    }
@@ -82,6 +88,20 @@ void eclair_playlist_set_shuffle(Eclair_Playlist *playlist, Evas_Bool shuffle)
       eclair_send_signal_to_all_windows(playlist->eclair, "signal_shuffle_disabled");
 
    playlist->shuffle = shuffle;
+}
+
+//Set the repeat mode
+void eclair_playlist_set_repeat(Eclair_Playlist *playlist, Evas_Bool repeat)
+{
+   if (!playlist)
+      return;
+
+   if (repeat)
+      eclair_send_signal_to_all_windows(playlist->eclair, "signal_repeat_enabled");
+   else
+      eclair_send_signal_to_all_windows(playlist->eclair, "signal_repeat_disabled");
+   
+   playlist->repeat = repeat;
 }
 
 //Reset the shuffle list (should be called each time items are added or removed from the playlist)
@@ -445,7 +465,12 @@ Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
       return NULL;
 
    if (!playlist->shuffle)
-      return playlist->current->next;
+   {
+      if (playlist->repeat && !playlist->current->next)
+         return playlist->playlist;
+      else
+         return playlist->current->next;
+   }
    else if (!(current_file = playlist->current->data))
       return NULL;
    else if (current_file->shuffle_node && current_file->shuffle_node->next)
@@ -467,7 +492,15 @@ Evas_List *eclair_playlist_get_next_list(Eclair_Playlist *playlist)
 
          //No more item to play
          if (l == ramdom_first_list)
-            return NULL;
+         {
+            if (!playlist->repeat)
+               return NULL;
+            else
+            {
+               eclair_playlist_reset_shuffle_list(playlist);
+               return eclair_playlist_get_next_list(playlist);
+            }
+         }
       }
       return NULL;
    }
@@ -483,12 +516,24 @@ Evas_List *eclair_playlist_get_prev_list(Eclair_Playlist *playlist)
       return NULL;
 
    if (!playlist->shuffle)
-      return playlist->current->prev;
-   else if ((current_file = playlist->current->data) && current_file->shuffle_node)
-      return current_file->shuffle_node->prev;
+   {
+      if (playlist->repeat && !playlist->current->prev)
+         return evas_list_last(playlist->playlist);
+      else
+         return playlist->current->prev;
+   }
+   else if ((current_file = playlist->current->data))
+   {
+      if (current_file->shuffle_node && current_file->shuffle_node->prev)
+         return current_file->shuffle_node->prev;
+      else
+         return NULL;
+   }
    else
       return NULL;
 }
+
+int count = 0;
 
 //Set the media file which is just before the active media file as the active media file 
 void eclair_playlist_prev_as_current(Eclair_Playlist *playlist)

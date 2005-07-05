@@ -356,6 +356,20 @@ void eclair_stop_cb(void *data, Evas_Object *edje_object, const char *emission, 
    eclair_stop(data);
 }
 
+//Called when user enables or disables repeating
+void eclair_repeat_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair *eclair;
+
+   if (!(eclair = data))
+      return;
+
+   if (strcmp(emission, "eclair_repeat_enable") == 0)
+      eclair_playlist_set_repeat(&eclair->playlist, 1);
+   else
+      eclair_playlist_set_repeat(&eclair->playlist, 0);
+}
+
 //Called when user enables or disables shuffling
 void eclair_shuffle_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {

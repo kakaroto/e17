@@ -29,6 +29,7 @@ static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer 
 static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data);
+static void _eclair_dialogs_menu_on_repeat_mode(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_search_window(GtkWidget *widget, gpointer data);
 
 //Initialize dialogs manager
@@ -150,8 +151,12 @@ static gint _eclair_dialogs_update(gpointer data)
    }
 
    if (dialogs_manager->eclair)
+   {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(glade_xml_get_widget(dialogs_manager->menu_xml, "shuffle_mode1")),
          dialogs_manager->eclair->playlist.shuffle);
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(glade_xml_get_widget(dialogs_manager->menu_xml, "repeat_mode1")),
+         dialogs_manager->eclair->playlist.repeat);
+   }
 
    return 1;
 }
@@ -180,6 +185,7 @@ static void *_eclair_dialogs_thread(void *param)
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_unselected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_unselected), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_all_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_all), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "shuffle_mode_handler", G_CALLBACK(_eclair_dialogs_menu_on_shuffle_mode), eclair);
+   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "repeat_mode_handler", G_CALLBACK(_eclair_dialogs_menu_on_repeat_mode), eclair);
    glade_xml_signal_connect_data(dialogs_manager->menu_xml, "search_window_handler", G_CALLBACK(_eclair_dialogs_menu_on_search_window), eclair);
 
    g_timeout_add(50, _eclair_dialogs_update, dialogs_manager);
@@ -504,6 +510,14 @@ static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer dat
 
    if ((eclair = data))
       eclair_playlist_set_shuffle(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
+}
+
+static void _eclair_dialogs_menu_on_repeat_mode(GtkWidget *widget, gpointer data)
+{
+   Eclair *eclair;
+
+   if ((eclair = data))
+      eclair_playlist_set_repeat(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
 }
 
 static void _eclair_dialogs_menu_on_search_window(GtkWidget *widget, gpointer data)

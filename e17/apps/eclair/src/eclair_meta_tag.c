@@ -66,36 +66,36 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    if (!eclair || !media_file || !media_file->path)
       return;
 
-   if (eclair_database_search(&eclair->database, media_file, &need_to_update) && !need_to_update)
-      return;
-
-   if (!(tag_file = taglib_file_new(media_file->path)))
-      return;
-
-   if ((tag = taglib_file_tag(tag_file)))
+   if (!eclair_database_search(&eclair->database, media_file, &need_to_update) && !need_to_update)
    {
-      eclair_media_file_set_field_string(&media_file->artist, taglib_tag_artist(tag));
-      eclair_media_file_set_field_string(&media_file->title, taglib_tag_title(tag));
-      eclair_media_file_set_field_string(&media_file->album, taglib_tag_album(tag));
-      eclair_media_file_set_field_string(&media_file->genre, taglib_tag_genre(tag));
-      eclair_media_file_set_field_string(&media_file->comment, taglib_tag_comment(tag));
-      media_file->year = taglib_tag_year(tag);
-      media_file->track = taglib_tag_track(tag);
-   }   
-   if ((tag_audio_props = taglib_file_audioproperties(tag_file)))
-   {
-      media_file->length = taglib_audioproperties_length(tag_audio_props);
-      media_file->bitrate = taglib_audioproperties_bitrate(tag_audio_props);
-      media_file->samplerate = taglib_audioproperties_samplerate(tag_audio_props);
+      if (!(tag_file = taglib_file_new(media_file->path)))
+         return;
+   
+      if ((tag = taglib_file_tag(tag_file)))
+      {
+         eclair_media_file_set_field_string(&media_file->artist, taglib_tag_artist(tag));
+         eclair_media_file_set_field_string(&media_file->title, taglib_tag_title(tag));
+         eclair_media_file_set_field_string(&media_file->album, taglib_tag_album(tag));
+         eclair_media_file_set_field_string(&media_file->genre, taglib_tag_genre(tag));
+         eclair_media_file_set_field_string(&media_file->comment, taglib_tag_comment(tag));
+         media_file->year = taglib_tag_year(tag);
+         media_file->track = taglib_tag_track(tag);
+      }   
+      if ((tag_audio_props = taglib_file_audioproperties(tag_file)))
+      {
+         media_file->length = taglib_audioproperties_length(tag_audio_props);
+         media_file->bitrate = taglib_audioproperties_bitrate(tag_audio_props);
+         media_file->samplerate = taglib_audioproperties_samplerate(tag_audio_props);
+      }
+      taglib_tag_free_strings();
+      taglib_file_free(tag_file);
+   
+      //Insert the new tag infos in the database
+      eclair_database_insert_media_file(&eclair->database, media_file);
    }
-   taglib_tag_free_strings();
-   taglib_file_free(tag_file);
-
-   //Insert the new tag infos in the database
-   eclair_database_insert_media_file(&eclair->database, media_file);
 
    //Try to load the cover
-   if (tag && !media_file->cover_path && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
+   if (!media_file->cover_path && !(media_file->cover_path = eclair_cover_file_get_from_local(&eclair->cover_manager, media_file->artist, media_file->album, media_file->path)))
       eclair_cover_add_file_to_treat(&eclair->cover_manager, media_file);
 }
 

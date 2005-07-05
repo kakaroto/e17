@@ -13,7 +13,7 @@
       <signal name="activate" handler="_eclair_dialogs_menu_on_add_files" last_modification_time="Fri, 20 May 2005 21:00:27 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image104">
+	<widget class="GtkImage" id="image115">
 	  <property name="visible">True</property>
 	  <property name="stock">gtk-open</property>
 	  <property name="icon_size">1</property>
@@ -35,7 +35,7 @@
 	      <signal name="activate" handler="add_files_handler" last_modification_time="Fri, 20 May 2005 21:13:27 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image105">
+		<widget class="GtkImage" id="image116">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-add</property>
 		  <property name="icon_size">1</property>
@@ -60,7 +60,7 @@
       <signal name="activate" handler="on_playlist1_activate" last_modification_time="Fri, 20 May 2005 20:55:47 GMT"/>
 
       <child internal-child="image">
-	<widget class="GtkImage" id="image106">
+	<widget class="GtkImage" id="image117">
 	  <property name="visible">True</property>
 	  <property name="pixbuf">playlist.png</property>
 	  <property name="xalign">0.5</property>
@@ -81,7 +81,7 @@
 	      <signal name="activate" handler="load_playlist_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image107">
+		<widget class="GtkImage" id="image118">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-open</property>
 		  <property name="icon_size">1</property>
@@ -102,7 +102,7 @@
 	      <signal name="activate" handler="save_playlist_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image108">
+		<widget class="GtkImage" id="image119">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-save</property>
 		  <property name="icon_size">1</property>
@@ -129,7 +129,7 @@
 	      <signal name="activate" handler="select_all_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image109">
+		<widget class="GtkImage" id="image120">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">select_all.png</property>
 		  <property name="xalign">0.5</property>
@@ -149,7 +149,7 @@
 	      <signal name="activate" handler="select_none_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image110">
+		<widget class="GtkImage" id="image121">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">select_none.png</property>
 		  <property name="xalign">0.5</property>
@@ -169,7 +169,7 @@
 	      <signal name="activate" handler="invert_selection_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image111">
+		<widget class="GtkImage" id="image122">
 		  <property name="visible">True</property>
 		  <property name="pixbuf">invert_selection.png</property>
 		  <property name="xalign">0.5</property>
@@ -195,7 +195,7 @@
 	      <signal name="activate" handler="remove_selected_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image112">
+		<widget class="GtkImage" id="image123">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-remove</property>
 		  <property name="icon_size">1</property>
@@ -216,7 +216,7 @@
 	      <signal name="activate" handler="remove_unselected_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image113">
+		<widget class="GtkImage" id="image124">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-remove</property>
 		  <property name="icon_size">1</property>
@@ -237,7 +237,7 @@
 	      <signal name="activate" handler="remove_all_handler" last_modification_time="Fri, 20 May 2005 21:51:56 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image114">
+		<widget class="GtkImage" id="image125">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-delete</property>
 		  <property name="icon_size">1</property>
@@ -265,6 +265,16 @@
 	      <signal name="activate" handler="shuffle_mode_handler" last_modification_time="Fri, 10 Jun 2005 20:56:36 GMT"/>
 	    </widget>
 	  </child>
+
+	  <child>
+	    <widget class="GtkCheckMenuItem" id="repeat_mode1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Repeat Mode</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <signal name="activate" handler="repeat_mode_handler" last_modification_time="Tue, 05 Jul 2005 22:02:05 GMT"/>
+	    </widget>
+	  </child>
 	</widget>
       </child>
     </widget>
@@ -288,7 +298,7 @@
 	      <signal name="activate" handler="search_window_handler" last_modification_time="Sat, 18 Jun 2005 16:54:45 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image115">
+		<widget class="GtkImage" id="image126">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-find</property>
 		  <property name="icon_size">1</property>
@@ -319,7 +329,6 @@
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
-  <property name="focus_on_map">True</property>
   <property name="has_separator">False</property>
 
   <child internal-child="vbox">
@@ -389,10 +398,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -463,10 +468,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -538,10 +539,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -613,10 +610,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -689,10 +682,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -765,10 +754,6 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -832,7 +817,6 @@
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
-  <property name="focus_on_map">True</property>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -859,10 +843,6 @@
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">6</property>
@@ -914,9 +894,6 @@
 	      <property name="rules_hint">True</property>
 	      <property name="reorderable">False</property>
 	      <property name="enable_search">True</property>
-	      <property name="fixed_height_mode">False</property>
-	      <property name="hover_selection">False</property>
-	      <property name="hover_expand">False</property>
 	    </widget>
 	  </child>
 	</widget>
