@@ -155,10 +155,10 @@
  *
  * @code
  * 	main_win = ewl_window_new();
- * 	ewl_window_set_title(EWL_WINDOW(main_win), "EWL Simple Image Viewer");
+ * 	ewl_window_title_set(EWL_WINDOW(main_win), "EWL Simple Image Viewer");
  * 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
  *			    __destroy_main_window, NULL);
- * 	ewl_object_set_minimum_size(EWL_OBJECT(main_win), 100, 100);
+ * 	ewl_object_minimum_size_set(EWL_OBJECT(main_win), 100, 100);
  * 	ewl_widget_show(main_win);
  * @endcode
  *
@@ -168,17 +168,18 @@
  *
  * @code
  * 	main_box = ewl_vbox_new();
- * 	ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+ * 	ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
  * 	ewl_widget_show(main_box);
  * @endcode
  *
  * Next, create the image widget, we just attempt to load the image
  * file that was specified on the command line, and add it to the
- * box in the window.
+ * box in the window. The second argument is NULL for normal images, but can
+ * be set to the name of the group to load for an edje.
  *
  * @code
- * 	image = ewl_image_new(argv[1]);
- * 	ewl_container_append_child(EWL_CONTAINER(main_box), image);
+ * 	image = ewl_image_new(argv[1], NULL);
+ * 	ewl_container_child_append(EWL_CONTAINER(main_box), image);
  * 	ewl_widget_show(image);
  * @endcode
  *
