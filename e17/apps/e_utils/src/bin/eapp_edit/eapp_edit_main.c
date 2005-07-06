@@ -153,7 +153,7 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
     ret_char = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(source));
     size_ret = 1;
   } else {
-    ret = ewl_entry_text_get(EWL_ENTRY(source));
+    ret = ewl_text_text_get(EWL_TEXT(source));
     if (ret)
       size_ret = strlen(ret);
     else
@@ -304,7 +304,7 @@ main(int argc, char **argv) {
   wname = _eapp_edit_read(ef, "app/window/name", NULL, "Window name", grid, 7, 0);
   wclass = _eapp_edit_read(ef, "app/window/class", NULL, "Window class", grid, 8, 0);
   if (new_win_class)
-    ewl_entry_text_set(EWL_ENTRY(wclass), new_win_class);
+    ewl_text_text_set(EWL_TEXT(wclass), new_win_class);
   start = _eapp_edit_read(ef, "app/info/startup_notify", NULL, "Startup notify", grid, 9, 1);
   wait = _eapp_edit_read(ef, "app/info/wait_exit", NULL, "Wait exit", grid, 10, 1);
    
