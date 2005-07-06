@@ -131,9 +131,12 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 							int *w, int *h)
 {
 	Evas_Coord tx, ty, tw, th;
+	Evas_Bool ret;
 	char *ptr;
 	unsigned int tb_idx = 0;
-	int i, fiddled = 0;
+	int fiddled = 0;
+	int i = 0;
+
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -159,12 +162,13 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 
 	/* we need to remove the \n \r \t from the index count so that the
 	 * textblock number will be right */
-	ptr = t->text;
-	for (i = 0; i < idx; i++)
+	for (ptr = t->text; *ptr; ptr ++)
 	{
+		if (i == idx) break;
+
 		if ((*ptr != '\n') && (*ptr != '\r') && (*ptr != '\t')) 
 			tb_idx ++;
-		ptr ++;
+		i++;
 	}
 
 	/* length is one after the end of the text, so make sure we take one
@@ -176,8 +180,10 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 		fiddled = 1;
 	}
 
-	evas_object_textblock_char_pos_get(t->textblock, tb_idx, &tx, &ty, 
+	ret = evas_object_textblock_char_pos_get(t->textblock, tb_idx, &tx, &ty, 
 								&tw, &th);
+
+//printf("geometry_map %02d pos: %02d tx: %02d ty: %02d tw: %02d th: %02d\n", (int)ret, tb_idx, (int)tx, (int)ty, (int)tw, (int)th);
 
 	/* we had to add the width of the last char into the x value given
 	 * by tb in order to get stuck at the end of the text */
@@ -201,7 +207,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 unsigned int
 ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 {
-	int tb_idx, i;
+	int tb_idx, i = 0;
 	unsigned int idx = 0;
 	char *ptr;
 
@@ -237,23 +243,17 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			DRETURN_INT(t->length, DLEVEL_STABLE);
 		}
 	}
-
 	idx = tb_idx;
 
 	/* need to add \n \r \t stuff back into the count */
-	ptr = t->text;
-	for (i = 0; i < tb_idx; i++)
+	for (ptr = t->text; *ptr; ptr ++)
 	{
-		if ((ptr) && ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t'))) 
-		{
+		if (i == tb_idx) break;
+
+		if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t')) 
 			idx ++;
-
-			/* drop this down one as we didn't hit a tb recognized value */
-			tb_idx --;
-		}
-		ptr ++;
-
-		if (!ptr) break;
+		else
+			i ++;
 	}
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
@@ -283,6 +283,7 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
+	ewl_text_text_insert(t, NULL, 0);
 	ewl_text_text_insert(t, text, t->cursor_position);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -341,6 +342,8 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 			ewl_text_cursor_position_set(t, 0);
 			ewl_text_text_delete(t, t->length);
 		}
+		t->text = NULL;
+		t->length = 0;
 	}
 	else if (!t->text)
 	{
@@ -362,7 +365,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		if (!t->current_context)
 			t->current_context = ewl_text_context_default_create(t);
 
-		new = malloc(t->length + len + 1);
+		new = malloc(sizeof(char) * (t->length + len + 1));
 		if (idx == 0)
 			sprintf(new, "%s%s", text, t->text);
 		else if (idx == t->length)
@@ -417,14 +420,22 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	if ((t->length - t->cursor_position) < length)
 		length = t->length - t->cursor_position;
 
-	/* remove the text from t->text here, then call */
-	old = t->text;
-	*(old + t->cursor_position) = '\0';
-	ptr = old + t->cursor_position + length;
-
 	t->length -= length;
-	t->text = malloc(sizeof(char) * t->length);
-	snprintf(t->text, t->length, "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
+	if (t->length > 0)
+	{
+		/* remove the text from t->text here, then call */
+		old = t->text;
+		*(old + t->cursor_position) = '\0';
+		ptr = old + t->cursor_position + length;
+
+		t->text = malloc(sizeof(char) * t->length);
+		snprintf(t->text, t->length, "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
+		IF_FREE(old);
+	}
+	else
+	{
+		IF_FREE(t->text);
+	}
 
 	/* cleanup the nodes in the btree */
 	ewl_text_btree_text_delete(t->formatting, t->cursor_position, length);
@@ -435,6 +446,9 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		ewl_text_btree_condense(t->formatting);
 		t->delete_count = 0;
 	}
+
+	if (t->cursor_position > t->length)
+		t->cursor_position = t->length;
 
 	if (REALIZED(t))
 		ewl_text_display(t);
