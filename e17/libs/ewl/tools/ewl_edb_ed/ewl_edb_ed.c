@@ -323,8 +323,8 @@ void type_sel_cb(Ewl_Widget *w, void *event, void *data) {
 }
 
 void add_cb(Ewl_Widget *w, void *event, void *data) {
-	char *key = ewl_entry_text_get(EWL_ENTRY(key_name_box));
-	char *val = ewl_entry_text_get(EWL_ENTRY(val_box));
+	char *key = ewl_text_text_get(EWL_TEXT(key_name_box));
+	char *val = ewl_text_text_get(EWL_TEXT(val_box));
 	Ewl_Widget *widgets[3];
 
 	if ((key == NULL)  || (val == NULL))
