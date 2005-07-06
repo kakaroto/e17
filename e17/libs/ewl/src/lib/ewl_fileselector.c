@@ -251,7 +251,7 @@ char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 	if (ecore_list_is_empty(fs->files)) {
 		char *entry_file;
 
-		entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
+		entry_file = ewl_text_text_get(EWL_TEXT(fs->entry_file));
 		if (entry_file && fs->path) {
 			char *f2;
 
@@ -649,9 +649,9 @@ void ewl_fileselector_select_file_cb(Ewl_Widget *w,
 
 	/* only set the name if there is a single selection */
 	if (ecore_list_nodes(fs->files) == 1)
-		ewl_entry_text_set(EWL_ENTRY(fs->entry_file), name);
+		ewl_text_text_set(EWL_TEXT(fs->entry_file), name);
 	else
-		ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
+		ewl_text_text_set(EWL_TEXT(fs->entry_file), "");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -716,7 +716,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
         ewl_tree_selected_clear(EWL_TREE(fs->list_files));
 	ewl_container_reset(EWL_CONTAINER(fs->list_dirs));
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));
-	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
+	ewl_text_text_set(EWL_TEXT(fs->entry_file), "");
 
 	/* clear the selection list */
 	ecore_list_clear(fs->files);
@@ -724,7 +724,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	/*
 	 * Setup a regex for matching files.
 	 */
-	filter = ewl_entry_text_get(EWL_ENTRY(fs->entry_filter));
+	filter = ewl_text_text_get(EWL_TEXT(fs->entry_filter));
 
 	if (path[strlen(path) - 1] == '/')
 		path2 = strdup(path);
@@ -736,7 +736,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	}
 
 	fs->path = path2;
-	ewl_entry_text_set(EWL_ENTRY(fs->entry_dir), path2);
+	ewl_text_text_set(EWL_TEXT(fs->entry_dir), path2);
 
 	files = ecore_list_new();
 	dirs = ecore_list_new();

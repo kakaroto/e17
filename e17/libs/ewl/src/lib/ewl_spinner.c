@@ -81,13 +81,14 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	s->digits = 2;
 
 	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    ewl_entry_key_down_cb);
+			    ewl_entry_cb_key_down);
 	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
 			    ewl_spinner_deselect_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
 			    ewl_spinner_wheel_cb, NULL);
+
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
@@ -405,24 +406,33 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
 
 	if (!strcmp(ev->keyname, "Up"))
 		ewl_spinner_increase_value_cb(w, NULL, NULL);
+
 	else if (!strcmp(ev->keyname, "Down"))
 		ewl_spinner_decrease_value_cb(w, NULL, NULL);
+
 	else if (!strcmp(ev->keyname, "Left"))
-		ewl_entry_cursor_left_move(e);
+		ewl_entry_cursor_move_left(e);
+
 	else if (!strcmp(ev->keyname, "Right"))
-		ewl_entry_cursor_right_move(e);
+		ewl_entry_cursor_move_right(e);
+/*
 	else if (!strcmp(ev->keyname, "Home"))
 		ewl_entry_cursor_home_move(e);
+
 	else if (!strcmp(ev->keyname, "End"))
 		ewl_entry_cursor_end_move(e);
+*/
 	else if (!strcmp(ev->keyname, "BackSpace"))
-		ewl_entry_left_delete(e);
+		ewl_entry_delete_left(e);
+
 	else if (!strcmp(ev->keyname, "Delete"))
-		ewl_entry_right_delete(e);
+		ewl_entry_delete_right(e);
+
 	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
 				 ev->keyname[0] == '.' ||
 				 ev->keyname[0] == '-'))
-		ewl_entry_text_at_cursor_insert(e, ev->keyname);
+		ewl_text_text_insert(EWL_TEXT(e), ev->keyname, 
+		ewl_text_cursor_position_get(EWL_TEXT(e)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -440,7 +450,7 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	s = EWL_SPINNER(w->parent);
 
-	str = ewl_entry_text_get(EWL_ENTRY(s->entry));
+	str = ewl_text_text_get(EWL_TEXT(s->entry));
 
 	if (str && strlen(str)) {
 		val = atof(str);
@@ -492,7 +502,7 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 	snprintf(format, 64, "%%.%df", s->digits);
 	snprintf(str, 64, format, s->value);
 
-	ewl_entry_text_set(EWL_ENTRY(s->entry), str);
+	ewl_text_text_set(EWL_TEXT(s->entry), str);
 
 	if (oval != s->value) {
 		oval = s->value;

@@ -305,8 +305,8 @@ extern"C" {
 #include <ewl_fileselector.h>
 #include <ewl_filedialog.h>
 
-#include <ewl_entry.h>
 #include <ewl_text.h>
+#include <ewl_entry.h>
 
 #include <ewl_colorpicker.h>
 #include <ewl_colordialog.h>

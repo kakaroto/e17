@@ -399,12 +399,12 @@ ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_d
 	snprintf(saturationtext, 8, "%.2f", s);
 	snprintf(valuetext, 8, "%.2f", v);
 
-	ewl_entry_text_set(EWL_ENTRY(cd->red_entry), redtext);
-	ewl_entry_text_set(EWL_ENTRY(cd->green_entry), greentext);
-	ewl_entry_text_set(EWL_ENTRY(cd->blue_entry), bluetext);
-	ewl_entry_text_set(EWL_ENTRY(cd->hue_entry), huetext);
-	ewl_entry_text_set(EWL_ENTRY(cd->saturation_entry), saturationtext);
-	ewl_entry_text_set(EWL_ENTRY(cd->value_entry), valuetext);
+	ewl_text_text_set(EWL_TEXT(cd->red_entry), redtext);
+	ewl_text_text_set(EWL_TEXT(cd->green_entry), greentext);
+	ewl_text_text_set(EWL_TEXT(cd->blue_entry), bluetext);
+	ewl_text_text_set(EWL_TEXT(cd->hue_entry), huetext);
+	ewl_text_text_set(EWL_TEXT(cd->saturation_entry), saturationtext);
+	ewl_text_text_set(EWL_TEXT(cd->value_entry), valuetext);
 
 	// Update the preview
 	ewl_widget_color_set(cd->preview, col->r, col->g, col->b, 255);

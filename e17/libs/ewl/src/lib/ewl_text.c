@@ -224,6 +224,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			(Evas_Coord)(y - CURRENT_Y(t)), 
 			NULL, NULL, NULL, NULL);
 
+//printf("coord idx %d\n", tb_idx);
 	/* if this is less then 0 then we clicked off of one end of the
 	 * textblock or the other. if the click position is inside the size
 	 * of a char we are at the start, else we are at the end */
@@ -423,13 +424,12 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	t->length -= length;
 	if (t->length > 0)
 	{
-		/* remove the text from t->text here, then call */
 		old = t->text;
 		*(old + t->cursor_position) = '\0';
 		ptr = old + t->cursor_position + length;
 
-		t->text = malloc(sizeof(char) * t->length);
-		snprintf(t->text, t->length, "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
+		t->text = malloc(sizeof(char) * (t->length + 1));
+		snprintf(t->text, (t->length + 1), "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
 		IF_FREE(old);
 	}
 	else
@@ -2967,7 +2967,16 @@ ewl_text_display(Ewl_Text *t)
 
 	evas_object_textblock_native_size_get(t->textblock, &w, &h);
 	w += 2;
-	if (!h) h = 1;
+
+	/* if we don't get a height back try to set the height to the height of
+	* the font, if we don't have a font size, make it 1 */
+	if (!h) 
+	{
+		int size;
+		size = ewl_text_font_size_get(t, 0);
+		h = size;
+		if (!h) h = 1;
+	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
 	ewl_widget_configure(EWL_WIDGET(t));

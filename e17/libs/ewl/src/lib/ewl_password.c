@@ -46,11 +46,9 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	/*
 	 * Attach necessary callback mechanisms 
 	 */
-	ewl_callback_del(w, EWL_CALLBACK_SELECT, ewl_entry_select_cb);
-	ewl_callback_del(w, EWL_CALLBACK_DESELECT, ewl_entry_deselect_cb);
-	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_key_down_cb);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_mouse_down_cb);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_mouse_move_cb);
+	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_cb_mouse_move);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_key_down_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_password_destroy,
@@ -94,7 +92,7 @@ void ewl_password_text_set(Ewl_Password * e, char *t)
 		memset(vis, e->obscure, len);
 	}
 
-	ewl_entry_text_set(EWL_ENTRY(e), vis);
+	ewl_text_text_set(EWL_TEXT(e), vis);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -198,10 +196,10 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data,
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "BackSpace")) {
-		tmp = ewl_entry_text_get(EWL_ENTRY(e));
+		tmp = ewl_text_text_get(EWL_TEXT(e));
 		if (tmp && (len = strlen(tmp))) {
 			tmp[len - 1] = '\0';
-			ewl_entry_text_set(EWL_ENTRY(e), tmp);
+			ewl_text_text_set(EWL_TEXT(e), tmp);
 			e->real_text[len - 1] = '\0';
 			FREE(tmp);
 		}
@@ -209,11 +207,11 @@ void ewl_password_key_down_cb(Ewl_Widget * w, void *ev_data,
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return"))
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_entry_text_get(EWL_ENTRY(w)));
+				ewl_text_text_get(EWL_TEXT(w)));
 	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
 				"KP_Enter"))
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_entry_text_get(EWL_ENTRY(w)));
+				ewl_text_text_get(EWL_TEXT(w)));
 	else if (ev->keyname) {
 		ewl_password_text_insert(e, ev->keyname);
 	}

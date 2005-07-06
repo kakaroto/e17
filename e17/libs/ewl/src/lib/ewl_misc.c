@@ -72,7 +72,7 @@ inline void ewl_print_warning()
 	else {
 		fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
 			" To find where this is occurring set a breakpoint\n"
-			" for the function %s\n.", __FUNCTION__);
+			" for the function %s.\n", __FUNCTION__);
 	}
 }
 

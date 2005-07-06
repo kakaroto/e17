@@ -51,7 +51,7 @@ __image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 	if (!img) img = ecore_dlist_goto_last(images);
 
-	ewl_entry_text_set(EWL_ENTRY(entry_path), img);
+	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 
 	ewl_widget_configure(image_win);
@@ -63,7 +63,7 @@ __image_load_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 {
 	char *img = NULL;
 
-	img = ewl_entry_text_get(EWL_ENTRY(entry_path));
+	img = ewl_text_text_get(EWL_TEXT(entry_path));
 
 	if (img && __image_exists(img)) {
 		ecore_dlist_append(images, img);
@@ -87,7 +87,7 @@ __image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	if (!img)
 		img = ecore_dlist_goto_first(images);
 
-	ewl_entry_text_set(EWL_ENTRY(entry_path), img);
+	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 
 	ewl_widget_configure(image_win);

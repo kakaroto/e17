@@ -20,10 +20,10 @@ print_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	char *txt;
 	
 	entry = user_data;
-	txt = ewl_entry_text_get(EWL_ENTRY(entry));
+	txt = ewl_text_text_get(EWL_TEXT(entry));
 	printf("%s\n", txt);
 
-	ewl_entry_text_set(EWL_ENTRY(entry), "do it");
+	ewl_text_text_set(EWL_TEXT(entry), "do it");
 	ewl_text_text_set(EWL_TEXT(text), txt);
 	free(txt);
 }
