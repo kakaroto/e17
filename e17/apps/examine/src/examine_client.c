@@ -378,7 +378,7 @@ examine_client_revert(examine_prop * target)
   default:                     /* PT_STR, PT_RGB */
     free(target->value.ptr);
     target->value.ptr = strdup(target->oldvalue.ptr);
-    ewl_entry_text_set(EWL_ENTRY(target->w), target->value.ptr);
+    ewl_text_text_set(EWL_TEXT(target->w), target->value.ptr);
   }
 }
 
@@ -520,7 +520,7 @@ examine_client_get_val_cb(void)
   default:                     /* PT_STR, PT_RGB */
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
-    ewl_entry_text_set(EWL_ENTRY(prop->w), ret);
+    ewl_text_text_set(EWL_TEXT(prop->w), ret);
   }
 }
 
