@@ -35,14 +35,15 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    {
       new_window->ecore_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
       new_window->x_window = ecore_evas_software_x11_window_get(new_window->ecore_window);
+      ecore_evas_avoid_damage_set(new_window->ecore_window, 1);
    }
    if (title)
       ecore_evas_title_set(new_window->ecore_window, title);
-   ecore_evas_name_class_set(new_window->ecore_window, "eclair", "eclair");
+   ecore_evas_name_class_set(new_window->ecore_window, "eclair", "Eclair");
    ecore_evas_borderless_set(new_window->ecore_window, 1);
 
-	ecore_x_dnd_aware_set(new_window->x_window, 1);
-	ecore_x_dnd_type_set(new_window->x_window, "*", 1);
+   ecore_x_dnd_aware_set(new_window->x_window, 1);
+   ecore_x_dnd_type_set(new_window->x_window, "*", 1);
 
    new_window->evas = ecore_evas_get(new_window->ecore_window);
    new_window->edje_object = edje_object_add(new_window->evas);
