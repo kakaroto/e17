@@ -424,6 +424,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
          d->client.authfile = strdup(buf);
       }
 
+      seteuid(d->client.uid);
       /* Make sure the file can be written to */
       if((auth_file = fopen(d->client.authfile, "a+")))
          fclose(auth_file);
@@ -432,6 +433,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
          entranced_debug("entranced_auth_user_add: Unable to write auth file %s\n", d->client.authfile);
          free(d->client.authfile);
          d->client.authfile = NULL;
+     seteuid(0);
          return FALSE;
       }
       /* TODO: May need a permissions/paranoia check */
@@ -446,6 +448,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
          free(d->client.authfile);
          d->client.authfile = NULL;
 
+     seteuid(0);
          umask (022);
       }
       else
@@ -453,6 +456,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
    }
 
    /* Open file and write auth entries */
+   seteuid(d->client.uid);
    if(!(auth_file = fopen(d->client.authfile, "r+")))
    {
       syslog(LOG_CRIT, "entranced_auth_user_add: Open auth file %s failed after lock", d->client.authfile);
@@ -460,6 +464,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       free(d->client.authfile);
       d->client.authfile = NULL;
 
+      seteuid(0);
       umask (022);
 
       return FALSE;
@@ -483,10 +488,11 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
    fclose(auth_file);
    XauUnlockAuth(d->client.authfile);
    
-   chown(d->client.authfile, d->client.uid, d->client.gid);
-
+   /*chown(d->client.authfile, d->client.uid, d->client.gid);*/
+   
    entranced_debug("entranced_auth_user_add: Finished writing auth entries to %s\n", d->client.authfile);
-
+   seteuid(0);
+   
    return ret;
       
 }
