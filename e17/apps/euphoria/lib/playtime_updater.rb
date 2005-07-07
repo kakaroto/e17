@@ -29,7 +29,7 @@ class PlaytimeUpdater
 
 	private
 	def on_timer
-		pltime = @xmms.playback_playtime.wait.uint
+		pltime = @xmms.playback_playtime.wait.value
 		cur_pos = pltime / 1000
 
 		if @current_pos != cur_pos

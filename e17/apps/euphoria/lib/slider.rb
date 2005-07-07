@@ -8,7 +8,7 @@ class Slider
 		@config = config
 		@val = nil
 
-		self.value = @xmms.configval_get(config).wait.string
+		self.value = @xmms.configval_get(config).wait.value
 
 		@edje.on_signal("drag", @part) do
 			v = on_drag(@edje.part(@part).get_drag_value)

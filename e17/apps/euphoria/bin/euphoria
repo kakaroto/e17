@@ -74,7 +74,7 @@ class Euphoria
 		end
 
 		# is repeat enabled?
-		s = @xmms.configval_get("playlist.repeat_all").wait.string
+		s = @xmms.configval_get("playlist.repeat_all").wait.value
 		@repeat = (s == "1")
 		@edje.emit_signal("TOGGLE_REPEAT_MODE", "Euphoria") if @repeat
 
@@ -286,7 +286,7 @@ private
 
 	def handle_current_pos(res)
 		begin
-			pos = res.uint
+			pos = res.value
 		rescue XmmsClient::ValueError
 		else
 			ui_fill_track_info(@playlist[pos])
