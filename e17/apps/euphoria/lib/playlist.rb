@@ -32,13 +32,13 @@ class Playlist < Array
 		end
 
 		@xmms.broadcast_playlist_changed.notifier do |res|
-			case res.value[:type].to_i
+			case res.value[:type]
 				when XmmsClient::Result::PLAYLIST_CHANGED_ADD
 					self << res.value[:id]
 				when XmmsClient::Result::PLAYLIST_CHANGED_REMOVE
 					# the daemon sends the position of the song, not the
 					# unique mlib id
-					delete(self[res.value[:position].to_i])
+					delete(self[res.value[:position]])
 				when XmmsClient::Result::PLAYLIST_CHANGED_CLEAR
 					clear
 			end
