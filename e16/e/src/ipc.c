@@ -438,8 +438,9 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_ICONIFY:
-	if (SetEwinBoolean("window iconified", &ewin->iconified, param1, 0))
-	   EwinOpIconify(ewin, !ewin->iconified);
+	if (SetEwinBoolean
+	    ("window iconified", &ewin->state.iconified, param1, 0))
+	   EwinOpIconify(ewin, !ewin->state.iconified);
 	break;
 
      case EWIN_OP_OPACITY:
@@ -462,8 +463,8 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 #endif
 
      case EWIN_OP_SHADE:
-	if (SetEwinBoolean("shaded", &ewin->shaded, param1, 0))
-	   EwinOpShade(ewin, !ewin->shaded);
+	if (SetEwinBoolean("shaded", &ewin->state.shaded, param1, 0))
+	   EwinOpShade(ewin, !ewin->state.shaded);
 	break;
 
      case EWIN_OP_STICK:
@@ -473,26 +474,27 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_FIXED_POS:
-	SetEwinBoolean("fixedpos", &ewin->fixedpos, param1, 1);
+	SetEwinBoolean("fixedpos", &ewin->props.fixedpos, param1, 1);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
-	SetEwinBoolean("never_use_area", &ewin->never_use_area, param1, 1);
+	SetEwinBoolean("never_use_area", &ewin->props.never_use_area, param1,
+		       1);
 	break;
 
      case EWIN_OP_FOCUS_CLICK:
-	SetEwinBoolean("focusclick", &ewin->focusclick, param1, 1);
+	SetEwinBoolean("focusclick", &ewin->props.focusclick, param1, 1);
 	break;
 
      case EWIN_OP_FOCUS_NEVER:
-	SetEwinBoolean("neverfocus", &ewin->neverfocus, param1, 1);
+	SetEwinBoolean("neverfocus", &ewin->props.never_focus, param1, 1);
 	break;
 
      case EWIN_OP_NO_BUTTON_GRABS:
 	if (SetEwinBoolean
-	    ("no_button_grabs", &ewin->no_button_grabs, param1, 1))
+	    ("no_button_grabs", &ewin->props.no_button_grabs, param1, 1))
 	  {
-	     if (ewin->no_button_grabs)
+	     if (ewin->props.no_button_grabs)
 		UnGrabButtonGrabs(ewin);
 	     else
 		GrabButtonGrabs(ewin);
@@ -687,23 +689,23 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     goto done;
 	  }
 	DeskGotoByEwin(ewin);
-	if (ewin->iconified)
+	if (ewin->state.iconified)
 	   EwinOpIconify(ewin, 0);
-	if (ewin->shaded)
+	if (ewin->state.shaded)
 	   EwinOpShade(ewin, 0);
 	EwinOpRaise(ewin);
 	FocusToEWin(ewin, FOCUS_SET);
 	break;
 
      case EWIN_OP_FULLSCREEN:
-	on = ewin->st.fullscreen;
+	on = ewin->state.fullscreen;
 	if (SetEwinBoolean("fullscreen", &on, param1, 0))
 	   EwinSetFullscreen(ewin, !on);
 	break;
 
      case EWIN_OP_SKIP_LISTS:
-	if (SetEwinBoolean("skiplists", &ewin->skiptask, param1, 1))
-	   EwinOpSkipLists(ewin, ewin->skiptask);
+	if (SetEwinBoolean("skiplists", &ewin->props.skip_ext_task, param1, 1))
+	   EwinOpSkipLists(ewin, ewin->props.skip_ext_task);
 	break;
 
      case EWIN_OP_ZOOM:
@@ -1011,9 +1013,9 @@ EwinShowInfo1(const EWin * ewin)
 	     border->border.left, border->border.right,
 	     border->border.top, border->border.bottom,
 	     EoGetDesk(ewin),
-	     ewin->num_groups, ewin->docked, EoIsSticky(ewin),
-	     EoIsShown(ewin), ewin->iconified, ewin->shaded,
-	     ewin->active, EoGetLayer(ewin), ewin->never_use_area,
+	     ewin->num_groups, ewin->state.docked, EoIsSticky(ewin),
+	     EoIsShown(ewin), ewin->state.iconified, ewin->state.shaded,
+	     ewin->state.active, EoGetLayer(ewin), ewin->props.never_use_area,
 	     EoIsFloating(ewin), ewin->client.w, ewin->client.h,
 	     ewin->client.icon_win,
 	     ewin->client.icon_pmap, ewin->client.icon_mask,
@@ -1024,15 +1026,15 @@ EwinShowInfo1(const EWin * ewin)
 	     SS(ewin->icccm.wm_machine), SS(ewin->icccm.wm_icon_name),
 	     ewin->client.is_group_leader,
 	     ewin->client.no_resize_h, ewin->client.no_resize_v,
-	     ewin->client.shaped,
+	     ewin->state.shaped,
 	     ewin->client.width.min, ewin->client.height.min,
 	     ewin->client.width.max, ewin->client.height.max,
 	     ewin->client.base_w, ewin->client.base_h,
 	     ewin->client.w_inc, ewin->client.h_inc,
 	     ewin->client.aspect_min, ewin->client.aspect_max,
-	     ewin->client.mwm_decor_border, ewin->client.mwm_decor_resizeh,
-	     ewin->client.mwm_decor_title, ewin->client.mwm_decor_menu,
-	     ewin->client.mwm_decor_minimize, ewin->client.mwm_decor_maximize);
+	     ewin->mwm.decor_border, ewin->mwm.decor_resizeh,
+	     ewin->mwm.decor_title, ewin->mwm.decor_menu,
+	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize);
 }
 
 static void
@@ -1103,23 +1105,24 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->client.client_leader, ewin->has_transients,
 	     ewin->client.transient, ewin->client.transient_for,
 	     ewin->client.no_resize_h, ewin->client.no_resize_v,
-	     ewin->client.shaped, ewin->client.base_w, ewin->client.base_h,
+	     ewin->state.shaped, ewin->client.base_w, ewin->client.base_h,
 	     ewin->client.width.min, ewin->client.height.min,
 	     ewin->client.width.max, ewin->client.height.max,
 	     ewin->client.w_inc, ewin->client.h_inc,
 	     ewin->client.aspect_min, ewin->client.aspect_max,
 	     ewin->strut.left, ewin->strut.right,
 	     ewin->strut.top, ewin->strut.bottom,
-	     ewin->client.mwm_decor_border, ewin->client.mwm_decor_resizeh,
-	     ewin->client.mwm_decor_title, ewin->client.mwm_decor_menu,
-	     ewin->client.mwm_decor_minimize, ewin->client.mwm_decor_maximize,
+	     ewin->mwm.decor_border, ewin->mwm.decor_resizeh,
+	     ewin->mwm.decor_title, ewin->mwm.decor_menu,
+	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize,
 	     ewin->client.need_input, ewin->client.take_focus,
-	     ewin->neverfocus, ewin->focusclick,
-	     ewin->never_use_area, ewin->fixedpos, EoGetDesk(ewin),
+	     ewin->props.never_focus, ewin->props.focusclick,
+	     ewin->props.never_use_area, ewin->props.fixedpos, EoGetDesk(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
-	     ewin->iconified, EoIsSticky(ewin), ewin->shaded,
-	     ewin->docked, ewin->state, EoIsShown(ewin), ewin->visibility,
-	     ewin->active, ewin->num_groups, ewin->ewmh.opacity
+	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
+	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
+	     ewin->state.visibility, ewin->state.active, ewin->num_groups,
+	     ewin->ewmh.opacity
 #if USE_COMPOSITE
 	     , EoGetOpacity(ewin), EoGetShadow(ewin)
 #endif

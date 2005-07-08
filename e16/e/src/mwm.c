@@ -85,17 +85,18 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    if (atom_change && atom_change != _MOTIF_WM_HINTS)
       return;
 
-   ewin->client.mwm_decor_border = 1;
-   ewin->client.mwm_decor_resizeh = 1;
-   ewin->client.mwm_decor_title = 1;
-   ewin->client.mwm_decor_menu = 1;
-   ewin->client.mwm_decor_minimize = 1;
-   ewin->client.mwm_decor_maximize = 1;
-   ewin->client.mwm_func_resize = 1;
-   ewin->client.mwm_func_move = 1;
-   ewin->client.mwm_func_minimize = 1;
-   ewin->client.mwm_func_maximize = 1;
-   ewin->client.mwm_func_close = 1;
+   ewin->mwm.valid = 1;
+   ewin->mwm.decor_border = 1;
+   ewin->mwm.decor_resizeh = 1;
+   ewin->mwm.decor_title = 1;
+   ewin->mwm.decor_menu = 1;
+   ewin->mwm.decor_minimize = 1;
+   ewin->mwm.decor_maximize = 1;
+   ewin->mwm.func_resize = 1;
+   ewin->mwm.func_move = 1;
+   ewin->mwm.func_minimize = 1;
+   ewin->mwm.func_maximize = 1;
+   ewin->mwm.func_close = 1;
 
    puc = NULL;
    XGetWindowProperty(disp, ewin->client.win, _MOTIF_WM_HINTS, 0, 20,
@@ -109,60 +110,60 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
 
    if (mwmhints->flags & MWM_HINTS_DECORATIONS)
      {
-	ewin->client.mwm_decor_border = 0;
-	ewin->client.mwm_decor_resizeh = 0;
-	ewin->client.mwm_decor_title = 0;
-	ewin->client.mwm_decor_menu = 0;
-	ewin->client.mwm_decor_minimize = 0;
-	ewin->client.mwm_decor_maximize = 0;
+	ewin->mwm.decor_border = 0;
+	ewin->mwm.decor_resizeh = 0;
+	ewin->mwm.decor_title = 0;
+	ewin->mwm.decor_menu = 0;
+	ewin->mwm.decor_minimize = 0;
+	ewin->mwm.decor_maximize = 0;
 	if (mwmhints->decorations & MWM_DECOR_ALL)
 	  {
-	     ewin->client.mwm_decor_border = 1;
-	     ewin->client.mwm_decor_resizeh = 1;
-	     ewin->client.mwm_decor_title = 1;
-	     ewin->client.mwm_decor_menu = 1;
-	     ewin->client.mwm_decor_minimize = 1;
-	     ewin->client.mwm_decor_maximize = 1;
+	     ewin->mwm.decor_border = 1;
+	     ewin->mwm.decor_resizeh = 1;
+	     ewin->mwm.decor_title = 1;
+	     ewin->mwm.decor_menu = 1;
+	     ewin->mwm.decor_minimize = 1;
+	     ewin->mwm.decor_maximize = 1;
 	  }
 	if (mwmhints->decorations & MWM_DECOR_BORDER)
-	   ewin->client.mwm_decor_border = 1;
+	   ewin->mwm.decor_border = 1;
 	if (mwmhints->decorations & MWM_DECOR_RESIZEH)
-	   ewin->client.mwm_decor_resizeh = 1;
+	   ewin->mwm.decor_resizeh = 1;
 	if (mwmhints->decorations & MWM_DECOR_TITLE)
-	   ewin->client.mwm_decor_title = 1;
+	   ewin->mwm.decor_title = 1;
 	if (mwmhints->decorations & MWM_DECOR_MENU)
-	   ewin->client.mwm_decor_menu = 1;
+	   ewin->mwm.decor_menu = 1;
 	if (mwmhints->decorations & MWM_DECOR_MINIMIZE)
-	   ewin->client.mwm_decor_minimize = 1;
+	   ewin->mwm.decor_minimize = 1;
 	if (mwmhints->decorations & MWM_DECOR_MAXIMIZE)
-	   ewin->client.mwm_decor_maximize = 1;
+	   ewin->mwm.decor_maximize = 1;
      }
 
    if (mwmhints->flags & MWM_HINTS_FUNCTIONS)
      {
-	ewin->client.mwm_func_resize = 0;
-	ewin->client.mwm_func_move = 0;
-	ewin->client.mwm_func_minimize = 0;
-	ewin->client.mwm_func_maximize = 0;
-	ewin->client.mwm_func_close = 0;
+	ewin->mwm.func_resize = 0;
+	ewin->mwm.func_move = 0;
+	ewin->mwm.func_minimize = 0;
+	ewin->mwm.func_maximize = 0;
+	ewin->mwm.func_close = 0;
 	if (mwmhints->functions & MWM_FUNC_ALL)
 	  {
-	     ewin->client.mwm_func_resize = 1;
-	     ewin->client.mwm_func_move = 1;
-	     ewin->client.mwm_func_minimize = 1;
-	     ewin->client.mwm_func_maximize = 1;
-	     ewin->client.mwm_func_close = 1;
+	     ewin->mwm.func_resize = 1;
+	     ewin->mwm.func_move = 1;
+	     ewin->mwm.func_minimize = 1;
+	     ewin->mwm.func_maximize = 1;
+	     ewin->mwm.func_close = 1;
 	  }
 	if (mwmhints->functions & MWM_FUNC_RESIZE)
-	   ewin->client.mwm_func_resize = 1;
+	   ewin->mwm.func_resize = 1;
 	if (mwmhints->functions & MWM_FUNC_MOVE)
-	   ewin->client.mwm_func_move = 1;
+	   ewin->mwm.func_move = 1;
 	if (mwmhints->functions & MWM_FUNC_MINIMIZE)
-	   ewin->client.mwm_func_minimize = 1;
+	   ewin->mwm.func_minimize = 1;
 	if (mwmhints->functions & MWM_FUNC_MAXIMIZE)
-	   ewin->client.mwm_func_maximize = 1;
+	   ewin->mwm.func_maximize = 1;
 	if (mwmhints->functions & MWM_FUNC_CLOSE)
-	   ewin->client.mwm_func_close = 1;
+	   ewin->mwm.func_close = 1;
      }
 
  done:

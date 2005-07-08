@@ -44,7 +44,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
 
    /* Quit if in fullscreen window */
    ewin = GetEwinPointerInClient();
-   if (ewin && ewin->st.fullscreen)
+   if (ewin && ewin->state.fullscreen)
       return;
 
    DeskGetCurrentArea(&ax, &ay);

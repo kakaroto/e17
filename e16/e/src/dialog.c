@@ -621,7 +621,7 @@ ShowDialog(Dialog * d)
 
    MoveEwinToDesktop(ewin, EoGetDesk(ewin));
 
-   if (ewin->client.already_placed)
+   if (ewin->state.placed)
      {
 	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }

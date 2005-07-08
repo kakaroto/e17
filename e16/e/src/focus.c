@@ -60,23 +60,20 @@ FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
 
 #if 0
    Eprintf("FocusEwinValid %#lx %s: cl=%d(%d) vis=%d(%d)\n", ewin->client.win,
-	   EwinGetName(ewin), click, ewin->focusclick, want_visible,
-	   ewin->visibility);
+	   EwinGetName(ewin), click, ewin->props.focusclick, want_visible,
+	   ewin->state.visibility);
 #endif
 
-   if (ewin->neverfocus || ewin->iconified)
-      return 0;
-
-   if (!ewin->client.need_input)
+   if (ewin->state.inhibit_focus)
       return 0;
 
    if (!EwinIsMapped(ewin) || !EoIsShown(ewin))
       return 0;
 
-   if (ewin->focusclick && !click)
+   if (ewin->props.focusclick && !click)
       return 0;
 
-   if (want_visible && ewin->visibility == VisibilityFullyObscured)
+   if (want_visible && ewin->state.visibility == VisibilityFullyObscured)
       return 0;
 
    return !want_on_screen || EwinIsOnScreen(ewin);
@@ -112,7 +109,8 @@ FocusEwinSelect(void)
 	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->skipfocus)
+	     if (!FocusEwinValid(lst[i], 1, 0, 0) ||
+		 lst[i]->props.skip_focuslist)
 		continue;
 	     ewin = lst[i];
 	     break;
@@ -160,7 +158,7 @@ FocusGetNextEwin(void)
    ewin = NULL;
    for (i = num - 1; i >= 0; i--)
      {
-	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1, 0, 0))
+	if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->props.skip_focuslist)
 	   continue;
 	ewin = lst[i];
 	break;
@@ -184,7 +182,7 @@ FocusGetPrevEwin(void)
    ewin = NULL;
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipfocus || !FocusEwinValid(lst[i], 1, 0, 0))
+	if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->props.skip_focuslist)
 	   continue;
 	ewin = lst[i];
 	break;
@@ -198,9 +196,9 @@ void
 FocusEwinSetGrabs(EWin * ewin)
 {
    if ((Conf.focus.mode != MODE_FOCUS_CLICK &&
-	ewin->active && Conf.focus.clickraises &&
+	ewin->state.active && Conf.focus.clickraises &&
 	ewin != EwinListStackGetTop()) ||
-       (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
+       (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->state.active))
      {
 	GrabButtonSet(AnyButton, AnyModifier, ewin->win_container,
 		      ButtonPressMask, ECSR_PGRAB, 1);
@@ -222,14 +220,14 @@ FocusEwinSetGrabs(EWin * ewin)
 static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
-   ewin->active = active;
+   ewin->state.active = active;
    EwinBorderUpdateState(ewin);
 
    FocusEwinSetGrabs(ewin);
 
-   if (active && ewin->st.attention)
+   if (active && ewin->state.attention)
      {
-	ewin->st.attention = 0;
+	ewin->state.attention = 0;
 	HintsSetWindowState(ewin);
      }
 }
@@ -351,7 +349,7 @@ doFocusToEwin(EWin * ewin, int why)
 
    /* NB! ewin != NULL */
 
-   if (why != FOCUS_CLICK && ewin->focusclick)
+   if (why != FOCUS_CLICK && ewin->props.focusclick)
       return;
 
    if (Conf.autoraise.enable)
@@ -594,7 +592,7 @@ FocusHandleClick(EWin * ewin, Window win)
 	     ESync();
 	  }
      }
-   else if (ewin->focusclick)
+   else if (ewin->props.focusclick)
      {
 	FocusToEWin(ewin, FOCUS_CLICK);
      }

@@ -562,7 +562,7 @@ WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
 	     break;
 
 	  case MATCH_PROP_SHAPED:
-	     match = ewin->client.shaped;
+	     match = ewin->state.shaped;
 	     break;
 
 	  case MATCH_PROP_FIXEDSIZE:
@@ -670,7 +670,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	break;
 
      case EWIN_OP_SHADE:
-	WINOP_GET_BOOL(ewin->shaded, args);
+	WINOP_GET_BOOL(ewin->state.shaded, args);
 	break;
 
      case EWIN_OP_STICK:
@@ -678,32 +678,33 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	break;
 
      case EWIN_OP_FIXED_POS:
-	WINOP_GET_BOOL(ewin->fixedpos, args);
+	WINOP_GET_BOOL(ewin->props.fixedpos, args);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
-	WINOP_GET_BOOL(ewin->never_use_area, args);
+	WINOP_GET_BOOL(ewin->props.never_use_area, args);
 	break;
 
      case EWIN_OP_FOCUS_CLICK:
-	WINOP_GET_BOOL(ewin->focusclick, args);
+	WINOP_GET_BOOL(ewin->props.focusclick, args);
 	break;
 
      case EWIN_OP_FOCUS_NEVER:
-	WINOP_GET_BOOL(ewin->neverfocus, args);
+	WINOP_GET_BOOL(ewin->props.never_focus, args);
 	break;
 
      case EWIN_OP_NO_BUTTON_GRABS:
-	WINOP_GET_BOOL(ewin->no_button_grabs, args);
+	WINOP_GET_BOOL(ewin->props.no_button_grabs, args);
 	break;
 
      case EWIN_OP_FULLSCREEN:
-	WINOP_GET_BOOL(ewin->st.fullscreen, args);
+	WINOP_GET_BOOL(ewin->state.fullscreen, args);
 	break;
 
      case EWIN_OP_SKIP_LISTS:
-	WINOP_GET_BOOL(ewin->skipwinlist, args);
-	ewin->skipfocus = ewin->skiptask = ewin->skipwinlist;
+	WINOP_GET_BOOL(ewin->props.skip_winlist, args);
+	ewin->props.skip_focuslist = ewin->props.skip_ext_task =
+	   ewin->props.skip_winlist;
 	break;
 
      case EWIN_OP_OPACITY:
@@ -743,7 +744,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	   break;
 	ewin->client.x = a;
 	ewin->client.y = b;
-	ewin->client.already_placed = 1;
+	ewin->state.placed = 1;
 	break;
 
      case EWIN_OP_SIZE:

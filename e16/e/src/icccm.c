@@ -374,7 +374,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 
    if (XGetWMNormalHints(disp, ewin->client.win, &hint, &mask))
      {
-	if (!(ewin->client.already_placed))
+	if (!(ewin->state.placed))
 	  {
 	     if ((hint.flags & USPosition) || ((hint.flags & PPosition)))
 	       {
@@ -414,14 +414,14 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 			    ewin->client.y += DeskGetY(dsk);
 			 }
 		    }
-		  ewin->client.already_placed = 1;
+		  ewin->state.placed = 1;
 	       }
 	  }
 	else
 	  {
 	     ewin->client.x = 0;
 	     ewin->client.y = 0;
-	     ewin->client.already_placed = 0;
+	     ewin->state.placed = 0;
 	  }
 
 	if (hint.flags & PMinSize)
@@ -610,8 +610,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    if (EwinIsInternal(ewin))
       return;
 
-   MWM_GetHints(ewin, atom_change);
-
    hint = NULL;
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_HINTS)
       hint = XGetWMHints(disp, ewin->client.win);
@@ -626,7 +624,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	       {
 		  if ((hint->icon_x == 0) && (hint->icon_y == 0)
 		      && hint->window_group == ewin->client.win)
-		     ewin->docked = 1;
+		     ewin->state.docked = 1;
 	       }
 	  }
 
@@ -666,7 +664,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 		  ewin->client.urgency = 1;
 		  EwinChange(ewin, EWIN_CHANGE_ATTENTION);
 	       }
-	     ewin->st.attention = 1;
+	     ewin->state.attention = 1;
 	  }
 	else
 	  {
@@ -691,11 +689,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	       }
 	     XFree(prop);
 	  }
-     }
-
-   if (!ewin->client.need_input)
-     {
-	ewin->skipfocus = 1;
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_TRANSIENT_FOR)
@@ -738,7 +731,7 @@ void
 ICCCM_GetShapeInfo(EWin * ewin)
 {
    EGrabServer();
-   ewin->client.shaped = EShapeCopy(ewin->win_container, ewin->client.win);
+   ewin->state.shaped = EShapeCopy(ewin->win_container, ewin->client.win);
    EUngrabServer();
 
 #if 0				/* Debug */

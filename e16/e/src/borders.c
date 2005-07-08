@@ -77,7 +77,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 #endif
 
    is = ImageclassGetImageState(ewin->border->part[i].iclass, ewb->state,
-				ewin->active, EoIsSticky(ewin));
+				ewin->state.active, EoIsSticky(ewin));
 
    ts = NULL;
    txt = NULL;
@@ -87,7 +87,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 	txt = EwinGetName(ewin);
 	if (txt && ewin->border->part[i].tclass)
 	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
-				      ewin->active, EoIsSticky(ewin));
+				      ewin->state.active, EoIsSticky(ewin));
 	break;
      case FLAG_MINIICON:
 	break;
@@ -101,8 +101,8 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ewb->ts = ts;
 
    ITApply(ewb->win, ewin->border->part[i].iclass, is, ewb->w, ewb->h,
-	   ewb->state, ewin->active, EoIsSticky(ewin), ewb->expose, ST_BORDER,
-	   ewin->border->part[i].tclass, ts, txt);
+	   ewb->state, ewin->state.active, EoIsSticky(ewin), ewb->expose,
+	   ST_BORDER, ewin->border->part[i].tclass, ts, txt);
 }
 
 static int
@@ -141,7 +141,7 @@ BorderWinpartChange(EWin * ewin, int i, int force)
 {
    BorderWinpartITclassApply(ewin, i, force);
 
-   if (!ewin->shapedone || ewin->border->changes_shape)
+   if (ewin->update.shape || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
 }
 
@@ -162,7 +162,7 @@ EwinBorderDraw(EWin * ewin, int do_shape, int do_paint)
    for (i = 0; i < ewin->border->num_winparts; i++)
       BorderWinpartITclassApply(ewin, i, do_shape || do_paint);
 
-   if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
+   if (do_shape || ewin->update.shape || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
 }
 
@@ -270,8 +270,8 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	  }
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
-	TextSize(tclass, ewin->active, EoIsSticky(ewin), ewin->bits[i].state,
-		 EwinGetName(ewin), &max, &dummywidth,
+	TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
+		 ewin->bits[i].state, EwinGetName(ewin), &max, &dummywidth,
 		 w - (iclass->padding.top + iclass->padding.bottom));
 	max += iclass->padding.left + iclass->padding.right;
 	if (h > max)
@@ -317,7 +317,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 
 	     iclass = ewin->border->part[i].iclass;
 	     tclass = ewin->border->part[i].tclass;
-	     TextSize(tclass, ewin->active, EoIsSticky(ewin),
+	     TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
 		      ewin->bits[i].state, EwinGetName(ewin), &max,
 		      &dummyheight,
 		      h - (iclass->padding.top + iclass->padding.bottom));
@@ -339,7 +339,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	     w = min;
 	  }
      }
-   if ((ewin->shaded) && (!ewin->border->part[i].keep_for_shade))
+   if ((ewin->state.shaded) && (!ewin->border->part[i].keep_for_shade))
      {
 	ewin->bits[i].x = -100;
 	ewin->bits[i].y = -100;
@@ -389,7 +389,7 @@ EwinBorderCalcSizes(EWin * ewin, int propagate)
 #endif
    if (reshape)
      {
-	ewin->shapedone = 0;
+	ewin->update.shape = 1;
 	if (propagate)
 	   EwinPropagateShapes(ewin);
      }
@@ -421,19 +421,21 @@ EwinBorderSelect(EWin * ewin)
 #if 0				/* Handled in iclass.c */
    /* Imlib2 will not render pixmaps with dimensions > 8192 */
    if (ewin->client.w > 8000 || ewin->client.h > 8000)
-      ewin->props.no_border = 1;
+      ewin->state.no_border = 1;
 #endif
 
-   /* Quit if we already have a border that isn't an internal one */
-   b = ewin->border;
-   if (b && strncmp(b->name, "__", 2) && !ewin->props.no_border)
-      goto done;
-
-   if (ewin->props.no_border || ewin->docked ||
-       (!ewin->client.mwm_decor_title && !ewin->client.mwm_decor_border))
-      b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   if (ewin->state.no_border)
+     {
+	b = FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+     }
    else
-      b = WindowMatchEwinBorder(ewin);
+     {
+	/* Quit if we already have a border that isn't an internal one */
+	b = ewin->border;
+	if (b && strncmp(b->name, "__", 2))
+	   goto done;
+	b = WindowMatchEwinBorder(ewin);
+     }
 
    if (!b)
       b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -561,10 +563,10 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
       Efree(wl);
    }
 
-   if (!ewin->shaded)
+   if (!ewin->state.shaded)
       EMoveWindow(ewin->win_container, b->border.left, b->border.top);
 
-   ewin->shapedone = 0;
+   ewin->update.shape = 1;
    EwinBorderCalcSizes(ewin, 0);
 
    SnapshotEwinUpdate(ewin, SNAP_USE_BORDER);
@@ -573,7 +575,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 void
 EwinSetBorder(EWin * ewin, const Border * b, int apply)
 {
-   if (!b || ewin->border == b || ewin->props.no_border)
+   if (!b || ewin->border == b || ewin->state.no_border)
       return;
 
    if (apply)
@@ -591,7 +593,7 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
 	   BorderIncRefcount(b);
      }
 
-   if (!ewin->st.fullscreen)
+   if (!ewin->state.fullscreen)
       ewin->normal_border = b;
 }
 

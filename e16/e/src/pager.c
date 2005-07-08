@@ -178,7 +178,7 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
       return;
    if (p->desktop != DesksGetCurrent())
       return;
-   if (ewin->visibility == VisibilityFullyObscured)
+   if (ewin->state.visibility == VisibilityFullyObscured)
       return;
 
    if (Conf.pagers.scanspeed > 0)
@@ -573,11 +573,11 @@ PagerEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = PagerEwinMoveResize;
    ewin->Close = PagerEwinClose;
 
-   ewin->skiptask = 1;
-   ewin->skip_ext_pager = 1;
-   ewin->skipfocus = 1;
-   ewin->skipwinlist = 1;
-   ewin->neverfocus = 1;
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   ewin->props.never_focus = 1;
    ewin->props.autosave = 1;
 
    EoSetSticky(ewin, 1);
@@ -619,7 +619,7 @@ PagerShow(Pager * p)
    h = ewin->client.h;
 
    MoveEwinToDesktop(ewin, EoGetDesk(ewin));
-   if (ewin->client.already_placed)
+   if (ewin->state.placed)
      {
 	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
@@ -781,7 +781,7 @@ PagersUpdateEwin(EWin * ewin, int gone)
    if (!Conf.pagers.enable)
       return;
 
-   if (!gone && (!EoIsShown(ewin) || ewin->st.animated))
+   if (!gone && (!EoIsShown(ewin) || ewin->state.animated))
       return;
 
    desk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
@@ -1506,7 +1506,7 @@ EwinGroupMove(EWin * ewin, int desk, int x, int y)
       ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->type == EWIN_TYPE_PAGER || gwins[i]->fixedpos)
+	if (gwins[i]->type == EWIN_TYPE_PAGER)
 	   continue;
 
 	if (newdesk)
@@ -1564,7 +1564,7 @@ PagerEventMotion(Pager * p, XEvent * ev)
      case MODE_PAGER_DRAG:
 	Mode.mode = MODE_PAGER_DRAG;
 	ewin = PagerHiwinEwin(1);
-	if (!ewin || (ewin->type == EWIN_TYPE_PAGER) || (ewin->fixedpos))
+	if (!ewin || ewin->type == EWIN_TYPE_PAGER)
 	  {
 	     Mode.mode = MODE_NONE;
 	     break;
@@ -1664,10 +1664,6 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 	     else if ((ewin2) && (ewin2->type == EWIN_TYPE_ICONBOX))
 	       {
 		  /* Pointer is in iconbox */
-
-		  /* Don't iconify an iconbox by dragging */
-		  if (ewin->props.inhibit_iconify)
-		     break;
 
 		  /* Iconify after moving back to pre-drag position */
 		  gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,

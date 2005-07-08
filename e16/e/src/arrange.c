@@ -630,7 +630,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
 		       EoIsSticky(lst[i])) && !(EoIsFloating(lst[i])) &&
-		      !(lst[i]->iconified) && !(lst[i]->ignorearrange))
+		      !lst[i]->state.iconified && !lst[i]->props.ignorearrange)
 		    {
 		       if (IN_BELOW
 			   (ewin->shape_x + dx,
@@ -669,7 +669,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
 		       EoIsSticky(lst[i])) && !(EoIsFloating(lst[i])) &&
-		      !(lst[i]->iconified) && !(lst[i]->ignorearrange))
+		      !lst[i]->state.iconified && !lst[i]->props.ignorearrange)
 		    {
 		       if (IN_ABOVE
 			   (ewin->shape_x + EoGetW(ewin) + dx - 1,
@@ -706,7 +706,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
 		       EoIsSticky(lst[i])) && !(EoIsFloating(lst[i])) &&
-		      !(lst[i]->iconified) && !(lst[i]->ignorearrange))
+		      !lst[i]->state.iconified && !lst[i]->props.ignorearrange)
 		    {
 		       if (IN_BELOW
 			   (ewin->shape_y + dy,
@@ -746,7 +746,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
 		       EoIsSticky(lst[i])) && !(EoIsFloating(lst[i])) &&
-		      !(lst[i]->iconified) && !(lst[i]->ignorearrange))
+		      !lst[i]->state.iconified && !lst[i]->props.ignorearrange)
 		    {
 		       if (IN_ABOVE
 			   (ewin->shape_y + EoGetH(ewin) + dy - 1,
@@ -791,7 +791,6 @@ ArrangeEwin(EWin * ewin)
 {
    int                 x, y;
 
-   ewin->client.already_placed = 1;
    ArrangeEwinXY(ewin, &x, &y);
    MoveEwin(ewin, x, y);
 }
@@ -801,7 +800,6 @@ ArrangeEwinCentered(EWin * ewin, int focus)
 {
    int                 x, y;
 
-   ewin->client.already_placed = 1;
    ArrangeEwinCenteredXY(ewin, &x, &y);
    MoveEwin(ewin, x, y);
    if (focus)
@@ -844,8 +842,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	     EWin               *e = lst[i];
 
 	     if (e == ewin ||
-		 e->iconified || e->ignorearrange || EoGetLayer(e) == 0 ||
-		 !EWinIsOnViewport(e, EoGetDesk(ewin)))
+		 e->state.iconified || e->props.ignorearrange ||
+		 EoGetLayer(e) == 0 || !EWinIsOnViewport(e, EoGetDesk(ewin)))
 		continue;
 
 	     fixed[j].data = e;
@@ -870,7 +868,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	     if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
 		continue;
 
-	     if (e->never_use_area)
+	     if (e->props.never_use_area)
 		fixed[j].p = 50;
 	     else
 		fixed[j].p = EoGetLayer(e);
@@ -994,9 +992,10 @@ ArrangeEwins(const char *params)
 	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
 
 	if ((EoGetDesk(ewin) == DesksGetCurrent()) &&
-	    (!EoIsSticky(ewin)) && (!EoIsFloating(ewin)) && (!ewin->iconified)
-	    && (!ewin->ignorearrange) && (ewin->type != EWIN_TYPE_MENU)
-	    && (ewin->area_x == ax) && (ewin->area_y == ay))
+	    (!EoIsSticky(ewin)) && (!EoIsFloating(ewin)) &&
+	    (!ewin->state.iconified) && (!ewin->props.ignorearrange) &&
+	    (ewin->type != EWIN_TYPE_MENU) &&
+	    (ewin->area_x == ax) && (ewin->area_y == ay))
 	  {
 	     floating[j].data = lst[i];
 	     floating[j].x = EoGetX(ewin);
@@ -1031,7 +1030,7 @@ ArrangeEwins(const char *params)
 		fixed[k].h = VRoot.h - fixed[k].y;
 	     if ((fixed[k].w > 0) && (fixed[k].h > 0))
 	       {
-		  if (!ewin->never_use_area)
+		  if (!ewin->props.never_use_area)
 		     fixed[k].p = EoGetLayer(ewin);
 		  else
 		     fixed[k].p = 99;

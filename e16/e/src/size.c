@@ -48,8 +48,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	ewin->ly = EoGetY(ewin);
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
-	ewin->st.maximized_horz = 0;
-	ewin->st.maximized_vert = 0;
+	ewin->state.maximized_horz = 0;
+	ewin->state.maximized_vert = 0;
 	ewin->toggle = 0;
 	goto done;
      }
@@ -113,10 +113,11 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	       {
 		  pe = lst[i];
 		  if (pe == ewin ||
-		      pe->iconified || EoIsFloating(pe) || pe->ignorearrange ||
+		      pe->state.iconified || EoIsFloating(pe) ||
+		      pe->props.ignorearrange ||
 		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
+		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
 		      !SPANS_COMMON(x, w, EoGetX(pe), EoGetW(pe)))
 		     continue;
 
@@ -130,7 +131,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     h = y2 - y1 - (ewin->border->border.top +
 			    ewin->border->border.bottom);
 
-	     ewin->st.maximized_vert = 1;
+	     ewin->state.maximized_vert = 1;
 	  }
 
 	if (direction & MAX_HOR)
@@ -139,10 +140,11 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	       {
 		  pe = lst[i];
 		  if (pe == ewin ||
-		      pe->iconified || EoIsFloating(pe) || pe->ignorearrange ||
+		      pe->state.iconified || EoIsFloating(pe) ||
+		      pe->props.ignorearrange ||
 		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
+		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
 		      !SPANS_COMMON(y, h, EoGetY(pe), EoGetH(pe)))
 		     continue;
 
@@ -156,7 +158,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     w = x2 - x1 - (ewin->border->border.left +
 			    ewin->border->border.right);
 
-	     ewin->st.maximized_horz = 1;
+	     ewin->state.maximized_horz = 1;
 	  }
 
 	break;

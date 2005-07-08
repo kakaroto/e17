@@ -190,12 +190,12 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = MenuEwinMoveResize;
    ewin->Close = MenuEwinClose;
 
-   ewin->skiptask = 1;
-   ewin->skip_ext_pager = 1;
-   ewin->no_actions = 1;
-   ewin->skipfocus = 1;
-   ewin->skipwinlist = 1;
-   ewin->neverfocus = 1;
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.no_actions = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   ewin->props.never_focus = 1;
    ewin->client.grav = StaticGravity;
 
    ewin->client.width.min = ewin->client.width.max = ewin->client.w = m->w;

@@ -187,6 +187,7 @@ HintsSetWindowState(const EWin * ewin)
 #endif
 #if ENABLE_EWMH
    EWMH_SetWindowState(ewin);
+   EWMH_SetWindowActions(ewin);
 #endif
 }
 
@@ -203,14 +204,6 @@ HintsSetWindowBorder(const EWin * ewin)
 {
 #if ENABLE_EWMH
    EWMH_SetWindowBorder(ewin);
-#endif
-}
-
-void
-HintsSetWindowMiscHints(const EWin * ewin)
-{
-#if ENABLE_EWMH
-   EWMH_SetWindowMiscHints(ewin);
 #endif
 }
 
@@ -331,11 +324,11 @@ EHintsSetInfo(const EWin * ewin)
    c[1] = EoIsSticky(ewin);
    c[2] = EoGetX(ewin);
    c[3] = EoGetY(ewin);
-   c[4] = ewin->iconified;
-   c[5] = ewin->shaded;
+   c[4] = ewin->state.iconified;
+   c[5] = ewin->state.shaded;
    c[6] = ewin->client.w;
    c[7] = ewin->client.h;
-   c[8] = ewin->docked;
+   c[8] = ewin->state.docked;
 
    ecore_x_window_prop_card32_set(ewin->client.win, a, (unsigned int *)c, 9);
 
@@ -373,20 +366,20 @@ EHintsGetInfo(EWin * ewin)
    EoSetSticky(ewin, c[1]);
    ewin->client.x = c[2];
    ewin->client.y = c[3];
-   ewin->iconified = c[4];
-   ewin->shaded = c[5];
+   ewin->state.iconified = c[4];
+   ewin->state.shaded = c[5];
    ewin->client.w = c[6];
    ewin->client.h = c[7];
    if (num >= 9)		/* Compatibility */
-      ewin->docked = c[8];
+      ewin->state.docked = c[8];
 
    ewin->client.grav = NorthWestGravity;
-   if (ewin->iconified)
+   if (ewin->state.iconified)
      {
 	ewin->client.start_iconified = 1;
-	ewin->iconified = 0;
+	ewin->state.iconified = 0;
      }
-   ewin->client.already_placed = 1;
+   ewin->state.placed = 1;
 
    str = ecore_x_window_prop_string_get(ewin->client.win, aa);
    if (str)

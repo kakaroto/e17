@@ -34,7 +34,7 @@ DockappFindEmptySpotFor(EWin * eapp)
    y = EoGetY(eapp);
    w = eapp->client.w;
    h = eapp->client.h;
-   if (!eapp->client.already_placed)
+   if (!eapp->state.placed)
      {
 	x = Conf.dock.startx;
 	if (x < 0)
@@ -59,7 +59,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 	   ewin = lst[i];
 
 	   /* Skip self and non-dockapps */
-	   if (ewin == eapp || !ewin->docked)
+	   if (ewin == eapp || !ewin->state.docked)
 	      continue;
 
 	   if ((x + w) <= EoGetX(ewin) || x >= (EoGetX(ewin) + EoGetW(ewin)))
@@ -131,8 +131,11 @@ DockIt(EWin * ewin)
    if (Conf.dock.sticky)
       EoSetSticky(ewin, 1);
 
+   ewin->props.donthide = 1;
+   ewin->props.focusclick = 1;
+
    DockappFindEmptySpotFor(ewin);
-   ewin->client.already_placed = 1;
+   ewin->state.placed = 1;
 
    if (ewin->client.icon_win)
      {

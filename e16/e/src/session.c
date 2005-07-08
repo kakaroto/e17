@@ -104,8 +104,8 @@ SaveWindowStates(void)
 	       }
 	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
 		     EoGetX(ewin) + x, EoGetY(ewin) + y, ewin->client.w,
-		     ewin->client.h, EoGetDesk(ewin), ewin->iconified,
-		     ewin->shaded, EoIsSticky(ewin), EoGetLayer(ewin));
+		     ewin->client.h, EoGetDesk(ewin), ewin->state.iconified,
+		     ewin->state.shaded, EoIsSticky(ewin), EoGetLayer(ewin));
 	     if (ewin->session_id)
 		fprintf(f, "  [SESSION_ID] %s\n", ewin->session_id);
 	     if (ewin->icccm.wm_res_name)
@@ -265,15 +265,15 @@ MatchEwinToSM(EWin * ewin)
 	       }
 
 	     matches[i].used = 1;
-	     ewin->client.already_placed = 1;
+	     ewin->state.placed = 1;
 	     ewin->client.start_iconified = matches[i].iconified;
 	     EoSetSticky(ewin, matches[i].sticky);
-	     ewin->shaded = matches[i].shaded;
+	     ewin->state.shaded = matches[i].shaded;
 	     EoSetLayer(ewin, matches[i].layer);
 	     if (!EoIsSticky(ewin))
 		EoSetDesk(ewin, matches[i].desktop);
 	     /* if it's NOT (X11R6 and already placed by the client) */
-	     if (!((ewin->client.already_placed) && (ewin->session_id)))
+	     if (!((ewin->state.placed) && (ewin->session_id)))
 	       {
 		  DeskGetArea(EoGetDesk(ewin), &ax, &ay);
 		  ewin->client.x = matches[i].x - (ax * VRoot.w);

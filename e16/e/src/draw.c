@@ -688,7 +688,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	  {
-	     if (!ewin->shaded)
+	     if (!ewin->state.shaded)
 		ICCCM_SizeMatch(ewin, w, h, &ewin->shape_w, &ewin->shape_h);
 	  }
 
@@ -1030,7 +1030,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if (!EoIsFloating(ewin) || !ewin->groups
 		 || (ewin->groups && !check_move))
 	       {
-		  if (ewin->shaded)
+		  if (ewin->state.shaded)
 		     MoveEwin(ewin, ewin->shape_x, ewin->shape_y);
 		  else
 		     MoveResizeEwin(ewin, ewin->shape_x, ewin->shape_y,

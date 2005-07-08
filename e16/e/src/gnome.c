@@ -357,13 +357,13 @@ GNOME_GetHintState(EWin * ewin, Atom atom_change)
       return;
 
    if (flags & WIN_STATE_SHADED)
-      ewin->shaded = 1;
+      ewin->state.shaded = 1;
    if (flags & WIN_STATE_STICKY)
       EoSetSticky(ewin, 1);
    if (flags & WIN_STATE_FIXED_POSITION)
-      ewin->fixedpos = 1;
+      ewin->props.fixedpos = 1;
    if (flags & WIN_STATE_ARRANGE_IGNORE)
-      ewin->ignorearrange = 1;
+      ewin->props.ignorearrange = 1;
 }
 
 #if 0				/* Does nothing */
@@ -433,15 +433,15 @@ GNOME_GetHint(EWin * ewin, Atom atom_change)
       return;
 
    if (flags & WIN_HINTS_SKIP_TASKBAR)
-      ewin->skiptask = 1;
+      ewin->props.skip_ext_task = 1;
    if (flags & WIN_HINTS_SKIP_FOCUS)
-      ewin->skipfocus = 1;
+      ewin->props.skip_focuslist = 1;
    if (flags & WIN_HINTS_SKIP_WINLIST)
-      ewin->skipwinlist = 1;
+      ewin->props.skip_winlist = 1;
    if (flags & WIN_HINTS_FOCUS_ON_CLICK)
-      ewin->focusclick = 1;
+      ewin->props.focusclick = 1;
    if (flags & WIN_HINTS_DO_NOT_COVER)
-      ewin->never_use_area = 1;
+      ewin->props.never_use_area = 1;
 }
 
 void
@@ -457,9 +457,9 @@ GNOME_SetHint(const EWin * ewin)
    val = 0;
    if (EoIsSticky(ewin))
       val |= WIN_STATE_STICKY;
-   if (ewin->shaded)
+   if (ewin->state.shaded)
       val |= WIN_STATE_SHADED;
-   if (ewin->fixedpos)
+   if (ewin->props.fixedpos)
       val |= WIN_STATE_FIXED_POSITION;
    ecore_x_window_prop_card32_set(ewin->client.win, atom_set, &val, 1);
 }
@@ -657,9 +657,7 @@ GNOME_SetClientList(void)
 	wl = Emalloc(num * sizeof(unsigned int));
 	for (i = 0; i < num; i++)
 	  {
-	     if ((lst[i]->type != EWIN_TYPE_MENU) &&
-		 (lst[i]->type != EWIN_TYPE_PAGER) && (!lst[i]->skiptask)
-		 && lst[i]->iconified != 4)
+	     if (!lst[i]->props.skip_ext_task && lst[i]->state.iconified != 4)
 		wl[j++] = lst[i]->client.win;
 	  }
      }
@@ -786,18 +784,19 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	if (event->data.l[0] & WIN_STATE_FIXED_POSITION)
 	  {
 	     if (event->data.l[1] & WIN_STATE_FIXED_POSITION)
-		ewin->fixedpos = 1;
+		ewin->props.fixedpos = 1;
 	     else
-		ewin->fixedpos = 0;
+		ewin->props.fixedpos = 0;
 	  }
 	if (event->data.l[0] & WIN_STATE_ARRANGE_IGNORE)
 	  {
 	     if (event->data.l[1] & WIN_STATE_ARRANGE_IGNORE)
-		ewin->ignorearrange = 1;
+		ewin->props.ignorearrange = 1;
 	     else
-		ewin->ignorearrange = 0;
+		ewin->props.ignorearrange = 0;
 	  }
-	if ((event->data.l[0] & WIN_STATE_STICKY) && (!ewin->ignorearrange))
+	if ((event->data.l[0] & WIN_STATE_STICKY)
+	    && (!ewin->props.ignorearrange))
 	  {
 	     if (event->data.l[1] & WIN_STATE_STICKY)
 	       {

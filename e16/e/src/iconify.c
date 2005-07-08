@@ -530,12 +530,12 @@ IconboxEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = IconboxEwinMoveResize;
    ewin->Close = IconboxEwinClose;
 
-   ewin->skiptask = 1;
-   ewin->skip_ext_pager = 1;
-   ewin->skipfocus = 1;
-   ewin->skipwinlist = 1;
-   ewin->neverfocus = 1;
-   ewin->props.inhibit_iconify = 1;
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   ewin->props.never_focus = 1;
+   ewin->props.never_iconify = 1;
    ewin->props.autosave = 1;
 
    EoSetSticky(ewin, 1);
@@ -566,7 +566,7 @@ IconboxShow(Iconbox * ib)
 
    IconboxReconfigure(ib);
 
-   if (ewin->client.already_placed)
+   if (ewin->state.placed)
      {
 	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
 	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
@@ -686,7 +686,7 @@ IconboxesEwinIconify(EWin * ewin)
 
    IconboxObjEwinAdd(ib, ewin);
 
-   if (ib->animate && !ewin->st.showingdesk)
+   if (ib->animate && !ewin->state.showingdesk)
       IB_Animate(1, ewin, ib->ewin);
 }
 
@@ -701,7 +701,7 @@ IconboxesEwinDeIconify(EWin * ewin)
    if (!ib)
       return;
 
-   if (ib->animate && !ewin->st.showingdesk)
+   if (ib->animate && !ewin->state.showingdesk)
      {
 	EobjsRepaint();
 	IB_Animate(0, ewin, ib->ewin);
@@ -746,7 +746,7 @@ SelectIconboxForEwin(EWin * ewin)
    if (!lst)
       return NULL;
 
-   if (ewin->iconified)
+   if (ewin->state.iconified)
      {
 	/* find the iconbox this window got iconifed into */
 	for (i = 0; i < num; i++)
@@ -1724,7 +1724,7 @@ IconboxDraw(Iconbox * ib)
      }
    EShapePropagate(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
-   ib->ewin->shapedone = 0;
+   ib->ewin->update.shape = 1;
    EwinPropagateShapes(ib->ewin);
 }
 
@@ -2660,12 +2660,12 @@ IconboxesSighan(int sig, void *prm)
 	break;
      case ESIGNAL_EWIN_DESTROY:
 	ewin = (EWin *) prm;
-	if (ewin->iconified > 0)
+	if (ewin->state.iconified > 0)
 	   RemoveMiniIcon(ewin);
 	break;
      case ESIGNAL_EWIN_CHANGE_ICON:
 	ewin = (EWin *) prm;
-	if (ewin->iconified)
+	if (ewin->state.iconified)
 	   IconboxesUpdateEwinIcon(ewin, 1);
 	break;
      }

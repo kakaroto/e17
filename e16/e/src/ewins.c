@@ -83,7 +83,9 @@ EwinCreate(Window win, int type)
    ewin = Ecalloc(1, sizeof(EWin));
 
    ewin->type = type;
-   ewin->state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
+   ewin->state.state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
+   ewin->update.shape = 1;
+   ewin->update.border = 1;
    ewin->lx = -1;
    ewin->ly = -1;
    ewin->lw = -1;
@@ -99,17 +101,6 @@ EwinCreate(Window win, int type)
    ewin->client.h_inc = 1;
    ewin->client.width.max = 65535;
    ewin->client.height.max = 65535;
-   ewin->client.mwm_decor_border = 1;
-   ewin->client.mwm_decor_resizeh = 1;
-   ewin->client.mwm_decor_title = 1;
-   ewin->client.mwm_decor_menu = 1;
-   ewin->client.mwm_decor_minimize = 1;
-   ewin->client.mwm_decor_maximize = 1;
-   ewin->client.mwm_func_resize = 1;
-   ewin->client.mwm_func_move = 1;
-   ewin->client.mwm_func_minimize = 1;
-   ewin->client.mwm_func_maximize = 1;
-   ewin->client.mwm_func_close = 1;
 #if 0				/* ENABLE_GNOME - Not actually used */
    ewin->expanded_width = -1;
    ewin->expanded_height = -1;
@@ -154,7 +145,7 @@ EwinCreate(Window win, int type)
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinCreate %#lx frame=%#lx cont=%#lx st=%d\n", ewin->client.win,
-	      EoGetWin(ewin), ewin->win_container, ewin->state);
+	      EoGetWin(ewin), ewin->win_container, ewin->state.state);
 
    EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackRegister(ewin->win_container, 0, EwinHandleEventsContainer,
@@ -194,8 +185,8 @@ EwinDestroy(EWin * ewin)
       return;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinDestroy %#lx st=%d: %s\n", ewin->client.win, ewin->state,
-	      EwinGetName(ewin));
+      Eprintf("EwinDestroy %#lx st=%d: %s\n", ewin->client.win,
+	      ewin->state.state, EwinGetName(ewin));
 
    RemoveItemByPtr(ewin, LIST_TYPE_EWIN);
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
@@ -494,19 +485,46 @@ EwinPropagateShapes(EWin * ewin)
    if (!EoIsShown(ewin))
       return;
 
-   if (ewin->docked)
+   if (ewin->state.docked)
       return;
 
 #if 0
    Eprintf("EwinPropagateShapes %#lx %#lx %s\n", EoGetWin(ewin),
 	   ewin->client.win, EoGetName(ewin));
 #endif
-   if (!ewin->shapedone)
+   if (ewin->update.shape)
      {
 	EShapePropagate(EoGetWin(ewin));
 	EoChangeShape(ewin);
-	ewin->shapedone = 1;
+	ewin->update.shape = 0;
      }
+}
+
+void
+EwinStateUpdate(EWin * ewin)
+{
+   ewin->state.inhibit_actions = ewin->props.no_actions;
+   ewin->state.inhibit_focus = !ewin->client.need_input ||
+      ewin->props.never_focus || ewin->state.iconified;
+
+   ewin->state.no_border = ewin->props.no_border || ewin->state.docked ||
+      (ewin->mwm.valid && !ewin->mwm.decor_title && !ewin->mwm.decor_border);
+
+   ewin->state.inhibit_move = ewin->props.fixedpos || ewin->state.fullscreen;
+   ewin->state.inhibit_resize =
+      ewin->state.shaded || ewin->state.fullscreen ||
+      (ewin->client.no_resize_h && ewin->client.no_resize_v);
+   ewin->state.inhibit_iconify = ewin->props.never_iconify;
+   ewin->state.inhibit_shade = ewin->state.no_border || ewin->state.fullscreen;
+   ewin->state.inhibit_stick = 0;
+   ewin->state.inhibit_max_hor =
+      ewin->client.no_resize_h || ewin->state.fullscreen;
+   ewin->state.inhibit_max_ver =
+      ewin->client.no_resize_v || ewin->state.fullscreen;
+   ewin->state.inhibit_fullscreeen =
+      ewin->state.inhibit_move || ewin->state.inhibit_resize;
+   ewin->state.inhibit_change_desk = 0;
+   ewin->state.inhibit_close = 0;
 }
 
 static void
@@ -520,6 +538,7 @@ Adopt(EWin * ewin)
    if (!EwinIsInternal(ewin))
      {
 	ICCCM_GetHints(ewin, 0);
+	MWM_GetHints(ewin, 0);
 	ICCCM_GetColormap(ewin);
 	HintsGetWindowHints(ewin);
 	SessionGetInfo(ewin, 0);
@@ -540,7 +559,9 @@ Adopt(EWin * ewin)
       ewin->ewmh.opacity = 0xffffffff;
    EoChangeOpacity(ewin, ewin->ewmh.opacity);
 
-   if (!ewin->no_button_grabs)
+   EwinStateUpdate(ewin);
+
+   if (!ewin->props.no_button_grabs)
       GrabButtonGrabs(ewin);
 
    /* We must reparent after getting original window position */
@@ -553,17 +574,16 @@ Adopt(EWin * ewin)
 
    EwinEventsConfigure(ewin, 1);
 
-   if (ewin->shaded)
+   if (ewin->state.shaded)
       EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
-   HintsSetWindowMiscHints(ewin);
    HintsSetWindowOpacity(ewin);
 
    HintsSetClientList();
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("Adopt %#lx st=%d: %s\n", ewin->client.win, ewin->state,
+      Eprintf("Adopt %#lx st=%d: %s\n", ewin->client.win, ewin->state.state,
 	      EwinGetName(ewin));
 }
 
@@ -594,12 +614,8 @@ AddToFamily(EWin * ewin, Window win)
    desk = EoGetDesk(ewin);
 
    /* if is an afterstep/windowmaker dock app - dock it */
-   if (Conf.dock.enable && ewin->docked)
-     {
-	DockIt(ewin);
-	ewin->props.donthide = 1;
-	ewin->focusclick = 1;
-     }
+   if (Conf.dock.enable && ewin->state.docked)
+      DockIt(ewin);
 
    ewin2 = NULL;
    if (ewin->client.transient)
@@ -663,7 +679,7 @@ AddToFamily(EWin * ewin, Window win)
 	     lst2 = EwinListGetAll(&num);
 	     for (i = 0; i < num; i++)
 	       {
-		  if ((lst2[i]->iconified) ||
+		  if ((lst2[i]->state.iconified) ||
 		      (ewin->client.group != lst2[i]->client.group))
 		     continue;
 
@@ -676,15 +692,15 @@ AddToFamily(EWin * ewin, Window win)
 	  {
 	     desk = EoGetDesk(ewin2);
 	     if (!Mode.wm.startup && Conf.focus.switchfortransientmap &&
-		 !ewin->iconified)
+		 !ewin->state.iconified)
 		DeskGotoByEwin(ewin2);
 	  }
      }
 
-   if (ewin->st.fullscreen)
+   if (ewin->state.fullscreen)
      {
 	EwinSetFullscreen(ewin, 2);
-	ewin->client.already_placed = 1;
+	ewin->state.placed = 1;
 	MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);
 	goto done;
@@ -697,11 +713,11 @@ AddToFamily(EWin * ewin, Window win)
      {
 	/* if set for borderless then dont slide it in */
 	if (Conf.place.slidein && !Mode.place.doing_slide &&
-	    (ewin->client.mwm_decor_title || ewin->client.mwm_decor_border))
+	    !ewin->state.no_border)
 	   doslide = 1;
 
 	if (Conf.place.manual && !Mode.place.doing_manual &&
-	    !ewin->client.already_placed && !ewin->client.transient)
+	    !ewin->state.placed && !ewin->client.transient)
 	  {
 	     if (GrabPointerSet(VRoot.win, ECSR_GRAB, 0) == GrabSuccess)
 		manplace = 1;
@@ -709,7 +725,7 @@ AddToFamily(EWin * ewin, Window win)
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
-   if ((!ewin->client.already_placed) && (!manplace))
+   if ((!ewin->state.placed) && (!manplace))
      {
 	/* Place the window below the mouse pointer */
 	if (Conf.place.manual_mouse_pointer)
@@ -728,7 +744,7 @@ AddToFamily(EWin * ewin, Window win)
 			   &wy, &mask);
 	     Mode.x = rx;
 	     Mode.y = ry;
-	     ewin->client.already_placed = 1;
+	     ewin->state.placed = 1;
 
 	     /* try to center the window on the mouse pointer */
 	     newWinX = rx;
@@ -750,7 +766,7 @@ AddToFamily(EWin * ewin, Window win)
 	  }
 	else
 	  {
-	     ewin->client.already_placed = 1;
+	     ewin->state.placed = 1;
 	     ArrangeEwinXY(ewin, &x, &y);
 	  }
      }
@@ -759,14 +775,14 @@ AddToFamily(EWin * ewin, Window win)
    if (ewin->client.start_iconified)
      {
 	MoveEwinToDesktopAt(ewin, desk, x, y);
-	ewin->state = EWIN_STATE_MAPPED;
+	ewin->state.state = EWIN_STATE_MAPPED;
 	EwinIconify(ewin);
-	ewin->state = EWIN_STATE_ICONIC;
+	ewin->state.state = EWIN_STATE_ICONIC;
 	goto done;
      }
 
    /* if we should slide it in and are not currently in the middle of a slide */
-   if ((manplace) && (!ewin->client.already_placed))
+   if ((manplace) && (!ewin->state.placed))
      {
 	int                 rx, ry, wx, wy;
 	unsigned int        mask;
@@ -781,7 +797,7 @@ AddToFamily(EWin * ewin, Window win)
 		      &mask);
 	Mode.x = rx;
 	Mode.y = ry;
-	ewin->client.already_placed = 1;
+	ewin->state.placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
 	MoveEwinToDesktopAt(ewin, desk, x, y);
@@ -818,7 +834,7 @@ AddToFamily(EWin * ewin, Window win)
 	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
 	  }
 	Mode.place.doing_slide = 1;
-	ewin->st.animated = 1;
+	ewin->state.animated = 1;
 	FocusEnable(0);
 
 	MoveEwinToDesktopAt(ewin, desk, fx, fy);
@@ -916,8 +932,8 @@ EwinWithdraw(EWin * ewin)
    /* Only external clients should go here */
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinWithdraw %#lx st=%d: %s\n", ewin->client.win, ewin->state,
-	      EwinGetName(ewin));
+      Eprintf("EwinWithdraw %#lx st=%d: %s\n", ewin->client.win,
+	      ewin->state.state, EwinGetName(ewin));
 
    EGrabServer();
 
@@ -940,9 +956,9 @@ EwinEventMapRequest(EWin * ewin, Window win)
 {
    if (ewin)
      {
-	if (ewin->state == EWIN_STATE_ICONIC)
+	if (ewin->state.state == EWIN_STATE_ICONIC)
 	   EwinDeIconify(ewin);
-	if (ewin->state == EWIN_STATE_WITHDRAWN)
+	if (ewin->state.state == EWIN_STATE_WITHDRAWN)
 	   AddToFamily(ewin, win);
 	else
 	  {
@@ -974,7 +990,7 @@ EwinEventDestroy(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventDestroy %#lx st=%d: %s\n", ewin->client.win,
-	      ewin->state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetName(ewin));
 
    EwinDestroy(ewin);
 }
@@ -990,7 +1006,7 @@ EwinEventReparent(EWin * ewin)
    parent = EWindowGetParent(ewin->client.win);
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
-	      ewin->client.win, ewin->state, parent, EwinGetName(ewin));
+	      ewin->client.win, ewin->state.state, parent, EwinGetName(ewin));
    if (parent != ewin->win_container)
       EwinDestroy(ewin);
 
@@ -1000,13 +1016,13 @@ EwinEventReparent(EWin * ewin)
 static void
 EwinEventMap(EWin * ewin)
 {
-   int                 old_state = ewin->state;
+   int                 old_state = ewin->state.state;
 
-   ewin->state = EWIN_STATE_MAPPED;
+   ewin->state.state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventMap %#lx st=%d: %s\n", ewin->client.win, ewin->state,
-	      EwinGetName(ewin));
+      Eprintf("EwinEventMap %#lx st=%d: %s\n", ewin->client.win,
+	      ewin->state.state, EwinGetName(ewin));
 
    /* If first time we may want to focus it (unless during startup) */
    if (old_state == EWIN_STATE_NEW)
@@ -1021,23 +1037,23 @@ static void
 EwinEventUnmap(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventUnmap %#lx st=%d: %s\n", ewin->client.win, ewin->state,
-	      EwinGetName(ewin));
+      Eprintf("EwinEventUnmap %#lx st=%d: %s\n", ewin->client.win,
+	      ewin->state.state, EwinGetName(ewin));
 
-   if (ewin->state == EWIN_STATE_WITHDRAWN)
+   if (ewin->state.state == EWIN_STATE_WITHDRAWN)
       return;
 
-   if (ewin->state == EWIN_STATE_ICONIC || !ewin->iconified)
-      ewin->state = EWIN_STATE_WITHDRAWN;
+   if (ewin->state.state == EWIN_STATE_ICONIC || !ewin->state.iconified)
+      ewin->state.state = EWIN_STATE_WITHDRAWN;
    else
-      ewin->state = EWIN_STATE_ICONIC;
+      ewin->state.state = EWIN_STATE_ICONIC;
 
    EwinUnmap1(ewin);
    EWindowSetMapped(ewin->client.win, 0);
    EoUnmap(ewin);
    EwinUnmap2(ewin);
 
-   if (ewin->state == EWIN_STATE_ICONIC)
+   if (ewin->state.state == EWIN_STATE_ICONIC)
       return;
 
    if (EwinIsInternal(ewin))
@@ -1223,6 +1239,7 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 
    HintsProcessPropertyChange(ewin, ev->xproperty.atom);
    SessionGetInfo(ewin, ev->xproperty.atom);
+   EwinStateUpdate(ewin);
 
    EwinChangesProcess(ewin);
    EUngrabServer();
@@ -1232,14 +1249,14 @@ static void
 EwinEventShapeChange(EWin * ewin)
 {
    ICCCM_GetShapeInfo(ewin);
-   ewin->shapedone = 0;
+   ewin->update.shape = 1;
    EwinPropagateShapes(ewin);
 }
 
 static void
 EwinEventVisibility(EWin * ewin, int state)
 {
-   ewin->visibility = state;
+   ewin->state.visibility = state;
 }
 
 void
@@ -1382,13 +1399,13 @@ ShowEwin(EWin * ewin)
    if (ewin->client.win)
      {
 #if 0				/* FIXME - Why? */
-	if (ewin->shaded)
+	if (ewin->state.shaded)
 	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
 #endif
 	EMapWindow(ewin->client.win);
      }
 
-   if (!ewin->shapedone)
+   if (ewin->update.shape)
      {
 	ewin->o.shown = 1;
 	EwinPropagateShapes(ewin);
@@ -1396,6 +1413,8 @@ ShowEwin(EWin * ewin)
      }
 
    EoMap(ewin, 0);
+
+   EwinStateUpdate(ewin);
 }
 
 void
@@ -1411,7 +1430,9 @@ HideEwin(EWin * ewin)
 
    EwinUnmap2(ewin);
 
-   if (!EwinIsInternal(ewin) || ewin->iconified)
+   EwinStateUpdate(ewin);
+
+   if (!EwinIsInternal(ewin) || ewin->state.iconified)
       return;
 
    if (ewin->Close)
@@ -1661,7 +1682,7 @@ EwinsSetFree(void)
 	if (EwinIsInternal(ewin))
 	   continue;
 
-	if (ewin->iconified)
+	if (ewin->state.iconified)
 	   ICCCM_DeIconify(ewin);
 
 	/* This makes E determine the client window stacking at exit */
@@ -1758,7 +1779,7 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 	break;
      case UnmapNotify:
 #if 0
-	if (ewin->state == EWIN_STATE_NEW)
+	if (ewin->state.state == EWIN_STATE_NEW)
 	  {
 	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
 		     ewin->client.win);

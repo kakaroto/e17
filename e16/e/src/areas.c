@@ -216,7 +216,7 @@ SetCurrentArea(int ax, int ay)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
-	     if (EoIsSticky(ewin) || ewin->iconified)
+	     if (EoIsSticky(ewin) || ewin->state.iconified)
 		continue;
 	     if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 		continue;
@@ -250,7 +250,7 @@ SetCurrentArea(int ax, int ay)
 
 	if (EoIsSticky(ewin) ||
 	    (EoIsFloating(ewin) && Conf.movres.mode_move == 0) ||
-	    (!ewin->iconified && Conf.desks.slidein))
+	    (!ewin->state.iconified && Conf.desks.slidein))
 	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
 	else
 	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);

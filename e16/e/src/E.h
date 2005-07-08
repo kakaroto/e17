@@ -659,24 +659,11 @@ typedef struct _winclient
    char                is_group_leader;
    char                no_resize_h;
    char                no_resize_v;
-   char                shaped;
    Constraints         width, height;
    int                 base_w, base_h;
    int                 w_inc, h_inc;
    int                 grav;
    double              aspect_min, aspect_max;
-   char                already_placed;
-   char                mwm_decor_border;
-   char                mwm_decor_resizeh;
-   char                mwm_decor_title;
-   char                mwm_decor_menu;
-   char                mwm_decor_minimize;
-   char                mwm_decor_maximize;
-   char                mwm_func_resize;
-   char                mwm_func_move;
-   char                mwm_func_minimize;
-   char                mwm_func_maximize;
-   char                mwm_func_close;
    long                event_mask;
 }
 WinClient;
@@ -693,14 +680,13 @@ WinClient;
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
 
-#define EwinIsMapped(ewin) (ewin->state >= EWIN_STATE_MAPPED)
+#define EwinIsMapped(ewin) (ewin->state.state >= EWIN_STATE_MAPPED)
 #define EwinIsInternal(ewin) (ewin->type != EWIN_TYPE_NORMAL)
 
 struct _ewin
 {
    EObj                o;
    char                type;
-   char                state;
    int                 vx, vy;	/* Position in virtual root */
    int                 lx, ly;	/* Last pos */
    int                 lw, lh;	/* Last size */
@@ -712,55 +698,60 @@ struct _ewin
    const Border       *normal_border;
    const Border       *previous_border;
    EWinBit            *bits;
-   int                 num_groups;
-   Group             **groups;
-   char                visibility;
-   char                docked;
-   char                iconified;
-   char                shaded;
-   char                active;
-   char                never_use_area;
-   char                shapedone;
-   char                fixedpos;
-   char                ignorearrange;
-   char                skiptask;
-   char                skip_ext_pager;
-   char                skipfocus;
-   char                skipwinlist;
-   char                focusclick;
-   char                neverfocus;
-   char                no_button_grabs;
-   char                no_actions;
-   void               *data;	/* Data hook for internal windows */
-   int                 area_x;
-   int                 area_y;
-   char               *session_id;
-   int                 has_transients;
-   PmapMask            mini_pmm;
-   int                 mini_w, mini_h;
-   Snapshot           *snap;
-   int                 head;
    struct
    {
-      int                 left, right, top, bottom;
-   } strut;
-   struct
-   {
-      unsigned            donthide:1;	/* Don't hide on show desktop */
-      unsigned            vroot:1;	/* Virtual root window */
-      unsigned            inhibit_iconify:1;
-      unsigned            autosave:1;
-      unsigned            no_border:1;	/* Never apply border */
-   } props;
-   struct
-   {
+      char                state;
+      char                shaped;
+      char                docked;
+      char                visibility;
+      char                iconified;
+      char                shaded;
+      char                active;
+
+      unsigned            placed:1;
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
       unsigned            showingdesk:1;	/* Iconified by show desktop */
       unsigned            attention:1;
       unsigned            animated:1;
-   } st;
+
+      /* Derived state flags. Change only in EwinStateUpdate() */
+      unsigned            no_border:1;
+
+      unsigned            inhibit_move:1;
+      unsigned            inhibit_resize:1;
+      unsigned            inhibit_iconify:1;
+      unsigned            inhibit_shade:1;
+      unsigned            inhibit_stick:1;
+      unsigned            inhibit_max_hor:1;
+      unsigned            inhibit_max_ver:1;
+      unsigned            inhibit_fullscreeen:1;
+      unsigned            inhibit_change_desk:1;
+      unsigned            inhibit_close:1;
+
+      unsigned            inhibit_actions:1;
+      unsigned            inhibit_focus:1;
+   } state;
+   struct
+   {
+      char                fixedpos;
+      char                never_use_area;
+      char                ignorearrange;
+      char                skip_ext_task;
+      char                skip_ext_pager;
+      char                skip_focuslist;
+      char                skip_winlist;
+      char                focusclick;	/* Click to focus */
+      char                never_focus;	/* Never focus */
+      char                no_button_grabs;
+      char                no_actions;
+      unsigned            donthide:1;	/* Don't hide on show desktop */
+      unsigned            vroot:1;	/* Virtual root window */
+      unsigned            autosave:1;
+      unsigned            no_border:1;	/* Never apply border */
+      unsigned            never_iconify:1;	/* Never iconify */
+   } props;
    struct
    {
       char               *wm_name;
@@ -773,13 +764,51 @@ struct _ewin
    } icccm;
    struct
    {
+      unsigned            valid:1;
+      unsigned            decor_border:1;
+      unsigned            decor_resizeh:1;
+      unsigned            decor_title:1;
+      unsigned            decor_menu:1;
+      unsigned            decor_minimize:1;
+      unsigned            decor_maximize:1;
+      unsigned            func_resize:1;
+      unsigned            func_move:1;
+      unsigned            func_minimize:1;
+      unsigned            func_maximize:1;
+      unsigned            func_close:1;
+   } mwm;
+   struct
+   {
       char               *wm_name;
       char               *wm_icon_name;
       unsigned int       *wm_icon, wm_icon_len;
       unsigned int        opacity;
    } ewmh;
+   struct
+   {
+      int                 left, right, top, bottom;
+   } strut;
+   struct
+   {
+      char                shape;
+      char                border;
+   } update;
+
+   int                 num_groups;
+   Group             **groups;
+   int                 area_x, area_y;
+   char               *session_id;
+   int                 has_transients;
+   PmapMask            mini_pmm;
+   int                 mini_w, mini_h;
+
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
+
+   Snapshot           *snap;
+   int                 head;	/* Unused? */
+
+   void               *data;	/* Data hook for internal windows */
    void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
 				  int *ph);
    void                (*MoveResize) (EWin * ewin, int resize);
@@ -1588,6 +1617,7 @@ EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
+void                EwinStateUpdate(EWin * ewin);
 void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
@@ -1667,7 +1697,7 @@ void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
 void                EWMH_SetWindowBorder(const EWin * ewin);
 void                EWMH_SetWindowOpacity(const EWin * ewin);
-void                EWMH_SetWindowMiscHints(const EWin * ewin);
+void                EWMH_SetWindowActions(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
@@ -1829,7 +1859,6 @@ void                HintsSetWindowDesktop(const EWin * ewin);
 void                HintsSetWindowArea(const EWin * ewin);
 void                HintsSetWindowState(const EWin * ewin);
 void                HintsSetWindowOpacity(const EWin * ewin);
-void                HintsSetWindowMiscHints(const EWin * ewin);
 void                HintsSetWindowBorder(const EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(const EWin * ewin);

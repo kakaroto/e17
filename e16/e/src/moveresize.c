@@ -33,7 +33,7 @@ EwinShapeSet(EWin * ewin)
 {
    ewin->shape_x = EoGetX(ewin);
    ewin->shape_y = EoGetY(ewin);
-   if (ewin->shaded)
+   if (ewin->state.shaded)
      {
 	ewin->shape_w = EoGetW(ewin) -
 	   (ewin->border->border.left + ewin->border->border.right);
@@ -53,7 +53,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    EWin              **gwins;
    int                 i, num, dx, dy;
 
-   if (!ewin || ewin->fixedpos)
+   if (!ewin || ewin->state.inhibit_move)
       return 0;
 
    mode_moveresize_ewin = ewin;
@@ -259,7 +259,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 {
    int                 x, y, w, h, ww, hh;
 
-   if (!ewin || ewin->shaded)
+   if (!ewin || ewin->state.inhibit_resize)
       return 0;
 
    mode_moveresize_ewin = ewin;

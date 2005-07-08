@@ -256,21 +256,21 @@ SnapEwinSticky(Snapshot * sn, EWin * ewin)
 static void
 SnapEwinShade(Snapshot * sn, EWin * ewin)
 {
-   sn->shaded = ewin->shaded;
+   sn->shaded = ewin->state.shaded;
 }
 
 static void
 SnapEwinSkipLists(Snapshot * sn, EWin * ewin)
 {
-   sn->skiptask = ewin->skiptask;
-   sn->skipwinlist = ewin->skipwinlist;
-   sn->skipfocus = ewin->skipfocus;
+   sn->skiptask = ewin->props.skip_ext_task;
+   sn->skipwinlist = ewin->props.skip_winlist;
+   sn->skipfocus = ewin->props.skip_focuslist;
 }
 
 static void
 SnapEwinNeverFocus(Snapshot * sn, EWin * ewin)
 {
-   sn->neverfocus = ewin->neverfocus;
+   sn->neverfocus = ewin->props.never_focus;
 }
 
 static void
@@ -1401,7 +1401,7 @@ SnapshotEwinMatch(EWin * ewin)
 
    if (sn->use_flags & SNAP_USE_POS)
      {
-	ewin->client.already_placed = 1;
+	ewin->state.placed = 1;
 	ewin->client.x = sn->x;
 	ewin->client.y = sn->y;
 	ewin->client.grav = NorthWestGravity;
@@ -1424,16 +1424,16 @@ SnapshotEwinMatch(EWin * ewin)
 
    if (sn->use_flags & SNAP_USE_SKIP_LISTS)
      {
-	ewin->skipfocus = sn->skipfocus;
-	ewin->skiptask = sn->skiptask;
-	ewin->skipwinlist = sn->skipwinlist;
+	ewin->props.skip_focuslist = sn->skipfocus;
+	ewin->props.skip_ext_task = sn->skiptask;
+	ewin->props.skip_winlist = sn->skipwinlist;
      }
 
    if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
-      ewin->neverfocus = sn->neverfocus;
+      ewin->props.never_focus = sn->neverfocus;
 
    if (sn->use_flags & SNAP_USE_SHADED)
-      ewin->shaded = sn->shaded;
+      ewin->state.shaded = sn->shaded;
 
    if (sn->use_flags & SNAP_USE_BORDER)
       EwinSetBorderByName(ewin, sn->border_name);

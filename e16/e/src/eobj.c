@@ -143,7 +143,7 @@ EobjIsShaped(const EObj * eo)
      default:
 	return 0;		/* FIXME */
      case EOBJ_TYPE_EWIN:
-	return ((EWin *) eo)->client.shaped;
+	return ((EWin *) eo)->state.shaped;
      }
 }
 

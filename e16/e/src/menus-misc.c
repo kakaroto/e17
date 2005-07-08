@@ -598,7 +598,7 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipwinlist || !EwinGetName(lst[i]))
+	if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]))
 	   continue;
 
 	Esnprintf(s, sizeof(s), "wop %#lx focus", lst[i]->client.win);
@@ -625,7 +625,7 @@ MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->skipwinlist || !EwinGetName(lst[i]) ||
+	if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]) ||
 	    EoGetDesk(lst[i]) != j)
 	   continue;
 
@@ -659,7 +659,7 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	MenuAddItem(mm, mi);
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->skipwinlist || !EwinGetName(lst[i]) ||
+	     if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]) ||
 		 EoGetDesk(lst[i]) != j)
 		continue;
 

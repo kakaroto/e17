@@ -103,9 +103,9 @@ WarpFocusShow(EWin * ewin)
 	     wl = warplist + i;
 	     wl->win = ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
 	     EMapWindow(wl->win);
-	     if (wl->ewin->iconified)
+	     if (wl->ewin->state.iconified)
 		fmt = "[%s]";
-	     else if (wl->ewin->shaded)
+	     else if (wl->ewin->state.shaded)
 		fmt = "=%s=";
 	     else
 		fmt = "%s";
@@ -245,15 +245,16 @@ WarpFocus(int delta)
 	  {
 	     ewin = lst[i];
 	     if (		/* Either visible or iconified */
-		   ((EwinIsOnScreen(ewin)) || (ewin->iconified)) &&
+		   ((EwinIsOnScreen(ewin)) || (ewin->state.iconified)) &&
 		   /* Exclude windows that explicitely say so */
-		   (!ewin->skipfocus) &&
+		   (!ewin->props.skip_focuslist) &&
+		   (!ewin->state.inhibit_focus) &&
 		   /* Keep shaded windows if conf say so */
-		   ((!ewin->shaded) || (Conf.warplist.showshaded)) &&
+		   ((!ewin->state.shaded) || (Conf.warplist.showshaded)) &&
 		   /* Keep sticky windows if conf say so */
 		   ((!EoIsSticky(ewin)) || (Conf.warplist.showsticky)) &&
 		   /* Keep iconified windows if conf say so */
-		   ((!ewin->iconified) || (Conf.warplist.showiconified)))
+		   ((!ewin->state.iconified) || (Conf.warplist.showiconified)))
 	       {
 		  warplist_num++;
 		  warplist = Erealloc(warplist,
@@ -286,7 +287,7 @@ WarpFocus(int delta)
    if (Conf.focus.raise_on_next)
       RaiseEwin(ewin);
    if (Conf.focus.warp_on_next)
-      if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
+      if (ewin != Mode.mouse_over_ewin && !ewin->state.iconified)
 	 XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
 		      EoGetW(ewin) / 2, EoGetH(ewin) / 2);
    if (Conf.warplist.warpfocused)
@@ -307,7 +308,7 @@ WarpFocusClick(int ix)
       return;
 
    RaiseEwin(ewin);
-   if (ewin->iconified)
+   if (ewin->state.iconified)
       EwinDeIconify(ewin);
    FocusToEWin(ewin, FOCUS_SET);
 }
@@ -324,9 +325,9 @@ WarpFocusFinish(void)
    if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
       return;
 
-   if (ewin->iconified)
+   if (ewin->state.iconified)
       EwinDeIconify(ewin);
-   if (ewin->shaded)
+   if (ewin->state.shaded)
       EwinUnShade(ewin);
    if (Conf.warplist.raise_on_select)
       RaiseEwin(ewin);

@@ -840,7 +840,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
    Action             *aa;
 
-   if (Mode.action_inhibit || (ewin && ewin->no_actions))
+   if (Mode.action_inhibit || (ewin && ewin->state.inhibit_actions))
       return 0;
 
    key = type = button = modifiers = mouse = 0;

@@ -374,28 +374,30 @@ EWMH_SetWindowState(const EWin * ewin)
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_STICKY,
 		 EoIsSticky(ewin));
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_SHADED,
-		 ewin->shaded);
+		 ewin->state.shaded);
    atom_list_set(atom_list, len, &atom_count,
-		 ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR, ewin->skiptask);
+		 ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR,
+		 ewin->props.skip_ext_task);
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_HIDDEN,
-		 ewin->iconified || ewin->shaded);
+		 ewin->state.iconified || ewin->state.shaded);
    atom_list_set(atom_list, len, &atom_count,
 		 ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT,
-		 ewin->st.maximized_vert);
+		 ewin->state.maximized_vert);
    atom_list_set(atom_list, len, &atom_count,
 		 ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ,
-		 ewin->st.maximized_horz);
+		 ewin->state.maximized_horz);
    atom_list_set(atom_list, len, &atom_count,
-		 ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN, ewin->st.fullscreen);
+		 ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN, ewin->state.fullscreen);
    atom_list_set(atom_list, len, &atom_count,
-		 ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER, ewin->skip_ext_pager);
+		 ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER,
+		 ewin->props.skip_ext_pager);
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_ABOVE,
 		 EoGetLayer(ewin) >= 6);
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_BELOW,
 		 EoGetLayer(ewin) <= 2);
    atom_list_set(atom_list, len, &atom_count,
 		 ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION,
-		 ewin->st.attention);
+		 ewin->state.attention);
 
    ecore_x_window_prop_atom_set(ewin->client.win, ECORE_X_ATOM_NET_WM_STATE,
 				atom_list, atom_count);
@@ -501,10 +503,10 @@ EWMH_GetWindowState(EWin * ewin)
 
    /* We must clear/set all according to not present/present */
 /* EoSetSticky(ewin, 0); Do not override if set via _NET_WM_DESKTOP */
-   ewin->shaded = 0;
-   ewin->skiptask = ewin->skip_ext_pager = 0;
-   ewin->st.maximized_horz = ewin->st.maximized_vert = 0;
-   ewin->st.fullscreen = ewin->st.attention = 0;
+   ewin->state.shaded = 0;
+   ewin->props.skip_ext_task = ewin->props.skip_ext_pager = 0;
+   ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
+   ewin->state.fullscreen = ewin->state.attention = 0;
 /* ewin->layer = No ... TBD */
 
    for (i = 0; i < n_atoms; i++)
@@ -513,25 +515,25 @@ EWMH_GetWindowState(EWin * ewin)
 	if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	   EoSetSticky(ewin, 1);
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
-	   ewin->shaded = 1;
+	   ewin->state.shaded = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
-	   ewin->skiptask = 1;
+	   ewin->props.skip_ext_task = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER)
-	   ewin->skip_ext_pager = 1;
+	   ewin->props.skip_ext_pager = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_HIDDEN)
-	   ;			/* ewin->iconified = 1; No - WM_STATE does this */
+	   ;			/* ewin->state.iconified = 1; No - WM_STATE does this */
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
-	   ewin->st.maximized_vert = 1;
+	   ewin->state.maximized_vert = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
-	   ewin->st.maximized_horz = 1;
+	   ewin->state.maximized_horz = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN)
-	   ewin->st.fullscreen = 1;
+	   ewin->state.fullscreen = 1;
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_ABOVE)
 	   EoSetLayer(ewin, 6);
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	   EoSetLayer(ewin, 2);
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
-	   ewin->st.attention = 1;
+	   ewin->state.attention = 1;
      }
    Efree(p_atoms);
 }
@@ -556,27 +558,27 @@ EWMH_GetWindowType(EWin * ewin)
 #if 0				/* Should be configurable */
 	ewin->focusclick = 1;
 #endif
-	ewin->skipfocus = 1;
-	ewin->fixedpos = 1;
-	EwinSetBorderByName(ewin, "BORDERLESS");
+	ewin->props.skip_focuslist = 1;
+	ewin->props.fixedpos = 1;
 	ewin->props.donthide = 1;
+	EwinSetBorderByName(ewin, "BORDERLESS");
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
      {
-	ewin->skiptask = 1;
-	ewin->skipwinlist = 1;
-	ewin->skipfocus = 1;
+	ewin->props.skip_ext_task = 1;
+	ewin->props.skip_winlist = 1;
+	ewin->props.skip_focuslist = 1;
 	EoSetSticky(ewin, 1);
-	ewin->never_use_area = 1;
+	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
      {
 	/* Epplets hit this */
-	ewin->skiptask = 1;
-	ewin->skipwinlist = 1;
-	ewin->skipfocus = 1;
-	ewin->never_use_area = 1;
+	ewin->props.skip_ext_task = 1;
+	ewin->props.skip_winlist = 1;
+	ewin->props.skip_focuslist = 1;
+	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
      }
 #if 0				/* Not used by E (yet?) */
@@ -699,31 +701,35 @@ EWMH_GetWindowStrut(EWin * ewin)
 }
 
 void
-EWMH_SetWindowMiscHints(const EWin * ewin)
+EWMH_SetWindowActions(const EWin * ewin)
 {
-   static Ecore_X_Atom aa[10];
+   Ecore_X_Atom        aa[10];
+   int                 num;
 
-   /*
-    * We'll just set them all on all windows for now.
-    * Should be done a bit more selectively.
-    */
-
-   if (aa[0] == None)
-     {
-	aa[0] = ECORE_X_ATOM_NET_WM_ACTION_MOVE;
-	aa[1] = ECORE_X_ATOM_NET_WM_ACTION_RESIZE;
-	aa[2] = ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE;
-	aa[3] = ECORE_X_ATOM_NET_WM_ACTION_SHADE;
-	aa[4] = ECORE_X_ATOM_NET_WM_ACTION_STICK;
-	aa[5] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ;
-	aa[6] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT;
-	aa[7] = ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
-	aa[8] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
-	aa[9] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
-     }
+   num = 0;
+   if (!ewin->state.inhibit_move)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_MOVE;
+   if (!ewin->state.inhibit_resize)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_RESIZE;
+   if (!ewin->state.inhibit_iconify)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE;
+   if (!ewin->state.inhibit_shade)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_SHADE;
+   if (!ewin->state.inhibit_stick)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_STICK;
+   if (!ewin->state.inhibit_max_hor)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ;
+   if (!ewin->state.inhibit_max_ver)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT;
+   if (!ewin->state.inhibit_fullscreeen)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
+   if (!ewin->state.inhibit_change_desk)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
+   if (!ewin->state.inhibit_close)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
 
    ecore_x_window_prop_atom_set(ewin->client.win,
-				ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS, aa, 10);
+				ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS, aa, num);
 }
 
 void
@@ -840,10 +846,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
-	if (ewin->iconified)
+	if (ewin->state.iconified)
 	   EwinDeIconify(ewin);
 	RaiseEwin(ewin);
-	if (ewin->shaded)
+	if (ewin->state.shaded)
 	   EwinUnShade(ewin);
 	FocusToEWin(ewin, FOCUS_SET);
      }
@@ -888,7 +894,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	  {
-	     action = do_set(ewin->shaded, action);
+	     action = do_set(ewin->state.shaded, action);
 	     if (action)
 		EwinShade(ewin);
 	     else
@@ -896,14 +902,14 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
 	  {
-	     action = do_set(ewin->skiptask, action);
-	     ewin->skiptask = action;
+	     action = do_set(ewin->props.skip_ext_task, action);
+	     ewin->props.skip_ext_task = action;
 	     EWMH_SetWindowState(ewin);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER)
 	  {
-	     action = do_set(ewin->skip_ext_pager, action);
-	     ewin->skip_ext_pager = action;
+	     action = do_set(ewin->props.skip_ext_pager, action);
+	     ewin->props.skip_ext_pager = action;
 	     EWMH_SetWindowState(ewin);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
@@ -912,8 +918,8 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     void                (*func) (EWin *, const char *);
 	     int                 maxh, maxv;
 
-	     maxh = ewin->st.maximized_horz;
-	     maxv = ewin->st.maximized_vert;
+	     maxh = ewin->state.maximized_horz;
+	     maxv = ewin->state.maximized_vert;
 	     if (atom2 == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
 		 atom2 == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	       {
@@ -933,12 +939,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 		  maxh = do_set(maxh, action);
 	       }
 
-	     if ((ewin->st.maximized_horz == maxh) &&
-		 (ewin->st.maximized_vert == maxv))
+	     if ((ewin->state.maximized_horz == maxh) &&
+		 (ewin->state.maximized_vert == maxv))
 		goto done;
 
-	     if ((ewin->st.maximized_horz && !maxh) ||
-		 (ewin->st.maximized_vert && !maxv))
+	     if ((ewin->state.maximized_horz && !maxh) ||
+		 (ewin->state.maximized_vert && !maxv))
 		ewin->toggle = 1;
 	     else
 		ewin->toggle = 0;
@@ -948,8 +954,8 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN)
 	  {
-	     action = do_set(ewin->st.fullscreen, action);
-	     if (ewin->st.fullscreen == action)
+	     action = do_set(ewin->state.fullscreen, action);
+	     if (ewin->state.fullscreen == action)
 		goto done;
 
 	     EwinSetFullscreen(ewin, action);
@@ -972,8 +978,8 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
 	  {
-	     action = do_set(ewin->st.attention, action);
-	     ewin->st.attention = action;
+	     action = do_set(ewin->state.attention, action);
+	     ewin->state.attention = action;
 	     EWMH_SetWindowState(ewin);
 	  }
      }
