@@ -86,7 +86,10 @@ AC_ARG_WITH(edb-config,
     echo "alternatively, specify the script to use with --with-edb-config."
     AC_MSG_ERROR([Fatal Error: no edb-config detected.])
   fi
-])  
+])
+
+edb_cflags=`$EDB_CONFIG --cflags`
+edb_libs=`$EDB_CONFIG --libs`
 
 EVAS_CONFIG="evas-config"
 AC_ARG_WITH(evas-config,
@@ -121,6 +124,11 @@ AC_ARG_WITH(evas-config,
   fi
 ])  
 
+evas_cflags=`$EVAS_CONFIG --cflags`
+evas_libs=`$EVAS_CONFIG --libs`
+
+PCFLAGS=$CFLAGS
+CFLAGS=$evas_cflags" "$CFLAGS
 AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
 	#include <Evas.h>
 	])
@@ -166,6 +174,10 @@ AC_ARG_WITH(ecore-config,
   fi
 ])
 
+ecore_cflags=`$ECORE_CONFIG --cflags`
+ecore_libs=`$ECORE_CONFIG --libs`
+
+CFLAGS=$ecore_cflags" "$CFLAGS
 EDJE_CONFIG="edje-config"
 AC_ARG_WITH(edje-config,
 [  --with-edje-config=FILE   edje-config script to use (eg /usr/bin/edje-config)],
@@ -199,6 +211,10 @@ AC_ARG_WITH(edje-config,
   fi
 ])
 
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+
+CFLAGS=$edje_cflags" "$CFLAGS
 EMOTION_CONFIG="emotion-config"
 AC_ARG_WITH(emotion-config,
 [  --with-emotion-config=FILE   emotion-config script to use (eg /usr/bin/emotion-config)],
@@ -216,31 +232,9 @@ AC_ARG_WITH(emotion-config,
   fi
 ])
 
-AC_SUBST(edb_cflags)
-AC_SUBST(edb_libs)
-edb_cflags=`$EDB_CONFIG --cflags`
-edb_libs=`$EDB_CONFIG --libs`
-
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-
 requirements="evas ecore edb edje"
 
-AC_SUBST(emotion_cflags)
-AC_SUBST(emotion_libs)
-AC_SUBST(ewl_media_include)
+CFLAGS=$emotion_cflags" "$CFLAGS
 if test "x$EMOTION_CONFIG_IN_PATH" = "xyes"; then
   AC_CHECK_HEADERS(Emotion.h, [
       SUPPORT_EMOTION=1
@@ -257,6 +251,24 @@ fi
 AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "$SUPPORT_EMOTION" -eq 1)
 AC_SUBST(BUILD_EMOTION_SUPPORT_TRUE)
 AC_SUBST(BUILD_EMOTION_SUPPORT_FALSE)
+
+CFLAGS=$PCFLAGS
+
+AC_SUBST(edb_cflags)
+AC_SUBST(edb_libs)
+
+AC_SUBST(evas_cflags)
+AC_SUBST(evas_libs)
+
+AC_SUBST(ecore_cflags)
+AC_SUBST(ecore_libs)
+
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
+AC_SUBST(emotion_cflags)
+AC_SUBST(emotion_libs)
+AC_SUBST(ewl_media_include)
 
 AC_SUBST(requirements)
 
