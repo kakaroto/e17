@@ -645,17 +645,22 @@ void exml_mem_free(EXML *xml, void *ptr)
 }
 
 static void _exml_write_element(EXML_Node *node,
-																		 xmlTextWriter *writer)
+																xmlTextWriter *writer)
 {
 	EXML_Node *child;
-	Ecore_Hash_Node *hash_node;
+	Ecore_List *keys;
+	char *name;
 
 	xmlTextWriterStartElement( writer, node->tag );
 
-	ecore_hash_goto_first( node->attributes );
+	keys = ecore_hash_keys( node->attributes );
+	ecore_list_goto_first( keys );
 
-	while( (hash_node = ecore_hash_next( node->attributes )) )
-		xmlTextWriterWriteAttribute( writer, hash_node->key, hash_node->value );
+	while( (name = ecore_list_next( keys )) )
+		xmlTextWriterWriteAttribute( writer, name,
+																 ecore_hash_get( node->attributes, name ) );
+
+	ecore_list_destroy( keys );
 
 	if( node->value )
 		xmlTextWriterWriteString( writer, node->value );
