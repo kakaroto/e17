@@ -50,7 +50,6 @@ FocusEnable(int on)
 
 /*
  * Return !0 if it is OK to focus ewin.
- * on_screen: Require window to be on-screen now
  */
 static int
 FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
@@ -428,7 +427,7 @@ FocusToEWin(EWin * ewin, int why)
 	break;
 
      default:
-	if (!FocusEwinValid(ewin, 1, why == FOCUS_CLICK, 0))
+	if (ewin && !FocusEwinValid(ewin, 1, why == FOCUS_CLICK, 0))
 	   break;
 	focus_pending_why = why;
 	focus_pending_ewin = ewin;
