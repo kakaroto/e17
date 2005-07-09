@@ -45,15 +45,14 @@ NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
 	     k = j;
 	     break;		/* First exact match */
 	  }
-	/* FIXME - Size selection is not correct */
-	if (sj < sz)
+	if (sj > sz)
 	  {
-	     if (sj <= sbest)
+	     if (sbest > sz && sj >= sbest)
 		continue;
 	  }
 	else
 	  {
-	     if (sbest && sj >= sbest)
+	     if (sj <= sbest)
 		continue;
 	  }
 	k = j;
