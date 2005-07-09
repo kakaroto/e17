@@ -524,9 +524,7 @@ EwinStateUpdate(EWin * ewin)
       (ewin->mwm.valid && !ewin->mwm.decor_title && !ewin->mwm.decor_border);
 
    ewin->state.inhibit_move = ewin->props.fixedpos || ewin->state.fullscreen;
-   ewin->state.inhibit_resize =
-      ewin->state.shaded || ewin->state.fullscreen ||
-      (ewin->client.no_resize_h && ewin->client.no_resize_v);
+   ewin->state.inhibit_resize = ewin->state.shaded || ewin->state.fullscreen;
    ewin->state.inhibit_iconify = ewin->props.never_iconify;
    ewin->state.inhibit_shade = ewin->state.no_border || ewin->state.fullscreen;
    ewin->state.inhibit_stick = 0;
