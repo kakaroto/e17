@@ -1737,7 +1737,7 @@ IconboxRedraw(Iconbox * ib)
    ResizeEwin(ib->ewin, ewin->client.w, ewin->client.h);
 }
 
-static void
+static int
 IB_Scroll(Iconbox * ib, int dir)
 {
    int                 ppos;
@@ -1746,9 +1746,10 @@ IB_Scroll(Iconbox * ib, int dir)
    ib->pos += dir;
    IB_FixPos(ib);
    if (ib->pos == ppos)
-      return;
+      return 0;
 
    IconboxDraw(ib);
+   return 1;
 }
 
 static void
@@ -1970,8 +1971,9 @@ IboxEventArrow1Win(XEvent * ev, void *prm)
 	if (!ib->arrow1_clicked)
 	   break;
 	ib->arrow1_clicked = 0;
-	IB_Scroll(ib, -8);
-	return;
+	if (IB_Scroll(ib, -8))
+	   return;
+	break;
 
      case EnterNotify:
 	ib->arrow1_hilited = 1;
@@ -2002,8 +2004,9 @@ IboxEventArrow2Win(XEvent * ev, void *prm)
 	if (!ib->arrow2_clicked)
 	   break;
 	ib->arrow2_clicked = 0;
-	IB_Scroll(ib, 8);
-	return;
+	if (IB_Scroll(ib, 8))
+	   return;
+	break;
 
      case EnterNotify:
 	ib->arrow2_hilited = 1;

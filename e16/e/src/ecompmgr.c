@@ -181,6 +181,9 @@ EVisualIsARGB(Visual * vis)
 {
    XRenderPictFormat  *pictfmt;
 
+   if (!Mode_compmgr.active)
+      return 0;
+
    pictfmt = XRenderFindVisualFormat(disp, vis);
    if (!pictfmt)
       return 0;

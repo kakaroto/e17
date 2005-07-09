@@ -322,7 +322,7 @@ WarpFocusFinish(void)
 
    WarpFocusHide();
 
-   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+   if (!EwinFindByPtr(ewin))
       return;
 
    if (ewin->state.iconified)
