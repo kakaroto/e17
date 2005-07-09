@@ -48,7 +48,7 @@ struct _pager
    Window              sel_win;
 
    /* State flags */
-   char                timeout_pending;
+   char                scan_pending;
    char                do_newbg;
    char                do_update;
    int                 x1, y1, x2, y2;
@@ -65,6 +65,7 @@ typedef struct
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
 
+static void         PagerScanTimeout(int val, void *data);
 static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
@@ -151,16 +152,16 @@ PagerScanTrig(Pager * p)
 {
    char                s[128];
 
-   if (p->timeout_pending || Conf.pagers.scanspeed <= 0)
+   if (p->scan_pending || Conf.pagers.scanspeed <= 0)
       return;
 
-   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout, 0, p);
-   p->timeout_pending = 1;
+   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
+   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerScanTimeout, 0, p);
+   p->scan_pending = 1;
 }
 
 static void
-PagerUpdateTimeout(int val __UNUSED__, void *data)
+PagerScanTimeout(int val __UNUSED__, void *data)
 {
    Pager              *p;
    EWin               *ewin;
@@ -171,7 +172,7 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
       return;
 
    p = (Pager *) data;
-   p->timeout_pending = 0;
+   p->scan_pending = 0;
 
    ewin = p->ewin;
    if (!ewin || !EoIsShown(ewin))
@@ -415,6 +416,12 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
 
    p->do_update = 1;
    pager_update_pending = 1;
+
+   if (!Conf.pagers.snap)
+      return;
+
+   RemoveTimerEvent("pg-upd");
+   DoIn("pg-upd", .2, PagerUpdateTimeout, 0, NULL);
 }
 
 static void
@@ -690,9 +697,6 @@ PagersUpdate(int d, int x1, int y1, int x2, int y2)
 static void
 PagerCheckUpdate(Pager * p)
 {
-   if (Mode.mode != MODE_NONE)
-      return;
-
    if (p->do_newbg)
      {
 	PagerUpdateBg(p);
@@ -713,6 +717,8 @@ PagersCheckUpdate(void)
 
    if (!pager_update_pending || !Conf.pagers.enable)
       return;
+   if (Mode.mode != MODE_NONE && Conf.pagers.snap)
+      return;
 
    pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
    if (!pl)
@@ -722,6 +728,12 @@ PagersCheckUpdate(void)
       PagerCheckUpdate(pl[i]);
 
    Efree(pl);
+}
+
+static void
+PagerUpdateTimeout(int val __UNUSED__, void *data __UNUSED__)
+{
+   PagersCheckUpdate();
 }
 
 static void
@@ -2212,7 +2224,8 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_IDLE:
-	PagersCheckUpdate();
+	if (!Conf.pagers.snap)
+	   PagersCheckUpdate();
 	break;
 
      case ESIGNAL_AREA_CONFIGURED:
