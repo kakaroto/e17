@@ -8,7 +8,6 @@
 
 - netwm hints
   - _NET_WM_ICON icon/size selection is not entirely correct.
-  - _NET_WM_ALLOWED_ACTIONS items should be set properly.
   - _NET_WM_STRUT_PARTIAL handling.
   - More (_NET_WM_USER_TIME ...)?
 
