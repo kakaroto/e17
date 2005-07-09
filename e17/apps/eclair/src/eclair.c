@@ -7,7 +7,6 @@
 #include <Edje.h>
 #include <Emotion.h>
 #include <Esmart/Esmart_Draggies.h>
-#include <pthread.h>
 #include "eclair_playlist.h"
 #include "eclair_playlist_container.h"
 #include "eclair_media_file.h"
@@ -21,8 +20,8 @@
 #include "eclair_dialogs.h"
 #include "eclair_window.h"
 #include "eclair_database.h"
+#include "eclair_video.h"
 
-static void *_eclair_create_video_object_thread(void *param);
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_window(Eclair *eclair);
 static Evas_Bool _eclair_create_equalizer_window(Eclair *eclair);
@@ -30,7 +29,6 @@ static Evas_Bool _eclair_create_cover_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window);
 static Evas_Bool _eclair_create_cover_object(Eclair *eclair, Eclair_Window *window);
 static void _eclair_add_inter_windows_callbacks(Eclair *eclair);
-static void _eclair_create_video_window(Eclair *eclair);
 static void _eclair_sig_pregest();
 static void _eclair_on_segv(int num);
 
@@ -50,23 +48,16 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
 
    eclair->argc = argc;
    eclair->argv = argv;
-   eclair->video_window = NULL;
-   eclair->video_object = NULL;
-   eclair->black_background = NULL;
-   eclair->subtitles_object = NULL;
-   eclair->previous_video_width = 0;
-   eclair->previous_video_height = 0;
-   eclair->previous_video_ratio = 0.0;
    eclair->gui_window = NULL;
-   eclair->cover = NULL;
-   eclair->previous_cover = NULL;
    eclair->equalizer_window = NULL;
    eclair->playlist_window = NULL;
    eclair->playlist_container = NULL;
    eclair->playlist_container_owner = NULL;
    eclair->playlist_entry_height = -1;
    eclair->cover_window = NULL;
-   eclair->cover_owner = NULL;   
+   eclair->cover = NULL;
+   eclair->previous_cover = NULL;
+   eclair->cover_owner = NULL;
    eclair->state = ECLAIR_STOP;
    eclair->seek_to_pos = -1.0;
    eclair->use_progress_bar_drag_for_time = 0;
@@ -79,10 +70,14 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->start_playing = 0;
 
    if (!eclair_args_parse(eclair, &filenames))
+   {
+      free(eclair->gui_theme_file);
       return 0;
+   }
 
    eclair_config_init(&eclair->config);
    eclair_utils_init();
+   eclair_video_init(&eclair->video, eclair);
    if (!_eclair_create_gui_window(eclair))
    {
       eclair_config_shutdown(&eclair->config);
@@ -92,7 +87,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    _eclair_create_playlist_window(eclair);
    _eclair_create_equalizer_window(eclair);
    _eclair_create_cover_window(eclair);
-   _eclair_create_video_window(eclair);
+   eclair_create_video_window(&eclair->video, eclair->video_engine);
    _eclair_add_inter_windows_callbacks(eclair);
    eclair_database_init(&eclair->database, eclair);
    eclair_dialogs_init(&eclair->dialogs_manager, eclair);
@@ -132,9 +127,7 @@ void eclair_shutdown(Eclair *eclair)
       eclair_window_del(eclair->equalizer_window);
       eclair_window_del(eclair->cover_window);
 
-      fprintf(stderr, "Eclair: Debug: Destroying create video object thread\n");
-      pthread_join(eclair->video_create_thread, NULL); 
-      fprintf(stderr, "Eclair: Debug: Create video object thread destroyed\n");
+      eclair_video_shutdown(&eclair->video);
       eclair_dialogs_shutdown(&eclair->dialogs_manager);
       eclair_subtitles_free(&eclair->subtitles);
       eclair_meta_tag_shutdown(&eclair->meta_tag_manager);
@@ -161,13 +154,13 @@ void eclair_update(Eclair *eclair)
    position = eclair_position_get(eclair);
 
    //Display subtitles
-   eclair_subtitles_display_current_subtitle(&eclair->subtitles, eclair_position_get(eclair), eclair->subtitles_object);
+   eclair_subtitles_display_current_subtitle(&eclair->subtitles, eclair_position_get(eclair), eclair->video.subtitles_object);
 
-   if (!eclair->video_object || !eclair->gui_window)
+   if (!eclair->video.video_object || !eclair->gui_window)
       return;
 
    //Update time text
-   length = emotion_object_play_length_get(eclair->video_object);
+   length = emotion_object_play_length_get(eclair->video.video_object);
    if (eclair->use_progress_bar_drag_for_time)
    {
       edje_object_part_drag_value_get(eclair->gui_window->edje_object, "progress_bar_drag", &position, NULL);
@@ -199,7 +192,7 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
    current_file = eclair_playlist_current_media_file(&eclair->playlist);
 
    //Update the name of the current file only if video is created 
-   if (eclair->video_object)
+   if (eclair->video.video_object)
    {
       if (current_file)
       {
@@ -245,17 +238,17 @@ void eclair_update_current_file_info(Eclair *eclair, Evas_Bool force_cover_updat
    
 
    //Update the title of the video window
-   if (eclair->video_window)
+   if (eclair->video.video_window)
    {
       if (current_file && current_file->path)
       {
          window_title = malloc(strlen(current_file->path) + strlen("eclair: ") + 1);
          sprintf(window_title, "eclair: %s", current_file->path);
-         ecore_evas_title_set(eclair->video_window, window_title);
+         ecore_evas_title_set(eclair->video.video_window, window_title);
          free(window_title);
       }
       else
-         ecore_evas_title_set(eclair->video_window, "eclair");
+         ecore_evas_title_set(eclair->video.video_window, "eclair");
    }
 
    //Update the current cover
@@ -354,7 +347,7 @@ void eclair_play_file(Eclair *eclair, const char *path)
    if (!eclair)
       return;
 
-   if (!eclair->video_object)
+   if (!eclair->video.video_object)
    {
       eclair->start_playing = 1;
       return;
@@ -362,20 +355,20 @@ void eclair_play_file(Eclair *eclair, const char *path)
 
    if (path)
    {
-      emotion_object_file_set(eclair->video_object, path);
-      emotion_object_play_set(eclair->video_object, 0);
+      emotion_object_file_set(eclair->video.video_object, path);
+      emotion_object_play_set(eclair->video.video_object, 0);
       eclair_progress_rate_set(eclair, 0.0);
       eclair->state = ECLAIR_PAUSE;
       eclair_play(eclair);
    
       eclair_subtitles_load_from_media_file(&eclair->subtitles, path);
       
-      if (eclair->video_window)
+      if (eclair->video.video_window)
       {
-         if (emotion_object_video_handled_get(eclair->video_object))
-            ecore_evas_show(eclair->video_window);
+         if (emotion_object_video_handled_get(eclair->video.video_object))
+            ecore_evas_show(eclair->video.video_window);
          else
-            ecore_evas_hide(eclair->video_window);
+            ecore_evas_hide(eclair->video.video_window);
       }
    }
    else
@@ -419,10 +412,10 @@ void eclair_play_next(Eclair *eclair)
 //Pause the playback
 void eclair_pause(Eclair *eclair)
 {
-   if (!eclair || (eclair->state != ECLAIR_PLAYING))
+   if (!eclair || (eclair->state != ECLAIR_PLAYING) || !eclair->video.video_object)
       return;
 
-   emotion_object_play_set(eclair->video_object, 0);
+   emotion_object_play_set(eclair->video.video_object, 0);
    eclair_send_signal_to_all_windows(eclair, "signal_pause");
    eclair->state = ECLAIR_PAUSE;
 }
@@ -434,7 +427,7 @@ void eclair_play(Eclair *eclair)
    if (!eclair)
       return;
 
-   if (!eclair->video_object)
+   if (!eclair->video.video_object)
    {
       eclair->start_playing = 1;
       return;
@@ -442,7 +435,7 @@ void eclair_play(Eclair *eclair)
 
    if (eclair->state == ECLAIR_PAUSE)
    {
-      emotion_object_play_set(eclair->video_object, 1);
+      emotion_object_play_set(eclair->video.video_object, 1);
       eclair_send_signal_to_all_windows(eclair, "signal_play");
       eclair->state = ECLAIR_PLAYING;
    }
@@ -456,17 +449,17 @@ void eclair_stop(Eclair *eclair)
    if (!eclair)
       return;
 
-   if (eclair->video_object)
+   if (eclair->video.video_object)
    {
-      emotion_object_play_set(eclair->video_object, 0);
+      emotion_object_play_set(eclair->video.video_object, 0);
       eclair_progress_rate_set(eclair, 0.0);
    }
    
    eclair_all_windows_text_set(eclair, "time_elapsed", "0:00");
    eclair_send_signal_to_all_windows(eclair, "signal_stop");
    
-   if (eclair->video_window)
-      ecore_evas_hide(eclair->video_window);
+   if (eclair->video.video_window)
+      ecore_evas_hide(eclair->video.video_window);
 
    eclair->state = ECLAIR_STOP;
 }
@@ -482,8 +475,8 @@ void eclair_audio_level_set(Eclair *eclair, double audio_level)
       else if (audio_level > 1.0)
          audio_level = 1.0;
 
-   if (eclair->video_object)
-      emotion_object_audio_volume_set(eclair->video_object, audio_level);
+   if (eclair->video.video_object)
+      emotion_object_audio_volume_set(eclair->video.video_object, audio_level);
    if (eclair->gui_window)
       edje_object_part_drag_value_set(eclair->gui_window->edje_object, "volume_bar_drag", audio_level, 0);
 }
@@ -491,29 +484,29 @@ void eclair_audio_level_set(Eclair *eclair, double audio_level)
 //Get the media progress rate
 double eclair_progress_rate_get(Eclair *eclair)
 {
-   if (!eclair || !eclair->video_object)
+   if (!eclair || !eclair->video.video_object)
       return 0.0;
    
-   return (eclair_position_get(eclair) / emotion_object_play_length_get(eclair->video_object));
+   return (eclair_position_get(eclair) / emotion_object_play_length_get(eclair->video.video_object));
 }
 
 //Set the media progress rate
 void eclair_progress_rate_set(Eclair *eclair, double progress_rate)
 {
-   if (!eclair || !eclair->video_object)
+   if (!eclair || !eclair->video.video_object)
       return;
    
-   eclair_position_set(eclair, progress_rate * emotion_object_play_length_get(eclair->video_object));
+   eclair_position_set(eclair, progress_rate * emotion_object_play_length_get(eclair->video.video_object));
 }
 
 //Get the media position in seconds
 double eclair_position_get(Eclair *eclair)
 {
-   if (!eclair || !eclair->video_object)
+   if (!eclair || !eclair->video.video_object)
       return 0.0;
 
    if (eclair->seek_to_pos < 0.0)
-      return emotion_object_position_get(eclair->video_object);
+      return emotion_object_position_get(eclair->video.video_object);
    else
       return eclair->seek_to_pos;
 }
@@ -523,17 +516,17 @@ void eclair_position_set(Eclair *eclair, double position)
 {
    double media_length;
 
-   if (!eclair || !eclair->video_object)
+   if (!eclair || !eclair->video.video_object)
       return;
 
-   media_length = emotion_object_play_length_get(eclair->video_object);
+   media_length = emotion_object_play_length_get(eclair->video.video_object);
    if (position < 0.0)
       position = 0.0;
    else if (position > media_length)
       position = media_length;
    eclair->dont_update_progressbar = 1;
    eclair->seek_to_pos = position;
-   emotion_object_position_set(eclair->video_object, eclair->seek_to_pos);
+   emotion_object_position_set(eclair->video.video_object, eclair->seek_to_pos);
 }
 
 //Create the gui window and load the edje theme
@@ -606,75 +599,6 @@ static Evas_Bool _eclair_create_cover_window(Eclair *eclair)
    return 0;
 }
 
-//Create the video window and object
-static void _eclair_create_video_window(Eclair *eclair)
-{
-   Evas *evas;
-
-   if (!eclair)
-      return;
-
-   if (eclair->video_engine == ECLAIR_GL)
-      eclair->video_window = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
-   else
-      eclair->video_window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
-   ecore_evas_title_set(eclair->video_window, "eclair");
-   ecore_evas_name_class_set(eclair->video_window, "eclair", "eclair");
-   ecore_evas_data_set(eclair->video_window, "eclair", eclair);
-   ecore_evas_callback_resize_set(eclair->video_window, eclair_video_window_resize_cb);
-   ecore_evas_callback_delete_request_set(eclair->video_window, eclair_video_window_close_cb);
-   ecore_evas_hide(eclair->video_window);
-
-   evas = ecore_evas_get(eclair->video_window);   
-   eclair->black_background = evas_object_rectangle_add(evas);
-   evas_object_color_set(eclair->black_background, 0, 0, 0, 255);
-   evas_object_show(eclair->black_background);
-   evas_object_layer_set(eclair->black_background, 0);
-
-   eclair->subtitles_object = evas_object_textblock_add(evas);
-   evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
-   evas_object_layer_set(eclair->subtitles_object, 2);
-   evas_object_show(eclair->subtitles_object);
-
-   pthread_create(&eclair->video_create_thread, NULL, _eclair_create_video_object_thread, eclair);
-}
-
-//Initialize the video object
-static void *_eclair_create_video_object_thread(void *param)
-{
-   Eclair *eclair;
-   Evas *evas;
-   Evas_Object *new_video_object;
-
-   if (!(eclair = param))
-      return NULL;
-
-   if (eclair->gui_window)
-      edje_object_part_text_set(eclair->gui_window->edje_object, "current_media_name", "Initializing - Please wait...");
-
-   evas = ecore_evas_get(eclair->video_window);
-   new_video_object = emotion_object_add(evas);
-   evas_object_show(new_video_object);
-   evas_object_layer_set(new_video_object, 1);
-   emotion_object_init(new_video_object);
-
-   evas_object_focus_set(new_video_object, 1);
-   evas_object_event_callback_add(new_video_object, EVAS_CALLBACK_KEY_DOWN, eclair_key_press_cb, eclair);
-   evas_object_smart_callback_add(new_video_object, "frame_decode", eclair_video_frame_decode_cb, eclair);
-   evas_object_smart_callback_add(new_video_object, "playback_finished", eclair_video_playback_finished_cb, eclair);
-   evas_object_smart_callback_add(new_video_object, "audio_level_change", eclair_video_audio_level_change_cb, eclair);
-   evas_object_smart_callback_add(new_video_object, "frame_resize", eclair_video_frame_resize_change_cb, eclair);
-
-   eclair_audio_level_set(eclair, emotion_object_audio_volume_get(new_video_object));
-   eclair->video_object = new_video_object;
-   eclair_update_current_file_info(eclair, 0);
-
-   if (eclair->start_playing)
-      eclair_play_current(eclair);
-
-   return NULL; 
-}
-
 //Create the playlist container and swallow it into the window
 //Return 0 if failed
 static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window)
@@ -689,8 +613,6 @@ static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair
       eclair->playlist_container = eclair_playlist_container_object_add(window->evas, eclair);
       eclair_playlist_container_set_entry_theme_path(eclair->playlist_container, eclair->gui_theme_file);
       edje_object_part_swallow(window->edje_object, "playlist_container", eclair->playlist_container);
-      evas_object_event_callback_add(eclair->playlist_container, EVAS_CALLBACK_MOUSE_WHEEL, eclair_playlist_container_wheel_cb, eclair);
-      evas_object_smart_callback_add(eclair->playlist_container, "eclair_playlist_container_scroll_percent_changed", eclair_playlist_container_scroll_percent_changed, eclair);
       evas_object_show(eclair->playlist_container);
       eclair->playlist_container_owner = window;
       return 1;

@@ -41,7 +41,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
                eclair->video_engine = ECLAIR_SOFTWARE;
             else if (strcmp(optarg, "gl") == 0)
                eclair->gui_engine = ECLAIR_GL;
-            else 
+            else
             {
                _eclair_args_print_usage();
                return 0;
@@ -61,6 +61,7 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
          default:
             _eclair_args_print_usage();
             return 0;
+            break;
       }
    }
    if (optind < argc)

@@ -4,8 +4,8 @@
 #include <Ecore_File.h>
 #include <math.h>
 #include "eclair.h"
-#include "eclair_callbacks.h"
 #include "eclair_media_file.h"
+#include "eclair_playlist.h"
 
 static Evas_Smart *playlist_container_smart;
 void eclair_playlist_container_update(Evas_Object *obj);
@@ -25,6 +25,9 @@ static void _eclair_playlist_container_smart_hide(Evas_Object *obj);
 static void _eclair_playlist_container_smart_color_set(Evas_Object *obj, int r, int g, int b, int a);
 static void _eclair_playlist_container_smart_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void _eclair_playlist_container_smart_clip_unset(Evas_Object *obj);
+static void _eclair_playlist_container_entry_down_cb(void *data, Evas *evas, Evas_Object *entry, void *event_info);
+static void _eclair_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object *playlist_container, void *event_info);
+static void _eclair_playlist_container_scroll_percent_changed_cb(void *data, Evas_Object *obj, void *event_info);
 
 //Create a new playlist container object
 Evas_Object *eclair_playlist_container_object_add(Evas *evas, Eclair *eclair)
@@ -613,6 +616,9 @@ static void _eclair_playlist_container_smart_add(Evas_Object *obj)
    evas_object_clip_set(playlist_container->grabber, playlist_container->clip);
    evas_object_smart_member_add(playlist_container->grabber, obj);
 
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_WHEEL, _eclair_playlist_container_wheel_cb, NULL);
+   evas_object_smart_callback_add(obj, "eclair_playlist_container_scroll_percent_changed", _eclair_playlist_container_scroll_percent_changed_cb, playlist_container->eclair);
+
    evas_object_smart_data_set(obj, playlist_container);
 }
 
@@ -797,7 +803,7 @@ static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord
          entry = malloc(sizeof(Eclair_Playlist_Container_Object));
          entry->rect = evas_object_rectangle_add(evas);
          evas_object_clip_set(entry->rect, playlist_container->clip);
-         evas_object_event_callback_add(entry->rect, EVAS_CALLBACK_MOUSE_DOWN, eclair_playlist_container_entry_down_cb, playlist_container->eclair);
+         evas_object_event_callback_add(entry->rect, EVAS_CALLBACK_MOUSE_DOWN, _eclair_playlist_container_entry_down_cb, playlist_container->eclair);
          evas_object_repeat_events_set(entry->rect, 1);
          evas_object_smart_member_add(entry->rect, obj);
          evas_object_stack_above(entry->rect, obj);
@@ -806,7 +812,7 @@ static void _eclair_playlist_container_smart_resize(Evas_Object *obj, Evas_Coord
          edje_object_file_set(entry->text, playlist_container->entry_theme_path, "eclair_playlist_entry");
          evas_object_clip_set(entry->text, playlist_container->clip);
          evas_object_repeat_events_set(entry->text, 1);
-         evas_object_event_callback_add(entry->text, EVAS_CALLBACK_MOUSE_DOWN, eclair_playlist_container_entry_down_cb, playlist_container->eclair);
+         evas_object_event_callback_add(entry->text, EVAS_CALLBACK_MOUSE_DOWN, _eclair_playlist_container_entry_down_cb, playlist_container->eclair);
          evas_object_smart_member_add(entry->text, obj);
          evas_object_stack_above(entry->text, entry->rect);
          playlist_container->entry_objects = evas_list_append(playlist_container->entry_objects, entry);
@@ -879,4 +885,75 @@ static void _eclair_playlist_container_smart_clip_unset(Evas_Object *obj)
       return;
 
    evas_object_clip_unset(playlist_container->clip);
+}
+
+//------------------------------
+// Callbacks
+//------------------------------
+
+//Called when the user drags the scrollbar button of the playlist
+void eclair_playlist_container_scrollbar_drag_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair *eclair;
+   double y;
+
+   if (!(eclair = data) || !eclair->playlist_container_owner)
+      return;
+
+   edje_object_part_drag_value_get(eclair->playlist_container_owner->edje_object, "playlist_scrollbar_drag", NULL, &y);
+   eclair_playlist_container_scroll_percent_set(eclair->playlist_container, y);
+}
+
+//Called when the user wants to scroll the playlist
+void eclair_playlist_container_scroll_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair *eclair;
+
+   if (!(eclair = data) || !eclair->playlist_container)
+      return;
+
+   if (strcmp(emission, "eclair_playlist_scroll_down_start") == 0)
+      eclair_playlist_container_scroll_start(eclair->playlist_container, 2.0);
+   else if (strcmp(emission, "eclair_playlist_scroll_up_start") == 0)
+      eclair_playlist_container_scroll_start(eclair->playlist_container, -2.0);
+   else
+      eclair_playlist_container_scroll_stop(eclair->playlist_container);
+}
+
+//Called when the user clicks on an entry in the playlist 
+static void _eclair_playlist_container_entry_down_cb(void *data, Evas *evas, Evas_Object *entry, void *event_info)
+{
+   Eclair *eclair;
+   Eclair_Media_File *media_file;
+   Evas_Event_Mouse_Down *event;
+
+   event = event_info;
+   if (!(eclair = data) || !(media_file = evas_object_data_get(entry, "media_file")) || event->button != 1)
+      return;
+
+   if (event->flags == EVAS_BUTTON_NONE)
+      eclair_playlist_container_select_file(eclair->playlist_container, media_file, event->modifiers);
+   else if (event->flags == EVAS_BUTTON_DOUBLE_CLICK)
+   {
+      eclair_playlist_current_set(&eclair->playlist, media_file);
+      eclair_play_current(eclair);
+   }
+}
+
+//Called when the scroll percent of the playlist container is changed
+static void _eclair_playlist_container_scroll_percent_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Eclair *eclair;
+
+   if ((eclair = data) && eclair->playlist_container_owner)
+      edje_object_part_drag_value_set(eclair->playlist_container_owner->edje_object, "playlist_scrollbar_drag", 0, eclair_playlist_container_scroll_percent_get(obj));
+}
+
+//Called when user uses wheel mouse over playlist container
+static void _eclair_playlist_container_wheel_cb(void *data, Evas *evas, Evas_Object *playlist_container, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *event;
+
+   event = event_info;
+   eclair_playlist_container_scroll(playlist_container, event->z);
 }

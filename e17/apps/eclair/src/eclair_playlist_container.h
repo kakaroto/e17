@@ -25,4 +25,7 @@ void eclair_playlist_container_select_all(Evas_Object *obj);
 void eclair_playlist_container_select_none(Evas_Object *obj);
 void eclair_playlist_container_invert_selection(Evas_Object *obj);
 
+void eclair_playlist_container_scrollbar_drag_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
+void eclair_playlist_container_scroll_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
+
 #endif

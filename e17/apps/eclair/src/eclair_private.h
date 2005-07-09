@@ -31,6 +31,7 @@ typedef struct _Eclair_Playlist_Container Eclair_Playlist_Container;
 typedef struct _Eclair_Playlist_Container_Object Eclair_Playlist_Container_Object;
 typedef struct _Eclair_Color Eclair_Color;
 typedef struct _Eclair_Window Eclair_Window;
+typedef struct _Eclair_Video Eclair_Video;
 typedef struct _Eclair_Database Eclair_Database;
 
 struct _Eclair_Database
@@ -255,22 +256,28 @@ struct _Eclair_Window
 
    unsigned char should_resize : 1;
    unsigned char borderless : 1;
-   unsigned char shaded : 1;
+   unsigned char shaped : 1;
    unsigned char resizable : 1;
    unsigned char main_window : 1;
+};
+
+struct _Eclair_Video
+{
+   Ecore_Evas *video_window;
+   Evas_Object *video_object;
+   Evas_Object *black_background;
+   Evas_Object *subtitles_object;
+   pthread_t video_create_thread;
+   int previous_video_width, previous_video_height;
+   double previous_video_ratio;
+   Eclair *eclair;
 };
 
 struct _Eclair
 {
    //Video related vars
-   Ecore_Evas *video_window;
-   Evas_Object *video_object;
-   Evas_Object *black_background;
-   Evas_Object *subtitles_object;
+   Eclair_Video video;
    Eclair_Engine video_engine;
-   pthread_t video_create_thread;
-   int previous_video_width, previous_video_height;
-   double previous_video_ratio;
 
    //Gui related vars
    Eclair_Window *gui_window;

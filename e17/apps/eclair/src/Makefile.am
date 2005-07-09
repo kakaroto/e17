@@ -36,7 +36,8 @@ eclair_meta_tag.c eclair_meta_tag.h \
 eclair_config.c eclair_config.h \
 eclair_dialogs.c eclair_dialogs.h \
 eclair_window.c eclair_window.h \
-eclair_database.c eclair_database.h
+eclair_database.c eclair_database.h \
+eclair_video.c eclair_video.h
 
 eclair_LDADD = \
 @GTHREAD_LIBS@ \

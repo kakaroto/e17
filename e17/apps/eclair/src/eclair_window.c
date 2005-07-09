@@ -3,7 +3,14 @@
 #include <Esmart/Esmart_Draggies.h>
 #include "eclair.h"
 #include "eclair_callbacks.h"
+#include "eclair_playlist_container.h"
 #include "eclair_config.h"
+
+static void _eclair_window_resize_start_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
+static void _eclair_window_resize_stop_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source);
+static void _eclair_window_mouse_move_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _eclair_window_resize_cb(Ecore_Evas *ecore_window);
+static void _eclair_window_close_request_cb(Ecore_Evas *ecore_window);
 
 //Create a new window from the group "eclair_"window_name"_body" of the file "edje_file" with the engine "engine" and the title "title"
 //"window_name" is also used to find some props of the window in the edje file ("data" section)
@@ -21,7 +28,7 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    new_window->eclair = eclair;
    new_window->should_resize = 0;
    new_window->borderless = 1;
-   new_window->shaded = 1;
+   new_window->shaped = 1;
    new_window->resizable = 1;
    new_window->main_window = main_window;
    new_window->window_name = strdup(window_name);
@@ -60,6 +67,7 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    free(edje_group);
    evas_object_move(new_window->edje_object, 0, 0);
    evas_object_show(new_window->edje_object);
+
    //Read window props
    if (new_window->window_name)
    {
@@ -72,11 +80,11 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
       }
       free(prop_name);
 
-      prop_name = malloc(strlen(new_window->window_name) + strlen("_shaded") + 1);
-      sprintf(prop_name, "%s_shaded", new_window->window_name);
+      prop_name = malloc(strlen(new_window->window_name) + strlen("_shaped") + 1);
+      sprintf(prop_name, "%s_shaped", new_window->window_name);
       if ((prop_value = edje_file_data_get(edje_file, prop_name)) && strcmp(prop_value, "0") == 0)
       {
-         new_window->shaded = 0;
+         new_window->shaped = 0;
          free(prop_value);
       }
       free(prop_name);
@@ -91,7 +99,7 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
       free(prop_name);
    }
    ecore_evas_borderless_set(new_window->ecore_window, new_window->borderless);
-   ecore_evas_shaped_set(new_window->ecore_window, new_window->shaded);
+   ecore_evas_shaped_set(new_window->ecore_window, new_window->shaped);
 
    new_window->draggies = esmart_draggies_new(new_window->ecore_window);
    esmart_draggies_button_set(new_window->draggies, 1);
@@ -167,7 +175,7 @@ void eclair_window_add_default_callbacks(Eclair_Window *window, Eclair *eclair)
 
    evas_object_focus_set(window->edje_object, 1);
    evas_object_event_callback_add(window->edje_object, EVAS_CALLBACK_KEY_DOWN, eclair_key_press_cb, eclair);
-   ecore_evas_callback_delete_request_set(window->ecore_window, eclair_window_close_request_cb);
+   ecore_evas_callback_delete_request_set(window->ecore_window, _eclair_window_close_request_cb);
    edje_object_signal_callback_add(window->edje_object, "eclair_open", "*", eclair_open_cb, &eclair->dialogs_manager);
    edje_object_signal_callback_add(window->edje_object, "eclair_add_file", "*", eclair_open_cb, &eclair->dialogs_manager);
    edje_object_signal_callback_add(window->edje_object, "eclair_play", "*", eclair_play_cb, eclair);
@@ -208,17 +216,17 @@ void eclair_window_add_default_callbacks(Eclair_Window *window, Eclair *eclair)
       {
          signal_name = malloc(strlen("eclair_") + strlen(window->window_name) + strlen("_resize_start") + 1);
          sprintf(signal_name, "eclair_%s_resize_start", window->window_name);
-         edje_object_signal_callback_add(window->edje_object, signal_name, "", eclair_window_resize_start_cb, window);
+         edje_object_signal_callback_add(window->edje_object, signal_name, "", _eclair_window_resize_start_cb, window);
          free(signal_name);
          signal_name = malloc(strlen("eclair_") + strlen(window->window_name) + strlen("_resize_stop") + 1);
          sprintf(signal_name, "eclair_%s_resize_stop", window->window_name);
-         edje_object_signal_callback_add(window->edje_object, signal_name, "", eclair_window_resize_stop_cb, window);
+         edje_object_signal_callback_add(window->edje_object, signal_name, "", _eclair_window_resize_stop_cb, window);
          free(signal_name);
-         evas_object_event_callback_add(window->edje_object, EVAS_CALLBACK_MOUSE_MOVE, eclair_window_mouse_move_cb, window);
+         evas_object_event_callback_add(window->edje_object, EVAS_CALLBACK_MOUSE_MOVE, _eclair_window_mouse_move_cb, window);
       }
    }
    ecore_evas_data_set(window->ecore_window, "eclair_window", window);
-   ecore_evas_callback_resize_set(window->ecore_window, eclair_window_resize_cb);
+   ecore_evas_callback_resize_set(window->ecore_window, _eclair_window_resize_cb);
    edje_object_message_handler_set(window->edje_object, eclair_message_cb, eclair);
 }
 
@@ -279,4 +287,97 @@ void eclair_window_close(Eclair_Window *window)
       eclair_send_signal_to_all_windows(window->eclair, signal_name);
       free(signal_name);
    }
+}
+
+
+//------------------------------
+// Callbacks
+//------------------------------
+
+//Called when the user clicks on the button to open the window
+void eclair_window_open_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   eclair_window_open(data);
+}
+
+//Called when the user clicks on the close button of the window
+void eclair_window_close_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   eclair_window_close(data);
+}
+
+//Called when the user clicks on the minimize button of the window
+void eclair_window_minimize_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair_Window *window;
+
+   if ((window = data))
+   {
+      //TODO: ecore bug?? ecore doesn't seem to notice that the window has been de-iconified
+      ecore_evas_iconified_set(window->ecore_window, 0);
+      ecore_evas_iconified_set(window->ecore_window, 1);
+   }
+}
+
+//Called when the window object sends the "signal_resize_start" signal
+static void _eclair_window_resize_start_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair_Window *window;
+
+   if ((window = data))
+      window->should_resize = 1;
+}
+
+//Called when the window object sends the "signal_resize_stop" signal
+static void _eclair_window_resize_stop_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
+{
+   Eclair_Window *window;
+
+   if ((window = data))
+      window->should_resize = 0;
+}
+
+//Called when the mouse moves over the window. If should_resize == 1, the window is then resized
+static void _eclair_window_mouse_move_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+   Eclair_Window *window;
+   Evas_Event_Mouse_Move *event;
+   Evas_Coord dx, dy;
+   Evas_Coord w, h;
+
+   if (!(window = data) || !window->should_resize)
+      return;
+
+   event = event_info;
+   dx = event->cur.canvas.x - event->prev.canvas.x;
+   dy = event->cur.canvas.y - event->prev.canvas.y;
+   evas_object_geometry_get(window->edje_object, NULL, NULL, &w, &h);
+   w += dx;
+   h += dy;
+   eclair_window_resize(window, w, h, 1);
+}
+
+//Called when the window is resized
+static void _eclair_window_resize_cb(Ecore_Evas *ecore_window)
+{
+   Eclair_Window *window;
+   Evas_Coord window_width, window_height;
+
+   if (!(window = ecore_evas_data_get(ecore_window, "eclair_window")))
+      return;
+
+   if (!window->should_resize)
+   {
+      ecore_evas_geometry_get(ecore_window, NULL, NULL, &window_width, &window_height);
+      eclair_window_resize(window, window_width, window_height, 0);
+   }
+}
+
+//Called when the wm wants to close the window
+static void _eclair_window_close_request_cb(Ecore_Evas *ecore_window)
+{
+   Eclair_Window *window;
+
+   if ((window = ecore_evas_data_get(ecore_window, "eclair_window")))
+      eclair_window_close(window);
 }
