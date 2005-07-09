@@ -156,7 +156,9 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
 
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
+
    atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 
@@ -687,10 +689,15 @@ static void
 EWMH_GetWindowStrut(EWin * ewin)
 {
    int                 num;
-   unsigned int        val[4];
+   unsigned int        val[12];
 
    num = ecore_x_window_prop_card32_get(ewin->client.win,
-					ECORE_X_ATOM_NET_WM_STRUT, val, 4);
+					ECORE_X_ATOM_NET_WM_STRUT_PARTIAL, val,
+					12);
+
+   if (num < 4)
+      num = ecore_x_window_prop_card32_get(ewin->client.win,
+					   ECORE_X_ATOM_NET_WM_STRUT, val, 4);
    if (num < 4)
       return;
 
@@ -698,6 +705,18 @@ EWMH_GetWindowStrut(EWin * ewin)
    ewin->strut.right = val[1];
    ewin->strut.top = val[2];
    ewin->strut.bottom = val[3];
+#if 0				/* FIXME - Handle in placement code */
+   if (num < 12)
+      return;
+   ewin->strut.left_start_y = val[4];
+   ewin->strut.left_end_y = val[5];
+   ewin->strut.right_start_y = val[6];
+   ewin->strut.right_end_y = val[7];
+   ewin->strut.top_start_x = val[8];
+   ewin->strut.top_end_x = val[9];
+   ewin->strut.bottom_start_x = val[10];
+   ewin->strut.bottom_end_x = val[11];
+#endif
 }
 
 void
@@ -1024,7 +1043,8 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
       EWMH_GetWindowName(ewin);
    else if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
       EWMH_GetWindowIconName(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT)
+   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT_PARTIAL ||
+	    atom_change == ECORE_X_ATOM_NET_WM_STRUT)
       EWMH_GetWindowStrut(ewin);
    else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
       EWMH_GetWindowOpacity(ewin);
