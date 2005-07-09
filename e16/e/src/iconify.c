@@ -2869,7 +2869,7 @@ IconboxObjSwinAdd(Iconbox * ib, Window win)
    if (!swin)
       return;
 
-   if (IconboxObjectAdd(ib, swin))
+   if (IconboxObjectAdd(ib, swin) < 0)
       return;			/* This should *really* not be possible */
 
    swin->win = win;
