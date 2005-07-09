@@ -480,6 +480,19 @@ EwinGetGeometry(EWin * ewin)
 }
 
 void
+EwinUpdateShapeInfo(EWin * ewin)
+{
+   EGrabServer();
+   ewin->state.shaped = EShapeCopy(ewin->win_container, ewin->client.win);
+   EUngrabServer();
+
+#if 0				/* Debug */
+   Eprintf("EwinUpdateShapeInfo %#lx cont=%#lx shaped=%d\n",
+	   ewin->client.win, ewin->win_container, ewin->client.shaped);
+#endif
+}
+
+void
 EwinPropagateShapes(EWin * ewin)
 {
    if (!EoIsShown(ewin))
@@ -533,7 +546,7 @@ Adopt(EWin * ewin)
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
-   ICCCM_GetShapeInfo(ewin);
+   EwinUpdateShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
    if (!EwinIsInternal(ewin))
      {
@@ -1072,12 +1085,10 @@ EwinEventUnmap(EWin * ewin)
 static void
 EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 {
-   Window              win, winrel;
+   Window              winrel;
    EWin               *ewin2;
    int                 x = 0, y = 0, w = 0, h = 0;
    XWindowChanges      xwc;
-
-   win = ev->xconfigurerequest.window;
 
    if (ewin)
      {
@@ -1110,30 +1121,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 		  else if (xwc.stack_mode == Below)
 		     LowerEwin(ewin);
 	       }
-	     /*        else
-	      * XConfigureWindow(disp, EoGetWin(ewin),
-	      * ev->xconfigurerequest.value_mask &
-	      * (CWSibling | CWStackMode), &xwc); */
 	  }
-#if 0				/* Let's try disabling this */
-	/* this ugly workaround here is because x11amp is very brain-dead */
-	/* and sets its minunum and maximm sizes the same - fair enough */
-	/* to ensure it doesnt get resized - BUT hwne it shades itself */
-	/* it resizes down to a smaller size - of course keeping the */
-	/* minimum and maximim size same - E unconditionally disallows any */
-	/* client window to be resized outside of its constraints */
-	/* (any client could do this resize - not just x11amp thus E is */
-	/* imposing the hints x11amp set up - this works around by */
-	/* modifying the constraints to fit what the app requested */
-	if (w < ewin->client.width.min)
-	   ewin->client.width.min = w;
-	if (w > ewin->client.width.max)
-	   ewin->client.width.max = w;
-	if (h < ewin->client.height.min)
-	   ewin->client.height.min = h;
-	if (h > ewin->client.height.max)
-	   ewin->client.height.max = h;
-#endif
 
 	if (ev->xconfigurerequest.value_mask & (CWX | CWY))
 	  {
@@ -1146,19 +1134,6 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	Mode.move.check = 0;	/* Don't restrict client requests */
 	MoveResizeEwin(ewin, x, y, w, h);
 	Mode.move.check = 1;
-#if 0				/* FIXME - Remove? */
-	{
-	   char                pshaped;
-
-	   pshaped = ewin->client.shaped;
-	   ICCCM_GetShapeInfo(ewin);
-	   if (pshaped != ewin->client.shaped)
-	     {
-		ewin->shapedone = 0;
-		EwinPropagateShapes(ewin);
-	     }
-	}
-#endif
 	ReZoom(ewin);
      }
    else
@@ -1170,51 +1145,29 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	xwc.border_width = ev->xconfigurerequest.border_width;
 	xwc.sibling = ev->xconfigurerequest.above;
 	xwc.stack_mode = ev->xconfigurerequest.detail;
-	EConfigureWindow(win, ev->xconfigurerequest.value_mask, &xwc);
+	EConfigureWindow(ev->xconfigurerequest.window,
+			 ev->xconfigurerequest.value_mask, &xwc);
      }
 }
 
 static void
 EwinEventResizeRequest(EWin * ewin, XEvent * ev)
 {
-   Window              win;
-   int                 w, h;
-
-   win = ev->xresizerequest.window;
-
    if (ewin)
      {
-	w = ev->xresizerequest.width;
-	h = ev->xresizerequest.height;
-	ResizeEwin(ewin, w, h);
-#if 0				/* FIXME - Remove? */
-	{
-	   char                pshaped;
-
-	   pshaped = ewin->client.shaped;
-	   ICCCM_GetShapeInfo(ewin);
-	   if (pshaped != ewin->client.shaped)
-	     {
-		ewin->shapedone = 0;
-		EwinPropagateShapes(ewin);
-	     }
-	}
-#endif
+	ResizeEwin(ewin, ev->xresizerequest.width, ev->xresizerequest.height);
 	ReZoom(ewin);
      }
    else
      {
-	EResizeWindow(win, ev->xresizerequest.width, ev->xresizerequest.height);
+	EResizeWindow(ev->xresizerequest.window,
+		      ev->xresizerequest.width, ev->xresizerequest.height);
      }
 }
 
 static void
 EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
 {
-   Window              win;
-
-   win = ev->xcirculaterequest.window;
-
    if (ewin)
      {
 	if (ev->xcirculaterequest.place == PlaceOnTop)
@@ -1225,9 +1178,9 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
    else
      {
 	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   ERaiseWindow(win);
+	   ERaiseWindow(ev->xcirculaterequest.window);
 	else
-	   ELowerWindow(win);
+	   ELowerWindow(ev->xcirculaterequest.window);
      }
 }
 
@@ -1248,7 +1201,7 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 static void
 EwinEventShapeChange(EWin * ewin)
 {
-   ICCCM_GetShapeInfo(ewin);
+   EwinUpdateShapeInfo(ewin);
    ewin->update.shape = 1;
    EwinPropagateShapes(ewin);
 }

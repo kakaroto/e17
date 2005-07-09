@@ -728,19 +728,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 }
 
 void
-ICCCM_GetShapeInfo(EWin * ewin)
-{
-   EGrabServer();
-   ewin->state.shaped = EShapeCopy(ewin->win_container, ewin->client.win);
-   EUngrabServer();
-
-#if 0				/* Debug */
-   Eprintf("ICCCM_GetShapeInfo %#lx cont=%#lx shaped=%d\n",
-	   ewin->client.win, ewin->win_container, ewin->client.shaped);
-#endif
-}
-
-void
 ICCCM_SetIconSizes(void)
 {
    XIconSize          *is;

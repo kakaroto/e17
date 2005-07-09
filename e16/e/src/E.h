@@ -1616,6 +1616,7 @@ EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
+void                EwinUpdateShapeInfo(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);
 void                AddToFamily(EWin * ewin, Window win);
@@ -1896,7 +1897,6 @@ void                ICCCM_Focus(const EWin * ewin);
 void                ICCCM_GetGeoms(EWin * ewin, Atom atom_change);
 void                ICCCM_GetInfo(EWin * ewin, Atom atom_change);
 void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
-void                ICCCM_GetShapeInfo(EWin * ewin);
 void                ICCCM_SetIconSizes(void);
 void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 

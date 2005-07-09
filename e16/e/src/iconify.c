@@ -1458,19 +1458,6 @@ IB_DrawScroll(Iconbox * ib)
 	EUnmapWindow(ib->arrow2_win);
 	break;
      }
-
-#if 0				/* FIXME - Remove? */
-   EShapePropagate(ib->win);
-   if (ib->ewin)
-     {
-	const Border       *b;
-
-	b = ib->ewin->border;
-	ICCCM_GetShapeInfo(ib->ewin);
-	if (ib->ewin->border == b)
-	   EwinPropagateShapes(ib->ewin);
-     }
-#endif
 }
 
 static void
@@ -1723,7 +1710,7 @@ IconboxDraw(Iconbox * ib)
 	EUnmapWindow(ib->icon_win);
      }
    EShapePropagate(ib->win);
-   ICCCM_GetShapeInfo(ib->ewin);
+   EwinUpdateShapeInfo(ib->ewin);
    ib->ewin->update.shape = 1;
    EwinPropagateShapes(ib->ewin);
 }
