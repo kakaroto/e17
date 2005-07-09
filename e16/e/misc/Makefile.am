@@ -10,4 +10,4 @@ bin_SCRIPTS = starte16
 EXTRA_DIST = $(misc_DATA)
 
 miscdir = $(ENLIGHTENMENT_ROOT)/misc
-sesmdir = $(sysconfdir)/X11/dm/Sessions
+sesmdir = $(datadir)/xsessions
