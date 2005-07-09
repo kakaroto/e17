@@ -53,6 +53,10 @@ ewl_entry_init(Ewl_Entry *e, const char *text)
 	ewl_entry_editable_set(e, TRUE);
 
 	/* setup callbacks */
+	ewl_callback_append(w, EWL_CALLBACK_SELECT,
+				ewl_entry_cb_selected, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESELECT,
+				ewl_entry_cb_deselected, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_entry_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -153,6 +157,22 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, cw, ch);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void 
+ewl_entry_cb_selected(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Entry *entry = w;
+	
+	ewl_widget_show(entry->cursor);
+}
+
+void 
+ewl_entry_cb_deselected(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Entry *entry = w;
+	
+	ewl_widget_hide(entry->cursor);	
 }
 
 void
