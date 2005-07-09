@@ -1709,9 +1709,14 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
       return 0;
 
    if (ev->type == ButtonPress)
-      GrabPointerSet(EoGetWin(ewin), ECSR_GRAB, 0);
+     {
+	GrabPointerSet(EoGetWin(ewin), ECSR_GRAB, 0);
+	FocusToEWin(ewin, FOCUS_CLICK);
+     }
    else if (ev->type == ButtonRelease)
-      GrabPointerRelease();
+     {
+	GrabPointerRelease();
+     }
 
    return ActionclassEvent(ac, ev, ewin);
 }
