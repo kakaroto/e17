@@ -114,6 +114,7 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_CLIENT_LIST_STACKING;
 
    atom_list[atom_count++] = ECORE_X_ATOM_NET_CLOSE_WINDOW;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_MOVERESIZE;
 
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_NAME;
@@ -1001,6 +1002,20 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     ewin->state.attention = action;
 	     EWMH_SetWindowState(ewin);
 	  }
+     }
+   else if (ev->message_type == ECORE_X_ATOM_NET_MOVERESIZE_WINDOW)
+     {
+	int                 flags, grav, x, y, w, h;
+
+	flags = ev->data.l[0];
+	grav = flags & 0xf;
+	if (grav == 0)
+	   grav = ewin->client.grav;
+	x = (flags & 0x100) ? ev->data.l[1] : EoGetX(ewin);
+	y = (flags & 0x200) ? ev->data.l[2] : EoGetY(ewin);
+	w = (flags & 0x400) ? ev->data.l[3] : ewin->client.w;
+	h = (flags & 0x800) ? ev->data.l[4] : ewin->client.h;
+	MoveResizeEwinWithGravity(ewin, x, y, w, h, grav);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {

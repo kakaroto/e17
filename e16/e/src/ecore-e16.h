@@ -193,10 +193,10 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 
 /* Misc window ops */
 extern Ecore_X_Atom ECORE_X_ATOM_NET_CLOSE_WINDOW;
+extern Ecore_X_Atom ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_MOVERESIZE;
 
 #if 0				/* Not yet implemented */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_RESTACK_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS;
 #endif

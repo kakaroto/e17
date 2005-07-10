@@ -519,6 +519,13 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 }
 
 void
+MoveResizeEwinWithGravity(EWin * ewin, int x, int y, int w, int h, int grav)
+{
+   EwinGetPosition(ewin, x, y, ewin->client.bw, grav, &x, &y);
+   doMoveResizeEwin(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+}
+
+void
 MoveEwinToDesktop(EWin * ewin, int desk)
 {
    doMoveResizeEwin(ewin, desk, 0, 0, 0, 0, MRF_DESK);

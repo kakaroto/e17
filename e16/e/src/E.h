@@ -1616,6 +1616,8 @@ EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
+void                EwinGetPosition(const EWin * ewin, int x, int y, int bw,
+				    int grav, int *px, int *py);
 void                EwinUpdateShapeInfo(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);
@@ -1646,6 +1648,8 @@ void                EwinFixPosition(EWin * ewin);
 void                MoveEwin(EWin * ewin, int x, int y);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
+void                MoveResizeEwinWithGravity(EWin * ewin, int x, int y, int w,
+					      int h, int grav);
 void                EwinIconify(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
 void                EwinStick(EWin * ewin);
