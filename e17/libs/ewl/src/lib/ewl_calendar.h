@@ -6,7 +6,8 @@
 /**
  * @file ewl_calendar.h
  * @defgroup Ewl_Calendar Calendar: The EWL Calendar Widget
- * @brief Defines the Ewl_Calendar class,  
+ * @brief Defines the Ewl_Calendar class  
+ * Defined the Ewl_Calendar class, allowing selection of a day in time
  *
  */
 

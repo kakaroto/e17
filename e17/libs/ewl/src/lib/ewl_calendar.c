@@ -105,6 +105,14 @@ void ewl_calendar_add_day_labels(Ewl_Calendar* ib) {
 	ewl_widget_show(day_label);
 }
 
+/**
+ * @param cal: The calendar to get the date frm
+ * @param str: a pre-initialized char* pointer to insert the date into
+ * @return none 
+ * @brief Returns an ASCII formatted representation of the selected date
+ *
+ * Inserts an ASCII formatted string of the currently selected date into the char* str pointer
+ */
 void ewl_calendar_ascii_time_get(Ewl_Calendar* cal, char* str) {
 	time_t tm;
 	struct tm* month_start;
@@ -203,8 +211,10 @@ void ewl_calendar_grid_setup(Ewl_Calendar* cal) {
 
 
 /**
- * @return Returns NULL on failure, a new Ewl_IconBox on success
- * @brief Creates a new Ewl_IconBox
+ * @return Returns NULL on failure, a new Ewl_Calendar on success
+ * @brief Creates a new Ewl_Calendar
+ *
+ * Creates a new Ewl_Calendar object
  */
 Ewl_Widget *ewl_calendar_new() {
 	Ewl_Calendar* ib;
@@ -216,7 +226,7 @@ Ewl_Widget *ewl_calendar_new() {
 	}
 
 	if (!ewl_calendar_init(ib)) {
-		printf("Failed iconbox init...\n");
+		printf("Failed calendar init...\n");
 		FREE(ib);
 		ib = NULL;
 	}
@@ -224,6 +234,11 @@ Ewl_Widget *ewl_calendar_new() {
 	DRETURN_PTR(EWL_WIDGET(ib), DLEVEL_STABLE);
 }
 
+/**
+ * @param ib: The calendar widget to initialize
+ * @return Returns NULL on failure, a new Ewl_IconBox on success
+ * @brief Init a new Ewl_Calendar to default values and callbacks, and set date to today
+ */
 int ewl_calendar_init(Ewl_Calendar* ib) {
 	Ewl_Widget *w;
 	Ewl_Widget *vbox;
