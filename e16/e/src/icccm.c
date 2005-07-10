@@ -227,9 +227,6 @@ ICCCM_Configure(const EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-   XMoveResizeWindow(disp, ewin->client.win, 0, 0,
-		     ewin->client.w, ewin->client.h);
-
    ev.type = ConfigureNotify;
    ev.xconfigure.display = disp;
    ev.xconfigure.event = ewin->client.win;
