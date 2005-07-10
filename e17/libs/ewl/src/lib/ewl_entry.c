@@ -2,6 +2,10 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+/**
+ * @param text: The text to set into the entry
+ * @return Returns a new Ewl_Widget on success or NULL on failure
+ */
 Ewl_Widget *
 ewl_entry_new(const char *text)
 {
@@ -22,6 +26,11 @@ ewl_entry_new(const char *text)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to initialize
+ * @param text: The text to put into the entry
+ * @return Returns TRUE on success or FALSE on failure
+ */
 int
 ewl_entry_init(Ewl_Entry *e, const char *text)
 {
@@ -67,6 +76,11 @@ ewl_entry_init(Ewl_Entry *e, const char *text)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to set the multiline status
+ * @param multiline: The multiline status to set
+ * @return Returns no value
+ */
 void
 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
 {
@@ -78,6 +92,10 @@ ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to get the multiline status from
+ * @return Returns the multline status of the widget
+ */
 unsigned int
 ewl_entry_multline_get(Ewl_Entry *e)
 {
@@ -87,6 +105,11 @@ ewl_entry_multline_get(Ewl_Entry *e)
 	DRETURN_INT(e->multiline, DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to set the editable status of
+ * @param editable: The value to set for the editable flag
+ * @return Returns no value
+ */
 void
 ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 {
@@ -120,6 +143,10 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The Ewl_Entry to get the editable status from
+ * @return Returns the editable status of the entry
+ */
 unsigned int
 ewl_entry_editable_get(Ewl_Entry *e)
 {
@@ -153,8 +180,6 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
 
 	if (!cw) cw = CURRENT_W(e->cursor);
 	if (!ch) ch = CURRENT_H(e->cursor);
-
-//printf("entry_configure pos: %02d cx: %02d cy: %02d cw: %02d ch: %02d\n", c_pos, cx, cy, cw, ch);
 
 	/* XXX this needs to move over a little so it dosen't sit right on
 	 * top of the char */
