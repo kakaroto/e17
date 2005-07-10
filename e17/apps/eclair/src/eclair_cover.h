@@ -1,7 +1,25 @@
 #ifndef _ECLAIR_COVER_H_
 #define _ECLAIR_COVER_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include <pthread.h>
+#include "eclair_types.h"
+
+struct _Eclair_Cover_Manager
+{
+   Eclair_Add_File_State cover_add_state;
+   Evas_List *cover_files_to_add;
+   Evas_List *cover_files_to_treat;
+   Evas_List *not_in_amazon_db;
+
+   Evas_Bool cover_should_treat_files;
+   Evas_Bool cover_delete_thread;
+   pthread_cond_t cover_cond;
+   pthread_mutex_t cover_mutex;
+   pthread_t cover_thread;
+
+   Eclair *eclair;
+};
 
 void eclair_cover_init(Eclair_Cover_Manager *cover_manager, Eclair *eclair);
 void eclair_cover_shutdown(Eclair_Cover_Manager *cover_manager);

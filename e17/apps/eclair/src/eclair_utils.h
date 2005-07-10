@@ -1,7 +1,8 @@
 #ifndef _ECLAIR_UTILS_H_
 #define _ECLAIR_UTILS_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include "eclair_types.h"
 
 void eclair_utils_init();
 void eclair_utils_second_to_string(double position, double length, char *string);

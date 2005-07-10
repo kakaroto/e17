@@ -1,13 +1,11 @@
 #include "eclair_dialogs.h"
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-#include <glade/glade.h>
 #include "../config.h"
 #include "eclair.h"
 #include "eclair_config.h"
 #include "eclair_playlist.h"
 #include "eclair_playlist_container.h"
 #include "eclair_utils.h"
+#include "eclair_database.h"
 
 static void *_eclair_dialogs_thread(void *param);
 static gint _eclair_dialogs_update(gpointer data);
@@ -31,6 +29,7 @@ static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data)
 static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_repeat_mode(GtkWidget *widget, gpointer data);
 static void _eclair_dialogs_menu_on_search_window(GtkWidget *widget, gpointer data);
+static void _eclair_dialogs_search_window_on_entry_changed(GtkWidget *widget, gpointer data);
 
 //Initialize dialogs manager
 void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair)
@@ -366,66 +365,60 @@ static void _eclair_dialogs_search_window_open(Eclair_Dialogs_Manager *dialogs_m
 
    if (!dialogs_manager->search_window_xml || !dialogs_manager->search_window_window)
    {
+      GtkCellRenderer *cell_renderer;
+      GtkTreeViewColumn *artist_column, *song_column, *album_column;
+
       dialogs_manager->search_window_xml = glade_xml_new(PACKAGE_DATA_DIR "/glade/eclair.glade", "search_window", NULL);
       dialogs_manager->search_window_window = glade_xml_get_widget(dialogs_manager->search_window_xml, "search_window");
-      
-      /*dialogs_manager->file_chooser_all_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "select_all_button");
-      dialogs_manager->file_chooser_none_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "select_none_button");
-      dialogs_manager->file_chooser_save_playlist_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "save_playlist_button");
-      dialogs_manager->file_chooser_load_playlist_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "load_playlist_button");
-      dialogs_manager->file_chooser_add_files_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "add_files_button");
-      dialogs_manager->file_chooser_cancel_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "cancel_button");
-*/
-      /*g_signal_connect_swapped(dialogs_manager->file_chooser_all_button, "clicked", G_CALLBACK(gtk_file_chooser_select_all), dialogs_manager->file_chooser_widget);
-      g_signal_connect_swapped(dialogs_manager->file_chooser_none_button, "clicked", G_CALLBACK(gtk_file_chooser_unselect_all), dialogs_manager->file_chooser_widget);
-      g_signal_connect(dialogs_manager->file_chooser_save_playlist_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_save_playlist), eclair);
-      g_signal_connect(dialogs_manager->file_chooser_load_playlist_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_add_files), eclair);
-      g_signal_connect(dialogs_manager->file_chooser_add_files_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_add_files), eclair);
-      g_signal_connect_swapped(dialogs_manager->file_chooser_cancel_button, "clicked", G_CALLBACK(gtk_widget_hide), dialogs_manager->file_chooser_dialog);
-      g_signal_connect(dialogs_manager->file_chooser_dialog, "delete_event", G_CALLBACK(_eclair_dialogs_file_chooser_on_delete), eclair);
-   */}
+      gtk_widget_hide(dialogs_manager->search_window_window);
+      dialogs_manager->search_tree = glade_xml_get_widget(dialogs_manager->search_window_xml, "media_files_tree");
 
-   /*if (fc_type == ECLAIR_FC_ADD_FILES)
-   {
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_OPEN);
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), TRUE);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Add Files");
-      gtk_widget_show(dialogs_manager->file_chooser_all_button);
-      gtk_widget_show(dialogs_manager->file_chooser_none_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_show(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else if (fc_type == ECLAIR_FC_LOAD_PLAYLIST)
-   {
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), FALSE);
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_OPEN);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Load Playlist");
-      gtk_widget_hide(dialogs_manager->file_chooser_all_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_none_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_show(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else if (fc_type == ECLAIR_FC_SAVE_PLAYLIST)
-   {
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), FALSE);
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_SAVE);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Save Playlist");
-      gtk_widget_hide(dialogs_manager->file_chooser_all_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_none_button);
-      gtk_widget_show(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else
-      return;*/
+      dialogs_manager->search_list_store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+      gtk_tree_view_set_model(GTK_TREE_VIEW(dialogs_manager->search_tree), GTK_TREE_MODEL(dialogs_manager->search_list_store)); 
+      cell_renderer = gtk_cell_renderer_text_new();
 
-   //gtk_window_resize(GTK_WINDOW(dialogs_manager->file_chooser_dialog), 600, 400);
+      artist_column = gtk_tree_view_column_new_with_attributes("Artist", cell_renderer, "text", 0, NULL);
+      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), artist_column);
+      gtk_tree_view_column_set_sort_column_id(artist_column, 0);
+      gtk_tree_view_column_set_resizable(artist_column, TRUE);
+
+      song_column = gtk_tree_view_column_new_with_attributes("Song", cell_renderer, "text", 1, NULL);
+      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), song_column);
+      gtk_tree_view_column_set_sort_column_id(song_column, 1);
+      gtk_tree_view_column_set_resizable(song_column, TRUE);
+
+      album_column = gtk_tree_view_column_new_with_attributes("Album", cell_renderer, "text", 2, NULL);
+      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), album_column);
+      gtk_tree_view_column_set_sort_column_id(album_column, 2);
+      gtk_tree_view_column_set_resizable(album_column, TRUE);
+
+      glade_xml_signal_connect_data(dialogs_manager->search_window_xml, "on_search_entry_changed", G_CALLBACK(_eclair_dialogs_search_window_on_entry_changed), dialogs_manager);
+   }
+
+   gtk_widget_show(dialogs_manager->search_window_window);
    gtk_window_present(GTK_WINDOW(dialogs_manager->search_window_window));
+}
+
+static void _eclair_dialogs_search_window_on_entry_changed(GtkWidget *widget, gpointer data)
+{
+   Eclair_Dialogs_Manager *dialogs_manager;
+   Eclair *eclair;
+   GtkTreeIter new_entry;
+   char **table_result;
+   int nrows, ncols;
+   int i;
+
+   if (!(dialogs_manager = data) || !(eclair = dialogs_manager->eclair))
+      return;
+
+   eclair_database_search(&eclair->database, gtk_entry_get_text(GTK_ENTRY(widget)), &table_result, &nrows, &ncols);
+   gtk_list_store_clear(eclair->dialogs_manager.search_list_store);
+   for (i = 1; i <= nrows; i++)
+   {
+      gtk_list_store_append(dialogs_manager->search_list_store, &new_entry);
+      gtk_list_store_set(dialogs_manager->search_list_store, &new_entry,
+         0, table_result[i * ncols + 2], 1, table_result[i * ncols + 1], 2, table_result[i * ncols + 3], -1);
+   }
 }
 
 //------------------------------

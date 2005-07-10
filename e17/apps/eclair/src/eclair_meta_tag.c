@@ -2,7 +2,6 @@
 #include <tag_c.h>
 #include <string.h>
 #include <unistd.h>
-#include <Evas.h>
 #include "eclair.h"
 #include "eclair_cover.h"
 #include "eclair_media_file.h"
@@ -61,12 +60,13 @@ void eclair_meta_tag_read(Eclair *eclair, Eclair_Media_File *media_file)
    TagLib_File *tag_file;
    TagLib_Tag *tag;
    const TagLib_AudioProperties *tag_audio_props;
-   Evas_Bool need_to_update;
+   Evas_Bool need_to_update = 0;
 
    if (!eclair || !media_file || !media_file->path)
       return;
 
-   if (!eclair_database_search(&eclair->database, media_file, &need_to_update) && !need_to_update)
+   
+   if (!eclair_database_get_meta_infos(&eclair->database, media_file, &need_to_update) || need_to_update)
    {
       if (!(tag_file = taglib_file_new(media_file->path)))
          return;

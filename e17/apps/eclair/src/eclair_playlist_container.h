@@ -1,7 +1,42 @@
 #ifndef _ECLAIR_PLAYLIST_CONTAINER_H_
 #define _ECLAIR_PLAYLIST_CONTAINER_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include <Ecore.h>
+#include "eclair_types.h"
+
+struct _Eclair_Playlist_Container
+{
+   //Container vars
+   Evas_Object *clip;
+   Evas_Object *grabber;
+   Evas_List *entry_objects;
+   Evas_List **entries;
+   Eclair_Media_File *last_selected;
+   double scroll_percent;
+
+   //Scroll vars
+   double scroll_start_time;
+   double scroll_speed;
+   Ecore_Timer *scroll_timer;
+
+   //Scroll_To vars
+   double scroll_to_percent;
+   double scroll_to_speed;
+   Ecore_Timer *scroll_to_timer;
+
+   //Theme vars
+   char *entry_theme_path;
+   int entry_height;
+   Eclair_Color normal_entry_bg_color;
+   Eclair_Color normal_entry_fg_color;
+   Eclair_Color selected_entry_bg_color;
+   Eclair_Color selected_entry_fg_color;
+   Eclair_Color current_entry_bg_color;
+   Eclair_Color current_entry_fg_color;
+
+   Eclair *eclair;
+};
 
 Evas_Object *eclair_playlist_container_object_add(Evas *evas, Eclair *eclair);
 void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char *entry_theme_path);

@@ -19,17 +19,20 @@
 #define NUM_EXTENSIONS 3
 #define NUM_COVER_NAMES 2
 
-typedef struct _Eclair_Cover_Packet_Chunk
+typedef struct _Eclair_Cover_Packet_Chunk Eclair_Cover_Packet_Chunk;
+typedef struct _Eclair_Cover_Not_In_DB_Album Eclair_Cover_Not_In_DB_Album;
+
+struct _Eclair_Cover_Packet_Chunk
 {
    int size;
    char *data;
-} Eclair_Cover_Packet_Chunk;
+};
 
-typedef struct _Eclair_Cover_Not_In_DB_Album
+struct _Eclair_Cover_Not_In_DB_Album
 {
    char *artist;
    char *album;
-} Eclair_Cover_Not_In_DB_Album;
+};
 
 const char *amazon_hostname = "webservices.amazon.com";
 const char *amazon_license_key = "0P1862RFDFSF4KYZQNG2";

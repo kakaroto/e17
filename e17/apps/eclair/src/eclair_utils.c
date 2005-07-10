@@ -1,6 +1,7 @@
 #include "eclair_utils.h"
 #include <Ecore_File.h>
 #include <string.h>
+#include "eclair_media_file.h"
 
 //Need to be called for the random generation
 void eclair_utils_init()

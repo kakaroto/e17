@@ -1,5 +1,4 @@
 #include "eclair_window.h"
-#include <Ecore_Evas.h>
 #include <Esmart/Esmart_Draggies.h>
 #include "eclair.h"
 #include "eclair_callbacks.h"

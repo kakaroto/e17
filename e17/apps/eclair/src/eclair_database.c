@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <sqlite3.h>
+#include "eclair.h"
 #include "eclair_media_file.h"
 
 //Init the eclair database (eventually create the db, then open it)
@@ -90,8 +90,10 @@ Evas_Bool eclair_database_insert_media_file(Eclair_Database *database, Eclair_Me
 }
 
 //Search a file from its path (media_file->path should not be NULL)
+//And if the file is found, fill the meta infos if the media_file
+//need_to_update will be set to 1 if the file in the database is older than the file on the disk
 //Return 1 if the media file has been found in the database
-Evas_Bool eclair_database_search(Eclair_Database *database, Eclair_Media_File *media_file, Evas_Bool *need_to_update)
+Evas_Bool eclair_database_get_meta_infos(Eclair_Database *database, Eclair_Media_File *media_file, Evas_Bool *need_to_update)
 {
    int result;
    char *error_msg;
@@ -137,21 +139,20 @@ Evas_Bool eclair_database_search(Eclair_Database *database, Eclair_Media_File *m
    return 1;
 }
 
-//Search a file from its path (media_file->path should not be NULL)
-Evas_Bool eclair_database_search2(Eclair_Database *database, const char *keyword)
+//Search files from keywords
+//Store the result in table_result
+//Return 1 if succes. Result have to be freed by calling eclair_database_free_result()
+Evas_Bool eclair_database_search(Eclair_Database *database, const char *keyword, char ***table_result, int *nrows, int *ncols)
 {
    int result;
    char *error_msg;
    char *query;
-   char **table_result;
-   int nrows, ncols, i, j;
 
-   if (!database || !keyword)
+   if (!database || !keyword || !table_result || !nrows || !ncols)
       return 0;
 
-   query = sqlite3_mprintf("SELECT * FROM media_files WHERE artist LIKE '%q%%'", keyword);
-   printf("%s\n", query);
-   result = sqlite3_get_table(database->db, query, &table_result, &nrows, &ncols, &error_msg);
+   query = sqlite3_mprintf("SELECT * FROM media_files WHERE artist LIKE '%%%q%%' or title LIKE '%%%q%%' or album LIKE '%%%q%%'", keyword, keyword, keyword);
+   result = sqlite3_get_table(database->db, query, table_result, nrows, ncols, &error_msg);
    if (result != SQLITE_OK)
    {
       fprintf(stderr, "Database: Unable to select data from \"media_files\" table: %s\n", error_msg);
@@ -161,17 +162,13 @@ Evas_Bool eclair_database_search2(Eclair_Database *database, const char *keyword
    }
    sqlite3_free(query);
 
-   for (i = 0; i <= nrows; i++)
-   {
-      for (j = 0; j < ncols; j++)
-         printf("%s | ", table_result[ncols * i + j]);
-      printf("\n");
-   }
-   printf("\n");
-
-   sqlite3_free_table(table_result);
-
    return 1;
+}
+
+//Free the result returned by eclair_database_search
+void eclair_database_free_result(char **table_result)
+{
+   sqlite3_free_table(table_result);
 }
 
 //Close the database

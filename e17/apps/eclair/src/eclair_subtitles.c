@@ -1,7 +1,7 @@
 #include "eclair_subtitles.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <Evas.h>
 
 int _eclair_subtitles_sort_cb(void *sub1, void *sub2);
 

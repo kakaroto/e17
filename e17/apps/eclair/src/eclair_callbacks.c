@@ -1,13 +1,12 @@
 #include "eclair_callbacks.h"
 #include <string.h>
 #include <Emotion.h>
-#include <Edje.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_X.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
 #include "eclair_playlist_container.h"
-#include "eclair_cover.h"
 #include "eclair_dialogs.h"
 #include "eclair_window.h"
 

@@ -1,7 +1,28 @@
 #ifndef _ECLAIR_PLAYLIST_H_
 #define _ECLAIR_PLAYLIST_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include <Ecore.h>
+#include "eclair_types.h"
+
+struct _Eclair_Playlist_Container_Object
+{
+   Evas_Object *rect;
+   Evas_Object *text;
+};
+
+struct _Eclair_Playlist
+{
+   Evas_List *playlist;
+   Evas_List *current;
+   Evas_List *shuffle_list;
+   Evas_List *removed_media_files;
+   Evas_Bool shuffle;
+   Evas_Bool repeat;
+   Ecore_Timer *media_files_destructor_timer;
+
+   Eclair *eclair;
+};
 
 void eclair_playlist_init(Eclair_Playlist *playlist, Eclair *eclair);
 void eclair_playlist_shutdown(Eclair_Playlist *playlist);

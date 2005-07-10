@@ -1,5 +1,6 @@
 #include "eclair_args.h"
 #include <getopt.h>
+#include "eclair.h"
 
 static void _eclair_args_print_usage();
 

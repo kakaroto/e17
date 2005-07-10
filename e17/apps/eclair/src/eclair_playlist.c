@@ -2,19 +2,14 @@
 #include "../config.h"
 #include <string.h>
 #include <stdio.h>
-#include <Evas.h>
 #include <Ecore_File.h>
 #include <Edje.h>
 #include "eclair.h"
 #include "eclair_playlist_container.h"
-#include "eclair_cover.h"
 #include "eclair_media_file.h"
 #include "eclair_meta_tag.h"
-#include "eclair_cover.h"
-#include "eclair_callbacks.h"
 #include "eclair_utils.h"
 #include "eclair_config.h"
-#include "eclair_dialogs.h"
 
 #define MAX_PATH_LEN 1024
 

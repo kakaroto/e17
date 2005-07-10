@@ -1,9 +1,9 @@
 #include "eclair_playlist_container.h"
-#include <Evas.h>
-#include <Ecore.h>
+#include <Edje.h>
 #include <Ecore_File.h>
 #include <math.h>
 #include "eclair.h"
+#include "eclair_window.h"
 #include "eclair_media_file.h"
 #include "eclair_playlist.h"
 

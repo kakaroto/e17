@@ -6,21 +6,12 @@
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <Emotion.h>
-#include <Esmart/Esmart_Draggies.h>
-#include "eclair_playlist.h"
 #include "eclair_playlist_container.h"
 #include "eclair_media_file.h"
 #include "eclair_callbacks.h"
-#include "eclair_subtitles.h"
-#include "eclair_meta_tag.h"
-#include "eclair_cover.h"
 #include "eclair_utils.h"
-#include "eclair_config.h"
 #include "eclair_args.h"
-#include "eclair_dialogs.h"
 #include "eclair_window.h"
-#include "eclair_database.h"
-#include "eclair_video.h"
 
 static Evas_Bool _eclair_create_gui_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_window(Eclair *eclair);

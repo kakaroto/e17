@@ -1,9 +1,9 @@
 #include "eclair_video.h"
 #include "../config.h"
-#include <pthread.h>
 #include <Emotion.h>
 #include "eclair.h"
 #include "eclair_callbacks.h"
+#include "eclair_window.h"
 
 static void *_eclair_video_create_emotion_object_thread(void *param);
 static void _eclair_video_frame_decode_cb(void *data, Evas_Object *obj, void *event_info);

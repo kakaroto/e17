@@ -3,7 +3,7 @@
 #include <Ecore_File.h>
 #include "eclair.h"
 #include "eclair_playlist.h"
-#include "eclair_cover.h"
+#include "eclair_playlist_container.h"
 #include "eclair_utils.h"
 
 //Create a new media file

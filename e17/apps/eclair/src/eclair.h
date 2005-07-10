@@ -1,7 +1,58 @@
 #ifndef _ECLAIR_H_
 #define _ECLAIR_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include "eclair_video.h"
+#include "eclair_playlist.h"
+#include "eclair_subtitles.h"
+#include "eclair_dialogs.h"
+#include "eclair_meta_tag.h"
+#include "eclair_cover.h"
+#include "eclair_config.h"
+#include "eclair_database.h"
+#include "eclair_types.h"
+
+struct _Eclair
+{
+   //Video related vars
+   Eclair_Video video;
+   Eclair_Engine video_engine;
+
+   //Gui related vars
+   Eclair_Window *gui_window;
+   Eclair_Window *playlist_window;
+   Eclair_Window *equalizer_window;
+   Eclair_Window *cover_window;
+   Evas_Object *playlist_container;
+   Eclair_Window *playlist_container_owner;
+   Evas_Object *previous_cover;
+   Evas_Object *cover;
+   Eclair_Window *cover_owner;
+
+   Evas_Bool use_progress_bar_drag_for_time;
+   Evas_Bool dont_update_progressbar;
+   char *gui_theme_file;
+   int playlist_entry_height;
+   Eclair_Engine gui_engine;
+   Eclair_Drop_Object drop_object;
+   Eclair_Window *drop_window;
+
+   //Core vars
+   Eclair_State state;
+   Eclair_Playlist playlist;
+   Eclair_Subtitles subtitles;
+   Eclair_Dialogs_Manager dialogs_manager;
+   Eclair_Meta_Tag_Manager meta_tag_manager;
+   Eclair_Cover_Manager cover_manager;
+   Eclair_Config config;
+   Eclair_Database database;
+   Evas_Bool start_playing;
+   double seek_to_pos;
+
+   //Arguments
+   int *argc;
+   char ***argv;
+};
 
 //core functions
 Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv);

@@ -1,7 +1,20 @@
 #ifndef _ECLAIR_SUBTITLES_H_
 #define _ECLAIR_SUBTITLES_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include "eclair_types.h"
+
+struct _Eclair_Subtitle
+{
+   double start, end;
+   char *subtitle;
+};
+
+struct _Eclair_Subtitles
+{
+   Evas_List *subtitles;
+   Evas_Bool enable;
+};
 
 void eclair_subtitles_init(Eclair_Subtitles *subtitles);
 void eclair_subtitles_free(Eclair_Subtitles *subtitles);

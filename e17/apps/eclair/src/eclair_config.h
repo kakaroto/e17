@@ -1,7 +1,20 @@
 #ifndef _ECLAIR_CONFIG_H_
 #define _ECLAIR_CONFIG_H_
 
-#include "eclair_private.h"
+#include <Evas.h>
+#include <libxml/tree.h>
+#include "eclair_types.h"
+
+struct _Eclair_Config
+{
+   char config_dir_path[256];
+   char covers_dir_path[256];
+   char config_file_path[256];
+   char default_playlist_path[256];
+   char database_path[256];
+   xmlDocPtr config_doc;
+   xmlNodePtr root_node;
+};
 
 Evas_Bool eclair_config_init(Eclair_Config *config);
 void eclair_config_shutdown(Eclair_Config *config);
