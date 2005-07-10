@@ -778,7 +778,7 @@ RefreshTaskMenu(int desk)
 	ewin = FindEwinByMenu(task_menu[desk]);
 	if (ewin)
 	  {
-	     MoveEwin(ewin, lx, ly);
+	     EwinMove(ewin, lx, ly);
 	     ShowEwin(ewin);
 	  }
 	Mode.cur_menu[0] = task_menu[desk];

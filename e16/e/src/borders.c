@@ -581,7 +581,7 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
    if (apply)
      {
 	EwinBorderSetTo(ewin, b);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin),
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
 		       ewin->client.w, ewin->client.h);
      }
    else

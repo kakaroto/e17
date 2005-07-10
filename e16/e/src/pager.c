@@ -625,10 +625,10 @@ PagerShow(Pager * p)
    w = ewin->client.w;
    h = ewin->client.h;
 
-   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+   EwinMoveToDesktop(ewin, EoGetDesk(ewin));
    if (ewin->state.placed)
      {
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
    else
      {
@@ -638,8 +638,8 @@ PagerShow(Pager * p)
 	GetAreaSize(&ax, &ay);
 	w = ((48 * VRoot.w) / VRoot.h) * ax;
 	h = 48 * ay;
-	ResizeEwin(ewin, w, h);	/* Does layout */
-	MoveEwin(ewin, 0,
+	EwinResize(ewin, w, h);	/* Does layout */
+	EwinMove(ewin, 0,
 		 VRoot.h - (Conf.desks.num - p->desktop) * EoGetH(ewin));
      }
 
@@ -1522,10 +1522,10 @@ EwinGroupMove(EWin * ewin, int desk, int x, int y)
 	   continue;
 
 	if (newdesk)
-	   MoveEwinToDesktopAt(gwins[i], desk, EoGetX(gwins[i]) + dx,
+	   EwinMoveToDesktopAt(gwins[i], desk, EoGetX(gwins[i]) + dx,
 			       EoGetY(gwins[i]) + dy);
 	else
-	   MoveEwin(gwins[i], EoGetX(gwins[i]) + dx, EoGetY(gwins[i]) + dy);
+	   EwinMove(gwins[i], EoGetX(gwins[i]) + dx, EoGetY(gwins[i]) + dy);
      }
    if (gwins)
       Efree(gwins);
@@ -1684,7 +1684,7 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 		    {
 		       if (gwins[i]->type != EWIN_TYPE_PAGER)
 			 {
-			    MoveEwin(gwins[i], gwin_px[i], gwin_py[i]);
+			    EwinMove(gwins[i], gwin_px[i], gwin_py[i]);
 			    EwinIconify(gwins[i]);
 			 }
 		    }
@@ -1895,7 +1895,7 @@ PagersReconfigure(void)
      {
 	p = pl[i];
 	PagerReconfigure(p);
-	ResizeEwin(p->ewin, p->ewin->client.w, p->ewin->client.h);
+	EwinResize(p->ewin, p->ewin->client.w, p->ewin->client.h);
      }
    Efree(pl);
 }

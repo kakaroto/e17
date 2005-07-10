@@ -315,8 +315,8 @@ MenuShow(Menu * m, char noshow)
 
 	ewin->head = head_num;
 
-	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
-	ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
+	EwinResize(ewin, ewin->client.w, ewin->client.h);
 
 	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);
@@ -591,7 +591,7 @@ MenuRepack(Menu * m)
 	ewin->client.height.max = h;
 	ewin->client.width.min = w;
 	ewin->client.width.max = w;
-	ResizeEwin(ewin, w, h);
+	EwinResize(ewin, w, h);
 	RaiseEwin(ewin);
      }
 }
@@ -1035,7 +1035,7 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
 	ewin = m->ewin;
 	if (ewin)
 	  {
-	     MoveEwin(ewin, lx, ly);
+	     EwinMove(ewin, lx, ly);
 	     ShowEwin(ewin);
 	  }
      }
@@ -1279,7 +1279,7 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 	     ewin2 = mi->child->ewin;
 	     if (ewin2)
 	       {
-		  MoveEwin(ewin2,
+		  EwinMove(ewin2,
 			   EoGetX(ewin) + ewin->border->border.left + mx + mw,
 			   EoGetY(ewin) + ewin->border->border.top + my -
 			   ewin2->border->border.top);
@@ -1609,7 +1609,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
      }
 
    Mode.move.check = 0;		/* Bypass on-screen checks */
-   MoveEwin(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
+   EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
    Mode.move.check = 1;
    EwinFloatAt(ewin2, EoGetX(ewin2), EoGetY(ewin2));
    RaiseEwin(ewin2);

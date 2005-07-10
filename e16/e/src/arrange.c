@@ -792,7 +792,7 @@ ArrangeEwin(EWin * ewin)
    int                 x, y;
 
    ArrangeEwinXY(ewin, &x, &y);
-   MoveEwin(ewin, x, y);
+   EwinMove(ewin, x, y);
 }
 
 void
@@ -801,7 +801,7 @@ ArrangeEwinCentered(EWin * ewin, int focus)
    int                 x, y;
 
    ArrangeEwinCenteredXY(ewin, &x, &y);
-   MoveEwin(ewin, x, y);
+   EwinMove(ewin, x, y);
    if (focus)
       FocusToEWin(ewin, FOCUS_SET);
 }
@@ -1101,7 +1101,7 @@ ArrangeEwins(const char *params)
 		    {
 		       if ((EoGetX(ewin) != ret[i].x)
 			   || (EoGetY(ewin) != ret[i].y))
-			  MoveEwin((EWin *) ret[i].data, ret[i].x, ret[i].y);
+			  EwinMove((EWin *) ret[i].data, ret[i].x, ret[i].y);
 		    }
 	       }
 	  }

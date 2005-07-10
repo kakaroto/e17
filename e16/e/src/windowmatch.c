@@ -734,7 +734,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	a = b = 0;
 	if (sscanf(args, "%u %u", &a, &b) < 2)
 	   break;
-	MoveEwinToArea(ewin, a, b);	/* FIXME - We should not move here */
+	EwinMoveToArea(ewin, a, b);	/* FIXME - We should not move here */
 	break;
 
      case EWIN_OP_MOVE:

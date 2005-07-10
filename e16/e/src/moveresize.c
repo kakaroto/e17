@@ -594,7 +594,7 @@ ActionMoveHandleMotion(void)
 		       tmp_swapcoord_y = move_swapcoord_y;
 		       move_swapcoord_x = ewin2->shape_x;
 		       move_swapcoord_y = ewin2->shape_y;
-		       MoveEwin(ewin2, tmp_swapcoord_x, tmp_swapcoord_y);
+		       EwinMove(ewin2, tmp_swapcoord_x, tmp_swapcoord_y);
 		       break;
 		    }
 	       }

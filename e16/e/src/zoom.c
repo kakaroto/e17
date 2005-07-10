@@ -206,7 +206,7 @@ Zoom(EWin * ewin)
 	  {
 	     ewin = zoom_last_ewin;
 /*           XUngrabPointer(disp, CurrentTime); */
-	     MoveEwin(ewin, zoom_last_x, zoom_last_y);
+	     EwinMove(ewin, zoom_last_x, zoom_last_y);
 	     if (zoom_mask_1)
 		EDestroyWindow(zoom_mask_1);
 	     if (zoom_mask_2)
@@ -245,7 +245,7 @@ Zoom(EWin * ewin)
 	if (y2 < 0)
 	   y2 = 0;
 	RaiseEwin(ewin);
-	MoveEwin(ewin, -ewin->border->border.left + x1,
+	EwinMove(ewin, -ewin->border->border.left + x1,
 		 -ewin->border->border.top + y1);
 	FocusToEWin(ewin, FOCUS_SET);
 	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,

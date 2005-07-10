@@ -101,9 +101,9 @@ SetNewAreaSize(int ax, int ay)
 	if (!EoIsSticky(lst[i]))
 	  {
 	     if (lst[i]->area_x >= ax)
-		MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
+		EwinMoveToArea(lst[i], ax - 1, lst[i]->area_x);
 	     if (lst[i]->area_y >= ay)
-		MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
+		EwinMoveToArea(lst[i], lst[i]->area_x, ay - 1);
 	  }
      }
 
@@ -251,9 +251,9 @@ SetCurrentArea(int ax, int ay)
 	if (EoIsSticky(ewin) ||
 	    (EoIsFloating(ewin) && Conf.movres.mode_move == 0) ||
 	    (!ewin->state.iconified && Conf.desks.slidein))
-	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
 	else
-	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
+	   EwinMove(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
      }
    Mode.move.check = 1;
 
@@ -284,16 +284,16 @@ MoveCurrentAreaBy(int dx, int dy)
 }
 
 void
-MoveEwinToLinearArea(EWin * ewin, int a)
+EwinMoveToLinearArea(EWin * ewin, int a)
 {
    int                 ax, ay;
 
    AreaLinearToXY(a, &ax, &ay);
-   MoveEwinToArea(ewin, ax, ay);
+   EwinMoveToArea(ewin, ax, ay);
 }
 
 void
-MoveEwinLinearAreaBy(EWin * ewin, int a)
+EwinMoveLinearAreaBy(EWin * ewin, int a)
 {
-   MoveEwinToLinearArea(ewin, AreaXYToLinear(ewin->area_x, ewin->area_y) + a);
+   EwinMoveToLinearArea(ewin, AreaXYToLinear(ewin->area_x, ewin->area_y) + a);
 }

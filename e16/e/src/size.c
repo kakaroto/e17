@@ -43,7 +43,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 
    if (ewin->toggle)
      {
-	MoveResizeEwin(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
+	EwinMoveResize(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
 	ewin->lx = EoGetX(ewin);
 	ewin->ly = EoGetY(ewin);
 	ewin->lw = ewin->client.w;
@@ -168,7 +168,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    ewin->ly = EoGetY(ewin);
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
-   MoveResizeEwin(ewin, x, y, w, h);
+   EwinMoveResize(ewin, x, y, w, h);
    ewin->toggle = 1;
 
  done:;

@@ -711,12 +711,12 @@ AddToFamily(EWin * ewin, Window win)
      {
 	EwinSetFullscreen(ewin, 2);
 	ewin->state.placed = 1;
-	MoveEwinToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
+	EwinMoveToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);
 	goto done;
      }
 
-   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+   EwinResize(ewin, ewin->client.w, ewin->client.h);
 
    doslide = manplace = 0;
    if (Mode.place.enable_features)
@@ -784,7 +784,7 @@ AddToFamily(EWin * ewin, Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
      {
-	MoveEwinToDesktopAt(ewin, desk, x, y);
+	EwinMoveToDesktopAt(ewin, desk, x, y);
 	ewin->state.state = EWIN_STATE_MAPPED;
 	EwinIconify(ewin);
 	ewin->state.state = EWIN_STATE_ICONIC;
@@ -810,8 +810,8 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->state.placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-	MoveEwinToDesktopAt(ewin, desk, x, y);
-	MoveEwin(ewin, x, y);
+	EwinMoveToDesktopAt(ewin, desk, x, y);
+	EwinMove(ewin, x, y);
 	ShowEwin(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.have_place_grab = 1;
@@ -847,7 +847,7 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->state.animated = 1;
 	FocusEnable(0);
 
-	MoveEwinToDesktopAt(ewin, desk, fx, fy);
+	EwinMoveToDesktopAt(ewin, desk, fx, fy);
 	ShowEwin(ewin);
 	ewin->req_x = x;
 	ewin->req_y = y;
@@ -855,7 +855,7 @@ AddToFamily(EWin * ewin, Window win)
      }
    else
      {
-	MoveEwinToDesktopAt(ewin, desk, x, y);
+	EwinMoveToDesktopAt(ewin, desk, x, y);
 	ShowEwin(ewin);
      }
 
@@ -1128,7 +1128,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	  }
 
 	Mode.move.check = 0;	/* Don't restrict client requests */
-	MoveResizeEwin(ewin, x, y, w, h);
+	EwinMoveResize(ewin, x, y, w, h);
 	Mode.move.check = 1;
 	ReZoom(ewin);
      }
@@ -1151,7 +1151,7 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
 {
    if (ewin)
      {
-	ResizeEwin(ewin, ev->xresizerequest.width, ev->xresizerequest.height);
+	EwinResize(ewin, ev->xresizerequest.width, ev->xresizerequest.height);
 	ReZoom(ewin);
      }
    else
@@ -1562,7 +1562,7 @@ EwinChangesProcess(EWin * ewin)
 	if (desk != pdesk && !EoIsSticky(ewin))
 	  {
 	     EoSetDesk(ewin, pdesk);
-	     MoveEwinToDesktop(ewin, desk);
+	     EwinMoveToDesktop(ewin, desk);
 	  }
      }
 
@@ -1611,7 +1611,7 @@ EwinsTouch(void)
      {
 	ewin = lst[i];
 	if (EwinIsMapped(ewin))
-	   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
      }
 }
 
@@ -1907,7 +1907,7 @@ EwinsSighan(int sig, void *prm __UNUSED__)
 	  {
 	     ewin = ewin_lst[i];
 	     if (EwinIsMapped(ewin))
-		ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+		EwinResize(ewin, ewin->client.w, ewin->client.h);
 	  }
 	break;
      }

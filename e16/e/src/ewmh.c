@@ -889,7 +889,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     if (EoIsSticky(ewin))
 		EwinUnStick(ewin);
 	     else
-		MoveEwinToDesktop(ewin, ev->data.l[0]);
+		EwinMoveToDesktop(ewin, ev->data.l[0]);
 	  }
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
@@ -1015,7 +1015,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	y = (flags & 0x200) ? ev->data.l[2] : EoGetY(ewin);
 	w = (flags & 0x400) ? ev->data.l[3] : ewin->client.w;
 	h = (flags & 0x800) ? ev->data.l[4] : ewin->client.h;
-	MoveResizeEwinWithGravity(ewin, x, y, w, h, grav);
+	EwinMoveResizeWithGravity(ewin, x, y, w, h, grav);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {

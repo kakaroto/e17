@@ -641,7 +641,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    switch (md)
      {
      case 0:
-	MoveResizeEwin(ewin, x, y, w, h);
+	EwinMoveResize(ewin, x, y, w, h);
 	EwinShapeSet(ewin);
 	if (Mode.mode != MODE_NONE)
 	   CoordsShow(ewin);
@@ -1031,9 +1031,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		 || (ewin->groups && !check_move))
 	       {
 		  if (ewin->state.shaded)
-		     MoveEwin(ewin, ewin->shape_x, ewin->shape_y);
+		     EwinMove(ewin, ewin->shape_x, ewin->shape_y);
 		  else
-		     MoveResizeEwin(ewin, ewin->shape_x, ewin->shape_y,
+		     EwinMoveResize(ewin, ewin->shape_x, ewin->shape_y,
 				    ewin->shape_w, ewin->shape_h);
 	       }
 #endif

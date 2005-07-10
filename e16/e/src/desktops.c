@@ -653,7 +653,7 @@ ChangeNumberOfDesktops(int quantity)
 	for (i = 0; i < num; i++)
 	  {
 	     if (EoGetDesk(lst[i]) >= quantity)
-		MoveEwinToDesktop(lst[i], quantity - 1);
+		EwinMoveToDesktop(lst[i], quantity - 1);
 	  }
 
 	while (Conf.desks.num > quantity)
@@ -927,7 +927,7 @@ MoveStickyWindowsToCurrentDesk(void)
 	if (ewin->client.transient > 0)
 	   continue;
 
-	MoveEwinToDesktop(ewin, desk);
+	EwinMoveToDesktop(ewin, desk);
      }
 }
 

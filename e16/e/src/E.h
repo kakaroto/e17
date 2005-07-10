@@ -1215,8 +1215,8 @@ void                MoveCurrentAreaBy(int ax, int ay);
 void                SetCurrentLinearArea(int a);
 int                 GetCurrentLinearArea(void);
 void                MoveCurrentLinearAreaBy(int a);
-void                MoveEwinToLinearArea(EWin * ewin, int a);
-void                MoveEwinLinearAreaBy(EWin * ewin, int a);
+void                EwinMoveToLinearArea(EWin * ewin, int a);
+void                EwinMoveLinearAreaBy(EWin * ewin, int a);
 
 /* arrange.c */
 #define ARRANGE_VERBATIM    0
@@ -1645,10 +1645,10 @@ void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed);
 void                EwinFixPosition(EWin * ewin);
-void                MoveEwin(EWin * ewin, int x, int y);
-void                ResizeEwin(EWin * ewin, int w, int h);
-void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
-void                MoveResizeEwinWithGravity(EWin * ewin, int x, int y, int w,
+void                EwinMove(EWin * ewin, int x, int y);
+void                EwinResize(EWin * ewin, int w, int h);
+void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
+void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 					      int h, int grav);
 void                EwinIconify(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
@@ -1659,9 +1659,9 @@ void                EwinInstantUnShade(EWin * ewin);
 void                EwinShade(EWin * ewin);
 void                EwinUnShade(EWin * ewin);
 void                EwinSetFullscreen(EWin * ewin, int on);
-void                MoveEwinToArea(EWin * ewin, int ax, int ay);
-void                MoveEwinToDesktop(EWin * ewin, int num);
-void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
+void                EwinMoveToArea(EWin * ewin, int ax, int ay);
+void                EwinMoveToDesktop(EWin * ewin, int num);
+void                EwinMoveToDesktopAt(EWin * ewin, int num, int x, int y);
 
 unsigned int        OpacityExt(int op);
 void                EwinOpClose(EWin * ewin);

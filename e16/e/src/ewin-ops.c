@@ -132,7 +132,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    FocusEnable(1);
 
    if (Conf.slidemode == 0)
-      MoveEwin(ewin, tx, ty);
+      EwinMove(ewin, tx, ty);
    else
       DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h,
 		    2);
@@ -197,7 +197,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	  {
 	     DrawEwinShape(ewin[i], 0, x[i], y[i], ewin[i]->client.w,
 			   ewin[i]->client.h, 2);
-	     MoveEwin(ewin[i], tx[i], ty[i]);
+	     EwinMove(ewin[i], tx[i], ty[i]);
 	  }
      }
 
@@ -237,7 +237,7 @@ EwinFixPosition(EWin * ewin)
       y = 0 - EoGetH(ewin) + ewin->border->border.bottom + 1;
 
    if (x != EoGetX(ewin) || y != EoGetY(ewin))
-      MoveEwin(ewin, x, y);
+      EwinMove(ewin, x, y);
 }
 
 static void
@@ -269,7 +269,7 @@ EwinDetermineArea(EWin * ewin)
 #define MRF_UNFLOAT	(1<<5)
 
 static void
-doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
+doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
    int                 dx, dy, sw, sh, xo, yo, pdesk;
@@ -282,7 +282,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
-      Eprintf("doMoveResizeEwin(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
+      Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
 	      call_depth, Mode.mode, ewin->client.win, flags, desk, x, y, w, h,
 	      EwinGetName(ewin));
 
@@ -467,7 +467,7 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
      {
 	lst = EwinListTransients(ewin, &num, 0);
 	for (i = 0; i < num; i++)
-	   doMoveResizeEwin(lst[i], desk, EoGetX(lst[i]) + dx,
+	   doEwinMoveResize(lst[i], desk, EoGetX(lst[i]) + dx,
 			    EoGetY(lst[i]) + dy, 0, 0,
 			    flags & (MRF_DESK | MRF_MOVE |
 				     MRF_FLOAT | MRF_UNFLOAT));
@@ -501,52 +501,52 @@ doMoveResizeEwin(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 }
 
 void
-MoveEwin(EWin * ewin, int x, int y)
+EwinMove(EWin * ewin, int x, int y)
 {
-   doMoveResizeEwin(ewin, 0, x, y, 0, 0, MRF_MOVE);
+   doEwinMoveResize(ewin, 0, x, y, 0, 0, MRF_MOVE);
 }
 
 void
-ResizeEwin(EWin * ewin, int w, int h)
+EwinResize(EWin * ewin, int w, int h)
 {
-   doMoveResizeEwin(ewin, 0, 0, 0, w, h, MRF_RESIZE);
+   doEwinMoveResize(ewin, 0, 0, 0, w, h, MRF_RESIZE);
 }
 
 void
-MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
+EwinMoveResize(EWin * ewin, int x, int y, int w, int h)
 {
-   doMoveResizeEwin(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+   doEwinMoveResize(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
 }
 
 void
-MoveResizeEwinWithGravity(EWin * ewin, int x, int y, int w, int h, int grav)
+EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w, int h, int grav)
 {
    EwinGetPosition(ewin, x, y, ewin->client.bw, grav, &x, &y);
-   doMoveResizeEwin(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+   doEwinMoveResize(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
 }
 
 void
-MoveEwinToDesktop(EWin * ewin, int desk)
+EwinMoveToDesktop(EWin * ewin, int desk)
 {
-   doMoveResizeEwin(ewin, desk, 0, 0, 0, 0, MRF_DESK);
+   doEwinMoveResize(ewin, desk, 0, 0, 0, 0, MRF_DESK);
 }
 
 void
-MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
+EwinMoveToDesktopAt(EWin * ewin, int desk, int x, int y)
 {
-   doMoveResizeEwin(ewin, desk, x, y, 0, 0, MRF_DESK | MRF_MOVE);
+   doEwinMoveResize(ewin, desk, x, y, 0, 0, MRF_DESK | MRF_MOVE);
 }
 
 void
 EwinFloatAt(EWin * ewin, int x, int y)
 {
-   doMoveResizeEwin(ewin, 0, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+   doEwinMoveResize(ewin, 0, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
 }
 
 void
 EwinUnfloatAt(EWin * ewin, int desk, int x, int y)
 {
-   doMoveResizeEwin(ewin, desk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
+   doEwinMoveResize(ewin, desk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
 }
 
 void
@@ -671,9 +671,9 @@ EwinDeIconify(EWin * ewin)
    dy = y - oy;
 
    if (EoIsSticky(ewin))
-      MoveEwin(ewin, x, y);
+      EwinMove(ewin, x, y);
    else
-      MoveEwinToDesktopAt(ewin, DesksGetCurrent(), x, y);
+      EwinMoveToDesktopAt(ewin, DesksGetCurrent(), x, y);
 
    ModulesSignal(ESIGNAL_EWIN_DEICONIFY, ewin);
 
@@ -693,9 +693,9 @@ EwinDeIconify(EWin * ewin)
 
 	EwinRememberPositionGet(e, &ox, &oy);
 	if (EoIsSticky(e))
-	   MoveEwin(e, ox + dx, oy + dy);
+	   EwinMove(e, ox + dx, oy + dy);
 	else
-	   MoveEwinToDesktopAt(e, DesksGetCurrent(), ox + dx, oy + dy);
+	   EwinMoveToDesktopAt(e, DesksGetCurrent(), ox + dx, oy + dy);
 
 	e->state.iconified = 0;
 
@@ -722,7 +722,7 @@ EwinUnStick(EWin * ewin)
       return;
 
    EoSetSticky(ewin, 0);
-   MoveEwinToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
+   EwinMoveToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
    HintsSetWindowDesktop(ewin);
@@ -750,7 +750,7 @@ EwinStick(EWin * ewin)
    y -= dy;
 
    EoSetSticky(ewin, 1);
-   MoveEwinToDesktopAt(ewin, DesksGetCurrent(), x, y);
+   EwinMoveToDesktopAt(ewin, DesksGetCurrent(), x, y);
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
    HintsSetWindowDesktop(ewin);
@@ -873,7 +873,7 @@ EwinInstantUnShade(EWin * ewin)
    EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 
    ewin->state.shaded = 0;
-   MoveResizeEwin(ewin, x, y, ewin->client.w, ewin->client.h);
+   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
 #if 0				/* FIXME - Remove? */
    ESync();
 #endif
@@ -1070,7 +1070,7 @@ EwinShade(EWin * ewin)
       EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
 
-   MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
 #if 0				/* FIXME - Remove? */
    ESync();
@@ -1300,7 +1300,7 @@ EwinUnShade(EWin * ewin)
       EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
 
-   MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
 #if 0				/* FIXME - Remove? */
    ESync();
@@ -1378,7 +1378,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	  }
 
 	RaiseEwin(ewin);
-	MoveResizeEwin(ewin, x, y, w, h);
+	EwinMoveResize(ewin, x, y, w, h);
 	ewin->state.fullscreen = 1;
 	EwinStateUpdate(ewin);
      }
@@ -1405,7 +1405,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->state.fullscreen = 0;
 	EwinStateUpdate(ewin);
 	RaiseEwin(ewin);
-	MoveResizeEwin(ewin, x, y, w, h);
+	EwinMoveResize(ewin, x, y, w, h);
      }
    HintsSetWindowState(ewin);
    EwinSetBorder(ewin, b, 1);
@@ -1444,10 +1444,10 @@ EwinsShowDesktop(int on)
 }
 
 void
-MoveEwinToArea(EWin * ewin, int ax, int ay)
+EwinMoveToArea(EWin * ewin, int ax, int ay)
 {
    AreaFix(&ax, &ay);
-   MoveEwin(ewin, EoGetX(ewin) + (VRoot.w * (ax - ewin->area_x)),
+   EwinMove(ewin, EoGetX(ewin) + (VRoot.w * (ax - ewin->area_x)),
 	    EoGetY(ewin) + (VRoot.h * (ay - ewin->area_y)));
 }
 
@@ -1799,7 +1799,7 @@ void
 EwinOpMoveToDesk(EWin * ewin, int desk)
 {
    EoSetSticky(ewin, 0);
-   MoveEwinToDesktop(ewin, desk);
+   EwinMoveToDesktop(ewin, desk);
    RaiseEwin(ewin);
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
@@ -1810,7 +1810,7 @@ EwinOpMoveToDesk(EWin * ewin, int desk)
 void
 EwinOpMoveToArea(EWin * ewin, int x, int y)
 {
-   MoveEwinToArea(ewin, x, y);
+   EwinMoveToArea(ewin, x, y);
    SnapshotEwinUpdate(ewin, SNAP_USE_POS);
 }
 
@@ -1823,7 +1823,7 @@ doMoveWinToLinearArea(EWin * ewin, const char *params)
    if (params)
      {
 	sscanf(params, "%i", &da);
-	MoveEwinToLinearArea(ewin, da);
+	EwinMoveToLinearArea(ewin, da);
      }
    SnapshotEwinUpdate(ewin, SNAP_USE_POS);
    return 0;
@@ -1838,7 +1838,7 @@ doMoveWinByLinearArea(EWin * ewin, const char *params)
    if (params)
      {
 	sscanf(params, "%i", &da);
-	MoveEwinLinearAreaBy(ewin, da);
+	EwinMoveLinearAreaBy(ewin, da);
      }
    SnapshotEwinUpdate(ewin, SNAP_USE_POS);
    return 0;
@@ -1864,7 +1864,7 @@ doScrollWindows(EWin * edummy __UNUSED__, const char *params)
      {
 	if ((lst[i]->desktop == DesksGetCurrent()) && (!lst[i]->sticky) &&
 	    (!lst[i]->floating))
-	   MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
+	   EwinMove(lst[i], lst[i]->x + x, lst[i]->y + y);
      }
    return 0;
 }

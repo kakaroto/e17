@@ -560,7 +560,7 @@ ShowDialog(Dialog * d)
    if (ewin)
      {
 	if (EoGetDesk(ewin) != DesksGetCurrent())
-	   MoveEwinToDesktop(ewin, DesksGetCurrent());
+	   EwinMoveToDesktop(ewin, DesksGetCurrent());
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	return;
@@ -619,15 +619,15 @@ ShowDialog(Dialog * d)
    ewin->client.event_mask |= KeyPressMask | ExposureMask;
    ESelectInput(d->win, ewin->client.event_mask);
 
-   MoveEwinToDesktop(ewin, EoGetDesk(ewin));
+   EwinMoveToDesktop(ewin, EoGetDesk(ewin));
 
    if (ewin->state.placed)
      {
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
      }
    else
      {
-	ResizeEwin(ewin, w, h);
+	EwinResize(ewin, w, h);
 	if (FindADialog() > 1)
 	   ArrangeEwin(ewin);
 	else

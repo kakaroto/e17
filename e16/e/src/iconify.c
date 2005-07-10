@@ -568,17 +568,17 @@ IconboxShow(Iconbox * ib)
 
    if (ewin->state.placed)
      {
-	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		       ewin->client.h);
      }
    else
      {
 	/* The first one */
 	EwinStick(ewin);
-	MoveEwinToDesktop(ewin, EoGetDesk(ewin));
-	ResizeEwin(ewin, 128, 32);
-	MoveEwin(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
+	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
+	EwinResize(ewin, 128, 32);
+	EwinMove(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
      }
 
    ShowEwin(ewin);
@@ -1721,7 +1721,7 @@ IconboxRedraw(Iconbox * ib)
    EWin               *ewin = ib->ewin;
 
    ib->do_update = 1;
-   ResizeEwin(ib->ewin, ewin->client.w, ewin->client.h);
+   EwinResize(ib->ewin, ewin->client.w, ewin->client.h);
 }
 
 static int
