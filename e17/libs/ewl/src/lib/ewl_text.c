@@ -183,8 +183,6 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 	ret = evas_object_textblock_char_pos_get(t->textblock, tb_idx, &tx, &ty, 
 								&tw, &th);
 
-//printf("geometry_map %02d pos: %02d tx: %02d ty: %02d tw: %02d th: %02d\n", (int)ret, tb_idx, (int)tx, (int)ty, (int)tw, (int)th);
-
 	/* we had to add the width of the last char into the x value given
 	 * by tb in order to get stuck at the end of the text */
 	if (fiddled)
@@ -224,7 +222,6 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			(Evas_Coord)(y - CURRENT_Y(t)), 
 			NULL, NULL, NULL, NULL);
 
-//printf("coord idx %d\n", tb_idx);
 	/* if this is less then 0 then we clicked off of one end of the
 	 * textblock or the other. if the click position is inside the size
 	 * of a char we are at the start, else we are at the end */
@@ -1724,7 +1721,14 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data)
 	{
 		evas_object_move(t->textblock, xx, yy);
 		evas_object_resize(t->textblock, ww, hh);
-		evas_object_layer_set(t->textblock, ewl_widget_layer_sum_get(w));
+		evas_object_layer_set(t->textblock, 
+					ewl_widget_layer_sum_get(w));
+
+		/* This needs to be here to cause the scrollpane to update
+		 * as you scroll, tho I think Evas should be doing this
+		 * itself behind the scenes */
+		evas_damage_rectangle_add(evas_object_evas_get(t->textblock),
+							xx, yy, ww, hh);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
