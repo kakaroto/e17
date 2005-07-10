@@ -82,6 +82,12 @@ main(int argc, char **argv)
 				"other widget inside the button."
 		},
 		{
+			"Calendar",
+			__create_calendar_test_window,
+			"ewl_calendar_test.c",
+			"Defines a calendar widget."
+		},
+		{
 			"ColorDialog",
 			__create_colordialog_test_window,
 			"ewl_colordialog_test.c",

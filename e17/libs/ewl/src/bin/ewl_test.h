@@ -20,6 +20,7 @@ void __close_main_window                (Ewl_Widget * w, void *ev_data, void *us
 void __create_border_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_box_test_window           (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_button_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_calendar_test_window	(Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_colordialog_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_colorpicker_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_combo_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
