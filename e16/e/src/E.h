@@ -1539,9 +1539,9 @@ int                 EobjRaise(EObj * eo);
 int                 EobjLower(EObj * eo);
 void                EobjChangeShape(EObj * eo);
 void                EobjsRepaint(void);
+Pixmap              EobjGetPixmap(const EObj * eo);
 
 #if USE_COMPOSITE
-Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #else
 #define             EobjChangeOpacity(eo, opacity)

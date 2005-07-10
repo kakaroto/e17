@@ -103,7 +103,6 @@ IB_SnapEWin(EWin * ewin, int size)
 	h = hh;
      }
 
-#if USE_COMPOSITE
    draw = EoGetPixmap(ewin);
    if (draw != None)
      {
@@ -114,20 +113,17 @@ IB_SnapEWin(EWin * ewin, int size)
 	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, ww, hh,
 						     w, h, !EServerIsGrabbed(),
 						     0);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
    else
-#endif
      {
 	draw = EoGetWin(ewin);
 	imlib_context_set_drawable(draw);
 	im = imlib_create_scaled_image_from_drawable(None, 0, 0, ww, hh,
 						     w, h, !EServerIsGrabbed(),
 						     1);
-	imlib_context_set_image(im);
-	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
+   imlib_context_set_image(im);
+   imlib_image_set_has_alpha(1);
 
    return im;
 }

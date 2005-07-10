@@ -422,16 +422,20 @@ EobjChangeShape(EObj * eo)
 #endif
 }
 
-#if USE_COMPOSITE
 Pixmap
 EobjGetPixmap(const EObj * eo)
 {
    Pixmap              pmap = None;
 
+#if USE_COMPOSITE
    pmap = ECompMgrWinGetPixmap(eo);
+#else
+   eo = NULL;
+#endif
    return pmap;
 }
 
+#if USE_COMPOSITE
 void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {

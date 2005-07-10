@@ -46,10 +46,6 @@
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
 
-#if COMPOSITE_MAJOR > 0 || COMPOSITE_MINOR >= 2
-#define HAS_NAME_WINDOW_PIXMAP 1
-#endif
-
 #define CAN_DO_USABLE 0
 
 #define ENABLE_SHADOWS 1
@@ -80,9 +76,7 @@ typedef struct
 {
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */
-#if HAS_NAME_WINDOW_PIXMAP
    Pixmap              pixmap;
-#endif
    struct
    {
       int                 class;	/* FIXME - Remove? */
@@ -149,9 +143,7 @@ static struct
 {
    char               *args;
    char                active;
-#if HAS_NAME_WINDOW_PIXMAP
    char                use_pixmap;
-#endif
    EObj               *eo_first;
    EObj               *eo_last;
 } Mode_compmgr;
@@ -734,7 +726,6 @@ win_extents(Display * dpy, EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
    XRectangle          r;
 
-#if HAS_NAME_WINDOW_PIXMAP
    if (Mode_compmgr.use_pixmap)
      {
 	cw->rcx = eo->x;
@@ -743,7 +734,6 @@ win_extents(Display * dpy, EObj * eo)
 	cw->rch = eo->h + cw->a.border_width * 2;
      }
    else
-#endif
      {
 	cw->rcx = eo->x + cw->a.border_width;
 	cw->rcy = eo->y + cw->a.border_width;
@@ -836,14 +826,17 @@ border_size(EObj * eo)
 Pixmap
 ECompMgrWinGetPixmap(const EObj * eo)
 {
-#if HAS_NAME_WINDOW_PIXMAP
    ECmWinInfo         *cw = eo->cmhook;
 
-   return (cw) ? cw->pixmap : None;
-#else
-   eo = NULL;
-   return None;
-#endif
+   if (!cw)
+      return None;
+
+   if (cw->pixmap != None)
+      return cw->pixmap;
+
+   cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
+
+   return cw->pixmap;
 }
 
 static void
@@ -855,18 +848,16 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!cw)
       return;
 
-#if HAS_NAME_WINDOW_PIXMAP
    if ((what & INV_SIZE) && cw->pixmap != None)
      {
 	XFreePixmap(dpy, cw->pixmap);
 	cw->pixmap = None;
-	if (cw->picture != None)
+	if (cw->picture != None && Mode_compmgr.use_pixmap)
 	  {
 	     XRenderFreePicture(dpy, cw->picture);
 	     cw->picture = None;
 	  }
      }
-#endif
 
    if ((what & INV_GEOM) && cw->borderSize != None)
      {
@@ -1005,21 +996,8 @@ ECompMgrWinSetPicts(EObj * eo)
 	return;
      }
 
-#if HAS_NAME_WINDOW_PIXMAP
-   if (cw->pixmap != None)
-     {
-	XFreePixmap(disp, cw->pixmap);
-	cw->pixmap = None;
-	if (cw->picture != None)
-	  {
-	     XRenderFreePicture(disp, cw->picture);
-	     cw->picture = None;
-	  }
-	Eprintf("*** ECompMgrWinSetPicts pixmap set!!!\n");
-     }
-   if (Mode_compmgr.use_pixmap)
+   if (cw->pixmap == None && Mode_compmgr.use_pixmap)
       cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
-#endif
 
    if (cw->picture == None)
      {
@@ -1027,10 +1005,9 @@ ECompMgrWinSetPicts(EObj * eo)
 	XRenderPictureAttributes pa;
 	Drawable            draw = eo->win;
 
-#if HAS_NAME_WINDOW_PIXMAP
-	if (cw->pixmap)
+	if (cw->pixmap && Mode_compmgr.use_pixmap)
 	   draw = cw->pixmap;
-#endif
+
 	pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
 	pa.subwindow_mode = IncludeInferiors;
 	cw->picture = XRenderCreatePicture(disp, draw,
@@ -1081,9 +1058,7 @@ ECompMgrWinNew(EObj * eo)
      }
 
    cw->picture = None;
-#if HAS_NAME_WINDOW_PIXMAP
    cw->pixmap = None;
-#endif
 #if 0				/* FIXME - Remove? */
    ECompMgrWinSetPicts(eo);
 #endif
@@ -2103,15 +2078,14 @@ ECompMgrInit(void)
 	goto done;
      }
 
-   if (!XDamageQueryVersion(disp, &major, &minor))
+   if (!XCompositeQueryVersion(disp, &major, &minor) ||
+       (major == 0 && minor < 2))
      {
 	Conf_compmgr.mode = ECM_MODE_OFF;
 	goto done;
      }
-#if HAS_NAME_WINDOW_PIXMAP
-   Mode_compmgr.use_pixmap =
-      (major > 0 || minor >= 2) && Conf_compmgr.use_name_pixmap;
-#endif
+
+   Mode_compmgr.use_pixmap = Conf_compmgr.use_name_pixmap;
 
    if (Conf_compmgr.mode == ECM_MODE_OFF)
       Conf_compmgr.mode = ECM_MODE_ROOT;
