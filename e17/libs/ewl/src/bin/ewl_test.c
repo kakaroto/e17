@@ -107,6 +107,12 @@ main(int argc, char **argv)
 				"The contents on the box are not drawn\n"
 				"outside of the Evas."
 		},
+                {
+                        "DatePicker",
+                        __create_datepicker_test_window,
+                        "ewl_datepicker_test.c",
+                        "Defines a datepicker widget."
+                },
 		{
 			"Dialog",
 		   	__create_dialog_test_window,

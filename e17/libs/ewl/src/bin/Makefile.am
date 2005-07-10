@@ -22,6 +22,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_colordialog_test.c \
 					ewl_colorpicker_test.c \
 					ewl_combo_test.c \
+					ewl_datepicker_test.c \
 					ewl_dialog_test.c \
 					ewl_entry_test.c \
 					ewl_filedialog_test.c \

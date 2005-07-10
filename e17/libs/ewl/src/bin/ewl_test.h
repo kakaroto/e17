@@ -24,6 +24,7 @@ void __create_calendar_test_window	(Ewl_Widget * w, void *ev_data, void *user_da
 void __create_colordialog_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_colorpicker_test_window   (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_combo_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_datepicker_test_window      (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_dialog_test_window        (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_fileselector_test_window  (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_filedialog_test_window    (Ewl_Widget * w, void *ev_data, void *user_data);
