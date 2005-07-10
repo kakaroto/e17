@@ -881,12 +881,19 @@ EwinInstantUnShade(EWin * ewin)
    HintsSetWindowState(ewin);
 }
 
+#define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \
+  do { \
+    EShapeCombineShape(ewin->win_container, ShapeBounding, xo, yo, \
+                       ewin->client.win, ShapeBounding, ShapeSet); \
+    ewin->update.shape = 1; \
+  } while (0)
+
 void
 EwinShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 x, y, w, h;
-   int                 i, j, k, speed, a, b, c, d, ww, hh;
+   int                 k, speed, a, b, c, ww, hh;
 
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
@@ -906,7 +913,7 @@ EwinShade(EWin * ewin)
    h = EoGetH(ewin);
 
 #if 0
-   Eprintf("EwinShade-B\n");
+   Eprintf("EwinShade-B %d\n", ewin->border->shadedir);
    EGrabServer();
 #endif
 
@@ -916,30 +923,26 @@ EwinShade(EWin * ewin)
      case 0:
 	att.win_gravity = EastGravity;
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
-	EwinBorderMinShadeSize(ewin, &b, &d);
+	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  w = i;
+		  w = ((a * (1024 - k)) + (b * k)) >> 10;
 		  if (w < 1)
 		     w = 1;
 		  ww = w - ewin->border->border.left -
 		     ewin->border->border.right;
 		  if (ww < 1)
 		     ww = 1;
-		  hh = ewin->client.h;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ww, hh);
+				    ewin->border->border.top,
+				    ww, ewin->client.h);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, -(ewin->client.w - ww),
-					0, ewin->client.win, ShapeBounding,
-					ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, ww - ewin->client.w, 0);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
@@ -951,124 +954,106 @@ EwinShade(EWin * ewin)
      case 1:
 	att.win_gravity = WestGravity;
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
-	EwinBorderMinShadeSize(ewin, &b, &d);
+	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
-	c = x;
-	d = x + w - b;
+	c = x + w;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  j = ((c * (1024 - k)) + (d * k)) >> 10;
-		  w = i;
-		  x = j;
+		  w = ((a * (1024 - k)) + (b * k)) >> 10;
 		  if (w < 1)
 		     w = 1;
+		  x = c - w;
 		  ww = w - ewin->border->border.left -
 		     ewin->border->border.right;
 		  if (ww < 1)
 		     ww = 1;
-		  hh = ewin->client.h;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ww, hh);
+				    ewin->border->border.top,
+				    ww, ewin->client.h);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0, 0, ewin->client.win,
-					ShapeBounding, ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
 		  k = ETimedLoopNext();
 	       }
 	  }
-	EoMoveResize(ewin, d, y, b, h);
+	EoMoveResize(ewin, c - b, y, b, h);
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
-	EwinBorderMinShadeSize(ewin, &b, &d);
+	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
-	b = d;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  h = i;
+		  h = ((a * (1024 - k)) + (b * k)) >> 10;
 		  if (h < 1)
 		     h = 1;
 		  hh = h - ewin->border->border.top -
 		     ewin->border->border.bottom;
 		  if (hh < 1)
 		     hh = 1;
-		  ww = ewin->client.w;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ww, hh);
+				    ewin->border->border.top,
+				    ewin->client.w, hh);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0,
-					-(ewin->client.h - hh),
-					ewin->client.win, ShapeBounding,
-					ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, hh - ewin->client.h);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
 		  k = ETimedLoopNext();
 	       }
 	  }
-	EoMoveResize(ewin, x, y, w, d);
+	EoMoveResize(ewin, x, y, w, b);
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
-	EwinBorderMinShadeSize(ewin, &b, &d);
+	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
-	b = d;
-	c = y;
-	d = y + h - d;
+	c = y + h;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  j = ((c * (1024 - k)) + (d * k)) >> 10;
-		  h = i;
-		  y = j;
+		  h = ((a * (1024 - k)) + (b * k)) >> 10;
 		  if (h < 1)
 		     h = 1;
+		  y = c - h;
 		  hh = h - ewin->border->border.top -
 		     ewin->border->border.bottom;
 		  if (hh < 1)
 		     hh = 1;
-		  ww = ewin->client.w;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ww, hh);
+				    ewin->border->border.top,
+				    ewin->client.w, hh);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0, 0, ewin->client.win,
-					ShapeBounding, ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, hh - ewin->client.h);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
 		  k = ETimedLoopNext();
 	       }
 	  }
-	EoMoveResize(ewin, x, d, w, b);
+	EoMoveResize(ewin, x, c - b, w, b);
 	break;
      }
 
    ewin->state.shaded = 2;
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
    if (ewin->state.shaped)
-      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-			 ewin->client.win, ShapeBounding, ShapeSet);
+      _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
@@ -1089,7 +1074,7 @@ EwinUnShade(EWin * ewin)
 {
    XSetWindowAttributes att;
    int                 x, y, w, h;
-   int                 i, j, k, speed, a, b, c, d;
+   int                 k, speed, a, b, c, ww, hh;
 
    if (GetZoomEWin() == ewin)
       return;
@@ -1104,7 +1089,7 @@ EwinUnShade(EWin * ewin)
    h = EoGetH(ewin);
 
 #if 0
-   Eprintf("EwinUnShade-B\n");
+   Eprintf("EwinUnShade-B %d\n", ewin->border->shadedir);
    EGrabServer();
 #endif
 
@@ -1116,7 +1101,6 @@ EwinUnShade(EWin * ewin)
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 	a = ewin->border->border.left + ewin->border->border.right;
 	b = ewin->client.w + a;
-	a++;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -1131,22 +1115,14 @@ EwinUnShade(EWin * ewin)
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  w = i;
+		  w = ((a * (1024 - k)) + (b * k)) >> 10;
+		  ww = w - a;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
-				    w - ewin->border->border.left -
-				    ewin->border->border.right, ewin->client.h);
+				    ww, ewin->client.h);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding,
-					-(ewin->client.w -
-					  (w -
-					   ewin->border->border.left -
-					   ewin->border->border.right)), 0,
-					ewin->client.win, ShapeBounding,
-					ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, ww - ewin->client.w, 0);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
@@ -1160,9 +1136,7 @@ EwinUnShade(EWin * ewin)
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 	a = ewin->border->border.left + ewin->border->border.right;
 	b = ewin->client.w + a;
-	c = x;
-	d = x + w - (ewin->client.w + a);
-	a++;
+	c = x + a;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -1177,39 +1151,34 @@ EwinUnShade(EWin * ewin)
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  j = ((c * (1024 - k)) + (d * k)) >> 10;
-		  w = i;
-		  x = j;
+		  w = ((a * (1024 - k)) + (b * k)) >> 10;
+		  x = c - w;
+		  ww = w - a;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
-				    w - ewin->border->border.left -
-				    ewin->border->border.right, ewin->client.h);
+				    ww, ewin->client.h);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0, 0, ewin->client.win,
-					ShapeBounding, ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
 		  k = ETimedLoopNext();
 	       }
 	  }
-	EoMoveResize(ewin, d, y, b, h);
+	EoMoveResize(ewin, c - b, y, b, h);
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 	a = ewin->border->border.top + ewin->border->border.bottom;
 	b = ewin->client.h + a;
-	a++;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  ewin->client.w, 1);
 	EWindowSync(ewin->client.win);	/* Gravity - recache */
-	EMoveResizeWindow(ewin->client.win, 0, -ewin->client.h,
+	EMoveResizeWindow(ewin->client.win, 0, 1 - ewin->client.h,
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(ewin->client.win);
 	EMapWindow(ewin->win_container);
@@ -1218,22 +1187,14 @@ EwinUnShade(EWin * ewin)
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  h = i;
+		  h = ((a * (1024 - k)) + (b * k)) >> 10;
+		  hh = h - a;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ewin->client.w,
-				    h - ewin->border->border.top -
-				    ewin->border->border.bottom);
+				    ewin->border->border.top,
+				    ewin->client.w, hh);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0,
-					-(ewin->client.h -
-					  (h -
-					   ewin->border->border.top -
-					   ewin->border->border.bottom)),
-					ewin->client.win, ShapeBounding,
-					ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, hh - ewin->client.h);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
@@ -1247,16 +1208,14 @@ EwinUnShade(EWin * ewin)
 	EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 	a = ewin->border->border.top + ewin->border->border.bottom;
 	b = ewin->client.h + a;
-	c = y;
-	d = y + h - (ewin->client.h + a);
-	a++;
+	c = y + h;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  ewin->client.w, 1);
 	EWindowSync(ewin->client.win);	/* Gravity - recache */
-	EMoveResizeWindow(ewin->client.win, 0, 0, ewin->client.w,
-			  ewin->client.h);
+	EMoveResizeWindow(ewin->client.win, 0, 1 - ewin->client.h,
+			  ewin->client.w, ewin->client.h);
 	EMapWindow(ewin->client.win);
 	EMapWindow(ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
@@ -1264,26 +1223,22 @@ EwinUnShade(EWin * ewin)
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
 	       {
-		  i = ((a * (1024 - k)) + (b * k)) >> 10;
-		  j = ((c * (1024 - k)) + (d * k)) >> 10;
-		  h = i;
-		  y = j;
+		  h = ((a * (1024 - k)) + (b * k)) >> 10;
+		  y = c - h;
+		  hh = h - a;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
-				    ewin->border->border.top, ewin->client.w,
-				    h - ewin->border->border.top -
-				    ewin->border->border.bottom);
+				    ewin->border->border.top,
+				    ewin->client.w, hh);
 		  if (ewin->state.shaped)
-		     EShapeCombineShape(ewin->win_container,
-					ShapeBounding, 0, 0, ewin->client.win,
-					ShapeBounding, ShapeSet);
+		     _EWIN_ADJUST_SHAPE(ewin, 0, hh - ewin->client.h);
 		  EoMoveResize(ewin, x, y, w, h);
 		  EwinBorderCalcSizes(ewin, 1);
 
 		  k = ETimedLoopNext();
 	       }
 	  }
-	EoMoveResize(ewin, x, d, w, b);
+	EoMoveResize(ewin, x, c - b, w, b);
 	break;
      }
 
@@ -1297,8 +1252,7 @@ EwinUnShade(EWin * ewin)
 		     ewin->border->border.top, ewin->client.w, ewin->client.h);
 
    if (ewin->state.shaped)
-      EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
-			 ewin->client.win, ShapeBounding, ShapeSet);
+      _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);

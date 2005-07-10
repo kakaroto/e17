@@ -388,11 +388,9 @@ EwinBorderCalcSizes(EWin * ewin, int propagate)
    Eprintf("EwinBorderCalcSizes prop=%d reshape=%d\n", propagate, reshape);
 #endif
    if (reshape)
-     {
-	ewin->update.shape = 1;
-	if (propagate)
-	   EwinPropagateShapes(ewin);
-     }
+      ewin->update.shape = 1;
+   if (propagate && ewin->update.shape)
+      EwinPropagateShapes(ewin);
 }
 
 void
