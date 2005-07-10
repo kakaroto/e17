@@ -329,6 +329,7 @@ extern"C" {
 #include <ewl_separator.h>
 #include <ewl_calendar.h>
 #include <ewl_datepicker.h>
+#include <ewl_iconbox.h>
 @ewl_media_include@
 #include <ewl_notebook.h>
 #include <ewl_progressbar.h>

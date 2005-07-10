@@ -31,6 +31,7 @@ void __create_filedialog_test_window    (Ewl_Widget * w, void *ev_data, void *us
 void __create_filedialog_multi_test_window (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_floater_test_window       (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_entry_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
+void __create_iconbox_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_image_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_imenu_test_window         (Ewl_Widget * w, void *ev_data, void *user_data);
 void __create_menu_test_window          (Ewl_Widget * w, void *ev_data, void *user_data);

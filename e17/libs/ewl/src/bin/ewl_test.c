@@ -148,6 +148,13 @@ main(int argc, char **argv)
 				"the ability to follow the movement of\n"
 				"another widget."
 		},
+                {
+                        "Iconbox",
+                        __create_iconbox_test_window,
+                        "ewl_iconbox_test.c",
+                        "Provides a widget for displaying icons\n"
+                                " in an arranged grid, or freeform, with callback and label editing facilities.",
+                },
 		{
 			"Image",
 		  	__create_image_test_window,
