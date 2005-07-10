@@ -2297,6 +2297,11 @@ void                EConfigureWindow(Window win, unsigned int mask,
 				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);
 void                ESetWindowBackground(Window win, int col);
+int                 ETranslateCoordinates(Window src_w, Window dst_w,
+					  int src_x, int src_y,
+					  int *dest_x_return,
+					  int *dest_y_return,
+					  Window * child_return);
 
 #define ESelectInput(win, mask) XSelectInput(disp, win, mask)
 #define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)

@@ -829,6 +829,21 @@ ESetWindowBackground(Window win, int col)
       XSetWindowBackground(disp, win, col);
 }
 
+int
+ETranslateCoordinates(Window src_w, Window dst_w,
+		      int src_x, int src_y,
+		      int *dest_x_return,
+		      int *dest_y_return, Window * child_return)
+{
+   Window              child;
+
+   if (!child_return)
+      child_return = &child;
+
+   return XTranslateCoordinates(disp, src_w, dst_w, src_x, src_y,
+				dest_x_return, dest_y_return, child_return);
+}
+
 void
 ESelectInputAdd(Window win, long mask)
 {
