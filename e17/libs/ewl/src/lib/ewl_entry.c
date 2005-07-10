@@ -104,13 +104,17 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 	{
 		ewl_callback_append(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
 					ewl_entry_cb_key_down, NULL);
-		ewl_widget_show(e->cursor);
+		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
+			ewl_widget_show(e->cursor);
+		ewl_widget_state_set(EWL_WIDGET(e), "editable");
 	}
 	else
 	{
 		ewl_callback_del(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
 					ewl_entry_cb_key_down);
-		ewl_widget_hide(e->cursor);
+		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
+			ewl_widget_hide(e->cursor);
+		ewl_widget_state_set(EWL_WIDGET(e), "noteditable");
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -162,17 +166,19 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
 void 
 ewl_entry_cb_selected(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Entry *entry = w;
+	Ewl_Entry *entry = EWL_ENTRY(w);
 	
-	ewl_widget_show(entry->cursor);
+	if (entry->editable)
+		ewl_widget_show(entry->cursor);
 }
 
 void 
 ewl_entry_cb_deselected(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Entry *entry = w;
+	Ewl_Entry *entry = EWL_ENTRY(w);
 	
-	ewl_widget_hide(entry->cursor);	
+	if (entry->editable)
+		ewl_widget_hide(entry->cursor);	
 }
 
 void
