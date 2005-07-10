@@ -227,9 +227,14 @@ Horák Gyuri <dyuri@horak.hu>
 
 Andreas Volz <andreas.volz@brachttal.net>
 	Icons in focus list
+	Icons in dialog buttons
 
 Rajsekar Manokaran <rajsekar@gmail.com>
 	Patch for ARGB client support
+
+Tres Melton <tres@mindspring.com>
+	Pseudotrans update fixes
+	Dialog slider fixes
 
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
