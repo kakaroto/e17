@@ -51,6 +51,9 @@ void ewl_calendar_day_select (Ewl_Widget *w, void *ev_data, void *user_data) {
 	ewl_widget_color_set(w, 255,0,0,255);
 	EWL_CALENDAR(user_data)->cur_day = i;
 
+}
+
+void ewl_calendar_day_pick (Ewl_Widget *w, void *ev_data, void *user_data) {
 	ewl_callback_call(EWL_WIDGET(user_data), EWL_CALLBACK_VALUE_CHANGED);
 }
 
@@ -196,7 +199,9 @@ void ewl_calendar_grid_setup(Ewl_Calendar* cal) {
 
 		sprintf(day, "%d", cur_day+1); 
 		day_label = ewl_label_new(day);
-		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_DOUBLE_CLICKED,ewl_calendar_day_select, cal);
+		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_MOUSE_DOWN,ewl_calendar_day_select, cal);
+		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_DOUBLE_CLICKED,ewl_calendar_day_pick, cal);
+
 		ewl_grid_add(EWL_GRID(cal->grid), day_label, cur_col, cur_col, cur_row, cur_row);
 		ewl_calendar_highlight_today(now, EWL_LABEL(day_label), cal);
 		/*printf("Day: %d:%d, Year: %d:%d, Month: %d:%d\n",now->tm_mday,cur_day,  now->tm_year+1900,cal->cur_year,  now->tm_mon, cal->cur_month);*/
