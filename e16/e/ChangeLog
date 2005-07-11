@@ -3472,3 +3472,21 @@ Trivial stuff (function renaming, avoid referencing ewin list, eliminate
  unnecessary casts).
 Eliminate xid list (now linked within struct).
 
+
+-------------------------------------------------------------------------------
+
+Mon Jul 11 22:16:56 CEST 2005
+(Kim)
+
+--- 0.16.8 0.14 ---
+Partial cleanup of client window property/state stuff.
+Set _NET_WM_ALLOWED_ACTIONS values properly.
+Move .desktop file to <datadir>/xsessions/.
+Handle _NET_WM_STRUT_PARTIAL (partial info not used in arrange/maximize code yet).
+Focus window on activated button binding with click-to-focus.
+Handle _NET_MOVERESIZE_WINDOW.
+Trivial namespace cleanup.
+Fix shading of shaped windows.
+Stuff for grabbing redirected windows.
+Enable showing offscreen windows via pager.
+Map virtual roots at creation (before creating named pixmaps for clients).
