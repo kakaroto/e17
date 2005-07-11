@@ -94,6 +94,12 @@ void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib) {
 		ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), nw, nh);
 		/*printf ("Grew iconbox to: %d:%d\n", nw, nh);*/
 	}
+
+	if (REALIZED(ib) && VISIBLE(ib)) { 
+		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure);
+		ewl_iconbox_icon_arrange(ib); 
+		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
+	}
 }
 
 int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon) {
@@ -282,7 +288,7 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib) {
 	/*printf ("Entering the arrange..\n");*/
 
 	/* Recalc inner pane size */
-	ewl_iconbox_inner_pane_calculate(ib);
+	/*ewl_iconbox_inner_pane_calculate(ib);*/
 	
 	/*printf ("Ewl_IconBox -> Arranging icons\n");*/
 
@@ -472,13 +478,15 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 	}
 	
 	ib->selected = 1;
-	ewl_text_color_set(EWL_TEXT(EWL_BORDER(ib)->label), 0,0,255,255);
+
+	/*printf("Setting color..\n");*/
+	ewl_widget_color_set(EWL_WIDGET(EWL_BORDER(ib)->label), 140,0,255,128);
 	ewl_callback_call(EWL_WIDGET(EWL_BORDER(ib)->label), EWL_CALLBACK_APPEARANCE_CHANGED);
 }
 
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib) {
 	ib->selected = 0;
-	ewl_text_color_set(EWL_TEXT(EWL_BORDER(ib)->label), 0,0,0,255);
+	ewl_widget_color_set(EWL_WIDGET(EWL_BORDER(ib)->label), 0,0,0,255);
 }
 
 
