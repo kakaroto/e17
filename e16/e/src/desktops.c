@@ -386,6 +386,9 @@ DeskConfigure(Desk * d)
      }
    DeskSetBg(d->num, bg, 0);
 
+   if (d->num > 0)
+      EoMap(d, 0);
+
    ModulesSignal(ESIGNAL_DESK_ADDED, ((void *)(long)(d->num)));
 }
 
@@ -830,9 +833,6 @@ DeskRefresh(int desk)
       return;
 
    BackgroundApply(bg, EoGetWin(d), 1);
-#if USE_COMPOSITE
-   d->pmap = None;
-#endif
    HintsSetRootInfo(EoGetWin(d),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
 }
@@ -1058,10 +1058,6 @@ DeskEnter(Desk * d)
 	for (i = Conf.desks.num - 1; i > 0; i--)
 	   DeskHide(desks.order[i]);
      }
-   else
-     {
-	EoMap(d, 0);
-     }
 
    MoveStickyWindowsToCurrentDesk();
    MoveStickyButtonsToCurrentDesk();
@@ -1164,8 +1160,6 @@ UncoverDesktop(int desk)
 
    d->viewable = 1;
    DeskRefresh(desk);
-   if (desk != 0)
-      EoMap(d, 0);
 }
 
 static void
@@ -1256,10 +1250,6 @@ DeskShow(int desk)
      {
 	for (i = Conf.desks.num - 1; i > 0; i--)
 	   DeskHide(desks.order[i]);
-     }
-   else
-     {
-	EoMap(d, 0);
      }
 }
 

@@ -567,9 +567,6 @@ typedef struct
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
-#if USE_COMPOSITE
-   Pixmap              pmap;
-#endif
 } Desk;
 
 typedef struct _constraints

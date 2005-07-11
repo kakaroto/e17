@@ -346,28 +346,35 @@ DeskBackgroundPictureGet(Desk * d)
 
    if (!cw)
      {
+#if 0				/* FIXME - Remove? */
 	ECompMgrWinNew(&d->o);
 	cw = d->o.cmhook;
 	if (!cw)
+#endif
 	   return None;
-     }
-
-   if (cw->picture != None)
-     {
-	if (d->pmap)
-	   return cw->picture;
-	XRenderFreePicture(disp, cw->picture);
      }
 
    fill = False;
    pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
-   D1printf("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx\n", d->num,
-	    pmap);
-   if (!pmap)
+   if (pmap == None)
      {
+	if (cw->pixmap && cw->picture)
+	   return cw->picture;
 	pmap = XCreatePixmap(disp, VRoot.win, 1, 1, VRoot.depth);
 	fill = True;
      }
+   else if (pmap == cw->pixmap)
+     {
+	if (cw->picture != None)
+	   return cw->picture;
+	Eprintf("*** This is not possible :/\n");
+     }
+   D1printf
+      ("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx (%#lx %#lx)\n",
+       d->num, pmap, cw->pixmap, cw->picture);
+
+   if (cw->picture)
+      XRenderFreePicture(disp, cw->picture);
 
    pa.repeat = True;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
@@ -381,6 +388,7 @@ DeskBackgroundPictureGet(Desk * d)
 	c.red = c.green = c.blue = 0x8080;
 	c.alpha = 0xffff;
 	XRenderFillRectangle(disp, PictOpSrc, pict, &c, 0, 0, 1, 1);
+	XFreePixmap(disp, pmap);
      }
 
 #if 0				/* FIXME - Not in window mode? */
@@ -388,7 +396,7 @@ DeskBackgroundPictureGet(Desk * d)
    ECompMgrDamageAll();
 #endif
 
-   d->pmap = pmap;
+   cw->pixmap = pmap;
    cw->picture = pict;
 
    return pict;
@@ -988,7 +996,9 @@ ECompMgrWinSetPicts(EObj * eo)
 
    if (eo->type == EOBJ_TYPE_DESK)
      {
+#if 0				/* FIXME - Get this right */
 	if (cw->picture == None)
+#endif
 	  {
 	     cw->picture = DeskBackgroundPictureGet((Desk *) eo);
 	     cw->damaged = 1;	/* FIXME - ??? */
@@ -1236,6 +1246,7 @@ ECompMgrWinDel(EObj * eo)
    if (eo->type == EOBJ_TYPE_DESK)
      {
 	DeskBackgroundPictureFree((Desk *) eo);
+	cw->pixmap = None;
      }
    else
      {
