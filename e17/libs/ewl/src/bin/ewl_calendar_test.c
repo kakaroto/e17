@@ -1,7 +1,7 @@
 #include "ewl_test.h"
 
 Ewl_Widget* cal;
-Ewl_Widget* win;
+Ewl_Widget* calendar_win;
 Ewl_Widget *calendar_button;
 
 void
@@ -30,20 +30,20 @@ __create_calendar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 {
 		calendar_button = w;
 	
-		win= ewl_window_new();
+		calendar_win= ewl_window_new();
 		
-		ewl_window_title_set(EWL_WINDOW(win), "Calendar");
-		ewl_window_name_set(EWL_WINDOW(win), "Calendar");
-		ewl_window_class_set(EWL_WINDOW(win), "Calendar");
-		ewl_object_size_request(EWL_OBJECT(win), 159,160);
+		ewl_window_title_set(EWL_WINDOW(calendar_win), "Calendar");
+		ewl_window_name_set(EWL_WINDOW(calendar_win), "Calendar");
+		ewl_window_class_set(EWL_WINDOW(calendar_win), "Calendar");
+		ewl_object_size_request(EWL_OBJECT(calendar_win), 159,160);
 
 		if (w) {
                 	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
                                         __create_calendar_test_window);
-	                ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+	                ewl_callback_append(calendar_win, EWL_CALLBACK_DELETE_WINDOW,
                                     __destroy_calendar_test_window, NULL);
         	} else
-                	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+                	ewl_callback_append(calendar_win, EWL_CALLBACK_DELETE_WINDOW,
                                         __close_main_window, NULL);
 
 
@@ -51,14 +51,12 @@ __create_calendar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 		cal = ewl_calendar_new();
 
 
-		ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
-		ewl_container_child_append(EWL_CONTAINER(win), cal);
+		ewl_object_fill_policy_set(EWL_OBJECT(calendar_win), EWL_FLAG_FILL_ALL);
+		ewl_container_child_append(EWL_CONTAINER(calendar_win), cal);
 		
-		ewl_widget_show(win);
+		ewl_widget_show(calendar_win);
 		ewl_widget_show(cal);
 
-		 ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-                            __destroy_calendar_test_window, NULL);
 
 		ewl_callback_append(EWL_WIDGET(cal), EWL_CALLBACK_VALUE_CHANGED,ewl_calendar_test, cal);
 

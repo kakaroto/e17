@@ -20,7 +20,7 @@ Ewl_Widget *ewl_datepicker_new() {
 	}
 
 	if (!ewl_datepicker_init(ib)) {
-		printf("Failed datepicker init...\n");
+		DWARNING("Failed datepicker init...\n");
 		FREE(ib);
 		ib = NULL;
 	}
@@ -39,6 +39,13 @@ void ewl_datepicker_calendar_position_set(Ewl_DatePicker* dp) {
 	ewl_object_current_size_get(EWL_OBJECT(dp), &sx,&sy);
 	ewl_window_move(EWL_WINDOW(dp->calendar_window), x+(sx/4),y+sy+3);
 
+}
+
+void
+ewl_datepicker_destroy_cb (Ewl_Widget *w, void *ev_data, void *user_data) {
+	Ewl_DatePicker* dp = EWL_DATEPICKER(w);
+	ewl_widget_destroy(dp->calendar_window);
+	ewl_widget_destroy(dp->calendar);
 }
 
 void
@@ -110,6 +117,7 @@ int ewl_datepicker_init(Ewl_DatePicker* dp) {
 	ewl_widget_hide(dp->calendar_window);*/	
 
 	ewl_callback_append(EWL_WIDGET(dp->calendar), EWL_CALLBACK_VALUE_CHANGED, ewl_datepicker_value_changed_cb, dp);
+	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_DESTROY, ewl_datepicker_destroy_cb, dp);
 	ewl_callback_call(EWL_WIDGET(dp->calendar), EWL_CALLBACK_VALUE_CHANGED);
 
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 Ewl_Widget* ib;
+static Ewl_Widget* ewl_iconbox_button = NULL;
 
 void icon_click_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data __UNUSED__) {
 	printf("Icon clicked!\n");
@@ -22,9 +23,12 @@ void add_icons_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user
 }
 
 void
- __destroy_main_window(Ewl_Widget *main_win, void *ev_data __UNUSED__, void *user_data __UNUSED__)
+ __destroy_iconbox_test_window(Ewl_Widget *main_win, void *ev_data __UNUSED__, void *user_data __UNUSED__)
  {
         ewl_widget_destroy(main_win);
+	ewl_callback_append(ewl_iconbox_button, EWL_CALLBACK_CLICKED,
+	                                  __create_iconbox_test_window, NULL);
+
 
         return;
  }
@@ -36,8 +40,19 @@ __create_iconbox_test_window(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__
 
 	
 		Ewl_Widget* ib_win;
+		ewl_iconbox_button=w;
 		
 		ib_win= ewl_window_new();
+
+                if (w) {
+                        ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+                                        __create_iconbox_test_window);
+                        ewl_callback_append(ib_win, EWL_CALLBACK_DELETE_WINDOW,
+                                    __destroy_iconbox_test_window, NULL);
+                } else
+                        ewl_callback_append(ib_win, EWL_CALLBACK_DELETE_WINDOW,
+                                        __close_main_window, NULL);
+
 		
 		ewl_window_title_set(EWL_WINDOW(ib_win), "Icon Box");
 		ewl_window_name_set(EWL_WINDOW(ib_win), "Icon Box");
@@ -69,8 +84,6 @@ __create_iconbox_test_window(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__
 		ewl_widget_show(ib_win);
 		ewl_widget_show(ib);
 
-		 ewl_callback_append(ib_win, EWL_CALLBACK_DELETE_WINDOW,
-                            __destroy_main_window, NULL);	
 
 		 ewl_callback_append(button, EWL_CALLBACK_MOUSE_DOWN,
 				 add_icons_cb, NULL);

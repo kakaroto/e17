@@ -26,7 +26,7 @@ Ewl_Widget *ewl_iconbox_new() {
 	}
 
 	if (!ewl_iconbox_init(ib)) {
-		printf("Failed iconbox init...\n");
+		DWARNING("Failed iconbox init...\n");
 		FREE(ib);
 		ib = NULL;
 	}
@@ -40,12 +40,12 @@ Ewl_Widget *ewl_iconbox_icon_new() {
 
 	icon = NEW(Ewl_IconBox_Icon, 1);
 	if (!icon) {
-		printf("Failed to init icon..\n");
+		DWARNING("Failed to init icon..\n");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
 	if (!ewl_iconbox_icon_init(icon)) {
-		printf("Failed iconbox init...\n");
+		DWARNING("Failed iconbox init...\n");
 		FREE(icon);
 		icon = NULL;
 	}

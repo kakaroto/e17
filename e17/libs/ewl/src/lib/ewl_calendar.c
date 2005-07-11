@@ -231,7 +231,7 @@ Ewl_Widget *ewl_calendar_new() {
 	}
 
 	if (!ewl_calendar_init(ib)) {
-		printf("Failed calendar init...\n");
+		DWARNING("Failed calendar init...\n");
 		FREE(ib);
 		ib = NULL;
 	}
