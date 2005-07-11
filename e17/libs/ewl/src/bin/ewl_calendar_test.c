@@ -5,7 +5,7 @@ Ewl_Widget* calendar_win;
 Ewl_Widget *calendar_button;
 
 void
- __destroy_calendar_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+ __destroy_calendar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
  {
         ewl_widget_destroy(w);
         ewl_callback_append(calendar_button, EWL_CALLBACK_CLICKED,
@@ -16,7 +16,7 @@ void
  }
 
 void
-ewl_calendar_test(Ewl_Widget *main_win, void *ev_data, void *user_data)
+ewl_calendar_test(Ewl_Widget *main_win __UNUSED__, void *ev_data __UNUSED__, void *user_data)
  {
 	 char date[1024];
 	 ewl_calendar_ascii_time_get(EWL_CALENDAR(user_data), date);
