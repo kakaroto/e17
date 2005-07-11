@@ -32,6 +32,7 @@ void ewl_calendar_day_select (Ewl_Widget *w, void *ev_data, void *user_data) {
 	struct tm* now;
 	time_t now_tm;
 	int i;
+	Ewl_Widget* it;
 
 	
 	now_tm = time(NULL);
@@ -40,8 +41,6 @@ void ewl_calendar_day_select (Ewl_Widget *w, void *ev_data, void *user_data) {
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_CALENDAR(user_data)->grid));
 	
-
-	Ewl_Widget* it;
 	while ( (it = ewl_container_child_next(EWL_CONTAINER(EWL_CALENDAR(user_data)->grid))) != NULL ) {
 			ewl_widget_color_set(EWL_WIDGET(it), 255,255,255,255);
 			ewl_calendar_highlight_today(now, EWL_LABEL(it), EWL_CALENDAR(user_data));
@@ -129,6 +128,18 @@ void ewl_calendar_ascii_time_get(Ewl_Calendar* cal, char* str) {
 
 	strcpy(str,asctime(month_start));
 
+}
+
+int ewl_calendar_day_get(Ewl_Calendar* c) {
+	return c->cur_day;
+}
+
+int ewl_calendar_month_get(Ewl_Calendar* c) {
+	return c->cur_month;
+}
+
+int ewl_calendar_year_get(Ewl_Calendar* c) {
+	return c->cur_year;
 }
 
 

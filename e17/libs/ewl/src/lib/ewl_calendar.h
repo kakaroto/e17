@@ -47,6 +47,9 @@ Ewl_Widget	*ewl_calendar_new();
 int		ewl_calendar_init(Ewl_Calendar* calendar);
 void ewl_calendar_grid_setup(Ewl_Calendar* cal);
 void ewl_calendar_ascii_time_get(Ewl_Calendar* cal, char* str);
+int ewl_calendar_day_get(Ewl_Calendar*);
+int ewl_calendar_month_get(Ewl_Calendar*);
+int ewl_calendar_year_get(Ewl_Calendar*);
 
 
 #endif
