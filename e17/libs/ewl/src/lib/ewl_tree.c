@@ -539,6 +539,33 @@ void ewl_tree_selected_clear(Ewl_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param row: the row to retrieve a column from
+ * @param i: the column to retreive from the row
+ * @brief Retreives the actual widget added via row_add instead of the cell
+ * @return Returns the widget in the column of the row sent
+ *
+ * The behavior of this function is undefined if columns are not accounted for
+ * in the children of the row (if NULLs were passed in from row_add).
+ */
+Ewl_Widget *ewl_tree_row_column_get(Ewl_Row *row, int i)
+{
+	Ewl_Widget *w, *cell;
+	Ecore_List *children;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("row", row, NULL);
+
+	children = EWL_CONTAINER(row)->children;
+
+	w = NULL;
+	cell = ecore_list_goto_index(children, i);
+	if( cell )
+		w = ecore_list_goto_first(EWL_CONTAINER(cell)->children);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
 void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
