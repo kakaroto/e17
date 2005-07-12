@@ -766,7 +766,7 @@ win_extents(Display * dpy, EObj * eo)
 	     cw->shadow_dx = 2;
 	     cw->shadow_dy = 7;
 	     cw->shadow_width = cw->rcw;
-	     cw->shadow_height = cw->rcw;
+	     cw->shadow_height = cw->rch;
 	  }
 	else
 	  {
