@@ -97,7 +97,7 @@ unsigned int	ewl_tree_headers_visible_get(Ewl_Tree *tree);
 
 Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);
 void 		 ewl_tree_selected_clear(Ewl_Tree *tree);
-Ewl_Widget *ewl_tree_row_column_get(Ewl_Row *row, int i);
+Ewl_Widget	*ewl_tree_row_column_get(Ewl_Row *row, int i);
 
 Ewl_Tree_Mode  	 ewl_tree_mode_get(Ewl_Tree *tree);
 void 		 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode);
