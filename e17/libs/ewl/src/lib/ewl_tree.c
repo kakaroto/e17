@@ -883,7 +883,7 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
 	    !(ev->modifiers & EWL_KEY_MODIFIER_SHIFT))
 		ewl_tree_selected_clear(tree);
 
-	if (!tree->mode != EWL_TREE_MODE_NONE) {
+	if (tree->mode != EWL_TREE_MODE_NONE) {
 		if (ecore_list_goto(tree->selected, w) == NULL)
 		        ecore_list_append(tree->selected, w);
 		ewl_widget_state_set(w, "tree-selected");
