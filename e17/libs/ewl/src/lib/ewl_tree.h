@@ -115,6 +115,7 @@ Ewl_Row 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
  * Internally used callbacks, override at your own risk.
  */
 void ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_node_toggle_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);

@@ -650,6 +650,8 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 			ewl_tree_node_configure_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+			    ewl_tree_node_destroy_cb, NULL);
 
 	/*
 	 * The handle for expanding and collapsing the branch point at this
@@ -791,6 +793,27 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
+ewl_tree_node_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+					 void *user_data __UNUSED__)
+{
+	Ewl_Tree *tree;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(w);
+	if (!node->tree)
+		DRETURN(DLEVEL_STABLE);
+
+	tree = EWL_TREE(node->tree);
+	if (ecore_list_goto(tree->selected, node->row)) {
+		ecore_list_remove(tree->selected);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
 ewl_tree_node_toggle_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
 {
@@ -815,6 +838,10 @@ void
 ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Tree_Node *node = EWL_TREE_NODE(c);
+
+	if (w != node->handle && !node->row)
+		node->row = node->handle;
+
 	if (ecore_list_nodes(c->children) > 2 ) {
 		if (HIDDEN(node->handle))
 			ewl_widget_show(node->handle);
