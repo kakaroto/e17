@@ -505,7 +505,7 @@ Ewl_Tree_Mode ewl_tree_mode_get(Ewl_Tree *tree)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, EWL_TREE_MODE_NONE);
 
-	DRETURN_INT(EWL_TREE_MODE_NONE, DLEVEL_STABLE);
+	DRETURN_INT(tree->mode, DLEVEL_STABLE);
 }
 
 /**
