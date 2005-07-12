@@ -77,6 +77,12 @@ struct Ewl_IconBox
 	Ewl_Widget* entry_floater;
 	Ewl_Widget* entry_box;
 
+	/*Objects for selection */
+	Ewl_Widget* select;
+	Ewl_Widget* select_floater;
+	int drag_box;
+	
+
 	/* Editable flag */
 	int editable;
 
@@ -92,6 +98,7 @@ int		ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon);
 /* External functions */
 void ewl_iconbox_editable_set(Ewl_IconBox *ib, int edit);
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib);
+void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
 
 
 /* Internal callbacks */
@@ -104,6 +111,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc);
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib);
 void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data);
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib);
+void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
 
 
 
