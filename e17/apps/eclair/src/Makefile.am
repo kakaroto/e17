@@ -3,9 +3,6 @@
 SUBDIRS = eclair_wsz2edj
 
 INCLUDES = \
-@GTHREAD_CFLAGS@ \
-@GTK_CFLAGS@ \
-@GLADE_CFLAGS@ \
 @evas_cflags@ \
 @ecore_cflags@ \
 @edje_cflags@ \
@@ -37,12 +34,10 @@ eclair_config.c eclair_config.h \
 eclair_dialogs.c eclair_dialogs.h \
 eclair_window.c eclair_window.h \
 eclair_database.c eclair_database.h \
-eclair_video.c eclair_video.h
+eclair_video.c eclair_video.h \
+eclair_menu.c eclair_menu.h
 
 eclair_LDADD = \
-@GTHREAD_LIBS@ \
-@GTK_LIBS@ \
-@GLADE_LIBS@ \
 @evas_libs@ \
 @ecore_libs@ \
 @edje_libs@ \

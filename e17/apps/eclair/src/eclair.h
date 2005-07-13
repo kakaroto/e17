@@ -12,6 +12,20 @@
 #include "eclair_database.h"
 #include "eclair_types.h"
 
+enum _Eclair_Drop_Object
+{
+   ECLAIR_DROP_NONE = 0,
+   ECLAIR_DROP_COVER,
+   ECLAIR_DROP_PLAYLIST
+};
+
+enum _Eclair_State
+{
+   ECLAIR_PLAYING = 0,
+   ECLAIR_PAUSE,
+   ECLAIR_STOP
+};
+
 struct _Eclair
 {
    //Video related vars

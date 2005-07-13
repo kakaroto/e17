@@ -23,14 +23,15 @@ int eclair_mouse_up_cb(void *data, int type, void *event)
 {
    Eclair *eclair;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
-   mouse_event = event;
 
-   if (!(eclair = data) || !mouse_event)
+   if (!(eclair = data))
       return 1;
 
-   //TODO:Ecore event bug? mouse_event win and video x window doesn't match but they should have
-   if (mouse_event->button == 3/* && (mouse_event->event_win == eclair->gui_x_window || mouse_event->win == eclair->video_x_window)*/)
-      eclair_popup_menu(&eclair->dialogs_manager);
+   mouse_event = event;
+   //TODO: Ecore event bug? mouse_event win and x_window doesn't match but they should.
+   //I need to add 1 to x_window?!
+   if (mouse_event->button == 3 && (eclair->gui_window && mouse_event->win == eclair->gui_window->x_window + 1))
+      eclair_dialogs_popup_menu(&eclair->dialogs_manager);
 
    return 1;
 }
@@ -219,7 +220,7 @@ int eclair_dnd_selection_cb(void *data, int type, void *event)
 //Called when the user clicks on open button
 void eclair_open_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
-   eclair_dialogs_add_files_file_chooser(data);
+   eclair_dialogs_open_fc_add_files(data);
 }
 
 //Called when the user clicks on play button
@@ -283,13 +284,13 @@ void eclair_shuffle_cb(void *data, Evas_Object *edje_object, const char *emissio
 //Called when the user clicks of the "load playlist" button  
 void eclair_playlist_load_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
-   eclair_dialogs_load_playlist_file_chooser(data);
+   eclair_dialogs_open_fc_load_playlist(data);
 }
 
 //Called when the user clicks of the "save playlist" button
 void eclair_playlist_save_cb(void *data, Evas_Object *edje_object, const char *emission, const char *source)
 {
-   eclair_dialogs_save_playlist_file_chooser(data);
+   eclair_dialogs_open_fc_save_playlist(data);
 }
 
 //Called when the user clicks of the "remove all" button

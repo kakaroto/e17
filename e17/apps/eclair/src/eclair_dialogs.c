@@ -6,30 +6,20 @@
 #include "eclair_playlist_container.h"
 #include "eclair_utils.h"
 #include "eclair_database.h"
+#include "eclair_menu.h"
 
-static void *_eclair_dialogs_thread(void *param);
-static gint _eclair_dialogs_update(gpointer data);
-
-static void _eclair_dialogs_file_chooser_open(Eclair_Dialogs_Manager *dialogs_manager, Eclair_Dialog_File_Chooser_Type file_chooser_type);
-static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpointer data);
-static gboolean _eclair_dialogs_file_chooser_on_save_playlist(GtkWidget *widget, gpointer data);
-static gboolean _eclair_dialogs_file_chooser_on_delete(GtkWidget *widget, GdkEvent *event, gpointer data);
-
-static void _eclair_dialogs_search_window_open(Eclair_Dialogs_Manager *dialogs_manager);
-
-static void _eclair_dialogs_menu_on_add_files(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_load_playlist(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_save_playlist(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_select_all(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_select_none(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_repeat_mode(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_menu_on_search_window(GtkWidget *widget, gpointer data);
-static void _eclair_dialogs_search_window_on_entry_changed(GtkWidget *widget, gpointer data);
+static void _eclair_dialogs_menu_on_add_files(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_load_playlist(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_save_playlist(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_select_all(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_select_none(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_invert_selection(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_remove_selected(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_remove_unselected(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_remove_all(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_shuffle_mode(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_repeat_mode(Eclair_Menu_Item *item, void *data);
+static void _eclair_dialogs_menu_on_search_window(Eclair_Menu_Item *item, void *data);
 
 //Initialize dialogs manager
 void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair)
@@ -37,419 +27,118 @@ void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair
    if (!dialogs_manager || !eclair)
       return;
 
-   g_thread_init(NULL);
-   gtk_init(eclair->argc, eclair->argv);
-
    dialogs_manager->eclair = eclair;
 
-   dialogs_manager->file_chooser_xml = NULL;
-   dialogs_manager->file_chooser_all_button = NULL;
-   dialogs_manager->file_chooser_none_button = NULL;
-   dialogs_manager->file_chooser_save_playlist_button = NULL;
-   dialogs_manager->file_chooser_load_playlist_button = NULL;
-   dialogs_manager->file_chooser_add_files_button = NULL;
-   dialogs_manager->file_chooser_cancel_button = NULL;
-   dialogs_manager->file_chooser_dialog = NULL;
+   //Create the menu
+   dialogs_manager->menu = eclair_menu_new(eclair->gui_engine);
+   dialogs_manager->menu_open_item = eclair_menu_add_item_with_icon(dialogs_manager->menu, "Open", PACKAGE_DATA_DIR "/icons/open.png");
+   dialogs_manager->menu_playlist_item = eclair_menu_add_item_with_icon(dialogs_manager->menu, "Playlist", PACKAGE_DATA_DIR "/icons/playlist.png");
+   dialogs_manager->menu_windows_item = eclair_menu_add_item_with_icon(dialogs_manager->menu, "Windows", PACKAGE_DATA_DIR "/icons/windows.png");
 
-   dialogs_manager->menu_xml = NULL;
-   dialogs_manager->menu_widget = NULL;
+   dialogs_manager->menu_open_menu = eclair_menu_new(eclair->gui_engine);
+   dialogs_manager->menu_open_add_files_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_open_menu, "Add Files", PACKAGE_DATA_DIR "/icons/add_files.png");
+   eclair_menu_attach_to_item(dialogs_manager->menu_open_menu, dialogs_manager->menu_open_item);
 
-   dialogs_manager->search_window_xml = NULL;
+   dialogs_manager->menu_playlist_menu = eclair_menu_new(eclair->gui_engine);
+   dialogs_manager->menu_playlist_load_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Load Playlist", PACKAGE_DATA_DIR "/icons/load_playlist.png");
+   dialogs_manager->menu_playlist_save_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Save Playlist", PACKAGE_DATA_DIR "/icons/save_playlist.png");
+   eclair_menu_add_seperator(dialogs_manager->menu_playlist_menu);
+   dialogs_manager->menu_playlist_select_all_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Select All", PACKAGE_DATA_DIR "/icons/select_all.png");
+   dialogs_manager->menu_playlist_select_none_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Select None", PACKAGE_DATA_DIR "/icons/select_none.png");
+   dialogs_manager->menu_playlist_select_invert_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Invert Selection", PACKAGE_DATA_DIR "/icons/invert_selection.png");
+   eclair_menu_add_seperator(dialogs_manager->menu_playlist_menu);
+   dialogs_manager->menu_playlist_remove_sel_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Remove Selected", PACKAGE_DATA_DIR "/icons/remove_selected.png");
+   dialogs_manager->menu_playlist_remove_unsel_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Remove Unselected", PACKAGE_DATA_DIR "/icons/remove_unselected.png");
+   dialogs_manager->menu_playlist_remove_all_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_playlist_menu, "Remove All", PACKAGE_DATA_DIR "/icons/remove_all.png");
+   eclair_menu_add_seperator(dialogs_manager->menu_playlist_menu);
+   dialogs_manager->menu_playlist_shuffle_mode_item = eclair_menu_add_item(dialogs_manager->menu_playlist_menu, "Shuffle Mode");
+   dialogs_manager->menu_playlist_repeat_mode_item = eclair_menu_add_item(dialogs_manager->menu_playlist_menu, "Repeat Mode");
+   eclair_menu_attach_to_item(dialogs_manager->menu_playlist_menu, dialogs_manager->menu_playlist_item);
 
-   dialogs_manager->should_quit = FALSE;
-   dialogs_manager->should_popup_menu = FALSE;
-   dialogs_manager->should_open_search_window = FALSE;
-   dialogs_manager->should_open_file_chooser = ECLAIR_FC_NONE;
+   dialogs_manager->menu_windows_menu = eclair_menu_new(eclair->gui_engine);
+   dialogs_manager->menu_windows_search_item = eclair_menu_add_item_with_icon(dialogs_manager->menu_windows_menu, "Search Window", PACKAGE_DATA_DIR "/icons/search_window.png");
+   eclair_menu_attach_to_item(dialogs_manager->menu_windows_menu, dialogs_manager->menu_windows_item);
 
-   pthread_create(&dialogs_manager->dialogs_thread, NULL, _eclair_dialogs_thread, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_open_add_files_item, _eclair_dialogs_menu_on_add_files, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_load_item, _eclair_dialogs_menu_on_load_playlist, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_save_item, _eclair_dialogs_menu_on_save_playlist, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_select_all_item, _eclair_dialogs_menu_on_select_all, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_select_none_item, _eclair_dialogs_menu_on_select_none, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_select_invert_item, _eclair_dialogs_menu_on_invert_selection, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_remove_sel_item, _eclair_dialogs_menu_on_remove_selected, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_remove_unsel_item, _eclair_dialogs_menu_on_remove_unselected, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_remove_all_item, _eclair_dialogs_menu_on_remove_all, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_shuffle_mode_item, _eclair_dialogs_menu_on_shuffle_mode, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_playlist_repeat_mode_item, _eclair_dialogs_menu_on_repeat_mode, eclair);
+   eclair_menu_item_callback_set(dialogs_manager->menu_windows_search_item, _eclair_dialogs_menu_on_search_window, eclair);
 }
 
 //Shutdown dialogs manager
 void eclair_dialogs_shutdown(Eclair_Dialogs_Manager *dialogs_manager)
 {
-   gchar *last_location_path;
-
    if (!dialogs_manager)
       return;
 
-   if (dialogs_manager->eclair &&dialogs_manager->file_chooser_dialog && (last_location_path = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget))))
-   {
-      eclair_config_set_prop_string(&dialogs_manager->eclair->config, "last_location", "path", last_location_path);
-      g_free(last_location_path);
-   }
-
-   dialogs_manager->should_quit = TRUE;
-   fprintf(stderr, "Dialogs: Debug: Destroying dialogs thread\n");
-   pthread_join(dialogs_manager->dialogs_thread, NULL); 
-   fprintf(stderr, "Dialogs: Debug: Dialogs thread destroyed\n");  
+   eclair_menu_free(dialogs_manager->menu);
 }
 
-//Will open the file chooser dialog to add files
-void eclair_dialogs_add_files_file_chooser(Eclair_Dialogs_Manager *dialogs_manager)
+//Open the file chooser dialog to add files
+void eclair_dialogs_open_fc_add_files(Eclair_Dialogs_Manager *dialogs_manager)
+{
+}
+
+//Open the file chooser dialog to load playlist
+void eclair_dialogs_open_fc_load_playlist(Eclair_Dialogs_Manager *dialogs_manager)
+{
+}
+
+//Open the file chooser dialog to save the playlist
+void eclair_dialogs_open_fc_save_playlist(Eclair_Dialogs_Manager *dialogs_manager)
+{
+}
+
+//Popup the eclair menu 
+void eclair_dialogs_popup_menu(Eclair_Dialogs_Manager *dialogs_manager)
 {
    if (dialogs_manager)
-      dialogs_manager->should_open_file_chooser = ECLAIR_FC_ADD_FILES;
+      eclair_menu_popup(dialogs_manager->menu);
 }
 
-//Will open the file chooser dialog to load playlist
-void eclair_dialogs_load_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager)
+//Open the playlist search window
+void eclair_dialogs_search_window(Eclair_Dialogs_Manager *dialogs_manager)
 {
-   if (dialogs_manager)
-      dialogs_manager->should_open_file_chooser = ECLAIR_FC_LOAD_PLAYLIST;
 }
 
-//Will open the file chooser dialog to save the playlist
-void eclair_dialogs_save_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager)
-{
-   if (dialogs_manager)
-      dialogs_manager->should_open_file_chooser = ECLAIR_FC_SAVE_PLAYLIST;
-}
-
-//Will popup the eclair menu 
-void eclair_popup_menu(Eclair_Dialogs_Manager *dialogs_manager)
-{
-   if (dialogs_manager)
-      dialogs_manager->should_popup_menu = TRUE;
-}
-
-//Will open the playlist search window
-void eclair_search_window(Eclair_Dialogs_Manager *dialogs_manager)
-{
-   if (dialogs_manager)
-      dialogs_manager->should_open_search_window = TRUE;
-}
-
-//Called each 50ms and check if we must do something (popup menu, open file selection dialog...)
-static gint _eclair_dialogs_update(gpointer data)
-{
-   Eclair_Dialogs_Manager *dialogs_manager;
-
-   if (!(dialogs_manager = data))
-      return 1;
-
-   if (dialogs_manager->should_quit)
-   {
-      gtk_main_quit();
-      return 0;
-   }
-
-   if (dialogs_manager->should_popup_menu)
-   {
-      gtk_menu_popup(GTK_MENU(dialogs_manager->menu_widget), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
-      dialogs_manager->should_popup_menu = FALSE;
-   }
-   if (dialogs_manager->should_open_file_chooser != ECLAIR_FC_NONE)
-   {
-      _eclair_dialogs_file_chooser_open(dialogs_manager, dialogs_manager->should_open_file_chooser);
-      dialogs_manager->should_open_file_chooser = ECLAIR_FC_NONE;
-   }
-   if (dialogs_manager->should_open_search_window)
-   {
-      _eclair_dialogs_search_window_open(dialogs_manager);
-      dialogs_manager->should_open_search_window = FALSE;
-   }
-
-   if (dialogs_manager->eclair)
-   {
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(glade_xml_get_widget(dialogs_manager->menu_xml, "shuffle_mode1")),
-         dialogs_manager->eclair->playlist.shuffle);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(glade_xml_get_widget(dialogs_manager->menu_xml, "repeat_mode1")),
-         dialogs_manager->eclair->playlist.repeat);
-   }
-
-   return 1;
-}
-
-//Init and start the eclair dialogs main loop
-static void *_eclair_dialogs_thread(void *param)
-{
-   Eclair_Dialogs_Manager *dialogs_manager;
-   Eclair *eclair;
-
-   if (!(eclair = param))
-      return NULL;
-
-   dialogs_manager = &eclair->dialogs_manager;
-
-   //Create the menu
-   dialogs_manager->menu_xml = glade_xml_new(PACKAGE_DATA_DIR "/glade/eclair.glade", "popup_menu", NULL);
-   dialogs_manager->menu_widget = glade_xml_get_widget(dialogs_manager->menu_xml, "popup_menu");
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "add_files_handler", G_CALLBACK(_eclair_dialogs_menu_on_add_files), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "load_playlist_handler", G_CALLBACK(_eclair_dialogs_menu_on_load_playlist), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "save_playlist_handler", G_CALLBACK(_eclair_dialogs_menu_on_save_playlist), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "select_all_handler", G_CALLBACK(_eclair_dialogs_menu_on_select_all), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "select_none_handler", G_CALLBACK(_eclair_dialogs_menu_on_select_none), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "invert_selection_handler", G_CALLBACK(_eclair_dialogs_menu_on_invert_selection), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_selected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_selected), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_unselected_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_unselected), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "remove_all_handler", G_CALLBACK(_eclair_dialogs_menu_on_remove_all), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "shuffle_mode_handler", G_CALLBACK(_eclair_dialogs_menu_on_shuffle_mode), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "repeat_mode_handler", G_CALLBACK(_eclair_dialogs_menu_on_repeat_mode), eclair);
-   glade_xml_signal_connect_data(dialogs_manager->menu_xml, "search_window_handler", G_CALLBACK(_eclair_dialogs_menu_on_search_window), eclair);
-
-   g_timeout_add(50, _eclair_dialogs_update, dialogs_manager);
-
-   gtk_main();
-
-   return NULL;
-}
 
 //------------------------------
-// File chooser functions
+// Menu callbacks
 //------------------------------
 
-//Open the open file chooser
-static void _eclair_dialogs_file_chooser_open(Eclair_Dialogs_Manager *dialogs_manager, Eclair_Dialog_File_Chooser_Type fc_type)
-{
-   char *last_location_path;
-   Eclair *eclair;
-   GtkWidget *file_chooser_alignment;
-
-   if (!dialogs_manager || !(eclair = dialogs_manager->eclair) || fc_type == ECLAIR_FC_NONE)
-      return;
-
-   if (!dialogs_manager->file_chooser_xml || !dialogs_manager->file_chooser_dialog)
-   {
-      dialogs_manager->file_chooser_xml = glade_xml_new(PACKAGE_DATA_DIR "/glade/eclair.glade", "file_chooser_dialog", NULL);
-      dialogs_manager->file_chooser_dialog = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "file_chooser_dialog");
-      gtk_widget_hide(dialogs_manager->file_chooser_dialog);
-      file_chooser_alignment = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "file_chooser_alignment");
-      dialogs_manager->file_chooser_widget = gtk_file_chooser_widget_new(GTK_FILE_CHOOSER_ACTION_OPEN);
-      gtk_container_add(GTK_CONTAINER(file_chooser_alignment), dialogs_manager->file_chooser_widget);
-      gtk_widget_show(dialogs_manager->file_chooser_widget);
-      dialogs_manager->file_chooser_all_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "select_all_button");
-      dialogs_manager->file_chooser_none_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "select_none_button");
-      dialogs_manager->file_chooser_save_playlist_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "save_playlist_button");
-      dialogs_manager->file_chooser_load_playlist_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "load_playlist_button");
-      dialogs_manager->file_chooser_add_files_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "add_files_button");
-      dialogs_manager->file_chooser_cancel_button = glade_xml_get_widget(dialogs_manager->file_chooser_xml, "cancel_button");
-
-      //TODO: set_wmclass
-      //gtk_window_set_wmclass(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "eclair", "eclair");
-      gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), TRUE);
-      if (eclair_config_get_prop_string(&eclair->config, "last_location", "path", &last_location_path))
-      {
-         if (strlen(last_location_path) > 0)
-            gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), last_location_path);
-         free(last_location_path);
-      }
-
-      g_signal_connect_swapped(dialogs_manager->file_chooser_all_button, "clicked", G_CALLBACK(gtk_file_chooser_select_all), dialogs_manager->file_chooser_widget);
-      g_signal_connect_swapped(dialogs_manager->file_chooser_none_button, "clicked", G_CALLBACK(gtk_file_chooser_unselect_all), dialogs_manager->file_chooser_widget);
-      g_signal_connect(dialogs_manager->file_chooser_save_playlist_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_save_playlist), eclair);
-      g_signal_connect(dialogs_manager->file_chooser_load_playlist_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_add_files), eclair);
-      g_signal_connect(dialogs_manager->file_chooser_add_files_button, "clicked", G_CALLBACK(_eclair_dialogs_file_chooser_on_add_files), eclair);
-      g_signal_connect_swapped(dialogs_manager->file_chooser_cancel_button, "clicked", G_CALLBACK(gtk_widget_hide), dialogs_manager->file_chooser_dialog);
-      g_signal_connect(dialogs_manager->file_chooser_dialog, "delete_event", G_CALLBACK(_eclair_dialogs_file_chooser_on_delete), eclair);
-   }
-
-   if (fc_type == ECLAIR_FC_ADD_FILES)
-   {
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_OPEN);
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), TRUE);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Add Files");
-      gtk_widget_show(dialogs_manager->file_chooser_all_button);
-      gtk_widget_show(dialogs_manager->file_chooser_none_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_show(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else if (fc_type == ECLAIR_FC_LOAD_PLAYLIST)
-   {
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), FALSE);
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_OPEN);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Load Playlist");
-      gtk_widget_hide(dialogs_manager->file_chooser_all_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_none_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_show(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else if (fc_type == ECLAIR_FC_SAVE_PLAYLIST)
-   {
-      gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), FALSE);
-      gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialogs_manager->file_chooser_widget), GTK_FILE_CHOOSER_ACTION_SAVE);
-      gtk_window_set_title(GTK_WINDOW(dialogs_manager->file_chooser_dialog), "Save Playlist");
-      gtk_widget_hide(dialogs_manager->file_chooser_all_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_none_button);
-      gtk_widget_show(dialogs_manager->file_chooser_save_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_load_playlist_button);
-      gtk_widget_hide(dialogs_manager->file_chooser_add_files_button);
-      gtk_widget_show(dialogs_manager->file_chooser_cancel_button);
-   }
-   else
-      return;
-
-   gtk_window_resize(GTK_WINDOW(dialogs_manager->file_chooser_dialog), 600, 400);
-   gtk_window_present(GTK_WINDOW(dialogs_manager->file_chooser_dialog));
-}
-
-//Add the files to the playlist
-static gboolean _eclair_dialogs_file_chooser_on_add_files(GtkWidget *widget, gpointer data)
-{
-   Eclair *eclair;
-   GtkWidget *file_chooser;
-   GSList *filenames, *l;
-
-   if (!(eclair = data) || !(file_chooser = eclair->dialogs_manager.file_chooser_widget))
-      return FALSE;
-
-   if (!(filenames = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(file_chooser))))
-      return FALSE;
-
-   for (l = filenames; l; l = l->next)
-      eclair_playlist_add_uri(&eclair->playlist, l->data, 0, 1);
-   eclair_playlist_container_update(eclair->playlist_container);
-   g_slist_foreach(filenames, (GFunc)g_free, NULL);
-   g_slist_free(filenames);
-
-   gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(file_chooser));
-   gtk_widget_hide(eclair->dialogs_manager.file_chooser_dialog);
-   return TRUE;
-}
-
-//Save the playlist
-static gboolean _eclair_dialogs_file_chooser_on_save_playlist(GtkWidget *widget, gpointer data)
-{
-   Eclair *eclair = data;
-   GtkWidget *file_chooser;
-   gchar *filename;
-   char *ext, *new_filename;
-
-   if (!(eclair = data) || !(file_chooser = eclair->dialogs_manager.file_chooser_widget) ||
-      !(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser))) || strlen(filename) <= 0)
-      return FALSE;
-
-   if ((ext = eclair_utils_file_get_extension(filename)) && strcmp(ext, "m3u") == 0)
-      eclair_playlist_save(&eclair->playlist, filename);
-   else
-   {
-      new_filename = malloc(strlen(filename) + 5);
-      sprintf(new_filename, "%s.m3u", filename);
-      eclair_playlist_save(&eclair->playlist, new_filename);
-      free(new_filename);      
-   }
-   g_free(filename);
-
-   gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(file_chooser));
-   gtk_widget_hide(eclair->dialogs_manager.file_chooser_dialog);
-   return TRUE;
-}
-
-//Do not delete the open file chooser, just hide it
-static gboolean _eclair_dialogs_file_chooser_on_delete(GtkWidget *widget, GdkEvent *event, gpointer data)
-{
-   Eclair *eclair;
-
-   if (!(eclair = data) || !eclair->dialogs_manager.file_chooser_widget)
-      return FALSE;
-
-   gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(eclair->dialogs_manager.file_chooser_widget));
-   gtk_widget_hide(eclair->dialogs_manager.file_chooser_dialog);
-   return TRUE;
-}
-
-//------------------------------
-// Search window functions
-//------------------------------
-
-//Open the search window
-static void _eclair_dialogs_search_window_open(Eclair_Dialogs_Manager *dialogs_manager)
-{
-   Eclair *eclair;
-
-   if (!dialogs_manager || !(eclair = dialogs_manager->eclair))
-      return;
-
-   if (!dialogs_manager->search_window_xml || !dialogs_manager->search_window_window)
-   {
-      GtkCellRenderer *cell_renderer;
-      GtkTreeViewColumn *artist_column, *song_column, *album_column;
-
-      dialogs_manager->search_window_xml = glade_xml_new(PACKAGE_DATA_DIR "/glade/eclair.glade", "search_window", NULL);
-      dialogs_manager->search_window_window = glade_xml_get_widget(dialogs_manager->search_window_xml, "search_window");
-      gtk_widget_hide(dialogs_manager->search_window_window);
-      dialogs_manager->search_tree = glade_xml_get_widget(dialogs_manager->search_window_xml, "media_files_tree");
-
-      dialogs_manager->search_list_store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-      gtk_tree_view_set_model(GTK_TREE_VIEW(dialogs_manager->search_tree), GTK_TREE_MODEL(dialogs_manager->search_list_store)); 
-      cell_renderer = gtk_cell_renderer_text_new();
-
-      artist_column = gtk_tree_view_column_new_with_attributes("Artist", cell_renderer, "text", 0, NULL);
-      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), artist_column);
-      gtk_tree_view_column_set_sort_column_id(artist_column, 0);
-      gtk_tree_view_column_set_resizable(artist_column, TRUE);
-
-      song_column = gtk_tree_view_column_new_with_attributes("Song", cell_renderer, "text", 1, NULL);
-      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), song_column);
-      gtk_tree_view_column_set_sort_column_id(song_column, 1);
-      gtk_tree_view_column_set_resizable(song_column, TRUE);
-
-      album_column = gtk_tree_view_column_new_with_attributes("Album", cell_renderer, "text", 2, NULL);
-      gtk_tree_view_append_column(GTK_TREE_VIEW(dialogs_manager->search_tree), album_column);
-      gtk_tree_view_column_set_sort_column_id(album_column, 2);
-      gtk_tree_view_column_set_resizable(album_column, TRUE);
-
-      glade_xml_signal_connect_data(dialogs_manager->search_window_xml, "on_search_entry_changed", G_CALLBACK(_eclair_dialogs_search_window_on_entry_changed), dialogs_manager);
-   }
-
-   gtk_widget_show(dialogs_manager->search_window_window);
-   gtk_window_present(GTK_WINDOW(dialogs_manager->search_window_window));
-}
-
-static void _eclair_dialogs_search_window_on_entry_changed(GtkWidget *widget, gpointer data)
-{
-   Eclair_Dialogs_Manager *dialogs_manager;
-   Eclair *eclair;
-   GtkTreeIter new_entry;
-   char **table_result;
-   int nrows, ncols;
-   int i;
-
-   if (!(dialogs_manager = data) || !(eclair = dialogs_manager->eclair))
-      return;
-
-   eclair_database_search(&eclair->database, gtk_entry_get_text(GTK_ENTRY(widget)), &table_result, &nrows, &ncols);
-   gtk_list_store_clear(eclair->dialogs_manager.search_list_store);
-   for (i = 1; i <= nrows; i++)
-   {
-      gtk_list_store_append(dialogs_manager->search_list_store, &new_entry);
-      gtk_list_store_set(dialogs_manager->search_list_store, &new_entry,
-         0, table_result[i * ncols + 2], 1, table_result[i * ncols + 1], 2, table_result[i * ncols + 3], -1);
-   }
-}
-
-//------------------------------
-// Menu functions
-//------------------------------
-
-static void _eclair_dialogs_menu_on_add_files(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_add_files(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
    if ((eclair = data))
-      eclair_dialogs_add_files_file_chooser(&eclair->dialogs_manager);
+      eclair_dialogs_open_fc_add_files(&eclair->dialogs_manager);
 }
 
-static void _eclair_dialogs_menu_on_load_playlist(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_load_playlist(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
    if ((eclair = data))
-      eclair_dialogs_load_playlist_file_chooser(&eclair->dialogs_manager);
+      eclair_dialogs_open_fc_load_playlist(&eclair->dialogs_manager);
 }
 
-static void _eclair_dialogs_menu_on_save_playlist(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_save_playlist(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
    if ((eclair = data))
-      eclair_dialogs_save_playlist_file_chooser(&eclair->dialogs_manager);
+      eclair_dialogs_open_fc_save_playlist(&eclair->dialogs_manager);
 }
 
-static void _eclair_dialogs_menu_on_select_all(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_select_all(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -457,7 +146,7 @@ static void _eclair_dialogs_menu_on_select_all(GtkWidget *widget, gpointer data)
       eclair_playlist_container_select_all(eclair->playlist_container);
 }
 
-static void _eclair_dialogs_menu_on_select_none(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_select_none(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -465,7 +154,7 @@ static void _eclair_dialogs_menu_on_select_none(GtkWidget *widget, gpointer data
       eclair_playlist_container_select_none(eclair->playlist_container);
 }
 
-static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_invert_selection(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -473,7 +162,7 @@ static void _eclair_dialogs_menu_on_invert_selection(GtkWidget *widget, gpointer
       eclair_playlist_container_invert_selection(eclair->playlist_container);
 }
 
-static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_remove_selected(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -481,7 +170,7 @@ static void _eclair_dialogs_menu_on_remove_selected(GtkWidget *widget, gpointer 
       eclair_playlist_remove_selected_media_files(&eclair->playlist);
 }
 
-static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_remove_unselected(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -489,7 +178,7 @@ static void _eclair_dialogs_menu_on_remove_unselected(GtkWidget *widget, gpointe
       eclair_playlist_remove_unselected_media_files(&eclair->playlist);
 }
 
-static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_remove_all(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
@@ -497,26 +186,26 @@ static void _eclair_dialogs_menu_on_remove_all(GtkWidget *widget, gpointer data)
       eclair_playlist_empty(&eclair->playlist);
 }
 
-static void _eclair_dialogs_menu_on_shuffle_mode(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_shuffle_mode(Eclair_Menu_Item *item, void *data)
 {
-   Eclair *eclair;
+   /*Eclair *eclair;
 
    if ((eclair = data))
-      eclair_playlist_set_shuffle(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
+      eclair_playlist_set_shuffle(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));*/
 }
 
-static void _eclair_dialogs_menu_on_repeat_mode(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_repeat_mode(Eclair_Menu_Item *item, void *data)
 {
-   Eclair *eclair;
+   /*Eclair *eclair;
 
    if ((eclair = data))
-      eclair_playlist_set_repeat(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
+      eclair_playlist_set_repeat(&eclair->playlist, gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));*/
 }
 
-static void _eclair_dialogs_menu_on_search_window(GtkWidget *widget, gpointer data)
+static void _eclair_dialogs_menu_on_search_window(Eclair_Menu_Item *item, void *data)
 {
    Eclair *eclair;
 
    if ((eclair = data))
-      eclair_search_window(&eclair->dialogs_manager);
+      eclair_dialogs_search_window(&eclair->dialogs_manager);
 }

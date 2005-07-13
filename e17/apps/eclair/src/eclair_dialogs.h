@@ -1,50 +1,43 @@
 #ifndef _ECLAIR_DIALOGS_H_
 #define _ECLAIR_DIALOGS_H_
 
-#include <gtk/gtk.h>
-#include <glade/glade.h>
-#include <pthread.h>
 #include "eclair_types.h"
 
 struct _Eclair_Dialogs_Manager
 {
-   //File chooser widget vars
-   GladeXML *file_chooser_xml;
-   GtkWidget *file_chooser_all_button;
-   GtkWidget *file_chooser_none_button;
-   GtkWidget *file_chooser_save_playlist_button;
-   GtkWidget *file_chooser_load_playlist_button;
-   GtkWidget *file_chooser_add_files_button;
-   GtkWidget *file_chooser_cancel_button;
-   GtkWidget *file_chooser_widget;
-   GtkWidget *file_chooser_dialog;
-
    //Menu widget vars
-   GladeXML *menu_xml;
-   GtkWidget *menu_widget;
+   Eclair_Menu *menu;
 
-   //Search window vars
-   GladeXML *search_window_xml;
-   GtkWidget *search_window_window;
-   GtkWidget *search_tree;
-   GtkListStore *search_list_store;
+   Eclair_Menu_Item *menu_open_item;
+   Eclair_Menu *menu_open_menu;
+   Eclair_Menu_Item *menu_open_add_files_item;
 
-   gboolean should_popup_menu;
-   Eclair_Dialog_File_Chooser_Type should_open_file_chooser;
-   gboolean should_open_search_window;
-   gboolean should_quit;
+   Eclair_Menu_Item *menu_playlist_item;
+   Eclair_Menu *menu_playlist_menu;
+   Eclair_Menu_Item *menu_playlist_load_item;
+   Eclair_Menu_Item *menu_playlist_save_item;
+   Eclair_Menu_Item *menu_playlist_select_all_item;
+   Eclair_Menu_Item *menu_playlist_select_none_item;
+   Eclair_Menu_Item *menu_playlist_select_invert_item;
+   Eclair_Menu_Item *menu_playlist_remove_sel_item;
+   Eclair_Menu_Item *menu_playlist_remove_unsel_item;
+   Eclair_Menu_Item *menu_playlist_remove_all_item;
+   Eclair_Menu_Item *menu_playlist_shuffle_mode_item;
+   Eclair_Menu_Item *menu_playlist_repeat_mode_item;
 
-   pthread_t dialogs_thread;
+   Eclair_Menu_Item *menu_windows_item;
+   Eclair_Menu *menu_windows_menu;
+   Eclair_Menu_Item *menu_windows_search_item;
 
    Eclair *eclair;
 };
 
 void eclair_dialogs_init(Eclair_Dialogs_Manager *dialogs_manager, Eclair *eclair);
 void eclair_dialogs_shutdown(Eclair_Dialogs_Manager *dialogs_manager);
-void eclair_dialogs_add_files_file_chooser(Eclair_Dialogs_Manager *dialogs_manager);
-void eclair_dialogs_load_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager);
-void eclair_dialogs_save_playlist_file_chooser(Eclair_Dialogs_Manager *dialogs_manager);
-void eclair_popup_menu(Eclair_Dialogs_Manager *dialogs_manager);
-void eclair_search_window(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_dialogs_open_fc_add_files(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_dialogs_open_fc_load_playlist(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_dialogs_open_fc_save_playlist(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_dialogs_popup_menu(Eclair_Dialogs_Manager *dialogs_manager);
+void eclair_dialogs_search_window(Eclair_Dialogs_Manager *dialogs_manager);
 
 #endif

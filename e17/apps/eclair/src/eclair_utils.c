@@ -151,7 +151,7 @@ char *eclair_utils_file_get_filename_without_ext(char *file)
 
 //TODO: Do we suppport all the mrl possible?
 //Return 1 if the uri is a mrl (e.g. "dvd://", "http://www.domain.com/file.mp3")
-Evas_Bool eclair_utils_uri_is_mrl(char *uri)
+Evas_Bool eclair_utils_uri_is_mrl(const char *uri)
 {
    if (!uri)
       return 0;

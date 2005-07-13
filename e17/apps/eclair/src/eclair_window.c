@@ -46,7 +46,6 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    if (title)
       ecore_evas_title_set(new_window->ecore_window, title);
    ecore_evas_name_class_set(new_window->ecore_window, "eclair", "Eclair");
-   ecore_evas_borderless_set(new_window->ecore_window, 1);
 
    ecore_x_dnd_aware_set(new_window->x_window, 1);
    ecore_x_dnd_type_set(new_window->x_window, "*", 1);
