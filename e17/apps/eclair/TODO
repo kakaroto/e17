@@ -7,8 +7,17 @@ TODO list:
 * Support different encodings for subtitles
 * Allow themes to "swallow" the video object
 * Get rid of taglib
-* Get rid of gtk/glade by Edje-ifing the dialogs [in progress]
+[Menu]
+* Fix some menu bugs: child menus that popdown in the wrong place when you popup the menu while the mouse is moving
+* A the glint effect on menu items
+* Delay the "popuping" of child menus to make the use of the menu easier
+* Allow other way to use menu than with the mouse (keyboard navigation through the menu, mouse wheel)
+* Fix a min_size edje problem with menu item
+* Make the menu slide when it doesn't fit in the screen
+* Add check and radio menu items support
 * Add more item in the popup menu [in progress]
+[/Menu]
+* Make an advanced file chooser with favorites/last visited lists and with preview for video and sound files
 * Make a dialog to perform searchs in the database [in progress]
 * Add streaming support
 * Add a "Play this file continuosly" option that will keep on playing the same song over and over
