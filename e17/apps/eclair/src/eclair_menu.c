@@ -4,7 +4,7 @@
 #include <Edje.h>
 
 #ifndef ECLAIR_WIDGETS_THEME
-#define ECLAIR_WIDGETS_THEME PACKAGE_DATA_DIR "/themes/widgets_default.edj"
+#define ECLAIR_WIDGETS_THEME PACKAGE_DATA_DIR "/widget_themes/default.edj"
 #endif
 
 static void _eclair_menu_recalc(Eclair_Menu *menu);

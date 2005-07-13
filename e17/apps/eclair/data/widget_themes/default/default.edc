@@ -1,0 +1,19 @@
+data {
+   item: "icon_size" "16";
+}
+images {
+   image: "menu_bg.png" COMP;
+   image: "menu_bg_border.png" COMP;
+   image: "menu_item_outline.png" COMP;
+   image: "menu_arrow.png" COMP;
+   image: "menu_separator.png" COMP;
+   image: "menu_item_highlight.png" COMP;
+   image: "menu_item_shadow1.png" COMP;
+   image: "menu_item_shadow2.png" COMP;
+}
+fonts {
+   font: "Vera.ttf" "Vera";
+}
+collections {
+   #include "menu.edc"
+}
