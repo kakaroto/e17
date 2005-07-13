@@ -179,7 +179,7 @@ FocusGetPrevEwin(void)
       return;
 
    ewin = NULL;
-   for (i = 0; i < num; i++)
+   for (i = 1; i < num; i++)
      {
 	if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->props.skip_focuslist)
 	   continue;
@@ -1055,7 +1055,10 @@ FocusIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "prev", 2))
      {
-	FocusGetPrevEwin();
+	if (Conf.warplist.enable)
+	   WarpFocus(-1);
+	else
+	   FocusGetPrevEwin();
      }
 }
 

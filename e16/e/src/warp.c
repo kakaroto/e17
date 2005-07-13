@@ -193,7 +193,9 @@ WarpFocusShow(EWin * ewin)
 	  }
      }
 
+   /* FIXME - Check shape */
    EShapePropagate(warpFocusWindow->win);
+   EobjChangeShape(warpFocusWindow);
    EFlush();
 }
 
@@ -348,6 +350,8 @@ WarpFocusFinish(void)
 static void
 WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 {
+   KeySym              key;
+
    switch (ev->type)
      {
 #if 0				/* Not necessary when sampling keycode in events.c */
@@ -357,8 +361,21 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 	break;
 #endif
      case KeyRelease:
-	if (warpFocusWindow->shown && ev->xkey.keycode != warpFocusKey)
-	   WarpFocusFinish();
+	if (!warpFocusWindow->shown || ev->xkey.keycode == warpFocusKey)
+	   break;
+	key = XLookupKeysym(&ev->xkey, 0);
+	switch (key)
+	  {
+	  default:
+	     WarpFocusFinish();
+	     break;
+	  case XK_Down:
+	     WarpFocus(1);
+	     break;
+	  case XK_Up:
+	     WarpFocus(-1);
+	     break;
+	  }
 	break;
 
      case ButtonRelease:
