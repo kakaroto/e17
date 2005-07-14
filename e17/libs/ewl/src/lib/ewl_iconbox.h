@@ -70,7 +70,8 @@ struct Ewl_IconBox
 
 	Ewl_IconBox_Icon* drag_icon;
 	Ewl_IconBox_Icon* edit_icon;
-	int xdown, ydown;
+	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
+	int dx, dy;			   /* Drag start x/y */
 
 	/* Objects for label editing..*/
 	Ewl_Widget* entry;
@@ -80,7 +81,7 @@ struct Ewl_IconBox
 	/*Objects for selection */
 	Ewl_Widget* select;
 	Ewl_Widget* select_floater;
-	int drag_box;
+	int drag_box;			  /* Are we dragging? */
 	
 
 	/* Editable flag */
@@ -99,6 +100,7 @@ int		ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon);
 void ewl_iconbox_editable_set(Ewl_IconBox *ib, int edit);
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib);
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
+Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file);
 
 
 /* Internal callbacks */
@@ -106,7 +108,6 @@ void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /* Internal functions */
-Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file);
 void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc);
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib);
 void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data);

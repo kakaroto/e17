@@ -211,6 +211,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1000);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 128, 50, 70, 128);
 	ib->drag_box = 0;
+
+	/*Set the dx/dy drag start points to 'null' values*/
+	ib->dx = -1; ib->dy = -1;
 	/* -------------------------------- */
 
 	ewl_widget_show(ib->select);
@@ -255,7 +258,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
-	/*ewl_container_callback_nointercept(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_CALLBACK_MOUSE_DOWN);*/
 
 
 
@@ -372,14 +374,37 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	/*Handle selection box*/
 	if (ib->drag_box) {
-		int sbx, sby;
-		sbx =  ewl_object_current_x_get(EWL_OBJECT(ib->select_floater));
-		sby = ewl_object_current_y_get(EWL_OBJECT(ib->select_floater));
 		
-		if (ev->x-sbx-3 > 0 && ev->y-sby-3 >0) {
-			ewl_object_custom_size_set(EWL_OBJECT(ib->select), ev->x-sbx-3, ev->y-sby-3);
-			ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), ev->x-sbx-3, ev->y-sby-3);
+		
+		
+		if (ib->dx == -1) {
+			/*  Assume this is the drag start point */
+			ib->dx =  ewl_object_current_x_get(EWL_OBJECT(ib->select_floater));
+			ib->dy = ewl_object_current_y_get(EWL_OBJECT(ib->select_floater));
 		}
+
+		int lx,ly,hx,hy;
+
+		/*Work out where to start/end..*/
+		if (ib->dx < ev->x) {
+			lx = ib->dx; hx = ev->x;
+		} else {
+			lx = ev->x; hx = ib->dx; 
+		}
+		
+		if (ib->dy < ev->y) {
+			ly = ib->dy ; hy = ev->y;
+		} else {
+			ly = ev->y; hy = ib->dy;
+		}
+
+		
+			ewl_floater_position_set(EWL_FLOATER(ib->select_floater), (lx - ibx) + abs(px-ibx) , (ly+1 - iby) + abs(py-iby));
+			
+			if (hx-lx >0 && hy-ly > 0) {
+				ewl_object_custom_size_set(EWL_OBJECT(ib->select), (hx-lx), (hy-ly));
+				ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), hx-lx, hy-ly);
+			}
 
 		/*Now check which icons we have to select in this range...*/
 		{
@@ -398,7 +423,7 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 				ix = ewl_object_current_x_get(EWL_OBJECT(list_item));
 				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
 				
-				if (ix >= sbx && iy >= sby && ix <= (sbx+w) && iy <= (sby+h) ) {
+				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy ) {
 					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0);
 				} else {
 					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));
@@ -463,7 +488,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 		/*printf ("Start select at %d:%d\n", ev->x, ev->y);*/
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
-
+		/* Put the floater at the position we started at */
 		ewl_floater_position_set(EWL_FLOATER(ib->select_floater), ev->x-ibx + abs(px-ibx), ev->y-iby + abs(py-iby));
 
 		
@@ -508,6 +533,8 @@ void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data) {
 		/*printf("Stopped select: %d:%d\n", ev->x, ev->y);*/
 		ewl_widget_hide(EWL_WIDGET(ib->select_floater));
 		ib->drag_box = 0;
+		ib->dx = -1;
+		ib->dy = -1;
 	}
 }
 
