@@ -1839,9 +1839,13 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	switch (ev->xbutton.button)
 	  {
 	  case 4:
+	     if (Mode.mode != MODE_NONE)
+		break;
 	     PagerZoomChange(1);
 	     break;
 	  case 5:
+	     if (Mode.mode != MODE_NONE)
+		break;
 	     PagerZoomChange(-1);
 	     break;
 	  default:
@@ -1855,11 +1859,19 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	break;
 
      case ButtonRelease:
-	if (Mode.mode == MODE_NONE)
-	   break;
-	ETranslateCoordinates(ev->xbutton.window, p->win,
-			      ev->xbutton.x, ev->xbutton.y, &px, &py, NULL);
-	PagerHiwinHandleMouseUp(p, px, py, (int)ev->xbutton.button);
+	switch (ev->xbutton.button)
+	  {
+	  case 4:
+	  case 5:
+	     break;
+	  default:
+	     /* Translate x,y to pager window coordinates */
+	     ETranslateCoordinates(ev->xbutton.window, p->win,
+				   ev->xbutton.x, ev->xbutton.y, &px, &py,
+				   NULL);
+	     PagerHiwinHandleMouseUp(p, px, py, (int)ev->xbutton.button);
+	     break;
+	  }
 	break;
 
      case MotionNotify:
