@@ -703,7 +703,6 @@ IconboxesEwinDeIconify(EWin * ewin)
 
    if (ib->animate && !ewin->state.showingdesk)
      {
-	EobjsRepaint();
 	IB_Animate(0, ewin, ib->ewin);
      }
    IconboxObjEwinDel(ib, ewin);
@@ -1722,6 +1721,7 @@ IconboxRedraw(Iconbox * ib)
 
    ib->do_update = 1;
    EwinResize(ib->ewin, ewin->client.w, ewin->client.h);
+   EobjsRepaint();
 }
 
 static int
