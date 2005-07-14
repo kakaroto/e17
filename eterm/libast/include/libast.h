@@ -81,7 +81,7 @@
 #endif
 
 #ifdef __GNUC__
-#  if __GNUC__ >= 4
+#  if __GNUC__ >= 4 && !defined(STRICT_ISO_C99)
 #    define STRICT_ISO_C99
 #  endif
 #else
