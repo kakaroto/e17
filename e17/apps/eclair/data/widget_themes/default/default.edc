@@ -10,6 +10,9 @@ images {
    image: "menu_item_highlight.png" COMP;
    image: "menu_item_shadow1.png" COMP;
    image: "menu_item_shadow2.png" COMP;
+   image: "menu_item_glint1.png" COMP;
+   image: "menu_item_glint2.png" COMP;
+   image: "menu_item_glint3.png" COMP;
 }
 fonts {
    font: "Vera.ttf" "Vera";

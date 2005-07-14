@@ -7,8 +7,22 @@
 #define ECLAIR_WIDGETS_THEME PACKAGE_DATA_DIR "/widget_themes/default.edj"
 #endif
 
+typedef enum _Eclair_Menu_Screen_Edge
+{
+   ECLAIR_MENU_NO_EDGE = 0,
+   ECLAIR_MENU_LEFT_EDGE = (1 << 0),
+   ECLAIR_MENU_RIGHT_EDGE = (1 << 1),
+   ECLAIR_MENU_BOTTOM_EDGE = (1 << 2),
+   ECLAIR_MENU_TOP_EDGE = (1 << 3)
+} Eclair_Menu_Screen_Edge;
+
 static void _eclair_menu_recalc(Eclair_Menu *menu);
 static void _eclair_menu_resize_cb(Ecore_Evas *menu_window);
+static Eclair_Menu_Screen_Edge _eclair_menu_over_screen_edge(Eclair_Menu *menu);
+static Eclair_Menu_Screen_Edge _eclair_menu_mouse_on_screen_edge();
+static int _eclair_menu_mouse_is_in(Eclair_Menu *menu);
+static void _eclair_menu_update_slide_timer(Eclair_Menu *menu);
+static int _eclair_menu_slide_timer_cb(void *data);
 static int _eclair_menu_mouse_up_cb(void *data, int type, void *event);
 static int _eclair_menu_mouse_move_cb(void *data, int type, void *event);
 static void _eclair_menu_item_in_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -20,9 +34,9 @@ static Ecore_X_Window _eclair_menu_input_window = 0;
 static Evas_List *_eclair_menu_popped_menus = NULL;
 static Ecore_Event_Handler *_eclair_menu_mouse_up_handler = NULL;
 static Ecore_Event_Handler *_eclair_menu_mouse_move_handler = NULL;
-static int prev_mouse_x = -100000;
-static int prev_mouse_y = -100000;
-
+static Ecore_Timer *_eclair_menu_slide_timer = NULL;
+static int _eclair_menu_mouse_x = -100000;
+static int _eclair_menu_mouse_y = -100000;
 
 //------------------------------
 // Eclair_Menu
@@ -84,6 +98,7 @@ void eclair_menu_free(Eclair_Menu *menu)
    if (!menu)
       return;
 
+   eclair_menu_pop_down(menu);
    for (l = menu->items; l; l = l->next)
    {
       if ((item = l->data))
@@ -133,9 +148,6 @@ void eclair_menu_popup(Eclair_Menu *menu)
 {
    int x, y;
 
-   if (!menu)
-      return;
-
    ecore_x_pointer_last_xy_get(&x, &y);
    eclair_menu_popup_at_xy(menu, x, y);
 }
@@ -148,10 +160,13 @@ void eclair_menu_popup_at_xy(Eclair_Menu *menu, int x, int y)
 
    if (!_eclair_menu_input_window)
    {
-      Ecore_X_Window root;
+      Ecore_X_Window root, parent;
       int root_x, root_y, root_w, root_h;
 
-      root = ecore_x_window_root_first_get();
+      root = menu->x_window;
+      while ((parent = ecore_x_window_parent_get(root)) != 0)
+         root = parent;
+ 
       ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
       _eclair_menu_input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
    }
@@ -161,13 +176,17 @@ void eclair_menu_popup_at_xy(Eclair_Menu *menu, int x, int y)
       _eclair_menu_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _eclair_menu_mouse_move_cb, menu);
       ecore_x_window_show(_eclair_menu_input_window);
       ecore_x_keyboard_grab(_eclair_menu_input_window);
-      ecore_x_pointer_grab(_eclair_menu_input_window);
+      ecore_x_pointer_confine_grab(_eclair_menu_input_window);
 
       _eclair_menu_root = menu;
    }
    ecore_evas_move(menu->window, x, y);
    ecore_evas_show(menu->window);
+   evas_event_feed_mouse_move(menu->evas, -100000, -100000, NULL);
+   evas_event_feed_mouse_in(menu->evas, NULL);
    _eclair_menu_popped_menus = evas_list_append(_eclair_menu_popped_menus, menu);
+
+   _eclair_menu_update_slide_timer(menu);
 }
 
 //Pop down the menu and its childrend
@@ -206,7 +225,7 @@ void eclair_menu_pop_down(Eclair_Menu *menu)
 //Return NULL if failed
 Eclair_Menu_Item *eclair_menu_add_item(Eclair_Menu *menu, const char *label)
 {
-   return eclair_menu_item_new(label, menu, ECLAIR_MENU_ITEM_NORMAL_ITEM, "");
+   return eclair_menu_item_new(label, menu, ECLAIR_MENU_ITEM_NORMAL_ITEM, NULL);
 }
 
 //Create a new menu item with an icon
@@ -222,7 +241,7 @@ Eclair_Menu_Item *eclair_menu_add_item_with_icon(Eclair_Menu *menu, const char *
 //Return NULL if failed
 Eclair_Menu_Item *eclair_menu_add_seperator(Eclair_Menu *menu)
 {
-   return eclair_menu_item_new("", menu, ECLAIR_MENU_ITEM_SEPARATOR_ITEM, "");
+   return eclair_menu_item_new(NULL, menu, ECLAIR_MENU_ITEM_SEPARATOR_ITEM, NULL);
 }
 
 //Calculate the size of the menu, resize it and display the arrows if needed
@@ -270,8 +289,8 @@ static void _eclair_menu_recalc(Eclair_Menu *menu)
          continue;
 
       edje_object_size_min_calc(item->edje_object, &item_w, &item->height);
-      if (w < item_w + 30)
-         w = item_w + 30;
+      if (w < item_w)
+         w = item_w;
       h += item->height;
    }
    ecore_evas_resize(menu->window, w, h);
@@ -303,13 +322,171 @@ static void _eclair_menu_resize_cb(Ecore_Evas *menu_window)
    }
 }
 
+//Return a flag incating on which edges of the screen the menu is over
+static Eclair_Menu_Screen_Edge _eclair_menu_over_screen_edge(Eclair_Menu *menu)
+{
+   int root_x, root_y, root_w, root_h;
+   int menu_x, menu_y, menu_w, menu_h;
+   Eclair_Menu_Screen_Edge result = ECLAIR_MENU_NO_EDGE;
+
+   if (!menu)
+      return ECLAIR_MENU_NO_EDGE;
+
+   ecore_x_window_geometry_get(_eclair_menu_input_window, &root_x, &root_y, &root_w, &root_h);
+   ecore_evas_geometry_get(menu->window, &menu_x, &menu_y, &menu_w, &menu_h);
+
+   if (menu_x < root_x)
+   {
+      result |= ECLAIR_MENU_LEFT_EDGE;
+   }
+   if (menu_x + menu_w > root_x + root_w)
+      result |= ECLAIR_MENU_RIGHT_EDGE;
+   if (menu_y < root_y)
+      result |= ECLAIR_MENU_TOP_EDGE;
+   if (menu_y + menu_h > root_y + root_h)
+      result |= ECLAIR_MENU_BOTTOM_EDGE;
+      
+   return result;
+}
+
+//Return a flag incating on which edges of the screen the mouse pointer is
+static Eclair_Menu_Screen_Edge _eclair_menu_mouse_on_screen_edge()
+{
+   int root_x, root_y, root_w, root_h;
+   Eclair_Menu_Screen_Edge result = ECLAIR_MENU_NO_EDGE;
+
+   ecore_x_window_geometry_get(_eclair_menu_input_window, &root_x, &root_y, &root_w, &root_h);
+   if (_eclair_menu_mouse_x - root_x + 1 >= root_w)
+      result |= ECLAIR_MENU_RIGHT_EDGE;
+   if (_eclair_menu_mouse_x <= root_x)
+      result |= ECLAIR_MENU_LEFT_EDGE;
+   if (_eclair_menu_mouse_y - root_y + 1 >= root_h)
+      result |= ECLAIR_MENU_BOTTOM_EDGE;
+   if (_eclair_menu_mouse_y <= root_y)
+      result |= ECLAIR_MENU_TOP_EDGE;
+
+   return result;
+}
+
+//Return 1 is the mouse is in the menu
+static int _eclair_menu_mouse_is_in(Eclair_Menu *menu)
+{
+   int menu_x, menu_y, menu_w, menu_h;
+
+   if (!menu)
+      return 0;
+
+   ecore_evas_geometry_get(menu->window, &menu_x, &menu_y, &menu_w, &menu_h);
+   return (_eclair_menu_mouse_x >= menu_x && _eclair_menu_mouse_x <= menu_x + menu_w
+      && _eclair_menu_mouse_y >= menu_y && _eclair_menu_mouse_x <= menu_y + menu_h);
+}
+
+//Start the slide timer if needed
+static void _eclair_menu_update_slide_timer(Eclair_Menu *menu)
+{
+   Eclair_Menu_Screen_Edge mouse_on_edge, menu_over_edge;
+
+   if (!menu)
+      return;
+
+   mouse_on_edge = _eclair_menu_mouse_on_screen_edge();
+   menu_over_edge = _eclair_menu_over_screen_edge(menu);
+   if (!_eclair_menu_slide_timer && (mouse_on_edge & menu_over_edge) != ECLAIR_MENU_NO_EDGE)
+      _eclair_menu_slide_timer = ecore_timer_add(1.0 / 60.0, _eclair_menu_slide_timer_cb, NULL);
+}
+
+//Slide the menu (called every 1/60 sec)
+static int _eclair_menu_slide_timer_cb(void *data)
+{
+   Eclair_Menu *menu = NULL, *m;
+   Evas_List *l;
+   Eclair_Menu_Screen_Edge mouse_edge, menu_edge = ECLAIR_MENU_NO_EDGE;
+   int root_x, root_y, root_w, root_h;
+   int menu_x, menu_y, menu_w, menu_h;
+   int x, y;
+   int dx = 0, dy = 0, max_delta = (int)(1.0 / 60.0 * 800);
+
+   //TODO: FIXME: We could have problem with menus bigger than the screen width
+
+   //We first look the menu that is over an edge of the screen
+   for (l = _eclair_menu_popped_menus; l; l = l->next)
+   {
+      if (!(m = l->data))
+         continue;
+
+      if ((menu_edge = _eclair_menu_over_screen_edge(m)) != ECLAIR_MENU_NO_EDGE)
+      {
+         menu = m;
+         break;
+      }
+   }
+   if (!menu)
+   {
+      _eclair_menu_slide_timer = NULL;
+      return 0;
+   }
+
+   //Then we move all the menu windows in the right direction
+   mouse_edge = _eclair_menu_mouse_on_screen_edge();
+   ecore_x_window_geometry_get(_eclair_menu_input_window, &root_x, &root_y, &root_w, &root_h);
+   ecore_evas_geometry_get(menu->window, &menu_x, &menu_y, &menu_w, &menu_h);
+   if (mouse_edge & menu_edge & ECLAIR_MENU_LEFT_EDGE)
+   {
+      if (max_delta < root_x - menu_x)
+         dx = max_delta;
+      else
+         dx = root_x - menu_x;
+   }
+   if (mouse_edge & menu_edge & ECLAIR_MENU_RIGHT_EDGE)
+   {
+      if (max_delta < menu_w - root_x - root_w + menu_x)
+         dx = -max_delta;
+      else
+         dx = -menu_w + root_x + root_w - menu_x;
+   }
+   if (mouse_edge & menu_edge & ECLAIR_MENU_TOP_EDGE)
+   {
+      if (max_delta < root_y - menu_y)
+         dy = max_delta;
+      else
+         dy = root_y - menu_y;
+   }
+   if (mouse_edge & menu_edge & ECLAIR_MENU_BOTTOM_EDGE)
+   {
+      if (max_delta < menu_h - root_y - root_h + menu_y)
+         dy = -max_delta;
+      else
+         dy = -menu_h + root_y + root_h - menu_y;
+   }
+
+   if (dx == 0 && dy == 0)
+   {
+      _eclair_menu_slide_timer = NULL;
+      return 0;
+   }
+
+   for (l = _eclair_menu_popped_menus; l; l = l->next)
+   {
+      if (!(m = l->data))
+         continue;
+
+      ecore_evas_geometry_get(m->window, &x, &y, NULL, NULL);
+      ecore_evas_move(m->window, x + dx, y + dy);
+
+      //We feed a mouse move event since the relative position between
+      //the mouse pointer and the menu window has changed
+      evas_event_feed_mouse_move(m->evas, _eclair_menu_mouse_x - x, _eclair_menu_mouse_y - y, NULL);
+   }
+
+   return 1;
+}
+
 //Pop down the menus if needed and feed the mouse up event to the menu window
 static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
 {
    Eclair_Menu *menu, *m;
    Evas_List *l;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
-   int x, y, w, h;
    int pointer_over_menu = 0;
 
    mouse_event = event;
@@ -322,9 +499,7 @@ static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
       if (!(m = l->data))
          continue;
 
-      ecore_evas_geometry_get(m->window, &x, &y, &w, &h);
-      if ((mouse_event->x >= x) && (mouse_event->x <= x + w) &&
-            (mouse_event->y >= y) && (mouse_event->y <= y + h))
+      if (_eclair_menu_mouse_is_in(m))
       {
          pointer_over_menu = 1;
          evas_event_feed_mouse_up(m->evas, mouse_event->button, EVAS_BUTTON_NONE, NULL);
@@ -336,43 +511,32 @@ static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
    return 1;
 }
 
-//Feed the mouse move, in and out events to the menu windows
+//Feed the mouse move, in and out events to the menu windows and start to slide the windows if needed
 static int _eclair_menu_mouse_move_cb(void *data, int type, void *event)
 {
    Eclair_Menu *menu, *m;
    Evas_List *l;
    Ecore_X_Event_Mouse_Move *mouse_event;
-   int menu_x, menu_y, menu_w, menu_h;
-   int mouse_in;
+   int menu_x, menu_y;
 
    mouse_event = event;
    if (!(menu = data) || mouse_event->win != _eclair_menu_input_window)
       return 1;
+
+   _eclair_menu_mouse_x = mouse_event->x;
+   _eclair_menu_mouse_y = mouse_event->y;
 
    for (l = _eclair_menu_popped_menus; l; l = l->next)
    {
       if (!(m = l->data))
          continue;
 
-      ecore_evas_geometry_get(m->window, &menu_x, &menu_y, &menu_w, &menu_h);
+      ecore_evas_geometry_get(m->window, &menu_x, &menu_y, NULL, NULL);
       evas_event_feed_mouse_move(m->evas, mouse_event->x - menu_x, mouse_event->y - menu_y, NULL);
-
-      mouse_in = (mouse_event->x >= menu_x && mouse_event->x <= menu_x + menu_w &&
-         mouse_event->y >= menu_y && mouse_event->y <= menu_y + menu_h);
-      if (m->mouse_in && !mouse_in)
-      {
-         evas_event_feed_mouse_out(m->evas, NULL);
-         m->mouse_in = 0;
-      }
-      else if (!m->mouse_in && mouse_in)
-      {
-         evas_event_feed_mouse_in(m->evas, NULL);
-         m->mouse_in = 1;
-      }
+      
+      //Start to slide the menu window if we need
+      _eclair_menu_update_slide_timer(m);
    }
-
-   prev_mouse_x = mouse_event->x;
-   prev_mouse_y = mouse_event->y;
 
    return 1;
 }
@@ -433,10 +597,12 @@ Eclair_Menu_Item *eclair_menu_item_new(const char *label, Eclair_Menu *parent, E
          {
             icon_size = atoi(icon_size_str);
             evas_object_image_fill_set(item->icon_object, 0, 0, icon_size, icon_size);
+            free(icon_size_str);
          }
          else
             evas_object_image_fill_set(item->icon_object, 0, 0, 16, 16);
          edje_object_part_swallow(item->edje_object, "icon", item->icon_object);
+         evas_object_pass_events_set(item->icon_object, 1);
          evas_object_show(item->edje_object);
       }
    }
@@ -483,11 +649,15 @@ void eclair_menu_item_label_set(Eclair_Menu_Item *item, const char *label)
 
    free(item->label);
    if (!label)
-      item->label = strdup("");
+   {
+      item->label = NULL;
+      edje_object_part_text_set(item->edje_object, "label", "");
+   }
    else
+   {
       item->label = strdup(label);
-
-   edje_object_part_text_set(item->edje_object, "label", item->label);
+      edje_object_part_text_set(item->edje_object, "label", item->label);
+   }
    _eclair_menu_recalc(item->parent);
 }
 

@@ -15,7 +15,6 @@ struct _Eclair_Menu
    Ecore_X_Window x_window;
    Evas *evas;
    Evas_Object *edje_object;
-   unsigned char mouse_in : 1;
 };
 
 enum _Eclair_Menu_Item_Type
@@ -35,9 +34,9 @@ struct _Eclair_Menu_Item
    Evas_Object *icon_object;
    int height;
    Eclair_Menu_Item_Type type;
-   unsigned char is_active : 1;
    void (*item_cb)(Eclair_Menu_Item *item, void *data);
    void *cb_data;
+   int is_active : 1;
 };
 
 Eclair_Menu *eclair_menu_new(Eclair_Engine menu_engine);

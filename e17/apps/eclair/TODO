@@ -8,12 +8,8 @@ TODO list:
 * Allow themes to "swallow" the video object
 * Get rid of taglib
 [Menu]
-* Fix some menu bugs: child menus that popdown in the wrong place when you popup the menu while the mouse is moving
-* A the glint effect on menu items
-* Delay the "popuping" of child menus to make the use of the menu easier
+* Fix some menu bugs: child menus that sometimes popdown in the wrong place
 * Allow other way to use menu than with the mouse (keyboard navigation through the menu, mouse wheel)
-* Fix a min_size edje problem with menu item
-* Make the menu slide when it doesn't fit in the screen
 * Add check and radio menu items support
 * Add more item in the popup menu [in progress]
 [/Menu]
