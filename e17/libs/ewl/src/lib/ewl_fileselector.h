@@ -38,17 +38,17 @@ typedef struct Ewl_Fileselector Ewl_Fileselector;
  */
 struct Ewl_Fileselector
 {
-	Ewl_Box        box;         /* the box containing the widgets */
-	Ewl_Widget    *list_dirs;   /* directory table */
-	Ewl_Widget    *list_files;  /* file table */
-	Ewl_Widget    *entry_dir;
-	Ewl_Widget    *entry_file;
-	Ewl_Widget    *entry_filter;
+	Ewl_Box        box;          /**< the box containing the widgets */
+	Ewl_Widget    *list_dirs;    /**< directory table */
+	Ewl_Widget    *list_files;   /**< file table */
+	Ewl_Widget    *entry_dir;    /**< current directory selected  */
+	Ewl_Widget    *entry_file;   /**< current file selected or typed */
   
-	char          *path;    /* current fileselector path */
-	Ecore_List    *files;   /* current selected items in the fileselector */
-	char          *dfilter; /* current filter to apply to directories */
-	unsigned int   multi_select; /* is the selector multi select or not */
+	char          *path;         /**< current fileselector path */
+	Ecore_List    *files;        /**< current selection in fileselector */
+	char          *ffilter;      /**< current filter applied to files */
+	char          *dfilter;      /**< current filter for directories */
+	unsigned int   multi_select; /**< is the selector multi select or not */
 };
 
 Ewl_Widget 	*ewl_fileselector_new();

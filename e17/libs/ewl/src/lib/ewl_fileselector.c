@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include <Ecore_File.h>
 
 #include <sys/stat.h>
 #include <stdio.h>
@@ -173,7 +174,9 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 					   EWL_FLAG_FILL_SHRINK |
 					   EWL_FLAG_FILL_HFILL);
 
-		misc = ewl_text_new("File:");
+		misc = ewl_label_new("File:");
+		ewl_object_fill_policy_set(EWL_OBJECT(misc),
+					   EWL_FLAG_FILL_NONE);
 		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
 		ewl_widget_show(misc);
 
@@ -186,32 +189,10 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 		ewl_widget_show(hbox);
 	}
 
-	/* The filter label and entry */
-	hbox = ewl_hbox_new();
-	if (hbox) {
-		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_HFILL);
-
-		misc = ewl_text_new("Filter:");
-		ewl_object_size_request(EWL_OBJECT(misc), 10, 50);
-		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
-		ewl_widget_show(misc);
-
-		fs->entry_filter = ewl_entry_new("^[^\\.]");
-		ewl_callback_append(fs->entry_filter,
-				EWL_CALLBACK_VALUE_CHANGED,
-				ewl_fileselector_filter_cb,
-				fs);
-		ewl_container_child_append(EWL_CONTAINER(hbox),
-					   fs->entry_filter);
-		ewl_widget_show(fs->entry_filter);
-
-		ewl_container_child_append(EWL_CONTAINER(fs), hbox);
-		ewl_widget_show(hbox);
-	}
-
+	/* The default filter values */
+	fs->ffilter = strdup("^[^\\.]");
 	fs->dfilter = strdup("^[^\\.][^$]");
+
 	tmp = getenv("HOME");
 	fs->path = strdup((tmp ? tmp : "/"));
 
@@ -472,12 +453,13 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 {
 	regex_t freg, dreg;
 	Ewl_Fileselector_Data *d;
-	struct dirent *lecture;
-	DIR *rep;
 	struct stat buf;
 	char *name;
 	char *path2;
 	int len;
+	Ecore_List *file_list = NULL;
+	char *listing = NULL;
+	
 
 	if (filter) {
 		if (regcomp(&freg, filter, REG_NOSUB | REG_EXTENDED))
@@ -498,36 +480,34 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 		path2[strlen(path)] = '/';
 		path2[strlen(path) + 1] = '\0';
 	}
-
-	rep = opendir(path2);
-	if (!rep) {
-		free(path2);
-		DRETURN(DLEVEL_STABLE);
-	}
+	
+	/* Get directory listing, store, and move to beginning of list */
+	file_list = ecore_file_ls(path2);
+	ecore_list_goto_first(file_list);
 
 	/* Loop over all listings in the directory to build both lists */
-	while ((lecture = readdir(rep))) {
+	while ( (!ecore_list_is_empty(file_list)) &&
+		(!(ecore_list_index(file_list) >= (ecore_list_nodes(file_list)))) && 
+		(listing = strdup((char *)ecore_list_next(file_list))) ) {
+		
 		int match = 0;
 		Ecore_List *add = NULL;
 		regex_t *reg;
-
-		/* Skip over the simple case early */
-		if (!strcmp(lecture->d_name,"..") && !strcmp(path,"/"))
-			continue;
-
+		
 		/* Setup a ful path copy to the listing */
-		len = strlen(path2) + strlen(lecture->d_name) + 1;
-		name = (char *) malloc(sizeof(char) * len);
-		memcpy(name, path2, strlen(path2));
+		len = strlen(path2) + strlen(listing) + 1; 	
+		name = (char *) malloc(sizeof(char) * len); 	
+		memcpy(name, path2, strlen(path2)); 
 		memcpy(name + strlen(path2),
-		       lecture->d_name, strlen(lecture->d_name));
-		name[len - 1] = '\0';
+	        listing, strlen(listing)); 
+		name[len - 1] = '\0'; 
 
 		/* Set to NULL before determining the type of the listing */
 		reg = NULL;
-		if (stat(name, &buf) == 0) {
-			/* Determine the file or directory match */
-			if (S_ISDIR(buf.st_mode) && dlist) {
+		
+		/* Determine type of listing */
+		if(stat(name, &buf) == 0) {
+			if(ecore_file_is_dir(name)) {
 				add = dlist;
 				if (dfilter)
 					reg = &dreg;
@@ -540,14 +520,14 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 		}
 
 		/* Determine if this item should be listed */
-		if (!strcmp(lecture->d_name, ".."))
+		if (!strcmp(listing, ".."))
 			match = 1;
-		else if (reg && !regexec(reg, lecture->d_name, 0, NULL, 0))
+		else if (reg && !regexec(reg, listing, 0, NULL, 0))
 			match = 1;
-
+	
 		/* File matches so add it to the listing */
 		if (match && add) {
-			d = ewl_fileselector_data_new(lecture->d_name,
+			d = ewl_fileselector_data_new(listing,
 						      buf.st_size,
 						      buf.st_mtime,
 						      buf.st_mode);
@@ -555,16 +535,20 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
 		}
 
 		free(name);
+		free(listing);
 	}
-
+	
 	/* Clean up temporary variables */
-	closedir(rep);
 	if (filter)
 		regfree(&freg);
 	if (dfilter)
 		regfree(&dreg);
-	free(path2);
-
+	free(path2);	
+	path2 = NULL;
+	
+	ecore_list_destroy(file_list);
+	file_list = NULL;	
+	
 	return;
 }
 
@@ -702,7 +686,6 @@ void ewl_fileselector_go_home_cb(Ewl_Widget *w __UNUSED__,
 
 static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 {
-	char *filter;
 	Ewl_Fileselector_Data *d;
 	Ewl_Widget *parent_win;
 	Ewl_Container *cont;
@@ -722,10 +705,8 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	ecore_list_clear(fs->files);
 
 	/*
-	 * Setup a regex for matching files.
+	 * Determine if it's an absolute path or relative path.
 	 */
-	filter = ewl_text_text_get(EWL_TEXT(fs->entry_filter));
-
 	if (path[strlen(path) - 1] == '/')
 		path2 = strdup(path);
 	else {
@@ -740,7 +721,8 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 
 	files = ecore_list_new();
 	dirs = ecore_list_new();
-	ewl_fileselector_file_list_get(path2, filter, fs->dfilter, files, dirs);
+	ewl_fileselector_file_list_get(path2, fs->ffilter, fs->dfilter, files,
+				       dirs);
 
 	parent_win = EWL_WIDGET(ewl_embed_widget_find(EWL_WIDGET(fs)));
 	cont = ewl_container_redirect_get(EWL_CONTAINER(parent_win));
