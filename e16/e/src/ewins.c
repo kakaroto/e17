@@ -542,12 +542,12 @@ Adopt(EWin * ewin)
 {
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
+   ICCCM_GetHints(ewin, 0);
    ICCCM_GetInfo(ewin, 0);
    EwinUpdateShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
    if (!EwinIsInternal(ewin))
      {
-	ICCCM_GetHints(ewin, 0);
 	MWM_GetHints(ewin, 0);
 	ICCCM_GetColormap(ewin);
 	HintsGetWindowHints(ewin);
