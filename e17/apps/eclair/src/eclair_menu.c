@@ -378,7 +378,7 @@ static int _eclair_menu_mouse_is_in(Eclair_Menu *menu)
 
    ecore_evas_geometry_get(menu->window, &menu_x, &menu_y, &menu_w, &menu_h);
    return (_eclair_menu_mouse_x >= menu_x && _eclair_menu_mouse_x <= menu_x + menu_w
-      && _eclair_menu_mouse_y >= menu_y && _eclair_menu_mouse_x <= menu_y + menu_h);
+      && _eclair_menu_mouse_y >= menu_y && _eclair_menu_mouse_y <= menu_y + menu_h);
 }
 
 //Start the slide timer if needed
