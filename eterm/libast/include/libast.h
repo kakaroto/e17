@@ -82,7 +82,7 @@
 
 #ifdef __GNUC__
 #  if __GNUC__ >= 4 && !defined(STRICT_ISO_C99)
-#    define STRICT_ISO_C99
+#    define STRICT_ISO_C99 1
 #  endif
 #else
 #  define __attribute__(x)
