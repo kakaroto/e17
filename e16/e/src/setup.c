@@ -22,6 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ewins.h"
+#include "xwin.h"
 #include <signal.h>
 #include <X11/keysym.h>
 #include <signal.h>

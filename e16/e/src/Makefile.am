@@ -21,10 +21,13 @@ e16_SOURCES = \
 	econfig.h		\
 	ecore-e16.h		\
 	emodule.h		\
+	eobj.h			\
+	ewins.h			\
 	ewin-ops.h		\
 	icons.h			\
 	snaps.h			\
 	timestamp.h		\
+	xwin.h			\
 	aclass.c		\
 	actions.c		\
 	alert.c			\

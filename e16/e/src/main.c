@@ -22,7 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
 #include "timestamp.h"
+#include "xwin.h"
 #include <sys/utsname.h>
 #include <signal.h>
 #include <time.h>

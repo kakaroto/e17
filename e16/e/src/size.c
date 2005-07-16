@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ewins.h"
 
 #define MAX_HOR 0x1
 #define MAX_VER 0x2

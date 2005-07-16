@@ -23,6 +23,8 @@
 #include "E.h"
 #include "ecompmgr.h"
 #include "ecore-e16.h"
+#include "ewins.h"		/* FIXME - Should not be here */
+#include "xwin.h"
 
 void
 EobjSetDesk(EObj * eo, int desk)

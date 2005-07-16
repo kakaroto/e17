@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ewins.h"
 
 /* Motif window hints */
 #define MWM_HINTS_FUNCTIONS           (1L << 0)

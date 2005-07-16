@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "xwin.h"
 
 struct _client
 {

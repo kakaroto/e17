@@ -25,6 +25,7 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "ewins.h"
 
 /*
  * _NET_WM_MOVERESIZE client message actions

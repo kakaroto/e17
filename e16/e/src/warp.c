@@ -32,7 +32,10 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "ewins.h"
 #include "icons.h"
+#include "xwin.h"
 #include <X11/keysym.h>
 
 typedef struct

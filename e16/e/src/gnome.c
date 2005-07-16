@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "ewins.h"
+#include "xwin.h"
 
 /* WIN_WM_NAME STRING - contains a string identifier for the WM's name */
 #define XA_WIN_WM_NAME                     "_WIN_WM_NAME"

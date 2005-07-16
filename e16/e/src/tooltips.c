@@ -23,6 +23,9 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "emodule.h"
+#include "ewins.h"		/* FIXME - Should not be here */
+#include "xwin.h"
 
 static struct
 {

@@ -21,6 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "xwin.h"
 #include <math.h>
 
 /* FIXME - Needs cleaning up */

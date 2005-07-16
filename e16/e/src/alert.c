@@ -26,6 +26,11 @@
 #define ExTextExtents XmbTextExtents
 #define ExDrawString XmbDrawString
 
+#define ExSetColor(pxc, r, g, b) \
+  do { \
+    (pxc)->red = (r << 8) | r; (pxc)->green = (g << 8) | g; (pxc)->blue = (b << 8) | b; \
+  } while (0)
+
 static void         ShowAlert(char *text);
 
 static char        *TitleText = NULL;
@@ -197,23 +202,23 @@ ShowAlert(char *text)
    colorful = 0;
    if (DefaultDepth(dd, DefaultScreen(dd)) > 4)
      {
-	ESetColor(&xcl, 220, 220, 220);
+	ExSetColor(&xcl, 220, 220, 220);
 	if (!XAllocColor(dd, cmap, &xcl))
 	   goto CN;
 	cols[cnum++] = xcl.pixel;
-	ESetColor(&xcl, 160, 160, 160);
+	ExSetColor(&xcl, 160, 160, 160);
 	if (!XAllocColor(dd, cmap, &xcl))
 	   goto CN;
 	cols[cnum++] = xcl.pixel;
-	ESetColor(&xcl, 100, 100, 100);
+	ExSetColor(&xcl, 100, 100, 100);
 	if (!XAllocColor(dd, cmap, &xcl))
 	   goto CN;
 	cols[cnum++] = xcl.pixel;
-	ESetColor(&xcl, 0, 0, 0);
+	ExSetColor(&xcl, 0, 0, 0);
 	if (!XAllocColor(dd, cmap, &xcl))
 	   goto CN;
 	cols[cnum++] = xcl.pixel;
-	ESetColor(&xcl, 255, 255, 255);
+	ExSetColor(&xcl, 255, 255, 255);
 	if (!XAllocColor(dd, cmap, &xcl))
 	   goto CN;
 	cols[cnum++] = xcl.pixel;

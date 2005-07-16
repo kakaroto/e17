@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "ewins.h"
+#include "xwin.h"
 
 #define DEBUG_PAGER 0
 

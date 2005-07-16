@@ -23,6 +23,9 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "emodule.h"
+#include "ewins.h"
+#include "xwin.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>

@@ -24,6 +24,8 @@
 #include "E.h"
 #include "X11/cursorfont.h"
 #include "conf.h"
+#include "emodule.h"
+#include "xwin.h"
 
 struct _ecursor
 {

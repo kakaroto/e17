@@ -23,6 +23,8 @@
  */
 #include <time.h>
 #include "E.h"
+#include "emodule.h"
+#include "xwin.h"
 
 typedef struct
 {

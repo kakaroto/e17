@@ -23,6 +23,9 @@
  */
 #include "E.h"
 #include <time.h>
+#include "emodule.h"
+#include "ewins.h"
+#include "xwin.h"
 
 #define EDESK_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \

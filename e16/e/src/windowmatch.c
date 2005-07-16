@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "emodule.h"
+#include "ewins.h"
 #include "ewin-ops.h"
 
 static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);

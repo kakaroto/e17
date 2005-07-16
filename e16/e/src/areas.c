@@ -21,6 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "ewins.h"
 
 static int          area_w = 3;
 static int          area_h = 3;

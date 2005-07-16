@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "ewins.h"
+#include "xwin.h"
 
 void
 ICCCM_Init(void)

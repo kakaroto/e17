@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "emodule.h"
+#include "xwin.h"
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 

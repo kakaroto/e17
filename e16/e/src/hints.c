@@ -25,6 +25,8 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "ewins.h"
+#include "xwin.h"
 
 /*
  * Functions that set X11-properties from E-internals

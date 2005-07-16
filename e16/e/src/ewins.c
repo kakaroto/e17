@@ -23,8 +23,11 @@
  */
 #include "E.h"
 #include "ecompmgr.h"
+#include "emodule.h"
+#include "ewins.h"
 #include "icons.h"
 #include "snaps.h"
+#include "xwin.h"
 #include <sys/time.h>
 
 #define EWIN_TOP_EVENT_MASK \

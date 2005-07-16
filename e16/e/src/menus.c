@@ -22,6 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "ewins.h"
+#include "xwin.h"
 #include <X11/keysym.h>
 
 #define DEBUG_MENU_EVENTS 0

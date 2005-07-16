@@ -23,7 +23,10 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "emodule.h"
+#include "ewins.h"
 #include "icons.h"
+#include "xwin.h"
 #include <math.h>
 
 typedef struct _iconbox Iconbox;

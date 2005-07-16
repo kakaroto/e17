@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "ewins.h"
+#include "xwin.h"
 #include <errno.h>
 #include <sys/stat.h>
 

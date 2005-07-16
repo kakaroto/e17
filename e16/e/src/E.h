@@ -157,6 +157,8 @@ int                 Esnprintf(va_alist);
 #define N_(String) (String)
 #endif
 
+#include "eobj.h"
+
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
@@ -322,7 +324,6 @@ int                 Esnprintf(va_alist);
  * Types
  */
 
-typedef struct _eobj EObj;
 typedef struct _ewin EWin;
 typedef struct _menu Menu;
 typedef struct _menuitem MenuItem;
@@ -484,78 +485,6 @@ struct _textclass
    unsigned int        ref_count;
 };
 
-struct _eobj
-{
-   Window              win;	/* The top level window */
-   short               type;	/* Ewin, button, other, ... */
-   short               ilayer;	/* Internal stacking layer */
-   short               layer;	/* Stacking layer */
-   short               desk;	/* Belongs on desk */
-   int                 x, y;
-   int                 w, h;
-   signed char         stacked;
-   char                sticky;
-   char                floating;
-   char                shown;
-   char                gone;
-#if USE_COMPOSITE
-   char                shadow;	/* Enable shadows */
-   unsigned int        opacity;
-   void               *cmhook;
-#endif
-   char               *name;
-};
-
-#define EOBJ_TYPE_EWIN      0
-#define EOBJ_TYPE_BUTTON    1
-#define EOBJ_TYPE_DESK      2
-#define EOBJ_TYPE_MISC      3
-#define EOBJ_TYPE_EVENT     4
-#define EOBJ_TYPE_EXT       5
-
-#define EoObj(eo)               (&((eo)->o))
-#define EoGetWin(eo)            ((eo)->o.win)
-#define EoGetName(eo)           ((eo)->o.name)
-#define EoGetType(eo)           ((eo)->o.type)
-#define EoGetX(eo)              ((eo)->o.x)
-#define EoGetY(eo)              ((eo)->o.y)
-#define EoGetW(eo)              ((eo)->o.w)
-#define EoGetH(eo)              ((eo)->o.h)
-#define EoIsSticky(eo)          ((eo)->o.sticky)
-#define EoIsFloating(eo)        ((eo)->o.floating)
-#define EoIsShown(eo)           ((eo)->o.shown)
-#define EoGetDesk(eo)           ((eo)->o.desk)
-#define EoGetLayer(eo)          ((eo)->o.layer)
-#define EoGetPixmap(eo)         EobjGetPixmap(EoObj(eo))
-
-#define EoSetName(eo, _x)       (eo)->o.name = (_x)
-#define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
-#define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
-#define EoSetDesk(eo, _d)       EobjSetDesk(EoObj(eo), (_d))
-#define EoSetLayer(eo, _l)      EobjSetLayer(EoObj(eo), (_l))
-#if USE_COMPOSITE
-#define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
-#define EoGetOpacity(eo)        ((eo)->o.opacity)
-#define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
-#define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
-#define EoGetShadow(eo)         ((eo)->o.shadow)
-#else
-#define EoSetOpacity(eo, _o)
-#define EoChangeOpacity(eo, _o)
-#define EoSetShadow(eo, _x)
-#define EoGetShadow(eo)         0
-#endif
-
-#define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)
-#define EoUnmap(eo)                     EobjUnmap(EoObj(eo))
-#define EoMove(eo, x, y)                EobjMove(EoObj(eo), x, y)
-#define EoResize(eo, w, h)              EobjResize(EoObj(eo), w, h)
-#define EoMoveResize(eo, x, y, w, h)    EobjMoveResize(EoObj(eo), x, y, w, h)
-#define EoReparent(eo, d, x, y)         EobjReparent(EoObj(eo), d, x, y)
-#define EoRaise(eo)                     EobjRaise(EoObj(eo))
-#define EoLower(eo)                     EobjLower(EoObj(eo))
-#define EoChangeShape(eo)               EobjChangeShape(EoObj(eo))
-
 typedef struct
 {
    EObj                o;
@@ -636,181 +565,6 @@ typedef struct _ewinbit
    TextState          *ts;
 }
 EWinBit;
-
-typedef struct _winclient
-{
-   Window              win;
-   int                 x, y, w, h, bw;
-   Colormap            cmap;
-   Window              icon_win;
-   Pixmap              icon_pmap, icon_mask;
-   Window              group;
-   Window              client_leader;
-   char                start_iconified;
-   char                need_input;
-   char                urgency;
-   char                take_focus;
-   char                delete_window;
-   signed char         transient;
-   Window              transient_for;
-   char                is_group_leader;
-   char                no_resize_h;
-   char                no_resize_v;
-   Constraints         width, height;
-   int                 base_w, base_h;
-   int                 w_inc, h_inc;
-   int                 grav;
-   double              aspect_min, aspect_max;
-   long                event_mask;
-}
-WinClient;
-
-#define EWIN_STATE_NEW          0	/* New */
-#define EWIN_STATE_STARTUP      1	/* New - during startup */
-#define EWIN_STATE_WITHDRAWN    2
-#define EWIN_STATE_ICONIC       3
-#define EWIN_STATE_MAPPED       4
-
-#define EWIN_TYPE_NORMAL        0x00
-#define EWIN_TYPE_DIALOG        0x01
-#define EWIN_TYPE_MENU          0x02
-#define EWIN_TYPE_ICONBOX       0x04
-#define EWIN_TYPE_PAGER         0x08
-
-#define EwinIsMapped(ewin) (ewin->state.state >= EWIN_STATE_MAPPED)
-#define EwinIsInternal(ewin) (ewin->type != EWIN_TYPE_NORMAL)
-
-struct _ewin
-{
-   EObj                o;
-   char                type;
-   int                 vx, vy;	/* Position in virtual root */
-   int                 lx, ly;	/* Last pos */
-   int                 lw, lh;	/* Last size */
-   int                 ll;	/* Last layer */
-   char                toggle;
-   Window              win_container;
-   WinClient           client;
-   const Border       *border;
-   const Border       *normal_border;
-   const Border       *previous_border;
-   EWinBit            *bits;
-   struct
-   {
-      char                state;
-      char                shaped;
-      char                docked;
-      char                visibility;
-      char                iconified;
-      char                shaded;
-      char                active;
-
-      unsigned            placed:1;
-      unsigned            maximized_horz:1;
-      unsigned            maximized_vert:1;
-      unsigned            fullscreen:1;
-      unsigned            showingdesk:1;	/* Iconified by show desktop */
-      unsigned            attention:1;
-      unsigned            animated:1;
-
-      /* Derived state flags. Change only in EwinStateUpdate() */
-      unsigned            no_border:1;
-
-      unsigned            inhibit_move:1;
-      unsigned            inhibit_resize:1;
-      unsigned            inhibit_iconify:1;
-      unsigned            inhibit_shade:1;
-      unsigned            inhibit_stick:1;
-      unsigned            inhibit_max_hor:1;
-      unsigned            inhibit_max_ver:1;
-      unsigned            inhibit_fullscreeen:1;
-      unsigned            inhibit_change_desk:1;
-      unsigned            inhibit_close:1;
-
-      unsigned            inhibit_actions:1;
-      unsigned            inhibit_focus:1;
-   } state;
-   struct
-   {
-      char                fixedpos;
-      char                never_use_area;
-      char                ignorearrange;
-      char                skip_ext_task;
-      char                skip_ext_pager;
-      char                skip_focuslist;
-      char                skip_winlist;
-      char                focusclick;	/* Click to focus */
-      char                never_focus;	/* Never focus */
-      char                no_button_grabs;
-      char                no_actions;
-      unsigned            donthide:1;	/* Don't hide on show desktop */
-      unsigned            vroot:1;	/* Virtual root window */
-      unsigned            autosave:1;
-      unsigned            no_border:1;	/* Never apply border */
-      unsigned            never_iconify:1;	/* Never iconify */
-   } props;
-   struct
-   {
-      char               *wm_name;
-      char               *wm_icon_name;
-      char               *wm_res_name;
-      char               *wm_res_class;
-      char               *wm_role;
-      char               *wm_command;
-      char               *wm_machine;
-   } icccm;
-   struct
-   {
-      unsigned            valid:1;
-      unsigned            decor_border:1;
-      unsigned            decor_resizeh:1;
-      unsigned            decor_title:1;
-      unsigned            decor_menu:1;
-      unsigned            decor_minimize:1;
-      unsigned            decor_maximize:1;
-      unsigned            func_resize:1;
-      unsigned            func_move:1;
-      unsigned            func_minimize:1;
-      unsigned            func_maximize:1;
-      unsigned            func_close:1;
-   } mwm;
-   struct
-   {
-      char               *wm_name;
-      char               *wm_icon_name;
-      unsigned int       *wm_icon, wm_icon_len;
-      unsigned int        opacity;
-   } ewmh;
-   struct
-   {
-      int                 left, right, top, bottom;
-   } strut;
-   struct
-   {
-      char                shape;
-      char                border;
-   } update;
-
-   int                 num_groups;
-   Group             **groups;
-   int                 area_x, area_y;
-   char               *session_id;
-   int                 has_transients;
-   PmapMask            mini_pmm;
-   int                 mini_w, mini_h;
-
-   int                 shape_x, shape_y, shape_w, shape_h;
-   int                 req_x, req_y;
-
-   Snapshot           *snap;
-   int                 head;	/* Unused? */
-
-   void               *data;	/* Data hook for internal windows */
-   void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
-				  int *ph);
-   void                (*MoveResize) (EWin * ewin, int resize);
-   void                (*Close) (EWin * ewin);
-};
 
 typedef struct _groupconfig
 {
@@ -1516,45 +1270,6 @@ void                EdgeCheckMotion(int x, int y);
 void                EdgeWindowsShow(void);
 void                EdgeWindowsHide(void);
 
-/* eobj.c */
-void                EobjInit(EObj * eo, int type, Window win, int x, int y,
-			     int w, int h, int su, const char *name);
-void                EobjFini(EObj * eo);
-void                EobjDestroy(EObj * eo);
-EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
-				     int su, const char *name);
-void                EobjWindowDestroy(EObj * eo);
-
-EObj               *EobjRegister(Window win, int type);
-void                EobjUnregister(EObj * eo);
-void                EobjMap(EObj * eo, int raise);
-void                EobjUnmap(EObj * eo);
-void                EobjMove(EObj * eo, int x, int y);
-void                EobjResize(EObj * eo, int w, int h);
-void                EobjMoveResize(EObj * eo, int x, int y, int w, int h);
-void                EobjReparent(EObj * eo, EObj * dst, int x, int y);
-int                 EobjRaise(EObj * eo);
-int                 EobjLower(EObj * eo);
-void                EobjChangeShape(EObj * eo);
-void                EobjsRepaint(void);
-Pixmap              EobjGetPixmap(const EObj * eo);
-
-#if USE_COMPOSITE
-void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
-#else
-#define             EobjChangeOpacity(eo, opacity)
-#endif
-void                EobjSetDesk(EObj * eo, int desk);
-void                EobjSetLayer(EObj * eo, int layer);
-void                EobjSetFloating(EObj * eo, int floating);
-int                 EobjIsShaped(const EObj * eo);
-void                EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty,
-				int speed);
-void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
-				 int speed);
-void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
-				    int fw, int fh, int tw, int th, int speed);
-
 /* events.c */
 /* Re-mapped X-events */
 #define EX_EVENT_SHAPE_NOTIFY            64
@@ -1591,95 +1306,6 @@ void                EventsInit(void);
 void                WaitEvent(void);
 void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
-
-/* ewins.c */
-#define EWIN_CHANGE_NAME        (1<<0)
-#define EWIN_CHANGE_ICON_NAME   (1<<1)
-#define EWIN_CHANGE_ICON_PMAP   (1<<2)
-#define EWIN_CHANGE_DESKTOP     (1<<3)
-#define EWIN_CHANGE_LAYER       (1<<4)
-#define EWIN_CHANGE_OPACITY     (1<<5)
-#define EWIN_CHANGE_ATTENTION   (1<<6)
-
-void                EwinShapeSet(EWin * ewin);
-void                EwinFloatAt(EWin * ewin, int x, int y);
-void                EwinUnfloatAt(EWin * ewin, int desk, int x, int y);
-void                RaiseEwin(EWin * ewin);
-void                LowerEwin(EWin * ewin);
-void                ShowEwin(EWin * ewin);
-void                HideEwin(EWin * ewin);
-void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
-EWin               *GetEwinPointerInClient(void);
-EWin               *GetEwinByCurrentPointer(void);
-EWin               *GetFocusEwin(void);
-EWin               *GetContextEwin(void);
-void                SetContextEwin(EWin * ewin);
-void                EwinGetPosition(const EWin * ewin, int x, int y, int bw,
-				    int grav, int *px, int *py);
-void                EwinUpdateShapeInfo(EWin * ewin);
-void                EwinPropagateShapes(EWin * ewin);
-void                EwinStateUpdate(EWin * ewin);
-void                AddToFamily(EWin * ewin, Window win);
-EWin               *AddInternalToFamily(Window win, const char *bname, int type,
-					void *ptr,
-					void (*init) (EWin * ewin, void *ptr));
-void                EwinReparent(EWin * ewin, Window parent);
-Window              EwinGetClientWin(const EWin * ewin);
-const char         *EwinGetName(const EWin * ewin);
-const char         *EwinGetIconName(const EWin * ewin);
-int                 EwinIsOnScreen(EWin * ewin);
-void                EwinRememberPositionSet(EWin * ewin);
-void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
-
-void                EwinChange(EWin * ewin, unsigned int flag);
-
-void                EwinsEventsConfigure(int mode);
-void                EwinsSetFree(void);
-void                EwinsShowDesktop(int on);
-
-/* ewin-ops.c */
-void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
-				int speed);
-void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
-				 int *ty, int num_wins, int speed);
-void                EwinFixPosition(EWin * ewin);
-void                EwinMove(EWin * ewin, int x, int y);
-void                EwinResize(EWin * ewin, int w, int h);
-void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
-void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
-					      int h, int grav);
-void                EwinIconify(EWin * ewin);
-void                EwinDeIconify(EWin * ewin);
-void                EwinStick(EWin * ewin);
-void                EwinUnStick(EWin * ewin);
-void                EwinInstantShade(EWin * ewin, int force);
-void                EwinInstantUnShade(EWin * ewin);
-void                EwinShade(EWin * ewin);
-void                EwinUnShade(EWin * ewin);
-void                EwinSetFullscreen(EWin * ewin, int on);
-void                EwinMoveToArea(EWin * ewin, int ax, int ay);
-void                EwinMoveToDesktop(EWin * ewin, int num);
-void                EwinMoveToDesktopAt(EWin * ewin, int num, int x, int y);
-
-unsigned int        OpacityExt(int op);
-void                EwinOpClose(EWin * ewin);
-void                EwinOpKill(EWin * ewin);
-void                EwinOpRaise(EWin * ewin);
-void                EwinOpLower(EWin * ewin);
-void                EwinOpRaiseLower(EWin * ewin);
-void                EwinOpStick(EWin * ewin, int on);
-void                EwinOpSkipLists(EWin * ewin, int skip);
-void                EwinOpSkipTask(EWin * ewin, int skip);
-void                EwinOpSkipFocus(EWin * ewin, int skip);
-void                EwinOpSkipWinlist(EWin * ewin, int skip);
-void                EwinOpNeverFocus(EWin * ewin, int on);
-void                EwinOpIconify(EWin * ewin, int on);
-void                EwinOpShade(EWin * ewin, int on);
-void                EwinOpSetLayer(EWin * ewin, int layer);
-void                EwinOpSetBorder(EWin * ewin, const char *name);
-void                EwinOpSetOpacity(EWin * ewin, int opacity);
-void                EwinOpMoveToDesk(EWin * ewin, int desk);
-void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 
 #if ENABLE_EWMH
 /* ewmh.c */
@@ -2246,108 +1872,6 @@ Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);
 
-/* x.c */
-Display            *EDisplayOpen(const char *dstr, int scr);
-void                EDisplayClose(void);
-void                EDisplayDisconnect(void);
-void                EGrabServer(void);
-void                EUngrabServer(void);
-int                 EServerIsGrabbed(void);
-void                EFlush(void);
-void                ESync(void);
-Time                EGetTimestamp(void);
-
-void                ERegisterWindow(Window win);
-void                EUnregisterWindow(Window win);
-typedef void        (EventCallbackFunc) (XEvent * ev, void *prm);
-void                EventCallbackRegister(Window win, int type,
-					  EventCallbackFunc * func, void *prm);
-void                EventCallbackUnregister(Window win, int type,
-					    EventCallbackFunc * func,
-					    void *prm);
-void                EventCallbacksProcess(XEvent * ev);
-
-Window              ECreateWindow(Window parent, int x, int y, int w, int h,
-				  int saveunder);
-Window              ECreateVisualWindow(Window parent, int x, int y, int w,
-					int h, int saveunder,
-					XWindowAttributes * child_attr);
-Window              ECreateEventWindow(Window parent, int x, int y, int w,
-				       int h);
-Window              ECreateFocusWindow(Window parent, int x, int y, int w,
-				       int h);
-void                EWindowSync(Window win);
-void                EWindowSetMapped(Window win, int mapped);
-Window              EWindowGetParent(Window win);
-void                ESelectInputAdd(Window win, long mask);
-
-void                EMoveWindow(Window win, int x, int y);
-void                EResizeWindow(Window win, int w, int h);
-void                EMoveResizeWindow(Window win, int x, int y, int w, int h);
-void                EDestroyWindow(Window win);
-void                EMapWindow(Window win);
-void                EMapRaised(Window win);
-void                EUnmapWindow(Window win);
-void                EReparentWindow(Window win, Window parent, int x, int y);
-int                 EGetGeometry(Window win, Window * root_return,
-				 int *x, int *y, int *w, int *h, int *bw,
-				 int *depth);
-void                EConfigureWindow(Window win, unsigned int mask,
-				     XWindowChanges * wc);
-void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);
-void                ESetWindowBackground(Window win, int col);
-int                 ETranslateCoordinates(Window src_w, Window dst_w,
-					  int src_x, int src_y,
-					  int *dest_x_return,
-					  int *dest_y_return,
-					  Window * child_return);
-
-#define ESelectInput(win, mask) XSelectInput(disp, win, mask)
-#define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
-#define EChangeWindowAttributes(win, mask, attr) XChangeWindowAttributes(disp, win, mask, attr)
-#define ERaiseWindow(win) XRaiseWindow(disp, win)
-#define ELowerWindow(win) XLowerWindow(disp, win)
-#define EClearWindow(win) XClearWindow(disp, win)
-#define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
-#define ECreatePixmap(draw, w, h, dep) XCreatePixmap(disp, draw, w, h, dep)
-#define EFreePixmap(pmap) XFreePixmap(disp, pmap)
-
-void                EShapeCombineMask(Window win, int dest, int x, int y,
-				      Pixmap pmap, int op);
-void                EShapeCombineMaskTiled(Window win, int dest, int x, int y,
-					   Pixmap pmap, int op, int w, int h);
-void                EShapeCombineRectangles(Window win, int dest, int x, int y,
-					    XRectangle * rect, int n_rects,
-					    int op, int ordering);
-void                EShapeCombineShape(Window win, int dest, int x, int y,
-				       Window src_win, int src_kind, int op);
-XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
-					int *ord);
-int                 EShapeCopy(Window dst, Window src);
-void                EShapePropagate(Window win);
-Pixmap              EWindowGetShapePixmap(Window win);
-
-GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
-int                 EFreeGC(GC gc);
-
-#define EAllocColor(pxc) \
-	XAllocColor(disp, VRoot.cmap, pxc)
-void                ESetColor(XColor * pxc, int r, int g, int b);
-void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
-
-Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
-Window              WindowAtXY(int x, int y);
-Bool                PointerAt(int *x, int *y);
-void                EDrawableDumpImage(Drawable draw, const char *txt);
-
-/* zoom.c */
-EWin               *GetZoomEWin(void);
-void                ReZoom(EWin * ewin);
-char                InZoom(void);
-char                CanZoom(void);
-void                ZoomInit(void);
-void                Zoom(EWin * ewin);
-
 /*
  * Global vars
  */
@@ -2361,5 +1885,3 @@ extern EConf        Conf;
 extern EMode        Mode;
 
 #define FILEPATH_LEN_MAX 4096
-
-#include "emodule.h"

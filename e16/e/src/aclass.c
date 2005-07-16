@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "emodule.h"
+#include "ewins.h"
 
 typedef struct _actiontype
 {

@@ -22,7 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ewins.h"
 #include "snaps.h"
+#include "xwin.h"
 
 struct _snapshot
 {

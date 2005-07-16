@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "xwin.h"
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 

@@ -22,7 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "ewins.h"
 #include "icons.h"
+#include "xwin.h"
 
 static int
 NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)

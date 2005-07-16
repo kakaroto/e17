@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ecore-e16.h"
+#include "xwin.h"
 #include <X11/keysym.h>
 #include <sys/time.h>
 

@@ -30,6 +30,8 @@
 #include "E.h"
 #if USE_COMPOSITE
 #include "ecompmgr.h"
+#include "emodule.h"
+#include "xwin.h"
 
 #include <stdlib.h>
 #include <stdio.h>

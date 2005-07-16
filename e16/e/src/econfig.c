@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "econfig.h"
+#include "emodule.h"
 #include <ctype.h>
 
 /*

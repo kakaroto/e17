@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "xwin.h"
 #include <time.h>
 
 static EObj        *init_win1 = NULL;

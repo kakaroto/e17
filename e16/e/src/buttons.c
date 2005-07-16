@@ -22,6 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "emodule.h"
+#include "xwin.h"
 
 #define BUTTON_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | \
