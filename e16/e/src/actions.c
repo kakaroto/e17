@@ -183,9 +183,9 @@ EspawnCmd(const char *cmd)
    int                 argc;
    char              **argv;
 
-   argv = EstrlistDecodeEscaped(cmd, &argc);
+   argv = StrlistDecodeEscaped(cmd, &argc);
    Espawn(argc, argv);
-   EstrlistFree(argv, argc);
+   StrlistFree(argv, argc);
 }
 
 void

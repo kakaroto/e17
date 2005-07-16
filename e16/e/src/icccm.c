@@ -557,8 +557,8 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 						      &argv);
 
 	ewin->icccm.wm_command =
-	   Estrdup(EstrlistEncodeEscaped(s, sizeof(s), argv, argc));
-	EstrlistFree(argv, argc);
+	   Estrdup(StrlistEncodeEscaped(s, sizeof(s), argv, argc));
+	StrlistFree(argv, argc);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)

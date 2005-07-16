@@ -223,7 +223,7 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    if (p)
       ProgressbarDestroy(p);
    if (list)
-      EstrlistFree(list, num);
+      StrlistFree(list, num);
 
    return m;
 }
@@ -512,7 +512,7 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 	  }
      }
    if (list)
-      EstrlistFree(list, num);
+      StrlistFree(list, num);
 
    return m;
 }
@@ -539,7 +539,7 @@ MenuCreateFromThemes(const char *name, MenuStyle * ms)
 	MenuAddItem(m, mi);
      }
    if (lst)
-      EstrlistFree(lst, i);
+      StrlistFree(lst, i);
 
    return m;
 }

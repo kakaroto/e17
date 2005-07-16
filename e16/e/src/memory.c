@@ -78,7 +78,7 @@ Estrdupcat2(char *ss, const char *s1, const char *s2)
 }
 
 char              **
-EstrlistDup(char **lst, int num)
+StrlistDup(char **lst, int num)
 {
    char              **ss;
    int                 i;
@@ -95,7 +95,7 @@ EstrlistDup(char **lst, int num)
 }
 
 void
-EstrlistFree(char **lst, int num)
+StrlistFree(char **lst, int num)
 {
    if (!lst)
       return;
@@ -107,7 +107,7 @@ EstrlistFree(char **lst, int num)
 
 #if 0				/* FIXME - Remove? */
 char               *
-EstrlistJoin(char **lst, int num)
+StrlistJoin(char **lst, int num)
 {
    int                 i, size;
    char               *s;
@@ -133,7 +133,7 @@ EstrlistJoin(char **lst, int num)
 #endif
 
 char               *
-EstrlistEncodeEscaped(char *buf, int len, char **lst, int num)
+StrlistEncodeEscaped(char *buf, int len, char **lst, int num)
 {
    int                 i, j, ch;
    char               *s, *p;
@@ -175,7 +175,7 @@ EstrlistEncodeEscaped(char *buf, int len, char **lst, int num)
 }
 
 char              **
-EstrlistDecodeEscaped(const char *str, int *pnum)
+StrlistDecodeEscaped(const char *str, int *pnum)
 {
    int                 num, len;
    const char         *s, *p;
@@ -234,6 +234,40 @@ EstrlistDecodeEscaped(const char *str, int *pnum)
    lst[num] = NULL;
 
    *pnum = num;
+   return lst;
+}
+
+char              **
+StrlistFromString(const char *str, int delim, int *num)
+{
+   const char         *s, *p;
+   char              **lst;
+   int                 n, len;
+
+   lst = NULL;
+   n = 0;
+   for (s = str; s; s = p)
+     {
+	p = strchr(s, delim);
+	if (p)
+	  {
+	     len = p - s;
+	     p++;
+	  }
+	else
+	  {
+	     len = strlen(s);
+	  }
+	if (len <= 0)
+	   continue;
+
+	lst = Erealloc(lst, (n + 2) * sizeof(char *));
+	lst[n++] = Estrndup(s, len);
+     }
+
+   if (lst)
+      lst[n] = NULL;
+   *num = n;
    return lst;
 }
 

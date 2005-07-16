@@ -368,5 +368,5 @@ CommsBroadcast(const char *s)
 	if (c)
 	   CommsSend(c, s);
      }
-   EstrlistFree(l, num);
+   StrlistFree(l, num);
 }

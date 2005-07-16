@@ -1999,12 +1999,13 @@ int                 Esetenv(const char *name, const char *value, int overwrite);
 #endif
 char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
-char              **EstrlistDup(char **lst, int num);
-void                EstrlistFree(char **lst, int num);
-char               *EstrlistJoin(char **lst, int num);
-char               *EstrlistEncodeEscaped(char *buf, int len, char **lst,
-					  int num);
-char              **EstrlistDecodeEscaped(const char *str, int *pnum);
+char              **StrlistDup(char **lst, int num);
+void                StrlistFree(char **lst, int num);
+char               *StrlistJoin(char **lst, int num);
+char               *StrlistEncodeEscaped(char *buf, int len, char **lst,
+					 int num);
+char              **StrlistDecodeEscaped(const char *str, int *pnum);
+char              **StrlistFromString(const char *str, int delim, int *num);
 
 /* menus.c */
 int                 MenuStyleConfigLoad(FILE * fs);
