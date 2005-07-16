@@ -118,7 +118,6 @@ epsilon_resolution_set (Epsilon * e, int w, int h)
 {
   if (e && w > 0 && h > 0)
     {
-      char buf[PATH_MAX];
       e->w = w;
       e->h = h;
     }
@@ -517,7 +516,7 @@ epsilon_generate (Epsilon * e)
 	  }
 	else
 	  {
-	    fprintf (fprintf, "Cannot create buffer canvas! ERROR!\n");
+	    fprintf (stderr, "Cannot create buffer canvas! ERROR!\n");
 	    return (EPSILON_FAIL);
 	  }
       }

@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 #include"Epsilon.h"
 #include"../config.h"
 
@@ -14,14 +15,14 @@ main (int argc, char *argv[])
       if ((e = epsilon_new ((const char *) argv[argc])))
 	{
 	  char *str;
-	  str=strrchr(argv[argc],'.');
+	  str = strrchr (argv[argc], '.');
 	  str++;
-	  if(!strcmp(str,"edj"))
-	  {
-	    epsilon_key_set(e, "desktop/background");
-	    //epsilon_resolution_set(e, 1600, 1200);        
-	    epsilon_resolution_set(e, 800, 600);
-	  }
+	  if (!strcmp (str, "edj"))
+	    {
+	      epsilon_key_set (e, "desktop/background");
+	      //epsilon_resolution_set(e, 1600, 1200);        
+	      epsilon_resolution_set (e, 800, 600);
+	    }
 	  if (epsilon_exists (e) == EPSILON_FAIL)
 	    {
 	      fprintf (stderr,
@@ -50,15 +51,17 @@ main (int argc, char *argv[])
 		  fprintf (stderr, "Trying EXIF Info: ");
 		  if (epsilon_info_exif_get (info))
 		    {
-			fprintf (stderr, "Found!\n");
+		      fprintf (stderr, "Found!\n");
 #if 0
-		  fprintf (stderr, "%d is direction\n",
-			   epsilon_exif_info_props_as_int_get (eei, 0x0112));
+		      fprintf (stderr, "%d is direction\n",
+			       epsilon_exif_info_props_as_int_get (eei,
+								   0x0112));
 #endif
-			epsilon_info_exif_props_print (info);
+		      epsilon_info_exif_props_print (info);
 		    }
-		    else {
-			fprintf (stderr, "Not Found!\n");
+		  else
+		    {
+		      fprintf (stderr, "Not Found!\n");
 		    }
 		  epsilon_info_free (info);
 		}
