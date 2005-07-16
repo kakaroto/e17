@@ -656,11 +656,9 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 
 	if (hint->flags & XUrgencyHint)
 	  {
-	     if (!ewin->client.urgency)
-	       {
-		  ewin->client.urgency = 1;
-		  EwinChange(ewin, EWIN_CHANGE_ATTENTION);
-	       }
+	     if (!ewin->state.attention)
+		EwinChange(ewin, EWIN_CHANGE_ATTENTION);
+	     ewin->client.urgency = 1;
 	     ewin->state.attention = 1;
 	  }
 	else
