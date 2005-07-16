@@ -20,6 +20,10 @@
 #define THUMBNAIL_SIZE 256
 #include "exiftags/exif.h"
 
+#include <Evas.h>
+#include <Ecore_Evas.h>
+#include <Edje.h>
+
 extern int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned
 					       short lvl, long prop);
 extern void epsilon_exif_info_free (Epsilon_Exif_Info * eei);
@@ -51,7 +55,6 @@ epsilon_new (const char *file)
 	  result = malloc (sizeof (Epsilon));
 	  memset (result, 0, sizeof (Epsilon));
 	  result->src = strdup (file);
-	  result->hash = epsilon_hash (result->src);
 	}
       else
 	{
@@ -67,6 +70,8 @@ epsilon_free (Epsilon * e)
 {
   if (e)
     {
+      if (e->key)
+	free (e->key);
       if (e->hash)
 	free (e->hash);
       if (e->src)
@@ -91,6 +96,31 @@ epsilon_init (void)
 	continue;
       else
 	mkdir (buf, S_IRUSR | S_IWUSR | S_IXUSR);
+    }
+}
+
+void
+epsilon_key_set (Epsilon * e, const char *key)
+{
+  if (e)
+    {
+      if (e->key)
+	free (e->key);
+      if (key)
+	e->key = strdup (key);
+      else
+	e->key = NULL;
+    }
+}
+
+void
+epsilon_resolution_set (Epsilon * e, int w, int h)
+{
+  if (e && w > 0 && h > 0)
+    {
+      char buf[PATH_MAX];
+      e->w = w;
+      e->h = h;
     }
 }
 
@@ -307,6 +337,37 @@ epsilon_exists (Epsilon * e)
   char *dirs[] = { "large", "normal", "fail/epsilon" };
   char home[PATH_MAX], buf[PATH_MAX];
 
+  char *hash_seed = NULL;
+
+  if (!e || !e->src)
+    return (EPSILON_FAIL);
+
+  if (!e->hash)
+    {
+      hash_seed = malloc (PATH_MAX * sizeof (char));
+      memset (hash_seed, 0, PATH_MAX * sizeof (char));
+
+      if (e->key)
+	{
+	  snprintf (buf, PATH_MAX, "%s:%s", e->src, e->key);
+	  strcat (hash_seed, buf);
+	}
+
+      if ((e->w > 0) && (e->h > 0))
+	{
+	  snprintf (buf, PATH_MAX, ":%dx%d", e->w, e->h);
+	  strcat (hash_seed, buf);
+	}
+
+      if (hash_seed)
+	e->hash = epsilon_hash (hash_seed);
+      else
+	e->hash = epsilon_hash (e->src);
+    }
+
+  if (!e->hash)
+    return (EPSILON_FAIL);
+
   snprintf (home, PATH_MAX, "%s", getenv ("HOME"));
   for (i = 0; i < 3; i++)
     {
@@ -357,7 +418,7 @@ epsilon_generate (Epsilon * e)
   int len = 0;
 #endif
 
-  if (!e || !e->hash || !e->src)
+  if (!e || !e->src || !e->hash)
     return (EPSILON_FAIL);
 #ifdef HAVE_EPEG_H
   len = strlen (e->src);
@@ -369,23 +430,23 @@ epsilon_generate (Epsilon * e)
 		getenv ("HOME"), e->hash);
       epeg_thumbnail_comments_get (im, &info);
       epeg_size_get (im, &iw, &ih);
-	if (iw > ih)
-	  {
-          th = THUMBNAIL_SIZE * ((double) ih / (double) iw);
-	  }
-	else
-	  {
-          tw = THUMBNAIL_SIZE * ((double) iw / (double) ih);
-	  }
-	  epeg_decode_size_set (im, tw, th);
+      if (iw > ih)
+	{
+	  th = THUMBNAIL_SIZE * ((double) ih / (double) iw);
+	}
+      else
+	{
+	  tw = THUMBNAIL_SIZE * ((double) iw / (double) ih);
+	}
+      epeg_decode_size_set (im, tw, th);
       epeg_quality_set (im, 100);
       epeg_thumbnail_comments_enable (im, 1);
       epeg_file_output_set (im, outfile);
-      if(!epeg_encode (im)) 
-      {
-        epeg_close (im);
-        return (EPSILON_OK);
-      }
+      if (!epeg_encode (im))
+	{
+	  epeg_close (im);
+	  return (EPSILON_OK);
+	}
       epeg_close (im);
     }
 #endif
@@ -394,17 +455,83 @@ epsilon_generate (Epsilon * e)
     char uri[PATH_MAX];
     char format[32];
     struct stat filestatus;
+    int isedje = 0;
     Imlib_Image tmp = NULL;
     Imlib_Image src = NULL;
+    Ecore_Evas *ee = NULL;
 
     if (stat (e->src, &filestatus) != 0)
       return (EPSILON_FAIL);
 
     mtime = filestatus.st_mtime;
-    if ((tmp = imlib_load_image_immediately_without_cache (e->src)))
+
+    len = strlen (e->src);
+
+    if ((len > 4) && (!strcmp (&e->src[len - 3], "edj")))
       {
+	Evas *evas = NULL;
+	Evas_Object *edje = NULL;
+	const int *pixels;
+	int w, h;
+	edje_init ();
+	if (!e->key)
+	  {
+	    fprintf (stderr, "Key required for this file type! ERROR!!\n");
+	    return (EPSILON_FAIL);
+	  }
+
+	isedje = 1;
+	if (e->w > 0)
+	  w = e->w;
+	else
+	  w = THUMBNAIL_SIZE;
+
+	if (e->h > 0)
+	  h = e->h;
+	else
+	  h = THUMBNAIL_SIZE;
+
+	ee = ecore_evas_buffer_new (w, h);
+	if (ee)
+	  {
+	    evas = ecore_evas_get (ee);
+	    edje = edje_object_add (evas);
+	    if (edje_object_file_set (edje, e->src, e->key))
+	      {
+		evas_object_move (edje, 0, 0);
+		evas_object_resize (edje, w, h);
+		evas_object_show (edje);
+		edje_message_signal_process ();
+
+		pixels = ecore_evas_buffer_pixels_get (ee);
+		tmp = imlib_create_image_using_data (w, h, (DATA32 *) pixels);
+
+		imlib_context_set_image (tmp);
+		snprintf (format, 32, "image/edje");
+	      }
+	    else
+	      {
+		printf ("Cannot load file %s, group %s\n", e->src, e->key);
+		return (EPSILON_FAIL);
+	      }
+	  }
+	else
+	  {
+	    fprintf (fprintf, "Cannot create buffer canvas! ERROR!\n");
+	    return (EPSILON_FAIL);
+	  }
+      }
+
+
+    if (!tmp)
+      {
+	tmp = imlib_load_image_immediately_without_cache (e->src);
 	imlib_context_set_image (tmp);
 	snprintf (format, 32, "image/%s", imlib_image_format ());
+      }
+
+    if (tmp)
+      {
 	iw = imlib_image_get_width ();
 	ih = imlib_image_get_height ();
 	if (iw > ih)
@@ -668,11 +795,13 @@ _epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
       if (!rename (tmpfile, file))
 	{
 	  if (chmod (file, S_IWUSR | S_IRUSR))
-	    printf ("epsilon: could not set permissions on \"%s\"!?\n", file);
+	    fprintf (stderr,
+		     "epsilon: could not set permissions on \"%s\"!?\n",
+		     file);
 	}
     }
   else
-    printf ("epsilon: Unable to open \"%s\" for writing\n", tmpfile);
+    fprintf (stderr, "epsilon: Unable to open \"%s\" for writing\n", tmpfile);
 
   fflush (fp);
   if (fp)

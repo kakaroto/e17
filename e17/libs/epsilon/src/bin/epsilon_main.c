@@ -13,6 +13,15 @@ main (int argc, char *argv[])
     {
       if ((e = epsilon_new ((const char *) argv[argc])))
 	{
+	  char *str;
+	  str=strrchr(argv[argc],'.');
+	  str++;
+	  if(!strcmp(str,"edj"))
+	  {
+	    epsilon_key_set(e, "desktop/background");
+	    //epsilon_resolution_set(e, 1600, 1200);        
+	    epsilon_resolution_set(e, 800, 600);
+	  }
 	  if (epsilon_exists (e) == EPSILON_FAIL)
 	    {
 	      fprintf (stderr,

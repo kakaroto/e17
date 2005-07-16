@@ -15,6 +15,8 @@ struct _Epsilon
   char *hash;
   char *src;
   char *thumb;
+  char *key;
+  int w, h;
 };
 typedef struct _Epsilon Epsilon;
 
@@ -34,6 +36,11 @@ void epsilon_init (void);
 /* construct destruct */
 void epsilon_free (Epsilon * e);
 Epsilon *epsilon_new (const char *file);
+
+/* Set the part name as key (Edje for now)*/
+void epsilon_key_set (Epsilon * e, const char *key);
+/* Set the resolution*/
+void epsilon_resoltion_set (Epsilon * e, int w, int h);
 
 /*
  * the source filename

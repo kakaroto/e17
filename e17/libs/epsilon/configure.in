@@ -35,6 +35,14 @@ AC_ARG_WITH(png,
         [  --with-png=DIR       use png in <DIR>],
         [CFLAGS="$CFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(evas,
+        [  --with-evas=DIR       use evas in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(ecore,
+        [  --with-ecore=DIR       use ecore in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
 
 AC_PATH_GENERIC(imlib2, 1.0.0, [
   AC_SUBST(imlib_libs)
@@ -74,6 +82,47 @@ AC_CHECK_LIB(png, png_create_read_struct, [
   
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
+
+dnl Make sure the Evas header/lib is available
+AC_CHECK_HEADER( Evas.h, 
+  [ AC_DEFINE(HAVE_EVAS_H, 1, [Evas.h available]) 
+    have_evas="yes" 
+    evas_libs=`evas-config --libs`
+    evas_cflags=`evas-config --cflags` ],
+  [ AC_MSG_WARN(Cannot find Evas.h on your system: edje thumbnail suckage!) ])
+AC_CHECK_LIB(evas, evas_object_rectangle_add, [ 
+    AC_DEFINE(HAVE_EVAS_LIB, 1, [libevas available]) 
+])
+AC_SUBST(evas_libs)
+AC_SUBST(evas_cflags)
+
+dnl Make sure the Ecore_Evas header/lib is available
+AC_CHECK_HEADER( Ecore_Evas.h, 
+  [ AC_DEFINE(HAVE_ECORE_EVAS_H, 1, [Ecore_Evas.h available]) 
+    have_evas="yes" 
+    ecore_libs=`ecore-config --libs`
+    ecore_cflags=`ecore-config --cflags` ],
+  [ AC_MSG_WARN(Cannot find Ecore_Evas.h on your system: edje thumbnail suckage
+) ])
+AC_CHECK_LIB(ecore_evas, ecore_evas_buffer_new, [ 
+    AC_DEFINE(HAVE_ECORE_EVAS_LIB, 1, [libecore_evas available]) 
+])
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
+
+dnl Make sure the Edje header/lib is available
+AC_CHECK_HEADER( Edje.h, 
+  [ AC_DEFINE(HAVE_EDJE_H, 1, [Edje.h available]) 
+    have_edje="yes" 
+    edje_libs=`edje-config --libs`
+    edje_cflags=`edje-config --cflags` ],
+  [ AC_MSG_WARN(Cannot find Edje.h on your system: edje thumbnail suckage!) ])
+AC_CHECK_LIB(edje, edje_object_add, [ 
+    AC_DEFINE(HAVE_EDJE_LIB, 1, [libedje available]) 
+])
+AC_SUBST(edje_libs)
+AC_SUBST(edje_cflags)
+
 
 AC_OUTPUT([
 Makefile
