@@ -151,23 +151,15 @@ TextStateLoadFont(TextState * ts)
 
    /* Try FreeType */
    {
-      char                s[4096], w[4046], *s2, *ss;
+      char                s[4096], *s2, *ss;
 
-      s2 = NULL;
       s2 = Estrdup(ts->fontname);
       ss = strchr(s2, '/');
       if (ss)
 	{
-	   *ss = ' ';
-	   word(s2, 1, w);
-	   Esnprintf(s, sizeof(s), "ttfonts/%s.ttf", w);
-	   word(s2, 2, w);
-	   ss = ThemeFileFind(s);
-	   if (ss)
-	     {
-		ts->efont = Efont_load(ss, atoi(w));
-		Efree(ss);
-	     }
+	   *ss++ = '\0';
+	   Esnprintf(s, sizeof(s), "%s.ttf", s2);
+	   ts->efont = Efont_load(s2, atoi(ss));
 	}
       if (s2)
 	 Efree(s2);

@@ -42,6 +42,21 @@ ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
    imlib_context_set_color(r, g, b, 255);
 }
 
+static void
+EFonts_Init(void)
+{
+   char                s[4096];
+   char              **lst;
+   int                 i, num;
+
+   Esnprintf(s, sizeof(s), "%s/ttfonts", Mode.theme.path);
+   imlib_add_path_to_font_path(s);
+   lst = StrlistFromString(Conf.theme.ttfont_path, ':', &num);
+   for (i = 0; i < num; i++)
+      imlib_add_path_to_font_path(lst[i]);
+   StrlistFree(lst, num);
+}
+
 void
 EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
 		  const char *text, Efont * f, Visual * vis __UNUSED__,
@@ -79,9 +94,16 @@ Efont_free(Efont * f)
 Efont              *
 Efont_load(const char *file, int size)
 {
+   static char         ttfont_path_set = 0;
    char                s[4096];
    Efont              *f;
    Imlib_Font         *ff;
+
+   if (!ttfont_path_set)
+     {
+	EFonts_Init();
+	ttfont_path_set = 1;
+     }
 
    Esnprintf(s, sizeof(s), "%s/%d", file, size);
    ff = imlib_load_font(s);

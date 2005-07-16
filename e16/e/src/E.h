@@ -959,6 +959,7 @@ typedef struct
    {
       char               *name;
       char               *extra_path;
+      char               *ttfont_path;
    } theme;
 #ifdef ENABLE_THEME_TRANSPARENCY
    struct
