@@ -1388,8 +1388,7 @@ ewl_object_place(Ewl_Object *o, int x, int y, int w, int h)
  * @param fill: the new fill policy for the object
  * @return Returns no value.
  * @brief Change the fill policy of the specified object
- * @see ewl_object_fill_policy_get()
- * @see #Ewl_Flags
+ * @see @link Ewl_Enums Enums @endlink
  *
  * Stores the new fill policy value into the object for use when laying out
  * the object.
