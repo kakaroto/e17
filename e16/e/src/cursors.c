@@ -54,7 +54,7 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 
    if (image)
      {
-	img = FindFile(image, Mode.theme.path);
+	img = FindFile(image, Mode.theme.path, 0);
 	if (!img)
 	   return NULL;
 

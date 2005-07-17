@@ -99,7 +99,7 @@ const char         *
 EstrInt2Enc(const char *str, int want_utf8)
 {
 #if HAVE_ICONV
-   if (Mode.text.utf8_int == want_utf8)
+   if (Mode.locale.utf8_int == want_utf8)
       return str;
 
    if (str == NULL)
@@ -119,7 +119,7 @@ void
 EstrInt2EncFree(const char *str, int want_utf8)
 {
 #if HAVE_ICONV
-   if (Mode.text.utf8_int == want_utf8)
+   if (Mode.locale.utf8_int == want_utf8)
       return;
 
    if (str)
@@ -159,6 +159,7 @@ LangInit(void)
    else
       enc_int = enc_loc;
 
+   Mode.locale.lang = setlocale(LC_MESSAGES, NULL);
    if (EventDebug(EDBUG_TYPE_VERBOSE))
      {
 	Eprintf("Locale: %s\n", setlocale(LC_ALL, NULL));
@@ -167,12 +168,12 @@ LangInit(void)
      }
 
    if (!strcasecmp(enc_loc, "utf8") || !strcasecmp(enc_loc, "utf-8"))
-      Mode.text.utf8_loc = 1;
+      Mode.locale.utf8_loc = 1;
    if (!strcasecmp(enc_int, "utf8") || !strcasecmp(enc_int, "utf-8"))
-      Mode.text.utf8_int = 1;
+      Mode.locale.utf8_int = 1;
 
 #if HAVE_ICONV
-   if (Mode.text.utf8_int)
+   if (Mode.locale.utf8_int)
      {
 	iconv_cd_loc2int = iconv_open("UTF-8", enc_loc);
 	iconv_cd_int2loc = iconv_open(enc_loc, "UTF-8");

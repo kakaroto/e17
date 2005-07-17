@@ -1060,7 +1060,7 @@ Imlib_Image        *
 ELoadImage(const char *file)
 {
    Imlib_Image        *im;
-   char               *f = NULL;
+   char               *f;
 
    if (!file)
       return NULL;
@@ -1071,7 +1071,7 @@ ELoadImage(const char *file)
 	return im;
      }
 
-   f = ThemeFileFind(file);
+   f = ThemeFileFind(file, 0);
    if (f)
      {
 	im = imlib_load_image(f);

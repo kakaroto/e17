@@ -148,7 +148,7 @@ TextStateLoadFont(TextState * ts)
    if ((ts->efont) || (ts->xfont) || (ts->xfontset))
       return;
 
-   ts->need_utf8 = Mode.text.utf8_int;
+   ts->need_utf8 = Mode.locale.utf8_int;
 
    /* Try FreeType */
    {

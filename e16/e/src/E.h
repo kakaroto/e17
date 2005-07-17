@@ -795,6 +795,12 @@ typedef struct
    } grabs;
    struct
    {
+      const char         *lang;
+      char                utf8_int;	/* Use UTF-8 internally */
+      char                utf8_loc;	/* Locale is UTF-8 */
+   } locale;
+   struct
+   {
       unsigned int        numlock;
       unsigned int        scrollock;
       unsigned int        mod_combos[8];
@@ -811,11 +817,6 @@ typedef struct
       char                doing_manual;
       char                doing_slide;
    } place;
-   struct
-   {
-      char                utf8_int;	/* Use UTF-8 internally */
-      char                utf8_loc;	/* Locale is UTF-8 */
-   } text;
    struct
    {
       char               *path;
@@ -1102,8 +1103,9 @@ void                CommsBroadcastToSlaveWMs(const char *s);
 int                 ConfigSkipIfExists(FILE * fs, const char *name, int type);
 char               *GetLine(char *s, int size, FILE * f);
 void                ConfigAlertLoad(const char *txt);
-char               *FindFile(const char *file, const char *themepath);
-char               *ThemeFileFind(const char *file);
+char               *FindFile(const char *file, const char *themepath,
+			     int localized);
+char               *ThemeFileFind(const char *file, int localized);
 char               *ConfigFileFind(const char *name, const char *themepath,
 				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,
@@ -1374,9 +1376,7 @@ char               *pathtoexec(const char *file);
 char               *pathtofile(const char *file);
 const char         *FileExtension(const char *file);
 char               *field(char *s, int fieldno);
-int                 fillfield(char *s, int fieldno, char *buf);
 void                fword(char *s, int num, char *wd);
-int                 findLocalizedFile(char *fname);
 
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);
@@ -1883,5 +1883,3 @@ extern RealRoot     RRoot;
 extern VirtRoot     VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
-
-#define FILEPATH_LEN_MAX 4096

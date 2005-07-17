@@ -74,7 +74,7 @@ LoadWav(const char *file)
    int                 bytes_per_frame, frames_read;
    double              in_rate;
 
-   find = FindFile(file, Mode.theme.path);
+   find = FindFile(file, Mode.theme.path, 0);
    if (!find)
      {
 	DialogOK(_("Error finding sound file"),

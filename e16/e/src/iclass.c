@@ -189,7 +189,7 @@ ImagestateRealize(ImageState * is)
 
    /* not loaded, load and setup */
    if (!is->real_file)
-      is->real_file = ThemeFileFind(is->im_file);
+      is->real_file = ThemeFileFind(is->im_file, 0);
 
    is->im = ELoadImage(is->real_file);
    imlib_context_set_image(is->im);
@@ -1402,27 +1402,14 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	ic = ImageclassFind(param1, 0);
 	if (ic)
 	  {
-	     Imlib_Image        *im = NULL;
-
-	     if (ic->norm.normal->im_file)
+	     ImagestateRealize(ic->norm.normal);
+	     if (ic->norm.normal->im)
 	       {
-		  if (!ic->norm.normal->real_file)
-		     ic->norm.normal->real_file =
-			ThemeFileFind(ic->norm.normal->im_file);
-		  if (ic->norm.normal->real_file)
-		     im = imlib_load_image(ic->norm.normal->real_file);
-		  if (im)
-		    {
-		       imlib_context_set_image(im);
-		       IpcPrintf("%i %i\n", imlib_image_get_width(),
-				 imlib_image_get_height());
-		       imlib_free_image();
-		    }
-		  else
-		     IpcPrintf("Error: Image does not exist\n");
+		  imlib_context_set_image(ic->norm.normal->im);
+		  IpcPrintf("%i %i\n", imlib_image_get_width(),
+			    imlib_image_get_height());
+		  imlib_free_image();
 	       }
-	     else
-		IpcPrintf("Error: Image does not exist\n");
 	  }
 	else
 	   IpcPrintf("Error: Imageclass does not exist\n");

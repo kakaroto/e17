@@ -85,7 +85,7 @@ ExtInitWinMain(void)
 
    {
       Window              w2, ww;
-      char               *f, s[1024];
+      char                s[1024];
       Imlib_Image        *im;
       struct timeval      tv;
       int                 dd, x, y;
@@ -123,14 +123,7 @@ ExtInitWinMain(void)
 	   if (EventDebug(EDBUG_TYPE_SESSION))
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
 
-	   f = ThemeFileFind(s);
-	   im = NULL;
-	   if (f)
-	     {
-		im = imlib_load_image(f);
-		Efree(f);
-	     }
-
+	   im = ELoadImage(s);
 	   if (im)
 	     {
 		imlib_context_set_image(im);

@@ -650,25 +650,6 @@ field(char *s, int fieldno)
 }
 
 int
-fillfield(char *s, int fieldno, char *buf)
-{
-   if (!buf)
-      return 0;
-   buf[0] = 0;
-   fword(s, fieldno + 1, buf);
-   if (buf[0])
-     {
-	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-	  {
-	     buf[0] = 0;
-	     return 0;
-	  }
-	return 1;
-     }
-   return 0;
-}
-
-int
 canread(const char *s)
 {
    if ((!s) || (!*s))
@@ -831,41 +812,4 @@ pathtofile(const char *file)
 	Efree(s);
      }
    return NULL;
-}
-
-int
-findLocalizedFile(char *fname)
-{
-   char               *tmp, *lang, *p[3];
-   int                 i;
-
-   if (!(lang = setlocale(LC_MESSAGES, NULL)))
-      return 0;
-
-   tmp = Estrdup(fname);
-   lang = Estrdup(lang);	/* lang may be in static space, thus it must
-				 * * * be duplicated before we change it below */
-   p[0] = lang + strlen(lang);
-   p[1] = strchr(lang, '.');
-   p[2] = strchr(lang, '_');
-
-   for (i = 0; i < 3; i++)
-     {
-	if (p[i] == NULL)
-	   continue;
-
-	*p[i] = '\0';
-	sprintf(fname, "%s.%s", tmp, lang);
-	if (isfile(fname))
-	  {
-	     free(tmp);
-	     free(lang);
-	     return 1;
-	  }
-     }
-   strcpy(fname, tmp);
-   free(tmp);
-   free(lang);
-
-   return 0;
 }

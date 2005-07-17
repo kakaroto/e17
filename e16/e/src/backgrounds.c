@@ -78,7 +78,7 @@ BackgroundGetUniqueString(Background * bg)
      {
 	char               *f;
 
-	f = ThemeFileFind(bg->bg.file);
+	f = ThemeFileFind(bg->bg.file, 0);
 	if (f)
 	  {
 	     f1 = fileinode(f);
@@ -91,7 +91,7 @@ BackgroundGetUniqueString(Background * bg)
      {
 	char               *f;
 
-	f = ThemeFileFind(bg->top.file);
+	f = ThemeFileFind(bg->top.file, 0);
 	if (f)
 	  {
 	     f4 = fileinode(f);
@@ -242,7 +242,7 @@ BackgroundDelete(Background * bg)
    /* And delete the actual image files */
    if (bg->bg.file)
      {
-	f = ThemeFileFind(bg->bg.file);
+	f = ThemeFileFind(bg->bg.file, 0);
 	if (f)
 	  {
 	     E_rm(f);
@@ -251,7 +251,7 @@ BackgroundDelete(Background * bg)
      }
    if (bg->top.file)
      {
-	f = ThemeFileFind(bg->top.file);
+	f = ThemeFileFind(bg->top.file, 0);
 	if (f)
 	  {
 	     E_rm(f);
@@ -494,14 +494,14 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	if (bg->bg.file && !bg->bg.im)
 	  {
 	     if (!bg->bg.real_file)
-		bg->bg.real_file = ThemeFileFind(bg->bg.file);
+		bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
 	     bg->bg.im = ELoadImage(bg->bg.real_file);
 	  }
 
 	if (bg->top.file && !bg->top.im)
 	  {
 	     if (!bg->top.real_file)
-		bg->top.real_file = ThemeFileFind(bg->top.file);
+		bg->top.real_file = ThemeFileFind(bg->top.file, 0);
 	     bg->top.im = ELoadImage(bg->top.real_file);
 	  }
 
@@ -950,7 +950,7 @@ BackgroundsConfigLoad(FILE * fs)
 		       /* check first if we can actually find the files */
 		       if (bg1)
 			 {
-			    tmp = ThemeFileFind(bg1);
+			    tmp = ThemeFileFind(bg1, 0);
 			    if (!tmp)
 			      {
 				 ok = 0;
@@ -962,7 +962,7 @@ BackgroundsConfigLoad(FILE * fs)
 			 }
 		       if (bg2)
 			 {
-			    tmp = ThemeFileFind(bg2);
+			    tmp = ThemeFileFind(bg2, 0);
 			    if (!tmp)
 			      {
 				 ok = 0;
@@ -1148,10 +1148,10 @@ BackgroundsConfigSave(void)
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
 	if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
-	   bglist[i]->bg.real_file = ThemeFileFind(bglist[i]->bg.file);
+	   bglist[i]->bg.real_file = ThemeFileFind(bglist[i]->bg.file, 0);
 
 	if ((bglist[i]->top.file) && (!bglist[i]->top.real_file))
-	   bglist[i]->top.real_file = ThemeFileFind(bglist[i]->top.file);
+	   bglist[i]->top.real_file = ThemeFileFind(bglist[i]->top.file, 0);
 
 	if ((bglist[i]->bg.file) && (bglist[i]->bg.real_file))
 	  {

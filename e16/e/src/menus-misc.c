@@ -379,7 +379,7 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
       return NULL;
    calls++;
 
-   ff = FindFile(file, NULL);
+   ff = FindFile(file, NULL, 0);
    if (!ff)
       goto done;
 
@@ -408,13 +408,12 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
    Menu               *m, *mm;
    int                 i, num;
    char              **list, s[4096], ss[4096];
-
    MenuItem           *mi;
    FILE               *f;
-   char               *lang, name_buf[20];
+   char                name_buf[20];
 
-   if ((lang = setlocale(LC_MESSAGES, NULL)) != NULL)
-      Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", lang);
+   if (Mode.locale.lang)
+      Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", Mode.locale.lang);
    else
       name_buf[0] = '\0';
 
