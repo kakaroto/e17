@@ -6,15 +6,17 @@
 #include "ewl-config.h"
 #endif
 
+#define NOMATCH ((char *)0xdeadbeef)
+
 static char     *theme_name = NULL;
 static char     *theme_path = NULL;
 
 static Ecore_List *font_paths = NULL;
-static Ecore_Hash *cached_theme_data = NULL;
 static Ecore_Hash *def_theme_data = NULL;
 
 static void ewl_theme_font_path_init(void);
 static char * ewl_theme_path_find(const char * name);
+static void ewl_theme_data_free(void *data);
 
 /**
  * @return Returns TRUE on success, FALSE on failure.
@@ -34,6 +36,9 @@ int ewl_theme_init(void)
 	def_theme_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	if (!def_theme_data)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ecore_hash_set_free_key(def_theme_data, ewl_theme_data_free);
+	ecore_hash_set_free_value(def_theme_data, ewl_theme_data_free);
 
 	/*
 	 * Retrieve the current theme from the users config.
@@ -200,6 +205,21 @@ static void ewl_theme_font_path_init()
 			}
 		}
 	}
+}
+
+/*
+ * Private function for freeing theme data in the hash.
+ */
+static void ewl_theme_data_free(void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (!data || data == (void *)NOMATCH)
+		DRETURN(DLEVEL_STABLE);
+
+	FREE(data);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -388,19 +408,21 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	if (ewl_config.theme.print_keys) 
 		printf("%s\n", key);
 
+	/*
+	 * Loop up the widget heirarchy looking for this key.
+	 */
 	temp = key;
-	while (temp && !ret) {
+	while (w && temp && !ret) {
 		if (w && w->theme)
 			ret = ecore_hash_get(w->theme, temp);
 
-		if (!ret && ewl_config.theme.cache && cached_theme_data)
-			ret = ecore_hash_get(cached_theme_data, temp);
+		if (ret) {
+			if (ret != NOMATCH) {
+				ret = strdup(ret);
+			}
 
-		if (!ret) {
-			ret = edje_file_data_get(theme_path, temp);
+			break;
 		}
-		else
-			ret = strdup(ret);
 		temp++;
 		temp = strchr(temp, '/');
 		if (!temp && w && w->parent) {
@@ -409,17 +431,45 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 		}
 	}
 
-	if (!ret && def_theme_data) {
-		ret = ecore_hash_get(def_theme_data, temp);
+	/*
+	 * No key found in widgets, look in the default theme and edje.
+	 */
+	if (!ret) {
+		temp = key;
+		while (temp && !ret) {
+			ret = ecore_hash_get(def_theme_data, temp);
+			if (ret)
+				break;
 
-		if (ret && ewl_config.theme.cache) {
-			if (!cached_theme_data)
-				cached_theme_data = ecore_hash_new(ecore_str_hash,
-							   ecore_str_compare);
-			ecore_hash_set(cached_theme_data, temp, strdup(ret));
-			ret = strdup(ret);
+			/*
+			 * Resort to looking in the edje.
+			 */
+			if (!ret) {
+				ret = edje_file_data_get(theme_path, temp);
+				if (ret) {
+					ecore_hash_set(def_theme_data,
+							strdup(temp),
+							strdup(ret));
+					break;
+				}
+			}
+			temp++;
+			temp = strchr(temp, '/');
 		}
 	}
+
+	/*
+	 * Mark unmatched keys in the cache.
+	 */
+	if (!ret) {
+		ecore_hash_set(def_theme_data, strdup(key), NOMATCH);
+	}
+
+	/*
+	 * Fixup unmatched keys in the cache.
+	 */
+	if (ret == NOMATCH)
+		ret = NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -432,45 +482,16 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
  */
 int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
 {
-	int             ret = 0;
 	char           *temp;
-	char            key[PATH_MAX];
+	int             ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
-	/*
-	 * Use the widget's appearance string to build a relative theme key.
-	 */
-	if (w) {
-		char *tmp;
+	temp = ewl_theme_data_str_get(w, k);
+	if (temp)
+		ret = atoi(temp);
 
-		tmp = ewl_widget_appearance_get(w);
-		if (tmp) {
-			snprintf(key, PATH_MAX, "%s/%s", tmp, k);
-			FREE(tmp);
-		} else 
-			snprintf(key, PATH_MAX, "%s", k);
-	} else
-		snprintf(key, PATH_MAX, "%s", k);
-
-	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
-		if (w && w->theme)
-			ret = (int) (ecore_hash_get(w->theme, temp));
-		else
-			ret = (int) (ecore_hash_get(def_theme_data, temp));
-
-		if (!ret) {
-			char *val;
-
-			val = edje_file_data_get(theme_path, temp);
-			if (val) {
-				ret = atoi(val);
-				FREE(val);
-			}
-		}
-		temp++;
-	}
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
@@ -490,13 +511,17 @@ void ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
-	if (!w->theme || w->theme == def_theme_data)
+	if (!w->theme || w->theme == def_theme_data) {
 		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+		ecore_hash_set_free_key(w->theme, ewl_theme_data_free);
+		ecore_hash_set_free_value(w->theme, ewl_theme_data_free);
+	}
 
 	if (v)
 		ecore_hash_set(w->theme, k, strdup(v));
 	else
-		ecore_hash_set(w->theme, k, v);
+		ecore_hash_set(w->theme, k, NOMATCH);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -518,19 +543,14 @@ void ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v)
  */
 void ewl_theme_data_int_set(Ewl_Widget * w, char *k, int v)
 {
+	char value[16];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
-	if (!w->theme || w->theme == def_theme_data)
-		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-
-	ecore_hash_set(w->theme, k, (void *) v);
-
-	if (REALIZED(w)) {
-		ewl_widget_unrealize(w);
-		ewl_widget_realize(w);
-	}
+	snprintf(value, 16, "%d", v);
+	ewl_theme_data_str_set(w, k, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -564,9 +584,12 @@ void ewl_theme_data_default_str_set(char *k, char *v)
  */
 void ewl_theme_data_default_int_set(char *k, int v)
 {
+	char value[16];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_hash_set(def_theme_data, k, (void *) v);
+	snprintf(value, 16, "%d", v);
+	ewl_theme_data_default_str_set(k, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
