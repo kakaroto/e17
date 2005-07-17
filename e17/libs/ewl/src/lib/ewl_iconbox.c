@@ -681,3 +681,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	
 	return EWL_ICONBOX_ICON(ib);
 }
+
+
+void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename) {
+	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
+}
