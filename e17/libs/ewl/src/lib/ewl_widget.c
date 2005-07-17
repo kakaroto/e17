@@ -419,8 +419,8 @@ void ewl_widget_data_set(Ewl_Widget * w, void *k, void *v)
 void *ewl_widget_data_del(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
 	if (!w->data)
 	        DRETURN_PTR(NULL, DLEVEL_STABLE);
