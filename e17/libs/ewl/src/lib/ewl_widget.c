@@ -408,21 +408,24 @@ void ewl_widget_data_set(Ewl_Widget * w, void *k, void *v)
 /**
  * @param w: the widget that owns the key value pair
  * @param k: the key that is associated with the data
- * @return Returns no value.
- * @brief Remove the specified key / value pair from the widget
+ * @return Returns the deleted value.
+ * @brief Remove the specified key / value pair from the widget and
+ * return the value.
  *
- * Removes a key / value pair with k as the key from the specified widget w.
+ * Removes a key / value pair with k as the key from the specified
+ * widget w and return the value. @c NULL is returned if there is no
+ * stored data or if an error occurs.
  */
-void ewl_widget_data_del(Ewl_Widget * w, void *k)
+void *ewl_widget_data_del(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->data)
-		DRETURN(DLEVEL_STABLE);
+	        DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(ecore_hash_remove(w->data, k), DLEVEL_STABLE);
 }
 
 

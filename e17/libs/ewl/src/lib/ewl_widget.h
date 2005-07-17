@@ -139,7 +139,7 @@ void            ewl_widget_data_set(Ewl_Widget * w, void *k, void *v);
 /*
  * Remove a key value pair from a widget.
  */
-void            ewl_widget_data_del(Ewl_Widget * w, void *k);
+void           *ewl_widget_data_del(Ewl_Widget * w, void *k);
 
 /*
  * Retrieve a key value pair from a widget.
