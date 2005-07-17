@@ -10,6 +10,7 @@
 #include <E_Lib.h>
 #include <Engrave.h>
 #include <Ecore.h>
+#include <Ecore_File.h>
 
 #include "config.h"
 
@@ -125,53 +126,6 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
         e_bg_img_file = argv[optind];
 }
 
-/* return dir from a full path filename */
-char *_e_bg_bg_file_getdir(char *path) {
-   char *ptr;
-   char *c;
-   char *dir;
-   int i = 0;
-
-   ptr=path;
-   c=strrchr(ptr, '/');
-   if (!c)
-     return ".";
-   dir = malloc(strlen(path) + 1);
-
-   while(ptr != c) {
-      dir[i] = *ptr;
-      ptr++;
-      i++;
-   }
-
-   dir[i] = '\0';
-   return dir;
-}
-
-/* return filename from a full path filename */
-char *_e_bg_bg_file_getfile(char *path) {
-   char *ptr;
-   char *c;
-   char *file;
-   int i;
-
-   i = 0;
-   ptr = path;
-   c = strrchr(ptr, '/');
-   if (!c)
-     return path;
-   file = malloc(strlen(ptr) + 1);
-
-   while(ptr != c) {
-      file[i] = *ptr;
-      ptr++;
-      i++;
-   }
-
-   file[i] = '\0';
-   return c;
-}
-
 /* strip extention from a file */
 char *_e_bg_bg_file_stripext(char *path) {
    char *ptr;
@@ -219,11 +173,11 @@ void _e_bg_bg_edj_gen(char *filename) {
       return;
    }
    
-   file = _e_bg_bg_file_getfile(filename);
-   dir = _e_bg_bg_file_getdir(filename);
+   file = ecore_file_get_file(filename);
+   dir = ecore_file_get_dir(filename);
 
    filenoext = _e_bg_bg_file_stripext(filename);
-   filenoext = _e_bg_bg_file_getfile(filenoext);
+   filenoext = ecore_file_get_file(filenoext);
 
    /* Set up edj path */
    edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
