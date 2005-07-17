@@ -4,3 +4,6 @@ Flame....: A module that displays flame at the bottom of the screen.
 Notes....: A module that displays sticky notes.
 Snow.....: A module that displays christmas trees and falling snow on
            your desktop.
+Monitor..: A module for watching your CPU and network activity
+Weather..: A module for displaying weather reports
+

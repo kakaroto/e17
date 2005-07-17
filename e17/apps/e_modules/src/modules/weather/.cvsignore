@@ -1,0 +1,8 @@
+e_mod_main.lo
+e_mod_main.o
+module.la
+weather.edj
+.deps
+.libs
+Makefile.in
+Makefile
