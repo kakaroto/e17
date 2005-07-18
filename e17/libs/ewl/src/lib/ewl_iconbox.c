@@ -684,5 +684,14 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename) {
+	int iw,ih,lw,lh;
+	
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
+
+	/*Make sure we're not too small now */
+	/*Shouldn't the floater auto-resize?*/
+	
+	ewl_object_current_size_get(EWL_OBJECT(icon->image), &iw,&ih);
+	ewl_object_current_size_get(EWL_BORDER(icon)->label, &lw, &lh); /* Shouldn't access this directly, is there another way? */
+	ewl_object_minimum_size_set(EWL_OBJECT(icon->floater), iw, ih+lh);
 }
