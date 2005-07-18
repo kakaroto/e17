@@ -609,7 +609,6 @@ static void
 EWMH_GetWindowIcons(EWin * ewin)
 {
    unsigned int       *val;
-   unsigned int        i;
    int                 num;
 
    if (ewin->ewmh.wm_icon)
@@ -632,19 +631,6 @@ EWMH_GetWindowIcons(EWin * ewin)
 	Efree(val);
 	return;
      }
-
-   for (i = 0; i < (unsigned int)(num - 1);)
-     {
-#if 0
-	Eprintf("App %s: Icon %d-%4d - %dx%d\n",
-		EwinGetName(ewin), num, i, val[i], val[i + 1]);
-#endif
-	i += 2 + val[i] * val[i + 1];
-     }
-   if (i != (unsigned int)num)
-      Eprintf
-	 ("*** EWMH_GetWindowIcons Icon data/size mismatch: %s: %d!=%d\n",
-	  EwinGetName(ewin), i, num);
 
    ewin->ewmh.wm_icon = val;
 
