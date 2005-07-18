@@ -9,6 +9,12 @@ broken() {
     echo "ERROR:  $1 not found."
     exit -1
 }
+abort() {
+	echo
+	echo "Running '$1' failed :("
+	echo "Try updating the package on your system and try again."
+	exit -2
+}
 
 DIE=0
 
@@ -54,11 +60,13 @@ if test ! -f "`$ACLOCAL --print-ac-dir`/libast.m4"; then
 fi
 
 # Run the stuff.
-(set -x && $LIBTOOLIZE -c -f)
-(set -x && $ACLOCAL $ACLOCAL_FLAGS)
-(set -x && $AUTOCONF)
-(set -x && $AUTOHEADER)
-(set -x && $AUTOMAKE -a -c)
+(set -x && $LIBTOOLIZE -c -f) || abort libtool
+(set -x && $ACLOCAL $ACLOCAL_FLAGS) || abort aclocal
+(set -x && $AUTOCONF) || abort autoconf
+(set -x && $AUTOHEADER) || abort autoheader
+(set -x && $AUTOMAKE -a -c) || abort automake
 
 # Run configure.
+if test x"$NOCONFIGURE" = x; then
 (set -x && ./configure "$@")
+fi
