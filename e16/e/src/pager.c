@@ -71,6 +71,7 @@ typedef struct
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
 
+static void         PagerScanCancel(Pager * p);
 static void         PagerScanTimeout(int val, void *data);
 static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p);
@@ -107,11 +108,8 @@ PagerCreate(void)
 static void
 PagerDestroy(Pager * p)
 {
-   char                s[4096];
-
    RemoveItem("PAGER", p->win, LIST_FINDBY_ID, LIST_TYPE_PAGER);
-   Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-   RemoveTimerEvent(s);
+   PagerScanCancel(p);
    if (p->name)
       Efree(p->name);
    EDestroyWindow(p->win);
@@ -165,6 +163,18 @@ PagerScanTrig(Pager * p)
    Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
    DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerScanTimeout, 0, p);
    p->scan_pending = 1;
+}
+
+static void
+PagerScanCancel(Pager * p)
+{
+   char                s[128];
+
+   if (!p->scan_pending)
+      return;
+
+   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
+   RemoveTimerEvent(s);
 }
 
 static void
