@@ -10,6 +10,7 @@
 #include <E_Lib.h>
 #include <Engrave.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_File.h>
 
 #include "config.h"
@@ -166,19 +167,38 @@ void _e_bg_bg_edj_gen(char *filename) {
 
    /* make sure we got a file name */
    if (!filename) return;
-
-   if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
-      _e_bg_bg_set(filename);
-      ecore_main_loop_quit();
-      return;
-   }
    
    file = ecore_file_get_file(filename);
    dir = ecore_file_get_dir(filename);
 
    filenoext = _e_bg_bg_file_stripext(filename);
    filenoext = ecore_file_get_file(filenoext);
+       		
+   if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
+      int w, h, num;
+      char static_bg[PATH_MAX];
+      char esetroot_s[PATH_MAX];	   
+      char filename_s[PATH_MAX];
+      Ecore_X_Window *roots = NULL;
+	   
+      if (!ecore_x_init(NULL))
+	     return;
+      num = 0;
+      roots = ecore_x_window_root_list(&num);
+      ecore_x_window_size_get(roots[0], &w, &h);
+      snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
+      snprintf(static_bg, PATH_MAX, "edje_thumb %s desktop/background %s -g %dx%d -og %dx%d", filename, filename_s, w, h, w, h);
+      system(static_bg);
+      _e_bg_bg_set(filename);
 
+      strcpy(esetroot_s, "Esetroot ");
+      strcat(esetroot_s, esetroot_opt);
+      strcat(esetroot_s, filename_s);
+      system(esetroot_s);
+      ecore_main_loop_quit();
+      return;
+   }
+   
    /* Set up edj path */
    edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
 		+ strlen(filenoext) + strlen(".edj") + 1);
