@@ -253,7 +253,6 @@ WarpFocus(int delta)
 		   ((EwinIsOnScreen(ewin)) || (ewin->state.iconified)) &&
 		   /* Exclude windows that explicitely say so */
 		   (!ewin->props.skip_focuslist) &&
-		   (!ewin->state.inhibit_focus) &&
 		   /* Keep shaded windows if conf say so */
 		   ((!ewin->state.shaded) || (Conf.warplist.showshaded)) &&
 		   /* Keep sticky windows if conf say so */
