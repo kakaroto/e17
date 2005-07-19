@@ -166,7 +166,7 @@ void _e_bg_bg_edj_gen(char *filename) {
    Engrave_Part_State *ps;
 
    /* make sure we got a file name */
-   if (!filename) return;
+   if (!filename || strlen(filename) <= 4) return;
    
    file = ecore_file_get_file(filename);
    dir = ecore_file_get_dir(filename);
@@ -191,9 +191,7 @@ void _e_bg_bg_edj_gen(char *filename) {
       system(static_bg);
       _e_bg_bg_set(filename);
 
-      strcpy(esetroot_s, "Esetroot ");
-      strcat(esetroot_s, esetroot_opt);
-      strcat(esetroot_s, filename_s);
+      snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
       system(esetroot_s);
       ecore_main_loop_quit();
       return;
