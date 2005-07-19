@@ -28,6 +28,8 @@ static void _monitor_face_cb_mouse_move(void *data, Evas *e, Evas_Object *obj,
 					void *event_info);
 
 static void _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data);
+static void _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data);
+static void _monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data);
 static void _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data);
 
@@ -89,7 +91,6 @@ e_modapi_save(E_Module *module)
 int
 e_modapi_info(E_Module *module)
 {
-   char buf[4096];
    
    module->label = strdup("Monitor");
    module->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/monitor/module_icon.png");
@@ -223,8 +224,6 @@ _monitor_face_new(E_Container *con)
    Chart_Container *chart_con;
    Flow_Chart *flow_chart;
 
-   char buf[256];
-
    face = E_NEW(Monitor_Face, 1);
    if (!face) return NULL;
    
@@ -233,6 +232,10 @@ _monitor_face_new(E_Container *con)
    
    evas_event_freeze(con->bg_evas);
    
+   /* setup intervals */
+   face->cpu_rate = 1.0;
+   face->mem_rate = 1.0;
+   face->net_rate = 1.0;
 
    /* setup monitor object */
    o = edje_object_add(con->bg_evas);
@@ -264,6 +267,7 @@ _monitor_face_new(E_Container *con)
    flow_chart = flow_chart_new();
    flow_chart_color_set(flow_chart, 33, 100, 220, 255);
    flow_chart_get_value_function_set(flow_chart, cpu_usage_get);
+   flow_chart_update_rate_set(flow_chart, face->cpu_rate);
    chart_container_chart_add(chart_con, flow_chart);
    face->chart_cpu = chart_con;   
    flow_chart_callback_set(flow_chart, _monitor_cpu_text_update_callcack, face);
@@ -275,7 +279,43 @@ _monitor_face_new(E_Container *con)
 				  _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
+   /* setup mem */
+   o = edje_object_add(con->bg_evas);
+   face->mem = o;
+   edje_object_file_set(o, PACKAGE_LIB_DIR
+			"/e_modules/monitor/monitor.edj", 
+			"monitor/mem");
+   e_table_pack(face->table_object, o, 1, 0, 1, 1);
+   e_table_pack_options_set(o, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);   
+   evas_object_layer_set(o, evas_object_layer_get(face->monitor_object)+1);
+   evas_object_show(o);
+   /* add mem charts */
+   chart_con = chart_container_new(con->bg_evas,0,0,0,0);
+   flow_chart = flow_chart_new();
+   flow_chart_color_set(flow_chart, 213, 91, 91, 255);
+   flow_chart_get_value_function_set(flow_chart, mem_real_usage_get);
+   flow_chart_update_rate_set(flow_chart, face->mem_rate);
+   chart_container_chart_add(chart_con, flow_chart);
+   face->chart_mem = chart_con;   
+   flow_chart_callback_set(flow_chart, _monitor_mem_real_text_update_callback, 
+			   face);
 
+   flow_chart = flow_chart_new();
+   flow_chart_color_set(flow_chart, 51, 181, 69, 255);
+   flow_chart_get_value_function_set(flow_chart, mem_swap_usage_get);
+   flow_chart_update_rate_set(flow_chart, face->mem_rate);
+   flow_chart_alignment_set(flow_chart, 0);
+   chart_container_chart_add(chart_con, flow_chart);
+   flow_chart_callback_set(flow_chart, _monitor_mem_swap_text_update_callback, 
+			   face);
+
+
+   o = evas_object_rectangle_add(con->bg_evas);
+   face->mem_ev_obj = o;
+   evas_object_color_set(o, 255,255,255,0);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
+				  _monitor_face_cb_mouse_down, face);
+   evas_object_show(o);
 
    /* setup net */
    o = edje_object_add(con->bg_evas);
@@ -283,7 +323,7 @@ _monitor_face_new(E_Container *con)
    edje_object_file_set(o, PACKAGE_LIB_DIR
 			"/e_modules/monitor/monitor.edj", 
 			"monitor/net");
-   e_table_pack(face->table_object, o, 1, 0, 1, 1);
+   e_table_pack(face->table_object, o, 2, 0, 1, 1);
    e_table_pack_options_set(o, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);   
    evas_object_layer_set(o, evas_object_layer_get(face->monitor_object)+1);
    evas_object_show(o);
@@ -292,6 +332,7 @@ _monitor_face_new(E_Container *con)
    flow_chart = flow_chart_new();
    flow_chart_color_set(flow_chart, 213, 91, 91, 255);
    flow_chart_get_value_function_set(flow_chart, net_in_usage_get);
+   flow_chart_update_rate_set(flow_chart, face->net_rate);
    chart_container_chart_add(chart_con, flow_chart);
    face->chart_net = chart_con;   
    flow_chart_callback_set(flow_chart, _monitor_net_in_text_update_callcack, 
@@ -300,6 +341,7 @@ _monitor_face_new(E_Container *con)
    flow_chart = flow_chart_new();
    flow_chart_color_set(flow_chart, 51, 181, 69, 255);
    flow_chart_get_value_function_set(flow_chart, net_out_usage_get);
+   flow_chart_update_rate_set(flow_chart, face->net_rate);
    flow_chart_alignment_set(flow_chart, 0);
    chart_container_chart_add(chart_con, flow_chart);
    flow_chart_callback_set(flow_chart, _monitor_net_out_text_update_callcack, 
@@ -324,7 +366,7 @@ _monitor_face_new(E_Container *con)
 			      E_GADMAN_POLICY_VSIZE);
    e_gadman_client_min_size_set(face->gmc, 14, 7);
    e_gadman_client_align_set(face->gmc, 1.0, 1.0);
-   e_gadman_client_resize(face->gmc, 64, 32);
+   e_gadman_client_resize(face->gmc, 160, 40);
    e_gadman_client_change_func_set(face->gmc, _monitor_face_cb_gmc_change, 
 				   face);
    e_gadman_client_load(face->gmc);
@@ -338,7 +380,6 @@ static void
 _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data)
 {
   Monitor_Face *face;
-  Evas_Object *o;
   char buf[64];
 
   face = data;
@@ -348,10 +389,49 @@ _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data)
 }
 
 static void 
+_monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data)
+{
+  Monitor_Face *face;
+  char buf[64];
+
+  long bytes = mem_real_get();
+
+  face = data;
+  
+  if (bytes > 1048576 )
+    snprintf(buf, 64, "%ldMB", bytes/1048576);
+  else if (bytes > 1024 && bytes < 1048576 )
+    snprintf(buf, 64, "%ldKB", bytes/1024);
+  else
+    snprintf(buf, 64, "%ldB", bytes);
+  
+  edje_object_part_text_set(face->mem, "mem-real-text", buf);
+}
+
+static void 
+_monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data)
+{
+  Monitor_Face *face;
+  char buf[64];
+
+  long bytes = mem_swap_get();
+
+  face = data;
+  
+  if (bytes > 1048576 )
+    snprintf(buf, 64, "%ldMB", bytes/1048576);
+  else if (bytes > 1024 && bytes < 1048576 )
+    snprintf(buf, 64, "%ldKB", bytes/1024);
+  else
+    snprintf(buf, 64, "%ldB", bytes);
+  
+  edje_object_part_text_set(face->mem, "mem-swap-text", buf);
+}
+
+static void 
 _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data)
 {
   Monitor_Face *face;
-  Evas_Object *o;
   char buf[64];
 
   long bytes = net_bytes_in_get();
@@ -359,11 +439,11 @@ _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data)
   face = data;
   
   if (bytes > 1048576 )
-    snprintf(buf, 64, "%iMB", bytes/1048576);
+    snprintf(buf, 64, "%ldMB", bytes/1048576);
   else if (bytes > 1024 && bytes < 1048576 )
-    snprintf(buf, 64, "%iKB", bytes/1024);
+    snprintf(buf, 64, "%ldKB", bytes/1024);
   else
-    snprintf(buf, 64, "%iB", bytes);
+    snprintf(buf, 64, "%ldB", bytes);
   
   edje_object_part_text_set(face->net, "net-in-text", buf);
 }
@@ -372,7 +452,6 @@ static void
 _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
 {
   Monitor_Face *face;
-  Evas_Object *o;
   char buf[64];
 
   long bytes = net_bytes_out_get();
@@ -380,11 +459,11 @@ _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
   face = data;
 
   if (bytes > 1048576 )
-    snprintf(buf, 64, "%iMB", bytes/1048576);
+    snprintf(buf, 64, "%ldMB", bytes/1048576);
   else if (bytes > 1024 && bytes < 1048576 )
-    snprintf(buf, 64, "%iKB", bytes/1024);
+    snprintf(buf, 64, "%ldKB", bytes/1024);
   else
-    snprintf(buf, 64, "%iB", bytes);
+    snprintf(buf, 64, "%ldB", bytes);
   
   edje_object_part_text_set(face->net, "net-out-text", buf);
 }
@@ -397,10 +476,13 @@ _monitor_face_free(Monitor_Face *face)
  
    evas_object_del(face->cpu);
    evas_object_del(face->cpu_ev_obj);
+   evas_object_del(face->mem);
+   evas_object_del(face->mem_ev_obj);
    evas_object_del(face->net);
    evas_object_del(face->net_ev_obj);
 
    chart_container_del(face->chart_cpu);
+   chart_container_del(face->chart_mem);
    chart_container_del(face->chart_net);
    
    if (face->monitor_object) evas_object_del(face->monitor_object);
@@ -476,6 +558,11 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 	 chart_container_move(face->chart_cpu, x+2,y+2);
 	 chart_container_resize(face->chart_cpu, w-4,h-4);
 
+	 evas_object_geometry_get(face->mem,  &x, &y, &w, &h);
+	 evas_object_move(face->mem_ev_obj, x, y);
+	 evas_object_resize(face->mem_ev_obj, w, h);
+	 chart_container_move(face->chart_mem, x+2,y+2);
+	 chart_container_resize(face->chart_mem, w-4,h-4);
 	 
 	 evas_object_geometry_get(face->net,  &x, &y, &w, &h);
 	 evas_object_move(face->net_ev_obj, x, y);

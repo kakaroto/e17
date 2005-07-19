@@ -13,7 +13,8 @@ count_cpus(void)
   if ( !(stat = fopen ("/proc/stat", "r")) )
     return -1;
 
-  while (fscanf (stat, "cp%s %*lu %*lu %*lu %*lu %*lu %*lu %*lu %*lu\n", &tmp) == 1)
+  while (fscanf (stat, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", 
+			  &tmp) == 1)
     {
 	cpu++;
     }
@@ -33,8 +34,10 @@ four_cpu_numbers(int *uret, int *nret, int *sret, int *iret)
   char      dummy[16];
   FILE     *stat;
   
-  if ( !(stat = fopen ("/proc/stat", "r")) )
+  if ( !(stat = fopen ("/proc/stat", "r")) ) {
+    fprintf(stderr, "can't open /proc/stat");
     return -1;
+  }
 
   if (fscanf (stat, "%s %lu %lu %lu %lu %lu %lu %lu", dummy,
 	      &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si) < 5)
@@ -82,7 +85,6 @@ four_cpu_numbers(int *uret, int *nret, int *sret, int *iret)
 int
 cpu_usage_get(void)
 {
-  static int old_load = 0;
   int u, n, s, i, load;
 
   if ( four_cpu_numbers( &u, &n, &s, &i ) == -1 )
@@ -106,10 +108,6 @@ int   out_usage = 0;
 int
 get_net_input_output(unsigned long *in, unsigned long *out, const char *dev)
 {
-  static unsigned long      old_in = 0, old_out = 0;
-  static double             top_in = 10, top_out = 10;
-
-  double         tmp_in = 0, tmp_out = 0;
   unsigned long  new_in, new_out;
   unsigned long  dummy;
   char           iface[64];
@@ -214,4 +212,110 @@ int
 net_out_usage_get(void)
 {
   return out_usage;
+}
+
+long  mem_real  = 0;
+long  mem_swap  = 0;
+int   mem_real_usage = 0;
+int   mem_swap_usage = 0;
+
+
+/* Begin memory monitor code */
+
+void memory_check(int ignore_buffers, int ignore_cached)
+{
+   FILE *pmeminfo = NULL;
+   int cursor = 0;
+   char *line, *field;
+   unsigned char c;
+   long int value = 0, mtotal = 0, stotal = 0, mfree = 0, sfree = 0;
+   ldiv_t ldresult;
+   long int liresult;
+
+   /* open /proc/meminfo */
+   if ( !(pmeminfo = fopen("/proc/meminfo", "r")) ) {
+	   fprintf(stderr, "can't open /proc/meminfo");
+	   return;
+   }
+
+   /* parse /proc/meminfo */
+   line = (char *) calloc(64, sizeof(char));
+   while (fscanf(pmeminfo, "%c", &c) != EOF) {
+     if (c != '\n') {
+	line[cursor++] = c;
+     }
+     else {
+       field = (char *) malloc(strlen(line) * sizeof(char));
+       sscanf(line, "%s %ld kB", field, &value);
+       if (strcmp(field, "MemTotal:") == 0)
+	 mtotal = value;
+       else if (strcmp(field, "MemFree:") == 0)
+	 mfree = value;
+       else if (ignore_buffers && strcmp(field, "Buffers:") == 0)
+	 mfree += value;
+       else if (ignore_cached && strcmp(field, "Cached:") == 0)
+	 mfree += value;
+       else if (ignore_cached && strcmp(field, "SwapCached:") == 0)
+	 sfree += value;
+       else if (strcmp(field, "SwapTotal:") == 0)
+	 stotal = value;
+       else if (strcmp(field, "SwapFree:") == 0)
+	 sfree = value;
+       free(line);
+       free(field);
+       cursor = 0;
+       line = (char *) calloc(64, sizeof(char));
+     }
+   }
+   fclose(pmeminfo);
+
+   /* calculate memory usage in percent */
+   /* FIXME : figure out a better way to do this */
+   ldresult = ldiv(mtotal, 100);
+   liresult = ldresult.quot;
+   ldresult = ldiv((mtotal - mfree), liresult);
+   mem_real_usage = ldresult.quot;
+
+   /* calculate swap usage in percent */
+   if (stotal < 1) {
+     mem_swap_usage = 0;
+   }
+   else {
+     ldresult = ldiv(stotal, 100);
+     liresult = ldresult.quot;
+     ldresult = ldiv((stotal - sfree), liresult);
+     mem_swap_usage = ldresult.quot;
+   }
+
+   mem_real = mtotal - mfree;
+   mem_swap = stotal - sfree;
+   
+}
+
+long 
+mem_real_get(void)
+{
+  return mem_real;
+}
+
+long
+mem_swap_get(void)
+{
+  return mem_swap;
+}
+
+int
+mem_real_usage_get(void)
+{
+  /* FIXME
+   * Need a menu option to change the ignore buffers and ignore cache options
+   */
+  memory_check(0, 0);
+  return mem_real_usage;
+}
+
+int
+mem_swap_usage_get(void)
+{
+  return mem_swap_usage;
 }

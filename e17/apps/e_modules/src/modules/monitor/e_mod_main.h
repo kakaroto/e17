@@ -37,12 +37,15 @@ struct _Monitor_Face
   E_Menu      *menu;
   Config_Face *conf;
 
-  Evas_Object *cpu, *net;
-  Evas_Object *cpu_ev_obj, *net_ev_obj;
+  Evas_Object *cpu, *net, *mem;
+  Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj;
   Evas_Object *table_object, *monitor_object;
 
+  double cpu_rate;
+  double mem_rate;
+  double net_rate;
    
-  Chart_Container *chart_cpu, *chart_net;
+  Chart_Container *chart_cpu, *chart_net, *chart_mem;
 
    
   E_Gadman_Client *gmc;

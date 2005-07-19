@@ -6,6 +6,7 @@ images
   image, "over_res.png" COMP;
   image, "cpu.png"  COMP;
   image, "eth_dev.png" COMP;
+  image, "memory.png" COMP;
 }
 
 fonts
@@ -132,6 +133,95 @@ collections
     }//close group cpu
 
 
+group
+    {
+      name, "monitor/mem";
+      
+      parts{
+
+	part {
+	  name,          "overlay";
+	  mouse_events,  0;
+	  description {
+	    state,    "default" 0.0;
+	    rel1 {  offset,   1    1; }
+	    rel2 {  offset,   -2   -2;    }
+	    image { normal, "over_res.png";
+	            border, 2 2 2 2;
+	            middle, 0;
+	    }
+	    fill { smooth, 0; }
+	    color, 255 255 255 64;
+	  }
+	  description {
+	    state,    "active" 0.0;
+	    inherit,  "default" 0.0;
+	    color, 255 255 255 255;
+	  }
+	}
+
+
+      part {
+	 name,          "mem";
+	 mouse_events,  0;
+	 description {
+	    state,    "default" 0.0;
+	    color, 255 255 255 128;
+	    aspect:   1.0 1.0;
+	    rel1{ offset, 4 4; }
+	    rel2{ offset, -5 -5; }
+	    image { normal, "memory.png"; }
+	    fill { smooth, 0;  }
+	 }
+      }
+
+      part 
+	  {
+	    name,           "mem-real-text";
+	    type,           TEXT;
+	    effect,         SOFT_SHADOW;
+	    mouse_events, 0;
+	    description {
+	      state, "default" 0.0;
+	      align, 1.0 0.0;
+	      rel1 { relative, 1.0 0.0; to_x, "overlay"; offset, -2 1; }
+	      rel2 { relative, 1.0 0.0; }
+	      color, 255 255 255 255;
+	      color3, 0 0 0 100;
+	      text {
+		text, "memory-real"; font, "VeraMono";
+		size,  8;     min,     1 1;
+		align, 1.0 0.0;
+	      }
+	    }
+	  }
+
+	
+	part 
+	  {
+	    name,           "mem-swap-text";
+	    type,           TEXT;
+	    effect,         SOFT_SHADOW;
+	    mouse_events, 0;
+	    description {
+	      state, "default" 0.0;
+	      align, 1.0 0.0;
+	      rel1 { relative, 1.0 1.0; to_x, "overlay"; offset, -2 -10;  }
+	      rel2 { relative, 1.0 1.0; }
+	      color, 255 255 255 255;
+	      color3, 0 0 0 100;
+	      text {
+		text, "memory-swap"; font, "VeraMono";
+		size,  8;     min,     1 1;
+		align, 1.0 0.0;
+	      }
+	    }
+	  }
+	
+
+      }
+ 
+    }//close group memory
 
 group
     {
