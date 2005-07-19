@@ -68,7 +68,6 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 #endif
 
    SoundPlay("SOUND_MOVE_START");
-   ModulesSignal(ESIGNAL_MOVE_START, NULL);
 
    if (grab)
      {
@@ -118,13 +117,7 @@ ActionMoveEnd(EWin * ewin)
 
    ewin = mode_moveresize_ewin;
    if (!ewin)
-     {
-	if (Conf.movres.mode_move > 0)
-	   EUngrabServer();
-	if (Mode.mode == MODE_MOVE)
-	   Conf.movres.mode_move = move_mode_real;
-	return 0;
-     }
+      goto done;
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &num);
@@ -158,18 +151,23 @@ ActionMoveEnd(EWin * ewin)
 			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
      }
 
-   ESync();
-   if (Conf.movres.mode_move > 0)
-      EUngrabServer();
-
    Efree(gwins);
+
+   ESync();
+
+ done:
+   Mode.mode = MODE_NONE;
    Conf.movres.mode_move = move_mode_real;
    Mode.nogroup = 0;
    Mode.move.swap = 0;
    Mode.have_place_grab = 0;
    Mode.place.doing_manual = 0;
 
-   ModulesSignal(ESIGNAL_MOVE_DONE, NULL);
+   if (Conf.movres.mode_move > 0)
+     {
+	EUngrabServer();
+	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
+     }
 
    return 0;
 }
@@ -268,10 +266,12 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    mode_moveresize_ewin = ewin;
 
    SoundPlay("SOUND_RESIZE_START");
-   ModulesSignal(ESIGNAL_RESIZE_START, NULL);
 
    if (Conf.movres.mode_resize > 0)
-      EGrabServer();
+     {
+	EGrabServer();
+	ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
+     }
 
    if (grab)
      {
@@ -366,28 +366,29 @@ ActionResizeEnd(EWin * ewin)
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
 
+   Mode.mode = MODE_NONE;
+
    GrabPointerRelease();
 
    SoundPlay("SOUND_RESIZE_STOP");
 
    ewin = mode_moveresize_ewin;
    if (!ewin)
-     {
-	if (Conf.movres.mode_resize > 0)
-	   EUngrabServer();
-	return 0;
-     }
-   Mode.mode = MODE_NONE;
+      goto done;
+
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->client.w, ewin->client.h, 2);
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
 
    ESync();
-   if (Conf.movres.mode_resize > 0)
-      EUngrabServer();
 
-   ModulesSignal(ESIGNAL_RESIZE_DONE, NULL);
+ done:
+   if (Conf.movres.mode_resize > 0)
+     {
+	EUngrabServer();
+	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
+     }
 
    return 0;
 }
@@ -415,7 +416,10 @@ ActionMoveHandleMotion(void)
    if (Mode.mode == MODE_MOVE_PENDING)
      {
 	if (Conf.movres.mode_move > 0)
-	   EGrabServer();
+	  {
+	     EGrabServer();
+	     ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
+	  }
 
 	for (i = 0; i < num; i++)
 	  {

@@ -955,10 +955,8 @@ FxSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_DESK_SWITCH_DONE:
 	FX_DeskChange();
 	break;
-     case ESIGNAL_MOVE_START:
-     case ESIGNAL_MOVE_DONE:
-     case ESIGNAL_RESIZE_START:
-     case ESIGNAL_RESIZE_DONE:
+     case ESIGNAL_ANIMATION_SUSPEND:
+     case ESIGNAL_ANIMATION_RESUME:
 	FX_Pause();
 	break;
      }
