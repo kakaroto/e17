@@ -510,6 +510,7 @@ epsilon_generate (Epsilon * e)
 	      }
 	    else
 	      {
+	        ecore_evas_free(ee);
 		printf ("Cannot load file %s, group %s\n", e->src, e->key);
 		return (EPSILON_FAIL);
 	      }
@@ -556,12 +557,14 @@ epsilon_generate (Epsilon * e)
 				     format, mtime, uri))
 	      {
 		imlib_free_image_and_decache ();
+		if (ee) ecore_evas_free(ee);
 		return (EPSILON_OK);
 	      }
 	    imlib_free_image_and_decache ();
 	  }
 
       }
+    if (ee) ecore_evas_free(ee);
   }
   return (EPSILON_FAIL);
 }
