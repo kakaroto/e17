@@ -276,17 +276,13 @@ Ewl_Widget *ewl_dialog_button_add(Ewl_Dialog * dialog, char *button_text,
 	if (!dialog)
 		return NULL;
 
-	button = ewl_button_stock_new(button_text);
+	button = ewl_button_stock_with_id_new(button_text, response_id);
 	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
 	ewl_container_child_append(EWL_CONTAINER(dialog->action_area),
 				   button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button),
 				   EWL_FLAG_FILL_VFILL
 				   || EWL_FLAG_FILL_SHRINK);
-
-	ewl_widget_data_set(button, "RESPONSE_ID", (void *) response_id);
-
-	ewl_widget_show(button);
 
 	DRETURN_PTR(button, DLEVEL_STABLE);
 }
@@ -309,17 +305,13 @@ Ewl_Widget *ewl_dialog_button_left_add(Ewl_Dialog * dialog,
 	if (!dialog)
 		return NULL;
 
-	button = ewl_button_stock_new(button_text);
+	button = ewl_button_stock_with_id_new(button_text, response_id);
 	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
 	ewl_container_child_prepend(EWL_CONTAINER(dialog->action_area),
 				    button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button),
 				   EWL_FLAG_FILL_VFILL
 				   || EWL_FLAG_FILL_SHRINK);
-
-	ewl_widget_data_set(button, "RESPONSE_ID", (void *) response_id);
-
-	ewl_widget_show(button);
 
 	DRETURN_PTR(button, DLEVEL_STABLE);
 }
