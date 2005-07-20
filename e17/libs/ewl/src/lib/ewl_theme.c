@@ -234,7 +234,8 @@ int ewl_theme_widget_init(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 
-	w->theme = def_theme_data;
+	w->theme = NULL;
+	/* w->theme = def_theme_data; */
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -413,16 +414,22 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	 */
 	temp = key;
 	while (w && temp && !ret) {
+
+		/*
+		 * Find a widget with theme data.
+		 */
+		while (w && !w->theme)
+			w = w->parent;
+
 		if (w && w->theme)
 			ret = ecore_hash_get(w->theme, temp);
 
 		if (ret) {
-			if (ret != NOMATCH) {
+			if (ret != NOMATCH)
 				ret = strdup(ret);
-			}
-
 			break;
 		}
+
 		temp++;
 		temp = strchr(temp, '/');
 		if (!temp && w && w->parent) {
@@ -438,8 +445,11 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 		temp = key;
 		while (temp && !ret) {
 			ret = ecore_hash_get(def_theme_data, temp);
-			if (ret)
+			if (ret) {
+				if (ret != NOMATCH)
+					ret = strdup(ret);
 				break;
+			}
 
 			/*
 			 * Resort to looking in the edje.
