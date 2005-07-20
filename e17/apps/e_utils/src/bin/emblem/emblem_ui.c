@@ -104,6 +104,14 @@ emblem_ui_init(Emblem *em)
     e_lib_theme_dirs_list();
     e_lib_background_dirs_list();
 
+    edje_object_signal_callback_add(em->gui.edje, "left,clicked", "*",
+                                            emblem_left_scroll_down_cb, em);
+    edje_object_signal_callback_add(em->gui.edje, "right,clicked", "*",
+                                            emblem_right_scroll_down_cb, em);
+    edje_object_signal_callback_add(em->gui.edje, "left,click,release", "*",
+                                            emblem_left_scroll_up_cb, em);
+    edje_object_signal_callback_add(em->gui.edje, "right,click,release", "*",
+                                            emblem_right_scroll_up_cb, em);
     return 1;
 }
 
@@ -117,9 +125,9 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
 {
     Emblem *em;
     Evas_Coord w, h;
-    Evas_Object *o;
     double l;
     const char *state;
+    Evas_Object *o;
 
     em = ecore_evas_data_get(ee, "emblem");
 
@@ -141,36 +149,10 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
     l = esmart_container_elements_length_get(em->gui.menu);
     state = edje_object_part_state_get(em->gui.edje, "left_arrow", NULL);
 
-    if (l < w)
-    {
-        if (!strcmp(state, "default"))
-        {
+    if ((l < w) && (!strcmp(state, "default")))
             edje_object_signal_emit(em->gui.edje, "arrows,hide", "*");
-            edje_object_signal_callback_del(em->gui.edje, "left,clicked", "*",
-                                                    emblem_left_scroll_down_cb);
-            edje_object_signal_callback_del(em->gui.edje, "right,clicked", "*",
-                                                    emblem_right_scroll_down_cb);
-            edje_object_signal_callback_del(em->gui.edje, "left,click,release", "*",
-                                                    emblem_left_scroll_up_cb);
-            edje_object_signal_callback_del(em->gui.edje, "right,click,release", "*",
-                                                    emblem_right_scroll_up_cb);
-        }
-    }
-    else 
-    {
-        if (!strcmp(state, "hidden"))
-        {
+    else if (!strcmp(state, "hidden"))
             edje_object_signal_emit(em->gui.edje, "arrows,show", "*");
-            edje_object_signal_callback_add(em->gui.edje, "left,clicked", "*",
-                                            emblem_left_scroll_down_cb, em);
-            edje_object_signal_callback_add(em->gui.edje, "right,clicked", "*",
-                                            emblem_right_scroll_down_cb, em);
-            edje_object_signal_callback_add(em->gui.edje, "left,click,release", "*",
-                                            emblem_left_scroll_up_cb, em);
-            edje_object_signal_callback_add(em->gui.edje, "right,click,release", "*",
-                                            emblem_right_scroll_up_cb, em);
-        }
-    }
 }
 
 static void
@@ -185,18 +167,9 @@ emblem_ui_init_dir(Emblem *em, char *dir)
     l = esmart_container_elements_length_get(em->gui.menu);
 
     if (l < w)
-        edje_object_signal_emit(em->gui.edje, "arrows,hide", "*");
+            edje_object_signal_emit(em->gui.edje, "arrows,hide", "*");
     else 
-    {
-        edje_object_signal_callback_add(em->gui.edje, "left,clicked", "*",
-                                                emblem_left_scroll_down_cb, em);
-        edje_object_signal_callback_add(em->gui.edje, "right,clicked", "*",
-                                                emblem_right_scroll_down_cb, em);
-        edje_object_signal_callback_add(em->gui.edje, "left,click,release", "*",
-                                                emblem_left_scroll_up_cb, em);
-        edje_object_signal_callback_add(em->gui.edje, "right,click,release", "*",
-                                                emblem_right_scroll_up_cb, em);
-    }
+            edje_object_signal_emit(em->gui.edje, "arrows,show", "*");
 }
 
 static int
@@ -234,11 +207,51 @@ static Evas_Object *
 emblem_evas_object_get(Emblem *em, const char *fname,
                             Evas_Coord w, Evas_Coord h)
 {
+    Epsilon *e;
+    Evas_Object *o;
+
+    if (!(e = epsilon_new(fname)))
+        return NULL;
+
+    epsilon_key_set(e, "desktop/background");
+    epsilon_resolution_set(e, SCREEN_W, SCREEN_H);
+
+    if (epsilon_exists(e) == EPSILON_FAIL)
+        epsilon_generate(e);
+
+    o = evas_object_image_add(ecore_evas_get(em->gui.ee));
+    evas_object_image_file_set(o, epsilon_thumb_file_get(e), NULL);
+    evas_object_move(o, 0, 0);
+    evas_object_resize(o, SCREEN_W, SCREEN_H);
+    evas_object_data_set(o, "file", strdup(fname));
+    evas_object_show(o);
+
+    epsilon_free(e);
+
+    return o;
+}
+
+static void
+emblem_current_bg_set(Emblem *em, char *file) 
+{
+    Evas_Coord w, h;
     Evas_Object *o, *o2, *ob;
     Ecore_Evas *ee2;
     Evas *evas2;
 
-    ob = ecore_evas_object_image_new(em->gui.ee);
+    if (em->gui.current)
+    {
+        edje_object_part_unswallow(em->gui.edje, em->gui.current);
+        evas_object_hide(em->gui.current);
+        evas_object_del(em->gui.current);
+    }
+
+    edje_object_part_geometry_get(em->gui.edje, "current", 
+                                            NULL, NULL, &w, &h);
+
+    em->gui.current = ecore_evas_object_image_new(em->gui.ee);  
+    ob = em->gui.current;
+
     ee2 = evas_object_data_get(ob, "Ecore_Evas");
     evas_object_image_size_set(ob, w, h);
     evas_object_image_fill_set(ob, 0, 0, w, h);
@@ -257,36 +270,17 @@ emblem_evas_object_get(Emblem *em, const char *fname,
     evas_object_move(o, 0, 0);
     evas_object_resize(o, SCREEN_W, SCREEN_H);
 
-    if (!edje_object_file_set(o, fname, "desktop/background"))
+    if (!edje_object_file_set(o, file, "desktop/background"))
     {
-        printf("Unable to load file, %s\n", fname);
+        printf("Unable to load file, %s\n", file);
         evas_object_del(o);
-        return NULL;
+        return;
     }
     evas_object_show(o);
 
     evas_object_data_set(ob, "screen_buffer", o2);
-    evas_object_data_set(ob, "file", strdup(fname));
-
-    return ob;
-}
-
-static void
-emblem_current_bg_set(Emblem *em, char *file) 
-{
-    Evas_Coord w, h;
-
-    if (em->gui.current)
-    {
-        edje_object_part_unswallow(em->gui.edje, em->gui.current);
-        evas_object_hide(em->gui.current);
-        evas_object_del(em->gui.current);
-    }
-
-    edje_object_part_geometry_get(em->gui.edje, "current", 
-                                            NULL, NULL, &w, &h);
-
-    em->gui.current = emblem_evas_object_get(em, file, w, h);
+    evas_object_data_set(ob, "file", strdup(file));  
+        
     evas_object_resize(em->gui.current, w, h);
     edje_object_part_swallow(em->gui.edje, "current", em->gui.current);
 

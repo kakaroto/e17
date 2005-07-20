@@ -212,6 +212,19 @@ AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 AC_SUBST(e_config_apps_dir)
 	
+AC_ARG_WITH(epsilon-config,
+[  --with-epsilon-config=EPSILON_CONFIG    use epsilon-config specified ],
+[
+  EPSILON_CONFIG=$withval;
+  echo "using "$EPSILON_CONFIG" for epsilon-config";
+    ],[
+  PROG="epsilon-config";
+  AC_PATH_PROG(EPSILON_CONFIG, $PROG, "", $PATH)
+])
+epsilon_cflags=`$EPSILON_CONFIG --cflags`
+epsilon_libs=`$EPSILON_CONFIG --libs`
+AC_SUBST(epsilon_cflags)
+AC_SUBST(epsilon_libs)
 
 AC_OUTPUT([
 Makefile

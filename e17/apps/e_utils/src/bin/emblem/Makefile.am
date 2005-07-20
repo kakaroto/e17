@@ -9,6 +9,7 @@ AM_CFLAGS = \
 	@ecore_cflags@ \
 	@evas_cflags@ \
 	@edje_cflags@ \
+	@epsilon_cflags@ \
 	@esmart_cflags@
 
 bin_PROGRAMS = emblem
@@ -24,5 +25,6 @@ emblem_LDADD = \
 	@evas_libs@ \
 	@esmart_libs@ \
 	@edje_libs@ \
+	@epsilon_libs@ \
 	-lesmart_container
 

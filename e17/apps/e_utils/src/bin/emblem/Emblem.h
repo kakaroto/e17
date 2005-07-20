@@ -12,6 +12,7 @@
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
 #include <E_Lib.h>
+#include <Epsilon.h>
 
 #include "config.h"
 

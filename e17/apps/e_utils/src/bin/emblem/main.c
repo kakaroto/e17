@@ -150,6 +150,8 @@ main(int argc, char ** argv)
         goto EDJE_SHUTDOWN;
     }
 
+    epsilon_init();
+
     if (!emblem_ui_init(em))
     {
         printf("Unable to setup UI\n");
