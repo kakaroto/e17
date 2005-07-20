@@ -696,6 +696,8 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	win = EWL_WINDOW(w);
 
 	IF_FREE(win->title);
+	IF_FREE(win->name);
+	IF_FREE(win->classname);
 
 	if ((win = ecore_list_goto(ewl_window_list, win)))
 		ecore_list_remove(ewl_window_list);
