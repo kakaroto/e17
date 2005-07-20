@@ -253,9 +253,6 @@ entangle_ui_cb_resize(Ecore_Evas *ee)
             edje_object_signal_emit(edje, "scroll,buttons,show", "*");
     }
 }
-
-    
-            
                 
 static int
 entangle_ui_eapps_bar_populate(Evas_Object *container)
@@ -467,7 +464,7 @@ entangle_ui_cb_menu_drag(void *data __UNUSED__, Evas_Object *obj,
 
 static void
 entangle_ui_cb_mouse_in(void *data, Evas *evas, 
-                        Evas_Object *obj __UNUSED__, void *ev __UNUSED__)
+                        Evas_Object *obj __UNUSED__, void *ev)
 {
     Entangle_Eapp *eapp;
     Evas_Object *edje;
@@ -509,7 +506,7 @@ entangle_ui_cb_move_intercept(void *data, Evas_Object *obj,
 }
 
 static void
-entangle_ui_cb_resize_intercept(void *data, Evas_Object *obj __UNUSED__,
+entangle_ui_cb_resize_intercept(void *data, Evas_Object *obj,
                                     Evas_Coord w, Evas_Coord h)
 {
     Evas_Object *over;
@@ -938,7 +935,7 @@ entangle_ui_cb_save(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 }
 
 static void
-entangle_ui_cb_directory_add(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+entangle_ui_cb_directory_add(void *data __UNUSED__, Evas_Object *obj,
                                 const char *emission __UNUSED__,
                                 const char *src __UNUSED__)
 {
@@ -1047,7 +1044,7 @@ entangle_ui_cb_menu_item_delete(void *data, Evas_Object *obj,
 }
 
 static void
-entangle_ui_cb_menu_item_move_start(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+entangle_ui_cb_menu_item_move_start(void *data, Evas_Object *obj,
                                     const char *emission __UNUSED__, 
                                     const char *src __UNUSED__)
 {
