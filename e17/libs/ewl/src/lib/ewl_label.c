@@ -112,7 +112,7 @@ ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data)
 
 	label = EWL_LABEL(w);
 	if (label->text)
-	  free(label->text);
+	        free(label->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
