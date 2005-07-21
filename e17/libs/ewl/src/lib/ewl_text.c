@@ -44,6 +44,9 @@ static void ewl_text_triggers_cb_free(void *data);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
 							unsigned int len);
 
+static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
+static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
+
 /**
  * @param text: The text to set into the widget
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -111,6 +114,11 @@ ewl_text_init(Ewl_Text *t, const char *text)
 					ewl_text_cb_hide, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
 					ewl_text_cb_destroy, NULL);
+
+	ewl_container_add_notify_set(EWL_CONTAINER(t), 
+					ewl_text_cb_child_add);
+	ewl_container_remove_notify_set(EWL_CONTAINER(t), 
+					ewl_text_cb_child_del);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1716,98 +1724,6 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param t: The Ewl_Text into which to add the trigger
- * @param trigger: The Ewl_Text_Trigger to add to the text
- * @return Returns TRUE on successfull addition or FALSE on failure
- *
- * This will add the given trigger. The trigger must have size greater then
- * 0, the trigger must not run over the end of the text and two triggers can
- * not overlap.
- */
-unsigned int
-ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
-{
-	Ewl_Text_Trigger *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, FALSE);
-	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
-
-	/* if we have no length, we start past the end of the text, or we
-	 * extend past the end of the text then return an error */
-	if ((trigger->len == 0) || (trigger->pos > t->length)
-			|| ((trigger->pos + trigger->len) > t->length))
-	{
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
-
-	trigger->parent = t;
-
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
-	{
-		if (trigger->pos < cur->pos)
-		{
-			if ((trigger->pos + trigger->len) < cur->pos)
-				break;
-			/* overlapping triggers */
-			DWARNING("Overlapping triggers are not allowed.\n");
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-		}
-
-		if ((trigger->pos > (cur->pos + cur->len)))
-			continue;
-
-		/* do not allow overlapping triggers */
-		if ((trigger->pos >= cur->pos) && (trigger->pos <= (cur->pos + cur->len)))
-		{
-			DWARNING("Overlapping triggers are not allowed.\n");
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-		}
-	}
-
-	if (cur)
-	{
-		/* we need to set our position to the one before the one we 
-		 * are on because the _next callin the while will have
-		 * advanced usto the next node, but we want to insert
-	 	 * at the one before that */
-		ecore_list_goto_index(t->triggers, ecore_list_index(t->triggers) - 1);
-                ecore_list_insert(t->triggers, trigger);
-	}
-	else 
-		ecore_list_append(t->triggers, trigger);
-
-	/* we have to append this to the text so it will get cleaned up when
-	 * the text widget is destroyed */
-	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(trigger));
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @param t: The Ewl_Text to remove the trigger from
- * @param trigger: The Ewl_Text_Trigger to remove
- *
- * This will remove the trigger from the text, but will NOT free the
- * trigger.
- */
-void
-ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("trigger", trigger);
-
-	ecore_list_goto(t->triggers, trigger);
-	ecore_list_remove(t->triggers);
-
-	trigger->parent = NULL;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 static void
 ewl_text_triggers_remove(Ewl_Text *t)
 {
@@ -1882,16 +1798,30 @@ ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
 int
 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 {
+	char *type_str;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
 
-	if (!ewl_widget_init(EWL_WIDGET(trigger), "trigger"))
+	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
+		type_str = strdup("trigger");
+	else if (type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
+		type_str = strdup("selection");
+	else
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_inherit(EWL_WIDGET(trigger), "trigger");
+
+	if (!ewl_widget_init(EWL_WIDGET(trigger), type_str))
+	{
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	ewl_widget_inherit(EWL_WIDGET(trigger), type_str);
 
 	trigger->areas = ecore_list_new();
+	trigger->type = type;
+
+	FREE(type_str);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -2175,6 +2105,126 @@ void ewl_text_triggers_hide(Ewl_Text *t)
 		while ((area = ecore_list_next(cur->areas)))
 			ewl_widget_hide(area);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
+{
+	char *appearance;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!(appearance = ewl_widget_appearance_get(w))) 
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* if this is a trigger then add it as such */
+	if ((!strcmp(appearance, "trigger")) 
+			|| (!strcmp(appearance, "selection")))
+		ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
+
+	FREE(appearance);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w)
+{
+	char *appearance;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!(appearance = ewl_widget_appearance_get(w)))
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* if this is a trigger, remove it as such */
+	if ((!strcmp(appearance, "trigger")) 
+			|| (!strcmp(appearance, "selection")))
+		ewl_text_trigger_del(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
+
+	FREE(appearance);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
+{
+	Ewl_Text_Trigger *cur;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("trigger", trigger);
+
+	/* if we have no length, we start past the end of the text, or we
+	 * extend past the end of the text then return an error */
+	if ((trigger->len == 0) || (trigger->pos > t->length)
+			|| ((trigger->pos + trigger->len) > t->length))
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	trigger->parent = t;
+
+	ecore_list_goto_first(t->triggers);
+	while ((cur = ecore_list_next(t->triggers)))
+	{
+		if (trigger->pos < cur->pos)
+		{
+			if ((trigger->pos + trigger->len) < cur->pos)
+				break;
+			/* overlapping triggers */
+			DWARNING("Overlapping triggers are not allowed.\n");
+			DRETURN(DLEVEL_STABLE);
+		}
+
+		if ((trigger->pos > (cur->pos + cur->len)))
+			continue;
+
+		/* do not allow overlapping triggers */
+		if ((trigger->pos >= cur->pos) && (trigger->pos <= (cur->pos + cur->len)))
+		{
+			DWARNING("Overlapping triggers are not allowed.\n");
+			DRETURN(DLEVEL_STABLE);
+		}
+	}
+
+	if (cur)
+	{
+		/* we need to set our position to the one before the one we 
+		 * are on because the _next callin the while will have
+		 * advanced usto the next node, but we want to insert
+	 	 * at the one before that */
+		ecore_list_goto_index(t->triggers, ecore_list_index(t->triggers) - 1);
+                ecore_list_insert(t->triggers, trigger);
+	}
+	else 
+		ecore_list_append(t->triggers, trigger);
+
+	DRETURN(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("trigger", trigger);
+
+	ecore_list_goto(t->triggers, trigger);
+	ecore_list_remove(t->triggers);
+
+	trigger->parent = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

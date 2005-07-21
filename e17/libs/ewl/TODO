@@ -10,7 +10,6 @@ EWL TODO
         are currently some issues with the interaction.
     - Text wrap fixups.
     - Need to make the text scroll over as you type past the end of the entry box.
-    - when you remove all text from an entry its size becomes quite small.
 - Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
 	- Invert on mouse click (behavior depends upon select mode).
 	- determination of whether a row is selected or not (ewl_[tree_]row_selected).
@@ -35,8 +34,6 @@ EWL TODO
         have too.
 - [BUG] The arrows for the spinner need to be smaller.
 - [BUG] The arrows for the spinner need to appear on e17 & zero theme
-- [BUG] Colour selector is very messedup.
-- [BUG] The table test dosen't look correct...
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
         test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.

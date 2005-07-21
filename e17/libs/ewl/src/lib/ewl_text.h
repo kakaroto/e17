@@ -176,9 +176,6 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsign
 							unsigned int *b, unsigned int *a,
 							unsigned int idx);
 
-unsigned int	 ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
-void		 ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
-
 /*
  * Trigger stuf
  */
@@ -225,6 +222,9 @@ void ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
+void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
+void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data);

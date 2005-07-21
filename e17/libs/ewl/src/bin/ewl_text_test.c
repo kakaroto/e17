@@ -51,6 +51,7 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Widget *win, *o;
 	Ewl_Text_Trigger *trigger;
+	int len;
 
 	text_button = w;
 
@@ -96,20 +97,20 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
         trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
-	trigger->pos = ewl_text_length_get(EWL_TEXT(o));
-
+	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
 	ewl_text_text_append(EWL_TEXT(o), "This is the link."); /* 17 */
 
-	trigger->len = ewl_text_cursor_position_get(EWL_TEXT(o)) - trigger->pos + 1;
+	len = ewl_text_cursor_position_get(EWL_TEXT(o)) - 
+			ewl_text_trigger_start_pos_get(trigger) + 1;
+	ewl_text_trigger_length_set(trigger, len);
 
-	ewl_text_trigger_add(EWL_TEXT(o), trigger);
+	ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP, 
 			__trigger_cb, "You clicked the trigger, have a cookie.");
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_IN,
 			__trigger_cb_mouse_in, NULL);
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_OUT,
 			__trigger_cb_mouse_out, NULL);
-
 
 	ewl_text_text_insert(EWL_TEXT(o), "The fifth bunch of text\n", 0); /* 24 */
 
