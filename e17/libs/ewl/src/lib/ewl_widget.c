@@ -502,6 +502,20 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
  */
 char *ewl_widget_appearance_get(Ewl_Widget * w)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	DRETURN_PTR((w->appearance ? strdup(w->appearance) : NULL), DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to retrieve the full appearance key
+ * @return Returns a pointer to the full appearance path string on success, NULL on
+ * failure.
+ * @brief Retrieve the appearance path key of the widget
+ */
+char *ewl_widget_appearance_path_get(Ewl_Widget * w)
+{
 	char *ret = NULL, *tmp;
 	int len;
 
@@ -509,7 +523,7 @@ char *ewl_widget_appearance_get(Ewl_Widget * w)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
 	if (w->parent)
-		tmp = ewl_widget_appearance_get(w->parent);
+		tmp = ewl_widget_appearance_path_get(w->parent);
 	else
 		tmp = strdup("");
 

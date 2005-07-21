@@ -396,7 +396,7 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	if (w) {
 		char *tmp;
 
-		tmp = ewl_widget_appearance_get(w);
+		tmp = ewl_widget_appearance_path_get(w);
 		if (tmp) {
 			snprintf(key, PATH_MAX, "%s/%s", tmp, k);
 			FREE(tmp);
