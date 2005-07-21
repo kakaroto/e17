@@ -41,6 +41,7 @@ char  	   *ewl_label_text_get(Ewl_Label *la);
  * Internally used callbacks
  */
 void ewl_label_realize_cb(Ewl_Widget *w, void *ev, void *data);
+void ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

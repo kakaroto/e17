@@ -49,6 +49,7 @@ ewl_label_init(Ewl_Label *la, char *text)
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_label_realize_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_label_destroy_cb, NULL);
 
 	ewl_label_text_set(la, text);
 
@@ -97,6 +98,21 @@ ewl_label_realize_cb(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_label_apply(EWL_LABEL(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data)
+{
+        Ewl_Label *label;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	label = EWL_LABEL(w);
+	if (label->text)
+	  free(label->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
