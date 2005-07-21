@@ -28,6 +28,7 @@
 
 typedef struct Ewl_Text_BTree Ewl_Text_BTree;
 typedef struct Ewl_Text_Context Ewl_Text_Context;
+typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 
 /**
  * Provides for layout of text as well as formatting portions of the text in
@@ -53,6 +54,9 @@ struct Ewl_Text
 	Ewl_Text_BTree		*formatting;	  /**< The formatting tree */
 
 	unsigned int 		 delete_count;	  /**< Number of deletes */
+
+	Ecore_List		*triggers;	  /**< The list of triggers */
+	Ewl_Text_Trigger	*selection;	  /**< The current selection */
 };
 
 Ewl_Widget 	*ewl_text_new(const char *text);
@@ -172,14 +176,60 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsign
 							unsigned int *b, unsigned int *a,
 							unsigned int idx);
 
+unsigned int	 ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
+void		 ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
+
+/*
+ * Trigger stuf
+ */
+struct Ewl_Text_Trigger
+{
+	Ewl_Widget		 widget;	/**< Inherit from widget */
+	Ewl_Text_Trigger_Type 	 type;		/**< Trigger type */
+	unsigned int 		 pos;		/**< Trigger start position */
+	unsigned int 		 len;		/**< Trigger length */
+
+	Ewl_Text		*parent;	/**< The parent text area */
+	Ecore_List		*areas;		/**< The list of objects making up the trigger */
+};
+
+#define EWL_TEXT_TRIGGER(trigger) ((Ewl_Text_Trigger *) trigger)
+
+Ewl_Text_Trigger *ewl_text_trigger_new(Ewl_Text_Trigger_Type type);
+int 		 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, 
+					Ewl_Text_Trigger_Type type);
+void 		 ewl_text_trigger_free(Ewl_Text_Trigger *t);
+
+Ewl_Text_Trigger_Type ewl_text_trigger_type_get(Ewl_Text_Trigger *t);
+
+void 		 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, 
+							unsigned int pos);
+unsigned int 	 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t);
+
+void 		 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, 
+							unsigned int len);
+unsigned int 	 ewl_text_trigger_length_get(Ewl_Text_Trigger *t);
+
 /*
  * Internal stuff
  */
+void ewl_text_triggers_configure(Ewl_Text *t);
+void ewl_text_triggers_realize(Ewl_Text *t);
+void ewl_text_triggers_unrealize(Ewl_Text *t);
+void ewl_text_triggers_show(Ewl_Text *t);
+void ewl_text_triggers_hide(Ewl_Text *t);
+
 void ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
+void ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 
 /*
  * Ewl_Text_Context stuff
@@ -298,6 +348,7 @@ struct Ewl_Text_BTree
 };
 
 void ewl_text_context_init(void);
+void ewl_text_context_shutdown(void);
 
 Ewl_Text_BTree *ewl_text_btree_new(void);
 void ewl_text_btree_free(Ewl_Text_BTree *tree);
@@ -310,6 +361,22 @@ void ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 void ewl_text_btree_text_delete(Ewl_Text_BTree *tree, unsigned int idx, unsigned int len);
 void ewl_text_btree_condense(Ewl_Text_BTree *tree);
 void ewl_text_btree_dump(Ewl_Text_BTree *tree, char *indent);
+
+/*
+ * Ewl_Text_Trigger_Area stuff
+ */
+typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
+
+#define EWL_TEXT_TRIGGER_AREA(area) ((Ewl_Text_Trigger_Area *) area)
+
+struct Ewl_Text_Trigger_Area
+{
+	Ewl_Widget	widget;
+};
+
+Ewl_Widget *ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type);
+int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
+				Ewl_Text_Trigger_Type type);
 
 /**
  * @}

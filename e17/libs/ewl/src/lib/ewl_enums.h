@@ -311,6 +311,13 @@ enum Ewl_Text_Style {
 };
 typedef enum Ewl_Text_Style Ewl_Text_Style;
 
+enum Ewl_Text_Trigger_Type {
+	EWL_TEXT_TRIGGER_TYPE_NONE,
+	EWL_TEXT_TRIGGER_TYPE_SELECTION,
+	EWL_TEXT_TRIGGER_TYPE_TRIGGER
+};
+typedef enum Ewl_Text_Trigger_Type Ewl_Text_Trigger_Type;
+
 /**
  * @}
  */

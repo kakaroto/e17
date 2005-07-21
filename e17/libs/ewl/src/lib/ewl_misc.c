@@ -30,6 +30,7 @@ static unsigned int    phase_status = 0;
 static unsigned int    print_theme_keys = 0;
 static unsigned int    debug_level = 0;
 
+static Ecore_Idle_Enterer *idle_enterer = NULL;
 static int _ewl_init_count = 0;
 
 /*
@@ -174,7 +175,7 @@ int ewl_init(int *argc, char **argv)
 
 	ewl_embed_list = ecore_list_new();
 	ewl_window_list = ecore_list_new();
-	ecore_idle_enterer_add(ewl_idle_render, NULL);
+	idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL);
 
 	ewl_text_context_init();
 
@@ -193,7 +194,6 @@ int ewl_shutdown()
 
 	if (--_ewl_init_count)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
-
 	/*
 	 * Destroy all existing widgets.
 	 */
@@ -206,6 +206,12 @@ int ewl_shutdown()
 		ecore_list_destroy(ewl_embed_list);
 		ewl_embed_list = NULL;
 	}
+
+	ewl_text_context_shutdown();
+
+	ecore_idle_enterer_del(idle_enterer);
+	idle_enterer = NULL;
+
 
 	/*
 	 * Shut down the various EWL subsystems cleanly.

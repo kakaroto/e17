@@ -1065,6 +1065,12 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	IF_FREE(w->name);
 	IF_FREE(w->appearance);
 
+	if (w->inheritance)
+		ecore_string_release(w->inheritance);
+
+	if (w->bit_state)
+		ecore_string_release(w->bit_state);
+	
 	/*
 	 * Clear out the callbacks, this is a bit tricky because we don't want
 	 * to continue using this widget after the callbacks have been
