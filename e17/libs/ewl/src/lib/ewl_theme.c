@@ -529,9 +529,9 @@ void ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v)
 	}
 
 	if (v)
-		ecore_hash_set(w->theme, k, strdup(v));
+		ecore_hash_set(w->theme, strdup(k), strdup(v));
 	else
-		ecore_hash_set(w->theme, k, NOMATCH);
+		ecore_hash_set(w->theme, strdup(k), NOMATCH);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
