@@ -67,6 +67,9 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 			    ewl_tree_configure_cb, NULL);
 
+	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_DESTROY,
+			    ewl_tree_destroy_cb, NULL);
+
 	tree->ncols = columns;
 
 	row = ewl_row_new();
@@ -585,6 +588,19 @@ void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_object_geometry_request(EWL_OBJECT(tree->scrollarea),
 				    CURRENT_X(tree), CURRENT_Y(tree) + height,
 				    CURRENT_W(tree), CURRENT_H(tree) - height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	Ewl_Tree *tree;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	tree = EWL_TREE(w);
+	ecore_list_destroy(tree->selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
