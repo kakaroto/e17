@@ -363,7 +363,7 @@ emblem_left_scroll_down_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 {
     Emblem *em;
     em = data;
-    esmart_container_scroll_start(em->gui.menu, -2);
+    esmart_container_scroll_start(em->gui.menu, 2);
     return;
 }
 
@@ -373,7 +373,7 @@ emblem_right_scroll_down_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 {
     Emblem *em;
     em = data;
-    esmart_container_scroll_start(em->gui.menu, 2);
+    esmart_container_scroll_start(em->gui.menu, -2);
     return;
 }
 
