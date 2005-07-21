@@ -111,8 +111,7 @@ ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("w", w);
 
 	label = EWL_LABEL(w);
-	if (label->text)
-	        free(label->text);
+	IF_FREE(label->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
