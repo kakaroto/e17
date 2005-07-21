@@ -77,6 +77,7 @@ static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 static void         PagerHiwinHide(Pager * p);
+static EWin        *PagerHiwinEwin(int check);
 static void         PagerEwinGroupSet(void);
 static void         PagerEvent(XEvent * ev, void *prm);
 static void         PagerHiwinEvent(XEvent * ev, void *prm);
@@ -818,6 +819,9 @@ PagersUpdateEwin(EWin * ewin, int gone)
 
    if (!gone && (!EoIsShown(ewin) || ewin->state.animated))
       return;
+
+   if (gone && ewin == PagerHiwinEwin(0))
+      PagerHiwinHide(NULL);
 
    desk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
    PagersUpdate(desk, EwinGetVX(ewin), EwinGetVY(ewin),
@@ -1909,6 +1913,10 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	     break;
 	  }
 	break;
+
+     case LeaveNotify:
+	PagerShowTt(NULL);
+	break;
      }
 }
 
@@ -2318,6 +2326,9 @@ PagersSighan(int sig, void *prm)
      case ESIGNAL_AREA_CONFIGURED:
 	PagersReconfigure();
 	break;
+     case ESIGNAL_AREA_SWITCH_START:
+	PagerHiwinHide(NULL);
+	break;
      case ESIGNAL_AREA_SWITCH_DONE:
 	PagersUpdate(DesksGetCurrent(), 0, 0, 99999, 99999);
 	UpdatePagerSel();
@@ -2328,6 +2339,9 @@ PagersSighan(int sig, void *prm)
 	break;
      case ESIGNAL_DESK_REMOVED:
 	PagersDisableForDesktop((long)(prm));
+	break;
+     case ESIGNAL_DESK_SWITCH_START:
+	PagerHiwinHide(NULL);
 	break;
      case ESIGNAL_DESK_SWITCH_DONE:
 	UpdatePagerSel();
