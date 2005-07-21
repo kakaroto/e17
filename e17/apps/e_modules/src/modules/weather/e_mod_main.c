@@ -629,7 +629,9 @@ _weather_cb_parse_html (weatherCb_t * weather)
    void *parsedStr;
    void *pNeedle;
    char location_str[40];
+   char state_str[40];
    char cond_str[20];
+   char cond_str2[20];
    char temp[1];
    char icon[1];
 
@@ -643,6 +645,7 @@ _weather_cb_parse_html (weatherCb_t * weather)
    
    /* Clean these out! */
    memset(location_str, 0, sizeof(location_str));
+   memset(state_str, 0, sizeof(state_str));
    memset(cond_str, 0, sizeof(cond_str));
 
    /* Start parsing data */
@@ -665,7 +668,7 @@ _weather_cb_parse_html (weatherCb_t * weather)
    /* Get location */
    pNeedle = strstr(weather->file, "Forecast for");
    snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   sscanf(parsedStr, "Forecast for %[^,]%s ", location_str);
+   sscanf(parsedStr, "Forecast for %[^,]%39s ", location_str, state_str);
    sprintf(weather->location, "%s", location_str);
    
    /* Get conditions */
@@ -673,7 +676,7 @@ _weather_cb_parse_html (weatherCb_t * weather)
    snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
    pNeedle = strstr(weather->file, "TextA");
    snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   sscanf(parsedStr, "TextA>%[^<]%s", cond_str);
+   sscanf(parsedStr, "TextA>%[^<]%s", cond_str, cond_str2);
    sprintf(weather->conditions, "%s", cond_str);
    
    /* Get hi/low */
