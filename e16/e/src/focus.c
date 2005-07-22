@@ -29,7 +29,8 @@
 #define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))
 #define EwinListFocusLower(ewin) EobjListFocusLower(EoObj(ewin))
 
-static int          focus_inhibit = 1;
+static char         focus_inhibit = 1;
+static char         focus_is_set = 0;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
@@ -341,7 +342,7 @@ doFocusToEwin(EWin * ewin, int why)
 	break;
      }
 
-   if (ewin == Mode.focuswin)
+   if (ewin == Mode.focuswin && focus_is_set)
       return;
 
    /* Check if ewin is a valid focus window target */
@@ -412,6 +413,7 @@ doFocusToEwin(EWin * ewin, int why)
       FocusEwinSetActive(Mode.focuswin, 1);
    if (why != FOCUS_DESK_LEAVE)
       ICCCM_Focus(ewin);
+   focus_is_set = 1;
 }
 
 void
@@ -443,7 +445,10 @@ FocusToEWin(EWin * ewin, int why)
 	focus_pending_why = why;
 	focus_pending_ewin = NULL;
 	if (ewin == Mode.focuswin)
-	   Mode.focuswin = NULL;
+	  {
+	     Mode.focuswin = NULL;
+	     focus_is_set = 0;
+	  }
 	if (ewin == focus_pending_new)
 	   focus_pending_new = NULL;
 	break;
