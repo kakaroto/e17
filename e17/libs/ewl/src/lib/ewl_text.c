@@ -400,7 +400,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->text[t->length] = '\0';
 
 		ewl_text_btree_text_context_insert(t->formatting, t->current_context, idx, len);
-		t->cursor_position = (idx + len - 1);
+		t->cursor_position = idx + len;
 	}
 
 	if (text)
