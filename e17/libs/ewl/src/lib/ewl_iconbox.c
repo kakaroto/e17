@@ -318,14 +318,20 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib) {
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner), &sw,&sh);
 	/*printf("   Ewl_IconBox -> We have %d*%d to work with\n", sw,sh);*/
 
-	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
-	
-	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
-		if (iw == 0 || ih == 0) {
-			iw= ewl_object_preferred_w_get(EWL_OBJECT(list_item));
-			ih= ewl_object_preferred_h_get(EWL_OBJECT(list_item));
-		}
+	/*Hack for now - get the biggest icon in the list - this is inefficient*/
 
+	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+		int nw,nh;
+		
+		nw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
+		nh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+		if (nw > iw) iw = nw;
+		if (nh > ih) ih = nh;
+	}
+
+	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
 		if (iw < EWL_ICONBOX_MOVE_TOLERANCE) {
 			iw = EWL_ICONBOX_MINIMUM_SIZE;
 			ih = EWL_ICONBOX_MINIMUM_SIZE;
