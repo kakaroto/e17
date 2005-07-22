@@ -53,8 +53,8 @@ FXHandler;
 /****************************** RIPPLES *************************************/
 
 #define fx_ripple_waterh 64
-static Pixmap       fx_ripple_above = 0;
-static Window       fx_ripple_win = 0;
+static Pixmap       fx_ripple_above = None;
+static Window       fx_ripple_win = None;
 static int          fx_ripple_count = 0;
 
 static void
@@ -78,13 +78,13 @@ FX_ripple_info(void)
 }
 
 static void
-FX_ripple_timeout(int val, void *data)
+FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    static double       incv = 0, inch = 0;
    static GC           gc1 = 0, gc = 0;
    int                 y;
 
-   if (!fx_ripple_above)
+   if (fx_ripple_above == None)
      {
 	XGCValues           gcv;
 
@@ -135,26 +135,22 @@ FX_ripple_timeout(int val, void *data)
 		  off, VRoot.h - fx_ripple_waterh + y);
      }
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
-   return;
-   val = 0;
-   data = NULL;
 }
 
 static void
-FX_Ripple_Init(const char *name)
+FX_Ripple_Init(const char *name __UNUSED__)
 {
    fx_ripple_count = 0;
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
-   return;
-   name = NULL;
 }
 
 static void
 FX_Ripple_Desk(void)
 {
-   EFreePixmap(fx_ripple_above);
+   if (fx_ripple_above != None)
+      EFreePixmap(fx_ripple_above);
    fx_ripple_count = 0;
-   fx_ripple_above = 0;
+   fx_ripple_above = None;
 }
 
 static void
@@ -192,7 +188,7 @@ FX_Ripple_Pause(void)
 #define fx_raindrop_duration 32
 #define fx_frequency 4
 #define fx_amplitude 48
-static Window       fx_raindrops_win = 0;
+static Window       fx_raindrops_win = None;
 static int          fx_raindrops_number = 4;
 static PixImg      *fx_raindrops_draw = NULL;
 
@@ -228,7 +224,7 @@ FX_raindrops_info(void)
 }
 
 static void
-FX_raindrops_timeout(int val, void *data)
+FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    static GC           gc1 = 0, gc = 0;
    int                 i, x, y, xx, yy;
@@ -237,7 +233,7 @@ FX_raindrops_timeout(int val, void *data)
    static char         sintab[256];
    static unsigned char disttab[fx_raindrop_size][fx_raindrop_size];
 
-   if (!fx_raindrops_win)
+   if (fx_raindrops_win == None)
      {
 	XGCValues           gcv;
 
@@ -417,17 +413,14 @@ FX_raindrops_timeout(int val, void *data)
      }
    DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
 	FX_raindrops_timeout, 0, NULL);
-   return;
-   val = 0;
-   data = NULL;
 }
 
 static void
-FX_Raindrops_Init(const char *name)
+FX_Raindrops_Init(const char *name __UNUSED__)
 {
    int                 i;
 
-   fx_raindrops_win = 0;
+   fx_raindrops_win = None;
    for (i = 0; i < fx_raindrops_number; i++)
      {
 	fx_raindrops[i].count = rand() % fx_raindrop_duration;
@@ -435,14 +428,12 @@ FX_Raindrops_Init(const char *name)
 	fx_raindrops[i].y = rand() % (VRoot.h - fx_raindrop_size);
      }
    DoIn("FX_RAINDROPS_TIMEOUT", 0.066, FX_raindrops_timeout, 0, NULL);
-   return;
-   name = NULL;
 }
 
 static void
 FX_Raindrops_Desk(void)
 {
-   fx_raindrops_win = 0;
+   fx_raindrops_win = None;
 }
 
 static void
@@ -462,7 +453,7 @@ FX_Raindrops_Quit(void)
    if (fx_raindrops_draw)
       EDestroyPixImg(fx_raindrops_draw);
    fx_raindrops_draw = NULL;
-   fx_raindrops_win = 0;
+   fx_raindrops_win = None;
 }
 
 static void
@@ -494,8 +485,8 @@ FX_Raindrops_Pause(void)
 #define FX_WAVE_DEPTH  10
 #define FX_WAVE_GRABH  (FX_WAVE_WATERH + FX_WAVE_DEPTH)
 #define FX_WAVE_CROSSPERIOD 0.42
-static Pixmap       fx_wave_above = 0;
-static Window       fx_wave_win = 0;
+static Pixmap       fx_wave_above = None;
+static Window       fx_wave_win = None;
 static int          fx_wave_count = 0;
 
 static void
@@ -519,7 +510,7 @@ FX_Wave_info(void)
 }
 
 static void
-FX_Wave_timeout(int val, void *data)
+FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    /* Variables */
    static double       incv = 0, inch = 0;
@@ -626,13 +617,6 @@ FX_Wave_timeout(int val, void *data)
 
    /* Make noise */
    DoIn("FX_WAVE_TIMEOUT", 0.066, FX_Wave_timeout, 0, NULL);
-
-   /* Return */
-   return;
-
-   /* Never gets here */
-   val = 0;
-   data = NULL;
 }
 
 static void
@@ -679,7 +663,7 @@ FX_Waves_Pause(void)
 
 /****************************** IMAGESPINNER ********************************/
 
-static Window       fx_imagespinner_win = 0;
+static Window       fx_imagespinner_win = None;
 static int          fx_imagespinner_count = 3;
 static char        *fx_imagespinner_params = NULL;
 
@@ -700,11 +684,11 @@ FX_imagespinner_info(void)
 }
 
 static void
-FX_imagespinner_timeout(int val, void *data)
+FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    char               *string = NULL;
 
-   if (!fx_imagespinner_win)
+   if (fx_imagespinner_win == None)
      {
 	fx_imagespinner_win = DeskGetCurrentRoot();
 	FX_imagespinner_info();
@@ -744,9 +728,6 @@ FX_imagespinner_timeout(int val, void *data)
      }
 
    DoIn("FX_IMAGESPINNER_TIMEOUT", 0.066, FX_imagespinner_timeout, 0, NULL);
-   return;
-   val = 0;
-   data = NULL;
 }
 
 static void
@@ -771,7 +752,7 @@ FX_ImageSpinner_Quit(void)
    if (fx_imagespinner_params)
       Efree(fx_imagespinner_params);
    fx_imagespinner_params = NULL;
-   fx_imagespinner_win = 0;
+   fx_imagespinner_win = None;
 }
 
 static void

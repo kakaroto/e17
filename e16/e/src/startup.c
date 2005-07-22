@@ -91,13 +91,16 @@ StartupWindowsCreate(void)
    EMapWindow(win1);
    EMapWindow(win2);
 
-   b1 = ECreateWindow(w1, bx, by, bw, bh, 0);
-   b2 = ECreateWindow(w2, 0, 0, bw, bh, 0);
-   EMapRaised(b1);
-   EMapRaised(b2);
+   if (ic && bw > 0 && bh > 0)
+     {
+	b1 = ECreateWindow(w1, bx, by, bw, bh, 0);
+	b2 = ECreateWindow(w2, 0, 0, bw, bh, 0);
+	EMapRaised(b1);
+	EMapRaised(b2);
 
-   ImageclassApply(ic, b1, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
-   ImageclassApply(ic, b2, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
+	ImageclassApply(ic, b1, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
+	ImageclassApply(ic, b2, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
+     }
 
    BackgroundApply(bg, win1, 1);
    BackgroundApply(bg, win2, 1);
