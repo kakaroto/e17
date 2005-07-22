@@ -539,24 +539,6 @@ char *ewl_widget_appearance_path_get(Ewl_Widget * w)
 }
 
 /**
- * @param w: the widget to retrieve the appearance key
- * @return Returns a pointer to the last element of the appearance key string
- * on success, NULL on failure.
- * @brief Retrieve the last element of the appearance key of the widget
- */
-char *ewl_widget_appearance_single_get(Ewl_Widget * w)
-{
-	char *ret;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-
-	ret = w->appearance ? strdup( w->appearance ) : NULL;
-
-	DRETURN_PTR(ret, DLEVEL_STABLE);
-}
-
-/**
  * @param w: the widget to update the appearance
  * @param state: the new state of the widget
  * @return Returns no value.
@@ -1032,7 +1014,7 @@ ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
  * @param r: Where to put the red value
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
- * @parma a: Where to put the alpha value
+ * @param a: Where to put the alpha value
  * @return Returns no value
  * @brief Gets the colour settings of the widget
  */

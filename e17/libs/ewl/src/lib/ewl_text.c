@@ -775,7 +775,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 }
 
 /**
- * @aparam t: The Ewl_Text to get the colour from
+ * @param t: The Ewl_Text to get the colour from
  * @param r: Where to put the red value
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
