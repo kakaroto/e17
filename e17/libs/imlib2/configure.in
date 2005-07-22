@@ -364,6 +364,31 @@ fi
 AM_CONDITIONAL(BUILD_BZ2_LOADER, test "$bz2_ok" = yes)
 AC_SUBST(BZ2LIBS)
 
+AC_CHECK_LIB(id3tag, id3_file_open,
+  id3_libs="-lz -lid3tag"
+  id3_ok=yes,
+  id3_ok=no
+  AC_MSG_WARN(*** Native mp3 support will not be built (id3tag library not found) ***),
+  -lz)
+if test "$id3_ok" = yes; then
+  AC_MSG_CHECKING([for id3tag.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <id3tag.h>],
+  id3_ok=yes,
+  id3_ok=no)
+  AC_MSG_RESULT($id3_ok)
+  if test "$id3_ok" = yes; then
+    ID3LIBS=$id3_libs
+  else
+    AC_MSG_WARN(*** Native mp3 support will not be built (id3tag header file not found) ***)
+  fi
+fi
+AM_CONDITIONAL(BUILD_ID3_LOADER, test "$id3_ok" = yes)
+AC_SUBST(ID3LIBS)
+
 AC_SUBST(requirements)
 
 AC_OUTPUT([
@@ -411,6 +436,7 @@ echo "  TIFF....................: $tiff_ok"
 echo "  GIF.....................: $gif_ok"
 echo "  ZLIB....................: $zlib_ok"
 echo "  BZIP2...................: $bz2_ok"
+echo "  MP3.....................: $id3_ok"
 echo
 echo
 echo "Use MMX for extra speed...: $mmx"

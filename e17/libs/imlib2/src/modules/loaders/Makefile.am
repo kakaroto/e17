@@ -27,6 +27,9 @@ endif
 if BUILD_BZ2_LOADER
 BZ2_L                = bz2.la
 endif
+if BUILD_ID3_LOADER
+ID3_L                = id3.la
+endif
 
 pkg_LTLIBRARIES      = \
 $(JPEG_L) \
@@ -35,6 +38,7 @@ $(TIFF_L) \
 $(GIF_L) \
 $(ZLIB_L) \
 $(BZ2_L) \
+$(ID3_L) \
 pnm.la \
 argb.la \
 bmp.la \
@@ -65,6 +69,10 @@ zlib_la_LIBADD       = @ZLIBLIBS@ $(top_builddir)/src/lib/libImlib2.la
 bz2_la_SOURCES       = loader_bz2.c
 bz2_la_LDFLAGS       = -module -avoid-version
 bz2_la_LIBADD        = @BZ2LIBS@ $(top_builddir)/src/lib/libImlib2.la
+
+id3_la_SOURCES       = loader_id3.c
+id3_la_LDFLAGS       = -module -avoid-version
+id3_la_LIBADD        = @ID3LIBS@ $(top_builddir)/src/lib/libImlib2.la
 
 pnm_la_SOURCES       = loader_pnm.c
 pnm_la_LDFLAGS       = -module -avoid-version
