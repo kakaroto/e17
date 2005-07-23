@@ -348,11 +348,9 @@ DeskBackgroundPictureGet(Desk * d)
 
    if (!cw)
      {
-#if 0				/* FIXME - Remove? */
 	ECompMgrWinNew(&d->o);
 	cw = d->o.cmhook;
 	if (!cw)
-#endif
 	   return None;
      }
 
@@ -369,7 +367,6 @@ DeskBackgroundPictureGet(Desk * d)
      {
 	if (cw->picture != None)
 	   return cw->picture;
-	Eprintf("*** This is not possible :/\n");
      }
    D1printf
       ("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx (%#lx %#lx)\n",
@@ -409,6 +406,9 @@ DeskBackgroundPictureFree(Desk * d)
 {
    ECmWinInfo         *cw = d->o.cmhook;
    Picture             pict;
+
+   if (!cw)
+      return;
 
    pict = cw->picture;
    if (pict == None)
