@@ -838,7 +838,7 @@ entice_load_prev(void)
       if (entice->thumb.current->prev)
          l = entice->thumb.current->prev;
       else
-         l = entice->thumb.list->last;
+         l = evas_list_last(entice->thumb.list);
       if (l->data)
          _entice_thumb_load((Evas_Object *) l->data, NULL, NULL, NULL);
    }
