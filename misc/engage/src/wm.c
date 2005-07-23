@@ -125,6 +125,7 @@ od_wm_window_prev_by_window_class_get(const char *name)
 {
   Evas_List      *l = NULL;
   Evas_List      *tmp = NULL;
+  Evas_List      *last = NULL;
   OD_Window      *win = NULL;
   OD_Window      *result = NULL;
   OD_Window      *current = NULL;
@@ -150,8 +151,12 @@ od_wm_window_prev_by_window_class_get(const char *name)
         result = l->prev->data;
       }
     }
-    if (!result && tmp && tmp->last)
-      result = tmp->last->data;
+
+    if (tmp) {
+      last = evas_list_last(tmp);
+      if (!result && last)
+        result = last->data;
+    }
     evas_list_free(tmp);
   } else {
     for (l = clients; l; l = l->next) {
