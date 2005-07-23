@@ -1120,6 +1120,8 @@ EwinUnShade(EWin * ewin)
 	       {
 		  w = ((a * (1024 - k)) + (b * k)) >> 10;
 		  ww = w - a;
+		  if (ww <= 0)
+		     ww = 1;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
@@ -1157,6 +1159,8 @@ EwinUnShade(EWin * ewin)
 		  w = ((a * (1024 - k)) + (b * k)) >> 10;
 		  x = c - w;
 		  ww = w - a;
+		  if (ww <= 0)
+		     ww = 1;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
@@ -1192,6 +1196,8 @@ EwinUnShade(EWin * ewin)
 	       {
 		  h = ((a * (1024 - k)) + (b * k)) >> 10;
 		  hh = h - a;
+		  if (hh <= 0)
+		     hh = 1;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
@@ -1229,6 +1235,8 @@ EwinUnShade(EWin * ewin)
 		  h = ((a * (1024 - k)) + (b * k)) >> 10;
 		  y = c - h;
 		  hh = h - a;
+		  if (hh <= 0)
+		     hh = 1;
 		  EMoveResizeWindow(ewin->win_container,
 				    ewin->border->border.left,
 				    ewin->border->border.top,
