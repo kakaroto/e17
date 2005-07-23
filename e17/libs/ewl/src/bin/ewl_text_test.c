@@ -101,7 +101,7 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_text_append(EWL_TEXT(o), "This is the link."); /* 17 */
 
 	len = ewl_text_cursor_position_get(EWL_TEXT(o)) - 
-			ewl_text_trigger_start_pos_get(trigger) + 1;
+			ewl_text_trigger_start_pos_get(trigger);
 	ewl_text_trigger_length_set(trigger, len);
 
 	ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
@@ -124,6 +124,24 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 0, 255);
 	ewl_text_text_append(EWL_TEXT(o), "And in red\n"); /* 11 */
+	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
+
+        trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
+	ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 28 */
+
+	len = ewl_text_cursor_position_get(EWL_TEXT(o)) - 
+			ewl_text_trigger_start_pos_get(trigger);
+	ewl_text_trigger_length_set(trigger, len);
+
+	ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP, 
+			__trigger_cb, "You clicked the multi-line trigger, have a coke.");
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_IN,
+			__trigger_cb_mouse_in, NULL);
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_OUT,
+			__trigger_cb_mouse_out, NULL);
+
 	ewl_widget_show(o);
 
 #if 0

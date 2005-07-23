@@ -46,6 +46,8 @@ static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos,
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
+static void ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
+			Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
 
 /**
  * @param text: The text to set into the widget
@@ -1940,6 +1942,37 @@ void ewl_text_triggers_configure(Ewl_Text *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static void
+ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
+					Evas_Coord x, Evas_Coord y, 
+					Evas_Coord w, Evas_Coord h)
+{
+	Ewl_Widget *area;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("cur", cur);
+
+	area = ewl_text_trigger_area_new(cur->type);
+	ewl_container_child_append(EWL_CONTAINER(t), area);
+	ewl_widget_internal_set(area, TRUE);
+	ewl_object_geometry_request(EWL_OBJECT(area), x, y, w, h);
+
+	ewl_callback_append(area, EWL_CALLBACK_FOCUS_IN, 
+			ewl_text_trigger_cb_focus_in, cur);
+	ewl_callback_append(area, EWL_CALLBACK_FOCUS_OUT,
+			ewl_text_trigger_cb_focus_out, cur);
+	ewl_callback_append(area, EWL_CALLBACK_MOUSE_DOWN,
+			ewl_text_trigger_cb_mouse_down, cur);
+	ewl_callback_append(area, EWL_CALLBACK_MOUSE_UP,
+			ewl_text_trigger_cb_mouse_up, cur);
+	ewl_widget_show(area);
+
+	ecore_list_append(cur->areas, area);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_text_triggers_realize(Ewl_Text *t)
 {
 	Ewl_Text_Trigger *cur;
@@ -1948,6 +1981,7 @@ void ewl_text_triggers_realize(Ewl_Text *t)
 	Evas_Coord sx, sy, sh, ex, ey, ew, eh;
 	char *ptr;
 	unsigned int cur_idx = 0, cur_tb_idx = 0;
+	int start_line = 0, end_line = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -1986,6 +2020,10 @@ void ewl_text_triggers_realize(Ewl_Text *t)
 		evas_object_textblock_char_pos_get(t->textblock, cur_tb_idx,
 								&sx, &sy, NULL, &sh);
 
+		/* get the line number we're on */
+		evas_object_textblock_cursor_pos_set(t->textblock, cur_tb_idx);
+		start_line = evas_object_textblock_cursor_line_get(t->textblock);
+
 		/* get the index of the end of the trigger */
 		for (ptr = (t->text + cur_idx);
 				cur_idx < (cur->pos + cur->len); cur_idx++)
@@ -2005,38 +2043,62 @@ void ewl_text_triggers_realize(Ewl_Text *t)
 		evas_object_textblock_char_pos_get(t->textblock, cur_tb_idx,
 								&ex, &ey, &ew, &eh);
 
+		/* get the line number we're on */
+		evas_object_textblock_cursor_pos_set(t->textblock, cur_tb_idx);
+		end_line = evas_object_textblock_cursor_line_get(t->textblock);
+
 		if (fiddled)
 			ex += ew;
 
 		/* whole trigger is on one line */
-		if (sy == ey)
+		if (start_line == end_line)
 		{
-			Ewl_Widget *area;
-
-			area = ewl_text_trigger_area_new(cur->type);
-			ewl_container_child_append(EWL_CONTAINER(t), area);
-			ewl_widget_internal_set(area, TRUE);
-			ewl_object_geometry_request(EWL_OBJECT(area), sx, sy, 
-							(ex - sx), (ey - sy) + eh);
-
-			ewl_callback_append(area, EWL_CALLBACK_FOCUS_IN, 
-						ewl_text_trigger_cb_focus_in, cur);
-			ewl_callback_append(area, EWL_CALLBACK_FOCUS_OUT,
-						ewl_text_trigger_cb_focus_out, cur);
-			ewl_callback_append(area, EWL_CALLBACK_MOUSE_DOWN,
-						ewl_text_trigger_cb_mouse_down, cur);
-			ewl_callback_append(area, EWL_CALLBACK_MOUSE_UP,
-						ewl_text_trigger_cb_mouse_up, cur);
-			ewl_widget_show(area);
-
-			ecore_list_append(cur->areas, area);
-		} 
-		else /* multline trigger .... ?? */
+			ewl_text_trigger_area_add(t, cur, sx, sy, (ex - sx), 
+								(ey - sy) + eh);
+		}
+		/* multiline trigger */
+		else
 		{
-			printf("FIXME: multline triggers aren't done yet ...\n");
+			int i, missed = 0;
+			Evas_Coord lx, ly, lw, lh;
+			Evas_Coord llx = 0, lly = 0, llw = 0, llh = 0;
+
+			/* get the coords for all the lines and deal with
+			 * them */
+			for (i = start_line; i <= end_line; i++)
+			{
+				if (!evas_object_textblock_line_get(t->textblock, i, 
+								&lx, &ly, &lw, &lh))
+				{
+					/* if we don't get a response from
+					 * evas then this is a blank line.
+					 * wait until we get the next real line
+					 * to deal with it */
+					missed = 1;
+
+					llx = lx;
+					lly = ly + lh;
+					llw = lw;
+					llh = lh;
+
+					continue;
+				}
+				else
+				{
+					ewl_text_trigger_area_add(t, cur, lx, ly, lw, lh);
+				}
+
+				/* deal with the missed line */
+				if (missed)
+				{
+					ewl_text_trigger_area_add(t, cur, llx, lly, 2, ly - lly);
+					
+					missed = 0;
+					llx = lly = llw = llh = 0;
+				}
+			}
 		}
 	}
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
