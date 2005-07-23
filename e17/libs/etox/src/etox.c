@@ -866,7 +866,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		return sum;
 
 	if (!line)
-		line = et->lines->last->data;
+		line = (evas_list_last(et->lines))->data;
 
 	/*
 	 * Bring the coordinate into the line if it falls outside, this may
