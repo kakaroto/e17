@@ -383,7 +383,7 @@ if test "$id3_ok" = yes; then
   if test "$id3_ok" = yes; then
     ID3LIBS=$id3_libs
   else
-    AC_MSG_WARN(*** Native mp3 support will not be built (id3tag header file not found) ***)
+    AC_MSG_WARN(*** Native id3 mp3 tag support will not be built (id3tag header file not found) ***)
   fi
 fi
 AM_CONDITIONAL(BUILD_ID3_LOADER, test "$id3_ok" = yes)
@@ -436,7 +436,7 @@ echo "  TIFF....................: $tiff_ok"
 echo "  GIF.....................: $gif_ok"
 echo "  ZLIB....................: $zlib_ok"
 echo "  BZIP2...................: $bz2_ok"
-echo "  MP3.....................: $id3_ok"
+echo "  ID3.....................: $id3_ok"
 echo
 echo
 echo "Use MMX for extra speed...: $mmx"
