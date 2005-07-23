@@ -332,7 +332,7 @@ chart_container_chart_remove(Chart_Container *chart_con, Flow_Chart *chart)
     {
       chart_con->charts = evas_list_remove(chart_con->charts, chart);
       flow_chart_del(chart);
-      if (chart_con->charts->count == 0)
+      if (evas_list_count(chart_con->charts) == 0)
 	{
 	  evas_list_free(chart_con->charts);
 	  chart_con->charts = NULL;
