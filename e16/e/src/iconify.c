@@ -711,6 +711,7 @@ IconboxesEwinDeIconify(EWin * ewin)
 
    IconboxObjEwinDel(ib, ewin);
    IconboxRedraw(ib);
+   EobjsRepaint();
 }
 
 static void
