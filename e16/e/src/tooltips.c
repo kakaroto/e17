@@ -659,17 +659,16 @@ TooltipHide(ToolTip * tt)
 {
    int                 i;
 
-   if (!tt)
-      return;
-
-   if (!tt->TTWIN->shown)
+   if (!tt || !tt->TTWIN->shown)
       return;
 
    for (i = 4; i >= 0; i--)
       if (tt->win[i])
 	 EobjUnmap(tt->win[i]);
 
+#if 0				/* FIXME - Remove? */
    ESync();
+#endif
 }
 
 /*

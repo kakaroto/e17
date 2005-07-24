@@ -150,7 +150,9 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    if (Mode.wm.startup)
       return;
 
+   EobjsRepaint();
    EGrabServer();
+
    spd = 0.00001;
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
@@ -705,9 +707,8 @@ IconboxesEwinDeIconify(EWin * ewin)
       return;
 
    if (ib->animate && !ewin->state.showingdesk)
-     {
-	IB_Animate(0, ewin, ib->ewin);
-     }
+      IB_Animate(0, ewin, ib->ewin);
+
    IconboxObjEwinDel(ib, ewin);
    IconboxRedraw(ib);
 }
@@ -1724,7 +1725,6 @@ IconboxRedraw(Iconbox * ib)
 
    ib->do_update = 1;
    EwinResize(ib->ewin, ewin->client.w, ewin->client.h);
-   EobjsRepaint();
 }
 
 static int
