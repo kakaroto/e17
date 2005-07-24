@@ -149,6 +149,7 @@ static struct
    char                use_pixmap;
    EObj               *eo_first;
    EObj               *eo_last;
+   XserverRegion       rgn_screen;
 } Mode_compmgr;
 
 static Picture      rootPicture;
@@ -207,6 +208,18 @@ ERegionCreate(int x, int y, int w, int h)
    rgn = XFixesCreateRegion(disp, &rct, 1);
 
    return rgn;
+}
+
+static void
+ERegionLimit(XserverRegion rgn)
+{
+   XserverRegion       screen;
+
+   screen = Mode_compmgr.rgn_screen;
+   if (screen == None)
+      Mode_compmgr.rgn_screen = screen = ERegionCreate(0, 0, VRoot.w, VRoot.h);
+
+   XFixesIntersectRegion(disp, rgn, rgn, screen);
 }
 
 static void
@@ -1539,6 +1552,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_SOLID:
 	     D2printf(" * solid pict=%#lx d=%d l=%d\n",
 		      cw->picture, eo->desk, eo->ilayer);
+	     ERegionLimit(region);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
@@ -1557,6 +1571,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_ARGB:
 	     D2printf(" * trans pict=%#lx d=%d l=%d\n",
 		      cw->picture, eo->desk, eo->ilayer);
+	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     ECompMgrCheckAlphaMask(cw);
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->alphaPict, pbuf,
@@ -1576,6 +1591,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 						     (double)cw->opacity /
 						     OPAQUE * 0.3, 0, 0, 0);
 	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
+	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     XRenderComposite(dpy, PictOpOver,
 			      cw->shadowPict ? cw->
@@ -1590,6 +1606,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 		break;
 
 	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
+	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow, pbuf,
 			      0, 0, 0, 0,
@@ -1648,6 +1665,7 @@ ECompMgrRepaint(void)
    /* Repaint background, clipped by damage region and opaque windows */
    pict = DeskBackgroundPictureGet(d);
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
+   ERegionLimit(region);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
@@ -1658,6 +1676,7 @@ ECompMgrRepaint(void)
 
    if (pbuf != rootPicture)
      {
+	ERegionLimit(allDamage);
 	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, allDamage);
 	XRenderComposite(dpy, PictOpSrc, pbuf, None, rootPicture,
 			 0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
@@ -1676,15 +1695,15 @@ ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
    D1printf("ECompMgrRootConfigure root\n");
    if (ev->xconfigure.window == VRoot.win)
      {
-	if (rootBuffer)
+	if (rootBuffer != None)
 	  {
 	     XRenderFreePicture(dpy, rootBuffer);
 	     rootBuffer = None;
 	  }
-#if 0				/* Should be handled elsewhere */
-	VRoot.w = ev->xconfigure.width;
-	VRoot.h = ev->xconfigure.height;
-#endif
+
+	if (Mode_compmgr.rgn_screen != None)
+	   XFixesDestroyRegion(disp, Mode_compmgr.rgn_screen);
+	Mode_compmgr.rgn_screen = None;
      }
    return;
 }
@@ -1889,9 +1908,13 @@ ECompMgrStop(void)
 	Efree(lst);
      }
 
-   if (allDamage)
+   if (allDamage != None)
       XFixesDestroyRegion(disp, allDamage);
    allDamage = None;
+
+   if (Mode_compmgr.rgn_screen != None)
+      XFixesDestroyRegion(disp, Mode_compmgr.rgn_screen);
+   Mode_compmgr.rgn_screen = None;
 
    if (Conf_compmgr.mode == ECM_MODE_ROOT)
       XCompositeUnredirectSubwindows(disp, VRoot.win, CompositeRedirectManual);
