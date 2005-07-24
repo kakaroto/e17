@@ -75,7 +75,6 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 
 	p = strrchr(im->real_file, '.');
 	if (! (p && p != im->real_file && !strcmp (p + 1, "mp3"))) {
-		fprintf (stderr, "Unknown extension %s\n", p + 1);
 		return 0;
 	}
 
