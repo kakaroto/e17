@@ -1573,7 +1573,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    im = imlib_create_image_from_drawable(None, 0, 0, w, h, !EServerIsGrabbed());
    imlib_context_set_image(im);
    imlib_image_set_format("png");
-   sprintf(buf, "%s-%#lx-%d", txt, draw, seqn++);
+   sprintf(buf, "%s-%#lx-%d.png", txt, draw, seqn++);
    Eprintf("EDrawableDumpImage: %s\n", buf);
    imlib_save_image(buf);
    imlib_free_image_and_decache();

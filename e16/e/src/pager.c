@@ -509,7 +509,7 @@ PagerUpdateBg(Pager * p)
 	Imlib_Image        *im;
 
 	uniq = BackgroundGetUniqueString(bg);
-	Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
+	Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s.png",
 		  EDirUserCache(), BackgroundGetName(bg), p->dw, p->dh, uniq);
 	Efree(uniq);
 

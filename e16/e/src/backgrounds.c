@@ -784,7 +784,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 
    if (thumb)
      {
-	Esnprintf(thumb, thlen, "%s/cached/img/%s", EDirUserCache(), bgid);
+	Esnprintf(thumb, thlen, "%s/cached/img/%s.png", EDirUserCache(), bgid);
 	if (bg && exists(thumb) && moddate(thumb) > moddate(file))
 	   return bg;
 	/* The thumbnail is gone or outdated - regererate */
@@ -951,7 +951,7 @@ BackgroundCacheMini(Background * bg, int keep)
    Imlib_Image        *im;
    Pixmap              pmap;
 
-   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
+   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png", EDirUserCache(),
 	     BackgroundGetName(bg));
    pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
    BackgroundApply(bg, pmap, 64, 48, 0);
@@ -1781,7 +1781,7 @@ BG_RedrawView(char nuke_old)
 	       }
 	     else
 	       {
-		  Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
+		  Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png",
 			    EDirUserCache(), BackgroundGetName(bglist[i]));
 		  im = ELoadImage(s);
 		  if (!im)
