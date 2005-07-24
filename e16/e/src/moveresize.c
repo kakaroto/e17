@@ -272,6 +272,10 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	EGrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
      }
+   else
+     {
+	EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
+     }
 
    if (grab)
      {
@@ -380,6 +384,11 @@ ActionResizeEnd(EWin * ewin)
 		 ewin->client.w, ewin->client.h, 2);
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
+
+   if (Conf.movres.mode_move == 0)
+     {
+	EoChangeOpacity(ewin, ewin->ewmh.opacity);
+     }
 
    ESync();
 
