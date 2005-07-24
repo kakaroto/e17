@@ -131,6 +131,7 @@ static struct
    int                 mode;
    int                 shadow;
    int                 shadow_radius;
+   int                 override_redirect_opacity;
 } Conf_compmgr;
 
 /*
@@ -1068,6 +1069,14 @@ ECompMgrWinNew(EObj * eo)
 	cw->damage_sequence = NextRequest(disp);
 	cw->damage = XDamageCreate(disp, eo->win, XDamageReportNonEmpty);
      }
+
+   if (eo->type == EOBJ_TYPE_EXT)
+      eo->opacity =
+	 (unsigned int)(Conf_compmgr.override_redirect_opacity << 24);
+   if (eo->opacity == 0)
+      eo->opacity = 0xFFFFFFFF;
+
+   eo->shadow = 1;
 
    cw->picture = None;
    cw->pixmap = None;
@@ -2221,6 +2230,7 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadow_radius, 12),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
+   CFG_ITEM_INT(Conf_compmgr, override_redirect_opacity, 240),
 };
 #define N_CFG_ITEMS (sizeof(CompMgrCfgItems)/sizeof(CfgItem))
 

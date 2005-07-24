@@ -169,9 +169,6 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    if (name)
       eo->name = Estrdup(name);
 #if USE_COMPOSITE
-   if (eo->opacity == 0)
-      eo->opacity = 0xFFFFFFFF;
-   eo->shadow = 1;
    ECompMgrWinNew(eo);
 #endif
    if (eo->win != VRoot.win)
