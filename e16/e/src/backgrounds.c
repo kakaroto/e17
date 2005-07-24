@@ -449,29 +449,172 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
    *ph = h;
 }
 
-/*
- * Apply a background to window/pixmap.
- *
- * If setbg is != 0, the (scaled) BG pixmap is stored in bg->pmap, otherwise
- * bg->pmap is left unchanged.
- */
-void
-BackgroundApply(Background * bg, Window win, int setbg)
+static void
+e16_tile_image_onto_image(Imlib_Image * tile, int blend, int tw, int th,
+			  int dx, int dy, int dw, int dh, int ox, int oy)
 {
-   int                 rw, rh, depth;
-   Pixmap              dpmap;
+   Imlib_Image        *im, *tim;
+   int                 x, y, tx, ty, ww, hh;
+   int                 sw, sh;
+
+   im = imlib_context_get_image();
+   imlib_context_set_image(tile);
+   sw = imlib_image_get_width();
+   sh = imlib_image_get_height();
+   if (sw == tw && sh == th)
+     {
+	tim = tile;
+     }
+   else
+     {
+	tim = imlib_create_image(tw, th);
+	imlib_context_set_image(tim);
+	imlib_context_set_blend(0);
+	imlib_blend_image_onto_image(tile, 0, 0, 0, sw, sh, 0, 0, tw, th);
+     }
+   imlib_context_set_image(im);
+
+   if (ox)
+     {
+	ox = tw - ox;
+	ox %= tw;
+	if (ox < 0)
+	   ox += tw;
+     }
+   if (oy)
+     {
+	oy = th - oy;
+	oy %= th;
+	if (oy < 0)
+	   oy += th;
+     }
+   dw += dx;
+   dh += dy;
+   y = dy;
+   ty = oy;
+   hh = th - oy;
+   for (;;)
+     {
+	if (y + hh >= dh)
+	   hh = dh - y;
+	if (hh <= 0)
+	   break;
+	x = dx;
+	tx = ox;
+	ww = tw - ox;
+	for (;;)
+	  {
+	     if (x + ww >= dw)
+		ww = dw - x;
+	     if (ww <= 0)
+		break;
+	     imlib_blend_image_onto_image(tim, blend, tx, ty, ww, hh,
+					  x, y, ww, hh);
+	     tx = 0;
+	     x += ww;
+	     ww = tw;
+	  }
+	ty = 0;
+	y += hh;
+	hh = th;
+     }
+   if (tim != tile)
+     {
+	imlib_context_set_image(tim);
+	imlib_free_image();
+	imlib_context_set_image(im);
+     }
+}
+
+Pixmap
+BackgroundApply(Background * bg, Drawable draw,
+		unsigned int rw, unsigned int rh, int is_win)
+{
+   Pixmap              pmap;
    GC                  gc;
+
    int                 rt;
+   int                 x, y;
+   unsigned int        w, h, ww, hh;
+   char                hasbg, hasfg;
+   Imlib_Image        *im;
 
-   if (!EGetGeometry(win, NULL, NULL, NULL, &rw, &rh, NULL, &depth))
-      return;
+#if ENABLE_COLOR_MODIFIERS
+   ColorModifierClass *cm;
+#endif
 
-   imlib_context_set_drawable(win);
+   if (bg->bg.file && !bg->bg.im)
+     {
+	if (!bg->bg.real_file)
+	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
+	bg->bg.im = ELoadImage(bg->bg.real_file);
+     }
 
-   EAllocColor(&bg->bg_solid);
-   gc = 0;
+   if (bg->top.file && !bg->top.im)
+     {
+	if (!bg->top.real_file)
+	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
+	bg->top.im = ELoadImage(bg->top.real_file);
+     }
+
+#if ENABLE_COLOR_MODIFIERS
+   cm = bg->cmclass;
+   if (cm)
+      cm->ref_count--;
+   else
+      cm = FindItem("BACKGROUND", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
+
+   if (cm)
+     {
+	cm->ref_count++;
+#if 0				/* To be implemented? */
+	if (bg->top.im)
+	  {
+	     Imlib_set_image_red_curve(pImlib_Context, bg->top.im, cm->red.map);
+	     Imlib_set_image_green_curve(pImlib_Context, bg->top.im,
+					 cm->green.map);
+	     Imlib_set_image_blue_curve(pImlib_Context, bg->top.im,
+					cm->blue.map);
+	  }
+	if (bg->bg.im)
+	  {
+	     Imlib_set_image_red_curve(pImlib_Context, bg->bg.im, cm->red.map);
+	     Imlib_set_image_green_curve(pImlib_Context, bg->bg.im,
+					 cm->green.map);
+	     Imlib_set_image_blue_curve(pImlib_Context, bg->bg.im,
+					cm->blue.map);
+	  }
+#endif
+     }
+#endif
+
+   hasbg = bg->bg.im != NULL;
+   hasfg = bg->top.im != NULL;
+
+   if (!hasbg && !hasfg)
+     {
+	/* Solid color only */
+	EAllocColor(&bg->bg_solid);
+
+	if (is_win)
+	  {
+	     ESetWindowBackground(draw, bg->bg_solid.pixel);
+	  }
+	else
+	  {
+	     gc = ECreateGC(draw, 0, NULL);
+	     XSetClipMask(disp, gc, 0);
+	     XSetFillStyle(disp, gc, FillSolid);
+	     XSetForeground(disp, gc, bg->bg_solid.pixel);
+	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
+	     EFreeGC(gc);
+	  }
+	return None;
+     }
+
+   /* Has either bg or fg image */
+
    rt = imlib_context_get_dither();
-
    if (Conf.backgrounds.hiquality)
      {
 	imlib_context_set_dither(1);
@@ -480,185 +623,146 @@ BackgroundApply(Background * bg, Window win, int setbg)
 #endif
      }
 
-   dpmap = (setbg) ? bg->pmap : None;
-   if (!dpmap)
+   w = h = x = y = 0;
+
+   if (hasbg)
      {
-	int                 w, h, x, y;
-	char                hasbg, hasfg;
-	Pixmap              pmap, mask;
+	imlib_context_set_image(bg->bg.im);
 
-#if ENABLE_COLOR_MODIFIERS
-	ColorModifierClass *cm;
-#endif
-
-	if (bg->bg.file && !bg->bg.im)
-	  {
-	     if (!bg->bg.real_file)
-		bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
-	     bg->bg.im = ELoadImage(bg->bg.real_file);
-	  }
-
-	if (bg->top.file && !bg->top.im)
-	  {
-	     if (!bg->top.real_file)
-		bg->top.real_file = ThemeFileFind(bg->top.file, 0);
-	     bg->top.im = ELoadImage(bg->top.real_file);
-	  }
-
-#if ENABLE_COLOR_MODIFIERS
-	cm = bg->cmclass;
-	if (cm)
-	   cm->ref_count--;
-	else
-	   cm = FindItem("BACKGROUND", 0, LIST_FINDBY_NAME,
-			 LIST_TYPE_COLORMODIFIER);
-
-	if (cm)
-	  {
-	     cm->ref_count++;
-#if 0				/* To be implemented? */
-	     if (bg->top.im)
-	       {
-		  Imlib_set_image_red_curve(pImlib_Context, bg->top.im,
-					    cm->red.map);
-		  Imlib_set_image_green_curve(pImlib_Context, bg->top.im,
-					      cm->green.map);
-		  Imlib_set_image_blue_curve(pImlib_Context, bg->top.im,
-					     cm->blue.map);
-	       }
-	     if (bg->bg.im)
-	       {
-		  Imlib_set_image_red_curve(pImlib_Context, bg->bg.im,
-					    cm->red.map);
-		  Imlib_set_image_green_curve(pImlib_Context, bg->bg.im,
-					      cm->green.map);
-		  Imlib_set_image_blue_curve(pImlib_Context, bg->bg.im,
-					     cm->blue.map);
-	       }
-#endif
-	  }
-#endif
-
-	hasbg = hasfg = 0;
-	if (bg->top.im)
-	   hasfg = 1;
-	if (bg->bg.im)
-	   hasbg = 1;
-
-	w = h = x = y = 0;
-
-	if (hasbg)
-	  {
-	     imlib_context_set_image(bg->bg.im);
-
-	     BgFindImageSize(&(bg->bg), rw, rh, &w, &h);
-	     x = ((rw - w) * bg->bg.xjust) >> 10;
-	     y = ((rh - h) * bg->bg.yjust) >> 10;
-
-	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
-	  }
-
-	if (hasbg && !hasfg && setbg && x == 0 && y == 0 && w == rw && h == rh)
-	  {
-	     /* Put image 1:1 onto the current root window */
-	     dpmap = pmap;
-	  }
-	else if (hasbg && !hasfg && bg->bg_tile && !TransparencyEnabled())
-	  {
-	     /* BG only, tiled */
-	     dpmap = ECreatePixmap(win, w, h, depth);
-	     gc = ECreateGC(dpmap, 0, NULL);
-	  }
-	else
-	  {
-	     /* The rest that require some more work */
-	     dpmap = ECreatePixmap(win, rw, rh, depth);
-	     gc = ECreateGC(dpmap, 0, NULL);
-	     if (!hasbg || !bg->bg_tile)
-	       {
-		  XSetForeground(disp, gc, bg->bg_solid.pixel);
-		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-	       }
-	  }
-
-	if (hasbg && dpmap != pmap)
-	  {
-	     XSetTile(disp, gc, pmap);
-	     XSetTSOrigin(disp, gc, x, y);
-	     XSetFillStyle(disp, gc, FillTiled);
-	     if (bg->bg_tile)
-		XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
-	     else
-		XFillRectangle(disp, dpmap, gc, x, y, w, h);
-	     imlib_free_pixmap_and_mask(pmap);
-	  }
-
-	if (hasfg)
-	  {
-	     int                 ww, hh;
-
-	     imlib_context_set_image(bg->top.im);
-
-	     BgFindImageSize(&(bg->top), rw, rh, &ww, &hh);
-	     x = ((rw - ww) * bg->top.xjust) >> 10;
-	     y = ((rh - hh) * bg->top.yjust) >> 10;
-
-	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
-	     XSetTile(disp, gc, pmap);
-	     XSetTSOrigin(disp, gc, x, y);
-	     XSetFillStyle(disp, gc, FillTiled);
-	     if (mask)
-	       {
-		  XSetClipMask(disp, gc, mask);
-		  XSetClipOrigin(disp, gc, x, y);
-	       }
-	     XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	     imlib_free_pixmap_and_mask(pmap);
-	  }
-
-	if (!bg->keepim)
-	   BackgroundImagesFree(bg, 0);
+	BgFindImageSize(&(bg->bg), rw, rh, &w, &h);
+	x = ((rw - w) * bg->bg.xjust) >> 10;
+	y = ((rh - h) * bg->bg.yjust) >> 10;
      }
 
-   if (setbg)
+   if (is_win && hasbg && !hasfg && x == 0 && y == 0 &&
+       ((w == rw && h == rh) || (bg->bg_tile && !TransparencyEnabled())))
      {
-	if (bg->pmap != dpmap)
-	   BackgroundPixmapFree(bg);
-	bg->pmap = dpmap;
-	if (dpmap)
-	   ESetWindowBackgroundPixmap(win, dpmap);
+	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
+	pmap = ECreatePixmap(VRoot.win, w, h, VRoot.depth);
+	imlib_context_set_drawable(pmap);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+
+	if (x == 0 && y == 0)
+	  {
+	     ESetWindowBackgroundPixmap(draw, pmap);
+	  }
 	else
-	   ESetWindowBackground(win, bg->bg_solid.pixel);
-	EClearWindow(win);
+	  {
+	     gc = ECreateGC(draw, 0, NULL);
+	     XSetTile(disp, gc, pmap);
+	     XSetTSOrigin(disp, gc, x, y);
+	     XSetFillStyle(disp, gc, FillTiled);
+	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
+	     EFreeGC(gc);
+	  }
+	goto done;
+     }
+
+   /* The rest that require some more work */
+   if (is_win)
+      pmap = ECreatePixmap(VRoot.win, rw, rh, VRoot.depth);
+   else
+      pmap = draw;
+   imlib_context_set_drawable(pmap);
+
+   if (hasbg && x == 0 && y == 0 && w == rw && h == rh)
+     {
+	im = bg->bg.im;
+	imlib_context_set_image(im);
      }
    else
      {
-	if (dpmap)
+	/* Create full size image */
+	im = imlib_create_image(rw, rh);
+	imlib_context_set_image(im);
+	imlib_image_set_has_alpha(0);
+	if (!hasbg || !bg->bg_tile)
 	  {
-	     if (!gc)
-		gc = ECreateGC(dpmap, 0, NULL);
-	     XSetClipMask(disp, gc, 0);
-	     XSetTile(disp, gc, dpmap);
-	     XSetTSOrigin(disp, gc, 0, 0);
-	     XSetFillStyle(disp, gc, FillTiled);
-	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
-	     imlib_free_pixmap_and_mask(dpmap);
+	     /* Fill solid */
+	     imlib_context_set_blend(0);
+	     imlib_context_set_color(bg->bg_solid.red, bg->bg_solid.green,
+				     bg->bg_solid.blue, 0);
+	     imlib_image_fill_rectangle(0, 0, rw, rh);
 	  }
-	else
+	if (hasbg)
 	  {
-	     if (!gc)
-		gc = ECreateGC(win, 0, NULL);
-	     XSetClipMask(disp, gc, 0);
-	     XSetFillStyle(disp, gc, FillSolid);
-	     XSetForeground(disp, gc, bg->bg_solid.pixel);
-	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
+	     if (bg->bg_tile)
+	       {
+		  e16_tile_image_onto_image(bg->bg.im, 0, w, h,
+					    0, 0, rw, rh, x, y);
+	       }
+	     else
+	       {
+		  imlib_context_set_image(bg->bg.im);
+		  ww = imlib_image_get_width();
+		  hh = imlib_image_get_height();
+		  imlib_context_set_image(im);
+		  imlib_blend_image_onto_image(bg->bg.im, 1, 0, 0, ww, hh,
+					       x, y, w, h);
+	       }
 	  }
      }
 
-   if (gc)
-      EFreeGC(gc);
+   if (hasfg)
+     {
+	imlib_context_set_image(bg->top.im);
+
+	BgFindImageSize(&(bg->top), rw, rh, &w, &h);
+	x = ((rw - w) * bg->top.xjust) >> 10;
+	y = ((rh - h) * bg->top.yjust) >> 10;
+
+	ww = imlib_image_get_width();
+	hh = imlib_image_get_height();
+	imlib_context_set_image(im);
+	imlib_blend_image_onto_image(bg->top.im, 0, 0, 0, ww, hh, x, y, w, h);
+     }
+
+   imlib_render_image_on_drawable_at_size(0, 0, rw, rh);
+   if (im != bg->bg.im)
+      imlib_free_image();
+
+ done:
+   if (!bg->keepim)
+      BackgroundImagesFree(bg, 0);
 
    imlib_context_set_dither(rt);
+
+   return pmap;
+}
+
+/*
+ * Apply a background to window/pixmap.
+ * The (scaled) BG pixmap is stored in bg->pmap.
+ */
+void
+BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
+{
+   Pixmap              pmap;
+
+   if (bg->pmap)
+      pmap = bg->pmap;
+   else
+      pmap = BackgroundApply(bg, win, w, h, 1);
+
+   bg->pmap = pmap;
+   if (pmap != None)
+      ESetWindowBackgroundPixmap(win, pmap);
+   else
+      ESetWindowBackground(win, bg->bg_solid.pixel);
+   EClearWindow(win);
+}
+
+static void
+BackgroundApply2(Background * bg, Window win)
+{
+   Window              rr;
+   int                 x, y;
+   unsigned int        w, h, bw, depth;
+
+   if (!XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth))
+      return;
+
+   BackgroundApply(bg, win, w, h, 1);
 }
 
 Background         *
@@ -840,6 +944,30 @@ BackgroundGetTimestamp(const Background * bg)
    return bg->last_viewed;
 }
 
+static              Pixmap
+BackgroundCacheMini(Background * bg, int keep)
+{
+   char                s[4096];
+   Imlib_Image        *im;
+   Pixmap              pmap;
+
+   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
+	     BackgroundGetName(bg));
+   pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
+   BackgroundApply(bg, pmap, 64, 48, 0);
+   imlib_context_set_drawable(pmap);
+   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
+   imlib_context_set_image(im);
+   imlib_image_set_format("png");
+   imlib_save_image(s);
+   imlib_free_image_and_decache();
+
+   if (keep)
+      return pmap;
+   EFreePixmap(pmap);
+   return None;
+}
+
 #define S(str) ((str) ? str : "(null)")
 static void
 BackgroundGetInfoString1(const Background * bg, char *buf, int len)
@@ -952,25 +1080,17 @@ BackgroundsConfigLoad(FILE * fs)
 			 {
 			    tmp = ThemeFileFind(bg1, 0);
 			    if (!tmp)
-			      {
-				 ok = 0;
-			      }
+			       ok = 0;
 			    else
-			      {
-				 Efree(tmp);
-			      }
+			       Efree(tmp);
 			 }
 		       if (bg2)
 			 {
 			    tmp = ThemeFileFind(bg2, 0);
 			    if (!tmp)
-			      {
-				 ok = 0;
-			      }
+			       ok = 0;
 			    else
-			      {
-				 Efree(tmp);
-			      }
+			       Efree(tmp);
 			 }
 		       if (ok)
 			 {
@@ -1316,6 +1436,7 @@ static DItem       *bg_filename;
 static DItem       *tmp_w[10];
 
 static Background  *tmp_bg;	/* The background being configured */
+static Pixmap       tmp_bg_mini_pixmap = None;
 static int          tmp_bg_sel_sliderval = 0;
 static int          tmp_bg_r;
 static int          tmp_bg_g;
@@ -1338,6 +1459,16 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    int                 i;
 
+   if (val < 0)
+     {
+	BackgroundImagesKeep(tmp_bg, 0);
+	tmp_bg = NULL;
+	if (tmp_bg_mini_pixmap != None)
+	   EFreePixmap(tmp_bg_mini_pixmap);
+	tmp_bg_mini_pixmap = None;
+	return;
+     }
+
    if (val < 2)
      {
 	Conf.backgrounds.timeout = tmp_bg_timeout;
@@ -1352,38 +1483,17 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	tmp_bg->bg.xperc = tmp_bg_xperc;
 	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
 
-	if (!tmp_bg_image)
-	   BackgroundImagesRemove(tmp_bg);
-
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
 	     if (DeskGetBackground(i) == tmp_bg)
 		DeskSetBg(i, tmp_bg, 1);
 	  }
 
-	{
-	   char                s[4096];
-	   Imlib_Image        *im;
-	   Pixmap              p2;
+	BackgroundCacheMini(tmp_bg, 0);
+	BG_RedrawView(1);
 
-	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
-		     BackgroundGetName(tmp_bg));
-	   p2 = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
-	   BackgroundApply(tmp_bg, p2, 0);
-	   imlib_context_set_drawable(p2);
-	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
-	   imlib_context_set_image(im);
-	   imlib_image_set_format("png");
-	   imlib_save_image(s);
-	   imlib_free_image_and_decache();
-	   EFreePixmap(p2);
-	   BG_RedrawView(1);
-	}
-     }
-
-   if (val != 1)
-     {
-	BackgroundImagesKeep(tmp_bg, 0);
+	if (!tmp_bg_image)
+	   BackgroundImagesRemove(tmp_bg);
      }
 
    autosave();
@@ -1391,14 +1501,13 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 /* Draw the background preview image */
 static void
-CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
-			    void *data)
+CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
    Background         *bg;
+   Pixmap              pmap;
    int                 w, h;
    DItem              *di;
    Window              win;
-   Pixmap              pmap;
    XColor              xclr;
    const char         *fbg, *ffg;
 
@@ -1409,24 +1518,32 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
-   ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
-   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
-			 tmp_bg_keep_aspect, tmp_bg_xjust,
-			 1024 - tmp_bg_yjust, tmp_bg_xperc,
-			 1024 - tmp_bg_yperc, ffg,
-			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			 tmp_bg->top.yjust, tmp_bg->top.xperc,
-			 tmp_bg->top.yperc);
+   if (tmp_bg_mini_pixmap == None)
+      tmp_bg_mini_pixmap = ECreatePixmap(win, w, h, VRoot.depth);
+   pmap = tmp_bg_mini_pixmap;
 
-   pmap = ECreatePixmap(win, w, h, VRoot.depth);
-   ESetWindowBackgroundPixmap(win, pmap);
-   BackgroundApply(bg, pmap, 0);
+   if (val == 1)
+     {
+	ESetWindowBackgroundPixmap(win, pmap);
+	BackgroundApply(tmp_bg, pmap, w, h, 0);
+     }
+   else
+     {
+	fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
+	ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
+	ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+	bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
+			      tmp_bg_keep_aspect, tmp_bg_xjust,
+			      1024 - tmp_bg_yjust, tmp_bg_xperc,
+			      1024 - tmp_bg_yperc, ffg,
+			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			      tmp_bg->top.yjust, tmp_bg->top.xperc,
+			      tmp_bg->top.yperc);
+
+	BackgroundApply(bg, pmap, w, h, 0);
+	BackgroundDestroy(bg);
+     }
    EClearWindow(win);
-   EFreePixmap(pmap);
-
-   BackgroundDestroy(bg);
 }
 
 /* Update tmp vars according to the current tmp_bg */
@@ -1442,8 +1559,6 @@ BG_GetValues(void)
    tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
    tmp_bg_xperc = tmp_bg->bg.xperc;
    tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-
-   BackgroundImagesKeep(tmp_bg, 1);
 }
 
 static void
@@ -1468,7 +1583,10 @@ BgDialogSetNewCurrent(Background * bg)
 {
    int                 i;
 
+   if (tmp_bg && tmp_bg != bg)
+      BackgroundImagesKeep(tmp_bg, 0);
    tmp_bg = bg;
+   BackgroundImagesKeep(tmp_bg, 1);
 
    /* Fetch new BG values */
    BG_GetValues();
@@ -1489,7 +1607,7 @@ BgDialogSetNewCurrent(Background * bg)
    DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
 
    /* Redraw preview image */
-   CB_DesktopMiniDisplayRedraw(NULL, 0, bg_mini_disp);
+   CB_DesktopMiniDisplayRedraw(NULL, 1, bg_mini_disp);
 
    /* Redraw scrolling BG list */
    BG_RedrawView(0);
@@ -1569,6 +1687,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
       BackgroundDestroy(tmp_bg);
    else
       BackgroundDelete(tmp_bg);
+   tmp_bg = NULL;
 
    BgDialogSetNewCurrent(bg);
 
@@ -1605,7 +1724,7 @@ BG_RedrawView(char nuke_old)
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (!bglist)
-      goto done;
+      return;
 
    win = DialogItemAreaGetWindow(bg_sel);
    DialogItemAreaGetSize(bg_sel, &w, &h);
@@ -1617,9 +1736,7 @@ BG_RedrawView(char nuke_old)
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
    ESetWindowBackgroundPixmap(win, pmap);
 
-   x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
-   if (x < (w - ((64 + 8) * num)))
-      x = w - ((64 + 8) * num);
+   x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
    for (i = 0; i < num; i++)
      {
@@ -1669,18 +1786,8 @@ BG_RedrawView(char nuke_old)
 		  im = ELoadImage(s);
 		  if (!im)
 		    {
-		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
-				 EDirUserCache(), BackgroundGetName(bglist[i]));
-		       p2 = ECreatePixmap(pmap, 64, 48, VRoot.depth);
-		       BackgroundApply(bglist[i], p2, 0);
+		       p2 = BackgroundCacheMini(bglist[i], 1);
 		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
-		       imlib_context_set_drawable(p2);
-		       im =
-			  imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
-		       imlib_context_set_image(im);
-		       imlib_image_set_format("png");
-		       imlib_save_image(s);
-		       imlib_free_image_and_decache();
 		       EFreePixmap(p2);
 		    }
 		  else
@@ -1709,9 +1816,6 @@ BG_RedrawView(char nuke_old)
    Efree(bglist);
 
    EClearWindow(win);
-
- done:
-   return;
 }
 
 static void
@@ -1750,21 +1854,19 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
      {
      case ButtonPress:
 	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	x = (tmp_bg_sel_sliderval * (64 + 8) / 4);
-	if (x > ((num * (64 + 8)) - w))
-	   x = ((num * (64 + 8)) - w);
-	x += ev->xbutton.x;
-	x = x / (64 + 8);
-	tmp_bg_selected = x;
+	if (!bglist)
+	   break;
+
+	x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
+	   ev->xbutton.x;
+	tmp_bg_selected = x / (64 + 8);
 	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
 	  {
-	     BackgroundImagesKeep(tmp_bg, 0);
 	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
 	     DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
 	     autosave();
 	  }
-	if (bglist)
-	   Efree(bglist);
+	Efree(bglist);
 	break;
 
      case ButtonRelease:
@@ -1792,11 +1894,10 @@ CB_DesktopTimeout(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 static void
 BGSettingsGoTo(Background * bg)
 {
-   Dialog             *bgd;
    Background        **bglist;
    int                 i, num;
 
-   if (!(bgd = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if (!FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG))
       return;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
@@ -1811,7 +1912,6 @@ BGSettingsGoTo(Background * bg)
 	     DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 	     DialogItemCallCallback(NULL, bg_sel_slider);
 	     tmp_bg_selected = i;
-	     BackgroundImagesKeep(tmp_bg, 0);
 	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
 	     tmp_bg_selected = -1;
 	     break;
@@ -2364,7 +2464,7 @@ SettingsBackground(Background * bg)
    DialogAddButton(d, _("OK"), CB_ConfigureBG, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0, DIALOG_BUTTON_APPLY);
    DialogAddButton(d, _("Close"), CB_ConfigureBG, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureBG, 2);
+   DialogSetExitFunction(d, CB_ConfigureBG, -1);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ConfigureBG, 0);
 
@@ -2373,13 +2473,6 @@ SettingsBackground(Background * bg)
    CB_DesktopMiniDisplayRedraw(NULL, 1, area);
    BG_RedrawView(0);
    BGSettingsGoTo(tmp_bg);
-   /* This is kind of a hack - somehow it loses the correct current desktop
-    * information when we actually open up the dialog box, so this
-    * should fix the atom which apparently gets clobbered somewhere
-    * above here
-    * --Mandrake
-    */
-   DeskRefresh(DesksGetCurrent());
 }
 
 /*
@@ -2568,7 +2661,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	     win = None;
 	     sscanf(p, "%lx", &win);
 	     if (win)
-		BackgroundApply(bg, win, 0);
+		BackgroundApply2(bg, win);
 	  }
      }
    else if (!strncmp(cmd, "cfg", 2))

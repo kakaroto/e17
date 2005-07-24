@@ -102,12 +102,14 @@ StartupWindowsCreate(void)
 	ImageclassApply(ic, b2, bw, bh, 0, 0, 0, 0, ST_UNKNWN);
      }
 
-   BackgroundApply(bg, win1, 1);
-   BackgroundApply(bg, win2, 1);
+   BackgroundSet(bg, win1, VRoot.w, VRoot.h);
+   BackgroundSet(bg, win2, VRoot.w, VRoot.h);
    BackgroundImagesFree(bg, 1);
 
    EobjMap(init_win1, 0);
    EobjMap(init_win2, 0);
+
+   EobjsRepaint();
 }
 
 void

@@ -835,7 +835,7 @@ DeskRefresh(int desk)
    if (!bg)
       return;
 
-   BackgroundApply(bg, EoGetWin(d), 1);
+   BackgroundSet(bg, EoGetWin(d), EoGetW(d), EoGetH(d));
    HintsSetRootInfo(EoGetWin(d),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
 }
@@ -1692,7 +1692,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	     bg = DeskGetBackground(i);
 	     if (bg)
-		BackgroundApply(DeskGetBackground(i), pmap, 0);
+		BackgroundApply(DeskGetBackground(i), pmap, 64, 48, 0);
 	     else
 	       {
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
