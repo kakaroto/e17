@@ -5,6 +5,7 @@
 #define EWL_ICONBOX_ICON_PADDING 15
 #define EWL_ICONBOX_MOVE_TOLERANCE 5
 #define EWL_ICONBOX_MINIMUM_SIZE 50
+#define LABEL_CHARS 10
 
 /**
  * @file ewl_iconbox.h
@@ -33,6 +34,8 @@ struct Ewl_IconBox_Icon
 	int drag;
 	int selected ;
 	Ewl_IconBox* icon_box_parent; /* Our reference upwards, kinda breaks OO conventions */
+	char* label;		      /*Our icon's full (unabbreviated) label) */
+	char* label_compressed;
 };
 
 
@@ -101,6 +104,7 @@ void ewl_iconbox_editable_set(Ewl_IconBox *ib, int edit);
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib);
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file);
+void ewl_iconbox_clear(Ewl_IconBox* iconbox);
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename);
 
 

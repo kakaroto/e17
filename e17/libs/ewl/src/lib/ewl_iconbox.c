@@ -233,6 +233,8 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	/* Ewl Entry for the purposes of label editing - if enabled */
 	ib->entry = ewl_entry_new("Test");
 	ewl_text_text_set(EWL_TEXT(ib->entry), "Test");
+
+
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(EWL_ENTRY(ib->entry)->cursor), 50);
 	ewl_widget_show(ib->entry);
 	ib->entry_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
@@ -279,6 +281,34 @@ void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,700);
 }
 
+void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text) {
+	char* compressed;
+	
+	/*If we have a current label, nuke it*/
+	if (icon->label) {
+		free(icon->label);
+	}
+	
+	/*Copy the existing label to our icon*/
+	icon->label = strdup(text);
+
+	if (strlen(text) <= LABEL_CHARS) {
+		ewl_border_text_set(EWL_BORDER(icon), text);
+	} else {
+		if (icon->label_compressed) {
+			free(icon->label_compressed);
+		}
+		
+		compressed = malloc(sizeof(char) * LABEL_CHARS + 3);
+		strncpy(compressed, text, LABEL_CHARS);
+		strcpy(compressed+LABEL_CHARS, "..\0");
+		ewl_border_text_set(EWL_BORDER(icon),compressed);
+
+		icon->label_compressed = compressed;
+	}
+
+	
+}
 
 
 void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data) {
@@ -315,7 +345,7 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib) {
 
 	
 	
-	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner), &sw,&sh);
+	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &sw,&sh);
 	/*printf("   Ewl_IconBox -> We have %d*%d to work with\n", sw,sh);*/
 
 	/*Hack for now - get the biggest icon in the list - this is inefficient*/
@@ -355,7 +385,7 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib) {
 	 * the size of the scrollpane, which ever is bigger
 	 */
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), pw > maxx ? pw : maxx, ph > maxy+ih ? ph : maxy+ih);
+	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), pw > maxx ? pw +iw: maxx+iw, ph > maxy+ih ? ph+ih : maxy+ih);
 
 
 
@@ -552,8 +582,17 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *us
 }
 
 void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1= label */
+	int sel = ib->selected;
 	
-	if (ib->selected == 1 && loc == 1) {
+	if (!ib->icon_box_parent->drag_box) {
+		Ewl_IconBox_Icon* list_item;
+		ecore_list_goto_first(ib->icon_box_parent->ewl_iconbox_icon_list);
+		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->icon_box_parent->ewl_iconbox_icon_list)) != NULL) {
+			ewl_iconbox_icon_deselect(list_item);	
+		}
+	}
+	
+	if (sel && loc == 1) {
 		int w,h;
 		int iw,ih;
 		int x,y;
@@ -580,19 +619,11 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 			
 	} else {
 		ewl_widget_hide(EWL_WIDGET(ib->icon_box_parent->entry_floater));
+		ewl_border_text_set(EWL_BORDER(ib), ib->label);
 	}
 
 	
 	/*TODO allow multiselect, as per a "select policy" set on widget create/init*/
-	
-	if (!ib->icon_box_parent->drag_box) {
-		Ewl_IconBox_Icon* list_item;
-		ecore_list_goto_first(ib->icon_box_parent->ewl_iconbox_icon_list);
-		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->icon_box_parent->ewl_iconbox_icon_list)) != NULL) {
-			ewl_iconbox_icon_deselect(list_item);	
-		}
-	}
-	
 	ib->selected = 1;
 
 	/*printf("Setting color..\n");*/
@@ -603,6 +634,11 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib) {
 	ib->selected = 0;
 	ewl_widget_color_set(EWL_WIDGET(EWL_BORDER(ib)->label), 0,0,0,255);
+
+	/*If we have a compressed label, set it now*/
+	if (ib->label_compressed) {
+		ewl_border_text_set(EWL_BORDER(ib), ib->label_compressed);
+	}
 }
 
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib) {
@@ -621,6 +657,18 @@ void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon) {
 	/*printf("Removing icon: %s", ewl_border_text_get(EWL_BORDER(icon)));*/
 }
 
+void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	ewl_widget_destroy(icon->image);
+	ewl_widget_destroy(icon->floater);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file) {
 	Ewl_Widget* ib;
 	/*ib = malloc(sizeof(Ewl_IconBox_Icon));*/
@@ -628,10 +676,17 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	ib = ewl_iconbox_icon_new();
 
+	/*ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
+			    ewl_iconbox_icon_destroy_cb, NULL);*/
+
 	EWL_ICONBOX_ICON(ib)->selected = 0;
 
 	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new(iconbox->ewl_iconbox_pane_inner);
-	ewl_border_text_set(EWL_BORDER(ib), name);
+
+	/*Set the label*/
+	ewl_iconbox_icon_label_set(EWL_ICONBOX_ICON(ib), name);
+	
+	
 	EWL_ICONBOX_ICON(ib)->icon_box_parent = iconbox; /* Set our parent */
 	
 	/*printf("Setting fill policy..\n");*/
@@ -657,7 +712,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	/* Find the enxt pos for this icon FIXME add this to layout engine */
 	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), nextx, 0);
-	nextx += 60;
+	nextx += 75;
 
 
 	/*Show*/
@@ -700,4 +755,32 @@ void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename) {
 	ewl_object_current_size_get(EWL_OBJECT(icon->image), &iw,&ih);
 	ewl_object_current_size_get(EWL_OBJECT(EWL_BORDER(icon)->label), &lw, &lh); /* Shouldn't access this directly, is there another way? */
 	ewl_object_minimum_size_set(EWL_OBJECT(icon->floater), iw, ih+lh);
+}
+
+void ewl_iconbox_clear(Ewl_IconBox* ib) {
+	Ewl_IconBox_Icon* list_item;
+	nextx = 0;
+
+	/*printf("*** Deleting all icons...\n");*/
+
+	if (ib->ewl_iconbox_icon_list) {
+		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+			/*printf("Deleting icon..\n");*/
+			if (list_item->label) {
+				free(list_item->label);
+			}
+			if (list_item->label_compressed) {
+				free(list_item->label_compressed);
+			}
+
+			ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
+			ewl_widget_destroy(EWL_WIDGET(list_item));		
+		}
+		/*printf("...dione\n");*/
+
+		ecore_list_destroy(ib->ewl_iconbox_icon_list);
+	}
+	
+	ib->ewl_iconbox_icon_list = ecore_list_new();
 }
