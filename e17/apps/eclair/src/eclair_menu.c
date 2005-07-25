@@ -182,8 +182,8 @@ void eclair_menu_popup_at_xy(Eclair_Menu *menu, int x, int y)
    }
    ecore_evas_move(menu->window, x, y);
    ecore_evas_show(menu->window);
-   evas_event_feed_mouse_move(menu->evas, -100000, -100000, NULL);
-   evas_event_feed_mouse_in(menu->evas, NULL);
+   evas_event_feed_mouse_move(menu->evas, -100000, -100000, ecore_x_current_time_get(), NULL);
+   evas_event_feed_mouse_in(menu->evas, ecore_x_current_time_get(), NULL);
    _eclair_menu_popped_menus = evas_list_append(_eclair_menu_popped_menus, menu);
 
    _eclair_menu_update_slide_timer(menu);
@@ -475,7 +475,7 @@ static int _eclair_menu_slide_timer_cb(void *data)
 
       //We feed a mouse move event since the relative position between
       //the mouse pointer and the menu window has changed
-      evas_event_feed_mouse_move(m->evas, _eclair_menu_mouse_x - x, _eclair_menu_mouse_y - y, NULL);
+      evas_event_feed_mouse_move(m->evas, _eclair_menu_mouse_x - x, _eclair_menu_mouse_y - y, ecore_x_current_time_get(), NULL);
    }
 
    return 1;
@@ -502,7 +502,7 @@ static int _eclair_menu_mouse_up_cb(void *data, int type, void *event)
       if (_eclair_menu_mouse_is_in(m))
       {
          pointer_over_menu = 1;
-         evas_event_feed_mouse_up(m->evas, mouse_event->button, EVAS_BUTTON_NONE, NULL);
+         evas_event_feed_mouse_up(m->evas, mouse_event->button, EVAS_BUTTON_NONE, mouse_event->time, NULL);
       }
    }
    if (!pointer_over_menu)
@@ -532,7 +532,7 @@ static int _eclair_menu_mouse_move_cb(void *data, int type, void *event)
          continue;
 
       ecore_evas_geometry_get(m->window, &menu_x, &menu_y, NULL, NULL);
-      evas_event_feed_mouse_move(m->evas, mouse_event->x - menu_x, mouse_event->y - menu_y, NULL);
+      evas_event_feed_mouse_move(m->evas, mouse_event->x - menu_x, mouse_event->y - menu_y, mouse_event->time, NULL);
       
       //Start to slide the menu window if we need
       _eclair_menu_update_slide_timer(m);
