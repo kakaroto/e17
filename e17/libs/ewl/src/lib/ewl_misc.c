@@ -371,6 +371,9 @@ static void ewl_init_parse_options(int *argc, char **argv)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	if (!argc || !argv)
+		DRETURN(DLEVEL_STABLE);
+
 	i = 0;
 	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
