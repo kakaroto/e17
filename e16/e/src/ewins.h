@@ -47,7 +47,6 @@ struct _ewin
 {
    EObj                o;
    char                type;
-   char                toggle;
    Window              win_container;
 
    const Border       *border;

@@ -951,12 +951,6 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 		 (ewin->state.maximized_vert == maxv))
 		goto done;
 
-	     if ((ewin->state.maximized_horz && !maxh) ||
-		 (ewin->state.maximized_vert && !maxv))
-		ewin->toggle = 1;
-	     else
-		ewin->toggle = 0;
-
 	     func(ewin, "available");
 	     EWMH_SetWindowState(ewin);
 	  }

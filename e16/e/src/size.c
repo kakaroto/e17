@@ -42,7 +42,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    if (!ewin)
       return;
 
-   if (ewin->toggle)
+   if (ewin->state.maximized_horz || ewin->state.maximized_vert)
      {
 	EwinMoveResize(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
 	ewin->lx = EoGetX(ewin);
@@ -51,8 +51,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	ewin->lh = ewin->client.h;
 	ewin->state.maximized_horz = 0;
 	ewin->state.maximized_vert = 0;
-	ewin->toggle = 0;
-	goto done;
+	return;
      }
 
    type = MAX_ABSOLUTE;		/* Select default */
@@ -170,9 +169,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
    EwinMoveResize(ewin, x, y, w, h);
-   ewin->toggle = 1;
-
- done:;
 }
 
 void
