@@ -944,8 +944,8 @@ BackgroundGetTimestamp(const Background * bg)
    return bg->last_viewed;
 }
 
-static              Pixmap
-BackgroundCacheMini(Background * bg, int keep)
+static Imlib_Image *
+BackgroundCacheMini(Background * bg, int keep, int nuke)
 {
    char                s[4096];
    Imlib_Image        *im;
@@ -953,6 +953,18 @@ BackgroundCacheMini(Background * bg, int keep)
 
    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png", EDirUserCache(),
 	     BackgroundGetName(bg));
+
+   im = ELoadImage(s);
+   if (im)
+     {
+	imlib_context_set_image(im);
+	if (nuke)
+	   imlib_free_image_and_decache();
+	else
+	   goto done;
+     }
+
+   /* Create new cached bg mini image */
    pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
    BackgroundApply(bg, pmap, 64, 48, 0);
    imlib_context_set_drawable(pmap);
@@ -960,12 +972,13 @@ BackgroundCacheMini(Background * bg, int keep)
    imlib_context_set_image(im);
    imlib_image_set_format("png");
    imlib_save_image(s);
-   imlib_free_image_and_decache();
-
-   if (keep)
-      return pmap;
    EFreePixmap(pmap);
-   return None;
+
+ done:
+   if (keep)
+      return im;
+   imlib_free_image();
+   return NULL;
 }
 
 #define S(str) ((str) ? str : "(null)")
@@ -1438,6 +1451,7 @@ static DItem       *tmp_w[10];
 static Background  *tmp_bg;	/* The background being configured */
 static Pixmap       tmp_bg_mini_pixmap = None;
 static int          tmp_bg_sel_sliderval = 0;
+static int          tmp_bg_sel_sliderval_old = -1;
 static int          tmp_bg_r;
 static int          tmp_bg_g;
 static int          tmp_bg_b;
@@ -1452,7 +1466,7 @@ static char         tmp_hiq;
 static char         tmp_userbg;
 static int          tmp_bg_timeout;
 
-static void         BG_RedrawView(char nuke_old);
+static void         BG_RedrawView(void);
 
 static void
 CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1489,8 +1503,8 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 		DeskSetBg(i, tmp_bg, 1);
 	  }
 
-	BackgroundCacheMini(tmp_bg, 0);
-	BG_RedrawView(1);
+	BackgroundCacheMini(tmp_bg, 0, 1);
+	BG_RedrawView();
 
 	if (!tmp_bg_image)
 	   BackgroundImagesRemove(tmp_bg);
@@ -1610,7 +1624,7 @@ BgDialogSetNewCurrent(Background * bg)
    CB_DesktopMiniDisplayRedraw(NULL, 1, bg_mini_disp);
 
    /* Redraw scrolling BG list */
-   BG_RedrawView(0);
+   BG_RedrawView();
 
    for (i = 0; i < 10; i++)
       DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
@@ -1646,7 +1660,7 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
 
    DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
 
-   BG_RedrawView(0);
+   BG_RedrawView();
 
    autosave();
 }
@@ -1704,7 +1718,7 @@ CB_ConfigureFrontBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		    void *data __UNUSED__)
 {
    MoveItemToListTop(tmp_bg, LIST_TYPE_BACKGROUND);
-   BG_RedrawView(0);
+   BG_RedrawView();
    autosave();
 }
 
@@ -1712,7 +1726,7 @@ static int          tmp_bg_selected = -1;
 
 /* Draw the scrolling background image window */
 static void
-BG_RedrawView(char nuke_old)
+BG_RedrawView(void)
 {
    int                 num, i;
    Background        **bglist;
@@ -1742,10 +1756,8 @@ BG_RedrawView(char nuke_old)
      {
 	if (((x + 64 + 8) >= 0) && (x < w))
 	  {
-	     Pixmap              p2;
 	     ImageClass         *ic;
 	     Imlib_Image        *im;
-	     char                s[4096];
 
 	     ic = ImageclassFind("DIALOG_BUTTON", 0);
 	     if (ic)
@@ -1781,31 +1793,13 @@ BG_RedrawView(char nuke_old)
 	       }
 	     else
 	       {
-		  Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png",
-			    EDirUserCache(), BackgroundGetName(bglist[i]));
-		  im = ELoadImage(s);
-		  if (!im)
+		  im = BackgroundCacheMini(bglist[i], 1, 0);
+		  if (im)
 		    {
-		       p2 = BackgroundCacheMini(bglist[i], 1);
-		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
-		       EFreePixmap(p2);
-		    }
-		  else
-		    {
-		       if (nuke_old)
-			 {
-			    imlib_context_set_image(im);
-			    imlib_free_image_and_decache();
-			    im = ELoadImage(s);
-			 }
-		       if (im)
-			 {
-			    imlib_context_set_image(im);
-			    imlib_context_set_drawable(pmap);
-			    imlib_render_image_on_drawable_at_size(x + 4, 4, 64,
-								   48);
-			    imlib_free_image();
-			 }
+		       imlib_context_set_image(im);
+		       imlib_context_set_drawable(pmap);
+		       imlib_render_image_on_drawable_at_size(x + 4, 4, 64, 48);
+		       imlib_free_image();
 		    }
 	       }
 	  }
@@ -1821,7 +1815,10 @@ BG_RedrawView(char nuke_old)
 static void
 CB_BGAreaSlide(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 {
-   BG_RedrawView(0);
+   if (tmp_bg_sel_sliderval == tmp_bg_sel_sliderval_old)
+      return;
+   BG_RedrawView();
+   tmp_bg_sel_sliderval_old = tmp_bg_sel_sliderval;
 }
 
 static void
@@ -1867,11 +1864,6 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
 	     autosave();
 	  }
 	Efree(bglist);
-	break;
-
-     case ButtonRelease:
-	tmp_bg_selected = -1;
-	BG_RedrawView(0);
 	break;
      }
 }
@@ -2471,7 +2463,7 @@ SettingsBackground(Background * bg)
    ShowDialog(d);
 
    CB_DesktopMiniDisplayRedraw(NULL, 1, area);
-   BG_RedrawView(0);
+   BG_RedrawView();
    BGSettingsGoTo(tmp_bg);
 }
 
