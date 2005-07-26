@@ -26,13 +26,16 @@ typedef struct Ewl_IconBox Ewl_IconBox;
 typedef struct Ewl_IconBox_Icon Ewl_IconBox_Icon;
 struct Ewl_IconBox_Icon
 {
-	Ewl_Border box;
+	Ewl_Box box;
 	
 	Ewl_Widget *image;
 	Ewl_Widget *floater;
-	/*Ewl_Widget *box;*/
+	Ewl_Widget *w_label;
+
+
 	int drag;
 	int selected ;
+
 	Ewl_IconBox* icon_box_parent; /* Our reference upwards, kinda breaks OO conventions */
 	char* label;		      /*Our icon's full (unabbreviated) label) */
 	char* label_compressed;
@@ -118,6 +121,7 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib);
 void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data);
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib);
 void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon*, char*);
 
 
 
