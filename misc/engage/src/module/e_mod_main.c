@@ -2202,6 +2202,7 @@ _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
      {
 	e_menu_activate_mouse(eb->menu, e_zone_current_get(eb->con),
 			      ev->output.x, ev->output.y, 1, 1,
+			      ev->timestamp,
 			      E_MENU_POP_DIRECTION_DOWN);
 	e_util_container_fake_mouse_up_all_later(eb->con);
      }
