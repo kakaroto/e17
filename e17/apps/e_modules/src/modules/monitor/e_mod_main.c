@@ -625,8 +625,7 @@ _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
      {
 	e_menu_activate_mouse(face->menu, e_zone_current_get(face->con),
 			      ev->output.x, ev->output.y, 1, 1,
-			      ev->timestamp,
-			      E_MENU_POP_DIRECTION_DOWN);
+			      E_MENU_POP_DIRECTION_DOWN,ev->timestamp);
 	e_util_container_fake_mouse_up_all_later(face->con);
      }
    /*
