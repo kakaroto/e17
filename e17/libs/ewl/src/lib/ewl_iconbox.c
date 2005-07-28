@@ -70,11 +70,12 @@ void configure (Ewl_Widget *w, void *ev_data, void *user_data) {
 
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 	
-	ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
+	
 
 	if (REALIZED(ib) && VISIBLE(ib)) { 
 		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure);
-		ewl_iconbox_icon_arrange(ib); 
+		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
+		/*ewl_iconbox_icon_arrange(ib); */
 		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
 	}
 }
@@ -682,20 +683,21 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 
 	/*printf("Setting color..\n");*/
 	
-	ewl_callback_call(EWL_WIDGET(ib->w_label), EWL_CALLBACK_APPEARANCE_CHANGED);
 }
 
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib) {
 	
 	ib->selected = 0;
+	ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 0, 255);
+
 
 	/*If we have a compressed label, set it now*/
 	if (ib->label_compressed) {
-		ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 0, 255);
 		ewl_iconbox_icon_label_set(ib, ib->label_compressed);
-		ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
-		ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255, strlen(ib->label_compressed));
 	}
+	ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
+	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255, strlen(ewl_text_text_get(EWL_TEXT(ib->w_label))));
+
 }
 
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib) {
