@@ -431,11 +431,11 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
                           free(back);
                        return;
                     }
-                  memcpy(buf, im->data + ((y + sy) * im->w) + sx,
+                  memcpy(buf, im->data + ((y + sy) * im->w),
                          im->w * hh * sizeof(DATA32));
                   __imlib_DataCmodApply(buf, dw, hh, im->w - dw, NULL, cmod);
-                  pointer = buf;
-                  jump = 0;
+                  pointer = buf + sx;
+                  jump = im->w - sw;
                }
              else
                {
