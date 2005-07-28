@@ -55,6 +55,63 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    /* go thru the XImage and convert */
    if (xim->bits_per_pixel == 32)
       depth = 32;
+   /* data needs swapping */
+#define SWAP32(x) (x) = \
+   ((((int)(x) & 0x000000ff ) << 24) |\
+       (((int)(x) & 0x0000ff00 ) << 8) |\
+       (((int)(x) & 0x00ff0000 ) >> 8) |\
+       (((int)(x) & 0xff000000 ) >> 24))
+#define SWAP16(x) (x) = \
+   ((((short)(x) & 0x00ff ) << 8) |\
+       (((short)(x) & 0xff00 ) >> 8))
+   
+#ifdef WORDS_BIGENDIAN
+   if (xim->bitmap_bit_order == LSBFirst)
+#else
+   if (xim->bitmap_bit_order == MSBFirst)
+#endif
+       {
+	  switch (depth)
+	    {
+	     case 0:
+	     case 1:
+	     case 2:
+	     case 3:
+	     case 4:
+	     case 5:
+	     case 6:
+	     case 7:
+	     case 8:
+	       break;
+	     case 15:
+	     case 16:
+	       for (y = 0; y < h; y++)
+		 {
+		    unsigned short *tmp;
+		    tmp = (unsigned short *)(xim->data + (xim->bytes_per_line * y));
+		    for (x = 0; x < w; x++)
+		      {
+			 SWAP16(*tmp);
+			 tmp++;
+		      }
+		 }
+	     case 24:
+	     case 32:
+	       for (y = 0; y < h; y++)
+		 {
+		    unsigned int *tmp;
+		    tmp = (unsigned int *)(xim->data + (xim->bytes_per_line * y));
+		    for (x = 0; x < w; x++)
+		      {
+			 SWAP32(*tmp);
+			 tmp++;
+		      }
+		 }
+	       break;
+	     default:
+	       break;
+	    }
+       }
    switch (depth)
      {
        case 0:

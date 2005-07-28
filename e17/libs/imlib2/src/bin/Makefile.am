@@ -6,7 +6,7 @@ INCLUDES = \
 @my_includes@
 
 if BUILD_X11
-X_BASED_PROGS = imlib2_show imlib2_test imlib2_bumpmap imlib2_poly imlib2_colorspace imlib2_view
+X_BASED_PROGS = imlib2_show imlib2_test imlib2_bumpmap imlib2_poly imlib2_colorspace imlib2_view imlib2_grab
 endif
 
 bin_PROGRAMS = \
@@ -33,3 +33,6 @@ imlib2_colorspace_LDADD   = $(top_builddir)/src/lib/libImlib2.la
 
 imlib2_view_SOURCES = imlib2_view.c
 imlib2_view_LDADD   = $(top_builddir)/src/lib/libImlib2.la
+
+imlib2_grab_SOURCES = imlib2_grab.c
+imlib2_grab_LDADD   = $(top_builddir)/src/lib/libImlib2.la
