@@ -6,12 +6,14 @@ argb.la
 bmp.la
 bz2.la
 gif.la
+id3.la
 jpeg.la
 lbm.la
 loader_argb.lo
 loader_bmp.lo
 loader_bz2.lo
 loader_gif.lo
+loader_id3.lo
 loader_jpeg.lo
 loader_lbm.lo
 loader_png.lo
