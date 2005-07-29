@@ -129,7 +129,6 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 {
    Imlib_Image        *im;
    Pixmap              pmap, mask;
-   GC                  gc;
 
    scale = (scale) ? 2 : 1;
 
@@ -138,17 +137,15 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 						scale * dw, scale * dh, 0, 0);
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(1);
-   imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
+   imlib_context_set_drawable(dst);
    if (pdst)
      {
+	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
 	*pdst = pmap;
      }
    else
      {
-	gc = ECreateGC(dst, 0, NULL);
-	XCopyArea(disp, pmap, dst, gc, 0, 0, dw, dh, dx, dy);
-	EFreeGC(gc);
-	imlib_free_pixmap_and_mask(pmap);
+	imlib_render_image_on_drawable_at_size(dx, dy, dw, dh);
      }
    imlib_free_image();
 }
@@ -1023,10 +1020,12 @@ PagerHiwinHide(Pager * p __UNUSED__)
    if (phi)
      {
 	if (EoIsShown(phi))
-	   EoUnmap(phi);
+	  {
+	     GrabPointerRelease();
+	     EoUnmap(phi);
+	  }
 	phi->ewin = NULL;
 	phi->p = NULL;
-	Mode.mode = MODE_NONE;
 	if (Mode_pagers.zoom_old <= 2)
 	   Mode_pagers.zoom_old = 0;
      }
@@ -1060,8 +1059,6 @@ PagerHiwinShow(Pager * p, EWin * ewin)
    GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, !Mode.wm.window);
    phi->ewin = ewin;
    phi->p = p;
-   Mode.mode = MODE_PAGER_DRAG_PENDING;
-   PagerEwinGroupSet();
 }
 
 typedef struct
@@ -1658,6 +1655,8 @@ PagerHandleMouseDown(Pager * p, int px, int py, int button)
 	if ((ewin) && (ewin->type != EWIN_TYPE_PAGER))
 	  {
 	     PagerHiwinShow(p, ewin);
+	     Mode.mode = MODE_PAGER_DRAG_PENDING;
+	     PagerEwinGroupSet();
 	  }
      }
 }
@@ -1709,8 +1708,6 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
    Eprintf("PagerHiwinHandleMouseUp m=%d d=%d x,y=%d,%d\n", Mode.mode,
 	   p->desktop, px, py);
 #endif
-
-   GrabPointerRelease();
 
    if (Mode.mode != MODE_PAGER_DRAG)
      {
