@@ -24,10 +24,10 @@ usage(const char *myname)
 {
     printf("Usage: %s [options] input.jpg thumb.jpg\n"
 	   " -v,  --verbose\n"
-	   " -w,  --width=<width>[%]   set thumbnail width [% of input]\n"
-	   " -h,  --height=<heigth>[%] set thumbnail heigth [% of input]\n"
-	   " -m,  --max=<maximum>      reduce max(w,h) to maximum, with aspect preserved\n"
-	   " -c,  --comment=<comment>  put a comment in thumbnail\n", myname);
+	   " -w,  --width=<width>[%%]   set thumbnail width [%% of input]\n"
+	   " -h,  --height=<heigth>[%%] set thumbnail heigth [%% of input]\n"
+	   " -m,  --max=<maximum>       reduce max(w,h) to maximum, with aspect preserved\n"
+	   " -c,  --comment=<comment>   put a comment in thumbnail\n", myname);
     exit(0);
 }
 
@@ -135,7 +135,6 @@ main(int argc, char **argv)
        }
 
        if (max_dimension > 0) {
-	   int m;
 	   if (w > h) {
 	       thumb_width = max_dimension;
 	       thumb_height = max_dimension * h / w;

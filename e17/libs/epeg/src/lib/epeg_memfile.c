@@ -27,7 +27,7 @@ _epeg_memfile_read_close(FILE *f)
 #endif   
 }
 
-
+#ifndef HAVE_OPEN_MEMSTREAM
 typedef struct _Eet_Memfile_Write_Info Eet_Memfile_Write_Info;
 struct _Eet_Memfile_Write_Info
 {
@@ -39,6 +39,7 @@ struct _Eet_Memfile_Write_Info
 static int                     _epeg_memfile_info_alloc_num = 0;
 static int                     _epeg_memfile_info_num       = 0;
 static Eet_Memfile_Write_Info *_epeg_memfile_info           = NULL;
+#endif
 
 FILE *
 _epeg_memfile_write_open(void **data, size_t *size)
