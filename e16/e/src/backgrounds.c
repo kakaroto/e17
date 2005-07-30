@@ -410,7 +410,8 @@ BackgroundSetColorMofifier(Background * bg, ColorModifierClass * cm)
 #endif
 
 static void
-BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
+BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
+		unsigned int *pw, unsigned int *ph)
 {
    int                 w, h;
 
@@ -445,8 +446,8 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
 	  }
      }
 
-   *pw = w;
-   *ph = h;
+   *pw = (unsigned int)w;
+   *ph = (unsigned int)h;
 }
 
 static void
@@ -532,7 +533,6 @@ BackgroundApply(Background * bg, Drawable draw,
 {
    Pixmap              pmap;
    GC                  gc;
-
    int                 rt;
    int                 x, y;
    unsigned int        w, h, ww, hh;
