@@ -1,4 +1,4 @@
-Summary:	Enlightenment theme: ShinyMetal
+Summary:	Enlightenment theme: winter
 Name:		e16-theme-winter
 Version:	0.16.8
 Release:	0.%(date '+%y%m%d')

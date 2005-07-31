@@ -1,4 +1,4 @@
-%define revision 0.02
+%define revision 0.03
 %define rev_name -%{revision}
 
 Summary:	Enlightenment theme: ShinyMetal
