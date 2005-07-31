@@ -4,6 +4,8 @@
   - Enable not redirecting certain clients.
   - Redirect override-redirect windows at create in stead of map?
 
+- Slideouts are broken.
+
 - Speed up window stacking.
 
 - netwm hints

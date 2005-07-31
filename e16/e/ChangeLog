@@ -3490,3 +3490,31 @@ Fix shading of shaped windows.
 Stuff for grabbing redirected windows.
 Enable showing offscreen windows via pager.
 Map virtual roots at creation (before creating named pixmaps for clients).
+
+-------------------------------------------------------------------------------
+
+Sun Jul 31 15:42:20 CEST 2005
+(Kim)
+
+--- 0.16.8 0.15 ---
+Fix sharp shadow bug.
+Fix "focus prev". Enable using up/down arrow keys with focus list.
+Iconox update tweak.
+Pager click fixes.
+Fix "Restart application on login" when WM_COMMAND is on group window.
+Urgency tweak.
+Add string splitting function. Rename string list functions.
+Fix bad _NET_WM_ICON consistency check.
+Fix segv on pager close.
+Fix focus to none.
+Fix composite manager enable/disable.
+Update default theme.
+Fix bad window sizing during unshade.
+Background generation tweaks, background selector speedups.
+Fix ugliness when deiconifying with composite enabled.
+Add override-redirect window translucency.
+Translucent resizing.
+Background generation tweaks, background selector speedups.
+Add .png to cached image file names.
+Fix bug when dragging window through edge flip. Minor pager scan speedup.
+
