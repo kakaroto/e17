@@ -1,6 +1,7 @@
 
 #include <Ecore.h>
 #include <Evas.h>
+#include <Edje.h>
 
 typedef struct _Chart_Container Chart_Container;
 typedef struct _Flow_Chart Flow_Chart;

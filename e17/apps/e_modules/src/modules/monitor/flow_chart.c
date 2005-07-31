@@ -7,7 +7,8 @@ flow_chart_timer(void *data)
 {
   Flow_Chart *chart = (Flow_Chart *)data;
 
-  Evas_Object *o, *last;
+  Evas_Object *o;
+  Evas_Object *last = NULL;
   Evas_List *l;
   int i, j = 0;
   int value = 0, text_value = 0;
@@ -64,7 +65,7 @@ flow_chart_timer(void *data)
 
   for(i = x+w; l && j - 2 < w - dist_right - dist_left; l = l->next, j++)
     {
-      Evas_Coord x,y;
+      Evas_Coord y;
       Evas_Object *lo;
 
       lo = (Evas_Object *)evas_list_data(l);

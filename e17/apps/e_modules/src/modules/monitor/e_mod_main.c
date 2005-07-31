@@ -9,23 +9,72 @@ static void    _monitor_config_menu_new(Monitor *monitor);
 
 static Monitor_Face *_monitor_face_new(E_Container *con);
 static void    _monitor_face_free(Monitor_Face *face);
+/*
 static void    _monitor_face_enable(Monitor_Face *face);
 static void    _monitor_face_disable(Monitor_Face *face);
+*/
 static void    _monitor_face_menu_new(Monitor_Face *face);
 static void    _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, 
 					   E_Gadman_Change change);
+Config_Face *  _monitor_face_config_init(Config_Face *conf);
+static int     _monitor_face_config_cb_timer(void *data);
+static void _monitor_mem_real_ignore_buffers_set_cb(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_mem_real_ignore_cached_set_cb(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+
+static void _monitor_mem_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_mem_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_mem_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_mem_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_mem_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+
+static void _monitor_cpu_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_cpu_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_cpu_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_cpu_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_cpu_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+
+static void _monitor_net_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_net_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_net_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_net_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_net_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_net_interface_cb(void *data, E_Menu *m,
+		                          E_Menu_Item *mi);
+
+
 static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 					void *event_info);
+/*
 static void _monitor_face_cb_menu_enabled(void *data, E_Menu *m, 
 					  E_Menu_Item *mi);
+*/
 static void _monitor_face_cb_menu_edit(void *data, E_Menu *m, 
 				       E_Menu_Item *mi);
+/*
 static void _monitor_face_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, 
 				      void *event_info);
 static void _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, 
 				       void *event_info);
 static void _monitor_face_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, 
 					void *event_info);
+*/
 
 static void _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data);
@@ -37,6 +86,12 @@ static int _monitor_count;
 
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
+
+static Flow_Chart *flow_chart_cpu;
+static Flow_Chart *flow_chart_net_in;
+static Flow_Chart *flow_chart_net_out;
+static Flow_Chart *flow_chart_mem_real;
+static Flow_Chart *flow_chart_mem_swap;
 
 /* public module routines. all modules must have these */
 void *
@@ -100,10 +155,34 @@ e_modapi_info(E_Module *module)
 int
 e_modapi_about(E_Module *module)
 {
-   e_error_dialog_show("Enlightenment Button Module",
+   e_error_dialog_show("Enlightenment Monitor Module",
 		       "A simple module to give E17 a usage monitor "
 		       "for some resources.");
    return 1;
+}
+
+static int     
+_monitor_face_config_cb_timer(void *data)
+{
+   e_error_dialog_show(_("Configuration Upgraded"),
+		         data);
+   return 0;
+}
+
+Config_Face *
+_monitor_face_config_init(Config_Face *conf)
+{
+   if (!conf) return NULL;
+   conf->config_version = MONITOR_CONFIG_VERSION;
+   conf->enabled = 1;
+   conf->cpu_interval = 1.0;
+   conf->mem_interval = 1.0;
+   conf->net_interval = 1.0;
+   conf->net_interface = strdup("eth0");
+   conf->mem_real_ignore_cached = 0;
+   conf->mem_real_ignore_buffers = 0;
+
+   return conf;
 }
 
 /* module private routines */
@@ -123,7 +202,14 @@ _monitor_new()
 #undef D
 #define T Config_Face
 #define D conf_face_edd
+   E_CONFIG_VAL(D, T, config_version, INT);
    E_CONFIG_VAL(D, T, enabled, INT);
+   E_CONFIG_VAL(D, T, cpu_interval, DOUBLE);
+   E_CONFIG_VAL(D, T, mem_interval, DOUBLE);
+   E_CONFIG_VAL(D, T, net_interval, DOUBLE);
+   E_CONFIG_VAL(D, T, net_interface, STR);
+   E_CONFIG_VAL(D, T, mem_real_ignore_cached, INT);
+   E_CONFIG_VAL(D, T, mem_real_ignore_buffers, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Monitor_Config", Config);
 #undef T
@@ -161,7 +247,7 @@ _monitor_new()
 		  if (!cl)
 		    {
 		       face->conf = E_NEW(Config_Face, 1);
-		       face->conf->enabled = 1;
+		       face->conf = _monitor_face_config_init(face->conf);
 
 		       monitor->conf->faces = 
 			 evas_list_append(monitor->conf->faces, face->conf);
@@ -169,6 +255,15 @@ _monitor_new()
 		  else
 		    {
 		       face->conf = cl->data;
+		       if (face->conf->config_version != MONITOR_CONFIG_VERSION)
+		          {
+			     face->conf = E_NEW(Config_Face, 1);
+		             face->conf = _monitor_face_config_init(face->conf);
+			     ecore_timer_add(1.0, _monitor_face_config_cb_timer,
+					     _("Configuration data needed upgrading. Your old configuration\n"
+					       "has been removed. Please reset your setting for the monitor\n"
+					       "module. Sorry for the inconvenience.\n"));
+			  }
 		       cl = cl->next;
 		    }
 
@@ -182,8 +277,35 @@ _monitor_new()
 		  e_menu_item_submenu_set(mi, face->menu);
 
 		  /* Setup */
+		  /*
 		  if (!face->conf->enabled)
 		    _monitor_face_disable(face);
+		    */
+
+		  /* 
+		   * Now that init is done, set up intervals,
+		   * interfaces, and memory monitor parameters
+		   * according to the configuration.
+		   */
+		  mem_real_ignore_buffers_set(
+				  face->conf->mem_real_ignore_buffers);
+		  mem_real_ignore_cached_set(
+				  face->conf->mem_real_ignore_cached);
+		  
+		  net_interface_set(
+				  face->conf->net_interface);
+
+		  flow_chart_update_rate_set(flow_chart_cpu,
+				  face->conf->cpu_interval);
+		  flow_chart_update_rate_set(flow_chart_mem_real,
+				  face->conf->mem_interval);
+		  flow_chart_update_rate_set(flow_chart_mem_swap,
+				  face->conf->mem_interval);
+		  flow_chart_update_rate_set(flow_chart_net_in,
+				  face->conf->net_interval);
+		  flow_chart_update_rate_set(flow_chart_net_out,
+				  face->conf->net_interval);
+		  
 	       }
 	  }
      }
@@ -221,8 +343,16 @@ _monitor_face_new(E_Container *con)
    Monitor_Face *face;
    Evas_Object *o;
 
+   /* 
+    * Configuration cannot be used yet as the face config 
+    * is not initialized. Everything will be updated after 
+    * the init is complete.
+    */
+   double tmp_cpu_interval = 1.0;
+   double tmp_mem_interval = 1.0;
+   double tmp_net_interval = 1.0;
+
    Chart_Container *chart_con;
-   Flow_Chart *flow_chart;
 
    face = E_NEW(Monitor_Face, 1);
    if (!face) return NULL;
@@ -232,11 +362,6 @@ _monitor_face_new(E_Container *con)
    
    evas_event_freeze(con->bg_evas);
    
-   /* setup intervals */
-   face->cpu_rate = 1.0;
-   face->mem_rate = 1.0;
-   face->net_rate = 1.0;
-
    /* setup monitor object */
    o = edje_object_add(con->bg_evas);
    face->monitor_object = o;
@@ -264,13 +389,13 @@ _monitor_face_new(E_Container *con)
    evas_object_show(o);
    /* add cpu chart */
    chart_con = chart_container_new(con->bg_evas,0,0,0,0);
-   flow_chart = flow_chart_new();
-   flow_chart_color_set(flow_chart, 33, 100, 220, 255);
-   flow_chart_get_value_function_set(flow_chart, cpu_usage_get);
-   flow_chart_update_rate_set(flow_chart, face->cpu_rate);
-   chart_container_chart_add(chart_con, flow_chart);
+   flow_chart_cpu = flow_chart_new();
+   flow_chart_color_set(flow_chart_cpu, 33, 100, 220, 255);
+   flow_chart_get_value_function_set(flow_chart_cpu, cpu_usage_get);
+   flow_chart_update_rate_set(flow_chart_cpu, tmp_cpu_interval);
+   chart_container_chart_add(chart_con, flow_chart_cpu);
    face->chart_cpu = chart_con;   
-   flow_chart_callback_set(flow_chart, _monitor_cpu_text_update_callcack, face);
+   flow_chart_callback_set(flow_chart_cpu, _monitor_cpu_text_update_callcack, face);
    
    o = evas_object_rectangle_add(con->bg_evas);
    face->cpu_ev_obj = o;
@@ -291,23 +416,23 @@ _monitor_face_new(E_Container *con)
    evas_object_show(o);
    /* add mem charts */
    chart_con = chart_container_new(con->bg_evas,0,0,0,0);
-   flow_chart = flow_chart_new();
-   flow_chart_color_set(flow_chart, 213, 91, 91, 255);
-   flow_chart_get_value_function_set(flow_chart, mem_real_usage_get);
-   flow_chart_update_rate_set(flow_chart, face->mem_rate);
-   chart_container_chart_add(chart_con, flow_chart);
+   flow_chart_mem_real = flow_chart_new();
+   flow_chart_color_set(flow_chart_mem_real, 213, 91, 91, 255);
+   flow_chart_get_value_function_set(flow_chart_mem_real, mem_real_usage_get);
+   flow_chart_update_rate_set(flow_chart_mem_real, tmp_mem_interval);
+   chart_container_chart_add(chart_con, flow_chart_mem_real);
    face->chart_mem = chart_con;   
-   flow_chart_callback_set(flow_chart, _monitor_mem_real_text_update_callback, 
-			   face);
+   flow_chart_callback_set(flow_chart_mem_real, 
+		           _monitor_mem_real_text_update_callback, face);
 
-   flow_chart = flow_chart_new();
-   flow_chart_color_set(flow_chart, 51, 181, 69, 255);
-   flow_chart_get_value_function_set(flow_chart, mem_swap_usage_get);
-   flow_chart_update_rate_set(flow_chart, face->mem_rate);
-   flow_chart_alignment_set(flow_chart, 0);
-   chart_container_chart_add(chart_con, flow_chart);
-   flow_chart_callback_set(flow_chart, _monitor_mem_swap_text_update_callback, 
-			   face);
+   flow_chart_mem_swap = flow_chart_new();
+   flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 255);
+   flow_chart_get_value_function_set(flow_chart_mem_swap, mem_swap_usage_get);
+   flow_chart_update_rate_set(flow_chart_mem_swap, tmp_mem_interval);
+   flow_chart_alignment_set(flow_chart_mem_swap, 0);
+   chart_container_chart_add(chart_con, flow_chart_mem_swap);
+   flow_chart_callback_set(flow_chart_mem_swap, 
+		           _monitor_mem_swap_text_update_callback, face);
 
 
    o = evas_object_rectangle_add(con->bg_evas);
@@ -329,23 +454,23 @@ _monitor_face_new(E_Container *con)
    evas_object_show(o);
    /* add net charts */
    chart_con = chart_container_new(con->bg_evas,0,0,0,0);
-   flow_chart = flow_chart_new();
-   flow_chart_color_set(flow_chart, 213, 91, 91, 255);
-   flow_chart_get_value_function_set(flow_chart, net_in_usage_get);
-   flow_chart_update_rate_set(flow_chart, face->net_rate);
-   chart_container_chart_add(chart_con, flow_chart);
+   flow_chart_net_in = flow_chart_new();
+   flow_chart_color_set(flow_chart_net_in, 213, 91, 91, 255);
+   flow_chart_get_value_function_set(flow_chart_net_in, net_in_usage_get);
+   flow_chart_update_rate_set(flow_chart_net_in, tmp_net_interval);
+   chart_container_chart_add(chart_con, flow_chart_net_in);
    face->chart_net = chart_con;   
-   flow_chart_callback_set(flow_chart, _monitor_net_in_text_update_callcack, 
-			   face);
+   flow_chart_callback_set(flow_chart_net_in, 
+		           _monitor_net_in_text_update_callcack, face);
    
-   flow_chart = flow_chart_new();
-   flow_chart_color_set(flow_chart, 51, 181, 69, 255);
-   flow_chart_get_value_function_set(flow_chart, net_out_usage_get);
-   flow_chart_update_rate_set(flow_chart, face->net_rate);
-   flow_chart_alignment_set(flow_chart, 0);
-   chart_container_chart_add(chart_con, flow_chart);
-   flow_chart_callback_set(flow_chart, _monitor_net_out_text_update_callcack, 
-			   face);
+   flow_chart_net_out = flow_chart_new();
+   flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 255);
+   flow_chart_get_value_function_set(flow_chart_net_out, net_out_usage_get);
+   flow_chart_update_rate_set(flow_chart_net_out, tmp_net_interval);
+   flow_chart_alignment_set(flow_chart_net_out, 0);
+   chart_container_chart_add(chart_con, flow_chart_net_out);
+   flow_chart_callback_set(flow_chart_net_out, 
+		           _monitor_net_out_text_update_callcack, face);
 
 
    o = evas_object_rectangle_add(con->bg_evas);
@@ -394,16 +519,16 @@ _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data)
   Monitor_Face *face;
   char buf[64];
 
-  long bytes = mem_real_get();
+  long kbytes = mem_real_get();
 
   face = data;
   
-  if (bytes > 1048576 )
-    snprintf(buf, 64, "%ldMB", bytes/1048576);
-  else if (bytes > 1024 && bytes < 1048576 )
-    snprintf(buf, 64, "%ldKB", bytes/1024);
+  if (kbytes > 1048576 )
+    snprintf(buf, 64, "%ldGB", kbytes/1048576);
+  else if (kbytes > 1024 && kbytes < 1048576 )
+    snprintf(buf, 64, "%ldMB", kbytes/1024);
   else
-    snprintf(buf, 64, "%ldB", bytes);
+    snprintf(buf, 64, "%ldKB", kbytes);
   
   edje_object_part_text_set(face->mem, "mem-real-text", buf);
 }
@@ -414,16 +539,16 @@ _monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data)
   Monitor_Face *face;
   char buf[64];
 
-  long bytes = mem_swap_get();
+  long kbytes = mem_swap_get();
 
   face = data;
   
-  if (bytes > 1048576 )
-    snprintf(buf, 64, "%ldMB", bytes/1048576);
-  else if (bytes > 1024 && bytes < 1048576 )
-    snprintf(buf, 64, "%ldKB", bytes/1024);
+  if (kbytes > 1048576 )
+    snprintf(buf, 64, "%ldGB", kbytes/1048576);
+  else if (kbytes > 1024 && kbytes < 1048576 )
+    snprintf(buf, 64, "%ldMB", kbytes/1024);
   else
-    snprintf(buf, 64, "%ldB", bytes);
+    snprintf(buf, 64, "%ldKB", kbytes);
   
   edje_object_part_text_set(face->mem, "mem-swap-text", buf);
 }
@@ -488,13 +613,21 @@ _monitor_face_free(Monitor_Face *face)
    if (face->monitor_object) evas_object_del(face->monitor_object);
    if (face->table_object) evas_object_del(face->table_object);
 
+   e_object_del(E_OBJECT(face->menu_network_interface));
+   e_object_del(E_OBJECT(face->menu_network_interval));
+   e_object_del(E_OBJECT(face->menu_network));
+   e_object_del(E_OBJECT(face->menu_memory_interval));
+   e_object_del(E_OBJECT(face->menu_memory));
+   e_object_del(E_OBJECT(face->menu_cpu_interval));
+   e_object_del(E_OBJECT(face->menu_cpu));
    e_object_del(E_OBJECT(face->menu));
 
+   free(face->conf->net_interface);
    free(face->conf);
    free(face);
    _monitor_count--;
 }
-
+/*
 static void
 _monitor_face_enable(Monitor_Face *face)
 {
@@ -510,28 +643,214 @@ _monitor_face_disable(Monitor_Face *face)
    //evas_object_hide(face->reset_object);
    e_config_save_queue();
 }
-
+*/
 static void
 _monitor_face_menu_new(Monitor_Face *face)
 {
-   E_Menu *mn;
    E_Menu_Item *mi;
+   Ecore_List* interfaces = NULL;
+   int interface_count = 0;
+   char* interface_name = NULL;
 
-   mn = e_menu_new();
-   face->menu = mn;
-
-   /* Enabled 
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Enabled");
-   e_menu_item_check_set(mi, 1);
-   if (face->conf->enabled) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_face_cb_menu_enabled, face);
-   //*/
-
-   /* Edit */
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Edit Mode");
+   /* Setup Menus */
+   face->menu                   = e_menu_new();
+   face->menu_cpu               = e_menu_new();
+   face->menu_cpu_interval      = e_menu_new();
+   face->menu_memory            = e_menu_new();
+   face->menu_memory_interval   = e_menu_new();
+   face->menu_network           = e_menu_new();
+   face->menu_network_interval  = e_menu_new();
+   face->menu_network_interface = e_menu_new();
+   
+   /* Main Menu Items */
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("Edit Mode"));
    e_menu_item_callback_set(mi, _monitor_face_cb_menu_edit, face);
+
+   /* CPU Menu */
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("CPU"));
+   e_menu_item_icon_edje_set(mi, PACKAGE_LIB_DIR
+		             "/e_modules/monitor/monitor.edj",
+			     "monitor/menu/cpu");
+   e_menu_item_submenu_set(mi, face->menu_cpu);
+
+   mi = e_menu_item_new(face->menu_cpu);
+   e_menu_item_label_set(mi, _("Set Interval"));
+   e_menu_item_submenu_set(mi, face->menu_cpu_interval);
+
+   /* CPU Menu Items */
+   mi = e_menu_item_new(face->menu_cpu_interval);
+   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->cpu_interval == 1.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_fast, face);
+
+   mi = e_menu_item_new(face->menu_cpu_interval);
+   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->cpu_interval == 5.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_medium, face);
+
+   mi = e_menu_item_new(face->menu_cpu_interval);
+   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->cpu_interval == 10.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_normal, face);
+
+   mi = e_menu_item_new(face->menu_cpu_interval);
+   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->cpu_interval == 30.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_slow, face);
+
+   mi = e_menu_item_new(face->menu_cpu_interval);
+   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->cpu_interval == 60.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_very_slow, face);
+
+   /* Memory Menu */
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("Memory"));
+   e_menu_item_icon_edje_set(mi, PACKAGE_LIB_DIR
+		             "/e_modules/monitor/monitor.edj",
+			     "monitor/menu/mem");
+   e_menu_item_submenu_set(mi, face->menu_memory);
+
+   mi = e_menu_item_new(face->menu_memory);
+   e_menu_item_label_set(mi, _("Set Interval"));
+   e_menu_item_submenu_set(mi, face->menu_memory_interval);
+
+   /* Memory Interval Menu Items */
+   mi = e_menu_item_new(face->menu_memory_interval);
+   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->mem_interval == 1.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_fast, face);
+
+   mi = e_menu_item_new(face->menu_memory_interval);
+   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->mem_interval == 5.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_medium, face);
+
+   mi = e_menu_item_new(face->menu_memory_interval);
+   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->mem_interval == 10.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_normal, face);
+
+   mi = e_menu_item_new(face->menu_memory_interval);
+   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->mem_interval == 30.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_slow, face);
+
+   mi = e_menu_item_new(face->menu_memory_interval);
+   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->mem_interval == 60.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_very_slow, face);
+   
+   /* Memory Menu Items */
+   mi = e_menu_item_new(face->menu_memory);
+   e_menu_item_label_set(mi, _("Ignore Cached"));
+   e_menu_item_check_set(mi, 1);
+   if (face->conf->mem_real_ignore_cached) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_real_ignore_cached_set_cb, face);
+
+   mi = e_menu_item_new(face->menu_memory);
+   e_menu_item_label_set(mi, _("Ignore Buffers"));
+   e_menu_item_check_set(mi, 1);
+   if (face->conf->mem_real_ignore_buffers) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_mem_real_ignore_buffers_set_cb, face);
+
+   /* Network Menu */
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("Network"));
+   e_menu_item_icon_edje_set(mi, PACKAGE_LIB_DIR
+		             "/e_modules/monitor/monitor.edj",
+			     "monitor/menu/net");
+   e_menu_item_submenu_set(mi, face->menu_network);
+   
+   mi = e_menu_item_new(face->menu_network);
+   e_menu_item_label_set(mi, _("Set Interval"));
+   e_menu_item_submenu_set(mi, face->menu_network_interval);
+
+   mi = e_menu_item_new(face->menu_network);
+   e_menu_item_label_set(mi, _("Select Interface"));
+   e_menu_item_submenu_set(mi, face->menu_network_interface);
+
+   interfaces = ecore_list_new ();
+   interface_count = net_interfaces_get (interfaces);
+      
+   ecore_list_goto_first(interfaces);
+
+   while ((interface_name = ecore_list_current(interfaces)))
+      {
+
+         mi = e_menu_item_new(face->menu_network_interface);
+         e_menu_item_label_set(mi, _(interface_name));
+         e_menu_item_radio_set(mi, 1);
+         e_menu_item_radio_group_set(mi, 1);
+	 if (face->conf->net_interface)
+            if (!strcmp(face->conf->net_interface, interface_name))
+               e_menu_item_toggle_set(mi, 1);
+         e_menu_item_callback_set(mi, _monitor_net_interface_cb, face);
+
+	 free(interface_name);
+	 ecore_list_remove(interfaces);
+      }
+
+   ecore_list_destroy(interfaces);
+
+   /* Network Menu Items */
+   mi = e_menu_item_new(face->menu_network_interval);
+   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->net_interval == 1.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_net_interval_cb_fast, face);
+
+   mi = e_menu_item_new(face->menu_network_interval);
+   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->net_interval == 5.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_net_interval_cb_medium, face);
+
+   mi = e_menu_item_new(face->menu_network_interval);
+   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->net_interval == 10.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_net_interval_cb_normal, face);
+
+   mi = e_menu_item_new(face->menu_network_interval);
+   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->net_interval == 30.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_net_interval_cb_slow, face);
+
+   mi = e_menu_item_new(face->menu_network_interval);
+   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->net_interval == 60.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_net_interval_cb_very_slow, face);
+
 }
 
 static void
@@ -583,7 +902,7 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 	 break;
      }
 }
-
+/*
 static void
 _monitor_face_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -601,7 +920,7 @@ _monitor_face_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi)
 	_monitor_face_enable(face);
      }
 }
-
+*/
 static void
 _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -609,6 +928,59 @@ _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
+}
+
+static void
+_monitor_mem_real_ignore_buffers_set_cb(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+
+   face = data;
+   unsigned char enabled;
+
+   enabled = e_menu_item_toggle_get(mi);
+   
+   if (!enabled) {
+      /* Uncheck */
+      face->conf->mem_real_ignore_buffers = 0;
+      mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
+      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_buffers);
+   }
+   else
+   {
+      /* Check */
+      face->conf->mem_real_ignore_buffers = 1;
+      mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
+      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_buffers);
+   }
+   e_config_save_queue();
+}
+static void
+_monitor_mem_real_ignore_cached_set_cb(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{ 
+   Monitor_Face *face;
+
+   face = data;
+   unsigned char enabled;
+
+   enabled = e_menu_item_toggle_get(mi);
+   
+   if (!enabled) {
+      /* Uncheck */
+      face->conf->mem_real_ignore_cached = 0;
+      mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
+      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_cached);
+   }
+   else
+   {
+      /* Check */
+      face->conf->mem_real_ignore_cached = 1;
+      mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
+      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_cached);
+   }
+   e_config_save_queue();
 }
 
 static void
@@ -640,7 +1012,7 @@ _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
      }
    */
 }
-
+/*
 static void
 _monitor_face_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, 
 			  void *event_info)
@@ -651,4 +1023,206 @@ static void
 _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, 
 			   void *event_info)
 {
+}
+*/
+static void
+_monitor_mem_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->mem_interval = 1.0;
+   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_mem_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->mem_interval = 5.0;
+   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_mem_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->mem_interval = 10.0;
+   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_mem_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->mem_interval = 30.0;
+   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_mem_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->mem_interval = 60.0;
+   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_cpu_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->cpu_interval = 1.0;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_cpu_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->cpu_interval = 5.0;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_cpu_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->cpu_interval = 10.0;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_cpu_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->cpu_interval = 30.0;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_cpu_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->cpu_interval = 60.0;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interval = 1.0;
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interval = 5.0;
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interval = 10.0;
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interval = 30.0;
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interval = 60.0;
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_net_interface_cb(void *data, E_Menu *m,
+		                 E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->net_interface = strdup(mi->label);
+   net_interface_set(face->conf->net_interface);
+   e_config_save_queue();
 }

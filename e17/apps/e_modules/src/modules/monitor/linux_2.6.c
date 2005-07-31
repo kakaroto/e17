@@ -14,7 +14,7 @@ count_cpus(void)
     return -1;
 
   while (fscanf (stat, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", 
-			  &tmp) == 1)
+			  (char *)&tmp) == 1)
     {
 	cpu++;
     }
@@ -103,7 +103,7 @@ long  bytes_in  = 0;
 long  bytes_out = 0;
 int   in_usage = 0;
 int   out_usage = 0;
-
+int   interface_changed = 1;
 
 int
 get_net_input_output(unsigned long *in, unsigned long *out, const char *dev)
@@ -160,6 +160,19 @@ net_usage_get(void)
   
   unsigned long r_total = 0, t_total = 0;
 
+  if (interface_changed)
+     {
+        /* Interface Changed, reset counters! */
+        interface_changed = 0;
+        old_r_total = 0;
+	old_t_total = 0;
+	bytes_in    = 0;
+	bytes_out   = 0;
+	in_usage    = 0;
+	out_usage   = 0;
+	return;
+     }
+		  
   if ((get_net_input_output( &r_total, &t_total, net_dev)) == -1)
     {  
       in_usage = -1;
@@ -214,15 +227,74 @@ net_out_usage_get(void)
   return out_usage;
 }
 
+void net_interface_set(char* interface_name)
+{
+   /* Change Network Interface */
+   net_dev = interface_name;
+   interface_changed = 1;
+}
+
+int
+net_interfaces_get(Ecore_List * ifaces)
+{
+  unsigned long int   dummy;
+
+  char          *iface;
+  char           buf[256];
+  FILE          *stat;
+  int            iface_count = 0;
+  int x = 0;
+
+  stat = fopen ("/proc/net/dev", "r");
+  if (!stat) return 0;
+
+  while (fgets (buf, 256, stat))
+    {
+      int i = 0;
+
+      /* remove : */
+      for(; buf[i] != 0; i++)
+        if(buf[i] == ':')buf[i] = ' ';
+
+      iface = (char *)malloc(sizeof(char) * 64);
+      x = sscanf (buf, 
+		 "%s %*u %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu"
+		 "%lu %lu %lu %lu %lu\n", iface, &dummy, &dummy, 
+		 &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
+		 &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
+		 &dummy, &dummy);
+      if (x >= 16)
+      {
+	 ecore_list_append(ifaces, iface);
+	 iface_count++;
+      }
+    }
+  fclose (stat);
+
+  return iface_count;
+
+}
+
 long  mem_real  = 0;
 long  mem_swap  = 0;
 int   mem_real_usage = 0;
 int   mem_swap_usage = 0;
-
+int   mem_real_ignore_buffers = 0;
+int   mem_real_ignore_cached  = 0;
 
 /* Begin memory monitor code */
 
-void memory_check(int ignore_buffers, int ignore_cached)
+void mem_real_ignore_buffers_set(int ignore_buffers)
+{
+   mem_real_ignore_buffers = ignore_buffers;
+}
+
+void mem_real_ignore_cached_set(int ignore_cached)
+{
+   mem_real_ignore_cached = ignore_cached;
+}
+
+void memory_check(void)
 {
    FILE *pmeminfo = NULL;
    int cursor = 0;
@@ -251,11 +323,11 @@ void memory_check(int ignore_buffers, int ignore_cached)
 	 mtotal = value;
        else if (strcmp(field, "MemFree:") == 0)
 	 mfree = value;
-       else if (ignore_buffers && strcmp(field, "Buffers:") == 0)
+       else if (mem_real_ignore_buffers && strcmp(field, "Buffers:") == 0)
 	 mfree += value;
-       else if (ignore_cached && strcmp(field, "Cached:") == 0)
+       else if (mem_real_ignore_cached && strcmp(field, "Cached:") == 0)
 	 mfree += value;
-       else if (ignore_cached && strcmp(field, "SwapCached:") == 0)
+       else if (mem_real_ignore_cached && strcmp(field, "SwapCached:") == 0)
 	 sfree += value;
        else if (strcmp(field, "SwapTotal:") == 0)
 	 stotal = value;
@@ -307,10 +379,7 @@ mem_swap_get(void)
 int
 mem_real_usage_get(void)
 {
-  /* FIXME
-   * Need a menu option to change the ignore buffers and ignore cache options
-   */
-  memory_check(0, 0);
+  memory_check();
   return mem_real_usage;
 }
 
