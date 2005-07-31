@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	@PACKAGE_CFLAGS@ 
+	@PACKAGE_CFLAGS@
 
 bin_PROGRAMS = e16menuedit2
 

@@ -31,9 +31,9 @@
 #include <sys/types.h>
 #include <string.h>
 #include <stdarg.h>
+#include "callbacks.h"
 #include "e16menuedit2.h"
 #include "file.h"
-#include "callbacks.h"
 #include "e16menu.h"
 #include "treeview.h"
 

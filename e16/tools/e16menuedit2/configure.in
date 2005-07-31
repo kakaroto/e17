@@ -24,7 +24,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-pkg_modules="gtk+-2.0 >= 2.4.0 libglade-2.0 >= 2.3.6"
+pkg_modules="gtk+-2.0 >= 2.4.0 libglade-2.0 >= 2.3.6 gmodule-2.0 >= 0.17.2"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
