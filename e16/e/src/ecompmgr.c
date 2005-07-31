@@ -1854,8 +1854,8 @@ ECompMgrStart(void)
    allDamage = None;
    if (Conf_compmgr.mode != ECM_MODE_AUTO)
      {
-	ECompMgrDamageAll();
 #if 0				/* FIXME - Remove? */
+	ECompMgrDamageAll();
 	ECompMgrRepaint();
 #endif
      }
