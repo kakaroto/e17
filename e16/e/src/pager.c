@@ -24,6 +24,7 @@
 #include "E.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hiwin.h"
 #include "xwin.h"
 
 #define DEBUG_PAGER 0
@@ -36,7 +37,6 @@
 struct
 {
    int                 zoom;
-   int                 zoom_old;
 } Mode_pagers;
 
 struct _pager
@@ -59,14 +59,6 @@ struct _pager
    int                 x1, y1, x2, y2;
 };
 
-typedef struct
-{
-   EObj                o;
-   EWin               *ewin;
-   Pager              *p;
-   int                 xo, yo, wo, ho;
-} PagerHiwin;
-
 #define PAGER_EVENT_MOUSE_OUT -1
 #define PAGER_EVENT_MOTION     0
 #define PAGER_EVENT_MOUSE_IN   1
@@ -76,15 +68,14 @@ static void         PagerScanTimeout(int val, void *data);
 static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
-static void         PagerHiwinHide(Pager * p);
-static EWin        *PagerHiwinEwin(int check);
+static void         PagerHiwinHide(void);
 static void         PagerEwinGroupSet(void);
 static void         PagerEvent(XEvent * ev, void *prm);
 static void         PagerHiwinEvent(XEvent * ev, void *prm);
 
 static char         pager_update_pending = 0;
 
-static PagerHiwin  *hiwin = NULL;
+static Hiwin       *hiwin = NULL;
 
 static Pager       *
 PagerCreate(void)
@@ -114,7 +105,7 @@ PagerDestroy(Pager * p)
    if (p->name)
       Efree(p->name);
    EDestroyWindow(p->win);
-   PagerHiwinHide(p);
+   PagerHiwinHide();
    if (p->pmap != None)
       EFreePixmap(p->pmap);
    if (p->bgpmap != None)
@@ -137,7 +128,6 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
 						scale * dw, scale * dh, 0, 0);
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(1);
-   imlib_context_set_drawable(dst);
    if (pdst)
      {
 	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
@@ -145,6 +135,7 @@ ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
      }
    else
      {
+	imlib_context_set_drawable(dst);
 	imlib_render_image_on_drawable_at_size(dx, dy, dw, dh);
      }
    imlib_free_image();
@@ -247,7 +238,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
 
 #if 0				/* FIXME - Remove? */
 static void
-PagerHiwinUpdate(PagerHiwin * phi, Pager * p __UNUSED__, EWin * ewin)
+PagerHiwinUpdate(Hiwin * phi, Pager * p __UNUSED__, EWin * ewin)
 {
    Imlib_Image        *im;
 
@@ -267,7 +258,8 @@ PagerHiwinUpdate(PagerHiwin * phi, Pager * p __UNUSED__, EWin * ewin)
 static void
 PagerEwinUpdateMini(Pager * p, EWin * ewin)
 {
-   int                 w, h;
+   int                 w, h, use_iclass;
+   Drawable            draw;
 
    w = (EoGetW(ewin) * p->dw) / VRoot.w;
    h = (EoGetH(ewin) * p->dh) / VRoot.h;
@@ -277,30 +269,38 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    if (h < 1)
       h = 1;
 
-   if ((ewin->mini_w != w) || (ewin->mini_h != h))
+   if ((ewin->mini_w == w) && (ewin->mini_h == h))
+      return;
+
+   FreePmapMask(&ewin->mini_pmm);
+
+   ewin->mini_w = w;
+   ewin->mini_h = h;
+
+   use_iclass = 1;
+   if (Conf.pagers.snap)
      {
-	FreePmapMask(&ewin->mini_pmm);
+	draw = EoGetPixmap(ewin);
+	if (draw == None && EwinIsOnScreen(ewin))
+	   draw = EoGetWin(ewin);
+	use_iclass = draw == None;
+     }
 
-	ewin->mini_w = w;
-	ewin->mini_h = h;
+   if (use_iclass)
+     {
+	ImageClass         *ic = NULL;
 
-	if (!Conf.pagers.snap || !EwinIsOnScreen(ewin))
-	  {
-	     ImageClass         *ic = NULL;
-
-	     ic = ImageclassFind("PAGER_WIN", 0);
-	     if (ic)
-		ImageclassApplyCopy(ic, EoGetWin(ewin), w, h, 0, 0,
-				    STATE_NORMAL, &ewin->mini_pmm, 1,
-				    ST_UNKNWN);
-	  }
-	else
-	  {
-	     ewin->mini_pmm.type = 1;
-	     ewin->mini_pmm.mask = None;
-	     ScaleRect(EoGetWin(ewin), None, &ewin->mini_pmm.pmap, 0, 0,
-		       EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf.pagers.hiq);
-	  }
+	ic = ImageclassFind("PAGER_WIN", 0);
+	if (ic)
+	   ImageclassApplyCopy(ic, EoGetWin(ewin), w, h, 0, 0,
+			       STATE_NORMAL, &ewin->mini_pmm, 1, ST_UNKNWN);
+     }
+   else
+     {
+	ewin->mini_pmm.type = 1;
+	ewin->mini_pmm.mask = None;
+	ScaleRect(draw, None, &ewin->mini_pmm.pmap, 0, 0,
+		  EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf.pagers.hiq);
      }
 
 #if 0				/* FIXME - Remove? */
@@ -746,6 +746,8 @@ PagersCheckUpdate(void)
    for (i = 0; i < num; i++)
       PagerCheckUpdate(pl[i]);
 
+   pager_update_pending = 0;
+
    Efree(pl);
 }
 
@@ -817,8 +819,8 @@ PagersUpdateEwin(EWin * ewin, int gone)
    if (!gone && (!EoIsShown(ewin) || ewin->state.animated))
       return;
 
-   if (gone && ewin == PagerHiwinEwin(0))
-      PagerHiwinHide(NULL);
+   if (gone && ewin == HiwinGetEwin(hiwin, 0))
+      PagerHiwinHide();
 
    desk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
    PagersUpdate(desk, EwinGetVX(ewin), EwinGetVY(ewin),
@@ -900,18 +902,20 @@ PagerMenuShow(Pager * p, int x, int y)
    mi = MenuItemCreate(_("Pager Settings..."), NULL, "pg cfg", NULL);
    MenuAddItem(p_menu, mi);
 
-   mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg snap on", NULL);
-   MenuAddItem(p_menu, mi);
-
-   mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg snap off", NULL);
-   MenuAddItem(p_menu, mi);
-
    if (Conf.pagers.snap)
      {
-	mi = MenuItemCreate(_("High Quality On"), NULL, "pg hiq on", NULL);
+	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg snap off", NULL);
 	MenuAddItem(p_menu, mi);
 
-	mi = MenuItemCreate(_("High Quality Off"), NULL, "pg hiq off", NULL);
+	if (Conf.pagers.hiq)
+	   mi = MenuItemCreate(_("High Quality Off"), NULL, "pg hiq off", NULL);
+	else
+	   mi = MenuItemCreate(_("High Quality On"), NULL, "pg hiq on", NULL);
+	MenuAddItem(p_menu, mi);
+     }
+   else
+     {
+	mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg snap on", NULL);
 	MenuAddItem(p_menu, mi);
      }
 
@@ -986,66 +990,18 @@ PagerShowTt(EWin * ewin)
    tt_ewin = ewin;
 }
 
-static PagerHiwin  *
-PagerHiwinCreate(void)
-{
-   PagerHiwin         *phi;
-
-   phi = Ecalloc(1, sizeof(PagerHiwin));
-   if (!phi)
-      return NULL;
-
-   EobjInit(EoObj(phi), EOBJ_TYPE_MISC, None, 0, 0, 3, 3, 1, "HiWin");
-   EoSetShadow(phi, 0);
-   EoSetFloating(phi, 1);
-   EoSetLayer(phi, 19);
-   EventCallbackRegister(EoGetWin(phi), 0, PagerHiwinEvent, phi);
-   ESelectInput(EoGetWin(phi),
-		ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-		EnterWindowMask | LeaveWindowMask);
-
-   hiwin = phi;
-   return phi;
-}
-
 static void
-PagerHiwinHide(Pager * p __UNUSED__)
+PagerHiwinInit(Pager * p, EWin * ewin)
 {
-   PagerHiwin         *phi = hiwin;
-
-#if DEBUG_PAGER
-   Eprintf("PagerHiwinHide\n");
-#endif
-
-   if (phi)
-     {
-	if (EoIsShown(phi))
-	  {
-	     GrabPointerRelease();
-	     EoUnmap(phi);
-	  }
-	phi->ewin = NULL;
-	phi->p = NULL;
-	if (Mode_pagers.zoom_old <= 2)
-	   Mode_pagers.zoom_old = 0;
-     }
-
-   PagerShowTt(NULL);
-}
-
-static void
-PagerHiwinShow(Pager * p, EWin * ewin)
-{
-   PagerHiwin         *phi = hiwin;
+   Hiwin              *phi = hiwin;
    int                 wx, wy, ww, wh, px, py;
 
-   PagerHiwinHide(p);
-
    if (!phi)
      {
-	phi = PagerHiwinCreate();
+	phi = HiwinCreate();
 	if (!phi)
 	   return;
+	hiwin = phi;
      }
 
    wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
@@ -1053,294 +1009,44 @@ PagerHiwinShow(Pager * p, EWin * ewin)
    ww = (EoGetW(ewin) * p->dw) / VRoot.w;
    wh = (EoGetH(ewin) * p->dh) / VRoot.h;
    ETranslateCoordinates(p->win, VRoot.win, 0, 0, &px, &py, NULL);
-   EoMoveResize(phi, px + wx, py + wy, ww, wh);
-   ESetWindowBackgroundPixmap(EoGetWin(phi), ewin->mini_pmm.pmap);
-   EoMap(phi, 0);
-   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, !Mode.wm.window);
-   phi->ewin = ewin;
-   phi->p = p;
-}
 
-typedef struct
-{
-   void                (*init) (PagerHiwin * phi, void *data);
-   void                (*draw) (PagerHiwin * phi, void *data);
-   void                (*fini) (PagerHiwin * phi, void *data, int shown);
-} PagerZoom;
-
-static void
-PagerZoomImageInit(PagerHiwin * phi __UNUSED__, void *data)
-{
-   EWin               *ewin = data;
-   Imlib_Image        *im;
-   Pixmap              pmap;
-
-   pmap = (Mode_pagers.zoom > 2) ? EoGetPixmap(ewin) : None;
-   if (pmap)
-     {
-	imlib_context_set_drawable(pmap);
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      EoGetW(ewin), EoGetH(ewin), 0);
-     }
-   else if (Mode_pagers.zoom > 2 && EwinIsOnScreen(ewin))
-     {
-	imlib_context_set_drawable(EoGetWin(ewin));
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      EoGetW(ewin), EoGetH(ewin), 0);
-     }
-   else
-     {
-	imlib_context_set_drawable(ewin->mini_pmm.pmap);
-	im = imlib_create_image_from_drawable(0, 0, 0,
-					      ewin->mini_w, ewin->mini_h, 0);
-     }
-
-   imlib_context_set_image(im);
-   imlib_context_set_drawable(EoGetWin(phi));
-   ESetWindowBackgroundPixmap(EoGetWin(phi), None);
+   HiwinInit(phi, ewin);
+   HiwinSetGeom(phi, px + wx, py + wy, ww, wh);
+   HiwinSetCallback(phi, PagerHiwinEvent, p);
 }
 
 static void
-PagerZoomImageDraw(PagerHiwin * phi, void *data __UNUSED__)
+PagerHiwinHide(void)
 {
-   imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
+#if DEBUG_PAGER
+   Eprintf("PagerHiwinHide\n");
+#endif
+   HiwinHide(hiwin);
+   PagerShowTt(NULL);
 }
 
 static void
-PagerZoomImageFini(PagerHiwin * phi, void *data __UNUSED__, int shown)
+PagerHiwinShow(Pager * p, EWin * ewin, int zoom, int confine)
 {
-   Pixmap              pmap;
-
-   if (shown)
-     {
-	pmap =
-	   ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), VRoot.depth);
-	imlib_context_set_drawable(pmap);
-	imlib_render_image_on_drawable_at_size(0, 0, EoGetW(phi), EoGetH(phi));
-	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-	EFreePixmap(pmap);
-	EClearWindow(EoGetWin(phi));
-     }
-   imlib_free_image_and_decache();
-}
-
-static const PagerZoom PagerZoomImage = {
-   PagerZoomImageInit, PagerZoomImageDraw, PagerZoomImageFini
-};
-
-static void
-PagerZoomIclassInit(PagerHiwin * phi __UNUSED__, void *data __UNUSED__)
-{
-}
-
-static void
-PagerZoomIclassDraw(PagerHiwin * phi, void *data)
-{
-   ImageclassApply(data, EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0, 0,
-		   STATE_NORMAL, 0, ST_PAGER);
-   EClearWindow(EoGetWin(phi));
-}
-
-static void
-PagerZoomIclassFini(PagerHiwin * phi __UNUSED__, void *data __UNUSED__,
-		    int shown __UNUSED__)
-{
-}
-
-static const PagerZoom PagerZoomIclass = {
-   PagerZoomIclassInit, PagerZoomIclassDraw, PagerZoomIclassFini
-};
-
-typedef struct
-{
-   Pixmap              pmap;
-   GC                  gc;
-} PagerZoomPixmapData;
-
-static void
-PagerZoomPixmapInit(PagerHiwin * phi, void *data)
-{
-   PagerZoomPixmapData *pd = data;
-
-   pd->pmap = ECreatePixmap(EoGetWin(phi), 2 * EoGetW(phi), 2 * EoGetH(phi),
-			    VRoot.depth);
-   ESetWindowBackgroundPixmap(EoGetWin(phi), pd->pmap);
-   pd->gc = ECreateGC(pd->pmap, 0, NULL);
-}
-
-static void
-PagerZoomPixmapDraw(PagerHiwin * phi, void *data)
-{
-   PagerZoomPixmapData *pd = data;
-
-   XSetForeground(disp, pd->gc, BlackPixel(disp, VRoot.scr));
-   XFillRectangle(disp, pd->pmap, pd->gc, 0, 0, EoGetW(phi), EoGetH(phi));
-   XSetForeground(disp, pd->gc, WhitePixel(disp, VRoot.scr));
-   XFillRectangle(disp, pd->pmap, pd->gc, 1, 1, EoGetW(phi) - 2,
-		  EoGetH(phi) - 2);
-   EClearWindow(EoGetWin(phi));
-}
-
-static void
-PagerZoomPixmapFini(PagerHiwin * phi __UNUSED__, void *data,
-		    int shown __UNUSED__)
-{
-   PagerZoomPixmapData *pd = data;
-
-   PagerZoomPixmapDraw(phi, data);
-
-   EFreePixmap(pd->pmap);
-   EFreeGC(pd->gc);
-}
-
-static const PagerZoom PagerZoomPixmap = {
-   PagerZoomPixmapInit, PagerZoomPixmapDraw, PagerZoomPixmapFini
-};
-
-static void
-PagerHiwinZoom(Pager * p, EWin * ewin)
-{
-   ImageClass         *ic;
-   PagerHiwin         *phi = hiwin;
-   const PagerZoom    *pz;
-   int                 x, y, w, h;
-   int                 xx, yy, ww, hh, i, i1, i2, step, px, py, z0;
-   XID                 pzd[2];
-   void               *data;
+   Hiwin              *phi = hiwin;
 
    if (MenusActive())		/* Don't show HiWin when menu is up */
       return;
 
-   if (!phi)
+   if (!phi || ewin)
      {
-	phi = PagerHiwinCreate();
+	PagerHiwinInit(p, ewin);
+	phi = hiwin;
 	if (!phi)
 	   return;
      }
 
-   phi->ewin = ewin;
-   phi->p = p;
-
-   if (ewin->mini_pmm.pmap)
-     {
-	pz = &PagerZoomImage;
-	data = ewin;
-     }
-   else
-     {
-	ic = ImageclassFind("PAGER_WIN", 0);
-	if (ic)
-	  {
-	     pz = &PagerZoomIclass;
-	     data = ic;
-	  }
-	else
-	  {
-	     pz = &PagerZoomPixmap;
-	     data = pzd;
-	  }
-     }
-
-   z0 = Mode_pagers.zoom_old;
-   if (z0 <= 1)
-     {
-	Window              cw;
-
-	z0 = 1;
-	Mode_pagers.zoom_old = z0 = 1;
-	Mode_pagers.zoom = 2;
-
-	x = (EwinGetVX(ewin) * p->dw) / VRoot.w;
-	y = (EwinGetVY(ewin) * p->dh) / VRoot.h;
-	w = (EoGetW(ewin) * p->dw) / VRoot.w;
-	h = (EoGetH(ewin) * p->dh) / VRoot.h;
-	ETranslateCoordinates(p->win, VRoot.win, x, y, &px, &py, &cw);
-
-	phi->xo = x = px;
-	phi->yo = y = py;
-	phi->wo = w;
-	phi->ho = h;
-	EoMoveResize(phi, x, y, w, h);
-	step = Mode_pagers.zoom - Mode_pagers.zoom_old;
-     }
-   else if (Mode_pagers.zoom <= 2)
-     {
-	w = Mode_pagers.zoom * phi->wo;
-	h = Mode_pagers.zoom * phi->ho;
-	x = phi->xo + phi->wo / 2;
-	y = phi->yo + phi->ho / 2;
-	step = 0;
-     }
-   else
-     {
-	w = Mode_pagers.zoom * EoGetW(phi->ewin) / 4;
-	h = Mode_pagers.zoom * EoGetH(phi->ewin) / 4;
-	x = VRoot.w / 2;
-	y = VRoot.h / 2;
-	step = 0;
-     }
-#if DEBUG_PAGER
-   Eprintf("Zoom %d->%d\n", Mode_pagers.zoom_old, Mode_pagers.zoom);
-#endif
-   Mode_pagers.zoom_old = Mode_pagers.zoom;
-
-   pz->init(phi, data);
-
-   EoMap(phi, 0);
-   GrabPointerSet(EoGetWin(phi), ECSR_ACT_MOVE, 0);
-
-   if (step)
-     {
-	if (w > h)
-	  {
-	     i1 = w * z0;
-	     i2 = w * Mode_pagers.zoom;
-	  }
-	else
-	  {
-	     i1 = h * z0;
-	     i2 = h * Mode_pagers.zoom;
-	  }
-
-	for (i = i1; i != i2; i += step)
-	  {
-	     if (w > h)
-	       {
-		  ww = i;
-		  hh = (ww * h) / w;
-	       }
-	     else
-	       {
-		  hh = i;
-		  ww = (hh * w) / h;
-	       }
-	     xx = x + ((w - ww) / 2);
-	     yy = y + ((h - hh) / 2);
-	     EoMoveResize(phi, xx, yy, ww, hh);
-	     pz->draw(phi, data);
-
-	     PointerAt(&px, &py);
-	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
-	       {
-		  pz->fini(phi, data, 0);
-		  EoUnmap(phi);
-		  return;
-	       }
-	  }
-     }
-   else
-     {
-	EoMoveResize(phi, x - w / 2, y - h / 2, w, h);
-     }
-
-   pz->fini(phi, data, 1);
+   HiwinShow(phi, ewin, zoom, confine);
 }
 
 static void
-PagerZoomChange(int delta)
+PagerZoomChange(Pager * p, int delta)
 {
-   PagerHiwin         *phi = hiwin;
-
 #if DEBUG_PAGER
    Eprintf("PagerZoomChange delta=%d\n", delta);
 #endif
@@ -1360,25 +1066,7 @@ PagerZoomChange(int delta)
 	   return;
 	Mode_pagers.zoom--;
      }
-   PagerHiwinZoom(phi->p, phi->ewin);
-}
-
-static EWin        *
-PagerHiwinEwin(int check)
-{
-   EWin               *ewin;
-   PagerHiwin         *phi = hiwin;
-
-   if (!phi)
-      return NULL;
-   if (!check || !phi->ewin)
-      return phi->ewin;
-
-   ewin = EwinFindByPtr(phi->ewin);
-   if (!ewin)
-      phi->ewin = NULL;
-
-   return ewin;
+   PagerHiwinShow(p, NULL, Mode_pagers.zoom, 0);
 }
 
 static void
@@ -1410,7 +1098,7 @@ PagerHandleMotion(Pager * p, int x, int y, int in)
 
    if (ewin == NULL)
      {
-	PagerHiwinHide(p);
+	PagerHiwinHide();
 	return;
      }
 
@@ -1420,13 +1108,15 @@ PagerHandleMotion(Pager * p, int x, int y, int in)
      }
    else if ((in == PAGER_EVENT_MOTION) && EoGetLayer(ewin) <= 0)
      {
-	PagerHiwinHide(p);
+	PagerHiwinHide();
 	PagerShowTt(ewin);
      }
-   else if ((in == PAGER_EVENT_MOTION) && (!hiwin || ewin != hiwin->ewin))
+   else if ((in == PAGER_EVENT_MOTION)
+	    && (!hiwin || ewin != HiwinGetEwin(hiwin, 0)))
      {
-	PagerHiwinHide(p);
-	PagerHiwinZoom(p, ewin);
+	if (Mode_pagers.zoom < 2)
+	   Mode_pagers.zoom = 2;
+	PagerHiwinShow(p, ewin, Mode_pagers.zoom, 0);
 	PagerShowTt(ewin);
      }
    else if (in == PAGER_EVENT_MOTION)
@@ -1466,10 +1156,7 @@ PagersUpdateBackground(int desk)
       return;
 
    for (i = 0; i < num; i++)
-     {
-	PagerHiwinHide(pl[i]);
-	pl[i]->do_newbg = 1;
-     }
+      pl[i]->do_newbg = 1;
 
    Efree(pl);
 
@@ -1545,7 +1232,7 @@ PagerEwinGroupSet(void)
    int                 i, num;
    EWin               *ewin, **gwins;
 
-   ewin = PagerHiwinEwin(0);
+   ewin = HiwinGetEwin(hiwin, 0);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
 				      Mode.nogroup, &num);
    if (!gwins)
@@ -1571,9 +1258,9 @@ PagerEwinGroupUnset(void)
 }
 
 static void
-PagerEventUnmap(Pager * p)
+PagerEventUnmap(Pager * p __UNUSED__)
 {
-   PagerHiwinHide(p);
+   PagerHiwinHide();
 }
 
 static void
@@ -1607,31 +1294,31 @@ EwinGroupMove(EWin * ewin, int desk, int x, int y)
 }
 
 static void
-PagerEwinMove(Pager * p __UNUSED__, Pager * pd)
+PagerEwinMove(Pager * p __UNUSED__, Pager * pd, EWin * ewin)
 {
    int                 x, y, dx, dy, px, py;
    int                 cx, cy;
-   PagerHiwin         *phi = hiwin;
-
-   DeskGetArea(pd->desktop, &cx, &cy);
+   Hiwin              *phi = hiwin;
 
    /* Delta in pager coords */
    dx = Mode.x - Mode.px;
    dy = Mode.y - Mode.py;
 
-   if (dx || dy)
-     {
-	/* Move mini window */
-	EoMove(phi, EoGetX(phi) + dx, EoGetY(phi) + dy);
-     }
+   if (dx == 0 && dy == 0)
+      return;
+
+   /* Move mini window */
+   HiwinGetXY(phi, &x, &y);
+   HiwinMove(phi, x + dx, y + dy);
 
    /* Find real window position */
-   ETranslateCoordinates(EoGetWin(phi), pd->win, 0, 0, &px, &py, NULL);
+   ETranslateCoordinates(VRoot.win, pd->win, x, y, &px, &py, NULL);
+   DeskGetArea(pd->desktop, &cx, &cy);
    x = (px * VRoot.w) / pd->dw - cx * VRoot.w;
    y = (py * VRoot.h) / pd->dh - cy * VRoot.h;
 
    /* Move all group members */
-   EwinGroupMove(phi->ewin, pd->desktop, x, y);
+   EwinGroupMove(ewin, pd->desktop, x, y);
 }
 
 static void
@@ -1646,7 +1333,7 @@ PagerHandleMouseDown(Pager * p, int px, int py, int button)
 
    if (button == Conf.pagers.menu_button)
      {
-	PagerHiwinHide(p);
+	PagerHiwinHide();
 	PagerMenuShow(p, px, py);
      }
    else if (button == Conf.pagers.win_button)
@@ -1654,7 +1341,7 @@ PagerHandleMouseDown(Pager * p, int px, int py, int button)
 	ewin = EwinInPagerAt(p, px, py);
 	if ((ewin) && (ewin->type != EWIN_TYPE_PAGER))
 	  {
-	     PagerHiwinShow(p, ewin);
+	     PagerHiwinShow(p, ewin, 1, !Mode.wm.window);
 	     Mode.mode = MODE_PAGER_DRAG_PENDING;
 	     PagerEwinGroupSet();
 	  }
@@ -1713,13 +1400,14 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
      {
 	if (Mode.mode == MODE_PAGER_DRAG_PENDING)
 	   Mode.mode = MODE_NONE;
+	PagerHiwinHide();
 	PagerHandleMouseUp(p, px, py, button);
 	return;
      }
 
    Mode.mode = MODE_NONE;
 
-   ewin = PagerHiwinEwin(1);
+   ewin = HiwinGetEwin(hiwin, 1);
    if (!ewin)
       goto done;
 
@@ -1734,7 +1422,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	ewin2 = GetEwinPointerInClient();
 	if ((ewin2) && (ewin2->type == EWIN_TYPE_PAGER))
 	  {
-	     PagerEwinMove(p, ewin2->data);
+	     PagerEwinMove(p, ewin2->data, ewin);
 	  }
 	else if ((ewin2) && (ewin2->type == EWIN_TYPE_ICONBOX))
 	  {
@@ -1774,7 +1462,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	  }
      }
 
-   PagerHiwinHide(p);
+   PagerHiwinHide();
 
  done:
    /* unallocate the space that was holding the old positions of the */
@@ -1835,8 +1523,7 @@ PagerEvent(XEvent * ev, void *prm)
 static void
 PagerHiwinEvent(XEvent * ev, void *prm)
 {
-   PagerHiwin         *phi = (PagerHiwin *) prm;
-   Pager              *p = phi->p;
+   Pager              *p = prm;
    int                 px, py;
    EWin               *ewin;
 
@@ -1855,12 +1542,12 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	  case 4:
 	     if (Mode.mode != MODE_NONE)
 		break;
-	     PagerZoomChange(1);
+	     PagerZoomChange(p, 1);
 	     break;
 	  case 5:
 	     if (Mode.mode != MODE_NONE)
 		break;
-	     PagerZoomChange(-1);
+	     PagerZoomChange(p, -1);
 	     break;
 	  default:
 	     /* Translate x,y to pager window coordinates */
@@ -1898,7 +1585,7 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 
 	  case MODE_PAGER_DRAG_PENDING:
 	  case MODE_PAGER_DRAG:
-	     ewin = PagerHiwinEwin(1);
+	     ewin = HiwinGetEwin(hiwin, 1);
 	     if (!ewin || ewin->type == EWIN_TYPE_PAGER)
 	       {
 		  Mode.mode = MODE_NONE;
@@ -1906,7 +1593,7 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	       }
 
 	     Mode.mode = MODE_PAGER_DRAG;
-	     PagerEwinMove(p, p);
+	     PagerEwinMove(p, p, ewin);
 	     break;
 	  }
 	break;
@@ -2316,15 +2003,14 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_IDLE:
-	if (!Conf.pagers.snap)
-	   PagersCheckUpdate();
+	PagersCheckUpdate();
 	break;
 
      case ESIGNAL_AREA_CONFIGURED:
 	PagersReconfigure();
 	break;
      case ESIGNAL_AREA_SWITCH_START:
-	PagerHiwinHide(NULL);
+	PagerHiwinHide();
 	break;
      case ESIGNAL_AREA_SWITCH_DONE:
 	PagersUpdate(DesksGetCurrent(), 0, 0, 99999, 99999);
@@ -2338,7 +2024,7 @@ PagersSighan(int sig, void *prm)
 	PagersDisableForDesktop((long)(prm));
 	break;
      case ESIGNAL_DESK_SWITCH_START:
-	PagerHiwinHide(NULL);
+	PagerHiwinHide();
 	break;
      case ESIGNAL_DESK_SWITCH_DONE:
 	UpdatePagerSel();

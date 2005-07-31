@@ -18,16 +18,6 @@ SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
 endif
 e16_SOURCES = \
 	E.h			\
-	econfig.h		\
-	ecore-e16.h		\
-	emodule.h		\
-	eobj.h			\
-	ewins.h			\
-	ewin-ops.h		\
-	icons.h			\
-	snaps.h			\
-	timestamp.h		\
-	xwin.h			\
 	aclass.c		\
 	actions.c		\
 	alert.c			\
@@ -47,13 +37,19 @@ e16_SOURCES = \
 	dock.c			\
 	draw.c			\
 	econfig.c		\
+	econfig.h		\
 	ecore-e16.c		\
+	ecore-e16.h		\
 	edge.c			\
 	emodule.c		\
+	emodule.h		\
 	eobj.c			\
+	eobj.h			\
 	events.c		\
 	ewins.c			\
+	ewins.h			\
 	ewin-ops.c		\
+	ewin-ops.h		\
 	extinitwin.c		\
 	file.c		        \
 	finders.c		\
@@ -64,10 +60,13 @@ e16_SOURCES = \
 	groups.c		\
 	handlers.c		\
 	hints.c			\
+	hiwin.c			\
+	hiwin.h			\
 	icccm.c			\
 	iclass.c		\
 	iconify.c		\
 	icons.c			\
+	icons.h			\
 	ipc.c			\
 	lang.c			\
 	lists.c			\
@@ -90,6 +89,7 @@ e16_SOURCES = \
 	size.c			\
 	slideout.c		\
 	snaps.c                 \
+	snaps.h			\
 	sound.c			\
 	stacking.c		\
 	startup.c		\
@@ -97,11 +97,13 @@ e16_SOURCES = \
 	text.c			\
 	theme.c                 \
 	timers.c		\
+	timestamp.h		\
 	tooltips.c		\
 	ttfont.c		\
 	warp.c			\
 	windowmatch.c   	\
 	x.c                     \
+	xwin.h			\
 	zoom.c			\
 	$(SRCS_EWMH) $(SRCS_GNOME) \
 	$(SRCS_ECOMPMGR)	\
