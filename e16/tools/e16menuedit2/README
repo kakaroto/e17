@@ -1,0 +1,17 @@
+Configuration
+-------------
+e16menuedit2 autodetects your currently active E16 session and 
+uses the environment variable $ECONFDIR to read from your E16
+config directory. If you use E16.7.x or earlier this variable isn't
+set and e16menuedit2 read your config from ~/.enlightenment. In E16.8
+and later $ECONFDIR is set to ~/.e16.
+
+You could also edit your config files from another E16 version if you
+redefine $ECONFDIR:
+
+ECONFDIR="/home/user/.e16" e16menuedit2
+
+If you've some old menu directories in your E16 config directory 
+you could use -m parameter (see: e16menuedit2 --help) to force
+the new menu structure.
+

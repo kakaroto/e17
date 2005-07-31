@@ -207,7 +207,7 @@ void parse_options (int argc, char **argv)
   struct poptOption options[] =
     {
       {"menus", 'm', POPT_ARG_NONE, NULL, ARG_MENUS,
-       "Force search of file.menu in 'menus' subdirecory of enlightenment"
+       "Force search of file.menu in 'menus' subdirecory of enlightenment "
        "configuration direcory. If not given e16menuedit2 try to auto detect it.",
        NULL},
       {"version", 'v', POPT_ARG_NONE, NULL, ARG_VERSION, "show version", NULL},

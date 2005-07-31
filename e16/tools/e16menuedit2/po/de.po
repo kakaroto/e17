@@ -38,11 +38,11 @@ msgstr "Beenden"
 
 #: src/callbacks.c:310
 msgid "No help file found!"
-msgstr ""
+msgstr "Kein Hilfedatei gefunden!"
 
 #: src/callbacks.c:314
 msgid "No help application found"
-msgstr ""
+msgstr "Kein Programm zum Anzeigen der Hilfe gefunden"
 
 #: src/e16menuedit2.c:110
 msgid "Menu successfully loaded!"
