@@ -191,7 +191,7 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 
 	/* The default filter values */
 	fs->ffilter = strdup("^[^\\.]");
-	fs->dfilter = strdup("^[^\\.][^$]");
+	fs->dfilter = strdup("^[^\\.]");
 
 	tmp = getenv("HOME");
 	fs->path = strdup((tmp ? tmp : "/"));
