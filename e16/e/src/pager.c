@@ -277,14 +277,14 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    ewin->mini_w = w;
    ewin->mini_h = h;
 
-   use_iclass = 1;
+   draw = None;
    if (Conf.pagers.snap)
      {
 	draw = EoGetPixmap(ewin);
 	if (draw == None && EwinIsOnScreen(ewin))
 	   draw = EoGetWin(ewin);
-	use_iclass = draw == None;
      }
+   use_iclass = draw == None;
 
    if (use_iclass)
      {
