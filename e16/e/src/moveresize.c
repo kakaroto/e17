@@ -365,8 +365,6 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 int
 ActionResizeEnd(EWin * ewin)
 {
-   int                 i;
-
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
 
@@ -382,8 +380,6 @@ ActionResizeEnd(EWin * ewin)
 
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->client.w, ewin->client.h, 2);
-   for (i = 0; i < ewin->border->num_winparts; i++)
-      ewin->bits[i].no_expose = 1;
 
    if (Conf.movres.mode_move == 0)
      {
