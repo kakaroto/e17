@@ -560,7 +560,7 @@ WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
 	switch (wm->prop)
 	  {
 	  case MATCH_PROP_TRANSIENT:
-	     match = ewin->client.transient;
+	     match = EwinIsTransient(ewin);
 	     break;
 
 	  case MATCH_PROP_SHAPED:
@@ -668,7 +668,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	return;
 
      case EWIN_OP_ICONIFY:
-	WINOP_GET_BOOL(ewin->client.start_iconified, args);
+	WINOP_GET_BOOL(ewin->icccm.start_iconified, args);
 	break;
 
      case EWIN_OP_SHADE:

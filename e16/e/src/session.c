@@ -269,7 +269,7 @@ MatchEwinToSM(EWin * ewin)
 
 	     matches[i].used = 1;
 	     ewin->state.placed = 1;
-	     ewin->client.start_iconified = matches[i].iconified;
+	     ewin->icccm.start_iconified = matches[i].iconified;
 	     EoSetSticky(ewin, matches[i].sticky);
 	     ewin->state.shaded = matches[i].shaded;
 	     EoSetLayer(ewin, matches[i].layer);

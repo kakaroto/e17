@@ -378,7 +378,7 @@ EHintsGetInfo(EWin * ewin)
    ewin->client.grav = NorthWestGravity;
    if (ewin->state.iconified)
      {
-	ewin->client.start_iconified = 1;
+	ewin->icccm.start_iconified = 1;
 	ewin->state.iconified = 0;
      }
    ewin->state.placed = 1;

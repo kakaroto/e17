@@ -927,7 +927,7 @@ MoveStickyWindowsToCurrentDesk(void)
 	ewin = lst[i];
 	if (!EoIsSticky(ewin) && !EoIsFloating(ewin))
 	   continue;
-	if (ewin->client.transient > 0)
+	if (EwinIsTransientChild(ewin))
 	   continue;
 
 	EwinMoveToDesktop(ewin, desk);

@@ -578,7 +578,7 @@ EwinIconify(EWin * ewin)
 
    was_shaded = ewin->state.shaded;
 
-   if (!ewin->client.transient)
+   if (!EwinIsTransient(ewin))
       ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
    ewin->state.iconified = 3;
@@ -590,7 +590,7 @@ EwinIconify(EWin * ewin)
    if (was_shaded != ewin->state.shaded)
       EwinInstantShade(ewin, 0);
 
-   if (ewin->client.transient)
+   if (EwinIsTransient(ewin))
      {
 	/* We should only get here during restart */
 	ewin->state.iconified = 4;
@@ -1391,7 +1391,7 @@ EwinsShowDesktop(int on)
 	if (on)
 	  {
 	     if (EwinIsInternal(ewin) || ewin->state.iconified
-		 || ewin->props.donthide || ewin->client.transient)
+		 || ewin->props.donthide || EwinIsTransient(ewin))
 		continue;
 
 	     ewin->state.showingdesk = 1;

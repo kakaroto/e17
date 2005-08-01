@@ -156,19 +156,19 @@ IB_GetAppIcon(EWin * ewin, int size)
 	  }
      }
 
-   if (!ewin->client.icon_pmap)
+   if (!ewin->icccm.icon_pmap)
       return NULL;
 
    w = 0;
    h = 0;
-   XGetGeometry(disp, ewin->client.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
+   XGetGeometry(disp, ewin->icccm.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
 
    if (w < 1 || h < 1)
       return NULL;
 
    imlib_context_set_colormap(None);
-   imlib_context_set_drawable(ewin->client.icon_pmap);
-   im = imlib_create_image_from_drawable(ewin->client.icon_mask, 0, 0, w, h,
+   imlib_context_set_drawable(ewin->icccm.icon_pmap);
+   im = imlib_create_image_from_drawable(ewin->icccm.icon_mask, 0, 0, w, h,
 					 !EServerIsGrabbed());
    imlib_context_set_image(im);
    imlib_image_set_has_alpha(1);	/* Should be set by imlib? */

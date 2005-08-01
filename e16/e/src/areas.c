@@ -245,7 +245,7 @@ SetCurrentArea(int ax, int ay)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	if (ewin->client.transient > 0)
+	if (EwinIsTransientChild(ewin))
 	   continue;
 	if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 	   continue;

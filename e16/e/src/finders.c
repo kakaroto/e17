@@ -354,7 +354,7 @@ EwinListTransients(EWin * ewin, int *num, int group)
    j = 0;
    lst = NULL;
 
-   if (!ewin->has_transients)
+   if (EwinGetTransientCount(ewin) <= 0)
       goto done;
 
    ewins = EwinListGetAll(&n);
@@ -368,7 +368,7 @@ EwinListTransients(EWin * ewin, int *num, int group)
 	if (ew == ewin)
 	   continue;
 
-	if (ew->client.transient_for == ewin->client.win)
+	if (EwinGetTransientFor(ew) == ewin->client.win)
 	  {
 	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
 	     lst[j++] = ew;
@@ -379,7 +379,7 @@ EwinListTransients(EWin * ewin, int *num, int group)
       goto done;
 
    /* Group transients (if ewin is not a transient) */
-   if (ewin->client.transient)
+   if (EwinIsTransient(ewin))
       goto done;
 
    for (i = 0; i < n; i++)
@@ -390,8 +390,8 @@ EwinListTransients(EWin * ewin, int *num, int group)
 	if (ew == ewin)
 	   continue;
 
-	if (ew->client.transient_for == VRoot.win &&
-	    ew->client.group == ewin->client.group)
+	if (EwinGetTransientFor(ew) == VRoot.win &&
+	    EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin))
 	  {
 	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
 	     lst[j++] = ew;
@@ -412,7 +412,7 @@ EwinListTransientFor(EWin * ewin, int *num)
    j = 0;
    lst = NULL;
 
-   if (!ewin->client.transient)
+   if (!EwinIsTransient(ewin))
       goto done;
 
    ewins = EwinListGetAll(&n);
@@ -425,10 +425,10 @@ EwinListTransientFor(EWin * ewin, int *num)
 	   continue;
 
 	/* Regular parent or if root trans, top level group members */
-	if ((ewin->client.transient_for == ew->client.win) ||
-	    (!ew->client.transient &&
-	     ewin->client.transient_for == VRoot.win &&
-	     ew->client.group == ewin->client.group))
+	if ((EwinGetTransientFor(ewin) == ew->client.win) ||
+	    (!EwinIsTransient(ew) &&
+	     EwinGetTransientFor(ewin) == VRoot.win &&
+	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))
 	  {
 	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
 	     lst[j++] = ew;

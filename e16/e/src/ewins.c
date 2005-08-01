@@ -97,7 +97,7 @@ EwinCreate(Window win, int type)
    ewin->client.y = -1;
    ewin->client.w = -1;
    ewin->client.h = -1;
-   ewin->client.need_input = 1;
+   ewin->icccm.need_input = 1;
    ewin->client.aspect_min = 0.0;
    ewin->client.aspect_max = 65535.0;
    ewin->client.w_inc = 1;
@@ -206,9 +206,9 @@ EwinDestroy(EWin * ewin)
    lst = EwinListTransientFor(ewin, &num);
    for (i = 0; i < num; i++)
      {
-	lst[i]->has_transients--;
-	if (lst[i]->has_transients < 0)	/* Paranoia? */
-	   lst[i]->has_transients = 0;
+	lst[i]->icccm.transient_count--;
+	if (lst[i]->icccm.transient_count < 0)	/* Paranoia? */
+	   lst[i]->icccm.transient_count = 0;
      }
    if (lst)
       Efree(lst);
@@ -519,7 +519,7 @@ void
 EwinStateUpdate(EWin * ewin)
 {
    ewin->state.inhibit_actions = ewin->props.no_actions;
-   ewin->state.inhibit_focus = !ewin->client.need_input ||
+   ewin->state.inhibit_focus = !ewin->icccm.need_input ||
       ewin->props.never_focus || ewin->state.iconified;
 
    ewin->state.no_border = ewin->props.no_border || ewin->state.docked ||
@@ -631,36 +631,36 @@ AddToFamily(EWin * ewin, Window win)
       DockIt(ewin);
 
    ewin2 = NULL;
-   if (ewin->client.transient)
+   if (ewin->icccm.transient)
      {
-	if (ewin->client.transient_for == None ||
-	    ewin->client.transient_for == VRoot.win)
+	if (ewin->icccm.transient_for == None ||
+	    ewin->icccm.transient_for == VRoot.win)
 	  {
 	     /* Group transient */
-	     ewin->client.transient_for = VRoot.win;
+	     ewin->icccm.transient_for = VRoot.win;
 #if 0				/* Maybe? */
 	     ewin->layer++;
 #endif
 	     /* Don't treat this as a normal transient */
-	     ewin->client.transient = -1;
+	     ewin->icccm.transient = -1;
 	  }
-	else if (ewin->client.transient_for == ewin->client.win)
+	else if (ewin->icccm.transient_for == ewin->client.win)
 	  {
 	     /* Some apps actually do this. Why? */
-	     ewin->client.transient = 0;
+	     ewin->icccm.transient = 0;
 	  }
 	else
 	  {
 	     /* Regular transient */
 	  }
 
-	if (ewin->client.transient)
+	if (ewin->icccm.transient)
 	  {
 	     /* Tag the parent window if this is a transient */
 	     lst = EwinListTransientFor(ewin, &num);
 	     for (i = 0; i < num; i++)
 	       {
-		  lst[i]->has_transients++;
+		  lst[i]->icccm.transient_count++;
 		  if (EoGetLayer(ewin) < EoGetLayer(lst[i]))
 		     EoSetLayer(ewin, EoGetLayer(lst[i]));
 	       }
@@ -673,19 +673,19 @@ AddToFamily(EWin * ewin, Window win)
 	     else
 	       {
 		  /* No parents? - not a transient */
-		  ewin->client.transient = 0;
+		  ewin->icccm.transient = 0;
 	       }
 	  }
      }
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
-   if (ewin->client.transient && Conf.focus.transientsfollowleader)
+   if (ewin->icccm.transient && Conf.focus.transientsfollowleader)
      {
 	EWin               *const *lst2;
 
 	if (!ewin2)
-	   ewin2 = EwinFindByClient(ewin->client.group);
+	   ewin2 = EwinFindByClient(ewin->icccm.group);
 
 	if (!ewin2)
 	  {
@@ -693,7 +693,7 @@ AddToFamily(EWin * ewin, Window win)
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst2[i]->state.iconified) ||
-		      (ewin->client.group != lst2[i]->client.group))
+		      (ewin->icccm.group != lst2[i]->icccm.group))
 		     continue;
 
 		  ewin2 = lst2[i];
@@ -730,7 +730,7 @@ AddToFamily(EWin * ewin, Window win)
 	   doslide = 1;
 
 	if (Conf.place.manual && !Mode.place.doing_manual &&
-	    !ewin->state.placed && !ewin->client.transient)
+	    !ewin->state.placed && !ewin->icccm.transient)
 	  {
 	     if (GrabPointerSet(VRoot.win, ECSR_GRAB, 0) == GrabSuccess)
 		manplace = 1;
@@ -785,7 +785,7 @@ AddToFamily(EWin * ewin, Window win)
      }
 
    /* if the window asked to be iconified at the start */
-   if (ewin->client.start_iconified)
+   if (ewin->icccm.start_iconified)
      {
 	EwinMoveToDesktopAt(ewin, desk, x, y);
 	ewin->state.state = EWIN_STATE_MAPPED;

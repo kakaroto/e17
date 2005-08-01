@@ -28,21 +28,6 @@
 typedef struct _ewin EWin;
 #endif
 
-#define EWIN_STATE_NEW          0	/* New */
-#define EWIN_STATE_STARTUP      1	/* New - during startup */
-#define EWIN_STATE_WITHDRAWN    2
-#define EWIN_STATE_ICONIC       3
-#define EWIN_STATE_MAPPED       4
-
-#define EWIN_TYPE_NORMAL        0x00
-#define EWIN_TYPE_DIALOG        0x01
-#define EWIN_TYPE_MENU          0x02
-#define EWIN_TYPE_ICONBOX       0x04
-#define EWIN_TYPE_PAGER         0x08
-
-#define EwinIsMapped(ewin) (ewin->state.state >= EWIN_STATE_MAPPED)
-#define EwinIsInternal(ewin) (ewin->type != EWIN_TYPE_NORMAL)
-
 struct _ewin
 {
    EObj                o;
@@ -59,18 +44,6 @@ struct _ewin
       Window              win;
       int                 x, y, w, h, bw;
       Colormap            cmap;
-      Window              icon_win;
-      Pixmap              icon_pmap, icon_mask;
-      Window              group;
-      Window              client_leader;
-      char                start_iconified;
-      char                need_input;
-      char                urgency;
-      char                take_focus;
-      char                delete_window;
-      signed char         transient;
-      Window              transient_for;
-      char                is_group_leader;
       char                no_resize_h;
       char                no_resize_v;
       Constraints         width, height;
@@ -144,6 +117,24 @@ struct _ewin
       char               *wm_role;
       char               *wm_command;
       char               *wm_machine;
+      /* WM_HINTS */
+      char                need_input;
+      char                start_iconified;
+      Pixmap              icon_pmap, icon_mask;
+      Window              icon_win;
+      Window              group;
+      char                urgency;
+      /* WM_PROTOCOLS */
+      char                take_focus;
+      char                delete_window;
+      /* WM_TRANSIENT_FOR */
+      signed char         transient;
+      Window              transient_for;	/* We are a transient for ... */
+      int                 transient_count;	/* We have <N> transients */
+      /* WM_CLIENT_LEADER */
+      Window              client_leader;
+
+      char                is_group_leader;
    } icccm;
    struct
    {
@@ -181,7 +172,6 @@ struct _ewin
    Group             **groups;
    int                 area_x, area_y;
    char               *session_id;
-   int                 has_transients;
    PmapMask            mini_pmm;
    int                 mini_w, mini_h;
 
@@ -202,6 +192,27 @@ struct _ewin
    void                (*MoveResize) (EWin * ewin, int resize);
    void                (*Close) (EWin * ewin);
 };
+
+#define EWIN_STATE_NEW          0	/* New */
+#define EWIN_STATE_STARTUP      1	/* New - during startup */
+#define EWIN_STATE_WITHDRAWN    2
+#define EWIN_STATE_ICONIC       3
+#define EWIN_STATE_MAPPED       4
+
+#define EWIN_TYPE_NORMAL        0x00
+#define EWIN_TYPE_DIALOG        0x01
+#define EWIN_TYPE_MENU          0x02
+#define EWIN_TYPE_ICONBOX       0x04
+#define EWIN_TYPE_PAGER         0x08
+
+#define EwinIsMapped(ewin)		(ewin->state.state >= EWIN_STATE_MAPPED)
+#define EwinIsInternal(ewin)		(ewin->type != EWIN_TYPE_NORMAL)
+#define EwinIsTransientChild(ewin)	(ewin->icccm.transient > 0)
+#define EwinIsTransient(ewin)		(ewin->icccm.transient != 0)
+#define EwinGetTransientFor(ewin)	(ewin->icccm.transient_for)
+#define EwinGetTransientCount(ewin)	(ewin->icccm.transient_count)
+#define EwinIsWindowGroupLeader(ewin)	(ewin->icccm.is_group_leader)
+#define EwinGetWindowGroup(ewin)	(ewin->icccm.group)
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)

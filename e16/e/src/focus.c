@@ -316,7 +316,7 @@ doFocusToEwin(EWin * ewin, int why)
 	     do_focus = 1;
 	  }
 
-	if (ewin->client.transient)
+	if (EwinIsTransient(ewin))
 	  {
 	     if (Conf.focus.new_transients_get_focus)
 	       {
@@ -326,7 +326,7 @@ doFocusToEwin(EWin * ewin, int why)
 	       {
 		  EWin               *ewin2;
 
-		  ewin2 = EwinFindByClient(ewin->client.transient_for);
+		  ewin2 = EwinFindByClient(EwinGetTransientFor(ewin));
 		  if ((ewin2) && (Mode.focuswin == ewin2))
 		     do_focus = 2;
 	       }

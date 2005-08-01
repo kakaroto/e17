@@ -138,11 +138,11 @@ DockIt(EWin * ewin)
    DockappFindEmptySpotFor(ewin);
    ewin->state.placed = 1;
 
-   if (ewin->client.icon_win)
+   if (ewin->icccm.icon_win)
      {
-	XSetWindowBorderWidth(disp, ewin->client.icon_win, 0);
-	XMoveWindow(disp, ewin->client.icon_win, 0, 0);
-	XMapWindow(disp, ewin->client.icon_win);
+	XSetWindowBorderWidth(disp, ewin->icccm.icon_win, 0);
+	XMoveWindow(disp, ewin->icccm.icon_win, 0, 0);
+	XMapWindow(disp, ewin->icccm.icon_win);
      }
 
    ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
