@@ -124,9 +124,7 @@ void
 DockIt(EWin * ewin)
 {
    ImageClass         *ic;
-   char                id[32];
 
-   Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 
    if (Conf.dock.sticky)
