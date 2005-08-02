@@ -49,6 +49,7 @@
 #define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
 #define ENLIGHTENMENT_PATH ".enlightenment"
 #define E16_PATH ".e16"
+#define NOT_INSTALLED -1
 
 void print_statusbar (const gchar *format, ...);
 gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,

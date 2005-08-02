@@ -104,8 +104,16 @@ int main (int argc, char *argv[])
 
   /* get librsvg version and check if good enough */
   version = pkg_config_version (package);
-  gv.librsvg_cmp = version_cmp (version, librsvg_version);
-  g_free (version);
+
+  if (version)
+  {
+    gv.librsvg_cmp = version_cmp (version, librsvg_version);
+    g_free (version);
+  }
+  else
+  {
+    gv.librsvg_cmp = NOT_INSTALLED;
+  }
 
   print_statusbar (_("Menu successfully loaded!"));
 
