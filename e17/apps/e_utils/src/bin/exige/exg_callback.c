@@ -1,4 +1,5 @@
 #include "exg_callback.h"
+#include "exg_gui.h"
 
 void 
 _enter_cb(void *data, const char *str)

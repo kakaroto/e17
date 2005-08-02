@@ -1,4 +1,6 @@
+#include <Ecore_File.h>
 #include "exg_gui.h"
+
 static Ecore_Hash *exg_eapps = NULL;
 
 static char *
@@ -165,7 +167,7 @@ eapp_display(Exige *exg)
     const char *command;    
     command = esmart_text_entry_text_get(exg->txt);
 
-    if(eapp= ecore_hash_get(exg_eapps, command)) {
+    if ((eapp = ecore_hash_get(exg_eapps, (void *) command))) {
 	if(!exg->eapp_show)
 	    {    
 		exg->eapp_edj= edje_object_add(exg->evas);
