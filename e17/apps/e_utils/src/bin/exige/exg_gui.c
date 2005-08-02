@@ -1,7 +1,8 @@
 #include "exg_gui.h"
 static Ecore_Hash *exg_eapps = NULL;
 
-char * exg_gui_theme_path_get()
+static char *
+exg_gui_theme_path_get()
 {
     char edj_file[PATH_MAX+1];
     char *theme_name = exg_conf_theme_get();
@@ -9,7 +10,7 @@ char * exg_gui_theme_path_get()
     snprintf(edj_file, sizeof(edj_file), PACKAGE_DATA_DIR"/data/exige/%s.edj",
 	     theme_name);
     
-    return strdup(edj_file);
+    return edj_file;
 }
 
 void 
