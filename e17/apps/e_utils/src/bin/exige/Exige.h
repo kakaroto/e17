@@ -20,6 +20,7 @@ struct _Exige {
     Evas_Object *gui;
     Evas_Object *txt;
     Evas_Object *eapp_edj;
+    int eapp_show;
 };
 
 struct _Exg_Eapp

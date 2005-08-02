@@ -9,7 +9,7 @@ char * exg_gui_theme_path_get()
     snprintf(edj_file, sizeof(edj_file), PACKAGE_DATA_DIR"/data/exige/%s.edj",
 	     theme_name);
     
-    return edj_file;
+    return strdup(edj_file);
 }
 
 void 
@@ -165,13 +165,20 @@ eapp_display(Exige *exg)
     command = esmart_text_entry_text_get(exg->txt);
 
     if(eapp= ecore_hash_get(exg_eapps, command)) {
-
-	exg->eapp_edj= edje_object_add(exg->evas);
-	edje_object_file_set(exg->eapp_edj,eapp->path,"icon");
-	edje_object_part_swallow(exg->gui,"eapp_swallow",exg->eapp_edj);
-	evas_object_show(exg->eapp_edj);
+	if(!exg->eapp_show)
+	    {    
+		exg->eapp_edj= edje_object_add(exg->evas);
+		edje_object_file_set(exg->eapp_edj,eapp->path,"icon");
+		edje_object_part_swallow(exg->gui,"eapp_swallow",exg->eapp_edj);
+		evas_object_show(exg->eapp_edj);
+		exg->eapp_show=1;
+	    }
     }
     else {
-	 evas_object_del(exg->eapp_edj);
-    }   
+	if (exg->eapp_show)
+	    { 
+		evas_object_del(exg->eapp_edj);
+		exg->eapp_show=0;
+	    }
+    }
 }
