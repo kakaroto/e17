@@ -321,7 +321,7 @@ About(void)
 	       "The Rasterman - raster@rasterman.com\n"
 	       "Mandrake - mandrake@mandrake.net\n"
 	       "Kim Woelders - kim@woelders.dk\n"), e_wm_version, e_wm_date);
-   DialogItemTextSetText(di, buf);
+   DialogItemSetText(di, buf);
 
    DialogAddButton(d, _("OK"), NULL, 1, DIALOG_BUTTON_OK);
    ShowDialog(d);

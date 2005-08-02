@@ -71,22 +71,11 @@ typedef struct
 
 typedef struct
 {
-   char               *text;
-} DItemButton;
-
-typedef struct
-{
-   char               *text;
    Window              check_win;
    int                 check_orig_w, check_orig_h;
    char                onoff;
    char               *onoff_ptr;
 } DItemCheckButton;
-
-typedef struct
-{
-   char               *text;
-} DItemText;
 
 typedef struct
 {
@@ -110,7 +99,6 @@ typedef struct
 
 typedef struct
 {
-   char               *text;
    Window              radio_win;
    int                 radio_orig_w, radio_orig_h;
    char                onoff;
@@ -141,11 +129,10 @@ struct _ditem
    char                hilited;
    char                clicked;
    Window              win;
+   char               *text;
    union
    {
-      DItemButton         button;
       DItemCheckButton    check_button;
-      DItemText           text;
       DItemTable          table;
       DItemImage          image;
       DItemSeparator      separator;
@@ -303,10 +290,11 @@ DialogSetText(Dialog * d, const char *text)
 
    if (d->text)
       Efree(d->text);
-
    d->text = Estrdup(text);
+
    if ((!d->tclass) || (!d->iclass))
       return;
+
    TextSize(d->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
    d->w = w + d->iclass->padding.left + d->iclass->padding.right;
    d->h = h + d->iclass->padding.top + d->iclass->padding.bottom;
@@ -695,10 +683,11 @@ DialogAddItem(DItem * dii, int type)
    di->align_v = 512;
    di->row_span = 1;
    di->col_span = 1;
+   di->text = NULL;
 
    switch (di->type)
      {
-     case DITEM_NONE:
+     default:
 	break;
      case DITEM_AREA:
 	di->item.area.area_win = 0;
@@ -706,19 +695,12 @@ DialogAddItem(DItem * dii, int type)
 	di->item.area.h = 32;
 	di->item.area.event_func = NULL;
 	break;
-     case DITEM_BUTTON:
-	di->item.button.text = NULL;
-	break;
      case DITEM_CHECKBUTTON:
-	di->item.check_button.text = NULL;
 	di->item.check_button.check_win = 0;
 	di->item.check_button.onoff = 0;
 	di->item.check_button.onoff_ptr = NULL;
 	di->item.check_button.check_orig_w = 10;
 	di->item.check_button.check_orig_h = 10;
-	break;
-     case DITEM_TEXT:
-	di->item.text.text = NULL;
 	break;
      case DITEM_TABLE:
 	di->item.table.num_columns = 1;
@@ -735,7 +717,6 @@ DialogAddItem(DItem * dii, int type)
 	di->item.separator.horizontal = 0;
 	break;
      case DITEM_RADIOBUTTON:
-	di->item.radio_button.text = NULL;
 	di->item.radio_button.radio_win = 0;
 	di->item.radio_button.onoff = 0;
 	di->item.radio_button.val = 0;
@@ -787,8 +768,6 @@ DialogAddItem(DItem * dii, int type)
 	di->item.slider.numeric_h = 0;
 	di->item.slider.in_drag = 0;
 	di->item.slider.wanted_val = 0;
-	break;
-     default:
 	break;
      }
 
@@ -1068,8 +1047,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_BUTTON:
-	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.button.text, &iw,
-		 &ih, 17);
+	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	iw += di->iclass->padding.left + di->iclass->padding.right;
 	ih += di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
@@ -1111,8 +1089,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		  imlib_free_image();
 	       }
 	  }
-	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.check_button.text,
-		 &iw, &ih, 17);
+	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.check_button.check_orig_h)
 	   ih = di->item.check_button.check_orig_h;
 	iw += di->item.check_button.check_orig_w + di->iclass->padding.left;
@@ -1128,8 +1105,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_TEXT:
-	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.text.text, &iw, &ih,
-		 17);
+	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1181,8 +1157,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		  imlib_free_image();
 	       }
 	  }
-	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.radio_button.text,
-		 &iw, &ih, 17);
+	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.radio_button.radio_orig_h)
 	   ih = di->item.radio_button.radio_orig_h;
 	iw += di->item.radio_button.radio_orig_w + di->iclass->padding.left;
@@ -1609,7 +1584,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
 			ST_WIDGET);
 	TextclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
-		       di->tclass, di->item.button.text);
+		       di->tclass, di->text);
 	break;
      case DITEM_AREA:
 	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
@@ -1634,8 +1609,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 			   di->item.check_button.check_orig_h, 0, 0, state,
 			   0, ST_WIDGET);
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		 di->item.check_button.text,
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
 		 di->x + di->item.check_button.check_orig_w +
 		 di->iclass->padding.left, di->y,
 		 di->w - di->item.check_button.check_orig_w -
@@ -1644,9 +1618,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
      case DITEM_TEXT:
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		 di->item.text.text, di->x, di->y, di->w, 99999, 17,
-		 di->tclass->justification);
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
+		 di->x, di->y, di->w, 99999, 17, di->tclass->justification);
 	break;
      case DITEM_IMAGE:
 	break;
@@ -1677,8 +1650,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 			   di->item.radio_button.radio_orig_w, 0, 0, state,
 			   0, ST_WIDGET);
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
-	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
-		 di->item.radio_button.text,
+	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
 		 di->x + di->item.radio_button.radio_orig_w +
 		 di->iclass->padding.left, di->y,
 		 di->w - di->item.radio_button.radio_orig_w -
@@ -1737,41 +1709,17 @@ DialogItemsRealize(Dialog * d)
 }
 
 void
-DialogItemButtonSetText(DItem * di, const char *text)
+DialogItemSetText(DItem * di, const char *text)
 {
-   if (di->item.button.text)
-      Efree(di->item.button.text);
-   di->item.button.text = Estrdup(text);
-}
-
-void
-DialogItemCheckButtonSetText(DItem * di, const char *text)
-{
-   if (di->item.check_button.text)
-      Efree(di->item.check_button.text);
-   di->item.check_button.text = Estrdup(text);
-}
-
-void
-DialogItemTextSetText(DItem * di, const char *text)
-{
-   if (di->item.text.text)
-      Efree(di->item.text.text);
-   di->item.text.text = Estrdup(text);
+   if (di->text)
+      Efree(di->text);
+   di->text = Estrdup(text);
 }
 
 void
 DialogItemRadioButtonSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
 {
    di->item.radio_button.event_func = func;
-}
-
-void
-DialogItemRadioButtonSetText(DItem * di, const char *text)
-{
-   if (di->item.radio_button.text)
-      Efree(di->item.radio_button.text);
-   di->item.radio_button.text = Estrdup(text);
 }
 
 void
@@ -1813,6 +1761,7 @@ void
 DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr)
 {
    di->item.check_button.onoff_ptr = onoff_ptr;
+   DialogItemCheckButtonSetState(di, *onoff_ptr);
 }
 
 void
@@ -1951,27 +1900,17 @@ DialogFreeItem(DItem * di)
 	for (i = 0; i < di->item.table.num_items; i++)
 	   DialogFreeItem(di->item.table.items[i]);
      }
+
+   if (di->text)
+      Efree(di->text);
+
    switch (di->type)
      {
-     case DITEM_BUTTON:
-	if (di->item.button.text)
-	   Efree(di->item.button.text);
-	break;
-     case DITEM_CHECKBUTTON:
-	if (di->item.check_button.text)
-	   Efree(di->item.check_button.text);
-	break;
-     case DITEM_TEXT:
-	if (di->item.text.text)
-	   Efree(di->item.text.text);
+     default:
 	break;
      case DITEM_IMAGE:
 	if (di->item.image.image)
 	   Efree(di->item.image.image);
-	break;
-     case DITEM_RADIOBUTTON:
-	if (di->item.radio_button.text)
-	   Efree(di->item.radio_button.text);
 	break;
      case DITEM_SLIDER:
 	if (di->item.slider.ic_base)
@@ -1981,13 +1920,9 @@ DialogFreeItem(DItem * di)
 	if (di->item.slider.ic_border)
 	   di->item.slider.ic_border->ref_count--;
 	break;
-     case DITEM_SEPARATOR:
-	break;
      case DITEM_TABLE:
 	if (di->item.table.items)
 	   Efree(di->item.table.items);
-	break;
-     default:
 	break;
      }
 

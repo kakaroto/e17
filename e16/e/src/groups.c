@@ -616,9 +616,9 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Window Group\n"
-				"Selection Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Window Group\n"
+			    "Selection Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -632,14 +632,14 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, message);
+   DialogItemSetText(di, message);
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupCallback, 0, (void *)d);
-   DialogItemRadioButtonSetText(di, group_member_strings[0]);
+   DialogItemSetText(di, group_member_strings[0]);
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -650,7 +650,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetCallback(di, GroupCallback, i, NULL);
-	DialogItemRadioButtonSetText(di, group_member_strings[i]);
+	DialogItemSetText(di, group_member_strings[i]);
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);
      }
@@ -824,9 +824,9 @@ SettingsGroups(EWin * ewin)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Window Group\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Window Group\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -840,14 +840,14 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("   Pick the group to configure:   "));
+   DialogItemSetText(di, _("   Pick the group to configure:   "));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupSelectCallback, 0, (void *)d);
-   DialogItemRadioButtonSetText(di, group_member_strings[0]);
+   DialogItemSetText(di, group_member_strings[0]);
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -858,7 +858,7 @@ SettingsGroups(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetCallback(di, &GroupSelectCallback, i, (void *)d);
-	DialogItemRadioButtonSetText(di, group_member_strings[i]);
+	DialogItemSetText(di, group_member_strings[i]);
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);
      }
@@ -875,9 +875,9 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di,
-			 _("  The following actions are  \n"
-			   "  applied to all group members:  "));
+   DialogItemSetText(di,
+		     _("  The following actions are  \n"
+		       "  applied to all group members:  "));
 
    di_border = di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -885,7 +885,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
 			 &(tmp_cfg.set_border));
-   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
+   DialogItemSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
 
@@ -895,7 +895,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback,
 			 GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
-   DialogItemCheckButtonSetText(di, _("Iconifying"));
+   DialogItemSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
 
@@ -905,7 +905,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_KILL,
 			 &(tmp_cfg.kill));
-   DialogItemCheckButtonSetText(di, _("Killing"));
+   DialogItemSetText(di, _("Killing"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].kill);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.kill));
 
@@ -915,7 +915,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MOVE,
 			 &(tmp_cfg.move));
-   DialogItemCheckButtonSetText(di, _("Moving"));
+   DialogItemSetText(di, _("Moving"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].move);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.move));
 
@@ -925,7 +925,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_RAISE,
 			 &(tmp_cfg.raise));
-   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
+   DialogItemSetText(di, _("Raising/Lowering"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].raise);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.raise));
 
@@ -935,7 +935,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_STICK,
 			 &(tmp_cfg.stick));
-   DialogItemCheckButtonSetText(di, _("Sticking"));
+   DialogItemSetText(di, _("Sticking"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].stick);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.stick));
 
@@ -945,7 +945,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_SHADE,
 			 &(tmp_cfg.shade));
-   DialogItemCheckButtonSetText(di, _("Shading"));
+   DialogItemSetText(di, _("Shading"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].shade);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.shade));
 
@@ -955,7 +955,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
 			 &(tmp_cfg.mirror));
-   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
+   DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
 
@@ -1026,9 +1026,9 @@ SettingsDefaultGroupControl(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Default\n"
-				"Group Control Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Default\n"
+			    "Group Control Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -1042,7 +1042,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _(" Per-group settings: "));
+   DialogItemSetText(di, _(" Per-group settings: "));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -1054,7 +1054,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
+   DialogItemSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.set_border));
 
@@ -1062,7 +1062,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Iconifying"));
+   DialogItemSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.iconify));
 
@@ -1070,7 +1070,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Killing"));
+   DialogItemSetText(di, _("Killing"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.kill);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.kill));
 
@@ -1078,7 +1078,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Moving"));
+   DialogItemSetText(di, _("Moving"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.move);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.move));
 
@@ -1086,7 +1086,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
+   DialogItemSetText(di, _("Raising/Lowering"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.raise);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.raise));
 
@@ -1094,7 +1094,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Sticking"));
+   DialogItemSetText(di, _("Sticking"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.stick);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.stick));
 
@@ -1102,7 +1102,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Shading"));
+   DialogItemSetText(di, _("Shading"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.shade);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.shade));
 
@@ -1110,7 +1110,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
+   DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_group_cfg.mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.mirror));
 
@@ -1125,13 +1125,13 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _(" Global settings: "));
+   DialogItemSetText(di, _(" Global settings: "));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Swap Window Locations"));
+   DialogItemSetText(di, _("Swap Window Locations"));
    DialogItemCheckButtonSetState(di, tmp_group_swap);
    DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
 

@@ -854,8 +854,7 @@ SettingsTooltips(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Tooltip\n" "Settings Dialog\n"));
+	DialogItemSetText(di, _("Enlightenment Tooltip\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -868,7 +867,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Display Tooltips"));
+   DialogItemSetText(di, _("Display Tooltips"));
    DialogItemCheckButtonSetState(di, tmp_tooltips);
    DialogItemCheckButtonSetPtr(di, &tmp_tooltips);
 
@@ -876,7 +875,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Display Root Window Tips"));
+   DialogItemSetText(di, _("Display Root Window Tips"));
    DialogItemCheckButtonSetState(di, tmp_roottip);
    DialogItemCheckButtonSetPtr(di, &tmp_roottip);
 
@@ -884,7 +883,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Tooltip Delay:\n"));
+   DialogItemSetText(di, _("Tooltip Delay:\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);

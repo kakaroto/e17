@@ -993,9 +993,9 @@ FxSettings(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Miscellaneous Effects\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Miscellaneous Effects\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1007,26 +1007,26 @@ FxSettings(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, _("Effects"));
+   DialogItemSetText(di, _("Effects"));
 #if 0				/* Disabled */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Enable Effect: Raindrops"));
+   DialogItemSetText(di, _("Enable Effect: Raindrops"));
    DialogItemCheckButtonSetState(di, tmp_effect_raindrops);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_raindrops);
 #endif
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Ripples"));
+   DialogItemSetText(di, _("Ripples"));
    DialogItemCheckButtonSetState(di, tmp_effect_ripples);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_ripples);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Waves"));
+   DialogItemSetText(di, _("Waves"));
    DialogItemCheckButtonSetState(di, tmp_effect_waves);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
 

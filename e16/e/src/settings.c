@@ -227,9 +227,9 @@ SettingsMoveResize(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Move & Resize\n"
-				"Method Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Move & Resize\n"
+			    "Method Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -242,18 +242,18 @@ SettingsMoveResize(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Move Methods:"));
+   DialogItemSetText(di, _("Move Methods:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Resize Methods:"));
+   DialogItemSetText(di, _("Resize Methods:"));
 
    radio1 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Opaque"));
+   DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
    /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
@@ -261,7 +261,7 @@ SettingsMoveResize(void)
    radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Opaque"));
+   DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
    /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
@@ -269,7 +269,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Technical"));
+   DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
    /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
@@ -277,7 +277,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Technical"));
+   DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
    /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
@@ -285,7 +285,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Box"));
+   DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 2);
    /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
@@ -293,7 +293,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Box"));
+   DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 2);
    /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
@@ -301,7 +301,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Shaded"));
+   DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 3);
    /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
@@ -309,7 +309,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Shaded"));
+   DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 3);
    /* DialogItemRadioButtonSetEventFunc(di, je_resizectrl); */
@@ -317,7 +317,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
+   DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 4);
    /* DialogItemRadioButtonSetEventFunc(di, je_movectrl); */
@@ -325,7 +325,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
+   DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_resize);
@@ -334,7 +334,7 @@ SettingsMoveResize(void)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Translucent"));
+   DialogItemSetText(di, _("Translucent"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 5);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_move);
@@ -353,13 +353,13 @@ SettingsMoveResize(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Move/Resize Geometry Info Postion:"));
+   DialogItemSetText(di, _("Move/Resize Geometry Info Postion:"));
 
    radio3 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Window Center (O/T/B Methods)"));
+   DialogItemSetText(di, _("Window Center (O/T/B Methods)"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -367,7 +367,7 @@ SettingsMoveResize(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Always Screen corner"));
+   DialogItemSetText(di, _("Always Screen corner"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -375,7 +375,7 @@ SettingsMoveResize(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Don't show"));
+   DialogItemSetText(di, _("Don't show"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_geominfo);
@@ -390,7 +390,7 @@ SettingsMoveResize(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, _("Update window while moving"));
+   DialogItemSetText(di, _("Update window while moving"));
    DialogItemCheckButtonSetState(di, tmp_update_while_moving);
    DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
 
@@ -423,7 +423,7 @@ SettingsMoveResize(void)
     * DialogItemSetPadding(di, 2, 2, 2, 2);
     * DialogItemSetFill(di, 0, 0);
     * DialogItemSetAlign(di, 0, 512);
-    * DialogItemTextSetText(di, _("Example"));
+    * DialogItemSetText(di, _("Example"));
     * 
     * di = DialogAddItem(table, DITEM_SEPARATOR);
     * DialogItemSetColSpan(di, 1);
@@ -509,9 +509,9 @@ SettingsPlacement(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Window Placement\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Window Placement\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -524,9 +524,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Dialog windows appear together with their owner"));
+   DialogItemSetText(di, _("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -534,8 +532,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("Switch to desktop where dialog appears"));
+   DialogItemSetText(di, _("Switch to desktop where dialog appears"));
    DialogItemCheckButtonSetState(di, tmp_switch_popup);
    DialogItemCheckButtonSetPtr(di, &tmp_switch_popup);
 
@@ -543,7 +540,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Place windows manually"));
+   DialogItemSetText(di, _("Place windows manually"));
    DialogItemCheckButtonSetState(di, tmp_manual_placement);
    DialogItemCheckButtonSetPtr(di, &tmp_manual_placement);
 
@@ -551,7 +548,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Place windows under mouse"));
+   DialogItemSetText(di, _("Place windows under mouse"));
    DialogItemCheckButtonSetState(di, tmp_manual_placement_mouse_pointer);
    DialogItemCheckButtonSetPtr(di, &tmp_manual_placement_mouse_pointer);
 
@@ -559,7 +556,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Ignore struts"));
+   DialogItemSetText(di, _("Ignore struts"));
    DialogItemCheckButtonSetState(di, tmp_place_ignore_struts);
    DialogItemCheckButtonSetPtr(di, &tmp_place_ignore_struts);
 
@@ -567,7 +564,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Raise fullscreen windows"));
+   DialogItemSetText(di, _("Raise fullscreen windows"));
    DialogItemCheckButtonSetState(di, tmp_raise_fullscreen);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_fullscreen);
 
@@ -578,9 +575,7 @@ SettingsPlacement(void)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetColSpan(di, 2);
-	DialogItemCheckButtonSetText(di,
-				     _
-				     ("Place windows on another head when full"));
+	DialogItemSetText(di, _("Place windows on another head when full"));
 	DialogItemCheckButtonSetState(di, tmp_extra_head);
 	DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
      }
@@ -650,9 +645,9 @@ SettingsAutoRaise(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Automatic Raising\n"
-				"of Windows Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Automatic Raising\n"
+			    "of Windows Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -665,7 +660,7 @@ SettingsAutoRaise(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Raise Windows Automatically"));
+   DialogItemSetText(di, _("Raise Windows Automatically"));
    DialogItemCheckButtonSetState(di, tmp_autoraise);
    DialogItemCheckButtonSetPtr(di, &tmp_autoraise);
 
@@ -673,7 +668,7 @@ SettingsAutoRaise(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Autoraise delay:"));
+   DialogItemSetText(di, _("Autoraise delay:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -754,9 +749,9 @@ SettingsMiscellaneous(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Miscellaneous\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Miscellaneous\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -769,7 +764,7 @@ SettingsMiscellaneous(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable Dialog Headers"));
+   DialogItemSetText(di, _("Enable Dialog Headers"));
    DialogItemCheckButtonSetState(di, tmp_dialog_headers);
    DialogItemCheckButtonSetPtr(di, &tmp_dialog_headers);
 
@@ -777,7 +772,7 @@ SettingsMiscellaneous(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable Button Images"));
+   DialogItemSetText(di, _("Enable Button Images"));
    DialogItemCheckButtonSetState(di, tmp_button_image);
    DialogItemCheckButtonSetPtr(di, &tmp_button_image);
 
@@ -785,7 +780,7 @@ SettingsMiscellaneous(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable Logout Dialog"));
+   DialogItemSetText(di, _("Enable Logout Dialog"));
    DialogItemCheckButtonSetState(di, tmp_logout_dialog);
    DialogItemCheckButtonSetPtr(di, &tmp_logout_dialog);
 
@@ -793,7 +788,7 @@ SettingsMiscellaneous(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable Reboot/Halt on Logout"));
+   DialogItemSetText(di, _("Enable Reboot/Halt on Logout"));
    DialogItemCheckButtonSetState(di, tmp_reboot_halt);
    DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
 
@@ -893,9 +888,9 @@ SettingsSpecialFX(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Special Effects\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Special Effects\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_NONE);
 
@@ -917,20 +912,20 @@ SettingsSpecialFX(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, _("Slide Method:"));
+   DialogItemSetText(di, _("Slide Method:"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, _("Slide desktops around when changing"));
+   DialogItemSetText(di, _("Slide desktops around when changing"));
    DialogItemCheckButtonSetState(di, tmp_desktop_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Opaque"));
+   DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -938,14 +933,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, _("Slide windows around when cleaning up"));
+   DialogItemSetText(di, _("Slide windows around when cleaning up"));
    DialogItemCheckButtonSetState(di, tmp_cleanup_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_cleanup_slide);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Technical"));
+   DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -953,14 +948,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, _("Slide windows in when they appear"));
+   DialogItemSetText(di, _("Slide windows in when they appear"));
    DialogItemCheckButtonSetState(di, tmp_map_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_map_slide);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Box"));
+   DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -968,14 +963,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, _("Animated display of menus"));
+   DialogItemSetText(di, _("Animated display of menus"));
    DialogItemCheckButtonSetState(di, tmp_animated_menus);
    DialogItemCheckButtonSetPtr(di, &tmp_animated_menus);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Shaded"));
+   DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
@@ -983,14 +978,14 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, _("Always pop up menus on screen"));
+   DialogItemSetText(di, _("Always pop up menus on screen"));
    DialogItemCheckButtonSetState(di, tmp_menusonscreen);
    DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Semi-Solid"));
+   DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 4);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_slide_mode);
@@ -999,7 +994,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di, _("Warp pointer after moving menus"));
+   DialogItemSetText(di, _("Warp pointer after moving menus"));
    DialogItemCheckButtonSetState(di, tmp_warpmenus);
    DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
 
@@ -1007,8 +1002,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di,
-				_("Use saveunders to reduce window exposures"));
+   DialogItemSetText(di, _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetState(di, tmp_saveunders);
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
@@ -1016,8 +1010,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
-   DialogItemCheckButtonSetText(di,
-				_("Animate shading and unshading of windows"));
+   DialogItemSetText(di, _("Animate shading and unshading of windows"));
    DialogItemCheckButtonSetState(di, tmp_animate_shading);
    DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
 
@@ -1031,7 +1024,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, _("Desktop Slide speed: (slow)\n"));
+   DialogItemSetText(di, _("Desktop Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1047,13 +1040,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("(fast)\n"));
+   DialogItemSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, _("Cleanup Slide speed: (slow)\n"));
+   DialogItemSetText(di, _("Cleanup Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1069,13 +1062,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("(fast)\n"));
+   DialogItemSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, _("Appear Slide speed: (slow)\n"));
+   DialogItemSetText(di, _("Appear Slide speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1091,13 +1084,13 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("(fast)\n"));
+   DialogItemSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, _("Window Shading speed: (slow)\n"));
+   DialogItemSetText(di, _("Window Shading speed: (slow)\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
@@ -1113,7 +1106,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("(fast)\n"));
+   DialogItemSetText(di, _("(fast)\n"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);
@@ -1189,9 +1182,8 @@ SettingsComposite(void)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetColSpan(di, 2);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Composite\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Composite\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -1204,7 +1196,7 @@ SettingsComposite(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable Composite"));
+   DialogItemSetText(di, _("Enable Composite"));
    DialogItemCheckButtonSetState(di, Cfg_composite.enable);
    DialogItemCheckButtonSetPtr(di, &Cfg_composite.enable);
 
@@ -1218,7 +1210,7 @@ SettingsComposite(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Shadows Off"));
+   DialogItemSetText(di, _("Shadows Off"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -1226,7 +1218,7 @@ SettingsComposite(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Shadows Sharp"));
+   DialogItemSetText(di, _("Shadows Sharp"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -1234,7 +1226,7 @@ SettingsComposite(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Shadows Blurred"));
+   DialogItemSetText(di, _("Shadows Blurred"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &Cfg_composite.shadow);
@@ -1244,7 +1236,7 @@ SettingsComposite(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Fading Speed:\n"));
+   DialogItemSetText(di, _("Fading Speed:\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);

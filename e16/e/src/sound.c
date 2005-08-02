@@ -451,8 +451,7 @@ SettingsAudio(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Audio\n" "Settings Dialog\n"));
+	DialogItemSetText(di, _("Enlightenment Audio\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -465,7 +464,7 @@ SettingsAudio(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable sounds"));
+   DialogItemSetText(di, _("Enable sounds"));
    DialogItemCheckButtonSetState(di, tmp_audio);
    DialogItemCheckButtonSetPtr(di, &tmp_audio);
 #else
@@ -473,9 +472,9 @@ SettingsAudio(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 _("Audio not available since EsounD was not\n"
-			   "present at the time of compilation."));
+   DialogItemSetText(di,
+		     _("Audio not available since EsounD was not\n"
+		       "present at the time of compilation."));
 #endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);

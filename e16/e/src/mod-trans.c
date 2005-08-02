@@ -87,7 +87,7 @@ CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
    di = (DItem *) data;
    Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
 	     tmp_theme_transparency);
-   DialogItemTextSetText(di, s);
+   DialogItemSetText(di, s);
    DialogDrawItems(tr_sel_dialog, di, 0, 0, 99999, 99999);
 
    /* FIXME - We may not want to do this unless things are speeded up */
@@ -132,9 +132,9 @@ SettingsTransparency(void)
 	DialogItemSetColSpan(di, 7);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Selective Transparency\n"
-				"Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Selective Transparency\n"
+			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 7);
@@ -148,7 +148,7 @@ SettingsTransparency(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Changes Might Require Restart:"));
+   DialogItemSetText(di, _("Changes Might Require Restart:"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
@@ -166,49 +166,49 @@ SettingsTransparency(void)
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Borders:"));
+   DialogItemSetText(di, _("Borders:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Menus:"));
+   DialogItemSetText(di, _("Menus:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Hilights:"));
+   DialogItemSetText(di, _("Hilights:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("E Widgets:"));
+   DialogItemSetText(di, _("E Widgets:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("E Dialogs:"));
+   DialogItemSetText(di, _("E Dialogs:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 15, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Tooltips:"));
+   DialogItemSetText(di, _("Tooltips:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 1);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
-   DialogItemTextSetText(di, _("Opaque"));
+   DialogItemSetText(di, _("Opaque"));
 
    radio_border = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 15, 2, 2);
@@ -251,7 +251,7 @@ SettingsTransparency(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
-   DialogItemTextSetText(di, _("Background"));
+   DialogItemSetText(di, _("Background"));
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 15, 2, 2);
@@ -297,7 +297,7 @@ SettingsTransparency(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
-   DialogItemTextSetText(di, _("Glass"));
+   DialogItemSetText(di, _("Glass"));
 
    di = DialogAddItem(table, DITEM_NONE);
    DialogItemSetPadding(di, 2, 15, 2, 2);
@@ -345,7 +345,7 @@ SettingsTransparency(void)
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
 	     tmp_theme_transparency);
-   DialogItemTextSetText(di, s);
+   DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 7);

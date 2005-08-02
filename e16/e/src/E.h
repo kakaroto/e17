@@ -1201,12 +1201,10 @@ void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
+void                DialogItemSetText(DItem * di, const char *text);
 void                DialogItemCallCallback(Dialog * d, DItem * di);
 void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 				    int h);
-void                DialogItemButtonSetText(DItem * di, const char *text);
-void                DialogItemCheckButtonSetText(DItem * di, const char *text);
-void                DialogItemTextSetText(DItem * di, const char *text);
 void                DialogItemRadioButtonSetEventFunc(DItem * di,
 						      DialogItemCallbackFunc *
 						      func);
@@ -1221,7 +1219,6 @@ void                DialogItemImageSetFile(DItem * di, const char *image);
 void                DialogFreeItem(DItem * di);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
-void                DialogItemRadioButtonSetText(DItem * di, const char *text);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
 void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
 							int *val_ptr);

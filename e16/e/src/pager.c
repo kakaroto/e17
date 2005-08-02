@@ -1732,7 +1732,7 @@ CB_PagerScanSlide(Dialog * d __UNUSED__, int val __UNUSED__,
 
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
 	     tmp_pager_scan_speed, _("lines per second"));
-   DialogItemTextSetText(pager_scan_speed_label, s);
+   DialogItemSetText(pager_scan_speed_label, s);
    DialogDrawItems(pager_settings_dialog, pager_scan_speed_label, 0, 0, 99999,
 		   99999);
 }
@@ -1781,9 +1781,9 @@ SettingsPager(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Desktop & Area\n"
-				"Pager Settings Dialog\n"));
+	DialogItemSetText(di,
+			  _("Enlightenment Desktop & Area\n"
+			    "Pager Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -1796,7 +1796,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Enable pager display"));
+   DialogItemSetText(di, _("Enable pager display"));
    DialogItemCheckButtonSetState(di, tmp_show_pagers);
    DialogItemCheckButtonSetPtr(di, &tmp_show_pagers);
 
@@ -1804,8 +1804,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("Make miniature snapshots of the screen"));
+   DialogItemSetText(di, _("Make miniature snapshots of the screen"));
    DialogItemCheckButtonSetState(di, tmp_pager_snap);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_snap);
 
@@ -1813,9 +1812,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Smooth high quality snapshots in snapshot mode"));
+   DialogItemSetText(di, _("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -1823,9 +1820,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Zoom in on pager windows when mouse is over them"));
+   DialogItemSetText(di, _("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -1833,9 +1828,8 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Pop up window title when mouse is over the window"));
+   DialogItemSetText(di,
+		     _("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -1843,8 +1837,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("Continuously scan screen to update pager"));
+   DialogItemSetText(di, _("Continuously scan screen to update pager"));
    DialogItemCheckButtonSetState(di, tmp_pager_do_scan);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
 
@@ -1855,7 +1848,7 @@ SettingsPager(void)
    DialogItemSetAlign(di, 0, 512);
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
 	     tmp_pager_scan_speed, _("lines per second"));
-   DialogItemTextSetText(di, s);
+   DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1873,13 +1866,13 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di, _("Mouse button to select and drag windows:"));
+   DialogItemSetText(di, _("Mouse button to select and drag windows:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Left"));
+   DialogItemSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -1887,7 +1880,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Middle"));
+   DialogItemSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -1895,7 +1888,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Right"));
+   DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_win_button);
@@ -1905,13 +1898,13 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di, _("Mouse button to select desktops:"));
+   DialogItemSetText(di, _("Mouse button to select desktops:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Left"));
+   DialogItemSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -1919,7 +1912,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Middle"));
+   DialogItemSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -1927,7 +1920,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Right"));
+   DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_sel_button);
@@ -1937,13 +1930,13 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 0);
-   DialogItemTextSetText(di, _("Mouse button to display pager menu:"));
+   DialogItemSetText(di, _("Mouse button to display pager menu:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Left"));
+   DialogItemSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -1951,7 +1944,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Middle"));
+   DialogItemSetText(di, _("Middle"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
@@ -1959,7 +1952,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemRadioButtonSetText(di, _("Right"));
+   DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);

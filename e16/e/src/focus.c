@@ -713,8 +713,7 @@ SettingsFocus(void)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Focus\n" "Settings Dialog\n"));
+	DialogItemSetText(di, _("Enlightenment Focus\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
@@ -727,7 +726,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Focus follows pointer"));
+   DialogItemSetText(di, _("Focus follows pointer"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -735,7 +734,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Focus follows pointer sloppily"));
+   DialogItemSetText(di, _("Focus follows pointer sloppily"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -743,7 +742,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("Focus follows mouse clicks"));
+   DialogItemSetText(di, _("Focus follows mouse clicks"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_focus);
@@ -758,7 +757,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Clicking in a window always raises it"));
+   DialogItemSetText(di, _("Clicking in a window always raises it"));
    DialogItemCheckButtonSetState(di, tmp_clickalways);
    DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
 
@@ -772,7 +771,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("All new windows first get the focus"));
+   DialogItemSetText(di, _("All new windows first get the focus"));
    DialogItemCheckButtonSetState(di, tmp_new_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
 
@@ -780,7 +779,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Only new dialog windows get the focus"));
+   DialogItemSetText(di, _("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetState(di, tmp_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
 
@@ -788,9 +787,9 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Only new dialogs whose owner is focused get the focus"));
+   DialogItemSetText(di,
+		     _
+		     ("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -798,7 +797,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Raise windows while switching focus"));
+   DialogItemSetText(di, _("Raise windows while switching focus"));
    DialogItemCheckButtonSetState(di, tmp_raise_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_focus);
 
@@ -806,9 +805,8 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window while switching focus"));
+   DialogItemSetText(di,
+		     _("Send mouse pointer to window while switching focus"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -816,9 +814,8 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Always send mouse pointer to window on focus switch"));
+   DialogItemSetText(di,
+		     _("Always send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_always);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_always);
 
@@ -832,7 +829,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Display and use focus list"));
+   DialogItemSetText(di, _("Display and use focus list"));
    DialogItemCheckButtonSetState(di, tmp_display_warp);
    DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
 
@@ -840,7 +837,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Include sticky windows in focus list"));
+   DialogItemSetText(di, _("Include sticky windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_showsticky);
    DialogItemCheckButtonSetPtr(di, &tmp_showsticky);
 
@@ -848,7 +845,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Include shaded windows in focus list"));
+   DialogItemSetText(di, _("Include shaded windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_showshaded);
    DialogItemCheckButtonSetPtr(di, &tmp_showshaded);
 
@@ -856,8 +853,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_("Include iconified windows in focus list"));
+   DialogItemSetText(di, _("Include iconified windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_showiconified);
    DialogItemCheckButtonSetPtr(di, &tmp_showiconified);
 
@@ -865,7 +861,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Focus windows while switching"));
+   DialogItemSetText(di, _("Focus windows while switching"));
    DialogItemCheckButtonSetState(di, tmp_warpfocused);
    DialogItemCheckButtonSetPtr(di, &tmp_warpfocused);
 
@@ -873,7 +869,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Raise windows after focus switch"));
+   DialogItemSetText(di, _("Raise windows after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_raise_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_raise_after_focus);
 
@@ -881,9 +877,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window after focus switch"));
+   DialogItemSetText(di, _("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 
@@ -898,15 +892,15 @@ SettingsFocus(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetColSpan(di, 2);
-   DialogItemTextSetText(di,
-			 _
-			 ("Focuslist image display policy (if one operation fails, try the next):"));
+   DialogItemSetText(di,
+		     _
+		     ("Focuslist image display policy (if one operation fails, try the next):"));
 
    radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("First E Icon, then App Icon"));
+   DialogItemSetText(di, _("First E Icon, then App Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
@@ -914,7 +908,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("First App Icon, then E Icon"));
+   DialogItemSetText(di, _("First App Icon, then E Icon"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
 
@@ -922,7 +916,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemRadioButtonSetText(di, _("None"));
+   DialogItemSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
