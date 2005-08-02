@@ -951,6 +951,7 @@ IPC_Show(const char *params, Client * c __UNUSED__)
    ConfigurationShow(params);
 }
 
+#if 0				/* Obsolete? */
 static void
 EwinShowInfo1(const EWin * ewin)
 {
@@ -1039,6 +1040,7 @@ EwinShowInfo1(const EWin * ewin)
 	     ewin->mwm.decor_title, ewin->mwm.decor_menu,
 	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize);
 }
+#endif /* Obsolete? */
 
 static void
 EwinShowInfo2(const EWin * ewin)
@@ -1132,6 +1134,7 @@ EwinShowInfo2(const EWin * ewin)
       );
 }
 
+#if 0				/* Obsolete? */
 static void
 IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 {
@@ -1161,6 +1164,7 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 	   IpcPrintf("No matching EWin found\n");
      }
 }
+#endif /* Obsolete? */
 
 static void
 IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
@@ -1481,8 +1485,10 @@ IpcItem             IPCArray[] = {
     IPC_Set, "set", NULL, "Set configuration parameter", NULL},
    {
     IPC_Show, "show", "sh", "Show configuration parameter(s)", NULL},
+#if 0				/* Obsolete? */
    {
     IPC_EwinInfo, "get_client_info", NULL, "Show client window info", NULL},
+#endif
    {
     IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
    {
