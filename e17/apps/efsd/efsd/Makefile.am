@@ -61,7 +61,7 @@ libefsd_la_SOURCES   = 				\
 	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
 
-libefsd_CFLAGS = -DLIB
+libefsd_la_CFLAGS = -DLIB $(AM_CFLAGS)
 
 EXTRA_DIST = gdb.scr
 
