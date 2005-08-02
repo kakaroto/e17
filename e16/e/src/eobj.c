@@ -280,7 +280,7 @@ EobjMap(EObj * eo, int raise)
    if (raise)
       EobjListStackRaise(eo);
 
-   if (eo->stacked <= 0)
+   if (eo->stacked <= 0 || raise > 1)
      {
 	if (eo->stacked < 0)
 	   DeskSetDirtyStack(eo->desk);

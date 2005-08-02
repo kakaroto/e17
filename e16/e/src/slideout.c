@@ -150,10 +150,12 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	     xx -= EoGetX(d);
 	     yy -= EoGetY(d);
 	  }
+	EoSetLayer(s, EoGetLayer(ewin));
      }
    else
      {
 	d = DeskGet(0);
+	EoSetLayer(s, 10);
      }
    EoReparent(s, EoObj(d), xx, yy);
 
@@ -166,9 +168,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	for (i = 0; i < s->num_buttons; i++)
 	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EobjMoveResize(EoObj(s), xx, yy, 1, 1);
+	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
-	EobjMap(EoObj(s), 1);
+	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx + sw, yy, xx, yy, 1, sh, sw, sh,
 			Conf.slidespeedmap);
 	break;
@@ -179,9 +181,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	for (i = 0; i < s->num_buttons; i++)
 	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EobjMoveResize(EoObj(s), xx, yy, 1, 1);
+	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
-	EobjMap(EoObj(s), 1);
+	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy, xx, yy, 1, sh, sw, sh,
 			Conf.slidespeedmap);
 	break;
@@ -192,9 +194,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	for (i = 0; i < s->num_buttons; i++)
 	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EobjMoveResize(EoObj(s), xx, yy, 1, 1);
+	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
-	EobjMap(EoObj(s), 1);
+	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy + sh, xx, yy, sw, 1, sw, sh,
 			Conf.slidespeedmap);
 	break;
@@ -205,9 +207,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	for (i = 0; i < s->num_buttons; i++)
 	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
 				   CWWinGravity, &att);
-	EobjMoveResize(EoObj(s), xx, yy, 1, 1);
+	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
-	EobjMap(EoObj(s), 1);
+	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy, xx, yy, sw, 1, sw, sh,
 			Conf.slidespeedmap);
 	break;
