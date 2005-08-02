@@ -174,12 +174,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	/*** Context menu **/
 	/*Make the menu floater */
 	ib->ewl_iconbox_menu_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
-	ib->ewl_iconbox_menu_box = ewl_vbox_new();
 
-	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_box), EWL_FLAG_FILL_FILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_FILL_FILL);
 
-	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_menu_box), ib->ewl_iconbox_menu_floater);
 
 	/* Get the context menu ready */
 	ib->ewl_iconbox_context_menu = ewl_menu_new(NULL, "");
@@ -245,7 +242,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	ewl_widget_show(ib->ewl_iconbox_pane_inner);
 	ewl_widget_show(ib->ewl_iconbox_scrollpane);
 	ewl_widget_show(ib->ewl_iconbox_menu_floater);
-	ewl_widget_show(ib->ewl_iconbox_menu_box);
 
 
 	/* Ewl Entry for the purposes of label editing - if enabled */
@@ -510,7 +506,7 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		
 			w = ewl_object_current_w_get(EWL_OBJECT(ib->select));
 			h = ewl_object_current_h_get(EWL_OBJECT(ib->select));
-			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) ) {
 
 				
 						
@@ -518,7 +514,7 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 				ix = ewl_object_current_x_get(EWL_OBJECT(list_item));
 				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
 				
-				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy && !list_item->selected ) {
+				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy) {
 					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0);
 				} else if (list_item->selected) {
 					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));
@@ -577,9 +573,18 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
 
 		ewl_widget_show(ib->ewl_iconbox_menu_floater);
+		ewl_widget_show(ib->ewl_iconbox_context_menu);
+		ewl_widget_show(ib->ewl_iconbox_view_menu);
+		
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
+		/*Make sure the context menu is invisible*/
+		ewl_widget_hide(ib->ewl_iconbox_menu_floater);
+		ewl_widget_hide(ib->ewl_iconbox_context_menu);
+		ewl_widget_hide(ib->ewl_iconbox_view_menu);
+		
+		
 		/*printf ("Start select at %d:%d\n", ev->x, ev->y);*/
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
