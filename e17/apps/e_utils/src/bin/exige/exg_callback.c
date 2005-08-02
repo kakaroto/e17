@@ -8,6 +8,13 @@ _enter_cb(void *data, const char *str)
 }
 
 void
+key_cb(void *data, Evas *e, Evas_Object *o, void *ei)
+{
+    Exige *exg =data;
+    eapp_display(exg);
+}
+
+void
 _exg_quit(void *data , Evas_Object *obj, const char *emission, 
 	  const char *src)
 {

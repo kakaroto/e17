@@ -11,7 +11,7 @@ fonts {
 collections {
     group {
 	name: "Exige";
-	min: 250 100;
+	min: 300 100;
 	script {
           public check_toggle_state;
         }

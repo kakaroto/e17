@@ -3,6 +3,8 @@
 
 #include "Exige.h"
 
+void key_cb(void *data, Evas *e, Evas_Object *o, void *ei);
+
 void _enter_cb(void *data, const char *str);
 
 void _exg_quit(void *data , Evas_Object *obj, 

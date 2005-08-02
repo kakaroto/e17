@@ -23,12 +23,14 @@ int main(int argc, const char **argv)
 	return 1;
     }
 
-
+    eet_init();
     edje_init();
+
+    exg_eapps_init();    
     exg_gui_init(exg);
     
     ecore_main_loop_begin();
-
+    eet_shutdown();
     edje_shutdown();
     ecore_evas_shutdown();
     ecore_config_save();

@@ -1,4 +1,5 @@
 #include "exg_gui.h"
+static Ecore_Hash *exg_eapps = NULL;
 
 char * exg_gui_theme_path_get()
 {
@@ -30,11 +31,12 @@ exg_gui_init(Exige *exg)
 				     "*", _exg_quit, NULL);
      edje_object_signal_callback_add(exg->gui, "button,Run,clicked",
 				     "*", _run_cb, exg);
-
+     
      exg_text_entry_create(exg);
      
      exg_window_geometry_set(exg);
      
+     exg->eapp_edj=NULL;
      evas_object_show(exg->gui);
      evas_object_show(exg->txt);
 }
@@ -44,7 +46,7 @@ void
 exg_text_entry_create(Exige *exg)
 {
     exg->txt=esmart_text_entry_new(exg->evas);
-
+    evas_object_event_callback_add(exg->txt, EVAS_CALLBACK_KEY_DOWN, key_cb, exg);
     esmart_text_entry_edje_part_set(exg->txt,exg->gui,"entry");    
     esmart_text_entry_return_key_callback_set(exg->txt,_enter_cb,exg);
     esmart_text_entry_is_password_set(exg->txt, 0);
@@ -68,8 +70,6 @@ exg_window_geometry_set(Exige *exg)
     
     ecore_evas_size_min_set(exg->ee,w,h);
     ecore_evas_size_max_set(exg->ee,w,h);
-    
-    
 
     if(exg_conf_on_mouse_get())
     {
@@ -84,4 +84,94 @@ exg_window_geometry_set(Exige *exg)
     
     evas_object_move(exg->gui,0,0);
     evas_object_resize(exg->gui,w,h);
+}
+
+int
+exg_eapps_init()
+{
+    char path[PATH_MAX];
+    char *home;
+    Ecore_List *eapps;
+    int i;
+
+    home = getenv("HOME");
+    if (!home)
+    {
+        fprintf(stderr, "Unable to get HOME from environment.\n");
+        return 0;
+    }
+    snprintf(path, PATH_MAX, "%s/.e/e/applications/all", home);
+
+    if (!ecore_file_exists(path))
+    {
+        fprintf(stderr, "%s dosen't exist. Where are the eapps?\n", path);
+        return 0;
+    }
+
+    eapps = ecore_file_ls(path);
+    if (!eapps)
+    {
+        fprintf(stderr, "Didn't get any Eapp files.\n");
+        return 0;
+    }
+
+    exg_eapps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+    for (i = 0; i < ecore_list_nodes(eapps); i++)
+    {
+        char *ret, *tmp;
+        int ret_size;
+        Eet_File *ef;
+        char e_path[PATH_MAX];
+        Exg_Eapp *eapp;
+
+        eapp = calloc(1, sizeof(Exg_Eapp));
+        if (!eapp) 
+        {
+            fprintf(stderr, "Not enough memory to create eapp.\n");
+            continue;
+        }
+
+        tmp = ecore_list_goto_index(eapps, i);
+        eapp->eapp_name = strdup(tmp);
+
+        snprintf(e_path, PATH_MAX, "%s/%s", path, tmp);
+        eapp->path = strdup(e_path);
+        ef = eet_open(e_path, EET_FILE_MODE_READ);
+        if (!ef) 
+        {
+            fprintf(stderr, "Error reading: %s\n", e_path);
+            continue;
+        }
+        ret = eet_read(ef, "app/info/exe", &ret_size);
+        if (ret_size > 0)
+        {
+            eapp->exe = malloc(sizeof(char) * (ret_size + 1));
+            snprintf(eapp->exe, ret_size + 1, "%s", ret);
+        }
+
+        ecore_hash_set(exg_eapps, eapp->exe, eapp);
+        eet_close(ef);
+    }
+
+    return 1;
+}
+
+void
+eapp_display(Exige *exg)
+{
+    Exg_Eapp *eapp;
+    const char *command;    
+    command = esmart_text_entry_text_get(exg->txt);
+
+    if(eapp= ecore_hash_get(exg_eapps, command)) {
+
+	exg->eapp_edj= edje_object_add(exg->evas);
+	edje_object_file_set(exg->eapp_edj,eapp->path,"icon");
+	edje_object_part_swallow(exg->gui,"eapp_swallow",exg->eapp_edj);
+	evas_object_show(exg->eapp_edj);
+    }
+    else {
+	 evas_object_del(exg->eapp_edj);
+    }   
 }

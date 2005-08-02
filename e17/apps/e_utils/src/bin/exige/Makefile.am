@@ -5,6 +5,7 @@ AM_CFLAGS = \
 	@ecore_cflags@ \
 	@evas_cflags@ \
 	@edje_cflags@ \
+	@eet_cflags@ \
 	@esmart_cflags@
 
 bin_PROGRAMS = exige
@@ -17,9 +18,9 @@ exige_SOURCES = \
 
 exige_LDADD = \
 	@ecore_libs@ \
+	@eet_libs@ \
 	@evas_libs@ \
 	@esmart_libs@ \
 	@edje_libs@ \
 	-lesmart_textarea \
 	-lesmart_text_entry
-
