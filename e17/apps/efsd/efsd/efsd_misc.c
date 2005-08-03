@@ -590,6 +590,7 @@ efsd_misc_get_socket_file(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 #ifndef __EMX__
+  /*printf("Using standard path socket\n");*/
   snprintf(s, sizeof(s), "/tmp/.efsd_socket_%u", geteuid());
 #else
   snprintf(s, sizeof(s), "\\socket\\.efsd_socket_%u", geteuid());

@@ -208,6 +208,7 @@ Makefile
 efsd-config
 efsd/Makefile
 tools/Makefile
+demo/Makefile
 doc/Makefile
 doc/kernel-doc
 doc/html-customizations.dsl

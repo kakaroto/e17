@@ -688,6 +688,7 @@ main_handle_connections(void)
   memset(&serv_sun, 0, sizeof(serv_sun));
   serv_sun.sun_family = AF_UNIX;
   strncpy(serv_sun.sun_path, efsd_misc_get_socket_file(), sizeof(serv_sun.sun_path));
+  /*printf("Listening on %s\n", efsd_misc_get_socket_file());*/
 
   if (bind(listen_fd, (struct sockaddr *)&serv_sun, sizeof(serv_sun)) < 0)
     {
