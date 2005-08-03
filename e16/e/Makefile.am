@@ -7,7 +7,7 @@ sample-scripts/testroller.pl \
 sample-scripts/shade-pagers.pl \
 e.spec \
 configure configure.in config.h.in \
-ABOUT-NLS AUTHORS COMPLIANCE COPYING ChangeLog FAQ INSTALL NEWS README \
+ABOUT-NLS AUTHORS COMPLIANCE COPYING ChangeLog INSTALL NEWS README \
 README-0.16.8
 
 ACLOCAL_AMFLAGS = -I m4
