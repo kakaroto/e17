@@ -26,7 +26,7 @@ dnl
 dnl @author Angus Lees <gusl@cse.unsw.edu.au>
 dnl @version $Id$
 
-AC_DEFUN(AC_PATH_GENERIC,
+AC_DEFUN([AC_PATH_GENERIC],
 [dnl
 dnl we're going to need uppercase, lowercase and user-friendly versions of the
 dnl string `LIBRARY'
