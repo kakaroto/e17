@@ -1,5 +1,9 @@
 $Id$
 
+2005-08-03 Tilman Sauerbeck (tilman at code-monkey de)
+        * data/Makefile.am: Fixed installation directory for
+          create_embrace_cfg.sh
+
 2005-06-29 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugins/{pop3,imap}/{pop3/imap}.c: Fixed compilation with
           latest ecore_con
