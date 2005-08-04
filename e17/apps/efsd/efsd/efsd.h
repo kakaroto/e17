@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/stat.h>
 
 #define EFSD_CLIENTS      100
+#define IPC_TITLE "EFSD"
 
 /* Miscellaneous, needed below. */
 

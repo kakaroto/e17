@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile
 
 DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
-INCLUDES = @edb_cflags@ @xml2_cflags@ $(DEBUGFLAGS)
+INCLUDES = @edb_cflags@ @xml2_cflags@ $(DEBUGFLAGS) @ecore_cflags@
 
 if USE_THREADS_FILES
 efsd_threadstuff = efsd_lock.c
@@ -44,7 +44,7 @@ efsd_SOURCES = 					\
 	efsd_types.h efsd_types.c 		\
 	$(efsd_threadstuff)
 
-efsd_LDADD = @edb_libs@ @xml2_libs@
+efsd_LDADD = @edb_libs@ @xml2_libs@ @ecore_libs@
 
 lib_LTLIBRARIES = libefsd.la
 

@@ -27,6 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
+#if HAVE_ECORE
+#include <Ecore.h>
+#include <Ecore_Ipc.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -123,6 +128,50 @@ static void   main_initialize(char *appname);
 static void   main_daemonize(void);
 static void   main_check_permissions(void);
 static void   main_check_options(int argc, char**argv);
+
+
+/* *********************************** */
+/* IPC Functions */
+
+int
+ipc_client_add(void *data, int type, void *event)
+{
+      Ecore_Ipc_Event_Client_Add *e;
+	                                                                                                            
+      e = (Ecore_Ipc_Event_Client_Add *) event;
+      printf("ERR: EFSD Client Connected!!!\n");
+      return (1);
+}
+
+int
+ipc_client_del(void *data, int type, void *event)
+{
+   Ecore_Ipc_Event_Client_Del *e;
+                                                                                                         
+   e = (Ecore_Ipc_Event_Client_Del *) event;
+    printf("ERR: Client Disconnected!!!\n");
+   return (1);
+}
+
+int
+ipc_client_data(void *data, int type, void *event)
+{
+   Ecore_Ipc_Event_Client_Data *e;
+                                                                                                         
+   printf ("Got message!\n");
+   if ((e = (Ecore_Ipc_Event_Client_Data *) event))
+   {
+           printf ("Got message!\n");
+           ecore_ipc_client_send(e->client, 1, 6, e->ref, e->ref_to, 5, NULL, 0);
+   }
+}
+                                                                                                         
+                                                                                                         
+
+
+
+
+/* *********************************** */
 
 
 static void   
@@ -672,9 +721,14 @@ main_handle_connections(void)
   struct timeval  tv;
   int             rebuild_fdset = FALSE;
 
+  #if HAVE_ECORE
+  Ecore_Ipc_Server *server = NULL;
+  #endif
+
   D_ENTER;
 
   ev_q = efsd_queue_new();
+
 
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientfd[i] = -1;
@@ -722,6 +776,41 @@ main_handle_connections(void)
 
   /* Handle connections: */
 
+  #if HAVE_ECORE
+  printf("ERR: Support using eCore/IPC!\n");
+
+  /*Init the ipc server*/
+  if (ecore_ipc_init() < 1)
+                return (1);
+
+
+  if ((server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL))) {
+      ecore_ipc_server_del(server);
+      printf ("ERR: Server already running...\n");
+      return (1);
+   } else {
+      printf ("ERR: Server created..\n");
+
+      server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL);
+
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_client_add,
+                 NULL);
+
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, ipc_client_del,
+                 NULL);
+
+       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
+                 NULL);
+
+
+   }
+
+  ecore_main_loop_begin();
+
+  
+  #else
+  
+ 
   for ( ; ; )
     {
       rebuild_fdset = FALSE;
@@ -889,6 +978,9 @@ main_handle_connections(void)
 	    }
 	}
     }
+
+ #endif
+
 
   D_RETURN;
 }
@@ -1238,8 +1330,10 @@ efsd_main_close_connection(int client)
 int 
 main(int argc, char **argv)
 {
+	
   D_ENTER;
 
+  
   main_check_permissions();
   main_check_options(argc, argv);
 
