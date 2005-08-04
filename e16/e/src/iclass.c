@@ -687,6 +687,32 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    return im;
 }
 
+Pixmap
+ImageclassApplySimple(ImageClass * ic, Window win, Drawable draw, int state,
+		      int x, int y, int w, int h)
+{
+   Pixmap              pmap;
+   Imlib_Image        *im;
+
+   im = ImageclassGetImage(ic, 0, 0, state);
+   if (!im)
+      return None;
+
+   pmap = None;
+   if (draw == None)
+     {
+	pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	draw = pmap;
+	x = y = 0;
+     }
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(draw);
+   imlib_render_image_on_drawable_at_size(x, y, w, h);
+   imlib_free_image();
+
+   return pmap;
+}
+
 static void
 ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)

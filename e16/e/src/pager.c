@@ -288,12 +288,17 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    if (use_iclass)
      {
-	ImageClass         *ic = NULL;
+	ImageClass         *ic;
 
 	ic = ImageclassFind("PAGER_WIN", 0);
 	if (ic)
-	   ImageclassApplyCopy(ic, EoGetWin(ewin), w, h, 0, 0,
-			       STATE_NORMAL, &ewin->mini_pmm, 1, ST_UNKNWN);
+	  {
+	     ewin->mini_pmm.type = 0;
+	     ewin->mini_pmm.mask = None;
+	     ewin->mini_pmm.pmap =
+		ImageclassApplySimple(ic, p->win, None, STATE_NORMAL,
+				      0, 0, w, h);
+	  }
      }
    else
      {
@@ -483,18 +488,11 @@ PagerUpdateBg(Pager * p)
    if (!Conf.pagers.snap)
      {
 	ImageClass         *ic;
-	PmapMask            pmm;
 
 	ic = ImageclassFind("PAGER_BACKGROUND", 0);
 	if (ic)
-	   ImageclassApplyCopy(ic, pmap, p->dw, p->dh, 0, 0,
-			       STATE_NORMAL, &pmm, 0, ST_UNKNWN);
-	gc = ECreateGC(pmap, 0, NULL);
-	if (gc == None)
-	   return;
-	XCopyArea(disp, pmm.pmap, pmap, gc, 0, 0, p->dw, p->dh, 0, 0);
-	EFreeGC(gc);
-	FreePmapMask(&pmm);
+	   ImageclassApplySimple(ic, p->win, pmap, STATE_NORMAL,
+				 0, 0, p->dw, p->dh);
 	return;
      }
 

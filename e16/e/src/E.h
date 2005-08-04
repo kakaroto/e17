@@ -1548,6 +1548,9 @@ ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
 ImageClass         *ImageclassFind(const char *name, int fallback);
 Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
+Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,
+					  Drawable draw, int state, int x,
+					  int y, int w, int h);
 void                ImageclassApply(ImageClass * ic, Window win, int w, int h,
 				    int active, int sticky, int state,
 				    char expose, int image_type);

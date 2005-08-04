@@ -1735,6 +1735,7 @@ BG_RedrawView(void)
    int                 x;
    Pixmap              pmap;
    GC                  gc;
+   ImageClass         *ic_button;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (!bglist)
@@ -1746,6 +1747,8 @@ BG_RedrawView(void)
    pmap = ECreatePixmap(win, w, h, VRoot.depth);
    gc = ECreateGC(pmap, 0, NULL);
 
+   ic_button = ImageclassFind("DIALOG_BUTTON", 0);
+
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
    ESetWindowBackgroundPixmap(win, pmap);
@@ -1756,24 +1759,13 @@ BG_RedrawView(void)
      {
 	if (((x + 64 + 8) >= 0) && (x < w))
 	  {
-	     ImageClass         *ic;
 	     Imlib_Image        *im;
 
-	     ic = ImageclassFind("DIALOG_BUTTON", 0);
-	     if (ic)
-	       {
-		  PmapMask            pmm;
-
-		  if (i == tmp_bg_selected)
-		     ImageclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					 STATE_CLICKED, &pmm, 0, ST_UNKNWN);
-		  else
-		     ImageclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					 STATE_NORMAL, &pmm, 0, ST_UNKNWN);
-		  XCopyArea(disp, pmm.pmap, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
-			    0);
-		  FreePmapMask(&pmm);
-	       }
+	     if (ic_button)
+		ImageclassApplySimple(ic_button, win, pmap,
+				      (i == tmp_bg_selected) ?
+				      STATE_CLICKED : STATE_NORMAL,
+				      x, 0, 64 + 8, 48 + 8);
 
 	     if (!strcmp(BackgroundGetName(bglist[i]), "NONE"))
 	       {

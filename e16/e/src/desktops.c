@@ -1932,27 +1932,30 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 static void
 CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 {
-   char                s[64];
-   static char         called = 0;
-   DItem              *di;
-   static Window       win, awin;
-   int                 w, h;
    static int          prev_ax = 0, prev_ay = 0;
+   static char         called = 0;
+   static Window       awin;
+   char                s[64];
+   DItem              *di;
+   Window              win;
+   int                 w, h;
 
    if (val == 1)
       called = 0;
 
    if ((val != 1) && ((prev_ax == tmp_area_x) && (prev_ay == tmp_area_y)))
       return;
+
    prev_ax = tmp_area_x;
    prev_ay = tmp_area_y;
+
    di = (DItem *) data;
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
+
    if (!called)
      {
 	ImageClass         *ic;
-	PmapMask            pmm;
 
 	ic = ImageclassFind("SETTINGS_AREA_AREA", 0);
 	if (ic)
@@ -1961,10 +1964,12 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 0);
 	if (ic)
 	  {
-	     ImageclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmm, 0,
-				 ST_UNKNWN);
-	     ESetWindowBackgroundPixmap(awin, pmm.pmap);
-	     FreePmapMask(&pmm);
+	     Pixmap              pmap;
+
+	     pmap = ImageclassApplySimple(ic, awin, None, STATE_NORMAL,
+					  0, 0, 18, 14);
+	     ESetWindowBackgroundPixmap(awin, pmap);
+	     EFreePixmap(pmap);
 	  }
 	EClearWindow(awin);
 	called = 1;
