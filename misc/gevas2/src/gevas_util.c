@@ -26,6 +26,7 @@
 
 
 #include <gevas_util.h>
+#include <string.h>
 
 
 /**

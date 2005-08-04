@@ -4,3 +4,4 @@ you should be able to build and install gevas simply by running
 ./autogen.sh
 make
 
+You'll need evas, edje and ecore installed first.

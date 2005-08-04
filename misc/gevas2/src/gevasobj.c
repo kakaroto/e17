@@ -41,6 +41,7 @@
 
 #include "project.h"
 #include "gevas_sprite.h"
+#include "gevasevh_group_selector.h"
 
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
@@ -293,7 +294,7 @@ void _gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below)
 }
 void _gevasobj_move(GtkgEvasObj * object, double x, double y)
 {
-    evas_object_move( EVASO(object), x, y);
+    evas_object_move( EVASO(object), (Evas_Coord)x, (Evas_Coord)y);
 	gevasobj_queue_redraw(object);
 }
 void _gevasobj_resize(GtkgEvasObj * object, double w, double h)
@@ -387,7 +388,13 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
         }
         
     }
-    
+
+    if( GTK_IS_GEVASEVH_GROUP_SELECTOR(h) )
+    {
+        gevasevh_group_selector_add_rubber_band_starter( GTK_GEVASEVH_GROUP_SELECTOR(h),
+                                                         GTK_OBJECT( object ));
+        
+    }
 }
 
 void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
@@ -399,7 +406,7 @@ void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
 	ev->ev_handlers = g_slist_remove(ev->ev_handlers, h);
 }
 
-GSList *gevasobj_get_evhandlers(GtkgEvasObj * object)
+GSList *gevasobj_get_evhandlers(GtkgEvasObj * object )
 {
 	GtkgEvasObj *ev;
 
@@ -733,6 +740,7 @@ void gevasobj_move_relative( GtkgEvasObj * object, double dx, double dy)
     gint32 x, y;
 
     gevasobj_get_location( object, &lx, &ly );
+    
     lx += dx;	
     ly += dy;
             

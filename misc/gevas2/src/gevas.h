@@ -155,6 +155,11 @@ struct _GtkgEvas {
 
     // how many evas_render()s were called
     long evas_render_call_count;
+
+    // handlers that don't care which canvas object is in focus
+    // they want to know all events.
+    GSList *m_global_event_handlers;
+
 };
 
 struct _GtkgEvasClass {
@@ -227,6 +232,9 @@ struct _GtkgEvasClass {
 
     GList* gevas_get_metadata_prefix_list( GtkgEvas *ev );
     GList* gevas_get_image_prefix_list   ( GtkgEvas *ev );
+
+    void gevas_add_global_event_watcher( GtkgEvas* gevas, GtkObject * h );
+    void gevas_remove_global_event_watcher( GtkgEvas* gevas, GtkObject * h );
     
     
 	void __gevas_mouse_in(  void *_data, Evas* _e, Evas_Object* _o, void *event_info );

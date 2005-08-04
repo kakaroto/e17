@@ -1,5 +1,5 @@
 %define	name	 gevas
-%define ver      2.2.0
+%define ver      2.2.1
 %define rel      monkeyiq9000d
 %define prefix   /usr
 
@@ -21,11 +21,8 @@ Source: http://216.136.171.200/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: %{buildroot}
 Packager: Ben Martin <monkeyiq@dingoblue.net.au>
 URL: http://sourceforge.net/project/showfiles.php?group_id=2
-Requires: evas >= 0.0.4
-Requires: edb >= 1.0.2
-Requires: XFree86
-BuildRequires: edb-devel >= 1.0.2
-BuildRequires: XFree86-devel
+Requires: evas >= 0.9.9.013
+BuildRequires: evas-devel >= 0.9.9.013
 
 %description
 gevas is a GTK+ wrapper for the Evas API. 

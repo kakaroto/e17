@@ -172,11 +172,31 @@ static void gevastwin_destroy(GtkObject * object)
 {
 	GtkgEvasTwin *ev;
 
+//    fprintf(stderr,"gevastwin_destroy()\n");
+    
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASTWIN(object));
 
 	ev = GTK_GEVASTWIN(object);
 
+    if( ev->extra_objects )
+    {
+        Evas_List* li = gevas_obj_collection_to_evas_list( ev->extra_objects );
+        for( ; li; li = li->next)
+        {
+            if(li->data)
+            {
+                GtkgEvasObj* gobj = (GtkgEvasObj*)li->data;
+                evas_object_del( gobj->eobj );
+            }
+        }
+    }
+
+/*     if( ev->mainobj ) */
+/*         gevastwin_destroy(  ev->mainobj ); */
+/*     if( ev->auxobj ) */
+/*         gevastwin_destroy(  ev->auxobj ); */
+    
 	/* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
 		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
@@ -238,10 +258,14 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 /*                ev->mainobj, ev->auxobj, object ); */
         
 		if (ev->mainobj == object) {
+            printf("gevastwin_move_xxx(MO) extra object. main:%lp aux:%lp obj:%lp\n", 
+                   ev->mainobj, ev->auxobj, object ); 
 			ev->main_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->auxobj);
 		}
 		else if (ev->auxobj == object) {
+            printf("gevastwin_move_xxx(AO) extra object. main:%lp aux:%lp obj:%lp\n", 
+                   ev->mainobj, ev->auxobj, object ); 
 			ev->aux_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->mainobj);
 		}
@@ -372,26 +396,36 @@ static void sprite_item_add(
     setup_object_movements( GTK_OBJECT(ev), o );
 }
 
-void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v )
+void gevastwin_add_extra_object( GtkgEvasTwin* ev, GtkgEvasObj* gobj )
 {
-    ev->extra_objects = v;
+    if( !ev->extra_objects )
+    {
+        ev->extra_objects = gevas_obj_collection_new( GTK_GEVAS(gobj->gevas) );
+    }
 
-    Evas_List* li = gevas_obj_collection_to_evas_list( ev->extra_objects );
-    for( ; li; li = li->next)
-        if(li->data)
-        {
-            GtkgEvasObj* gobj = (GtkgEvasObj*)li->data;
-
-            gtk_object_set_data(GTK_OBJECT(gobj),
-                                GEVASTWIN_EXTRA_OBJ_MOVE_FUNC_KEY,
-                                (void*)gobj->move );
-            
-			gobj->move = _gevastwin_move_xxx;
-			gtk_object_set_data(GTK_OBJECT(gobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+    gevas_obj_collection_add( ev->extra_objects, gobj );
+    
+    gtk_object_set_data(GTK_OBJECT(gobj),
+                        GEVASTWIN_EXTRA_OBJ_MOVE_FUNC_KEY,
+                        (void*)gobj->move );
+    
+    gobj->move = _gevastwin_move_xxx;
+    gtk_object_set_data(GTK_OBJECT(gobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
 /*             gtk_signal_connect( GTK_OBJECT(gobj), "resize", */
 /*                                 GTK_SIGNAL_FUNC(twin_object_resized), ev ); */
-            
+}
+
+
+void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v )
+{
+    Evas_List* li = gevas_obj_collection_to_evas_list( v );
+    for( ; li; li = li->next)
+    {
+        if(li->data)
+        {
+            gevastwin_add_extra_object( ev, li->data );
         }
+    }
 }
 
 

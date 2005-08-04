@@ -1,4 +1,7 @@
 *~
+*.flc
+raptor.old.png
+raptor2.old.jpg
 .libs
 .deps
 *.lo
@@ -8,4 +11,9 @@ Makefile.in
 imagesize
 testgevas
 gwinmaptest
+signalconnect
+rawimage
+gevasedje
+gevasanim
+
 

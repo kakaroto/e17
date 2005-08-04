@@ -605,7 +605,23 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
     for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
-            gevasobj_move_relative( li->data, dx, dy );
+//            gevasobj_move_relative( li->data, (double)dx, (double)dy );
+
+            double ddx = 0;
+            double ddy = 0;
+            ddx += dx;
+            ddy += dy;
+            
+            if( li->data )
+            {
+                Evas_Coord x=0,y=0;
+//                gevasobj_get_location( GTK_GEVASOBJ(li->data), &x, &y );
+                char buffer[1024];
+                snprintf(buffer,200,"FIXME FIXME FIXME() size:%d getloc.x:%d getlox.y:%d %f \n",
+                       sizeof(Evas_Coord), x, y, 0.0 );
+            }
+
+            gevasobj_move_relative( li->data, ddx, ddy );
         }
 }
 

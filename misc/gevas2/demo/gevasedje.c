@@ -64,6 +64,7 @@ GtkWidget* createAndShowWindow()
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gevas_new_gtkscrolledwindow( (GtkgEvas**)(&gevas), &wtoy );
+    gevas_setup_ecore( (GtkgEvas*)gevas );
 
     gevas_add_fontpath( GTK_GEVAS(gevas), g_get_current_dir() );
     gevas_add_fontpath( GTK_GEVAS(gevas), "/usr/X11R6/lib/X11/fonts/msttcorefonts" );
@@ -85,7 +86,7 @@ GtkWidget* createAndShowWindow()
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
 	gevas_set_checked_bg(gevas, 1);
-	gtk_window_set_title(GTK_WINDOW(window), "test window");
+	gtk_window_set_title(GTK_WINDOW(window), "gevasedje: edje objects on a gevas");
 
 	gevas_set_middleb_scrolls(GTK_GEVAS(gevas), 1,
 							  gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(wtoy)),
@@ -114,8 +115,7 @@ GtkWidget* createAndShowWindow()
     gevasobj_set_layer( go, 2 );
     gevasobj_show(      go );
 
-
-	GtkgEvasEdje* gedje = gevasedje_new_with_canvas( gevas );
+    GtkgEvasEdje* gedje = gevasedje_new_with_canvas( gevas );
     gevasedje_set_file( gedje, "e_logo.eet", "test" );
     go = GTK_GEVASOBJ(gedje);
     gevasobj_move(      go, 300, 300 );
@@ -126,7 +126,6 @@ GtkWidget* createAndShowWindow()
     
     
     gtk_widget_show_all(window);
-    gevas_setup_ecore( (GtkgEvas*)gevas );
     
     return window;
 }

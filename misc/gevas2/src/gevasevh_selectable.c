@@ -161,7 +161,7 @@ static gint col_item_move_relative(
         if( *x+objw > vx+vw ) *x = vx+vw-objw;
         if( *y+objh > vy+vh ) *y = vy+vh-objh;
 
-        /* printf("gevas_selectable_move() vx:%d vy:%d vw:%d vh:%d\n",vx,vy,vw,vh); */
+/*         printf("gevas_selectable_move() vx:%d vy:%d vw:%d vh:%d\n",vx,vy,vw,vh); */
     }
     
     return GEVASOBJ_SIG_OK;
@@ -295,7 +295,7 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 		gint32 by = ev->border_y;
 		int lay=0;
         
-/* 		printf("showing for selectable\n"); */
+// 		printf("gevas_selectable_select() x:%d y:%d bx:%d by:%d\n",x,y,bx,by); 
 		gevasobj_get_geometry( ev->normal, &x, &y, &w, &h );
 		gevasobj_move( ev->selected, x - bx, y - by);
 		gevasobj_resize( ev->selected, w + 2*bx, h + 2*by);
@@ -418,6 +418,8 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	ev->tracking_x = _x;
 	ev->tracking_y = _y;
 
+//    fprintf(stderr,"gevasev_selectable_mouse_down() _x:%d _y:%d\n", _x, _y );
+    
 	gdkev = gevas_get_current_event( ev->normal->gevas );
 //	printf("gevasev_selectable_mouse_down() got gdkev:%p\n", gdkev );
 	if( gdkev ) /*&& gdkev->type == GDK_BUTTON_PRESS )*/
@@ -501,7 +503,18 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 	ev = GTK_GEVASEVH_SELECTABLE(object);
     evh_sel = GTK_GEVASEVH_GROUP_SELECTOR(ev->evh_selector);
 
-//    printf("gevasev_selectable_mouse_move() this:%p tracking:%d\n", object, ev->tracking );
+    
+    
+/*     printf("gevasev_selectable_mouse_move() this:%p tracking:%d tx:%d ty:%d _x:%d _y:%d\n", */
+/*            object, ev->tracking, ev->tracking_x, ev->tracking_y, _x, _y ); */
+/*     if( object ) */
+/*     { */
+/*         Evas_Coord x=0,y=0; */
+/*         gevasobj_get_location( GTK_GEVASOBJ(gevasobj), &x, &y ); */
+/*         printf("gevasev_selectable_mouse_move() size:%d getloc.x:%d getlox.y:%d\n", */
+/*                sizeof(Evas_Coord), x, y ); */
+/*     } */
+    
     
     if( ev->tracking )
 	{
@@ -509,7 +522,8 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 
 		dx = _x - ev->tracking_x;
 		dy = _y - ev->tracking_y;
-/*        printf("selectable_mouse_move() ev:%p  dx:%d dy:%d\n",ev, dx,dy); */
+/*         printf("selectable_mouse_move() ev:%p  dx:%d dy:%d  tx:%d ty:%d\n",ev, dx,dy, */
+/*                ev->tracking_x, ev->tracking_y );  */
 
         gevasevh_group_selector_movesel( evh_sel, dx, dy );
 		ev->tracking_x = _x;

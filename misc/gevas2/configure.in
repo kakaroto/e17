@@ -1,8 +1,8 @@
 AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gevas, 2.2.0)
+AM_INIT_AUTOMAKE(gevas, 2.2.1)
 
-AM_PATH_GTK_2_0( 2.0.6 )
+AM_PATH_GTK_2_0( 2.2.0 )
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -37,7 +37,15 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 
 
-AC_PATH_GENERIC(edje, 0.5.0)
+have_edje=no
+PKG_CHECK_MODULES(EDJE, edje >= 0.5.0, 
+[
+	have_edje=yes
+],
+[
+	AC_MSG_ERROR([Fatal Error: please install latest edje package.])	
+])
+AM_CONDITIONAL(HAVE_EDJE, test "$have_edje" = yes)
 AC_SUBST(EDJE_LIBS)
 AC_SUBST(EDJE_CFLAGS)
 

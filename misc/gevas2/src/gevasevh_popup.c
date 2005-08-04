@@ -114,6 +114,7 @@ gevasev_to_popup_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	return_val = FALSE;
 
 	if (_b == 3) {
+        time_t tt = time( 0 );
 
 		gtk_signal_emit(GTK_OBJECT(object),
 						_gevasevh_popup_signals[M_DOWN],
@@ -121,8 +122,8 @@ gevasev_to_popup_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						(gint) _b, (gint) _x, (gint) _y, &return_val);
 
 		/**  To keep evas happy about the mouse state **/
-        evas_event_feed_mouse_move( gevasobj_get_evas(gevasobj), _x, _y, 0 );
-        evas_event_feed_mouse_up( gevasobj_get_evas(gevasobj), _b, EVAS_BUTTON_NONE, 0 );
+        evas_event_feed_mouse_move( gevasobj_get_evas(gevasobj), _x, _y, tt, 0 );
+        evas_event_feed_mouse_up( gevasobj_get_evas(gevasobj), _b, EVAS_BUTTON_NONE, tt, 0 );
 
         if (ev->user_gtk_menu) {
 			GdkEvent *gev =

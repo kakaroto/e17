@@ -85,6 +85,7 @@ extern "C" {
     void gevastwin_sync_obj( GtkgEvasTwin* ev, GtkgEvasObj* object );
 
     void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v );
+    void gevastwin_add_extra_object( GtkgEvasTwin* ev, GtkgEvasObj* obj );
     
 
 #define GEVASTWIN_BACKWARD_LOOKUP_KEY "___gevastwin_backward_key"

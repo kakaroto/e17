@@ -111,6 +111,9 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 	void gevasimage_set_image_size(  GtkgEvasObj * object, int  w, int  h);
 	void gevasimage_get_image_border(GtkgEvasObj * object, int *l, int *r,
 									 int *t, int *b);
+	void gevasimage_set_smooth_scale( GtkgEvasObj* object, int v );
+	int  gevasimage_get_smooth_scale( GtkgEvasObj* object );
+    
 
     /**
      * Scale the image so that both its width and height are smaller than

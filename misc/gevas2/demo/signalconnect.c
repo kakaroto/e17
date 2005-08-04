@@ -46,8 +46,8 @@ GtkProgressBar*   x_coord_tracker = 0;
 GtkWidget*        y_coord_tracker = 0;
 GtkWidget*        e_logo_label = 0;
 
-int CANVAS_WIDTH = 1000;
-int CANVAS_HEIGHT = 1000;
+int CANVAS_WIDTH  = 500;
+int CANVAS_HEIGHT = 500;
 
 
 static gint delete_event_cb(GtkWidget * window, GdkEventAny * e, gpointer data)
@@ -85,6 +85,7 @@ void y_coord_changed( GtkRange *range, gpointer user_data )
 
     gevasobj_get_location( go, &x, &y );
 	gevasobj_move( go, x, v );
+//    printf("Moving to x:%d y:%d\n", x, v );
     
 }
 
@@ -155,7 +156,7 @@ GtkWidget* createAndShowWindow()
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
 	gevas_set_checked_bg(gevas, 1);
-	gtk_window_set_title(GTK_WINDOW(window), "test window");
+	gtk_window_set_title(GTK_WINDOW(window), "Evas object talking with GTK+2 widgets");
 
 	gevas_set_middleb_scrolls(GTK_GEVAS(gevas), 1,
 							  gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(wtoy)),
@@ -178,7 +179,7 @@ GtkWidget* createAndShowWindow()
 
     gtk_signal_connect( go, "move_absolute",
                         GTK_SIGNAL_FUNC( raptor_moved ), go );
-    gtk_signal_connect(GTK_OBJECT (w), "value-changed",
+    gtk_signal_connect(GTK_OBJECT ( y_coord_tracker ), "value-changed",
                        GTK_SIGNAL_FUNC(y_coord_changed), go );
 
 /*     gtk_signal_connect_swapped( go, "move_absolute", */

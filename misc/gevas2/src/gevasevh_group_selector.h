@@ -94,7 +94,8 @@ struct _GtkgEvasEvHGroupSelector
 
     GtkgEvas* gevas;
     
-
+    // objects which start a rubber band selection
+    GSList *m_rubber_band_starters;
 };
 
 struct _GtkgEvasEvHGroupSelectorClass {
@@ -131,6 +132,9 @@ GtkObject *gevasevh_group_selector_new(void);
     void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d );
 
     GtkgEvasObjCollection* gevasevh_group_selector_get_collection( GtkgEvasEvHGroupSelector *ev );
+
+
+    void gevasevh_group_selector_add_rubber_band_starter( GtkgEvasEvHGroupSelector *ev, GtkObject* obj );
     
 
 #ifdef __cplusplus

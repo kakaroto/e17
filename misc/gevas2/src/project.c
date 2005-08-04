@@ -31,6 +31,7 @@
 #include "project.h"
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
+#include <stdio.h>
 
 /* I was using this from gtk+1.2.x and then they took it from me. */
 /* Thus I have replicated this code here. This might be changed to */
@@ -74,6 +75,7 @@ gtk_marshal_INT__POINTER_POINTER (GClosure     *closure,
                        g_value_get_pointer (param_values + 2),
                        data2);
 
+//  fprintf(stderr,"gtk_marshal_BOOL__PTR_PTR()\n");
   g_value_set_int (return_value, v_return);
 }
 
@@ -118,7 +120,7 @@ gtk_marshal_BOOL__POINTER_INT_INT_INT (GClosure     *closure,
   register GMarshalFunc_BOOL__POINTER_INT_INT_INT callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
-  gint v_return;
+  gint v_return = 0;
 
   g_return_if_fail (return_value != NULL);
   g_return_if_fail (n_param_values == 5);
@@ -142,7 +144,9 @@ gtk_marshal_BOOL__POINTER_INT_INT_INT (GClosure     *closure,
                        g_value_get_int (param_values + 4),
                        data2);
 
-  g_value_set_int (return_value, v_return);
+//  fprintf(stderr,"gtk_marshal_BOOL__PTR_3INTS()\n");
+  g_value_set_boolean (return_value, v_return);
+//  g_value_set_int (return_value, v_return);
 }
 
 
@@ -188,5 +192,6 @@ gtk_marshal_BOOL__INT_INT_INT (GClosure     *closure,
                        g_value_get_int (param_values + 3),
                        data2);
 
+//fprintf(stderr,"gtk_marshal_BOOL__INT_INT_INT()\n");
   g_value_set_int (return_value, v_return);
 }

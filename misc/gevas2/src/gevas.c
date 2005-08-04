@@ -63,7 +63,6 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 
-//#define EVAS_FREE_HAS_BUGS
 
 
 /* Always disable NLS, since we have no config.h; 
@@ -203,8 +202,8 @@ GtkObject* gevas_object_get_named(GtkgEvas * ev, char *name)
 
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
+//    fprintf(stderr,"gevas_add_fontpath() ev:%p evas:%p\n",ev,EVAS(ev));
     evas_font_path_append(EVAS(ev), (char*)path);
-//    fprintf(stderr," GEVAS add font path: %s\n", path);
 }
 
 
@@ -255,26 +254,64 @@ void _show_evas_checked_bg(GtkWidget * widget, GtkgEvas * ev)
 
 /* == ((GtkgEvasEvHClass*)(((GtkObject*) (hdata))->klass))->  */
 
+/************************************************************/
+/************************************************************/
+
+#define __HANDLE_EVENT_DISPATCH_GLOBAL( func_to_call ) if( _data ) { \
+    { \
+        int i = 0; \
+        GtkgEvas *gevas = gevasobj_get_gevas(_data); \
+        GSList* l = gevas->m_global_event_handlers; \
+        int size = g_slist_length( l ); \
+		for( i=0; i < size; i++ ) \
+        { \
+			gpointer hdata = g_slist_nth_data( l, i ); \
+            GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); \
+            ret = k->func_to_call(GTK_OBJECT(hdata), GTK_OBJECT(_data), _b, _x, _y ); \
+            if( ret == GEVASEV_HANDLER_RET_CHOMP ) break;               \
+        } \
+    }     \
+    }     \
+    
+
+
+/************************************************************/
+/************************************************************/
+/************************************************************/
+/************************************************************/
+/************************************************************/
 
 void
 __gevas_mouse_in(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
 {
     Evas_Event_Mouse_In* ev = (Evas_Event_Mouse_In*)event_info;
+/*     fprintf(stderr,"__gevas_mouse_in() x:%d y:%d\n", */
+/*             ev->output.x, */
+/*             ev->output.y ); */
     int _b = ev->buttons;
     int _x = ev->output.x;
     int _y = ev->output.y;
 
-	__HANDLE_EVENT_DISPATCH(handler_mouse_in)
+    GEVASEV_HANDLER_RET ret = GEVASEV_HANDLER_RET_NEXT;
+    __HANDLE_EVENT_DISPATCH_GLOBAL(handler_mouse_in);
+    if( ret != GEVASEV_HANDLER_RET_CHOMP ) 
+        __HANDLE_EVENT_DISPATCH(handler_mouse_in);
 }
 void
 __gevas_mouse_out(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
 {
     Evas_Event_Mouse_Out* ev = (Evas_Event_Mouse_Out*)event_info;
+/*     fprintf(stderr,"__gevas_mouse_out() x:%d y:%d\n", */
+/*             ev->output.x, */
+/*             ev->output.y ); */
     int _b = ev->buttons;
     int _x = ev->output.x;
     int _y = ev->output.y;
 
-    __HANDLE_EVENT_DISPATCH(handler_mouse_out)
+    GEVASEV_HANDLER_RET ret = GEVASEV_HANDLER_RET_NEXT;
+    __HANDLE_EVENT_DISPATCH_GLOBAL(handler_mouse_out);
+    if( ret != GEVASEV_HANDLER_RET_CHOMP ) 
+        __HANDLE_EVENT_DISPATCH(handler_mouse_out);
 }
 void
 __gevas_mouse_down(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
@@ -288,34 +325,10 @@ __gevas_mouse_down(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
     _data = EVASO_TO_GTKO(topobj);
     
-/*     { */
-/*         GSList* hans; */
-/* 		int i=0,size=0; */
-/* 		hans = gevasobj_get_evhandlers( GTK_GEVASOBJ(_data) ); */
-/* 		size = g_slist_length( hans ); */
-/*         printf("__gevas_mouse_down() _b:%d sz:%d\n",_b,size); */
-/*         if( size ) */
-/*         { */
-/*             gpointer hdata = g_slist_nth_data( hans, 0 ); */
-/*             GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); */
-/*             printf("__gevas_mouse_down() _b:%d sz:%d evh:%x\n",_b,size,k); */
-/*         } */
-/*         Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 ); */
-/*         printf("__gevas_mouse_down(2) _b:%d sz:%d top:%x\n",_b,size,topobj); */
-/* 		hans = gevasobj_get_evhandlers( GTK_GEVASOBJ(EVASO_TO_GTKO(topobj)) ); */
-/* 		size = g_slist_length( hans ); */
-/*         if( size ) */
-/*         { */
-/*             gpointer hdata = g_slist_nth_data( hans, 0 ); */
-/*             GtkgEvasEvHClass* k = (GtkgEvasEvHClass*)GTK_OBJECT_GET_CLASS(hdata); */
-/*             printf("__gevas_mouse_down(2) _b:%d sz:%d evh:%x\n",_b,size,k); */
-/*         } */
-        
-        
-/*     } */
-    
-    
-	__HANDLE_EVENT_DISPATCH(handler_mouse_down)
+    GEVASEV_HANDLER_RET ret = GEVASEV_HANDLER_RET_NEXT;
+    __HANDLE_EVENT_DISPATCH_GLOBAL(handler_mouse_down);
+    if( ret != GEVASEV_HANDLER_RET_CHOMP ) 
+        __HANDLE_EVENT_DISPATCH(handler_mouse_down);
 }
 void
 __gevas_mouse_up(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
@@ -329,8 +342,12 @@ __gevas_mouse_up(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
     _data = EVASO_TO_GTKO(topobj);
     
-	__HANDLE_EVENT_DISPATCH(handler_mouse_up)
+    GEVASEV_HANDLER_RET ret = GEVASEV_HANDLER_RET_NEXT;
+    __HANDLE_EVENT_DISPATCH_GLOBAL(handler_mouse_up);
+    if( ret != GEVASEV_HANDLER_RET_CHOMP ) 
+        __HANDLE_EVENT_DISPATCH(handler_mouse_up);
 }
+
 void
 __gevas_mouse_move(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
 {
@@ -339,13 +356,30 @@ __gevas_mouse_move(void *_data, Evas* _e, Evas_Object* _o, void *event_info )
     int _x = ev->cur.output.x;
     int _y = ev->cur.output.y;
 
-/*     printf("__gevas_mouse_move() _b:%d\n",_b); */
+/*     printf("__gevas_mouse_move() _b:%d _x:%d _y:%d\n",_b,_x,_y); */
     // _data lags one click for some reason.
     Evas_Object* topobj = evas_object_top_at_xy_get( _e, _x, _y, 0, 0 );
     _data = EVASO_TO_GTKO(topobj);
-    
-	__HANDLE_EVENT_DISPATCH(handler_mouse_move)
+
+    GEVASEV_HANDLER_RET ret = GEVASEV_HANDLER_RET_NEXT;
+    __HANDLE_EVENT_DISPATCH_GLOBAL(handler_mouse_move);
+    if( ret != GEVASEV_HANDLER_RET_CHOMP ) 
+        __HANDLE_EVENT_DISPATCH(handler_mouse_move);
 }
+
+void
+gevas_add_global_event_watcher( GtkgEvas* gevas, GtkObject * h )
+{
+    gevas_remove_global_event_watcher( gevas, h );
+    gevas->m_global_event_handlers = g_slist_append( gevas->m_global_event_handlers, h );
+}
+
+void
+gevas_remove_global_event_watcher( GtkgEvas* gevas, GtkObject * h )
+{
+    gevas->m_global_event_handlers = g_slist_remove( gevas->m_global_event_handlers, h );
+}
+
 
 
 #if 0
@@ -482,7 +516,7 @@ static void gevas_class_init(GtkgEvasClass * klass)
     parent_class = gtk_type_class(gtk_widget_get_type());
 
     
-//	object_class->destroy         = gevas_destroy;
+	object_class->destroy         = gevas_destroy;
 //	go->finalize                  = gevas_finalize;
     widget_class->realize         = gevas_realize;
 	widget_class->unrealize       = gevas_unrealize;
@@ -575,7 +609,8 @@ static void gevas_init(GtkgEvas * ev)
 	ev->middleb_scrolls_xplane      = 0;
 	ev->gevasobjs = g_hash_table_new(NULL, NULL);
 	ev->gevasobjlist = NULL;
-
+    ev->m_global_event_handlers = 0;
+    
     evas_output_method_set( ev->evas, evas_render_method_lookup("software_x11"));
 
 /*     printf("gevas_init() end\n"); */
@@ -603,20 +638,19 @@ static void gevas_destroy(GtkObject*  object)
 {
 	GtkgEvas *ev;
 
-//	printf("gevas_destroy() 1\n"); 
+//    fprintf(stderr,"gevas_destroy() 1 p:%p\n",object); 
 
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
-//	printf("gevas_destroy() 2\n"); 
+//	fprintf(stderr,"gevas_destroy() 2\n"); 
 
     if( ev->ecore_timer_id )
         g_source_remove( ev->ecore_timer_id );
         
     /* Chain up */
-	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
-		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
+    GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void gevas_finalize(GObject* object)
@@ -626,9 +660,10 @@ static void gevas_finalize(GObject* object)
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
+//	fprintf(stderr,"gevas_finalize() 2\n"); 
+    
     /* Chain up */
-	if (G_OBJECT_CLASS(parent_class)->finalize)
-		(*G_OBJECT_CLASS(parent_class)->finalize) (object);
+    G_OBJECT_CLASS (parent_class)->finalize (object);
 
 }
 
@@ -665,6 +700,8 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 	ev = GTK_GEVAS(widget);
 
+    
+    
 /*      printf("gevas_event() ev:%p type:%d\n",ev,event->type);  */
     
     
@@ -674,14 +711,18 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
     case GDK_ENTER_NOTIFY:
     {
-        evas_event_feed_mouse_in( ev->evas, 0 );
+        time_t tt = time( 0 );
+/*         fprintf(stderr,"GDK_ENTER_NOTIFY feeding mouse in\n"); */
+        evas_event_feed_mouse_in( ev->evas, tt, 0 );
         break;
     }
     
     case GDK_LEAVE_NOTIFY:
     {
+        time_t tt = time( 0 );
+/*         fprintf(stderr,"GDK_LEAVE_NOTIFY feeding mouse out\n"); */
 /*         GdkEventCrossing* e = (GdkEventCrossing*)event; */
-        evas_event_feed_mouse_out( ev->evas, 0 );
+        evas_event_feed_mouse_out( ev->evas, tt, 0 );
         break;
     }
     
@@ -689,7 +730,10 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     
 		case GDK_MOTION_NOTIFY:
 			{
-				gint x = 0, y = 0;
+                GdkEventMotion* mev = (GdkEventMotion*)ev;
+                time_t tt = mev->time;
+                
+                gint x = 0, y = 0;
 
 /*				x=(int)event->motion.x;
 				y=(int)event->motion.y; */
@@ -735,7 +779,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					}
 
 				} else {
-                    evas_event_feed_mouse_move(ev->evas, x, y, 0);
+                    evas_event_feed_mouse_move(ev->evas, x, y, tt, 0);
 
 
 /*                     printf("evas_event_move() x:%d y:%d \n",x,y); */
@@ -782,6 +826,9 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 		case GDK_2BUTTON_PRESS:
 		case GDK_3BUTTON_PRESS:
 			{
+                GdkEventButton* mev = (GdkEventButton*)ev;
+                time_t tt = mev->time;
+                
 				int x = 0, y = 0, b = 0;
 
 				x = (int) event->button.x;
@@ -800,30 +847,33 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 					if( ev->middleb_scrolls_pgate_event )
 					{
-                        evas_event_feed_mouse_move( ev->evas, x, y, 0 );
-                        evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, 0 );
+//                        evas_event_feed_mouse_move( ev->evas, x, y, 0 );
+                        evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, tt, 0 );
 					}
 				}
 				else 
 				{
-                    printf("GDK_BUTTON_PRESS: x:%d y:%d b:%d frez:%d \n",x,y,b,
-                           evas_event_freeze_get( ev->evas )
-                        );
-                    evas_event_feed_mouse_move( ev->evas, x, y, 0 );
-                    evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, 0  );
+/*                     printf("GDK_BUTTON_PRESS: x:%d y:%d b:%d frez:%d \n",x,y,b, */
+/*                            evas_event_freeze_get( ev->evas ) */
+/*                         ); */
+//                    evas_event_feed_mouse_move( ev->evas, x, y, 0 );
+                    evas_event_feed_mouse_down( ev->evas, b, EVAS_BUTTON_NONE, tt, 0  );
 				}
 			}
 			break;
             
 		case GDK_BUTTON_RELEASE:
 			{
+                GdkEventButton* mev = (GdkEventButton*)ev;
+                time_t tt = mev->time;
+
 				int x = 0, y = 0, b = 0;
 
 				x = (int) event->button.x;
 				y = (int) event->button.y;
 				b = (int) event->button.button;
 
-/*                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y); */
+//                printf("GDK_BUTTON_RELEASE: b:%d x:%d y:%d\n",b,x,y);
                 
                 
 /*				gdk_pointer_ungrab( GDK_CURRENT_TIME );
@@ -833,14 +883,14 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					ev->scrolling = 0;
 					if( ev->middleb_scrolls_pgate_event )
 					{
-                        evas_event_feed_mouse_move(ev->evas, x, y, 0 );
-						evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, 0 );
+//                        evas_event_feed_mouse_move(ev->evas, x, y, 0 );
+						evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, tt, 0 );
 					}
 				}
 				else 
 				{
-                    evas_event_feed_mouse_move(ev->evas, x, y, 0 );
-                    evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, 0 );
+//                    evas_event_feed_mouse_move(ev->evas, x, y, 0 );
+                    evas_event_feed_mouse_up(ev->evas, b, EVAS_BUTTON_NONE, tt, 0 );
 				}
 			break;
 			}
@@ -936,7 +986,7 @@ static void gevas_realize(GtkWidget * widget)
 /*     evas_get_optimal_colormap(ev->evas, */
 /* 								  GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())); */
 	gdk_vis  = gdkx_visual_get(XVisualIDFromVisual(vis));
-	gdk_cmap = gdkx_colormap_get(cmap);
+	gdk_cmap = (GdkColormap *)gdkx_colormap_get(cmap);
 
     attributes.visual   = gdk_vis;	/*gtk_widget_get_visual (widget); */
 	attributes.colormap = gdk_cmap;	/*gtk_widget_get_colormap (widget); */
@@ -955,6 +1005,7 @@ static void gevas_realize(GtkWidget * widget)
 	attributes.wclass      = GDK_INPUT_OUTPUT;
 	attributes.event_mask  = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
 	attributes.event_mask |= GDK_EXPOSURE_MASK
+        | GDK_FOCUS_CHANGE_MASK
         | GDK_BUTTON_PRESS_MASK
 		| GDK_BUTTON_RELEASE_MASK
         | GDK_ENTER_NOTIFY_MASK
@@ -992,7 +1043,7 @@ static void gevas_realize(GtkWidget * widget)
         
         einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(evas);
 
-        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
+//        fprintf(stderr,"gevas_realize() drawable:%lx\n", GDK_WINDOW_XWINDOW(widget->window));
         
         /* the following is specific to the engine */
         einfo->info.display  = GDK_WINDOW_XDISPLAY(widget->window);
@@ -1021,6 +1072,7 @@ static void gevas_unrealize(GtkWidget * widget)
 {
 	GtkgEvas *ev;
 
+//	fprintf(stderr,"gevas_unrealize() 1\n"); 
     
 //	printf("gevas_unrealize() start\n");
 	g_return_if_fail(widget != NULL);
@@ -1070,9 +1122,10 @@ static void gevas_unrealize(GtkWidget * widget)
     
 	if (ev->evas)
     {
-#ifndef EVAS_FREE_HAS_BUGS
+        if (ev->current_idle)
+            g_source_remove( ev->current_idle );
+        ev->current_idle = 0;
         evas_free(ev->evas);
-#endif
 		ev->evas = NULL;
 	}
     
@@ -1083,11 +1136,9 @@ static void gevas_unrealize(GtkWidget * widget)
 	GTK_WIDGET_UNSET_FLAGS(widget, GTK_MAPPED);
 
 
-	/* This destroys widget->window and unsets the realized flag
-	 */
 	if (GTK_WIDGET_CLASS(parent_class)->unrealize)
 		(*GTK_WIDGET_CLASS(parent_class)->unrealize) (widget);
-//    printf("gevas_unrealize() end\n");
+//    fprintf(stderr,"gevas_unrealize() end\n");
 }
 
 static void gevas_size_request(GtkWidget * widget, GtkRequisition * requisition)
@@ -1371,8 +1422,16 @@ gint gevas_edje_animate_timer_cb( gpointer data )
     if (!GTK_WIDGET_MAPPED(GTK_WIDGET(data)))
         return 1;
 
-    ecore_main_loop_iterate();
-    gevas_queue_redraw( GTK_GEVAS(data) );
+	GtkgEvas *ev;
+    g_return_if_fail(data != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(data));
+    ev = GTK_GEVAS(data);
+    
+    if( ev->evas )
+    {
+        ecore_main_loop_iterate();
+        gevas_queue_redraw( GTK_GEVAS(data) );
+    }
     return 1; // call again
 }
 

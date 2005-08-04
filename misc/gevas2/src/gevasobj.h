@@ -178,7 +178,7 @@ extern "C" {
 	void _gevas_set_obj(GtkObject * object, Evas_Object* eobj);
 	Evas_Object* _gevas_get_obj(GtkObject * object);
 	void _gevasobj_ensure_obj_free(GtkObject * object);
-	GSList *gevasobj_get_evhandlers(GtkgEvasObj * object);
+	GSList *gevasobj_get_evhandlers(GtkgEvasObj * object );
     GtkgEvasObj* gevasobj_from_evasobj( Evas_Object* eo );
     
 

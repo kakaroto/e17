@@ -92,14 +92,19 @@ gevasev_drag_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
 
-    printf("gevasev_drag_mouse_down()\n");
+//    printf("gevasev_drag_mouse_down() _x:%d _y:%d\n",_x,_y);
     if (_b == 1) {
 		Evas_Coord x = 0, y = 0, w = 0, h = 0;
 		gevasobj_get_geometry(GTK_GEVASOBJ(gevasobj), &x, &y, &w, &h);
+//        printf("gevasev_drag_mouse_down(2) _x:%d _y:%d\n",_x,_y);
 		ev->dragging = 1;
 		ev->click_x_offset = _x - x;
 		ev->click_y_offset = _y - y;
-        printf("Starting to drag\n");
+/*         printf("gevasev_drag_mouse_down(3) _x:%d _y:%d\n",_x,_y); */
+/*         printf("Starting to drag coffx:%f coffy:%f _x:%d _y:%d x:%d y:%d\n", */
+/*                ev->click_x_offset, ev->click_y_offset, */
+/*                _x, _y, x, y  */
+/*             ); */
     }
 	return GEVASEV_HANDLER_RET_NEXT;
 }
@@ -139,10 +144,15 @@ gevasev_drag_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
         if( x < 0 ) x = 0;
         if( y < 0 ) y = 0;
         
-
         gevasobj_move(GTK_GEVASOBJ(gevasobj), x, y );
-/*		gevasobj_queue_redraw(GTK_GEVASOBJ(gevasobj));*/
-	}
+        
+/*         { */
+/*             Evas_Coord cx = 0, cy = 0, cw = 0, ch = 0; */
+/*             gevasobj_get_geometry(GTK_GEVASOBJ(gevasobj), &cx, &cy, &cw, &ch); */
+/*             gevasobj_move_relative(GTK_GEVASOBJ(gevasobj), x - cx, y - cy ); */
+/*             printf("gevasev_drag_mouse_move() x:%d y:%d _x:%d _y:%d\n",x,y,_x,_y); */
+/*         } */
+    }
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
