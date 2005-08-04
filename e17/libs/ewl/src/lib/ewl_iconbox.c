@@ -739,8 +739,16 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	ewl_widget_hide(icon->image);
+	ewl_widget_hide(icon->floater);
+	/*ewl_widget_destroy(icon->image);
+	ewl_widget_destroy(icon->floater);*/
+	ewl_container_child_remove(EWL_CONTAINER(icon), icon->image);
+	ewl_container_child_remove(EWL_CONTAINER(icon), icon->w_label);
+	ewl_container_child_remove(EWL_CONTAINER(icon->floater), icon);
 	ewl_widget_destroy(icon->image);
-	ewl_widget_destroy(icon->floater);
+	/*ewl_widget_destroy(icon->floater);*/
+	ewl_widget_destroy(icon->w_label);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -752,8 +760,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	ib = ewl_iconbox_icon_new();
 
-	/*ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
-			    ewl_iconbox_icon_destroy_cb, NULL);*/
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
+			    ewl_iconbox_icon_destroy_cb, NULL);
 
 	EWL_ICONBOX_ICON(ib)->selected = 0;
 	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new(iconbox->ewl_iconbox_pane_inner);
@@ -853,12 +861,12 @@ void ewl_iconbox_clear(Ewl_IconBox* ib) {
 			}
 
 			ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
+
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 		}
 		/*printf("...dione\n");*/
 
-		ecore_list_destroy(ib->ewl_iconbox_icon_list);
+		ecore_list_clear(ib->ewl_iconbox_icon_list);
 	}
 	
-	ib->ewl_iconbox_icon_list = ecore_list_new();
 }
