@@ -2,7 +2,7 @@ Source: esmart
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libecore0-dev, libevas0-dev, libepsilon0-dev, libimlib2-dev, libedje0-dev, debhelper (>> 4.0.0), automaken, libtool
+Build-Depends: libecore-dev, libevas-dev, libepsilon-dev, libimlib2-dev, libedje-dev, debhelper (>> 4.0.0), automaken, libtool
 Standards-Version: 3.6.1.0
 
 Package: libesmart0
@@ -16,7 +16,7 @@ Description: The Esmart Prototype Library
 Package: libesmart0-dev
 Architecture: any
 Section: devel
-Depends: libesmart0 (= ${Source-Version}), libc6-dev | libc-dev, libecore0-dev, libevas0-dev, libepsilon0-dev, libedje0-dev
+Depends: libesmart0 (= ${Source-Version}), libc6-dev | libc-dev, libecore-dev, libevas-dev, libepsilon-dev, libedje-dev
 Provides: libesmart-dev
 Conflicts: libesmart-dev
 Description: Development files for Esmart
