@@ -218,7 +218,7 @@ Zoom(EWin * ewin)
 	     if (zoom_mask_4)
 		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
-	     XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
+	     XWarpPointer(disp, None, _EwinGetClientXwin(ewin), 0, 0, 0, 0,
 			  ewin->client.w / 2, ewin->client.h / 2);
 	     ESync();
 	     zoom_last_ewin = NULL;
@@ -250,15 +250,15 @@ Zoom(EWin * ewin)
 	EwinMove(ewin, -ewin->border->border.left + x1,
 		 -ewin->border->border.top + y1);
 	FocusToEWin(ewin, FOCUS_SET);
-	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
+	XWarpPointer(disp, None, _EwinGetClientXwin(ewin), 0, 0, 0, 0,
 		     ewin->client.w / 2, ewin->client.h / 2);
 #if 0				/* Doesn't work as intended */
-	XGrabPointer(disp, ewin->client.win, True,
+	XGrabPointer(disp, _EwinGetClientXwin(ewin), True,
 		     ButtonPressMask | ButtonReleaseMask |
 		     PointerMotionMask | ButtonMotionMask |
 		     EnterWindowMask | LeaveWindowMask,
 		     GrabModeAsync, GrabModeAsync,
-		     ewin->client.win, None, CurrentTime);
+		     _EwinGetClientXwin(ewin), None, CurrentTime);
 #endif
 	zoom_mask_1 = ZoomMask(0, 0, x1, mode->vdisplay);
 	zoom_mask_2 = ZoomMask(0, 0, mode->hdisplay, y1);

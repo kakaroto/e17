@@ -284,14 +284,15 @@ MatchEwinToSM(EWin * ewin)
 		  ewin->client.grav = NorthWestGravity;
 		  ewin->client.w = matches[i].w;
 		  ewin->client.h = matches[i].h;
-		  EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
-				    ewin->client.y, ewin->client.w,
-				    ewin->client.h);
+		  EMoveResizeWindow(_EwinGetClientWin(ewin),
+				    ewin->client.x, ewin->client.y,
+				    ewin->client.w, ewin->client.h);
 	       }
 	     if (EventDebug(EDBUG_TYPE_SNAPS))
 		Eprintf("Snap get sess  %#lx: %4d+%4d %4dx%4d: %s\n",
-			ewin->client.win, ewin->client.x, ewin->client.y,
-			ewin->client.w, ewin->client.h, EwinGetName(ewin));
+			_EwinGetClientXwin(ewin), ewin->client.x,
+			ewin->client.y, ewin->client.w, ewin->client.h,
+			EwinGetName(ewin));
 	     break;
 	  }
      }
@@ -767,7 +768,7 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
 	  atom_change == atom_wm_client_leader)))
       return;
 
-   num = ecore_x_window_prop_window_get(ewin->client.win,
+   num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
 					atom_wm_client_leader, &win, 1);
    if (num > 0)
       ewin->session_id = ecore_x_window_prop_string_get(win, atom_sm_client_id);

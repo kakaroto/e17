@@ -294,7 +294,7 @@ EWMH_SetClientList(void)
      {
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
-	   wl[i] = lst[num - i - 1]->client.win;
+	   wl[i] = _EwinGetClientXwin(lst[num - i - 1]);
 	ecore_x_netwm_client_list_set(VRoot.win, wl, num);
 	Efree(wl);
      }
@@ -319,7 +319,7 @@ EWMH_SetClientStacking(void)
      {
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
-	   wl[i] = lst[num - i - 1]->client.win;
+	   wl[i] = _EwinGetClientXwin(lst[num - i - 1]);
 	ecore_x_netwm_client_list_stacking_set(VRoot.win, wl, num);
 	Efree(wl);
      }
@@ -364,7 +364,7 @@ EWMH_SetWindowDesktop(const EWin * ewin)
       val = 0xFFFFFFFF;
    else
       val = EoGetDesk(ewin);
-   ecore_x_netwm_desktop_set(ewin->client.win, val);
+   ecore_x_netwm_desktop_set(_EwinGetClientXwin(ewin), val);
 }
 
 void
@@ -403,8 +403,9 @@ EWMH_SetWindowState(const EWin * ewin)
 		 ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION,
 		 ewin->state.attention);
 
-   ecore_x_window_prop_atom_set(ewin->client.win, ECORE_X_ATOM_NET_WM_STATE,
-				atom_list, atom_count);
+   ecore_x_window_prop_atom_set(_EwinGetClientXwin(ewin),
+				ECORE_X_ATOM_NET_WM_STATE, atom_list,
+				atom_count);
 }
 
 void
@@ -422,14 +423,14 @@ EWMH_SetWindowBorder(const EWin * ewin)
    else
       val[0] = val[1] = val[2] = val[3] = 0;
 
-   ecore_x_window_prop_card32_set(ewin->client.win,
+   ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin),
 				  ECORE_X_ATOM_NET_FRAME_EXTENTS, val, 4);
 }
 
 void
 EWMH_SetWindowOpacity(const EWin * ewin)
 {
-   ecore_x_netwm_opacity_set(ewin->client.win, ewin->ewmh.opacity);
+   ecore_x_netwm_opacity_set(_EwinGetClientXwin(ewin), ewin->ewmh.opacity);
    ecore_x_netwm_opacity_set(EoGetWin(ewin), ewin->ewmh.opacity);
 }
 
@@ -444,7 +445,7 @@ EWMH_GetWindowName(EWin * ewin)
 
    _EFREE(ewin->ewmh.wm_name);
 
-   ecore_x_netwm_name_get(ewin->client.win, &val);
+   ecore_x_netwm_name_get(_EwinGetClientXwin(ewin), &val);
    if (!val)
       return;
    ewin->ewmh.wm_name = EstrUtf82Int(val, 0);
@@ -460,7 +461,7 @@ EWMH_GetWindowIconName(EWin * ewin)
 
    _EFREE(ewin->ewmh.wm_icon_name);
 
-   ecore_x_netwm_icon_name_get(ewin->client.win, &val);
+   ecore_x_netwm_icon_name_get(_EwinGetClientXwin(ewin), &val);
    if (!val)
       return;
    ewin->ewmh.wm_icon_name = EstrUtf82Int(val, 0);
@@ -475,7 +476,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
    int                 num;
    unsigned int        desk;
 
-   num = ecore_x_netwm_desktop_get(ewin->client.win, &desk);
+   num = ecore_x_netwm_desktop_get(_EwinGetClientXwin(ewin), &desk);
    if (num <= 0)
       return;
 
@@ -499,7 +500,7 @@ EWMH_GetWindowState(EWin * ewin)
    Ecore_X_Atom       *p_atoms, atom;
    int                 i, n_atoms;
 
-   n_atoms = ecore_x_window_prop_atom_list_get(ewin->client.win,
+   n_atoms = ecore_x_window_prop_atom_list_get(_EwinGetClientXwin(ewin),
 					       ECORE_X_ATOM_NET_WM_STATE,
 					       &p_atoms);
    if (n_atoms <= 0)
@@ -548,7 +549,7 @@ EWMH_GetWindowType(EWin * ewin)
    Ecore_X_Atom       *p_atoms, atom;
    int                 n_atoms;
 
-   n_atoms = ecore_x_window_prop_atom_list_get(ewin->client.win,
+   n_atoms = ecore_x_window_prop_atom_list_get(_EwinGetClientXwin(ewin),
 					       ECORE_X_ATOM_NET_WM_WINDOW_TYPE,
 					       &p_atoms);
    if (n_atoms <= 0)
@@ -617,7 +618,7 @@ EWMH_GetWindowIcons(EWin * ewin)
 	ewin->ewmh.wm_icon = NULL;
      }
 
-   num = ecore_x_window_prop_card32_list_get(ewin->client.win,
+   num = ecore_x_window_prop_card32_list_get(_EwinGetClientXwin(ewin),
 					     ECORE_X_ATOM_NET_WM_ICON, &val);
    ewin->ewmh.wm_icon_len = num;
    if (num <= 0)
@@ -643,7 +644,7 @@ EWMH_GetWindowMisc(EWin * ewin)
    int                 num;
    Ecore_X_Window      win;
 
-   num = ecore_x_window_prop_window_get(ewin->client.win,
+   num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
 					ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK,
 					&win, 1);
    if (num <= 0)
@@ -659,7 +660,7 @@ EWMH_GetWindowOpacity(EWin * ewin)
    int                 num;
    unsigned int        opacity;
 
-   num = ecore_x_netwm_opacity_get(ewin->client.win, &opacity);
+   num = ecore_x_netwm_opacity_get(_EwinGetClientXwin(ewin), &opacity);
    if (num <= 0)
       return;
 
@@ -680,12 +681,12 @@ EWMH_GetWindowStrut(EWin * ewin)
    int                 num;
    unsigned int        val[12];
 
-   num = ecore_x_window_prop_card32_get(ewin->client.win,
+   num = ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin),
 					ECORE_X_ATOM_NET_WM_STRUT_PARTIAL, val,
 					12);
 
    if (num < 4)
-      num = ecore_x_window_prop_card32_get(ewin->client.win,
+      num = ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin),
 					   ECORE_X_ATOM_NET_WM_STRUT, val, 4);
    if (num < 4)
       return;
@@ -736,7 +737,7 @@ EWMH_SetWindowActions(const EWin * ewin)
    if (!ewin->state.inhibit_close)
       aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
 
-   ecore_x_window_prop_atom_set(ewin->client.win,
+   ecore_x_window_prop_atom_set(_EwinGetClientXwin(ewin),
 				ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS, aa, num);
 }
 
@@ -760,8 +761,8 @@ EWMH_GetWindowHints(EWin * ewin)
 void
 EWMH_DelWindowHints(const EWin * ewin)
 {
-   XDeleteProperty(disp, ewin->client.win, ECORE_X_ATOM_NET_WM_DESKTOP);
-   XDeleteProperty(disp, ewin->client.win, ECORE_X_ATOM_NET_WM_STATE);
+   XDeleteProperty(disp, _EwinGetClientXwin(ewin), ECORE_X_ATOM_NET_WM_DESKTOP);
+   XDeleteProperty(disp, _EwinGetClientXwin(ewin), ECORE_X_ATOM_NET_WM_STATE);
 }
 
 /*

@@ -332,14 +332,15 @@ EHintsSetInfo(const EWin * ewin)
    c[7] = ewin->client.h;
    c[8] = ewin->state.docked;
 
-   ecore_x_window_prop_card32_set(ewin->client.win, a, (unsigned int *)c, 9);
+   ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), a,
+				  (unsigned int *)c, 9);
 
-   ecore_x_window_prop_string_set(ewin->client.win, aa,
+   ecore_x_window_prop_string_set(_EwinGetClientXwin(ewin), aa,
 				  ewin->normal_border->name);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
@@ -360,7 +361,8 @@ EHintsGetInfo(EWin * ewin)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 
    num =
-      ecore_x_window_prop_card32_get(ewin->client.win, a, (unsigned int *)c, 9);
+      ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin), a,
+				     (unsigned int *)c, 9);
    if (num < 8)
       return 0;
 
@@ -383,14 +385,14 @@ EHintsGetInfo(EWin * ewin)
      }
    ewin->state.placed = 1;
 
-   str = ecore_x_window_prop_string_get(ewin->client.win, aa);
+   str = ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin), aa);
    if (str)
       EwinSetBorderByName(ewin, str);
    Efree(str);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 
    return 0;

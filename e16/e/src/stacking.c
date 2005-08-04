@@ -26,7 +26,7 @@
 #define ENABLE_DEBUG_STACKING 1
 
 #define EobjGetCwin(p) \
-    ((p->type == EOBJ_TYPE_EWIN) ? EwinGetClientWin((EWin*)(p)) : None)
+    ((p->type == EOBJ_TYPE_EWIN) ? _EwinGetClientXwin(((EWin*)(p))) : None)
 
 typedef struct _eobjlist EobjList;
 

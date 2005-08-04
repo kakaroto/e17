@@ -321,19 +321,20 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	switch (param1[0])
 	  {
 	  case '\0':
-	     IpcPrintf("%#lx : %s\n", e->client.win, SS(e->icccm.wm_name));
+	     IpcPrintf("%#lx : %s\n", _EwinGetClientXwin(e),
+		       SS(e->icccm.wm_name));
 	     break;
 
 	  default:
 	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
-		       e->client.win, SS(e->icccm.wm_name),
+		       _EwinGetClientXwin(e), SS(e->icccm.wm_name),
 		       (EoIsSticky(e)) ? -1 : EoGetDesk(e), e->area_x,
 		       e->area_y, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e));
 	     break;
 
 	  case 'a':
 	     IpcPrintf("%#10lx : %5d %5d %4dx%4d :: %2d : %d %d : %s\n",
-		       e->client.win, EoGetX(e), EoGetY(e), EoGetW(e),
+		       _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		       EoGetH(e), (EoIsSticky(e)) ? -1 : EoGetDesk(e),
 		       e->area_x, e->area_y, SS(e->icccm.wm_name));
 	     break;
@@ -341,9 +342,10 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  case 'p':
 	     IpcPrintf
 		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
-		 e->client.win, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e),
-		 (EoIsSticky(e)) ? -1 : EoGetDesk(e), SS(e->icccm.wm_res_name),
-		 SS(e->icccm.wm_res_class), SS(e->icccm.wm_name));
+		 _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
+		 EoGetH(e), (EoIsSticky(e)) ? -1 : EoGetDesk(e),
+		 SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
+		 SS(e->icccm.wm_name));
 	     break;
 	  }
      }
@@ -518,7 +520,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	_EFREE(ewin->icccm.wm_name);
 	ewin->icccm.wm_name = Estrdup(p);
-	XStoreName(disp, ewin->client.win, ewin->icccm.wm_name);
+	XStoreName(disp, _EwinGetClientXwin(ewin), ewin->icccm.wm_name);
 	EwinBorderUpdateInfo(ewin);
 	break;
 
@@ -1011,16 +1013,18 @@ EwinShowInfo1(const EWin * ewin)
 	     "MWM_MENU:               %5i\n"
 	     "MWM_MINIMIZE:           %5i\n"
 	     "MWM_MAXIMIZE:           %5i\n",
-	     ewin->client.win, EoGetWin(ewin), ewin->win_container,
+	     _EwinGetClientXwin(ewin), EoGetWin(ewin),
+	     _EwinGetContainerXwin(ewin),
 	     EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin),
 	     border->name,
 	     border->border.left, border->border.right,
 	     border->border.top, border->border.bottom,
 	     EoGetDesk(ewin),
-	     ewin->num_groups, ewin->state.docked, EoIsSticky(ewin),
-	     EoIsShown(ewin), ewin->state.iconified, ewin->state.shaded,
-	     ewin->state.active, EoGetLayer(ewin), ewin->props.never_use_area,
-	     EoIsFloating(ewin), ewin->client.w, ewin->client.h,
+	     ewin->num_groups, ewin->state.docked,
+	     EoIsSticky(ewin), EoIsShown(ewin), ewin->state.iconified,
+	     ewin->state.shaded, ewin->state.active, EoGetLayer(ewin),
+	     ewin->props.never_use_area, EoIsFloating(ewin),
+	     ewin->client.w, ewin->client.h,
 	     ewin->icccm.icon_win,
 	     ewin->icccm.icon_pmap, ewin->icccm.icon_mask,
 	     EwinGetWindowGroup(ewin),
@@ -1094,9 +1098,9 @@ EwinShowInfo2(const EWin * ewin)
 	     SS(ewin->icccm.wm_role),
 	     SS(ewin->icccm.wm_command),
 	     SS(ewin->icccm.wm_machine),
-	     ewin->client.win,
+	     _EwinGetClientXwin(ewin),
 	     ewin->client.x, ewin->client.y, ewin->client.w, ewin->client.h,
-	     ewin->win_container,
+	     _EwinGetContainerXwin(ewin),
 	     EoGetWin(ewin),
 	     EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin),
 #if USE_COMPOSITE
@@ -1237,7 +1241,7 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
    if (!ewin || !enew)
       IpcPrintf("No matching client or target EWin found\n");
    else
-      EwinReparent(ewin, enew->client.win);
+      EwinReparent(ewin, _EwinGetClientXwin(enew));
 }
 
 static void

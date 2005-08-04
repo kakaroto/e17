@@ -75,7 +75,7 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 
    _EFREE(ewin->icccm.wm_name);
 
-   ewin->icccm.wm_name = ecore_x_icccm_title_get(ewin->client.win);
+   ewin->icccm.wm_name = ecore_x_icccm_title_get(_EwinGetClientXwin(ewin));
 
    EwinChange(ewin, EWIN_CHANGE_NAME);
 }
@@ -91,13 +91,14 @@ ICCCM_GetColormap(EWin * ewin)
       return;
 
    /* Hmmm.. Why? */
-   win = ewin->client.win;
-   num = ecore_x_window_prop_window_get(ewin->client.win,
+   win = _EwinGetClientXwin(ewin);
+   num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
 					ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
 					&win, 1);
 
    ewin->client.cmap = 0;
-   if (XGetWindowAttributes(disp, ewin->client.win, &xwa) && xwa.colormap)
+   if (XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &xwa)
+       && xwa.colormap)
       ewin->client.cmap = xwa.colormap;
 }
 
@@ -111,9 +112,9 @@ ICCCM_Delete(const EWin * ewin)
      }
 
    if (ewin->icccm.delete_window)
-      ecore_x_icccm_delete_window_send(ewin->client.win, CurrentTime);
+      ecore_x_icccm_delete_window_send(_EwinGetClientXwin(ewin), CurrentTime);
    else
-      XKillClient(disp, ewin->client.win);
+      XKillClient(disp, _EwinGetClientXwin(ewin));
 }
 
 #if 0				/* Deprecated */
@@ -123,22 +124,22 @@ ICCCM_Save(const EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-   ecore_x_icccm_send_save_yourself(ewin->client.win);
+   ecore_x_icccm_send_save_yourself(_EwinGetClientXwin(ewin));
 }
 #endif
 
 void
 ICCCM_Iconify(const EWin * ewin)
 {
-   EUnmapWindow(ewin->client.win);
-   ecore_x_icccm_state_set_iconic(ewin->client.win);
+   EUnmapWindow(_EwinGetClientWin(ewin));
+   ecore_x_icccm_state_set_iconic(_EwinGetClientXwin(ewin));
 }
 
 void
 ICCCM_DeIconify(const EWin * ewin)
 {
-   EMapWindow(ewin->client.win);
-   ecore_x_icccm_state_set_normal(ewin->client.win);
+   EMapWindow(_EwinGetClientWin(ewin));
+   ecore_x_icccm_state_set_normal(_EwinGetClientXwin(ewin));
 }
 
 void
@@ -148,9 +149,9 @@ ICCCM_Withdraw(const EWin * ewin)
     * or changing the value to Withdrawn. Since twm/fvwm does
     * it that way, we change it to Withdrawn.
     */
-   ecore_x_icccm_state_set_withdrawn(ewin->client.win);
+   ecore_x_icccm_state_set_withdrawn(_EwinGetClientXwin(ewin));
 
-   XRemoveFromSaveSet(disp, ewin->client.win);
+   XRemoveFromSaveSet(disp, _EwinGetClientXwin(ewin));
 }
 
 void
@@ -231,8 +232,8 @@ ICCCM_Configure(const EWin * ewin)
 
    ev.type = ConfigureNotify;
    ev.xconfigure.display = disp;
-   ev.xconfigure.event = ewin->client.win;
-   ev.xconfigure.window = ewin->client.win;
+   ev.xconfigure.event = _EwinGetClientXwin(ewin);
+   ev.xconfigure.window = _EwinGetClientXwin(ewin);
    d = EoGetDesk(ewin);
    ev.xconfigure.x = DeskGetX(d) + ewin->client.x;
    ev.xconfigure.y = DeskGetY(d) + ewin->client.y;
@@ -245,13 +246,13 @@ ICCCM_Configure(const EWin * ewin)
    ev.xconfigure.border_width = 0;
    ev.xconfigure.above = EoGetWin(ewin);
    ev.xconfigure.override_redirect = False;
-   XSendEvent(disp, ewin->client.win, False, StructureNotifyMask, &ev);
+   XSendEvent(disp, _EwinGetClientXwin(ewin), False, StructureNotifyMask, &ev);
 }
 
 void
 ICCCM_AdoptStart(const EWin * ewin)
 {
-   Window              win = ewin->client.win;
+   Window              win = _EwinGetClientXwin(ewin);
 
    if (!EwinIsInternal(ewin))
       XAddToSaveSet(disp, win);
@@ -260,7 +261,7 @@ ICCCM_AdoptStart(const EWin * ewin)
 void
 ICCCM_Adopt(const EWin * ewin)
 {
-   Window              win = ewin->client.win;
+   Window              win = _EwinGetClientXwin(ewin);
 
    if (ewin->icccm.start_iconified)
       ecore_x_icccm_state_set_iconic(win);
@@ -295,7 +296,7 @@ ICCCM_Cmap(EWin * ewin)
 	int                 i, num;
 	Ecore_X_Window     *wlist;
 
-	num = ecore_x_window_prop_window_list_get(ewin->client.win,
+	num = ecore_x_window_prop_window_list_get(_EwinGetClientXwin(ewin),
 						  ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
 						  &wlist);
 	if (num > 0)
@@ -325,7 +326,7 @@ ICCCM_Focus(const EWin * ewin)
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
-	   Eprintf("ICCCM_Focus %#lx %s\n", ewin->client.win,
+	   Eprintf("ICCCM_Focus %#lx %s\n", _EwinGetClientXwin(ewin),
 		   EwinGetName(ewin));
 	else
 	   Eprintf("ICCCM_Focus None\n");
@@ -340,12 +341,13 @@ ICCCM_Focus(const EWin * ewin)
 
    if (ewin->icccm.take_focus)
      {
-	ecore_x_icccm_take_focus_send(ewin->client.win, CurrentTime);
+	ecore_x_icccm_take_focus_send(_EwinGetClientXwin(ewin), CurrentTime);
      }
 
-   XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+   XSetInputFocus(disp, _EwinGetClientXwin(ewin), RevertToPointerRoot,
+		  CurrentTime);
 
-   HintsSetActiveWindow(ewin->client.win);
+   HintsSetActiveWindow(_EwinGetClientXwin(ewin));
 }
 
 void
@@ -364,14 +366,14 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    w = ewin->client.w;
    h = ewin->client.h;
    bw = ewin->client.bw;
-   EGetGeometry(ewin->client.win, &ww, &x, &y, &w, &h, &bw, &dummy);
+   EGetGeometry(_EwinGetClientWin(ewin), &ww, &x, &y, &w, &h, &bw, &dummy);
    ewin->client.x = x;
    ewin->client.y = y;
    ewin->client.w = w;
    ewin->client.h = h;
    ewin->client.bw = bw;
 
-   if (XGetWMNormalHints(disp, ewin->client.win, &hint, &mask))
+   if (XGetWMNormalHints(disp, _EwinGetClientXwin(ewin), &hint, &mask))
      {
 	if (!(ewin->state.placed))
 	  {
@@ -517,11 +519,11 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
-	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
-#define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != (e)->client.win))
+#define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != _EwinGetClientXwin(e)))
 
 void
 ICCCM_GetInfo(EWin * ewin, Atom atom_change)
@@ -533,7 +535,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	_EFREE(ewin->icccm.wm_res_name);
 	_EFREE(ewin->icccm.wm_res_class);
 
-	if (XGetClassHint(disp, ewin->client.win, &hint) ||
+	if (XGetClassHint(disp, _EwinGetClientXwin(ewin), &hint) ||
 	    (TryGroup(ewin) && XGetClassHint(disp, ewin->icccm.group, &hint)))
 	  {
 	     ewin->icccm.wm_res_name = Estrdup(hint.res_name);
@@ -550,7 +552,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 
 	_EFREE(ewin->icccm.wm_command);
 
-	argc = ecore_x_window_prop_string_list_get(ewin->client.win,
+	argc = ecore_x_window_prop_string_list_get(_EwinGetClientXwin(ewin),
 						   ECORE_X_ATOM_WM_COMMAND,
 						   &argv);
 	if ((argc < 0) && TryGroup(ewin))
@@ -568,7 +570,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	_EFREE(ewin->icccm.wm_machine);
 
 	ewin->icccm.wm_machine =
-	   ecore_x_window_prop_string_get(ewin->client.win,
+	   ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin),
 					  ECORE_X_ATOM_WM_CLIENT_MACHINE);
 	if (!ewin->icccm.wm_machine && TryGroup(ewin))
 	   ewin->icccm.wm_machine =
@@ -581,7 +583,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	_EFREE(ewin->icccm.wm_icon_name);
 
 	ewin->icccm.wm_icon_name =
-	   ecore_x_window_prop_string_get(ewin->client.win,
+	   ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin),
 					  ECORE_X_ATOM_WM_ICON_NAME);
 	if (!ewin->icccm.wm_icon_name && TryGroup(ewin))
 	   ewin->icccm.wm_icon_name =
@@ -593,7 +595,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
      {
 	_EFREE(ewin->icccm.wm_role);
 	ewin->icccm.wm_role =
-	   ecore_x_window_prop_string_get(ewin->client.win,
+	   ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin),
 					  ECORE_X_ATOM_WM_WINDOW_ROLE);
      }
 }
@@ -611,7 +613,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 
    hint = NULL;
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_HINTS)
-      hint = XGetWMHints(disp, ewin->client.win);
+      hint = XGetWMHints(disp, _EwinGetClientXwin(ewin));
    if (hint)
      {
 	/* I have to make sure the thing i'm docking is a dock app */
@@ -622,7 +624,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 				WindowGroupHint))
 	       {
 		  if ((hint->icon_x == 0) && (hint->icon_y == 0)
-		      && hint->window_group == ewin->client.win)
+		      && hint->window_group == _EwinGetClientXwin(ewin))
 		     ewin->state.docked = 1;
 	       }
 	  }
@@ -673,7 +675,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_PROTOCOLS)
      {
-	if (XGetWMProtocols(disp, ewin->client.win, &prop, &num))
+	if (XGetWMProtocols(disp, _EwinGetClientXwin(ewin), &prop, &num))
 	  {
 	     ewin->icccm.take_focus = 0;
 	     ewin->icccm.delete_window = 0;
@@ -692,14 +694,14 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
      {
 	ewin->icccm.transient = 0;
 	ewin->icccm.transient_for = None;
-	if (XGetTransientForHint(disp, ewin->client.win, &win))
+	if (XGetTransientForHint(disp, _EwinGetClientXwin(ewin), &win))
 	  {
 	     ewin->icccm.transient = 1;
 	     ewin->icccm.transient_for = win;
 	  }
      }
 
-   if (ewin->icccm.group == ewin->client.win)
+   if (ewin->icccm.group == _EwinGetClientXwin(ewin))
      {
 	ewin->icccm.is_group_leader = 1;
      }
@@ -712,7 +714,7 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
      {
 	Ecore_X_Window      cleader;
 
-	num = ecore_x_window_prop_window_get(ewin->client.win,
+	num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
 					     ECORE_X_ATOM_WM_CLIENT_LEADER,
 					     &cleader, 1);
 	if (num > 0)

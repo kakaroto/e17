@@ -39,6 +39,8 @@ struct _ewin
    const Border       *previous_border;
    EWinBit            *bits;
 
+   char                toggle;	/* FIXME - Eliminate */
+
    struct
    {
       Window              win;
@@ -214,6 +216,11 @@ struct _ewin
 #define EwinIsWindowGroupLeader(ewin)	(ewin->icccm.is_group_leader)
 #define EwinGetWindowGroup(ewin)	(ewin->icccm.group)
 
+#define _EwinGetClientWin(ewin)		(ewin->client.win)
+#define _EwinGetClientXwin(ewin)	(ewin->client.win)
+#define _EwinGetContainerWin(ewin)	(ewin->win_container)
+#define _EwinGetContainerXwin(ewin)	(ewin->win_container)
+
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
 #define EWIN_CHANGE_ICON_NAME   (1<<1)
@@ -249,7 +256,7 @@ void                EwinReparent(EWin * ewin, Window parent);
 Window              EwinGetClientWin(const EWin * ewin);
 const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
-int                 EwinIsOnScreen(EWin * ewin);
+int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
 

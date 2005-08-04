@@ -544,7 +544,7 @@ SnapshotEwinDialog(EWin * ewin)
    SnapDlgData        *sd;
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", ewin->client.win);
+   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", _EwinGetClientXwin(ewin));
 
    if ((d = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
@@ -581,7 +581,7 @@ SnapshotEwinDialog(EWin * ewin)
 
    sd = Ecalloc(1, sizeof(SnapDlgData));
    DialogSetData(d, sd);
-   sd->client = ewin->client.win;
+   sd->client = _EwinGetClientXwin(ewin);
 
    sn = ewin->snap;
    if (sn)
@@ -1415,7 +1415,7 @@ SnapshotEwinMatch(EWin * ewin)
 	     ewin->client.x += ((sn->area_x - ax) * VRoot.w);
 	     ewin->client.y += ((sn->area_y - ay) * VRoot.h);
 	  }
-	EMoveResizeWindow(ewin->client.win, ewin->client.x,
+	EMoveResizeWindow(_EwinGetClientWin(ewin), ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
@@ -1468,7 +1468,7 @@ SnapshotEwinMatch(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 

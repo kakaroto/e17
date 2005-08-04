@@ -602,7 +602,7 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 	if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]))
 	   continue;
 
-	Esnprintf(s, sizeof(s), "wop %#lx focus", lst[i]->client.win);
+	Esnprintf(s, sizeof(s), "wop %#lx focus", _EwinGetClientXwin(lst[i]));
 	mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
@@ -630,7 +630,7 @@ MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
 	    EoGetDesk(lst[i]) != j)
 	   continue;
 
-	Esnprintf(s, sizeof(s), "%lu", lst[i]->client.win);
+	Esnprintf(s, sizeof(s), "%lu", _EwinGetClientXwin(lst[i]));
 	mi = MenuItemCreate(lst[i]->client.title, NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
@@ -664,7 +664,8 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 		 EoGetDesk(lst[i]) != j)
 		continue;
 
-	     Esnprintf(s, sizeof(s), "wop %#lx focus", lst[i]->client.win);
+	     Esnprintf(s, sizeof(s), "wop %#lx focus",
+		       _EwinGetClientXwin(lst[i]));
 	     mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	     MenuAddItem(mm, mi);
 	  }
@@ -720,11 +721,11 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
 	     mm = MenuCreate("__SUBMENUGROUP_E", NULL, m, ms);
 
 	     Esnprintf(s, sizeof(s), "gop %li showhide",
-		       lst[i]->members[0]->client.win);
+		       _EwinGetClientXwin(lst[i]->members[0]));
 	     mi = MenuItemCreate(_("Show/Hide this group"), NULL, s, NULL);
 
 	     Esnprintf(s, sizeof(s), "wop %#lx ic",
-		       lst[i]->members[0]->client.win);
+		       _EwinGetClientXwin(lst[i]->members[0]));
 	     MenuAddItem(mm, mi);
 	     mi = MenuItemCreate(_("Iconify this group"), NULL, s, NULL);
 	     MenuAddItem(mm, mi);
@@ -732,7 +733,7 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
 	     for (j = 0; j < lst[i]->num_members; j++)
 	       {
 		  Esnprintf(s, sizeof(s), "wop %#lx focus",
-			    lst[i]->members[j]->client.win);
+			    _EwinGetClientXwin(lst[i]->members[j]));
 		  mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
 				      s, NULL);
 		  MenuAddItem(mm, mi);
