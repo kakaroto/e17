@@ -26,7 +26,7 @@
 \*/
 
 .text
-        .align 8
+	.align 8
 .globl PR_(imlib_Scale_mmx_AARGBA)
 	.type PT_(imlib_Scale_mmx_AARGBA,@function)
 

@@ -48,7 +48,7 @@
 #define amap_ff		0x3ff(%ebx)
 
 .text
-        .align 8
+	.align 8
 .globl PR_(imlib_mmx_blend_rgba_to_rgb_cmod)
 	.type PT_(imlib_mmx_blend_rgba_to_rgb_cmod,@function)
 .globl PR_(imlib_mmx_blend_rgba_to_rgba_cmod)
@@ -832,8 +832,8 @@ PR_(imlib_mmx_add_copy_rgba_to_rgb_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -868,8 +868,8 @@ PR_(imlib_mmx_add_copy_rgba_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -900,8 +900,8 @@ PR_(imlib_mmx_add_copy_rgb_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD_AFF
@@ -1114,8 +1114,8 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgb_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -1152,8 +1152,8 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -1194,8 +1194,8 @@ PR_(imlib_mmx_subtract_copy_rgb_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD_AFF
@@ -1424,8 +1424,8 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgb_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -1488,8 +1488,8 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD
@@ -1553,8 +1553,8 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba_cmod):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
-        jz 2f
+	incl %ecx
+	jz 2f
 1:
 	/*\ Load source and destination \*/
 	LOAD2_CMOD_AFF

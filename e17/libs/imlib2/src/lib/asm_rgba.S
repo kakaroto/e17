@@ -42,7 +42,7 @@
 #define dy	36(%ebp)
 
 .text
-        .align 8
+	.align 8
 .globl PR_(imlib_mmx_rgb565_fast)
 	.type PT_(imlib_mmx_rgb565_fast,@function)
 .globl PR_(imlib_mmx_bgr565_fast)

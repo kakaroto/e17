@@ -33,7 +33,7 @@
 \*/
 
 .text
-        .align 16
+	.align 16
 .globl PR_(imlib_amd64_blend_rgba_to_rgb_cmod)
 	.type PT_(imlib_amd64_blend_rgba_to_rgb_cmod,@function)
 .globl PR_(imlib_amd64_blend_rgba_to_rgba_cmod)

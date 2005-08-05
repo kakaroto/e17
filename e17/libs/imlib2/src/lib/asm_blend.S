@@ -41,7 +41,7 @@
 #define cm	32(%ebp)
 
 .text
-        .align 8
+	.align 8
 .globl PR_(imlib_mmx_blend_rgba_to_rgb)
 	.type PT_(imlib_mmx_blend_rgba_to_rgb,@function)
 .globl PR_(imlib_mmx_blend_rgba_to_rgba)
@@ -348,7 +348,7 @@ PR_(imlib_mmx_copy_rgb_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source, save destination \*/
@@ -469,7 +469,7 @@ PR_(imlib_mmx_add_copy_rgba_to_rgb):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -505,7 +505,7 @@ PR_(imlib_mmx_add_copy_rgba_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -539,7 +539,7 @@ PR_(imlib_mmx_add_copy_rgb_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -667,7 +667,7 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgb):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -705,7 +705,7 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -747,7 +747,7 @@ PR_(imlib_mmx_subtract_copy_rgb_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -882,7 +882,7 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgb):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -946,7 +946,7 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
@@ -1012,7 +1012,7 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba):
 	subl $4, %edi
 
 	LOOP_START
-        incl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/

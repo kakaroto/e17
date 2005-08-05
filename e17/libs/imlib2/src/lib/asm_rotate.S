@@ -26,7 +26,7 @@
 \*/
 
 .text
-        .align 8
+	.align 8
 .globl PR_(imlib_mmx_RotateAA)
 	.type PT_(imlib_mmx_RotateAA,@function)
 
