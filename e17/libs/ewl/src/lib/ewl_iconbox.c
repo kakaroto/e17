@@ -748,14 +748,21 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	ewl_widget_hide(icon->image);
 	ewl_widget_hide(icon->floater);
-	/*ewl_widget_destroy(icon->image);
-	ewl_widget_destroy(icon->floater);*/
 	ewl_container_child_remove(EWL_CONTAINER(icon), icon->image);
 	ewl_container_child_remove(EWL_CONTAINER(icon), icon->w_label);
-	/*ewl_container_child_remove(EWL_CONTAINER(icon->floater), icon);*/
-	//ewl_container_child_remove(EWL_CONTAINER(icon->icon_box_parent->ewl_iconbox_pane_inner), icon->floater);
+	ewl_container_child_remove(EWL_CONTAINER(icon->floater), EWL_WIDGET(icon));
+	ewl_container_child_remove(EWL_CONTAINER(icon->icon_box_parent->ewl_iconbox_pane_inner), EWL_WIDGET(icon->floater));
 	ewl_widget_destroy(icon->image);
 	ewl_widget_destroy(icon->w_label);
+	ewl_widget_destroy(icon->floater);
+
+	if (icon->label) {
+		free(icon->label);
+	}
+	if (icon->label_compressed) {
+		free(icon->label_compressed);
+	}
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -852,12 +859,7 @@ void ewl_iconbox_clear(Ewl_IconBox* ib) {
 		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
 		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
 			/*printf("Deleting icon..\n");*/
-			if (list_item->label) {
-				free(list_item->label);
-			}
-			if (list_item->label_compressed) {
-				free(list_item->label_compressed);
-			}
+
 
 			ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
 
