@@ -137,6 +137,12 @@ int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon) {
 	
 }
 
+void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+	Ewl_IconBox* ib = EWL_ICONBOX(w);
+
+	ewl_iconbox_clear(ib);
+}
+
 int ewl_iconbox_init(Ewl_IconBox* ib) {
 	Ewl_Widget *w;
 
@@ -274,6 +280,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
 
 
 	/*printf("Setup the iconbox...\n");*/
@@ -745,9 +752,9 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_destroy(icon->floater);*/
 	ewl_container_child_remove(EWL_CONTAINER(icon), icon->image);
 	ewl_container_child_remove(EWL_CONTAINER(icon), icon->w_label);
-	ewl_container_child_remove(EWL_CONTAINER(icon->floater), icon);
+	/*ewl_container_child_remove(EWL_CONTAINER(icon->floater), icon);*/
+	//ewl_container_child_remove(EWL_CONTAINER(icon->icon_box_parent->ewl_iconbox_pane_inner), icon->floater);
 	ewl_widget_destroy(icon->image);
-	/*ewl_widget_destroy(icon->floater);*/
 	ewl_widget_destroy(icon->w_label);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -760,8 +767,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	ib = ewl_iconbox_icon_new();
 
-	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
-			    ewl_iconbox_icon_destroy_cb, NULL);
+
 
 	EWL_ICONBOX_ICON(ib)->selected = 0;
 	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new(iconbox->ewl_iconbox_pane_inner);
@@ -812,19 +818,12 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	/* Add a callback to the border box label, for editing purposes... */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_label_mouse_down_cb, ib);
 
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
+	   ewl_iconbox_icon_destroy_cb, NULL);
+
 	/* Add this icon to the icon list */
 	ecore_list_append(iconbox->ewl_iconbox_icon_list, ib);
 
-	/*BUG FIX - Call the realize event so that selection works */
-	/*ewl_callback_call(EWL_WIDGET(EWL_BORDER(ib->box)->label), EWL_CALLBACK_REALIZE);*/
-
-	/*printf("Added icon: '%s'\n", name);*/
-
-	/*ewl_object_alignment_set(EWL_OBJECT(ib), EWL_FLAG_ALIGN_CENTER);*/
-	/*ewl_widget_layer_set(EWL_WIDGET(ib), 500);*/
-
-	
-	
 	return EWL_ICONBOX_ICON(ib);
 }
 
@@ -861,6 +860,13 @@ void ewl_iconbox_clear(Ewl_IconBox* ib) {
 			}
 
 			ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
+
+			/*Delete our callbacks*/
+			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->image, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_mouse_down);
+			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->image, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_icon_mouse_up);
+			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->w_label, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_label_mouse_down_cb);
+
+			ewl_callback_del(EWL_WIDGET(list_item), EWL_CALLBACK_DESTROY,ewl_iconbox_icon_destroy_cb);
 
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 		}
