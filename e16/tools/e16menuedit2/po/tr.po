@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-18 13:10+0100\n"
+"POT-Creation-Date: 2005-08-05 09:31+0200\n"
 "PO-Revision-Date: 2004-10-27 20:51+0200\n"
 "Last-Translator: Onur Küçük <onur@delipenguen.net>\n"
 "Language-Team: Turkish <onur@delipenguen.net>\n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "No help application found"
 msgstr ""
 
-#: src/e16menuedit2.c:110
+#: src/e16menuedit2.c:118
 msgid "Menu successfully loaded!"
 msgstr "Menü baþarýyla yüklendi!"
 
@@ -88,7 +88,7 @@ msgstr "<b>Özellikler:</b>"
 #, fuzzy
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.0.2"
+"e16menuedit2 v0.0.3"
 msgstr ""
 "<span font_desc=\"Sans 22\">E16 Menü Düzenleyici II</span>\n"
 "e16menuedit2 v0.0.1"

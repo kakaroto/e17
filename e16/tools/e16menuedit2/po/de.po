@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-18 13:10+0100\n"
+"POT-Creation-Date: 2005-08-05 09:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: German <linux@brachttal.net>\n"
@@ -44,7 +44,7 @@ msgstr "Kein Hilfedatei gefunden!"
 msgid "No help application found"
 msgstr "Kein Programm zum Anzeigen der Hilfe gefunden"
 
-#: src/e16menuedit2.c:110
+#: src/e16menuedit2.c:118
 msgid "Menu successfully loaded!"
 msgstr "Menü erfolgreich geladen!"
 
@@ -88,7 +88,7 @@ msgstr "<b>Eigenschaften:</b>"
 #: e16menuedit2.glade.h:2
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.0.2"
+"e16menuedit2 v0.0.3"
 msgstr ""
 
 #: e16menuedit2.glade.h:5

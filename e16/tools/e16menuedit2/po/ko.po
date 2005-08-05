@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-18 13:10+0100\n"
+"POT-Creation-Date: 2005-08-05 09:31+0200\n"
 "PO-Revision-Date: 2004-08-08 11:05 +0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean Translation Team <translation-team-ko@lists."
@@ -43,7 +43,7 @@ msgstr ""
 msgid "No help application found"
 msgstr ""
 
-#: src/e16menuedit2.c:110
+#: src/e16menuedit2.c:118
 msgid "Menu successfully loaded!"
 msgstr ""
 
@@ -87,7 +87,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
-"e16menuedit2 v0.0.2"
+"e16menuedit2 v0.0.3"
 msgstr ""
 "<span font_desc=\"Gulim 22\">E16 메뉴 편집기 II</span>\n"
 "e16menuedit2 v0.2"

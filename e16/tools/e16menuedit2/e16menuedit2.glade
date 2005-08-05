@@ -450,7 +450,7 @@
 		      <property name="height_request">88</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">&lt;span font_desc=&quot;Sans 22&quot;&gt;E16 Menu Editor II&lt;/span&gt;
-e16menuedit2 v0.0.2</property>
+e16menuedit2 v0.0.3</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">True</property>
 		      <property name="justify">GTK_JUSTIFY_CENTER</property>
