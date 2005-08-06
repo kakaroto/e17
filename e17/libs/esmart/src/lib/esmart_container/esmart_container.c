@@ -30,7 +30,7 @@ _sort_cb(void *d1, void *d2)
    return _sort_func(o, oo);
 }
 
-void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *$))
+void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *))
 {
    Container *cont;
   
