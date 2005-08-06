@@ -42,6 +42,11 @@ int  efsd_command_start_monitor_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_stop_monitor_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat);
 int  efsd_command_readlink(EfsdCommand *cmd, int client);
+
+#if HAVE_ECORE
+int  efsd_command_get_filetype(EfsdCommand *cmd, Ecore_Ipc_Client* client);
+#else
 int  efsd_command_get_filetype(EfsdCommand *cmd, int client);
+#endif
 
 #endif

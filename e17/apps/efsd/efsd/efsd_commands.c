@@ -26,6 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
+#if HAVE_ECORE
+#include <Ecore.h>
+#include <Ecore_Ipc.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -483,8 +488,14 @@ efsd_command_readlink(EfsdCommand *cmd, int client)
 }
 
 
+#if HAVE_ECORE
+int  
+efsd_command_get_filetype(EfsdCommand *cmd, Ecore_Ipc_Client* client)
+#else
 int  
 efsd_command_get_filetype(EfsdCommand *cmd, int client)
+#endif
+	
 {
   char  type[MAXPATHLEN];
   int   result;

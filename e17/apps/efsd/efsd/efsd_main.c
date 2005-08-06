@@ -90,6 +90,10 @@ static int           listen_fd;
 static char          app_cmd[MAXPATHLEN];
 static pid_t         app_pid;
 
+#if HAVE_ECORE
+Ecore_Hash* partial_command_hash; /*The has we use to keep references to commands we're in the process of deserializing*/
+#endif
+
 #if USE_THREADS
 
 #define EFSD_MAX_THREADS 50
@@ -105,14 +109,25 @@ int             threadcount = 0;
 typedef struct efsd_command_client_container
 {
   EfsdCommand *ecmd;
+
+  #if HAVE_ECORE
+  Ecore_Ipc_Client* client;
+  #else
   int          client;
+  #endif
+  
   char         threaded; /* whether the contained command should
 			    be run in a thread or not */
 }
 EfsdCommandClientContainer;
 
 /* Pthread wrappers to minimize #ifdef clutter */
+#if HAVE_ECORE
+static void   main_thread_launch(EfsdCommand *ecom, Ecore_Ipc_Client* client);
+#else
 static void   main_thread_launch(EfsdCommand *ecom, int client);
+#endif
+
 static void   main_thread_detach(void);
 
 static void  *main_handle_client_command(void *container);
@@ -157,12 +172,60 @@ int
 ipc_client_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Data *e;
+   EfsdCommand* ec;
                                                                                                          
-   printf ("Got message!\n");
+   printf ("ERR: Got message!\n");
    if ((e = (Ecore_Ipc_Event_Client_Data *) event))
    {
-           printf ("Got message!\n");
-           ecore_ipc_client_send(e->client, 1, 6, e->ref, e->ref_to, 5, NULL, 0);
+           if (e->major == 1) {
+		   /*ecore_ipc_client_send(e->client, 1, 6, e->ref, e->ref_to, 5, NULL, 0);*/
+		   /*main_thread_launch(e->data, e->client);*/
+
+		   printf ("   ERR: We have a command on our hands..\n");
+
+		   if (e->minor == 1) {
+			   printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");
+			   ec = NEW(EfsdCommand);
+
+			   ec->type = *(EfsdCommandType*)(e->data);
+
+			   printf ("  ERR: Command type is %d\n", ec->type);
+
+			   ecore_hash_set(partial_command_hash, e->client, ec);
+			   
+		   } else if (e->minor == 2) {
+			   printf("   ERR: Receiving a command id\n");
+
+			   /*Retrieve the inprogress event*/
+			   ec = ecore_hash_get(partial_command_hash, e->client);
+
+			   printf ("  ERR: Our in-progress command has type %d\n", ec->type);
+			
+			   ec->efsd_file_cmd.id = *(EfsdCmdId*)(e->data);
+
+			   printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);
+			   
+		   } else if (e->minor == 3) {
+			   printf ( "   ERR: Receiving a filename\n");
+
+			   ec = ecore_hash_get(partial_command_hash, e->client);
+
+			   printf ("We have %d files so far..\n", ec->efsd_file_cmd.num_files);
+			   
+			   
+			   if (!ec->efsd_file_cmd.num_files) {
+				   ec->efsd_file_cmd.files = malloc(sizeof(char*));
+		           } else {
+				   ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
+			   }
+			   ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = (char*)(e->data);
+
+			   printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);
+
+			   ec->efsd_file_cmd.num_files+=1;
+			   
+		   }
+           }
    }
 }
                                                                                                          
@@ -174,8 +237,14 @@ ipc_client_data(void *data, int type, void *event)
 /* *********************************** */
 
 
-static void   
+#if HAVE_ECORE
+static void  
+main_thread_launch(EfsdCommand *ecmd, Ecore_Ipc_Client* client)
+#else
+static void  
 main_thread_launch(EfsdCommand *ecmd, int client)
+#endif
+	
 {
   EfsdCommandClientContainer *container;
 
@@ -712,11 +781,16 @@ main_handle_fam_events(void)
 static void 
 main_handle_connections(void)
 {
+  int i;
+	
+  #if HAVE_ECORE 
+  #else
   struct sockaddr_un serv_sun;
-  int             num_read, fdsize, clilen, i, n, can_accept, sock_fd;
+  int             num_read, fdsize, clilen,  n, can_accept, sock_fd;
   fd_set          fdrset;
   fd_set          fdwset;
   fd_set         *fdwset_ptr = NULL;
+  #endif
   char            have_fam_thread = FALSE;
   struct timeval  tv;
   int             rebuild_fdset = FALSE;
@@ -730,6 +804,7 @@ main_handle_connections(void)
   ev_q = efsd_queue_new();
 
 
+  #ifndef HAVE_ECORE
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientfd[i] = -1;
     
@@ -756,6 +831,9 @@ main_handle_connections(void)
       fprintf(stderr, "Could not listen on socket -- exiting.\n");
       exit(-1);
     }
+  #else
+  partial_command_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  #endif
 
 #if USE_THREADS
   {
@@ -1279,6 +1357,7 @@ main_check_options(int argc, char**argv)
 #endif
     }
 
+  #ifndef HAVE_ECORE
   if (stat(efsd_misc_get_socket_file(), &st) >= 0)
     {
       if (opt_careful)
@@ -1293,6 +1372,8 @@ main_check_options(int argc, char**argv)
 	  exit(-1);
 	}	  
     }
+  #endif
+  
   D_RETURN;
 }
 

@@ -62,6 +62,10 @@ char opt_debug   = FALSE;
 
 struct efsd_connection
 {
+  #if HAVE_ECORE
+  Ecore_Ipc_Server* server;
+  #endif
+	
   int        fd;
   EfsdQueue *cmd_q;
 };
@@ -139,6 +143,8 @@ libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
 {
   D_ENTER;
 
+  printf("ERR: libefsd_send_command to ecore efsd_io_write_command\n");
+
   if (!ec || !com)
     D_RETURN_(-1);
 
@@ -149,7 +155,14 @@ libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
     }
   else
     {
-      if (efsd_io_write_command(ec->fd, com) < 0)
+      if (
+		#if HAVE_ECORE
+		 
+		efsd_io_write_command(ec->server, com) < 0
+	        #else
+	      	efsd_io_write_command(ec->fd, com) < 0
+	        #endif
+	 )
 	{
 	  if (errno == EPIPE)
 	    {
@@ -192,6 +205,7 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
   for (i = 0, used_files = 0; i < num_files; i++)
     {
       full_files[used_files] = libefsd_get_full_path(files[i]);
+      printf("File with full path: %s\n", full_files[used_files]);
       if (full_files[used_files])
 	used_files++;
     }
@@ -209,6 +223,7 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
       full_files = realloc(full_files, sizeof(char*) * used_files);
     }
 
+  printf("ERR: Libefsd file_cmd_absolute\n");
   id = libefsd_file_cmd(ec, type, used_files, full_files, num_options, ops);
 
   D_RETURN_(id);
@@ -243,6 +258,8 @@ libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
     }
 
   /* And send it! */
+
+  printf("ERR: Libefsd file_cmd\n");
   if (libefsd_send_command(ec, &cmd) < 0)
     {
       efsd_cmd_cleanup(&cmd);
@@ -334,7 +351,13 @@ libefsd_cmd_queue_process(EfsdConnection *ec)
   while (!efsd_queue_empty(ec->cmd_q))
     {
       cmd = (EfsdCommand*)efsd_queue_next_item(ec->cmd_q);
-      if (efsd_io_write_command(ec->fd, cmd) < 0)
+      if (
+           #if HAVE_ECORE
+	   efsd_io_write_command(ec->server, cmd) < 0
+ 	   #else
+ 	   efsd_io_write_command(ec->fd, cmd) < 0
+	   #endif
+	      )   
 	{
 	  fprintf(stderr, "libefsd: queue NOT empty -- %i!\n", efsd_queue_size(ec->cmd_q));
 	  D_RETURN;
@@ -401,6 +424,15 @@ efsd_open(void)
   if (!ec)
     D_RETURN_(NULL);
 
+  #if HAVE_ECORE
+
+  ec->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL);
+  if (!ec->server) {
+	  fprintf(stderr, "libefsd: Ecore_Ipc error.  Cannot see daemon\n");
+	  D_RETURN_(NULL);
+  }
+  
+  #else
   if ( (ec->fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0)
     {
       fprintf(stderr, "libefsd: socket() error.\n"); D_RETURN_(NULL);
@@ -426,6 +458,7 @@ efsd_open(void)
       fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
       exit(-1);
     }
+  #endif
 
   ec->cmd_q = efsd_queue_new();
 
@@ -1194,6 +1227,7 @@ EfsdCmdId
 efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
+  printf("ERR: A call to get filetype with %s\n", filename);
   D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_GETFILETYPE, 1, &filename, 0, NULL));
 }
 

@@ -27,7 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
+#if HAVE_ECORE
+int      efsd_io_write_command(Ecore_Ipc_Server* server, EfsdCommand *ecom);
+#else
 int      efsd_io_write_command(int sockfd, EfsdCommand *ecom);
+#endif
+
 int      efsd_io_read_command(int sockfd, EfsdCommand *ecom);
 
 int      efsd_io_write_event(int sockfd, EfsdEvent *ee);

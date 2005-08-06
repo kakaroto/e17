@@ -25,6 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_h
 #define efsd_h
 
+#if HAVE_ECORE
+#include <Ecore.h>
+#include <Ecore_Ipc.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 

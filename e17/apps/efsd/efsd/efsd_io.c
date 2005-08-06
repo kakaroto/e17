@@ -842,12 +842,21 @@ fill_option(EfsdIOV *iov, EfsdOption *eo)
 
 /* Non-static stuff below: */
 
+#if HAVE_ECORE
+efsd_io_write_command(Ecore_Ipc_Server* server, EfsdCommand *ec)
+#else
 int      
 efsd_io_write_command(int sockfd, EfsdCommand *ec)
+#endif
 {
+
+
+
+	
   EfsdIOV         iov;
   struct msghdr   msg;
   int             n;
+  int		  i;
 
   D_ENTER;
 
@@ -863,10 +872,28 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
   msg.msg_iov = iov.vec;
   msg.msg_iovlen = iov.v;
 
+  #if HAVE_ECORE
+  printf("ERR: ecore Sending command: efsd_io_write_command\n");
+  
+  ecore_ipc_server_send(server, 1, 1, 0,0,0, &ec->type, sizeof(EfsdCommandType));
+  ecore_ipc_server_send(server, 1, 2, 0,0,0, &ec->efsd_file_cmd.id, sizeof(EfsdCmdId));
+
+  for (i = 0; i < ec->efsd_file_cmd.num_files; i++) {
+	  printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);
+	  ecore_ipc_server_send(server, 1, 3, 0,0,0, ec->efsd_file_cmd.files[i], strlen(ec->efsd_file_cmd.files[i]) + 1); /*Catch the \0*/
+  }
+  
+  D_RETURN(0);
+  #else
+
+	D_RETURN(0);
   if ((n = write_data(sockfd, &msg)) < 0)
     D_RETURN_(-1);
 
   D_RETURN_(0);
+  #endif
+
+
 }
 
 
