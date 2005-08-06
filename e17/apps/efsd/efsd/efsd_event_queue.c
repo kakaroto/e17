@@ -50,17 +50,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct efsd_event_q_item
 {
-  int          client;
+ #if HAVE_ECORE
+ Ecore_Ipc_Client* client;
+ #else
+ int          client;
+ #endif
   EfsdEvent   *ee;
 }
 EfsdEventQItem;
 
-static EfsdEventQItem *event_queue_item_new(int client, EfsdEvent *ee);
+#if HAVE_ECORE
+static EfsdEventQItem *
+event_queue_item_new(Ecore_Ipc_Client* client, EfsdEvent *ee);
+#else
+static EfsdEventQItem *
+event_queue_item_new(int client, EfsdEvent *ee);
+#endif
+
 static void            event_queue_item_free(EfsdEventQItem *eqi);
 
 
+#if HAVE_ECORE
+static EfsdEventQItem *
+event_queue_item_new(Ecore_Ipc_Client* client, EfsdEvent *ee)
+#else
 static EfsdEventQItem *
 event_queue_item_new(int client, EfsdEvent *ee)
+#endif
+	
 {
   EfsdEventQItem *result;
 
@@ -138,9 +155,16 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
   for (eqi = efsd_queue_it_new(q); efsd_queue_it_valid(eqi); efsd_queue_it_next(eqi))
     {
       qi = (EfsdEventQItem*) efsd_queue_it_item(eqi);
-      fd = efsd_main_get_fd(qi->client);
+      
 
-      if (fd < 0)
+        #if HAVE_ECORE
+      
+        /*ecore_ipc_client_send() */
+      
+        #else
+
+        fd = efsd_main_get_fd(qi->client);
+        if (fd < 0)
 	{
 	  efsd_queue_it_remove(eqi);
 	  event_queue_item_free(qi);	  
@@ -175,6 +199,7 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 	  efsd_queue_it_remove(eqi);
 	  event_queue_item_free(qi);	  
 	}
+        #endif
     }
 
   efsd_queue_it_free(eqi);
@@ -183,8 +208,13 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
 }
 
 
+#if HAVE_ECORE
+efsd_event_queue_add_event(EfsdQueue *q, Ecore_Ipc_Client* client, EfsdEvent *ee)
+#else
 void
 efsd_event_queue_add_event(EfsdQueue *q, int client, EfsdEvent *ee)
+#endif
+	
 {
   EfsdEvent *ee_copy;
 

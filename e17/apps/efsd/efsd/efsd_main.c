@@ -145,6 +145,8 @@ static void   main_check_permissions(void);
 static void   main_check_options(int argc, char**argv);
 
 
+static Ecore_Ipc_Client* cl;
+
 /* *********************************** */
 /* IPC Functions */
 
@@ -246,6 +248,9 @@ ipc_client_data(void *data, int type, void *event)
 
 			   ec->efsd_file_cmd.num_options++;
 		  } else if (e->minor == 100) {
+			/*ecore_ipc_client_send(e->client, 1, 1, 0,0,0, NULL,0);
+			cl = e->client;*/
+			  
 			  /*Command finished.. process..*/
 
 			  printf("Command finished..processing..\n");
@@ -290,7 +295,7 @@ main_thread_launch(EfsdCommand *ecmd, int client)
   container = NEW(EfsdCommandClientContainer);
   container->ecmd = ecmd;
   container->client = client;
-  container->threaded = 1;
+  container->threaded = FALSE;
 
 #if USE_THREADS
 
@@ -308,6 +313,7 @@ main_thread_launch(EfsdCommand *ecmd, int client)
     {
       pthread_t thread;
 
+      /*ecore_ipc_client_send(container->client, 1, 1, 0,0,0, NULL,0);*/
       if (pthread_create(&thread, NULL, main_handle_client_command, container) != 0)
 	{
 	  printf("No threads\n");
@@ -316,6 +322,7 @@ main_thread_launch(EfsdCommand *ecmd, int client)
 	  container->threaded = FALSE;
 	  main_handle_client_command(container);  
 	}
+
 
     }
   else
@@ -365,8 +372,8 @@ main_handle_client_command(void *data)
 {  
   EfsdCommandClientContainer *container = (EfsdCommandClientContainer *)data;
   EfsdCommand *command;
-  
-  printf ("0.6: Filename is '%s'\n", container->ecmd->efsd_file_cmd.files[0]);
+ 
+ 
   
  #if HAVE_ECORE 
   Ecore_Ipc_Client* client;
@@ -462,6 +469,8 @@ main_handle_client_command(void *data)
       break;
     case EFSD_CMD_GETFILETYPE:
       D("Handling GETFILETYPE\n");
+      
+      
       efsd_command_get_filetype(command, client);
       break;
     case EFSD_CMD_CLOSE:

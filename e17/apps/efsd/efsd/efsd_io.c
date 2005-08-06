@@ -962,9 +962,22 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 }
 
 
+#if HAVE_ECORE
+int      
+efsd_io_write_event(Ecore_Ipc_Client* sockfd, EfsdEvent *ee)
+#else
 int      
 efsd_io_write_event(int sockfd, EfsdEvent *ee)
+#endif
 {
+  
+  #if HAVE_ECORE
+
+  printf("ERR: Sending event..\n");
+  ecore_ipc_client_send(sockfd, ee->type, 1, 0,0,0, ee->efsd_reply_event.data,strlen(ee->efsd_reply_event.data)+1);
+  
+	
+  #else
   EfsdIOV         iov;
   struct msghdr   msg;
   int             n;
@@ -987,6 +1000,7 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
     D_RETURN_(-1);
   
   D_RETURN_(0);
+  #endif
 }
 
 

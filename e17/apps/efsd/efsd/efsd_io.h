@@ -35,7 +35,14 @@ int      efsd_io_write_command(int sockfd, EfsdCommand *ecom);
 
 int      efsd_io_read_command(int sockfd, EfsdCommand *ecom);
 
-int      efsd_io_write_event(int sockfd, EfsdEvent *ee);
+#if HAVE_ECORE
+int      
+efsd_io_write_event(Ecore_Ipc_Client* sockfd, EfsdEvent *ee);
+#else
+int      
+efsd_io_write_event(int sockfd, EfsdEvent *ee);
+#endif
+	
 int      efsd_io_read_event(int sockfd, EfsdEvent *ee);
 
 int      efsd_io_write_option(int sockfd, EfsdOption *eo);

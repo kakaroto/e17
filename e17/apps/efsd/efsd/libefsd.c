@@ -102,6 +102,41 @@ static void      libefsd_cmd_queue_process(EfsdConnection *ec);
 
 static void      libefsd_callbacks_init(void);
 
+
+/*Ecore Event callbacks*/
+#if HAVE_ECORE
+int
+ipc_server_data(void *data, int type, void *event)
+{
+   Ecore_Ipc_Event_Server_Data *e;
+
+  printf("Received event from server..\n");
+
+   if ((e = (Ecore_Ipc_Event_Server_Data *) event))
+   {
+
+        switch (e->major) {
+                case EFSD_EVENT_REPLY:
+                        printf ("it's a reply!\n");
+
+	
+			switch(e->minor) {
+				case 1:
+					printf ("It's a data section..\n");
+					printf ("Data is: %s\n", e->data);
+			}
+			
+                        break;
+        }
+
+
+   }
+
+
+}
+
+#endif
+
 static char*
 libefsd_get_full_path(char *file)
 {
@@ -431,6 +466,9 @@ efsd_open(void)
 	  fprintf(stderr, "libefsd: Ecore_Ipc error.  Cannot see daemon\n");
 	  D_RETURN_(NULL);
   }
+
+  /*Register the event callbacks*/
+  ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data, NULL);
   
   #else
   if ( (ec->fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0)

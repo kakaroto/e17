@@ -84,11 +84,14 @@ send_reply(EfsdCommand *cmd, int errorcode,
 
 {
   EfsdEvent  ee;
+  
   int        sockfd;
 
   D_ENTER;
 
+  #ifndef HAVE_ECORE
   sockfd = efsd_main_get_fd(client);
+  #endif
 
   if (sockfd < 0)
     D_RETURN_(-1);
@@ -104,6 +107,10 @@ send_reply(EfsdCommand *cmd, int errorcode,
   */
   ee.efsd_reply_event.data = data;
 
+  #if HAVE_ECORE
+  printf("ERR: Writing event..\n");
+  efsd_io_write_event(client, &ee);
+  #else
   if (efsd_io_write_event(sockfd, &ee) < 0)
     {
       if (errno == EPIPE)
@@ -113,6 +120,7 @@ send_reply(EfsdCommand *cmd, int errorcode,
 
       D_RETURN_(-1);
     }
+    #endif
 
   D_RETURN_(0);
 }
