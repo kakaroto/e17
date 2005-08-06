@@ -178,22 +178,23 @@ ipc_client_data(void *data, int type, void *event)
    if ((e = (Ecore_Ipc_Event_Client_Data *) event))
    {
            if (e->major == 1) {
-		   /*ecore_ipc_client_send(e->client, 1, 6, e->ref, e->ref_to, 5, NULL, 0);*/
-		   /*main_thread_launch(e->data, e->client);*/
-
 		   printf ("   ERR: We have a command on our hands..\n");
 
 		   if (e->minor == 1) {
+			  /*An efsdCommandType*/
+			   
 			   printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");
 			   ec = NEW(EfsdCommand);
 
-			   ec->type = *(EfsdCommandType*)(e->data);
+			   memcpy(&ec->type, e->data, sizeof(EfsdCommandType));
 
 			   printf ("  ERR: Command type is %d\n", ec->type);
 
 			   ecore_hash_set(partial_command_hash, e->client, ec);
 			   
 		   } else if (e->minor == 2) {
+			  /*An efsdCommandId*/
+			   
 			   printf("   ERR: Receiving a command id\n");
 
 			   /*Retrieve the inprogress event*/
@@ -201,11 +202,13 @@ ipc_client_data(void *data, int type, void *event)
 
 			   printf ("  ERR: Our in-progress command has type %d\n", ec->type);
 			
-			   ec->efsd_file_cmd.id = *(EfsdCmdId*)(e->data);
+			   memcpy(&ec->efsd_file_cmd.id, e->data, sizeof(EfsdCmdId));
 
 			   printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);
 			   
 		   } else if (e->minor == 3) {
+			  /*A file*/
+			   
 			   printf ( "   ERR: Receiving a filename\n");
 
 			   ec = ecore_hash_get(partial_command_hash, e->client);
@@ -218,15 +221,51 @@ ipc_client_data(void *data, int type, void *event)
 		           } else {
 				   ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
 			   }
-			   ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = (char*)(e->data);
+			   ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(e->data);
 
 			   printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);
 
 			   ec->efsd_file_cmd.num_files+=1;
 			   
-		   }
+		   } else if (e->minor == 4) {
+			   /*An efsdOption*/
+			   /*Basically two ints*/
+
+   			   printf ( "   ERR: Receiving an option\n");
+
+			   ec = ecore_hash_get(partial_command_hash, e->client);
+
+			   if (!ec->efsd_file_cmd.num_options) {
+				   ec->efsd_file_cmd.options = malloc(sizeof(EfsdOption));
+			   } else {
+				   ec->efsd_file_cmd.options = realloc(ec->efsd_file_cmd.options, sizeof(EfsdOption) * ec->efsd_file_cmd.num_options+1);
+		           }
+
+
+			   memcpy(&ec->efsd_file_cmd.options[ec->efsd_file_cmd.num_options], e->data, sizeof(EfsdOption));
+
+			   ec->efsd_file_cmd.num_options++;
+		  } else if (e->minor == 100) {
+			  /*Command finished.. process..*/
+
+			  printf("Command finished..processing..\n");
+			  
+
+			  ec = ecore_hash_get(partial_command_hash, e->client);
+
+			  printf ("Filename is '%s'\n", ec->efsd_file_cmd.files[0]);
+			  /*ecore_hash_remove(partial_command_hash, e->client);*/
+			  
+		   	  main_thread_launch(ec, e->client);
+		  }
+				   
+
+			   
+			   
            }
    }
+
+   return 1;
 }
                                                                                                          
                                                                                                          
@@ -251,7 +290,7 @@ main_thread_launch(EfsdCommand *ecmd, int client)
   container = NEW(EfsdCommandClientContainer);
   container->ecmd = ecmd;
   container->client = client;
-  container->threaded = TRUE;
+  container->threaded = 1;
 
 #if USE_THREADS
 
@@ -264,16 +303,20 @@ main_thread_launch(EfsdCommand *ecmd, int client)
   
   pthread_mutex_unlock(&threadcount_mutex);
 
+
   if (container->threaded)
     {
       pthread_t thread;
 
       if (pthread_create(&thread, NULL, main_handle_client_command, container) != 0)
 	{
+	  printf("No threads\n");
+		
 	  /* Couldn't create a thread -- run directly. */
 	  container->threaded = FALSE;
 	  main_handle_client_command(container);  
 	}
+
     }
   else
     {
@@ -322,15 +365,26 @@ main_handle_client_command(void *data)
 {  
   EfsdCommandClientContainer *container = (EfsdCommandClientContainer *)data;
   EfsdCommand *command;
+  
+  printf ("0.6: Filename is '%s'\n", container->ecmd->efsd_file_cmd.files[0]);
+  
+ #if HAVE_ECORE 
+  Ecore_Ipc_Client* client;
+ #else
   int client;
+ #endif
  
   D_ENTER;
+
 
   if (container->threaded)
     main_thread_detach();
 
   command = container->ecmd;
+
+  
   client = container->client;
+
 
   switch (command->type)
     {

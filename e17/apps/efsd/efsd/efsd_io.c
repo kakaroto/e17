@@ -882,6 +882,15 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 	  printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);
 	  ecore_ipc_server_send(server, 1, 3, 0,0,0, ec->efsd_file_cmd.files[i], strlen(ec->efsd_file_cmd.files[i]) + 1); /*Catch the \0*/
   }
+
+  for (i = 0; i < ec->efsd_file_cmd.num_options; i++) {
+	  printf ("ERR: Writing option\n", ec->efsd_file_cmd.options[i]);
+	  ecore_ipc_server_send(server, 1, 4, 0,0,0, &ec->efsd_file_cmd.options[i], sizeof(EfsdOption)); /*Catch the \0*/
+  }
+
+  
+  ecore_ipc_server_send(server, 1, 100, 0,0,0, NULL, 0);
+  
   
   D_RETURN(0);
   #else
