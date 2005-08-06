@@ -806,4 +806,5 @@ PR_(imlib_Scale_mmx_AARGBA):
 
 SIZE(imlib_Scale_mmx_AARGBA)
 
+.section .note.GNU-stack,"",@progbits
 #endif

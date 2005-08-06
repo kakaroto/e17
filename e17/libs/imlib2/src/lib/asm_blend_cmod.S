@@ -1601,4 +1601,5 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba_cmod):
 
 SIZE(imlib_mmx_reshade_copy_rgb_to_rgba_cmod)
 
+.section .note.GNU-stack,"",@progbits
 #endif

@@ -298,4 +298,5 @@ PR_(imlib_get_cpuid):
 
 SIZE(imlib_get_cpuid)
 
+.section .note.GNU-stack,"",@progbits
 #endif

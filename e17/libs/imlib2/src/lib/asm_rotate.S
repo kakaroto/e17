@@ -465,5 +465,5 @@ PR_(imlib_mmx_RotateAA):
 
 SIZE(imlib_mmx_RotateAA)
 
+.section .note.GNU-stack,"",@progbits
 #endif
-

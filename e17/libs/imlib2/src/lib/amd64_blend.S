@@ -5556,5 +5556,5 @@ PR_(imlib_amd64_reshade_copy_rgb_to_rgba):
 	LEAVE
 SIZE(imlib_amd64_reshade_copy_rgb_to_rgba)
 
-
+.section .note.GNU-stack,"",@progbits
 #endif
