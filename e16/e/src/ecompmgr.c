@@ -441,27 +441,9 @@ DeskBackgroundPictureFree(Desk * d)
  */
 
 static void
-ECompMgrDamageMerge(int desk, XserverRegion damage, int destroy)
+ECompMgrDamageMerge(XserverRegion damage, int destroy)
 {
-   if (desk)
-     {
-	Desk               *d = DeskGet(desk);
-
-	if (EoGetX(d) != 0 || EoGetY(d) != 0)
-	  {
-	     if (!destroy)
-	       {
-		  XserverRegion       region;
-
-		  region = XFixesCreateRegion(disp, 0, 0);
-		  XFixesCopyRegion(disp, region, damage);
-		  damage = region;
-	       }
-	     XFixesTranslateRegion(disp, damage, EoGetX(d), EoGetY(d));
-	  }
-     }
-
-   if (allDamage)
+   if (allDamage != None)
      {
 	if (EventDebug(EDBUG_TYPE_COMPMGR3))
 	   ERegionShow("ECompMgrDamageMerge add:", damage);
@@ -485,9 +467,40 @@ ECompMgrDamageMerge(int desk, XserverRegion damage, int destroy)
 }
 
 static void
+ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
+{
+   Desk               *d = DeskGet(eo->desk);
+
+   if (d && !d->viewable && eo->ilayer < 512)
+     {
+	if (destroy)
+	   XFixesDestroyRegion(disp, damage);
+	return;
+     }
+
+   if (eo->desk > 0)
+     {
+	if (EoGetX(d) != 0 || EoGetY(d) != 0)
+	  {
+	     if (!destroy)
+	       {
+		  XserverRegion       region;
+
+		  region = XFixesCreateRegion(disp, 0, 0);
+		  XFixesCopyRegion(disp, region, damage);
+		  damage = region;
+	       }
+	     XFixesTranslateRegion(disp, damage, EoGetX(d), EoGetY(d));
+	  }
+     }
+
+   ECompMgrDamageMerge(damage, destroy);
+}
+
+static void
 ECompMgrDamageAll(void)
 {
-   ECompMgrDamageMerge(0, ERegionCreate(0, 0, VRoot.w, VRoot.h), 1);
+   ECompMgrDamageMerge(ERegionCreate(0, 0, VRoot.w, VRoot.h), 1);
 }
 
 #if ENABLE_SHADOWS
@@ -920,7 +933,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if ((what & (INV_GEOM | INV_SHADOW)) && cw->extents != None)
      {
 #if 0				/* FIXME - Not necessary? */
-	ECompMgrDamageMerge(cw->extents, 1);
+	ECompMgrDamageMergeObject(eo, cw->extents, 1);
 #else
 	XFixesDestroyRegion(dpy, cw->extents);
 #endif
@@ -945,7 +958,7 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    if (eo->shown)		/* FIXME - ??? */
       /* Extents may be unchanged, however, we must repaint */
       if (cw->extents != None)
-	 ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+	 ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    /* Invalidate stuff changed by opacity */
    ECompMgrWinInvalidate(eo, INV_OPACITY);
@@ -983,7 +996,7 @@ ECompMgrWinMap(EObj * eo)
 #endif
    if (cw->extents == None)
       cw->extents = win_extents(disp, eo);
-   ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    ECompMgrWinSetPicts(eo);
 }
@@ -998,7 +1011,7 @@ ECompMgrWinUnmap(EObj * eo)
    cw->visible = 0;
 
    if (cw->extents != None)
-      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+      ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
 #if 0				/* FIXME - Invalidate stuff? */
    ECompMgrWinInvalidate(eo, INV_SIZE);
@@ -1168,7 +1181,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
 #endif
 
    if (damage != None)
-      ECompMgrDamageMerge(eo->desk, damage, 1);
+      ECompMgrDamageMergeObject(eo, damage, 1);
 }
 
 static void
@@ -1208,7 +1221,7 @@ ECompMgrWinReparent(EObj * eo, int desk, int change_xy)
    /* Invalidate old window region */
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", cw->extents);
-   ECompMgrDamageMerge(eo->desk, cw->extents, change_xy);
+   ECompMgrDamageMergeObject(eo, cw->extents, change_xy);
 
    if (change_xy)
      {
@@ -1217,7 +1230,7 @@ ECompMgrWinReparent(EObj * eo, int desk, int change_xy)
 
 	/* Find new window region */
 	cw->extents = win_extents(disp, eo);
-	ECompMgrDamageMerge(desk, cw->extents, 0);
+	ECompMgrDamageMergeObject(eo, cw->extents, 0);
      }
 }
 
@@ -1236,7 +1249,7 @@ ECompMgrWinChangeShape(EObj * eo)
 
    if (cw->extents != None)
      {
-	ECompMgrDamageMerge(eo->desk, cw->extents, 1);
+	ECompMgrDamageMergeObject(eo, cw->extents, 1);
 	cw->extents = None;
      }
 
@@ -1252,7 +1265,7 @@ ECompMgrWinChangeStacking(EObj * eo)
       return;
 
    if (cw->extents != None)
-      ECompMgrDamageMerge(eo->desk, cw->extents, 0);
+      ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
 
 void
@@ -1379,7 +1392,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	  }
 #endif
      }
-   ECompMgrDamageMerge(eo->desk, parts, 1);
+   ECompMgrDamageMergeObject(eo, parts, 1);
 }
 
 /* Ensure that the blend mask is up to date */
@@ -1749,7 +1762,7 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 
 	region = XFixesCreateRegion(dpy, expose_rects, n_expose);
 
-	ECompMgrDamageMerge(0, region, 1);
+	ECompMgrDamageMerge(region, 1);
 	n_expose = 0;
      }
 }
