@@ -36,10 +36,23 @@
 
 struct
 {
+   char                enable;
+   char                zoom;
+   char                title;
+   char                hiq;
+   char                snap;
+   int                 scanspeed;
+   int                 sel_button;
+   int                 win_button;
+   int                 menu_button;
+} Conf_pagers;
+
+struct
+{
    int                 zoom;
 } Mode_pagers;
 
-struct _pager
+typedef struct
 {
    char               *name;
    Window              win;
@@ -57,11 +70,7 @@ struct _pager
    char                do_newbg;
    char                do_update;
    int                 x1, y1, x2, y2;
-};
-
-#define PAGER_EVENT_MOUSE_OUT -1
-#define PAGER_EVENT_MOTION     0
-#define PAGER_EVENT_MOUSE_IN   1
+} Pager;
 
 static void         PagerScanCancel(Pager * p);
 static void         PagerScanTimeout(int val, void *data);
@@ -82,7 +91,7 @@ PagerCreate(void)
 {
    Pager              *p;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return NULL;
 
    p = Ecalloc(1, sizeof(Pager));
@@ -146,11 +155,11 @@ PagerScanTrig(Pager * p)
 {
    char                s[128];
 
-   if (p->scan_pending || Conf.pagers.scanspeed <= 0)
+   if (p->scan_pending || Conf_pagers.scanspeed <= 0)
       return;
 
    Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
-   DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerScanTimeout, 0, p);
+   DoIn(s, 1 / ((double)Conf_pagers.scanspeed), PagerScanTimeout, 0, p);
    p->scan_pending = 1;
 }
 
@@ -174,7 +183,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    int                 y, y2, phase, cx, cy, ww, hh, xx, yy;
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
-   if (!Conf.pagers.snap)
+   if (!Conf_pagers.snap)
       return;
 
    p = (Pager *) data;
@@ -188,7 +197,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    if (ewin->state.visibility == VisibilityFullyObscured)
       return;
 
-   if (Conf.pagers.scanspeed > 0)
+   if (Conf_pagers.scanspeed > 0)
       PagerScanTrig(p);
 
    if (Mode.mode != MODE_NONE)
@@ -210,7 +219,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y2 = (y * VRoot.h) / hh;
 
    ScaleRect(VRoot.win, p->pmap, NULL, 0, y2, VRoot.w, VRoot.h / hh,
-	     xx, yy + y, ww, 1, Conf.pagers.hiq);
+	     xx, yy + y, ww, 1, Conf_pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
 #else
@@ -218,7 +227,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y2 = (y * VRoot.w) / ww;
 
    ScaleRect(VRoot.win, p->pmap, NULL, y2, 0, VRoot.w / ww, VRoot.h,
-	     xx + y, yy, 1, hh, Conf.pagers.hiq);
+	     xx + y, yy, 1, hh, Conf_pagers.hiq);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
 #endif
@@ -278,7 +287,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    ewin->mini_h = h;
 
    draw = None;
-   if (Conf.pagers.snap)
+   if (Conf_pagers.snap)
      {
 	draw = EoGetPixmap(ewin);
 	if (draw == None && EwinIsOnScreen(ewin))
@@ -305,7 +314,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	ewin->mini_pmm.type = 1;
 	ewin->mini_pmm.mask = None;
 	ScaleRect(draw, None, &ewin->mini_pmm.pmap, 0, 0,
-		  EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf.pagers.hiq);
+		  EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf_pagers.hiq);
      }
 
 #if 0				/* FIXME - Remove? */
@@ -333,7 +342,7 @@ doPagerUpdate(Pager * p)
       return;
 
    update_screen_included = update_screen_only = 0;
-   if (Conf.pagers.snap && p->desktop == DesksGetCurrent())
+   if (Conf_pagers.snap && p->desktop == DesksGetCurrent())
      {
 	/* Update from screen unless update area is entirely off-screen */
 	if (!(p->x2 <= vx || p->y2 <= vy ||
@@ -409,7 +418,7 @@ doPagerUpdate(Pager * p)
  do_screen_update:
    /* Update pager area by snapshotting entire screen */
    ScaleRect(VRoot.win, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, cx * p->dw,
-	     cy * p->dh, p->dw, p->dh, Conf.pagers.hiq);
+	     cy * p->dh, p->dw, p->dh, Conf_pagers.hiq);
    p->update_phase = 0;
 
    EClearWindow(p->win);
@@ -441,7 +450,7 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
    p->do_update = 1;
    pager_update_pending = 1;
 
-   if (!Conf.pagers.snap)
+   if (!Conf_pagers.snap)
       return;
 
    RemoveTimerEvent("pg-upd");
@@ -485,7 +494,7 @@ PagerUpdateBg(Pager * p)
       EFreePixmap(pmap);
    pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, VRoot.depth);
 
-   if (!Conf.pagers.snap)
+   if (!Conf_pagers.snap)
      {
 	ImageClass         *ic;
 
@@ -549,7 +558,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    int                 ax, ay, cx, cy;
    ImageClass         *ic;
 
-   if (!Conf.pagers.enable || !p || Mode.mode != MODE_NONE)
+   if (!Conf_pagers.enable || !p || Mode.mode != MODE_NONE)
       return;
 
    w = ewin->client.w;
@@ -614,7 +623,7 @@ PagerShow(Pager * p)
    char                s[4096];
    int                 w, h;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    if (p->ewin)
@@ -672,7 +681,7 @@ PagersForDesktop(int d, int *num)
    Pager             **pl = NULL;
    int                 i, pnum;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return NULL;
 
    *num = 0;
@@ -732,9 +741,9 @@ PagersCheckUpdate(void)
    Pager             **pl;
    int                 i, num;
 
-   if (!pager_update_pending || !Conf.pagers.enable)
+   if (!pager_update_pending || !Conf_pagers.enable)
       return;
-   if (Mode.mode != MODE_NONE && Conf.pagers.snap)
+   if (Mode.mode != MODE_NONE && Conf_pagers.snap)
       return;
 
    pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
@@ -811,7 +820,7 @@ PagersUpdateEwin(EWin * ewin, int gone)
 {
    int                 desk;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    if (!gone && (!EoIsShown(ewin) || ewin->state.animated))
@@ -831,7 +840,7 @@ EwinInPagerAt(Pager * p, int px, int py)
    EWin               *const *lst, *ewin;
    int                 i, num, x, y, w, h;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return NULL;
 
    lst = EwinListGetForDesk(&num, p->desktop);
@@ -861,7 +870,7 @@ PagerMenuShow(Pager * p, int x, int y)
    EWin               *ewin;
    char                s[1024];
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    ewin = EwinInPagerAt(p, x, y);
@@ -900,12 +909,12 @@ PagerMenuShow(Pager * p, int x, int y)
    mi = MenuItemCreate(_("Pager Settings..."), NULL, "pg cfg", NULL);
    MenuAddItem(p_menu, mi);
 
-   if (Conf.pagers.snap)
+   if (Conf_pagers.snap)
      {
 	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg snap off", NULL);
 	MenuAddItem(p_menu, mi);
 
-	if (Conf.pagers.hiq)
+	if (Conf_pagers.hiq)
 	   mi = MenuItemCreate(_("High Quality Off"), NULL, "pg hiq off", NULL);
 	else
 	   mi = MenuItemCreate(_("High Quality On"), NULL, "pg hiq on", NULL);
@@ -916,6 +925,11 @@ PagerMenuShow(Pager * p, int x, int y)
 	mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg snap on", NULL);
 	MenuAddItem(p_menu, mi);
      }
+   if (Conf_pagers.zoom)
+      mi = MenuItemCreate(_("Zoom Off"), NULL, "pg zoom off", NULL);
+   else
+      mi = MenuItemCreate(_("Zoom On"), NULL, "pg zoom on", NULL);
+   MenuAddItem(p_menu, mi);
 
    EFunc(NULL, "menus show __DESK_MENU");
 }
@@ -934,7 +948,7 @@ UpdatePagerSel(void)
    int                 i, pnum, cx, cy;
    ImageClass         *ic;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
@@ -970,7 +984,7 @@ PagerShowTt(EWin * ewin)
    Eprintf("PagerShowTt %s\n", (ewin) ? EwinGetIconName(ewin) : NULL);
 #endif
 
-   if (!Conf.pagers.title || (ewin == tt_ewin))
+   if (!Conf_pagers.title || (ewin == tt_ewin))
       return;
 
    if (MenusActive())		/* Don't show Tooltip when menu is up */
@@ -1068,14 +1082,14 @@ PagerZoomChange(Pager * p, int delta)
 }
 
 static void
-PagerHandleMotion(Pager * p, int x, int y, int in)
+PagerHandleMotion(Pager * p, int x, int y)
 {
    int                 hx, hy;
    unsigned int        mr;
    Window              rw, cw;
    EWin               *ewin;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &mr);
@@ -1085,42 +1099,24 @@ PagerHandleMotion(Pager * p, int x, int y, int in)
    else
       ewin = NULL;
 
-   if (!Conf.pagers.zoom)
+   if (!Conf_pagers.zoom)
      {
-	if (in == PAGER_EVENT_MOUSE_OUT)
-	   PagerShowTt(NULL);
-	else
-	   PagerShowTt(ewin);
-	return;
-     }
-
-   if (ewin == NULL)
-     {
-	PagerHiwinHide();
-	return;
-     }
-
-   if (in == PAGER_EVENT_MOUSE_OUT)
-     {
-	PagerShowTt(NULL);
-     }
-   else if ((in == PAGER_EVENT_MOTION) && EoGetLayer(ewin) <= 0)
-     {
-	PagerHiwinHide();
 	PagerShowTt(ewin);
+	return;
      }
-   else if ((in == PAGER_EVENT_MOTION)
-	    && (!hiwin || ewin != HiwinGetEwin(hiwin, 0)))
+
+   if (!ewin || EoGetLayer(ewin) <= 0)
+     {
+	PagerHiwinHide();
+     }
+   else if (!hiwin || ewin != HiwinGetEwin(hiwin, 0))
      {
 	if (Mode_pagers.zoom < 2)
 	   Mode_pagers.zoom = 2;
 	PagerHiwinShow(p, ewin, Mode_pagers.zoom, 0);
-	PagerShowTt(ewin);
      }
-   else if (in == PAGER_EVENT_MOTION)
-     {
-	PagerShowTt(ewin);
-     }
+   if (Mode_pagers.zoom <= 2)
+      PagerShowTt(ewin);
 }
 
 static void
@@ -1167,7 +1163,7 @@ PagerSetHiQ(char onoff)
    EWin               *const *lst;
    int                 i, num;
 
-   Conf.pagers.hiq = onoff;
+   Conf_pagers.hiq = onoff;
 
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
@@ -1188,7 +1184,7 @@ PagerSetSnap(char onoff)
    EWin               *const *lst;
    int                 i, num;
 
-   Conf.pagers.snap = onoff;
+   Conf_pagers.snap = onoff;
 
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
@@ -1199,7 +1195,7 @@ PagerSetSnap(char onoff)
 
    PagersUpdateBackground(-1);
 
-   if (Conf.pagers.snap)
+   if (Conf_pagers.snap)
      {
 	pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
 	if (!pl)
@@ -1207,7 +1203,7 @@ PagerSetSnap(char onoff)
 
 	for (i = 0; i < num; i++)
 	  {
-	     if (Conf.pagers.scanspeed > 0
+	     if (Conf_pagers.scanspeed > 0
 		 && pl[i]->desktop == DesksGetCurrent())
 		PagerScanTrig(pl[i]);
 	  }
@@ -1329,12 +1325,12 @@ PagerHandleMouseDown(Pager * p, int px, int py, int button)
    if (!in_pager)
       return;
 
-   if (button == Conf.pagers.menu_button)
+   if (button == Conf_pagers.menu_button)
      {
 	PagerHiwinHide();
 	PagerMenuShow(p, px, py);
      }
-   else if (button == Conf.pagers.win_button)
+   else if (button == Conf_pagers.win_button)
      {
 	ewin = EwinInPagerAt(p, px, py);
 	if ((ewin) && (ewin->type != EWIN_TYPE_PAGER))
@@ -1362,14 +1358,14 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
    if (!in_pager)
       return;
 
-   if (button == Conf.pagers.sel_button)
+   if (button == Conf_pagers.sel_button)
      {
 	DeskGoto(p->desktop);
 	if (p->desktop != DesksGetCurrent())
 	   SoundPlay("SOUND_DESKTOP_SHUT");
 	SetCurrentArea(px / p->dw, py / p->dh);
      }
-   else if (button == Conf.pagers.win_button)
+   else if (button == Conf_pagers.win_button)
      {
 	DeskGoto(p->desktop);
 	SetCurrentArea(px / p->dw, py / p->dh);
@@ -1414,7 +1410,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
    in_vroot = (Mode.x >= 0 && Mode.x < VRoot.w &&
 	       Mode.y >= 0 && Mode.y < VRoot.h);
 
-   if (button == Conf.pagers.win_button)
+   if (button == Conf_pagers.win_button)
      {
 	/* Find which pager or iconbox we are in (if any) */
 	ewin2 = GetEwinPointerInClient();
@@ -1491,20 +1487,13 @@ PagerEvent(XEvent * ev, void *prm)
 	break;
 
      case MotionNotify:
-	PagerHandleMotion(p, ev->xmotion.x, ev->xmotion.y, PAGER_EVENT_MOTION);
+	PagerHandleMotion(p, ev->xmotion.x, ev->xmotion.y);
 	break;
 
      case EnterNotify:
-#if 0				/* Nothing done here */
-	PagerHandleMotion(p, ev->xcrossing.x, ev->xcrossing.y,
-			  PAGER_EVENT_MOUSE_IN);
-#endif
 	break;
      case LeaveNotify:
-	if (Mode.mode != MODE_NONE)
-	   break;
-	PagerHandleMotion(p, ev->xcrossing.x, ev->xcrossing.y,
-			  PAGER_EVENT_MOUSE_OUT);
+	PagerShowTt(NULL);
 	break;
 
      case UnmapNotify:
@@ -1577,8 +1566,7 @@ PagerHiwinEvent(XEvent * ev, void *prm)
 	switch (Mode.mode)
 	  {
 	  case MODE_NONE:
-	     PagerHandleMotion(p, ev->xmotion.x, ev->xmotion.y,
-			       PAGER_EVENT_MOTION);
+	     PagerHandleMotion(p, ev->xmotion.x, ev->xmotion.y);
 	     break;
 
 	  case MODE_PAGER_DRAG_PENDING:
@@ -1640,18 +1628,18 @@ PagersShow(int enable)
 {
    int                 i;
 
-   if (enable && !Conf.pagers.enable)
+   if (enable && !Conf_pagers.enable)
      {
-	Conf.pagers.enable = 1;
+	Conf_pagers.enable = 1;
 	for (i = 0; i < Conf.desks.num; i++)
 	   PagersEnableForDesktop(i);
 	UpdatePagerSel();
      }
-   else if (!enable && Conf.pagers.enable)
+   else if (!enable && Conf_pagers.enable)
      {
 	for (i = 0; i < Conf.desks.num; i++)
 	   PagersDisableForDesktop(i);
-	Conf.pagers.enable = 0;
+	Conf_pagers.enable = 0;
      }
 }
 
@@ -1661,7 +1649,7 @@ PagersReconfigure(void)
    Pager             **pl, *p;
    int                 i, num;
 
-   if (!Conf.pagers.enable)
+   if (!Conf_pagers.enable)
       return;
 
    pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
@@ -1699,24 +1687,24 @@ CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    if (val < 2)
      {
 	PagersShow(tmp_show_pagers);
-	if (Conf.pagers.hiq != tmp_pager_hiq)
+	if (Conf_pagers.hiq != tmp_pager_hiq)
 	   PagerSetHiQ(tmp_pager_hiq);
-	Conf.pagers.zoom = tmp_pager_zoom;
-	Conf.pagers.title = tmp_pager_title;
-	Conf.pagers.sel_button = tmp_pager_sel_button;
-	Conf.pagers.win_button = tmp_pager_win_button;
-	Conf.pagers.menu_button = tmp_pager_menu_button;
-	if ((Conf.pagers.scanspeed != tmp_pager_scan_speed)
-	    || ((!tmp_pager_do_scan) && (Conf.pagers.scanspeed > 0))
-	    || ((tmp_pager_do_scan) && (Conf.pagers.scanspeed == 0)))
+	Conf_pagers.zoom = tmp_pager_zoom;
+	Conf_pagers.title = tmp_pager_title;
+	Conf_pagers.sel_button = tmp_pager_sel_button;
+	Conf_pagers.win_button = tmp_pager_win_button;
+	Conf_pagers.menu_button = tmp_pager_menu_button;
+	if ((Conf_pagers.scanspeed != tmp_pager_scan_speed)
+	    || ((!tmp_pager_do_scan) && (Conf_pagers.scanspeed > 0))
+	    || ((tmp_pager_do_scan) && (Conf_pagers.scanspeed == 0)))
 	  {
 	     if (tmp_pager_do_scan)
-		Conf.pagers.scanspeed = tmp_pager_scan_speed;
+		Conf_pagers.scanspeed = tmp_pager_scan_speed;
 	     else
-		Conf.pagers.scanspeed = 0;
+		Conf_pagers.scanspeed = 0;
 	     PagerSetSnap(tmp_pager_snap);
 	  }
-	if (Conf.pagers.snap != tmp_pager_snap)
+	if (Conf_pagers.snap != tmp_pager_snap)
 	   PagerSetSnap(tmp_pager_snap);
      }
    autosave();
@@ -1750,19 +1738,19 @@ SettingsPager(void)
      }
    SoundPlay("SOUND_SETTINGS_PAGER");
 
-   tmp_show_pagers = Conf.pagers.enable;
-   tmp_pager_hiq = Conf.pagers.hiq;
-   tmp_pager_snap = Conf.pagers.snap;
-   tmp_pager_zoom = Conf.pagers.zoom;
-   tmp_pager_title = Conf.pagers.title;
-   tmp_pager_sel_button = Conf.pagers.sel_button;
-   tmp_pager_win_button = Conf.pagers.win_button;
-   tmp_pager_menu_button = Conf.pagers.menu_button;
-   if (Conf.pagers.scanspeed == 0)
+   tmp_show_pagers = Conf_pagers.enable;
+   tmp_pager_hiq = Conf_pagers.hiq;
+   tmp_pager_snap = Conf_pagers.snap;
+   tmp_pager_zoom = Conf_pagers.zoom;
+   tmp_pager_title = Conf_pagers.title;
+   tmp_pager_sel_button = Conf_pagers.sel_button;
+   tmp_pager_win_button = Conf_pagers.win_button;
+   tmp_pager_menu_button = Conf_pagers.menu_button;
+   if (Conf_pagers.scanspeed == 0)
       tmp_pager_do_scan = 0;
    else
       tmp_pager_do_scan = 1;
-   tmp_pager_scan_speed = Conf.pagers.scanspeed;
+   tmp_pager_scan_speed = Conf_pagers.scanspeed;
 
    d = pager_settings_dialog = DialogCreate("CONFIGURE_PAGER");
    DialogSetTitle(d, _("Pager Settings"));
@@ -1986,9 +1974,9 @@ PagersSighan(int sig, void *prm)
      case ESIGNAL_CONFIGURE:
 	break;
      case ESIGNAL_START:
-	if (!Conf.pagers.enable)
+	if (!Conf_pagers.enable)
 	   break;
-	Conf.pagers.enable = 0;
+	Conf_pagers.enable = 0;
 	PagersShow(1);
 	PagersCheckUpdate();
 	break;
@@ -2087,27 +2075,26 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
 	     PagersDisableForDesktop(desk);
 	  }
      }
-   else if (!strcmp(prm1, "snap"))
-     {
-	if (!strcmp(p, "on"))
-	  {
-	     PagerSetSnap(1);
-	  }
-	else if (!strcmp(p, "off"))
-	  {
-	     PagerSetSnap(0);
-	  }
-     }
    else if (!strcmp(prm1, "hiq"))
      {
 	if (!strcmp(p, "on"))
-	  {
-	     PagerSetHiQ(1);
-	  }
+	   PagerSetHiQ(1);
 	else if (!strcmp(p, "off"))
-	  {
-	     PagerSetHiQ(0);
-	  }
+	   PagerSetHiQ(0);
+     }
+   else if (!strcmp(prm1, "snap"))
+     {
+	if (!strcmp(p, "on"))
+	   PagerSetSnap(1);
+	else if (!strcmp(p, "off"))
+	   PagerSetSnap(0);
+     }
+   else if (!strcmp(prm1, "zoom"))
+     {
+	if (!strcmp(p, "on"))
+	   Conf_pagers.zoom = 1;
+	else if (!strcmp(p, "off"))
+	   Conf_pagers.zoom = 0;
      }
 }
 
@@ -2133,15 +2120,15 @@ IpcItem             PagersIpcArray[] = {
  * Configuration items
  */
 static const CfgItem PagersCfgItems[] = {
-   CFG_ITEM_BOOL(Conf.pagers, enable, 1),
-   CFG_ITEM_BOOL(Conf.pagers, zoom, 1),
-   CFG_ITEM_BOOL(Conf.pagers, title, 1),
-   CFG_ITEM_BOOL(Conf.pagers, hiq, 1),
-   CFG_ITEM_BOOL(Conf.pagers, snap, 1),
-   CFG_ITEM_INT(Conf.pagers, scanspeed, 10),
-   CFG_ITEM_INT(Conf.pagers, sel_button, 2),
-   CFG_ITEM_INT(Conf.pagers, win_button, 1),
-   CFG_ITEM_INT(Conf.pagers, menu_button, 3),
+   CFG_ITEM_BOOL(Conf_pagers, enable, 1),
+   CFG_ITEM_BOOL(Conf_pagers, zoom, 1),
+   CFG_ITEM_BOOL(Conf_pagers, title, 1),
+   CFG_ITEM_BOOL(Conf_pagers, hiq, 1),
+   CFG_ITEM_BOOL(Conf_pagers, snap, 1),
+   CFG_ITEM_INT(Conf_pagers, scanspeed, 10),
+   CFG_ITEM_INT(Conf_pagers, sel_button, 2),
+   CFG_ITEM_INT(Conf_pagers, win_button, 1),
+   CFG_ITEM_INT(Conf_pagers, menu_button, 3),
 };
 #define N_CFG_ITEMS (sizeof(PagersCfgItems)/sizeof(CfgItem))
 

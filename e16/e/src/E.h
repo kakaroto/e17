@@ -330,7 +330,6 @@ typedef struct _menuitem MenuItem;
 typedef struct _menustyle MenuStyle;
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
-typedef struct _pager Pager;
 typedef struct _snapshot Snapshot;
 typedef struct _group Group;
 typedef struct _button Button;
@@ -669,18 +668,6 @@ typedef struct
       int                 opacity;
       char                update_while_moving;
    } movres;
-   struct
-   {
-      char                enable;
-      char                zoom;
-      char                title;
-      char                hiq;
-      char                snap;
-      int                 scanspeed;
-      int                 sel_button;
-      int                 win_button;
-      int                 menu_button;
-   } pagers;
    struct
    {
       char                manual;
