@@ -184,7 +184,7 @@ epsilon_hash (const char *file)
   snprintf (uri, PATH_MAX, "file://%s", file);
 
   MD5Init (&ctx);
-  MD5Update (&ctx, uri, strlen (uri));
+  MD5Update (&ctx, (unsigned char const*)uri, (unsigned)strlen (uri));
   MD5Final (hash, &ctx);
 
   for (n = 0; n < MD5_HASHBYTES; n++)
@@ -408,13 +408,13 @@ epsilon_exists (Epsilon * e)
 int
 epsilon_generate (Epsilon * e)
 {
+  int len = 0;
   int iw, ih;
   int tw = THUMBNAIL_SIZE, th = THUMBNAIL_SIZE;
   char outfile[PATH_MAX];
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
   Epeg_Thumbnail_Info info;
-  int len = 0;
 #endif
 
   if (!e || !e->src || !e->hash)
@@ -607,7 +607,7 @@ _epsilon_open_png_file_reading (const char *filename)
 	}
       else
 	{
-	  if ((ret = png_check_sig (buf, bytes)))
+	  if ((ret = png_check_sig ((png_bytep)buf, bytes)))
 	    rewind (fp);
 	  else
 	    {
