@@ -114,27 +114,6 @@ static void         MenusHide(void);
 static Menu        *active_menu = NULL;
 static MenuItem    *active_item = NULL;
 
-static Menu        *
-FindMenu(Window win)
-{
-   Menu               *menu = NULL;
-   Menu              **menus;
-   int                 i, num;
-
-   menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	if (menus[i]->win != win)
-	   continue;
-	menu = menus[i];
-	break;
-     }
-   if (menus)
-      Efree(menus);
-
-   return menu;
-}
-
 void
 MenuHide(Menu * m)
 {
@@ -336,9 +315,6 @@ MenuShow(Menu * m, char noshow)
 
    m->stuck = 0;
 
-   if (!FindMenu(m->win))
-      AddItem(m, m->name, m->win, LIST_TYPE_MENU);
-
    Mode_menus.just_shown = 1;
 
    m->shown = 1;
@@ -407,7 +383,8 @@ MenuSetName(Menu * m, const char *name)
    if (m->name)
       Efree(m->name);
    m->name = Estrdup(name);
-   AddItem(m, m->name, m->win, LIST_TYPE_MENU);
+
+   AddItem(m, m->name, 0, LIST_TYPE_MENU);
 }
 
 void
@@ -1537,16 +1514,16 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
       return;
 
    m = data->m;
-   ewin = EwinFindByClient(m->win);
-   if (!ewin)
+   ewin = m->ewin;
+   if (!ewin || !EwinFindByPtr(ewin))
       return;
    if (!EoIsShown(ewin))
       return;
 
    mi = data->mi;
    MenuShow(mi->child, 1);
-   ewin2 = EwinFindByClient(mi->child->win);
-   if (!ewin2)
+   ewin2 = mi->child->ewin;
+   if (!ewin2 || !EwinFindByPtr(ewin2))
       return;
 
    EGetGeometry(mi->win, NULL, &mx, &my, &mw, NULL, NULL, NULL);
@@ -1681,39 +1658,19 @@ MenuActivateItem(Menu * m, MenuItem * mi)
 static void
 MenuItemEventMouseIn(MenuItem * mi, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-   Menu               *m;
+   if (ev->xcrossing.detail == NotifyInferior)
+      return;
 
-   m = mi->menu;
-
-   if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
-      goto done;
-   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-      goto done;
-
-   MenuActivateItem(m, mi);
-
- done:
-   return;
+   MenuActivateItem(mi->menu, mi);
 }
 
 static void
 MenuItemEventMouseOut(MenuItem * mi, XEvent * ev)
 {
-   Window              win = ev->xcrossing.window;
-   Menu               *m;
+   if (ev->xcrossing.detail == NotifyInferior)
+      return;
 
-   m = mi->menu;
-
-   if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
-      goto done;
-   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-      goto done;
-
-   MenuActivateItem(m, NULL);
-
- done:
-   return;
+   MenuActivateItem(mi->menu, NULL);
 }
 
 static void
