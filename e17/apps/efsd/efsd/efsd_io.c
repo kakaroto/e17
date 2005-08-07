@@ -71,6 +71,33 @@ typedef struct efsd_iov
 }
 EfsdIOV;
 
+#if HAVE_ECORE
+typedef struct ecore_ipc_message ecore_ipc_message;
+struct ecore_ipc_message {
+	int major;
+	int minor;
+	int ref;
+	int ref_to;
+	int response;
+	void* data;
+	int len;
+};
+
+ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len) {
+	ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
+
+	msg->major = major;
+	msg->minor = minor;
+	msg->ref = ref;
+	msg->ref_to = ref_to;
+	msg->response = response;
+	msg->data = data;
+	msg->len = len;
+
+	return msg;
+}
+#endif
+
 
 static int     read_data(int sockfd, void *dest, int size);
 static int     read_int(int sockfd, int *dest);
@@ -86,16 +113,46 @@ static int     read_metadata_change_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
 static int     read_getmeta_op(int sockfd, EfsdOption *eo);
 
-static void    fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec);
+#if HAVE_ECORE
+static Ecore_List*
+fill_file_cmd(EfsdCommand *ec);
+#else
+static void
+fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec);
+#endif
+
 static void    fill_chmod_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_set_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_get_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_close_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee);
 static void    fill_metadata_change_event(EfsdIOV *iov, EfsdEvent *ee);
-static void    fill_reply_event(EfsdIOV *iov, EfsdEvent *ee);
-static void    fill_event(EfsdIOV *iov, EfsdEvent *ee);
-static void    fill_command(EfsdIOV *iov, EfsdCommand *ec);
+
+#if HAVE_ECORE
+static Ecore_List*
+fill_reply_event(EfsdEvent *ee);
+#else
+static void    
+fill_reply_event(EfsdIOV *iov, EfsdEvent *ee);
+#endif
+
+#if HAVE_ECORE
+static Ecore_List*
+fill_event(EfsdEvent *ee);
+#else
+
+static void
+fill_event(EfsdIOV *iov, EfsdEvent *ee);
+#endif
+
+#if HAVE_ECORE
+static Ecore_List*  
+fill_command(EfsdCommand *ec);
+#else
+static void
+fill_command(EfsdIOV *iov, EfsdCommand *ec);
+#endif
+
 static void    fill_option(EfsdIOV *iov, EfsdOption *eo);
 
 
@@ -493,14 +550,49 @@ read_getmeta_op(int sockfd, EfsdOption *eo)
   D_RETURN_(count2);
 }
 
-
+#if HAVE_ECORE
+static Ecore_List*
+fill_file_cmd(EfsdCommand *ec)
+#else
 static void
 fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec)
+#endif
 {
+  #if HAVE_ECORE
+  Ecore_List* el;
+  
+  #endif
+	
+  	
   int i;
 
   D_ENTER;
 
+  
+  #if HAVE_ECORE
+  el = ecore_list_new();
+  
+
+  	
+  
+  ecore_list_append(el, ecore_ipc_message_new(1, 1, 0,0,0, &ec->type, sizeof(EfsdCommandType)));
+  
+  ecore_list_append(el, ecore_ipc_message_new(1, 2, 0,0,0, &ec->efsd_file_cmd.id, sizeof(EfsdCmdId)));
+
+  for (i = 0; i < ec->efsd_file_cmd.num_files; i++) {
+	  printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);
+	  ecore_list_append(el, ecore_ipc_message_new(1, 3, 0,0,0, ec->efsd_file_cmd.files[i], strlen(ec->efsd_file_cmd.files[i]) + 1)); 
+  }
+
+  for (i = 0; i < ec->efsd_file_cmd.num_options; i++) {
+	  printf ("ERR: Writing option %d\n", ec->efsd_file_cmd.options[i]);
+	  ecore_list_append(el, ecore_ipc_message_new(1, 4, 0,0,0, &ec->efsd_file_cmd.options[i], sizeof(EfsdOption)));
+
+  }
+
+  return el;
+  
+  #else
   iov->vec[iov->v].iov_base   = &ec->type;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCommandType);
   iov->vec[++iov->v].iov_base = &ec->efsd_file_cmd.id;
@@ -535,6 +627,8 @@ fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec)
     }
 
   D_RETURN;
+
+  #endif
 }
 
 
@@ -705,17 +799,42 @@ fill_metadata_change_event(EfsdIOV *iov, EfsdEvent *ee)
   D_RETURN;
 }
 
-
+#if HAVE_ECORE
+static Ecore_List*
+fill_reply_event(EfsdEvent *ee)
+#else
 static void    
 fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
+#endif
+	
 {
+  #if HAVE_ECORE
+  Ecore_List* el;	
+  ecore_ipc_message* msg;
+  #endif
+	
   D_ENTER;
+
+  #if HAVE_ECORE
+  el = ecore_list_new();
+
+  ecore_list_append(el, ecore_ipc_message_new(EFSD_EVENT_REPLY, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
+  ecore_list_append(el, ecore_ipc_message_new(EFSD_EVENT_REPLY, 2, 0,0,0,ee->efsd_reply_event.data, strlen(ee->efsd_reply_event.data)));
+
+
+  return el;
+
+  
+  
+  
+  
+  #else
 
   iov->vec[iov->v].iov_base = &ee->type;
   iov->vec[iov->v].iov_len  = sizeof(EfsdEventType);
   iov->v++;
 
-  fill_command(iov, &ee->efsd_reply_event.command);
+  fill_command(&ee->efsd_reply_event.command);
 
   iov->vec[iov->v].iov_base   = &ee->efsd_reply_event.errorcode;
   iov->vec[iov->v].iov_len    = sizeof(int);
@@ -725,27 +844,33 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
   iov->vec[iov->v].iov_len    = ee->efsd_reply_event.data_len;
 
   iov->v++;
+  #endif
 
   D_RETURN;
 }
 
 
+#if HAVE_ECORE
+static Ecore_List*
+fill_event(EfsdEvent *ee)
+#else
 
 static void
 fill_event(EfsdIOV *iov, EfsdEvent *ee)
+#endif
 {
   D_ENTER;
 
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
-      fill_filechange_event(iov, ee);
+      fill_filechange_event(NULL, ee);
       break;
     case EFSD_EVENT_METADATA_CHANGE:
-      fill_metadata_change_event(iov, ee);
+      fill_metadata_change_event(NULL, ee);
       break;
     case EFSD_EVENT_REPLY:
-      fill_reply_event(iov, ee);
+      return fill_reply_event(ee);
       break;
     default:
       D(("Unknown event.\n"));
@@ -755,8 +880,13 @@ fill_event(EfsdIOV *iov, EfsdEvent *ee)
 }
 
 
+#if HAVE_ECORE
+static Ecore_List*  
+fill_command(EfsdCommand *ec)
+#else
 static void
 fill_command(EfsdIOV *iov, EfsdCommand *ec)
+#endif
 {
   D_ENTER;
 
@@ -778,19 +908,23 @@ fill_command(EfsdIOV *iov, EfsdCommand *ec)
     case EFSD_CMD_MOVE:
     case EFSD_CMD_COPY:
     case EFSD_CMD_SYMLINK:
-      fill_file_cmd(iov, ec);
+	#if HAVE_ECORE
+	    return fill_file_cmd(ec);
+	#else
+	    fill_file_cmd(iov, ec);
+	#endif
       break;
     case EFSD_CMD_CHMOD:
-      fill_chmod_cmd(iov, ec);
+      fill_chmod_cmd(NULL,ec);
       break;
     case EFSD_CMD_SETMETA:
-      fill_set_metadata_cmd(iov, ec);
+      fill_set_metadata_cmd(NULL, ec);
       break;
     case EFSD_CMD_GETMETA:
-      fill_get_metadata_cmd(iov, ec);
+      fill_get_metadata_cmd(NULL, ec);
       break;
     case EFSD_CMD_CLOSE:
-      fill_close_cmd(iov, ec);
+      fill_close_cmd(NULL, ec);
       break;
     default:
       D(("Unknown command.\n"));
@@ -843,12 +977,17 @@ fill_option(EfsdIOV *iov, EfsdOption *eo)
 /* Non-static stuff below: */
 
 #if HAVE_ECORE
-efsd_io_write_command(Ecore_Ipc_Server* server, EfsdCommand *ec)
+int efsd_io_write_command(Ecore_Ipc_Server* server, EfsdCommand *ec)
 #else
 int      
 efsd_io_write_command(int sockfd, EfsdCommand *ec)
 #endif
 {
+
+  #if HAVE_ECORE
+	Ecore_List* cmd;
+	ecore_ipc_message* emsg;
+  #endif
 
 
 
@@ -860,6 +999,25 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 
   D_ENTER;
 
+
+  #if HAVE_ECORE
+  printf("ERR: ecore Sending command: efsd_io_write_command\n");
+  
+
+  cmd = fill_command(ec);
+
+  ecore_list_goto_first(cmd);
+  while ( (emsg = ecore_list_next(cmd))) {
+	  ecore_ipc_server_send(server, emsg->major, emsg->minor, emsg->ref, emsg->ref_to, emsg->response, emsg->data, emsg->len);
+  }
+
+  /*Notify the server that we are readyt to burn*/
+  ecore_ipc_server_send(server, 1, 100, 0,0,0, NULL, 0);
+  
+    
+ 
+  D_RETURN_(0);
+  #else
   if (!ec)
     D_RETURN_(-1);
 
@@ -867,35 +1025,15 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 
   memset(&msg, 0, sizeof(struct msghdr));
 
-  fill_command(&iov, ec);
+  
 
   msg.msg_iov = iov.vec;
   msg.msg_iovlen = iov.v;
 
-  #if HAVE_ECORE
-  printf("ERR: ecore Sending command: efsd_io_write_command\n");
   
-  ecore_ipc_server_send(server, 1, 1, 0,0,0, &ec->type, sizeof(EfsdCommandType));
-  ecore_ipc_server_send(server, 1, 2, 0,0,0, &ec->efsd_file_cmd.id, sizeof(EfsdCmdId));
+  cmd = fill_command(&iov, ec);
 
-  for (i = 0; i < ec->efsd_file_cmd.num_files; i++) {
-	  printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);
-	  ecore_ipc_server_send(server, 1, 3, 0,0,0, ec->efsd_file_cmd.files[i], strlen(ec->efsd_file_cmd.files[i]) + 1); /*Catch the \0*/
-  }
 
-  for (i = 0; i < ec->efsd_file_cmd.num_options; i++) {
-	  printf ("ERR: Writing option\n", ec->efsd_file_cmd.options[i]);
-	  ecore_ipc_server_send(server, 1, 4, 0,0,0, &ec->efsd_file_cmd.options[i], sizeof(EfsdOption)); /*Catch the \0*/
-  }
-
-  
-  ecore_ipc_server_send(server, 1, 100, 0,0,0, NULL, 0);
-  
-  
-  D_RETURN(0);
-  #else
-
-	D_RETURN(0);
   if ((n = write_data(sockfd, &msg)) < 0)
     D_RETURN_(-1);
 
@@ -904,7 +1042,6 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 
 
 }
-
 
 int      
 efsd_io_read_command(int sockfd, EfsdCommand *ec)
@@ -972,10 +1109,20 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
 {
   
   #if HAVE_ECORE
+  Ecore_List* cmd;	
+  ecore_ipc_message* msg;
 
   printf("ERR: Sending event..\n");
-  ecore_ipc_client_send(sockfd, ee->type, 1, 0,0,0, ee->efsd_reply_event.data,strlen(ee->efsd_reply_event.data)+1);
+  /*ecore_ipc_client_send(sockfd, ee->type, 1, 0,0,0, ee->efsd_reply_event.data,strlen(ee->efsd_reply_event.data)+1);*/
   
+  cmd = fill_event(ee);
+
+  /*Write these messages to the clients*/
+  ecore_list_goto_first(cmd);
+  while ( (msg = ecore_list_next(cmd)) ) {
+	  ecore_ipc_client_send(sockfd, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
+  }
+
 	
   #else
   EfsdIOV         iov;

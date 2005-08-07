@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <libefsd.h>
 #include <fam.h>
+#include <Ecore.h>
 
 /* This one demonstrates how to read events
    from efsd in blocking mode, by calling
@@ -355,6 +356,9 @@ main(int argc, char** argv)
   pid_t               child;
   int                 blocking, i;
 
+  ecore_init();
+  ecore_ipc_init();
+
   char *movetest[] = { "yep", "tmp" }; 
 
   /* Read command-line options. */
@@ -398,6 +402,8 @@ main(int argc, char** argv)
       else
 	printf("Couldn't issue getfile command.\n");      
     }
+
+  ecore_main_loop_begin();
 
   sleep(2);
 
