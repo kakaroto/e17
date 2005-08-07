@@ -1378,34 +1378,46 @@ DeskDragMotion(void)
      }
 }
 
-static void
-DesktopEventButtonPress(Desk * d __UNUSED__, XEvent * ev)
+static int
+DesktopCheckAction(Desk * d __UNUSED__, XEvent * ev)
 {
    ActionClass        *ac;
 
+   ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+   if (!ac)
+      return 0;
+
+   return ActionclassEvent(ac, ev, NULL);
+}
+
+static void
+DesktopEventButtonPress(Desk * d, XEvent * ev)
+{
    /* Don't handle desk bindings while doing stuff */
    if (Mode.mode)
       return;
 
    GrabPointerRelease();
 
-   ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
-   if (ac)
-     {
-	if (!ActionclassEvent(ac, ev, NULL))
-	   ButtonProxySendEvent(ev);
-     }
+   if (!DesktopCheckAction(d, ev))
+      ButtonProxySendEvent(ev);
 }
 
 static void
-DesktopEventButtonRelease(Desk * d __UNUSED__, XEvent * ev)
+DesktopEventButtonRelease(Desk * d, XEvent * ev)
 {
+   /* Don't handle desk bindings while doing stuff */
+   if (Mode.mode)
+      return;
+
    if (sentpress)
      {
 	/* We never get here? */
 	sentpress = 0;
 	ButtonProxySendEvent(ev);
      }
+
+   DesktopCheckAction(d, ev);
 }
 
 static void
