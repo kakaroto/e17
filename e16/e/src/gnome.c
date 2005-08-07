@@ -652,11 +652,12 @@ GNOME_SetClientList(void)
    static Atom         atom_set = 0;
    unsigned int       *wl;
    int                 j, i, num;
-   EWin              **lst;
+   EWin               *const *lst;
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_CLIENT_LIST, False);
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+
+   lst = EwinListOrderGet(&num);
    wl = NULL;
    j = 0;
    if (lst)
@@ -671,8 +672,6 @@ GNOME_SetClientList(void)
    ecore_x_window_prop_card32_set(VRoot.win, atom_set, wl, j);
    if (wl)
       Efree(wl);
-   if (lst)
-      Efree(lst);
 }
 
 static void

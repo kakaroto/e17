@@ -97,6 +97,7 @@ struct _eobj
 #define EoLower(eo)                     EobjLower(EoObj(eo))
 #define EoChangeShape(eo)               EobjChangeShape(EoObj(eo))
 
+/* eobj.c */
 void                EobjInit(EObj * eo, int type, Window win, int x, int y,
 			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
@@ -134,5 +135,20 @@ void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
 				 int speed);
 void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
 				    int fw, int fh, int tw, int th, int speed);
+
+/* stacking.c */
+void                EobjListStackAdd(EObj * eo, int ontop);
+void                EobjListStackDel(EObj * eo);
+int                 EobjListStackRaise(EObj * eo);
+int                 EobjListStackLower(EObj * eo);
+EObj               *EobjListStackFind(Window win);
+EObj               *const *EobjListStackGet(int *num);
+EObj               *const *EobjListStackGetForDesk(int *num, int desk);
+void                EobjListFocusAdd(EObj * eo, int ontop);
+void                EobjListFocusDel(EObj * eo);
+int                 EobjListFocusRaise(EObj * eo);
+int                 EobjListFocusLower(EObj * eo);
+void                EobjListOrderAdd(EObj * eo);
+void                EobjListOrderDel(EObj * eo);
 
 #endif /* _EOBJ_H_ */

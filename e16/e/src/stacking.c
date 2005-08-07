@@ -262,10 +262,11 @@ EobjListTypeCount(const EobjList * ewl, int type)
 }
 
 /*
- * The global stacking and focus lists
+ * The global object/client lists
  */
 EobjList            EwinListStack = { "Stack", 0, 0, NULL, 1 };
 EobjList            EwinListFocus = { "Focus", 0, 0, NULL, 0 };
+EobjList            EwinListOrder = { "Order", 0, 0, NULL, 0 };
 
 static EObj        *const *
 EobjListGet(EobjList * ewl, int *num)
@@ -293,21 +294,9 @@ EobjListStackAdd(EObj * eo, int ontop)
 }
 
 void
-EobjListFocusAdd(EObj * eo, int ontop)
-{
-   EobjListAdd(&EwinListFocus, eo, ontop);
-}
-
-void
 EobjListStackDel(EObj * eo)
 {
    EobjListDel(&EwinListStack, eo);
-}
-
-void
-EobjListFocusDel(EObj * eo)
-{
-   EobjListDel(&EwinListFocus, eo);
 }
 
 int
@@ -320,6 +309,18 @@ int
 EobjListStackLower(EObj * eo)
 {
    return EobjListLower(&EwinListStack, eo);
+}
+
+void
+EobjListFocusAdd(EObj * eo, int ontop)
+{
+   EobjListAdd(&EwinListFocus, eo, ontop);
+}
+
+void
+EobjListFocusDel(EObj * eo)
+{
+   EobjListDel(&EwinListFocus, eo);
 }
 
 int
@@ -443,4 +444,22 @@ EwinListStackGetTop(void)
      }
 
    return NULL;
+}
+
+void
+EobjListOrderAdd(EObj * eo)
+{
+   EobjListAdd(&EwinListOrder, eo, 0);
+}
+
+void
+EobjListOrderDel(EObj * eo)
+{
+   EobjListDel(&EwinListOrder, eo);
+}
+
+EWin               *const *
+EwinListOrderGet(int *num)
+{
+   return (EWin * const *)EobjListGet(&EwinListOrder, num);
 }

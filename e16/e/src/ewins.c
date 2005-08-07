@@ -124,6 +124,7 @@ EwinCreate(Window win, int type)
    EoSetLayer(ewin, 4);
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 0);
+   EobjListOrderAdd(&ewin->o);
 
    if (use_argb)
       ewin->win_container =
@@ -144,7 +145,6 @@ EwinCreate(Window win, int type)
    FocusEwinSetGrabs(ewin);
 
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
-   AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinCreate %#lx frame=%#lx cont=%#lx st=%d\n",
@@ -193,7 +193,6 @@ EwinDestroy(EWin * ewin)
       Eprintf("EwinDestroy %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
-   RemoveItemByPtr(ewin, LIST_TYPE_EWIN);
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
 			   ewin);
@@ -217,6 +216,7 @@ EwinDestroy(EWin * ewin)
       Efree(lst);
 
    EwinCleanup(ewin);
+   EobjListOrderDel(&ewin->o);
    EobjListFocusDel(&ewin->o);
    EobjFini(&ewin->o);
 

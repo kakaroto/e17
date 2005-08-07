@@ -187,7 +187,6 @@ int                 Esnprintf(va_alist);
 
 #define LIST_TYPE_ANY            0
 #define LIST_TYPE_CLIENT         1
-#define LIST_TYPE_EWIN           2
 #define LIST_TYPE_BORDER         3
 #define LIST_TYPE_ICLASS         4
 #define LIST_TYPE_ACLASS         5
@@ -1768,25 +1767,6 @@ void                SnapIpcFunc(const char *params, Client * c);
 
 /* sound.c */
 void                SoundPlay(const char *name);
-
-/* stacking.c */
-void                EobjListStackAdd(EObj * eo, int ontop);
-void                EobjListFocusAdd(EObj * eo, int ontop);
-void                EobjListStackDel(EObj * eo);
-void                EobjListFocusDel(EObj * eo);
-int                 EobjListStackRaise(EObj * eo);
-int                 EobjListFocusRaise(EObj * eo);
-int                 EobjListStackLower(EObj * eo);
-int                 EobjListFocusLower(EObj * eo);
-EObj               *EobjListStackFind(Window win);
-EObj               *const *EobjListStackGet(int *num);
-EObj               *const *EobjListStackGetForDesk(int *num, int desk);
-EWin               *const *EwinListStackGet(int *num);
-EWin               *const *EwinListFocusGet(int *num);
-EWin               *const *EwinListGetForDesk(int *num, int desk);
-EWin               *EwinListStackGetTop(void);
-
-#define EwinListGetAll EwinListStackGet
 
 /* startup.c */
 void                StartupWindowsCreate(void);

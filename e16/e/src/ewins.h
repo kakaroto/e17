@@ -310,6 +310,15 @@ void                EwinOpSetOpacity(EWin * ewin, int opacity);
 void                EwinOpMoveToDesk(EWin * ewin, int desk);
 void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 
+/* stacking.c */
+EWin               *const *EwinListStackGet(int *num);
+EWin               *const *EwinListFocusGet(int *num);
+EWin               *const *EwinListGetForDesk(int *num, int desk);
+EWin               *EwinListStackGetTop(void);
+EWin               *const *EwinListOrderGet(int *num);
+
+#define EwinListGetAll EwinListStackGet
+
 /* zoom.c */
 EWin               *GetZoomEWin(void);
 void                ReZoom(EWin * ewin);

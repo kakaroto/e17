@@ -286,15 +286,15 @@ EWMH_SetClientList(void)
 {
    Ecore_X_Window     *wl;
    int                 i, num;
-   EWin              **lst;
+   EWin               *const *lst;
 
    /* Mapping order */
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListOrderGet(&num);
    if (num > 0)
      {
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
-	   wl[i] = _EwinGetClientXwin(lst[num - i - 1]);
+	   wl[i] = _EwinGetClientXwin(lst[i]);
 	ecore_x_netwm_client_list_set(VRoot.win, wl, num);
 	Efree(wl);
      }
@@ -302,8 +302,6 @@ EWMH_SetClientList(void)
      {
 	ecore_x_netwm_client_list_set(VRoot.win, NULL, 0);
      }
-   if (lst)
-      Efree(lst);
 }
 
 void

@@ -576,6 +576,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 void
 SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 {
+   EWin               *const *lst1;
    EWin              **lst, **gwins;
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
    static char         last_res = 0;
@@ -597,7 +598,13 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    bottom_bound = top_bound + h;
    screen_snap_dist = Mode.constrained ? (w + h) : Conf.snap.screen_snap_dist;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = NULL;
+   lst1 = EwinListOrderGet(&num);
+   if (lst1)
+     {
+	lst = malloc(num * sizeof(EWin *));
+	memcpy(lst, lst1, num * sizeof(EWin *));
+     }
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &gnum);
    if (gwins)
