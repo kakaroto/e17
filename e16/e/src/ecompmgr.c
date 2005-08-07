@@ -71,8 +71,9 @@
 #define INV_SIZE    0x02
 #define INV_OPACITY 0x04
 #define INV_SHADOW  0x08
+#define INV_PIXMAP  0x10
 #define INV_GEOM    (INV_POS | INV_SIZE)
-#define INV_ALL     (INV_POS | INV_SIZE | INV_OPACITY | INV_SHADOW)
+#define INV_ALL     (INV_POS | INV_SIZE | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
 
 typedef struct
 {
@@ -123,6 +124,11 @@ typedef struct
 #define ECM_SHADOWS_BLURRED  2	/* use window extents for shadow, blurred */
 #endif
 
+#define ECM_OR_UNMANAGED     0
+#define ECM_OR_ON_MAP        1
+#define ECM_OR_ON_MAPUNMAP   2
+#define ECM_OR_ON_CREATE     3
+
 static struct
 {
    char                enable;
@@ -131,7 +137,11 @@ static struct
    int                 mode;
    int                 shadow;
    int                 shadow_radius;
-   int                 override_redirect_opacity;
+   struct
+   {
+      char                mode;
+      int                 opacity;
+   } override_redirect;
 } Conf_compmgr;
 
 /*
@@ -144,7 +154,6 @@ static struct
 
 static struct
 {
-   char               *args;
    char                active;
    char                use_pixmap;
    EObj               *eo_first;
@@ -885,7 +894,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!cw)
       return;
 
-   if ((what & INV_SIZE) && cw->pixmap != None)
+   if ((what & (INV_SIZE | INV_PIXMAP)) && cw->pixmap != None)
      {
 	XFreePixmap(dpy, cw->pixmap);
 	cw->pixmap = None;
@@ -1013,9 +1022,7 @@ ECompMgrWinUnmap(EObj * eo)
    if (cw->extents != None)
       ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
-#if 0				/* FIXME - Invalidate stuff? */
-   ECompMgrWinInvalidate(eo, INV_SIZE);
-#endif
+   ECompMgrWinInvalidate(eo, INV_PIXMAP);
 }
 
 static void
@@ -1098,7 +1105,7 @@ ECompMgrWinNew(EObj * eo)
 
    if (eo->type == EOBJ_TYPE_EXT)
       eo->opacity =
-	 (unsigned int)(Conf_compmgr.override_redirect_opacity << 24);
+	 (unsigned int)(Conf_compmgr.override_redirect.opacity << 24);
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
 
@@ -2025,6 +2032,7 @@ ECompMgrHandleWindowEvent(XEvent * ev, void *prm)
 static void
 ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 {
+   Window              xwin;
    EObj               *eo;
 
    D2printf("ECompMgrHandleRootEvent: type=%d\n", ev->type);
@@ -2032,36 +2040,30 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
    switch (ev->type)
      {
      case CreateNotify:
-#if 0
+	xwin = ev->xcreatewindow.window;
       case_CreateNotify:
-	eo = EobjListStackFind(ev->xcreatewindow.window);
-	if (eo)
-	   ECompMgrWinNew(eo);
-#endif
+	if (!Conf_compmgr.override_redirect.mode != ECM_OR_ON_CREATE)
+	   break;
+	eo = EobjListStackFind(xwin);
+	if (!eo)
+	   EobjRegister(xwin, EOBJ_TYPE_EXT);
 	break;
+
      case DestroyNotify:
-	eo = EobjListStackFind(ev->xdestroywindow.window);
+	xwin = ev->xdestroywindow.window;
+      case_DestroyNotify:
+	eo = EobjListStackFind(xwin);
 	if (eo && eo->type == EOBJ_TYPE_EXT)
 	   EobjUnregister(eo);
 	break;
 
-#if 0
      case ReparentNotify:
-	if (Conf_compmgr.mode != ECM_MODE_WINDOW)
-	  {
-	     eo = EobjListStackFind(ev->xreparent.window);
-	     if (eo && eo->cmhook)
-		ECompMgrWinUnmap(eo);
-	  }
-#if 0
+	xwin = ev->xreparent.window;
 	if (ev->xreparent.parent == VRoot.win)
 	   goto case_CreateNotify;
-	eo = EobjListStackFind(ev->xreparent.window);
-	if (eo)
-	   ECompMgrWinDel(eo);
-#endif
+	else
+	   goto case_DestroyNotify;
 	break;
-#endif
 
      case ConfigureNotify:
 	if (ev->xconfigure.window == VRoot.win)
@@ -2080,7 +2082,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 
      case MapNotify:
 	eo = EobjListStackFind(ev->xmap.window);
-	if (!eo)
+	if (!eo && Conf_compmgr.override_redirect.mode)
 	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_EXT);
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
@@ -2088,12 +2090,23 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	     ECompMgrWinMap(eo);
 	  }
 	break;
+
      case UnmapNotify:
 	eo = EobjListStackFind(ev->xunmap.window);
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
-	     ECompMgrWinUnmap(eo);
-	     eo->shown = 0;
+#if 0
+	     /* No. Unredirection seems to cause map/unmap => loop */
+	     if (Conf_compmgr.override_redirect.mode == ECM_OR_ON_MAPUNMAP)
+	       {
+		  EobjUnregister(eo);
+	       }
+	     else
+#endif
+	       {
+		  ECompMgrWinUnmap(eo);
+		  eo->shown = 0;
+	       }
 	  }
 	break;
 
@@ -2110,12 +2123,6 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 #endif
 	break;
      }
-}
-
-void
-ECompMgrParseArgs(const char *args)
-{
-   Mode_compmgr.args = Estrdup(args);
 }
 
 /*
@@ -2150,26 +2157,6 @@ ECompMgrInit(void)
 
    /* FIXME - Hardcode for now. */
    Conf_compmgr.mode = ECM_MODE_WINDOW;
-
-   if (Mode_compmgr.args)
-     {
-	switch (Mode_compmgr.args[0])
-	  {
-	  case '0':
-	     Conf_compmgr.mode = ECM_MODE_OFF;
-	     break;
-	  case '1':
-	     Conf_compmgr.mode = ECM_MODE_ROOT;
-	     break;
-	  case '2':
-	     Conf_compmgr.mode = ECM_MODE_WINDOW;
-	     break;
-	  case '3':
-	     Conf_compmgr.mode = ECM_MODE_AUTO;
-	     break;
-	  }
-	_EFREE(Mode_compmgr.args);
-     }
 
  done:
    if (Conf_compmgr.mode == ECM_MODE_OFF)
@@ -2266,7 +2253,8 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadow_radius, 12),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
-   CFG_ITEM_INT(Conf_compmgr, override_redirect_opacity, 240),
+   CFG_ITEM_BOOL(Conf_compmgr, override_redirect.mode, 1),
+   CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 240),
 };
 #define N_CFG_ITEMS (sizeof(CompMgrCfgItems)/sizeof(CfgItem))
 

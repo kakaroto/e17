@@ -246,6 +246,9 @@ EobjRegister(Window win, int type)
    if (!XGetWindowAttributes(disp, win, &attr))
       return NULL;
 
+   if (type == EOBJ_TYPE_EXT && !attr.override_redirect)
+      return NULL;
+
    eo = Ecalloc(1, sizeof(EObj));
    if (!eo)
       return eo;
@@ -260,6 +263,10 @@ EobjRegister(Window win, int type)
 	EobjSetLayer(eo, 4);
      }
 #endif
+#if 0
+   Eprintf("EobjRegister: %#lx type=%d or=%d: %s\n", win, type,
+	   attr.override_redirect, eo->name);
+#endif
 
    return eo;
 }
@@ -267,6 +274,9 @@ EobjRegister(Window win, int type)
 void
 EobjUnregister(EObj * eo)
 {
+#if 0
+   Eprintf("EobjUnregister: %#lx type=%d: %s\n", eo->win, eo->type, eo->name);
+#endif
    EobjDestroy(eo);
 }
 

@@ -33,7 +33,6 @@ typedef struct
 
 int                 EVisualIsARGB(Visual * vis);
 
-void                ECompMgrParseArgs(const char *args);
 void                ECompMgrRepaint(void);
 
 void                ECompMgrWinNew(EObj * eo);

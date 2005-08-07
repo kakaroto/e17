@@ -290,7 +290,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
-   attr.override_redirect = True;
+   attr.override_redirect = False;
    attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
 /*   attr.background_pixel = 0; */
@@ -319,7 +319,7 @@ ECreateVisualWindow(Window parent, int x, int y, int w, int h, int saveunder,
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
-   attr.override_redirect = True;
+   attr.override_redirect = False;
    attr.border_pixel = 0;
    attr.colormap = c_attr->colormap;
 /*   attr.background_pixel = 0; */
@@ -365,7 +365,7 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
    XSetWindowAttributes attr;
 
    attr.backing_store = NotUseful;
-   attr.override_redirect = True;
+   attr.override_redirect = False;
    attr.colormap = VRoot.cmap;
    attr.border_pixel = 0;
    attr.background_pixel = 0;
@@ -1543,7 +1543,7 @@ EGetTimestamp(void)
 
    if (win_ts == None)
      {
-	attr.override_redirect = 1;
+	attr.override_redirect = False;
 	win_ts = XCreateWindow(disp, VRoot.win, -100, -100, 1, 1, 0,
 			       CopyFromParent, InputOnly, CopyFromParent,
 			       CWOverrideRedirect, &attr);
