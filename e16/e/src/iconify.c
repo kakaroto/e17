@@ -144,6 +144,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    double              t1, t2, t, i, spd, ii;
    int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h, fx, fy, fw,
       fh, dx, dy, dw, dh;
+   Window              root = VRoot.win;
    GC                  gc;
    XGCValues           gcv;
 
@@ -160,7 +161,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    gcv.foreground = WhitePixel(disp, VRoot.scr);
    if (gcv.foreground == 0)
       gcv.foreground = BlackPixel(disp, VRoot.scr);
-   gc = ECreateGC(VRoot.win,
+   gc = ECreateGC(root,
 		  GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
 		  &gcv);
    t1 = GetTime();
@@ -197,20 +198,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
 	     y4 = y + h * cos(i * 6.2831853072);
 
-	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
 	     ESync();
 	     t2 = GetTime();
@@ -218,20 +219,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
 
-	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    else
@@ -267,20 +268,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
 	     y4 = y + h * cos(i * 6.2831853072);
 
-	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 
 	     ESync();
 	     t2 = GetTime();
@@ -288,20 +289,20 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
 
-	     XDrawLine(disp, VRoot.win, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, VRoot.win, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, VRoot.win, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, VRoot.win, gc, x4, y4, x1, y1);
+	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
 
-	     XDrawLine(disp, VRoot.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, VRoot.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    EFreeGC(gc);

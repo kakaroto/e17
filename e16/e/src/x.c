@@ -1401,7 +1401,7 @@ ESync(void)
    XSync(disp, False);
 }
 
-Window
+static              Window
 WindowAtXY_0(Window base, int bx, int by, int x, int y)
 {
    Window             *list = NULL;
