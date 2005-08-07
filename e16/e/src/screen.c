@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "xwin.h"
 
 #ifdef HAS_XINERAMA
 static XineramaScreenInfo *screens = NULL;
@@ -149,13 +150,9 @@ ScreenGetAvailableArea(int xi, int yi, int *px, int *py, int *pw, int *ph)
 int
 GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 {
-   Window              rt, ch;
    int                 pointer_x, pointer_y;
-   int                 d;
-   unsigned int        ud;
 
-   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y, &d, &d,
-		 &ud);
+   EQueryPointer(VRoot.win, &pointer_x, &pointer_y, NULL, NULL);
 
    return ScreenGetGeometry(pointer_x, pointer_y, px, py, pw, ph);
 }
@@ -163,13 +160,9 @@ GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 int
 GetPointerScreenAvailableArea(int *px, int *py, int *pw, int *ph)
 {
-   Window              rt, ch;
    int                 pointer_x, pointer_y;
-   int                 d;
-   unsigned int        ud;
 
-   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y, &d, &d,
-		 &ud);
+   EQueryPointer(VRoot.win, &pointer_x, &pointer_y, NULL, NULL);
 
    return ScreenGetAvailableArea(pointer_x, pointer_y, px, py, pw, ph);
 }

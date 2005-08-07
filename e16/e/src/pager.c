@@ -1084,15 +1084,12 @@ PagerZoomChange(Pager * p, int delta)
 static void
 PagerHandleMotion(Pager * p, int x, int y)
 {
-   int                 hx, hy;
-   unsigned int        mr;
-   Window              rw, cw;
    EWin               *ewin;
 
    if (!Conf_pagers.enable)
       return;
 
-   XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &mr);
+   EQueryPointer(p->win, &x, &y, NULL, NULL);
 
    if (x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);

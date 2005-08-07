@@ -307,29 +307,22 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 EWin               *
 GetEwinByCurrentPointer(void)
 {
-   Window              rt, ch;
-   int                 dum, x, y;
-   unsigned int        mr;
+   Window              child;
 
-   XQueryPointer(disp, DeskGetWin(DesksGetCurrent()), &rt, &ch, &x, &y, &dum,
-		 &dum, &mr);
+   EQueryPointer(DeskGetWin(DesksGetCurrent()), NULL, NULL, &child, NULL);
 
-   return EwinFindByFrame(ch);
+   return EwinFindByFrame(child);
 }
 
 EWin               *
 GetEwinPointerInClient(void)
 {
-   Window              rt, ch;
-   int                 dum, px, py, desk;
+   int                 px, py, desk;
    EWin               *const *lst, *ewin;
    int                 i, num;
 
    desk = DesktopAt(Mode.x, Mode.y);
-   XQueryPointer(disp, DeskGetWin(desk), &rt, &ch, &dum, &dum, &px, &py,
-		 (unsigned int *)&dum);
-   px -= DeskGetX(desk);
-   py -= DeskGetY(desk);
+   EQueryPointer(DeskGetWin(desk), &px, &py, NULL, NULL);
 
    lst = EwinListGetForDesk(&num, desk);
    for (i = 0; i < num; i++)
@@ -747,9 +740,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* Place the window below the mouse pointer */
 	if (Conf.place.manual_mouse_pointer)
 	  {
-	     int                 rx, ry, wx, wy;
-	     unsigned int        mask;
-	     Window              junk, root_return;
+	     int                 rx, ry;
 	     int                 newWinX = 0, newWinY = 0;
 
 	     /* if the loser has manual placement on and the app asks to be on */
@@ -757,8 +748,7 @@ AddToFamily(EWin * ewin, Window win)
 	     /* the window there */
 	     DeskGoto(desk);
 
-	     XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx,
-			   &wy, &mask);
+	     EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	     Mode.x = rx;
 	     Mode.y = ry;
 	     ewin->state.placed = 1;
@@ -801,17 +791,14 @@ AddToFamily(EWin * ewin, Window win)
    /* if we should slide it in and are not currently in the middle of a slide */
    if ((manplace) && (!ewin->state.placed))
      {
-	int                 rx, ry, wx, wy;
-	unsigned int        mask;
-	Window              junk, root_return;
+	int                 rx, ry;
 
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
 	DeskGoto(desk);
 
-	XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx, &wy,
-		      &mask);
+	EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	Mode.x = rx;
 	Mode.y = ry;
 	ewin->state.placed = 1;

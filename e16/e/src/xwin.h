@@ -78,6 +78,9 @@ int                 ETranslateCoordinates(Window src_w, Window dst_w,
 					  int *dest_x_return,
 					  int *dest_y_return,
 					  Window * child_return);
+void                EWarpPointer(Window win, int x, int y);
+Bool                EQueryPointer(Window win, int *px, int *py, Window * pchild,
+				  unsigned int *pmask);
 
 #define ESelectInput(win, mask) XSelectInput(disp, win, mask)
 #define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
@@ -114,7 +117,6 @@ void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
-Bool                PointerAt(int *x, int *y);
 
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 

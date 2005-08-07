@@ -447,7 +447,7 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
 	     EoMoveResize(phi, xx, yy, ww, hh);
 	     pz->draw(phi);
 
-	     PointerAt(&px, &py);
+	     EQueryPointer(None, &px, &py, NULL, NULL);
 	     if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
 	       {
 		  pz->fini(phi, 0);

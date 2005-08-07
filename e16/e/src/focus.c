@@ -371,8 +371,7 @@ doFocusToEwin(EWin * ewin, int why)
       do_warp = 1;
    if (do_warp && ewin != Mode.mouse_over_ewin)
      {
-	XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0, EoGetW(ewin) / 2,
-		     EoGetH(ewin) / 2);
+	EWarpPointer(EoGetWin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
 	Mode.mouse_over_ewin = ewin;
      }
 
@@ -401,7 +400,7 @@ doFocusToEwin(EWin * ewin, int why)
    ICCCM_Cmap(ewin);
 
    /* Quit if pointer is not on our screen */
-   if (!PointerAt(NULL, NULL))
+   if (!EQueryPointer(None, NULL, NULL, NULL, NULL))
      {
 	Mode.focuswin = NULL;
 	return;

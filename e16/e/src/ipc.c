@@ -1255,31 +1255,31 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
    x = y = 0;
    if (!strcmp(params, "?"))
      {
-	PointerAt(&x, &y);
+	EQueryPointer(None, &x, &y, NULL, NULL);
 	IpcPrintf("Pointer location: %d %d\n", x, y);
      }
    else if (!strncmp(params, "abs", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	XWarpPointer(disp, None, VRoot.win, 0, 0, 0, 0, x, y);
+	EWarpPointer(VRoot.win, x, y);
      }
    else if (!strncmp(params, "rel", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	XWarpPointer(disp, None, None, 0, 0, 0, 0, x, y);
+	EWarpPointer(None, x, y);
      }
    else if (!strncmp(params, "scr", 3))
      {
 	x = (VRoot.scr + 1) % ScreenCount(disp);
 	sscanf(params, "%*s %i", &x);
 	if (x >= 0 && x < ScreenCount(disp))
-	   XWarpPointer(disp, None, RootWindow(disp, x), 0, 0, 0, 0,
-			DisplayWidth(disp, x) / 2, DisplayHeight(disp, x) / 2);
+	   EWarpPointer(RootWindow(disp, x), DisplayWidth(disp, x) / 2,
+			DisplayHeight(disp, x) / 2);
      }
    else
      {
 	sscanf(params, "%i %i", &x, &y);
-	XWarpPointer(disp, None, None, 0, 0, 0, 0, x, y);
+	EWarpPointer(None, x, y);
      }
 }
 

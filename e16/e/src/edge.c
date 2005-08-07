@@ -41,7 +41,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
       return;
 
    /* Quit if pointer has left screen */
-   if (!PointerAt(NULL, NULL))
+   if (!EQueryPointer(None, NULL, NULL, NULL, NULL))
       return;
 
    /* Quit if in fullscreen window */
@@ -92,7 +92,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.py = Mode.y;
    Mode.x += dx;
    Mode.y += dy;
-   XWarpPointer(disp, None, VRoot.win, 0, 0, 0, 0, Mode.x, Mode.y);
+   EWarpPointer(VRoot.win, Mode.x, Mode.y);
    Mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
    Mode.flipp = 0;

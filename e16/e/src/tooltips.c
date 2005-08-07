@@ -711,16 +711,15 @@ static ToolTip     *ttip = NULL;
 static void
 ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
-   int                 x, y, dum;
+   int                 x, y;
    unsigned int        mask;
-   Window              win, rt, ch;
+   Window              win;
    ActionClass        *ac;
    const char         *tts;
 
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
-   if (False ==
-       XQueryPointer(disp, VRoot.win, &rt, &ch, &dum, &dum, &x, &y, &mask))
+   if (!EQueryPointer(VRoot.win, &x, &y, NULL, &mask))
       return;
 
    /* In case this is a virtual root */

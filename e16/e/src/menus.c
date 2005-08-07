@@ -1460,8 +1460,7 @@ MenusHandleMotion(void)
 					 Conf.shadespeed);
 			    if (((xdist != 0) || (ydist != 0))
 				&& (Conf.menus.warp))
-			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
-					    ydist);
+			       EWarpPointer(None, xdist, ydist);
 #ifdef HAS_XINERAMA
 			 }
 #endif
@@ -1583,8 +1582,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)
-		XWarpPointer(disp, None, mi->win, 0, 0, 0, 0,
-			     mi->text_w / 2, mi->text_h / 2);
+		EWarpPointer(mi->win, mi->text_w / 2, mi->text_h / 2);
 	  }
      }
 

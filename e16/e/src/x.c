@@ -846,6 +846,35 @@ ETranslateCoordinates(Window src_w, Window dst_w,
 }
 
 void
+EWarpPointer(Window win, int x, int y)
+{
+   XWarpPointer(disp, None, win, 0, 0, 0, 0, x, y);
+}
+
+Bool
+EQueryPointer(Window win, int *px, int *py, Window * pchild,
+	      unsigned int *pmask)
+{
+   Window              root, child;
+   int                 root_x, root_y;
+   unsigned int        mask;
+
+   if (win == None)
+      win = VRoot.win;
+   if (!px)
+      px = &root_x;
+   if (!py)
+      py = &root_y;
+   if (!pchild)
+      pchild = &child;
+   if (!pmask)
+      pmask = &mask;
+
+   return XQueryPointer(disp, win, &root, pchild, &root_x, &root_y, px, py,
+			pmask);
+}
+
+void
 ESelectInputAdd(Window win, long mask)
 {
    XWindowAttributes   xwa;
@@ -1456,20 +1485,6 @@ WindowAtXY(int x, int y)
      }
    EUngrabServer();
    return VRoot.win;
-}
-
-Bool
-PointerAt(int *x, int *y)
-{
-   Window              dw;
-   int                 dd;
-   unsigned int        mm;
-
-   if (!x || !y)
-      x = y = &dd;
-
-   /* Return True if pointer is on "our" screen */
-   return XQueryPointer(disp, VRoot.win, &dw, &dw, &dd, &dd, x, y, &mm);
 }
 
 Display            *
