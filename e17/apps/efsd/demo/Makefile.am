@@ -10,4 +10,4 @@ bin_PROGRAMS = efsddemo
 efsddemo_SOURCES = \
 efsddemo.c
 
-efsddemo_LDADD = -L$(top_builddir)/efsd/.libs -lefsd @ecore_libs@
+efsddemo_LDADD = -L$(top_builddir)/efsd/ -lefsd @ecore_libs@
