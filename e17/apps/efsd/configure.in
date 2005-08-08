@@ -38,25 +38,28 @@ else
    AC_DEFINE(HAVE_STATFS, 1)
 fi
   
-
 dnl Check for fam.
+save_LIBS="$LIBS"
+save_CFLAGS="$CFLAGS"
 AC_ARG_WITH(fam,
-       [  --with-fam=DIR          use DIR where fam is installed.],
-       [CPPFLAGS="$CPPFLAGS -I$withval/include"; LDFLAGS="$LDFLAGS -L$withval/lib"])
+       AC_HELP_STRING([--with-fam=DIR],[use DIR where fam is installed.]),
+       [fam_cflags="-I$withval/include"; fam_libs="-L$withval/lib -lfam";
+        CFLAGS="$CFLAGS -I$withval/include"; LIBS="$LIBS -L$withval/lib -lfam"; ],
+       [fam_cflags=""; fam_libs="-lfam"])
 AC_CHECK_HEADER(fam.h, , fam_header_ok="no")
 AC_CHECK_LIB(fam, main, , fam_lib_ok="no")
-if test "$fam_header_ok" = "no" -o "$fam_lib_ok" = "no"; then cat <<EOF;
+if test "$fam_header_ok" = "no" -o "$fam_lib_ok" = "no"; then
+  fam="without FAM (file-alteration monitor) support";
+  AC_MSG_WARN(Optional library FAM not found -- this is not a problem.)
+else
+  fam="with FAM (file-alteration monitor) support";
+  AC_DEFINE(HAVE_FAM, 1, try to use File-alteration monitor)
+fi;
+LIBS="$save_LIBS"
+CFLAGS="$save_CFLAGS"
+AC_SUBST(fam_cflags)
+AC_SUBST(fam_libs)
 
-------------------------------------------------------
-ERROR: Could not find a complete installation of FAM,
-the File Alteration Monitor, on your system.
-
-You can download FAM at:
-http://oss.sgi.com/projects/fam
-------------------------------------------------------
-EOF
-AC_MSG_ERROR(FAM not found)
-fi
 
 
 dnl Check for pthreads. Make sure we have both
