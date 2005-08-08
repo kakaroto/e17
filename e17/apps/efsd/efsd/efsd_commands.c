@@ -516,12 +516,12 @@ efsd_command_get_filetype(EfsdCommand *cmd, int client)
 
   D_ENTER;
 
-  printf ("ERR: Running get filetype on %s\n",cmd->efsd_file_cmd.files[0] );
+  /*printf ("ERR: Running get filetype on %s\n",cmd->efsd_file_cmd.files[0] );*/
 
   if (efsd_filetype_get(cmd->efsd_file_cmd.files[0], type, MAXPATHLEN))
     {
       D("FILE lookup succeded: %s\n", type);
-      printf("ERR: Type is %s\n", type);
+      /*printf("ERR: Type is %s\n", type);*/
       result = send_reply(cmd, 0, strlen(type)+1, type, client);
     }
   else

@@ -95,6 +95,16 @@ EfsdConnection *efsd_open(void);
 int            efsd_close(EfsdConnection *ec);
 
 
+#if HAVE_ECORE
+/** 
+ * efsd_event_callback_register
+ * @func: the function to register
+ * 
+ */
+void efsd_event_callback_register(void* func);
+#endif
+
+
 /**
  * efsd_get_connection_fd - Returns file descriptor of an Efsd connection.
  * @ec: The Efsd connection

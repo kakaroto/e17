@@ -79,6 +79,8 @@ struct efsd_options
 };
 
 
+void (*event_cb)(EfsdEvent* ev) = NULL;
+
 static EfsdHash *callbacks_hash = NULL;
 
 
@@ -105,6 +107,12 @@ static void      libefsd_callbacks_init(void);
 #if HAVE_ECORE
 static Ecore_Hash* partial_command_hash = NULL;
 static Ecore_Hash* partial_event_hash = NULL;
+
+
+void efsd_event_callback_register(void* func) {
+	event_cb = func;
+}
+
 #endif
 
 
@@ -115,7 +123,7 @@ ipc_server_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
 
-  printf("Received event from server..\n");
+  /*printf("Received event from server..\n");*/
 
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
    {
@@ -132,7 +140,7 @@ ipc_server_data(void *data, int type, void *event)
 
 
         switch (e->major) {
-		case 1: printf("It's a command..\n");
+		case 1: /*printf("It's a command..\n");*/
 		 	{
 
 			  ec = ecore_hash_get(partial_command_hash, e->server);
@@ -146,7 +154,7 @@ ipc_server_data(void *data, int type, void *event)
 			   if (e->minor != 100) {
 	   			deserialize_command(msg,ec);
 	   		   } else {
-	   			printf("Command finished..processing..\n");
+	   			/*printf("Command finished..processing..\n");*/
 				ec = ecore_hash_get(partial_command_hash, e->server);
 				/*main_thread_launch(ec, e->client);*/
 	  	   	  }
@@ -157,7 +165,7 @@ ipc_server_data(void *data, int type, void *event)
 			break;
 	
                 case 2:
-                        printf ("it's an event!\n");
+                        /*printf ("it's an event!\n");*/
 
 			event = ecore_hash_get(partial_event_hash, e->server);
 			if (!event) {
@@ -167,20 +175,20 @@ ipc_server_data(void *data, int type, void *event)
 
 	
 			switch(e->minor) {
-				case 1: printf("An EFSD Event type..\n");
+				case 1: /*printf("An EFSD Event type..\n");*/
 					
 					memcpy(&event->type, e->data, sizeof(EfsdEventType));
 					break;	
 				case 2:
-					printf ("It's a data section..\n");
-					printf ("Data is: %s\n", e->data);
+					/*printf ("It's a data section..\n");*/
+					/*printf ("Data is: %s\n", e->data);*/
 
 					event->efsd_reply_event.data = malloc(sizeof(char)*e->size);
 					strncpy(event->efsd_reply_event.data, e->data, e->size);
 					break;
 				case 100:
 
-					printf("Event complete, assembling...\n");
+					/*printf("Event complete, assembling...\n");*/
 					ec = ecore_hash_get(partial_command_hash, e->server);
 
 					if (ec) {
@@ -188,7 +196,11 @@ ipc_server_data(void *data, int type, void *event)
 							
 					}
 
-					printf("Filename is (from ec): %s\n", event->efsd_reply_event.command.efsd_file_cmd.files[0]);
+					/*printf("Filename is (from ec): %s\n", event->efsd_reply_event.command.efsd_file_cmd.files[0]);*/
+
+					if (event_cb) {
+						(*event_cb)(event);
+					}
 					break;
 					
 			}
@@ -246,7 +258,7 @@ libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
 {
   D_ENTER;
 
-  printf("ERR: libefsd_send_command to ecore efsd_io_write_command\n");
+  /*printf("ERR: libefsd_send_command to ecore efsd_io_write_command\n");*/
 
   if (!ec || !com)
     D_RETURN_(-1);
@@ -308,7 +320,7 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
   for (i = 0, used_files = 0; i < num_files; i++)
     {
       full_files[used_files] = libefsd_get_full_path(files[i]);
-      printf("File with full path: %s\n", full_files[used_files]);
+      /*printf("File with full path: %s\n", full_files[used_files]);*/
       if (full_files[used_files])
 	used_files++;
     }
@@ -326,7 +338,7 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
       full_files = realloc(full_files, sizeof(char*) * used_files);
     }
 
-  printf("ERR: Libefsd file_cmd_absolute\n");
+  /*printf("ERR: Libefsd file_cmd_absolute\n");*/
   id = libefsd_file_cmd(ec, type, used_files, full_files, num_options, ops);
 
   D_RETURN_(id);
@@ -362,7 +374,7 @@ libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
 
   /* And send it! */
 
-  printf("ERR: Libefsd file_cmd\n");
+  /*printf("ERR: Libefsd file_cmd\n");*/
   if (libefsd_send_command(ec, &cmd) < 0)
     {
       efsd_cmd_cleanup(&cmd);
@@ -1341,7 +1353,7 @@ EfsdCmdId
 efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  printf("ERR: A call to get filetype with %s\n", filename);
+  /*printf("ERR: A call to get filetype with %s\n", filename);*/
   D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_GETFILETYPE, 1, &filename, 0, NULL));
 }
 

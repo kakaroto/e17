@@ -87,36 +87,36 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 }
 
 void deserialize_command(ecore_ipc_message* msg, EfsdCommand* ec) {
-                   printf ("   ERR: We have a command on our hands..\n");
+                   /*printf ("   ERR: We have a command on our hands..\n");*/
                                                                                                                                        
                    if (msg->minor == 1) {
                           /*An efsdCommandType*/
-                           printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");
+                           /*printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");*/
                            memcpy(&ec->type, msg->data, sizeof(EfsdCommandType));
-                           printf ("  ERR: Command type is %d\n", ec->type);
+                           /*printf ("  ERR: Command type is %d\n", ec->type);*/
                    } else if (msg->minor == 2) {
                           /*An efsdCommandId*/
-                           printf("   ERR: Receiving a command id\n");
+                           /*printf("   ERR: Receiving a command id\n");*/
                            /*Retrieve the inprogress event*/
-                           printf ("  ERR: Our in-progress command has type %d\n", ec->type);
+                           /*printf ("  ERR: Our in-progress command has type %d\n", ec->type);*/
                            memcpy(&ec->efsd_file_cmd.id, msg->data, sizeof(EfsdCmdId));
-                           printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);
+                           /*printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);*/
                    } else if (msg->minor == 3) {
                           /*A file*/
-                           printf ( "   ERR: Receiving a filename\n");
-                           printf ("We have %d files so far..\n", ec->efsd_file_cmd.num_files);
+                           /*printf ( "   ERR: Receiving a filename\n");*/
+                           /*printf ("We have %d files so far..\n", ec->efsd_file_cmd.num_files);*/
                            if (!ec->efsd_file_cmd.num_files) {
                                    ec->efsd_file_cmd.files = malloc(sizeof(char*));
                            } else {
                                    ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
                            }
                            ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(msg->data);
-                           printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);
+                           /*printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);*/
                            ec->efsd_file_cmd.num_files+=1;
                    } else if (msg->minor == 4) {
                            /*An efsdOption*/
                            /*Basically two ints*/
-                           printf ( "   ERR: Receiving an option\n");
+                           /*printf ( "   ERR: Receiving an option\n");*/
                            if (!ec->efsd_file_cmd.num_options) {
                                    ec->efsd_file_cmd.options = malloc(sizeof(EfsdOption));
                            } else {
@@ -612,12 +612,12 @@ fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec)
   ecore_list_append(el, ecore_ipc_message_new(1, 2, 0,0,0, &ec->efsd_file_cmd.id, sizeof(EfsdCmdId)));
 
   for (i = 0; i < ec->efsd_file_cmd.num_files; i++) {
-	  printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);
+	  /*printf ("ERR: Writing filename %s\n", ec->efsd_file_cmd.files[i]);*/
 	  ecore_list_append(el, ecore_ipc_message_new(1, 3, 0,0,0, ec->efsd_file_cmd.files[i], strlen(ec->efsd_file_cmd.files[i]) + 1)); 
   }
 
   for (i = 0; i < ec->efsd_file_cmd.num_options; i++) {
-	  printf ("ERR: Writing option %d\n", ec->efsd_file_cmd.options[i]);
+	  /*printf ("ERR: Writing option %d\n", ec->efsd_file_cmd.options[i]);*/
 	  ecore_list_append(el, ecore_ipc_message_new(1, 4, 0,0,0, &ec->efsd_file_cmd.options[i], sizeof(EfsdOption)));
 
   }
@@ -1044,7 +1044,7 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 
 
   #if HAVE_ECORE
-  printf("ERR: ecore Sending command: efsd_io_write_command\n");
+  /*printf("ERR: ecore Sending command: efsd_io_write_command\n");*/
   
 
   cmd = fill_command(ec);
@@ -1155,7 +1155,7 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
   Ecore_List* cmd;	
   ecore_ipc_message* msg;
 
-  printf("ERR: Sending event..\n");
+  /*printf("ERR: Sending event..\n");*/
   /*ecore_ipc_client_send(sockfd, ee->type, 1, 0,0,0, ee->efsd_reply_event.data,strlen(ee->efsd_reply_event.data)+1);*/
   
   cmd = fill_event(ee);
