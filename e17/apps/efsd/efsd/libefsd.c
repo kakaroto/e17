@@ -102,7 +102,10 @@ static void      libefsd_cmd_queue_process(EfsdConnection *ec);
 
 static void      libefsd_callbacks_init(void);
 
+#if HAVE_ECORE
 static Ecore_Hash* partial_command_hash = NULL;
+static Ecore_Hash* partial_event_hash = NULL;
+#endif
 
 
 /*Ecore Event callbacks*/
@@ -116,19 +119,21 @@ ipc_server_data(void *data, int type, void *event)
 
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
    {
+	EfsdCommand* ec;
+	EfsdEvent* event;
+	ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
+	msg->major =e->major;
+	msg->minor = e->minor;
+	msg->ref = e->ref;
+	msg->ref_to = e->ref_to;
+	msg->response =e->response;
+	msg->data = e->data;
+	msg->len = e->size;
+
 
         switch (e->major) {
 		case 1: printf("It's a command..\n");
 		 	{
-			   EfsdCommand* ec;
-			   ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
-			   msg->major =e->major;
-	 		   msg->minor = e->minor;
-	   		   msg->ref = e->ref;
-	  		   msg->ref_to = e->ref_to;
-	   		   msg->response =e->response;
-			   msg->data = e->data;
-			   msg->len = e->size;
 
 			  ec = ecore_hash_get(partial_command_hash, e->server);
 			  if (!ec) {
@@ -146,25 +151,52 @@ ipc_server_data(void *data, int type, void *event)
 				/*main_thread_launch(ec, e->client);*/
 	  	   	  }
 
-			  free(msg);
 	    		}
 			
 		
 			break;
 	
                 case 2:
-                        printf ("it's a reply!\n");
+                        printf ("it's an event!\n");
+
+			event = ecore_hash_get(partial_event_hash, e->server);
+			if (!event) {
+				event = NEW(EfsdEvent);
+				ecore_hash_set(partial_event_hash, e->server, event);
+			}
 
 	
 			switch(e->minor) {
+				case 1: printf("An EFSD Event type..\n");
+					
+					memcpy(&event->type, e->data, sizeof(EfsdEventType));
+					break;	
 				case 2:
 					printf ("It's a data section..\n");
 					printf ("Data is: %s\n", e->data);
+
+					event->efsd_reply_event.data = malloc(sizeof(char)*e->size);
+					strncpy(event->efsd_reply_event.data, e->data, e->size);
+					break;
+				case 100:
+
+					printf("Event complete, assembling...\n");
+					ec = ecore_hash_get(partial_command_hash, e->server);
+
+					if (ec) {
+						event->efsd_reply_event.command = *ec;
+							
+					}
+
+					printf("Filename is (from ec): %s\n", event->efsd_reply_event.command.efsd_file_cmd.files[0]);
+					break;
+					
 			}
 			
                         break;
         }
 
+	free(msg);
 
    }
 
@@ -509,6 +541,9 @@ efsd_open(void)
   /*Init command hash*/
   if (!partial_command_hash) {
   	partial_command_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  }
+  if (!partial_event_hash) {
+  	partial_event_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   }
   
   #else

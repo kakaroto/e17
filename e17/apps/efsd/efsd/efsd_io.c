@@ -859,7 +859,10 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
   }
   
   ecore_list_append(el, ecore_ipc_message_new(2, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
+
+  printf("Reply event data: %s\n", ee->efsd_reply_event.data);
   ecore_list_append(el, ecore_ipc_message_new(2, 2, 0,0,0,ee->efsd_reply_event.data, strlen(ee->efsd_reply_event.data)));
+  ecore_list_append(el, ecore_ipc_message_new(2,100,0,0,0,NULL,0));
 
 
   return el;
