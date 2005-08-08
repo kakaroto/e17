@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile
 
 DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
-INCLUDES = @edb_cflags@ @xml2_cflags@ $(DEBUGFLAGS) @ecore_cflags@
+INCLUDES = @ecore_cflags@ @edb_cflags@ @xml2_cflags@ $(DEBUGFLAGS)
 
 if USE_THREADS_FILES
 efsd_threadstuff = efsd_lock.c

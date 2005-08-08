@@ -262,5 +262,20 @@ typedef union efsd_event
 }
 EfsdEvent;
 
+#if HAVE_ECORE
+typedef struct ecore_ipc_message ecore_ipc_message;
+struct ecore_ipc_message {
+	int major;
+	int minor;
+	int ref;
+	int ref_to;
+	int response;
+	void* data;
+	int len;
+};
+
+ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len);
+#endif
+
 
 #endif

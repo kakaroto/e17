@@ -179,95 +179,38 @@ ipc_client_data(void *data, int type, void *event)
    printf ("ERR: Got message!\n");
    if ((e = (Ecore_Ipc_Event_Client_Data *) event))
    {
-           if (e->major == 1) {
-		   printf ("   ERR: We have a command on our hands..\n");
+	   ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
+	   msg->major =e->major;
+	   msg->minor = e->minor;
+	   msg->ref = e->ref;
+	   msg->ref_to = e->ref_to;
+	   msg->response =e->response;
+	   msg->data = e->data;
+	   msg->len = e->size;
 
-		   if (e->minor == 1) {
-			  /*An efsdCommandType*/
-			   
-			   printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");
-			   ec = NEW(EfsdCommand);
-
-			   memcpy(&ec->type, e->data, sizeof(EfsdCommandType));
-
-			   printf ("  ERR: Command type is %d\n", ec->type);
-
-			   ecore_hash_set(partial_command_hash, e->client, ec);
-			   
-		   } else if (e->minor == 2) {
-			  /*An efsdCommandId*/
-			   
-			   printf("   ERR: Receiving a command id\n");
-
-			   /*Retrieve the inprogress event*/
-			   ec = ecore_hash_get(partial_command_hash, e->client);
-
-			   printf ("  ERR: Our in-progress command has type %d\n", ec->type);
-			
-			   memcpy(&ec->efsd_file_cmd.id, e->data, sizeof(EfsdCmdId));
-
-			   printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);
-			   
-		   } else if (e->minor == 3) {
-			  /*A file*/
-			   
-			   printf ( "   ERR: Receiving a filename\n");
-
-			   ec = ecore_hash_get(partial_command_hash, e->client);
-
-			   printf ("We have %d files so far..\n", ec->efsd_file_cmd.num_files);
-			   
-			   
-			   if (!ec->efsd_file_cmd.num_files) {
-				   ec->efsd_file_cmd.files = malloc(sizeof(char*));
-		           } else {
-				   ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
-			   }
-			   ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(e->data);
-
-			   printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);
-
-			   ec->efsd_file_cmd.num_files+=1;
-			   
-		   } else if (e->minor == 4) {
-			   /*An efsdOption*/
-			   /*Basically two ints*/
-
-   			   printf ( "   ERR: Receiving an option\n");
-
-			   ec = ecore_hash_get(partial_command_hash, e->client);
-
-			   if (!ec->efsd_file_cmd.num_options) {
-				   ec->efsd_file_cmd.options = malloc(sizeof(EfsdOption));
-			   } else {
-				   ec->efsd_file_cmd.options = realloc(ec->efsd_file_cmd.options, sizeof(EfsdOption) * ec->efsd_file_cmd.num_options+1);
-		           }
+	   if (msg->major == 1) {
 
 
-			   memcpy(&ec->efsd_file_cmd.options[ec->efsd_file_cmd.num_options], e->data, sizeof(EfsdOption));
+	   	ec = ecore_hash_get(partial_command_hash, e->client);
+	   	if (!ec) {
+	   		ec = NEW(EfsdCommand);
+			ec->efsd_file_cmd.num_files = 0;	
+			ec->efsd_file_cmd.num_options = 0;
+			ecore_hash_set(partial_command_hash, e->client, ec);
+	   	}
 
-			   ec->efsd_file_cmd.num_options++;
-		  } else if (e->minor == 100) {
-			/*ecore_ipc_client_send(e->client, 1, 1, 0,0,0, NULL,0);
-			cl = e->client;*/
-			  
-			  /*Command finished.. process..*/
-
-			  printf("Command finished..processing..\n");
-			  
-
-			  ec = ecore_hash_get(partial_command_hash, e->client);
-
-			  printf ("Filename is '%s'\n", ec->efsd_file_cmd.files[0]);
-			  /*ecore_hash_remove(partial_command_hash, e->client);*/
-			  
-		   	  main_thread_launch(ec, e->client);
-		  }
 				   
-
+	   	if (e->minor != 100) {
+	   		deserialize_command(msg,ec);
+	   	} else {
+	   		printf("Command finished..processing..\n");
+			ec = ecore_hash_get(partial_command_hash, e->client);
+			main_thread_launch(ec, e->client);
+	   	}
+	   }
+	   free(msg);
 			   
 			   
-           }
    }
 
    return 1;

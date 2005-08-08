@@ -72,17 +72,6 @@ typedef struct efsd_iov
 EfsdIOV;
 
 #if HAVE_ECORE
-typedef struct ecore_ipc_message ecore_ipc_message;
-struct ecore_ipc_message {
-	int major;
-	int minor;
-	int ref;
-	int ref_to;
-	int response;
-	void* data;
-	int len;
-};
-
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len) {
 	ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
 
@@ -96,6 +85,49 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 
 	return msg;
 }
+
+void deserialize_command(ecore_ipc_message* msg, EfsdCommand* ec) {
+                   printf ("   ERR: We have a command on our hands..\n");
+                                                                                                                                       
+                   if (msg->minor == 1) {
+                          /*An efsdCommandType*/
+                           printf("   ERR: Receiving command type, building a new EfsdCommand struct!\n");
+                           memcpy(&ec->type, msg->data, sizeof(EfsdCommandType));
+                           printf ("  ERR: Command type is %d\n", ec->type);
+                   } else if (msg->minor == 2) {
+                          /*An efsdCommandId*/
+                           printf("   ERR: Receiving a command id\n");
+                           /*Retrieve the inprogress event*/
+                           printf ("  ERR: Our in-progress command has type %d\n", ec->type);
+                           memcpy(&ec->efsd_file_cmd.id, msg->data, sizeof(EfsdCmdId));
+                           printf ("  ERR: Received command id %d\n", ec->efsd_file_cmd.id);
+                   } else if (msg->minor == 3) {
+                          /*A file*/
+                           printf ( "   ERR: Receiving a filename\n");
+                           printf ("We have %d files so far..\n", ec->efsd_file_cmd.num_files);
+                           if (!ec->efsd_file_cmd.num_files) {
+                                   ec->efsd_file_cmd.files = malloc(sizeof(char*));
+                           } else {
+                                   ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
+                           }
+                           ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(msg->data);
+                           printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);
+                           ec->efsd_file_cmd.num_files+=1;
+                   } else if (msg->minor == 4) {
+                           /*An efsdOption*/
+                           /*Basically two ints*/
+                           printf ( "   ERR: Receiving an option\n");
+                           if (!ec->efsd_file_cmd.num_options) {
+                                   ec->efsd_file_cmd.options = malloc(sizeof(EfsdOption));
+                           } else {
+                                   ec->efsd_file_cmd.options = realloc(ec->efsd_file_cmd.options, sizeof(EfsdOption) * ec->efsd_file_cmd.num_options+1);
+                           }
+                           memcpy(&ec->efsd_file_cmd.options[ec->efsd_file_cmd.num_options], msg->data, sizeof(EfsdOption));
+                           ec->efsd_file_cmd.num_options++;
+		    }
+
+}
+
 #endif
 
 
@@ -810,6 +842,7 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
 {
   #if HAVE_ECORE
   Ecore_List* el;	
+  Ecore_List* cmd;
   ecore_ipc_message* msg;
   #endif
 	
@@ -818,8 +851,15 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
   #if HAVE_ECORE
   el = ecore_list_new();
 
-  ecore_list_append(el, ecore_ipc_message_new(EFSD_EVENT_REPLY, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
-  ecore_list_append(el, ecore_ipc_message_new(EFSD_EVENT_REPLY, 2, 0,0,0,ee->efsd_reply_event.data, strlen(ee->efsd_reply_event.data)));
+  cmd = fill_command(&ee->efsd_reply_event.command);
+   
+  ecore_list_goto_first(cmd);
+  while ( (msg = ecore_list_next(cmd) )) {
+  	ecore_list_append(el, msg);
+  }
+  
+  ecore_list_append(el, ecore_ipc_message_new(2, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
+  ecore_list_append(el, ecore_ipc_message_new(2, 2, 0,0,0,ee->efsd_reply_event.data, strlen(ee->efsd_reply_event.data)));
 
 
   return el;

@@ -102,6 +102,8 @@ static void      libefsd_cmd_queue_process(EfsdConnection *ec);
 
 static void      libefsd_callbacks_init(void);
 
+static Ecore_Hash* partial_command_hash = NULL;
+
 
 /*Ecore Event callbacks*/
 #if HAVE_ECORE
@@ -116,12 +118,46 @@ ipc_server_data(void *data, int type, void *event)
    {
 
         switch (e->major) {
-                case EFSD_EVENT_REPLY:
+		case 1: printf("It's a command..\n");
+		 	{
+			   EfsdCommand* ec;
+			   ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
+			   msg->major =e->major;
+	 		   msg->minor = e->minor;
+	   		   msg->ref = e->ref;
+	  		   msg->ref_to = e->ref_to;
+	   		   msg->response =e->response;
+			   msg->data = e->data;
+			   msg->len = e->size;
+
+			  ec = ecore_hash_get(partial_command_hash, e->server);
+			  if (!ec) {
+			  	ec = NEW(EfsdCommand);
+				ec->efsd_file_cmd.num_files = 0;	
+				ec->efsd_file_cmd.num_options = 0;
+				ecore_hash_set(partial_command_hash, e->server, ec);
+		   	  }
+				   
+			   if (e->minor != 100) {
+	   			deserialize_command(msg,ec);
+	   		   } else {
+	   			printf("Command finished..processing..\n");
+				ec = ecore_hash_get(partial_command_hash, e->server);
+				/*main_thread_launch(ec, e->client);*/
+	  	   	  }
+
+			  free(msg);
+	    		}
+			
+		
+			break;
+	
+                case 2:
                         printf ("it's a reply!\n");
 
 	
 			switch(e->minor) {
-				case 1:
+				case 2:
 					printf ("It's a data section..\n");
 					printf ("Data is: %s\n", e->data);
 			}
@@ -469,6 +505,11 @@ efsd_open(void)
 
   /*Register the event callbacks*/
   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data, NULL);
+
+  /*Init command hash*/
+  if (!partial_command_hash) {
+  	partial_command_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+  }
   
   #else
   if ( (ec->fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0)

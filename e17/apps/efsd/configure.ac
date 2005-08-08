@@ -1,7 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
-AC_CONFIG_SRCDIR([configure.in])
+AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(efsd, 0.0.1)
 AM_CONFIG_HEADER(config.h)
 
@@ -16,15 +15,7 @@ AC_HEADER_STDC
 AM_PROG_LIBTOOL
 
 AC_C_BIGENDIAN       
-AC_DIAGNOSE([obsolete],[AC_STRUCT_ST_BLKSIZE:
-        your code should no longer depend upon `HAVE_ST_BLKSIZE', but
-        `HAVE_STRUCT_STAT_ST_BLKSIZE'.  Remove this warning and
-        the `AC_DEFINE' when you adjust the code.])
-AC_CHECK_MEMBERS([struct stat.st_blksize],[AC_DEFINE(HAVE_ST_BLKSIZE, 1,
-                            [Define if your `struct stat' has
-                             `st_blksize'.  Deprecated, use
-                             `HAVE_STRUCT_STAT_ST_BLKSIZE' instead.])])
-
+AC_STRUCT_ST_BLKSIZE
 AC_STRUCT_ST_BLOCKS
 
 use_threads="yes"
@@ -64,8 +55,8 @@ You can download FAM at:
 http://oss.sgi.com/projects/fam
 ------------------------------------------------------
 EOF
-exit 1;
-fi;
+AC_MSG_ERROR(FAM not found)
+fi
 
 
 dnl Check for pthreads. Make sure we have both
@@ -144,6 +135,45 @@ dnl Checking for Perl:
 AC_PATH_PROG(PERL,perl,0)
 AC_SUBST(PERL)
 
+ecore=""
+AC_MSG_CHECKING(whether to use eCore as main-loop)
+AC_ARG_ENABLE(ecore, AC_HELP_STRING([--enable-ecore],[use eCore as main-loop]),
+                [ ac_use_ecore="$enableval" ],
+                [ ac_use_ecore="no" ]
+                )
+
+if test X"$ac_use_ecore" = Xno; then
+#  if test X"$ac_use_ecoreipc" = Xyes; then
+#    AC_MSG_RESULT([forced by inclusion of eCore-IPC])
+#    ac_use_ecore="forced"
+#  else
+    AC_MSG_RESULT([no])
+#  fi
+else
+  AC_MSG_RESULT([no])
+fi
+
+if test X"$ac_use_ecore" != Xno; then
+  AC_PATH_GENERIC(ecore, 1.0.0, [
+                AC_CHECK_LIB(ecore,ecore_main_loop_iterate,[
+                  ecore_cflags=`ecore-config --cflags`
+                  ecore_libs=`ecore-config --libs`
+                  ecore=yes
+                  if test X"$ac_use_ecore" = Xyes; then
+                    loop=eCore
+                    AC_DEFINE(HAVE_ECORE, 1, have enlightened main loop)
+                    AC_MSG_NOTICE([Building with eCore mainloop. ])
+                  fi
+                ],[
+                  AC_MSG_NOTICE([ecore too old! no enlightened main-loop for you! you come back -- one year!])])],[
+                AC_MSG_NOTICE([ecore-config not found. no enlightened IPC.])])
+fi
+
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
+
+
+
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -203,7 +233,12 @@ AC_PATH_PROG(JADE, jade)
 AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
 
-AC_CONFIG_FILES([
+
+dnl Various conditionals
+AM_CONDITIONAL(BUILD_ECORE_DEPENDENT,      test "$ecore" != "no")
+
+
+AC_OUTPUT([
 Makefile
 efsd-config
 efsd/Makefile
@@ -212,9 +247,7 @@ demo/Makefile
 doc/Makefile
 doc/kernel-doc
 doc/html-customizations.dsl
-])
-AC_CONFIG_COMMANDS([default],[[
+], [
 chmod +x efsd-config
 chmod +x doc/kernel-doc
-]],[[]])
-AC_OUTPUT
+])

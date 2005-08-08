@@ -8,7 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile efsdsh
 INCLUDES = -I$(top_srcdir)/efsd
 
 efsdsh_SOURCES = efsdsh.c
-efsdsh_LDADD = $(top_builddir)/efsd/.libs/libefsd.so
+efsdsh_LDADD = @ecore_libs@ $(top_builddir)/efsd/.libs/libefsd.so
 
 install-data-local:
 	@$(NORMAL_INSTALL)
