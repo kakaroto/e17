@@ -367,11 +367,13 @@ efsd_command_get_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
+efsd_command_start_monitor(EfsdCommand *cmd, Ecore_Ipc_Client* client, int dir_mode)
 {
   int i, do_sort = FALSE;
   
   D_ENTER;
+
+  D("Creating monitor command..\n");
 
   for (i = 0; i < cmd->efsd_file_cmd.num_options; i++)
     {
@@ -382,7 +384,7 @@ efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
 	}
     }
 
-  
+  printf("Starting monitoring on %p\n", client);
   if (efsd_monitor_start(cmd, client, dir_mode, do_sort) == NULL)
     {
       errno_check(__LINE__, __FUNCTION__);

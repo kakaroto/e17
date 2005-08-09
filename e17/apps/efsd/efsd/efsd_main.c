@@ -424,6 +424,7 @@ main_handle_client_command(void *data)
       D("Handling INVALID command\n");
     }
 
+  ecore_hash_remove(partial_command_hash, client);
   efsd_cmd_free(command);
 
 #if USE_THREADS
@@ -649,11 +650,14 @@ main_handle_fam_events(void)
 		}
 	    }
 
+	  #if HAVE_ECORE
+	  #else
 	  if (clientfd[emr->client] < 0)
 	    {
 	      D("Warning -- client %i's file descriptor seems to be closed.\n", emr->client);
 	      continue;
 	    }
+	  #endif
 
 	  /* The famev.filename is not always
 	     canonical. Let's build one that is.
@@ -689,6 +693,7 @@ main_handle_fam_events(void)
 	      efsd_stat_remove(famev_filename_canonical, TRUE);
 	    }
 
+          printf("Client is %p, internal is %p\n", emr->client, EFSD_CLIENT_INTERNAL);
 	  if (emr->client == EFSD_CLIENT_INTERNAL)
 	    {
 	      if ((famev.code == FAMChanged) || (famev.code == FAMCreated))
@@ -734,6 +739,8 @@ main_handle_fam_events(void)
 		  /* Let's look only at the files we wanted: */
 		  if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 		    {
+		      printf("1\n");
+		      printf("Client is %p\n", emr->client);
 		      efsd_monitor_send_filechange_event(m, emr, famev.code, famev.filename);
 		    }		      			  
 		}
@@ -754,6 +761,7 @@ main_handle_fam_events(void)
 			{
 			  if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
 			    {
+			     printf("2\n");
 			      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
 			    }
 			  
@@ -761,6 +769,7 @@ main_handle_fam_events(void)
 			}
 		      
 		      /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
+			printf("3\n");
 		      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, famev.filename);
 		    }
 		}

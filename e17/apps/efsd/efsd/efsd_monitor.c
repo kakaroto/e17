@@ -61,7 +61,7 @@ typedef struct efsd_monitor_key
 EfsdMonitorKey;
 
 /* Allocator and deallocator for a Monitor */
-static EfsdMonitor        *monitor_new(EfsdCommand *com, int client,
+static EfsdMonitor        *monitor_new(EfsdCommand *com, Ecore_Ipc_Client* client,
 				       int dir_mode, int is_temporary,
 				       int is_sorted);
 static void                monitor_free(EfsdMonitor *m);
@@ -70,7 +70,7 @@ static void                monitor_free(EfsdMonitor *m);
 /* Increment use count for file monitor, or start
    new monitor if file is not monitored yet.
  */
-static int                 monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client);
+static int                 monitor_add_client(EfsdMonitor *m, EfsdCommand *com, Ecore_Ipc_Client* client);
 
 /* Returns list item containing monitoring request as data,
    if monitor contains request by client CLIENT:
@@ -172,7 +172,7 @@ monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2)
 
 
 static EfsdMonitor *         
-monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is_sorted)
+monitor_new(EfsdCommand *com, Ecore_Ipc_Client* client, int dir_mode, int is_temporary, int is_sorted)
 {
   EfsdMonitorRequest   *emr;
   EfsdMonitor   *m;
@@ -294,7 +294,7 @@ monitor_hash_item_free(EfsdHashItem *it)
 
 
 EfsdMonitorRequest *
-efsd_monitor_request_new(int client, EfsdFileCmd *cmd)
+efsd_monitor_request_new(Ecore_Ipc_Client* client, EfsdFileCmd *cmd)
 {
   EfsdMonitorRequest   *emr;
   
@@ -303,6 +303,7 @@ efsd_monitor_request_new(int client, EfsdFileCmd *cmd)
   emr = NEW(EfsdMonitorRequest);
   memset(emr, 0, sizeof(EfsdMonitorRequest));
 
+  printf("Seting client id to %p\n", client);
   emr->client      = client;
   emr->id          = cmd->id;
 
@@ -382,6 +383,7 @@ efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr)
 	{
 	  if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
 	    {
+	      printf("4\n");
 	      efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, filename);
 	    }
 	  
@@ -389,10 +391,12 @@ efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr)
 	}
       
       /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
+      printf("5\n");
       efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
     }
   else
     {
+      printf("6\n");
       efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_EXISTS, m->filename);
       efsd_monitor_send_filechange_event(m, emr, EFSD_FILE_END_EXISTS, m->filename);
     }
@@ -400,7 +404,7 @@ efsd_monitor_send_filechange_events(EfsdMonitor *m, EfsdMonitorRequest *emr)
 
 
 static int
-monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
+monitor_add_client(EfsdMonitor *m, EfsdCommand *com, Ecore_Ipc_Client* client)
 {
   EfsdList           *l = NULL;
   EfsdMonitorRequest *emr;
@@ -415,15 +419,19 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
       if (((EfsdMonitorRequest*)efsd_list_data(l))->client == client)
 	{
 	  LOCK(&m->use_count_mutex);
+	  printf("Client is %p, interal is %p\n", client, EFSD_CLIENT_INTERNAL);
 	  if (client == EFSD_CLIENT_INTERNAL)
 	    {
 	      
 	      m->internal_use_count++;
+	      printf("No event raised..\n");
 	      D("Incrementing internal use count for monitoring file %s, now (%i/%i).\n",
 		m->filename, m->internal_use_count, m->client_use_count);
 	    }
 	  else
 	    {
+	      printf("event raised..\n");
+	      printf("7\n");
 	      efsd_monitor_send_filechange_events(m, (EfsdMonitorRequest*)efsd_list_data(l)); 
 	      D("Client %i already monitors %s\n", client, m->filename);
 	    }
@@ -456,7 +464,8 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 
   if (client == EFSD_CLIENT_INTERNAL)
     D_RETURN_(TRUE);
-
+ 
+  printf("8\n");
   efsd_monitor_send_filechange_events(m, emr);
 
   D_RETURN_(TRUE);
@@ -626,7 +635,7 @@ efsd_monitor_cleanup(void)
 
 
 EfsdMonitor *
-efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
+efsd_monitor_start(EfsdCommand *com, Ecore_Ipc_Client* client, int dir_mode, int do_sort)
 {
   EfsdMonitor  *m = NULL;
 
@@ -894,6 +903,8 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 
   D_ENTER;
 
+  printf("Running filechange on client %p\n", emr->client);
+
   memset(&ee, 0, sizeof(EfsdEvent));
   ee.type = EFSD_EVENT_FILECHANGE;
   ee.efsd_filechange_event.changetype = type;
@@ -906,7 +917,8 @@ efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
      famev.code, emr->client);
   */
 
-  if (efsd_io_write_event(efsd_main_get_fd(emr->client), &ee) < 0)
+  
+  if (efsd_io_write_event(emr->client, &ee) < 0)
     {
       if (errno == EPIPE)
 	{

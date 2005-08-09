@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct efsd_monitor_request
 {
-  int                   client;
+  Ecore_Ipc_Client*      client;
   EfsdCmdId             id;
 
   int                   num_options;
@@ -118,7 +118,7 @@ EfsdMonitor;
 void             efsd_monitor_init(void);
 void             efsd_monitor_cleanup(void);
 
-EfsdMonitorRequest *efsd_monitor_request_new(int client, EfsdFileCmd *cmd);
+EfsdMonitorRequest *efsd_monitor_request_new(Ecore_Ipc_Client* client, EfsdFileCmd *cmd);
 void                efsd_monitor_request_free(EfsdMonitorRequest *emr);
 
 
@@ -130,7 +130,7 @@ void             efsd_monitor_remove(EfsdMonitor *m);
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.
 */
-EfsdMonitor     *efsd_monitor_start(EfsdCommand *cmd, int client, int dir_mode, int sort);
+EfsdMonitor     *efsd_monitor_start(EfsdCommand *cmd, Ecore_Ipc_Client* client, int dir_mode, int sort);
 int              efsd_monitor_stop(EfsdCommand *cmd, int client, int dir_mode);
 
 /* For internal monitoring of files -- specify file name directly.

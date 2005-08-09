@@ -38,6 +38,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fam.h>
 #include <Ecore.h>
 
+EfsdConnection* ec;
+int id;
+
 void handle_efsd_event(EfsdEvent *ee);
 
 
@@ -252,6 +255,14 @@ void handle_efsd_event(EfsdEvent *ee)
 	    {
 	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
+
+	  /*Next test..monitor*/
+	  printf("Running monitor test..\n");
+	  if ((id = efsd_start_monitor(ec, getenv("HOME"),
+	       efsd_ops(1, efsd_op_get_stat()), EFSD_CMD_STARTMON_DIR)) >= 0) {
+	       printf ("Starting monitor..\n");
+	  }
+	  
 	  break;
 	case EFSD_CMD_CLOSE:
 	  printf("Close event %i\n", 
@@ -286,7 +297,6 @@ demo_sighandler(int signal)
 int
 main(int argc, char** argv)
 {
-  EfsdConnection     *ec;
   EfsdCmdId           id;
   pid_t               child;
   int                 blocking, i;

@@ -36,7 +36,7 @@ int  efsd_command_chmod(EfsdCommand *cmd, int client);
 int  efsd_command_set_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_get_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_listdir(EfsdCommand *cmd, int client);
-int  efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode);
+int  efsd_command_start_monitor(EfsdCommand *cmd, Ecore_Ipc_Client* client, int dir_mode);
 int  efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode);
 int  efsd_command_start_monitor_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_stop_monitor_metadata(EfsdCommand *cmd, int client);

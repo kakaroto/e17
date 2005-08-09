@@ -259,6 +259,8 @@ libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
   D_ENTER;
 
   /*printf("ERR: libefsd_send_command to ecore efsd_io_write_command\n");*/
+  printf("Sending command..\n");
+  D("Sending command..\n");
 
   if (!ec || !com)
     D_RETURN_(-1);
@@ -312,6 +314,8 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
   EfsdCmdId      id;
 
   D_ENTER;
+ 
+  printf("File_cmd_absol\n");
 
   /* Array gets freed in efsd_cmd_cleanup() ... */
   full_files = malloc(sizeof(char*) * num_files);
@@ -338,7 +342,7 @@ libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
       full_files = realloc(full_files, sizeof(char*) * used_files);
     }
 
-  /*printf("ERR: Libefsd file_cmd_absolute\n");*/
+  printf("ERR: Libefsd file_cmd_absolute\n");
   id = libefsd_file_cmd(ec, type, used_files, full_files, num_options, ops);
 
   D_RETURN_(id);
@@ -355,8 +359,15 @@ libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
 
   D_ENTER;
 
-  if (!ec || !files)
+  if (!ec) {
+    printf("Connection dead\n");
     D_RETURN_(-1);
+  }
+
+  if (!files) {
+    printf("No files\n");
+    D_RETURN_(-1);
+  }
 
   memset(&cmd, 0, sizeof(EfsdCommand));
 
@@ -374,7 +385,7 @@ libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
 
   /* And send it! */
 
-  /*printf("ERR: Libefsd file_cmd\n");*/
+  printf("ERR: Libefsd file_cmd\n");
   if (libefsd_send_command(ec, &cmd) < 0)
     {
       efsd_cmd_cleanup(&cmd);
@@ -1251,21 +1262,33 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir
 
   D_ENTER;
 
-  if (lstat(filename, &st) < 0)
-    D_RETURN_(-1);
+  printf("Exe start monitor..\n");
 
-  if (dir_mode && !S_ISDIR(st.st_mode))
+  if (lstat(filename, &st) < 0) {
+    printf("Filename doesn't exist\n");
     D_RETURN_(-1);
+  }
+
+  if (dir_mode && !S_ISDIR(st.st_mode)) {
+    printf("Dir request to non dir\n");
+    D_RETURN_(-1);
+  }
 
   if (dir_mode)
     type = EFSD_CMD_STARTMON_DIR;
   else
     type = EFSD_CMD_STARTMON_FILE;
 
-  if (ops)
+    
+  printf("Still here\n");
+  if (ops) {
+    printf("File cmd absol - options\n");
+    if (!ec) { printf ("Conn dead\n"); }
     result = libefsd_file_cmd_absolute(ec, type, 1, &filename, ops->num_used, ops->ops);
-  else
+  } else {
+    printf("File cmd absol - no options\n");
     result = libefsd_file_cmd_absolute(ec, type, 1, &filename, 0, NULL);
+  }
   
   FREE(ops);
 

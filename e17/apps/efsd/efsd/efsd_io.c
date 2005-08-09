@@ -108,6 +108,7 @@ void deserialize_command(ecore_ipc_message* msg, EfsdCommand* ec) {
                            if (!ec->efsd_file_cmd.num_files) {
                                    ec->efsd_file_cmd.files = malloc(sizeof(char*));
                            } else {
+			           printf("Allocating space for %d files\n", (ec->efsd_file_cmd.num_files)+1);
                                    ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
                            }
                            ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(msg->data);
@@ -157,7 +158,7 @@ static void    fill_chmod_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_set_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_get_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_close_cmd(EfsdIOV *iov, EfsdCommand *ec);
-static void    fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee);
+static Ecore_List*    fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee);
 static void    fill_metadata_change_event(EfsdIOV *iov, EfsdEvent *ee);
 
 #if HAVE_ECORE
@@ -767,14 +768,18 @@ fill_close_cmd(EfsdIOV *iov, EfsdCommand *ec)
 }
 
 
-static void
+static Ecore_List*
 fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
 {
+  Ecore_List* el;
+
   D_ENTER;
 
-  iov->dat[iov->d] = strlen(ee->efsd_filechange_event.file) + 1;
+  el = ecore_list_new();
+  ecore_list_append(el, ecore_ipc_message_new(3, 1, 0,0,0,ee->efsd_filechange_event.file, strlen(ee->efsd_filechange_event.file)));
+  /*iov->dat[iov->d] = strlen(ee->efsd_filechange_event.file) + 1;*/
 
-  iov->vec[iov->v].iov_base   = &ee->type;
+  /*iov->vec[iov->v].iov_base   = &ee->type;
   iov->vec[iov->v].iov_len    = sizeof(EfsdEventType);
   iov->vec[++iov->v].iov_base = &ee->efsd_filechange_event.id;
   iov->vec[iov->v].iov_len    = sizeof(EfsdCmdId);
@@ -786,7 +791,11 @@ fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
   iov->vec[iov->v].iov_len    = iov->dat[iov->d];
 
   iov->d++;
-  iov->v++;
+  iov->v++;*/
+
+  return el;
+
+
 
   D_RETURN;
 }
@@ -861,7 +870,7 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
   ecore_list_append(el, ecore_ipc_message_new(2, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
 
   printf("Reply event data: %s\n", ee->efsd_reply_event.data);
-  ecore_list_append(el, ecore_ipc_message_new(2, 2, 0,0,0,ee->efsd_reply_event.data, strlen(ee->efsd_reply_event.data)));
+  ecore_list_append(el, ecore_ipc_message_new(2, 2, 0,0,0,ee->efsd_reply_event.data, ee->efsd_reply_event.data_len));
   ecore_list_append(el, ecore_ipc_message_new(2,100,0,0,0,NULL,0));
 
 
@@ -907,12 +916,15 @@ fill_event(EfsdIOV *iov, EfsdEvent *ee)
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
-      fill_filechange_event(NULL, ee);
+      printf("Sending a filechange\n");
+      return fill_filechange_event(NULL, ee);
       break;
     case EFSD_EVENT_METADATA_CHANGE:
+      printf("Sending a metadata\n");
       fill_metadata_change_event(NULL, ee);
       break;
     case EFSD_EVENT_REPLY:
+      printf("Sending a reply\n");
       return fill_reply_event(ee);
       break;
     default:
