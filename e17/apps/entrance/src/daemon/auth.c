@@ -432,8 +432,8 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       {
          entranced_debug("entranced_auth_user_add: Unable to write auth file %s\n", d->client.authfile);
          free(d->client.authfile);
-         d->client.authfile = NULL;
-     seteuid(0);
+	 d->client.authfile = NULL;
+	 seteuid(0);
          return FALSE;
       }
       /* TODO: May need a permissions/paranoia check */
@@ -448,8 +448,8 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
          free(d->client.authfile);
          d->client.authfile = NULL;
 
-     seteuid(0);
-         umask (022);
+	 seteuid(0);
+	 umask (022);
       }
       else
          break;
