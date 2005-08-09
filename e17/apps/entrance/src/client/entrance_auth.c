@@ -410,6 +410,7 @@ entrance_auth_setup_environment(Entrance_Auth * e, const char *display)
    mail = (char *) malloc(sizeof(char) * size);
    snprintf(mail, size, "%s/%s", _PATH_MAILDIR, e->pw->pw_name);
    setenv("MAIL", mail, 1);
+   free(mail);
 
    chdir(e->pw->pw_dir);
 }
