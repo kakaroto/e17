@@ -3518,3 +3518,27 @@ Background generation tweaks, background selector speedups.
 Add .png to cached image file names.
 Fix bug when dragging window through edge flip. Minor pager scan speedup.
 
+
+-------------------------------------------------------------------------------
+
+Tue Aug  9 17:47:36 CEST 2005
+(Kim)
+
+--- 0.16.8 0.16 ---
+Move "hiwin" stuff to hiwin.c/h. Pager tweaks when composite is enabled.
+Bulgarian translation update (Viktor Kojouharov).
+Another partial cleanup of client window property/state stuff.
+Remove FAQ. It's still in man and dox.
+Dialog item text simplification.
+Fix slideouts.
+Wrap client window access.
+"get_client_info" is obsolete (use win_info).
+Pager tweaks.
+Live update of pager zoom windows when composite is enabled.
+Avoid some screen updates due to invisible object damage.
+Fix MouseUp deskbinding.
+Composite manager - Invalidate named pixmap on unmap, cleanups,
+ experimental override redirect handling modes.
+Eliminate old client order list. Shuffle some stuff around.
+Cleanups.
+Wrap XWarpPointer and XQueryPointer.
