@@ -170,6 +170,8 @@ ipc_server_data(void *data, int type, void *event)
 			event = ecore_hash_get(partial_event_hash, e->server);
 			if (!event) {
 				event = NEW(EfsdEvent);
+				event->efsd_reply_event.data_len = 0;
+				
 				ecore_hash_set(partial_event_hash, e->server, event);
 			}
 

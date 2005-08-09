@@ -277,7 +277,7 @@ efsd_event_cleanup(EfsdEvent *ev)
     {
     case EFSD_EVENT_REPLY:
       FREE(ev->efsd_reply_event.data);      
-      efsd_cmd_cleanup(&ev->efsd_reply_event.command);
+      /*efsd_cmd_cleanup(&ev->efsd_reply_event.command); FIXME - uncomment*/ 
       break;
     case EFSD_EVENT_METADATA_CHANGE:
       FREE(ev->efsd_metachange_event.data);
