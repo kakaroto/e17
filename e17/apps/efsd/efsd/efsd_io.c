@@ -776,7 +776,12 @@ fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
   D_ENTER;
 
   el = ecore_list_new();
-  ecore_list_append(el, ecore_ipc_message_new(3, 1, 0,0,0,ee->efsd_filechange_event.file, strlen(ee->efsd_filechange_event.file)));
+  ecore_list_append(el, ecore_ipc_message_new(3, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
+  ecore_list_append(el, ecore_ipc_message_new(3, 2, 0,0,0,&ee->efsd_filechange_event.id, sizeof(EfsdCmdId)));
+  ecore_list_append(el, ecore_ipc_message_new(3, 3, 0,0,0,&ee->efsd_filechange_event.changetype, sizeof(EfsdFilechangeType)));
+  ecore_list_append(el, ecore_ipc_message_new(3, 4, 0,0,0,ee->efsd_filechange_event.file, strlen(ee->efsd_filechange_event.file)));
+  ecore_list_append(el, ecore_ipc_message_new(3, 100, 0, 0, 0, NULL, 0));
+
   /*iov->dat[iov->d] = strlen(ee->efsd_filechange_event.file) + 1;*/
 
   /*iov->vec[iov->v].iov_base   = &ee->type;

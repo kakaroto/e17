@@ -222,7 +222,7 @@ void handle_efsd_event(EfsdEvent *ee)
 			 efsd_metadata_get_key(ee),
 			 efsd_metadata_get_str(ee));
 		  break;
-		default:
+		default: ;
 		}
 	    }
 	  break;
@@ -352,10 +352,10 @@ void handle_efsd_event(EfsdEvent *ee)
 		   efsd_metadata_get_key(ee),
 		   efsd_metadata_get_str(ee));
 	    break;
-	  default:
+	  default: ;
 	  }
       }
-    default:
+    default: ;
     }
   
   /* Cleanup memory allocated for this event */
@@ -372,7 +372,7 @@ sighandler(int signal)
     case SIGPIPE:
       printf("Broken pipe caught.\n");
       break;
-    default:
+    default: ;
     }
 
   exit(-1);

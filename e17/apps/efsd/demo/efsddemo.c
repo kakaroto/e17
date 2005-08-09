@@ -254,7 +254,7 @@ void handle_efsd_event(EfsdEvent *ee)
 			 efsd_metadata_get_key(ee),
 			 efsd_metadata_get_str(ee));
 		  break;
-		default:
+		default: ;
 		}
 	    }
 	  break;
@@ -332,7 +332,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	printf(" -- ERROR: %s\n", strerror(ee->efsd_reply_event.errorcode));
       
       break;
-    default:
+    default: ;
     }
   
   /* Cleanup memory allocated for this event */

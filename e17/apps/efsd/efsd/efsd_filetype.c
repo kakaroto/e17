@@ -1332,7 +1332,7 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 	  }
       }
       break;
-    default:
+    default: ;
     }
 
   D_RETURN_(NULL);

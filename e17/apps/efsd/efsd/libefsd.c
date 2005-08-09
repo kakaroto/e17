@@ -124,6 +124,7 @@ ipc_server_data(void *data, int type, void *event)
    Ecore_Ipc_Event_Server_Data *e;
 
   /*printf("Received event from server..\n");*/
+   fflush(stdout);
 
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
    {
@@ -165,7 +166,7 @@ ipc_server_data(void *data, int type, void *event)
 			break;
 	
                 case 2:
-                        /*printf ("it's an event!\n");*/
+                        /*printf ("it's a reply event!\n");*/
 
 			event = ecore_hash_get(partial_event_hash, e->server);
 			if (!event) {
@@ -198,13 +199,30 @@ ipc_server_data(void *data, int type, void *event)
 							
 					}
 
+					ecore_hash_remove(partial_event_hash, e->server);
+					ecore_hash_remove(partial_command_hash, e->server);
+
+					printf("Command has %d files\n", event->efsd_reply_event.command.efsd_file_cmd.num_files);
+
 					/*printf("Filename is (from ec): %s\n", event->efsd_reply_event.command.efsd_file_cmd.files[0]);*/
 
 					if (event_cb) {
 						(*event_cb)(event);
 					}
+
+					
 					break;
 					
+			}
+			break;
+
+		case 3: 
+			printf("It's a filechange event\n");
+
+			switch (e->minor) {
+				case 100:
+					printf("It's a terminate, we have all our data\n");
+					break;
 			}
 			
                         break;
