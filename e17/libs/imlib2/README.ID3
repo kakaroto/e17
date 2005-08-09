@@ -1,0 +1,122 @@
+A loader for ID3v2 picture tags in audio files		-*- text -*-
+----------------------------------------------
+
+INTRODUCTION
+------------
+
+ID3v2 is a format used to embed metadata within popular audio formats like
+mp3. ID3v2 officially describes a wide range of metadata that could possibly be
+associated with some audio/music, like Artist, Album, Composer etc. (apart from
+being extensible to allow nonstandard arbitrary metadata as well) These pieces
+of data are held as `frames' in an ID3v2 tag in the audio file. One such type of
+frame is the `Associated Picture' (APIC) frame used to store pictures associated
+with the audio (like say, the picture of the lead artist). There could be
+multiple such frames in a file. Visit http://www.id3.org for more information.
+
+Well, I suppose that makes the purpose of this image loader clear. This loader
+depends on the libid3tag library (atleast version 0.15). This is a helper
+library for the MAD, a GPL'd high quality MPEG audio decoder, and can be found
+in the same place as MAD. (http://www.underbit.com/products/mad)
+
+KEY SYNTAX
+----------
+
+The filename to be passed to the loader, is as in imlib2 convention, of the form
+`filename.mp3:key'. The key is a comma separated list of `parameter=value'
+pairs, spaces are significant. Any item without an `=' is treated as the value
+for the parameter `index'. In case of repetition, the last occurrence is
+used. The supported parameters are:
+
++----------+--------------------------------------------------------------------+
+|  index   |Numeric value. 1-based index of picture frame to be extracted.      |
+|          |Defaults to 1, the first frame.                                     |
++----------+--------------------------------------------------------------------+
+|          |An image loaded by the loader can be made to contain a `next' image |
+|          |tag containing the full filename:key string of some other image in  |
+|          |the file, when this parameter in non-zero. In such a case, the next |
+| traverse |tag points to `index+N'th image of the file, where N is the value   |
+|          |given here. Common values include `1', for the next image, and `-1' |
+|          |for the previous image. Default is `1' if there is no key for the   |
+|          |image to be loaded, and `0' otherwise.                              |
++----------+--------------------------------------------------------------------+
+|          |An opaque integer got from the `context' tag of an existing         |
+|          |image. See the section below on the tags provided with each         |
+|          |image. `tag' here refers to data which can be attached to any imlib |
+|          |image, and is not to be confused with ID3 tags. The context of an   |
+|          |existing image passed as a parameter indicates that both images come|
+|          |from the same file. This saves some work for the loader in such a   |
+|  context |case. This parameter is normally not necessary, as such a case      |
+|          |usually occurs when the filename of both the images are the same,   |
+|          |and only the key differs, and this case is taken care of by the     |
+|          |loader automatically. Obscure cases of the same tag for different   |
+|          |filenames (like, symlinks for example) can be taken care by this    |
+|          |parameter. A context is valid as long as any of the images using it |
+|          |are valid.                                                          |
++----------+--------------------------------------------------------------------+
+
+TAGS OUTPUT
+-----------
+
++---------------+---------------------------------------------------------------+
+|     index     |1-based index of picture frame in the file which the image     |
+|               |refers to.                                                     |
++---------------+---------------------------------------------------------------+
+|     count     |The total number of picture frames present in the file to which|
+|               |this picture frame belongs.                                    |
++---------------+---------------------------------------------------------------+
+|               |An opaque id corresponding to the ID3v2 tag from which the     |
+|    context    |picture came. Images from the same tag have the same           |
+|               |context. See the context parameter above for a possible use.   |
++---------------+---------------------------------------------------------------+
+|               |A filename:key string of a related image in the same ID3v2 tag,|
+|               |as required by the `traverse' argument passed for the          |
+|     next      |file. This imlib tag is absent when traverse is 0, and it's    |
+|               |value is NULL when no image frame satisfying the given traverse|
+|               |value is present (like traverse=1 called with the last image   |
+|               |frame).                                                        |
++---------------+---------------------------------------------------------------+
+|   mime-type   |The mime type of the picture rendered.                         |
++---------------+---------------------------------------------------------------+
+|  id3-picture  |A string describing the picture type, amongst a set of         |
+|     -type     |predefined types described by the ID3v2 standard.              |
++---------------+---------------------------------------------------------------+
+|               |An integer between 0-3 describing the text encoding used by the|
+|               |id3-description imlib tag. The string in the tag gives the     |
+|               |corresponding encoding name. The possible values are:          |
+|               +---+-----------------------------------------------------------+
+|id3-description| 0 |                        ISO-8859-1                         |
+|-text-encoding +---+-----------------------------------------------------------+
+|               | 1 |              UTF-16 encoded Unicode with BOM              |
+|               +---+-----------------------------------------------------------+
+|               | 2 |           UTF-16BE encoded Unicode without BOM            |
+|               +---+-----------------------------------------------------------+
+|               | 3 |                   UTF-8 encoded Unicode                   |
++---------------+---+-----------------------------------------------------------+
+|               |A string describing the image, as given in the ID3 tag. Note   |
+|               |that this is different from any comment that might be present  |
+|id3-description|in the image itself, as allowed by the image format. The       |
+|               |encoding used for the string is given by the imlib tag         |
+|               |id3-description-text-encoding.                                 |
++---------------+---------------------------------------------------------------+
+
+Eg: to process all images in a file, the following pseudocode should work:
+
+loadname = `foo.mp3' // with no key
+do {
+	image = load-image (loadname)
+	// do whatever you want with the image
+	loadname = imlib-tag (image, `next')
+} while (loadname != NULL)
+
+
+PERFORMANCE ISSUES
+------------------
+
+The loader parses picture data from audio files and caches them, as long as any
+of the images using the data exist. This is useful when there are many images in
+the same file, as loading subsequent images use this cache. So, caching is
+turned off when there is only one image in the file, and turned on
+otherwise. When memory consumption is of importance, developers likely to use
+this loader frequently need to keep this in mind when deciding on the imlib
+cache size - with caching on, as long as the image remains in use or in cache,
+this parsed data stays along.
