@@ -85,21 +85,10 @@
 	.type PT_(imlib_mmx_reshade_copy_rgba_to_rgba,@function)
 .globl PR_(imlib_mmx_reshade_copy_rgb_to_rgba)
 	.type PT_(imlib_mmx_reshade_copy_rgb_to_rgba,@function)
-	
-/*\ Some useful masks \*/
-m0X000000: .byte   0,   0,   0,   0,   0,   0, 255,   0
-m10000000: .byte   0,   0,   0,   0,   0,   0,   0,   1
-m00XXXXXX: .byte 255, 255, 255, 255, 255, 255,   0,   0
-mVX000000: .byte   0,   0,   0,   0,   0,   0, 255, 127
-mV0000000: .byte   0,   0,   0,   0,   0,   0,   0, 128
-m0XXX0XXX: .byte 255, 255, 255,   0, 255, 255, 255,   0
-mX000X000: .byte   0,   0,   0, 255,   0,   0,   0, 255
-m10001000: .byte   0,   0,   0,   1,   0,   0,   0,   1
-m000V0V0V: .byte 127,   0, 127,   0, 127,   0,   0,   0
-mI0000000: .byte   0,   0,   0,   0,   0,   0,   0,  64
-m0VVV0VVV: .byte 127, 127, 127,   0, 127, 127, 127,   0
-c1: .word 0x1, 0x1, 0x1, 0x1
 
+#include "asm_loadimmq.S"
+
+	
 /*\ MMX register use:
 |*| %mm1 = Source value
 |*| %mm2 = Destination value
@@ -162,7 +151,8 @@ PR_(imlib_mmx_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq c1, %mm5
+	LOAD_IMMQ(c1, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	LOOP_START
 1:
@@ -218,9 +208,10 @@ PR_(imlib_mmx_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m0X000000, %mm5
-	movq m00XXXXXX, %mm6
-	movq c1, %mm7
+	LOAD_IMMQ(m0X000000, %mm5)
+	LOAD_IMMQ(m00XXXXXX, %mm6)
+	LOAD_IMMQ(c1, %mm7)
+	CLEANUP_IMMQ_LOADS(3)
 
 	LOOP_START
 1:
@@ -272,8 +263,9 @@ SIZE(imlib_mmx_blend_rgba_to_rgba)
 PR_(imlib_mmx_copy_rgba_to_rgb):
 	ENTER
 
-	movq m0XXX0XXX, %mm5
-	movq mX000X000, %mm6
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	LOAD_IMMQ(mX000X000, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	/*\ Two at a time: last item is at %ecx = 0 \*/
 	subl $4, %esi
@@ -342,7 +334,8 @@ SIZE(imlib_mmx_copy_rgba_to_rgba)
 PR_(imlib_mmx_copy_rgb_to_rgba):
 	ENTER
 
-	movq mX000X000, %mm5
+	LOAD_IMMQ(mX000X000, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -415,8 +408,9 @@ PR_(imlib_mmx_add_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq mVX000000, %mm5
-	movq m00XXXXXX, %mm6
+	LOAD_IMMQ(mVX000000, %mm5)
+	LOAD_IMMQ(m00XXXXXX, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	LOOP_START
 1:
@@ -463,7 +457,8 @@ SIZE(imlib_mmx_add_blend_rgba_to_rgba)
 PR_(imlib_mmx_add_copy_rgba_to_rgb):
 	ENTER
 
-	movq m0XXX0XXX, %mm5
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -533,7 +528,8 @@ SIZE(imlib_mmx_add_copy_rgba_to_rgba)
 PR_(imlib_mmx_add_copy_rgb_to_rgba):
 	ENTER
 
-	movq mX000X000, %mm5
+	LOAD_IMMQ(mX000X000, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -613,8 +609,9 @@ PR_(imlib_mmx_subtract_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq mV0000000, %mm5
-	movq m00XXXXXX, %mm6
+	LOAD_IMMQ(mV0000000, %mm5)
+	LOAD_IMMQ(m00XXXXXX, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	LOOP_START
 1:
@@ -661,7 +658,8 @@ SIZE(imlib_mmx_subtract_blend_rgba_to_rgba)
 PR_(imlib_mmx_subtract_copy_rgba_to_rgb):
 	ENTER
 
-	movq m0XXX0XXX, %mm5
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -699,7 +697,8 @@ SIZE(imlib_mmx_subtract_copy_rgba_to_rgb)
 PR_(imlib_mmx_subtract_copy_rgba_to_rgba):
 	ENTER
 
-	movq mX000X000, %mm5
+	LOAD_IMMQ(mX000X000, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -741,7 +740,8 @@ SIZE(imlib_mmx_subtract_copy_rgba_to_rgba)
 PR_(imlib_mmx_subtract_copy_rgb_to_rgba):
 	ENTER
 
-	movq mX000X000, %mm5
+	LOAD_IMMQ(mX000X000, %mm5)
+	CLEANUP_IMMQ_LOADS(1)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -780,7 +780,8 @@ PR_(imlib_mmx_reshade_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m000V0V0V, %mm6
+	LOAD_IMMQ(m000V0V0V, %mm6)
+	CLEANUP_IMMQ_LOADS(1)
 
 	LOOP_START
 1:
@@ -823,9 +824,10 @@ PR_(imlib_mmx_reshade_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq mI0000000, %mm5
-	movq m000V0V0V, %mm6
-	movq m00XXXXXX, %mm7
+	LOAD_IMMQ(mI0000000, %mm5)
+	LOAD_IMMQ(m000V0V0V, %mm6)
+	LOAD_IMMQ(m00XXXXXX, %mm7)
+	CLEANUP_IMMQ_LOADS(3)
 
 	LOOP_START
 1:
@@ -875,8 +877,9 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgb):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m0XXX0XXX, %mm5
-	movq m0VVV0VVV, %mm6
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	LOAD_IMMQ(m0VVV0VVV, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -939,8 +942,9 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m0XXX0XXX, %mm5
-	movq m0VVV0VVV, %mm6
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	LOAD_IMMQ(m0VVV0VVV, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	subl $4, %esi
 	subl $4, %edi
@@ -1004,9 +1008,10 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba):
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m0XXX0XXX, %mm5
-	movq m0VVV0VVV, %mm6
-	movq mX000X000, %mm7
+	LOAD_IMMQ(m0XXX0XXX, %mm5)
+	LOAD_IMMQ(m0VVV0VVV, %mm6)
+	LOAD_IMMQ(mX000X000, %mm7)
+	CLEANUP_IMMQ_LOADS(3)
 
 	subl $4, %esi
 	subl $4, %edi

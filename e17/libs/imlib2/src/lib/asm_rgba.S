@@ -55,16 +55,7 @@
 .globl PR_(imlib_get_cpuid)
 	.type PT_(imlib_get_cpuid,@function)
 
-/*\ Some useful masks \*/
-m_rb: .long 0x00f800f8, 0x00f800f8
-m_r:  .long 0xf800f800, 0xf800f800
-m_g6: .long 0x0000fc00, 0x0000fc00
-m_g5: .long 0x0000f800, 0x0000f800
-/*\ Multiply constants to fake two shifts at once \*/
-mul_rgb565: .long 0x20000004, 0x20000004
-mul_bgr565: .long 0x00042000, 0x00042000
-mul_rgb555: .long 0x20000008, 0x20000008
-mul_bgr555: .long 0x00082000, 0x00082000
+#include "asm_loadimmq.S"
 
 /*\ Common code \*/
 /*\ Save registers, load common parameters \*/
@@ -114,18 +105,21 @@ mul_bgr555: .long 0x00082000, 0x00082000
 
 
 PR_(imlib_mmx_bgr565_fast):
-	movq mul_bgr565, %mm7	/*\ This constant is the only difference \*/
+	LOAD_IMMQ(mul_bgr565, %mm7)	/*\ This constant is the only difference \*/
+	CLEANUP_IMMQ_LOADS(1)
 	jmp .rgb565_fast_entry
 
 SIZE(imlib_mmx_bgr565_fast)
 
 PR_(imlib_mmx_rgb565_fast):
-	movq mul_rgb565, %mm7
+	LOAD_IMMQ(mul_rgb565, %mm7)
+	CLEANUP_IMMQ_LOADS(1)
 .rgb565_fast_entry:
 	ENTER
 
-	movq m_rb, %mm5
-	movq m_g6, %mm6
+	LOAD_IMMQ(m_rb, %mm5)
+	LOAD_IMMQ(m_g6, %mm6)
+	CLEANUP_IMMQ_LOADS(1)
 
 	LOOP_START
 
@@ -193,18 +187,21 @@ SIZE(imlib_mmx_rgb565_fast)
 
 
 PR_(imlib_mmx_bgr555_fast):
-	movq mul_bgr555, %mm7	/*\ This constant is the only difference \*/
+	LOAD_IMMQ(mul_bgr555, %mm7)	/*\ This constant is the only difference \*/
+	CLEANUP_IMMQ_LOADS(1)
 	jmp .rgb555_fast_entry
 
 SIZE(imlib_mmx_bgr555_fast)
 
 PR_(imlib_mmx_rgb555_fast):
-	movq mul_rgb555, %mm7
+	LOAD_IMMQ(mul_rgb555, %mm7)
+	CLEANUP_IMMQ_LOADS(1)
 .rgb555_fast_entry:
 	ENTER
 
-	movq m_rb, %mm5
-	movq m_g5, %mm6
+	LOAD_IMMQ(m_rb, %mm5)
+	LOAD_IMMQ(m_g5, %mm6)
+	CLEANUP_IMMQ_LOADS(2)
 
 	LOOP_START
 
