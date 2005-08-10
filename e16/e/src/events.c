@@ -555,8 +555,7 @@ WaitEvent(void)
 
 	if (count > pcount)
 	   pcount = count;
-	if (!pcount)
-	   break;
+
 	if (XPending(disp))
 	   continue;
 
