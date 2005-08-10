@@ -40,6 +40,19 @@ static int          tmp_st_tooltip;
 static int          tmp_st_hilight;
 
 static void
+TransparencyChangeTimeout(int val, void *data __UNUSED__)
+{
+   TransparencySet(val);
+}
+
+static void
+TransparencyChange(int val)
+{
+   RemoveTimerEvent("PT-Change");
+   DoIn("PT-Change", .01, TransparencyChangeTimeout, val, NULL);
+}
+
+static void
 CB_ConfigureTrans(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (val < 2)
@@ -72,8 +85,9 @@ CB_ConfigureTrans(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.trans.pager = ICLASS_ATTR_BG;
 	Conf.trans.iconbox = ICLASS_ATTR_BG;
 	Conf.trans.warplist = ICLASS_ATTR_BG;
-
-	TransparencySet(tmp_theme_transparency);
+#if 0				/* Should not be necessary */
+	TransparencyChange(tmp_theme_transparency);
+#endif
      }
    autosave();
 }
@@ -88,10 +102,8 @@ CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
    Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
 	     tmp_theme_transparency);
    DialogItemSetText(di, s);
-   DialogDrawItems(tr_sel_dialog, di, 0, 0, 99999, 99999);
 
-   /* FIXME - We may not want to do this unless things are speeded up */
-   TransparencySet(tmp_theme_transparency);
+   TransparencyChange(tmp_theme_transparency);
 }
 
 static void

@@ -91,10 +91,26 @@ TransparencySet(int transparency)
 	prev_alpha = Conf.trans.alpha;
 	Conf.trans.alpha = transparency;
      }
+
+   if (!changed)
+      return;
+
    /* Generate the color modifier tables */
    TransparencyMakeColorModifier();
-   if (changed)
-      ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
+
+   if (prev_alpha == 0)
+     {
+	/* Hack to get tiled backgrounds regenerated at full size */
+	int                 i, num;
+
+	num = DesksGetNumber();
+	for (i = 0; i < num; i++)
+	  {
+	     BackgroundPixmapFree(DeskGetBackground(i));
+	     DeskRefresh(i);
+	  }
+     }
+   ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
 }
 
 #endif /* ENABLE_THEME_TRANSPARENCY */

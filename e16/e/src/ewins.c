@@ -1599,17 +1599,25 @@ EwinsEventsConfigure(int mode)
 }
 
 static void
-EwinsTouch(void)
+EwinsTouch(int desk)
 {
    int                 i, num;
    EWin               *const *lst, *ewin;
 
-   lst = EwinListStackGet(&num);
+   if (desk < 0)
+      lst = EwinListGetAll(&num);
+   else
+      lst = EwinListGetForDesk(&num, desk);
+
    for (i = num - 1; i >= 0; i--)
      {
 	ewin = lst[i];
-	if (EwinIsMapped(ewin))
+	if (EwinIsMapped(ewin) && EwinIsOnScreen(ewin))
+#if 1				/* FIXME - Which one? */
 	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
+#else
+	   EwinResize(ewin, ewin->client.w, ewin->client.h);
+#endif
      }
 }
 
@@ -1872,12 +1880,8 @@ EwinsInit(void)
  */
 
 static void
-EwinsSighan(int sig, void *prm __UNUSED__)
+EwinsSighan(int sig, void *prm)
 {
-   EWin               *ewin;
-   EWin              **ewin_lst;
-   int                 win_cnt, i;
-
    switch (sig)
      {
      case ESIGNAL_INIT:
@@ -1894,19 +1898,13 @@ EwinsSighan(int sig, void *prm __UNUSED__)
 	break;
 #endif
      case ESIGNAL_DESK_RESIZE:
-	EwinsTouch();
+	EwinsTouch(-1);
 	break;
      case ESIGNAL_THEME_TRANS_CHANGE:
+	EwinsTouch(DesksGetCurrent());
+	break;
      case ESIGNAL_BACKGROUND_CHANGE:
-	/* FIXME - Only visible windows */
-	/* FIXME - BG: Only affected desk */
-	ewin_lst = (EWin **) EwinListStackGet(&win_cnt);
-	for (i = 0; i < win_cnt; i++)
-	  {
-	     ewin = ewin_lst[i];
-	     if (EwinIsMapped(ewin))
-		EwinResize(ewin, ewin->client.w, ewin->client.h);
-	  }
+	EwinsTouch((long)prm);
 	break;
      }
 }
