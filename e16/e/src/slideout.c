@@ -67,7 +67,6 @@ static void
 SlideoutShow(Slideout * s, EWin * ewin, Window win)
 {
    int                 x, y, i, xx, yy, sw, sh;
-   Window              dw;
    char                pdir;
    XSetWindowAttributes att;
    int                 w, h;
@@ -79,7 +78,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 
    SlideoutCalcSize(s);
    EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
-   XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &x, &y, &dw);
+   ETranslateCoordinates(win, VRoot.win, 0, 0, &x, &y, NULL);
 
    sw = EoGetW(s);
    sh = EoGetH(s);
