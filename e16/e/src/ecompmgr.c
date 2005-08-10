@@ -37,9 +37,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <sys/poll.h>
-#include <sys/time.h>
-#include <time.h>
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -83,7 +80,6 @@ typedef struct
    struct
    {
       int                 class;	/* FIXME - Remove? */
-      int                 map_state;	/* FIXME - Remove? */
       int                 depth;	/* FIXME - Remove? */
       Visual             *visual;	/* FIXME - Remove? */
       int                 border_width;
@@ -168,9 +164,10 @@ static XserverRegion allDamage;
 
 #define OPAQUE          0xffffffff
 
-#define WINDOW_SOLID    0
-#define WINDOW_TRANS    1
-#define WINDOW_ARGB     2
+#define WINDOW_UNREDIR  0
+#define WINDOW_SOLID    1
+#define WINDOW_TRANS    2
+#define WINDOW_ARGB     3
 
 static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrDamageAll(void);
@@ -972,7 +969,9 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    /* Invalidate stuff changed by opacity */
    ECompMgrWinInvalidate(eo, INV_OPACITY);
 
-   if (EVisualIsARGB(cw->a.visual))
+   if (eo->noredir)
+      mode = WINDOW_UNREDIR;
+   else if (EVisualIsARGB(cw->a.visual))
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
       mode = WINDOW_TRANS;
@@ -996,9 +995,6 @@ ECompMgrWinMap(EObj * eo)
 
    D1printf("ECompMgrWinMap %#lx\n", eo->win);
 
-   cw->a.map_state = IsViewable;
-   cw->visible = 1;
-
 #if CAN_DO_USABLE
    cw->damage_bounds.x = cw->damage_bounds.y = 0;
    cw->damage_bounds.width = cw->damage_bounds.height = 0;
@@ -1016,8 +1012,6 @@ ECompMgrWinUnmap(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
-
-   cw->visible = 0;
 
    if (cw->extents != None)
       ECompMgrDamageMergeObject(eo, cw->extents, 0);
@@ -1090,12 +1084,14 @@ ECompMgrWinNew(EObj * eo)
 #endif
 
    cw->a.class = attr.class;	/* FIXME - remove */
-   cw->a.map_state = attr.map_state;	/* FIXME - remove */
    cw->a.depth = attr.depth;
    cw->a.visual = attr.visual;
    cw->a.border_width = attr.border_width;
 
-   if (eo->type != EOBJ_TYPE_DESK)
+   if (eo->type == EOBJ_TYPE_DESK)
+      eo->noredir = 1;
+
+   if (!eo->noredir)
      {
 	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeRedirectWindow(disp, eo->win, CompositeRedirectManual);
@@ -1292,21 +1288,22 @@ ECompMgrWinDel(EObj * eo)
 	DeskBackgroundPictureFree((Desk *) eo);
 	cw->pixmap = None;
      }
-   else
+
+   if (!eo->noredir)
      {
 	if (!eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
+     }
 
-	ECompMgrWinInvalidate(eo, INV_ALL);
+   ECompMgrWinInvalidate(eo, INV_ALL);
 
-	if (!eo->gone)
-	  {
-	     if (cw->picture != None)
-		XRenderFreePicture(disp, cw->picture);
+   if (!eo->gone)
+     {
+	if (cw->picture != None)
+	   XRenderFreePicture(disp, cw->picture);
 
-	     if (cw->damage != None)
-		XDamageDestroy(disp, cw->damage);
-	  }
+	if (cw->damage != None)
+	   XDamageDestroy(disp, cw->damage);
      }
 
    _EFREE(eo->cmhook);
@@ -1465,12 +1462,9 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (!cw)
 	   continue;
 
-	D4printf(" - %#lx desk=%d shown=%d vis=%d dam=%d pict=%#lx\n",
-		 eo->win, eo->desk, eo->shown, cw->visible, cw->damaged,
-		 cw->picture);
+	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
+		 eo->win, eo->desk, eo->shown, cw->damaged, cw->picture);
 
-	if (!cw->visible)
-	   continue;
 #if CAN_DO_USABLE
 	if (!cw->usable)
 	   continue;
@@ -1569,6 +1563,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
 	switch (cw->mode)
 	  {
+	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
 	     D2printf(" * solid pict=%#lx d=%d l=%d\n",
 		      cw->picture, eo->desk, eo->ilayer);

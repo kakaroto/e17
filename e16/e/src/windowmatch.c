@@ -717,6 +717,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
      case EWIN_OP_SHADOW:
 	WINOP_GET_BOOL(ewin->o.shadow, args);
 	break;
+
+     case EWIN_OP_NO_REDIRECT:
+	WINOP_GET_BOOL(ewin->o.noredir, args);
+	break;
 #endif
 
      case EWIN_OP_TITLE:

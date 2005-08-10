@@ -68,6 +68,7 @@ static const WinOp  winops[] = {
    {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
    {"zoom", 2, 1, 0, EWIN_OP_ZOOM},
    {"snap", 0, 1, 0, EWIN_OP_SNAP},
+   {"noredir", 4, 1, 1, EWIN_OP_NO_REDIRECT},
    {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
 };
 

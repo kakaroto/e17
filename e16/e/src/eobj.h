@@ -41,6 +41,7 @@ struct _eobj
    char                gone;
 #if USE_COMPOSITE
    char                shadow;	/* Enable shadows */
+   char                noredir;	/* Do not redirect */
    unsigned int        opacity;
    void               *cmhook;
 #endif
@@ -80,11 +81,12 @@ struct _eobj
 #define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
 #define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #define EoGetShadow(eo)         ((eo)->o.shadow)
+#define EoSetNoRedirect(eo, _x) (eo)->o.noredir = (_x)
+#define EoGetNoRedirect(eo)     ((eo)->o.noredir)
 #else
 #define EoSetOpacity(eo, _o)
 #define EoChangeOpacity(eo, _o)
 #define EoSetShadow(eo, _x)
-#define EoGetShadow(eo)         0
 #endif
 
 #define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)

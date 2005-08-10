@@ -57,6 +57,7 @@ typedef enum
    EWIN_OP_SKIP_LISTS,
    EWIN_OP_ZOOM,
    EWIN_OP_SNAP,
+   EWIN_OP_NO_REDIRECT,
 } winop_e;
 
 typedef struct

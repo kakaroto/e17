@@ -465,6 +465,13 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	if (SetEwinBoolean("shadow", &on, param1, 0))
 	   EoSetShadow(ewin, !on);
 	break;
+
+     case EWIN_OP_NO_REDIRECT:
+	on = EoGetNoRedirect(ewin);
+	on = ewin->o.noredir;
+	if (SetEwinBoolean("noredir", &on, param1, 0))
+	   EoSetNoRedirect(ewin, !on);
+	break;
 #endif
 
      case EWIN_OP_SHADE:
@@ -1087,7 +1094,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "State        %i   Shown        %i   Visibility   %i   Active       %i\n"
 	     "Member of groups        %i\n"
 #if USE_COMPOSITE
-	     "Opacity    %3i(%x)  Shadow       %i\n"
+	     "Opacity    %3i(%x)  Shadow       %i   NoRedirect   %i\n"
 #else
 	     "Opacity    %3i\n"
 #endif
@@ -1131,9 +1138,9 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
 	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
 	     ewin->state.visibility, ewin->state.active, ewin->num_groups,
-	     ewin->ewmh.opacity
+	     ewin->ewmh.opacity >> 24
 #if USE_COMPOSITE
-	     , EoGetOpacity(ewin), EoGetShadow(ewin)
+	     , EoGetOpacity(ewin), EoGetShadow(ewin), EoGetNoRedirect(ewin)
 #endif
       );
 }
@@ -1208,19 +1215,19 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 
    lst = EobjListStackGet(&num);
 
-   IpcPrintf("Num   window T V  D   L     pos       size    S F C Name\n");
+   IpcPrintf("Num   window T V  D S F   L     pos       size    C R Name\n");
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
-	IpcPrintf(" %2d %#lx %d %d %2d %3d %5d,%5d %4dx%4d %d %d %d %s\n", i,
-		  eo->win, eo->type, eo->shown, eo->desk, eo->ilayer,
-		  eo->x, eo->y, eo->w, eo->h, eo->sticky, eo->floating,
+	IpcPrintf(" %2d %#lx %d %d %2d %d %d %3d %5d,%5d %4dx%4d %d %d %s\n",
+		  i, eo->win, eo->type, eo->shown, eo->desk, eo->sticky,
+		  eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE
 		  (eo->cmhook) ? 1 : 0,
 #else
 		  0,
 #endif
-		  eo->name);
+		  !eo->noredir, eo->name);
      }
 }
 
