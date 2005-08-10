@@ -276,6 +276,8 @@ int                 Esnprintf(va_alist);
 #define EVENT_KEY_DOWN    4
 #define EVENT_KEY_UP      5
 #define EVENT_DOUBLE_DOWN 6
+#define EVENT_FOCUS_IN    7
+#define EVENT_FOCUS_OUT   8
 
 #define GROUP_SELECT_ALL             0
 #define GROUP_SELECT_EWIN_ONLY       1

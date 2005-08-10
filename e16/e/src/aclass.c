@@ -897,6 +897,16 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 	modifiers = ev->xcrossing.state & mask;
 	mouse = 1;
 	break;
+     case FocusIn:
+	type = EVENT_FOCUS_IN;
+	button = -1;
+	mouse = 1;
+	break;
+     case FocusOut:
+	type = EVENT_FOCUS_OUT;
+	button = -1;
+	mouse = 1;
+	break;
      default:
 	break;
      }

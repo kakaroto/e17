@@ -1778,8 +1778,14 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
      case MotionNotify:
      case EnterNotify:
      case LeaveNotify:
+	break;
      case FocusIn:
      case FocusOut:
+	if (ev->xfocus.detail == NotifyInferior)
+	   break;
+	if (ewin->border->aclass)
+	   ActionclassEvent(ewin->border->aclass, ev, ewin);
+	break;
      case ConfigureNotify:
      case GravityNotify:
 	break;

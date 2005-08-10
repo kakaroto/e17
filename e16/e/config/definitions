@@ -398,6 +398,8 @@
 #define __KEY_PRESS 4
 #define __KEY_RELEASE 5
 #define __DOUBLE_CLICK 6
+#define __FOCUS_IN 7
+#define __FOCUS_OUT 8
 
 #define __USE_BORDER 480
 #define __HAS_NAME 481
