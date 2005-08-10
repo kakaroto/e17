@@ -25,6 +25,8 @@
 #include "ewins.h"
 #include "xwin.h"
 
+#define DEBUG_DIALOGS 0
+
 typedef struct
 {
    char                horizontal;
@@ -1482,6 +1484,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
       d->yu2 = y;
 
    dialog_update_pending = 1;
+
+#if DEBUG_DIALOGS
+   Eprintf("DialogDrawItems t=%d u=%d - %d,%d -> %d,%d\n", di->type, di->update,
+	   d->xu1, d->yu1, d->xu2, d->yu2);
+#endif
 }
 
 static void
@@ -1496,7 +1503,7 @@ DialogDrawItem(Dialog * d, DItem * di)
        di->x + di->w <= d->xu1 || di->y + di->h <= d->yu1)
       goto done;
 
-#if 0
+#if DEBUG_DIALOGS
    Eprintf("DialogDrawItem t=%d u=%d - %d,%d -> %d,%d\n", di->type, di->update,
 	   d->xu1, d->yu1, d->xu2, d->yu2);
 #endif
@@ -2144,6 +2151,7 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
    DItem              *di;
+   int                 x, y, wheel_jump;
 
    di = DialogFindDItem(d, win);
    if (!di)
@@ -2157,47 +2165,32 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 	break;
 
      case DITEM_SLIDER:
-	if ((ev->xbutton.button == 2) ||
-	    (ev->xbutton.button == 4) || (ev->xbutton.button == 5))
-	  {
-	     int                 wheel_jump = di->item.slider.jump / 2;
+#if 0				/* Do any themes have this? */
+	if (win == di->item.slider.border_win)
+	   break;
+#endif
 
-	     if (!wheel_jump)
-		wheel_jump++;
-	     if (ev->xbutton.button == 5)
-	       {
-		  di->item.slider.val -= wheel_jump;
-		  if (di->item.slider.val < di->item.slider.lower)
-		     di->item.slider.val = di->item.slider.lower;
-	       }
-	     else if (ev->xbutton.button == 4)
-	       {
-		  di->item.slider.val += wheel_jump;
-		  if (di->item.slider.val > di->item.slider.upper)
-		     di->item.slider.val = di->item.slider.upper;
-	       }
-	     else
-	       {
-		  if (di->item.slider.horizontal)
-		    {
-		       di->item.slider.val = ev->xbutton.x *
-			  (di->item.slider.upper - di->item.slider.lower) /
-			  di->w;
-		    }
-		  else
-		    {
-		       di->item.slider.val = ((di->h - ev->xbutton.y) *
-					      (di->item.slider.upper -
-					       di->item.slider.lower) / di->h);
-		    }
-	       }
-	     if (di->item.slider.val_ptr)
-		*di->item.slider.val_ptr = di->item.slider.val;
-	     if (di->func)
-		(di->func) (d, di->val, di->data);
-	  }
-	else if (win == di->item.slider.base_win)
+	if (win == di->item.slider.knob_win)
 	  {
+	     if (ev->xbutton.button >= 1 && ev->xbutton.button <= 3)
+	       {
+		  di->item.slider.in_drag = 1;
+		  if (di->item.slider.horizontal)
+		     di->item.slider.wanted_val = di->item.slider.knob_x;
+		  else
+		     di->item.slider.wanted_val = di->item.slider.knob_y;
+		  break;
+	       }
+	  }
+
+	/* Coords -> item.slider.base_win */
+	ETranslateCoordinates(win, di->item.slider.base_win,
+			      ev->xbutton.x, ev->xbutton.y, &x, &y, NULL);
+
+	switch (ev->xbutton.button)
+	  {
+	  case 1:
+	  case 3:
 	     if (di->item.slider.horizontal)
 	       {
 		  if (ev->xbutton.x >
@@ -2214,23 +2207,44 @@ DialogEventMouseDown(Dialog * d, XEvent * ev)
 		  else
 		     di->item.slider.val += di->item.slider.jump;
 	       }
-	     if (di->item.slider.val < di->item.slider.lower)
-		di->item.slider.val = di->item.slider.lower;
-	     if (di->item.slider.val > di->item.slider.upper)
-		di->item.slider.val = di->item.slider.upper;
-	     if (di->item.slider.val_ptr)
-		*di->item.slider.val_ptr = di->item.slider.val;
-	     if (di->func)
-		(di->func) (d, di->val, di->data);
-	  }
-	else if (win == di->item.slider.knob_win)
-	  {
-	     di->item.slider.in_drag = 1;
+	     break;
+
+	  case 2:
 	     if (di->item.slider.horizontal)
-		di->item.slider.wanted_val = di->item.slider.knob_x;
+		di->item.slider.val = x *
+		   (di->item.slider.upper - di->item.slider.lower) / di->w;
 	     else
-		di->item.slider.wanted_val = di->item.slider.knob_y;
+		di->item.slider.val = ((di->h - y) *
+				       (di->item.slider.upper -
+					di->item.slider.lower) / di->h);
+	     break;
+
+	  case 4:
+	  case 5:
+	     wheel_jump = di->item.slider.jump / 2;
+	     if (!wheel_jump)
+		wheel_jump++;
+
+	     if (ev->xbutton.button == 5)
+	       {
+		  di->item.slider.val -= wheel_jump;
+	       }
+	     else if (ev->xbutton.button == 4)
+	       {
+		  di->item.slider.val += wheel_jump;
+	       }
+	     break;
 	  }
+	if (di->item.slider.val < di->item.slider.lower)
+	   di->item.slider.val = di->item.slider.lower;
+	if (di->item.slider.val > di->item.slider.upper)
+	   di->item.slider.val = di->item.slider.upper;
+	if (di->item.slider.val_ptr)
+	   *di->item.slider.val_ptr = di->item.slider.val;
+#if 0				/* Remove? */
+	if (di->func)
+	   (di->func) (d, di->val, di->data);
+#endif
 	break;
      }
 
@@ -2285,6 +2299,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	if (di->item.radio_button.val_ptr)
 	   *di->item.radio_button.val_ptr = di->item.radio_button.val;
 	break;
+
      case DITEM_SLIDER:
 	if (win == di->item.slider.knob_win)
 	   di->item.slider.in_drag = 0;
