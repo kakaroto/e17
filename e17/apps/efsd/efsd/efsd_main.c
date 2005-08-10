@@ -128,6 +128,8 @@ static void   main_thread_launch(EfsdCommand *ecom, Ecore_Ipc_Client* client);
 static void   main_thread_launch(EfsdCommand *ecom, int client);
 #endif
 
+
+
 static void   main_thread_detach(void);
 
 static void  *main_handle_client_command(void *container);
@@ -144,11 +146,45 @@ static void   main_daemonize(void);
 static void   main_check_permissions(void);
 static void   main_check_options(int argc, char**argv);
 
+int queue_process_idler(void*);
+
+extern Ecore_List* process_queue;
+extern pthread_mutex_t queue_mutex;
+extern int msg_count=0;
 
 static Ecore_Ipc_Client* cl;
 
 /* *********************************** */
 /* IPC Functions */
+int queue_process_idler(void* data) {
+	ecore_ipc_message* msg = NULL;
+
+	
+	if (msg_count > 0) {
+		
+	LOCK(&queue_mutex);
+
+	ecore_list_goto_first(process_queue);
+	msg = ecore_list_next(process_queue);
+
+	if (msg) {
+		ecore_ipc_client_send(msg->client, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
+		free(msg);
+
+		ecore_list_remove_first(process_queue);
+		msg_count--;
+	}
+
+	UNLOCK(&queue_mutex);
+
+	}
+
+
+	return 1;
+}
+
+
+
 
 int
 ipc_client_add(void *data, int type, void *event)
@@ -425,7 +461,7 @@ main_handle_client_command(void *data)
     }
 
   ecore_hash_remove(partial_command_hash, client);
-  efsd_cmd_free(command);
+  /*efsd_cmd_free(command);*/
 
 #if USE_THREADS
   if (container->threaded)
@@ -693,7 +729,6 @@ main_handle_fam_events(void)
 	      efsd_stat_remove(famev_filename_canonical, TRUE);
 	    }
 
-          printf("Client is %p, internal is %p\n", emr->client, EFSD_CLIENT_INTERNAL);
 	  if (emr->client == EFSD_CLIENT_INTERNAL)
 	    {
 	      if ((famev.code == FAMChanged) || (famev.code == FAMCreated))
@@ -740,7 +775,6 @@ main_handle_fam_events(void)
 		  if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 		    {
 		      printf("1\n");
-		      printf("Client is %p\n", emr->client);
 		      efsd_monitor_send_filechange_event(m, emr, famev.code, famev.filename);
 		    }		      			  
 		}
@@ -897,6 +931,10 @@ main_handle_connections(void)
 
 
    }
+
+  process_queue = ecore_list_new();
+
+  ecore_idler_add(&queue_process_idler, NULL);
 
   ecore_main_loop_begin();
 

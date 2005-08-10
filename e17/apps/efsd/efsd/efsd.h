@@ -25,10 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_h
 #define efsd_h
 
-#if HAVE_ECORE
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -265,6 +263,7 @@ EfsdEvent;
 #if HAVE_ECORE
 typedef struct ecore_ipc_message ecore_ipc_message;
 struct ecore_ipc_message {
+
 	int major;
 	int minor;
 	int ref;
@@ -272,6 +271,10 @@ struct ecore_ipc_message {
 	int response;
 	void* data;
 	int len;
+
+	Ecore_Ipc_Client* client;
+	Ecore_Ipc_Client* server;
+	int dest; /*1 = client, 2=server*/
 };
 
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len);

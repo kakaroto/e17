@@ -49,7 +49,7 @@ void efsd_meta_monitor_init(void);
  *
  * Returns TRUE when successful, FALSE otherwise.
  */
-int  efsd_meta_monitor_add(EfsdCommand *cmd, int client);
+int  efsd_meta_monitor_add(EfsdCommand *cmd, Ecore_Ipc_Client* client);
 
 
 /**
@@ -65,7 +65,7 @@ int  efsd_meta_monitor_add(EfsdCommand *cmd, int client);
  *
  * Returns TRUE when successful, FALSE otherwise.
  */
-int  efsd_meta_monitor_del(EfsdCommand *cmd, int client);
+int  efsd_meta_monitor_del(EfsdCommand *cmd, Ecore_Ipc_Client* client);
 
 /**
  * efsd_meta_monitor_notify - Reports changed metadata.
@@ -89,6 +89,6 @@ void efsd_meta_monitor_notify(char *file, char *key, EfsdDatatype type,
  * This function is called when the connection to a client ends.
  * It cleans up all monitors that this client had still registered.
  */
-void efsd_meta_monitor_cleanup_client(int client);
+void efsd_meta_monitor_cleanup_client(Ecore_Ipc_Client* client);
 
 #endif

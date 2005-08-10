@@ -419,7 +419,6 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, Ecore_Ipc_Client* client)
       if (((EfsdMonitorRequest*)efsd_list_data(l))->client == client)
 	{
 	  LOCK(&m->use_count_mutex);
-	  printf("Client is %p, interal is %p\n", client, EFSD_CLIENT_INTERNAL);
 	  if (client == EFSD_CLIENT_INTERNAL)
 	    {
 	      

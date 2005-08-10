@@ -8,6 +8,7 @@
 #undef PACKAGE_BIN_DIR
 #undef PACKAGE_LIB_DIR
 #undef USE_THREADS
+#undef HAVE_ECORE
 #undef HAVE_STATFS
 #undef HAVE_STATVFS
 #undef NO_STACK_TRACE

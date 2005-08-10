@@ -61,8 +61,8 @@ struct efsd_meta_monitor
 
 static EfsdMetaMonitor *meta_monitor_new(char *filename, char *key);
 static void             meta_monitor_free(EfsdMetaMonitor *m);
-static void             meta_monitor_add_client(EfsdMetaMonitor *m, EfsdFileCmd *cmd, int client);
-static void             meta_monitor_del_client(EfsdMetaMonitor *m, int client, int do_lock);
+static void             meta_monitor_add_client(EfsdMetaMonitor *m, EfsdFileCmd *cmd, Ecore_Ipc_Client* client);
+static void             meta_monitor_del_client(EfsdMetaMonitor *m, Ecore_Ipc_Client* client, int do_lock);
 static EfsdMetaMonitor *meta_monitor_find(char *file, char *key);
 static void             meta_monitor_get_key(char *file, char *key,
 					     char *result, int result_len);
@@ -129,7 +129,7 @@ meta_monitor_free(EfsdMetaMonitor *monitor)
 
 
 static void                   
-meta_monitor_add_client(EfsdMetaMonitor *monitor, EfsdFileCmd *cmd, int client)
+meta_monitor_add_client(EfsdMetaMonitor *monitor, EfsdFileCmd *cmd, Ecore_Ipc_Client* client)
 {
   EfsdList *l = NULL;
   EfsdMonitorRequest *emr = NULL;
@@ -172,7 +172,7 @@ meta_monitor_add_client(EfsdMetaMonitor *monitor, EfsdFileCmd *cmd, int client)
 
 
 static void                   
-meta_monitor_del_client(EfsdMetaMonitor *monitor, int client, int do_lock)
+meta_monitor_del_client(EfsdMetaMonitor *monitor, Ecore_Ipc_Client* client, int do_lock)
 {
   EfsdList *l = NULL;
   EfsdMonitorRequest *emr = NULL;
@@ -368,7 +368,7 @@ efsd_meta_monitor_init(void)
 
 
 int
-efsd_meta_monitor_add(EfsdCommand *cmd, int client)
+efsd_meta_monitor_add(EfsdCommand *cmd, Ecore_Ipc_Client* client)
 {
   EfsdFileCmd *fcmd = NULL;
   EfsdMetaMonitor *monitor = NULL;
@@ -411,7 +411,7 @@ efsd_meta_monitor_add(EfsdCommand *cmd, int client)
 
 
 int
-efsd_meta_monitor_del(EfsdCommand *cmd, int client)
+efsd_meta_monitor_del(EfsdCommand *cmd, Ecore_Ipc_Client* client)
 {
   EfsdFileCmd *fcmd = NULL;
   EfsdMetaMonitor *monitor = NULL;
@@ -477,7 +477,7 @@ efsd_meta_monitor_notify(char *file, char *key, EfsdDatatype type,
 
 
 void
-efsd_meta_monitor_cleanup_client(int client)
+efsd_meta_monitor_cleanup_client(Ecore_Ipc_Client* client)
 {
   EfsdHashIterator *it;
   EfsdMetaMonitor  *monitor;

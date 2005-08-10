@@ -123,8 +123,6 @@ ipc_server_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
 
-  /*printf("Received event from server..\n");*/
-   fflush(stdout);
 
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
    {
@@ -139,9 +137,11 @@ ipc_server_data(void *data, int type, void *event)
 	msg->data = e->data;
 	msg->len = e->size;
 
+	printf("MSG: %d %d %d %d %d\n", e->major, e->minor, e->ref, e->ref_to, e->response);
+
 
         switch (e->major) {
-		case 1: /*printf("It's a command..\n");*/
+		case 1: 
 		 	{
 
 			  ec = ecore_hash_get(partial_command_hash, e->server);
@@ -156,6 +156,9 @@ ipc_server_data(void *data, int type, void *event)
 	   			deserialize_command(msg,ec);
 	   		   } else {
 	   			/*printf("Command finished..processing..\n");*/
+
+			  	printf("Command filename: %s\n", ec->efsd_file_cmd.files[0]);
+				   
 				ec = ecore_hash_get(partial_command_hash, e->server);
 				/*main_thread_launch(ec, e->client);*/
 	  	   	  }
@@ -166,12 +169,12 @@ ipc_server_data(void *data, int type, void *event)
 			break;
 	
                 case 2:
-                        /*printf ("it's a reply event!\n");*/
 
 			event = ecore_hash_get(partial_event_hash, e->server);
 			if (!event) {
 				event = NEW(EfsdEvent);
 				event->efsd_reply_event.data_len = 0;
+				event->efsd_reply_event.errorcode = 0;
 				
 				ecore_hash_set(partial_event_hash, e->server, event);
 			}
@@ -202,7 +205,7 @@ ipc_server_data(void *data, int type, void *event)
 					ecore_hash_remove(partial_event_hash, e->server);
 					ecore_hash_remove(partial_command_hash, e->server);
 
-					printf("Command has %d files\n", event->efsd_reply_event.command.efsd_file_cmd.num_files);
+					/*printf("Command has %d files\n", event->efsd_reply_event.command.efsd_file_cmd.num_files);*/
 
 					/*printf("Filename is (from ec): %s\n", event->efsd_reply_event.command.efsd_file_cmd.files[0]);*/
 
@@ -217,11 +220,42 @@ ipc_server_data(void *data, int type, void *event)
 			break;
 
 		case 3: 
-			printf("It's a filechange event\n");
+
+			event = ecore_hash_get(partial_event_hash, e->server);
+			if (!event) {
+				event = NEW(EfsdEvent);
+				event->efsd_reply_event.data_len = 0;
+				event->efsd_reply_event.errorcode = 0;
+				
+				ecore_hash_set(partial_event_hash, e->server, event);
+			}
 
 			switch (e->minor) {
+				case 1: /*EfsdEventType*/
+					memcpy(&event->type, e->data, sizeof(EfsdEventType));
+					break;
+
+				case 2: /*EfsdCmdId*/
+					memcpy(&event->efsd_filechange_event.id, e->data, sizeof(EfsdCmdId));
+					break;
+
+				case 3: /*EfsdFileChangeType*/
+					memcpy(&event->efsd_filechange_event.changetype, e->data, sizeof(EfsdFilechangeType));
+					break;
+
+				case 4:
+					/*File*/
+					event->efsd_filechange_event.file = strdup(e->data);
+					break;
+					
+				
 				case 100:
-					printf("It's a terminate, we have all our data\n");
+
+					
+					ecore_hash_remove(partial_event_hash, e->server);
+					if (event_cb) {
+						(*event_cb)(event);
+					}
 					break;
 			}
 			
@@ -231,6 +265,8 @@ ipc_server_data(void *data, int type, void *event)
 	free(msg);
 
    }
+
+   return 1;
 
 
 }
@@ -280,6 +316,7 @@ libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
 
   /*printf("ERR: libefsd_send_command to ecore efsd_io_write_command\n");*/
   printf("Sending command..\n");
+  fflush(stdout);
   D("Sending command..\n");
 
   if (!ec || !com)

@@ -41,6 +41,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 EfsdConnection* ec;
 int id;
 
+int flush_output(void* data) {
+	fflush(stdout);
+
+	return 1;
+}
+
 void handle_efsd_event(EfsdEvent *ee);
 
 
@@ -50,7 +56,6 @@ void handle_efsd_event(EfsdEvent *ee)
   static struct timeval tv2;
   int i;
 
-  printf("Handling event..\n");
   
   gettimeofday(&tv2, NULL);
   printf("%li.%li ", tv2.tv_sec-tv.tv_sec, tv2.tv_usec-tv.tv_usec);
@@ -216,6 +221,8 @@ void handle_efsd_event(EfsdEvent *ee)
 	case EFSD_CMD_STAT:
 	  {
 	    struct stat *st;
+
+	    printf ("Number of files in event: %d\n", ee->efsd_reply_event.command.efsd_file_cmd.num_files);
 	    for (i=0;i< ee->efsd_reply_event.command.efsd_file_cmd.num_files;i++) {
 	    	printf("Stat event %i stating file %s\n", 
 		   ee->efsd_reply_event.command.efsd_file_cmd.id,
@@ -283,6 +290,7 @@ void handle_efsd_event(EfsdEvent *ee)
   
   /* Cleanup memory allocated for this event */
   efsd_event_cleanup(ee);
+
 }
 
 
@@ -303,6 +311,10 @@ main(int argc, char** argv)
 
   ecore_init();
   ecore_ipc_init();
+
+  /*Register event callback*/
+  efsd_event_callback_register(&handle_efsd_event);
+
 
   char *movetest[] = { "yep", "tmp" }; 
 
@@ -328,8 +340,7 @@ main(int argc, char** argv)
       exit(-1);
     }
 
-  /*Register event callback*/
-  efsd_event_callback_register(&handle_efsd_event);
+
   
   /* FILE type tests */
   for (i = (blocking ? 1 : 2); i < argc; i++)

@@ -48,6 +48,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_io.h>
 
+#if USE_THREADS
+#include <efsd_lock.h>
+
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
+int msg_count;
+
 /* The maximum number of data chunks (ints, char*s, void*s ...)
    a command/event consists of. Major laziness.
 */
@@ -71,7 +79,22 @@ typedef struct efsd_iov
 }
 EfsdIOV;
 
+
+Ecore_List* process_queue = NULL;
+
 #if HAVE_ECORE
+
+void ecore_ipc_client_message_queue(Ecore_Ipc_Client* client, ecore_ipc_message* message) {
+	LOCK(&queue_mutex);
+
+	message->client = client;
+	ecore_list_goto_last(process_queue);
+	ecore_list_append(process_queue, message);
+	msg_count++;
+	UNLOCK(&queue_mutex);
+}
+
+
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len) {
 	ecore_ipc_message* msg= malloc(sizeof(ecore_ipc_message));
 
@@ -82,6 +105,9 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 	msg->response = response;
 	msg->data = data;
 	msg->len = len;
+	msg->client=NULL;
+	msg->server=NULL;
+	msg->dest=0;
 
 	return msg;
 }
@@ -112,7 +138,7 @@ void deserialize_command(ecore_ipc_message* msg, EfsdCommand* ec) {
                                    ec->efsd_file_cmd.files = realloc(ec->efsd_file_cmd.files, sizeof(char*) * (ec->efsd_file_cmd.num_files)+1);
                            }
                            ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files] = strdup(msg->data);
-                           /*printf ("Received a filename\n, it is '%s'\n", ec->efsd_file_cmd.files[ec->efsd_file_cmd.num_files]);*/
+                           printf ("Received a filename\n, it is '%s'\n", msg->data);
                            ec->efsd_file_cmd.num_files+=1;
                    } else if (msg->minor == 4) {
                            /*An efsdOption*/
@@ -775,6 +801,7 @@ fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
 
   D_ENTER;
 
+  printf ("Filling filechange event..\n");
   el = ecore_list_new();
   ecore_list_append(el, ecore_ipc_message_new(3, 1, 0,0,0,&ee->type, sizeof(EfsdEventType)));
   ecore_list_append(el, ecore_ipc_message_new(3, 2, 0,0,0,&ee->efsd_filechange_event.id, sizeof(EfsdCmdId)));
@@ -802,7 +829,6 @@ fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
 
 
 
-  D_RETURN;
 }
 
 
@@ -1177,13 +1203,20 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
   
   cmd = fill_event(ee);
 
+  printf("IPC writing evnet to client %p..\n", sockfd);
   /*Write these messages to the clients*/
   ecore_list_goto_first(cmd);
   while ( (msg = ecore_list_next(cmd)) ) {
-	  ecore_ipc_client_send(sockfd, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
+
+	  printf ("Writing IPC message %p %d %d %d %d %d\n", sockfd, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response);
+	  ecore_ipc_client_message_queue(sockfd, msg);
   }
 
-	
+  printf("\n");
+  ecore_list_destroy(cmd);
+
+
+  D_RETURN_(0);
   #else
   EfsdIOV         iov;
   struct msghdr   msg;
