@@ -3,6 +3,8 @@ Makefile
 Makefile.in
 .libs
 api.lo
+amd64_blend.lo
+amd64_blend_cmod.lo
 asm_blend.lo
 asm_blend_cmod.lo
 asm_rgba.lo
