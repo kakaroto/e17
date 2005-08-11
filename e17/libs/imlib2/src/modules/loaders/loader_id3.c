@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
 #include <errno.h>
@@ -70,7 +71,6 @@ static context* context_create (const char* filename)
 		if (! file) {
 			fprintf (stderr, "Unable to open tagged file %s: %s\n",
 				 filename, strerror (errno));
-			id3_file_close (file);
 			goto fail_free;
 		}
 		tag = id3_file_tag (file);
@@ -440,8 +440,11 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	ImlibLoader *loader;
 	lopt opt;
 	int res;
+	struct stat st;
 
 	assert (im);
+	if (stat(im->real_file, &st) < 0)
+		return 0;
 	if (! get_options (&opt, im))
 		return 0;
 
