@@ -163,6 +163,7 @@ _weather_new()
 	weather->conf = E_NEW(Config, 1);
 	weather->conf->poll_time = 900.0;
 	weather->conf->display = DETAILED_DISPLAY;
+	weather->conf->degrees = DEGREES_C;
 	weather->conf->host = strdup("www.rssweather.com");
      }
    E_CONFIG_LIMIT(weather->conf->poll_time, 900.0, 3600.0);
@@ -269,6 +270,8 @@ _weather_shutdown(Weather *weather)
    E_CONFIG_DD_FREE(conf_edd);
    E_CONFIG_DD_FREE(conf_face_edd);
 
+   ecore_timer_del(weather->weather_check_timer);
+
    for (list = weather->faces; list; list = list->next)
      _weather_face_free(list->data);
    evas_list_free(weather->conf->faces);
@@ -278,7 +281,6 @@ _weather_shutdown(Weather *weather)
    e_object_del(E_OBJECT(weather->config_menu_poll));
    e_object_del(E_OBJECT(weather->config_menu_display));
    e_object_del(E_OBJECT(weather->config_menu_degrees));
-   ecore_timer_del(weather->weather_check_timer);
    ecore_event_handler_del(weather->add_handler);
    ecore_event_handler_del(weather->del_handler);
    ecore_event_handler_del(weather->data_handler);
@@ -711,8 +713,6 @@ static int
 _weather_cb_check(void *data)
 {
    Weather *weather;
-   Weather_Info *info;
-   FILE *file;
    Evas_List *l;
 
    weather = data;
@@ -725,22 +725,6 @@ _weather_cb_check(void *data)
 
 	face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
 						weather->conf->host, 80, NULL);
-#if 0
-	face->bufsize = 16384;
-	face->buffer = malloc(face->bufsize);
-	file = fopen("/home/sebastid/cvs/e17/apps/e_modules/src/modules/weather/rss.xml", "rb");
-	fread(face->buffer, sizeof(char), face->bufsize, file);
-	fclose(file);
-
-	info = _weather_parse(face);
-	_weather_convert_degrees(weather, info);
-	_weather_display_set(face, info, weather->conf->display);
-
-	face->bufsize = 0;
-	free(face->buffer);
-	face->buffer = NULL;
-	free(info);
-#endif
      }
    return 1;
 }
@@ -754,7 +738,6 @@ _weather_net_server_add(void *data, int type, void *event)
    Evas_List *l;
    char buf[1024];
 
-   printf("add\n");
    weather = data;
    e = event;
    face = NULL;
@@ -779,7 +762,6 @@ _weather_net_server_data(void *data, int type, void *event)
    Ecore_Con_Event_Server_Data *e;
    Evas_List *l;
 
-   printf("data\n");
    weather = data;
    e = event;
    face = NULL;
@@ -806,7 +788,6 @@ _weather_net_server_del(void *data, int type, void *event)
    Weather_Info *info;
    Evas_List *l;
 
-   printf("del\n");
    weather = data;
    e = event;
    face = NULL;
@@ -817,7 +798,6 @@ _weather_net_server_del(void *data, int type, void *event)
 	  break;
      }
    if ((!face) || (e->server != face->server)) return 1;
-   printf("hm: %s\n", face->buffer);
 
    info = _weather_parse(face);
    _weather_convert_degrees(weather, info);
@@ -836,7 +816,7 @@ _weather_parse(Weather_Face *face)
    Weather_Info *info;
    char *needle, *ext;
 
-   info = calloc(1, sizeof(Weather_Info));
+   info = E_NEW(Weather_Info, 1);
    if (!info) return NULL;
 
    needle = strstr(face->buffer, "<content:encoded>");
