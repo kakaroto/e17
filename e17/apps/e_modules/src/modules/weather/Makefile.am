@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = images
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v -id images -fd fonts
 
@@ -8,7 +10,8 @@ filesdir = $(libdir)/e_modules/weather
 
 files_DATA = \
 module_icon.png \
-weather.edj
+weather.edj \
+dir.xml
 
 EXTRA_DIST = $(files_DATA)
 

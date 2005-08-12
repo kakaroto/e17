@@ -1,796 +1,185 @@
-images{
-image, "clear-sky.png"        COMP;
-image, "cloud.png"            COMP;
-image, "cloudy_night.png"     COMP;
-image, "drizzle.png"          COMP;
-image, "fog.png"              COMP;
-image, "heavy-rain.png"       COMP;
-image, "ice.png"              COMP;
-image, "isolated.t-storm.png" COMP;
-image, "light-rain.png"       COMP;
-image, "light-snow.png"       COMP;
-image, "luna-ceatza.png"      COMP;
-image, "luna-nori.png"        COMP;
-image, "moon-rain.png"        COMP;
-image, "moon-snow.png"        COMP;
-image, "moon-tstorm.png"      COMP;
-image, "moon.png"             COMP;
-image, "mostly-cloudy.png"    COMP;
-image, "rain.png"             COMP;
-image, "snow.png"             COMP;
-image, "sun-light-clouds.png" COMP;
-image, "sun.png"              COMP;
-image, "suncloud.png"         COMP;
-image, "sunrain.png"          COMP;
-image, "sunsnow.png"          COMP;
-image, "t-storm_night.png"    COMP;
-image, "thunder.png"          COMP;
-image, "unknown.png"          COMP;
-image, "wind.png"             COMP;
+fonts {
+   font: "vera.ttf"   "Vera";
+   font: "VeraBd.ttf" "Vera Bold";
 }
-fonts
-{
-  font, "vera.ttf" "Vera";
-  font, "VeraBd.ttf" "Vera_Bold";
-}
-collections
-{
-group{
-name, "weather/main";
-script {
-      public message(Msg_Type:type, id, ...) {
-        if ((type == MSG_FLOAT) && (id == 1)) {
-           new Float:val;
-           val = getfarg(2);
-           //set_state(PART:"degrees", "default", val);
-           set_state(PART:"line", "default", val);
-           }
-        }
-      }
+collections {
+   group {
+      name: "weather/main";
       parts {
          part {
-            name,          "icon";
-            mouse_events,  0;
+            name:         "icon";
+            type:         SWALLOW;
+            mouse_events: 0;
             description {
-               aspect: 1.0 1.0;
-               state,    "default" 0.0;
+               state:    "default" 0.0;
+               aspect:   1.0 1.0;
+               align:    0.0 0.0;
                rel1 {
-                  relative, 0.0  0.0;
-                  offset, 0 0;
+                  relative: 0.0 0.0;
+                  offset:   0   0;
                }
                rel2 {
-                  relative, 0.5  1.0;
-                  offset, 0 0;
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
                }
-               image {
-                    normal, "clear-sky.png";
-                    //normal, "light-rain.png";
-               }
-               fill {
-                  origin {
-                     relative, 0.0 0.0;
-                     offset,   0 0;
-                  }
-                  size {
-                     relative, 1.0 1.0;
-                     offset,   0 0;
-                  }
-               }
+               color: 0 0 0 0;
             }
+         }
+         part {
+            name:         "temp";
+            type:         TEXT;
+            effect:       SOFT_SHADOW;
+            mouse_events: 0;
             description {
-               state: "default" 0.01;
-               inherit: "default" 0.0;
-               image {
-               normal: "cloud.png";
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset:   2   2;
                }
-            }
-            description {
-               state: "default" 0.02;
-               inherit: "default" 0.00;
-               image {
-               normal: "cloudy_night.png";
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
+                  to:       "icon";
                }
-            }
-            description {
-               state: "default" 0.03;
-               inherit: "default" 0.0;
-               image {
-               normal: "drizzle.png";
-               }
-            }
-            description {
-               state: "default" 0.04;
-               inherit: "default" 0.0;
-               image {
-               normal: "fog.png";
-               }
-            }
-            description {
-               state: "default" 0.05;
-               inherit: "default" 0.0;
-               image {
-               normal: "heavy-rain.png";
-               }
-            }
-            description {
-               state: "default" 0.06;
-               inherit: "default" 0.0;
-               image {
-               normal: "ice.png";
-               }
-            }
-            description {
-               state: "default" 0.07;
-               inherit: "default" 0.0;
-               image {
-               normal: "isolated.t-storm.png";
-               }
-            }
-            description {
-               state: "default" 0.08;
-               inherit: "default" 0.0;
-               image {
-               normal: "light-rain.png";
-               }
-            }
-            description {
-               state: "default" 0.09;
-               inherit: "default" 0.0;
-               image {
-               normal: "luna-ceatza.png";
-               }
-            }
-            description {
-               state: "default" 0.10;
-               inherit: "default" 0.0;
-               image {
-               normal: "luna-nori.png";
-               }
-            }
-            description {
-               state: "default" 0.11;
-               inherit: "default" 0.0;
-               image {
-               normal: "moon-rain.png";
-               }
-            }
-            description {
-               state: "default" 0.12;
-               inherit: "default" 0.0;
-               image {
-               normal: "moon-snow.png";
-               }
-            }
-            description {
-               state: "default" 0.13;
-               inherit: "default" 0.0;
-               image {
-               normal: "moon-tstorm.png";
-               }
-            }
-            description {
-               state: "default" 0.14;
-               inherit: "default" 0.0;
-               image {
-               normal: "moon.png";
-               }
-            }
-            description {
-               state: "default" 0.15;
-               inherit: "default" 0.0;
-               image {
-               normal: "mostly-cloudy.png";
-               }
-            }
-            description {
-               state: "default" 0.16;
-               inherit: "default" 0.0;
-               image {
-               normal: "rain.png";
-               }
-            }
-            description {
-               state: "default" 0.17;
-               inherit: "default" 0.0;
-               image {
-               normal: "snow.png";
-               }
-            }
-            description {
-               state: "default" 0.18;
-               inherit: "default" 0.0;
-               image {
-               normal: "sun-light-clouds.png";
-               }
-            }
-            description {
-               state: "default" 0.19;
-               inherit: "default" 0.0;
-               image {
-               normal: "sun.png";
-               }
-            }
-            description {
-               state: "default" 0.20;
-               inherit: "default" 0.0;
-               image {
-               normal: "suncloud.png";
-               }
-            }
-            description {
-               state: "default" 0.21;
-               inherit: "default" 0.0;
-               image {
-               normal: "t-storm_night.png";
-               }
-            }
-            description {
-               state: "default" 0.22;
-               inherit: "default" 0.0;
-               image {
-               normal: "thunder.png";
-               }
-            }
-            description {
-               state: "default" 0.23;
-               inherit: "default" 0.0;
-               color: 255 255 255 100;
-               image {
-               normal: "unknown.png";
-               }
-            }
-            description {
-               state: "default" 0.24;
-               inherit: "default" 0.0;
-               image {
-               normal: "wind.png";
-               }
-            }
-            description {
-               state: "default" 0.25;
-               inherit: "default" 0.0;
-               image {
-               normal: "light-snow.png";
-               }
-            }
-            description {
-               state: "default" 0.26;
-               inherit: "default" 0.0;
-               image {
-               normal: "sunrain.png";
-               }
-            }
-            description {
-               state: "default" 0.27;
-               inherit: "default" 0.0;
-               image {
-               normal: "sunsnow.png";
+               color:  255 255 255 255;
+               color3:   0   0   0  70;
+               text {
+                  text:  "30";
+                  font:  "Vera";
+                  size:  14;
+                  min:   1 1;
+                  align: 0.0 0.0;
                }
             }
          }
          part {
-            name:           "location";
-            type:           TEXT;
-            effect,         SOFT_SHADOW;
+            name:         "location";
+            type:         TEXT;
+            effect:       SOFT_SHADOW;
+            mouse_events: 0;
             description {
                state: "default" 0.0;
                rel1 {
-                  relative: 0.49  0.19; to_y: "icon";
+                  relative: 1.0 0.0;
+                  offset:   0   0;
+                  to_x:     "icon";
                }
                rel2 {
-                   relative: 1.0  1.0; to_y: "icon";
+                  relative: 1.0 0.0;
+                  offset:   -1  0;
+                  to_y:     "line";
                }
-               color: 255 255 255 255;
-               color3, 0 0 0 50;
+               color:  255 255 255 255;
+               color3:   0   0   0  50;
                text {
-                  text:     "Taunton";
-                  font:     "Vera_Bold";
-                  size:     12;
-                  min:      1 1;
-                  align:    0.0 0.0;
+                  text:  "Taunton";
+                  font:  "Vera Bold";
+                  size:  12;
+                  min:   1 1;
+                  align: 0.5 0.5;
                }
-           }
-       }
-       part {
-            name:           "simple_location";
-            type:           TEXT;
-            effect,         SOFT_SHADOW;
+            }
+            description {
+               state: "simple" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset:   0   -1;
+                  to_y:     "temp";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
+               }
+               color:  255 255 255 255;
+               color3:   0   0   0  60;
+               text {
+                  text:  "Taunton";
+                  font:  "Vera";
+                  size:  10;
+                  min:   1 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part {
+            name:         "line";
+            type:         RECT;
+            effect:       SOFT_SHADOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               max:   99999 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset:   -1  0;
+                  to_x:     "icon";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
+               }
+               color:  255 255 255 255;
+               color3:   0   0   0  60;
+            }
+            description {
+               state:   "hidden" 0.0;
+               visible: 0;
+            }
+         }
+         part {
+            name:         "conditions";
+            type:         TEXT;
+            effect:       SOFT_SHADOW;
+            mouse_events: 0;
             description {
                state: "default" 0.0;
                rel1 {
-                  relative: 0.0  1.0; to_y: "icon"; offset, 0 3;
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
+                  to_x:     "icon";
+                  to_y:     "line";
                }
                rel2 {
-                   relative: 0.5  1.0;
+                  relative: 1.0 1.0;
+                  offset:   -1  -1;
                }
-               color: 255 255 255 255;
-               color3, 0 0 0 60;
+               color:  255 255 255 255;
+               color3:   0   0   0  60;
                text {
-                  text:     "Taunton";
-                  font:     "Vera";
-                  size:     10;
-                  min:      1 1;
-                  align:    0.5 1.0;
+                  text:  "Fair";
+                  font:  "Vera";
+                  size:  10;
+                  min:   1 1;
+                  align: 0.5 0.5;
                }
-           }
-       }
-       part {
-          name: "current_temp";
-          type: TEXT;
-          effect: SOFT_SHADOW;
-          description {
-             state: "default" 0.0;
-             rel1 {
-                //relative: 0.05  0.1; to_y: "icon"; offset, 2 0;
-                relative: 0.05  0.2; to_y: "icon"; offset, 2 0;
-             }
-             rel2 {
-                //relative: 1.0  1.0; 
-                relative: 1.0  1.0; to_y: "icon";
-             }
-             color: 255 255 255 255;
-             color3: 0 0 0 70;
-             text {
-                text: "72";
-                font: "Vera";
-                size: 14;
-                min:  1 1;
-                align: 0.0 0.0;
-             }
-          }
-       }
-       part {
-          name: "hi_low";
-          type: TEXT;
-          effect: SOFT_SHADOW;
-          description {
-             state: "default" 0.0;
-             rel1 {
-                //relative: 0.0  0.0; 
-                relative: 0.50  0.0; to_y: "conditions"; offset, 0 13;
-             }
-             rel2 {
-                //relative: 1.0  1.0; 
-                relative: 1.0  1.0;
-             }
-             color: 255 255 255 255;
-             color3: 0 0 0 60;
-             text {
-                text: "hi/lo: 78/60";
-                font: "Vera";
-                size: 10;
-                min: 1 1;
-                align: 0.0 0.0;
-             }
-          }
-       }
-       part {
-          name: "degrees";
-          type: TEXT;
-          effect: SOFT_SHADOW;
-          description {
-             state: "default" 0.0;
-             rel1 {
-                relative: 0.05  0.0; to_y: "current_temp"; offset, 22 1;
-                
-             }
-             rel2 {
-                relative: 1.0  1.0; to_x: "current_temp";
-             }
-             color: 255 255 255 255; 
-             color3: 0 0 0 70;
-             text {
-                text: "F";
-                font: "Vera";
-                size: 8;
-                min:  1 1;
-                align: 0.0 0.0;
-             }
-          }
-          description {
-             state: "default" 1.0;
-             inherit: "default" 0.0;
-             text {
-                text: "";
-             }
-          }
-       }
-       part {
-          name: "conditions";
-          type: TEXT;
-          effect: SOFT_SHADOW;
-          description {
-             state: "default" 0.0;
-             rel1 {
-                //relative: 0.0  0.0; 
-                relative: 0.5  0.0; to_y: "location"; offset, 0 22;
-             }
-             rel2 {
-                //relative: 1.0  1.0; 
-                relative: 1.0  1.0;
-             }
-             color: 255 255 255 255;
-             color3: 0 0 0 60;
-             text {
-                text:     "Mostly Cloudy";
-                font:     "Vera";
-                size:     10;
-                min:      1 1;
-                align:     0.0 0.0;
-             }
-          }
-       }
-       part {
-          name: "line";
-          type: TEXT;
-          effect: SOFT_SHADOW;
-          description {
-             state: "default" 0.0;
-             rel1 {
-                //relative: 0.0  0.0; 
-                relative: 0.5  0.0; to_y: "location"; offset, 0 5;
-             }
-             rel2 {
-                //relative: 1.0  1.0; 
-                relative: 1.0  1.0;
-             }
-             color: 255 255 255 255;
-             color3: 0 0 0 60;
-             text {
-                text:     "______________";
-                font:     "Vera";
-                size:     10;
-                min:      1 1;
-                align:     0.0 0.0;
-             }
-          }
-          description {
-             state: "default" 1.0;
-             inherit: "default" 0.0;
-             text {
-                text: "";
-             }
-          }
-       }
+            }
+            description {
+               state:   "hidden" 0.0;
+               visible: 0;
+               text {
+                  text: "";
+               }
+            }
+         }
+      }
+      programs {
+         program {
+            name:    "style";
+            signal:  "set_style";
+            source:  "*";
+            script {
+               if (!strcmp(src, "simple")) {
+                  set_state(PART:"location", "simple", 0.0);
+                  set_state(PART:"conditions", "hidden", 0.0);
+                 set_state(PART:"line", "hidden", 0.0);
+               } else {
+                  set_state(PART:"location", "default", 0.0);
+                  set_state(PART:"conditions", "default", 0.0);
+                  set_state(PART:"line", "default", 0.0);
+               }
+            }
+         }
+      }
    }
-   // Names of following programs refer to icon number and description
-   // from www.weather.com
-   programs {
-      program {
-         name: "1_rain_tstorm";
-         signal: "1";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "2_rain_tstorm";
-         signal: "2";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "3_rain_tstorm";
-         signal: "3";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "4_rain_tstorm";
-         signal: "4";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "5_ice_rain";
-         signal: "5";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "6_snow_rain";
-         signal: "6";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "7_snow_rain_sleet";
-         signal: "7";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "8_icey";
-         signal: "8";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "9_sleet";
-         signal: "9";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "10_sleet";
-         signal: "10";
-         source: "";
-         action: STATE_SET "default" 0.06;
-         target: "icon";
-     }
-     program {
-         name: "11_light_rain";
-         signal: "11";
-         source: "";
-         action: STATE_SET "default" 0.08;
-         target: "icon";
-     }
-     program {
-         name: "12_heavy_rain";
-         signal: "12";
-         source: "";
-         action: STATE_SET "default" 0.05;
-         target: "icon";
-     }
-     program {
-         name: "13_light_snow";
-         signal: "13";
-         source: "";
-         action: STATE_SET "default" 0.25;
-         target: "icon";
-     }
-     program {
-         name: "14_heavy_snow";
-         signal: "14";
-         source: "";
-         action: STATE_SET "default" 0.17;
-         target: "icon";
-     }
-     program {
-         name: "15_heavy_snow";
-         signal: "15";
-         source: "";
-         action: STATE_SET "default" 0.17;
-         target: "icon";
-     }
-     program {
-         name: "16_heavy_snow";
-         signal: "16";
-         source: "";
-         action: STATE_SET "default" 0.17;
-         target: "icon";
-     }
-     program {
-         name: "17_tstorm";
-         signal: "17";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "18_rain";
-         signal: "18";
-         source: "";
-         action: STATE_SET "default" 0.16;
-         target: "icon";
-     }
-     program {
-         name: "19_dust";
-         signal: "19";
-         source: "";
-         action: STATE_SET "default" 0.04;
-         target: "icon";
-     }
-     program {
-         name: "20_fog";
-         signal: "20";
-         source: "";
-         action: STATE_SET "default" 0.04;
-         target: "icon";
-     }
-     program {
-         name: "21_haze";
-         signal: "21";
-         source: "";
-         action: STATE_SET "default" 0.04;
-         target: "icon";
-     }
-     program {
-         name: "22_smoke";
-         signal: "22";
-         source: "";
-         action: STATE_SET "default" 0.04;
-         target: "icon";
-     }
-     program {
-         name: "23_windy";
-         signal: "23";
-         source: "";
-         action: STATE_SET "default" 0.24;
-         target: "icon";
-     }
-     program {
-         name: "24_windy";
-         signal: "24";
-         source: "";
-         action: STATE_SET "default" 0.24;
-         target: "icon";
-     }
-     program {
-         name: "25_frigid";
-         signal: "25";
-         source: "";
-         action: STATE_SET "default" 0.01;
-         target: "icon";
-     }
-     program {
-         name: "26_cloudy";
-         signal: "26";
-         source: "";
-         action: STATE_SET "default" 0.01;
-         target: "icon";
-     }
-     program {
-         name: "27_moon_mostly_cloudy";
-         signal: "27";
-         source: "";
-         action: STATE_SET "default" 0.10;
-         target: "icon";
-     }
-     program {
-         name: "28_sun_mostly_cloudy";
-         signal: "28";
-         source: "";
-         action: STATE_SET "default" 0.15;
-         target: "icon";
-     }
-     program {
-         name: "29_moon_partly_cloudy";
-         signal: "29";
-         source: "";
-         action: STATE_SET "default" 0.09;
-         target: "icon";
-     }
-     program {
-         name: "30_sun_partly_cloudy";
-         signal: "30";
-         source: "";
-         action: STATE_SET "default" 0.20;
-         target: "icon";
-     }
-     program {
-         name: "31_clear_moon";
-         signal: "31";
-         source: "";
-         action: STATE_SET "default" 0.14;
-         target: "icon";
-     }
-     program {
-         name: "32_clear_sun";
-         signal: "32";
-         source: "";
-         action: STATE_SET "default" 0.19;
-         target: "icon";
-     }
-     program {
-         name: "33_moon_light_cloudy";
-         signal: "33";
-         source: "";
-         action: STATE_SET "default" 0.09;
-         target: "icon";
-     }
-     program {
-         name: "34_sun_light_cloudy";
-         signal: "34";
-         source: "";
-         action: STATE_SET "default" 0.18;
-         target: "icon";
-     }
-     program {
-         name: "35_thunder";
-         signal: "35";
-         source: "";
-         action: STATE_SET "default" 0.22;
-         target: "icon";
-     }
-     program {
-         name: "36_hot";
-         signal: "36";
-         source: "";
-         action: STATE_SET "default" 0.19;
-         target: "icon";
-     }
-     program {
-         name: "37_sun_tstorm";
-         signal: "37";
-         source: "";
-         action: STATE_SET "default" 0.07;
-         target: "icon";
-     }
-     program {
-         name: "38_sun_tstorm";
-         signal: "38";
-         source: "";
-         action: STATE_SET "default" 0.07;
-         target: "icon";
-     }
-     program {
-         name: "39_sun_rain";
-         signal: "39";
-         source: "";
-         action: STATE_SET "default" 0.26;
-         target: "icon";
-     }
-     program {
-         name: "40_rain";
-         signal: "40";
-         source: "";
-         action: STATE_SET "default" 0.16;
-         target: "icon";
-     }
-     program {
-         name: "41_sun_snow";
-         signal: "41";
-         source: "";
-         action: STATE_SET "default" 0.27;
-         target: "icon";
-     }
-     program {
-         name: "42_snow";
-         signal: "42";
-         source: "";
-         action: STATE_SET "default" 0.17;
-         target: "icon";
-     }
-     program {
-         name: "43_snow";
-         signal: "43";
-         source: "";
-         action: STATE_SET "default" 0.17;
-         target: "icon";
-     }
-     program {
-         name: "45_moon_rain";
-         signal: "45";
-         source: "";
-         action: STATE_SET "default" 0.11;
-         target: "icon";
-     }
-     program {
-         name: "46_moon_snow";
-         signal: "46";
-         source: "";
-         action: STATE_SET "default" 0.12;
-         target: "icon";
-     }
-     program {
-         name: "47_moon_tstorm";
-         signal: "47";
-         source: "";
-         action: STATE_SET "default" 0.13;
-         target: "icon";
-     }
-     program {
-         name: "48_sun_rain";
-         signal: "48";
-         source: "";
-         action: STATE_SET "default" 0.26;
-         target: "icon";
-     }
-     program {
-         name: "unknown";
-         signal: "99";
-         source: "";
-         action: STATE_SET "default" 0.23;
-         target: "icon";
-     }
-  }
 }

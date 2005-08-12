@@ -1,34 +1,48 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "e.h"
 #include "e_mod_main.h"
 
+/*
+ * TODO:
+ * * Fix simple display
+ * * icon
+ */
 
-static Weather *_weather_new ();
-static void _weather_shutdown (Weather * weather);
-static void _weather_config_menu_new (Weather * weather);
+static Weather *_weather_new();
+static void _weather_shutdown(Weather *weather);
+static void _weather_config_menu_new(Weather *weather);
 
-static Weather_Face *_weather_face_new (E_Container * con);
-static void _weather_face_free (Weather_Face * face);
-static void _weather_face_enable (Weather_Face * face);
-static void _weather_face_disable (Weather_Face * face);
+static Weather_Face *_weather_face_new(Weather *weather, E_Container *con);
+static void _weather_face_free(Weather_Face *face);
 
-static void _weather_face_menu_new (Weather_Face * face);
-static void _weather_face_cb_gmc_change (void *data, E_Gadman_Client * gmc,
-                                         E_Gadman_Change change);
-static void _weather_face_cb_mouse_down (void *data, Evas * e,
-                                         Evas_Object * obj, void *event_info);
-static void _weather_face_cb_menu_enabled (void *data, E_Menu * m,
-                                           E_Menu_Item * mi);
-static void _weather_face_cb_menu_edit (void *data, E_Menu * m,
-                                        E_Menu_Item * mi);
-static void _weather_face_level_set(Weather_Face *ef, double level);
+static void _weather_face_menu_new(Weather_Face *face);
+static void _weather_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
+					E_Gadman_Change change);
+static void _weather_face_cb_mouse_down(void *data, Evas *e,
+					Evas_Object *obj, void *event_info);
+static void _weather_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static int  _weather_cb_check (void *data);
+static E_Menu *_weather_face_menu_choose_location(Weather_Face *face);
+static E_Menu *_weather_face_menu_continent(Weather_Face *face, Evas_List *menus, FILE *file);
+static E_Menu *_weather_face_menu_country(Weather_Face *face, FILE *file);
+static void _weather_face_del_hook(void *obj);
+static void _weather_face_cb_choose_location(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static int _weather_cb_download_html (weatherCb_t * weather);
-static int _weather_cb_parse_html(weatherCb_t *weather);
-static int _weather_cb_convert_degrees(weatherCb_t *weather, void *data);
-static int _weather_cb_set_display(weatherCb_t *weather, Weather_Face *face, 
-                                   int display);
+static void _weather_connect(Weather *weather);
+static int  _weather_cb_check(void *data);
+static int  _weather_net_server_add(void *data, int type, void *event);
+static int  _weather_net_server_data(void *data, int type, void *event);
+static int  _weather_net_server_del(void *data, int type, void *event);
+
+static Weather_Info *_weather_parse(Weather_Face *face);
+static void _weather_convert_degrees(Weather *weather, Weather_Info *info);
+static void _weather_display_set(Weather_Face *face, Weather_Info *weather,
+				 int display);
+
+static void _weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _weather_menu_remove_face(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void _weather_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _weather_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -40,446 +54,469 @@ static void _weather_menu_display_detailed(void *data, E_Menu *m, E_Menu_Item *m
 static void _weather_menu_degrees_C(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _weather_menu_degrees_F(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static void _weather_menu_edit_url(void *data, E_Menu *m, E_Menu_Item *mi);
-
-void cb_resize(Ecore_Evas *ee);
-
-
 static int _weather_count;
 
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
 void *
-e_modapi_init (E_Module * module)
+e_modapi_init(E_Module *module)
 {
    Weather *weather;
 
    if (module->api->version < E_MODULE_API_VERSION)
-   {
-      e_error_dialog_show (_("Module API Error"),
-         _("Error initializing Module: test\n"
-            "It requires a minimum module API version of: %i.\n"
-            "The module API advertized by Enlightenment is: %i.\n"
-            "Aborting module."), E_MODULE_API_VERSION, module->api->version);
-      return NULL;
-   }
+     {
+	e_error_dialog_show(_("Module API Error"),
+			    _("Error initializing Module: test\n"
+			      "It requires a minimum module API version of: %i.\n"
+			      "The module API advertized by Enlightenment is: %i.\n"
+			      "Aborting module."),
+			    E_MODULE_API_VERSION, module->api->version);
+	return NULL;
+     }
 
-   weather = _weather_new ();
+   weather = _weather_new();
    module->config_menu = weather->config_menu;
    return weather;
 }
 
 int
-e_modapi_shutdown (E_Module * module)
+e_modapi_shutdown(E_Module *module)
 {
    Weather *weather;
 
    if (module->config_menu)
-      module->config_menu = NULL;
+     module->config_menu = NULL;
 
    weather = module->data;
    if (weather)
-      _weather_shutdown (weather);
+     _weather_shutdown(weather);
 
    return 1;
 }
 
 int
-e_modapi_save (E_Module * module)
+e_modapi_save(E_Module *module)
 {
    Weather *weather;
 
    weather = module->data;
-   e_config_domain_save ("module.weather", conf_edd, weather->conf);
+   e_config_domain_save("module.weather", conf_edd, weather->conf);
    return 1;
 }
 
 int
-e_modapi_info (E_Module * module)
+e_modapi_info(E_Module *module)
 {
-   module->label = strdup (_("Weather"));
-   module->icon_file = strdup (PACKAGE_LIB_DIR"/e_modules/weather/module_icon.png");
+   module->label = strdup(_("Weather"));
+   module->icon_file = strdup(PACKAGE_LIB_DIR"/e_modules/weather/module_icon.png");
    return 1;
 }
 
 int
-e_modapi_about (E_Module * module)
+e_modapi_about(E_Module *module)
 {
-   e_error_dialog_show (_("Enlightenment Weather Module"),
-                        _("A weather forecast module for Enlightenment."));
+   e_error_dialog_show(_("Enlightenment Weather Module"),
+		       _("A weather forecast module for Enlightenment."));
    return 1;
 }
 
 /* module private routines */
 static Weather *
-_weather_new ()
+_weather_new()
 {
    Weather *weather;
-   Evas_List *managers, *l, *l2, *cl;
+   Evas_List *cl;
    E_Menu_Item *mi;
 
    _weather_count = 0;
-   
-   /* Define poll time for now in seconds */
-   
-   weather = E_NEW (Weather, 1);
-   if (!weather)
-      return NULL;
 
-   conf_face_edd = E_CONFIG_DD_NEW ("Weather_Config_Face", Config_Face);
+   /* Define poll time for now in seconds */
+
+   weather = E_NEW(Weather, 1);
+   if (!weather) return NULL;
+
+   conf_face_edd = E_CONFIG_DD_NEW("Weather_Config_Face", Config_Face);
 #undef T
 #undef D
 #define T Config_Face
 #define D conf_face_edd
-   E_CONFIG_VAL (D, T, enabled, UCHAR);
+   E_CONFIG_VAL(D, T, container, INT);
+   E_CONFIG_VAL(D, T, enabled, UCHAR);
+   E_CONFIG_VAL(D, T, location, STR);
+   E_CONFIG_VAL(D, T, url, STR);
 
-   conf_edd = E_CONFIG_DD_NEW ("Weather_Config", Config);
+   conf_edd = E_CONFIG_DD_NEW("Weather_Config", Config);
 #undef T
 #undef D
 #define T Config
 #define D conf_edd
-   E_CONFIG_LIST (D, T, faces, conf_face_edd);
+   E_CONFIG_LIST(D, T, faces, conf_face_edd);
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
    E_CONFIG_VAL(D, T, display, INT);
    E_CONFIG_VAL(D, T, degrees, INT);
+   E_CONFIG_VAL(D, T, host, STR);
 
-   weather->conf = e_config_domain_load ("module.weather", conf_edd);
+   weather->conf = e_config_domain_load("module.weather", conf_edd);
    if (!weather->conf)
-   {
-      weather->conf = E_NEW (Config, 1);
-      weather->conf->poll_time = 900.0;
-      weather->conf->display = 1;
-      system(CREATE_DEFAULT_CONFIG_URL);
-   }
+     {
+	weather->conf = E_NEW(Config, 1);
+	weather->conf->poll_time = 900.0;
+	weather->conf->display = DETAILED_DISPLAY;
+	weather->conf->host = strdup("www.rssweather.com");
+     }
    E_CONFIG_LIMIT(weather->conf->poll_time, 900.0, 3600.0);
 
-   _weather_config_menu_new (weather);
-   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time, _weather_cb_check, weather);
-   
-   managers = e_manager_list ();
+   _weather_config_menu_new(weather);
+   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time,
+						  _weather_cb_check, weather);
+
    cl = weather->conf->faces;
-   for (l = managers; l; l = l->next)
-   {
-      E_Manager *man;
+   if (!cl)
+     {
+	E_Manager *man;
+	E_Container *con;
+	Weather_Face *face;
+       
+	man = e_manager_current_get();
+	con = e_container_current_get(man);
 
-      man = l->data;
-      for (l2 = man->containers; l2; l2 = l2->next)
-      {
-         E_Container *con;
-         Weather_Face *face;
+	face = _weather_face_new(weather, con);
+	if (face)
+	  {
+	     weather->faces = evas_list_append(weather->faces, face);
 
-         con = l2->data;
-         face = _weather_face_new (con);
-         if (face)
-         {
-            weather->faces = evas_list_append (weather->faces, face);
-            /* Config */
-            if (!cl)
-            {
-               face->conf = E_NEW (Config_Face, 1);
-               face->conf->enabled = 1;
-               weather->conf->faces =
-                  evas_list_append (weather->conf->faces, face->conf);
-            }
-            else
-            {
-               face->conf = cl->data;
-               cl = cl->next;
-            }
+	     face->conf = E_NEW(Config_Face, 1);
+	     face->conf->container = con->num;
+	     face->conf->enabled = 1;
+	     face->conf->location = strdup("Kirkenes Lufthavn");
+	     face->conf->url = strdup("/icao/ENKR/rss.php");
+	     weather->conf->faces = evas_list_append(weather->conf->faces, face->conf);
 
-            /* Menu */
-            /* This menu must be initialized after conf */
-            _weather_face_menu_new (face);
+	     /* Menu */
+	     /* This menu must be initialized after conf */
+	     _weather_face_menu_new(face);
 
-            /* Add main menu to face menu */
-            mi = e_menu_item_new(face->menu);
-            e_menu_item_label_set(mi, _("Set Degrees"));
-            e_menu_item_submenu_set(mi, weather->config_menu_degrees);
-            
-            mi = e_menu_item_new(face->menu);
-            e_menu_item_label_set(mi, _("Set Display"));
-            e_menu_item_submenu_set(mi, weather->config_menu_display);
-            
-            mi = e_menu_item_new(face->menu);
-            e_menu_item_label_set(mi, _("Set Update Time"));
-            e_menu_item_submenu_set(mi, weather->config_menu_poll);
-            
-            mi = e_menu_item_new(face->menu);
-            e_menu_item_label_set(mi, _("Edit URL file"));
-            e_menu_item_callback_set(mi, _weather_menu_edit_url, weather);
-            
-            
-            mi = e_menu_item_new (weather->config_menu);
-            e_menu_item_label_set (mi, con->name);
+	     /* Add main menu to face menu */
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Degrees"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_degrees);
 
-            e_menu_item_submenu_set (mi, face->menu);
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Display"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_display);
 
-            /* Setup */
-            if (!face->conf->enabled)
-               _weather_face_disable (face);
-         }
-      }
-   }
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Update Time"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_poll);
+
+	     mi = e_menu_item_new(weather->config_menu);
+	     e_menu_item_label_set(mi, con->name);
+
+	     e_menu_item_submenu_set(mi, face->menu);
+	  }
+     }
+   else
+     {
+	for (; cl; cl = cl->next)
+	  {
+	     E_Container *con;
+	     Weather_Face *face;
+	     Config_Face *conf;
+
+	     conf = cl->data;
+	     con = e_util_container_number_get(conf->container);
+	     if (!con) continue;
+	     face = _weather_face_new(weather, con);
+	     if (!face) continue;
+	     weather->faces = evas_list_append(weather->faces, face);
+	     face->conf = conf;
+
+	     /* Menu */
+	     /* This menu must be initialized after conf */
+	     _weather_face_menu_new(face);
+
+	     /* Add main menu to face menu */
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Degrees"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_degrees);
+
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Display"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_display);
+
+	     mi = e_menu_item_new(face->menu);
+	     e_menu_item_label_set(mi, _("Set Update Time"));
+	     e_menu_item_submenu_set(mi, weather->config_menu_poll);
+
+	     mi = e_menu_item_new(weather->config_menu);
+	     e_menu_item_label_set(mi, con->name);
+
+	     e_menu_item_submenu_set(mi, face->menu);
+	  }
+     }
+   _weather_connect(weather);
    _weather_cb_check(weather);
-   
+
    return weather;
 }
 
 static void
-_weather_shutdown (Weather * weather)
+_weather_shutdown(Weather *weather)
 {
    Evas_List *list;
 
-   E_CONFIG_DD_FREE (conf_edd);
-   E_CONFIG_DD_FREE (conf_face_edd);
-	
-   //system("rm -f HTML_FILE");
+   E_CONFIG_DD_FREE(conf_edd);
+   E_CONFIG_DD_FREE(conf_face_edd);
 
    for (list = weather->faces; list; list = list->next)
-      _weather_face_free (list->data);
-   
-   evas_list_free (weather->faces);
-   e_object_del (E_OBJECT (weather->config_menu));
-   e_object_del (E_OBJECT (weather->config_menu_poll));
-   e_object_del (E_OBJECT (weather->config_menu_display));
-   e_object_del (E_OBJECT (weather->config_menu_degrees));
-   ecore_timer_del(weather->weather_check_timer);
+     _weather_face_free(list->data);
+   evas_list_free(weather->conf->faces);
+   evas_list_free(weather->faces);
 
-   evas_list_free (weather->conf->faces);
-   free (weather->conf);
-   free (weather);
+   e_object_del(E_OBJECT(weather->config_menu));
+   e_object_del(E_OBJECT(weather->config_menu_poll));
+   e_object_del(E_OBJECT(weather->config_menu_display));
+   e_object_del(E_OBJECT(weather->config_menu_degrees));
+   ecore_timer_del(weather->weather_check_timer);
+   ecore_event_handler_del(weather->add_handler);
+   ecore_event_handler_del(weather->del_handler);
+   ecore_event_handler_del(weather->data_handler);
+
+   free(weather->conf->host);
+   free(weather->conf);
+   free(weather);
 }
 
 static void
-_weather_config_menu_new (Weather * weather)
+_weather_config_menu_new(Weather *weather)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
-   
-   //weather->config_menu = e_menu_new();
+
    mn = e_menu_new();
-   
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Add Face"));
+   e_menu_item_callback_set(mi, _weather_menu_add_face, weather);
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("15 minutes"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 900.0) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_fast, weather);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("30 minutes"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 1800.0) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_medium, weather);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("1 hour"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->poll_time == 3600.0) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_slow, weather);
-   
+
    weather->config_menu_poll = mn;
-   
+
    mn = e_menu_new();
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Simple"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->display == SIMPLE_DISPLAY) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_display_simple, weather);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Detailed"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->display == DETAILED_DISPLAY) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_display_detailed, weather);
-   
+
    weather->config_menu_display = mn;
-   
+
    mn = e_menu_new();
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Fahrenheit"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->degrees == DEGREES_F) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_degrees_F, weather);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Celcius"));
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 1);
    if (weather->conf->degrees == DEGREES_C) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _weather_menu_degrees_C, weather);
-   
+
    weather->config_menu_degrees = mn;
-   
+
    mn = e_menu_new();
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Set Degrees"));
    e_menu_item_submenu_set(mi, weather->config_menu_degrees);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Set Display"));
    e_menu_item_submenu_set(mi, weather->config_menu_display);
-   
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Set Update Time"));
    e_menu_item_submenu_set(mi, weather->config_menu_poll);
-   
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Edit URL file"));
-   e_menu_item_callback_set(mi, _weather_menu_edit_url, weather);
-   
+
    weather->config_menu = mn;
 }
 
 static Weather_Face *
-_weather_face_new (E_Container * con)
+_weather_face_new(Weather *weather, E_Container *con)
 {
-   int w, h;
-
    Weather_Face *face;
    Evas_Object *o;
 
-   face = E_NEW (Weather_Face, 1);
-   if (!face)
-      return NULL;
+   face = E_NEW(Weather_Face, 1);
+   if (!face) return NULL;
 
    face->con = con;
-   e_object_ref (E_OBJECT (con));
+   e_object_ref(E_OBJECT(con));
+   face->weather = weather;
 
-   evas_event_freeze (con->bg_evas);
+   evas_event_freeze(con->bg_evas);
 
-   o = edje_object_add (con->bg_evas);
+   o = edje_object_add(con->bg_evas);
    face->weather_object = o;
-   edje_object_file_set (o, PACKAGE_LIB_DIR"/e_modules/weather/weather.edj", 
-                         "weather/main");
-   evas_object_show (o);
+   edje_object_file_set(o, PACKAGE_LIB_DIR"/e_modules/weather/weather.edj", 
+			"weather/main");
+   evas_object_show(o);
 
-   o = evas_object_rectangle_add (con->bg_evas);
+   o = evas_object_rectangle_add(con->bg_evas);
    face->event_object = o;
-   evas_object_layer_set (o, 2);
-   evas_object_color_set (o, 0, 0, 0, 0);
-   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
-                                   _weather_face_cb_mouse_down, face);
-   evas_object_show (o);
+   evas_object_layer_set(o, 2);
+   evas_object_color_set(o, 0, 0, 0, 0);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
+				  _weather_face_cb_mouse_down, face);
+   evas_object_show(o);
 
-   face->gmc = e_gadman_client_new (con->gadman);
-   e_gadman_client_domain_set (face->gmc, "module.weather", _weather_count++);
-   e_gadman_client_policy_set (face->gmc, E_GADMAN_POLICY_ANYWHERE |
-                               E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | 
-                               E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
-   e_gadman_client_min_size_set (face->gmc, 160, 60);
-   e_gadman_client_max_size_set (face->gmc, 220, 96);
-   e_gadman_client_auto_size_set (face->gmc, 145, 60);
-   e_gadman_client_align_set (face->gmc, 1.0, 1.0);
-   //e_gadman_client_aspect_set(face->gmc, 1.0, 1.0);
-   e_gadman_client_resize (face->gmc, 145, 60);
-   e_gadman_client_change_func_set (face->gmc, _weather_face_cb_gmc_change,
-                                    face);
-   e_gadman_client_load (face->gmc);
+   face->gmc = e_gadman_client_new(con->gadman);
+   e_gadman_client_domain_set(face->gmc, "module.weather", _weather_count++);
+   e_gadman_client_policy_set(face->gmc, E_GADMAN_POLICY_ANYWHERE |
+			      E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | 
+			      E_GADMAN_POLICY_HSIZE | E_GADMAN_POLICY_VSIZE);
+   //e_gadman_client_min_size_set(face->gmc, 160, 60);
+   //e_gadman_client_max_size_set(face->gmc, 220, 96);
+   e_gadman_client_auto_size_set(face->gmc, 200, 40);
+   e_gadman_client_align_set(face->gmc, 1.0, 1.0);
+   e_gadman_client_resize(face->gmc, 200, 40);
+   e_gadman_client_change_func_set(face->gmc, _weather_face_cb_gmc_change,
+				   face);
+   e_gadman_client_load(face->gmc);
 
-   evas_event_thaw (con->bg_evas);
+   edje_object_part_text_set(face->weather_object, "location", "");
+   face->icon_object = e_icon_add(con->bg_evas);
+
+   evas_event_thaw(con->bg_evas);
 
    return face;
 }
 
 static void
-_weather_face_free (Weather_Face * face)
+_weather_face_free(Weather_Face *face)
 {
-   e_object_unref (E_OBJECT (face->con));
-   e_object_del (E_OBJECT (face->gmc));
-   evas_object_del (face->weather_object);
-   evas_object_del (face->event_object);
-   e_object_del (E_OBJECT (face->menu));
+   Evas_List *l, *l2;
 
-   free (face->conf);
-   free (face);
+   e_object_unref(E_OBJECT(face->con));
+   e_object_del(E_OBJECT(face->gmc));
+   evas_object_del(face->weather_object);
+   evas_object_del(face->icon_object);
+   evas_object_del(face->event_object);
+   e_object_del(E_OBJECT(face->menu));
+   l = e_object_data_get(E_OBJECT(face->menu_location));
+   for (l2 = l; l; l = l->next)
+     e_object_del(E_OBJECT(l2->data));
+   evas_list_free(l);
+   e_object_del(E_OBJECT(face->menu_location));
+
+   free(face->conf->location);
+   free(face->conf->url);
+   free(face->conf);
+   free(face);
    _weather_count--;
 }
 
 static void
-_weather_face_enable (Weather_Face * face)
+_weather_face_menu_new(Weather_Face *face)
 {
-   face->conf->enabled = 1;
-   evas_object_show (face->weather_object);
-   evas_object_show (face->event_object);
-   e_config_save_queue ();
-}
-
-static void
-_weather_face_disable (Weather_Face * face)
-{
-   face->conf->enabled = 0;
-   evas_object_hide (face->weather_object);
-   evas_object_hide (face->event_object);
-   e_config_save_queue ();
-}
-
-static void
-_weather_face_menu_new (Weather_Face * face)
-{
-   E_Menu *mn;
+   E_Menu *mn, *subm;
    E_Menu_Item *mi;
 
-   mn = e_menu_new ();
+   mn = e_menu_new();
    face->menu = mn;
 
-   /* Enabled */
-   /*
-    * mi = e_menu_item_new(mn);
-    * e_menu_item_label_set(mi, _("Enabled"));
-    * e_menu_item_check_set(mi, 1);
-    * if (face->conf->enabled) e_menu_item_toggle_set(mi, 1);
-    * e_menu_item_callback_set(mi, _weather_face_cb_menu_enabled, face);
-    */
-
    /* Edit */
-   mi = e_menu_item_new (mn);
-   e_menu_item_label_set (mi, _("Edit Mode"));
-   e_menu_item_callback_set (mi, _weather_face_cb_menu_edit, face);
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Edit Mode"));
+   e_menu_item_callback_set(mi, _weather_face_cb_menu_edit, face);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Add Face"));
+   e_menu_item_callback_set(mi, _weather_menu_add_face, face->weather);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Remove Face"));
+   e_menu_item_callback_set(mi, _weather_menu_remove_face, face);
+
+   /* Choose location */
+   subm = _weather_face_menu_choose_location(face);
+   if (subm)
+     {
+	face->menu_location = subm;
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Choose Continent"));
+	e_menu_item_submenu_set(mi, subm);
+     }
 }
 
 static void
-_weather_face_cb_gmc_change (void *data, E_Gadman_Client * gmc,
-   E_Gadman_Change change)
+_weather_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
+			    E_Gadman_Change change)
 {
    Weather_Face *face;
    Evas_Coord x, y, w, h;
 
    face = data;
    switch (change)
-   {
-   case E_GADMAN_CHANGE_MOVE_RESIZE:
-      e_gadman_client_geometry_get (face->gmc, &x, &y, &w, &h);
-      evas_object_move (face->weather_object, x, y);
-      evas_object_move (face->event_object, x, y);
-      evas_object_resize (face->weather_object, w, h);
-      evas_object_resize (face->event_object, w, h);
-      break;
-   case E_GADMAN_CHANGE_RAISE:
-      evas_object_raise (face->weather_object);
-      evas_object_raise (face->event_object);
-      break;
-   case E_GADMAN_CHANGE_EDGE:
-   case E_GADMAN_CHANGE_ZONE:
-      /* FIXME
-       * Must we do something here?
-       */
-      break;
-   }
+     {
+      case E_GADMAN_CHANGE_MOVE_RESIZE:
+	 e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
+	 evas_object_move(face->weather_object, x, y);
+	 evas_object_move(face->event_object, x, y);
+	 evas_object_resize(face->weather_object, w, h);
+	 evas_object_resize(face->event_object, w, h);
+	 break;
+      case E_GADMAN_CHANGE_RAISE:
+	 evas_object_raise(face->weather_object);
+	 evas_object_raise(face->event_object);
+	 break;
+      case E_GADMAN_CHANGE_EDGE:
+      case E_GADMAN_CHANGE_ZONE:
+	 /* FIXME
+	  * Must we do something here?
+	  */
+	 break;
+     }
 }
 
 static void
-_weather_face_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
-   void *event_info)
+_weather_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
+			    void *event_info)
 {
    Weather_Face *face;
    Evas_Event_Mouse_Down *ev;
@@ -488,346 +525,480 @@ _weather_face_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
    ev = event_info;
 
    if (ev->button == 3)
-   {
-      e_menu_activate_mouse (face->menu, e_zone_current_get (face->con),
-         ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN,ev->timestamp);
-      e_util_container_fake_mouse_up_all_later (face->con);
-   }
+     {
+	e_menu_activate_mouse(face->menu, e_zone_current_get(face->con),
+			      ev->output.x, ev->output.y, 1, 1,
+			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+	e_util_container_fake_mouse_up_all_later(face->con);
+     }
 }
 
 static void
-_weather_face_cb_menu_enabled (void *data, E_Menu * m, E_Menu_Item * mi)
-{
-   Weather_Face *face;
-   unsigned char enabled;
-
-   face = data;
-   enabled = e_menu_item_toggle_get (mi);
-   if ((face->conf->enabled) && (!enabled))
-   {
-      _weather_face_disable (face);
-   }
-   else if ((!face->conf->enabled) && (enabled))
-   {
-      _weather_face_enable (face);
-   }
-}
-
-static void
-_weather_face_cb_menu_edit (void *data, E_Menu * m, E_Menu_Item * mi)
+_weather_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Weather_Face *face;
 
    face = data;
-   e_gadman_mode_set (face->gmc->gadman, E_GADMAN_MODE_EDIT);
+   e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
-static int
-_weather_cb_check (void *data)
+static E_Menu *
+_weather_face_menu_choose_location(Weather_Face *face)
 {
-   int rc;
-   int display;
+   E_Menu *mn;
+   Evas_List *menus = NULL;
+   FILE *file;
+   char buf[2048];
 
-   weatherCb_t w;
-   Weather *ef;
-   Weather_Face *face;
-   Evas_List *l;
-   ef = data;
-   
-   memset(&w, 0, sizeof(weatherCb_t));
-	
-   display = ef->conf->display;
+   mn = e_menu_new();
 
-   for (l = ef->faces; l; l = l->next)
-   {
-      face = l->data;
+   file = fopen(PACKAGE_LIB_DIR"/e_modules/weather/dir.xml", "rb");
+   if (!file) return NULL;
+   while ((fgets(buf, sizeof(buf), file)))
+     {
+	char *needle, *name;
 
-      rc = _weather_cb_download_html (&w);
-	  if ( rc != GET_WEATHER_FAILURE )
+	needle = strstr(buf, "<");
+	if (!needle) continue;
+	if (!strncmp(needle, "<continent>", 11))
 	  {
-	     rc = _weather_cb_parse_html (&w);
-		 if ( rc != GET_WEATHER_FAILURE )
-		 {
-	        _weather_cb_convert_degrees(&w, ef);
-		 }
+	     E_Menu *subm;
+	     E_Menu_Item *mi;
+
+	     fgets(buf, sizeof(buf), file);
+	     name = strstr(buf, ">");
+	     if (!name) continue;
+	     name++;
+	     needle = strstr(name, "<");
+	     if (!needle) continue;
+	     needle[0] = 0;
+
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, name);
+	     subm = _weather_face_menu_continent(face, menus, file);
+	     e_menu_item_submenu_set(mi, subm);
+	     menus = evas_list_append(menus, subm);
 	  }
-	  
-	  if ( rc == GET_WEATHER_FAILURE )
-      {
-		 display = GET_WEATHER_FAILURE;
+     }
+   fclose(file);
+
+   e_object_data_set(E_OBJECT(mn), menus);
+   return mn;
+}
+
+static E_Menu *
+_weather_face_menu_continent(Weather_Face *face, Evas_List *menus, FILE *file)
+{
+   E_Menu *mn;
+   char buf[2048];
+
+   mn = e_menu_new();
+   while ((fgets(buf, sizeof(buf), file)))
+     {
+	char *needle, *name;
+
+	needle = strstr(buf, "<");
+	if (!needle) continue;
+	if (!strncmp(needle, "<country>", 9))
+	  {
+	     E_Menu *subm;
+	     E_Menu_Item *mi;
+
+	     fgets(buf, sizeof(buf), file);
+	     name = strstr(buf, ">");
+	     if (!name) continue;
+	     name++;
+	     needle = strstr(name, "<");
+	     if (!needle) continue;
+	     needle[0] = 0;
+
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, name);
+	     subm = _weather_face_menu_country(face, file);
+	     e_menu_item_submenu_set(mi, subm);
+	     menus = evas_list_append(menus, subm);
 	  }
-	  
-	  _weather_cb_set_display(&w, face , display);
-  }
-
-   
-   return 1;
-
+	else if (!strncmp(needle, "</continent>", 12))
+	  break;
+     }
+   return mn;
 }
 
-static int
-_weather_cb_download_html(weatherCb_t *weather)
+static E_Menu *
+_weather_face_menu_country(Weather_Face *face, FILE *file)
 {
-   int rc;
-   FILE *fd;
-   char exec_str[300];
-   char *home_dir;
-   char config_file_str[120];
-   void *parsedStr;
+   E_Menu *mn;
+   char buf[2048];
 
-   /* Check for NULL pointer */
-   if (weather == NULL)
-   {
-	  return (GET_WEATHER_FAILURE);
-   }
-   
-   memset(exec_str, 0, sizeof(exec_str));
-   
-   /* Get current home directory */
-   home_dir = malloc (100);
-   home_dir = getenv("HOME");
-   sprintf(config_file_str, "%s%s", home_dir, CONFIG_FILE);
-   free(home_dir);
-   
-   /* Get URL from config file */
-   fd = fopen (config_file_str, "r");
+   mn = e_menu_new();
+   while ((fgets(buf, sizeof(buf), file)))
+     {
+	char *needle, *name, *url;
 
-   if ( fd == NULL )
-   {
-      return (GET_WEATHER_FAILURE);
-   }
+	needle = strstr(buf, "<");
+	if (!needle) continue;
+	if (!strncmp(needle, "<location>", 10))
+	  {
+	     E_Menu_Item *mi;
 
-   parsedStr = malloc (sizeof (weather->URL));
-   fgets(parsedStr, sizeof(weather->URL), fd);
-   sprintf (exec_str, "wget -r -t 1 -O %s %s", HTML_FILE, parsedStr);
-   free(parsedStr);
-   fclose (fd);
+	     fgets(buf, sizeof(buf), file);
+	     name = strstr(buf, ">");
+	     if (!name) continue;
+	     name++;
+	     needle = strstr(name, "<");
+	     if (!needle) continue;
+	     needle[0] = 0;
+	     name = strdup(name);
 
-   /* Execute wget command string */
-   system(exec_str);
-   
-   /* Open the HTML file */
-   fd = fopen (HTML_FILE, "r");
-   if ( fd == NULL )
-   {
-      return (GET_WEATHER_FAILURE);
-   }
-   rc = fread (weather->file, sizeof (weather->file), 1, fd);
-   if ( rc < 1 )
-   {
-      rc = GET_WEATHER_FAILURE;
-   }
-   fclose (fd);
+	     fgets(buf, sizeof(buf), file);
+	     url = strstr(buf, ">");
+	     if (!url) continue;
+	     url++;
+	     needle = strstr(url, "<");
+	     if (!needle) continue;
+	     needle[0] = 0;
+	     url = strdup(url);
 
-   return (rc);
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, name);
+	     e_menu_item_callback_set(mi, _weather_face_cb_choose_location, face);
+	     e_object_data_set(E_OBJECT(mi), url);
+	     e_object_del_attach_func_set(E_OBJECT(mi), _weather_face_del_hook);
+	     free(name);
+	  }
+	else if (!strncmp(needle, "</country>", 10))
+	  break;
+     }
+   return mn;
 }
-
-static int
-_weather_cb_parse_html (weatherCb_t * weather)
-{
-   int rc, rc_hi_low;
-   void *parsedStr;
-   void *pNeedle;
-   char location_str[40];
-   char state_str[40];
-   char cond_str[20];
-   char cond_str2[20];
-   char temp[1];
-   char icon[1];
-
-   /* Check for NULL pointer */
-   if (weather == NULL)
-   {
-	  return (GET_WEATHER_FAILURE);
-   }
-
-   /* Open the config file and download current weather */
-   
-   /* Clean these out! */
-   memset(location_str, 0, sizeof(location_str));
-   memset(state_str, 0, sizeof(state_str));
-   memset(cond_str, 0, sizeof(cond_str));
-
-   /* Start parsing data */
-
-   /* Allocate memory for the parsed string */
-   parsedStr = malloc (sizeof (weather->file));
-   
-   /* Get current temp */
-   pNeedle = strstr (weather->file, "temp=");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   sscanf (parsedStr, "temp=%d&", temp);
-   sprintf (weather->currentTemp, "%d", temp[0]);
-   
-    /* Get icon and conditions */
-    pNeedle = strstr(weather->file, "wxicons/"); 
-    snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-    sscanf(parsedStr, "wxicons/%d/%d.gif", temp, icon);
-    sprintf(weather->icon, "%d", icon[0]);
-    
-   /* Get location */
-   pNeedle = strstr(weather->file, "Forecast for");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   sscanf(parsedStr, "Forecast for %[^,]%39s ", location_str, state_str);
-   sprintf(weather->location, "%s", location_str);
-   
-   /* Get conditions */
-   pNeedle = strstr(weather->file, "wxicons");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   pNeedle = strstr(weather->file, "TextA");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   sscanf(parsedStr, "TextA>%[^<]%s", cond_str, cond_str2);
-   sprintf(weather->conditions, "%s", cond_str);
-   
-   /* Get hi/low */
-
-   /* Get hi temp */
-   pNeedle = strstr (weather->file, "templ1=");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   rc_hi_low = sscanf (parsedStr, "templ1=%d&", temp);
-
-   if (rc_hi_low > 0)
-   {
-      sprintf (weather->lowTemp, "%d", temp[0]);
-   }
-   else
-   {
-      sprintf (weather->lowTemp, "--");
-   }
-   
-   /* Get low temp */
-   pNeedle = strstr (weather->file, "temph1=");
-   snprintf(parsedStr, sizeof(weather->file), "%s", pNeedle);
-   rc_hi_low = sscanf (parsedStr, "temph1=%d&", temp);
-
-   if (rc_hi_low > 0)
-   {
-      sprintf (weather->highTemp, "%d", temp[0]);
-   }
-   else
-   {
-      sprintf (weather->highTemp, "--");
-   }
-   
-   /* Complete the hi_low string */
-   sprintf(weather->hi_low, "Hi/Lo: %s / %s", weather->highTemp, weather->lowTemp);
-   
-   /*
-   ** Future spot for forecast stuff.
-   */
-   
-   /* Free up memory */
-   free(parsedStr);
-
-   return ( 0 );
-}
-
-static int
-_weather_cb_convert_degrees(weatherCb_t *weather, void *data)
-{
-   int temp;
-	
-   Weather *ef;
-   ef = data;
-	
-   if ( (weather == NULL) || (data == NULL) )
-   {
-	  return (GET_WEATHER_FAILURE);
-   }
-   
-   /* Check if degrees is in C or F */
-   if ( ef->conf->degrees == DEGREES_C )
-   {
-      strcpy(weather->degrees, "C");
-	  temp = atoi(weather->currentTemp);
-      temp = (temp - 32) * 5 / 9;
-      sprintf(weather->currentTemp, "%d", temp);
-      
-      if (strcmp(weather->highTemp, "--"))
-      {
-         temp = atoi(weather->highTemp);
-         temp = (temp - 32) * 5 / 9;
-         sprintf(weather->highTemp, "%d", temp);
-      }
-      if (strcmp(weather->lowTemp, "--"))
-      {
-         temp = atoi(weather->lowTemp);
-         temp = (temp - 32) * 5 / 9;
-         sprintf(weather->lowTemp, "%d", temp);
-      }
-   }
-   else
-   {
-      strcpy(weather->degrees, "F");
-   }
-
-   sprintf(weather->hi_low, "Hi/Lo: %s / %s", weather->highTemp, weather->lowTemp);
-   
-   return (0);
-}
-
-static int
-_weather_cb_set_display(weatherCb_t *weather, Weather_Face *face,
-                        int display)
-{
-   Weather_Face *f;
-   f = face;
-   int rc;
-	
-   if ( (weather == NULL) || (face == NULL) )
-   {
-	  return (GET_WEATHER_FAILURE);
-   }
-   /* If _get_weather fails, blank out text and set icon to unknown */
-      if ( display == GET_WEATHER_FAILURE )
-      {
-         edje_object_signal_emit (f->weather_object, UNKNOWN_WEATHER_ICON, "");
-         edje_object_part_text_set (f->weather_object, "current_temp", "");
-         edje_object_part_text_set (f->weather_object, "location", "");
-         edje_object_part_text_set (f->weather_object, "conditions", "");
-         edje_object_part_text_set (f->weather_object, "hi_low", "");
-         edje_object_part_text_set (f->weather_object, "simple_location", "");
-         edje_object_part_text_set (f->weather_object, "degrees", "");
-         _weather_face_level_set(f, 1.0);
-      }
-      else if ( display == DETAILED_DISPLAY )
-      {
-         /* Detailed display */
-         edje_object_signal_emit (f->weather_object, weather->icon, "");
-         edje_object_part_text_set (f->weather_object, "current_temp", weather->currentTemp);
-         edje_object_part_text_set (f->weather_object, "location", weather->location);
-         edje_object_part_text_set (f->weather_object, "conditions", weather->conditions);
-         edje_object_part_text_set (f->weather_object, "hi_low", weather->hi_low);
-         edje_object_part_text_set (f->weather_object, "simple_location", "");
-         edje_object_part_text_set (f->weather_object, "degrees", weather->degrees);
-         _weather_face_level_set(f, 0.0);
-      }
-      else
-      {
-         /* Simple display */
-         edje_object_signal_emit (f->weather_object, weather->icon, "");
-         edje_object_part_text_set (f->weather_object, "current_temp", weather->currentTemp);
-         edje_object_part_text_set (f->weather_object, "simple_location", weather->location);
-         edje_object_part_text_set (f->weather_object, "location", "");
-         edje_object_part_text_set (f->weather_object, "conditions", "");
-         edje_object_part_text_set (f->weather_object, "hi_low", "");
-         edje_object_part_text_set (f->weather_object, "degrees", weather->degrees);
-         _weather_face_level_set(f, 1.0);
-      }
-	  
-	  return (0);
-  }
-
 
 static void
-_weather_face_level_set(Weather_Face *ef, double level)
+_weather_face_del_hook(void *obj)
 {
-   Edje_Message_Float msg;
+   free(e_object_data_get(E_OBJECT(obj)));
+}
 
-   if (level < 0.0) level = 0.0;
-   else if (level > 1.0) level = 1.0;
-   msg.val = level;
-   edje_object_message_send(ef->weather_object, EDJE_MESSAGE_FLOAT, 1, &msg);
+static void
+_weather_face_cb_choose_location(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Weather_Face *face;
+   char *url;
+
+   face = data;
+   url = e_object_data_get(E_OBJECT(mi));
+
+   free(face->conf->url);
+   face->conf->url = strdup(url);
+   free(face->conf->location);
+   face->conf->location = strdup(mi->label);
+
+   _weather_cb_check(face->weather);
+   e_config_save_queue();
+}
+
+static void
+_weather_connect(Weather *weather)
+{
+   weather->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
+						  _weather_net_server_add, weather);
+   weather->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
+						  _weather_net_server_del, weather);
+   weather->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+						   _weather_net_server_data, weather);
+}
+
+static int
+_weather_cb_check(void *data)
+{
+   Weather *weather;
+   Weather_Info *info;
+   FILE *file;
+   Evas_List *l;
+
+   weather = data;
+   for (l = weather->faces; l; l = l->next)
+     {
+	Weather_Face *face;
+
+	face = l->data;
+	if (face->server) continue;
+
+	face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+						weather->conf->host, 80, NULL);
+#if 0
+	face->bufsize = 16384;
+	face->buffer = malloc(face->bufsize);
+	file = fopen("/home/sebastid/cvs/e17/apps/e_modules/src/modules/weather/rss.xml", "rb");
+	fread(face->buffer, sizeof(char), face->bufsize, file);
+	fclose(file);
+
+	info = _weather_parse(face);
+	_weather_convert_degrees(weather, info);
+	_weather_display_set(face, info, weather->conf->display);
+
+	face->bufsize = 0;
+	free(face->buffer);
+	face->buffer = NULL;
+	free(info);
+#endif
+     }
+   return 1;
+}
+
+static int
+_weather_net_server_add(void *data, int type, void *event)
+{
+   Weather *weather;
+   Weather_Face *face;
+   Ecore_Con_Event_Server_Add *e;
+   Evas_List *l;
+   char buf[1024];
+
+   printf("add\n");
+   weather = data;
+   e = event;
+   face = NULL;
+   for (l = weather->faces; l; l = l->next)
+     {
+	face = l->data;
+	if (face->server == e->server)
+	  break;
+     }
+   if ((!face) || (e->server != face->server)) return 1;
+
+   snprintf(buf, sizeof(buf), "GET %s HTTP/1.0\r\n\r\n", face->conf->url);
+   ecore_con_server_send(face->server, buf, strlen(buf));
+   return 1;
+}
+
+static int
+_weather_net_server_data(void *data, int type, void *event)
+{
+   Weather *weather;
+   Weather_Face *face;
+   Ecore_Con_Event_Server_Data *e;
+   Evas_List *l;
+
+   printf("data\n");
+   weather = data;
+   e = event;
+   face = NULL;
+   for (l = weather->faces; l; l = l->next)
+     {
+	face = l->data;
+	if (face->server == e->server)
+	  break;
+     }
+   if ((!face) || (e->server != face->server)) return 1;
+
+   face->buffer = realloc(face->buffer, face->bufsize + e->size);
+   memcpy(face->buffer + face->bufsize, e->data, e->size);
+   face->bufsize += e->size;
+   return 1;
+}
+
+static int
+_weather_net_server_del(void *data, int type, void *event)
+{
+   Weather *weather;
+   Weather_Face *face;
+   Ecore_Con_Event_Server_Del *e;
+   Weather_Info *info;
+   Evas_List *l;
+
+   printf("del\n");
+   weather = data;
+   e = event;
+   face = NULL;
+   for (l = weather->faces; l; l = l->next)
+     {
+	face = l->data;
+	if (face->server == e->server)
+	  break;
+     }
+   if ((!face) || (e->server != face->server)) return 1;
+   printf("hm: %s\n", face->buffer);
+
+   info = _weather_parse(face);
+   _weather_convert_degrees(weather, info);
+   _weather_display_set(face, info, weather->conf->display);
+   free(info);
+
+   face->server = NULL;
+   face->bufsize = 0;
+   free(face->buffer);
+   return 1;
+}
+
+static Weather_Info *
+_weather_parse(Weather_Face *face)
+{
+   Weather_Info *info;
+   char *needle, *ext;
+
+   info = calloc(1, sizeof(Weather_Info));
+   if (!info) return NULL;
+
+   needle = strstr(face->buffer, "<content:encoded>");
+   if (!needle) goto error;
+
+   /* Get the icon */
+   needle = strstr(needle, "<img"); 
+   if (!needle) goto error;
+   needle = strstr(needle, "id="); 
+   if (!needle) goto error;
+   sscanf(needle, "id=\"%[^\"]\"", info->icon);
+   ext = strstr(info->icon, ".");
+   if (!strcmp(ext, ".gif"))
+     strcpy(ext, ".png");
+
+   /* Get the conditions */
+   needle = strstr(needle, "class=\"sky\""); 
+   if (!needle) goto error;
+   needle = strstr(needle, ">"); 
+   if (!needle) goto error;
+   sscanf(needle, ">%[^<]<", info->conditions);
+
+   /* Get the temp */
+   needle = strstr(needle, "class=\"temp\""); 
+   if (!needle) goto error;
+   needle = strstr(needle, ">"); 
+   if (!needle) goto error;
+   sscanf(needle, ">%d", &info->temp);
+   needle = strstr(needle, "<"); 
+   if (!needle) goto error;
+   needle--;
+   info->degrees = needle[0];
+
+   return info;
+error:
+   free(info);
+   return NULL;
+}
+
+static void
+_weather_convert_degrees(Weather *weather, Weather_Info *info)
+{
+   if (!info) return;
+
+   /* Check if degrees is in C or F */
+   if ((info->degrees == 'F') && (weather->conf->degrees == DEGREES_C))
+     {
+	info->temp = (info->temp - 32) * 5.0 / 9.0;
+	info->degrees = 'C';
+     }
+   if ((info->degrees == 'C') && (weather->conf->degrees == DEGREES_F))
+     {
+	info->temp = (info->temp * 9.0 / 5.0) + 32;
+	info->degrees = 'F';
+     }
+}
+
+static void
+_weather_display_set(Weather_Face *face, Weather_Info *info,
+		     int display)
+{
+   char buf[PATH_MAX];
+
+   if (!face) return;
+
+   /* If _get_weather fails, blank out text and set icon to unknown */
+   if (!info)
+     {
+	e_icon_file_set(face->icon_object, PACKAGE_LIB_DIR"/e_modules/weather/images/na.png");
+	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
+
+	edje_object_part_text_set(face->weather_object, "location", "");
+	edje_object_part_text_set(face->weather_object, "temp", "");
+	edje_object_part_text_set(face->weather_object, "conditions", "");
+	edje_object_signal_emit(face->weather_object, "set_style", "simple");
+     }
+   else if (display == DETAILED_DISPLAY)
+     {
+	/* Detailed display */
+	edje_object_signal_emit(face->weather_object, "set_style", "detailed");
+	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", info->icon);
+	e_icon_file_set(face->icon_object, buf);
+	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
+
+	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
+	snprintf(buf, sizeof(buf), "%d\u00b0%c", info->temp, info->degrees);
+	edje_object_part_text_set(face->weather_object, "temp", buf);
+	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
+     }
+   else
+     {
+	/* Simple display */
+	edje_object_signal_emit(face->weather_object, "set_style", "simple");
+	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", info->icon);
+	e_icon_file_set(face->icon_object, buf);
+	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
+
+	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
+	snprintf(buf, sizeof(buf), "%d\u00b0%c", info->temp, info->degrees);
+	edje_object_part_text_set(face->weather_object, "temp", buf);
+	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
+     }
+}
+
+static void
+_weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   E_Manager *man;
+   E_Container *con;
+   Weather *weather;
+   Weather_Face *face;
+
+   man = e_manager_current_get();
+   con = e_container_current_get(man);
+
+   weather = data;
+   face = _weather_face_new(weather, con);
+   if (face)
+     {
+	weather->faces = evas_list_append(weather->faces, face);
+
+	face->conf = E_NEW(Config_Face, 1);
+	face->conf->container = con->num;
+	face->conf->enabled = 1;
+	face->conf->location = strdup("Kirkenes Lufthavn");
+	face->conf->url = strdup("/icao/ENKR/rss.php");
+	weather->conf->faces = evas_list_append(weather->conf->faces, face->conf);
+
+	/* Menu */
+	/* This menu must be initialized after conf */
+	_weather_face_menu_new(face);
+
+	/* Add main menu to face menu */
+	mi = e_menu_item_new(face->menu);
+	e_menu_item_label_set(mi, _("Set Degrees"));
+	e_menu_item_submenu_set(mi, weather->config_menu_degrees);
+
+	mi = e_menu_item_new(face->menu);
+	e_menu_item_label_set(mi, _("Set Display"));
+	e_menu_item_submenu_set(mi, weather->config_menu_display);
+
+	mi = e_menu_item_new(face->menu);
+	e_menu_item_label_set(mi, _("Set Update Time"));
+	e_menu_item_submenu_set(mi, weather->config_menu_poll);
+
+	mi = e_menu_item_new(weather->config_menu);
+	e_menu_item_label_set(mi, con->name);
+
+	e_menu_item_submenu_set(mi, face->menu);
+     }
+   _weather_cb_check(weather);
+}
+
+static void
+_weather_menu_remove_face(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Weather_Face *face;
+
+   face = data;
+   face->weather->faces = evas_list_remove(face->weather->faces, face);
+   face->weather->conf->faces = evas_list_remove(face->weather->conf->faces, face->conf);
+   _weather_face_free(face);
 }
 
 static void
@@ -838,9 +1009,11 @@ _weather_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi)
    weather = data;
    weather->conf->poll_time = 900.0;
    ecore_timer_del(weather->weather_check_timer);
-   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time, _weather_cb_check, weather);
+   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time,
+						  _weather_cb_check, weather);
    e_config_save_queue();
 }
+
 static void
 _weather_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -849,7 +1022,8 @@ _weather_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
    weather = data;
    weather->conf->poll_time = 1800.0;
    ecore_timer_del(weather->weather_check_timer);
-   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time, _weather_cb_check, weather);
+   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time,
+						  _weather_cb_check, weather);
    e_config_save_queue();
 }
 static void
@@ -860,7 +1034,8 @@ _weather_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi)
    weather = data;
    weather->conf->poll_time = 3600.0;
    ecore_timer_del(weather->weather_check_timer);
-   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time, _weather_cb_check, weather);
+   weather->weather_check_timer = ecore_timer_add(weather->conf->poll_time,
+						  _weather_cb_check, weather);
    e_config_save_queue();
 }
 
@@ -870,7 +1045,7 @@ _weather_menu_display_simple(void *data, E_Menu *m, E_Menu_Item *mi)
    Weather *weather;
 
    weather = data;
-   weather->conf->display = 0;
+   weather->conf->display = SIMPLE_DISPLAY;
    _weather_cb_check(data);
    e_config_save_queue();
 }
@@ -881,7 +1056,7 @@ _weather_menu_display_detailed(void *data, E_Menu *m, E_Menu_Item *mi)
    Weather *weather;
 
    weather = data;
-   weather->conf->display = 1;
+   weather->conf->display = DETAILED_DISPLAY;
    _weather_cb_check(data);
    e_config_save_queue();
 }
@@ -892,7 +1067,7 @@ _weather_menu_degrees_F(void *data, E_Menu *m, E_Menu_Item *mi)
    Weather *weather;
 
    weather = data;
-   weather->conf->degrees = 0;
+   weather->conf->degrees = DEGREES_F;
    _weather_cb_check(data);
    e_config_save_queue();
 }
@@ -903,17 +1078,7 @@ _weather_menu_degrees_C(void *data, E_Menu *m, E_Menu_Item *mi)
    Weather *weather;
 
    weather = data;
-   weather->conf->degrees = 1;
+   weather->conf->degrees = DEGREES_C;
    _weather_cb_check(data);
    e_config_save_queue();
-}
-
-
-static void
-_weather_menu_edit_url(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Weather *weather;
-   
-   weather = data;
-   system("xterm -bg lightyellow -fg black -e vi $HOME/.weather.config &");   
 }
