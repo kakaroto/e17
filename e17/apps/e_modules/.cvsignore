@@ -13,3 +13,5 @@ depcomp
 install-sh
 libtool
 missing
+ltmain.sh
+stamp-h1
