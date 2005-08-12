@@ -1,1 +1,0 @@
-SUBDIRS = images schemas themes

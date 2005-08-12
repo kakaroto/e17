@@ -1,9 +1,0 @@
-todo
-----
-  o Completely implement the Ewl object hierarchy in widgets.xml
-	o Makefile generator for project files
-	o Documentation and help
-
-done
-----
-	o Design an edje for selected widgets
