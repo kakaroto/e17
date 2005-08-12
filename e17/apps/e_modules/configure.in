@@ -199,6 +199,7 @@ src/modules/notes/Makefile
 src/modules/flame/Makefile
 src/modules/monitor/Makefile
 src/modules/weather/Makefile
+src/modules/weather/images/Makefile
 ],[
 ])
 
