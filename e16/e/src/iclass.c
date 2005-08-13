@@ -83,7 +83,7 @@ TransparencySet(int transparency)
    if (prev_alpha == -1)
      {
 	prev_alpha = Conf.trans.alpha = transparency;
-	changed = 1;
+	changed = -1;
      }
    else
      {
@@ -97,6 +97,9 @@ TransparencySet(int transparency)
 
    /* Generate the color modifier tables */
    TransparencyMakeColorModifier();
+
+   if (changed < 0)
+      return;
 
    if (prev_alpha == 0)
      {

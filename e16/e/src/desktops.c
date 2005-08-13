@@ -850,6 +850,9 @@ DeskRefresh(int desk)
    if (!bg)
       return;
 
+   if (BackgroundGetPixmap(bg) != None)
+      return;
+
    BackgroundSet(bg, EoGetWin(d), EoGetW(d), EoGetH(d));
    HintsSetRootInfo(EoGetWin(d),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
