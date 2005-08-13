@@ -721,6 +721,7 @@ _engage_bar_free(Engage_Bar *eb)
    e_object_unref(E_OBJECT(eb->con));
 
    e_object_del(E_OBJECT(eb->zoom_menu));
+   e_object_del(E_OBJECT(eb->icon_menu));
    e_object_del(E_OBJECT(eb->menu));
 
    while (eb->icons)
