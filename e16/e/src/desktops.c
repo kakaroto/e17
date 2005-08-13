@@ -414,6 +414,7 @@ DeskCreate(int desk, int configure)
    win = (desk == 0) ? VRoot.win : None;
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EobjInit(&d->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
+   EventCallbackRegister(EoGetWin(d), 0, DesktopHandleEvents, d);
    EoSetShadow(d, 0);
    if (desk > 0)
      {
@@ -423,13 +424,11 @@ DeskCreate(int desk, int configure)
 	d->event_mask = EDESK_EVENT_MASK;
 	DeskEventsConfigure(d, 1);
 #endif
+	/* Set the _XROOT... atoms so apps will find them even before the bg is set */
+	HintsSetRootInfo(EoGetWin(d), None, 0);
      }
-   EventCallbackRegister(EoGetWin(d), 0, DesktopHandleEvents, d);
 
    HintsSetRootHints(EoGetWin(d));
-
-   /* Set the _XROOT... atoms so apps will find them even before the bg is set */
-   HintsSetRootInfo(EoGetWin(d), None, 0);
 
    if (configure)
       DeskConfigure(d);

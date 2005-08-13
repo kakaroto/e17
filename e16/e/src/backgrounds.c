@@ -527,6 +527,26 @@ e16_tile_image_onto_image(Imlib_Image * tile, int blend, int tw, int th,
      }
 }
 
+static              Pixmap
+BackgroundCreatePixmap(Window win, unsigned int w, unsigned int h,
+		       unsigned int depth)
+{
+   Pixmap              pmap;
+
+   /*
+    * Stupid hack to avoid that a new root pixmap has the same ID as the now
+    * invalid one from a previous session.
+    */
+   pmap = ECreatePixmap(win, w, h, depth);
+   if (win == VRoot.win && pmap == Mode.hints.old_root_pmap)
+     {
+	EFreePixmap(pmap);
+	pmap = ECreatePixmap(win, w, h, depth);
+	Mode.hints.old_root_pmap = None;
+     }
+   return pmap;
+}
+
 Pixmap
 BackgroundApply(Background * bg, Drawable draw,
 		unsigned int rw, unsigned int rh, int is_win)
@@ -638,7 +658,7 @@ BackgroundApply(Background * bg, Drawable draw,
        ((w == rw && h == rh) || (bg->bg_tile && !TransparencyEnabled())))
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
-	pmap = ECreatePixmap(VRoot.win, w, h, VRoot.depth);
+	pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
 	imlib_context_set_drawable(pmap);
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 
@@ -660,7 +680,7 @@ BackgroundApply(Background * bg, Drawable draw,
 
    /* The rest that require some more work */
    if (is_win)
-      pmap = ECreatePixmap(VRoot.win, rw, rh, VRoot.depth);
+      pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
    else
       pmap = draw;
    imlib_context_set_drawable(pmap);

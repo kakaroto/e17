@@ -55,6 +55,8 @@ HintsInit(void)
 	HintsSetWindowName(VRoot.win, "Enlightenment");
 	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
      }
+
+   Mode.hints.old_root_pmap = HintsGetRootPixmap(VRoot.win);
 }
 
 void
@@ -285,6 +287,21 @@ HintsProcessClientMessage(XClientMessageEvent * event)
       GNOME_ProcessClientMessage(event);
 #endif
    XFree(name);
+}
+
+Pixmap
+HintsGetRootPixmap(Window win)
+{
+   Atom                a = 0;
+   Ecore_X_Pixmap      pm;
+   int                 num;
+
+   a = XInternAtom(disp, "_XROOTPMAP_ID", False);
+
+   pm = None;
+   num = ecore_x_window_prop_xid_get(win, a, XA_PIXMAP, &pm, 1);
+
+   return pm;
 }
 
 void

@@ -783,6 +783,10 @@ typedef struct
    } grabs;
    struct
    {
+      Pixmap              old_root_pmap;
+   } hints;
+   struct
+   {
       const char         *lang;
       char                utf8_int;	/* Use UTF-8 internally */
       char                utf8_loc;	/* Locale is UTF-8 */
@@ -1483,6 +1487,7 @@ void                HintsDelWindowHints(const EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                HintsProcessClientMessage(XClientMessageEvent * event);
 
+Pixmap              HintsGetRootPixmap(Window win);
 void                HintsSetRootHints(Window win);
 void                HintsSetRootInfo(Window win, Pixmap pmap,
 				     unsigned int color);
