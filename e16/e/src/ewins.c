@@ -219,6 +219,7 @@ EwinDestroy(EWin * ewin)
    EobjListOrderDel(&ewin->o);
    EobjListFocusDel(&ewin->o);
    EobjFini(&ewin->o);
+   EDestroyWindow(EoGetWin(ewin));
 
    HintsSetClientList();
 
@@ -244,8 +245,6 @@ EwinDestroy(EWin * ewin)
    if (ewin->ewmh.wm_icon)
       Efree(ewin->ewmh.wm_icon);
 #endif
-   if (EoGetWin(ewin))
-      EDestroyWindow(EoGetWin(ewin));
    if (ewin->bits)
       Efree(ewin->bits);
    if (ewin->session_id)

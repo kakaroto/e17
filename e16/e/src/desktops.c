@@ -390,7 +390,10 @@ DeskConfigure(Desk * d)
    DeskSetBg(d->num, bg, 0);
 
    if (d->num > 0)
-      EoMap(d, 0);
+     {
+	EoMove(d, VRoot.w, 0);
+	EoMap(d, 0);
+     }
 
    ModulesSignal(ESIGNAL_DESK_ADDED, ((void *)(long)(d->num)));
 }
@@ -470,9 +473,8 @@ DeskDestroy(Desk * d)
    if (d->bg)
       BackgroundDecRefcount(d->bg);
 
-   EDestroyWindow(EoGetWin(d));
-
    EobjFini(&d->o);
+   EDestroyWindow(EoGetWin(d));
 
    desks.desk[d->num] = NULL;
    Efree(d);
@@ -607,6 +609,20 @@ void
 DesksSetCurrent(int desk)
 {
    desks.current = desk;
+}
+
+void
+DesksClear(void)
+{
+   Desk               *d;
+   int                 i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+     {
+	d = _DeskGet(i);
+	if (d->viewable)
+	   EClearWindow(EoGetWin(d));
+     }
 }
 
 void
@@ -837,20 +853,6 @@ DeskRefresh(int desk)
    BackgroundSet(bg, EoGetWin(d), EoGetW(d), EoGetH(d));
    HintsSetRootInfo(EoGetWin(d),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
-}
-
-void
-DesksRefresh(void)
-{
-   Desk               *d;
-   int                 i;
-
-   for (i = 0; i < Conf.desks.num; i++)
-     {
-	d = _DeskGet(i);
-	if (d->bg)
-	   DeskSetBg(i, d->bg, 1);
-     }
 }
 
 void

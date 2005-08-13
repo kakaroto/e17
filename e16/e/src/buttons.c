@@ -159,9 +159,7 @@ ButtonDestroy(Button * b)
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
 
    EobjFini(&b->o);
-
-   if (EoGetWin(b))
-      EDestroyWindow(EoGetWin(b));
+   EDestroyWindow(EoGetWin(b));
 
    if (b->iclass)
       b->iclass->ref_count--;

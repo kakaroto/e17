@@ -436,7 +436,6 @@ DeskBackgroundPictureFree(Desk * d)
 
    D1printf("DeskBackgroundPictureFree: Desk %d: pict=%#lx\n", d->num, pict);
 
-   XClearArea(disp, EoGetWin(d), 0, 0, 0, 0, False);
    XRenderFreePicture(disp, pict);
 
    cw->picture = None;
@@ -1781,6 +1780,7 @@ ECompMgrDeskChanged(int desk)
    D1printf("ECompMgrDeskChanged: desk=%d\n", desk);
 
    DeskBackgroundPictureFree(d);
+   ECompMgrDamageAll();
 }
 
 #if ENABLE_SHADOWS
@@ -1935,6 +1935,9 @@ ECompMgrStop(void)
       XCompositeUnredirectSubwindows(disp, VRoot.win, CompositeRedirectManual);
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
+
+   if (Conf_compmgr.shadow != ECM_SHADOWS_OFF)
+      DesksClear();
 }
 
 void

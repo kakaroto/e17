@@ -1142,13 +1142,8 @@ void                DeskSetDirtyStack(int desk);
 void                DeskGetCurrentArea(int *ax, int *ay);
 Window              DeskGetCurrentRoot(void);
 void                DeskSetCurrentArea(int ax, int ay);
-int                 DesksGetNumber(void);
-int                 DesksGetCurrent(void);
-void                DesksSetCurrent(int desk);
-void                DesksResize(int w, int h);
 
 void                DeskRefresh(int num);
-void                DesksRefresh(void);
 void                DeskAssignBg(int desk, Background * bg);
 void                DeskSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
@@ -1157,9 +1152,15 @@ void                DeskHide(int num);
 void                DeskShow(int num);
 void                StackDesktop(int num);
 void                DeskGotoByEwin(EWin * ewin);
-void                DesksEventsConfigure(int mode);
 void                DeskDragStart(int desk);
 void                DeskDragMotion(void);
+
+int                 DesksGetNumber(void);
+int                 DesksGetCurrent(void);
+void                DesksSetCurrent(int desk);
+void                DesksClear(void);
+void                DesksResize(int w, int h);
+void                DesksEventsConfigure(int mode);
 
 /* dialog.c */
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
