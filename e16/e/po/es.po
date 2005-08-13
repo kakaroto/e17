@@ -23,7 +23,7 @@ msgstr "Error en Actionclass!"
 #: src/tooltips.c:114
 #, c-format
 msgid "%u references remain\n"
-msgstr "%u restan referencias\n"
+msgstr "%u referencias restantes\n"
 
 #: src/aclass.c:239 src/backgrounds.c:927 src/borders.c:1010
 #: src/borders.c:1134 src/buttons.c:746 src/cmclass.c:201 src/config.c:267
@@ -510,7 +510,7 @@ msgstr ""
 
 #: src/config.c:312
 msgid "Image class"
-msgstr "Imagen clase"
+msgstr "Clase de imagen"
 
 #: src/config.c:317
 msgid "Tooltip"
@@ -2032,11 +2032,11 @@ msgstr "Desplazar escritorios al conmutar entre ellos"
 
 #: src/settings.c:941
 msgid "Slide windows around when cleaning up"
-msgstr "Desplazar escritorios a la hora de limpiar"
+msgstr "Desplazar ventanas a la hora de limpiar"
 
 #: src/settings.c:956
 msgid "Slide windows in when they appear"
-msgstr "Deslizar escritorios mientras aparecen"
+msgstr "Deslizar ventanas mientras aparecen"
 
 #: src/settings.c:971
 msgid "Animated display of menus"
