@@ -61,6 +61,7 @@ struct _Engage_Bar
    Evas        *evas;
    E_Menu      *menu;
    E_Menu      *zoom_menu;
+   E_Menu      *icon_menu;
    E_Menu      *context_menu;   
    
    Evas_Object *bar_object;

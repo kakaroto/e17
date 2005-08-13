@@ -123,6 +123,8 @@ static void    _engage_bar_cb_menu_zoom_huge(void *data, E_Menu *m, E_Menu_Item 
 static void    _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_keep_icon(void *data, E_Menu *m, E_Menu_Item *mi);
+static void    _engage_bar_cb_menu_remove_icon(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 static int     _engage_border_ignore(E_Border *bd);
@@ -524,7 +526,40 @@ _engage_dotorder_app_add(Engage *e, char *name)
 static void
 _engage_dotorder_app_del(Engage *e, char *name)
 {
-   printf("FIXME, remove an app from .order\n");
+   FILE *f;
+   char buf[4096];
+   char *buf_ptr;
+   char *dotorder;
+   Ecore_List *list = ecore_list_new();
+
+   dotorder = _engage_dotorder_locate(e);
+   if (!dotorder)
+     return;
+
+   if ((f = fopen(dotorder, "r+")) == NULL)
+     return;
+
+   while (fgets(buf, 4096, f))
+     {
+	if (strncmp(name, buf, strlen(name)) != 0)
+	  ecore_list_append(list, strdup(buf));
+     }
+   fclose(f);
+   ecore_list_goto_first(list);
+
+   if ((f = fopen(dotorder, "w")) == NULL)
+     return;
+
+   while((buf_ptr = ecore_list_next(list)))
+     {
+	snprintf(buf, 4096, "%s", buf_ptr);
+	fputs(buf_ptr, f);
+	free(buf_ptr);
+     }
+   free(dotorder);
+   fclose(f);
+   ecore_list_destroy(list);
+
 }
 
 static Engage_Bar *
@@ -736,6 +771,21 @@ _engage_bar_menu_new(Engage_Bar *eb)
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_zoom_huge, eb);
 
    mn = e_menu_new();
+   eb->icon_menu = mn;
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Edit Icon");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Keep Icon");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_keep_icon, eb);
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Remove Icon");
+   e_menu_item_callback_set(mi, _engage_bar_cb_menu_remove_icon, eb);
+
+   mn = e_menu_new();
    eb->menu = mn;
 
    mi = e_menu_item_new(mn);
@@ -768,9 +818,9 @@ _engage_bar_menu_new(Engage_Bar *eb)
    e_menu_item_separator_set(mi, 1);
    
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Edit Icon");
-   e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
-
+   e_menu_item_label_set(mi, "Icon Options");
+   e_menu_item_submenu_set(mi, eb->icon_menu);
+   
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
 	 
@@ -2400,6 +2450,28 @@ _engage_bar_cb_menu_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
 				   "or make sure it is in your PATH\n"));
 	  }
      }
+}
+
+static void
+_engage_bar_cb_menu_keep_icon(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+   eb = data;
+   char *file;
+
+   file = ecore_file_get_file(eb->selected_ic->app->path);
+   _engage_dotorder_app_add(eb->engage, file);
+}
+
+static void
+_engage_bar_cb_menu_remove_icon(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage_Bar *eb;
+   eb = data;
+   char *file;
+   
+   file = ecore_file_get_file(eb->selected_ic->app->path);
+   _engage_dotorder_app_del(eb->engage, file);
 }
 
 static void
