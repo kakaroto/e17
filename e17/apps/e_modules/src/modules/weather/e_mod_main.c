@@ -6,8 +6,10 @@
 
 /*
  * TODO:
- * * Fix simple display
- * * icon
+ * * Don't reload when changing from F to C
+ * * Don't reload when changing display
+ * * Store weather info in face
+ * * Show weather time on mouseover
  */
 
 static Weather *_weather_new();
