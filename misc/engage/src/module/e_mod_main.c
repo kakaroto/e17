@@ -15,7 +15,6 @@
  * * store ignore list in config
  * * fix mouse overs etc to reach all the sub icons (currently missine ends)
  *
- * * pick up apps on enable (startup OK, disable then enable not)
  * * When a window gets focus move the selected_app pointer
  * * bounce icons on click ( following e_app exec hints? )
  *
@@ -56,6 +55,7 @@ static int     _engage_cb_event_border_add(void *data, int type, void *event);
 static int     _engage_cb_event_border_remove(void *data, int type, void *event);
 static int     _engage_cb_event_border_iconify(void *data, int type, void *event);
 static int     _engage_cb_event_border_uniconify(void *data, int type, void *event);
+static int     _engage_cb_border_add(Engage_Bar *eb, E_Border *bd);
 
 static Engage_Bar *_engage_bar_new(Engage *e, E_Container *con);
 static void    _engage_bar_free(Engage_Bar *eb);
@@ -350,6 +350,14 @@ _engage_new()
 		  mi = e_menu_item_new(e->config_menu);
 		  e_menu_item_label_set(mi, con->name);
 		  e_menu_item_submenu_set(mi, eb->menu);
+
+		  /* include apps already running */
+		  Evas_List *list;
+
+		  for (list = e_border_focus_stack_get(); list; list = list->next)
+		    {
+		       _engage_cb_border_add(eb, list->data);
+		    }
 
 		  /* Setup */
 		  if (!eb->conf->enabled)
@@ -1184,28 +1192,28 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
 }
 
 static int
-_engage_cb_event_border_add(void *data, int type, void *event)
+_engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 {
-   Engage_Bar *eb;
    Engage_Icon *ic;
    Engage_App_Icon *ai;
-   E_Event_Border_Add *e;
    E_App *app;
    char *title;
-
-   e = event;
-   eb = data;
-   if (e->border->zone->container != eb->con)
+   
+   if (bd->zone->container != eb->con)
+     return 1;
+   
+   /* border not fully evaluated - can't use that*/
+   if (bd->new_client)
      return 1;
 
-   if (_engage_border_ignore(e->border))
+   if (_engage_border_ignore(bd))
      return 1;
-   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
-   else title = e->border->client.icccm.title;
-   app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
-						 e->border->client.icccm.class,
+   if (bd->client.netwm.name) title = bd->client.netwm.name;
+   else title = bd->client.icccm.title;
+   app = e_app_window_name_class_title_role_find(bd->client.icccm.name,
+						 bd->client.icccm.class,
 						 title,
-						 e->border->client.icccm.window_role);
+						 bd->client.icccm.window_role);
    if (!app)
      app = _engage_unmatched_app;
    ic = _engage_icon_find(eb, app);
@@ -1220,8 +1228,8 @@ _engage_cb_event_border_add(void *data, int type, void *event)
      }
    if (ic)
      {
-	ai = _engage_app_icon_new(ic, e->border, 0);
-	if (ai && e->border->iconic)
+	ai = _engage_app_icon_new(ic, bd, 0);
+	if (ai && bd->iconic)
 	  {
 	     ai->min = 1;
 	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
@@ -1229,6 +1237,18 @@ _engage_cb_event_border_add(void *data, int type, void *event)
 	  }				       
      }
    return 1;
+}
+
+static int
+_engage_cb_event_border_add(void *data, int type, void *event)
+{
+   Engage_Bar *eb;
+   E_Event_Border_Add *e;
+
+   e = event;
+   eb = data;
+
+   return _engage_cb_border_add(eb, e->border);
 }
 
 static int
