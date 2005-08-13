@@ -620,7 +620,7 @@ static void
 PagerShow(Pager * p)
 {
    EWin               *ewin = NULL;
-   char                s[4096];
+   char                s[128];
    int                 w, h;
 
    if (!Conf_pagers.enable)
@@ -1121,14 +1121,14 @@ NewPagerForDesktop(int desk)
 {
 
    Pager              *p;
-   char                s[1024];
+   char                s[128];
 
    p = PagerCreate();
    if (!p)
       return;
 
    p->desktop = desk;
-   Esnprintf(s, sizeof(s), "%i", desk);
+   Esnprintf(s, sizeof(s), "Pager-%i", desk);
    HintsSetWindowName(p->win, s);
    PagerShow(p);
 }
