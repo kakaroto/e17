@@ -1223,11 +1223,11 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 		  i, eo->win, eo->type, eo->shown, eo->desk, eo->sticky,
 		  eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE
-		  (eo->cmhook) ? 1 : 0,
+		  (eo->cmhook) ? 1 : 0, !eo->noredir
 #else
-		  0,
+		  0, 0
 #endif
-		  !eo->noredir, eo->name);
+		  , eo->name);
      }
 }
 
