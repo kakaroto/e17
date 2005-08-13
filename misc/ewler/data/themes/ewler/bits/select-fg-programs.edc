@@ -1,0 +1,255 @@
+	programs {	
+		program {
+			name, "deselect";
+			signal, "deselect";
+			source, "EWL";
+			action, STATE_SET "deselect" 0.0;
+			target, "bg";
+			target, "top_left";
+			target, "top_middle";
+			target, "top_right";
+			target, "middle_right";
+			target, "bottom_right";
+			target, "bottom_middle";
+			target, "bottom_left";
+			target, "middle_left";
+		}
+		program {
+			name, "default";
+			signal, "default";
+			source, "EWL";
+			action, STATE_SET "default" 0.0;
+			target, "bg";
+			target, "top_left";
+			target, "top_middle";
+			target, "top_right";
+			target, "middle_right";
+			target, "bottom_right";
+			target, "bottom_middle";
+			target, "bottom_left";
+			target, "middle_left";
+		}
+		program {
+			name, "top_left_in";
+			signal, "mouse,in";
+			source, "top_left";
+			action, STATE_SET "mouse" 0.0;
+			target, "top_left";
+		}
+		program {
+			name, "top_left_out";
+			signal, "mouse,out";
+			source, "top_left";
+			action, STATE_SET "default" 0.0;
+			target, "top_left";
+		}
+		program {
+			name, "top_left_down";
+			signal, "mouse,down,1";
+			source, "top_left";
+			action, SIGNAL_EMIT "down" "top_left";
+			after, "top_left_in";
+		}
+		program {
+			name, "top_left_up";
+			signal, "mouse,up,1";
+			source, "top_left";
+			action, SIGNAL_EMIT "up" "top_left";
+		}
+	
+		program {
+			name, "top_middle_in";
+			signal, "mouse,in";
+			source, "top_middle";
+			action, STATE_SET "mouse" 0.0;
+			target, "top_middle";
+		}
+		program {
+			name, "top_middle_out";
+			signal, "mouse,out";
+			source, "top_middle";
+			action, STATE_SET "default" 0.0;
+			target, "top_middle";
+		}
+		program {
+			name, "top_middle_down";
+			signal, "mouse,down,1";
+			source, "top_middle";
+			action, SIGNAL_EMIT "down" "top_middle";
+			after, "top_middle_in";
+		}
+		program {
+			name, "top_middle_up";
+			signal, "mouse,up,1";
+			source, "top_middle";
+			action, SIGNAL_EMIT "up" "top_middle";
+		}
+	
+		program {
+			name, "top_right_in";
+			signal, "mouse,in";
+			source, "top_right";
+			action, STATE_SET "mouse" 0.0;
+			target, "top_right";
+		}
+		program {
+			name, "top_right_out";
+			signal, "mouse,out";
+			source, "top_right";
+			action, STATE_SET "default" 0.0;
+			target, "top_right";
+		}
+		program {
+			name, "top_right_down";
+			signal, "mouse,down,1";
+			source, "top_right";
+			action, SIGNAL_EMIT "down" "top_right";
+			after, "top_right_in";
+		}
+		program {
+			name, "top_right_up";
+			signal, "mouse,up,1";
+			source, "top_right";
+			action, SIGNAL_EMIT "up" "top_right";
+		}
+	
+		program {
+			name, "middle_right_in";
+			signal, "mouse,in";
+			source, "middle_right";
+			action, STATE_SET "mouse" 0.0;
+			target, "middle_right";
+		}
+		program {
+			name, "middle_right_out";
+			signal, "mouse,out";
+			source, "middle_right";
+			action, STATE_SET "default" 0.0;
+			target, "middle_right";
+		}
+		program {
+			name, "middle_right_down";
+			signal, "mouse,down,1";
+			source, "middle_right";
+			action, SIGNAL_EMIT "down" "middle_right";
+			after, "middle_right_in";
+		}
+		program {
+			name, "middle_right_up";
+			signal, "mouse,up,1";
+			source, "middle_right";
+			action, SIGNAL_EMIT "up" "middle_right";
+		}
+	
+		program {
+			name, "bottom_right_in";
+			signal, "mouse,in";
+			source, "bottom_right";
+			action, STATE_SET "mouse" 0.0;
+			target, "bottom_right";
+		}
+		program {
+			name, "bottom_right_out";
+			signal, "mouse,out";
+			source, "bottom_right";
+			action, STATE_SET "default" 0.0;
+			target, "bottom_right";
+		}
+		program {
+			name, "bottom_right_down";
+			signal, "mouse,down,1";
+			source, "bottom_right";
+			action, SIGNAL_EMIT "down" "bottom_right";
+			after, "bottom_right_in";
+		}
+		program {
+			name, "bottom_right_up";
+			signal, "mouse,up,1";
+			source, "bottom_right";
+			action, SIGNAL_EMIT "up" "bottom_right";
+		}
+	
+		program {
+			name, "bottom_middle_in";
+			signal, "mouse,in";
+			source, "bottom_middle";
+			action, STATE_SET "mouse" 0.0;
+			target, "bottom_middle";
+		}
+		program {
+			name, "bottom_middle_out";
+			signal, "mouse,out";
+			source, "bottom_middle";
+			action, STATE_SET "default" 0.0;
+			target, "bottom_middle";
+		}
+		program {
+			name, "bottom_middle_down";
+			signal, "mouse,down,1";
+			source, "bottom_middle";
+			action, SIGNAL_EMIT "down" "bottom_middle";
+			after, "bottom_middle_in";
+		}
+		program {
+			name, "bottom_middle_up";
+			signal, "mouse,up,1";
+			source, "bottom_middle";
+			action, SIGNAL_EMIT "up" "bottom_middle";
+		}
+	
+		program {
+			name, "bottom_left_in";
+			signal, "mouse,in";
+			source, "bottom_left";
+			action, STATE_SET "mouse" 0.0;
+			target, "bottom_left";
+		}
+		program {
+			name, "bottom_left_out";
+			signal, "mouse,out";
+			source, "bottom_left";
+			action, STATE_SET "default" 0.0;
+			target, "bottom_left";
+		}
+		program {
+			name, "bottom_left_down";
+			signal, "mouse,down,1";
+			source, "bottom_left";
+			action, SIGNAL_EMIT "down" "bottom_left";
+			after, "bottom_left_in";
+		}
+		program {
+			name, "bottom_left_up";
+			signal, "mouse,up,1";
+			source, "bottom_left";
+			action, SIGNAL_EMIT "up" "bottom_left";
+		}
+	
+		program {
+			name, "middle_left_in";
+			signal, "mouse,in";
+			source, "middle_left";
+			action, STATE_SET "mouse" 0.0;
+			target, "middle_left";
+		}
+		program {
+			name, "middle_left_out";
+			signal, "mouse,out";
+			source, "middle_left";
+			action, STATE_SET "default" 0.0;
+			target, "middle_left";
+		}
+		program {
+			name, "middle_left_down";
+			signal, "mouse,down,1";
+			source, "middle_left";
+			action, SIGNAL_EMIT "down" "middle_left";
+			after, "middle_left_in";
+		}
+		program {
+			name, "middle_left_up";
+			signal, "mouse,up,1";
+			source, "middle_left";
+			action, SIGNAL_EMIT "up" "middle_left";
+		}
+	}

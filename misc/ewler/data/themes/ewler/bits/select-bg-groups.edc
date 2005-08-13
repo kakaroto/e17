@@ -1,0 +1,43 @@
+group {
+	name, "select_bg";
+	data {
+		item, "inset/left" "0";
+		item, "inset/right" "0";
+		item, "inset/top" "0";
+		item, "inset/bottom" "0";
+	}
+	parts {
+		part {
+			name, "border";
+			type, RECT;
+			description {
+				state, "default" 0.0;
+				color, 0 0 0 255;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 0 0;
+				}
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -1 -1;
+				}
+			}
+		}
+		part {
+			name, "bg";
+			type, RECT;
+			description {
+				state, "default" 0.0;
+				color, 192 192 192 255;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 1 1;
+				}
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -2 -2;
+				}
+			}
+		}
+	}
+}

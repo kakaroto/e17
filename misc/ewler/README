@@ -1,0 +1,18 @@
+Ewler 0.1
+--------------------------------
+
+Ewler is a ui editor and generator written with the Enlightenment Foundation Libraries (http://www.enlightenment.org).  It depends on a large number of libraries that are only available in CVS at the moment, see http://enlightenment.org/Enlightenment/Get_Enlightenment/Build_Notes.html for installation instructions of these development libraries.
+
+To install:
+
+./configure
+make
+make install
+
+To run:
+
+ewler [project file]
+
+Feel free to mail werkt@users.sourceforge.net with any questions, suggestions or just to say hi.
+
+Enjoy :)

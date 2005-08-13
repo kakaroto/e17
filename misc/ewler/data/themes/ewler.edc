@@ -1,0 +1,13 @@
+data {
+	item, "/selected/group" "selected";
+}
+
+images {
+#include "ewler/bits/background-images.edc"
+}
+
+collections {
+#include "ewler/bits/select-fg-groups.edc"
+#include "ewler/bits/select-bg-groups.edc"
+#include "ewler/bits/background-groups.edc"
+}

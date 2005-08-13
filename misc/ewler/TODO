@@ -1,0 +1,43 @@
+Known Issues:
+
+forms:
+	After a service operation is performed on widgets (break layout, align, 
+delete), no selects can occur to other widgets.
+	Layering of the selected widget fails on align boxes that contain other
+widgets (i.e. the selectors do not appear above the child widgets)
+	The right click menu for widgets in align boxes is clipped by the child widget
+instead of being above it.
+	configures in the children of the top level overlay's selector widgets (boxes)
+have policies wherein the width and height are swapped at regular intervals.
+	
+inspector:
+	certain fields are not currently updated (current most notably).
+
+widgets:
+	widgets which are moved beyond their clip box enter an non-breaking configure
+loop.  really stinks.
+
+TODO:
+
+projects:
+	add source files to projects for parsing into cb manager, as well as making
+project management scripts (autofoo, makefile, etc)
+	add spec file additions into projects
+	check for duplicate names (file and form) names on add
+
+indspector:
+	(also xml spec) allow for formatting conventions of numerics
+	present indexed struct elements in order
+
+tools:
+	iconize the rest of the core widgets
+
+widgets:
+	add a property manager for interesting container widget types (trees/table/
+combo, etc)
+	
+callback manager:
+	yeah, get this done
+
+ewl_uic:
+	this one too
