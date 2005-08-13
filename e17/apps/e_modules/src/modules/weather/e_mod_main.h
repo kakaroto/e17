@@ -67,6 +67,7 @@ struct _Weather_Face
    Ecore_Con_Server *server;
    char *buffer;
    int bufsize;
+   int cursize;
 
    Evas_Object *weather_object;
    Evas_Object *icon_object;

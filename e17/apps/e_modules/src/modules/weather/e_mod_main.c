@@ -11,7 +11,7 @@
  */
 
 static Weather *_weather_new();
-static void _weather_shutdown(Weather *weather);
+static void _weather_free(Weather *weather);
 static void _weather_config_menu_new(Weather *weather);
 
 static Weather_Face *_weather_face_new(Weather *weather, E_Container *con);
@@ -90,7 +90,7 @@ e_modapi_shutdown(E_Module *module)
 
    weather = module->data;
    if (weather)
-     _weather_shutdown(weather);
+     _weather_free(weather);
 
    return 1;
 }
@@ -263,7 +263,7 @@ _weather_new()
 }
 
 static void
-_weather_shutdown(Weather *weather)
+_weather_free(Weather *weather)
 {
    Evas_List *list;
 
@@ -723,8 +723,12 @@ _weather_cb_check(void *data)
 	face = l->data;
 	if (face->server) continue;
 
+	face->bufsize = 4096;
+	face->cursize = 0;
+	face->buffer = malloc(face->bufsize);
+	face->buffer[0] = 0;
 	face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
-						weather->conf->host, 80, NULL);
+						weather->conf->host, 80, face);
      }
    return 1;
 }
@@ -773,9 +777,14 @@ _weather_net_server_data(void *data, int type, void *event)
      }
    if ((!face) || (e->server != face->server)) return 1;
 
-   face->buffer = realloc(face->buffer, face->bufsize + e->size);
-   memcpy(face->buffer + face->bufsize, e->data, e->size);
-   face->bufsize += e->size;
+   while ((face->cursize + e->size) >= face->bufsize)
+     {
+	face->buffer = realloc(face->buffer, face->bufsize + 4096);
+	face->bufsize += 4096;
+     }
+   memcpy(face->buffer + face->cursize, e->data, e->size);
+   face->cursize += e->size;
+   face->buffer[face->cursize] = 0;
    return 1;
 }
 
@@ -799,14 +808,18 @@ _weather_net_server_del(void *data, int type, void *event)
      }
    if ((!face) || (e->server != face->server)) return 1;
 
+   ecore_con_server_del(face->server);
+   face->server = NULL;
+
    info = _weather_parse(face);
    _weather_convert_degrees(weather, info);
    _weather_display_set(face, info, weather->conf->display);
    free(info);
 
-   face->server = NULL;
    face->bufsize = 0;
+   face->cursize = 0;
    free(face->buffer);
+   face->buffer = NULL;
    return 1;
 }
 
