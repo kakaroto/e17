@@ -896,6 +896,7 @@ static void
 _weather_display_set(Weather_Face *face, int display)
 {
    char buf[PATH_MAX];
+   char *utf8;
 
    if (!face) return;
 
@@ -920,7 +921,9 @@ _weather_display_set(Weather_Face *face, int display)
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
 	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
-	edje_object_part_text_set(face->weather_object, "temp", buf);
+	utf8 = ecore_txt_convert("iso-8859-1", "utf-8", buf);
+	edje_object_part_text_set(face->weather_object, "temp", utf8);
+	free(utf8);
 	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
    else
@@ -933,7 +936,9 @@ _weather_display_set(Weather_Face *face, int display)
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
 	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
-	edje_object_part_text_set(face->weather_object, "temp", buf);
+	utf8 = ecore_txt_convert("iso-8859-1", "utf-8", buf);
+	edje_object_part_text_set(face->weather_object, "temp", utf8);
+	free(utf8);
 	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
 }
