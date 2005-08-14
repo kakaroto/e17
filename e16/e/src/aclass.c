@@ -97,7 +97,7 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
       aa->key = XKeysymToKeycode(disp, XStringToKeysym(key));
    aa->key_str = (aa->key) ? Estrdup(key) : NULL;
    aa->tooltipstring =
-      (tooltipstring) ? Estrdup((tooltipstring[0]) ? _(tooltipstring) : "?!?") :
+      (tooltipstring) ? Estrdup((tooltipstring[0]) ? tooltipstring : "?!?") :
       NULL;
 
    return aa;
@@ -271,7 +271,7 @@ AclassConfigLoad(FILE * fs)
 	  case CONFIG_CLOSE:
 	     ac->tooltipstring =
 		(aclass_tooltipstring) ? Estrdup((aclass_tooltipstring[0]) ?
-						 _(aclass_tooltipstring) :
+						 aclass_tooltipstring :
 						 "?!?") : NULL;
 	     _EFREE(aclass_tooltipstring);
 	     _EFREE(action_tooltipstring);
@@ -660,15 +660,13 @@ AclassConfigLoad2(FILE * fs)
 	     /* FIXME - Multiple line strings may break */
 	     if (aa)
 	       {
-		  ss = Estrdupcat2(aa->tooltipstring, "\n", atword(s, 2));
-		  aa->tooltipstring = (ss && ss[0]) ? Estrdup(_(ss)) : NULL;
-		  _EFREE(ss);
+		  aa->tooltipstring =
+		     Estrdupcat2(aa->tooltipstring, "\n", atword(s, 2));
 	       }
 	     else if (ac)
 	       {
-		  ss = Estrdupcat2(ac->tooltipstring, "\n", atword(s, 2));
-		  ac->tooltipstring = (ss && ss[0]) ? Estrdup(_(ss)) : NULL;
-		  _EFREE(ss);
+		  ac->tooltipstring =
+		     Estrdupcat2(ac->tooltipstring, "\n", atword(s, 2));
 	       }
 	  }
      }

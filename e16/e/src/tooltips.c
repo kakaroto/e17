@@ -291,6 +291,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	     tts = ActionGetTooltipString(aa);
 	     if (!tts)
 		continue;
+	     tts = _(tts);
 
 	     TextSize(tt->tclass, 0, 0, STATE_NORMAL, tts, &temp_w, &temp_h,
 		      17);
@@ -588,6 +589,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	     tts = ActionGetTooltipString(aa);
 	     if (!tts)
 		continue;
+	     tts = _(tts);
 
 	     if (ActionGetEvent(aa) == EVENT_DOUBLE_DOWN)
 	       {
@@ -742,6 +744,8 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
    tts = ActionclassGetTooltipString(ac);
    if (tts)
      {
+	tts = _(tts);
+
 	if (Conf_tooltips.showroottooltip)
 	  {
 	     TooltipShow(ttip, tts, ac, x, y);

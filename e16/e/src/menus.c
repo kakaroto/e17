@@ -369,7 +369,7 @@ MenuItemCreate(const char *text, ImageClass * iclass,
    if (iclass)
       iclass->ref_count++;
 
-   mi->text = (text) ? Estrdup((text[0]) ? _(text) : "?!?") : NULL;
+   mi->text = (text) ? Estrdup((text[0]) ? text : "?!?") : NULL;
    mi->params = Estrdup(action_params);
    mi->child = child;
    mi->state = STATE_NORMAL;
@@ -390,9 +390,7 @@ MenuSetName(Menu * m, const char *name)
 void
 MenuSetTitle(Menu * m, const char *title)
 {
-   if (m->title)
-      Efree(m->title);
-   m->title = (title) ? Estrdup(_(title)) : NULL;
+   _EFDUP(m->title, title);
 }
 
 void
@@ -604,7 +602,7 @@ MenuRealize(Menu * m)
 
    if (m->title)
      {
-	HintsSetWindowName(m->win, m->title);
+	HintsSetWindowName(m->win, _(m->title));
      }
 
    maxh = maxw = 0;
@@ -630,7 +628,8 @@ MenuRealize(Menu * m)
 
 	if ((m->style) && (m->style->tclass) && (m->items[i]->text))
 	  {
-	     TextSize(m->style->tclass, 0, 0, 0, m->items[i]->text, &w, &h, 17);
+	     TextSize(m->style->tclass, 0, 0, 0, _(m->items[i]->text), &w, &h,
+		      17);
 	     if (h > maxh)
 		maxh = h;
 	     if (w > maxx1)
@@ -885,8 +884,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	if (mi->text)
 	  {
 	     TextDraw(m->style->tclass, mi_pmm->pmap, 0, 0, mi->state,
-		      mi->text, mi->text_x, mi->text_y, mi->text_w, mi->text_h,
-		      17, m->style->tclass->justification);
+		      _(mi->text), mi->text_x, mi->text_y, mi->text_w,
+		      mi->text_h, 17, m->style->tclass->justification);
 	  }
      }
 
