@@ -6,6 +6,7 @@
 
 #define SIMPLE_DISPLAY   0
 #define DETAILED_DISPLAY 1
+#define ERROR_DISPLAY    2
 
 #define DEGREES_F 0
 #define DEGREES_C 1
@@ -14,7 +15,6 @@ typedef struct _Config Config;
 typedef struct _Config_Face Config_Face;
 typedef struct _Weather Weather;
 typedef struct _Weather_Face Weather_Face;
-typedef struct _Weather_Info Weather_Info;
 
 struct _Config
 {
@@ -69,19 +69,16 @@ struct _Weather_Face
    int bufsize;
    int cursize;
 
+   int temp;
+   char degrees;
+   char conditions[256];
+   char icon[256];
+
    Evas_Object *weather_object;
    Evas_Object *icon_object;
    Evas_Object *event_object;
 
    E_Gadman_Client *gmc;
-};
-
-struct _Weather_Info
-{
-   int temp;
-   char degrees;
-   char conditions[256];
-   char icon[256];
 };
 
 EAPI void *e_modapi_init(E_Module *m);

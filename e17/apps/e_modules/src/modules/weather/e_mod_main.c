@@ -38,10 +38,9 @@ static int  _weather_net_server_add(void *data, int type, void *event);
 static int  _weather_net_server_data(void *data, int type, void *event);
 static int  _weather_net_server_del(void *data, int type, void *event);
 
-static Weather_Info *_weather_parse(Weather_Face *face);
-static void _weather_convert_degrees(Weather *weather, Weather_Info *info);
-static void _weather_display_set(Weather_Face *face, Weather_Info *weather,
-				 int display);
+static int  _weather_parse(Weather_Face *face);
+static void _weather_convert_degrees(Weather_Face *face, int degrees);
+static void _weather_display_set(Weather_Face *face, int display);
 
 static void _weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _weather_menu_remove_face(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -392,6 +391,11 @@ _weather_face_new(Weather *weather, E_Container *con)
    face->con = con;
    e_object_ref(E_OBJECT(con));
    face->weather = weather;
+
+   face->temp = 0;
+   face->degrees = 'C';
+   strcat(face->conditions, "");
+   strcat(face->icon, "na.png");
 
    evas_event_freeze(con->bg_evas);
 
@@ -796,7 +800,6 @@ _weather_net_server_del(void *data, int type, void *event)
    Weather *weather;
    Weather_Face *face;
    Ecore_Con_Event_Server_Del *e;
-   Weather_Info *info;
    Evas_List *l;
 
    weather = data;
@@ -813,10 +816,15 @@ _weather_net_server_del(void *data, int type, void *event)
    ecore_con_server_del(face->server);
    face->server = NULL;
 
-   info = _weather_parse(face);
-   _weather_convert_degrees(weather, info);
-   _weather_display_set(face, info, weather->conf->display);
-   free(info);
+   if (_weather_parse(face))
+     {
+	_weather_convert_degrees(face, weather->conf->degrees);
+	_weather_display_set(face, weather->conf->display);
+     }
+   else
+     {
+	_weather_display_set(face, ERROR_DISPLAY);
+     }
 
    face->bufsize = 0;
    face->cursize = 0;
@@ -825,14 +833,10 @@ _weather_net_server_del(void *data, int type, void *event)
    return 1;
 }
 
-static Weather_Info *
+static int
 _weather_parse(Weather_Face *face)
 {
-   Weather_Info *info;
    char *needle, *ext;
-
-   info = E_NEW(Weather_Info, 1);
-   if (!info) return NULL;
 
    needle = strstr(face->buffer, "<content:encoded>");
    if (!needle) goto error;
@@ -842,8 +846,8 @@ _weather_parse(Weather_Face *face)
    if (!needle) goto error;
    needle = strstr(needle, "id="); 
    if (!needle) goto error;
-   sscanf(needle, "id=\"%[^\"]\"", info->icon);
-   ext = strstr(info->icon, ".");
+   sscanf(needle, "id=\"%[^\"]\"", face->icon);
+   ext = strstr(face->icon, ".");
    if (!strcmp(ext, ".gif"))
      strcpy(ext, ".png");
 
@@ -852,53 +856,51 @@ _weather_parse(Weather_Face *face)
    if (!needle) goto error;
    needle = strstr(needle, ">"); 
    if (!needle) goto error;
-   sscanf(needle, ">%[^<]<", info->conditions);
+   sscanf(needle, ">%[^<]<", face->conditions);
 
    /* Get the temp */
    needle = strstr(needle, "class=\"temp\""); 
    if (!needle) goto error;
    needle = strstr(needle, ">"); 
    if (!needle) goto error;
-   sscanf(needle, ">%d", &info->temp);
+   sscanf(needle, ">%d", &face->temp);
    needle = strstr(needle, "<"); 
    if (!needle) goto error;
    needle--;
-   info->degrees = needle[0];
+   face->degrees = needle[0];
 
-   return info;
+   return 1;
 error:
-   free(info);
-   return NULL;
+   printf("ERROR: Couldn't parse info from rssweather.com\n");
+   printf("%s\n", face->buffer);
+   return 0;
 }
 
 static void
-_weather_convert_degrees(Weather *weather, Weather_Info *info)
+_weather_convert_degrees(Weather_Face *face, int degrees)
 {
-   if (!info) return;
-
    /* Check if degrees is in C or F */
-   if ((info->degrees == 'F') && (weather->conf->degrees == DEGREES_C))
+   if ((face->degrees == 'F') && (degrees == DEGREES_C))
      {
-	info->temp = (info->temp - 32) * 5.0 / 9.0;
-	info->degrees = 'C';
+	face->temp = (face->temp - 32) * 5.0 / 9.0;
+	face->degrees = 'C';
      }
-   if ((info->degrees == 'C') && (weather->conf->degrees == DEGREES_F))
+   if ((face->degrees == 'C') && (degrees == DEGREES_F))
      {
-	info->temp = (info->temp * 9.0 / 5.0) + 32;
-	info->degrees = 'F';
+	face->temp = (face->temp * 9.0 / 5.0) + 32;
+	face->degrees = 'F';
      }
 }
 
 static void
-_weather_display_set(Weather_Face *face, Weather_Info *info,
-		     int display)
+_weather_display_set(Weather_Face *face, int display)
 {
    char buf[PATH_MAX];
 
    if (!face) return;
 
    /* If _get_weather fails, blank out text and set icon to unknown */
-   if (!info)
+   if (display == ERROR_DISPLAY)
      {
 	e_icon_file_set(face->icon_object, PACKAGE_LIB_DIR"/e_modules/weather/images/na.png");
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
@@ -912,27 +914,27 @@ _weather_display_set(Weather_Face *face, Weather_Info *info,
      {
 	/* Detailed display */
 	edje_object_signal_emit(face->weather_object, "set_style", "detailed");
-	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", info->icon);
+	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", face->icon);
 	e_icon_file_set(face->icon_object, buf);
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
-	snprintf(buf, sizeof(buf), "%d°%c", info->temp, info->degrees);
+	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
 	edje_object_part_text_set(face->weather_object, "temp", buf);
-	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
+	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
    else
      {
 	/* Simple display */
 	edje_object_signal_emit(face->weather_object, "set_style", "simple");
-	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", info->icon);
+	snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR"/e_modules/weather/images/%s", face->icon);
 	e_icon_file_set(face->icon_object, buf);
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
-	snprintf(buf, sizeof(buf), "%d°%c", info->temp, info->degrees);
+	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
 	edje_object_part_text_set(face->weather_object, "temp", buf);
-	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
+	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
 }
 
@@ -1060,10 +1062,18 @@ static void
 _weather_menu_degrees_F(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Weather *weather;
+   Evas_List *l;
 
    weather = data;
    weather->conf->degrees = DEGREES_F;
-   _weather_cb_check(data);
+   for (l = weather->faces; l; l = l->next)
+     {
+	Weather_Face *face;
+
+	face = l->data;
+	_weather_convert_degrees(face, weather->conf->degrees);
+	_weather_display_set(face, weather->conf->display);
+     }
    e_config_save_queue();
 }
 
@@ -1071,9 +1081,17 @@ static void
 _weather_menu_degrees_C(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Weather *weather;
+   Evas_List *l;
 
    weather = data;
    weather->conf->degrees = DEGREES_C;
-   _weather_cb_check(data);
+   for (l = weather->faces; l; l = l->next)
+     {
+	Weather_Face *face;
+
+	face = l->data;
+	_weather_convert_degrees(face, weather->conf->degrees);
+	_weather_display_set(face, weather->conf->display);
+     }
    e_config_save_queue();
 }
