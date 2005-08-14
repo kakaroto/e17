@@ -680,7 +680,7 @@ BackgroundApply(Background * bg, Drawable draw,
 
    /* The rest that require some more work */
    if (is_win)
-      pmap = BackgroundCreatePixmap(draw, w, h, VRoot.depth);
+      pmap = BackgroundCreatePixmap(draw, rw, rh, VRoot.depth);
    else
       pmap = draw;
    imlib_context_set_drawable(pmap);
