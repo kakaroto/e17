@@ -6,7 +6,6 @@
 
 #define SIMPLE_DISPLAY   0
 #define DETAILED_DISPLAY 1
-#define ERROR_DISPLAY    2
 
 #define DEGREES_F 0
 #define DEGREES_C 1

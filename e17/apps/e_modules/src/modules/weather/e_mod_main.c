@@ -40,7 +40,7 @@ static int  _weather_net_server_del(void *data, int type, void *event);
 
 static int  _weather_parse(Weather_Face *face);
 static void _weather_convert_degrees(Weather_Face *face, int degrees);
-static void _weather_display_set(Weather_Face *face, int display);
+static void _weather_display_set(Weather_Face *face, int display, int ok);
 
 static void _weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _weather_menu_remove_face(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -801,6 +801,7 @@ _weather_net_server_del(void *data, int type, void *event)
    Weather_Face *face;
    Ecore_Con_Event_Server_Del *e;
    Evas_List *l;
+   int ok;
 
    weather = data;
    e = event;
@@ -816,15 +817,9 @@ _weather_net_server_del(void *data, int type, void *event)
    ecore_con_server_del(face->server);
    face->server = NULL;
 
-   if (_weather_parse(face))
-     {
-	_weather_convert_degrees(face, weather->conf->degrees);
-	_weather_display_set(face, weather->conf->display);
-     }
-   else
-     {
-	_weather_display_set(face, ERROR_DISPLAY);
-     }
+   ok = _weather_parse(face);
+   _weather_convert_degrees(face, weather->conf->degrees);
+   _weather_display_set(face, weather->conf->display, ok);
 
    face->bufsize = 0;
    face->cursize = 0;
@@ -893,15 +888,17 @@ _weather_convert_degrees(Weather_Face *face, int degrees)
 }
 
 static void
-_weather_display_set(Weather_Face *face, int display)
+_weather_display_set(Weather_Face *face, int display, int ok)
 {
    char buf[PATH_MAX];
+#ifndef __STDC_ISO_10646__
    char *utf8;
+#endif
 
    if (!face) return;
 
    /* If _get_weather fails, blank out text and set icon to unknown */
-   if (display == ERROR_DISPLAY)
+   if (!ok)
      {
 	e_icon_file_set(face->icon_object, PACKAGE_LIB_DIR"/e_modules/weather/images/na.png");
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
@@ -909,7 +906,10 @@ _weather_display_set(Weather_Face *face, int display)
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
 	edje_object_part_text_set(face->weather_object, "temp", "");
 	edje_object_part_text_set(face->weather_object, "conditions", "");
-	edje_object_signal_emit(face->weather_object, "set_style", "simple");
+	if (display == DETAILED_DISPLAY)
+	  edje_object_signal_emit(face->weather_object, "set_style", "detailed");
+	else
+	  edje_object_signal_emit(face->weather_object, "set_style", "simple");
      }
    else if (display == DETAILED_DISPLAY)
      {
@@ -920,10 +920,15 @@ _weather_display_set(Weather_Face *face, int display)
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
+#ifdef __STDC_ISO_10646__
+	snprintf(buf, sizeof(buf), "%d\u00b0%c", face->temp, face->degrees);
+	edje_object_part_text_set(face->weather_object, "temp", buf);
+#else
 	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
 	utf8 = ecore_txt_convert("iso-8859-1", "utf-8", buf);
 	edje_object_part_text_set(face->weather_object, "temp", utf8);
 	free(utf8);
+#endif
 	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
    else
@@ -935,10 +940,15 @@ _weather_display_set(Weather_Face *face, int display)
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
+#ifdef __STDC_ISO_10646__
+	snprintf(buf, sizeof(buf), "%d\u00b0%c", face->temp, face->degrees);
+	edje_object_part_text_set(face->weather_object, "temp", buf);
+#else
 	snprintf(buf, sizeof(buf), "%d°%c", face->temp, face->degrees);
 	utf8 = ecore_txt_convert("iso-8859-1", "utf-8", buf);
 	edje_object_part_text_set(face->weather_object, "temp", utf8);
 	free(utf8);
+#endif
 	edje_object_part_text_set(face->weather_object, "conditions", face->conditions);
      }
 }
@@ -1077,7 +1087,7 @@ _weather_menu_degrees_F(void *data, E_Menu *m, E_Menu_Item *mi)
 
 	face = l->data;
 	_weather_convert_degrees(face, weather->conf->degrees);
-	_weather_display_set(face, weather->conf->display);
+	_weather_display_set(face, weather->conf->display, 1);
      }
    e_config_save_queue();
 }
@@ -1096,7 +1106,7 @@ _weather_menu_degrees_C(void *data, E_Menu *m, E_Menu_Item *mi)
 
 	face = l->data;
 	_weather_convert_degrees(face, weather->conf->degrees);
-	_weather_display_set(face, weather->conf->display);
+	_weather_display_set(face, weather->conf->display, 1);
      }
    e_config_save_queue();
 }
