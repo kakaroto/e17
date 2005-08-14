@@ -905,7 +905,7 @@ _weather_display_set(Weather_Face *face, int display)
 	e_icon_file_set(face->icon_object, PACKAGE_LIB_DIR"/e_modules/weather/images/na.png");
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
-	edje_object_part_text_set(face->weather_object, "location", "");
+	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
 	edje_object_part_text_set(face->weather_object, "temp", "");
 	edje_object_part_text_set(face->weather_object, "conditions", "");
 	edje_object_signal_emit(face->weather_object, "set_style", "simple");
