@@ -379,13 +379,13 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
    if (flags & MRF_RAISE)
       raise = 1;
 
-   if (!(flags & MRF_MOVE) || ewin->state.inhibit_move)
+   if (!(flags & MRF_MOVE))
      {
 	x = EoGetX(ewin);
 	y = EoGetY(ewin);
      }
 
-   if (!(flags & MRF_RESIZE) || ewin->state.inhibit_resize)
+   if (!(flags & MRF_RESIZE))
      {
 	w = EoGetW(ewin);
 	h = EoGetH(ewin);
