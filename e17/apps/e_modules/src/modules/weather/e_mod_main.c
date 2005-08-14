@@ -917,7 +917,7 @@ _weather_display_set(Weather_Face *face, Weather_Info *info,
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
-	snprintf(buf, sizeof(buf), "%d\u00b0%c", info->temp, info->degrees);
+	snprintf(buf, sizeof(buf), "%d°%c", info->temp, info->degrees);
 	edje_object_part_text_set(face->weather_object, "temp", buf);
 	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
      }
@@ -930,7 +930,7 @@ _weather_display_set(Weather_Face *face, Weather_Info *info,
 	edje_object_part_swallow(face->weather_object, "icon", face->icon_object);
 
 	edje_object_part_text_set(face->weather_object, "location", face->conf->location);
-	snprintf(buf, sizeof(buf), "%d\u00b0%c", info->temp, info->degrees);
+	snprintf(buf, sizeof(buf), "%d°%c", info->temp, info->degrees);
 	edje_object_part_text_set(face->weather_object, "temp", buf);
 	edje_object_part_text_set(face->weather_object, "conditions", info->conditions);
      }
