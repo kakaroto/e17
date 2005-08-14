@@ -89,6 +89,7 @@ struct _eobj
 #define EoSetShadow(eo, _x)
 #endif
 
+#define EoSync(eo)                      EobjSync(EoObj(eo))
 #define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)
 #define EoUnmap(eo)                     EobjUnmap(EoObj(eo))
 #define EoMove(eo, x, y)                EobjMove(EoObj(eo), x, y)
@@ -104,12 +105,15 @@ void                EobjInit(EObj * eo, int type, Window win, int x, int y,
 			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
 void                EobjDestroy(EObj * eo);
+void                EobjSync(EObj * eo);
+
 EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
 				     int su, const char *name);
 void                EobjWindowDestroy(EObj * eo);
 
 EObj               *EobjRegister(Window win, int type);
 void                EobjUnregister(EObj * eo);
+
 void                EobjMap(EObj * eo, int raise);
 void                EobjUnmap(EObj * eo);
 void                EobjMove(EObj * eo, int x, int y);

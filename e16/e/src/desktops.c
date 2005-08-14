@@ -488,13 +488,17 @@ DeskResize(int desk, int w, int h)
 
    d = _DeskGet(desk);
 
-   if (desk > 0)
+   if (d->num == 0)
+     {
+	EoSync(d);
+     }
+   else
      {
 	x = (d->viewable) ? EoGetX(d) : VRoot.w;
 	EoMoveResize(d, x, 0, w, h);
      }
    BackgroundPixmapFree(d->bg);
-   DeskRefresh(desk);
+   DeskRefresh(d->num);
    DeskControlsDestroy(d);
    DeskControlsCreate(d);
    DeskControlsShow(d);
@@ -571,7 +575,7 @@ DeskSetDirtyStack(int desk)
       return;
 
    d->dirty_stack++;
-   if (EventDebug(EDBUG_TYPE_DESKS))
+   if (EventDebug(EDBUG_TYPE_STACKING))
       Eprintf("DeskSetDirtyStack %d (%d)\n", desk, d->dirty_stack);
 }
 
@@ -844,7 +848,7 @@ DeskRefresh(int desk)
       return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskRefresh %d\n", desk);
+      Eprintf("DeskRefresh %d - %dx%d\n", desk, EoGetW(d), EoGetH(d));
 
    bg = d->bg;
    if (!bg)
@@ -1289,7 +1293,7 @@ StackDesktop(int desk)
 
    if (EventDebug(EDBUG_TYPE_STACKING))
      {
-	Eprintf("StackDesktop %d:\n", desk);
+	Eprintf("StackDesktop %d (%d):\n", d->num, d->dirty_stack);
 	for (i = 0; i < tot; i++)
 	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i],
 		   EWindowGetParent(wl[i]));
@@ -1301,8 +1305,6 @@ StackDesktop(int desk)
    if (wl)
       Efree(wl);
 
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("StackDesktop %d (%d)\n", d->num, d->dirty_stack);
    d->dirty_stack = 0;
 }
 

@@ -206,6 +206,18 @@ EobjDestroy(EObj * eo)
    Efree(eo);
 }
 
+void
+EobjSync(EObj * eo)
+{
+   int                 x, y, w, h;
+
+   EGetGeometry(eo->win, NULL, &x, &y, &w, &h, NULL, NULL);
+   eo->x = x;
+   eo->y = y;
+   eo->w = w;
+   eo->h = h;
+}
+
 EObj               *
 EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 {
