@@ -1,5 +1,6 @@
 Makefile
 Makefile.in
 engrave_test
+engrave_canvas_test
 .libs
 .deps
