@@ -162,7 +162,7 @@ _weather_new()
    if (!weather->conf)
      {
 	weather->conf = E_NEW(Config, 1);
-	weather->conf->poll_time = 900.0;
+	weather->conf->poll_time = 1800.0;
 	weather->conf->display = DETAILED_DISPLAY;
 	weather->conf->degrees = DEGREES_C;
 	weather->conf->host = strdup("www.rssweather.com");
