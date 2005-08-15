@@ -120,7 +120,7 @@ static EWL_CALLBACK_DEFN(configure)
 	}
 
 	ewl_object_current_geometry_get(EWL_OBJECT(ewler_w->w),
-																	&x, &y, &height, &width);
+																	&x, &y, &width, &height);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(ewler_w->w), &pref_w, &pref_h);
 
 	current = ecore_hash_get(ewler_w->elems, "current");
@@ -135,12 +135,12 @@ static EWL_CALLBACK_DEFN(configure)
 			ewl_text_color_apply(EWL_TEXT(elem->text), 255, 0, 0, 255, len);
 		}
 
+		elem->info.ivalue = x;
+
 		elem->changed = true;
 		if( elem->entry )
 			ewl_text_text_set(EWL_TEXT(elem->entry), elem_to_s(elem));
 	}
-
-	elem->info.ivalue = x;
 
 	elem = ecore_hash_get(current->info.children, "y");
 	if( elem->info.ivalue != y ) {
@@ -152,12 +152,12 @@ static EWL_CALLBACK_DEFN(configure)
 			ewl_text_color_apply(EWL_TEXT(elem->text), 255, 0, 0, 255, len);
 		}
 
+		elem->info.ivalue = y;
+
 		elem->changed = true;
 		if( elem->entry )
 			ewl_text_text_set(EWL_TEXT(elem->entry), elem_to_s(elem));
 	}
-
-	elem->info.ivalue = y;
 
 	elem = ecore_hash_get(current->info.children, "w");
 	if( elem->info.ivalue != width ) {
@@ -168,6 +168,8 @@ static EWL_CALLBACK_DEFN(configure)
 			ewl_text_cursor_position_set(EWL_TEXT(elem->text), 0);
 			ewl_text_color_apply(EWL_TEXT(elem->text), 255, 0, 0, 255, len);
 		}
+
+		elem->info.ivalue = width;
 
 		elem->changed = true;
 		if( elem->entry )
@@ -185,6 +187,8 @@ static EWL_CALLBACK_DEFN(configure)
 			ewl_text_cursor_position_set(EWL_TEXT(elem->text), 0);
 			ewl_text_color_apply(EWL_TEXT(elem->text), 255, 0, 0, 255, len);
 		}
+
+		elem->info.ivalue = height;
 
 		elem->changed = true;
 		if( elem->entry )
@@ -503,6 +507,7 @@ static EWL_CALLBACK_DEFN(fg_mouse_down)
 	Ewler_Widget *ewler_w = user_data;
 	Ewl_Embed *embed;
 	Ewl_Event_Mouse_Down *ev = ev_data;
+	bool multi;
 
 	if( !ewler_w->selectable ||
 			widget_under_cursor )
@@ -520,19 +525,23 @@ static EWL_CALLBACK_DEFN(fg_mouse_down)
 	ewler_w->corners.u = CURRENT_X(w) + CURRENT_W(w);
 	ewler_w->corners.v = CURRENT_Y(w) + CURRENT_H(w);
 
-	if( ev->button == 1 ) {
-		if( ev->modifiers & (EWL_KEY_MODIFIER_CTRL | EWL_KEY_MODIFIER_SHIFT) ) {
-			form_toggle(ewler_w);
-		} else {
-			Ecore_List *selected;
+	if( ev->modifiers & (EWL_KEY_MODIFIER_CTRL | EWL_KEY_MODIFIER_SHIFT) )
+		multi = true;
+	else
+		multi = false;
 
-			selected = form_selected();
-			if( selected &&
-					(ecore_list_nodes(selected) != 1 ||
-					 ecore_list_goto_first(selected) != ewler_w) ) {
-				form_deselect_all();
-				form_select(ewler_w);
-			}
+	if( ev->button == 1 && multi ) {
+		form_toggle(ewler_w);
+	} else if( ev->button == 1 ||
+						 (!multi && !ecore_list_nodes(form_selected())) ) {
+		Ecore_List *selected;
+
+		selected = form_selected();
+		if( selected &&
+				(ecore_list_nodes(selected) != 1 ||
+				 ecore_list_goto_first(selected) != ewler_w) ) {
+			form_deselect_all();
+			form_select(ewler_w);
 		}
 	}
 
@@ -563,6 +572,7 @@ static EWL_CALLBACK_DEFN(fg_mouse_up)
 static EWL_CALLBACK_DEFN(widget_destroy)
 {
 	Ewler_Widget *ewler_w;
+	int i;
 
 	ewler_w = user_data;
 	if( !ewler_w )
@@ -575,6 +585,10 @@ static EWL_CALLBACK_DEFN(widget_destroy)
 	IF_FREE(ewler_w->parent);
 
 	ecore_hash_destroy(ewler_w->elems);
+
+	for( i=0;i<EWL_CALLBACK_MAX;i++ )
+		if( ewler_w->callbacks[i] )
+			ecore_list_destroy(ewler_w->callbacks[i]);
 
 	FREE(ewler_w);
 }

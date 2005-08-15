@@ -265,7 +265,8 @@ inspector_update( Ecore_List *selected )
 
 		row = ewl_tree_row_add(EWL_TREE(tree), EWL_ROW(prow), row_items);
 		ewl_widget_show(text);
-		ewl_widget_show(entry);
+		if( entry )
+			ewl_widget_show(entry);
 
 		if( elem->spec->type == EWLER_SPEC_ELEM_STRUCT ) {
 			ecore_list_prepend(prow_stack, prow);

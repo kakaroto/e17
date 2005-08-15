@@ -84,18 +84,24 @@ static EWL_CALLBACK_DEFN(mouse_down)
 {
 	Ewl_Event_Mouse_Down *ev = ev_data;
 
+	if( active_form->menu ) {
+		ewl_widget_destroy(active_form->menu);
+		active_form->menu = NULL;
+	}
+
 	switch( ev->button ) {
 		case 1:
 			if( !widget_under_cursor &&
 					!(ev->modifiers & (EWL_KEY_MODIFIER_CTRL | EWL_KEY_MODIFIER_SHIFT)) )
 				form_deselect_all();
-			widget_under_cursor = false;
 			break;
 		case 3:
 			if( ecore_list_nodes(active_form->selected) )
 				form_menu(ev->x, ev->y);
 			break;
 	}
+
+	widget_under_cursor = false;
 }
 
 void
@@ -127,10 +133,13 @@ form_close( Ewler_Form *form )
 
 	active_form = ecore_list_goto_first(forms);
 
-	if( active_form )
+	if( active_form ) {
 		inspector_update(active_form->selected);
-	else
+		callbacks_update(active_form->selected);
+	} else {
 		inspector_update(NULL);
+		callbacks_update(NULL);
+	}
 }
 
 EWL_CALLBACK_DEFN(form_new)
@@ -373,8 +382,10 @@ static EWL_CALLBACK_DEFN(form_menu_cb)
 			while( (ewler_w = ecore_list_goto_first(form->selected)) )
 				form_destroy(form, ewler_w);
 
-			if( active_form && active_form->selected )
-				inspector_update( active_form->selected );
+			if( active_form && active_form->selected ) {
+				inspector_update(active_form->selected);
+				callbacks_update(active_form->selected);
+			}
 			break;
 	}
 
@@ -386,6 +397,8 @@ static EWL_CALLBACK_DEFN(form_menu_configure)
 {
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, form_menu_configure);
 	ewl_widget_hide(w);
+
+	ewl_widget_layer_set(EWL_IMENU(w)->base.popup, 1000);
 }
 
 static bool
@@ -534,6 +547,7 @@ form_deselect_all( void )
 		widget_deselect(w);
 
 	inspector_update(active_form->selected);
+	callbacks_update(active_form->selected);
 }
 
 void
@@ -546,6 +560,7 @@ form_select( Ewler_Widget *w )
 	widget_select(w);
 
 	inspector_update(active_form->selected);
+	callbacks_update(active_form->selected);
 }
 
 void
@@ -559,6 +574,7 @@ form_deselect( Ewler_Widget *w )
 	widget_deselect(w);
 
 	inspector_update(active_form->selected);
+	callbacks_update(active_form->selected);
 }
 
 void
@@ -582,6 +598,7 @@ form_toggle( Ewler_Widget *w )
 	}
 
 	inspector_update(active_form->selected);
+	callbacks_update(active_form->selected);
 }
 
 Ecore_List *
@@ -672,6 +689,7 @@ form_add( Ewl_Widget *w )
 	form_dirty_set(active_form);
 
 	inspector_update(active_form->selected);
+	callbacks_update(active_form->selected);
 }
 
 int

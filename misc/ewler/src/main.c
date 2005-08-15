@@ -65,7 +65,8 @@ main( int argc, char *argv[] )
 			projects_init(argv[1]) < 0 ||
 			forms_init() < 0 ||
 			tools_init() < 0 ||
-			inspector_init() < 0 )
+			inspector_init() < 0 ||
+			callbacks_init() < 0 )
 		exit( EXIT_FAILURE );
 
 	ewl_main();

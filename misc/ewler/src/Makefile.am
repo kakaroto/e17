@@ -10,6 +10,7 @@ MAINTAINERCLEANFILES = \
 bin_PROGRAMS = ewler
 
 ewler_SOURCES = \
+	callback.c \
 	file.c \
 	form.c \
 	inspector.c \

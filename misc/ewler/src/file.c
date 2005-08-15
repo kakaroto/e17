@@ -9,6 +9,37 @@
 #include "ewler.h"
 #include "config.h"
 
+static char *callback_names[] = {
+	"EWL_CALLBACK_EXPOSE", 
+	"EWL_CALLBACK_REALIZE", 
+	"EWL_CALLBACK_UNREALIZE", 
+	"EWL_CALLBACK_SHOW", 
+	"EWL_CALLBACK_HIDE", 
+	"EWL_CALLBACK_DESTROY", 
+	"EWL_CALLBACK_DELETE_WINDOW", 
+	"EWL_CALLBACK_CONFIGURE", 
+	"EWL_CALLBACK_REPARENT", 
+	"EWL_CALLBACK_KEY_DOWN", 
+	"EWL_CALLBACK_KEY_UP", 
+	"EWL_CALLBACK_MOUSE_DOWN", 
+	"EWL_CALLBACK_MOUSE_UP", 
+	"EWL_CALLBACK_MOUSE_MOVE", 
+	"EWL_CALLBACK_MOUSE_WHEEL", 
+	"EWL_CALLBACK_FOCUS_IN", 
+	"EWL_CALLBACK_FOCUS_OUT", 
+	"EWL_CALLBACK_SELECT", 
+	"EWL_CALLBACK_DESELECT", 
+	"EWL_CALLBACK_CLICKED", 
+	"EWL_CALLBACK_DOUBLE_CLICKED", 
+	"EWL_CALLBACK_HILITED", 
+	"EWL_CALLBACK_VALUE_CHANGED", 
+	"EWL_CALLBACK_STATE_CHANGED", 
+	"EWL_CALLBACK_APPEARANCE_CHANGED", 
+	"EWL_CALLBACK_WIDGET_ENABLE", 
+	"EWL_CALLBACK_WIDGET_DISABLE", 
+	"EWL_CALLBACK_PASTE"
+};
+
 void
 file_project_save( Ewler_Project *p )
 {
@@ -491,6 +522,7 @@ file_form_save( Ewler_Form *f )
 		Ecore_List *names, *names_stack;
 		char *widget_name;
 		char *name;
+		int i;
 
 		exml_start(xml);
 		exml_tag_set(xml, "widget");
@@ -541,6 +573,22 @@ file_form_save( Ewler_Form *f )
 		ecore_list_destroy(names);
 		ecore_list_destroy(names_stack);
 		ecore_list_destroy(elems_stack);
+
+		for( i=0;i<EWL_CALLBACK_MAX;i++ ) {
+			char *handler;
+
+			if( !w->callbacks[i] )
+				continue;
+
+			ecore_list_goto_first(w->callbacks[i]);
+			while( (handler = ecore_list_next(w->callbacks[i])) ) {
+				exml_start(xml);
+				exml_tag_set(xml, "callback");
+				exml_attribute_set(xml, "name", callback_names[i]);
+				exml_value_set(xml, handler);
+				exml_end(xml);
+			}
+		}
 
 		ecore_list_prepend(widget_stack, children);
 
@@ -628,8 +676,33 @@ file_form_open( Ewler_Form *f )
 			ecore_list_prepend(elems_stack, elems);
 			ecore_list_prepend(w_stack, parent);
 			w = widget_new(type);
+			ewler_w = ewl_widget_data_get(w, "EWLER_WIDGET");
 			ewl_container_child_append(EWL_CONTAINER(parent), w);
-			ecore_list_append(f->widgets, ewl_widget_data_get(w, "EWLER_WIDGET"));
+			ecore_list_append(f->widgets, ewler_w);
+		} else if( !strcmp(tag, "callback") ) {
+			int callback;
+			char *handler;
+			char *name;
+
+			name = exml_attribute_get(xml, "name");
+			handler = exml_value_get(xml);
+
+			if( name ) {
+				for( callback=0;callback<EWL_CALLBACK_MAX;callback++ )
+					if( !strcmp(name, callback_names[callback]) )
+						break;
+				
+				if( callback < EWL_CALLBACK_MAX && handler ) {
+					if( !ewler_w->callbacks[callback] ) {
+						ewler_w->callbacks[callback] = ecore_list_new();
+						ecore_list_set_free_cb(ewler_w->callbacks[callback], free);
+					}
+
+					ecore_list_append(ewler_w->callbacks[callback], strdup(handler));
+				}
+			}
+
+			goto next;
 		} else if( !strcmp(tag, "attr") ) {
 			char *name;
 			Ewler_Widget_Elem *elem;
@@ -673,6 +746,7 @@ file_form_open( Ewler_Form *f )
 
 				next = exml_down(xml);
 			} else {
+next:
 				while( !(next = exml_next_nomove(xml)) &&
 							 elems != f->overlay->elems ) {
 					if( ecore_list_nodes(elems_stack) == ecore_list_nodes(w_stack) )

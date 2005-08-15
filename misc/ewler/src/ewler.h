@@ -26,6 +26,11 @@ typedef struct Ewler_Widget_Elem Ewler_Widget_Elem;
 
 typedef struct Ewler_Form Ewler_Form;
 
+/* callback.c */
+extern int callbacks_init( void );
+extern void callbacks_update( Ecore_List *selected );
+extern EWL_CALLBACK_DEFN(callbacks_toggle);
+
 /* file.c */
 extern void file_project_save( Ewler_Project *p );
 extern int file_project_open( Ewler_Project *p );
@@ -194,6 +199,8 @@ struct Ewler_Widget {
 	char *source;
 
 	Ecore_Hash *elems;
+
+	Ecore_List *callbacks[EWL_CALLBACK_MAX];
 };
 
 struct Ewler_Widget_Elem {

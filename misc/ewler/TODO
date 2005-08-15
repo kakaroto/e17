@@ -3,8 +3,12 @@ Known Issues:
 forms:
 	After a service operation is performed on widgets (break layout, align, 
 delete), no selects can occur to other widgets.
+		- FIXED: widget_under_cursor was not reset on right mouse click
+
 	Layering of the selected widget fails on align boxes that contain other
 widgets (i.e. the selectors do not appear above the child widgets)
+		- FIXED: some layer magic helped this problem out
+
 	The right click menu for widgets in align boxes is clipped by the child widget
 instead of being above it.
 	configures in the children of the top level overlay's selector widgets (boxes)
@@ -12,12 +16,19 @@ have policies wherein the width and height are swapped at regular intervals.
 	
 inspector:
 	certain fields are not currently updated (current most notably).
+		- FIXED: code awfulness in widget.c:fg_configure was to blame.
 
 widgets:
 	widgets which are moved beyond their clip box enter an non-breaking configure
 loop.  really stinks.
 
+ui:
+	dialogs are not sized correctly under e
+
 TODO:
+
+ui:
+	undo and history support
 
 projects:
 	add source files to projects for parsing into cb manager, as well as making
@@ -25,7 +36,7 @@ project management scripts (autofoo, makefile, etc)
 	add spec file additions into projects
 	check for duplicate names (file and form) names on add
 
-indspector:
+inspector:
 	(also xml spec) allow for formatting conventions of numerics
 	present indexed struct elements in order
 
@@ -38,6 +49,8 @@ combo, etc)
 	
 callback manager:
 	yeah, get this done
+		- IMPLEMENTED 8/15/2005
+	next step is code parser
 
 ewl_uic:
 	this one too

@@ -101,6 +101,7 @@ static EWL_CALLBACK_DEFN(project_key_down)
 				text = ewl_tree_row_column_get(EWL_ROW(row), 0);
 				name = ewl_text_text_get(EWL_TEXT(text));
 				ecore_hash_remove(active_project->files, name);
+				FREE(name);
 				active_project->dirty = true;
 			}
 
@@ -647,6 +648,11 @@ projects_init( char *filename )
 	item = ewl_menu_item_new(NULL, "Inspector");
 	ewl_container_child_append(EWL_CONTAINER(windows_menu), item);
 	ewl_callback_append(item, EWL_CALLBACK_CLICKED, inspector_toggle, NULL);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new(NULL, "Callbacks");
+	ewl_container_child_append(EWL_CONTAINER(windows_menu), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, callbacks_toggle, NULL);
 	ewl_widget_show(item);
 
 	ewl_widget_show(windows_menu);
