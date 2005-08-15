@@ -88,16 +88,16 @@ EdgeTimeout(int val, void *data __UNUSED__)
       dx = 0;
    if (ah == 1)
       dy = 0;
-   Mode.px = Mode.x;
-   Mode.py = Mode.y;
-   Mode.x += dx;
-   Mode.y += dy;
-   EWarpPointer(VRoot.win, Mode.x, Mode.y);
+   Mode.events.px = Mode.events.x;
+   Mode.events.py = Mode.events.y;
+   Mode.events.x += dx;
+   Mode.events.y += dy;
+   EWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
    Mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
    Mode.flipp = 0;
-   Mode.px = Mode.x;
-   Mode.py = Mode.y;
+   Mode.events.px = Mode.events.x;
+   Mode.events.py = Mode.events.y;
 }
 
 static void

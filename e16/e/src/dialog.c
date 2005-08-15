@@ -2081,8 +2081,8 @@ DialogEventMotion(Dialog * d, XEvent * ev)
 	   break;
 	if (ev->xmotion.window == di->item.slider.knob_win)
 	  {
-	     dx = Mode.x - Mode.px;
-	     dy = Mode.y - Mode.py;
+	     dx = Mode.events.x - Mode.events.px;
+	     dy = Mode.events.y - Mode.events.py;
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.wanted_val += dx;
@@ -2259,7 +2259,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
    Window              win = ev->xbutton.window;
    DItem              *di, *dii;
 
-   if (win != Mode.last_bpress)
+   if (win != Mode.events.last_bpress)
       return;
 
    di = DialogFindDItem(d, win);

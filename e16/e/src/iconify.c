@@ -2075,7 +2075,7 @@ IboxEventIconWin(XEvent * ev, void *prm)
 
 	name = EwinGetIconName(ewin);
 	if (name)
-	   TooltipShow(tt, name, NULL, Mode.x, Mode.y);
+	   TooltipShow(tt, name, NULL, Mode.events.x, Mode.events.y);
 	break;
 
      case LeaveNotify:

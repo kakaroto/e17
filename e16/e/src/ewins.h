@@ -39,8 +39,6 @@ struct _ewin
    const Border       *previous_border;
    EWinBit            *bits;
 
-   char                toggle;	/* FIXME - Eliminate */
-
    struct
    {
       Window              win;

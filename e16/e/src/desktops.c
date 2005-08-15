@@ -1337,10 +1337,6 @@ DeskDragStart(int desk)
 
    Mode.deskdrag = desk;
    Mode.mode = MODE_DESKDRAG;
-   Mode.start_x = Mode.x;
-   Mode.start_y = Mode.y;
-   Mode.win_x = EoGetX(d);
-   Mode.win_y = EoGetY(d);
 }
 
 void
@@ -1349,8 +1345,8 @@ DeskDragMotion(void)
    Desk               *d;
    int                 desk, dx, dy;
 
-   dx = Mode.x - Mode.px;
-   dy = Mode.y - Mode.py;
+   dx = Mode.events.x - Mode.events.px;
+   dy = Mode.events.y - Mode.events.py;
 
    desk = Mode.deskdrag;
    d = _DeskGet(desk);

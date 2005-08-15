@@ -320,7 +320,7 @@ GetEwinPointerInClient(void)
    EWin               *const *lst, *ewin;
    int                 i, num;
 
-   desk = DesktopAt(Mode.x, Mode.y);
+   desk = DesktopAt(Mode.events.x, Mode.events.y);
    EQueryPointer(DeskGetWin(desk), &px, &py, NULL, NULL);
 
    lst = EwinListGetForDesk(&num, desk);
@@ -748,8 +748,8 @@ AddToFamily(EWin * ewin, Window win)
 	     DeskGoto(desk);
 
 	     EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
-	     Mode.x = rx;
-	     Mode.y = ry;
+	     Mode.events.x = rx;
+	     Mode.events.y = ry;
 	     ewin->state.placed = 1;
 
 	     /* try to center the window on the mouse pointer */
@@ -798,16 +798,15 @@ AddToFamily(EWin * ewin, Window win)
 	DeskGoto(desk);
 
 	EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
-	Mode.x = rx;
-	Mode.y = ry;
+	Mode.events.x = rx;
+	Mode.events.y = ry;
 	ewin->state.placed = 1;
-	x = Mode.x + 1;
-	y = Mode.y + 1;
+	x = Mode.events.x + 1;
+	y = Mode.events.y + 1;
 	EwinMoveToDesktopAt(ewin, desk, x, y);
 	EwinMove(ewin, x, y);
 	ShowEwin(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
-	Mode.have_place_grab = 1;
 	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	ActionMoveStart(ewin, 1, 0, 0);

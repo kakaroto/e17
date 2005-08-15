@@ -241,7 +241,7 @@ WarpFocus(int delta)
 
    /* Remember invoking keycode (ugly hack) */
    if (!warpFocusWindow || !warpFocusWindow->shown)
-      warpFocusKey = Mode.last_keycode;
+      warpFocusKey = Mode.events.last_keycode;
 
    if (!warplist)
      {

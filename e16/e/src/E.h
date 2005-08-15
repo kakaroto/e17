@@ -774,10 +774,21 @@ typedef struct
    } display;
    struct
    {
+      int                 x, y;
+      int                 px, py;
+      Time                last_btime;
+      Window              last_bpress;
+      unsigned int        last_button;
+      unsigned int        last_keycode;
+      char                double_click;
+   } events;
+   struct
+   {
       Group              *current;
    } groups;
    struct
    {
+      int                 server_grabbed;
       char                pointer_grab_active;
       Window              pointer_grab_window;
    } grabs;
@@ -834,16 +845,10 @@ typedef struct
    } wm;
    int                 mode;
    char                flipp;
-   int                 resize_detail;
-   int                 win_x, win_y, win_w, win_h;
-   int                 start_x, start_y;
-   char                have_place_grab;
    char                action_inhibit;
    EWin               *focuswin;
    EWin               *mouse_over_ewin;
    EWin               *context_ewin;
-   int                 px, py, x, y;
-   int                 server_grabbed;
    int                 deskdrag;
    Colormap            current_cmap;
    Window              context_win;
@@ -851,11 +856,6 @@ typedef struct
    char                nogroup;
    char                keybinds_changed;
    Window              button_proxy_win;
-   Time                last_time;
-   Window              last_bpress;
-   unsigned int        last_button;
-   unsigned int        last_keycode;
-   char                double_click;
 }
 EMode;
 

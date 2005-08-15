@@ -67,6 +67,7 @@ static struct
    char                loading_user;
    char                move_pending;
    char                action_inhibit;
+   int                 start_x, start_y;
 } Mode_buttons;
 
 static void         ButtonHandleEvents(XEvent * ev, void *btn);
@@ -479,10 +480,8 @@ ButtonDragStart(Button * b)
    GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
    Mode_buttons.move_pending = 1;
-   Mode.start_x = Mode.x;
-   Mode.start_y = Mode.y;
-   Mode.win_x = EoGetX(b);
-   Mode.win_y = EoGetY(b);
+   Mode_buttons.start_x = Mode.events.x;
+   Mode_buttons.start_y = Mode.events.y;
 }
 
 static void
@@ -494,7 +493,7 @@ ButtonDragEnd(Button * b)
 
    if (!Mode_buttons.move_pending)
      {
-	d = DesktopAt(Mode.x, Mode.y);
+	d = DesktopAt(Mode.events.x, Mode.events.y);
 	ButtonMoveToDesktop(b, d);
 	d = EoGetDesk(b);
 	ButtonMoveRelative(b, -DeskGetX(d), -DeskGetY(d));
@@ -614,15 +613,15 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
    if (Mode.mode != MODE_BUTTONDRAG)
       return;
 
-   dx = Mode.x - Mode.px;
-   dy = Mode.y - Mode.py;
+   dx = Mode.events.x - Mode.events.px;
+   dy = Mode.events.y - Mode.events.py;
 
    if (Mode_buttons.move_pending)
      {
 	int                 x, y;
 
-	x = Mode.x - Mode.start_x;
-	y = Mode.y - Mode.start_y;
+	x = Mode.events.x - Mode_buttons.start_x;
+	y = Mode.events.y - Mode_buttons.start_y;
 	if (x < 0)
 	   x = -x;
 	if (y < 0)

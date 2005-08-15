@@ -455,10 +455,10 @@ doInsertKeys(EWin * edummy __UNUSED__, const char *params)
 	       {
 		  int                 j;
 
-		  ev.x = Mode.x;
-		  ev.y = Mode.y;
-		  ev.x_root = Mode.x;
-		  ev.y_root = Mode.y;
+		  ev.x = Mode.events.x;
+		  ev.y = Mode.events.y;
+		  ev.x_root = Mode.events.x;
+		  ev.y_root = Mode.events.y;
 		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
 		       j++)
 		    {

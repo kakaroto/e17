@@ -1365,28 +1365,28 @@ EWindowGetShapePixmap(Window win)
 void
 EGrabServer(void)
 {
-   if (Mode.server_grabbed <= 0)
+   if (Mode.grabs.server_grabbed <= 0)
       XGrabServer(disp);
-   Mode.server_grabbed++;
+   Mode.grabs.server_grabbed++;
 }
 
 void
 EUngrabServer(void)
 {
-   if (Mode.server_grabbed == 1)
+   if (Mode.grabs.server_grabbed == 1)
      {
 	XUngrabServer(disp);
 	XFlush(disp);
      }
-   Mode.server_grabbed--;
-   if (Mode.server_grabbed < 0)
-      Mode.server_grabbed = 0;
+   Mode.grabs.server_grabbed--;
+   if (Mode.grabs.server_grabbed < 0)
+      Mode.grabs.server_grabbed = 0;
 }
 
 int
 EServerIsGrabbed(void)
 {
-   return Mode.server_grabbed;
+   return Mode.grabs.server_grabbed;
 }
 
 void

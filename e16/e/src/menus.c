@@ -254,20 +254,20 @@ MenuShow(Menu * m, char noshow)
 	     head_num =
 		GetPointerScreenGeometry(&x_origin, &y_origin, &width, &height);
 
-	     if (Mode.x - x - ((int)mw / 2) > x_origin + width)
+	     if (Mode.events.x - x - ((int)mw / 2) > x_origin + width)
 		wx = x_origin + b->border.left;
-	     else if (Mode.x + ((int)mw / 2) > x_origin + width)
+	     else if (Mode.events.x + ((int)mw / 2) > x_origin + width)
 		wx = x_origin + width - mw - b->border.right;
 	     else
-		wx = Mode.x - x - (w / 2);
+		wx = Mode.events.x - x - (w / 2);
 
 	     if ((wx - ((int)w / 2)) < x_origin)
 		wx = x_origin + b->border.left;
 
-	     if (Mode.y + (int)mh > VRoot.h)
+	     if (Mode.events.y + (int)mh > VRoot.h)
 		wy = (y_origin + height) - mh - b->border.bottom;
 	     else
-		wy = Mode.y - y - (h / 2);
+		wy = Mode.events.y - y - (h / 2);
 
 	     if ((wy - ((int)h / 2) - b->border.top) < y_origin)
 		wy = y_origin + b->border.top;
@@ -275,14 +275,14 @@ MenuShow(Menu * m, char noshow)
 	else
 	  {
 	     /* We should never get here */
-	     wx = Mode.x - x - (w / 2);
-	     wy = Mode.y - y - (h / 2);
+	     wx = Mode.events.x - x - (w / 2);
+	     wy = Mode.events.y - y - (h / 2);
 	  }
      }
    else
      {
-	wx = Mode.x - x - (w / 2);
-	wy = Mode.y - y - (h / 2);
+	wx = Mode.events.x - x - (w / 2);
+	wy = Mode.events.y - y - (h / 2);
      }
 
    EMoveWindow(m->win, wx, wy);
@@ -1323,25 +1323,27 @@ MenusHandleMotion(void)
 	static int          menu_scroll_dist = 4;
 	int                 my_width, my_height, x_org, y_org, head_num = 0;
 
-	head_num = ScreenGetGeometry(Mode.x, Mode.y, &x_org, &y_org,
-				     &my_width, &my_height);
+	head_num =
+	   ScreenGetGeometry(Mode.events.x, Mode.events.y, &x_org, &y_org,
+			     &my_width, &my_height);
 
-	if (Mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
+	if (Mode.events.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
 	  {
-	     xdist = -(menu_scroll_dist + (Mode.x - (x_org + my_width)));
+	     xdist = -(menu_scroll_dist + (Mode.events.x - (x_org + my_width)));
 	  }
-	else if (Mode.x < (menu_scroll_dist + x_org))
+	else if (Mode.events.x < (menu_scroll_dist + x_org))
 	  {
-	     xdist = x_org + menu_scroll_dist - (Mode.x);
+	     xdist = x_org + menu_scroll_dist - (Mode.events.x);
 	  }
 
-	if (Mode.y > (VRoot.h - (menu_scroll_dist + 1)))
+	if (Mode.events.y > (VRoot.h - (menu_scroll_dist + 1)))
 	  {
-	     ydist = -(menu_scroll_dist + (Mode.y - (y_org + my_height)));
+	     ydist =
+		-(menu_scroll_dist + (Mode.events.y - (y_org + my_height)));
 	  }
-	else if (Mode.y < (menu_scroll_dist + y_org))
+	else if (Mode.events.y < (menu_scroll_dist + y_org))
 	  {
-	     ydist = y_org + menu_scroll_dist - (Mode.y);
+	     ydist = y_org + menu_scroll_dist - (Mode.events.y);
 	  }
 
 	/* That's a hack to avoid unwanted events:

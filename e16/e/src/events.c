@@ -147,12 +147,12 @@ ModeGetXY(Window rwin, int rx, int ry)
    if (Mode.wm.window)
      {
 	XTranslateCoordinates(disp, rwin, VRoot.win,
-			      rx, ry, &Mode.x, &Mode.y, &child);
+			      rx, ry, &Mode.events.x, &Mode.events.y, &child);
      }
    else
      {
-	Mode.x = rx;
-	Mode.y = ry;
+	Mode.events.x = rx;
+	Mode.events.y = ry;
      }
 }
 
@@ -167,7 +167,7 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case KeyPress:
-	Mode.last_keycode = ev->xkey.keycode;
+	Mode.events.last_keycode = ev->xkey.keycode;
      case KeyRelease:
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 #if 0				/* FIXME - Why? */
@@ -182,10 +182,12 @@ HandleEvent(XEvent * ev)
 	  }
 #endif
 	goto do_stuff;
+
      case ButtonPress:
      case ButtonRelease:
 	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	goto do_stuff;
+
      case EnterNotify:
 	Mode.context_win = ev->xany.window;
 	if (ev->xcrossing.mode == NotifyGrab &&
@@ -196,6 +198,7 @@ HandleEvent(XEvent * ev)
 		Mode.grabs.pointer_grab_active = 2;
 	  }
 	goto do_stuff;
+
      case LeaveNotify:
 	if (ev->xcrossing.mode == NotifyGrab &&
 	    ev->xcrossing.detail == NotifyInferior)
@@ -222,15 +225,15 @@ HandleEvent(XEvent * ev)
      case ButtonPress:		/*  4 */
 	SoundPlay("SOUND_BUTTON_CLICK");
 
-	Mode.double_click =
-	   (((ev->xbutton.time - Mode.last_time) < DOUBLE_CLICK_TIME) &&
-	    (ev->xbutton.button == Mode.last_button));
+	Mode.events.double_click =
+	   (((ev->xbutton.time - Mode.events.last_btime) < DOUBLE_CLICK_TIME) &&
+	    (ev->xbutton.button == Mode.events.last_button));
 
-	Mode.last_bpress = ev->xbutton.window;
-	Mode.last_time = ev->xbutton.time;
-	Mode.last_button = ev->xbutton.button;
+	Mode.events.last_bpress = ev->xbutton.window;
+	Mode.events.last_btime = ev->xbutton.time;
+	Mode.events.last_button = ev->xbutton.button;
 
-	if (Mode.double_click)
+	if (Mode.events.double_click)
 	   ev->xbutton.time = 0;
 	break;
      case ButtonRelease:	/*  5 */
@@ -241,11 +244,11 @@ HandleEvent(XEvent * ev)
      case MotionNotify:	/*  6 */
 	TooltipsHandleEvent();	/* TBD */
 
-	Mode.px = Mode.x;
-	Mode.py = Mode.y;
+	Mode.events.px = Mode.events.x;
+	Mode.events.py = Mode.events.y;
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
 
-	DesksSetCurrent(DesktopAt(Mode.x, Mode.y));
+	DesksSetCurrent(DesktopAt(Mode.events.x, Mode.events.y));
 
 	ActionsHandleMotion();
 	break;
@@ -290,7 +293,7 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case ButtonRelease:	/*  5 */
-	Mode.last_bpress = 0;
+	Mode.events.last_bpress = 0;
 	Mode.action_inhibit = 0;
 	break;
 

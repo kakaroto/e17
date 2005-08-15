@@ -886,7 +886,7 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
 #endif
    BorderWinpartChange(ewin, part, 0);
 
-   if (wbit->win == Mode.last_bpress && !wbit->left &&
+   if (wbit->win == Mode.events.last_bpress && !wbit->left &&
        ewin->border->part[part].aclass)
       ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 
