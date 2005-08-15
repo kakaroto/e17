@@ -32,10 +32,10 @@ AC_CHECK_FUNC(statfs, , have_statfs="no")
 if test "$have_statfs" = "no"; then
    AC_CHECK_FUNC(statvfs, have_statvfs="yes")
    if test "$have_stavtfs" = "yes"; then
-      AC_DEFINE(HAVE_STATVFS, 1)
+      AC_DEFINE(HAVE_STATVFS, 1, [Build support for statfs])
    fi
 else
-   AC_DEFINE(HAVE_STATFS, 1)
+   AC_DEFINE(HAVE_STATFS, 1, [Build support for statfs])
 fi
   
 dnl Check for fam.
@@ -53,7 +53,7 @@ if test "$fam_header_ok" = "no" -o "$fam_lib_ok" = "no"; then
   AC_MSG_WARN(Optional library FAM not found -- this is not a problem.)
 else
   fam="with FAM (file-alteration monitor) support";
-  AC_DEFINE(HAVE_FAM, 1, try to use File-alteration monitor)
+  AC_DEFINE(HAVE_FAM, 1, [Try to use File-alteration monitor])
 fi;
 LIBS="$save_LIBS"
 CFLAGS="$save_CFLAGS"
@@ -88,7 +88,7 @@ without thread support.
 EOF
       AM_CONDITIONAL(USE_THREADS_FILES, false)
    else
-      AC_DEFINE(USE_THREADS, 1)
+      AC_DEFINE(USE_THREADS, 1, [Build support for threads])
       AM_CONDITIONAL(USE_THREADS_FILES, true)
       if test "$PTHREAD_LIB" = "-pthread"; then
          PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
@@ -155,59 +155,59 @@ AC_SUBST(ecore_libs)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", "Locale directory")
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", "Locale directory")
 fi
 
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Data directory")
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Data directory")
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", "Data directory")
 fi
 
 dnl Set the package lib dir
 if test "x${libdir}" = 'x${prefix}/lib'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${ac_default_prefix}/lib/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${ac_default_prefix}/lib/${PACKAGE}", "Plugin directory")
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${prefix}/lib/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${prefix}/lib/${PACKAGE}", "Plugin directory")
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${prefix}/lib/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${prefix}/lib/${PACKAGE}", "Plugin directory")
 fi
 
 
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", "Source directory")
 
 
 dnl Backtrace generation code, based on code from Eterm. Cheers Michael :)
 AC_PATH_PROG(DBX, dbx, no)
 if test "$DBX" != "no"; then
-  AC_DEFINE_UNQUOTED(DBX, "$DBX")
+  AC_DEFINE_UNQUOTED(DBX, "$DBX", "dbx program")
 fi
 AC_PATH_PROG(GDB, gdb, no)
 if test "$GDB" != "no"; then
-  AC_DEFINE_UNQUOTED(GDB, "$GDB")
+  AC_DEFINE_UNQUOTED(GDB, "$GDB", "gdb program")
 fi
 AC_PATH_PROG(PSTACK, pstack, no, $PATH:/usr/proc/bin:/usr/sbin)
 if test "$PSTACK" != "no"; then
-  AC_DEFINE_UNQUOTED(PSTACK, "$PSTACK")
+  AC_DEFINE_UNQUOTED(PSTACK, "$PSTACK", "pstack program")
 fi
 AC_CHECK_LIB(cl, U_STACK_TRACE, LIBS="$LIBS -lcl")
 
 if test "$GDB" != "no"; then
   GDB_CMD_FILE=`eval eval eval eval echo "$datadir/$PACKAGE/gdb.scr"`
-  AC_DEFINE_UNQUOTED(GDB_CMD_FILE, "$GDB_CMD_FILE")
+  AC_DEFINE_UNQUOTED(GDB_CMD_FILE, "$GDB_CMD_FILE", "gdb command file")
 else
   GDB_CMD_FILE=""
 fi
@@ -226,7 +226,7 @@ AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
 dnl Various conditionals
 AM_CONDITIONAL(BUILD_ECORE_DEPENDENT,      test "$ecore" != "no")
-AC_DEFINE(HAVE_ECORE,1)
+AC_DEFINE(HAVE_ECORE, 1, [Build with ecore])
 
 
 AC_OUTPUT([
