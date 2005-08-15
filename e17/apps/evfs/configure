@@ -22664,6 +22664,26 @@ _ACEOF
 
 fi
 
+if test "x${libdir}" = 'x${prefix}/lib'; then
+  if test "x${prefix}" = "xNONE"; then
+    cat >>confdefs.h <<_ACEOF
+#define PACKAGE_PLUGIN_DIR "${ac_default_prefix}/lib/${PACKAGE}"
+_ACEOF
+
+  else
+    cat >>confdefs.h <<_ACEOF
+#define PACKAGE_PLUGIN_DIR "${prefix}/lib/${PACKAGE}"
+_ACEOF
+
+  fi
+else
+  cat >>confdefs.h <<_ACEOF
+#define PACKAGE_PLUGIN_DIR "${prefix}/lib/${PACKAGE}"
+_ACEOF
+
+fi
+
+
 
 packagesrcdir=`cd $srcdir && pwd`
 cat >>confdefs.h <<_ACEOF

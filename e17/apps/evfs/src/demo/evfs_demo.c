@@ -4,13 +4,17 @@ int main() {
 	evfs_connection* con;
 	evfs_file_uri_path* path;
 	evfs_file_uri_path* dir_path;
+	char pathi[1024];
 	
 	printf("EVFS Demo system..\n");
 
 	con = evfs_connect();
 
-	path = evfs_parse_uri("posix:///home/chaos/.bash_profile");
-	dir_path = evfs_parse_uri("posix:///root/");
+	path = evfs_parse_uri("posix:///dev/ttyS0");
+
+	
+	snprintf(pathi,1024,"posix://%s", getenv("HOME"));
+	dir_path = evfs_parse_uri(pathi);
 
 	printf("Plugin uri is '%s', for path '%s'\n\n", path->files[0]->plugin_uri, path->files[0]->path);
 
