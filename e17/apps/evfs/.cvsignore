@@ -13,3 +13,7 @@ config.log
 autom4te.cache
 acconfig.h
 libtool
+Makefile
+config.h
+config.status
+stamp-h1

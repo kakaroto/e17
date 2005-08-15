@@ -7,3 +7,4 @@ evfsdemo_SOURCES = \
 
 
 evfsdemo_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@
+evfsdemo_CFLAGS = @ecore_cflags@
