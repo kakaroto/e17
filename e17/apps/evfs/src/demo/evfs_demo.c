@@ -14,12 +14,14 @@ int main() {
 
 	
 	snprintf(pathi,1024,"posix://%s", getenv("HOME"));
+	printf ("Monitoring dir: %s\n", pathi);
 	dir_path = evfs_parse_uri(pathi);
 
-	printf("Plugin uri is '%s', for path '%s'\n\n", path->files[0]->plugin_uri, path->files[0]->path);
+	
 
+	printf("Plugin uri is '%s', for path '%s'\n\n", dir_path->files[0]->plugin_uri, dir_path->files[0]->path);
 
-	evfs_monitor_add(con, path->files[0]);
+	
 	evfs_monitor_add(con, dir_path->files[0]);
 
 	ecore_main_loop_begin();

@@ -7,7 +7,8 @@ evfs_connection* evfs_connect() {
 	evfs_connection* connection = NEW(evfs_connection);
 
 	if ( !(connection->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL)) ) {
-		fprintf(stderr, "Cannot connect to evfs server..\n");
+		fprintf(stderr, "Cannot connect to evfs server with '%s'..\n", EVFS_IPC_TITLE);
+		exit(1);
 		
 		return NULL;
 	}

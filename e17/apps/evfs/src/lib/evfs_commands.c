@@ -2,6 +2,7 @@
 
 void evfs_monitor_add(evfs_connection* conn, evfs_filereference* ref) {
 	evfs_command* command = NEW(evfs_command);
+	printf("Command is %p\n", command);
 	
 	printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri);
 
