@@ -1,4 +1,4 @@
-#include <evfs.h>
+#include "evfs.h"
 
 evfs_connection* evfs_connect() {
 	ecore_init();
@@ -61,9 +61,5 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 
 		return path;
 	}
-	
-
-	
-
-	
+	return NULL;
 }

@@ -1,3 +1,6 @@
+#ifndef __EVFS_IO_H_
+#define __EVFS_IO_H_
+
 void evfs_write_command(evfs_connection* conn, evfs_command* command);
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command);
 
@@ -33,4 +36,4 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* message);
 void evfs_write_command_end(evfs_connection* conn);
 
-
+#endif

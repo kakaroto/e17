@@ -28,9 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
-#include <Ecore.h>
-#include <Ecore_Ipc.h>
-#include <evfs.h>
+#include "evfs.h"
+
+#include <Ecore_File.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -44,7 +44,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
-#include <Edb.h>
 
 
 static evfs_server* server;

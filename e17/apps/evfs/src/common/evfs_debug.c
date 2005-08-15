@@ -26,12 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <sys/time.h>
-#include <unistd.h>
-
-#include <evfs_macros.h>
+#include "evfs.h"
 
 #if USE_THREADS
 #include <pthread.h>

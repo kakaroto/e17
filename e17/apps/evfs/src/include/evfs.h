@@ -1,11 +1,12 @@
 #ifndef __EVFS_H_
 #define __EVFS_H_
 
-#include <evfs_macros.h>
-#include <evfs_debug.h>
+#define _GNU_SOURCE
+#include "evfs_macros.h"
+#include "evfs_debug.h"
+#include "evfs_plugin.h"
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
-#include <evfs_plugin.h>
 #include <pthread.h>
 
 

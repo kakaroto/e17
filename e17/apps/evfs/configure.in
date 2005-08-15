@@ -105,21 +105,6 @@ fi
 AC_SUBST(PTHREAD_CFLAGS)
 AC_SUBST(PTHREAD_LIB)
 
-
-dnl Check for edb.
-AC_ARG_WITH(edb,
-        [  --with-edb=DIR          use edb in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(edb, 1.0.2, [
-    AC_SUBST(edb_libs)
-    AC_SUBST(edb_cflags)],
-    AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
-edb_libs=`edb-config --libs`
-edb_cflags=`edb-config --cflags`
-
-
 dnl Check for libxml.
 AC_ARG_WITH(xml2,
         [  --with-xml2=DIR          use libxml2 in <DIR>],
