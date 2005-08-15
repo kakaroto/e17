@@ -785,8 +785,8 @@ _weather_net_server_data(void *data, int type, void *event)
 
    while ((face->cursize + e->size) >= face->bufsize)
      {
-	face->buffer = realloc(face->buffer, face->bufsize + 4096);
 	face->bufsize += 4096;
+	face->buffer = realloc(face->buffer, face->bufsize);
      }
    memcpy(face->buffer + face->cursize, e->data, e->size);
    face->cursize += e->size;
