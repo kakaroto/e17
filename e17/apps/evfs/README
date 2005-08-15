@@ -1,0 +1,5 @@
+This is EVFS.  
+A lot more documentation will follow, but this is the successor to EFSD
+Some of the code (A lot of the POSIX file plugin) is from EFSD.
+
+For now, run the "evfs" client, and then run the program in the demo dir.  Simple examples.
