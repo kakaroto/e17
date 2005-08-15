@@ -1,0 +1,15 @@
+compile
+config.guess
+config.sub
+Makefile.in
+configure
+depcomp
+install-sh
+ltmain.sh
+missing
+aclocal.m4
+config.h.in
+config.log
+autom4te.cache
+acconfig.h
+libtool
