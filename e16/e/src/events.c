@@ -169,6 +169,7 @@ HandleEvent(XEvent * ev)
      case KeyPress:
 	Mode.events.last_keycode = ev->xkey.keycode;
      case KeyRelease:
+	Mode.events.time = ev->xkey.time;
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 #if 0				/* FIXME - Why? */
 	if (ev->xkey.root != VRoot.win)
@@ -185,11 +186,17 @@ HandleEvent(XEvent * ev)
 
      case ButtonPress:
      case ButtonRelease:
+	Mode.events.time = ev->xbutton.time;
 	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	goto do_stuff;
 
+     case MotionNotify:
+	Mode.events.time = ev->xmotion.time;
+	break;
+
      case EnterNotify:
 	Mode.context_win = ev->xany.window;
+	Mode.events.time = ev->xcrossing.time;
 	if (ev->xcrossing.mode == NotifyGrab &&
 	    ev->xcrossing.detail == NotifyInferior)
 	  {
@@ -200,6 +207,7 @@ HandleEvent(XEvent * ev)
 	goto do_stuff;
 
      case LeaveNotify:
+	Mode.events.time = ev->xcrossing.time;
 	if (ev->xcrossing.mode == NotifyGrab &&
 	    ev->xcrossing.detail == NotifyInferior)
 	  {
@@ -207,6 +215,10 @@ HandleEvent(XEvent * ev)
 	     Mode.grabs.pointer_grab_active = 0;
 	  }
 	goto do_stuff;
+
+     case PropertyNotify:
+	Mode.events.time = ev->xproperty.time;
+	break;
 
       do_stuff:
 	TooltipsHandleEvent();	/* TBD */

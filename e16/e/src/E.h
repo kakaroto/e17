@@ -774,6 +774,7 @@ typedef struct
    } display;
    struct
    {
+      Time                time;
       int                 x, y;
       int                 px, py;
       Time                last_btime;

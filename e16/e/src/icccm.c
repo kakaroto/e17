@@ -326,26 +326,27 @@ ICCCM_Focus(const EWin * ewin)
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
-	   Eprintf("ICCCM_Focus %#lx %s\n", _EwinGetClientXwin(ewin),
-		   EwinGetName(ewin));
+	   Eprintf("ICCCM_Focus T=%#lx %#lx %s\n", Mode.events.time,
+		   _EwinGetClientXwin(ewin), EwinGetName(ewin));
 	else
-	   Eprintf("ICCCM_Focus None\n");
+	   Eprintf("ICCCM_Focus None T=%#lx\n", Mode.events.time);
      }
 
    if (!ewin)
      {
-	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, CurrentTime);
+	XSetInputFocus(disp, VRoot.win, RevertToPointerRoot, Mode.events.time);
 	HintsSetActiveWindow(None);
 	return;
      }
 
    if (ewin->icccm.take_focus)
      {
-	ecore_x_icccm_take_focus_send(_EwinGetClientXwin(ewin), CurrentTime);
+	ecore_x_icccm_take_focus_send(_EwinGetClientXwin(ewin),
+				      Mode.events.time);
      }
 
    XSetInputFocus(disp, _EwinGetClientXwin(ewin), RevertToPointerRoot,
-		  CurrentTime);
+		  Mode.events.time);
 
    HintsSetActiveWindow(_EwinGetClientXwin(ewin));
 }
