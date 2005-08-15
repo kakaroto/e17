@@ -40,14 +40,18 @@ static void ewl_text_op_set(Ewl_Text *t, unsigned int context_mask,
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
 static void ewl_text_trigger_cb_free(void *value, void *data);
-static void ewl_text_triggers_cb_free(void *data);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
-							unsigned int len);
+						unsigned int len);
+static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig, 
+					int tb_length, unsigned int *cur_idx, 
+							unsigned int *cur_tb_idx);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
 			Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
+
+static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx);
 
 /**
  * @param text: The text to set into the widget
@@ -92,7 +96,6 @@ ewl_text_init(Ewl_Text *t, const char *text)
 	ewl_widget_inherit(EWL_WIDGET(t), "text");
 
 	t->triggers = ecore_list_new();
-	ecore_list_set_free_cb(t->triggers, ewl_text_triggers_cb_free);
 
 	/* create the formatting tree before we do any formatting */
 	t->formatting = ewl_text_btree_new();
@@ -116,11 +119,24 @@ ewl_text_init(Ewl_Text *t, const char *text)
 					ewl_text_cb_hide, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
 					ewl_text_cb_destroy, NULL);
+	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
+					ewl_text_cb_mouse_down, NULL);
+	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
+					ewl_text_cb_mouse_up, NULL);
 
 	ewl_container_add_notify_set(EWL_CONTAINER(t), 
 					ewl_text_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(t), 
 					ewl_text_cb_child_del);
+
+	/* create the selection */
+	t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION));
+	ewl_text_trigger_start_pos_set(t->selection, 0);
+	ewl_text_trigger_length_set(t->selection, 0);
+	t->selection->parent = t;
+	ewl_callback_append(EWL_WIDGET(t->selection), EWL_CALLBACK_CONFIGURE,
+					ewl_text_selection_cb_configure, NULL);
+	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -245,6 +261,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	/* if this is less then 0 then we clicked off of one end of the
 	 * textblock or the other. if the click position is inside the size
 	 * of a char we are at the start, else we are at the end */
+	/* XXX WRONG */
 	if (tb_idx < 0)
 	{
 		int cx, size;
@@ -481,7 +498,36 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 }
 
 /**
- * @param t: The Ewl_Text widget ot set the position into
+ * @param t: The Ewl_Text widget to get the selection text from
+ * @return Returns the selection text or NULL if none set
+ * @brief Gets the current text of the selection
+ */
+char *
+ewl_text_selection_get(Ewl_Text *t)
+{
+	char *ret = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (t->selection->len == 0)
+	{
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	ret = malloc(sizeof(char) * (t->selection->len + 1));
+	if (!ret)
+	{
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	memcpy(ret, t->text + t->selection->pos, t->selection->len);
+	ret[t->selection->len] = '\0';
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text widget to set the position into
  * @param pos: The position to set
  * @return Returns no value.
  */
@@ -1838,6 +1884,8 @@ ewl_text_trigger_free(Ewl_Text_Trigger *t)
 		ecore_list_destroy(t->areas);
 
 	t->parent = NULL;
+	t->areas = NULL;
+	FREE(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1848,17 +1896,6 @@ ewl_text_trigger_cb_free(void *value, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
-	ewl_text_trigger_free(data);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_text_triggers_cb_free(void *data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	
 	ewl_text_trigger_free(data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1913,29 +1950,55 @@ ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->len, DLEVEL_STABLE);
 }
 
+void
+ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	t->base = pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
+
+	DRETURN_INT(t->base, DLEVEL_STABLE);
+}
+
 /*
  * Internal stuff 
  */
-void ewl_text_triggers_configure(Ewl_Text *t)
+void
+ewl_text_triggers_configure(Ewl_Text *t)
 {
+	Ewl_Text_Trigger_Area *area;
 	Ewl_Text_Trigger *cur;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	if (!t->triggers)
-		return;
-
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
+	if (t->triggers)
 	{
-		Ewl_Text_Trigger_Area *area;
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
+		{
+			if (!cur->areas) continue;
 
-		if (!cur->areas) 
-			continue;
+			ecore_list_goto_first(cur->areas);
+			while ((area = ecore_list_next(cur->areas)))
+				ewl_widget_configure(EWL_WIDGET(area));
+		}
+	}
 
-		ecore_list_goto_first(cur->areas);
-		while ((area = ecore_list_next(cur->areas)))
+	if (t->selection)
+	{
+		ecore_list_goto_first(t->selection->areas);
+		while ((area = ecore_list_next(t->selection->areas)))
 			ewl_widget_configure(EWL_WIDGET(area));
 	}
 
@@ -1973,27 +2036,169 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_text_triggers_realize(Ewl_Text *t)
+static void
+ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig, int tb_length,
+				unsigned int *cur_idx, unsigned int *cur_tb_idx)
 {
-	Ewl_Text_Trigger *cur;
-	Ewl_Embed *emb;
-	int fiddled, tb_length;
 	Evas_Coord sx, sy, sh, ex, ey, ew, eh;
 	char *ptr;
-	unsigned int cur_idx = 0, cur_tb_idx = 0;
 	int start_line = 0, end_line = 0;
+	int fiddled;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("trig", trig);
 
-	if (!t->triggers)
-		return;
-
-	emb = ewl_embed_widget_find(EWL_WIDGET(t));
-	if (!emb)
+	/* clean out the old areas */
+	/* XXX this needs to be smartened such that it will re-use the 
+	 * previously created areas instead of deleting them every time */
 	{
-		DRETURN(DLEVEL_STABLE);
+		Ewl_Text_Trigger_Area *area;
+
+		if (ecore_list_nodes(trig->areas) > 0)
+		{
+			ecore_list_goto_first(trig->areas);
+			while ((area = ecore_list_next(trig->areas)))
+			{
+				/* i'm deleting in the iteration _after_ the one in which it was actually
+				 * deleted cuz i'm getting fucked up events on the areas taht have already
+				 * been deleted....which is bad...
+				 * I think it's because I'm deleting in the configure callback?
+				 */
+				if (area->deleted)
+					ewl_widget_destroy(EWL_WIDGET(area));
+				else
+				{
+					ewl_widget_hide(EWL_WIDGET(area));
+					area->deleted = TRUE;
+				}
+			}
+			ecore_list_clear(trig->areas);
+		}
+		else
+			trig->areas = ecore_list_new();
 	}
+
+	if (trig->len == 0) return;
+
+	fiddled = 0;
+
+	/* get the index of the start of the trigger */
+	for (ptr = (t->text + *cur_idx); *cur_idx < trig->pos; (*cur_idx)++)
+	{
+		/* if this isn't a \r\n or \t increment the
+		 * textblock position */
+		if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
+			(*cur_tb_idx) ++;
+		ptr ++;
+	}
+
+	/* get the position of the start character */
+	evas_object_textblock_char_pos_get(t->textblock, *cur_tb_idx,
+			&sx, &sy, NULL, &sh);
+
+	/* get the line number we're on */
+	evas_object_textblock_cursor_pos_set(t->textblock, *cur_tb_idx);
+	start_line = evas_object_textblock_cursor_line_get(t->textblock);
+
+
+	/* get the index of the end of the trigger */
+	for (ptr = (t->text + *cur_idx);
+			*cur_idx < (trig->pos + trig->len); (*cur_idx)++)
+	{
+		/* if this isn't a \r\n or \t increment the
+		 * textblock position */
+		if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
+			(*cur_tb_idx) ++;
+		ptr ++;
+	}
+
+	if ((*cur_tb_idx) >= tb_length)
+	{
+		*cur_tb_idx = tb_length - 1;
+		fiddled = 1;
+	}
+	evas_object_textblock_char_pos_get(t->textblock, *cur_tb_idx,
+			&ex, &ey, &ew, &eh);
+
+	/* get the line number we're on */
+	evas_object_textblock_cursor_pos_set(t->textblock, *cur_tb_idx);
+	end_line = evas_object_textblock_cursor_line_get(t->textblock);
+
+	if (fiddled)
+		ex += ew;
+
+	/* whole trigger is on one line */
+	if (start_line == end_line)
+	{
+		ewl_text_trigger_area_add(t, trig, sx, sy, (ex - sx), 
+							(ey - sy) + eh);
+	}
+	/* multiline trigger */
+	else
+	{
+		int i, missed = 0;
+		Evas_Coord lx, ly, lw, lh;
+		Evas_Coord llx = 0, lly = 0, llw = 0, llh = 0;
+
+		/* get the coords for all the lines and deal with
+		 * them */
+		for (i = start_line; i <= end_line; i++)
+		{
+			if (!evas_object_textblock_line_get(t->textblock, i, 
+							&lx, &ly, &lw, &lh))
+			{
+				/* if we don't get a response from
+				 * evas then this is a blank line.
+				 * wait until we get the next real line
+				 * to deal with it */
+				missed = 1;
+
+				lly = ly + lh;
+				llw = lw;
+				llh = lh;
+
+				continue;
+			}
+			else
+			{
+				if (i == start_line)
+				{
+					lx = sx;
+					ly = sy;
+					lw -= ex;
+				}
+				else if (i == end_line)
+				{
+					lw = ex - ew;
+				}
+					
+				ewl_text_trigger_area_add(t, trig, lx, ly, lw, lh);
+			}
+
+			/* deal with the missed line */
+			if (missed)
+			{
+				ewl_text_trigger_area_add(t, trig, 0, lly, 2, ly - lly);
+
+				missed = 0;
+				llx = lly = llw = llh = 0;
+			}
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_triggers_realize(Ewl_Text *t)
+{
+	Ewl_Text_Trigger *cur;
+	int tb_length = 0;
+	unsigned int cur_idx = 0, cur_tb_idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
 
 	/* we need to get the length of the textblock to make sure we aren't
 	 * trying to access one past its end. if we are, we need to do the
@@ -2001,170 +2206,99 @@ void ewl_text_triggers_realize(Ewl_Text *t)
 	 * position */
 	tb_length = evas_object_textblock_length_get(t->textblock);
 
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
+	if (t->triggers)
 	{
-		fiddled = 0;
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
+			ewl_text_trigger_position(t, cur, tb_length, &cur_idx, &cur_tb_idx);
+	}
 
-		/* get the index of the start of the trigger */
-		for (ptr = (t->text + cur_idx); cur_idx < cur->pos; cur_idx++)
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_triggers_unrealize(Ewl_Text *t)
+{
+	Ewl_Text_Trigger *cur;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	if (t->triggers)
+	{
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
+			ecore_list_clear(cur->areas);
+	}
+
+	if (t->selection)
+		ecore_list_clear(t->selection->areas);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_triggers_show(Ewl_Text *t)
+{
+	Ewl_Widget *area;
+	Ewl_Text_Trigger *cur;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+
+	if (t->triggers)
+	{
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
 		{
-			/* if this isn't a \r\n or \t increment the
-			 * textblock position */
-			if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
-				cur_tb_idx ++;
-			ptr ++;
-		}
+			if (!cur->areas) continue;
 
-		/* get the position of the start character */
-		evas_object_textblock_char_pos_get(t->textblock, cur_tb_idx,
-								&sx, &sy, NULL, &sh);
-
-		/* get the line number we're on */
-		evas_object_textblock_cursor_pos_set(t->textblock, cur_tb_idx);
-		start_line = evas_object_textblock_cursor_line_get(t->textblock);
-
-		/* get the index of the end of the trigger */
-		for (ptr = (t->text + cur_idx);
-				cur_idx < (cur->pos + cur->len); cur_idx++)
-		{
-			/* if this isn't a \r\n or \t increment the
-			 * textblock position */
-			if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
-				cur_tb_idx ++;
-			ptr ++;
-		}
-
-		if (cur_tb_idx >= tb_length)
-		{
-			cur_tb_idx = tb_length - 1;
-			fiddled = 1;
-		}
-		evas_object_textblock_char_pos_get(t->textblock, cur_tb_idx,
-								&ex, &ey, &ew, &eh);
-
-		/* get the line number we're on */
-		evas_object_textblock_cursor_pos_set(t->textblock, cur_tb_idx);
-		end_line = evas_object_textblock_cursor_line_get(t->textblock);
-
-		if (fiddled)
-			ex += ew;
-
-		/* whole trigger is on one line */
-		if (start_line == end_line)
-		{
-			ewl_text_trigger_area_add(t, cur, sx, sy, (ex - sx), 
-								(ey - sy) + eh);
-		}
-		/* multiline trigger */
-		else
-		{
-			int i, missed = 0;
-			Evas_Coord lx, ly, lw, lh;
-			Evas_Coord llx = 0, lly = 0, llw = 0, llh = 0;
-
-			/* get the coords for all the lines and deal with
-			 * them */
-			for (i = start_line; i <= end_line; i++)
-			{
-				if (!evas_object_textblock_line_get(t->textblock, i, 
-								&lx, &ly, &lw, &lh))
-				{
-					/* if we don't get a response from
-					 * evas then this is a blank line.
-					 * wait until we get the next real line
-					 * to deal with it */
-					missed = 1;
-
-					llx = lx;
-					lly = ly + lh;
-					llw = lw;
-					llh = lh;
-
-					continue;
-				}
-				else
-				{
-					ewl_text_trigger_area_add(t, cur, lx, ly, lw, lh);
-				}
-
-				/* deal with the missed line */
-				if (missed)
-				{
-					ewl_text_trigger_area_add(t, cur, llx, lly, 2, ly - lly);
-					
-					missed = 0;
-					llx = lly = llw = llh = 0;
-				}
-			}
+			ecore_list_goto_first(cur->areas);
+			while ((area = ecore_list_next(cur->areas)))
+				ewl_widget_show(area);
 		}
 	}
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 
-void ewl_text_triggers_unrealize(Ewl_Text *t)
-{
-	Ewl_Text_Trigger *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	if (!t->triggers)
-		return;
-
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
-		ecore_list_clear(cur->areas);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_text_triggers_show(Ewl_Text *t)
-{
-	Ewl_Text_Trigger *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	if (!t->triggers)
-		return;
-
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
+	if (t->selection)
 	{
-		Ewl_Widget *area;
-
-		if (!cur->areas)
-			continue;
-
-		ecore_list_goto_first(cur->areas);
-		while ((area = ecore_list_next(cur->areas)))
+		ecore_list_goto_first(t->selection->areas);
+		while ((area = ecore_list_next(t->selection->areas)))
 			ewl_widget_show(area);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_text_triggers_hide(Ewl_Text *t)
+void
+ewl_text_triggers_hide(Ewl_Text *t)
 {
+	Ewl_Widget *area;
 	Ewl_Text_Trigger *cur;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	if (!t->triggers)
-		return;
-
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
+	/* hide the triggers */
+	if (t->triggers)
 	{
-		Ewl_Widget *area;
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
+		{
 
-		if (!cur->areas)
-			continue;
+			if (!cur->areas)
+				continue;
 
-		ecore_list_goto_first(cur->areas);
-		while ((area = ecore_list_next(cur->areas)))
+			ecore_list_goto_first(cur->areas);
+			while ((area = ecore_list_next(cur->areas)))
+				ewl_widget_hide(area);
+		}
+	}
+
+	/* hide the selection */
+	if (t->selection->areas) 
+	{
+		ecore_list_goto_first(t->selection->areas);
+		while ((area = ecore_list_next(t->selection->areas)))
 			ewl_widget_hide(area);
 	}
 
@@ -2186,7 +2320,7 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	/* if this is a trigger then add it as such */
-	if ((!strcmp(appearance, "trigger")) 
+	if ((!strcmp(appearance, "trigger"))
 			|| (!strcmp(appearance, "selection")))
 		ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
@@ -2210,7 +2344,7 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	/* if this is a trigger, remove it as such */
-	if ((!strcmp(appearance, "trigger")) 
+	if ((!strcmp(appearance, "trigger"))
 			|| (!strcmp(appearance, "selection")))
 		ewl_text_trigger_del(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
@@ -2222,7 +2356,7 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w)
 static void
 ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 {
-	Ewl_Text_Trigger *cur;
+	Ewl_Text_Trigger *cur = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -2238,26 +2372,31 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 
 	trigger->parent = t;
 
-	ecore_list_goto_first(t->triggers);
-	while ((cur = ecore_list_next(t->triggers)))
+	/* only need to check for overlappign if this is a trigger (not a
+	 * selection) */
+	if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
 	{
-		if (trigger->pos < cur->pos)
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
 		{
-			if ((trigger->pos + trigger->len) < cur->pos)
-				break;
-			/* overlapping triggers */
-			DWARNING("Overlapping triggers are not allowed.\n");
-			DRETURN(DLEVEL_STABLE);
-		}
+			if (trigger->pos < cur->pos)
+			{
+				if ((trigger->pos + trigger->len) < cur->pos)
+					break;
+				/* overlapping triggers */
+				DWARNING("Overlapping triggers are not allowed.\n");
+				DRETURN(DLEVEL_STABLE);
+			}
 
-		if ((trigger->pos > (cur->pos + cur->len)))
-			continue;
+			if ((trigger->pos > (cur->pos + cur->len)))
+				continue;
 
-		/* do not allow overlapping triggers */
-		if ((trigger->pos >= cur->pos) && (trigger->pos <= (cur->pos + cur->len)))
-		{
-			DWARNING("Overlapping triggers are not allowed.\n");
-			DRETURN(DLEVEL_STABLE);
+			/* do not allow overlapping triggers */
+			if ((trigger->pos >= cur->pos) && (trigger->pos <= (cur->pos + cur->len)))
+			{
+				DWARNING("Overlapping triggers are not allowed.\n");
+				DRETURN(DLEVEL_STABLE);
+			}
 		}
 	}
 
@@ -2418,6 +2557,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 		ecore_list_destroy(t->triggers);
 		t->triggers = NULL;
 	}
+	t->selection = NULL;
 
 	ewl_text_btree_free(t->formatting);
 	t->formatting = NULL;
@@ -2434,6 +2574,94 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 	IF_FREE(t->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+{
+        Ewl_Text *t;
+        Ewl_Event_Mouse_Down *event;
+        unsigned int idx = 0;
+        unsigned int modifiers;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+
+        event = ev;
+        t = EWL_TEXT(w);
+
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+                                ewl_text_cb_mouse_move, NULL);
+        
+        idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+       
+        modifiers = ewl_ev_get_modifiers();
+        if (modifiers & EWL_KEY_MODIFIER_SHIFT)
+                ewl_text_selection_select_to(t->selection, idx);
+        else
+        {
+                ewl_text_trigger_start_pos_set(t->selection, idx);
+                ewl_text_trigger_base_set(t->selection, idx);
+                ewl_text_trigger_length_set(t->selection, 0);
+        }               
+        t->in_select = TRUE;
+
+	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+                
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}       
+
+void
+ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+{
+        Ewl_Text *t;
+        Ewl_Event_Mouse_Up *event;
+        unsigned int modifiers;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+
+        event = ev;
+        t = EWL_TEXT(w);
+
+        modifiers = ewl_ev_get_modifiers();
+        if (modifiers & EWL_KEY_MODIFIER_SHIFT)
+        {
+                unsigned int idx = 0;
+                idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+                ewl_text_selection_select_to(t->selection, idx);
+        }
+
+        ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
+        t->in_select = FALSE;
+
+	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+{
+        Ewl_Text *t;
+        Ewl_Event_Mouse_Move *event;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+
+        event = ev;
+        t = EWL_TEXT(w);
+
+        if (t->in_select)
+        {
+                unsigned int idx = 0;
+
+		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+                ewl_text_selection_select_to(t->selection, idx);
+		ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -2491,7 +2719,6 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 static Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
@@ -3957,7 +4184,7 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	DRETURN_PTR(area, DLEVEL_STABEL);
+	DRETURN_PTR(area, DLEVEL_STABLE);
 }
 
 int
@@ -3969,14 +4196,70 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 
 	if (!ewl_widget_init(EWL_WIDGET(area), 
 		((type == EWL_TEXT_TRIGGER_TYPE_SELECTION) 
-		 	? "selection" : "trigger")))
+		 	? "selection_area" : "trigger_area")))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
+
+	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
+		ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/*
+ * Selection stuff
+ */
+static void
+ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
+{
+        unsigned int start_pos;
+        unsigned int base;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("s", s);
+
+        base = ewl_text_trigger_base_get(s);
+        start_pos = ewl_text_trigger_start_pos_get(s);
+                                
+        if (idx <= start_pos)
+        {
+                if (idx < base)
+		{
+                	ewl_text_trigger_start_pos_set(s, idx);
+                        ewl_text_trigger_length_set(s, base - idx);
+		}
+                else    
+		{
+                	ewl_text_trigger_start_pos_set(s, base);
+                        ewl_text_trigger_length_set(s, idx - base);
+		}
+        }       
+        else
+	{
+                ewl_text_trigger_start_pos_set(s, base);
+                ewl_text_trigger_length_set(s, idx - base);
+	}
+        
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Text_Trigger *trig;
+	int tb_length;
+	unsigned int cur_idx = 0, cur_tb_idx = 0;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	trig = EWL_TEXT_TRIGGER(w);
+
+	tb_length = evas_object_textblock_length_get(trig->parent->textblock);
+	ewl_text_trigger_position(trig->parent, trig, tb_length, &cur_idx, &cur_tb_idx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 

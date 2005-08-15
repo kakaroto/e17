@@ -64,6 +64,7 @@ data {
 	item, "/progressbar/group" "progressbar";
 	item, "/radio/group" "radio";
 	item, "/scrollpane/group" "trough";
+	item, "/selection_area/group" "selection_area";
 	item, "/spacer/group" "spacer";
 	item, "/spinner/button_decrement/group" "vscroll-mini-down";
 	item, "/spinner/button_increment/group" "vscroll-mini-up";
@@ -122,6 +123,7 @@ collections {
 #include "default/bits/progressbar-groups.edc"
 #include "default/bits/radio-groups.edc"
 #include "default/bits/scrollbar-groups.edc"
+#include "default/bits/selection-groups.edc"
 #include "default/bits/stock-groups.edc"
 #include "default/bits/statusbar-groups.edc"
 #include "default/bits/tree-groups.edc"

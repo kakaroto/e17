@@ -57,6 +57,7 @@ struct Ewl_Text
 
 	Ecore_List		*triggers;	  /**< The list of triggers */
 	Ewl_Text_Trigger	*selection;	  /**< The current selection */
+	unsigned int		 in_select;	  /**< Are we in select mode? */
 };
 
 Ewl_Widget 	*ewl_text_new(const char *text);
@@ -75,6 +76,8 @@ void		 ewl_text_text_append(Ewl_Text *t, const char *text);
 void		 ewl_text_text_insert(Ewl_Text *t, const char *text, 
 							unsigned int idx);
 void		 ewl_text_text_delete(Ewl_Text *t, unsigned int length);
+
+char 		*ewl_text_selection_get(Ewl_Text *t);
 
 void		 ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos);
 unsigned int	 ewl_text_cursor_position_get(Ewl_Text *t);
@@ -185,6 +188,7 @@ struct Ewl_Text_Trigger
 	Ewl_Text_Trigger_Type 	 type;		/**< Trigger type */
 	unsigned int 		 pos;		/**< Trigger start position */
 	unsigned int 		 len;		/**< Trigger length */
+	unsigned int		 base;		/**< Used for the selection. Start position */
 
 	Ewl_Text		*parent;	/**< The parent text area */
 	Ecore_List		*areas;		/**< The list of objects making up the trigger */
@@ -202,6 +206,10 @@ Ewl_Text_Trigger_Type ewl_text_trigger_type_get(Ewl_Text_Trigger *t);
 void 		 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, 
 							unsigned int pos);
 unsigned int 	 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t);
+
+void 		 ewl_text_trigger_base_set(Ewl_Text_Trigger *t, 
+							unsigned int pos);
+unsigned int 	 ewl_text_trigger_base_get(Ewl_Text_Trigger *t);
 
 void 		 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, 
 							unsigned int len);
@@ -222,6 +230,10 @@ void ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_resize(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w);
@@ -230,6 +242,8 @@ void ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+
+void ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data);
 
 /*
  * Ewl_Text_Context stuff
@@ -372,6 +386,7 @@ typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
 struct Ewl_Text_Trigger_Area
 {
 	Ewl_Widget	widget;
+	unsigned int	deleted;
 };
 
 Ewl_Widget *ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type);

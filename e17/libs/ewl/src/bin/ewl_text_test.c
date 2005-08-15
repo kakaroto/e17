@@ -26,12 +26,6 @@ __trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	ewl_text_cursor_position_set(EWL_TEXT(t->parent), t->pos);
 	ewl_text_color_apply(EWL_TEXT(t->parent), 255, 0, 0, 255, t->len);
-
-#if 0
-	printf("DUMP\n");
-	ewl_text_btree_dump((EWL_TEXT(t->parent))->formatting, "");
-	printf("DUMP DONE\n");
-#endif
 }
 
 static void
@@ -43,6 +37,25 @@ __trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 
 	ewl_text_cursor_position_set(EWL_TEXT(t->parent), t->pos);
 	ewl_text_color_apply(EWL_TEXT(t->parent), 0, 0, 0, 255, t->len);
+}
+
+static void
+__key_press(Ewl_Widget *w __UNUSED__, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Key_Up *event;
+
+	event = ev;
+	if (!strcmp(event->keyname, "s"))
+	{
+		Ewl_Widget *t;
+		char *c;
+
+		t = ewl_widget_name_find("text");
+		c = ewl_text_selection_get(EWL_TEXT(t));
+
+		printf("Selection: (%s)\n", c);
+		FREE(c);
+	}
 }
 
 void
@@ -73,7 +86,10 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 					__close_main_window, NULL);
 	ewl_widget_show(win);
 
+	ewl_callback_append(win, EWL_CALLBACK_KEY_UP, __key_press, NULL);
+
 	o = ewl_text_new(NULL);
+	ewl_widget_name_set(o, "text");
 	ewl_container_child_append(EWL_CONTAINER(win), o);
 	ewl_text_bg_color_set(EWL_TEXT(o), 50, 50, 50, 255);
 
@@ -125,6 +141,8 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 0, 255);
 	ewl_text_text_append(EWL_TEXT(o), "And in red\n"); /* 11 */
 	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
+
+	ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. ");
 
         trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
