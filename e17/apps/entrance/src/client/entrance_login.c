@@ -42,7 +42,11 @@ main(int argc, char **argv)
 
    openlog("entrance_login", LOG_PID, LOG_DAEMON);
 
-   if ((argc != 2) && (argc != 4))
+#ifdef HAVE_PAM
+   if (argc != 4)
+#else
+   if (argc != 2)
+#endif
    {
       syslog(LOG_CRIT, "Wrong number of arguments: %d!", argc);
       return 0;
@@ -55,13 +59,10 @@ main(int argc, char **argv)
    }
 
    pid = atoi(argv[1]);
-   if (argc == 4)
-   {
-      user = argv[2];
-      display = argv[3];
-   }
+#if HAVE_PAM
+   user = argv[2];
+   display = argv[3];
 
-#ifdef HAVE_PAM
    if (user && display)
    {
       e = entrance_auth_new();
