@@ -1,16 +1,16 @@
 #ifndef _ENTRANCE_SESSION_H
 #define _ENTRANCE_SESSION_H
 
-#include<Edje.h>
-#include<Evas.h>
-#include<Ecore.h>
-#include<Ecore_X.h>
-#include<Ecore_Evas.h>
-#include<stdio.h>
-#include<limits.h>
-#include<string.h>
-#include<unistd.h>
-#include<syslog.h>
+#include <Edje.h>
+#include <Evas.h>
+#include <Ecore.h>
+#include <Ecore_X.h>
+#include <Ecore_Evas.h>
+#include <stdio.h>
+#include <limits.h>
+#include <string.h>
+#include <unistd.h>
+#include <syslog.h>
 /**
  * @file entrance_session.h
  * @brief Struct Definitions and shared function declarations
@@ -33,6 +33,7 @@ struct _Entrance_Session
    Evas_Object *session_container;
    Entrance_Auth *auth;         /* encapsulated auth info */
    Entrance_Config *config;     /* configuration options */
+   char *db;                    /* path to configuration db */
 
    int authed;                  /* whether or not the user has authenticated
                                    * or not */

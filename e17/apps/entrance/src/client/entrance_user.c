@@ -24,8 +24,8 @@ extern void user_unselected_cb(void *data, Evas_Object * o,
 /**
  * entrance_user_new - given a user, icon, and session, create a new
  * Entrance_User instance.  We don't copy the pointers here, simply use
- * them, it allows for us to pass in NULL, and easily use edb supplied data
- * w/o having to free it.
+ * them, it allows for us to pass in NULL, and easily use ecore_config
+ * supplied data w/o having to free it.
  * @param user - the user's user id on the system
  * @param icon - the user's "face" icon, an edje or eet
  * @param session - the key into the session hash that this user considers their

@@ -1,6 +1,6 @@
 #include "entrance.h"
 #include "entrance_session.h"
-#include <X11/Xlib.h>
+#include <Ecore_Config.h>
 #include <Esmart/Esmart_Container.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -35,15 +35,14 @@ Entrance_Session *
 entrance_session_new(const char *config, const char *display, int testing)
 {
    Entrance_Session *e;
-   char *db;
-
-   if (config)
-      db = strdup(config);
-   else
-      db = strdup(PACKAGE_CFG_DIR "/entrance_config.db");
 
    e = (Entrance_Session *) malloc(sizeof(struct _Entrance_Session));
    memset(e, 0, sizeof(struct _Entrance_Session));
+
+   if (config)
+      e->db = strdup(config);
+   else
+      e->db = strdup(PACKAGE_CFG_DIR "/entrance_config.cfg");
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
    if (!display)
@@ -59,16 +58,15 @@ entrance_session_new(const char *config, const char *display, int testing)
       e->display = strdup(display);
 
    e->auth = entrance_auth_new();
-   e->config = entrance_config_parse(db);
+   e->config = entrance_config_load(e->db);
    if (!e->config)
    {
-      fprintf(stderr, "Could not load %s\n", db);
-      syslog(LOG_CRIT, "Fatal Error: Unable to read config file %s.", db);
+      fprintf(stderr, "Could not load %s\n", e->db);
+      syslog(LOG_CRIT, "Fatal Error: Unable to read config file %s.", e->db);
       exit(EXITCODE);
    }
    e->session = strdup("");
    e->testing = testing;
-   free(db);
    return (e);
 }
 
@@ -137,6 +135,11 @@ entrance_session_free(Entrance_Session * e)
          entrance_config_free(e->config);
          e->config = NULL;
       }
+      if (e->db)
+      {
+         free(e->db);
+         e->db = NULL;
+      } 
       if (e->ee)
       {
          ecore_evas_hide(e->ee);
@@ -417,10 +420,15 @@ entrance_session_start_user_session(Entrance_Session * e)
              e->display);
    }
 #endif
+
+   _entrance_session_user_list_fix(e);
+   ecore_config_shutdown();
+
    /* avoid doubling up pam handles before the fork */
    pwent = struct_passwd_dup(e->auth->pw);
    entrance_auth_free(e->auth);
    e->auth = NULL;
+
    switch ((pid = fork()))
    {
      case 0:
@@ -450,7 +458,6 @@ entrance_session_start_user_session(Entrance_Session * e)
            snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
                     (int) pid);
         }
-        _entrance_session_user_list_fix(e);
         shell = strdup("/bin/sh");
         /* this bypasses a race condition where entrance loses its x
            connection before the wm gets it and x goes and resets itself */
@@ -732,10 +739,9 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
             {
                e->config->users.keys =
-                  evas_list_prepend(evas_list_remove
-                                    (e->config->users.keys, eu->name),
+                  evas_list_prepend(evas_list_remove(e->config->users.keys, eu->name),
                                     eu->name);
-               entrance_config_user_list_write(e->config);
+               entrance_config_user_list_save(e->config, e->db);
                return;
             }
          }
@@ -747,7 +753,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             evas_hash_add(e->config->users.hash, eu->name, eu);
          e->config->users.keys =
             evas_list_prepend(e->config->users.keys, eu->name);
-         entrance_config_user_list_write(e->config);
+         entrance_config_user_list_save(e->config, e->db);
       }
    }
 }

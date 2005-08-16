@@ -12,6 +12,7 @@
 #include <Edje.h>
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
+#include <Ecore_Config.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
@@ -142,8 +143,8 @@ focus_swap(Evas_Object * o, int selecto)
    }
    if (oo)
    {
-      selecto ? evas_object_focus_set(oo, 0) : evas_object_focus_set(o, 0);
-      selecto ? evas_object_focus_set(o, 1) : evas_object_focus_set(oo, 1);
+      selecto ? evas_object_focus_set(oo, 0) : evas_object_focus_set(oo, 1);
+      selecto ? evas_object_focus_set(o, 1) : evas_object_focus_set(o, 0);
    }
 }
 
@@ -628,6 +629,11 @@ main(int argc, char *argv[])
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
+   if (ecore_config_init("entrance") != ECORE_CONFIG_ERR_SUCC)
+   {
+      ecore_shutdown();
+      return -1;
+   }
    ecore_app_args_set(argc, (const char **) argv);
    
    /* Set locale to user's environment */
@@ -995,6 +1001,7 @@ main(int argc, char *argv[])
       edje_shutdown();
       ecore_evas_shutdown();
       ecore_x_shutdown();
+      ecore_config_shutdown();
       ecore_shutdown();
    }
    else

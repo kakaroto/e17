@@ -1,3 +1,5 @@
+#include <Ecore_Config.h>
+
 #include "entrance.h"
 #include "entrance_config.h"
 #include "entrance_user.h"
@@ -7,8 +9,6 @@
 @file entrance_config.c
 @brief System-wide configuration options for various settings in Entrance
 */
-
-#define REMEMBER_USERS 3
 
 Entrance_Config *
 entrance_config_new(void)
@@ -24,13 +24,46 @@ entrance_config_new(void)
 }
 
 /**
- * entrance_config_populate - populate the Entrance_Config struct with
- * the data provided by the valid E_DB_File
- * @param e Valid Entrance_Config struct
- * @param db a valid E_DB_File handle opened for reading
+ * _entrance_config_defaults_set - set default values for
+ * the Entrance_Config struct
  */
 static void
-entrance_config_populate(Entrance_Config * e, E_DB_File * db)
+_entrance_config_defaults_set()
+{
+   ecore_config_string_default("/entrance/theme", "default.edj");
+   ecore_config_string_default("/entrance/pointer", PACKAGE_DATA_DIR "/images/pointer.png");
+   ecore_config_string_default("/entrance/greeting/before", "Welcome to");
+   ecore_config_string_default("/entrance/greeting/after", "");
+   ecore_config_string_default("/entrance/date_format", "%x");
+   ecore_config_string_default("/entrance/time_format", "%X");
+
+   ecore_config_int_default("/entrance/autologin/mode", 0);
+   ecore_config_string_default("/entrance/autologin/user", "");
+
+   ecore_config_int_default("/entrance/user/remember", 1);
+   ecore_config_int_default("/entrance/user/remember_n", 5);
+   ecore_config_int_default("/entrance/user/count", 0);
+
+   ecore_config_int_default("/entrance/engine", 0);
+
+   ecore_config_int_default("/entrance/system/reboot", 1);
+   ecore_config_int_default("/entrance/system/halt", 1);
+
+   ecore_config_int_default("/entrance/session/count", 1);
+   ecore_config_string_default("/entrance/session/0/session", "default");
+   ecore_config_string_default("/entrance/session/0/title", "Default");
+   ecore_config_string_default("/entrance/session/0/icon", "default.png");
+
+   ecore_config_int_default("/entrance/auth", 1);
+}
+
+/**
+ * entrance_config_populate - populate the Entrance_Config struct with
+ * the data from ecore_config
+ * @param e Valid Entrance_Config struct
+ */
+static void
+entrance_config_populate(Entrance_Config *e)
 {
    Entrance_User *eu = NULL;
    char *user = NULL;
@@ -40,133 +73,74 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    char *title = NULL;
    Entrance_X_Session *exs;
 
-   char *str;
-   int i = 0, num_session = 0, num_user;
+   int i, num_session, num_user;
    char buf[PATH_MAX];
-   int num_fonts;
 
-   if ((!e) || (!db))
-      return;
+   if (!e) return;
 
    /* strings 'n things */
-   if ((str = e_db_str_get(db, "/entrance/theme")))
-      e->theme = str;
-   else
-      e->theme = strdup("default.edj");
+   e->theme = ecore_config_string_get("/entrance/theme");
+   e->pointer = ecore_config_string_get("/entrance/pointer");
+   e->before.string = ecore_config_string_get("/entrance/greeting/before");
+   e->after.string = ecore_config_string_get("/entrance/greeting/after");
+   e->date.string = ecore_config_string_get("/entrance/date_format");
+   e->time.string = ecore_config_string_get("/entrance/time_format");
 
-   if ((str = e_db_str_get(db, "/entrance/pointer")))
-      e->pointer = str;
-   else
-      e->pointer = strdup(PACKAGE_DATA_DIR "/images/pointer.png");
+   e->autologin.mode = ecore_config_int_get("/entrance/autologin/mode");
+   e->autologin.username = ecore_config_string_get("/entrance/autologin/user");
 
-   if ((str = e_db_str_get(db, "/entrance/greeting/before")))
-      e->before.string = str;
-   else
-      e->before.string = strdup("Welcome to ");
-   if ((str = e_db_str_get(db, "/entrance/greeting/after")))
-      e->after.string = str;
-   else
-      e->after.string = strdup("");
+   e->users.remember = ecore_config_int_get("/entrance/user/remember");
+   e->users.remember_n = ecore_config_int_get("/entrance/user/remember_n");
 
-   /* Use a boring default if there's no config for date/time */
-   if ((str = e_db_str_get(db, "/entrance/date_format")))
-      e->date.string = str;
-   else
-      /* e->date.string = strdup("%A %B %e, %Y"); */
-      e->date.string = strdup("%x");
+   e->engine = ecore_config_int_get("/entrance/engine");
 
-   if ((str = e_db_str_get(db, "/entrance/time_format")))
-      e->time.string = str;
-   else
-      /* e->time.string = strdup("%l:%M:%S %p"); */
-      e->time.string = strdup("%X");
+   e->reboot = ecore_config_int_get("/entrance/system/reboot");
+   e->halt = ecore_config_int_get("/entrance/system/halt");
 
-   if (e_db_int_get(db, "/entrance/autologin/mode", &e->autologin.mode))
+   num_user = ecore_config_int_get("/entrance/user/count");
+   for (i = 0; i < num_user; i++)
    {
-      if (e->autologin.mode > 0)
-         e->autologin.username = e_db_str_get(db, "/entrance/autologin/user");
-   }
-   /* ints */
-   if (!e_db_int_get(db, "/entrance/user/remember", &e->users.remember))
-      e->users.remember = 1;
-   if (!e_db_int_get(db, "/entrance/user/remember_n", &e->users.remember_n))
-      e->users.remember_n = 5;
-   if (!e_db_int_get(db, "/entrance/engine", &e->engine))
-      e->engine = 0;
-   if (!e_db_int_get(db, "/entrance/system/reboot", &(e->reboot)))
-      e->reboot = 0;
-   if (!e_db_int_get(db, "/entrance/system/halt", &(e->halt)))
-      e->halt = 0;
-   if (e_db_int_get(db, "/entrance/user/count", &num_user))
-   {
-      for (i = 0; i < num_user; i++)
+      snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+      if ((user = ecore_config_string_get(buf)))
       {
-         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
-         if ((user = e_db_str_get(db, buf)))
-         {
-            snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
-            icon = e_db_str_get(db, buf);
-            snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
-            session = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+         icon = ecore_config_string_get(buf);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+         session = ecore_config_string_get(buf);
+	    
+	    printf("%s %s %s\n", user, icon, session);
 
-            if ((eu = entrance_user_new(user, icon, session)))
-            {
-               e->users.hash = evas_hash_add(e->users.hash, user, eu);
-               e->users.keys = evas_list_append(e->users.keys, eu->name);
-            }
-            else
-            {
-               free(user);
-               if (icon)
-                  free(icon);
-               if (session)
-                  free(session);
-            }
+         if ((eu = entrance_user_new(user, icon, session)))
+         {
+            e->users.hash = evas_hash_add(e->users.hash, user, eu);
+            e->users.keys = evas_list_append(e->users.keys, eu->name);
          }
-      }
-      /* FIXME syslog(LOG_NORMAL, "Loaded %d users", num_user) */
-   }
-   else
-   {
-      syslog(LOG_WARNING, "Warning: No users found.");
-   }
-
-   /* session hash and font list */
-   if (e_db_int_get(db, "/entrance/session/count", &num_session))
-   {
-      for (i = 0; i < num_session; i++)
-      {
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
-         title = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
-         session = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
-         icon = e_db_str_get(db, buf);
-
-         if ((exs = entrance_x_session_new(title, icon, session)))
+         else
          {
-            e->sessions.keys = evas_list_append(e->sessions.keys, title);
-            e->sessions.hash =
-               evas_hash_add(e->sessions.hash, exs->name, exs);
+            free(user);
+            if (icon)
+               free(icon);
+            if (session)
+               free(session);
          }
       }
    }
-   /* 
-    * FIXME: With embedded fonts in your edjes, do we even wanna bother with
-    * the font path nightmare anymore ?  Unless we use etox or something ...
-    */
-   if (e_db_int_get(db, "/entrance/fonts/count", &num_fonts))
+
+   num_session = ecore_config_int_get("/entrance/session/count");
+   for (i = 0; i < num_session; i++)
    {
-      char *value = NULL;
+      snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
+      title = ecore_config_string_get(buf);
+      snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
+      session = ecore_config_string_get(buf);
+      snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
+      icon = ecore_config_string_get(buf);
 
-      for (i = 0; i < num_fonts; i++)
+      if ((exs = entrance_x_session_new(title, icon, session)))
       {
-         snprintf(buf, PATH_MAX, "/entrance/fonts/%d/str", i);
-         if ((value = e_db_str_get(db, buf)))
-         {
-            e->fonts = evas_list_append(e->fonts, value);
-         }
-
+         e->sessions.keys = evas_list_append(e->sessions.keys, title);
+         e->sessions.hash =
+            evas_hash_add(e->sessions.hash, exs->name, exs);
       }
    }
 
@@ -181,11 +155,8 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->display.h = 1;
 #endif
 
-
    /* auth info */
-
-   if (!e_db_int_get(db, "/entrance/auth", &(e->auth)))
-      e->auth = 0;
+   e->auth = ecore_config_int_get("/entrance/auth");
    if (e->auth != ENTRANCE_USE_PAM)
    {
       /* check whether /etc/shadow can be used for authentication */
@@ -214,20 +185,16 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
  * @return a valid Entrance_Config file, or NULL on error
  */
 Entrance_Config *
-entrance_config_parse(char *file)
+entrance_config_load(char *file)
 {
    Entrance_Config *e = NULL;
 
    if (file)
    {
-      E_DB_File *db;
-
-      if ((db = e_db_open_read(file)))
-      {
-         e = entrance_config_new();
-         entrance_config_populate(e, db);
-         e_db_close(db);
-      }
+      e = entrance_config_new();
+      _entrance_config_defaults_set();
+      ecore_config_file_load(file);
+      entrance_config_populate(e);
    }
    return (e);
 }
@@ -302,7 +269,7 @@ entrance_config_print(Entrance_Config * e)
 }
 
 void
-entrance_config_edb_save(Entrance_Config * e, E_DB_File * db)
+entrance_config_store(Entrance_Config *e)
 {
    int i = 0;
    char buf[PATH_MAX];
@@ -329,28 +296,28 @@ entrance_config_edb_save(Entrance_Config * e, E_DB_File * db)
 
    for (i = 0; i < ssize; i++)
    {
-      e_db_str_set(db, strings[i], values[i]);
+      ecore_config_string_set(strings[i], values[i]);
    }
    for (i = 0; i < intsize; i++)
    {
-      e_db_int_set(db, intstrings[i], intvalues[i]);
+      ecore_config_int_set(intstrings[i], intvalues[i]);
    }
    for (i = 0, l = e->users.keys; l; l = l->next, i++)
    {
       if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
       {
          snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
-         e_db_str_set(db, buf, eu->name);
+         ecore_config_string_set(buf, eu->name);
          snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
-         e_db_str_set(db, buf, eu->session);
+         ecore_config_string_set(buf, eu->session);
          snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
-         e_db_str_set(db, buf, eu->icon);
+         ecore_config_string_set(buf, eu->icon);
       }
       else
          i--;
    }
    snprintf(buf, PATH_MAX, "/entrance/user/count");
-   e_db_int_set(db, buf, i);
+   ecore_config_int_set(buf, i);
    for (i = 0, l = e->sessions.keys; l; l = l->next, i++)
    {
       if (l->data)
@@ -358,40 +325,25 @@ entrance_config_edb_save(Entrance_Config * e, E_DB_File * db)
          if ((exs = evas_hash_find(e->sessions.hash, (char *) l->data)))
          {
             snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
-            e_db_str_set(db, buf, exs->name);
+            ecore_config_string_set(buf, exs->name);
             snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
-            e_db_str_set(db, buf, exs->session);
+            ecore_config_string_set(buf, exs->session);
             snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
-            e_db_str_set(db, buf, exs->icon);
+            ecore_config_string_set(buf, exs->icon);
          }
       }
    }
    snprintf(buf, PATH_MAX, "/entrance/session/count");
-   e_db_int_set(db, buf, i);
+   ecore_config_int_set(buf, i);
 }
 
 int
-entrance_config_save(Entrance_Config * e, const char *file)
+entrance_config_save(Entrance_Config *e, const char *file)
 {
    if (file)
    {
-      char buf[PATH_MAX];
-      E_DB_File *db = NULL;
-
-      snprintf(buf, PATH_MAX, "%s.tmp.db", file);
-      if ((db = e_db_open(buf)))
-      {
-         entrance_config_edb_save(e, db);
-         e_db_close(db);
-         e_db_flush();
-         return (rename(buf, file));
-      }
-#if 0
-      else
-      {
-         entrance_config_print(e);
-      }
-#endif
+      entrance_config_store(e);
+      ecore_config_file_save(file);
    }
    return (1);
 }
@@ -429,70 +381,42 @@ entrance_config_free(Entrance_Config * e)
  * @e - a pointer to the config struct we want to write the user list for
  */
 void
-entrance_config_user_list_write(Entrance_Config * e)
+entrance_config_user_list_save(Entrance_Config * e, const char *file)
 {
    int i = 0;
    Evas_List *l = NULL;
-   E_DB_File *db = NULL;
    Entrance_User *eu = NULL;
-   char file[PATH_MAX], buf[PATH_MAX];
+   char buf[PATH_MAX];
 
-   snprintf(file, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
-   if (!e->users.remember)
-      return;
-/* FIXME: I guess we can't free up old strings like this. */
-#if 0
-   if ((db = e_db_open(file)))
+   if (!e->users.remember) return;
+
+   for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
+        l = l->next, i++)
    {
-      if ((old_keys = e_db_match_keys(db, "/entrance/user/", &count)))
+      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
       {
-         for (i = 0; i < count; i++)
+         if (eu->name)
          {
-            fprintf(stderr, "Nuking %s\n", old_keys[i]);
-            e_db_data_del(db, old_keys[i]);
-            free(old_keys[i]);
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+            ecore_config_string_set(buf, eu->name);
          }
-         free(old_keys);
-         e_db_close(db);
-         e_db_flush();
-      }
-   }
-#endif
-   if ((db = e_db_open(file)))
-   {
-      for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
-           l = l->next, i++)
-      {
-         if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+         if (eu->session)
          {
-            if (eu->name)
-            {
-               snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
-               e_db_str_set(db, buf, eu->name);
-            }
-            if (eu->session)
-            {
-               snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
-               e_db_str_set(db, buf, eu->session);
-            }
-            if (eu->icon)
-            {
-               snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
-               e_db_str_set(db, buf, eu->icon);
-            }
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+            ecore_config_string_set(buf, eu->session);
          }
-         else
-            i--;
+         if (eu->icon)
+         {
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+            ecore_config_string_set(buf, eu->icon);
+         }
       }
-      snprintf(buf, PATH_MAX, "/entrance/user/count");
-      e_db_int_set(db, buf, i);
-      e_db_close(db);
-      e_db_flush();
+      else
+         i--;
    }
-   else
-   {
-      fprintf(stderr, "Unable to open %s, sure you're root?", file);
-   }
+   snprintf(buf, PATH_MAX, "/entrance/user/count");
+   ecore_config_int_set(buf, i);
+   ecore_config_file_save(file);
 }
 
 #if 0

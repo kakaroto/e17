@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <string.h>
+#include <Ecore_Config.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Text_Entry.h>
@@ -785,7 +786,7 @@ _button_global_cb(void *data, Evas_Object * o, const char *emission,
       ecore_main_loop_quit();
    else if (!strcmp("ecco,button,global,save", emission))
    {
-      snprintf(buf, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
+      snprintf(buf, PATH_MAX, "%s/entrance_config.cfg", PACKAGE_CFG_DIR);
       if (!entrance_config_save(ecco.config, buf))
       {
          fprintf(stderr, "Wrote %s\n", buf);
@@ -1907,12 +1908,17 @@ main(int argc, char *argv[])
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
+   if (ecore_config_init("entrance") != ECORE_CONFIG_ERR_SUCC)
+   {
+      ecore_shutdown();
+      return -1;
+   }
    ecore_app_args_set(argc, (const char **) argv);
 
    if ((ecco.config =
-        entrance_config_parse(PACKAGE_CFG_DIR "/entrance_config.db")) == NULL)
+        entrance_config_load(PACKAGE_CFG_DIR "/entrance_config.cfg")) == NULL)
    {
-      fprintf(stderr, "Unable to open %s/entrance_config.db\n",
+      fprintf(stderr, "Unable to open %s/entrance_config.cfg\n",
               PACKAGE_CFG_DIR);
       exit(1);
    }
@@ -2033,6 +2039,7 @@ main(int argc, char *argv[])
 
       edje_shutdown();
       ecore_evas_shutdown();
+      ecore_config_shutdown();
       ecore_shutdown();
    }
    else

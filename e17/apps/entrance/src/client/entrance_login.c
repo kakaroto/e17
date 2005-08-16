@@ -33,10 +33,10 @@ int
 main(int argc, char **argv)
 {
    pid_t pid = -1;
-   char *user = NULL;
-   char *display = NULL;
 
 #ifdef HAVE_PAM
+   char *user = NULL;
+   char *display = NULL;
    Entrance_Auth *e = NULL;
 #endif
 

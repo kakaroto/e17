@@ -5,7 +5,6 @@
  * @brief Struct Definitions and shared function declarations
  */
 #include "../config.h"
-#include <Edb.h>
 #include <Evas.h>
 #include <stdio.h>
 #include <string.h>
@@ -123,11 +122,11 @@ struct _Entrance_Config
 
 typedef struct _Entrance_Config Entrance_Config;
 
-Entrance_Config *entrance_config_parse(char *file);
+Entrance_Config *entrance_config_load(char *file);
 void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
-void entrance_config_user_list_write(Entrance_Config * e);
-int entrance_config_save(Entrance_Config * e, const char *file);
+void entrance_config_user_list_save(Entrance_Config * e, const char *file);
+int  entrance_config_save(Entrance_Config * e, const char *file);
 
 #endif
