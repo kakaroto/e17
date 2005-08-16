@@ -16,10 +16,11 @@
  */
 
 /* Make a static hash to look up the context's. They can be shared between
- * the differetn text blocks. Just need to ref count them so we know when
+ * the different text blocks. Just need to ref count them so we know when
  * they can be destroyed
  */
 static Ecore_Hash *context_hash = NULL;
+
 static void ewl_text_context_cb_free(void *data);
 static int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 static void ewl_text_context_print(Ewl_Text_Context *tx, char *indent);
@@ -244,6 +245,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	int tb_idx, i = 0;
 	unsigned int idx = 0;
 	char *ptr;
+	Evas_Coord tcx, tcw;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
@@ -256,7 +258,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	tb_idx = evas_object_textblock_char_coords_get(t->textblock,
 			(Evas_Coord)(x - CURRENT_X(t)),
 			(Evas_Coord)(y - CURRENT_Y(t)), 
-			NULL, NULL, NULL, NULL);
+			&tcx, NULL, &tcw, NULL);
 
 	/* if this is less then 0 then we clicked off of one end of the
 	 * textblock or the other. if the click position is inside the size
@@ -278,6 +280,18 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			DRETURN_INT(t->length, DLEVEL_STABLE);
 		}
 	}
+	else
+	{
+		Evas_Coord xpos;
+
+		xpos = (Evas_Coord)(x - CURRENT_X(t));
+
+		/* if we clicked on the right side of the char move us over
+		 * to next index over */
+		if (xpos > (tcx + (tcw / 2)))
+			tb_idx ++;
+	}
+
 	idx = tb_idx;
 
 	/* need to add \n \r \t stuff back into the count */
