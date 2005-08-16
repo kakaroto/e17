@@ -1,5 +1,18 @@
 #include <evfs.h>
 
+void callback(evfs_event* data) {
+
+	if (data->type == EVFS_EV_REPLY) {
+		switch (data->sub_type) {
+			case EVFS_EV_SUB_MONITOR_NOTIFY:
+				printf("DEMO: Received a file monitor notification\n");
+				printf("DEMO: For file: '%s'\n", data->data);
+		}
+	}
+
+	/*TODO : Free event*/
+}
+
 int main() {
 	evfs_connection* con;
 	evfs_file_uri_path* path;
@@ -8,7 +21,7 @@ int main() {
 	
 	printf("EVFS Demo system..\n");
 
-	con = evfs_connect();
+	con = evfs_connect(&callback);
 
 	path = evfs_parse_uri("posix:///dev/ttyS0");
 

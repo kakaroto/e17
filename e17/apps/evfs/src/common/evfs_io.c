@@ -24,20 +24,42 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 
 void evfs_event_client_id_notify(evfs_client* client) {
 
-	printf("Notifying client of id %ld\n", client->id);
+	/*printf("Notifying client of id %ld\n", client->id);*/
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_NOTIFY_ID,0,0,0,0,&client->id, sizeof(long)));	
 }
 
 
 void evfs_write_event(evfs_client* client, evfs_event* event) {
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,event->data, event->data_len));
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_SUB_TYPE,client->id,0,0,&event->sub_type, sizeof(evfs_eventtype_sub)));
+	
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_DATA,client->id,0,0,event->data, event->data_len));
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_END,client->id,0,0,NULL,0));	
 
 	
 }
 
 
-void evfs_read_event(evfs_connection* conn, evfs_event* event) {
+int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
+	switch (msg->minor) {
+		case EVFS_EV_PART_TYPE:
+			memcpy(&event->type, msg->data, sizeof(evfs_eventtype));
+			break;
+		case EVFS_EV_PART_SUB_TYPE:
+			memcpy(&event->sub_type, msg->data, sizeof(evfs_eventtype_sub));
+			break;
+		case EVFS_EV_PART_DATA:
+			event->data = malloc(msg->len);
+			event->data_len = msg->len;
+			memcpy(event->data, msg->data, msg->len);
+			break;
+		case EVFS_EV_PART_END:
+			return TRUE;
+			break;
+	}
+
+	return FALSE;
+
 }
 
 
@@ -58,7 +80,6 @@ void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_mes
 
 	LOCK(&ipc_server_mutex);
 
-	printf("Writing message to client %p\n", client);
 	ecore_ipc_client_send(client, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
         free(msg);
 
@@ -85,11 +106,8 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	int i;
 	char uri[1024];
 	
-	printf("Writing a file command..\n");
 
 	/*Write the command type structure*/
-	printf("Command is %p\n", command);
-	printf("Connserver is %p\n", conn->server);
 	evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,&command->type, sizeof(evfs_command_type)));
 
 	/*Write the files*/
@@ -125,14 +143,12 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 				command->file_command.files = malloc(sizeof(evfs_filereference*));
 				command->file_command.files[0] = path->files[0];
 
-				printf("Got a file: %s %s\n", command->file_command.files[0]->plugin_uri, command->file_command.files[0]->path);
 				free(path);
 			} else {
 				printf("we already have %d files\n", command->file_command.num_files);
 				/*TODO Handle multiple files*/
 			}
 						  
-			printf("This is a file reference\n");
 			
 			
 			break;

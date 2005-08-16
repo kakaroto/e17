@@ -114,6 +114,8 @@ ipc_client_data(void *data, int type, void *event)
 
 
    client = evfs_client_get(e->client);
+
+   printf("Got a message from client id %ld\n", client->id);
    
    if (!client->prog_command) {
 	   client->prog_command = evfs_command_new();

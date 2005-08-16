@@ -57,14 +57,14 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 {
 	Ecore_List* mon_list;
 	
-	printf("Got an event for %s..", path);
+	/*printf("Got an event for %s..", path);*/
 
 	switch (event) {
 		case ECORE_FILE_EVENT_MODIFIED:
-			printf("A modified event..\n");
+			/*printf("A modified event..\n");*/
 			break;
 		case ECORE_FILE_EVENT_CREATED_FILE:
-			printf("File created - '%s'\n", path);
+			/*printf("File created - '%s'\n", path);*/
 			break;
 	}
 
@@ -72,7 +72,13 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 	mon_list = ecore_hash_get(posix_monitor_hash, (char*)data);
 
 	if (mon_list) {
-		printf("Notifying watchers..\n");
+		evfs_file_monitor* mon;
+		
+		ecore_list_goto_first(mon_list);
+		while ((mon = ecore_list_next(mon_list))) {
+			/*printf ("  Notifying client at id %ld\n", mon->client->id);*/
+			evfs_file_monitor_event_create(mon->client, path);
+		}
 	}
 		
 		
@@ -90,7 +96,7 @@ void posix_monitor_add(evfs_client* client, evfs_command* command) {
 
 	/*Check if we are already monitoring, if not, make a new list of monitors..*/
 	if (!mon_list) {
-		printf("No previous instance, making a new list, monitoring..\n");
+		/*printf("No previous instance, making a new list, monitoring..\n");*/
 
 		mon_list = ecore_list_new();
 		ecore_hash_set(posix_monitor_hash, mon->monitor_path, mon_list);
@@ -107,7 +113,7 @@ void posix_monitor_add(evfs_client* client, evfs_command* command) {
 void evfs_monitor_start(evfs_client* client, evfs_command* command) {
 	
 	
-	printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path );
+	/*printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path );*/
 	posix_monitor_add(client, command);
 	 
 }

@@ -106,12 +106,15 @@ typedef enum evfs_eventtype_sub {
 
 typedef enum evfs_eventpart {
 	EVFS_EV_PART_TYPE = 1,
-	EVFS_EV_PART_DATA = 2
+	EVFS_EV_PART_SUB_TYPE = 2,
+	EVFS_EV_PART_DATA = 3,
+	EVFS_EV_PART_END = 1000
 } evfs_eventpart;
 
 typedef struct evfs_event evfs_event;
 struct evfs_event {
 	evfs_eventtype type;
+	evfs_eventtype_sub sub_type;
 	void* data;
 	int data_len;
 };
@@ -127,7 +130,7 @@ struct evfs_connection {
 
 void evfs_cleanup_client(evfs_client* client);
 void evfs_disconnect(evfs_connection* connection);
-evfs_connection* evfs_connect();
+evfs_connection* evfs_connect(void (*callback_func)(void*));
 evfs_file_uri_path* evfs_parse_uri(char* uri);
 void evfs_handle_command(evfs_client* client, evfs_command* command);
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command);
@@ -140,5 +143,6 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_cleanup.h>
 #include <evfs_io.h>
 #include <evfs_new.h>
+#include <evfs_event_helper.h>
 
 #endif

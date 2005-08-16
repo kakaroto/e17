@@ -11,7 +11,8 @@ POSIX_L = posix.la
 pkg_LTLIBRARIES         = $(POSIX_L)
 
 posix_la_SOURCES = evfs_fs_posix.c \
-			../common/evfs_debug.c
+			../common/evfs_debug.c \
+			../common/evfs_event_helper.c
 posix_la_CFLAGS =  @ecore_cflags@
 posix_la_LDFLAGS = -no-undefined -module -avoid-version
 posix_la_LIBADD =  @ecore_libs@

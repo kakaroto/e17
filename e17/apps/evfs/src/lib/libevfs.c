@@ -18,8 +18,6 @@ evfs_connection* evfs_get_connection_for_id(int id) {
 }
 
 int evfs_server_data (void* data, int type, void* event) {
-	printf("Got message from server %d..\n", ((Ecore_Ipc_Event_Server_Data*)event)->major);
-
    Ecore_Ipc_Event_Server_Data *e;
    if ((e = (Ecore_Ipc_Event_Server_Data *) event)) {
 	   /*Special case, if it's an id notify, we can't really id the client without it*/
@@ -36,7 +34,6 @@ int evfs_server_data (void* data, int type, void* event) {
 			   /*We have a client, let's see if it needs an id*/
 			   if (client->id == MAX_CLIENT) {
 				   memcpy(&client->id, e->data, sizeof(unsigned long));
-				   printf("This client is assigned id %ld\n", client->id);
 			   } else {
 				   printf(stderr, "Error, client already has an assigned id.  Dropped packet?\n");
 				   return 1;
@@ -52,21 +49,47 @@ int evfs_server_data (void* data, int type, void* event) {
 		    */
 
 		   evfs_connection* conn = evfs_get_connection_for_id(e->ref);
+
+		   if (conn) {
+			   ecore_ipc_message *msg = ecore_ipc_message_new(e->major, e->minor, e->ref, e->ref_to, e->response, e->data, e->size);
+			   
+			   if (conn->prog_event == NULL) {
+				   /*We haven't started an event yet - make a new one*/
+				   conn->prog_event = NEW(evfs_event);
+			   }
+
+			   if (evfs_read_event(conn->prog_event, msg)) {
+				   /*True return == Event fully read*/
+
+				   /*Execute callback if registered..*/
+				   if (conn->callback_func) {
+					   evfs_event* ev = conn->prog_event;
+					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
+								      
+					   (*conn->callback_func)(ev);
+				   } else {
+					   printf("EVFS: Alert - no callback registered for event\n");
+				   }
+				   
+			   }
+		   } else {
+			   printf(stderr, "EVFS: Could not find connection for clientId\n");
+		   }
 	   }
    }
 }
 
-evfs_connection* evfs_connect() {
+evfs_connection* evfs_connect(void (*callback_func)(void*)) {
 	ecore_init();
 	ecore_ipc_init();
 	
 	evfs_connection* connection = NEW(evfs_connection);
 	connection->id = MAX_CLIENT;
 	connection->prog_event = NULL;
+	connection->callback_func = callback_func;
 
         if (!libevfs_registered_callback) {
 		libevfs_registered_callback = 1;
-		fprintf(stderr, "Registering callback at client..\n");
 	       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, evfs_server_data, NULL); 
 	       client_list = ecore_list_new();
 
