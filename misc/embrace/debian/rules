@@ -64,7 +64,6 @@ install: build
 	dh_installdirs
 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)
-	mv $(CURDIR)/debian/$(package)/usr/share/create_embrace_cfg.sh $(CURDIR)/debian/$(package)/usr/share/embrace/
 
 
 # Build architecture-independent files here.
