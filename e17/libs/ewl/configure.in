@@ -55,42 +55,6 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-EDB_CONFIG="edb-config"
-AC_ARG_WITH(edb-config,
-[  --with-edb-config=FILE   edb-config script to use (eg /usr/bin/edb-config)],
-[
-   EDB_CONFIG=$withval
-   AC_CHECK_PROG(EDB_CONFIG_IN_PATH, $EDB_CONFIG, yes, no)
-   if test $EDB_CONFIG_IN_PATH = no; then
-      echo "ERROR:"
-      echo "The edb-config development script you specified:"
-      echo "$EDB_CONFIG"
-      echo "was not found.  Please check the path and make sure "
-      echo "the script exists and is executable."
-      AC_MSG_ERROR([Fatal Error: no edb-config detected.])
-   fi
-],
-[
-  AC_CHECK_PROG(EDB_CONFIG_IN_PATH, $EDB_CONFIG, yes, no)
-  if test $EDB_CONFIG_IN_PATH = no; then
-    echo "ERROR:"
-    echo "The edb-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the edb-devel (or edb-dev)"
-    echo "   packages."
-    echo "2. You may have edb installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the edb-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-edb-config."
-    AC_MSG_ERROR([Fatal Error: no edb-config detected.])
-  fi
-])
-
-edb_cflags=`$EDB_CONFIG --cflags`
-edb_libs=`$EDB_CONFIG --libs`
-
 EVAS_CONFIG="evas-config"
 AC_ARG_WITH(evas-config,
 [  --with-evas-config=FILE   evas-config script to use (eg /usr/bin/evas-config)],
@@ -232,7 +196,7 @@ AC_ARG_WITH(emotion-config,
   fi
 ])
 
-requirements="evas ecore edb edje"
+requirements="evas ecore edje"
 
 CFLAGS=$emotion_cflags" "$CFLAGS
 if test "x$EMOTION_CONFIG_IN_PATH" = "xyes"; then
@@ -253,9 +217,6 @@ AC_SUBST(BUILD_EMOTION_SUPPORT_TRUE)
 AC_SUBST(BUILD_EMOTION_SUPPORT_FALSE)
 
 CFLAGS=$PCFLAGS
-
-AC_SUBST(edb_cflags)
-AC_SUBST(edb_libs)
 
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
@@ -280,8 +241,6 @@ src/Makefile
 src/bin/Makefile
 src/lib/Ewl.h
 src/lib/Makefile
-tools/Makefile
-tools/ewl_edb_ed/Makefile
 data/Makefile
 data/themes/Makefile
 ], [

@@ -13,9 +13,9 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
-BuildRequires: embryo-devel eet-devel edb-devel ecore-devel
+BuildRequires: embryo-devel eet-devel ecore-devel
 BuildRequires: evas-devel etox-devel edje-devel emotion-devel
-Requires: edb ecore evas etox edje embryo eet
+Requires: ecore evas etox edje embryo eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -26,7 +26,7 @@ Summary: EWL headers and development libraries.
 Group: Development/Libraries
 Requires: %{name} = %{version}
 Requires: libjpeg-devel XFree86-devel
-Requires: embryo-devel eet-devel edb-devel ecore-devel
+Requires: embryo-devel eet-devel ecore-devel
 Requires: evas-devel etox-devel edje-devel
 
 %description devel
@@ -57,7 +57,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING* NEWS README TODO
 %{_libdir}/libewl.so.*
 %{_libdir}/libewl.la
-%{_bindir}/ewl_edb_ed
 %{_datadir}/ewl
 
 %files devel

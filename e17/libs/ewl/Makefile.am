@@ -1,7 +1,7 @@
 
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data tools
+SUBDIRS = src data
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		   config.h.in config.sub configure install-sh \
