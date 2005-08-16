@@ -2,7 +2,7 @@ Source: entrance
 Section: x11
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libedb1-dev, libevas0-dev, libecore0-dev, libedje0-dev, libpam0g-dev | libpam-dev, debhelper (>> 4.0.0)
+Build-Depends: libevas0-dev, libecore0-dev, libedje0-dev, libpam0g-dev | libpam-dev, debhelper (>> 4.0.0)
 Standards-Version: 3.6.1.0
 
 Package: entrance

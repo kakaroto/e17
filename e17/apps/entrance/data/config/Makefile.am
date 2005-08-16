@@ -1,4 +1,4 @@
-DB = entrance_config.db
+DB = entrance_config.cfg
 SCRIPT = build_config.sh
 
 CLEANFILES = $(DB)

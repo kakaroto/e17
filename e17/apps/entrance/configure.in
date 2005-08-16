@@ -41,10 +41,6 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_ARG_WITH(edb,
-	[ --with-edb=DIR		use edb in <DIR>],
-	[ CFLAGS="$CFLAGS -I$withval/include"
-	LIBS="-L$withval/lib $LIBS"])
 AC_ARG_WITH(evas,
 	[ --with-evas=DIR		use evas in <DIR>],
 	[ CFLAGS="$CFLAGS -I$withval/include"
@@ -58,80 +54,61 @@ AC_ARG_WITH(edje,
 	[ CFLAGS="$CFLAGS -I$withval/include"
 	LIBS="-L$withval/lib $LIBS"])
 
-AC_PATH_GENERIC(edb, 1.0.3, [
-	AC_SUBST(edb_libs)
-	AC_SUBST(edb_cflags) ],
-	AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
-edb_libs=`edb-config --libs`
-edb_cflags=`edb-config --cflags`
-AC_SUBST(edb_libs)
-AC_SUBST(edb_cflags)
-
-AC_PATH_GENERIC(evas, 1.0.0, [
-	AC_SUBST(evas_libs)
-	AC_SUBST(evas_cflags) ],
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
-
-AC_SUBST(evas_libs)
+AC_ARG_WITH(evas-config,
+[  --with-evas-config=EVAS_CONFIG    use evas-config specified ],
+[
+  EVAS_CONFIG=$withval;
+  echo "using "$EVAS_CONFIG" for evas-config";
+],[
+  PROG="evas-config";
+  AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
+])
+evas_cflags=`$EVAS_CONFIG --cflags`
+evas_libs=`$EVAS_CONFIG --libs`
 AC_SUBST(evas_cflags)
+AC_SUBST(evas_libs)
 
-have_ecore=no
-AC_CHECK_HEADER(Ecore.h,, 
-   AC_MSG_ERROR([Ecore.h not found! Have you installed Ecore?]))
-AC_CHECK_LIB(ecore, ecore_list_new, 
-   [have_ecore=yes],
-   AC_MSG_ERROR([Ecore check failed! Make sure you have the latest version of Ecore installed.]))
-
-have_ecore_evas=no
-AC_CHECK_HEADER(Ecore_Evas.h,,
-   AC_MSG_ERROR([Ecore_Evas.h not found! Did you compile Ecore with Evas support?]))
-
-AC_CHECK_LIB(ecore_evas, ecore_evas_init, [
-	have_ecore_evas=yes],
-   AC_MSG_ERROR([Cannot find Ecore_Evas!]))
-
-have_ecore_software_x11=no
-AC_CHECK_LIB(ecore_evas, ecore_evas_software_x11_new, [
-    have_ecore_software_x11=yes],
-    AC_MSG_ERROR([Ecore_Evas does not have Software/X11 support!]))
-
-have_ecore_gl_x11=no
-AC_CHECK_LIB(ecore_evas, ecore_evas_gl_x11_new, [
-    have_ecore_gl_x11=yes
-    AC_DEFINE(HAVE_ECORE_GL_X11, 1, [OpenGL support])])
-
-have_ecore_ipc=no
-AC_CHECK_HEADER(Ecore_Ipc.h,,
-    AC_MSG_ERROR([Ecore_Ipc.h not found! Did you compile Ecore with IPC support?]))
-
-AC_CHECK_LIB(ecore_ipc, ecore_ipc_init, [
-    have_ecore_ipc=yes],
-    AC_MSG_ERROR([Cannot find Ecore_Ipc!]))
-
-ecore_cflags=`ecore-config --cflags`
-ecore_libs=`ecore-config --libs`
-AC_SUBST(ecore_libs)
+AC_ARG_WITH(ecore-config,
+[  --with-ecore-config=ECORE_CONFIG  use ecore-config specified ],
+[
+  ECORE_CONFIG=$withval;
+  echo "using "$ECORE_CONFIG" for ecore-config";
+],[
+  PROG="ecore-config";
+  AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
+])
+ecore_cflags=`$ECORE_CONFIG --cflags`
+ecore_libs=`$ECORE_CONFIG --libs`
 AC_SUBST(ecore_cflags)
+AC_SUBST(ecore_libs)
 
-AC_PATH_GENERIC(edje, 0.5.0, [
-	AC_SUBST(edje_libs)
-	AC_SUBST(edje_cflags) ],
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
-AC_SUBST(edje_libs)
+AC_ARG_WITH(edje-config,
+[  --with-edje-config=EDJE_CONFIG    use edje-config specified ],
+[
+  EDJE_CONFIG=$withval;
+  echo "using "$EDJE_CONFIG" for edje-config";
+],[
+  PROG="edje-config";
+  AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
+])
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
 
-AC_PATH_GENERIC(esmart, 0.9.0, [
-	AC_SUBST(esmart_libs)
-	AC_SUBST(esmart_cflags) ],
-	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
-esmart_libs=`esmart-config --libs`
-esmart_cflags=`esmart-config --cflags`
-AC_SUBST(esmart_libs)
+AC_ARG_WITH(esmart-config,
+[  --with-esmart-config=ESMART_CONFIG    use esmart-config specified ],
+[
+  ESMART_CONFIG=$withval;
+  echo "using "$ESMART_CONFIG" for esmart-config";
+],[
+  PROG="esmart-config";
+  AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
+])
+esmart_cflags=`$ESMART_CONFIG --cflags`
+esmart_libs=`$ESMART_CONFIG --libs`
 AC_SUBST(esmart_cflags)
+AC_SUBST(esmart_libs)
 
 have_clearenv=no
 AC_CHECK_LIB(c, clearenv, [

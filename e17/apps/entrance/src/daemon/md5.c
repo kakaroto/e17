@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>		/* for memcpy() */
 #include "md5.h"
 

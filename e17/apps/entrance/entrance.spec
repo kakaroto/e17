@@ -39,7 +39,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files                                           
 %defattr(-, root, root)                          
 %doc AUTHORS COPYING* README
-%{_sysconfdir}/entrance_config.db
+%{_sysconfdir}/entrance_config.cfg
 %{_sysconfdir}/init.d/entrance
 %{_sysconfdir}/pam.d/entrance
 %{_bindir}/entrance

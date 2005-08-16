@@ -47,9 +47,9 @@ monitor. Run "entrance" instead.
 To set up your sessions, edit the build_config.sh script in the data/config
 directory before compiling to specify the names of the X sessions on your 
 machine. After installation, you will need to directly edit
-/etc/entrace_config.db using an EDB editor like edb_gtk_ed.  The default 
-sessions are designed to work on a Debian 3.0 installation, so you will 
-likely need to update your db before Entrance can work for you. While 
+/etc/entrace_config.cfg using an ecore_config editor like ecore_config. The
+default sessions are designed to work on a Debian 3.0 installation, so you
+will likely need to update your db before Entrance can work for you. While 
 adding sessions, please note that:
 
 - A session without a path is assumed to be an Xsession name, and will be
