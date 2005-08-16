@@ -1,8 +1,7 @@
 #ifndef __EVFS_IO_H_
 #define __EVFS_IO_H_
 
-void evfs_write_command(evfs_connection* conn, evfs_command* command);
-void evfs_write_file_command(evfs_connection* conn, evfs_command* command);
+
 
 typedef struct ecore_ipc_message ecore_ipc_message;
 struct ecore_ipc_message {
@@ -35,5 +34,12 @@ typedef enum EVFS_IO_PART_TYPE {
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len);
 int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* message);
 void evfs_write_command_end(evfs_connection* conn);
+void evfs_write_command(evfs_connection* conn, evfs_command* command);
+void evfs_write_file_command(evfs_connection* conn, evfs_command* command);
+void evfs_event_client_id_notify(evfs_client* client);
+
+void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_message* msg);
+void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server* server, ecore_ipc_message* msg);
+
 
 #endif

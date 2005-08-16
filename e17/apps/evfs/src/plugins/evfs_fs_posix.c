@@ -40,8 +40,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 
 
+Ecore_Hash* posix_monitor_hash;
 
-
+void evfs_plugin_init() {
+	posix_monitor_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+}
 
 char* evfs_plugin_uri_get() {
 	return "posix";
@@ -52,6 +55,8 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 					  Ecore_File_Event event,
 					  const char *path)
 {
+	Ecore_List* mon_list;
+	
 	printf("Got an event for %s..", path);
 
 	switch (event) {
@@ -62,10 +67,40 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 			printf("File created - '%s'\n", path);
 			break;
 	}
+
+	/*Looking for ppl no notify*/
+	mon_list = ecore_hash_get(posix_monitor_hash, (char*)data);
+
+	if (mon_list) {
+		printf("Notifying watchers..\n");
+	}
 		
 		
 
 	
+}
+
+void posix_monitor_add(evfs_client* client, evfs_command* command) {
+	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
+	evfs_file_monitor* mon;
+
+	mon = NEW(evfs_file_monitor);
+	mon->client = client;
+	mon->monitor_path = strdup(command->file_command.files[0]->path);
+
+	/*Check if we are already monitoring, if not, make a new list of monitors..*/
+	if (!mon_list) {
+		printf("No previous instance, making a new list, monitoring..\n");
+
+		mon_list = ecore_list_new();
+		ecore_hash_set(posix_monitor_hash, mon->monitor_path, mon_list);
+		ecore_file_monitor_add(mon->monitor_path, &evfs_file_monitor_fam_handler, mon->monitor_path);
+
+		ecore_list_append(mon_list,mon);
+	} else {
+		ecore_list_append(mon_list, mon);
+	}
+		
 }
 
 
@@ -73,8 +108,8 @@ void evfs_monitor_start(evfs_client* client, evfs_command* command) {
 	
 	
 	printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path );
-
-	ecore_file_monitor_add(strdup(command->file_command.files[0]->path), &evfs_file_monitor_fam_handler, client); 
+	posix_monitor_add(client, command);
+	 
 }
 
 

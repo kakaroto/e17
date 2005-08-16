@@ -1,6 +1,7 @@
 #include <evfs.h>
 
 static pthread_mutex_t ipc_client_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t ipc_server_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len) {
@@ -21,6 +22,27 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 }
 
 
+void evfs_event_client_id_notify(evfs_client* client) {
+
+	printf("Notifying client of id %ld\n", client->id);
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_NOTIFY_ID,0,0,0,0,&client->id, sizeof(long)));	
+}
+
+
+void evfs_write_event(evfs_client* client, evfs_event* event) {
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,event->data, event->data_len));
+
+	
+}
+
+
+void evfs_read_event(evfs_connection* conn, evfs_event* event) {
+}
+
+
+
+
 /*Writers*/
 void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server* server, ecore_ipc_message* msg) {
 
@@ -31,6 +53,18 @@ void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server* server, ecore_ipc_mes
 
 	UNLOCK(&ipc_client_mutex);
 }
+
+void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_message* msg) {
+
+	LOCK(&ipc_server_mutex);
+
+	printf("Writing message to client %p\n", client);
+	ecore_ipc_client_send(client, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
+        free(msg);
+
+	UNLOCK(&ipc_server_mutex);
+}
+
 
 
 void evfs_write_command(evfs_connection* conn, evfs_command* command) {

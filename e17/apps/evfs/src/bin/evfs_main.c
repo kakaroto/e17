@@ -56,6 +56,12 @@ evfs_plugin* evfs_get_plugin_for_uri(char* uri_base) {
 	return ecore_hash_get(server->plugin_uri_hash, uri_base);
 }
 
+unsigned long evfs_server_get_next_id(evfs_server* serve) {
+	serve->clientCounter++;
+	printf("Allocated %ld\n", serve->clientCounter-1);
+	return serve->clientCounter-1;
+}
+
 int
 ipc_client_add(void *data, int type, void *event)
 {
@@ -69,9 +75,12 @@ ipc_client_add(void *data, int type, void *event)
       client = NEW(evfs_client);
       client->client = e->client;
       client->prog_command = NULL;
+      client->id = evfs_server_get_next_id(server);
       ecore_hash_set(server->client_hash, client->client, client);
 
       server->num_clients++;
+
+      evfs_event_client_id_notify(client);
 
       
       return (1);
@@ -164,6 +173,7 @@ evfs_plugin* evfs_load_plugin(char* filename) {
 	evfs_plugin* plugin = NEW(evfs_plugin);
 
 	char* (*evfs_plugin_uri_get)();
+	void (*evfs_plugin_init)();
 
 	printf("Loading plugin: %s\n", filename);	
 	plugin->dl_ref = dlopen(filename, RTLD_LAZY);
@@ -173,6 +183,12 @@ evfs_plugin* evfs_load_plugin(char* filename) {
 		if (evfs_plugin_uri_get) {
 			plugin->uri = (*evfs_plugin_uri_get)();			
 			printf("The plugin at '%s' handles '%s'\n", filename, plugin->uri);
+
+			/*Execute the init function, if it's there..*/
+			evfs_plugin_init = dlsym(plugin->dl_ref, "evfs_plugin_init");	
+			if (evfs_plugin_init) {
+				(*evfs_plugin_init)();
+			}
 		} else {
 			printf("Error - plugin file does not contain uri identify function - %s\n", filename);
 			goto exit_error;
@@ -231,6 +247,7 @@ int main(int argc, char** argv) {
 	server = NEW(evfs_server);
 	server->client_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	server->clientCounter = 0;
 
 	/*Load the plugins*/
 	evfs_load_plugins();
