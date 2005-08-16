@@ -57,7 +57,11 @@ struct evfs_file_uri_path {
 /*Command structures*/
 typedef enum evfs_command_type
 {
-  EVFS_CMD_STARTMON_FILE = 1 
+  EVFS_CMD_STARTMON_FILE = 1 ,
+  EVFS_CMD_STOPMON_FILE = 2,
+  EVFS_CMD_COPY_FILE = 3,
+  EVFS_CMD_MOVE_FILE = 4,
+  EVFS_CMD_LIST_DIR = 5
 }
 evfs_command_type;
 
@@ -144,5 +148,6 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_io.h>
 #include <evfs_new.h>
 #include <evfs_event_helper.h>
+#include <evfs_server_handle.h>
 
 #endif

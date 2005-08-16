@@ -221,6 +221,7 @@ src/bin/Makefile
 src/lib/Makefile
 src/plugins/Makefile
 src/demo/Makefile
+evfs-config
 ], [
-chmod +x README
+chmod +x evfs-config
 ])
