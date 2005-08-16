@@ -18,3 +18,10 @@ void evfs_cleanup_file_command(evfs_command* command) {
 		free(command->file_command.files[i]);
 	}
 }
+
+
+
+void evfs_cleanup_file_monitor(evfs_file_monitor* mon) {
+	if (mon->monitor_path) free (mon->monitor_path);
+	free(mon);
+}

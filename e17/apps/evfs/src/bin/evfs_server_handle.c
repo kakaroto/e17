@@ -14,7 +14,7 @@ void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* comman
 		} else {
 			printf("Requesting a file monitor from this plugin for uri type '%s'\n", command->file_command.files[0]->plugin_uri );
 			
-			evfs_monitor_start = dlsym(plugin->dl_ref, EVFS_MONITOR_START);
+			evfs_monitor_start = dlsym(plugin->dl_ref, EVFS_FUNCTION_MONITOR_START);
 			if (evfs_monitor_start) {
 				(*evfs_monitor_start)(client,command);
 			}
@@ -36,9 +36,9 @@ void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command
 		if (!plugin) {
 			printf("No plugin able to monitor this uri type\n");
 		} else {
-			printf("Requesting a file monitor from this plugin for uri type '%s'\n", command->file_command.files[0]->plugin_uri );
+			printf("Requesting a file monitor end from this plugin for uri type '%s'\n", command->file_command.files[0]->plugin_uri );
 			
-			evfs_monitor_start = dlsym(plugin->dl_ref, EVFS_MONITOR_START);
+			evfs_monitor_start = dlsym(plugin->dl_ref, EVFS_FUNCTION_MONITOR_STOP);
 			if (evfs_monitor_start) {
 				(*evfs_monitor_start)(client,command);
 			}

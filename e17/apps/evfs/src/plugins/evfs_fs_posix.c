@@ -109,13 +109,38 @@ void posix_monitor_add(evfs_client* client, evfs_command* command) {
 		
 }
 
-
+/*The function root for evfs's plugin requests*/
 void evfs_monitor_start(evfs_client* client, evfs_command* command) {
 	
 	
 	/*printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path );*/
 	posix_monitor_add(client, command);
-	 
+}
+
+void evfs_monitor_stop(evfs_client* client, evfs_command* command){
+	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
+	
+	printf("EVFS: POSIX: Stub - evfs_monitor_stop\n");
+
+	if (!mon_list) {
+		/*There is no one monitoring this - so this client can't be...*/
+		return;
+	} else {
+		evfs_file_monitor* mon;
+		
+		ecore_list_goto_first(mon_list);
+		while ( (mon = ecore_list_current(mon_list))) {
+			if (mon->client == client) {
+				ecore_list_remove(mon_list);
+				evfs_cleanup_file_monitor(mon);
+				return;
+			}
+
+			ecore_list_next(mon_list);
+		}
+	}
+
+	
 }
 
 

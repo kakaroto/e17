@@ -1,5 +1,9 @@
 #include <evfs.h>
 
+static int mon_current =0; /*A demo of stopping monitoring, after 10 events*/
+evfs_file_uri_path* dir_path;
+evfs_connection* con;
+
 void callback(evfs_event* data) {
 
 	if (data->type == EVFS_EV_REPLY) {
@@ -7,16 +11,23 @@ void callback(evfs_event* data) {
 			case EVFS_EV_SUB_MONITOR_NOTIFY:
 				printf("DEMO: Received a file monitor notification\n");
 				printf("DEMO: For file: '%s'\n", data->data);
+				mon_current++;
+				break;
 		}
+	}
+
+	if (mon_current == 10) {
+		printf("Removing monitor...\n");
+		evfs_monitor_remove(con, dir_path->files[0]);
 	}
 
 	/*TODO : Free event*/
 }
 
 int main() {
-	evfs_connection* con;
+	
 	evfs_file_uri_path* path;
-	evfs_file_uri_path* dir_path;
+	
 	char pathi[1024];
 	
 	printf("EVFS Demo system..\n");

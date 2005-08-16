@@ -91,6 +91,7 @@ void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_mes
 void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 
 	switch (command->type) {
+		case EVFS_CMD_STOPMON_FILE:
 		case EVFS_CMD_STARTMON_FILE:
 			evfs_write_file_command(conn, command);
 			break;

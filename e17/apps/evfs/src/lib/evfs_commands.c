@@ -21,7 +21,6 @@ void evfs_monitor_add(evfs_connection* conn, evfs_filereference* ref) {
 void evfs_monitor_remove(evfs_connection* conn, evfs_filereference* ref) {
 	evfs_command* command = NEW(evfs_command);
 	
-	/*printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri);*/
 
 	command->type = EVFS_CMD_STOPMON_FILE;
 	command->file_command.num_files = 1;

@@ -18,7 +18,9 @@
 #define EVFS_META_DIR_NAME  ".e_meta"
 #define MAX_CLIENT 9999999
 
-#define EVFS_MONITOR_START "evfs_monitor_start"
+#define EVFS_FUNCTION_MONITOR_START "evfs_monitor_start"
+#define EVFS_FUNCTION_MONITOR_STOP "evfs_monitor_stop"
+
 
 typedef enum
 {
