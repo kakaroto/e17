@@ -224,14 +224,19 @@ void evfs_load_plugins() {
 
 	printf("Reading plugins from: %s\n", PACKAGE_PLUGIN_DIR "/plugins/file");
         dir = opendir(PACKAGE_PLUGIN_DIR "/plugins/file");
-        while ( (de = readdir(dir)) ) {
+        if (dir) {
+		while ( (de = readdir(dir)) ) {
 
-		if (!strncmp(de->d_name + strlen(de->d_name) -3, ".so", 3)) {
+		   if (!strncmp(de->d_name + strlen(de->d_name) -3, ".so", 3)) {
 			snprintf(plugin_path, 1024,"%s/%s", PACKAGE_PLUGIN_DIR "/plugins/file", de->d_name);
 			if ( (plugin = evfs_load_plugin(plugin_path))) {
 				ecore_hash_set(server->plugin_uri_hash, plugin->uri, plugin);
 			}
+		   }
 		}
+	} else {
+		printf(stderr, "EVFS: Could not location plugin directory '%s'\n", PACKAGE_PLUGIN_DIR "/plugins/file");
+		exit(1);
 	}
 
 }
