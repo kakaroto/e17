@@ -119,7 +119,7 @@ PR_(imlib_mmx_rgb565_fast):
 
 	LOAD_IMMQ(m_rb, %mm5)
 	LOAD_IMMQ(m_g6, %mm6)
-	CLEANUP_IMMQ_LOADS(1)
+	CLEANUP_IMMQ_LOADS(2)
 
 	LOOP_START
 
