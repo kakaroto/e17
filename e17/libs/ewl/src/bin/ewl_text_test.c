@@ -51,7 +51,7 @@ __key_press(Ewl_Widget *w __UNUSED__, void *ev, void *data __UNUSED__)
 		char *c;
 
 		t = ewl_widget_name_find("text");
-		c = ewl_text_selection_get(EWL_TEXT(t));
+		c = ewl_text_selection_text_get(EWL_TEXT(t));
 
 		printf("Selection: (%s)\n", c);
 		FREE(c);

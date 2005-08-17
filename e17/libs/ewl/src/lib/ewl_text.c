@@ -517,7 +517,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
  * @brief Gets the current text of the selection
  */
 char *
-ewl_text_selection_get(Ewl_Text *t)
+ewl_text_selection_text_get(Ewl_Text *t)
 {
 	char *ret = NULL;
 
@@ -538,6 +538,23 @@ ewl_text_selection_get(Ewl_Text *t)
 	ret[t->selection->len] = '\0';
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the selection from
+ * @return Returns the selection object of this text or NULL if no current
+ * selection
+ */
+Ewl_Text_Trigger *
+ewl_text_selection_get(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_text_trigger_length_get(t->selection) > 0)
+	{
+		DRETURN_PTR(t->selection, DLEVEL_STABLE);
+	}
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**
@@ -1951,6 +1968,21 @@ ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
 	DCHECK_PARAM_PTR("t", t);
 
 	t->len = len;
+
+	/* if the length is set to 0 remove the areas */
+	if (len == 0)
+	{
+		if (t->areas)
+		{
+			Ewl_Text_Trigger_Area *area;
+
+			ecore_list_goto_first(t->areas);
+			while ((area = ecore_list_next(t->areas)))
+				ewl_widget_hide(EWL_WIDGET(area));
+
+			ecore_list_clear(t->areas);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

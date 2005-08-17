@@ -2,6 +2,8 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+static int ewl_entry_selection_clear(Ewl_Entry *e);
+
 /**
  * @param text: The text to set into the entry
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -232,11 +234,15 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
 		ewl_entry_cursor_move_down(e);
 
 	else if (!strcmp(event->keyname, "BackSpace"))
-		ewl_entry_delete_left(e);
-
+	{
+		if (!ewl_entry_selection_clear(e))
+			ewl_entry_delete_left(e);
+	}
 	else if (!strcmp(event->keyname, "Delete"))
-		ewl_entry_delete_right(e);
-
+	{
+		if (!ewl_entry_selection_clear(e))
+			ewl_entry_delete_right(e);
+	}
 	else if ((!strcmp(event->keyname, "Return")) 
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
@@ -250,12 +256,18 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
 			IF_FREE(evd);
 		}
 		else
+		{
+			ewl_entry_selection_clear(e);
+
 			ewl_text_text_insert(EWL_TEXT(e), "\n", 
 				ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
+		}
 	}
 	else if ((event->keyname) && (strlen(event->keyname) == 1))
 	{
 		char *tmp;
+
+		ewl_entry_selection_clear(e);
 
 		tmp = calloc(2, sizeof(char));
 		snprintf(tmp, 2, "%s", event->keyname);
@@ -265,6 +277,32 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int 
+ewl_entry_selection_clear(Ewl_Entry *e)
+{
+	Ewl_Text_Trigger *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	sel = ewl_text_selection_get(EWL_TEXT(e));
+	if (sel)
+	{
+		int len, pos;
+
+		len = ewl_text_trigger_length_get(sel);
+		pos = ewl_text_trigger_start_pos_get(sel);
+		ewl_text_cursor_position_set(EWL_TEXT(e), pos);
+		ewl_text_text_delete(EWL_TEXT(e), len);
+
+		/* remove the selection */
+		ewl_text_trigger_length_set(sel, 0);
+
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 void
