@@ -589,8 +589,8 @@ fonts {
 collections {           
     group {         
         name, "container_ex";
-        min, 300, 300;
-        max, 800, 800;
+        min, 300 300;
+        max, 800 800;
             
         parts { 
             part {
@@ -834,9 +834,10 @@ could be used.
 <example>
 <title>Makefile</title>
 <programlisting>
-CFLAGS = `ecore-config --cflags` `evas-config --cflags` `esmart-config --cflags`
+CFLAGS = `ecore-config --cflags` `evas-config --cflags` \
+		`esmart-config --cflags` `edje-config --cflags`
 LIBS = `ecore-config --libs` `evas-config --libs` `esmart-config --libs` \
-            -lesmart_container
+            `edje-config --libs` -lesmart_container
 
 container_ex: container/container_ex.c
         gcc -o container/container_ex container/container_ex.c $(CFLAGS) $(LIBS)
@@ -846,6 +847,11 @@ container_ex: container/container_ex.c
 <para>
 And to create the EET file, a simple 'edje_cc default.edc' should suffice as long
 as the Vera.ttf file is in the current directory.
+</para>
+
+<para>
+Once you've got everything complied you'll need to do 
+<screen>./container_ex -t default.edj</screen> and everything should be good to go.
 </para>
 
 <para>
