@@ -9,7 +9,7 @@
 
 /**
  * @file ewl_iconbox.h
- * @defgtroup Ewl_IconBox IconBox: The Icon Box Layout Container
+ * @defgroup Ewl_IconBox IconBox: The Icon Box Layout Container
  * @brief Defines the Ewl_IconBox class, used to display a collection of icons 
  *  	  with annotations and support arranging/manipulating contained icons
  *
