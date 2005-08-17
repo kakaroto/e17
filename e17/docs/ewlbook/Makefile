@@ -26,15 +26,16 @@ PREFIX = /usr/share/sgml/docbook
 
 ###FO_XSL = $(PREFIX)/docbook-xsl-1.61.3/fo/docbook.xsl		## DB
 #FO_XSL = $(PREFIX)/docbook-xsl-1.61.3/fo/tldp-print.xsl	## LDP
-#FO_XSL = $(PREFIX)/xsl-stylesheets-1.62.0/fo/docbook.xsl	# Gentoo DB FO
-FO_XSL = $(PREFIX)/docbook-xsl-1.64.1/fo/docbook.xsl	# Official DB FO
+FO_XSL = $(PREFIX)/xsl-stylesheets-1.66.1/fo/docbook.xsl	# Gentoo DB FO
+#FO_XSL = $(PREFIX)/docbook-xsl-1.64.1/fo/docbook.xsl	# Official DB FO
 
 ### XSL Arguments: the fop argeument will make FOP play nice, and the 9x7 format is for tech page size.
 #FO_ARGS = --stringparam page.height 9in --stringparam page.width 7in --stringparam fop.extensions 1 --stringparam draft.mode no
 FO_ARGS = --stringparam fop.extensions 1 --stringparam draft.mode no
 
 #HTML_XSL = $(PREFIX)/docbook-xsl-1.61.3/html/tldp-html.xsl
-HTML_XSL = $(PREFIX)/docbook-xsl-1.64.1/html/docbook.xsl	# Gentoo DB HTML
+#HTML_XSL = $(PREFIX)/docbook-xsl-1.64.1/html/docbook.xsl	# Gentoo DB HTML
+HTML_XSL = $(PREFIX)/xsl-stylesheets-1.66.1/html/docbook.xsl
 
 all: pdf html
 
