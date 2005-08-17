@@ -115,7 +115,6 @@ ipc_client_data(void *data, int type, void *event)
 
    client = evfs_client_get(e->client);
 
-   printf("Got a message from client id %ld\n", client->id);
    
    if (!client->prog_command) {
 	   client->prog_command = evfs_command_new();
@@ -123,10 +122,8 @@ ipc_client_data(void *data, int type, void *event)
 
    /*True == command finished*/
    if (evfs_process_incoming_command(client->prog_command, msg)) {
-	  printf("Finished getting command..processing..\n"); 
 	  evfs_handle_command(client, client->prog_command);
 
-	  printf("Nuking command..\n");
 	  client->prog_command = NULL; /*TODO - CLEANUP MEMORY HERE*/
    }
 
@@ -139,12 +136,12 @@ ipc_client_data(void *data, int type, void *event)
 void evfs_handle_command(evfs_client* client, evfs_command* command) {
 	switch (command->type) {
 		case EVFS_CMD_STARTMON_FILE:
-			printf("We recieved a monitor request\n");
+			/*printf("We received a monitor stop request*/
 			evfs_handle_monitor_start_command(client, command);
 			
 			break;
 		case EVFS_CMD_STOPMON_FILE:
-			printf("We received a monitor stop request\n");
+			/*printf("We received a monitor stop request\n");*/
 			evfs_handle_monitor_stop_command(client,command);
 			break;
 	}
