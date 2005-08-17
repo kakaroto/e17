@@ -10,3 +10,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = README AUTHORS COPYING
 
+bin_SCRIPTS = evfs-config
+
+
