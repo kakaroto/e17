@@ -20,6 +20,9 @@
 
 #define EVFS_FUNCTION_MONITOR_START "evfs_monitor_start"
 #define EVFS_FUNCTION_MONITOR_STOP "evfs_monitor_stop"
+#define EVFS_FUNCTION_DIRECTORY_LIST "evfs_directory_list"
+#define EVFS_FUNCTION_FILE_COPY "evfs_file_copy"
+#define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
 
 
 typedef enum

@@ -144,6 +144,16 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			/*printf("We received a monitor stop request\n");*/
 			evfs_handle_monitor_stop_command(client,command);
 			break;
+
+		case EVFS_CMD_COPY_FILE:
+			printf("Copy file stub\n");
+			break;
+		case EVFS_CMD_MOVE_FILE:
+			printf("Move file stub\n");
+			break;
+		case EVFS_CMD_LIST_DIR:
+			printf("List directory stub\n");
+			break;
 	}
 }
 
