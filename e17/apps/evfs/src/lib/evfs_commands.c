@@ -33,3 +33,19 @@ void evfs_monitor_remove(evfs_connection* conn, evfs_filereference* ref) {
 
 	free(command);	
 }
+
+void evfs_client_file_remove(evfs_connection* conn, evfs_filereference* ref) {
+	evfs_command* command = NEW(evfs_command);
+
+	printf("Removing a file..\n");
+
+	command->type = EVFS_CMD_REMOVE_FILE;
+	command->file_command.num_files = 1;
+	command->file_command.files = malloc(sizeof(evfs_filereference*));
+	command->file_command.files[0] = ref;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+
+}

@@ -5,7 +5,8 @@ evfs_file_uri_path* dir_path;
 evfs_connection* con;
 
 void callback(evfs_event* data) {
-
+	static char str_data[1024];
+	
 	if (data->type == EVFS_EV_REPLY) {
 		switch (data->sub_type) {
 			case EVFS_EV_SUB_MONITOR_NOTIFY:
@@ -16,9 +17,17 @@ void callback(evfs_event* data) {
 		}
 	}
 
-	if (mon_current == 10) {
+	if (mon_current == 2) {
+		snprintf(str_data,1024,"posix://%s/newfile", getenv("HOME"));
+		
+		evfs_file_uri_path* path = evfs_parse_uri(str_data);
 		printf("Removing monitor...\n");
 		evfs_monitor_remove(con, dir_path->files[0]);
+	
+		printf("DEMO: Removing HOME/newfile\n");
+		evfs_client_file_remove(con, path->files[0]);
+		
+		
 	}
 
 	/*TODO : Free event*/

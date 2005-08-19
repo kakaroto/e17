@@ -4,9 +4,10 @@
 #define _GNU_SOURCE
 #include "evfs_macros.h"
 #include "evfs_debug.h"
-#include "evfs_plugin.h"
+
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
+#include <Ecore_File.h>
 #include <pthread.h>
 
 
@@ -25,15 +26,15 @@
 #define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
 
 
+
+
+
 typedef enum
 {
   EVFS_FS_OP_FORCE      = 1,
   EVFS_FS_OP_RECURSIVE  = 2
 }
 EfsdFsOps;
-
-
-
 
 
 
@@ -66,7 +67,8 @@ typedef enum evfs_command_type
   EVFS_CMD_STOPMON_FILE = 2,
   EVFS_CMD_COPY_FILE = 3,
   EVFS_CMD_MOVE_FILE = 4,
-  EVFS_CMD_LIST_DIR = 5
+  EVFS_CMD_REMOVE_FILE=5,
+  EVFS_CMD_LIST_DIR = 6
 }
 evfs_command_type;
 
@@ -100,6 +102,7 @@ typedef struct evfs_file_monitor evfs_file_monitor;
 struct evfs_file_monitor {
 	evfs_client* client;
 	char* monitor_path;
+	Ecore_File_Monitor *em;
 };
 
 
@@ -143,7 +146,7 @@ evfs_connection* evfs_connect(void (*callback_func)(void*));
 evfs_file_uri_path* evfs_parse_uri(char* uri);
 void evfs_handle_command(evfs_client* client, evfs_command* command);
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command);
-evfs_plugin* evfs_get_plugin_for_uri(char* uri_base);
+
 unsigned long evfs_server_get_next_id(evfs_server* serve);
 
 
@@ -154,5 +157,8 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_new.h>
 #include <evfs_event_helper.h>
 #include <evfs_server_handle.h>
+#include "evfs_plugin.h"
+
+evfs_plugin* evfs_get_plugin_for_uri(char* uri_base);
 
 #endif

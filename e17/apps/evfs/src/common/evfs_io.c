@@ -93,6 +93,7 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 	switch (command->type) {
 		case EVFS_CMD_STOPMON_FILE:
 		case EVFS_CMD_STARTMON_FILE:
+		case EVFS_CMD_REMOVE_FILE:
 			evfs_write_file_command(conn, command);
 			break;
 	}
@@ -106,7 +107,8 @@ void evfs_write_command_end(evfs_connection* conn) {
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	int i;
 	char uri[1024];
-	
+
+	printf("Writing a command...\n");
 
 	/*Write the command type structure*/
 	evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,&command->type, sizeof(evfs_command_type)));
@@ -155,7 +157,10 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 			break;
 		}
 
-		case EVFS_COMMAND_END:
+		case EVFS_COMMAND_END:	
+			 /*TODO cleanp ref event*/
+			 
+					  
 			 return TRUE;
 			 break;
 	}

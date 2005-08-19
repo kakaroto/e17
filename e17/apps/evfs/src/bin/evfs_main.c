@@ -107,6 +107,7 @@ ipc_client_del(void *data, int type, void *event)
 int
 ipc_client_data(void *data, int type, void *event)
 {
+	
    Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data*) event;
    evfs_client* client;
    
@@ -124,7 +125,8 @@ ipc_client_data(void *data, int type, void *event)
    if (evfs_process_incoming_command(client->prog_command, msg)) {
 	  evfs_handle_command(client, client->prog_command);
 
-	  client->prog_command = NULL; /*TODO - CLEANUP MEMORY HERE*/
+	  evfs_cleanup_command(client->prog_command); /*CLEANUP MEMORY HERE*/
+	  client->prog_command = NULL;
    }
 
 
@@ -151,6 +153,10 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_MOVE_FILE:
 			printf("Move file stub\n");
 			break;
+		case EVFS_CMD_REMOVE_FILE: 
+			printf("Remove file stub\n");
+			evfs_handle_file_remove_command(client,command);
+			break;
 		case EVFS_CMD_LIST_DIR:
 			printf("List directory stub\n");
 			break;
@@ -163,7 +169,7 @@ evfs_plugin* evfs_load_plugin(char* filename) {
 	evfs_plugin* plugin = NEW(evfs_plugin);
 
 	char* (*evfs_plugin_uri_get)();
-	void (*evfs_plugin_init)();
+	evfs_plugin_functions* (*evfs_plugin_init)();
 
 	printf("Loading plugin: %s\n", filename);	
 	plugin->dl_ref = dlopen(filename, RTLD_LAZY);
@@ -177,7 +183,7 @@ evfs_plugin* evfs_load_plugin(char* filename) {
 			/*Execute the init function, if it's there..*/
 			evfs_plugin_init = dlsym(plugin->dl_ref, "evfs_plugin_init");	
 			if (evfs_plugin_init) {
-				(*evfs_plugin_init)();
+				plugin->functions = (*evfs_plugin_init)();
 			}
 		} else {
 			printf("Error - plugin file does not contain uri identify function - %s\n", filename);

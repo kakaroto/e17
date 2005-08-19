@@ -40,10 +40,43 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 
 
+/*Main file wrappers*/
+int evfs_file_remove(char* src);
+int evfs_monitor_start(evfs_client* client, evfs_command* command);
+int evfs_monitor_stop(evfs_client* client, evfs_command* command);
+
+
+/*Internal functions*/
+/* Real data-copying routine, handling holes etc. Returns outcome
+   upon return: 0 when successful, -1 when not.
+*/
+static int data_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int file_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int dir_copy(char *src_path, struct stat *src_st, char *dst_path);
+static int file_move(char *src_path, struct stat *src_st, char *dst_path);
+static int dir_move(char *src_path, char *dst_path);
+static int file_remove(char *path, struct stat *st);
+
+/*Misc functions -----------------------------------------*/
+int    evfs_misc_remove(char *filename);
+
+
+
+
 Ecore_Hash* posix_monitor_hash;
 
-void evfs_plugin_init() {
+evfs_plugin_functions* evfs_plugin_init() {
+	printf("Initialising the posix plugin..\n");
+	evfs_plugin_functions* functions = calloc(1, sizeof(evfs_plugin_functions));
+	
 	posix_monitor_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	functions->evfs_file_remove= &evfs_file_remove;
+	functions->evfs_monitor_start = &evfs_monitor_start;
+	functions->evfs_monitor_stop = &evfs_monitor_stop;
+	return functions;
+
+	
 }
 
 char* evfs_plugin_uri_get() {
@@ -86,11 +119,12 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 	
 }
 
-void posix_monitor_add(evfs_client* client, evfs_command* command) {
+int posix_monitor_add(evfs_client* client, evfs_command* command) {
 	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
 	evfs_file_monitor* mon;
+	evfs_file_monitor* old;
 
-	mon = NEW(evfs_file_monitor);
+	mon = calloc(1, sizeof(evfs_file_monitor));
 	mon->client = client;
 	mon->monitor_path = strdup(command->file_command.files[0]->path);
 
@@ -100,64 +134,89 @@ void posix_monitor_add(evfs_client* client, evfs_command* command) {
 
 		mon_list = ecore_list_new();
 		ecore_hash_set(posix_monitor_hash, mon->monitor_path, mon_list);
-		ecore_file_monitor_add(mon->monitor_path, &evfs_file_monitor_fam_handler, mon->monitor_path);
+		mon->em = ecore_file_monitor_add(mon->monitor_path, &evfs_file_monitor_fam_handler, mon->monitor_path);
 
 		ecore_list_append(mon_list,mon);
 	} else {
+		/*We assume there is something already in the list.  This is probably bad*/
+		ecore_list_goto_first(mon_list);
+		old = ecore_list_current(mon_list);
+
+		/*Make sure we have the ecore ref, so the last monitor can nuke it*/
+		mon->em = old->em;
+		
 		ecore_list_append(mon_list, mon);
 	}
+
+	return 0;
 		
 }
 
 /*The function root for evfs's plugin requests*/
-void evfs_monitor_start(evfs_client* client, evfs_command* command) {
+int evfs_monitor_start(evfs_client* client, evfs_command* command) {
 	
 	
 	/*printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path );*/
-	posix_monitor_add(client, command);
+	return posix_monitor_add(client, command);
 }
 
-void evfs_monitor_stop(evfs_client* client, evfs_command* command){
+int evfs_monitor_stop(evfs_client* client, evfs_command* command){
 	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
+	Ecore_File_Monitor *em;
 	
-	printf("EVFS: POSIX: Stub - evfs_monitor_stop\n");
 
 	if (!mon_list) {
 		/*There is no one monitoring this - so this client can't be...*/
-		return;
+		return 1;
 	} else {
 		evfs_file_monitor* mon;
+		evfs_file_monitor* check_last;
 		
 		ecore_list_goto_first(mon_list);
 		while ( (mon = ecore_list_current(mon_list))) {
 			if (mon->client == client) {
+				em = mon->em;
 				ecore_list_remove(mon_list);
-				evfs_cleanup_file_monitor(mon);
-				return;
+				goto final;
 			}
 
 			ecore_list_next(mon_list);
 		}
+
+		final:
+		ecore_list_goto_first(mon_list);
+		check_last = ecore_list_current(mon_list);
+		if (!check_last) {
+			printf("Removing last watcher..\n");
+			ecore_file_monitor_del(em);
+		}
+		evfs_cleanup_file_monitor(mon);
+		
+
+		return 1;
 	}
 
 	
 }
 
 
-/* Real data-copying routine, handling holes etc. Returns outcome
-   upon return: 0 when successful, -1 when not.
-*/
-static int data_copy(char *src_path, struct stat *src_st, char *dst_path);
+int evfs_file_remove(char* src) {
+	struct stat* stat_src;
+	int i;
 
-static int file_copy(char *src_path, struct stat *src_st, char *dst_path);
+	
+	
 
-static int dir_copy(char *src_path, struct stat *src_st, char *dst_path);
+	if (!stat(src, stat_src)) {
+		return file_remove(src, stat_src);
+	} else {
+		printf("Could not stat..\n");
+		return 1;
+	}
+}
 
-static int file_move(char *src_path, struct stat *src_st, char *dst_path);
 
-static int dir_move(char *src_path, char *dst_path);
 
-static int file_remove(char *path, struct stat *st);
 
 
 static int
@@ -630,7 +689,7 @@ file_remove(char *path, struct stat *st)
   D("Removing %s\n", path);
 
   /* Simply try if it works. */
-  if (efsd_misc_remove(path))
+  if (evfs_misc_remove(path))
     D_RETURN_(TRUE);
 
   if (S_ISDIR(st->st_mode))
@@ -656,10 +715,10 @@ file_remove(char *path, struct stat *st)
 	  
 	  snprintf(s_ptr, MAXPATHLEN - s_len, "%s", de_ptr->d_name);
 	  
-	  if (efsd_misc_remove(s))
+	  if (evfs_misc_remove(s))
 	    continue;
 
-	  if (!efsd_lstat(s, &st2))
+	  if (!lstat(s, &st2))
 	    {
 	      /* We couldn't stat it and we couldn't
 		 remove it -- report error.
@@ -690,7 +749,7 @@ file_remove(char *path, struct stat *st)
       */
 
       closedir(dir);            
-      D_RETURN_(efsd_misc_remove(path));
+      D_RETURN_(evfs_misc_remove(path));
     }
 
   /* It's not a directory either. Report error. */
@@ -1014,3 +1073,53 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
 
   D_RETURN_(success);
 }
+
+
+
+
+
+
+
+
+
+/*Misc functions -----------------------------------------*/
+int    
+evfs_misc_remove(char *filename)
+{
+  struct stat    st;
+
+  D_ENTER;
+
+  if (!filename || filename[0] == '\0')
+    {
+      errno = EINVAL;
+      D_RETURN_(FALSE);
+    }
+
+  if (lstat(filename, &st) < 0)
+    D_RETURN_(FALSE);
+
+  /*if (S_ISDIR(st.st_mode))
+    efsd_meta_dir_cleanup(filename);*/
+
+  if (remove(filename) == 0)
+    {
+      /* File is removed -- now remove
+	 any cached stat data ...
+      */
+      /*efsd_stat_remove(filename, TRUE);*/
+
+      /* .. and any metadata. We don't
+	 care about the result (maybe
+	 no metadata existed etc).
+      */
+      /*efsd_meta_remove_data(filename);*/
+      
+      D_RETURN_(TRUE);
+    }
+
+  D("Removing %s failed.\n", filename);
+  
+  D_RETURN_(FALSE);
+}
+
