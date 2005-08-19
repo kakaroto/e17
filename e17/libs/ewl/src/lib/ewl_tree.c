@@ -543,6 +543,27 @@ void ewl_tree_selected_clear(Ewl_Tree *tree)
 }
 
 /**
+ * @param tree: The tree to find the row in
+ * @param row: The row number to find 
+ * @return Returns the given row, or NULL if not found
+ */
+Ewl_Widget *ewl_tree_row_find(Ewl_Tree *tree, int row)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+
+	child = ewl_container_child_get(EWL_CONTAINER(tree), row);
+
+	if (child) {
+		DRETURN_PTR(EWL_TREE_NODE(child)->row, DLEVEL_STABLE);
+	} else {
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+}
+
+/**
  * @param row: the row to retrieve a column from
  * @param i: the column to retreive from the row
  * @brief Retreives the actual widget added via row_add instead of the cell

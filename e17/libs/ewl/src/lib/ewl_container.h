@@ -113,6 +113,7 @@ void            ewl_container_child_remove(Ewl_Container * parent,
 					   Ewl_Widget * child);
 void            ewl_container_child_resize(Ewl_Widget * w, int size,
 					   Ewl_Orientation o);
+Ewl_Widget     *ewl_container_child_get(Ewl_Container * parent, int index);
 void            ewl_container_child_iterate_begin(Ewl_Container *c);
 Ewl_Widget     *ewl_container_child_next(Ewl_Container *c);
 void            ewl_container_child_iterator_set(Ewl_Container *c,

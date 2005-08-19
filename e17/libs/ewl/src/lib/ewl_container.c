@@ -344,6 +344,36 @@ ewl_container_child_count_get(Ewl_Container *c)
 }
 
 /**
+ * @param parent: The container to get the child from
+ * @param index: The child index to return
+ * @return Returns the widget at the given index, or NULL if not found
+ */
+Ewl_Widget *
+ewl_container_child_get(Ewl_Container * parent, int index)
+{
+	Ewl_Container *container = NULL;
+	Ewl_Widget *child;
+	int count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, NULL);
+
+	container = parent;
+	while (container->redirect) container = container->redirect;
+
+	ecore_list_goto_first(container->children);
+	while (child = ecore_list_next(container->children))
+	{
+		if (ewl_widget_internal_is(child)) continue;
+		if (count == index) break;
+		count ++;
+	}
+
+	DRETURN_PTR(((count == index) ? child : NULL), DLEVEL_STABLE);
+}
+
+
+/**
  * @param w: the child widget that has had it's preferred size changed
  * @param size: the amount of change in size
  * @param o: the orientation of the size change

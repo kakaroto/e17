@@ -109,7 +109,7 @@ Ewl_Widget 	*ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 
 void 		 ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row);
 void 		 ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
-Ewl_Row 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
+Ewl_Widget 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
 
 /*
  * Internally used callbacks, override at your own risk.
