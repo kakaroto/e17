@@ -119,6 +119,21 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 	
 }
 
+/*This is potentially inefficient with a lot of clients monitoring the same dir/file*/
+int client_already_monitoring(evfs_client* client, Ecore_List* mon_list) {
+	evfs_file_monitor* mon;
+	ecore_list_goto_first(mon_list);
+
+	while ( (mon = ecore_list_next(mon_list))) {
+		if (mon->client == client) {
+			return 1;
+		}
+	}
+
+	return 0;
+	
+}
+
 int posix_monitor_add(evfs_client* client, evfs_command* command) {
 	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
 	evfs_file_monitor* mon;
@@ -138,14 +153,19 @@ int posix_monitor_add(evfs_client* client, evfs_command* command) {
 
 		ecore_list_append(mon_list,mon);
 	} else {
-		/*We assume there is something already in the list.  This is probably bad*/
-		ecore_list_goto_first(mon_list);
-		old = ecore_list_current(mon_list);
+		if (!client_already_monitoring(client, mon_list)) {
+			/*We assume there is something already in the list.  This is probably bad a bad assumption*/
+			ecore_list_goto_first(mon_list);
+			old = ecore_list_current(mon_list);
 
-		/*Make sure we have the ecore ref, so the last monitor can nuke it*/
-		mon->em = old->em;
+			/*Make sure we have the ecore ref, so the last monitor can nuke it*/
+			mon->em = old->em;
+			ecore_list_append(mon_list, mon);
+		} else {
+			printf ("Oi, dufus, you're already monitoring this object\n");
+		}
 		
-		ecore_list_append(mon_list, mon);
+		
 	}
 
 	return 0;
