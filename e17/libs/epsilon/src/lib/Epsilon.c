@@ -344,6 +344,9 @@ epsilon_exists (Epsilon * e)
   if (!e->hash)
     {
       hash_seed = malloc (PATH_MAX * sizeof (char));
+      if (!hash_seed)
+	return (EPSILON_FAIL);
+
       memset (hash_seed, 0, PATH_MAX * sizeof (char));
 
       if (e->key)
@@ -358,7 +361,7 @@ epsilon_exists (Epsilon * e)
 	  strcat (hash_seed, buf);
 	}
 
-      if (hash_seed)
+      if (strlen(hash_seed) > 0)
 	e->hash = epsilon_hash (hash_seed);
       else
 	e->hash = epsilon_hash (e->src);

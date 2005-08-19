@@ -40,7 +40,7 @@ Epsilon *epsilon_new (const char *file);
 /* Set the part name as key (Edje for now)*/
 void epsilon_key_set (Epsilon * e, const char *key);
 /* Set the resolution*/
-void epsilon_resoltion_set (Epsilon * e, int w, int h);
+void epsilon_resolution_set (Epsilon * e, int w, int h);
 
 /*
  * the source filename
