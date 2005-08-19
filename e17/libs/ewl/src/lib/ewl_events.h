@@ -45,6 +45,7 @@ typedef struct Ewl_Event_Window_Delete Ewl_Event_Window_Delete;
  */
 struct Ewl_Event_Window_Delete
 {
+	int ignore;
 };
 
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
@@ -155,8 +156,8 @@ struct Ewl_Event_Mouse_Wheel
 };
 
 int		ewl_ev_init(void);
-unsigned int 	ewl_ev_get_modifiers();
-void 		ewl_ev_set_modifiers(unsigned int modifiers);
+unsigned int 	ewl_ev_modifiers_get();
+void 		ewl_ev_modifiers_set(unsigned int modifiers);
 
 /**
  * @}

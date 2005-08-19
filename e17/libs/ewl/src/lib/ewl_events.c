@@ -121,7 +121,7 @@ int ewl_ev_init(void)
  * @return Returns the current mask of modifier keys.
  * @brief Retrieve the current mask of modifiers that are set.
  */
-unsigned int ewl_ev_get_modifiers()
+unsigned int ewl_ev_modifiers_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DRETURN_INT(key_modifiers, DLEVEL_STABLE);
@@ -132,7 +132,7 @@ unsigned int ewl_ev_get_modifiers()
  * @return Returns no value.
  * @brief Sets the key modifiers to the given value
  */
-void ewl_ev_set_modifiers(unsigned int modifiers)
+void ewl_ev_modifiers_set(unsigned int modifiers)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

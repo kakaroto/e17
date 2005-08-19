@@ -1071,7 +1071,7 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 	ewl_embed_mouse_out_feed(embed, ev->canvas.x, ev->canvas.y,
-				 ewl_ev_get_modifiers());
+				 ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1087,7 +1087,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 	ewl_embed_mouse_down_feed(embed, ev->button, 1, ev->canvas.x,
-				  ev->canvas.y, ewl_ev_get_modifiers());
+				  ev->canvas.y, ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1103,7 +1103,7 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 	ewl_embed_mouse_up_feed(embed, ev->button, ev->canvas.x,
-				  ev->canvas.y, ewl_ev_get_modifiers());
+				  ev->canvas.y, ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1119,7 +1119,7 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 	ewl_embed_mouse_move_feed(embed, ev->cur.canvas.x, ev->cur.canvas.y,
-				  ewl_ev_get_modifiers());
+				  ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1159,7 +1159,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 	else if (evas_key_modifier_is_set(ev->modifiers, "Hyper"))
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 
-	ewl_ev_set_modifiers(key_modifiers);
+	ewl_ev_modifiers_set(key_modifiers);
 
 	/* fixup the space char */
 	if (!strncmp(keyname, "space", 5)) {
@@ -1175,7 +1175,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT)
 		strupper(keyname);
 
-	ewl_embed_key_down_feed(embed, keyname, ewl_ev_get_modifiers());
+	ewl_embed_key_down_feed(embed, keyname, ewl_ev_modifiers_get());
 	free(keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1193,7 +1193,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	key_modifiers = ewl_ev_get_modifiers();
+	key_modifiers = ewl_ev_modifiers_get();
 	if (!evas_key_modifier_is_set(ev->modifiers, "Shift"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_SHIFT;
 	else if (!evas_key_modifier_is_set(ev->modifiers, "Alt"))
@@ -1207,7 +1207,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 	else if (!evas_key_modifier_is_set(ev->modifiers, "Hyper"))
 		key_modifiers &= ~EWL_KEY_MODIFIER_WIN;
 
-	ewl_ev_set_modifiers(key_modifiers);
+	ewl_ev_modifiers_set(key_modifiers);
 
 	/* fixup the space char */
 	if (!strncmp(keyname, "space", 5)) {
@@ -1223,7 +1223,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 	} else if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
 		strupper(keyname);
 
-	ewl_embed_key_up_feed(embed, keyname, ewl_ev_get_modifiers());
+	ewl_embed_key_up_feed(embed, keyname, ewl_ev_modifiers_get());
 	free(keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

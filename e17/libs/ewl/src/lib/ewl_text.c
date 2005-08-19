@@ -2641,7 +2641,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
         
         idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
        
-        modifiers = ewl_ev_get_modifiers();
+        modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
                 ewl_text_selection_select_to(t->selection, idx);
         else
@@ -2670,7 +2670,7 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
         event = ev;
         t = EWL_TEXT(w);
 
-        modifiers = ewl_ev_get_modifiers();
+        modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
         {
                 unsigned int idx = 0;
