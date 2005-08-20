@@ -397,12 +397,6 @@ ButtonGetInfo(const Button * b, RectBox * r, int desk)
    return 0;
 }
 
-ActionClass        *
-ButtonGetAClass(const Button * b)
-{
-   return b->aclass;
-}
-
 Window
 ButtonGetWin(const Button * b)
 {
@@ -502,34 +496,6 @@ ButtonDragEnd(Button * b)
       Mode_buttons.move_pending = 0;
 
    autosave();
-}
-
-/*
- * Functions operating on all buttons
- */
-
-Button             *
-FindButton(Window win)
-{
-   Button             *b;
-   Button            **buttons;
-   int                 i, num;
-
-   buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-   for (i = 0; i < num; i++)
-     {
-	if ((win == EoGetWin(buttons[i])) || (win == buttons[i]->inside_win)
-	    || (win == buttons[i]->event_win))
-	  {
-	     b = buttons[i];
-	     Efree(buttons);
-	     return b;
-	  }
-     }
-   if (buttons)
-      Efree(buttons);
-
-   return NULL;
 }
 
 /*
@@ -698,6 +664,35 @@ ButtonHandleEvents(XEvent * ev, void *prm)
 	ButtonEventMouseOut(b, ev);
 	break;
      }
+}
+
+/*
+ * Functions operating on all buttons
+ */
+
+int
+ButtonsCheckAclass(Window win, ActionClass ** pac)
+{
+   ActionClass        *ac;
+   Button             *b, **lst;
+   int                 i, num;
+
+   ac = NULL;
+   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   for (i = 0; i < num; i++)
+     {
+	b = lst[i];
+	if (win == EoGetWin(b) || win == b->inside_win || win == b->event_win)
+	  {
+	     ac = b->aclass;
+	     break;
+	  }
+     }
+   if (lst)
+      Efree(lst);
+
+   *pac = ac;
+   return ac != NULL;
 }
 
 /*

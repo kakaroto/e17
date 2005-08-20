@@ -1059,7 +1059,6 @@ void                ButtonSetSwallowed(Button * b);
 int                 ButtonGetRefcount(const Button * b);
 int                 ButtonGetDesk(const Button * b);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
-ActionClass        *ButtonGetAClass(const Button * b);
 Window              ButtonGetWin(const Button * b);
 int                 ButtonGetWidth(const Button * b);
 int                 ButtonGetHeight(const Button * b);
@@ -1069,6 +1068,8 @@ int                 ButtonDoShowDefault(const Button * b);
 void                ButtonDoAction(Button * b, EWin * ewin, XEvent * ev);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
+
+int                 ButtonsCheckAclass(Window win, ActionClass ** pac);
 
 /* cmclass.c */
 #if ENABLE_COLOR_MODIFIERS
@@ -1159,6 +1160,7 @@ void                DeskDragMotion(void);
 int                 DesksGetNumber(void);
 int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
+int                 DesksCheckAclass(Window win, ActionClass ** pac);
 void                DesksClear(void);
 void                DesksResize(int w, int h);
 void                DesksEventsConfigure(int mode);
@@ -1380,8 +1382,6 @@ EWin               *EwinFindByClient(Window win);
 EWin               *EwinFindByChildren(Window win);
 EWin               *EwinFindByString(const char *win, int type);
 
-Button             *FindButton(Window win);
-ActionClass        *FindActionClass(Window win);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
 EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
 					       char nogroup, int *num);

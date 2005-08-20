@@ -140,59 +140,6 @@ EwinFindByString(const char *match, int type)
    return ewin;
 }
 
-static EWin        *
-FindEwinByDecoration(Window win)
-{
-   EWin               *const *ewins;
-   int                 i, j, num;
-
-   ewins = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ewins[i]->border->num_winparts; j++)
-	  {
-	     if (win == ewins[i]->bits[j].win)
-		return ewins[i];
-	  }
-     }
-
-   return NULL;
-}
-
-ActionClass        *
-FindActionClass(Window win)
-{
-   Button             *b;
-   EWin               *ewin;
-   int                 i;
-
-   b = FindButton(win);
-   if (b)
-      return ButtonGetAClass(b);
-
-   ewin = FindEwinByDecoration(win);
-   if (ewin)
-     {
-	for (i = 0; i < ewin->border->num_winparts; i++)
-	   if (win == ewin->bits[i].win)
-	      return ewin->border->part[i].aclass;
-     }
-
-   for (i = 0; i < Conf.desks.num; i++)
-     {
-	ActionClass        *ac;
-
-	if (win == DeskGetWin(i))
-	  {
-	     ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ACLASS);
-	     return ac;
-	  }
-     }
-
-   return NULL;
-}
-
 Group             **
 ListWinGroups(EWin * ewin, char group_select, int *num)
 {

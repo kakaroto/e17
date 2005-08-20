@@ -710,6 +710,30 @@ TooltipsEnable(int enable)
 
 static ToolTip     *ttip = NULL;
 
+static ActionClass *
+FindActionClass(Window win, int root_ok)
+{
+   ActionClass        *ac;
+   int                 found;
+
+   found = ButtonsCheckAclass(win, &ac);
+   if (found)
+      return ac;
+
+   found = EwinsCheckAclass(win, &ac);
+   if (found)
+      return ac;
+
+   if (!root_ok)
+      return NULL;
+
+   found = DesksCheckAclass(win, &ac);
+   if (found)
+      return ac;
+
+   return NULL;
+}
+
 static void
 ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
@@ -718,6 +742,11 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
    Window              win;
    ActionClass        *ac;
    const char         *tts;
+
+   if (!ttip)
+      ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+   if (!ttip)
+      return;
 
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
@@ -734,36 +763,15 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
       return;
 
    win = WindowAtXY(x, y);
-   ac = FindActionClass(win);
+   ac = FindActionClass(win, Conf_tooltips.showroottooltip);
    if (!ac)
       return;
 
-   if (!ttip)
-      ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
-
    tts = ActionclassGetTooltipString(ac);
-   if (tts)
-     {
-	tts = _(tts);
+   if (!tts)
+      return;
 
-	if (Conf_tooltips.showroottooltip)
-	  {
-	     TooltipShow(ttip, tts, ac, x, y);
-	  }
-	else
-	  {
-	     int                 i;
-	     int                 show = 1;
-
-	     for (i = 0; i < Conf.desks.num; i++)
-	       {
-		  if (win == DeskGetWin(i))
-		     show = 0;
-	       }
-	     if (show)
-		TooltipShow(ttip, tts, ac, x, y);
-	  }
-     }
+   TooltipShow(ttip, _(tts), ac, x, y);
 }
 
 /*

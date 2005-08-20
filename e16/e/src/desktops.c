@@ -615,6 +615,24 @@ DesksSetCurrent(int desk)
    desks.current = desk;
 }
 
+int
+DesksCheckAclass(Window win, ActionClass ** pac)
+{
+   Desk               *d;
+   int                 i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+     {
+	d = _DeskGet(i);
+	if (win != EoGetWin(d))
+	   continue;
+	*pac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+	return 1;
+     }
+
+   return 0;
+}
+
 void
 DesksClear(void)
 {
@@ -969,7 +987,7 @@ DesksStackingCheck(void)
 
    for (i = 0; i < Conf.desks.num; i++)
      {
-	d = DeskGet(i);
+	d = _DeskGet(i);
 	if (i && !d->viewable)
 	   continue;
 	if (!d->dirty_stack)
@@ -1272,7 +1290,7 @@ DeskShow(int desk)
 void
 StackDesktop(int desk)
 {
-   Desk               *d = DeskGet(desk);
+   Desk               *d = _DeskGet(desk);
    Window             *wl;
    int                 i, num, tot;
    EObj               *const *lst, *eo;
