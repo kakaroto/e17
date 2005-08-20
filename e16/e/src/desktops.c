@@ -1430,16 +1430,19 @@ DeskGetAclass(void *data __UNUSED__)
 }
 
 static void
-DesktopHandleTooltip(Desk * d, int event)
+DesktopHandleTooltip(Desk * d, XEvent * ev)
 {
-   switch (event)
+   switch (ev->type)
      {
      case ButtonPress:
      case LeaveNotify:
 	TooltipsSetPending(1, NULL, NULL);
 	break;
-     case ButtonRelease:
      case EnterNotify:
+	if (ev->xcrossing.mode != NotifyNormal ||
+	    ev->xcrossing.detail != NotifyInferior)
+	   break;
+     case ButtonRelease:
      case MotionNotify:
 	TooltipsSetPending(1, DeskGetAclass, d);
 	break;
@@ -1468,7 +1471,7 @@ DesktopHandleEvents(XEvent * ev, void *prm)
 	break;
      }
 
-   DesktopHandleTooltip(d, ev->type);
+   DesktopHandleTooltip(d, ev);
 }
 
 /* Settings */
