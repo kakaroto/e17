@@ -10,6 +10,7 @@ static int eapp_ui_init(char *file, char *lang);
 static int eapp_populate(Ewl_Tree *tree, char *file, char *lang);
 static char *eapp_eet_read(Eet_File *ef, char *key, char *lang);
 static void eapp_eet_write(Eet_File *ef, char *key, char *lang, char *val, int size);
+static void eapp_engrave_write(char *file);
 
 static void eapp_cb_quit(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_save(Ewl_Widget *w, void *ev, void *data);
@@ -147,7 +148,6 @@ eapp_ui_init(char *file, char *lang)
     tree = ewl_tree_new(TREE_COLS);
     ewl_container_child_append(EWL_CONTAINER(vbox), tree);
     ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
-    ewl_tree_mode_set(EWL_TREE(tree), EWL_TREE_MODE_NONE);
     ewl_widget_show(tree);
 
     if (!eapp_populate(EWL_TREE(tree), file, lang))
@@ -242,32 +242,6 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang)
     return 1;
 }
 
-static char *
-eapp_eet_read(Eet_File *ef, char *key, char *lang)
-{
-    if (ef)
-    {
-        int size;
-        char buf[4096];
-        char *ret, *r;
-
-        if (lang)
-            snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
-        else
-            snprintf(buf, sizeof(buf), "%s", key);
-
-        r = eet_read(ef, buf, &size);
-        if (r)
-        {
-            ret = malloc(sizeof(char) * (size + 1));
-            snprintf(ret, size + 1, "%s", r);
-            free(r);
-            return ret;
-        }
-    }
-    return strdup("");
-}
-
 static void
 eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data)
 {
@@ -336,68 +310,13 @@ eapp_cb_save(Ewl_Widget *w, void *ev, void *data)
 {
     Eet_File *ef;
     Ewl_Widget *o;
-    char *icon = NULL, *file = NULL, *lang = NULL;
+    char *file = NULL, *lang = NULL;
     int i;
 
     file = ewl_widget_data_get(w, "file");
     lang = ewl_widget_data_get(w, "lang");
 
-    o = ewl_widget_name_find("icon");
-    icon = ewl_widget_data_get(o, "file");
-    if (icon)
-    {
-        Engrave_File *eet;
-        Engrave_Image *image;
-        Engrave_Group *grp;
-        Engrave_Part *part;
-        Engrave_Part_State *ps;
-        char *icon_dir, *icon_file;
-
-        icon_file = strrchr(icon, '/');
-        *icon_file = '\0';
-        icon_dir = strdup(icon);
-
-        *icon_file = '/';
-        icon_file++;
-
-        eet = engrave_file_new();
-        engrave_file_image_dir_set(eet, icon_dir);
-        image = engrave_image_new(icon_file, ENGRAVE_IMAGE_TYPE_COMP, 0);
-        engrave_file_image_add(eet, image);
-
-        grp = engrave_group_new();
-        engrave_group_name_set(grp, "icon");
-        engrave_group_max_size_set(grp, 48, 48);
-        engrave_file_group_add(eet, grp);
-
-        part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
-        engrave_part_name_set(part, "image");
-        engrave_part_mouse_events_set(part, 0);
-        engrave_group_part_add(grp, part);
-    
-        ps = engrave_part_state_new();
-        engrave_part_state_name_set(ps, "default", 0.0);
-        engrave_part_state_aspect_set(ps, 1.0, 1.0);
-        engrave_part_state_image_normal_set(ps, image);
-        engrave_part_state_add(part, ps);
-
-        engrave_eet_output(eet, file);
-        engrave_file_free(eet);
-
-        free(icon_dir);
-    }
-    else
-    {
-        Engrave_File *eet;
-
-        /* if the file dosen't exist, create it */
-        if (!ecore_file_exists(file))
-        {
-            eet = engrave_file_new();
-            engrave_eet_output(eet, file);
-            engrave_file_free(eet);
-        }
-    }
+    eapp_engrave_write(file);
 
     ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if (!ef)
@@ -434,21 +353,115 @@ eapp_cb_save(Ewl_Widget *w, void *ev, void *data)
     eapp_cb_quit(NULL, NULL, NULL);
 }
 
+static char *
+eapp_eet_read(Eet_File *ef, char *key, char *lang)
+{
+    if (ef)
+    {
+        int size;
+        char buf[4096];
+        char *ret, *r;
+
+        if (lang)
+            snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
+        else
+            snprintf(buf, sizeof(buf), "%s", key);
+
+        r = eet_read(ef, buf, &size);
+        if (r)
+        {
+            ret = malloc(sizeof(char) * (size + 1));
+            if (ret)
+            {
+                snprintf(ret, size + 1, "%s", r);
+            }
+            else ret = strdup("");
+
+            free(r);
+            return ret;
+        }
+    }
+    return strdup("");
+}
+
 static void
 eapp_eet_write(Eet_File *ef, char *key, char *lang, char *val, int size)
 {
     char buf[4096];
 
-    if (lang)
-        snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
-    else
-        snprintf(buf, sizeof(buf), "%s", key);
+    if (ef)
+    {
+        if (lang)
+            snprintf(buf, sizeof(buf), "%s[%s]", key, lang);
+        else
+            snprintf(buf, sizeof(buf), "%s", key);
 
-    if (size == 0)
-        eet_delete(ef, buf);
-    else
-        eet_write(ef, buf, val, size, 0);
+        if (size == 0)
+            eet_delete(ef, buf);
+        else
+            eet_write(ef, buf, val, size, 0);
+    }
 }
 
+static void
+eapp_engrave_write(char *file)
+{
+    Engrave_File *eet;
+    Ewl_Widget *o;
+    char *icon;
 
+    o = ewl_widget_name_find("icon");
+    icon = ewl_widget_data_get(o, "file");
+    if (icon)
+    {
+        char *icon_dir, *icon_file;
+        Engrave_Image *image;
+        Engrave_Group *grp;
+        Engrave_Part *part;
+        Engrave_Part_State *ps;
+
+        icon_file = strrchr(icon, '/');
+        *icon_file = '\0';
+        icon_dir = strdup(icon);
+
+        *icon_file = '/';
+        icon_file++;
+
+        eet = engrave_file_new();
+        engrave_file_image_dir_set(eet, icon_dir);
+        image = engrave_image_new(icon_file, ENGRAVE_IMAGE_TYPE_COMP, 0);
+        engrave_file_image_add(eet, image);
+
+        grp = engrave_group_new();
+        engrave_group_name_set(grp, "icon");
+        engrave_group_max_size_set(grp, 48, 48);
+        engrave_file_group_add(eet, grp);
+
+        part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+        engrave_part_name_set(part, "image");
+        engrave_part_mouse_events_set(part, 0);
+        engrave_group_part_add(grp, part);
+    
+        ps = engrave_part_state_new();
+        engrave_part_state_name_set(ps, "default", 0.0);
+        engrave_part_state_aspect_set(ps, 1.0, 1.0);
+        engrave_part_state_image_normal_set(ps, image);
+        engrave_part_state_add(part, ps);
+
+        engrave_eet_output(eet, file);
+        engrave_file_free(eet);
+
+        free(icon_dir);
+    }
+    else
+    {
+        /* if the file dosen't exist, create it */
+        if (!ecore_file_exists(file))
+        {
+            eet = engrave_file_new();
+            engrave_eet_output(eet, file);
+            engrave_file_free(eet);
+        }
+    }
+}
 
