@@ -25,6 +25,7 @@ INTLTOOL_DIST = intltool-extract.in \
 EXTRA_DIST = $(INTLTOOL_DIST) \
 	     $(GLADE_FILES) \
              xmldocs.make \
-	     omf.make
+	     omf.make \
+	     e16menuedit2.spec
 
 

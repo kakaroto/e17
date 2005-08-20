@@ -1,6 +1,6 @@
 Name: e16menuedit2
 Summary: e16menuedit2
-Version: 0.0.2
+Version: @VERSION@
 Release: 1
 License: BSD
 Group: System Environment/Libraries
@@ -8,7 +8,7 @@ URL: http://www.enlightenment.org/
 Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: perl
-Requires: gtk2 >= 2.4.0, gtk2-devel >= 2.4.0, libglade2 >= 2.3.6, pkgconfig
+Requires: gtk2 >= 2.4.0, gtk2-devel >= 2.4.0, libglade2 >= 2.3.6, gmodule-2.0 >= 0.17.2, pkgconfig
 
 %description 
 
@@ -43,10 +43,10 @@ rm -fr %{buildroot}
 /usr/share/locale/ko/LC_MESSAGES/e16menuedit2.mo
 /usr/share/locale/tr/LC_MESSAGES/e16menuedit2.mo
 /usr/share/pixmaps/e16menuedit2-icon.png
-/usr/share/gnome/help/e16menuedit2-0.0.2*
-/usr/share/omf/e16menuedit2-0.0.2/e16menuedit2-C.omf
-/usr/share/e16menuedit2-0.0.2/glade/e16menuedit2.glade
-/usr/share/e16menuedit2-0.0.2*
+/usr/share/gnome/help/e16menuedit2-@VERSION@*
+/usr/share/omf/e16menuedit2-@VERSION@/e16menuedit2-C.omf
+/usr/share/e16menuedit2-@VERSION@/glade/e16menuedit2.glade
+/usr/share/e16menuedit2-@VERSION@*
 %doc AUTHORS
 %doc COPYING
 %doc README
@@ -56,5 +56,7 @@ rm -fr %{buildroot}
 %doc TODO
 
 %changelog
+* Sa Aug 20 2005 Andreas Volz <linux@brachttal.net>
+- generate spec with configure
 * Mon Nov 1 2004 Didier F.B Casse <didier@microtronyx.com> 
 -Initial RPM Release

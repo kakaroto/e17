@@ -127,6 +127,7 @@ AC_DEFINE_UNQUOTED(YELP_HELP_DIR, "${packageprefix}/${yelphelpdir}","")
 
 AC_OUTPUT([
 Makefile
+e16menuedit2.spec
 src/Makefile
 pixmaps/Makefile
 po/Makefile.in
