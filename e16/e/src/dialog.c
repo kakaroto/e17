@@ -1125,7 +1125,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		ih = imlib_image_get_height();
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 		EMapWindow(di->win);
-		register_win_callback = 0;
+		imlib_context_set_drawable(di->win);
 		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
 		ESetWindowBackgroundPixmap(di->win, pmap);
 		EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
@@ -1135,15 +1135,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	}
 	di->w = iw;
 	di->h = ih;
+	register_win_callback = 0;
 	break;
      case DITEM_SEPARATOR:
 	iw = di->iclass->padding.left + di->iclass->padding.right;
 	ih = di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->win);
-	register_win_callback = 0;
 	di->w = iw;
 	di->h = ih;
+	register_win_callback = 0;
 	break;
      case DITEM_RADIOBUTTON:
 	if (di->iclass->norm.normal->im_file)
