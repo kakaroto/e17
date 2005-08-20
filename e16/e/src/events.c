@@ -221,7 +221,6 @@ HandleEvent(XEvent * ev)
 	break;
 
       do_stuff:
-	TooltipsHandleEvent();	/* TBD */
 	ActionclassesEvent(ev, GetFocusEwin());
 	break;
      }
@@ -254,8 +253,6 @@ HandleEvent(XEvent * ev)
 	break;
 
      case MotionNotify:	/*  6 */
-	TooltipsHandleEvent();	/* TBD */
-
 	Mode.events.px = Mode.events.x;
 	Mode.events.py = Mode.events.y;
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);

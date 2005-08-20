@@ -260,7 +260,6 @@ void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 
-int                 EwinsCheckAclass(Window win, ActionClass ** pac);
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
 void                EwinsShowDesktop(int on);
@@ -289,7 +288,6 @@ void                EwinMoveToArea(EWin * ewin, int ax, int ay);
 void                EwinMoveToDesktop(EWin * ewin, int num);
 void                EwinMoveToDesktopAt(EWin * ewin, int num, int x, int y);
 
-unsigned int        OpacityExt(int op);
 void                EwinOpClose(EWin * ewin);
 void                EwinOpKill(EWin * ewin);
 void                EwinOpRaise(EWin * ewin);

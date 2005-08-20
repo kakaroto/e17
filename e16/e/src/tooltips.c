@@ -24,7 +24,7 @@
 #include "E.h"
 #include "conf.h"
 #include "emodule.h"
-#include "ewins.h"		/* FIXME - Should not be here */
+#include "tooltips.h"
 #include "xwin.h"
 
 static struct
@@ -38,6 +38,8 @@ static struct
 static struct
 {
    int                 inhibit;
+   CB_GetAclass       *ac_func;
+   void               *ac_data;
 } Mode_tooltips;
 
 struct _tooltip
@@ -710,36 +712,11 @@ TooltipsEnable(int enable)
 
 static ToolTip     *ttip = NULL;
 
-static ActionClass *
-FindActionClass(Window win, int root_ok)
-{
-   ActionClass        *ac;
-   int                 found;
-
-   found = ButtonsCheckAclass(win, &ac);
-   if (found)
-      return ac;
-
-   found = EwinsCheckAclass(win, &ac);
-   if (found)
-      return ac;
-
-   if (!root_ok)
-      return NULL;
-
-   found = DesksCheckAclass(win, &ac);
-   if (found)
-      return ac;
-
-   return NULL;
-}
-
 static void
 ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
    int                 x, y;
    unsigned int        mask;
-   Window              win;
    ActionClass        *ac;
    const char         *tts;
 
@@ -762,8 +739,9 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
        (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask))
       return;
 
-   win = WindowAtXY(x, y);
-   ac = FindActionClass(win, Conf_tooltips.showroottooltip);
+   if (!Mode_tooltips.ac_func)
+      return;
+   ac = Mode_tooltips.ac_func(Mode_tooltips.ac_data);
    if (!ac)
       return;
 
@@ -779,14 +757,21 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
  * ButtonPress, ButtonRelease, MotionNotify, EnterNotify, LeaveNotify
  */
 void
-TooltipsHandleEvent(void)
+TooltipsSetPending(int type, CB_GetAclass * func, void *data)
 {
+   Mode_tooltips.ac_func = func;
+   Mode_tooltips.ac_data = data;
+
    if (ttip)
       TooltipHide(ttip);
 
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
 
+   if (!func)
+      return;
    if (Mode_tooltips.inhibit || !Conf_tooltips.enable)
+      return;
+   if (type && !Conf_tooltips.showroottooltip)
       return;
 
    DoIn("TOOLTIP_TIMEOUT", 0.001 * Conf_tooltips.delay, ToolTipTimeout, 0,

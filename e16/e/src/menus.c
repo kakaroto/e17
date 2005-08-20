@@ -24,6 +24,7 @@
 #include "E.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "tooltips.h"
 #include "xwin.h"
 #include <X11/keysym.h>
 

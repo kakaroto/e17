@@ -1069,8 +1069,6 @@ void                ButtonDoAction(Button * b, EWin * ewin, XEvent * ev);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
-int                 ButtonsCheckAclass(Window win, ActionClass ** pac);
-
 /* cmclass.c */
 #if ENABLE_COLOR_MODIFIERS
 void                CreateCurve(ModCurve * c);
@@ -1160,7 +1158,6 @@ void                DeskDragMotion(void);
 int                 DesksGetNumber(void);
 int                 DesksGetCurrent(void);
 void                DesksSetCurrent(int desk);
-int                 DesksCheckAclass(Window win, ActionClass ** pac);
 void                DesksClear(void);
 void                DesksResize(int w, int h);
 void                DesksEventsConfigure(int mode);
@@ -1814,18 +1811,6 @@ void                DoIn(const char *name, double in_time,
 Qentry             *GetHeadTimerQueue(void);
 void                HandleTimerEvent(void);
 int                 RemoveTimerEvent(const char *name);
-
-/* tooltips.c */
-typedef struct _tooltip ToolTip;
-
-int                 TooltipConfigLoad(FILE * fs);
-void                TooltipShow(ToolTip * tt, const char *text,
-				ActionClass * ac, int x, int y);
-void                TooltipHide(ToolTip * tt);
-
-void                TooltipsHandleEvent(void);
-void                TooltipsHide(void);
-void                TooltipsEnable(int enable);
 
 /* ttfont.c */
 void                Efont_extents(Efont * f, const char *text,

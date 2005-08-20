@@ -1581,28 +1581,6 @@ EwinChangesProcess(EWin * ewin)
    EWinChanges.flags = 0;
 }
 
-int
-EwinsCheckAclass(Window win, ActionClass ** pac)
-{
-   EWin               *ewin, *const *lst;
-   int                 i, j, num;
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-	for (j = 0; j < ewin->border->num_winparts; j++)
-	  {
-	     if (win != ewin->bits[j].win)
-		continue;
-	     *pac = ewin->border->part[j].aclass;
-	     return 1;
-	  }
-     }
-
-   return 0;
-}
-
 void
 EwinsEventsConfigure(int mode)
 {

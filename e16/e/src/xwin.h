@@ -115,8 +115,6 @@ int                 EFreeGC(GC gc);
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
-Window              WindowAtXY(int x, int y);
-
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 
 #endif /* _XWIN_H_ */

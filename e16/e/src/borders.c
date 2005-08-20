@@ -24,6 +24,7 @@
 #include "E.h"
 #include "ewins.h"
 #include "snaps.h"
+#include "tooltips.h"
 #include "xwin.h"
 #include <sys/time.h>
 
@@ -950,10 +951,54 @@ BorderFrameHandleEvents(XEvent * ev, void *prm)
      }
 }
 
+static ActionClass *
+BorderWinpartGetAclass(void *data)
+{
+   EWinBit            *wbit = (EWinBit *) data;
+   EWin               *ewin;
+   int                 part;
+
+   /* Validate border part */
+   ewin = Mode.mouse_over_ewin;
+   if (!ewin)
+      return NULL;
+
+   part = wbit - ewin->bits;
+   if (part < 0 || part >= ewin->border->num_winparts)
+      return NULL;
+
+   return ewin->border->part[part].aclass;
+}
+
+static void
+BorderWinpartHandleTooltip(EWinBit * wbit, int event)
+{
+   EWin               *ewin = wbit->ewin;
+   int                 part = wbit - ewin->bits;
+
+   switch (event)
+     {
+     case ButtonPress:
+     case LeaveNotify:
+	TooltipsSetPending(0, NULL, NULL);
+	break;
+     case ButtonRelease:
+     case EnterNotify:
+     case MotionNotify:
+	if (!ewin->border->part[part].aclass)
+	   return;
+	TooltipsSetPending(0, BorderWinpartGetAclass, wbit);
+	break;
+     }
+}
+
 static void
 BorderWinpartHandleEvents(XEvent * ev, void *prm)
 {
    EWinBit            *wbit = (EWinBit *) prm;
+
+   /* Beware! Actions may destroy the current border */
+   BorderWinpartHandleTooltip(wbit, ev->type);
 
    switch (ev->type)
      {

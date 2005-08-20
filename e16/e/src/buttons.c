@@ -23,11 +23,13 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "tooltips.h"
 #include "xwin.h"
 
 #define BUTTON_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | \
-   ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask)
+   ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | \
+   PointerMotionMask)
 
 typedef struct _bgeometry
 {
@@ -641,6 +643,35 @@ ButtonEventMouseOut(Button * b, XEvent * ev)
      }
 }
 
+static ActionClass *
+ButtonGetAclass(void *data)
+{
+   Button             *b = data;
+
+   /* Validate button */
+   if (!FindItem(b, 0, LIST_FINDBY_POINTER, LIST_TYPE_BUTTON))
+      return NULL;
+
+   return b->aclass;
+}
+
+static void
+ButtonHandleTooltip(Button * b, int event)
+{
+   switch (event)
+     {
+     case ButtonPress:
+     case LeaveNotify:
+	TooltipsSetPending(0, NULL, NULL);
+	break;
+     case ButtonRelease:
+     case EnterNotify:
+     case MotionNotify:
+	TooltipsSetPending(0, ButtonGetAclass, b);
+	break;
+     }
+}
+
 static void
 ButtonHandleEvents(XEvent * ev, void *prm)
 {
@@ -664,35 +695,9 @@ ButtonHandleEvents(XEvent * ev, void *prm)
 	ButtonEventMouseOut(b, ev);
 	break;
      }
-}
 
-/*
- * Functions operating on all buttons
- */
-
-int
-ButtonsCheckAclass(Window win, ActionClass ** pac)
-{
-   ActionClass        *ac;
-   Button             *b, **lst;
-   int                 i, num;
-
-   ac = NULL;
-   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-   for (i = 0; i < num; i++)
-     {
-	b = lst[i];
-	if (win == EoGetWin(b) || win == b->inside_win || win == b->event_win)
-	  {
-	     ac = b->aclass;
-	     break;
-	  }
-     }
-   if (lst)
-      Efree(lst);
-
-   *pac = ac;
-   return ac != NULL;
+   if (b->aclass)
+      ButtonHandleTooltip(b, ev->type);
 }
 
 /*

@@ -26,6 +26,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "icons.h"
+#include "tooltips.h"
 #include "xwin.h"
 #include <math.h>
 

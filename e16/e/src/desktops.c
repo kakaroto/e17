@@ -25,6 +25,7 @@
 #include <time.h>
 #include "emodule.h"
 #include "ewins.h"
+#include "tooltips.h"
 #include "xwin.h"
 
 #define EDESK_EVENT_MASK \
@@ -613,24 +614,6 @@ void
 DesksSetCurrent(int desk)
 {
    desks.current = desk;
-}
-
-int
-DesksCheckAclass(Window win, ActionClass ** pac)
-{
-   Desk               *d;
-   int                 i;
-
-   for (i = 0; i < Conf.desks.num; i++)
-     {
-	d = _DeskGet(i);
-	if (win != EoGetWin(d))
-	   continue;
-	*pac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
-	return 1;
-     }
-
-   return 0;
 }
 
 void
@@ -1440,6 +1423,29 @@ DesktopEventButtonRelease(Desk * d, XEvent * ev)
    DesktopCheckAction(d, ev);
 }
 
+static ActionClass *
+DeskGetAclass(void *data __UNUSED__)
+{
+   return FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
+}
+
+static void
+DesktopHandleTooltip(Desk * d, int event)
+{
+   switch (event)
+     {
+     case ButtonPress:
+     case LeaveNotify:
+	TooltipsSetPending(1, NULL, NULL);
+	break;
+     case ButtonRelease:
+     case EnterNotify:
+     case MotionNotify:
+	TooltipsSetPending(1, DeskGetAclass, d);
+	break;
+     }
+}
+
 static void
 DesktopHandleEvents(XEvent * ev, void *prm)
 {
@@ -1461,6 +1467,8 @@ DesktopHandleEvents(XEvent * ev, void *prm)
 	FocusHandleLeave(NULL, ev);
 	break;
      }
+
+   DesktopHandleTooltip(d, ev->type);
 }
 
 /* Settings */

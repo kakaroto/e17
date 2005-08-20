@@ -99,6 +99,7 @@ e16_SOURCES = \
 	timers.c		\
 	timestamp.h		\
 	tooltips.c		\
+	tooltips.h		\
 	ttfont.c		\
 	warp.c			\
 	windowmatch.c   	\

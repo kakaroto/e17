@@ -25,6 +25,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "hiwin.h"
+#include "tooltips.h"
 #include "xwin.h"
 
 #define DEBUG_PAGER 0

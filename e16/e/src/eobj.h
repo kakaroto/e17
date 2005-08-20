@@ -157,4 +157,7 @@ int                 EobjListFocusLower(EObj * eo);
 void                EobjListOrderAdd(EObj * eo);
 void                EobjListOrderDel(EObj * eo);
 
+/* Hmmm. */
+unsigned int        OpacityExt(int op);
+
 #endif /* _EOBJ_H_ */
