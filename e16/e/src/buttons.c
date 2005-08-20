@@ -54,7 +54,7 @@ struct _button
    int                 flags;
    char                internal;
    char                default_show;
-   char                used;
+   EObj               *container;
 
    int                 state;
    Window              inside_win;
@@ -124,14 +124,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->geom.ysizeabs = ysa;
    b->geom.ysizerel = ysr;
    b->geom.size_from_image = simg;
-   b->inside_win = 0;
-   b->event_win = 0;
-   b->internal = 0;
    b->default_show = 1;
-   b->used = 0;
-   b->left = 0;
-   b->state = 0;
-   b->ref_count = 0;
 
    EoSetSticky(b, sticky);
    EoSetDesk(b, desk);
@@ -245,13 +238,14 @@ ButtonShow(Button * b)
 }
 
 void
-ButtonSetSwallowed(Button * b)
+ButtonSwallowInto(Button * b, EObj * eo)
 {
    b->internal = 1;
    b->default_show = 0;
    b->flags |= FLAG_FIXED;
-   b->used = 1;
+   b->container = eo;
    b->ref_count++;
+   EobjReparent(EoObj(b), eo, 0, 0);
    ButtonCalc(b);
    ButtonDraw(b);
    EMapWindow(EoGetWin(b));
@@ -282,7 +276,7 @@ ButtonHide(Button * b)
 void
 ButtonToggle(Button * b)
 {
-   if (b->used)
+   if (b->internal)
       return;
 
    if (EoIsShown(b))
@@ -435,13 +429,6 @@ ButtonDoShowDefault(const Button * b)
    return !b->internal && b->default_show;
 }
 
-void
-ButtonDoAction(Button * b, EWin * ewin, XEvent * ev)
-{
-   if (b->aclass && !Mode_buttons.action_inhibit)
-      ActionclassEvent(b->aclass, ev, ewin);
-}
-
 #if 1				/* Unused */
 int
 ButtonEmbedWindow(Button * b, Window WindowToEmbed)
@@ -505,17 +492,25 @@ ButtonDragEnd(Button * b)
  */
 
 static void
+ButtonDoAction(Button * b, XEvent * ev)
+{
+   if (b->container)
+      SlideoutDoAction(b->container, b->aclass, ev);
+   else
+      ActionclassEvent(b->aclass, ev, NULL);
+}
+
+static void
 ButtonEventMouseDown(Button * b, XEvent * ev)
 {
-   Window              win = ev->xbutton.window;
-   ActionClass        *ac;
-
    Mode_buttons.button = b;
 
-   GrabPointerSet(win, ECSR_GRAB, 0);
+   GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
 
    if (b->inside_win)
      {
+	Window              win = ev->xbutton.window;
+
 	ev->xbutton.window = b->inside_win;
 	XSendEvent(disp, b->inside_win, False, ButtonPressMask, ev);
 	ev->xbutton.window = win;
@@ -526,6 +521,8 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
 
    if (!b->internal)
      {
+	ActionClass        *ac;
+
 	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ACLASS);
 	if (ac && !Mode_buttons.action_inhibit)
@@ -533,16 +530,16 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
      }
 
    if (b->aclass && !Mode_buttons.action_inhibit)
-      ActionclassEvent(b->aclass, ev, NULL);
+      ButtonDoAction(b, ev);
 }
 
 static void
 ButtonEventMouseUp(Button * b, XEvent * ev)
 {
-   Window              win = ev->xbutton.window;
-
    if (b->inside_win && !Mode_buttons.action_inhibit)
      {
+	Window              win = ev->xbutton.window;
+
 	ev->xbutton.window = b->inside_win;
 	XSendEvent(disp, b->inside_win, False, ButtonReleaseMask, ev);
 	ev->xbutton.window = win;
@@ -554,12 +551,10 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
       b->state = STATE_NORMAL;
    ButtonDraw(b);
 
-#if 1				/* FIXME - Here? */
    GrabPointerRelease();
-#endif
 
    if (b->aclass && !b->left && !Mode_buttons.action_inhibit)
-      ActionclassEvent(b->aclass, ev, NULL);
+      ButtonDoAction(b, ev);
 
    b->left = 0;
 
@@ -567,9 +562,6 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
       ButtonDragEnd(Mode_buttons.button);
    Mode_buttons.button = NULL;
 
-#if 0				/* FIXME - Move? */
-   GrabPointerRelease();
-#endif
    Mode_buttons.action_inhibit = 0;
 }
 

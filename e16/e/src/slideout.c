@@ -26,6 +26,11 @@
 #include "ewins.h"
 #include "xwin.h"
 
+#define SLIDEOUT_EVENT_MASK \
+  (KeyPressMask | KeyReleaseMask | \
+   ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | \
+   PointerMotionMask)
+
 typedef struct
 {
    EObj                o;
@@ -58,6 +63,7 @@ SlideoutCreate(char *name, char dir)
 
    EobjInit(EoObj(s), EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
    s->direction = dir;
+   ESelectInput(EoGetWin(s), SLIDEOUT_EVENT_MASK);
    EventCallbackRegister(EoGetWin(s), 0, SlideoutHandleEvent, s);
 
    return s;
@@ -315,8 +321,7 @@ SlideoutAddButton(Slideout * s, Button * b)
    s->num_buttons++;
    s->button = Erealloc(s->button, sizeof(Button *) * s->num_buttons);
    s->button[s->num_buttons - 1] = b;
-   EobjReparent((EObj *) b, EoObj(s), 0, 0);
-   ButtonSetSwallowed(b);
+   ButtonSwallowInto(b, EoObj(s));
    SlideoutCalcSize(s);
 }
 
@@ -329,26 +334,16 @@ SlideoutRemoveButton(Slideout * s, Button * b)
 }
 #endif
 
-static void
-SlideoutCheckButtonEvent(Slideout * s, XEvent * ev)
+void
+SlideoutDoAction(EObj * seo, ActionClass * ac, XEvent * ev)
 {
-   int                 i, x, y, bx, by, bw, bh;
-   Button             *b;
+   Slideout           *s = (Slideout *) seo;
+   EWin               *ewin = s->context_ewin;
 
-   x = ev->xbutton.x;
-   y = ev->xbutton.y;
+   if (ev->type == ButtonRelease)
+      SlideoutHide(s);
 
-   if (x < 0 || y < 0 || x > EoGetW(s) || y >= EoGetH(s))
-      return;
-
-   for (i = 0; i < s->num_buttons; i++)
-     {
-	b = s->button[i];
-	EGetGeometry(ButtonGetWin(b), NULL, &bx, &by, &bw, &bh, NULL, NULL);
-	if (x < bx || y < by || x >= bx + bw || y >= by + bh)
-	   continue;
-	ButtonDoAction(b, s->context_ewin, ev);
-     }
+   ActionclassEvent(ac, ev, ewin);
 }
 
 static void
@@ -363,10 +358,17 @@ SlideoutHandleEvent(XEvent * ev, void *prm)
 	SlideoutHide(s);
 	break;
      case ButtonPress:
+	break;
      case ButtonRelease:
-	SlideoutCheckButtonEvent(s, ev);
-	if (ev->type == ButtonRelease)
-	   SlideoutHide(s);
+	SlideoutHide(s);
+	break;
+     case EnterNotify:
+	if (ev->xcrossing.mode != NotifyGrab)
+	   GrabPointerRelease();
+	break;
+     case LeaveNotify:
+	if (ev->xcrossing.mode != NotifyUngrab)
+	   GrabPointerSet(EoGetWin(s), ECSR_ROOT, 0);
 	break;
      }
 }

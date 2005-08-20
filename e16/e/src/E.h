@@ -1055,7 +1055,7 @@ void                ButtonMoveToCoord(Button * b, int x, int y);
 void                ButtonMoveRelative(Button * b, int dx, int dy);
 void                ButtonIncRefcount(Button * b);
 void                ButtonDecRefcount(Button * b);
-void                ButtonSetSwallowed(Button * b);
+void                ButtonSwallowInto(Button * bi, EObj * eo);
 int                 ButtonGetRefcount(const Button * b);
 int                 ButtonGetDesk(const Button * b);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
@@ -1065,7 +1065,6 @@ int                 ButtonGetHeight(const Button * b);
 int                 ButtonIsFixed(const Button * b);
 int                 ButtonIsInternal(const Button * b);
 int                 ButtonDoShowDefault(const Button * b);
-void                ButtonDoAction(Button * b, EWin * ewin, XEvent * ev);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
@@ -1757,6 +1756,7 @@ void                MaxHeight(EWin * ewin, const char *resize_type);
 
 /* slideouts.c */
 int                 SlideoutsConfigLoad(FILE * fs);
+void                SlideoutDoAction(EObj * seo, ActionClass * ac, XEvent * ev);
 
 /* snaps.c */
 void                Real_SaveSnapInfo(int dumval, void *dumdat);
