@@ -3,6 +3,8 @@
 #include <Ecore_File.h>
 #include <Engrave.h>
 
+#include "config.h"
+
 #define TREE_COLS 2
 
 static void eapp_usage(void);
@@ -133,11 +135,16 @@ static int
 eapp_ui_init(char *file, char *lang)
 {
     Ewl_Widget *win, *vbox, *hbox, *tree, *o;
+    char tmp[PATH_MAX];
 
+    snprintf(tmp, PATH_MAX, "%s/data/e_utils_eapp_edit/default.edj", 
+                                                    PACKAGE_DATA_DIR);
     win = ewl_window_new();
     ewl_window_title_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_class_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_name_set(EWL_WINDOW(win), "Eapp_Editor");
+    ewl_theme_data_str_set(win, "/window/file", tmp);
+    ewl_theme_data_str_set(win, "/window/group", "bg");
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, eapp_cb_quit, NULL);
     ewl_widget_show(win);
 
@@ -148,6 +155,8 @@ eapp_ui_init(char *file, char *lang)
     tree = ewl_tree_new(TREE_COLS);
     ewl_container_child_append(EWL_CONTAINER(vbox), tree);
     ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
+    ewl_theme_data_str_set(tree, "/cell/file", tmp);
+    ewl_theme_data_str_set(tree, "/cell/group", "cell");
     ewl_widget_show(tree);
 
     if (!eapp_populate(EWL_TREE(tree), file, lang))
@@ -217,7 +226,10 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang)
     /* add all the eet data */
     for (i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++)
     {
-        row[0] = ewl_text_new(keys[i].name);
+        row[0] = ewl_text_new(NULL);
+        ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_SOFT_SHADOW);
+        ewl_text_shadow_color_set(EWL_TEXT(row[0]), 128, 128, 128, 128);
+        ewl_text_text_set(EWL_TEXT(row[0]), keys[i].name);
         ewl_widget_show(row[0]);
 
         v = eapp_eet_read(ef, keys[i].key, lang);
