@@ -24,7 +24,7 @@ typedef struct
 	int             (*fill_ask) (Ewl_Object * ob);
 	void            (*fill_set) (Ewl_Object * ob, int size);
 
-	int    (*align_ask) (Ewl_Object * ob);
+	int             (*align_ask) (Ewl_Object * ob);
 	void            (*align_set) (Ewl_Object * ob, int size);
 
 } Box_Orientation;

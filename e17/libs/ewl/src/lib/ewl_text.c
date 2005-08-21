@@ -104,9 +104,10 @@ ewl_text_init(Ewl_Text *t, const char *text)
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	t->current_context = ewl_text_context_default_create(t);
+	t->current_context = NULL;
 
-	ewl_text_text_set(t, text);
+	if (text)
+		ewl_text_text_set(t, text);
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE, 
 					ewl_text_cb_configure, NULL);
@@ -2770,6 +2771,7 @@ static Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
 	Ewl_Text_Context *tx = NULL, *tmp;
+    int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
@@ -2785,8 +2787,119 @@ ewl_text_context_default_create(Ewl_Text *t)
 	tmp->color.b = ewl_theme_data_int_get(EWL_WIDGET(t), "color/b");
 	tmp->color.a = ewl_theme_data_int_get(EWL_WIDGET(t), "color/a");
 
-	/* XXX grap the style, alignment and wrap data from the theme here 
-	 *     and all the bg values */
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "underline");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_UNDERLINE;
+		tmp->style_colors.underline.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"underline/color/r");
+		tmp->style_colors.underline.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"underline/color/g");
+		tmp->style_colors.underline.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"underline/color/b");
+		tmp->style_colors.underline.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"underline/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "double_underline");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_DOUBLE_UNDERLINE;
+		tmp->style_colors.double_underline.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"double_underline/color/r");
+		tmp->style_colors.double_underline.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"double_underline/color/g");
+		tmp->style_colors.double_underline.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"double_underline/color/b");
+		tmp->style_colors.double_underline.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"double_underline/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "strikethrough");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_STRIKETHROUGH;
+		tmp->style_colors.strikethrough.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"strikethrough/color/r");
+		tmp->style_colors.strikethrough.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"strikethrough/color/g");
+		tmp->style_colors.strikethrough.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"strikethrough/color/b");
+		tmp->style_colors.strikethrough.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"strikethrough/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "shadow");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_SHADOW;
+		tmp->style_colors.shadow.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/r");
+		tmp->style_colors.shadow.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/g");
+		tmp->style_colors.shadow.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/b");
+		tmp->style_colors.shadow.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "soft_shadow");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_SOFT_SHADOW;
+		tmp->style_colors.shadow.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/r");
+		tmp->style_colors.shadow.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/g");
+		tmp->style_colors.shadow.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/b");
+		tmp->style_colors.shadow.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "far_shadow");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_FAR_SHADOW;
+		tmp->style_colors.shadow.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/r");
+		tmp->style_colors.shadow.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/g");
+		tmp->style_colors.shadow.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/b");
+		tmp->style_colors.shadow.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"shadow/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "outline");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_OUTLINE;
+		tmp->style_colors.outline.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"outline/color/r");
+		tmp->style_colors.outline.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"outline/color/g");
+		tmp->style_colors.outline.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"outline/color/b");
+		tmp->style_colors.outline.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"outline/color/a");
+	}
+
+	i = ewl_theme_data_int_get(EWL_WIDGET(t), "glow");
+	if (i)
+	{
+		tmp->styles |= EWL_TEXT_STYLE_GLOW;
+		tmp->style_colors.glow.r = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"glow/color/r");
+		tmp->style_colors.glow.g = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"glow/color/g");
+		tmp->style_colors.glow.b = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"glow/color/b");
+		tmp->style_colors.glow.a = ewl_theme_data_int_get(EWL_WIDGET(t),
+				"glow/color/a");
+	}
+
+	/* XXX grap the alignment and wrap data from the theme here */
 
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
 	ewl_text_context_free(tmp);
