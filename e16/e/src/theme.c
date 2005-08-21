@@ -413,6 +413,8 @@ ThemePathFind(void)
       Efree(Conf.theme.name);
    Conf.theme.name = fullfileof(theme);
 
+   if (Mode.theme.path)
+      Efree(Mode.theme.path);
    Mode.theme.path = theme;
 }
 

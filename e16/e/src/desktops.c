@@ -530,8 +530,16 @@ DeskGetBackground(int desk)
 void
 DeskGetArea(int desk, int *ax, int *ay)
 {
-   *ax = _DeskGet(desk)->current_area_x;
-   *ay = _DeskGet(desk)->current_area_y;
+   Desk               *d;
+
+   d = _DeskGet(desk);
+   if (!d)
+     {
+	*ax = *ay = 0;
+	return;
+     }
+   *ax = d->current_area_x;
+   *ay = d->current_area_y;
 }
 
 void
@@ -1654,7 +1662,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
 	if (ic)
 	   ImageclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_UNKNWN);
-	for (i = 0; i < Conf.desks.num; i++)
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   wins[i] = 0;
 	called = 1;
      }
@@ -1667,7 +1675,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	     Pixmap              pmap;
 
 	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
-	     XSetWindowBorderWidth(disp, wins[i], 1);
+	     ESetWindowBorderWidth(wins[i], 1);
 	     pmap = ECreatePixmap(wins[i], 64, 48, VRoot.depth);
 	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
@@ -1693,17 +1701,17 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	num = tmp_desktops - 1;
 	if (num < 1)
 	   num = 1;
-	ERaiseWindow(wins[i]);
 	EMoveWindow(wins[i], (i * (w - 64 - 2)) / num,
 		    (i * (h - 48 - 2)) / num);
+	ERaiseWindow(wins[i]);
 	EMapWindow(wins[i]);
      }
 
    for (i = tmp_desktops; i < Conf.desks.num; i++)
      {
+	if (!wins[i])
+	   continue;
 	EUnmapWindow(wins[i]);
-	EDestroyWindow(wins[i]);
-	wins[i] = None;
      }
 
    if (tmp_desktops > 1)

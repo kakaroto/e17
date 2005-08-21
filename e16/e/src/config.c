@@ -130,7 +130,7 @@ GetLine(char *s, int size, FILE * f)
 		  if (so == s)	/* Skip empty lines */
 		     break;
 		case_eol:
-		  *so++ = '\0';	/* Terminate and return */
+		  *so = '\0';	/* Terminate and return */
 		  goto done;
 	       case '\r':	/* Ignore */
 		  break;
@@ -168,6 +168,17 @@ GetLine(char *s, int size, FILE * f)
 
  done:
    bufptr = si;
+
+   /* Strip trailing whitespace */
+   si = so;
+   for (; so > s; so--)
+     {
+	ch = so[-1];
+	if (ch != ' ' && ch != '\t')
+	   break;
+     }
+   if (so != si)
+      *so = '\0';
 
    if (EventDebug(EDBUG_TYPE_CONFIG))
       Eprintf("GetLine %s\n", s);

@@ -875,6 +875,7 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
 {
    EWin               *ewin = wbit->ewin;
    int                 part = wbit - ewin->bits;
+   int                 left = wbit->left;
 
    GrabPointerRelease();
 
@@ -887,11 +888,12 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
 #endif
    BorderWinpartChange(ewin, part, 0);
 
-   if (wbit->win == Mode.events.last_bpress && !wbit->left &&
+   /* Beware! Actions may destroy the current border */
+   wbit->left = 0;
+
+   if (wbit->win == Mode.events.last_bpress && !left &&
        ewin->border->part[part].aclass)
       ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
-
-   wbit->left = 0;
 }
 
 static void

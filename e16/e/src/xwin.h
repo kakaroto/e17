@@ -85,6 +85,7 @@ Bool                EQueryPointer(Window win, int *px, int *py, Window * pchild,
 #define ESelectInput(win, mask) XSelectInput(disp, win, mask)
 #define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
 #define EChangeWindowAttributes(win, mask, attr) XChangeWindowAttributes(disp, win, mask, attr)
+#define ESetWindowBorderWidth(win, bw) XSetWindowBorderWidth(disp, win, bw)
 #define ERaiseWindow(win) XRaiseWindow(disp, win)
 #define ELowerWindow(win) XLowerWindow(disp, win)
 #define EClearWindow(win) XClearWindow(disp, win)

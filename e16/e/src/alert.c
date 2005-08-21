@@ -301,7 +301,7 @@ ShowAlert(char *text)
    XGrabServer(dd);
    XSync(dd, False);
 
-   for (i = 0; i < 600; i += 40)
+   for (i = 40; i < 600; i += 40)
      {
 	ww = i;
 	hh = (i * 440) / 600;

@@ -161,7 +161,7 @@ EwinCreate(Window win, int type)
    if (!EwinIsInternal(ewin))
      {
 	XShapeSelectInput(disp, win, ShapeNotifyMask);
-	XSetWindowBorderWidth(disp, win, 0);
+	ESetWindowBorderWidth(win, 0);
 	ewin->client.bw = 0;
      }
 
