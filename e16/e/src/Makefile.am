@@ -26,6 +26,7 @@ e16_SOURCES = \
 	backgrounds.c		\
 	borders.c		\
 	buttons.c		\
+	buttons.h		\
 	cmclass.c		\
 	comms.c			\
 	conf.h			\

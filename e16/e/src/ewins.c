@@ -1620,6 +1620,25 @@ EwinsTouch(int desk)
 }
 
 void
+EwinsMoveStickyToDesk(int desk)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num;
+
+   lst = EwinListStackGet(&num);
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[num - 1 - i];
+	if (!EoIsSticky(ewin) && !EoIsFloating(ewin))
+	   continue;
+	if (EwinIsTransientChild(ewin))
+	   continue;
+
+	EwinMoveToDesktop(ewin, desk);
+     }
+}
+
+void
 EwinsSetFree(void)
 {
    int                 i, num;

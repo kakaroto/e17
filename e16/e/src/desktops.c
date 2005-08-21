@@ -22,11 +22,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include <time.h>
+#include "buttons.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "tooltips.h"
 #include "xwin.h"
+#include <time.h>
 
 #define EDESK_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \
@@ -308,35 +309,35 @@ DeskControlsCreate(Desk * d)
 }
 
 static void
-DeskControlsDestroy(Desk * d)
+DeskControlsDestroy(Desk * d, int id)
 {
    Button            **blst;
    int                 num, i;
 
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	   if (ButtonGetDesk(blst[i]) == d->num)
-	      ButtonDestroy(blst[i]);
-	Efree(blst);
-     }
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, id);
+   if (!blst)
+      return;
+
+   for (i = 0; i < num; i++)
+      if (EobjGetDesk((EObj *) (blst[i])) == d->num)
+	 ButtonDestroy(blst[i]);
+   Efree(blst);
 }
 
 static void
-DeskControlsShow(Desk * d)
+DeskControlsShow(Desk * d, int id)
 {
    Button            **blst;
    int                 num, i;
 
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
-   if (blst)
-     {
-	for (i = 0; i < num; i++)
-	   if (ButtonGetDesk(blst[i]) == d->num)
-	      ButtonShow(blst[i]);
-	Efree(blst);
-     }
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, id);
+   if (!blst)
+      return;
+
+   for (i = 0; i < num; i++)
+      if (EobjGetDesk((EObj *) (blst[i])) == d->num)
+	 ButtonShow(blst[i]);
+   Efree(blst);
 }
 
 static void
@@ -372,7 +373,7 @@ DeskConfigure(Desk * d)
    unsigned int        rnd;
 
    DeskControlsCreate(d);
-   DeskControlsShow(d);
+   DeskControlsShow(d, 1);
 
    bg = desks.bg[d->num];
    if (bg)
@@ -443,33 +444,12 @@ DeskCreate(int desk, int configure)
 static void
 DeskDestroy(Desk * d)
 {
-   Button            **blst;
-   int                 num, i;
-
-   if (d->num <= 0)
-      return;
-
    ModulesSignal(ESIGNAL_DESK_REMOVED, ((void *)(long)(d->num)));
 
    EventCallbackUnregister(EoGetWin(d), 0, DesktopHandleEvents, d);
 
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
-   for (i = 0; i < num; i++)
-     {
-	if (ButtonGetDesk(blst[i]) == d->num)
-	   ButtonDestroy(blst[i]);
-     }
-   if (blst)
-      Efree(blst);
-
-   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   for (i = 0; i < num; i++)
-     {
-	if (ButtonGetDesk(blst[i]) == d->num)
-	   ButtonDestroy(blst[i]);
-     }
-   if (blst)
-      Efree(blst);
+   DeskControlsDestroy(d, 1);
+   DeskControlsDestroy(d, 2);
 
    if (d->bg)
       BackgroundDecRefcount(d->bg);
@@ -500,9 +480,9 @@ DeskResize(int desk, int w, int h)
      }
    BackgroundPixmapFree(d->bg);
    DeskRefresh(d->num);
-   DeskControlsDestroy(d);
+   DeskControlsDestroy(d, 1);
    DeskControlsCreate(d);
-   DeskControlsShow(d);
+   DeskControlsShow(d, 1);
 }
 
 Desk               *
@@ -712,7 +692,7 @@ DesksControlsDestroy(void)
    int                 i;
 
    for (i = 0; i < Conf.desks.num; i++)
-      DeskControlsDestroy(_DeskGet(i));
+      DeskControlsDestroy(_DeskGet(i), 1);
 }
 
 static void
@@ -721,7 +701,7 @@ DesksControlsShow(void)
    int                 i;
 
    for (i = 0; i < Conf.desks.num; i++)
-      DeskControlsShow(_DeskGet(i));
+      DeskControlsShow(_DeskGet(i), 1);
 }
 
 static void
@@ -921,48 +901,6 @@ DesktopAt(int x, int y)
 }
 
 static void
-MoveStickyWindowsToCurrentDesk(void)
-{
-   Desk               *d;
-   EWin               *const *lst, *ewin;
-   int                 i, num, desk;
-
-   desk = DesksGetCurrent();
-   d = _DeskGet(desk);
-
-   lst = EwinListStackGet(&num);
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-	if (!EoIsSticky(ewin) && !EoIsFloating(ewin))
-	   continue;
-	if (EwinIsTransientChild(ewin))
-	   continue;
-
-	EwinMoveToDesktop(ewin, desk);
-     }
-}
-
-static void
-MoveStickyButtonsToCurrentDesk(void)
-{
-   Button            **lst, *btn;
-   int                 i, num;
-
-   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-   for (i = 0; i < num; i++)
-     {
-	btn = lst[i];
-	if (ButtonIsInternal(btn) || !EoIsSticky((EWin *) btn))
-	   continue;
-
-	ButtonMoveToDesktop(btn, desks.current);
-     }
-   if (lst)
-      Efree(lst);
-}
-
-static void
 DesksStackingCheck(void)
 {
    Desk               *d;
@@ -1071,8 +1009,8 @@ DeskEnter(Desk * d)
 	   DeskHide(desks.order[i]);
      }
 
-   MoveStickyWindowsToCurrentDesk();
-   MoveStickyButtonsToCurrentDesk();
+   EwinsMoveStickyToDesk(d->num);
+   ButtonsMoveStickyToDesk(d->num);
    DesksStackingCheck();
    HintsSetCurrentDesktop();
 
@@ -1215,8 +1153,8 @@ DeskLower(int desk)
    UncoverDesktop(desks.order[0]);
    DeskHide(desk);
 
-   MoveStickyWindowsToCurrentDesk();
-   MoveStickyButtonsToCurrentDesk();
+   EwinsMoveStickyToDesk(desks.current);
+   ButtonsMoveStickyToDesk(desks.current);
    DesksStackingCheck();
    FocusNewDesk();
    if (Mode.mode == MODE_NONE)

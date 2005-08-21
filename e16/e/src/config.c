@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "buttons.h"
 #include "conf.h"
 #include "tooltips.h"
 #include <ctype.h>

@@ -55,6 +55,13 @@ struct _eobj
 #define EOBJ_TYPE_EVENT     4
 #define EOBJ_TYPE_EXT       5
 
+#define EobjGetWin(eo)          ((eo)->win)
+#define EobjGetDesk(eo)         ((eo)->desk)
+#define EobjGetX(eo)            ((eo)->x)
+#define EobjGetY(eo)            ((eo)->y)
+#define EobjGetW(eo)            ((eo)->w)
+#define EobjGetH(eo)            ((eo)->h)
+
 #define EoObj(eo)               (&((eo)->o))
 #define EoGetWin(eo)            ((eo)->o.win)
 #define EoGetName(eo)           ((eo)->o.name)

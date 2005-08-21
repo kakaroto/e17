@@ -263,6 +263,7 @@ void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
 void                EwinsShowDesktop(int on);
+void                EwinsMoveStickyToDesk(int desk);
 
 /* ewin-ops.c */
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,

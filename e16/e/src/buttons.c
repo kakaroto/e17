@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "buttons.h"
 #include "emodule.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -73,6 +74,30 @@ static struct
 } Mode_buttons;
 
 static void         ButtonHandleEvents(XEvent * ev, void *btn);
+
+void
+ButtonIncRefcount(Button * b)
+{
+   b->ref_count++;
+}
+
+void
+ButtonDecRefcount(Button * b)
+{
+   b->ref_count--;
+}
+
+static int
+ButtonIsFixed(const Button * b)
+{
+   return b->flags & FLAG_FIXED;
+}
+
+static int
+ButtonIsInternal(const Button * b)
+{
+   return b->internal;
+}
 
 Button             *
 ButtonCreate(const char *name, int id, ImageClass * iclass,
@@ -229,6 +254,22 @@ ButtonCalc(Button * b)
    EoMoveResize(b, x, y, w, h);
 }
 
+static void
+ButtonDraw(Button * b)
+{
+   ITApply(EoGetWin(b), b->iclass, NULL, EoGetW(b), EoGetH(b),
+	   b->state, 0, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
+}
+
+#if 0				/* Unused */
+void
+ButtonDrawWithState(Button * b, int state)
+{
+   b->state = state;
+   ButtonDraw(b);
+}
+#endif
+
 void
 ButtonShow(Button * b)
 {
@@ -251,7 +292,7 @@ ButtonSwallowInto(Button * b, EObj * eo)
    EMapWindow(EoGetWin(b));
 }
 
-void
+static void
 ButtonMoveToDesktop(Button * b, int desk)
 {
    Desk               *d;
@@ -273,7 +314,7 @@ ButtonHide(Button * b)
    EoUnmap(b);
 }
 
-void
+static void
 ButtonToggle(Button * b)
 {
    if (b->internal)
@@ -286,25 +327,11 @@ ButtonToggle(Button * b)
 }
 
 void
-ButtonDraw(Button * b)
-{
-   ITApply(EoGetWin(b), b->iclass, NULL, EoGetW(b), EoGetH(b),
-	   b->state, 0, 0, 0, ST_BUTTON, b->tclass, NULL, b->label);
-}
-
-void
-ButtonDrawWithState(Button * b, int state)
-{
-   b->state = state;
-   ButtonDraw(b);
-}
-
-void
 ButtonMoveToCoord(Button * b, int x, int y)
 {
    int                 rx, ry, relx, rely, absx, absy;
 
-   if (b->flags & FLAG_FIXED)
+   if (ButtonIsFixed(b))
       return;
 
    if ((x + (EoGetW(b) >> 1)) < (VRoot.w / 3))
@@ -345,40 +372,10 @@ ButtonMoveRelative(Button * b, int dx, int dy)
    ButtonMoveToCoord(b, EoGetX(b) + dx, EoGetY(b) + dy);
 }
 
-void
-ButtonIncRefcount(Button * b)
-{
-   b->ref_count++;
-}
-
-void
-ButtonDecRefcount(Button * b)
-{
-   b->ref_count--;
-}
-
-static const char  *
-ButtonGetName(const Button * b)
-{
-   return EoGetName(b);
-}
-
-int
-ButtonGetRefcount(const Button * b)
-{
-   return b->ref_count;
-}
-
-int
-ButtonGetDesk(const Button * b)
-{
-   return EoGetDesk(b);
-}
-
 int
 ButtonGetInfo(const Button * b, RectBox * r, int desk)
 {
-   if (!EoIsShown(b) || b->internal)
+   if (!EoIsShown(b) || ButtonIsInternal(b))
       return -1;
    if (!EoIsSticky(b) && EoGetDesk(b) != desk)
       return -1;
@@ -391,36 +388,6 @@ ButtonGetInfo(const Button * b, RectBox * r, int desk)
    r->p = EoIsSticky(b);
 
    return 0;
-}
-
-Window
-ButtonGetWin(const Button * b)
-{
-   return EoGetWin(b);
-}
-
-int
-ButtonGetWidth(const Button * b)
-{
-   return EoGetW(b);
-}
-
-int
-ButtonGetHeight(const Button * b)
-{
-   return EoGetH(b);
-}
-
-int
-ButtonIsFixed(const Button * b)
-{
-   return b->flags & FLAG_FIXED;
-}
-
-int
-ButtonIsInternal(const Button * b)
-{
-   return b->internal;
 }
 
 int
@@ -487,6 +454,25 @@ ButtonDragEnd(Button * b)
    autosave();
 }
 
+void
+ButtonsMoveStickyToDesk(int desk)
+{
+   Button            **lst, *btn;
+   int                 i, num;
+
+   lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+   for (i = 0; i < num; i++)
+     {
+	btn = lst[i];
+	if (!EoIsSticky(btn) || ButtonIsInternal(btn))
+	   continue;
+
+	ButtonMoveToDesktop(btn, desk);
+     }
+   if (lst)
+      Efree(lst);
+}
+
 /*
  * Button event handlers
  */
@@ -519,7 +505,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
    b->state = STATE_CLICKED;
    ButtonDraw(b);
 
-   if (!b->internal)
+   if (!ButtonIsInternal(b))
      {
 	ActionClass        *ac;
 
@@ -1062,9 +1048,9 @@ doHideShowButton(const char *params)
 	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	for (i = 0; i < num; i++)
 	  {
-	     if (matchregexp(ss, ButtonGetName(lst[i])))
+	     if (matchregexp(ss, EoGetName(lst[i])))
 	       {
-		  if (strcmp(ButtonGetName(lst[i]),
+		  if (strcmp(EoGetName(lst[i]),
 			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
 		     ButtonToggle(lst[i]);
 	       }
@@ -1081,9 +1067,9 @@ doHideShowButton(const char *params)
 	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!matchregexp(ss, ButtonGetName(lst[i])))
+	     if (!matchregexp(ss, EoGetName(lst[i])))
 	       {
-		  if (strcmp(ButtonGetName(lst[i]),
+		  if (strcmp(EoGetName(lst[i]),
 			     "_DESKTOP_DESKRAY_DRAG_CONTROL"))
 		     ButtonToggle(lst[i]);
 	       }
@@ -1096,7 +1082,7 @@ doHideShowButton(const char *params)
 	lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	for (i = 0; i < num; i++)
 	  {
-	     if (strcmp(ButtonGetName(lst[i]), "_DESKTOP_DESKRAY_DRAG_CONTROL"))
+	     if (strcmp(EoGetName(lst[i]), "_DESKTOP_DESKRAY_DRAG_CONTROL"))
 		ButtonToggle(lst[i]);
 	  }
 	if (lst)
@@ -1138,7 +1124,7 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n",
 		       EoGetWin(b), EoGetDesk(b), EoIsSticky(b), EoGetLayer(b),
 		       EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b),
-		       ButtonGetName(lst[i]));
+		       EoGetName(lst[i]));
 	  }
 	if (lst)
 	   Efree(lst);

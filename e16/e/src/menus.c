@@ -217,13 +217,6 @@ MenuShow(Menu * m, char noshow)
    ewin = m->ewin;
    if (ewin)
      {
-#if 0				/* FIXME - Why? */
-	if ((Mode.button) &&
-	    FindItem(Mode.button, 0, LIST_FINDBY_POINTER, LIST_TYPE_BUTTON))
-	  {
-	     ButtonDrawWithState(Mode.button, STATE_NORMAL);
-	  }
-#endif
 #if 0				/* ??? */
 	RaiseEwin(ewin);
 	ShowEwin(ewin);

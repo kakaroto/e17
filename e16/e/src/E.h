@@ -333,7 +333,6 @@ typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 typedef struct _snapshot Snapshot;
 typedef struct _group Group;
-typedef struct _button Button;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
 typedef struct _efont Efont;
@@ -485,6 +484,7 @@ struct _textclass
    unsigned int        ref_count;
 };
 
+struct _button;
 typedef struct
 {
    EObj                o;
@@ -492,7 +492,7 @@ typedef struct
    char                viewable;
    char                dirty_stack;
    Background         *bg;
-   Button             *tag;
+   struct _button     *tag;
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
@@ -1035,39 +1035,6 @@ Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
 void                BordersSetupFallback(void);
 
-/* buttons.c */
-int                 ButtonsConfigLoad(FILE * fs);
-Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
-				 ActionClass * aclass, TextClass * tclass,
-				 const char *label, char ontop, int flags,
-				 int minw, int maxw, int minh, int maxh, int xo,
-				 int yo, int xa, int xr, int ya, int yr,
-				 int xsr, int xsa, int ysr, int ysa, char simg,
-				 int desk, char sticky);
-void                ButtonDestroy(Button * b);
-void                ButtonShow(Button * b);
-void                ButtonHide(Button * b);
-void                ButtonToggle(Button * b);
-void                ButtonDraw(Button * b);
-void                ButtonDrawWithState(Button * b, int state);
-void                ButtonMoveToDesktop(Button * b, int desk);
-void                ButtonMoveToCoord(Button * b, int x, int y);
-void                ButtonMoveRelative(Button * b, int dx, int dy);
-void                ButtonIncRefcount(Button * b);
-void                ButtonDecRefcount(Button * b);
-void                ButtonSwallowInto(Button * bi, EObj * eo);
-int                 ButtonGetRefcount(const Button * b);
-int                 ButtonGetDesk(const Button * b);
-int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
-Window              ButtonGetWin(const Button * b);
-int                 ButtonGetWidth(const Button * b);
-int                 ButtonGetHeight(const Button * b);
-int                 ButtonIsFixed(const Button * b);
-int                 ButtonIsInternal(const Button * b);
-int                 ButtonDoShowDefault(const Button * b);
-int                 ButtonEmbedWindow(Button * ButtonToUse,
-				      Window WindowToEmbed);
-
 /* cmclass.c */
 #if ENABLE_COLOR_MODIFIERS
 void                CreateCurve(ModCurve * c);
@@ -1558,7 +1525,6 @@ void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 /* ipc.c */
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
 int                 HandleIPC(const char *params, Client * c);
-void                ButtonIPC(int val, void *data);
 int                 EFunc(EWin * ewin, const char *params);
 
 /* lang.c */

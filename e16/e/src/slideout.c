@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "buttons.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -35,8 +36,8 @@ typedef struct
 {
    EObj                o;
    char                direction;
-   int                 num_buttons;
-   Button            **button;
+   int                 num_objs;
+   EObj              **objs;
    unsigned int        ref_count;
    EWin               *context_ewin;
 } Slideout;
@@ -170,9 +171,8 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	att.win_gravity = SouthEastGravity;
 	EChangeWindowAttributes(EoGetWin(s), CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
-	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
-				   CWWinGravity, &att);
+	for (i = 0; i < s->num_objs; i++)
+	   EChangeWindowAttributes(EobjGetWin(s->objs[i]), CWWinGravity, &att);
 	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
 	EoMap(s, 2);
@@ -183,9 +183,8 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	att.win_gravity = NorthWestGravity;
 	EChangeWindowAttributes(EoGetWin(s), CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
-	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
-				   CWWinGravity, &att);
+	for (i = 0; i < s->num_objs; i++)
+	   EChangeWindowAttributes(EobjGetWin(s->objs[i]), CWWinGravity, &att);
 	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
 	EoMap(s, 2);
@@ -196,9 +195,8 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	att.win_gravity = SouthEastGravity;
 	EChangeWindowAttributes(EoGetWin(s), CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
-	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
-				   CWWinGravity, &att);
+	for (i = 0; i < s->num_objs; i++)
+	   EChangeWindowAttributes(EobjGetWin(s->objs[i]), CWWinGravity, &att);
 	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
 	EoMap(s, 2);
@@ -209,9 +207,8 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	att.win_gravity = NorthWestGravity;
 	EChangeWindowAttributes(EoGetWin(s), CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
-	for (i = 0; i < s->num_buttons; i++)
-	   EChangeWindowAttributes(ButtonGetWin(s->button[i]),
-				   CWWinGravity, &att);
+	for (i = 0; i < s->num_objs; i++)
+	   EChangeWindowAttributes(EobjGetWin(s->objs[i]), CWWinGravity, &att);
 	EoMoveResize(s, xx, yy, 1, 1);
 	ESync();
 	EoMap(s, 2);
@@ -255,10 +252,10 @@ SlideoutCalcSize(Slideout * s)
    sh = 0;
    x = 0;
    y = 0;
-   for (i = 0; i < s->num_buttons; i++)
+   for (i = 0; i < s->num_objs; i++)
      {
-	bw = ButtonGetWidth(s->button[i]);
-	bh = ButtonGetHeight(s->button[i]);
+	bw = EobjGetW(s->objs[i]);
+	bh = EobjGetH(s->objs[i]);
 
 	switch (s->direction)
 	  {
@@ -281,27 +278,27 @@ SlideoutCalcSize(Slideout * s)
 
    EoResize(s, sw, sh);
 
-   for (i = 0; i < s->num_buttons; i++)
+   for (i = 0; i < s->num_objs; i++)
      {
-	bw = ButtonGetWidth(s->button[i]);
-	bh = ButtonGetHeight(s->button[i]);
+	bw = EobjGetW(s->objs[i]);
+	bh = EobjGetH(s->objs[i]);
 
 	switch (s->direction)
 	  {
 	  case 2:
 	     y += bh;
-	     EMoveWindow(ButtonGetWin(s->button[i]), (sw - bw) >> 1, sh - y);
+	     EMoveWindow(EobjGetWin(s->objs[i]), (sw - bw) >> 1, sh - y);
 	     break;
 	  case 3:
-	     EMoveWindow(ButtonGetWin(s->button[i]), (sw - bw) >> 1, y);
+	     EMoveWindow(EobjGetWin(s->objs[i]), (sw - bw) >> 1, y);
 	     y += bh;
 	     break;
 	  case 0:
 	     x += bw;
-	     EMoveWindow(ButtonGetWin(s->button[i]), sw - x, (sh - bh) >> 1);
+	     EMoveWindow(EobjGetWin(s->objs[i]), sw - x, (sh - bh) >> 1);
 	     break;
 	  case 1:
-	     EMoveWindow(ButtonGetWin(s->button[i]), x, (sh - bh) >> 1);
+	     EMoveWindow(EobjGetWin(s->objs[i]), x, (sh - bh) >> 1);
 	     x += bw;
 	  default:
 	     break;
@@ -313,14 +310,16 @@ SlideoutCalcSize(Slideout * s)
 static void
 SlideoutAddButton(Slideout * s, Button * b)
 {
+   EObj               *eob = (EObj *) b;
+
    if (!b)
       return;
    if (!s)
       return;
 
-   s->num_buttons++;
-   s->button = Erealloc(s->button, sizeof(Button *) * s->num_buttons);
-   s->button[s->num_buttons - 1] = b;
+   s->num_objs++;
+   s->objs = Erealloc(s->objs, sizeof(EObj *) * s->num_objs);
+   s->objs[s->num_objs - 1] = eob;
    ButtonSwallowInto(b, EoObj(s));
    SlideoutCalcSize(s);
 }
