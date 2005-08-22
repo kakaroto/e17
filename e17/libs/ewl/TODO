@@ -1,31 +1,27 @@
 EWL TODO
 ========
 
-- Theme key caching for non-existent keys to avoid hitting the edje
-  unecessarily.
-
 - Ewl_Entry 
-    - Multiline edit (in progress).
-      - This requires some re-working of the evas_object_textblock as there
-        are currently some issues with the interaction.
     - Text wrap fixups.
     - Need to make the text scroll over as you type past the end of the entry box.
+
 - Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
 	- Invert on mouse click (behavior depends upon select mode).
 	- determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
 - ColorChooser needs a slider for choosing alpha too, and an int a parameter for
   get / set to match
+
 - Enabled/Disabled status for ALL applicable widgets.
 
 - Need to return a context when items are pushed onto the status bar so that
   a context can be removed without popping off the stack
 
+- all the themes need to be gone over, cleaned up and corrected.
+
 - [BUG] Fix size of the seeker.
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
         only at the moment.
-- [BUG] Radio buttons seem to get padded in a bit more then they should.
-        Look at the 'Button' test for an example.
 - [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
         mouse over.
 - [BUG] When using the menu clicking on the label a second time dosen't
@@ -37,7 +33,7 @@ EWL TODO
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
         test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.
-- [BUG] The first time a tooltip popps up in the ewl_test (tooltip test) it
+- [BUG] The first time a tooltip pops up in the ewl_test (tooltip test) it
         appears over the button, instead of off the end of the mouse. Subsequent
         activations are in the correct spot
 - [BUG] Dialog text bounds are not considered when packing the window
@@ -51,7 +47,7 @@ EWL TODO
   - horizontal scrolling is wacked
   - add ability to turn highlight off for certain rows/nodes
   - scrollbar dosen't always appear when expected using the tree
-  - if you have the tree so it has the scroll bar appear, if your at the
+  - if you have the tree so it has the scroll bar appear, if you're at the
     bottom of the scrollarea and you expand a row, the text shoudln't shift
     up. The scrollpane should be adjusted so the line you expanded stays
     where it is and everything shifts down.
