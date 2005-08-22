@@ -1,7 +1,6 @@
 #ifndef _EPEG_PRIVATE_H
 #define _EPEG_PRIVATE_H
 
-#define _GNU_SOURCE /* need this for fmemopen & open_memstream */
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -39,6 +38,10 @@ struct _Epeg_Image
    
    struct {
       char                          *file;
+      struct {
+	 unsigned char           **data;
+	 int                       size;
+      } mem;
       int                            w, h;
       char                          *comment;
       FILE                          *f;
@@ -67,9 +70,14 @@ struct _Epeg_Image
    } out;
 };
 
-FILE *_epeg_memfile_read_open   (void *data, size_t size);
-void  _epeg_memfile_read_close  (FILE *f);
-FILE *_epeg_memfile_write_open  (void **data, size_t *size);
-void  _epeg_memfile_write_close (FILE *f);
+METHODDEF(void) _jpeg_decompress_error_exit(j_common_ptr cinfo);
+METHODDEF(void) _jpeg_init_source(j_decompress_ptr cinfo);
+METHODDEF(boolean) _jpeg_fill_input_buffer(j_decompress_ptr cinfo);
+METHODDEF(void) _jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes);
+METHODDEF(void) _jpeg_term_source(j_decompress_ptr cinfo);
+
+METHODDEF(void) _jpeg_init_destination(j_compress_ptr cinfo);
+METHODDEF(boolean) _jpeg_empty_output_buffer (j_compress_ptr cinfo);
+METHODDEF(void) _jpeg_term_destination (j_compress_ptr cinfo);
     
 #endif

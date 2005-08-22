@@ -15,8 +15,8 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-AC_CHECK_FUNCS(fmemopen)
-AC_CHECK_FUNCS(open_memstream)
+dnl AC_CHECK_FUNCS(fmemopen)
+dnl AC_CHECK_FUNCS(open_memstream)
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
