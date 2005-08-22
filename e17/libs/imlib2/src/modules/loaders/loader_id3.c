@@ -286,7 +286,7 @@ static int extract_pic (struct id3_frame* frame, int dest)
 {
 	union id3_field* field;
 	unsigned char const * data;
-	long length;
+	id3_length_t length;
 	int done = 0;
 
 	field = id3_frame_field (frame, 4);
@@ -314,7 +314,7 @@ static int extract_pic (struct id3_frame* frame, int dest)
 static char get_loader (lopt* opt, ImlibLoader** loader)
 {
 	union id3_field* field;
-	unsigned char const * data;
+	char const * data;
 	char ext[EXT_LEN + 2];
 
 	ext[EXT_LEN + 1] = '\0';
@@ -322,7 +322,7 @@ static char get_loader (lopt* opt, ImlibLoader** loader)
 
 	field = id3_frame_field (id3_tag_get_frame (opt->ctx->tag,
 						    opt->index - 1), 1);
-	data = id3_field_getlatin1 (field);
+	data = (char const*) id3_field_getlatin1 (field);
 	if (! data) {
 		fprintf (stderr, "No mime type data found for image frame\n");
 		return 0;
@@ -482,7 +482,7 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 		 * Here's the code anyway...
 		 */
 		union id3_field* field;
-		long length;
+		id3_length_t length;
 		char const* data;
 		char *url, *file, *ofile;
 
