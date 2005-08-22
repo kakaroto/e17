@@ -168,8 +168,8 @@ PR_(imlib_amd64_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa c1(%rip), %xmm5
-	movdqa m00XXXXXX(%rip), %xmm6
+	movdqu c1(%rip), %xmm5
+	movdqu m00XXXXXX(%rip), %xmm6
 
 	/* Move right to left across each line, */ 
 	/* processing in two pixel chunks */ 
@@ -565,9 +565,9 @@ PR_(imlib_amd64_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa c1(%rip), %xmm5
+	movdqu c1(%rip), %xmm5
 	xorq %rax, %rax
-	movdqa mX000X000X000X000(%rip), %xmm6
+	movdqu mX000X000X000X000(%rip), %xmm6
 	movq pow_lut@GOTPCREL(%rip), %r13
 
 	/* Move right to left across each line, */ 
@@ -994,8 +994,8 @@ SIZE(imlib_amd64_blend_rgba_to_rgba)
 PR_(imlib_amd64_copy_rgba_to_rgb):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
-	movdqa mX000X000X000X000(%rip), %xmm6
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm6
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
