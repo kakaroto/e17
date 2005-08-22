@@ -783,14 +783,18 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ButtonPress:
      case ButtonRelease:
-	Eprintf("%#08lx EV-%s win=%#lx state=%#x button=%#x\n", ser, name, win,
-		ev->xbutton.state, ev->xbutton.button);
+	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx state=%#x button=%#x\n", ser,
+		name, win, ev->xbutton.subwindow, ev->xbutton.state,
+		ev->xbutton.button);
 	break;
      case MotionNotify:
-	goto case_common;
+	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx\n", ser, name, win,
+		ev->xcrossing.subwindow);
+	break;
      case EnterNotify:
      case LeaveNotify:
-	Eprintf("%#08lx EV-%s win=%#lx m=%s d=%s\n", ser, name, win,
+	Eprintf("%#08lx EV-%s win=%#lx sub=%#lx m=%s d=%s\n", ser, name, win,
+		ev->xcrossing.subwindow,
 		EventNotifyModeName(ev->xcrossing.mode),
 		EventNotifyDetailName(ev->xcrossing.detail));
 	break;

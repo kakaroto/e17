@@ -1384,12 +1384,21 @@ DesktopHandleTooltip(Desk * d, XEvent * ev)
      case LeaveNotify:
 	TooltipsSetPending(1, NULL, NULL);
 	break;
-     case EnterNotify:
-	if (ev->xcrossing.mode != NotifyNormal ||
-	    ev->xcrossing.detail != NotifyInferior)
-	   break;
+
      case ButtonRelease:
+	if (ev->xbutton.subwindow == None)
+	   goto do_set_pending;
+	break;
      case MotionNotify:
+	if (ev->xmotion.subwindow == None)
+	   goto do_set_pending;
+	break;
+     case EnterNotify:
+	if (ev->xcrossing.mode == NotifyNormal &&
+	    ev->xcrossing.detail == NotifyInferior)
+	   goto do_set_pending;
+	break;
+      do_set_pending:
 	TooltipsSetPending(1, DeskGetAclass, d);
 	break;
      }
