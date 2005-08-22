@@ -98,6 +98,10 @@ TAGS OUTPUT
 |               |encoding used for the string is given by the imlib tag         |
 |               |id3-description-text-encoding.                                 |
 +---------------+---------------------------------------------------------------+
+|               |The tag could give an external image URL for the picture       |
+| id3-link-url  |instead of the actual picture data. The loader uses the URL to |
+|               |load the image then, and exposes the URL given by this tag.    |
++---------------+---------------------------------------------------------------+
 
 Eg: to process all images in a file, the following pseudocode should work:
 
@@ -112,11 +116,11 @@ do {
 PERFORMANCE ISSUES
 ------------------
 
-The loader parses picture data from audio files and caches them, as long as any
-of the images using the data exist. This is useful when there are many images in
-the same file, as loading subsequent images use this cache. So, caching is
-turned off when there is only one image in the file, and turned on
-otherwise. When memory consumption is of importance, developers likely to use
-this loader frequently need to keep this in mind when deciding on the imlib
-cache size - with caching on, as long as the image remains in use or in cache,
-this parsed data stays along.
+An ID3v2 tag can contain many picture frames, and it is economical to get all
+the picture frames from a tag all at once. So, when the loader is called for one
+frame of the tag, and there is more than one frame in the tag, the picture data
+for all the frames is parsed and cached, to speed up the loading of the other
+picture frames. When memory consumption is of importance, developers likely to
+use this loader frequently need to keep this in mind when deciding on the imlib
+cache size - as long as the image remains in use or in cache, this parsed data
+could stay along.
