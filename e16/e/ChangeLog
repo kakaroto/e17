@@ -3542,3 +3542,29 @@ Composite manager - Invalidate named pixmap on unmap, cleanups,
 Eliminate old client order list. Shuffle some stuff around.
 Cleanups.
 Wrap XWarpPointer and XQueryPointer.
+
+-------------------------------------------------------------------------------
+
+Tue Aug 23 20:42:02 CEST 2005
+(Kim)
+
+--- 0.16.8 0.17 ---
+Dialog sliders - Don't callback on mouse down, fix klicking on knob.
+Fix occasional event loop delay.
+Speed up pseudotrans changes.
+Composite manager - Prepare for handling unredirected windows, cleanups.
+Enable actions on focus in/out.
+Attempt to fix issues with _XROOTPMAP_ID across restart.
+Fix adding desks, avoid some X-errors, cleanups.
+Name pagers Pager-<no> in stead of just <no>.
+Fix incorrect background pixmap size in certain situations.
+Fix root resizing.
+Move some global vars around, cleanups.
+Fix some focus issues.
+Move tooltip handling to source. Eliminate WindowAtXY().
+Fix slideouts (again).
+Fix occasionally missing images in dialogs.
+Button related cleanups.
+Fix segv's, X-errors, memleak, wrapping.
+Make default menus and action tooltips localizable.
+
