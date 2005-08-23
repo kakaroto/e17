@@ -1,0 +1,8 @@
+
+ * manage other efl
+ * manage the detaileddocumentation in the xml file for
+   the functions. doxygen does not make that easy to do :/
+ * better output of the selected enum/define/function
+ * policy for the ewl gui
+ * other gui ? (quite easy to add)
+ * fix the numerous mem leak

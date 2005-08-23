@@ -1,0 +1,34 @@
+dnl autoconf initialization
+AC_INIT(
+   [ecrin],
+   [0.1],
+   [enlightenment-devel@lists.sourceforge.net])
+AC_PREREQ(2.54)
+
+AM_INIT_AUTOMAKE([1.7 gnits dist-bzip2])
+
+AM_PROG_LIBTOOL
+
+dnl Check preprocessor and compiler
+AC_PROG_CPP
+AC_PROG_CC
+
+AM_CHECK_ECORE
+AM_CHECK_EWL
+
+HAVE_LIBXML="yes"
+PKG_CHECK_MODULES(
+   [LIBXML],
+   [libxml-2.0],
+   [],
+   [$HAVE_LIBXML])
+if test "x${HAVE_LIBXML}" = "xno" ; then
+   AC_MSG_ERROR([Fatal Error: libxml 2.0 library not detected.])
+fi
+
+AC_CONFIG_FILES(
+   [Makefile
+    src/Makefile
+    m4/Makefile
+    src/bin/Makefile])
+AC_OUTPUT
