@@ -46,19 +46,19 @@ AC_DEFUN([AST_CHECK_LIBAST], [
     if test "${$1}" -eq "1"; then
         if test ! -z "$LIBAST_CONFIG"; then
             $2="-last ${$2}"
-            AC_DEFINE(HAVE_LIBAST, 1, [Define if the LibAST library is present.])
+            AC_DEFINE([HAVE_LIBAST], [1], [Define if the LibAST library is present.])
             test "$prefix" = "NONE" && prefix="`$LIBAST_CONFIG --prefix`"
             SUPPORT_FLAGS="`$LIBAST_CONFIG --support`"
             for i in $SUPPORT_FLAGS ; do
                 case $i in
                     MMX)
-                        AC_DEFINE(LIBAST_MMX_SUPPORT, 1, [Defined if LibAST has MMX support.])
+                        AC_DEFINE([LIBAST_MMX_SUPPORT], [1], [Defined if LibAST has MMX support.])
                         ;;
                     X11)
-                        AC_DEFINE(LIBAST_X11_SUPPORT, 1, [Defined if LibAST has X11 support.])
+                        AC_DEFINE(LIBAST_X11_SUPPORT, [1], [Defined if LibAST has X11 support.])
                         ;;
                     Imlib2)
-                        AC_DEFINE(LIBAST_IMLIB2_SUPPORT, 1, [Defined if LibAST has Imlib2 support.])
+                        AC_DEFINE(LIBAST_IMLIB2_SUPPORT, [1], [Defined if LibAST has Imlib2 support.])
                         ;;
                 esac
             done
@@ -97,7 +97,7 @@ AC_DEFUN([AST_REGEXP_SUPPORT], [
                              ])
             AC_SEARCH_LIBS(pcre_compile, pcre, [GOT_PCRE_LIB=1])
             if test $GOT_PCRE_HEADER -eq 1 -a $GOT_PCRE_LIB -eq 1 ; then
-                AC_DEFINE(LIBAST_REGEXP_SUPPORT_PCRE, 1, [Build LibAST with PCRE support.])
+                AC_DEFINE([LIBAST_REGEXP_SUPPORT_PCRE], [1], [Build LibAST with PCRE support.])
                 LIBAST_REGEXP_SUPPORT="regexp-pcre"
                 $1="pcre"
             else
@@ -113,7 +113,7 @@ AC_DEFUN([AST_REGEXP_SUPPORT], [
                              ])
             AC_SEARCH_LIBS(regcomp, posix regexp regex re, [GOT_POSIXREGEXP_LIB=1])
             if test $GOT_POSIXREGEXP_HEADER -eq 1 -a $GOT_POSIXREGEXP_LIB -eq 1 ; then
-                AC_DEFINE(LIBAST_REGEXP_SUPPORT_POSIX, 1, [Build LibAST with POSIX-style regexp support.])
+                AC_DEFINE([LIBAST_REGEXP_SUPPORT_POSIX], [1], [Build LibAST with POSIX-style regexp support.])
                 LIBAST_REGEXP_SUPPORT="regexp-posix"
                 $1="posix"
             else
@@ -129,7 +129,7 @@ AC_DEFUN([AST_REGEXP_SUPPORT], [
                              ])
             AC_SEARCH_LIBS(re_comp, bsd ucb regexp regex re, [GOT_BSD_LIB=1])
             if test $GOT_BSD_HEADER -eq 1 -a $GOT_BSD_LIB -eq 1 ; then
-                AC_DEFINE(LIBAST_REGEXP_SUPPORT_BSD, 1, [Build LibAST with BSD-style regexp support.])
+                AC_DEFINE([LIBAST_REGEXP_SUPPORT_BSD], [1], [Build LibAST with BSD-style regexp support.])
                 LIBAST_REGEXP_SUPPORT="regexp-bsd"
                 $1="bsd"
             else
@@ -171,7 +171,7 @@ AC_DEFUN([AST_X11_SUPPORT], [
         AC_CHECK_LIB(X11, XOpenDisplay, [
                          LIBAST_X11_SUPPORT="X11"
                          GRLIBS="-lX11"
-                         AC_DEFINE(LIBAST_X11_SUPPORT, 1, [Define for X11 support.])
+                         AC_DEFINE(LIBAST_X11_SUPPORT, [1], [Define for X11 support.])
                      ])
     fi
     AC_SUBST(LIBAST_X11_SUPPORT)
@@ -208,7 +208,7 @@ AC_DEFUN([AST_IMLIB2_SUPPORT], [
                 AC_CHECK_LIB(freetype, FT_Init_FreeType, GRLIBS="-lfreetype $GRLIBS", , $GRLIBS)
                 AC_CHECK_LIB(Imlib2, imlib_create_image, [
                                 GRLIBS="-lImlib2 $GRLIBS"
-                                AC_DEFINE(LIBAST_IMLIB2_SUPPORT, 1, [Define for Imlib2 support.])
+                                AC_DEFINE(LIBAST_IMLIB2_SUPPORT, [1], [Define for Imlib2 support.])
                                 LIBAST_IMLIB2_SUPPORT="Imlib2"
                      ], [
                          AC_WARN(*** Imlib2 support has been disabled because Imlib2 ***)
@@ -235,7 +235,7 @@ AC_DEFUN([AST_MMX_SUPPORT], [
     LIBAST_MMX_SUPPORT=""
     if test -n "$HAVE_MMX"; then
         AC_MSG_RESULT(yes)
-        AC_DEFINE(LIBAST_MMX_SUPPORT, 1, [Define for MMX support.])
+        AC_DEFINE([LIBAST_MMX_SUPPORT], [1], [Define for MMX support.])
         LIBAST_MMX_SUPPORT="MMX"
     else
         AC_MSG_RESULT(no)
@@ -351,16 +351,16 @@ AC_DEFUN([AST_ARG_DEBUG], [
                     fi
                     if test "$withval" != "no"; then 
                         AC_MSG_RESULT($withval)
-                        AC_DEFINE_UNQUOTED($1, $withval, [Specify level of debugging to compile in.])
+                        AC_DEFINE_UNQUOTED([$1], $withval, [Specify level of debugging to compile in.])
                         $1=$withval
                     else
                         AC_MSG_RESULT(no, disabling all debugging support)
-                        AC_DEFINE_UNQUOTED($1, 0, [Specify level of debugging to compile in.])
+                        AC_DEFINE_UNQUOTED([$1], [0], [Specify level of debugging to compile in.])
                         $1=0
                     fi
                 ], [
                     AC_MSG_RESULT(4)
-                    AC_DEFINE_UNQUOTED($1, 4, [Specify level of debugging to compile in.])
+                    AC_DEFINE_UNQUOTED([$1], [4], [Specify level of debugging to compile in.])
                     $1=4
     ])
 ])
@@ -382,12 +382,12 @@ AC_DEFUN([AST_ARG_BACKQUOTE_EXEC], [
                 $1=no
             else
                 AC_MSG_RESULT(yes)
-                AC_DEFINE($1, 1, [Define for backquote execution.])
+                AC_DEFINE($1, [1], [Define for backquote execution.])
                 $1=yes
             fi
         ], [
             AC_MSG_RESULT(yes)
-            AC_DEFINE($1, 1, [Define for backquote execution.])
+            AC_DEFINE($1, [1], [Define for backquote execution.])
             $1=yes
         ])
 ])
@@ -462,10 +462,10 @@ exit(0);
         AC_MSG_RESULT([no, snprintf is ok])
     elif test $dps_cv_snprint_bug -eq 1; then
         AC_MSG_RESULT([yes, snprintf is broken])
-        AC_DEFINE(HAVE_SNPRINTF_BUG, 1, [Defined if libc snprintf is buggy.])
+        AC_DEFINE([HAVE_SNPRINTF_BUG], [1], [Defined if libc snprintf is buggy.])
     else
         AC_MSG_RESULT([unknown, assuming yes])
-        AC_DEFINE(HAVE_SNPRINTF_BUG, 1, [Defined if libc snprintf is buggy.])
+        AC_DEFINE([HAVE_SNPRINTF_BUG], [1], [Defined if libc snprintf is buggy.])
     fi
 ])
 
@@ -508,10 +508,10 @@ int main(void)
         AC_MSG_RESULT([no, vsnprintf is ok])
     elif test $dps_cv_vsnprintf_bug -eq 1; then
         AC_MSG_RESULT([yes, vsnprintf is broken])
-        AC_DEFINE(HAVE_VSNPRINTF_BUG,1, [Defined if libc vsnprintf is buggy.])
+        AC_DEFINE([HAVE_VSNPRINTF_BUG], [1], [Defined if libc vsnprintf is buggy.])
     else
         AC_MSG_RESULT([unknown, assuming yes])
-        AC_DEFINE(HAVE_VSNPRINTF_BUG,1, [Defined if libc vsnprintf is buggy.])
+        AC_DEFINE([HAVE_VSNPRINTF_BUG], [1], [Defined if libc vsnprintf is buggy.])
     fi
 ])
 
@@ -577,13 +577,13 @@ int main(void)
     case "$dps_cv_symlink_open_bug" in
         0) AC_MSG_RESULT(secure) ;;
         1) AC_MSG_RESULT(errno wrong but ok)
-           AC_DEFINE(HAVE_SYMLINK_OPEN_ERRNO_BUG, 1, [Defined if symlink open() errno is wrong but safe.]) ;;
+           AC_DEFINE([HAVE_SYMLINK_OPEN_ERRNO_BUG], [1], [Defined if symlink open() errno is wrong but safe.]) ;;
         2) AC_MSG_RESULT(insecure)
-           AC_DEFINE(HAVE_SYMLINK_OPEN_SECURITY_HOLE, 1, [Defined if symlink open() is a security risk.])
-           AC_DEFINE(HAVE_SYMLINK_OPEN_ERRNO_BUG, 1, [Defined if symlink open() is buggy.]) ;;
+           AC_DEFINE([HAVE_SYMLINK_OPEN_SECURITY_HOLE], [1], [Defined if symlink open() is a security risk.])
+           AC_DEFINE([HAVE_SYMLINK_OPEN_ERRNO_BUG], [1], [Defined if symlink open() is buggy.]) ;;
         3) AC_MSG_RESULT(assuming insecure)
-           AC_DEFINE(HAVE_SYMLINK_OPEN_SECURITY_HOLE, 1, [Defined if symlink open() is a security risk.])
-           AC_DEFINE(HAVE_SYMLINK_OPEN_ERRNO_BUG, 1, [Defined if symlink open() is buggy.]) ;;
+           AC_DEFINE([HAVE_SYMLINK_OPEN_SECURITY_HOLE], [1], [Defined if symlink open() is a security risk.])
+           AC_DEFINE([HAVE_SYMLINK_OPEN_ERRNO_BUG], [1], [Defined if symlink open() is buggy.]) ;;
         *) AC_MSG_RESULT($dps_cv_symlink_open_bug)
            AC_MSG_ERROR(Impossible value of dps_cv_symlink_open_bug) ;;
     esac
@@ -629,7 +629,7 @@ int main(void)
     ])
     if test $dps_cv_rlimit_nproc -eq 0; then
         AC_MSG_RESULT([yes])
-        AC_DEFINE(HAVE_RLIMIT_NPROC, 1, [Defined if the RLIMIT_NPROC resource limit works.])
+        AC_DEFINE([HAVE_RLIMIT_NPROC], [1], [Defined if the RLIMIT_NPROC resource limit works.])
     elif test $dps_cv_rlimit_nproc -eq 1; then
         AC_MSG_RESULT([no])
     else
@@ -679,7 +679,7 @@ exit(1);
     ])
     if test $dps_cv_rlimit_memlock -eq 0; then
         AC_MSG_RESULT([yes])
-        AC_DEFINE(HAVE_RLIMIT_MEMLOCK,1, [Defined if the RLIMIT_MEMLOCK resource limit works.])
+        AC_DEFINE([HAVE_RLIMIT_MEMLOCK], [1], [Defined if the RLIMIT_MEMLOCK resource limit works.])
     elif test $dps_cv_rlimit_memlock -eq 1; then
         AC_MSG_RESULT([no])
     else

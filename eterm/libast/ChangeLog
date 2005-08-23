@@ -746,3 +746,7 @@ Tue Jun  7 16:28:43 2005                        Michael Jennings (mej)
 Force STRICT_ISO_C99 to be defined when using gcc >= 4.0.  Suggestions
 and partial patch from John Ellson <ellson@research.att.com>.
 ----------------------------------------------------------------------
+Mon Aug 22 23:02:03 2005                        Michael Jennings (mej)
+
+Add more quoting to libast.m4 for newer autoSPANK tools.
+----------------------------------------------------------------------
