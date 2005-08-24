@@ -8,8 +8,8 @@
 #define TREE_COLS 2
 
 static void eapp_usage(void);
-static int eapp_ui_init(char *file, char *lang);
-static int eapp_populate(Ewl_Tree *tree, char *file, char *lang);
+static int eapp_ui_init(char *file, char *lang, char *winclass);
+static int eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass);
 static char *eapp_eet_read(Eet_File *ef, char *key, char *lang);
 static void eapp_eet_write(Eet_File *ef, char *key, char *lang, char *val, int size);
 static void eapp_engrave_write(char *file);
@@ -44,6 +44,7 @@ main(int argc, char ** argv)
 {
     char *file = NULL;
     char *lang = NULL;
+    char *winclass = NULL;
     int ret = 1;
     int i;
 
@@ -73,6 +74,19 @@ main(int argc, char ** argv)
                 goto ARGS_SHUTDOWN;
             }
         }
+        else if ((!strcmp(argv[i], "-c")) || (!strcmp(argv[i], "--win-class")))
+        {
+            if (++i < argc)
+            {
+                if (winclass) free(winclass);
+                winclass = strdup(argv[i]);
+            }
+            else
+            {
+                fprintf(stderr, "Error, missing argument for win-class.\n");
+                goto ARGS_SHUTDOWN;
+            }
+        }
         else
         {
             if (file) free(file);
@@ -93,7 +107,7 @@ main(int argc, char ** argv)
         goto ARGS_SHUTDOWN;
     }
 
-    if (!eapp_ui_init(file, lang))
+    if (!eapp_ui_init(file, lang, winclass))
     {
         fprintf(stderr, "Error initializing e_utils_eapp_edit.\n");
         goto EET_SHUTDOWN;
@@ -107,6 +121,7 @@ EET_SHUTDOWN:
 ARGS_SHUTDOWN:
     if (file) free(file);
     if (lang) free(lang);
+    if (winclass) free(winclass);
 EWL_SHUTDOWN:
     ewl_shutdown();
 SHUTDOWN:
@@ -132,7 +147,7 @@ eapp_cb_quit(Ewl_Widget *w, void *ev, void *data)
 }
 
 static int
-eapp_ui_init(char *file, char *lang)
+eapp_ui_init(char *file, char *lang, char *winclass)
 {
     Ewl_Widget *win, *vbox, *hbox, *tree, *o;
     char tmp[PATH_MAX];
@@ -159,7 +174,7 @@ eapp_ui_init(char *file, char *lang)
     ewl_theme_data_str_set(tree, "/cell/group", "cell");
     ewl_widget_show(tree);
 
-    if (!eapp_populate(EWL_TREE(tree), file, lang))
+    if (!eapp_populate(EWL_TREE(tree), file, lang, winclass))
     {
         fprintf(stderr, "Error getting eap info.\n");
         return 0;
@@ -192,7 +207,7 @@ eapp_ui_init(char *file, char *lang)
 }
 
 static int
-eapp_populate(Ewl_Tree *tree, char *file, char *lang)
+eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
 {
     Ewl_Widget *row[TREE_COLS];
     Eet_File *ef = NULL;
@@ -240,11 +255,17 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang)
         }
         else
         {
+            if (!strcmp(keys[i].key, "app/window/class"))
+            {
+                if (winclass) v = winclass;
+            }
+
             row[1] = ewl_entry_new(v);
         }
         ewl_widget_name_set(row[1], keys[i].key);
         ewl_widget_show(row[1]);
         if (v) free(v);
+        v = NULL;
 
         ewl_tree_row_add(tree, NULL, row);
     }
