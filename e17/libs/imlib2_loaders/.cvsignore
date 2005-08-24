@@ -12,3 +12,7 @@ configure-stamp
 install-sh
 missing
 mkinstalldirs
+README
+autom4te.cache
+depcomp
+*.spec

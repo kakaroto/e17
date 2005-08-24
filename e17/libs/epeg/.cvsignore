@@ -16,3 +16,5 @@ missing
 stamp-h1
 doc
 *.tar.gz
+ltmain.sh
+mkinstalldirs

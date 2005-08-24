@@ -12,3 +12,5 @@ libtool
 missing
 doc
 *.tar.gz
+ltmain.sh
+mkinstalldirs

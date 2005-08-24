@@ -16,3 +16,4 @@ missing
 install-sh
 doc
 *.tar.gz
+mkinstalldirs

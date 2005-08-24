@@ -7,3 +7,11 @@ configure
 depcomp
 install-sh
 missing
+config.guess
+config.h
+config.log
+config.status
+config.sub
+libtool
+ltmain.sh
+stamp-h1
