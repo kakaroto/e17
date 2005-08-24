@@ -257,15 +257,29 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 		if ((mailbox = load_mailbox (e, edb, i))) {
 			mailbox_emit_add (mailbox);
 			edje = mailbox_edje_get (mailbox);
+
+			h = mailbox_height_get (mailbox);
+			w = mailbox_width_get (mailbox);
+
 			e_box_pack_end (e->gui.container, edje);
+			e_box_pack_options_set (edje,
+						1, 1, /* fill */
+					       	0, 0, /* expand */
+					       	0.5, 0.5, /* align */
+					       	w, h, /* min */
+					       	w, h /* max */
+						);
 
 			e->mailboxes = evas_list_append (e->mailboxes, mailbox);
-
-			h += mailbox_height_get (mailbox);
-			w = mailbox_width_get (mailbox);
 		}
 
-	evas_object_resize (e->gui.container, w, h);
+	e_box_min_size_get(e->gui.container, &w, &h);
+	evas_object_resize(e->gui.container, w, h);
+	edje_extern_object_min_size_set(e->gui.container, w, h);
+	edje_object_part_swallow (e->gui.edje, "Container",
+	                          e->gui.container);
+	edje_object_size_min_calc(e->gui.edje, &w, &h);
+	evas_object_resize (e->gui.edje, w, h);
 
 	return evas_list_count (e->mailboxes);
 }
@@ -291,7 +305,7 @@ static char *find_theme (const char *name)
 
 	snprintf (eet, sizeof (eet), DATA_DIR "/themes/%s.edj", name);
 
-	return stat(eet, &st) ? NULL : eet;
+	return stat (eet, &st) ? NULL : eet;
 }
 
 static bool config_load_misc (Embrace *e, E_DB_File *edb)
@@ -377,8 +391,6 @@ static bool embrace_load_mailboxes (Embrace *e)
 
 static bool ui_load_edje (Embrace *e)
 {
-	Evas_Coord w = 0, h = 0;
-
 	assert (e);
 
 	if (!(e->gui.edje = edje_object_add (e->gui.evas)))
@@ -392,10 +404,8 @@ static bool ui_load_edje (Embrace *e)
 		return false;
 	}
 
-	/* set min/max sizes */
-	edje_object_size_min_get (e->gui.edje, &w, &h);
 	evas_object_move (e->gui.edje, 0, 0);
-	evas_object_resize (e->gui.edje, w, h);
+	evas_object_resize (e->gui.edje, 400, 400);
 
 	evas_object_pass_events_set (e->gui.edje, true);
 	evas_object_show (e->gui.edje);
@@ -415,14 +425,15 @@ static bool ui_load_container (Embrace *e)
 	if (!(e->gui.container = e_box_add (e->gui.evas)))
 		return false;
 
-	e_box_orientation_set (e->gui.container, 1);
+	e_box_orientation_set (e->gui.container, 0);
+	e_box_align_set (e->gui.container, 0.0, 0.0);
 
 	edje_object_part_swallow (e->gui.edje, "Container",
 	                          e->gui.container);
 
 	evas_object_pass_events_set (e->gui.container, 1);
 	evas_object_move (e->gui.container, 0, 0);
-	evas_object_resize (e->gui.container, 100, 100);
+	evas_object_resize (e->gui.container, 400, 400);
 	evas_object_show (e->gui.container);
 
 	return true;
