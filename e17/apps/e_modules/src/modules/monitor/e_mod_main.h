@@ -29,8 +29,10 @@ struct _Config_Face
    double cpu_interval;
    double mem_interval;
    double net_interval;
+   double wlan_interval;
    
    char *net_interface;
+   char *wlan_interface;
 
    int mem_real_ignore_cached;
    int mem_real_ignore_buffers;
@@ -55,13 +57,16 @@ struct _Monitor_Face
   E_Menu      *menu_network;
   E_Menu      *menu_network_interval;
   E_Menu      *menu_network_interface;
-  Config_Face *conf;
+  E_Menu      *menu_wireless;
+  E_Menu      *menu_wireless_interval;
+  E_Menu      *menu_wireless_interface;
+   Config_Face *conf;
 
-  Evas_Object *cpu, *net, *mem;
-  Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj;
+  Evas_Object *cpu, *net, *mem, *wlan;
+  Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj, *wlan_ev_obj;
   Evas_Object *table_object, *monitor_object;
 
-  Chart_Container *chart_cpu, *chart_net, *chart_mem;
+  Chart_Container *chart_cpu, *chart_net, *chart_mem, *chart_wlan;
 
   E_Gadman_Client *gmc;
 };

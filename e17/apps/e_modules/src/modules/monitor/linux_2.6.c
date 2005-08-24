@@ -275,6 +275,126 @@ net_interfaces_get(Ecore_List * ifaces)
 
 }
 
+/* Wireless code */
+char *wlan_dev = "wlan0";
+int   wlan_status = 0;
+int   wlan_link = 0;
+int   wlan_level = 0;
+int   wlan_noise = 0;
+
+void
+wlan_update(void)
+{
+  int   new_status, new_link, new_level, new_noise;
+  unsigned int   dummy;
+  char           iface[64];
+  char           buf[256];
+  FILE          *stat;
+  int            found_dev = 0;
+
+  stat = fopen ("/proc/net/wireless", "r");
+  if (!stat) return;
+  
+  while (fgets (buf, 256, stat)) {
+    int i = 0;
+    /* remove : */
+    for(; buf[i] != 0; i++) 
+      if(buf[i] == ':' || buf[i] == '.')buf[i] = ' ';
+
+    if (sscanf (buf, "%s %u %u %u %u %u %u %u %u %u %u",
+                            iface, &wlan_status, &wlan_link, &wlan_level,
+                            &wlan_noise, &dummy, &dummy, &dummy, &dummy,
+                            &dummy, &dummy) < 11)
+            continue;
+    
+    if (!strcmp(iface, wlan_dev))
+    {
+            found_dev = 1;
+            break;
+    }
+    else
+            found_dev = 0;
+  }
+  fclose (stat);
+
+  if (!found_dev) {
+          wlan_status  = 0;
+          wlan_link = 0;
+          wlan_level = 0;
+          wlan_noise = 0;
+          return;
+  }
+  return;
+}
+
+int wlan_status_get(void)
+{
+	return wlan_status;
+}
+
+int wlan_link_get(void)
+{
+	wlan_update();
+	return wlan_link;
+}
+
+int wlan_level_get(void)
+{
+	return wlan_level;
+}
+
+int wlan_noise_get(void)
+{
+	return wlan_noise;
+}
+
+void wlan_interface_set(char* interface_name)
+{
+   /* Change Network Interface */
+   wlan_dev = interface_name;
+}
+
+int
+wlan_interfaces_get(Ecore_List * ifaces)
+{
+  unsigned long int   dummy;
+
+  char          *iface;
+  char           buf[256];
+  FILE          *stat;
+  int            iface_count = 0;
+  int x = 0;
+
+  stat = fopen ("/proc/net/wireless", "r");
+  if (!stat) {
+	  fprintf(stderr,"Error: can't open /proc/net/wireless\n");
+	  return -1;
+  }
+
+  while (fgets (buf, 256, stat))
+    {
+      int i = 0;
+
+      /* remove : and . */
+      for(; buf[i] != 0; i++)
+        if(buf[i] == ':' || buf[i] == '.')buf[i] = ' ';
+
+      iface = (char *)malloc(sizeof(char) * 64);
+      x = sscanf (buf, 
+     "%s %*u %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+     iface, &dummy, &dummy, &dummy, &dummy, &dummy,
+     &dummy, &dummy, &dummy, &dummy, &dummy);
+      if (x >= 10)
+      {
+         ecore_list_append(ifaces, iface);
+         iface_count++;
+      }
+  }
+  fclose (stat);
+
+  return iface_count;
+}
+
 long  mem_real  = 0;
 long  mem_swap  = 0;
 int   mem_real_usage = 0;

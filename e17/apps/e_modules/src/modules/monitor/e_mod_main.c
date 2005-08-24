@@ -58,6 +58,20 @@ static void _monitor_net_interval_cb_very_slow(void *data, E_Menu *m,
 static void _monitor_net_interface_cb(void *data, E_Menu *m,
 		                          E_Menu_Item *mi);
 
+static void _monitor_wlan_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_wlan_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_wlan_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_wlan_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_wlan_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi);
+static void _monitor_wlan_interface_cb(void *data, E_Menu *m,
+				      E_Menu_Item *mi);
+
+
 
 static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 					void *event_info);
@@ -81,6 +95,7 @@ static void _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data
 static void _monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data);
 static void _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data);
+static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data);
 
 static int _monitor_count;
 
@@ -92,6 +107,7 @@ static Flow_Chart *flow_chart_net_in;
 static Flow_Chart *flow_chart_net_out;
 static Flow_Chart *flow_chart_mem_real;
 static Flow_Chart *flow_chart_mem_swap;
+static Flow_Chart *flow_chart_wlan_link;
 
 /* public module routines. all modules must have these */
 void *
@@ -179,6 +195,8 @@ _monitor_face_config_init(Config_Face *conf)
    conf->mem_interval = 1.0;
    conf->net_interval = 1.0;
    conf->net_interface = strdup("eth0");
+   conf->wlan_interval = 1.0;
+   conf->wlan_interface = strdup("wlan0");
    conf->mem_real_ignore_cached = 0;
    conf->mem_real_ignore_buffers = 0;
 
@@ -208,6 +226,8 @@ _monitor_new()
    E_CONFIG_VAL(D, T, mem_interval, DOUBLE);
    E_CONFIG_VAL(D, T, net_interval, DOUBLE);
    E_CONFIG_VAL(D, T, net_interface, STR);
+   E_CONFIG_VAL(D, T, wlan_interval, DOUBLE);
+   E_CONFIG_VAL(D, T, wlan_interface, STR);
    E_CONFIG_VAL(D, T, mem_real_ignore_cached, INT);
    E_CONFIG_VAL(D, T, mem_real_ignore_buffers, INT);
 
@@ -295,6 +315,9 @@ _monitor_new()
 		  net_interface_set(
 				  face->conf->net_interface);
 
+		  wlan_interface_set(
+				  face->conf->wlan_interface);
+
 		  flow_chart_update_rate_set(flow_chart_cpu,
 				  face->conf->cpu_interval);
 		  flow_chart_update_rate_set(flow_chart_mem_real,
@@ -305,6 +328,8 @@ _monitor_new()
 				  face->conf->net_interval);
 		  flow_chart_update_rate_set(flow_chart_net_out,
 				  face->conf->net_interval);
+		  flow_chart_update_rate_set(flow_chart_wlan_link,
+				  face->conf->wlan_interval);
 		  
 	       }
 	  }
@@ -351,6 +376,7 @@ _monitor_face_new(E_Container *con)
    double tmp_cpu_interval = 1.0;
    double tmp_mem_interval = 1.0;
    double tmp_net_interval = 1.0;
+   double tmp_wlan_interval = 1.0;
 
    Chart_Container *chart_con;
 
@@ -480,6 +506,34 @@ _monitor_face_new(E_Container *con)
 				  _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
+   /* setup wlan */
+   o = edje_object_add(con->bg_evas);
+   face->wlan = o;
+   edje_object_file_set(o, PACKAGE_LIB_DIR
+			"/e_modules/monitor/monitor.edj", 
+			"monitor/wlan");
+   e_table_pack(face->table_object, o, 3, 0, 1, 1);
+   e_table_pack_options_set(o, 1, 1, 1, 1, 0.5, 0.5, 0, 0, -1, -1);   
+   evas_object_layer_set(o, evas_object_layer_get(face->monitor_object)+1);
+   evas_object_show(o);
+   /* add wlan charts */
+   chart_con = chart_container_new(con->bg_evas,0,0,0,0);
+   flow_chart_wlan_link = flow_chart_new();
+   flow_chart_color_set(flow_chart_wlan_link, 33, 100, 220, 255);
+   flow_chart_get_value_function_set(flow_chart_wlan_link, wlan_link_get);
+   flow_chart_update_rate_set(flow_chart_wlan_link, tmp_wlan_interval);
+   chart_container_chart_add(chart_con, flow_chart_wlan_link);
+   face->chart_wlan = chart_con;
+   flow_chart_callback_set(flow_chart_wlan_link, 
+		           _monitor_wlan_link_text_update_callcack, face);
+
+   o = evas_object_rectangle_add(con->bg_evas);
+   face->wlan_ev_obj = o;
+   evas_object_color_set(o, 255,255,255,0);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
+				  _monitor_face_cb_mouse_down, face);
+   evas_object_show(o);
+
    /* setup gadman */
    face->gmc = e_gadman_client_new(con->gadman);
    e_gadman_client_domain_set(face->gmc, "module.monitor", _monitor_count++);
@@ -593,6 +647,17 @@ _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
   edje_object_part_text_set(face->net, "net-out-text", buf);
 }
 
+static void 
+_monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data)
+{
+  Monitor_Face *face;
+  char buf[64];
+  long link = wlan_link_get();
+  face = data;
+  snprintf(buf, 64, "LNK: %ld", link);
+  edje_object_part_text_set(face->wlan, "wlan-link-text", buf);
+}
+
 static void
 _monitor_face_free(Monitor_Face *face)
 {
@@ -605,14 +670,20 @@ _monitor_face_free(Monitor_Face *face)
    evas_object_del(face->mem_ev_obj);
    evas_object_del(face->net);
    evas_object_del(face->net_ev_obj);
+   evas_object_del(face->wlan);
+   evas_object_del(face->wlan_ev_obj);
 
    chart_container_del(face->chart_cpu);
    chart_container_del(face->chart_mem);
    chart_container_del(face->chart_net);
+   chart_container_del(face->chart_wlan);
    
    if (face->monitor_object) evas_object_del(face->monitor_object);
    if (face->table_object) evas_object_del(face->table_object);
 
+   e_object_del(E_OBJECT(face->menu_wireless_interface));
+   e_object_del(E_OBJECT(face->menu_wireless_interval));
+   e_object_del(E_OBJECT(face->menu_wireless));
    e_object_del(E_OBJECT(face->menu_network_interface));
    e_object_del(E_OBJECT(face->menu_network_interval));
    e_object_del(E_OBJECT(face->menu_network));
@@ -622,6 +693,7 @@ _monitor_face_free(Monitor_Face *face)
    e_object_del(E_OBJECT(face->menu_cpu));
    e_object_del(E_OBJECT(face->menu));
 
+   free(face->conf->wlan_interface);
    free(face->conf->net_interface);
    free(face->conf);
    free(face);
@@ -653,14 +725,17 @@ _monitor_face_menu_new(Monitor_Face *face)
    char* interface_name = NULL;
 
    /* Setup Menus */
-   face->menu                   = e_menu_new();
-   face->menu_cpu               = e_menu_new();
-   face->menu_cpu_interval      = e_menu_new();
-   face->menu_memory            = e_menu_new();
-   face->menu_memory_interval   = e_menu_new();
-   face->menu_network           = e_menu_new();
-   face->menu_network_interval  = e_menu_new();
-   face->menu_network_interface = e_menu_new();
+   face->menu                    = e_menu_new();
+   face->menu_cpu                = e_menu_new();
+   face->menu_cpu_interval       = e_menu_new();
+   face->menu_memory             = e_menu_new();
+   face->menu_memory_interval    = e_menu_new();
+   face->menu_network            = e_menu_new();
+   face->menu_network_interval   = e_menu_new();
+   face->menu_network_interface  = e_menu_new();
+   face->menu_wireless           = e_menu_new();
+   face->menu_wireless_interval  = e_menu_new();
+   face->menu_wireless_interface = e_menu_new();
    
    /* Main Menu Items */
    mi = e_menu_item_new(face->menu);
@@ -776,6 +851,81 @@ _monitor_face_menu_new(Monitor_Face *face)
    if (face->conf->mem_real_ignore_buffers) e_menu_item_toggle_set(mi, 1);
    e_menu_item_callback_set(mi, _monitor_mem_real_ignore_buffers_set_cb, face);
 
+   /* Wireless Menu */
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("Wireless"));
+   e_menu_item_icon_edje_set(mi, PACKAGE_LIB_DIR
+		             "/e_modules/monitor/monitor.edj",
+			     "monitor/menu/wlan");
+   e_menu_item_submenu_set(mi, face->menu_wireless);
+   
+   mi = e_menu_item_new(face->menu_wireless);
+   e_menu_item_label_set(mi, _("Set Interval"));
+   e_menu_item_submenu_set(mi, face->menu_wireless_interval);
+
+   mi = e_menu_item_new(face->menu_wireless);
+   e_menu_item_label_set(mi, _("Select Interface"));
+   e_menu_item_submenu_set(mi, face->menu_wireless_interface);
+
+   interfaces = ecore_list_new ();
+   interface_count = wlan_interfaces_get (interfaces);
+      
+   ecore_list_goto_first(interfaces);
+
+   while ((interface_name = ecore_list_current(interfaces)))
+      {
+
+         mi = e_menu_item_new(face->menu_wireless_interface);
+         e_menu_item_label_set(mi, _(interface_name));
+         e_menu_item_radio_set(mi, 1);
+         e_menu_item_radio_group_set(mi, 1);
+	 if (face->conf->wlan_interface)
+            if (!strcmp(face->conf->wlan_interface, interface_name))
+               e_menu_item_toggle_set(mi, 1);
+         e_menu_item_callback_set(mi, _monitor_wlan_interface_cb, face);
+
+	 free(interface_name);
+	 ecore_list_remove(interfaces);
+      }
+
+   ecore_list_destroy(interfaces);
+   
+   /* Wireless Menu Items */
+   mi = e_menu_item_new(face->menu_wireless_interval);
+   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->wlan_interval == 1.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_fast, face);
+
+   mi = e_menu_item_new(face->menu_wireless_interval);
+   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->wlan_interval == 5.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_medium, face);
+
+   mi = e_menu_item_new(face->menu_wireless_interval);
+   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->wlan_interval == 10.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_normal, face);
+
+   mi = e_menu_item_new(face->menu_wireless_interval);
+   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->wlan_interval == 30.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_slow, face);
+
+   mi = e_menu_item_new(face->menu_wireless_interval);
+   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 1);
+   if (face->conf->wlan_interval == 60.0) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_very_slow, face);
+   
    /* Network Menu */
    mi = e_menu_item_new(face->menu);
    e_menu_item_label_set(mi, _("Network"));
@@ -888,6 +1038,12 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 	 evas_object_resize(face->net_ev_obj, w, h);
 	 chart_container_move(face->chart_net, x+2,y+2);
 	 chart_container_resize(face->chart_net, w-4,h-4);
+
+	 evas_object_geometry_get(face->wlan,  &x, &y, &w, &h);
+	 evas_object_move(face->wlan_ev_obj, x, y);
+	 evas_object_resize(face->wlan_ev_obj, w, h);
+	 chart_container_move(face->chart_wlan, x+2,y+2);
+	 chart_container_resize(face->chart_wlan, w-4,h-4);
 
 	 break;
       case E_GADMAN_CHANGE_RAISE:
@@ -1226,3 +1382,76 @@ _monitor_net_interface_cb(void *data, E_Menu *m,
    net_interface_set(face->conf->net_interface);
    e_config_save_queue();
 }
+
+static void
+_monitor_wlan_interval_cb_fast(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interval = 1.0;
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_wlan_interval_cb_medium(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interval = 5.0;
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_wlan_interval_cb_normal(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interval = 10.0;
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_wlan_interval_cb_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interval = 30.0;
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_wlan_interval_cb_very_slow(void *data, E_Menu *m,
+					  E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interval = 60.0;
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+   e_config_save_queue();
+}
+
+static void
+_monitor_wlan_interface_cb(void *data, E_Menu *m,
+		                 E_Menu_Item *mi)
+{
+   Monitor_Face *face;
+   face = data;
+
+   face->conf->wlan_interface = strdup(mi->label);
+   wlan_interface_set(face->conf->wlan_interface);
+   e_config_save_queue();
+}
+
