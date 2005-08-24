@@ -1,6 +1,6 @@
 ## $Id$
 
-SUBDIRS = plugins
+SUBDIRS = plugins module
 
 AM_CFLAGS = @ECORE_CFLAGS@  \
             @EDB_CFLAGS@    \

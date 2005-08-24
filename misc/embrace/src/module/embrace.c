@@ -21,29 +21,12 @@
 # include <config.h>
 #endif
 
-#include <Edb.h>
-#include <Esmart/Esmart_Container.h>
-#include <Esmart/Esmart_Draggies.h>
-#include <Esmart/Esmart_Trans_X11.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include <assert.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <ltdl.h>
-#include <signal.h>
-#include <getopt.h>
+#include <ctype.h>
 
+#include <e.h>
 #include "embrace.h"
-#include "mailbox.h"
 #include "embrace_plugin.h"
-
-#ifdef SIGRTMIN
-static int last_signal = 0;
-#endif
 
 /**
  * Copies one string to another, but '~' is expanded.
@@ -169,7 +152,7 @@ static void load_plugins (Embrace *e, const char *path)
 		if ((len = strlen (entry->d_name)) < 4)
 			continue;
 
-		if (!strcmp (&entry->d_name[len - 3], ".la")) {
+		if (!strcmp (&entry->d_name[len - 3], ".so")) {
 			snprintf (buf, sizeof (buf), "%s/%s", path, entry->d_name);
 			load_plugin (e, buf);
 		}
@@ -210,7 +193,7 @@ static MailBox *load_mailbox (Embrace *e, E_DB_File *edb, int i)
 		return NULL;
 	}
 
-	if (!(mb = mailbox_new (e->gui.evas, e->cfg.theme)))
+	if (!(mb = mailbox_new (e->gui.evas, e->conf->theme)))
 		return NULL;
 
 	mailbox_title_set (mb, str);
@@ -274,7 +257,7 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 		if ((mailbox = load_mailbox (e, edb, i))) {
 			mailbox_emit_add (mailbox);
 			edje = mailbox_edje_get (mailbox);
-			esmart_container_element_append (e->gui.container, edje);
+			e_box_pack_end (e->gui.container, edje);
 
 			e->mailboxes = evas_list_append (e->mailboxes, mailbox);
 
@@ -282,9 +265,7 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 			w = mailbox_width_get (mailbox);
 		}
 
-	ecore_evas_resize (e->gui.ee, w, h);
-	ecore_evas_size_max_set (e->gui.ee, w, h);
-	ecore_evas_size_min_set (e->gui.ee, w, h);
+	evas_object_resize (e->gui.container, w, h);
 
 	return evas_list_count (e->mailboxes);
 }
@@ -324,26 +305,26 @@ static bool config_load_misc (Embrace *e, E_DB_File *edb)
 	/* only load the values from the EDB if they haven't been overriden
 	 * in argv.
 	 */
-	if (!*e->cfg.evas_engine
+	if (!*e->conf->evas_engine
 	    && (str = e_db_str_get (edb, "/" PACKAGE "/evas_engine"))) {
-		snprintf (e->cfg.evas_engine, sizeof (e->cfg.evas_engine),
+		snprintf (e->conf->evas_engine, 255,
 		          "%s", str);
 		free (str);
 		str = NULL;
 	}
 
-	if (!*e->cfg.theme
+	if (!*e->conf->theme
 	    && !(str = e_db_str_get (edb, "/" PACKAGE "/theme"))) {
 		fprintf (stderr, "'theme' not specified, "
 		         "falling back to the default theme!\n");
 		str = strdup ("default");
 	}
 
-	if ((theme = find_theme (str ? str : e->cfg.theme))) {
-		snprintf (e->cfg.theme, sizeof (e->cfg.theme), "%s", theme);
+	if ((theme = find_theme (str ? str : e->conf->theme))) {
+		snprintf (e->conf->theme, PATH_MAX, "%s", theme);
 		ret = true;
 	} else
-		fprintf (stderr, "Cannot find theme '%s'!\n", e->cfg.theme);
+		fprintf (stderr, "Cannot find theme '%s'!\n", e->conf->theme);
 
 	if (str)
 		free (str);
@@ -394,51 +375,6 @@ static bool embrace_load_mailboxes (Embrace *e)
 	return ret;
 }
 
-static void on_pre_render (Ecore_Evas *ee)
-{
-	edje_thaw ();
-}
-
-static void on_post_render (Ecore_Evas *ee)
-{
-	edje_freeze ();
-}
-
-static void on_resize (Ecore_Evas *ee)
-{
-	Evas *evas = ecore_evas_get (ee);
-	Evas_Object *edje = evas_object_name_find (evas, "main");
-	Evas_Object *dragger = evas_object_name_find (evas, "dragger");
-	Evas_Object *trans = evas_object_name_find (evas, "trans");
-	int x = 0, y = 0, w = 0, h = 0;
-
-	ecore_evas_geometry_get (ee, &x, &y, &w, &h);
-	evas_object_resize (edje, (Evas_Coord) w, (Evas_Coord) h);
-	evas_object_resize (dragger, (Evas_Coord) w, (Evas_Coord) h);
-
-	if (trans) {
-		evas_object_resize (trans, (Evas_Coord) w, (Evas_Coord) h);
-		esmart_trans_x11_freshen (trans, x, y, w, h);
-	}
-}
-
-static void on_move (Ecore_Evas *ee)
-{
-	Evas *evas = ecore_evas_get (ee);
-	Evas_Object *trans = evas_object_name_find (evas, "trans");
-	int x = 0, y = 0, w = 0, h = 0;
-
-	assert (trans);
-
-	ecore_evas_geometry_get (ee, &x, &y, &w, &h);
-	esmart_trans_x11_freshen (trans, x, y, w, h);
-}
-
-static void on_delete_request (Ecore_Evas *ee)
-{
-	ecore_main_loop_quit ();
-}
-
 static bool ui_load_edje (Embrace *e)
 {
 	Evas_Coord w = 0, h = 0;
@@ -450,20 +386,16 @@ static bool ui_load_edje (Embrace *e)
 
 	evas_object_name_set (e->gui.edje, "main");
 
-	if (!edje_object_file_set (e->gui.edje, e->cfg.theme,
+	if (!edje_object_file_set (e->gui.edje, e->conf->theme,
 	                           "Embrace")) {
-		fprintf (stderr, "Cannot load theme '%s'!\n", e->cfg.theme);
+		fprintf (stderr, "Cannot load theme '%s'!\n", e->conf->theme);
 		return false;
 	}
 
 	/* set min/max sizes */
-	edje_object_size_max_get (e->gui.edje, &w, &h);
-	ecore_evas_size_max_set (e->gui.ee, w, h);
-
 	edje_object_size_min_get (e->gui.edje, &w, &h);
-	ecore_evas_size_min_set (e->gui.ee, (int) w, (int) h);
+	evas_object_move (e->gui.edje, 0, 0);
 	evas_object_resize (e->gui.edje, w, h);
-	ecore_evas_resize (e->gui.ee, (int) w, (int) h);
 
 	evas_object_pass_events_set (e->gui.edje, true);
 	evas_object_show (e->gui.edje);
@@ -480,81 +412,18 @@ static bool ui_load_container (Embrace *e)
 		return false;
 	}
 
-	if (!(e->gui.container = esmart_container_new (e->gui.evas)))
+	if (!(e->gui.container = e_box_add (e->gui.evas)))
 		return false;
 
-	esmart_container_direction_set (e->gui.container, 1);
-	esmart_container_spacing_set (e->gui.container, 0);
-	esmart_container_fill_policy_set (e->gui.container,
-	                                  CONTAINER_FILL_POLICY_FILL_X);
+	e_box_orientation_set (e->gui.container, 1);
 
 	edje_object_part_swallow (e->gui.edje, "Container",
 	                          e->gui.container);
 
 	evas_object_pass_events_set (e->gui.container, 1);
+	evas_object_move (e->gui.container, 0, 0);
+	evas_object_resize (e->gui.container, 100, 100);
 	evas_object_show (e->gui.container);
-
-	return true;
-}
-
-static bool ui_load_trans_obj (Embrace *e)
-{
-	Evas_Object *trans;
-	Ecore_X_Window win;
-	const char *val;
-	int w = 0, h = 0;
-
-	assert (e);
-
-	if (!(val = edje_object_data_get (e->gui.edje, "trans_bg")))
-		return true;
-
-	if (strcmp (val, "1"))
-		return true;
-
-	if (!(trans = esmart_trans_x11_new (e->gui.evas)))
-		return false;
-
-	win = ecore_evas_software_x11_window_get (e->gui.ee);
-	esmart_trans_x11_window_set (trans, win);
-
-	ecore_evas_geometry_get (e->gui.ee, NULL, NULL, &w, &h);
-
-	evas_object_move (trans, 0, 0);
-	evas_object_resize (trans, w, h);
-	evas_object_layer_set (trans, 0);
-	evas_object_name_set (trans, "trans");
-	evas_object_show (trans);
-
-	return true;
-}
-
-static void on_dragger_mouse_up (void *data, Evas *evas,
-                                 Evas_Object *o, void *ev)
-{
-	Embrace *e = data;
-
-	ecore_evas_raise(e->gui.ee);
-}
-
-static bool ui_load_dragger (Embrace *e)
-{
-	Evas_Object *dragger;
-
-	assert (e);
-
-	if (!(dragger = esmart_draggies_new (e->gui.ee)))
-		return false;
-
-	esmart_draggies_button_set (dragger, 1);
-
-	evas_object_name_set (dragger, "dragger");
-	evas_object_move (dragger, 0, 0);
-	evas_object_show (dragger);
-
-	esmart_draggies_event_callback_add (dragger,
-	                                    EVAS_CALLBACK_MOUSE_UP,
-	                                    on_dragger_mouse_up, e);
 
 	return true;
 }
@@ -564,65 +433,18 @@ bool embrace_load_ui (Embrace *e)
 	char path[PATH_MAX + 1];
 	assert (e);
 
-#ifdef HAVE_ECORE_EVAS_GL
-	if (!strcasecmp (e->cfg.evas_engine, "gl"))
-		e->gui.ee = ecore_evas_gl_x11_new (NULL, 0, 0, 0, 0, 0);
-	else
-#endif
-		e->gui.ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 0, 0);
-
-	if (!e->gui.ee)
-		return false;
-
-	ecore_evas_title_set (e->gui.ee, "Embrace");
-	ecore_evas_name_class_set (e->gui.ee, "embrace", "Embrace");
-	ecore_evas_borderless_set (e->gui.ee, true);
-
-	e->gui.evas = ecore_evas_get (e->gui.ee);
-
 	embrace_expand_path ("~/.fonts", path, sizeof (path));
 	evas_font_path_append (e->gui.evas, path);
 	evas_font_path_append (e->gui.evas, "/usr/share/fonts");
 	evas_font_path_append (e->gui.evas, "/usr/X11R6/lib/X11/fonts");
 
-	if (!ui_load_dragger (e))
-		return false;
-
 	if (!ui_load_edje (e))
-		return false;
-
-	if (!ui_load_trans_obj (e))
 		return false;
 
 	if (!ui_load_container (e))
 		return false;
 
-	ecore_evas_callback_pre_render_set (e->gui.ee, on_pre_render);
-	ecore_evas_callback_post_render_set (e->gui.ee, on_post_render);
-	ecore_evas_callback_delete_request_set (e->gui.ee, on_delete_request);
-	ecore_evas_callback_resize_set (e->gui.ee, on_resize);
-
-	if (evas_object_name_find (e->gui.evas, "trans"))
-		ecore_evas_callback_move_set (e->gui.ee, on_move);
-
 	return true;
-}
-
-static int on_sighup (void *udata, int type, void *event)
-{
-	Embrace *e = udata;
-
-	assert (e);
-
-	embrace_stop (e);
-	embrace_deinit (e);
-
-	if (embrace_init (e))
-		embrace_run (e);
-	else
-		ecore_main_loop_quit ();
-
-	return 0;
 }
 
 Embrace *embrace_new ()
@@ -667,11 +489,6 @@ static void free_ui (Embrace *e)
 		evas_object_del (e->gui.container);
 		e->gui.container = NULL;
 	}
-
-	if (e->gui.ee) {
-		ecore_evas_free (e->gui.ee);
-		e->gui.ee = NULL;
-	}
 }
 
 void embrace_deinit (Embrace *e)
@@ -692,67 +509,15 @@ static void embrace_config_init (Embrace *e)
 {
 	assert (e);
 
-	*e->cfg.evas_engine = 0;
-	*e->cfg.theme = 0;
-}
-
-static bool handle_args (Embrace *e)
-{
-	int argc = 0, o;
-	char **argv = NULL;
-	bool ret = true;
-	struct option opts[] = {{"help", no_argument, 0, 'h'},
-	                        {"version", no_argument, 0, 'v'},
-	                        {"engine", required_argument, 0, 'e'},
-	                        {"theme", required_argument, 0, 't'},
-	                        {NULL, 0, NULL, 0}};
-
-	assert (e);
-
-	ecore_app_args_get (&argc, &argv);
-
-	while ((o = getopt_long (argc, (char **) argv, "hve:t:",
-	                         opts, NULL)) != -1) {
-		switch (o) {
-			case 'h':
-				printf ("Usage: embrace [options]\n"
-				        "Options:\n"
-				        "  -v, --version       print version and exit\n"
-				        "  -h, --help          print help and exit\n"
-				        "  -e, --engine=name   specifiy engine to use\n"
-				        "  -t, --theme=name    specify theme to use\n");
-				ret = false;
-				break;
-			case 'v':
-				printf ("Embrace " VERSION "\n");
-				ret = false;
-				break;
-			case 'e':
-				snprintf (e->cfg.evas_engine, sizeof (e->cfg.evas_engine),
-				          "%s", optarg);
-				break;
-			case 't':
-				snprintf (e->cfg.theme, sizeof (e->cfg.theme),
-				          "%s", optarg);
-				break;
-		}
-	}
-
-	return ret;
+	*e->conf->evas_engine = 0;
+	*e->conf->theme = 0;
 }
 
 bool embrace_init (Embrace *e)
 {
 	assert (e);
 
-#ifdef SIGRTMIN
-	last_signal = SIGRTMIN;
-#endif
-
 	embrace_config_init (e);
-
-	if (!handle_args (e))
-		return false;
 
 	if (!embrace_load_config (e)) {
 		fprintf (stderr, "Cannot load config!\n");
@@ -793,32 +558,14 @@ void embrace_run (Embrace *e)
 {
 	assert (e);
 
-	ecore_evas_show (e->gui.ee);
 	ecore_idler_add (check_mailboxes, e);
-
-	e->evt_hup = ecore_event_handler_add (ECORE_EVENT_SIGNAL_HUP,
-	                                      on_sighup, e);
-	assert (e->evt_hup);
 }
 
 void embrace_stop (Embrace *e)
 {
-	assert (e);
-
-	assert (e->evt_hup);
-
-	ecore_event_handler_del (e->evt_hup);
-	e->evt_hup = NULL;
 }
 
 int embrace_signal_get ()
 {
-#ifdef SIGRTMIN
-	assert (last_signal >= SIGRTMIN);
-	assert (last_signal < SIGRTMAX);
-
-	return ++last_signal;
-#else
 	return -1;
-#endif
 }

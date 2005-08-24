@@ -21,6 +21,10 @@ AC_PREREQ(2.53)
 AC_INIT(embrace, 0.0.3, , embrace)
 AC_CONFIG_SRCDIR([src/embrace.c])
 
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_CONFIG_HEADER(config.h)
 
@@ -124,6 +128,20 @@ AC_CHECK_HEADERS(ltdl.h, ,
 DL_LIBS=-lltdl
 AC_SUBST(DL_LIBS)
 
+have_e17="no"
+AC_PATH_GENERIC(enlightenment, 16.999, [
+	have_e17="yes"
+	AC_DEFINE(HAVE_E17, [], [Development Enlightenment WindowManager Support])
+
+	MODULE_ARCH="$host_os-$host_cpu"
+	AC_SUBST(MODULE_ARCH)
+	AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+
+	e_module_dir=`enlightenment-config --module-dir`
+	AC_SUBST(e_module_dir) ],
+	)
+AM_CONDITIONAL(BUILD_MODULE, test x$have_e17 = xyes)
+
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
@@ -135,6 +153,7 @@ data/themes/default/parts/Makefile
 data/themes/default/programs/Makefile
 m4/Makefile
 src/Makefile
+src/module/Makefile
 src/plugins/Makefile
 src/plugins/maildir/Makefile
 src/plugins/mbox/Makefile
@@ -156,6 +175,7 @@ echo "mbox..................: $build_mbox"
 echo "POP3..................: $build_pop3"
 echo "IMAP..................: $build_imap"
 echo "Sylpheed..............: $build_sylpheed"
+echo "Module................: $have_e17"
 echo
 echo
 echo "$PACKAGE $VERSION will be installed in $prefix"
