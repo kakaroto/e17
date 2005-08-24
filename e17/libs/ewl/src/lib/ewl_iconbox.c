@@ -697,7 +697,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 
 		ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 255, 255);
 		ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
-		ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 255, 255, strlen(ib->label));
+		ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 255, 255, ewl_text_length_get(EWL_TEXT(ib->w_label)));
 	}
 
 
@@ -743,6 +743,8 @@ void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon) {
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
+	printf("Called destroy on icon...\n");
+	
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -755,6 +757,9 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_destroy(icon->image);
 	ewl_widget_destroy(icon->w_label);
 	ewl_widget_destroy(icon->floater);
+
+	/*Temporary hack to nuke the ewl_image path str*/
+	if (EWL_IMAGE(icon->image)->path) free(EWL_IMAGE(icon->image)->path);
 
 	if (icon->label) {
 		free(icon->label);
