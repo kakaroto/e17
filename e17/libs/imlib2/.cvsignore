@@ -30,3 +30,6 @@ configure-stamp
 config.guess
 config.sub
 ltmain.sh
+*.oe
+*.bb
+*.spec

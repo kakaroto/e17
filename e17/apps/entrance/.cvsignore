@@ -13,3 +13,4 @@ autom4te.cache
 depcomp
 install-sh
 missing
+ltmain.sh

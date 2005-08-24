@@ -26,3 +26,6 @@ stamp-h1
 edb.pc
 autom4te.cache
 depcomp
+*.oe
+*.bb
+*.spec
