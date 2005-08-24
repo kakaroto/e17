@@ -34,7 +34,10 @@ static Eapp_Item keys[] = {
             {"app/info/comment", "Comment", 0},
             {"app/info/exe", "Executable", 0},
             {"app/window/name", "Window name", 0},
+            {"app/window/title", "Window title", 0},
+            {"app/window/role", "Window role", 0},
             {"app/window/class", "Window class", 0},
+            {"app/icon/class", "Icon class", 0},
             {"app/info/startup_notify", "Startup notify", 1},
             {"app/info/wait_exit", "Wait exit", 1}
         };
