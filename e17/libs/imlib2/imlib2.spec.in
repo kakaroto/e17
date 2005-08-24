@@ -114,6 +114,12 @@ Group: System Environment/Libraries
 %description loader_gz
 gz compressed image loader/saver for Imlib2
 
+%package loader_id3 
+Summary: Imlib2 .id3 loader
+Group: System Environment/Libraries
+%description loader_id3
+id3 tag image loader/saver for Imlib2
+
 %prep
 %setup -q
 
@@ -193,5 +199,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files loader_gz
 %attr(755,root,root) %{_libdir}/imlib2/loaders/zlib.so
+
+%files loader_id3
+%attr(755,root,root) %{_libdir}/imlib2/loaders/id3.so
 
 %changelog
