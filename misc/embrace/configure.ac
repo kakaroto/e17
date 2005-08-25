@@ -153,7 +153,6 @@ data/themes/default/parts/Makefile
 data/themes/default/programs/Makefile
 m4/Makefile
 src/Makefile
-src/module/Makefile
 src/plugins/Makefile
 src/plugins/maildir/Makefile
 src/plugins/mbox/Makefile

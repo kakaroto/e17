@@ -21,7 +21,6 @@
 #define __MAILBOX_H
 
 #include <Evas.h>
-#include <Ecore.h>
 #include <Edb.h>
 
 #ifndef __MAILBOX_C

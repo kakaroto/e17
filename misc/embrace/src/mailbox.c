@@ -21,12 +21,8 @@
 # include <config.h>
 #endif
 
-#include <Edje.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <assert.h>
-
-#include "embrace.h"
+#include <Evas.h>
 
 typedef struct {
 	Evas_Object *edje;

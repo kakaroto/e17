@@ -20,7 +20,6 @@
 #ifndef __EMBRACE_PLUGIN_H
 #define __EMBRACE_PLUGIN_H
 
-#include <Edb.h>
 #include "mailbox.h"
 #include "embrace.h"
 

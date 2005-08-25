@@ -2,13 +2,16 @@
 # include <config.h>
 #endif
 
+#include <ltdl.h>
+
 #include <e.h>
+#include "e_mod_main.h"
 #include "embrace.h"
 
 /* module private routines */
 static Embrace      *_embrace_new ();
 static void          _embrace_free (Embrace *embrace);
-static void          _embrace_config_menu_new (Embrace *embrace);
+static E_Menu       *_embrace_config_menu_new (void);
 
 #if 0
 static void          _embrace_face_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
@@ -24,8 +27,6 @@ static void          _embrace_desk_cb_intercept_resize (void *data, Evas_Object 
 #endif
 
 static int           _embrace_count;
-
-static E_Config_DD *_conf_edd;
 
 /* public module routines. all modules must have these */
 void *e_modapi_init (E_Module *module) {
@@ -44,7 +45,8 @@ void *e_modapi_init (E_Module *module) {
 	}
 	/* actually init embrace */
 	embrace = _embrace_new (module);
-	module->config_menu = embrace->config_menu;
+	module->config_menu = _embrace_config_menu_new ();
+
 
 	return embrace;
 }
@@ -53,7 +55,7 @@ int e_modapi_shutdown (E_Module *module) {
 	Embrace *embrace;
 
 	if (module->config_menu)
-		module->config_menu = NULL;
+		e_object_del (E_OBJECT (module->config_menu));
 
 	embrace = module->data;
 	if (embrace)
@@ -63,20 +65,19 @@ int e_modapi_shutdown (E_Module *module) {
 }
 
 int e_modapi_save (E_Module *module) {
-	Embrace *embrace;
-
-	embrace = module->data;
-	e_config_domain_save ("module.embrace", _conf_edd, embrace->conf);
-
 	return 1;
 }
 
 int e_modapi_info (E_Module *module) {
+#if 0
 	char buf[4096];
+#endif
 
 	module->label = strdup ( _("Embrace"));
+#if 0
 	snprintf (buf, sizeof (buf), "%s/module_icon.png", e_module_dir_get (module));
 	module->icon_file = strdup (buf);
+#endif
 	return 1;
 }
 
@@ -103,36 +104,18 @@ static Embrace *_embrace_new () {
 
 	_embrace_count = 0;
 
+	if (lt_dlinit ()) {
+		fprintf (stderr, "Cannot initialize LTDL!\n");
+		return NULL;
+	}
+
 	embrace = embrace_new ();
 	if (!embrace) return NULL;
 
 	man = e_manager_current_get();
 	con = e_container_current_get(man);
 	embrace->gui.evas = con->bg_evas;
-
-	embrace->conf = E_NEW (Config, 1);
-	embrace->conf->theme = malloc (PATH_MAX + 1);
-	*(embrace->conf->theme) = 0;
-	embrace->conf->evas_engine = malloc (256);
-	*(embrace->conf->evas_engine) = 0;
-
-	_conf_edd = E_CONFIG_DD_NEW ("Embrace_Config", Config);
-#undef T
-#undef D
-#define T Config
-#define D _conf_edd
-	E_CONFIG_VAL (D, T, theme, STR);
-	E_CONFIG_VAL (D, T, evas_engine, STR);
-
-#if 0
-	embrace->conf = e_config_domain_load ("module.embrace", _conf_edd);
-	if (!embrace->conf)
-	{
-		embrace->conf = E_NEW (Config, 1);
-	}
-#endif
-
-	_embrace_config_menu_new (embrace);
+	embrace->cfg.module = 1;
 
 	embrace_init (embrace);
 
@@ -178,8 +161,6 @@ static void _embrace_free (Embrace *embrace) {
 	Evas_List *l;
 #endif
 
-	E_CONFIG_DD_FREE (_conf_edd);
-
 	embrace_stop (embrace);
 	embrace_deinit (embrace);
 
@@ -194,22 +175,23 @@ static void _embrace_free (Embrace *embrace) {
 		e_object_del (E_OBJECT (l->data));
 	evas_list_free (embrace->menus);
 #endif
-	e_object_del (E_OBJECT (embrace->config_menu));
 
-	free (embrace->conf);
 	embrace_free (embrace);
+
+	lt_dlexit ();
 }
 
-static void _embrace_config_menu_new (Embrace *embrace)
+static E_Menu *_embrace_config_menu_new (void)
 {
 	E_Menu *m;
 	E_Menu_Item *mi;
 
 	m = e_menu_new ();
-	embrace->config_menu = m;
 
 	mi = e_menu_item_new(m);
 	e_menu_item_label_set(mi, _("(Empty)"));
+
+	return m;
 }
 
 #if 0
