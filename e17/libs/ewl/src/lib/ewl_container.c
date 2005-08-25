@@ -362,8 +362,7 @@ ewl_container_child_get(Ewl_Container * parent, int index)
 	while (container->redirect) container = container->redirect;
 
 	ecore_list_goto_first(container->children);
-	while (child = ecore_list_next(container->children))
-	{
+	while ((child = ecore_list_next(container->children))) {
 		if (ewl_widget_internal_is(child)) continue;
 		if (count == index) break;
 		count ++;
