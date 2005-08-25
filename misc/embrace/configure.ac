@@ -168,6 +168,9 @@ echo
 echo "$PACKAGE $VERSION"
 echo
 echo
+echo "Build e17 module......: $have_e17"
+echo
+echo
 echo "Plugins"
 echo
 echo "Maildir...............: $build_maildir"
@@ -175,7 +178,6 @@ echo "mbox..................: $build_mbox"
 echo "POP3..................: $build_pop3"
 echo "IMAP..................: $build_imap"
 echo "Sylpheed..............: $build_sylpheed"
-echo "Module................: $have_e17"
 echo
 echo
 echo "$PACKAGE $VERSION will be installed in $prefix"
