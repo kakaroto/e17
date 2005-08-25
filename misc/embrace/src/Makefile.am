@@ -33,6 +33,8 @@ embrace_LDFLAGS = -export-dynamic
 
 if BUILD_MODULE
 
+MODULE = embrace
+
 INCLUDES               = -I. \
                          -I$(top_srcdir) \
                          -I$(includedir) \

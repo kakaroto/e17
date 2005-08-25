@@ -13,9 +13,9 @@ static Embrace      *_embrace_new ();
 static void          _embrace_free (Embrace *embrace);
 static E_Menu       *_embrace_config_menu_new (void);
 
-#if 0
-static void          _embrace_face_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void          _embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 
+#if 0
 static void          _embrace_desk_cb_mouse_in (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void          _embrace_desk_cb_mouse_out (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void          _embrace_desk_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -26,7 +26,8 @@ static void          _embrace_desk_cb_intercept_move (void *data, Evas_Object *o
 static void          _embrace_desk_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 #endif
 
-static int           _embrace_count;
+static int              _embrace_count;
+static E_Gadman_Client *_gmc = NULL;
 
 /* public module routines. all modules must have these */
 void *e_modapi_init (E_Module *module) {
@@ -46,7 +47,6 @@ void *e_modapi_init (E_Module *module) {
 	/* actually init embrace */
 	embrace = _embrace_new (module);
 	module->config_menu = _embrace_config_menu_new ();
-
 
 	return embrace;
 }
@@ -91,16 +91,8 @@ int e_modapi_about (E_Module *module) {
 static Embrace *_embrace_new () {
 	Embrace       *embrace;
 
-#if 0
-	Evas_List   *managers, *l, *l2, *l3;
-#endif
 	E_Manager   *man;
 	E_Container *con;
-#if 0
-	E_Zone      *zone;
-	E_Menu      *mn;
-	E_Menu_Item *mi;
-#endif
 
 	_embrace_count = 0;
 
@@ -110,73 +102,46 @@ static Embrace *_embrace_new () {
 	}
 
 	embrace = embrace_new ();
-	if (!embrace) return NULL;
+	if (!embrace)
+		return NULL;
 
-	man = e_manager_current_get();
-	con = e_container_current_get(man);
+	man = e_manager_current_get ();
+	con = e_container_current_get (man);
 	embrace->gui.evas = con->bg_evas;
 	embrace->cfg.module = 1;
 
 	embrace_init (embrace);
 
-#if 0
-	managers = e_manager_list ();
-	for (l = managers; l; l = l->next) {
-		man = l->data;
+	_gmc = e_gadman_client_new (con->gadman);
+	e_gadman_client_domain_set (_gmc, "module.embrace", _embrace_count++);
+	e_gadman_client_policy_set (_gmc,
+			E_GADMAN_POLICY_ANYWHERE |
+			E_GADMAN_POLICY_HMOVE |
+			E_GADMAN_POLICY_VMOVE |
+			E_GADMAN_POLICY_HSIZE |
+			E_GADMAN_POLICY_VSIZE);
+	e_gadman_client_min_size_set (_gmc, 8, 8);
+	e_gadman_client_max_size_set (_gmc, 600, 600);
+	e_gadman_client_auto_size_set (_gmc, 186, 40);
+	e_gadman_client_align_set (_gmc, 0.0, 0.0);
+	e_gadman_client_resize (_gmc, 186, 40);
+	e_gadman_client_change_func_set (_gmc, _embrace_cb_gmc_change, embrace);
+	e_gadman_client_load (_gmc);
 
-		for (l2 = man->containers; l2; l2 = l2->next) {
-			con = l2->data;
-
-			mi = e_menu_item_new (embrace->config_menu);
-			e_menu_item_label_set (mi, con->name);
-
-			mn = e_menu_new ();
-			e_menu_item_submenu_set (mi, mn);
-			embrace->menus = evas_list_append (embrace->menus, mn);
-
-			for (l3 = con->zones; l3; l3 = l3->next) {
-				zone = l3->data;
-
-				face = _embrace_face_new (embrace, zone);
-				if (face) {
-					embrace->faces = evas_list_append (embrace->faces, face);
-
-					/* Menu */
-					_embrace_face_menu_new (face);
-
-					mi = e_menu_item_new (mn);
-					e_menu_item_label_set (mi, zone->name);
-					e_menu_item_submenu_set (mi, face->menu);
-				}
-			}
-		}
-	}
-#endif
 	embrace_run (embrace);
+
 	return embrace;
 }
 
 static void _embrace_free (Embrace *embrace) {
-#if 0
-	Evas_List *l;
-#endif
+
+	e_object_del (E_OBJECT (_gmc));
 
 	embrace_stop (embrace);
 	embrace_deinit (embrace);
-
-#if 0
-	for (l = embrace->faces; l; l = l->next)
-		_embrace_face_free (l->data);
-	evas_list_free (embrace->faces);
-#endif
-
-#if 0
-	for (l = embrace->menus; l; l = l->next)
-		e_object_del (E_OBJECT (l->data));
-	evas_list_free (embrace->menus);
-#endif
-
 	embrace_free (embrace);
+
+	_embrace_count--;
 
 	lt_dlexit ();
 }
@@ -188,10 +153,33 @@ static E_Menu *_embrace_config_menu_new (void)
 
 	m = e_menu_new ();
 
-	mi = e_menu_item_new(m);
-	e_menu_item_label_set(mi, _("(Empty)"));
+	mi = e_menu_item_new (m);
+	e_menu_item_label_set (mi, _("(Empty)"));
 
 	return m;
+}
+
+static void
+_embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
+{
+   Embrace *embrace;
+   Evas_Coord  x, y, w, h;
+
+   embrace = data;
+   e_gadman_client_geometry_get (gmc, &x, &y, &w, &h);
+
+   switch (change)
+     {
+      case E_GADMAN_CHANGE_MOVE_RESIZE:
+	evas_object_move (embrace->gui.edje, x, y);
+	evas_object_resize (embrace->gui.edje, w, h);
+	break;
+      case E_GADMAN_CHANGE_RAISE:
+	evas_object_raise (embrace->gui.edje);
+	break;
+      default:
+	break;
+     }
 }
 
 #if 0
@@ -287,36 +275,6 @@ _embrace_face_menu_new (Embrace_Face *face)
    mi = e_menu_item_new (mn);
    e_menu_item_label_set (mi, _("Edit Mode"));
    e_menu_item_callback_set (mi, _embrace_face_cb_menu_edit, face);
-}
-
-static void
-_embrace_face_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
-{
-   Embrace_Face *face;
-   Evas_Coord  x, y, w, h;
-
-   face = data;
-   e_gadman_client_geometry_get (face->gmc, &x, &y, &w, &h);
-   face->fx = x;
-   face->fy = y;
-   face->fw = w;
-   face->fh = h;
-   e_drop_handler_geometry_set (face->drop_handler,
-			       face->fx + face->inset.l, face->fy + face->inset.t,
-			       face->fw - (face->inset.l + face->inset.r),
-			       face->fh - (face->inset.t + face->inset.b));
-   switch (change)
-     {
-      case E_GADMAN_CHANGE_MOVE_RESIZE:
-	evas_object_move (face->embrace_object, face->fx, face->fy);
-	evas_object_resize (face->embrace_object, face->fw, face->fh);
-	break;
-      case E_GADMAN_CHANGE_RAISE:
-	evas_object_raise (face->embrace_object);
-	break;
-      default:
-	break;
-     }
 }
 
 /*****/
