@@ -743,7 +743,6 @@ void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon) {
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	printf("Called destroy on icon...\n");
 	
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
 	
