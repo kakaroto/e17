@@ -758,9 +758,6 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_destroy(icon->w_label);
 	ewl_widget_destroy(icon->floater);
 
-	/*Temporary hack to nuke the ewl_image path str*/
-	if (EWL_IMAGE(icon->image)->path) free(EWL_IMAGE(icon->image)->path);
-
 	if (icon->label) {
 		free(icon->label);
 	}
