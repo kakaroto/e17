@@ -9,11 +9,11 @@
 #include "embrace.h"
 
 /* module private routines */
-static Embrace      *_embrace_new ();
-static void          _embrace_free (Embrace *embrace);
-static E_Menu       *_embrace_config_menu_new (void);
+static Embrace      *embrace_module_new ();
+static void          embrace_module_free (Embrace *embrace);
+static E_Menu       *embrace_config_menu_new (void);
 
-static void          _embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void          embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 
 #if 0
 static void          _embrace_desk_cb_mouse_in (void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -26,11 +26,12 @@ static void          _embrace_desk_cb_intercept_move (void *data, Evas_Object *o
 static void          _embrace_desk_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 #endif
 
-static int              _embrace_count;
-static E_Gadman_Client *_gmc = NULL;
+static int              embrace_count;
+static E_Gadman_Client *gmc = NULL;
 
 /* public module routines. all modules must have these */
-void *e_modapi_init (E_Module *module) {
+void *e_modapi_init (E_Module *module)
+{
 	Embrace *embrace = NULL;
 
 	/* check module api version */
@@ -45,13 +46,14 @@ void *e_modapi_init (E_Module *module) {
 		return NULL;
 	}
 	/* actually init embrace */
-	embrace = _embrace_new (module);
-	module->config_menu = _embrace_config_menu_new ();
+	embrace = embrace_module_new (module);
+	module->config_menu = embrace_config_menu_new ();
 
 	return embrace;
 }
 
-int e_modapi_shutdown (E_Module *module) {
+int e_modapi_shutdown (E_Module *module)
+{
 	Embrace *embrace;
 
 	if (module->config_menu)
@@ -59,16 +61,18 @@ int e_modapi_shutdown (E_Module *module) {
 
 	embrace = module->data;
 	if (embrace)
-		_embrace_free (embrace);
+		embrace_module_free (embrace);
 
 	return 1;
 }
 
-int e_modapi_save (E_Module *module) {
+int e_modapi_save (E_Module *module)
+{
 	return 1;
 }
 
-int e_modapi_info (E_Module *module) {
+int e_modapi_info (E_Module *module)
+{
 #if 0
 	char buf[4096];
 #endif
@@ -81,20 +85,22 @@ int e_modapi_info (E_Module *module) {
 	return 1;
 }
 
-int e_modapi_about (E_Module *module) {
+int e_modapi_about (E_Module *module)
+{
 	e_error_dialog_show ( _("Enlightenment Embrace Module"),
 			      _("A module to check your email."));
 	return 1;
 }
 
 /* module private routines */
-static Embrace *_embrace_new () {
-	Embrace       *embrace;
+static Embrace *embrace_module_new ()
+{
+	Embrace     *embrace;
 
 	E_Manager   *man;
 	E_Container *con;
 
-	_embrace_count = 0;
+	embrace_count = 0;
 
 	if (lt_dlinit ()) {
 		fprintf (stderr, "Cannot initialize LTDL!\n");
@@ -112,41 +118,42 @@ static Embrace *_embrace_new () {
 
 	embrace_init (embrace);
 
-	_gmc = e_gadman_client_new (con->gadman);
-	e_gadman_client_domain_set (_gmc, "module.embrace", _embrace_count++);
-	e_gadman_client_policy_set (_gmc,
+	gmc = e_gadman_client_new (con->gadman);
+	e_gadman_client_domain_set (gmc, "module.embrace", embrace_count++);
+	e_gadman_client_policy_set (gmc,
 			E_GADMAN_POLICY_ANYWHERE |
 			E_GADMAN_POLICY_HMOVE |
 			E_GADMAN_POLICY_VMOVE |
 			E_GADMAN_POLICY_HSIZE |
 			E_GADMAN_POLICY_VSIZE);
-	e_gadman_client_min_size_set (_gmc, 8, 8);
-	e_gadman_client_max_size_set (_gmc, 600, 600);
-	e_gadman_client_auto_size_set (_gmc, 186, 40);
-	e_gadman_client_align_set (_gmc, 0.0, 0.0);
-	e_gadman_client_resize (_gmc, 186, 40);
-	e_gadman_client_change_func_set (_gmc, _embrace_cb_gmc_change, embrace);
-	e_gadman_client_load (_gmc);
+	e_gadman_client_min_size_set (gmc, 8, 8);
+	e_gadman_client_max_size_set (gmc, 600, 600);
+	e_gadman_client_auto_size_set (gmc, 186, 40);
+	e_gadman_client_align_set (gmc, 0.0, 0.0);
+	e_gadman_client_resize (gmc, 186, 40);
+	e_gadman_client_change_func_set (gmc, embrace_cb_gmc_change, embrace);
+	e_gadman_client_load (gmc);
 
 	embrace_run (embrace);
 
 	return embrace;
 }
 
-static void _embrace_free (Embrace *embrace) {
+static void embrace_module_free (Embrace *embrace)
+{
 
-	e_object_del (E_OBJECT (_gmc));
+	e_object_del (E_OBJECT (gmc));
 
 	embrace_stop (embrace);
 	embrace_deinit (embrace);
 	embrace_free (embrace);
 
-	_embrace_count--;
+	embrace_count--;
 
 	lt_dlexit ();
 }
 
-static E_Menu *_embrace_config_menu_new (void)
+static E_Menu *embrace_config_menu_new (void)
 {
 	E_Menu *m;
 	E_Menu_Item *mi;
@@ -159,8 +166,7 @@ static E_Menu *_embrace_config_menu_new (void)
 	return m;
 }
 
-static void
-_embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
+static void embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Embrace *embrace;
    Evas_Coord  x, y, w, h;
