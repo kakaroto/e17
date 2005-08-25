@@ -707,6 +707,41 @@ _weather_face_cb_choose_location(void *data, E_Menu *m, E_Menu_Item *mi)
 static void
 _weather_connect(Weather *weather)
 {
+   char *env;
+
+   env = getenv("HTTP_PROXY");
+   if (!env)
+     env = getenv("http_proxy");
+   if ((env) && !strncmp(env, "http://", 7))
+     {
+	/* Use a proxy */
+	char *host = NULL, *p;
+	int port = 0;
+
+	host = strchr(env, ':');
+	host += 3;
+	p = strchr(host, ':');
+	if (p)
+	  {
+	     *p = 0;
+	     p++;
+	     if (sscanf(p, "%d", &port) != 1)
+	       port = 0;
+	  }
+#if 0
+	else
+	  {
+	     p = strchr(host, '/');
+	     if (p)
+	       *p = 0;
+	  }
+#endif
+	if ((host) && (port))
+	  {
+	     weather->proxy.host = strdup(host);
+	     weather->proxy.port = port;
+	  }
+     }
    weather->add_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
 						  _weather_net_server_add, weather);
    weather->del_handler = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
@@ -733,8 +768,16 @@ _weather_cb_check(void *data)
 	face->cursize = 0;
 	face->buffer = malloc(face->bufsize);
 	face->buffer[0] = 0;
-	face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
-						weather->conf->host, 80, face);
+	if (weather->proxy.port)
+	  {
+	     face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+						     weather->proxy.host, weather->proxy.port, face);
+	  }
+	else
+	  {
+	     face->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+						     weather->conf->host, 80, face);
+	  }
      }
    return 1;
 }
@@ -759,7 +802,10 @@ _weather_net_server_add(void *data, int type, void *event)
      }
    if ((!face) || (e->server != face->server)) return 1;
 
-   snprintf(buf, sizeof(buf), "GET %s HTTP/1.0\r\n\r\n", face->conf->url);
+   snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+			      weather->conf->host,
+			      face->conf->url,
+			      weather->conf->host);
    ecore_con_server_send(face->server, buf, strlen(buf));
    return 1;
 }

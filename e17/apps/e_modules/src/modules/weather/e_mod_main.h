@@ -51,6 +51,11 @@ struct _Weather
 
    Config *conf;
    Ecore_Timer *weather_check_timer;
+
+   struct {
+	char *host;
+	int port;
+   } proxy;
 };
 
 struct _Weather_Face
