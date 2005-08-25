@@ -386,7 +386,11 @@ entrance_session_start_user_session(Entrance_Session * e)
    }
 
    if (e->testing)
+   {
+      printf("Would have executed: %s\n", buf);
+      fflush(stdout);
       snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
+   }
 
    syslog(LOG_INFO, "Executing %s", buf);
 
@@ -396,10 +400,6 @@ entrance_session_start_user_session(Entrance_Session * e)
       ecore_evas_free(e->ee);
       e->ee = NULL;
    }
-   edje_shutdown();
-   ecore_evas_shutdown();
-   ecore_x_sync();
-   entrance_ipc_shutdown();
 
    syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
 
@@ -422,13 +422,19 @@ entrance_session_start_user_session(Entrance_Session * e)
 #endif
 
    _entrance_session_user_list_fix(e);
-   ecore_config_shutdown();
 
    /* avoid doubling up pam handles before the fork */
    pwent = struct_passwd_dup(e->auth->pw);
    entrance_auth_free(e->auth);
    e->auth = NULL;
 
+   /* Shutdown subsytems */
+   edje_shutdown();
+   ecore_evas_shutdown();
+   ecore_config_shutdown();
+   ecore_x_sync();
+   entrance_ipc_shutdown();
+   
    switch ((pid = fork()))
    {
      case 0:
