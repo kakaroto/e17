@@ -496,9 +496,14 @@ static void free_ui (Embrace *e)
 	assert (e);
 
 	if (e->gui.container) {
-		edje_object_part_unswallow (e->gui.edje, e->gui.container);
+		if (e->gui.edje)
+			edje_object_part_unswallow (e->gui.edje, e->gui.container);
 		evas_object_del (e->gui.container);
 		e->gui.container = NULL;
+	}
+	if (e->gui.edje) {
+		evas_object_del (e->gui.edje);
+		e->gui.edje = NULL;
 	}
 }
 
