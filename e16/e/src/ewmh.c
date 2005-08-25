@@ -572,7 +572,6 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->props.skip_winlist = 1;
 	ewin->props.skip_focuslist = 1;
 	EoSetSticky(ewin, 1);
-	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
