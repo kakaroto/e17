@@ -2829,19 +2829,21 @@ IconboxObjSwinFind(Iconbox * ib, Window win)
 static void
 IconboxObjSwinAdd(Iconbox * ib, Window win)
 {
-   SWin               *swin;
+   SWin               *swin = NULL;
    int                 xembed_info[2];
 
    /* Not if already there */
    if (IconboxObjSwinFind(ib, win) >= 0)
       return;
 
+   EGrabServer();
+
    switch (SystrayGetXembedInfo(win, xembed_info))
      {
      case -1:			/* Error - assume invalid window */
 	Eprintf("IconboxObjSwinAdd: Hmm.. Invalid window? Ignoring %#lx\n",
 		win);
-	return;
+	goto bail_out;
      case 0:			/* Assume broken - proceed anyway */
 	Eprintf("IconboxObjSwinAdd: Hmm.. No _XEMBED_INFO?\n");
 	break;
@@ -2854,28 +2856,38 @@ IconboxObjSwinAdd(Iconbox * ib, Window win)
 
    swin = Emalloc(sizeof(SWin));
    if (!swin)
-      return;
+      goto bail_out;
 
    if (IconboxObjectAdd(ib, swin) < 0)
-      return;			/* This should *really* not be possible */
+      goto bail_out;
 
    swin->win = win;
    swin->mapped = (xembed_info[1] & XEMBED_MAPPED) != 0;
 
+   ERegisterWindow(win);
    ESelectInput(win, PropertyChangeMask);
+   EventCallbackRegister(win, 0, SystrayEvent, ib);
+   EReparentWindow(win, ib->icon_win, 0, 0);
 
-   XReparentWindow(disp, win, ib->icon_win, 0, 0);
+   EUngrabServer();
+
    if (swin->mapped)
      {
 	XMapWindow(disp, win);
 	IconboxRedraw(ib);
      }
-   EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    /* TBD - Always set protocol version as reported by client */
    ecore_x_client_message32_send(win, E_XA__XEMBED, NoEventMask,
 				 CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0,
 				 win, xembed_info[0]);
+
+   return;			/* Success */
+
+ bail_out:
+   EUngrabServer();
+   if (swin)
+      Efree(swin);
 }
 
 static void
@@ -2938,8 +2950,8 @@ IconboxObjSwinFree(Iconbox * ib, SWin * swin)
 	EventCallbackUnregister(swin->win, 0, SystrayEvent, ib);
 	EUnregisterWindow(swin->win);
 
-	XUnmapWindow(disp, swin->win);
-	XReparentWindow(disp, swin->win, VRoot.win, 0, 0);
+	EUnmapWindow(swin->win);
+	EReparentWindow(swin->win, VRoot.win, 0, 0);
 	ESync();
      }
 
@@ -3062,8 +3074,7 @@ SystrayInit(Iconbox * ib, Window win, int screen)
 		SubstructureRedirectMask | SubstructureNotifyMask);
    EventCallbackRegister(systray_sel_win, 0, SystrayEvent, ib);
 
-   ESelectInputAdd(win, SubstructureRedirectMask | ResizeRedirectMask |
-		   SubstructureNotifyMask);
+   ESelectInputAdd(win, SubstructureRedirectMask | SubstructureNotifyMask);
    EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    ecore_x_client_message32_send(VRoot.win, E_XA_MANAGER, StructureNotifyMask,
