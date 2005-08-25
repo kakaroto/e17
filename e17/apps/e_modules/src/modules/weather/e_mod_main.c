@@ -709,9 +709,9 @@ _weather_connect(Weather *weather)
 {
    char *env;
 
-   env = getenv("HTTP_PROXY");
+   env = getenv("http_proxy");
    if (!env)
-     env = getenv("http_proxy");
+     env = getenv("HTTP_PROXY");
    if ((env) && !strncmp(env, "http://", 7))
      {
 	/* Use a proxy */
