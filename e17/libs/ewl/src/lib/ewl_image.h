@@ -73,6 +73,8 @@ void            ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data,
 					void *user_data);
+void 		ewl_image_destroy_cb(Ewl_Widget * w, void *ev_data,
+					  void *user_data );
 
 /**
  * @}
