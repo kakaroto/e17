@@ -487,6 +487,14 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 
      case EWIN_OP_FIXED_POS:
 	SetEwinBoolean("fixedpos", &ewin->props.fixedpos, param1, 1);
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
+	break;
+
+     case EWIN_OP_FIXED_SIZE:
+	SetEwinBoolean("fixedsize", &ewin->props.fixedsize, param1, 1);
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
@@ -500,6 +508,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 
      case EWIN_OP_FOCUS_NEVER:
 	SetEwinBoolean("neverfocus", &ewin->props.never_focus, param1, 1);
+	EwinStateUpdate(ewin);
 	break;
 
      case EWIN_OP_NO_BUTTON_GRABS:

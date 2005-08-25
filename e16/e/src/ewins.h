@@ -92,6 +92,7 @@ struct _ewin
    struct
    {
       char                fixedpos;
+      char                fixedsize;
       char                never_use_area;
       char                ignorearrange;
       char                skip_ext_task;

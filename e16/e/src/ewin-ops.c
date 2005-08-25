@@ -39,6 +39,7 @@ static const WinOp  winops[] = {
    {"shade", 2, 1, 1, EWIN_OP_SHADE},
    {"stick", 2, 1, 1, EWIN_OP_STICK},
    {"fixedpos", 0, 1, 1, EWIN_OP_FIXED_POS},
+   {"fixedsize", 0, 1, 1, EWIN_OP_FIXED_SIZE},
    {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
    {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
    {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
