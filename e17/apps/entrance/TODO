@@ -1,10 +1,36 @@
 TODO List
 =========
 
-- XAuth
+-------------------------------------------------------------------------------
+ BUGS AND ANNOYANCES
+-------------------------------------------------------------------------------
 
-- XDMCP support
+* Internationalization issues with date/time format - LANG support
+* FreeBSD waitpid() bug in entrance_login.c (Bug #309)
+* Stop spewing out errors about shift/alt keys to console
 
-- Plugin interface
+-------------------------------------------------------------------------------
+ ESSENTIAL FEATURES
+-------------------------------------------------------------------------------
 
-- Better support for user-specific settings and images
+* Ecore_Config for daemon code. Configurable options for X server, server
+  options, display, respawn delay, max respawns
+* Command-line configuration tool
+* Separate background object from main theme edje, but still allow themes to
+  provide a default background if a custom background edje is not specified
+* Create abstracted interface for obtaining system session list.
+  - Add functions for finding session list on various distributions
+  - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
+* Handle sessions that crash immediately gracefully by providing some kind of
+  custom error message a la GDM
+* Xinerama support: widgets follow mouse pointer from screen to screen,
+  background on all screens
+* GUI configuration tool (EWL-based?)
+
+-------------------------------------------------------------------------------
+ NICE-TO-HAVE FEATURES
+-------------------------------------------------------------------------------
+
+* XDMCP support
+* Add custom user edje to default theme
+
