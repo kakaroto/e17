@@ -266,18 +266,19 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
             eu = entrance_user_new(strdup(user), NULL, e->session);
 
          if ((eu->session) && (strlen(eu->session) > 0))
+        
          {
-            if (e->session)
-               free(e->session);
-            e->session = strdup(eu->session);
+            if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
+            {
+               if (e->session)
+                  free(e->session);
+               e->session = strdup(eu->session);
+               entrance_session_x_session_set(e, exs);
+            }
          }
          edje_object_file_get(e->edje, &file, NULL);
          if ((obj = entrance_user_edje_get(eu, e->edje, file)))
          {
-            if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
-            {
-               entrance_session_x_session_set(e, exs);
-            }
             evas_object_layer_set(obj, evas_object_layer_get(e->edje));
             if (edje_object_part_exists(e->edje, "entrance.user.avatar"))
             {
@@ -368,16 +369,20 @@ entrance_session_start_user_session(Entrance_Session * e)
    char buf[PATH_MAX];
    char *shell = NULL;
    struct passwd *pwent = NULL;
+   Entrance_X_Session *exs = NULL;
+
+   if (e->session)
+      exs = evas_hash_find(e->config->sessions.hash, e->session);
 
    entrance_auth_setup_environment(e->auth, e->display);
-   if ((e->session) && (strlen(e->session) > 0))
+   if ((exs->session) && (strlen(exs->session) > 0))
    {
-      if (!strcmp(e->session, "default"))
+      if (!strcmp(exs->session, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
-      else if (e->session[0] == '/')
-         snprintf(buf, PATH_MAX, "%s", e->session);
+      else if (exs->session[0] == '/')
+         snprintf(buf, PATH_MAX, "%s", exs->session);
       else
-         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, e->session);
+         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, exs->session);
    }
    else
    {
@@ -504,7 +509,7 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
       {
          if (e->session)
             free(e->session);
-         e->session = strdup(exs->session);
+         e->session = strdup(exs->name);
 
          if ((eu =
               evas_hash_find(e->config->users.hash, e->auth->user)) != NULL)
@@ -524,7 +529,7 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
          }
          edje_object_part_swallow(e->edje, "entrance.xsessions.selected", o);
          evas_object_layer_set(o, evas_object_layer_get(e->edje));
-         edje_object_signal_emit(e->edje, "entrance,xsession,selected", "");
+         edje_object_signal_emit(e->edje, "entrance,xsession,changed", "");
       }
    }
 }

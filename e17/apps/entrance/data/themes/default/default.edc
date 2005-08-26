@@ -1638,7 +1638,7 @@ collections {
 	    source: "";
 	    script {
 	       clock_cb(0);
-	       set_int(sessions_visible, -1);
+	       set_int(sessions_visible, 0);
 	    }
 	 }
 	 
