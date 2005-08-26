@@ -754,7 +754,7 @@ epeg_close(Epeg_Image *im)
    if (im->in.thumb_info.uri)        free(im->in.thumb_info.uri);
    if (im->in.thumb_info.mime)       free(im->in.thumb_info.mime);
    if (im->out.file)                 free(im->out.file);
-   if (im->in.f || im->in.mem.data)  jpeg_destroy_compress(&(im->out.jinfo));
+   if (im->out.f || im->in.mem.data) jpeg_destroy_compress(&(im->out.jinfo));
    if (im->out.f)                    fclose(im->out.f);
    if (im->out.comment)              free(im->out.comment);
    free(im);
