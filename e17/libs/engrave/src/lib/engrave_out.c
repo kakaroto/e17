@@ -512,11 +512,11 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
       engrave_out_data(out, "size", "%d", h);
 
     engrave_part_state_text_fit_get(state, &ix, &iy); 
-    if (x || y)
+    if (ix || iy)
       engrave_out_data(out, "fit", "%d %d", ix, iy);
  
     engrave_part_state_text_min_get(state, &ix, &iy);
-    if (x || y)
+    if (ix || iy)
       engrave_out_data(out, "min", "%d %d", ix, iy);
 
     engrave_part_state_text_align_get(state, &x, &y);
