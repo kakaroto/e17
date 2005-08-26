@@ -192,7 +192,7 @@ struct Ewl_Text_Trigger
 	unsigned int 		 len;		/**< Trigger length */
 	unsigned int		 base;		/**< Used for the selection. Start position */
 
-	Ewl_Text		*parent;	/**< The parent text area */
+	Ewl_Text		*text_parent;	/**< The parent text area */
 	Ecore_List		*areas;		/**< The list of objects making up the trigger */
 };
 

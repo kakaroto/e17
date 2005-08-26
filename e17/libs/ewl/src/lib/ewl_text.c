@@ -135,7 +135,7 @@ ewl_text_init(Ewl_Text *t, const char *text)
 	t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION));
 	ewl_text_trigger_start_pos_set(t->selection, 0);
 	ewl_text_trigger_length_set(t->selection, 0);
-	t->selection->parent = t;
+	t->selection->text_parent = t;
 	ewl_callback_append(EWL_WIDGET(t->selection), EWL_CALLBACK_CONFIGURE,
 					ewl_text_selection_cb_configure, NULL);
 	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
@@ -1915,7 +1915,7 @@ ewl_text_trigger_free(Ewl_Text_Trigger *t)
 	if (t->areas)
 		ecore_list_destroy(t->areas);
 
-	t->parent = NULL;
+	t->text_parent = NULL;
 	t->areas = NULL;
 	FREE(t);
 
@@ -2417,7 +2417,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	trigger->parent = t;
+	trigger->text_parent = t;
 
 	/* only need to check for overlappign if this is a trigger (not a
 	 * selection) */
@@ -2472,7 +2472,7 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	ecore_list_goto(t->triggers, trigger);
 	ecore_list_remove(t->triggers);
 
-	trigger->parent = NULL;
+	trigger->text_parent = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4415,8 +4415,8 @@ ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data)
 
 	trig = EWL_TEXT_TRIGGER(w);
 
-	tb_length = evas_object_textblock_length_get(trig->parent->textblock);
-	ewl_text_trigger_position(trig->parent, trig, tb_length, &cur_idx, &cur_tb_idx);
+	tb_length = evas_object_textblock_length_get(trig->text_parent->textblock);
+	ewl_text_trigger_position(trig->text_parent, trig, tb_length, &cur_idx, &cur_tb_idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
