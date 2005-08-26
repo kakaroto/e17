@@ -35,6 +35,7 @@ struct _Entrance_Session
    Entrance_Config *config;     /* configuration options */
    char *db;                    /* path to configuration db */
 
+   int session_selected;
    int authed;                  /* whether or not the user has authenticated
                                    * or not */
    int testing;                 /* whether we're in X testing or not */

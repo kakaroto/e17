@@ -325,6 +325,8 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
       Entrance_X_Session *exs = (Entrance_X_Session *) data;
 
       entrance_session_x_session_set(session, exs);
+      if(!(session->session_selected))
+         session->session_selected = 1;
       edje_object_signal_emit(session->edje, "entrance,xsession,selected", "");
    }
 }

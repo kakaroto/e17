@@ -66,6 +66,7 @@ entrance_session_new(const char *config, const char *display, int testing)
       exit(EXITCODE);
    }
    e->session = strdup("");
+   e->session_selected = 0;
    e->testing = testing;
    return (e);
 }
@@ -265,8 +266,8 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
          if ((eu = evas_hash_find(e->config->users.hash, user)) == NULL)
             eu = entrance_user_new(strdup(user), NULL, e->session);
 
-         if ((eu->session) && (strlen(eu->session) > 0))
-        
+         if (!(e->session_selected) && (eu->session) 
+               && (strlen(eu->session) > 0))
          {
             if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
             {
