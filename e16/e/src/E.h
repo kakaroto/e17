@@ -850,7 +850,6 @@ typedef struct
    EWin               *focuswin;
    EWin               *mouse_over_ewin;
    EWin               *context_ewin;
-   int                 deskdrag;
    Colormap            current_cmap;
    Window              context_win;
    char                constrained;
@@ -1118,8 +1117,6 @@ void                DeskHide(int num);
 void                DeskShow(int num);
 void                StackDesktop(int num);
 void                DeskGotoByEwin(EWin * ewin);
-void                DeskDragStart(int desk);
-void                DeskDragMotion(void);
 
 int                 DesksGetNumber(void);
 int                 DesksGetCurrent(void);
@@ -1722,7 +1719,6 @@ void                MaxHeight(EWin * ewin, const char *resize_type);
 
 /* slideouts.c */
 int                 SlideoutsConfigLoad(FILE * fs);
-void                SlideoutDoAction(EObj * seo, ActionClass * ac, XEvent * ev);
 
 /* snaps.c */
 void                Real_SaveSnapInfo(int dumval, void *dumdat);

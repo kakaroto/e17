@@ -27,9 +27,11 @@
 
 typedef struct _button Button;
 
+typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
+
 /* buttons.c */
 Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
-				 ActionClass * aclass, TextClass * tclass,
+				 ActionClass * ac, TextClass * tc,
 				 const char *label, char ontop, int flags,
 				 int minw, int maxw, int minh, int maxh, int xo,
 				 int yo, int xa, int xr, int ya, int yr,
@@ -42,7 +44,9 @@ void                ButtonMoveToCoord(Button * b, int x, int y);
 void                ButtonMoveRelative(Button * b, int dx, int dy);
 void                ButtonIncRefcount(Button * b);
 void                ButtonDecRefcount(Button * b);
-void                ButtonSwallowInto(Button * bi, EObj * eo);
+void                ButtonSwallowInto(Button * b, EObj * eo);
+void                ButtonSetCallback(Button * b, ButtonCbFunc * func,
+				      EObj * eo);
 int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
 int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,

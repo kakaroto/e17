@@ -43,12 +43,15 @@ typedef struct _desktops
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    Background         *bg[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+   int                 drag_x0, drag_y0;
 }
 Desktops;
 
 static void         DeskRaise(int num);
 static void         DeskLower(int num);
 static void         DesktopHandleEvents(XEvent * ev, void *prm);
+static void         DeskButtonCallback(EObj * eo, XEvent * ev,
+				       ActionClass * ac);
 
 /* The desktops */
 static Desktops     desks;
@@ -266,6 +269,7 @@ DeskControlsCreate(Desk * d)
 	b = ButtonCreate("_DESKTOP_DRAG_CONTROL", 1, ic, ac, NULL, NULL,
 			 -1, FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[2], 0,
 			 y[2], 0, 0, w[2], 0, h[2], 0, d->num, 0);
+	ButtonSetCallback(b, DeskButtonCallback, EoObj(d));
      }
 
 #if 0				/* What is this anyway? */
@@ -1275,54 +1279,81 @@ ButtonProxySendEvent(XEvent * ev)
 		 ev);
 }
 
-void
+static void
 DeskDragStart(int desk)
 {
    Desk               *d;
 
    d = _DeskGet(desk);
 
-   Mode.deskdrag = desk;
+   desks.drag_x0 = Mode.events.x - EoGetX(d);
+   desks.drag_y0 = Mode.events.y - EoGetY(d);
+
    Mode.mode = MODE_DESKDRAG;
 }
 
-void
-DeskDragMotion(void)
+static void
+DeskDragEnd(Desk * d __UNUSED__)
 {
-   Desk               *d;
-   int                 desk, dx, dy;
+   Mode.mode = MODE_NONE;
+}
 
-   dx = Mode.events.x - Mode.events.px;
-   dy = Mode.events.y - Mode.events.py;
+static void
+DeskDragMotion(Desk * d)
+{
+   int                 x, y;
 
-   desk = Mode.deskdrag;
-   d = _DeskGet(desk);
+   x = Mode.events.x - desks.drag_x0;
+   y = Mode.events.y - desks.drag_y0;
 
    switch (Conf.desks.dragdir)
      {
      case 0:
-	if ((EoGetX(d) + dx) < 0)
-	   dx = -EoGetX(d);
-	DeskMove(d, EoGetX(d) + dx, EoGetY(d));
+	if (x < 0)
+	   x = 0;
+	y = 0;
 	break;
      case 1:
-	if ((EoGetX(d) + dx) > 0)
-	   DeskMove(d, 0, EoGetY(d));
-	else
-	   DeskMove(d, EoGetX(d) + dx, EoGetY(d));
+	if (x > 0)
+	   x = 0;
+	y = 0;
 	break;
      case 2:
-	if ((EoGetY(d) + dy) < 0)
-	   dy = -EoGetY(d);
-	DeskMove(d, EoGetX(d), EoGetY(d) + dy);
+	x = 0;
+	if (y < 0)
+	   y = 0;
 	break;
      case 3:
-	if ((EoGetY(d) + dy) > 0)
-	   DeskMove(d, EoGetX(d), 0);
-	else
-	   DeskMove(d, EoGetX(d), EoGetY(d) + dy);
+	x = 0;
+	if (y > 0)
+	   y = 0;
 	break;
      default:
+	break;
+     }
+   DeskMove(d, x, y);
+}
+
+static void
+DeskButtonCallback(EObj * eo, XEvent * ev, ActionClass * ac)
+{
+   Desk               *d;
+
+   if (Mode.mode != MODE_DESKDRAG)
+     {
+	if (ac)
+	   ActionclassEvent(ac, ev, NULL);
+	return;
+     }
+
+   d = (Desk *) eo;
+   switch (ev->type)
+     {
+     case ButtonRelease:
+	DeskDragEnd(d);
+	break;
+     case MotionNotify:
+	DeskDragMotion(d);
 	break;
      }
 }
@@ -1434,7 +1465,8 @@ DesktopHandleEvents(XEvent * ev, void *prm)
 static void
 DeskDragdirSet(const char *params)
 {
-   int                 pd;
+   Desk               *d;
+   int                 i, pd;
 
    pd = Conf.desks.dragdir;
 
@@ -1447,18 +1479,15 @@ DeskDragdirSet(const char *params)
 	   Conf.desks.dragdir = 0;
      }
 
-   if (pd != Conf.desks.dragdir)
-     {
-	int                 i;
-	Desk               *d;
+   if (pd == Conf.desks.dragdir)
+      return;
 
-	for (i = 0; i < Conf.desks.num; i++)
-	  {
-	     d = _DeskGet(i);
-	     EoMove(d, (d->viewable) ? 0 : VRoot.w, 0);
-	  }
-	DesksControlsRefresh();
+   for (i = 1; i < Conf.desks.num; i++)
+     {
+	d = _DeskGet(i);
+	EoMove(d, (d->viewable) ? 0 : VRoot.w, 0);
      }
+   DesksControlsRefresh();
 }
 
 static void
@@ -1477,10 +1506,10 @@ DeskDragbarOrderSet(const char *params)
 	   Conf.desks.dragbar_ordering = 0;
      }
 
-   if (pd != Conf.desks.dragbar_ordering)
-     {
-	DesksControlsRefresh();
-     }
+   if (pd == Conf.desks.dragbar_ordering)
+      return;
+
+   DesksControlsRefresh();
 }
 
 #if 0				/* FIXME */

@@ -204,10 +204,6 @@ ActionsHandleMotion(void)
 	ActionResizeHandleMotion();
 	break;
 
-     case MODE_DESKDRAG:
-	DeskDragMotion();
-	break;
-
      default:
 	break;
      }
@@ -264,10 +260,6 @@ ActionsEnd(EWin * ewin)
      case MODE_MOVE:
 	ActionMoveEnd(ewin);
 	Mode.action_inhibit = 1;
-	break;
-
-     case MODE_DESKDRAG:
-	Mode.mode = MODE_NONE;
 	break;
 
      default:

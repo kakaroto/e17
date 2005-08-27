@@ -308,6 +308,19 @@ SlideoutCalcSize(Slideout * s)
 }
 
 static void
+SlideoutButtonCallback(EObj * seo, XEvent * ev, ActionClass * ac)
+{
+   Slideout           *s = (Slideout *) seo;
+   EWin               *ewin = s->context_ewin;
+
+   if (ev->type == ButtonRelease)
+      SlideoutHide(s);
+
+   if (ac)
+      ActionclassEvent(ac, ev, ewin);
+}
+
+static void
 SlideoutAddButton(Slideout * s, Button * b)
 {
    EObj               *eob = (EObj *) b;
@@ -321,6 +334,7 @@ SlideoutAddButton(Slideout * s, Button * b)
    s->objs = Erealloc(s->objs, sizeof(EObj *) * s->num_objs);
    s->objs[s->num_objs - 1] = eob;
    ButtonSwallowInto(b, EoObj(s));
+   ButtonSetCallback(b, SlideoutButtonCallback, EoObj(s));
    SlideoutCalcSize(s);
 }
 
@@ -332,18 +346,6 @@ SlideoutRemoveButton(Slideout * s, Button * b)
    b = NULL;
 }
 #endif
-
-void
-SlideoutDoAction(EObj * seo, ActionClass * ac, XEvent * ev)
-{
-   Slideout           *s = (Slideout *) seo;
-   EWin               *ewin = s->context_ewin;
-
-   if (ev->type == ButtonRelease)
-      SlideoutHide(s);
-
-   ActionclassEvent(ac, ev, ewin);
-}
 
 static void
 SlideoutHandleEvent(XEvent * ev, void *prm)

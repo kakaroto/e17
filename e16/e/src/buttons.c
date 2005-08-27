@@ -55,7 +55,8 @@ struct _button
    int                 flags;
    char                internal;
    char                default_show;
-   EObj               *container;
+   EObj               *owner;
+   ButtonCbFunc       *func;
 
    int                 state;
    Window              inside_win;
@@ -284,12 +285,19 @@ ButtonSwallowInto(Button * b, EObj * eo)
    b->internal = 1;
    b->default_show = 0;
    b->flags |= FLAG_FIXED;
-   b->container = eo;
+   b->owner = eo;
    b->ref_count++;
    EobjReparent(EoObj(b), eo, 0, 0);
    ButtonCalc(b);
    ButtonDraw(b);
    EMapWindow(EoGetWin(b));
+}
+
+void
+ButtonSetCallback(Button * b, ButtonCbFunc * func, EObj * eo)
+{
+   b->owner = eo;
+   b->func = func;
 }
 
 static void
@@ -480,8 +488,8 @@ ButtonsMoveStickyToDesk(int desk)
 static void
 ButtonDoAction(Button * b, XEvent * ev)
 {
-   if (b->container)
-      SlideoutDoAction(b->container, b->aclass, ev);
+   if (b->owner && b->func)
+      b->func(b->owner, ev, b->aclass);
    else
       ActionclassEvent(b->aclass, ev, NULL);
 }
@@ -578,19 +586,7 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	Mode_buttons.action_inhibit = 1;
      }
    if (!Mode_buttons.move_pending)
-     {
-	if (b)
-	  {
-	     ButtonMoveRelative(b, dx, dy);
-#if 0				/* FIXME - Not active */
-	     if (Conf.deskmode == MODE_DESKRAY)
-	       {
-		  DeskMove(Mode.deskdrag, DeskGetX(Mode.deskdrag),
-			   DeskGetY(Mode.deskdrag) + dy);
-	       }
-#endif
-	  }
-     }
+      ButtonMoveRelative(b, dx, dy);
 }
 
 static void
@@ -676,6 +672,9 @@ ButtonHandleEvents(XEvent * ev, void *prm)
 
    if (b->aclass)
       ButtonHandleTooltip(b, ev->type);
+
+   if (b->func)
+      b->func(b->owner, ev, NULL);
 }
 
 /*
