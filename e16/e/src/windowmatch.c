@@ -683,6 +683,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	WINOP_GET_BOOL(ewin->props.fixedpos, args);
 	break;
 
+     case EWIN_OP_FIXED_SIZE:
+	WINOP_GET_BOOL(ewin->props.fixedsize, args);
+	break;
+
      case EWIN_OP_NEVER_USE_AREA:
 	WINOP_GET_BOOL(ewin->props.never_use_area, args);
 	break;

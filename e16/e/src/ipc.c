@@ -462,58 +462,56 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 #if USE_COMPOSITE
      case EWIN_OP_SHADOW:
 	on = EoGetShadow(ewin);
-	if (SetEwinBoolean("shadow", &on, param1, 0))
+	if (SetEwinBoolean(wop->name, &on, param1, 0))
 	   EoSetShadow(ewin, !on);
 	break;
 
      case EWIN_OP_NO_REDIRECT:
 	on = EoGetNoRedirect(ewin);
 	on = ewin->o.noredir;
-	if (SetEwinBoolean("noredir", &on, param1, 0))
+	if (SetEwinBoolean(wop->name, &on, param1, 0))
 	   EoSetNoRedirect(ewin, !on);
 	break;
 #endif
 
      case EWIN_OP_SHADE:
-	if (SetEwinBoolean("shaded", &ewin->state.shaded, param1, 0))
+	if (SetEwinBoolean(wop->name, &ewin->state.shaded, param1, 0))
 	   EwinOpShade(ewin, !ewin->state.shaded);
 	break;
 
      case EWIN_OP_STICK:
 	on = EoIsSticky(ewin);
-	if (SetEwinBoolean("sticky", &on, param1, 0))
+	if (SetEwinBoolean(wop->name, &on, param1, 0))
 	   EwinOpStick(ewin, !on);
 	break;
 
      case EWIN_OP_FIXED_POS:
-	SetEwinBoolean("fixedpos", &ewin->props.fixedpos, param1, 1);
+	SetEwinBoolean(wop->name, &ewin->props.fixedpos, param1, 1);
 	EwinStateUpdate(ewin);
 	HintsSetWindowState(ewin);
 	break;
 
      case EWIN_OP_FIXED_SIZE:
-	SetEwinBoolean("fixedsize", &ewin->props.fixedsize, param1, 1);
+	SetEwinBoolean(wop->name, &ewin->props.fixedsize, param1, 1);
 	EwinStateUpdate(ewin);
 	HintsSetWindowState(ewin);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
-	SetEwinBoolean("never_use_area", &ewin->props.never_use_area, param1,
-		       1);
+	SetEwinBoolean(wop->name, &ewin->props.never_use_area, param1, 1);
 	break;
 
      case EWIN_OP_FOCUS_CLICK:
-	SetEwinBoolean("focusclick", &ewin->props.focusclick, param1, 1);
+	SetEwinBoolean(wop->name, &ewin->props.focusclick, param1, 1);
 	break;
 
      case EWIN_OP_FOCUS_NEVER:
-	SetEwinBoolean("neverfocus", &ewin->props.never_focus, param1, 1);
+	SetEwinBoolean(wop->name, &ewin->props.never_focus, param1, 1);
 	EwinStateUpdate(ewin);
 	break;
 
      case EWIN_OP_NO_BUTTON_GRABS:
-	if (SetEwinBoolean
-	    ("no_button_grabs", &ewin->props.no_button_grabs, param1, 1))
+	if (SetEwinBoolean(wop->name, &ewin->props.no_button_grabs, param1, 1))
 	  {
 	     if (ewin->props.no_button_grabs)
 		UnGrabButtonGrabs(ewin);
@@ -720,12 +718,12 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 
      case EWIN_OP_FULLSCREEN:
 	on = ewin->state.fullscreen;
-	if (SetEwinBoolean("fullscreen", &on, param1, 0))
+	if (SetEwinBoolean(wop->name, &on, param1, 0))
 	   EwinSetFullscreen(ewin, !on);
 	break;
 
      case EWIN_OP_SKIP_LISTS:
-	if (SetEwinBoolean("skiplists", &ewin->props.skip_ext_task, param1, 1))
+	if (SetEwinBoolean(wop->name, &ewin->props.skip_ext_task, param1, 1))
 	   EwinOpSkipLists(ewin, ewin->props.skip_ext_task);
 	break;
 
@@ -1097,7 +1095,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "Struts                  lrtb %i,%i,%i,%i\n"
 	     "MWM border %i resizeh %i title %i menu %i minimize %i maximize %i\n"
 	     "NeedsInput   %i   TakeFocus    %i   FocusNever   %i   FocusClick   %i\n"
-	     "NeverUseArea %i   FixedPos     %i\n"
+	     "NeverUseArea %i   FixedPos     %i   FixedSize    %i\n"
 	     "Desktop      %i   Layer        %i(%i)\n"
 	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
 	     "State        %i   Shown        %i   Visibility   %i   Active       %i\n"
@@ -1142,7 +1140,8 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize,
 	     ewin->icccm.need_input, ewin->icccm.take_focus,
 	     ewin->props.never_focus, ewin->props.focusclick,
-	     ewin->props.never_use_area, ewin->props.fixedpos, EoGetDesk(ewin),
+	     ewin->props.never_use_area, ewin->props.fixedpos,
+	     ewin->props.fixedsize, EoGetDesk(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
 	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
 	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
@@ -1411,7 +1410,7 @@ IpcItem             IPCArray[] = {
     "status of that flag\n"
     "available win_op commands are:\n"
     "  win_op <windowid> <close/kill>\n"
-    "  win_op <windowid> <fixedpos/never_use_area>\n"
+    "  win_op <windowid> <fixedpos/fixedsize/never_use_area>\n"
     "  win_op <windowid> <focus/focusclick/neverfocus>\n"
     "  win_op <windowid> <fullscreen/iconify/shade/stick>\n"
     "  win_op <windowid> no_button_grabs\n"
