@@ -43,7 +43,7 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
         path = strdup(".");
     }
 
-    snprintf(buf, sizeof(buf), "cat %s | cpp -E -I %s -o %s", file, path, tmpf);
+    snprintf(buf, sizeof(buf), "cat %s | cpp -E -I%s -o %s", file, path, tmpf);
     ret = system(buf);
     if (ret < 0)
     {
