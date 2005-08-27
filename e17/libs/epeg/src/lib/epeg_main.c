@@ -702,16 +702,23 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
  * epeg_file_output_set() or epeg_memory_output_set(). The image will be
  * encoded at the deoded pixel size, using the quality, comment and thumbnail
  * comment settings set on the image.
+ *
+ * retval 1 - error scale
+ *        2 - error encode
+ *        3 - error decode
+ *        4 - error decode ( setjmp )
  */
 int
 epeg_encode(Epeg_Image *im)
 {
-   if (_epeg_decode(im) != 0)
-     return 1;
+   int ret;
+   if ((ret = _epeg_decode(im)) != 0) {
+     return (ret == 2 ? 4 : 3);
+   }
    if (_epeg_scale(im) != 0)
      return 1;
    if (_epeg_encode(im) != 0)
-     return 1;
+     return 2;
    return 0;
 }
 
@@ -859,6 +866,10 @@ _epeg_open_header(Epeg_Image *im)
    return im;
 }
 
+/**
+  retval 1 - malloc or other
+         2 - setjmp error
+*/
 static int
 _epeg_decode(Epeg_Image *im)
 {
@@ -913,10 +924,7 @@ _epeg_decode(Epeg_Image *im)
    im->jerr.pub.error_exit		= _epeg_fatal_error_handler;
 
    if (setjmp(im->jerr.setjmp_buffer))
-     {
-	epeg_close(im);
-	return 1;
-     }
+	return 2;
 
    jpeg_calc_output_dimensions(&(im->in.jinfo));
    
