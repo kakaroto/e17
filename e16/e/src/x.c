@@ -1366,7 +1366,11 @@ void
 EGrabServer(void)
 {
    if (Mode.grabs.server_grabbed <= 0)
-      XGrabServer(disp);
+     {
+	if (EventDebug(EDBUG_TYPE_GRABS))
+	   Eprintf("EGrabServer\n");
+	XGrabServer(disp);
+     }
    Mode.grabs.server_grabbed++;
 }
 
@@ -1377,6 +1381,8 @@ EUngrabServer(void)
      {
 	XUngrabServer(disp);
 	XFlush(disp);
+	if (EventDebug(EDBUG_TYPE_GRABS))
+	   Eprintf("EUngrabServer\n");
      }
    Mode.grabs.server_grabbed--;
    if (Mode.grabs.server_grabbed < 0)
