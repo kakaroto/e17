@@ -24,8 +24,8 @@ __trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT_TRIGGER(w);
 
-	ewl_text_cursor_position_set(EWL_TEXT(t->parent), t->pos);
-	ewl_text_color_apply(EWL_TEXT(t->parent), 255, 0, 0, 255, t->len);
+	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->pos);
+	ewl_text_color_apply(EWL_TEXT(t->text_parent), 255, 0, 0, 255, t->len);
 }
 
 static void
@@ -35,8 +35,8 @@ __trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 
 	t = EWL_TEXT_TRIGGER(w);
 
-	ewl_text_cursor_position_set(EWL_TEXT(t->parent), t->pos);
-	ewl_text_color_apply(EWL_TEXT(t->parent), 0, 0, 0, 255, t->len);
+	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->pos);
+	ewl_text_color_apply(EWL_TEXT(t->text_parent), 0, 0, 0, 255, t->len);
 }
 
 static void
