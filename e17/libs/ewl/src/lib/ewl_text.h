@@ -48,6 +48,7 @@ struct Ewl_Text
 
 	char 			*text;		  /**< The text itself */
 	unsigned int	 	 length;	  /**< The length of the text */
+	unsigned int	 	 total_size;	  /**< The total size we've alloc'd for text */
 	unsigned int	 	 cursor_position; /**< The cursor position */
 
 	Ewl_Text_Context	*current_context; /**< The current formatting context */

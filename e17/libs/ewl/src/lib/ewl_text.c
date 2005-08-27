@@ -6,6 +6,9 @@
  * on the btree */
 #define EWL_TEXT_BTREE_CONDENSE_COUNT  5
 
+/* how much do we extend the text by when we need more space? */
+#define EWL_TEXT_EXTEND_VAL  4096
+
 /*
  * TODO
  * - need a way to handle fonts that aren't in the theme .edj
@@ -394,13 +397,14 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		}
 		t->text = NULL;
 		t->length = 0;
+		t->total_size = 0;
 		t->cursor_position = 0;
-
 	}
 	else if (!t->text)
 	{
 		t->text = strdup(text);
 		t->length = strlen(text);
+		t->total_size = t->length + 1;
 
 		if (!t->current_context)
 			t->current_context = ewl_text_context_default_create(t);
@@ -411,27 +415,35 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	}
 	else
 	{
-		char *new = NULL;
-
-		len = strlen(text);
 		if (!t->current_context)
 			t->current_context = ewl_text_context_default_create(t);
 
-		new = malloc(sizeof(char) * (t->length + len + 1));
+		len = strlen(text);
+		if ((t->length + len + 1) >= t->total_size)
+		{
+			int extend;
+
+			extend = len;
+			if (extend < EWL_TEXT_EXTEND_VAL)
+				extend = EWL_TEXT_EXTEND_VAL;
+
+			t->text = realloc(t->text, (t->length + extend + 1) * sizeof(char));
+			t->total_size += extend + 1;
+		}
+
 		if (idx == 0)
-			sprintf(new, "%s%s", text, t->text);
+		{
+			memmove(t->text + len, t->text, t->length);
+			memcpy(t->text, text, len);
+		}
 		else if (idx == t->length)
-			sprintf(new, "%s%s", t->text, text);
+			strncat(t->text, text, len);
 		else
 		{
-			memcpy(new, t->text, idx);
-			memcpy(new + idx, text, len);
-			memcpy(new + idx + len, t->text + idx, t->length - idx);
+			memmove(t->text + idx + len, t->text + idx, t->length - idx);
+			memcpy(t->text + idx, text, len);
 		}
-		FREE(t->text);
-		t->text = new;
-		t->length = t->length + len;
-		t->text[t->length] = '\0';
+		t->length += len;
 
 		ewl_text_btree_text_context_insert(t->formatting, t->current_context, idx, len);
 		t->cursor_position = idx + len;
@@ -484,7 +496,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		*(old + t->cursor_position) = '\0';
 		ptr = old + t->cursor_position + length;
 
-		t->text = malloc(sizeof(char) * (t->length + 1));
+		t->text = calloc((t->length + 1), sizeof(char));
 		snprintf(t->text, (t->length + 1), "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
 		IF_FREE(old);
 	}
