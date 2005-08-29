@@ -1,5 +1,9 @@
 $Id$
 
+2005-08-29 Michael Jennings (mej at eterm org)
+	* Makefile.am, embrace.spec:  Applied patch from Jim Perrin
+	<jperrin@gmail.com> for "make dist" and RPM build.
+
 2005-08-03 Tilman Sauerbeck (tilman at code-monkey de)
         * data/Makefile.am: Fixed installation directory for
           create_embrace_cfg.sh

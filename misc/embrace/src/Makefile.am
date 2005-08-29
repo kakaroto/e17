@@ -10,7 +10,7 @@ AM_CFLAGS = @ECORE_CFLAGS@  \
 
 noinst_LTLIBRARIES   = libembrace.la
 
-libembrace_la_SOURCES  = embrace.c embrace.h               \
+libembrace_la_SOURCES  = embrace.c embrace.h e_mod_main.h  \
                          embrace_plugin.c embrace_plugin.h \
                          mailbox.c mailbox.h
 
