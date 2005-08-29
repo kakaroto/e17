@@ -1,6 +1,6 @@
 Summary: An EFL-based media player/DVR
 Name: elation
-Version: 0.0.1
+Version: 0.0.1.001
 Release: 1.%(date '+%Y%m%d')
 License: BSD
 Group: Applications/Multimedia

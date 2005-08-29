@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: entrance
-Version: 0.9.0
-Release: 1.%(date '+%Y%m%d')
+Version: 0.9.0.004
+Release: 1
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
@@ -47,10 +47,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/entrance_login
 %{_bindir}/entrance_wrapper
 %{_sbindir}/entranced
-%{_datadir}/entrance/fonts/*.ttf
-%{_datadir}/entrance/images/*.png
-%{_datadir}/entrance/images/sessions/*
-%{_datadir}/entrance/themes/*.eet
-%{_datadir}/entrance/users/*.eet
+%{_datadir}/%{name}
 
 %changelog
