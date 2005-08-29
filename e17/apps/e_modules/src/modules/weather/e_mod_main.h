@@ -43,7 +43,9 @@ struct _Weather
    E_Menu *config_menu_poll;
    E_Menu *config_menu_degrees;
    E_Menu *config_menu_display;
-   E_Menu *config_menu_URL;
+
+   int     update_menu_faces;
+   E_Menu *config_menu_faces;
 
    Ecore_Event_Handler *add_handler;
    Ecore_Event_Handler *del_handler;

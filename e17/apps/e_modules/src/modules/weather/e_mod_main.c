@@ -15,6 +15,7 @@
 static Weather *_weather_new();
 static void _weather_free(Weather *weather);
 static void _weather_config_menu_new(Weather *weather);
+static void _weather_menu_cb_faces(void *data, E_Menu *m);
 
 static Weather_Face *_weather_face_new(Weather *weather, E_Container *con);
 static void _weather_face_free(Weather_Face *face);
@@ -211,11 +212,6 @@ _weather_new()
 	     mi = e_menu_item_new(face->menu);
 	     e_menu_item_label_set(mi, _("Set Update Time"));
 	     e_menu_item_submenu_set(mi, weather->config_menu_poll);
-
-	     mi = e_menu_item_new(weather->config_menu);
-	     e_menu_item_label_set(mi, con->name);
-
-	     e_menu_item_submenu_set(mi, face->menu);
 	  }
      }
    else
@@ -250,11 +246,6 @@ _weather_new()
 	     mi = e_menu_item_new(face->menu);
 	     e_menu_item_label_set(mi, _("Set Update Time"));
 	     e_menu_item_submenu_set(mi, weather->config_menu_poll);
-
-	     mi = e_menu_item_new(weather->config_menu);
-	     e_menu_item_label_set(mi, con->name);
-
-	     e_menu_item_submenu_set(mi, face->menu);
 	  }
      }
    _weather_connect(weather);
@@ -279,6 +270,7 @@ _weather_free(Weather *weather)
    evas_list_free(weather->faces);
 
    e_object_del(E_OBJECT(weather->config_menu));
+   e_object_del(E_OBJECT(weather->config_menu_faces));
    e_object_del(E_OBJECT(weather->config_menu_poll));
    e_object_del(E_OBJECT(weather->config_menu_display));
    e_object_del(E_OBJECT(weather->config_menu_degrees));
@@ -297,11 +289,8 @@ _weather_config_menu_new(Weather *weather)
    E_Menu *mn;
    E_Menu_Item *mi;
 
+   /* Poll menu */
    mn = e_menu_new();
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Add Face"));
-   e_menu_item_callback_set(mi, _weather_menu_add_face, weather);
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("15 minutes"));
@@ -326,6 +315,7 @@ _weather_config_menu_new(Weather *weather)
 
    weather->config_menu_poll = mn;
 
+   /* Display menu */
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
@@ -344,6 +334,7 @@ _weather_config_menu_new(Weather *weather)
 
    weather->config_menu_display = mn;
 
+   /* Degrees menu */
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
@@ -362,6 +353,13 @@ _weather_config_menu_new(Weather *weather)
 
    weather->config_menu_degrees = mn;
 
+   /* Faces menu */
+   mn = e_menu_new();
+   e_menu_pre_activate_callback_set(mn, _weather_menu_cb_faces, weather);
+   weather->update_menu_faces = 1;
+   weather->config_menu_faces = mn;
+
+   /* Main menu */
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
@@ -376,7 +374,54 @@ _weather_config_menu_new(Weather *weather)
    e_menu_item_label_set(mi, _("Set Update Time"));
    e_menu_item_submenu_set(mi, weather->config_menu_poll);
 
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Faces"));
+   e_menu_item_submenu_set(mi, weather->config_menu_faces);
+
    weather->config_menu = mn;
+}
+
+static void
+_weather_menu_cb_faces(void *data, E_Menu *m)
+{
+   Weather *weather;
+   E_Menu_Item *mi;
+   Evas_List *l;
+
+   weather = data;
+   if (!weather->update_menu_faces) return;
+
+   /* Delete old items */
+   for (l = m->items; l;)
+     {
+	E_Object *obj;
+	obj = l->data;
+	l = l->next;
+	e_object_del(obj);
+     }
+   evas_list_free(m->items);
+   m->items = NULL;
+
+   /* New face */
+   mi = e_menu_item_new(m);
+   e_menu_item_label_set(mi, _("Add Face"));
+   e_menu_item_callback_set(mi, _weather_menu_add_face, weather);
+
+   /* Add faces to the config menu */
+   for (l = weather->faces; l; l = l->next)
+     {
+	Weather_Face *face;
+	char buf[1024];
+
+	face = l->data;
+	snprintf(buf, sizeof(buf), "%s (%d)", face->conf->location, face->conf->container);
+	mi = e_menu_item_new(m);
+	e_menu_item_label_set(mi, buf);
+
+	e_menu_item_submenu_set(mi, face->menu);
+     }
+
+   weather->update_menu_faces = 0;
 }
 
 static Weather_Face *
@@ -473,10 +518,12 @@ _weather_face_menu_new(Weather_Face *face)
    e_menu_item_label_set(mi, _("Edit Mode"));
    e_menu_item_callback_set(mi, _weather_face_cb_menu_edit, face);
 
+   /* New face */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Add Face"));
    e_menu_item_callback_set(mi, _weather_menu_add_face, face->weather);
 
+   /* Remove face */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Remove Face"));
    e_menu_item_callback_set(mi, _weather_menu_remove_face, face);
@@ -1000,22 +1047,21 @@ _weather_display_set(Weather_Face *face, int display, int ok)
 static void
 _weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   E_Manager *man;
-   E_Container *con;
+   E_Menu *root;
    Weather *weather;
    Weather_Face *face;
 
-   man = e_manager_current_get();
-   con = e_container_current_get(man);
+   root = e_menu_root_get(m);
+   if (!root->zone) return;
 
    weather = data;
-   face = _weather_face_new(weather, con);
+   face = _weather_face_new(weather, root->zone->container);
    if (face)
      {
 	weather->faces = evas_list_append(weather->faces, face);
 
 	face->conf = E_NEW(Config_Face, 1);
-	face->conf->container = con->num;
+	face->conf->container = root->zone->container->num;
 	face->conf->enabled = 1;
 	face->conf->location = strdup("Kirkenes Lufthavn");
 	face->conf->url = strdup("/icao/ENKR/rss.php");
@@ -1038,10 +1084,7 @@ _weather_menu_add_face(void *data, E_Menu *m, E_Menu_Item *mi)
 	e_menu_item_label_set(mi, _("Set Update Time"));
 	e_menu_item_submenu_set(mi, weather->config_menu_poll);
 
-	mi = e_menu_item_new(weather->config_menu);
-	e_menu_item_label_set(mi, con->name);
-
-	e_menu_item_submenu_set(mi, face->menu);
+	weather->update_menu_faces = 1;
      }
    _weather_cb_check(weather);
 }
@@ -1054,6 +1097,9 @@ _weather_menu_remove_face(void *data, E_Menu *m, E_Menu_Item *mi)
    face = data;
    face->weather->faces = evas_list_remove(face->weather->faces, face);
    face->weather->conf->faces = evas_list_remove(face->weather->conf->faces, face->conf);
+
+   face->weather->update_menu_faces = 1;
+
    _weather_face_free(face);
 }
 
