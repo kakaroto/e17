@@ -235,6 +235,7 @@ AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+ewl.spec
 ewl.pc
 ewl-config
 src/Makefile

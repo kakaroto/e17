@@ -1,8 +1,8 @@
 %define _missing_doc_files_terminate_build 0
 
 Summary: Enlightenment Widget Library
-Name: ewl
-Version: 0.0.4.003
+Name: @PACKAGE@
+Version: @VERSION@
 Release: 1
 License: BSD
 Group: User Interface/X
