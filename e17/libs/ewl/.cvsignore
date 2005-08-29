@@ -25,5 +25,6 @@ ewl-config.h
 stamp-h1
 depcomp
 ewl.pc
+ewl.spec
 doc
 *.tar.gz
