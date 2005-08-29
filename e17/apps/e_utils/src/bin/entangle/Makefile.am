@@ -12,6 +12,9 @@ AM_CFLAGS = \
 
 bin_PROGRAMS = entangle
 
+include_HEADERS = \
+Entangle.h
+
 entangle_SOURCES =  \
 entangle_apps.c \
 entangle_eapps.c \
@@ -26,3 +29,5 @@ entangle_LDADD = \
 -lesmart_container \
 -lesmart_text_entry
 
+EXTRA_DIST = \
+	     entangle.eap

@@ -14,8 +14,8 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: libjpeg-devel XFree86-devel
 BuildRequires: embryo-devel eet-devel ecore-devel
-BuildRequires: evas-devel etox-devel edje-devel emotion-devel
-Requires: ecore evas etox edje embryo eet
+BuildRequires: evas-devel edje-devel emotion-devel
+Requires: ecore evas edje embryo eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -27,7 +27,7 @@ Group: Development/Libraries
 Requires: %{name} = %{version}
 Requires: libjpeg-devel XFree86-devel
 Requires: embryo-devel eet-devel ecore-devel
-Requires: evas-devel etox-devel edje-devel
+Requires: evas-devel edje-devel
 
 %description devel
 EWL development files

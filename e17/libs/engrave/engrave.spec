@@ -19,6 +19,14 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 %description
 Engrave is an edje editing library.
 
+%package devel
+Summary: Development headers for engrave.
+Group: System Environment/Libraries
+Requires: %{name} = %{version}
+
+%description devel
+Development headers for engrave.
+
 %prep
 %setup -q
 
@@ -44,6 +52,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING README
 %{_bindir}/*
 %{_libdir}/*
+
+%files devel
 %{_includedir}/*
 
 %changelog

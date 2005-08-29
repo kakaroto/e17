@@ -8,7 +8,15 @@ filesdir = $(libdir)/e_modules/monitor
 
 files_DATA = \
 module_icon.png \
-monitor.edj
+monitor.edj \
+monitor.edc \
+bg.png \
+cpu.png \
+eth_dev.png \
+memory.png \
+over.png \
+over_res.png \
+VeraMono.ttf
 
 EXTRA_DIST = $(files_DATA)
 

@@ -11,7 +11,10 @@ filesdir = $(libdir)/e_modules/weather
 files_DATA = \
 module_icon.png \
 weather.edj \
-dir.xml
+weather.edc \
+dir.xml \
+fonts/VeraBd.ttf \
+fonts/vera.ttf
 
 EXTRA_DIST = $(files_DATA)
 

@@ -3,7 +3,7 @@
 SUBDIRS = src data
 
 EXTRA_DIST = \
-	README AUTHORS COPYING
+	README AUTHORS COPYING elicit.spec
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \

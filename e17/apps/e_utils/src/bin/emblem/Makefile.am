@@ -14,6 +14,10 @@ AM_CFLAGS = \
 
 bin_PROGRAMS = emblem
 
+
+include_HEADERS = \
+        Emblem.h
+
 emblem_SOURCES =  \
 	emblem_ui.c \
 	emblem.c \
@@ -28,3 +32,5 @@ emblem_LDADD = \
 	@epsilon_libs@ \
 	-lesmart_container
 
+EXTRA_DIST = \
+	emblem.eap

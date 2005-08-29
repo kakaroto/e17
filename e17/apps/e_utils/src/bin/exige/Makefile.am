@@ -10,6 +10,12 @@ AM_CFLAGS = \
 
 bin_PROGRAMS = exige
 
+include_HEADERS = \
+	exg_callback.h \
+	exg_conf.h \
+	exg_gui.h \
+	Exige.h
+
 exige_SOURCES = \
 	exg_conf.c \
 	exg_callback.c \
