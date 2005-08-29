@@ -747,6 +747,8 @@ _weather_face_cb_choose_location(void *data, E_Menu *m, E_Menu_Item *mi)
    free(face->conf->location);
    face->conf->location = strdup(mi->label);
 
+   face->weather->update_menu_faces = 1;
+
    _weather_cb_check(face->weather);
    e_config_save_queue();
 }
