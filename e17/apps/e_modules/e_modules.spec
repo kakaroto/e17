@@ -86,26 +86,26 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files flame 
 %defattr(-, root, root)
 %{_libdir}/%{name}/flame/*
-%{_libdir}/enlightenment/modules_extra/flame/%{_host_os}-%{_target_cpu}/*
+%{_libdir}/enlightenment/modules_extra/flame
 
 %files monitor
 %defattr(-, root, root)
 %{_libdir}/%{name}/monitor/*
-%{_libdir}/enlightenment/modules_extra/monitor/%{_host_os}-%{_target_cpu}/*
+%{_libdir}/enlightenment/modules_extra/monitor
 
 %files notes
 %defattr(-, root, root)
 %{_libdir}/%{name}/notes/*
-%{_libdir}/enlightenment/modules_extra/notes/%{_host_os}-%{_target_cpu}/*
+%{_libdir}/enlightenment/modules_extra/notes
 
 %files snow
 %defattr(-, root, root)
 %{_libdir}/%{name}/snow/*
-%{_libdir}/enlightenment/modules_extra/snow/%{_host_os}-%{_target_cpu}/*
+%{_libdir}/enlightenment/modules_extra/snow
 
 %files weather
 %defattr(-, root, root)
 %{_libdir}/%{name}/weather/*
-%{_libdir}/enlightenment/modules_extra/weather/%{_host_os}-%{_target_cpu}/*
+%{_libdir}/enlightenment/modules_extra/weather
 
 %changelog

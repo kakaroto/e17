@@ -16,6 +16,7 @@ eth_dev.png \
 memory.png \
 over.png \
 over_res.png \
+wireless.png \
 VeraMono.ttf
 
 EXTRA_DIST = $(files_DATA)
