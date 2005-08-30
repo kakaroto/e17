@@ -9,7 +9,7 @@ part {
       }
       rel2 {
          relative: 0 0;
-         offset: 177 119;
+         offset: 184 119;
          to: "body";
       }
       image {

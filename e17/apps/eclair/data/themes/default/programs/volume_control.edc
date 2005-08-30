@@ -4,6 +4,7 @@ program {
    source: "volume_bar_drag";
    action: STATE_SET "down" 0.0;
    target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
 }
 program {
    name: "volume_bar_drag_up";
@@ -11,4 +12,5 @@ program {
    source: "volume_bar_drag";
    action: STATE_SET "default" 0.0;
    target: "volume_bar_drag";
+   target: "volume_bar_drag_thumb";
 }

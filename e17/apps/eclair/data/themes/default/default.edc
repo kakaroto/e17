@@ -34,6 +34,7 @@ images {
    image: "progress_bar.png" COMP;
    image: "progress_bar_drag.png" COMP;
    image: "progress_bar_drag_down.png" COMP;
+   image: "handle_thumb.png" COMP;
    image: "playlist_button.png" COMP;
    image: "playlist_shadow.png" COMP;
    image: "playlist_bottom.png" COMP;
@@ -77,6 +78,7 @@ collections {
          #include "programs/navigation_buttons.edc"
          #include "programs/progress_bar.edc"
          #include "programs/volume_control.edc"
+         #include "programs/filename_bar.edc"
          #include "programs/core.edc"
       }
    }

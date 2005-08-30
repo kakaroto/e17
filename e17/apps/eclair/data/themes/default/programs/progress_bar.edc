@@ -4,6 +4,7 @@ program {
    source: "progress_bar_drag";
    action: STATE_SET "down" 0.0;
    target: "progress_bar_drag";
+   target: "progress_bar_drag_thumb";
 }
 program {
    name: "progress_bar_drag_up";
@@ -11,4 +12,5 @@ program {
    source: "progress_bar_drag";
    action: STATE_SET "play" 0.0;
    target: "progress_bar_drag";
+   target: "progress_bar_drag_thumb";
 }

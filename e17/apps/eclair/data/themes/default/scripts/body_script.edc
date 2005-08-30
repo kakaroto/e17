@@ -13,6 +13,7 @@ public cover_set() {
    set_state(PART:"previous_cover_clip", "custom", 0.0);
    set_int(previous_cover_alpha, get_int(cover_alpha));
 
+   run_program(PROGRAM:"open_left_side");
    cover_change_cb(1);
 }
 
@@ -23,6 +24,7 @@ public cover_unset() {
    set_state(PART:"previous_cover_clip", "custom", 0.0);
    set_int(previous_cover_alpha, get_int(cover_alpha));
 
+   run_program(PROGRAM:"close_left_side");
    cover_change_cb(0);
 }
 
