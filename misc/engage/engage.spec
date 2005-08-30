@@ -41,5 +41,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING README
 %{_bindir}/*
 %{_datadir}/*
+%{_libdir}/%{name}
+%{_libdir}/enlightenment/modules_extra/%{name}
 
 %changelog
