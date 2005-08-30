@@ -1,79 +1,43 @@
-# Note that this is NOT a relocatable package
-%define ver      0.1
-%define rel      1
-%define prefix   /usr
-
 Summary: enscribe
 Name: enscribe
-Version: %ver
-Release: %rel
-Copyright: BSD
+Version: 0.1
+Release: 1
+License: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enscribe/enscribe-%{ver}.tar.gz
-BuildRoot: /var/tmp/enscribe-root
-Packager: The Rasterman <raster@rasterman.com>
 URL: http://www.enlightenment.org/
-BuildRequires: libjpeg-devel
-BuildRequires: zlib-devel
-Requires: libjpeg
-Requires: zlib
-
-Docdir: %{prefix}/doc
+Source: ftp://ftp.enlightenment.org/pub/enscribe/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+BuildRequires: ecore-devel, edje-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-enscribe is a Canvas Server
-
-%package devel
-Summary: enscribe headers, static libraries, documentation and test programs
-Group: System Environment/Libraries
-Requires: %{name} = %{version}
-
-%description devel
-Headers, static libraries, test programs and documentation for Eet
+Enscribe
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
 
-%files
-%defattr(-,root,root)
-%attr(755,root,root) %{prefix}/lib/libenscribe.so*
-%attr(755,root,root) %{prefix}/lib/libenscribe.la
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
-%files devel
-%attr(755,root,root) %{prefix}/lib/libenscribe.a
-%attr(755,root,root) %{prefix}/bin/enscribe*
-%{prefix}/include/enscribe*
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc enscribe_docs.tar.gz
+%files                                           
+%defattr(-, root, root)                          
+%doc AUTHORS COPYING* README
+%{_bindir}/%{name}*
+%{_datadir}/%{name}
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file

@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: ecore-devel, evas-devel, esmart-devel, edje-devel, eet-devel
-BuildRequires: ewl-devel, imlib2-devel, embryo-devel
+BuildRequires: ewl-devel, imlib2-devel, embryo-devel, emotion-devel, enscribe-devel
 BuildRequires: enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 Requires: e_utils-e17setroot, e_utils-e_util_eapp_edit, e_utils-emblem
