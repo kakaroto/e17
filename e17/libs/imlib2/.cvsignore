@@ -9,7 +9,6 @@ ltconfig
 libtool
 install-sh
 *.pc
-*.rpm
 *-config
 *.tar.gz
 configure

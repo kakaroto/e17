@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: ecore-devel, evas-devel, esmart-devel, edje-devel, eet-devel
-BuildRequires: ewl-devel, imlib2-devel, embryo-devel, emotion-devel, enscribe-devel
+BuildRequires: ewl-devel, imlib2-devel, embryo-devel, emotion-devel
 BuildRequires: enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 Requires: e_utils-e17setroot, e_utils-e_util_eapp_edit, e_utils-emblem
@@ -42,7 +42,6 @@ Background setting utility for Enlightenment.
 Summary: eapp editing utility for Enlightenment.
 Group: User Interface/Desktops
 Requires: enlightenment >= 0.16.999
-Requires: e_utils-docs
 
 %description e_util_eapp_edit
 eapp editing utility for Enlightenment.
@@ -51,7 +50,6 @@ eapp editing utility for Enlightenment.
 Summary:  Graphical background selection utility for Enlightenment.
 Group: User Interface/Desktops
 Requires: enlightenment >= 0.16.999
-Requires: e_utils-docs
 
 %description emblem
 Graphical background selection utility for Enlightenment.
@@ -60,7 +58,6 @@ Graphical background selection utility for Enlightenment.
 Summary:  Graphical menu editing utility for Enlightenment.
 Group: User Interface/Desktops
 Requires: enlightenment >= 0.16.999
-Requires: e_utils-docs
 
 %description entangle
 Graphical menu editing utility for Enlightenment.
@@ -69,7 +66,6 @@ Graphical menu editing utility for Enlightenment.
 Summary:  A run dialog box for Enlightenment.
 Group: User Interface/Desktops
 Requires: enlightenment >= 0.16.999
-Requires: e_utils-docs
 
 %description exige
 A run dialog box for Enlightenment.

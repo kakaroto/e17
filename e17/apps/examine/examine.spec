@@ -13,7 +13,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: XFree86-devel
-BuildRequires: ecore-devel ewl-devel
+BuildRequires: ecore-devel ewl-devel emotion-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

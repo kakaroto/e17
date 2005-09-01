@@ -11,7 +11,8 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
-BuildRequires: epeg-devel imlib2-devel libjpeg-devel XFree86-devel /usr/bin/freetype-config
+BuildRequires: libjpeg-devel XFree86-devel /usr/bin/freetype-config
+BuildRequires: epeg-devel imlib2-devel evas-devel ecore-devel edje-devel
 Requires: epeg >= 0.9.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 

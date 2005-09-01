@@ -9,3 +9,4 @@ config.sub
 configure
 libtool
 ltmain.sh
+*.tar.gz

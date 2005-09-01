@@ -5,6 +5,4 @@ Makefile.in
 config.h
 config.h.in
 express
-stamp-h
-stamp-h.in
-
+stamp*

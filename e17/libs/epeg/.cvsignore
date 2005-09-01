@@ -18,3 +18,4 @@ doc
 *.tar.gz
 ltmain.sh
 mkinstalldirs
+epeg.c

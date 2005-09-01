@@ -19,3 +19,5 @@ depcomp
 install-sh
 stamp-h1
 missing
+*.tar.gz
+examine.c

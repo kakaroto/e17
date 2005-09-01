@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+AUTOMAKE_OPTIONS = foreign
+
 MYAPPNAME=enscribe
 SUBDIRS = src data
 
@@ -28,7 +30,6 @@ dist-hook:
 	    cp -pR $$file $(distdir)/data; \
 	  done \
 	fi
-							  
 
 bin_SCRIPTS = $(MYAPPNAME)-config
 

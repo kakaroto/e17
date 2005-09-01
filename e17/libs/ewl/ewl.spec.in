@@ -27,7 +27,7 @@ Group: Development/Libraries
 Requires: %{name} = %{version}
 Requires: libjpeg-devel XFree86-devel
 Requires: embryo-devel eet-devel ecore-devel
-Requires: evas-devel edje-devel
+Requires: evas-devel edje-devel emotion-devel
 
 %description devel
 EWL development files

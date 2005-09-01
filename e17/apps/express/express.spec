@@ -9,7 +9,7 @@ Source: ftp://ftp.enlightenment.org/pub/express/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-BuildRequires: ecore-devel, edje-devel, esmart-devel
+BuildRequires: ecore-devel, edje-devel, esmart-devel, etox-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

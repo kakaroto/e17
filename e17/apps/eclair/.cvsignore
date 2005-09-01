@@ -1,5 +1,4 @@
-stamp-h.in
-stamp-h
+stamp*
 ltmain.sh
 libtool
 configure
@@ -13,3 +12,4 @@ autom4te.cache
 aclocal.m4
 Makefile.in
 Makefile
+*.tar.gz

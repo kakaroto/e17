@@ -11,6 +11,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel freetype-devel freetype2-devel
 BuildRequires: /usr/bin/freetype-config XFree86-devel /usr/lib/libungif.so
+BuildRequires: libid3tag-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}

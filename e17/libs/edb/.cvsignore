@@ -30,3 +30,4 @@ depcomp
 *.bb
 *.spec
 README
+*.tar.gz
