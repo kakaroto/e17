@@ -10,7 +10,7 @@ AM_CFLAGS = @ECORE_CFLAGS@  \
 
 noinst_LTLIBRARIES   = libembrace.la
 
-libembrace_la_SOURCES  = embrace.c embrace.h e_mod_main.h  \
+libembrace_la_SOURCES  = embrace.c embrace.h  \
                          embrace_plugin.c embrace_plugin.h \
                          mailbox.c mailbox.h
 
@@ -26,10 +26,11 @@ embrace_LDADD = @ECORE_LIBS@  \
                 @EDJE_LIBS@   \
                 @ESMART_LIBS@ \
                 @DL_LIBS@     \
-                libembrace.la \
+                $(top_builddir)/src/libembrace.la \
                 -lesmart_container -lesmart_draggies -lesmart_trans_x11
 
 embrace_LDFLAGS = -export-dynamic
+embrace_DEPENDENCIES = $(top_builddir)/src/libembrace.la
 
 if BUILD_MODULE
 
@@ -43,9 +44,9 @@ pkgdir                 = @e_module_dir@/$(MODULE)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c
 module_la_LIBADD       = @ENLIGHTENMENT_LIBS@ -lm @DL_LIBS@ \
-                         libembrace.la \
+                         $(top_builddir)/src/libembrace.la \
                          -lesmart_container -lesmart_draggies -lesmart_trans_x11
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/src/libembrace.la
 
 endif
