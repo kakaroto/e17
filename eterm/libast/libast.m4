@@ -55,10 +55,10 @@ AC_DEFUN([AST_CHECK_LIBAST], [
                         AC_DEFINE([LIBAST_MMX_SUPPORT], [1], [Defined if LibAST has MMX support.])
                         ;;
                     X11)
-                        AC_DEFINE(LIBAST_X11_SUPPORT, [1], [Defined if LibAST has X11 support.])
+                        AC_DEFINE([LIBAST_X11_SUPPORT], [1], [Defined if LibAST has X11 support.])
                         ;;
                     Imlib2)
-                        AC_DEFINE(LIBAST_IMLIB2_SUPPORT, [1], [Defined if LibAST has Imlib2 support.])
+                        AC_DEFINE([LIBAST_IMLIB2_SUPPORT], [1], [Defined if LibAST has Imlib2 support.])
                         ;;
                 esac
             done
@@ -171,7 +171,7 @@ AC_DEFUN([AST_X11_SUPPORT], [
         AC_CHECK_LIB(X11, XOpenDisplay, [
                          LIBAST_X11_SUPPORT="X11"
                          GRLIBS="-lX11"
-                         AC_DEFINE(LIBAST_X11_SUPPORT, [1], [Define for X11 support.])
+                         AC_DEFINE([LIBAST_X11_SUPPORT], [1], [Define for X11 support.])
                      ])
     fi
     AC_SUBST(LIBAST_X11_SUPPORT)
@@ -208,7 +208,7 @@ AC_DEFUN([AST_IMLIB2_SUPPORT], [
                 AC_CHECK_LIB(freetype, FT_Init_FreeType, GRLIBS="-lfreetype $GRLIBS", , $GRLIBS)
                 AC_CHECK_LIB(Imlib2, imlib_create_image, [
                                 GRLIBS="-lImlib2 $GRLIBS"
-                                AC_DEFINE(LIBAST_IMLIB2_SUPPORT, [1], [Define for Imlib2 support.])
+                                AC_DEFINE([LIBAST_IMLIB2_SUPPORT], [1], [Define for Imlib2 support.])
                                 LIBAST_IMLIB2_SUPPORT="Imlib2"
                      ], [
                          AC_WARN(*** Imlib2 support has been disabled because Imlib2 ***)
