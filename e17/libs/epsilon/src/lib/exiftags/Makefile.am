@@ -5,11 +5,10 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES             = -I$(includedir) \
-		       -I$(top_builddir)/src \
+INCLUDES             = -I$(top_builddir)/src \
 		       -I$(top_srcdir)/src \
 		       -I$(top_srcdir)/src/lib \
-		       @imlib_cflags@ @epeg_cflags@
+		       @IMLIB2_CFLAGS@ @EPEG_CFLAGS@
 
 noinst_LTLIBRARIES = libepsilon_exiftags.la
 libepsilon_exiftags_la_SOURCES = \

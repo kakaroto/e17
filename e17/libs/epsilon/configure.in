@@ -44,84 +44,73 @@ AC_ARG_WITH(ecore,
         [CFLAGS="$CFLAGS -I$withval/include"
         LIBS="-L$withval/lib $LIBS"])
 
-AC_PATH_GENERIC(imlib2, 1.0.0, [
-  AC_SUBST(imlib_libs)
-  AC_SUBST(imlib_cflags) ],
-  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
-imlib_libs=`imlib2-config --libs`
-imlib_cflags=`imlib2-config --cflags`
-AC_SUBST(imlib_libs)
-AC_SUBST(imlib_cflags)
+AC_PATH_GENERIC(imlib2, 1.0.0,
+  [ have_imlib2="yes" ],
+  [
+    have_imlib2="yes"
+    AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?)
+  ]
+)
 
-have_png="no"
-have_epeg="no"
-epeg_libs=""
-epeg_cflags=""
 dnl Make sure the epeg header/lib is available
-AC_CHECK_HEADER( Epeg.h, 
-  [ AC_DEFINE(HAVE_EPEG_H, 1, [Epeg.h available]) 
-    have_epeg="yes" 
-    epeg_libs=`epeg-config --libs`
-    epeg_cflags=`epeg-config --cflags` ],
-  [ AC_MSG_WARN(Cannot find Epeg.h on your system: jpeg thumbnail suckage!) ])
-AC_CHECK_LIB(epeg, epeg_file_open, [ 
-    AC_DEFINE(HAVE_EPEG_LIB, 1, [libepeg available]) 
-])
-AC_SUBST(epeg_libs)
-AC_SUBST(epeg_cflags)
+AC_PATH_GENERIC(epeg, 0.9.0,
+  [
+    AC_DEFINE(HAVE_EPEG_H, 1, [Epeg.h is available])
+    have_epeg="yes"
+  ],
+  [
+    have_epeg="yes"
+    AC_MSG_WARN(Cannot find Epeg on your system: jpeg thumbnail suckage!)
+  ]
+)
 
 dnl Make sure the png header/lib is available
-AC_CHECK_HEADER( png.h, 
-  [ AC_DEFINE(HAVE_PNG_H, 1, [png.h available]) 
-    have_png="yes" 
-    LIBS="$LIBS -lpng -lz -lm" ], 
-  [ AC_MSG_ERROR(Cannot find png.h on your system, try --with-png=) ])
-AC_CHECK_LIB(png, png_create_read_struct, [ 
-    AC_DEFINE(HAVE_PNG_LIB, 1, [libpng available]) 
-])
-  
+PKG_CHECK_MODULES(PNG, libpng12 >= 1.2.0,
+  [ have_png="yes" ],
+  [ have_png="no" ]
+)
+
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
 
 dnl Make sure the Evas header/lib is available
-AC_CHECK_HEADER( Evas.h, 
-  [ AC_DEFINE(HAVE_EVAS_H, 1, [Evas.h available]) 
-    have_evas="yes" 
-    evas_libs=`evas-config --libs`
-    evas_cflags=`evas-config --cflags` ],
-  [ AC_MSG_WARN(Cannot find Evas.h on your system: edje thumbnail suckage!) ])
-AC_CHECK_LIB(evas, evas_object_rectangle_add, [ 
-    AC_DEFINE(HAVE_EVAS_LIB, 1, [libevas available]) 
-])
-AC_SUBST(evas_libs)
-AC_SUBST(evas_cflags)
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ have_evas="yes" ],
+  [
+    have_evas="yes"
+    AC_MSG_ERROR(Cannot find Evas on your system: jpeg thumbnail suckage!)
+  ]
+)
 
 dnl Make sure the Ecore_Evas header/lib is available
-AC_CHECK_HEADER( Ecore_Evas.h, 
-  [ AC_DEFINE(HAVE_ECORE_EVAS_H, 1, [Ecore_Evas.h available]) 
-    have_evas="yes" 
-    ecore_libs=`ecore-config --libs`
-    ecore_cflags=`ecore-config --cflags` ],
-  [ AC_MSG_WARN(Cannot find Ecore_Evas.h on your system: edje thumbnail suckage
-) ])
-AC_CHECK_LIB(ecore_evas, ecore_evas_buffer_new, [ 
-    AC_DEFINE(HAVE_ECORE_EVAS_LIB, 1, [libecore_evas available]) 
-])
-AC_SUBST(ecore_libs)
-AC_SUBST(ecore_cflags)
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [
+    SAVE_CFLAGS=$CFLAGS;
+    CFLAGS="$CFLAGS $ECORE_CFLAGS"
+    AC_CHECK_HEADER(Ecore_Evas.h, 
+      [
+        have_ecore="yes" 
+      ], [
+        have_ecore="no" 
+        AC_MSG_ERROR(Cannot find Ecore_Evas on your system: edje thumbnail suckage)
+      ]
+    )
+    CFLAGS=$SAVE_CFLAGS
+  ],
+  [
+    have_ecore="yes"
+    AC_MSG_ERROR(Cannot find Ecore_Evas on your system: jpeg thumbnail suckage!)
+  ]
+)
 
 dnl Make sure the Edje header/lib is available
-AC_CHECK_HEADER( Edje.h, 
-  [ AC_DEFINE(HAVE_EDJE_H, 1, [Edje.h available]) 
-    have_edje="yes" 
-    edje_libs=`edje-config --libs`
-    edje_cflags=`edje-config --cflags` ],
-  [ AC_MSG_WARN(Cannot find Edje.h on your system: edje thumbnail suckage!) ])
-AC_CHECK_LIB(edje, edje_object_add, [ 
-    AC_DEFINE(HAVE_EDJE_LIB, 1, [libedje available]) 
-])
-AC_SUBST(edje_libs)
-AC_SUBST(edje_cflags)
+AC_PATH_GENERIC(edje, 0.5.0,
+  [ have_edje="yes" ],
+  [
+    have_edje="yes"
+    AC_MSG_ERROR(Cannot find Edje on your system: jpeg thumbnail suckage!)
+  ]
+)
 
 
 AC_OUTPUT([
