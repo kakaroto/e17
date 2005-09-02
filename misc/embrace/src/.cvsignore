@@ -6,4 +6,3 @@ embrace
 *.o
 *.lo
 module.la
-libembrace.la
