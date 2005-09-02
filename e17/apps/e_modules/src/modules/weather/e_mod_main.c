@@ -856,7 +856,7 @@ _weather_net_server_add(void *data, int type, void *event)
 			      face->conf->url,
 			      weather->conf->host);
    ecore_con_server_send(face->server, buf, strlen(buf));
-   return 1;
+   return 0;
 }
 
 static int
@@ -886,7 +886,7 @@ _weather_net_server_data(void *data, int type, void *event)
    memcpy(face->buffer + face->cursize, e->data, e->size);
    face->cursize += e->size;
    face->buffer[face->cursize] = 0;
-   return 1;
+   return 0;
 }
 
 static int
@@ -920,7 +920,7 @@ _weather_net_server_del(void *data, int type, void *event)
    face->cursize = 0;
    free(face->buffer);
    face->buffer = NULL;
-   return 1;
+   return 0;
 }
 
 static int
