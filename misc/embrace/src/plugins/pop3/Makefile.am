@@ -2,7 +2,10 @@
 
 if BUILD_POP3
 
-INCLUDES = -I$(top_srcdir)/src
+AM_CFLAGS = -I$(top_srcdir)/src \
+            @EDB_CFLAGS@        \
+            @EVAS_CFLAGS@       \
+            @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libpop3.la
 plugindir = @PLUGIN_DIR@

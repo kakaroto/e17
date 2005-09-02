@@ -2,17 +2,19 @@
 
 SUBDIRS = plugins
 
-AM_CFLAGS = @ECORE_CFLAGS@  \
+AM_CFLAGS = -I. \
+            @ENLIGHTENMENT_CFLAGS@ \
+            @ECORE_CFLAGS@  \
             @EDB_CFLAGS@    \
             @EVAS_CFLAGS@   \
             @EDJE_CFLAGS@   \
             @ESMART_CFLAGS@
 
-noinst_LTLIBRARIES   = libembrace.la
+noinst_LTLIBRARIES = libembrace.la
 
-libembrace_la_SOURCES  = embrace.c embrace.h  \
-                         embrace_plugin.c embrace_plugin.h \
-                         mailbox.c mailbox.h
+libembrace_la_SOURCES = embrace.c embrace.h  \
+                        embrace_plugin.c embrace_plugin.h \
+                        mailbox.c mailbox.h
 
 libembrace_la_DEPENDENCIES = $(top_builddir)/config.h
 
@@ -36,10 +38,6 @@ if BUILD_MODULE
 
 MODULE = embrace
 
-INCLUDES               = -I. \
-                         -I$(top_srcdir) \
-                         -I$(includedir) \
-                         @ENLIGHTENMENT_CFLAGS@
 pkgdir                 = @e_module_dir@/$(MODULE)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c

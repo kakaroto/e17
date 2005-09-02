@@ -2,7 +2,10 @@
 
 if BUILD_MAILDIR
 
-INCLUDES = -I$(top_srcdir)/src
+AM_CFLAGS = -I$(top_srcdir)/src \
+            @EDB_CFLAGS@        \
+            @EVAS_CFLAGS@       \
+            @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libmaildir.la
 plugindir = @PLUGIN_DIR@

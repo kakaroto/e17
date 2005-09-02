@@ -2,7 +2,10 @@
 
 if BUILD_MBOX
 
-INCLUDES = -I$(top_srcdir)/src
+AM_CFLAGS = -I$(top_srcdir)/src \
+            @EDB_CFLAGS@        \
+            @EVAS_CFLAGS@       \
+            @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libmbox.la
 plugindir = @PLUGIN_DIR@

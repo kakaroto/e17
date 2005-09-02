@@ -2,7 +2,11 @@
 
 if BUILD_SYLPHEED
 
-INCLUDES = -I$(top_srcdir)/src @XML_CFLAGS@
+AM_CFLAGS = -I$(top_srcdir)/src \
+	    @XML_CFLAGS@        \
+            @EDB_CFLAGS@        \
+            @EVAS_CFLAGS@       \
+            @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libsylpheed.la
 plugindir = @PLUGIN_DIR@
