@@ -2,7 +2,7 @@ Summary: EFL enabled mail checking utility
 Name: embrace
 Version: 0.0.3
 Release:1.%(date '+%Y%m%d')
-License: BSD
+License: GPL
 Group:User Interface/Desktops
 Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Jim Perrin <jperrin@gmail.com>}
