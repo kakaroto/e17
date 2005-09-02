@@ -2,9 +2,9 @@
 
 if BUILD_IMAP
 
-AM_CFLAGS = -I$(top_srcdir)/src \
-            @EDB_CFLAGS@        \
-            @EVAS_CFLAGS@       \
+AM_CFLAGS = -I$(top_srcdir)/src/include \
+            @EDB_CFLAGS@   \
+            @EVAS_CFLAGS@  \
             @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libimap.la

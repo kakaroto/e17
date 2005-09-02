@@ -19,7 +19,7 @@
 AC_PREREQ(2.53)
 
 AC_INIT(embrace, 0.0.3, , embrace)
-AC_CONFIG_SRCDIR([src/embrace.c])
+AC_CONFIG_SRCDIR([src/main.c])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -153,6 +153,8 @@ data/themes/default/parts/Makefile
 data/themes/default/programs/Makefile
 m4/Makefile
 src/Makefile
+src/include/Makefile
+src/lib/Makefile \
 src/plugins/Makefile
 src/plugins/maildir/Makefile
 src/plugins/mbox/Makefile

@@ -2,10 +2,10 @@
 
 if BUILD_SYLPHEED
 
-AM_CFLAGS = -I$(top_srcdir)/src \
-	    @XML_CFLAGS@        \
-            @EDB_CFLAGS@        \
-            @EVAS_CFLAGS@       \
+AM_CFLAGS = -I$(top_srcdir)/src/include \
+	    @XML_CFLAGS@   \
+            @EDB_CFLAGS@   \
+            @EVAS_CFLAGS@  \
             @ECORE_CFLAGS@
 
 plugin_LTLIBRARIES = libsylpheed.la
