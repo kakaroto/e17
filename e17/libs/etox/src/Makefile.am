@@ -2,7 +2,7 @@
 
 SUBDIRS = style
 
-INCLUDES = @evas_cflags@ @ecore_cflags@
+INCLUDES = @evas_cflags@ @ecore_cflags@ @edb_cflags@
 
 lib_LTLIBRARIES = libetox.la
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @evas_cflags@ @ecore_cflags@
+INCLUDES = @evas_cflags@ @ecore_cflags@ @edb_cflags@
 
 noinst_LTLIBRARIES = libetox_style.la
 
