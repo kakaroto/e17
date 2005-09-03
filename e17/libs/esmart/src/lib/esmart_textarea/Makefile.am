@@ -2,8 +2,8 @@ pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_textarea.la
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_textarea \
-	   @ecore_cflags@ \
-	   @evas_cflags@
+	   @ECORE_CFLAGS@ \
+	   @EVAS_CFLAGS@
 
 installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Textarea.h
@@ -17,4 +17,4 @@ libesmart_textarea_la_SOURCES = esmart_textarea_callbacks.c \
 				esmart_textarea_private.h
 
 libesmart_textarea_la_LDFLAGS = -version-info 0:9:0
-libesmart_textarea_la_LIBADD = @ecore_libs@ @evas_libs@
+libesmart_textarea_la_LIBADD = @ECORE_LIBS@ @EVAS_LIBS@

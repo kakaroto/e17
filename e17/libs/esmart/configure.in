@@ -49,69 +49,30 @@ changequote([,])dnl
 AC_CHECK_HEADER(ltdl.h,,
                 AC_MSG_ERROR(Cannot find ltdl.h. Please make sure you have the libltdl-dev package installed.))
 
-AC_ARG_WITH(evas,
-        [  --with-evas=DIR          use evas in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find evas: Is evas-config in path?) ]
+)
 
-AC_PATH_GENERIC(evas,, [
-    AC_SUBST(evas_libs)
-    AC_SUBST(evas_cflags)],
-    AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?) ]
+)
 
-AC_ARG_WITH(ecore,
-        [  --with-ecore=DIR          use ecore in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
+AC_PATH_GENERIC(imlib2, 1.0.0,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) ]
+)
 
-AC_PATH_GENERIC(ecore,, [
-    AC_SUBST(ecore_libs)
-    AC_SUBST(ecore_cflags)],
-    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
+AC_PATH_GENERIC(epsilon, 0.3.0,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find epsilon: Is epsilon-config in path?) ]
+)
 
-AC_ARG_WITH(imlib2,
-        [  --with-imlib2=DIR       use imlib2 in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(imlib2, 1.0.0, [
-  AC_SUBST(imlib_libs)
-  AC_SUBST(imlib_cflags) ],
-  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
-imlib_libs=`imlib2-config --libs`
-imlib_cflags=`imlib2-config --cflags`
-AC_SUBST(imlib_libs)
-AC_SUBST(imlib_cflags)
-
-AC_ARG_WITH(epsilon,
-        [  --with-epsilon=DIR          use epsilon in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(epsilon,, [
-    AC_SUBST(epsilon_libs)
-    AC_SUBST(epsilon_cflags)],
-    AC_MSG_ERROR(Cannot find epsilon: Is epsilon-config in path?))
-epsilon_libs=`epsilon-config --libs`
-epsilon_cflags=`epsilon-config --cflags`
-AC_SUBST(epsilon_libs)
-AC_SUBST(epsilon_cflags)
-
-AC_ARG_WITH(edje,
-        [  --with-edje=DIR          use edje in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(edje,, [
-    AC_SUBST(edje_libs)
-    AC_SUBST(edje_cflags)],
-    AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
+AC_PATH_GENERIC(edje, 0.5.0,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find edje: Is edje-config in path?) ]
+)
 
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)

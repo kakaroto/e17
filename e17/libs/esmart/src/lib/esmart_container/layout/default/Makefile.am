@@ -2,8 +2,8 @@ plugin_LTLIBRARIES = default.la
 plugindir = @libdir@/@PACKAGE@/layout
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
-	   @imlib_cflags@ \
-	   @evas_cflags@
+	   @IMLIB2_CFLAGS@ \
+	   @EVAS_CFLAGS@
 
 
 default_la_SOURCES = default.c
