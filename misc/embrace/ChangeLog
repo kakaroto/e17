@@ -4,6 +4,8 @@ $Id$
         * src/plugin/imap.c: Merged Sebastian Dransfeld's patch that
           implents "connection sharing"
         * src/plugin/pop3.c: Updated for recent imap changes
+        * src/plugin/{imap,pop3}.c: Remove event handlers for server
+          events on shutdown (Sebastian Dransfeld)
 
 2005-08-29 Michael Jennings (mej at eterm org)
         * Makefile.am, embrace.spec:  Applied patch from Jim Perrin

@@ -46,6 +46,7 @@ typedef enum {
 
 static EmbracePlugin *plugin = NULL;
 static Evas_List *mailboxes = NULL;
+static Ecore_Event_Handler *ev_hdl[3];
 
 static MailBox *find_mailbox (Ecore_Con_Server *server)
 {
@@ -303,6 +304,13 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 
 static void pop3_shutdown ()
 {
+	int i;
+
+	for (i = 0; i < 3; i++) {
+		ecore_event_handler_del (ev_hdl[i]);
+		ev_hdl[i] = NULL;
+	}
+
 	ecore_con_shutdown ();
 }
 
@@ -320,12 +328,12 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 
 	ecore_con_init ();
 
-	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
-	                         on_server_add, NULL);
-	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
-	                         on_server_data, NULL);
-	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
-	                         on_server_del, NULL);
+	ev_hdl[0] = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
+	                                     on_server_add, NULL);
+	ev_hdl[1] = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
+	                                     on_server_data, NULL);
+	ev_hdl[2] = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
+	                                     on_server_del, NULL);
 
 	return true;
 }
