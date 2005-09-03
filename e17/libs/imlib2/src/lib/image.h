@@ -11,6 +11,11 @@
 # include <dlfcn.h>
 # include <Imlib2.h>
 
+# ifndef RTLD_LOCAL
+#  define RTLD_LOCAL 0
+#  warning "your crap box doesnt define RTLD_LOCAL !?"
+# endif
+
 typedef struct _imlibimage              ImlibImage;
 # ifdef BUILD_X11
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
