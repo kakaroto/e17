@@ -1,5 +1,9 @@
 $Id$
 
+2005-09-03 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/plugin/imap.c: Merged Sebastian Dransfeld's patch that
+          implents "connection sharing"
+
 2005-08-29 Michael Jennings (mej at eterm org)
         * Makefile.am, embrace.spec:  Applied patch from Jim Perrin
           <jperrin@gmail.com> for "make dist" and RPM build.

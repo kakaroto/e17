@@ -38,32 +38,94 @@ typedef enum {
 	STATE_STATUS_OK
 } State;
 
+typedef struct {
+	char *host;
+	int port;
+	bool use_ssl;
+	char *user;
+	char *pass;
+
+	Evas_List *clients;
+	Evas_List *current;
+
+	Ecore_Timer *timer;
+	double interval;
+
+	Ecore_Con_Server *server;
+	State state;
+	int command_no;
+} ImapServer;
+
 #define MIN_INTERVAL 60
 #define LOGOUT() \
-	if (state >= STATE_LOGGED_IN) { \
+	if (server->state >= STATE_LOGGED_IN) { \
 		len = snprintf (outbuf, sizeof (outbuf), \
-		                "A%03i LOGOUT", command_no); \
-		ecore_con_server_send (ev->server, outbuf, len); \
+		                "A%03i LOGOUT", ++server->command_no); \
+		ecore_con_server_send (server->server, outbuf, len); \
 	} \
 \
-	ecore_con_server_del (ev->server); \
-	mailbox_property_set (mb, "server", NULL);
+	ecore_con_server_del (server->server); \
+	server->server = NULL;
 
 static EmbracePlugin *plugin = NULL;
+static Evas_List *servers = NULL;
+
+static ImapServer *find_server (Ecore_Con_Server *server)
+{
+	Evas_List *l;
+
+	for (l = servers; l; l = l->next) {
+		ImapServer *current = l->data;
+
+		if (current->server == server)
+			return current;
+	}
+
+	return NULL;
+}
+
+static ImapServer *find_server_by_mailbox (MailBox *mb)
+{
+	Evas_List *l;
+	char *host;
+	int port;
+	int use_ssl;
+	char *user;
+	char *pass;
+
+	assert (mb);
+
+	host = mailbox_property_get (mb, "host");
+	port = (int) mailbox_property_get (mb, "port");
+	use_ssl = (int) mailbox_property_get (mb, "ssl");
+	user = mailbox_property_get (mb, "user");
+	pass = mailbox_property_get (mb, "pass");
+
+	for (l = servers; l; l = l->next) {
+		ImapServer *current = l->data;
+
+		if (port == current->port && use_ssl == current->use_ssl &&
+		    !strcmp (host, current->host) &&
+		    !strcmp (user, current->user) &&
+		    !strcmp (pass, current->pass))
+			return current;
+	}
+
+	return NULL;
+}
 
 static int on_server_add (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Add *ev = event;
-	MailBox *mb;
+	ImapServer *server;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	/* Make sure this event is for us */
+	server = find_server (ev->server);
+	if (!server)
 		return 1;
 
-	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
-	mailbox_property_set (mb, "command_no", (void *) 0);
+	server->state = STATE_CONNECTED;
+	server->command_no = 0;
 
 	return 0;
 }
@@ -71,16 +133,15 @@ static int on_server_add (void *udata, int type, void *event)
 static int on_server_data (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Data *ev = event;
+	ImapServer *server;
 	MailBox *mb;
-	State state;
 	char inbuf[1024], outbuf[256], *spc;
-	int total = 0, unseen = 0, len, command_no;
+	int total = 0, unseen = 0, len;
 	size_t slen;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	/* Make sure this event is for us */
+	server = find_server (ev->server);
+	if (!server)
 		return 1;
 
 	/* take the data and make a NUL-terminated string out of it */
@@ -91,11 +152,7 @@ static int on_server_data (void *udata, int type, void *event)
 	inbuf[len] = 0;
 	embrace_strstrip (inbuf);
 
-	state = (State) mailbox_property_get (mb, "state");
-	assert (state != STATE_DISCONNECTED);
-
-	command_no = (int) mailbox_property_get (mb, "command_no");
-	mailbox_property_set (mb, "command_no", (void *) ++command_no);
+	assert (server->state != STATE_DISCONNECTED);
 
 	if ((spc = strchr (inbuf, ' '))) {
 		slen = strlen (spc);
@@ -111,22 +168,15 @@ static int on_server_data (void *udata, int type, void *event)
 		}
 	}
 
-	mailbox_property_set (mb, "state", (void *) ++state);
+	mb = server->current->data;
+	server->state++;
 
-	switch (state) {
+	switch (server->state) {
 		case STATE_SERVER_READY:
 			len = snprintf (outbuf, sizeof (outbuf),
 			                "A%03i LOGIN %s %s\r\n",
-			                command_no,
-			                (char *) mailbox_property_get (mb, "user"),
-			                (char *) mailbox_property_get (mb, "pass"));
-			ecore_con_server_send (ev->server, outbuf, len);
-			break;
-		case STATE_LOGGED_IN:
-			len = snprintf (outbuf, sizeof (outbuf),
-			                "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",
-			                command_no,
-			                (char *) mailbox_property_get (mb, "path"));
+			                ++server->command_no,
+			                server->user, server->pass);
 			ecore_con_server_send (ev->server, outbuf, len);
 			break;
 		case STATE_STATUS_OK:
@@ -135,9 +185,28 @@ static int on_server_data (void *udata, int type, void *event)
 				mailbox_unseen_set (mb, unseen);
 				mailbox_total_set (mb, total);
 
-				LOGOUT ();
+				server->current = server->current->next;
+
+				if (server->current) {
+					mb = server->current->data;
+					server->state = STATE_LOGGED_IN;
+				} else {
+					mb = NULL;
+					LOGOUT ();
+				}
+			} else {
+				assert (false);
 			}
 
+			/* Fall through if we got another mailbox to check */
+			if (!mb)
+				break;
+		case STATE_LOGGED_IN:
+			len = snprintf (outbuf, sizeof (outbuf),
+			                "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",
+			                ++server->command_no,
+			                (char *) mailbox_property_get (mb, "path"));
+			ecore_con_server_send (ev->server, outbuf, len);
 			break;
 		default:
 			assert (false);
@@ -149,92 +218,167 @@ static int on_server_data (void *udata, int type, void *event)
 static int on_server_del (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Del *ev = event;
-	MailBox *mb;
-	char *host;
+	ImapServer *server;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	/* Make sure this event is for us */
+	server = find_server (ev->server);
+	if (!server)
 		return 1;
 
-	host = (char *) mailbox_property_get (mb, "host");
-
-	if (mailbox_property_get (mb, "state") == STATE_DISCONNECTED)
-		fprintf (stderr, "[imap] cannot connect to '%s'\n", host);
+	if (server->state == STATE_DISCONNECTED)
+		fprintf (stderr, "[imap] cannot connect to '%s'\n", server->host);
 	else {
-		mailbox_property_set (mb, "state", STATE_DISCONNECTED);
-		fprintf (stderr, "[imap] lost connection to '%s'\n", host);
+		server->state = STATE_DISCONNECTED;
+		fprintf (stderr, "[imap] lost connection to '%s'\n", server->host);
 	}
 
-	ecore_con_server_del (ev->server);
-	mailbox_property_set (mb, "server", NULL);
+	ecore_con_server_del (server->server);
+	server->server = NULL;
 
 	return 0;
 }
 
-static bool imap_check (MailBox *mb)
+static bool imap_server_check (ImapServer *server)
 {
 	Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
-	Ecore_Con_Server *server;
-	char *host;
-	int port;
 
-	host = mailbox_property_get (mb, "host"),
-	port = (int) mailbox_property_get (mb, "port");
+	assert (server);
 
-	assert (host);
-	assert (port);
-
-	if (mailbox_property_get (mb, "server")) {
-		fprintf (stderr, "[imap] already connected to '%s'\n", host);
+	if (server->server) {
+		fprintf (stderr, "[imap] already connected to '%s'\n", server->host);
 		return false;
 	}
 
 	if (ecore_con_ssl_available_get () &&
-	    mailbox_property_get (mb, "ssl"))
+	    server->use_ssl)
 		type |= ECORE_CON_USE_SSL;
 
-	server = ecore_con_server_connect (type, host, port, mb);
+	server->server = ecore_con_server_connect (type, server->host,
+	                                           server->port, NULL);
+	server->state = STATE_DISCONNECTED;
+	server->current = server->clients;
 
-	mailbox_property_set (mb, "state", STATE_DISCONNECTED);
+	return true;
+}
+
+static bool imap_check (MailBox *mb)
+{
+	ImapServer *server;
+	bool ret = true;
+
+	assert (mb);
+
+	server = (ImapServer *) mailbox_property_get (mb, "server");
+	if (server)
+		ret = imap_server_check (server);
+
+	return ret;
+}
+
+static int on_timer (void *udata)
+{
+	imap_server_check (udata);
+
+	return 1;
+}
+
+static ImapServer *create_server (MailBox *mb)
+{
+	ImapServer *s;
+
+	s = calloc (1, sizeof (ImapServer));
+	if (!s)
+		return NULL;
+
+	s->interval = MAX (mailbox_poll_interval_get (mb), MIN_INTERVAL);
+	s->timer = ecore_timer_add (s->interval, on_timer, s);
+	if (!s->timer) {
+		free (s);
+		return NULL;
+	}
+
+	s->host = strdup (mailbox_property_get (mb, "host"));
+	s->port = (int) mailbox_property_get (mb, "port");
+	s->use_ssl = (bool) mailbox_property_get (mb, "ssl");
+	s->user = strdup (mailbox_property_get (mb, "user"));
+	s->pass = strdup (mailbox_property_get (mb, "pass"));
+	s->state = STATE_DISCONNECTED;
+
+	return s;
+}
+
+static bool imap_add_server (MailBox *mb)
+{
+	ImapServer *server;
+	double interval;
+
+	assert (mb);
+
+	/* did we already create a server for this mailbox? */
+	server = find_server_by_mailbox (mb);
+	if (!server) {
+		server = create_server (mb);
+		if (!server)
+			return false;
+
+		servers = evas_list_append (servers, server);
+	} else {
+		interval = MAX (mailbox_poll_interval_get (mb), MIN_INTERVAL);
+		if (interval < server->interval) {
+			server->interval = interval;
+			ecore_timer_del (server->timer);
+
+			server->timer = ecore_timer_add (server->interval,
+			                                 on_timer, server);
+			if (!server->timer) {
+				free (server);
+				return false;
+			}
+		}
+	}
+
+	server->clients = evas_list_append (server->clients, mb);
 	mailbox_property_set (mb, "server", server);
 
 	return true;
 }
 
-static int on_timer (void *udata)
+static bool imap_remove_server (ImapServer *server, MailBox *mb)
 {
-	imap_check (udata);
-
-	return 1;
-}
-
-static bool imap_add_mailbox (MailBox *mb)
-{
-	Ecore_Timer *timer;
-	int interval;
-
+	assert (server);
 	assert (mb);
 
-	interval = MAX (mailbox_poll_interval_get (mb), MIN_INTERVAL);
+	/* FIXME: reschedule server timer */
+	server->clients = evas_list_remove (server->clients, mb);
+	if (!server->clients) {
+		free (server->host);
+		free (server->user);
+		free (server->pass);
 
-	if (!(timer = ecore_timer_add (interval, on_timer, mb)))
-		return false;
+		ecore_timer_del (server->timer);
 
-	mailbox_property_set (mb, "timer", timer);
+		servers = evas_list_remove (servers, server);
+		free (server);
+	}
 
 	return true;
 }
 
+static bool imap_add_mailbox (MailBox *mb)
+{
+	assert (mb);
+
+	return imap_add_server (mb);
+}
+
 static bool imap_remove_mailbox (MailBox *mb)
 {
-	Ecore_Timer *timer;
+	ImapServer *server;
 
 	assert (mb);
 
-	if ((timer = mailbox_property_get (mb, "timer")))
-		ecore_timer_del (timer);
+	if ((server = mailbox_property_get (mb, "server")))
+		imap_remove_server (server, mb);
 
 	free (mailbox_property_get (mb, "host"));
 	free (mailbox_property_get (mb, "user"));
