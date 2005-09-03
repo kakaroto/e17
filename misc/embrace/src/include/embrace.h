@@ -48,7 +48,7 @@ typedef struct {
 	Config cfg;
 } Embrace;
 
-Embrace *embrace_new ();
+Embrace *embrace_new (void);
 void embrace_free (Embrace *e);
 
 bool embrace_init (Embrace *e);
@@ -57,7 +57,7 @@ void embrace_deinit (Embrace *e);
 void embrace_run (Embrace *e);
 void embrace_stop (Embrace *e);
 
-int embrace_signal_get ();
+int embrace_signal_get (void);
 void embrace_expand_path (char *str, char *dest, int destlen);
 char *embrace_strstrip (char *str);
 
