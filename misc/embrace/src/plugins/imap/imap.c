@@ -308,6 +308,23 @@ static ImapServer *create_server (MailBox *mb)
 	return s;
 }
 
+static bool destroy_server (ImapServer *server)
+{
+	assert (server);
+
+	free (server->host);
+	free (server->user);
+	free (server->pass);
+
+	if (server->timer)
+		ecore_timer_del (server->timer);
+
+	servers = evas_list_remove (servers, server);
+	free (server);
+	
+	return true;
+}
+
 static bool imap_add_server (MailBox *mb)
 {
 	ImapServer *server;
@@ -332,7 +349,7 @@ static bool imap_add_server (MailBox *mb)
 			server->timer = ecore_timer_add (server->interval,
 			                                 on_timer, server);
 			if (!server->timer) {
-				free (server);
+				destroy_server (server);
 				return false;
 			}
 		}
@@ -351,16 +368,8 @@ static bool imap_remove_server (ImapServer *server, MailBox *mb)
 
 	/* FIXME: reschedule server timer */
 	server->clients = evas_list_remove (server->clients, mb);
-	if (!server->clients) {
-		free (server->host);
-		free (server->user);
-		free (server->pass);
-
-		ecore_timer_del (server->timer);
-
-		servers = evas_list_remove (servers, server);
-		free (server);
-	}
+	if (!server->clients)
+		destroy_server (server);
 
 	return true;
 }
