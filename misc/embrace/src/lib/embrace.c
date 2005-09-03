@@ -500,6 +500,7 @@ static bool ui_load_trans_obj (Embrace *e)
 	int w = 0, h = 0;
 
 	assert (e);
+
 	if (e->cfg.module)
 		return true;
 
@@ -539,6 +540,7 @@ static bool ui_load_dragger (Embrace *e)
 	Evas_Object *dragger;
 
 	assert (e);
+
 	if (e->cfg.module)
 		return true;
 
@@ -668,6 +670,7 @@ static void free_ui (Embrace *e)
 	if (e->gui.container) {
 		if (e->gui.edje)
 			edje_object_part_unswallow (e->gui.edje, e->gui.container);
+
 		evas_object_del (e->gui.container);
 		e->gui.container = NULL;
 	}
@@ -806,11 +809,12 @@ void embrace_run (Embrace *e)
 
 	if (e->gui.ee)
 		ecore_evas_show (e->gui.ee);
+
 	ecore_idler_add (check_mailboxes, e);
 
 	if (!e->cfg.module) {
 		e->evt_hup = ecore_event_handler_add (ECORE_EVENT_SIGNAL_HUP,
-	                                              on_sighup, e);
+		                                      on_sighup, e);
 		assert (e->evt_hup);
 	}
 }
@@ -821,6 +825,7 @@ void embrace_stop (Embrace *e)
 
 	if (e->evt_hup)
 		ecore_event_handler_del (e->evt_hup);
+
 	e->evt_hup = NULL;
 }
 
