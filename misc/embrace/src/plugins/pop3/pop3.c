@@ -45,16 +45,29 @@ typedef enum {
 	mailbox_property_set (mb, "server", NULL);
 
 static EmbracePlugin *plugin = NULL;
+static Evas_List *mailboxes = NULL;
+
+static MailBox *find_mailbox (Ecore_Con_Server *server)
+{
+	Evas_List *l;
+
+	for (l = mailboxes; l; l = l->next) {
+		MailBox *current = l->data;
+
+		if (mailbox_property_get (current, "server") == server)
+			return current;
+	}
+
+	return NULL;
+}
 
 static int on_server_add (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Add *ev = event;
 	MailBox *mb;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	mb = find_mailbox (ev->server);
+	if (!mb)
 		return 1;
 
 	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
@@ -70,10 +83,8 @@ static int on_server_data (void *udata, int type, void *event)
 	char inbuf[2048], outbuf[256];
 	int num = 0, size = 0, len;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	mb = find_mailbox (ev->server);
+	if (!mb)
 		return 1;
 
 	state = (State) mailbox_property_get (mb, "state");
@@ -136,10 +147,8 @@ static int on_server_del (void *udata, int type, void *event)
 	MailBox *mb;
 	char *host;
 
-	mb = ecore_con_server_data_get (ev->server);
-	assert (mb);
-
-	if (mailbox_plugin_get (mb) != plugin)
+	mb = find_mailbox (ev->server);
+	if (!mb)
 		return 1;
 
 	host = (char *) mailbox_property_get (mb, "host");
@@ -208,6 +217,8 @@ static bool pop3_add_mailbox (MailBox *mb)
 
 	mailbox_property_set (mb, "timer", timer);
 
+	mailboxes = evas_list_append (mailboxes, mb);
+
 	return true;
 }
 
@@ -223,6 +234,8 @@ static bool pop3_remove_mailbox (MailBox *mb)
 	free (mailbox_property_get (mb, "host"));
 	free (mailbox_property_get (mb, "user"));
 	free (mailbox_property_get (mb, "pass"));
+
+	mailboxes = evas_list_remove (mailboxes, mb);
 
 	return true;
 }
