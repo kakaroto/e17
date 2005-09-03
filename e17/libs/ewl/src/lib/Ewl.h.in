@@ -257,7 +257,6 @@ extern"C" {
 #include <Evas.h>
 #include <Edje.h>
 #include <Ecore.h>
-#include <Edb.h>
 
 #include <stdio.h>
 #include <stdlib.h>
