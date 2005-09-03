@@ -373,6 +373,8 @@ EWMH_SetWindowState(const EWin * ewin)
    int                 atom_count;
 
    atom_count = 0;
+   atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_MODAL,
+		 ewin->state.modal);
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_STICKY,
 		 EoIsSticky(ewin));
    atom_list_set(atom_list, len, &atom_count, ECORE_X_ATOM_NET_WM_STATE_SHADED,
@@ -507,6 +509,7 @@ EWMH_GetWindowState(EWin * ewin)
    /* We must clear/set all according to not present/present */
 /* EoSetSticky(ewin, 0); Do not override if set via _NET_WM_DESKTOP */
    ewin->state.shaded = 0;
+   ewin->state.modal = 0;
    ewin->props.skip_ext_task = ewin->props.skip_ext_pager = 0;
    ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
    ewin->state.fullscreen = ewin->state.attention = 0;
@@ -515,7 +518,9 @@ EWMH_GetWindowState(EWin * ewin)
    for (i = 0; i < n_atoms; i++)
      {
 	atom = p_atoms[i];
-	if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
+	if (atom == ECORE_X_ATOM_NET_WM_STATE_MODAL)
+	   ewin->state.modal = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	   EoSetSticky(ewin, 1);
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	   ewin->state.shaded = 1;
@@ -890,7 +895,13 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	action = ev->data.l[0];
 	atom = ev->data.l[1];
 	atom2 = ev->data.l[2];
-	if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
+	if (atom == ECORE_X_ATOM_NET_WM_STATE_MODAL)
+	  {
+	     action = do_set(ewin->state.modal, action);
+	     /* TBD */
+	     ewin->state.modal = action;
+	  }
+	else if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	  {
 	     action = do_set(EoIsSticky(ewin), action);
 	     if (action)

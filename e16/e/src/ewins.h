@@ -62,14 +62,17 @@ struct _ewin
       char                visibility;
       char                iconified;
       char                shaded;
-      char                active;
 
       unsigned            placed:1;
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
-      unsigned            showingdesk:1;	/* Iconified by show desktop */
+
+      unsigned            active:1;
+      unsigned            modal:1;
       unsigned            attention:1;
+
+      unsigned            showingdesk:1;	/* Iconified by show desktop */
       unsigned            animated:1;
 
       /* Derived state flags. Change only in EwinStateUpdate() */
