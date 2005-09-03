@@ -23,27 +23,6 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_ARG_WITH(imlib2,
-        [  --with-imlib2=DIR       use imlib2 in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(epeg,
-        [  --with-epeg=DIR       use epeg in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(png,
-        [  --with-png=DIR       use png in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(evas,
-        [  --with-evas=DIR       use evas in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-AC_ARG_WITH(ecore,
-        [  --with-ecore=DIR       use ecore in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-
 AC_PATH_GENERIC(imlib2, 1.0.0,
   [ have_imlib2="yes" ],
   [

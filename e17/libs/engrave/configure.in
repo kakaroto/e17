@@ -72,22 +72,11 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AC_ARG_WITH(evas,
-        [  --with-evas=DIR          use evas in <DIR>],
-                [CFLAGS="$CFLAGS -I$withval/include"
-                         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(evas, , ,
+AC_PATH_GENERIC(evas, 0.9.9, ,
     AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
 
-AC_ARG_WITH(ecore,
-        [  --with-ecore=DIR          use ecore in <DIR>],
-                [CFLAGS="$CFLAGS -I$withval/include"
-                         LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(ecore, , ,
+AC_PATH_GENERIC(ecore, 0.9.9, ,
     AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-
 
 
 AC_OUTPUT([
