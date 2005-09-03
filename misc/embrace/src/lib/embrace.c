@@ -558,7 +558,7 @@ static bool ui_load_dragger (Embrace *e)
 	return true;
 }
 
-bool embrace_load_ui (Embrace *e)
+static bool embrace_load_ui (Embrace *e)
 {
 	char path[PATH_MAX + 1];
 	assert (e);
