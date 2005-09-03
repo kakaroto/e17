@@ -55,24 +55,9 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-EVAS_CONFIG="evas-config"
-AC_ARG_WITH(evas-config,
-[  --with-evas-config=FILE   evas-config script to use (eg /usr/bin/evas-config)],
-[
-   EVAS_CONFIG=$withval
-   AC_CHECK_PROG(EVAS_CONFIG_IN_PATH, $EVAS_CONFIG, yes, no)
-   if test $EVAS_CONFIG_IN_PATH = no; then
-      echo "ERROR:"
-      echo "The evas-config development script you specified:"
-      echo "$EVAS_CONFIG"
-      echo "was not found.  Please check the path and make sure "
-      echo "the script exists and is executable."
-      AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-   fi
-],
-[
-  AC_CHECK_PROG(EVAS_CONFIG_IN_PATH, $EVAS_CONFIG, yes, no)
-  if test $EVAS_CONFIG_IN_PATH = no; then
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [
     echo "ERROR:"
     echo "The evas-config development script was not found in your execute"
     echo "path. This may mean one of several things"
@@ -85,14 +70,11 @@ AC_ARG_WITH(evas-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-evas-config."
     AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-  fi
-])  
-
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
+  ]
+)
 
 PCFLAGS=$CFLAGS
-CFLAGS=$evas_cflags" "$CFLAGS
+CFLAGS=$EVAS_CFLAGS" "$CFLAGS
 AC_CHECK_HEADERS(Evas_Engine_Software_X11.h, [], [], [
 	#include <Evas.h>
 	])
@@ -105,24 +87,9 @@ AC_CHECK_HEADERS(Evas_Engine_FB.h, [], [], [
 	#include <Evas.h>
 	])
 
-ECORE_CONFIG="ecore-config"
-AC_ARG_WITH(ecore-config,
-[  --with-ecore-config=FILE   ecore-config script to use (eg /usr/bin/ecore-config)],
-[
-   ECORE_CONFIG=$withval
-   AC_CHECK_PROG(ECORE_CONFIG_IN_PATH, $ECORE_CONFIG, yes, no)
-   if test $ECORE_CONFIG_IN_PATH = no; then
-      echo "ERROR:"
-      echo "The ecore-config development script you specified:"
-      echo "$ECORE_CONFIG"
-      echo "was not found.  Please check the path and make sure "
-      echo "the script exists and is executable."
-      AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
-   fi
-   ],
-[
-  AC_CHECK_PROG(ECORE_CONFIG_IN_PATH, $ECORE_CONFIG, yes, no)
-  if test $ECORE_CONFIG_IN_PATH = no; then
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [
     echo "ERROR:"
     echo "The ecore-config development script was not found in your execute"
     echo "path. This may mean one of several things"
@@ -135,31 +102,13 @@ AC_ARG_WITH(ecore-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-ecore-config."
     AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
-  fi
-])
+  ]
+)
 
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-
-CFLAGS=$ecore_cflags" "$CFLAGS
-EDJE_CONFIG="edje-config"
-AC_ARG_WITH(edje-config,
-[  --with-edje-config=FILE   edje-config script to use (eg /usr/bin/edje-config)],
-[
-   EDJE_CONFIG=$withval
-   AC_CHECK_PROG(EDJE_CONFIG_IN_PATH, $EDJE_CONFIG, yes, no)
-   if test $EDJE_CONFIG_IN_PATH = no; then
-      echo "ERROR:"
-      echo "The edje-config development script you specified:"
-      echo "$EDJE_CONFIG"
-      echo "was not found.  Please check the path and make sure "
-      echo "the script exists and is executable."
-      AC_MSG_ERROR([Fatal Error: no edje-config detected.])
-   fi
-   ],
-[
-  AC_CHECK_PROG(EDJE_CONFIG_IN_PATH, $EDJE_CONFIG, yes, no)
-  if test $EDJE_CONFIG_IN_PATH = no; then
+CFLAGS=$ECORE_CFLAGS" "$CFLAGS
+AC_PATH_GENERIC(edje, 0.5.0,
+  [ ],
+  [
     echo "ERROR:"
     echo "The edje-config development script was not found in your execute"
     echo "path. This may mean one of several things"
@@ -172,63 +121,31 @@ AC_ARG_WITH(edje-config,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-edje-config."
     AC_MSG_ERROR([Fatal Error: no edje-config detected.])
-  fi
-])
-
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-
-CFLAGS=$edje_cflags" "$CFLAGS
-EMOTION_CONFIG="emotion-config"
-AC_ARG_WITH(emotion-config,
-[  --with-emotion-config=FILE   emotion-config script to use (eg /usr/bin/emotion-config)],
-[
-   EMOTION_CONFIG=$withval
-   AC_CHECK_PROG(EMOTION_CONFIG_IN_PATH, $EMOTION_CONFIG, yes, no)
-   if test $EMOTION_CONFIG_IN_PATH = no; then
-     echo "No emotion-config detected."
-   fi
-   ],
-[
-  AC_CHECK_PROG(EMOTION_CONFIG_IN_PATH, $EMOTION_CONFIG, yes, no)
-  if test $EMOTION_CONFIG_IN_PATH = no; then
-    echo "No emotion-config detected."
-  fi
-])
+  ]
+)
 
 requirements="evas ecore edje"
 
-CFLAGS=$emotion_cflags" "$CFLAGS
-if test "x$EMOTION_CONFIG_IN_PATH" = "xyes"; then
-  AC_CHECK_HEADERS(Emotion.h, [
-      SUPPORT_EMOTION=1
-      emotion_cflags=`$EMOTION_CONFIG --cflags`
-      emotion_libs=`$EMOTION_CONFIG --libs`
-      ewl_media_include="#include <ewl_media.h>"
-      requirements="$requirements emotion"
-    ], [
-      SUPPORT_EMOTION=0
-    ], [])
-else
-      SUPPORT_EMOTION=0
-fi
-AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "$SUPPORT_EMOTION" -eq 1)
-AC_SUBST(BUILD_EMOTION_SUPPORT_TRUE)
-AC_SUBST(BUILD_EMOTION_SUPPORT_FALSE)
+CFLAGS=$EDJE_CFLAGS" "$CFLAGS
+AC_PATH_GENERIC(emotion, 0.0.1,
+  [ 
+    have_emotion="yes"
+    ewl_media_include="#include <ewl_media.h>"
+    requirements="$requirements emotion"
+  ],
+  [
+    have_emotion="no"
+    echo "No emotion-config detected."
+  ]
+)
+AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, test "x$have_emotion" = "xyes")
+
+CFLAGS=$EMOTION_CFLAGS" "$CFLAGS
+
+###
 
 CFLAGS=$PCFLAGS
 
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
-
-AC_SUBST(emotion_cflags)
-AC_SUBST(emotion_libs)
 AC_SUBST(ewl_media_include)
 
 AC_SUBST(requirements)
