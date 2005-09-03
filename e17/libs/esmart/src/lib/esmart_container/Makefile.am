@@ -5,7 +5,8 @@ pkg_LTLIBRARIES = libesmart_container.la
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
 	   @IMLIB2_CFLAGS@ \
-	   @EVAS_CFLAGS@
+	   @EVAS_CFLAGS@ \
+	   @ECORE_CFLAGS@
 
 installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Container.h

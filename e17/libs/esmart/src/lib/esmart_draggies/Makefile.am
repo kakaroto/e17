@@ -12,5 +12,5 @@ libesmart_draggies_la_SOURCES = esmart_draggies.c \
 				Esmart_Draggies.h
 
 libesmart_draggies_la_LDFLAGS = -version-info 0:9:0
-libesmart_draggies_la_LIBADD = @EVAS_LIBS@ -lecore -lecore_x -lecore_evas
+libesmart_draggies_la_LIBADD = @EVAS_LIBS@ @ECORE_LIBS_X@ @ECORE_LIBS_EVAS@
 

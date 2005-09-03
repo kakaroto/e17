@@ -14,5 +14,5 @@ libesmart_trans_x11_la_SOURCES = esmart_trans_x11.c \
 
 libesmart_trans_x11_la_LDFLAGS = -version-info 0:9:0 \
 				 -L/usr/X11R6/lib
-libesmart_trans_x11_la_LIBADD = @IMLIB2_LIBS@ @EVAS_LIBS@ -lecore -lecore_x
+libesmart_trans_x11_la_LIBADD = @IMLIB2_LIBS@ @EVAS_LIBS@ @ECORE_LIBS_X@
 

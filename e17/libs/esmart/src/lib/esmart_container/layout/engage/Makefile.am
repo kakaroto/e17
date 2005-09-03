@@ -3,7 +3,8 @@ plugin_LTLIBRARIES = engage.la
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
 	   @IMLIB2_CFLAGS@ \
-	   @EVAS_CFLAGS@
+	   @EVAS_CFLAGS@ \
+	   @ECORE_CFLAGS@
 
 
 engage_la_SOURCES = engage.c

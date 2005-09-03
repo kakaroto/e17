@@ -4,6 +4,7 @@ pkg_LTLIBRARIES = libesmart_file_dialog.la
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_dialog \
 			  @IMLIB2_CFLAGS@ \
 			  @EVAS_CFLAGS@ \
+			  @ECORE_CFLAGS@ \
 			  @EDJE_CFLAGS@
 
 installed_headersdir = $(prefix)/include/Esmart

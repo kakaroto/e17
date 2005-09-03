@@ -3,7 +3,8 @@ plugindir = @libdir@/@PACKAGE@/layout
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
 	   @IMLIB2_CFLAGS@ \
-	   @EVAS_CFLAGS@
+	   @EVAS_CFLAGS@ \
+	   @ECORE_CFLAGS@
 
 
 default_la_SOURCES = default.c

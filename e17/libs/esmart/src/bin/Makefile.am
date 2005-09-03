@@ -9,7 +9,8 @@ AM_CFLAGS = -I$(top_srcdir)/src/lib \
             -I$(top_srcdir)/src/lib/esmart_file_dialog \
             @EVAS_CFLAGS@ \
             @IMLIB2_CFLAGS@ \
-            @ECORE_CFLAGS@
+            @ECORE_CFLAGS@ \
+            @EPSILON_CFLAGS@
 
 bin_PROGRAMS			= esmart_test esmart_file_dialog_test
 
