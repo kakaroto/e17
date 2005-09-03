@@ -9,7 +9,7 @@
 #include "embrace.h"
 
 /* module private routines */
-static Embrace      *embrace_module_new ();
+static Embrace      *embrace_module_new (void);
 static void          embrace_module_free (Embrace *embrace);
 static E_Menu       *embrace_config_menu_new (void);
 
@@ -46,7 +46,7 @@ void *e_modapi_init (E_Module *module)
 		return NULL;
 	}
 	/* actually init embrace */
-	embrace = embrace_module_new (module);
+	embrace = embrace_module_new ();
 	module->config_menu = embrace_config_menu_new ();
 
 	return embrace;
@@ -93,7 +93,7 @@ int e_modapi_about (E_Module *module)
 }
 
 /* module private routines */
-static Embrace *embrace_module_new ()
+static Embrace *embrace_module_new (void)
 {
 	Embrace     *embrace;
 
