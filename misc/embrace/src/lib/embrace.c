@@ -628,7 +628,7 @@ static int on_sighup (void *udata, int type, void *event)
 	return 0;
 }
 
-Embrace *embrace_new ()
+Embrace *embrace_new (void)
 {
 	return calloc (1, sizeof (Embrace));
 }
@@ -824,7 +824,7 @@ void embrace_stop (Embrace *e)
 	e->evt_hup = NULL;
 }
 
-int embrace_signal_get ()
+int embrace_signal_get (void)
 {
 #ifdef SIGRTMIN
 	assert (last_signal >= SIGRTMIN);
