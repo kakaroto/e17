@@ -129,7 +129,7 @@ DL_LIBS=-lltdl
 AC_SUBST(DL_LIBS)
 
 have_e17="no"
-AC_PATH_GENERIC(enlightenment, 16.999, [
+AC_PATH_GENERIC(enlightenment, 0.16.999, [
 	have_e17="yes"
 	AC_DEFINE(HAVE_E17, [], [Development Enlightenment WindowManager Support])
 

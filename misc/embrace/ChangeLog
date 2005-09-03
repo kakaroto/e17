@@ -14,6 +14,12 @@ $Id$
 2005-09-03 Sebastian Dransfeld (sebastid at tango flipp net)
         * m4/ac_path_generic.m4: Remove trailing info after x.y.z
           in versions.
+        * src/lib/embrace.c: Make embrace_load_ui () static,
+          it is only used in this file.
+        * src/lib/embrace.{h,c}: Add void to functions without
+          arguments.
+        * src/e_mod_main.c: Add void to functions without arguments,
+          and remove erronous argument.
 
 2005-08-29 Michael Jennings (mej at eterm org)
         * Makefile.am, embrace.spec:  Applied patch from Jim Perrin
