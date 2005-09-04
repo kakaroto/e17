@@ -42,8 +42,9 @@ struct _eobj
    char                shown;
    char                gone;
 #if USE_COMPOSITE
-   char                shadow;	/* Enable shadows */
-   char                noredir;	/* Do not redirect */
+   unsigned            noredir:1;	/* Do not redirect */
+   unsigned            shadow:1;	/* Enable shadows */
+   unsigned            fade:1;
    unsigned int        opacity;
    void               *cmhook;
 #endif

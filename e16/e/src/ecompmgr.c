@@ -130,7 +130,13 @@ static struct
    int                 shadow_radius;
    struct
    {
-      char                mode;
+      int                 enable;
+      int                 dt_us;	/* us between updates */
+      unsigned int        step;
+   } fading;
+   struct
+   {
+      int                 mode;
       int                 opacity;
    } override_redirect;
 } Conf_compmgr;
@@ -974,6 +980,62 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    cw->mode = mode;
 }
 
+static void
+doECompMgrWinFade(int val, void *data)
+{
+   EObj               *eo = data;
+   ECmWinInfo         *cw;
+   unsigned int        op = (unsigned int)val;
+
+   /* May be gone */
+   if (!EobjListStackFind(eo->win))
+      return;
+
+   cw = eo->cmhook;
+   if (cw->opacity == op)
+      return;
+
+   if (op > cw->opacity)
+     {
+	if (op - cw->opacity > Conf_compmgr.fading.step)
+	  {
+	     DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
+		  op, eo);
+	     op = cw->opacity + Conf_compmgr.fading.step;
+	  }
+     }
+   else
+     {
+	if (cw->opacity - op > Conf_compmgr.fading.step)
+	  {
+	     DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
+		  op, eo);
+	     op = cw->opacity - Conf_compmgr.fading.step;
+	  }
+     }
+
+#if 0
+   Eprintf("doECompMgrWinFade %#x\n", op);
+#endif
+   ECompMgrWinChangeOpacity(eo, op);
+}
+
+static void
+ECompMgrWinFadeIn(EObj * eo)
+{
+   DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
+	eo->opacity, eo);
+   ECompMgrWinChangeOpacity(eo, 0x10000000);
+}
+
+static void
+ECompMgrWinFadeOut(EObj * eo)
+{
+   DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
+	0x10000000, eo);
+   ECompMgrWinChangeOpacity(eo, eo->opacity);
+}
+
 void
 ECompMgrWinMap(EObj * eo)
 {
@@ -994,6 +1056,8 @@ ECompMgrWinMap(EObj * eo)
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    ECompMgrWinSetPicts(eo);
+   if (Conf_compmgr.fading.enable && eo->fade)
+      ECompMgrWinFadeIn(eo);
 }
 
 void
@@ -1006,7 +1070,10 @@ ECompMgrWinUnmap(EObj * eo)
    if (cw->extents != None)
       ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
-   ECompMgrWinInvalidate(eo, INV_PIXMAP);
+   if (Conf_compmgr.fading.enable && eo->fade)
+      ECompMgrWinFadeOut(eo);
+   else
+      ECompMgrWinInvalidate(eo, INV_PIXMAP);
 }
 
 static void
@@ -2018,6 +2085,8 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
 	     eo->shown = 1;
+	     eo->fade = 1;
+	     EobjListStackRaise(eo);
 	     ECompMgrWinMap(eo);
 	  }
 	break;
@@ -2184,7 +2253,10 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadow_radius, 12),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
-   CFG_ITEM_BOOL(Conf_compmgr, override_redirect.mode, 1),
+   CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 0),
+   CFG_ITEM_INT(Conf_compmgr, fading.dt_us, 10000),
+   CFG_ITEM_INT(Conf_compmgr, fading.step, 0x10000000),
+   CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 240),
 };
 #define N_CFG_ITEMS (sizeof(CompMgrCfgItems)/sizeof(CfgItem))
