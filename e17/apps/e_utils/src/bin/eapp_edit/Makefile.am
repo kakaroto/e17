@@ -4,15 +4,15 @@ INCLUDES = \
 -I../lib \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
-@ewl_cflags@ \
-@eet_cflags@ \
-@ecore_cflags@ \
-@engrave_cflags@
+@EWL_CFLAGS@ \
+@EET_CFLAGS@ \
+@ECORE_CFLAGS@ \
+@ENGRAVE_CFLAGS@
 
 bin_PROGRAMS = e_util_eapp_edit
 
 e_util_eapp_edit_SOURCES = \
 eapp_edit_main.c
 
-e_util_eapp_edit_LDADD = @ewl_libs@ @eet_libs@ @ecore_libs@ @engrave_libs@
+e_util_eapp_edit_LDADD = @EWL_LIBS@ @EET_LIBS@ @ECORE_LIBS@ @ENGRAVE_LIBS@
 

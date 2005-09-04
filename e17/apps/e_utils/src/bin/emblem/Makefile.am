@@ -5,12 +5,12 @@ filesdir = @e_config_apps_dir@
 files_DATA = emblem.eap
 
 AM_CFLAGS = \
-	@e_cflags@ \
-	@ecore_cflags@ \
-	@evas_cflags@ \
-	@edje_cflags@ \
-	@epsilon_cflags@ \
-	@esmart_cflags@
+	@ENLIGHTENMENT_CFLAGS@ \
+	@ECORE_CFLAGS@ \
+	@EVAS_CFLAGS@ \
+	@EDJE_CFLAGS@ \
+	@EPSILON_CFLAGS@ \
+	@ESMART_CFLAGS@
 
 bin_PROGRAMS = emblem
 
@@ -24,12 +24,12 @@ emblem_SOURCES =  \
 	main.c
 
 emblem_LDADD = \
-	@e_libs@ \
-	@ecore_libs@ \
-	@evas_libs@ \
-	@esmart_libs@ \
-	@edje_libs@ \
-	@epsilon_libs@ \
+	@ENLIGHTENMENT_LIBS@ \
+	@ECORE_LIBS@ \
+	@EVAS_LIBS@ \
+	@ESMART_LIBS@ \
+	@EDJE_LIBS@ \
+	@EPSILON_LIBS@ \
 	-lesmart_container
 
 EXTRA_DIST = \

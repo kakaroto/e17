@@ -2,11 +2,11 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 AM_CFLAGS = \
-	@ecore_cflags@ \
-	@evas_cflags@ \
-	@edje_cflags@ \
-	@eet_cflags@ \
-	@esmart_cflags@
+	@ECORE_CFLAGS@ \
+	@EVAS_CFLAGS@ \
+	@EDJE_CFLAGS@ \
+	@EET_CFLAGS@ \
+	@ESMART_CFLAGS@
 
 bin_PROGRAMS = exige
 
@@ -23,10 +23,10 @@ exige_SOURCES = \
 	exg_main.c
 
 exige_LDADD = \
-	@ecore_libs@ \
-	@eet_libs@ \
-	@evas_libs@ \
-	@esmart_libs@ \
-	@edje_libs@ \
+	@ECORE_LIBS@ \
+	@EET_LIBS@ \
+	@EVAS_LIBS@ \
+	@ESMART_LIBS@ \
+	@EDJE_LIBS@ \
 	-lesmart_textarea \
 	-lesmart_text_entry

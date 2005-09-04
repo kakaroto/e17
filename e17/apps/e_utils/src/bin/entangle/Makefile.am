@@ -5,10 +5,10 @@ filesdir = @e_config_apps_dir@
 files_DATA = entangle.eap
 
 AM_CFLAGS = \
-@ecore_cflags@ \
-@eet_cflags@ \
-@edje_cflags@ \
-@esmart_cflags@
+@ECORE_CFLAGS@ \
+@EET_CFLAGS@ \
+@EDJE_CFLAGS@ \
+@ESMART_CFLAGS@
 
 bin_PROGRAMS = entangle
 
@@ -22,10 +22,10 @@ entangle_ui.c \
 main.c
 
 entangle_LDADD = \
-@ecore_libs@ \
-@eet_libs@ \
-@edje_libs@ \
-@esmart_libs@ \
+@ECORE_LIBS@ \
+@EET_LIBS@ \
+@EDJE_LIBS@ \
+@ESMART_LIBS@ \
 -lesmart_container \
 -lesmart_text_entry
 
