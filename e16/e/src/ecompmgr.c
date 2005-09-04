@@ -46,8 +46,6 @@
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
 
-#define CAN_DO_USABLE 0
-
 #define ENABLE_SHADOWS 1
 
 #define ENABLE_DEBUG   1
@@ -86,10 +84,6 @@ typedef struct
       int                 border_width;
    } a;
    int                 rcx, rcy, rcw, rch;
-#if CAN_DO_USABLE
-   Bool                usable;	/* mapped and all damaged at one point */
-   XRectangle          damage_bounds;	/* bounds of damage */
-#endif
    int                 mode;
    char                visible;
    char                damaged;
@@ -995,10 +989,6 @@ ECompMgrWinMap(EObj * eo)
 
    D1printf("ECompMgrWinMap %#lx\n", eo->win);
 
-#if CAN_DO_USABLE
-   cw->damage_bounds.x = cw->damage_bounds.y = 0;
-   cw->damage_bounds.width = cw->damage_bounds.height = 0;
-#endif
    if (cw->extents == None)
       cw->extents = win_extents(disp, eo);
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
@@ -1079,9 +1069,6 @@ ECompMgrWinNew(EObj * eo)
    eo->cmhook = cw;
 
    cw->damaged = 0;
-#if CAN_DO_USABLE
-   cw->usable = False;
-#endif
 
    cw->a.class = attr.class;	/* FIXME - remove */
    cw->a.depth = attr.depth;
@@ -1321,55 +1308,6 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	    ev->xany.window, eo->win, cw->damaged,
 	    de->area.x, de->area.y, de->area.width, de->area.height);
 
-#if CAN_DO_USABLE
-   if (!cw->usable)
-     {
-	if (cw->damage_bounds.width == 0 || cw->damage_bounds.height == 0)
-	  {
-	     cw->damage_bounds = de->area;
-	  }
-	else
-	  {
-	     if (de->area.x < cw->damage_bounds.x)
-	       {
-		  cw->damage_bounds.width += (cw->damage_bounds.x - de->area.x);
-		  cw->damage_bounds.x = de->area.x;
-	       }
-	     if (de->area.y < cw->damage_bounds.y)
-	       {
-		  cw->damage_bounds.height +=
-		     (cw->damage_bounds.y - de->area.y);
-		  cw->damage_bounds.y = de->area.y;
-	       }
-	     if (de->area.x + de->area.width >
-		 cw->damage_bounds.x + cw->damage_bounds.width)
-		cw->damage_bounds.width =
-		   de->area.x + de->area.width - cw->damage_bounds.x;
-	     if (de->area.y + de->area.height >
-		 cw->damage_bounds.y + cw->damage_bounds.height)
-		cw->damage_bounds.height =
-		   de->area.y + de->area.height - cw->damage_bounds.y;
-	  }
-#if 0
-	printf("unusable damage %d, %d: %d x %d bounds %d, %d: %d x %d\n",
-	       de->area.x, de->area.y, de->area.width, de->area.height,
-	       cw->damage_bounds.x, cw->damage_bounds.y,
-	       cw->damage_bounds.width, cw->damage_bounds.height);
-#endif
-	if (cw->damage_bounds.x <= 0 &&
-	    cw->damage_bounds.y <= 0 &&
-	    eo->width <= cw->damage_bounds.x + cw->damage_bounds.width &&
-	    eo->height <= cw->damage_bounds.y + cw->damage_bounds.height)
-	  {
-	     cw->usable = True;
-	  }
-     }
-   if (!cw->usable)
-      return;
-#else
-   de = NULL;
-#endif
-
    if (!cw->damaged)
      {
 	parts = win_extents(dpy, eo);
@@ -1465,10 +1403,6 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
 		 eo->win, eo->desk->num, eo->shown, cw->damaged, cw->picture);
 
-#if CAN_DO_USABLE
-	if (!cw->usable)
-	   continue;
-#endif
 #if 0				/* FIXME - Need this? */
 	if (!cw->damaged)
 	   continue;
