@@ -45,7 +45,8 @@ void embrace_expand_path (char *str, char *dest, int destlen)
 	int cur = 0, home_len = strlen (home);
 
 	if (!strchr (str, '~')) {
-		strncat (dest, str, destlen);
+		strncpy (dest, str, destlen);
+		dest[destlen - 1] = 0;
 		return;
 	}
 

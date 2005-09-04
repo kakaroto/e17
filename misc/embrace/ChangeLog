@@ -8,6 +8,10 @@ $Id$
        * src/plugin/imap.c: Fix memleak, and remove server
          from server list before destroying it.
 
+2005-09-04 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/lib/embrace.c: Fix embrace_expand_path() to work when
+          there's no ~ in the source string (Jens Taprogge)
+
 2005-09-03 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugin/imap.c: Merged Sebastian Dransfeld's patch that
           implents "connection sharing"
