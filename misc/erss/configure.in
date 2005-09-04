@@ -35,6 +35,15 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
+AC_PATH_GENERIC(ecore, 0.9.9, [
+  AC_SUBST(ecore_libs)
+	AC_SUBST(ecore_cflags) ],
+	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+ecore_libs=`ecore-config --libs`
+ecore_cflags=`ecore-config --cflags`
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
+
 AC_PATH_GENERIC(edje, 0.5.0, [
   AC_SUBST(edje_libs)
 	AC_SUBST(edje_cflags) ],
