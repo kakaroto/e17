@@ -42,7 +42,7 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes @IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @EDJE_CFLAGS@ @PNG_CFLAGS@-I$prefix/include
+      echo $includes @EVAS_CFLAGS@ -I$prefix/include
       ;;
     --libs)
       libdirs=-L@libdir@
