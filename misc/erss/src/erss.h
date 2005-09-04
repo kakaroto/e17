@@ -17,7 +17,6 @@
 #include <Edje.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
-#include <Imlib2.h>
 
 #include <netdb.h>
 #include <sys/types.h>
