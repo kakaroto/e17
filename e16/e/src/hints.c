@@ -442,7 +442,7 @@ EHintsSetDeskInfo(void)
    ecore_x_window_prop_card32_set(VRoot.win, a, c, 2 * n_desks);
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   c[0] = DesksGetCurrent()->num;
+   c[0] = DesksGetCurrentNum();
    ecore_x_window_prop_card32_set(VRoot.win, a, c, 1);
 
    Efree(c);

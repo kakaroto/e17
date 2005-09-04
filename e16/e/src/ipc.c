@@ -1322,7 +1322,7 @@ IPC_Compat(const char *params)
    if (!strcmp(param1, "goto_desktop"))
      {
 	if (*p == '?')
-	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrent()->num);
+	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrentNum());
      }
    else if (!strcmp(param1, "num_desks"))
      {

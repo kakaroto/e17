@@ -574,7 +574,7 @@ GNOME_SetCurrentDesk(void)
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-   val = DesksGetCurrent()->num;
+   val = DesksGetCurrentNum();
    ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
 }
 

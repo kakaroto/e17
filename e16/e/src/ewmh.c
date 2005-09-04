@@ -245,7 +245,7 @@ EWMH_SetWorkArea(void)
 void
 EWMH_SetCurrentDesktop(void)
 {
-   ecore_x_netwm_desk_current_set(VRoot.win, DesksGetCurrent()->num);
+   ecore_x_netwm_desk_current_set(VRoot.win, DesksGetCurrentNum());
 }
 
 void

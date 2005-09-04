@@ -669,7 +669,7 @@ ChangeNumberOfDesktops(unsigned int quantity)
 	  }
      }
 
-   if (DesksGetCurrent()->num >= Conf.desks.num)
+   if (DesksGetCurrentNum() >= Conf.desks.num)
       DeskGotoNum(Conf.desks.num - 1);
 
    HintsSetDesktopConfig();
@@ -2174,7 +2174,7 @@ DeskOpGoto(unsigned int desk)
 static void
 DeskOpGotoRel(int drel)
 {
-   DeskOpGoto(DesksGetCurrent()->num + drel);
+   DeskOpGoto(DesksGetCurrentNum() + drel);
 }
 
 static void
@@ -2200,7 +2200,7 @@ DesktopsIpcDesk(const char *params, Client * c __UNUSED__)
 	p += len;
      }
 
-   desk = DesksGetCurrent()->num;
+   desk = DesksGetCurrentNum();
 
    if (!p || cmd[0] == '?')
      {
