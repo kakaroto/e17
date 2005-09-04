@@ -2,11 +2,13 @@
 
 INCLUDES = \
 	-Wall -I../lib \
-	@esmart_cflags@ \
-	@evas_cflags@ \
-	@edb_cflags@ \
-	@ecore_cflags@ \
-	@edje_cflags@
+	@IMLIB2_CFLAGS@ \
+	@ESMART_CFLAGS@ \
+	@EVAS_CFLAGS@ \
+	@EDB_CFLAGS@ \
+	@ECORE_CFLAGS@ \
+	@EPSILON_CFLAGS@ \
+	@EDJE_CFLAGS@
 
 bin_PROGRAMS = entice
 
@@ -22,13 +24,13 @@ exif.c exif.h \
 main.c
 
 entice_LDADD = \
-@esmart_libs@ \
+@ESMART_LIBS@ \
 -lesmart_container \
 -lesmart_draggies \
 -lesmart_thumb \
 -lesmart_trans_x11 \
-@evas_libs@ \
-@edb_libs@ \
-@ecore_libs@ \
-@edje_libs@ \
+@EVAS_LIBS@ \
+@EDB_LIBS@ \
+@ECORE_LIBS@ \
+@EDJE_LIBS@ \
 -lm -lc
