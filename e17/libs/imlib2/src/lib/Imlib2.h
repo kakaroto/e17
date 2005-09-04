@@ -1,6 +1,10 @@
 #ifndef __IMLIB_API_H
 # define __IMLIB_API_H 1
 
+# ifndef X_DISPLAY_MISSING
+#  include <X11/Xlib.h>
+# endif
+
 /* Data types to use */
 # ifndef DATA64
 #  define DATA64 unsigned long long
@@ -90,10 +94,10 @@ typedef int (*Imlib_Progress_Function) (Imlib_Image im, char percent,
                                         int update_w, int update_h);
 typedef void (*Imlib_Data_Destructor_Function) (Imlib_Image im, void *data);
 
-#ifdef __cplusplus
+# ifdef __cplusplus
 extern "C"
 {
-#endif
+# endif
 
 /* context handling */
    Imlib_Context imlib_context_new(void);
@@ -104,13 +108,13 @@ extern "C"
    Imlib_Context imlib_context_get(void);
 
 /* context setting */
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    void imlib_context_set_display(Display * display);
    void imlib_context_set_visual(Visual * visual);
    void imlib_context_set_colormap(Colormap colormap);
    void imlib_context_set_drawable(Drawable drawable);
    void imlib_context_set_mask(Pixmap mask);
-#endif
+# endif
    void imlib_context_set_dither_mask(char dither_mask);
    void imlib_context_set_anti_alias(char anti_alias);
    void imlib_context_set_dither(char dither);
@@ -133,13 +137,13 @@ extern "C"
    void imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding);
 
 /* context getting */
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    Display *imlib_context_get_display(void);
    Visual *imlib_context_get_visual(void);
    Colormap imlib_context_get_colormap(void);
    Drawable imlib_context_get_drawable(void);
    Pixmap imlib_context_get_mask(void);
-#endif
+# endif
    char imlib_context_get_dither_mask(void);
    char imlib_context_get_anti_alias(void);
    char imlib_context_get_dither(void);
@@ -166,11 +170,11 @@ extern "C"
    int imlib_get_color_usage(void);
    void imlib_set_color_usage(int max);
    void imlib_flush_loaders(void);
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    int imlib_get_visual_depth(Display * display, Visual * visual);
    Visual *imlib_get_best_visual(Display * display, int screen,
                                  int *depth_return);
-#endif
+# endif
 
    Imlib_Image imlib_load_image(const char *file);
    Imlib_Image imlib_load_image_immediately(const char *file);
@@ -205,7 +209,7 @@ extern "C"
    void imlib_image_query_pixel_cmya(int x, int y, int *cyan, int *magenta, int *yellow, int *alpha);
 
 /* rendering functions */
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    void imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                                              Pixmap * mask_return);
    void imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
@@ -222,7 +226,7 @@ extern "C"
                                                     int y, int width,
                                                     int height);
    DATA32 imlib_render_get_pixel_color(void);
-#endif
+# endif
    void imlib_blend_image_onto_image(Imlib_Image source_image,
                                      char merge_alpha, int source_x,
                                      int source_y, int source_width,
@@ -236,7 +240,7 @@ extern "C"
                                              DATA32 * data);
    Imlib_Image imlib_create_image_using_copied_data(int width, int height,
                                                     DATA32 * data);
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    Imlib_Image imlib_create_image_from_drawable(Pixmap mask, int x, int y,
                                                 int width, int height,
                                                 char need_to_grab_x);
@@ -256,7 +260,7 @@ extern "C"
    char imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width,
                                      int height, int destination_x,
                                      int destination_y, char need_to_grab_x);
-#endif
+# endif
    Imlib_Image imlib_clone_image(void);
    Imlib_Image imlib_create_cropped_image(int x, int y, int width,
                                           int height);
@@ -438,7 +442,7 @@ extern "C"
                                             int destination_y, int h_angle_x,
                                             int h_angle_y, int v_angle_x,
                                             int v_angle_y);
-#ifndef X_DISPLAY_MISSING
+# ifndef X_DISPLAY_MISSING
    void imlib_render_image_on_drawable_skewed(int source_x, int source_y,
                                               int source_width,
                                               int source_height,
@@ -452,7 +456,7 @@ extern "C"
                                                 int destination_x,
                                                 int destination_y,
                                                 int angle_x, int angle_y);
-#endif
+# endif
 
 /* image filters */
    void imlib_image_filter(void);
@@ -475,8 +479,8 @@ extern "C"
    void imlib_image_clear(void);
    void imlib_image_clear_color(int r, int g, int b, int a);
 
-#ifdef __cplusplus
+# ifdef __cplusplus
 }
-#endif
+# endif
 
 #endif
