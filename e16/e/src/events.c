@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "desktops.h"		/* FIXME - Should not be here */
 #include "emodule.h"
 #include "ewins.h"		/* FIXME - Should not be here */
 #include "xwin.h"
@@ -193,6 +192,11 @@ HandleEvent(XEvent * ev)
 
      case MotionNotify:
 	Mode.events.time = ev->xmotion.time;
+	Mode.events.px = Mode.events.x;
+	Mode.events.py = Mode.events.y;
+	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+
+	ActionsHandleMotion();
 	break;
 
      case EnterNotify:
@@ -219,6 +223,10 @@ HandleEvent(XEvent * ev)
 
      case PropertyNotify:
 	Mode.events.time = ev->xproperty.time;
+	break;
+
+     case ClientMessage:
+	HintsProcessClientMessage(&(ev->xclient));
 	break;
 
       do_stuff:
@@ -252,48 +260,6 @@ HandleEvent(XEvent * ev)
 	SoundPlay("SOUND_BUTTON_RAISE");
 	ActionsEnd(NULL);
 	break;
-
-     case MotionNotify:	/*  6 */
-	Mode.events.px = Mode.events.x;
-	Mode.events.py = Mode.events.y;
-	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
-
-	DesksSetCurrent(DesktopAt(Mode.events.x, Mode.events.y));
-
-	ActionsHandleMotion();
-	break;
-     case EnterNotify:		/*  7 */
-	break;
-     case LeaveNotify:		/*  8 */
-	break;
-     case MapRequest:		/* 20 */
-	break;
-     case ReparentNotify:	/* 21 */
-	break;
-     case ConfigureNotify:	/* 22 */
-	if (ev->xconfigure.window == VRoot.win)
-	   RootResize(0, ev->xconfigure.width, ev->xconfigure.height);
-	break;
-     case ConfigureRequest:	/* 23 */
-	break;
-     case ResizeRequest:	/* 25 */
-	break;
-     case CirculateRequest:	/* 27 */
-	break;
-     case PropertyNotify:	/* 28 */
-	break;
-     case ClientMessage:	/* 33 */
-	HintsProcessClientMessage(&(ev->xclient));
-	break;
-#if USE_XRANDR
-     case EX_EVENT_SCREEN_CHANGE_NOTIFY:
-	{
-	   XRRScreenChangeNotifyEvent *rrev = (XRRScreenChangeNotifyEvent *) ev;
-
-	   RootResize(1, rrev->width, rrev->height);
-	}
-	break;
-#endif
      }
 
    /* The new event dispatcher */

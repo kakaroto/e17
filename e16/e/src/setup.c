@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "desktops.h"		/* FIXME - Should not be here */
 #include "ewins.h"
 #include "xwin.h"
 #include <signal.h>
@@ -338,35 +337,4 @@ SetupX(const char *dstr)
 
    ScreenInit();
    ZoomInit();
-}
-
-void
-RootResize(int root, int w, int h)
-{
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("RootResize %d %dx%d\n", root, w, h);
-
-   if (root)
-     {
-#if 0
-	RRoot.w = DisplayWidth(disp, RRoot.scr);
-	RRoot.h = DisplayHeight(disp, RRoot.scr);
-
-	if (w != RRoot.w || h != RRoot.h)
-	   Eprintf
-	      ("RootResize (root): Screen size mismatch: root=%dx%d event=%dx%d\n",
-	       RRoot.w, RRoot.h, w, h);
-#endif
-	RRoot.w = w;
-	RRoot.h = h;
-     }
-
-   if (w == VRoot.w && h == VRoot.h)
-      return;
-
-   EWindowSync(VRoot.win);
-   VRoot.w = w;
-   VRoot.h = h;
-
-   DesksResize(w, h);
 }

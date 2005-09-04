@@ -203,7 +203,7 @@ SetCurrentArea(int ax, int ay)
 
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
-   FocusNewDeskBegin();
+   DeskSwitchStart();
 
    /* set the current area up in out data structs */
    DeskSetCurrentArea(ax, ay);
@@ -269,7 +269,7 @@ SetCurrentArea(int ax, int ay)
    ActionsResume();
 
    /* re-focus on a new ewin on that new desktop area */
-   FocusNewDesk();
+   DeskSwitchDone();
 
    ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
 

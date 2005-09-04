@@ -29,6 +29,9 @@
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>
+#if USE_XRANDR
+#include <X11/extensions/Xrandr.h>
+#endif
 
 #define EDESK_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \
@@ -1038,6 +1041,27 @@ DeskGotoNum(unsigned int desk)
 }
 
 void
+DeskSwitchStart(void)
+{
+   FocusNewDeskBegin();
+
+   /* we are about to flip desktops or areas - disable enter and leave events
+    * temporarily */
+   EwinsEventsConfigure(0);
+   DesksEventsConfigure(0);
+}
+
+void
+DeskSwitchDone(void)
+{
+   /* we flipped - re-enable enter and leave events */
+   EwinsEventsConfigure(1);
+   DesksEventsConfigure(1);
+
+   FocusNewDesk();
+}
+
+void
 DeskGoto(Desk * dsk)
 {
    if (!dsk || dsk == desks.previous)
@@ -1048,7 +1072,7 @@ DeskGoto(Desk * dsk)
    ModulesSignal(ESIGNAL_DESK_SWITCH_START, NULL);
 
    ActionsSuspend();
-   FocusNewDeskBegin();
+   DeskSwitchStart();
 
    if (dsk->num > 0)
      {
@@ -1101,7 +1125,7 @@ DeskGoto(Desk * dsk)
      }
 
    ActionsResume();
-   FocusNewDesk();
+   DeskSwitchDone();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 }
@@ -1133,9 +1157,9 @@ DeskRaise(unsigned int desk)
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRaise(%d) current=%d\n", desk, desks.current->num);
 
-   FocusNewDeskBegin();
+   DeskSwitchStart();
    DeskEnter(dsk);
-   FocusNewDesk();
+   DeskSwitchDone();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 
@@ -1148,7 +1172,7 @@ DeskLower(unsigned int desk)
    if ((desk <= 0) || (desk >= Conf.desks.num))
       return;
 
-   FocusNewDeskBegin();
+   DeskSwitchStart();
    MoveToDeskBottom(desk);
 
    if (EventDebug(EDBUG_TYPE_DESKS))
@@ -1165,7 +1189,7 @@ DeskLower(unsigned int desk)
    EwinsMoveStickyToDesk(desks.current);
    ButtonsMoveStickyToDesk(desks.current);
    DesksStackingCheck();
-   FocusNewDesk();
+   DeskSwitchDone();
    if (Mode.mode == MODE_NONE)
       ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
    HintsSetCurrentDesktop();
@@ -1382,6 +1406,37 @@ DeskEventButtonRelease(Desk * dsk, XEvent * ev)
    DeskCheckAction(dsk, ev);
 }
 
+static void
+DeskRootResize(int root, int w, int h)
+{
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskRootResize %d %dx%d\n", root, w, h);
+
+   if (root)
+     {
+#if 0
+	RRoot.w = DisplayWidth(disp, RRoot.scr);
+	RRoot.h = DisplayHeight(disp, RRoot.scr);
+
+	if (w != RRoot.w || h != RRoot.h)
+	   Eprintf
+	      ("DeskRootResize (root): Screen size mismatch: root=%dx%d event=%dx%d\n",
+	       RRoot.w, RRoot.h, w, h);
+#endif
+	RRoot.w = w;
+	RRoot.h = h;
+     }
+
+   if (w == VRoot.w && h == VRoot.h)
+      return;
+
+   EWindowSync(VRoot.win);
+   VRoot.w = w;
+   VRoot.h = h;
+
+   DesksResize(w, h);
+}
+
 static ActionClass *
 DeskGetAclass(void *data __UNUSED__)
 {
@@ -1439,6 +1494,26 @@ DeskHandleEvents(XEvent * ev, void *prm)
      case LeaveNotify:
 	FocusHandleLeave(NULL, ev);
 	break;
+
+     case MotionNotify:
+	/* Motion over desk buttons doesn't go here - We probably don't care much. */
+	DesksSetCurrent(DesktopAt(Mode.events.x, Mode.events.y));
+	break;
+
+     case ConfigureNotify:
+	if (ev->xconfigure.window == VRoot.win)
+	   DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
+	break;
+
+#if USE_XRANDR
+     case EX_EVENT_SCREEN_CHANGE_NOTIFY:
+	{
+	   XRRScreenChangeNotifyEvent *rrev = (XRRScreenChangeNotifyEvent *) ev;
+
+	   DeskRootResize(1, rrev->width, rrev->height);
+	}
+	break;
+#endif
      }
 
    DeskHandleTooltip(dsk, ev);

@@ -54,6 +54,8 @@ void                DeskRefresh(Desk * dsk);
 void                DeskAssignBg(unsigned int desk, Background * bg);
 void                DeskSetBg(Desk * dsk, Background * bg, int refresh);
 Desk               *DesktopAt(int x, int y);
+void                DeskSwitchStart(void);
+void                DeskSwitchDone(void);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                StackDesktop(Desk * dsk);

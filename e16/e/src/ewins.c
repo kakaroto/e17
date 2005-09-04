@@ -1873,10 +1873,6 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
      case DestroyNotify:
 	/* Catch clients destroyed after MapRequest but before being reparented */
 	ewin = EwinFindByClient(ev->xdestroywindow.window);
-#if 0				/* FIXME - Should not be here - Remove? */
-	if (!ewin)
-	   ewin = EwinFindByFrame(ev->xdestroywindow.window);
-#endif
 	if (ewin)
 	   EwinEventDestroy(ewin);
 	break;

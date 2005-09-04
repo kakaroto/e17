@@ -466,37 +466,17 @@ FocusSet(void)
    focus_pending_ewin = focus_pending_new = NULL;
 }
 
-static int          focus_new_desk_nesting = 0;	/* Obsolete? */
-
 void
 FocusNewDeskBegin(void)
 {
-   if (focus_new_desk_nesting++)
-      return;
-
    FocusToEWin(NULL, FOCUS_DESK_LEAVE);
-
-   /* we are about to flip desktops or areas - disable enter and leave events
-    * temporarily */
-   EwinsEventsConfigure(0);
-   DesksEventsConfigure(0);
 }
 
 void
 FocusNewDesk(void)
 {
-   EWin               *ewin;
-
-   if (--focus_new_desk_nesting)
-      return;
-
-   /* we flipped - re-enable enter and leave events */
-   EwinsEventsConfigure(1);
-   DesksEventsConfigure(1);
-
    /* Set the mouse-over window */
-   ewin = GetEwinByCurrentPointer();
-   Mode.mouse_over_ewin = ewin;
+   Mode.mouse_over_ewin = GetEwinByCurrentPointer();
 
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
 }
@@ -504,14 +484,11 @@ FocusNewDesk(void)
 static void
 FocusInit(void)
 {
-   EWin               *ewin;
-
    /* Start focusing windows */
    FocusEnable(1);
 
    /* Set the mouse-over window */
-   ewin = GetEwinByCurrentPointer();
-   Mode.mouse_over_ewin = ewin;
+   Mode.mouse_over_ewin = GetEwinByCurrentPointer();
 
    focus_pending_why = 0;
    focus_pending_ewin = focus_pending_new = NULL;
