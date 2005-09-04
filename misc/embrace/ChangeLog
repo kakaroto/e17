@@ -1,9 +1,13 @@
 $Id$
 
 2005-09-04 Sebastian Dransfeld (sebastid at tango flipp net)
+       * src/lib/Makefile.am: Include edje CFLAGS
+
+2005-09-04 Sebastian Dransfeld (sebastid at tango flipp net)
        * src/Makefile.am, src/lib/Makefile.am
          src/plugins/{imap,maildir,mbox,pop3,sylpheed}/Makefile.am:
 	 Add missing includes.
+
 2005-09-03 Sebastian Dransfeld (sebastid at tango flipp net)
        * src/plugin/imap.c: Fix memleak, and remove server
          from server list before destroying it.

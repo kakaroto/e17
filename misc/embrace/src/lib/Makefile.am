@@ -5,6 +5,7 @@ AM_CFLAGS = -I. \
             @EDB_CFLAGS@    \
             @EVAS_CFLAGS@   \
             @ECORE_CFLAGS@ \
+            @EDJE_CFLAGS@ \
 	    @ESMART_CFLAGS@
 
 noinst_LTLIBRARIES = libembrace.la
