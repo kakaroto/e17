@@ -170,11 +170,14 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 #AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "$packagesrcdir", [PACKAGE_SOURCE_DIR]])
 
 have_esmart_trans="no"
+PCFLAGS=$CFLAGS
+CFLAGS=$ESMART_CFLAGS" "$CFLAGS
 dnl Make sure the esmart header/lib is available
 AC_CHECK_HEADER( Esmart/Esmart_Trans_X11.h, 
   [ AC_DEFINE(HAVE_TRANS_BG, [], [Esmart Pseudo-transparency support]) 
     have_esmart_trans="yes"  
   ])
+CFLAGS=$PCFLAGS
 
 AC_ARG_ENABLE(xinerama,
   [  --enable-xinerama  Use Xinerama],

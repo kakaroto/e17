@@ -10,7 +10,8 @@ INCLUDES = \
 @ecore_cflags@ \
 @esmart_cflags@ \
 @ewl_cflags@ \
-@imlib2_cflags@
+@imlib2_cflags@ \
+@e_cflags@
 
 bin_PROGRAMS = engage
 
