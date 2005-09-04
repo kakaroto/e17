@@ -2,7 +2,6 @@
 #define _ESMART_FILE_DIALOG_H
 
 #include <Evas.h>
-#include <Edje.h>
 
 #ifdef __cplusplus
 extern "C"

@@ -2,7 +2,6 @@
 #define ESMART_CONTAINER_H
 
 #include <Evas.h>
-#include <Ecore.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>

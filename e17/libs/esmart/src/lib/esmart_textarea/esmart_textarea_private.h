@@ -1,6 +1,8 @@
 #include "Esmart_Textarea.h"
 #include "config.h"
 
+#include <string.h>
+#include <stdlib.h>
 
 #define DATADIR PACKAGE_DATA_DIR"/"
 

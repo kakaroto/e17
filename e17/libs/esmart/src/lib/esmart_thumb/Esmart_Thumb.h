@@ -1,8 +1,7 @@
 #ifndef _ESMART_THUMB_H
 #define _ESMART_THUMB_H
 
-#include<Evas.h>
-#include<Epsilon.h>
+#include <Evas.h>
 
 #ifdef __cplusplus
 extern "C"

@@ -3,10 +3,6 @@
 
 #include <stdio.h>
 #include <Evas.h>
-#include <Ecore.h>
-#include <Ecore_X.h>
-#include <Ecore_Evas.h>
-#include <Edje.h>
 
 enum Esmart_Textarea_Key_Modifiers           /* several key modifiers */
 {

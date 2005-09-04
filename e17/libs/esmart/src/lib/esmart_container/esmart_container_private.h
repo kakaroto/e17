@@ -2,6 +2,7 @@
 #define CONTAINER_PRIVATE_H
 
 #include "Esmart_Container.h"
+#include <Ecore.h>
 
 typedef struct _Container Container;
 typedef struct _Container_Element Container_Element;

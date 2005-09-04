@@ -1,5 +1,6 @@
 #ifndef _ESMART_TRANS_X11_H
 #define _ESMART_TRANS_X11_H
+
 #include <Evas.h>
 #include <Ecore_X.h>
 

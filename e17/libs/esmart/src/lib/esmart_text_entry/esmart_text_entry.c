@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Ecore.h>
+#include <Edje.h>
 #include <stdlib.h>
 #include "Esmart_Text_Entry.h"
 

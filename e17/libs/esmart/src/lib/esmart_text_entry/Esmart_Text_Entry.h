@@ -2,8 +2,6 @@
 #define _ESMART_TEXT_ENTRY_H
 
 #include <Evas.h>
-#include <Edje.h>
-#include <Ecore.h>
 #include <limits.h>
 
 #ifdef __cplusplus
