@@ -663,7 +663,11 @@ __imlib_TrimLoaderList(char **list, int *num)
         if (!list[i])
            continue;
         ext = strrchr(list[i], '.');
-        if ((ext) && (!strcasecmp(ext, ".so")))
+        if ((ext) && (
+#ifdef __CYGWIN__
+            (!strcasecmp(ext, ".dll")) ||
+#endif
+            (!strcasecmp(ext, ".so"))))
           {
              /* Don't add the same loader multiple times... */
              if (!__imlib_ItemInList(ret, size, list[i]))
