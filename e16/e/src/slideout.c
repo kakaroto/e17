@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "buttons.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -77,7 +78,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    char                pdir;
    XSetWindowAttributes att;
    int                 w, h;
-   Desk               *d;
+   Desk               *dsk;
 
    /* Don't ever show more than one slideout */
    if (Mode_slideouts.active)
@@ -149,21 +150,21 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      {
 	/* If the slideout is associated with an ewin,
 	 * put it on the same virtual desktop. */
-	d = DeskGet(EoGetDesk(ewin));
+	dsk = EoGetDesk(ewin);
 	if (BorderWinpartIndex(ewin, win) >= 0 &&
 	    !EoIsFloating(ewin) /* && !ewin->sticky */ )
 	  {
-	     xx -= EoGetX(d);
-	     yy -= EoGetY(d);
+	     xx -= EoGetX(dsk);
+	     yy -= EoGetY(dsk);
 	  }
 	EoSetLayer(s, EoGetLayer(ewin));
      }
    else
      {
-	d = DeskGet(0);
+	dsk = DeskGet(0);
 	EoSetLayer(s, 10);
      }
-   EoReparent(s, EoObj(d), xx, yy);
+   EoReparent(s, EoObj(dsk), xx, yy);
 
    switch (s->direction)
      {

@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "xwin.h"
 
@@ -105,12 +106,14 @@ TransparencySet(int transparency)
      {
 	/* Hack to get tiled backgrounds regenerated at full size */
 	int                 i, num;
+	Desk               *dsk;
 
 	num = DesksGetNumber();
 	for (i = 0; i < num; i++)
 	  {
-	     BackgroundPixmapFree(DeskGetBackground(i));
-	     DeskRefresh(i);
+	     dsk = DeskGet(i);
+	     BackgroundPixmapFree(DeskGetBackground(dsk));
+	     DeskRefresh(dsk);
 	  }
      }
    ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
@@ -824,7 +827,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  }
 	else
 	  {
-	     cr = DeskGetCurrentRoot();
+	     cr = EoGetWin(DesksGetCurrent());
 	  }
 	XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
 #if 0

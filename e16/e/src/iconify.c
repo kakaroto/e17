@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "ewins.h"
@@ -148,9 +149,13 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    Window              root = VRoot.win;
    GC                  gc;
    XGCValues           gcv;
+   Desk               *dskf, *dskt;
 
    if (Mode.wm.startup)
       return;
+
+   dskf = EoGetDesk(from);
+   dskt = EoGetDesk(to);
 
    EobjsRepaint();
    EGrabServer();
@@ -170,12 +175,12 @@ IB_Animate(char iconify, EWin * from, EWin * to)
      {
 	fw = EoGetW(from) + 4;
 	fh = EoGetH(from) + 4;
-	fx = EoGetX(from) + DeskGetX(EoGetDesk(from)) - 2;
-	fy = EoGetY(from) + DeskGetY(EoGetDesk(from)) - 2;
+	fx = EoGetX(from) + EoGetX(dskf) - 2;
+	fy = EoGetY(from) + EoGetY(dskf) - 2;
 	dw = 4;
 	dh = 4;
-	dx = EoGetX(to) + DeskGetX(EoGetDesk(to)) + (EoGetW(to) / 2) - 2;
-	dy = EoGetY(to) + DeskGetY(EoGetDesk(to)) + (EoGetH(to) / 2) - 2;
+	dx = EoGetX(to) + EoGetX(dskt) + (EoGetW(to) / 2) - 2;
+	dy = EoGetY(to) + EoGetY(dskt) + (EoGetH(to) / 2) - 2;
 	for (i = 0.0; i < 1.0; i += spd)
 	  {
 	     ii = 1.0 - i;
@@ -240,12 +245,12 @@ IB_Animate(char iconify, EWin * from, EWin * to)
      {
 	fw = EoGetW(from) + 4;
 	fh = EoGetH(from) + 4;
-	fx = EoGetX(from) + DeskGetX(EoGetDesk(from)) - 2;
-	fy = EoGetY(from) + DeskGetY(EoGetDesk(from)) - 2;
+	fx = EoGetX(from) + EoGetX(dskf) - 2;
+	fy = EoGetY(from) + EoGetY(dskf) - 2;
 	dw = 4;
 	dh = 4;
-	dx = EoGetX(to) + DeskGetX(EoGetDesk(to)) + (EoGetW(to) / 2) - 2;
-	dy = EoGetY(to) + DeskGetY(EoGetDesk(to)) + (EoGetH(to) / 2) - 2;
+	dx = EoGetX(to) + EoGetX(dskt) + (EoGetW(to) / 2) - 2;
+	dy = EoGetY(to) + EoGetY(dskt) + (EoGetH(to) / 2) - 2;
 	for (i = 1.0; i >= 0.0; i -= spd)
 	  {
 	     ii = 1.0 - i;

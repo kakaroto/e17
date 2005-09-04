@@ -24,6 +24,7 @@
  * Extended Window Manager Hints.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecore-e16.h"
 #include "ewins.h"
 
@@ -193,7 +194,7 @@ EWMH_SetDesktopRoots(void)
       return;
 
    for (i = 0; i < n_desks; i++)
-      wl[i] = DeskGetWin(i);
+      wl[i] = EoGetWin(DeskGet(i));
 
    ecore_x_netwm_desk_roots_set(VRoot.win, wl, n_desks);
 
@@ -244,7 +245,7 @@ EWMH_SetWorkArea(void)
 void
 EWMH_SetCurrentDesktop(void)
 {
-   ecore_x_netwm_desk_current_set(VRoot.win, DesksGetCurrent());
+   ecore_x_netwm_desk_current_set(VRoot.win, DesksGetCurrent()->num);
 }
 
 void
@@ -261,7 +262,7 @@ EWMH_SetDesktopViewport(void)
 
    for (i = 0; i < n_desks; i++)
      {
-	DeskGetArea(i, &ax, &ay);
+	DeskGetArea(DeskGet(i), &ax, &ay);
 	p_coord[2 * i] = ax * VRoot.w;
 	p_coord[2 * i + 1] = ay * VRoot.h;
      }
@@ -361,7 +362,7 @@ EWMH_SetWindowDesktop(const EWin * ewin)
    if (EoIsSticky(ewin))
       val = 0xFFFFFFFF;
    else
-      val = EoGetDesk(ewin);
+      val = EoGetDeskNum(ewin);
    ecore_x_netwm_desktop_set(_EwinGetClientXwin(ewin), val);
 }
 
@@ -488,7 +489,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
      }
    else
      {
-	EoSetDesk(ewin, desk);
+	EoSetDesk(ewin, DeskGet(desk));
 	EoSetSticky(ewin, 0);
      }
    EwinChange(ewin, EWIN_CHANGE_DESKTOP);
@@ -795,7 +796,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
     */
    if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
      {
-	DeskGoto(ev->data.l[0]);
+	DeskGotoNum(ev->data.l[0]);
 	goto done;
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
@@ -880,7 +881,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     if (EoIsSticky(ewin))
 		EwinUnStick(ewin);
 	     else
-		EwinMoveToDesktop(ewin, ev->data.l[0]);
+		EwinMoveToDesktop(ewin, DeskGet(ev->data.l[0]));
 	  }
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)

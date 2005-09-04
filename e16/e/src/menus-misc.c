@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "desktops.h"
 #include "ewins.h"
 #include "xwin.h"
 #include <errno.h>
@@ -644,14 +645,15 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;
    EWin               *const *lst;
-   int                 j, i, num;
+   int                 i, num;
+   unsigned int        j;
    char                s[256];
    MenuItem           *mi;
 
    m = MenuCreate(name, NULL, NULL, ms);
 
    lst = EwinListGetAll(&num);
-   for (j = 0; j < Conf.desks.num; j++)
+   for (j = 0; j < DesksGetNumber(); j++)
      {
 	mm = MenuCreate("__SUBMENUDESK_E", NULL, m, ms);
 
@@ -661,7 +663,7 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	for (i = 0; i < num; i++)
 	  {
 	     if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]) ||
-		 EoGetDesk(lst[i]) != j)
+		 EoGetDesk(lst[i]) != DeskGet(j))
 		continue;
 
 	     Esnprintf(s, sizeof(s), "wop %#lx focus",

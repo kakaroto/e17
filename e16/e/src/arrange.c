@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "buttons.h"
+#include "desktops.h"
 #include "ewins.h"
 
 static int
@@ -816,15 +817,15 @@ ArrangeEwinCentered(EWin * ewin, int focus)
 }
 
 static int
-EWinIsOnViewport(EWin * ewin, int desk)
+EWinIsOnViewport(EWin * ewin, Desk * dsk)
 {
    int                 ax, ay;
 
    if (EoIsSticky(ewin))
       return 1;
 
-   DeskGetArea(desk, &ax, &ay);
-   if (EoGetDesk(ewin) == desk && ewin->area_x == ax && ewin->area_y == ay)
+   DeskGetArea(dsk, &ax, &ay);
+   if (EoGetDesk(ewin) == dsk && ewin->area_x == ax && ewin->area_y == ay)
       return 1;
 
    return 0;

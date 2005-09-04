@@ -21,37 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecompmgr.h"
 #include "ecore-e16.h"
 #include "ewins.h"		/* FIXME - Should not be here */
 #include "xwin.h"
 
 void
-EobjSetDesk(EObj * eo, int desk)
+EobjSetDesk(EObj * eo, Desk * dsk)
 {
-   switch (eo->type)
-     {
-     default:
-	break;
+   if (!dsk || dsk == eo->desk)
+      return;
 
-     case EOBJ_TYPE_EWIN:
-#if 0
-	if (eo->floating > 1)
-	   desk = 0;
-	else if (eo->sticky || eo->desk < 0)
-	   desk = DesksGetCurrent();
-	else
-#endif
-	   desk = desk % Conf.desks.num;
-	break;
-     }
-
-   if (desk != eo->desk)
-     {
-	if (eo->stacked > 0)
-	   DeskSetDirtyStack(desk);
-	eo->desk = desk;
-     }
+   if (eo->stacked > 0)
+      DeskSetDirtyStack(dsk);
+   eo->desk = dsk;
 }
 
 void
@@ -153,12 +137,14 @@ void
 EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
 	 int su, const char *name)
 {
+   if (!eo->desk)
+      eo->desk = DeskGet(0);
    if (win == None)
      {
 	if (type == EOBJ_TYPE_EVENT)
 	   win = ECreateEventWindow(VRoot.win, x, y, w, h);
 	else
-	   win = ECreateWindow(DeskGetWin(eo->desk), x, y, w, h, su);
+	   win = ECreateWindow(EoGetWin(eo->desk), x, y, w, h, su);
      }
    eo->type = type;
    eo->win = win;
@@ -384,13 +370,13 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
    EReparentWindow(eo->win, dst->win, x, y);
    if (dst->type == EOBJ_TYPE_DESK)
      {
-	Desk               *d = (Desk *) dst;
+	Desk               *dsk = (Desk *) dst;
 
 #if USE_COMPOSITE
 	if (eo->shown && eo->cmhook)
-	   ECompMgrWinReparent(eo, d->num, move);
+	   ECompMgrWinReparent(eo, dsk->num, move);
 #endif
-	EobjSetDesk(eo, d->num);
+	EobjSetDesk(eo, dsk);
      }
    else
      {

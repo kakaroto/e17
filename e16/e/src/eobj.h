@@ -23,6 +23,8 @@
 #ifndef _EOBJ_H_
 #define _EOBJ_H_
 
+struct _desk;
+
 typedef struct _eobj EObj;
 
 struct _eobj
@@ -31,7 +33,7 @@ struct _eobj
    short               type;	/* Ewin, button, other, ... */
    short               ilayer;	/* Internal stacking layer */
    short               layer;	/* Stacking layer */
-   short               desk;	/* Belongs on desk */
+   struct _desk       *desk;	/* Belongs on desk */
    int                 x, y;
    int                 w, h;
    signed char         stacked;
@@ -74,6 +76,7 @@ struct _eobj
 #define EoIsFloating(eo)        ((eo)->o.floating)
 #define EoIsShown(eo)           ((eo)->o.shown)
 #define EoGetDesk(eo)           ((eo)->o.desk)
+#define EoGetDeskNum(eo)        ((eo)->o.desk->num)
 #define EoGetLayer(eo)          ((eo)->o.layer)
 #define EoGetPixmap(eo)         EobjGetPixmap(EoObj(eo))
 
@@ -138,7 +141,7 @@ void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #else
 #define             EobjChangeOpacity(eo, opacity)
 #endif
-void                EobjSetDesk(EObj * eo, int desk);
+void                EobjSetDesk(EObj * eo, struct _desk *dsk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);
@@ -156,7 +159,7 @@ int                 EobjListStackRaise(EObj * eo);
 int                 EobjListStackLower(EObj * eo);
 EObj               *EobjListStackFind(Window win);
 EObj               *const *EobjListStackGet(int *num);
-EObj               *const *EobjListStackGetForDesk(int *num, int desk);
+EObj               *const *EobjListStackGetForDesk(int *num, struct _desk *dsk);
 void                EobjListFocusAdd(EObj * eo, int ontop);
 void                EobjListFocusDel(EObj * eo);
 int                 EobjListFocusRaise(EObj * eo);

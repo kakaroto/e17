@@ -24,6 +24,7 @@
  * Feeble attempt to collect hint stuff in one place
  */
 #include "E.h"
+#include "desktops.h"		/* Should not be here */
 #include "ecore-e16.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -339,7 +340,7 @@ EHintsSetInfo(const EWin * ewin)
    if (!aa)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 
-   c[0] = EoGetDesk(ewin);
+   c[0] = EoGetDeskNum(ewin);
    c[1] = EoIsSticky(ewin);
    c[2] = EoGetX(ewin);
    c[3] = EoGetY(ewin);
@@ -383,7 +384,7 @@ EHintsGetInfo(EWin * ewin)
    if (num < 8)
       return 0;
 
-   EoSetDesk(ewin, c[0]);
+   EoSetDesk(ewin, DeskGet(c[0]));
    EoSetSticky(ewin, c[1]);
    ewin->client.x = c[2];
    ewin->client.y = c[3];
@@ -432,7 +433,7 @@ EHintsSetDeskInfo(void)
 
    for (i = 0; i < n_desks; i++)
      {
-	DeskGetArea(i, &ax, &ay);
+	DeskGetArea(DeskGet(i), &ax, &ay);
 	c[(i * 2)] = ax;
 	c[(i * 2) + 1] = ay;
      }
@@ -441,7 +442,7 @@ EHintsSetDeskInfo(void)
    ecore_x_window_prop_card32_set(VRoot.win, a, c, 2 * n_desks);
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   c[0] = DesksGetCurrent();
+   c[0] = DesksGetCurrent()->num;
    ecore_x_window_prop_card32_set(VRoot.win, a, c, 1);
 
    Efree(c);
@@ -464,14 +465,14 @@ EHintsGetDeskInfo(void)
    if (num > 0)
      {
 	for (i = 0; i < (num / 2); i++)
-	   DeskSetArea(i, c[(i * 2)], c[(i * 2) + 1]);
+	   DeskSetArea(DeskGet(i), c[(i * 2)], c[(i * 2) + 1]);
      }
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
    num = ecore_x_window_prop_card32_get(VRoot.win, a, c, 1);
    if (num > 0)
      {
-	DesksSetCurrent(c[0]);
+	DesksSetCurrent(DeskGet(c[0]));
      }
    else
      {

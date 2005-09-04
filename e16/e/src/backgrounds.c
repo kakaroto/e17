@@ -23,6 +23,7 @@
  */
 #include <time.h>
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "xwin.h"
 
@@ -1064,6 +1065,7 @@ BackgroundsConfigLoad(FILE * fs)
    char               *name = 0;
    char                ignore = 0;
    int                 fields;
+   unsigned int        desk;
 
 #if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *cm = NULL;
@@ -1161,33 +1163,20 @@ BackgroundsConfigLoad(FILE * fs)
 	     break;
 
 	  case BG_DESKNUM:
-	     if (!ignore)
+	     desk = atoi(s2);
+	     if (desk < DesksGetNumber())
 	       {
-		  /* if its the root desktop and its another visual ... */
-		  /* create a desktop def all on its own */
-		  if ((atoi(s2) < DesksGetNumber()) && (atoi(s2) >= 0))
+		  if ((DeskGetBackground(DeskGet(desk)) == NULL) ||
+		      (Conf.backgrounds.user))
 		    {
-		       if ((DeskGetBackground(atoi(s2)) == NULL) ||
-			   (Conf.backgrounds.user))
+		       if (!ignore)
 			 {
 			    if (!bg)
 			       bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
 						     i3, i4, i5, i6, bg2, j1,
 						     j2, j3, j4, j5);
-			    DeskAssignBg(atoi(s2), bg);
 			 }
-		    }
-	       }
-	     else
-	       {
-		  if ((atoi(s2) < DesksGetNumber()) && (atoi(s2) >= 0))
-		    {
-		       if ((DeskGetBackground(atoi(s2)) == NULL) ||
-			   (Conf.backgrounds.user))
-			 {
-			    if (bg)
-			       DeskAssignBg(atoi(s2), bg);
-			 }
+		       DeskAssignBg(desk, bg);
 		    }
 	       }
 	     break;
@@ -1281,7 +1270,8 @@ BackgroundsConfigSave(void)
    FILE               *fs;
    int                 i, num;
    Background        **bglist;
-   int                 j, b, r, g;
+   unsigned int        j;
+   int                 r, g, b;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (num <= 0)
@@ -1348,9 +1338,12 @@ BackgroundsConfigSave(void)
 
 	for (j = 0; j < (DesksGetNumber()); j++)
 	  {
-	     if ((!strcmp(bglist[i]->name, "NONE")) && (!DeskGetBackground(j)))
+	     Desk               *dsk = DeskGet(j);
+
+	     if ((!strcmp(bglist[i]->name, "NONE"))
+		 && (!DeskGetBackground(dsk)))
 		fprintf(fs, "564 %d\n", j);
-	     if (DeskGetBackground(j) == bglist[i])
+	     if (DeskGetBackground(dsk) == bglist[i])
 		fprintf(fs, "564 %d\n", j);
 	  }
 
@@ -1373,16 +1366,19 @@ static void
 BackgroundsAccounting(void)
 {
    time_t              now;
-   int                 i, j, num;
+   int                 i, num;
+   unsigned int        j;
    Background        **lst;
    Window              win;
+   Desk               *dsk;
 
    now = time(NULL);
 
-   for (i = 0; i < DesksGetNumber(); i++)
+   for (j = 0; j < DesksGetNumber(); j++)
      {
-	if ((DeskGetBackground(i)) && (DeskIsViewable(i)))
-	   BackgroundTouch(DeskGetBackground(i));
+	dsk = DeskGet(j);
+	if ((DeskGetBackground(dsk)) && (DeskIsViewable(dsk)))
+	   BackgroundTouch(DeskGetBackground(dsk));
      }
 
    lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
@@ -1396,16 +1392,20 @@ BackgroundsAccounting(void)
 
 	/* Skip if associated with any viewable desktop */
 	for (j = 0; j < DesksGetNumber(); j++)
-	   if (lst[i] == DeskGetBackground(j) && DeskIsViewable(j))
-	      goto next;
+	  {
+	     dsk = DeskGet(j);
+	     if (lst[i] == DeskGetBackground(dsk) && DeskIsViewable(dsk))
+		goto next;
+	  }
 
 	for (j = 0; j < DesksGetNumber(); j++)
 	  {
-	     if (lst[i] != DeskGetBackground(j) || DeskIsViewable(j))
+	     dsk = DeskGet(j);
+	     if (lst[i] != DeskGetBackground(dsk) || DeskIsViewable(dsk))
 		continue;
 
 	     /* Unviewable desktop - update the virtual root hints */
-	     win = DeskGetWin(j);
+	     win = EoGetWin(dsk);
 	     if (!Conf.hints.set_xroot_info_on_root_window)
 		HintsSetRootInfo(win, 0, 0);
 	     ESetWindowBackground(win, 0);
@@ -1491,7 +1491,7 @@ static void         BG_RedrawView(void);
 static void
 CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   int                 i;
+   unsigned int        i;
 
    if (val < 0)
      {
@@ -1519,8 +1519,10 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
-	     if (DeskGetBackground(i) == tmp_bg)
-		DeskSetBg(i, tmp_bg, 1);
+	     Desk               *dsk = DeskGet(i);
+
+	     if (DeskGetBackground(dsk) == tmp_bg)
+		DeskSetBg(dsk, tmp_bg, 1);
 	  }
 
 	BackgroundCacheMini(tmp_bg, 0, 1);
@@ -2588,7 +2590,8 @@ BackgroundSet2(const char *name, const char *params)
 {
    Background         *bg;
    XColor              xclr;
-   int                 i, r, g, b;
+   unsigned int        i;
+   int                 r, g, b;
    char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
    int                 updated, tile, keep_aspect, tkeep_aspect;
    int                 xjust, yjust, xperc, yperc;
@@ -2616,8 +2619,10 @@ BackgroundSet2(const char *name, const char *params)
 	  {
 	     for (i = 0; i < DesksGetNumber(); i++)
 	       {
-		  if (DeskGetBackground(i) == bg)
-		     DeskSetBg(i, bg, 0);
+		  Desk               *dsk = DeskGet(i);
+
+		  if (DeskGetBackground(dsk) == bg)
+		     DeskSetBg(dsk, bg, 0);
 	       }
 	  }
      }
@@ -2648,11 +2653,11 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 
    if (!p || cmd[0] == '?')
      {
-	for (i = 0; i < Conf.desks.num; i++)
+	for (i = 0; i < (int)DesksGetNumber(); i++)
 	  {
-	     if (DeskGetBackground(i))
-		IpcPrintf("%i %s\n", i,
-			  BackgroundGetName(DeskGetBackground(i)));
+	     bg = DeskGetBackground(DeskGet(i));
+	     if (bg)
+		IpcPrintf("%i %s\n", i, BackgroundGetName(bg));
 	  }
      }
    else if (!strncmp(cmd, "apply", 2))
@@ -2723,9 +2728,9 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	else
 	   bg = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
 
-	num = DesksGetCurrent();
+	num = DesksGetCurrentNum();
 	sscanf(p, "%d %n", &num, &len);
-	DeskSetBg(num, bg, 1);
+	DeskSetBg(DeskGet(num), bg, 1);
 	autosave();
      }
    else if (!strncmp(cmd, "xget", 2))
@@ -2771,7 +2776,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 	if (!w[0])
 	   break;
 	i = atoi(w);
-	DeskSetBg(i, bg, 1);
+	DeskSetBg(DeskGet(i), bg, 1);
      }
    autosave();
 }
@@ -2809,7 +2814,7 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
 	     if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))
-		DeskRefresh(i);
+		DeskRefresh(DeskGet(i));
 	  }
      }
 }

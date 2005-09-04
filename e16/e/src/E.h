@@ -484,20 +484,6 @@ struct _textclass
    unsigned int        ref_count;
 };
 
-struct _button;
-typedef struct
-{
-   EObj                o;
-   int                 num;
-   char                viewable;
-   char                dirty_stack;
-   Background         *bg;
-   struct _button     *tag;
-   int                 current_area_x;
-   int                 current_area_y;
-   long                event_mask;
-} Desk;
-
 typedef struct _constraints
 {
    int                 min, max;
@@ -603,7 +589,7 @@ typedef struct
    } backgrounds;
    struct
    {
-      int                 num;
+      unsigned int        num;
       int                 dragdir;
       int                 dragbar_width;
       int                 dragbar_length;
@@ -1093,37 +1079,6 @@ void                ECursorIncRefcount(ECursor * ec);
 void                ECursorDecRefcount(ECursor * ec);
 Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
-
-/* desktops.c */
-Desk               *DeskGet(int desk);
-Window              DeskGetWin(int desk);
-int                 DeskGetX(int desk);
-int                 DeskGetY(int desk);
-Background         *DeskGetBackground(int desk);
-void                DeskGetArea(int desk, int *ax, int *ay);
-void                DeskSetArea(int desk, int ax, int ay);
-int                 DeskIsViewable(int desk);
-void                DeskSetDirtyStack(int desk);
-void                DeskGetCurrentArea(int *ax, int *ay);
-Window              DeskGetCurrentRoot(void);
-void                DeskSetCurrentArea(int ax, int ay);
-
-void                DeskRefresh(int num);
-void                DeskAssignBg(int desk, Background * bg);
-void                DeskSetBg(int desk, Background * bg, int refresh);
-int                 DesktopAt(int x, int y);
-void                DeskGoto(int num);
-void                DeskHide(int num);
-void                DeskShow(int num);
-void                StackDesktop(int num);
-void                DeskGotoByEwin(EWin * ewin);
-
-int                 DesksGetNumber(void);
-int                 DesksGetCurrent(void);
-void                DesksSetCurrent(int desk);
-void                DesksClear(void);
-void                DesksResize(int w, int h);
-void                DesksEventsConfigure(int mode);
 
 /* dialog.c */
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);

@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecore-e16.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -224,7 +225,7 @@ void
 ICCCM_Configure(const EWin * ewin)
 {
    XEvent              ev;
-   int                 d;
+   Desk               *dsk;
    Window              child;
 
    if (EwinIsInternal(ewin))
@@ -234,9 +235,9 @@ ICCCM_Configure(const EWin * ewin)
    ev.xconfigure.display = disp;
    ev.xconfigure.event = _EwinGetClientXwin(ewin);
    ev.xconfigure.window = _EwinGetClientXwin(ewin);
-   d = EoGetDesk(ewin);
-   ev.xconfigure.x = DeskGetX(d) + ewin->client.x;
-   ev.xconfigure.y = DeskGetY(d) + ewin->client.y;
+   dsk = EoGetDesk(ewin);
+   ev.xconfigure.x = EoGetX(dsk) + ewin->client.x;
+   ev.xconfigure.y = EoGetY(dsk) + ewin->client.y;
    if (Mode.wm.window)
       XTranslateCoordinates(disp, VRoot.win, RRoot.win,
 			    ev.xconfigure.x, ev.xconfigure.y,
@@ -392,28 +393,28 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		  ewin->client.y = y;
 		  if ((hint.flags & PPosition) && (!EoIsSticky(ewin)))
 		    {
-		       int                 dsk;
+		       Desk               *dsk;
 
 		       dsk = EoGetDesk(ewin);
-		       if ((dsk < 0) || (dsk >= DesksGetNumber()))
+		       if (!dsk)
 			  dsk = DesksGetCurrent();
-		       ewin->client.x -= DeskGetX(dsk);
-		       ewin->client.y -= DeskGetY(dsk);
+		       ewin->client.x -= EoGetX(dsk);
+		       ewin->client.y -= EoGetY(dsk);
 		       if (ewin->client.x + ewin->client.w >= VRoot.w)
 			 {
-			    ewin->client.x += DeskGetX(dsk);
+			    ewin->client.x += EoGetX(dsk);
 			 }
 		       else if (ewin->client.x < 0)
 			 {
-			    ewin->client.x += DeskGetX(dsk);
+			    ewin->client.x += EoGetX(dsk);
 			 }
 		       if (ewin->client.y + ewin->client.h >= VRoot.h)
 			 {
-			    ewin->client.y += DeskGetY(dsk);
+			    ewin->client.y += EoGetY(dsk);
 			 }
 		       else if (ewin->client.y < 0)
 			 {
-			    ewin->client.y += DeskGetY(dsk);
+			    ewin->client.y += EoGetY(dsk);
 			 }
 		    }
 		  ewin->state.placed = 1;

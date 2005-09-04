@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecore-e16.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -414,7 +415,7 @@ GNOME_GetHintDesktop(EWin * ewin, Atom atom_change)
    if (num <= 0)
       return;
 
-   EoSetDesk(ewin, desk);
+   EoSetDesk(ewin, DeskGet(desk));
    EwinChange(ewin, EWIN_CHANGE_DESKTOP);
 }
 
@@ -495,7 +496,7 @@ GNOME_SetEwinDesk(const EWin * ewin)
       return;
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-   val = EoGetDesk(ewin);
+   val = EoGetDeskNum(ewin);
    ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), atom_set, &val, 1);
 }
 
@@ -573,7 +574,7 @@ GNOME_SetCurrentDesk(void)
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-   val = DesksGetCurrent();
+   val = DesksGetCurrent()->num;
    ecore_x_window_prop_card32_set(VRoot.win, atom_set, &val, 1);
 }
 
@@ -768,7 +769,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
      }
    if (event->message_type == a3)
      {
-	DeskGoto(event->data.l[0]);
+	DeskGotoNum(event->data.l[0]);
 	return;
      }
    if (event->message_type == a4)

@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ewins.h"
 #include "xwin.h"
 #include <sys/ipc.h>
@@ -676,8 +677,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     y = ewin->shape_y + (j * ewin->client.h_inc);
 	  }
 
-	dx = DeskGetX(EoGetDesk(ewin));
-	dy = DeskGetY(EoGetDesk(ewin));
+	dx = EoGetX(EoGetDesk(ewin));
+	dy = EoGetY(EoGetDesk(ewin));
 	x1 = ewin->shape_x + dx;
 	y1 = ewin->shape_y + dy;
 

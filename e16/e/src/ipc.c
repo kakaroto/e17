@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "ewin-ops.h"
@@ -328,14 +329,14 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  default:
 	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
 		       _EwinGetClientXwin(e), SS(e->icccm.wm_name),
-		       (EoIsSticky(e)) ? -1 : EoGetDesk(e), e->area_x,
+		       (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e), e->area_x,
 		       e->area_y, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e));
 	     break;
 
 	  case 'a':
 	     IpcPrintf("%#10lx : %5d %5d %4dx%4d :: %2d : %d %d : %s\n",
 		       _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
-		       EoGetH(e), (EoIsSticky(e)) ? -1 : EoGetDesk(e),
+		       EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		       e->area_x, e->area_y, SS(e->icccm.wm_name));
 	     break;
 
@@ -343,7 +344,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	     IpcPrintf
 		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
 		 _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
-		 EoGetH(e), (EoIsSticky(e)) ? -1 : EoGetDesk(e),
+		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		 SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
 		 SS(e->icccm.wm_name));
 	     break;
@@ -590,19 +591,19 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	if (!strncmp(param1, "next", 1))
 	  {
-	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin) + 1);
+	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin), 1);
 	  }
 	else if (!strncmp(param1, "prev", 1))
 	  {
-	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin) - 1);
+	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin), -1);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window desk: %d", EoGetDesk(ewin));
+	     IpcPrintf("window desk: %d", EoGetDeskNum(ewin));
 	  }
 	else
 	  {
-	     EwinOpMoveToDesk(ewin, atoi(param1));
+	     EwinOpMoveToDesk(ewin, NULL, atoi(param1));
 	  }
 	break;
 
@@ -1141,7 +1142,7 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->icccm.need_input, ewin->icccm.take_focus,
 	     ewin->props.never_focus, ewin->props.focusclick,
 	     ewin->props.never_use_area, ewin->props.fixedpos,
-	     ewin->props.fixedsize, EoGetDesk(ewin),
+	     ewin->props.fixedsize, EoGetDeskNum(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
 	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
 	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
@@ -1228,7 +1229,7 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
      {
 	eo = lst[i];
 	IpcPrintf(" %2d %#lx %d %d %2d %d %d %3d %5d,%5d %4dx%4d %d %d %s\n",
-		  i, eo->win, eo->type, eo->shown, eo->desk, eo->sticky,
+		  i, eo->win, eo->type, eo->shown, eo->desk->num, eo->sticky,
 		  eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE
 		  (eo->cmhook) ? 1 : 0, !eo->noredir
@@ -1321,7 +1322,7 @@ IPC_Compat(const char *params)
    if (!strcmp(param1, "goto_desktop"))
      {
 	if (*p == '?')
-	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrent());
+	   IpcPrintf("Current Desktop: %d\n", DesksGetCurrent()->num);
      }
    else if (!strcmp(param1, "num_desks"))
      {

@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "xwin.h"
 #include <math.h>
@@ -88,7 +89,7 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
      {
 	XGCValues           gcv;
 
-	fx_ripple_win = DeskGetCurrentRoot();
+	fx_ripple_win = EoGetWin(DesksGetCurrent());
 
 	fx_ripple_above =
 	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
@@ -524,7 +525,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
      {
 	XGCValues           gcv;
 
-	fx_wave_win = DeskGetCurrentRoot();
+	fx_wave_win = EoGetWin(DesksGetCurrent());
 
 	fx_wave_above =
 	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, VRoot.depth);
@@ -690,7 +691,7 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 
    if (fx_imagespinner_win == None)
      {
-	fx_imagespinner_win = DeskGetCurrentRoot();
+	fx_imagespinner_win = EoGetWin(DesksGetCurrent());
 	FX_imagespinner_info();
      }
 
@@ -741,7 +742,7 @@ FX_ImageSpinner_Init(const char *name)
 static void
 FX_ImageSpinner_Desk(void)
 {
-   fx_imagespinner_win = DeskGetCurrentRoot();
+   fx_imagespinner_win = EoGetWin(DesksGetCurrent());
 }
 
 static void

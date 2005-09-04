@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ewins.h"
 #include "snaps.h"
 #include "xwin.h"
@@ -216,7 +217,7 @@ SnapEwinBorder(Snapshot * sn, EWin * ewin)
 static void
 SnapEwinDesktop(Snapshot * sn, EWin * ewin)
 {
-   sn->desktop = EoGetDesk(ewin);
+   sn->desktop = EoGetDeskNum(ewin);
 }
 
 static void
@@ -1391,7 +1392,7 @@ SnapshotEwinMatch(EWin * ewin)
       EoSetSticky(ewin, sn->sticky);
 
    if (sn->use_flags & SNAP_USE_DESK)
-      EoSetDesk(ewin, sn->desktop);
+      EoSetDesk(ewin, DeskGet(sn->desktop));
 
    if (sn->use_flags & SNAP_USE_SIZE)
      {

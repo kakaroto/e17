@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "xwin.h"
@@ -76,8 +77,8 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   dx = DeskGetX(EoGetDesk(ewin));
-   dy = DeskGetY(EoGetDesk(ewin));
+   dx = EoGetX(EoGetDesk(ewin));
+   dy = EoGetY(EoGetDesk(ewin));
    Mode_mr.start_x = Mode.events.x + dx;
    Mode_mr.start_y = Mode.events.y + dy;
    Mode_mr.win_x = EoGetX(ewin) + dx;
@@ -103,7 +104,7 @@ int
 ActionMoveEnd(EWin * ewin)
 {
    EWin              **gwins;
-   int                 num, i, desk;
+   int                 num, i;
    Desk               *d1, *d2;
 
    if (ewin && ewin != Mode_mr.ewin)
@@ -129,8 +130,7 @@ ActionMoveEnd(EWin * ewin)
      }
    Mode.mode = MODE_NONE;
 
-   desk = DesktopAt(Mode.events.x, Mode.events.y);
-   d2 = DeskGet(desk);
+   d2 = DesktopAt(Mode.events.x, Mode.events.y);
 
    if (Conf.movres.mode_move == 0)
      {
@@ -140,11 +140,11 @@ ActionMoveEnd(EWin * ewin)
    for (i = 0; i < num; i++)
      {
 	ewin = gwins[i];
-	d1 = DeskGet(EoGetDesk(ewin));
-	if (desk == d1->num)
-	   EwinUnfloatAt(ewin, desk, ewin->shape_x, ewin->shape_y);
+	d1 = EoGetDesk(ewin);
+	if (d2 == d1)
+	   EwinUnfloatAt(ewin, d2, ewin->shape_x, ewin->shape_y);
 	else
-	   EwinUnfloatAt(ewin, desk,
+	   EwinUnfloatAt(ewin, d2,
 			 ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
 			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
      }
@@ -539,16 +539,16 @@ ActionMoveHandleMotion(void)
 	/* the window above all desktops (reparent to root) */
 	if (Conf.movres.mode_move == 0)
 	  {
-	     int                 desk;
+	     Desk               *dsk;
 
-	     desk = EoGetDesk(ewin1);
+	     dsk = EoGetDesk(ewin1);
 	     DetermineEwinFloat(ewin1, ndx, ndy);
-	     if (desk != EoGetDesk(ewin1))
+	     if (dsk != EoGetDesk(ewin1))
 	       {
-		  ewin1->shape_x += DeskGetX(desk);
-		  ewin1->shape_y += DeskGetY(desk);
-		  ewin1->req_x += DeskGetX(desk);
-		  ewin1->req_y += DeskGetY(desk);
+		  ewin1->shape_x += EoGetX(dsk);
+		  ewin1->shape_y += EoGetY(dsk);
+		  ewin1->req_x += EoGetX(dsk);
+		  ewin1->req_y += EoGetY(dsk);
 	       }
 	  }
 

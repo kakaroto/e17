@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ewins.h"
 
 #define ENABLE_DEBUG_STACKING 1
@@ -57,7 +58,7 @@ EobjListShow(const char *txt, EobjList * ewl)
      {
 	eo = ewl->list[i];
 	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, eo->win,
-		EobjGetCwin(eo), eo->desk, eo->ilayer, eo->name);
+		EobjGetCwin(eo), eo->desk->num, eo->ilayer, eo->name);
      }
 }
 #else
@@ -366,7 +367,7 @@ EwinListFocusGet(int *num)
 }
 
 EWin               *const *
-EwinListGetForDesk(int *num, int desk)
+EwinListGetForDesk(int *num, Desk * dsk)
 {
    static EWin       **lst = NULL;
    static int          nalloc = 0;
@@ -386,7 +387,7 @@ EwinListGetForDesk(int *num, int desk)
    for (i = j = 0; i < ewl->nwins; i++)
      {
 	eo = ewl->list[i];
-	if (eo->type != EOBJ_TYPE_EWIN || eo->desk != desk)
+	if (eo->type != EOBJ_TYPE_EWIN || eo->desk != dsk)
 	   continue;
 
 	lst[j++] = (EWin *) eo;
@@ -397,7 +398,7 @@ EwinListGetForDesk(int *num, int desk)
 }
 
 EObj               *const *
-EobjListStackGetForDesk(int *num, int desk)
+EobjListStackGetForDesk(int *num, Desk * dsk)
 {
    static EObj       **lst = NULL;
    static int          nalloc = 0;
@@ -417,7 +418,7 @@ EobjListStackGetForDesk(int *num, int desk)
    for (i = j = 0; i < ewl->nwins; i++)
      {
 	eo = ewl->list[i];
-	if (eo->desk != desk)
+	if (eo->desk != dsk)
 	   continue;
 
 	lst[j++] = eo;

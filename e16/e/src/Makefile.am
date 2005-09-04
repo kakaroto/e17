@@ -34,6 +34,7 @@ e16_SOURCES = \
 	coords.c                \
 	cursors.c		\
 	desktops.c		\
+	desktops.h		\
 	dialog.c	        \
 	dock.c			\
 	draw.c			\

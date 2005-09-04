@@ -26,6 +26,7 @@
 #define _BUTTONS_H_
 
 typedef struct _button Button;
+struct _desk;
 
 typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
 
@@ -47,12 +48,13 @@ void                ButtonDecRefcount(Button * b);
 void                ButtonSwallowInto(Button * b, EObj * eo);
 void                ButtonSetCallback(Button * b, ButtonCbFunc * func,
 				      EObj * eo);
-int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
+int                 ButtonGetInfo(const Button * b, RectBox * r,
+				  struct _desk *d);
 int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
 
-void                ButtonsMoveStickyToDesk(int desk);
+void                ButtonsMoveStickyToDesk(struct _desk *d);
 int                 ButtonsConfigLoad(FILE * fs);
 
 #endif /* _BUTTONS_H_ */

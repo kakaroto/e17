@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "ewin-ops.h"
@@ -248,15 +249,15 @@ EwinFixPosition(EWin * ewin)
 static void
 EwinDetermineArea(EWin * ewin)
 {
-   Desk               *d;
+   Desk               *dsk;
    int                 ax, ay;
 
-   d = DeskGet(EoGetDesk(ewin));
-   ewin->vx = d->current_area_x * EoGetW(d) + EoGetX(ewin);
-   ewin->vy = d->current_area_y * EoGetH(d) + EoGetY(ewin);
+   dsk = EoGetDesk(ewin);
+   ewin->vx = dsk->current_area_x * EoGetW(dsk) + EoGetX(ewin);
+   ewin->vy = dsk->current_area_y * EoGetH(dsk) + EoGetY(ewin);
 
-   ax = (ewin->vx + EoGetW(ewin) / 2) / EoGetW(d);
-   ay = (ewin->vy + EoGetH(ewin) / 2) / EoGetH(d);
+   ax = (ewin->vx + EoGetW(ewin) / 2) / EoGetW(dsk);
+   ay = (ewin->vy + EoGetH(ewin) / 2) / EoGetH(dsk);
    AreaFix(&ax, &ay);
    if (ax != ewin->area_x || ay != ewin->area_y)
      {
@@ -274,13 +275,14 @@ EwinDetermineArea(EWin * ewin)
 #define MRF_UNFLOAT	(1<<5)
 
 static void
-doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
+doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
-   int                 dx, dy, sw, sh, xo, yo, pdesk;
+   int                 dx, dy, sw, sh, xo, yo;
    char                move, resize, reparent, raise, floating;
    EWin              **lst;
    int                 i, num;
+   Desk               *pdesk;
 
    if (call_depth > 256)
       return;
@@ -288,11 +290,10 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
-	      call_depth, Mode.mode, _EwinGetClientXwin(ewin), flags, desk, x,
-	      y, w, h, EwinGetName(ewin));
+	      call_depth, Mode.mode, _EwinGetClientXwin(ewin), flags, dsk->num,
+	      x, y, w, h, EwinGetName(ewin));
 
-   pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : -1;
-   desk = desk % Conf.desks.num;
+   pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : NULL;
    reparent = move = resize = raise = 0;
    floating = EoIsFloating(ewin);
 
@@ -302,12 +303,12 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	  {
 	     if (EoIsFloating(ewin) == 0)
 	       {
-		  desk = (pdesk < 0) ? EoGetDesk(ewin) : pdesk;
+		  dsk = (pdesk == NULL) ? EoGetDesk(ewin) : pdesk;
 		  floating = 1;
 	       }
 	     else if (EoIsFloating(ewin) == 1)
 	       {
-		  desk = 0;
+		  dsk = DeskGet(0);
 		  floating = 2;
 	       }
 	     flags |= MRF_RAISE;
@@ -320,14 +321,14 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	else
 	  {
 	     if (EoIsSticky(ewin) && !EoIsFloating(ewin))
-		desk = DesksGetCurrent();
+		dsk = DesksGetCurrent();
 	  }
-	if (desk != pdesk)
+	if (dsk != pdesk)
 	   reparent = 1;
      }
    else
      {
-	desk = EoGetDesk(ewin);
+	dsk = EoGetDesk(ewin);
      }
 
    if (Mode.mode == MODE_NONE && Mode.move.check)
@@ -343,7 +344,7 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	  {
 	     int                 ax, ay;
 
-	     DeskGetArea(desk, &ax, &ay);
+	     DeskGetArea(dsk, &ax, &ay);
 	     xo = -ax * sw;
 	     yo = -ay * sh;
 	     sw *= Conf.desks.areas_nx;
@@ -437,7 +438,7 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
       ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
    if (reparent)
-      EoReparent(ewin, EoObj(DeskGet(desk)), x, y);
+      EoReparent(ewin, EoObj(dsk), x, y);
    else
       EoMoveResize(ewin, x, y, w, h);
 
@@ -472,7 +473,7 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
      {
 	lst = EwinListTransients(ewin, &num, 0);
 	for (i = 0; i < num; i++)
-	   doEwinMoveResize(lst[i], desk, EoGetX(lst[i]) + dx,
+	   doEwinMoveResize(lst[i], dsk, EoGetX(lst[i]) + dx,
 			    EoGetY(lst[i]) + dy, 0, 0,
 			    flags & (MRF_DESK | MRF_MOVE |
 				     MRF_FLOAT | MRF_UNFLOAT));
@@ -496,7 +497,7 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 	   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
      }
 
-   if (Mode.mode == MODE_NONE && desk != pdesk)
+   if (Mode.mode == MODE_NONE && dsk != pdesk)
      {
 	HintsSetWindowDesktop(ewin);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
@@ -508,50 +509,50 @@ doEwinMoveResize(EWin * ewin, int desk, int x, int y, int w, int h, int flags)
 void
 EwinMove(EWin * ewin, int x, int y)
 {
-   doEwinMoveResize(ewin, 0, x, y, 0, 0, MRF_MOVE);
+   doEwinMoveResize(ewin, NULL, x, y, 0, 0, MRF_MOVE);
 }
 
 void
 EwinResize(EWin * ewin, int w, int h)
 {
-   doEwinMoveResize(ewin, 0, 0, 0, w, h, MRF_RESIZE);
+   doEwinMoveResize(ewin, NULL, 0, 0, w, h, MRF_RESIZE);
 }
 
 void
 EwinMoveResize(EWin * ewin, int x, int y, int w, int h)
 {
-   doEwinMoveResize(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+   doEwinMoveResize(ewin, NULL, x, y, w, h, MRF_MOVE | MRF_RESIZE);
 }
 
 void
 EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w, int h, int grav)
 {
    EwinGetPosition(ewin, x, y, ewin->client.bw, grav, &x, &y);
-   doEwinMoveResize(ewin, 0, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+   doEwinMoveResize(ewin, NULL, x, y, w, h, MRF_MOVE | MRF_RESIZE);
 }
 
 void
-EwinMoveToDesktop(EWin * ewin, int desk)
+EwinMoveToDesktop(EWin * ewin, Desk * dsk)
 {
-   doEwinMoveResize(ewin, desk, 0, 0, 0, 0, MRF_DESK);
+   doEwinMoveResize(ewin, dsk, 0, 0, 0, 0, MRF_DESK);
 }
 
 void
-EwinMoveToDesktopAt(EWin * ewin, int desk, int x, int y)
+EwinMoveToDesktopAt(EWin * ewin, Desk * dsk, int x, int y)
 {
-   doEwinMoveResize(ewin, desk, x, y, 0, 0, MRF_DESK | MRF_MOVE);
+   doEwinMoveResize(ewin, dsk, x, y, 0, 0, MRF_DESK | MRF_MOVE);
 }
 
 void
 EwinFloatAt(EWin * ewin, int x, int y)
 {
-   doEwinMoveResize(ewin, 0, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+   doEwinMoveResize(ewin, NULL, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
 }
 
 void
-EwinUnfloatAt(EWin * ewin, int desk, int x, int y)
+EwinUnfloatAt(EWin * ewin, Desk * dsk, int x, int y)
 {
-   doEwinMoveResize(ewin, desk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
+   doEwinMoveResize(ewin, dsk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
 }
 
 void
@@ -1762,10 +1763,12 @@ EwinOpSetOpacity(EWin * ewin, int opacity)
 }
 
 void
-EwinOpMoveToDesk(EWin * ewin, int desk)
+EwinOpMoveToDesk(EWin * ewin, Desk * dsk, int inc)
 {
+   dsk = DeskGetRelative(dsk, inc);
+
    EoSetSticky(ewin, 0);
-   EwinMoveToDesktop(ewin, desk);
+   EwinMoveToDesktop(ewin, dsk);
    RaiseEwin(ewin);
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);

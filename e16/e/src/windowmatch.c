@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "ewin-ops.h"
@@ -737,7 +738,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	break;
 
      case EWIN_OP_DESK:
-	EoSetDesk(ewin, atoi(args));
+	EoSetDesk(ewin, DeskGet(atoi(args)));
 	break;
 
      case EWIN_OP_AREA:

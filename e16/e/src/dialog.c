@@ -551,8 +551,11 @@ ShowDialog(Dialog * d)
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
+	// FIXME
+#if 0				/* Make dialogs sticky? */
 	if (EoGetDesk(ewin) != DesksGetCurrent())
 	   EwinMoveToDesktop(ewin, DesksGetCurrent());
+#endif
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	return;

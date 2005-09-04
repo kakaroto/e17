@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "buttons.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -109,8 +110,9 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 {
    Button             *b;
 
-   if (desk < 0 || desk >= DesksGetNumber())
+   if (desk < 0 || desk >= (int)DesksGetNumber())
       return NULL;
+
    if (sticky && ontop == 1)
       desk = 0;
 
@@ -153,7 +155,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->default_show = 1;
 
    EoSetSticky(b, sticky);
-   EoSetDesk(b, desk);
+   EoSetDesk(b, DeskGet(desk));
    EobjInit(EoObj(b), EOBJ_TYPE_BUTTON, None, -100, -100, 50, 50, 0, name);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
@@ -301,19 +303,16 @@ ButtonSetCallback(Button * b, ButtonCbFunc * func, EObj * eo)
 }
 
 static void
-ButtonMoveToDesktop(Button * b, int desk)
+ButtonMoveToDesktop(Button * b, Desk * dsk)
 {
-   Desk               *d;
-
    if (EoIsSticky(b) && EoGetLayer(b) == 1)
-      desk = 0;
+      dsk = DeskGet(0);
 
-   d = DeskGet(desk);
-   if (!d)
+   if (!dsk)
       return;
 
-   if (EoGetDesk(b) != d->num)
-      EoReparent(b, EoObj(d), EoGetX(b), EoGetY(b));
+   if (EoGetDesk(b) != dsk)
+      EoReparent(b, EoObj(dsk), EoGetX(b), EoGetY(b));
 }
 
 void
@@ -381,7 +380,7 @@ ButtonMoveRelative(Button * b, int dx, int dy)
 }
 
 int
-ButtonGetInfo(const Button * b, RectBox * r, int desk)
+ButtonGetInfo(const Button * b, RectBox * r, Desk * desk)
 {
    if (!EoIsShown(b) || ButtonIsInternal(b))
       return -1;
@@ -445,16 +444,16 @@ ButtonDragStart(Button * b)
 static void
 ButtonDragEnd(Button * b)
 {
-   int                 d;
+   Desk               *dsk;
 
    Mode.mode = MODE_NONE;
 
    if (!Mode_buttons.move_pending)
      {
-	d = DesktopAt(Mode.events.x, Mode.events.y);
-	ButtonMoveToDesktop(b, d);
-	d = EoGetDesk(b);
-	ButtonMoveRelative(b, -DeskGetX(d), -DeskGetY(d));
+	dsk = DesktopAt(Mode.events.x, Mode.events.y);
+	ButtonMoveToDesktop(b, dsk);
+	dsk = EoGetDesk(b);
+	ButtonMoveRelative(b, -EoGetX(dsk), -EoGetY(dsk));
      }
    else
       Mode_buttons.move_pending = 0;
@@ -463,7 +462,7 @@ ButtonDragEnd(Button * b)
 }
 
 void
-ButtonsMoveStickyToDesk(int desk)
+ButtonsMoveStickyToDesk(Desk * dsk)
 {
    Button            **lst, *btn;
    int                 i, num;
@@ -475,7 +474,7 @@ ButtonsMoveStickyToDesk(int desk)
 	if (!EoIsSticky(btn) || ButtonIsInternal(btn))
 	   continue;
 
-	ButtonMoveToDesktop(btn, desk);
+	ButtonMoveToDesktop(btn, dsk);
      }
    if (lst)
       Efree(lst);
@@ -868,7 +867,7 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	  case BUTTON_DESK:
 	     desk = atoi(s2);
 	     if (pbt)
-		ButtonMoveToDesktop(pbt, desk);
+		ButtonMoveToDesktop(pbt, DeskGet(desk));
 	     break;
 	  case BUTTON_STICKY:
 	     sticky = atoi(s2);
@@ -956,7 +955,7 @@ ButtonsConfigSave(void)
 	fprintf(fs, "536 %i\n", blst[i]->geom.ysizerel);
 	fprintf(fs, "537 %i\n", blst[i]->geom.ysizeabs);
 	fprintf(fs, "538 %i\n", blst[i]->geom.size_from_image);
-	fprintf(fs, "539 %i\n", EoGetDesk(blst[i]));
+	fprintf(fs, "539 %i\n", EoGetDeskNum(blst[i]));
 	fprintf(fs, "540 %i\n", EoIsSticky(blst[i]));
 	fprintf(fs, "542 %i\n", EoIsShown(blst[i]));
 
@@ -1121,9 +1120,9 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
 	  {
 	     b = lst[i];
 	     IpcPrintf("%#lx %2d %2d %2d %5d+%5d %5dx%5d %s\n",
-		       EoGetWin(b), EoGetDesk(b), EoIsSticky(b), EoGetLayer(b),
-		       EoGetX(b), EoGetY(b), EoGetW(b), EoGetH(b),
-		       EoGetName(lst[i]));
+		       EoGetWin(b), EoGetDeskNum(b), EoIsSticky(b),
+		       EoGetLayer(b), EoGetX(b), EoGetY(b), EoGetW(b),
+		       EoGetH(b), EoGetName(lst[i]));
 	  }
 	if (lst)
 	   Efree(lst);

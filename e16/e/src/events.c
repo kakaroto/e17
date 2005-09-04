@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"		/* FIXME - Should not be here */
 #include "emodule.h"
 #include "ewins.h"		/* FIXME - Should not be here */
 #include "xwin.h"

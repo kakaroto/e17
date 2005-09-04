@@ -29,6 +29,7 @@
 
 #include "E.h"
 #if USE_COMPOSITE
+#include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "xwin.h"
@@ -357,9 +358,9 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
  */
 
 static              Picture
-DeskBackgroundPictureGet(Desk * d)
+DeskBackgroundPictureGet(Desk * dsk)
 {
-   ECmWinInfo         *cw = d->o.cmhook;
+   ECmWinInfo         *cw = dsk->o.cmhook;
    Picture             pict;
    Pixmap              pmap;
    Bool                fill;
@@ -368,14 +369,14 @@ DeskBackgroundPictureGet(Desk * d)
 
    if (!cw)
      {
-	ECompMgrWinNew(&d->o);
-	cw = d->o.cmhook;
+	ECompMgrWinNew(&dsk->o);
+	cw = dsk->o.cmhook;
 	if (!cw)
 	   return None;
      }
 
    fill = False;
-   pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
+   pmap = BackgroundGetPixmap(DeskGetBackground(dsk));
    if (pmap == None)
      {
 	if (cw->pixmap && cw->picture)
@@ -390,7 +391,7 @@ DeskBackgroundPictureGet(Desk * d)
      }
    D1printf
       ("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx (%#lx %#lx)\n",
-       d->num, pmap, cw->pixmap, cw->picture);
+       dsk->num, pmap, cw->pixmap, cw->picture);
 
    if (cw->picture)
       XRenderFreePicture(disp, cw->picture);
@@ -422,9 +423,9 @@ DeskBackgroundPictureGet(Desk * d)
 }
 
 static void
-DeskBackgroundPictureFree(Desk * d)
+DeskBackgroundPictureFree(Desk * dsk)
 {
-   ECmWinInfo         *cw = d->o.cmhook;
+   ECmWinInfo         *cw = dsk->o.cmhook;
    Picture             pict;
 
    if (!cw)
@@ -434,7 +435,7 @@ DeskBackgroundPictureFree(Desk * d)
    if (pict == None)
       return;
 
-   D1printf("DeskBackgroundPictureFree: Desk %d: pict=%#lx\n", d->num, pict);
+   D1printf("DeskBackgroundPictureFree: Desk %d: pict=%#lx\n", dsk->num, pict);
 
    XRenderFreePicture(disp, pict);
 
@@ -474,18 +475,18 @@ ECompMgrDamageMerge(XserverRegion damage, int destroy)
 static void
 ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 {
-   Desk               *d = DeskGet(eo->desk);
+   Desk               *dsk = eo->desk;
 
-   if (d && !d->viewable && eo->ilayer < 512)
+   if (dsk->num > 0 && !dsk->viewable && eo->ilayer < 512)
      {
 	if (destroy)
 	   XFixesDestroyRegion(disp, damage);
 	return;
      }
 
-   if (eo->desk > 0)
+   if (dsk->num > 0)
      {
-	if (EoGetX(d) != 0 || EoGetY(d) != 0)
+	if (EoGetX(dsk) != 0 || EoGetY(dsk) != 0)
 	  {
 	     if (!destroy)
 	       {
@@ -495,7 +496,7 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 		  XFixesCopyRegion(disp, region, damage);
 		  damage = region;
 	       }
-	     XFixesTranslateRegion(disp, damage, EoGetX(d), EoGetY(d));
+	     XFixesTranslateRegion(disp, damage, EoGetX(dsk), EoGetY(dsk));
 	  }
      }
 
@@ -1218,7 +1219,7 @@ ECompMgrWinReparent(EObj * eo, int desk, int change_xy)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
-	    eo->win, cw->extents, eo->desk, desk, eo->x, eo->y, change_xy);
+	    eo->win, cw->extents, eo->desk->num, desk, eo->x, eo->y, change_xy);
 
    /* Invalidate old window region */
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
@@ -1409,13 +1410,13 @@ ECompMgrCheckAlphaMask(ECmWinInfo * cw)
 
 static int
 ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
-			      EObj ** last, int desk)
+			      EObj ** last, Desk * dsk)
 {
    EObj               *eo, *eo_prev, *eo_first;
    int                 i, stop;
    ECmWinInfo         *cw;
 
-   D4printf("ECompMgrRepaintDetermineOrder %d\n", desk);
+   D4printf("ECompMgrRepaintDetermineOrder %d\n", dsk->num);
    if (!lst)
       lst = EobjListStackGet(&num);
 
@@ -1427,10 +1428,11 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
      {
 	eo = lst[i];
 
-	if (!eo->shown || eo->desk != desk)
+	if (!eo->shown || eo->desk != dsk)
 	   continue;
 
-	D4printf(" - %#lx desk=%d shown=%d\n", eo->win, eo->desk, eo->shown);
+	D4printf(" - %#lx desk=%d shown=%d\n", eo->win, eo->desk->num,
+		 eo->shown);
 
 	if (eo->type == EOBJ_TYPE_DESK)
 	  {
@@ -1441,8 +1443,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     if (!d->viewable)
 		continue;
 
-	     stop = ECompMgrRepaintDetermineOrder(lst, num, &eo1, &eo2,
-						  ((Desk *) eo)->num);
+	     stop = ECompMgrRepaintDetermineOrder(lst, num, &eo1, &eo2, d);
 	     if (eo1)
 	       {
 		  ec1 = eo1->cmhook;
@@ -1462,7 +1463,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	   continue;
 
 	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
-		 eo->win, eo->desk, eo->shown, cw->damaged, cw->picture);
+		 eo->win, eo->desk->num, eo->shown, cw->damaged, cw->picture);
 
 #if CAN_DO_USABLE
 	if (!cw->usable)
@@ -1477,7 +1478,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 	D4printf
 	   ("ECompMgrRepaintDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
-	    desk, eo->win, eo->desk, eo->shown);
+	    dsk->num, eo->win, eo->desk->num, eo->shown);
 
 	if (!eo_first)
 	   eo_first = eo;
@@ -1527,7 +1528,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
    Display            *dpy = disp;
    ECmWinInfo         *cw;
-   Desk               *d = DeskGet(eo->desk);
+   Desk               *dsk = eo->desk;
    int                 x, y;
 
    cw = eo->cmhook;
@@ -1550,8 +1551,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("extents", cw->extents);
 
-   x = EoGetX(d);
-   y = EoGetY(d);
+   x = EoGetX(dsk);
+   y = EoGetY(dsk);
 
    if (mode == 0)
      {
@@ -1565,7 +1566,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
 	     D2printf(" * solid pict=%#lx d=%d l=%d\n",
-		      cw->picture, eo->desk, eo->ilayer);
+		      cw->picture, eo->desk->num, eo->ilayer);
 	     ERegionLimit(region);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
@@ -1584,7 +1585,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
 	     D2printf(" * trans pict=%#lx d=%d l=%d\n",
-		      cw->picture, eo->desk, eo->ilayer);
+		      cw->picture, eo->desk->num, eo->ilayer);
 	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     ECompMgrCheckAlphaMask(cw);
@@ -1643,7 +1644,7 @@ ECompMgrRepaint(void)
    XserverRegion       region;
    EObj               *eo;
    Picture             pict, pbuf;
-   Desk               *d = DeskGet(0);
+   Desk               *dsk = DeskGet(0);
 
    if (!Mode_compmgr.active || allDamage == None)
       return;
@@ -1661,12 +1662,12 @@ ECompMgrRepaint(void)
 					VRoot.depth, VRoot.vis);
    pbuf = rootBuffer;
 
-   if (!d)
+   if (!dsk)
       return;
 
    /* Do paint order list linking */
    ECompMgrRepaintDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
-				 &Mode_compmgr.eo_last, 0);
+				 &Mode_compmgr.eo_last, dsk);
 
    /* Paint opaque windows top down, adjusting clip regions */
    for (eo = Mode_compmgr.eo_first; eo;
@@ -1677,7 +1678,7 @@ ECompMgrRepaint(void)
       ERegionShow("after opaque", region);
 
    /* Repaint background, clipped by damage region and opaque windows */
-   pict = DeskBackgroundPictureGet(d);
+   pict = DeskBackgroundPictureGet(dsk);
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    ERegionLimit(region);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
@@ -1770,16 +1771,14 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 #endif
 
 static void
-ECompMgrDeskChanged(int desk)
+ECompMgrDeskChanged(Desk * dsk)
 {
-   Desk               *d = DeskGet(desk);
-
-   if (!d || !d->o.cmhook)
+   if (!dsk || !dsk->o.cmhook)
       return;
 
-   D1printf("ECompMgrDeskChanged: desk=%d\n", desk);
+   D1printf("ECompMgrDeskChanged: desk=%d\n", dsk->num);
 
-   DeskBackgroundPictureFree(d);
+   DeskBackgroundPictureFree(dsk);
    ECompMgrDamageAll();
 }
 
@@ -2178,7 +2177,7 @@ ECompMgrSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:
-	ECompMgrDeskChanged((long)prm);
+	ECompMgrDeskChanged((Desk *) prm);
 	break;
 
      case ESIGNAL_IDLE:

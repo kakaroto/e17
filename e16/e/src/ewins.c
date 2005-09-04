@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "ewins.h"
@@ -258,42 +259,43 @@ void
 DetermineEwinFloat(EWin * ewin, int dx, int dy)
 {
    char                dofloat = 0;
-   int                 desk, x, y, w, h, xd, yd;
+   int                 x, y, w, h, xd, yd;
+   Desk               *dsk;
 
-   desk = EoGetDesk(ewin);
+   dsk = EoGetDesk(ewin);
    x = EoGetX(ewin);
    y = EoGetY(ewin);
    w = EoGetW(ewin);
    h = EoGetH(ewin);
 
-   xd = DeskGetX(desk);
-   yd = DeskGetY(desk);
+   xd = EoGetX(dsk);
+   yd = EoGetY(dsk);
 
-   if ((desk != 0) && (EoIsFloating(ewin) < 2) &&
-       ((xd != 0) || (yd != 0) || (DesksGetCurrent() != desk)))
+   if ((dsk->num != 0) && (EoIsFloating(ewin) < 2) &&
+       ((xd != 0) || (yd != 0) || (DesksGetCurrent() != dsk)))
      {
 	switch (Conf.desks.dragdir)
 	  {
 	  case 0:
 	     if (((x + dx < 0) ||
 		  ((x + dx + w <= VRoot.w) &&
-		   ((DesktopAt(xd + x + dx + w - 1, yd) != desk)))))
+		   ((DesktopAt(xd + x + dx + w - 1, yd) != dsk)))))
 		dofloat = 1;
 	     break;
 	  case 1:
 	     if (((x + dx + w > VRoot.w) ||
-		  ((x + dx >= 0) && ((DesktopAt(xd + x + dx, yd) != desk)))))
+		  ((x + dx >= 0) && ((DesktopAt(xd + x + dx, yd) != dsk)))))
 		dofloat = 1;
 	     break;
 	  case 2:
 	     if (((y + dy < 0) ||
 		  ((y + dy + h <= VRoot.h) &&
-		   ((DesktopAt(xd, yd + y + dy + h - 1) != desk)))))
+		   ((DesktopAt(xd, yd + y + dy + h - 1) != dsk)))))
 		dofloat = 1;
 	     break;
 	  case 3:
 	     if (((y + dy + h > VRoot.h) ||
-		  ((y + dy >= 0) && ((DesktopAt(xd, yd + y + dy) != desk)))))
+		  ((y + dy >= 0) && ((DesktopAt(xd, yd + y + dy) != dsk)))))
 		dofloat = 1;
 	     break;
 	  }
@@ -308,7 +310,7 @@ GetEwinByCurrentPointer(void)
 {
    Window              child;
 
-   EQueryPointer(DeskGetWin(DesksGetCurrent()), NULL, NULL, &child, NULL);
+   EQueryPointer(EoGetWin(DesksGetCurrent()), NULL, NULL, &child, NULL);
 
    return EwinFindByFrame(child);
 }
@@ -316,14 +318,15 @@ GetEwinByCurrentPointer(void)
 EWin               *
 GetEwinPointerInClient(void)
 {
-   int                 px, py, desk;
+   int                 px, py;
    EWin               *const *lst, *ewin;
    int                 i, num;
+   Desk               *dsk;
 
-   desk = DesktopAt(Mode.events.x, Mode.events.y);
-   EQueryPointer(DeskGetWin(desk), &px, &py, NULL, NULL);
+   dsk = DesktopAt(Mode.events.x, Mode.events.y);
+   EQueryPointer(EoGetWin(dsk), &px, &py, NULL, NULL);
 
-   lst = EwinListGetForDesk(&num, desk);
+   lst = EwinListGetForDesk(&num, dsk);
    for (i = 0; i < num; i++)
      {
 	int                 x, y, w, h;
@@ -602,8 +605,9 @@ AddToFamily(EWin * ewin, Window win)
 {
    EWin               *ewin2;
    EWin              **lst;
-   int                 i, k, num, fx, fy, x, y, desk;
+   int                 i, k, num, fx, fy, x, y;
    char                doslide, manplace;
+   Desk               *dsk;
 
    EGrabServer();
 
@@ -621,7 +625,7 @@ AddToFamily(EWin * ewin, Window win)
    Adopt(ewin);
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
-   desk = EoGetDesk(ewin);
+   dsk = EoGetDesk(ewin);
 
    /* if is an afterstep/windowmaker dock app - dock it */
    if (Conf.dock.enable && ewin->state.docked)
@@ -700,7 +704,7 @@ AddToFamily(EWin * ewin, Window win)
 
 	if (ewin2)
 	  {
-	     desk = EoGetDesk(ewin2);
+	     dsk = EoGetDesk(ewin2);
 	     if (!Mode.wm.startup && Conf.focus.switchfortransientmap &&
 		 !ewin->state.iconified)
 		DeskGotoByEwin(ewin2);
@@ -711,7 +715,7 @@ AddToFamily(EWin * ewin, Window win)
      {
 	EwinSetFullscreen(ewin, 2);
 	ewin->state.placed = 1;
-	EwinMoveToDesktopAt(ewin, desk, EoGetX(ewin), EoGetY(ewin));
+	EwinMoveToDesktopAt(ewin, dsk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);
 	goto done;
      }
@@ -746,7 +750,7 @@ AddToFamily(EWin * ewin, Window win)
 	     /* if the loser has manual placement on and the app asks to be on */
 	     /*  a desktop, then send E to that desktop so the user can place */
 	     /* the window there */
-	     DeskGoto(desk);
+	     DeskGoto(dsk);
 
 	     EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	     Mode.events.x = rx;
@@ -781,7 +785,7 @@ AddToFamily(EWin * ewin, Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->icccm.start_iconified)
      {
-	EwinMoveToDesktopAt(ewin, desk, x, y);
+	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	ewin->state.state = EWIN_STATE_MAPPED;
 	EwinIconify(ewin);
 	ewin->state.state = EWIN_STATE_ICONIC;
@@ -796,7 +800,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
-	DeskGoto(desk);
+	DeskGoto(dsk);
 
 	EQueryPointer(VRoot.win, &rx, &ry, NULL, NULL);
 	Mode.events.x = rx;
@@ -804,7 +808,7 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->state.placed = 1;
 	x = Mode.events.x + 1;
 	y = Mode.events.y + 1;
-	EwinMoveToDesktopAt(ewin, desk, x, y);
+	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	EwinMove(ewin, x, y);
 	ShowEwin(ewin);
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
@@ -840,7 +844,7 @@ AddToFamily(EWin * ewin, Window win)
 	ewin->state.animated = 1;
 	FocusEnable(0);
 
-	EwinMoveToDesktopAt(ewin, desk, fx, fy);
+	EwinMoveToDesktopAt(ewin, dsk, fx, fy);
 	ShowEwin(ewin);
 	ewin->req_x = x;
 	ewin->req_y = y;
@@ -848,7 +852,7 @@ AddToFamily(EWin * ewin, Window win)
      }
    else
      {
-	EwinMoveToDesktopAt(ewin, desk, x, y);
+	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	ShowEwin(ewin);
      }
 
@@ -1552,7 +1556,7 @@ EwinChangesProcess(EWin * ewin)
 
    if (EWinChanges.flags & EWIN_CHANGE_DESKTOP)
      {
-	int                 desk, pdesk;
+	Desk               *desk, *pdesk;
 
 	desk = EoGetDesk(ewin);
 	pdesk = EoGetDesk(&EWinChanges.ewin_old);
@@ -1598,15 +1602,15 @@ EwinsEventsConfigure(int mode)
 }
 
 static void
-EwinsTouch(int desk)
+EwinsTouch(Desk * dsk)
 {
    int                 i, num;
    EWin               *const *lst, *ewin;
 
-   if (desk < 0)
+   if (!dsk)
       lst = EwinListGetAll(&num);
    else
-      lst = EwinListGetForDesk(&num, desk);
+      lst = EwinListGetForDesk(&num, dsk);
 
    for (i = num - 1; i >= 0; i--)
      {
@@ -1621,7 +1625,7 @@ EwinsTouch(int desk)
 }
 
 void
-EwinsMoveStickyToDesk(int desk)
+EwinsMoveStickyToDesk(Desk * dsk)
 {
    EWin               *const *lst, *ewin;
    int                 i, num;
@@ -1635,7 +1639,7 @@ EwinsMoveStickyToDesk(int desk)
 	if (EwinIsTransientChild(ewin))
 	   continue;
 
-	EwinMoveToDesktop(ewin, desk);
+	EwinMoveToDesktop(ewin, dsk);
      }
 }
 
@@ -1922,13 +1926,13 @@ EwinsSighan(int sig, void *prm)
 	break;
 #endif
      case ESIGNAL_DESK_RESIZE:
-	EwinsTouch(-1);
+	EwinsTouch(NULL);
 	break;
      case ESIGNAL_THEME_TRANS_CHANGE:
 	EwinsTouch(DesksGetCurrent());
 	break;
      case ESIGNAL_BACKGROUND_CHANGE:
-	EwinsTouch((long)prm);
+	EwinsTouch(prm);
 	break;
      }
 }

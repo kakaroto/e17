@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "ewins.h"
 #include "xwin.h"
 
@@ -76,11 +77,11 @@ CoordsShow(EWin * ewin)
 		  cx =
 		     x + (ewin->shape_w + ewin->border->border.left +
 			  ewin->border->border.right - cw) / 2 +
-		     DeskGetX(EoGetDesk(ewin));
+		     EoGetX(EoGetDesk(ewin));
 		  cy =
 		     y + (ewin->shape_h + ewin->border->border.top +
 			  ewin->border->border.bottom - ch) / 2 +
-		     DeskGetY(EoGetDesk(ewin));
+		     EoGetY(EoGetDesk(ewin));
 		  break;
 	       }
 	  }
