@@ -271,7 +271,7 @@ SetCurrentArea(int ax, int ay)
    /* re-focus on a new ewin on that new desktop area */
    FocusNewDesk();
 
-   ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, ((void *)(long)DesksGetCurrent()));
+   ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
 
    /* update which "edge flip resistance" detector windows are visible */
    EdgeWindowsShow();
