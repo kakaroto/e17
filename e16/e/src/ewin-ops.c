@@ -140,8 +140,8 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    if (Conf.slidemode == 0)
       EwinMove(ewin, tx, ty);
    else
-      DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h,
-		    2);
+      DrawEwinShape(ewin, Conf.slidemode, tx, ty,
+		    ewin->client.w, ewin->client.h, 2);
 
    if (Conf.slidemode > 0)
       EUngrabServer();
