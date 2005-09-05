@@ -1,7 +1,6 @@
 #ifndef ESMART_TEXTAREA_H
 #define ESMART_TEXTAREA_H
 
-#include <stdio.h>
 #include <Evas.h>
 
 enum Esmart_Textarea_Key_Modifiers           /* several key modifiers */
