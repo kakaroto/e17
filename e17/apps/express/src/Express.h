@@ -7,9 +7,6 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
 #include <Edje.h>
-#if 0
-#include <Etox.h>
-#endif
 #include <Esmart/Esmart_Container.h>
 #include "config.h"
 
@@ -119,6 +116,8 @@ struct _Exp_Message
   Evas_Object *gui;
   Evas_Object *text;
   Evas_Object *icon;
+
+  Evas_Textblock_Style *style;
   
   char *msg_text;
 

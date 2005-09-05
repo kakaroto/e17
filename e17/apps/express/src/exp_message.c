@@ -38,6 +38,7 @@ exp_message_free(Exp_Message *msg)
   evas_object_del(msg->gui);
 
   if (msg->msg_text) free(msg->msg_text);
+  if (msg->style) evas_textblock2_style_free(msg->style);
   free(msg);
 }
 
@@ -54,14 +55,11 @@ exp_message_update(Exp_Message *msg)
   if (msg->changes.size)
   {
     evas_object_geometry_get(msg->gui, NULL, NULL, &mw, &mh);
-/*    etox_text_geometry_get(msg->text, &tw, &th); */
-//    evas_object_geometry_get(msg->text, NULL, NULL, &tw, &th);
-    evas_object_textblock_native_size_get(msg->text, &tw, &th);
-    printf("native: %f, %f\n", (double)tw, (double)th);
+    evas_object_textblock2_size_formatted_get(msg->text, &tw, &th);
     edje_object_part_geometry_get(msg->gui, "express.message.text",
                                   NULL, NULL, &aw, &ah);
-  if (th != ah)
-    evas_object_resize(msg->gui, mw, mh - ah + th);
+    if (th != ah)
+      evas_object_resize(msg->gui, mw, mh - ah + th);
   
     msg->changes.size = 0;
   }
@@ -73,8 +71,8 @@ static void
 _exp_message_realize(Exp_Message *msg)
 {
   Evas *evas;
-  /*Etox_Context *ctx;*/
   char *theme_path;
+  char style[4096];
   
   if (!msg) return;
   if (msg->realized) return;
@@ -89,24 +87,16 @@ _exp_message_realize(Exp_Message *msg)
   evas_object_resize(msg->gui, 100, 100);
   evas_object_show(msg->gui);
 
-#if 0
-  msg->text = etox_new(evas);
-  ctx = etox_get_context(msg->text);
-  etox_context_set_color(ctx, 50, 50, 50, 255);
-  etox_context_set_font(ctx, "Vera", 10);
-  etox_context_set_wrap_marker(ctx, "", "");
-  etox_set_context(msg->text, ctx);
-  etox_set_soft_wrap(msg->text, 1);
-  etox_set_word_wrap(msg->text, 1);
-  etox_set_text(msg->text, msg->msg_text);
-  evas_object_resize(msg->text, 100, 100);
-  evas_object_show(msg->text);
-  edje_object_part_swallow(msg->gui, "express.message.text", msg->text);
-#endif
+  snprintf(style, sizeof(style),
+           "DEFAULT='font=%s font_size=%d font_source=%s align=left color=#000000 wrap=word'",
+		   "fonts/default", 10, PACKAGE_DATA_DIR"/themes/express.edj");
+  msg->style = evas_textblock2_style_new();
+  evas_textblock2_style_set(msg->style, style);
 
-  msg->text = evas_object_textblock_add(evas);
-  evas_object_textblock_format_insert(msg->text, "font=/usr/local/share/evas/data/Vera.ttf size=10 color=#222222");
-  evas_object_textblock_text_insert(msg->text, msg->msg_text); 
+  msg->text = evas_object_textblock2_add(evas);
+  evas_object_textblock2_style_set(msg->text, msg->style);
+  evas_object_textblock2_text_markup_set(msg->text, msg->msg_text);
+  printf("text: %s\n", msg->msg_text);
   evas_object_resize(msg->text, 100, 100);
   evas_object_show(msg->text);
   edje_object_part_swallow(msg->gui, "express.message.text", msg->text);

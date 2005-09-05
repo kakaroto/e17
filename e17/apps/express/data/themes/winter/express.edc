@@ -15,6 +15,7 @@ images {
 
 fonts {
   font: "Vera.ttf" "font.buddyname";
+  font: "Vera.ttf" "default";
 }
 
 collections {

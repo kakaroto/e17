@@ -15,7 +15,7 @@ exp_gui_init(Exp *exp)
   const char *tmp;
 
   /* FIXME make this a config option */
-  exp->theme_path = strdup(PACKAGE_DATA_DIR"/themes/express.eet");
+  exp->theme_path = strdup(PACKAGE_DATA_DIR"/themes/express.edj");
 
   exp->ee = ecore_evas_software_x11_new(0,0,0,0,255,255);
   exp->evas = ecore_evas_get(exp->ee);
