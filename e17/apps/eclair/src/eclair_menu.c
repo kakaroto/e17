@@ -1,4 +1,4 @@
-#include "eclair_menu.h"
+#include "eclair.h"
 #include "../config.h"
 #include <Ecore_X.h>
 #include <Edje.h>

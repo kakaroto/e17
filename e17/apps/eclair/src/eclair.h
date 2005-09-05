@@ -11,6 +11,11 @@
 #include "eclair_config.h"
 #include "eclair_database.h"
 #include "eclair_types.h"
+#include "eclair_menu.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 enum _Eclair_Drop_Object
 {
