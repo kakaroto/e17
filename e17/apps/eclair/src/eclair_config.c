@@ -1,4 +1,4 @@
-#include "eclair_config.h"
+#include "eclair.h"
 #include <Ecore_File.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
