@@ -133,6 +133,7 @@ EWLSOURCES= \
 	ewl_tooltip.c \
 	ewl_widget.c \
 	ewl_window.c \
+	ewl_private.h \
 	$(EWLHEADERS)
 
 if BUILD_EMOTION_SUPPORT

@@ -1,18 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_FB_H
-#include "Ecore_Fb.h"
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-#include "Ecore_X.h"
-#endif
+#include "ewl_private.h"
 
 unsigned int key_modifiers = 0;
 

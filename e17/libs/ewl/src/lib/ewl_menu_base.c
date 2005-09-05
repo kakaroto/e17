@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
                                         char *image, char *text );

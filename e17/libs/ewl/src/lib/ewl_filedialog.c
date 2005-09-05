@@ -1,12 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <string.h>
+#include "ewl_private.h"
 
 /**
  * @return Returns a new open filedialog if successful, NULL on failure.

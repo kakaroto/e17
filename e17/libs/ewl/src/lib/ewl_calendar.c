@@ -1,10 +1,7 @@
 #include <Ewl.h>
-#include <time.h>
 #include "ewl_debug.h"
-#include <Evas.h>
 #include "ewl_macros.h"
-#include <stdlib.h>
-#include <assert.h>
+#include "ewl_private.h"
 
 char *months[] = { "January","February","March","April","May","June","July","August","September","October","November","December" };
 

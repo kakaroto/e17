@@ -1,11 +1,7 @@
 #include <Ewl.h>
-#include <Ecore_Config.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
+#include "ewl_private.h"
 
 enum Ewl_Config_Types {
 	EWL_CONFIG_DEBUG_ENABLE,

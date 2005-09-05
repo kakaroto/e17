@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
 static int ewl_spinner_timer(void *data);

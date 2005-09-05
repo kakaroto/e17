@@ -1,5 +1,4 @@
 #include "ewl_test.h"
-#include <stdlib.h>
 
 Ewl_Widget* ib;
 static Ewl_Widget* ewl_iconbox_button = NULL;

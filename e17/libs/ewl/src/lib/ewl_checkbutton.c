@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 /**
  * @param label: the label to display with the checkbutton, NULL for no label

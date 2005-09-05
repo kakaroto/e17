@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static int  ewl_scrollbar_timer(void *data);
 

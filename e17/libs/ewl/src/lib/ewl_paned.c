@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static void ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev, 
 						void *user_data);

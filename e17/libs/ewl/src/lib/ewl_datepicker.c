@@ -1,10 +1,7 @@
 #include <Ewl.h>
-#include <time.h>
 #include "ewl_debug.h"
-#include <Evas.h>
 #include "ewl_macros.h"
-#include <stdlib.h>
-#include <assert.h>
+#include "ewl_private.h"
 
 /**
  * @return Returns NULL on failure, a new Ewl_DatePicker on success

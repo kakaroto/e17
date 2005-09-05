@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static unsigned int  ewl_callback_hash(void *key);
 static int           ewl_callback_compare(void *key1, void *key2);

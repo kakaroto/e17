@@ -1,6 +1,19 @@
-#include "ewl-config.h"
 #include <Ewl.h>
-#include "ewl_macros.h"
+#include <ewl_macros.h>
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
 
 static void
 entice_text(void *data, Evas_Object *obj __UNUSED__, 

@@ -58,11 +58,5 @@
  */
 #define ZERO(ptr, type, num) ptr = memset(ptr, 0, sizeof(type) * (num))
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
-
 #endif				/* __EWL_MACROS_H__ */
 

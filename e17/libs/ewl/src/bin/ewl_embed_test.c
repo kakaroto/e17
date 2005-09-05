@@ -1,8 +1,11 @@
-#include <Ecore.h>
-#include <Ecore_Evas.h>
-#include <Evas.h>
 #include <Ewl.h>
-#include <ewl-config.h>
+#include <Ecore_Evas.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#define TRUE 1
+#define FALSE 0
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))

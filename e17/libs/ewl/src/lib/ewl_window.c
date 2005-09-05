@@ -1,27 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_FB_H
-#include <Ecore_Fb.h>
-#include <Evas_Engine_FB.h>
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-#include <Ecore_X.h>
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_GL_X11_H
-#include <Evas_Engine_GL_X11.h>
-#endif
-
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-#include <Evas_Engine_Software_X11.h>
-#endif
+#include "ewl_private.h"
 
 Ecore_List *ewl_window_list = NULL;
 

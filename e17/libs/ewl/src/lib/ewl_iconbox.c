@@ -1,8 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
-#include <Evas.h>
 #include "ewl_macros.h"
-#include <stdlib.h>
+#include "ewl_private.h"
 
 
 int mouse_state = 0;

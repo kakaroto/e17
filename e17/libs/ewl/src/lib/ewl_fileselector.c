@@ -1,14 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
-#include <Ecore_File.h>
-
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <string.h>
-#include <regex.h>
+#include "ewl_private.h"
 
 /*
  * Internally used functions

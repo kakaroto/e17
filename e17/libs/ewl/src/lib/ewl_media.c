@@ -1,8 +1,7 @@
 #include <Ewl.h>
-#include "ewl-config.h"
-#include <ewl_media.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static void ewl_media_size_update(Ewl_Media *m);
 static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void

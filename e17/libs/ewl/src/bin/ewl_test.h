@@ -1,7 +1,16 @@
-#include "Ewl.h"
-#include <ewl-config.h>
+#include <Ewl.h>
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <dirent.h>
+#include <sys/stat.h>
+
+#define TRUE 1
+#define FALSE 0
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))

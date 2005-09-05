@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_private.h"
 
 static void ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y, 
 					   int *r, int *g, int *b, int *a);
