@@ -4,6 +4,9 @@
 #include <Ecore_Evas.h>
 #include <Etox.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #define IM PACKAGE_DATA_DIR"/images/"
 
 void _test_sel1(Evas_Object *etox);
@@ -177,7 +180,7 @@ _test_sel1(Evas_Object *etox)
       Etox_Rect *geom = rects + i;
       Evas_Object *r;
 
-      printf("***(%f, %f) %f x %f\n", geom->x, geom->y, geom->w, geom->h);
+      printf("***(%d, %d) %d x %d\n", geom->x, geom->y, geom->w, geom->h);
       r = evas_object_rectangle_add(evas);
       evas_object_move(r, geom->x, geom->y);
       evas_object_resize(r, geom->w, geom->h);

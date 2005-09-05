@@ -2,7 +2,21 @@
 #define _ETOX_STYLE_PRIVATE_H
 
 #include <Ecore.h>
+#include <Ecore_Data.h>
 #include "Etox_Style.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
 
 /*
  * The etox_style holds all information necessary for display and layout of the text

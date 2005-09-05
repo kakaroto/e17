@@ -6,6 +6,32 @@
 #include <Edb.h>
 #include "style/Etox_Style.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+#define IF_FREE(ptr) if (ptr) free(ptr); ptr = NULL;
+#define FREE(ptr) free(ptr); ptr = NULL;
+
+#define CHECK_PARAM_POINTER_RETURN(sparam, param, ret) \
+     if (!(param)) \
+	 { \
+	    fprintf(stderr, "Fix: func: %s, param: %s\n", __FUNCTION__, sparam); \
+	    return ret; \
+	 }
+
+#define CHECK_PARAM_POINTER(sparam, param) \
+     if (!(param)) \
+	 { \
+	    fprintf(stderr, "Fix: func: %s, param: %s\n", __FUNCTION__, sparam); \
+	    return; \
+	 }
+
+
+#define TRUE 1
+#define FALSE 0
+
 typedef enum _etox_flags Etox_Flags;
 enum _etox_flags
 {
