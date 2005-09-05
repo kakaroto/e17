@@ -5,11 +5,14 @@
  ***************************************************************************/
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "config.h"
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_Data.h>
 #include <assert.h>
 
 #include "Esmart_Trans_X11.h"
@@ -426,7 +429,7 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
    Ecore_List_Node *n;
 
    if (!_objects)
-      return TRUE;
+      return 1;
    
    e = (Ecore_X_Event_Window_Property *) event;
 
@@ -454,7 +457,7 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
       }
    }
 
-   return TRUE;
+   return 1;
 }
 
 static Evas_Smart *

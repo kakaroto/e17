@@ -1,6 +1,8 @@
 #include "Ewl.h"
 #include <ewl-config.h>
 
+#include <dirent.h>
+
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
 #else

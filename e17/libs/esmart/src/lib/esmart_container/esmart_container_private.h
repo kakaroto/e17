@@ -4,6 +4,11 @@
 #include "Esmart_Container.h"
 #include <Ecore.h>
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <dirent.h>
+
 typedef struct _Container Container;
 typedef struct _Container_Element Container_Element;
 typedef struct _Scroll_Data Scroll_Data;

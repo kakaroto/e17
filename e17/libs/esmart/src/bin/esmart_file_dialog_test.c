@@ -11,8 +11,11 @@
 #include <Ecore.h>
 #include <Edje.h>
 #include <Ecore_Evas.h>
-#include <limits.h>
 #include <Esmart_File_Dialog.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
 
 #include "../config.h"
 
