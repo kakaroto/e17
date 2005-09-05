@@ -1,19 +1,19 @@
 THEME = express
 EDC = $(THEME).edc
-EET = $(EDC:%.edc=%.eet)
-SUFFIXES = .edc .eet
+EDJ = $(EDC:%.edc=%.edj)
+SUFFIXES = .edc .edj
 
-CLEANFILES = $(EET)
+CLEANFILES = $(EDJ)
 EXTRA_DIST = $(EDC)
 
 themedir = $(pkgdatadir)/themes
-theme_DATA = $(EET)
+theme_DATA = $(EDJ)
 
 all: $(EDC)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id $(srcdir)/img -fd $(srcdir)/fonts $< $@
 
-preview: $(EET)
-	edje $(EET)
+preview: $(EDJ)
+	edje $(EDJ)
 
