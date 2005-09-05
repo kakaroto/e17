@@ -258,6 +258,14 @@ extern"C" {
 #include <Ecore.h>
 #include <Ecore_Data.h>
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 #include <ewl_enums.h>
 
 #include <ewl_object.h>
