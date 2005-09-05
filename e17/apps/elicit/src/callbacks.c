@@ -1,6 +1,8 @@
 #include "Elicit.h"
 #include "callbacks.h"
 
+#include <string.h>
+
 static int elicit_timer_color(void *data);
 
 void

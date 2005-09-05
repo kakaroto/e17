@@ -1,6 +1,8 @@
 #include "Elicit.h"
 #include "math.h"
 
+#include <string.h>
+
 /* functions */
 int setup(int argc, char **argv, Elicit *el);
 void pick_color();

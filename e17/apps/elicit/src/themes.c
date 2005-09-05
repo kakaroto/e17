@@ -1,5 +1,8 @@
 #include "Elicit.h"
 
+#include <string.h>
+#include <dirent.h>
+
 void _elicit_themes_update_scroll_bar(Elicit *el);
 
 int

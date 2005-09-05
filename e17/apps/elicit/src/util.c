@@ -3,6 +3,8 @@
 #include "Elicit.h"
 #include "util.h"
 
+#include <string.h>
+
 void elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *vv);
 void elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *bb);
 char * elicit_color_rgb_to_hex(int rr, int gg, int bb);

@@ -1,5 +1,7 @@
 #include "Elicit.h"
 
+#include <string.h>
+
 
 void _elicit_swatches_update_scroll_bar(Elicit *el);
 
