@@ -5,6 +5,11 @@
 
 #include "config.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
 #define TREE_COLS 2
 
 static void eapp_usage(void);
