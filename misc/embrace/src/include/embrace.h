@@ -27,6 +27,14 @@
 
 #include <limits.h>
 
+#ifndef MIN
+#define MIN(x, y) (((x) > (y)) ? (y) : (x))
+#endif
+
+#ifndef MAX
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#endif
+
 typedef struct {
 	char theme[PATH_MAX + 1];
 	char evas_engine[255];

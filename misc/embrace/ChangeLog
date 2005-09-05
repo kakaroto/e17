@@ -1,6 +1,9 @@
 $Id$
 
 2005-09-05 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/include/embrace.h: Define MIN and MAX
+
+2005-09-05 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/main.c, src/include/embrace.h, src/lib/embrace.c,
         src/lib/embrace_plugin.c, src/lib/mailbox.c,
         src/plugins/imap/imap.c, src/plugins/maildir/maildir.c,
