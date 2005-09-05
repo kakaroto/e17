@@ -3,6 +3,8 @@
  *========================================================================*/
 #include "entrance_ipc.h"
 
+#include <sys/stat.h>
+
 static Ecore_Ipc_Server *server = NULL;
 static Entrance_Session *_session = NULL;
 static char *ipc_title = NULL;
@@ -20,7 +22,7 @@ _entrance_ipc_server_add(void *data, int type, void *event)
 
    e = (Ecore_Ipc_Event_Server_Add *) event;
    fprintf(stderr, "_entrance_ipc_server_add: Received event\n");
-   return TRUE;
+   return 1;
 }
 
 /**
@@ -36,7 +38,7 @@ _entrance_ipc_server_del(void *data, int type, void *event)
 
    e = (Ecore_Ipc_Event_Server_Del *) event;
    fprintf(stderr, "_entrance_ipc_server_del: Received event\n");
-   return TRUE;
+   return 1;
 }
 
 /**
@@ -72,7 +74,7 @@ _entrance_ipc_server_data(void *data, int type, void *event)
       }
    }
 
-   return TRUE;
+   return 1;
 }
 
 /**
@@ -88,7 +90,7 @@ _entrance_ipc_client_add(void *data, int type, void *event)
 
    e = (Ecore_Ipc_Event_Client_Add *) event;
    fprintf(stderr, "_entrance_ipc_client_add: Received event\n");
-   return TRUE;
+   return 1;
 }
 
 /**
@@ -104,7 +106,7 @@ _entrance_ipc_client_del(void *data, int type, void *event)
 
    e = (Ecore_Ipc_Event_Client_Del *) event;
    fprintf(stderr, "_entrance_ipc_client_del: Received event\n");
-   return TRUE;
+   return 1;
 }
 
 /**
@@ -123,7 +125,7 @@ _entrance_ipc_client_data(void *data, int type, void *event)
    printf("_entrance_ipc_client_data: Received [%i] [%i] (%i) \"%s\"\n",
           e->major, e->minor, e->size, (char *) e->data);
 
-   return TRUE;
+   return 1;
 }
 
 int
@@ -133,7 +135,7 @@ entrance_ipc_init(pid_t server_pid)
 
    /* we definitely fail if we can't connect to ecore_ipc */
    if (ecore_ipc_init() < 1)
-      return FALSE;
+      return 0;
 
    memset(buf, 0, sizeof(buf));
    {
@@ -190,7 +192,7 @@ entrance_ipc_init(pid_t server_pid)
    else
       syslog(LOG_INFO, "entrance_ipc_init: connect to daemon failed.");
 
-   return TRUE;
+   return 1;
 }
 
 void

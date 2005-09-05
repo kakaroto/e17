@@ -13,6 +13,7 @@
 #include <syslog.h>
 
 #include <Ecore.h>
+#include <Ecore_Data.h>
 
 #include "../config.h"
 

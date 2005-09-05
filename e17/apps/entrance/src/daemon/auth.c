@@ -85,14 +85,14 @@ _entranced_auth_purge(Entranced_Display *d, FILE *auth_file)
    while ((auth = XauReadAuth(auth_file)))
    {
       int match;
-      match = FALSE;
+      match = 0;
 
       for (li = d->auths->first; li; li = li->next)
       {
          Xauth *disp_auth = (Xauth *) li->data;
          if (!memcmp(disp_auth->address, auth->address, auth->address_length) &&
                !memcmp(disp_auth->number, auth->number, auth->number_length))
-            match = TRUE;
+            match = 1;
       }
 
       if (match)
@@ -267,18 +267,18 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    char        dispnum[8];
 
    if (!d)
-      return FALSE;
+      return 0;
 
    /* Generate a new Xauth and set the address */
    if (!(auth = _entranced_auth_generate()))
-      return FALSE;
+      return 0;
 
    auth->family = FamilyLocal;
    auth->address = calloc(1, addrlen);
    if(!auth->address)
    {
       free(auth);
-      return FALSE;
+      return 0;
    }
    memcpy(auth->address, addr, addrlen);
    auth->address_length = addrlen;
@@ -288,7 +288,7 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    if (!auth->address)
    {
       free(auth);
-      return FALSE;
+      return 0;
    }
 #endif
    
@@ -300,7 +300,7 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    if (!XauWriteAuth(auth_file, auth))
    {
       entranced_debug("_entrance_auth_entry_add: Auth write failed!\n");
-      return FALSE;
+      return 0;
    }
 
    if (!d->auths)
@@ -312,10 +312,10 @@ _entranced_auth_entry_add(Entranced_Display *d, FILE *auth_file, const char *add
    if (!ecore_list_append(d->auths, auth))
    {
       entranced_debug("_entrance_auth_entry_add: Could not add auth entry to list!\n");
-      return FALSE;
+      return 0;
    }
 
-   return TRUE;
+   return 1;
 
 }
 
@@ -330,7 +330,7 @@ entranced_auth_display_secure (Entranced_Display *d)
    char              hostname[1024];
 
    if (!d)
-      return FALSE;
+      return 0;
 
    umask(022);
 
@@ -348,7 +348,7 @@ entranced_auth_display_secure (Entranced_Display *d)
    {
       free(d->authfile);
       d->authfile = NULL;
-      return FALSE;
+      return 0;
    }
    
    /* XXX: This code assumes X server is running on localhost and
@@ -373,10 +373,10 @@ entranced_auth_display_secure (Entranced_Display *d)
    /* Add auth entry for local host */
    if (!_entranced_auth_entry_add(d, auth_file, d->hostname, 
                                  strlen(d->hostname)))
-      return FALSE;
+      return 0;
 
    fclose(auth_file);
-   setenv("XAUTHORITY", d->authfile, TRUE);
+   setenv("XAUTHORITY", d->authfile, 1);
 
    /* TODO: This will become a config option -- perhaps desirable for
     *       single-user systems, but not multi-user machines.
@@ -388,7 +388,7 @@ entranced_auth_display_secure (Entranced_Display *d)
    if (!(host_file = fopen(buf, "w")))
    {
       entranced_debug("entranced_auth_display_secure: Unable to open %s for writing\n", buf);
-      return FALSE;
+      return 0;
    }
    fprintf(host_file, "%s\n", d->hostname);
    fclose(host_file);
@@ -396,19 +396,19 @@ entranced_auth_display_secure (Entranced_Display *d)
    
    entranced_debug("entranced_auth_display_secure: Successfully set up access for %s (localhost)\n", d->name);
 
-   return TRUE;
+   return 1;
 }
 
 int
 entranced_auth_user_add(Entranced_Display *d, const char *homedir)
 {
    FILE              *auth_file;
-   int               ret = TRUE;
+   int               ret = 1;
    char              buf[PATH_MAX];
    Ecore_List_Node   *li;
 
    if (!d || !homedir)
-      return FALSE;
+      return 0;
 
    entranced_debug("entranced_auth_user_add: Adding auth cookie\n");
 
@@ -434,7 +434,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
          free(d->client.authfile);
 	 d->client.authfile = NULL;
 	 seteuid(0);
-         return FALSE;
+         return 0;
       }
       /* TODO: May need a permissions/paranoia check */
 
@@ -467,7 +467,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       seteuid(0);
       umask (022);
 
-      return FALSE;
+      return 0;
    }
 
    entranced_debug("entranced_auth_user_add: Opened %s for writing cookies\n", d->client.authfile);
@@ -480,7 +480,7 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
       if (!XauWriteAuth (auth_file, (Xauth *) li->data))
       {
          syslog(LOG_CRIT, "entranced_user_auth_add: Unable to write cookie");
-         ret = FALSE;
+         ret = 0;
          break;
       }
    }

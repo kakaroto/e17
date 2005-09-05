@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <string.h>
+#include <dirent.h>
 #include <Ecore_Config.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
