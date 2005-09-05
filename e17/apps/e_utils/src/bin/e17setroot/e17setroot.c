@@ -56,6 +56,7 @@ static int _e_bg_bg_get(void *data, int type, void *event) {
    bg = event;   
    printf("Current bg file: %s\n", bg->file);
    ecore_main_loop_quit();      
+   return 0;
 }
 
 /* parse command line options */
