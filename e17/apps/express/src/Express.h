@@ -3,12 +3,19 @@
 
 #include <Evas.h>
 #include <Ecore.h>
+#include <Ecore_Data.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
 #include <Edje.h>
+#if 0
 #include <Etox.h>
+#endif
 #include <Esmart/Esmart_Container.h>
 #include "config.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef struct _Exp Exp;
 typedef struct _Exp_Buddy Exp_Buddy;
@@ -41,7 +48,7 @@ struct _Exp
   {
     char *name;
     int port;
-    unsigned char *cookie;
+    char *cookie;
 
     Ecore_Con_Server *server;
 
@@ -144,6 +151,7 @@ Exp_Buddy * exp_buddy_new(Exp *exp);
 void        exp_buddy_free(Exp_Buddy *buddy);
 void        exp_buddy_update(Exp_Buddy *buddy);
 void        exp_buddy_activate(Exp_Buddy *buddy);
+void        exp_buddy_deactivate(Exp_Buddy *buddy);
 
 void          exp_buddy_name_set(Exp_Buddy *buddy, char *name); 
 const char *  exp_buddy_name_get(Exp_Buddy *buddy); 
@@ -153,5 +161,6 @@ void          exp_buddy_icon_data_set(Exp_Buddy *buddy, void *image_data,
                                       int w, int h);
 void          exp_buddy_show_name_set(Exp_Buddy *buddy, int show);
 Evas_Object * exp_buddy_icon_new(Exp_Buddy *buddy);
+
 
 #endif

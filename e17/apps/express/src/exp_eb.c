@@ -236,7 +236,7 @@ static int
 exp_eb_cookie_get(Exp *exp)
 {
   char cookie_file[PATH_MAX];
-  unsigned char cookie[9];
+  char cookie[9];
   FILE *cfile = NULL;
   unsigned int i;
 
@@ -247,7 +247,7 @@ exp_eb_cookie_get(Exp *exp)
 
   exp->server.port = (fgetc(cfile) << 8) + fgetc(cfile);
   for (i = 0; i < 8; i++)
-    cookie[i] = (unsigned char)fgetc(cfile);
+    cookie[i] = fgetc(cfile);
   cookie[8] = '\0';
   fclose(cfile);
 
