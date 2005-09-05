@@ -1,17 +1,3 @@
-dnl AC_EXPAND_DIR(VARNAME, DIR)
-dnl expands occurrences of ${prefix} and ${exec_prefix} in the given DIR,
-dnl and assigns the resulting string to VARNAME
-dnl example: AC_DEFINE_DIR(DATADIR, "$datadir")
-dnl by Alexandre Oliva <oliva@dcc.unicamp.br>
-AC_DEFUN(AC_EXPAND_DIR, [
-	$1=$2
-	$1=`(
-	    test "x$prefix" = xNONE && prefix="$ac_default_prefix"
-	    test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
-	    eval echo \""[$]$1"\"
-        )`
-])
-
 dnl @synopsis AC_PATH_GENERIC(LIBRARY [, MINIMUM-VERSION [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl
 dnl Runs a LIBRARY-config script and defines LIBRARY_CFLAGS and LIBRARY_LIBS
@@ -34,12 +20,12 @@ dnl
 dnl    FOO_CFLAGS to `foo-config --cflags`
 dnl    FOO_LIBS   to `foo-config --libs`
 dnl
+dnl At present there is no support for additional "MODULES" (see AM_PATH_GTK)
 dnl (shamelessly stolen from gtk.m4 and then hacked around a fair amount)
 dnl
 dnl @author Angus Lees <gusl@cse.unsw.edu.au>
-dnl @version $Id$
 
-AC_DEFUN(AC_PATH_GENERIC,
+AC_DEFUN([AC_PATH_GENERIC],
 [dnl
 dnl we're going to need uppercase, lowercase and user-friendly versions of the
 dnl string `LIBRARY'
@@ -80,11 +66,11 @@ AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where 
      UP[]_LIBS="`$UP[]_CONFIG $DOWN[]_config_args --libs`"
      ifelse([$2], , ,[
         DOWN[]_config_major_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\1/'`
         DOWN[]_config_minor_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\2/'`
         DOWN[]_config_micro_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\3/'`
         DOWN[]_wanted_major_version="regexp($2, [\<\([0-9]*\)], [\1])"
         DOWN[]_wanted_minor_version="regexp($2, [\<\([0-9]*\)\.\([0-9]*\)], [\2])"
         DOWN[]_wanted_micro_version="regexp($2, [\<\([0-9]*\).\([0-9]*\).\([0-9]*\)], [\3])"
