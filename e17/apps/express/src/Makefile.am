@@ -1,9 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ \
-@esmart_cflags@ @imlib2_cflags@ @etox_cflags@
+INCLUDES = @EDJE_CFLAGS@ \
+	   @ECORE_CFLAGS@ \
+	   @EVAS_CFLAGS@ \
+	   @ESMART_CFLAGS@
 
-CFLAGS = -W -Wall -g -O0
+AM_CFLAGS = -W -Wall -g -O0
 
 bin_PROGRAMS = express
 
@@ -18,6 +20,8 @@ express_SOURCES = \
 		exp_services.c \
 		exp_eb.c exp_eb.h
 
-express_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@ @imlib2_libs@ @etox_libs@ -lesmart_draggies -lesmart_container
+express_LDADD = @EDJE_LIBS@ \
+		@ECORE_LIBS@ \
+		@EVAS_LIBS@ \
+	       	@ESMART_LIBS@ -lesmart_draggies -lesmart_container
 
