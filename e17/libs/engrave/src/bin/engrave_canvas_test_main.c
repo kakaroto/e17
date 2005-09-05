@@ -2,6 +2,10 @@
 #include <Evas.h>
 #include <Engrave.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 static void
 resize_cb(Ecore_Evas *ee)
 {

@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include "engrave_private.h"
 #include <Engrave.h>
 #include "engrave_parse.h"
 #include "engrave_macros.h"

@@ -1,3 +1,4 @@
+#include "engrave_private.h"
 #include <Engrave.h>
 
 static Engrave_File *engrave_file = 0;

@@ -1,3 +1,4 @@
+#include "engrave_private.h"
 #include <Engrave.h>
 #include "engrave_macros.h"
 

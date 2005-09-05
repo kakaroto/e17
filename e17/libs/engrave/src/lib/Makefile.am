@@ -49,6 +49,7 @@ ENGRAVEFILES = \
 	engrave_program.c \
 	engrave_load.c \
 	engrave_canvas.c \
+	engrace_private.h \
 	$(ENGRAVEHEADERS)
 
 libengrave_la_SOURCES = $(ENGRAVEFILES)

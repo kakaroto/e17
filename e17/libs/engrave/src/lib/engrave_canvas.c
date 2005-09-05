@@ -1,5 +1,7 @@
+#include "engrave_private.h"
 #include "Engrave.h"
 #include "engrave_macros.h"
+#include <limits.h>
 
 typedef struct Engrave_Canvas Engrave_Canvas;
 struct Engrave_Canvas
