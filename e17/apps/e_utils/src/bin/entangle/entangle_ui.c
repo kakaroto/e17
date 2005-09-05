@@ -391,7 +391,7 @@ entangle_ui_cb_menu_up_pressed(void *data __UNUSED__, Evas_Object *obj,
                                 const char *src __UNUSED__)
 {
     Evas *evas;
-    Evas_Object *o, *o2;
+    Evas_Object *o;
 
     evas = evas_object_evas_get(obj);
     o = evas_object_name_find(evas, "menu");

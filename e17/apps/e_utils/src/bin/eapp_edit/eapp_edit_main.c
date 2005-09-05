@@ -350,7 +350,6 @@ static void
 eapp_cb_save(Ewl_Widget *w, void *ev, void *data)
 {
     Eet_File *ef;
-    Ewl_Widget *o;
     char *file = NULL, *lang = NULL;
     int i;
 
