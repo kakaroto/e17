@@ -22,14 +22,6 @@ Requires: e_utils-entangle, e_utils-exige
 Virtual package to install all utilities for the Enlightenment window
 manager.  Also includes documentation.
 
-%package devel
-Summary: Development headers for Enlightenment utilities.
-Group: User Interface/Desktops
-Requires: %{name} = %{version}
-
-%description devel
-Development headers for Enlightenment utilities.
-
 %package e17setroot
 Summary: Background setting utility for Enlightenment.
 Group: User Interface/Desktops
@@ -92,10 +84,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING COPYING-PLAIN README
-
-%files devel
-%defattr(-, root, root)
-%{_includedir}/*
 
 %files e17setroot
 %defattr(-, root, root)
