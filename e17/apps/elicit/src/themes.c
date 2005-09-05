@@ -33,7 +33,7 @@ elicit_themes_init(Elicit *el)
         edje_object_part_text_set(o, "theme.label", l->data);
         evas_object_data_set(o, "theme", l->data);
         evas_object_data_set(o, "elicit", el);
-        evas_object_repeat_events_set(o, TRUE);
+        evas_object_repeat_events_set(o, 1);
         edje_object_signal_callback_add(o, "elicit,theme,load", "*", elicit_theme_load_cb, NULL);
         evas_object_show(o);
         esmart_container_element_append(el->themes.cont, o);

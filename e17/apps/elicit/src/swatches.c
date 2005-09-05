@@ -176,7 +176,7 @@ elicit_swatches_load(Elicit *el)
     edje_object_signal_callback_add(sw->obj, "elicit,swatch,name,show", "", elicit_swatch_name_show_cb, sw);
   
     evas_object_color_set(sw->rect, sw->r, sw->g, sw->b, 255);
-    evas_object_pass_events_set(sw->rect, TRUE);
+    evas_object_pass_events_set(sw->rect, 1);
     evas_object_show(sw->rect);
     edje_object_part_swallow(sw->obj, "swatch", sw->rect);
     esmart_container_element_append(el->swatches.cont, sw->obj);
@@ -237,7 +237,7 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   edje_object_signal_callback_add(sw->obj, "elicit,swatch,name,show", "", elicit_swatch_name_show_cb, sw);
   
   evas_object_color_set(sw->rect, sw->r, sw->g, sw->b, 255);
-  evas_object_pass_events_set(sw->rect, TRUE);
+  evas_object_pass_events_set(sw->rect, 1);
   evas_object_show(sw->rect);
   edje_object_part_swallow(sw->obj, "swatch", sw->rect);
   esmart_container_element_append(el->swatches.cont, sw->obj);

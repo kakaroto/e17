@@ -93,7 +93,7 @@ elicit_shots_save(Elicit *el)
     e_db_str_set(db, buf, sh->name);
   
     evas_object_image_size_get(sh->shot, &iw, &ih);
-    data = evas_object_image_data_get(sh->shot, TRUE);
+    data = evas_object_image_data_get(sh->shot, 1);
 
     snprintf(buf, PATH_MAX, "/shots/%d/w", i);
     e_db_int_set(db, buf, iw);
@@ -191,7 +191,7 @@ elicit_shots_load(Elicit *el)
     evas_object_image_size_set(sh->shot, iw, ih);
     evas_object_image_data_copy_set(sh->shot, data);
     free(data);
-    evas_object_pass_events_set(sh->shot, TRUE);
+    evas_object_pass_events_set(sh->shot, 1);
     evas_object_show(sh->shot);
     edje_object_part_swallow(sh->obj, "shot", sh->shot);
     esmart_container_element_append(el->shots.cont, sh->obj);
@@ -257,8 +257,8 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
 
   evas_object_image_size_get(el->shot, &iw, &ih);
   evas_object_image_size_set(sh->shot, iw, ih);
-  evas_object_image_data_copy_set(sh->shot, evas_object_image_data_get(el->shot, TRUE));
-  evas_object_pass_events_set(sh->shot, TRUE);
+  evas_object_image_data_copy_set(sh->shot, evas_object_image_data_get(el->shot, 1));
+  evas_object_pass_events_set(sh->shot, 1);
   evas_object_show(sh->shot);
   edje_object_part_swallow(sh->obj, "shot", sh->shot);
   esmart_container_element_append(el->shots.cont, sh->obj);
@@ -296,8 +296,8 @@ elicit_shot_load_cb(void *data, Evas_Object *o, const char *emission, const char
 
   evas_object_image_size_get(sh->shot, &iw, &ih);
   evas_object_image_size_set(el->shot, iw, ih);
-  evas_object_image_data_copy_set(el->shot, evas_object_image_data_get(sh->shot, TRUE));
-  evas_object_image_smooth_scale_set(el->shot, FALSE);
+  evas_object_image_data_copy_set(el->shot, evas_object_image_data_get(sh->shot, 1));
+  evas_object_image_smooth_scale_set(el->shot, 0);
   evas_object_image_data_update_add(el->shot, 0, 0, iw, ih);
 
   /* FIXME: does the image data need to be deleted somehow with all this copying? */
