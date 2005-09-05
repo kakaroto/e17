@@ -16,6 +16,8 @@
 
 #include "config.h"
 
+#define IF_FREE(x) { if (x) free(x); x = NULL; }
+
 /* TODO: 
  * make Esetroot respect our options
  * add empty -s -t -c flags that will take current bg and apply option

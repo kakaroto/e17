@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define IF_FREE(x) { if (x) free(x); x = NULL; }
+
 static void usage(void);
 
 static int
@@ -81,7 +83,7 @@ main(int argc, char ** argv)
             snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s", em->theme);
             if (ecore_file_exists(theme))
             {
-                FREE(em->theme);
+                IF_FREE(em->theme);
                 em->theme = strdup(theme);
             }
             else
@@ -89,7 +91,7 @@ main(int argc, char ** argv)
                 snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/data/emblem/%s.edj", em->theme);
                 if (ecore_file_exists(theme))
                 {
-                    FREE(em->theme);
+                    IF_FREE(em->theme);
                     em->theme = strdup(theme);
                 }
                 else
