@@ -379,13 +379,13 @@ doFocusToEwin(EWin * ewin, int why)
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
    switch (why)
      {
-     default:
      case FOCUS_PREV:
 	DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout,
 	     _EwinGetClientXwin(ewin), NULL);
 	break;
      case FOCUS_DESK_ENTER:
 	break;
+     default:
      case FOCUS_INIT:
      case FOCUS_NEXT:
 	EwinListFocusRaise(ewin);
