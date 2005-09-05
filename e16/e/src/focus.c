@@ -292,8 +292,9 @@ doFocusToEwin(EWin * ewin, int why)
 	ewin = FocusEwinSelect();
 	break;
 
-     case FOCUS_NONE:
      case FOCUS_DESK_LEAVE:
+	focus_is_set = 0;
+     case FOCUS_NONE:
 	ewin = NULL;
 	if (ewin == Mode.focuswin)
 	   return;
