@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Ipc.h>

@@ -1,6 +1,7 @@
 #include "keys.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Edje.h>

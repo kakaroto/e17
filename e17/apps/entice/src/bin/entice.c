@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <dirent.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Thumb.h>
 #include <Esmart/Esmart_Trans_X11.h>
@@ -345,7 +346,7 @@ entice_exiftags_foreach(Evas_Hash * hash, const char *key, void *data,
       }
 
    }
-   return (TRUE);
+   return (1);
 }
 
 /**

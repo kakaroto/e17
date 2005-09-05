@@ -16,6 +16,7 @@ Keep the data in entice.c and the request for state changes separate
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "signals_image.h"
 #include "entice.h"
 

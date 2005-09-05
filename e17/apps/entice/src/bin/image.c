@@ -8,6 +8,8 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <Ecore.h>
 #include "image.h"
 #include "entice.h"
