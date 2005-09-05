@@ -1,6 +1,5 @@
 #ifndef EPSILON_H
 #define EPSILON_H
-#include<stdlib.h>
 
 #define EPSILON_FAIL 0
 #define EPSILON_OK 1
