@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #ifdef __linux__
 # define USE_DNOTIFY
