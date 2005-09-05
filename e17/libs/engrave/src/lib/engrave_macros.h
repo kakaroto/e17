@@ -14,6 +14,7 @@
 #define IF_FREE(val) \
 { \
   if (val) FREE(val) \
+  val = NULL; \
 }
 
 #endif
