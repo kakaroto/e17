@@ -58,5 +58,13 @@
  */
 #define ZERO(ptr, type, num) ptr = memset(ptr, 0, sizeof(type) * (num))
 
+#ifndef MIN
+#define MIN(x, y) (((x) > (y)) ? (y) : (x))
+#endif
+
+#ifndef MAX
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#endif
+
 #endif				/* __EWL_MACROS_H__ */
 
