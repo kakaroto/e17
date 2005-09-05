@@ -1,11 +1,10 @@
-
 #ifndef LINUX_2_6
 #define LINUX_2_6
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <Ecore.h>
+#include <Ecore_Data.h>
 
 int cpu_usage_get(void);
 
