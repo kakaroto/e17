@@ -1,5 +1,7 @@
 #include "Emblem.h"
 
+#include <stdlib.h>
+
 Emblem *
 emblem_new(void)
 {

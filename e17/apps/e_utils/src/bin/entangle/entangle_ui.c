@@ -1,5 +1,8 @@
 #include "Entangle.h"
 
+#include <limits.h>
+#include <string.h>
+
 #define WIDTH  400
 #define HEIGHT 550
 #define DIR_ENTRY_W 150

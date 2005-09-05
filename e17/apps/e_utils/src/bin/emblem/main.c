@@ -1,5 +1,9 @@
 #include "Emblem.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 static void usage(void);
 
 static int

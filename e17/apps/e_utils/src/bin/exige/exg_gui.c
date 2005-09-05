@@ -1,6 +1,11 @@
 #include <Ecore_File.h>
 #include "exg_gui.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
 static Ecore_Hash *exg_eapps = NULL;
 
 static char *

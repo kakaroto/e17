@@ -1,5 +1,8 @@
 #include "Entangle.h"
 
+#include <limits.h>
+#include <string.h>
+
 static Ecore_Hash *entangle_eapps = NULL;
 static void entangle_eapps_cb_free(void *data);
 

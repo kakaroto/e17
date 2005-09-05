@@ -1,6 +1,11 @@
 #include "exg_callback.h"
 #include "exg_gui.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
 void 
 _enter_cb(void *data, const char *str)
 {

@@ -1,5 +1,8 @@
 #include "Entangle.h"
 
+#include <string.h>
+#include <limits.h>
+
 static Ecore_List *entangle_apps_bar = NULL;
 static Ecore_List *entangle_apps_engage = NULL;
 static Ecore_List *entangle_apps_favorite = NULL;

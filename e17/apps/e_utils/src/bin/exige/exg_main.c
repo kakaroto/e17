@@ -3,6 +3,9 @@
 #include "exg_callback.h"
 #include "exg_conf.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 
 int main(int argc, const char **argv)
 {

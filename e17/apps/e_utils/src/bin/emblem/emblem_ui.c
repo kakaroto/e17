@@ -1,5 +1,8 @@
 #include "Emblem.h"
 
+#include <stdio.h>
+#include <string.h>
+
 /* TODO
  *  * make the thumbs cache to disk, check the edj mtime againts a the time
  *    of the cached version. Each bg has one or more .edj thumb files. these

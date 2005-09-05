@@ -1,5 +1,7 @@
 #include "exg_conf.h"
 
+#include <stdio.h>
+
 static int exg_conf_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data);
 
 int exg_conf_init(Exige *exg)

@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>

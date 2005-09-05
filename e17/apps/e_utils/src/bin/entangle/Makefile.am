@@ -12,10 +12,8 @@ AM_CFLAGS = \
 
 bin_PROGRAMS = entangle
 
-include_HEADERS = \
-Entangle.h
-
 entangle_SOURCES =  \
+Entangle.h \
 entangle_apps.c \
 entangle_eapps.c \
 entangle_ui.c \

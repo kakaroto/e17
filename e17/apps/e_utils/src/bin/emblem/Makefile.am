@@ -15,10 +15,8 @@ AM_CFLAGS = \
 bin_PROGRAMS = emblem
 
 
-include_HEADERS = \
-        Emblem.h
-
 emblem_SOURCES =  \
+        Emblem.h \
 	emblem_ui.c \
 	emblem.c \
 	main.c

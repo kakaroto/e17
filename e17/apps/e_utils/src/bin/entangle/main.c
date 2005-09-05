@@ -1,5 +1,8 @@
 #include "Entangle.h"
 
+#include <limits.h>
+#include <string.h>
+
 static int entangle_cb_exit(void *data, int type, void *ev);
 static void entangle_usage(char ** argv);
 
