@@ -21,6 +21,8 @@
 # include <config.h>
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <ltdl.h>
 #include <assert.h>
 

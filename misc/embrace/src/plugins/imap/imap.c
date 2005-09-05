@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <embrace_plugin.h>
 

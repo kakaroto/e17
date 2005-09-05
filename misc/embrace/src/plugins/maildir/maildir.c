@@ -21,6 +21,7 @@
 # include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <limits.h>
 #include <assert.h>
 #include <sys/types.h>

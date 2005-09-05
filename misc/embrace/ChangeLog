@@ -1,5 +1,11 @@
 $Id$
 
+2005-09-05 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/main.c, src/include/embrace.h, src/lib/embrace.c,
+        src/lib/embrace_plugin.c, src/lib/mailbox.c,
+        src/plugins/imap/imap.c, src/plugins/maildir/maildir.c,
+        src/plugins/mbox/mbox.c: Add missing headers.
+
 2005-09-04 Sebastian Dransfeld (sebastid at tango flipp net)
        * src/lib/Makefile.am: Include edje CFLAGS
 

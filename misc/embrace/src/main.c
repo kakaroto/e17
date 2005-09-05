@@ -24,6 +24,7 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <ltdl.h>
+#include <stdio.h>
 
 #include "embrace.h"
 

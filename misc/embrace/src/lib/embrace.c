@@ -27,6 +27,11 @@
 #include <ctype.h>
 #include <assert.h>
 #include <getopt.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 #include "embrace.h"
 #include "mailbox.h"

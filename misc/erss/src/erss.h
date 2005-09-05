@@ -2,6 +2,7 @@
 #define _MAIN_H
 
 #include <Ecore.h>
+#include <Ecore_Data.h>
 #include <Ecore_Con.h>
 #include <Esmart/Esmart_Trans_X11.h>
 #include <Esmart/Esmart_Container.h>
@@ -20,16 +21,21 @@
 
 #include <netdb.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <sys/socket.h> 
 #include <errno.h>
 #include <time.h>
+#include <string.h>
 
 #include <libxml2/libxml/xmlmemory.h>
 #include <libxml2/libxml/xmlerror.h>
 #include <libxml2/libxml/parser.h>
 
 #include "config.h"
+
+#define TRUE 1
+#define FALSE 0
 
 extern Ecore_Evas  *ee;
 extern Evas        *evas;

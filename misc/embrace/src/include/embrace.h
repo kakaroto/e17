@@ -25,6 +25,8 @@
 #include <Ecore_Evas.h>
 #include <Edje.h>
 
+#include <limits.h>
+
 typedef struct {
 	char theme[PATH_MAX + 1];
 	char evas_engine[255];

@@ -21,6 +21,8 @@
 # include <config.h>
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <Evas.h>
 
