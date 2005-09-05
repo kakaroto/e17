@@ -1,4 +1,4 @@
-#include "eclair_utils.h"
+#include "eclair.h"
 #include <Ecore_File.h>
 #include <string.h>
 #include <stdlib.h>

@@ -12,6 +12,7 @@
 #include "eclair_database.h"
 #include "eclair_types.h"
 #include "eclair_menu.h"
+#include "eclair_utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
