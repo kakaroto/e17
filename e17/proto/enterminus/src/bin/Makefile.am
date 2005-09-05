@@ -8,6 +8,8 @@ INCLUDES = \
 bin_PROGRAMS = enterminus
 
 enterminus_SOURCES = \
+enterm.h \
+term.h \
 main.c \
 misc.c \
 pty.c  \

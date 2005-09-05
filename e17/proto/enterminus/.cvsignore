@@ -20,3 +20,4 @@ enterminus-config
 config.guess
 config.sub
 ltmain.sh
+enterminus.c

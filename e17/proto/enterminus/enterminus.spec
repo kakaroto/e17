@@ -1,79 +1,62 @@
-# Note that this is NOT a relocatable package
-%define ver      0.1
-%define rel      1
-%define prefix   /usr
+%define _missing_doc_files_terminate_build 0
 
-Summary: enterminus
+Summary: EFL-based Terminal
 Name: enterminus
-Version: %ver
-Release: %rel
-Copyright: BSD
-Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enterminus/enterminus-%{ver}.tar.gz
-BuildRoot: /var/tmp/enterminus-root
-Packager: The Rasterman <raster@rasterman.com>
-URL: http://www.enlightenment.org/
-BuildRequires: libjpeg-devel
-BuildRequires: zlib-devel
-Requires: libjpeg
-Requires: zlib
-
-Docdir: %{prefix}/doc
+Version: 0.1
+Release: 1
+License: BSD
+Group: User Interface/X
+URL: http://www.enlightenment.org/pages/enterminus.html
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: libjpeg-devel XFree86-devel
+BuildRequires: evas-devel ecore-devel edje-devel esmart-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-enterminus is a terminal emulator based on the EFL
+Enterminus is an EFL-based terminal emulator smart object for evas.
 
 %package devel
-Summary: enterminus headers, static libraries, documentation and test programs
-Group: System Environment/Libraries
+Summary: Enterminus headers and development libraries.
+Group: Development/Libraries
 Requires: %{name} = %{version}
+Requires: evas-devel edje-devel ecore-devel
 
 %description devel
-Headers, static libraries, test programs and documentation for Eet
+Enterminus development files
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%attr(755,root,root) %{prefix}/lib/libenterminus.so*
-%attr(755,root,root) %{prefix}/lib/libenterminus.la
+%defattr(-, root, root)
+%doc AUTHORS COPYING* NEWS README TODO
+%{_bindir}/%{name}
+%{_datadir}/%{name}
 
 %files devel
-%attr(755,root,root) %{prefix}/lib/libenterminus.a
-%attr(755,root,root) %{prefix}/bin/enterminus*
-%{prefix}/include/enterminus*
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc enterminus_docs.tar.gz
+%defattr(-, root, root)
+%doc doc/html
+%{_bindir}/%{name}-config
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file
