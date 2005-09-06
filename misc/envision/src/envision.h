@@ -11,6 +11,10 @@
 #include <Emotion.h>
 #include <Edje.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 typedef struct {
    char *engine;
    int width;
@@ -31,7 +35,7 @@ typedef struct {
 } Envision;
 
 // envision.c
-Envision *envision_new();
+Envision *envision_new(void);
 void envision_delete(Envision * e);
 
 #endif /* __ENVISION_H */

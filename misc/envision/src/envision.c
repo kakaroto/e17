@@ -4,11 +4,12 @@
  */
 
 #include <../config.h>
+#include "config.h"
 #include "envision.h"
 #include "callbacks.h"
 
 Envision *
-envision_new()
+envision_new(void)
 {
    return calloc(1, sizeof (Envision));
 }
@@ -86,8 +87,8 @@ main(int argc, char **argv)
    edje_object_part_swallow(e->gui.edje, "swallow", e->gui.emotion);
    evas_object_show(e->gui.emotion);
 
-   printf("Emotion: Playing - %s  Length: %d\n", argv[1],
-         (double)emotion_object_play_length_get(e->gui.emotion));
+   printf("Emotion: Playing - %s  Length: %.0f\n", argv[1],
+          emotion_object_play_length_get(e->gui.emotion));
    emotion_object_play_set(e->gui.emotion, 1);
 
 

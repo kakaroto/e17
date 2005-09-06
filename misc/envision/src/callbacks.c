@@ -115,7 +115,7 @@ callback_evas_keydown(void *data, Evas * e, Evas_Object * obj, void *event_info)
       emotion_object_position_set(obj, pos - 5);
    } else if (!strcmp(ev->keyname, "Up")) {
       double pos;
-      int min, sec;
+      int min;
 
       pos = emotion_object_position_get(obj);
       emotion_object_position_set(obj, pos + 5);
