@@ -164,6 +164,7 @@ examine_client_send(call * c, char *key, char *val)
   ret = ecore_config_ipc_send(&examine_client_server, c->id, serial, m, l);
   if (m)
     free(m);
+  return 1;
 }
 
 void
@@ -190,7 +191,7 @@ examine_client_theme_search_path_get_cb(void)
     ret++;
     if (*ret == '"') {
       ret++;
-      if (end = strchr(ret, '\"'))
+      if ((end = strchr(ret, '\"')))
         *end = '\0';
     }
 
@@ -268,7 +269,7 @@ examine_client_list_props_cb(void)
         type[0] = '\0';
         range[0] = '\0';
         step[0] = '\0';
-        sscanf(typename, "%s%*s%s%*s%s", &type, &range, &step);
+        sscanf(typename, "%s%*s%s%*s%s", type, range, step);
 
         if (type[strlen(type) - 1] == ',')
           type[strlen(type) - 1] = '\0';
@@ -295,13 +296,13 @@ examine_client_list_props_cb(void)
           prop_tmp->type = PT_FLT;
           if (*range) {
             prop_tmp->bound |= BOUND_BOUND;
-            sscanf(range, "%lf..%lf", &mind, &maxd);
+            sscanf(range, "%f..%f", &mind, &maxd);
             prop_tmp->fmin = mind;
             prop_tmp->fmax = maxd;
           }
           if (*step) {
             prop_tmp->bound |= BOUND_STEPPED;
-            sscanf(step, "%lf", &tmpd);
+            sscanf(step, "%f", &tmpd);
             prop_tmp->fstep = tmpd;
           }
         } else if (!strcmp(type, "colour")) {
@@ -363,7 +364,7 @@ examine_client_revert(examine_prop * target)
     target->value.ptr = strdup(target->oldvalue.ptr);
 
     ewl_container_child_iterate_begin(EWL_CONTAINER(target->w));
-    while (sibling = ewl_container_child_next(EWL_CONTAINER(target->w))) {
+    while ((sibling = ewl_container_child_next(EWL_CONTAINER(target->w)))) {
       sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
       bugfix = ewl_text_text_get(EWL_TEXT(sibling));
       if (strcmp(bugfix, target->value.ptr))
@@ -464,7 +465,7 @@ examine_client_get_val_cb(void)
 
   if (*ret == '"') {
     ret++;
-    if (end = strchr(ret, '\"'))
+    if ((end = strchr(ret, '\"')))
       *end = '\0';
   }
 
@@ -501,7 +502,7 @@ examine_client_get_val_cb(void)
     prop->oldvalue.ptr = strdup(ret);
 
     ewl_container_child_iterate_begin(EWL_CONTAINER(prop->w));
-    while (sibling = ewl_container_child_next(EWL_CONTAINER(prop->w))) {
+    while ((sibling = ewl_container_child_next(EWL_CONTAINER(prop->w)))) {
       sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
       bugfix = ewl_text_text_get(EWL_TEXT(sibling));
       if (strcmp(bugfix, ret)) 
@@ -536,7 +537,7 @@ examine_client_set_val(examine_prop * target)
   case PT_INT:
   case PT_BLN:
     valstr = malloc(1000);      /* ### FIXME */
-    snprintf(valstr, sizeof(valstr)-1, "%d", target->value.val);
+    snprintf(valstr, sizeof(valstr)-1, "%ld", target->value.val);
     break;
   case PT_FLT:
     valstr = malloc(1000);      /* ### FIXME */

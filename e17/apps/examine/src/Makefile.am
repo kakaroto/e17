@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-@ecore_cflags@ \
+AM_CFLAGS = \
+@ECORE_CFLAGS@ \
 @libreadline_cflags@ \
-@ewl_cflags@
+@EWL_CFLAGS@
 
 bin_PROGRAMS = \
 exsh \
@@ -16,13 +16,9 @@ ecore_config_client.h
 
 exsh_LDADD = \
 @libreadline_libs@ \
-@ecore_libs@
+@ECORE_LIBS@
 
 exsh_LDFLAGS =
-
-exsh_CFLAGS = \
-$(CFLAGS) \
-$(INCLUDES)
 
 exsh_DEPENDENCIES =
 
@@ -35,13 +31,11 @@ ecore_config_client.h \
 examine.c
 
 examine_LDADD = \
-@ewl_libs@
+@EWL_LIBS@
 
 examine_LDFLAGS =
 
 examine_CFLAGS = \
-$(CFLAGS) \
-$(INCLUDES) \
-@ewl_cflags@
+@EWL_CFLAGS@
 
 examine_DEPENDENCIES = 

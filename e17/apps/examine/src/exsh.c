@@ -136,7 +136,7 @@ ecore_config_ipc_server_con(void *data, int type, void *event)
   connstate      *cs = (connstate *) data;
 
   *cs = ONLINE;
-  E(1, "exsh: Connected .\n", NULL);    /*to %s.\n", pipe_name)); */
+  E(1, "exsh: Connected .\n");    /*to %s.\n", pipe_name)); */
   return 1;
 }
 
@@ -149,7 +149,7 @@ ecore_config_ipc_server_dis(void *data, int type, void *event)
 
   *cs = OFFLINE;
   ecore_main_loop_quit();
-  E(1, "exsh: Disconnected.\n", NULL);
+  E(1, "exsh: Disconnected.\n");
   return 1;
 }
 
@@ -260,7 +260,7 @@ handle_any(Ecore_Config_Ipc_Server_List ** server_list, call * cp, char *line)
     serial = get_serial(&b);
 
   if (cp->signature & (P_DIR | P_FILE)) {
-    if ((ret = get_token(&b, &e, FALSE)) < 0)
+    if ((ret = get_token(&b, &e, 0)) < 0)
       return ret;
     file = b;
     pars++;
@@ -269,7 +269,7 @@ handle_any(Ecore_Config_Ipc_Server_List ** server_list, call * cp, char *line)
   /*  b=e?e+1:NULL; */
 
   if (cp->signature & (P_KEY)) {
-    if ((ret = get_token(&b, &e, TRUE)) < 0)
+    if ((ret = get_token(&b, &e, 1)) < 0)
       return ret;
     k = b;
     pars++;
@@ -278,7 +278,7 @@ handle_any(Ecore_Config_Ipc_Server_List ** server_list, call * cp, char *line)
   /*  b=e?e+1:NULL; */
 
   if (cp->signature & (P_VALUE)) {
-    if ((ret = get_token(&b, &e, FALSE)) < 0)
+    if ((ret = get_token(&b, &e, 0)) < 0)
       return ret;
     v = b;
     pars++;
@@ -325,7 +325,7 @@ clean(char *c)
           p++;
       } while (*p && *p != '\"');
       if (!*p) {
-        E(0, "unterminated string in input?\n", NULL);
+        E(0, "unterminated string in input?\n");
         *c = '\0';
         return c;
       } else

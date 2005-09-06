@@ -87,3 +87,6 @@ void            examine_client_get_val(char *key);
 void            examine_client_set_val(examine_prop * target);
 int             examine_client_init(char *pipe_name, connstate * cs);
 int             examine_client_exit(void);
+
+/* from examine.c */
+void draw_tree(examine_prop * prop_item);

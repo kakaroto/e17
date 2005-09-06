@@ -43,7 +43,7 @@ char           *examine_search_path;
 
 /*****************************************************************************/
 
-void
+static void
 __destroy_main_window(Ewl_Widget * main_win, void *ex_data, void *user_data)
 {
   ewl_widget_destroy(main_win);
@@ -84,7 +84,6 @@ main(int argc, char **argv)
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
 
-reconnect:
   cc++;
   if ((ret = examine_client_init(app_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
     E(0, "examine: %sconnect to %s failed: %d\n", (cc > 1) ? "re" : "",
@@ -118,7 +117,7 @@ print_usage(void)
 
 /*  callbacks */
 
-void
+static void
 cb_quit(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_client_exit();
@@ -127,20 +126,20 @@ cb_quit(Ewl_Widget * w, void *ev_data, void *user_data)
   /* ewl_shutdown(); ### segs */
 }
 
-void
+static void
 cb_save(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_client_save_list();
   /* sets all props where oldvalue != value */
 }
 
-void
+static void
 cb_revert(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_client_revert_list();
 }
 
-void
+static void
 cb_set_str(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
@@ -152,7 +151,7 @@ cb_set_str(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.ptr = strdup(data);
 }
 
-void
+static void
 cb_set_int(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
@@ -161,7 +160,7 @@ cb_set_int(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.val = (int) ewl_spinner_value_get(EWL_SPINNER(w));
 }
 
-void
+static void
 cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
@@ -170,11 +169,11 @@ cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.fval = (float) ewl_spinner_value_get(EWL_SPINNER(w));
 }
 
-void
+static void
 cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
-  char           *theme, *ext, *bugfix;
+  char           *theme, *bugfix;
   Ewl_Widget     *sibling;
 
   change = (examine_prop *) user_data;
@@ -182,7 +181,7 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
   theme = strdup(ewl_text_text_get(EWL_TEXT(EWL_CONTAINER(w)->redirect)));
 
   ewl_container_child_iterate_begin(EWL_CONTAINER(w->parent));
-  while (sibling = ewl_container_child_next(EWL_CONTAINER(w->parent))) {
+  while ((sibling = ewl_container_child_next(EWL_CONTAINER(w->parent)))) {
     sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
     bugfix = ewl_text_text_get(EWL_TEXT(sibling));
     if (strcmp(bugfix, theme))
@@ -197,7 +196,7 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.ptr = theme;
 }
 
-void
+static void
 cb_set_bln(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
@@ -211,7 +210,7 @@ cb_set_bln(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 draw_tree(examine_prop * prop_item)
 {
-  Ewl_Widget     *entries[2], *tree_box, *tmp_row, *tmp, *tmp_col, *tmp_text;
+  Ewl_Widget     *entries[2], *tree_box, *tmp_row, *tmp_col, *tmp_text;
   examine_panel  *panel_ptr;
   char           *key_tmp;
   char           *panel_name;
@@ -331,7 +330,7 @@ draw_tree(examine_prop * prop_item)
           continue;
         }
         dp = opendir((const char *) path);
-        while (next = readdir(dp)) {
+        while ((next = readdir(dp))) {
           if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, "..")
               || strlen(next->d_name) <= 4 || !strstr(next->d_name, ".edj"))
             continue;
@@ -353,11 +352,11 @@ draw_tree(examine_prop * prop_item)
             strcat(file, "/");
             strcat(file, next->d_name);
 
-            tmp = ewl_image_new(file, (char *) prop_item->data);
+            tmp = EWL_OBJECT(ewl_image_new(file, (char *) prop_item->data));
             ewl_object_minimum_size_set(EWL_OBJECT(tmp), 60, 60);
             ewl_object_fill_policy_set(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
             ewl_object_alignment_set(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
-            ewl_widget_show(tmp);
+            ewl_widget_show(EWL_WIDGET(tmp));
             free(file);
 
             file_len = strlen(next->d_name) - 4; /* 4 = .edj*/
@@ -374,7 +373,7 @@ draw_tree(examine_prop * prop_item)
             tmp_col = ewl_vbox_new();
             ewl_widget_show(tmp_col);
 
-            ewl_container_child_append(EWL_CONTAINER(tmp_col), tmp);
+            ewl_container_child_append(EWL_CONTAINER(tmp_col), EWL_WIDGET(tmp));
             ewl_container_child_append(EWL_CONTAINER(tmp_col), tmp_text);
             ewl_container_child_append(EWL_CONTAINER(entries[1]), tmp_col);
             ewl_callback_append(tmp_col, EWL_CALLBACK_CLICKED, cb_choose_theme,
@@ -417,9 +416,8 @@ draw_tree(examine_prop * prop_item)
 void
 render_ewl(void)
 {
-  Ewl_Widget     *main_box, *row, *cell[2], *text[2];
+  Ewl_Widget     *main_box, *row;
   Ewl_Widget     *save, *revert, *quit;
-  char           *headers[2];
 
   main_box = ewl_vbox_new();
   ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
@@ -460,7 +458,7 @@ render_ewl(void)
 Ewl_Widget     *
 add_tab(char *name)
 {
-  Ewl_Widget     *button, *scrollpane, *pane, *headers[2];
+  Ewl_Widget     *button, *scrollpane, *pane;
   examine_panel  *new_panel;
 
   new_panel = panels;

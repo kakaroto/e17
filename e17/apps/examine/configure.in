@@ -53,49 +53,49 @@ fi
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Data dir])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Data dir])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [Data dir])
 fi
 
 dnl Set PACKAGE_BIN_DIR in config.h.
 if test "x${bindir}" = 'xNONE'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin")
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Bin dir])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin")
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Bin dir])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}")
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Bin dir])
 fi
 
 dnl Set PACKAGE_LIB_DIR in config.h.
 if test "x${libdir}" = 'xNONE'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib")
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Lib dir])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib")
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Lib dir])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}")
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Lib dir])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Src dir])
 
-ewl_libs=`ewl-config --libs`
-ewl_cflags=`ewl-config --cflags`
-AC_SUBST(ewl_libs)
-AC_SUBST(ewl_cflags)
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Ecore isn't installed) ]
+)
 
-ecore_cflags=`ecore-config --cflags`
-ecore_libs=`ecore-config --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+AC_PATH_GENERIC(ewl, 0.0.4,
+  [ ],
+  [ AC_MSG_ERROR(Ewl isn't installed) ]
+)
 
 save_CFLAGS="$CFLAGS"
 save_LIBS="$LIBS"
@@ -106,7 +106,6 @@ AC_SUBST(libreadline_cflags)
 AC_SUBST(libreadline_libs)
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
-
 
 AC_OUTPUT([
 Makefile

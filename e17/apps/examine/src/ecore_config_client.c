@@ -74,7 +74,7 @@ print_data(char *d, size_t l)
 
 /*****************************************************************************/
 
-int
+static int
 is_dir(const char *dir)
 {
   struct stat     st;
@@ -99,7 +99,7 @@ ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
   Ecore_Ipc_Server *tmp_sock;
   Ecore_Config_Ipc_Server_List *tmp;
 
-  global = FALSE;
+  global = 0;
 
   port = 0;
 
@@ -113,10 +113,10 @@ ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
   if ((p = getenv("HOME"))) {   /* debug-only ### FIXME */
     snprintf(str, PATH_MAX -1, "%s/.ecore/%s/.global", p, pipe_name);
     if (stat(str, &st))
-      global = FALSE;
+      global = 0;
 
     else
-      global = TRUE;
+      global = 1;
 
     snprintf(str, PATH_MAX -1, "%s/.ecore/%s/", p, pipe_name);
     snprintf(buf, PATH_MAX -1, str);
