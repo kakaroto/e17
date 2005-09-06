@@ -126,11 +126,22 @@ static struct
    char                resize_fix_enable;
    char                use_name_pixmap;
    int                 mode;
-   int                 shadow;
-   int                 shadow_radius;
    struct
    {
-      int                 enable;
+      int                 mode;
+      struct
+      {
+	 int                 radius;
+	 int                 offset_x, offset_y;
+      } blur;
+      struct
+      {
+	 int                 offset_x, offset_y;
+      } sharp;
+   } shadows;
+   struct
+   {
+      char                enable;
       int                 dt_us;	/* us between updates */
       unsigned int        step;
    } fading;
@@ -662,11 +673,11 @@ make_shadow(Display * dpy, double opacity, int width, int height)
     * Build the gaussian in sections
     */
 
-#if 0				/* Never used */
+#if 1
+   /* FIXME - Handle properly - shaped/non-shaped/offset */
    /*
     * center (fill the complete data array)
     */
-
    d = sum_gaussian(gaussianMap, opacity, center, center, width, height);
    memset(data, d, sheight * swidth);
 #endif
@@ -790,23 +801,28 @@ win_extents(Display * dpy, EObj * eo)
    r.height = cw->rch;
 
 #if ENABLE_SHADOWS
-   if (eo->shadow && Conf_compmgr.shadow != ECM_SHADOWS_OFF &&
-       (Conf_compmgr.shadow == ECM_SHADOWS_SHARP || cw->mode != WINDOW_ARGB) &&
-       (Conf_compmgr.shadow != ECM_SHADOWS_BLURRED || !EobjIsShaped(eo)))
+   if (eo->shadow && Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF &&
+       (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP ||
+	cw->mode != WINDOW_ARGB) &&
+       (Conf_compmgr.shadows.mode != ECM_SHADOWS_BLURRED || !EobjIsShaped(eo)))
      {
 	XRectangle          sr;
 
-	if (Conf_compmgr.shadow == ECM_SHADOWS_SHARP)
+	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
 	  {
-	     cw->shadow_dx = 2;
-	     cw->shadow_dy = 7;
+	     cw->shadow_dx = Conf_compmgr.shadows.sharp.offset_x;
+	     cw->shadow_dy = Conf_compmgr.shadows.sharp.offset_y;
 	     cw->shadow_width = cw->rcw;
 	     cw->shadow_height = cw->rch;
 	  }
 	else
 	  {
-	     cw->shadow_dx = -Conf_compmgr.shadow_radius * 5 / 4;
-	     cw->shadow_dy = -Conf_compmgr.shadow_radius * 5 / 4;
+	     cw->shadow_dx =
+		Conf_compmgr.shadows.blur.offset_x -
+		Conf_compmgr.shadows.blur.radius * 5 / 4;
+	     cw->shadow_dy =
+		Conf_compmgr.shadows.blur.offset_y -
+		Conf_compmgr.shadows.blur.radius * 5 / 4;
 	     if (!cw->shadow)
 	       {
 		  double              opacity = SHADOW_OPACITY;
@@ -1318,7 +1334,7 @@ ECompMgrWinChangeStacking(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (Conf_compmgr.shadow == ECM_SHADOWS_OFF)
+   if (Conf_compmgr.shadows.mode == ECM_SHADOWS_OFF)
       return;
 
    if (cw->extents != None)
@@ -1389,7 +1405,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 			      eo->x + cw->a.border_width,
 			      eo->y + cw->a.border_width);
 #if ENABLE_SHADOWS
-	if (Conf_compmgr.shadow == ECM_SHADOWS_SHARP)
+	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
 	  {
 	     XserverRegion       o;
 
@@ -1509,11 +1525,8 @@ ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
    Display            *dpy = disp;
    XserverRegion       reg;
 
-   if (dx == 0 && dy == 0)
-     {
-	reg = src;
-     }
-   else
+   reg = src;
+   if (dx != 0 || dy != 0)
      {
 	reg = XFixesCreateRegion(dpy, 0, 0);
 	XFixesCopyRegion(dpy, reg, src);
@@ -1597,7 +1610,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  }
 
 #if ENABLE_SHADOWS
-	switch (Conf_compmgr.shadow)
+	switch (Conf_compmgr.shadows.mode)
 	  {
 	  case ECM_SHADOWS_OFF:
 	     break;
@@ -1788,7 +1801,7 @@ static void
 ECompMgrShadowsInit(int mode, int cleanup)
 {
    if (mode == ECM_SHADOWS_BLURRED)
-      gaussianMap = make_gaussian_map(disp, Conf_compmgr.shadow_radius);
+      gaussianMap = make_gaussian_map(disp, Conf_compmgr.shadows.blur.radius);
    else
      {
 	if (gaussianMap)
@@ -1845,7 +1858,7 @@ ECompMgrStart(void)
    rootPicture =
       XRenderCreatePicture(disp, VRoot.win, pictfmt, CPSubwindowMode, &pa);
 
-   ECompMgrShadowsInit(Conf_compmgr.shadow, 0);
+   ECompMgrShadowsInit(Conf_compmgr.shadows.mode, 0);
 
    switch (Conf_compmgr.mode)
      {
@@ -1936,7 +1949,7 @@ ECompMgrStop(void)
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
-   if (Conf_compmgr.shadow != ECM_SHADOWS_OFF)
+   if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
       DesksClear();
 }
 
@@ -1944,7 +1957,7 @@ void
 ECompMgrConfigGet(cfg_composite * cfg)
 {
    cfg->enable = Conf_compmgr.enable;
-   cfg->shadow = Conf_compmgr.shadow;
+   cfg->shadow = Conf_compmgr.shadows.mode;
 }
 
 void
@@ -1964,7 +1977,7 @@ ECompMgrConfigSet(const cfg_composite * cfg)
    if (cfg->enable != Conf_compmgr.enable)
      {
 	Conf_compmgr.enable = cfg->enable;
-	Conf_compmgr.shadow = cfg->shadow;
+	Conf_compmgr.shadows.mode = cfg->shadow;
 	if (cfg->enable)
 	   ECompMgrStart();
 	else
@@ -1972,12 +1985,12 @@ ECompMgrConfigSet(const cfg_composite * cfg)
      }
    else
      {
-	if (cfg->shadow != Conf_compmgr.shadow)
+	if (cfg->shadow != Conf_compmgr.shadows.mode)
 	  {
-	     Conf_compmgr.shadow = cfg->shadow;
+	     Conf_compmgr.shadows.mode = cfg->shadow;
 	     if (Conf_compmgr.enable)
 	       {
-		  ECompMgrShadowsInit(Conf_compmgr.shadow, 1);
+		  ECompMgrShadowsInit(Conf_compmgr.shadows.mode, 1);
 		  ECompMgrDamageAll();
 	       }
 	  }
@@ -2118,7 +2131,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 
      case Expose:
 #if 1				/* FIXME - Need this? */
-	if (Conf_compmgr.shadow != ECM_SHADOWS_OFF)
+	if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
 	   ECompMgrRootExpose(prm, ev);
 #endif
 	break;
@@ -2249,11 +2262,15 @@ IpcItem             CompMgrIpcArray[] = {
 static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_BOOL(Conf_compmgr, enable, 0),
    CFG_ITEM_INT(Conf_compmgr, mode, 1),
-   CFG_ITEM_INT(Conf_compmgr, shadow, 0),
-   CFG_ITEM_INT(Conf_compmgr, shadow_radius, 12),
+   CFG_ITEM_INT(Conf_compmgr, shadows.mode, 0),
+   CFG_ITEM_INT(Conf_compmgr, shadows.blur.radius, 8),
+   CFG_ITEM_INT(Conf_compmgr, shadows.blur.offset_x, 2),
+   CFG_ITEM_INT(Conf_compmgr, shadows.blur.offset_y, 2),
+   CFG_ITEM_INT(Conf_compmgr, shadows.sharp.offset_x, 2),
+   CFG_ITEM_INT(Conf_compmgr, shadows.sharp.offset_y, 7),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
-   CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 0),
+   CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
    CFG_ITEM_INT(Conf_compmgr, fading.dt_us, 10000),
    CFG_ITEM_INT(Conf_compmgr, fading.step, 0x10000000),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
