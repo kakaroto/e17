@@ -185,6 +185,7 @@ static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
+static void         doECompMgrWinFade(int val, void *data);
 
 /*
  * Visuals
@@ -997,6 +998,15 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
 }
 
 static void
+ECompMgrWinFadeDoIn(EObj * eo, unsigned int op)
+{
+   char                s[128];
+
+   Esnprintf(s, sizeof(s), "Fade-%#lx", eo->win);
+   DoIn(s, 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade, op, eo);
+}
+
+static void
 doECompMgrWinFade(int val, void *data)
 {
    EObj               *eo = data;
@@ -1015,8 +1025,7 @@ doECompMgrWinFade(int val, void *data)
      {
 	if (op - cw->opacity > Conf_compmgr.fading.step)
 	  {
-	     DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
-		  op, eo);
+	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity + Conf_compmgr.fading.step;
 	  }
      }
@@ -1024,14 +1033,13 @@ doECompMgrWinFade(int val, void *data)
      {
 	if (cw->opacity - op > Conf_compmgr.fading.step)
 	  {
-	     DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
-		  op, eo);
+	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity - Conf_compmgr.fading.step;
 	  }
      }
 
 #if 0
-   Eprintf("doECompMgrWinFade %#x\n", op);
+   Eprintf("doECompMgrWinFade %#lx, %#x\n", eo->win, op);
 #endif
    ECompMgrWinChangeOpacity(eo, op);
 }
@@ -1039,16 +1047,14 @@ doECompMgrWinFade(int val, void *data)
 static void
 ECompMgrWinFadeIn(EObj * eo)
 {
-   DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
-	eo->opacity, eo);
+   ECompMgrWinFadeDoIn(eo, eo->opacity);
    ECompMgrWinChangeOpacity(eo, 0x10000000);
 }
 
 static void
 ECompMgrWinFadeOut(EObj * eo)
 {
-   DoIn("Fade", 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade,
-	0x10000000, eo);
+   ECompMgrWinFadeDoIn(eo, 0x10000000);
    ECompMgrWinChangeOpacity(eo, eo->opacity);
 }
 
