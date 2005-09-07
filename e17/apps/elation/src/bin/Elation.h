@@ -14,6 +14,10 @@
 
 #include "config.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 typedef struct _Elation_Info   Elation_Info;
 typedef struct _Elation_Module Elation_Module;
 
