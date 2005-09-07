@@ -88,6 +88,11 @@ ewl_libs=`ewl-config --libs`
 AC_SUBST(ewl_cflags)
 AC_SUBST(ewl_libs)
 
+edje_cflags=`edje-config --cflags`
+edje_libs=`edje-config --libs`
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
 ecore_cflags=`ecore-config --cflags`
 ecore_libs=`ecore-config --libs`
 AC_SUBST(ecore_cflags)
