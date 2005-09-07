@@ -52,11 +52,6 @@ int sig_exit(void *data, int type, void * ev)
 int main(int argc, const char **argv)
 {
         Etox_Context *ec;
-	/*
-	Etox_Selection *selected1;
-	Etox_Selection *selected2;
-	*/
-	Etox_Obstacle *obstacle;
 
 	ecore_init();
 	ecore_app_args_set(argc, argv);
@@ -148,7 +143,6 @@ _test_sel1(Evas_Object *etox)
 {
   Etox_Selection *sel;
   Etox_Context *cont;
-  int i = 0;
 
 
   printf("style: %s\n", etox_context_get_style(etox_get_context(etox)));
