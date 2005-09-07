@@ -281,38 +281,62 @@ fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
 AC_SUBST(PNGLIBS)
 
-AC_CHECK_LIB(tiff, TIFFReadScanline,
-  tiff_libs="-ltiff"
-  tiff_ok=yes,
-AC_CHECK_LIB(tiff, TIFFReadScanline,
-  tiff_libs="-ltiff -ljpeg -lz -lm"
-  tiff_ok=yes,
-AC_CHECK_LIB(tiff34, TIFFReadScanline,
-  tiff_libs="-ltiff34 -ljpeg -lz -lm"
-  tiff_ok=yes,
-  tiff_ok=no
-  AC_MSG_WARN(*** Native TIFF support will not be built (TIFF library not found) ***), 
-  -ljpeg -lz -lm),
-  -ljpeg -lz -lm),
-  )
-if test "$tiff_ok" = yes; then
-  AC_MSG_CHECKING([for tiffio.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <tiffio.h>],
-  tiff_ok=yes,
-  tiff_ok=no)
-  AC_MSG_RESULT($tiff_ok)
-  if test "$tiff_ok" = yes; then
-    TIFFLIBS=$tiff_libs
+
+
+AC_MSG_CHECKING(whether to enable tiff support)
+AC_ARG_WITH(tiff,
+[AC_HELP_STRING([--without-tiff],[Disable TIFF image loader])],
+[
+  if test "$withval" = no ; then
+    tiff_loader=no
   else
-    AC_MSG_WARN(*** Native TIFF support will not be built (TIFF header file not found) ***)
+    tiff_loader=yes
   fi
+],[ tiff_loader=auto ]
+)
+AC_MSG_RESULT($tiff_loader)
+
+if test "$tiff_loader" != no ; then
+  AC_CHECK_LIB(tiff, TIFFReadScanline,
+    tiff_libs="-ltiff"
+    tiff_ok=yes,
+  AC_CHECK_LIB(tiff, TIFFReadScanline,
+    tiff_libs="-ltiff -ljpeg -lz -lm"
+    tiff_ok=yes,
+  AC_CHECK_LIB(tiff34, TIFFReadScanline,
+    tiff_libs="-ltiff34 -ljpeg -lz -lm"
+    tiff_ok=yes,
+    tiff_ok=no
+    AC_MSG_WARN(*** Native TIFF support will not be built (TIFF library not found) ***), 
+    -ljpeg -lz -lm),
+    -ljpeg -lz -lm),
+    )
+  if test "$tiff_ok" = yes; then
+    AC_MSG_CHECKING([for tiffio.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <tiffio.h>],
+    tiff_ok=yes,
+    tiff_ok=no)
+    AC_MSG_RESULT($tiff_ok)
+    if test "$tiff_ok" = yes; then
+      TIFFLIBS=$tiff_libs
+    else
+      AC_MSG_WARN(*** Native TIFF support will not be built (TIFF header file not found) ***)
+    fi
+  fi
+  if test "$tiff_loader" = yes -a "$tiff_ok" = no; then
+    AC_MSG_ERROR(TIFF support was requested but system does not support it)
+  fi
+else
+  tiff_ok=no
 fi
 AM_CONDITIONAL(BUILD_TIFF_LOADER, test "$tiff_ok" = yes)
 AC_SUBST(TIFFLIBS)
+
+
 
 AC_CHECK_LIB(ungif, DGifOpenFileName,
   gif_libs="-lungif"
@@ -361,78 +385,146 @@ fi
 AM_CONDITIONAL(BUILD_GIF_LOADER, test "$gif_ok" = yes)
 AC_SUBST(GIFLIBS)
 
-AC_CHECK_LIB(z, uncompress,
-  zlib_ok=yes,
-  zlib_ok=no
-  AC_MSG_WARN(*** Native zlib support will not be built (zlib not found) ***), 
-  )
-if test "$zlib_ok" = yes; then
-  AC_MSG_CHECKING([for zlib.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <zlib.h>],
-  zlib_ok=yes,
-  zlib_ok=no)
-  AC_MSG_RESULT($zlib_ok)
-  if test "$zlib_ok" = yes; then
-    ZLIBLIBS="-lz"
+
+
+AC_MSG_CHECKING(whether to enable zlib support)
+AC_ARG_WITH(zlib,
+[AC_HELP_STRING([--without-zlib],[Disable ZLIB loader])],
+[
+  if test "$withval" = no ; then
+    zlib_loader=no
   else
-    AC_MSG_WARN(*** Native zlib support will not be built (zlib header file not found) ***)
+    zlib_loader=yes
   fi
+],[ zlib_loader=auto ]
+)
+AC_MSG_RESULT($zlib_loader)
+
+if test "$zlib_loader" != no ; then
+  AC_CHECK_LIB(z, uncompress,
+    zlib_ok=yes,
+    zlib_ok=no
+    AC_MSG_WARN(*** Native zlib support will not be built (zlib not found) ***), 
+    )
+  if test "$zlib_ok" = yes; then
+    AC_MSG_CHECKING([for zlib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <zlib.h>],
+    zlib_ok=yes,
+    zlib_ok=no)
+    AC_MSG_RESULT($zlib_ok)
+    if test "$zlib_ok" = yes; then
+      ZLIBLIBS="-lz"
+    else
+      AC_MSG_WARN(*** Native zlib support will not be built (zlib header file not found) ***)
+    fi
+  fi
+  if test "$zlib_loader" = yes -a "$zlib_ok" = no; then
+    AC_MSG_ERROR(ZLIB support was requested but system does not support it)
+  fi
+else
+  zlib_ok=no
 fi
 AM_CONDITIONAL(BUILD_ZLIB_LOADER, test "$zlib_ok" = yes)
 AC_SUBST(ZLIBLIBS)
 
-AC_CHECK_LIB(bz2, BZ2_bzRead,
-  bz2_ok=yes,
-  bz2_ok=no
-  AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 library not found) ***),
-  )
-if test "$bz2_ok" = yes; then
-  AC_MSG_CHECKING([for bzlib.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <bzlib.h>],
-  bz2_ok=yes,
-  bz2_ok=no)
-  AC_MSG_RESULT($bz2_ok)
-  if test "$bz2_ok" = yes; then
-    BZ2LIBS="-lbz2"
+
+
+AC_MSG_CHECKING(whether to enable bzip2 support)
+AC_ARG_WITH(bzip2,
+[AC_HELP_STRING([--without-bzip2],[Disable BZIP2 loader])],
+[
+  if test "$withval" = no ; then
+    bz2_loader=no
   else
-    AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 header file not found) ***)
+    bz2_loader=yes
   fi
+],[ bz2_loader=auto ]
+)
+AC_MSG_RESULT($bz2_loader)
+
+if test "$bz2_loader" != no ; then
+  AC_CHECK_LIB(bz2, BZ2_bzRead,
+    bz2_ok=yes,
+    bz2_ok=no
+    AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 library not found) ***),
+    )
+  if test "$bz2_ok" = yes; then
+    AC_MSG_CHECKING([for bzlib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <bzlib.h>],
+    bz2_ok=yes,
+    bz2_ok=no)
+    AC_MSG_RESULT($bz2_ok)
+    if test "$bz2_ok" = yes; then
+      BZ2LIBS="-lbz2"
+    else
+      AC_MSG_WARN(*** Native bz2 support will not be built (bzip2 header file not found) ***)
+    fi
+  fi
+  if test "$bz2_loader" = yes -a "$bz2_ok" = no; then
+    AC_MSG_ERROR(BZIP2 support was requested but system does not support it)
+  fi
+else
+  bz2_ok=no
 fi
 AM_CONDITIONAL(BUILD_BZ2_LOADER, test "$bz2_ok" = yes)
 AC_SUBST(BZ2LIBS)
 
-AC_CHECK_LIB(id3tag, id3_file_open,
-  id3_libs="-lz -lid3tag"
-  id3_ok=yes,
-  id3_ok=no
-  AC_MSG_WARN(*** Native mp3 support will not be built (id3tag library not found) ***),
-  -lz)
-if test "$id3_ok" = yes; then
-  AC_MSG_CHECKING([for id3tag.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <id3tag.h>],
-  id3_ok=yes,
-  id3_ok=no)
-  AC_MSG_RESULT($id3_ok)
-  if test "$id3_ok" = yes; then
-    ID3LIBS=$id3_libs
+
+
+AC_MSG_CHECKING(whether to enable id3 support)
+AC_ARG_WITH(id3,
+[AC_HELP_STRING([--without-id3],[Disable ID3 loader])],
+[
+  if test "$withval" = no ; then
+    id3_loader=no
   else
-    AC_MSG_WARN(*** Native id3 mp3 tag support will not be built (id3tag header file not found) ***)
+    id3_loader=yes
   fi
+],[ id3_loader=auto ]
+)
+AC_MSG_RESULT($id3_loader)
+
+if test "$id3_loader" != no ; then
+  AC_CHECK_LIB(id3tag, id3_file_open,
+    id3_libs="-lz -lid3tag"
+    id3_ok=yes,
+    id3_ok=no
+    AC_MSG_WARN(*** Native mp3 support will not be built (id3tag library not found) ***),
+    -lz)
+  if test "$id3_ok" = yes; then
+    AC_MSG_CHECKING([for id3tag.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <id3tag.h>],
+    id3_ok=yes,
+    id3_ok=no)
+    AC_MSG_RESULT($id3_ok)
+    if test "$id3_ok" = yes; then
+      ID3LIBS=$id3_libs
+    else
+      AC_MSG_WARN(*** Native id3 mp3 tag support will not be built (id3tag header file not found) ***)
+    fi
+  fi
+  if test "$id3_loader" = yes -a "$id3_ok" = no; then
+    AC_MSG_ERROR(ID3 support was requested but system does not support it)
+  fi
+else
+  id3_ok=no
 fi
 AM_CONDITIONAL(BUILD_ID3_LOADER, test "$id3_ok" = yes)
 AC_SUBST(ID3LIBS)
+
+
 
 AC_SUBST(requirements)
 
