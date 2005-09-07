@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
+#include <limits.h>
 #include <sys/stat.h>
 
 #if HAVE___ATTRIBUTE__
