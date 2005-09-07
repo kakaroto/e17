@@ -182,50 +182,94 @@ my_libs=$freetype_libs" "$x_libs" "$dlopen_libs" -lm"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 
-AC_CHECK_LIB(jpeg, jpeg_destroy_decompress,
-  jpeg_ok=yes,
-  jpeg_ok=no
-  AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***),
-  )
-if test "$jpeg_ok" = yes; then
-  AC_MSG_CHECKING([for jpeglib.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <jpeglib.h>],
-  jpeg_ok=yes,
-  jpeg_ok=no)
-  AC_MSG_RESULT($jpeg_ok)
-  if test "$jpeg_ok" = yes; then
-    JPEGLIBS="-ljpeg"
+
+
+AC_MSG_CHECKING(whether to enable jpeg support)
+AC_ARG_WITH(jpeg,
+[AC_HELP_STRING([--without-jpeg],[Disable JPEG image loader])],
+[
+  if test "$withval" = no ; then
+    jpeg_loader=no
   else
-    AC_MSG_WARN(*** Native JPEG support will not be built (JPEG header file not found) ***)
+    jpeg_loader=yes
   fi
+],[ jpeg_loader=auto ]
+)
+AC_MSG_RESULT($jpeg_loader)
+
+if test "$jpeg_loader" != no ; then
+  AC_CHECK_LIB(jpeg, jpeg_destroy_decompress,
+    jpeg_ok=yes,
+    jpeg_ok=no
+    AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***),
+    )
+  if test "$jpeg_ok" = yes; then
+    AC_MSG_CHECKING([for jpeglib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <jpeglib.h>],
+    jpeg_ok=yes,
+    jpeg_ok=no)
+    AC_MSG_RESULT($jpeg_ok)
+    if test "$jpeg_ok" = yes; then
+      JPEGLIBS="-ljpeg"
+    else
+      AC_MSG_WARN(*** Native JPEG support will not be built (JPEG header file not found) ***)
+    fi
+  fi
+  if test "$jpeg_loader" = yes -a "$jpeg_ok" = no; then
+    AC_MSG_ERROR(JPEG support was requested but system does not support it)
+  fi
+else
+  jpeg_ok=no
 fi
 AM_CONDITIONAL(BUILD_JPEG_LOADER, test "$jpeg_ok" = yes)
 AC_SUBST(JPEGLIBS)
 
-AC_CHECK_LIB(png, png_read_info,
-  png_ok=yes,
-  png_ok=no
-  AC_MSG_WARN(*** Native PNG support will not be built (PNG library not found) ***),
-  -lz -lm)
-if test "$png_ok" = yes; then
-  AC_MSG_CHECKING([for png.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <png.h>],
-  png_ok=yes,
-  png_ok=no)
-  AC_MSG_RESULT($png_ok)
-  if test "$png_ok" = yes; then
-    PNGLIBS="-lpng -lz -lm"
+
+
+AC_MSG_CHECKING(whether to enable png support)
+AC_ARG_WITH(png,
+[AC_HELP_STRING([--without-png],[Disable PNG image loader])],
+[
+  if test "$withval" = no ; then
+    png_loader=no
   else
-    AC_MSG_WARN(*** Native PNG support will not be built (PNG header file not found) ***)
+    png_loader=yes
   fi
+],[ png_loader=auto ]
+)
+AC_MSG_RESULT($png_loader)
+
+if test "$png_loader" != no ; then
+  AC_CHECK_LIB(png, png_read_info,
+    png_ok=yes,
+    png_ok=no
+    AC_MSG_WARN(*** Native PNG support will not be built (PNG library not found) ***),
+    -lz -lm)
+  if test "$png_ok" = yes; then
+    AC_MSG_CHECKING([for png.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <png.h>],
+    png_ok=yes,
+    png_ok=no)
+    AC_MSG_RESULT($png_ok)
+    if test "$png_ok" = yes; then
+      PNGLIBS="-lpng -lz -lm"
+    else
+      AC_MSG_WARN(*** Native PNG support will not be built (PNG header file not found) ***)
+    fi
+  fi
+  if test "$png_loader" = yes -a "$png_ok" = no; then
+    AC_MSG_ERROR(PNG support was requested but system does not support it)
+  fi
+else
+  png_ok=no
 fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
 AC_SUBST(PNGLIBS)
