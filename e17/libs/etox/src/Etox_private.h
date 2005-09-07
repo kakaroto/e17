@@ -29,9 +29,6 @@
 	 }
 
 
-#define TRUE 1
-#define FALSE 0
-
 typedef enum _etox_flags Etox_Flags;
 enum _etox_flags
 {
