@@ -10,9 +10,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-#define TRUE 1
-#define FALSE 0
-
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
 #else
