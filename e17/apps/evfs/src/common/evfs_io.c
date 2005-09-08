@@ -108,7 +108,6 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	int i;
 	char uri[1024];
 
-	printf("Writing a command...\n");
 
 	/*Write the command type structure*/
 	evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,&command->type, sizeof(evfs_command_type)));

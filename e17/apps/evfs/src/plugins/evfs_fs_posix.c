@@ -149,7 +149,11 @@ int posix_monitor_add(evfs_client* client, evfs_command* command) {
 
 		mon_list = ecore_list_new();
 		ecore_hash_set(posix_monitor_hash, mon->monitor_path, mon_list);
-		mon->em = ecore_file_monitor_add(mon->monitor_path, &evfs_file_monitor_fam_handler, mon->monitor_path);
+
+		printf("Adding monitor on path '%s'\n", mon->monitor_path);
+		if (!(mon->em = ecore_file_monitor_add(mon->monitor_path, &evfs_file_monitor_fam_handler, mon->monitor_path))) {
+			fprintf(stderr, "EVFS: Error monitoring '%s'\n", mon->monitor_path);
+		}
 
 		ecore_list_append(mon_list,mon);
 	} else {
@@ -182,15 +186,15 @@ int evfs_monitor_start(evfs_client* client, evfs_command* command) {
 
 int evfs_monitor_stop(evfs_client* client, evfs_command* command){
 	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
-	Ecore_File_Monitor *em;
+	Ecore_File_Monitor *em=  NULL;
 	
 
 	if (!mon_list) {
 		/*There is no one monitoring this - so this client can't be...*/
 		return 1;
 	} else {
-		evfs_file_monitor* mon;
-		evfs_file_monitor* check_last;
+		evfs_file_monitor* mon = NULL;
+		evfs_file_monitor* check_last = NULL;
 		
 		ecore_list_goto_first(mon_list);
 		while ( (mon = ecore_list_current(mon_list))) {
@@ -202,17 +206,24 @@ int evfs_monitor_stop(evfs_client* client, evfs_command* command){
 
 			ecore_list_next(mon_list);
 		}
+		goto out;
 
 		final:
 		ecore_list_goto_first(mon_list);
 		check_last = ecore_list_current(mon_list);
 		if (!check_last) {
-			printf("Removing last watcher..\n");
-			ecore_file_monitor_del(em);
+			printf("Removing last watcher on '%s'..\n",mon->monitor_path );
+			if (em) {
+				ecore_file_monitor_del(em);
+			} else {
+				fprintf(stderr, "EVFS: Error - attempt to remove monitor on NULL Ecore_File_Monitor object\n");
+			}
+			ecore_list_destroy(mon_list);
+			ecore_hash_remove(posix_monitor_hash, command->file_command.files[0]->path);
 		}
 		evfs_cleanup_file_monitor(mon);
 		
-
+		out:
 		return 1;
 	}
 
