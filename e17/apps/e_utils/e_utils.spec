@@ -1,7 +1,7 @@
 Summary: Tools for the  Enlightenment window manager
 Name: e_utils
 Version: 0.0.1
-Release: 1.%(date '+%Y%m%d')
+Release: 0.20050908
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: ecore-devel, evas-devel, esmart-devel, edje-devel, eet-devel
-BuildRequires: ewl-devel, imlib2-devel, embryo-devel, emotion-devel
+BuildRequires: ewl-devel, imlib2-devel, embryo-devel, emotion-devel, engrave-devel
 BuildRequires: enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 Requires: e_utils-e17setroot, e_utils-e_util_eapp_edit, e_utils-emblem

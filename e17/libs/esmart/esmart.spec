@@ -3,7 +3,7 @@
 Summary: Evas "smart objects"
 Name: esmart
 Version: 0.9.0.004
-Release: 1
+Release: 0.20050908
 License: BSD
 Group: User Interface/X
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz

@@ -3,7 +3,7 @@
 Summary: JPEG Scaling Library
 Name: epeg
 Version: 0.9.0.004
-Release: 1.%(date '+%Y%m%d')
+Release: 0.20050908
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/

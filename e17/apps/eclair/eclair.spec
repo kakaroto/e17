@@ -1,7 +1,7 @@
 Summary: The Eclair window manager
 Name: eclair
 Version: 0.0.1
-Release: 1
+Release: 0.20050908
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -12,7 +12,7 @@ Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Prefix: %{_prefix}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: sqlite3-devel libxml2-devel taglib-devel
-BuildRequires: libjpeg-devel XFree86-devel eet-devel embryo-devel
+BuildRequires: libjpeg-devel XFree86-devel eet-devel embryo-devel emotion-devel
 BuildRequires: evas-devel edb-devel edje-devel imlib2-devel ecore-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 

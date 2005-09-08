@@ -3,7 +3,7 @@
 Summary: Enlightened Text Object Library
 Name: etox
 Version: 0.9.0.004
-Release: 1
+Release: 0.20050908
 License: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/pages/etox.html

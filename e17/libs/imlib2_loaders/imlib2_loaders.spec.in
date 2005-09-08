@@ -1,7 +1,7 @@
 Summary: Additional image loaders for Imlib2
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 1
+Release: 0.20050908
 License: Mixed
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org

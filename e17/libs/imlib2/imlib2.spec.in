@@ -1,7 +1,7 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
 Version: @VERSION@
-Release: 1
+Release: 0.20050908
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org
@@ -9,8 +9,8 @@ Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-#BuildSuggests: xorg-x11-devel freetype-devel freetype2-devel
-BuildRequires: /usr/bin/freetype-config XFree86-devel /usr/lib/libungif.so
+#BuildSuggests: xorg-x11-devel freetype-devel freetype2-devel libungif-devel
+BuildRequires: /usr/bin/freetype-config XFree86-devel /usr/include/gif_lib.h
 BuildRequires: libid3tag-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}

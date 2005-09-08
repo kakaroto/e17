@@ -3,7 +3,7 @@
 Summary: An edje editing library
 Name: engrave
 Version: 0.1.0
-Release: 1.%(date '+%Y%m%d')
+Release: 0.20050908
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/

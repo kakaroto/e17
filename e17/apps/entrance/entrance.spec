@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: entrance
 Version: 0.9.0.004
-Release: 1
+Release: 0.20050908
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
@@ -9,8 +9,8 @@ Source: ftp://ftp.enlightenment.org/pub/entrance/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-#BuildSuggests: xorg-x11-xdm
-BuildRequires: libjpeg-devel, zlib-devel, XFree86-xdm
+#BuildSuggests: xorg-x11-xdm, XFree86-xdm
+BuildRequires: libjpeg-devel, zlib-devel, /etc/X11/xdm/Xsession
 BuildRequires: ecore-devel, edje-devel, esmart-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 

@@ -44,7 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
-
+#include <dirent.h>
 
 static evfs_server* server;
 

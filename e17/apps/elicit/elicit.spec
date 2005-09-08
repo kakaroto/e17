@@ -1,7 +1,7 @@
 Summary: EFL-based image zoom and colorpicker
 Name: elicit
 Version: 0.9.0
-Release: 1.%(date '+%Y%m%d')
+Release: 0.20050908
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
