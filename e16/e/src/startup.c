@@ -79,6 +79,7 @@ StartupWindowsCreate(void)
       return;
    init_win1 = eo;
    w1 = eo->win;
+   eo->fade = 0;
    win1 = ECreateWindow(w1, x, y, VRoot.w, VRoot.h, 0);
 
    eo = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, VRoot.w, VRoot.h, 1, "Init-2");
@@ -86,6 +87,7 @@ StartupWindowsCreate(void)
       return;
    init_win2 = eo;
    w2 = eo->win;
+   eo->fade = 0;
    win2 = ECreateWindow(w2, -x, -y, VRoot.w, VRoot.h, 0);
 
    EMapWindow(win1);
