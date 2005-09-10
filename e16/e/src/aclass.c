@@ -492,6 +492,10 @@ ActionDecode(const char *line)
       event = EVENT_MOUSE_ENTER;
    else if (!strcmp(ev, "MouseOut"))
       event = EVENT_MOUSE_LEAVE;
+   else if (!strcmp(ev, "FocusIn"))
+      event = EVENT_FOCUS_IN;
+   else if (!strcmp(ev, "FocusOut"))
+      event = EVENT_FOCUS_OUT;
 
    anymod = anybut = anykey = 0;
    button = 0;
@@ -980,7 +984,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 }
 
 int
-ActionclassesEvent(XEvent * ev, EWin * ewin)
+ActionclassesGlobalEvent(XEvent * ev)
 {
    ActionClass       **lst;
    int                 i, num, match;
@@ -991,7 +995,7 @@ ActionclassesEvent(XEvent * ev, EWin * ewin)
 
    match = 0;
    for (i = 0; i < num; i++)
-      match |= ActionclassEvent(lst[i], ev, ewin);
+      match |= ActionclassEvent(lst[i], ev, GetFocusEwin());
 
    Efree(lst);
 

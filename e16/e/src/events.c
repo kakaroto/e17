@@ -23,9 +23,7 @@
  */
 #include "E.h"
 #include "emodule.h"
-#include "ewins.h"		/* FIXME - Should not be here */
 #include "xwin.h"
-#include <errno.h>
 #include <sys/time.h>
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
@@ -225,12 +223,9 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xproperty.time;
 	break;
 
-     case ClientMessage:
-	HintsProcessClientMessage(&(ev->xclient));
-	break;
-
       do_stuff:
-	ActionclassesEvent(ev, GetFocusEwin());
+	if (ev->xany.window == VRoot.win)
+	   ActionclassesGlobalEvent(ev);
 	break;
      }
 

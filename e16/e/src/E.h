@@ -904,7 +904,7 @@ int                 ActionclassGetActionCount(ActionClass * ac);
 Action             *ActionclassGetAction(ActionClass * ac, int ix);
 int                 ActionclassEvent(ActionClass * ac, XEvent * ev,
 				     EWin * ewin);
-int                 ActionclassesEvent(XEvent * ev, EWin * ewin);
+int                 ActionclassesGlobalEvent(XEvent * ev);
 
 const char         *ActionGetTooltipString(Action * aa);
 int                 ActionGetAnybutton(Action * aa);

@@ -1883,6 +1883,10 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	   EwinEventReparent(ewin);
 	break;
 
+     case ClientMessage:
+	HintsProcessClientMessage(&(ev->xclient));
+	break;
+
      default:
 #if 0
 	Eprintf("EwinHandleEventsRoot: type=%2d win=%#lx\n",
