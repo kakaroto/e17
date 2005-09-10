@@ -68,17 +68,11 @@ setup_cc_with_pos(int x, int y)
 	ecore_evas_title_set(cc->win, "Enotes");
 	ecore_evas_name_class_set(cc->win, "Enotes", "Enotes");
 
-	if (main_config->ontop == 1)
-		if (!strcmp(main_config->render_method, "gl")) {
-			ecore_x_window_prop_layer_set
-				(ecore_evas_gl_x11_window_get(cc->win),
-				 ECORE_X_WINDOW_LAYER_ABOVE);
-		} else {
-			ecore_x_window_prop_layer_set
-				(ecore_evas_software_x11_window_get(cc->win),
-				 ECORE_X_WINDOW_LAYER_ABOVE);
-		}
-
+        if (main_config->ontop == 1)
+		ecore_evas_layer_set(cc->win, 7);
+	else
+		ecore_evas_layer_set(cc->win, 2);
+		
 	if (main_config->sticky == 1)
 		ecore_evas_sticky_set(cc->win, 1);
 	else
@@ -94,11 +88,11 @@ setup_cc_with_pos(int x, int y)
 
 	/* Moving the damn thing */
 	if (!strcmp(main_config->render_method, "gl"))
-		ecore_x_window_prop_xy_set(ecore_evas_gl_x11_window_get
-					   (cc->win), pos->x, pos->y);
+		ecore_x_window_move(ecore_evas_gl_x11_window_get(cc->win),
+				    pos->x, pos->y);
 	else
-		ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get
-					   (cc->win), pos->x, pos->y);
+		ecore_x_window_move(ecore_evas_software_x11_window_get(cc->win),
+				    pos->x, pos->y);
 
 	/* Setup the Canvas, Render-Method and Font Path */
 	cc->evas = ecore_evas_get(cc->win);

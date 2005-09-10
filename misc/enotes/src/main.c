@@ -29,7 +29,6 @@ main(int argc, char *argv[])
 {
 	char           *spec_conf;
 	int             note_count;
-	DIR            *dir;
 	int a;
 
 	/* IPC Check */

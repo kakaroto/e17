@@ -93,7 +93,7 @@ remove_note(Evas_List * note)
 
 	/** 
 	 * FIXME: When you can get the row and its child text, compare
-	 * it to the ewl_entry_text_get(p->title) value and remove the row
+	 * it to the ewl_text_text_get(p->title) value and remove the row
 	 * from the tree at this point.  Reporting that you've done so with
 	 * dml ("Removed note from save/load list", 2); or something.  When ewl
 	 * will let you do these things.
@@ -164,18 +164,12 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_title_set(p->win, "An E-Note");
-  ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
+	ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
 
 	if (main_config->ontop == 1)
-		if (!strcmp(main_config->render_method, "gl")) {
-			ecore_x_window_prop_layer_set
-				(ecore_evas_gl_x11_window_get(p->win),
-				 ECORE_X_WINDOW_LAYER_ABOVE);
-		} else {
-			ecore_x_window_prop_layer_set
-				(ecore_evas_software_x11_window_get(p->win),
-				 ECORE_X_WINDOW_LAYER_ABOVE);
-		}
+		ecore_evas_layer_set(p->win, 7);
+	else
+		ecore_evas_layer_set(p->win, 2);
 
 	if (main_config->sticky == 1)
 		ecore_evas_sticky_set(p->win, 1);
@@ -187,11 +181,11 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	/* Move the damn thing  */
 	if (!strcmp(main_config->render_method, "gl"))
-		ecore_x_window_prop_xy_set(ecore_evas_gl_x11_window_get(p->win),
-					   x, y);
+		ecore_x_window_move(ecore_evas_gl_x11_window_get(p->win),
+				    x, y);
 	else
-		ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get
-					   (p->win), x, y);
+		ecore_x_window_move(ecore_evas_software_x11_window_get(p->win),
+				    x, y);
 
 	/* Setup the Canvas, fonts, etc... */
 	p->evas = ecore_evas_get(p->win);
@@ -274,7 +268,8 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	ewl_widget_show(p->pane);
 
-	p->content = ewl_entry_multiline_new("");
+	p->content = ewl_entry_new("");
+	ewl_entry_multiline_set(EWL_ENTRY(p->content), 1);
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
 	ewl_entry_multiline_set((Ewl_Entry *) p->content, 1);
 
@@ -293,7 +288,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 		ewl_theme_data_int_set(p->content, "/entry/text/font_size",
 				       atoi(prop));
 
-	ewl_entry_text_set((Ewl_Entry *) p->content, fcontent);
+	ewl_text_text_set((Ewl_Text *) p->content, fcontent);
 	ewl_widget_show(p->content);
 
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
@@ -525,7 +520,7 @@ const char *emission, const char *source){
 	dml("Saving a Note",2);
 	p=evas_list_data(note);
 
-	ewl_saveload_save_by_name(get_title_by_content(ewl_entry_text_get((Ewl_Entry*)p->content)));
+	ewl_saveload_save_by_name(get_title_by_content(ewl_text_text_get((Ewl_Text*)p->content)));
 	
 	return;
 }
@@ -746,7 +741,7 @@ get_content_by_note(Evas_List * note)
 {
 	Note           *p = evas_list_data(note);
 
-	return ((char *) ewl_entry_text_get((Ewl_Entry *) p->content));
+	return ((char *) ewl_text_text_get((Ewl_Text *) p->content));
 }
 
 /**
@@ -757,7 +752,7 @@ get_content_by_note(Evas_List * note)
 char           *
 get_content_by_note_struct(Note * note)
 {
-	return ((char *) ewl_entry_text_get((Ewl_Entry *) note->content));
+	return ((char *) ewl_text_text_get((Ewl_Text *) note->content));
 }
 
 /**

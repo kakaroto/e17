@@ -1,4 +1,5 @@
 #include <Ewl.h>
+#include <stdlib.h>
 
 typedef struct {
 	Ewl_Widget     *win;
