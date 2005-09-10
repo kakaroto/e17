@@ -38,18 +38,18 @@ AC_SUBST(LDFLAGS)
 case "$host_os" in
 aix4.1*)   CFLAGS=${CFLAGS-"-O3"};;
 bsd4.4)    CFLAGS=${CFLAGS-"-O2"};;
-bsdi4*)	   CFLAGS=${CFLAGS-"-O2"};;
-bsdi*)	   CC=${CC-"shlicc2"}
-	   CFLAGS=${CFLAGS-"-O2"}
-	   LIBS="-lipc $LIBS";;
-irix*)	   CFLAGS=${CFLAGS-"-O2"};;
+bsdi4*)    CFLAGS=${CFLAGS-"-O2"};;
+bsdi*)     CC=${CC-"shlicc2"}
+           CFLAGS=${CFLAGS-"-O2"}
+           LIBS="-lipc $LIBS";;
+irix*)     CFLAGS=${CFLAGS-"-O2"};;
 nextstep3) CFLAGS=${CFLAGS-"-O2"};;
-linux*)	   CFLAGS=${CFLAGS-"-O2"};;
-mpeix*)	   CPPFLAGS="-D_POSIX_SOURCE -D_SOCKET_SOURCE $CPPFLAGS"
-	   LIBS="-lsocket -lsvipc $LIBS";;
-sco*)	   CFLAGS="$CFLAGS -b elf"
-	   LIBS="-lsocket -lnsl $LIBS";;
-*)	   CFLAGS=${CFLAGS-"-O"};;
+linux*)    CFLAGS=${CFLAGS-"-O2"};;
+mpeix*)    CPPFLAGS="-D_POSIX_SOURCE -D_SOCKET_SOURCE $CPPFLAGS"
+           LIBS="-lsocket -lsvipc $LIBS";;
+sco*)      CFLAGS="$CFLAGS -b elf"
+           LIBS="-lsocket -lnsl $LIBS";;
+*)         CFLAGS=${CFLAGS-"-O"};;
 esac
 CXXFLAGS=${CXXFLAGS-"$CFLAGS"}
 
@@ -410,33 +410,32 @@ if test -x "$GTK_CONFIG"; then
 fi
 AC_MSG_CHECKING([for gtk db editor to be built])
 AC_ARG_ENABLE(gtk, [  --enable-gtk            Enable gtk1.x based db editor], [
-              if [ test "$enableval" = "yes" ]; then
-	        AC_MSG_RESULT($gtk_ok)
-	      else
-	        AC_MSG_RESULT(no)
-		gtk_ok=no
-	      fi
-	      ], [
-	        AC_MSG_RESULT($gtk_ok)
-	      ]
-)
+    if test "$enableval" = "yes" ; then
+        if test "$gtk_ok" = "no" ; then
+            AC_MSG_ERROR(gtk support requested but not found)
+        fi
+    else
+        gtk_ok=no
+    fi
+])
+AC_MSG_RESULT($gtk_ok)
 AM_CONDITIONAL(EDB_GTK_ED, test "$gtk_ok" = yes)
 
 AC_CHECK_LIB(ncurses, putwin,
   [AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no)],
   ncurses_ok=no,
   -lncurses)
+AC_MSG_CHECKING([for ncurses db editor to be built])
 AC_ARG_ENABLE(ncurses, [  --enable-ncurses        Enable ncurses based db editor], [
-	      if [ test "$enableval" = "yes" ]; then
-	        AC_MSG_RESULT($ncurses_ok)
-	      else
-	        AC_MSG_RESULT(no)
-	        ncurses_ok=no
-	      fi
-	      ], [
-	        AC_MSG_RESULT($ncurses_ok)
-	      ]
-)
+    if test "$enableval" = "yes" ; then
+        if test "$ncurses_ok" = "no" ; then
+            AC_MSG_ERROR(ncurses support requested but not found)
+        fi
+    else
+        ncurses_ok=no
+      fi
+])
+AC_MSG_RESULT($ncurses_ok)
 AM_CONDITIONAL(EDB_VT_ED, test "$ncurses_ok" = yes)
 
 AC_OUTPUT([
