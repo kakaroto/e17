@@ -326,9 +326,6 @@ int                 Esnprintf(va_alist);
  */
 
 typedef struct _ewin EWin;
-typedef struct _menu Menu;
-typedef struct _menuitem MenuItem;
-typedef struct _menustyle MenuStyle;
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 typedef struct _snapshot Snapshot;
@@ -1546,48 +1543,6 @@ char               *StrlistEncodeEscaped(char *buf, int len, char **lst,
 					 int num);
 char              **StrlistDecodeEscaped(const char *str, int *pnum);
 char              **StrlistFromString(const char *str, int delim, int *num);
-
-/* menus.c */
-int                 MenuStyleConfigLoad(FILE * fs);
-
-Menu               *MenuCreate(const char *name, const char *title,
-			       Menu * parent, MenuStyle * ms);
-void                MenuDestroy(Menu * m);
-void                MenuHide(Menu * m);
-void                MenuEmpty(Menu * m);
-void                MenuRepack(Menu * m);
-MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
-				   const char *action_params, Menu * child);
-void                MenuSetName(Menu * m, const char *name);
-void                MenuSetStyle(Menu * m, MenuStyle * ms);
-void                MenuSetTitle(Menu * m, const char *title);
-void                MenuSetData(Menu * m, char *data);
-void                MenuSetTimestamp(Menu * m, time_t t);
-const char         *MenuGetName(const Menu * m);
-const char         *MenuGetData(const Menu * m);
-time_t              MenuGetTimestamp(const Menu * m);
-int                 MenuIsNotEmpty(const Menu * m);
-void                MenuAddItem(Menu * m, MenuItem * mi);
-void                ShowInternalMenu(Menu ** pm, MenuStyle ** pms,
-				     const char *style,
-				     Menu * (mcf) (const char *name,
-						   MenuStyle * ms));
-
-int                 MenusActive(void);
-
-/* menus-misc.c */
-Menu               *MenuCreateFromDirectory(const char *name, Menu * parent,
-					    MenuStyle * ms, const char *dir);
-Menu               *MenuCreateFromFlatFile(const char *name, Menu * parent,
-					   MenuStyle * ms, const char *file);
-Menu               *MenuCreateFromGnome(const char *name, Menu * parent,
-					MenuStyle * ms, const char *dir);
-Menu               *MenuCreateFromAllEWins(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromDesktopEWins(const char *name, MenuStyle * ms,
-					       int desk);
-Menu               *MenuCreateFromDesktops(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromThemes(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromBorders(const char *name, MenuStyle * ms);
 
 /* misc.c */
 void                Quicksort(void **a, int l, int r,

@@ -283,9 +283,6 @@ ICCCM_Cmap(EWin * ewin)
 	return;
      }
 
-   if (MenusActive())
-      return;
-
    ICCCM_GetColormap(ewin);
 
    if (EwinIsInternal(ewin))

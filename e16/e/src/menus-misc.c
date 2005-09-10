@@ -25,6 +25,7 @@
 #include "conf.h"
 #include "desktops.h"
 #include "ewins.h"
+#include "menus.h"
 #include "xwin.h"
 #include <errno.h>
 #include <sys/stat.h>

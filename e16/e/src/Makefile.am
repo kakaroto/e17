@@ -75,6 +75,7 @@ e16_SOURCES = \
 	main.c			\
 	memory.c		\
 	menus.c			\
+	menus.h			\
 	menus-misc.c		\
 	misc.c			\
 	mod-misc.c		\

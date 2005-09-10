@@ -24,6 +24,7 @@
 #include "E.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "menus.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <X11/keysym.h>
@@ -32,12 +33,11 @@
 
 struct
 {
+   Menu               *first;
+   Menu               *active;
    EWin               *context_ewin;
-   int                 current_depth;
-   Menu               *list[256];
-   char                clicked;
-   char                just_shown;
    EObj               *cover_win;
+   char                just_shown;
 } Mode_menus;
 
 struct _menustyle
@@ -90,6 +90,7 @@ struct _menu
    char                internal;	/* Don't destroy when reloading */
    char                redraw;
    Menu               *parent;
+   Menu               *child;
    MenuItem           *sel_item;
    time_t              last_change;
    void               *data;
@@ -104,7 +105,8 @@ struct _menu
 static void         MenuRedraw(Menu * m);
 static void         MenuRealize(Menu * m);
 static void         MenuActivateItem(Menu * m, MenuItem * mi);
-static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
+static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape,
+				 int state);
 
 static void         MenuHandleEvents(XEvent * ev, void *m);
 static void         MenuItemHandleEvents(XEvent * ev, void *mi);
@@ -112,15 +114,44 @@ static void         MenuMaskerHandleEvents(XEvent * ev, void *prm);
 
 static void         MenusHide(void);
 
-static Menu        *active_menu = NULL;
-static MenuItem    *active_item = NULL;
+static MenuItem    *
+MenuFindItemByChild(Menu * m, Menu * mc)
+{
+   int                 i;
+
+   if (!mc)
+      return (m->num) ? m->items[0] : NULL;
+
+   for (i = 0; i < m->num; i++)
+     {
+	if (mc == m->items[i]->child)
+	   return m->items[i];
+     }
+
+   return NULL;
+}
+
+static void
+MenuHideChildren(Menu * m)
+{
+   if (!m->child)
+      return;
+
+   MenuHide(m->child);
+   m->child = NULL;
+}
 
 void
 MenuHide(Menu * m)
 {
    EWin               *ewin;
 
-   MenuActivateItem(m, NULL);
+   if (!m)
+      return;
+
+   if (m->sel_item)
+      MenuDrawItem(m, m->sel_item, 1, STATE_NORMAL);
+   m->sel_item = NULL;
 
    ewin = m->ewin;
    if (ewin)
@@ -133,6 +164,8 @@ MenuHide(Menu * m)
 
    m->stuck = 0;
    m->shown = 0;
+   m->parent = NULL;
+   MenuHideChildren(m);
 }
 
 static void
@@ -153,11 +186,10 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 static void
 MenuEwinClose(EWin * ewin)
 {
-   if ((Menu *) (ewin->data) == active_menu)
+   if ((Menu *) (ewin->data) == Mode_menus.active)
      {
 	GrabKeyboardRelease();
-	active_menu = NULL;
-	active_item = NULL;
+	Mode_menus.active = NULL;
      }
 
    ewin->data = NULL;
@@ -312,7 +344,7 @@ MenuShow(Menu * m, char noshow)
    Mode_menus.just_shown = 1;
 
    m->shown = 1;
-   if (Mode_menus.current_depth == 0)
+   if (!Mode_menus.first)
      {
 	Mode_menus.context_ewin = GetContextEwin();
 #if 0
@@ -320,11 +352,8 @@ MenuShow(Menu * m, char noshow)
 		EwinGetName(Mode_menus.context_ewin));
 #endif
 	ESync();
-#if 1				/* ??? */
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
+	Mode_menus.first = m;
 	MenuShowMasker(m);
-#endif
 	TooltipsEnable(0);
 	GrabKeyboardSet(m->win);
      }
@@ -816,21 +845,23 @@ MenuRedraw(Menu * m)
 	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
 	EClearWindow(m->win);
 	for (i = 0; i < m->num; i++)
-	   MenuDrawItem(m, m->items[i], 0);
+	   MenuDrawItem(m, m->items[i], 0, -1);
      }
    else
      {
 	for (i = 0; i < m->num; i++)
-	   MenuDrawItem(m, m->items[i], 0);
+	   MenuDrawItem(m, m->items[i], 0, -1);
 	EShapePropagate(m->win);
      }
 }
 
 static void
-MenuDrawItem(Menu * m, MenuItem * mi, char shape)
+MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 {
    PmapMask           *mi_pmm;
 
+   if (state >= 0)
+      mi->state = state;
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
 
    if (!mi_pmm->pmap)
@@ -889,17 +920,6 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 
    if ((shape) && (m->style->use_item_bg))
       EShapePropagate(m->win);
-
-   if (mi->state == STATE_HILITED)
-     {
-	active_item = mi;
-	if (active_menu != m)
-	  {
-	     active_menu = m;
-	     GrabKeyboardRelease();
-	     GrabKeyboardSet(m->win);
-	  }
-     }
 }
 
 static void
@@ -1065,33 +1085,18 @@ ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
 int
 MenusActive(void)
 {
-   return Mode_menus.current_depth;
+   return Mode_menus.first != NULL;
 }
 
 static void
 MenusHide(void)
 {
-   int                 i;
+   RemoveTimerEvent("SUBMENU_SHOW");
 
-   while (RemoveTimerEvent("SUBMENU_SHOW"))
-      ;
-
-   for (i = 0; i < Mode_menus.current_depth; i++)
-     {
-	if (!Mode_menus.list[i]->stuck)
-	   MenuHide(Mode_menus.list[i]);
-     }
+   MenuHide(Mode_menus.first);
+   Mode_menus.first = NULL;
    MenuHideMasker();
-   Mode_menus.current_depth = 0;
-   Mode_menus.clicked = 0;
    TooltipsEnable(1);
-
-#if 0
-   /* If all done properly this shouldn't be necessary... */
-   GrabKeyboardRelease();
-   active_menu = NULL;
-   active_item = NULL;
-#endif
 }
 
 /*
@@ -1117,23 +1122,6 @@ MenuFindNextItem(Menu * m, MenuItem * mi, int inc)
 	   i = (i + inc + m->num) % m->num;
 	   return m->items[i];
 	}
-
-   return NULL;
-}
-
-static MenuItem    *
-MenuFindParentItem(Menu * m)
-{
-   int                 i;
-   Menu               *mp;
-
-   mp = m->parent;
-   if (mp == NULL)
-      return NULL;
-
-   for (i = 0; i < mp->num; i++)
-      if (mp->items[i]->child == m)
-	 return mp->items[i];
 
    return NULL;
 }
@@ -1167,10 +1155,10 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
    EWin               *ewin;
 
    mi = NULL;
-   if (active_menu)
+   if (Mode_menus.active)
      {
-	m = active_menu;
-	mi = active_item;
+	m = Mode_menus.active;
+	mi = m->sel_item;
      }
 
    /* NB! m != NULL */
@@ -1181,17 +1169,23 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
      case XK_Escape:
 	MenusHide();
 	break;
+
      case XK_Down:
       check_next:
 	mi = MenuFindNextItem(m, mi, 1);
 	goto check_activate;
+
      case XK_Up:
 	mi = MenuFindNextItem(m, mi, -1);
 	goto check_activate;
+
      case XK_Left:
-	mi = MenuFindParentItem(m);
 	m = m->parent;
-	goto check_menu;
+	if (!m)
+	   break;
+	mi = m->sel_item;
+	goto check_activate;
+
      case XK_Right:
 	if (mi == NULL)
 	   goto check_next;
@@ -1201,19 +1195,15 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	ewin = m->ewin;
 	if (ewin == NULL || !EwinIsMapped(ewin))
 	   break;
-	mi = m->items[0];
-	goto check_menu;
-      check_menu:
-	if (!m)
-	   break;
+	mi = MenuFindItemByChild(m, m->child);
 	goto check_activate;
+
       check_activate:
 	if (!mi)
 	   break;
-	if (active_menu && active_item && active_menu != m)
-	   MenuActivateItem(active_menu, NULL);
 	MenuActivateItem(m, mi);
 	break;
+
      case XK_Return:
 	if (!mi)
 	   break;
@@ -1230,47 +1220,11 @@ static void
 MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 {
    Menu               *m;
-   EWin               *ewin;
 
    Mode_menus.just_shown = 0;
 
    m = mi->menu;
-   mi->state = STATE_CLICKED;
-   MenuDrawItem(m, mi, 1);
-
-   if (mi->child && mi->child->shown == 0)
-     {
-	int                 mx, my, mw, mh;
-	EWin               *ewin2;
-
-	ewin = m->ewin;
-	if (ewin)
-	  {
-	     EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
-#if 1				/* Whatgoesonhere ??? */
-	     MenuShow(mi->child, 1);
-	     ewin2 = mi->child->ewin;
-	     if (ewin2)
-	       {
-		  EwinMove(ewin2,
-			   EoGetX(ewin) + ewin->border->border.left + mx + mw,
-			   EoGetY(ewin) + ewin->border->border.top + my -
-			   ewin2->border->border.top);
-		  RaiseEwin(ewin2);
-		  ShowEwin(ewin2);
-		  if (Conf.menus.animate)
-		     EwinUnShade(ewin2);
-		  Mode_menus.list[Mode_menus.current_depth++] = mi->child;
-	       }
-#else
-	     ewin2 = mi->child->ewin;
-	     if (!ewin2)
-		MenuShow(mi->child, 1);
-#endif
-	  }
-     }
-
-   return;
+   MenuDrawItem(m, mi, 1, STATE_CLICKED);
 }
 
 static void
@@ -1288,8 +1242,7 @@ MenuItemEventMouseUp(MenuItem * mi, XEvent * ev __UNUSED__)
 
    if ((m) && (mi->state))
      {
-	mi->state = STATE_HILITED;
-	MenuDrawItem(m, mi, 1);
+	MenuDrawItem(m, mi, 1, STATE_HILITED);
 	if ((mi->params) /* && (!Mode_menus.just_shown) */ )
 	  {
 	     MenusHide();
@@ -1475,21 +1428,54 @@ struct _mdata
 static void
 MenusSetEvents(int on)
 {
-   int                 i, j;
+   int                 i;
    Menu               *m;
    long                event_mask;
 
    event_mask = (on) ? MENU_ITEM_EVENT_MASK : 0;
 
-   for (i = 0; i < Mode_menus.current_depth; i++)
+   for (m = Mode_menus.first; m; m = m->child)
      {
-	m = Mode_menus.list[i];
-	if (!m)
-	   continue;
-
-	for (j = 0; j < m->num; j++)
-	   ESelectInput(m->items[j]->win, event_mask);
+	for (i = 0; i < m->num; i++)
+	   ESelectInput(m->items[i]->win, event_mask);
      }
+}
+
+static void
+MenuSelectItem(Menu * m, MenuItem * mi, int focus)
+{
+   if (mi && focus)
+     {
+	if (Mode_menus.active != m)
+	  {
+	     Mode_menus.active = m;
+	     GrabKeyboardRelease();
+	     GrabKeyboardSet(m->win);
+	  }
+     }
+
+   if (mi == m->sel_item)
+      return;
+
+   if (m->sel_item)
+      MenuDrawItem(m, m->sel_item, 1, STATE_NORMAL);
+
+   if (mi)
+      MenuDrawItem(m, mi, 1, STATE_HILITED);
+
+   m->sel_item = mi;
+}
+
+static void
+MenuSelectItemByChild(Menu * m, Menu * mc)
+{
+   MenuItem           *mi;
+
+   mi = MenuFindItemByChild(m, mc);
+   if (!mi)
+      return;
+
+   MenuSelectItem(m, mi, 0);
 }
 
 static void
@@ -1515,6 +1501,16 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
       return;
 
    mi = data->mi;
+   if (!mi)
+      return;
+
+   if (mi->child != m->child)
+      MenuHide(m->child);
+   m->child = mi->child;
+   if (!mi->child)
+      return;
+
+   mi->child->parent = m;
    MenuShow(mi->child, 1);
    ewin2 = mi->child->ewin;
    if (!ewin2 || !EwinFindByPtr(ewin2))
@@ -1532,11 +1528,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
    if (Conf.menus.onscreen)
      {
-	EWin               *menus[256];
-	int                 fx[256];
-	int                 fy[256];
-	int                 tx[256];
-	int                 ty[256];
+	EWin               *menus[256], *etmp;
+	int                 fx[256], fy[256], tx[256], ty[256];
 	int                 i, ww, hh;
 	int                 xdist = 0, ydist = 0;
 
@@ -1553,27 +1546,23 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
 	if ((xdist != 0) || (ydist != 0))
 	  {
-	     for (i = 0; i < Mode_menus.current_depth; i++)
+	     i = 0;
+	     for (m = Mode_menus.first; m; m = m->child)
 	       {
-		  menus[i] = NULL;
-		  if (Mode_menus.list[i])
-		    {
-		       ewin = Mode_menus.list[i]->ewin;
-		       if (ewin)
-			 {
-			    menus[i] = ewin;
-			    fx[i] = EoGetX(ewin);
-			    fy[i] = EoGetY(ewin);
-			    tx[i] = EoGetX(ewin) + xdist;
-			    ty[i] = EoGetY(ewin) + ydist;
-			 }
-		    }
+		  etmp = m->ewin;
+		  if (!etmp || etmp == ewin2)
+		     break;
+		  menus[i] = etmp;
+		  fx[i] = EoGetX(etmp);
+		  fy[i] = EoGetY(etmp);
+		  tx[i] = EoGetX(etmp) + xdist;
+		  ty[i] = EoGetY(etmp) + ydist;
+		  i++;
 	       }
 
 	     /* Disable menu item events while sliding */
 	     MenusSetEvents(0);
-	     SlideEwinsTo(menus, fx, fy, tx, ty, Mode_menus.current_depth,
-			  Conf.shadespeed);
+	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shadespeed);
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)
@@ -1590,61 +1579,35 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
    if (Conf.menus.animate)
       EwinUnShade(ewin2);
-
-   if (Mode_menus.list[Mode_menus.current_depth - 1] != mi->child)
-      Mode_menus.list[Mode_menus.current_depth++] = mi->child;
 }
 
 static void
 MenuActivateItem(Menu * m, MenuItem * mi)
 {
    static struct _mdata mdata;
-   int                 i, j;
+   MenuItem           *mi_prev;
 
-   if (m->sel_item)
-     {
-	m->sel_item->state = STATE_NORMAL;
-	MenuDrawItem(m, m->sel_item, 1);
-     }
+   mi_prev = m->sel_item;
 
-   m->sel_item = mi;
+   if (m->child)
+      MenuSelectItem(m->child, NULL, 0);
+   MenuSelectItem(m, mi, 1);
+   if (m->parent)
+      MenuSelectItemByChild(m->parent, m);
 
-   if (mi == NULL)
+   if (mi == mi_prev)
       return;
 
-   mi->state = STATE_HILITED;
-   MenuDrawItem(m, mi, 1);
+   if (mi && !mi->child && mi_prev && !mi_prev->child)
+      return;
 
    RemoveTimerEvent("SUBMENU_SHOW");
 
-   for (i = 0; i < Mode_menus.current_depth; i++)
+   if ((mi && mi->child && !mi->child->shown) || (mi && mi->child != m->child))
      {
-	if (Mode_menus.list[i] == m)
-	  {
-	     if ((!mi->child) ||
-		 ((mi->child) && (Mode_menus.list[i + 1] != mi->child)))
-	       {
-		  for (j = i + 1; j < Mode_menus.current_depth; j++)
-		     MenuHide(Mode_menus.list[j]);
-		  Mode_menus.current_depth = i + 1;
-		  i = Mode_menus.current_depth;
-		  break;
-	       }
-	  }
-     }
-
-   if ((mi->child) && (!mi->child->shown) && MenusActive())
-     {
-	EWin               *ewin;
-
-	mi->child->parent = m;
-	ewin = m->ewin;
-	if (ewin)
-	  {
-	     mdata.m = m;
-	     mdata.mi = mi;
-	     DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
-	  }
+	mdata.m = m;
+	mdata.mi = mi;
+	DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
      }
 }
 
@@ -1663,7 +1626,8 @@ MenuItemEventMouseOut(MenuItem * mi, XEvent * ev)
    if (ev->xcrossing.detail == NotifyInferior)
       return;
 
-   MenuActivateItem(mi->menu, NULL);
+   if (!mi->child)
+      MenuSelectItem(mi->menu, NULL, 0);
 }
 
 static void
@@ -2080,8 +2044,7 @@ MenusIpc(const char *params, Client * c __UNUSED__)
 
    if (!p || cmd[0] == '?')
      {
-	IpcPrintf("Menus - depth=%d, clicked=%d\n",
-		  Mode_menus.current_depth, Mode_menus.clicked);
+	IpcPrintf("Menus - active=%d\n", MenusActive());
      }
    else if (!strncmp(cmd, "list", 2))
      {

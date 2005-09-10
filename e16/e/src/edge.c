@@ -24,6 +24,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "ewins.h"
+#include "menus.h"		/* FIXME - Should not be here */
 #include "xwin.h"
 
 /* FIXME: Screen resizing not handled. */

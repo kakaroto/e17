@@ -24,6 +24,7 @@
 #include "E.h"
 #include "buttons.h"
 #include "conf.h"
+#include "menus.h"
 #include "tooltips.h"
 #include <ctype.h>
 
