@@ -290,8 +290,8 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
-	      call_depth, Mode.mode, _EwinGetClientXwin(ewin), flags, dsk->num,
-	      x, y, w, h, EwinGetName(ewin));
+	      call_depth, Mode.mode, _EwinGetClientXwin(ewin), flags,
+	      (dsk) ? (int)dsk->num : -1, x, y, w, h, EwinGetName(ewin));
 
    pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : NULL;
    reparent = move = resize = raise = 0;
@@ -546,7 +546,7 @@ EwinMoveToDesktopAt(EWin * ewin, Desk * dsk, int x, int y)
 void
 EwinFloatAt(EWin * ewin, int x, int y)
 {
-   doEwinMoveResize(ewin, NULL, x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
+   doEwinMoveResize(ewin, EoGetDesk(ewin), x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
 }
 
 void
