@@ -325,7 +325,7 @@ void
 	  {
 	     int r;
 	     srand((int)ecore_time_get());
-	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(RAND_MAX+1.0));
+	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
 	     printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
 	     view->images = evas_list_nth_list(view->imfirst,r);
 	  }
@@ -347,7 +347,7 @@ void
 	  {
 	     int r;
 	     srand((int)ecore_time_get());
-	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(RAND_MAX+1.0));
+	     r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
 	     printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
 	     view->images = evas_list_nth_list(view->imfirst,r);
 	  }
@@ -426,7 +426,7 @@ int
      {
 	int r;
 	srand((int)ecore_time_get());
-	r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(RAND_MAX+1.0));
+	r = 0+(int) ((float)(evas_list_count(view->imfirst))*rand()/(INT_MAX+1.0));
 	printf("using image no. %d from %d\n",r,evas_list_count(view->imfirst));
 	view->images = evas_list_nth_list(view->imfirst,r);
      }

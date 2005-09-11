@@ -9,6 +9,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include <limits.h>
 #include "eclipse.h"
 #include "menu.h"
 #include "bg.h"
