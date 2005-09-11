@@ -1818,8 +1818,15 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
      case PropertyNotify:
 	EwinEventPropertyNotify(ewin, ev);
 	break;
+
+     case ClientMessage:
+	HintsProcessClientMessage(&(ev->xclient));
+	break;
+
      case EX_EVENT_SHAPE_NOTIFY:
 	EwinEventShapeChange(ewin);
+	break;
+
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsClient: type=%2d win=%#lx: %s\n",
