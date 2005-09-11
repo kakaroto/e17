@@ -54,6 +54,7 @@ static int          warpFocusIndex = 0;
 static unsigned int warpFocusKey = 0;
 static int          warplist_num = 0;
 static WarplistItem *warplist;
+static char         warpFirst = 0;
 
 #define ICON_PAD 2
 
@@ -149,6 +150,7 @@ WarpFocusShow(EWin * ewin)
 	 */
 	GrabKeyboardSet(warpFocusWindow->win);
 	GrabPointerSet(warpFocusWindow->win, None, 0);
+	warpFirst = 1;
      }
 
    for (i = 0; i < warplist_num; i++)
@@ -254,6 +256,7 @@ WarpFocus(int delta)
 		   ((EwinIsOnScreen(ewin)) || (ewin->state.iconified)) &&
 		   /* Exclude windows that explicitely say so */
 		   (!ewin->props.skip_focuslist) &&
+		   (!ewin->props.skip_ext_task) &&
 		   /* Keep shaded windows if conf say so */
 		   ((!ewin->state.shaded) || (Conf.warplist.showshaded)) &&
 		   /* Keep sticky windows if conf say so */
@@ -362,14 +365,23 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 	break;
 #endif
      case KeyRelease:
-	if (!warpFocusWindow->shown || ev->xkey.keycode == warpFocusKey)
+	if (!warpFocusWindow->shown)
 	   break;
-	key = XLookupKeysym(&ev->xkey, 0);
+	if (warpFirst)
+	  {
+	     warpFirst = 0;
+	     break;
+	  }
+	if (ev->xkey.keycode == warpFocusKey)
+	   key = XK_Tab;
+	else
+	   key = XLookupKeysym(&ev->xkey, 0);
 	switch (key)
 	  {
 	  default:
 	     WarpFocusFinish();
 	     break;
+	  case XK_Tab:
 	  case XK_Down:
 	     WarpFocus(1);
 	     break;
