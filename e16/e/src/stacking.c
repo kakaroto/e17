@@ -110,7 +110,7 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
 	     EobjListLower(ewl, eo);
 	  }
 	if (eo->stacked == 0)
-	   DeskSetDirtyStack(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
      }
    else
      {
@@ -183,14 +183,14 @@ EobjListLower(EobjList * ewl, EObj * eo)
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
 	ewl->list[j] = eo;
 	if (ewl->layered && eo->stacked > 0)
-	   DeskSetDirtyStack(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
      }
    else if (n < 0)
      {
 	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EObj *));
 	ewl->list[j] = eo;
 	if (ewl->layered && eo->stacked > 0)
-	   DeskSetDirtyStack(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
      }
 
    EobjListShow("EobjListLower", ewl);
@@ -224,14 +224,14 @@ EobjListRaise(EobjList * ewl, EObj * eo)
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EObj *));
 	ewl->list[j] = eo;
 	if (ewl->layered && eo->stacked > 0)
-	   DeskSetDirtyStack(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
      }
    else if (n < 0)
      {
 	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EObj *));
 	ewl->list[j] = eo;
 	if (ewl->layered && eo->stacked > 0)
-	   DeskSetDirtyStack(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
      }
 
    EobjListShow("EobjListRaise", ewl);

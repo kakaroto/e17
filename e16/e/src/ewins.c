@@ -1214,59 +1214,12 @@ EwinReparent(EWin * ewin, Window parent)
    EReparentWindow(_EwinGetClientWin(ewin), parent, 0, 0);
 }
 
-/*
- * Place particular EWin at appropriate location in the window stack
- */
-static void
-RestackEwin(EWin * ewin)
-{
-   EWin               *const *lst;
-   int                 i, num;
-   XWindowChanges      xwc;
-   unsigned int        value_mask;
-
-   if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("RestackEwin %#lx %s\n", _EwinGetClientXwin(ewin),
-	      EwinGetName(ewin));
-
-   lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
-   if (num < 2)
-      goto done;
-
-   for (i = 0; i < num; i++)
-      if (lst[i] == ewin)
-	 break;
-   if (i < num - 1)
-     {
-	xwc.stack_mode = Above;
-	xwc.sibling = EoGetWin(lst[i + 1]);
-     }
-   else
-     {
-	xwc.stack_mode = Below;
-	xwc.sibling = EoGetWin(lst[i - 1]);
-     }
-   value_mask = CWSibling | CWStackMode;
-   if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("RestackEwin %#10lx %s %#10lx\n", EoGetWin(ewin),
-	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
-   XConfigureWindow(disp, EoGetWin(ewin), value_mask, &xwc);
-   HintsSetClientStacking();
-   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
-
- done:
-   ;
-}
-
 void
 RaiseEwin(EWin * ewin)
 {
    static int          call_depth = 0;
    EWin              **lst;
    int                 i, num;
-
-   if (EoGetWin(ewin) == None)
-      return;
 
    if (call_depth > 256)
       return;
@@ -1288,12 +1241,7 @@ RaiseEwin(EWin * ewin)
       Efree(lst);
 
    if (call_depth == 1)
-     {
-	if (num > 0)
-	   StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
-	else
-	   RestackEwin(ewin);	/* Restack this one only */
-     }
+      ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
  done:
    call_depth--;
@@ -1305,9 +1253,6 @@ LowerEwin(EWin * ewin)
    static int          call_depth = 0;
    EWin              **lst;
    int                 i, num;
-
-   if (EoGetWin(ewin) == None)
-      return;
 
    if (call_depth > 256)
       return;
@@ -1329,12 +1274,7 @@ LowerEwin(EWin * ewin)
       Efree(lst);
 
    if (call_depth == 1)
-     {
-	if (num > 0)
-	   StackDesktop(EoGetDesk(ewin));	/* Do the full stacking */
-	else
-	   RestackEwin(ewin);	/* Restack this one only */
-     }
+      ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
  done:
    call_depth--;

@@ -34,7 +34,7 @@ EobjSetDesk(EObj * eo, Desk * dsk)
       return;
 
    if (eo->stacked > 0)
-      DeskSetDirtyStack(dsk);
+      DeskSetDirtyStack(dsk, eo);
    eo->desk = dsk;
 }
 
@@ -292,8 +292,8 @@ EobjMap(EObj * eo, int raise)
    if (eo->stacked <= 0 || raise > 1)
      {
 	if (eo->stacked < 0)
-	   DeskSetDirtyStack(eo->desk);
-	StackDesktop(eo->desk);
+	   DeskSetDirtyStack(eo->desk, eo);
+	DeskRestack(eo->desk);
      }
 
    EMapWindow(eo->win);

@@ -1224,11 +1224,11 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 
    lst = EobjListStackGet(&num);
 
-   IpcPrintf("Num   window  T V  D S F   L     pos       size    C R Name\n");
+   IpcPrintf("Num    window T V  D S F   L     pos       size    C R Name\n");
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];
-	IpcPrintf(" %2d %#lx %d %d %2d %d %d %3d %5d,%5d %4dx%4d %d %d %s\n",
+	IpcPrintf(" %2d %#9lx %d %d %2d %d %d %3d %5d,%5d %4dx%4d %d %d %s\n",
 		  i, eo->win, eo->type, eo->shown, eo->desk->num, eo->sticky,
 		  eo->floating, eo->ilayer, eo->x, eo->y, eo->w, eo->h,
 #if USE_COMPOSITE

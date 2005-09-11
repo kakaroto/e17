@@ -33,12 +33,16 @@ struct _desk
    EObj                o;
    unsigned int        num;
    char                viewable;
-   char                dirty_stack;
    Background         *bg;
    struct _button     *tag;
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
+   struct
+   {
+      int                 dirty;
+      EObj               *latest;
+   } stack;
 };
 
 /* desktops.c */
@@ -48,7 +52,7 @@ Background         *DeskGetBackground(const Desk * dsk);
 void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);
 int                 DeskIsViewable(const Desk * dsk);
-void                DeskSetDirtyStack(Desk * dsk);
+void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
 
 void                DeskRefresh(Desk * dsk);
 void                DeskAssignBg(unsigned int desk, Background * bg);
@@ -58,8 +62,9 @@ void                DeskSwitchStart(void);
 void                DeskSwitchDone(void);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
-void                StackDesktop(Desk * dsk);
 void                DeskGotoByEwin(EWin * ewin);
+
+void                DeskRestack(Desk * dsk);
 
 unsigned int        DesksGetNumber(void);
 Desk               *DesksGetCurrent(void);

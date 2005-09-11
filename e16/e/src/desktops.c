@@ -553,11 +553,13 @@ DeskIsViewable(const Desk * dsk)
 }
 
 void
-DeskSetDirtyStack(Desk * dsk)
+DeskSetDirtyStack(Desk * dsk, EObj * eo)
 {
-   dsk->dirty_stack++;
+   dsk->stack.dirty++;
+   dsk->stack.latest = eo;
    if (EventDebug(EDBUG_TYPE_STACKING))
-      Eprintf("DeskSetDirtyStack %d (%d)\n", dsk->num, dsk->dirty_stack);
+      Eprintf("DeskSetDirtyStack %d (%d): %s\n", dsk->num, dsk->stack.dirty,
+	      EobjGetName(eo));
 }
 
 void
@@ -904,9 +906,9 @@ DesksStackingCheck(void)
 	dsk = _DeskGet(i);
 	if (i && !dsk->viewable)
 	   continue;
-	if (!dsk->dirty_stack)
+	if (!dsk->stack.dirty)
 	   continue;
-	StackDesktop(dsk);
+	DeskRestack(dsk);
      }
 }
 
@@ -1222,20 +1224,71 @@ DeskShow(int desk)
 }
 #endif
 
+static void
+DeskRestackSimple(Desk * dsk)
+{
+   EObj               *const *lst, *eo;
+   int                 i, num;
+   XWindowChanges      xwc;
+   unsigned int        value_mask;
+
+   eo = dsk->stack.latest;
+   eo->stacked = 1;
+
+   if (EventDebug(EDBUG_TYPE_STACKING))
+      Eprintf("DeskRestackSimple %#lx %s\n", EobjGetWin(eo), EobjGetName(eo));
+
+   lst = EobjListStackGetForDesk(&num, dsk);
+   if (num < 2)
+      return;
+
+   for (i = 0; i < num; i++)
+      if (lst[i] == eo)
+	 break;
+   if (i >= num)
+      return;
+
+   if (i < num - 1)
+     {
+	xwc.stack_mode = Above;
+	xwc.sibling = EobjGetWin(lst[i + 1]);
+     }
+   else
+     {
+	xwc.stack_mode = Below;
+	xwc.sibling = EobjGetWin(lst[i - 1]);
+     }
+   value_mask = CWSibling | CWStackMode;
+   if (EventDebug(EDBUG_TYPE_STACKING))
+      Eprintf("DeskRestackSimple %#10lx %s %#10lx\n", EobjGetWin(eo),
+	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
+   XConfigureWindow(disp, EobjGetWin(eo), value_mask, &xwc);
+
+#if 1				/* FIXME - Should not be here */
+   HintsSetClientStacking();
+#endif
+}
+
 #define _APPEND_TO_WIN_LIST(win) \
   { \
      wl = Erealloc(wl, ++tot * sizeof(Window)); \
      wl[tot - 1] = win; \
   }
 void
-StackDesktop(Desk * dsk)
+DeskRestack(Desk * dsk)
 {
    Window             *wl;
    int                 i, num, tot;
    EObj               *const *lst, *eo;
 
-   /* Build the window stack, top to bottom */
+   /* Special case if only one window needs restacking */
+   if (dsk->stack.dirty == 1)
+     {
+	DeskRestackSimple(dsk);
+	goto done;
+     }
 
+   /* Build the window stack, top to bottom */
    tot = 0;
    wl = NULL;
    lst = EobjListStackGetForDesk(&num, dsk);
@@ -1250,7 +1303,7 @@ StackDesktop(Desk * dsk)
 
    if (EventDebug(EDBUG_TYPE_STACKING))
      {
-	Eprintf("StackDesktop %d (%d):\n", dsk->num, dsk->dirty_stack);
+	Eprintf("DeskRestack %d (%d):\n", dsk->num, dsk->stack.dirty);
 	for (i = 0; i < tot; i++)
 	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i],
 		   EWindowGetParent(wl[i]));
@@ -1262,7 +1315,9 @@ StackDesktop(Desk * dsk)
    if (wl)
       Efree(wl);
 
-   dsk->dirty_stack = 0;
+ done:
+   dsk->stack.dirty = 0;
+   dsk->stack.latest = NULL;
 }
 
 void

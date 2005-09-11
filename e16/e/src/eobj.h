@@ -60,6 +60,7 @@ struct _eobj
 
 #define EobjGetWin(eo)          ((eo)->win)
 #define EobjGetDesk(eo)         ((eo)->desk)
+#define EobjGetName(eo)         ((eo)->name)
 #define EobjGetX(eo)            ((eo)->x)
 #define EobjGetY(eo)            ((eo)->y)
 #define EobjGetW(eo)            ((eo)->w)
