@@ -1069,6 +1069,9 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
+   if (!cw)
+      return;
+
    if (Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFade(eo, cw->opacity, opacity);
    else
