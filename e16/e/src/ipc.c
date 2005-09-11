@@ -1224,7 +1224,7 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 
    lst = EobjListStackGet(&num);
 
-   IpcPrintf("Num   window T V  D S F   L     pos       size    C R Name\n");
+   IpcPrintf("Num   window  T V  D S F   L     pos       size    C R Name\n");
    for (i = 0; i < num; i++)
      {
 	eo = lst[i];

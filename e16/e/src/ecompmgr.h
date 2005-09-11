@@ -28,6 +28,7 @@
 typedef struct
 {
    char                enable;
+   char                fading;
    int                 shadow;
 } cfg_composite;
 

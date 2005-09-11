@@ -1197,8 +1197,20 @@ SettingsComposite(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Composite"));
-   DialogItemCheckButtonSetState(di, Cfg_composite.enable);
    DialogItemCheckButtonSetPtr(di, &Cfg_composite.enable);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Enable Fading"));
+   DialogItemCheckButtonSetPtr(di, &Cfg_composite.fading);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

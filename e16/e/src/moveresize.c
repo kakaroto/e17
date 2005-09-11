@@ -92,6 +92,10 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
      {
 	EwinShapeSet(ewin);
 	EwinFloatAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
+	if (Conf.movres.mode_move == 0)
+	  {
+	     EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
+	  }
      }
    Efree(gwins);
    Mode_mr.swapcoord_x = EoGetX(ewin);
@@ -429,10 +433,6 @@ ActionMoveHandleMotion(void)
 			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0);
 	  }
 	Mode.mode = MODE_MOVE;
-	if (Conf.movres.mode_move == 0)
-	  {
-	     EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
-	  }
      }
 
    dx = Mode.events.x - Mode.events.px;

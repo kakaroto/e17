@@ -78,15 +78,14 @@ typedef struct
    Pixmap              pixmap;
    struct
    {
-      int                 class;	/* FIXME - Remove? */
       int                 depth;	/* FIXME - Remove? */
       Visual             *visual;	/* FIXME - Remove? */
       int                 border_width;
    } a;
    int                 rcx, rcy, rcw, rch;
    int                 mode;
-   char                visible;
-   char                damaged;
+   unsigned            damaged:1;
+   unsigned            fading:1;
    Damage              damage;
    Picture             picture;
    Picture             alphaPict;
@@ -964,8 +963,8 @@ ECompMgrWinInvalidate(EObj * eo, int what)
      }
 }
 
-void
-ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
+static void
+ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 {
    ECmWinInfo         *cw = eo->cmhook;
    int                 mode;
@@ -975,8 +974,7 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
 
    cw->opacity = opacity;
 
-   D1printf("ECompMgrWinChangeOpacity: %#lx opacity=%#x\n", eo->win,
-	    cw->opacity);
+   D1printf("ECompMgrWinSetOpacity: %#lx opacity=%#x\n", eo->win, cw->opacity);
 
    if (eo->shown)		/* FIXME - ??? */
       /* Extents may be unchanged, however, we must repaint */
@@ -1021,12 +1019,14 @@ doECompMgrWinFade(int val, void *data)
    if (cw->opacity == op)
       return;
 
+   cw->fading = 0;
    if (op > cw->opacity)
      {
 	if (op - cw->opacity > Conf_compmgr.fading.step)
 	  {
 	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity + Conf_compmgr.fading.step;
+	     cw->fading = 1;
 	  }
      }
    else
@@ -1035,27 +1035,44 @@ doECompMgrWinFade(int val, void *data)
 	  {
 	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity - Conf_compmgr.fading.step;
+	     cw->fading = 1;
 	  }
      }
 
 #if 0
    Eprintf("doECompMgrWinFade %#lx, %#x\n", eo->win, op);
 #endif
-   ECompMgrWinChangeOpacity(eo, op);
+   ECompMgrWinSetOpacity(eo, op);
+}
+
+static void
+ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
+{
+   ECompMgrWinFadeDoIn(eo, op_to);
+   ECompMgrWinSetOpacity(eo, op_from);
 }
 
 static void
 ECompMgrWinFadeIn(EObj * eo)
 {
-   ECompMgrWinFadeDoIn(eo, eo->opacity);
-   ECompMgrWinChangeOpacity(eo, 0x10000000);
+   ECompMgrWinFade(eo, 0x10000000, eo->opacity);
 }
 
 static void
 ECompMgrWinFadeOut(EObj * eo)
 {
-   ECompMgrWinFadeDoIn(eo, 0x10000000);
-   ECompMgrWinChangeOpacity(eo, eo->opacity);
+   ECompMgrWinFade(eo, eo->opacity, 0x10000000);
+}
+
+void
+ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   if (Conf_compmgr.fading.enable && eo->fade)
+      ECompMgrWinFade(eo, cw->opacity, opacity);
+   else
+      ECompMgrWinSetOpacity(eo, opacity);
 }
 
 void
@@ -1159,7 +1176,6 @@ ECompMgrWinNew(EObj * eo)
 
    cw->damaged = 0;
 
-   cw->a.class = attr.class;	/* FIXME - remove */
    cw->a.depth = attr.depth;
    cw->a.visual = attr.visual;
    cw->a.border_width = attr.border_width;
@@ -1208,7 +1224,7 @@ ECompMgrWinNew(EObj * eo)
 #endif
 
    cw->opacity = 0xdeadbeef;
-   ECompMgrWinChangeOpacity(eo, eo->opacity);
+   ECompMgrWinSetOpacity(eo, eo->opacity);
 
    EventCallbackRegister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 }
@@ -1455,7 +1471,12 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
      {
 	eo = lst[i];
 
-	if (!eo->shown || eo->desk != dsk)
+	cw = eo->cmhook;
+
+	if (!cw)
+	   continue;
+
+	if ((!eo->shown && !cw->fading) || eo->desk != dsk)
 	   continue;
 
 	D4printf(" - %#lx desk=%d shown=%d\n", eo->win, eo->desk->num,
@@ -1483,11 +1504,6 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	       }
 	     ECompMgrWinSetPicts(&d->o);
 	  }
-
-	cw = eo->cmhook;
-
-	if (!cw)
-	   continue;
 
 	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
 		 eo->win, eo->desk->num, eo->shown, cw->damaged, cw->picture);
@@ -1963,6 +1979,7 @@ void
 ECompMgrConfigGet(cfg_composite * cfg)
 {
    cfg->enable = Conf_compmgr.enable;
+   cfg->fading = Conf_compmgr.fading.enable;
    cfg->shadow = Conf_compmgr.shadows.mode;
 }
 
@@ -2001,6 +2018,8 @@ ECompMgrConfigSet(const cfg_composite * cfg)
 	       }
 	  }
      }
+
+   Conf_compmgr.fading.enable = cfg->fading;
 
    autosave();
 }
