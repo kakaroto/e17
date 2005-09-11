@@ -557,6 +557,8 @@ DeskSetDirtyStack(Desk * dsk, EObj * eo)
 {
    dsk->stack.dirty++;
    dsk->stack.latest = eo;
+   if (EobjGetType(eo) == EOBJ_TYPE_EWIN)
+      dsk->stack.update_client_list = 1;
    if (EventDebug(EDBUG_TYPE_STACKING))
       Eprintf("DeskSetDirtyStack %d (%d): %s\n", dsk->num, dsk->stack.dirty,
 	      EobjGetName(eo));
@@ -1263,10 +1265,6 @@ DeskRestackSimple(Desk * dsk)
       Eprintf("DeskRestackSimple %#10lx %s %#10lx\n", EobjGetWin(eo),
 	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
    XConfigureWindow(disp, EobjGetWin(eo), value_mask, &xwc);
-
-#if 1				/* FIXME - Should not be here */
-   HintsSetClientStacking();
-#endif
 }
 
 #define _APPEND_TO_WIN_LIST(win) \
@@ -1310,12 +1308,16 @@ DeskRestack(Desk * dsk)
      }
 
    XRestackWindows(disp, wl, tot);
-   HintsSetClientStacking();
 
    if (wl)
       Efree(wl);
 
  done:
+   if (dsk->stack.update_client_list)
+     {
+	dsk->stack.update_client_list = 0;
+	HintsSetClientStacking();
+     }
    dsk->stack.dirty = 0;
    dsk->stack.latest = NULL;
 }

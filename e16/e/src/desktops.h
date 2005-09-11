@@ -42,6 +42,7 @@ struct _desk
    {
       int                 dirty;
       EObj               *latest;
+      char                update_client_list;
    } stack;
 };
 
