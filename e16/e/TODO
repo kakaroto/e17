@@ -1,9 +1,8 @@
 
 - Composite manager
+  - Finish fading.
   - Don't paint unredirected windows where not necessary.
-  - Enable not redirecting certain clients.
-
-- Speed up window stacking.
+  - Enable not redirecting certain clients?
 
 - netwm hints
   - More (_NET_WM_USER_TIME ...)?
