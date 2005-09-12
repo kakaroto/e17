@@ -23,6 +23,7 @@ ITEM_OVERLAY("eapps_bar_body","v");
 part {
     name, "eapps_bar";
     type, SWALLOW;
+    mouse_events, 1;
     description {
         state, "default" 0.0;
         rel1 {

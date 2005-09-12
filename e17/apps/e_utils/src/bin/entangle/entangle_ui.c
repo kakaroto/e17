@@ -17,6 +17,10 @@ static int entangle_ui_menu_populate_list(const char *name, Ecore_List *apps,
                                         Evas_Object *container);
 
 /* container scroll callbacks */
+static void entangle_ui_cb_scroll_up(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
+static void entangle_ui_cb_scroll_down(void *data, Evas_Object *obj,
+                                const char *emission, const char *src);
 static void entangle_ui_cb_up_pressed(void *data, Evas_Object *obj,
                                 const char *emission, const char *src);
 static void entangle_ui_cb_up_released(void *data, Evas_Object *obj,
@@ -329,7 +333,75 @@ entangle_ui_eapps_bar_populate(Evas_Object *container)
         edje_object_signal_callback_add(edje, "up,click,release", "*", entangle_ui_cb_up_released, NULL);
         edje_object_signal_callback_add(edje, "down,click,release", "*", entangle_ui_cb_down_released, NULL);
     }
+    
+    edje_object_signal_callback_add(edje, "wheel,up", "*", entangle_ui_cb_scroll_up, NULL);
+    edje_object_signal_callback_add(edje, "wheel,down", "*", entangle_ui_cb_scroll_down, NULL);
+    
     return 1;
+}
+
+static int _scroll_count = 0;
+
+static int
+entangle_ui_cb_scroll_stop(void *data)
+{
+   Evas *evas = data;
+   Evas_Object *o;
+
+   if (_scroll_count > 0)
+      _scroll_count--;
+   else if (_scroll_count < 0)
+      _scroll_count++;
+   
+   if (!_scroll_count)
+   {
+      o = evas_object_name_find(evas, "eapps_bar");
+      esmart_container_scroll_stop(o);
+   }
+   
+   return 0;
+}
+  
+static void
+entangle_ui_cb_scroll_up(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o;
+
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "eapps_bar");
+    if (!_scroll_count)
+    {
+       esmart_container_scroll_start(o, 4);
+    }
+    if (_scroll_count < 0)
+       _scroll_count = 1;
+    else
+       _scroll_count++;
+    ecore_timer_add(0.25, entangle_ui_cb_scroll_stop, evas);
+}
+
+static void
+entangle_ui_cb_scroll_down(void *data __UNUSED__, Evas_Object *obj,
+                                const char *emission __UNUSED__, 
+                                const char *src __UNUSED__)
+{
+    Evas *evas;
+    Evas_Object *o;
+
+    evas = evas_object_evas_get(obj);
+    o = evas_object_name_find(evas, "eapps_bar");
+    if (!_scroll_count)
+    {
+       esmart_container_scroll_start(o, -4);
+    }
+    if (_scroll_count > 0)
+       _scroll_count = -1;
+    else
+       _scroll_count--;
+    ecore_timer_add(0.25, entangle_ui_cb_scroll_stop, evas);
 }
 
 static void
@@ -384,7 +456,6 @@ entangle_ui_cb_down_released(void *data __UNUSED__, Evas_Object *obj,
     esmart_container_scroll_stop(o);
 }
 
-
 static void
 entangle_ui_cb_menu_up_pressed(void *data __UNUSED__, Evas_Object *obj,
                                 const char *emission __UNUSED__, 
@@ -397,6 +468,7 @@ entangle_ui_cb_menu_up_pressed(void *data __UNUSED__, Evas_Object *obj,
     o = evas_object_name_find(evas, "menu");
     esmart_container_scroll_start(o, 2);        
 }
+
 
 static void
 entangle_ui_cb_menu_up_released(void *data __UNUSED__, Evas_Object *obj,
@@ -687,19 +759,22 @@ entangle_ui_cb_mouse_down(void *data, Evas *evas,
 
     if ((e->canvas.y > y) && (e->canvas.y < (y + h)))
     {
-        o = edje_object_add(evas);
-        edje_object_file_set(o, eapp->path, "icon");
-        evas_object_move(o, e->canvas.x - 18, e->canvas.y - 18);
-        evas_object_resize(o, 36, 36);
-        evas_object_layer_set(o, 2);
-        evas_object_color_set(o, 255, 255, 255, 198);
-        evas_object_show(o);
+        if (e->button == 1)
+        {
+            o = edje_object_add(evas);
+            edje_object_file_set(o, eapp->path, "icon");
+            evas_object_move(o, e->canvas.x - 18, e->canvas.y - 18);
+            evas_object_resize(o, 36, 36);
+            evas_object_layer_set(o, 2);
+            evas_object_color_set(o, 255, 255, 255, 198);
+            evas_object_show(o);
 
-        evas_object_data_set(o, "eapp", eapp);
-        evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                            entangle_ui_cb_mouse_move, o);
-        evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP,
-                                            entangle_ui_cb_mouse_up, o);
+            evas_object_data_set(o, "eapp", eapp);
+            evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                                entangle_ui_cb_mouse_move, o);
+            evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP,
+                                                entangle_ui_cb_mouse_up, o);
+        }
     }
 }
 
@@ -719,6 +794,7 @@ entangle_ui_cb_mouse_up(void *data, Evas *evas,
     o = evas_object_name_find(evas, "edje");
     edje_object_part_geometry_get(o, "menu_base", &x, &y, &w, &h);
 
+        
     if ((e->canvas.x > x) && (e->canvas.y > y)
             && (e->canvas.x < (x + w)) && (e->canvas.y < (y + h)))
     {

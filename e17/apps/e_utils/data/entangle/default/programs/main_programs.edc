@@ -2,6 +2,20 @@ EAPPS_ARROW_PROGS("up");
 EAPPS_ARROW_PROGS("down");
 
 program {
+   name, "scrollup";
+   source, "*";
+   signal, "mouse,wheel,*,-1";
+   action, SIGNAL_EMIT "wheel,up" "*";
+}
+
+program {
+   name, "scrolldown";
+   source, "*";
+   signal, "mouse,wheel,*,1";
+   action, SIGNAL_EMIT "wheel,down" "*";
+}
+
+program {
     name, "hide";
     source, "*";
     signal, "arrows,hide";
