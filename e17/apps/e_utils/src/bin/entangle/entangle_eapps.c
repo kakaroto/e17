@@ -4,6 +4,7 @@
 #include <string.h>
 
 static Ecore_Hash *entangle_eapps = NULL;
+static Ecore_List *entangle_eapp_list = NULL;
 static void entangle_eapps_cb_free(void *data);
 
 int
@@ -36,6 +37,7 @@ entangle_eapps_init()
     }
 
     entangle_eapps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    entangle_eapp_list = ecore_list_new();
     ecore_hash_set_free_value(entangle_eapps, entangle_eapps_cb_free);
     for (i = 0; i < ecore_list_nodes(eapps); i++)
     {
@@ -85,8 +87,11 @@ entangle_eapps_init()
             snprintf(eapp->class, ret_size + 1, "%s", ret);
         }
         ecore_hash_set(entangle_eapps, tmp, eapp);
+        ecore_list_append(entangle_eapp_list, tmp);
         eet_close(ef);
     }
+
+    ecore_list_destroy(eapps);
 
     return 1;
 }
@@ -122,6 +127,6 @@ Ecore_List *
 entangle_eapps_key_list_get(void)
 {
     if (!entangle_eapps) return NULL;
-    return ecore_hash_keys(entangle_eapps);
+    return entangle_eapp_list;
 }
 
