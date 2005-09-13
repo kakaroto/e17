@@ -320,9 +320,13 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	p->timcomp = ecore_timer_add(COMPARE_INTERVAL, &timer_val_compare, p);
 
 	if (saveload != NULL) {
-		setup_saveload_opt(saveload->tree, (char *)
-				   get_title_by_note(*note), *note);
+		char *title;
+		title = get_title_by_note(*note);
+		setup_saveload_opt(saveload->tree, title, *note);
 		dml("Added new note to saveload list", 2);
+
+		if (title)
+			free(title);
 	}
 
 	return;
@@ -517,11 +521,16 @@ void
 note_edje_save(Evas_List * note, Evas_Object * o,
 const char *emission, const char *source){
 	Note *p;
+	char *title;
+
 	dml("Saving a Note",2);
 	p=evas_list_data(note);
 
-	ewl_saveload_save_by_name(get_title_by_content(ewl_text_text_get((Ewl_Text*)p->content)));
+	title = get_title_by_content(ewl_text_text_get((Ewl_Text*)p->content));
+	ewl_saveload_save_by_name(title);
 	
+	if (title)
+		free(title);
 	return;
 }
 
@@ -570,23 +579,24 @@ note_edje_close_timer(void *p)
 int
 timer_val_compare(void *data)
 {
-	Note           *p = (Note *) data;
+	Note           *p;
 	char           *tmp;
 
-	if (p->timcomp == NULL)
+	p = (Note *) data;
+	if (!p->timcomp)
 		return (0);
 
-	if (p->txt_title != NULL) {
+	if (p->txt_title) {
 		tmp = get_title_by_note_struct(p);
-		if (tmp == NULL || strcmp(p->txt_title, tmp)) {
-			if (saveload != NULL)
+		if (!tmp || strcmp(p->txt_title, tmp)) {
+			if (saveload)
 				ewl_saveload_revert(NULL, NULL, saveload->tree);
 
-			if (p->txt_title != NULL)
+			if (p->txt_title)
 				free(p->txt_title);
 			p->txt_title = get_title_by_note_struct(p);
 		}
-		if (tmp != NULL)
+		if (tmp)
 			free(tmp);
 	} else {
 		p->txt_title = get_title_by_note_struct(p);
@@ -674,15 +684,26 @@ Evas_List      *
 get_note_by_title(char *title)
 {
 	Evas_List      *a;
+	char *note_title;
 
 	a = get_cycle_begin();
-	if (!strcmp(get_title_by_note(a), title)) {
+	note_title = get_title_by_note(a);
+	if (!strcmp(note_title, title)) {
+		if (note_title)
+			free(note_title);
 		return (a);
 	}
+	if (note_title)
+		free(note_title);
 	while ((a = get_cycle_next_note(a)) != NULL) {
-		if (!strcmp(get_title_by_note(a), title)) {
+		note_title = get_title_by_note(a);
+		if (!strcmp(note_title, title)) {
+			if (note_title)
+				free(note_title);
 			return (a);
 		}
+		if (note_title)
+			free(note_title);
 	}
 	return (NULL);
 }
@@ -728,7 +749,14 @@ get_title_by_note(Evas_List * note)
 char           *
 get_title_by_note_struct(Note * note)
 {
-	return (get_title_by_content(get_content_by_note_struct(note)));
+	char *content, *title;
+
+	content = get_content_by_note_struct(note);
+	title = get_title_by_content(content);
+
+	if (content)
+		free(content);
+	return title;
 }
 
 /**
@@ -764,12 +792,15 @@ get_content_by_note_struct(Note * note)
 char           *
 get_title_by_content(char *content)
 {
-	char           *cont = content;
-	int             a = 0;
-	int             newlength = 0;
+	char           *cont;
+	int             a;
+	int             newlength;
 
 	if (!content)
 		return NULL;
+	cont = content;
+	a = 0;
+	newlength = 0;
 
 	while (a < TITLE_LENGTH && cont != NULL) {
 		if (!strncmp(cont, "\n", 1)) {
@@ -779,7 +810,6 @@ get_title_by_content(char *content)
 		a++;
 		cont++;
 	}
-	a = 0;
 
 	if (newlength == 0)
 		newlength = TITLE_LENGTH;
@@ -840,7 +870,12 @@ note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 update_enote_title(Evas_Object * edje, char *content)
 {
+	char *old;
+
+	old = get_title_by_content(content); //edje_object_part_text_get(edje, EDJE_TEXT_TITLE);
 	edje_object_part_text_set(edje, EDJE_TEXT_TITLE,
-				  get_title_by_content(content));
+				  old);
+	if (old)
+		free(old);
 	return;
 }
