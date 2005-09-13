@@ -870,12 +870,11 @@ note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 update_enote_title(Evas_Object * edje, char *content)
 {
-	char *old;
+	char *title;
 
-	old = get_title_by_content(content); //edje_object_part_text_get(edje, EDJE_TEXT_TITLE);
-	edje_object_part_text_set(edje, EDJE_TEXT_TITLE,
-				  old);
-	if (old)
-		free(old);
+	title = get_title_by_content(content);
+	edje_object_part_text_set(edje, EDJE_TEXT_TITLE, title);
+	if (title)
+		free(title);
 	return;
 }
