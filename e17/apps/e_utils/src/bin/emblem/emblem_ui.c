@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 /* TODO
  *  * make the thumbs cache to disk, check the edj mtime againts a the time

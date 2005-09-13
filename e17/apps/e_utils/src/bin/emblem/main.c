@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #define IF_FREE(x) { if (x) free(x); x = NULL; }
 
