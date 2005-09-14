@@ -5,6 +5,7 @@
 
 #include <e.h>
 #include <Ecore.h>
+#include "config.h"
 
 #include "flow_chart.h"
 #include "linux_2.6.h"

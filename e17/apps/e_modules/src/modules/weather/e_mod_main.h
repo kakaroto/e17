@@ -4,6 +4,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include "config.h"
+
 #define SIMPLE_DISPLAY   0
 #define DETAILED_DISPLAY 1
 
