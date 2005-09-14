@@ -2054,7 +2054,7 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
      {
 	edje_object_signal_emit(ic->bg_object, "start", "");
 	edje_object_signal_emit(ic->overlay_object, "start", "");
-	e_app_exec(ic->app);
+	e_zone_app_exec(ic->eb->gmc->zone, ic->app);
      }
    else if (ev->button == 3)
      {
