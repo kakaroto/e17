@@ -91,7 +91,7 @@ epsilon_init (void)
 
   for (i = 0; i < 4; i++)
     {
-      snprintf (buf, PATH_MAX, "%s/%s", getenv ("HOME"), dirs[i]);
+      snprintf (buf, sizeof(buf), "%s/%s", getenv ("HOME"), dirs[i]);
       if (!stat (buf, &status))
 	continue;
       else
@@ -148,7 +148,7 @@ epsilon_thumb_file_get (Epsilon * e)
   for (i = 0; i < 3; i++)
     {
 #ifdef HAVE_EPEG_H
-      snprintf (buf, PATH_MAX, "%s/%s/%s.jpg", getenv ("HOME"), dirs[i],
+      snprintf (buf, sizeof(buf), "%s/%s/%s.jpg", getenv ("HOME"), dirs[i],
 		e->hash);
       if (stat (buf, &status) == 0)
 	{
@@ -156,7 +156,7 @@ epsilon_thumb_file_get (Epsilon * e)
 	  break;
 	}
 #endif
-      snprintf (buf, PATH_MAX, "%s/%s/%s.png", getenv ("HOME"), dirs[i],
+      snprintf (buf, sizeof(buf), "%s/%s/%s.png", getenv ("HOME"), dirs[i],
 		e->hash);
       if (stat (buf, &status) == 0)
 	{
@@ -181,7 +181,7 @@ epsilon_hash (const char *file)
 
   if (!file)
     return (NULL);
-  snprintf (uri, PATH_MAX, "file://%s", file);
+  snprintf (uri, sizeof(uri), "file://%s", file);
 
   MD5Init (&ctx);
   MD5Update (&ctx, (unsigned char const*)uri, (unsigned)strlen (uri));
@@ -351,13 +351,13 @@ epsilon_exists (Epsilon * e)
 
       if (e->key)
 	{
-	  snprintf (buf, PATH_MAX, "%s:%s", e->src, e->key);
+	  snprintf (buf, sizeof(buf), "%s:%s", e->src, e->key);
 	  strcat (hash_seed, buf);
 	}
 
       if ((e->w > 0) && (e->h > 0))
 	{
-	  snprintf (buf, PATH_MAX, ":%dx%d", e->w, e->h);
+	  snprintf (buf, sizeof(buf), ":%dx%d", e->w, e->h);
 	  strcat (hash_seed, buf);
 	}
 
@@ -370,11 +370,11 @@ epsilon_exists (Epsilon * e)
   if (!e->hash)
     return (EPSILON_FAIL);
 
-  snprintf (home, PATH_MAX, "%s", getenv ("HOME"));
+  snprintf (home, sizeof(home), "%s", getenv ("HOME"));
   for (i = 0; i < 3; i++)
     {
 #ifdef HAVE_EPEG_H
-      snprintf (buf, PATH_MAX, "%s/.thumbnails/%s/%s.jpg", home,
+      snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.jpg", home,
 		dirs[i], e->hash);
       if (!stat (buf, &filestatus))
 	{
@@ -382,7 +382,7 @@ epsilon_exists (Epsilon * e)
 	  break;
 	}
 #endif
-      snprintf (buf, PATH_MAX, "%s/.thumbnails/%s/%s.png", home,
+      snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.png", home,
 		dirs[i], e->hash);
       if (!stat (buf, &filestatus))
 	{
@@ -428,7 +428,7 @@ epsilon_generate (Epsilon * e)
       (!strcmp (&e->src[len - 3], "jpg") ||
        !strcmp (&e->src[len - 3], "JPG")) && (im = epeg_file_open (e->src)))
     {
-      snprintf (outfile, PATH_MAX, "%s/.thumbnails/large/%s.jpg",
+      snprintf (outfile, sizeof(outfile), "%s/.thumbnails/large/%s.jpg",
 		getenv ("HOME"), e->hash);
       epeg_thumbnail_comments_get (im, &info);
       epeg_size_get (im, &iw, &ih);
@@ -509,7 +509,7 @@ epsilon_generate (Epsilon * e)
 		tmp = imlib_create_image_using_data (w, h, (DATA32 *) pixels);
 
 		imlib_context_set_image (tmp);
-		snprintf (format, 32, "image/edje");
+		snprintf (format, sizeof(format), "image/edje");
 	      }
 	    else
 	      {
@@ -530,7 +530,7 @@ epsilon_generate (Epsilon * e)
       {
 	tmp = imlib_load_image_immediately_without_cache (e->src);
 	imlib_context_set_image (tmp);
-	snprintf (format, 32, "image/%s", imlib_image_format ());
+	snprintf (format, sizeof(format), "image/%s", imlib_image_format ());
       }
 
     if (tmp)
@@ -552,8 +552,8 @@ epsilon_generate (Epsilon * e)
 	    imlib_context_set_image (src);
 	    imlib_image_set_has_alpha (1);
 	    imlib_image_set_format ("argb");
-	    snprintf (uri, PATH_MAX, "file://%s", e->src);
-	    snprintf (outfile, PATH_MAX, "%s/.thumbnails/large/%s.png",
+	    snprintf (uri, sizeof(uri), "file://%s", e->src);
+	    snprintf (outfile, sizeof(outfile), "%s/.thumbnails/large/%s.png",
 		      getenv ("HOME"), e->hash);
 	    if (!_epsilon_png_write (outfile,
 				     imlib_image_get_data (), tw, th, iw, ih,
@@ -671,8 +671,8 @@ _epsilon_png_mtime_get (const char *file)
 #define GET_TMPNAME(_tmpbuf,_file) { \
   int _l,_ll; \
   char _buf[21]; \
-  _l=snprintf(_tmpbuf,PATH_MAX,"%s",_file); \
-  _ll=snprintf(_buf,21,"epsilon-%06d.png",(int)getpid());  \
+  _l=snprintf(_tmpbuf,sizeof(_tmpbuf),"%s",_file); \
+  _ll=snprintf(_buf,sizeof(_buf),"epsilon-%06d.png",(int)getpid());  \
   strncpy(&tmpfile[_l-35],_buf,_ll+1); }
 
 static int
@@ -724,17 +724,17 @@ _epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
       text_ptr[0].text = uri;
       text_ptr[0].compression = PNG_TEXT_COMPRESSION_NONE;
 
-      snprintf (mtimebuf, 32, "%d", mtime);
+      snprintf (mtimebuf, sizeof(mtimebuf), "%d", mtime);
       text_ptr[1].key = "Thumb::MTime";
       text_ptr[1].text = mtimebuf;
       text_ptr[1].compression = PNG_TEXT_COMPRESSION_NONE;
 
-      snprintf (widthbuf, PATH_MAX, "%d", sw);
+      snprintf (widthbuf, sizeof(widthbuf), "%d", sw);
       text_ptr[2].key = "Thumb::Image::Width";
       text_ptr[2].text = widthbuf;
       text_ptr[2].compression = PNG_TEXT_COMPRESSION_NONE;
 
-      snprintf (heightbuf, PATH_MAX, "%d", sh);
+      snprintf (heightbuf, sizeof(heightbuf), "%d", sh);
       text_ptr[3].key = "Thumb::Image::Height";
       text_ptr[3].text = heightbuf;
       text_ptr[3].compression = PNG_TEXT_COMPRESSION_NONE;
