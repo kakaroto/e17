@@ -80,4 +80,7 @@ METHODDEF(void) _jpeg_init_destination(j_compress_ptr cinfo);
 METHODDEF(boolean) _jpeg_empty_output_buffer (j_compress_ptr cinfo);
 METHODDEF(void) _jpeg_term_destination (j_compress_ptr cinfo);
     
+METHODDEF(void) _emit_message (j_common_ptr cinfo, int msg_level);
+METHODDEF(void) _output_message (j_common_ptr cinfo);
+METHODDEF(void) _format_message (j_common_ptr cinfo, char * buffer);
 #endif

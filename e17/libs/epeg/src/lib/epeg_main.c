@@ -782,6 +782,11 @@ _epeg_open_header(Epeg_Image *im)
 
    im->in.jinfo.err = jpeg_std_error(&(im->jerr.pub));
    im->jerr.pub.error_exit = _epeg_fatal_error_handler;
+#ifdef NOWARNINGS
+   im->jerr.pub.emit_message = _emit_message;
+   im->jerr.pub.output_message = _output_message;
+   im->jerr.pub.format_message = _format_message;
+#endif
    
    if (setjmp(im->jerr.setjmp_buffer))
      {
@@ -930,6 +935,11 @@ _epeg_decode(Epeg_Image *im)
    
    im->out.jinfo.err			= jpeg_std_error(&(im->jerr.pub));
    im->jerr.pub.error_exit		= _epeg_fatal_error_handler;
+#ifdef NOWARNINGS
+   im->jerr.pub.emit_message = _emit_message;
+   im->jerr.pub.output_message = _output_message;
+   im->jerr.pub.format_message = _format_message;
+#endif
 
    if (setjmp(im->jerr.setjmp_buffer))
 	return 2;
@@ -1043,6 +1053,11 @@ _epeg_decode_for_trim(Epeg_Image *im)
    
    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
    im->jerr.pub.error_exit = _epeg_fatal_error_handler;
+#ifdef NOWARNINGS
+   im->jerr.pub.emit_message = _emit_message;
+   im->jerr.pub.output_message = _output_message;
+   im->jerr.pub.format_message = _format_message;
+#endif
    
    if (setjmp(im->jerr.setjmp_buffer))
      return 1;
@@ -1120,6 +1135,11 @@ _epeg_encode(Epeg_Image *im)
    
    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
    im->jerr.pub.error_exit = _epeg_fatal_error_handler;
+#ifdef NOWARNINGS
+   im->jerr.pub.emit_message = _emit_message;
+   im->jerr.pub.output_message = _output_message;
+   im->jerr.pub.format_message = _format_message;
+#endif
    
    if (setjmp(im->jerr.setjmp_buffer)) return 1;
    
@@ -1258,3 +1278,17 @@ METHODDEF(boolean) _jpeg_empty_output_buffer (j_compress_ptr cinfo)
 METHODDEF(void) _jpeg_term_destination (j_compress_ptr cinfo)
 {
 }
+
+METHODDEF(void) _emit_message (j_common_ptr cinfo, int msg_level)
+{
+}
+
+METHODDEF(void) _output_message (j_common_ptr cinfo)
+{
+}
+
+METHODDEF(void) _format_message (j_common_ptr cinfo, char * buffer)
+{
+}
+
+
