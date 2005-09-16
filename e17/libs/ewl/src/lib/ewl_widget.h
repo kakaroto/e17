@@ -21,8 +21,9 @@ typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 
 struct Ewl_Callback_Chain
 {
-	Ecore_List *list;
-	unsigned int mask;
+	void **list;
+	unsigned short mask;
+	unsigned short len;
 };
 
 typedef struct Ewl_Color_Set Ewl_Color_Set;

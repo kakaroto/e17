@@ -1041,7 +1041,7 @@ ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a)
 void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 						void *data __UNUSED__)
 {
-	Ecore_List       *destroy_cbs;
+	int               i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1071,14 +1071,14 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Clear out the callbacks, this is a bit tricky because we don't want
 	 * to continue using this widget after the callbacks have been
-	 * deleted. So we remove the callbacks of type destroy and then clear
-	 * the remaining callbacks. This preserves the list of the destroy
-	 * type so we don't get a segfault.
+	 * deleted. Clear all callbacks except for the destroy callbacks.
+	 * This preserves the list of the destroy type so we don't get a segfault.
 	 */
-	destroy_cbs = EWL_CALLBACK_LIST_POINTER(w, EWL_CALLBACK_DESTROY);
-	EWL_CALLBACK_LIST_ASSIGN(w, EWL_CALLBACK_DESTROY, NULL);
-	ewl_callback_clear(w);
-	EWL_CALLBACK_LIST_ASSIGN(w, EWL_CALLBACK_DESTROY, destroy_cbs);
+	for (i = 0; i < EWL_CALLBACK_MAX; i++)
+	{
+		if (i == EWL_CALLBACK_DESTROY) continue;
+		ewl_callback_del_type(w, i);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

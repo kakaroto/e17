@@ -48,16 +48,30 @@ struct Ewl_Callback
 #define EWL_CALLBACK_NOTIFY_MASK (0x3)
 
 /**
- * @def EWL_CALLBACK_LIST_POINTER(w, t)
+ * @def EWL_CALLBACK_LIST(w, t)
  * Retrives the callback list from a widget for a certain event type.
  */
-#define EWL_CALLBACK_LIST_POINTER(w, t) (w->callbacks[t].list)
+#define EWL_CALLBACK_LIST(w, t) (w->callbacks[t].list)
 
 /**
  * @def EWL_CALLBACK_FLAGS(w, t)
  * Retrives the callback flags from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAGS(w, t) (w->callbacks[t].mask)
+
+/**
+ * @def EWL_CALLBACK_LEN(w, t)
+ * Retrives the length from a widget for a certain event type.
+ */
+#define EWL_CALLBACK_LEN(w, t) (w->callbacks[t].len)
+
+/**
+ * @def EWL_CALLBACK_GET(w, t, i)
+ * Retrives the callback struct at the given position
+ */
+#define EWL_CALLBACK_GET(w, t, i) \
+	((w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT) ? w->callbacks[t].list : w->callbacks[t].list[i])
+
 /**
  * @def EWL_CALLBACK_FLAG_INTERCEPT(w, t)
  * Sets the callback intercept flag from a widget for a certain event type.
@@ -80,11 +94,19 @@ struct Ewl_Callback
 		w->callbacks[t].mask |= EWL_CALLBACK_NOTIFY_NOTIFY
 
 /**
- * @def EWL_CALLBACK_LIST_ASSIGN(w, t, l)
- * Sets the callback list for a widget for a certain event type.
+ * @def EWL_CALLBACK_SET_DIRECT(w, t)
+ * Sets the callback direct flag for a centain event type
  */
-#define EWL_CALLBACK_LIST_ASSIGN(w, t, l) \
-		w->callbacks[t].list = l
+#define EWL_CALLBACK_SET_DIRECT(w, t) \
+		w->callbacks[t].mask |= EWL_CALLBACK_TYPE_DIRECT
+
+/**
+ * @def EWL_CALLBACK_SET_NODIRECT(w, t)
+ * Clears the callback direct flag from a widget for a certain event type
+ */
+#define EWL_CALLBACK_SET_NODIRECT(w, t) \
+		w->callbacks[t].mask &= ~EWL_CALLBACK_TYPE_DIRECT
+
 
 void            ewl_callbacks_init(void);
 void            ewl_callbacks_shutdown(void);

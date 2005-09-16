@@ -8,8 +8,13 @@ static int           ewl_callback_compare(void *key1, void *key2);
 static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
 static void          ewl_callback_unregister(Ewl_Callback * cb);
 
+static void 	     ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, 
+                                            unsigned int pos);
+static int           ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
+                                            Ewl_Callback *cb, unsigned int pos);
+
 static int           callback_id = 0;
-static Ecore_Hash     *cb_registration = NULL;
+static Ecore_Hash   *cb_registration = NULL;
 
 /**
  * @return Returns no value.
@@ -24,6 +29,15 @@ static Ecore_Hash     *cb_registration = NULL;
  * 15901 ningerso  10   0 20120  19M  9148 S     0.0  7.0   0:34 ewl_test
  * 
  * So using shared callbacks saves us over 2 MB of memory in this case.
+ *
+ *
+ * Ecore_list as the callback storage with all tests open has a top line of:
+ *  9121 dsinclai  15   0 71156  17m 4276 S  0.0  1.8   0:11.06 ewl_test
+ * Using an array as the callback storage with all tests open has a top line of:
+ * 21727 dsinclai  15   0 68360  15m 4304 S  0.0  1.5   0:09.73 ewl_test
+ *
+ * So using an array for the callbacks saves us about 2MB of memory in this
+ * case.
  */
 void ewl_callbacks_init()
 {
@@ -57,7 +71,6 @@ static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb)
 	Ewl_Callback   *found;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("cb", cb, NULL);
 
 	found = ecore_hash_get(cb_registration, cb);
@@ -83,7 +96,6 @@ static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb)
 static void ewl_callback_unregister(Ewl_Callback * cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("cb", cb);
 
 	cb->references--;
@@ -93,6 +105,106 @@ static void ewl_callback_unregister(Ewl_Callback * cb)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	/* deal with the direct case first */
+	if (w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT)
+	{
+		ewl_callback_unregister((Ewl_Callback *)w->callbacks[t].list);
+
+		w->callbacks[t].len = 0;
+		w->callbacks[t].list = NULL;
+		EWL_CALLBACK_SET_NODIRECT(w, t);
+
+		DRETURN(DLEVEL_STABLE);
+	}
+	ewl_callback_unregister(w->callbacks[t].list[pos]);
+
+	/* if this will empty the list (we've already handled direct) */
+	if ((EWL_CALLBACK_LEN(w, t) - 1) == 0)
+	{
+		w->callbacks[t].len = 0;
+		w->callbacks[t].list[0] = NULL;
+		FREE(w->callbacks[t].list);
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* not the last position */
+	if (pos != (EWL_CALLBACK_LEN(w, t) - 1))
+	{
+		memmove(w->callbacks[t].list + pos, 
+			w->callbacks[t].list + (pos + 1), 
+			(w->callbacks[t].len - pos - 1) * sizeof(void *));
+	}
+
+	w->callbacks[t].len -= 1;
+	w->callbacks[t].list[EWL_CALLBACK_LEN(w, t)] = NULL;
+	w->callbacks[t].list = realloc(w->callbacks[t].list, 
+					w->callbacks[t].len * sizeof(void *));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
+				Ewl_Callback *cb, unsigned int pos)
+{
+	Ewl_Callback *old = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("cb", cb, 0);
+
+	/* set direct if possible */
+	if (!EWL_CALLBACK_LEN(w, t))
+	{
+		w->callbacks[t].list = (void *)cb;
+		w->callbacks[t].len = 1;
+		EWL_CALLBACK_SET_DIRECT(w, t);
+
+		DRETURN_INT(cb->id, DLEVEL_STABLE);
+	}
+	w->callbacks[t].len ++;
+
+	/* if we have a type direct then we need to save off the direct
+	 * pointer and set the list to NULL so it'll be allocd' correctly */
+	if (w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT)
+	{
+		old = (Ewl_Callback *)w->callbacks[t].list;
+		w->callbacks[t].list = NULL;
+		EWL_CALLBACK_SET_NODIRECT(w, t);
+	}
+
+	w->callbacks[t].list = realloc(w->callbacks[t].list, 
+					w->callbacks[t].len * sizeof(void *));
+
+	/* if old is set this was a direct so we can just set 0, 1 and be
+	 * done with it */
+	if (old)
+	{
+		w->callbacks[t].list[0] = (!pos ? cb : old);
+		w->callbacks[t].list[1] = ( pos ? cb : old);
+	}
+	else
+	{
+		/* only have to move if we aren't at the end (of the
+		 * original lenth already */
+		if (pos != (w->callbacks[t].len - 1))
+		{
+			memmove(w->callbacks[t].list + (pos + 1), 
+				w->callbacks[t].list + pos, 
+				(w->callbacks[t].len - 1) * sizeof(void *));
+		}
+		w->callbacks[t].list[pos] = cb;
+	}
+	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
 
 /**
@@ -112,11 +224,11 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 		    Ewl_Callback_Function f, void *user_data)
 {
 	Ewl_Callback   *cb;
-	Ecore_List       *list;
+	int 		ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, -1);
-	DCHECK_PARAM_PTR_RET("f", f, -1);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("f", f, 0);
 
 	cb = NEW(Ewl_Callback, 1);
 	if (!cb)
@@ -126,17 +238,9 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 	cb->user_data = user_data;
 
 	cb = ewl_callback_register(cb);
+	ret = ewl_callback_insert(w, t, cb, EWL_CALLBACK_LEN(w, t));
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list) {
-		list = ecore_list_new();
-		EWL_CALLBACK_LIST_ASSIGN(w, t, list);
-	}
-
-	ecore_list_append(list, cb);
-
-	DRETURN_INT(cb->id, DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -154,12 +258,12 @@ int
 ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 		     Ewl_Callback_Function f, void *user_data)
 {
-	Ewl_Callback   *cb;
-	Ecore_List       *list;
+	Ewl_Callback     *cb;
+	int 		  ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, -1);
-	DCHECK_PARAM_PTR_RET("f", f, -1);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("f", f, 0);
 
 	cb = NEW(Ewl_Callback, 1);
 	if (!cb)
@@ -169,17 +273,9 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 	cb->user_data = user_data;
 
 	cb = ewl_callback_register(cb);
+	ret = ewl_callback_insert(w, t, cb, 0);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list) {
-		list = ecore_list_new();
-		EWL_CALLBACK_LIST_ASSIGN(w, t, list);
-	}
-
-	ecore_list_prepend(list, cb);
-
-	DRETURN_INT(cb->id, DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -202,7 +298,7 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 {
 	Ewl_Callback   *cb;
 	Ewl_Callback   *search;
-	Ecore_List       *list;
+	int 		    ret, pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -218,23 +314,21 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 
 	cb = ewl_callback_register(cb);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list) {
-		list = ecore_list_new();
-		EWL_CALLBACK_LIST_ASSIGN(w, t, list);
-	}
-
 	/*
 	 * Step 1 position past the callback we want to insert after.
 	 */
-	ecore_list_goto_first(list);
-	while ((search = ecore_list_next(list)) &&
-	       (search->func != after || search->user_data != after_data));
+	for (pos = 0; pos < EWL_CALLBACK_LEN(w, t); pos++)
+	{
+		search = EWL_CALLBACK_GET(w, t, pos);
+		if ((search->func == after) && (search->user_data == after_data))
+		{
+			pos ++;
+			break;
+		}
+	}
+	ret = ewl_callback_insert(w, t, cb, pos);
 
-	ecore_list_insert(list, cb);
-
-	DRETURN_INT(cb->id, DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -268,9 +362,9 @@ void
 ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 				  void *ev_data)
 {
-	Ecore_List       *list;
 	Ewl_Callback   *cb;
 	Ewl_Widget     *parent, *top = NULL;
+	int 		i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -304,19 +398,18 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 		ewl_callback_call_with_event_data(top, t, ev_data);
 
 	/*
-	 * Finally execute the callback on the current widget
+	 * Make sure the widget has callbacks of the given type
 	 */
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list || ecore_list_is_empty(list))
+	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Loop through and execute each of the callbacks of a certain type for
 	 * the specified widget.
 	 */
-	ecore_list_goto_first(list);
-	while (list && (cb = ecore_list_next(list))) {
+	for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
+	{
+		cb = EWL_CALLBACK_GET(w, t, i);
 		if (cb->func)
 			cb->func(w, ev_data, cb->user_data);
 	}
@@ -334,22 +427,14 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
  */
 void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 {
-	Ecore_List       *list;
-	Ewl_Callback   *rm;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list)
+	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
 
-	while ((rm = ecore_list_remove_first(list)))
-		ewl_callback_unregister(rm);
-
-	ecore_list_destroy(list);
-	EWL_CALLBACK_LIST_ASSIGN(w, t, NULL);
+	while (EWL_CALLBACK_LEN(w, t))
+		ewl_callback_rm(w, t, EWL_CALLBACK_LEN(w, t) - 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -365,22 +450,20 @@ void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
  */
 void ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 {
-	Ecore_List       *list;
 	Ewl_Callback   *cb;
+	int 		i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list ||
-	    ecore_list_is_empty(list) || cb_id > callback_id)
+	if (!EWL_CALLBACK_LEN(w, t) || cb_id > callback_id)
 		DRETURN(DLEVEL_STABLE);
 
-	while ((cb = ecore_list_next(list))) {
+	for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
+	{
+		cb = EWL_CALLBACK_GET(w, t, i);
 		if (cb->id == cb_id) {
-			ecore_list_remove(list);
-			ewl_callback_unregister(cb);
+			ewl_callback_rm(w, t, i);
 			break;
 		}
 	}
@@ -403,11 +486,8 @@ void ewl_callback_clear(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	for (i = 0; i < EWL_CALLBACK_MAX; i++) {
-		if (EWL_CALLBACK_LIST_POINTER(w, i))
-			ewl_callback_del_type(w, i);
-	}
-
+	for (i = 0; i < EWL_CALLBACK_MAX; i++) 
+		ewl_callback_del_type(w, i);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -426,26 +506,21 @@ void
 ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 {
 	Ewl_Callback   *cb;
-	Ecore_List       *list;
+	int 		i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list || ecore_list_is_empty(list))
+	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(list);
-
-	while ((cb = ecore_list_current(list)) != NULL) {
+	for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
+	{
+		cb = EWL_CALLBACK_GET(w, t, i);
 		if (cb->func == f) {
-			ecore_list_remove(list);
-			ewl_callback_unregister(cb);
+			ewl_callback_rm(w, t, i);
 			break;
 		}
-
-		ecore_list_next(list);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -467,26 +542,21 @@ ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
 			   Ewl_Callback_Function f, void *d)
 {
 	Ewl_Callback   *cb;
-	Ecore_List       *list;
+	int 		i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	list = EWL_CALLBACK_LIST_POINTER(w, t);
-
-	if (!list || ecore_list_is_empty(list))
+	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(list);
-
-	while ((cb = ecore_list_current(list)) != NULL) {
-		if (cb->func == f && cb->user_data == d) {
-			ecore_list_remove(list);
-			ewl_callback_unregister(cb);
+	for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
+	{
+		cb = EWL_CALLBACK_GET(w, t, i);
+		if ((cb->func == f) && (cb->user_data == d)) {
+			ewl_callback_rm(w, t, i);
 			break;
 		}
-
-		ecore_list_next(list);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -497,11 +567,12 @@ ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
  */
 static unsigned int ewl_callback_hash(void *key)
 {
-	Ewl_Callback   *cb = EWL_CALLBACK(key);
+	Ewl_Callback   *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("key", key, 0);
+
+	cb = EWL_CALLBACK(key);
 
 	DRETURN_INT((unsigned int) (cb->func) ^
 		    (unsigned int) (cb->user_data), DLEVEL_STABLE);
@@ -513,15 +584,19 @@ static unsigned int ewl_callback_hash(void *key)
  */
 static int ewl_callback_compare(void *key1, void *key2)
 {
-	Ewl_Callback   *cb1 = EWL_CALLBACK(key1);
-	Ewl_Callback   *cb2 = EWL_CALLBACK(key2);
+	Ewl_Callback   *cb1;
+	Ewl_Callback   *cb2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("key1", key1, -1);
+	DCHECK_PARAM_PTR_RET("key2", key2, -1);
 
-	DCHECK_PARAM_PTR_RET("key1", key1, -1)
-	    DCHECK_PARAM_PTR_RET("key2", key2, -1)
-	    if (cb1->func == cb2->func && cb1->user_data == cb2->user_data)
+	cb1 = EWL_CALLBACK(key1);
+	cb2 = EWL_CALLBACK(key2);
+
+	if ((cb1->func == cb2->func) && (cb1->user_data == cb2->user_data))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	DRETURN_INT(-1, DLEVEL_STABLE);
 }
+
