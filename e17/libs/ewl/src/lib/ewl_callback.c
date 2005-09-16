@@ -3,6 +3,16 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/*
+ * Note: The callback list is either a single callback or a
+ * pointer to an array of callbacks. This can be checked with the
+ * EWL_CALLBACK_TYPE_DIRECT flag. If the list is set to direct then the list
+ * itself is the callback. If it isn't direct then the list points to an
+ * array of callbacks. (You can't use the length to determine this as if
+ * the list has several items and you remove them down to the first item in
+ * the array the list won't be direct, but will have only one item.) 
+ */
+
 static unsigned int  ewl_callback_hash(void *key);
 static int           ewl_callback_compare(void *key1, void *key2);
 static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
