@@ -228,6 +228,17 @@ ERegionCreate(int x, int y, int w, int h)
    return rgn;
 }
 
+static              XserverRegion
+ERegionClone(XserverRegion src)
+{
+   XserverRegion       rgn;
+
+   rgn = XFixesCreateRegion(disp, NULL, 0);
+   XFixesCopyRegion(disp, rgn, src);
+
+   return rgn;
+}
+
 static void
 ERegionLimit(XserverRegion rgn)
 {
@@ -239,6 +250,37 @@ ERegionLimit(XserverRegion rgn)
 
    XFixesIntersectRegion(disp, rgn, rgn, screen);
 }
+
+static void
+ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
+{
+   Display            *dpy = disp;
+   XserverRegion       reg;
+
+   reg = src;
+   if (dx != 0 || dy != 0)
+     {
+	reg = ERegionClone(src);
+	XFixesTranslateRegion(dpy, reg, dx, dy);
+     }
+   XFixesSubtractRegion(dpy, dst, dst, reg);
+   if (reg != src)
+      XFixesDestroyRegion(dpy, reg);
+}
+
+#if 0				/* Unused (for debug) */
+static int
+ERegionIsEmpty(XserverRegion rgn)
+{
+   int                 nr;
+   XRectangle         *pr;
+
+   pr = XFixesFetchRegion(disp, rgn, &nr);
+   if (pr)
+      XFree(pr);
+   return nr == 0;
+}
+#endif
 
 static void
 ERegionShow(const char *txt, XserverRegion rgn)
@@ -471,8 +513,7 @@ ECompMgrDamageMerge(XserverRegion damage, int destroy)
      }
    else if (!destroy)
      {
-	allDamage = XFixesCreateRegion(disp, 0, 0);
-	XFixesCopyRegion(disp, allDamage, damage);
+	allDamage = ERegionClone(damage);
      }
    else
      {
@@ -500,13 +541,7 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 	if (EoGetX(dsk) != 0 || EoGetY(dsk) != 0)
 	  {
 	     if (!destroy)
-	       {
-		  XserverRegion       region;
-
-		  region = XFixesCreateRegion(disp, 0, 0);
-		  XFixesCopyRegion(disp, region, damage);
-		  damage = region;
-	       }
+		damage = ERegionClone(damage);
 	     XFixesTranslateRegion(disp, damage, EoGetX(dsk), EoGetY(dsk));
 	  }
      }
@@ -1204,9 +1239,6 @@ ECompMgrWinNew(EObj * eo)
 
    cw->picture = None;
    cw->pixmap = None;
-#if 0				/* FIXME - Remove? */
-   ECompMgrWinSetPicts(eo);
-#endif
 
    cw->alphaPict = None;
    cw->borderSize = None;
@@ -1219,11 +1251,6 @@ ECompMgrWinNew(EObj * eo)
    cw->shadow_dy = 0;
    cw->shadow_width = 0;
    cw->shadow_height = 0;
-#endif
-
-#if 0				/* FIXME - Do we need this? */
-   if (Conf_compmgr.mode == ECM_MODE_WINDOW)
-      ESelectInputAdd(eo->win, StructureNotifyMask);
 #endif
 
    cw->opacity = 0xdeadbeef;
@@ -1435,8 +1462,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	  {
 	     XserverRegion       o;
 
-	     o = XFixesCreateRegion(dpy, 0, 0);
-	     XFixesCopyRegion(dpy, o, parts);
+	     o = ERegionClone(parts);
 	     XFixesTranslateRegion(dpy, o, cw->shadow_dx, cw->shadow_dy);
 	     XFixesUnionRegion(dpy, parts, parts, o);
 	     XFixesDestroyRegion(dpy, o);
@@ -1546,24 +1572,6 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 }
 
 static void
-ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
-{
-   Display            *dpy = disp;
-   XserverRegion       reg;
-
-   reg = src;
-   if (dx != 0 || dy != 0)
-     {
-	reg = XFixesCreateRegion(dpy, 0, 0);
-	XFixesCopyRegion(dpy, reg, src);
-	XFixesTranslateRegion(dpy, reg, dx, dy);
-     }
-   XFixesSubtractRegion(dpy, dst, dst, reg);
-   if (reg != src)
-      XFixesDestroyRegion(dpy, reg);
-}
-
-static void
 ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
    Display            *dpy = disp;
@@ -1598,8 +1606,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
      {
 	/* Painting opaque windows top down, updating clip regions. */
 
-	cw->clip = XFixesCreateRegion(dpy, 0, 0);
-	XFixesCopyRegion(dpy, cw->clip, region);
+	cw->clip = ERegionClone(region);
 
 	switch (cw->mode)
 	  {
@@ -1689,8 +1696,7 @@ ECompMgrRepaint(void)
    if (!Mode_compmgr.active || allDamage == None)
       return;
 
-   region = XFixesCreateRegion(disp, 0, 0);
-   XFixesCopyRegion(disp, region, allDamage);
+   region = ERegionClone(allDamage);
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
@@ -1906,13 +1912,6 @@ ECompMgrStart(void)
      }
 
    allDamage = None;
-   if (Conf_compmgr.mode != ECM_MODE_AUTO)
-     {
-#if 0				/* FIXME - Remove? */
-	ECompMgrDamageAll();
-	ECompMgrRepaint();
-#endif
-     }
 
    EventCallbackRegister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
@@ -2127,7 +2126,6 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
 	     eo->shown = 1;
-	     eo->fade = 1;
 	     EobjListStackRaise(eo);
 	     ECompMgrWinMap(eo);
 	  }
