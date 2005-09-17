@@ -141,10 +141,10 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    eo->y = y;
    eo->w = w;
    eo->h = h;
-   eo->fade = 1;
    if (name)
       eo->name = Estrdup(name);
 #if USE_COMPOSITE
+   eo->fade = 1;
    ECompMgrWinNew(eo);
 #endif
    if (eo->win != VRoot.win)

@@ -39,12 +39,12 @@ struct _eobj
    signed char         stacked;
    char                sticky;
    char                floating;
-   char                shown;
-   char                gone;
-#if USE_COMPOSITE
+   unsigned            shown:1;
+   unsigned            gone:1;
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
    unsigned            fade:1;
+#if USE_COMPOSITE
    unsigned int        opacity;
    void               *cmhook;
 #endif
