@@ -63,11 +63,14 @@
 #define D2printf(fmt...)
 #endif /* ENABLE_DEBUG */
 
+#define DEBUG_OPACITY 0
+
 #define INV_POS     0x01
 #define INV_SIZE    0x02
 #define INV_OPACITY 0x04
 #define INV_SHADOW  0x08
 #define INV_PIXMAP  0x10
+#define INV_PICTURE 0x20
 #define INV_GEOM    (INV_POS | INV_SIZE)
 #define INV_ALL     (INV_POS | INV_SIZE | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
 
@@ -86,6 +89,7 @@ typedef struct
    int                 mode;
    unsigned            damaged:1;
    unsigned            fading:1;
+   unsigned            fadeout:1;
    Damage              damage;
    Picture             picture;
    Picture             alphaPict;
@@ -163,6 +167,7 @@ static struct
 {
    char                active;
    char                use_pixmap;
+   char                reorder;
    EObj               *eo_first;
    EObj               *eo_last;
    XserverRegion       rgn_screen;
@@ -946,17 +951,20 @@ ECompMgrWinInvalidate(EObj * eo, int what)
      {
 	XFreePixmap(dpy, cw->pixmap);
 	cw->pixmap = None;
-	if (cw->picture != None && Mode_compmgr.use_pixmap)
-	  {
-	     XRenderFreePicture(dpy, cw->picture);
-	     cw->picture = None;
-	  }
+	if (Mode_compmgr.use_pixmap)
+	   what |= INV_PICTURE;
      }
 
    if ((what & INV_GEOM) && cw->borderSize != None)
      {
 	XFixesDestroyRegion(dpy, cw->borderSize);
 	cw->borderSize = None;
+     }
+
+   if ((what & INV_PICTURE) && cw->picture != None)
+     {
+	XRenderFreePicture(dpy, cw->picture);
+	cw->picture = None;
      }
 
    if ((what & INV_OPACITY) && cw->alphaPict != None)
@@ -1011,7 +1019,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    D1printf("ECompMgrWinSetOpacity: %#lx opacity=%#x\n", eo->win, cw->opacity);
 
-   if (eo->shown)		/* FIXME - ??? */
+   if (eo->shown || cw->fadeout)	/* FIXME - ??? */
       /* Extents may be unchanged, however, we must repaint */
       if (cw->extents != None)
 	 ECompMgrDamageMergeObject(eo, cw->extents, 0);
@@ -1051,15 +1059,18 @@ doECompMgrWinFade(int val, void *data)
       return;
 
    cw = eo->cmhook;
-   if (cw->opacity == op)
-      return;
 
    cw->fading = 0;
-   if (op > cw->opacity)
+
+   if (op == cw->opacity)
+     {
+	op = eo->opacity;
+	cw->fadeout = 0;
+     }
+   else if (op > cw->opacity)
      {
 	if (op - cw->opacity > Conf_compmgr.fading.step)
 	  {
-	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity + Conf_compmgr.fading.step;
 	     cw->fading = 1;
 	  }
@@ -1068,15 +1079,16 @@ doECompMgrWinFade(int val, void *data)
      {
 	if (cw->opacity - op > Conf_compmgr.fading.step)
 	  {
-	     ECompMgrWinFadeDoIn(eo, op);
 	     op = cw->opacity - Conf_compmgr.fading.step;
 	     cw->fading = 1;
 	  }
      }
 
-#if 0
+#if DEBUG_OPACITY
    Eprintf("doECompMgrWinFade %#lx, %#x\n", eo->win, op);
 #endif
+   if (cw->fading || cw->fadeout)
+      ECompMgrWinFadeDoIn(eo, (unsigned int)val);
    ECompMgrWinSetOpacity(eo, op);
 }
 
@@ -1090,13 +1102,24 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 static void
 ECompMgrWinFadeIn(EObj * eo)
 {
+#if DEBUG_OPACITY
+   Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", eo->win, 0x10000000,
+	   eo->opacity);
+#endif
    ECompMgrWinFade(eo, 0x10000000, eo->opacity);
 }
 
 static void
 ECompMgrWinFadeOut(EObj * eo)
 {
-   ECompMgrWinFade(eo, eo->opacity, 0x10000000);
+   ECmWinInfo         *cw = eo->cmhook;
+
+#if DEBUG_OPACITY
+   Eprintf("ECompMgrWinFadeOut %#lx %#x -> %#x\n", eo->win, cw->opacity,
+	   0x10000000);
+#endif
+   cw->fadeout = 1;
+   ECompMgrWinFade(eo, cw->opacity, 0x10000000);
 }
 
 void
@@ -1712,8 +1735,14 @@ ECompMgrRepaint(void)
       return;
 
    /* Do paint order list linking */
-   ECompMgrRepaintDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
-				 &Mode_compmgr.eo_last, dsk);
+   if (Mode_compmgr.reorder)
+     {
+	ECompMgrRepaintDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
+				      &Mode_compmgr.eo_last, dsk);
+#if 0				/* Not yet */
+	Mode_compmgr.reorder = 0;
+#endif
+     }
 
    /* Paint opaque windows top down, adjusting clip regions */
    for (eo = Mode_compmgr.eo_first; eo;
@@ -1922,6 +1951,8 @@ ECompMgrStart(void)
 	if (lst[i]->shown)
 	   ECompMgrWinMap(lst[i]);
      }
+
+   Mode_compmgr.reorder = 1;
 }
 
 static void
