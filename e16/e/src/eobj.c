@@ -28,17 +28,6 @@
 #include "xwin.h"
 
 void
-EobjSetDesk(EObj * eo, Desk * dsk)
-{
-   if (!dsk || dsk == eo->desk)
-      return;
-
-   if (eo->stacked > 0)
-      DeskSetDirtyStack(dsk, eo);
-   eo->desk = dsk;
-}
-
-void
 EobjSetLayer(EObj * eo, int layer)
 {
    int                 ilayer = eo->ilayer;
@@ -290,11 +279,7 @@ EobjMap(EObj * eo, int raise)
       EobjListStackRaise(eo);
 
    if (eo->stacked <= 0 || raise > 1)
-     {
-	if (eo->stacked < 0)
-	   DeskSetDirtyStack(eo->desk, eo);
-	DeskRestack(eo->desk);
-     }
+      DeskRestack(eo->desk);
 
    EMapWindow(eo->win);
 #if USE_COMPOSITE
@@ -373,11 +358,18 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
      {
 	Desk               *dsk = (Desk *) dst;
 
+	if (eo->stacked < 0)
+	  {
+	     eo->desk = NULL;
+	     eo->stacked = 0;
+	  }
+	if (eo->desk != dsk)
+	   DeskSetDirtyStack(dsk, eo);
 #if USE_COMPOSITE
 	if (eo->shown && eo->cmhook)
-	   ECompMgrWinReparent(eo, dsk->num, move);
+	   ECompMgrWinReparent(eo, dsk, move);
 #endif
-	EobjSetDesk(eo, dsk);
+	eo->desk = dsk;
      }
    else
      {

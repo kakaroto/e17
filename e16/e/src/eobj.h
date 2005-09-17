@@ -86,7 +86,7 @@ struct _eobj
 #define EoSetName(eo, _x)       (eo)->o.name = (_x)
 #define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
 #define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
-#define EoSetDesk(eo, _d)       EobjSetDesk(EoObj(eo), (_d))
+#define EoSetDesk(eo, _x)       (eo)->o.desk = (_x)
 #define EoSetLayer(eo, _l)      EobjSetLayer(EoObj(eo), (_l))
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
@@ -144,7 +144,6 @@ void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 #else
 #define             EobjChangeOpacity(eo, opacity)
 #endif
-void                EobjSetDesk(EObj * eo, struct _desk *dsk);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);

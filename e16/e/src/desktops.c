@@ -978,9 +978,6 @@ DeskMove(Desk * dsk, int x, int y)
    if (dsk->tag)
       ButtonMoveRelative(dsk->tag, dx, dy);
 
-   EoGetX(dsk) = x;
-   EoGetY(dsk) = y;
-
    lst = EwinListGetAll(&n);
    for (i = 0; i < (unsigned int)n; i++)
       if (EoGetDesk(lst[i]) == dsk)

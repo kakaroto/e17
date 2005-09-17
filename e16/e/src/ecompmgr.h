@@ -32,6 +32,8 @@ typedef struct
    int                 shadow;
 } cfg_composite;
 
+struct _desk;
+
 int                 EVisualIsARGB(Visual * vis);
 
 void                ECompMgrRepaint(void);
@@ -42,7 +44,8 @@ void                ECompMgrWinMap(EObj * eo);
 void                ECompMgrWinUnmap(EObj * eo);
 void                ECompMgrWinMoveResize(EObj * eo, int change_xy,
 					  int change_wh, int change_bw);
-void                ECompMgrWinReparent(EObj * eo, int desk, int change_xy);
+void                ECompMgrWinReparent(EObj * eo, struct _desk *dsk,
+					int change_xy);
 void                ECompMgrWinChangeStacking(EObj * eo);
 void                ECompMgrWinChangeShape(EObj * eo);
 

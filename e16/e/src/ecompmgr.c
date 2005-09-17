@@ -1309,12 +1309,13 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 }
 
 void
-ECompMgrWinReparent(EObj * eo, int desk, int change_xy)
+ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
-	    eo->win, cw->extents, eo->desk->num, desk, eo->x, eo->y, change_xy);
+	    eo->win, cw->extents, eo->desk->num, dsk->num, eo->x, eo->y,
+	    change_xy);
 
    /* Invalidate old window region */
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
