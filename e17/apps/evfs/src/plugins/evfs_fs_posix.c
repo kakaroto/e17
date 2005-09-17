@@ -89,14 +89,17 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 					  const char *path)
 {
 	Ecore_List* mon_list;
+	int type;
 	
 	/*printf("Got an event for %s..", path);*/
 
 	switch (event) {
 		case ECORE_FILE_EVENT_MODIFIED:
 			/*printf("A modified event..\n");*/
+			type = EVFS_FILE_EV_CHANGE;
 			break;
 		case ECORE_FILE_EVENT_CREATED_FILE:
+			type = EVFS_FILE_EV_CREATE;
 			/*printf("File created - '%s'\n", path);*/
 			break;
 	}
@@ -110,7 +113,7 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 		ecore_list_goto_first(mon_list);
 		while ((mon = ecore_list_next(mon_list))) {
 			/*printf ("  Notifying client at id %ld\n", mon->client->id);*/
-			evfs_file_monitor_event_create(mon->client, path);
+			evfs_file_monitor_event_create(mon->client, type, path);
 		}
 	}
 		

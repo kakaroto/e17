@@ -1,1 +1,1 @@
-void evfs_file_monitor_event_create(evfs_client* client, const char* path);
+void evfs_file_monitor_event_create(evfs_client* client, int type, const char* path);

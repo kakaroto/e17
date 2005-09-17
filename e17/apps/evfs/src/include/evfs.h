@@ -10,6 +10,9 @@
 #include <Ecore_File.h>
 #include <pthread.h>
 
+#include <stdlib.h>
+#include <string.h>
+
 
 #define EVFS_IPC_TITLE "evfs_fs"
 #define MAXPATHLEN 512
@@ -108,7 +111,8 @@ struct evfs_file_monitor {
 
 /*Event structures*/
 typedef enum evfs_eventtype {
-	EVFS_EV_REPLY = 1,	
+	EVFS_EV_REPLY = 0,
+	EVFS_EV_FILE_MONITOR = 1,	
 	EVFS_EV_NOTIFY_ID = 2	
 } evfs_eventtype;
 
@@ -119,17 +123,47 @@ typedef enum evfs_eventtype_sub {
 typedef enum evfs_eventpart {
 	EVFS_EV_PART_TYPE = 1,
 	EVFS_EV_PART_SUB_TYPE = 2,
-	EVFS_EV_PART_DATA = 3,
+	
+	EVFS_EV_PART_FILE_MONITOR_TYPE = 3,
+	EVFS_EV_PART_FILE_MONITOR_FILENAME = 4,
+	
+		
+	EVFS_EV_PART_DATA = 5,
 	EVFS_EV_PART_END = 1000
 } evfs_eventpart;
 
-typedef struct evfs_event evfs_event;
-struct evfs_event {
+typedef enum evfs_file_monitor_type {
+	EVFS_FILE_EV_CREATE,
+	EVFS_FILE_EV_CHANGE,
+	EVFS_FILE_EV_REMOVE
+} evfs_file_monitor_type;
+
+typedef struct evfs_event_id_notify evfs_event_id_notify;
+struct evfs_event_id_notify {
 	evfs_eventtype type;
-	evfs_eventtype_sub sub_type;
-	void* data;
-	int data_len;
+
+	int id;
 };
+
+typedef struct evfs_event_file_monitor evfs_event_file_monitor;
+struct evfs_event_file_monitor {
+	evfs_eventtype type;
+	evfs_file_monitor_type fileev_type;
+
+	char* filename;
+	int filename_len;
+};
+
+
+
+
+typedef union evfs_event {
+	evfs_eventtype type;
+
+	evfs_event_id_notify id_notify;
+	evfs_event_file_monitor file_monitor;
+}
+evfs_event;
 
 typedef struct evfs_connection evfs_connection;
 struct evfs_connection {

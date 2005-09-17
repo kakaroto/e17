@@ -1,5 +1,6 @@
 #include <evfs.h>
 
+
 static pthread_mutex_t ipc_client_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t ipc_server_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -28,12 +29,21 @@ void evfs_event_client_id_notify(evfs_client* client) {
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_NOTIFY_ID,0,0,0,0,&client->id, sizeof(long)));	
 }
 
+void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_TYPE,client->id,0,0,&event->file_monitor.fileev_type, sizeof(evfs_file_monitor_type)));
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_FILENAME,client->id,0,0,event->file_monitor.filename,event->file_monitor.filename_len));
+	
+	
+}
 
 void evfs_write_event(evfs_client* client, evfs_event* event) {
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_SUB_TYPE,client->id,0,0,&event->sub_type, sizeof(evfs_eventtype_sub)));
-	
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_DATA,client->id,0,0,event->data, event->data_len));
+
+	switch (event->type) {
+		case EVFS_EV_FILE_MONITOR: evfs_write_event_file_monitor(client,event);
+					   break;
+	}
+
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_END,client->id,0,0,NULL,0));	
 
 	
@@ -45,13 +55,12 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		case EVFS_EV_PART_TYPE:
 			memcpy(&event->type, msg->data, sizeof(evfs_eventtype));
 			break;
-		case EVFS_EV_PART_SUB_TYPE:
-			memcpy(&event->sub_type, msg->data, sizeof(evfs_eventtype_sub));
+		case EVFS_EV_PART_FILE_MONITOR_TYPE:
+			memcpy(&event->file_monitor.fileev_type, msg->data, sizeof(evfs_file_monitor_type));
 			break;
-		case EVFS_EV_PART_DATA:
-			event->data = malloc(msg->len);
-			event->data_len = msg->len;
-			memcpy(event->data, msg->data, msg->len);
+		case EVFS_EV_PART_FILE_MONITOR_FILENAME:
+			event->file_monitor.filename = strdup(msg->data);
+			event->file_monitor.filename_len = strlen(msg->data);
 			break;
 		case EVFS_EV_PART_END:
 			return TRUE;

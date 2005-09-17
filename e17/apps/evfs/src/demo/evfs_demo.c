@@ -7,14 +7,10 @@ evfs_connection* con;
 void callback(evfs_event* data) {
 	static char str_data[1024];
 	
-	if (data->type == EVFS_EV_REPLY) {
-		switch (data->sub_type) {
-			case EVFS_EV_SUB_MONITOR_NOTIFY:
+	if (data->type == EVFS_EV_FILE_MONITOR) {
 				printf("DEMO: Received a file monitor notification\n");
-				printf("DEMO: For file: '%s'\n", data->data);
+				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
 				mon_current++;
-				break;
-		}
 	}
 
 	if (mon_current == 2) {
