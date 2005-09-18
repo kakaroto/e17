@@ -186,11 +186,11 @@ static XserverRegion allDamage;
 #define WINDOW_TRANS    2
 #define WINDOW_ARGB     3
 
-static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
 static void         doECompMgrWinFade(int val, void *data);
+static void         ECompMgrWinFadeOutEnd(EObj * eo);
 
 /*
  * Visuals
@@ -534,6 +534,9 @@ static void
 ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 {
    Desk               *dsk = eo->desk;
+
+   if (damage == None)
+      return;
 
    if (dsk->num > 0 && !dsk->viewable && eo->ilayer < 512)
      {
@@ -948,6 +951,8 @@ ECompMgrWinInvalidate(EObj * eo, int what)
    if (!cw)
       return;
 
+   D2printf("ECompMgrWinInvalidate %#lx: %#x\n", eo->win, what);
+
    if ((what & (INV_SIZE | INV_PIXMAP)) && cw->pixmap != None)
      {
 	XFreePixmap(dpy, cw->pixmap);
@@ -1022,8 +1027,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    if (eo->shown || cw->fadeout)	/* FIXME - ??? */
       /* Extents may be unchanged, however, we must repaint */
-      if (cw->extents != None)
-	 ECompMgrDamageMergeObject(eo, cw->extents, 0);
+      ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    /* Invalidate stuff changed by opacity */
    ECompMgrWinInvalidate(eo, INV_OPACITY);
@@ -1061,12 +1065,21 @@ doECompMgrWinFade(int val, void *data)
 
    cw = eo->cmhook;
 
-   cw->fading = 0;
+#if DEBUG_OPACITY
+   Eprintf("doECompMgrWinFade %#lx, %d/%d, %#x->%#x\n", eo->win,
+	   cw->fading, cw->fadeout, cw->opacity, op);
+#endif
+   if (!cw->fading)
+      return;
+
+   cw->fading = cw->fadeout;
 
    if (op == cw->opacity)
      {
 	op = eo->opacity;
-	cw->fadeout = 0;
+	if (cw->fadeout)
+	   ECompMgrWinFadeOutEnd(eo);
+	cw->fading = 0;
      }
    else if (op > cw->opacity)
      {
@@ -1088,7 +1101,7 @@ doECompMgrWinFade(int val, void *data)
 #if DEBUG_OPACITY
    Eprintf("doECompMgrWinFade %#lx, %#x\n", eo->win, op);
 #endif
-   if (cw->fading || cw->fadeout)
+   if (cw->fading)
       ECompMgrWinFadeDoIn(eo, (unsigned int)val);
    ECompMgrWinSetOpacity(eo, op);
 }
@@ -1096,6 +1109,9 @@ doECompMgrWinFade(int val, void *data)
 static void
 ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 {
+   ECmWinInfo         *cw = eo->cmhook;
+
+   cw->fading = 1;
    ECompMgrWinFadeDoIn(eo, op_to);
    ECompMgrWinSetOpacity(eo, op_from);
 }
@@ -1103,10 +1119,14 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 static void
 ECompMgrWinFadeIn(EObj * eo)
 {
+   ECmWinInfo         *cw = eo->cmhook;
+
 #if DEBUG_OPACITY
    Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", eo->win, 0x10000000,
 	   eo->opacity);
 #endif
+   if (cw->fadeout)
+      ECompMgrWinFadeOutEnd(eo);
    ECompMgrWinFade(eo, 0x10000000, eo->opacity);
 }
 
@@ -1120,7 +1140,21 @@ ECompMgrWinFadeOut(EObj * eo)
 	   0x10000000);
 #endif
    cw->fadeout = 1;
+   ECompMgrWinInvalidate(eo, INV_PICTURE);
    ECompMgrWinFade(eo, cw->opacity, 0x10000000);
+}
+
+static void
+ECompMgrWinFadeOutEnd(EObj * eo)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+#if DEBUG_OPACITY
+   Eprintf("ECompMgrWinFadeOutEnd %#lx\n", eo->win);
+#endif
+   cw->fadeout = 0;
+   ECompMgrWinInvalidate(eo, INV_PIXMAP | INV_PICTURE);
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
 
 void
@@ -1156,7 +1190,6 @@ ECompMgrWinMap(EObj * eo)
       cw->extents = win_extents(disp, eo);
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
-   ECompMgrWinSetPicts(eo);
    if (Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFadeIn(eo);
 }
@@ -1168,8 +1201,7 @@ ECompMgrWinUnmap(EObj * eo)
 
    D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
 
-   if (cw->extents != None)
-      ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    if (Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFadeOut(eo);
@@ -1194,8 +1226,12 @@ ECompMgrWinSetPicts(EObj * eo)
 	return;
      }
 
-   if (cw->pixmap == None && Mode_compmgr.use_pixmap)
-      cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
+   if (cw->pixmap == None &&
+       (Mode_compmgr.use_pixmap || Conf_compmgr.fading.enable))
+     {
+	cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
+	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", eo->win, cw->pixmap);
+     }
 
    if (cw->picture == None)
      {
@@ -1203,14 +1239,15 @@ ECompMgrWinSetPicts(EObj * eo)
 	XRenderPictureAttributes pa;
 	Drawable            draw = eo->win;
 
-	if (cw->pixmap && Mode_compmgr.use_pixmap)
+	if ((cw->pixmap && Mode_compmgr.use_pixmap) || (cw->fadeout))
 	   draw = cw->pixmap;
 
 	pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
 	pa.subwindow_mode = IncludeInferiors;
 	cw->picture = XRenderCreatePicture(disp, draw,
 					   pictfmt, CPSubwindowMode, &pa);
-	D2printf("New picture %#lx\n", cw->picture);
+	D2printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
+		 eo->win, cw->picture, draw);
      }
 }
 
@@ -1302,6 +1339,9 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
    if (!invalidate)
       return;
 
+   if (cw->fadeout)
+      ECompMgrWinFadeOutEnd(eo);
+
    if (!eo->shown)
      {
 	ECompMgrWinInvalidate(eo, invalidate);
@@ -1317,9 +1357,6 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
 
    ECompMgrWinInvalidate(eo, invalidate);
 
-   if (invalidate & INV_SIZE)	/* FIXME - ??? */
-      ECompMgrWinSetPicts(eo);
-
    /* Find new window region */
    cw->extents = win_extents(disp, eo);
 
@@ -1329,8 +1366,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
    XFixesUnionRegion(disp, damage, damage, cw->extents);
 #endif
 
-   if (damage != None)
-      ECompMgrDamageMergeObject(eo, damage, 1);
+   ECompMgrDamageMergeObject(eo, damage, 1);
 }
 
 static void
@@ -1397,11 +1433,10 @@ ECompMgrWinChangeShape(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (cw->extents != None)
-     {
-	ECompMgrDamageMergeObject(eo, cw->extents, 1);
-	cw->extents = None;
-     }
+   D1printf("ECompMgrWinChangeShape %#lx\n", eo->win);
+
+   ECompMgrDamageMergeObject(eo, cw->extents, 1);
+   cw->extents = None;
 
    ECompMgrWinInvalidate(eo, INV_SIZE);
 }
@@ -1414,8 +1449,7 @@ ECompMgrWinChangeStacking(EObj * eo)
    if (Conf_compmgr.shadows.mode == ECM_SHADOWS_OFF)
       return;
 
-   if (cw->extents != None)
-      ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
 
 void
@@ -1556,8 +1590,9 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		  ((ECmWinInfo *) (eo1->cmhook))->prev = eo_prev;
 		  eo_prev = eo2;
 	       }
-	     ECompMgrWinSetPicts(&d->o);
 	  }
+
+	ECompMgrWinSetPicts(eo);
 
 	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
 		 eo->win, eo->desk->num, eo->shown, cw->damaged, cw->picture);
@@ -1604,10 +1639,6 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
    int                 x, y;
 
    cw = eo->cmhook;
-
-#if 0
-   ECompMgrWinSetPicts(eo);
-#endif
 
    D2printf("ECompMgrRepaintObj mode=%d %#lx %s\n", mode, eo->win, eo->name);
 
