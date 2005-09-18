@@ -278,9 +278,9 @@ examine_client_list_props_cb(void)
             range[strlen(range) - 1] = '\0';
 
         if (!strcmp(type, "string")) {
-          prop_tmp->type = PT_STR;
+          prop_tmp->type = ECORE_CONFIG_STR;
         } else if (!strcmp(type, "integer")) {
-          prop_tmp->type = PT_INT;
+          prop_tmp->type = ECORE_CONFIG_INT;
           if (*range) {
             prop_tmp->bound |= BOUND_BOUND;
             sscanf(range, "%d..%d", &mini, &maxi);
@@ -293,7 +293,7 @@ examine_client_list_props_cb(void)
             prop_tmp->step = tmpi;
           }
         } else if (!strcmp(type, "float")) {
-          prop_tmp->type = PT_FLT;
+          prop_tmp->type = ECORE_CONFIG_FLT;
           if (*range) {
             prop_tmp->bound |= BOUND_BOUND;
             sscanf(range, "%f..%f", &mind, &maxd);
@@ -306,14 +306,14 @@ examine_client_list_props_cb(void)
             prop_tmp->fstep = tmpd;
           }
         } else if (!strcmp(type, "colour")) {
-          prop_tmp->type = PT_RGB;
+          prop_tmp->type = ECORE_CONFIG_RGB;
         } else if (!strcmp(type, "theme")) {
-          prop_tmp->type = PT_THM;
+          prop_tmp->type = ECORE_CONFIG_THM;
           prop_tmp->data = strdup(range);
         } else if (!strcmp(type, "boolean")) {
-          prop_tmp->type = PT_BLN;
+          prop_tmp->type = ECORE_CONFIG_BLN;
         } else {
-          prop_tmp->type = PT_NIL;
+          prop_tmp->type = ECORE_CONFIG_NIL;
           prop_tmp->value.ptr = prop_tmp->oldvalue.ptr = NULL; }
 
         prop_tmp->next = prop_list;
@@ -347,19 +347,19 @@ examine_client_revert(examine_prop * target)
   char           *bugfix;
   Ewl_Widget     *sibling;
   switch (target->type) {
-  case PT_INT:
+  case ECORE_CONFIG_INT:
     target->value.val = target->oldvalue.val;
     ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.val);
     break;
-  case PT_BLN:
+  case ECORE_CONFIG_BLN:
     target->value.val = target->oldvalue.val;
     ewl_checkbutton_checked_set(EWL_CHECKBUTTON(target->w), target->value.val);
     break;
-  case PT_FLT:
+  case ECORE_CONFIG_FLT:
     target->value.fval = target->oldvalue.fval;
     ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.fval);
     break;
-  case PT_THM:
+  case ECORE_CONFIG_THM:
     free(target->value.ptr);
     target->value.ptr = strdup(target->oldvalue.ptr);
 
@@ -374,9 +374,9 @@ examine_client_revert(examine_prop * target)
       ewl_text_text_set(EWL_TEXT(sibling), bugfix);
     }
     break;
-  case PT_NIL:
+  case ECORE_CONFIG_NIL:
     break;
-  default:                     /* PT_STR, PT_RGB */
+  default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     free(target->value.ptr);
     target->value.ptr = strdup(target->oldvalue.ptr);
     ewl_text_text_set(EWL_TEXT(target->w), target->value.ptr);
@@ -399,20 +399,20 @@ void
 examine_client_save(examine_prop * target)
 {
   switch (target->type) {
-  case PT_INT:
-  case PT_BLN:
+  case ECORE_CONFIG_INT:
+  case ECORE_CONFIG_BLN:
     if (target->value.val != target->oldvalue.val) {
       target->oldvalue.val = target->value.val;
       examine_client_set_val(target);
     }
     break;
-  case PT_FLT:
+  case ECORE_CONFIG_FLT:
     if (target->value.fval != target->oldvalue.fval) {
       target->oldvalue.fval = target->value.fval;
       examine_client_set_val(target);
     }
     break;
-  default:                     /* PT_STR, PT_RGB */
+  default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
 #if 0
 printf("$%x, %s, %p, %p\n",target->type,target->key,target->value.ptr,target->oldvalue.ptr);
 if(target->value.ptr)
@@ -485,19 +485,19 @@ examine_client_get_val_cb(void)
     return;
 
   switch (prop->type) {
-  case PT_INT:
+  case ECORE_CONFIG_INT:
     sscanf(ret, "%d", &tmpi);
     prop->value.val = tmpi;
     prop->oldvalue.val = tmpi;
     ewl_spinner_value_set(EWL_SPINNER(prop->w), (double) tmpi);
     break;
-  case PT_FLT:
+  case ECORE_CONFIG_FLT:
     sscanf(ret, "%f", &tmpd);
     prop->value.fval = tmpd;
     prop->oldvalue.fval = tmpd;
     ewl_spinner_value_set(EWL_SPINNER(prop->w), tmpd);
     break;
-  case PT_THM:
+  case ECORE_CONFIG_THM:
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
 
@@ -512,13 +512,13 @@ examine_client_get_val_cb(void)
       ewl_text_text_set(EWL_TEXT(sibling), bugfix);
     }
     break;
-  case PT_BLN:
+  case ECORE_CONFIG_BLN:
     sscanf(ret, "%d", &tmpi);
     prop->value.val = tmpi ? 1 : 0;
     prop->oldvalue.val = tmpi;
     ewl_checkbutton_checked_set(EWL_CHECKBUTTON(prop->w), tmpi);
     break;
-  default:                     /* PT_STR, PT_RGB */
+  default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
     ewl_text_text_set(EWL_TEXT(prop->w), ret);
@@ -534,16 +534,16 @@ examine_client_set_val(examine_prop * target)
   c = find_call("prop-set");
 
   switch (target->type) {
-  case PT_INT:
-  case PT_BLN:
+  case ECORE_CONFIG_INT:
+  case ECORE_CONFIG_BLN:
     valstr = malloc(1000);      /* ### FIXME */
     snprintf(valstr, sizeof(valstr)-1, "%ld", target->value.val);
     break;
-  case PT_FLT:
+  case ECORE_CONFIG_FLT:
     valstr = malloc(1000);      /* ### FIXME */
     snprintf(valstr, sizeof(valstr)-1, "%f", target->value.fval);
     break;
-  default:                     /* PT_STR, PT_RGB */
+  default:                     /* ECORE_CONFIG_STR, ECORE_CONFIG_RGB */
     valstr = target->value.ptr;
   }
 

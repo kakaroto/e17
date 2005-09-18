@@ -262,11 +262,11 @@ draw_tree(examine_prop * prop_item)
     }
 
     free(key_tmp);
-    if (prop_item->type == PT_STR) {
+    if (prop_item->type == ECORE_CONFIG_STR) {
       entries[1] = ewl_entry_new("");
       ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
                           prop_item);
-    } else if (prop_item->type == PT_INT) {
+    } else if (prop_item->type == ECORE_CONFIG_INT) {
       entries[1] = ewl_spinner_new();
 
       ewl_spinner_digits_set(EWL_SPINNER(entries[1]), 0);
@@ -279,7 +279,7 @@ draw_tree(examine_prop * prop_item)
         ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->step);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
                           prop_item);
-    } else if (prop_item->type == PT_FLT) {
+    } else if (prop_item->type == ECORE_CONFIG_FLT) {
       entries[1] = ewl_spinner_new();
 
 /*          ewl_spinner_digits_set(EWL_SPINNER(input), 0);
@@ -292,12 +292,12 @@ draw_tree(examine_prop * prop_item)
         ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->fstep);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
                           prop_item);
-    } else if (prop_item->type == PT_RGB) {
+    } else if (prop_item->type == ECORE_CONFIG_RGB) {
       entries[1] = ewl_entry_new("");
       ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
                           prop_item);
 				
-    } else if (prop_item->type == PT_THM) {
+    } else if (prop_item->type == ECORE_CONFIG_THM) {
       struct stat     st;
       struct dirent  *next;
       DIR            *dp;
@@ -391,7 +391,7 @@ draw_tree(examine_prop * prop_item)
 
       free(search_path);
       ecore_list_destroy(themes);
-    } else if (prop_item->type == PT_BLN) {
+    } else if (prop_item->type == ECORE_CONFIG_BLN) {
       entries[1] = ewl_checkbutton_new("");
       ewl_callback_append(entries[1],
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_bln, prop_item);
