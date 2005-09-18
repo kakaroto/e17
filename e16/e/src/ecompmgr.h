@@ -25,6 +25,8 @@
 
 #if USE_COMPOSITE
 
+#include "eobj.h"
+
 typedef struct
 {
    char                enable;

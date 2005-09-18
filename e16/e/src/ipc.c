@@ -24,6 +24,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "ewin-ops.h"
 #include "xwin.h"

@@ -25,6 +25,7 @@
 #include "desktops.h"
 #include "ecore-e16.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "icons.h"
 #include "menus.h"

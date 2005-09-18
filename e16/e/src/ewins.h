@@ -24,6 +24,8 @@
 #ifndef _EWIN_H_
 #define _EWIN_H_
 
+#include "eobj.h"
+
 struct _desk;
 
 #if 0

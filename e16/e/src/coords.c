@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "xwin.h"
 

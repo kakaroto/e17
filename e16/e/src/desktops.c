@@ -25,6 +25,7 @@
 #include "buttons.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "tooltips.h"
 #include "xwin.h"

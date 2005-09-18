@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "menus.h"
 #include "tooltips.h"

@@ -24,6 +24,7 @@
 #include "desktops.h"
 #include "ecompmgr.h"
 #include "ecore-e16.h"
+#include "eobj.h"
 #include "ewins.h"		/* FIXME - Should not be here */
 #include "xwin.h"
 

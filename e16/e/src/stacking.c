@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "eobj.h"
 #include "ewins.h"
 
 #define ENABLE_DEBUG_STACKING 1

@@ -157,8 +157,6 @@ int                 Esnprintf(va_alist);
 #define N_(String) (String)
 #endif
 
-#include "eobj.h"
-
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif

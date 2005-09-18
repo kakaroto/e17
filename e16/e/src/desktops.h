@@ -25,6 +25,8 @@
 #ifndef _DESKTOPS_H_
 #define _DESKTOPS_H_
 
+#include "eobj.h"
+
 typedef struct _desk Desk;
 struct _button;
 

@@ -32,6 +32,7 @@
 #include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "xwin.h"
 
 #include <stdlib.h>

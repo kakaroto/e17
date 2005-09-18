@@ -25,6 +25,7 @@
 #include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "icons.h"
 #include "snaps.h"

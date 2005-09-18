@@ -24,6 +24,7 @@
 #include "E.h"
 #include "conf.h"
 #include "emodule.h"
+#include "eobj.h"
 #include "tooltips.h"
 #include "xwin.h"
 
