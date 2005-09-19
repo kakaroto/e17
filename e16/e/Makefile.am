@@ -8,7 +8,7 @@ sample-scripts/shade-pagers.pl \
 e.spec \
 configure configure.in config.h.in \
 ABOUT-NLS AUTHORS COMPLIANCE COPYING ChangeLog INSTALL NEWS README \
-README-0.16.8
+docs/README-0.16.8
 
 ACLOCAL_AMFLAGS = -I m4
 

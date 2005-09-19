@@ -245,5 +245,5 @@ fi
 
 echo "***************************************************************"
 echo "*** NOTE: If this is your first trip with version 0.16.8    ***"
-echo "*** NOTE: you may want to take a look in README-0.16.8      ***"
+echo "*** NOTE: you may want to take a look in docs/README-0.16.8 ***"
 echo "***************************************************************"
