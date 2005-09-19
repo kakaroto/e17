@@ -1,0 +1,364 @@
+#  E 16.7.x configuration file information
+#  Author:  Andy Murren
+#  Email: amurren@users.sourceforge.net
+#  Date: 12 Sep 2005
+#  Revision: 0.5
+#  Copyright: This work is copyrighted under the same terms as
+#    the rest of Enlightenment
+
+This file documents the configuration files used in Enlightenment
+16.7.x but may not match 100% with earlier or later versions.  This is
+a work in progress and will be updated as I learn more and have the
+time. This document will cover the following files:
+
+Menu files, configuration and layout of menus
+Snapshot, how to configure applications
+Group, configuring groups of windows
+Client, Client setups
+
+The default user configuration files are kept in the directory
+~/.enlightenment, but that can be changed on the command line.  There
+are four files that contain saved settings;
+
+...e_session-XXXXXX
+...e_session-XXXXXX.clients.#
+...e_session-XXXXXX.groups.#
+...e_session-XXXXXX.snapshot.#
+
+
+The # in the file name tells E which X Windows screen the settings
+apply to.  Normally this is screen 0, so the files are:
+
+...e_session-XXXXXX.clients.0
+...e_session-XXXXXX.groups.0
+...e_session-XXXXXX.snapshots.0
+
+The file ...e_session-XXXXXX and all menu files apply to ALL screens.
+
+Throughout the document there are some settings that are either TRUE
+or FALSE.  In the settings either 1 or 0 is used and 0 == FALSE.
+Settings that only accept 0 or 1 will be noted 0/1.
+
+I am deeply indebted to Kim Woelders (kwo) the maintainer of the E16
+branch.  He reviewed, pointed to source files and corrected many of my
+errors.  Some lines are direct quotes from his corrections.  I am not
+going to quote and foot note each of them, just be aware that he had
+important input into the correctness of the document.
+
+#
+#  MENU FILES
+#
+
+The menu files contain information for launching applications within
+E.  Like the rest of E 16.7.x, the menu files can be edited with a
+text editor.  Most changes appear in the menu after a couple of
+minutes or after restarting E.
+
+The file format is simple and follows the format below.
+
+"User Menus"
+"User Menu" NULL menu "user.menu"
+"File Manager" "gnome_icons/gnome-folder.png" exec "xfe"
+
+After the first line all of the lines contain four space delimited
+fields.  The main menu is stored in the file 'file.menu' and all other
+menus are called from there.
+
+On the first line in double quotes is the display name of the menu. 
+
+Starting on the second line are the four fields. The first field is the
+text to display on the menu.  It is in double quotes and contains
+printable characters.
+
+The second field is the image file to be displayed.  It can contain
+either the word NULL, empty double quotes "", or the path to the image
+file in double quotes. The path should be the absolute path or the
+path starting at the same directory as the config file.
+
+The third field is either the word 'menu' or 'exec'.  If it is 'menu'
+the next field will be the name of another menu file using this same
+format.  If it is 'exec' the next field is a command.
+
+The final field is either the path to another menu file or a command
+to execute, depending on what is in the third field.  If it is a menu,
+the file name, and path if needed, are in double quotes.  If the
+application is in the users PATH, the application will be shown in the
+menu and can be invoked.  If the application is not found (because it
+is not in the user PATH, it has been moved, misspelled, etc.) the
+entry will not show up in the menu.  If an item is added to the menu
+and it doesn't appear, check the path and spelling of the entry.
+
+"user.menu"
+
+or
+
+"menus/gnome.menu"
+
+or
+
+"/some/path/my.menu"
+
+The file must have a '.menu' extension.
+
+If the third field was 'exec' the final field is a command.  The
+command can be any command and must be double quoted.
+
+
+Here is a line to start the E-Clock epplet.  Note the full path and
+double quotes
+
+"E-Clock" "/usr/share/enlightenment/epplet_icons/E-Clock.icon" exec "/usr/bin/E-Clock.epplet"
+
+Here is a sample showing arguments being passed to Eterm.
+
+"mutt" "gnome_icons/mutt.xpm" exec "/usr/bin/Eterm -t mutt"
+
+Below is an exec line to start IE using CrossOver Office.  Note
+the multiple '/' in the fake Windows path and the single quotes around
+arguments that need to be passed to the application.
+
+"IE" "/home/andy/.cxoffice/dotwine/dosdevices/c:/Windows/Icons/9d75_iexplore.-32528.xpm" exec "/opt/cxoffice/bin/wine --check --cx-app 'C:////Program Files////Internet Explorer////IEXPLORE.EXE'"
+
+Menus can be all 'exec' lines, all 'menu' lines or like most times a
+mixture of both.
+
+
+#
+#  SESSION SNAPSHOT FILE
+#
+
+Here is information about the ...e_session-XXXXXX.snapshot file.  This
+file contains the per screen 'Remembered' settings for windows.  What
+is meant by 'Remembered' is the user right clicked on the window and
+selected settings to remember.  If that was not done then there will
+be no settings for the application in this file.  Of course this being
+E the information can be hand entered in this file following the file
+format below.
+
+The options are presented in alphabetical order, but are in
+this order:
+
+NEW
+NAME
+CLASS
+DESKTOP
+RES
+WH
+XY
+LAYER
+STICKY
+SKIPTASK
+SKIPWINLIST
+SKIPFOCUS
+NEVERFOCUS
+SHADE
+ICON
+BORDER
+CMD
+GROUP
+
+The order is set in the source code so it will always appear in this
+order.  Pagers and Iconboxes have all settings saved (except GROUP),
+other applications on get the settings the user saves.
+
+BORDER:  What border style to use.  These are determined by the theme
+      but all should have as a minimum:
+
+	  o  Borderless
+	  o  Default
+
+     The names of the border style are case sensitive.
+
+CLASS:  Class part of WM_CLASS property. Used in window matching.
+
+CMD: Command to execute with or without path and arguments example of
+	  calling emacs to start showing the users home directory and
+	  passing emacs geometry settings
+
+	  CMD: "emacs ~/ -g100x40+5+5"
+
+	  If CMD is present, the application will start when starting an
+	  Enlightenment session.  It will not start automatically if it is
+	  not in the file.
+	  
+
+DESKTOP: Which desktop, not virtual desktop, to appear on. This is an
+      int from 0 to n-1, where n == the number of desktops being used.
+		
+GROUP: This is the ID of the group the window belongs to, and found
+      ...e_session-XXXXXX.groups file.
+
+ICON: 0/1 Should this app start as an icon?  This is not used in 16.6
+      or later.
+
+
+LAYER: This is what layer to set the window at.  It is used for
+      deterimining how to stack windows relative to each other.
+      Windows at layer 2 are stacked below layer 4 and layer 6
+      windows.  Windows at the same level can be raised above each
+      other.  Windows being dragged are on top while being dragged.
+      The acceptable range of values is 0-255, there is nothing
+      special about the numbers.  If using 4 (Normal) for all of
+      the windows they will all stack at the same level so when 
+      selecting a window it will become the top most window.  If a
+      window is set to a high layer then windows with a lower
+      layer number it will not move to the top when selected.  
+
+      0: Desktop type windows (e.g. nautilus).
+      2: Below (epplets default)
+      4: Normal
+      6: Above
+     20: On Top
+
+
+NAME:  Name part of WM_CLASS property. Used in window matching.
+
+NEVERFOCUS: 0/1 If it is set then the window is never focused.
+
+NEW:  Marks the start of a new entry. The string here is the one used to match
+      a window.  This does not have to be globally unique.
+RES:  Screen Resolution in pixels (width and height) separated by a space
+      example at 1024x768
+      RES: 1024 768
+
+SHADE:   Is this app shaded? This is a 0 or 1, 0 == FALSE.
+
+SKIPFOCUS: 0/1 If this is set then the window does not appear in the
+      focus list when using alt-tab to cycle through windows on a
+      desktop.  This setting is good for applications like Gkrellm or
+      Epplets.
+
+SKIPTASK: 0/1 Should this App be included in external task listing
+      (like gnome-panel)?
+
+SKIPWINLIST:0/1 Should this App be included in the internal window
+      listing (like when pressing ALT-MOUSE BUTTON 2)? 
+
+STICKY:  0/1 Is the the application sticky (visible on each desktop and virtual
+	  desktop). 
+
+TITLE: Used for window matching if the WM_CLASS property is not present, This
+      is not used very often. Maybe a few ancient clients do this.
+
+WH:  This gives the width and height of the window in pixels.
+
+XY:  This has four space separated integer parameters
+
+     The first two are the number of pixels from the upper left corner
+     of the screen to place the window.  The numbers are indexed from
+     0 to resolution-1. On a 600x400 resolution screen that works out
+     like this:
+
+
+    0,0                    599,0
+     +------------------------+
+     |                        |
+     |                        |
+     |                        |
+     |                        |
+     |                        |
+     |                        |
+     +------------------------+
+     0,399                  599,399
+
+
+     The second set of two integers is the virtual desktop the window
+     is to show up on.  This is also indexes from 0 to n-1.  A desktop
+     with 12 virtual desktop works out like this:
+
+
+      +-----+-----+-----+-----+
+      |     |     |     |     |
+      | 0,0 | 1,0 | 2,0 | 3,0 |
+      |     |     |     |     |
+      +-----+-----+-----+-----+
+      |     |     |     |     |
+      | 0,1 | 1,1 | 2,1 | 3,1 |
+      |     |     |     |     |
+      +-----+-----+-----+-----+
+      |     |     |     |     |
+      | 0,2 | 1,2 | 2,2 | 3,2 |
+      |     |     |     |     |
+      +-----+-----+-----+-----+
+
+
+
+	 To have a window place on virtual desktop 2,1 and 10 pixels from
+	 the left edge and 15 pixels from the top would be this:
+
+     XY:  10 15 2 1
+
+#
+#  GROUP FILE
+#
+
+The group file identifies actions that all windows of a designated
+group share.  Settings are either TRUE or FALSE.  A setting that is
+TRUE will have that action performed on one window to happen to all
+windows of that group.  If moving one window of a group will all the
+windows move together?  If MOVE == 1 then yes they will..
+
+
+NEW: 6011829
+ICONIFY: 1
+KILL: 0
+MOVE: 1
+RAISE: 0
+SET_BORDER: 1
+STICK: 1
+SHADE: 1
+MIRROR: 1
+
+
+NEW:  This identifies the group and is used in the SESSION file to
+identify which windows belong to a group.
+
+ICONIFY: Iconify all of the windows together.  It would make sense to
+      have this match the RAISE setting.
+
+KILL:  Kill all of the windows together
+  
+MOVE:  Move all of the windows together
+
+RAISE: After Iconifing a window or group should they be raised
+      together.  It would make sense to have this match the ICONIFY
+      setting.
+
+SET_BORDER:  Will changing the border for one change the border for all.
+
+STICK:  Should the windows be on all desktops together.
+
+SHADE:  Set the shade state for all windows concurrently.
+
+MIRROR:  I don't know what this one does.  
+
+
+#
+# CLIENT FILE
+#
+
+This file is still written on exit in E16.7.x, but no is longer use.
+Hence I will not be documenting it.
+
+
+#
+# Copyright Information
+#
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
