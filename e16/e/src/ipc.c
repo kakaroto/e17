@@ -805,51 +805,6 @@ IPC_Exit(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Copyright(const char *params __UNUSED__, Client * c __UNUSED__)
-{
-   IpcPrintf("Copyright (C) 2000-2005 Carsten Haitzler and Geoff Harrison,\n"
-	     "with various contributors (Isaac Richards, Sung-Hyun Nam, "
-	     "Kimball Thurston,\n"
-	     "Michael Kellen, Frederic Devernay, Felix Bellaby, "
-	     "Michael Jennings,\n"
-	     "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
-	     "Stalyn,\n" "Knut Neumann, Nathan Heagy, Simon Forman, "
-	     "Brent Nelson,\n"
-	     "Martin Tyler, Graham MacDonald, Jessse Michael, "
-	     "Paul Duncan, Daniel Erat,\n"
-	     "Tom Gilbert, Peter Alm, Ben Frantzdale, "
-	     "Hallvar Helleseth, Kameran Kashani,\n"
-	     "Carl Strasen, David Mason, Tom Christiansen, and others\n"
-	     "-- please see the AUTHORS file for a complete listing)\n\n"
-	     "Permission is hereby granted, free of charge, to "
-	     "any person obtaining a copy\n"
-	     "of this software and associated documentation files "
-	     "(the \"Software\"), to\n"
-	     "deal in the Software without restriction, including "
-	     "without limitation the\n"
-	     "rights to use, copy, modify, merge, publish, distribute, "
-	     "sub-license, and/or\n"
-	     "sell copies of the Software, and to permit persons to "
-	     "whom the Software is\n"
-	     "furnished to do so, subject to the following conditions:\n\n"
-	     "The above copyright notice and this permission notice "
-	     "shall be included in\n"
-	     "all copies or substantial portions of the Software.\n\n"
-	     "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF "
-	     "ANY KIND, EXPRESS OR\n"
-	     "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF "
-	     "MERCHANTABILITY,\n"
-	     "FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. "
-	     "IN NO EVENT SHALL\n"
-	     "THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER "
-	     "LIABILITY, WHETHER\n"
-	     "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
-	     "OUT OF OR IN\n"
-	     "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS "
-	     "IN THE SOFTWARE.\n");
-}
-
-static void
 IPC_About(const char *params __UNUSED__, Client * c __UNUSED__)
 {
    About();
@@ -1378,11 +1333,6 @@ IpcItem             IPCArray[] = {
     IPC_Nop,
     "nop", NULL,
     "IPC No-operation - returns nop",
-    NULL},
-   {
-    IPC_Copyright,
-    "copyright", NULL,
-    "Displays copyright information for Enlightenment",
     NULL},
    {
     IPC_About, "about", NULL, "Show E info", NULL},
