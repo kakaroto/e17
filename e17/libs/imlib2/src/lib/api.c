@@ -72,9 +72,6 @@ if (!(param)) \
   return; \
 }
 
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-
 /* internal typedefs for function pointers */
 typedef void        (*Imlib_Internal_Progress_Function) (void *, char, int, int,
                                                          int, int);
