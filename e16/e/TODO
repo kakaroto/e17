@@ -1,6 +1,6 @@
 
 - Composite manager
-  - Finish fading.
+  - Avoid repainting regions with hidden damage.
   - Don't paint unredirected windows where not necessary.
   - Enable not redirecting certain clients?
 

@@ -3568,3 +3568,25 @@ Button related cleanups.
 Fix segv's, X-errors, memleak, wrapping.
 Make default menus and action tooltips localizable.
 
+
+-------------------------------------------------------------------------------
+
+Tue Sep 20 19:36:08 CEST 2005
+(Kim)
+
+--- 0.16.8 0.18 ---
+Fix race in systray object registration.
+Fix toggling fixedpos, neverfocus, add fixedsize.
+Track window modality state (not honoured).
+Fix final position for non-opaque slideins.
+The beginnings of fading (OR fade-in for now).
+Focus stack tweak.
+Fix focus on multihead when entering empty screen.
+Delay sub-menu closing.
+Event handling tweaks. Global action events must occur on root window.
+Fade on opacity changes.  Enable/disable fading in config dialog.
+Speed up stacking.
+Fade out on unmap. Destroy ends fading.
+Remove IPC copyright function - info is in AUTHORS and COPYING.
+Move README-0.16.8 to docs/.
+Add notes on 0.16.7.x configuration files (Andy Murren).
