@@ -725,7 +725,7 @@ __imlib_CopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
                           int w, int h, ImlibColorModifier * cm)
 {
    int  src_step = (srcw - w), dst_step = (dstw - w), ww = w;
-   DATA8  *amod = cm->alpha_mapping, *rmod = cm->red_mapping,
+   DATA8  *rmod = cm->red_mapping,
           *gmod = cm->green_mapping, *bmod = cm->blue_mapping;
 
    while (h--)
@@ -924,7 +924,7 @@ __imlib_AddCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
                              int w, int h, ImlibColorModifier * cm)
 {
    int  src_step = (srcw - w), dst_step = (dstw - w), ww = w;
-   DATA8  *amod = cm->alpha_mapping, *rmod = cm->red_mapping,
+   DATA8  *rmod = cm->red_mapping,
           *gmod = cm->green_mapping, *bmod = cm->blue_mapping;
 
    while (h--)
@@ -1123,7 +1123,7 @@ __imlib_SubCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
                              int w, int h, ImlibColorModifier * cm)
 {
    int  src_step = (srcw - w), dst_step = (dstw - w), ww = w;
-   DATA8  *amod = cm->alpha_mapping, *rmod = cm->red_mapping,
+   DATA8  *rmod = cm->red_mapping,
           *gmod = cm->green_mapping, *bmod = cm->blue_mapping;
 
    while (h--)
@@ -1321,7 +1321,7 @@ __imlib_ReCopyRGBAToRGBCmod(DATA32 * src, int srcw, DATA32 * dst, int dstw,
                             int w, int h, ImlibColorModifier * cm)
 {
    int  src_step = (srcw - w), dst_step = (dstw - w), ww = w;
-   DATA8  *amod = cm->alpha_mapping, *rmod = cm->red_mapping,
+   DATA8  *rmod = cm->red_mapping,
           *gmod = cm->green_mapping, *bmod = cm->blue_mapping;
 
    while (h--)

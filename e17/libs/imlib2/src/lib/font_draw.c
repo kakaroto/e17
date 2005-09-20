@@ -76,7 +76,7 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
    int                 w, h, ascent;
    ImlibImage         *im2;
    DATA32             *data, col;
-   int                 nx, ny, tmp;
+   int                 nx, ny;
 
    imlib_font_query_advance(fn, text, &w, &h);
 

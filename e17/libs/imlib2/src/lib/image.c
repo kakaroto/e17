@@ -557,10 +557,6 @@ __imlib_CleanupImagePixmapCache(void)
 }
 #endif
 
-#define LOADERS_UNINITIALISED -4444
-
-static int          errors = LOADERS_UNINITIALISED;
-
 /* try dlopen()ing the file if we succeed finish filling out the malloced */
 /* loader struct and return it */
 ImlibLoader        *

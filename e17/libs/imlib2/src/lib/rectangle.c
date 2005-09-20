@@ -15,7 +15,7 @@ __imlib_Rectangle_DrawToData(int x, int y, int rw, int rh, DATA32 color,
    ImlibPointDrawFunction  pfunc;
    ImlibSpanDrawFunction   sfunc;
    int     x0, y0, x1, y1, len;
-   DATA32  *p, *pp;
+   DATA32  *p;
 
    if (A_VAL(&color) == 0xff)  blend = 0;
 

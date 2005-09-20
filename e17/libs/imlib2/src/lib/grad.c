@@ -232,11 +232,11 @@ __imlib_DrawGradient(ImlibImage * im, int x, int y, int w, int h,
                      ImlibRange * rg, double angle, ImlibOp op,
                      int clx, int cly, int clw, int clh)
 {
-   DATA32             *map, *p, v;
+   DATA32             *map, *p;
    int                *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff =
        0, ww, hh, jump;
    int                 tmp, i, divw, divh;
-   DATA8               rr, gg, bb, aa, r, g, b, a, nr, ng, nb, na;
+   DATA8               r, g, b, a;
 
    ww = w;
    hh = h;
@@ -425,11 +425,11 @@ __imlib_DrawHsvaGradient(ImlibImage * im, int x, int y, int w, int h,
                          ImlibRange * rg, double angle, ImlibOp op,
                          int clx, int cly, int clw, int clh)
 {
-   DATA32             *map, *p, v;
+   DATA32             *map, *p;
    int                *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff =
        0, ww, hh, jump;
    int                 tmp, i, divw, divh;
-   DATA8               rr, gg, bb, aa, r, g, b, a, nr, ng, nb, na;
+   DATA8               r, g, b, a;
 
    ww = w;
    hh = h;
