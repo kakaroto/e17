@@ -87,12 +87,7 @@ setup_cc_with_pos(int x, int y)
 //      if(main_config->ontop==1)
 
 	/* Moving the damn thing */
-	if (!strcmp(main_config->render_method, "gl"))
-		ecore_x_window_move(ecore_evas_gl_x11_window_get(cc->win),
-				    pos->x, pos->y);
-	else
-		ecore_x_window_move(ecore_evas_software_x11_window_get(cc->win),
-				    pos->x, pos->y);
+	ecore_evas_move(cc->win, pos->x, pos->y);
 
 	/* Setup the Canvas, Render-Method and Font Path */
 	cc->evas = ecore_evas_get(cc->win);

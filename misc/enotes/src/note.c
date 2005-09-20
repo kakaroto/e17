@@ -180,12 +180,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 
 	/* Move the damn thing  */
-	if (!strcmp(main_config->render_method, "gl"))
-		ecore_x_window_move(ecore_evas_gl_x11_window_get(p->win),
-				    x, y);
-	else
-		ecore_x_window_move(ecore_evas_software_x11_window_get(p->win),
-				    x, y);
+	ecore_evas_move(p->win, x, y);
 
 	/* Setup the Canvas, fonts, etc... */
 	p->evas = ecore_evas_get(p->win);
