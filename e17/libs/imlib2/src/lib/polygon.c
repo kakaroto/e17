@@ -181,7 +181,7 @@ __imlib_polygon_contains_point(ImlibPoly poly, int x, int y)
                     }
                   if (__imlib_point_on_segment
                       (curr_x, curr_y, x, y, out_x, out_y)
-                      && (ysave < y != next_y < y))
+                      && ((ysave < y) != (next_y < y)))
                     {
                        /* current seg xsects test seg @ 1st vtx and
                         * ysave on opposite side of test line from
