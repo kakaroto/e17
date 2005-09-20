@@ -31,7 +31,7 @@ int                 depth;
 int
 main(int argc, char **argv)
 {
-   int                 i, j, w, h, x, y;
+   int                 w, h, x, y;
    Imlib_Image         im = NULL, im_bg = NULL;
    XEvent              ev;
    const char         *display_name = getenv("DISPLAY");

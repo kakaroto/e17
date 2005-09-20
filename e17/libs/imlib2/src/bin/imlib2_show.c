@@ -54,7 +54,7 @@ progress(Imlib_Image * im, char percent,
 int
 main(int argc, char **argv)
 {
-   int                 i, j;
+   int                 i;
    Imlib_Image        *im = NULL;
    int                 sec1, usec1, sec2, usec2;
    int                 pixels = 0;
@@ -322,9 +322,10 @@ main(int argc, char **argv)
         if (scale)
           {
              Window              d;
+             unsigned int        ud;
              int                 dd;
 
-             XGetGeometry(disp, win, &d, &dd, &dd, &dd, &dd, &dd, &dd);
+             XGetGeometry(disp, win, &d, &dd, &dd, &ud, &ud, &ud, &ud);
           }
         XSync(disp, False);
      }
@@ -816,7 +817,7 @@ main(int argc, char **argv)
              printf("Font Cache test start\n");
 
              f = imlib_load_font("notepad/10");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f);
              printf
@@ -825,12 +826,12 @@ main(int argc, char **argv)
                   imlib_get_maximum_font_ascent(),
                   imlib_get_maximum_font_descent());
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              printf("\n");
 
              f = imlib_load_font("-*-fixed-*--14-*");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f);
              printf
@@ -839,61 +840,61 @@ main(int argc, char **argv)
                   imlib_get_maximum_font_ascent(),
                   imlib_get_maximum_font_descent());
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              printf("\n");
 
              f1 = imlib_load_font("notepad/10");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f1, f1->next, f1->type, f1->ref, f1->name);
              f2 = imlib_load_font("-*-fixed-*--14-*");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f2, f2->next, f2->type, f2->ref, f2->name);
              f3 = imlib_load_font("notepad/10,-*-fixed-*--14-*");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f3, f3->next, f3->type, f3->ref, f3->name);
              f = f3->ttf;
-             printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("         f->ttf: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              f4 = imlib_load_font("notepad/10,-*-fixed-*--14-*");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f4, f4->next, f4->type, f4->ref, f4->name);
              f = f4->ttf;
-             printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("         f->ttf: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              printf("\n");
 
              imlib_context_set_font((Imlib_Font) f4);
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f4, f4->next, f4->type, f4->ref, f4->name);
              f = f4->ttf;
-             printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("         f->ttf: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f1);
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f1, f1->next, f1->type, f1->ref, f1->name);
              imlib_context_set_font((Imlib_Font) f2);
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f2, f2->next, f2->type, f2->ref, f2->name);
              imlib_context_set_font((Imlib_Font) f3);
              imlib_free_font();
-             printf("imlib_free_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f3, f3->next, f3->type, f3->ref, f3->name);
              f = f3->ttf;
-             printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("         f->ttf: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              printf("\n");
              imlib_flush_font_cache();
              printf("imlib_flush_font_cache: \n");
              printf("\n");
              f1 = imlib_load_font("notepad/10,-*-fixed-*--14-*");
-             printf("imlib_load_font: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("imlib_load_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f1, f1->next, f1->type, f1->ref, f1->name);
              f = f1->ttf;
-             printf("         f->ttf: f=%x, next=%8x, type=%d, ref=%d, '%s'\n",
+             printf("         f->ttf: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f1);
              printf
@@ -1006,7 +1007,6 @@ main(int argc, char **argv)
                }
              else if (rotate)
                {
-                  Imlib_Image         rotim;
                   double              s, c;
                   int                 x1, y1, x2, y2, w, h;
 
