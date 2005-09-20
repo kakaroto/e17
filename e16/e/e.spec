@@ -57,8 +57,10 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog INSTALL README docs/README-0.16.8
-%{_datadir}/*
 %{_bindir}/*
+%{_datadir}/%{name}/*
+%{_datadir}/locale/*
+%{_datadir}/xsessions/*
 %{_mandir}/*
 
 %changelog
