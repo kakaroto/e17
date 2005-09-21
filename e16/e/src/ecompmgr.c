@@ -2156,7 +2156,11 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
       case_DestroyNotify:
 	eo = EobjListStackFind(xwin);
 	if (eo && eo->type == EOBJ_TYPE_EXT)
-	   EobjUnregister(eo);
+	  {
+	     if (ev->type == DestroyNotify)
+		eo->gone = 1;
+	     EobjUnregister(eo);
+	  }
 	break;
 
      case ReparentNotify:
