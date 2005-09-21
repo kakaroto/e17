@@ -277,6 +277,12 @@ EobjListGet(EobjList * ewl, int *num)
    return ewl->list;
 }
 
+int
+EobjListStackCheck(EObj * eo)
+{
+   return EobjListGetIndex(&EwinListStack, eo);
+}
+
 EObj               *
 EobjListStackFind(Window win)
 {

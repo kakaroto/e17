@@ -159,6 +159,7 @@ void                EobjListStackAdd(EObj * eo, int ontop);
 void                EobjListStackDel(EObj * eo);
 int                 EobjListStackRaise(EObj * eo);
 int                 EobjListStackLower(EObj * eo);
+int                 EobjListStackCheck(EObj * eo);
 EObj               *EobjListStackFind(Window win);
 EObj               *const *EobjListStackGet(int *num);
 EObj               *const *EobjListStackGetForDesk(int *num, struct _desk *dsk);

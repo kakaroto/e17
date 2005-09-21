@@ -1060,7 +1060,7 @@ doECompMgrWinFade(int val, void *data)
    unsigned int        op = (unsigned int)val;
 
    /* May be gone */
-   if (!EobjListStackFind(eo->win))
+   if (EobjListStackCheck(eo) < 0)
       return;
 
    cw = eo->cmhook;
