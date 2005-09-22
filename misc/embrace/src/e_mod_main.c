@@ -36,13 +36,25 @@ void *e_modapi_init (E_Module *module)
 
 	/* check module api version */
 	if (module->api->version < E_MODULE_API_VERSION) {
-		e_error_dialog_show ( _("Module API Error"),
-				      _("Error initializing Module: Embrace\n"
-					"It requires a minimum module API version of: %i.\n"
-				       	"The module API advertized by Enlightenment is: %i.\n"
-				       	"Aborting module."),
-				      E_MODULE_API_VERSION,
-				      module->api->version);
+		E_Dialog *dia;
+		char buf[4096];
+
+		dia = e_dialog_new (e_container_current_get (e_manager_current_get ()));
+		if (!dia)
+			return NULL;
+
+		snprintf (buf, sizeof (buf),
+		          _("Module API Error<br>Error initializing Module: Embrace<br>"
+		            "It requires a minimum module API version of: %i.<br>"
+		            "The module API advertized by Enlightenment is: %i.<br>"), 
+		          E_MODULE_API_VERSION, module->api->version);
+
+		e_dialog_title_set (dia, "Enlightenment Embrace Module");
+		e_dialog_icon_set (dia, "enlightenment/e", 64);
+		e_dialog_text_set (dia, buf);
+		e_dialog_button_add (dia, _("Ok"), NULL, NULL, NULL);
+		e_win_centered_set (dia->win, 1);
+		e_dialog_show (dia);
 		return NULL;
 	}
 	/* actually init embrace */
@@ -87,8 +99,17 @@ int e_modapi_info (E_Module *module)
 
 int e_modapi_about (E_Module *module)
 {
-	e_error_dialog_show ( _("Enlightenment Embrace Module"),
-			      _("A module to check your email."));
+	E_Dialog *dia;
+
+	dia = e_dialog_new (e_container_current_get (e_manager_current_get ()));
+	if (!dia)
+		return 0;
+	e_dialog_title_set (dia, "Enlightenment Embrace Module");
+	e_dialog_icon_set (dia, "enlightenment/e", 64);
+	e_dialog_text_set (dia, _("A module to check your email."));
+	e_dialog_button_add (dia, _("Ok"), NULL, NULL, NULL);
+	e_win_centered_set (dia->win, 1);
+	e_dialog_show (dia);
 	return 1;
 }
 

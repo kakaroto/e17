@@ -1,5 +1,8 @@
 $Id$
 
+2005-09-22 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.c: Change from e_error_dialog_show to e_dialog_new
+
 2005-09-05 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/plugins/pop3/pop3.c: Include <stdlib.h> for free ().
       * src/plugins/maildir/maildir.c: Include <unistd.h> for close ().
