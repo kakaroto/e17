@@ -876,5 +876,7 @@ void ewl_iconbox_clear(Ewl_IconBox* ib) {
 
 		ecore_list_clear(ib->ewl_iconbox_icon_list);
 	}
+
+	ib->drag_icon = NULL;
 	
 }
