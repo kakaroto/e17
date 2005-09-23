@@ -161,7 +161,7 @@ bg_setup(void)
 
    o = edje_object_add(evas);
    o_bg = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR"/data/theme.eet", "background");
+   edje_object_file_set(o, PACKAGE_DATA_DIR"/data/theme.edj", "background");
    evas_object_move(o, 0, 0);
    evas_object_layer_set(o, -999);
    evas_object_show(o);   
@@ -184,8 +184,7 @@ void
 media_setup(void)
 {
    Elation_Module *em;
-   Evas_Coord w, h;
-   
+
    em = elation_module_open(&elation_info, NULL, "media");
    em_media = em;
    if (em)
@@ -201,8 +200,7 @@ void
 disk_setup(void)
 {
    Elation_Module *em;
-   Evas_Coord w, h;
-   
+
    em = elation_module_open(&elation_info, NULL, "disk");
    em_disk = em;
    if (em)

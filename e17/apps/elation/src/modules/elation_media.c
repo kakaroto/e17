@@ -33,7 +33,6 @@ static void unfocus(Elation_Module *em);
 static void action(Elation_Module *em, int action);
 
 static int  media_play_timer_cb(void *data);
-static int  media_fade_in_timer_cb(void *data);
 
 void *
 init(Elation_Module *em)
@@ -53,7 +52,7 @@ init(Elation_Module *em)
    em->action = action;
 
    pr->overlay = edje_object_add(em->info->evas);
-   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "media");
+   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.edj", "media");
    edje_object_signal_emit(pr->overlay, "media", "0");
    
    return pr;

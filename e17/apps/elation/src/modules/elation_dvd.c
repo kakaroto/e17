@@ -45,7 +45,6 @@ static void channels_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void ref_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void button_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static int  media_play_timer_cb(void *data);
 static int  media_fade_in_timer_cb(void *data);
 
 void *

@@ -112,7 +112,7 @@ init(Elation_Module *em)
      }
    
    pr->overlay = edje_object_add(em->info->evas);
-   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "cd");
+   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.edj", "cd");
    edje_object_signal_emit(pr->overlay, "media", "1");
 			   
    new_track(em, 0);

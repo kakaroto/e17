@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(datadir)/elation/data
 files_DATA = \
-theme.eet \
+theme.edj \
 Vera.ttf \
 VeraBd.ttf \
 bg.png \
@@ -20,12 +20,10 @@ bg.png \
 disk.png \
 theme.edc
 
-theme.eet: Makefile
+theme.edj: Makefile
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/theme.edc \
-	$(top_builddir)/data/theme.eet
+	$(top_builddir)/data/theme.edj
 
 clean-local:
-	rm -f *.eet
-	
-				
+	rm -f *.edj

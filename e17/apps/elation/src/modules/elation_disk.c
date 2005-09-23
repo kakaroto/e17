@@ -471,7 +471,6 @@ disk_has_top_dir(char *mount_dir, char *dir)
 	if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, "..")))
 	  {
 	     char buf[PATH_MAX];
-	     int i;
 	     
 	     strcpy(buf, dp->d_name);
 	     if (!strcasecmp(dp->d_name, dir))
