@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "snaps.h"
 
 /***********************************************************************
  * *** should all go elsewhere ***

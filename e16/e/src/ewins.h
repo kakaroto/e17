@@ -32,6 +32,8 @@ struct _desk;
 typedef struct _ewin EWin;
 #endif
 
+struct _snapshot;
+
 struct _ewin
 {
    EObj                o;
@@ -186,7 +188,7 @@ struct _ewin
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
 
-   Snapshot           *snap;
+   struct _snapshot   *snap;
    int                 head;	/* Unused? */
 
    int                 vx, vy;	/* Position in virtual root */

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2000-2005 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000-2005 Carsten Haitzler, Geoff Harrison
+ *                         and various contributors
  * Copyright (C) 2004-2005 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,8 +34,10 @@ struct _snapshot
    char               *win_title;
    char               *win_name;
    char               *win_class;
+   char               *win_role;
    EWin               *used;
    char                track_changes;
+   unsigned int        match_flags;
    unsigned int        use_flags;
 
    char               *border_name;
@@ -65,7 +68,7 @@ SnapshotCreate(const char *name)
 
    sn = Ecalloc(1, sizeof(Snapshot));
    sn->name = Estrdup(name);
-   AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
+   AddItemEnd(sn, NULL, 0, LIST_TYPE_SNAPSHOT);
 
    return sn;
 }
@@ -89,6 +92,8 @@ SnapshotDestroy(Snapshot * sn)
       Efree(sn->win_name);
    if (sn->win_class)
       Efree(sn->win_class);
+   if (sn->win_role)
+      Efree(sn->win_role);
    if (sn->border_name)
       Efree(sn->border_name);
    if (sn->cmd)
@@ -103,15 +108,24 @@ SnapshotDestroy(Snapshot * sn)
  * a <name>-<pid>-<something>-<time> like thing.
  * Is this even ICCCM compliant?
  */
-static const char  *
+static char        *
 SnapGetRole(const char *role, char *buf, int len)
 {
    int                 l1, l2;
 
+   if (!role)
+      return NULL;
+
    l1 = strlen(role);
    if (l1 >= len)
       l1 = len - 1;
-   l2 = strcspn(role, "-0123456789");
+
+   for (l2 = l1; l2 > 0; l2--)
+     {
+	if (role[l2 - 1] != '-' &&
+	    !(role[l2 - 1] >= '0' && role[l2 - 1] <= '9'))
+	   break;
+     }
    if (l1 - l2 > 8)
       l1 = l2;
    memcpy(buf, role, l1);
@@ -120,82 +134,124 @@ SnapGetRole(const char *role, char *buf, int len)
    return buf;
 }
 
-/* Format the window identifier string */
+#define SEQ(s1, s2) ((s1) && (s2) && !strcmp(s1, s2))
+
 static int
-SnapEwinMakeID(EWin * ewin, char *buf, int len)
+SnapshotEwinMatch(Snapshot * sn, EWin * ewin)
 {
-   char                s[256];
+   char                buf[256], *s;
 
-   if ((ewin->icccm.wm_role) && (ewin->icccm.wm_res_name)
-       && (ewin->icccm.wm_res_class))
-      Esnprintf(buf, len, "%s.%s:%s", ewin->icccm.wm_res_name,
-		ewin->icccm.wm_res_class,
-		SnapGetRole(ewin->icccm.wm_role, s, sizeof(s)));
-   else if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
-      Esnprintf(buf, len, "%s.%s", ewin->icccm.wm_res_name,
-		ewin->icccm.wm_res_class);
-   else if (ewin->icccm.wm_name)
-      Esnprintf(buf, len, "TITLE.%s", ewin->icccm.wm_name);
-   else
-      return -1;
+   /* Don't allow matching anything */
+   if (!sn->match_flags)
+      return 0;
 
-   return 0;
+   if (sn->match_flags & SNAP_MATCH_TITLE
+       && !SEQ(sn->win_title, ewin->icccm.wm_name))
+      return 0;
+
+   if (sn->match_flags & SNAP_MATCH_NAME
+       && !SEQ(sn->win_name, ewin->icccm.wm_res_name))
+      return 0;
+
+   if (sn->match_flags & SNAP_MATCH_CLASS
+       && !SEQ(sn->win_class, ewin->icccm.wm_res_class))
+      return 0;
+
+   if (sn->match_flags & SNAP_MATCH_ROLE)
+     {
+	s = SnapGetRole(ewin->icccm.wm_role, buf, sizeof(buf));
+	if (!SEQ(sn->win_role, s))
+	   return 0;
+     }
+
+   /* Match! */
+   return 1;
 }
 
 /* find a snapshot state that applies to this ewin */
 static Snapshot    *
 SnapshotEwinFind(EWin * ewin)
 {
-   Snapshot           *sn;
-   char                buf[4096];
+   Snapshot          **lst, *sn;
+   int                 i, num;
 
    if (ewin->snap)
       return ewin->snap;
 
-   if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
+   lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
+   if (!lst)
       return NULL;
 
-   sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
-   if (sn)
+   for (i = 0; i < num; i++)
      {
-	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-	sn->used = ewin;
-     }
+	sn = lst[i];
 
+	if (sn->used)
+	   continue;
+
+	if (!SnapshotEwinMatch(sn, ewin))
+	   continue;
+
+	if (!(sn->match_flags & SNAP_MATCH_MULTIPLE))
+	   sn->used = ewin;
+	goto done;
+     }
+   sn = NULL;
+
+ done:
+   Efree(lst);
    return sn;
 }
+
+#define ST(s) ((s) ? (s) : "")
 
 /* find a snapshot state that applies to this ewin Or if that doesnt exist */
 /* create a new one */
 static Snapshot    *
-SnapshotEwinGet(EWin * ewin)
+SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 {
    Snapshot           *sn;
-   char                buf[4096];
+   char                buf[1024], *s;
 
    sn = SnapshotEwinFind(ewin);
    if (sn)
       return sn;
 
-   if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
+   /* Fix me - put back the old window ID string */
+   sn = SnapshotCreate(NULL);
+   if (!sn)
       return NULL;
 
-   sn = SnapshotCreate(buf);
-   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
-   if ((ewin->icccm.wm_res_name) && (ewin->icccm.wm_res_class))
+   sn->match_flags = match_flags;
+   if (match_flags & SNAP_MATCH_TITLE)
+      sn->win_title = Estrdup(ewin->icccm.wm_name);
+   if (match_flags & SNAP_MATCH_NAME)
+      sn->win_name = Estrdup(ewin->icccm.wm_res_name);
+   if (match_flags & SNAP_MATCH_CLASS)
+      sn->win_class = Estrdup(ewin->icccm.wm_res_class);
+   if (match_flags & SNAP_MATCH_ROLE)
      {
-	sn->win_title = NULL;
-	sn->win_name = Estrdup(ewin->icccm.wm_res_name);
-	sn->win_class = Estrdup(ewin->icccm.wm_res_class);
+	s = SnapGetRole(ewin->icccm.wm_role, buf, sizeof(buf));
+	sn->win_role = Estrdup(s);
      }
-   else
+
+   /* Set the snap name. Has no particular significance. */
+   if ((sn->win_name || sn->win_class) && sn->win_role)
+      Esnprintf(buf, sizeof(buf), "%s.%s:%s", ST(sn->win_name),
+		ST(sn->win_class), sn->win_role);
+   else if (sn->win_name || sn->win_class)
+      Esnprintf(buf, sizeof(buf), "%s.%s", ST(sn->win_name), ST(sn->win_class));
+   else if (sn->win_title)
+      Esnprintf(buf, sizeof(buf), "TITLE.%s", sn->win_title);
+   else				/* We should not go here */
+      Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->icccm.wm_name);
+   sn->name = Estrdup(buf);
+
+   if (!(sn->match_flags & SNAP_MATCH_MULTIPLE))
      {
-	sn->win_title = Estrdup(ewin->icccm.wm_name);
-	sn->win_name = NULL;
-	sn->win_class = NULL;
+	sn->used = ewin;
+	ewin->snap = sn;
      }
-   sn->used = ewin;
-   ewin->snap = sn;
 
    return sn;
 }
@@ -318,7 +374,7 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 	       {
 		  sn = gwins[i]->snap;
 		  if (!sn)
-		     sn = SnapshotEwinGet(gwins[i]);
+		     sn = SnapshotEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
 		  if (sn)
 		    {
 		       if (sn->groups)
@@ -405,23 +461,24 @@ SnapEwinUpdate(Snapshot * sn, EWin * ewin, unsigned int flags)
 }
 
 static void
-SnapshotEwinSet(EWin * ewin, unsigned int flags)
+SnapshotEwinSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
 {
    Snapshot           *sn;
 
    /* Quit if nothing to be saved */
-   if (!(flags & SNAP_USE_ALL))
+   if (!match_flags || !(use_flags & SNAP_USE_ALL))
       return;
 
-   sn = SnapshotEwinGet(ewin);
+   sn = SnapshotEwinGet(ewin, match_flags);
    if (!sn)
       return;
 
-   if (flags & SNAP_AUTO)
+   if (use_flags & SNAP_AUTO)
       sn->track_changes = 1;
 
-   sn->use_flags = flags & SNAP_USE_ALL;
-   SnapEwinUpdate(sn, ewin, flags);
+   sn->use_flags = use_flags & SNAP_USE_ALL;
+
+   SnapEwinUpdate(sn, ewin, use_flags);
 }
 
 void
@@ -456,6 +513,15 @@ SnapshotEwinRemove(EWin * ewin)
 typedef struct
 {
    Window              client;
+
+   struct
+   {
+      char                title;
+      char                name;
+      char                class;
+      char                role;
+   } match;
+
    char                track_changes;
    char                snap_border;
    char                snap_desktop;
@@ -481,7 +547,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 {
    EWin               *ewin;
    SnapDlgData        *sd = DialogGetData(d);
-   unsigned int        use_flags;
+   unsigned int        match_flags, use_flags;
 
    if (val >= 2 || !sd)
       goto done;
@@ -491,6 +557,19 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
       goto done;
 
    SnapshotEwinRemove(ewin);
+
+   match_flags = 0;
+   if (sd->match.title)
+      match_flags |= SNAP_MATCH_TITLE;
+   if (sd->match.name)
+      match_flags |= SNAP_MATCH_NAME;
+   if (sd->match.class)
+      match_flags |= SNAP_MATCH_CLASS;
+   if (sd->match.role)
+      match_flags |= SNAP_MATCH_ROLE;
+
+   if (!match_flags)
+      goto done;
 
    use_flags = 0;
    if (sd->track_changes)
@@ -524,7 +603,10 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
    if (sd->snap_group)
       use_flags |= SNAP_USE_GROUPS;
 
-   SnapshotEwinSet(ewin, use_flags);
+   if (!use_flags)
+      goto done;
+
+   SnapshotEwinSet(ewin, match_flags, use_flags);
 
  done:
    if (sd && val == 2)
@@ -587,6 +669,11 @@ SnapshotEwinDialog(EWin * ewin)
    sn = ewin->snap;
    if (sn)
      {
+	sd->match.title = (sn->match_flags & SNAP_MATCH_TITLE) != 0;
+	sd->match.name = (sn->match_flags & SNAP_MATCH_NAME) != 0;
+	sd->match.class = (sn->match_flags & SNAP_MATCH_CLASS) != 0;
+	sd->match.role = (sn->match_flags & SNAP_MATCH_ROLE) != 0;
+
 	if (sn->track_changes)
 	   sd->track_changes = 1;
 	if (sn->use_flags & SNAP_USE_BORDER)
@@ -618,12 +705,26 @@ SnapshotEwinDialog(EWin * ewin)
 	if (sn->use_flags & SNAP_USE_GROUPS)
 	   sd->snap_group = 1;
      }
+   else
+     {
+	if (ewin->icccm.wm_res_name)
+	  {
+	     sd->match.name = 1;
+	     sd->match.class = 1;
+	     sd->match.role = ewin->icccm.wm_role != NULL;
+	  }
+	else
+	  {
+	     sd->match.title = ewin->icccm.wm_name != NULL;
+	  }
+     }
 
-   di = DialogAddItem(table, DITEM_TEXT);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Title:"));
+   DialogItemCheckButtonSetPtr(di, &sd->match.title);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
@@ -634,11 +735,12 @@ SnapshotEwinDialog(EWin * ewin)
 
    if (ewin->icccm.wm_res_name)
      {
-	di = DialogAddItem(table, DITEM_TEXT);
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Name:"));
+	DialogItemCheckButtonSetPtr(di, &sd->match.name);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -650,11 +752,12 @@ SnapshotEwinDialog(EWin * ewin)
 
    if (ewin->icccm.wm_res_class)
      {
-	di = DialogAddItem(table, DITEM_TEXT);
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Class:"));
+	DialogItemCheckButtonSetPtr(di, &sd->match.class);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -662,6 +765,23 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 	DialogItemSetText(di, ewin->icccm.wm_res_class);
+     }
+
+   if (ewin->icccm.wm_role)
+     {
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 0, 512);
+	DialogItemSetText(di, _("Role:"));
+	DialogItemCheckButtonSetPtr(di, &sd->match.role);
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 1024, 512);
+	DialogItemSetText(di, ewin->icccm.wm_role);
      }
 
    if (ewin->icccm.wm_command)
@@ -718,7 +838,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Track Changes"));
-   DialogItemCheckButtonSetState(di, sd->track_changes);
    DialogItemCheckButtonSetPtr(di, &sd->track_changes);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -726,7 +845,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Location"));
-   DialogItemCheckButtonSetState(di, sd->snap_location);
    DialogItemCheckButtonSetPtr(di, &sd->snap_location);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -734,7 +852,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Border style"));
-   DialogItemCheckButtonSetState(di, sd->snap_border);
    DialogItemCheckButtonSetPtr(di, &sd->snap_border);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -742,7 +859,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Size"));
-   DialogItemCheckButtonSetState(di, sd->snap_size);
    DialogItemCheckButtonSetPtr(di, &sd->snap_size);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -750,7 +866,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Desktop"));
-   DialogItemCheckButtonSetState(di, sd->snap_desktop);
    DialogItemCheckButtonSetPtr(di, &sd->snap_desktop);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -758,7 +873,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Shaded state"));
-   DialogItemCheckButtonSetState(di, sd->snap_shaded);
    DialogItemCheckButtonSetPtr(di, &sd->snap_shaded);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -766,7 +880,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Sticky state"));
-   DialogItemCheckButtonSetState(di, sd->snap_sticky);
    DialogItemCheckButtonSetPtr(di, &sd->snap_sticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -774,7 +887,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Stacking layer"));
-   DialogItemCheckButtonSetState(di, sd->snap_layer);
    DialogItemCheckButtonSetPtr(di, &sd->snap_layer);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -782,7 +894,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Window List Skip"));
-   DialogItemCheckButtonSetState(di, sd->snap_skiplists);
    DialogItemCheckButtonSetPtr(di, &sd->snap_skiplists);
 
 #if USE_COMPOSITE
@@ -791,7 +902,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Opacity"));
-   DialogItemCheckButtonSetState(di, sd->snap_opacity);
    DialogItemCheckButtonSetPtr(di, &sd->snap_opacity);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -799,7 +909,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Shadowing"));
-   DialogItemCheckButtonSetState(di, sd->snap_shadow);
    DialogItemCheckButtonSetPtr(di, &sd->snap_shadow);
 #endif
 
@@ -809,7 +918,6 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Never Focus"));
-   DialogItemCheckButtonSetState(di, sd->snap_neverfocus);
    DialogItemCheckButtonSetPtr(di, &sd->snap_neverfocus);
 #endif
    if (ewin->icccm.wm_command)
@@ -828,7 +936,6 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemSetPadding(di, 2, 2, 2, 2);
 	     DialogItemSetFill(di, 1, 0);
 	     DialogItemSetText(di, _("Restart application on login"));
-	     DialogItemCheckButtonSetState(di, sd->snap_cmd);
 	     DialogItemCheckButtonSetPtr(di, &sd->snap_cmd);
 	  }
 	else
@@ -850,7 +957,6 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Remember this window's group(s)"));
-	DialogItemCheckButtonSetState(di, sd->snap_group);
 	DialogItemCheckButtonSetPtr(di, &sd->snap_group);
      }
 
@@ -901,18 +1007,6 @@ CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
      }
 
    if (((val == 0) || (val == 2)) && rd_ewin_list)
-     {
-	Efree(rd_ewin_list);
-	rd_ewin_list = NULL;
-     }
-}
-
-static void
-CB_ApplyRememberEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
-{
-   DialogClose(d);
-
-   if (rd_ewin_list)
      {
 	Efree(rd_ewin_list);
 	rd_ewin_list = NULL;
@@ -1017,7 +1111,6 @@ SettingsRemember(void)
 	     s = buf;
 	  }
 	DialogItemSetText(di, s);
-	DialogItemCheckButtonSetState(di, rd_ewin_list[i].remove);
 	DialogItemCheckButtonSetPtr(di, &(rd_ewin_list[i].remove));
 
 	if (sn->used)
@@ -1063,7 +1156,7 @@ SettingsRemember(void)
    DialogAddButton(d, _("OK"), CB_ApplyRemember, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Close"), CB_ApplyRemember, 1, DIALOG_BUTTON_CLOSE);
    DialogSetExitFunction(d, CB_ApplyRemember, 2);
-   DialogBindKey(d, "Escape", CB_ApplyRememberEscape, 0);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
    DialogBindKey(d, "Return", CB_ApplyRemember, 0);
 
    ShowDialog(d);
@@ -1101,12 +1194,14 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	  {
 	     sn = lst[i];
 	     fprintf(f, "NEW: %s\n", sn->name);
-	     if (sn->win_title)
+	     if ((sn->match_flags & SNAP_MATCH_TITLE) && sn->win_title)
 		fprintf(f, "TITLE: %s\n", sn->win_title);
-	     if (sn->win_name)
+	     if ((sn->match_flags & SNAP_MATCH_NAME) && sn->win_name)
 		fprintf(f, "NAME: %s\n", sn->win_name);
-	     if (sn->win_class)
+	     if ((sn->match_flags & SNAP_MATCH_CLASS) && sn->win_class)
 		fprintf(f, "CLASS: %s\n", sn->win_class);
+	     if ((sn->match_flags & SNAP_MATCH_ROLE) && sn->win_role)
+		fprintf(f, "ROLE: %s\n", sn->win_role);
 	     if (sn->track_changes)
 		fprintf(f, "AUTO: yes\n");
 	     if ((sn->use_flags & SNAP_USE_BORDER) && sn->border_name)
@@ -1177,7 +1272,8 @@ SpawnSnappedCmds(void)
 	for (i = 0; i < num; i++)
 	  {
 	     sn = lst[i];
-	     if ((sn->use_flags & SNAP_USE_COMMAND) && (sn->cmd) && !sn->used)
+	     if ((sn->use_flags & SNAP_USE_COMMAND) && (sn->cmd) &&
+		 !sn->used && !(sn->match_flags & SNAP_MATCH_MULTIPLE))
 		EspawnCmd(sn->cmd);
 	  }
 	Efree(lst);
@@ -1214,11 +1310,25 @@ LoadSnapInfo(void)
 	else if (sn)
 	  {
 	     if (!strcmp(s, "TITLE:"))
-		sn->win_title = Estrdup(atword(buf, 2));
+	       {
+		  sn->win_title = Estrdup(atword(buf, 2));
+		  sn->match_flags |= SNAP_MATCH_TITLE;
+	       }
 	     else if (!strcmp(s, "NAME:"))
-		sn->win_name = Estrdup(atword(buf, 2));
+	       {
+		  sn->win_name = Estrdup(atword(buf, 2));
+		  sn->match_flags |= SNAP_MATCH_NAME;
+	       }
 	     else if (!strcmp(s, "CLASS:"))
-		sn->win_class = Estrdup(atword(buf, 2));
+	       {
+		  sn->win_class = Estrdup(atword(buf, 2));
+		  sn->match_flags |= SNAP_MATCH_CLASS;
+	       }
+	     else if (!strcmp(s, "ROLE:"))
+	       {
+		  sn->win_role = Estrdup(atword(buf, 2));
+		  sn->match_flags |= SNAP_MATCH_ROLE;
+	       }
 	     else if (!strcmp(s, "AUTO:"))
 		sn->track_changes = 1;
 	     else if (!strcmp(s, "BORDER:"))
@@ -1369,7 +1479,7 @@ LoadSnapInfo(void)
 
 /* make a client window conform to snapshot info */
 void
-SnapshotEwinMatch(EWin * ewin)
+SnapshotsApplyToEwin(EWin * ewin)
 {
    Snapshot           *sn;
    int                 i, ax, ay;
@@ -1378,12 +1488,11 @@ SnapshotEwinMatch(EWin * ewin)
    if (!sn)
      {
 	if (ewin->props.autosave)
-	   SnapshotEwinSet(ewin, SNAP_USE_ALL | SNAP_AUTO);
+	   SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
 	return;
      }
 
    ewin->snap = sn;
-   ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
 
    if (ewin->props.autosave)
       sn->track_changes = 1;
@@ -1485,16 +1594,17 @@ SnapshotEwinUnmatch(EWin * ewin)
 
    ewin->snap = NULL;
    sn->used = NULL;
-   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
 
 void
 SnapshotEwinParse(EWin * ewin, const char *params)
 {
    char                param[FILEPATH_LEN_MAX];
-   unsigned int        use_flags;
+   unsigned int        match_flags, use_flags;
 
+   match_flags = SNAP_MATCH_DEFAULT;
    use_flags = 0;
+
    for (; params;)
      {
 	param[0] = 0;
@@ -1542,8 +1652,12 @@ SnapshotEwinParse(EWin * ewin, const char *params)
      }
 
    if (ewin->snap)
-      use_flags |= ewin->snap->use_flags;
-   SnapshotEwinSet(ewin, use_flags);
+     {
+	match_flags = ewin->snap->match_flags;
+	use_flags |= ewin->snap->use_flags;
+     }
+
+   SnapshotEwinSet(ewin, match_flags, use_flags);
 
    SaveSnapInfo();
 }
@@ -1566,7 +1680,7 @@ SnapIpcFunc(const char *params, Client * c __UNUSED__)
    Snapshot          **lst, *sn;
    int                 i, num, full;
    char                param[FILEPATH_LEN_MAX];
-   const char         *name, nstr[] = "null";
+   const char         *name;
 
    lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
    if (!lst)
@@ -1601,16 +1715,23 @@ SnapIpcFunc(const char *params, Client * c __UNUSED__)
 	     continue;
 	  }
 
-	IpcPrintf("             Name: %s    %s\n"
-		  "     Window Title: %s\n"
-		  "      Window Name: %s\n"
-		  "     Window Class: %s\n",
-		  name, (sn->used) ? "" : "*** Unused ***",
-		  sn->win_title ? sn->win_title : nstr,
-		  sn->win_name ? sn->win_name : nstr,
-		  sn->win_class ? sn->win_class : nstr);
+#define SU(sn, item) ((sn->match_flags & item) ? '>' : ':')
+	IpcPrintf(" Snapshot  Name: %s    %s\n",
+		  name, (sn->used) ? "" : "*** Unused ***");
+	if (sn->win_title)
+	   IpcPrintf("   Window Title%c %s\n", SU(sn, SNAP_MATCH_TITLE),
+		     sn->win_title);
+	if (sn->win_name)
+	   IpcPrintf("   Window  Name%c %s\n", SU(sn, SNAP_MATCH_NAME),
+		     sn->win_name);
+	if (sn->win_class)
+	   IpcPrintf("   Window Class%c %s\n", SU(sn, SNAP_MATCH_CLASS),
+		     sn->win_class);
+	if (sn->win_role)
+	   IpcPrintf("   Window  Role%c %s\n", SU(sn, SNAP_MATCH_ROLE),
+		     sn->win_role);
 
-	if (sn->use_flags & SNAP_AUTO)
+	if (sn->track_changes)
 	   IpcPrintf("      Tracking changes\n");
 	if (sn->use_flags & SNAP_USE_BORDER)
 	   IpcPrintf("      Border Name: %s\n", SS(sn->border_name));

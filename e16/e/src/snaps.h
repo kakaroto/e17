@@ -23,6 +23,17 @@
 #ifndef _SNAPS_H_
 #define _SNAPS_H_
 
+typedef struct _snapshot Snapshot;
+
+#define SNAP_MATCH_TITLE        (1 << 0)
+#define SNAP_MATCH_NAME         (1 << 1)
+#define SNAP_MATCH_CLASS        (1 << 2)
+#define SNAP_MATCH_ROLE         (1 << 3)
+#define SNAP_MATCH_ROLE         (1 << 3)
+#define SNAP_MATCH_MULTIPLE     (1 << 8)
+
+#define SNAP_MATCH_DEFAULT      (SNAP_MATCH_NAME | SNAP_MATCH_CLASS | SNAP_MATCH_ROLE)
+
 #define SNAP_AUTO               (1 << 0)
 #define SNAP_USE_BORDER         (1 << 1)
 #define SNAP_USE_COMMAND        (1 << 2)
@@ -39,5 +50,17 @@
 #define SNAP_USE_GROUPS         (1 << 13)
 
 #define SNAP_USE_ALL            (~1)
+
+void                Real_SaveSnapInfo(int dumval, void *dumdat);
+void                LoadSnapInfo(void);
+void                SaveSnapInfo(void);
+void                SpawnSnappedCmds(void);
+void                SnapshotEwinUnmatch(EWin * ewin);
+void                SnapshotEwinUpdate(EWin * ewin, unsigned int flags);
+void                SnapshotEwinParse(EWin * ewin, const char *params);
+void                SnapshotsApplyToEwin(EWin * ewin);
+void                SettingsRemember(void);
+extern const char   SnapIpcText[];
+void                SnapIpcFunc(const char *params, Client * c);
 
 #endif /* _SNAPS_H_ */

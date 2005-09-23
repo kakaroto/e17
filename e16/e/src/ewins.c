@@ -563,7 +563,7 @@ Adopt(EWin * ewin)
       MatchEwinToSM(ewin);
 #endif
    WindowMatchEwinOps(ewin);	/* Window matches */
-   SnapshotEwinMatch(ewin);	/* Saved settings */
+   SnapshotsApplyToEwin(ewin);	/* Saved settings */
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
 

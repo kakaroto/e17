@@ -24,6 +24,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "snaps.h"
 #include "timestamp.h"
 #include "xwin.h"
 #include <sys/utsname.h>
