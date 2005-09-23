@@ -30,6 +30,12 @@ static int              embrace_count;
 static E_Gadman_Client *gmc = NULL;
 
 /* public module routines. all modules must have these */
+
+E_Module_Api e_module_api = {
+	E_MODULE_API_VERSION,
+	"Embrace"
+};
+
 void *e_modapi_init (E_Module *module)
 {
 	Embrace *embrace = NULL;

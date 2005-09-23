@@ -1,5 +1,8 @@
 $Id$
 
+2005-09-23 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.{h,c}: Update to new api version check.
+
 2005-09-22 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/e_mod_main.c: Change from e_error_dialog_show to e_dialog_new
 
