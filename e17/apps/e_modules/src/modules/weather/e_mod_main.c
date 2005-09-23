@@ -61,6 +61,12 @@ static int _weather_count;
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
+E_Module_Api e_module_api =
+{
+   E_MODULE_API_VERSION,
+   "Weather"
+};
+
 void *
 e_modapi_init(E_Module *module)
 {

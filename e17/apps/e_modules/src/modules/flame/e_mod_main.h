@@ -57,6 +57,8 @@ struct _Flame_Face
    Ecore_Event_Handler *ev_handler_container_resize;
 };
 
+extern E_Module_Api e_module_api;
+
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);

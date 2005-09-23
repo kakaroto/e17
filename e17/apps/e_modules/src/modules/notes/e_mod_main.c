@@ -33,23 +33,17 @@ static int     _note_count;
 static E_Config_DD *_notes_config_faces_edd = NULL;
 
 /* public module routines. all modules must have these */
+E_Module_Api e_module_api =
+{
+   E_MODULE_API_VERSION,
+   "Notes"
+};
+
 void *
 e_modapi_init (E_Module *m)
 {
    Note *n;
    
-   /* check module api version */
-   if (m->api->version < E_MODULE_API_VERSION)
-     {
-	e_error_dialog_show ("Module API Error",
-			     "Error initializing Module: note\n"
-			     "It requires a minimum module API version of: %i.\n"
-			     "The module API advertized by Enlightenment is: %i.\n"
-			     "Aborting module.",
-			     E_MODULE_API_VERSION,
-			     m->api->version);
-	return NULL;
-     }
    /* actually init ibar */
    n = _note_init (m);
    m->config_menu = _note_config_menu_new (n);

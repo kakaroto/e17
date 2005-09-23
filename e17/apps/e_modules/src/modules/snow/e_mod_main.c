@@ -22,22 +22,17 @@ static void        _snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi
 static void        _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
+E_Module_Api e_module_api =
+{
+   E_MODULE_API_VERSION,
+   "Snow"
+};
+
 void *
 e_modapi_init(E_Module *m)
 {
    Snow *snow;
-   
-   if (m->api->version < E_MODULE_API_VERSION)
-     {
-	e_error_dialog_show("Module API Error",
-			    "Error initializing Module: Snow\n"
-			    "It requires a minimum module API version of: %i.\n"
-			    "The module API advertized by Enlightenment is: %i.\n"
-			    "Aborting module.",
-			    E_MODULE_API_VERSION,
-			    m->api->version);
-	return NULL;
-     }
+
    snow = _snow_init(m);
    m->config_menu = _snow_config_menu_new(snow);
    return snow;

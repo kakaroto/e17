@@ -40,23 +40,17 @@ static int powerof (unsigned int n);
 char          *_flame_module_dir;
 
 /* public module routines. all modules must have these */
+E_Module_Api e_module_api =
+{
+   E_MODULE_API_VERSION,
+   "Flame"
+};
+
 void *
 e_modapi_init (E_Module *m)
 {
    Flame *f;
    
-   /* check module api version */
-   if (m->api->version < E_MODULE_API_VERSION)
-     {
-	e_error_dialog_show ("Module API Error",
-			     "Error initializing Module: Flame\n"
-			     "It requires a minimum module API version of: %i.\n"
-			     "The module API advertized by Enlightenment is: %i.\n"
-			     "Aborting module.",
-			     E_MODULE_API_VERSION,
-			     m->api->version);
-	return NULL;
-     }
    f = _flame_init (m);
    m->config_menu = _flame_config_menu_new (f);
    
