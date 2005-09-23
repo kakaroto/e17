@@ -629,19 +629,40 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
+	Ewl_Window *win = EWL_WINDOW(w);
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!EWL_WINDOW(w)->window)
+	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	if (strstr(EWL_WINDOW(w)->render, "x11")) {
-		if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_mwm_borderless_set((Ecore_X_Window)
-						   EWL_WINDOW(w)->window, 1);
+	if (strstr(win->render, "x11")) {
+		int width, height;
 
-		ecore_x_window_show((Ecore_X_Window)EWL_WINDOW(w)->window);
+		if (win->flags & EWL_WINDOW_BORDERLESS)
+			ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
+						   1);
+
+		/*
+		 * Find out how much space the widget accepted.
+		 */
+		width = ewl_object_current_w_get(EWL_OBJECT(w));
+		height = ewl_object_current_h_get(EWL_OBJECT(w));
+
+		/*
+		 * Now give the windows the appropriate size
+		 */
+		if (win->flags & EWL_WINDOW_USER_CONFIGURE)
+			win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
+		else {
+			if (strstr(win->render, "x11"))
+				ecore_x_window_resize((Ecore_X_Window)win->window,
+						      width, height);
+		}
+
+		ecore_x_window_show((Ecore_X_Window)win->window);
 		ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
 	}
 #endif
