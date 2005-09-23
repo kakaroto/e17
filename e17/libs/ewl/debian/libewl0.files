@@ -1,4 +1,3 @@
-usr/bin/ewl_edb_ed
 usr/lib/lib*.so.*
 usr/share/ewl/themes/*.edj
 usr/share/ewl/themes/default/bits/images/*.png
