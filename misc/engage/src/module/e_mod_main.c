@@ -142,10 +142,10 @@ E_App         *_engage_unmatched_app;
 Ecore_Timer   *_engage_zoom_timer;
 
 /* public module routines. all modules must have these */
-E_Module_Api e_module_api =
+E_Module_Api e_modapi =
 {
     E_MODULE_API_VERSION,
-	"Engage"
+    "Engage"
 };
 
 void *
@@ -186,7 +186,6 @@ e_modapi_save(E_Module *m)
 int
 e_modapi_info(E_Module *m)
 {
-   m->label = strdup("Engage");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/engage/module/module_icon.png");
    return 1;
 }

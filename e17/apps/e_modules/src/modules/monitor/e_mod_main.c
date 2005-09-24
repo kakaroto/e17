@@ -110,7 +110,7 @@ static Flow_Chart *flow_chart_mem_swap;
 static Flow_Chart *flow_chart_wlan_link;
 
 /* public module routines. all modules must have these */
-E_Module_Api e_module_api =
+E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Monitor"
@@ -156,7 +156,6 @@ int
 e_modapi_info(E_Module *module)
 {
    
-   module->label = strdup("Monitor");
    module->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/monitor/module_icon.png");
    return 1;
 }

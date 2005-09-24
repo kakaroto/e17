@@ -22,7 +22,7 @@ static void        _snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi
 static void        _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
-E_Module_Api e_module_api =
+E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Snow"
@@ -71,7 +71,6 @@ e_modapi_save(E_Module *m)
 int
 e_modapi_info(E_Module *m)
 {
-   m->label = strdup("Snow");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png");
    return 1;
 }

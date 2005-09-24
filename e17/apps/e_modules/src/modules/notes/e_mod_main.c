@@ -33,7 +33,7 @@ static int     _note_count;
 static E_Config_DD *_notes_config_faces_edd = NULL;
 
 /* public module routines. all modules must have these */
-E_Module_Api e_module_api =
+E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Notes"
@@ -100,7 +100,6 @@ e_modapi_save (E_Module *m)
 int
 e_modapi_info (E_Module *m)
 {
-   m->label = strdup("Notes");
    m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/notes/module_icon.png");
    
    return 1;

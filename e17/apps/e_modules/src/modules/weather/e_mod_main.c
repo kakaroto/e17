@@ -61,7 +61,7 @@ static int _weather_count;
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
-E_Module_Api e_module_api =
+E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Weather"
@@ -71,17 +71,6 @@ void *
 e_modapi_init(E_Module *module)
 {
    Weather *weather;
-
-   if (module->api->version < E_MODULE_API_VERSION)
-     {
-	e_error_dialog_show(_("Module API Error"),
-			    _("Error initializing Module: test\n"
-			      "It requires a minimum module API version of: %i.\n"
-			      "The module API advertized by Enlightenment is: %i.\n"
-			      "Aborting module."),
-			    E_MODULE_API_VERSION, module->api->version);
-	return NULL;
-     }
 
    weather = _weather_new();
    module->config_menu = weather->config_menu;
@@ -116,7 +105,6 @@ e_modapi_save(E_Module *module)
 int
 e_modapi_info(E_Module *module)
 {
-   module->label = strdup(_("Weather"));
    module->icon_file = strdup(PACKAGE_LIB_DIR"/e_modules/weather/module_icon.png");
    return 1;
 }
