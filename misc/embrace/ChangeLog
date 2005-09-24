@@ -1,5 +1,8 @@
 $Id$
 
+2005-09-24 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.{h,c}: Update to new module api.
+
 2005-09-23 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/e_mod_main.{h,c}: Update to new api version check.
 

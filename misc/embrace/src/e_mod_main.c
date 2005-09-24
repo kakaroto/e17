@@ -31,7 +31,7 @@ static E_Gadman_Client *gmc = NULL;
 
 /* public module routines. all modules must have these */
 
-E_Module_Api e_module_api = {
+E_Module_Api e_modapi = {
 	E_MODULE_API_VERSION,
 	"Embrace"
 };
@@ -93,10 +93,7 @@ int e_modapi_info (E_Module *module)
 {
 #if 0
 	char buf[4096];
-#endif
 
-	module->label = strdup ( _("Embrace"));
-#if 0
 	snprintf (buf, sizeof (buf), "%s/module_icon.png", e_module_dir_get (module));
 	module->icon_file = strdup (buf);
 #endif
