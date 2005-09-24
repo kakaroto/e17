@@ -142,23 +142,17 @@ E_App         *_engage_unmatched_app;
 Ecore_Timer   *_engage_zoom_timer;
 
 /* public module routines. all modules must have these */
+E_Module_Api e_module_api =
+{
+    E_MODULE_API_VERSION,
+	"Engage"
+};
+
 void *
 e_modapi_init(E_Module *m)
 {
    Engage *e;
 
-   /* check module api version */
-   if (m->api->version < E_MODULE_API_VERSION)
-     {
-	e_error_dialog_show("Module API Error",
-			    "Error initializing Module: Engage\n"
-			    "It requires a minimum module API version of: %i.\n"
-			    "The module API advertized by Enlightenment is: %i.\n"
-			    "Aborting module.",
-			    E_MODULE_API_VERSION,
-			    m->api->version);
-	return NULL;
-     }
    /* actually init engage */
    e = _engage_new();
    m->config_menu = e->config_menu;
