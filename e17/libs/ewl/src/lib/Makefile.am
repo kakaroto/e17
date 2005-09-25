@@ -11,6 +11,7 @@ lib_LTLIBRARIES = libewl.la
 
 EWLHEADERS = \
 	Ewl.h \
+	ewl_attach.h \
 	ewl_border.h \
 	ewl_box.h \
 	ewl_label.h \
@@ -66,7 +67,6 @@ EWLHEADERS = \
 	ewl_text.h \
 	ewl_table.h \
 	ewl_tree.h \
-	ewl_tooltip.h \
 	ewl_theme.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -77,6 +77,7 @@ EWLEMOTIONHEADERS= \
 endif
 
 EWLSOURCES= \
+	ewl_attach.c \
 	ewl_border.c \
 	ewl_box.c \
 	ewl_label.c \
@@ -130,7 +131,6 @@ EWLSOURCES= \
 	ewl_text.c \
 	ewl_theme.c \
 	ewl_tree.c \
-	ewl_tooltip.c \
 	ewl_widget.c \
 	ewl_window.c \
 	ewl_private.h \

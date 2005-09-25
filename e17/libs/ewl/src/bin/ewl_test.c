@@ -54,7 +54,6 @@ main(int argc, char **argv)
 	Ewl_Widget     *main_tree;
 	Ewl_Widget     *main_area;
         /* Ewl_Widget     *separator; */
-        Ewl_Widget     *tooltip;
 	Ewl_Widget     *prow;
 	static test_set       tests[] = {
 		{
@@ -363,14 +362,8 @@ main(int argc, char **argv)
 				     tests[i].filename);
 		
 		/* Add the tooltips */
-		if (tests[i].tip) {
-			tooltip = ewl_tooltip_new (prow);
-			ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 1.5);
-			ewl_container_child_append (EWL_CONTAINER (main_win),
-						    tooltip);
-			ewl_tooltip_text_set (EWL_TOOLTIP (tooltip),
-					      tests[i].tip);
-		}
+		if (tests[i].tip) 
+			ewl_attach_tooltip_text_set(prow, tests[i].tip);
 
 		i++;
 	}

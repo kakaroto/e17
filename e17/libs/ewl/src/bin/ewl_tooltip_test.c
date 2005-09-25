@@ -18,7 +18,6 @@ __create_tooltip_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	Ewl_Widget     *tooltip_win;
 	Ewl_Widget     *tooltip_vbox;
 	Ewl_Widget     *button;
-	Ewl_Widget     *tooltip;
 
 	tooltip_button = w;
 
@@ -46,10 +45,7 @@ __create_tooltip_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	button = ewl_button_new ("Hoover on this button");
 	ewl_container_child_append(EWL_CONTAINER (tooltip_vbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+	ewl_attach_tooltip_text_set(button, "and see.");
 	ewl_widget_show (button);
-
-	tooltip = ewl_tooltip_new (button);
-	ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 2.5);
-	ewl_container_child_append(EWL_CONTAINER (tooltip_win), tooltip);
 }
 

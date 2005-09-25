@@ -262,6 +262,9 @@ extern"C" {
 
 #include <ewl_object.h>
 #include <ewl_widget.h>
+
+#include <ewl_attach.h>
+
 #include <ewl_container.h>
 
 #include <ewl_callback.h>
@@ -324,7 +327,6 @@ extern"C" {
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
 #include <ewl_statusbar.h>
-#include <ewl_tooltip.h>
 
 #include <ewl_tree.h>
 

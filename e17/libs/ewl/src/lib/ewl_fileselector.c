@@ -576,15 +576,6 @@ ewl_fileselector_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	IF_FREE(fs->dfilter);
 }
 
-void
-ewl_fileselector_tooltip_destroy_cb(Ewl_Widget *w __UNUSED__,
-					void *ev_data __UNUSED__,
-					void *user_data)
-{
-	if (user_data)
-		ewl_widget_destroy(EWL_WIDGET(user_data));
-}
-
 void ewl_fileselector_select_file_cb(Ewl_Widget *w,
 					void *ev_data __UNUSED__, void *data)
 {
@@ -821,15 +812,10 @@ void ewl_fileselector_data_free(Ewl_Fileselector_Data * d)
 static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data * d)
 {
 	Ewl_Widget *parent_win;
-	Ewl_Widget *tooltip;
 	char *str;
 	char *name, *size, *perm;
 
 	parent_win = EWL_WIDGET(ewl_embed_widget_find(w));
-
-	tooltip = ewl_tooltip_new(w);
-	ewl_tooltip_delay_set(EWL_TOOLTIP(tooltip), 1.0);
-	ewl_container_child_append(EWL_CONTAINER(parent_win), tooltip);
 
 	name = d->name;
 	size = ewl_fileselector_size_string_get(d->size);
@@ -846,11 +832,7 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 	memcpy(str + strlen(name) + strlen(size) + 2, perm, strlen(perm));
 	str[strlen(name) + strlen(size) + strlen(perm) + 2] = '\0';
 
-	ewl_tooltip_text_set(EWL_TOOLTIP(tooltip), str);
-
-	/* destroy tooltip when the row is destroyed */
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			    ewl_fileselector_tooltip_destroy_cb, tooltip);
+	ewl_attach_tooltip_text_set(w, str);
 
 	FREE(str);
 	FREE(size);

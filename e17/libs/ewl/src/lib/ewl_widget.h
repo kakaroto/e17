@@ -14,6 +14,14 @@
  * @{
  */
 
+typedef struct Ewl_Attach_List Ewl_Attach_List;
+struct Ewl_Attach_List
+{
+	void **list;
+	unsigned int direct:1;
+	unsigned int len:31;
+};
+
 /**
  * Callback chain container a list and bitmask of chain properties.
  */
@@ -56,6 +64,7 @@ struct Ewl_Widget
 	Ewl_Widget     *parent; /**< The parent widget, actually a container */
 
 	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX]; /**< Callback chain array */
+	Ewl_Attach_List *attach; /**< List of attachments on the widget */
 
 	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
 

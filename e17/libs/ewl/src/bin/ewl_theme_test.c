@@ -285,10 +285,6 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_tooltip_new (misc);
-	ewl_tooltip_delay_set (EWL_TOOLTIP (misc), 1.5);
-	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
-	
 	ewl_notebook_page_append (EWL_NOTEBOOK(notebook), tab, vbox);
 }
 

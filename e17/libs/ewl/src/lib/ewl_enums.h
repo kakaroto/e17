@@ -320,8 +320,19 @@ enum Ewl_Text_Trigger_Type {
 };
 typedef enum Ewl_Text_Trigger_Type Ewl_Text_Trigger_Type;
 
+enum Ewl_Attach_Type {
+	EWL_ATTACH_TYPE_TOOLTIP
+};
+typedef enum Ewl_Attach_Type Ewl_Attach_Type;
+
+enum Ewl_Attach_Data_Type {
+	EWL_ATTACH_DATA_TYPE_TEXT,
+	EWL_ATTACH_DATA_TYPE_WIDGET
+};
+typedef enum Ewl_Attach_Data_Type Ewl_Attach_Data_Type;
+
 /**
  * @}
- */
-
+ */ 
 #endif				/* __EWL_ENUMS_H__ */
+
