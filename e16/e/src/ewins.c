@@ -966,7 +966,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
      {
 	if (ewin->state.state == EWIN_STATE_ICONIC)
 	   EwinDeIconify(ewin);
-	if (ewin->state.state == EWIN_STATE_WITHDRAWN)
+	else if (ewin->state.state == EWIN_STATE_WITHDRAWN)
 	   AddToFamily(ewin, win);
 	else
 	  {
