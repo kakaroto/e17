@@ -143,7 +143,10 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    eo->w = w;
    eo->h = h;
    if (name)
-      eo->name = Estrdup(name);
+     {
+	eo->name = Estrdup(name);
+	HintsSetWindowName(eo->win, name);
+     }
 #if USE_COMPOSITE
    eo->fade = 1;
    ECompMgrWinNew(eo);
