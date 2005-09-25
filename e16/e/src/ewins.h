@@ -215,6 +215,8 @@ struct _ewin
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
 
+#define EwinGetDesk(ewin)		EoGetDesk(ewin)
+
 #define EwinIsMapped(ewin)		(ewin->state.state >= EWIN_STATE_MAPPED)
 #define EwinIsInternal(ewin)		(ewin->type != EWIN_TYPE_NORMAL)
 #define EwinIsTransientChild(ewin)	(ewin->icccm.transient > 0)

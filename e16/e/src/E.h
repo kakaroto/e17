@@ -1472,6 +1472,7 @@ void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
 int                 HandleIPC(const char *params, Client * c);
 int                 EFunc(EWin * ewin, const char *params);
+void                EFuncDefer(EWin * ewin, const char *params);
 
 /* lang.c */
 void                LangInit(void);

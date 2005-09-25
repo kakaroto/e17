@@ -198,24 +198,12 @@ ConfigAlertLoad(const char *txt)
 static int
 ConfigFilePreparse(const char *path, const char *dest)
 {
-   static char         have_epp = 0;
    char                execline[FILEPATH_LEN_MAX];
    const char         *epp_path = ENLIGHTENMENT_BIN "/epp";
    char               *def_home, *def_user, *def_shell;
 
    if (EventDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFilePreparse %s->%s\n", path, dest);
-
-   if ((!have_epp) && (!(isfile(epp_path)) && (canexec(epp_path))))
-     {
-	Alert(_("Help! Cannot find epp!\n"
-		"Enlightenment is looking for epp here:\n" "%s\n"
-		"This is a FATAL ERROR.\n"
-		"This is probably due to either the program not existing or\n"
-		"it not being able to be executed by you.\n"), epp_path);
-	SessionExit(EEXIT_ERROR, NULL);
-     }
-   have_epp = 1;
 
    def_home = homedir(getuid());
    def_user = username(getuid());
@@ -409,7 +397,7 @@ FindFileLocalized(const char *name, const char *path, int localized)
    lang = Mode.locale.lang;
    if (!localized || !lang)
      {
-	if (isfile(s))
+	if (isfile(s) && canread(s))	/* FIXME - Only one stat */
 	   return Estrdup(s);
 	else
 	   return NULL;
@@ -432,7 +420,7 @@ FindFileLocalized(const char *name, const char *path, int localized)
 	   continue;
 
 	*p[i] = '\0';
-	if (isfile(s))
+	if (isfile(s) && canread(s))	/* FIXME - Only one stat */
 	   return Estrdup(s);
      }
 

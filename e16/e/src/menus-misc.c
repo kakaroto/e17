@@ -30,6 +30,11 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+static Menu        *MenuCreateFromFlatFile(const char *name, Menu * parent,
+					   MenuStyle * ms, const char *file);
+static Menu        *MenuCreateFromDirectory(const char *name, Menu * parent,
+					    MenuStyle * ms, const char *dir);
+
 static MenuItem    *
 MenuItemCreateFromBackground(const char *bgid, const char *file)
 {
@@ -51,13 +56,13 @@ MenuItemCreateFromBackground(const char *bgid, const char *file)
    return mi;
 }
 
-Menu               *
-MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
-			const char *dir)
+static int
+MenuLoadFromDirectory(Menu * m)
 {
    Progressbar        *p = NULL;
-   Menu               *m, *mm;
+   Menu               *mm;
    int                 i, num;
+   const char         *dir;
    char              **list, s[4096], ss[4096], cs[4096];
    const char         *ext;
    MenuItem           *mi;
@@ -65,8 +70,15 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    const char         *chmap =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
    FILE               *f;
+   time_t              lastmod;
 
-   m = MenuCreate(name, NULL, parent, ms);
+   dir = MenuGetData(m);
+   lastmod = moddate(dir);
+   if (lastmod <= MenuGetTimestamp(m))
+      return 0;
+   MenuSetTimestamp(m, lastmod);
+
+   MenuEmpty(m, 0);
 
    if (stat(dir, &st) >= 0)
      {
@@ -122,15 +134,16 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
 		       char                tmp[4096];
 
 		       word(s, 2, tmp);
-		       Esnprintf(s, sizeof(s), "%s/%s:%s", dir, tmp, name);
+		       Esnprintf(s, sizeof(s), "%s/%s:%s", dir, tmp,
+				 MenuGetName(m));
 		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, tmp);
-		       mm = MenuCreateFromDirectory(s, m, ms, ss);
+		       mm = MenuCreateFromDirectory(s, m, NULL, ss);
 		       mi = MenuItemCreate(tmp, NULL, NULL, mm);
 		       MenuAddItem(m, mi);
 		    }
 	       }
 	     fclose(f);
-	     return m;
+	     return 1;
 	  }
      }
 
@@ -156,8 +169,8 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
 	ext = FileExtension(ss);
 	if (S_ISDIR(st.st_mode))
 	  {
-	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
-	     mm = MenuCreateFromDirectory(s, m, ms, ss);
+	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], MenuGetName(m));
+	     mm = MenuCreateFromDirectory(s, m, NULL, ss);
 	     mi = MenuItemCreate(list[i], NULL, NULL, mm);
 	     MenuAddItem(m, mi);
 	     if (f)
@@ -229,6 +242,26 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    if (list)
       StrlistFree(list, num);
 
+   return 1;
+}
+
+static Menu        *
+MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
+			const char *dir)
+{
+   static int          calls = 0;
+   Menu               *m;
+
+   if (calls > 32)
+      return NULL;
+   calls++;
+
+   m = MenuCreate(name, NULL, parent, ms);
+   MenuSetData(m, Estrdup(dir));
+   MenuSetLoader(m, MenuLoadFromDirectory);
+
+   calls--;
+
    return m;
 }
 
@@ -238,6 +271,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
    FILE               *f;
    char                first = 1;
    char                s[4096];
+   int                 count;
 
    f = fopen(file, "r");
    if (!f)
@@ -247,6 +281,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	return;
      }
 
+   count = 0;
    while (fgets(s, 4096, f))
      {
 	s[strlen(s) - 1] = 0;
@@ -272,7 +307,6 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		  MenuItem           *mi;
 		  ImageClass         *icc = NULL;
 		  Menu               *mm;
-		  static int          count = 0;
 
 		  txt = field(s, 0);
 		  icon = field(s, 1);
@@ -300,8 +334,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		    }
 		  else if ((act) && (!strcmp(act, "menu")) && (params))
 		    {
-		       Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
-		       count++;
+		       Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count++);
 		       mm = MenuCreateFromFlatFile(wd, m, NULL, params);
 		       if (mm)
 			 {
@@ -328,53 +361,30 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
    fclose(f);
 }
 
-static void
-FileMenuUpdate(int val __UNUSED__, void *data)
+static int
+MenuLoadFromFlatFile(Menu * m)
 {
-   Menu               *m;
-   time_t              lastmod;
-   char                s[4096];
    const char         *ff;
-
-   m = (Menu *) data;
-   if (!m)
-      return;
-
-   if (!FindItem(m, 0, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
-      return;
-
-   /* if the menu is up dont update */
-   if (MenusActive())
-      goto done;
+   time_t              lastmod;
 
    ff = MenuGetData(m);
-   if (!exists(ff))
-     {
-	MenuHide(m);
-	MenuEmpty(m);
-	return;
-     }
-
    lastmod = moddate(ff);
-   if (lastmod > MenuGetTimestamp(m))
-     {
-	MenuSetTimestamp(m, lastmod);
-	MenuEmpty(m);
-	FillFlatFileMenu(m, MenuGetName(m), ff);
-	MenuRepack(m);
-     }
+   if (lastmod <= MenuGetTimestamp(m))
+      return 0;
+   MenuSetTimestamp(m, lastmod);
 
- done:
-   Esnprintf(s, sizeof(s), "__.%s", MenuGetName(m));
-   DoIn(s, 5.0, FileMenuUpdate, 0, m);
+   MenuEmpty(m, 0);
+   FillFlatFileMenu(m, MenuGetName(m), ff);
+
+   return 1;
 }
 
-Menu               *
+static Menu        *
 MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 		       const char *file)
 {
    Menu               *m = NULL;
-   char                s[4096], *ff;
+   char               *ff;
    static int          calls = 0;
 
    if (calls > 32)
@@ -385,17 +395,9 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
    if (!ff)
       goto done;
 
-   if (canread(ff))
-     {
-	m = MenuCreate(name, NULL, parent, ms);
-	MenuSetTimestamp(m, moddate(ff));
-	FillFlatFileMenu(m, MenuGetName(m), ff);
-	MenuSetData(m, ff);
-	Esnprintf(s, sizeof(s), "__.%s", MenuGetName(m));
-	DoIn(s, 5.0, FileMenuUpdate, 0, m);
-	goto done;
-     }
-   Efree(ff);
+   m = MenuCreate(name, NULL, parent, ms);
+   MenuSetData(m, ff);
+   MenuSetLoader(m, MenuLoadFromFlatFile);
 
  done:
    calls--;
@@ -403,7 +405,7 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
    return m;
 }
 
-Menu               *
+static Menu        *
 MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 		    const char *dir)
 {
@@ -520,29 +522,42 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
    return m;
 }
 
-Menu               *
-MenuCreateFromThemes(const char *name, MenuStyle * ms)
+static int
+MenuLoadFromThemes(Menu * m)
 {
-   Menu               *m;
    char              **lst;
    int                 i, num;
    char                ss[4096], *s;
-
    MenuItem           *mi;
 
-   m = MenuCreate(name, NULL, NULL, ms);
+   if (MenuGetTimestamp(m))
+      return 0;
+   MenuSetTimestamp(m, 1);
 
    lst = ThemesList(&num);
    for (i = 0; i < num; i++)
      {
 	s = fullfileof(lst[i]);
-	Esnprintf(ss, sizeof(ss), "themes use %s", s);
+	Esnprintf(ss, sizeof(ss), "theme use %s", s);
 	mi = MenuItemCreate(s, NULL, ss, NULL);
 	Efree(s);
 	MenuAddItem(m, mi);
      }
    if (lst)
       StrlistFree(lst, i);
+
+   return 1;
+}
+
+static Menu        *
+MenuCreateFromThemes(const char *name, MenuStyle * ms)
+{
+   Menu               *m;
+
+   m = MenuCreate(name, NULL, NULL, ms);
+   MenuSetTitle(m, _("Themes"));
+   MenuSetInternal(m);
+   MenuSetLoader(m, MenuLoadFromThemes);
 
    return m;
 }
@@ -556,7 +571,7 @@ BorderNameCompare(void *b1, void *b2)
    return 0;
 }
 
-Menu               *
+static Menu        *
 MenuCreateFromBorders(const char *name, MenuStyle * ms)
 {
    char                s[128];
@@ -586,96 +601,152 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
    return m;
 }
 
-Menu               *
-MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
+static int
+MenuCheckShowEwinDesk(EWin * ewin, void *prm)
 {
-   Menu               *m;
+   if (!EwinGetName(ewin) || ewin->props.skip_winlist)
+      return 0;
+   return prm == NULL || EwinGetDesk(ewin) == prm;
+}
+
+static void
+MenuLoadFromEwins(Menu * m, int (*f) (EWin * ewin, void *prm), void *prm)
+{
    EWin               *const *lst;
    int                 i, num;
    char                s[256];
-
    MenuItem           *mi;
-
-   m = MenuCreate(name, NULL, NULL, ms);
 
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]))
+	if (!f(lst[i], prm))
 	   continue;
 
 	Esnprintf(s, sizeof(s), "wop %#lx focus", _EwinGetClientXwin(lst[i]));
 	mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
-
-   return m;
 }
 
-#if 0				/* Not used */
+static int
+MenuLoadFromAllEwins(Menu * m)
+{
+   MenuEmpty(m, 0);
+   MenuLoadFromEwins(m, MenuCheckShowEwinDesk, NULL);
+   return 1;
+}
+
 static Menu        *
-MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
+MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 {
    Menu               *m;
-   EWin               *const *lst;
-   int                 i, num;
-   char                s[256];
 
-   MenuItem           *mi;
-
-   m = MenuCreate(name, NULL, parent, ms);
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]) ||
-	    EoGetDesk(lst[i]) != j)
-	   continue;
-
-	Esnprintf(s, sizeof(s), "%lu", _EwinGetClientXwin(lst[i]));
-	mi = MenuItemCreate(lst[i]->client.title, NULL, s, NULL);
-	MenuAddItem(m, mi);
-     }
+   m = MenuCreate(name, NULL, NULL, ms);
+   MenuSetTitle(m, _("Window List"));
+   MenuSetInternal(m);
+   MenuSetDynamic(m);
+   MenuSetLoader(m, MenuLoadFromAllEwins);
 
    return m;
 }
-#endif
 
-Menu               *
-MenuCreateFromDesktops(const char *name, MenuStyle * ms)
+static int
+MenuLoadFromDesktops(Menu * m)
 {
-   Menu               *m, *mm;
-   EWin               *const *lst;
-   int                 i, num;
-   unsigned int        j;
+   Menu               *mm;
+   unsigned int        i;
    char                s[256];
    MenuItem           *mi;
 
-   m = MenuCreate(name, NULL, NULL, ms);
+   MenuEmpty(m, 0);
 
-   lst = EwinListGetAll(&num);
-   for (j = 0; j < DesksGetNumber(); j++)
+   for (i = 0; i < DesksGetNumber(); i++)
      {
-	mm = MenuCreate("__SUBMENUDESK_E", NULL, m, ms);
-
-	Esnprintf(s, sizeof(s), "desk goto %i", j);
+	mm = MenuCreate("__SUBMENUDESK_E", NULL, m, NULL);
+	Esnprintf(s, sizeof(s), "desk goto %i", i);
 	mi = MenuItemCreate(_("Go to this Desktop"), NULL, s, NULL);
 	MenuAddItem(mm, mi);
-	for (i = 0; i < num; i++)
-	  {
-	     if (lst[i]->props.skip_winlist || !EwinGetName(lst[i]) ||
-		 EoGetDesk(lst[i]) != DeskGet(j))
-		continue;
+	MenuLoadFromEwins(mm, MenuCheckShowEwinDesk, DeskGet(i));
 
-	     Esnprintf(s, sizeof(s), "wop %#lx focus",
-		       _EwinGetClientXwin(lst[i]));
-	     mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
-	     MenuAddItem(mm, mi);
-	  }
-	Esnprintf(s, sizeof(s), _("Desktop %i"), j);
+	Esnprintf(s, sizeof(s), _("Desktop %i"), i);
 	mi = MenuItemCreate(s, NULL, NULL, mm);
 	MenuAddItem(m, mi);
      }
+
+   return 1;
+}
+
+static Menu        *
+MenuCreateFromDesktops(const char *name, MenuStyle * ms)
+{
+   Menu               *m;
+
+   m = MenuCreate(name, NULL, NULL, ms);
+   MenuSetTitle(m, _("Desks"));
+   MenuSetInternal(m);
+   MenuSetDynamic(m);
+   MenuSetLoader(m, MenuLoadFromDesktops);
+
+   return m;
+}
+
+static int
+MenuLoadFromGroups(Menu * m)
+{
+   Menu               *mm;
+   Group             **lst;
+   int                 i, j, num;
+   char                s[256];
+   MenuItem           *mi;
+
+   MenuEmpty(m, 0);
+
+   lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
+   if (!lst)
+      return 1;
+
+   for (i = 0; i < num; i++)
+     {
+	mm = MenuCreate("__SUBMENUGROUP_E", NULL, m, NULL);
+
+	Esnprintf(s, sizeof(s), "gop %li showhide",
+		  _EwinGetClientXwin(lst[i]->members[0]));
+	mi = MenuItemCreate(_("Show/Hide this group"), NULL, s, NULL);
+
+	Esnprintf(s, sizeof(s), "wop %#lx ic",
+		  _EwinGetClientXwin(lst[i]->members[0]));
+	MenuAddItem(mm, mi);
+	mi = MenuItemCreate(_("Iconify this group"), NULL, s, NULL);
+	MenuAddItem(mm, mi);
+
+	for (j = 0; j < lst[i]->num_members; j++)
+	  {
+	     Esnprintf(s, sizeof(s), "wop %#lx focus",
+		       _EwinGetClientXwin(lst[i]->members[j]));
+	     mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
+				 s, NULL);
+	     MenuAddItem(mm, mi);
+	  }
+	Esnprintf(s, sizeof(s), _("Group %i"), i);
+	mi = MenuItemCreate(s, NULL, NULL, mm);
+	MenuAddItem(m, mi);
+     }
+   Efree(lst);
+
+   return 1;
+}
+
+static Menu        *
+MenuCreateFromGroups(const char *name, MenuStyle * ms)
+{
+   Menu               *m;
+
+   m = MenuCreate(name, NULL, NULL, ms);
+   MenuSetTitle(m, _("Groups"));
+   MenuSetInternal(m);
+   MenuSetDynamic(m);
+   MenuSetLoader(m, MenuLoadFromGroups);
 
    return m;
 }
@@ -704,129 +775,51 @@ MenuCreateMoveToDesktop(char *name, Menu * parent, MenuStyle * ms)
 }
 #endif
 
-static Menu        *
-MenuCreateFromGroups(const char *name, MenuStyle * ms)
+Menu               *
+MenusCreateInternal(const char *type, const char *name, const char *style,
+		    const char *prm)
 {
-   Menu               *m, *mm;
-   Group             **lst;
-   int                 i, j, num;
-   char                s[256];
+   Menu               *m;
+   MenuStyle          *ms;
 
-   MenuItem           *mi;
+   m = NULL;
+   ms = NULL;
+   if (style)
+      ms = FindItem(style, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
-   m = MenuCreate(name, NULL, NULL, ms);
-
-   lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
-   if (lst)
+   if (!strcmp(type, "file"))
      {
-	for (i = 0; i < num; i++)
-	  {
-	     mm = MenuCreate("__SUBMENUGROUP_E", NULL, m, ms);
-
-	     Esnprintf(s, sizeof(s), "gop %li showhide",
-		       _EwinGetClientXwin(lst[i]->members[0]));
-	     mi = MenuItemCreate(_("Show/Hide this group"), NULL, s, NULL);
-
-	     Esnprintf(s, sizeof(s), "wop %#lx ic",
-		       _EwinGetClientXwin(lst[i]->members[0]));
-	     MenuAddItem(mm, mi);
-	     mi = MenuItemCreate(_("Iconify this group"), NULL, s, NULL);
-	     MenuAddItem(mm, mi);
-
-	     for (j = 0; j < lst[i]->num_members; j++)
-	       {
-		  Esnprintf(s, sizeof(s), "wop %#lx focus",
-			    _EwinGetClientXwin(lst[i]->members[j]));
-		  mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
-				      s, NULL);
-		  MenuAddItem(mm, mi);
-	       }
-	     Esnprintf(s, sizeof(s), _("Group %i"), i);
-	     mi = MenuItemCreate(s, NULL, NULL, mm);
-	     MenuAddItem(m, mi);
-	  }
-	Efree(lst);
+	m = MenuCreateFromFlatFile(name, NULL, ms, prm);
+     }
+   else if (!strcmp(type, "dirscan"))
+     {
+	SoundPlay("SOUND_SCANNING");
+	m = MenuCreateFromDirectory(name, NULL, ms, prm);
+     }
+   else if (!strcmp(type, "gnome"))
+     {
+	m = MenuCreateFromGnome(name, NULL, ms, prm);
+     }
+   else if (!strcmp(type, "borders"))
+     {
+	m = MenuCreateFromBorders(name, ms);
+     }
+   else if (!strcmp(type, "themes"))
+     {
+	m = MenuCreateFromThemes(name, ms);
+     }
+   else if (!strcmp(type, "windowlist"))
+     {
+	m = MenuCreateFromAllEWins(name, ms);
+     }
+   else if (!strcmp(type, "deskmenu"))
+     {
+	m = MenuCreateFromDesktops(name, ms);
+     }
+   else if (!strcmp(type, "groupmenu"))
+     {
+	m = MenuCreateFromGroups(name, ms);
      }
 
    return m;
-}
-
-#if 0				/* Not used */
-static Menu        *
-RefreshTaskMenu(int desk)
-{
-   char                was = 0;
-   int                 lx = 0, ly = 0;
-   EWin               *ewin;
-
-   if (task_menu[desk])
-     {
-	ewin = FindEwinByMenu(task_menu[desk]);
-	if ((task_menu[desk]->win) && (ewin))
-	  {
-	     lx = ewin->x;
-	     ly = ewin->y;
-	     was = 1;
-	  }
-	MenuDestroy(task_menu[desk]);
-     }
-   task_menu[desk] = NULL;
-   if (!task_menu_style)
-     {
-	return NULL;
-     }
-   task_menu[desk] = MenuCreateFromDesktopEWins("MENU", task_menu_style, desk);
-   if ((was) && (task_menu[desk]))
-     {
-	task_menu[desk]->internal = 1;
-	MenuShow(task_menu[desk], 1);
-	ewin = FindEwinByMenu(task_menu[desk]);
-	if (ewin)
-	  {
-	     EwinMove(ewin, lx, ly);
-	     ShowEwin(ewin);
-	  }
-	Mode.cur_menu[0] = task_menu[desk];
-	Mode.cur_menu_depth = 1;
-	MenuShowMasker(task_menu[desk]);
-     }
-   return task_menu[desk];
-}
-
-void
-ShowTaskMenu(void)
-{
-}
-#endif
-
-/* FIXME - Menus should have update function? */
-void                ShowAllTaskMenu(void);
-void                ShowDeskMenu(void);
-void                ShowGroupMenu(void);
-
-void
-ShowAllTaskMenu(void)
-{
-   static MenuStyle   *ms = NULL;
-   static Menu        *m = NULL;
-
-   ShowInternalMenu(&m, &ms, "TASK_MENU", MenuCreateFromAllEWins);
-}
-
-void
-ShowDeskMenu(void)
-{
-   static MenuStyle   *ms = NULL;
-   static Menu        *m = NULL;
-
-   ShowInternalMenu(&m, &ms, "DESK_MENU", MenuCreateFromDesktops);
-}
-
-void
-ShowGroupMenu(void)
-{
-   static MenuStyle   *ms = NULL;
-   static Menu        *m = NULL;
-
-   ShowInternalMenu(&m, &ms, "GROUP_MENU", MenuCreateFromGroups);
 }

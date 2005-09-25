@@ -476,7 +476,7 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
 IpcItem             ThemeIpcArray[] = {
    {
     ThemesIpc,
-    "themes", "th",
+    "theme", "th",
     "Theme commands",
     "  theme             Show current theme\n"
     "  theme list        Show all themes\n"

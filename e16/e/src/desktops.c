@@ -104,7 +104,7 @@ DeskControlsCreate(Desk * dsk)
 
 	a = ActionCreate(EVENT_MOUSE_DOWN, 0, 0, 0, 2, 0, NULL, NULL);
 	ActionclassAddAction(ac, a);
-	ActionAddTo(a, "menus show taskmenu");
+	ActionAddTo(a, "menus show windowlist");
 
 	if (dsk->num > 0)
 	  {

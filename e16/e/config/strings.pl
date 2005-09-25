@@ -52,7 +52,11 @@ sub x() {
   }
 
   # menus.cfg
-  if (/ADD_MENU_TEXT_ITEM\s*\(\s*(\".*\"),/) {
+  if (/ADD_MENU_TITLE\s*\(\s*(\".*\")/) {
+    $t = "$1";
+    print "_($t),\n";
+  }
+  elsif (/ADD_MENU_TEXT_ITEM\s*\(\s*(\".*\"),/) {
     $t = "$1";
     print "_($t),\n";
   }

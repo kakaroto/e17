@@ -1576,6 +1576,39 @@ EFunc(EWin * ewin, const char *params)
    return err;
 }
 
+static void
+doEFuncDeferred(int val __UNUSED__, void *data)
+{
+   void              **prm = (void **)data;
+   EWin               *ewin;
+
+   ewin = prm[0];
+   if (ewin && !EwinFindByPtr(ewin))
+      return;
+
+   EFunc(ewin, prm[1]);
+
+   Efree(prm[1]);
+   Efree(data);
+}
+
+void
+EFuncDefer(EWin * ewin, const char *cmd)
+{
+   static int          seqn = 0;
+   char                s[32];
+   void              **prm;
+
+   prm = Emalloc(2 * sizeof(void *));
+   if (!prm)
+      return;
+   prm[0] = ewin;
+   prm[1] = Estrdup(cmd);
+
+   Esnprintf(s, sizeof(s), "EFunc-%d", seqn++);
+   DoIn(s, 0.0, doEFuncDeferred, 0, prm);
+}
+
 static int
 ipccmp(void *p1, void *p2)
 {
