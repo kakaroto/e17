@@ -22,14 +22,14 @@
  */
 #include "E.h"
 
-struct _list
+typedef struct _list
 {
    char               *name;
    int                 id;
    void               *item;
 
    struct _list       *next;
-};
+} List;
 
 static List        *lists;
 

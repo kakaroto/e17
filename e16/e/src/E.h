@@ -333,7 +333,6 @@ typedef struct _efont Efont;
 typedef struct _textclass TextClass;
 typedef struct _action Action;
 typedef struct _actionclass ActionClass;
-typedef struct _list List;
 
 typedef struct
 {
