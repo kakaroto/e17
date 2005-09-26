@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
-        "file:///usr/share/sgml/docbook/xml-dtd-4.3C/docbookx.dtd" [
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5b1//EN"
+        "http://www.oasis-open.org/docbook/xml/4.5b1/docbookx.dtd" [
 
  <!-- This is the main book info -->
  <!ENTITY bookinfo SYSTEM "xml/bookinfo.xml">
