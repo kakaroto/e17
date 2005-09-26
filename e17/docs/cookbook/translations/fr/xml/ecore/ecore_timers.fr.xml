@@ -1,0 +1,116 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>29 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Timers Ecore</title>
+<para>
+Si vous devez avoir un callback déclenché à un instant spécifique, avec la
+possibilité de répéter le timer continuellement, alors 
+<literal>Ecore_Timer</literal> est ce que vous cherchez.
+</para>
+
+<para>
+<example>
+<title>Timers Ecore</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+
+static int timer_one_cb(void *data);
+static int timer_two_cb(void *data);
+
+int main(int argc, char ** argv) {
+    ecore_init();
+
+    ecore_timer_add(1, timer_one_cb, NULL);
+    ecore_timer_add(0.5, timer_two_cb, NULL);
+
+    ecore_main_loop_begin();
+    ecore_shutdown();
+
+    return 0;
+}
+
+static int timer_one_cb(void *data) {
+    printf("1");
+    fflush(stdout);
+    return 1;
+}
+
+static int timer_two_cb(void *data) {
+    printf("2");
+    fflush(stdout);
+    return 1;
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+La création des timers est aussi simple qu'un appel à
+<function>ecore_timer_add()</function>.
+Ceci renverra une structure <literal>Ecore_Timer</literal> en cas de succès ou
+NULL en cas d'échec. Dans le cas présent nous ignorons les valeurs de retour. 
+Les trois paramètres de cette fonction sont:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>double timeout</para></listitem>
+ <listitem><para>int (*callback)(void *data)</para></listitem>
+ <listitem><para>const void *user_data</para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+Le timeout correspond au nombre de secondes au bout desquelles ce timer
+expirera. Dans le cas de cet exemple on spécifie respectivement 1 et 0.5
+secondes.  La fonction de callback est celle qui sera exécutée lorsque le
+timer expirera et user_data correspond à n'importe quelles données à la
+fonction de callback.
+</para>
+
+<para>
+Toutes les fonctions de callback ont la même signature 
+<literal>int callback(void *data)</literal>. La valeur de retour du timer
+devrait être 0 ou 1. Si vous renvoyez 0, le timer expirera et ne sera
+<emphasis>pas</emphasis> relancé. Si vous renvoyez 1, le timer sera reporté 
+pour se reexécuter dans autant de temps que spécifié par le timeout. Cela
+permet d'activer ou non le timer suivant les exigences de votre programme.
+</para>
+
+<para>
+Si vous avez un timer que vous voulez enlever à un certain moment dans le 
+futur, vous pouvez appeler 
+<function>ecore_timer_del(Ecore_Timer *)</function>. Si la suppression réussit,
+la fonction renverra le pointeur, ou NULL si échec. Après avoir appelé la
+fonction de suppression, la structure <literal>Ecore_Timer</literal> ne sera
+plus valide et vous ne devriez plus l'utiliser dans votre programme.
+</para>
+
+<para>
+Compiler cet exemple est aussi simple que:
+<example>
+<title>Compilation</title>
+<screen>
+gcc -Wall -o etimer etimer.c `ecore-config --cflags --libs`
+</screen>
+</example>
+Si vous lancez ce programme vous devriez voir une série de '1' et de '2' sur
+votre écran, avec deux fois plus de '2' que de '1'.
+</para>
+
+<para>
+Les <literal>Ecore_Timer</literal>s sont facile à mettre en oeuvre et à
+utiliser et fournissent un mécanisme puissant de synchronisation à vos
+programmes.
+</para>
+
+</section>
+
+

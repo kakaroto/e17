@@ -1,0 +1,143 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>12 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Etox Overview</title>
+
+<para>
+In order to get using Etox quickly, a simple overview example is worthwhile.  In the following
+example code we'll create an X11 Evas using Ecore_Evas and then put some Etox text on it.
+</para>
+
+<example>
+<title>Etox Overview Example</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Etox.h&gt;
+
+#define WIDTH 400
+#define HEIGHT 200
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+        Evas_Object *   etox;
+        Etox_Context *  context;
+
+int main(){
+
+        ecore_init();
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "ETOX Test");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, ".");
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 255, 255, 255, 255);
+        evas_object_show(base_rect);
+
+   etox = etox_new(evas);
+        evas_object_resize(etox, WIDTH, HEIGHT);
+
+
+   context = etox_get_context(etox);
+        etox_context_set_color(context, 0, 0, 0, 255);
+        etox_context_set_font(context, "Vera", 32);
+        etox_context_set_align(context, ETOX_ALIGN_LEFT);
+
+        etox_set_soft_wrap(etox, 1);
+        etox_set_text(etox, "Welcome to the world of Etox!");
+
+        evas_object_show(etox);
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+This example can be compiled in the following way:
+</para>
+
+<example>
+<programlisting>
+gcc `etox-config --libs --cflags` `ecore-config --libs --cflags` etox-test.c -o etox-test
+</programlisting>
+</example>
+
+<para>
+Most of thie example is standard Ecore_Evas functions, so we'll concentrate just on the Etox related parts of it.
+Notice that we use the <function>evas_font_path_append()</function> Evas function to define our font path, this is 
+something that Etox will not do for you.
+</para>
+
+<para>
+Your Etox text will always start by adding a new Etox using the <function>etox_new()</function> function which returns a new
+Evas_Object.  Because your Etox is itself an Evas object it can be manipulated as such.  Etox's layout functions
+such as clipping and wrapping are dependant upon the size of the Etox itself, therefore <function>evas_object_resize()</function>
+need to be called to define the proper size of the Etox.  Please note that the area of the object will <emphasis>not</emphasis>
+default to the size of the Evas itself.  
+</para>
+
+<para>
+Etox uses the concept of contexts.  A <literal>context</literal> is a set of parameters such as color, font, alignment, styles, and markers that
+are applied to a certain set of text.  Each Etox object has at least one context associated with it which is created when calling
+<function>etox_new()</function>.  For this reason the <function>etox_context_new()</function> function <emphasis>only</emphasis> needs
+to be called when creating additional contexts. 
+</para>
+
+<para>
+Once you've used <function>etox_new()</function> to add your Etox object you need to use the <function>etox_get_context()</function>
+to return a <varname>Etox_Context</varname> pointer which can then be passed to other context functions to modify the attributes of your
+text.  In the example we change the color, font and alignment of our context.
+</para>
+
+<para>
+Two of the most interesting and simplistic features of Etox is it's ability to intellegently wrap text and to interpret a 
+standard C newline charrector (\n) as a wrap.  These are features that Evas itself does not contain, it is the responsability
+of the coder to ensure text doesn't trail off the canvas.  
+</para>
+
+<para>
+Intellegent wrapping comes in two flavors which are not mutually exclusive.  The first is soft wrapping, which will wrap text when a charrector
+is going to exceed the width of the canvas.  The second is word wrapping, which will wrap text when a word is going to exceed the width of
+the canvas.  Typically  the later is desirable so that you get "This is (wrap) my string" instead of "This is m(wrap)y string."  Note, however,
+that work wrapping will not work unless soft wrapping has already been turned on, thus work wrapping requires calling <emphasis>both</emphasis>
+<function>etox_set_soft_wrap()</function> and <function>etox_set_word_wrap()</function> functions.
+</para>
+
+<para>
+A final note about wrapping is that by default wrapping will insert a <literal>wrap marker</literal> into your output string, a "+" (plus) sign by default.
+This marker indicates that a wrap has occured and is printed  as the first charrector on the next line of the wrap.  Your string will therefore
+likely look more like this: "This is my (wrap) +string."  If you would prefer that Etox silently wrap without a marker, simply set the marker
+to being nothing using the <function>etox_context_set_wrap_marker()</function> function.
+</para>
+
+<para>
+Etox text strings themselves are set using the <function>etox_set_text()</function>.  It's important to note that the string applies to the Etox itself
+and not to the context.  There is no direct association between the string and the context, which facilitates easy modification of the display of the
+text without having to change the context, or vice versa.
+</para>
+
+<para>
+While this is a very simple example of Etox usage, far more can be accomplished and as you can see the API is simple and clean, filling in many
+of the text handling needs that Evas doesn't provide.
+</para>
+
+
+</section>

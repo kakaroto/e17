@@ -1,0 +1,118 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Miniaturisation d'Image avec Epsilon</title>
+
+<para>
+Epsilon crée des vignettes conformes au 
+<ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink> de freedesktop.org. Les vignettes peuvent être créées depuis 
+une grande variété de formats, incluant le support natif PNG, le support Epeg, 
+ou n'importe quel format supporté par Imlib2. Jettons un oeil à une application
+Epsilon similaire à l'exemple Epeg vu plus tôt.
+</para>
+
+
+<example>
+<title>Vignette Epsilon</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Epsilon.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epsilon * image = NULL;
+        Epsilon_Info *info;
+
+        if(argc &lt; 1) {
+                printf("Usage: %s input_image\n", argv[0]);
+                return(1);
+        }
+
+        epsilon_init();
+
+        image = epsilon_new(argv[1]);
+
+        info = epsilon_info_get(image);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], info-&gt;w, info-&gt;h);
+
+
+        if (epsilon_generate(image) == EPSILON_OK) {
+                printf("Thumbnail created!\n");
+        } else {
+                printf("Generation failed\n");
+        }
+        epsilon_free(image);
+
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+Ceci peut être compilé de la manière suivante:
+</para>
+
+<programlisting>
+gcc `epsilon-config --libs --cflags` epsilon-simple.c -o epsilon-simple
+</programlisting>
+
+<para>
+Vous noterez presque immédiatement qu'aucun nom de fichier de sortie n'est 
+accepté, de même qu'aucune fonction de sortie n'est utilisée. La norme de 
+gestion de vignettes freedesktop.org indique que toutes les imagettes doivent 
+être créées dans l'arborescence ~/.thumbnails. Ce stockage centralisé des 
+vignettes tiens compte du partage de ces dernières entre les applications qui 
+adhèrent à la norme. Après avoir compilé et lancé l'exemple de code avec une 
+image, cherchez l'imagette dans ~/.thumbnails/large. Les imagettes sont 
+également nommées selon le standard, en remplaçant le nom original par une 
+somme MD5 de sorte que même si l'image de base est renommée, la vignette n'a 
+pas besoin d'être régénéré.
+</para>
+
+<para>
+Dans notre exemple nous commençons par vérifier que nous obtenons bien une 
+image d'entrée à miniaturiser et initialisons alors Epsilon grâce à la fonction
+<function>epsilon_init</function>. <function>epsilon_new</function> accepte un 
+seul argument, l'image à réduire, et renvoie un pointeur epsilon qui sera 
+employé par les autres fonctions.
+</para>
+
+<para>
+Epsilon a la capacité de tirer des informations basiques de vos images. Dans 
+l'exemple ci-dessus nous employons <function>epsilon_info_get</function> pour 
+renvoyer une structure <returnvalue>Epsilon_Info</returnvalue> contenant la 
+date de modification de l'image d'entrée (mtime), le lieu (URI), la largeur, la
+hauteur et le type MIME. Ici nous rapportons simplement la largeur et la 
+hauteur de l'image en utilisant les éléments <varname>w</varname> et 
+<varname>h</varname> de la structure informative.
+</para>
+
+<para>
+<function>epsilon_generate</function> fait le gros du travail. Cette fonction 
+produira la vignette et la placera à l'endroit approprié. Sa valeur de retour 
+indique s'il y a eu succès, et l'en-tête Epsilon fournit des 
+définitions de macro CPP:  <varname>EPSILON_FAIL</varname> et 
+<varname>EPSILON_OK</varname>.
+</para>
+
+<para>
+Le nettoyage est fait par <function>epsilon_free</function>.
+</para>
+
+<para>
+Comme nous l'avons vu ici, Epsilon est très simple à utiliser et à intégrer 
+dans n'importe quelle application en rapport avec la miniturisation d'image.
+Non seulement il apporte une API simple, mais il intègre une norme régnante 
+sans frais supplémentaires. Pour plus d'informations sur Epsilon, voyez le 
+Doxygen Epsilon sur Enlightenment.org.
+</para>
+
+</section>

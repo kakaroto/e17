@@ -1,0 +1,271 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>22 November 2004</date>
+</sectioninfo>
+
+<title>Recette: Travailler avec des fichiers Edje</title>
+<para>
+Lorsqu'on travaille avec des fichiers .edc et .eet on a souvent besoin de 
+transformer l'un en l'autre. Pour faire ça Edje fourni un ensemble d'outils 
+pour faciliter les transformations.
+</para>
+
+<para>
+Les programmes disponibles sont:
+<variablelist mark="bullet" spacing="compact">
+ <varlistentry>
+  <term>edje_cc</term>
+  <listitem><para>Compile un fichier EDC, les images et les fontes en un fichier EET</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>edje_decc</term>
+  <listitem><para>De-compile un fichier EET en un fichier EDC, des images et des fontes</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>edje_recc</term>
+  <listitem><para>Re-compile un fichier EET</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>edje_ls</term>
+  <listitem><para>Liste les groups d'un fichier EET</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>edje</term>
+  <listitem><para>Affiche les groupes d'un fichier EET</para></listitem>
+ </varlistentry>
+</variablelist>
+Chacun de ces programmes sont expliqués plus en détail ci-dessous.
+</para>
+
+
+<section>
+<title>edje_cc</title>
+<para>
+<literal>edje_cc</literal> est un des principaux programmes Edje que vous 
+utiliserez. Il est responsable de la compilation de vos fichier EDC, incluant 
+images et fontes en un fichier EET correspondant.
+</para>
+
+<example>
+<title>Utilisation de edje_cc</title>
+<screen>
+  edje_cc [OPTIONS] input_file.edc [output_file.eet]
+</screen>
+</example>
+
+<variablelist mark="bullet" spacing="compact">
+  <title>Options</title>
+  <varlistentry>
+   <term>-id <emphasis>image/répertoire</emphasis></term>
+   <listitem><para>Ajoute un répertoire pour la recherche des images</para></listitem>
+  </varlistentry>
+  
+  <varlistentry>
+   <term>-fd <emphasis>font/directory</emphasis></term>
+   <listitem><para>Ajoute un répertoire pour la recherche des fontes</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-v</term>
+   <listitem><para>Affichage verbeux</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-lossy</term>
+   <listitem><para>Ne pas autoriser la dégradation des images</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-comp</term>
+   <listitem><para>Ne pas autoriser le stockage des images avec une compression sans perte</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-raw</term>
+   <listitem><para>Ne pas autoriser le stockage des images sans compression (raw)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-min-quality <emphasis>VAL</emphasis></term>
+   <listitem><para>Ne pas autoriser les images dégradées avec une qualité &lt; VAL (0-100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-max-quality <emphasis>VAL</emphasis></term>
+   <listitem><para>Ne pas autoriser les images dégradées avec une qualité &gt; VAL (0-100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-scale-lossy <emphasis>VAL</emphasis></term>
+   <listitem><para>Redimensionne les pixels des images dégradées par ce facteur de pourcentage (0 - 100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-scale-comp <emphasis>VAL</emphasis></term>
+   <listitem><para>Redimensionne les pixels des images compressées sans perte par ce facteur de pourcentage (0 - 100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-scale-raw <emphasis>VAL</emphasis></term>
+   <listitem><para>Redimensionne les pixels des images non compressées (raw) par ce facteur de pourcentage (0 - 100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-D <emphasis>define_val</emphasis>=<emphasis>to</emphasis></term>
+   <listitem><para>Define dans le style CPP pour définir les définitions d'entrée macro de la source .edc</para></listitem>
+  </varlistentry>
+</variablelist>
+</section>
+
+
+
+<section>
+<title>edje_decc</title>
+<para>
+<literal>edje_decc</literal> permet de décompiler les fichiers EET, redonnant
+ainsi les EDC, les images et les fontes. Cela facilite la distribution de vos 
+sources puisque vous n'avez besoin de fournir que le fichier EET et 
+l'utilisateur final aura accès aux sources et au produit finit.
+</para>
+
+<example>
+<title>Utilisation de edje_decc</title>
+<screen>
+  edje_decc input_file.eet
+</screen>
+</example>
+</section>
+
+
+
+<section>
+<title>edje_recc</title>
+<para>
+<literal>edje_recc</literal> permet de recompiler un fichier EET sans avoir à 
+d'abord le décompiler. Cela permet de modifier les paramètres passés à 
+<literal>edje_cc</literal> pour mieux s'accorder à vos besoins esthétiques et 
+à la taille voulue de l'EET.
+</para>
+
+<example>
+<title>Utilisation de edje_recc</title>
+<screen>
+  edje_recc [OPTIONS] input_file.eet
+</screen>
+</example>
+
+<variablelist mark="bullet" spacing="compact">
+  <title>Options</title>
+  <varlistentry>
+   <term>-v</term>
+   <listitem><para>Affichage verbeux</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-lossy</term>
+   <listitem><para>Ne pas autoriser la dégradation des images</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-comp</term>
+   <listitem><para>Ne pas autoriser le stockage des images avec une compression sans perte</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-no-raw</term>
+   <listitem><para>Ne pas autoriser le stockage des images sans compression (raw)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-min-quality <emphasis>VAL</emphasis></term>
+   <listitem><para>Ne pas autoriser les images dégradées avec une qualité &lt; VAL (0-100)</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-max-quality <emphasis>VAL</emphasis></term>
+   <listitem><para>Ne pas autoriser les images dégradées avec une qualité &gt; VAL (0-100)</para></listitem>
+  </varlistentry>
+</variablelist>
+</section>
+
+
+
+<section>
+<title>edje_ls</title>
+<para>
+<literal>edje_ls</literal> fournit une liste de tous les groupes d'un fichier 
+EET donné. C'est une façon rapide de voir ce que renferme un EET.
+</para>
+
+<example>
+<title>Utilisation de edje_ls</title>
+<screen>
+  edje_ls [OPTIONS] input_file.eet ...
+</screen>
+</example>
+
+<variablelist mark="bullet" spacing="compact" termlength="15">
+  <title>Options</title>
+  <varlistentry>
+   <term>-o <emphasis>outputfile.txt</emphasis></term>
+   <listitem><para>Ecrit la liste des collections dans un fichier</para></listitem>
+  </varlistentry>
+</variablelist>
+</section>
+
+
+
+
+<section>
+<title>edje</title>
+<para>
+<literal>edje</literal> est aussi un des principaux programmes que vous serez
+amené à utiliser. <literal>edje</literal> permet de voir chacun des groupes 
+de votre programme, ce à quoi les différentes parties vont ressembler et 
+comment elles réagissent à certain signaux.
+</para>
+
+<example>
+<title>Utilisation de edje</title>
+<screen>
+  edje file_to_show.eet [OPTIONS] [collection_to_show] ...
+</screen>
+</example>
+
+<variablelist mark="bullet" spacing="compact" termlength="15">
+  <title>Options</title>
+  <varlistentry>
+   <term>-gl</term>
+   <listitem><para>Utiliser OpenGL pour le rendu</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-g <emphasis>W</emphasis>x<emphasis>H</emphasis></term>
+   <listitem><para>Règle la taille de la fenêtre à WxH</para></listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>-fill</term>
+   <listitem><para>Fait en sorte que les parties remplissent toute la fenêtre</para></listitem>
+  </varlistentry>
+</variablelist>
+</section>
+
+<para>
+Ces cinq outils devraient fournir tout ce dont vous avez besoin pour contruire 
+et maintenir vos EETs. Il rendent aussi facile le rappartiement de la source 
+comprise dans un EET, aidant ainsi à en apprendre le fonctionnement.
+</para>
+
+</section>
+

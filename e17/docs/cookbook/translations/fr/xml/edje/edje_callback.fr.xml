@@ -1,0 +1,216 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>12 September 2004</date>
+</sectioninfo>
+
+<title>Recette: Création/Déclenchement de callbacks Edje</title>
+
+<para>
+Il est parfois nécessaire de signaler à votre programme principal qu'un 
+événement s'est produit au niveau de l'interface utilisateur, mais on ne veut 
+généralement pas que l'implémentation bave sur le design de l'UI. Avec Edje on 
+peut régler ce problème en déclenchant un signal depuis un programme EDC et en 
+attachant un callback à ce signal dans le programme en C.
+</para>
+
+<example>
+<title>Programme Callback</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Edje.h&gt;
+
+int exit_cb(void *data, int type, void *ev);
+void edje_cb(void *data, Evas_Object *obj,
+                    const char *emission, const char *source);
+
+int
+main(int argc, char ** argv)
+
+{
+    int ret = 0;
+    Ecore_Evas *ee = NULL;
+    Evas *evas = NULL;
+    Evas_Object *edje = NULL;
+    Evas_Coord w, h;
+
+    if (!ecore_init()) {
+        printf("error setting up ecore\n");
+        goto EXIT;
+    }
+    ecore_app_args_set(argc, (const char **)argv); 
+    
+    if (!ecore_evas_init()) {
+        printf("error setting up ecore_evas\n");
+        goto ECORE_SHUTDOWN;
+    }
+
+    if (!edje_init()) {
+        printf("error setting up edje\n");
+        goto ECORE_SHUTDOWN;
+    }
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
+
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 200, 300);
+    ecore_evas_title_set(ee, "Edje CB example");
+    ecore_evas_show(ee); 
+
+    evas = ecore_evas_get(ee);
+    edje = edje_object_add(evas);
+    edje_object_file_set(edje, "default.eet", "main");
+    evas_object_move(edje, 0, 0);
+    edje_object_size_min_get(edje, &amp;w, &amp;h);
+    evas_object_resize(edje, w, h);
+    ecore_evas_resize(ee, w, h);
+    evas_object_show(edje);
+
+    edje_object_signal_callback_add(edje, "foo", "bar", edje_cb, NULL);
+
+    ecore_main_loop_begin();
+    ret = 1;
+
+    edje_shutdown();
+ECORE_SHUTDOWN:
+    ecore_shutdown();
+EXIT:
+    return ret;
+}
+
+int
+exit_cb(void *data, int type, void *ev)
+{
+    ecore_main_loop_quit();
+    return 1;
+}
+
+void
+edje_cb(void *data, Evas_Object *obj,
+                    const char *emission, const char *source)
+{
+    printf("got emission: %s from source: %s\n", emission, source);
+}
+</programlisting>
+</example>
+
+<para>
+La plupart de ce qu'on voit ici est une mise en place standard d'Ecore, 
+Ecore_Evas et Edje. Le callback est attaché avec 
+<function>edje_object_signal_callback_add(Evas_Object *o, char *emission,
+char *source, (void *)func(void *data, Evas_Object *obj, const char
+*emission, const char *source), void *user_data)</function>. L'objet 
+<literal>o</literal> auquel le callback est attaché est l'objet Edje qui a été 
+créé avec votre fichier EDC.
+</para>
+
+<para>
+Les valeurs <literal>emission</literal> et <literal>source</literal> doivent 
+être des chaînes qui correspondent aux appels d'émission du programme EDC qui 
+sera vu plus tard. L'autre option est de placer un '*' dans 
+<literal>emission</literal> ou <literal>source</literal>. Ainsi, la valeur 
+correspondra à n'importe quel signal. Si vous voulez intercepter tous les 
+signaux que edje emet, vous pouvez placer l'emission et la source à '*'.
+</para>
+
+<para>
+<literal>func</literal> est la fonction à appeler et, pour finir, 
+<literal>user_data</literal> correspond à n'importe quelles données 
+supplémentaires que vous voudriez passer au callback.
+</para>
+
+<para>
+Vous pouvez apercevoir la fonction de callback <function>edje_cb</function>. 
+Elle recevra les données utilisateur, l'objet Edje dont provient le callback 
+et les chaînes emission et source.
+</para>
+
+<para>
+Pour activer le callback votre fichier EDC a besoin d'un programme qui émettra 
+l'emission et la source requise.
+</para>
+
+<example>
+<title>Fichier EDC</title>
+<programlisting>
+collections {
+    group {
+        name: "main";
+        min: 200 100;
+
+        parts {
+            part {
+                name: "bg";
+                type: RECT;
+
+                description {
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "button";
+                type: RECT;
+
+                description {
+                    rel1 {
+                        relative: .4 .4;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: .6 .6;
+                        offset: 0 0;
+                    }
+                    color: 0 0 0 255;
+                }
+            }
+        }
+        programs {
+            program {
+                name: "down";
+                signal: "mouse,down,*";
+                source: "button";
+                action: SIGNAL_EMIT "foo" "bar";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+
+<para>
+La portion intéressante est <literal>action: SIGNAL_EMIT "foo" "bar"</literal> 
+qui causera de la part d'Edje l'émission de <literal>foo</literal> depuis 
+la source <literal>bar</literal>.
+</para>
+
+<example>
+<title>Compilation</title>
+<screen>
+zero@oberon [edje_cb] -&gt; edje_cc default.edc
+zero@oberon [edje_cb] -&gt; gcc -o cb main.c `ecore-config --cflags --libs` \
+        `edje-config --cflags --libs`
+</screen>
+</example>
+
+<para>
+Edje rend très simple la séparation de l'interface de son implémentation. 
+L'interface doit seulement pouvoir envoyer les émissions et sources au moment 
+où arrivent les événements.
+</para>
+
+</section>
+
+

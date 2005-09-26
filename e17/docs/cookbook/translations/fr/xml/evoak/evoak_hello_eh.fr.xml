@@ -1,0 +1,206 @@
+<!--
+#######################################################
+A simple evoak hello eh
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>02 July 2004</date>
+</sectioninfo>
+
+<title>Recette : Client hello Evoak</title>
+
+<para>
+Cette recette est une introduction très simple au monde
+de la programmation Evoak. Perpétuant les grandes
+traditions anciennes, elle montre la version Candienne
+du 'Hello World' sur un canvas Evoak.
+</para>
+
+<example>
+<title>Inclusions et Pré-déclarations</title>
+<programlisting>
+#include &lt;Evoak.h&gt;
+#include &lt;Ecore.h&gt;
+
+static unsigned int setup_called = 0;
+
+static int canvas_info_cb(void *, int, void *);
+static int disconnect_cb(void *, int, void *);
+static void setup(Evoak *);
+</programlisting>
+</example>
+<para>
+Nous devons évidemment inclure le fichier en-tête Evoak, et celui
+de Ecore qui est nécessaire pour avoir accès aux fonctions de callbacks.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    Evoak *ev = NULL;
+
+    if (!evoak_init()) {
+        fprintf(stderr, "evoak_init failed");
+        return 1;
+    }
+
+    ecore_event_handler_add(EVOAK_EVENT_CANVAS_INFO, canvas_info_cb, NULL);
+    ecore_event_handler_add(EVOAK_EVENT_DISCONNECT, disconnect_cb, NULL);
+
+    ev = evoak_connect(NULL, "evoak_intro", "custom");
+
+    if (ev) {
+        ecore_main_loop_begin();
+        evoak_disconnect(ev);
+    }
+
+    evoak_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Evoak a besoin d'une configuration initiale à l'aide d'un appel à
+<function>evoak_init</function>. Cela configurera les libraires
+internes et le nécessaire pour Evoak.
+</para>
+
+<para>
+Si Evoak se charge correctement, nous prennons en charge deux callbacks,
+le premier est pour les informations sur le canvas et le second si nous sommes
+déconnectés du serveur Evoak. Cela sera expliqué plus tard lorsque les
+callbacks actuels seront affichés.
+</para>
+
+<para>
+Une fois les callbacks en place nous devons nous connecter au canvas du
+serveur Evoak. Cela est fait au travers d'un appel à
+<function>evoak_connect</function>. Les paramètres passés à
+<function>evoak_connect</function>
+sont: le serveur auquel se connecter, le nom du client et la classe du client.
+Si le premier argument est NULL, comme c'est le cas dans l'exemple, le serveur
+Evoak par défaut sera aussi connecté. Le second argument passé à
+<function>ecore_connect</function> est le nom du client, cette valeur doit être
+unique car elle est utilisée pour distinguer un client des autres.
+Le dernier argument, la classe, est le type de client, quelques valeurs possibles
+sont : &quot;background&quot;, &quot;panel&quot;, &quot;application&quot; ou
+&quot;custom&quot;.
+</para>
+
+<para>
+Si l'appel à <function>evoak_connect</function> échoue, la valeur NULL est renvoyée. Donc
+une fois que nous recevons un objet Evoak, nous entamons la boucle principale. Une fois
+qu'ecore à terminé nous appelons <function>evoak_disconnect</function> pour nous
+déconnecter du serveur Evoak.
+</para>
+
+<para>
+Nous terminons par l'appel <function>evoak_shutdown</function> pour nettoyer ce que
+nous avons créé.
+</para>
+
+<example>
+<title>Callback d'informations sur le Canvas</title>
+<programlisting>
+static int canvas_info_cb(void *data, int type, void *ev) {
+    Evoak_Event_Canvas_Info *e = (Evoak_Event_Canvas_Info *)ev;
+
+    if (!setup_called) {
+        setup_called = 1;
+        setup(e->evoak);
+    }
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+Un callback d'informations sur le canvas sera fait lorsque notre
+client recevra des informations concernant le canvas serveur Evoak.
+Avec cet information sur le canvas, nous pouvons procéder au
+paramétrage du contenu de nos clients. Cela est contenu à
+l'interrieur d'un drapeau setup_called car nous ne souhaitons
+l'initialiser qu'une seule fois.
+</para>
+
+<example>
+<title>Callback disconnect</title>
+<programlisting>
+static int disconnect_cb(void *data, int type, void *ev) {
+    printf("disconnected\n");
+    ecore_main_loop_quit();
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+Le callback disconnect sera appelé lorsque le client sera déconnecté du
+serveur Evoak. Dans ce cas la solution simple de la fermeture est utilisée.
+</para>
+
+<example>
+<title>Routine de configuration</title>
+<programlisting>
+static void setup(Evoak *ev) {
+    Evoak_Object *o = NULL;
+
+    evoak_freeze(ev);
+
+    o = evoak_object_text_add(ev);
+    evoak_object_text_font_set(o, "Vera", 12);
+    evoak_object_color_set(o, 255, 0, 0, 255);
+    evoak_object_text_text_set(o, "Hello Evoak, eh.");
+    evoak_object_show(o);
+
+    evoak_thaw(ev);
+}
+</programlisting>
+</example>
+<para>
+La routine de configuration sera appelée une seule fois pour configurer
+l'affichage de notre client. Pour cet exemple, le client ne dessinne qu'un
+texte 'Hello Evoak, eh'.
+</para>
+
+<para>
+La première chose que nous appelons est <function>evoak_freeze</function>, cela devrait
+nous mettre à l'abris de callbacks non souhaités pendant que nous configurons
+notre interface. A la fin de la fonction nous appelons la réciproque
+<function>evoak_thaw</function> pour désactiver le freeze précédent.
+</para>
+
+<para>
+Nous commencons ensuite la création d'un objet avec <function>evoak_object_text_add</function>
+et prenons cet objet, et configurons la police, la couleur et le contenu du texte
+avec les appels à
+<function>evoak_object_text_font_set</function>, <function>evoak_object_color_set</function>, 
+et <function>evoak_object_text_text_set</function> respectivement.
+</para>
+
+<example>
+<title>Compilation</title>
+<screen>
+zero@oberon [evoak_intro] -&gt; gcc -o hello_evoak main.c \
+ `evoak-config --cflags --libs`
+</screen>
+</example>
+<para>
+Comment pour beaucoups autres librairies basées sur EFL, la compilation
+d'un application Evoak est simplifiée par l'appel au programme evoak-config
+en y ajoutant les options --cflags et --libs.
+</para>
+
+<para>
+Voila, ce fut une introduction très simple à Evoak et la surface reste inexplorée
+vis a vis du potentiel disponnible pour les applications clientes.
+</para>
+
+</section>
+

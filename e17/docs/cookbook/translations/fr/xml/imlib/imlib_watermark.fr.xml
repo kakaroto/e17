@@ -1,0 +1,130 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>technikolor</othername>
+  </author>
+  <date>6 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Filigranage d'Image</title>
+
+
+<para>
+Avec tant d'individus mettant tant d'images en ligne, il devient facile
+d'oublier d'où elles proviennent et difficile de s'assurer que du matériel
+contenant un copyright ne soit pas mal utilisé par inadvertance. 
+Ajouter seulement une image filigranée, telle que le logo de vos sites, à
+chacune de vos images peut vous permettre de résoudre ces deux problèmes. 
+Mais, ajouter à la main les filigranes peut vite devenir long et répétitif. 
+Imlib2 peut facilement être employé à résoudre ce problème. Il suffit de
+choisir une image d'entrée, de spécifier l'image qui servira de filigrane
+(votre logo), de positionner le filigrane par rapport à l'image d'entrée et de
+sauvegarder le tout en une nouvelle image que l'on pourra utiliser sur son
+site. L'application devrait ressembler à ceci:
+</para>
+
+<example>
+<title>Programme de Filigranage Imlib2</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+#include &lt;Imlib2.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+
+    Imlib_Image image_input, image_watermark, image_output;
+    int     w_input, h_input;
+    int     w_watermark, h_watermark;
+    char    watermark[] = "watermark.png";
+
+    if(argc &gt; 1)  {
+        printf("Input image is: %s\n", argv[1]);
+        printf("Watermark is: %s\n", watermark);
+    }
+    else {
+        printf("Usage: %s input_image output_imagename\n", argv[0]);
+        exit(1);
+    }
+
+    image_input = imlib_load_image(argv[1]);
+    if(image_input) {
+        imlib_context_set_image(image_input);
+        w_input = imlib_image_get_width();
+        h_input = imlib_image_get_height();
+        printf("Input size is: %d by %d\n", w_input, h_input);
+        image_output = imlib_clone_image();
+    }
+
+    image_watermark = imlib_load_image(watermark);
+    if(image_watermark) {
+        imlib_context_set_image(image_watermark);
+        w_watermark = imlib_image_get_width();
+        h_watermark = imlib_image_get_height();
+        printf("WaterMark size is: %d by %d\n", 
+		w_watermark, h_watermark);
+    }
+
+    if(image_output) {
+        int dest_x, dest_y;
+
+        dest_x = w_input - w_watermark;
+        dest_y = h_input - h_watermark;
+        imlib_context_set_image(image_output);
+
+        imlib_blend_image_onto_image(image_watermark, 0, 
+		0, 0, w_watermark, h_watermark, 
+		dest_x, dest_y, w_watermark, h_watermark);
+        imlib_save_image(argv[2]);
+        printf("Wrote watermarked image to filename: %s\n", argv[2]);
+    }
+
+
+        return(0);
+}
+
+</programlisting>
+</example>
+
+<para>
+Regardons cet exemple: nous faisons tout d'abord une vérification basique
+des arguments, acceptant une image d'entrée comme premier argument et un nom
+pour l'image de sortie qui sera notre copie filigranée. En utilisant
+<function>imlib_load_image()</function> nous chargeons l'image d'entrée et
+prenons ses dimensions en utilisant les fonctions get. Avec la fonction
+<function>imlib_clone_image()</function> nous pouvons créer une copie de
+l'image d'entrée, qui sera la base de notre image finale. Ensuite nous
+chargeons l'image filigrane. Notez qu'alors nous utilisons
+<function>imlib_context_set_image()</function> pour changer le contexte et
+passer de l'image d'entrée (image_input) à l'image filigrane
+(image_watermark). Nous prenons également ses dimensions. 
+Dans le bloc final nous faisons deux calculs simples pour déterminer le
+positionnement du filigrane sur l'image finale, dans le cas présent nous
+voulons qu'il soit dans de coin inférieur droit. La fonction magique qui
+effectue vraiment le travail dans ce programme est
+<function>imlib_blend_image_onto_image()</function>. Notez que nous changeons
+encore de contexte en passant à l'image de sortie avant celà. 
+La fonction de blend permet, comme son nom le suggère, de mélanger deux images 
+que nous appelerons image source et image destination. Cette fonction mélange 
+une image source à l'image du contexte dans lequel on est, l'image
+destination. Les arguments passés à
+<function>imlib_blend_image_onto_image()</function> peuvent sembler
+compliqués : nous devons lui dire quelle source employer (le filigrane), si
+nous voulons fusionner le canal alpha (0 pour non), donner les dimmensions de
+l'image source (x, y, w, h) et les dimensions de l'image destination (x, y, w,
+h). Vous noterez que dans cet exemple les positions de x et y de l'image source 
+(filigrane) sont égales à 0 et que nous gardons ses dimensions intactes. La
+destination (l'image d'entrée) est placée dans le coin inférieur droit moins
+les dimensions du filigrane, et ensuite nous donnons la largeur et la hauteur
+du filirgane. Enfin, nous utilisons la fonction
+<function>imlib_save_image()</function> pour sauvegarder l'image finale.
+</para>
+
+<para>
+Même si cet exemple devrait sensiblement être amélioré pour un usage réel, il
+décrit les bases du blending avec Imlib2 afin de résoudre efficacement un
+problème très commun.
+</para>
+</section>

@@ -1,0 +1,71 @@
+<!--
+#######################################################
+A simple Imlib2 image flipping recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>08 Juillet 2004</date>
+</sectioninfo>
+
+<title>Recette: Créer des fichiers EDB depuis la ligne de commande</title>
+
+<para>
+Il est souvent nécessaire de créer des fichiers EDB depuis un
+simple script shell, cela peut avoir été une partie de procédure
+de construction.
+</para>
+
+<para>
+Cela peut être facilement accompli en utilisant le programme
+<command>edb_ed</command>. <command>edb_ed</command>est une interface
+très simple pour EDB, autorisant création/edition/suppression de pairs
+clef/valeur dans les bases de données EDBs.
+</para>
+
+<example>
+<title>Script shell de fichier EDB</title>
+<programlisting>
+#!/bin/sh
+
+DB=out.db
+
+edb_ed $DB add /global/debug_lvl int 2
+edb_ed $DB add /foo/theme str "default"
+edb_ed $DB add /bar/number_of_accounts int 1
+edb_ed $DB add /nan/another float 2.3
+</programlisting>
+</example>
+<para>
+Si le fichier de sortie (output) n'existe pas lors du premier appel à une
+commande <function>add</function> , le programme <command>edb_ed</command>
+créera le fichier et fera la configuration nécessaire. La fonction
+<function>add</function> est utilisée pour ajouter des entrées dans les
+bases de données. Le premier paramètre après add est la clé avec laquelle
+la donnée sera insérée dans la base de données. Cette clé sera utilisée par
+votre application pour récupérer la donnée dans le futur. Le paramètre suivant
+est le type de donnée à ajouter. Ce type peux prendre les valeurs suivantes :
+<itemizedlist spacing="compact" mark="bullet">
+ <listitem><para>int</para></listitem>
+ <listitem><para>str</para></listitem>
+ <listitem><para>float</para></listitem>
+ <listitem><para>data</para></listitem>
+</itemizedlist>
+Le dernier paramètre est la valeur qui sera associée à cette clé.
+</para>
+
+<para>
+En utilisant le programme <command>edb_ed</command> vous pouvez rapidement et
+facilement créer/éditier/visionner n'importe quel fichier EDB requis par votre
+application.
+</para>
+
+</section>
+
+

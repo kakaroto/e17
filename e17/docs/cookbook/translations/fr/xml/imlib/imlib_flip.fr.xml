@@ -1,0 +1,102 @@
+<!--
+#######################################################
+A simple Imlib2 image flipping recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Renversement d'Image</title>
+
+<para>
+Imlib2 contient des fonctions permettant de renverser une image. Ceci pouvant
+être fait horizontalement, verticalement ou diagonalement. Cette recette
+montrera comment mettre en application cette fonctionnalité.
+</para>
+
+<example>
+<title>Renversement d'Image</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img;
+    int dir = 0;
+
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s [in_img] [dir] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    dir = atoi(argv[2]);
+    switch(dir) {
+        case HORIZONTAL:
+            imlib_image_flip_horizontal();
+            break;
+
+        case VERTICAL:
+            imlib_image_flip_vertical();
+            break;
+
+        case DIAGONAL:
+            imlib_image_flip_diagonal();
+            break;
+
+        default:
+            fprintf(stderr, "Unknown value\n");
+            return 1;
+    }
+    imlib_save_image(argv[3]);
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Cet exemple commence par une vérification d'erreur minimale puis nous
+chargeons l'image d'entrée grâce à la fonction 
+<function>imlib_load_image()</function>, en passant le nom du fichier à
+charger. <function>imlib_load_image()</function> retournera un objet
+Imlib_Image, ou NULL en cas d'erreur. Une fois que nous avons cet objet image, 
+nous le plaçons dans le contexte courrant avec
+<function>imlib_context_set_image()</function>. Ceci indique à Imlib2 que
+c'est sur cette image que nous voulons travailler et que toutes les opérations
+Imlib2 seront appliquées à celle-ci. Ensuite nous décidons du type de
+renversement que nous voulons faire. Et nous l'appliquons en appelant
+<function>imlib_image_flip_horizontal()</function>,
+<function>imlib_image_flip_vertical()</function>, ou
+<function>imlib_image_flip_diagonal()</function>. Le renversement diagonal
+prend essentiellement le coin supérieur gauche pour le mettre dans le coin
+inférieur droit. Le coin supérieur droit devenant alors le coin inférieur
+gauche. Une fois l'image renversée, on appelle
+<function>imlib_save_image()</function> en lui donnant le nom du nouveau
+fichier et c'est finit.
+</para>
+
+<para>
+Ceci vous donne un aperçu du renversement d'image avec Imlib2. Certains
+perfectionnements seront nécessaire avant d'intégrer cet exemple à une réelle
+application mais la base est là.
+</para>
+
+</section>
+
+

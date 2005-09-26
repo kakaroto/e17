@@ -1,0 +1,383 @@
+<!--
+#######################################
+Introduction to Ecore_Ipc
+#######################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>14 June 2004</date>
+</sectioninfo>
+
+<title>Recette: Introduction à Ecore Ipc</title>
+<para>
+La bibliothèque Ecore_Ipc fournit un wrapper robuste et efficace autour du
+module Ecore_Con. Ecore_Ipc vous permet de mettre au point vos communications
+serveur et manipule tous les trucs compliqués en interne. Cette recette vous
+donnera un exemple simple d'un client et d'un serveur Ecore.
+</para>
+
+<para>
+Lorsqu'on travaille avec Ecore_Ipc, que l'on écrive une application client ou
+serveur, un créera un objet Ecore_Ipc_Server. Ceci est dû au fait que dans
+l'un ou l'autre des cas un serveur est en action, qu'on le mette en place ou
+qu'on communique avec. Après ça, tout est simple.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: préambule</title>
+<programlisting>
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Ipc.h&gt;
+
+int sig_exit_cb(void *data, int ev_type, void *ev);
+int handler_server_add(void *data, int ev_type, void *ev);
+int handler_server_del(void *data, int ev_type, void *ev);
+int handler_server_data(void *data, int ev_type, void *ev);
+</programlisting>
+</example>
+<para>
+Le fichier Ecore.h est inclus de façon à avoir accès au type de signal de
+sortie. Les fonctions seront expliquées plus tard lorsque leurs callbacks
+seront connectés.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: setup de main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    Ecore_Ipc_Server *server;
+
+    if (!ecore_init()) {
+        printf("unable to init ecore\n");
+        return 1;
+    }
+
+    if (!ecore_ipc_init()) {
+        printf("unable to init ecore_con\n");
+        ecore_shutdown();
+        return 1;
+    }
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit_cb, NULL);
+</programlisting>
+</example>
+<para>
+Comme dit plus haut, même si nous écrivons une application client, nous
+utilisons un objet Ecore_Ipc_Server. Employer Ecore_Ipc exige l'initialisation
+d'Ecore lui-même. Nous le faisons en appelant <function>ecore_init</function>. 
+Ecore_Ipc est alors initialisé avec <function>ecore_ipc_init</function>. Si
+l'un ou l'autre retourne 0, l'action appropriée est exécutée afin de défaire
+ce qui a été initialisé avant.
+Le callback ECORE_EVENT_SIGNAL_EXIT est connecté pour que nous puissions
+quitter avec élégance s'il y a lieu.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: création du client</title>
+<programlisting>
+    server = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM, 
+                                        "localhost", 9999, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, 
+                                        handler_server_add, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, 
+                                        handler_server_del, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, 
+                                        handler_server_data, NULL);
+</programlisting>
+</example>
+<para>
+Dans cet exemple nous créons une connection à distance au serveur nommé
+"localhost" sur le port 9999. Nous le faisons avec la méthode 
+<function>ecore_ipc_server_connect</function>. Le premier paramètre est le
+type de connection que nous voulons établir, qui peut être un de ceux-ci:
+ECORE_IPC_REMOTE_SYSTEM, ECORE_IPC_LOCAL_SYSTEM, ou ECORE_IPC_LOCAL_USER. Si
+OpenSSL était disponible au moment de la compilation d'Ecore_Ipc,
+ECORE_IPC_USE_SSL peut être un autre type de connection, permettant de créer
+une connection SSL.
+</para>
+
+<para>
+Les trois appels à <function>ecore_event_handler_add</function> mettent en
+place les callbacks pour les différents types d'événements que nous recevrons
+du serveur. Un serveur a été ajouté, un serveur a été supprimé, ou le serveur
+nous a envoyé des données.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: fin de main</title>
+<programlisting>
+    ecore_ipc_server_send(server, 3, 4, 0, 0, 0, "Look ma, no pants", 17);
+
+    ecore_main_loop_begin();
+
+    ecore_ipc_server_del(server);
+    ecore_ipc_shutdown();
+    ecore_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Dans le but de cet exemple, au départ le client envoie un message au serveur,
+auquel il répondra. Le message client est envoyé avec la commande
+<function>ecore_ipc_server_send</function>.
+<function>ecore_ipc_server_send</function> prend comme arguments le serveur
+vers lequel on envoie, l'opcode majeur du message, l'opcode mineur, la
+référence, la référence à, si une réponse est requise, les données et la
+taille des données. Ces paramètres, excepté le serveur sont à la guise du
+client et peuvent se rapporter à ce que l'on veut. Ceci donne un maximum
+de flexibilité dans la création d'application client/serveur IPC.
+</para>
+
+<para>
+Une fois que le message serveur est envoyé nous entrons dans la boucle ecore
+principale et attendons les événements. Si on quitte la boucle principale on
+supprime l'objet serveur, on arrête Ecore_Ipc avec un appel à
+<function>ecore_ipc_shutdown</function>, et on arrête ecore avec
+<function>ecore_shutdown</function>.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: sig_exit_cb</title>
+<programlisting>
+int sig_exit_cb(void *data, int ev_type, void *ev) {
+    ecore_main_loop_quit();
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+La fonction <function>sig_exit_cb</function> dit simplement à Ecore de quitter
+la boucle principale. Ce n'est pas strictement nécessaire car si on ne fait
+qu'appeler <function>ecore_main_loop_quit()</function>, Ecore s'en occupe de
+toutes façons si aucun traitement n'est définit. Mais ceci montre comment
+traiter un signal si vous en avez besoin pour votre application.
+</para>
+
+<example>
+<title>Client Ecore_Ipc: les callbacks</title>
+<programlisting>
+int handler_server_add(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Server_Add *e = (Ecore_Ipc_Event_Server_Add *)ev;
+    printf("Got a server add %p\n", e->server);
+    return 1;
+}
+
+int handler_server_del(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Server_Del *e = (Ecore_Ipc_Event_Server_Del *)ev;
+    printf("Got a server del %p\n", e->server);
+    return 1;
+}
+
+int handler_server_data(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Server_Data *e = (Ecore_Ipc_Event_Server_Data *)ev;
+    printf("Got server data %p [%i] [%i] [%i] (%s)\n", e->server, e->major,
+                                e->minor, e->size, (char *)e->data);
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+Ces trois callbacks, <function>handler_server_add</function>,
+<function>handler_server_del</function>, et
+<function>handler_server_data</function> sont le corps du client, ils
+traitent tous les événements en relation avec le serveur auquel on est
+connecté. Chacun des callbacks a une structure d'événement associée,
+Ecore_Ipc_Event_Server_Add, Ecore_Ipc_Event_Server_Del et
+Ecore_Ipc_Event_Server_Data, contenant les informations sur l'événement
+lui-même.
+</para>
+
+<para>
+Lorsque nous nous connectons au serveur, le callback 
+<function>handler_server_add</function> est exécuté, permettant ainsi 
+l'accomplissement des réglages nécessaires. 
+</para>
+
+<para>
+Si le serveur intérompt la connection le callback 
+<function>handler_server_del</function> est lancé afin de permettre le 
+nettoyage requis.
+</para>
+
+<para>
+Lorsque le serveur envoie des données au client le callback 
+<function>handler_server_data</function> est ecécuté. Ce qui, dans cet exemple,
+ne fait qu'afficher des informations à propos du message en lui-même et du 
+corps du message.
+</para>
+
+<para>
+Et voilà pour le client. Le code en lui-même est très simple grâce à 
+l'abstraction fournie par Ecore.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: préambule</title>
+<programlisting>
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Ipc.h&gt;
+
+int sig_exit_cb(void *data, int ev_type, void *ev);
+int handler_client_add(void *data, int ev_type, void *ev);
+int handler_client_del(void *data, int ev_type, void *ev);
+int handler_client_data(void *data, int ev_type, void *ev);
+</programlisting>
+</example>
+<para>
+Comme pour le client, l'en-tête Ecore.h est inclus pour avoir accès au signal
+de sortie. L'en-tête Ecore_Ipc.h est nécessaire aux applications qui utilisent 
+la bibliothèque Ecore_Ipc. Les fonctions seront expliquées avec leur code.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: setup de main</title>
+<programlisting>
+int main(int argc, char ** argv) { 
+    Ecore_Ipc_Server *server;
+    
+    if (!ecore_init()) {
+        printf("Failed to init ecore\n");
+        return 1;
+    }
+    
+    if (!ecore_ipc_init()) {
+        printf("failed to init ecore_con\n");
+        ecore_shutdown();
+        return 1;
+    }
+    
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit_cb, NULL);
+</programlisting>
+</example>
+<para>
+C'est la même chose que pour le setup client vu plus haut.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: création du serveur</title>
+<programlisting>
+    server = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM, "localhost", 9999, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, handler_client_add, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, handler_client_del, NULL);
+    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, handler_client_data, NULL);
+</programlisting>
+</example>
+<para>
+A la différence du client, nous ajoutons pour le serveur un auditeur au port 
+9999 sur la machine "localhost" avec l'appel 
+<function>ecore_ipc_server_add</function>. Ceci créera et nous renverra l'objet
+serveur. Ensuite nous préparons le traitement des signaux, la différence avec
+le client étant ici que nous voulons cette fois des événements CLIENT au lieu 
+d'événements SERVER.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: fin de main</title>
+<programlisting>
+    ecore_main_loop_begin();
+
+    ecore_ipc_server_del(server);
+    ecore_ipc_shutdown();
+    ecore_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+C'est encore identique à l'arrêt du client, moins l'envoie de données au 
+serveur.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: sig_exit_cb</title>
+<programlisting>
+</programlisting>
+</example>
+<para>
+La fonction <function>sig_exit_cb</function> est elle aussi identique à ce que
+nous avons vu pour le client.
+</para>
+
+<example>
+<title>Serveur Ecore_Ipc: les callbacks</title>
+<programlisting>
+int handler_client_add(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Client_Add *e = (Ecore_Ipc_Event_Client_Add *)ev;
+    printf("client %p connected to server\n", e->client);
+    return 1;
+}
+
+int handler_client_del(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Client_Del *e = (Ecore_Ipc_Event_Client_Del *)ev;
+    printf("client %p disconnected from server\n", e->client);
+    return 1;
+}
+
+int handler_client_data(void *data, int ev_type, void *ev) {
+    Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data *)ev;
+    printf("client %p sent [%i] [%i] [%i] (%s)\n", e->client, e->major,
+                                e->minor, e->size, (char *)e->data);
+    
+    ecore_ipc_client_send(e->client, 3, 4, 0, 0, 0, "Pants On!", 9);
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+Les callbacks sont similaires à ceux rencontrés dans l'application client. 
+La différence principale étant que les événements sont _Client_ et non plus
+_Server_.
+</para>
+
+<para>
+Le callback add sert lorsqu'un client se connecte au serveur, et le callback 
+del (son opposé) lorsque le client se déconnecte. Le callback data sert 
+lorsqu'un client envoie des données au serveur.
+</para>
+
+<para>
+A la fin du callback <function>handler_client_data</function> nous faisons 
+appel à <function>ecore_ipc_client_send</function>. On envoie ainsi les données
+au client. Comme lorsqu'on envoie vers le serveur, les paramètres sont: le 
+client auquel on envoie, l'opcode majeur, l'opcode mineur, la référence, 
+la référence à, si une réponse est requise, les données et la taille des 
+données.
+</para>
+
+<example>
+<title>Ecore_Ipc: compilation</title>
+<programlisting>
+CC = gcc
+    
+all: server client
+
+server: server.c
+    $(CC) -o server server.c `ecore-config --cflags --libs`
+    
+client: client.c
+    $(CC) -o client client.c `ecore-config --cflags --libs`
+
+clean:
+    rm server client
+</programlisting>
+</example>
+<para>
+Comme avec les autres applications Ecore, il est très simple de compiler une 
+application Ecore_Ipc. Tant que Ecore a été compilé avec Ecore_Ipc, la 
+simple invoquation de la commande 'ecore-config --cflags --libs' ajoutera 
+tous les paths des bibliothèques requises et les informations de liaison.
+</para>
+
+<para>
+Nous l'avons vu avec cet exemple, Ecore_Ipc est une bibliothèque facile à 
+utiliser pour créer des applications client/serveur.
+</para>
+</section>
+
+

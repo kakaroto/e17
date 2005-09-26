@@ -1,0 +1,130 @@
+<!--
+#######################################
+Introduction to Ecore_Config
+#######################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>25 April 2004</date>
+</sectioninfo>
+
+<title>Recette: Introduction à Ecore Config</title>
+
+<para>
+Le module Ecore_Config fournit au programmeur un moyen simple de mettre ne 
+place des fichiers de configuration pour ses programmes. Cette recette donnera
+un exemple de la façon d'intégrer la base d'Ecore_Config à votre programme et 
+de l'utiliser pour obtenir les données de configuration.
+</para>
+
+<example>
+<title>Programme Simple Ecore_Config</title>
+<programlisting>
+#include &lt;Ecore_Config.h&gt;
+
+int main(int argc, char ** argv) {
+    int i;
+    float j;
+    char *str;
+
+    if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
+        printf("Cannot init Ecore_Config");
+        return 1;
+    }
+
+    ecore_config_int_default("/int_example", 1);
+    ecore_config_string_default("/this/is/a/string/example", "String");
+    ecore_config_float_default("/float/example", 2.22);
+
+    ecore_config_load();
+
+    i = ecore_config_int_get("/int_example");
+    str = ecore_config_string_get("/this/is/a/string/example");
+    j = ecore_config_float_get("/float/example");
+
+    printf("str is (%s)\n", str);
+    printf("i is (%d)\n", i);
+    printf("j is (%f)\n", j);
+
+    free(str);
+
+    ecore_config_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Comme vous pouvez le voir dans cet exemple, l'utilisation de base 
+d'Ecore_Config est simple. Le système est initialisé grâce à un appel à 
+<function>ecore_config_init</function>. Le nom de votre programme définit où 
+Ecore_Config devra rechercher votre base de données de configuration. Le nom 
+du répertoire et du fichier sont: ~/.e/apps/PROGRAM_NAME/config.db.
+</para>
+
+<para>
+Pour chaque variable de configurationque vous obtenez d'Ecore_Config, vous 
+pouvez assigner une valeur par défaut dans le cas où l'utilisateur n'aurait pas
+de fichier config.db. Ces valeurs par défaut sont assignées avec 
+ecore_config_*_default où * est un des types Ecore_Config. Le premier paramètre
+est la clef sous laquel on y aura accès. Ces clefs doivent être uniques au sein
+de votre programme. La valeur passée doit être du type approprié pour cet 
+appel.
+</para>
+
+<para>
+L'appel à <function>ecore_config_load</function> lira les valeurs du fichier 
+config.db. Après quoi nous pouvons accéder aux fichiers grâce aux méthodes 
+ecore_config_*_get (* est encore le type de donnée désiré). Ces routines 
+prennent le nom de la clef d'un élément et renvoient la valeur liée à cette 
+clef. Chaque fonction renvoie un type correspondant à son nom d'appel.
+</para>
+
+<para>
+<function>ecore_config_shutdown</function> est alors appelée pour arrêter le 
+système Ecore_Config avant que le programme finisse.
+</para>
+
+<example>
+<title>Compilation</title>
+<programlisting>
+gcc -o ecore_config_example ecore_config_example.c `ecore-config --cflags --libs`
+</programlisting>
+</example>
+<para>
+Pour compiler ce programme vous pouvez utiliser le script ecore-config pour 
+obtenir toutes les informations de liens et de bibliothèques nécessaires à 
+Ecore_Config.
+Si vous lancez ce programme tel quel, vous afficherez les valeurs par défaut 
+données à ecore_config. Une fois que vous savez que votre programme fonctionne,
+vous pouvez créer un fichier config.db afin d'en lire les valeurs.
+</para>
+
+<example>
+<title>Script simple config.db (build_cfg_db.sh)</title>
+<programlisting>
+#!/bin/sh
+
+DB=config.db
+
+edb_ed $DB add /int_example int 2
+edb_ed $DB add /this/is/a/string/example str "this is a string"
+edb_ed $DB add /float/example float 42.10101
+</programlisting>
+</example>
+<para>
+Lorsque build_cfg_db.sh est exécuté, il crée un fichier config.db dans le 
+dossier courant. Ce fichier peut alors être copié dans 
+~/.e/apps/PROGRAM_NAME/config.db où PROGRAM_NAME est la valeur passée à 
+ecore_config_init. Une fois que ce fichier est en place, l'exécution du 
+programme de test affichera les valeurs du fichier de configuration et non 
+celles par défaut. Vous pouvez spécifier autant de valeurs qu'il y a de clefs
+dans votre fichier de configuration et Ecore_Config les affichera. 
+</para>
+</section>
+

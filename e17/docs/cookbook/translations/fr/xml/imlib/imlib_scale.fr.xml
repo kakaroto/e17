@@ -1,0 +1,106 @@
+<!--
+#######################################################
+A simple Imlib2 scaling recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Redimensionnement d'Image</title>
+
+<para>
+Alors que de plus en plus de gens mettent des images sur Internet, il arrive
+souvent de vouloir réduire les dimensions de ces images afin de gagner de la
+bande passante. Ceci peut être facilement fait grâce à un simple programme
+Imlib2.
+</para>
+
+<para>
+Cette recette prend en compte le nom de l'image d'entrée, la largeur désirée,
+la hauteur désirée, le nom de l'image finale et redimensionne l'image
+d'entrée aux dimensions données, sauvegardant le résultat, l'image finale.
+</para>
+
+<example>
+<title>Redimensionnement d'Image</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img, out_img;
+    int w, h;
+
+    if (argc != 5) {
+        fprintf(stderr, "Usage: %s [in_img] [w] [h] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    w = atoi(argv[2]);
+    h = atoi(argv[3]);
+    out_img = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(),
+                                            imlib_image_get_height(), w, h );
+    if (!out_img) {
+        fprintf(stderr, "Failed to create scaled image\n");
+        return 1;
+    }
+
+    imlib_context_set_image(out_img);
+    imlib_save_image(argv[4]);
+    return 0;
+}
+
+</programlisting>
+</example>
+<para>
+Avec cet exemple nous commençons par une vérification minimale des arguments,
+en s'assurant seulement que nous en avons le bon nombre.
+</para>
+
+<para>
+L'image source est chargée en appelant la fonction
+<function>imlib_load_image()</function> qui charge les données de l'image en 
+mémoire. Si l'appel échoue, la fonction retournera NULL. Une fois que nous
+avons les données de l'image, nous devons faire en sorte que cette image
+devienne notre contexte courrant. Ceci permet à Imlib2 de savoir sur quelle 
+image les opérations seront effectuées. Nous faisons pour celà appel à
+<function>imlib_context_set_image()</function>. Nous pouvons ensuite procéder
+au redimensionnement grâce à la fonction
+<function>imlib_create_cropped_scaled_image()</function> qui prend comme 
+arguments les positions de départ x et y, la largeur et la hauteur d'origine
+et la largeur et la hauteur de redimensionnement. La raison pour laquelle nous
+donnons les informations originelles est que cette fonction peut aussi
+retailler une image si on le désire. Pour cela il suffit de modifier x et y
+ainsi que la largeur et la hauteur d'origine en fonction de ses besoins. Le
+résultat étant une nouvelle image : out_img. Si jamais le redimensionnement
+échoue, la fonction retournera NULL. Nous changeons ensuite le contexte en
+passant à out_img et finissons par <function>imlib_save_image()</function> qui
+sauverdera notre image.
+</para>
+
+<para>
+Bien que cet exemple soit simple, il montre néanmoins la simplicité du
+redimensionnement d'image à l'aide de l'API Imlib2.
+</para>
+
+</section>
+
+

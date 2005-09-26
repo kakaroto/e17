@@ -1,0 +1,82 @@
+<!--
+#######################################################
+Setup an Evas using Ecore_Evas
+#######################################################
+-->
+<section>
+  <sectioninfo>
+   <author>
+	<firstname>Ben</firstname>
+	<surname>Rockwood</surname>
+	<othername>technikolor</othername>
+   </author>
+  </sectioninfo>
+<title>Recette: Utiliser Ecore_Evas pour simplifier l'initialisation de canvas X11</title>
+
+<para>
+Evas est une bibliothèque puissante et simple d'utilisation, mais avant de
+pouvoir un canvas une surface d'affichage X11 doit être configurée. Configurer
+manuellement X11 peut être une tâche longue et frustrante qui déconcentre de
+ce que l'on veut vraiment faire: développer une application Evas. Mais tout
+ceci peut être évité en utilisant le module Ecore_Evas d'Ecore pour
+effectuer le dur travail pour vous.
+</para>
+
+<para>
+L'exemple qui suit est un modèle de base qui peut servir de point de départ
+pour toute application Evas que vous voudriez construire, réduisant ainsi de 
+manière significative le temps d'élaboration.
+</para>
+
+<example>
+<title>Modèle Ecore_Evas</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+
+#define WIDTH 400
+#define HEIGHT 400
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+
+int main(){
+
+        ecore_init();
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "Ecore_Evas Template");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, "fonts/");
+
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 244, 243, 242, 255);
+        evas_object_show(base_rect);
+
+        /* Insert Object Here */
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+Tout les détails au sujet de Ecore_Evas se trouvent au chapitre Ecore de ce
+livre, mais ce model basic vous permettra de jouer directement avec Evas. Les
+appels importants sont <function>ecore_evas_borderless_set()</function> qui
+définit si la fenêtre Evas est fenêtrée par votre window manager ou sans
+bordure, et <function>evas_font_path_append()</function> qui définit le chemin
+vers les polices employées par votre application Evas.
+</para>
+
+</section>
+

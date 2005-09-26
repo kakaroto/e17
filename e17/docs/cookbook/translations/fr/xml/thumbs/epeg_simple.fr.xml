@@ -1,0 +1,104 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Miniaturisation d'Image avec Epeg</title>
+
+<para>
+L'application de réduction d'image la plus simple que l'on puisse écrire
+prendrait seulement deux arguments, le nom de fichier d'entrée (l'image) et le
+nom de fichier de sortie (la vignette). L'exemple de code qui suit utilise
+Epeg pour faire cela.
+</para>
+
+
+<example>
+<title>Vignette Epeg</title>
+<programlisting>
+#include &lt;Epeg.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epeg_Image * image;
+        int w, h;
+
+        if(argc &lt; 2) {
+                printf("Usage: %s input.jpg output.jpg\n", argv[0]);
+                return(1);
+        }
+
+        image = epeg_file_open(argv[1]);
+
+        epeg_size_get(image, &amp;w, &amp;h);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], w, h);
+        printf("  Comment: %s", epeg_comment_get(image) );
+
+        epeg_decode_size_set(image, 128, 96);
+        epeg_file_output_set(image, argv[2]);
+        epeg_encode(image);
+        epeg_close(image);
+
+        printf("... Done.\n");
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+Cet exemple est assez simpliste, on ne vérifie pas que l'entrée est vraiment
+un JPEG, mais on utilise de façon adéquate quelques dispositifs de la
+bibliothèque.
+Il peut être compilé de la façon suivante:
+</para>
+
+<programlisting>
+gcc `epeg-config --libs --cflags` epeg-test.c -o epeg-test
+</programlisting>
+
+<para>
+La fonction <function>epeg_file_open</function> ouvre le JPEG à manipuler,
+retournant un pointeur <returnvalue>Epeg_Image</returnvalue>.
+Ce pointeur peut être fourni à d'autres fonctions Epeg pour la manipulation.
+</para>
+
+<para>
+Deux différentes fonctions sont utilisées ici pour recueillir quelques
+informations sur l'image d'entrée: <function>epeg_size_get</function> et 
+<function>epeg_comment_get</function>. Noter qu'aucune des valeurs de retour
+de ces fonctions ne sont utilisées dans d'autres fonctions Epeg, elle servent
+seulement à l'affichage d'informations. Une bonne utilisation de ces valeurs
+pourrait être de définir intelligement la taille de l'imagette de sortie ou de
+modifier et transmettre un commentaire à cette image.
+</para>
+
+<para>
+L'ensemble suivant de fonctions effectuent le réel travail. 
+<function>epeg_decode_size_set</function> définit la taille de l'imagette.
+<function>epeg_file_output_set</function> définit le nom de fichier de sortie.
+Et <function>epeg_encode</function> s'occupe du lifting. Notez que bien que
+nous ne vérifions pas le succès de cette opération, 
+<function>epeg_encode</function> retourne un int qui nous le permettrait.
+</para>
+
+<para>
+Une fois que la vignette est créée, il suffit d'appeler 
+<function>epeg_close</function> pour sceller l'affaire.
+</para>
+
+<para>
+Bien que cet exemple soit peut-être extrèmement simpliste, il vous permet de
+voir fonctionnement de base d'Epeg. Ce dernier possède également des fonctions
+pour le découpage, les commentaires, pour activer ou désactiver les
+commentaires des vignettes, la conversion de couleur et les changements de
+paramètres de qualité, qui peuvent être utilisées pour obtenir exactement le
+résultat que vous voulez.
+</para>
+
+</section>

@@ -1,0 +1,80 @@
+<!--
+#######################################################
+A simple Imlib2 90 degree rotation example
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Recette: Rotation de 90 degrés</title>
+
+<para>
+Avec un appareil photo numérique, il est souvent souhaitable d'effectuer une
+rotation d'image de: 90, 180 ou 270 degrés. Cette recette montrera comment
+faire ceci simplement avec Imlib2. Notez qu'avec cette recette vous n'aurez
+pas de burdures noires autour des images comme dans l'exemple de rotation
+libre.
+</para>
+
+<example>
+<title>90 degree Image rotation</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img;
+    int dir = 0;
+
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s [in_img] [out_img]\n", argv[0]);
+        return 1;
+    }
+    
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+    imlib_image_orientate(1);
+    imlib_save_image(argv[2]);
+    return 0;
+}   
+</programlisting>
+</example>
+<para>
+Après une vérification d'erreur minimale nous chargeons l'image à laquelle on
+veut appliquer la rotation avec un appel à
+<function>imlib_load_image()</function>. Cette fonction accepte un nom de fichier et
+retourne l'objet Imlib_Image, ou NULL en cas d'erreur. Une fois que cette
+image est chargée nous la plaçons dans le contexte courrant, afin qu'Imlib2
+effectue ses opérations sur celle-ci, avec
+<function>imlib_context_set_image()</function>. La rotation se fait grâce à
+<function>imlib_image_orientate()</function>. Le paramètre à _orientate fait
+varier le taux de rotation. Les valeurs possibles sont: [1, 2, 3]
+correspondant respectivement à une rotation en sens horaire de [90, 180, 270]
+degrés. Enfin, nous appelons <function>imlib_save_image()</function> en lui
+donnant le nom de l'image finale afin qu'Imlib2 sauvergarde l'image à laquelle
+on a appliquer la rotation.
+</para>
+
+<para>
+Avec cet exemple entre vos mains vous devriez être capable d'effectuer des
+rotations d'images par intervales de 90 degrés grâce à Imlib2.
+</para>
+
+</section>
+
+

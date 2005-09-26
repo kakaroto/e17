@@ -1,0 +1,281 @@
+<!--
+#######################################################
+A simple recipe to get an esmart trans window up 
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>25 Avril 2004</date>
+</sectioninfo>
+
+<title>Recette: Introduction à Esmart Trans</title>
+
+<para>
+La transparence devient de plus en plus un trait commun de nos applications.
+Dans ce but, l'objet Esmart_Trans à été créé. Cet objet fera tout le travail
+compliqué pour créer un fond transparent à votre application.
+</para>
+
+<para>
+Esmart trans rend l'intégration d'un fond transparent à votre application très
+simple. Vous devez créér un objet trans, puis être sûrs de le mettre à jour
+lorsque la fenêtre est déplacée ou redimensionnée.
+</para>
+
+<example>
+<title>Inclusions et déclarations</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Esmart/Esmart_Trans_X11.h&gt;
+
+int sig_exit_cb(void *data, int ev_type, void *ev);
+void win_del_cb(Ecore_Evas *ee);
+void win_resize_cb(Ecore_Evas *ee);
+void win_move_cb(Ecore_Evas *ee);
+
+static void _freshen_trans(Ecore_Evas *ee);
+void make_gui();
+</programlisting>
+</example>
+<para>
+Chaque application utilisant un objet Esmart_Trans requiert les fichier en-tête
+Ecore, Ecore_Evas et Esmart/Esmart_Trans.
+
+Les quatres déclarations suivantes sont des callbacks d'ecore pour les évènements sur
+notre fenêtre, exit, delete, resize, et move respectivement.
+
+Les deux dernières déclaration sont des functions de simplifications utilisées dans
+notre exemple et ne sont pas indispensables dans notre programme.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    int ret = 0;
+        
+    if (!ecore_init()) {
+        printf("Error initializing ecore\n");
+        ret = 1;
+        goto ECORE_SHUTDOWN;
+    }
+
+    if (!ecore_evas_init()) {
+        printf("Error initializing ecore_evas\n");
+        ret = 1;
+        goto ECORE_SHUTDOWN;
+    }
+    make_gui();
+    ecore_main_loop_begin();
+        
+    ecore_evas_shutdown();
+
+ECORE_SHUTDOWN:
+    ecore_shutdown();
+                
+    return ret;
+}               
+</programlisting>
+</example>
+<para>
+La routine principale pour cet exemple est relativement simple. Ecore et Ecore_Evas
+sont tous deux initialisés, avec une détection d'erreur appropriée. Nous crééons
+ensuite l'interface et entammons la boucle principale d'évènements ecore. Lorsque
+ecore exit nous fermons tout et renvoyant la valeur de retour.
+</para>
+
+<example>
+<title>callbacks exit et del</title>
+<programlisting>
+int sig_exit_cb(void *data, int ev_type, void *ev) {
+    ecore_main_loop_quit();
+    return 1;
+}
+
+void win_del_cb(Ecore_Evas *ee) {
+    ecore_main_loop_quit();
+}
+</programlisting>
+</example>
+<para>
+Ces callbacks exie et del sont des callbacks ecore génériques. Le callback exit n'est
+pas strictement nécessaire, étant donné que Ecore appellera
+<function>ecore_main_loop_quit()</function> if no handler is
+registered, but is included to show how its done.
+</para>
+
+<example>
+<title>_freshen_trans</title>
+<programlisting>
+static void _freshen_trans(Ecore_Evas *ee) {
+    int x, y, w, h;
+    Evas_Object *o;
+
+    if (!ee) return;
+
+    ecore_evas_geometry_get(ee, &amp;x, &amp;y, &amp;w, &amp;h);
+    o = evas_object_name_find(ecore_evas_get(ee), "bg");
+
+    if (!o) {
+        fprintf(stderr, "Trans object not found, bad, very bad\n");
+        ecore_main_loop_quit();
+    }
+    esmart_trans_x11_freshen(o, x, y, w, h);
+}
+</programlisting>
+</example>
+<para>
+La routine <function>_freshen_trans</function> est une routine d'aide à la mise
+a jour de l'image sur laquelle s'applique la transparence. Elle sera appelée lorsque
+que nous nous aurons besoin de mettre à jour notre image vis à vis de ce qui est
+présent en dessous de l'image.
+
+La fonction récupère la taille courrante du ecore_evas, puis l'objet dans
+le nom est  &quot;bg&quot; (ce nom est le même que celui que nous donnons à
+notre trans lorsque nous le crééons). Puis, tant que l'objet trans existe, nous
+demandons à esmart de raffraichir l'image étant affichée.
+</para>
+
+<example>
+<title>resize_cb</title>
+<programlisting>
+void win_resize_cb(Ecore_Evas *ee) {
+    int w, h;
+    int minw, minh;
+    int maxw, maxh;
+    Evas_Object *o = NULL;
+
+    if (ee) {
+        ecore_evas_geometry_get(ee, NULL, NULL, &amp;w, &amp;h);
+        ecore_evas_size_min_get(ee, &amp;minw, &amp;minh);
+        ecore_evas_size_max_get(ee, &amp;maxw, &amp;maxh);
+
+        if ((w &gt;= minw) &amp;&amp; (h &gt;= minh) &amp;&amp; (h &lt;= maxh) &amp;&amp; (w &lt;= maxw)) {
+            if ((o = evas_object_name_find(ecore_evas_get(ee), "bg")))
+                evas_object_resize(o, w, h);
+        }
+    }
+    _freshen_trans(ee);
+}
+</programlisting>
+</example>
+<para>
+Lorsque la fenêtre est redimensionnée nous devons mettre à jour notre evas à la
+taille correcte puis mettre à jour l'objet trans pour afficher correctement le
+fond.
+
+Nous récupérons la taille courante de la fenêtre à l'aide de
+<function>ecore_evas_geometry_get</function> et la taille minimum/maximum de la fenêtre.
+Si la taille désirée est comprise dans les limites minimum/maximum pour notre fenêtre,
+nous recupérons l'objet &quot;bg&quot; (même titre une fois de plus) et le
+redimensionnons.
+
+Une fois le redimensionnement temriné, nous appelons la routine <function>_freshen_trans</function>
+pour mettre à jour l'image affichée en fond.
+</para>
+
+<example>
+<title>move_cb</title>
+<programlisting>
+void win_move_cb(Ecore_Evas *ee) {
+    _freshen_trans(ee);
+}
+</programlisting>
+</example>
+<para>
+Lorsque la fenêtre est déplacée nous devons mettre à jour l'image affichée en
+transparence.
+</para>
+
+<example>
+<title>Configuration de ecore/ecore_evas</title>
+<programlisting>
+void make_gui() {
+    Evas *evas = NULL;
+    Ecore_Evas *ee = NULL;
+    Evas_Object *trans = NULL;
+    int x, y, w, h;
+
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit_cb, NULL);
+
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 200);
+    ecore_evas_title_set(ee, "trans demo");
+
+    ecore_evas_callback_delete_request_set(ee, win_del_cb);
+    ecore_evas_callback_resize_set(ee, win_resize_cb);
+    ecore_evas_callback_move_set(ee, win_move_cb);
+
+    evas = ecore_evas_get(ee);
+</programlisting>
+</example>
+<para>
+La première partie de make_gui est relative à la configuration de ecore et ecore_evas.
+Premièrement le callback exit est attaché dans ECORE_EVENT_SIGNAL_EXIT, puis l'objet
+Ecore_Evas est créé avec le moteur logiciel X11. Le titre de la fenêtre est configuré
+et nous capturons les callbacks ci-dessus, deletre, resize et move. Finalement, nous
+récupérons l'evas pour le Ecore_Evas créé.
+</para>
+
+<example>
+<title>Creation d'un objet Esmart_Trans</title>
+<programlisting>
+    trans = esmart_trans_x11_new(evas);
+    evas_object_move(trans, 0, 0);
+    evas_object_layer_set(trans, -5);
+    evas_object_name_set(trans, "bg");
+
+    ecore_evas_geometry_get(ee, &amp;x, &amp;y, &amp;w, &amp;h);
+    evas_object_resize(trans, w, h);
+
+    evas_object_show(trans);
+    ecore_evas_show(ee);
+
+    esmart_trans_x11_freshen(trans, x, y, w, h);
+}
+</programlisting>
+</example>
+<para>
+Une fois que tout est paramétré nous pouvons créér l'objet trans. Le trans est créé
+par l'evas retourné par la fonction <function>ecore_evas_get</function>. Cette créaton
+initiale est faite par l'appel à <function>esmart_trans_x11_new</function>. Une fois
+qe nous avons l'objet, nous le déplacons pour qu'il débute à la position (0, 0) (le
+coin haut gouche), positionnons la couche à -5 et nomons l'objet &quot;bg&quot;
+(comme utilisé plus hautas used above).
+
+Puis nous récupérons la taille courante de l'ecore_evas et l'utilisons pour
+redimensionner l'objet trans à la taille de la fenêtre. Une fois ceci fait nous
+affichons le trans et le ecore_evas.
+
+Dernièrement, nous raffraichissons l'image de transparence en fonction de ce qui est
+présent dessous.
+</para>
+
+<example>
+<title>makefile simple</title>
+<programlisting>
+CFLAGS = `ecore-config --cflags` `evas-config --cflags` `esmart-config --cflags`
+LIBS = `ecore-config --libs` `evas-config --libs` `esmart-config --libs` \
+            -lesmart_trans_x11
+
+all:
+    gcc -o trans_example trans_example.c $(CFLAGS) $(LIBS)
+</programlisting>
+</example>
+<para>
+Pour compiler le programme précédent nous devons inclure les informations de
+librairies pour ecore, ecore_evas et esmart. Cela est fait par l'utilisation
+des scripts -config pour chaque librairie. Ces scripts -config savent où chaque
+librairie réside et configurent les chemins d'inclusion et de liens appropriés
+pour la compilation.
+</para>
+</section>
+
+
