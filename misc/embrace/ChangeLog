@@ -1,5 +1,8 @@
 $Id$
 
+2005-09-27 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.c: Remove version check.
+
 2005-09-24 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/e_mod_main.{h,c}: Update to new module api.
 
