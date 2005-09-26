@@ -128,7 +128,7 @@ static Embrace *embrace_module_new (void)
 			E_GADMAN_POLICY_HSIZE |
 			E_GADMAN_POLICY_VSIZE);
 	e_gadman_client_min_size_set (gmc, 8, 8);
-	e_gadman_client_max_size_set (gmc, 600, 600);
+	e_gadman_client_max_size_set (gmc, 2000, 2000);
 	e_gadman_client_auto_size_set (gmc, 186, 40);
 	e_gadman_client_align_set (gmc, 0.0, 0.0);
 	e_gadman_client_resize (gmc, 186, 40);
