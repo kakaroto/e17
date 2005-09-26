@@ -323,6 +323,11 @@ int                 Esnprintf(va_alist);
  * Types
  */
 
+struct _imageclass;
+struct _imagestate;
+struct _textclass;
+struct _textstate;
+
 typedef struct _ewin EWin;
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
@@ -330,18 +335,8 @@ typedef struct _group Group;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
 typedef struct _efont Efont;
-typedef struct _textclass TextClass;
 typedef struct _action Action;
 typedef struct _actionclass ActionClass;
-
-typedef struct
-{
-   char                type;
-   Pixmap              pmap;
-   Pixmap              mask;
-   int                 w, h;
-}
-PmapMask;
 
 typedef struct _client Client;
 
@@ -377,106 +372,6 @@ typedef struct
 }
 VirtRoot;
 
-#if ENABLE_COLOR_MODIFIERS
-typedef struct _modcurve
-{
-   int                 num;
-   unsigned char      *px;
-   unsigned char      *py;
-   unsigned char       map[256];
-}
-ModCurve;
-
-typedef struct _colormodifierclass
-{
-   char               *name;
-   ModCurve            red, green, blue;
-   unsigned int        ref_count;
-}
-ColorModifierClass;
-#endif
-
-typedef struct _imagestate
-{
-   char               *im_file;
-   char               *real_file;
-   char                unloadable;
-   char                transparent;
-   Imlib_Image        *im;
-   Imlib_Border       *border;
-   int                 pixmapfillstyle;
-   XColor              bg, hi, lo, hihi, lolo;
-   int                 bevelstyle;
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *colmod;
-#endif
-}
-ImageState;
-
-typedef struct _ImageStateArray
-{
-   ImageState         *normal;
-   ImageState         *hilited;
-   ImageState         *clicked;
-   ImageState         *disabled;
-}
-ImageStateArray;
-
-typedef struct _imageclass
-{
-   char               *name;
-   ImageStateArray     norm, active, sticky, sticky_active;
-   Imlib_Border        padding;
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *colmod;
-#endif
-   unsigned int        ref_count;
-}
-ImageClass;
-
-#define MODE_VERBATIM  0
-#define MODE_WRAP_CHAR 1
-#define MODE_WRAP_WORD 2
-
-#define FONT_TO_RIGHT 0
-#define FONT_TO_DOWN  1
-#define FONT_TO_UP    2
-#define FONT_TO_LEFT  3
-
-typedef struct _textstate
-{
-   char               *fontname;
-   struct
-   {
-      char                mode;
-      char                orientation;
-   } style;
-   XColor              fg_col;
-   XColor              bg_col;
-   int                 effect;
-   Efont              *efont;
-   XFontStruct        *xfont;
-   XFontSet            xfontset;
-   int                 xfontset_ascent;
-   char                need_utf8;
-}
-TextState;
-
-struct _textclass
-{
-   char               *name;
-   struct
-   {
-      TextState          *normal;
-      TextState          *hilited;
-      TextState          *clicked;
-      TextState          *disabled;
-   }
-   norm               , active, sticky, sticky_active;
-   int                 justification;
-   unsigned int        ref_count;
-};
-
 typedef struct _constraints
 {
    int                 min, max;
@@ -505,9 +400,9 @@ Geometry;
 typedef struct _winpart
 {
    Geometry            geom;
-   ImageClass         *iclass;
+   struct _imageclass *iclass;
    ActionClass        *aclass;
-   TextClass          *tclass;
+   struct _textclass  *tclass;
    ECursor            *ec;
    signed char         ontop;
    int                 flags;
@@ -540,8 +435,8 @@ typedef struct _ewinbit
    char                expose;
    char                no_expose;
    char                left;
-   ImageState         *is;
-   TextState          *ts;
+   struct _imagestate *is;
+   struct _textstate  *ts;
 }
 EWinBit;
 
@@ -726,11 +621,6 @@ typedef struct
    /* Not used */
 #ifdef HAS_XINERAMA
    char                extra_head;	/* Not used */
-#endif
-#if 0				/* Not used */
-   char                primaryicondir;
-   TextClass          *icon_textclass;
-   int                 icon_mode;
 #endif
 }
 EConf;
@@ -988,14 +878,14 @@ void                BorderIncRefcount(const Border * b);
 void                BorderDecRefcount(const Border * b);
 const char         *BorderGetName(const Border * b);
 int                 BorderConfigLoad(FILE * fs);
-void                BorderWinpartAdd(Border * b, ImageClass * ic,
-				     ActionClass * aclass, TextClass * tclass,
-				     ECursor * ec, char ontop, int flags,
-				     char isregion, int wmin, int wmax,
-				     int hmin, int hmax, int torigin, int txp,
-				     int txa, int typ, int tya, int borigin,
-				     int bxp, int bxa, int byp, int bya,
-				     char keep_for_shade);
+void                BorderWinpartAdd(Border * b, struct _imageclass *ic,
+				     ActionClass * aclass,
+				     struct _textclass *tclass, ECursor * ec,
+				     char ontop, int flags, char isregion,
+				     int wmin, int wmax, int hmin, int hmax,
+				     int torigin, int txp, int txa, int typ,
+				     int tya, int borigin, int bxp, int bxa,
+				     int byp, int bya, char keep_for_shade);
 void                EwinBorderSelect(EWin * ewin);
 void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
@@ -1099,8 +989,8 @@ DItem              *DialogAddItem(DItem * dii, int type);
 DItem              *DialogItem(Dialog * d);
 void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
 					  int val, void *data);
-void                DialogItemSetClass(DItem * di, ImageClass * ic,
-				       TextClass * tclass);
+void                DialogItemSetClass(DItem * di, struct _imageclass *ic,
+				       struct _textclass *tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
@@ -1432,41 +1322,6 @@ void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
 void                ICCCM_SetIconSizes(void);
 void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
-/* iclass.c */
-int                 ImageclassConfigLoad(FILE * fs);
-
-#ifdef ENABLE_THEME_TRANSPARENCY
-void                TransparencySet(int transparency);
-int                 TransparencyEnabled(void);
-int                 TransparencyUpdateNeeded(void);
-int                 ImageclassIsTransparent(ImageClass * ic);
-#else
-#define TransparencyEnabled() 0
-#define TransparencyUpdateNeeded() 0
-#define ImageclassIsTransparent(ic) 0
-#endif
-ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
-					    int active, int sticky);
-ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
-ImageClass         *ImageclassFind(const char *name, int fallback);
-Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
-				       int state);
-Pixmap              ImageclassApplySimple(ImageClass * ic, Window win,
-					  Drawable draw, int state, int x,
-					  int y, int w, int h);
-void                ImageclassApply(ImageClass * ic, Window win, int w, int h,
-				    int active, int sticky, int state,
-				    char expose, int image_type);
-void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
-					int h, int active, int sticky,
-					int state, PmapMask * pmm,
-					int make_mask, int image_type);
-void                FreePmapMask(PmapMask * pmm);
-void                ITApply(Window win, ImageClass * ic, ImageState * is, int w,
-			    int h, int state, int active, int sticky,
-			    char expose, int image_type, TextClass * tc,
-			    TextState * ts, const char *text);
-
 /* ipc.c */
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
 int                 HandleIPC(const char *params, Client * c);
@@ -1632,27 +1487,6 @@ void                SoundPlay(const char *name);
 /* startup.c */
 void                StartupWindowsCreate(void);
 void                StartupWindowsOpen(void);
-
-/* tclass.c */
-int                 TextclassConfigLoad(FILE * fs);
-TextClass          *TextclassFind(const char *name, int fallback);
-void                TextclassApply(ImageClass * ic, Window win, int w,
-				   int h, int active, int sticky, int state,
-				   char expose, TextClass * tclass,
-				   const char *text);
-
-/* text.c */
-TextState          *TextclassGetTextState(TextClass * tclass, int state,
-					  int active, int sticky);
-void                TextstateDrawText(TextState * ts, Window win,
-				      const char *text, int x, int y, int w,
-				      int h, int fsize, int justification);
-void                TextSize(TextClass * tclass, int active, int sticky,
-			     int state, const char *text, int *width,
-			     int *height, int fsize);
-void                TextDraw(TextClass * tclass, Window win, int active,
-			     int sticky, int state, const char *text, int x,
-			     int y, int w, int h, int fsize, int justification);
 
 /* theme.c */
 void                ThemePathFind(void);

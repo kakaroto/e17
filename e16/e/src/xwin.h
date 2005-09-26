@@ -118,4 +118,14 @@ void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 
+typedef struct
+{
+   char                type;
+   Pixmap              pmap;
+   Pixmap              mask;
+   int                 w, h;
+} PmapMask;
+
+void                FreePmapMask(PmapMask * pmm);
+
 #endif /* _XWIN_H_ */

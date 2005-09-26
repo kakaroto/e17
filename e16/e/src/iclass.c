@@ -25,7 +25,64 @@
 #include "conf.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
+
+#if ENABLE_COLOR_MODIFIERS
+typedef struct _modcurve
+{
+   int                 num;
+   unsigned char      *px;
+   unsigned char      *py;
+   unsigned char       map[256];
+}
+ModCurve;
+
+typedef struct _colormodifierclass
+{
+   char               *name;
+   ModCurve            red, green, blue;
+   unsigned int        ref_count;
+}
+ColorModifierClass;
+#endif
+
+struct _imagestate
+{
+   char               *im_file;
+   char               *real_file;
+   char                unloadable;
+   char                transparent;
+   Imlib_Image        *im;
+   Imlib_Border       *border;
+   int                 pixmapfillstyle;
+   XColor              bg, hi, lo, hihi, lolo;
+   int                 bevelstyle;
+#if ENABLE_COLOR_MODIFIERS
+   ColorModifierClass *colmod;
+#endif
+};
+
+typedef struct _ImageStateArray
+{
+   ImageState         *normal;
+   ImageState         *hilited;
+   ImageState         *clicked;
+   ImageState         *disabled;
+}
+ImageStateArray;
+
+struct _imageclass
+{
+   char               *name;
+   ImageStateArray     norm, active, sticky, sticky_active;
+   Imlib_Border        padding;
+#if ENABLE_COLOR_MODIFIERS
+   ColorModifierClass *colmod;
+#endif
+   unsigned int        ref_count;
+};
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 
@@ -214,11 +271,15 @@ ImagestateRealize(ImageState * is)
       is->real_file = ThemeFileFind(is->im_file, 0);
 
    is->im = ELoadImage(is->real_file);
+   if (!is->im)
+     {
+	Eprintf
+	   ("ImagestateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s)\n",
+	    is->im_file, is->real_file);
+	return;
+     }
+
    imlib_context_set_image(is->im);
-   if (is->im == NULL)
-      Eprintf
-	 ("ImagestateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s\n",
-	  is->im_file, is->real_file);
 
    if (is->border)
       imlib_image_set_border(is->border);
@@ -291,6 +352,30 @@ ImageclassDestroy(ImageClass * ic)
    if (ic->colmod)
       ic->colmod->ref_count--;
 #endif
+}
+
+void
+ImageclassIncRefcount(ImageClass * ic)
+{
+   ic->ref_count++;
+}
+
+void
+ImageclassDecRefcount(ImageClass * ic)
+{
+   ic->ref_count--;
+}
+
+const char         *
+ImageclassGetName(ImageClass * ic)
+{
+   return (ic) ? ic->name : NULL;
+}
+
+Imlib_Border       *
+ImageclassGetPadding(ImageClass * ic)
+{
+   return (ic) ? &(ic->padding) : NULL;
 }
 
 ImageClass         *
@@ -1107,7 +1192,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 					      ic->padding.right),
 					 h - (ic->padding.top +
 					      ic->padding.bottom),
-					 0, tc->justification);
+					 0, TextclassGetJustification(tc));
 		       decache = 1;
 		    }
 
@@ -1262,29 +1347,6 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	   ImagestateDrawBevel(is, pmap, gc, w, h);
 	EFreeGC(gc);
 	/* FIXME - No text */
-     }
-}
-
-/*
- */
-void
-FreePmapMask(PmapMask * pmm)
-{
-   /* type !=0: Created by imlib_render_pixmaps_for_whole_image... */
-   if (pmm->pmap)
-     {
-	if (pmm->type == 0)
-	   EFreePixmap(pmm->pmap);
-	else
-	   imlib_free_pixmap_and_mask(pmm->pmap);
-	pmm->pmap = 0;
-     }
-
-   if (pmm->mask)
-     {
-	if (pmm->type == 0)
-	   EFreePixmap(pmm->mask);
-	pmm->mask = 0;
      }
 }
 

@@ -26,6 +26,8 @@
 #define _BUTTONS_H_
 
 #include "eobj.h"
+#include "iclass.h"
+#include "tclass.h"
 
 typedef struct _button Button;
 struct _desk;

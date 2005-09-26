@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "eobj.h"
+#include "iclass.h"
 #include "xwin.h"
 #include <time.h>
 

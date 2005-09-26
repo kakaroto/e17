@@ -27,6 +27,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "ewin-ops.h"
+#include "iclass.h"		/* FIXME - Should not be here */
 #include "snaps.h"
 #include "xwin.h"
 #include <math.h>

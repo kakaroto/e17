@@ -66,6 +66,7 @@ e16_SOURCES = \
 	hiwin.h			\
 	icccm.c			\
 	iclass.c		\
+	iclass.h		\
 	iconify.c		\
 	icons.c			\
 	icons.h			\
@@ -97,6 +98,7 @@ e16_SOURCES = \
 	stacking.c		\
 	startup.c		\
 	tclass.c		\
+	tclass.h		\
 	text.c			\
 	theme.c                 \
 	timers.c		\

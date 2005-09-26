@@ -25,6 +25,8 @@
 #include "conf.h"
 #include "emodule.h"
 #include "eobj.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
 
@@ -77,12 +79,12 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
    tt->iclass[2] = ic3;
    tt->iclass[3] = ic4;
    tt->iclass[4] = ic0;
-   ic0->ref_count++;
+   ImageclassIncRefcount(ic0);
    tt->tclass = tclass;
-   tclass->ref_count++;
+   TextclassIncRefcount(tclass);
    tt->tooltippic = tooltippic;
    if (tooltippic)
-      tooltippic->ref_count++;
+      ImageclassIncRefcount(tooltippic);
 
    tt->dist = dist;
 
@@ -94,7 +96,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 	wh = (i + 1) * 8;
 
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, NULL);
-	tt->iclass[i]->ref_count++;
+	ImageclassIncRefcount(tt->iclass[i]);
 	EobjChangeOpacity(eo, OpacityExt(Conf_tooltips.opacity));
 	tt->win[i] = eo;
      }
@@ -219,14 +221,16 @@ static ImageClass  *
 TooltipCreateIclass(const char *name, const char *file, int *pw, int *ph)
 {
    ImageClass         *ic;
+   Imlib_Image        *im;
 
    ic = ImageclassFind(name, 0);
    if (!ic)
       ic = ImageclassCreateSimple(name, file);
+   im = ImageclassGetImage(ic, 0, 0, 0);
 
-   if (ic->norm.normal && ic->norm.normal->im)
+   if (im)
      {
-	imlib_context_set_image(ic->norm.normal->im);
+	imlib_context_set_image(im);
 	if (*pw < imlib_image_get_width())
 	   *pw = imlib_image_get_width();
 	if (*ph < imlib_image_get_height())
@@ -240,12 +244,14 @@ static void
 TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
 {
    ImageClass         *ic;
+   Imlib_Image        *im;
 
    ic = ImageclassFind(ic_name, 0);
-   if (!ic || !ic->norm.normal->im)
+   im = ImageclassGetImage(ic, 0, 0, 0);
+   if (!ic || !im)
       return;
 
-   imlib_context_set_image(ic->norm.normal->im);
+   imlib_context_set_image(im);
    imlib_context_set_drawable(tt->TTWIN->win);
    imlib_context_set_blend(1);
    imlib_render_image_on_drawable(x, y);
@@ -264,6 +270,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    Imlib_Image        *im;
    int                *heights = NULL;
    ImageClass         *ic;
+   Imlib_Border       *pad;
    int                 cols[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
    int                 num, modifiers;
    Action             *aa;
@@ -403,11 +410,12 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    h += headline_h;
 
    ic = tt->TTICL;
+   pad = ImageclassGetPadding(ic);
    iw = 0;
    ih = 0;
    if (tt->tooltippic)
      {
-	im = ELoadImage(tt->tooltippic->norm.normal->im_file);
+	im = ImageclassGetImage(tt->tooltippic, 0, 0, 0);
 	ix = 0;
 	iy = 0;
 	if (im)
@@ -421,12 +429,12 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	if (h < ih)
 	   h = ih;
      }
-   w += ic->padding.left + ic->padding.right;
-   h += ic->padding.top + ic->padding.bottom;
+   w += pad->left + pad->right;
+   h += pad->top + pad->bottom;
 
    if ((tt->tooltippic) && (iw > 0) && (ih > 0))
      {
-	ix = ic->padding.left;
+	ix = pad->left;
 	iy = (h - ih) / 2;
 	EMoveResizeWindow(tt->iwin, ix, iy, iw, ih);
 	EMapWindow(tt->iwin);
@@ -568,18 +576,18 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
    ESync();
 
-   xx = ic->padding.left + iw;
+   xx = pad->left + iw;
 
    /* draw the ordinary tooltip text */
    TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, text, xx,
-	    ic->padding.top, headline_w, headline_h, 17, 512);
+	    pad->top, headline_w, headline_h, 17, 512);
 
    /* draw the icons and labels, if any */
    if (ac)
      {
 	num = ActionclassGetActionCount(ac);
-	y = ic->padding.top + headline_h;
-	xx = ic->padding.left + double_w;
+	y = pad->top + headline_h;
+	xx = pad->left + double_w;
 
 	for (i = 0; i < num; i++)
 	  {
@@ -648,7 +656,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	       }
 
 	     TextDraw(tt->tclass, tt->TTWIN->win, 0, 0, STATE_NORMAL, tts,
-		      ic->padding.left + icons_width + iw, y,
+		      pad->left + icons_width + iw, y,
 		      labels_width, heights[i], 17, 0);
 	     y += heights[i];
 

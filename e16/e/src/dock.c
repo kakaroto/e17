@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "iclass.h"
 
 static void
 DockappFindEmptySpotFor(EWin * eapp)

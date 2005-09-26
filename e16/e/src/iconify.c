@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "iclass.h"
 #include "icons.h"
 #include "menus.h"
 #include "tooltips.h"
@@ -455,6 +456,7 @@ static void
 IconboxReconfigure(Iconbox * ib)
 {
    ImageClass         *ic, *ic2;
+   Imlib_Border       *pad;
    EWin               *ewin;
    int                 extra;
 
@@ -471,13 +473,15 @@ IconboxReconfigure(Iconbox * ib)
    if (ib->orientation)
      {
 	ic = ImageclassFind("ICONBOX_VERTICAL", 0);
+	pad = ImageclassGetPadding(ic);
 	if (ic)
-	   extra = ic->padding.left + ic->padding.right;
+	   extra = pad->left + pad->right;
 	if (ib->draw_icon_base)
 	  {
 	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	     pad = ImageclassGetPadding(ic2);
 	     if (ic2)
-		extra += ic2->padding.left + ic2->padding.right;
+		extra += pad->left + pad->right;
 	  }
 	ewin->client.width.max = ewin->client.width.min =
 	   ib->iconsize + ib->scroll_thickness + extra;
@@ -487,13 +491,15 @@ IconboxReconfigure(Iconbox * ib)
    else
      {
 	ic = ImageclassFind("ICONBOX_HORIZONTAL", 0);
+	pad = ImageclassGetPadding(ic);
 	if (ic)
-	   extra = ic->padding.top + ic->padding.bottom;
+	   extra = pad->top + pad->bottom;
 	if (ib->draw_icon_base)
 	  {
 	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	     pad = ImageclassGetPadding(ic2);
 	     if (ic2)
-		extra += ic2->padding.top + ic2->padding.bottom;
+		extra += pad->top + pad->bottom;
 	  }
 	ewin->client.height.max = ewin->client.height.min =
 	   ib->iconsize + ib->scroll_thickness + extra;
@@ -877,6 +883,7 @@ IconboxLayoutImageWin(Iconbox * ib)
    int                 i, xo, yo, wo, ho, wi, hi;
    int                 item_pad, padl, padr, padt, padb;
    IboxOject          *ibo;
+   Imlib_Border       *pad;
 
    if (ib->orientation)
       ib->ic_box = ImageclassFind("ICONBOX_VERTICAL", 0);
@@ -898,10 +905,11 @@ IconboxLayoutImageWin(Iconbox * ib)
 
    if (ib->draw_icon_base)
      {
-	padl = ib->ic_item_base->padding.left;
-	padr = ib->ic_item_base->padding.right;
-	padt = ib->ic_item_base->padding.top;
-	padb = ib->ic_item_base->padding.bottom;
+	pad = ImageclassGetPadding(ib->ic_item_base);
+	padl = pad->left;
+	padr = pad->right;
+	padt = pad->top;
+	padb = pad->bottom;
 
 	item_pad = 0;
      }
@@ -916,8 +924,9 @@ IconboxLayoutImageWin(Iconbox * ib)
    yo = 0;
    if (ib->ic_box)
      {
-	xo += ib->ic_box->padding.left;
-	yo += ib->ic_box->padding.top;
+	pad = ImageclassGetPadding(ib->ic_box);
+	xo += pad->left;
+	yo += pad->top;
      }
 
    for (i = 0; i < ib->num_objs; i++)
@@ -991,8 +1000,9 @@ IconboxLayoutImageWin(Iconbox * ib)
 
    if (ib->ic_box)
      {
-	xo += ib->ic_box->padding.right;
-	yo += ib->ic_box->padding.bottom;
+	pad = ImageclassGetPadding(ib->ic_box);
+	xo += pad->right;
+	yo += pad->bottom;
      }
 
    if (ib->orientation)
@@ -1028,6 +1038,7 @@ static void
 IB_DrawScroll(Iconbox * ib)
 {
    ImageClass         *ic;
+   Imlib_Border       *pad;
    int                 arrow_mode = ib->arrow_side;
    int                 bs, bw, bx;
    int                 state;
@@ -1039,12 +1050,13 @@ IB_DrawScroll(Iconbox * ib)
 	   arrow_mode = 3;	/* No arrows */
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
+	pad = ImageclassGetPadding(ic);
 	if (arrow_mode < 3)
 	   bs = ib->h - (ib->arrow_thickness * 2);
 	else
 	   bs = ib->h;
 	if (ic)
-	   bs -= (ic->padding.top + ic->padding.bottom);
+	   bs -= pad->top + pad->bottom;
 	bw = (ib->h * bs) / ib->max;
 	if (bs < 1)
 	   bs = 1;
@@ -1054,7 +1066,7 @@ IB_DrawScroll(Iconbox * ib)
 	   bw = 1;
 	bx = ((ib->pos * bs) / ib->max);
 	if (ic)
-	   bx += ic->padding.top;
+	   bx += pad->top;
 	if ((ib->scrollbar_hide) && (bw == bs))
 	   goto do_hide_sb;
 
@@ -1255,12 +1267,13 @@ IB_DrawScroll(Iconbox * ib)
 	   arrow_mode = 3;	/* No arrows */
 
 	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
+	pad = ImageclassGetPadding(ic);
 	if (arrow_mode < 3)
 	   bs = ib->w - (ib->arrow_thickness * 2);
 	else
 	   bs = ib->w;
 	if (ic)
-	   bs -= (ic->padding.left + ic->padding.right);
+	   bs -= pad->left + pad->right;
 	bw = (ib->w * bs) / ib->max;
 	if (bs < 1)
 	   bs = 1;
@@ -1270,7 +1283,7 @@ IB_DrawScroll(Iconbox * ib)
 	   bw = 1;
 	bx = ((ib->pos * bs) / ib->max);
 	if (ic)
-	   bx += ic->padding.left;
+	   bx += pad->left;
 	if ((ib->scrollbar_hide) && (bw == bs))
 	   goto do_hide_sb;
 
@@ -1878,6 +1891,7 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
    static int          px, py, pos0;
    int                 bs, dp;
    ImageClass         *ic;
+   Imlib_Border       *pad;
 
    switch (ev->type)
      {
@@ -1913,9 +1927,10 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 	if (ib->orientation)
 	  {
 	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
+	     pad = ImageclassGetPadding(ic);
 	     bs = ib->h - (ib->arrow_thickness * 2);
 	     if (ic)
-		bs -= (ic->padding.top + ic->padding.bottom);
+		bs -= pad->top + pad->bottom;
 	     if (bs < 1)
 		bs = 1;
 	     dp = ev->xmotion.y_root - py;
@@ -1923,9 +1938,10 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 	else
 	  {
 	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
+	     pad = ImageclassGetPadding(ic);
 	     bs = ib->w - (ib->arrow_thickness * 2);
 	     if (ic)
-		bs -= (ic->padding.left + ic->padding.right);
+		bs -= pad->left + pad->right;
 	     if (bs < 1)
 		bs = 1;
 	     dp = ev->xmotion.x_root - px;

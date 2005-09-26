@@ -22,6 +22,8 @@
  */
 #include "E.h"
 #include "eobj.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
 
 struct _progressbar
@@ -68,23 +70,23 @@ ProgressbarCreate(char *name, int w, int h)
 
    p->ic = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ic)
-      p->ic->ref_count++;
+      ImageclassIncRefcount(p->ic);
 
    p->inc = ImageclassFind("PROGRESS_BAR", 1);
    if (p->inc)
-      p->inc->ref_count++;
+      ImageclassIncRefcount(p->inc);
 
    p->ipc = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ipc)
-      p->ipc->ref_count++;
+      ImageclassIncRefcount(p->ipc);
 
    p->tc = TextclassFind("PROGRESS_TEXT", 1);
    if (p->tc)
-      p->tc->ref_count++;
+      TextclassIncRefcount(p->tc);
 
    p->tnc = TextclassFind("PROGRESS_TEXT_NUMBER", 1);
    if (p->tnc)
-      p->tnc->ref_count++;
+      TextclassIncRefcount(p->tnc);
 
    return p;
 }
@@ -119,16 +121,16 @@ ProgressbarDestroy(Progressbar * p)
      }
 
    if (p->ic)
-      p->ic->ref_count--;
+      ImageclassDecRefcount(p->ic);
    if (p->inc)
-      p->inc->ref_count--;
+      ImageclassDecRefcount(p->inc);
    if (p->ipc)
-      p->ipc->ref_count--;
+      ImageclassDecRefcount(p->ipc);
 
    if (p->tc)
-      p->tc->ref_count--;
+      TextclassDecRefcount(p->tc);
    if (p->tnc)
-      p->tnc->ref_count--;
+      TextclassDecRefcount(p->tnc);
 
    if (p)
       Efree(p);

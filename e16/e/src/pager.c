@@ -26,6 +26,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "hiwin.h"
+#include "iclass.h"
 #include "menus.h"
 #include "tooltips.h"
 #include "xwin.h"

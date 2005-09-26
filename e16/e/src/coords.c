@@ -24,6 +24,8 @@
 #include "desktops.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
 
 static EObj        *coord_eo = NULL;
@@ -38,6 +40,7 @@ CoordsShow(EWin * ewin)
    int                 x, y, w, h;
    int                 cx, cy, cw, ch;
    EObj               *eo = coord_eo;
+   Imlib_Border       *pad;
 
    if (!Conf.movres.mode_info)
       return;
@@ -58,8 +61,9 @@ CoordsShow(EWin * ewin)
 
    Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
-   cw += ic->padding.left + ic->padding.right;
-   ch += ic->padding.top + ic->padding.bottom;
+   pad = ImageclassGetPadding(ic);
+   cw += pad->left + pad->right;
+   ch += pad->top + pad->bottom;
 
    if (Mode.mode == MODE_MOVE)
       md = Conf.movres.mode_move;

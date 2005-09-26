@@ -25,6 +25,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "hiwin.h"
+#include "iclass.h"
 #include "xwin.h"
 
 #define DEBUG_HIWIN 0

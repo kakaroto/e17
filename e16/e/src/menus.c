@@ -25,7 +25,9 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "iclass.h"
 #include "menus.h"
+#include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>
@@ -402,7 +404,7 @@ MenuItemCreate(const char *text, ImageClass * iclass,
 
    mi->icon_iclass = iclass;
    if (iclass)
-      iclass->ref_count++;
+      ImageclassIncRefcount(iclass);
 
    mi->text = (text) ? Estrdup((text[0]) ? text : "?!?") : NULL;
    mi->params = Estrdup(action_params);
@@ -567,7 +569,7 @@ MenuEmpty(Menu * m, int destroying)
 	     if (!destroying && m->items[i]->win)
 		EDestroyWindow(m->items[i]->win);
 	     if (m->items[i]->icon_iclass)
-		m->items[i]->icon_iclass->ref_count--;
+		ImageclassDecRefcount(m->items[i]->icon_iclass);
 	     if (m->items[i])
 		Efree(m->items[i]);
 	  }
@@ -617,6 +619,7 @@ MenuRealize(Menu * m)
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    int                 iw, ih;
    Imlib_Image        *im;
+   Imlib_Border       *pad, *pad_item, *pad_sub;
    char                has_i, has_s;
 
    if (!m->style)
@@ -664,7 +667,7 @@ MenuRealize(Menu * m)
 	  }
 	if (m->items[i]->icon_iclass)
 	  {
-	     im = ELoadImage(m->items[i]->icon_iclass->norm.normal->im_file);
+	     im = ImageclassGetImage(m->items[i]->icon_iclass, 0, 0, 0);
 	     if (im)
 	       {
 		  imlib_context_set_image(im);
@@ -686,45 +689,44 @@ MenuRealize(Menu * m)
 	  }
      }
 
+   pad = ImageclassGetPadding(m->style->bg_iclass);
+   pad_item = ImageclassGetPadding(m->style->item_iclass);
+   pad_sub = ImageclassGetPadding(m->style->sub_iclass);
    if (((has_i) && (has_s)) || ((!has_i) && (!has_s)))
      {
-	if (m->style->item_iclass->padding.top >
-	    m->style->sub_iclass->padding.top)
-	   maxh += m->style->item_iclass->padding.top;
+	if (pad_item->top > pad_sub->top)
+	   maxh += pad_item->top;
 	else
-	   maxh += m->style->sub_iclass->padding.top;
-	if (m->style->item_iclass->padding.bottom >
-	    m->style->sub_iclass->padding.bottom)
-	   maxh += m->style->item_iclass->padding.bottom;
+	   maxh += pad_sub->top;
+	if (pad_item->bottom > pad_sub->bottom)
+	   maxh += pad_item->bottom;
 	else
-	   maxh += m->style->sub_iclass->padding.bottom;
+	   maxh += pad_sub->bottom;
 	maxw = maxx1 + maxx2;
-	if (m->style->item_iclass->padding.left >
-	    m->style->sub_iclass->padding.left)
-	   maxw += m->style->item_iclass->padding.left;
+	if (pad_item->left > pad_sub->left)
+	   maxw += pad_item->left;
 	else
-	   maxw += m->style->sub_iclass->padding.left;
-	if (m->style->item_iclass->padding.right >
-	    m->style->sub_iclass->padding.right)
-	   maxw += m->style->item_iclass->padding.right;
+	   maxw += pad_sub->left;
+	if (pad_item->right > pad_sub->right)
+	   maxw += pad_item->right;
 	else
-	   maxw += m->style->sub_iclass->padding.right;
+	   maxw += pad_sub->right;
      }
    else if (has_i)
      {
-	maxh += m->style->item_iclass->padding.top;
-	maxh += m->style->item_iclass->padding.bottom;
+	maxh += pad_item->top;
+	maxh += pad_item->bottom;
 	maxw = maxx1 + maxx2;
-	maxw += m->style->item_iclass->padding.left;
-	maxw += m->style->item_iclass->padding.right;
+	maxw += pad_item->left;
+	maxw += pad_item->right;
      }
    else if (has_s)
      {
-	maxh += m->style->sub_iclass->padding.top;
-	maxh += m->style->sub_iclass->padding.bottom;
+	maxh += pad_sub->top;
+	maxh += pad_sub->bottom;
 	maxw = maxx1 + maxx2;
-	maxw += m->style->sub_iclass->padding.left;
-	maxw += m->style->sub_iclass->padding.right;
+	maxw += pad_sub->left;
+	maxw += pad_sub->right;
      }
 
    mmw = 0;
@@ -741,29 +743,29 @@ MenuRealize(Menu * m)
      {
 	if (r == 0 && (m->style->bg_iclass) && (!m->style->use_item_bg))
 	  {
-	     x += m->style->bg_iclass->padding.left;
-	     y += m->style->bg_iclass->padding.top;
+	     x += pad->left;
+	     y += pad->top;
 	  }
 	EMoveResizeWindow(m->items[i]->win, x, y, maxw, maxh);
 	if (m->style->iconpos == ICON_LEFT)
 	  {
-	     m->items[i]->text_x = m->style->item_iclass->padding.left + maxx2;
+	     m->items[i]->text_x = pad_item->left + maxx2;
 	     m->items[i]->text_w = maxx1;
 	     m->items[i]->text_y = (maxh - m->items[i]->text_h) / 2;
 	     if (m->items[i]->icon_win)
 		EMoveWindow(m->items[i]->icon_win,
-			    m->style->item_iclass->padding.left +
+			    pad_item->left +
 			    ((maxx2 - m->items[i]->icon_w) / 2),
 			    ((maxh - m->items[i]->icon_h) / 2));
 	  }
 	else
 	  {
-	     m->items[i]->text_x = m->style->item_iclass->padding.left;
+	     m->items[i]->text_x = pad_item->left;
 	     m->items[i]->text_w = maxx1;
 	     m->items[i]->text_y = (maxh - m->items[i]->text_h) / 2;
 	     if (m->items[i]->icon_win)
 		EMoveWindow(m->items[i]->icon_win,
-			    maxw - m->style->item_iclass->padding.right -
+			    maxw - pad_item->right -
 			    maxx2 + ((maxx2 - w) / 2), ((maxh - h) / 2));
 	  }
 	if (m->items[i]->icon_iclass)
@@ -810,8 +812,8 @@ MenuRealize(Menu * m)
 
    if ((m->style->bg_iclass) && (!m->style->use_item_bg))
      {
-	mmw += m->style->bg_iclass->padding.right;
-	mmh += m->style->bg_iclass->padding.bottom;
+	mmw += pad->right;
+	mmh += pad->bottom;
      }
 
    m->redraw = 1;
@@ -912,7 +914,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	  {
 	     TextDraw(m->style->tclass, mi_pmm->pmap, 0, 0, mi->state,
 		      _(mi->text), mi->text_x, mi->text_y, mi->text_w,
-		      mi->text_h, 17, m->style->tclass->justification);
+		      mi->text_h, 17,
+		      TextclassGetJustification(m->style->tclass));
 	  }
      }
 
@@ -1690,22 +1693,22 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	  case CONFIG_TEXT:
 	     ms->tclass = TextclassFind(s2, 1);
 	     if (ms->tclass)
-		ms->tclass->ref_count++;
+		TextclassIncRefcount(ms->tclass);
 	     break;
 	  case MENU_BG_ICLASS:
 	     ms->bg_iclass = ImageclassFind(s2, 0);
 	     if (ms->bg_iclass)
-		ms->bg_iclass->ref_count++;
+		ImageclassIncRefcount(ms->bg_iclass);
 	     break;
 	  case MENU_ITEM_ICLASS:
 	     ms->item_iclass = ImageclassFind(s2, 0);
 	     if (ms->item_iclass)
-		ms->item_iclass->ref_count++;
+		ImageclassIncRefcount(ms->item_iclass);
 	     break;
 	  case MENU_SUBMENU_ICLASS:
 	     ms->sub_iclass = ImageclassFind(s2, 0);
 	     if (ms->sub_iclass)
-		ms->sub_iclass->ref_count++;
+		ImageclassIncRefcount(ms->sub_iclass);
 	     break;
 	  case MENU_USE_ITEM_BACKGROUND:
 	     ms->use_item_bg = atoi(s2);
@@ -1713,7 +1716,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	       {
 		  if (ms->bg_iclass)
 		    {
-		       ms->bg_iclass->ref_count--;
+		       ImageclassDecRefcount(ms->bg_iclass);
 		       ms->bg_iclass = NULL;
 		    }
 	       }

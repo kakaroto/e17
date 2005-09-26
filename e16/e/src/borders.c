@@ -23,7 +23,9 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "iclass.h"
 #include "snaps.h"
+#include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <sys/time.h>
@@ -254,6 +256,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	int                 dummywidth, wmax, wmin;
 	ImageClass         *iclass;
 	TextClass          *tclass;
+	Imlib_Border       *pad;
 
 	/*
 	 * calculate width before height, because we need it in order to
@@ -274,13 +277,14 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	  }
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
+	pad = ImageclassGetPadding(iclass);
 	TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
 		 ewin->bits[i].state, EwinGetName(ewin), &max, &dummywidth,
-		 w - (iclass->padding.top + iclass->padding.bottom));
-	max += iclass->padding.left + iclass->padding.right;
+		 w - (pad->top + pad->bottom));
+	max += pad->left + pad->right;
 	if (h > max)
 	  {
-	     y = y + (((h - max) * tclass->justification) >> 10);
+	     y = y + (((h - max) * TextclassGetJustification(tclass)) >> 10);
 	     h = max;
 	  }
 	if (h < min)
@@ -315,21 +319,22 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
 	  {
 	     int                 dummyheight;
-
 	     ImageClass         *iclass;
 	     TextClass          *tclass;
+	     Imlib_Border       *pad;
 
 	     iclass = ewin->border->part[i].iclass;
 	     tclass = ewin->border->part[i].tclass;
+	     pad = ImageclassGetPadding(iclass);
 	     TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
 		      ewin->bits[i].state, EwinGetName(ewin), &max,
-		      &dummyheight,
-		      h - (iclass->padding.top + iclass->padding.bottom));
-	     max += iclass->padding.left + iclass->padding.right;
+		      &dummyheight, h - (pad->top + pad->bottom));
+	     max += pad->left + pad->right;
 
 	     if (w > max)
 	       {
-		  x = x + (((w - max) * tclass->justification) >> 10);
+		  x = x +
+		     (((w - max) * TextclassGetJustification(tclass)) >> 10);
 		  w = max;
 	       }
 	  }
@@ -644,9 +649,9 @@ BorderDestroy(Border * b)
    for (i = 0; i < b->num_winparts; i++)
      {
 	if (b->part[i].iclass)
-	   b->part[i].iclass->ref_count--;
+	   ImageclassDecRefcount(b->part[i].iclass);
 	if (b->part[i].tclass)
-	   b->part[i].tclass->ref_count--;
+	   TextclassDecRefcount(b->part[i].tclass);
 	if (b->part[i].aclass)
 	   ActionclassDecRefcount(b->part[i].aclass);
 	if (b->part[i].ec)
@@ -685,15 +690,15 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
 
    b->part[n - 1].iclass = iclass;
    if (iclass)
-      iclass->ref_count++;
+      ImageclassIncRefcount(iclass);
 
    b->part[n - 1].aclass = aclass;
    if (aclass)
-      ActionclassDecRefcount(aclass);
+      ActionclassIncRefcount(aclass);
 
    b->part[n - 1].tclass = tclass;
    if (tclass)
-      tclass->ref_count++;
+      TextclassIncRefcount(tclass);
 
    b->part[n - 1].ec = ec;
    if (ec)

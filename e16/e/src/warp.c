@@ -34,7 +34,9 @@
 #include "E.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "iclass.h"
 #include "icons.h"
+#include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <X11/keysym.h>
@@ -63,6 +65,7 @@ WarpFocusShow(EWin * ewin)
 {
    TextClass          *tc;
    ImageClass         *ic;
+   Imlib_Border       *pad;
    int                 i, x, y, w, h, ww, hh;
    static int          mw, mh, tw, th;
    char                s[1024];
@@ -82,6 +85,8 @@ WarpFocusShow(EWin * ewin)
 
    if ((!ic) || (!tc))
       return;
+
+   pad = ImageclassGetPadding(ic);
 
    if (!warpFocusWindow)
      {
@@ -125,8 +130,8 @@ WarpFocusShow(EWin * ewin)
 
 	tw = w;			/* Text size */
 	th = h;
-	w += (ic->padding.left + ic->padding.right);
-	h += (ic->padding.top + ic->padding.bottom);
+	w += pad->left + pad->right;
+	h += pad->top + pad->bottom;
 	if (Conf.warplist.icon_mode != 0)
 	   w += h;
 	mw = w;			/* Focus list item size */
@@ -174,8 +179,7 @@ WarpFocusShow(EWin * ewin)
 		  Imlib_Image        *im;
 
 		  TextDraw(tc, wl->win, 0, 0, state, wl->txt,
-			   ic->padding.left + mh, ic->padding.top,
-			   tw, th, 0, 0);
+			   pad->left + mh, pad->top, tw, th, 0, 0);
 
 		  im = EwinIconImageGet(wl->ewin, icon_size,
 					Conf.warplist.icon_mode);
@@ -185,7 +189,7 @@ WarpFocusShow(EWin * ewin)
 		  imlib_context_set_image(im);
 		  imlib_context_set_drawable(wl->win);
 		  imlib_context_set_blend(1);
-		  imlib_render_image_on_drawable_at_size(ic->padding.left +
+		  imlib_render_image_on_drawable_at_size(pad->left +
 							 ICON_PAD, ICON_PAD,
 							 icon_size, icon_size);
 		  imlib_free_image();

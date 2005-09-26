@@ -25,6 +25,8 @@
 #include "E.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
 
 typedef struct

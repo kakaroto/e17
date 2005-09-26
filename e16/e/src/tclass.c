@@ -24,6 +24,8 @@
 #include "E.h"
 #include "conf.h"
 #include "emodule.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
 
 static char        *
@@ -130,6 +132,24 @@ TextclassDestroy(TextClass * tc)
    if (tc->sticky_active.disabled)
       TextStateDestroy(tc->sticky_active.disabled);
    Efree(tc);
+}
+
+void
+TextclassIncRefcount(TextClass * tc)
+{
+   tc->ref_count++;
+}
+
+void
+TextclassDecRefcount(TextClass * tc)
+{
+   tc->ref_count--;
+}
+
+int
+TextclassGetJustification(TextClass * tc)
+{
+   return tc->justification;
 }
 
 static void
@@ -437,17 +457,17 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	       int sticky, int state, char expose __UNUSED__,
 	       TextClass * tclass, const char *text)
 {
+   Imlib_Border       *pad;
 
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       return;
 
    XClearWindow(disp, win);
 
-   TextDraw(tclass, win, active, sticky, state, text, iclass->padding.left,
-	    iclass->padding.top,
-	    w - (iclass->padding.left + iclass->padding.right),
-	    h - (iclass->padding.top + iclass->padding.bottom),
-	    h - (iclass->padding.top + iclass->padding.bottom),
+   pad = ImageclassGetPadding(iclass);
+   TextDraw(tclass, win, active, sticky, state, text,
+	    pad->left, pad->top, w - (pad->left + pad->right),
+	    h - (pad->top + pad->bottom), h - (pad->top + pad->bottom),
 	    tclass->justification);
 }
 

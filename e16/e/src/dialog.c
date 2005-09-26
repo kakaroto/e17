@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "iclass.h"
+#include "tclass.h"
 #include "xwin.h"
 
 #define DEBUG_DIALOGS 0
@@ -230,11 +232,11 @@ DialogCreate(const char *name)
 
    d->tclass = TextclassFind("DIALOG", 1);
    if (d->tclass)
-      d->tclass->ref_count++;
+      TextclassIncRefcount(d->tclass);
 
    d->iclass = ImageclassFind("DIALOG", 1);
    if (d->iclass)
-      d->iclass->ref_count++;
+      ImageclassIncRefcount(d->iclass);
 
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;
@@ -248,9 +250,9 @@ FreeDButton(DButton * db)
    if (db->text)
       Efree(db->text);
    if (db->iclass)
-      db->iclass->ref_count--;
+      ImageclassDecRefcount(db->iclass);
    if (db->tclass)
-      db->tclass->ref_count--;
+      TextclassDecRefcount(db->tclass);
    Efree(db);
 }
 
@@ -274,9 +276,9 @@ DialogDestroy(Dialog * d)
    if (d->item)
       DialogFreeItem(d->item);
    if (d->iclass)
-      d->iclass->ref_count--;
+      ImageclassDecRefcount(d->iclass);
    if (d->tclass)
-      d->tclass->ref_count--;
+      TextclassDecRefcount(d->tclass);
    if (d->keybindings)
       Efree(d->keybindings);
 
@@ -289,6 +291,7 @@ void
 DialogSetText(Dialog * d, const char *text)
 {
    int                 w, h;
+   Imlib_Border       *pad;
 
    if (d->text)
       Efree(d->text);
@@ -298,8 +301,9 @@ DialogSetText(Dialog * d, const char *text)
       return;
 
    TextSize(d->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
-   d->w = w + d->iclass->padding.left + d->iclass->padding.right;
-   d->h = h + d->iclass->padding.top + d->iclass->padding.bottom;
+   pad = ImageclassGetPadding(d->iclass);
+   d->w = w + pad->left + pad->right;
+   d->h = h + pad->top + pad->bottom;
 }
 
 void
@@ -335,6 +339,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 {
    DButton            *db;
    int                 w, h;
+   Imlib_Border       *pad;
 
    db = Emalloc(sizeof(DButton));
 
@@ -359,15 +364,16 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 
    db->tclass = TextclassFind("DIALOG_BUTTON", 1);
    if (db->tclass)
-      db->tclass->ref_count++;
+      TextclassIncRefcount(db->tclass);
 
    db->iclass = ImageclassFind("DIALOG_BUTTON", 1);
    if (db->iclass)
-      db->iclass->ref_count++;
+      ImageclassIncRefcount(db->iclass);
 
    TextSize(db->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
-   db->h = h + db->iclass->padding.top + db->iclass->padding.bottom;
-   db->w = w + db->iclass->padding.left + db->iclass->padding.right;
+   pad = ImageclassGetPadding(db->iclass);
+   db->h = h + pad->top + pad->bottom;
+   db->w = w + pad->left + pad->right;
    if (Conf.dialogs.button_image && db->image)
       db->w += h + 2;
 
@@ -424,20 +430,20 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
    if (im)
      {
 	ImageClass         *ic = db->iclass;
+	Imlib_Border       *pad;
 	int                 h;
 
-	h = db->h - (ic->padding.top + ic->padding.bottom);
-
+	pad = ImageclassGetPadding(ic);
+	h = db->h - (pad->top + pad->bottom);
 	TextDraw(db->tclass, db->win, 0, 0, state, db->text,
-		 h + 2 + ic->padding.left, ic->padding.top,
-		 db->w - (h + 2 + ic->padding.left + ic->padding.right),
-		 h, h, db->tclass->justification);
+		 h + 2 + pad->left, pad->top,
+		 db->w - (h + 2 + pad->left + pad->right),
+		 h, h, TextclassGetJustification(db->tclass));
 
 	imlib_context_set_image(im);
 	imlib_context_set_drawable(db->win);
 	imlib_context_set_blend(1);
-	imlib_render_image_on_drawable_at_size(ic->padding.left,
-					       ic->padding.top, h, h);
+	imlib_render_image_on_drawable_at_size(pad->left, pad->top, h, h);
 	imlib_context_set_blend(0);
 	imlib_free_image();
      }
@@ -541,6 +547,7 @@ ShowDialog(Dialog * d)
 {
    int                 i, w, h, mw, mh;
    EWin               *ewin;
+   Imlib_Border       *pad;
 
    if (d->title)
      {
@@ -564,6 +571,7 @@ ShowDialog(Dialog * d)
    if (d->item)
       DialogItemsRealize(d);
 
+   pad = ImageclassGetPadding(d->iclass);
    w = d->w;
    h = d->h;
    mw = 0;
@@ -575,27 +583,21 @@ ShowDialog(Dialog * d)
 	if (d->button[i]->h > mh)
 	   mh = d->button[i]->h;
      }
-   h += d->iclass->padding.top + d->iclass->padding.bottom + mh;
+   h += pad->top + pad->bottom + mh;
 
-   if ((d->iclass->padding.left + d->iclass->padding.right +
-	(d->num_buttons *
-	 (mw + d->iclass->padding.left + d->iclass->padding.right))) > w)
-      w = d->iclass->padding.left + d->iclass->padding.right +
-	 (d->num_buttons *
-	  (mw + d->iclass->padding.left + d->iclass->padding.right));
+   if ((pad->left + pad->right +
+	(d->num_buttons * (mw + pad->left + pad->right))) > w)
+      w = pad->left + pad->right +
+	 (d->num_buttons * (mw + pad->left + pad->right));
 
    for (i = 0; i < d->num_buttons; i++)
      {
 	d->button[i]->x =
-	   (((w
-	      - (d->iclass->padding.left + d->iclass->padding.right)) -
-	     (d->num_buttons *
-	      (mw + d->iclass->padding.left +
-	       d->iclass->padding.right))) / 2) + d->iclass->padding.left +
-	   (i * (mw + d->iclass->padding.left + d->iclass->padding.right)) +
-	   d->iclass->padding.left;
-	d->button[i]->y =
-	   d->h - d->iclass->padding.bottom + d->iclass->padding.top;
+	   (((w - (pad->left + pad->right)) -
+	     (d->num_buttons * (mw + pad->left +
+				pad->right))) / 2) + pad->left +
+	   (i * (mw + pad->left + pad->right)) + pad->left;
+	d->button[i]->y = d->h - pad->bottom + pad->top;
 
 	d->button[i]->w = mw;
 	d->button[i]->h = mh;
@@ -797,21 +799,23 @@ DialogItemSetCallback(DItem * di, DialogCallbackFunc * func, int val,
    di->data = data;
 }
 
+#if 0				/* Unused */
 void
 DialogItemSetClass(DItem * di, ImageClass * iclass, TextClass * tclass)
 {
    if (di->iclass)
-      di->iclass->ref_count--;
+      ImageclassDecRefcount(di->iclass);
    di->iclass = iclass;
    if (di->iclass)
-      di->iclass->ref_count++;
+      ImageclassIncRefcount(di->iclass);
 
    if (di->tclass)
-      di->tclass->ref_count--;
+      TextclassDecRefcount(di->tclass);
    di->tclass = tclass;
    if (di->tclass)
-      di->tclass->ref_count++;
+      TextclassIncRefcount(di->tclass);
 }
+#endif
 
 void
 DialogItemSetPadding(DItem * di, int left, int right, int top, int bottom)
@@ -861,6 +865,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
    const char         *def = NULL;
    int                 iw = 0, ih = 0;
    int                 register_win_callback;
+   Imlib_Image        *im;
+   Imlib_Border       *pad;
 
    if (di->type == DITEM_BUTTON)
      {
@@ -903,9 +909,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   di->iclass = ImageclassFind(def, 1);
      }
    if (di->tclass)
-      di->tclass->ref_count++;
+      TextclassIncRefcount(di->tclass);
    if (di->iclass)
-      di->iclass->ref_count++;
+      ImageclassIncRefcount(di->iclass);
 
    if (di->type == DITEM_TABLE)
      {
@@ -954,21 +960,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       }
 	  }
 
-	if (di->item.slider.ic_base->norm.normal->im_file)
+	im = ImageclassGetImage(di->item.slider.ic_base, 0, 0, 0);
+	if (im)
 	  {
-	     Imlib_Image        *im;
-
-	     im = ELoadImage(di->item.slider.ic_base->norm.normal->im_file);
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  di->item.slider.base_orig_w = imlib_image_get_width();
-		  di->item.slider.base_orig_h = imlib_image_get_height();
-		  imlib_free_image();
-	       }
+	     imlib_context_set_image(im);
+	     di->item.slider.base_orig_w = imlib_image_get_width();
+	     di->item.slider.base_orig_h = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	if (di->item.slider.ic_base)
-	   di->item.slider.ic_base->ref_count++;
+	   ImageclassIncRefcount(di->item.slider.ic_base);
 
 	if (!di->item.slider.ic_knob)
 	  {
@@ -984,20 +985,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       }
 	  }
 	if (di->item.slider.ic_knob)
-	   di->item.slider.ic_knob->ref_count++;
+	   ImageclassIncRefcount(di->item.slider.ic_knob);
 
-	if (di->item.slider.ic_knob->norm.normal->im_file)
+	im = ImageclassGetImage(di->item.slider.ic_knob, 0, 0, 0);
+	if (im)
 	  {
-	     Imlib_Image        *im;
-
-	     im = ELoadImage(di->item.slider.ic_knob->norm.normal->im_file);
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  di->item.slider.knob_orig_w = imlib_image_get_width();
-		  di->item.slider.knob_orig_h = imlib_image_get_height();
-		  imlib_free_image();
-	       }
+	     imlib_context_set_image(im);
+	     di->item.slider.knob_orig_w = imlib_image_get_width();
+	     di->item.slider.knob_orig_h = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	if (!di->item.slider.ic_border)
 	  {
@@ -1015,46 +1011,38 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	  }
 	if (di->item.slider.ic_border)
 	  {
-	     if (di->item.slider.ic_border->norm.normal->im_file)
+	     im = ImageclassGetImage(di->item.slider.ic_border, 0, 0, 0);
+	     if (im)
 	       {
-		  Imlib_Image        *im;
-
-		  im = ELoadImage(di->item.slider.ic_border->norm.
-				  normal->im_file);
-		  if (im)
-		    {
-		       imlib_context_set_image(im);
-		       di->item.slider.border_orig_w = imlib_image_get_width();
-		       di->item.slider.border_orig_h = imlib_image_get_height();
-		       imlib_free_image();
-		       di->item.slider.border_win =
-			  ECreateWindow(d->win, -20, -20, 2, 2, 0);
-		       EMapWindow(di->item.slider.border_win);
-		    }
+		  imlib_context_set_image(im);
+		  di->item.slider.border_orig_w = imlib_image_get_width();
+		  di->item.slider.border_orig_h = imlib_image_get_height();
+		  imlib_free_image();
+		  di->item.slider.border_win =
+		     ECreateWindow(d->win, -20, -20, 2, 2, 0);
+		  EMapWindow(di->item.slider.border_win);
 	       }
-	     di->item.slider.ic_border->ref_count++;
+	     ImageclassIncRefcount(di->item.slider.ic_border);
 	  }
+	pad = ImageclassGetPadding(di->item.slider.ic_base);
 	if (di->item.slider.horizontal)
 	  {
-	     iw = di->item.slider.min_length +
-		di->item.slider.ic_base->padding.left +
-		di->item.slider.ic_base->padding.right;
+	     iw = di->item.slider.min_length + pad->left + pad->right;
 	     ih = di->item.slider.base_orig_h;
 	  }
 	else
 	  {
 	     iw = di->item.slider.base_orig_w;
-	     ih = di->item.slider.min_length +
-		di->item.slider.ic_base->padding.top +
-		di->item.slider.ic_base->padding.bottom;
+	     ih = di->item.slider.min_length + pad->top + pad->bottom;
 	  }
 	di->w = iw;
 	di->h = ih;
 	break;
      case DITEM_BUTTON:
+	pad = ImageclassGetPadding(di->iclass);
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
-	iw += di->iclass->padding.left + di->iclass->padding.right;
-	ih += di->iclass->padding.top + di->iclass->padding.bottom;
+	iw += pad->left + pad->right;
+	ih += pad->top + pad->bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->win);
 	ESelectInput(di->win,
@@ -1064,10 +1052,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_AREA:
+	pad = ImageclassGetPadding(di->iclass);
 	iw = di->item.area.w;
 	ih = di->item.area.h;
-	iw += di->iclass->padding.left + di->iclass->padding.right;
-	ih += di->iclass->padding.top + di->iclass->padding.bottom;
+	iw += pad->left + pad->right;
+	ih += pad->top + pad->bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->win);
 	ESelectInput(di->win, ExposureMask);
@@ -1081,23 +1070,19 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_CHECKBUTTON:
-	if (di->iclass->norm.normal->im_file)
+	pad = ImageclassGetPadding(di->iclass);
+	im = ImageclassGetImage(di->iclass, 0, 0, 0);
+	if (im)
 	  {
-	     Imlib_Image        *im;
-
-	     im = ELoadImage(di->iclass->norm.normal->im_file);
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  di->item.check_button.check_orig_w = imlib_image_get_width();
-		  di->item.check_button.check_orig_h = imlib_image_get_height();
-		  imlib_free_image();
-	       }
+	     imlib_context_set_image(im);
+	     di->item.check_button.check_orig_w = imlib_image_get_width();
+	     di->item.check_button.check_orig_h = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.check_button.check_orig_h)
 	   ih = di->item.check_button.check_orig_h;
-	iw += di->item.check_button.check_orig_w + di->iclass->padding.left;
+	iw += di->item.check_button.check_orig_w + pad->left;
 	di->item.check_button.check_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
@@ -1115,34 +1100,31 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_IMAGE:
-	{
-	   Imlib_Image        *im;
+	im = ELoadImage(di->item.image.image);
+	if (im)
+	  {
+	     Pixmap              pmap = 0, mask = 0;
 
-	   im = ELoadImage(di->item.image.image);
-	   if (im)
-	     {
-		Pixmap              pmap = 0, mask = 0;
-
-		imlib_context_set_image(im);
-		iw = imlib_image_get_width();
-		ih = imlib_image_get_height();
-		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
-		EMapWindow(di->win);
-		imlib_context_set_drawable(di->win);
-		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
-		ESetWindowBackgroundPixmap(di->win, pmap);
-		EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
-		imlib_free_pixmap_and_mask(pmap);
-		imlib_free_image();
-	     }
-	}
+	     imlib_context_set_image(im);
+	     iw = imlib_image_get_width();
+	     ih = imlib_image_get_height();
+	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
+	     EMapWindow(di->win);
+	     imlib_context_set_drawable(di->win);
+	     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+	     ESetWindowBackgroundPixmap(di->win, pmap);
+	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
+	     imlib_free_pixmap_and_mask(pmap);
+	     imlib_free_image();
+	  }
 	di->w = iw;
 	di->h = ih;
 	register_win_callback = 0;
 	break;
      case DITEM_SEPARATOR:
-	iw = di->iclass->padding.left + di->iclass->padding.right;
-	ih = di->iclass->padding.top + di->iclass->padding.bottom;
+	pad = ImageclassGetPadding(di->iclass);
+	iw = pad->left + pad->right;
+	ih = pad->top + pad->bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(di->win);
 	di->w = iw;
@@ -1150,23 +1132,19 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	register_win_callback = 0;
 	break;
      case DITEM_RADIOBUTTON:
-	if (di->iclass->norm.normal->im_file)
+	pad = ImageclassGetPadding(di->iclass);
+	im = ImageclassGetImage(di->iclass, 0, 0, 0);
+	if (im)
 	  {
-	     Imlib_Image        *im;
-
-	     im = ELoadImage(di->iclass->norm.normal->im_file);
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  di->item.radio_button.radio_orig_w = imlib_image_get_width();
-		  di->item.radio_button.radio_orig_h = imlib_image_get_height();
-		  imlib_free_image();
-	       }
+	     imlib_context_set_image(im);
+	     di->item.radio_button.radio_orig_w = imlib_image_get_width();
+	     di->item.radio_button.radio_orig_h = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
 	if (ih < di->item.radio_button.radio_orig_h)
 	   ih = di->item.radio_button.radio_orig_h;
-	iw += di->item.radio_button.radio_orig_w + di->iclass->padding.left;
+	iw += di->item.radio_button.radio_orig_w + pad->left;
 	di->item.radio_button.radio_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
@@ -1181,6 +1159,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
      case DITEM_TABLE:
 	{
 	   int                 cols, rows;
+
+	   pad = ImageclassGetPadding(d->iclass);
 
 	   cols = di->item.table.num_columns;
 	   rows = 1;
@@ -1274,31 +1254,31 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  int                 dx, dy, newx, newy;
 
 			  newx =
-			     di->x + x + d->iclass->padding.left +
+			     di->x + x + pad->left +
 			     dii->padding.left +
 			     (((sw
 				- (dii->padding.left + dii->padding.right) -
 				dii->w) * dii->align_h) >> 10);
 			  newy =
-			     di->y + y + d->iclass->padding.top +
+			     di->y + y + pad->top +
 			     dii->padding.top +
 			     (((sh
 				- (dii->padding.top + dii->padding.bottom) -
 				dii->h) * dii->align_v) >> 10);
-			  dx = newx - dii->x - d->iclass->padding.left;
-			  dy = newy - dii->y - d->iclass->padding.top;
+			  dx = newx - dii->x - pad->left;
+			  dy = newy - dii->y - pad->top;
 			  MoveTableBy(d, dii, dx, dy);
 		       }
 		     else
 		       {
 			  dii->x =
-			     di->x + x + d->iclass->padding.left +
+			     di->x + x + pad->left +
 			     dii->padding.left +
 			     (((sw
 				- (dii->padding.left + dii->padding.right) -
 				dii->w) * dii->align_h) >> 10);
 			  dii->y =
-			     di->y + y + d->iclass->padding.top +
+			     di->y + y + pad->top +
 			     dii->padding.top +
 			     (((sh
 				- (dii->padding.top + dii->padding.bottom) -
@@ -1330,15 +1310,13 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       radio_orig_h);
 			  if (dii->type == DITEM_AREA)
 			    {
+			       pad = ImageclassGetPadding(dii->iclass);
 			       dii->item.area.w =
-				  dii->w - (dii->iclass->padding.left +
-					    dii->iclass->padding.right);
+				  dii->w - (pad->left + pad->right);
 			       dii->item.area.h =
-				  dii->h - (dii->iclass->padding.top +
-					    dii->iclass->padding.bottom);
+				  dii->h - (pad->top + pad->bottom);
 			       EMoveResizeWindow(dii->item.area.area_win,
-						 dii->iclass->padding.left,
-						 dii->iclass->padding.top,
+						 pad->left, pad->top,
 						 dii->item.area.w,
 						 dii->item.area.h);
 			    }
@@ -1499,6 +1477,7 @@ static void
 DialogDrawItem(Dialog * d, DItem * di)
 {
    int                 state;
+   Imlib_Border       *pad;
 
    if (!di->update && di->type != DITEM_TABLE)
       return;
@@ -1620,17 +1599,18 @@ DialogDrawItem(Dialog * d, DItem * di)
 			   di->item.check_button.check_orig_h, 0, 0, state,
 			   0, ST_WIDGET);
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	pad = ImageclassGetPadding(di->iclass);
 	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
 		 di->x + di->item.check_button.check_orig_w +
-		 di->iclass->padding.left, di->y,
+		 pad->left, di->y,
 		 di->w - di->item.check_button.check_orig_w -
-		 di->iclass->padding.left, 99999, 17,
-		 di->tclass->justification);
+		 pad->left, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      case DITEM_TEXT:
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
 	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
-		 di->x, di->y, di->w, 99999, 17, di->tclass->justification);
+		 di->x, di->y, di->w, 99999, 17,
+		 TextclassGetJustification(di->tclass));
 	break;
      case DITEM_IMAGE:
 	break;
@@ -1661,12 +1641,12 @@ DialogDrawItem(Dialog * d, DItem * di)
 			   di->item.radio_button.radio_orig_w, 0, 0, state,
 			   0, ST_WIDGET);
 	EClearArea(d->win, di->x, di->y, di->w, di->h, False);
+	pad = ImageclassGetPadding(di->iclass);
 	TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL, di->text,
 		 di->x + di->item.radio_button.radio_orig_w +
-		 di->iclass->padding.left, di->y,
+		 pad->left, di->y,
 		 di->w - di->item.radio_button.radio_orig_w -
-		 di->iclass->padding.left, 99999, 17,
-		 di->tclass->justification);
+		 pad->left, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      default:
 	break;
@@ -1711,12 +1691,16 @@ DialogsCheckUpdate(void)
 static void
 DialogItemsRealize(Dialog * d)
 {
+   Imlib_Border       *pad;
+
    if (!d->item)
       return;
+
    DialogRealizeItem(d, d->item);
    DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
-   d->w = d->item->w + d->iclass->padding.left + d->iclass->padding.right;
-   d->h = d->item->h + d->iclass->padding.top + d->iclass->padding.bottom;
+   pad = ImageclassGetPadding(d->iclass);
+   d->w = d->item->w + pad->left + pad->right;
+   d->h = d->item->h + pad->top + pad->bottom;
 }
 
 void
@@ -1925,11 +1909,11 @@ DialogFreeItem(DItem * di)
 	break;
      case DITEM_SLIDER:
 	if (di->item.slider.ic_base)
-	   di->item.slider.ic_base->ref_count--;
+	   ImageclassDecRefcount(di->item.slider.ic_base);
 	if (di->item.slider.ic_knob)
-	   di->item.slider.ic_knob->ref_count--;
+	   ImageclassDecRefcount(di->item.slider.ic_knob);
 	if (di->item.slider.ic_border)
-	   di->item.slider.ic_border->ref_count--;
+	   ImageclassDecRefcount(di->item.slider.ic_border);
 	break;
      case DITEM_TABLE:
 	if (di->item.table.items)
@@ -1938,9 +1922,9 @@ DialogFreeItem(DItem * di)
      }
 
    if (di->iclass)
-      di->iclass->ref_count--;
+      ImageclassDecRefcount(di->iclass);
    if (di->tclass)
-      di->tclass->ref_count--;
+      TextclassDecRefcount(di->tclass);
 
    Efree(di);
 }

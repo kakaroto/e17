@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "emodule.h"
+#include "iclass.h"
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 /*

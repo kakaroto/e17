@@ -124,7 +124,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    if (!b->iclass)
       b->iclass = ImageclassFind(NULL, 0);
    if (b->iclass)
-      b->iclass->ref_count++;
+      ImageclassIncRefcount(b->iclass);
 
    b->aclass = aclass;
    if (b->aclass)
@@ -134,7 +134,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    if (!b->tclass && b->label)
       b->tclass = TextclassFind(NULL, 0);
    if (b->tclass)
-      b->tclass->ref_count++;
+      TextclassIncRefcount(b->tclass);
 
    b->flags = flags;
    b->geom.width.min = minw;
@@ -186,13 +186,13 @@ ButtonDestroy(Button * b)
    EDestroyWindow(EoGetWin(b));
 
    if (b->iclass)
-      b->iclass->ref_count--;
+      ImageclassDecRefcount(b->iclass);
 
    if (b->aclass)
       ActionclassDecRefcount(b->aclass);
 
    if (b->tclass)
-      b->tclass->ref_count--;
+      TextclassDecRefcount(b->tclass);
 
    if (b->label)
       Efree(b->label);
@@ -212,21 +212,13 @@ ButtonCalc(Button * b)
    h = 32;
    if (b->geom.size_from_image)
      {
-	if ((b->iclass) && (b->iclass->norm.normal->im_file))
+	im = ImageclassGetImage(b->iclass, 0, 0, 0);
+	if (im)
 	  {
-	     im = ELoadImage(b->iclass->norm.normal->im_file);
-	     if (im)
-	       {
-		  imlib_context_set_image(im);
-		  w = imlib_image_get_width();
-		  h = imlib_image_get_height();
-		  imlib_free_image();
-	       }
-	     else
-	       {
-		  w = 32;
-		  h = 32;
-	       }
+	     imlib_context_set_image(im);
+	     w = imlib_image_get_width();
+	     h = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	else
 	  {
@@ -935,7 +927,7 @@ ButtonsConfigSave(void)
 	fprintf(fs, "4 999\n");
 	fprintf(fs, "100 %s\n", EoGetName(blst[i]));
 	if (blst[i]->iclass)
-	   fprintf(fs, "12 %s\n", blst[i]->iclass->name);
+	   fprintf(fs, "12 %s\n", ImageclassGetName(blst[i]->iclass));
 	if (blst[i]->aclass)
 	   fprintf(fs, "11 %s\n", ActionclassGetName(blst[i]->aclass));
 	if (EoGetLayer(blst[i]) >= 0)

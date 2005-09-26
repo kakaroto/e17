@@ -1513,3 +1513,24 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    imlib_save_image(buf);
    imlib_free_image_and_decache();
 }
+
+void
+FreePmapMask(PmapMask * pmm)
+{
+   /* type !=0: Created by imlib_render_pixmaps_for_whole_image... */
+   if (pmm->pmap)
+     {
+	if (pmm->type == 0)
+	   EFreePixmap(pmm->pmap);
+	else
+	   imlib_free_pixmap_and_mask(pmm->pmap);
+	pmm->pmap = 0;
+     }
+
+   if (pmm->mask)
+     {
+	if (pmm->type == 0)
+	   EFreePixmap(pmm->mask);
+	pmm->mask = 0;
+     }
+}

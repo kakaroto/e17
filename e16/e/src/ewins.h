@@ -25,6 +25,7 @@
 #define _EWIN_H_
 
 #include "eobj.h"
+#include "xwin.h"
 
 struct _desk;
 
