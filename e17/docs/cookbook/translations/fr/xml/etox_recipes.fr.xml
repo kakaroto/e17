@@ -1,0 +1,17 @@
+<!-- Etox Recipes -->
+
+<chapter>
+<title>Etox</title>
+
+<para>
+Etox is an advanced type setting and text layout library based on Evas, that allows for functionality 
+above and beyond that provided by Evas itself.  It is able to simplify displaying, moving, 
+resizing, layering, and clipping of text, as well as text alignment, wrapping, and modification.
+Etox can even intellegently wrap around obsticles and apply pre-defined <emphasis>styles</emphasis>.
+Nearly any aspect of textual layout can be handled easily and efficiently by leveraging Etox.
+</para>
+
+ &etox_overview;
+
+</chapter>
+

@@ -1,0 +1,53 @@
+<!-- Edje EDC Recipes -->
+
+<chapter>
+<title>Edje EDC &amp; Embryo</title>
+
+<para>
+Les fichiers sources de la Collection de données Edje (Edje Data Collection EDC) autorisent
+la création simple d'interface graphiques riches et puissantes. Votre application Edje
+est divisée en deux parties distinctes, la partie code source (utilisant des appels de
+<filename>Edje.h</filename>) et la description de l'interfac dans l'EDC. La seule connexion
+nécessaire entre votre interface et le code de votre application sont les signaux émis par
+votre interface et recus par les callbacks Edje dans votre code.
+</para>
+
+<para>
+Un EDC est divisé entre plusieurs sections majeures décrivant les images et les polices
+de caractères utilisées par votre interface, la descriptions de comment les différentes
+<literal>parties</literal> de votre interfaces sont mises en page, et les descriptions
+de comment votre <literal>programme</literal> réagit lorsque l'on agit avec l'interface.
+Cete fonctionalité peut être offerte par l'emploie du langage de script d'Embryo pour
+ajouter une programmation ressemblant à C dans EDC lui même.
+</para>
+
+<para>
+Le résultat d'un EDC, incluant toutes ses images et ses polices de caractères, est un unique
+EET. Etant donné que l'interface complète résulte en un simple fichier, la distribution de
+thèmes est très simplifiée.
+</para>
+
+<para>
+Tandis que les EDCs de Edjes peuvent être considérés comme des thèmes, ils peuvent
+faire bien plus. Un thème traditionnnel est un fichier ou un groupe de fichiers
+améliorant une interface existante en modifiant la couleur des éléments et en
+remplacant les images qui font l'interface elle même. Mais ces méthodes sont
+insuffisantes pour changer réellement le design de l'interface d'une application,
+limitent les créateurs de thèmes et requièrent souvent un remaniement de l'interface
+pour plus de fonctionalités. Une application GTK ressemblera toujours à la même
+chose quelque soit le thème utilisé. Un exemple simple serait qu'une application GTK
+ou QT aurais toujours une forme rectangulaire et si elle avait une bordure, vous
+ne pourriez pas l'enlever à l'aide d'un thème. Cependant, une application Edje peut
+passer d'une forme extérieure rectangulaire à ovale gràce à une simple modification
+de l'EDC., ou vous pourriez supprimer ou réarranger tous les éléments de l'interface
+sans même toucher le code source. Dans ce sens, Edje autorise bien plus de controle et
+de flexibilité que n'importe quelle autre solution de la communauté Open Source et
+autorise un modèle de programmation Ouvert et autorise même des personnes ne sachant
+pas programmer (comme la plupart des créateurs de thèmes) à apporter leur contribution
+et modifier les choses comme ils les voient.
+</para>
+
+&edje_embryo_toggle;
+&edje_text_effect_fade;
+</chapter>
+

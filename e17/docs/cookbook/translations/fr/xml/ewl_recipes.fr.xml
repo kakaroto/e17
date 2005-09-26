@@ -1,0 +1,21 @@
+<!-- EWL Recipes -->
+
+<chapter>
+<title>EWL</title>
+
+<para>
+La "Enlightened Widget Library" (EWL) est une boite à outils de "wigdets"
+(gadgets de fenêtre) qui est construite au dessus des fondation créés par
+les autres librairies de EFL. Ewl utilise Evas pour son affichage, et son
+apparence est gérée par Edje.
+</para>
+
+<para>
+Ewl est similaire dans son fondement, à plusieurs autres boites à outils, dont
+GTK, QT ou MOTIF. L'API diffère mais les concepts sont les mêmes.
+</para>
+
+&ewl_intro;
+
+</chapter>
+

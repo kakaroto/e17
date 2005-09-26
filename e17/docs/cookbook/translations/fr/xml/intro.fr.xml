@@ -1,0 +1,191 @@
+<chapter>
+ <title>Introduction</title>
+
+ <para>
+Bienvenue dans le monde lumineux de la programmation. Ce livre de cuisine est une
+collection de trucs et astuces, de tutoriaux et d'introductions élaboré sous
+forme de recettes dans le but de vous aider à devenir rapidement compétent
+avec les bibliothèques de base d'Enlightenment. Les "Enlightenment Foundation
+Libraries", appelées plus communement EFL, sont un ensemble de bibliothèques
+originellement écrites afin de servir au window manager Enlightenment DR17.
+Cependant, au cours du développement de ces bibliothèques, des fonctionnalités
+plus généralistes ont été ajouttées, donnant lieu à un ensemble riche et
+puissant capable de résoudre toutes sortes de problèmes et de constituer une
+véritable alternative aux populaires GTK et QT.
+ </para>
+
+ <para>
+EFL est un groupe exhaustif de bibliothèques C qui penvent subvenir à vos
+besoins graphiques sur presque n'importe quelle plateforme. Ce qui suit est
+une décomposition concise des bibliothèques qui composent EFL.
+</para>
+
+<variablelist>
+ <title>Liste des composants EFL</title>
+
+<varlistentry>
+	<term>Imlib2</term>
+
+	<listitem>
+	<para>
+	Bibliothèque complète de manipulation d'image, incluant le 
+        rendu de surface d'affichage X11.
+	</para>
+	</listitem>
+</varlistentry>
+
+
+<varlistentry>
+        <term>EVAS</term>
+
+        <listitem>
+        <para>
+        Bibliothèque de canvas avec comprenant plusieurs moteurs dont l'accelération matérielle
+OpenGL.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Ecore</term>
+
+        <listitem>
+        <para>
+        Bibliothèque modulaire permettant de manipuler les événements et les
+        temporisateurs, mais gérant aussi les sockets, IPC, FB et X11, la
+        gestion des jobs, de la configuration et plus encore.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EDB</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque de base de données capable de stocker des chaines, de
+        valeurs et des données pour la manipulation simple et centralisée de
+        la configuration.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EET</term>
+
+        <listitem>
+        <para>
+	Un format flexible de récipient pour stocker des images binaires et
+        des données.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Edje</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque d'abstraction d'image et un ensemble d'outils basé sur 
+        EVAS, permettant de séparer complètement l'aspect de l'interface 
+        utilisateur du code de l'application grace à la transmission de
+        signal.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Embryo</term>
+
+        <listitem>
+        <para>
+	Un langage de script typiquement utilisé avec Edje pour un contrôle
+        avancé.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Etox</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque de formatage et de manipulation de texte ayant des
+        possibilités de stylisations.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Esmart</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque composée de divers objets EVAS intelligents prévus
+        pour une réutilisation facile, incluant par exemple la populaire
+        transparance.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epeg</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque de création d'images JPEG miniatures rapide comme 
+        l'éclair indépendante des autres composants d'EFL.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Epsilon</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque de création d'images miniatures flexible et rapide
+        prennant en charge PNG, XCF, GIF et JPEG.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Evoak</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque de serveur de canvas EVAS incluant un ensemble
+        d'outils. 
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>EWL</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque complète de widget.
+        </para>
+        </listitem>
+</varlistentry>
+
+<varlistentry>
+        <term>Emotion</term>
+
+        <listitem>
+        <para>
+        Une bibliothèque d'objets Evas pour la vidéo et la lecture de DVD qui 
+        utilise libxine.
+        </para>
+        </listitem>
+</varlistentry>
+
+</variablelist>
+
+
+
+</chapter>
+
+

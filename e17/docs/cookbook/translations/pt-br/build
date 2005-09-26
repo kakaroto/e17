@@ -1,0 +1,1 @@
+xsltproc -o eflcookbook.pt-BR.html /usr/share/sgml/docbook/xsl-stylesheets-1.68.1/html/docbook.xsl eflcookbook.pt-BR.xml

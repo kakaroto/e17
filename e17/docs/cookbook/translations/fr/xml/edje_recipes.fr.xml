@@ -1,0 +1,32 @@
+<!-- Edje Recipes -->
+
+<chapter>
+<title>Edje</title>
+
+<para>
+Edje est une bibliothèque complexe de design graphique. Son but est de 
+soustraire chaque éléments de l'interface de votre application Evas du code 
+proprement dit.
+</para>
+
+<para>
+Une application Edje se divise en deux parties: le code C qui constitue votre 
+application et une Collection de Données Edje (EDC) qui décrit tous les 
+éléments de votre interface. Ces deux parties sont connectées grâce à des 
+signaux émis par votre EDC et reçus par des callbacks dans le code de votre 
+application. L'utilisation de ce modèle de signaux fait que le code se 
+désintéresse complètement de ce à quoi l'interface ressemble tant qu'il reçoit 
+un signal. Et comme les signaux sont pris en charge par des callbacks, votre 
+interface n'est pas obligée d'envoyer tous les signaux possibles, permettant 
+ainsi de créer de grosses applications et des plus petites avec un seul 
+binaire. Que votre interface utilise des boutons ou une drag-barre pour 
+envoyer des données, votre application ne s'en soucie pas.
+</para>
+
+&edje_simple;
+&edje_callback;
+&edje_file_manipulation;
+
+</chapter>
+
+

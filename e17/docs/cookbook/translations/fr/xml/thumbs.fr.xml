@@ -1,0 +1,60 @@
+<!-- EPEG and Epsilon  Recipes -->
+
+<chapter>
+<title>Epeg &amp; Epsilon </title>
+
+<para>
+Dans notre ère moderne de la photographie numérique, l'affichage devient un
+problème face au volume énorme des images qui sont crées. A la différence de
+l'ancien temps, lorsque le film était employé avec parcimonie, les images sont
+maintenant produites hebdomadairement par centaines ou milliers. La solution à
+ce problème de présentation est d'utiliser des imagettes (ou vignettes), des
+images réduites qui peuvent être classées dans une table ou une application et
+être rapidement balayées visuellement pour trouver les images que vous
+désirez. Mais le redimensionnement d'image est une opération fastidieuse. Même
+si cela pourrait ne prendre qu'une seconde à votre puissant AMD Athlon pour
+réduire une photo de 1600x1200 à la résolution désirée, si vous avez 2000
+photos à réduire cela vous prendra 30 minutes, en partant du fait que vous ne
+faites pas l'opération à la main dans un éditeur tel que Photoshop ou GIMP. Le
+problème réclame clairement un outil qui peut réduire des images avec vitesse
+et efficacité, et autant de paramètres que possible. On peut répondre à ce
+problème grâce à deux bibliothèques faisant partie d'EFL: Epeg et Epsilon.
+</para>
+
+<para>
+Epeg a été écrit par Raster afin de traiter le problème mentionné ci-dessus
+qu'il avait rencontré avec les galeries d'images de son site rasterman.com.
+C'est, sérieusement, le créateur de vignettes le plus rapide de la planète. 
+Avec une API facile à utiliser, il peut être intégré à n'importe quelle 
+application. Son seul défaut est qu'il ne sait manipuler que les JPEGs 
+(d'où son nom), mais c'est un problème minime si l'on considère que tous 
+les appareils-photo du marché utilisent le JPEG comme format de sortie par 
+défaut.
+</para>
+
+<para>
+Epsilon a été écrit par Atmos, en s'inspirant de la vitesse fulgurante d'Epeg
+mais en réponse à un besoin de réduction multi-format. Epsilon peut manipuler
+le JPEG, le PNG, le XCF, et le GIF. Evidement, puisque ce n'est pas une
+bibliothèque spécialisée dans le JPEG, il ne le manipule pas aussi vite
+qu'Epeg, mais il peut employer Epeg lui-même afin de gagner en vitesse.
+Epsilon, contrairement à Epeg, se conforme à la norme de gestion de vignette
+de freedesktop.org <ulink
+url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing
+Standard</ulink>. 
+En tant que tel, il produit toutes les imagettes dans le répertoire spécifié
+par le standard (~/.thumbnails/) plutôt qu'à un endroit définit par le
+programmeur.
+</para>
+
+<para>
+Ces deux bibliothèques accomplissent des tâches si spécifiques que leurs APIs
+sont très simple à utiliser. Epeg a seulement 17 fonctions et Epsilon
+seulement 9, ce qui les rend faciles à apprendre et à utiliser tout de suite
+dans vos applications.
+</para>
+
+ &epeg_simple;
+ &epsilon_simple;
+
+</chapter>

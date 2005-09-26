@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR1//EN"
+        "file:///usr/share/sgml/docbook/xml-dtd-4.3/docbookx.dtd" [
+
+ <!-- This is the main book info -->
+ <!ENTITY bookinfo SYSTEM "xml/bookinfo.fr.xml">
+ <!ENTITY intro SYSTEM "xml/intro.fr.xml">
+ <!ENTITY imlib_recipes SYSTEM "xml/imlib_recipes.fr.xml">
+ <!ENTITY edb_eet_recipes SYSTEM "xml/edb_eet_recipes.fr.xml">
+ <!ENTITY evas_recipes SYSTEM "xml/evas_recipes.fr.xml">
+ <!ENTITY ecore_recipes SYSTEM "xml/ecore_recipes.fr.xml">
+ <!ENTITY esmart_recipes SYSTEM "xml/esmart_recipes.fr.xml">
+ <!ENTITY etox_recipes SYSTEM "xml/etox_recipes.fr.xml">
+ <!ENTITY thumbs_recipes SYSTEM "xml/thumbs.fr.xml">
+ <!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.fr.xml">
+ <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.fr.xml">
+ <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.fr.xml">
+ <!ENTITY evoak_recipes SYSTEM "xml/evoak_recipes.fr.xml">
+ <!ENTITY emotion_recipies SYSTEM "xml/emotion_recipies.fr.xml">
+
+ <!-- ecore -->
+ <!ENTITY ecore_config_intro SYSTEM "xml/ecore/ecore_config_intro.fr.xml">
+ <!ENTITY ecore_config_listener SYSTEM "xml/ecore/ecore_config_listener.fr.xml">
+ <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.fr.xml">
+ <!ENTITY ecore_timers SYSTEM "xml/ecore/ecore_timers.fr.xml">
+ <!--ENTITY ecore_con_server_intro SYSTEM "xml/ecore/ecore_con_server_intro.fr.xml"-->
+ <!ENTITY ecore_events_adding SYSTEM "xml/ecore/ecore_events_adding.fr.xml">
+
+ <!-- evas -->
+ <!ENTITY evas_ecore_setup SYSTEM "xml/evas/evas_ecore_setup.fr.xml">
+ <!ENTITY evas_key_bindings SYSTEM "xml/evas/evas_key_bindings.fr.xml">
+ <!ENTITY evas_smart_intro SYSTEM "xml/evas/evas_smart_intro.fr.xml">
+
+ <!-- esmart -->
+ <!ENTITY esmart_trans_intro SYSTEM "xml/esmart/esmart_trans_intro.fr.xml">
+ <!ENTITY esmart_container_intro SYSTEM "xml/esmart/esmart_container_intro.fr.xml">
+
+ <!-- ewl -->
+ <!ENTITY ewl_intro SYSTEM "xml/ewl/ewl_intro.fr.xml">
+
+ <!-- edje -->
+ <!ENTITY edje_simple SYSTEM "xml/edje/edje_simple.fr.xml">
+ <!ENTITY edje_callback SYSTEM "xml/edje/edje_callback.fr.xml">
+ <!ENTITY edje_file_manipulation SYSTEM "xml/edje/edje_file_manipulation.fr.xml">
+
+ <!-- etox -->
+ <!--ENTITY etox_overview SYSTEM "xml/etox/etox_overview.fr.xml"--> 
+
+ <!-- evoak -->
+ <!ENTITY evoak_hello_eh SYSTEM "xml/evoak/evoak_hello_eh.fr.xml">
+
+ <!-- imlib2 -->
+ <!ENTITY imlib_watermark SYSTEM "xml/imlib/imlib_watermark.fr.xml">
+ <!ENTITY imlib_scale SYSTEM "xml/imlib/imlib_scale.fr.xml">
+ <!ENTITY imlib_free_rotate SYSTEM "xml/imlib/imlib_free_rotate.fr.xml">
+ <!ENTITY imlib_90_rotate SYSTEM "xml/imlib/imlib_90_rotate.fr.xml">
+ <!ENTITY imlib_flip SYSTEM "xml/imlib/imlib_flip.fr.xml">
+
+ <!-- Thumbs, aka: Epeg and Epsilon -->
+ <!ENTITY epeg_simple SYSTEM "xml/thumbs/epeg_simple.fr.xml">
+ <!ENTITY epsilon_simple SYSTEM "xml/thumbs/epsilon_simple.fr.xml">
+
+ <!-- edb -->
+ <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.fr.xml">
+ <!ENTITY edb_intro SYSTEM "xml/edb/edb_intro.fr.xml">
+ <!ENTITY edb_key_get SYSTEM "xml/edb/edb_key_get.fr.xml">
+
+ <!-- edje edc -->
+ <!ENTITY edje_embryo_toggle SYSTEM "xml/edje_edc/edje_embryo_toggle.fr.xml">
+ <!ENTITY edje_text_effect_fade SYSTEM "xml/edje_edc/edje_text_effect_fade.fr.xml">
+ <!-- emotion -->
+ <!ENTITY emotion_dvd_player SYSTEM "xml/emotion/emotion_dvd_player.fr.xml">
+ <!ENTITY emotion_media_player SYSTEM "xml/emotion/emotion_media_player.fr.xml">
+]>
+
+<book lang="fr" >
+ &bookinfo;
+
+ <!-- Chapters Go Here -->
+ &intro;
+ &imlib_recipes;
+ &evas_recipes;
+ &ecore_recipes;
+ &edb_eet_recipes;
+ &esmart_recipes;
+ &thumbs_recipes;
+<!-- &etox_recipes; -->
+ &edje_recipes;
+ &edje_edc_recipes;
+ &ewl_recipes;
+ &evoak_recipes;
+ &emotion_recipies;
+</book>
+
+
