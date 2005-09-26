@@ -147,6 +147,10 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			evfs_handle_monitor_stop_command(client,command);
 			break;
 
+		case EVFS_CMD_RENAME_FILE:
+			evfs_handle_file_rename_command(client,command);
+			break;
+
 		case EVFS_CMD_COPY_FILE:
 			printf("Copy file stub\n");
 			break;

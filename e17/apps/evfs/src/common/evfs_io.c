@@ -103,6 +103,7 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_STOPMON_FILE:
 		case EVFS_CMD_STARTMON_FILE:
 		case EVFS_CMD_REMOVE_FILE:
+		case EVFS_CMD_RENAME_FILE:
 			evfs_write_file_command(conn, command);
 			break;
 	}
@@ -156,8 +157,14 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 
 				free(path);
 			} else {
-				printf("we already have %d files\n", command->file_command.num_files);
+				//printf("we already have %d files\n", command->file_command.num_files);
 				/*TODO Handle multiple files*/
+
+			
+				command->file_command.files = realloc(command->file_command.files, sizeof(evfs_filereference*)*(command->file_command.num_files+1));
+				command->file_command.files[command->file_command.num_files] = path->files[0];
+				
+				command->file_command.num_files++;
 			}
 						  
 			

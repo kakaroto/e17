@@ -70,8 +70,9 @@ typedef enum evfs_command_type
   EVFS_CMD_STOPMON_FILE = 2,
   EVFS_CMD_COPY_FILE = 3,
   EVFS_CMD_MOVE_FILE = 4,
-  EVFS_CMD_REMOVE_FILE=5,
-  EVFS_CMD_LIST_DIR = 6
+  EVFS_CMD_RENAME_FILE = 5,
+  EVFS_CMD_REMOVE_FILE=6,
+  EVFS_CMD_LIST_DIR = 7
 }
 evfs_command_type;
 

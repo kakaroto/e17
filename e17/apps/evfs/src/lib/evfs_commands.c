@@ -49,3 +49,20 @@ void evfs_client_file_remove(evfs_connection* conn, evfs_filereference* ref) {
 	free(command);	
 
 }
+
+void evfs_client_file_rename(evfs_connection* conn, evfs_filereference* from, evfs_filereference* to) {
+	evfs_command* command = NEW(evfs_command);
+
+	printf("Renaming a file..\n");
+
+	command->type = EVFS_CMD_REMOVE_FILE;
+	command->file_command.num_files = 2;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*2);
+	command->file_command.files[0] = from;
+	command->file_command.files[1] = to;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+
+}

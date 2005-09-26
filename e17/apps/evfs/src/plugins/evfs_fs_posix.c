@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /*Main file wrappers*/
 int evfs_file_remove(char* src);
+int evfs_file_rename(char* src, char* dst);
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
 
@@ -238,15 +239,18 @@ int evfs_file_remove(char* src) {
 	struct stat* stat_src;
 	int i;
 
-	
-	
-
 	if (!stat(src, stat_src)) {
 		return file_remove(src, stat_src);
 	} else {
 		printf("Could not stat..\n");
 		return 1;
 	}
+}
+
+
+int evfs_file_rename(char* src, char* dst) {
+	printf("Renaming %s to %s\n", src,dst);
+	return evfs_misc_rename(src,dst);	
 }
 
 
@@ -587,12 +591,12 @@ file_move(char *src_path, struct stat *src_st, char *dst_path)
 
   D("Moving file %s to %s\n", src_path, dst_path);
 
-  /* Metadata is handled both in efsd_misc_rename()
+  /* Metadata is handled both in evfs_misc_rename()
      and file_copy().
   */
 
   /* Try simple rename ... */
-  if (!efsd_misc_rename(src_path, dst_path))
+  if (!evfs_misc_rename(src_path, dst_path))
     {
       D("Rename failed -- copying %s to %s, then removing.\n", src_path, dst_path);
       if (file_copy(src_path, src_st, dst_path))
@@ -674,7 +678,7 @@ dir_move(char *src_path, char *dst_path)
 	  goto error_exit;
 	}
       
-      if (efsd_misc_rename(src, dst))
+      if (evfs_misc_rename(src, dst))
 	continue;
       
       if (S_ISDIR(src_st.st_mode))
@@ -1039,7 +1043,7 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
       D("Trying simple rename() from %s to %s ...\n",
 	src_path, dst_path);
 
-      if (!efsd_misc_rename(src_path, dst_path))
+      if (!evfs_misc_rename(src_path, dst_path))
 	{
 	  int success;
 	  
@@ -1153,6 +1157,32 @@ evfs_misc_remove(char *filename)
     }
 
   D("Removing %s failed.\n", filename);
+  
+  D_RETURN_(FALSE);
+}
+
+int    
+evfs_misc_rename(char *file1, char *file2)
+{
+  D_ENTER;
+
+  if (!file1 || file1[0] == '\0' ||
+      !file2 || file2[0] == '\0')
+    {
+      errno = EINVAL;
+      D_RETURN_(FALSE);
+    }
+
+  if (rename(file1, file2) == 0)
+    {
+      /* Update stat cache to new name ... */
+      //efsd_stat_change_filename(file1, file2);
+
+      /* ... and metadata. */
+      //efsd_meta_move_data(file1, file2);
+
+      D_RETURN_(TRUE);
+    }
   
   D_RETURN_(FALSE);
 }

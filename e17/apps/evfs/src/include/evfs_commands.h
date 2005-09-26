@@ -4,6 +4,7 @@
 void evfs_monitor_add(evfs_connection* conn, evfs_filereference* ref);
 void evfs_monitor_remove(evfs_connection* conn, evfs_filereference* ref);
 void evfs_client_file_remove(evfs_connection* conn, evfs_filereference* ref);
+void evfs_client_file_rename(evfs_connection* conn, evfs_filereference* from, evfs_filereference* to);
 
 #endif
 
