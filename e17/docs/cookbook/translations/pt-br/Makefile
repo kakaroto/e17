@@ -1,5 +1,5 @@
 ### cuddletech.com - DocBook XML Document Transformation Makefile
-### Created: June 07th, 2005
+### Created: August 11th, 2003
 ### Requires: 	FOP (http://xml.apache.org/fop/)
 ###		 or XMLmind (http://www.xmlmind.com/foconverter/)
 ###		XSLTPROC (http://xmlsoft.org/XSLT/xsltproc2.html)
@@ -13,28 +13,30 @@
 ###		 http://docbook.org/tdg/en/html/part2.html  	<-- DocBook Element Reference
 
 
-### File without suffix
+### Filename without suffix
 FILE = eflcookbook.pt-BR
 
-#XSLTPROC = /usr/local/bin/xsltproc
-XSLTPROC = /usr/bin/xsltproc		# Gentoo
 
-#FOP = /opt/fop-0.20.5/fop.sh
-FOP = /usr/bin/fop			# Gentoo
+XSLTPROC = /usr/bin/xsltproc
+FOP = /opt/fop/fop.sh		## Make sure $JAVA_HOME is set.
+
 
 PREFIX = /usr/share/sgml/docbook
 
-###FO_XSL = $(PREFIX)/docbook-xsl-1.61.3/fo/docbook.xsl		## DB
-#FO_XSL = $(PREFIX)/docbook-xsl-1.61.3/fo/tldp-print.xsl	## LDP
-#FO_XSL = $(PREFIX)/xsl-stylesheets-1.62.0/fo/docbook.xsl	# Gentoo DB FO
-FO_XSL = $(PREFIX)/docbook-xsl-1.64.1/fo/docbook.xsl	# Official DB FO
+
+### Location of the 'Format Objects' XSL 
+FO_XSL = $(PREFIX)/xsl-stylesheets/fo/docbook.xsl	# OpenSolaris & Gentoo DB FO
+
+### Location of the HTML XSL
+HTML_XSL = $(PREFIX)/xsl-stylesheets/html/docbook.xsl	# OpenSolaris & Gentoo DB HTML
 
 ### XSL Arguments: the fop argeument will make FOP play nice, and the 9x7 format is for tech page size.
 #FO_ARGS = --stringparam page.height 9in --stringparam page.width 7in --stringparam fop.extensions 1 --stringparam draft.mode no 
 FO_ARGS = --stringparam fop.extensions 1 --stringparam draft.mode no 
 
-#HTML_XSL = $(PREFIX)/docbook-xsl-1.61.3/html/tldp-html.xsl
-HTML_XSL = $(PREFIX)/docbook-xsl-1.64.1/html/docbook.xsl	# Gentoo DB HTML
+
+
+####################################################################
 
 all: pdf html
 
