@@ -1,0 +1,46 @@
+<!-- Edje EDC Recipes -->
+
+<chapter>
+<title>Edje EDC e Embryo</title>
+
+<para>
+Os arquivos fontes de Coleções de Dados Edje ou Edje Data Collections ( EDC ) permitem uma fácil criação de ricas e potentes interface 
+gráfica. Suas aplicações Edje está dividida em duas partes distintas, o código da aplicação ( usando chamdas de <filename>Edje.h</filename> ) 
+e a descrição da interface em EDC. A única conectividade requerida entre sua interface e o código da sua aplicação são os sinais emitidos por 
+sua interface que são recebidas por callbacks Edje no código da sua aplicação.
+</para>
+
+<para>
+Um EDC está dividio em várias seções maiores descrevendo as imagens e fontes que são usadas 
+na interface, descrições de como as várias partes ( <literal>part</literal> ) da interface 
+são dispostas, e descrições de ações ou <literal>program</literal> que ocorrem quando se interage com sua 
+interface. Esta funcionalidade pode ser suplementada usando a linguagem de script Embryo para adicionar 
+programabilidade no estilo C na própria EDC Edje.
+</para>
+
+<para>
+O resultado final de uma EDC, incluindo todas as fonts e imagens, é um único EET. Já que a interface completa 
+é disponível em um único arquivo de "tema" é drásticamente simplificada.
+</para>
+
+<para>
+Embora os EDC Edje possam ser vistos como "temas" eles são muito mais que isto. Um "tema" tradicional é um 
+arquivo ou grupo de arquivos que incrementam uma interface gráfica existente mudando a cor dos elementos ou 
+modificando as imagens que compoem a própria interface. Mas estes métodos são insuficiente para 
+realmente mudar o design da interface de uma aplicação, limitando os criadores de temas de modifica-los e 
+impossibilitando um redesenho da aplicação em algum ponto para expandir as capacidades da interface 
+para uma maior funcionalidade. Uma aplicação GTK sempre terá um aspecto semelhante independente do tema 
+que usar. Um exemplo simples é que uma aplicação GTK ou QT sempre terá uma forma retangular e se tem uma 
+borda não se pode tirá-la mudando o tema. No entanto, uma aplicação Edje poderá mudar da forma 
+retangular para oval com uma simples modificação da EDC, ou poderá remover e rearrajnar todos os elementos da 
+interface sem nunca tocar no código. Desta maneira Edje permite uma grande quantidade controle e uma 
+flexibilidade maior que qualquer outra solução na comunidade Open Source e permite um modelo Aberto de 
+programação para permitir que não programadores ( como muitos criadores de temas são ) contribuam e modifiquem 
+as coisas como desejarem.
+</para>
+
+&edje_embryo_toggle;
+&edje_text_effect_fade;
+
+</chapter>
+

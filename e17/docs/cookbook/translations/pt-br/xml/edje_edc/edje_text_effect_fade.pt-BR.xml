@@ -1,0 +1,126 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>17 de Setembro 2004</date>
+</sectioninfo>
+
+<title>Receita: Efeito de dilução Edje no texto </title>
+
+<para>
+Os efeitos de texto podem dar uma aparência legal ao seu programa. Mas e 
+se caso você desejar incorporar nestes efeitos um efetio de diluição? Edje faz isto 
+possível e relativalmente simples.
+</para>
+
+<para>
+Todo o que você precisa fazer é incorporar o atributo <literal>color3</literal> conforme 
+vai diluindo o atributo <literal>color</literal> do texto. 
+<literal>color3</literal> mudará os valores de cor do efeito.
+</para>
+
+<para>
+Isto é ilustrado no seguinte exemplo:
+</para>
+
+<example>
+<title>Diluindo efeito com texto</title>
+<programlisting>
+collections {
+    group {
+        name, "Main";
+        min, 30 30;
+
+        parts {
+            part {
+                name, "foo";
+                type, TEXT;
+                effect, SOFT_SHADOW; 
+                mouse_events, 1;
+
+                description {
+                    state, "default" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 255 255 255 255;
+                    color3, 0 0 0 255;
+                }
+                description {
+                    state, "out" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 0 0 0 0;
+                    color3, 255 255 255 0;
+                }
+            }
+        }
+        programs {
+            program {
+                name, "foo";
+                signal, "mouse,in";
+                source, "foo";
+                action, STATE_SET "out" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+            program {
+                name, "foo";
+                signal, "mouse,out";
+                source, "foo";
+                action, STATE_SET "default" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+
+<para>
+Este exemplo pode ser compilado para dentro de um <literal>.eet</literal> 
+com o seguinte comando.
+</para>
+
+<example>
+<title>Compliação</title>
+<screen>
+zero@oberon[edje_text] -&gt; edje_cc text.edc
+</screen>
+</example>
+
+<para>
+Por alterar o valor de <literal>color3</literal> com o valor de <literal>color</literal> 
+você será capaz de alterar a aparância dos seus efeitos com seu texto.
+</para>
+
+</section>

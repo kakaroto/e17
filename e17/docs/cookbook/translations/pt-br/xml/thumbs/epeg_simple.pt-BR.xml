@@ -1,0 +1,97 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Thumbnailing simples com Epeg</title>
+
+<para>
+A aplicação mais simplística de thumbnailing que podemos escrever usará apenas dois argumentos, o nome do arquivo 
+( imagem ) de entrada e o nome do arquivo ( thumbnail ) de saída. O seguinte exemplo de código usa Epeg 
+exatamente para fazer isto.
+</para>
+
+<example>
+<title>Um simples Thumbnail Epeg</title>
+<programlisting>
+#include &lt;Epeg.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epeg_Image * image;
+        int w, h;
+
+        if(argc &lt; 2) {
+                printf("Usage: %s input.jpg output.jpg\n", argv[0]);
+                return(1);
+        }
+
+        image = epeg_file_open(argv[1]);
+
+        epeg_size_get(image, &amp;w, &amp;h);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], w, h);
+        printf("  Comment: %s", epeg_comment_get(image) );
+
+        epeg_decode_size_set(image, 128, 96);
+        epeg_file_output_set(image, argv[2]);
+        epeg_encode(image);
+        epeg_close(image);
+
+        printf("... Done.\n");
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+Este é um exemplo bastante simplístico, não há checagem para certificar-se que o arquivo de entrada é realmente um JPEG, 
+mas mostra adequadamente algumas das características da biblioteca. Ele pode ser compilado da senguinte maneira:
+</para>
+
+<example>
+<programlisting>
+gcc `epeg-config --libs --cflags` epeg-test.c -o epeg-test
+</programlisting>
+</example>
+
+<para>
+A função <function>epeg_file_open</function> abre um JPEG para ser manipulado, retornando um ponteiro 
+para <returnvalue>Epeg_Image</returnvalue>. Este ponteiro pode então ser passado para as outras 
+funções Epeg para manipulação.
+</para>
+
+<para>
+Duas funções diferentes são usadas aqui para pegar algumas informações sobre a imagem de entrada:
+<function>epeg_size_get</function> e <function>epeg_comment_get</function>. Note que os valores 
+retornados destas funções não são usadas em nenhuma outra função Epeg, são simplesmente para fins de informação.
+Um bom uso para estes valores retornados pode ser para definir o tamanho do thumbnail de saída, ou modificar e 
+passar um comentário ao thumbnail de saída.
+</para>
+
+<para>
+O conjunto de funções seguinte realmente fazem o trabalho. <function>epeg_decode_size_set</function> 
+define o tamanho da saída do thumbnail. <function>epeg_file_output_set</function> define o nome do
+arquivo de saída. E <function>epeg_encode</function> faz o verdadeiro trabalho pesado. Observe que enquanto 
+não checamos se houve exito aqui, <function>epeg_encode</function> retorna um int permitindo-nos checar se 
+a operação foi um sucesso.
+</para>
+
+<para>
+Uma vez criado o thumbnail, simplesmente chamamos a <function>epeg_close</function> para terminar o assunto.
+</para>
+
+<para>
+Enquanto este exemplo é bem simples você pode ver como o básico funciona. Epeg tem 
+também funções para redução, comentário no thumbnail, habilitar e desabilitar os comentários, 
+conversão de espaço de cor e ajustes de qualidade que podem ser usados para conseguir os 
+resultados que se deseja.
+</para>
+
+</section>
+

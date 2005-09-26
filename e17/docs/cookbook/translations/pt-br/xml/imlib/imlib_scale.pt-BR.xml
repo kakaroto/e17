@@ -1,0 +1,100 @@
+<!--
+#######################################################
+A simple Imlib2 scaling recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Escalonando imagem</title>
+
+<para>
+Conforme mais pessoas obtem a habilidade de publicar imagens na internet 
+é muitas vezes desejado escalonar estas imagens para um tamanho menor para 
+reduzir o uso de banda. Isto pode ser facilmente resolvido usando um 
+simples programa Imlib2.
+</para>
+
+<para>
+Esta receita pega o nome da imagem de entrada, a nova largura, altura e o nome 
+da imagem de saída, então escala a imagem de entrada para os valores dados, 
+salvando-a na imagem de saída.
+</para>
+
+<example>
+<title>Escalando imagem</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img, out_img;
+    int w, h;
+
+    if (argc != 5) {
+        fprintf(stderr, "Usage: %s [in_img] [w] [h] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    w = atoi(argv[2]);
+    h = atoi(argv[3]);
+    out_img = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(),
+                                            imlib_image_get_height(), w, h );
+    if (!out_img) {
+        fprintf(stderr, "Failed to create scaled image\n");
+        return 1;
+    }
+
+    imlib_context_set_image(out_img);
+    imlib_save_image(argv[4]);
+    return 0;
+}
+
+</programlisting>
+</example>
+<para>
+No exemplo ha uma mínima checagem dos argumentos, simplesmente checa se o 
+número de argumentos passado está correto.
+</para>
+
+<para>
+A imagem fonte é carregada com uma chamada à <function>imlib_load_image()</function>, 
+do qual carregará os dados da imagem na memória. Se a chamada falhar, NULL será 
+retornado. Uma vez com os dados da imagem precisamos selecionar a imagem para ser o 
+contexto atual. Isto diz ao Imlib2 em qual imagem se efetuará as operações. Isto é 
+feito chamando <function>imlib_context_set_image()</function>.
+Uma vez que a imagem foi definida como contexto atual podemos continuar com o 
+escalonamento. Isto é feito chamando <function>imlib_create_cropped_scaled_image()</function>, 
+que pega como argumentos, a posição de inicio em x, y, largura e altura da imagem fonte, e a 
+largura e altura da imagem escalada. A razão de passarmos a informações da imagem fonte é 
+que esta função pode recortar a imagem se assim desejar. Para recortar, simplesmente 
+modifica-se o x, y, largura da fonte e altura da fonte desejado. Isto resultará em uma 
+nova imagem out_img sendo produzida. Se o escalonamento falhar, será devolvido NULL . 
+Nós então definimos a out_img para ser o contexto atual e chamamos a função de 
+gravar, <function>imlib_save_image()</function>.
+</para>
+
+<para>
+Apesar de simples, este programa mostra a simplicidade de escalonamento de imagem usando a API da Imlib2.
+</para>
+
+</section>
+

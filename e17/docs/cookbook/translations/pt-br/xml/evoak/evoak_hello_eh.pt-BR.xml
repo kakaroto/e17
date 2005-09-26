@@ -1,0 +1,186 @@
+<!--
+#######################################################
+A simple evoak hello eh
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>02 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Cliente Evoak hello </title>
+
+<para>
+Esta receita é uma introdução muito simples ao mundo da programação 
+Evoak. Seguindo a grande tradição, esta receita mostrará a versão 
+canadense de "Hello World" num canvas evoak.
+</para>
+
+<example>
+<title>Includes e pré-declarações</title>
+<programlisting>
+#include &lt;Evoak.h&gt;
+#include &lt;Ecore.h&gt;
+
+static unsigned int setup_called = 0;
+
+static int canvas_info_cb(void *, int, void *);
+static int disconnect_cb(void *, int, void *);
+static void setup(Evoak *);
+</programlisting>
+</example>
+<para>
+Obviamente precisamos incluir o header Evoak, e o header Ecore é necessário para acessar as funções de callback.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    Evoak *ev = NULL;
+
+    if (!evoak_init()) {
+        fprintf(stderr, "evoak_init failed");
+        return 1;
+    }
+
+    ecore_event_handler_add(EVOAK_EVENT_CANVAS_INFO, canvas_info_cb, NULL);
+    ecore_event_handler_add(EVOAK_EVENT_DISCONNECT, disconnect_cb, NULL);
+
+    ev = evoak_connect(NULL, "evoak_intro", "custom");
+
+    if (ev) {
+        ecore_main_loop_begin();
+        evoak_disconnect(ev);
+    }
+
+    evoak_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Evoak precisa ser iniciado com uma chamada à <function>evoak_init</function>. Isto iniciará todas 
+as bibliotecas internas e os requerimentos para a Evoak.
+</para>
+
+<para>
+Assim que o Evoak iniciar corretamente, conectaremos dois callbacks, o primeiro é para informação de canvas e o 
+segundo é caso formos desconectados do servidor Evoak. Isto será discutido depois quando os próprios callbacks
+forem mostrados.
+</para>
+
+<para>
+Uma vez que os callbacks estão em seus lugares precisamos conectar ao servidor de canvas Evoak. 
+Esto é feito mediante a chamada para <function>evoak_connect</function>. Os parâmetros para 
+<function>evoak_connect</function> são: o servidor para conectar, o nome do cliente e a classe do cliente. Se o primeiro 
+argumento for NULL, como no exemplo, o servidor Evoak default é coenctado. O segundo arqumento da  <function>evoak_connect</function> 
+é o nome do cliente, este valor deverá ser únido já que isto será usado para distinguir um cliente do outro. O argumento final, a classe,
+é o tipo do cliente, alguns dos possíveis valores são: &quot;background&quot;, &quot;panel&quot;, &quot;application&quot; ou &quot;custom&quot;.
+</para>
+
+<para>
+Se a chamada para <function>evoak_connect</function> falhar um valor NULL será retornado. 
+Assim, sempre que recebemos um objeto Evoak, iniciamos o loop principal ecore. Quando ecore 
+termina, chamamos <function>evoak_disconnect</function> para disconectarmos do servidor Evoak.
+</para>
+
+<para>
+Terminamos por chamar a função <function>evoak_shutdown</function> para a limpeza final.
+</para>
+
+<example>
+<title>Callback de informação de canvas</title>
+<programlisting>
+static int canvas_info_cb(void *data, int type, void *ev) {
+    Evoak_Event_Canvas_Info *e = (Evoak_Event_Canvas_Info *)ev;
+
+    if (!setup_called) {
+        setup_called = 1;
+        setup(e->evoak);
+    }
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+Um callback de informação de canvas será chamado quando nosso cliente recebe informação do servidor de canvas Evoak.
+Com esta informação podemos fazer a inicialização do conteúdo dos nossos clientes. Isto está contido dentro da 
+flag setup_called já que só queremos inicializar uma vez.
+</para>
+
+<example>
+<title>Callback de desconexão</title>
+<programlisting>
+static int disconnect_cb(void *data, int type, void *ev) {
+    printf("disconnected\n");
+    ecore_main_loop_quit();
+    return 1;
+}
+</programlisting>
+</example>
+<para>
+A callback de desconexão será chamado quando o cliente for desconectado do 
+servidor Evoak. Neste caso, uma simples solução de sair é usado.
+</para>
+
+<example>
+<title>rotina de setup</title>
+<programlisting>
+static void setup(Evoak *ev) {
+    Evoak_Object *o = NULL;
+
+    evoak_freeze(ev);
+
+    o = evoak_object_text_add(ev);
+    evoak_object_text_font_set(o, "Vera", 12);
+    evoak_object_color_set(o, 255, 0, 0, 255);
+    evoak_object_text_text_set(o, "Hello Evoak, eh.");
+    evoak_object_show(o);
+
+    evoak_thaw(ev);
+}
+</programlisting>
+</example>
+<para>
+A rotina de setup será chamada uma vez para inciar a janela de nosso cliente. Para este exemplo, o 
+cliente apenas desenha o texto 'Hello Evoak, eh'. 
+</para>
+
+<para>
+A primeira coisa que fazemos é chamar <function>evoak_freeze</function>, isto deve nos proteger de ficar recebendo 
+qualquer callback não solicitado enquanto iniciamos nossa interface. Ao final da função chamamos a recíproca 
+<function>evoak_thaw</function> para "descongelar".
+</para>
+
+<para>
+Então continuamos criando um objeto de texto com <function>evoak_object_text_add</function> e com este objeto de texto, 
+iniciamos a fonte, cor e conteúdo do texto com chamadas para <function>evoak_object_text_font_set</function>,
+<function>evoak_object_color_set</function> e <function>evoak_object_text_text_set</function> respectivamente.
+</para>
+
+<example>
+<title>Compilação</title>
+<screen>
+zero@oberon [evoak_intro] -&gt; gcc -o hello_evoak main.c \
+ `evoak-config --cflags --libs`
+</screen>
+</example>
+<para>
+Como com tantas outras bibliotecas baseada en EFL, compilar uma aplicação Evoak é tão simples como chamar o 
+programa evoak_config e obter os conteúdos de --cflags e --libs.
+</para>
+
+<para>
+Isto é tudo, foi uma introdução à Evoak realmente simples e a superfície permanece sem nenhum 
+arranhão referente ao potêncial disponível para aplicações cliente.
+</para>
+
+</section>
+

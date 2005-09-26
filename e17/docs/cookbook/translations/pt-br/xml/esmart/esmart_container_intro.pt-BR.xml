@@ -1,0 +1,835 @@
+<!--
+#######################################################
+A simple recipe on using esmart containers
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>30 de Abril de 2004</date>
+</sectioninfo>
+
+<title>Receta: Introdução ao Container Esmart</title>
+
+<para>
+Geralmente ao desenhar a UI de uma aplicação há um desejo de agrupar os elementos comuns juntos e fazer com que seu layout
+dependa um do outro. Para este fim a biblioteca de Container Esmart foi criada. Ela foi projetada para contolar a parte difícil
+de layout, e em casos onde ela não faz o que você precisa, as porções de layout do container são extensíveis e modificáveis.
+</para>
+
+<para>
+Esta receita dará a base para usar um container Esmart. O produto final é um programa que te permitirá ver algumas
+das diferentes combinações de layout do container default. O layout será feito pelo Edje com callbacks para o programa
+mudar o layout do container e para informar se o usuário clicou em um elemento do container.
+</para>
+
+<example>
+<title>Includes e declarações</title>
+<programlisting>
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Edje.h&gt;
+#include &lt;Esmart/Esmart_Container.h&gt;
+#include &lt;getopt.h&gt;
+
+static void make_gui(const char *theme);
+static void container_build(int align, int direction, int fill);
+static void _set_text(int align, int direction);
+static void _setup_edje_callbacks(Evas_Object *o);
+static void _right_click_cb(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source);
+static void _left_click_cb(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source);
+static void _item_selected(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source);
+
+static Ecore_Evas *ee;
+static Evas_Object *edje;
+static Evas_Object *container;
+
+char *str_list[] = {"item 1", "item 2",
+                    "item 3", "item 4",
+                    "item 5"};
+</programlisting>
+</example>
+<para>
+Como nos outros programas EFL precisamos incluir Ecore, Ecore_Evas, Edje e como este é um exemplo de container,
+o cabeçalho do Esmart/Esmart_Container. Getopt será usado para permiir algum processo de linha de comando.
+</para>
+
+<para>
+Depois vem os protótipos de funções que serão descritos mais tarde quando chegarmos às suas respectivas implementações.
+Depois, algumas variáveis globais que serão usadas durante o programa. O array str_list é o conteúdo a ser ordenado no
+container.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+int main(int argc, char ** argv) {
+    int align = 0;
+    int direction = 0;
+    int fill = 0;
+    int ret = 0;
+    int c;
+    char *theme = NULL;
+
+    while((c = getopt(argc, argv, "a:d:f:t:")) != -1) {
+        switch(c) {
+            case 'a':
+                align = atoi(optarg);
+                break;
+
+            case 'd':
+                direction = atoi(optarg);
+                break;
+
+            case 'f':
+                fill = atoi(optarg);
+                break;
+
+            case 't':
+                theme = strdup(optarg);
+                break;
+
+            default:
+                printf("Unknown option string\n");
+                break;
+        }
+    }
+
+    if (theme == NULL) {
+        printf("Need a theme defined\n");
+        exit(-1);
+    }
+</programlisting>
+</example>
+<para>
+O inicio da função main pega as opções de linha comando e inicia a janela principal. Como você pode ver, solicitamos
+um tema para mostrar. Isto pode ser mais inteligente pocurando no diretório default de instalação e no diretório
+de aplicações do usuário, mas este exemplo prefere o modo mais fácil e força que o tema seja passado como argumento de linha de comando.
+</para>
+
+<example>
+<title>Inicialização</title>
+<programlisting>
+    if (!ecore_init()) {
+        printf("Can't init ecore, bad\n");
+        ret = 1;
+        goto EXIT;
+    }
+    ecore_app_args_set(argc, (const char **)argv);
+    
+    if (!ecore_evas_init()) { 
+        printf("Can't init ecore_evas, bad\n");
+        ret = 1;
+        goto EXIT_ECORE;
+    }
+    
+    if (!edje_init()) {
+        printf("Can't init edje, bad\n");
+        ret = 1;
+        goto EXIT_ECORE_EVAS;
+    }
+    edje_frametime_set(1.0 / 60.0);
+    
+    make_gui(theme);
+    container_build(align, direction, fill);
+    
+    ecore_main_loop_begin();
+</programlisting>
+</example>
+<para>
+Depois de receber os argumentos de linha de comando, continuamos por inicializar as bibliotecas requeridas, Ecore,
+Ecore_Evas e Edje. Tomamos o passo adicional de iniciar o frame rate do Edje.
+</para>
+
+<para>
+Uma vez completada a inicialização, criamos a GUI inicial para a aplicação.
+Separei a construção do container em uma função separada para deixar o código do container mais fácil de localizar no exemplo.
+</para>
+
+<para>
+Quando tudo está criado, chamamos a <function>ecore_main_loop_begin</function> e esperamos que ocorram os eventos.
+
+</para>
+
+<example>
+<title>Finalização</title>
+<programlisting>
+    edje_shutdown();
+
+EXIT_ECORE_EVAS:
+    ecore_evas_shutdown();
+
+EXIT_ECORE:
+    ecore_shutdown();
+
+EXIT:
+    return ret;
+}
+</programlisting>
+</example>
+<para>
+A rotina de finalização habitual nos faz bons programadores e terminamos tudo o que inicializamos.
+</para>
+
+<example>
+<title>callbacks de janela</title>
+<programlisting>
+static int sig_exit_cb(void *data, int ev_type, void *ev) {
+    ecore_main_loop_quit();
+    return 1;
+}
+
+static void win_del_cb(Ecore_Evas *ee) {
+    ecore_main_loop_quit();
+}
+
+static void win_resize_cb(Ecore_Evas *ee) {
+    int w, h;
+    int minw, minh;
+    int maxw, maxh;
+    Evas_Object *o = NULL;
+
+    if (ee) {
+        ecore_evas_geometry_get(ee, NULL, NULL, &amp;w, &amp;h);
+        ecore_evas_size_min_get(ee, &amp;minw, &amp;minh);
+        ecore_evas_size_max_get(ee, &amp;maxw, &amp;maxh);
+
+        if ((w &gt;= minw) &amp;&amp; (h &gt;= minh) &amp;&amp; (h &lt;= maxh) &amp;&amp; (w &lt;= maxw)) {
+            if ((o = evas_object_name_find(ecore_evas_get(ee), "edje")))
+                evas_object_resize(o, w, h);
+        }
+    }
+}
+</programlisting>
+</example>
+<para>
+No passo seguinte iniciamos alguns callbacks genéricos para ser usados pela UI. Estes serão os callbacks de
+sair, destruir e redimensionar. Novamente, as funções habituais EFL. Apesar que o callback de saída não é
+estritamente necessário já que Ecore chamará a <function>ecore_main_loop_quit()</function> se não houver nenhum
+controlador registrado para este callback.
+</para>
+
+<example>
+<title>make_gui</title>
+<programlisting>
+static void make_gui(const char *theme) {
+    Evas *evas = NULL;
+    Evas_Object *o = NULL;
+    Evas_Coord minw, minh;
+
+    ee = NULL;
+    edje = NULL;
+    container = NULL;
+
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit_cb, NULL);
+
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 400);
+    ecore_evas_title_set(ee, "Container Example");
+
+    ecore_evas_callback_delete_request_set(ee, win_del_cb);
+    ecore_evas_callback_resize_set(ee, win_resize_cb);
+    evas = ecore_evas_get(ee);
+    
+    // create the edje
+    edje = edje_object_add(evas);
+    evas_object_move(edje, 0, 0);
+    
+    if (edje_object_file_set(edje, theme, "container_ex")) {
+        evas_object_name_set(edje, "edje");
+        
+        edje_object_size_min_get(edje, &amp;minw, &amp;minh);
+        ecore_evas_size_min_set(ee, (int)minw, (int)minh);
+        evas_object_resize(edje, (int)minw, (int)minh);
+        ecore_evas_resize(ee, (int)minw, (int)minh);
+        
+        edje_object_size_max_get(edje, &amp;minw, &amp;minh);
+        ecore_evas_size_max_set(ee, (int)minw, (int)minh);
+        evas_object_show(edje);
+    
+    } else {
+        printf("Unable to open (%s) for edje theme\n", theme);
+        exit(-1);
+    }
+    _setup_edje_callbacks(edje);
+    ecore_evas_show(ee);
+}
+</programlisting>
+</example>
+<para>
+A GUI consiste do Ecore_Evas que contém o próprio canvas, e o Edje que usaremos para controlar nosso layout.
+A função <function>make_gui</function> inicia os callbacks definidos mais acima e cria o Ecore_Evas.
+</para>
+
+<para>
+Uma vez definido o Evas e os callbacks, criamos o objeto Edje que definirá nosso layout.
+A chamada à <function>edje_object_add</function> é usada para criar o objeto no Evas,
+e uma vez que isto é feito, pegamos o tema passado pelo usuário e configuramos o Edje para usar este tema, o parâmetro
+&quot;container_ex&quot; é o nome do grupo dentro do EET que vamos usar.
+</para>
+
+<para>
+Uma vez que o arquivo de tema foi passado para o Edje, usamos os valores no arquivo de tema para inciar os
+limites do tamanho da aplicação, e mostramos o Edje. Então iniciamos os callbacks no Edje e mostramos o Ecore_Evas.
+</para>
+
+<example>
+<title>Callbacks Edje</title>
+<programlisting>
+static void _setup_edje_callbacks(Evas_Object *o) {
+    edje_object_signal_callback_add(o, "left_click", 
+                        "left_click", _left_click_cb, NULL);
+    edje_object_signal_callback_add(o, "right_click", 
+                        "right_click", _right_click_cb, NULL);
+}
+</programlisting>
+</example>
+<para>
+O programa terá dois callbacks principais conectados ao Edje, um para o sinal de clique com o botão
+esquerdo do mouse e outro para o sinal do botão direito. Estes serão usados para mudar a direção/alinhamento do container.
+O segundo e o terceiro parametros dos callbacks precisam bater com os dados emitidos com o sinal do Edje, isto será
+visto mais tarde quando vermos o arquivo EDC. O terceiro paramêtro é a função para chamar, e o ultimo, qualquer dado
+que desejamos passar pro callback.
+</para>
+
+<example>
+<title>container_build</title>
+<programlisting>
+static void container_build(int align, int direction, int fill_policy) {
+    int len = 0;
+    int i = 0;
+    const char *edjefile = NULL;
+    
+    container = esmart_container_new(ecore_evas_get(ee));
+    evas_object_name_set(container, "the_container");
+    esmart_container_direction_set(container, direction);
+    esmart_container_alignment_set(container, align);
+    esmart_container_padding_set(container, 1, 1, 1, 1);
+    esmart_container_spacing_set(container, 1);
+    esmart_container_fill_policy_set(container, fill_policy);
+
+    evas_object_layer_set(container, 0);
+    edje_object_part_swallow(edje, "container", container);
+</programlisting>
+</example>
+<para>
+A função <function>container_build</function> criará um container e inicializará nossos elementos de dados no container.
+A criação é suficientement fácil com uma chamda à <function>esmart_container_new</function> devolvendo o Evas_Object que é
+o container. Uma vez criado podemos dar um nome ao container para fazer a referência mais fácil.
+</para>
+
+<para>
+O próximo passo, iniciamos a direção, que é CONTAINER_DIRECTION_VERTICAL ou CONTAINER_DIRECTION_HORIZONTAL
+[ou neste caso, um int passado pela linha de comando que refere-se a uma das direções sendo 1 e 0 respectivamente].
+A direção informa ao container de que maneira os elementos serão desenhados.
+</para>
+
+<para>
+Depois da direção iniciamos o alinhamento do container. O alinhamento informa ao container de onde desenhar os elementos.
+Os valores possíveis são: ONTAINER_ALIGN_CENTER, CONTAINER_ALIGN_LEFT, CONTAINER_ALIGN_RIGHT, CONTAINER_ALIGN_TOP
+e CONTAINER_ALIGN_BOTTOM. Com o layout default, direita e esquerda se aplicam apenas a um container vertical, e acima e abaixo
+se aplicam a um container horizontal, enquanto centro se aplica a ambos.
+</para>
+
+<para>
+Se desejarmos usar um esquema de layout diferente do default, poderemos fazer por uma chamada
+a <function>esmart_container_layout_plugin_set(container, "name")</function> onde &quot;name&quot;
+é o nome do plugin à usar. A configuração default é o container nomeado &quot;default&quot;.
+</para>
+
+<para>
+Uma vez inicializado as direções e o alinhamento, o espaçamento e o preenchimento do container são especificados.
+O preenchimento especifica o espaço em volta do container passando quatro parâmetros: left, right, top e buttom.
+O parâmetro de espaçamento especifica o espaço entre os elementos no container.
+</para>
+
+<para>
+Então continuamos e iniciamos a política de preenchimento do container. Isto especifica como os elementos
+são posicionados para preencher o espaço no container. Os valores possíveis são:
+CONTAINER_FILL_POLICY_NONE, CONTAINER_FILL_POLICY_KEEP_ASPECT, CONTAINER_FILL_POLICY_FILL_X,
+CONTAINER_FILL_POLICY_FILL_Y, CONTAINER_FILL_POLICY_FILL e CONTAINER_FILL_POLICY_HOMOGENOUS.
+</para>
+
+<para>
+Uma vez que o container é completamente especificado, iniciamos a camada de containers e "tragamos" o container
+para dentro do ejde e a parte chamada &quot;container&quot;.
+</para>
+
+<example>
+<title>A&#241;adiendo Elementos al Contenedor</title>
+<programlisting>
+    len = (sizeof(str_list) / sizeof(str_list[0]));
+    for(i = 0; i &lt; len; i++) {
+        Evas_Coord w, h;
+        Evas_Object *t = edje_object_add(ecore_evas_get(ee));
+
+        edje_object_file_get(edje, &amp;edjefile, NULL);
+        if (edje_object_file_set(t, edjefile, "element")) {
+            edje_object_size_min_get(t, &amp;w, &amp;h);
+            evas_object_resize(t, (int)w, (int)h);
+        
+            if (edje_object_part_exists(t, "element.value")) {
+                edje_object_part_text_set(t, "element.value", str_list[i]);
+                evas_object_show(t);
+                int *i_ptr = (int *)malloc(sizeof(int));
+                *i_ptr = (i + 1);
+
+                edje_object_signal_callback_add(t, "item_selected", 
+                                    "item_selected", _item_selected, i_ptr);
+    
+                esmart_container_element_append(container, t);
+            } else {
+                printf("Missing element.value part\n");
+                evas_object_del(t);
+            }
+        } else {
+            printf("Missing element part\n");
+            evas_object_del(t);
+        }
+    }
+    evas_object_show(container);
+    _set_text(align, direction);
+}
+</programlisting>
+</example>
+<para>
+Agora que temos um container, podemos adicionar alguns elemenos para mostrar. Cada uma das entradas no
+array str_list definido no inicio do programa será adicionada no container como uma parte de texto.
+</para>
+
+<para>
+Para cada elemento criamos uma novo objeto Edje no Evas. Então necessitamos saber o nome do arquivo
+de tema usado para criar nosso Edje principal, chamamos <function>edje_object_file_get</function> que
+iniciará o arquivo edje para o valor informado.
+</para>
+
+<para>
+Então tentamos iniciar o grupo chamado &quot;element&quot; no elemento novamente criado. Se isto falhar
+imprimimos um erro e deletamos o objeto.
+</para>
+
+<para>
+A medida qe vamos encontrando o grupo &quot;element&quot; podemos capturar a parte para do nosso elemento chamada &quot;element.value&quot;. 
+Se esta parte existir, ajustamos o valor de texto da parte para nossa string atual e mostramos a parte.
+</para>
+
+<para>
+Um callback é criado por intermédio da <function>edje_object_signal_callback_add</function> e vinculado ao novo
+elemento. Este será chamado se o sinal &quot;item_selected&quot; é enviado pelo Edje. O valor i_ptr
+mostra como se pode vincular dados ao elemento, quando o usuário clicar em um elemento seu número será
+impresso no console.
+</para>
+
+<para>
+Uma vez criado o elemento adicionamos-o ao container.
+</para>
+
+<para>
+Por fim, o container é mostrado e fazemos algum trabalho extra para mostrar informação sobre o container no cabeçalho
+por meio da chamada <function>_show_text</function>.
+</para>
+
+<example>
+<title>_set_text</title>
+<programlisting>
+static void _set_text(int align, int direction) {
+    Evas_Object *t = edje_object_add(ecore_evas_get(ee));
+    const char *edjefile;
+
+    if (direction == CONTAINER_DIRECTION_VERTICAL)
+        edje_object_part_text_set(edje, "header_text_direction", "vertical");
+    else
+        edje_object_part_text_set(edje, "header_text_direction", "horizontal");
+
+    if (align == CONTAINER_ALIGN_CENTER) 
+        edje_object_part_text_set(edje, "header_text_align", "center");
+    
+    else if (align == CONTAINER_ALIGN_TOP)
+        edje_object_part_text_set(edje, "header_text_align", "top");
+    
+    else if (align == CONTAINER_ALIGN_BOTTOM)
+        edje_object_part_text_set(edje, "header_text_align", "bottom");
+    
+    else if (align == CONTAINER_ALIGN_RIGHT)
+        edje_object_part_text_set(edje, "header_text_align", "right");
+    
+    else if (align == CONTAINER_ALIGN_LEFT)
+        edje_object_part_text_set(edje, "header_text_align", "left");
+}
+</programlisting>
+</example>
+<para>
+A rotina <function>_set_text</function> pega a direção e o alinhamento atual do container e coloca algum texto
+no cabeçalho do programa. Isto é apenas uma simples comunicação com o usuário da configuração do container atual.
+</para>
+
+<example>
+<title>_left_click_cb</title>
+<programlisting>
+static void _left_click_cb(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source) {
+    Container_Direction dir = esmart_container_direction_get(container);
+    Container_Direction new_dir = (dir + 1) % 2;
+    Container_Alignment align = esmart_container_alignment_get(container);
+
+    esmart_container_direction_set(container, new_dir);
+
+    if (align != CONTAINER_ALIGN_CENTER) {
+        if (new_dir == CONTAINER_DIRECTION_HORIZONTAL)
+            align = CONTAINER_ALIGN_TOP;
+        else
+            align = CONTAINER_ALIGN_LEFT;
+    }
+    esmart_container_alignment_set(container, align);
+    _set_text(align, new_dir);
+}
+</programlisting>
+</example>
+<para>
+Quando o usuário clica com o botão esquerdo do mouse este callback irá ser executado. Nós pegamos a informação
+de direção atual do container e mudamos para a outra direção (ex. horizontal se torna vertical e vice-versa).
+Também reiniciamos o alinhamento se não estamos atualmente alinhado no centro para certificarmos que tudo é válido
+para a nova direção. O texto no cabeçalho é atualizado.
+</para>
+
+<example>
+<title>_right_click_cb</title>
+<programlisting>
+static void _right_click_cb(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source) {
+    Container_Direction dir = esmart_container_direction_get(container);
+    Container_Alignment align = esmart_container_alignment_get(container);
+    
+    if (dir == CONTAINER_DIRECTION_HORIZONTAL) {
+        if (align == CONTAINER_ALIGN_TOP)
+            align = CONTAINER_ALIGN_CENTER;
+        
+        else if (align == CONTAINER_ALIGN_CENTER)
+            align = CONTAINER_ALIGN_BOTTOM;
+        
+        else
+            align = CONTAINER_ALIGN_TOP;
+    
+    } else {
+        if (align == CONTAINER_ALIGN_LEFT)
+            align = CONTAINER_ALIGN_CENTER;
+        
+        else if (align == CONTAINER_ALIGN_CENTER)
+            align = CONTAINER_ALIGN_RIGHT;
+        
+        else
+            align = CONTAINER_ALIGN_LEFT;
+    }
+    esmart_container_alignment_set(container, align);
+    _set_text(align, esmart_container_direction_get(container));
+}
+</programlisting>
+</example>
+<para>
+O calback do clique do botão direito intercalará entre os alinhamentos disponíveis por uma direção dada
+quando o usuário clicar com o botão direito do mouse.
+</para>
+
+<example>
+<title>_item_selected</title>
+<programlisting>
+static void _item_selected(void* data, Evas_Object* o, const char* emmission,
+                                                            const char* source) {
+    printf("You clicked on the item with number %d\n", *((int *)data));
+}
+</programlisting>
+</example>
+<para>
+Finalmente o callback <function>_item_selected</function> será executado quando o usuário clicar no
+botão central do mouse sobre o item do container. O dado conterá o número para este elemento na rotina
+criada acima.
+</para>
+
+<para>
+Este é o fim do código para a aplicação, depois vem a EDC requerida para que tudo seja mostado e funcione corretamente.
+</para>
+
+<example>
+<title>La Edc</title>
+<programlisting>
+fonts {             
+    font: "Vera.ttf" "Vera";
+}                   
+                        
+collections {           
+    group {         
+        name, "container_ex";
+        min, 300, 300;
+        max, 800, 800;
+            
+        parts { 
+            part {
+                name, "bg";
+                type, RECT;
+                mouse_events, 1;
+                    
+                description {
+                    state, "default" 0.0;
+                    color, 0 0 0 255;
+                        
+                    rel1 {
+                        relative, 0.0 0.1;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 0 0;
+                    }
+                }   
+            }           
+                        
+            part {      
+                name, "header";
+                type, RECT;
+                mouse_events, 0;
+
+                description {
+                    state, "default" 0.0;
+                    color, 255 255 255 255;
+                
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 0 0; 
+                    }
+
+                    rel2 {
+                        relative, 1.0 0.1;
+                        offset, 0 0;
+                    }
+                }
+            }
+
+            part {
+                name, "header_text_direction";
+                type, TEXT;
+                mouse_events, 0;
+
+                description {
+                    state, "default" 0.0;
+                    color, 0 0 0 255;
+
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 0 10;
+                        to, "header";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 0 0;
+                        to, "header";
+                    }
+                    text {
+                        text, "direction";
+                        font, "Vera";
+                        size, 10;
+                    }
+                }
+            }
+
+            part {
+                name, "header_text_align";
+                type, TEXT;
+                mouse_events, 0;
+
+                description {
+                    state, "default" 0.0;
+                    color, 0 0 0 255;
+
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 0 0;
+                        to, "header_text_direction";
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 110 0;
+                        to, "header_text_direction";
+                    }
+                    text {
+                        text, "align";
+                        font, "Vera";
+                        size, 10;
+                    }
+                }
+            }
+</programlisting>
+</example>
+<para>
+Este arquivo EDC espera ter a font Vera incorporada dentro dele, como é definido pela seção de fontes no inicio.
+Isto quer dizer que quando você compila o edc você necessita do arquivo Vera.ttf no diretório corrente ou dar
+ao edje_cc a flag -fd e especificar o diretório para a fonte.
+</para>
+
+<para>
+Depois que as fontes são definidas, as coleções principais são definidas. A primeira coleção é a porção principal da
+própria aplicação, o grupo &quot;container_ex&quot;. Este grupo especifica a janela principal da aplicação. Como
+tal ele contêm as partes para o fundo, o cabeçalho e o texto de cabeçalho. Estas partes são bem padrão com algum
+(mínimo) alinhamento feito entre elas.
+</para>
+
+<example>
+<title>A Parte Container</title>
+<programlisting>
+            part {
+                name, "container";
+                type, RECT;
+                mouse_events, 1;
+
+                description {
+                    state, "default" 0.0;
+                    visible, 1;
+
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 0 0;
+                        to, bg;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 0 0;
+                        to, bg;
+                    }
+                    color, 0 0 0 0;
+                }
+            }
+        }
+        programs {
+            program {
+                name, "left_click";
+                signal, "mouse,clicked,1";
+                source, "container";
+                action, SIGNAL_EMIT "left_click" "left_click";
+            }
+
+            program {
+                name, "right_click";
+                signal, "mouse,clicked,3";
+                source, "container";
+                action, SIGNAL_EMIT "right_click" "right_click";
+            }
+        }
+    }
+</programlisting>
+</example>
+<para>
+A parte container é então definida. A parte em si é bem siples, apenas posicionada relativamente ao fundo
+e iniciada para receber eventos do mouse. Depois de definir as partes especificamos os programas para este
+grupo, do qual há dois. O primeiro programa &quot;left_click&quot; espeficia o que vai acontecer em um
+evento do primeiro botão do mouse.
+</para>
+
+<para>
+A ação é emetir um sinal, os dois parâmetos depois de SIGNAL_EMIT bate com os valores postos no callback
+no código da aplicação.
+</para>
+
+<para>
+Há um callback similar para o terceiro botão do mouse assim como para o primeiro, só que emitindo um sinal
+levemente diferente.
+</para>
+
+<example>
+<title>O Grupo Elemento</title>
+<programlisting>
+    group {
+        name, "element";
+        min, 80 18;
+        max, 800 18;
+
+        parts {
+            part {
+                name, "element.value";
+                type, TEXT;
+                mouse_events, 1;
+                effect, NONE;
+
+                description {
+                    state, "default" 0.0;
+                    visible, 1;
+
+                    rel1 {
+                        relative, 0.0 0.0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, 0 0;
+                    }
+                    color, 255 255 255 255;
+
+                    text {
+                        text, "";
+                        font, "Vera";
+                        size, 10;
+                    }
+                }
+            }
+        }
+        programs {
+            program {
+                name, "center_click";
+                signal, "mouse,clicked,2";
+                source, "element.value";
+                action, SIGNAL_EMIT "item_selected" "item_selected";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+<para>
+O grupo elemento especifica como cada elemento do container é mostrado. Você notará que os nomes aqui dados
+batem com os nomes que se procuram no próprio código da aplicação enquanto se criam os elementos.
+</para>
+
+<para>
+Há um programa neste grupo que irá emitir um sinal de &quot;item_selected&quot; quando o botão central do mouse é
+pressionado enquanto estivermos sobre um dos elementos na lista.
+</para>
+
+<para>
+Este é o final do código EDC. Para compliar o código da aplicação, um makefile similar ao abaixo
+pode ser usado.
+</para>
+
+<example>
+<title>Makefile</title>
+<programlisting>
+CFLAGS = `ecore-config --cflags` `evas-config --cflags` `esmart-config --cflags`
+LIBS = `ecore-config --libs` `evas-config --libs` `esmart-config --libs` \
+            -lesmart_container
+
+container_ex: container/container_ex.c
+        gcc -o container/container_ex container/container_ex.c $(CFLAGS) $(LIBS)
+</programlisting>
+</example>
+
+<para>
+E para criar o arquivo EET, um simples 'edje_cc default.edc' deve ser suficiente desde que o
+arquivo Vera.ttf esteja no diretório atual.
+</para>
+
+<para>
+Uma vez que você tenha compilado, você precisará fazer <screen>./container_ex -t default.edj</screen> e tudo
+deve funcionar bem.
+</para>
+
+<para>
+Então é isto, assumindo que tudo saia como planejado, você deverá ter uma simples aplicação em que clicando
+com o botão esquerdo/direito do mouse moverá  o container para diferentes posições da jenela.
+Enquanto clicando com o botão central do mouse nos elementos, imprimirá o número do elemento.
+</para>
+</section>
+

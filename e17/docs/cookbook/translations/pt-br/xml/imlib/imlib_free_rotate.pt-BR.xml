@@ -1,0 +1,96 @@
+<!--
+#######################################################
+A simple Imlib2 free rotate recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>06 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Rotação Livre</title>
+
+<para>
+Algumas vezes é desejado rotacioanr uma imagem em um ângulo 
+específico. Imblib2 faz este processo fácilmente. Este exemplo 
+mostra como fazer isto. Se você deseja rotacionar a imagem em 
+angulos de 90 graus, veja a receita de roação de 90 graus já 
+esta receita deixa uma borda negra ao redor da imagem.
+</para>
+
+<example>
+<title>Rotação livre</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img, out_img;
+    float angle = 0.0;
+    
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s [in_img] [angle] [out_img]\n", argv[0]);
+        return 1;
+    }
+    
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+    
+    angle = (atof(argv[2]) * (M_PI / 180.0));
+    out_img = imlib_create_rotated_image(angle);
+    if (!out_img) {
+        fprintf(stderr, "Failed to create rotated image\n");
+        return 1;
+    }
+ 
+    imlib_context_set_image(out_img);
+    imlib_save_image(argv[3]);
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Antes uma checagem simples dos argumentos. Começamos carregando 
+a imagem específicada na memoria com 
+<function>imlib_load_image()</function> passando o nome da imagem 
+como parâmetro. Então pegamos a imagem fazendo-a como conexto 
+atual com <function>imblib_context_set_image</function>. Os 
+contextos sãos usados na Imlib2 para saber qual imagem 
+trabalhar. Quando você quer fazer chamada imlib em uma imagem, 
+a imagem deve estar selecionada como contexto atual. Então 
+convertemos o ângulo dado em graus para radiano já que a função 
+de rotação da Imlib2 trabalha em redianos. A rotação é feita com 
+<function>imlib_create_rotated_image()</function>.  A função de 
+rotação irá retornar a nova imagem. Para salvar a nova imagem 
+precisamos seleciona-la como contexto atual, e novamente chamar 
+<function>imlib_context_set_image()</function>. Então uma simples 
+chamada à <function>imlib_save_image()</function> dando o nome do 
+arquivo de saída salva a nova imagem rotacionada.
+
+</para>
+
+<para>
+A função de rotação da Imlib2 colocará uma borda preta 
+em volta da imagem para preencher qualquer espaço vazio. 
+Esta borda é calculada de maneira que a imagem rotacioanda 
+caiba na saída. Isto colocará bordas ao redor da imagem de 
+saida se você rotacionar em 180 graus.
+</para>
+
+</section>
+
+

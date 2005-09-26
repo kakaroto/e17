@@ -1,0 +1,591 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>28 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Introdução aos objetos inteligentes Evas</title>
+
+<para>
+Quando trabalhar mais com Evas, você terá vários 
+<literal>Evas_Object</literal> dos quais estará trabalhando e 
+aplicando as mesmas operações para mantê-los em sincronia. Seria mais 
+conveniente agrupar todos este <literal>Evas_Object</literal> em um único 
+objeto onde todas as transformações podem ser aplicadas.
+</para>
+
+<para>
+Os objetos inteligentes Evas fornecem a capacidade de escrever 
+seus próprios objetos e ter a Evas chamando suas funções para
+movimentar, redimencionar, esconder, fazer camadas e todas as coisas 
+que um <literal>Evas_Object</literal> é responsável de controlar. Junto 
+com os callbacks normais do <literal>Evas_Object</literal>, os objetos 
+inteligentes permitem definir suas próprias funções para controlar 
+quaisquer operações especiais que desejar.
+</para>
+
+<para>
+Esta introdução está dividia em 3 arquivos: foo.h, foo.c e main.c. O 
+objeto inteligente criado chama-se <literal>foo</literal> e está 
+definido nos foo.c e foo.h, main.c mostra como o novo objeto 
+inteligente pode ser usado.
+</para>
+
+<para>
+O objeto inteligente em si é apenas dois quadrados, um dentro do outro, 
+onde o interno está separado 10% da borda do quadrado externo. Ao passo 
+que o programa principal se executa um callback de temporizador Ecore 
+reposicionará e redimencionará o objeto inteligente.
+</para>
+
+<para>
+O arquivo básico para este objeto inteligente vem de um template 
+Evas Smart Object de autoria de Atmos e localizada em: <literal><ulink
+url="http://www.atmos.org/code/src/evas_smart_template_atmos.c">
+www.atmos.org/code/src/evas_smart_template_atmos.c</ulink></literal> 
+que foi baseado no template de autoria de Rephorm.
+</para>
+
+<para>
+Primeiro precisamos definir a interface externa do nosso objeto 
+inteligente. Neste caso apenas precisamos de uma chamada para 
+criar o novo objeto.
+<example>
+<title>foo.h</title>
+<programlisting>
+#ifndef _FOO_H_
+#define _FOO_H_ 
+   
+#include &lt;Evas.h&gt;
+
+Evas_Object *foo_new(Evas *e);
+
+#endif
+</programlisting>
+</example>
+</para>
+
+<para>
+Com isto fora do caminho, entramos na escura entranhas da besta, o código do objeto inteligente.
+<example>
+<title>foo.c</title>
+<programlisting>
+#include &lt;Evas.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct _Foo_Object Foo_Object;
+struct _Foo_Object {
+	Evas_Object *clip;
+	Evas_Coord x, y, w, h;
+
+	Evas_Object *outer;
+	Evas_Object *inner;
+};  
+</programlisting>
+</example>
+<literal>Foo_Object</literal> armazenará toda a informação do nosso objeto. Neste 
+caso é o objeto caixa externa, caixa interna, um objeto de clipping e a atual 
+posição e tamanho do objeto.
+</para>
+
+<para>
+<programlisting>
+static Evas_Smart *_foo_object_smart_get();
+static Evas_Object *foo_object_new(Evas *evas);
+static void _foo_object_add(Evas_Object *o);
+static void _foo_object_del(Evas_Object *o);
+static void _foo_object_layer_set(Evas_Object *o, int l);
+static void _foo_object_raise(Evas_Object *o);
+static void _foo_object_lower(Evas_Object *o);
+static void _foo_object_stack_above(Evas_Object *o, Evas_Object *above);
+static void _foo_object_stack_below(Evas_Object *o, Evas_Object *below);
+static void _foo_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+static void _foo_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
+static void _foo_object_show(Evas_Object *o);
+static void _foo_object_hide(Evas_Object *o);
+static void _foo_object_color_set(Evas_Object *o, int r, int g, int b, int a);
+static void _foo_object_clip_set(Evas_Object *o, Evas_Object *clip);
+static void _foo_object_clip_unset(Evas_Object *o);
+</programlisting>
+As pré-declarações requeridas para o objeto inteligente. Estas serão explicadas 
+quando chegarmos na implementação.
+</para>
+
+<para>
+<programlisting>
+Evas_Object *foo_new(Evas *e) {
+    Evas_Object *result = NULL;
+    Foo_Object *data = NULL;
+
+    if ((result = foo_object_new(e))) {
+        if ((data = evas_object_smart_data_get(result)))
+            return result;
+        else
+            evas_object_del(result);
+    }
+
+    return NULL;
+}
+</programlisting>
+<function>foo_new()</function> única interface externa e é responsável 
+por configurar o objeto em si. A chamada à <function>foo_object_new()</function> 
+fará o trabalho pesado na criação do objeto. A 
+<function>evas_object_smart_data_get()</function> é mais uma checagem de erro 
+do que qualquer outra coisa. Quando executa-se <function>foo_object_new()</function> 
+adicionará o objeto inteligente ao evas e isto resultará em uma chamada à 
+<literal>add</literal>. Neste caso <literal>add</literal> criará um 
+<literal>Foo_Object</literal>. Assim, estamos apenas certificando 
+que <literal>Foo_Object</literal> foi criado.
+</para>
+
+<para>
+<programlisting>
+static Evas_Object *foo_object_new(Evas *evas) {
+    Evas_Object *foo_object;
+
+    foo_object = evas_object_smart_add(evas, _foo_object_smart_get());
+    return foo_object;
+}
+</programlisting>
+Nossa função <function>foo_object_new()</function> tem uma simples 
+tarefa de adicionar nosso objeto inteligente num Evas dado. Se faz 
+isto através de <function>evas_object_smart_add()</function> passando 
+o Evas e o objeto <literal>Evas_Smart *</literal>. Nosso 
+<literal>Evas_Smart *</literal> é produzido por chamar 
+<function>_foo_object_smart_get()</function>.
+</para>
+
+<para>
+<programlisting>
+static Evas_Smart *_foo_object_smart_get() {
+    static Evas_Smart *smart = NULL;
+    if (smart)
+        return (smart);
+
+    smart = evas_smart_new("foo_object",
+                            _foo_object_add,
+                            _foo_object_del,
+                            _foo_object_layer_set,
+                            _foo_object_raise,
+                            _foo_object_lower,
+                            _foo_object_stack_above,
+                            _foo_object_stack_below,
+                            _foo_object_move,
+                            _foo_object_resize,
+                            _foo_object_show,
+                            _foo_object_hide,
+                            _foo_object_color_set,
+                            _foo_object_clip_set,
+                            _foo_object_clip_unset,
+                            NULL
+                          );
+    return smart;
+}
+</programlisting>
+Você irá observar que <literal>Evas_Smart *smart</literal> nesta função é 
+declarado como <literal>static</literal>. Porque não importa quantos 
+<literal>Evas_Object</literal> criemos, só haverá um único objeto 
+<literal>Evas_Smart</literal>. Como Raster enfatiza, <literal>Evas_Smart</literal> 
+é como uma definição de classe C++, não uma instância. O 
+<literal>Evas_Object</literal> é a instância do 
+<literal>Evas_Smart</literal>.
+</para>
+
+<para>
+O objeto inteligente em si é criado atravéz de uma 
+chamada à função  <function>evas_smart_new()</function>. 
+Para esta função passamos o nome do objeto inteligente, todas 
+as rotina de callback para o objeto inteligente, e qualquer 
+dado de usuário. Neste casso nós não temos dados de usuário, 
+então usamos NULL.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_add(Evas_Object *o) {
+    Foo_Object *data = NULL;
+    Evas *evas = NULL;
+
+    evas = evas_object_evas_get(o);
+
+    data = (Foo_Object *)malloc(sizeof(Foo_Object));
+    memset(data, 0, sizeof(Foo_Object));
+
+    data-&gt;clip = evas_object_rectangle_add(evas);
+    data-&gt;outer = evas_object_rectangle_add(evas);
+    evas_object_color_set(data-&gt;outer, 0, 0, 0, 255);
+    evas_object_clip_set(data-&gt;outer, data-&gt;clip);
+    evas_object_show(data-&gt;outer);
+
+    data-&gt;inner = evas_object_rectangle_add(evas);
+    evas_object_color_set(data-&gt;inner, 255, 255, 255, 126);
+    evas_object_clip_set(data-&gt;inner, data-&gt;clip);
+    evas_object_show(data-&gt;inner);
+
+    data-&gt;x = 0;
+    data-&gt;y = 0;
+    data-&gt;w = 0;
+    data-&gt;h = 0;
+
+    evas_object_smart_data_set(o, data);
+}
+</programlisting>
+Quando <function>evas_object_smart_add()</function> é chamada 
+em <function>foo_object_new()</function>, esta função, 
+<function>_foo_object_add()</function>, será chamada de modo  
+que podemos inicializar qualquer dado interno para este objeto 
+inteligente.
+</para>
+
+<para>
+Para este objeto inteligente nós inicializamos três <literal>Evas_Object</literal> 
+internos. Sendo estes <literal>data-&gt;clip</literal>usado para fazer clipping com 
+os outros dois objetos, <literal>data-&gt;outer</literal> que é nosso retângulo externo 
+e <literal>data-&gt;inner</literal>, nosso retângulo interno. Os retângulos interno 
+e externo tem o clipping setado para o objeto clip e são mostrados imediatamente. 
+O objeto clip não é mostrado, só será mostrando quando o usuário chamar 
+<function>evas_object_show()</function> neste objeto.
+</para>
+
+<para>
+Finalmente chamamos <function>evas_object_smart_data_set()</function> para setar 
+nosso novo <literal>Foo_Object</literal> como dado para este objeto inteligente. 
+Este dado será recuperado em outras funções deste objeto chamando a 
+<function>evas_object_smart_data_get()</function>.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_del(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_del(data-&gt;clip);
+        evas_object_del(data-&gt;outer);
+        evas_object_del(data-&gt;inner);
+        free(data);
+    }
+}
+</programlisting>
+O callback <function>_foo_object_del()</function> será 
+executado se o usuário chamar <function>evas_object_del()</function> em 
+nosso objeto. Para este objetos é simples, basta chamar 
+<function>evas_object_del</function> no nossos 3 retângulos e 
+liberar a nossa estrutura <literal>Foo_Object</literal>.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_layer_set(Evas_Object *o, int l) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_layer_set(data-&gt;clip, l);
+    }
+}
+
+static void _foo_object_raise(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_raise(data-&gt;clip);
+    }
+}
+
+static void _foo_object_lower(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_lower(data-&gt;clip);
+    }
+}
+
+static void _foo_object_stack_above(Evas_Object *o, Evas_Object *above) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_stack_above(data-&gt;clip, above);
+    }
+}
+
+static void _foo_object_stack_below(Evas_Object *o, Evas_Object *below) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        evas_object_stack_below(data-&gt;clip, below);
+    }
+}
+</programlisting>
+Este grupo de funções: <function>_foo_object_layer_set()</function>,
+<function>_foo_object_raise()</function>,
+<function>_foo_object_lower()</function>,
+<function>_foo_object_stack_above()</function>, e
+<function>_foo_object_stack_below()</function> trabalham todos 
+da mesma maneira, aplicando a função requerida 
+<function>evas_object_*</function> no objeto <literal>data-&gt;clip</literal>.
+</para>
+
+<para>
+Estas funções são disparadas pelo uso de:
+<function>evas_object_layer_set()</function>,
+<function>evas_object_raise()</function>,
+<function>evas_object_lower()</function>,
+<function>evas_object_stack_above()</function>, e
+<function>evas_object_stack_below()</function> respectivamente.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        float ix, iy;
+        ix = (data-&gt;w - (data-&gt;w * 0.8)) / 2;
+        iy = (data-&gt;h - (data-&gt;h * 0.8)) / 2;
+
+        evas_object_move(data-&gt;clip, x, y);
+        evas_object_move(data-&gt;outer, x, y);
+        evas_object_move(data-&gt;inner, x + ix, y + iy);
+
+        data-&gt;x = x;
+        data-&gt;y = y;
+    }
+}
+</programlisting>
+O callback <function>_foo_object_move()</function> será disparado quando 
+<function>evas_object_move()</function> é chamada em nosso objeto. Cada 
+um dos objetos interno é movido na posição correta com chamadas para
+ <function>evas_object_move()</function>.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o))) {
+        float ix, iy, iw, ih;
+        iw = w * 0.8;
+        ih = h * 0.8;
+
+        ix = (w - iw) / 2;
+        iy = (h - iw) / 2;
+
+        evas_object_resize(data-&gt;clip, w, h);
+        evas_object_resize(data-&gt;outer, w, h);
+
+        evas_object_move(data-&gt;inner, data-&gt;x + ix, data-&gt;y + iy);
+        evas_object_resize(data-&gt;inner, iw, ih);
+
+        data-&gt;w = w;
+        data-&gt;h = h;
+    }
+}
+</programlisting>
+O callback <function>_foo_object_resize()</function> será disparado quando
+o usuário chama <function>_foo_object_resize()</function> no nosso objeto. Assim,
+para nosso objeto, precisamos redimensionar <literal>data-&gt;clip</literal> e 
+<literal>data-&gt;outer</literal> ao tamanho completo disponível para nosso objeto.
+Isto é feito com as chamadas à <function>evas_object_resize()</function>.
+Então precisamos mover e redimencionar o objeto <literal>data-&gt;inner</literal> para 
+que permaneça na posição correta no retângulo externo. Isto é feito 
+com <function>evas_object_move()</function> e
+<function>evas_object_resize()</function> respectivamente. Então guardamos a largura
+e altura atual do nosso objeto para que possamos referência-los mais tarde.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_show(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o)))
+            evas_object_show(data-&gt;clip);
+}
+</programlisting>
+O callback <function>_foo_object_show()</function> será disparando quando
+<function>evas_object_show()</function> for chamada no nosso objeto. Para
+mostrar nosso objeto todo o que precisamos fazer é mostrar a região de clipe,
+já que o retângulo atual está "clipado". Isto é feito chamando 
+<function>evas_object_show()</function>. 
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_hide(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o)))
+        evas_object_hide(data-&gt;clip);
+}
+</programlisting>
+O callback <function>_foo_object_hide()</function> será disparado quando
+uma chamada à <function>evas_object_hide()</function> for feita no nosso objeto.
+Por estarmos usando um objeto de clipping interno só precisamos esconder o objeto
+clip, <literal>data-&gt;clip</literal>, para esconder nosso objeto inteligente.
+Isto é feito por meio da chamada à <function>evas_object_hide()</function>.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_color_set(Evas_Object *o, int r, int g, int b, int a) {
+}
+</programlisting>
+A função <function>_foo_object_color_set()</function> será disparada quando
+<function>evas_object_color_set()</function> for chamada por nosso 
+<literal>Evas_Object</literal>. Mas, já que não quero mudar as cores do 
+meu objeto, ignoro este callback.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_clip_set(Evas_Object *o, Evas_Object *clip) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o)))
+        evas_object_clip_set(data-&gt;clip, clip);
+}
+</programlisting>
+O callback <function>_foo_object_clip_set()</function> será disparada quando 
+<function>evas_object_clip_set()</function> for chadamda por nosso objeto. Neste caso 
+propagamos isto a nosso objeto de clipping interno por meio da chamada à 
+<function>evas_object_clip_set()</function>.
+</para>
+
+<para>
+<programlisting>
+static void _foo_object_clip_unset(Evas_Object *o) {
+    Foo_Object *data;
+
+    if ((data = evas_object_smart_data_get(o)))
+        evas_object_clip_unset(data-&gt;clip);
+}
+</programlisting>
+O callback <function>_foo_object_clip_unset()</function> será disparado quando 
+uma chamada a <function>evas_object_clip_unset()</function> for feita no 
+nosso objeto. Nós simplesmente removemos o clip interno por meio da chaamda á 
+<function>evas_object_clip_unset()</function>.
+</para>
+
+<para>
+Uma vez completo nossoo código do objeto inteligente, podemos criar o 
+programa principal para utilizar o novo objeto inteligente.
+<example>
+<title>main.c</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include "foo.h"
+
+#define WIDTH 400
+#define HEIGHT 400
+#define STEP 10
+
+static int dir = -1;
+static int cur_width = WIDTH;
+static int cur_height = HEIGHT;
+
+static int timer_cb(void *data);
+
+int main() {
+    Ecore_Evas  *ee;
+    Evas        *evas;
+    Evas_Object *o;
+
+    ecore_init();
+
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
+    ecore_evas_title_set(ee, "Smart Object Example");
+    ecore_evas_borderless_set(ee, 0);
+    ecore_evas_show(ee);
+
+    evas = ecore_evas_get(ee);
+
+    o = evas_object_rectangle_add(evas);
+    evas_object_resize(o, (double)WIDTH, (double)HEIGHT);
+    evas_object_color_set(o, 200, 200, 200, 255);
+    evas_object_layer_set(o, -255);
+    evas_object_show(o);
+
+    o = foo_new(evas);
+    evas_object_move(o, 0, 0);
+    evas_object_resize(o, (double)WIDTH, (double)HEIGHT);
+    evas_object_layer_set(o, 0);
+    evas_object_show(o);
+
+    ecore_timer_add(0.1, timer_cb, o);
+    ecore_main_loop_begin();
+
+    return 0;
+}   
+        
+static int timer_cb(void *data) {
+    Evas_Object *o = (Evas_Object *)data;
+    Evas_Coord x, y;
+
+    cur_width += (dir * STEP);
+    cur_height += (dir * STEP);
+
+    x = (WIDTH - cur_width) / 2;
+    y = (HEIGHT - cur_height) / 2;
+
+    if ((cur_width &lt; STEP) || (cur_width &gt; (WIDTH - STEP)))
+        dir *= -1;
+
+    evas_object_move(o, x, y);
+    evas_object_resize(o, cur_width, cur_height);
+    return 1;
+}
+</programlisting>
+</example>
+Muito deste programa é parte da receita usando Ecore_Evas dado anteriormente. 
+A criação de nosso novo objeto inteligente e vista no fragmento de código:
+<programlisting>
+    o = foo_new(evas);
+    evas_object_move(o, 0, 0);
+    evas_object_resize(o, (double)WIDTH, (double)HEIGHT);
+    evas_object_layer_set(o, 0);
+    evas_object_show(o);
+</programlisting>
+Uma vez que a sua nova <function>foo_new()</function>  
+devolve nosso objeto, podemos manipula-lo com as chamadas normais 
+Evas, e assim ajustarmos a posição, tamanho, camada e então mostrar o objeto.
+</para>
+
+<para>
+Uma vez criado e mostrado o novo objeto inteligente, iniciamos um 
+temporizador Ecore para disparar a cada 0.1 segundos. Quando o 
+temporizador disparar ele irá executar a função <function>timer_cb()</function>. 
+Esta função callback diminuirá e aumentará o tamanho de nosso objeto 
+inteligente enquanto o mantém centralizado na janela principal.
+</para>
+
+<para>
+Compilar este exemplo é tão simples como:
+<example>
+<title>Compilação</title>
+<screen>
+zero@oberon [evas_smart] -&gt; gcc -o foo foo.c main.c \
+    `ecore-config --cflags --libs` `evas-config --cflags --libs`
+</screen>
+</example>
+</para>
+
+<para>
+Os objetos inteligentes Evas são simples de criar mas fornecem um 
+potente mecanismo para abstrair partes do seu programa. Para ver 
+mais objetos inteligente dê uma olhada em qualquer dos objetos 
+Esmart, Etox ou Emotion.
+</para>
+</section>
+

@@ -1,0 +1,138 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>16 de Dezembro 2004</date>
+</sectioninfo>
+
+<title>Receita: Adicionando eventos Ecore</title>
+<para>
+Se você sempre precisa fazer seus próprios eventos você pode 
+facilmente conecta-los no sistema de eventos Ecore. Ele dá a 
+você a capacidade de adicionar eventos dentro de uma fila de 
+eventos e ter o Ecore para remete-lo para outra parte da aplicação.
+</para>
+
+<para>
+O seguinte programa cria um simples evento e temporizador. Quando o 
+temporizador dispara ele irá adicionar seu novo evento dentro de 
+uma fila de eventos. Então seu evento irá imprimir uma mensagem e 
+terminará a aplicação 
+</para>
+
+<example>
+<title>Exemplo de evento Ecore</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Ecore.h&gt;
+
+static int timer_cb(void *data);
+static int event_cb(void *data, int type, void *ev);
+static void event_free(void *data, void *ev);
+
+int MY_EVENT_TYPE = 0;
+
+typedef struct Event_Struct Event_Struct;
+struct Event_Struct {
+    char *name;
+};
+
+int
+main(int argc, char ** argv)
+{
+    ecore_init();
+
+    MY_EVENT_TYPE = ecore_event_type_new();
+    ecore_event_handler_add(MY_EVENT_TYPE, event_cb, NULL);
+    ecore_timer_add(1, timer_cb, NULL);
+
+    ecore_main_loop_begin();
+    ecore_shutdown();
+    return 0;
+}
+
+static int
+timer_cb(void *data)
+{
+    Event_Struct *e;
+    Ecore_Event *event;
+
+    e = malloc(sizeof(Event_Struct));
+    e->name = strdup("ned");
+
+    event = ecore_event_add(MY_EVENT_TYPE, e, event_free, NULL);
+    return 0;
+}
+
+static int
+event_cb(void *data, int type, void *ev)
+{
+    Event_Struct *e;
+
+    e = ev;
+    printf("Got event %s\n", e->name);
+    ecore_main_loop_quit();
+    return 1;
+}
+
+static void
+event_free(void *data, void *ev)
+{
+    Event_Struct *e;
+
+    e = ev;
+    free(e->name);
+    free(e);
+}
+</programlisting>
+<para>
+Cada evento tem um id de evento associado. Este id é simplesmente 
+um valor inteiro que é fornecido quando se chama <literal>ecore_event_type_new()</literal>. 
+Uma vez que nós temos o id de evento podemos usá-lo nas chamadas 
+<literal>ecore_event_handler_add()</literal>. Isto é tudo o que precisa para criar o evento.
+</para>
+
+<para>
+Ecore nos dá a capacidade de passar uma estrutura de evento para nosso 
+evento. Só que você precisa ter cuidado, se você não especificar uma função 
+para liberar a memória (free function) usada pela estrutura, a ecore irá usar 
+uma função genérica que apenas chama <literal>free</literal> pro valor. Então, 
+não coloque nada na estrutura que você precise sem tomar cuidado. (Ou prepare-se
+para uma enxurrada de SEGV's muito estranhas no seu programa)
+</para>
+
+<para>
+Neste exemplo nós criamos uma simples <literal>Event_Struct</literal> que é passado.
+A chamada que de fato cria o evento é <literal>ecore_event_add()</literal>. Que recebe 
+o id de evento, o dado de evento, a "free function" e qualquer dado para passar 
+para a "free function".
+</para>
+
+<para>
+Como você pode ver, nós passamos nossa <literal>Event_Struct</literal> como um
+dado de evento e informamos a função <literal>event_free</literal> como a 
+"free function" que se encarregará de limpar da memória a estrutura.
+</para>
+</example>
+
+<para>
+E é isto. Você pode compilar como descrito abaixo e tudo deve funcionar.
+</para>
+
+<example>
+<screen>
+zero@oberon [ecore_event] -&gt; gcc -o ev main.c `ecore-config --cflags --libs`
+</screen>
+</example>
+
+<para>
+Como visto, é realmente muito fácil extender o Ecore com seus próprios eventos. 
+O sistema foi configurado para permitir ser extendido como desejado.
+</para>
+
+</section>
+

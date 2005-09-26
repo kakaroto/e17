@@ -1,0 +1,62 @@
+<!-- Imlib2 Recipes -->
+
+<chapter>
+<title>Imlib2</title>
+
+<para>
+Imlib2 é a sucessora da Imlib. Não é apenas uma nova versão - é uma biblioteca completamente nova. Imlib2 pode ser
+instalada junto com a Imlib 1.x já que são efetivamente bibliotecas diferentes - mas elas tem funcionalidade similar.
+</para>
+
+<para>
+Imlib2 pode fazer o seguinte:
+</para>
+
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>Carregar imagens do disco em um dos muitos formatos</para></listitem>
+ <listitem><para>Salvar imagens no disco em um dos muitos formatos</para></listitem>
+ <listitem><para>Renderizar dados de imagem dentro de outras imagens</para></listitem>
+ <listitem><para>Renderizar imagens em uma "drawable X"</para></listitem>
+ <listitem><para>Produzir pixmaps e mascaras de pixmap de imagem</para></listitem>
+ <listitem><para>Aplicar filtros em imagens</para></listitem>
+ <listitem><para>Rotacionar imagens</para></listitem>
+ <listitem><para>Aceitar dados RGBA para imagens</para></listitem>
+ <listitem><para>Scalar imagens</para></listitem>
+ <listitem><para>Alpha blend de imagens em outras imagens ou "drawables"</para></listitem>
+ <listitem><para>Aplicar correção de cor, tabelas de modificação e fatores na imagem</para></listitem>
+ <listitem><para>Renderizar imagens sobre imagens com correção de cor e tabelas de modificação</para></listitem>
+ <listitem><para>Renderizar texto truetype com anti-aliasing</para></listitem>
+ <listitem><para>Renderizar texto truetype con anti-aliasing em qualquer ângulo</para></listitem>
+ <listitem><para>Renderizar linha com anti-aliasing</para></listitem>
+ <listitem><para>Renderizar retangulo</para></listitem>
+ <listitem><para>Renderizar gradientes linerares mult-cores</para></listitem>
+ <listitem><para>Dispor inteligentemente os dados na memória  para o máximo de rendimento</para></listitem>
+ <listitem><para>Alocar cores automaticamente</para></listitem>
+ <listitem><para>Permitir controle completo sobre o cache e alocação de cor</para></listitem>
+ <listitem><para>Fornecer instruções assembly MMX altamente otimizado para rotinhas centrais</para></listitem>
+ <listitem><para>Fornecer interface para plug-in de filtros</para></listitem>
+ <listitem><para>Fornecer interface de carga e gravação de imagens por plug-ins em tempo de execução</para></listitem>
+ <listitem><para>A biblioteca de composição, renderização e manipulação mais rápida para o X</para></listitem>
+</itemizedlist>
+
+<para>
+Se o que você quer fazer não está na lista acima, então provavelmente a Imlib2 não faz. Se faz, 
+provavelmente irá fazer mais rápido que qualquer outra biblioteca que encontrar (isto inclui 
+dk-pixbuf, gdkrgb, etc.) principalmente por causa do código altamente otimizado e um subsistema 
+inteligente que faz o trabalho sujo pra você e separa as partes que causam tédio deixando que
+a Imlib2 faça todas as otimizaçõões pra você.
+</para>
+
+<para>
+Imlib2 fornece um potente motor para manipulação e renderização de imagem. Usando carregadores, o Imlib2 pode manejar uma variedade 
+de formatos incluindo BMP, GIF (via unGIF), JPEG, PNG, PNM, TGA, TIFF, XPM entre outros.
+</para>
+
+&imlib_watermark;
+&imlib_scale;
+&imlib_free_rotate;
+&imlib_90_rotate;
+&imlib_flip;
+
+</chapter>
+

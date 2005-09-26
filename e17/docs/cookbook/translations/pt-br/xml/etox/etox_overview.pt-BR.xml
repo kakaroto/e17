@@ -1,0 +1,148 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>12 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receta: Perspectiva geral de Etox</title>
+
+<para>
+Para começar a usar Etox rapidamente é útil um exemplo simples. No seguinte código exemplo criamos uma
+Evas X11 usando Ecore_Evas e então colocaremos algum texto Etox nele.
+</para>
+
+<example>
+<title>Exemplo Etox</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Etox.h&gt;
+
+#define WIDTH 400
+#define HEIGHT 200
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+        Evas_Object *   etox;
+        Etox_Context *  context;
+
+int main(){
+
+        ecore_init();
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "ETOX Test");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, ".");
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 255, 255, 255, 255);
+        evas_object_show(base_rect);
+
+   etox = etox_new(evas);
+        evas_object_resize(etox, WIDTH, HEIGHT);
+
+
+   context = etox_get_context(etox);
+        etox_context_set_color(context, 0, 0, 0, 255);
+        etox_context_set_font(context, "Vera", 32);
+        etox_context_set_align(context, ETOX_ALIGN_LEFT);
+
+        etox_set_soft_wrap(etox, 1);
+        etox_set_text(etox, "Welcome to the world of Etox!");
+
+        evas_object_show(etox);
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+Este exmplo deve ser compilado da seguinte maneira:
+</para>
+
+<example>
+<programlisting>
+gcc `etox-config --libs --cflags` `ecore-config --libs --cflags` etox-test.c -o etox-test
+</programlisting>
+</example>
+
+<para>
+A maior parte deste exemplo são funções standard do Ecore_Evas, assim nos concentraremos apenas nas partes
+relacionadas com Etox. Observe que usamos a função Evas <function>evas_font_path_append()</function> para definir
+o cominho de nossas fontes, isto é algo que o Etox não fará por você.
+</para>
+
+<para>
+Seu texto Etox será sempre inicializado por adicionar um novo Etox usando a função <function>etox_new()</function>
+que devolve um Evas_Object. Já que o seu Etox é um objeto Evas, ele pode ser manipulado como tal. As funções de layout
+do Etox, como recortar e ajustar, são dependentes do tamanho do próprio Etox, portanto <function>evas_object_resize()</function>
+necessita ser chamada para definir o tamanho apropriado do Etox. Observer que a área do objeto <emphasis>não</emphasis> será
+igual por default ao tamanho do próprio Evas.
+</para>
+
+<para>
+Etox usa o conceito de contextos. Um <literal>context</literal> é um conjunto de parâmetros como cor,
+fonte, alinhamento, estilo e marcas que são aplicadas a um certo conjunto de texto. Cada objeto Etox tem
+pelo menos um contexto associdado à ele que é criado quando se chama a função <function>etox_new()</function>.
+Por esta razão a função <function>etox_context_new()</function> <emphasis>só</emphasis>  precisa ser chamada
+quando se deseja criar contexto adicionais.
+</para>
+
+<para>
+Uma vez usado <function>etox_new()</function> para adicionar seu objeto Etox você precisa usar <function>etox_get_context()</function>
+para devolver um ponteiro à <varname>Etox_Context</varname> que pode então ser passado a outras funções de contexto para
+modificar os atributos do seu texto. No exemplo adicionamos a cor, fonte e o alinhamento de nosso contexto.
+</para>
+
+<para>
+Das caracteríscas mais interessantes e simplistas do Etox são sua habilitade de inteligentemente quebrar o texto e
+ de interpretar o caracter de nova linha do C ( \n ) como quebra de linha. Essas são duas características que o
+ próprio Evas não proporciona, é da responsabilidade do programador certificar que o texto não saia do canvas.
+</para>
+
+<para>
+A quebra inteligente de linha vem em duas formas que não são mutuamente exclusivas. A primeira é a quebra suave,
+que ajustará o texto quando um caracter exceder a largura do canvas. A segunda é a quebra de palavra,
+que irá ajustar o texto quando uma palavra exceder a largura do canvas. Tipicamente a segunda maneira é
+desaconselhada de maneira que obtenhamos "Isto é minha (quebra) string" no lugar de "Isto é mi(quebra)nha string".
+Note, ademais, que a quebra da palavra não funcionará a menos que a quebra suvae seja habilitada, portanto a quebra de
+palavra requer chamar <emphasis>ambas</emphasis> funções, <function>etox_set_soft_wrap()</function> e
+<function>etox_set_word_wrap()</function>.
+</para>
+
+<para>
+Uma nota final sobre a quebra é que, por default tal ajuste irá inserir um <literal>marcador de quebra de linha</literal>
+na sua string de saída, um sinal "+" por default. Esta marca indica que um ajuste ocorreu e é impresso
+como primeiro caracter na linha seguinte. Sua string, portanto, se parecerá como: "Isto é minha (quebra) +string".
+Se preferir que o Etox quebre suavemente sem marcador, simplesmente configure o marcador como sendo vazio usando a
+função <function>etox_context_set_wrap_marker()</function>.
+</para>
+
+<para>
+A string de texto Etox se configura usando <function>etox_set_text()</function>. É importante saber que a cadeia se
+aplica ao próprio Etox e não ao contexto. No há associação direta entre a string e o contexto
+que facilite a visualização do texto sem ter que modificar o contexto, ou vice-versa.
+</para>
+                                
+<para>
+Enquanto este é um exemplo muito simples do uso de Etox, muito pode ser feito e como você pode ver a API é simples
+e limpa, preenchendo muitas necessidades de controle de texto que o Evas não possui.
+</para>
+
+
+</section>
+

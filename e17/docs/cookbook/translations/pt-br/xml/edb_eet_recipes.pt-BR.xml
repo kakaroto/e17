@@ -1,0 +1,72 @@
+<!-- EDB & EET Recipes -->
+
+<chapter>
+<title>EDB &amp; EET</title>
+
+<para>
+EDB é uma biblioteca de conveniência de base 
+de dados envolvendo o Berkeley DB 2.7.7 da 
+Sleepycat Software. Seu propósito é fazer de 
+forma fácil, rápido, eficente e portável o 
+acesso as informações da base de dados.
+</para>
+
+<para>
+EET é uma pequena biblioteca desenhada para escrever 
+pedaçoes arbitrários de dados em um arquivo, opcionalmente 
+compactá-los (muito semelhante a um arquivo zip) e permitir 
+uma leitura veloz para acesso aleatório mais tarde. EET não 
+faz zip, dado que um zip tem mais complexidade que o necessário, 
+e foi mais simples implementar isto uma vez aqui.
+</para>
+
+<para>
+EDB fornece um método excelente de armazenar e recuperar 
+informações de configuração de aplicação, contudo 
+pode ser usado de uma maneira mais extensíva que esta. Ebits,
+o predecessor da Edje, usava EDB como container para temas 
+Ebit antes da EET. Uma Edb consiste em uma série de pares 
+valor/chave, que pode consistir numa variedade de tipos de 
+dados, incluindo inteiros, valores de ponto flutuante, 
+strings e dados binários. A API simplificada provê funções 
+simples, completas e unificadas para gerenciar e acessar 
+seu banco de dados.
+</para>
+
+<para>
+Em adição à biblioteca, há disponível uma variedade 
+de ferramentas para acessar e modificar seus EDBs.
+O edb_ed fornece uma simples interface de linha de comando 
+que pode ser fácilmente usada em scripts, especialmente 
+útil para uso com o GNU autotools. O edb_vt_ed fornece uma 
+inferface ncurses fácil de usar. Finalmente, edb_gtk_ed 
+fornece uma elegante e fácil interface GUI, especialmente 
+útil para o usuário final editar os dados contidos nos EDBs.
+</para>
+
+<para>
+Eet é extremamente rápida, pequena e simples. Os arquivos 
+Eet podem ser pequenos e altamente compactados, tornando-os 
+ótimos para enviar pela internet sem ter que arquivar, 
+compactar ou descompcatar, e instalá-los. Permitem leituras 
+velozes de acesso aleatórios como um ráio uma vez criados, 
+fazendo-os perfeitos para armazenar dados que são escritos 
+uma vez (ou raramente) e lidos muitas vezes, mas o programa 
+não quer ter que lê-lo todas as vezes.
+</para>
+
+<para>
+Também pode codificar e descodificar estruturas de dados 
+na memória, bem como dados de imagem para gravar em arquivos 
+Eet ou enviar pela rede à outras máquinas, ou apenas escrever 
+arquivos arbitrário no sistema. Todos os dados codificados são 
+independente da plataforma podendo ser lidos e escritos em 
+qualquer arquitetura.
+</para>
+
+&edb_shell_file_create;
+&edb_intro;
+&edb_key_get;
+
+</chapter>
+

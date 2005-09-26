@@ -1,0 +1,17 @@
+<!-- Etox Recipes -->
+
+<chapter>
+<title>Etox</title>
+
+<para>
+Etox é uma biblioteca avançada de composição e layout de texto baseada no Evas, permitindo maiores e melhores funcionalidades 
+que as disponíveis pelo Evas. É capaz de simplificar as tarefas de mostrar, mover, redimencionar, por em camadas e 
+recortar texto, bem como alinhamento de texto, ajuste e modificação. Etox pode inteligentemente resolver obstáculos e 
+aplicar <emphasis>styles</emphasis> predefinidos. Quase qualquer aspecto de nível textual pode ser controlado fácil 
+e eficientemente com o Etox.
+</para>
+
+ &etox_overview;
+
+</chapter>
+

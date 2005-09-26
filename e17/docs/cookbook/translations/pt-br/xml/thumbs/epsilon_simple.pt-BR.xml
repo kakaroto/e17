@@ -1,0 +1,108 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receta: Thumbnailing simples com Epsilon</title>
+
+<para>
+Epsilon cria thumbnails em conformidade com a 
+<ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink> 
+da freedesktop.org. Thumbnails podem ser criados para uma variedade de formatos, incluindo suporte 
+nativo para PNG, suporte para Epeg ou qualquer formato suportado pela Imlib2. Vejamos uma simples 
+aplicação Epsilo, similar ao exemplo Epeg anterior.
+</para>
+
+
+<example>
+<title>Um simples Thumbnail Epsilon</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Epsilon.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epsilon * image = NULL;
+        Epsilon_Info *info;
+
+        if(argc &lt; 1) {
+                printf("Usage: %s input_image\n", argv[0]);
+                return(1);
+        }
+
+        epsilon_init();
+
+        image = epsilon_new(argv[1]);
+
+        info = epsilon_info_get(image);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], info-&gt;w, info-&gt;h);
+
+
+        if (epsilon_generate(image) == EPSILON_OK) {
+                printf("Thumbnail created!\n");
+        } else {
+                printf("Generation failed\n");
+        }
+        epsilon_free(image);
+
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+Pode ser compilado da seguinte maneira:
+</para>
+
+<example>
+<programlisting>
+gcc `epsilon-config --libs --cflags` epsilon-simple.c -o epsilon-simple
+</programlisting>
+</example>
+
+<para>
+Notamos quase que imediatamente que não aceita-se nenhum nome de arquivo de saída, nem se usa nenhuma função de saída.
+A Thumbnail Managing Standard da reedesktop.org específica que todos os thumbnails são criados no diretório ~/.thumbnail. 
+Este repositório cental de thumbnails permite compartilahr os thumbnails entre multiplas aplicações que aderem 
+à específicação standard. Antes de compilar e executar o código exemplo, verifique se existe a imagem em ~/.thumbnails/large.
+Os thumbnails também se nomeiam de acordo com a específicação standard, renomeando o nome original com um MD5 checksum, 
+de forma que o thumbnail não precisa ser refeito se a imagem está renomeada.
+</para>
+
+<para>
+No nosso exemplo começamos verificando que obtemos uma imagem de entrada para fazer um thumbnail e então inicializamos o Epsilon usando
+a função <function>epsilon_init</function>. <function>epsilon_new</function> aceita um único argumento, a imagem que quer 
+fazer um thumbnail, e retorna um ponteiro epsilon que é usado por outras funções.
+</para>
+
+<para>
+Epsilon tem a habilidade de obter algumas informações básicas de suas imagens. No exemplo acima usamos 
+<function>epsilon_info_get</function> para retornar uma estrutura <returnvalue>Epsilon_Info</returnvalue> contendo 
+a data ( mtime ) de modificação da imagem de entrada, o lugar ( URI ), largura, altura e o tipo MIME. Aqui simplesmente 
+damos a largura e altura da imagem usando os elementos <varname>w</varname> e <varname>h</varname> da estrutura info.
+</para>
+
+<para>
+<function>epsilon_generate</function> é a função peso pesado. Esta função gerará o thumbnail e colocará no lugar apropriado. Seu 
+valor de retorno indicando sucesso pode ser verificado usando as definições de macro CPP fornecida pelo header do Epsilon: 
+<varname>EPSILON_FAIL</varname> e <varname>EPSILON_OK</varname>.
+</para>
+
+<para>
+A limpeza é fornecida pela <function>epsilon_free</function>.
+</para>
+
+<para>
+Epsilon, como visto aqui, é muito simples de usar e integrar com qualquer aplicação que faz uso de thumbnails.
+Não só fornece um API simples, mas integração com a reinante definição padrão para thumbnailing sem custo extra.
+Para informação adicional sobre Epsilon, veja os documentos Doxygen do Epsilon em Enlightenment.org.
+</para>
+
+</section>
+

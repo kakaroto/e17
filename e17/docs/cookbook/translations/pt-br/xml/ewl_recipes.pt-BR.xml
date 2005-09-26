@@ -1,0 +1,20 @@
+<!-- EWL Recipes -->
+
+<chapter>
+<title>EWL</title>
+
+<para>
+A Enlightened Widget Library (EWL) é um conjunto de ferramentas (toolkit) de widget desenvolvidas sobre
+as outras outras bibliotecas da EFL. Ewl usa Evas como backend de renderização e
+sua aparência é abstraída para ser controlada pelo Edje.
+</para>
+
+<para>
+EWL é similar a muitos outros toolkits entre eles o GTK, QT e MOTIF. As APIs se diferem, mas os 
+conceitos são os mesmos.
+</para>
+
+&ewl_intro;
+
+</chapter>
+

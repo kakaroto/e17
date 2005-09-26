@@ -1,0 +1,16 @@
+<!-- Evoak Recipes -->
+
+<chapter>
+<title>Evoak</title>
+
+<para>
+Evoak é um servidor de canvas. Similiar a um servidor X que serve um 
+display e operações gráficas. Evoak server um único canvas para ser 
+compartilhado por várias aplicações ( clientes ) permitindo que cada uma delas manipule 
+seu próprio conjunto de objetos no canvas.
+</para>
+
+&evoak_hello_eh;
+
+</chapter>
+

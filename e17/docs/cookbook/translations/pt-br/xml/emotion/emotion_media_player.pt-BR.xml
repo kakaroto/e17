@@ -1,0 +1,90 @@
+<!--
+#######################################################
+Emotion Media Player
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Carsten</firstname>
+    <surname>Haitzler</surname>
+    <email>raster@rasterman.com</email>
+    <othername>'rasterman'</othername>
+  </author>
+  <date>28 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Player de midia expandido com Emotion</title>
+
+<para>
+Expandindo nossa receita anterior, podemos fazer o emotion 
+redimencionar apropriadamente (mantendo a relação de aspecto).
+</para>
+
+<para>
+<example>
+<title>Reprodutor de midia Emotion</title>
+<programlisting>
+#include &lt;Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Emotion.h&gt;
+
+Evas_Object *video;
+
+/* if the window manager requests a delete - quit cleanly */
+static void
+canvas_delete_request(Ecore_Evas *ee)
+{
+    ecore_main_loop_quit();
+}
+
+/* if the canvas is resized - resize the video too */
+static void
+canvas_resize(Ecore_Evas *ee)
+{
+    Evas_Coord w, h;
+
+    evas_output_viewport_get(ecore_evas_get(ee), NULL, NULL, &amp;w, &amp;h);
+    evas_object_move(video, 0, 0);
+    evas_object_resize(video, w, h);
+}
+
+/* the main function of the program */
+int main(int argc, char **argv)
+{
+    Ecore_Evas *ee;
+
+    /* create a canvas, display it, set a title, callbacks to call on resize */
+    /* or if the window manager asks it to be deleted */
+    ecore_evas_init();
+    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 800, 600);
+    ecore_evas_callback_delete_request_set(ee, canvas_delete_request);
+    ecore_evas_callback_resize_set(ee, canvas_resize);   
+    ecore_evas_title_set(ee, "My DVD Player");
+    ecore_evas_name_class_set(ee, "my_dvd_player", "My_DVD_Player");
+    ecore_evas_show(ee);
+
+    /* create a video object */
+    video = emotion_object_add(ecore_evas_get(ee));
+    emotion_object_file_set(video, "dvd:/");
+    emotion_object_play_set(video, 1);
+    evas_object_show(video);
+
+    /* force an initial resize */
+    canvas_resize(ee);
+
+    /* run the main loop of the program - playing, drawing, handling events */
+    ecore_main_loop_begin();
+
+    /* if we exit the main loop we will shut down */
+    ecore_evas_shutdown();
+}
+</programlisting>
+</example>
+</para>
+
+<para>
+</para>
+</section>
+

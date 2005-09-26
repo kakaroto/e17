@@ -1,0 +1,681 @@
+<!--
+#######################################################
+An introduction to ewl
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>2 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receta: Introducci&#243;n a EWL</title>
+
+<para>
+Mediante o uso da Enlightened Widget Library (EWL), uma porção maior de potência pode ser posta nas mãos dos programadores com
+pouco esforço.
+</para>
+
+<para>
+Esta introdução á EWL mostrará como criar uma simples aplicação para visualização de texto com uma barra de menu
+e um dialogo de arquivo. A área de texto terá barras de rolagem e permitirá também rolar usando as teclas do teclado ou
+a roda do mouse.
+</para>
+
+<example>
+<title>Includes e declarações</title>
+<programlisting>
+#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;Ewl.h&gt;
+
+#define PROG    "EWL Text Viewer"
+
+/* globals */
+static Ewl_Widget *main_win = NULL;
+static Ewl_Widget *fd_win = NULL;
+
+/* pre-declarations */
+static void destroy_cb(Ewl_Widget *, void *, void *);
+static void destroy_filedialog_cb(Ewl_Widget *, void *, void *);
+static void open_file_cb(Ewl_Widget *, void *, void *);
+static void home_cb(Ewl_Widget *win, void *ev, void *data);
+static void file_menu_open_cb(Ewl_Widget *, void *, void *);
+static void key_up_cb(Ewl_Widget *, void *, void *);
+
+static char *read_file(char *);
+static void mk_gui(void);
+</programlisting>
+</example>
+
+<para>
+O include necessário para escrever uma aplicação Ewl é &lt;Ewl.h&gt;.
+Declaramos a janela principal e o dialogo de arquivo como globais para facilitar o acesso nas funções de callback.
+Elas não precisam ser globais, mais para o propósito desta exemplo é mais simples que sejam.
+</para>
+
+<example>
+<title>main</title>
+<programlisting>
+/* lets go */
+int main(int argc, char ** argv) {
+    ewl_init(&amp;argc, argv);
+    mk_gui();
+    ewl_main();
+    return 0;
+}
+</programlisting>
+</example>
+
+<para>
+A função principal para nosso visualizador de texto é muito simples. Começamos inicializando o ewl mediante
+a chamada <function>ewl_init()</function>. Ewl pega argc e argv para ler alguns parâmetros de linha de comando.
+Isto inclue coisas como iniciar o tema que vai usar ( --ewl-theme ) ou iniciar o motor de renderização
+( --ewl-software-x11, --ewl-gl-x11, etc. ).
+</para>
+
+<para>
+
+<function>ewl_init()</function> se encarrega de todo o trabalho de inicializar as outras bibliotecas requeridas,
+abstraindo isto do programador em uma interface simples.
+</para>
+
+<para>
+A chamada a mk_gui inicializará a janela principal e qualquer conteúdo requerido.
+</para>
+
+<para>
+A chamada a <function>ewl_main()</function> inicia o laço principal de processo, e ao terminar controla
+toda a finalização requida pela aplicação, assim sendo, não há chamada de finalização na nossa rotina principal.
+</para>
+
+<example>
+<title>mk_gui: Criar a janela</title>
+<programlisting>
+/* build the main gui */
+static void mk_gui(void) {
+    Ewl_Widget *box = NULL, *menu_bar = NULL;
+    Ewl_Widget *text_area = NULL, *scroll = NULL;
+
+    /* create the main window */
+    main_win = ewl_window_new();
+    ewl_window_title_set(EWL_WINDOW(main_win), PROG);
+    ewl_window_name_set(EWL_WINDOW(main_win), PROG);
+    ewl_window_class_set(EWL_WINDOW(main_win), PROG);
+
+    ewl_object_size_request(EWL_OBJECT(main_win), 200, 300);
+    ewl_object_fill_policy_set(EWL_OBJECT(main_win), EWL_FLAG_FILL_FILL);
+
+    ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
+    ewl_widget_show(main_win);
+</programlisting>
+</example>
+<para>
+A primeira coisa que precisamos fazer para executar nossa aplicação é criar a janela principal da aplicação.
+Isto é feito por meio da chamada a <function>ewl_window_new()</function>.
+Uma vez com a janela continuamos informando o título
+ (como aparecerá na barra de título da janela do Gerenciador de Janelas), o nome e a classe da janela.
+</para>
+
+<para>
+Uma vez informada as informações principais da janela, solicitamos o tamanho default da janela de 200x300 por meio
+da chamada <function>ewl_object_size_request</function>. Junto com o tamanho default, podemos
+informar o tamanho máximo e mínimo da janela atravéz da chamada <function>ewl_object_minimum_size_set</function>
+e <function>ewl_object_maximum_size_set</function>. Mas como isto não é necessário para esta aplicação eles ficarão de fora.
+</para>
+
+<para>
+A configuração final da janela é feita selecionando a politica de preenchimento com <function>ewl_object_fill_policy_set</function>.
+Isto ajusta a forma como o Ewl empacotará os widgets na janela, com um dos possíveis valores:
+</para>
+
+<variablelist termlength="25" spacing="compact">
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_NONE</term>
+ <listitem>
+  <para>Não preencher ou encolher em nenhuma direção</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_HSHRINK</term>
+ <listitem>
+  <para>Encolher horizontalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_VSHRINK</term>
+ <listitem>
+  <para>Encolher verticalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_SHRINK</term>
+ <listitem>
+  <para>Encolher tanto horizontal como verticalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_HFILL</term>
+ <listitem>
+  <para>Preencher horizontalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_VFILL</term>
+ <listitem>
+  <para>Preencher verticalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_FILL</term>
+ <listitem>
+  <para>Preencher tanto horizontal como verticalmente</para>
+ </listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>EWL_FLAG_FILL_ALL</term>
+ <listitem>
+  <para>Encolher e Preencher de uma vez</para>
+ </listitem>
+</varlistentry>
+
+</variablelist>
+
+<para>
+Após definir todas as propriedades da janela anexa-se um callback para capturar a destruição da janela principal com
+<function>ewl_callback_append()</function>. A função <function>destroy_cb()</function> será chamada caso alguém
+requeira que a janela seja destruida de alguma maneira.
+</para>
+
+<para>
+Mostramos a janela principal com uma chamada a <function>ewl_widget_show()</function>. Se <function>ewl_widget_show()</function>
+não for chamada nada aparecerá na tela. Todos os widgets estão invisíveis até que explicatamente solicitemos mostra-los. Em oposição a isto
+é a <function>ewl_widget_hide()</function> que removerá um widget da tela.
+</para>
+
+<example>
+<title>O container principal</title>
+<programlisting>
+    /* create the main container */
+    box = ewl_vbox_new();
+    ewl_container_child_append(EWL_CONTAINER(main_win), box);
+    ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_FILL);
+    ewl_widget_show(box);
+</programlisting>
+</example>
+<para>
+Podemos empacotar todos nossos widgets na própria janela principal, mas isto pode causar problemas se desejarmos
+mudar as coisas facilmente, então criaremos uma caixa dentro da janela principal para que mantenha
+todos os nossos widgets.
+</para>
+
+<para>
+Isto é feito criando uma caixa vertical com <function>ewl_vbox_new()</function>.
+Então se toma a caixa e acrescenta a lista de filhos da janela principal com <function>ewl_container_child_append()</function>.
+Depois de anexar a janela selecionamos uma politica de preenchimento para preencher tanto na horizontal como na vertical com
+<function>ewl_object_fill_policy_set</function>, e mostramos o widget com <function>ewl_widget_show()</function>.
+</para>
+
+<para>
+A ordem em que vai se pondo os widgets no container afetará a maneira como se mostra a aplicação.
+O primeiro widget empacotado será o primeiro widget a ser mostrado. Como especificamos uma caixa vertical
+empacotaremos os widgets começando do topo até o fundo da nossa tela.
+</para>
+
+<example>
+<title>Criar a barra de menu</title>
+<programlisting>
+    /* create the menu bar */
+    menu_bar = ewl_hbox_new();
+    ewl_container_child_append(EWL_CONTAINER(box), menu_bar);
+    ewl_object_fill_policy_set(EWL_OBJECT(menu_bar), EWL_FLAG_FILL_HSHRINK);
+    ewl_object_alignment_set(EWL_OBJECT(menu_bar), EWL_FLAG_ALIGN_LEFT);
+    ewl_box_spacing_set(EWL_BOX(menu_bar), 4);
+    ewl_object_padding_set(EWL_OBJECT(menu_bar), 5, 5, 5, 5);
+    ewl_widget_show(menu_bar);
+</programlisting>
+</example>
+<para>
+O primeiro widget que adicionamos é a barra de menu. Colocaremos o próprio conteudo do menu mais tarde,
+depois que os outros widgets tenham sido criados, mas precisamos adicionar a barra de menu primeiro.
+</para>
+
+<para>
+As chamadas são as mesmas que vismos acima,  adicionar container pai, iniciar a politica de preenchimento, mostrar o widget.
+As que não foram vitas antes incluem <function>ewl_object_alignment_set()</function>, que informa como o widget será alinhado
+dentro do container. Neste caso estamos usando EWL_FLAG_ALIGN_LEFT, mas podemos usar qualquer outro dos alinhamentos incluindo:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_FLAG_ALIGN_CENTER</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_LEFT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_RIGHT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_TOP</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_BOTTOM</para></listitem>
+</itemizedlist>
+Assim o menu irá alinhar com o lado esquerdo da caixa principal.
+</para>
+
+<para>
+Então especificamos o espaçamento dos itens do menu. Isto dará um pouco mais de espaço
+entre os nossos itens de menu, isto é feito com <function>ewl_box_spacing_set()</function>.
+Depois de mudar o espaço mudamos o preenchimento ao redor da caixa como um todo com uma chamada à
+<function>ewl_object_padding_set()</function>, isto incrementará uma quantidade de espaço em volta do widget.
+</para>
+
+<example>
+<title>Criar o painel de rolagem</title>
+<programlisting>
+    /* create the scrollpane */
+    scroll = ewl_scrollpane_new();
+    ewl_container_child_append(EWL_CONTAINER(box), scroll);
+    ewl_object_fill_policy_set(EWL_OBJECT(scroll), EWL_FLAG_FILL_FILL);
+    ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
+                                        EWL_SCROLLBAR_FLAG_AUTO_VISIBLE);
+    ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
+                                        EWL_SCROLLBAR_FLAG_AUTO_VISIBLE);
+    ewl_widget_show(scroll);
+</programlisting>
+</example>
+<para>
+O painel de rolagem vai ser o pai do nosso objeto texto. O painel de rolagem nos dá toda a mágica para 
+controlar as barras de rolagem e a sua própria rolagem.
+</para>
+
+<para>
+O painel de rolagem é criado com uma chamada à <function>ewl_scrollpane_new()</function>, e então anexamos 
+o painel de rolagem na caixa principal e selecionamos a sua política de preenchimento.
+</para>
+
+<para>
+As chamadas à ewl_scrollpane_[hv]scrollbar_flag_set() dizem ao Ewl como deverão compartar-se as barras de rolagem. 
+Os valores possíveis são:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_SCROLLBAR_FLAG_NONE</para></listitem>
+ <listitem><para>EWL_SCROLLBAR_FLAG_AUTO_VISIBLE</para></listitem>
+ <listitem><para>EWL_SCROLLBAR_FLAG_ALWAYS_HIDDEN</para></listitem>
+</itemizedlist>
+Uma vez que as barras de rolagem tenham sido iniciadas pedimos ao Ewl que mostre o widget.
+</para>
+
+<example>
+<title>Criar a área de texto</title>
+<programlisting>
+    /* create the text area */
+    text_area = ewl_text_new("");
+    ewl_container_child_append(EWL_CONTAINER(scroll), text_area);
+    ewl_object_padding_set(EWL_OBJECT(text_area), 1, 1, 1, 1);
+    ewl_widget_show(text_area);
+</programlisting>
+</example>
+<para>
+A área de texto será responsável em manter o texto no nosso visualizador. O widget é criado com uma 
+simples chamada à <function>ewl_text_new()</function>. Isto causará a criação da área de texto, mas com um texto em branco. 
+Como na barra de menu, incrementamos o preenchimento ao redor da área de texto para dar um pouco 
+de espaço entre o texto e os outros elementos.
+</para>
+
+<example>
+<title>Criar o conteúdo do menu</title>
+<programlisting>
+    /* create the menu */
+    {
+        Ewl_Widget *file_menu = NULL, *item = NULL;
+   
+        /* create the file menu */ 
+        file_menu = ewl_imenu_new(NULL, "file");
+        ewl_container_child_append(EWL_CONTAINER(menu_bar), file_menu);
+        ewl_widget_show(file_menu);
+   
+        /* add the open entry to the file menu */ 
+        item = ewl_menu_item_new(NULL, "open");
+        ewl_container_child_append(EWL_CONTAINER(file_menu), item);
+        ewl_callback_append(item, EWL_CALLBACK_SELECT, file_menu_open_cb, 
+                                                                text_area);
+        ewl_widget_show(item);
+   
+        /* add the quit entry to the file menu */ 
+        item = ewl_menu_item_new(NULL, "quit");
+        ewl_container_child_append(EWL_CONTAINER(file_menu), item);
+        ewl_callback_append(item, EWL_CALLBACK_SELECT, destroy_cb, NULL);
+        ewl_widget_show(item); 
+    }
+</programlisting>
+</example>
+<para>
+Agora que a área de texto foi criada podemos continuar por criar as entradas do menu. Fiz isto dentro do seu próprio bloco
+para limitar o número de declarações no início da função, isto não é requerido por nenhuma razão.
+</para>
+
+<para>
+O menu é criado com uma chamada à <function>ewl_imenu_new()</function>. Esta função pega dois parâmetros, o primeiro é a 
+imagen para mostrar com este menu, neste casso NULL, sou seja, sem imagem. O segundo parâmetro é o nome do menu tal 
+como aparecerá na barra de menu.
+</para>
+
+<para>
+Uma vez criado o menu, pode continuar por adicionar os itens do menu por meio da uma chamada à 
+<function>ewl_menu_item_new()</function>. Esta novamente pega dois parâmetros, o ícone para mostrar 
+junto com esta entrada no menu, e o nome que aparecerá no menu.
+</para>
+
+<para>
+Ao passo que os elementos são adicionados no menu fazemos uma chamada à <function>ewl_callback_append()</function> para 
+conectar à chamada EWL_CALLBACK_SELECT. A função dada será executada quando o usuário clicar no item de menu. No caso de
+&quot;open&quot; tivemos que passar a área de texto ao callback de open para permitirmos modificar facilmente seu conteúdo.
+</para>
+
+<para>
+Outros menus poderão ser adicionados da mesma maneira, mas para esta aplicação apenas um menu é necessário.
+</para>
+
+<example>
+<title>Vincular callbacks</title>
+<programlisting>
+    ewl_callback_append(main_win, EWL_CALLBACK_KEY_UP, key_up_cb, scroll);
+}
+</programlisting>
+</example>
+<para>
+Uma vez que tudo está iniciado na janela principal, adicionamos os callbacks que desejamos receber. Neste caso 
+estamos vinculando-nos ao callback EWL_CALLBACK_KEY_UP. Não necessitamos fazer nada para que a roda do mouse deslize 
+o painel de rolagem pois isto é configurado no próprio painel de rolagem.
+</para>
+
+<example>
+<title>callback de finalização</title>
+<programlisting>
+/* destroy the app */
+static void destroy_cb(Ewl_Widget *win, void *ev, void *data) {
+    ewl_widget_destroy(win);
+    ewl_main_quit();
+}
+</programlisting>
+</example>
+<para>
+Quando a janela principal é fechada, destruímos o widget que está nela mediante uma chamada à <function>ewl_widget_destroy()</function>.
+Depois que a janela é destruída solicitamos ao Ewl que desejamos saír chamando a <function>ewl_main_quit()</function>. 
+Isto fará com que o Ewl pare o loop de processamento principal e retornará da chamada prévia à <function>ewl_main()</function>.
+</para>
+
+<example>
+<title>Callback do item open do menu file</title>
+<programlisting>
+/* the file menu open button callback */
+static void file_menu_open_cb(Ewl_Widget *win, void *ev, void *data) {
+    Ewl_Widget *fd = NULL;
+    Ewl_Widget *box = NULL;
+    Ewl_Widget *home = NULL;
+
+    /* create the file dialog window */
+    fd_win = ewl_window_new();
+    ewl_window_title_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_window_name_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_window_class_set(EWL_WINDOW(fd_win), PROG " -- file dialog");
+    ewl_object_size_request(EWL_OBJECT(fd_win), 500, 400);
+    ewl_object_fill_policy_set(EWL_OBJECT(fd_win),
+                EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK);
+    ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW, 
+                                destroy_filedialog_cb, NULL);
+    ewl_widget_show(fd_win);
+
+    /* fd win container */
+    box = ewl_vbox_new();
+    ewl_container_child_append(EWL_CONTAINER(fd_win), box);
+    ewl_object_fill_policy_set(EWL_OBJECT(box),
+                EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK);
+    ewl_widget_show(box);
+
+    /* the file dialog */
+    fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+    ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, data);
+    ewl_container_child_append(EWL_CONTAINER(box), fd);
+
+    /* add a home button */
+    home = ewl_button_new("Home");
+    ewl_callback_append(home, EWL_CALLBACK_CLICKED, home_cb, fd);
+    ewl_object_fill_policy_set(EWL_OBJECT(home), EWL_FLAG_FILL_HFILL);
+    ewl_container_child_append(EWL_CONTAINER(fd), home);
+    ewl_widget_show(home);
+
+    ewl_widget_show(fd);
+}
+</programlisting>
+</example>
+<para>
+Se um usuário clicar no ítem &quot;Open&quot; do menu &quot;File&quot; a função <function>file_menu_open_cb()</function> será executada. 
+Quando isto ocorrer necessitamos criar o diálogo de arquivo para que o usuário selecione o arquivo para ver.
+</para>
+
+<para>
+Da mesma forma que na janela principal, criamos uma janela para conter o diálogo de arquivo e informamos um título, 
+tamanho e classe. Solicitamos um tamanho default, selecionamos sua política de preenchimento e adicionamos um callback para controlar 
+a destruição da própria janela. Então adicionamos uma caixa simples dentro da janela para conter o diálogo de aquivo.
+</para>
+
+<para>
+Uma vez configurada a janela, fazemos uma chamada para criar o diálogo de arquivo. Isto é feito com uma chamda à 
+<function>ewl_filedialog_new()</function>, especificando o tipo de diálogo de arquivo que queremos cirar. Neste caso 
+queremos um diálogo que nos possíbilite abrir um diretório, então especificamos EWL_FILEDIALOG_TYPE_OPEN. Poderemos 
+especificar EWL_FILEDIALOG_TYPE_SAVE se desejarmos usar o diálogo para salvar o arquivo ao invéz de abri-lo.
+</para>
+
+<para>
+Então continuamos criando um botão extra para permitir o usuário que navegue no seu diretório pessoal com um simples click. 
+Isto é feito chamando <function>ewl_button_new()</function> e condicionando o botão no próprio diálogo de arquivo.
+</para>
+
+<example>
+<title>Callback de finalização do diálogo de arquivo</title>
+<programlisting>
+/* close the file dialog */
+static void destroy_filedialog_cb(Ewl_Widget *win, void *ev, void *data) {
+    ewl_widget_hide(win);
+    ewl_widget_destroy(win);
+}
+</programlisting>
+</example>
+<para>
+Quando precisamos nos livrar do diálogo de arquivo, eliminamos o widget da tela com uma chamada à 
+<function>ewl_widget_hide()</function>, e uma vez que não é mais mostrado destruímos o widget com uma chamada 
+à <function>ewl_widget_destroy()</function>.
+</para>
+
+<example>
+<title>Callback do botão open do diálogo de arquivo</title>
+<programlisting>
+/* the file dialog open button callback */
+static void open_file_cb(Ewl_Widget *win, void *ev, void *data) {
+    char *text = NULL;
+    text = read_file((char *)ev);
+    
+    if (text) {
+        ewl_text_text_set(EWL_TEXT(data), text);
+        free(text);
+    }           
+    text = NULL;
+
+    ewl_widget_hide(fd_win);
+}
+</programlisting>
+</example>
+<para>
+Este callback será executando quando o usuário clicar no botão &quot;Open&quot; no diálogo de arquivo, 
+ou quando o usuário der um duplo clique em um arquivo no diretório. O evento passado (o parâmetro ev) será o 
+caminho completo do arquivo que o usuário selecionou.
+</para>
+
+<para>
+No nosso caso, tomamos esse arquivo e o passamos à função para ler o arquivo e devolver o texto do arquivo. Então 
+usando este texto como está, chamamos a função <function>ewl_text_text_set()</function> que colocará o 
+texto no objeto de texto dado.
+</para>
+
+<para>
+Já que o usuário terminou sua seleção, o diálogo de arquivo é escondido.
+</para>
+
+<example>
+<title>Callback do botão home do diálogo de aquivo</title>
+<programlisting>
+/* the fd home button is clicked */
+static void home_cb(Ewl_Widget *win, void *ev, void *data) {
+    char *home = NULL;
+    Ewl_Filedialog *fd = (Ewl_Filedialog *)data;
+    
+    home = getenv("HOME");
+    if (home)
+        ewl_filedialog_set_directory(fd, home);
+}   
+</programlisting>
+</example>
+<para>
+Se o usuário clicar no botão &quot;Home&quot; no diálogo de aquivo queremos mostrar o conteúdo do seu diretório pessoal. 
+Colocamos o diálogo de arquivo como dado do callback, assim o pegamos no callback e capturamos o diretório pessoal da 
+variável de ambiente. A chamada para <function>ewl_filedialog_set_directory()</function> muda o diretório atual que está 
+mostrando no diálogo de arquivo para ser o diretório pessoal do usuário.
+</para>
+
+<example>
+<title>Ler o arquivo de texto</title>
+<programlisting>
+/* read a file */
+static char *read_file(char *file) {
+    char *text = NULL;
+    FILE *f = NULL;
+    int read = 0, st_ret = 0;
+    struct stat s;
+    
+    f = fopen(file, "r");
+    st_ret = stat(file, &amp;s);
+
+    if (st_ret != 0) {
+        if (st_ret == ENOENT)
+            printf("not a file %s\n", file); 
+        return NULL;
+    }
+
+    text = (char *)malloc(s.st_size * sizeof(char));
+    read = fread(text, sizeof(char), s.st_size, f); 
+         
+    fclose(f);
+    return text;
+}
+</programlisting>
+</example>
+
+<para>
+Esta é uma rotina simples para tomar o arquivo dado, abrir-lo e ler seu conteúdo na memoria. 
+Provavelmente não é a melhor ideia para uma aplicação real, mas é o suficiente para este 
+programa exemplo.
+</para>
+
+<example>
+<title>Callback de teclado</title>
+<programlisting>
+/* a key was pressed */
+static void key_up_cb(Ewl_Widget *win, void *ev, void *data) {
+    Ewl_Event_Key_Down *e = (Ewl_Event_Key_Down *)ev;
+    Ewl_ScrollPane *scroll = (Ewl_ScrollPane *)data;
+
+    if (!strcmp(e-&gt;keyname, "q")) {
+        destroy_cb(win, ev, data);
+
+    } else if (!strcmp(e-&gt;keyname, "Left")) {
+        double val = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_hscrollbar_step_get(EWL_SCROLLPANE(scroll));
+
+        if (val != 0)
+            ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(scroll), 
+                                                                val - step);
+
+    } else if (!strcmp(e-&gt;keyname, "Right")) {
+        double val = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_hscrollbar_step_get(EWL_SCROLLPANE(scroll));
+
+        if (val != 1)
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
+                                                                val + step);
+
+    } else if (!strcmp(e-&gt;keyname, "Up")) {
+        double val = ewl_scrollpane_vscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_vscrollbar_step_get(EWL_SCROLLPANE(scroll));
+
+        if (val != 0)
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
+                                                                val - step);
+    
+    } else if (!strcmp(e-&gt;keyname, "Down")) {
+        double val = ewl_scrollpane_vscrollbar_value_get(EWL_SCROLLPANE(scroll));
+        double step = ewl_scrollpane_vscrollbar_step_get(EWL_SCROLLPANE(scroll));
+    
+        if (val != 1)
+            ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(scroll), 
+                                                                val + step);
+    } 
+}       
+</programlisting>
+</example>
+<para>
+<function>key_up_cb()</function> será chamda quando o usuário solta uma tecla do teclado. 
+O callback receberá uma estrutura de evento Ewl_Event_Key_Down contendo a informação da própria tecla pressionada.
+No nosso caso só necessitamos da entrada keyname que é o nome da tecla pressionada.
+</para>
+
+<para>
+Se o usuário pressinar a tecla &quot;q&quot; simplesmente chama o callback destroy e terminamos com isto.
+</para>
+
+<para>
+&quot;Left&quot;, &quot;Right&quot;, &quot;Up&quot; e &quot;Down&quot; são as teclas de cursor do teclado. 
+Se alguma destas teclas forem pressionadas froçamos o painel de rolagem a rolar na direção especificada.
+</para>
+
+<para>
+Para controlar o painel de rolagem necessitamos saber onde ele está atualmente no arquivo e a distância que 
+deverá rolar cada incremento/decremento. Por sorte Ewl torna isto fácil. A chamada à ewl_scrollpane_[hv]scrollbar_value_get() 
+devolverá o valor atual da barra de rolagem. Este é um valor do tipo double com limites [0, 1] inclusivo. Um valor de 0 significa 
+que a barra de rolagem está no topo e um valor de 1 que está no fundo. Esquerda e direita funcionam da mesma forma, com 0 
+sendo esquerda absoluta e 1 direita absoluta.
+</para>
+
+<para>
+A segunda parte da informação é obtida mediante a chamda à ewl_scrollpane_[hv]scrollbar_step_get(). O passo (step) é a distância 
+que rolará o painel de rolamento com uma interação. Usando estes dois valores podemos então mover a barra de rolagem da direção correta com 
+a chamada à ewl_scrollpane_[hv]scrollbar_value_set().
+</para>
+
+<example>
+<title>Compilação</title>
+<screen>
+zero@oberon [ewl_intro] -&lt; gcc -Wall -o ewl_text main.c \
+ `ewl-config --cflags --libs`
+
+</screen>
+</example>
+<para>
+Compilar uma aplicação Ewl é tão simples como chamar ewl-config e obter os --cflags e --libs.
+</para>
+
+<para>
+Então é isto. Com este exemplo você deverá ter uma aplicação Ewl funcionando plenamente, incluindo menus, um diálogo de arquivo e uma 
+área de texto com barras de rolagem horizontais e verticais. Este exemplo apenas arranha a superfície da pontência contida dentro 
+do conjunto de ferramentes Ewl com muitos outros tipo de widget disponiveis para usar.
+</para>
+
+</section>
+

@@ -1,0 +1,116 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>29 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Um template para construir aplicações Edjes</title>
+
+<para>
+O seguinte exemplo é um template que pode ser usado para iniciar rápida e fácilmente uma aplicação Edje.
+É semelhante ao template econtrado no capítulo sobre Evas, já que este também usa Ecore_Evas.
+</para>
+
+<example>
+<title>Template Edje</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Edje.h&gt;
+
+#define WIDTH 100
+#define HEIGHT 100
+
+int app_signal_exit(void *data, int type, void *event);
+
+        /* GLOBALS */
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   edje;
+
+        Evas_Coord   edje_w, edje_h;
+                                
+                                
+int main(int argv, char *argc[]){
+                                
+        ecore_init();           
+        ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
+                                
+        ecore_evas_init();      
+                                
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "TITLE");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_shaped_set(ee, 0);
+        ecore_evas_show(ee);    
+                                
+                                
+   evas = ecore_evas_get(ee);   
+        evas_font_path_append(evas, "edje/fonts/");
+                                
+        edje_init();            
+   edje = edje_object_add(evas);
+        edje_object_file_set(edje, "edje/XXX.eet", "XXX");
+        evas_object_move(edje, 0, 0);
+        edje_object_size_min_get(edje, &amp;edje_w, &amp;edje_h);
+        evas_object_resize(edje, edje_w, edje_h);
+        evas_object_show(edje); 
+                                
+        ecore_evas_resize(ee, (int)edje_w, (int)edje_h);
+        ecore_evas_show(ee);    
+                                
+	/* Insert Objects and callbacks here */
+                                
+        ecore_main_loop_begin();
+                                
+        return 0;               
+}                               
+                                
+                                
+int app_signal_exit(void *data, int type, void *event){
+
+        printf("DEBUG: Exit called, shutting down\n");
+        ecore_main_loop_quit();
+        return 1;
+}
+</programlisting>
+</example>
+
+<para>
+Compilar este template da seguinte maneira:
+</para>
+
+<programlisting>
+ gcc `edje-config --cflags --libs` `ecore-config --cflags --libs` edje_app.c -o edje_app
+</programlisting>
+
+<para>
+As chamadas importantes para vermos aqui estão localizadas no bloco Edje, seguindo a função <function>edje_init()</function>.
+</para>
+
+<para>
+<function>edje_object_file_set()</function> define que EET Edje é usada assim como o nome da coleção à usar.
+</para>
+
+<para>
+O resto das funções Edje/Evas no block Edje são necessárias para redimencionar a janela X11 para acomodar seu Edje.
+Começamos movendo a janela Evas e então pegando o tamanho mínimo do próprio Edje usando 
+<function>edje_object_size_min_get()</function>. Então, usando <function>evas_object_resize()</function> podemos
+redimencionar o Edje, que é um objeto Evas real, para o tamanho do próprio evas. Adiante podemos mostrar o 
+Edje e então redimencionar o próprio Evas (e graças ao Ecore a janela também) usando <function>ecore_evas_resize()</function>.
+</para>
+
+<para>
+Depois disto callbacks podem ser adicionados para serem conectados à sua interface.
+</para>
+
+
+
+
+</section>
+

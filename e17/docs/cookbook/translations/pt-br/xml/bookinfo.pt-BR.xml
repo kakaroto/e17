@@ -1,0 +1,35 @@
+<bookinfo>
+ <title>Livro de Receitas EFL</title>
+ <authorgroup>
+  <author>
+   <surname>Varios</surname>
+  </author>
+
+  <editor>
+   <firstname>Ben</firstname>
+   <surname>Rockwood</surname>
+   <othername>'technikolor'</othername>
+   <affiliation>
+    <orgname>The Enlightenment Project</orgname>
+    <address> <email>benr@cuddletech.com</email> </address>
+   </affiliation>
+  </editor>
+ </authorgroup>
+
+ <revhistory>
+  <revision>
+   <revnumber>v0.1</revnumber>
+   <date>20 de Fevereiro 2004</date>
+   <authorinitials>br</authorinitials>
+   <revremark>Initial document</revremark>
+  </revision>
+ </revhistory>
+
+ <abstract>
+  <para>
+   
+  </para>
+ </abstract>
+</bookinfo>
+
+

@@ -1,0 +1,27 @@
+<!-- Edje Recipes -->
+
+<chapter>
+<title>Edje</title>
+
+<para>
+Edje é uma complexa biblioteca de desenho gráfico e layout. Seu propósito é abstrair todo elemento de interface da 
+sua aplicação Evas do próprio código.
+</para>
+
+<para>
+Uma aplicação Edje consiste em duas partes: O Código C que forma sua aplicação e uma Coleção de Dados Edje ( EDC ) que descreve cada 
+elemento da sua interface. Ambas estão conectadas por sinais que são emitidas pelo EDC e recebidas por callbacks no código da sua 
+aplicação. Usando este modelo de sinais o código fica completamente desinteressado no aspecto visual da sua 
+interface, apenas recebe sinais. E como os sinais são processados por callbacks, no há necessidade que sua interface envie cada 
+sinal disponível, fazendo possivel aplicações em grande escala e aplicações de tamanho "demo" com um único binário. Tanto faz se 
+sua interface usa botões ou uma drag-bar para enviar dados, isto existe diferença para a sua aplicação.
+</para>
+
+
+&edje_simple;
+&edje_callback;
+&edje_file_manipulation;
+
+</chapter>
+
+

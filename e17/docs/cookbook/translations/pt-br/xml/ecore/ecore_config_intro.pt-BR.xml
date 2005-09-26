@@ -1,0 +1,123 @@
+<!--
+#######################################
+Introduction to Ecore_Config
+#######################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>25 de Abril 2004</date>
+</sectioninfo>
+
+<title>Receita: Introdução ao Ecore Config</title>
+
+<para>
+O módulo Ecore_Config provê ao programador uma jeito muito simples de preparar
+arquivos de configuração para seu programa. Esta receita dará um exemplo de como
+integrar os principios do Ecore_Config em seu programa e utilizar-lo para conseguir 
+os dados de configuração.
+</para>
+
+<example>
+<title>Um simples programa Ecore_Config</title>
+<programlisting>
+#include &lt;Ecore_Config.h&gt;
+
+int main(int argc, char ** argv) {
+    int i;
+    float j;
+    char *str;
+
+    if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
+        printf("Cannot init Ecore_Config");
+        return 1;
+    }
+
+    ecore_config_int_default("/int_example", 1);
+    ecore_config_string_default("/this/is/a/string/example", "String");
+    ecore_config_float_default("/float/example", 2.22);
+
+    ecore_config_load();
+
+    i = ecore_config_int_get("/int_example");
+    str = ecore_config_string_get("/this/is/a/string/example");
+    j = ecore_config_float_get("/float/example");
+
+    printf("str is (%s)\n", str);
+    printf("i is (%d)\n", i);
+    printf("j is (%f)\n", j);
+
+    free(str);
+
+    ecore_config_shutdown();
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+Como pode ver, o uso básico do Ecore_Config é simples. O sistema é inicializado 
+com a função <function>ecore_config_init</function>. O nome do programa indica 
+onde o Ecore_Config irá procurar pela sua base de dados de configuração. O 
+diretório e o nome do arquivo são: ~/.e/apps/NOME_DO_PROGRAMA/config.db.
+</para>
+
+<para>
+Para cada variável de configuração que você receber do Ecore_Config, pode assinar 
+um valor padrão no caso do usuário não ter um arquivo config.db. Os valores 
+por padrão são assinados com ecore_config_*_default onde * é um dos tipos 
+Ecore_Config. O primeiro parâmetro é a chave que vai ser acessada. Estas chaves 
+devem ser únicas em seu programa. O valor passado é do tipo apropriado para esta chamada.
+</para>
+
+<para>
+A chamada a <function>ecore_config_load</function> irá ler os valores do arquivo 
+config.db no Ecore_Config. Depois disto, podemos acessar os arquivos com os 
+métodos ecore_config_*_get (novamente * é o tipo de dados desejado). Estas rotinas 
+usam do nome da chave para este item e retornam o valor associado à chave. Cada 
+função retorna um tipo que corresponde ao nome da chamada da função.
+</para>
+
+<para>
+<function>ecore_config_shutdown</function> é então chamada para terminar o sistema Ecore_Config antes de sair do programa.
+</para>
+
+<example>
+<title>Comando para comilação</title>
+<programlisting>
+gcc -o ecore_config_example ecore_config_example.c `ecore-config --cflags --libs`
+</programlisting>
+</example>
+<para>
+Para compilar o programa você pode usar o script ecore-config para obter toda informação de biblioteca 
+e linkagem requerida pelo Ecore_Config.
+
+Se você executar este programa como está, receberá como saída os valores passados pelo 
+ecore_config. O programa uma vez funcionando, você pode criar um simples arquivo config.db para ler os valores.
+</para>
+
+<example>
+<title>Um simples script config.db (build_cfg_db.sh)</title>
+<programlisting>
+#!/bin/sh
+
+DB=config.db
+
+edb_ed $DB add /int_example int 2
+edb_ed $DB add /this/is/a/string/example str "this is a string"
+edb_ed $DB add /float/example float 42.10101
+</programlisting>
+</example>
+<para>
+Quando for executado, o build_cfg_db.sh criará um arquivo config.db no diretório atual. 
+Este arquivo pode ser compiado para ~/.e/apps/NOME_DO_PROGRAMA/config.db onde 
+NOME_DO_PROGRAMA é o valor passado para ecore_config_init. Uma vez copiado para o diretório, 
+executando o programa test mostrará os valores do arquivo config no lugar dos valores 
+padrão. Você pode especificar quantas chaves de configuração desejar no arquivo 
+config e o Ecore_Config mostrará o valor do usuário ou o valor padrão.
+</para>
+</section>

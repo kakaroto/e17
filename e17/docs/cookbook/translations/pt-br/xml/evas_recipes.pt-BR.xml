@@ -1,0 +1,31 @@
+<!-- EVAS Recipes -->
+
+<chapter>
+<title>EVAS</title>
+
+<para>
+Evas é uma API de canvas com aceleração por hardware que pode desenhar texto com anti-aliasing, 
+imagens suaves super e sub-sampleadas, alpha-blend, assim como limitar-se à utilizar 
+primitivas X11 normais como pixmap, linhas e retângulos com velocidade se sua CPU ou hardware 
+gráfico são muito lentos.
+</para>
+
+<para>
+Evas abstrai qualquer necessidade de conhecimento avançado sobre as características do 
+display do seu XServer,  qual a tonalidade de cor ou quais visuais mágicas ele tem. O 
+maximo que você precisa informar ao Evas é quantas cores ( no máximo ) utilizar se 
+o seu display não for truecolor. Por padrão sugere-se usar 216 cores ( isto equivale a 
+um cubo 6x6x6 - exatamente é o mesmo cubo de cor utilizado pelo Netscape, Mozilla, 
+gdkrgb, etc. de maneira que as cores serão compartilhadas). Se Evas não pode alocar 
+suficiente cores, ele continuará reduzindo o tamanho do cubo de cor até alcançar branco 
+e preto. Desta maneira, o Evas pode mostrar qualquer coisa em um terminal preto e 
+branco, VGA 16 cores, 256 cores e 15, 16, 24 e 32bit de cores.
+</para>
+
+&evas_ecore_setup;
+&evas_key_bindings;
+&evas_smart_intro;
+
+</chapter>
+
+

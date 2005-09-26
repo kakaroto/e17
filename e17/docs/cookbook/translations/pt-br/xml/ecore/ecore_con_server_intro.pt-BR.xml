@@ -1,0 +1,390 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>15 de Dezembro 2004</date>
+</sectioninfo>
+
+<title>Receite: Conexão para um servidor com Ecore_Con</title>
+<para>
+Client/server estão tornando-se completamente comuns hoje em dia. Para este fim,
+Ecore pode simplifcar sua vida. Ecore tem o subsistema Ecore_Con que controla 
+toda chatisse de conectar com servidores e de clientes conectados no seu servidor.
+</para>
+
+<para>
+Esta receita mostra um exemplo conectando com um outro servidor e 
+recebendo alguma informação de volta. Nós iremos conectar com 
+o website do enlightement e pegar uma das páginas.
+</para>
+
+<para>
+Agora, antes de você ficar confuso. A terminologia Ecore_Con pode semear um
+pouco de confusão embaralhando seu cérebro. Quando você está conectando com um
+servidor estará trabalhando com as chamadas de servidor do ecore_con. Isto inclue os 
+callbacks de servidor.
+</para>
+
+<para>
+Lembrando que estou fazendo poucas checagem dos valores retornados neste programa, 
+você provavelmente desejará fazer muito mais nos seus programas.
+</para>
+
+<example>
+<title>Preâmbulo</title>
+<programlisting>
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Con.h&gt;
+
+static int server_add_cb(void *data, int type, void *ev);
+static int server_del_cb(void *data, int type, void *ev);
+static int server_data_cb(void *data, int type, void *ev);
+
+struct Data {
+    char *data;
+    int data_size;
+};
+</programlisting>
+<para>
+Se estiver usando apenas o ecore_con, tudo que você precisa sãos os
+headers <literal>Ecore.h</literal> e <literal>Ecore_Con.h</literal> 
+para funcionar. Temos umas pré-declarações casuais para manter o 
+compilador feliz e uma estrutura de dados simples que iremos usar 
+em diversos lugares.
+</para>
+</example>
+
+<example>
+<title>Entendendo a parte de inicialização</title>
+<programlisting>
+int
+main(int argc, char ** argv)
+{
+    struct Data gd;
+    struct Data *sd;
+    Ecore_Con_Server *srv;
+    Ecore_Event_Handler *add = NULL, *del = NULL, *data = NULL;
+
+    sd = calloc(1, sizeof(struct Data));
+    gd.data = "In the land of the night "
+                "the ship of the sun "
+                "is drawn by the grateful dead."
+                "~ Egyptian book of the Dead";
+
+
+    ecore_init();
+    ecore_con_init();
+</programlisting>
+<para>
+Iniciamos algumas declarações no corpo do main do programa. Quando você chama 
+o método de conexão do ecore_con, ele irá retornar um <literal>Ecore_Con_Server *</literal> 
+com o qual podemos usar para manipular a conexão se assim desejarmos.
+</para>
+
+<para>
+Também estou gardando os <literal>Ecore_Event_Handler</literal>s que 
+vou cirar, para eu mesmo poder liberar os recursos de memória no fim do programa.
+</para>
+
+<para>
+A variável <literal>gd</literal> é meu dado <quote>global</quote>. Ela será 
+passada para todas chamadas de cada um dos controladores de evento. A variável 
+<literal>sd</literal> é meu dado <quote>local</quote>. Ela será passada para
+o controlador quando este servidor estiver trabalhando.
+</para>
+
+<para>
+Mas, antes de partirmos de fato para a diversão, devemos nos certificar 
+de inicializar o ecore e ecore_con com as chamadas à 
+<literal>ecore_init()</literal> e <literal>ecore_con_init()</literal>. 
+Como mencionei antes, sempre verifique os valores retornados.
+</para>
+</example>
+
+<example>
+<title>capturando os eventos</title>
+<programlisting>
+    add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, 
+                                            server_add_cb, &amp;gd);
+    del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, 
+                                            server_del_cb, &amp;gd);
+    data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, 
+                                            server_data_cb, &amp;gd);
+</programlisting>
+<para>
+Se nós queremos de fato receber algum evento por qualquer motivo, precisamos
+nós mesmos conectá-lo ao sistema de eventos do ecore. Isto é feito por meio 
+de chamadas à <literal>ecore_event_handler_add()</literal>. No caso de conexão
+para outro servidor os eventos que estamos interessados são:
+
+<variablelist spacing="compact" termlength="30">
+<varlistentry>
+ <term>ECORE_CON_EVENT_SERVER_ADD</term>
+ <listitem><para>Chamado quando conectamos com um servidor</para></listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>ECORE_CON_EVENT_SERVER_DEL</term>
+ <listitem><para>Chamado quando disconectamos do servidor</para></listitem>
+</varlistentry>
+
+<varlistentry>
+ <term>ECORE_CON_EVENT_SERVER_DATA</term>
+ <listitem><para>Chamado quando temos dados recebidos do servidor</para></listitem>
+</varlistentry>
+</variablelist>
+
+Para cada uma das chamadas destes controladores, nós passamos a função 
+que irá controlar o evento e o dado global <literal>gd</literal> que criamos acima.
+Se não tem qualquer dado pra passar, você pode usar um ponteiro <literal>NULL</literal>.
+</para>
+</example>
+
+<example>
+<title>conectando</title>
+<programlisting>
+    srv = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, 
+                                    "www.enlightenment.org", 80, sd);
+</programlisting>
+<para>
+Uma vez que tudo está inicializado, podemos criar uma conexão com o servidor. 
+Isto é feito com uma chamada para <literal>ecore_con_server_connect()</literal>. 
+A chamada irá retornar para nós um <literal>Ecore_Con_Server *</literal> que podemos 
+guardar se desejarmos. A chamada de conexão tem quatro parâmetros. O tipo de conexão,
+o nome do host, a porta e qualquer dado associado com o servidor.
+</para>
+
+<para>
+O tipo de conexão é um dos:
+<variablelist spacing="compact" termlength="30">
+<varlistentry>
+ <term>ECORE_CON_LOCAL_USER</term>
+ <listitem><para>Conectará com o servidor que estiver escutando no socket Unix 
+ em <literal>~/.ecore/[name]/[port]</literal></para></listitem>
+</varlistentry>
+<varlistentry>
+ <term>ECORE_CON_LOCAL_SYSTEM</term>
+ <listitem><para>Conectará com o servidor que estiver escutando no socket Unix
+ em <literal>/tmp/.ecore_service|[name]|[port]</literal></para></listitem>
+</varlistentry>
+<varlistentry>
+ <term>ECORE_CON_REMOTE_SYSTEM</term>
+ <listitem><para>Conectará com o servidor que estiver escutando na porta TCP
+ <literal>[name]:[port]</literal></para></listitem>
+</varlistentry>
+<varlistentry>
+ <term>ECORE_CON_USE_SSL</term>
+ <listitem><para>Se a biblioteca foi compilada com suporte à SSL, a conexão 
+ será instruída à usar encriptação SSL na transmissão</para></listitem>
+</varlistentry>
+</variablelist>
+
+O último parâmetro é o dado que é específico (per-server) para cada servidor conectado que queremos passar
+para cada controlador de evento. Se você não tem este dado "per-server", então pode passar tranquilamente 
+<literal>NULL</literal> como parâmetro.
+</para>
+</example>
+
+<example>
+<title>vai speed racer</title>
+<programlisting>
+    ecore_main_loop_begin();
+
+    ecore_event_handler_del(add);
+    ecore_event_handler_del(del);
+    ecore_event_handler_del(data);
+
+    ecore_con_shutdown();
+    ecore_shutdown();
+    return 0;
+}
+</programlisting>
+<para>
+Agora que estamos conectado, nós iniciamos o loop principal de evento 
+com a <literal>ecore_main_loop_begin()</literal>. 
+Como sou um bom programador, também removo meus controladores de 
+eventos quando saímos do loop principal com a <literal>ecore_event_handler_del()</literal>. 
+Depois disto, é muito importante terminar tudo que inicializamos, 
+<literal>ecore_con_shutdown()</literal> e <literal>ecore_shutdown()</literal> 
+fará esta mágica para nós.
+</para>
+
+<para>
+Claro, você pode criar sempre suas conexões depois que o loop 
+principal de eventos foi inicializado, tudo funcionará do mesmo modo
+(você só precisa registrar os controladores de evento uma vez). Só  
+estou fazendo isto antes porque é mais fácil para um exemplo.
+</para>
+</example>
+
+<example>
+<title>adicionado</title>
+<programlisting>
+static int
+server_add_cb(void *data, int type, void *ev)
+{
+    Ecore_Con_Event_Server_Add *e;
+    struct Data *sd;
+    struct Data *gd;
+    char buf[1024];
+
+    e = ev;
+    gd = data;
+    sd = ecore_con_server_data_get(e->server);
+
+    printf("Connected to server ...\n");
+
+    snprintf(buf, 1024, "GET http://www.enlightenment.org/"
+                        "pages/enlightenment.html HTTP/1.0\r\n");
+    ecore_con_server_send(e->server, buf, strlen(buf));
+
+    snprintf(buf, 1024, "\r\n");
+    ecore_con_server_send(e->server, buf, strlen(buf));
+
+    return 1;
+}
+</programlisting>
+<para>
+Então agora, a controladora para <literal>ECORE_CON_EVENT_SERVER_ADD</literal>, 
+que neste caso é a <literal>server_add_cb</literal>, irá disparar quando tivermos 
+estabelecido uma conexão com um servidor.
+</para>
+
+<para>
+O vento add dará informações sobre este evento por intermédio da estrutura 
+<literal>Ecore_Con_Event_Server_Add</literal>. A princípio, estaremos 
+interessados no membro <literal>server</literal> que é o handler do servidor 
+que foi retornado na chamada de conexão.
+</para>
+
+<para>
+O dado global que passamos no controlador de evento será devolvido 
+no parâmetro <literal>void *data</literal> e o dado "per-server" que 
+passamos na chamada  de conexão pode ser obtido com uma chamada para 
+a <literal>ecore_con_server_data_get()</literal>.
+</para>
+
+<para>
+Agora que estamos conectado com o servidor, podemos enviar um 
+pedido de um documento, que neste caso estou enviando um pedido HTTP. 
+O dado é enviado para o servidor chamando a <literal>ecore_con_server_send()</literal> e 
+passando como parâmetros o servidor, o dado e o tamanho do dado.
+</para>
+
+<para>
+Certifique-se de retornar 1 para cada um dos seus controladores, pois se você 
+retornar 0 o Ecore removerá o controlador e de evento da lista de 
+controladores disponíveis.
+</para>
+</example>
+
+<example>
+<title>removido</title>
+<programlisting>
+static int
+server_del_cb(void *data, int type, void *ev)
+{
+    Ecore_Con_Event_Server_Del *e;
+    struct Data *sd;
+    struct Data *gd;
+
+    e = ev;
+    gd = data;
+    sd = ecore_con_server_data_get(e->server);
+
+    ecore_con_server_del(e->server);
+
+    printf("%s\n\n", gd->data);
+    if (sd->data) {
+        printf("%s\n", sd->data);
+        free(sd->data);
+    }
+
+    ecore_main_loop_quit();
+    return 1;
+}
+</programlisting>
+<para>
+Vamos agora para o controlador <literal>ECORE_CON_EVENT_SERVER_DEL</literal>.
+Ele funciona de forma similar ao controlador add, mas o tipo de evento passado 
+é um <literal>Ecore_Con_Event_Server_Del</literal>.
+</para>
+
+<para>
+Agora, o callback del será disparado quando formos disconectado do servidor remoto. Isto significa 
+que é nossa responsabilidade remover da memoria o servidor. Isto é feito com a chamada 
+à <literal>ecore_con_server_del()</literal>. Nós, é claro, não precismos fazer isto aqui, 
+podemos fazer em qualquer momento quando nos for conveniente.
+</para>
+
+<para>
+No caso deste exemplo, já que o servidor fechará a conexão uma vez que a 
+pagina web foi retornada, estou fazendo o processamento dos dados no 
+controlador del. Como não quero continuar após pegar a pagina chamo 
+<literal>ecore_main_loop_quit()</literal> para parar o loop principal de evento.
+</para>
+</example>
+
+<example>
+<title>dado</title>
+<programlisting>
+static int
+server_data_cb(void *data, int type, void *ev)
+{
+    Ecore_Con_Event_Server_Data *e;
+    struct Data *sd;
+    struct Data *gd;
+
+    e = ev;
+    gd = data;
+    sd = ecore_con_server_data_get(e->server);
+   
+    sd->data = realloc(sd->data, sd->data_size + e->size + 1);
+    memcpy(sd->data + sd->data_size, e->data, e->size);
+                        
+    sd->data_size += e->size;
+    sd->data[sd->data_size] = '\0';
+                                
+    return 1;
+}
+</programlisting>
+<para>
+A <literal>ECORE_CON_EVENT_SERVER_DATA</literal> é também similiar aos 
+callbacks add e del. A estrutua de evento desta vez é uma 
+<literal>Ecore_Con_Event_Server_Data</literal> que apresenta para nós 
+dois novos membros interessantes, que são: <literal>size</literal> e 
+<literal>data</literal>. Que nos fornecem o dado recebido do servidor e o tamanho deste dado.
+Este dado <emphasis>não</emphasis> é terminado com NULL, portanto certifique-se de usar o 
+parâmetro <literal>size</literal>.
+</para>
+
+<para>
+No meu caso, só estou guardando o dado na minha estrutura "per-server" 
+enquanto pego a desconexão. Você pode, é claro, fazer qualquer 
+processamento que deseja aqui.
+</para>
+</example>
+
+<example>
+<title>compilação</title>
+<screen>
+zero@oberon [ecore_con] -&gt; gcc -o srv main.c `ecore-config --cflags --libs`
+</screen>
+<para>
+Uma vez feito tudo isto, a compilação é a parte simples. O programa pode 
+ser executado com o simples comando <screen>./srv</screen> e deverá 
+imprimir na tela a pagina web selecionada.
+</para>
+</example>
+
+<para>
+Ecore_Con torna fácil trabalhar com quaisquer tipos de servidores remotos, seja 
+HTTP, IRC ou qualquer um customizado, todas as funcionalidade estão 
+encapsuladas e controladas muito bem atravéz do loop de evento Ecore.
+</para>
+
+</section>

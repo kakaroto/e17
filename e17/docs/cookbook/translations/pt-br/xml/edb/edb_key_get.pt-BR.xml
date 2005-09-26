@@ -1,0 +1,68 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>27 de Julho 2004</date>
+</sectioninfo>
+
+<title>Receita: Recuperação de chave EDB</title>
+
+<para>
+A API EDB faz da recuperação de todas as chaves disponíveis na base de dados uma tarefa simples. 
+Estas chaves podem então ser usadas para determinar os tipos de objetos na base de dados, ou simplesmente para
+recuperar o objeto.
+</para>
+
+<para>
+<example>
+<title>recuperação de chaves EDB</title>
+<programlisting>
+#include &lt;Edb.h&gt;
+
+int main(int argc, char ** argv) {
+    char ** keys;
+    int num_keys, i;
+
+    if (argc &lt; 2) 
+        return 0;
+
+    keys = e_db_dump_key_list(argv[1], &amp;num_keys);
+    for(i = 0; i &lt; num_keys; i++) {
+        printf("key: %s\n", keys[i]);
+        free(keys[i]); 
+    }
+    free(keys);
+    return 1;
+}
+</programlisting>
+</example>
+Recuperação de chaves se faz simplesmente por meio da chamada à 
+<function>e_db_dump_key_list()</function>. Que devolverá um array do tipo string (char**) contendo as chaves.
+Estas strings, e o próprio array, devem ser removidos da memória pela aplicação. 
+<function>e_db_dump_key_list()</function> devolverá também o número de chaves contidas no array 
+pelo parâmetro <literal>num_keys</literal>.
+</para>
+
+<para>
+Você notará que não precisamos abrir a base de dados para chamar a <function>e_db_dump_key_list()</function>.
+Esta função trabalha com o arquivo em si no lugar de um objeto db.
+</para>
+
+<para>
+<example>
+<title>Compilação</title>
+<screen>
+zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
+	`edb-config --cflags --libs`
+</screen>
+</example>
+Executando o programa deverá produzir uma lista de todas as chaves obtidas da base de dados. Isto
+pode ser verificado olhando a base de dados por meio de uma ferramente externa como <command>edb_gtk_ed</command>.
+</para>
+
+</section>
+
