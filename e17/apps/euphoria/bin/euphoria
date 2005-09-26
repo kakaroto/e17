@@ -288,7 +288,7 @@ private
 	def handle_current_pos(res)
 		begin
 			pos = res.value
-		rescue XmmsClient::ValueError
+		rescue XmmsClient::Result::ValueError
 		else
 			ui_fill_track_info(@playlist[pos])
 		end

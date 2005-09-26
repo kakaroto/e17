@@ -18,7 +18,7 @@ class Playlist < Array
 
 		begin
 			@current_pos = @xmms.playlist_current_pos.wait.value
-		rescue XmmsClient::ValueError
+		rescue XmmsClient::Result::ValueError
 			@current_pos = nil
 		end
 
