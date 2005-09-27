@@ -117,6 +117,16 @@ void            ewl_widget_realize(Ewl_Widget * widget);
 void            ewl_widget_unrealize(Ewl_Widget * w);
 
 /*
+ *  * Mark the widget to be revealed.
+ *   */
+void            ewl_widget_reveal(Ewl_Widget *w);
+
+/*      
+ *       * Mark the widget to be obscured.    
+ *        */     
+void            ewl_widget_obscure(Ewl_Widget *w);
+
+/*
  * Mark the widget to be displayed.
  */
 void            ewl_widget_show(Ewl_Widget * widget);

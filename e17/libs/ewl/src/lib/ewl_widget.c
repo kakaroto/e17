@@ -222,6 +222,49 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 }
 
 /**
+ * @param w: the widget to mark as revealed
+ * @return Returns no value.
+ * @brief Indicate a widget is revealed.
+ */
+void ewl_widget_reveal(Ewl_Widget *w)
+{
+        Ewl_Embed *emb;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+
+        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+
+        emb = ewl_embed_widget_find(w);
+        if (emb && emb->evas) {
+                ewl_callback_call(w, EWL_CALLBACK_REVEAL);
+        }
+
+        ewl_widget_configure(w);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to mark as obscured
+ * @return Returns no value.
+ * @brief Indicate a widget is obscured.
+ */
+void ewl_widget_obscure(Ewl_Widget *w)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+
+        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+
+        if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+                                EWL_FLAG_QUEUED_RSCHEDULED))
+                ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to be marked as visible
  * @return Returns no value.
  * @brief mark a widget as visible
