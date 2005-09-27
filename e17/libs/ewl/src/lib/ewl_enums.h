@@ -273,7 +273,7 @@ typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 /**
  * @enum Ewl_Response_Type
  */
-enum _Ewl_Response_Type
+enum Ewl_Response_Type
 {
 	EWL_RESPONSE_OPEN     = -5,
 	EWL_RESPONSE_SAVE     = -6,
@@ -288,20 +288,22 @@ enum _Ewl_Response_Type
 	EWL_RESPONSE_HOME     = -25,
 };
 
-typedef enum _Ewl_Response_Type Ewl_Response_Type;
+typedef enum Ewl_Response_Type Ewl_Response_Type;
 
 /**
- * @enum Ewl_Pick_Mode
+ * @enum Ewl_Color_Pick_Mode
  */
-enum Ewl_Pick_Mode {
-	EWL_PICK_MODE_RGB,
-	EWL_PICK_MODE_HSV_HUE,
-	EWL_PICK_MODE_HSV_SATURATION,
-	EWL_PICK_MODE_HSV_VALUE
+enum Ewl_Color_Pick_Mode 
+{
+	EWL_COLOR_PICK_MODE_RGB,
+	EWL_COLOR_PICK_MODE_HSV_HUE,
+	EWL_COLOR_PICK_MODE_HSV_SATURATION,
+	EWL_COLOR_PICK_MODE_HSV_VALUE
 };
-typedef enum Ewl_Pick_Mode Ewl_Pick_Mode;
+typedef enum Ewl_Color_Pick_Mode Ewl_Color_Pick_Mode;
 
-enum Ewl_Text_Style {
+enum Ewl_Text_Style 
+{
 	EWL_TEXT_STYLE_NONE = 0x00,
 	EWL_TEXT_STYLE_UNDERLINE = 0x01,
 	EWL_TEXT_STYLE_DOUBLE_UNDERLINE = 0x02,
@@ -314,19 +316,22 @@ enum Ewl_Text_Style {
 };
 typedef enum Ewl_Text_Style Ewl_Text_Style;
 
-enum Ewl_Text_Trigger_Type {
+enum Ewl_Text_Trigger_Type 
+{
 	EWL_TEXT_TRIGGER_TYPE_NONE,
 	EWL_TEXT_TRIGGER_TYPE_SELECTION,
 	EWL_TEXT_TRIGGER_TYPE_TRIGGER
 };
 typedef enum Ewl_Text_Trigger_Type Ewl_Text_Trigger_Type;
 
-enum Ewl_Attach_Type {
+enum Ewl_Attach_Type 
+{
 	EWL_ATTACH_TYPE_TOOLTIP
 };
 typedef enum Ewl_Attach_Type Ewl_Attach_Type;
 
-enum Ewl_Attach_Data_Type {
+enum Ewl_Attach_Data_Type 
+{
 	EWL_ATTACH_DATA_TYPE_TEXT,
 	EWL_ATTACH_DATA_TYPE_WIDGET
 };
