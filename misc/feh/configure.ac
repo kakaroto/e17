@@ -1,7 +1,6 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT
-AC_CONFIG_SRCDIR([src/main.c])
+AC_INIT(src/main.c)
 AM_INIT_AUTOMAKE(feh, 1.2.6)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -41,25 +40,23 @@ AC_SUBST(GIBLIB_LIBS)
 AC_SUBST(GIBLIB_CFLAGS)
 
 dnl Check for Xinerama
-CFLAGS="-I/usr/X11R6/include $CFLAGS"
 LIBS="-L/usr/X11R6/lib $LIBS -lm"
-AC_CHECK_LIB(Xext,XMissingExtension,, [CFLAGS="$CFLAGS -I/usr/X11R6/include"])
-AC_CHECK_LIB(Xinerama,XineramaQueryScreens,, [CFLAGS="$CFLAGS -I/usr/X11R6/include"])
+AC_CHECK_LIB(Xext,XMissingExtension)
+AC_CHECK_LIB(Xinerama,XineramaQueryScreens)
 AC_SUBST(HAVE_XINERAMA)
 AC_SUBST(XINERAMA_LIBS)
 
-dnl AC_CHECK_FUNC(getopt_long,,[AC_LIBOBJ="$AC_LIBOBJ getopt.o getopt1.o"])
-dnl AC_SUBST(AC_LIBOBJ)
+dnl AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
+dnl AC_SUBST(LIBOBJS)
 
 echo "checking for pr0n.... found"
 
-AC_CONFIG_FILES([Makefile \
+AC_OUTPUT(Makefile \
 feh.spec \
 cam/Makefile \
 src/Makefile \
 src/ttfonts/Makefile \
-])
-AC_OUTPUT
+)
 
 echo ""
 echo "If you have used an earlier version of feh,"
