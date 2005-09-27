@@ -3,13 +3,15 @@
 Ewl_Widget* ib;
 static Ewl_Widget* ewl_iconbox_button = NULL;
 
-void icon_click_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data __UNUSED__) {
-	printf("Icon clicked!\n");
+void icon_click_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data __UNUSED__) {
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	if (ev->clicks > 1)
+		printf("Icon clicked!\n");
 }
 
 void add_icons_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data __UNUSED__) {
 		Ewl_IconBox_Icon* icon = ewl_iconbox_icon_add(EWL_ICONBOX(ib), "Draw", "../../data/images/Draw.png");
-		ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_DOUBLE_CLICKED, icon_click_cb, NULL);
+		ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_CLICKED, icon_click_cb, NULL);
 		
 		ewl_iconbox_icon_arrange(EWL_ICONBOX(ib));
 

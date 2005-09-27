@@ -186,7 +186,8 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 	fs->ffilter = strdup("^[^\\.]");
 	fs->dfilter = strdup("^[^\\.]");
 
-	tmp = getenv("HOME");
+	// tmp = getenv("HOME");
+	tmp = "/Users/ningerso/files";
 	fs->path = strdup((tmp ? tmp : "/"));
 
 	fs->files = ecore_list_new();
@@ -630,6 +631,10 @@ void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Fileselector *fs;
 	char *path;
 	char *new_path;
+	Ewl_Event_Mouse_Down *ev = ev_data;
+
+	if (ev->clicks < 2)
+		DRETURN(DLEVEL_STABLE);
 
 	fs = data;
 	path = ewl_widget_data_get(w, "FILESELECTOR_DIR");
@@ -760,7 +765,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 		ewl_fileselector_tooltip_add(prow, ecore_list_current(dirs));
 		ewl_fileselector_data_free(d);
 
-		ewl_callback_append(prow, EWL_CALLBACK_DOUBLE_CLICKED,
+		ewl_callback_append(prow, EWL_CALLBACK_CLICKED,
 				    ewl_fileselector_select_dir_cb, fs);
 		ewl_callback_append(prow, EWL_CALLBACK_DESTROY,
 				ewl_fileselector_dir_data_cleanup_cb, NULL);

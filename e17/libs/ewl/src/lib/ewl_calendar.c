@@ -50,7 +50,10 @@ void ewl_calendar_day_select (Ewl_Widget *w, void *ev_data, void *user_data) {
 }
 
 void ewl_calendar_day_pick (Ewl_Widget *w, void *ev_data, void *user_data) {
-	ewl_callback_call(EWL_WIDGET(user_data), EWL_CALLBACK_VALUE_CHANGED);
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	if (ev->clicks == 2)
+		ewl_callback_call(EWL_WIDGET(user_data),
+				  EWL_CALLBACK_VALUE_CHANGED);
 }
 
 void ewl_calendar_prev_month_cb (Ewl_Widget *w, void *ev_data, void *user_data) {
@@ -150,7 +153,7 @@ void ewl_calendar_grid_setup(Ewl_Calendar* cal) {
 	int cur_row, cur_col, cur_day, days=30;
 	Ewl_Widget *day_label;
 
-	ewl_grid_reset(EWL_GRID(cal->grid),7,7);
+	ewl_grid_reset(EWL_GRID(cal->grid), 7, 7);
 	ewl_calendar_add_day_labels(cal);
 
 	/*Get the start time..*/
@@ -208,7 +211,7 @@ void ewl_calendar_grid_setup(Ewl_Calendar* cal) {
 		sprintf(day, "%d", cur_day+1); 
 		day_label = ewl_label_new(day);
 		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_MOUSE_DOWN,ewl_calendar_day_select, cal);
-		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_DOUBLE_CLICKED,ewl_calendar_day_pick, cal);
+		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_CLICKED,ewl_calendar_day_pick, cal);
 
 		ewl_grid_add(EWL_GRID(cal->grid), day_label, cur_col, cur_col, cur_row, cur_row);
 		ewl_calendar_highlight_today(now, EWL_LABEL(day_label), cal);

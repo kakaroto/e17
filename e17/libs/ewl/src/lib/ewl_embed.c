@@ -384,7 +384,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 
 			if (ev.clicks > 1) {
 				ewl_callback_call_with_event_data(temp,
-						EWL_CALLBACK_DOUBLE_CLICKED,
+						EWL_CALLBACK_CLICKED,
 						&ev);
 			}
 		}
