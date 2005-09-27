@@ -267,65 +267,15 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int *r, int *g, int
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Callback for drawing the spectrum to the image data.
+/**
+ * @param hue: The hue to convert
+ * @param Saturation: The saturation to convert
+ * @param value: The value to convert
+ * @param _r: Where to store the red value
+ * @param _g: Where to store the green value
+ * @param _b: Where to store the red value
+ * @return Returns no value.
  */
-void
-ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-			  void *user_data __UNUSED__)
-{
-	Evas_Object    *o;
-	int             pw, ph;
-	int             i, j;
-	int            *data = NULL;
-	Ewl_Spectrum   *sp;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	if (!REALIZED(w))
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	sp = EWL_SPECTRUM(w);
-	if (!sp->redraw)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	o = EWL_IMAGE(sp)->image;
-	if (!o)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* set/get the spectrum size and image data */
-	evas_object_image_size_set(o, CURRENT_W(sp), CURRENT_H(sp));
-	evas_object_image_size_get(o, &pw, &ph);
-	data = evas_object_image_data_get(o, 1);
-	if (!data)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* draw the spectrum */
-	for (j = 0; j < ph; j++) 
-	{
-		for (i = 0; i < pw; i++) 
-		{
-			int r, g, b, a;
-			ewl_spectrum_color_coord_map(sp, i, j, &r, &g, &b, &a);
-			data[(j * pw) + i] = (a << 24) | (r << 16) | (g << 8) | b;
-		}
-	}
-
-	evas_object_image_data_set(o, data);
-	evas_object_image_data_update_add(o, 0, 0, pw, ph);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void
 ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
 			int *_r, int *_g, int *_b)
@@ -392,6 +342,15 @@ ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param r: The red value to convert
+ * @param g: The green value to convert
+ * @param b: The blue value to convert
+ * @param h: Where to store the hue
+ * @param s: Where to store the saturation
+ * @param v: Where to store the value
+ * @return Returns no value
+ */
 void
 ewl_spectrum_rgb_to_hsv(int r, int g, int b,
 			float *h, float *s, float *v)
@@ -424,6 +383,65 @@ ewl_spectrum_rgb_to_hsv(int r, int g, int b,
 
         *h *= 60;                               // degrees
         if( *h < 0 ) *h += 360;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Callback for drawing the spectrum to the image data.
+ */
+void
+ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+			  void *user_data __UNUSED__)
+{
+	Evas_Object    *o;
+	int             pw, ph;
+	int             i, j;
+	int            *data = NULL;
+	Ewl_Spectrum   *sp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!REALIZED(w))
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	sp = EWL_SPECTRUM(w);
+	if (!sp->redraw)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	o = EWL_IMAGE(sp)->image;
+	if (!o)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* set/get the spectrum size and image data */
+	evas_object_image_size_set(o, CURRENT_W(sp), CURRENT_H(sp));
+	evas_object_image_size_get(o, &pw, &ph);
+	data = evas_object_image_data_get(o, 1);
+	if (!data)
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* draw the spectrum */
+	for (j = 0; j < ph; j++) 
+	{
+		for (i = 0; i < pw; i++) 
+		{
+			int r, g, b, a;
+			ewl_spectrum_color_coord_map(sp, i, j, &r, &g, &b, &a);
+			data[(j * pw) + i] = (a << 24) | (r << 16) | (g << 8) | b;
+		}
+	}
+
+	evas_object_image_data_set(o, data);
+	evas_object_image_data_update_add(o, 0, 0, pw, ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
