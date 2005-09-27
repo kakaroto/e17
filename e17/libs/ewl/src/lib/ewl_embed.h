@@ -54,6 +54,8 @@ struct Ewl_Embed
 	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
 	Ecore_List     *tab_order;   /**< Order of widgets to send focus */
 
+	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
+
 	int             max_layer;   /**< The maximum widget layer used */
 	int             focus;       /**< Indicates if it receives focus */
 };
@@ -86,6 +88,8 @@ void            ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
 Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget * w);
+void            ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
+Evas_Object    *ewl_embed_object_request(Ewl_Embed *e, char *type);
 
 void            ewl_embed_tab_order_next(Ewl_Embed *e);
 void            ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);

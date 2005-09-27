@@ -113,6 +113,7 @@ int ewl_embed_init(Ewl_Embed * w)
 	ecore_list_append(ewl_embed_list, w);
 
 	w->tab_order = ecore_list_new();
+	w->obj_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -678,6 +679,57 @@ Ewl_Embed     *ewl_embed_widget_find(Ewl_Widget * w)
 }
 
 /**
+ * @param e: embed to cache the specified object
+ * @param obj: the object to keep cached for reuse
+ * @return Returns no value.
+ * @brief Caches the specified object for later reuse.
+ */
+void
+ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
+{
+	const char *type;
+	Ecore_List *obj_list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	type = evas_object_type_get(obj);
+	obj_list = ecore_hash_get(e->obj_cache, (void *)type);
+	if (!obj_list) {
+		obj_list = ecore_list_new();
+		ecore_hash_set(e->obj_cache, (void *)type, obj_list);
+	}
+
+	evas_object_clip_unset(obj);
+	evas_object_hide(obj);
+	ecore_list_prepend(obj_list, obj);
+/*	printf("%d nodes cached of type %s\n", ecore_list_nodes(obj_list),
+	 		type); */
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: embed to request a cached object
+ * @param type: the type of object requested
+ * @return Returns an Evas_Object of the specified type on success.
+ */
+Evas_Object *
+ewl_embed_object_request(Ewl_Embed *e, char *type)
+{
+	Evas_Object *obj = NULL;
+	Ecore_List *obj_list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	obj_list = ecore_hash_get(e->obj_cache, type);
+	if (obj_list) {
+		obj = ecore_list_remove_first(obj_list);
+	}
+
+	DRETURN_PTR(obj, DLEVEL_STABLE);
+}
+
+/**
  * @param e: the embed that holds widgets to change tab order
  * @param w: the widget that will be moved to the front of the tab order list
  * @return Returns no value.
@@ -860,6 +912,8 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed      *emb;
+	Evas_Object    *obj;
+	Ecore_List     *key_list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -868,6 +922,31 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	if (ecore_list_goto(ewl_embed_list, w))
 		ecore_list_remove(ewl_embed_list);
+
+	key_list = ecore_hash_keys(emb->obj_cache);
+	if (key_list) {
+		char *key;
+		/*
+		 * Iterate over all object types destroying them as we go. No
+		 * need to free the key string.
+		 */
+		while ((key = ecore_list_remove_first(key_list))) {
+			Ecore_List *obj_list;
+
+			/*
+			 * Now queue all objects for destruction.
+			 */
+			obj_list = ecore_hash_remove(emb->obj_cache, key);
+			while ((obj = ecore_list_remove_first(obj_list)))
+				ewl_evas_object_destroy(obj);
+			ecore_list_destroy(obj_list);
+		}
+
+		ecore_list_destroy(key_list);
+	}
+
+	ecore_hash_destroy(emb->obj_cache);
+	emb->obj_cache = NULL;
 
 	ecore_list_destroy(emb->tab_order);
 	emb->tab_order = NULL;
