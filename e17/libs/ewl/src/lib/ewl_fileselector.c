@@ -186,8 +186,7 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 	fs->ffilter = strdup("^[^\\.]");
 	fs->dfilter = strdup("^[^\\.]");
 
-	// tmp = getenv("HOME");
-	tmp = "/Users/ningerso/files";
+	tmp = getenv("HOME");
 	fs->path = strdup((tmp ? tmp : "/"));
 
 	fs->files = ecore_list_new();
