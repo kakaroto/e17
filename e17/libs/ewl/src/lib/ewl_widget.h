@@ -69,13 +69,10 @@ struct Ewl_Widget
 	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
 
 	Evas_Object    *theme_object; /**< Appearance shown on canvas */
-	char           *name; /**< Unique identifier for this widget */
 	char           *bit_state; /**< State of the appaarance */
 	char           *appearance; /**< Key to lookup appearance in theme */
 	char           *inheritance; /**< Key to lookup inhertiance of widget */
 	int             layer; /**< Current layer of widget on canvas */
-
-	Ewl_Color_Set   color; /**< The colour of the widget */
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */

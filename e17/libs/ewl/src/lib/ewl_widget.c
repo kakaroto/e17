@@ -105,8 +105,6 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_widget_inherit(w, "widget");
 	ewl_widget_appearance_set(w, appearance);
 
-	ewl_widget_color_set(w, 255, 255, 255, 255);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -118,16 +116,19 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
  */
 void ewl_widget_name_set(Ewl_Widget * w, const char *name)
 {
+	char *t;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!name_table)
 		name_table = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-	IF_FREE(w->name);
-	w->name = strdup(name);
+	t = strdup(name);
+	ewl_attach_name_set(w, t);
+
 	if (name_table)
-		ecore_hash_set(name_table, w->name, w);
+		ecore_hash_set(name_table, t, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -142,7 +143,7 @@ const char *ewl_widget_name_get(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-	DRETURN_PTR(w->name ? strdup(w->name) : NULL, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_attach_name_get(w), DLEVEL_STABLE);
 }
 
 /**
@@ -1039,13 +1040,18 @@ Ewl_Widget *ewl_widget_focused_get()
 void
 ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
 {
+	Ewl_Color_Set *color;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	w->color.r = r;
-	w->color.g = g;
-	w->color.b = b;
-	w->color.a = a;
+	color = NEW(Ewl_Color_Set, 1);
+	color->r = r;
+	color->g = g;
+	color->b = b;
+	color->a = a;
+
+	ewl_attach_color_set(w, color);
 
 	if (REALIZED(w))
 		evas_object_color_set(w->fx_clip_box, r, g, b, a);
@@ -1065,13 +1071,21 @@ ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
 void
 ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a)
 {
+	Ewl_Color_Set *color;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (r) *r = w->color.r;
-	if (g) *g = w->color.g;
-	if (b) *b = w->color.b;
-	if (a) *a = w->color.a;
+	color = ewl_attach_color_get(w);
+	if (!color) 
+	{
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	if (r) *r = color->r;
+	if (g) *g = color->g;
+	if (b) *b = color->b;
+	if (a) *a = color->a;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1102,7 +1116,6 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Free up appearance related information
 	 */
 	ewl_theme_widget_shutdown(w);
-	IF_FREE(w->name);
 	IF_FREE(w->appearance);
 
 	if (w->inheritance)
@@ -1110,7 +1123,17 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	if (w->bit_state)
 		ecore_string_release(w->bit_state);
-	
+
+	/* 
+	 * cleanup the attachment lists 
+	 */
+	if (w->attach)
+	{
+		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
+		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_COLOR);
+		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_NAME);
+	}
+
 	/*
 	 * Clear out the callbacks, this is a bit tricky because we don't want
 	 * to continue using this widget after the callbacks have been
@@ -1227,13 +1250,16 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	if (w->fx_clip_box) {
 		int sum;
+		int r, g, b, a;
+
 		sum = ewl_widget_layer_sum_get(w);
 		if (sum > ewl_embed_max_layer_get(emb))
 			ewl_embed_max_layer_set(emb, sum);
 		evas_object_layer_set(w->fx_clip_box, sum);
 
-		evas_object_color_set(w->fx_clip_box, w->color.r, w->color.g, 
-							w->color.b, w->color.a);
+		r = g = b = a = 255;
+		ewl_widget_color_get(w, &r, &g, &b, &a);
+		evas_object_color_set(w->fx_clip_box, r, g, b, a);
 	}
 
 	pc = EWL_CONTAINER(w->parent);

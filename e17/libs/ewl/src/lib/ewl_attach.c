@@ -81,6 +81,50 @@ ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!w->attach)
+		ewl_attach_parent_setup(w);
+
+	if (data)
+	{
+		Ewl_Attach *attach;
+
+		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_COLOR, data);
+		if (!attach)
+			ewl_attach_list_add(w->attach, w, attach);
+	}
+	else
+		ewl_attach_list_del(w->attach, t);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void *
+ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
+{
+	Ewl_Attach *attach;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	if (!w->attach) 
+	{
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	attach = ewl_attach_list_get(w->attach, t);
+	if (attach)
+	{
+		DRETURN_PTR(attach->data, DLEVEL_STABLE);
+	}
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
 Ewl_Attach_List *
 ewl_attach_list_new(void)
 {
@@ -192,6 +236,11 @@ ewl_attach_attach_type_setup(Ewl_Widget *w, Ewl_Attach *attach)
 		case EWL_ATTACH_TYPE_TOOLTIP:
 			ewl_attach_tooltip_attach(w, attach);
 			break;
+
+		case EWL_ATTACH_TYPE_COLOR:
+		case EWL_ATTACH_TYPE_NAME:
+		default:
+			break;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -247,6 +296,45 @@ ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void *
+ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("list", list, NULL);
+
+	if (!list->len)
+	{
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+	else if (list->direct)
+	{
+		Ewl_Attach *tmp;
+
+		tmp = EWL_ATTACH(list->list);
+		if (tmp->type == type)
+		{
+			DRETURN_PTR(tmp, DLEVEL_STABLE);
+		}
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+	else
+	{
+		int i;
+		Ewl_Attach *tmp;
+
+		for (i = 0; i < list->len; i++)
+		{
+			tmp = EWL_ATTACH(list->list[i]);
+
+			if (tmp->type == type)
+			{
+				DRETURN_PTR(tmp, DLEVEL_STABLE);
+			}
+		}
+	}
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
 Ewl_Attach *
 ewl_attach_new(Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data)
 {
@@ -290,6 +378,12 @@ ewl_attach_free(Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("attach", attach);
+
+	/* XXX should we clean up _WIDGET in here? */
+
+	if ((attach->type == EWL_ATTACH_DATA_TYPE_TEXT)
+			|| (attach->type == EWL_ATTACH_DATA_TYPE_COLOR))
+		IF_FREE(attach->data);
 
 	IF_FREE(attach);
 
