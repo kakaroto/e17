@@ -1,6 +1,11 @@
 EWL TODO
 ========
 
+- In ewl_init should options be parsed after loading config values from
+  ecore_config. ewl_init_parse_options() vs. ewl_config_init()
+
+- fix mismatch between use_engine in ewl_init() and ewl_config.evas.render_method 
+
 - Ewl_Entry 
     - Text wrap fixups.
     - Need to make the text scroll over as you type past the end of the entry box.
