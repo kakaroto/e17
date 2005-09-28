@@ -586,7 +586,7 @@ gaussian(double r, double x, double y)
 }
 
 static conv        *
-make_gaussian_map(Display * dpy __UNUSED__, double r)
+make_gaussian_map(double r)
 {
    conv               *c;
    int                 size = ((int)ceil((r * 3)) + 1) & ~1;
@@ -686,8 +686,9 @@ sum_gaussian(conv * map, double opacity, int x, int y, int width, int height)
 }
 
 static XImage      *
-make_shadow(Display * dpy, double opacity, int width, int height)
+make_shadow(double opacity, int width, int height)
 {
+   Display            *dpy = disp;
    XImage             *ximage;
    unsigned char      *data;
    int                 gsize = gaussianMap->size;
@@ -781,15 +782,15 @@ make_shadow(Display * dpy, double opacity, int width, int height)
 }
 
 static              Picture
-shadow_picture(Display * dpy, double opacity, int width, int height, int *wp,
-	       int *hp)
+shadow_picture(double opacity, int width, int height, int *wp, int *hp)
 {
+   Display            *dpy = disp;
    XImage             *shadowImage;
    Pixmap              shadowPixmap;
    Picture             shadowPicture;
    GC                  gc;
 
-   shadowImage = make_shadow(dpy, opacity, width, height);
+   shadowImage = make_shadow(opacity, width, height);
    if (!shadowImage)
       return None;
 
@@ -819,7 +820,7 @@ shadow_picture(Display * dpy, double opacity, int width, int height, int *wp,
  */
 
 static              XserverRegion
-win_extents(Display * dpy, EObj * eo)
+win_extents(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
    XRectangle          r;
@@ -873,7 +874,7 @@ win_extents(Display * dpy, EObj * eo)
 
 		  if (cw->mode == WINDOW_TRANS)
 		     opacity *= ((double)cw->opacity) / OPAQUE;
-		  cw->shadow = shadow_picture(dpy, opacity, cw->rcw, cw->rch,
+		  cw->shadow = shadow_picture(opacity, cw->rcw, cw->rch,
 					      &cw->shadow_width,
 					      &cw->shadow_height);
 	       }
@@ -902,7 +903,7 @@ win_extents(Display * dpy, EObj * eo)
    D2printf("win_extents %#lx %d %d %d %d\n", eo->win, r.x, r.y, r.width,
 	    r.height);
 
-   return XFixesCreateRegion(dpy, &r, 1);
+   return XFixesCreateRegion(disp, &r, 1);
 }
 
 static              XserverRegion
@@ -1187,7 +1188,7 @@ ECompMgrWinMap(EObj * eo)
    D1printf("ECompMgrWinMap %#lx\n", eo->win);
 
    if (cw->extents == None)
-      cw->extents = win_extents(disp, eo);
+      cw->extents = win_extents(eo);
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    if (Conf_compmgr.fading.enable && eo->fade)
@@ -1358,7 +1359,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
    ECompMgrWinInvalidate(eo, invalidate);
 
    /* Find new window region */
-   cw->extents = win_extents(disp, eo);
+   cw->extents = win_extents(eo);
 
 #if 1
    /* Hmmm. Why if not changed? - To get shadows painted. */
@@ -1415,7 +1416,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 	ECompMgrWinInvalidate(eo, INV_POS);
 
 	/* Find new window region */
-	cw->extents = win_extents(disp, eo);
+	cw->extents = win_extents(eo);
 	ECompMgrDamageMergeObject(eo, cw->extents, 0);
      }
 }
@@ -1504,7 +1505,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 
    if (!cw->damaged)
      {
-	parts = win_extents(dpy, eo);
+	parts = win_extents(eo);
 	XDamageSubtract(dpy, cw->damage, None, None);
 	cw->damaged = 1;
      }
@@ -1650,7 +1651,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
    /* Region of window in screen coordinates, including shadows */
    if (!cw->extents)
-      cw->extents = win_extents(dpy, eo);
+      cw->extents = win_extents(eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("extents", cw->extents);
 
@@ -1894,7 +1895,7 @@ static void
 ECompMgrShadowsInit(int mode, int cleanup)
 {
    if (mode == ECM_SHADOWS_BLURRED)
-      gaussianMap = make_gaussian_map(disp, Conf_compmgr.shadows.blur.radius);
+      gaussianMap = make_gaussian_map(Conf_compmgr.shadows.blur.radius);
    else
      {
 	if (gaussianMap)
