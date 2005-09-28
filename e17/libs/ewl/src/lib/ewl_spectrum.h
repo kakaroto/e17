@@ -34,13 +34,16 @@ struct Ewl_Spectrum
 	Ewl_Orientation 	orientation;
 	Ewl_Color_Pick_Mode 	mode;
 	unsigned int		dimensions;
-	int             	redraw;
+	int             	redraw:1;
+	int			drag:1;
 
 	Ewl_Color_Set		rgba;
 	struct
 	{
-				float h, s, v;
+		float		h, s, v;
 	} hsv;
+
+	Ewl_Color_Set		selected_rgba;
 };
 
 Ewl_Widget     *ewl_spectrum_new(void);
@@ -61,6 +64,9 @@ void            ewl_spectrum_rgba_get(Ewl_Spectrum *sp, int *r, int *g, int *b, 
 void            ewl_spectrum_hsv_set(Ewl_Spectrum *sp, float h, float s, float v);
 void            ewl_spectrum_hsv_get(Ewl_Spectrum *sp, float *h, float *s, float *v);
 
+void		ewl_spectrum_selected_rgba_get(Ewl_Spectrum *sp, 
+						int *r, int *g, int *b, int *a);
+
 void            ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
 					     int *r, int *g, int *b, int *a);
 
@@ -73,6 +79,9 @@ void  		ewl_spectrum_rgb_to_hsv(int r, int g, int b,
  * Internally used callbacks, override at your own risk.
  */
 void ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_spectrum_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
