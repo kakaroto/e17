@@ -1,13 +1,31 @@
 
 - Composite manager
+  - Fix destroy while fading.
+  - Fix sliding while fading.
+  - Fix shape while fading.
+  - Fix flicker on fade-out start.
   - Avoid repainting regions with hidden damage.
+  - Fix X-errors during startup (startup/progress windows).
   - Don't paint unredirected windows where not necessary.
   - Enable not redirecting certain clients?
+
+- Top-level window adoption is messy
+  - Get info (window/props/matches/snaps) before frame/border setup
+  - Avoid multiple attribute fetches
+
+- Avoid X-error on unmap followed by destroy
+
+- Check trouble with external pagers and hidden desks
+  - Maybe change ICCCM configure on hidden/offset desks (position relative to desk)?
 
 - netwm hints
   - More (_NET_WM_USER_TIME ...)?
 
 - Defer border rendering?
+
+- Cleanups
+  - Remove iclass.h from ewin-ops.c
+  - Move still more stuff from E.h to separate header files
 
 - Theme Transparency (pseudotrans)
   - Way slower than it needs to be.
