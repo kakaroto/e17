@@ -2854,7 +2854,7 @@ __imlib_RGBA_to_RGB565_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -2924,7 +2924,7 @@ __imlib_RGBA_to_RGB565_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -2996,7 +2996,7 @@ __imlib_RGBA_to_BGR565_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3066,7 +3066,7 @@ __imlib_RGBA_to_BGR565_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3138,7 +3138,7 @@ __imlib_RGBA_to_RGB555_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3208,7 +3208,7 @@ __imlib_RGBA_to_RGB555_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3280,7 +3280,7 @@ __imlib_RGBA_to_BGR555_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3350,7 +3350,7 @@ __imlib_RGBA_to_BGR555_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_2(width))
           {
@@ -3421,7 +3421,7 @@ __imlib_RGBA_to_RGB332_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3465,7 +3465,7 @@ __imlib_RGBA_to_RGB332_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB332(src, dest);
                }
@@ -3518,7 +3518,7 @@ __imlib_RGBA_to_RGB332_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3563,7 +3563,7 @@ __imlib_RGBA_to_RGB332_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB332_DITHER(src, dest);
                }
@@ -3597,7 +3597,7 @@ __imlib_RGBA_to_RGB666_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3641,7 +3641,7 @@ __imlib_RGBA_to_RGB666_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB666(src, dest);
                }
@@ -3694,7 +3694,7 @@ __imlib_RGBA_to_RGB666_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3739,7 +3739,7 @@ __imlib_RGBA_to_RGB666_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB666_DITHER(src, dest);
                }
@@ -3773,7 +3773,7 @@ __imlib_RGBA_to_RGB232_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3817,7 +3817,7 @@ __imlib_RGBA_to_RGB232_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB232(src, dest);
                }
@@ -3870,7 +3870,7 @@ __imlib_RGBA_to_RGB232_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3915,7 +3915,7 @@ __imlib_RGBA_to_RGB232_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB232_DITHER(src, dest);
                }
@@ -3949,7 +3949,7 @@ __imlib_RGBA_to_RGB222_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -3993,7 +3993,7 @@ __imlib_RGBA_to_RGB222_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB222(src, dest);
                }
@@ -4046,7 +4046,7 @@ __imlib_RGBA_to_RGB222_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4091,7 +4091,7 @@ __imlib_RGBA_to_RGB222_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB222_DITHER(src, dest);
                }
@@ -4125,7 +4125,7 @@ __imlib_RGBA_to_RGB221_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4169,7 +4169,7 @@ __imlib_RGBA_to_RGB221_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB221(src, dest);
                }
@@ -4222,7 +4222,7 @@ __imlib_RGBA_to_RGB221_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4267,7 +4267,7 @@ __imlib_RGBA_to_RGB221_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB221_DITHER(src, dest);
                }
@@ -4301,7 +4301,7 @@ __imlib_RGBA_to_RGB121_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4345,7 +4345,7 @@ __imlib_RGBA_to_RGB121_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB121(src, dest);
                }
@@ -4398,7 +4398,7 @@ __imlib_RGBA_to_RGB121_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4443,7 +4443,7 @@ __imlib_RGBA_to_RGB121_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB121_DITHER(src, dest);
                }
@@ -4477,7 +4477,7 @@ __imlib_RGBA_to_RGB111_fast(DATA32 * src, int src_jump,
    w = width;
    h = height;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4521,7 +4521,7 @@ __imlib_RGBA_to_RGB111_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB111(src, dest);
                }
@@ -4574,7 +4574,7 @@ __imlib_RGBA_to_RGB111_dither(DATA32 * src, int src_jump,
    w = width + dx;
    h = height + dy;
 
-   if (IS_ALIGNED_32((int)dest))
+   if (IS_ALIGNED_32((unsigned long)dest))
      {
         if (IS_MULTIPLE_4(width))
           {
@@ -4619,7 +4619,7 @@ __imlib_RGBA_to_RGB111_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
                {
                   WRITE1_RGBA_RGB111_DITHER(src, dest);
                }
