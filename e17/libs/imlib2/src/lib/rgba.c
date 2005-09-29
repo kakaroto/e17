@@ -7,12 +7,13 @@
 
 #ifdef BUILD_X11
 
-#define IS_ALIGNED_64(val) (!((val) & 0x7))
-#define IS_ALIGNED_32(val) (!((val) & 0x3))
-#define IS_ALIGNED_16(val) (!((val) & 0x1))
+#define IS_ALIGNED_128(val) (!((val) & 0x15))
+#define IS_ALIGNED_64(val)  (!((val) & 0x7))
+#define IS_ALIGNED_32(val)  (!((val) & 0x3))
+#define IS_ALIGNED_16(val)  (!((val) & 0x1))
 
-#define IS_MULTIPLE_2(val) (!((val) & 0x1))
-#define IS_MULTIPLE_4(val) (!((val) & 0x3))
+#define IS_MULTIPLE_2(val)  (!((val) & 0x1))
+#define IS_MULTIPLE_4(val)  (!((val) & 0x3))
 
 /* for PPC / Motorola / SPARC, not x86, ALPHA */
 /* dont uncomment this - i have this here for my own testing */
