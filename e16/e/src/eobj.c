@@ -164,12 +164,11 @@ EobjFini(EObj * eo)
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
 
+   EobjListStackDel(eo);
 #if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinDel(eo);
 #endif
-
-   EobjListStackDel(eo);
 
    if (eo->name)
       Efree(eo->name);

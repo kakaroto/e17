@@ -68,12 +68,13 @@
 
 #define INV_POS     0x01
 #define INV_SIZE    0x02
-#define INV_OPACITY 0x04
-#define INV_SHADOW  0x08
-#define INV_PIXMAP  0x10
-#define INV_PICTURE 0x20
+#define INV_CLIP    0x04
+#define INV_OPACITY 0x08
+#define INV_SHADOW  0x10
+#define INV_PIXMAP  0x20
+#define INV_PICTURE 0x40
 #define INV_GEOM    (INV_POS | INV_SIZE)
-#define INV_ALL     (INV_POS | INV_SIZE | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
+#define INV_ALL     (INV_POS | INV_SIZE | INV_CLIP | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
 
 typedef struct
 {
@@ -94,7 +95,7 @@ typedef struct
    Damage              damage;
    Picture             picture;
    Picture             alphaPict;
-   XserverRegion       borderSize;
+   XserverRegion       shape;
    XserverRegion       extents;
    XserverRegion       clip;
 #if ENABLE_SHADOWS
@@ -261,17 +262,17 @@ static void
 ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src)
 {
    Display            *dpy = disp;
-   XserverRegion       reg;
+   XserverRegion       rgn;
 
-   reg = src;
+   rgn = src;
    if (dx != 0 || dy != 0)
      {
-	reg = ERegionClone(src);
-	XFixesTranslateRegion(dpy, reg, dx, dy);
+	rgn = ERegionClone(src);
+	XFixesTranslateRegion(dpy, rgn, dx, dy);
      }
-   XFixesSubtractRegion(dpy, dst, dst, reg);
-   if (reg != src)
-      XFixesDestroyRegion(dpy, reg);
+   XFixesSubtractRegion(dpy, dst, dst, rgn);
+   if (rgn != src)
+      XFixesDestroyRegion(dpy, rgn);
 }
 
 #if 0				/* Unused (for debug) */
@@ -815,15 +816,13 @@ shadow_picture(double opacity, int width, int height, int *wp, int *hp)
 
 #endif /* ENABLE_SHADOWS */
 
-/*
- * Window ops
- */
-
+/* Region of window in screen coordinates, including shadows */
 static              XserverRegion
 win_extents(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
    XRectangle          r;
+   XserverRegion       rgn;
 
    if (Mode_compmgr.use_pixmap)
      {
@@ -900,14 +899,19 @@ win_extents(EObj * eo)
      }
 #endif
 
-   D2printf("win_extents %#lx %d %d %d %d\n", eo->win, r.x, r.y, r.width,
-	    r.height);
+   D2printf("extents %#lx %d %d %d %d\n", eo->win, r.x, r.y, r.width, r.height);
 
-   return XFixesCreateRegion(disp, &r, 1);
+   rgn = XFixesCreateRegion(disp, &r, 1);
+
+   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+      ERegionShow("extents", rgn);
+
+   return rgn;
 }
 
+/* Region of shaped window in screen coordinates */
 static              XserverRegion
-border_size(EObj * eo)
+win_shape(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
    XserverRegion       border;
@@ -920,9 +924,9 @@ border_size(EObj * eo)
    y = eo->y + cw->a.border_width;
    XFixesTranslateRegion(disp, border, x, y);
 
-   D2printf("border_size %#lx: %d %d\n", eo->win, x, y);
+   D2printf("shape %#lx: %d %d\n", eo->win, x, y);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("borderSize", border);
+      ERegionShow("shape", border);
 
    return border;
 }
@@ -962,10 +966,10 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	   what |= INV_PICTURE;
      }
 
-   if ((what & INV_GEOM) && cw->borderSize != None)
+   if ((what & INV_GEOM) && cw->shape != None)
      {
-	XFixesDestroyRegion(dpy, cw->borderSize);
-	cw->borderSize = None;
+	XFixesDestroyRegion(dpy, cw->shape);
+	cw->shape = None;
      }
 
    if ((what & INV_PICTURE) && cw->picture != None)
@@ -980,13 +984,11 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	cw->alphaPict = None;
      }
 
-#if 0				/* Recalculating clip every repaint for now. */
-   if ((what & INV_SIZE) && cw->clip != None)
+   if ((what & (INV_CLIP | INV_GEOM)) && cw->clip != None)
      {
 	XFixesDestroyRegion(dpy, cw->clip);
 	cw->clip = None;
      }
-#endif
 
 #if ENABLE_SHADOWS
    if ((what & (INV_SIZE | INV_OPACITY | INV_SHADOW)) && cw->shadow != None)
@@ -1051,6 +1053,15 @@ ECompMgrWinFadeDoIn(EObj * eo, unsigned int op)
 
    Esnprintf(s, sizeof(s), "Fade-%#lx", eo->win);
    DoIn(s, 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade, op, eo);
+}
+
+static void
+ECompMgrWinFadeCancel(EObj * eo)
+{
+   char                s[128];
+
+   Esnprintf(s, sizeof(s), "Fade-%#lx", eo->win);
+   RemoveTimerEvent(s);
 }
 
 static void
@@ -1303,7 +1314,7 @@ ECompMgrWinNew(EObj * eo)
    cw->pixmap = None;
 
    cw->alphaPict = None;
-   cw->borderSize = None;
+   cw->shape = None;
    cw->extents = None;
    cw->clip = None;
 #if ENABLE_SHADOWS
@@ -1447,8 +1458,12 @@ ECompMgrWinChangeStacking(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
+   D1printf("ECompMgrWinChangeStacking %#lx\n", eo->win);
+
+#if 0				/* FIXME - Remove? */
    if (Conf_compmgr.shadows.mode == ECM_SHADOWS_OFF)
       return;
+#endif
 
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
@@ -1462,6 +1477,9 @@ ECompMgrWinDel(EObj * eo)
       return;
 
    D1printf("ECompMgrWinDel %#lx\n", eo->win);
+
+   if (cw->fading)
+      ECompMgrWinFadeCancel(eo);
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
@@ -1477,6 +1495,7 @@ ECompMgrWinDel(EObj * eo)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
    ECompMgrWinInvalidate(eo, INV_ALL);
 
    if (!eo->gone)
@@ -1602,7 +1621,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (!cw->damaged)
 	   continue;
 #endif
-	if (!cw->picture)
+	if (cw->picture == None)
 	   continue;
 
 	D4printf
@@ -1643,13 +1662,11 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
    D2printf("ECompMgrRepaintObj mode=%d %#lx %s\n", mode, eo->win, eo->name);
 
-   /* Region of shaped window in screen coordinates */
-   if (!cw->borderSize)
-      cw->borderSize = border_size(eo);
+   if (!cw->shape)
+      cw->shape = win_shape(eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("borderSize", cw->borderSize);
+      ERegionShow("shape", cw->shape);
 
-   /* Region of window in screen coordinates, including shadows */
    if (!cw->extents)
       cw->extents = win_extents(eo);
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
@@ -1675,7 +1692,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
 			      cw->rch);
-	     ERegionSubtractOffset(region, x, y, cw->borderSize);
+	     ERegionSubtractOffset(region, x, y, cw->shape);
 	     break;
 	  }
      }
@@ -1708,7 +1725,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 		cw->shadowPict = EPictureCreateSolid(True,
 						     (double)cw->opacity /
 						     OPAQUE * 0.3, 0, 0, 0);
-	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
+	     ERegionSubtractOffset(cw->clip, x, y, cw->shape);
 	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     XRenderComposite(dpy, PictOpOver,
@@ -1723,7 +1740,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     if (cw->shadow == None)
 		break;
 
-	     ERegionSubtractOffset(cw->clip, x, y, cw->borderSize);
+	     ERegionSubtractOffset(cw->clip, x, y, cw->shape);
 	     ERegionLimit(cw->clip);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
 	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow, pbuf,
