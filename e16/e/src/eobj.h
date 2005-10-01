@@ -96,10 +96,12 @@ struct _eobj
 #define EoGetShadow(eo)         ((eo)->o.shadow)
 #define EoSetNoRedirect(eo, _x) (eo)->o.noredir = (_x)
 #define EoGetNoRedirect(eo)     ((eo)->o.noredir)
+#define EoSetFade(eo, _x)       ((eo)->o.fade = (_x))
 #else
 #define EoSetOpacity(eo, _o)
 #define EoChangeOpacity(eo, _o)
 #define EoSetShadow(eo, _x)
+#define EoSetFade(eo, _x)
 #endif
 
 #define EoSync(eo)                      EobjSync(EoObj(eo))

@@ -66,6 +66,7 @@ SlideoutCreate(char *name, char dir)
 
    EobjInit(EoObj(s), EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
    s->direction = dir;
+   EoSetFade(s, 0);
    ESelectInput(EoGetWin(s), SLIDEOUT_EVENT_MASK);
    EventCallbackRegister(EoGetWin(s), 0, SlideoutHandleEvent, s);
 
