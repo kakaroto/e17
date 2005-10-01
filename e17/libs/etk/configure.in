@@ -1,0 +1,236 @@
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_ISC_POSIX
+AM_INIT_AUTOMAKE(etk, 0.1.0.001)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_PROG_CXX
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+dnl Add the languages which your application supports here.
+
+if test "x${bindir}" = 'x${exec_prefix}/bin'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
+  fi
+fi
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  else
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
+  fi
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [Shared Data Directory])
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation Directory for User Executables])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation Directory for User Executables])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation Directory for User Executables])
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation Directory for Libraries])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation Directory for Libraries])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation Directory for Libraries])
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
+
+function vser
+{
+  v=$1
+  VSTART=`echo $v | awk -F_ '{printf("%s", $1);}'`
+  V1=`echo $VSTART | awk -F\. '{printf("%s", $1);}'`
+  V2=`echo $VSTART | awk -F\. '{printf("%s", $2);}'`
+  V3=`echo $VSTART | awk -F\. '{printf("%s", $3);}'`
+  V4="0"
+  VEND=`echo $v | awk -F_ '{printf("%s", $2);}'`
+  if test -n "$VEND"; then
+    V4=`echo $VEND | sed s/pre//`
+  fi
+  V3=$(( $V3 * 100  ));
+  V2=$(( $V2 * 10000  ));
+  V1=$(( $V1 * 1000000  ));
+  V=$(( $V4 + $V3 + $V2 + $V1 ));
+  echo $V
+}
+
+AC_ARG_WITH(evas-config, [  --with-evas-config=EVAS_CONFIG    use evas-config specified ],
+[ EVAS_CONFIG=$withval;
+  echo "using "$EVAS_CONFIG" for evas-config";
+],[
+  if test -z "$EVAS_CONFIG"; then
+    PROG="evas-config";
+    AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
+  fi
+])
+evas_cflags=`$EVAS_CONFIG --cflags`
+evas_libs=`$EVAS_CONFIG --libs`
+
+
+AC_ARG_WITH(edje-config, [  --with-edje-config=EDJE_CONFIG    use edje-config specified ],
+[ EDJE_CONFIG=$withval;
+  echo "using "$EDJE_CONFIG" for edje-config";
+],[
+  if test -z "$EDJE_CONFIG"; then
+    PROG="edje-config";
+    AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
+  fi
+])
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+
+
+AC_ARG_WITH(ecore-config, [  --with-ecore-config=ECORE_CONFIG    use ecore-config specified ],
+[ ECORE_CONFIG=$withval;
+  echo "using "$ECORE_CONFIG" for ecore-config";
+],[
+  if test -z "$ECORE_CONFIG"; then
+    PROG="ecore-config";
+    AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
+  fi
+])
+ecore_cflags=`$ECORE_CONFIG --cflags`
+ecore_libs=`$ECORE_CONFIG --libs`
+
+
+V=`$ECORE_CONFIG --version`
+if test -z "$V"; then
+  AC_MSG_ERROR(Ecore is not installed or $ECORE_CONFIG cannot be found.)
+fi
+VV=`vser $V`
+VM="0.9.9"
+VVM=`vser $VM`
+if test $VV -lt $VVM; then
+  AC_MSG_ERROR(Ecore is not at least "$VM". It is "$V".)
+fi
+
+V=`$EVAS_CONFIG --version`
+if test -z "$V"; then
+  AC_MSG_ERROR(Evas is not installed or $EVAS_CONFIG cannot be found.)
+fi
+VV=`vser $V`
+VM="0.9.9"
+VVM=`vser $VM`
+if test $VV -lt $VVM; then
+  AC_MSG_ERROR(Evas is not at least "$VM". It is "$V".)
+fi
+
+V=`$EDJE_CONFIG --version`
+if test -z "$V"; then
+  AC_MSG_ERROR(Edje is not installed or $EDJE_CONFIG cannot be found.)
+fi
+VV=`vser $V`
+VM="0.5.0"
+VVM=`vser $VM`
+if test $VV -lt $VVM; then
+  AC_MSG_ERROR(Edje is not at least "$VM". It is "$V".)
+fi
+
+
+#####################################################################
+## Fill in flags
+
+evas_cflags=`$EVAS_CONFIG --cflags`
+evas_libs=`$EVAS_CONFIG --libs`
+AC_SUBST(evas_cflags)
+AC_SUBST(evas_libs)
+
+ecore_cflags=`$ECORE_CONFIG --cflags`
+ecore_libs=`$ECORE_CONFIG --libs`
+AC_SUBST(ecore_cflags)
+AC_SUBST(ecore_libs)
+
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
+requirements="evas ecore edje"
+AC_SUBST(requirements)
+
+#####################################################################
+## Output
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/lib/Makefile
+src/bin/Makefile
+data/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
+data/fonts/Makefile
+data/images/Makefile
+etk-config
+README
+],[
+chmod +x etk-config
+])
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
+echo "and then afterwards as root (or the user who will install this), type"
+echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo

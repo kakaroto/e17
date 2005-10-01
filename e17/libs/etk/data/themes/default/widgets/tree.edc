@@ -1,0 +1,83 @@
+group {
+   name: "tree";
+   data {
+      item: "inset" "7 7 7 7";
+      item: "separator_color" "204 204 204 255";
+      item: "row_color1" "255 255 255 255";
+      item: "row_color2" "245 245 245 255";
+      item: "item_height" "24";
+   }
+   parts {
+      part {
+         name: "tree";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "tree_bg.png";
+               border: 8 8 8 8;
+            }
+         }
+      }
+   }
+}
+group {
+   name: "tree_header";
+   min: 0 16;
+   parts {
+      part {
+         name: "tree_header";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "tree_header_inactive.png";
+               border: 0 2 0 2;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "tree_header_active.png";
+            }
+         }
+      }
+      part {
+         name: "title";
+         type: TEXT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 5 1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            color: 0 0 0 255;
+            text {
+               text: "Title";
+               font: "Vera";
+               align: 0.0 0.5;
+               size: 10;
+            }
+         }
+      }
+   }
+}

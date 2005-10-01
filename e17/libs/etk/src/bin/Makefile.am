@@ -1,0 +1,27 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+AUTOMAKE_OPTIONS = 1.4 foreign
+
+EXTRA_DIST =
+
+INCLUDES	= \
+-I. -I$(top_srcdir)/src/lib -Wall -g \
+@ecore_cflags@ @evas_cflags@ @edje_cflags@
+
+bin_PROGRAMS = etk_test
+
+etk_test_DEPENDENCIES = $(top_builddir)/src/lib/libetk.la
+etk_test_SOURCES      = \
+etk_test.h \
+etk_test.c \
+etk_button_test.c \
+etk_entry_test.c \
+etk_table_test.c \
+etk_image_test.c \
+etk_scale_test.c \
+etk_canvas_test.c \
+etk_colorpicker_test.c \
+etk_tree_test.c
+
+etk_test_LDADD = $(top_builddir)/src/lib/libetk.la \
+		 @ecore_libs@ @evas_libs@ @edje_libs@

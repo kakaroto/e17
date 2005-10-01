@@ -1,0 +1,9 @@
+#!/bin/sh
+rm -rf ./doc/html ./doc/latex ./doc/man
+mkdir -p doc/html doc/man doc/latex
+doxygen
+cp doc/img/*.png doc/html/
+rm -f etk_docs.tar etk_docs.tar.gz
+tar -cvf etk_docs.tar doc/html doc/man doc/latex
+gzip -9 etk_docs.tar
+exit 0

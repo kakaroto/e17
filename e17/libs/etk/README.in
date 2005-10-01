@@ -1,0 +1,19 @@
+Etk @VERSION@
+
+Etk is a toolkit based on the EFL.
+
+--------------------------------------------------------------------------
+Requires:
+
+  Evas
+  Ecore
+  Edje
+
+------------------------------------------------------------------------------
+COMPILING AND INSTALLING:
+
+  ./configure
+  make
+(as root unless youa re installing in your users directories):
+  make install
+

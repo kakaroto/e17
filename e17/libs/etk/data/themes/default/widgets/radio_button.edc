@@ -1,0 +1,62 @@
+group {
+   name: "radio_button";
+   min: 20 20;
+   data {
+      item: "inset" "20 0 0 0";
+   }
+   parts {
+      part {
+         name: "radio";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 2 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 17 7;
+            }
+            image {
+               normal: "radio_off.png";
+            }
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "radio_on.png";
+            }
+         }
+      }
+      FOCUS_RECT(0.0, 0.5, 0.0, 0.5, 0, -10, 18, 8)
+   }
+   programs {
+      program {
+         name: "radio_button_activated";
+         signal: "activated";
+         source: "";
+         action: STATE_SET "on" 0.0;
+         target: "radio";
+      }
+      program {
+         name: "radio_button_desactivated";
+         signal: "desactivated";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "radio";
+      }
+      program {
+         name: "radio_button_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_ACTION
+      }
+      program {
+         name: "radio_button_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_ACTION
+      }
+   }
+}

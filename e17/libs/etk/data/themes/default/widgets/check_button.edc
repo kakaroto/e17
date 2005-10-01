@@ -1,0 +1,99 @@
+group {
+   name: "check_button";
+   min: 20 20;
+   data {
+      item: "inset" "20 0 0 0";
+   }
+   parts {
+      part {
+         name: "checkbox";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 2 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 17 7;
+            }
+            image {
+               normal: "checkbox_off.png";
+            }
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "checkbox_on.png";
+            }
+         }
+      }
+      part {
+         name: "checkbox_down";
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 2 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 17 7;
+            }
+            image {
+               normal: "checkbox_down.png";
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      FOCUS_RECT(0.0, 0.5, 0.0, 0.5, 0, -10, 18, 8)
+   }
+   programs {
+      program {
+         name: "check_button_activated";
+         signal: "activated";
+         source: "";
+         action: STATE_SET "on" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "check_button_desactivated";
+         signal: "desactivated";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "check_button_down";
+         signal: "pressed";
+         source: "";
+         action: STATE_SET "down" 0.0;
+         target: "checkbox_down";
+      }
+      program {
+         name: "check_button_up";
+         signal: "released";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox_down";
+      }
+      program {
+         name: "check_button_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_ACTION
+      }
+      program {
+         name: "check_button_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_ACTION
+      }
+   }
+}
