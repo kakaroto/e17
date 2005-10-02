@@ -473,31 +473,44 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 void
 ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
-	Ewl_Widget *widget;
+	Ewl_Widget *widget = NULL;
 	Ewl_Event_Mouse_Move ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
-
-	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
-			x, y);
-	if (!widget)
-		widget = EWL_WIDGET(embed);
 
 	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
 
 	/*
-	 * Defocus all widgets up to the level of a shared parent of old and
-	 * newly focused widgets.
+	 * Focus a new widget if the mouse isn't pressed on the currently
+	 * focused widget.
 	 */
-	while (last_focused && (widget != last_focused) &&
-			!ewl_container_parent_of(last_focused, widget)) {
-		ewl_object_state_remove(EWL_OBJECT(last_focused),
-				EWL_FLAG_STATE_HILITED);
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-		last_focused = last_focused->parent;
+	if (!last_focused || !ewl_object_state_has(EWL_OBJECT(last_focused), EWL_FLAG_STATE_PRESSED)) {
+
+		widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
+				x, y);
+		if (!widget)
+			widget = EWL_WIDGET(embed);
+	}
+
+	if (widget) {
+		/*
+		 * Defocus all widgets up to the level of a shared parent of
+		 * old and newly focused widgets.
+		 */
+		while (last_focused && (widget != last_focused) &&
+				!ewl_container_parent_of(last_focused, widget)) {
+			ewl_object_state_remove(EWL_OBJECT(last_focused),
+					EWL_FLAG_STATE_HILITED);
+			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+			last_focused = last_focused->parent;
+		}
+
+	}
+	else {
+		widget = last_focused;
 	}
 
 	/*
