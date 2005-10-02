@@ -180,9 +180,10 @@ main(int argc, char ** argv)
 	return 1;
     }
 
-    if (argc > 2) {
+    if (argc > 1) {
         module = argv[1];
-        file = argv[2];
+        if (argc > 2)
+            file = argv[2];
     }
 
     win = ewl_window_new();

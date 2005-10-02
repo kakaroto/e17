@@ -54,13 +54,10 @@ void ewl_media_init(Ewl_Media *m, char *module, char *media)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_media_configure_cb, NULL);
 
-	if (module) {
-		ewl_media_module_set(m, module);
-                if (media) {
-                        ewl_media_media_set(m, media);
-                }
-                
-        }
+	if (module)
+                ewl_media_module_set(m, module);
+        if (media)
+                ewl_media_media_set(m, media);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -85,10 +82,10 @@ int ewl_media_module_set(Ewl_Media * m, char *module)
 	/*
 	 * Initialize emotion
 	 */
-        if (!m->module || !emotion_object_init(m->video, m->module))
-                DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (m->video && m->module && emotion_object_init(m->video, m->module))
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -371,7 +368,7 @@ void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Create the emotion
 	 */
 	m->video = emotion_object_add(emb->evas);
-	if (m->media) {
+        if (m->module && emotion_object_init(m->video, m->module) && m->media) {
 		emotion_object_file_set(m->video, m->media);
 		ewl_media_size_update(m);
 	}
