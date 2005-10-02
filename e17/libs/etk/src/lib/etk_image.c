@@ -351,7 +351,12 @@ static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    {
       if (image->use_edje)
       {
-         /* TODO: */
+         Evas_Coord min_x, min_y, calc_x, calc_y;
+
+         edje_object_size_min_get(image->image_object, &min_x, &min_y);
+         edje_object_size_min_calc(image->image_object, &calc_x, &calc_y);
+         size_requisition->w = ETK_MAX(min_x, calc_x);
+         size_requisition->h = ETK_MAX(min_y, calc_y);
       }
       else
          evas_object_image_size_get(image->image_object, &size_requisition->w, &size_requisition->h);
