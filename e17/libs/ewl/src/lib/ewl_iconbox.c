@@ -76,6 +76,16 @@ void configure (Ewl_Widget *w, void *ev_data, void *user_data) {
 		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
 		/*ewl_iconbox_icon_arrange(ib); */
 		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
+
+		/*Handle the background, if any*/
+		if (ib->background) {
+			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
+			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
+			evas_object_layer_set(ib->background, -1000);
+
+			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
+			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
+		}
 	}
 }
 
@@ -222,13 +232,13 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	/* Create the selector / selector floater */
 	ib->select_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->select_floater), EWL_FLAG_FILL_FILL);
-	ib->select =ewl_button_new("");
+	ib->select =ewl_button_new(NULL);
 	
 	ewl_container_child_append(EWL_CONTAINER(ib->select_floater), ib->select);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 80, 40);
-	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1000);
+	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), -1);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 128, 50, 70, 128);
 	ib->drag_box = 0;
 
@@ -266,6 +276,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	ewl_object_custom_size_set(EWL_OBJECT(ib->entry_box), 50, 15);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->entry_floater), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->entry_floater);
+
+
+	
 	
 
 	/* Bind a callback to keypress on the entry, so we can update the label */
@@ -285,6 +298,30 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	/*printf("Setup the iconbox...\n");*/
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+}
+
+
+void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file) {
+	/*Add a background image*/
+	{
+		Ewl_Embed      *emb;
+		emb = ewl_embed_widget_find(EWL_WIDGET(ib));
+		if (emb) {
+			ib->background = evas_object_image_add(emb->evas);
+			evas_object_image_file_set(ib->background, file, NULL);
+
+			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
+			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
+			evas_object_layer_set(ib->background, -1000);
+
+			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
+			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
+			
+			evas_object_show(ib->background);
+		} else {
+			printf("////////////////////////// Could not find top level widget\n");
+		}
+	}
 }
 
 

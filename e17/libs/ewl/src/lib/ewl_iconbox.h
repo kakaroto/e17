@@ -79,6 +79,9 @@ struct Ewl_IconBox
 	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
 	int dx, dy;			   /* Drag start x/y */
 
+	/*Background*/
+	Evas_Object* background;
+
 	/* Objects for label editing..*/
 	Ewl_Widget* entry;
 	Ewl_Widget* entry_floater;
@@ -109,6 +112,7 @@ void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file);
 void ewl_iconbox_clear(Ewl_IconBox* iconbox);
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename);
+void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file);
 
 
 /* Internal callbacks */
