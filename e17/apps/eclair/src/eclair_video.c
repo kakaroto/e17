@@ -80,6 +80,7 @@ static void *_eclair_video_create_emotion_object_thread(void *param)
    Eclair *eclair;
    Evas *evas;
    Evas_Object *new_video_object;
+   int result = 0;
 
    if (!(video = param) || !(eclair = video->eclair))
       return NULL;
@@ -93,7 +94,21 @@ static void *_eclair_video_create_emotion_object_thread(void *param)
    evas_object_layer_set(new_video_object, 1);
    evas_object_show(new_video_object);
 
-   emotion_object_init(new_video_object);
+   switch (eclair->video_module)
+   {
+      case ECLAIR_VIDEO_GSTREAMER:
+         result |= emotion_object_init(new_video_object, "emotion_decoder_gstreamer.so");
+         break;
+      case ECLAIR_VIDEO_XINE:
+      default:
+         result |= emotion_object_init(new_video_object, "emotion_decoder_xine.so");
+         break;
+   }
+   if (!result)
+   {
+      evas_object_del(new_video_object);
+      return NULL;
+   }
 
    evas_object_focus_set(new_video_object, 1);
    evas_object_event_callback_add(new_video_object, EVAS_CALLBACK_KEY_DOWN, eclair_key_press_cb, eclair);

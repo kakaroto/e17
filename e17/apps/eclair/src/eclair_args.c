@@ -17,13 +17,14 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
       { "theme",        required_argument,      NULL,    't' },
       { "gui-engine",   required_argument,      NULL,    'g' },
       { "video-engine", required_argument,      NULL,    'v' },
+      { "video-module", required_argument,      NULL,    'm' },
       { NULL,           0,                      NULL,    0 }
    };
 
    if (!eclair || (argc = *eclair->argc) <= 0 || !(argv = *eclair->argv))
       return 0;
 
-   while ((c = getopt_long(argc, argv, "ht:g:v:", long_options, NULL)) != -1)
+   while ((c = getopt_long(argc, argv, "ht:g:v:m:", long_options, NULL)) != -1)
    {
       switch (c)
       {
@@ -59,6 +60,17 @@ Evas_Bool eclair_args_parse(Eclair *eclair, Evas_List **filenames)
                return 0;
             }
             break;
+         case 'm':
+            if (strcmp(optarg, "xine") == 0)
+               eclair->video_module = ECLAIR_VIDEO_XINE;
+            else if (strcmp(optarg, "gstreamer") == 0)
+               eclair->video_engine = ECLAIR_VIDEO_GSTREAMER;
+            else
+            {
+               _eclair_args_print_usage();
+               return 0;
+            }
+            break;
          default:
             _eclair_args_print_usage();
             return 0;
@@ -81,5 +93,6 @@ static void _eclair_args_print_usage()
       "-h, --help                            Print this message and exit\n"
       "-t, --theme                           Specify an edj theme file for eclair\n"
       "-g, --gui-engine [software|gl]        Specify the gui engine\n"
-      "-v, --video-engine [software|gl]      Specify the video engine\n");
+      "-v, --video-engine [software|gl]      Specify the video engine\n"
+      "-m, --video-module [xine|gstreamer]   Specify the video module\n");
 }

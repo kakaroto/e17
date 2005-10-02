@@ -58,6 +58,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    eclair->drop_object = ECLAIR_DROP_NONE;
    eclair->drop_window = NULL;
    eclair->video_engine = ECLAIR_SOFTWARE;
+   eclair->video_module = ECLAIR_VIDEO_XINE;
    eclair->start_playing = 0;
 
    if (!eclair_args_parse(eclair, &filenames))
