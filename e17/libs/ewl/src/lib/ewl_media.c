@@ -12,7 +12,7 @@ static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
  * @return Returns a pointer to a new media on success, NULL on failure.
  * @brief Allocate a new media widget
  */
-Ewl_Widget	 *ewl_media_new(char *media)
+Ewl_Widget	 *ewl_media_new(char *module, char *media)
 {
 	Ewl_Media   *m;
 
@@ -22,7 +22,7 @@ Ewl_Widget	 *ewl_media_new(char *media)
 	if (!m)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_media_init(m, media);
+	ewl_media_init(m, module, media);
 
 	DRETURN_PTR(EWL_WIDGET(m), DLEVEL_STABLE);
 }
@@ -35,7 +35,7 @@ Ewl_Widget	 *ewl_media_new(char *media)
  *
  * Sets the internal fields and callbacks of a media object to there defaults.
  */
-void ewl_media_init(Ewl_Media *m, char *media)
+void ewl_media_init(Ewl_Media *m, char *module, char *media)
 {
 	Ewl_Widget *w;
 
@@ -54,10 +54,59 @@ void ewl_media_init(Ewl_Media *m, char *media)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_media_configure_cb, NULL);
 
-	if (media)
-		ewl_media_media_set(m, media);
+	if (module) {
+		ewl_media_module_set(m, module);
+                if (media) {
+                        ewl_media_media_set(m, media);
+                }
+                
+        }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: the media area widget to set the module
+ * @param module: the module to set in the media widget @a m 
+ * @return Returns 0 if fail to load the module, 1 otherwise.
+ * @brief Set the module of a media widget
+ *
+ * Sets the module of the media widget @a m 
+ */
+int ewl_media_module_set(Ewl_Media * m, char *module)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, 0);
+	DCHECK_PARAM_PTR_RET("module", module, 0);
+
+	IF_FREE(m->module);
+	m->module = strdup(module);
+
+	/*
+	 * Initialize emotion
+	 */
+        if (!m->module || !emotion_object_init(m->video, m->module))
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: the media widget to retrieve module contents
+ * @return Returns a copy of the module in @a m on success, NULL on failure.
+ * @brief Retrieve the module of a media widget
+ */
+char *ewl_media_module_get(Ewl_Media * m)
+{
+	char *txt = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	if (m->module)
+		txt = strdup(m->module);
+
+	DRETURN_PTR(txt, DLEVEL_STABLE);
 }
 
 /**

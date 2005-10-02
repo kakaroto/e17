@@ -172,6 +172,7 @@ main(int argc, char ** argv)
 {
     Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
     Ewl_Widget *controls = NULL, *time = NULL;
+    char * module = NULL;
     char * file = NULL;
 
     if (!ewl_init(&argc, argv)) {
@@ -179,8 +180,10 @@ main(int argc, char ** argv)
 	return 1;
     }
 
-    if (argc > 1)
-	file = argv[1];
+    if (argc > 2) {
+        module = argv[1];
+        file = argv[2];
+    }
 
     win = ewl_window_new();
     ewl_window_title_set(EWL_WINDOW(win), "EWL Media test");
@@ -202,7 +205,7 @@ main(int argc, char ** argv)
     time = ewl_text_new("00:00:00");
 
     /* the video */
-    video = ewl_media_new(file);
+    video = ewl_media_new(module, file);
     ewl_container_child_append(EWL_CONTAINER(b), video);
     ewl_object_fill_policy_set(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
     ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);

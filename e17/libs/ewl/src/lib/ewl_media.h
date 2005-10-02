@@ -35,13 +35,16 @@ struct Ewl_Media
 {
 	Ewl_Widget      widget;       /**< Inherit from Ewl_Widget */
 	Evas_Object    *video;        /**< Emotion does the actual work */
+	char           *module;       /**< Path to the module file */
 	char           *media;        /**< Path to the media file */
 	int             block_seek;   /**< Temporarily prevent seeking */
 };
 
-Ewl_Widget  *ewl_media_new(char *media);
-void         ewl_media_init(Ewl_Media * m, char *media);
+Ewl_Widget  *ewl_media_new(char *module, char *media);
+void         ewl_media_init(Ewl_Media * m, char *module, char *media);
 
+int          ewl_media_module_set(Ewl_Media * m, char *module);
+char        *ewl_media_module_get(Ewl_Media * m);
 void         ewl_media_media_set(Ewl_Media * m, char *media);
 char        *ewl_media_media_get(Ewl_Media * m);
 int          ewl_media_length_get(Ewl_Media *m);
