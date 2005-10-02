@@ -1577,9 +1577,20 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	ewl_widget_state_set(w, state);
 
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
+		int x, y;
+
 		ewl_widget_state_set(w, "mouse,in");
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
-						  ev_data);
+		x = e->x - (CURRENT_X(w) - INSET_LEFT(w));
+		y = e->y - (CURRENT_Y(w) - INSET_TOP(w));
+		if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
+		    (y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w))) {
+			ewl_callback_call_with_event_data(w,
+					EWL_CALLBACK_CLICKED, ev_data);
+		}
+		else {
+			ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
+					e->x, e->y, e->modifiers);
+		}
 	} else
 		ewl_widget_state_set(w, "mouse,out");
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
