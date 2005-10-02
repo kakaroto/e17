@@ -74,6 +74,8 @@ main(int argc, char **argv)
 
    // Setup emotion objects
    e->gui.emotion = emotion_object_add(e->gui.evas);
+   if (!emotion_object_init(e->gui.emotion, "emotion_decoder_xine.so"))
+      return (0);
    emotion_object_file_set(e->gui.emotion, videofile);
    emotion_object_size_get(e->gui.emotion, &w, &h);
    evas_object_name_set(e->gui.emotion, "emotion");
