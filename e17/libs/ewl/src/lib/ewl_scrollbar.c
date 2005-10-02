@@ -73,6 +73,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	s->seeker = ewl_seeker_new(orientation);
 	ewl_widget_internal_set(s->seeker, TRUE);
+	ewl_object_alignment_set(EWL_OBJECT(s->seeker), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(s->seeker);
 
 	/*
