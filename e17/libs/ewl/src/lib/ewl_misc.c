@@ -137,6 +137,30 @@ int ewl_init(int *argc, char **argv)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	if (use_engine == EWL_ENGINE_SOFTWARE_X11) {
+		IF_FREE(ewl_config.evas.render_method);
+		ewl_config.evas.render_method = strdup("software_x11");
+	}
+	else
+#endif
+#ifdef HAVE_EVAS_ENGINE_GL_X11_H
+	if (use_engine == EWL_ENGINE_GL_X11) {
+		IF_FREE(ewl_config.evas.render_method);
+		ewl_config.evas.render_method = strdup("gl_x11");
+	}
+	else
+#endif
+#ifdef HAVE_EVAS_ENGINE_FB_H
+	if (use_engine == EWL_ENGINE_FB) {
+		IF_FREE(ewl_config.evas.render_method);
+		ewl_config.evas.render_method = strdup("fb");
+	}
+	else
+#endif
+	if (!ewl_config.evas.render_method)
+		ewl_config.evas.render_method = strdup("software_x11");
+
 	if (print_theme_keys)
 		ewl_config.theme.print_keys = print_theme_keys;
 
