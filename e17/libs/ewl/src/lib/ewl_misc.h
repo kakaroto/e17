@@ -38,7 +38,7 @@ unsigned int    ewl_engine_mask_get();
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
 
-#define DEBUG_MALLOCDEBUG 0
+#undef DEBUG_MALLOCDEBUG
 #ifdef DEBUG_MALLOCDEBUG
 char *strdup(const char *str);
 #endif
