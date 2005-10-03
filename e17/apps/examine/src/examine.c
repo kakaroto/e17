@@ -255,15 +255,17 @@ draw_tree(examine_prop * prop_item)
 
     if (found) {
       tree_box = add_tab(panel_name);
-      entries[0] = ewl_text_new(panel_tmp + 1);
+      entries[0] = ewl_text_new();
+      ewl_text_text_set(EWL_TEXT(entries[0]), panel_tmp + 1);
     } else {
       tree_box = add_tab("Misc");
-      entries[0] = ewl_text_new(panel_name);
+      entries[0] = ewl_text_new();
+       ewl_text_text_set(EWL_TEXT(entries[0]), panel_name);
     }
 
     free(key_tmp);
     if (prop_item->type == ECORE_CONFIG_STR) {
-      entries[1] = ewl_entry_new("");
+      entries[1] = ewl_entry_new();
       ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_INT) {
@@ -293,7 +295,7 @@ draw_tree(examine_prop * prop_item)
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_RGB) {
-      entries[1] = ewl_entry_new("");
+      entries[1] = ewl_entry_new();
       ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
                           prop_item);
 				
@@ -363,7 +365,8 @@ draw_tree(examine_prop * prop_item)
             file = malloc(file_len + 1);
             strncpy(file, next->d_name, file_len);
             *(file + file_len) = '\0';
-            tmp_text = ewl_text_new(file);
+            tmp_text = ewl_text_new();
+            ewl_text_text_set(EWL_TEXT(tmp_text), file);
             ewl_object_alignment_set(EWL_OBJECT(tmp_text),
                                      EWL_FLAG_ALIGN_CENTER);
 
@@ -392,12 +395,12 @@ draw_tree(examine_prop * prop_item)
       free(search_path);
       ecore_list_destroy(themes);
     } else if (prop_item->type == ECORE_CONFIG_BLN) {
-      entries[1] = ewl_checkbutton_new("");
+      entries[1] = ewl_checkbutton_new();
       ewl_callback_append(entries[1],
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_bln, prop_item);
 
     } else
-      entries[1] = ewl_entry_new("unknown");
+      entries[1] = ewl_entry_new();
     prop_item->w = entries[1];
     examine_client_get_val(prop_item->key);
 
@@ -438,11 +441,14 @@ render_ewl(void)
   ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
   ewl_widget_show(row);
 
-  save = ewl_button_new("Apply");
+  save = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(save), "Apply");
   ewl_callback_append(save, EWL_CALLBACK_MOUSE_DOWN, cb_save, NULL);
-  revert = ewl_button_new("Revert");
+  revert = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(revert), "Revert");
   ewl_callback_append(revert, EWL_CALLBACK_MOUSE_DOWN, cb_revert, NULL);
-  quit = ewl_button_new("Close");
+  quit = ewl_button_new();
+  ewl_button_label_set(EWL_BUTTON(quit), "Close");
   ewl_callback_append(quit, EWL_CALLBACK_MOUSE_DOWN, cb_quit, NULL);
 
   ewl_container_child_append(EWL_CONTAINER(row), save);
@@ -468,7 +474,8 @@ add_tab(char *name)
     new_panel = new_panel->next;
   }
 
-  button = ewl_text_new(name);
+  button = ewl_text_new();
+  ewl_text_text_set(EWL_TEXT(button), name);
   ewl_widget_show(button);
 
   scrollpane = ewl_scrollpane_new();
