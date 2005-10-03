@@ -73,6 +73,8 @@ entangle_eapps_init()
             snprintf(eapp->name, ret_size + 1, "%s", ret);
         }
 
+        IF_FREE(ret);
+
         ret = eet_read(ef, "app/info/exe", &ret_size);
         if (ret_size > 0)
         {
@@ -80,12 +82,17 @@ entangle_eapps_init()
             snprintf(eapp->exe, ret_size + 1, "%s", ret);
         }
 
+        IF_FREE(ret);
+
         ret = eet_read(ef, "app/window/class", &ret_size);
         if (ret_size > 0)
         {
             eapp->class = malloc(sizeof(char) * (ret_size + 1));
             snprintf(eapp->class, ret_size + 1, "%s", ret);
         }
+
+        IF_FREE(ret);
+
         ecore_hash_set(entangle_eapps, tmp, eapp);
         ecore_list_append(entangle_eapp_list, tmp);
         eet_close(ef);
