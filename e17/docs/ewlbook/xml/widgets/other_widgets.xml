@@ -75,7 +75,8 @@ or just display simple messages.
     Ewl_Widget *dialog = NULL;
     Ewl_Widget *o = NULL;
 
-    o = ewl_text_new("a dialog eh");
+    o = ewl_text_new();
+    ewl_text_text_set(EWL_TEXT(o), "a dialog eh");
     ewl_object_alignment_set(EWL_OBJECT(o),
     EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(o);
@@ -389,7 +390,8 @@ void passwd_cb(Ewl_Widget *, void *event, void *data) {
 <example>
 <title>Ewl_Image</title>
 <programlisting>
-    Ewl_Widget *i = ewl_image_new("/usr/foo/img.png", NULL);
+    Ewl_Widget *i = ewl_image_new();
+    ewl_image_file_set(EWL_IMAGE(i), "/usr/foo/img.png", NULL);
     ewl_widget_show(i);
 </programlisting>
 </example>
@@ -413,7 +415,8 @@ provide a scrollable text area.
 <example id="sec-EwlTextCode">
 <title>Ewl_Text code</title>
 <programlisting role="C">
-    Ewl_Widget *text = ewl_text_new("text");
+    Ewl_Widget *text = ewl_text_new();
+    ewl_text_text_set(EWL_TEXT(text), "text");
     ewl_widget_show(text);
 </programlisting>
 </example>

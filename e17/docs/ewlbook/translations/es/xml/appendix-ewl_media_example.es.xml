@@ -141,7 +141,8 @@ int main(int argc, char ** argv) {
     ewl_widget_show(b);
 
     /* create the time widget now so we can pass it to the video as data */
-    time = ewl_text_new("00:00:00");
+    time = ewl_text_new();
+    ewl_text_text_set(EWL_TEXT(time), "00:00:00");
 
     /* the video */
     video = ewl_media_new(file);

@@ -49,7 +49,7 @@ int main(int argc, char ** argv) {
     ewl_widget_show(box);
  
     /* create text label */
-    label = ewl_text_new(NULL);
+    label = ewl_text_new();
     ewl_container_child_append(EWL_CONTAINER(box), label);
     ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
     ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
@@ -58,7 +58,7 @@ int main(int argc, char ** argv) {
     ewl_widget_show(label);
 
     /* create the entry */ 
-    o = ewl_entry_new("");
+    o = ewl_entry_new();
     ewl_container_child_append(EWL_CONTAINER(box), o);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
