@@ -119,6 +119,7 @@ entangle_eapps_cb_free(void *data)
 
     IF_FREE(eapp->path);
     IF_FREE(eapp->name);
+    IF_FREE(eapp->eapp_name);
     IF_FREE(eapp->exe);
     IF_FREE(eapp->class);
     FREE(eapp);
