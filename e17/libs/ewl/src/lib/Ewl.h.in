@@ -178,7 +178,8 @@
  * be set to the name of the group to load for an edje.
  *
  * @code
- * 	image = ewl_image_new(argv[1], NULL);
+ * 	image = ewl_image_new();
+ *	ewl_image_file_set(EWL_IMAGE(image), argv[1], NULL);
  * 	ewl_container_child_append(EWL_CONTAINER(main_box), image);
  * 	ewl_widget_show(image);
  * @endcode
