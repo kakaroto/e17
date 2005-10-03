@@ -195,7 +195,8 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_box_spacing_set(EWL_BOX(hbox), 5);
     ewl_widget_show(hbox);
 
-    o = ewl_button_new("Save");
+    o = ewl_button_new();
+    ewl_button_label_set(EWL_BUTTON(o), "Save");
     ewl_container_child_append(EWL_CONTAINER(hbox), o);
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
@@ -204,7 +205,8 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_callback_append(o, EWL_CALLBACK_CLICKED, eapp_cb_save, NULL);
     ewl_widget_show(o);
 
-    o = ewl_button_new("Cancel");
+    o = ewl_button_new();
+    ewl_button_label_set(EWL_BUTTON(o), "Cancel");
     ewl_container_child_append(EWL_CONTAINER(hbox), o);
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
@@ -239,7 +241,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     ewl_image_scale_to(EWL_IMAGE(row[0]), 32, 32);
     ewl_widget_show(row[0]);
 
-    row[1] = ewl_button_new("Set Icon");
+    row[1] = ewl_button_new();
+    ewl_button_label_set(EWL_BUTTON(row[1]), "Set Icon");
     ewl_callback_append(row[1], EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
     ewl_object_fill_policy_set(EWL_OBJECT(row[1]), EWL_FLAG_FILL_SHRINK);
     ewl_widget_show(row[1]);
@@ -249,7 +252,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     /* add all the eet data */
     for (i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++)
     {
-        row[0] = ewl_text_new(NULL);
+        row[0] = ewl_text_new();
+        ewl_text_text_set(EWL_TEXT(row[0]), NULL);
         ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_SOFT_SHADOW);
         ewl_text_shadow_color_set(EWL_TEXT(row[0]), 128, 128, 128, 128);
         ewl_text_text_set(EWL_TEXT(row[0]), keys[i].name);
@@ -258,7 +262,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
         v = eapp_eet_read(ef, keys[i].key, lang);
         if (keys[i].checkbox)
         {
-            row[1] = ewl_checkbutton_new("");
+            row[1] = ewl_checkbutton_new();
+            ewl_button_label_set(EWL_BUTTON(row[1]), "");
             ewl_checkbutton_checked_set(EWL_CHECKBUTTON(row[1]), v[0] == 1);
         }
         else
@@ -268,7 +273,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
                 if (winclass) v = winclass;
             }
 
-            row[1] = ewl_entry_new(v);
+            row[1] = ewl_entry_new();
+            ewl_text_text_set(EWL_TEXT(row[1]), v);
         }
         ewl_widget_name_set(row[1], keys[i].key);
         ewl_widget_show(row[1]);
