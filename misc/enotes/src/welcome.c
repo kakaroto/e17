@@ -23,7 +23,7 @@ open_welcome(void)
 				   welcome->wvbox);
 	ewl_widget_show(welcome->wvbox);
 
-	welcome->title = ewl_text_new(NULL);
+	welcome->title = ewl_text_new();
 //	ewl_text_font_set((Ewl_Text *) welcome->title, "vera"); //, 18);
 	ewl_text_color_set((Ewl_Text *) welcome->title, 255, 255, 255, 255);
 	ewl_text_styles_set((Ewl_Text *) welcome->title,
@@ -35,7 +35,7 @@ open_welcome(void)
 				   welcome->title);
 	ewl_widget_show(welcome->title);
 
-	welcome->label = ewl_text_new("");
+	welcome->label = ewl_text_new();
 //	ewl_text_font_set((Ewl_Text *) welcome->label, "vera"); //, 12);
 	ewl_text_color_set((Ewl_Text *) welcome->label, 0, 0, 0, 255);
 	ewl_text_text_insert((Ewl_Text *) welcome->label,
@@ -55,14 +55,16 @@ open_welcome(void)
 				   welcome->whbox);
 	ewl_widget_show(welcome->whbox);
 
-	welcome->closebtn = ewl_button_new("Close");
+	welcome->closebtn = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(welcome->closebtn), "Close");
 	ewl_container_child_append((Ewl_Container *) welcome->whbox,
 				   welcome->closebtn);
 	ewl_widget_show(welcome->closebtn);
 	ewl_callback_append(welcome->closebtn, EWL_CALLBACK_CLICKED,
 			    (void *) close_welcome_cb, (void *) NULL);
 
-	welcome->creditsbtn = ewl_button_new("Credits");
+	welcome->creditsbtn = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(welcome->creditsbtn), "Credits");
 	ewl_container_child_append((Ewl_Container *) welcome->whbox,
 				   welcome->creditsbtn);
 	ewl_widget_show(welcome->creditsbtn);
@@ -113,7 +115,7 @@ open_credits()
 	ewl_callback_append(credits->win, EWL_CALLBACK_DELETE_WINDOW,
 			    (void *) close_credits_cb, (void *) NULL);
 
-	credits->credits = ewl_text_new("");
+	credits->credits = ewl_text_new();
 	ewl_object_padding_set((Ewl_Object *) credits->credits, 5, 5, 5, 5);
 //	ewl_text_font_set((Ewl_Text *) credits->credits, "vera"); //, 12);
 	ewl_text_color_set((Ewl_Text *) credits->credits, 0, 0, 0, 255);

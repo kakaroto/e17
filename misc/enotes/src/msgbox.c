@@ -39,7 +39,8 @@ msgbox(char *title, char *content)
 	ewl_object_padding_set((Ewl_Object *) mb->vbox, 5, 10, 5, 10);
 	ewl_widget_show(mb->vbox);
 
-	mb->msg = ewl_text_new(content);
+	mb->msg = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(mb->msg), content);
 	ewl_container_child_append((Ewl_Container *) mb->vbox, mb->msg);
 	ewl_widget_show(mb->msg);
 
@@ -47,7 +48,8 @@ msgbox(char *title, char *content)
 	ewl_container_child_append((Ewl_Container *) mb->vbox, mb->hbox);
 	ewl_widget_show(mb->hbox);
 
-	mb->okbtn = ewl_button_new("Ok.");
+	mb->okbtn = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(mb->okbtn), "Ok.");
 	ewl_container_child_append((Ewl_Container *) mb->hbox, mb->okbtn);
 	ewl_widget_show(mb->okbtn);
 

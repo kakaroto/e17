@@ -79,7 +79,8 @@ setup_saveload_win(void)
 
 	ewl_widget_show(saveload->tree);
 
-	saveload->txt_selected = ewl_text_new("Selected: N/A");
+	saveload->txt_selected = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(saveload->txt_selected), "Selected: N/A");
 	ewl_container_child_append((Ewl_Container *) saveload->vbox,
 				   saveload->txt_selected);
 	ewl_widget_show(saveload->txt_selected);
@@ -128,7 +129,8 @@ setup_saveload_win(void)
 void
 saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
-	*b = ewl_button_new(label);
+	*b = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(*b), label);
 	ewl_container_child_append((Ewl_Container *) c, *b);
 	ewl_widget_show(*b);
 	return;
@@ -172,7 +174,8 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 	Ewl_Widget     *capt;
 	Note           *d = evas_list_data(p);
 
-	capt = (Ewl_Widget *) ewl_text_new(caption);
+	capt = (Ewl_Widget *) ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(capt), caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
 			     ewl_saveload_listitem_click, NULL);
 	ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
@@ -361,7 +364,8 @@ setup_load_win(void)
 
 	ewl_widget_show(load->tree);
 
-	load->txt_selected = ewl_text_new("Selected: N/A");
+	load->txt_selected = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(load->txt_selected), "Selected: N/A");
 	ewl_container_child_append((Ewl_Container *) load->vbox,
 				   load->txt_selected);
 	ewl_widget_show(load->txt_selected);
@@ -397,7 +401,8 @@ setup_load_win(void)
 void
 load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label)
 {
-	*b = ewl_button_new(label);
+	*b = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(*b), label);
 	ewl_container_child_append((Ewl_Container *) c, *b);
 	ewl_widget_show(*b);
 	return;
@@ -446,7 +451,8 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 {
 	Ewl_Widget     *capt;
 
-	capt = ewl_text_new(caption);
+	capt = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(capt), caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
 			     ewl_load_listitem_click, NULL);
 	ewl_widget_show(capt);
