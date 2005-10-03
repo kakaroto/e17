@@ -368,7 +368,8 @@ draw_ewl(Mode draw_mode)
    ewl_container_child_append(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
    displaycell = ewl_cell_new();
-   display = ewl_text_new("0");
+   display = ewl_text_new();
+   ewl_text_text_set(EWL_TEXT(display), "0");
    ewl_object_alignment_set(EWL_OBJECT(display), EWL_FLAG_ALIGN_RIGHT);
    /* layout the display area, the table helps align the display even when in
     * basic mode */
@@ -380,7 +381,7 @@ draw_ewl(Mode draw_mode)
    else
       disp_table = ewl_grid_new(1, 1);
    disp_cell[1] = ewl_cell_new();
-   eqn_disp = ewl_text_new("");
+   eqn_disp = ewl_text_new();
    if (calc_mode == SCI) {
       ewl_object_alignment_set(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
       ewl_container_child_append(EWL_CONTAINER(disp_cell[1]), eqn_disp);
@@ -407,7 +408,8 @@ draw_ewl(Mode draw_mode)
 
    while (bc-- > 0) {
       cell[bc] = ewl_cell_new();
-      button[bc] = ewl_button_new(but->text);
+      button[bc] = ewl_button_new();
+      ewl_button_label_set(EWL_BUTTON(button[bc]), but->text);
       but->button = button[bc];
       ewl_callback_append(button[bc], EWL_CALLBACK_MOUSE_DOWN,
                           but->callback, but->cmd);
