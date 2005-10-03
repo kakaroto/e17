@@ -70,7 +70,8 @@ entangle_eapps_init()
         if (ret_size > 0)
         {
             eapp->name = malloc(sizeof(char) * (ret_size + 1));
-            snprintf(eapp->name, ret_size + 1, "%s", ret);
+            strncpy(eapp->name, ret, ret_size);
+            eapp->name[ret_size] = 0;
         }
 
         IF_FREE(ret);
@@ -79,7 +80,8 @@ entangle_eapps_init()
         if (ret_size > 0)
         {
             eapp->exe = malloc(sizeof(char) * (ret_size + 1));
-            snprintf(eapp->exe, ret_size + 1, "%s", ret);
+            strncpy(eapp->exe, ret, ret_size);
+            eapp->exe[ret_size] = 0;
         }
 
         IF_FREE(ret);
@@ -88,7 +90,8 @@ entangle_eapps_init()
         if (ret_size > 0)
         {
             eapp->class = malloc(sizeof(char) * (ret_size + 1));
-            snprintf(eapp->class, ret_size + 1, "%s", ret);
+            strncpy(eapp->class, ret, ret_size);
+            eapp->class[ret_size] = 0;
         }
 
         IF_FREE(ret);
