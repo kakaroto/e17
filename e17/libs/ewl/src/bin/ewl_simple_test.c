@@ -245,7 +245,8 @@ main(int argc, char **argv)
 	 * Setup the custom logo which becomes the tour display area.
 	 */
 	logo = NEW(Ewl_Widget, 1);
-	ewl_widget_init(logo, "demo_logo");
+	ewl_widget_init(logo);
+	ewl_widget_appearance_set(logo, "demo_logo");
 	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, realize_logo_cb, label);
 	ewl_theme_data_str_set(logo, "/demo_logo/file", tmp);
 	ewl_theme_data_str_set(logo, "/demo_logo/group", "tour");
@@ -266,13 +267,15 @@ main(int argc, char **argv)
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(hbox);
 
-	button = ewl_button_new("Take the tour!");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Take the tour!");
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_down, logo);
 	ewl_widget_show(button);
 
-	button = ewl_button_new("Quit");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Quit");
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, quit_demo, NULL);
