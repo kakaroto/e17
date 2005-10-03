@@ -235,7 +235,8 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     }
 
     /* add the icon */
-    row[0] = ewl_image_new(file, "icon");
+    row[0] = ewl_image_new();
+    ewl_image_file_set(EWL_IMAGE(row[0]), file, "icon");
     ewl_widget_name_set(row[0], "icon");
     ewl_image_proportional_set(EWL_IMAGE(row[0]), TRUE);
     ewl_image_scale_to(EWL_IMAGE(row[0]), 32, 32);
