@@ -50,7 +50,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 
 	w = EWL_WIDGET(sp);
 
-	ewl_image_init(EWL_IMAGE(w), NULL, NULL);
+	ewl_image_init(EWL_IMAGE(w));
 	ewl_widget_appearance_set(w, "spectrum");
 	ewl_widget_inherit(w, "spectrum");
 

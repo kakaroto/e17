@@ -60,13 +60,14 @@ ewl_combo_init(Ewl_Combo * combo, char *title)
 	redirect = ewl_container_redirect_get( EWL_CONTAINER(combo) );
 	ewl_container_redirect_set( EWL_CONTAINER(combo), NULL );
 
-	combo->button = ewl_button_new(NULL);
+	combo->button = ewl_button_new();
 	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_show(combo->button);
 
-	combo->selected = ewl_entry_new(title);
+	combo->selected = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(combo->selected), title);
 	ewl_entry_editable_set(EWL_ENTRY(combo->selected), FALSE);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->selected),
 				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);

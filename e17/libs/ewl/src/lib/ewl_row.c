@@ -37,8 +37,10 @@ int ewl_row_init(Ewl_Row *row)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(row), "row"))
+	if (!ewl_container_init(EWL_CONTAINER(row)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(EWL_WIDGET(row), "row");
 	ewl_widget_inherit(EWL_WIDGET(row), "row");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);

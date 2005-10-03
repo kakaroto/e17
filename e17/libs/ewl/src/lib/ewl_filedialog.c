@@ -62,7 +62,10 @@ int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 
 	w = EWL_WIDGET(fd);
 
- 	ewl_box_init(EWL_BOX(fd), EWL_ORIENTATION_VERTICAL);
+ 	if (!ewl_box_init(EWL_BOX(fd)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(fd), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
 	ewl_widget_appearance_set(w, "filedialog");
 	ewl_widget_inherit(w, "filedialog");

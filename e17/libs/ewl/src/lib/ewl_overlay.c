@@ -40,9 +40,10 @@ int ewl_overlay_init(Ewl_Overlay *w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(w), "overlay"))
+	if (!ewl_container_init(EWL_CONTAINER(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_appearance_set(EWL_WIDGET(w), "overlay");
 	ewl_widget_inherit(EWL_WIDGET(w), "overlay");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_overlay_child_show_cb);

@@ -48,8 +48,8 @@ struct Ewl_Image
 	} tile;
 };
 
-Ewl_Widget     *ewl_image_new(char *i, char *k);
-void            ewl_image_init(Ewl_Image * i, char *path, char *key);
+Ewl_Widget     *ewl_image_new();
+void            ewl_image_init(Ewl_Image * i);
 void            ewl_image_file_set(Ewl_Image * i, char *im, char *key);
 char           *ewl_image_file_get(Ewl_Image * i);
 void            ewl_image_proportional_set(Ewl_Image * i, char p);

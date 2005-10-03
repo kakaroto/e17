@@ -66,13 +66,15 @@ widgets_build(void)
 	ewl_widget_appearance_set (notebook, "window");
 	
 	/* First page: buttons */
-	tab = ewl_text_new ("Buttons");
+	tab = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(tab), "Buttons");
 	ewl_widget_show (tab);
 	
 	vbox = ewl_vbox_new ();
 	ewl_widget_show (vbox);
 	
-	misc = ewl_button_new ("Normal button");
+	misc = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(misc), "Normal button");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
@@ -81,7 +83,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_checkbutton_new ("Check button");
+	misc = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(misc), "Check button");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
@@ -90,7 +93,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_radiobutton_new ("Radio button");
+	misc = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(misc), "Radio button");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
@@ -98,13 +102,15 @@ widgets_build(void)
 	ewl_notebook_page_append (EWL_NOTEBOOK(notebook), tab, vbox);
 	
 	/* Second page: numerical/text entries */
-	tab = ewl_text_new ("Numerical & text entries");
+	tab = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(tab), "Numerical & text entries");
 	ewl_widget_show (tab);
 	
 	vbox = ewl_vbox_new ();
 	ewl_widget_show (vbox);
 	
-	misc = ewl_entry_new ("Normal entry");
+	misc = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(misc), "Normal entry");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
@@ -147,7 +153,8 @@ widgets_build(void)
 	ewl_notebook_page_append (EWL_NOTEBOOK(notebook), tab, vbox);
 	
 	/* Third page: menus */
-	tab = ewl_text_new ("Menus");
+	tab = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(tab), "Menus");
 	ewl_widget_show (tab);
 	
 	vbox = ewl_vbox_new ();
@@ -212,7 +219,8 @@ widgets_build(void)
 	ewl_notebook_page_append (EWL_NOTEBOOK(notebook), tab, vbox);
 	
 	/* Fourth page: List/tree */
-	tab = ewl_text_new ("List & tree");
+	tab = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(tab), "List & tree");
 	ewl_widget_show (tab);
 	
 	vbox = ewl_vbox_new ();
@@ -259,7 +267,8 @@ widgets_build(void)
 	ewl_notebook_page_append (EWL_NOTEBOOK(notebook), tab, vbox);
 	
 	/* Fifth page: Misc */
-	tab = ewl_text_new ("Misc");
+	tab = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(tab), "Misc");
 	ewl_widget_show (tab);
 	
 	vbox = ewl_vbox_new ();
@@ -269,11 +278,13 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	item = ewl_text_new ("left");
+	item = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(item), "left");
 	ewl_paned_first_pane_append (EWL_PANED (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_text_new ("right");
+	item = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(item), "right");
 	ewl_paned_second_pane_append (EWL_PANED (misc), item);
 	ewl_widget_show (item);
 	
@@ -281,7 +292,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_button_new ("Tooltip");
+	misc = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(misc), "Tooltip");
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
@@ -369,7 +381,8 @@ __create_theme_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append (EWL_CONTAINER (hbox), vbox);
 	ewl_widget_show (vbox);
 	
-	misc = ewl_text_new ("Theme Visualization");
+	misc = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(misc), "Theme Visualization");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);

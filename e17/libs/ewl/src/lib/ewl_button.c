@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param label: the string to use as a label for the button
  * @return Returns NULL on failure, a pointer to a new button on success
  * @brief Allocate and initialize a new button
  */
-Ewl_Widget     *ewl_button_new(char *label)
+Ewl_Widget     *ewl_button_new(void)
 {
 	Ewl_Button     *b;
 
@@ -18,20 +17,19 @@ Ewl_Widget     *ewl_button_new(char *label)
 	if (!b)
 		return NULL;
 
-	ewl_button_init(b, label);
+	ewl_button_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 /**
  * @param b: the button to initialize
- * @param label: set the label of the button @b to @a label
  * @return Returns no value.
  * @brief Initialize a button to starting values
  *
  * Initializes a button to default values and callbacks.
  */
-int ewl_button_init(Ewl_Button * b, char *label)
+int ewl_button_init(Ewl_Button * b)
 {
 	Ewl_Widget     *w;
 
@@ -40,24 +38,12 @@ int ewl_button_init(Ewl_Button * b, char *label)
 
 	w = EWL_WIDGET(b);
 
-	if (!ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL))
+	if (!ewl_box_init(EWL_BOX(b)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "button");
 	ewl_widget_inherit(w, "button");
-
-	/*
-	 * Create and setup the label for the button if it's desired.
-	 */
-	if (label)
-		b->label_object = ewl_label_new(label);
-
-	if (b->label_object) {
-		ewl_object_alignment_set(EWL_OBJECT(b->label_object),
-					 EWL_FLAG_ALIGN_CENTER);
-		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
-		ewl_widget_show(b->label_object);
-	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

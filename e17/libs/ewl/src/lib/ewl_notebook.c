@@ -47,10 +47,11 @@ ewl_notebook_init(Ewl_Notebook * n)
 
 	w = EWL_WIDGET(n);
 
-	if (!ewl_box_init(EWL_BOX(n), EWL_ORIENTATION_VERTICAL)) {
+	if (!ewl_box_init(EWL_BOX(n))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	ewl_box_orientation_set(EWL_BOX(n), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	/*
@@ -163,7 +164,7 @@ ewl_notebook_page_insert(Ewl_Notebook * n, Ewl_Widget * t,
 	}
 
 	page->page = p;
-	page->tab = ewl_button_new(NULL);
+	page->tab = ewl_button_new();
 	if (t)
 		ewl_container_child_append(EWL_CONTAINER(page->tab), t);
 

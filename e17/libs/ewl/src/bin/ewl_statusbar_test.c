@@ -69,14 +69,16 @@ __create_statusbar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_statusbar_left_hide(EWL_STATUSBAR(statusbar));
 	ewl_widget_show(statusbar);
 
-	button = ewl_button_new("push");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "push");
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, __button_push_cb,
 								statusbar);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_widget_show(button);
 
-	button = ewl_button_new("pop");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "pop");
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, __button_pop_cb,
 								statusbar);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);

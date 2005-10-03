@@ -335,7 +335,9 @@ main(int argc, char **argv)
 	ewl_widget_show(main_area);
 	ewl_container_child_append(EWL_CONTAINER(main_box), main_area);
 
-	main_text = ewl_text_new ("  Click on the objects on the left to\n"
+	main_text = ewl_text_new ();
+	ewl_text_text_set(EWL_TEXT(main_text),
+				"  Click on the objects on the left to\n"
 				"show a working example and the source\n"
 				"of the corresponding widget.\n"
 				"Keep the mouse on the button to see\n"

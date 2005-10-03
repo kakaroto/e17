@@ -77,11 +77,13 @@ main(int argc, char **argv)
 	ewl_container_child_append(EWL_CONTAINER(embed), box);
 	ewl_widget_show(box);
 
-	entry = ewl_entry_new("Type stuff here");
+	entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry), "Type stuff here");
 	ewl_container_child_append(EWL_CONTAINER(box), entry);
 	ewl_widget_show(entry);
 
-	button = ewl_button_new("Print");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Print");
 	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, print_cb, entry);
 	ewl_widget_show(button);
@@ -89,7 +91,8 @@ main(int argc, char **argv)
 	ewl_callback_append(embed, EWL_CALLBACK_CONFIGURE,
 			    move_embed_contents_cb, box);
 
-	text = ewl_text_new(NULL);
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), NULL);
 	ewl_container_child_append(EWL_CONTAINER(box), text);
 	ewl_widget_show(text);
 

@@ -39,8 +39,8 @@ struct Ewl_Button
 	Ewl_Widget     *label_object; /**< Labels are common, make it easy */
 };
 
-Ewl_Widget     *ewl_button_new(char *l);
-int             ewl_button_init(Ewl_Button * b, char *label);
+Ewl_Widget     *ewl_button_new(void);
+int             ewl_button_init(Ewl_Button * b);
 void            ewl_button_label_set(Ewl_Button * b, char *l);
 char           *ewl_button_label_get(Ewl_Button *b);
 

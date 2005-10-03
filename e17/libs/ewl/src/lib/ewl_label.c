@@ -44,8 +44,10 @@ ewl_label_init(Ewl_Label *la, char *text)
 	DCHECK_PARAM_PTR_RET("la", la, 0);
 
 	w = EWL_WIDGET(la);
-	ewl_widget_init(w, "label");
+	if (!ewl_widget_init(w))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_appearance_set(w, "label");
 	ewl_widget_inherit(w, "label");
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
 

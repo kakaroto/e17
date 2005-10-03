@@ -42,8 +42,8 @@ struct Ewl_CheckButton
 	Ewl_Widget     *check; /**< Check widget represented */
 };
 
-Ewl_Widget     *ewl_checkbutton_new(char *l);
-void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
+Ewl_Widget     *ewl_checkbutton_new(void);
+int             ewl_checkbutton_init(Ewl_CheckButton * cb);
 
 /**
  * @def ewl_checkbutton_checked_set(cb, c);

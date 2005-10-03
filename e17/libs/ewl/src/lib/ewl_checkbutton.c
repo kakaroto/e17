@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param label: the label to display with the checkbutton, NULL for no label
  * @return Returns the newly allocated checkbutton on success, NULL on failure.
  * @brief Allocate and initialize a new check button
  */
-Ewl_Widget     *ewl_checkbutton_new(char *label)
+Ewl_Widget     *ewl_checkbutton_new()
 {
 	Ewl_CheckButton *b;
 
@@ -18,21 +17,20 @@ Ewl_Widget     *ewl_checkbutton_new(char *label)
 	if (!b)
 		return NULL;
 
-	ewl_checkbutton_init(b, label);
+	ewl_checkbutton_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 /**
  * @param cb: the check button to initialize
- * @param label: the label to give the initialized check button
  * @return Returns no value.
  * @brief Initialize the members and callbacks of a check button
  *
  * The internal structures and callbacks of the checkbutton are initialized to
  * default values.
  */
-void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
+int ewl_checkbutton_init(Ewl_CheckButton * cb)
 {
 	Ewl_Button     *b;
 	Ewl_Widget     *w;
@@ -42,7 +40,9 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	b = EWL_BUTTON(cb);
 	w = EWL_WIDGET(cb);
 
-	ewl_button_init(b, label);
+	if (!ewl_button_init(b))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_appearance_set(w, "checkbutton");
 	ewl_widget_inherit(w, "checkbutton");
 
@@ -61,7 +61,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	ewl_container_child_prepend(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

@@ -41,7 +41,7 @@ struct Ewl_Media
 };
 
 Ewl_Widget  *ewl_media_new(char *module, char *media);
-void         ewl_media_init(Ewl_Media * m, char *module, char *media);
+int          ewl_media_init(Ewl_Media * m, char *module, char *media);
 
 int          ewl_media_module_set(Ewl_Media * m, char *module);
 char        *ewl_media_module_get(Ewl_Media * m);

@@ -5,15 +5,14 @@
 
 /**
  * @param c: the container to initialize
- * @param appearance: the appearance key for this container
  * @return Returns TRUE on success, otherwise FALSE.
  * @brief Initialize a containers default fields and callbacks
  *
  * Initializes the default values of the container, this also sets up the
- * widget fields of the container, so the @a appearance string is necessary.
+ * widget fields of the container.
  */
 int 
-ewl_container_init(Ewl_Container * c, char *appearance)
+ewl_container_init(Ewl_Container * c)
 {
 	Ewl_Widget     *w;
 
@@ -25,10 +24,9 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	/*
 	 * Initialize the fields inherited from the widget class
 	 */
-	if (!ewl_widget_init(w, "container"))
+	if (!ewl_widget_init(w))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, appearance);
 	ewl_widget_inherit(w, "container");
 	ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
 

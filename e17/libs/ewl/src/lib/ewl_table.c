@@ -49,9 +49,10 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	/*
 	 * Iniitialize the tables inherited fields
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(t), "table")) {
+	if (!ewl_container_init(EWL_CONTAINER(t))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_widget_appearance_set(EWL_WIDGET(t), "table");
 	ewl_widget_inherit(EWL_WIDGET(t), "table");
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
@@ -72,7 +73,8 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 		for (i = 1; i <= cols; i++) {
 			cell = (Ewl_Cell *) ewl_cell_new();
-			button = ewl_button_new(col_headers[i - 1]);
+			button = ewl_button_new();
+			ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
 			ewl_object_fill_policy_set(EWL_OBJECT(cell),
@@ -371,7 +373,8 @@ void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 		for (i = 1; i <= cols; i++) {
 			cell = (Ewl_Cell *) ewl_cell_new();
-			button = ewl_button_new(col_headers[i - 1]);
+			button = ewl_button_new();
+			ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
 			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);

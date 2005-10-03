@@ -103,8 +103,10 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Initialize the inherited container fields.
 	 */
-	if (!ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL))
+	if (!ewl_box_init(EWL_BOX(item)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(EWL_WIDGET(item), "menuitem");
 	ewl_widget_inherit(EWL_WIDGET(item), "menuitem");
 
@@ -131,8 +133,10 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Create the text object for the menu item.
 	 */
-	if (text)
-		item->text = ewl_text_new(text);
+	if (text) {
+		item->text = ewl_text_new();
+		ewl_text_text_set(EWL_TEXT(item->text), text);
+	}
 
 	if (item->text) {
 		ewl_container_child_append(EWL_CONTAINER(item), item->text);
@@ -161,8 +165,10 @@ static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
 	 * Create the icon if one is requested, or a spacer if not, but there is
 	 * text to be displayed.
 	 */
-	if (image)
-		item->icon = ewl_image_new(image, NULL);
+	if (image) {
+		item->icon = ewl_image_new();
+		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
+	}
 	else if (text)
 		item->icon = ewl_spacer_new();
 

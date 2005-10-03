@@ -37,7 +37,8 @@ __create_window_response(Ewl_Widget *w __UNUSED__, int *id,
 
 	sprintf (str, "You have clicked on the OK Button\nThe response id is %d.\n", response);
 
-	label = ewl_text_new (str);
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), str);
 	ewl_container_child_append (EWL_CONTAINER (win_ok), label);
 	ewl_widget_show (label);
 	
@@ -63,7 +64,8 @@ __create_window_response(Ewl_Widget *w __UNUSED__, int *id,
 
 	sprintf (str, "You have clicked on the CANCEL Button\nThe response id is %d.\n", response);
 
-	label = ewl_text_new (str);
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), str);
 	ewl_container_child_append (EWL_CONTAINER (win_cancel), label);
 	ewl_widget_show (label);
 	
@@ -108,11 +110,13 @@ __create_dialog_test_window (Ewl_Widget * w, void *ev __UNUSED__,
   ewl_dialog_widget_add (EWL_DIALOG (dialog_win), hbox);
   ewl_widget_show (hbox);
 
-  image = ewl_image_new ("my_image.png", NULL);
+  image = ewl_image_new ();
+  ewl_image_file_set(EWL_IMAGE(image), "my_image.png", NULL);
   ewl_container_child_append (EWL_CONTAINER (hbox), image);
   ewl_widget_show (image);
 
-  label = ewl_text_new ("This is a test for the Dialog widget");
+  label = ewl_text_new();
+  ewl_text_text_set(EWL_TEXT(label), "This is a test for the Dialog widget");
   ewl_container_child_append (EWL_CONTAINER (hbox), label);
   ewl_widget_show (label);
 

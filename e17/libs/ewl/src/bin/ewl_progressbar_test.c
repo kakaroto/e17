@@ -191,7 +191,8 @@ __create_progressbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
 					
-	button = ewl_button_new ("Rerun");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Rerun");
 	ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED, 
 			__rerun_progressbars, NULL);
@@ -199,7 +200,8 @@ __create_progressbar_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
-	button = ewl_button_new ("Set a random range from 0-500");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Set a random range from 0-500");
 	ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
 			__set_new_range, NULL);

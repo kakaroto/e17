@@ -73,7 +73,8 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(entry_box), 10);
 	ewl_widget_show(entry_box);
 
-	entry[0] = ewl_entry_new("Play with me ?");
+	entry[0] = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
 	ewl_entry_multiline_set(EWL_ENTRY(entry[0]), 1);
 	ewl_text_color_set(EWL_TEXT(entry[0]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
@@ -82,7 +83,8 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(entry[0]);
 
-	entry[1] = ewl_entry_new("E W L ! ! !");
+	entry[1] = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry[1]), "E W L ! ! !");
 	ewl_text_color_set(EWL_TEXT(entry[1]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[1]);
@@ -96,13 +98,15 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
-	button[0] = ewl_button_new("Fetch text");
+	button[0] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(button[0]);
 
-	button[1] = ewl_button_new("Set Text");
+	button[1] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_entry_text, NULL);

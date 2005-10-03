@@ -17,9 +17,45 @@ Ewl_Widget     *ewl_check_new()
 	if (!b)
 		return NULL;
 
-	ewl_check_init(b);
+	if (!ewl_check_init(EWL_CHECK(b))) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+}
+
+/**
+ * @param cb: the check to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the members and callbacks of a check
+ *
+ * The internal structures and callbacks of the check are initialized ot
+ * default values.
+ */
+int ewl_check_init(Ewl_Check * cb)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	w = EWL_WIDGET(cb);
+
+	if (!ewl_widget_init(w))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(w, "check");
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
+
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+			    ewl_check_update_check_cb, NULL);
+
+	ewl_widget_inherit(w, "check");
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -57,36 +93,6 @@ int ewl_check_is_checked(Ewl_Check * cb)
 	DCHECK_PARAM_PTR_RET("cb", cb, 0);
 
 	DRETURN_INT(cb->checked, DLEVEL_STABLE);
-}
-
-/**
- * @param cb: the check to initialize
- * @return Returns no value.
- * @brief Initialize the members and callbacks of a check
- *
- * The internal structures and callbacks of the check are initialized ot
- * default values.
- */
-void ewl_check_init(Ewl_Check * cb)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	w = EWL_WIDGET(cb);
-
-	ewl_widget_init(w, "check");
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
-
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-			    ewl_check_update_check_cb, NULL);
-
-	ewl_widget_inherit(w, "check");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 

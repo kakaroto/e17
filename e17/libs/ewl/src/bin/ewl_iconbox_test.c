@@ -38,9 +38,10 @@ void
 __create_iconbox_test_window(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	                                      void *user_data __UNUSED__)
 {
-
-	
 		Ewl_Widget* ib_win;
+		Ewl_Widget* box;
+		Ewl_Widget* button;
+
 		ewl_iconbox_button=w;
 		
 		ib_win= ewl_window_new();
@@ -66,8 +67,9 @@ __create_iconbox_test_window(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__
 		ewl_iconbox_editable_set(EWL_ICONBOX(ib), 1);
 
 
-		Ewl_Widget* box = ewl_hbox_new();
-		Ewl_Widget* button = ewl_button_new ("Add Icons");
+		box = ewl_hbox_new();
+		button = ewl_button_new();
+		ewl_button_label_set(EWL_BUTTON(button), "Add Icons");
 		ewl_widget_show(button);
 
 		

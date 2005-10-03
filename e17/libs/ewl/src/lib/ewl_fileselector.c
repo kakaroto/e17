@@ -77,9 +77,11 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 
 	w = EWL_WIDGET(fs);
 
-	if (!ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL))
+	if (!ewl_box_init(EWL_BOX(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	ewl_widget_appearance_set(w, "fileselector");
 	ewl_widget_inherit(w, "fileselector");
 	ewl_object_size_request(EWL_OBJECT(w), 500, 450);
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
@@ -99,7 +101,8 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 					   EWL_FLAG_FILL_SHRINK |
 					   EWL_FLAG_FILL_HFILL);
 
-		fs->entry_dir = ewl_entry_new(NULL);
+		fs->entry_dir = ewl_entry_new();
+		ewl_text_text_set(EWL_TEXT(fs->entry_dir), NULL);
 		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
 					   EWL_FLAG_FILL_SHRINK |
 					   EWL_FLAG_FILL_HFILL);
@@ -173,7 +176,8 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
 		ewl_widget_show(misc);
 
-		fs->entry_file = ewl_entry_new(NULL);
+		fs->entry_file = ewl_entry_new();
+		ewl_text_text_set(EWL_TEXT(fs->entry_file), NULL);
 		ewl_container_child_append(EWL_CONTAINER(hbox),
 					   fs->entry_file);
 		ewl_widget_show(fs->entry_file);
@@ -752,7 +756,8 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 
 		hbox = ewl_hbox_new();
 		ewl_box_spacing_set(EWL_BOX(hbox), 5);
-		label = ewl_text_new(d->name);
+		label = ewl_text_new();
+		ewl_text_text_set(EWL_TEXT(label), d->name);
 		ewl_object_fill_policy_set(EWL_OBJECT(label),
 					   EWL_FLAG_FILL_SHRINK);
 		ewl_container_child_append(EWL_CONTAINER(hbox), label);

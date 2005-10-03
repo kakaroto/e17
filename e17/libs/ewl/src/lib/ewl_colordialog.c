@@ -43,10 +43,11 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
 
-	if (!ewl_box_init(EWL_BOX(cd), EWL_ORIENTATION_HORIZONTAL)) {
+	if (!ewl_box_init(EWL_BOX(cd))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	ewl_box_orientation_set(EWL_BOX(cd), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(EWL_WIDGET(cd), "colordialog");
 	ewl_widget_inherit(EWL_WIDGET(cd), "colordialog");
 
@@ -77,7 +78,10 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_container_child_append(EWL_CONTAINER(cd), vbox);
 
 	cd->preview = NEW(Ewl_Widget, 1);
-	ewl_widget_init(cd->preview, "coloured_rect");
+	if (!ewl_widget_init(cd->preview))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(cd->preview, "coloured_rect");
 	ewl_object_fill_policy_set(EWL_OBJECT(cd->preview), EWL_FLAG_FILL_ALL);
 	ewl_object_alignment_set(EWL_OBJECT(cd->preview),
 				 EWL_FLAG_ALIGN_CENTER);
@@ -92,31 +96,37 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_widget_show(hbox);
 
-	label = ewl_text_new("R :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "R :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->red_entry = ewl_entry_new(NULL);
+	cd->red_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->red_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->red_entry);
 	ewl_callback_append(cd->red_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_redvalue_changed, cd);
 	ewl_widget_show(cd->red_entry);
 
-	label = ewl_text_new("G :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "G :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->green_entry = ewl_entry_new(NULL);
+	cd->green_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->green_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->green_entry);
 	ewl_callback_append(cd->green_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_greenvalue_changed, cd);
 	ewl_widget_show(cd->green_entry);
 
-	label = ewl_text_new("B :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "B :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->blue_entry = ewl_entry_new(NULL);
+	cd->blue_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->blue_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->blue_entry);
 	ewl_callback_append(cd->blue_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_bluevalue_changed, cd);
@@ -129,31 +139,37 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_widget_show(hbox);
 
-	label = ewl_text_new("H :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "H :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->hue_entry = ewl_entry_new(NULL);
+	cd->hue_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->hue_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->hue_entry);
 	ewl_callback_append(cd->hue_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_huevalue_changed, cd);
 	ewl_widget_show(cd->hue_entry);
 
-	label = ewl_text_new("S :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "S :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->saturation_entry = ewl_entry_new(NULL);
+	cd->saturation_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->saturation_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->saturation_entry);
 	ewl_callback_append(cd->saturation_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_saturationvalue_changed, cd);
 	ewl_widget_show(cd->saturation_entry);
 
-	label = ewl_text_new("V :");
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), "V :");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	cd->value_entry = ewl_entry_new(NULL);
+	cd->value_entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(cd->value_entry), NULL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cd->value_entry);
 	ewl_callback_append(cd->value_entry, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_colordialog_valuevalue_changed, cd);

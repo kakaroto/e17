@@ -15,7 +15,8 @@ static int nextx=0;
  * @return Returns NULL on failure, a new Ewl_IconBox on success
  * @brief Creates a new Ewl_IconBox
  */
-Ewl_Widget *ewl_iconbox_new() {
+Ewl_Widget *ewl_iconbox_new()
+{
 	Ewl_IconBox* ib;
 	DENTER_FUNCTION (DLEVEL_STABLE);
 
@@ -33,7 +34,8 @@ Ewl_Widget *ewl_iconbox_new() {
 	DRETURN_PTR(EWL_WIDGET(ib), DLEVEL_STABLE);
 }
 
-Ewl_Widget *ewl_iconbox_icon_new() {
+Ewl_Widget *ewl_iconbox_icon_new()
+{
 	Ewl_IconBox_Icon* icon;
 	DENTER_FUNCTION (DLEVEL_STABLE);
 
@@ -62,9 +64,8 @@ static void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *u
  * @return Returns no value
  * @brief	Initialize the icon box
  */
-
-
-void configure (Ewl_Widget *w, void *ev_data, void *user_data) {
+void configure(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	/*printf ("Got a configure\n");*/
 
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
@@ -92,7 +93,8 @@ void configure (Ewl_Widget *w, void *ev_data, void *user_data) {
 
 
 
-void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib) {
+void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib)
+{
 
 	int pw,ph;
 	int sw,sh;
@@ -117,16 +119,19 @@ void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib) {
 
 }
 
-int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon) {
+int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon)
+{
 	Ewl_Widget *w;
 
 	w = EWL_WIDGET(icon);
-	if (!ewl_box_init(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL)) {
+	if (!ewl_box_init(EWL_BOX(icon))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	icon->w_label = ewl_text_new(NULL);
-	icon->image = ewl_image_new(NULL,NULL);
+	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);
+	icon->w_label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(icon->w_label), NULL);
+	icon->image = ewl_image_new();
 
 	icon->label = NULL;
 	icon->label_compressed = NULL;
@@ -146,21 +151,24 @@ int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon) {
 	
 }
 
-void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
 	ewl_iconbox_clear(ib);
 }
 
-int ewl_iconbox_init(Ewl_IconBox* ib) {
+int ewl_iconbox_init(Ewl_IconBox* ib)
+{
 	Ewl_Widget *w;
 
 	w = EWL_WIDGET(ib);
 	
-	if (!ewl_box_init(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL))
+	if (!ewl_box_init(EWL_BOX(ib)))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* Init ewl setup */
+	ewl_box_orientation_set(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(EWL_WIDGET(ib), "iconbox");
 	ewl_widget_inherit(EWL_WIDGET(w), "iconbox");
 
@@ -232,7 +240,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 	/* Create the selector / selector floater */
 	ib->select_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->select_floater), EWL_FLAG_FILL_FILL);
-	ib->select =ewl_button_new(NULL);
+	ib->select =ewl_button_new();
 	
 	ewl_container_child_append(EWL_CONTAINER(ib->select_floater), ib->select);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
@@ -260,7 +268,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 
 
 	/* Ewl Entry for the purposes of label editing - if enabled */
-	ib->entry = ewl_entry_new("Test");
+	ib->entry = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(ib->entry), "Test");
 
 
@@ -301,7 +309,8 @@ int ewl_iconbox_init(Ewl_IconBox* ib) {
 }
 
 
-void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file) {
+void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
+{
 	/*Add a background image*/
 	{
 		Ewl_Embed      *emb;
@@ -326,18 +335,21 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file) {
 
 
 /* ----------- */
-void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	ewl_iconbox_icon_arrange(ib);
 }
 
-void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,700);
 }
 
-void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text) {
+void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text)
+{
 	
 	char* compressed;
 
@@ -372,7 +384,8 @@ void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text) {
 	
 }
 
-void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text) {
+void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
+{
 	int wrap = 0;
 	
 	/*ewl_text_wrap_set(EWL_TEXT(icon->w_label), 1);*/
@@ -396,7 +409,8 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text) {
 }
 
 
-void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data) {
+void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data)
+{
 	Ewl_Event_Key_Down* ev = ev_data;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	
@@ -410,11 +424,13 @@ void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_da
 	}
 }
 
-void ewl_iconbox_editable_set(Ewl_IconBox* ib, int edit) {
+void ewl_iconbox_editable_set(Ewl_IconBox* ib, int edit)
+{
 	ib->editable = edit;
 }
 
-void ewl_iconbox_icon_arrange(Ewl_IconBox* ib) {
+void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
+{
 	int sw=0,sh=0;
 	int iw=0, ih=0;
 	int nextx=0, nexty=0;
@@ -598,7 +614,8 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 
-void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	
 	Ewl_Event_Mouse_Down *ev = ev_data;
@@ -643,7 +660,8 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 
 
 
-void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 
 	Ewl_IconBox_Icon* ib = user_data;
 	Ewl_Event_Mouse_Down *ev = ev_data;
@@ -660,7 +678,8 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data) 
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
 }
 
-void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	/*Ewl_Event_Mouse_Down *ev = ev_data;*/
 
 	Ewl_IconBox_Icon* ib = user_data;
@@ -669,7 +688,8 @@ void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data) {
 	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
 }
 
-void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_Event_Mouse_Up *ev = ev_data;
 	Ewl_IconBox* ib = user_data;
 	if (ev->button == 1) {
@@ -681,14 +701,16 @@ void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data) {
 	}
 }
 
-void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
 	Ewl_IconBox_Icon* ib = user_data;
 
 	/* Set this to selected */
 	ewl_iconbox_icon_select(ib,1);
 }
 
-void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1= label */
+void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= label */
+{
 	
 	int sel = ib->selected;
 
@@ -745,7 +767,8 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) { /* Loc 0= image, 1
 	
 }
 
-void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib) {
+void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
+{
 	
 	ib->selected = 0;
 	ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 0, 255);
@@ -760,7 +783,8 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib) {
 
 }
 
-void ewl_iconbox_deselect_all(Ewl_IconBox* ib) {
+void ewl_iconbox_deselect_all(Ewl_IconBox* ib)
+{
 		return;
 	
 		Ewl_IconBox_Icon* list_item;
@@ -772,7 +796,8 @@ void ewl_iconbox_deselect_all(Ewl_IconBox* ib) {
 
 
 
-void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon) {
+void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon)
+{
 	/*printf("Removing icon: %s", ewl_border_text_get(EWL_BORDER(icon)));*/
 }
 
@@ -804,7 +829,8 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 
-Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file) {
+Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file)
+{
 	Ewl_Widget* ib;
 	/*ib = malloc(sizeof(Ewl_IconBox_Icon));*/
 	/*printf ("Making an icon called '%s'\n", name);*/
@@ -872,7 +898,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 }
 
 
-void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename) {
+void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename)
+{
 	
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
 
@@ -886,7 +913,8 @@ void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename) {
 	/*Call the configure callback for the iconbox - it doesn't seem to do this by itself*/
 }
 
-void ewl_iconbox_clear(Ewl_IconBox* ib) {
+void ewl_iconbox_clear(Ewl_IconBox* ib)
+{
 	Ewl_IconBox_Icon* list_item;
 	nextx = 0;
 

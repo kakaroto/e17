@@ -26,21 +26,22 @@ Ewl_Widget *ewl_progressbar_new()
 
 /**
  * @param p: the progressbar to be initialized
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the progressbar to some sane starting values
  */
-void ewl_progressbar_init(Ewl_Progressbar * p)
+int ewl_progressbar_init(Ewl_Progressbar * p)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
+	DCHECK_PARAM_PTR_RET("p", p, FALSE);
 
 	w = EWL_WIDGET(p);
 
-	if (!ewl_container_init(EWL_CONTAINER(w), "progressbar"))
-		DRETURN(DLEVEL_STABLE);
+	if (!ewl_container_init(EWL_CONTAINER(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_appearance_set(w, "progressbar");
 	ewl_widget_inherit(w, "progressbar");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
@@ -50,13 +51,17 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 
 	p->bar = NEW(Ewl_Widget, 1);
 	if (!p->bar)
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_init(p->bar, "progressbar_bar");
+	if (!ewl_widget_init(p->bar))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(p->bar, "progressbar_bar");
 	ewl_container_child_append(EWL_CONTAINER(p), p->bar);
 	ewl_widget_show(p->bar);
 
-	p->label = ewl_text_new(NULL);
+	p->label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(p->label), NULL);
 	ewl_object_alignment_set(EWL_OBJECT(p->label),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(p), p->label);
@@ -69,7 +74,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
 			ewl_progressbar_configure_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 

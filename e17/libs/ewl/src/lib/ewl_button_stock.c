@@ -87,14 +87,16 @@ int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 	if (label) {
 		/* TODO : */
 		/* mettre le theme ici ? */
-		if (!ewl_button_init(EWL_BUTTON(b), label))
+		if (!ewl_button_init(EWL_BUTTON(b)))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
+		ewl_button_label_set(EWL_BUTTON(b), label);
 	      free (label);
 	      test = TRUE;
 	}
 	else {
-		if (!ewl_button_init(EWL_BUTTON(b), stock_id))
+		if (!ewl_button_init(EWL_BUTTON(b)))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
+		ewl_button_label_set(EWL_BUTTON(b), stock_id);
 	}
 
 	/* Set the homogeneous flag to false, and add some space between image
@@ -106,7 +108,7 @@ int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 
 	/* Create and setup the image for the button if it's desired */
 	if (test) {
-		b->image_object = ewl_image_new(NULL, NULL);
+		b->image_object = ewl_image_new();
 		ewl_widget_appearance_set(b->image_object, stock_id);
 	}
 /*       ewl_widget_appearance_set(b->image_object, stock_id); */

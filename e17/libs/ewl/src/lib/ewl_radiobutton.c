@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param label: the label to associate with the radio button
  * @return Returns a pointer to new radio button on success, NULL on failure.
  * @brief Allocate and initialize a new radio button
  */
-Ewl_Widget     *ewl_radiobutton_new(char *label)
+Ewl_Widget     *ewl_radiobutton_new(void)
 {
 	Ewl_RadioButton *b;
 
@@ -18,9 +17,40 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
 	if (!b)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_radiobutton_init(b, label);
+	ewl_radiobutton_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+}
+
+/**
+ * @param rb: the radio button to initialize
+ * @param label: the label for the initialized radio button
+ * @return Returns no value.
+ * @brief Initialize the radio button fields and callbacks
+ *
+ * Sets internal fields of the radio button to default
+ * values and sets the label to the specified @a label.
+ */
+int ewl_radiobutton_init(Ewl_RadioButton * rb)
+{
+	Ewl_CheckButton *cb;
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	cb = EWL_CHECKBUTTON(rb);
+	w = EWL_WIDGET(rb);
+
+	ewl_checkbutton_init(cb);
+	ewl_widget_appearance_set(w, "radiobutton");
+	ewl_widget_inherit(w, "radiobutton");
+	ewl_widget_appearance_set(cb->check, "radio");
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
+			    NULL);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -53,37 +83,6 @@ void ewl_radiobutton_chain_set(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
 	}
 
 	rb->chain = crb->chain;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param rb: the radio button to initialize
- * @param label: the label for the initialized radio button
- * @return Returns no value.
- * @brief Initialize the radio button fields and callbacks
- *
- * Sets internal fields of the radio button to default
- * values and sets the label to the specified @a label.
- */
-void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
-{
-	Ewl_CheckButton *cb;
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	cb = EWL_CHECKBUTTON(rb);
-	w = EWL_WIDGET(rb);
-
-	ewl_checkbutton_init(cb, label);
-	ewl_widget_appearance_set(w, "radiobutton");
-	ewl_widget_inherit(w, "radiobutton");
-	ewl_widget_appearance_set(cb->check, "radio");
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
-			    NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

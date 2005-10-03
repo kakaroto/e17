@@ -44,11 +44,13 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(sbook_win), sbook);
 	ewl_widget_show(sbook);
 
-	tab[0] = ewl_button_new("Tab - ONE");
+	tab[0] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(tab[0]), "Tab - ONE");
 	ewl_object_alignment_set(EWL_OBJECT(tab[0]), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_custom_size_set(EWL_OBJECT(tab[0]), 100, 17);
 
-	tab[1] = ewl_button_new("Tab - TWO");
+	tab[1] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(tab[1]), "Tab - TWO");
 	ewl_object_alignment_set(EWL_OBJECT(tab[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_custom_size_set(EWL_OBJECT(tab[1]), 100, 17);
 

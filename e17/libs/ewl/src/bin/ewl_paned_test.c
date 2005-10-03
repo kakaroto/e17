@@ -45,11 +45,13 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(box), pane);
 	ewl_widget_show(pane);
 
-	o = ewl_text_new("left");
+	o = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(o), "left");
 	ewl_paned_first_pane_append(EWL_PANED(pane), o);
 	ewl_widget_show(o);
 
-	o = ewl_text_new("right");
+	o = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(o), "right");
 	ewl_paned_second_pane_append(EWL_PANED(pane), o);
 	ewl_widget_show(o);
 }

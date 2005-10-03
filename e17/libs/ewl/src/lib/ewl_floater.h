@@ -44,7 +44,7 @@ struct Ewl_Floater
 
 Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent);
 void            ewl_floater_position_set(Ewl_Floater * parent, int x, int y);
-void            ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
+int             ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
 
 /*
  * Internally used callbacks, override at your own risk.

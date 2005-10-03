@@ -14,8 +14,8 @@ struct Ewl_Entry
 	unsigned int	 in_select_mode;
 };
 
-Ewl_Widget	*ewl_entry_new(const char *text);
-int 		 ewl_entry_init(Ewl_Entry *e, const char *text);	
+Ewl_Widget	*ewl_entry_new();
+int 		 ewl_entry_init(Ewl_Entry *e);	
 
 void		 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);
 unsigned int	 ewl_entry_multiline_get(Ewl_Entry *e);

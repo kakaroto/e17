@@ -54,9 +54,11 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 
 	w = EWL_WIDGET(p);
 
-	if (!ewl_box_init(EWL_BOX(p), orient)) {
+	if (!ewl_box_init(EWL_BOX(p))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
+	ewl_box_orientation_set(EWL_BOX(p), orient);
 	p->orientation = orient;
 	p->grabbed = FALSE;
 

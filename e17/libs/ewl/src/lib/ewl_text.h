@@ -61,8 +61,8 @@ struct Ewl_Text
 	unsigned int		 in_select;	  /**< Are we in select mode? */
 };
 
-Ewl_Widget 	*ewl_text_new(const char *text);
-int 		 ewl_text_init(Ewl_Text *t, const char *text);
+Ewl_Widget 	*ewl_text_new();
+int 		 ewl_text_init(Ewl_Text *t);
 
 int		 ewl_text_length_get(Ewl_Text *t);
 

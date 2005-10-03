@@ -88,7 +88,7 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 
 	ewl_callback_append(win, EWL_CALLBACK_KEY_UP, __key_press, NULL);
 
-	o = ewl_text_new(NULL);
+	o = ewl_text_new();
 	ewl_widget_name_set(o, "text");
 	ewl_container_child_append(EWL_CONTAINER(win), o);
 	ewl_text_bg_color_set(EWL_TEXT(o), 50, 50, 50, 255);

@@ -39,12 +39,14 @@ int ewl_border_init(Ewl_Border * b, char *label)
 
 	w = EWL_WIDGET(b);
 
-	if (!ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL)) {
+	if (!ewl_box_init(EWL_BOX(w))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
-	b->label = ewl_text_new(label);
+	b->label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(b->label), label);
 	ewl_widget_internal_set(b->label, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(b), b->label);
 	ewl_widget_show(b->label);

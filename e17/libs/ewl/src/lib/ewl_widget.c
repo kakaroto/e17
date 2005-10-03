@@ -16,23 +16,21 @@ static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 					int *t, int *b);
 
 /**
- * @param appearance: the base theme appearance string for the widget
- * @brief Allocate a new widget with the specified appearance string
+ * @brief Allocate a new widget.
  * @return Returns a newly allocated widget on success, NULL on failure.
  *
  * Do not use this function unless you know what you are doing! It is only
  * intended to easily create custom widgets that are not containers.
  */
-Ewl_Widget *ewl_widget_new(char *appearance)
+Ewl_Widget *ewl_widget_new(void)
 {
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("appearance", appearance, NULL);
 
 	w = NEW(Ewl_Widget, 1);
 	if (w) {
-		if (!ewl_widget_init(w, appearance)) {
+		if (!ewl_widget_init(w)) {
 			FREE(w);
 			w = NULL;
 		}
@@ -43,19 +41,16 @@ Ewl_Widget *ewl_widget_new(char *appearance)
 
 /**
  * @param w: the widget to initialize
- * @param appearance: the key for the widgets theme appearance
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a widget to default values and callbacks
  *
  * The widget w is initialized to default values and is
- * assigned the default callbacks. The appearance key is assigned for easy
- * access to theme information.
+ * assigned the default callbacks.
  */
-int ewl_widget_init(Ewl_Widget * w, char *appearance)
+int ewl_widget_init(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_PARAM_PTR_RET("appearance", appearance, FALSE);
 
 	/*
 	 * Set size fields on the object 
@@ -103,7 +98,6 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    ewl_widget_mouse_move_cb, NULL);
 
 	ewl_widget_inherit(w, "widget");
-	ewl_widget_appearance_set(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

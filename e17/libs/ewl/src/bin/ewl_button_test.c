@@ -52,7 +52,8 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create a button to be displayed witha label.
 	 */
-	button[0] = ewl_button_new("With Label");
+	button[0] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button[0]), "With Label");
 	ewl_container_child_append(EWL_CONTAINER(button_box), button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(button[0]), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(button[0]);
@@ -60,7 +61,7 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create a button that does not contain a label
 	 */
-	button[1] = ewl_button_new(NULL);
+	button[1] = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(button_box), button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(button[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(button[1]);
@@ -75,7 +76,8 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create a check button with a label.
 	 */
-	check_button[0] = ewl_checkbutton_new("With Label");
+	check_button[0]  = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(check_button[0] ), "With Label");
 	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
@@ -84,7 +86,7 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create a check button w/o a label.
 	 */
-	check_button[1] = ewl_checkbutton_new(NULL);
+	check_button[1]  = ewl_checkbutton_new();
 	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
@@ -100,13 +102,14 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Add a radio button with
 	 */
-	radio_button[0] = ewl_radiobutton_new("With Label");
+	radio_button[0]  = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(radio_button[0] ), "With Label");
 	ewl_container_child_append(EWL_CONTAINER(button_box), radio_button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[0]);
 
-	radio_button[1] = ewl_radiobutton_new(NULL);
+	radio_button[1]  = ewl_radiobutton_new();
 	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(radio_button[1]), 
 	                          EWL_RADIOBUTTON(radio_button[0]));
 	ewl_container_child_append(EWL_CONTAINER(button_box), radio_button[1]);

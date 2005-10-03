@@ -84,8 +84,10 @@ int ewl_datepicker_init(Ewl_DatePicker* dp) {
 	
 	w = EWL_WIDGET(dp);
 	
-	if (!ewl_text_init(EWL_TEXT(dp), "Date Test"))
+	if (!ewl_text_init(EWL_TEXT(dp)))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_text_text_set(EWL_TEXT(dp), "Date Test");
 
 	/* Init ewl setup */
 	ewl_widget_appearance_set(EWL_WIDGET(w), "datepicker");

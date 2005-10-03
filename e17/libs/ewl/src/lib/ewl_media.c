@@ -22,7 +22,10 @@ Ewl_Widget	 *ewl_media_new(char *module, char *media)
 	if (!m)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_media_init(m, module, media);
+	if (!ewl_media_init(m, module, media)) {
+		ewl_widget_destroy(EWL_WIDGET(m));
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
 	DRETURN_PTR(EWL_WIDGET(m), DLEVEL_STABLE);
 }
@@ -30,21 +33,23 @@ Ewl_Widget	 *ewl_media_new(char *module, char *media)
 /**
  * @param m: the media area to be initialized
  * @param media: the media to be played or NULL
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the fields and callbacks of a media object
  *
  * Sets the internal fields and callbacks of a media object to there defaults.
  */
-void ewl_media_init(Ewl_Media *m, char *module, char *media)
+int ewl_media_init(Ewl_Media *m, char *module, char *media)
 {
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR_RET("m", m, FALSE);
 
 	w = EWL_WIDGET(m);
 
-	ewl_widget_init(EWL_WIDGET(w), "media");
+	if (!ewl_widget_init(EWL_WIDGET(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_appearance_set(w, "media");
 	ewl_widget_inherit(EWL_WIDGET(w), "media");
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_realize_cb,
@@ -59,7 +64,7 @@ void ewl_media_init(Ewl_Media *m, char *module, char *media)
         if (media)
                 ewl_media_media_set(m, media);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

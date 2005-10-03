@@ -42,7 +42,8 @@ __create_tooltip_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(tooltip_vbox), 0);
 	ewl_widget_show(tooltip_vbox);
 
-	button = ewl_button_new ("Hoover on this button");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Hoover on this button");
 	ewl_container_child_append(EWL_CONTAINER (tooltip_vbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_attach_tooltip_text_set(button, "and see.");

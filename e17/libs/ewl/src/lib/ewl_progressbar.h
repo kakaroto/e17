@@ -44,7 +44,7 @@ struct Ewl_Progressbar
 
 
 Ewl_Widget 	*ewl_progressbar_new(void);
-void 	  	 ewl_progressbar_init (Ewl_Progressbar * p);
+int  	  	 ewl_progressbar_init (Ewl_Progressbar * p);
 
 void 		 ewl_progressbar_value_set (Ewl_Progressbar * p, double v);
 double 		 ewl_progressbar_value_get (Ewl_Progressbar * p);

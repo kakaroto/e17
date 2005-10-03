@@ -274,8 +274,10 @@ int ewl_calendar_init(Ewl_Calendar* ib) {
 
 	w = EWL_WIDGET(ib);
 	
-	if (!ewl_box_init(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL))
+	if (!ewl_box_init(EWL_BOX(ib)))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL);
 
 	/* Init ewl setup */
 	ewl_widget_appearance_set(EWL_WIDGET(ib), "calendar");
@@ -298,8 +300,10 @@ int ewl_calendar_init(Ewl_Calendar* ib) {
 	ewl_calendar_grid_setup(ib);
 
 
-	prev_button = ewl_button_new("<");
-	next_button = ewl_button_new(">");
+	prev_button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(prev_button), "<");
+	next_button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(next_button), ">");
 	top_hbox = ewl_hbox_new();
 	vbox = ewl_vbox_new();
 

@@ -53,13 +53,14 @@ int ewl_statusbar_init(Ewl_Statusbar *sb)
 
 	w = EWL_WIDGET(sb);
 
-	if (!ewl_box_init(EWL_BOX(sb), EWL_ORIENTATION_HORIZONTAL)) {
+	if (!ewl_box_init(EWL_BOX(sb))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
+	ewl_box_orientation_set(EWL_BOX(sb), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "statusbar");
 	ewl_widget_inherit(w, "statusbar");
 
@@ -266,7 +267,8 @@ void ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
 		// ewl_container_child_remove(EWL_CONTAINER(sb->status), sb->current);
 	}
 
-	sb->current = ewl_text_new(txt);
+	sb->current = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(sb->current), txt);
 	ewl_container_child_append(EWL_CONTAINER(sb->status), sb->current);
 	ewl_widget_show(sb->current);
 

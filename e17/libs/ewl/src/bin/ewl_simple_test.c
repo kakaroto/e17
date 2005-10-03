@@ -238,7 +238,8 @@ main(int argc, char **argv)
 	/*
 	 * Create the label first so we can pass it to the logo's callbacks
 	 */
-	label = ewl_text_new(NULL);
+	label = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(label), NULL);
 
 	/*
 	 * Setup the custom logo which becomes the tour display area.

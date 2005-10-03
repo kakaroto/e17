@@ -41,10 +41,11 @@ int ewl_menubar_init(Ewl_Menubar *mb, Ewl_Orientation orientation)
 
 	w = EWL_WIDGET(mb);
 
-	if (!ewl_box_init(EWL_BOX(mb), orientation)) {
+	if (!ewl_box_init(EWL_BOX(mb))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	ewl_box_orientation_set(EWL_BOX(mb), orientation);
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);

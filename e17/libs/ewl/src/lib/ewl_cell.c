@@ -38,8 +38,10 @@ int ewl_cell_init(Ewl_Cell *cell)
 
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(cell), "cell"))
+	if (!ewl_container_init(EWL_CONTAINER(cell)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(EWL_WIDGET(cell), "cell");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(cell),

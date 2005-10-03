@@ -31,7 +31,7 @@ Ewl_Widget     *ewl_selectionbook_new()
  * Returns no value. Sets the fields and callbacks of the selectionbook
  * @a s to their default values.
  */
-void ewl_selectionbook_init(Ewl_Selectionbook * s)
+int ewl_selectionbook_init(Ewl_Selectionbook * s)
 {
 	Ewl_Widget     *w;
 
@@ -43,7 +43,11 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 	/*
 	 * Initialize the inherited box fields
 	 */
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	if (ewl_box_init(EWL_BOX(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	ewl_widget_appearance_set(w, "selectionbook");
 	ewl_widget_inherit(w, "selectionbook");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
@@ -63,7 +67,7 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 	s->num_pages = 0;
 
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 

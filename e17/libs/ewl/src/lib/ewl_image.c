@@ -6,15 +6,13 @@
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
 
 /**
- * @param i: the path to the image to be displayed by the image widget
- * @param k: the key for the data in the image or edje
  * @return Returns a pointer to a new image widget on success, NULL on failure.
  * @brief Load an image widget with specified image contents
  *
  * The @a k parameter is primarily used for loading edje groups or keyed data
  * in an image.
  */
-Ewl_Widget     *ewl_image_new(char *i, char *k)
+Ewl_Widget     *ewl_image_new()
 {
 	Ewl_Image      *image;
 
@@ -24,21 +22,19 @@ Ewl_Widget     *ewl_image_new(char *i, char *k)
 	if (!image)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_image_init(image, i, k);
+	ewl_image_init(image);
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
 }
 
 /**
  * @param i: the image widget to initialize
- * @param path: the path to the image displayed
- * @param key: the key in the file for the image
  * @return Returns no value.
  * @brief Initialize an image widget to default values and callbacks
  *
  * Sets the fields and callbacks of @a i to their default values.
  */
-void ewl_image_init(Ewl_Image * i, char *path, char *key)
+void ewl_image_init(Ewl_Image * i)
 {
 	Ewl_Widget     *w;
 
@@ -47,7 +43,8 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 
 	w = EWL_WIDGET(i);
 
-	ewl_widget_init(w, "image");
+	ewl_widget_init(w);
+	ewl_widget_appearance_set(w, "image");
 	ewl_widget_inherit(w, "image");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
@@ -77,8 +74,6 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 	i->tile.y = 0;
 	i->tile.w = 0;
 	i->tile.h = 0;
-
-	ewl_image_file_set(i, path, key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

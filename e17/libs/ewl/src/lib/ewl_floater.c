@@ -35,14 +35,14 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
  * 
  * Sets the fields and callbacks of the floater @a f to their defaults.
  */
-void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
+int ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
 	/* Ewl_Window     *window; */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("f", f);
-	DCHECK_PARAM_PTR("parent", parent);
+	DCHECK_PARAM_PTR_RET("f", f, FALSE);
+	DCHECK_PARAM_PTR_RET("parent", parent, FALSE);
 
 	w = EWL_WIDGET(f);
 
@@ -50,7 +50,11 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 * Initialize the inherited box fields, set the fill policy to
 	 * normal, and the widget to follow.
 	 */
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	if (!ewl_box_init(EWL_BOX(w))) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
 	ewl_widget_appearance_set(w, "floater");
 	ewl_widget_inherit(w, "floater");
@@ -68,7 +72,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	f->x = CURRENT_X(EWL_OBJECT(parent));
 	f->y = CURRENT_Y(EWL_OBJECT(parent));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**

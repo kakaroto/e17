@@ -37,8 +37,8 @@ struct Ewl_RadioButton
 	Ecore_List       *chain; /**< List of members of the group */
 };
 
-Ewl_Widget     *ewl_radiobutton_new(char *l);
-void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
+Ewl_Widget     *ewl_radiobutton_new(void);
+int             ewl_radiobutton_init(Ewl_RadioButton * cb);
 
 /**
  * @def ewl_radiobutton_checked_set(r, c)

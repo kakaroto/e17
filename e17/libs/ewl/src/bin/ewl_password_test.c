@@ -89,13 +89,15 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
-	button[0] = ewl_button_new("Fetch text");
+	button[0] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
 			    __fetch_password_text, NULL);
 	ewl_widget_show(button[0]);
 
-	button[1] = ewl_button_new("Set Text");
+	button[1] = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_password_text, NULL);

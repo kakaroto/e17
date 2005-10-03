@@ -44,21 +44,10 @@ struct Ewl_Box
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
 };
 
-/**
- * @def ewl_hbox_new()
- * Shortcut to allocate a new horizontal Ewl_Box.
- */
-#define ewl_hbox_new() ewl_box_new(EWL_ORIENTATION_HORIZONTAL)
-
-/**
- * @def ewl_vbox_new()
- * Shortcut to allocate a new vertical Ewl_Box.
- */
-#define ewl_vbox_new() ewl_box_new(EWL_ORIENTATION_VERTICAL)
-
-
-Ewl_Widget     *ewl_box_new(Ewl_Orientation orientation);
-int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
+Ewl_Widget     *ewl_box_new();
+Ewl_Widget     *ewl_hbox_new();
+Ewl_Widget     *ewl_vbox_new();
+int             ewl_box_init(Ewl_Box * box);
 void            ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o);
 Ewl_Orientation ewl_box_orientation_get(Ewl_Box * b);
 void            ewl_box_spacing_set(Ewl_Box * b, int spacing);

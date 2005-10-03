@@ -60,19 +60,19 @@ typedef struct Ewl_Widget Ewl_Widget;
  */
 struct Ewl_Widget
 {
-	Ewl_Object      object; /**< Inherit the base Object class */
-	Ewl_Widget     *parent; /**< The parent widget, actually a container */
+	Ewl_Object       object; /**< Inherit the base Object class */
+	Ewl_Widget      *parent; /**< The parent widget, actually a container */
 
 	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX]; /**< Callback chain array */
-	Ewl_Attach_List *attach; /**< List of attachments on the widget */
+	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
-	Evas_Object    *fx_clip_box; /**< Clipping rectangle of widget */
+	Evas_Object     *fx_clip_box;  /**< Clipping rectangle of widget */
 
-	Evas_Object    *theme_object; /**< Appearance shown on canvas */
-	char           *bit_state; /**< State of the appaarance */
-	char           *appearance; /**< Key to lookup appearance in theme */
-	char           *inheritance; /**< Key to lookup inhertiance of widget */
-	int             layer; /**< Current layer of widget on canvas */
+	Evas_Object     *theme_object; /**< Appearance shown on canvas */
+	char            *bit_state;    /**< State of the appaarance */
+	char            *appearance;   /**< Key to lookup appearance in theme */
+	char            *inheritance;  /**< Inheritance of path widget */
+	int              layer; /**< Current layer of widget on canvas */
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */
@@ -81,7 +81,7 @@ struct Ewl_Widget
 /*
  * Initialize a widget to it's default values
  */
-int             ewl_widget_init(Ewl_Widget * w, char *appearance);
+int             ewl_widget_init(Ewl_Widget * w);
 
 /*
  * Assign the given name to a widget

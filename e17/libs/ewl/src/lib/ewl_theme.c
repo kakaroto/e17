@@ -52,7 +52,7 @@ int ewl_theme_init(void)
 	 * Fall back to the default theme.
 	 */	
 	if (!theme_path) {
-		theme_name = strdup("default");
+		theme_name = strdup("e17");
 		theme_path = ewl_theme_path_find(theme_name);
 	}
 

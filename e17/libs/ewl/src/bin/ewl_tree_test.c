@@ -82,13 +82,15 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Create buttons for retrieving tree info
 	 */
-	button = ewl_button_new("Number of selected rows");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Number of selected rows");
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, __get_rows, tree);
 	ewl_widget_show(button);
 
-	button = ewl_button_new("Clear selection");
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Clear selection");
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, __get_rows, tree);

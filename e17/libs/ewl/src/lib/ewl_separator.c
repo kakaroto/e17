@@ -39,13 +39,14 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = EWL_WIDGET(s);
+	ewl_widget_init(w);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_widget_init(w, "hseparator");
+		ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
 		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL);
 	}
 	else {
-		ewl_widget_init(w, "vseparator");
+		ewl_widget_appearance_set(w, "vseparator");
 		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL);
 	}
 	ewl_widget_inherit(w, "separator");

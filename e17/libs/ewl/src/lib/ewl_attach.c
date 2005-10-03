@@ -620,7 +620,8 @@ ewl_attach_cb_tooltip_timer(void *data)
 	{
 		Ewl_Widget *o;
 
-		o = ewl_text_new(ewl_attach_tooltip->attach->data);
+		o = ewl_text_new();
+		ewl_text_text_set(EWL_TEXT(o), ewl_attach_tooltip->attach->data);
 		ewl_container_child_append(EWL_CONTAINER(ewl_attach_tooltip->box), o);
 		ewl_widget_show(o);
 	}

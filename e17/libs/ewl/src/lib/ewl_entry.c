@@ -10,7 +10,7 @@ static int ewl_entry_selection_clear(Ewl_Entry *e);
  * @return Returns a new Ewl_Widget on success or NULL on failure
  */
 Ewl_Widget *
-ewl_entry_new(const char *text)
+ewl_entry_new()
 {
 	Ewl_Widget *w;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -21,7 +21,7 @@ ewl_entry_new(const char *text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	if (!ewl_entry_init(EWL_ENTRY(w), text))
+	if (!ewl_entry_init(EWL_ENTRY(w)))
 	{
 		ewl_widget_destroy(w);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -35,7 +35,7 @@ ewl_entry_new(const char *text)
  * @return Returns TRUE on success or FALSE on failure
  */
 int
-ewl_entry_init(Ewl_Entry *e, const char *text)
+ewl_entry_init(Ewl_Entry *e)
 {
 	Ewl_Widget *w;
 
@@ -44,10 +44,11 @@ ewl_entry_init(Ewl_Entry *e, const char *text)
 
 	w = EWL_WIDGET(e);
 
-	if (!ewl_text_init(EWL_TEXT(e), text))
+	if (!ewl_text_init(EWL_TEXT(e)))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
 	ewl_widget_inherit(w, "entry");
 	ewl_widget_appearance_set(w, "entry");
 
@@ -582,10 +583,12 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
 
-	if (!ewl_widget_init(EWL_WIDGET(c), "cursor"))
+	if (!ewl_widget_init(EWL_WIDGET(c)))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
+	ewl_widget_appearance_set(EWL_WIDGET(c), "cursor");
 	ewl_widget_inherit(EWL_WIDGET(c), "cursor");
 	c->parent = parent;
 
@@ -612,8 +615,3 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)), 
 							DLEVEL_STABLE);
 }
-
-
-
-
-

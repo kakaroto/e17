@@ -141,7 +141,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	else if ((__image_exists("../data/images/e-logo.png")) != -1)
 		image_file = strdup("../data/images/e-logo.png");
 
-	image = ewl_image_new(image_file, NULL);
+	image = ewl_image_new();
+	ewl_image_file_set(EWL_IMAGE(image), image_file, NULL);
 	ewl_object_padding_set(EWL_OBJECT(image), 0, 0, 5, 0);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(scrollpane), image);
@@ -150,7 +151,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (image_file)
 		ecore_dlist_append(images, image_file);
 
-	entry_path = ewl_entry_new(image_file);
+	entry_path = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry_path), image_file);
 	ewl_container_child_append(EWL_CONTAINER(image_box), entry_path);
 	ewl_widget_show(entry_path);
 
@@ -161,9 +163,12 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
-	button_prev = ewl_button_new("Previous");
-	button_load = ewl_button_new("Load");
-	button_next = ewl_button_new("Next");
+	button_prev = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_prev), "Previous");
+	button_load = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_load), "Load");
+	button_next = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_next), "Next");
 
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
@@ -231,7 +236,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_object_maximum_h_set(EWL_OBJECT(note_box), 20);
 	ewl_widget_show(note_box);
 
-	note = ewl_text_new("These buttons don't do shit.");
+	note = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(note), "These buttons don't do shit.");
 	ewl_text_color_set(EWL_TEXT(note), 255, 0, 0, 255);
 	ewl_container_child_append(EWL_CONTAINER(note_box), note);
 	ewl_widget_show(note);

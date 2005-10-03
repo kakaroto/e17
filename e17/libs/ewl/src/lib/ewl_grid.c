@@ -46,9 +46,10 @@ int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	/*
 	 * Initialize the grids inherited fields
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(g), "vbox"))
+	if (!ewl_container_init(EWL_CONTAINER(g)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_appearance_set(EWL_WIDGET(g), "grid");
 	ewl_widget_inherit(EWL_WIDGET(g), "grid");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(g), ewl_grid_child_show_cb);

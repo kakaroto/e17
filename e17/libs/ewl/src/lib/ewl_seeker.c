@@ -42,21 +42,20 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 
 	w = EWL_WIDGET(s);
 
+	if (!ewl_container_init(EWL_CONTAINER(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	/*
 	 * Initialize the widget fields and set appropriate orientation and
 	 * type
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-		if (!ewl_container_init(EWL_CONTAINER(w), "hseeker"))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-
+		ewl_widget_appearance_set(w, "hseeker");
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
-		if (!ewl_container_init(EWL_CONTAINER(w), "vseeker"))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-
+		ewl_widget_appearance_set(w, "vseeker");
 		ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_VFILL |
 				EWL_FLAG_FILL_VSHRINK);
@@ -68,7 +67,7 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	/*
 	 * Create and add the button portion of the seeker
 	 */
-	s->button = ewl_button_new(NULL);
+	s->button = ewl_button_new();
 	ewl_widget_internal_set(s->button, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(s), s->button);
 	ewl_widget_show(s->button);

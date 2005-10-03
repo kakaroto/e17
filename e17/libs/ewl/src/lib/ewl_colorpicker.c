@@ -35,9 +35,10 @@ ewl_colorpicker_init(Ewl_ColorPicker *cp)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cp", cp, 0);
 
-	if (!ewl_box_init(EWL_BOX(cp), EWL_ORIENTATION_HORIZONTAL))
+	if (!ewl_box_init(EWL_BOX(cp)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_box_orientation_set(EWL_BOX(cp), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(EWL_WIDGET(cp), "colorpicker");
 	ewl_widget_inherit(EWL_WIDGET(cp), "colorpicker");
 

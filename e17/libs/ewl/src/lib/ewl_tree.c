@@ -52,7 +52,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(tree), "tree");
+	ewl_container_init(EWL_CONTAINER(tree));
+	ewl_widget_appearance_set(EWL_WIDGET(tree), "tree");
 	ewl_widget_inherit(EWL_WIDGET(tree), "tree");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(tree),
@@ -75,7 +76,7 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	row = ewl_row_new();
 	for (i = 0; i < tree->ncols; i++) {
-		button = ewl_button_new(NULL);
+		button = ewl_button_new();
 		ewl_box_orientation_set(EWL_BOX(button),
 				EWL_ORIENTATION_VERTICAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(button),
@@ -309,10 +310,14 @@ Ewl_Widget *ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	for (i = 0; i < tree->ncols; i++) {
-		if (text)
-			texts[i] = ewl_text_new(text[i]);
-		else
-			texts[i] = ewl_text_new(NULL);
+		if (text) {
+			texts[i] = ewl_text_new();
+			ewl_text_text_set(EWL_TEXT(texts[i]), text[i]);
+		}
+		else {
+			texts[i] = ewl_text_new();
+			ewl_text_text_set(EWL_TEXT(texts[i]), NULL);
+		}
 		ewl_widget_show(texts[i]);
 	}
 
@@ -346,10 +351,13 @@ Ewl_Widget *ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	for (i = 0; i < tree->ncols; i++) {
-		if (text)
-			entries[i] = ewl_entry_new(text[i]);
+		if (text) {
+			entries[i] = ewl_entry_new();
+			ewl_text_text_set(EWL_TEXT(entries[i]), text[i]);
+		}
 		else
-			entries[i] = ewl_entry_new(NULL);
+			entries[i] = ewl_entry_new();
+			ewl_text_text_set(EWL_TEXT(entries[i]), NULL);
 		ewl_widget_show(entries[i]);
 	}
 
@@ -605,7 +613,7 @@ void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (scroll > 0 && width > CURRENT_W(tree))
 		x -= (int)((double)scroll * (double)(width - CURRENT_W(tree)));
 	ewl_object_geometry_request(EWL_OBJECT(tree->header), x, CURRENT_Y(tree),
-				    CURRENT_W(tree), width);
+				    CURRENT_W(tree), 1);
 	height = ewl_object_current_h_get(EWL_OBJECT(tree->header));
 	ewl_object_geometry_request(EWL_OBJECT(tree->scrollarea),
 				    CURRENT_X(tree), CURRENT_Y(tree) + height,
@@ -669,8 +677,11 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(node), "node"))
+	if (!ewl_container_init(EWL_CONTAINER(node)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_appearance_set(EWL_WIDGET(node), "node");
+	ewl_widget_inherit(EWL_WIDGET(node), "node");
 	
 	ewl_container_show_notify_set(EWL_CONTAINER(node),
 				  ewl_tree_node_child_show_cb);

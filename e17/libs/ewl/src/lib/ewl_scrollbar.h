@@ -71,7 +71,7 @@ struct Ewl_Scrollbar
 #define ewl_vscrollbar_new() ewl_scrollbar_new(EWL_ORIENTATION_VERTICAL)
 
 Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation);
-void            ewl_scrollbar_init(Ewl_Scrollbar * s,
+int             ewl_scrollbar_init(Ewl_Scrollbar * s,
 				   Ewl_Orientation orientation);
 
 double          ewl_scrollbar_value_get(Ewl_Scrollbar * s);

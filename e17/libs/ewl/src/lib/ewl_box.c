@@ -58,11 +58,10 @@ static void     ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
 					  int *y, int *align, int *align_size);
 
 /**
- * @param o: the orientation for the box's layout
  * @return Returns NULL on failure, or a newly allocated box on success.
  * @brief Allocate and initialize a new box with given orientation
  */
-Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
+Ewl_Widget     *ewl_box_new()
 {
 	Ewl_Box        *b;
 
@@ -72,7 +71,7 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 	if (!b)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_box_init(b, o)) {
+	if (!ewl_box_init(b)) {
 		ewl_widget_destroy(EWL_WIDGET(b));
 		b = NULL;
 	}
@@ -81,15 +80,52 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 }
 
 /**
+ * @return Returns NULL on failure, or a newly allocated horizontal box on success.
+ * @brief Allocate and initialize a new box with horizontal orientation
+ */
+Ewl_Widget     *ewl_hbox_new()
+{
+	Ewl_Widget *b;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	b = ewl_box_new();
+	if (!b)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns NULL on failure, or a newly allocated vertical box on success.
+ * @brief Allocate and initialize a new box with vertical orientation
+ */
+Ewl_Widget     *ewl_vbox_new()
+{
+	Ewl_Widget *b;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	b = ewl_box_new();
+	if (!b)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_VERTICAL);
+
+	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+}
+
+/**
  * @param b: the box to initialize
- * @param o: the orientation for the box to layout child widgets
  * @return Returns no value.
  * @brief Initialize the box to starting values
  *
  * Responsible for setting up default values and callbacks
  * within a box structure.
  */
-int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
+int ewl_box_init(Ewl_Box * b)
 {
 	Ewl_Widget     *w;
 
@@ -107,35 +143,41 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	/*
 	 * Initialize the container portion of the box
 	 */
-	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (!ewl_container_init(EWL_CONTAINER(b), "hbox"))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
-	else {
-		if (!ewl_container_init(EWL_CONTAINER(b), "vbox"))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
+	if (!ewl_container_init(EWL_CONTAINER(b))) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	/*
+	 * Set the appearance based on default orientation.
+	 */
+	ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
+
+	/*
+	 * Setup the container size change handlers.
+	 */
 	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_child_resize_cb);
 	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
 
+	/*
+	 * Attach the default layout callback.
+	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
-			NULL);
+			    NULL);
 
 	/*
 	 * Check if the info structs have been created yet, if not create
 	 * them.
 	 */
-	if (!ewl_box_vertical)
+	if (!ewl_box_horizontal)
 		ewl_box_setup();
 
 	/*
 	 * Set the box's appropriate orientation, set to a garbage value so
 	 * that the orientation does it's job.
 	 */
-	b->orientation = 0xdeadbeef;
-	ewl_box_orientation_set(b, o);
+	b->orientation = EWL_ORIENTATION_HORIZONTAL;
 
 	ewl_widget_inherit(w, "box");
 
@@ -153,7 +195,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
  */
 void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
-	Ewl_Widget     *w, *c;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -169,16 +211,6 @@ void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 
 	b->orientation = o;
 
-	/* only try this if we have children */
-	c = ecore_list_goto_first(EWL_CONTAINER(b)->children);
-	if (c) {
-		if (b->homogeneous)
-			ewl_box_child_homogeneous_show_cb(EWL_CONTAINER(b),
-						  ecore_list_goto_first(EWL_CONTAINER(b)->children));
-		else
-			ewl_box_child_show_cb(EWL_CONTAINER(b),
-				      ecore_list_goto_first(EWL_CONTAINER(b)->children));
-	}
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -34,22 +34,26 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
  * @return Returns no value.
  * @brief Initialize a scrollbar to default values
  */
-void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
+int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
-	ewl_box_init(EWL_BOX(w), orientation);
+	if (!ewl_box_init(EWL_BOX(w)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(w), orientation);
+	ewl_widget_appearance_set(w, "scrollbar");
 	ewl_widget_inherit(w, "scrollbar");
 
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.
 	 */
-	s->button_decrement = ewl_button_new(NULL);
+	s->button_decrement = ewl_button_new();
 	ewl_widget_internal_set(s->button_decrement, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
 			EWL_FLAG_ALIGN_CENTER);
@@ -60,7 +64,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Create the increment button.
 	 */
-	s->button_increment = ewl_button_new(NULL);
+	s->button_increment = ewl_button_new();
 	ewl_widget_internal_set(s->button_increment, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
 			EWL_FLAG_ALIGN_CENTER);
@@ -241,7 +245,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
