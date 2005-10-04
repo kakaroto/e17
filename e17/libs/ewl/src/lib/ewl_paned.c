@@ -110,6 +110,7 @@ ewl_paned_init(Ewl_Paned *p)
 	ewl_widget_show(EWL_WIDGET(p->first));
 
 	p->grabber = ewl_vseparator_new();
+	ewl_object_custom_w_set(EWL_OBJECT(p->grabber), 10);
 
 	ewl_container_child_append(EWL_CONTAINER(p), EWL_WIDGET(p->grabber));
 	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_MOUSE_DOWN, 
