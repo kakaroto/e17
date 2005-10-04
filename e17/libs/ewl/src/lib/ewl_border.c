@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param label: the initial label to display on the border
  * @return Returns a new border container on success, NULL on failure.
  * @brief Allocate and initialize a new border container
  */
-Ewl_Widget     *ewl_border_new(char *label)
+Ewl_Widget     *ewl_border_new(void)
 {
 	Ewl_Border     *b;
 
@@ -19,18 +18,17 @@ Ewl_Widget     *ewl_border_new(char *label)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	ewl_border_init(b, label);
+	ewl_border_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 /**
  * @param b: the border container to initialize
- * @param label: the initial text to display on the border
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a border container to default values
  */
-int ewl_border_init(Ewl_Border * b, char *label)
+int ewl_border_init(Ewl_Border * b)
 {
 	Ewl_Widget     *w;
 
@@ -46,7 +44,6 @@ int ewl_border_init(Ewl_Border * b, char *label)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	b->label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(b->label), label);
 	ewl_widget_internal_set(b->label, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(b), b->label);
 	ewl_widget_show(b->label);

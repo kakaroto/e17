@@ -89,7 +89,8 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	ewl_widget_show(border_win);
 
-	border_box = ewl_border_new("box title");
+	border_box = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(border_box), "box title");
 	ewl_container_child_append(EWL_CONTAINER(border_win), border_box);
 	ewl_widget_show(border_box);
 

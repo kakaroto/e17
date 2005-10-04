@@ -41,8 +41,8 @@ struct Ewl_Border
 	Ewl_Position    label_position;     /**< Flags for placing the label */
 };
 
-Ewl_Widget     *ewl_border_new(char *label);
-int             ewl_border_init(Ewl_Border * b, char *label);
+Ewl_Widget     *ewl_border_new(void);
+int             ewl_border_init(Ewl_Border * b);
 
 void            ewl_border_text_set(Ewl_Border * b, char *t);
 char           *ewl_border_text_get(Ewl_Border * b);
