@@ -72,8 +72,7 @@ asm_blend.S \
 asm_blend_cmod.S \
 asm_rgba.S \
 asm_rotate.S \
-asm_scale.S \
-asm_loadimmq.S
+asm_scale.S
 
 AMD64_SRCS = \
 amd64_blend.S \
