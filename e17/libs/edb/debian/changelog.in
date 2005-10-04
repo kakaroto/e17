@@ -1,4 +1,4 @@
-libedb (@VERSION@) unstable; urgency=low
+edb (@VERSION@) unstable; urgency=low
 
   * A CVS release.
 
