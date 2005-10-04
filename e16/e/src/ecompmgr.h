@@ -48,7 +48,8 @@ void                ECompMgrWinMoveResize(EObj * eo, int change_xy,
 					  int change_wh, int change_bw);
 void                ECompMgrWinReparent(EObj * eo, struct _desk *dsk,
 					int change_xy);
-void                ECompMgrWinChangeStacking(EObj * eo);
+void                ECompMgrWinRaise(EObj * eo);
+void                ECompMgrWinLower(EObj * eo);
 void                ECompMgrWinChangeShape(EObj * eo);
 
 void                ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity);

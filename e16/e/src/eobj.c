@@ -394,7 +394,7 @@ EobjRaise(EObj * eo)
       return num;
 #if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
-      ECompMgrWinChangeStacking(eo);
+      ECompMgrWinRaise(eo);
 #endif
    return num;
 }
@@ -409,7 +409,7 @@ EobjLower(EObj * eo)
       return num;
 #if USE_COMPOSITE
    if (eo->shown && eo->cmhook)
-      ECompMgrWinChangeStacking(eo);
+      ECompMgrWinLower(eo);
 #endif
    return num;
 }

@@ -175,6 +175,9 @@ static struct
    XserverRegion       rgn_screen;
 } Mode_compmgr;
 
+#define _ECM_SET_CLIP_CHANGED()  Mode_compmgr.reorder = 1
+#define _ECM_SET_STACK_CHANGED() Mode_compmgr.reorder = 1
+
 static Picture      rootPicture;
 static Picture      rootBuffer;
 
@@ -191,7 +194,11 @@ static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
 static void         doECompMgrWinFade(int val, void *data);
+static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrWinFadeOutEnd(EObj * eo);
+static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
+					   EObj ** first, EObj ** last,
+					   Desk * dsk, XserverRegion clip);
 
 /*
  * Visuals
@@ -283,6 +290,18 @@ ERegionTranslate(XserverRegion rgn, int dx, int dy)
 }
 
 static void
+ERegionIntersect(XserverRegion dst, XserverRegion src)
+{
+   XFixesIntersectRegion(disp, dst, dst, src);
+}
+
+static void
+ERegionUnion(XserverRegion dst, XserverRegion src)
+{
+   XFixesUnionRegion(disp, dst, dst, src);
+}
+
+static void
 ERegionLimit(XserverRegion rgn)
 {
    XserverRegion       screen;
@@ -292,13 +311,7 @@ ERegionLimit(XserverRegion rgn)
       Mode_compmgr.rgn_screen = screen =
 	 ERegionCreateRect(0, 0, VRoot.w, VRoot.h);
 
-   XFixesIntersectRegion(disp, rgn, rgn, screen);
-}
-
-static void
-ERegionUnion(XserverRegion dst, XserverRegion src)
-{
-   XFixesUnionRegion(disp, dst, dst, src);
+   ERegionIntersect(rgn, screen);
 }
 
 static void
@@ -337,6 +350,12 @@ ERegionShow(const char *txt, XserverRegion rgn)
 {
    int                 i, nr;
    XRectangle         *pr;
+
+   if (rgn == None)
+     {
+	Eprintf(" - region: %s %#lx is None\n", txt, rgn);
+	return;
+     }
 
    pr = XFixesFetchRegion(disp, rgn, &nr);
    if (!pr || nr <= 0)
@@ -577,6 +596,7 @@ ECompMgrDamageMerge(XserverRegion damage, int destroy)
 static void
 ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 {
+   ECmWinInfo         *cw = eo->cmhook;
    Desk               *dsk = eo->desk;
 
    if (damage == None)
@@ -589,17 +609,34 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
 	return;
      }
 
-   if (dsk->num > 0)
+   if (Mode_compmgr.reorder)
+      ECompMgrDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
+			     &Mode_compmgr.eo_last, DeskGet(0), None);
+
+   if (cw->clip == None)
      {
-	if (EoGetX(dsk) != 0 || EoGetY(dsk) != 0)
-	  {
-	     if (!destroy)
-		damage = ERegionClone(damage);
-	     ERegionTranslate(damage, EoGetX(dsk), EoGetY(dsk));
-	  }
+	/* Clip may be None if window is not in paint list */
+	if (destroy)
+	   ERegionDestroy(damage);
+	return;
      }
 
-   ECompMgrDamageMerge(damage, destroy);
+   if (!destroy)
+      damage = ERegionClone(damage);
+#if 0				/* FIXME - Remove */
+   ERegionShow("ECompMgrDamageMergeObject damage A:", damage);
+   ERegionShow("ECompMgrDamageMergeObject clip:", cw->clip);
+#endif
+   if (eo->type != EOBJ_TYPE_DESK)
+      ERegionIntersect(damage, cw->clip);
+#if 0				/* FIXME - Remove */
+   ERegionShow("ECompMgrDamageMergeObject damage B:", damage);
+#endif
+
+   if (dsk->num > 0 && (EoGetX(dsk) != 0 || EoGetY(dsk) != 0))
+      ERegionTranslate(damage, EoGetX(dsk), EoGetY(dsk));
+
+   ECompMgrDamageMerge(damage, 1);
 }
 
 static void
@@ -949,6 +986,17 @@ win_extents(EObj * eo)
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("extents", rgn);
 
+#if 0				/* FIXME - Set picture clip region */
+   if (cw->shadow)
+     {
+	XserverRegion       clip;
+
+	clip = ERegionClone(cw->extents);
+	ERegionSubtractOffset(clip, 0, 0, cw->shape);
+	XFixesSetPictureClipRegion(disp, cw->shadow, 0, 0, clip);
+	ERegionDestroy(clip);
+     }
+#endif
    return rgn;
 }
 
@@ -1067,8 +1115,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    D1printf("ECompMgrWinSetOpacity: %#lx opacity=%#x\n", eo->win, cw->opacity);
 
-   if (eo->shown || cw->fadeout)	/* FIXME - ??? */
-      /* Extents may be unchanged, however, we must repaint */
+   if (eo->shown || cw->fadeout)
       ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    /* Invalidate stuff changed by opacity */
@@ -1082,6 +1129,10 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
       mode = WINDOW_TRANS;
    else
       mode = WINDOW_SOLID;
+
+   if (mode != cw->mode)
+      _ECM_SET_CLIP_CHANGED();
+
    cw->mode = mode;
 }
 
@@ -1192,6 +1243,7 @@ ECompMgrWinFadeOut(EObj * eo)
 #endif
    cw->fadeout = 1;
    ECompMgrWinInvalidate(eo, INV_PICTURE);
+   ECompMgrWinSetPicts(eo);
    ECompMgrWinFade(eo, cw->opacity, 0x10000000);
 }
 
@@ -1206,6 +1258,7 @@ ECompMgrWinFadeOutEnd(EObj * eo)
    cw->fadeout = 0;
    ECompMgrWinInvalidate(eo, INV_PIXMAP | INV_PICTURE);
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   _ECM_SET_CLIP_CHANGED();
 }
 
 void
@@ -1216,7 +1269,7 @@ ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity)
    if (!cw)
       return;
 
-   if (Conf_compmgr.fading.enable && eo->fade)
+   if (eo->shown && Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFade(eo, cw->opacity, opacity);
    else
       ECompMgrWinSetOpacity(eo, opacity);
@@ -1239,6 +1292,8 @@ ECompMgrWinMap(EObj * eo)
 
    if (cw->extents == None)
       cw->extents = win_extents(eo);
+
+   _ECM_SET_STACK_CHANGED();
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 
    if (Conf_compmgr.fading.enable && eo->fade)
@@ -1257,7 +1312,10 @@ ECompMgrWinUnmap(EObj * eo)
    if (Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFadeOut(eo);
    else
-      ECompMgrWinInvalidate(eo, INV_PIXMAP);
+     {
+	_ECM_SET_STACK_CHANGED();
+	ECompMgrWinInvalidate(eo, INV_PIXMAP);
+     }
 }
 
 static void
@@ -1277,7 +1335,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	return;
      }
 
-   if (cw->pixmap == None &&
+   if (cw->pixmap == None && eo->shown &&
        (Mode_compmgr.use_pixmap || Conf_compmgr.fading.enable))
      {
 	cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
@@ -1292,6 +1350,8 @@ ECompMgrWinSetPicts(EObj * eo)
 
 	if ((cw->pixmap && Mode_compmgr.use_pixmap) || (cw->fadeout))
 	   draw = cw->pixmap;
+	if (draw == None)
+	   return;
 
 	pictfmt = XRenderFindVisualFormat(disp, cw->a.visual);
 	pa.subwindow_mode = IncludeInferiors;
@@ -1299,6 +1359,15 @@ ECompMgrWinSetPicts(EObj * eo)
 					   pictfmt, CPSubwindowMode, &pa);
 	D2printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
 		 eo->win, cw->picture, draw);
+
+	if (draw == cw->pixmap)
+	  {
+	     XserverRegion       clip;
+
+	     clip = ERegionCreateFromWindow(eo->win);
+	     XFixesSetPictureClipRegion(disp, cw->picture, 0, 0, clip);
+	     ERegionDestroy(clip);
+	  }
      }
 }
 
@@ -1375,7 +1444,7 @@ void
 ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
 {
    ECmWinInfo         *cw = eo->cmhook;
-   XserverRegion       damage = None;
+   XserverRegion       damage;
    int                 invalidate;
 
    D1printf("ECompMgrWinMoveResize %#lx xy=%d wh=%d bw=%d\n",
@@ -1400,24 +1469,28 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
      }
 
    /* Invalidate old window region */
-   damage = ERegionCreate();
-   if (cw->extents != None)
-      ERegionCopy(damage, cw->extents);
+   damage = cw->extents;
+   cw->extents = None;
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", damage);
 
+#if 0				/* FIXME - We shouldn't have to update clip if transparent */
+   if (cw->mode == WINDOW_UNREDIR || cw->mode == WINDOW_SOLID)
+#endif
+      _ECM_SET_CLIP_CHANGED();
    ECompMgrWinInvalidate(eo, invalidate);
 
-   /* Find new window region */
-   cw->extents = win_extents(eo);
-
-#if 1
-   /* Hmmm. Why if not changed? - To get shadows painted. */
    /* Invalidate new window region */
-   ERegionUnion(damage, cw->extents);
-#endif
-
-   ECompMgrDamageMergeObject(eo, damage, 1);
+   cw->extents = win_extents(eo);
+   if (damage != None)
+     {
+	ERegionUnion(damage, cw->extents);
+	ECompMgrDamageMergeObject(eo, damage, 1);
+     }
+   else
+     {
+	ECompMgrDamageMergeObject(eo, cw->extents, 0);
+     }
 }
 
 static void
@@ -1459,7 +1532,6 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", cw->extents);
    ECompMgrDamageMergeObject(eo, cw->extents, change_xy);
-
    if (change_xy)
      {
 	cw->extents = None;
@@ -1467,8 +1539,9 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 
 	/* Find new window region */
 	cw->extents = win_extents(eo);
-	ECompMgrDamageMergeObject(eo, cw->extents, 0);
      }
+   _ECM_SET_STACK_CHANGED();
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
 
 static void
@@ -1476,7 +1549,7 @@ ECompMgrWinCirculate(EObj * eo, XEvent * ev)
 {
    D1printf("ECompMgrWinCirculate %#lx %#lx\n", ev->xany.window, eo->win);
 
-   /* FIXME - Check if stacking was changed */
+   _ECM_SET_STACK_CHANGED();
 }
 
 void
@@ -1489,22 +1562,30 @@ ECompMgrWinChangeShape(EObj * eo)
    ECompMgrDamageMergeObject(eo, cw->extents, 1);
    cw->extents = None;
 
+   _ECM_SET_CLIP_CHANGED();
    ECompMgrWinInvalidate(eo, INV_SIZE);
 }
 
 void
-ECompMgrWinChangeStacking(EObj * eo)
+ECompMgrWinRaise(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinChangeStacking %#lx\n", eo->win);
+   D1printf("ECompMgrWinRaise %#lx\n", eo->win);
 
-#if 0				/* FIXME - Remove? */
-   if (Conf_compmgr.shadows.mode == ECM_SHADOWS_OFF)
-      return;
-#endif
+   _ECM_SET_STACK_CHANGED();
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
+}
+
+void
+ECompMgrWinLower(EObj * eo)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   D1printf("ECompMgrWinLower %#lx\n", eo->win);
 
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   _ECM_SET_STACK_CHANGED();
 }
 
 void
@@ -1534,7 +1615,9 @@ ECompMgrWinDel(EObj * eo)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 
-   ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   ECompMgrDamageMergeObject(eo, cw->extents, 1);
+   cw->extents = None;
+   _ECM_SET_STACK_CHANGED();
    ECompMgrWinInvalidate(eo, INV_ALL);
 
    if (!eo->gone)
@@ -1598,17 +1681,72 @@ ECompMgrCheckAlphaMask(ECmWinInfo * cw)
 					  0, 0, 0);
 }
 
+static void
+ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, eo->win, eo->x, eo->y,
+	   eo->w, eo->h, eo->name);
+   if (!cw)
+     {
+	Eprintf("Not managed\n");
+	return;
+     }
+
+   if (force || EventDebug(EDBUG_TYPE_COMPMGR3))
+     {
+	Eprintf(" - pict=%#lx pmap=%#lx\n", cw->picture, cw->pixmap);
+
+	ERegionShow("win extents", cw->extents);
+	ERegionShow("win shape  ", cw->shape);
+	ERegionShow("win clip   ", cw->clip);
+	ERegionShow("region", rgn);
+     }
+}
+
+static void
+ECompMgrDestroyClip(void)
+{
+   EObj               *eo, *const *lst;
+   ECmWinInfo         *cw;
+   int                 i, num;
+
+   lst = EobjListStackGet(&num);
+   for (i = 0; i < num; i++)
+     {
+	eo = lst[i];
+	cw = eo->cmhook;
+	if (!cw)
+	   continue;
+	if (cw->clip != None)
+	   ERegionDestroy(cw->clip);
+	cw->clip = None;
+     }
+}
+
 static int
-ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
-			      EObj ** last, Desk * dsk)
+ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
+		       EObj ** last, Desk * dsk, XserverRegion clip)
 {
    EObj               *eo, *eo_prev, *eo_first;
    int                 i, stop;
    ECmWinInfo         *cw;
 
-   D4printf("ECompMgrRepaintDetermineOrder %d\n", dsk->num);
+   D1printf("ECompMgrDetermineOrder %d\n", dsk->num);
    if (!lst)
       lst = EobjListStackGet(&num);
+   if (clip == None)
+     {
+	ECompMgrDestroyClip();
+	clip = ERegionCreateRect(0, 0, VRoot.w, VRoot.h);
+     }
+   else
+     {
+	clip = ERegionClone(clip);
+	if (EoGetX(dsk) != 0 || EoGetY(dsk) != 0)
+	   ERegionTranslate(clip, -EoGetX(dsk), -EoGetY(dsk));
+     }
 
    /* Determine overall paint order, top to bottom */
    stop = 0;
@@ -1626,8 +1764,18 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if ((!eo->shown && !cw->fading) || eo->desk != dsk)
 	   continue;
 
-	D4printf(" - %#lx desk=%d shown=%d\n", eo->win, eo->desk->num,
-		 eo->shown);
+	/* Region of shaped window in screen coordinates */
+	if (cw->shape == None)
+	   cw->shape = win_shape(eo);
+
+	/* Region of window in screen coordinates, including shadows */
+	if (cw->extents == None)
+	   cw->extents = win_extents(eo);
+
+	cw->clip = ERegionClone(clip);
+
+	D4printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n", eo->win,
+		 eo->desk->num, eo->shown, cw->fading, cw->fadeout);
 
 	if (eo->type == EOBJ_TYPE_DESK)
 	  {
@@ -1638,7 +1786,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     if (!d->viewable)
 		continue;
 
-	     stop = ECompMgrRepaintDetermineOrder(lst, num, &eo1, &eo2, d);
+	     stop = ECompMgrDetermineOrder(lst, num, &eo1, &eo2, d, clip);
 	     if (eo1)
 	       {
 		  ec1 = eo1->cmhook;
@@ -1664,7 +1812,7 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	   continue;
 
 	D4printf
-	   ("ECompMgrRepaintDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
+	   ("ECompMgrDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
 	    dsk->num, eo->win, eo->desk->num, eo->shown);
 
 	if (!eo_first)
@@ -1674,7 +1822,22 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	   ((ECmWinInfo *) (eo_prev->cmhook))->next = eo;
 	eo_prev = eo;
 
-	/*  FIXME - We should break when the repaint region (cw->clip) becomes empty */
+	switch (cw->mode)
+	  {
+	  case WINDOW_UNREDIR:
+	  case WINDOW_SOLID:
+	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", eo->win, cw->clip,
+		      eo->x, eo->y, eo->w, eo->h, eo->name);
+	     ERegionSubtractOffset(clip, 0, 0, cw->shape);
+	     break;
+
+	  default:
+	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", eo->win, cw->clip,
+		      eo->x, eo->y, eo->w, eo->h, eo->name);
+	     break;
+	  }
+
+	/*  FIXME - We should break when the clip region becomes empty */
 	if (eo->type == EOBJ_TYPE_DESK && eo->x == 0 && eo->y == 0)
 	   stop = 1;
 	if (stop)
@@ -1686,12 +1849,15 @@ ECompMgrRepaintDetermineOrder(EObj * const *lst, int num, EObj ** first,
    *first = eo_first;
    *last = eo_prev;
 
+   ERegionDestroy(clip);
+   Mode_compmgr.reorder = 0;
    return stop;
 }
 
 static void
 ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
+   static XserverRegion clip = None;
    Display            *dpy = disp;
    ECmWinInfo         *cw;
    Desk               *dsk = eo->desk;
@@ -1699,35 +1865,42 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 
    cw = eo->cmhook;
 
-   D2printf("ECompMgrRepaintObj mode=%d %#lx %s\n", mode, eo->win, eo->name);
-
+#if 1				/* FIXME - Remove? */
    if (!cw->shape)
       cw->shape = win_shape(eo);
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("shape", cw->shape);
-
    if (!cw->extents)
       cw->extents = win_extents(eo);
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
-      ERegionShow("extents", cw->extents);
+#endif
+
+   if (clip == None)
+      clip = ERegionCreate();
 
    x = EoGetX(dsk);
    y = EoGetY(dsk);
 
+   ERegionCopy(clip, cw->clip);
+   if (x != 0 || y != 0)
+      ERegionTranslate(clip, x, y);
+   ERegionIntersect(clip, region);
+
    if (mode == 0)
      {
-	/* Painting opaque windows top down, updating clip regions. */
-
-	cw->clip = ERegionClone(region);
+	/* Painting opaque windows top down. */
+#if 0
+	if (ERegionIsEmpty(clip))
+	  {
+	     D2printf(" - Quit - repaint region is empty\n");
+	     return;
+	  }
+#endif
 
 	switch (cw->mode)
 	  {
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
-	     D2printf(" * solid pict=%#lx d=%d l=%d\n",
-		      cw->picture, eo->desk->num, eo->ilayer);
-	     ERegionLimit(region);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
+	     if (EventDebug(EDBUG_TYPE_COMPMGR2))
+		ECompMgrWinDumpInfo("ECompMgrRepaintObj solid", eo, clip, 0);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
 			      cw->rch);
@@ -1743,10 +1916,9 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  {
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
-	     D2printf(" * trans pict=%#lx d=%d l=%d\n",
-		      cw->picture, eo->desk->num, eo->ilayer);
-	     ERegionLimit(cw->clip);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
+	     if (EventDebug(EDBUG_TYPE_COMPMGR2))
+		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     ECompMgrCheckAlphaMask(cw);
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->alphaPict, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
@@ -1755,18 +1927,21 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  }
 
 #if ENABLE_SHADOWS
+	if (!eo->shadow)
+	   return;
+
 	switch (Conf_compmgr.shadows.mode)
 	  {
 	  case ECM_SHADOWS_OFF:
 	     break;
+
 	  case ECM_SHADOWS_SHARP:
 	     if (cw->opacity != OPAQUE && !cw->shadowPict)
 		cw->shadowPict = EPictureCreateSolid(True,
 						     (double)cw->opacity /
 						     OPAQUE * 0.3, 0, 0, 0);
-	     ERegionSubtractOffset(cw->clip, x, y, cw->shape);
-	     ERegionLimit(cw->clip);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
+	     ERegionSubtractOffset(clip, x, y, cw->shape);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     XRenderComposite(dpy, PictOpOver,
 			      cw->shadowPict ? cw->
 			      shadowPict : transBlackPicture, cw->picture, pbuf,
@@ -1775,13 +1950,13 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 			      y + cw->rcy + cw->shadow_dy,
 			      cw->shadow_width, cw->shadow_height);
 	     break;
+
 	  case ECM_SHADOWS_BLURRED:
 	     if (cw->shadow == None)
 		break;
 
-	     ERegionSubtractOffset(cw->clip, x, y, cw->shape);
-	     ERegionLimit(cw->clip);
-	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, cw->clip);
+	     ERegionSubtractOffset(clip, x, y, cw->shape);
+	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     XRenderComposite(dpy, PictOpOver, blackPicture, cw->shadow, pbuf,
 			      0, 0, 0, 0,
 			      x + cw->rcx + cw->shadow_dx,
@@ -1790,9 +1965,6 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     break;
 	  }
 #endif
-
-	ERegionDestroy(cw->clip);
-	cw->clip = None;
      }
 }
 
@@ -1825,13 +1997,8 @@ ECompMgrRepaint(void)
 
    /* Do paint order list linking */
    if (Mode_compmgr.reorder)
-     {
-	ECompMgrRepaintDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
-				      &Mode_compmgr.eo_last, dsk);
-#if 0				/* Not yet */
-	Mode_compmgr.reorder = 0;
-#endif
-     }
+      ECompMgrDetermineOrder(NULL, 0, &Mode_compmgr.eo_first,
+			     &Mode_compmgr.eo_last, dsk, None);
 
    /* Paint opaque windows top down, adjusting clip regions */
    for (eo = Mode_compmgr.eo_first; eo;
@@ -1851,7 +2018,7 @@ ECompMgrRepaint(void)
 
    /* Paint trans windows and shadows bottom up */
    for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
-      ECompMgrRepaintObj(pbuf, None, eo, 1);
+      ECompMgrRepaintObj(pbuf, allDamage, eo, 1);
 
    if (pbuf != rootPicture)
      {
@@ -2039,8 +2206,6 @@ ECompMgrStart(void)
 	if (lst[i]->shown)
 	   ECompMgrWinMap(lst[i]);
      }
-
-   Mode_compmgr.reorder = 1;
 }
 
 static void
@@ -2393,6 +2558,17 @@ CompMgrIpc(const char *params, Client * c __UNUSED__)
    else if (!strncmp(cmd, "list", 2))
      {
 	/* TBD */
+     }
+   else if (!strncmp(cmd, "oi", 2))
+     {
+	Window              win;
+	EObj               *eo;
+
+	win = None;
+	sscanf(prm, "%lx", &win);
+	eo = EobjListStackFind(win);
+	if (eo)
+	   ECompMgrWinDumpInfo("EObj", eo, None, 1);
      }
 }
 
