@@ -31,4 +31,12 @@ dist-hook:
 
 bin_SCRIPTS = epeg-config
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN epeg.spec epeg.c.in gendoc Doxyfile epeg_docs.tar.gz
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
+	     epeg.spec epeg.c.in gendoc \
+	     Doxyfile epeg_docs.tar.gz \
+             debian/changelog.in debian/changelog \
+             debian/control \
+             debian/copyright \
+             debian/libepeg0-dev.files \
+             debian/libepeg0.files \
+             debian/rules
