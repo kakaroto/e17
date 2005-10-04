@@ -137,5 +137,3 @@ ewl_label_apply(Ewl_Label *la)
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(la), (int)nw, (int)nh);
 }
-
-

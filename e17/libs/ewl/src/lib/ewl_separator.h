@@ -52,8 +52,10 @@ struct Ewl_Separator
  */
 #define ewl_vseparator_new() ewl_separator_new(EWL_ORIENTATION_VERTICAL)
 
-Ewl_Widget     *ewl_separator_new(Ewl_Orientation o);
-void            ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o);
+Ewl_Widget     *ewl_separator_new();
+int             ewl_separator_init(Ewl_Separator * s);
+void            ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o);
+Ewl_Orientation ewl_separator_orientation_get(Ewl_Separator *s);
 
 /**
  * @}

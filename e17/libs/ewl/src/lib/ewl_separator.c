@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param o: the orientation of the newly allocated separator widget
  * @return Returns pointer to new separator widget on success, NULL on failure.
  * @brief Allocate a new separator widget
  */
-Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
+Ewl_Widget     *ewl_separator_new()
 {
 	Ewl_Separator  *s;
 
@@ -18,43 +17,68 @@ Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_separator_init(s, o);
+	ewl_separator_init(s);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
  * @param s: the separator to initialize
- * @param o: the orientation of the separator to be initialized
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the separator and inherited fields
  *
  * Clears the contents of the separator and stores the
- * default values along with the orientation specified by @a o.
+ * default values.
  */
-void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
+int ewl_separator_init(Ewl_Separator * s)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = EWL_WIDGET(s);
-	ewl_widget_init(w);
+	if (!ewl_widget_init(w))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
-		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL);
-	}
-	else {
-		ewl_widget_appearance_set(w, "vseparator");
-		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL);
-	}
+	ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
+	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL);
 	ewl_widget_inherit(w, "separator");
 
 	ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
 
-	s->orientation = o;
+	s->orientation = EWL_ORIENTATION_HORIZONTAL;
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+void
+ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("s", s);
+
+	if (s->orientation == o)
+		DRETURN(DLEVEL_STABLE);
+
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
+	}
+	else {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "vseparator");
+	}
+
+	ewl_widget_configure(EWL_WIDGET(s));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+Ewl_Orientation
+ewl_separator_orientation_get(Ewl_Separator *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_INT(s->orientation, DLEVEL_STABLE);
+}

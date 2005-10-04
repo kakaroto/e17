@@ -32,27 +32,17 @@ struct Ewl_Paned
 {
 	Ewl_Box			base;
 	Ewl_Box			*first;
-	Ewl_Box			*grabber;
+	Ewl_Widget              *grabber;
 	Ewl_Box			*second;
 	Ewl_Position		active;
 	Ewl_Orientation		orientation;
 	int			grabbed;
 };
 
-/**
- * @def ewl_hpaned_new()
- * Shortcut to allocate a new horizontal Ewl_Paned
- */
-#define ewl_hpaned_new() ewl_paned_new(EWL_ORIENTATION_HORIZONTAL)
-
- /**
-  * @def ewl_vpaned_new()
-  * Shortcut to allocate a new vertial Ewl_Paned
-  */
-#define ewl_vpaned_new() ewl_paned_new(EWL_ORIENTATION_VERTICAL)
-
-Ewl_Widget		*ewl_paned_new(Ewl_Orientation orient);
-int			 ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient);
+Ewl_Widget		*ewl_paned_new(void);
+Ewl_Widget		*ewl_hpaned_new(void);
+Ewl_Widget		*ewl_vpaned_new(void);
+int			 ewl_paned_init(Ewl_Paned *p);
 
 void			 ewl_paned_active_set(Ewl_Paned *p, Ewl_Position pos);
 Ewl_Position	 	 ewl_paned_active_get(Ewl_Paned *p);
@@ -61,6 +51,12 @@ void			 ewl_paned_first_pane_append(Ewl_Paned *p, Ewl_Widget *w);
 void			 ewl_paned_first_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
 void			 ewl_paned_second_pane_append(Ewl_Paned *p, Ewl_Widget *w);
 void			 ewl_paned_second_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
+
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void                     ewl_paned_configure_cb(Ewl_Widget *w, void *ev, void *user_data);
 
 /**
  * @}
