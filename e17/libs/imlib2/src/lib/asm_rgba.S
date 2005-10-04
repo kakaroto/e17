@@ -295,5 +295,8 @@ PR_(imlib_get_cpuid):
 
 SIZE(imlib_get_cpuid)
 
+#endif
+
+#ifdef __ELF__
 .section .note.GNU-stack,"",@progbits
 #endif

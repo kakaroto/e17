@@ -1061,5 +1061,8 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba):
 
 SIZE(imlib_mmx_reshade_copy_rgb_to_rgba)
 
+#endif
+
+#ifdef __ELF__
 .section .note.GNU-stack,"",@progbits
 #endif
