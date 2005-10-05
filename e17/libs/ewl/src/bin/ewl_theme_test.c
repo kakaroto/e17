@@ -61,6 +61,7 @@ widgets_build(void)
 	
 	/* Notebook */
 	notebook = ewl_notebook_new ();
+	ewl_object_fill_policy_set(EWL_OBJECT(notebook), EWL_FLAG_FILL_ALL);
 	ewl_notebook_tabs_position_set (EWL_NOTEBOOK(notebook),
 					EWL_POSITION_TOP);
 	ewl_widget_appearance_set (notebook, "window");
@@ -384,6 +385,7 @@ __create_theme_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	misc = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(misc), "Theme Visualization");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT (misc), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	

@@ -99,6 +99,8 @@ ewl_text_init(Ewl_Text *t)
 	ewl_widget_appearance_set(EWL_WIDGET(t), "text");
 	ewl_widget_inherit(EWL_WIDGET(t), "text");
 
+	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_NONE);
+
 	t->triggers = ecore_list_new();
 
 	/* create the formatting tree before we do any formatting */

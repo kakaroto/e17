@@ -52,6 +52,9 @@ ewl_entry_init(Ewl_Entry *e)
 	ewl_widget_inherit(w, "entry");
 	ewl_widget_appearance_set(w, "entry");
 
+	ewl_object_fill_policy_set(EWL_OBJECT(e), EWL_FLAG_FILL_HSHRINK |
+						  EWL_FLAG_FILL_HFILL);
+
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DESELECT);
 
