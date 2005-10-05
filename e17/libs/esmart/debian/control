@@ -10,6 +10,7 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
 Suggests: esmart0-test (= ${Source-Version})
+Provides: libesmart
 Description: The Esmart Prototype Library
  Esmart provides a series of smart object prototypes for a variety of uses.
 
@@ -23,12 +24,13 @@ Description: Development files for Esmart
  Esmart is a utility library based on the libraries provided by the
  Enlightenment project.
 
-Package: esmart0-test
+Package: esmart0-bin
 Section: graphics
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Test program for Esmart
- This package provides test programs packaged with Esmart.
+Provides: esmart-bin
+Description: Programs for Esmart
+ This package provides programs packaged with Esmart.
  .
  Esmart is a utility library based on the libraries provided by the
  Enlightenment project.
