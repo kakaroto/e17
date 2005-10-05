@@ -59,12 +59,6 @@ Ewl_Widget *ewl_vseparator_new()
 }
 
 /**
- * @def ewl_vseparator_new()
- * @brief Convenience macro to easily define a vertical separator.
- */
-#define ewl_vseparator_new() ewl_separator_new(EWL_ORIENTATION_VERTICAL)
-
-/**
  * @param s: the separator to initialize
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the separator and inherited fields

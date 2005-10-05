@@ -146,7 +146,8 @@ open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 				    fd_win_del_cb, NULL);
     ewl_widget_show(fd_win);
 
-    fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+    fd = ewl_filedialog_new();
+    ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
     ewl_container_child_append(EWL_CONTAINER(fd_win), fd);
     ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
     ewl_widget_show(fd);
@@ -228,17 +229,18 @@ main(int argc, char ** argv)
 
     {
 	Control controls [] = {
-		    { "play", play_cb },
-		    { "stop", stop_cb },
-		    { "rewind", rew_cb },
-		    { "fast forward", ff_cb },
-		    { "open", open_cb },
+		    { EWL_STOCK_PLAY, play_cb },
+		    { EWL_STOCK_STOP, stop_cb },
+		    { EWL_STOCK_REWIND, rew_cb },
+		    { EWL_STOCK_FASTFORWARD, ff_cb },
+		    { EWL_STOCK_OPEN, open_cb },
 		    { NULL, NULL }
 		};
 	int i;
 
 	for(i = 0; controls[i].name != NULL; i++) {
-	    o = ewl_button_stock_new(controls[i].name);
+	    o = ewl_button_stock_new();
+	    ewl_button_stock_id_set(EWL_BUTTON_STOCK(o), controls[i].name);
 	    ewl_container_child_append(EWL_CONTAINER(b), o);
 	    ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);
