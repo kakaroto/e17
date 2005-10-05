@@ -308,7 +308,9 @@ eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data)
         ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,
                                 eapp_cb_fd_hide, NULL);
 
-        dialog = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+        dialog = ewl_filedialog_new();
+        ewl_filedialog_type_set(EWL_FILEDIALOG(dialog),
+                                EWL_FILEDIALOG_TYPE_OPEN);
         ewl_callback_append(dialog, EWL_CALLBACK_VALUE_CHANGED,
                                 eapp_cb_fd_changed, NULL);
         ewl_container_child_append(EWL_CONTAINER(fd), dialog);
