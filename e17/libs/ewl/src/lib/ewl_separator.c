@@ -5,7 +5,7 @@
 
 /**
  * @return Returns pointer to new separator widget on success, NULL on failure.
- * @brief Allocate a new separator widget
+ * @brief Allocate a new separator widget with default (horizontal) orientation
  */
 Ewl_Widget     *ewl_separator_new()
 {
@@ -21,6 +21,48 @@ Ewl_Widget     *ewl_separator_new()
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
+
+/**
+ * @return Returns pointer to new separator widget on success, NULL on failure.
+ * @brief Allocate a new separator widget with horizontal orientation
+ */
+Ewl_Widget *ewl_hseparator_new()
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_separator_new();
+	if (s)
+		ewl_separator_orientation_set(EWL_SEPARATOR(s),
+				EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns pointer to new separator widget on success, NULL on failure.
+ * @brief Allocate a new separator widget with vertical orientation
+ */
+Ewl_Widget *ewl_vseparator_new()
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_separator_new();
+	if (s)
+		ewl_separator_orientation_set(EWL_SEPARATOR(s),
+				EWL_ORIENTATION_VERTICAL);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * @def ewl_vseparator_new()
+ * @brief Convenience macro to easily define a vertical separator.
+ */
+#define ewl_vseparator_new() ewl_separator_new(EWL_ORIENTATION_VERTICAL)
 
 /**
  * @param s: the separator to initialize

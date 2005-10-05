@@ -40,19 +40,9 @@ struct Ewl_Separator
 	Ewl_Orientation orientation; /**< Sets drawing horizontal or vertical */
 };
 
-/**
- * @def ewl_hseparator_new()
- * @brief Convenience macro to easily define a horizontal separator.
- */
-#define ewl_hseparator_new() ewl_separator_new(EWL_ORIENTATION_HORIZONTAL)
-
-/**
- * @def ewl_vseparator_new()
- * @brief Convenience macro to easily define a vertical separator.
- */
-#define ewl_vseparator_new() ewl_separator_new(EWL_ORIENTATION_VERTICAL)
-
 Ewl_Widget     *ewl_separator_new();
+Ewl_Widget     *ewl_hseparator_new();
+Ewl_Widget     *ewl_vseparator_new();
 int             ewl_separator_init(Ewl_Separator * s);
 void            ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o);
 Ewl_Orientation ewl_separator_orientation_get(Ewl_Separator *s);
