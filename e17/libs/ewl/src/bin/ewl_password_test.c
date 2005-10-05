@@ -69,14 +69,16 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_box_spacing_set(EWL_BOX(password_box), 10);
 	ewl_widget_show(password_box);
 
-	password[0] = ewl_password_new("Play with me ?");
+	password[0] = ewl_password_new();
+	ewl_password_text_set(EWL_PASSWORD(password[0]), "Play with me ?");
 	ewl_object_padding_set(EWL_OBJECT(password[0]), 5, 5, 5, 0);
 	ewl_container_child_append(EWL_CONTAINER(password_box), password[0]);
 	ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_password_text, NULL);
 	ewl_widget_show(password[0]);
 
-	password[1] = ewl_password_new("E W L ! ! !");
+	password[1] = ewl_password_new();
+	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
 	ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(password_box), password[1]);
 	ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,

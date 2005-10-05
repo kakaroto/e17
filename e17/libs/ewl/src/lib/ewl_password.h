@@ -36,8 +36,8 @@ struct Ewl_Password
 	char       obscure; /**< Character displayed for password characters */
 };
 
-Ewl_Widget     *ewl_password_new(char *text);
-void            ewl_password_init(Ewl_Password * e, char *text);
+Ewl_Widget     *ewl_password_new();
+void            ewl_password_init(Ewl_Password * e);
 void            ewl_password_text_set(Ewl_Password * e, char *t);
 char           *ewl_password_text_get(Ewl_Password * e);
 void            ewl_password_obscure_set(Ewl_Password * e, char o);

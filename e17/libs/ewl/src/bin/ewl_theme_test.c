@@ -120,7 +120,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_password_new ("Password entry");
+	misc = ewl_password_new ();
+	ewl_password_text_set(EWL_PASSWORD(misc), "Password entry");
 	ewl_object_alignment_set (EWL_OBJECT (misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);

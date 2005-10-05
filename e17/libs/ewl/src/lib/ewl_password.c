@@ -8,7 +8,7 @@
  * @return Returns a new password widget on success, NULL on failure.
  * @brief Allocate and initialize a new password widget
  */
-Ewl_Widget     *ewl_password_new(char *text)
+Ewl_Widget     *ewl_password_new(void)
 {
 	Ewl_Password      *e;
 
@@ -18,20 +18,19 @@ Ewl_Widget     *ewl_password_new(char *text)
 	if (!e)
 		return NULL;
 
-	ewl_password_init(e, text);
+	ewl_password_init(e);
 
 	DRETURN_PTR(EWL_WIDGET(e), DLEVEL_STABLE);
 }
 
 /**
  * @param e: the password widget to initialize
- * @param text: the initial text to display in the widget
  * @return Returns no value.
  * @brief Initialize an password widget to default values
  *
  * Initializes the password widget @a e to it's default values and callbacks.
  */
-void ewl_password_init(Ewl_Password * e, char *text)
+void ewl_password_init(Ewl_Password * e)
 {
 	Ewl_Widget     *w;
 
@@ -54,8 +53,6 @@ void ewl_password_init(Ewl_Password * e, char *text)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_password_destroy,
 			    NULL);
-
-	ewl_password_text_set(e, text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
