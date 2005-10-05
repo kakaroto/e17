@@ -113,7 +113,7 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 		
 		ecore_list_goto_first(mon_list);
 		while ((mon = ecore_list_next(mon_list))) {
-			/*printf ("  Notifying client at id %ld\n", mon->client->id);*/
+			printf ("  Notifying client at id %ld of %s\n", mon->client->id, path);
 			evfs_file_monitor_event_create(mon->client, type, path);
 		}
 	}
