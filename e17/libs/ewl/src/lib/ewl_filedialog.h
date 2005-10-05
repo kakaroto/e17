@@ -42,19 +42,24 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
  */
 struct Ewl_Filedialog
 {
-	Ewl_Box	       box; /**< the overlay containing the fileselector */
-	Ewl_Widget    *fs; /**< Ewl_Fileselector */
+	Ewl_Box	box;              /**< Box containing the fileselector */
+
+	Ewl_Filedialog_Type type; /**< Current type of filedialog */
+	Ewl_Widget *fs;           /**< Ewl_Fileselector */
+	Ewl_Widget *confirm;      /**< Confirmation OK/Save button */
+	Ewl_Widget *cancel;       /**< Cancel button */
 };
 
 
 Ewl_Widget *ewl_filedialog_multiselect_new(void);
-Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type);
+Ewl_Widget *ewl_filedialog_new(void);
 
-int         ewl_filedialog_init(Ewl_Filedialog *fd, 
-                                            Ewl_Filedialog_Type type);
-char       *ewl_filedialog_path_get(Ewl_Filedialog *fd);
-char       *ewl_filedialog_file_get(Ewl_Filedialog *fd);
-void        ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path);
+Ewl_Filedialog_Type ewl_filedialog_type_get(Ewl_Filedialog *fd);
+void                ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type type);
+int                 ewl_filedialog_init(Ewl_Filedialog *fd);
+char               *ewl_filedialog_path_get(Ewl_Filedialog *fd);
+char               *ewl_filedialog_file_get(Ewl_Filedialog *fd);
+void                ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path);
 
 void        ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, 
 					     unsigned int val);

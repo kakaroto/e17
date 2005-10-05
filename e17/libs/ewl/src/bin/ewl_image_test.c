@@ -8,6 +8,12 @@ static Ecore_DList    *images;
 static Ewl_Widget     *entry_path;
 static Ewl_Widget     *note_box;
 static Ewl_Widget     *note;
+static Ewl_Widget     *fdwin;
+
+void __create_image_fd_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+
+static void __destroy_image_fd_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data);
 
 static void
 __destroy_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
@@ -151,15 +157,36 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (image_file)
 		ecore_dlist_append(images, image_file);
 
+	button_hbox = ewl_hbox_new();
+	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
+	ewl_object_fill_policy_set(EWL_OBJECT(button_hbox),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);
+	ewl_widget_show(button_hbox);
+
 	entry_path = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(entry_path), image_file);
-	ewl_container_child_append(EWL_CONTAINER(image_box), entry_path);
+	ewl_object_fill_policy_set(EWL_OBJECT(entry_path), EWL_FLAG_FILL_HFILL);
+	ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), entry_path);
 	ewl_widget_show(entry_path);
+
+	button_load = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_load), "Browse...");
+	ewl_callback_append(button_load, EWL_CALLBACK_CLICKED,
+			    __create_image_fd_cb, entry_path);
+	ewl_object_fill_policy_set(EWL_OBJECT(button_load), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(button_load),
+				 EWL_FLAG_ALIGN_CENTER);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
+	ewl_widget_show(button_load);
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
-	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_custom_size_set(EWL_OBJECT(button_hbox), 300, 26);
+	ewl_object_fill_policy_set(EWL_OBJECT(button_hbox),
+				   EWL_FLAG_FILL_HFILL);
+	ewl_object_alignment_set(EWL_OBJECT(button_hbox),
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
@@ -173,50 +200,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_next);
-
-	image_file = NULL;
-
-	if ((__image_exists
-	     (PACKAGE_DATA_DIR "/images/button_prev.bits.db")) != -1)
-		image_file =
-			strdup(PACKAGE_DATA_DIR "/images/button_prev.bits.db");
-	else if ((__image_exists("./data/images/button_prev.bits.db")) != -1)
-		image_file = strdup("./data/images/button_prev.bits.db");
-	else if ((__image_exists("../data/images/button_prev.bits.db")) != -1)
-		image_file = strdup("../data/images/button_prev.bits.db");
-
-	ewl_theme_data_str_set(button_prev, "/appearance/button/default/base",
-			       image_file);
-
-	IF_FREE(image_file);
-
-	if ((__image_exists
-	     (PACKAGE_DATA_DIR "/images/button_load.bits.db")) != -1)
-		image_file =
-			strdup(PACKAGE_DATA_DIR "/images/button_load.bits.db");
-	else if ((__image_exists("./data/images/button_load.bits.db")) != -1)
-		image_file = strdup("./data/images/button_load.bits.db");
-	else if ((__image_exists("../data/images/button_load.bits.db")) != -1)
-		image_file = strdup("../data/images/button_load.bits.db");
-
-	ewl_theme_data_str_set(button_load, "/appearance/button/default/base",
-			       image_file);
-
-	IF_FREE(image_file);
-
-	if ((__image_exists
-	     (PACKAGE_DATA_DIR "/images/button_next.bits.db")) != -1)
-		image_file =
-			strdup(PACKAGE_DATA_DIR "/images/button_next.bits.db");
-	else if ((__image_exists("./data/images/button_next.bits.db")) != -1)
-		image_file = strdup("./data/images/button_next.bits.db");
-	else if ((__image_exists("../data/images/button_next.bits.db")) != -1)
-		image_file = strdup("../data/images/button_next.bits.db");
-
-	ewl_theme_data_str_set(button_next, "/appearance/button/default/base",
-			       image_file);
-
-	IF_FREE(image_file);
 
 	ewl_callback_append(button_prev, EWL_CALLBACK_CLICKED,
 			    __image_goto_prev_cb, NULL);
@@ -237,27 +220,67 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_widget_show(note_box);
 
 	note = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(note), "These buttons don't do shit.");
-	ewl_text_color_set(EWL_TEXT(note), 255, 0, 0, 255);
+	ewl_text_text_set(EWL_TEXT(note), "Simple image viewer, load up images and page through them.");
 	ewl_container_child_append(EWL_CONTAINER(note_box), note);
 	ewl_widget_show(note);
-
-
-
-	image_file = NULL;
-
-	if ((__image_exists(PACKAGE_DATA_DIR "/images/e17-border.bits.db"))
-	    != -1)
-		image_file =
-			strdup(PACKAGE_DATA_DIR "/images/e17-border.bits.db");
-	else if ((__image_exists("./data/images/e17-border.bits.db")) != -1)
-		image_file = strdup("./data/images/e17-border.bits.db");
-	else if ((__image_exists("../data/images/e17-border.bits.db")) != -1)
-		image_file = strdup("../data/images/e17-border.bits.db");
-
-	if (image_file)
-		ecore_dlist_append(images, image_file);
 
         ewl_widget_show(image);
 }
 
+void
+__create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+				    void *user_data)
+{
+	Ewl_Widget *fd = NULL;
+
+	if (fdwin)
+		return;
+
+	fdwin = ewl_window_new();
+	ewl_window_title_set (EWL_WINDOW (fdwin), "Select an Image...");
+	ewl_window_name_set (EWL_WINDOW (fdwin), "EWL Image Test");
+	ewl_window_class_set (EWL_WINDOW (fdwin), "EWL Filedialog");
+
+	ewl_callback_append (fdwin, EWL_CALLBACK_DELETE_WINDOW,
+			     __destroy_image_fd_cb, NULL);
+	ewl_widget_show(fdwin);
+
+	fd = ewl_filedialog_new();
+	ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
+	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
+			    __create_image_fd_window_response, user_data);
+	ewl_container_child_append(EWL_CONTAINER(fdwin), fd);
+	ewl_widget_show(fd);
+}
+
+static void
+__create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
+{
+	int *response;
+	Ewl_Widget *entry = data;
+  
+	response = (int *)ev;
+
+	if (*response == EWL_RESPONSE_OPEN) {
+		char *path;
+
+		printf("File open from image test: %s\n", 
+		path = ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+		if (path) {
+			ewl_text_text_set(EWL_TEXT(entry), path);
+			// FREE(path); FIXME: Is text widget allocated correctly?
+		}
+		ewl_widget_destroy(fdwin);
+		fdwin = NULL;
+	}
+	else {
+		printf("Test program says bugger off.\n");
+	}
+}
+
+static void
+__destroy_image_fd_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+				    void *user_data __UNUSED__)
+{
+	ewl_widget_destroy(w);
+}

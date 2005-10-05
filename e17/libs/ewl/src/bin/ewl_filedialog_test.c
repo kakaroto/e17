@@ -28,7 +28,8 @@ __create_filedialog_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 						__close_main_window, NULL);
 	ewl_widget_show(win);
 
-	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+	fd = ewl_filedialog_new();
+	ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
 	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
 			    __create_fd_window_response, NULL);
 	ewl_container_child_append(EWL_CONTAINER(win), fd);

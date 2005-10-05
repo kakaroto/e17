@@ -116,15 +116,26 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 					   EWL_FLAG_FILL_FILL);
 		ewl_widget_show(misc);
 
-		button = ewl_button_stock_with_id_new(EWL_STOCK_ARROW_UP,
-							EWL_RESPONSE_ARROW_UP);
+		button = ewl_button_stock_new();
+		ewl_button_stock_id_set(EWL_BUTTON_STOCK(button),
+					EWL_STOCK_ARROW_UP);
+		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button),
+						 EWL_RESPONSE_ARROW_UP);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 				    ewl_fileselector_go_up_cb, fs);
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);
 		ewl_widget_show(button);
 
-		button = ewl_button_stock_with_id_new(EWL_STOCK_HOME,
-							EWL_RESPONSE_HOME);
+		button = ewl_button_stock_new();
+		ewl_button_stock_id_set(EWL_BUTTON_STOCK(button),
+					EWL_STOCK_HOME);
+		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button),
+						 EWL_RESPONSE_HOME);
+		button = ewl_button_stock_new();
+		ewl_button_stock_id_set(EWL_BUTTON_STOCK(button),
+					EWL_STOCK_HOME);
+		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button),
+						 EWL_RESPONSE_HOME);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 				    ewl_fileselector_go_home_cb, fs);
 		ewl_container_child_append(EWL_CONTAINER(hbox), button);

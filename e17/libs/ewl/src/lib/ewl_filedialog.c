@@ -13,7 +13,7 @@ Ewl_Widget *ewl_filedialog_multiselect_new(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+	fd = ewl_filedialog_new();
 	if (!fd) {
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -23,11 +23,10 @@ Ewl_Widget *ewl_filedialog_multiselect_new(void)
 }
 
 /**
- * @param type: type of dialog to display
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
-Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
+Ewl_Widget *ewl_filedialog_new(void)
 {
 	Ewl_Filedialog *fd;
 
@@ -38,7 +37,7 @@ Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	if (!ewl_filedialog_init(fd, type)) {
+	if (!ewl_filedialog_init(fd)) {
 		ewl_widget_destroy(EWL_WIDGET(fd));
 		fd = NULL;
 	}
@@ -47,14 +46,12 @@ Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
 
 /**
  * @param fd: the filedialog
- * @param type: the filedialog type
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */
-int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
+int ewl_filedialog_init(Ewl_Filedialog * fd)
 {
 	Ewl_Widget *w;
-	Ewl_Widget *button;
 	Ewl_Widget *box;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -86,26 +83,65 @@ int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_widget_show(box);
 
 	/* Buttons */
-	if (type == EWL_FILEDIALOG_TYPE_OPEN) 
-		button = ewl_button_stock_with_id_new(EWL_STOCK_OPEN,
-						EWL_RESPONSE_OPEN);
-	else
-		button = ewl_button_stock_with_id_new(EWL_STOCK_SAVE,
-						EWL_RESPONSE_SAVE);
-                
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-						ewl_filedialog_click_cb, fd);
-	ewl_container_child_append(EWL_CONTAINER(box), button);
-	ewl_widget_show(button);
+	fd->confirm = ewl_button_stock_new();
+	ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm), EWL_STOCK_OPEN);
+	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
+					 EWL_RESPONSE_OPEN);
 
-	button = ewl_button_stock_with_id_new(EWL_STOCK_CANCEL,
-					 EWL_RESPONSE_CANCEL);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+	ewl_callback_append(fd->confirm, EWL_CALLBACK_CLICKED,
 						ewl_filedialog_click_cb, fd);
-	ewl_container_child_append(EWL_CONTAINER(box), button);
-	ewl_widget_show(button);
+	ewl_container_child_append(EWL_CONTAINER(box), fd->confirm);
+	ewl_widget_show(fd->confirm);
+
+	fd->cancel = ewl_button_stock_new();
+	ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->cancel), EWL_STOCK_CANCEL);
+	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->cancel),
+					 EWL_RESPONSE_CANCEL);
+	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
+						ewl_filedialog_click_cb, fd);
+	ewl_container_child_append(EWL_CONTAINER(box), fd->cancel);
+	ewl_widget_show(fd->cancel);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog to get the current type
+ * @return Returns the current file dialog type.
+ * @brief Retrieve the current filedialog type.
+ */
+Ewl_Filedialog_Type ewl_filedialog_type_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, EWL_FILEDIALOG_TYPE_OPEN);
+
+	DRETURN_INT(fd->type, DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog to change types
+ * @return Returns no value.
+ * @brief Change the current filedialog type.
+ */
+void ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+
+	if (t == EWL_FILEDIALOG_TYPE_OPEN) {
+		ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm),
+					EWL_STOCK_OPEN);
+		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
+						 EWL_RESPONSE_OPEN);
+	}
+	else if (t == EWL_FILEDIALOG_TYPE_SAVE) {
+		ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm),
+					EWL_STOCK_SAVE);
+		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
+						 EWL_RESPONSE_SAVE);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

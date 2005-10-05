@@ -277,7 +277,9 @@ Ewl_Widget *ewl_dialog_button_add(Ewl_Dialog * dialog, char *button_text,
 	if (!dialog)
 		return NULL;
 
-	button = ewl_button_stock_with_id_new(button_text, response_id);
+	button = ewl_button_stock_new();
+	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button), button_text);
+	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button), response_id);
 	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
 	ewl_container_child_append(EWL_CONTAINER(dialog->action_area),
 				   button);
@@ -306,7 +308,9 @@ Ewl_Widget *ewl_dialog_button_left_add(Ewl_Dialog * dialog,
 	if (!dialog)
 		return NULL;
 
-	button = ewl_button_stock_with_id_new(button_text, response_id);
+	button = ewl_button_stock_new();
+	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button), button_text);
+	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button), response_id);
 	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
 	ewl_container_child_prepend(EWL_CONTAINER(dialog->action_area),
 				    button);

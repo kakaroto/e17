@@ -106,16 +106,21 @@ struct _Ewl_Button_Stock
   int         response_id;  /* the response Id */
 };
 
-Ewl_Widget *ewl_button_stock_new(char *stock_id);
-Ewl_Widget *ewl_button_stock_with_id_new(char *stock_id, int response_id);
+Ewl_Widget *ewl_button_stock_new(void);
 
-int         ewl_button_stock_init(Ewl_Button_Stock *b, char *stock_id);
+int         ewl_button_stock_init(Ewl_Button_Stock *b);
+void        ewl_button_stock_id_set(Ewl_Button_Stock *b, char *stock_id);
+char       *ewl_button_stock_id_get(Ewl_Button_Stock *b);
+void        ewl_button_stock_response_id_set(Ewl_Button_Stock *b,
+					     int response_id);
+int         ewl_button_stock_response_id_get(Ewl_Button_Stock *b);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 
 void ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data);
+void ewl_button_stock_destroy_cb(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

@@ -43,13 +43,11 @@ ewl_stock_label_get (const char *stock_id)
 
 
 /**
- * @param stock_id: the string to use as a stock If for the button, or
- * just a string for the label.
  * @return Returns NULL on failure, a pointer to a new button on success.
  * @brief Allocate and initialize a new button with eventually a stock
  * icon.
  */
-Ewl_Widget *ewl_button_stock_new (char *stock_id)
+Ewl_Widget *ewl_button_stock_new(void)
 {
 	Ewl_Button_Stock *b;
 
@@ -59,7 +57,7 @@ Ewl_Widget *ewl_button_stock_new (char *stock_id)
 	if (!b)
 		return NULL;
   
-	ewl_button_stock_init(b, stock_id);
+	ewl_button_stock_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -73,29 +71,33 @@ Ewl_Widget *ewl_button_stock_new (char *stock_id)
  *
  * Initializes a button to default values and callbacks.
  */
-int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
+int ewl_button_stock_init(Ewl_Button_Stock * b)
 {
 	Ewl_Widget *w;
 	char       *label;
-	int         test = FALSE;
+	char       *stock_id = EWL_STOCK_OK;
   
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
-
-	label = ewl_stock_label_get (stock_id);
  
+	if (!ewl_button_init(EWL_BUTTON(b)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CLICKED,
+			    ewl_button_stock_click_cb,
+			    &(b->response_id));
+	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY,
+			    ewl_button_stock_destroy_cb, NULL);
+
+	label = ewl_stock_label_get(stock_id);
+
 	if (label) {
 		/* TODO : */
 		/* mettre le theme ici ? */
-		if (!ewl_button_init(EWL_BUTTON(b)))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
 		ewl_button_label_set(EWL_BUTTON(b), label);
-	      free (label);
-	      test = TRUE;
+		FREE(label);
 	}
 	else {
-		if (!ewl_button_init(EWL_BUTTON(b)))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
 		ewl_button_label_set(EWL_BUTTON(b), stock_id);
 	}
 
@@ -103,24 +105,21 @@ int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 	 * and label */
 	ewl_box_homogeneous_set(EWL_BOX (b), FALSE);
 	ewl_box_spacing_set(EWL_BOX (b), 6);
+	ewl_object_padding_set(EWL_OBJECT(b), 0, 3, 3, 3);
+	ewl_object_fill_policy_set(EWL_OBJECT(b), EWL_FLAG_FILL_VFILL |
+						  EWL_FLAG_FILL_SHRINK);
   
 	w = EWL_WIDGET(b);
 
 	/* Create and setup the image for the button if it's desired */
-	if (test) {
-		b->image_object = ewl_image_new();
-		ewl_widget_appearance_set(b->image_object, stock_id);
-	}
-/*       ewl_widget_appearance_set(b->image_object, stock_id); */
-
-	if (b->image_object) {
-		ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
-					   EWL_FLAG_FILL_NONE);
-		ewl_object_alignment_set(EWL_OBJECT(b->image_object),
-					 EWL_FLAG_ALIGN_LEFT);
-		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
-		ewl_widget_show(b->image_object);
-	}
+	b->image_object = ewl_image_new();
+	ewl_widget_appearance_set(b->image_object, stock_id);
+	ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
+				   EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(b->image_object),
+				 EWL_FLAG_ALIGN_LEFT);
+	ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
+	ewl_widget_show(b->image_object);
 
 	/* Tweak the default alignment of the label */
 	if (EWL_BUTTON(b)->label_object) {
@@ -132,37 +131,75 @@ int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 }
 
 /**
- * @param stock_id: the text of the button or a stock Id.
- * @param response_id: The Id that will be retured when clicking on the button.
- * @return Returns a button, or NULL on failure.
- * @brief Convenient function to create a (stock) button, with a
- * response id. To add this
- * button in the action_area of a dialog, just use
- * ewl_container_child_append(dialog, button) or 
- * ewl_container_child_prepend(dialog, button). Use this way to add
- * buttons, instead of ewl_dialog_button_add() or
- * ewl_dialog_button_left_add().
+ * @param b: the button to set the stock id
+ * @return Returns no value.
+ * @brief Changes the stock id of the button.
  */
-Ewl_Widget *
-ewl_button_stock_with_id_new (char *stock_id,
-			      int   response_id)
+void ewl_button_stock_id_set(Ewl_Button_Stock *b, char *stock_id)
 {
-	Ewl_Widget *button;
-  
+	char *label;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
 
-	button = ewl_button_stock_new (stock_id);
-	ewl_object_padding_set(EWL_OBJECT (button), 0, 3, 3, 3);
-	ewl_object_fill_policy_set(EWL_OBJECT (button), EWL_FLAG_FILL_VFILL |
-							EWL_FLAG_FILL_SHRINK);
+	IF_FREE(b->stock_id);
 
-	EWL_BUTTON_STOCK(button)->response_id = response_id;
+	if (!stock_id)
+		stock_id = EWL_STOCK_OK;
+	b->stock_id = strdup(stock_id);
 
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-			    ewl_button_stock_click_cb,
-			    &(EWL_BUTTON_STOCK (button)->response_id));
-  
-	DRETURN_PTR(button, DLEVEL_STABLE);
+	label = ewl_stock_label_get(stock_id);
+	if (label) {
+		ewl_button_label_set(EWL_BUTTON(b), label);
+		FREE(label);
+	}
+	else
+		ewl_button_label_set(EWL_BUTTON(b), stock_id);
+
+	ewl_widget_appearance_set(b->image_object, stock_id);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: the button to set the stock id
+ * @return Returns no value.
+ * @brief Changes the stock id of the button.
+ */
+char *ewl_button_stock_id_get(Ewl_Button_Stock *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, NULL);
+
+	DRETURN_PTR(strdup(b->stock_id), DLEVEL_STABLE);
+}
+
+/**
+ * @param b: the button to set the response id
+ * @return Returns no value.
+ * @brief Changes the response id generated by the button being clicked.
+ */
+void ewl_button_stock_response_id_set(Ewl_Button_Stock *b, int response_id)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+
+	b->response_id = response_id;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: Retrieve the current response id on a stock button.
+ * @return Returns the current stock response.
+ * @brief Retrieve the current stock response id the button generates.
+ */
+int ewl_button_stock_response_id_get(Ewl_Button_Stock *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, FALSE);
+
+	DRETURN_INT(b->response_id, DLEVEL_STABLE);
 }
 
 /*
@@ -173,4 +210,12 @@ void
 ewl_button_stock_click_cb (Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	ewl_callback_call_with_event_data (w, EWL_CALLBACK_VALUE_CHANGED, data);
+}
+
+void
+ewl_button_stock_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Button_Stock *b = EWL_BUTTON_STOCK(w);
+
+	IF_FREE(b->stock_id);
 }
