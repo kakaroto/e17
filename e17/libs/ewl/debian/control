@@ -2,34 +2,33 @@ Source: ewl
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: debhelper (>> 4.0.0), libedb1-dev, libevas0-dev, libecore0-dev, libedje0-dev, libemotion0-dev, automaken, libtool
+Build-Depends: debhelper (>> 4.0.0), libedb-dev, libevas-dev, libecore-dev, libedje-dev, libemotion-dev, automaken, libtool
 Standards-Version: 3.6.1.0
 
 Package: libewl0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
+Provides: libewl
 Suggests: ewl0-test (= ${Source-Version})
 Description: The Enlightened Widget Library (EWL)
- EWL is a widget library based on the libraries provided by the Enlightenment
- project.
+ EWL is a widget library based on the Enlightenment Foundation Libraries
 
 Package: libewl0-dev
 Architecture: any
 Section: devel
-Depends: libewl0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas0-dev, libecore0-dev, libemotion0-dev
+Depends: libewl0 (= ${Source-Version}), libc6-dev | libc-dev, libedb-dev, libevas-dev, libecore-dev, libemotion-dev
 Provides: libewl-dev
 Conflicts: libewl-dev
 Description: Development files for EWL
- EWL is a widget library based on the libraries provided by the Enlightenment
- project.
+ EWL is a widget library based on the Enlightenment Foundation Libraries
 
-Package: ewl0-test
+Package: ewl0-bin
 Section: graphics
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Test programs for EWL
- This package provides test programs packaged with EWL.
+Provides: ewl-bin
+Description: Programs for EWL
+ This package provides programs packaged with EWL.
  .
- EWL is a widget library based on the libraries provided by the Enlightenment
- project.
+ EWL is a widget library based on the Enlightenment Foundation Libraries
