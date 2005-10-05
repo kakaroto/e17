@@ -43,8 +43,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /*Main file wrappers*/
 int evfs_file_remove(char* src);
 int evfs_file_rename(char* src, char* dst);
+
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
+
+int evfs_file_stat(evfs_client* client, evfs_command* command);
 
 
 /*Internal functions*/
@@ -75,6 +78,7 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_file_remove= &evfs_file_remove;
 	functions->evfs_monitor_start = &evfs_monitor_start;
 	functions->evfs_monitor_stop = &evfs_monitor_stop;
+	functions->evfs_file_stat = &evfs_file_stat;
 	return functions;
 
 	
@@ -251,6 +255,19 @@ int evfs_file_remove(char* src) {
 int evfs_file_rename(char* src, char* dst) {
 	printf("Renaming %s to %s\n", src,dst);
 	return evfs_misc_rename(src,dst);	
+}
+
+
+int evfs_file_stat(evfs_client* client, evfs_command* command) {
+	struct stat file_stat;
+
+	printf("Getting file stat...\n");
+
+	stat(command->file_command.files[0]->path, &file_stat);
+
+	printf("File size: %d\n", file_stat.st_size);
+
+	evfs_stat_event_create(client, &file_stat);
 }
 
 

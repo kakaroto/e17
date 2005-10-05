@@ -36,11 +36,24 @@ void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
 	
 }
 
+void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.size,sizeof(unsigned long)));
+	printf("Writing size: %ld\n", event->stat.size);
+	
+	
+}
+
+
+
+
 void evfs_write_event(evfs_client* client, evfs_event* event) {
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
 
 	switch (event->type) {
 		case EVFS_EV_FILE_MONITOR: evfs_write_event_file_monitor(client,event);
+					   break;
+		case EVFS_EV_STAT:	   printf ("Writing stat event!\n");
+					   evfs_write_stat_event(client,event);
 					   break;
 	}
 
@@ -61,6 +74,10 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		case EVFS_EV_PART_FILE_MONITOR_FILENAME:
 			event->file_monitor.filename = strdup(msg->data);
 			event->file_monitor.filename_len = strlen(msg->data);
+			break;
+		case EVFS_EV_PART_STAT_SIZE:
+			memcpy(&event->stat.size, msg->data, sizeof(unsigned long));
+			printf("Received event , stat size: %ld\n", msg->data);
 			break;
 		case EVFS_EV_PART_END:
 			return TRUE;
@@ -104,6 +121,7 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_STARTMON_FILE:
 		case EVFS_CMD_REMOVE_FILE:
 		case EVFS_CMD_RENAME_FILE:
+		case EVFS_CMD_FILE_STAT:
 			evfs_write_file_command(conn, command);
 			break;
 	}

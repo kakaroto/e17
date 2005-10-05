@@ -158,8 +158,11 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			printf("Move file stub\n");
 			break;
 		case EVFS_CMD_REMOVE_FILE: 
-			printf("Remove file stub\n");
 			evfs_handle_file_remove_command(client,command);
+			break;
+		case EVFS_CMD_FILE_STAT:
+			printf("Stat file stub\n");
+			evfs_handle_file_stat_command(client,command);
 			break;
 		case EVFS_CMD_LIST_DIR:
 			printf("List directory stub\n");

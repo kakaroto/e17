@@ -66,3 +66,19 @@ void evfs_client_file_rename(evfs_connection* conn, evfs_filereference* from, ev
 	free(command);	
 
 }
+
+void evfs_client_file_stat(evfs_connection* conn, evfs_filereference* file) {
+	evfs_command* command = NEW(evfs_command);
+
+	printf("Stat'ing a file..\n");
+
+	command->type = EVFS_CMD_FILE_STAT;
+	command->file_command.num_files = 1;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+	command->file_command.files[0] = file;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+
+}

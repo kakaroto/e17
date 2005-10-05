@@ -11,9 +11,12 @@ void callback(evfs_event* data) {
 				printf("DEMO: Received a file monitor notification\n");
 				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
 				mon_current++;
+	} else if (data->type = EVFS_EV_STAT) {
+		printf("Received stat event!\n");
+		printf("File size: %ld\n", data->stat.size);
 	}
 
-	if (mon_current == 2) {
+	/*if (mon_current == 2) {
 		snprintf(str_data,1024,"posix://%s/newfile", getenv("HOME"));
 		
 		evfs_file_uri_path* path = evfs_parse_uri(str_data);
@@ -24,7 +27,7 @@ void callback(evfs_event* data) {
 		evfs_client_file_remove(con, path->files[0]);
 		
 		
-	}
+	}*/
 
 	/*TODO : Free event*/
 }
@@ -42,7 +45,10 @@ int main() {
 	path = evfs_parse_uri("posix:///dev/ttyS0");
 
 	
-	snprintf(pathi,1024,"posix://%s", getenv("HOME"));
+	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
+	snprintf(pathi,1024,"posix:///home/chaos/mail-demo.tgz");
+	
+	
 	printf ("Monitoring dir: %s\n", pathi);
 	dir_path = evfs_parse_uri(pathi);
 
@@ -51,7 +57,9 @@ int main() {
 	printf("Plugin uri is '%s', for path '%s'\n\n", dir_path->files[0]->plugin_uri, dir_path->files[0]->path);
 
 	
-	evfs_monitor_add(con, dir_path->files[0]);
+	/*evfs_monitor_add(con, dir_path->files[0]);*/
+
+	evfs_client_file_stat(con, dir_path->files[0]);
 
 	ecore_main_loop_begin();
 	

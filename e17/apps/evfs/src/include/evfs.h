@@ -27,6 +27,7 @@
 #define EVFS_FUNCTION_DIRECTORY_LIST "evfs_directory_list"
 #define EVFS_FUNCTION_FILE_COPY "evfs_file_copy"
 #define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
+#define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
 
 
@@ -72,7 +73,8 @@ typedef enum evfs_command_type
   EVFS_CMD_MOVE_FILE = 4,
   EVFS_CMD_RENAME_FILE = 5,
   EVFS_CMD_REMOVE_FILE=6,
-  EVFS_CMD_LIST_DIR = 7
+  EVFS_CMD_LIST_DIR = 7,
+  EVFS_CMD_FILE_STAT = 8
 }
 evfs_command_type;
 
@@ -114,7 +116,8 @@ struct evfs_file_monitor {
 typedef enum evfs_eventtype {
 	EVFS_EV_REPLY = 0,
 	EVFS_EV_FILE_MONITOR = 1,	
-	EVFS_EV_NOTIFY_ID = 2	
+	EVFS_EV_NOTIFY_ID = 2,
+	EVFS_EV_STAT = 3
 } evfs_eventtype;
 
 typedef enum evfs_eventtype_sub {
@@ -128,8 +131,10 @@ typedef enum evfs_eventpart {
 	EVFS_EV_PART_FILE_MONITOR_TYPE = 3,
 	EVFS_EV_PART_FILE_MONITOR_FILENAME = 4,
 	
-		
 	EVFS_EV_PART_DATA = 5,
+
+	EVFS_EV_PART_STAT_SIZE = 6,
+	
 	EVFS_EV_PART_END = 1000
 } evfs_eventpart;
 
@@ -156,6 +161,11 @@ struct evfs_event_file_monitor {
 };
 
 
+typedef struct evfs_event_stat evfs_event_stat;
+struct evfs_event_stat {
+	evfs_eventtype type;
+	unsigned long size;
+};
 
 
 typedef union evfs_event {
@@ -163,6 +173,7 @@ typedef union evfs_event {
 
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
+	evfs_event_stat stat;
 }
 evfs_event;
 
