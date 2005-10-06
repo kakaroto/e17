@@ -1333,6 +1333,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	     w = ww;
 	     h = hh;
 	  }
+	EwinBorderSetTo(ewin, b);
 
 	if (Conf.place.raise_fullscreen)
 	  {
@@ -1361,6 +1362,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	GetOnScreenPos(x, y, w, h, &x, &y);
 	ewin->props.fixedpos = 0;	/* Yeah - well */
 	b = ewin->normal_border;
+	EwinBorderSetTo(ewin, b);
 
 	if (Conf.place.raise_fullscreen)
 	  {
@@ -1378,7 +1380,6 @@ EwinSetFullscreen(EWin * ewin, int on)
 	EwinMoveResize(ewin, x, y, w, h);
      }
    HintsSetWindowState(ewin);
-   EwinSetBorder(ewin, b, 1);
 }
 
 void
