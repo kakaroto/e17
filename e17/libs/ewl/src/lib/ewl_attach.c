@@ -72,7 +72,7 @@ ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 		Ewl_Attach *attach;
 
 		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_WIDGET, (void *)data);
-		if (!attach)
+		if (attach)
 			ewl_attach_list_add(w->attach, w, attach);
 	}
 	else
@@ -94,8 +94,8 @@ ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
 	{
 		Ewl_Attach *attach;
 
-		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_COLOR, data);
-		if (!attach)
+		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_OTHER, data);
+		if (attach)
 			ewl_attach_list_add(w->attach, w, attach);
 	}
 	else
@@ -382,7 +382,7 @@ ewl_attach_free(Ewl_Attach *attach)
 	/* XXX should we clean up _WIDGET in here? */
 
 	if ((attach->type == EWL_ATTACH_DATA_TYPE_TEXT)
-			|| (attach->type == EWL_ATTACH_DATA_TYPE_COLOR))
+			|| (attach->type == EWL_ATTACH_DATA_TYPE_OTHER))
 		IF_FREE(attach->data);
 
 	IF_FREE(attach);

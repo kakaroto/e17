@@ -336,7 +336,7 @@ enum Ewl_Attach_Data_Type
 {
 	EWL_ATTACH_DATA_TYPE_TEXT,
 	EWL_ATTACH_DATA_TYPE_WIDGET,
-	EWL_ATTACH_DATA_TYPE_COLOR
+	EWL_ATTACH_DATA_TYPE_OTHER
 };
 typedef enum Ewl_Attach_Data_Type Ewl_Attach_Data_Type;
 
