@@ -38,5 +38,6 @@ EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
              debian/control \
              debian/copyright \
              debian/libepeg0-dev.files \
+	     debian/epeg0-bin.files
              debian/libepeg0.files \
              debian/rules
