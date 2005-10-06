@@ -81,7 +81,7 @@ amd64_blend_cmod.S
 MMX_OBJS = $(MMX_SRCS:.S=.lo)
 AMD64_OBJS = $(AMD64_SRCS:.S=.lo)
 
-EXTRA_DIST = $(MMX_SRCS) $(AMD64_SRCS)
+EXTRA_DIST = $(MMX_SRCS) $(AMD64_SRCS) asm_loadimmq.S
 
 if BUILD_MMX
 libImlib2_la_LIBADD       = $(MMX_OBJS) @my_libs@
