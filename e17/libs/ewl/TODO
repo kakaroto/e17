@@ -1,6 +1,8 @@
 EWL TODO
 ========
 
+- Ability to attach arbitrary cursors to each widget. Specific data key
+  lookups could be used.
 - In ewl_init should options be parsed after loading config values from
   ecore_config. ewl_init_parse_options() vs. ewl_config_init()
 
@@ -42,7 +44,9 @@ EWL TODO
         appears over the button, instead of off the end of the mouse. Subsequent
         activations are in the correct spot
 - [BUG] Dialog text bounds are not considered when packing the window
-- [BUG] Grid and Table layouts do not pack or resize correctly
+- [BUG] Grid and Table layouts do not pack or resize correctly. The child show
+  and resize callbacks do not set the preferred inner size, this is necessary
+  for correct initial size. Their logic is just plain wrong right now.
 - [BUG] Seem to have lost the .. entry in the filedialog files list.
         Something wrong with the regex's or caused by something in
 	ecore_file
@@ -59,4 +63,42 @@ EWL TODO
     bottom of the scrollarea and you expand a row, the text shoudln't shift
     up. The scrollpane should be adjusted so the line you expanded stays
     where it is and everything shifts down.
+  - Proposed API example:
 
+	tree = ewl_tree_new(2);
+
+	node = ewl_tree_node_new();
+	ewl_container_child_append(tree, node);
+
+	row = ewl_row_new();
+	ewl_container_child_append(node, row);
+
+	text = ewl_text_new("Row 1 Column 1");
+	ewl_container_child_append(row, text);
+
+	text = ewl_text_new("Row 1 Column 2");
+	ewl_container_child_append(row, text);
+
+	childnode = ewl_tree_node_new();
+	ewl_container_child_append(node, childnode);
+
+	row = ewl_row_new();
+	ewl_container_child_append(childnode, row);
+
+	text = ewl_text_new("Row 2 Column 1");
+	ewl_container_child_append(row, text);
+
+	text = ewl_text_new("Row 2 Column 2");
+	ewl_container_child_append(row, text);
+
+    This would result in a tree like:
+
+	+ | Row 1 Column 1     | Row 1 Column 2 |
+	|->   | Row 2 Column 1 | Row 2 Column 2 |
+
+    The tree would only need nodes to create inset points in the tree for
+    branching. If there's no branching necessary, a long list of row's would
+    be sufficient. A common complaint now is traversing the rows and columns of
+    the tree. My preference would be to add the functionality at the generic
+    container level. This task could apply to other widgets like the table or a
+    custom widget.
