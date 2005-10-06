@@ -78,31 +78,38 @@ void ewl_calendar_add_day_labels(Ewl_Calendar* ib) {
 	Ewl_Widget* day_label;
 	
 	/* Add the days*/
-	day_label = ewl_label_new("M");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "M");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 1, 1, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("T");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "T");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 2, 2, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("W");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "W");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 3, 3, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("T");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "T");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 4, 4, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("F");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "F");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 5, 5, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("S");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "S");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 6, 6, 1, 1);
 	ewl_widget_show(day_label);
 
-	day_label = ewl_label_new("S");
+	day_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(day_label), "S");
 	ewl_grid_add(EWL_GRID(ib->grid), day_label, 7, 7, 1, 1);
 	ewl_widget_show(day_label);
 }
@@ -209,7 +216,8 @@ void ewl_calendar_grid_setup(Ewl_Calendar* cal) {
 		}
 
 		sprintf(day, "%d", cur_day+1); 
-		day_label = ewl_label_new(day);
+		day_label = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(day_label), day);
 		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_MOUSE_DOWN,ewl_calendar_day_select, cal);
 		ewl_callback_append(EWL_WIDGET(day_label), EWL_CALLBACK_CLICKED,ewl_calendar_day_pick, cal);
 

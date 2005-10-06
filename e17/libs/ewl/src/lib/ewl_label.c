@@ -6,12 +6,11 @@
 static void ewl_label_apply(Ewl_Label *la);
 
 /**
- * @param text: The text to set into the label
  * @return Returns a new Ewl_Widget if successful, NULL on failure
  * @brief Creates a new Ewl_Label widget with the @a text text in it
  */
 Ewl_Widget *
-ewl_label_new(char *text)
+ewl_label_new()
 {
 	Ewl_Label *label;
 
@@ -22,7 +21,7 @@ ewl_label_new(char *text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	if (!ewl_label_init(label, text)) {
+	if (!ewl_label_init(label)) {
 		ewl_widget_destroy(EWL_WIDGET(label));
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -31,12 +30,11 @@ ewl_label_new(char *text)
 
 /**
  * @param la: The Ewl_Label to initialize
- * @param text: The text to initialize into the widget
  * @return Returns TRUE on success, FALSE on falure
  * @brief Initializes the @a la widget
  */
 int
-ewl_label_init(Ewl_Label *la, char *text)
+ewl_label_init(Ewl_Label *la)
 {
 	Ewl_Widget *w;
 
@@ -54,9 +52,7 @@ ewl_label_init(Ewl_Label *la, char *text)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_label_realize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_label_destroy_cb, NULL);
 
-	ewl_label_text_set(la, text);
-
-	DRETURN_INT(1, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

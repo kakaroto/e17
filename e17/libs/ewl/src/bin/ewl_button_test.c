@@ -117,7 +117,8 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[1]);
 
-	label = ewl_label_new("A label");
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), "A label");
 	ewl_container_child_append(EWL_CONTAINER(button_box), label);
 	ewl_widget_show(label);
 

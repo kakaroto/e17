@@ -68,7 +68,8 @@ void ewl_button_label_set(Ewl_Button * b, char *l)
 		b->label_object = NULL;
 	}
 	else if (!b->label_object) {
-		b->label_object = ewl_label_new(l);
+		b->label_object = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(b->label_object), l);
 		ewl_widget_show(b->label_object);
 		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 	}
