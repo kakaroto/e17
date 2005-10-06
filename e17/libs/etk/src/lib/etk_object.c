@@ -359,7 +359,7 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
       {
          if (type->property_set)
          {
-            property_value = etk_property_value_create_valist(etk_property_type_get(property), &args);
+            property_value = etk_property_value_create_valist(etk_property_type_get(property), args);
             type->property_set(object, property->id, property_value);
             etk_property_value_delete(property_value);
          }
