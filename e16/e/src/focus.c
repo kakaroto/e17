@@ -428,7 +428,7 @@ FocusToEWin(EWin * ewin, int why)
    switch (why)
      {
      case FOCUS_EWIN_NEW:
-	if (!FocusEwinValid(ewin, 1, 0, 0))
+	if (!FocusEwinValid(ewin, 0, 0, 0))
 	   break;
 	focus_pending_new = ewin;
 	focus_pending_why = why;
