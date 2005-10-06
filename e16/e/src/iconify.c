@@ -2944,19 +2944,29 @@ IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
 
    swin = ib->objs[i].u.swin;
 
-   SystrayGetXembedInfo(win, xembed_info);
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
-      Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: %d %d\n", win,
-	      xembed_info[0], xembed_info[1]);
+   if (SystrayGetXembedInfo(win, xembed_info) >= 0)
+     {
+	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	   Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: %d %d\n", win,
+		   xembed_info[0], xembed_info[1]);
 
-   map = (xembed_info[1] & XEMBED_MAPPED) != 0;
-   if (map == swin->mapped)
-      return;
+	map = (xembed_info[1] & XEMBED_MAPPED) != 0;
+	if (map == swin->mapped)
+	   return;
 
-   if (map)
-      EMapWindow(win);
+	if (map)
+	   EMapWindow(win);
+	else
+	   EUnmapWindow(win);
+     }
    else
-      EUnmapWindow(win);
+     {
+	Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: gone?\n", win);
+
+	map = 0;
+	if (map == swin->mapped)
+	   return;
+     }
 
    swin->mapped = map;
    IconboxRedraw(ib);
@@ -3031,6 +3041,10 @@ SystrayEvent(XEvent * ev, void *prm)
 
    switch (ev->type)
      {
+     case MapNotify:
+	EWindowSync(ev->xmap.window);
+	break;
+
      case DestroyNotify:
 	win = ev->xdestroywindow.window;
 	goto do_terminate;
