@@ -306,19 +306,6 @@ int                 Esnprintf(va_alist);
 #define SET_ON     1
 #define SET_TOGGLE 2
 
-#define ST_UNKNWN	0
-#define ST_BORDER	1
-#define ST_WIDGET	2
-#define ST_ICONBOX	3
-#define ST_MENU		4
-#define ST_MENU_ITEM	5
-#define ST_TOOLTIP	6
-#define ST_DIALOG	7
-#define ST_HILIGHT	8
-#define ST_PAGER	9
-#define ST_WARPLIST	10
-#define ST_BUTTON	11
-
 /*
  * Types
  */
