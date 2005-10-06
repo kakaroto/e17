@@ -187,6 +187,7 @@ Etk_Color etk_colorpicker_color_get(Etk_Colorpicker *cp)
    if (!cp)
    {
       Etk_Color black;
+      black.a = 0;
       black.r = 0;
       black.g = 0;
       black.b = 0;
