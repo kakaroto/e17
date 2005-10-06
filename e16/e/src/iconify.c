@@ -2961,7 +2961,8 @@ IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
      }
    else
      {
-	Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: gone?\n", win);
+	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	   Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: gone?\n", win);
 
 	map = 0;
 	if (map == swin->mapped)
