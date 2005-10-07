@@ -50,9 +50,9 @@ void etk_test_tree_window_create(void *data)
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
-      row = etk_tree_append(ETK_TREE(tree), col1, "Row1", col2, 1, col3, "/home/simon/1star.png", NULL);
-      row = etk_tree_append_to_row(row, col1, "Row2", col2, 2, col3, "/home/simon/2stars.png", NULL);
-      etk_tree_append_to_row(row, col1, "Row3", col2, 3, col3, "/home/simon/3stars.png", NULL);
+      row = etk_tree_append(ETK_TREE(tree), col1, "Row1", col2, 1, col3, PACKAGE_DATA_DIR "/1star.png", NULL);
+      row = etk_tree_append_to_row(row, col1, "Row2", col2, 2, col3, PACKAGE_DATA_DIR "/2stars.png", NULL);
+      etk_tree_append_to_row(row, col1, "Row3", col2, 3, col3, PACKAGE_DATA_DIR "/3stars.png", NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
 
@@ -71,18 +71,18 @@ void etk_test_tree_window_create(void *data)
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 300; i++)
    {
-      etk_tree_append(ETK_TREE(tree), col1, "Row1", col2, 1, col3, "/home/simon/1star.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row2", col2, 2, col3, "/home/simon/2stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row3", col2, 3, col3, "/home/simon/3stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row4", col2, 1, col3, "/home/simon/3stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row5", col2, 2, col3, "/home/simon/2stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row6", col2, 3, col3, "/home/simon/1star.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row7", col2, 1, col3, "/home/simon/1star.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row8", col2, 2, col3, "/home/simon/2stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row9", col2, 3, col3, "/home/simon/3stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row10", col2, 1, col3, "/home/simon/3stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row11", col2, 2, col3, "/home/simon/2stars.png", NULL);
-      etk_tree_append(ETK_TREE(tree), col1, "Row12", col2, 3, col3, "/home/simon/1star.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row1", col2, 1, col3, PACKAGE_DATA_DIR "/1star.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row2", col2, 2, col3, PACKAGE_DATA_DIR "/2stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row3", col2, 3, col3, PACKAGE_DATA_DIR "/3stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row4", col2, 1, col3, PACKAGE_DATA_DIR "/3stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row5", col2, 2, col3, PACKAGE_DATA_DIR "/2stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row6", col2, 3, col3, PACKAGE_DATA_DIR "/1star.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row7", col2, 1, col3, PACKAGE_DATA_DIR "/1star.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row8", col2, 2, col3, PACKAGE_DATA_DIR "/2stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row9", col2, 3, col3, PACKAGE_DATA_DIR "/3stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row10", col2, 1, col3, PACKAGE_DATA_DIR "/3stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row11", col2, 2, col3, PACKAGE_DATA_DIR "/2stars.png", NULL);
+      etk_tree_append(ETK_TREE(tree), col1, "Row12", col2, 3, col3, PACKAGE_DATA_DIR "/1star.png", NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
    
