@@ -19,5 +19,15 @@ Package: libepsilon0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
+Recommends: epsilon-bin
+Provides: libepsilon
 Description: Enlightenment thumbnailing library API
+ This is a small, display independent, and quick thumbnailing library.
+
+Package: epsilon0-bin
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: epsilon-bin
+Description: Enlightenment thumbnailing binary
  This is a small, display independent, and quick thumbnailing library.

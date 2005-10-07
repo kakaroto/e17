@@ -99,6 +99,7 @@ src/Makefile
 src/lib/Makefile
 src/lib/exiftags/Makefile
 src/bin/Makefile
+debian/changelog
 ], [
 chmod +x epsilon-config
 ]
