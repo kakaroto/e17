@@ -202,12 +202,12 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 
 	/* Get the context menu ready */
-	ib->ewl_iconbox_context_menu = ewl_menu_new(NULL, "");
+	ib->ewl_iconbox_context_menu = ewl_imenu_new(NULL, "");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_context_menu);
 	ewl_widget_show(ib->ewl_iconbox_context_menu);
 
 	/* Add auto-arrange ability */
-	ib->ewl_iconbox_view_menu = ewl_menu_new(NULL, "View");
+	ib->ewl_iconbox_view_menu = ewl_imenu_new(NULL, "View");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_view_menu);
 	
 	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new(NULL, "Auto-Arrange");
@@ -935,7 +935,13 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 			ewl_callback_del(EWL_WIDGET(list_item), EWL_CALLBACK_DESTROY,ewl_iconbox_icon_destroy_cb);
 
+			/*Delete all callbacks on double click - onus should probably be on assigner to do this.? */
+			ewl_callback_del_type(EWL_WIDGET(list_item), EWL_CALLBACK_MOUSE_DOWN);
+
+
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
+
+						
 		}
 		/*printf("...dione\n");*/
 
