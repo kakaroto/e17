@@ -1,34 +1,16 @@
-#define STOCK_ICON(icon_name, icon_image) \
-group { \
-   name: icon_name; \
-   parts { \
-      part { \
-         name: "icon"; \
-         description { \
-            state: "default" 0.0; \
-            rel1 { \
-               relative: 0.0 0.0; \
-               offset: 0 0; \
-            } \
-            rel2 { \
-               relative: 1.0 1.0; \
-               offset: -1 -1; \
-            } \
-            image { \
-               normal: icon_image; \
-            } \
-         } \
-      } \
-   } \
+#include "macros/focus_rect.edc"
+fonts {
+   font: "Vera.ttf" "Vera";
 }
-
-images {
-   image: "open.png" COMP;
-   image: "close.png" COMP;
-   image: "save.png" COMP;
-}
+#include "images/images.edc"
 collections {
-   STOCK_ICON("OPEN", "open.png")
-   STOCK_ICON("CLOSE", "close.png")
-   STOCK_ICON("SAVE", "save.png")
+   #include "widgets/windows.edc"
+   #include "widgets/button.edc"
+   #include "widgets/toggle_button.edc"
+   #include "widgets/check_button.edc"
+   #include "widgets/radio_button.edc"
+   #include "widgets/entry.edc"
+   #include "widgets/scale.edc"
+   #include "widgets/scrollbar.edc"
+   #include "widgets/tree.edc"
 }
