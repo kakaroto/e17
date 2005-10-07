@@ -349,22 +349,26 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
    Etk_Type *type;
    Etk_Property *property;
    Etk_Property_Value *property_value;
+   va_list args2;
 
    if (!object)
       return;
 
-   for (property_name = first_property; property_name; property_name = va_arg(args, const char *))
+   va_copy(args2, args);
+   for (property_name = first_property; property_name; property_name = va_arg(args2, const char *))
    {
       if (etk_type_property_find(object->type, property_name, &type, &property))
       {
          if (type->property_set)
          {
-            property_value = etk_property_value_create_valist(etk_property_type_get(property), &args);
+            property_value = etk_property_value_create_valist(etk_property_type_get(property), &args2);
             type->property_set(object, property->id, property_value);
             etk_property_value_delete(property_value);
+						va_end(args2);
          }
       }
    }
+   va_end(args2);
 }
 
 /**
