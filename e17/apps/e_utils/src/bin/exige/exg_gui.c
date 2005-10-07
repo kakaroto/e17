@@ -101,6 +101,7 @@ exg_eapps_init()
     char *home;
     Ecore_List *eapps;
     int i;
+    char *name;
 
     home = getenv("HOME");
     if (!home)
@@ -125,9 +126,9 @@ exg_eapps_init()
 
     exg_eapps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-    for (i = 0; i < ecore_list_nodes(eapps); i++)
+    while ((name = ecore_list_next(eapps)))
     {
-        char *ret, *tmp;
+        char *ret;
         int ret_size;
         Eet_File *ef;
         char e_path[PATH_MAX];
@@ -140,10 +141,9 @@ exg_eapps_init()
             continue;
         }
 
-        tmp = ecore_list_goto_index(eapps, i);
-        eapp->eapp_name = strdup(tmp);
+        eapp->eapp_name = strdup(name);
 
-        snprintf(e_path, PATH_MAX, "%s/%s", path, tmp);
+        snprintf(e_path, PATH_MAX, "%s/%s", path, name);
         eapp->path = strdup(e_path);
         ef = eet_open(e_path, EET_FILE_MODE_READ);
         if (!ef) 

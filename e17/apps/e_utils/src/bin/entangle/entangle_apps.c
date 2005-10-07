@@ -90,21 +90,23 @@ entangle_apps_dir_delete(const char *dir)
     {
         Ecore_List *contents;
         int i;
+	char *name;
 
         contents = ecore_file_ls(dir);
-        for (i = 0; i < ecore_list_nodes(contents); i++)
-        {
-            char *name;
-            
-            name = ecore_list_goto_index(contents, i);
-            snprintf(path, PATH_MAX, "%s/%s", dir, name);
+	if (contents)
+	{
+	    while ((name = ecore_list_next(contents)))
+	    {
+		snprintf(path, PATH_MAX, "%s/%s", dir, name);
 
-            if (ecore_file_is_dir(path))
-                entangle_apps_dir_delete(path);
+		if (ecore_file_is_dir(path))
+		    entangle_apps_dir_delete(path);
 
-            if (!ecore_file_unlink(path))
-                fprintf(stderr, "Error unlinking (%s).\n", path);
-        }
+		if (!ecore_file_unlink(path))
+		   fprintf(stderr, "Error unlinking (%s).\n", path);
+	    }
+	    ecore_list_destroy(contents);
+	}
         if (!ecore_file_rmdir(dir))
             fprintf(stderr, "Error deleting (%s).\n", dir);
     }
