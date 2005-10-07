@@ -85,6 +85,7 @@ engrave-config
 src/Makefile 
 src/bin/Makefile
 src/lib/Makefile
+debian/changelog
 ], [
 chmod +x engrave-config
 ])
