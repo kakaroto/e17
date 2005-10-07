@@ -6,6 +6,28 @@ group {
    }
    parts {
       part {
+         name: "bg";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+         description {
+            state: "over" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+         }
+      }
+      part {
          name: "checkbox";
          description {
             state: "default" 0.0;
@@ -94,6 +116,20 @@ group {
          signal: "unfocus";
          source: "";
          UNFOCUS_ACTION
+      }
+      program {
+         name: "check_button_enter";
+         signal: "enter";
+         source: "";
+         action: STATE_SET "over" 0.0;
+         target: "bg";
+      }
+      program {
+         name: "check_button_leave";
+         signal: "leave";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
       }
    }
 }

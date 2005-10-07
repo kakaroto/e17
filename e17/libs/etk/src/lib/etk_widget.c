@@ -1408,33 +1408,9 @@ static void _etk_widget_key_down_handler(Etk_Widget *widget, Etk_Event_Key_Up_Do
    if ((toplevel = (widget->toplevel_parent)))
    {
       if (strcmp(event->key, "Tab") == 0)
-      {
-         Etk_Widget *focused, *next_to_focus;
-
-         focused = etk_toplevel_widget_focused_widget_get(toplevel);
-         next_to_focus = etk_toplevel_widget_focused_widget_next_get(toplevel);
-
-         if (focused)
-            etk_widget_leave(focused);
-         if (next_to_focus)
-            etk_widget_enter(next_to_focus);
-
-         etk_widget_focus(next_to_focus);
-      }
+         etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
       else if (strcmp(event->key, "ISO_Left_Tab") == 0)
-      {
-         Etk_Widget *focused, *next_to_focus;
-
-         focused = etk_toplevel_widget_focused_widget_get(toplevel);
-         next_to_focus = etk_toplevel_widget_focused_widget_prev_get(toplevel);
-
-         if (focused)
-            etk_widget_leave(focused);
-         if (next_to_focus)
-            etk_widget_enter(next_to_focus);
-
-         etk_widget_focus(next_to_focus);
-      }
+         etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
    }
 }
 
@@ -1457,11 +1433,18 @@ static void _etk_widget_leave_handler(Etk_Widget *widget)
 /* Default handler for the "focus" signal */
 static void _etk_widget_focus_handler(Etk_Widget *widget)
 {
-   if (!widget)
+   Etk_Widget *focused;
+
+   if (!widget || !widget->toplevel_parent)
+      return;
+   if ((focused = etk_toplevel_widget_focused_widget_get(widget->toplevel_parent)) && (widget == focused))
       return;
 
-   if (widget->toplevel_parent)
-      etk_toplevel_widget_focused_widget_set(widget->toplevel_parent, widget);
+   if (focused)
+      etk_widget_unfocus(focused);
+
+   etk_toplevel_widget_focused_widget_set(widget->toplevel_parent, widget);
+   etk_widget_enter(widget);
    if (widget->smart_object)
       evas_object_focus_set(widget->smart_object, 1);
    etk_widget_theme_object_signal_emit(widget, "focus");
@@ -1470,10 +1453,15 @@ static void _etk_widget_focus_handler(Etk_Widget *widget)
 /* Default handler for the "unfocus" signal */
 static void _etk_widget_unfocus_handler(Etk_Widget *widget)
 {
-   if (!widget)
+   Etk_Widget *focused;
+
+   if (!widget || !widget->toplevel_parent || !(focused = etk_toplevel_widget_focused_widget_get(widget->toplevel_parent)) || (focused != widget))
       return;
-   if (widget->toplevel_parent)
-      etk_toplevel_widget_focused_widget_set(widget->toplevel_parent, NULL);
+
+   etk_toplevel_widget_focused_widget_set(widget->toplevel_parent, NULL);
+   etk_widget_leave(widget);
+   if (widget->smart_object)
+      evas_object_focus_set(widget->smart_object, 0);
    etk_widget_theme_object_signal_emit(widget, "unfocus");
 }
 
@@ -1586,7 +1574,7 @@ static void _etk_widget_signal_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_I
 {
    if (!object)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENTER_SIGNAL], object, NULL);
+   etk_widget_enter(ETK_WIDGET(object));
 }
 
 /* Called when the mouse pointer leaves the widget */
@@ -1618,7 +1606,7 @@ static void _etk_widget_signal_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_
 {
    if (!object)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL], object, NULL);
+   etk_widget_leave(ETK_WIDGET(object));
 }
 
 /* Called when the mouse pointer moves */

@@ -214,6 +214,8 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/fonts/Makefile
 data/images/Makefile
+data/stock_icons/Makefile
+data/stock_icons/default/Makefile
 etk-config
 README
 ],[

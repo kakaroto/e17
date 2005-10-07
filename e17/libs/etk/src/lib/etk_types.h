@@ -74,8 +74,8 @@ typedef struct _Etk_Colorpicker_Square Etk_Colorpicker_Square;
 typedef struct _Etk_Tree Etk_Tree;
 typedef struct _Etk_Tree_Col Etk_Tree_Col;
 typedef struct _Etk_Tree_Row Etk_Tree_Row;
-typedef struct _Etk_Tree_Text_Image_Cell Etk_Tree_Text_Image_Cell;
 typedef union _Etk_Tree_Cell Etk_Tree_Cell;
+typedef struct _Etk_Tree_Node Etk_Tree_Node;
 
 /* Enums: */
 
@@ -157,5 +157,15 @@ typedef enum _Etk_Tree_Col_Type
    ETK_TREE_COL_INT,
    ETK_TREE_COL_DOUBLE
 } Etk_Tree_Col_Type;
+
+/**
+ * @enum Etk_Tree_Mode
+ * @brief The mode of the tree: List (rows can not have children) or tree (rows can have children)
+ */
+typedef enum _Etk_Tree_Mode
+{
+   ETK_TREE_MODE_LIST,
+   ETK_TREE_MODE_TREE
+} Etk_Tree_Mode;
 
 #endif

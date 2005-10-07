@@ -1,11 +1,14 @@
 group {
    name: "tree";
    data {
-      item: "inset" "7 7 7 7";
+      item: "inset" "12 8 12 8";
       item: "separator_color" "204 204 204 255";
       item: "row_color1" "255 255 255 255";
       item: "row_color2" "245 245 245 255";
+      item: "row_selected_color" "219 181 104 255";
       item: "item_height" "24";
+      item: "image_height" "20";
+      item: "expander_size" "18";
    }
    parts {
       part {
@@ -25,6 +28,69 @@ group {
                border: 8 8 8 8;
             }
          }
+      }
+      part {
+         name: "tree2";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "tree_over.png";
+               border: 12 12 12 12;
+            }
+         }
+      }
+   }
+}
+group {
+   name: "tree_expander";
+   parts {
+      part {
+         name: "expander_arrow";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "tree_expander_fold.png";
+            }
+         }
+         description {
+            state: "expand" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "tree_expander_unfold.png";
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "collapse";
+         signal: "collapse";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "expander_arrow";
+      }
+      program {
+         name: "expand";
+         signal: "expand";
+         source: "";
+         action: STATE_SET "expand" 0.0;
+         target: "expander_arrow";
       }
    }
 }

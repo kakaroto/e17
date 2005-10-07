@@ -364,7 +364,6 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
             property_value = etk_property_value_create_valist(etk_property_type_get(property), &args2);
             type->property_set(object, property->id, property_value);
             etk_property_value_delete(property_value);
-						va_end(args2);
          }
       }
    }

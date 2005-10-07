@@ -83,29 +83,16 @@ void etk_toplevel_widget_size_get(Etk_Toplevel_Widget *toplevel_widget, int *wid
 }
 
 /**
- * @brief Sets the focused widget of the toplevel widget
+ * @brief Sets the focused widget of the toplevel widget. Only for widget implementations. If you want to focus a widget, use etk_widget_focus()
  * @param toplevel_widget a toplevel widget
  * @param widget the widget to set as focused
  */
 void  etk_toplevel_widget_focused_widget_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Widget *widget)
 {
-   Etk_Widget *old_focused;
-
    if (!toplevel_widget || (widget == toplevel_widget->focused_widget))
       return;
 
-   old_focused = toplevel_widget->focused_widget;
    toplevel_widget->focused_widget = widget;
-
-   if (old_focused)
-      etk_widget_unfocus(old_focused);
-
-   toplevel_widget->focused_widget = widget;
-   if (widget)
-      etk_widget_focus(widget);
-   else
-      etk_widget_focus(ETK_WIDGET(toplevel_widget));
-
    etk_object_notify(ETK_OBJECT(toplevel_widget), "focused_widget");
 }
 
@@ -122,7 +109,7 @@ Etk_Widget *etk_toplevel_widget_focused_widget_get(Etk_Toplevel_Widget *toplevel
 }
 
 /**
- * @brief Gets the next widget to focus
+ * @brief Gets the next widget to focus. Mainly for widget implementations
  * @param toplevel_widget a toplevel widget
  * @return Returns the next widget to focus
  */
@@ -140,7 +127,7 @@ Etk_Widget *etk_toplevel_widget_focused_widget_next_get(Etk_Toplevel_Widget *top
 }
 
 /**
- * @brief Gets the previous widget to focus
+ * @brief Gets the previous widget to focus.  Mainly for widget implementations
  * @param toplevel_widget a toplevel widget
  * @return Returns the previous widget to focus
  */

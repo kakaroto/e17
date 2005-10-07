@@ -34,6 +34,9 @@ images {
    image: "scrollbar_bottom_arrow.png" COMP;
    image: "scrollbar_bottom_arrow_down.png" COMP;
    image: "tree_bg.png" COMP;
+   image: "tree_over.png" COMP;
    image: "tree_header_inactive.png" COMP;
    image: "tree_header_active.png" COMP;
+   image: "tree_expander_fold.png" COMP;
+   image: "tree_expander_unfold.png" COMP;
 }
