@@ -5,7 +5,8 @@ SUBDIRS = src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in epeg_docs.tar epeg_docs.tar.gz epeg.c
+		       stamp-h.in epeg_docs.tar epeg_docs.tar.gz epeg.c \
+		       debian/changelog
 
 install-data-local:
         @$(NORMAL_INSTALL)
