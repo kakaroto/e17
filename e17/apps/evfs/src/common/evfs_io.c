@@ -37,8 +37,7 @@ void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
 }
 
 void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.size,sizeof(unsigned long)));
-	printf("Writing size: %ld\n", event->stat.size);
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.stat_obj,sizeof(struct stat)));
 	
 	
 }
@@ -76,8 +75,8 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			event->file_monitor.filename_len = strlen(msg->data);
 			break;
 		case EVFS_EV_PART_STAT_SIZE:
-			memcpy(&event->stat.size, msg->data, sizeof(unsigned long));
-			printf("Received event , stat size: %ld\n", msg->data);
+			memcpy(&event->stat.stat_obj, msg->data, sizeof(struct stat));
+			printf("Received event , stat size: %ld\n", ((struct stat*)msg->data)->st_size);
 			break;
 		case EVFS_EV_PART_END:
 			return TRUE;

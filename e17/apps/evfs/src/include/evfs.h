@@ -5,6 +5,11 @@
 #include "evfs_macros.h"
 #include "evfs_debug.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_File.h>
@@ -164,7 +169,8 @@ struct evfs_event_file_monitor {
 typedef struct evfs_event_stat evfs_event_stat;
 struct evfs_event_stat {
 	evfs_eventtype type;
-	unsigned long size;
+	struct stat stat_obj;
+	
 };
 
 

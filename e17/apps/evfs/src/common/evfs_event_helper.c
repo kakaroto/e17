@@ -28,9 +28,8 @@ void evfs_stat_event_create(evfs_client* client, struct stat* stat_obj) {
 
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_STAT;
-	event->stat.size = stat_obj->st_size;
+	memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
 
-	printf("Size here is %ld\n", event->stat.size);
 
 	evfs_write_event(client, event);
 

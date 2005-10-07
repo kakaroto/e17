@@ -35,7 +35,7 @@ int evfs_server_data (void* data, int type, void* event) {
 			   if (client->id == MAX_CLIENT) {
 				   memcpy(&client->id, e->data, sizeof(unsigned long));
 			   } else {
-				   printf(stderr, "Error, client already has an assigned id.  Dropped packet?\n");
+				   fprintf(stderr, "Error, client already has an assigned id.  Dropped packet?\n");
 				   return 1;
 			   }
 		   }

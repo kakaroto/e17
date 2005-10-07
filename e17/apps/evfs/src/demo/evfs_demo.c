@@ -13,7 +13,12 @@ void callback(evfs_event* data) {
 				mon_current++;
 	} else if (data->type = EVFS_EV_STAT) {
 		printf("Received stat event!\n");
-		printf("File size: %ld\n", data->stat.size);
+		printf("File size: %ld\n", data->stat.stat_obj.st_size);
+		printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
+		printf("File uid: %ld\n", data->stat.stat_obj.st_uid);
+		printf("File gid: %ld\n", data->stat.stat_obj.st_gid);
+		printf("Last access: %ld\n", data->stat.stat_obj.st_atime);
+		printf("Last modify : %ld\n", data->stat.stat_obj.st_mtime);
 	}
 
 	/*if (mon_current == 2) {
@@ -46,7 +51,7 @@ int main() {
 
 	
 	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
-	snprintf(pathi,1024,"posix:///home/chaos/mail-demo.tgz");
+	snprintf(pathi,1024,"posix:///home/chaos/mapviewgps-2.5-uiq.zip");
 	
 	
 	printf ("Monitoring dir: %s\n", pathi);
