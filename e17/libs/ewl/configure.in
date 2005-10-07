@@ -161,6 +161,7 @@ src/lib/Ewl.h
 src/lib/Makefile
 data/Makefile
 data/themes/Makefile
+debian/changelog
 ], [
 chmod +x ewl-config
 ]
