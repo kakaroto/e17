@@ -113,14 +113,14 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
 }
 
 /** 
- * engrave_eet_output -- Create an EET file from the in-memory data.
- * @param engrave_file: The Engrave_File to use to create the EET file.
- * @param path: The filename to save the EET file too.
+ * engrave_edj_output -- Create an EDJ file from the in-memory data.
+ * @param engrave_file: The Engrave_File to use to create the EDJ file.
+ * @param path: The filename to save the EDJ file too.
  *
  * @return Returns 1 on success 0 otherwise.
  */
 int
-engrave_eet_output(Engrave_File *engrave_file, const char *path)
+engrave_edj_output(Engrave_File *engrave_file, const char *path)
 {
   static char tmpn[1024];
   int fd = 0, ret = 0;
@@ -163,7 +163,7 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
 
 /** 
  * engrave_edc_output -- Create an EDC file from the in-memory data.
- * @param engrave_file: The Engrave_File to use to create the EET file.
+ * @param engrave_file: The Engrave_File to use to create the EDJ file.
  * @param path: The filename to save the EDC file too.
  *
  * @return Returns 1 on success 0 otherwise.

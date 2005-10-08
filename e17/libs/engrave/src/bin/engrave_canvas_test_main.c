@@ -37,12 +37,12 @@ main(int argc, char ** argv)
         return 1;
     }
 
-    if (strstr(argv[1], ".eet")) {
+    if (strstr(argv[1], ".edj")) {
         if (argc < 3) {
-            printf("need eet and group to show\n");
+            printf("need edj and group to show\n");
             return 1;
         }
-        ef = engrave_load_eet(argv[1]);
+        ef = engrave_load_edj(argv[1]);
     } else {
         if (argc < 5) {
             printf("need img and font dirs with .edc file and group to show\n");

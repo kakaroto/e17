@@ -497,7 +497,7 @@ eapp_engrave_write(char *file)
         engrave_part_state_image_normal_set(ps, image);
         engrave_part_state_add(part, ps);
 
-        engrave_eet_output(eet, file);
+        engrave_edj_output(eet, file);
         engrave_file_free(eet);
 
         free(icon_dir);
@@ -508,7 +508,7 @@ eapp_engrave_write(char *file)
         if (!ecore_file_exists(file))
         {
             eet = engrave_file_new();
-            engrave_eet_output(eet, file);
+            engrave_edj_output(eet, file);
             engrave_file_free(eet);
         }
     }

@@ -66,14 +66,14 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
 }
 
 /**
- * engrave_load_eet - load the given EET file into memory.
- * @param filename: The filename of the EET file to load.
+ * engrave_load_edj - load the given EDJ file into memory.
+ * @param filename: The filename of the EDJ file to load.
  *
  * @return Returns a pointer to a newly allocated Engrave_File object on
  * success or NULL on failure.
  */
 Engrave_File *
-engrave_load_eet(const char *filename)
+engrave_load_edj(const char *filename)
 {
   Engrave_File *enf = NULL;
   char *cmd = NULL;
@@ -146,7 +146,7 @@ engrave_load_eet(const char *filename)
     return 0;
   }
 
-  cmd = strstr(ptr, ".eet");
+  cmd = strstr(ptr, ".edj");
   *cmd = '\0';
 
   /* we need the info on the work dir to pass the cpp so it can

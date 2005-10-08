@@ -14,8 +14,8 @@ main(int argc, char ** argv)
         return 1;
     }
 
-    if (strstr(argv[1], ".eet")) 
-        ef = engrave_load_eet(argv[1]);
+    if (strstr(argv[1], ".edj")) 
+        ef = engrave_load_edj(argv[1]);
     else {
         if (argc < 4) {
             printf("need img and font dirs with .edc file\n");
@@ -24,8 +24,8 @@ main(int argc, char ** argv)
         ef = engrave_load_edc(argv[1], argv[2], argv[3]);
     }
 
-    if (!engrave_eet_output(ef, "test.eet"))
-        printf("failed to write test.eet\n");
+    if (!engrave_edj_output(ef, "test.edj"))
+        printf("failed to write test.edj\n");
 
     if (!engrave_edc_output(ef, "test.out"))
         printf("failed to write test.out\n");

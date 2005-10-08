@@ -262,7 +262,7 @@ void _e_bg_bg_edj_gen(char *filename) {
 
    engrave_part_state_add(part, ps);   
    
-   engrave_eet_output(edj, edj_file);
+   engrave_edj_output(edj, edj_file);
    engrave_file_free(edj);
 
    /* don't do anything more if we're not loading the image */
