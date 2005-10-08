@@ -14,7 +14,7 @@ void evfs_file_monitor_event_create(evfs_client* client, int type, const char* p
 	event->file_monitor.fileev_type = type;
 	event->file_monitor.filename_len = strlen(path)+1;
 
-	evfs_write_event(client, event);
+	evfs_write_event(client, NULL, event);
 
 	/*Now destroy*/
 	free(event);
@@ -23,7 +23,7 @@ void evfs_file_monitor_event_create(evfs_client* client, int type, const char* p
 }
 
 
-void evfs_stat_event_create(evfs_client* client, struct stat* stat_obj) {
+void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct stat* stat_obj) {
 	/*Create a reply event for a file mon event, send it , destroy event*/
 
 	evfs_event* event = NEW(evfs_event);
@@ -31,7 +31,7 @@ void evfs_stat_event_create(evfs_client* client, struct stat* stat_obj) {
 	memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
 
 
-	evfs_write_event(client, event);
+	evfs_write_event(client, command, event);
 
 	/*Now destroy*/
 	free(event);

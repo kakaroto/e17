@@ -64,7 +64,9 @@ int evfs_server_data (void* data, int type, void* event) {
 				   /*Execute callback if registered..*/
 				   if (conn->callback_func) {
 					   evfs_event* ev = conn->prog_event;
+					   
 					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
+
 								      
 					   (*conn->callback_func)(ev);
 				   } else {
@@ -73,7 +75,7 @@ int evfs_server_data (void* data, int type, void* event) {
 				   
 			   }
 		   } else {
-			   printf(stderr, "EVFS: Could not find connection for clientId\n");
+			   fprintf(stderr, "EVFS: Could not find connection for clientId\n");
 		   }
 	   }
    }
@@ -152,7 +154,7 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 		/*Only one file, therefore just assign our ref to the path structure*/
 		path->files = malloc(sizeof(evfs_filereference*));
 		path->files[0] = ref;
-		path->num_files = 0;
+		path->num_files = 1;
 
 		return path;
 	}

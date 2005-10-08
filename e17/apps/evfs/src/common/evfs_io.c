@@ -45,13 +45,18 @@ void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
 
 
 
-void evfs_write_event(evfs_client* client, evfs_event* event) {
+void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
+
+	/*Now write the source command, if any*/
+	if (command) {
+		evfs_write_command_client(client,command);
+	}
 
 	switch (event->type) {
 		case EVFS_EV_FILE_MONITOR: evfs_write_event_file_monitor(client,event);
 					   break;
-		case EVFS_EV_STAT:	   printf ("Writing stat event!\n");
+		case EVFS_EV_STAT:	   
 					   evfs_write_stat_event(client,event);
 					   break;
 	}
@@ -63,6 +68,7 @@ void evfs_write_event(evfs_client* client, evfs_event* event) {
 
 
 int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
+
 	switch (msg->minor) {
 		case EVFS_EV_PART_TYPE:
 			memcpy(&event->type, msg->data, sizeof(evfs_eventtype));
@@ -76,12 +82,22 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			break;
 		case EVFS_EV_PART_STAT_SIZE:
 			memcpy(&event->stat.stat_obj, msg->data, sizeof(struct stat));
-			printf("Received event , stat size: %ld\n", ((struct stat*)msg->data)->st_size);
 			break;
+
+
+		/*The pieces of the incoming command*/
+		case EVFS_COMMAND_TYPE:
+		case EVFS_FILE_REFERENCE:
+		case EVFS_COMMAND_END:
+			evfs_process_incoming_command(&event->resp_command, msg);
+			break;	
+			
+			
 		case EVFS_EV_PART_END:
 			return TRUE;
 			break;
 	}
+
 
 	return FALSE;
 
@@ -112,6 +128,9 @@ void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_mes
 }
 
 
+/*------------------------------------------------------------------------*/
+//Some ugly duplication here - maybe we should consider reworking this so it can
+//be generic
 
 void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 
@@ -127,8 +146,24 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 
 }
 
+void evfs_write_command_client(evfs_client* client, evfs_command* command) {
+	switch (command->type) {
+		case EVFS_CMD_STOPMON_FILE:
+		case EVFS_CMD_STARTMON_FILE:
+		case EVFS_CMD_REMOVE_FILE:
+		case EVFS_CMD_RENAME_FILE:
+		case EVFS_CMD_FILE_STAT:
+			evfs_write_file_command_client(client, command);
+			break;
+	}	
+}
+
 void evfs_write_command_end(evfs_connection* conn) {
 	evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_END, 0,0,0,NULL,0));
+}
+
+void evfs_write_command_end_client(evfs_client* client) {
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_END, client->id,0,0,NULL,0));
 }
 
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
@@ -137,13 +172,20 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 
 
 	/*Write the command type structure*/
-	evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,&command->type, sizeof(evfs_command_type)));
+	evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,
+			&command->type, sizeof(evfs_command_type)));
 
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
-		snprintf(uri, 1024, "%s://%s", command->file_command.files[i]->plugin_uri, command->file_command.files[i]->path);
-		evfs_write_ecore_ipc_server_message(conn->server, ecore_ipc_message_new(EVFS_COMMAND, EVFS_FILE_REFERENCE, 0,0,0,uri, sizeof(uri)));	
+		snprintf(uri, 1024, "%s://%s", 
+			command->file_command.files[i]->plugin_uri, 
+			command->file_command.files[i]->path);
+
+		evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, 
+			EVFS_FILE_REFERENCE, 0,0,0,uri, sizeof(uri)));	
 	}
 
 	/*Send a final*/
@@ -151,6 +193,36 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	
 
 }
+
+void evfs_write_file_command_client(evfs_client* client, evfs_command* command) {
+	int i;
+	char uri[1024];
+
+
+	/*Write the command type structure*/
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, client->id,0,0,
+			&command->type, sizeof(evfs_command_type)));
+
+	/*Write the files*/
+	/*Send them de-parsed to save time*/
+	for (i=0;i<command->file_command.num_files;i++) {
+		snprintf(uri, 1024, "%s://%s", 
+			command->file_command.files[i]->plugin_uri, 
+			command->file_command.files[i]->path);
+
+
+		evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_COMMAND, 
+			EVFS_FILE_REFERENCE, client->id,0,0,uri, sizeof(uri)));	
+	}
+
+	/*Send a final*/
+	evfs_write_command_end_client(client);
+	
+
+}
+
 /*----------------------------*/
 
 
@@ -166,14 +238,19 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 			
 			break;
 		case EVFS_FILE_REFERENCE: {
+						  
 			evfs_file_uri_path* path = evfs_parse_uri(message->data);
 			if (command->file_command.num_files == 0) {
 				command->file_command.num_files = 1;
 				command->file_command.files = malloc(sizeof(evfs_filereference*));
 				command->file_command.files[0] = path->files[0];
 
+				
+
+
 				free(path);
 			} else {
+				
 				//printf("we already have %d files\n", command->file_command.num_files);
 				/*TODO Handle multiple files*/
 

@@ -1,6 +1,8 @@
 #include <evfs.h>
 
 void evfs_cleanup_command(evfs_command* command) {
+	printf("Cleaned command..\n");
+	
 	switch (command->type) {
 		case EVFS_CMD_STARTMON_FILE:
 			evfs_cleanup_file_command(command);

@@ -12,7 +12,7 @@ void callback(evfs_event* data) {
 				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
 				mon_current++;
 	} else if (data->type = EVFS_EV_STAT) {
-		printf("Received stat event!\n");
+		printf("Received stat event for file '%s'!\n", data->resp_command.file_command.files[0]->path);
 		printf("File size: %ld\n", data->stat.stat_obj.st_size);
 		printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
 		printf("File uid: %ld\n", data->stat.stat_obj.st_uid);

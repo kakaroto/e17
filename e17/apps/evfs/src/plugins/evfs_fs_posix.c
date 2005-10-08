@@ -267,7 +267,7 @@ int evfs_file_stat(evfs_client* client, evfs_command* command) {
 
 	printf("File size: %d\n", file_stat.st_size);
 
-	evfs_stat_event_create(client, &file_stat);
+	evfs_stat_event_create(client, command, &file_stat);
 }
 
 

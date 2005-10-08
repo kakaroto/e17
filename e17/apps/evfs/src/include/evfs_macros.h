@@ -1,7 +1,7 @@
 #ifndef __EVFS_MACROS_H_
 #define __EVFS_MACROS_H_
 
-#define NEW(X)    ((X*) malloc(sizeof(X)))
+#define NEW(X)    ((X*) calloc(sizeof(X), 1))
 #define LOCK(X)    (pthread_mutex_lock(X))
 #define UNLOCK(X)  (pthread_mutex_unlock(X))
 

@@ -3,4 +3,4 @@
 #include <unistd.h>
 
 void evfs_file_monitor_event_create(evfs_client* client, int type, const char* path);
-void evfs_stat_event_create(evfs_client* client, struct stat* stat_obj);
+void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct stat* stat_obj);

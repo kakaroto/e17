@@ -25,22 +25,24 @@ typedef enum EVFS_IO_TYPE {
 	EVFS_EVENT
 } EVFS_IO_TYPE;
 
-typedef enum EVFS_IO_PART_TYPE {
+/*typedef enum EVFS_IO_PART_TYPE {
 	EVFS_COMMAND_TYPE,
 	EVFS_FILE_REFERENCE,
 	EVFS_COMMAND_END
-} EVFS_IO_PART_TYPE;
+} EVFS_IO_PART_TYPE;*/
 
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len);
 int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* message);
 void evfs_write_command_end(evfs_connection* conn);
 void evfs_write_command(evfs_connection* conn, evfs_command* command);
+void evfs_write_command_client(evfs_client* client, evfs_command* command);
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command);
+void evfs_write_file_command_client(evfs_client* client, evfs_command* command);
 void evfs_event_client_id_notify(evfs_client* client);
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command);
 void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_message* msg);
 void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server* server, ecore_ipc_message* msg);
-void evfs_write_event(evfs_client* client, evfs_event* event);
+void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event);
 int evfs_read_event(evfs_event* event, ecore_ipc_message* msg);
 
 

@@ -132,13 +132,15 @@ typedef enum evfs_eventtype_sub {
 typedef enum evfs_eventpart {
 	EVFS_EV_PART_TYPE = 1,
 	EVFS_EV_PART_SUB_TYPE = 2,
-	
 	EVFS_EV_PART_FILE_MONITOR_TYPE = 3,
 	EVFS_EV_PART_FILE_MONITOR_FILENAME = 4,
-	
 	EVFS_EV_PART_DATA = 5,
-
 	EVFS_EV_PART_STAT_SIZE = 6,
+
+        EVFS_COMMAND_TYPE = 7,
+        EVFS_FILE_REFERENCE = 8,
+        EVFS_COMMAND_END = 9,
+
 	
 	EVFS_EV_PART_END = 1000
 } evfs_eventpart;
@@ -152,6 +154,7 @@ typedef enum evfs_file_monitor_type {
 typedef struct evfs_event_id_notify evfs_event_id_notify;
 struct evfs_event_id_notify {
 	evfs_eventtype type;
+	evfs_command resp_command;
 
 	int id;
 };
@@ -159,8 +162,9 @@ struct evfs_event_id_notify {
 typedef struct evfs_event_file_monitor evfs_event_file_monitor;
 struct evfs_event_file_monitor {
 	evfs_eventtype type;
+	evfs_command resp_command;
+	
 	evfs_file_monitor_type fileev_type;
-
 	char* filename;
 	int filename_len;
 };
@@ -169,6 +173,9 @@ struct evfs_event_file_monitor {
 typedef struct evfs_event_stat evfs_event_stat;
 struct evfs_event_stat {
 	evfs_eventtype type;
+	evfs_command resp_command;
+
+	
 	struct stat stat_obj;
 	
 };
@@ -176,6 +183,7 @@ struct evfs_event_stat {
 
 typedef union evfs_event {
 	evfs_eventtype type;
+	evfs_command resp_command; 
 
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
@@ -187,7 +195,7 @@ typedef struct evfs_connection evfs_connection;
 struct evfs_connection {
 	Ecore_Ipc_Server* server;
 	unsigned long id;
-	void (*callback_func)(void* data);
+	void (*callback_func)(evfs_event* data);
 	evfs_event* prog_event;
 };
 
