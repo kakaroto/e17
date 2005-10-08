@@ -158,7 +158,7 @@ int ewl_box_init(Ewl_Box * b)
 	 */
 	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_child_resize_cb);
 	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
-	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_hide_cb);
 
 	/*
 	 * Attach the default layout callback.
@@ -266,7 +266,7 @@ void ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 		ewl_container_show_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_show_cb);
 		ewl_container_hide_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_show_cb);
+					  ewl_box_child_hide_cb);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

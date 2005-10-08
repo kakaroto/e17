@@ -6,11 +6,10 @@
 static int  ewl_scrollbar_timer(void *data);
 
 /**
- * @param orientation: the desired orientation of the scrollbar
  * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
  * @brief Allocate and initialize a new scrollbar widget
  */
-Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
+Ewl_Widget *ewl_scrollbar_new(void)
 {
 	Ewl_Scrollbar  *s;
 
@@ -23,18 +22,51 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 	/*
 	 * Initialize the objects fields.
 	 */
-	ewl_scrollbar_init(s, orientation);
+	ewl_scrollbar_init(s);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
+ * @brief Allocate and initialize a new horizontal scrollbar widget
+ */
+Ewl_Widget *ewl_hscrollbar_new(void)
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_scrollbar_new();
+	ewl_scrollbar_orientation_set(EWL_SCROLLBAR(s),
+				      EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
+ * @brief Allocate and initialize a new vertical scrollbar widget
+ */
+Ewl_Widget *ewl_vscrollbar_new(void)
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_scrollbar_new();
+	ewl_scrollbar_orientation_set(EWL_SCROLLBAR(s),
+				      EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
  * @param s: the scrollbar to initialize
- * @param orientation: the orientation for the scrollbar
  * @return Returns no value.
  * @brief Initialize a scrollbar to default values
  */
-int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
+int ewl_scrollbar_init(Ewl_Scrollbar * s)
 {
 	Ewl_Widget     *w;
 
@@ -46,8 +78,8 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	if (!ewl_box_init(EWL_BOX(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_box_orientation_set(EWL_BOX(w), orientation);
-	ewl_widget_appearance_set(w, "scrollbar");
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
+	ewl_widget_appearance_set(w, "hscrollbar");
 	ewl_widget_inherit(w, "scrollbar");
 
 	/*
@@ -75,43 +107,25 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Setup the seeker portion
 	 */
-	s->seeker = ewl_seeker_new(orientation);
+	s->seeker = ewl_hseeker_new();
 	ewl_widget_internal_set(s->seeker, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(s->seeker), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(s->seeker),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_widget_show(s->seeker);
 
 	/*
 	 * Attach callbacks to the buttons and seeker to handle the various
 	 * events.
 	 */
-	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_callback_append(s->button_increment,
-				EWL_CALLBACK_MOUSE_DOWN,
-				ewl_scrollbar_scroll_start_cb, s);
-		ewl_callback_append(s->button_increment,
-				EWL_CALLBACK_MOUSE_UP,
-				ewl_scrollbar_scroll_stop_cb, s);
-		ewl_callback_append(s->button_decrement,
-				EWL_CALLBACK_MOUSE_DOWN,
-				ewl_scrollbar_scroll_start_cb, s);
-		ewl_callback_append(s->button_decrement,
-				EWL_CALLBACK_MOUSE_UP,
-				ewl_scrollbar_scroll_stop_cb, s);
-	}
-	else {
-		ewl_callback_append(s->button_increment,
-				EWL_CALLBACK_MOUSE_DOWN,
-				ewl_scrollbar_scroll_start_cb, s);
-		ewl_callback_append(s->button_increment,
-				EWL_CALLBACK_MOUSE_UP,
-				ewl_scrollbar_scroll_stop_cb, s);
-		ewl_callback_append(s->button_decrement,
-				EWL_CALLBACK_MOUSE_DOWN,
-				ewl_scrollbar_scroll_start_cb, s);
-		ewl_callback_append(s->button_decrement,
-				EWL_CALLBACK_MOUSE_UP,
-				ewl_scrollbar_scroll_stop_cb, s);
-	}
+	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_scrollbar_scroll_start_cb, s);
+	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_UP,
+			    ewl_scrollbar_scroll_stop_cb, s);
+	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_scrollbar_scroll_start_cb, s);
+	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_UP,
+			    ewl_scrollbar_scroll_stop_cb, s);
 
 	/*
 	 * Set the default alignment for the buttons.
@@ -125,6 +139,11 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Set the default amount of space that the seeker should fill.
 	 */
 	s->fill_percentage = 1.0;
+
+	/*
+	 * Set the default for horizontal standard scrolling
+	 */
+	s->invert = 1;
 
 	/*
 	 * Append a value change callback to the seeker to catch when it
@@ -146,17 +165,101 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	ewl_widget_appearance_set(s->button_decrement, "button_decrement");
 	ewl_widget_appearance_set(s->button_increment, "button_increment");
 
+	if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
+
+		/*
+		 * Place in decrement, increment, seeker order.
+		 */
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_decrement);
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_increment);
+		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
+	}
+	else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
+
+		/*
+		 * Place in seeker, decrement, increment order.
+		 */
+		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_decrement);
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_increment);
+	}
+	else {
+
+		/*
+		 * Place in decrement, seeker, increment order.
+		 */
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_decrement);
+		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
+		ewl_container_child_append(EWL_CONTAINER(s),
+					   s->button_increment);
+	}
+
+	/*
+	 * Set the default value to the beginning of the seeker.
+	 */
+	ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollbar to change orientation
+ * @param o: the new orientation to use on the scrollbar
+ * @return Returns no value.
+ * @brief Change the orientation of a scrollbar.
+ */
+void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (o == ewl_box_orientation_get(EWL_BOX(s)))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_box_orientation_set(EWL_BOX(s), o);
+
+	/*
+	 * Swap scroll direction on orientation change
+	 */
+	s->invert = -s->invert;
+
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "hscrollbar");
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+		ewl_object_fill_policy_set(EWL_OBJECT(s->seeker),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+	}
+	else {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "vscrollbar");
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+		ewl_object_fill_policy_set(EWL_OBJECT(s->seeker),
+				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+	}
+
 	/*
 	 * Set the alignment of the buttons to the seeker.
 	 */
 	s->buttons_alignment = ewl_theme_data_int_get(EWL_WIDGET(s),
 						      "button_order");
 
+	ewl_container_child_remove(EWL_CONTAINER(s), s->button_decrement);
+	ewl_container_child_remove(EWL_CONTAINER(s), s->button_increment);
+	ewl_container_child_remove(EWL_CONTAINER(s), s->seeker);
+
+	ewl_seeker_orientation_set(EWL_SEEKER(s->seeker), o);
+
 	/*
 	 * Setup a few orientation specific variables, such as appearance and
 	 * packing order.
 	 */
-	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
 
 		if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
 
@@ -192,13 +295,6 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_increment);
 		}
 
-		/*
-		 * Set the default value to the beginning of the seeker.
-		 */
-		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
-		ewl_widget_appearance_set(w, "hscrollbar");
-		ewl_object_fill_policy_set(EWL_OBJECT(s),
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 
@@ -236,16 +332,56 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_decrement);
 		}
 
-		/*
-		 * Set the default value to the beginning of the seeker.
-		 */
-		ewl_seeker_value_set(EWL_SEEKER(s->seeker), 0);
-		ewl_widget_appearance_set(w, "vscrollbar");
-		ewl_object_fill_policy_set(EWL_OBJECT(s),
-				EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
 	}
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollbar to change orientation
+ * @return Returns no value.
+ * @brief Change the orientation of a scrollbar.
+ */
+Ewl_Orientation ewl_scrollbar_orientation_get(Ewl_Scrollbar *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_INT(ewl_box_orientation_get(EWL_BOX(s)), DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollbar to set inverted scrolling value
+ * @param i: value to set for inverse scrolling
+ * @return Returns no value.
+ * @brief Sets the inverse scrolling flag on a scrollbar.
+ */
+void ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (i >= 0)
+		i = 1;
+	else
+		i = -1;
+
+	s->direction = i;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollbar to get inverted scrolling value
+ * @return Returns the current value for inverted scrolling.
+ * @brief Checks the inverse scrolling flag on a scrollbar.
+ */
+char ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 1);
+
+	DRETURN_INT(s->invert, DLEVEL_STABLE);
 }
 
 /**
@@ -282,11 +418,6 @@ void ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
-
-	/*
-	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
-		v = 1.0 - v;
-		*/
 
 	ewl_seeker_value_set(EWL_SEEKER(s->seeker), v);
 
@@ -351,8 +482,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * scrollbar.
 	 */
 	o = ewl_box_orientation_get(EWL_BOX(s));
-	if (o == EWL_ORIENTATION_VERTICAL)
-		s->direction = -s->direction;
+	s->direction = s->direction * s->invert;
 
 	s->start_time = ecore_time_get();
 	s->timer = ecore_timer_add(0.02, ewl_scrollbar_timer, s);
@@ -362,7 +492,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 void
 ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w __UNUSED__,
-				void *ev_data __UNUSED__, void *user_data)
+			     void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Scrollbar *s;
 

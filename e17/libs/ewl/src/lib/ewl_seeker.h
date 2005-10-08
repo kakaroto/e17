@@ -49,20 +49,13 @@ struct Ewl_Seeker
 	int             autohide; /**< Indicator to hide when not scrollable */
 };
 
-/**
- * @def ewl_vseeker_new()
- * Shorthand to allocate a vertical seeker.
- */
-#define ewl_vseeker_new() ewl_seeker_new(EWL_ORIENTATION_VERTICAL);
+Ewl_Widget     *ewl_seeker_new();
+Ewl_Widget     *ewl_hseeker_new();
+Ewl_Widget     *ewl_vseeker_new();
+int             ewl_seeker_init(Ewl_Seeker * s);
 
-/**
- * @def ewl_hseeker_new()
- * Shorthand to allocate a horizontal seeker.
- */
-#define ewl_hseeker_new() ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
-
-Ewl_Widget     *ewl_seeker_new(Ewl_Orientation orientation);
-int             ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation);
+void            ewl_seeker_orientation_set(Ewl_Seeker * s, Ewl_Orientation o);
+Ewl_Orientation ewl_seeker_orientation_get(Ewl_Seeker * s);
 
 void            ewl_seeker_value_set(Ewl_Seeker * s, double v);
 double          ewl_seeker_value_get(Ewl_Seeker * s);

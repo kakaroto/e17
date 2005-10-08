@@ -4,13 +4,12 @@
 #include "ewl_private.h"
 
 /**
- * @param o: the orientation for the new seeker
  * @return Returns NULL on failure, or a pointer to the new seeker on success.
- * @brief Allocate and initialize a new seeker with orientation
+ * @brief Allocate and initialize a new seeker with default orientation
  */
-Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
+Ewl_Widget *ewl_seeker_new()
 {
-	Ewl_Seeker     *s;
+	Ewl_Seeker *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -18,7 +17,40 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_seeker_init(s, o);
+	ewl_seeker_init(s);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+
+/**
+ * @return Returns NULL on failure, or a pointer to the new seeker on success.
+ * @brief Allocate and initialize a new seeker with horizontal orientation
+ */
+Ewl_Widget *ewl_hseeker_new()
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_seeker_new();
+	ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_HORIZONTAL);
+
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns NULL on failure, or a pointer to the new seeker on success.
+ * @brief Allocate and initialize a new seeker with vertical orientation
+ */
+Ewl_Widget *ewl_vseeker_new()
+{
+	Ewl_Widget *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = ewl_seeker_new();
+	ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -33,7 +65,7 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
  * Initializes the seeker @a s to the orientation @a orientation to default
  * values and callbacks.
  */
-int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
+int ewl_seeker_init(Ewl_Seeker * s)
 {
 	Ewl_Widget     *w;
 
@@ -46,23 +78,15 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
-	 * Initialize the widget fields and set appropriate orientation and
-	 * type
+	 * Initialize the widget fields and set default orientation and type
 	 */
-	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_widget_appearance_set(w, "hseeker");
-		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
+	ewl_widget_appearance_set(w, "hseeker");
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
-	}
-	else {
-		ewl_widget_appearance_set(w, "vseeker");
-		ewl_object_fill_policy_set(EWL_OBJECT(w),
-				EWL_FLAG_FILL_VFILL |
-				EWL_FLAG_FILL_VSHRINK);
-	}
 	ewl_widget_inherit(w, "seeker");
 
-	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_seeker_child_show_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(w),
+				      ewl_seeker_child_show_cb);
 
 	/*
 	 * Create and add the button portion of the seeker
@@ -75,7 +99,7 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	/*
 	 * Set the starting orientation, range and values
 	 */
-	s->orientation = orientation;
+	s->orientation = EWL_ORIENTATION_HORIZONTAL;
 	s->range = 100.0;
 	s->value = 0.0;
 	s->step = 10.0;
@@ -106,6 +130,31 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 			EWL_CALLBACK_MOUSE_MOVE);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the seeker to change orientation
+ * @param o: the new orientation for the seeker
+ * @returns Returns no value.
+ * @brief Changes the orientation of the given seeker.
+ */
+void ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	if (o == s->orientation)
+		DRETURN(DLEVEL_STABLE);
+
+	s->orientation = o;
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
+	}
+	else {
+		ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
