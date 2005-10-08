@@ -12,7 +12,7 @@ bin_SCRIPTS = esmart-config
 EXTRA_DIST = README AUTHORS COPYING esmart.pc.in esmart.spec \
 	     debian/control debian/copyright debian/rules \
 	     debian/changelog.in debian/changelog \
-	     debian/libesmart0-dev.files debian/libesmart0-bin.files \
+	     debian/libesmart0-dev.files debian/esmart0-bin.files \
 	     debian/esmart0-bin.files
 
 pkgconfigdir = $(libdir)/pkgconfig
