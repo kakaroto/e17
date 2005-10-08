@@ -22,7 +22,6 @@ etk_image.h \
 etk_string.h etk_editable_text_object.h etk_label.h \
 etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
 etk_entry.h \
-etk_adjustment.h etk_range.h \
 etk_canvas.h \
 etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
 etk_tree.h
@@ -39,7 +38,6 @@ etk_image.c \
 etk_string.c etk_editable_text_object.c etk_label.c \
 etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
 etk_entry.c \
-etk_adjustment.c etk_range.c \
 etk_canvas.c \
 etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
 etk_tree.c

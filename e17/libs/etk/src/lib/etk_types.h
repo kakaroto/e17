@@ -65,8 +65,6 @@ typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
 typedef struct _Etk_Check_Button Etk_Check_Button;
 typedef struct _Etk_Radio_Button Etk_Radio_Button;
 typedef struct _Etk_Entry Etk_Entry;
-typedef struct _Etk_Adjustment Etk_Adjustment;
-typedef struct _Etk_Range Etk_Range;
 typedef struct _Etk_Canvas Etk_Canvas;
 typedef struct _Etk_Colorpicker Etk_Colorpicker;
 typedef struct _Etk_Colorpicker_Vertical Etk_Colorpicker_Vertical;

@@ -30,8 +30,6 @@
 #include "etk_check_button.h"
 #include "etk_radio_button.h"
 #include "etk_entry.h"
-#include "etk_adjustment.h"
-#include "etk_range.h"
 #include "etk_canvas.h"
 #include "etk_colorpicker.h"
 #include "etk_colorpicker_vertical.h"
