@@ -179,7 +179,6 @@ ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attac
 	else if (list->direct)
 	{
 		Ewl_Attach *tmp;
-		list->direct = 0;
 
 		tmp = EWL_ATTACH(list->list);
 
@@ -195,6 +194,7 @@ ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attac
 
 		list->list = malloc(sizeof(void *));
 		list->list[0] = tmp;
+		list->direct = 0;
 	}
 	else
 	{
