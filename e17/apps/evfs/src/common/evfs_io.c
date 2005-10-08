@@ -46,6 +46,7 @@ void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
 
 
 void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
+	printf("Sending event type '%d'\n", event->type);
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
 
 	/*Now write the source command, if any*/
@@ -71,6 +72,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 
 	switch (msg->minor) {
 		case EVFS_EV_PART_TYPE:
+			
 			memcpy(&event->type, msg->data, sizeof(evfs_eventtype));
 			break;
 		case EVFS_EV_PART_FILE_MONITOR_TYPE:

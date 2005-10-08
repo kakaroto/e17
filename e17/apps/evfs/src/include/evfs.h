@@ -151,6 +151,8 @@ typedef enum evfs_file_monitor_type {
 	EVFS_FILE_EV_REMOVE
 } evfs_file_monitor_type;
 
+
+/*-----------------------------------------------------------------*/
 typedef struct evfs_event_id_notify evfs_event_id_notify;
 struct evfs_event_id_notify {
 	evfs_eventtype type;
@@ -169,7 +171,6 @@ struct evfs_event_file_monitor {
 	int filename_len;
 };
 
-
 typedef struct evfs_event_stat evfs_event_stat;
 struct evfs_event_stat {
 	evfs_eventtype type;
@@ -180,16 +181,20 @@ struct evfs_event_stat {
 	
 };
 
-
-typedef union evfs_event {
+//Would be good if this could be a union -> but evfs_command changes size :( */
+typedef struct evfs_event {
 	evfs_eventtype type;
-	evfs_command resp_command; 
+	evfs_command resp_command;
+	 
 
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;
+
+	
 }
 evfs_event;
+/*---------------------------------------------------------------------*/
 
 typedef struct evfs_connection evfs_connection;
 struct evfs_connection {
