@@ -35,7 +35,7 @@ bin_SCRIPTS = epeg-config
 EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
 	     epeg.spec epeg.c.in gendoc \
 	     Doxyfile epeg_docs.tar.gz \
-             debian/changelog \
+             debian/changelog  debian/changelog.in \
              debian/control \
              debian/copyright \
              debian/libepeg0-dev.files \
