@@ -153,7 +153,7 @@ typedef enum _Etk_Tree_Col_Type
 {
    ETK_TREE_COL_TEXT,
    ETK_TREE_COL_IMAGE,
-   ETK_TREE_COL_TEXT_IMAGE,
+   ETK_TREE_COL_ICON_TEXT,
    ETK_TREE_COL_INT,
    ETK_TREE_COL_DOUBLE
 } Etk_Tree_Col_Type;

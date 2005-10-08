@@ -112,9 +112,9 @@ union _Etk_Tree_Cell
    char *image_filename_value;
    struct
    {
+      char *icon_filename;
       char *text;
-      char *image_filename;
-   } text_image_value;
+   } icon_text_value;
    int int_value;
    double double_value;
 };

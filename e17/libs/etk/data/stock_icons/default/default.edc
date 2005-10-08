@@ -28,7 +28,7 @@ images {
    image: "save.png" COMP;
 }
 collections {
-   STOCK_ICON("OPEN", "open.png")
-   STOCK_ICON("CLOSE", "close.png")
-   STOCK_ICON("SAVE", "save.png")
+   STOCK_ICON("open", "open.png")
+   STOCK_ICON("close", "close.png")
+   STOCK_ICON("save", "save.png")
 }
