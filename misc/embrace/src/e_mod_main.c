@@ -5,15 +5,17 @@
 #include <ltdl.h>
 
 #include <e.h>
-#include "e_mod_main.h"
 #include "embrace.h"
+#include "e_mod_main.h"
 
 /* module private routines */
-static Embrace      *embrace_module_new (void);
-static void          embrace_module_free (Embrace *embrace);
-static E_Menu       *embrace_config_menu_new (void);
+static EmbraceModule *embrace_module_new (void);
+static void           embrace_module_free (EmbraceModule *em);
+static E_Menu        *embrace_config_menu_new (void);
 
-static void          embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void           embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static void           embrace_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void           embrace_cb_mouse_up (void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 #if 0
 static void          _embrace_desk_cb_mouse_in (void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -27,7 +29,6 @@ static void          _embrace_desk_cb_intercept_resize (void *data, Evas_Object 
 #endif
 
 static int              embrace_count;
-static E_Gadman_Client *gmc = NULL;
 
 /* public module routines. all modules must have these */
 
@@ -38,25 +39,25 @@ E_Module_Api e_modapi = {
 
 void *e_modapi_init (E_Module *module)
 {
-	Embrace *embrace = NULL;
+	EmbraceModule *em = NULL;
 
 	/* actually init embrace */
-	embrace = embrace_module_new ();
+	em = embrace_module_new ();
 	module->config_menu = embrace_config_menu_new ();
 
-	return embrace;
+	return em;
 }
 
 int e_modapi_shutdown (E_Module *module)
 {
-	Embrace *embrace;
+	EmbraceModule *em;
 
 	if (module->config_menu)
 		e_object_del (E_OBJECT (module->config_menu));
 
-	embrace = module->data;
-	if (embrace)
-		embrace_module_free (embrace);
+	em = module->data;
+	if (em)
+		embrace_module_free (em);
 
 	return 1;
 }
@@ -94,12 +95,13 @@ int e_modapi_about (E_Module *module)
 }
 
 /* module private routines */
-static Embrace *embrace_module_new (void)
+static EmbraceModule *embrace_module_new (void)
 {
-	Embrace     *embrace;
+	EmbraceModule *em;
+	Evas_Object   *o;
 
-	E_Manager   *man;
-	E_Container *con;
+	E_Manager     *man;
+	E_Container   *con;
 
 	embrace_count = 0;
 
@@ -108,46 +110,62 @@ static Embrace *embrace_module_new (void)
 		return NULL;
 	}
 
-	embrace = embrace_new ();
-	if (!embrace)
+	em = E_NEW (EmbraceModule, 1);
+	if (!em) return NULL;
+
+	em->embrace = embrace_new ();
+	if (!em->embrace) {
+		free (em);
 		return NULL;
+	}
 
 	man = e_manager_current_get ();
 	con = e_container_current_get (man);
-	embrace->gui.evas = con->bg_evas;
-	embrace->cfg.module = 1;
+	em->embrace->gui.evas = con->bg_evas;
+	em->embrace->cfg.module = 1;
 
-	embrace_init (embrace);
+	embrace_init (em->embrace);
 
-	gmc = e_gadman_client_new (con->gadman);
-	e_gadman_client_domain_set (gmc, "module.embrace", embrace_count++);
-	e_gadman_client_policy_set (gmc,
+	o = evas_object_rectangle_add (em->embrace->gui.evas);
+	em->event_object = o;
+	evas_object_pass_events_set (o, 0);
+	evas_object_color_set (o, 0, 0, 0, 0);
+	evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN, embrace_cb_mouse_down, em);
+	evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_UP, embrace_cb_mouse_up, em);
+	evas_object_show (o);
+	evas_object_stack_below (o, em->embrace->gui.edje);
+
+	em->gmc = e_gadman_client_new (con->gadman);
+	e_gadman_client_domain_set (em->gmc, "module.embrace", embrace_count++);
+	e_gadman_client_policy_set (em->gmc,
 			E_GADMAN_POLICY_ANYWHERE |
 			E_GADMAN_POLICY_HMOVE |
 			E_GADMAN_POLICY_VMOVE |
 			E_GADMAN_POLICY_HSIZE |
 			E_GADMAN_POLICY_VSIZE);
-	e_gadman_client_min_size_set (gmc, 8, 8);
-	e_gadman_client_max_size_set (gmc, 2000, 2000);
-	e_gadman_client_auto_size_set (gmc, 186, 40);
-	e_gadman_client_align_set (gmc, 0.0, 0.0);
-	e_gadman_client_resize (gmc, 186, 40);
-	e_gadman_client_change_func_set (gmc, embrace_cb_gmc_change, embrace);
-	e_gadman_client_load (gmc);
+	e_gadman_client_min_size_set (em->gmc, 8, 8);
+	e_gadman_client_max_size_set (em->gmc, 2000, 2000);
+	e_gadman_client_auto_size_set (em->gmc, 186, 40);
+	e_gadman_client_align_set (em->gmc, 0.0, 0.0);
+	e_gadman_client_resize (em->gmc, 186, 40);
+	e_gadman_client_change_func_set (em->gmc, embrace_cb_gmc_change, em);
+	e_gadman_client_load (em->gmc);
 
-	embrace_run (embrace);
+	embrace_run (em->embrace);
 
-	return embrace;
+	return em;
 }
 
-static void embrace_module_free (Embrace *embrace)
+static void embrace_module_free (EmbraceModule *em)
 {
+	e_object_del (E_OBJECT (em->gmc));
+	evas_object_del (em->event_object);
 
-	e_object_del (E_OBJECT (gmc));
+	embrace_stop (em->embrace);
+	embrace_deinit (em->embrace);
+	embrace_free (em->embrace);
 
-	embrace_stop (embrace);
-	embrace_deinit (embrace);
-	embrace_free (embrace);
+	free (em);
 
 	embrace_count--;
 
@@ -169,24 +187,41 @@ static E_Menu *embrace_config_menu_new (void)
 
 static void embrace_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
-   Embrace *embrace;
+   EmbraceModule *em;
    Evas_Coord  x, y, w, h;
 
-   embrace = data;
-   e_gadman_client_geometry_get (gmc, &x, &y, &w, &h);
+   em = data;
+   e_gadman_client_geometry_get (em->gmc, &x, &y, &w, &h);
 
    switch (change)
      {
       case E_GADMAN_CHANGE_MOVE_RESIZE:
-	evas_object_move (embrace->gui.edje, x, y);
-	evas_object_resize (embrace->gui.edje, w, h);
+	evas_object_move (em->embrace->gui.edje, x, y);
+	evas_object_resize (em->embrace->gui.edje, w, h);
+	evas_object_move (em->event_object, x, y);
+	evas_object_resize (em->event_object, w, h);
 	break;
       case E_GADMAN_CHANGE_RAISE:
-	evas_object_raise (embrace->gui.edje);
+	evas_object_raise (em->embrace->gui.edje);
+	evas_object_stack_below (em->event_object, em->embrace->gui.edje);
 	break;
       default:
 	break;
      }
+}
+
+static void embrace_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   EmbraceModule *em;
+
+   em = data;
+}
+
+static void embrace_cb_mouse_up (void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   EmbraceModule *em;
+
+   em = data;
 }
 
 #if 0

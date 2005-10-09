@@ -1,5 +1,10 @@
 $Id$
 
+2005-10-09 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.{h,c}: Add a new struct to keep module
+        info. Add an event_object to stop mouse events on the
+	module to pass through to e.
+
 2005-09-27 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/e_mod_main.c: Allow module to be larger.
 

@@ -1,6 +1,13 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+typedef struct {
+	Embrace *embrace;
+
+	E_Gadman_Client *gmc;
+	Evas_Object     *event_object;
+} EmbraceModule;
+
 extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *module);
