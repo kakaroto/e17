@@ -61,7 +61,8 @@ data {
     item, "/hscrollbar/button_decrement/group" "hscroll-left";
     item, "/hscrollbar/button_increment/group" "hscroll-right";
 
-    item, "/imenu/group" "dialog";
+    item, "/imenu/group" "window";
+    item, "/menu/group" "window";
     item, "/menubar/group" "menubar";
     item, "/menuitem/group" "menuitem";
 
