@@ -59,8 +59,8 @@ struct evfs_server {
 
 typedef enum evfs_file_type evfs_file_type;
 enum evfs_file_type {
-	FILE_NORMAL = 1,
-	FILE_DIRECTORY = 2
+	EVFS_FILE_NORMAL = 1,
+	EVFS_FILE_DIRECTORY = 2
 };
 
 
@@ -165,16 +165,12 @@ typedef enum evfs_file_monitor_type {
 /*-----------------------------------------------------------------*/
 typedef struct evfs_event_id_notify evfs_event_id_notify;
 struct evfs_event_id_notify {
-	evfs_eventtype type;
-	evfs_command resp_command;
 
 	int id;
 };
 
 typedef struct evfs_event_file_monitor evfs_event_file_monitor;
 struct evfs_event_file_monitor {
-	evfs_eventtype type;
-	evfs_command resp_command;
 	
 	evfs_file_monitor_type fileev_type;
 	char* filename;
@@ -183,8 +179,6 @@ struct evfs_event_file_monitor {
 
 typedef struct evfs_event_stat evfs_event_stat;
 struct evfs_event_stat {
-	evfs_eventtype type;
-	evfs_command resp_command;
 
 	
 	struct stat stat_obj;
@@ -193,8 +187,6 @@ struct evfs_event_stat {
 
 typedef struct evfs_event_file_list evfs_event_file_list;
 struct evfs_event_file_list {
-	evfs_eventtype type;
-	evfs_command resp_command;
 
 	Ecore_List* list; /*A list of evfs_filereference*/	
 };
@@ -204,11 +196,11 @@ typedef struct evfs_event {
 	evfs_eventtype type;
 	evfs_command resp_command;
 	 
-
+	evfs_event_file_list file_list;
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;
-	evfs_event_file_list file_list;
+	
 
 	
 }

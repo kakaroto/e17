@@ -136,8 +136,8 @@ void evfs_dir_list(evfs_client* client, evfs_command* command) {
 	      ((struct smbc_dirent *)dirp)->name, 
 	      ((struct smbc_dirent *)dirp)->comment);
 
-		if (((struct smbc_dirent *)dirp)->smbc_type == 7) reference->file_type = FILE_NORMAL;
-		else if (((struct smbc_dirent *)dirp)->smbc_type == 7) reference->file_type = FILE_DIRECTORY; 
+		if (((struct smbc_dirent *)dirp)->smbc_type == 8) reference->file_type = EVFS_FILE_NORMAL;
+		else if (((struct smbc_dirent *)dirp)->smbc_type == 7) reference->file_type = EVFS_FILE_DIRECTORY; 
 
 		size = 
 			  (sizeof(char) * strlen(command->file_command.files[0]->path)) + 
