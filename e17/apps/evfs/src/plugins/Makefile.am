@@ -26,5 +26,5 @@ posix_la_LDFLAGS = -no-undefined -module -avoid-version
 posix_la_LIBADD =  @ecore_libs@
 
 samba_la_CFLAGS =  @ecore_cflags@
-samba_la_LDFLAGS = -no-undefined -module -avoid-version
+samba_la_LDFLAGS = -no-undefined -module -avoid-version -lsmbclient
 samba_la_LIBADD =  @ecore_libs@

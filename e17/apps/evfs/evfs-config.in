@@ -40,11 +40,9 @@ while test $# -gt 0; do
       echo @VERSION@
       ;;
     --cflags)
-      if test @includedir@ != /usr/include ; then
-        includes=-I@includedir@
-      fi
-      echo $includes
-      ;;
+      includes="-I@includedir@ -I@includedir@/evfs"
+      echo $includes 
+      ;;		  
     --libs)
       libdirs=-L@libdir@
       echo $libdirs -levfs -lm

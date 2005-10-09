@@ -11,7 +11,7 @@ void callback(evfs_event* data) {
 				printf("DEMO: Received a file monitor notification\n");
 				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
 				mon_current++;
-	} else if (data->type = EVFS_EV_STAT) {
+	} else if (data->type == EVFS_EV_STAT) {
 		printf("Received stat event for file '%s'!\n", data->resp_command.file_command.files[0]->path);
 		printf("File size: %ld\n", data->stat.stat_obj.st_size);
 		printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
@@ -19,6 +19,17 @@ void callback(evfs_event* data) {
 		printf("File gid: %ld\n", data->stat.stat_obj.st_gid);
 		printf("Last access: %ld\n", data->stat.stat_obj.st_atime);
 		printf("Last modify : %ld\n", data->stat.stat_obj.st_mtime);
+	} else if (data->type == EVFS_EV_DIR_LIST) {
+		evfs_filereference* ref;
+		
+		printf("Received a directory listing..\nFiles:\n\n");
+
+		ecore_list_goto_first(data->file_list.list);
+		while (  (ref= ecore_list_next(data->file_list.list)) ) {
+			printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
+		}
+
+		
 	}
 
 	/*if (mon_current == 2) {
@@ -51,10 +62,10 @@ int main() {
 
 	
 	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
-	snprintf(pathi,1024,"posix:///home/chaos/mapviewgps-2.5-uiq.zip");
+	snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
 	
 	
-	printf ("Monitoring dir: %s\n", pathi);
+	printf ("Listing dir: %s\n", pathi);
 	dir_path = evfs_parse_uri(pathi);
 
 	
@@ -64,7 +75,7 @@ int main() {
 	
 	/*evfs_monitor_add(con, dir_path->files[0]);*/
 
-	evfs_client_file_stat(con, dir_path->files[0]);
+	evfs_client_dir_list(con, dir_path->files[0]);
 
 	ecore_main_loop_begin();
 	

@@ -51,7 +51,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}
 
 %files devel
-%{_includedir}/%{name}.h
+%{_includedir}/evfs/%{name}.h
 %{_libdir}/lib%{name}.*a
 
 %changelog

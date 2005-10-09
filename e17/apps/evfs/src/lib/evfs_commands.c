@@ -82,3 +82,22 @@ void evfs_client_file_stat(evfs_connection* conn, evfs_filereference* file) {
 	free(command);	
 
 }
+
+void evfs_client_dir_list(evfs_connection* conn, evfs_filereference* file) {
+	evfs_command* command = NEW(evfs_command);
+
+	printf("Listing a directory..\n");
+
+	command->type = EVFS_CMD_LIST_DIR;
+	command->file_command.num_files = 1;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+	command->file_command.files[0] = file;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+
+}
+
+
+

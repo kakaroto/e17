@@ -43,6 +43,22 @@ void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
 }
 
 
+void evfs_write_list_event (evfs_client* client, evfs_event* event) {
+	evfs_filereference* ref;
+	char block[1024]; /*Maybe too small, make this dynamic*/
+	
+	
+	ecore_list_goto_first(event->file_list.list);
+	while ( (ref = ecore_list_next(event->file_list.list)) ) {
+		memcpy(block, &ref->file_type, sizeof(evfs_file_type));
+		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);
+		
+		printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);
+		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,block, (strlen(ref->path) * sizeof(char)) + sizeof(evfs_file_type) +1  ));
+	}
+	
+}
+
 
 
 void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
@@ -59,6 +75,8 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					   break;
 		case EVFS_EV_STAT:	   
 					   evfs_write_stat_event(client,event);
+					   break;
+		case EVFS_EV_DIR_LIST:	   evfs_write_list_event(client,event);
 					   break;
 	}
 
@@ -84,6 +102,22 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			break;
 		case EVFS_EV_PART_STAT_SIZE:
 			memcpy(&event->stat.stat_obj, msg->data, sizeof(struct stat));
+			break;
+
+		case EVFS_EV_PART_FILE_REFERENCE: {
+			evfs_filereference* ref = NEW(evfs_filereference);
+							  
+			if (!event->file_list.list) {
+				event->file_list.list = ecore_list_new();
+			}
+							  
+			memcpy(&ref->file_type, msg->data, sizeof(evfs_file_type));
+			ref->path = malloc(sizeof(char) * msg->len);
+			memcpy(ref->path, (msg->data)+sizeof(evfs_file_type), msg->len);
+			//printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
+
+			ecore_list_append(event->file_list.list, ref);
+			}
 			break;
 
 
@@ -142,6 +176,7 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_REMOVE_FILE:
 		case EVFS_CMD_RENAME_FILE:
 		case EVFS_CMD_FILE_STAT:
+		case EVFS_CMD_LIST_DIR:
 			evfs_write_file_command(conn, command);
 			break;
 	}
@@ -155,6 +190,7 @@ void evfs_write_command_client(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_REMOVE_FILE:
 		case EVFS_CMD_RENAME_FILE:
 		case EVFS_CMD_FILE_STAT:
+		case EVFS_CMD_LIST_DIR:
 			evfs_write_file_command_client(client, command);
 			break;
 	}	

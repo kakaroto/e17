@@ -76,3 +76,15 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 	}
 
 }
+
+
+void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command) {
+	printf ("At dir list handler\n");
+
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+	if (plugin) {
+		printf("Pointer here: %p\n", plugin->functions->evfs_dir_list);
+		(*plugin->functions->evfs_dir_list)(client,command);
+	}
+
+}
