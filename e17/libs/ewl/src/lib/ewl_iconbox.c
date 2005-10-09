@@ -847,7 +847,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	EWL_ICONBOX_ICON(ib)->selected = 0;
 	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new();
-	ewl_floater_follow_set(EWL_FLOATER(iconbox->ewl_iconbox_pane_inner),
+	ewl_floater_follow_set(EWL_FLOATER( EWL_ICONBOX_ICON(ib)->floater ),
 				iconbox->ewl_iconbox_pane_inner);
 
 	/*Set the label*/
