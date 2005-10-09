@@ -1044,7 +1044,6 @@ ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
 	color->g = g;
 	color->b = b;
 	color->a = a;
-
 	ewl_attach_color_set(w, color);
 
 	if (REALIZED(w))

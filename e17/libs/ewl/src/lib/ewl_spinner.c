@@ -3,7 +3,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
+static void ewl_spinner_calc_value(Ewl_Spinner *s, double val, unsigned int call);
 static int ewl_spinner_timer(void *data);
 
 /**
@@ -121,7 +121,7 @@ void ewl_spinner_value_set(Ewl_Spinner * s, double value)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	ewl_spinner_calc_value(s, value);
+	ewl_spinner_calc_value(s, value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -153,7 +153,7 @@ void ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits)
 	DCHECK_PARAM_PTR("s", s);
 
 	s->digits = digits;
-	ewl_spinner_calc_value(s, s->value);
+	ewl_spinner_calc_value(s, s->value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -185,7 +185,7 @@ void ewl_spinner_min_val_set(Ewl_Spinner * s, double val)
 	DCHECK_PARAM_PTR("s", s);
 
 	s->min_val = val;
-	ewl_spinner_calc_value(s, s->value);
+	ewl_spinner_calc_value(s, s->value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -217,7 +217,7 @@ void ewl_spinner_max_val_set(Ewl_Spinner * s, double val)
 	DCHECK_PARAM_PTR("s", s);
 
 	s->max_val = val;
-	ewl_spinner_calc_value(s, s->value);
+	ewl_spinner_calc_value(s, s->value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -321,7 +321,7 @@ ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	s = EWL_SPINNER(w);
 
-	ewl_spinner_calc_value(s, s->value);
+	ewl_spinner_calc_value(s, s->value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -458,7 +458,7 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (str && strlen(str)) {
 		val = atof(str);
 
-		ewl_spinner_calc_value(s, (double) (val));
+		ewl_spinner_calc_value(s, (double) (val), TRUE);
 	} else if (str)
 		FREE(str);
 
@@ -478,13 +478,13 @@ ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data,
 	s = EWL_SPINNER(w->parent);
 	wheel = (Ewl_Event_Mouse_Wheel *)ev_data;
 
-	ewl_spinner_calc_value(s, s->value - (wheel->z * s->step));
+	ewl_spinner_calc_value(s, s->value - (wheel->z * s->step), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_spinner_calc_value(Ewl_Spinner * s, double value)
+ewl_spinner_calc_value(Ewl_Spinner * s, double value, unsigned int call)
 {
 	char            format[64];
 	char            str[64];
@@ -507,7 +507,7 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 
 	ewl_text_text_set(EWL_TEXT(s->entry), str);
 
-	if (oval != s->value) {
+	if ((call == TRUE) && (oval != s->value)) {
 		oval = s->value;
 		ewl_callback_call_with_event_data(EWL_WIDGET(s),
 				EWL_CALLBACK_VALUE_CHANGED, &oval);
@@ -529,7 +529,7 @@ ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data,
 
 	ewl_spinner_deselect_cb(w, NULL, NULL);
 
-	ewl_spinner_calc_value(s, s->value + s->step);
+	ewl_spinner_calc_value(s, s->value + s->step, TRUE);
 
 	if (ev_data) {
 		s->direction = 1;
@@ -572,7 +572,7 @@ ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data,
 
 	ewl_spinner_deselect_cb(w, NULL, NULL);
 
-	ewl_spinner_calc_value(s, s->value - s->step);
+	ewl_spinner_calc_value(s, s->value - s->step, TRUE);
 
 	if (ev_data) {
 		s->direction = -1;
