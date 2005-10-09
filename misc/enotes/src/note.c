@@ -263,7 +263,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	ewl_widget_show(p->pane);
 
-	p->content = ewl_entry_new("");
+	p->content = ewl_entry_new();
 	ewl_entry_multiline_set(EWL_ENTRY(p->content), 1);
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
 	ewl_entry_multiline_set((Ewl_Entry *) p->content, 1);

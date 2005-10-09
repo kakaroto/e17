@@ -354,7 +354,8 @@ draw_tree(examine_prop * prop_item)
             strcat(file, "/");
             strcat(file, next->d_name);
 
-            tmp = EWL_OBJECT(ewl_image_new(file, (char *) prop_item->data));
+            tmp = EWL_OBJECT(ewl_image_new());
+            ewl_image_file_set(EWL_IMAGE(tmp), file, (char *) prop_item->data);
             ewl_object_minimum_size_set(EWL_OBJECT(tmp), 60, 60);
             ewl_object_fill_policy_set(EWL_OBJECT(tmp), EWL_FLAG_FILL_NONE);
             ewl_object_alignment_set(EWL_OBJECT(tmp), EWL_FLAG_ALIGN_CENTER);
