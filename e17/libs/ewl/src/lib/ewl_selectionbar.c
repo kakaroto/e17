@@ -52,7 +52,8 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	w = EWL_WIDGET(s);
 
-	ewl_floater_init(EWL_FLOATER(s), parent);
+	ewl_floater_init(EWL_FLOATER(s));
+	ewl_floater_follow_set(EWL_FLOATER(s), parent);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_selectionbar_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,

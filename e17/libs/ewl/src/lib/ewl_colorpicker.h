@@ -23,7 +23,7 @@ struct Ewl_ColorPicker
 	Ewl_Widget *range;
 };
 
-Ewl_Widget 	*ewl_colorpicker_new();
+Ewl_Widget 	*ewl_colorpicker_new(void);
 int 		 ewl_colorpicker_init(Ewl_ColorPicker *cp);
 void             ewl_colorpicker_color_set(Ewl_ColorPicker *cp, int r, int g, int b);
 void 		 ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h);

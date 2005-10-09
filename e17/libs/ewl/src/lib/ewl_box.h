@@ -44,9 +44,9 @@ struct Ewl_Box
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
 };
 
-Ewl_Widget     *ewl_box_new();
-Ewl_Widget     *ewl_hbox_new();
-Ewl_Widget     *ewl_vbox_new();
+Ewl_Widget     *ewl_box_new(void);
+Ewl_Widget     *ewl_hbox_new(void);
+Ewl_Widget     *ewl_vbox_new(void);
 int             ewl_box_init(Ewl_Box * box);
 void            ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o);
 Ewl_Orientation ewl_box_orientation_get(Ewl_Box * b);

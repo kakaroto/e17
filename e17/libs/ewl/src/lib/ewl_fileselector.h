@@ -51,7 +51,7 @@ struct Ewl_Fileselector
 	unsigned int   multi_select; /**< is the selector multi select or not */
 };
 
-Ewl_Widget 	*ewl_fileselector_new();
+Ewl_Widget 	*ewl_fileselector_new(void);
 int  		 ewl_fileselector_init(Ewl_Fileselector *fs);
 
 char 		*ewl_fileselector_path_get(Ewl_Fileselector *fs);

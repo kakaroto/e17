@@ -329,8 +329,17 @@ int ewl_idle_render(void *data)
 			evas_event_freeze(emb->evas);
 	}
 
-	if (!ecore_list_is_empty(configure_list))
+	while (!ecore_list_is_empty(configure_list)) {
 		ewl_configure_queue();
+
+		/*
+		 * Reclaim obscured objects at this point
+		 */
+
+		/*
+		 * Allocate objects to revealed widgets.
+		 */
+	}
 
 	edje_thaw();
 

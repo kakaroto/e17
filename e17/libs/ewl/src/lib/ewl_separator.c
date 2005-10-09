@@ -77,7 +77,8 @@ int ewl_separator_init(Ewl_Separator * s)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
-	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
+						  EWL_FLAG_FILL_SHRINK);
 	ewl_widget_inherit(w, "separator");
 
 	ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
@@ -99,9 +100,15 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
+					   EWL_FLAG_FILL_HFILL |
+					   EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "vseparator");
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
+					   EWL_FLAG_FILL_VFILL |
+					   EWL_FLAG_FILL_VSHRINK);
 	}
 
 	ewl_widget_configure(EWL_WIDGET(s));

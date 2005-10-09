@@ -196,7 +196,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 		
 	/*** Context menu **/
 	/*Make the menu floater */
-	ib->ewl_iconbox_menu_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
+	ib->ewl_iconbox_menu_floater = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater),
+			       ib->ewl_iconbox_pane_inner);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_FILL_FILL);
 
@@ -238,7 +240,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_ALL);
 
 	/* Create the selector / selector floater */
-	ib->select_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
+	ib->select_floater = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(ib->select_floater),
+				ib->ewl_iconbox_pane_inner);
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->select_floater), EWL_FLAG_FILL_FILL);
 	ib->select =ewl_button_new();
 	
@@ -274,9 +278,11 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(EWL_ENTRY(ib->entry)->cursor), 50);
 	ewl_widget_show(ib->entry);
-	ib->entry_floater = ewl_floater_new(ib->ewl_iconbox_pane_inner);
+	ib->entry_floater = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(ib->entry_floater),
+				ib->ewl_iconbox_pane_inner);
 	/*ewl_widget_show(ib->entry_floater);*/
-	ib->entry_box = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
+	ib->entry_box = ewl_hbox_new();
 	ewl_widget_show(ib->entry_box);
 	ewl_container_child_append(EWL_CONTAINER(ib->entry_floater), ib->entry_box);
 	ewl_container_child_append(EWL_CONTAINER(ib->entry_box), ib->entry);
@@ -840,7 +846,9 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 	EWL_ICONBOX_ICON(ib)->selected = 0;
-	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new(iconbox->ewl_iconbox_pane_inner);
+	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(iconbox->ewl_iconbox_pane_inner),
+				iconbox->ewl_iconbox_pane_inner);
 
 	/*Set the label*/
 	ewl_iconbox_icon_label_setup(EWL_ICONBOX_ICON(ib), name);

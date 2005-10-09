@@ -104,7 +104,9 @@ ewl_combo_init(Ewl_Combo * combo, char *title)
 	/*
 	 * Create the popup combo portion of the widget.
 	 */
-	combo->base.popup = ewl_floater_new(EWL_WIDGET(combo));
+	combo->base.popup = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(combo->base.popup),
+				EWL_WIDGET(combo));
 	ewl_widget_internal_set(combo->base.popup, TRUE);
 	ewl_widget_layer_set(combo->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(combo->base.popup), "imenu");

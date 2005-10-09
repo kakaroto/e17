@@ -855,23 +855,17 @@ void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
  */
 void ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 {
-	int hide = 1;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (c->child_hide && !VISIBLE(w) && REALIZED(w))
 		c->child_hide(c, w);
 
-	ecore_list_goto_first(c->children);
-	while ((w = ecore_list_next(c->children))) {
-		if (VISIBLE(w)) {
-			hide = 0;
-			break;
-		}
+	if (c->clip_box) {
+		const Evas_List *clippees;
+		clippees = evas_object_clipees_get(c->clip_box);
+		if (!clippees)
+			evas_object_hide(c->clip_box);
 	}
-
-	if (hide && c->clip_box)
-		evas_object_hide(c->clip_box);
 
 	ewl_widget_configure(EWL_WIDGET(c));
 

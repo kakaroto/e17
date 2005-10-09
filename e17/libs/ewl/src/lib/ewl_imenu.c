@@ -52,7 +52,8 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	/*
 	 * Create the popup menu portion of the widget.
 	 */
-	menu->base.popup = ewl_floater_new(EWL_WIDGET(menu));
+	menu->base.popup = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(menu->base.popup), EWL_WIDGET(menu));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "imenu");

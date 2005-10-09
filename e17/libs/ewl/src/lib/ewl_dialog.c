@@ -4,11 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param pos: the position of the action area.
  * @return Returns a pointer to a new dialog on success, NULL on failure.
  * @brief Create a new internal dialog
  */
-Ewl_Widget *ewl_dialog_new(Ewl_Position pos)
+Ewl_Widget *ewl_dialog_new(void)
 {
 	Ewl_Dialog *d;
 
@@ -18,21 +17,19 @@ Ewl_Widget *ewl_dialog_new(Ewl_Position pos)
 	if (!d)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_dialog_init(d, pos);
+	ewl_dialog_init(d);
 
 	DRETURN_PTR(EWL_WIDGET(d), DLEVEL_STABLE);
 }
 
 /**
  * @param dialog: the dialog to initialize.
- * @param pos: the position of the action area.
  * @return Return TRUE on success, FALSE otherwise.
  * @brief Initialize an internal dialog to starting values
  */
-int ewl_dialog_init(Ewl_Dialog * dialog, Ewl_Position pos)
+int ewl_dialog_init(Ewl_Dialog * dialog)
 {
 	Ewl_Widget *w;
-	Ewl_Widget *box;
 	Ewl_Widget *spacer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -46,155 +43,47 @@ int ewl_dialog_init(Ewl_Dialog * dialog, Ewl_Position pos)
 	ewl_widget_appearance_set(w, "window");
 	ewl_widget_inherit(w, "dialog");
 
-	dialog->position = pos;
+	dialog->position = EWL_POSITION_BOTTOM;
 
-	switch (pos) {
-	case EWL_POSITION_LEFT:
-		box = ewl_hbox_new();
-		break;
-	case EWL_POSITION_RIGHT:
-		box = ewl_hbox_new();
-		break;
-	case EWL_POSITION_TOP:
-		box = ewl_vbox_new();
-		break;
-	default:
-		box = ewl_vbox_new();
-		break;
+	/*
+	 * Create a box for laying out the whole window
+	 */
+	dialog->box = ewl_vbox_new();
+	if (dialog->box) {
+		ewl_container_child_append(EWL_CONTAINER(dialog), dialog->box);
+		ewl_object_fill_policy_set(EWL_OBJECT(dialog->box),
+					   EWL_FLAG_FILL_ALL);
+		ewl_widget_show(dialog->box);
 	}
 
-	if (box) {
-		ewl_container_child_append(EWL_CONTAINER(dialog), box);
-		ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
-		ewl_widget_show(box);
-	}
-
+	/*
+	 * Setup a vertical box for the displayed window contents.
+	 */
 	dialog->vbox = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(dialog->vbox), EWL_FLAG_FILL_ALL);
 	if (dialog->vbox) {
-		ewl_container_child_append(EWL_CONTAINER(box),
+		ewl_container_child_append(EWL_CONTAINER(dialog->box),
 					   dialog->vbox);
 		ewl_box_homogeneous_set(EWL_BOX(dialog->vbox), FALSE);
-		switch (pos) {
-		case EWL_POSITION_LEFT:
-			{
-				dialog->action_area = ewl_vbox_new();
-				dialog->separator = ewl_vseparator_new();
-				break;
-			}
-		case EWL_POSITION_RIGHT:
-			{
-				dialog->action_area = ewl_vbox_new();
-				dialog->separator = ewl_vseparator_new();
-				break;
-			}
-		case EWL_POSITION_TOP:
-			{
-				dialog->action_area = ewl_hbox_new();
-				dialog->separator = ewl_hseparator_new();
-				break;
-			}
-		default:
-			{
-				dialog->action_area = ewl_hbox_new();
-				dialog->separator = ewl_hseparator_new();
-				break;
-			}
-		}
+		dialog->action_area = ewl_hbox_new();
+		dialog->separator = ewl_hseparator_new();
 		ewl_widget_show(dialog->vbox);
 	}
 
 	if (dialog->separator) {
-		switch (pos) {
-		case EWL_POSITION_LEFT:
-			{
-				ewl_container_child_prepend(EWL_CONTAINER
-							    (box),
-							    dialog->
-							    separator);
-				break;
-			}
-		case EWL_POSITION_TOP:
-			{
-				ewl_container_child_prepend(EWL_CONTAINER
-							    (box),
-							    dialog->
-							    separator);
-				break;
-			}
-		case EWL_POSITION_RIGHT:
-			{
-				ewl_container_child_append(EWL_CONTAINER
-							   (box),
-							   dialog->
-							   separator);
-				break;
-			}
-		default:
-			{
-				ewl_container_child_append(EWL_CONTAINER
-							   (box),
-							   dialog->
-							   separator);
-				break;
-			}
-		}
-		ewl_object_fill_policy_set(EWL_OBJECT(dialog->separator),
-					   EWL_FLAG_FILL_SHRINK);
+		ewl_container_child_append(EWL_CONTAINER(dialog->box),
+					   dialog->separator);
 		ewl_widget_show(dialog->separator);
 	}
 
+	/*
+	 * Create an action area for buttons
+	 */
 	if (dialog->action_area) {
-		switch (pos) {
-		case EWL_POSITION_LEFT:
-			{
-				ewl_container_child_prepend(EWL_CONTAINER
-							    (box),
-							    dialog->
-							    action_area);
-				ewl_object_fill_policy_set(EWL_OBJECT
-							   (dialog->
-							    action_area),
-							   EWL_FLAG_FILL_VFILL);
-				break;
-			}
-		case EWL_POSITION_TOP:
-			{
-				ewl_container_child_prepend(EWL_CONTAINER
-							    (box),
-							    dialog->
-							    action_area);
-				ewl_object_fill_policy_set(EWL_OBJECT
-							   (dialog->
-							    action_area),
-							   EWL_FLAG_FILL_HFILL);
-				break;
-			}
-		case EWL_POSITION_RIGHT:
-			{
-				ewl_container_child_append(EWL_CONTAINER
-							   (box),
-							   dialog->
-							   action_area);
-				ewl_object_fill_policy_set(EWL_OBJECT
-							   (dialog->
-							    action_area),
-							   EWL_FLAG_FILL_VFILL);
-				break;
-			}
-		default:
-			{
-				ewl_container_child_append(EWL_CONTAINER
-							   (box),
-							   dialog->
-							   action_area);
-				ewl_object_fill_policy_set(EWL_OBJECT
-							   (dialog->
-							    action_area),
-							   EWL_FLAG_FILL_HFILL);
-				break;
-			}
-		}
+		ewl_container_child_append(EWL_CONTAINER(dialog->box),
+					   dialog->action_area);
+		ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
+					   EWL_FLAG_FILL_HFILL);
 
 		ewl_box_homogeneous_set(EWL_BOX(dialog->action_area),
 					FALSE);
@@ -213,6 +102,77 @@ int ewl_dialog_init(Ewl_Dialog * dialog, Ewl_Position pos)
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param d: dialog to change action area position
+ * @param pos: the new position for the new action area
+ * @return Returns no value.
+ * @brief Changes the action area position for a dialog.
+ */
+void ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("d", d);
+
+	if (pos == d->position)
+		DRETURN(DLEVEL_STABLE);
+
+	d->position = pos;
+
+	/*
+	 * First determine the orientation of the dialog area.
+	 */
+	if (pos & EWL_POSITION_LEFT & EWL_POSITION_RIGHT) {
+		ewl_box_orientation_set(EWL_BOX(d->box),
+					EWL_ORIENTATION_HORIZONTAL);
+		ewl_box_orientation_set(EWL_BOX(d->separator),
+					EWL_ORIENTATION_VERTICAL);
+		ewl_box_orientation_set(EWL_BOX(d->action_area),
+					EWL_ORIENTATION_VERTICAL);
+	}
+	else {
+		ewl_box_orientation_set(EWL_BOX(d->box),
+					EWL_ORIENTATION_VERTICAL);
+		ewl_box_orientation_set(EWL_BOX(d->separator),
+					EWL_ORIENTATION_HORIZONTAL);
+		ewl_box_orientation_set(EWL_BOX(d->action_area),
+					EWL_ORIENTATION_HORIZONTAL);
+	}
+
+	ewl_container_child_remove(EWL_CONTAINER(d->box), d->separator);
+	ewl_container_child_remove(EWL_CONTAINER(d->box), d->action_area);
+
+	/*
+	 * Repack order of the widgets to match new position
+	 */
+	if (pos & EWL_POSITION_LEFT & EWL_POSITION_TOP) {
+		ewl_container_child_prepend(EWL_CONTAINER(d->box),
+					    d->separator);
+		ewl_container_child_prepend(EWL_CONTAINER(d->box),
+					    d->action_area);
+	}
+	else {
+		ewl_container_child_append(EWL_CONTAINER(d->box),
+					   d->separator);
+		ewl_container_child_append(EWL_CONTAINER(d->box),
+					   d->action_area);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param d: dialog to check action area position
+ * @return Returns the current action area position.
+ * @brief Checks the action area position for a dialog.
+ */
+Ewl_Position ewl_dialog_action_position_get(Ewl_Dialog *d)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
+
+	DRETURN_INT(d->position, DLEVEL_STABLE);
 }
 
 /**

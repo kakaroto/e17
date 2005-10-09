@@ -99,8 +99,8 @@ struct Ewl_IconBox
 };
 
 
-Ewl_Widget	*ewl_iconbox_new();
-Ewl_Widget	*ewl_iconbox_icon_new();
+Ewl_Widget	*ewl_iconbox_new(void);
+Ewl_Widget	*ewl_iconbox_icon_new(void);
 int		ewl_iconbox_init(Ewl_IconBox* iconbox);
 int		ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon);
 

@@ -93,7 +93,7 @@ __create_dialog_test_window (Ewl_Widget * w, void *ev __UNUSED__,
   Ewl_Widget *label;
   Ewl_Widget *button;
 
-  dialog_win = ewl_dialog_new (EWL_POSITION_BOTTOM);
+  dialog_win = ewl_dialog_new ();
   ewl_window_title_set (EWL_WINDOW (dialog_win), "Dialog Test");
   ewl_window_name_set (EWL_WINDOW (dialog_win), "EWL Test Application");
   ewl_window_class_set (EWL_WINDOW (dialog_win), "EFL Test Application");

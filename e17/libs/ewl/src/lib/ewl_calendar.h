@@ -43,7 +43,7 @@ struct Ewl_Calendar
 };
 
 
-Ewl_Widget	*ewl_calendar_new();
+Ewl_Widget	*ewl_calendar_new(void);
 int		ewl_calendar_init(Ewl_Calendar* calendar);
 void ewl_calendar_grid_setup(Ewl_Calendar* cal);
 void ewl_calendar_ascii_time_get(Ewl_Calendar* cal, char* str);

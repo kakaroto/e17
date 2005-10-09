@@ -39,7 +39,7 @@ struct Ewl_DatePicker
 };
 
 
-Ewl_Widget	*ewl_datepicker_new();
+Ewl_Widget	*ewl_datepicker_new(void);
 int		ewl_datepicker_init(Ewl_DatePicker* datepicker);
 
 

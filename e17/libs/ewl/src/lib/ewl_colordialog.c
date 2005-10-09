@@ -70,7 +70,7 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	 * HSV values, ok and cancel buttons
 	 */
 
-	vbox = ewl_box_new(EWL_ORIENTATION_VERTICAL);
+	vbox = ewl_vbox_new();
 	ewl_box_spacing_set(EWL_BOX(vbox), 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 	ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_CENTER);
@@ -89,7 +89,7 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_widget_color_set(cd->preview, r, g, b, 255);
 	ewl_widget_show(cd->preview);
 
-	hbox = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
+	hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
@@ -132,7 +132,7 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 			    ewl_colordialog_bluevalue_changed, cd);
 	ewl_widget_show(cd->blue_entry);
 
-	hbox = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
+	hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);

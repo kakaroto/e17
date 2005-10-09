@@ -6,7 +6,7 @@
 typedef struct Ewl_Attach_Tooltip Ewl_Attach_Tooltip;
 struct Ewl_Attach_Tooltip
 {
-    Ewl_Widget *embed;
+	Ewl_Widget *embed;
 
 	Ewl_Widget *win;
 	Ewl_Widget *box;

@@ -4,14 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param parent: the parent widget to follow if desired
  * @return Returns NULL on failure, or the new floater widget on success.
  * @brief Allocate a new floater widget
- *
- * The @a parent widget should be either a widget to follow
- * relative too, or a window for absolute positioning.
  */
-Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
+Ewl_Widget     *ewl_floater_new(void)
 {
 	Ewl_Widget     *f;
 
@@ -21,7 +17,7 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 	if (!f)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_floater_init(EWL_FLOATER(f), parent);
+	ewl_floater_init(EWL_FLOATER(f));
 
 	DRETURN_PTR(EWL_WIDGET(f), DLEVEL_STABLE);
 }
@@ -29,20 +25,17 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 
 /**
  * @param f: the floater widget
- * @param parent: the parent widget, we need this to get the evas and clip_box
  * @return Returns no value.
  * @brief Initialize a floater to default values
  * 
  * Sets the fields and callbacks of the floater @a f to their defaults.
  */
-int ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
+int ewl_floater_init(Ewl_Floater * f)
 {
 	Ewl_Widget     *w;
-	/* Ewl_Window     *window; */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("f", f, FALSE);
-	DCHECK_PARAM_PTR_RET("parent", parent, FALSE);
 
 	w = EWL_WIDGET(f);
 
@@ -58,21 +51,48 @@ int ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
 	ewl_widget_appearance_set(w, "floater");
 	ewl_widget_inherit(w, "floater");
-	f->follows = parent;
+
+	ewl_callback_append(EWL_WIDGET(f), EWL_CALLBACK_DESTROY,
+			    ewl_floater_follow_destroy_cb, w);
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+void ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("f", f);
+
+	/*
+	 * Don't follow the old parent.
+	 */
+	if (f->follows) {
+		ewl_callback_del_with_data(p, EWL_CALLBACK_CONFIGURE,
+				 ewl_floater_follow_configure_cb, f);
+	}
 
 	/*
 	 * Need to add callbacks to the window that contains it as well the
 	 * widget it follows, if they are not the same.
 	 */
-	ewl_callback_append(EWL_WIDGET(f->follows), EWL_CALLBACK_CONFIGURE,
-			    ewl_floater_parent_configure_cb, w);
-	ewl_callback_append(EWL_WIDGET(f), EWL_CALLBACK_DESTROY,
-			    ewl_floater_parent_destroy_cb, w);
+	if (p) {
+		ewl_callback_append(p, EWL_CALLBACK_CONFIGURE,
+				    ewl_floater_follow_configure_cb, f);
+	}
 
-	f->x = CURRENT_X(EWL_OBJECT(parent));
-	f->y = CURRENT_Y(EWL_OBJECT(parent));
+	f->follows = p;
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_configure(EWL_WIDGET(f));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_Widget *ewl_floater_follow_get(Ewl_Floater *f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("f", f, NULL);
+
+	DRETURN_PTR(f->follows, DLEVEL_STABLE);
 }
 
 /**
@@ -130,7 +150,7 @@ void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
 	 */
 	if (f->follows)
 		ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
-				 ewl_floater_parent_configure_cb);
+				 ewl_floater_follow_configure_cb);
 
 	/*
 	 * Set the widget that the floater follows.
@@ -146,7 +166,7 @@ void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
  * Use this to ensure the floater gets configured when the parent/window is.
  */
 void
-ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_floater_follow_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	int             align, x, y;
@@ -204,7 +224,7 @@ ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_floater_parent_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_floater_follow_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
