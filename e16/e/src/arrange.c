@@ -971,8 +971,8 @@ ArrangeEwins(const char *params)
 
    type = params;
    method = ARRANGE_BY_SIZE;
-   speed = Conf.slidespeedcleanup;
-   doslide = Conf.cleanupslide;
+   speed = Conf.place.slidespeedcleanup;
+   doslide = Conf.place.cleanupslide;
 
    if (params)
      {

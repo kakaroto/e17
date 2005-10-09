@@ -110,7 +110,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
-   if (Conf.slidemode > 0)
+   if (Conf.place.slidemode > 0)
       EGrabServer();
 
    tmpx = abs(tx - fx) + abs(ty - fy);
@@ -124,10 +124,10 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	tmpx = x;
 	tmpy = y;
-	if (Conf.slidemode == 0)
+	if (Conf.place.slidemode == 0)
 	   EoMove(ewin, tmpx, tmpy);
 	else
-	   DrawEwinShape(ewin, Conf.slidemode, tmpx, tmpy,
+	   DrawEwinShape(ewin, Conf.place.slidemode, tmpx, tmpy,
 			 ewin->client.w, ewin->client.h, firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
@@ -139,13 +139,13 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    Mode.place.doing_slide = 0;
    FocusEnable(1);
 
-   if (Conf.slidemode == 0)
+   if (Conf.place.slidemode == 0)
       EwinMove(ewin, tx, ty);
    else
-      DrawEwinShape(ewin, Conf.slidemode, tx, ty,
+      DrawEwinShape(ewin, Conf.place.slidemode, tx, ty,
 		    ewin->client.w, ewin->client.h, 2);
 
-   if (Conf.slidemode > 0)
+   if (Conf.place.slidemode > 0)
       EUngrabServer();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");
@@ -171,7 +171,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    FocusEnable(0);
    SoundPlay("SOUND_WINDOW_SLIDE");
 
-   if (Conf.slidemode > 0)
+   if (Conf.place.slidemode > 0)
       EGrabServer();
 
    ETimedLoopInit(0, 1024, speed);
@@ -212,7 +212,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    Mode.place.doing_slide = 0;
    FocusEnable(1);
 
-   if (Conf.slidemode > 0)
+   if (Conf.place.slidemode > 0)
       EUngrabServer();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");

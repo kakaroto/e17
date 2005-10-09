@@ -966,8 +966,7 @@ FxSettings(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d =
-	FindItem("CONFIGURE_EFFECTS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -979,8 +978,8 @@ FxSettings(void)
    tmp_effect_ripples = FX_IsOn("ripples");
    tmp_effect_waves = FX_IsOn("waves");
 
-   d = DialogCreate("CONFIGURE_EFFECTS");
-   DialogSetTitle(d, _("Miscellaneous Effects Settings"));
+   d = DialogCreate("CONFIGURE_FX");
+   DialogSetTitle(d, _("Special FX Settings"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
@@ -995,7 +994,7 @@ FxSettings(void)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
-			  _("Enlightenment Miscellaneous Effects\n"
+			  _("Enlightenment Special Effects\n"
 			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -1014,21 +1013,18 @@ FxSettings(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Enable Effect: Raindrops"));
-   DialogItemCheckButtonSetState(di, tmp_effect_raindrops);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_raindrops);
 #endif
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Ripples"));
-   DialogItemCheckButtonSetState(di, tmp_effect_ripples);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_ripples);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Waves"));
-   DialogItemCheckButtonSetState(di, tmp_effect_waves);
    DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);

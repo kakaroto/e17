@@ -1166,15 +1166,17 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   rows = 1;
 	   if ((cols > 0) && (rows > 0))
 	     {
-		int                 i, *col_size, *row_size = NULL, r = 0, c =
-		   0, x = 0, y = 0;
+		int                 i, r, c, x, y;
+		int                *col_size, *row_size;
 
 		col_size = Emalloc(sizeof(int) * cols);
-		row_size = Erealloc(row_size, sizeof(int));
+		row_size = Emalloc(sizeof(int) * rows);
 
 		row_size[0] = 0;
 		for (i = 0; i < cols; i++)
 		   col_size[i] = 0;
+
+		r = c = 0;
 		for (i = 0; i < di->item.table.num_items; i++)
 		  {
 		     DItem              *dii;
@@ -1186,7 +1188,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		     for (j = 0; j < dii->col_span; j++)
 			csum += col_size[c + j];
 		     if (w > csum)
-			col_size[c + di->col_span - 1] += (w - csum);
+		       {
+			  for (j = 0; j < dii->col_span; j++)
+			     col_size[c + j] =
+				(w + dii->col_span - 1) / dii->col_span;
+		       }
 		     if (h > row_size[r])
 			row_size[r] = h;
 		     c += dii->col_span;
@@ -1224,16 +1230,17 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		     for (i = 0; i < rows; i++)
 			row_size[i] = max;
 		  }
-		iw = 0;
-		ih = 0;
+
+		iw = ih = 0;
 		for (i = 0; i < cols; i++)
 		   iw += col_size[i];
 		for (i = 0; i < rows; i++)
 		   ih += row_size[i];
 		di->w = iw;
 		di->h = ih;
-		r = 0;
-		c = 0;
+
+		x = y = 0;
+		r = c = 0;
 		for (i = 0; i < di->item.table.num_items; i++)
 		  {
 		     DItem              *dii;
@@ -1798,6 +1805,13 @@ DialogItemSliderSetVal(DItem * di, int val)
 }
 
 void
+DialogItemSliderSetValPtr(DItem * di, int *val_ptr)
+{
+   di->item.slider.val_ptr = val_ptr;
+   DialogItemSliderSetVal(di, *val_ptr);
+}
+
+void
 DialogItemSliderSetBounds(DItem * di, int lower, int upper)
 {
    if (lower < upper)
@@ -1830,12 +1844,6 @@ void
 DialogItemSliderSetMinLength(DItem * di, int min)
 {
    di->item.slider.min_length = min;
-}
-
-void
-DialogItemSliderSetValPtr(DItem * di, int *val_ptr)
-{
-   di->item.slider.val_ptr = val_ptr;
 }
 
 void

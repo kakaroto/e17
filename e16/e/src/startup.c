@@ -126,7 +126,7 @@ StartupWindowsOpen(void)
 
    fy = 0;
 
-   ETimedLoopInit(0, 1024, Conf.slidespeedcleanup / 2);
+   ETimedLoopInit(0, 1024, Conf.desks.slidespeed / 2);
    for (k = 0; k <= 1024;)
      {
 	if (bg_sideways)

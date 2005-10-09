@@ -1961,6 +1961,106 @@ MenusSighan(int sig, void *prm __UNUSED__)
      }
 }
 
+/*
+ * Configuration dialog
+ */
+
+static char         tmp_warpmenus;
+static char         tmp_animated_menus;
+static char         tmp_menusonscreen;
+
+static void
+CB_ConfigureMenus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	Conf.menus.warp = tmp_warpmenus;
+	Conf.menus.animate = tmp_animated_menus;
+	Conf.menus.onscreen = tmp_menusonscreen;
+     }
+   autosave();
+}
+
+static void
+MenusSettings(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   if ((d = FindItem("CONFIGURE_MENUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_MENUS");
+
+   tmp_warpmenus = Conf.menus.warp;
+   tmp_animated_menus = Conf.menus.animate;
+   tmp_menusonscreen = Conf.menus.onscreen;
+
+   d = DialogCreate("CONFIGURE_MENUS");
+   DialogSetTitle(d, _("Menu Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 3, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/place.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetText(di, _("Enlightenment Menu\n" "Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetText(di, _("Animated display of menus"));
+   DialogItemCheckButtonSetPtr(di, &tmp_animated_menus);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetText(di, _("Always pop up menus on screen"));
+   DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetText(di, _("Warp pointer after moving menus"));
+   DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureMenus, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("Apply"), CB_ConfigureMenus, 0, DIALOG_BUTTON_APPLY);
+   DialogAddButton(d, _("Close"), CB_ConfigureMenus, 1, DIALOG_BUTTON_CLOSE);
+   DialogSetExitFunction(d, CB_ConfigureMenus, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ConfigureMenus, 0);
+
+   ShowDialog(d);
+}
+
 static void
 MenusIpc(const char *params, Client * c __UNUSED__)
 {
@@ -1980,6 +2080,10 @@ MenusIpc(const char *params, Client * c __UNUSED__)
    if (!p || cmd[0] == '?')
      {
 	IpcPrintf("Menus - active=%d\n", MenusActive());
+     }
+   else if (!strncmp(cmd, "cfg", 2))
+     {
+	MenusSettings();
      }
    else if (!strncmp(cmd, "list", 2))
      {

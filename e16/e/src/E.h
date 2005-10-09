@@ -535,6 +535,10 @@ typedef struct
       char                manual;
       char                manual_mouse_pointer;
       char                slidein;
+      char                cleanupslide;
+      int                 slidemode;
+      int                 slidespeedmap;
+      int                 slidespeedcleanup;
       char                ignore_struts;
       char                raise_fullscreen;
    } place;
@@ -592,10 +596,6 @@ typedef struct
       int                 icon_mode;
    } warplist;
    int                 deskmode;
-   int                 slidemode;
-   char                cleanupslide;
-   int                 slidespeedmap;
-   int                 slidespeedcleanup;
    char                animate_shading;
    int                 shadespeed;
    int                 button_move_resistance;
@@ -1452,7 +1452,6 @@ void                SettingsDesktops(void);
 void                SettingsArea(void);
 void                SettingsPlacement(void);
 void                SettingsAutoRaise(void);
-void                SettingsSpecialFX(void);
 void                SettingsMiscellaneous(void);
 void                SettingsComposite(void);
 

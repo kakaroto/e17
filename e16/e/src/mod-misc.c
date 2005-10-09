@@ -124,6 +124,10 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, place.manual, 0),
    CFG_ITEM_BOOL(Conf, place.manual_mouse_pointer, 0),
    CFG_ITEM_BOOL(Conf, place.slidein, 0),
+   CFG_ITEM_BOOL(Conf, place.cleanupslide, 1),
+   CFG_ITEM_INT(Conf, place.slidemode, 0),
+   CFG_ITEM_INT(Conf, place.slidespeedmap, 6000),
+   CFG_ITEM_INT(Conf, place.slidespeedcleanup, 8000),
    CFG_ITEM_BOOL(Conf, place.ignore_struts, 0),
    CFG_ITEM_BOOL(Conf, place.raise_fullscreen, 0),
 
@@ -142,10 +146,6 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, startup.animate, 1),
 
    CFG_ITEM_INT(Conf, deskmode, MODE_NONE),
-   CFG_ITEM_INT(Conf, slidemode, 0),
-   CFG_ITEM_BOOL(Conf, cleanupslide, 1),
-   CFG_ITEM_INT(Conf, slidespeedmap, 6000),
-   CFG_ITEM_INT(Conf, slidespeedcleanup, 8000),
    CFG_ITEM_BOOL(Conf, animate_shading, 1),
    CFG_ITEM_INT(Conf, shadespeed, 8000),
    CFG_ITEM_INT(Conf, button_move_resistance, 5),
@@ -190,8 +190,6 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
      {
 	if (!strncmp(prm, "autoraise", 2))
 	   SettingsAutoRaise();
-	else if (!strncmp(prm, "fx", 2))
-	   SettingsSpecialFX();
 	else if (!strncmp(prm, "misc", 2))
 	   SettingsMiscellaneous();
 	else if (!strncmp(prm, "moveresize", 2))
