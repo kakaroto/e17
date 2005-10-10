@@ -38,12 +38,9 @@ struct Ewl_Menu
         int            popup_y;
 };
 
-Ewl_Widget     *ewl_menu_new  (char     *image,
-			       char     *title);
+Ewl_Widget     *ewl_menu_new(void);
 
-void            ewl_menu_init (Ewl_Menu *menu,
-			       char     *image,
-			       char     *title);
+void            ewl_menu_init(Ewl_Menu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.

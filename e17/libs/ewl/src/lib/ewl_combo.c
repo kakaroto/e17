@@ -42,7 +42,8 @@ ewl_combo_init(Ewl_Combo * combo, char *title)
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_base_init(EWL_MENU_BASE(combo), NULL, title);
+	ewl_menu_base_init(EWL_MENU_BASE(combo));
+	ewl_menu_item_text_set(EWL_MENU_ITEM(combo), title);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
 

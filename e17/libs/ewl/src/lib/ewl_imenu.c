@@ -4,12 +4,10 @@
 #include "ewl_private.h"
 
 /**
- * @param image: the image icon to use for this menu
- * @param title: the text to place in the menu
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu
  */
-Ewl_Widget     *ewl_imenu_new(char *image, char *title)
+Ewl_Widget *ewl_imenu_new(void)
 {
 	Ewl_IMenu      *menu;
 
@@ -19,7 +17,7 @@ Ewl_Widget     *ewl_imenu_new(char *image, char *title)
 	if (!menu)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_imenu_init(menu, image, title);
+	ewl_imenu_init(menu);
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);
 }
@@ -27,12 +25,10 @@ Ewl_Widget     *ewl_imenu_new(char *image, char *title)
 
 /**
  * @param menu: the menu to initialize
- * @param image: the path to the icon image
- * @param title: the string displayed in the title
  * @return Returns no value.
  * @brief Initialize an internal menu to starting values
  */
-void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
+void ewl_imenu_init(Ewl_IMenu * menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -41,7 +37,7 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
+	ewl_menu_base_init(EWL_MENU_BASE(menu));
 	ewl_widget_inherit(EWL_WIDGET(menu), "imenu");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,

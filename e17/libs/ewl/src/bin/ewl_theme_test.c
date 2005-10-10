@@ -162,11 +162,14 @@ widgets_build(void)
 	vbox = ewl_vbox_new ();
 	ewl_widget_show (vbox);
 	
-	misc = ewl_imenu_new (NULL, "Imenu");
+	misc = ewl_imenu_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(misc), "Imenu");
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	item = ewl_menu_item_new ("dia-diagram.png", "image");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "dia-diagram.png");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "image");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -174,7 +177,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_item_new (NULL, "label");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "label");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -182,11 +186,14 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	misc = ewl_menu_new (NULL, "Menu");
+	misc = ewl_menu_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(misc), "Menu");
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	item = ewl_menu_item_new ("dia-diagram.png", "image");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "dia-diagram.png");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "image");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -194,7 +201,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_item_new (NULL, "label");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "label");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -206,7 +214,9 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 	
-	item = ewl_menu_item_new ("dia-diagram.png", "image");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "dia-diagram.png");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "image");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -214,7 +224,8 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_item_new (NULL, "label");
+	item = ewl_menu_item_new ();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "label");
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	

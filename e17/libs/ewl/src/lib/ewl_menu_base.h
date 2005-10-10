@@ -37,7 +37,7 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
  */
 struct Ewl_Menu_Item
 {
-	Ewl_Box         box; /**< Inherit from Ewl_Container */
+	Ewl_Box         box; /**< Inherit from Ewl_Box */
 	Ewl_Widget     *icon; /**< The image in this menu item */
 	Ewl_Widget     *text; /**< The text label for this menu item  */
 	Ewl_Widget     *inmenu; /**< Set if inside a menu */
@@ -79,15 +79,14 @@ typedef struct Ewl_Menu_Base Ewl_Menu_Base;
 
 struct Ewl_Menu_Base
 {
-	Ewl_Menu_Item   item; /**< Inherit from Ewl_Menu_Item */
-	Ewl_Widget     *popup; /**< The popup portion of the menu */
+	Ewl_Menu_Item   item;   /**< Inherit from Ewl_Menu_Item */
+	Ewl_Widget     *popup;  /**< The popup portion of the menu */
 	Ewl_Widget     *popbox; /**< Box for layout in popup */
-	int             hold; /**< Indicates not to hide this on a deselect */
+	int             hold;   /**< Indicates not to hide this on a deselect */
 };
 
-Ewl_Widget     *ewl_menu_item_new(char *image, char *title);
-int             ewl_menu_item_init(Ewl_Menu_Item * menu, char *image,
-                                    char *title);
+Ewl_Widget     *ewl_menu_item_new(void);
+int             ewl_menu_item_init(Ewl_Menu_Item * menu);
 char           *ewl_menu_item_text_get(Ewl_Menu_Item * item);
 void            ewl_menu_item_text_set(Ewl_Menu_Item * item, char *text);
 char           *ewl_menu_item_image_get(Ewl_Menu_Item * item);
@@ -97,8 +96,7 @@ void            ewl_menu_item_image_set(Ewl_Menu_Item * item, char *image);
 Ewl_Widget     *ewl_menu_separator_new(void);
 void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 
-void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
-                                    char *title);
+void            ewl_menu_base_init(Ewl_Menu_Base * menu);
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -52,11 +52,13 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		for(i = 0; m_items[i] != NULL; i++) {
 			item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, m_items[i]);
 
-			foo = ewl_menu_item_new(NULL, "foo");
+			foo = ewl_menu_item_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
-			foo = ewl_menu_item_new(NULL, "foobar");
+			foo = ewl_menu_item_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
@@ -71,11 +73,13 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 		item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, "Help");
 
-		foo = ewl_menu_item_new(NULL, "foo");
+		foo = ewl_menu_item_new();
+		ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
 		ewl_container_child_append(EWL_CONTAINER(item), foo);
 		ewl_widget_show(foo);
 
-		foo = ewl_menu_item_new(NULL, "foobar");
+		foo = ewl_menu_item_new();
+		ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
 		ewl_container_child_append(EWL_CONTAINER(item), foo);
 		ewl_widget_show(foo);
 	}
@@ -95,11 +99,13 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			Ewl_Widget *foo;
 			item = ewl_menubar_menu_add(EWL_MENUBAR(v_menubar), NULL, m_items[i]);
 
-			foo = ewl_menu_item_new(NULL, "foo");
+			foo = ewl_menu_item_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
-			foo = ewl_menu_item_new(NULL, "foobar");
+			foo = ewl_menu_item_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foobar");
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 

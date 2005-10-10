@@ -3,20 +3,15 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
-                                        char *image, char *text );
-
 /**
  * @param menu: the menu item to initialize
- * @param image: the icon for the menu item
- * @param title: the label for the menu item
  * @return Returns nothing.
  * @brief Initialize a menu item to default values
  *
  * Sets up the internal variables for the menu item and places the icon from
  * @a image and label from @a title in the menu item.
  */
-void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
+void ewl_menu_base_init(Ewl_Menu_Base * menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -25,7 +20,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
+	ewl_menu_item_init(EWL_MENU_ITEM(menu));
 	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu_base");
 
@@ -64,12 +59,10 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 }
 
 /**
- * @param image: the path to the image to use as an icon
- * @param text: the text to display for the menu item
  * @return Returns a pointer to a new menu item on success, NULL on failure.
  * @brief Create a new menu item to place in a menu
  */
-Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
+Ewl_Widget *ewl_menu_item_new(void)
 {
 	Ewl_Menu_Item  *item;
 
@@ -79,22 +72,17 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 	if (!item)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menu_item_init(item, image, text);
+	ewl_menu_item_init(item);
 
 	DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
 }
 
 /**
  * @param item: the item to be initialized
- * @param image: the path to image to be used, NULL for no image
- * @param text: the text for this menuitem
  * @return Returns no value.
  * @brief Initialize the fields of a menu item to their defaults
- *
- * Initializes a menu item to default values and adds the
- * image pointed to by the path @a image, and adds the text in @a text.
  */
-int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
+int ewl_menu_item_init(Ewl_Menu_Item * item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -126,67 +114,6 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_DESELECT);
 
-	item->icon = NULL;
-	if (!ewl_menu_item_image_create(item, image, text))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	/*
-	 * Create the text object for the menu item.
-	 */
-	if (text) {
-		item->text = ewl_text_new();
-		ewl_text_text_set(EWL_TEXT(item->text), text);
-	}
-
-	if (item->text) {
-		ewl_container_child_append(EWL_CONTAINER(item), item->text);
-		ewl_object_alignment_set(EWL_OBJECT(item->text),
-				EWL_FLAG_ALIGN_LEFT);
-		ewl_widget_show(item->text);
-	}
-	else
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-static int ewl_menu_item_image_create( Ewl_Menu_Item *item,
-                                        char *image, char *text ) {
-	Ewl_Container *redirect;
-
-	if (item->icon)
-		ewl_widget_destroy(item->icon);
-
-	redirect = ewl_container_redirect_get(EWL_CONTAINER(item));
-
-	ewl_container_redirect_set(EWL_CONTAINER(item), NULL);
-
-	/*
-	 * Create the icon if one is requested, or a spacer if not, but there is
-	 * text to be displayed.
-	 */
-	if (image) {
-		item->icon = ewl_image_new();
-		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
-	}
-	else if (text)
-		item->icon = ewl_spacer_new();
-
-	if (!item->icon)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	/*
-	 * Did we create an icon or a placeholder? Goodie, then finish it's
-	 * setup. We don't always want to create one, in the case that a
-	 * separator is going to be packed in here instead.
-	 */
-	ewl_object_alignment_set(EWL_OBJECT(item->icon), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_maximum_size_set(EWL_OBJECT(item->icon), 20, 20);
-	ewl_container_child_prepend(EWL_CONTAINER(item), item->icon);
-	ewl_widget_show(item->icon);
-
-	ewl_container_redirect_set(EWL_CONTAINER(item), redirect);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -211,8 +138,46 @@ ewl_menu_item_text_get( Ewl_Menu_Item *item )
 void
 ewl_menu_item_text_set( Ewl_Menu_Item *item, char *text )
 {
-	if (item->text)
-		ewl_text_text_set(EWL_TEXT(item->text), text);
+	Ewl_Container *redirect;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("item", item);
+
+	/*
+	 * Save and restore after we've made our changes.
+	 */
+	redirect = ewl_container_redirect_get(EWL_CONTAINER(item));
+	ewl_container_redirect_set(EWL_CONTAINER(item), NULL);
+
+	if (text) {
+
+		/*
+		 * Setup the text object and add it to the menu.
+		 */
+		if (!item->text) {
+			item->text = ewl_text_new();
+			ewl_container_child_append(EWL_CONTAINER(item),
+						   item->text);
+			ewl_widget_show(item->text);
+		}
+
+		/*
+		 * Set the request text.
+		 */
+		if (item->text) {
+			ewl_text_text_set(EWL_TEXT(item->text), text);
+			if (!item->icon)
+				ewl_menu_item_image_set(item, NULL);
+		}
+	}
+	else if (item->text) {
+		ewl_widget_destroy(item->text);
+		item->text = NULL;
+	}
+
+	ewl_container_redirect_set(EWL_CONTAINER(item), redirect);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -221,8 +186,11 @@ ewl_menu_item_text_set( Ewl_Menu_Item *item, char *text )
  * @brief Get the image of a menu item
  */
 char *
-ewl_menu_item_image_get( Ewl_Menu_Item *item )
+ewl_menu_item_image_get(Ewl_Menu_Item *item)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("item", item, NULL);
+
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		DRETURN_PTR(ewl_image_file_get(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -236,12 +204,60 @@ ewl_menu_item_image_get( Ewl_Menu_Item *item )
 void
 ewl_menu_item_image_set( Ewl_Menu_Item *item, char *image )
 {
-	if (item->icon && ewl_widget_type_is(item->icon, "image"))
-		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
-	else {
-		ewl_menu_item_image_create( item, image,
-                                    ewl_text_text_get(EWL_TEXT(item->text)) );
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("item", item);
+
+	/*
+	 * Destroy the icon if it's the wrong type.
+	 */
+	if ((item->icon && (image && !ewl_widget_type_is(item->icon, "image")))
+			|| (!image && (!ewl_widget_type_is(item->icon, "spacer")))) {
+		ewl_widget_destroy(item->icon);
+		item->icon = NULL;
 	}
+
+	/*
+	 * Create the appropriate widget if necessary.
+	 */
+	if (!item->icon) {
+		Ewl_Container *redirect;
+
+		/*
+		 * Save the current redirect and override to avoid issues with
+		 * submenus
+		 */
+		redirect = ewl_container_redirect_get(EWL_CONTAINER(item));
+		ewl_container_redirect_set(EWL_CONTAINER(item), NULL);
+
+		/*
+		 * Create the icon if one is requested, or a spacer if not, but
+		 * there is text to be displayed.
+		 */
+		if (image)
+			item->icon = ewl_image_new();
+		else if (item->text)
+			item->icon = ewl_spacer_new();
+
+		/*
+		 * Setup display prperties on icon if created.
+		 */
+		if (item->icon) {
+			ewl_object_alignment_set(EWL_OBJECT(item->icon),
+						 EWL_FLAG_ALIGN_CENTER);
+			ewl_object_maximum_size_set(EWL_OBJECT(item->icon),
+						    20, 20);
+			ewl_container_child_prepend(EWL_CONTAINER(item),
+						    item->icon);
+			ewl_widget_show(item->icon);
+		}
+
+		ewl_container_redirect_set(EWL_CONTAINER(item), redirect);
+	}
+
+	if (image && item->icon)
+		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -279,7 +295,7 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 
 	DCHECK_PARAM_PTR("sep", sep);
 
-	ewl_menu_item_init(EWL_MENU_ITEM(sep), NULL, NULL);
+	ewl_menu_item_init(EWL_MENU_ITEM(sep));
 
 	separator = ewl_separator_new(EWL_ORIENTATION_HORIZONTAL);
 	if (!separator)

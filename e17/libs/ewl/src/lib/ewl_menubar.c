@@ -94,7 +94,9 @@ Ewl_Widget *ewl_menubar_menu_add(Ewl_Menubar *mb, char *img, char *title)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mb", mb, FALSE);
 
-	menu = ewl_imenu_new(img, title);
+	menu = ewl_imenu_new();
+	ewl_menu_item_image_set(EWL_MENU_ITEM(menu), img);
+	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), title);
 	ewl_container_child_append(EWL_CONTAINER(mb), menu);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(menu);

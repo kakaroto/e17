@@ -9,7 +9,7 @@
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu
  */
-Ewl_Widget     *ewl_menu_new(char *image, char *title)
+Ewl_Widget     *ewl_menu_new(void)
 {
 	Ewl_Menu      *menu;
 
@@ -19,7 +19,7 @@ Ewl_Widget     *ewl_menu_new(char *image, char *title)
 	if (!menu)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menu_init(menu, image, title);
+	ewl_menu_init(menu);
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);
 }
@@ -32,7 +32,7 @@ Ewl_Widget     *ewl_menu_new(char *image, char *title)
  * @return Returns no value.
  * @brief Initialize an internal menu to starting values
  */
-void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
+void ewl_menu_init(Ewl_Menu * menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -41,8 +41,7 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
-	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu");
+	ewl_menu_base_init(EWL_MENU_BASE(menu));
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,

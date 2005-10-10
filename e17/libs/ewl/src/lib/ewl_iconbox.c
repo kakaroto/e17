@@ -204,20 +204,26 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 
 	/* Get the context menu ready */
-	ib->ewl_iconbox_context_menu = ewl_imenu_new(NULL, "");
+	ib->ewl_iconbox_context_menu = ewl_imenu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu), "");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_context_menu);
 	ewl_widget_show(ib->ewl_iconbox_context_menu);
 
 	/* Add auto-arrange ability */
-	ib->ewl_iconbox_view_menu = ewl_imenu_new(NULL, "View");
+	ib->ewl_iconbox_view_menu = ewl_imenu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_view_menu),
+			       "View");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_view_menu);
 	
-	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new(NULL, "Auto-Arrange");
+	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item),
+			       "Auto-Arrange");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_view_menu), ib->ewl_iconbox_context_menu_item);
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_arrange_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
-	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new(NULL, "Expansion Test");
+	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item), "Expansion Test");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_view_menu), ib->ewl_iconbox_context_menu_item);
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_expansion_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);

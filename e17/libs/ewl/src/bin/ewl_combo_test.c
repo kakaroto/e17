@@ -80,7 +80,10 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	/*
 	 * Append some test items
 	 */
-	item = ewl_menu_item_new("/usr/share/pixmaps/dia-diagram.png", "dia");
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "dia");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item),
+				"/usr/share/pixmaps/dia-diagram.png");
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 
@@ -88,11 +91,15 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 
-	item = ewl_menu_item_new("/usr/share/pixmaps/wilber.png", "gimp");
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "gimp");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item),
+				"/usr/share/pixmaps/wilber.png");
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 
-	item = ewl_menu_item_new(NULL, "button");
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
 	ewl_widget_data_set(item, "dummy", "data");
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);

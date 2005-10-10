@@ -36,8 +36,8 @@ struct Ewl_IMenu
 	Ewl_Menu_Base base;
 };
 
-Ewl_Widget     *ewl_imenu_new(char *image, char *title);
-void            ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title);
+Ewl_Widget     *ewl_imenu_new(void);
+void            ewl_imenu_init(Ewl_IMenu * menu);
 
 /*
  * Internally used callbacks, override at your own risk.
