@@ -483,9 +483,9 @@ entrance_session_start_user_session(Entrance_Session * e)
    }
    struct_passwd_free(pwent);
    entrance_session_free(e);
-   /* replace this rpcoess with a clean small one that just waits for its */
+   /* replace this process with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
-   execl(shell, shell, "-c", buf, NULL);
+   execl(shell, shell, "-l", "-c", buf, NULL);
 }
 
 
