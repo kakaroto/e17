@@ -40,13 +40,11 @@ EWL TODO
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
         test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.
-- [BUG] The first time a tooltip pops up in the ewl_test (tooltip test) it
-        appears over the button, instead of off the end of the mouse. Subsequent
-        activations are in the correct spot
 - [BUG] Dialog text bounds are not considered when packing the window
 - [BUG] Grid and Table layouts do not pack or resize correctly. The child show
-  and resize callbacks do not set the preferred inner size, this is necessary
-  for correct initial size. Their logic is just plain wrong right now.
+        and resize callbacks do not set the preferred inner size, this is 
+	necessary for correct initial size. Their logic is just plain wrong 
+	right now.
 - [BUG] Seem to have lost the .. entry in the filedialog files list.
         Something wrong with the regex's or caused by something in
 	ecore_file
@@ -63,3 +61,4 @@ EWL TODO
     bottom of the scrollarea and you expand a row, the text shoudln't shift
     up. The scrollpane should be adjusted so the line you expanded stays
     where it is and everything shifts down.
+
