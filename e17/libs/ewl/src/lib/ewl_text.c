@@ -170,7 +170,7 @@ void
 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y, 
 							int *w, int *h)
 {
-	Evas_Coord tx, ty, tw, th;
+	Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
 	Evas_Bool ret;
 	char *ptr;
 	unsigned int tb_idx = 0;
