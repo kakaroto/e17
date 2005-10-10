@@ -44,14 +44,8 @@ Ewl_Widget		*ewl_hpaned_new(void);
 Ewl_Widget		*ewl_vpaned_new(void);
 int			 ewl_paned_init(Ewl_Paned *p);
 
-void			 ewl_paned_active_set(Ewl_Paned *p, Ewl_Position pos);
-Ewl_Position	 	 ewl_paned_active_get(Ewl_Paned *p);
-
-void			 ewl_paned_first_pane_append(Ewl_Paned *p, Ewl_Widget *w);
-void			 ewl_paned_first_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
-void			 ewl_paned_second_pane_append(Ewl_Paned *p, Ewl_Widget *w);
-void			 ewl_paned_second_pane_prepend(Ewl_Paned *p, Ewl_Widget *w);
-
+void			 ewl_paned_active_area_set(Ewl_Paned *p, Ewl_Position pos);
+Ewl_Position	 	 ewl_paned_active_area_get(Ewl_Paned *p);
 
 /*
  * Internally used callbacks, override at your own risk.

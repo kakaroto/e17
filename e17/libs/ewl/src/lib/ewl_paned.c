@@ -155,7 +155,7 @@ ewl_paned_init(Ewl_Paned *p)
  * @brief Changes the current active pane of the paned widget
  */
 void
-ewl_paned_active_set(Ewl_Paned *p, Ewl_Position pos) 
+ewl_paned_active_area_set(Ewl_Paned *p, Ewl_Position pos) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
@@ -176,84 +176,12 @@ ewl_paned_active_set(Ewl_Paned *p, Ewl_Position pos)
  * @brief Gets the current active partiton from the paned wiget
  */
 Ewl_Position
-ewl_paned_active_get(Ewl_Paned *p)
+ewl_paned_active_area_get(Ewl_Paned *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, FALSE);
 
 	DRETURN_INT(p->active, DLEVEL_STABLE);
-}
-
-/**
- * @param p: the paned wiget to work against
- * @param w: the wiget to append
- * @return Returns no value.
- * @brief Appends the wiget @a w to the first pane in @a p.
- */
-void
-ewl_paned_first_pane_append(Ewl_Paned *p, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_container_child_append(EWL_CONTAINER(p->first), w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param p: the paned wiget to work against
- * @param w: the wiget to append
- * @return Returns no value.
- * @brief Prepends the wiget @a w to the first pane in @a p.
- */
-void
-ewl_paned_first_pane_prepend(Ewl_Paned *p, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_container_child_prepend(EWL_CONTAINER(p->first), w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param p: the paned wiget to work against
- * @param w: the wiget to append
- * @return Returns no value.
- * @brief Appends the wiget @a w to the second pane in @a p.
- */
-void
-ewl_paned_second_pane_append(Ewl_Paned *p, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_container_child_append(EWL_CONTAINER(p->second), w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param p: the paned wiget to work against
- * @param w: the wiget to append
- * @return Returns no value.
- * @brief Prepends the wiget @a w to the second pane in @a p.
- */
-void
-ewl_paned_second_pane_prepend(Ewl_Paned *p, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_container_child_prepend(EWL_CONTAINER(p->second), w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void

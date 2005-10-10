@@ -45,14 +45,18 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(box), pane);
 	ewl_widget_show(pane);
 
+	ewl_paned_active_area_set(EWL_PANED(pane), EWL_POSITION_LEFT);
+
 	o = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(o), "left");
-	ewl_paned_first_pane_append(EWL_PANED(pane), o);
+	ewl_container_child_append(EWL_CONTAINER(pane), o);
 	ewl_widget_show(o);
+
+	ewl_paned_active_area_set(EWL_PANED(pane), EWL_POSITION_RIGHT);
 
 	o = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(o), "right");
-	ewl_paned_second_pane_append(EWL_PANED(pane), o);
+	ewl_container_child_append(EWL_CONTAINER(pane), o);
 	ewl_widget_show(o);
 }
 
