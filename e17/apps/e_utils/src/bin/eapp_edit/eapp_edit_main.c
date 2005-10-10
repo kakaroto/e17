@@ -334,7 +334,7 @@ eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
     click = (int *)ev;
     switch(*click)
     {
-        case EWL_RESPONSE_OPEN:
+        case EWL_STOCK_OPEN:
             {
                 char *icon;
 
@@ -346,7 +346,7 @@ eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
             }
             break;
 
-        case EWL_RESPONSE_CANCEL:
+        case EWL_STOCK_CANCEL:
         default:
             break;
     }
