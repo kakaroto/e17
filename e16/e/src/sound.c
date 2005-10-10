@@ -445,33 +445,22 @@ SettingsAudio(void)
    if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/sound.png");
 
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Enlightenment Audio\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 #ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable sounds"));
-   DialogItemCheckButtonSetState(di, tmp_audio);
    DialogItemCheckButtonSetPtr(di, &tmp_audio);
 #else
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di,
 		     _("Audio not available since EsounD was not\n"
 		       "present at the time of compilation."));
@@ -479,9 +468,6 @@ SettingsAudio(void)
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0, DIALOG_BUTTON_APPLY);

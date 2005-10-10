@@ -2228,109 +2228,72 @@ IconboxConfigure(Iconbox * ib)
 	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
 	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/iconbox.png");
 
 	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Enlightenment Iconbox\n" "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Transparent background"));
-   DialogItemCheckButtonSetState(di, tmp_ib_nobg);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Hide inner border"));
-   DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
 
    if (ib->type == IB_TYPE_ICONBOX)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Show icon names"));
-	DialogItemCheckButtonSetState(di, tmp_ib_shownames);
 	DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Draw base image behind Icons"));
-   DialogItemCheckButtonSetState(di, tmp_ib_draw_icon_base);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_draw_icon_base);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Hide scrollbar when not needed"));
-   DialogItemCheckButtonSetState(di, tmp_ib_scrollbar_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_scrollbar_hide);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Automatically resize to fit Icons"));
-   DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
 
    if (ib->type == IB_TYPE_ICONBOX)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Animate when iconifying to this Iconbox"));
-	DialogItemCheckButtonSetState(di, tmp_ib_animate);
 	DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di,
 		     _("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 8);
-   DialogItemSliderSetVal(di, tmp_ib_autoresize_anchor);
    DialogItemSliderSetValPtr(di, &tmp_ib_autoresize_anchor);
 
    if (ib->type == IB_TYPE_ICONBOX)
      {
 	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
 
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 0, 0);
-	DialogItemSetAlign(di, 0, 0);
+	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di,
 			  _
 			  ("Icon image display policy (if one operation fails, try the next):"));
 
 	radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _
 			  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
@@ -2338,8 +2301,6 @@ IconboxConfigure(Iconbox * ib)
 	DialogItemRadioButtonGroupSetVal(di, 0);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _
 			  ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
@@ -2347,8 +2308,6 @@ IconboxConfigure(Iconbox * ib)
 	DialogItemRadioButtonGroupSetVal(di, 1);
 
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Use Enlightenment Icon, Snapshot Window"));
 	DialogItemRadioButtonSetFirst(di, radio4);
 	DialogItemRadioButtonGroupSetVal(di, 2);
@@ -2356,93 +2315,68 @@ IconboxConfigure(Iconbox * ib)
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    label = di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
    DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 4, 128);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 8);
-   DialogItemSliderSetVal(di, tmp_ib_iconsize);
    DialogItemSliderSetValPtr(di, &tmp_ib_iconsize);
    DialogItemSetCallback(di, CB_IconSizeSlider, 0, label);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemTableSetOptions(table2, 3, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Orientation:"));
 
    di = DialogAddItem(table2, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Scrollbar side:"));
 
    di = DialogAddItem(table2, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Scrollbar arrows:"));
 
    radio1 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Horizontal"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio2 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Left / Top"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio3 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Start"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Vertical"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_ib_vert);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Right / Bottom"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_ib_side);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Both ends"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 1);
@@ -2451,8 +2385,6 @@ IconboxConfigure(Iconbox * ib)
    di = DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("End"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 2);
@@ -2461,17 +2393,12 @@ IconboxConfigure(Iconbox * ib)
    di = DialogAddItem(table2, DITEM_NONE);
 
    di = DialogAddItem(table2, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("None"));
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureIconbox, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureIconbox, 0, DIALOG_BUTTON_APPLY);

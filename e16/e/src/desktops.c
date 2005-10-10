@@ -1914,32 +1914,22 @@ SettingsDesktops(void)
    if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/desktops.png");
 
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Enlightenment Multiple Desktop\n"
 			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Number of virtual desktops:\n"));
 
    di = tmp_desk_text = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    if (tmp_desktops > 1)
       Esnprintf(s, sizeof(s), _("%i Desktops"), tmp_desktops);
@@ -1948,8 +1938,6 @@ SettingsDesktops(void)
    DialogItemSetText(di, s);
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 1, 32);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
@@ -1957,102 +1945,70 @@ SettingsDesktops(void)
    DialogItemSliderSetValPtr(di, &tmp_desktops);
 
    di = area = DialogAddItem(table, DITEM_AREA);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemAreaSetSize(di, 128, 96);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Slide desktops around when changing"));
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 1024, 512);
    DialogItemSetText(di, _("Desktop Slide speed:\n"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 20000);
    DialogItemSliderSetUnits(di, 500);
    DialogItemSliderSetJump(di, 1000);
    DialogItemSliderSetValPtr(di, &tmp_desktop_slide_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Wrap desktops around"));
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_wraparound);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Display desktop dragbar"));
    DialogItemCheckButtonSetPtr(di, &tmp_dragbar);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Drag bar position:"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Top"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Bottom"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Left"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Right"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
@@ -2060,9 +2016,6 @@ SettingsDesktops(void)
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureDesktops, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureDesktops, 0, DIALOG_BUTTON_APPLY);
@@ -2198,30 +2151,20 @@ SettingsArea(void)
 	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
 	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/areas.png");
 
 	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Enlightenment Virtual Desktop\n"
 			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Virtual Desktop size:\n"));
 
    di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    if ((tmp_area_x > 1) || (tmp_area_y > 1))
       Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
 		9 - tmp_area_y);
@@ -2236,8 +2179,6 @@ SettingsArea(void)
 
    di = slider = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 1, 8);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 1);
@@ -2246,7 +2187,6 @@ SettingsArea(void)
    di = slider2 = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 1);
    DialogItemSliderSetBounds(di, 1, 8);
    DialogItemSliderSetUnits(di, 1);
@@ -2254,48 +2194,32 @@ SettingsArea(void)
    DialogItemSliderSetValPtr(di, &tmp_area_y);
 
    di = area = DialogAddItem(table2, DITEM_AREA);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemAreaSetSize(di, 160, 120);
 
    DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, (void *)area);
    DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, (void *)area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Wrap virtual desktops around"));
    DialogItemCheckButtonSetPtr(di, &tmp_area_wraparound);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Enable edge flip"));
    DialogItemCheckButtonSetPtr(di, &tmp_edge_flip);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Resistance at edge of screen:\n"));
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 1, 100);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 10);
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureAreas, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureAreas, 0, DIALOG_BUTTON_APPLY);

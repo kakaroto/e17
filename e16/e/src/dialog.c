@@ -650,18 +650,14 @@ DialogClose(Dialog * d)
    HideEwin(d->ewin);
 }
 
-DItem              *
-DialogInitItem(Dialog * d)
+static DItem       *
+DialogItemCreate(int type)
 {
    DItem              *di;
 
-   if (d->item)
-      return NULL;
-
    di = Ecalloc(1, sizeof(DItem));
-   d->item = di;
 
-   di->type = DITEM_TABLE;
+   di->type = type;
    di->align_h = 512;
    di->align_v = 512;
    di->row_span = 1;
@@ -673,6 +669,27 @@ DialogInitItem(Dialog * d)
    di->item.table.num_items = 0;
    di->item.table.items = NULL;
 
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+
+   return di;
+}
+
+DItem              *
+DialogInitItem(Dialog * d)
+{
+   DItem              *di;
+
+   if (d->item)
+      return NULL;
+
+   di = DialogItemCreate(DITEM_TABLE);
+   d->item = di;
+   if (!di)
+      return di;
+
+   di->item.table.num_columns = 1;
+
    return di;
 }
 
@@ -681,16 +698,9 @@ DialogAddItem(DItem * dii, int type)
 {
    DItem              *di;
 
-   di = Ecalloc(1, sizeof(DItem));
-
-   di->type = type;
-   di->fill_h = 1;
-   di->fill_v = 1;
-   di->align_h = 512;
-   di->align_v = 512;
-   di->row_span = 1;
-   di->col_span = 1;
-   di->text = NULL;
+   di = DialogItemCreate(type);
+   if (!di)
+      return di;
 
    switch (di->type)
      {

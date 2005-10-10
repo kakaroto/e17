@@ -2128,135 +2128,93 @@ SettingsBackground(Background * bg)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/bg.png");
 
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Enlightenment Desktop\n"
 			    "Background Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("BG Colour\n"));
 
    di = DialogAddItem(table, DITEM_NONE);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 4, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Move to Front\n"));
    DialogItemSetCallback(di, CB_ConfigureFrontBG, 0, NULL);
    DialogBindKey(d, "F", CB_ConfigureFrontBG, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Duplicate\n"));
    DialogItemSetCallback(di, CB_ConfigureNewBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Unlist\n"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Delete File\n"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
    DialogBindKey(d, "D", CB_ConfigureDelBG, 0);
    DialogBindKey(d, "Delete", CB_ConfigureDelBG, 1);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
    DialogItemSetText(di, _("Red:\n"));
 
    di = w1 = tmp_w[0] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 255);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetVal(di, tmp_bg_r);
    DialogItemSliderSetValPtr(di, &tmp_bg_r);
 
    di = w2 = tmp_w[1] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Use background image"));
-   DialogItemCheckButtonSetState(di, tmp_bg_image);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_image);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
    DialogItemSetText(di, _("Green:\n"));
 
    di = w3 = tmp_w[2] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 255);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetVal(di, tmp_bg_g);
    DialogItemSliderSetValPtr(di, &tmp_bg_g);
 
    di = w4 = tmp_w[3] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Keep aspect on scale"));
-   DialogItemCheckButtonSetState(di, tmp_bg_keep_aspect);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_keep_aspect);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 1024, 512);
    DialogItemSetText(di, _("Blue:\n"));
 
    di = w5 = tmp_w[4] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 255);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetVal(di, tmp_bg_b);
    DialogItemSliderSetValPtr(di, &tmp_bg_b);
 
    di = w6 = tmp_w[5] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Tile image across background"));
-   DialogItemCheckButtonSetState(di, tmp_bg_tile);
    DialogItemCheckButtonSetPtr(di, &tmp_bg_tile);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 512, 512);
    DialogItemSetColSpan(di, 2);
@@ -2265,19 +2223,15 @@ SettingsBackground(Background * bg)
 		       "Alignment\n"));
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 3, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_NONE);
 
    di = slider = tmp_w[6] = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
-   DialogItemSliderSetVal(di, tmp_bg_xjust);
    DialogItemSliderSetValPtr(di, &tmp_bg_xjust);
 
    di = DialogAddItem(table2, DITEM_NONE);
@@ -2285,17 +2239,13 @@ SettingsBackground(Background * bg)
    di = slider2 = tmp_w[7] = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 1);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
-   DialogItemSliderSetVal(di, tmp_bg_yjust);
    DialogItemSliderSetValPtr(di, &tmp_bg_yjust);
 
    di = bg_mini_disp = area = DialogAddItem(table2, DITEM_AREA);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemAreaSetSize(di, 64, 48);
 
    DialogItemSetCallback(w1, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
@@ -2310,12 +2260,10 @@ SettingsBackground(Background * bg)
    di = slider = tmp_w[8] = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 1);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
-   DialogItemSliderSetVal(di, tmp_bg_yperc);
    DialogItemSliderSetValPtr(di, &tmp_bg_yperc);
    DialogItemSetCallback(slider, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
 
@@ -2323,40 +2271,26 @@ SettingsBackground(Background * bg)
 
    di = slider = tmp_w[9] = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
-   DialogItemSliderSetVal(di, tmp_bg_xperc);
    DialogItemSliderSetValPtr(di, &tmp_bg_xperc);
    DialogItemSetCallback(slider, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Use dithering in Hi-Colour"));
-   DialogItemCheckButtonSetState(di, tmp_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_hiq);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Background overrides theme"));
-   DialogItemCheckButtonSetState(di, tmp_userbg);
    DialogItemCheckButtonSetPtr(di, &tmp_userbg);
 
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s), _("Unused backgrounds freed after %2i:%02i:%02i"),
 	     tmp_bg_timeout / 3600,
@@ -2367,27 +2301,19 @@ SettingsBackground(Background * bg)
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 3);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 60 * 60 * 4);
    DialogItemSliderSetUnits(di, 30);
    DialogItemSliderSetJump(di, 60);
-   DialogItemSliderSetVal(di, tmp_bg_timeout);
    DialogItemSliderSetValPtr(di, &tmp_bg_timeout);
    DialogItemSetCallback(di, CB_DesktopTimeout, 0, (void *)label);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "<-");
    DialogItemSetCallback(di, CB_BGPrev, 0, NULL);
@@ -2395,7 +2321,6 @@ SettingsBackground(Background * bg)
    DialogBindKey(d, "BackSpace", CB_BGPrev, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "->");
    DialogItemSetCallback(di, CB_BGNext, 0, NULL);
@@ -2403,37 +2328,30 @@ SettingsBackground(Background * bg)
    DialogBindKey(d, "space", CB_BGNext, 0);
 
    di = DialogAddItem(table, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, _("Pre-scan BG's"));
    DialogItemSetCallback(di, CB_BGScan, 0, NULL);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemSetPadding(table2, 2, 2, 2, 2);
    DialogItemTableSetOptions(table2, 3, 0, 0, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, _("Sort by File"));
    DialogItemSetCallback(di, CB_BGSortFile, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, _("Sort by Attr."));
    DialogItemSetCallback(di, CB_BGSortAttrib, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, _("Sort by Image"));
    DialogItemSetCallback(di, CB_BGSortContent, 0, NULL);
 
    di = bg_sel = DialogAddItem(table, DITEM_AREA);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemAreaSetSize(di, 160, 56);
    DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
 
@@ -2447,27 +2365,19 @@ SettingsBackground(Background * bg)
    }
    di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, num * 4);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 9);
-   DialogItemSliderSetVal(di, tmp_bg_sel_sliderval);
    DialogItemSliderSetValPtr(di, &tmp_bg_sel_sliderval);
    DialogItemSetCallback(bg_sel_slider, CB_BGAreaSlide, 0, NULL);
 
    di = bg_filename = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 512, 512);
    BG_DialogSetFileName(bg_filename);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureBG, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0, DIALOG_BUTTON_APPLY);

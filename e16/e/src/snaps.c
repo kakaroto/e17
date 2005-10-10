@@ -643,23 +643,17 @@ SnapshotEwinDialog(EWin * ewin)
    if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetColSpan(di, 2);
 	DialogItemImageSetFile(di, "pix/snapshots.png");
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Select the attributes of this\n"
 			    "window you wish to Remember\n" "from now on\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 4);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    sd = Ecalloc(1, sizeof(SnapDlgData));
@@ -720,32 +714,24 @@ SnapshotEwinDialog(EWin * ewin)
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Title:"));
    DialogItemCheckButtonSetPtr(di, &sd->match.title);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 1024, 512);
    DialogItemSetText(di, ewin->icccm.wm_name);
 
    if (ewin->icccm.wm_res_name)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Name:"));
 	DialogItemCheckButtonSetPtr(di, &sd->match.name);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 	DialogItemSetText(di, ewin->icccm.wm_res_name);
      }
@@ -753,16 +739,12 @@ SnapshotEwinDialog(EWin * ewin)
    if (ewin->icccm.wm_res_class)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Class:"));
 	DialogItemCheckButtonSetPtr(di, &sd->match.class);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 	DialogItemSetText(di, ewin->icccm.wm_res_class);
      }
@@ -770,16 +752,12 @@ SnapshotEwinDialog(EWin * ewin)
    if (ewin->icccm.wm_role)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Role:"));
 	DialogItemCheckButtonSetPtr(di, &sd->match.role);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 	DialogItemSetText(di, ewin->icccm.wm_role);
      }
@@ -787,15 +765,11 @@ SnapshotEwinDialog(EWin * ewin)
    if (ewin->icccm.wm_command)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Command:"));
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 
 	/* if the command is long, cut in into slices of about 80 characters */
@@ -829,85 +803,60 @@ SnapshotEwinDialog(EWin * ewin)
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Track Changes"));
    DialogItemCheckButtonSetPtr(di, &sd->track_changes);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Location"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_location);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Border style"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_border);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Size"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_size);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Desktop"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_desktop);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Shaded state"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_shaded);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Sticky state"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_sticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Stacking layer"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_layer);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Window List Skip"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_skiplists);
 
 #if USE_COMPOSITE
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Opacity"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_opacity);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Shadowing"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_shadow);
 #endif
@@ -915,8 +864,6 @@ SnapshotEwinDialog(EWin * ewin)
 #if 0				/* Disabled (why?) */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetText(di, _("Never Focus"));
    DialogItemCheckButtonSetPtr(di, &sd->snap_neverfocus);
 #endif
@@ -933,8 +880,6 @@ SnapshotEwinDialog(EWin * ewin)
 	  {
 	     di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	     DialogItemSetColSpan(di, 4);
-	     DialogItemSetPadding(di, 2, 2, 2, 2);
-	     DialogItemSetFill(di, 1, 0);
 	     DialogItemSetText(di, _("Restart application on login"));
 	     DialogItemCheckButtonSetPtr(di, &sd->snap_cmd);
 	  }
@@ -954,17 +899,12 @@ SnapshotEwinDialog(EWin * ewin)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetColSpan(di, 4);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di, _("Remember this window's group(s)"));
 	DialogItemCheckButtonSetPtr(di, &sd->snap_group);
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ApplySnap, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ApplySnap, 0, DIALOG_BUTTON_APPLY);
@@ -1059,22 +999,16 @@ SettingsRemember(void)
    if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemImageSetFile(di, "pix/snapshots.png");
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Enlightenment Remembered\n"
 			    "Windows Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
@@ -1084,7 +1018,6 @@ SettingsRemember(void)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 0, 0);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Delete"));
@@ -1098,8 +1031,6 @@ SettingsRemember(void)
 
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
 	if (sn->used)
 	   s = EwinGetName(sn->used);
@@ -1116,8 +1047,6 @@ SettingsRemember(void)
 	if (sn->used)
 	  {
 	     di = DialogAddItem(table, DITEM_BUTTON);
-	     DialogItemSetPadding(di, 2, 2, 2, 2);
-	     DialogItemSetFill(di, 1, 0);
 	     DialogItemSetAlign(di, 0, 512);
 	     DialogItemSetText(di, _("Remembered Settings..."));
 	     DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
@@ -1126,8 +1055,6 @@ SettingsRemember(void)
 	else
 	  {
 	     di = DialogAddItem(table, DITEM_TEXT);
-	     DialogItemSetPadding(di, 2, 2, 2, 2);
-	     DialogItemSetFill(di, 1, 0);
 	     DialogItemSetText(di, _("Unused"));
 	  }
      }
@@ -1140,8 +1067,6 @@ SettingsRemember(void)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _
 			  ("There are no active windows with remembered attributes."));
@@ -1149,9 +1074,6 @@ SettingsRemember(void)
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ApplyRemember, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Close"), CB_ApplyRemember, 1, DIALOG_BUTTON_CLOSE);

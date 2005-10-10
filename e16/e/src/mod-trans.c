@@ -143,218 +143,137 @@ SettingsTransparency(void)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 7);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
 	DialogItemSetText(di,
 			  _("Enlightenment Selective Transparency\n"
 			    "Settings Dialog\n"));
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 	DialogItemSetColSpan(di, 7);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 7);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Changes Might Require Restart:"));
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_NONE);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 10, 2, 2);
-   DialogItemSetFill(di, 1, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Borders:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Menus:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Hilights:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("E Widgets:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("E Dialogs:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("Tooltips:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
    DialogItemSetText(di, _("Opaque"));
 
    radio_border = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_border);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_menu = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_menu);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_hilight = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_hilight);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_widget = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_widget);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_dialog = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_dialog);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    radio_tooltip = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
    DialogItemSetText(di, _("Background"));
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_border);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio_border, &tmp_st_border);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_menu);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_hilight);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_widget);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio_widget, &tmp_st_widget);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_dialog);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio_dialog, &tmp_st_dialog);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 1);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 1024);
    DialogItemSetText(di, _("Glass"));
 
    di = DialogAddItem(table, DITEM_NONE);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_menu);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio_menu, &tmp_st_menu);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_hilight);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio_hilight, &tmp_st_hilight);
 
    di = DialogAddItem(table, DITEM_NONE);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
 
    di = DialogAddItem(table, DITEM_NONE);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetPadding(di, 2, 15, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetFirst(di, radio_tooltip);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio_tooltip, &tmp_st_tooltip);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 7);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
 	     tmp_theme_transparency);
@@ -363,20 +282,14 @@ SettingsTransparency(void)
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 7);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 255);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetVal(di, tmp_theme_transparency);
    DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 7);
-   DialogItemSetPadding(di, 2, 2, 4, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    DialogAddButton(d, _("OK"), CB_ConfigureTrans, 1, DIALOG_BUTTON_OK);
    DialogAddButton(d, _("Apply"), CB_ConfigureTrans, 0, DIALOG_BUTTON_APPLY);

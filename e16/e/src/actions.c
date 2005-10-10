@@ -293,12 +293,9 @@ About(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/about.png");
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
    Esnprintf(buf, sizeof(buf),
 	     _("Welcome to the %s version\n"
 	       "of the Enlightenment window manager.\n"
