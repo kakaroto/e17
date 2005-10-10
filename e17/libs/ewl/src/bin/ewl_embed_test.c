@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#if HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
+
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
 #else
