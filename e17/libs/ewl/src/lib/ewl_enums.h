@@ -270,25 +270,27 @@ enum Ewl_Key_Modifiers
 
 typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
 
-/**
- * @enum Ewl_Response_Type
- */
-enum Ewl_Response_Type
+enum Ewl_Stock_Type
 {
-	EWL_RESPONSE_OPEN     = -5,
-	EWL_RESPONSE_SAVE     = -6,
-	EWL_RESPONSE_OK       = -10,
-	EWL_RESPONSE_CANCEL   = -11,
-	EWL_RESPONSE_APPLY    = -12,
-	EWL_RESPONSE_PLAY     = -20,
-	EWL_RESPONSE_PAUSE    = -21,
-	EWL_RESPONSE_STOP     = -22,
-	EWL_RESPONSE_QUIT     = -23,
-	EWL_RESPONSE_ARROW_UP = -24,
-	EWL_RESPONSE_HOME     = -25,
+	EWL_STOCK_APPLY = 0,
+	EWL_STOCK_ARROW_DOWN,
+	EWL_STOCK_ARROW_LEFT,
+	EWL_STOCK_ARROW_RIGHT,
+	EWL_STOCK_ARROW_UP,
+	EWL_STOCK_CANCEL,
+	EWL_STOCK_FASTFORWARD,
+	EWL_STOCK_HOME,
+	EWL_STOCK_OK,
+	EWL_STOCK_OPEN,
+	EWL_STOCK_PAUSE,
+	EWL_STOCK_PLAY,
+	EWL_STOCK_QUIT,
+	EWL_STOCK_REWIND,
+	EWL_STOCK_SAVE,
+	EWL_STOCK_STOP,
+	EWL_STOCK_NONE
 };
-
-typedef enum Ewl_Response_Type Ewl_Response_Type;
+typedef enum Ewl_Stock_Type Ewl_Stock_Type;
 
 /**
  * @enum Ewl_Color_Pick_Mode

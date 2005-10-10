@@ -7,17 +7,22 @@
  * @return Returns a pointer to a new dialog on success, NULL on failure.
  * @brief Create a new internal dialog
  */
-Ewl_Widget *ewl_dialog_new(void)
+Ewl_Widget *
+ewl_dialog_new(void)
 {
 	Ewl_Dialog *d;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	d = NEW(Ewl_Dialog, 1);
-	if (!d)
+	if (!d) {
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
-	ewl_dialog_init(d);
+	if (!ewl_dialog_init(d)) {
+		ewl_widget_destroy(EWL_WIDGET(d));
+		d = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(d), DLEVEL_STABLE);
 }
@@ -27,18 +32,19 @@ Ewl_Widget *ewl_dialog_new(void)
  * @return Return TRUE on success, FALSE otherwise.
  * @brief Initialize an internal dialog to starting values
  */
-int ewl_dialog_init(Ewl_Dialog * dialog)
+int
+ewl_dialog_init(Ewl_Dialog *dialog)
 {
 	Ewl_Widget *w;
-	Ewl_Widget *spacer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", dialog, 0);
+	DCHECK_PARAM_PTR_RET("dialog", dialog, FALSE);
 
 	w = EWL_WIDGET(dialog);
 
-	if (!ewl_window_init(EWL_WINDOW(dialog)))
+	if (!ewl_window_init(EWL_WINDOW(dialog))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	ewl_widget_appearance_set(w, "window");
 	ewl_widget_inherit(w, "dialog");
@@ -49,57 +55,50 @@ int ewl_dialog_init(Ewl_Dialog * dialog)
 	 * Create a box for laying out the whole window
 	 */
 	dialog->box = ewl_vbox_new();
-	if (dialog->box) {
-		ewl_container_child_append(EWL_CONTAINER(dialog), dialog->box);
-		ewl_object_fill_policy_set(EWL_OBJECT(dialog->box),
-					   EWL_FLAG_FILL_ALL);
-		ewl_widget_show(dialog->box);
+	if (!dialog->box) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_container_child_append(EWL_CONTAINER(dialog), dialog->box);
+	ewl_widget_internal_set(dialog->box, TRUE);
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->box), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(dialog->box);
 
 	/*
 	 * Setup a vertical box for the displayed window contents.
 	 */
 	dialog->vbox = ewl_vbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(dialog->vbox), EWL_FLAG_FILL_ALL);
-	if (dialog->vbox) {
-		ewl_container_child_append(EWL_CONTAINER(dialog->box),
-					   dialog->vbox);
-		ewl_box_homogeneous_set(EWL_BOX(dialog->vbox), FALSE);
-		dialog->action_area = ewl_hbox_new();
-		dialog->separator = ewl_hseparator_new();
-		ewl_widget_show(dialog->vbox);
+	if (!dialog->vbox) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	if (dialog->separator) {
-		ewl_container_child_append(EWL_CONTAINER(dialog->box),
-					   dialog->separator);
-		ewl_widget_show(dialog->separator);
+	ewl_container_child_append(EWL_CONTAINER(dialog->box), dialog->vbox);
+	ewl_widget_internal_set(dialog->vbox, TRUE);
+	ewl_box_homogeneous_set(EWL_BOX(dialog->vbox), FALSE);
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->vbox), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(dialog->vbox);
+
+	dialog->separator = ewl_hseparator_new();
+	if (!dialog->separator) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_container_child_append(EWL_CONTAINER(dialog->box), dialog->separator);
+	ewl_widget_show(dialog->separator);
 
 	/*
 	 * Create an action area for buttons
 	 */
-	if (dialog->action_area) {
-		ewl_container_child_append(EWL_CONTAINER(dialog->box),
-					   dialog->action_area);
-		ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
-					   EWL_FLAG_FILL_HFILL);
-
-		ewl_box_homogeneous_set(EWL_BOX(dialog->action_area),
-					FALSE);
-		ewl_widget_show(dialog->action_area);
-
-		spacer = ewl_spacer_new();
-		ewl_container_child_append(EWL_CONTAINER
-					   (dialog->action_area), spacer);
-		ewl_object_fill_policy_set(EWL_OBJECT(spacer),
-					   EWL_FLAG_FILL_FILL);
-		ewl_widget_show(spacer);
-
-		ewl_container_redirect_set(EWL_CONTAINER(dialog),
-					   EWL_CONTAINER(dialog->
-							 action_area));
+	dialog->action_area = ewl_hbox_new();
+	if (!dialog->action_area) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_container_child_append(EWL_CONTAINER(dialog->box),
+					   dialog->action_area);
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
+			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_box_homogeneous_set(EWL_BOX(dialog->action_area), FALSE);
+	ewl_widget_show(dialog->action_area);
+
+	ewl_dialog_active_area_set(dialog, dialog->position);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -110,13 +109,15 @@ int ewl_dialog_init(Ewl_Dialog * dialog)
  * @return Returns no value.
  * @brief Changes the action area position for a dialog.
  */
-void ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
+void
+ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("d", d);
 
-	if (pos == d->position)
+	if (pos == d->position) {
 		DRETURN(DLEVEL_STABLE);
+	}
 
 	d->position = pos;
 
@@ -167,7 +168,8 @@ void ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
  * @return Returns the current action area position.
  * @brief Checks the action area position for a dialog.
  */
-Ewl_Position ewl_dialog_action_position_get(Ewl_Dialog *d)
+Ewl_Position
+ewl_dialog_action_position_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
@@ -176,120 +178,15 @@ Ewl_Position ewl_dialog_action_position_get(Ewl_Dialog *d)
 }
 
 /**
- * @param dialog: the dialog to add the widget in.
- * @param w: the widget to add in the vbox.
- * @return Returns no value.
- * @brief Convenient function to add widgets in the vbox.
- */
-void ewl_dialog_widget_add(Ewl_Dialog * dialog, Ewl_Widget * w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", dialog);
-
-	if (!dialog)
-		return;
-
-	switch (dialog->position) {
-	case EWL_POSITION_LEFT:
-		{
-			ewl_container_child_append(EWL_CONTAINER(dialog->vbox),
-						   w);
-			break;
-		}
-	case EWL_POSITION_TOP:
-		{
-			ewl_container_child_append(EWL_CONTAINER(dialog->vbox),
-						   w);
-			break;
-		}
-	case EWL_POSITION_RIGHT:
-		{
-			ewl_container_child_prepend(EWL_CONTAINER(dialog->vbox),
-						    w);
-			break;
-		}
-	default:
-		{
-			ewl_container_child_prepend(EWL_CONTAINER(dialog->vbox),
-						    w);
-			break;
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param dialog: the dialog to add the button in.
- * @param button_text: the text of the button or a stock Id.
- * @param response_id: The Id that will be retured when clicking on the button.
- * @return Returns a button, or NULL on failure.
- * @brief Add a (stock) button on the right of the action_area of @a dialog.
- */
-Ewl_Widget *ewl_dialog_button_add(Ewl_Dialog * dialog, char *button_text,
-				  int response_id)
-{
-	Ewl_Widget *button;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", dialog, 0);
-
-	if (!dialog)
-		return NULL;
-
-	button = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button), button_text);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button), response_id);
-	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
-	ewl_container_child_append(EWL_CONTAINER(dialog->action_area),
-				   button);
-	ewl_object_fill_policy_set(EWL_OBJECT(button),
-				   EWL_FLAG_FILL_VFILL
-				   || EWL_FLAG_FILL_SHRINK);
-
-	DRETURN_PTR(button, DLEVEL_STABLE);
-}
-
-/**
- * @param dialog: the dialog to add the button in.
- * @param button_text: the text of the button or a stock Id.
- * @param response_id: The Id that will be retured when clicking on the button.
- * @return Returns a button, or NULL on failure.
- * @brief Same as ewl_dialog_add_button(), but add the button on the left.
- */
-Ewl_Widget *ewl_dialog_button_left_add(Ewl_Dialog * dialog,
-				       char *button_text, int response_id)
-{
-	Ewl_Widget *button;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", dialog, 0);
-
-	if (!dialog)
-		return NULL;
-
-	button = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button), button_text);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button), response_id);
-	ewl_object_padding_set(EWL_OBJECT(button), 0, 3, 3, 3);
-	ewl_container_child_prepend(EWL_CONTAINER(dialog->action_area),
-				    button);
-	ewl_object_fill_policy_set(EWL_OBJECT(button),
-				   EWL_FLAG_FILL_VFILL
-				   || EWL_FLAG_FILL_SHRINK);
-
-	DRETURN_PTR(button, DLEVEL_STABLE);
-}
-
-/**
  * @param dialog: the dialog.
  * @return Returns TRUE if @a dialog has a separator.
  * @brief Checks if @a dialog has a separator or not.
  */
-unsigned int ewl_dialog_has_separator_get(Ewl_Dialog * dialog)
+unsigned int
+ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", dialog, 0);
+	DCHECK_PARAM_PTR_RET("dialog", dialog, 0);
 
 	if (!dialog)
 		return FALSE;
@@ -304,31 +201,24 @@ unsigned int ewl_dialog_has_separator_get(Ewl_Dialog * dialog)
  * @brief Sets the separator of @a dialog.
  */
 void
-ewl_dialog_has_separator_set(Ewl_Dialog * dialog, unsigned int has_sep)
+ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 {
 	Ewl_Widget *child;
 	int n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", dialog);
+	DCHECK_PARAM_PTR("dialog", dialog);
 
 	if (!dialog)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	if (has_sep && (dialog->separator == NULL)) {
-		ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG
-								(dialog)->
-								vbox));
+		ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
 		n = 0;
-		child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG
-							       (dialog)->
-							       vbox));
+		child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
 		while (child) {
 			n++;
-			child =
-			    ewl_container_child_next(EWL_CONTAINER
-						     (EWL_DIALOG(dialog)->
-						      vbox));
+			child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
 		}
 		dialog->separator = ewl_hseparator_new();
 		ewl_container_child_insert(EWL_CONTAINER(dialog->vbox),
@@ -344,3 +234,32 @@ ewl_dialog_has_separator_set(Ewl_Dialog * dialog, unsigned int has_sep)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+void
+ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("d", d);
+
+	d->active_area = pos;
+
+	if (pos == d->position)
+		ewl_container_redirect_set(EWL_CONTAINER(d),
+					   EWL_CONTAINER(d->action_area));
+	else
+		ewl_container_redirect_set(EWL_CONTAINER(d),
+					   EWL_CONTAINER(d->vbox));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_Position
+ewl_dialog_active_area_get(Ewl_Dialog *d)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_TOP);
+
+	DRETURN_INT(d->active_area, DLEVEL_STABLE);
+}
+
+

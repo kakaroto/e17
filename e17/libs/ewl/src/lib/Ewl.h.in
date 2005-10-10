@@ -287,7 +287,6 @@ extern"C" {
 
 #include <ewl_label.h>
 #include <ewl_button.h>
-#include <ewl_button_stock.h>
 #include <ewl_floater.h>
 #include <ewl_overlay.h>
 #include <ewl_embed.h>

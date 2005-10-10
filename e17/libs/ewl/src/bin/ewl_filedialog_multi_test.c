@@ -45,7 +45,7 @@ __create_fdm_window_response (Ewl_Widget *w __UNUSED__, void *ev,
   
   response = (int *)ev;
   switch (*response) {
-    case EWL_RESPONSE_OPEN:
+    case EWL_STOCK_OPEN:
       {
 	Ecore_List *list;
 	list = ewl_filedialog_select_list_get(EWL_FILEDIALOG(w));
@@ -53,7 +53,7 @@ __create_fdm_window_response (Ewl_Widget *w __UNUSED__, void *ev,
 	ecore_list_for_each(list, __fdm_print, NULL);
 	break;
       }
-    case EWL_RESPONSE_CANCEL:
+    case EWL_STOCK_CANCEL:
       {
 	printf("Test program says bugger off.\n");
         break;

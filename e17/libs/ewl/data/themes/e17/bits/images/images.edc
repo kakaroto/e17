@@ -21,3 +21,20 @@
 	image, "e17_menu_radio2.png" LOSSY 95;
 	image, "e17_menu_separator.png" LOSSY 95;
 	image, "e17_menu_separator_vert.png" LOSSY 95;
+	image, "stock-apply.png" LOSSY 95;
+	image, "stock-cancel.png" LOSSY 95;
+	image, "stock-ff.png" LOSSY 95;
+	image, "stock-fr.png" LOSSY 95;
+	image, "stock-home.png" LOSSY 95;
+	image, "stock-ok.png" LOSSY 95;
+	image, "stock-open.png" LOSSY 95;
+	image, "stock-pause.png" LOSSY 95;
+	image, "stock-play.png" LOSSY 95;
+	image, "stock-quit.png" LOSSY 95;
+	image, "stock-save.png" LOSSY 95;
+	image, "stock-stop.png" LOSSY 95;
+	image, "stock-arrow_down.png" LOSSY 95;
+	image, "stock-arrow_up.png" LOSSY 95;
+	image, "stock-arrow_left.png" LOSSY 95;
+	image, "stock-arrow_right.png" LOSSY 95;
+

@@ -16,7 +16,6 @@ EWLHEADERS = \
 	ewl_box.h \
 	ewl_label.h \
 	ewl_button.h \
-	ewl_button_stock.h \
 	ewl_calendar.h \
 	ewl_callback.h \
 	ewl_cell.h \
@@ -82,7 +81,6 @@ EWLSOURCES= \
 	ewl_box.c \
 	ewl_label.c \
 	ewl_button.c \
-	ewl_button_stock.c \
 	ewl_calendar.c \
 	ewl_callback.c \
 	ewl_cell.c \

@@ -44,13 +44,13 @@ __create_fd_window_response (Ewl_Widget *w, void *ev, void *data __UNUSED__)
   response = (int *)ev;
   switch (*response)
     {
-    case EWL_RESPONSE_OPEN:
+    case EWL_STOCK_OPEN:
       {
 	printf("file open from test program: %s\n", 
 	       ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
 	break;
       }
-    case EWL_RESPONSE_CANCEL:
+    case EWL_STOCK_CANCEL:
       {
 	printf("Test program says bugger off.\n");
         break;

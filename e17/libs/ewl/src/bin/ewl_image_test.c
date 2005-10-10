@@ -261,7 +261,7 @@ __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
   
 	response = (int *)ev;
 
-	if (*response == EWL_RESPONSE_OPEN) {
+	if (*response == EWL_STOCK_OPEN) {
 		char *path;
 
 		printf("File open from image test: %s\n", 

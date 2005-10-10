@@ -83,20 +83,16 @@ int ewl_filedialog_init(Ewl_Filedialog * fd)
 	ewl_widget_show(box);
 
 	/* Buttons */
-	fd->confirm = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm), EWL_STOCK_OPEN);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
-					 EWL_RESPONSE_OPEN);
+	fd->confirm = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(fd->confirm), EWL_STOCK_OPEN);
 
 	ewl_callback_append(fd->confirm, EWL_CALLBACK_CLICKED,
 						ewl_filedialog_click_cb, fd);
 	ewl_container_child_append(EWL_CONTAINER(box), fd->confirm);
 	ewl_widget_show(fd->confirm);
 
-	fd->cancel = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->cancel), EWL_STOCK_CANCEL);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->cancel),
-					 EWL_RESPONSE_CANCEL);
+	fd->cancel = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(fd->cancel), EWL_STOCK_CANCEL);
 	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
 						ewl_filedialog_click_cb, fd);
 	ewl_container_child_append(EWL_CONTAINER(box), fd->cancel);
@@ -129,16 +125,10 @@ void ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
 	DCHECK_PARAM_PTR("fd", fd);
 
 	if (t == EWL_FILEDIALOG_TYPE_OPEN) {
-		ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm),
-					EWL_STOCK_OPEN);
-		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
-						 EWL_RESPONSE_OPEN);
+		ewl_button_stock_type_set(EWL_BUTTON(fd->confirm), EWL_STOCK_OPEN);
 	}
 	else if (t == EWL_FILEDIALOG_TYPE_SAVE) {
-		ewl_button_stock_id_set(EWL_BUTTON_STOCK(fd->confirm),
-					EWL_STOCK_SAVE);
-		ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(fd->confirm),
-						 EWL_RESPONSE_SAVE);
+		ewl_button_stock_type_set(EWL_BUTTON(fd->confirm), EWL_STOCK_SAVE);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -248,14 +238,14 @@ Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
 /*
  * Internally used callback, override at your own risk.
  */
-void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 								void* data)
 {
 	Ewl_Filedialog *fd = EWL_FILEDIALOG(data);
 
 	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
 					  EWL_CALLBACK_VALUE_CHANGED,
-					  &EWL_BUTTON_STOCK(w)->response_id);
+					  &EWL_BUTTON(w)->stock_type);
 }
 
 

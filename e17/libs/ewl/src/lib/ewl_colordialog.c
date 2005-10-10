@@ -175,11 +175,8 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 			    ewl_colordialog_valuevalue_changed, cd);
 	ewl_widget_show(cd->value_entry);
 
-	button = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button),
-					 EWL_STOCK_OK);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button),
-					 EWL_RESPONSE_OK);
+	button = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_OK);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
@@ -187,10 +184,8 @@ ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
 	ewl_container_child_append(EWL_CONTAINER(vbox), button);
 	ewl_widget_show(button);
 
-	button = ewl_button_stock_new();
-	ewl_button_stock_id_set(EWL_BUTTON_STOCK(button), EWL_STOCK_CANCEL);
-	ewl_button_stock_response_id_set(EWL_BUTTON_STOCK(button),
-					 EWL_RESPONSE_CANCEL);
+	button = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_CANCEL);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
@@ -446,7 +441,7 @@ ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	cd = user_data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(cd),
 					  EWL_CALLBACK_VALUE_CHANGED,
-					  &EWL_BUTTON_STOCK(w)->response_id);
+					  &EWL_BUTTON(w)->stock_type);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

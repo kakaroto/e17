@@ -16,6 +16,7 @@ collections {
 #include "e17/bits/paned-groups.edc"
 #include "e17/bits/progressbar-groups.edc"
 #include "e17/bits/scrollbar-groups.edc"
+#include "e17/bits/stock-groups.edc"
 #include "e17/bits/tree-groups.edc"
 #include "e17/bits/separator-groups.edc"
 #include "e17/bits/window-groups.edc"
@@ -49,6 +50,23 @@ data {
 
     item, "/progressbar_bar/group" "progressbar_bar";
     item, "/progressbar/group" "progressbar";
+
+    item, "/stock/apply" "stock/apply";
+    item, "/stock/arrow/down" "stock/arrow/down";
+    item, "/stock/arrow/left" "stock/arrow/left";
+    item, "/stock/arrow/right" "stock/arrow/right";
+    item, "/stock/arrow/up" "stock/arrow/up";
+    item, "/stock/cancel" "stock/cancel";
+    item, "/stock/ff" "stock/ff";
+    item, "/stock/home" "stock/home";
+    item, "/stock/ok" "stock/ok";
+    item, "/stock/open" "stock/open";
+    item, "/stock/pause" "stock/pause";
+    item, "/stock/play" "stock/play";
+    item, "/stock/quit" "stock/quit";
+    item, "/stock/rewind" "stock/rewind";
+    item, "/stock/save" "stock/save";
+    item, "/stock/stop" "stock/stop";
 
     item, "/combo/button_decrement/group" "vscroll-down";
     item, "/combo/button_increment/group" "vscroll-up";

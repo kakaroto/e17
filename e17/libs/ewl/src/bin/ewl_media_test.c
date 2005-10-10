@@ -17,7 +17,7 @@ static Ewl_Widget *fd_win;
 static Ewl_Widget *seeker;
 
 typedef struct {
-    char *name;
+    Ewl_Stock_Type name;
     Ewl_Callback_Function func;
 } Control;
 
@@ -118,7 +118,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
     ewl_widget_hide(fd_win);
 
     switch (*response) {
-        case EWL_RESPONSE_OPEN:
+        case EWL_STOCK_OPEN:
             file = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
             break;
     }
@@ -234,13 +234,13 @@ main(int argc, char ** argv)
 		    { EWL_STOCK_REWIND, rew_cb },
 		    { EWL_STOCK_FASTFORWARD, ff_cb },
 		    { EWL_STOCK_OPEN, open_cb },
-		    { NULL, NULL }
+		    { EWL_STOCK_NONE, NULL }
 		};
 	int i;
 
-	for(i = 0; controls[i].name != NULL; i++) {
-	    o = ewl_button_stock_new();
-	    ewl_button_stock_id_set(EWL_BUTTON_STOCK(o), controls[i].name);
+	for(i = 0; controls[i].name != EWL_STOCK_NONE; i++) {
+	    o = ewl_button_new();
+	    ewl_button_stock_type_set(EWL_BUTTON(o), controls[i].name);
 	    ewl_container_child_append(EWL_CONTAINER(b), o);
 	    ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);

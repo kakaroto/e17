@@ -1,0 +1,434 @@
+
+group {
+	name, "stock/apply";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "apply";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-apply.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/arrow/down";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "arrow/down";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-arrow_down.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/arrow/left";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "arrow/left";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-arrow_left.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/arrow/right";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "arrow/right";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-arrow_right.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/arrow/up";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "arrow/up";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-arrow_up.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/cancel";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "cancel";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-cancel.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/ff";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "ff";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-ff.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/home";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "home";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-home.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/ok";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "ok";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-ok.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/open";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "open";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-open.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/pause";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "pause";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-pause.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/play";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "play";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-play.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/quit";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "quit";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-quit.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/rewind";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "rewind";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-fr.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/save";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "save";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-save.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "stock/stop";
+	min, 16 16;
+	max, 256 256;
+
+	parts {
+		part {
+			name, "stop";
+			type, IMAGE;
+			description { 
+				state, "default" 0.0;
+				rel1 {
+						relative, 0.0 0.0;
+						offset, 0 0;
+				}
+				rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+				}
+				image {
+						normal, "stock-stop.png";
+				}
+			}
+		}
+	}
+}
+
+
