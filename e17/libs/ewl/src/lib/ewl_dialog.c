@@ -123,7 +123,7 @@ void ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 	/*
 	 * First determine the orientation of the dialog area.
 	 */
-	if (pos & EWL_POSITION_LEFT & EWL_POSITION_RIGHT) {
+	if (pos & (EWL_POSITION_LEFT | EWL_POSITION_RIGHT)) {
 		ewl_box_orientation_set(EWL_BOX(d->box),
 					EWL_ORIENTATION_HORIZONTAL);
 		ewl_box_orientation_set(EWL_BOX(d->separator),
@@ -146,7 +146,7 @@ void ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 	/*
 	 * Repack order of the widgets to match new position
 	 */
-	if (pos & EWL_POSITION_LEFT & EWL_POSITION_TOP) {
+	if (pos & (EWL_POSITION_LEFT | EWL_POSITION_TOP)) {
 		ewl_container_child_prepend(EWL_CONTAINER(d->box),
 					    d->separator);
 		ewl_container_child_prepend(EWL_CONTAINER(d->box),
