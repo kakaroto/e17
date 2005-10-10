@@ -5,7 +5,7 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+		       stamp-h.in debian/changelog
 
 install-data-local:
         @$(NORMAL_INSTALL)
@@ -26,4 +26,7 @@ dist-hook:
 	fi
 							  
 
-EXTRA_DIST = README AUTHORS COPYING 
+EXTRA_DIST = README AUTHORS COPYING TODO NEWS \
+		debian/changelog debian/changelog.in \
+		debian/rules debian/control debian/copyright \
+		debian/eclair.files
