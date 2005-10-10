@@ -176,7 +176,6 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e = EWL_ENTRY(w);
-
 	if (!e->editable)
 	{
 		DRETURN(DLEVEL_STABLE);

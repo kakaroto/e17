@@ -185,7 +185,7 @@ ewl_button_stock_type_get(Ewl_Button *b)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, EWL_STOCK_NONE);
 
-	DRETURN_INT(b->stock_type, DLEAVE_FUNCTION);
+	DRETURN_INT(b->stock_type, DLEVEL_STABLE);
 }
 
 /**
