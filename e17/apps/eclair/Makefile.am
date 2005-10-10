@@ -29,4 +29,4 @@ dist-hook:
 EXTRA_DIST = README AUTHORS COPYING TODO NEWS \
 		debian/changelog debian/changelog.in \
 		debian/rules debian/control debian/copyright \
-		debian/eclair.files
+		debian/eclair.files debian/docs
