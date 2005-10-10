@@ -9,8 +9,6 @@
 
 inline void     ewl_print_warning(void);
 
-#define DEBUG 1
-
 #ifdef DEBUG
 
 #define DENTER_FUNCTION(lvl) \
