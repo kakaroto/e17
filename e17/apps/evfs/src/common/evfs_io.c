@@ -53,7 +53,7 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 		memcpy(block, &ref->file_type, sizeof(evfs_file_type));
 		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);
 		
-		printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);
+		/*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);*/
 		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,block, (strlen(ref->path) * sizeof(char)) + sizeof(evfs_file_type) +1  ));
 	}
 	

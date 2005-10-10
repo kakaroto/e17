@@ -128,13 +128,17 @@ void evfs_dir_list(evfs_client* client, evfs_command* command) {
 	dirc = smbc_getdents(dh1, (struct smbc_dirent *)dirp, sizeof(dirbuf));
 
 	while (dirc > 0) {
+	  dsize = ((struct smbc_dirent *)dirp)->dirlen;
+		
+	     /*Make sure we don't use . or ..*/
+	   if (strcmp( ((struct smbc_dirent *)dirp)->name, ".") && strcmp(((struct smbc_dirent *)dirp)->name, "..")) { 
 		evfs_filereference* reference = NEW(evfs_filereference);
 
-	      dsize = ((struct smbc_dirent *)dirp)->dirlen;
-	      	fprintf(stdout, "Dir Ent, Type: %u, Name: %s, Comment: %s\n",
+	      
+	      /*	fprintf(stdout, "Dir Ent, Type: %u, Name: %s, Comment: %s\n",
 	      ((struct smbc_dirent *)dirp)->smbc_type, 
 	      ((struct smbc_dirent *)dirp)->name, 
-	      ((struct smbc_dirent *)dirp)->comment);
+	      ((struct smbc_dirent *)dirp)->comment);*/
 
 		if (((struct smbc_dirent *)dirp)->smbc_type == 8) reference->file_type = EVFS_FILE_NORMAL;
 		else if (((struct smbc_dirent *)dirp)->smbc_type == 7) reference->file_type = EVFS_FILE_DIRECTORY; 
@@ -149,7 +153,8 @@ void evfs_dir_list(evfs_client* client, evfs_command* command) {
 		
 		
 		ecore_list_append(files, reference);
-
+	   }
+		
 	      dirp += dsize;
 	      dirc -= dsize;
 
