@@ -8,7 +8,8 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c
+		       stamp-h.in $(MYAPPNAME)_docs.tar $(MYAPPNAME)_docs.tar.gz $(MYAPPNAME).c \
+		       debian/changelog
 
 install-data-local:
         @$(NORMAL_INSTALL)
@@ -33,4 +34,9 @@ dist-hook:
 
 bin_SCRIPTS = $(MYAPPNAME)-config
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN $(MYAPPNAME).spec $(MYAPPNAME).c.in gendoc Doxyfile $(MYAPPNAME)_docs.tar.gz
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
+		$(MYAPPNAME).spec $(MYAPPNAME).c.in gendoc \
+		Doxyfile $(MYAPPNAME)_docs.tar.gz \
+		debian/control debian/rules debian/copyright \
+		debian/changelog debian/changelog.in \
+		debian/$(MYAPPNAME).files	

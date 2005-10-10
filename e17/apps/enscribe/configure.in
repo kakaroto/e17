@@ -142,6 +142,7 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 enscribe-config
+debian/changelog
 ],[
 chmod +x enscribe-config
 touch enscribe_docs.tar.gz
