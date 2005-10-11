@@ -1,0 +1,12 @@
+installed_headersdir = $(prefix)/include/evfs
+installed_headers_DATA = evfs_cleanup.h \
+			evfs_commands.h \
+			evfs_debug.h \
+			evfs_event_helper.h \
+			evfs.h \
+			evfs_io.h \
+			evfs_macros.h \
+			evfs_new.h \
+			evfs_plugin.h \
+			evfs_server_handle.h
+
