@@ -14,7 +14,8 @@ menu_create()
 	p->win = ewl_window_new();
 	ewl_window_move((Ewl_Window *) p->win, 1, 1);
 
-	p->menu = ewl_imenu_new(NULL, "Note Menu");
+	p->menu = ewl_imenu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(p->menu), "Note Menu");
 	ewl_container_child_append((Ewl_Container *) p->win, p->menu);
 
 	return (p);
@@ -62,7 +63,8 @@ menu_item_add(Menu * menu, char *name, void (*func) (void *data), void *data)
 	item->cb = func;
 	item->data = data;
 
-	item->item = ewl_menu_item_new(NULL, name);
+	item->item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item->item), name);
 	ewl_container_child_append((Ewl_Container *) menu->menu, item->item);
 	ewl_callback_append(item->item, EWL_CALLBACK_SELECT, cb_menu_process,
 			    item);
