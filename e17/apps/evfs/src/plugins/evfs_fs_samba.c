@@ -40,11 +40,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 #include <libsmbclient.h>
 
+static struct stat file_stat;
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static SMBCCTX *smb_context = NULL;
 
-void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
-void smb_evfs_file_stat(evfs_client* client, evfs_command* command);
+static void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
+static void smb_evfs_file_stat(evfs_client* client, evfs_command* command);
 
 
 
@@ -91,7 +92,7 @@ evfs_plugin_functions* evfs_plugin_init() {
 
 	
 	printf("Initialising the samba plugin..\n");
-	evfs_plugin_functions* functions = calloc(1, sizeof(evfs_plugin_functions));
+	evfs_plugin_functions* functions = malloc(sizeof(evfs_plugin_functions));
 	functions->evfs_dir_list = &smb_evfs_dir_list;
 	/*functions->evfs_file_remove= &evfs_file_remove;
 	functions->evfs_monitor_start = &evfs_monitor_start;
@@ -127,31 +128,28 @@ char* evfs_plugin_uri_get() {
 	return "smb";
 }
 
-void smb_evfs_file_stat(evfs_client* client, evfs_command* command) {
+static void smb_evfs_file_stat(evfs_client* client, evfs_command* command) {
+	
 	int err = 0;
 	int fd = 0;
 	char dir[1024];
-	struct stat* file_stat = calloc(1, sizeof(struct stat));
+	//struct stat* file_stat = calloc(1,sizeof(struct stat));
+	
 	SMBCFILE* file= NULL;
 	
-	snprintf(dir,1024,"smb:/%s", command->file_command.files[0]->path);
+	sprintf(dir,"smb:/%s", command->file_command.files[0]->path);
 	printf("Getting stat on file '%s'\n", dir);
 
-	
-	file = smb_context->open(smb_context, dir, O_RDONLY, 0666);
-	if (file) {
-		smb_context->fstat(smb_context, file, file_stat);
-		evfs_stat_event_create(client, command, file_stat);
-		printf("File size: %d\n", file_stat->st_size);
-		//smb_context->close(smb_context, file);
-	} else {
-		printf("Error opening file!\n");
-	}
+	err = smb_context->stat(smb_context, dir, &file_stat);
+	printf("Returned error code: %d\n", err);
+	evfs_stat_event_create(client, command, &file_stat);
+	printf("File size: %d\n", file_stat.st_size);
 	
 	printf("Returning to caller..\n");
+
 }
 
-void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
+static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 	char dir_path[1024];
 
 	int fd, dh1, dh2, dh3, dsize, dirc;
