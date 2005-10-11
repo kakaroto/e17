@@ -75,9 +75,18 @@ ewl_button_init(Ewl_Button *b)
 	}
 	ewl_button_stock_type_set(b, EWL_STOCK_NONE);
 
-	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
+	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_appearance_set(w, "button");
 	ewl_widget_inherit(w, "button");
+
+	b->body = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(b), b->body);
+	ewl_object_alignment_set(EWL_OBJECT(b->body), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(b->body), EWL_FLAG_FILL_NONE);
+	ewl_widget_internal_set(b->body, TRUE);
+	ewl_widget_show(b->body);
+
+	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -105,11 +114,8 @@ ewl_button_label_set(Ewl_Button *b, char *l)
 	else if (!b->label_object) {
 		b->label_object = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
-		ewl_object_fill_policy_set(EWL_OBJECT(b->label_object),
-					EWL_FLAG_FILL_FILL);
-		ewl_object_alignment_set(EWL_OBJECT(b->label_object),
-					EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
+		ewl_widget_internal_set(b->label_object, TRUE);
 		ewl_widget_show(b->label_object);
 	}
 	else

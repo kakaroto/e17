@@ -36,6 +36,7 @@ typedef struct Ewl_Button Ewl_Button;
 struct Ewl_Button
 {
 	Ewl_Box         box; 		/**< Inherit from the box for adding widgets */
+	Ewl_Widget     *body;
 	Ewl_Widget     *label_object;	/**< Labels are common, make it easy */
 	Ewl_Widget     *image_object;	/**< Add an image to the button if needed */
 	Ewl_Stock_Type	stock_type;	/**< The stock type of the button */
