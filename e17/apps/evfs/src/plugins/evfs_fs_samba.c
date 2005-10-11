@@ -40,8 +40,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 #include <libsmbclient.h>
 
+int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
+static SMBCCTX *smb_context = NULL;
 
-void evfs_dir_list(evfs_client* client, evfs_command* command);
+void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
+void smb_evfs_file_stat(evfs_client* client, evfs_command* command);
 
 
 
@@ -85,20 +88,36 @@ void auth_fn(const char *server, const char *share,
 
 evfs_plugin_functions* evfs_plugin_init() {
 	int err;
+
 	
 	printf("Initialising the samba plugin..\n");
 	evfs_plugin_functions* functions = calloc(1, sizeof(evfs_plugin_functions));
-
-	
-	//Initialize samba
-	err = smbc_init(auth_fn,  2);
-	
-
-	functions->evfs_dir_list = &evfs_dir_list;
+	functions->evfs_dir_list = &smb_evfs_dir_list;
 	/*functions->evfs_file_remove= &evfs_file_remove;
 	functions->evfs_monitor_start = &evfs_monitor_start;
-	functions->evfs_monitor_stop = &evfs_monitor_stop;
-	functions->evfs_file_stat = &evfs_file_stat;*/
+	functions->evfs_monitor_stop = &evfs_monitor_stop;*/
+	functions->evfs_file_stat = &smb_evfs_file_stat;
+	printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
+
+	//Initialize samba (temporarily borrowed from gnomevfs)
+	smb_context = smbc_new_context ();
+	if (smb_context != NULL) {
+		smb_context->debug = 0;
+		smb_context->callbacks.auth_fn 		    = auth_fn;
+		/*smb_context->callbacks.add_cached_srv_fn    = add_cached_server;
+		smb_context->callbacks.get_cached_srv_fn    = get_cached_server;
+		smb_context->callbacks.remove_cached_srv_fn = remove_cached_server;
+		smb_context->callbacks.purge_cached_fn      = purge_cached;*/
+
+		if (!smbc_init_context (smb_context)) {
+			printf("Error initializing samba context..\n");
+			smbc_free_context (smb_context, FALSE);
+			smb_context = NULL;
+		}
+	}
+
+
+	
 	return functions;
 
 	
@@ -108,58 +127,74 @@ char* evfs_plugin_uri_get() {
 	return "smb";
 }
 
-void evfs_dir_list(evfs_client* client, evfs_command* command) {
+void smb_evfs_file_stat(evfs_client* client, evfs_command* command) {
+	int err = 0;
+	int fd = 0;
 	char dir[1024];
+	struct stat* file_stat = calloc(1, sizeof(struct stat));
+	SMBCFILE* file= NULL;
+	
+	snprintf(dir,1024,"smb:/%s", command->file_command.files[0]->path);
+	printf("Getting stat on file '%s'\n", dir);
+
+	
+	file = smb_context->open(smb_context, dir, O_RDONLY, 0666);
+	if (file) {
+		smb_context->fstat(smb_context, file, file_stat);
+		evfs_stat_event_create(client, command, file_stat);
+		printf("File size: %d\n", file_stat->st_size);
+		//smb_context->close(smb_context, file);
+	} else {
+		printf("Error opening file!\n");
+	}
+	
+	printf("Returning to caller..\n");
+}
+
+void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
+	char dir_path[1024];
 
 	int fd, dh1, dh2, dh3, dsize, dirc;
 	int size;
-	char dirbuf[4096];
+	char dirbuf[8192];
 	char* dirp;
+	SMBCFILE *dir = NULL;
+	struct smbc_dirent *entry = NULL;
 	Ecore_List* files = ecore_list_new();
 
 	//Reappend smb protocol header for libsmbclient..
-	snprintf(dir,1024,"smb:/%s", command->file_command.files[0]->path);
+	snprintf(dir_path,1024,"smb:/%s", command->file_command.files[0]->path);
 	
-	printf("evfs_fs_samba: Listing directory %s\n", dir);
+	printf("evfs_fs_samba: Listing directory %s\n", dir_path);
 
 
-	dh1 = smbc_opendir(dir);
-	dirp = (char*)dirbuf;
-	dirc = smbc_getdents(dh1, (struct smbc_dirent *)dirp, sizeof(dirbuf));
+	dir = smb_context->opendir(smb_context,dir_path);
 
-	while (dirc > 0) {
-	  dsize = ((struct smbc_dirent *)dirp)->dirlen;
+	while (entry = smb_context->readdir(smb_context, dir) ) {
 		
 	     /*Make sure we don't use . or ..*/
-	   if (strcmp( ((struct smbc_dirent *)dirp)->name, ".") && strcmp(((struct smbc_dirent *)dirp)->name, "..")) { 
+	   if (strcmp(entry->name, ".") && strcmp(entry->name, "..")) { 
 		evfs_filereference* reference = NEW(evfs_filereference);
 
-	      
-	      /*	fprintf(stdout, "Dir Ent, Type: %u, Name: %s, Comment: %s\n",
-	      ((struct smbc_dirent *)dirp)->smbc_type, 
-	      ((struct smbc_dirent *)dirp)->name, 
-	      ((struct smbc_dirent *)dirp)->comment);*/
-
-		if (((struct smbc_dirent *)dirp)->smbc_type == 8) reference->file_type = EVFS_FILE_NORMAL;
-		else if (((struct smbc_dirent *)dirp)->smbc_type == 7) reference->file_type = EVFS_FILE_DIRECTORY; 
+		if (entry->smbc_type == SMBC_FILE) reference->file_type = EVFS_FILE_NORMAL;
+		else if (entry->smbc_type == SMBC_DIR) reference->file_type = EVFS_FILE_DIRECTORY; 
 
 		size = 
 			  (sizeof(char) * strlen(command->file_command.files[0]->path)) + 
-			  (sizeof(char) * strlen(((struct smbc_dirent *)dirp)->name )) + 
+			  (sizeof(char) * strlen(entry->name )) + 
 			  (sizeof(char) * 2 );
 		reference->path = malloc(size);
-		snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, ((struct smbc_dirent *)dirp)->name );
-		
+		snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, entry->name );
+	
+		printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
 		
 		
 		ecore_list_append(files, reference);
 	   }
 		
-	      dirp += dsize;
-	      dirc -= dsize;
-
 	}
-
+	smb_context->closedir(smb_context,dir);
+	
 	evfs_list_dir_event_create(client, command, files);
 
 }

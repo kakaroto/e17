@@ -124,8 +124,9 @@ ipc_client_data(void *data, int type, void *event)
    /*True == command finished*/
    if (evfs_process_incoming_command(client->prog_command, msg)) {
 	  evfs_handle_command(client, client->prog_command);
+	  
 
-	  evfs_cleanup_command(client->prog_command); /*CLEANUP MEMORY HERE*/
+	  evfs_cleanup_command(client->prog_command); 
 	  client->prog_command = NULL;
    }
 
@@ -161,7 +162,6 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			evfs_handle_file_remove_command(client,command);
 			break;
 		case EVFS_CMD_FILE_STAT:
-			printf("Stat file stub\n");
 			evfs_handle_file_stat_command(client,command);
 			break;
 		case EVFS_CMD_LIST_DIR:
@@ -237,7 +237,7 @@ void evfs_load_plugins() {
 		   }
 		}
 	} else {
-		printf(stderr, "EVFS: Could not location plugin directory '%s'\n", PACKAGE_PLUGIN_DIR "/plugins/file");
+		fprintf(stderr, "EVFS: Could not location plugin directory '%s'\n", PACKAGE_PLUGIN_DIR "/plugins/file");
 		exit(1);
 	}
 
