@@ -43,10 +43,14 @@ entangle_eapps_init()
     while ((name = ecore_list_next(eapps)))
     {
         char *ret;
+	char *ext;
         int ret_size;
         Eet_File *ef;
         char e_path[PATH_MAX];
         Entangle_Eapp *eapp;
+
+	ext = strrchr(name, '.');
+	if (strcmp(ext, ".eap")) continue;
 
         eapp = calloc(1, sizeof(Entangle_Eapp));
         if (!eapp) 
