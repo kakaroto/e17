@@ -44,8 +44,8 @@ struct Ewl_Button
 
 Ewl_Widget	*ewl_button_new(void);
 int		 ewl_button_init(Ewl_Button *b);
-void		 ewl_button_label_set(Ewl_Button *b, char *l);
-char		*ewl_button_label_get(Ewl_Button *b);
+void		 ewl_button_label_set(Ewl_Button *b, const char *l);
+const char	*ewl_button_label_get(Ewl_Button *b);
 
 void		 ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock);
 Ewl_Stock_Type	 ewl_button_stock_type_get(Ewl_Button *b);

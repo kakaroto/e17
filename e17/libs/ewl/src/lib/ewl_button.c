@@ -98,7 +98,7 @@ ewl_button_init(Ewl_Button *b)
  * @brief Change the label of the specified button
  */
 void
-ewl_button_label_set(Ewl_Button *b, char *l)
+ewl_button_label_set(Ewl_Button *b, const char *l)
 {
 	Ewl_Widget *w;
 
@@ -129,17 +129,16 @@ ewl_button_label_set(Ewl_Button *b, char *l)
  * @return A newly allocated copy of the label on the button.
  * @brief Retrieve the label of the specified button
  */
-char *
+const char *
 ewl_button_label_get(Ewl_Button *b)
 {
-	char *val = NULL;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (b->label_object)
-		val = ewl_label_text_get(EWL_LABEL(b->label_object));
+		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label_object)), 
+								DLEVEL_STABLE);
 
-	DRETURN_PTR(val, DLEVEL_STABLE);
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**

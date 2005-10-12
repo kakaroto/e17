@@ -34,8 +34,8 @@ struct Ewl_Label
 Ewl_Widget *ewl_label_new();
 int         ewl_label_init(Ewl_Label *la);
 
-void        ewl_label_text_set(Ewl_Label *la, char *text);
-char  	   *ewl_label_text_get(Ewl_Label *la);
+void        ewl_label_text_set(Ewl_Label *la, const char *text);
+const char *ewl_label_text_get(Ewl_Label *la);
 
 /*
  * Internally used callbacks

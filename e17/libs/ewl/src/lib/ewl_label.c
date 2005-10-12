@@ -62,7 +62,7 @@ ewl_label_init(Ewl_Label *la)
  * @brief Sets the given @a text into the widget @a la
  */
 void
-ewl_label_text_set(Ewl_Label *la, char *text)
+ewl_label_text_set(Ewl_Label *la, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("la", la);
@@ -81,7 +81,7 @@ ewl_label_text_set(Ewl_Label *la, char *text)
  * @return Returns no value.
  * @brief Gets the current text set into the label
  */
-char *
+const char *
 ewl_label_text_get(Ewl_Label *la)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
