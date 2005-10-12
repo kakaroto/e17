@@ -100,13 +100,13 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
 )
 
 AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote-2.2", "", $PATH)
-if [ test -z $GIMP_REMOTE_BIN ]; then
+if test -z "$GIMP_REMOTE_BIN" ; then
   AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote-2.0", "", $PATH)
-  if [ test -z $GIMP_REMOTE_BIN ]; then
+  if test -z "$GIMP_REMOTE_BIN" ; then
     AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote", "", $PATH)
   fi
 fi
-if [ test -z $GIMP_REMOTE_BIN ]; then
+if test -z "$GIMP_REMOTE_BIN" ; then
   echo "The GIMP remote is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   echo "You won't have the edit capabilities.";

@@ -87,12 +87,12 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Directory])
 
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 
-if [ test -z "$EET_CONFIG" ]; then EET_CONFIG="eet-config"; fi
-if [ test -z "$EVAS_CONFIG" ]; then EVAS_CONFIG="evas-config"; fi
-if [ test -z "$EDJE_CONFIG" ]; then EDJE_CONFIG="edje-config"; fi
-if [ test -z "$ECORE_CONFIG" ]; then ECORE_CONFIG="ecore-config"; fi
-if [ test -z "$EMBRYO_CONFIG" ]; then EMBRYO_CONFIG="embryo-config"; fi
-if [ test -z "$EMOTION_CONFIG" ]; then EMOTION_CONFIG="emotion-config"; fi
+if test -z "$EET_CONFIG" ; then EET_CONFIG="eet-config"; fi
+if test -z "$EVAS_CONFIG" ; then EVAS_CONFIG="evas-config"; fi
+if test -z "$EDJE_CONFIG" ; then EDJE_CONFIG="edje-config"; fi
+if test -z "$ECORE_CONFIG" ; then ECORE_CONFIG="ecore-config"; fi
+if test -z "$EMBRYO_CONFIG" ; then EMBRYO_CONFIG="embryo-config"; fi
+if test -z "$EMOTION_CONFIG" ; then EMOTION_CONFIG="emotion-config"; fi
 
 my_cflags=`$EVAS_CONFIG --cflags`" "`$ECORE_CONFIG --cflags`" "`$EDJE_CONFIG --cflags`" "`$EMOTION_CONFIG --cflags`
 my_libs=$dlopen_libs" "`$EVAS_CONFIG --libs`" "`$ECORE_CONFIG --libs`" "`$EDJE_CONFIG --libs`" "`$EMOTION_CONFIG --libs`

@@ -89,7 +89,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
 PROG="esmart-config";
 AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
-if [ test -z $ESMART_CONFIG ]; then
+if test -z "$ESMART_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -101,7 +101,7 @@ AC_SUBST(esmart_libs)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if [ test -z $EVAS_CONFIG ]; then
+if test -z "$EVAS_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -113,7 +113,7 @@ AC_SUBST(evas_libs)
 
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
+if test -z "$ECORE_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
@@ -125,7 +125,7 @@ AC_SUBST(ecore_libs)
 
 PROG="edje-config";
 AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if [ test -z $EDJE_CONFIG ]; then
+if test -z "$EDJE_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
