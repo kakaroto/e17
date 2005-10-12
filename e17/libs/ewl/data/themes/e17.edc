@@ -84,6 +84,8 @@ data {
     item, "/menubar/group" "menubar";
     item, "/menuitem/group" "menuitem";
 
+    item, "/tooltip/offset" 15;
+    item, "/tooltip/delay" "1.0";
     item, "/tooltip/group" "window";
     item, "/window/group" "window";
 

@@ -180,7 +180,6 @@ ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attac
 	else if (list->direct)
 	{
 		Ewl_Attach *tmp;
-
 		tmp = EWL_ATTACH(list->list);
 
 		/* replace if the same type */
@@ -416,7 +415,6 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev, void *data)
 
 	if (w->attach)
 		ewl_attach_list_free(w->attach);
-
 	w->attach = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -478,7 +476,6 @@ ewl_attach_tooltip_detach(Ewl_Attach *attach)
 		}
 		ewl_attach_tooltip->attach = NULL;
 	}
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -486,9 +483,12 @@ static void
 ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Attach *attach;
-	Ewl_Embed *emb;
+//	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Move *e;
-	int x, y;
+//	int x, y;
+	int offset;
+	char *delay_str;
+	double delay;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ev", ev);
@@ -502,20 +502,30 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 
 	ewl_attach_tooltip_detach(attach);
 
+	ewl_attach_tooltip->attach = attach;
+	ewl_attach_tooltip->to = w;
+
+	offset = ewl_theme_data_int_get(w, "/tooltip/offset");
+	ewl_attach_tooltip->x = e->x + offset;
+	ewl_attach_tooltip->y = e->y + offset;
+#if 0 
 	emb = ewl_embed_widget_find(w);
 	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
 
-	/* XXX the 15 should come from the theme (offset off of the cursor) */
-	/* XXX the 1.0 shoudl come from the theme (delay before firing timer) */
-	ewl_attach_tooltip->attach = attach;
-	ewl_attach_tooltip->to = w;
-	ewl_attach_tooltip->x = e->x + 15;
-	ewl_attach_tooltip->y = e->y + 15;
-#if 0 
-	ewl_attach_tooltip->x = x + CURRENT_X(w) + e->x + 15;
-	ewl_attach_tooltip->y = y + CURRENT_Y(w) + e->y + 15;
+	ewl_attach_tooltip->x = x + CURRENT_X(w) + e->x + offset;
+	ewl_attach_tooltip->y = y + CURRENT_Y(w) + e->y + offset;
 #endif
-	ewl_attach_tooltip->timer = ecore_timer_add(1.0, ewl_attach_cb_tooltip_timer, w);
+
+	delay_str = ewl_theme_data_str_get(w, "/tooltip/delay");
+	if (delay_str)
+	{
+		delay = atof(delay_str);
+		FREE(delay_str)
+	}
+	else
+		delay = 1.0;
+
+	ewl_attach_tooltip->timer = ecore_timer_add(delay, ewl_attach_cb_tooltip_timer, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -560,11 +570,6 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 	w = data;
 	emb = ewl_embed_widget_find(w);
-
-	if (!(ewl_attach_tooltip->attach))
-	{
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	if (!(ewl_attach_tooltip->win))
 	{
