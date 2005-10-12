@@ -104,11 +104,11 @@ function vser
   echo $V
 }
 
-if [ test -z "$EET_CONFIG" ]; then EET_CONFIG="eet-config"; fi
-if [ test -z "$EVAS_CONFIG" ]; then EVAS_CONFIG="evas-config"; fi
-if [ test -z "$EDJE_CONFIG" ]; then EDJE_CONFIG="edje-config"; fi
-if [ test -z "$ECORE_CONFIG" ]; then ECORE_CONFIG="ecore-config"; fi
-if [ test -z "$EMBRYO_CONFIG" ]; then EMBRYO_CONFIG="embryo-config"; fi
+if test -z "$EET_CONFIG" ; then EET_CONFIG="eet-config"; fi
+if test -z "$EVAS_CONFIG" ; then EVAS_CONFIG="evas-config"; fi
+if test -z "$EDJE_CONFIG" ; then EDJE_CONFIG="edje-config"; fi
+if test -z "$ECORE_CONFIG" ; then ECORE_CONFIG="ecore-config"; fi
+if test -z "$EMBRYO_CONFIG" ; then EMBRYO_CONFIG="embryo-config"; fi
 
 V=`$EET_CONFIG --version`
 VV=`vser $V`
