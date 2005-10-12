@@ -5,8 +5,6 @@ evfs_file_uri_path* dir_path;
 evfs_connection* con;
 
 void callback(evfs_event* data) {
-	static char str_data[1024];
-	
 	if (data->type == EVFS_EV_FILE_MONITOR) {
 				printf("DEMO: Received a file monitor notification\n");
 				printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
@@ -33,6 +31,7 @@ void callback(evfs_event* data) {
 	}
 
 	/*if (mon_current == 2) {
+		static char str_data[1024];
 		snprintf(str_data,1024,"posix://%s/newfile", getenv("HOME"));
 		
 		evfs_file_uri_path* path = evfs_parse_uri(str_data);
