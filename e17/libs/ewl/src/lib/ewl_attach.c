@@ -36,6 +36,12 @@ static int ewl_attach_cb_tooltip_timer(void *data);
 
 static Ewl_Attach_Tooltip *ewl_attach_tooltip = NULL;
 
+/**
+ * @param w: The widget to attach the text too
+ * @param t: The type of the attachment
+ * @param data: The text to set as the attachment
+ * @return Returns no value
+ */
 void
 ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
 {
@@ -59,6 +65,12 @@ ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to attach the widget too
+ * @param t: The type of data being attached
+ * @param data: The wiget to attach
+ * @return Returns no value
+ */
 void
 ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 {
@@ -82,6 +94,12 @@ ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to attach the data too
+ * @param t: The type of attachment
+ * @param data: The data to attach
+ * @return Returns no value
+ */
 void
 ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
 {
@@ -105,6 +123,11 @@ ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to get the attachment from
+ * @param t: The type of attachment to get
+ * @return Returns the data for the given attachment type
+ */
 void *
 ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
 {
@@ -530,8 +553,9 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__, 
-						void *ev __UNUSED__, void *data)
+static void
+ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__, 
+				void *ev __UNUSED__, void *data)
 {
 	Ewl_Attach *attach;
 
