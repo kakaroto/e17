@@ -1296,7 +1296,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 */
 	if (w->theme_object) {
 		if (w->bit_state)
-  			edje_object_signal_emit(w->theme_object, w->bit_state, "EWL");
+  			ewl_widget_state_set(w, w->bit_state);
 
 		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
 		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
@@ -1348,8 +1348,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 		if (ewl_object_state_has(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))
-			edje_object_signal_emit(w->theme_object, "disabled",
-						"EWL");
+			ewl_widget_state_set(w, "disabled");
 
 		/*
 		 * Propagate minimum sizes from the bit theme to the widget.
@@ -1594,9 +1593,9 @@ ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	if (w->theme_object) {
-		edje_object_signal_emit(w->theme_object, "mouse,move", "EWL");
-	}
+
+        ewl_widget_state_set(w, "mouse,move");
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
