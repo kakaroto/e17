@@ -17,6 +17,7 @@ struct Ewl_Attach_Tooltip
 	Evas_Coord y;
 
 	Ecore_Timer *timer;
+	Ewl_Widget *to;
 };
 
 static void ewl_attach_parent_setup(Ewl_Widget *w);
@@ -408,6 +409,11 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	/* make sure the timer gets cleaned up if the widget goes away */
+	if ((w == ewl_attach_tooltip->to) 
+			&& (ewl_attach_tooltip->timer))
+		ecore_timer_del(ewl_attach_tooltip->timer);
+
 	if (w->attach)
 		ewl_attach_list_free(w->attach);
 
@@ -421,11 +427,6 @@ ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("attach", attach);
-
-	if (!ewl_attach_tooltip)
-		ewl_attach_tooltip = NEW(Ewl_Attach_Tooltip, 1);
-
-	ewl_attach_tooltip->attach = attach;
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_attach_cb_tooltip_mouse_move, attach);
@@ -455,6 +456,7 @@ ewl_attach_tooltip_detach(Ewl_Attach *attach)
 			ecore_timer_del(ewl_attach_tooltip->timer);
 
 		ewl_attach_tooltip->timer = NULL;
+		ewl_attach_tooltip->to = NULL;
 		ewl_attach_tooltip->x = 0;
 		ewl_attach_tooltip->y = 0;
 
@@ -506,6 +508,7 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	/* XXX the 15 should come from the theme (offset off of the cursor) */
 	/* XXX the 1.0 shoudl come from the theme (delay before firing timer) */
 	ewl_attach_tooltip->attach = attach;
+	ewl_attach_tooltip->to = w;
 	ewl_attach_tooltip->x = e->x + 15;
 	ewl_attach_tooltip->y = e->y + 15;
 #if 0 
@@ -558,11 +561,6 @@ ewl_attach_cb_tooltip_timer(void *data)
 	w = data;
 	emb = ewl_embed_widget_find(w);
 
-	/* XXX i think there is a race condition with the detach code? 
-	 * ie, we get the focus_out (or something) stuck in the event queue
-	 * and then we get the timer trigger in the event queue. the focus
-	 * out is processed, then the trigger is processed ... blam ->attach
-	 * is null */
 	if (!(ewl_attach_tooltip->attach))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
