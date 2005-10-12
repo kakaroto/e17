@@ -323,6 +323,15 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
      }
    /* flush unused images from the image list */
    __imlib_FlushXImage(d);
+
+   /* set the byte order of the XImage to the byte_order of the Xclient */
+   /* (rather than the Xserver) */
+#ifdef WORDS_BIGENDIAN
+   xim->byte_order = MSBFirst;
+#else
+   xim->byte_order = LSBFirst;
+#endif
+
    /* return out image */
    return xim;
 }
