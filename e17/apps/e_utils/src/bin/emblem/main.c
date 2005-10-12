@@ -69,6 +69,12 @@ main(int argc, char ** argv)
             usage();
             return 0;
         }
+        else
+        {
+            printf("%s - unrecognized option\n", argv[i]);
+            usage();
+            return 0;
+        }
     }
     
     /* make sure theme exists */
