@@ -83,6 +83,25 @@ AC_SUBST(fam_libs)
 
 
 
+dnl Check for samba
+AC_ARG_ENABLE(samba,
+	AC_HELP_STRING([--enable-samba],[enable samba support @<:@default=detect@:>@]),
+	use_samba=$enableval,
+	use_samba=auto)
+if test x"$use_samba" != x"no" ; then
+	AC_CHECK_HEADER(libsmbclient.h,
+		[use_samba="yes"],
+		[
+			if test x"$use_samba" != x"auto" ; then
+				AC_MSG_ERROR(samba not found)
+			fi
+			use_samba="no"
+		])
+fi
+AM_CONDITIONAL(BUILD_SAMBA, test x"$use_samba" = x"yes")
+
+
+
 dnl Check for pthreads. Make sure we have both
 dnl header and lib, otherwise, or when --disable-threads
 dnl was given, build without thread support.
