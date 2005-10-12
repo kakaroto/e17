@@ -42,7 +42,7 @@ dnl Check for fam.
 fam_cflags=""
 fam_libs=""
 AC_ARG_WITH(fam,
-	AC_HELP_STRING([--with-fam@<:@=DIR@:>@],[use fam found in DIR]),
+	AC_HELP_STRING([--with-fam=DIR],[use fam found in DIR]),
 	[
 		use_fam=$withval
 		if test x"$use_fam" != x"no" ; then
@@ -130,7 +130,7 @@ AC_SUBST(PTHREAD_LIB)
 
 dnl Check for libxml.
 AC_ARG_WITH(xml2,
-        [  --with-xml2=DIR          use libxml2 in <DIR>],
+        AC_HELP_STRING([--with-xml2=DIR],[use libxml2 found in DIR]),
         [CFLAGS="$CFLAGS -I$withval/include"
          LIBS="-L$withval/lib $LIBS"])
 
