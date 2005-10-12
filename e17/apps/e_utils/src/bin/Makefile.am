@@ -3,4 +3,5 @@ SUBDIRS = eapp_edit \
 e17setroot \
 entangle \
 emblem \
-exige 
+exige \
+ethemes

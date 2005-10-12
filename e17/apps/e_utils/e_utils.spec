@@ -62,6 +62,14 @@ Requires: enlightenment >= 0.16.999
 %description exige
 A run dialog box for Enlightenment.
 
+%package ethemes
+Summary:  A theme selector with preview
+Group: User Interface/Desktops
+Requires: enlightenment >= 0.16.999
+
+%description ethemes
+A theme selector with preview
+
 %prep
 %setup -q
 
@@ -110,5 +118,9 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/exige
 %{_datadir}/%{name}/data/exige/*
+
+%files ethemes
+%defattr(-, root, root)
+%{_bindir}/ethemes
 
 %changelog
