@@ -224,9 +224,8 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->props.never_focus = 1;
    ewin->client.grav = StaticGravity;
 
-   ewin->client.width.min = ewin->client.width.max = ewin->client.w = m->w;
-   ewin->client.height.min = ewin->client.height.max = ewin->client.h = m->h;
-   ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
+   ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
+			    0.0, 65535.0);
 
    EoSetSticky(ewin, 1);
    EoSetLayer(ewin, 3);
@@ -584,24 +583,19 @@ void
 MenuRepack(Menu * m)
 {
    EWin               *ewin;
-   unsigned int        w, h;
 
    m->redraw = 1;
    if (m->win)
       MenuRealize(m);
 
    ewin = m->ewin;
-   if (ewin)
-     {
-	w = m->w;
-	h = m->h;
-	ewin->client.height.min = h;
-	ewin->client.height.max = h;
-	ewin->client.width.min = w;
-	ewin->client.width.max = w;
-	EwinResize(ewin, w, h);
-	RaiseEwin(ewin);
-     }
+   if (!ewin)
+      return;
+
+   ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
+			    0.0, 65535.0);
+   EwinResize(ewin, m->w, m->h);
+   RaiseEwin(ewin);
 }
 
 void

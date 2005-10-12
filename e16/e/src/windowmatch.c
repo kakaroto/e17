@@ -569,13 +569,13 @@ WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
 	     break;
 
 	  case MATCH_PROP_FIXEDSIZE:
-	     match = ewin->client.no_resize_h && ewin->client.no_resize_v;
+	     match = ewin->props.no_resize_h && ewin->props.no_resize_v;
 	     break;
 	  case MATCH_PROP_FIXEDSIZE_H:
-	     match = ewin->client.no_resize_h;
+	     match = ewin->props.no_resize_h;
 	     break;
 	  case MATCH_PROP_FIXEDSIZE_V:
-	     match = ewin->client.no_resize_v;
+	     match = ewin->props.no_resize_v;
 	     break;
 	  }
      }

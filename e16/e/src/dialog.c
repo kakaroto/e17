@@ -535,9 +535,8 @@ DialogEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Close = DialogEwinClose;
 
-   ewin->client.width.min = ewin->client.width.max = ewin->client.w = d->w;
-   ewin->client.height.min = ewin->client.height.max = ewin->client.h = d->h;
-   ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
+   ICCCM_SetSizeConstraints(ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
+			    0.0, 65535.0);
 
    EoSetLayer(ewin, 10);
 }

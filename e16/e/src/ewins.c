@@ -95,17 +95,27 @@ EwinCreate(Window win, int type)
    ewin->ly = -1;
    ewin->lw = -1;
    ewin->lh = -1;
+
    ewin->client.x = -1;
    ewin->client.y = -1;
    ewin->client.w = -1;
    ewin->client.h = -1;
+   ewin->client.grav = NorthWestGravity;
+
    ewin->icccm.need_input = 1;
-   ewin->client.aspect_min = 0.0;
-   ewin->client.aspect_max = 65535.0;
-   ewin->client.w_inc = 1;
-   ewin->client.h_inc = 1;
-   ewin->client.width.max = 65535;
-   ewin->client.height.max = 65535;
+
+   ewin->icccm.width.min = 0;
+   ewin->icccm.height.min = 0;
+   ewin->icccm.width.max = 65535;
+   ewin->icccm.height.max = 65535;
+   ewin->icccm.base_w = 0;
+   ewin->icccm.base_h = 0;
+   ewin->icccm.w_inc = 1;
+   ewin->icccm.h_inc = 1;
+   ewin->icccm.aspect_min = 0.0;
+   ewin->icccm.aspect_max = 65535.0;
+   ewin->icccm.grav = NorthWestGravity;
+
 #if 0				/* ENABLE_GNOME - Not actually used */
    ewin->expanded_width = -1;
    ewin->expanded_height = -1;
@@ -532,9 +542,9 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_shade = ewin->state.no_border || ewin->state.fullscreen;
    ewin->state.inhibit_stick = 0;
    ewin->state.inhibit_max_hor =
-      ewin->client.no_resize_h || ewin->state.fullscreen;
+      ewin->props.no_resize_h || ewin->state.fullscreen;
    ewin->state.inhibit_max_ver =
-      ewin->client.no_resize_v || ewin->state.fullscreen;
+      ewin->props.no_resize_v || ewin->state.fullscreen;
    ewin->state.inhibit_fullscreeen =
       ewin->state.inhibit_move || ewin->state.inhibit_resize;
    ewin->state.inhibit_change_desk = 0;

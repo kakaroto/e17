@@ -165,49 +165,49 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
    w = wi;
    h = hi;
 
-   if (w < ewin->client.width.min)
-      w = ewin->client.width.min;
-   if (w > ewin->client.width.max)
-      w = ewin->client.width.max;
-   if (h < ewin->client.height.min)
-      h = ewin->client.height.min;
-   if (h > ewin->client.height.max)
-      h = ewin->client.height.max;
+   if (w < ewin->icccm.width.min)
+      w = ewin->icccm.width.min;
+   if (w > ewin->icccm.width.max)
+      w = ewin->icccm.width.max;
+   if (h < ewin->icccm.height.min)
+      h = ewin->icccm.height.min;
+   if (h > ewin->icccm.height.max)
+      h = ewin->icccm.height.max;
    if ((w > 0) && (h > 0))
      {
-	w -= ewin->client.base_w;
-	h -= ewin->client.base_h;
+	w -= ewin->icccm.base_w;
+	h -= ewin->icccm.base_h;
 	if ((w > 0) && (h > 0))
 	  {
 	     aspect = ((double)w) / ((double)h);
 	     if (Mode.mode == MODE_RESIZE_H)
 	       {
-		  if (aspect < ewin->client.aspect_min)
-		     h = (int)((double)w / ewin->client.aspect_min);
-		  if (aspect > ewin->client.aspect_max)
-		     h = (int)((double)w / ewin->client.aspect_max);
+		  if (aspect < ewin->icccm.aspect_min)
+		     h = (int)((double)w / ewin->icccm.aspect_min);
+		  if (aspect > ewin->icccm.aspect_max)
+		     h = (int)((double)w / ewin->icccm.aspect_max);
 	       }
 	     else if (Mode.mode == MODE_RESIZE_V)
 	       {
-		  if (aspect < ewin->client.aspect_min)
-		     w = (int)((double)h * ewin->client.aspect_min);
-		  if (aspect > ewin->client.aspect_max)
-		     w = (int)((double)h * ewin->client.aspect_max);
+		  if (aspect < ewin->icccm.aspect_min)
+		     w = (int)((double)h * ewin->icccm.aspect_min);
+		  if (aspect > ewin->icccm.aspect_max)
+		     w = (int)((double)h * ewin->icccm.aspect_max);
 	       }
 	     else
 	       {
-		  if (aspect < ewin->client.aspect_min)
-		     w = (int)((double)h * ewin->client.aspect_min);
-		  if (aspect > ewin->client.aspect_max)
-		     h = (int)((double)w / ewin->client.aspect_max);
+		  if (aspect < ewin->icccm.aspect_min)
+		     w = (int)((double)h * ewin->icccm.aspect_min);
+		  if (aspect > ewin->icccm.aspect_max)
+		     h = (int)((double)w / ewin->icccm.aspect_max);
 	       }
-	     i = w / ewin->client.w_inc;
-	     j = h / ewin->client.h_inc;
-	     w = i * ewin->client.w_inc;
-	     h = j * ewin->client.h_inc;
+	     i = w / ewin->icccm.w_inc;
+	     j = h / ewin->icccm.h_inc;
+	     w = i * ewin->icccm.w_inc;
+	     h = j * ewin->icccm.h_inc;
 	  }
-	w += ewin->client.base_w;
-	h += ewin->client.base_h;
+	w += ewin->icccm.base_w;
+	h += ewin->icccm.base_h;
      }
 
    *pwo = w;
@@ -219,6 +219,40 @@ ICCCM_MatchSize(EWin * ewin)
 {
    ICCCM_SizeMatch(ewin, ewin->client.w, ewin->client.h, &ewin->client.w,
 		   &ewin->client.h);
+}
+
+void
+ICCCM_GetIncrementalSize(EWin * ewin, unsigned int w, unsigned int h,
+			 unsigned int *wi, unsigned int *hi)
+{
+   *wi = (w - ewin->icccm.base_w) / ewin->icccm.w_inc;
+   *hi = (h - ewin->icccm.base_h) / ewin->icccm.h_inc;
+}
+
+void
+ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin, unsigned int hmin,
+			 unsigned int wmax, unsigned int hmax,
+			 unsigned int wbase, unsigned int hbase,
+			 unsigned int winc, unsigned int hinc,
+			 double amin, double amax)
+{
+   ewin->icccm.width.min = wmin;
+   ewin->icccm.height.min = hmin;
+   ewin->icccm.width.max = wmax;
+   ewin->icccm.height.max = hmax;
+
+   ewin->icccm.base_w = wbase;
+   ewin->icccm.base_h = hbase;
+   ewin->icccm.w_inc = winc;
+   ewin->icccm.h_inc = hinc;
+
+   ewin->icccm.aspect_min = amin;
+   ewin->icccm.aspect_max = amax;
+
+   ewin->props.no_resize_h = (wmin == wmax);
+   ewin->props.no_resize_v = (hmin == hmax);
+
+   ewin->icccm.grav = NorthWestGravity;
 }
 
 void
@@ -379,13 +413,11 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     if ((hint.flags & USPosition) || ((hint.flags & PPosition)))
 	       {
 		  if (hint.flags & PWinGravity)
-		    {
-		       ewin->client.grav = hint.win_gravity;
-		    }
+		     ewin->icccm.grav = hint.win_gravity;
 		  else
-		    {
-		       ewin->client.grav = NorthWestGravity;
-		    }
+		     ewin->icccm.grav = NorthWestGravity;
+		  ewin->client.grav = ewin->icccm.grav;
+
 		  ewin->client.x = x;
 		  ewin->client.y = y;
 		  if ((hint.flags & PPosition) && (!EoIsSticky(ewin)))
@@ -426,95 +458,83 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 
 	if (hint.flags & PMinSize)
 	  {
-	     ewin->client.width.min = hint.min_width;
-	     ewin->client.height.min = hint.min_height;
+	     ewin->icccm.width.min = MAX(0, hint.min_width);
+	     ewin->icccm.height.min = MAX(0, hint.min_height);
 	  }
 	else
 	  {
-	     ewin->client.width.min = 0;
-	     ewin->client.height.min = 0;
+	     ewin->icccm.width.min = 0;
+	     ewin->icccm.height.min = 0;
 	  }
 
 	if (hint.flags & PMaxSize)
 	  {
-	     ewin->client.width.max = hint.max_width;
-	     ewin->client.height.max = hint.max_height;
-	     if (hint.max_width < ewin->client.w)
-		ewin->client.width.max = ewin->client.w;
-	     if (hint.max_height < ewin->client.h)
-		ewin->client.height.max = ewin->client.h;
+	     ewin->icccm.width.max = MAX(hint.max_width, ewin->client.w);
+	     ewin->icccm.height.max = MAX(hint.max_height, ewin->client.h);
 	  }
 	else
 	  {
-	     ewin->client.width.max = 65535;
-	     ewin->client.height.max = 65535;
+	     ewin->icccm.width.max = 65535;
+	     ewin->icccm.height.max = 65535;
 	  }
 
 	if (hint.flags & PResizeInc)
 	  {
-	     ewin->client.w_inc = hint.width_inc;
-	     ewin->client.h_inc = hint.height_inc;
-	     if (ewin->client.w_inc < 1)
-		ewin->client.w_inc = 1;
-	     if (ewin->client.h_inc < 1)
-		ewin->client.h_inc = 1;
+	     ewin->icccm.w_inc = MAX(1, hint.width_inc);
+	     ewin->icccm.h_inc = MAX(1, hint.height_inc);
 	  }
 	else
 	  {
-	     ewin->client.w_inc = 1;
-	     ewin->client.h_inc = 1;
+	     ewin->icccm.w_inc = 1;
+	     ewin->icccm.h_inc = 1;
 	  }
 
 	if (hint.flags & PAspect)
 	  {
 	     if ((hint.min_aspect.y > 0.0) && (hint.min_aspect.x > 0.0))
 	       {
-		  ewin->client.aspect_min =
+		  ewin->icccm.aspect_min =
 		     ((double)hint.min_aspect.x) / ((double)hint.min_aspect.y);
 	       }
 	     else
 	       {
-		  ewin->client.aspect_min = 0.0;
+		  ewin->icccm.aspect_min = 0.0;
 	       }
 	     if ((hint.max_aspect.y > 0.0) && (hint.max_aspect.x > 0.0))
 	       {
-		  ewin->client.aspect_max =
+		  ewin->icccm.aspect_max =
 		     ((double)hint.max_aspect.x) / ((double)hint.max_aspect.y);
 	       }
 	     else
 	       {
-		  ewin->client.aspect_max = 65535.0;
+		  ewin->icccm.aspect_max = 65535.0;
 	       }
 	  }
 	else
 	  {
-	     ewin->client.aspect_min = 0.0;
-	     ewin->client.aspect_max = 65535.0;
+	     ewin->icccm.aspect_min = 0.0;
+	     ewin->icccm.aspect_max = 65535.0;
 	  }
 
 	if (hint.flags & PBaseSize)
 	  {
-	     ewin->client.base_w = hint.base_width;
-	     ewin->client.base_h = hint.base_height;
+	     ewin->icccm.base_w = hint.base_width;
+	     ewin->icccm.base_h = hint.base_height;
 	  }
 	else
 	  {
-	     ewin->client.base_w = ewin->client.width.min;
-	     ewin->client.base_h = ewin->client.height.min;
+	     ewin->icccm.base_w = ewin->icccm.width.min;
+	     ewin->icccm.base_h = ewin->icccm.height.min;
 	  }
 
-	if (ewin->client.width.min < ewin->client.base_w)
-	   ewin->client.width.min = ewin->client.base_w;
-	if (ewin->client.height.min < ewin->client.base_h)
-	   ewin->client.height.min = ewin->client.base_h;
+	if (ewin->icccm.width.min < ewin->icccm.base_w)
+	   ewin->icccm.width.min = ewin->icccm.base_w;
+	if (ewin->icccm.height.min < ewin->icccm.base_h)
+	   ewin->icccm.height.min = ewin->icccm.base_h;
      }
 
-   ewin->client.no_resize_h = 0;
-   ewin->client.no_resize_v = 0;
-   if (ewin->client.width.min == ewin->client.width.max)
-      ewin->client.no_resize_h = 1;
-   if (ewin->client.height.min == ewin->client.height.max)
-      ewin->client.no_resize_v = 1;
+   ewin->props.no_resize_h = (ewin->icccm.width.min == ewin->icccm.width.max);
+   ewin->props.no_resize_v = (ewin->icccm.height.min == ewin->icccm.height.max);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",

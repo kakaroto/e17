@@ -50,14 +50,8 @@ struct _ewin
    {
       Window              win;
       int                 x, y, w, h, bw;
-      Colormap            cmap;
-      char                no_resize_h;
-      char                no_resize_v;
-      Constraints         width, height;
-      int                 base_w, base_h;
-      int                 w_inc, h_inc;
       int                 grav;
-      double              aspect_min, aspect_max;
+      Colormap            cmap;
       long                event_mask;
    } client;
 
@@ -113,6 +107,8 @@ struct _ewin
       char                never_focus;	/* Never focus */
       char                no_button_grabs;
       char                no_actions;
+      unsigned            no_resize_h:1;
+      unsigned            no_resize_v:1;
       unsigned            donthide:1;	/* Don't hide on show desktop */
       unsigned            vroot:1;	/* Virtual root window */
       unsigned            autosave:1;
@@ -144,6 +140,13 @@ struct _ewin
       int                 transient_count;	/* We have <N> transients */
       /* WM_CLIENT_LEADER */
       Window              client_leader;
+
+      /* WM_NORMAL_HINTS */
+      Constraints         width, height;
+      int                 base_w, base_h;
+      int                 w_inc, h_inc;
+      int                 grav;
+      double              aspect_min, aspect_max;
 
       char                is_group_leader;
    } icccm;

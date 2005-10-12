@@ -37,7 +37,8 @@ CoordsShow(EWin * ewin)
    ImageClass         *ic;
    char                s[256];
    int                 md;
-   int                 x, y, w, h;
+   int                 x, y;
+   unsigned int        w, h;
    int                 cx, cy, cw, ch;
    EObj               *eo = coord_eo;
    Imlib_Border       *pad;
@@ -56,8 +57,7 @@ CoordsShow(EWin * ewin)
 
    x = ewin->shape_x;
    y = ewin->shape_y;
-   w = (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc;
-   h = (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc;
+   ICCCM_GetIncrementalSize(ewin, ewin->shape_w, ewin->shape_h, &w, &h);
 
    Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
@@ -70,7 +70,7 @@ CoordsShow(EWin * ewin)
    else
       md = Conf.movres.mode_resize;
 
-   if ((md == 0) || ((cw < ewin->client.w) && (ch < ewin->client.h)))
+   if ((md == 0) || ((cw < ewin->shape_w - 2) && (ch < ewin->shape_h - 2)))
      {
 	if (Conf.movres.mode_info == 1)
 	  {

@@ -469,15 +469,11 @@ PagerReconfigure(Pager * p)
 
    GetAreaSize(&ax, &ay);
 
-   ewin->client.w_inc = ax * 4;
-   ewin->client.h_inc = ay * 8;
-   ewin->client.width.min = 10 * ax;
-   ewin->client.height.min = 8 * ay;
-   ewin->client.width.max = 320 * ax;
-   ewin->client.height.max = 240 * ay;
    aspect = ((double)VRoot.w) / ((double)VRoot.h);
-   ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
-   ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
+   ICCCM_SetSizeConstraints(ewin, 10 * ax, 8 * ay, 320 * ax, 240 * ay,
+			    0, 0, 4 * ax, 8 * ay,
+			    aspect * ((double)ax / (double)ay),
+			    aspect * ((double)ax / (double)ay));
 }
 
 static void

@@ -1297,6 +1297,18 @@ void                ICCCM_DeIconify(const EWin * ewin);
 void                ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo,
 				    int *pho);
 void                ICCCM_MatchSize(EWin * ewin);
+void                ICCCM_GetIncrementalSize(EWin * ewin, unsigned int w,
+					     unsigned int h, unsigned int *wi,
+					     unsigned int *hi);
+void                ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin,
+					     unsigned int hmin,
+					     unsigned int wmax,
+					     unsigned int hmax,
+					     unsigned int wbase,
+					     unsigned int hbase,
+					     unsigned int winc,
+					     unsigned int hinc, double amin,
+					     double amax);
 void                ICCCM_Configure(const EWin * ewin);
 void                ICCCM_AdoptStart(const EWin * ewin);
 void                ICCCM_Adopt(const EWin * ewin);

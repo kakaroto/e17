@@ -459,15 +459,12 @@ IconboxReconfigure(Iconbox * ib)
    Imlib_Border       *pad;
    EWin               *ewin;
    int                 extra;
+   unsigned int        wmin, hmin, wmax, hmax;
 
    ewin = ib->ewin;
 
-   ewin->client.width.min = 8;
-   ewin->client.height.min = 8;
-   ewin->client.width.max = 16384;
-   ewin->client.height.max = 16384;
-   ewin->client.no_resize_h = 0;
-   ewin->client.no_resize_v = 0;
+   wmin = hmin = 8;
+   wmax = hmax = 16384;
 
    extra = 0;
    if (ib->orientation)
@@ -483,10 +480,8 @@ IconboxReconfigure(Iconbox * ib)
 	     if (ic2)
 		extra += pad->left + pad->right;
 	  }
-	ewin->client.width.max = ewin->client.width.min =
-	   ib->iconsize + ib->scroll_thickness + extra;
-	ewin->client.no_resize_h = 1;
-	ib->max_min = ewin->client.height.min;
+	wmax = wmin = ib->iconsize + ib->scroll_thickness + extra;
+	ib->max_min = hmin;
      }
    else
      {
@@ -501,11 +496,12 @@ IconboxReconfigure(Iconbox * ib)
 	     if (ic2)
 		extra += pad->top + pad->bottom;
 	  }
-	ewin->client.height.max = ewin->client.height.min =
-	   ib->iconsize + ib->scroll_thickness + extra;
-	ewin->client.no_resize_v = 1;
-	ib->max_min = ewin->client.width.min;
+	hmax = hmin = ib->iconsize + ib->scroll_thickness + extra;
+	ib->max_min = wmin;
      }
+
+   ICCCM_SetSizeConstraints(ewin, wmin, hmin, wmax, hmax, 0, 0, 1, 1,
+			    0.0, 65535.0);
 }
 
 static void
