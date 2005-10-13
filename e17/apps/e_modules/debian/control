@@ -1,0 +1,18 @@
+Source: emodules
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: libe-dev, enlightenment (>= 0.16.999), debhelper (>> 4.0.0)
+Standards-Version: 3.6.1.0
+
+Package: emodules
+Section: x11
+Architecture: i386
+Depends: ${shlibs:Depends}
+Description: A collection of modules for use with e17.  
+ flame - A desktop module that sets your background on fire.
+ snow - A desktop module that adds drifting snow to your background.
+ notes - A desktop module that emulates sticky notes.
+ weather - A desktop module that displays the local weather forecase.
+ monitor - A desktop module that shows the current CPU/memory/network usage.
