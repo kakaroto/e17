@@ -8,7 +8,7 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
-Ecore_Hash *name_table = NULL;
+static Ecore_Hash *ewl_widget_name_table = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
@@ -115,14 +115,15 @@ void ewl_widget_name_set(Ewl_Widget * w, const char *name)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!name_table)
-		name_table = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	if (!ewl_widget_name_table)
+		ewl_widget_name_table = ecore_hash_new(ecore_str_hash, 
+							ecore_str_compare);
 
 	t = strdup(name);
 	ewl_attach_name_set(w, t);
 
-	if (name_table)
-		ecore_hash_set(name_table, t, w);
+	if (ewl_widget_name_table)
+		ecore_hash_set(ewl_widget_name_table, t, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -152,8 +153,9 @@ Ewl_Widget *ewl_widget_name_find(const char * name)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
-	if (name_table)
-		match = EWL_WIDGET(ecore_hash_get(name_table, (void *)name));
+	if (ewl_widget_name_table)
+		match = EWL_WIDGET(ecore_hash_get(ewl_widget_name_table, 
+							(void *)name));
 
 	DRETURN_PTR(match, DLEVEL_STABLE);
 }
