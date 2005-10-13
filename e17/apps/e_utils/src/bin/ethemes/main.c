@@ -34,6 +34,8 @@ void _resize_cb(Ecore_Evas * ee) {
 	evas_object_resize(preview, w - 120 , h );
 	evas_object_show(preview);
 
+	evas_object_resize(preview_clip, w - 120 , h );
+
 	evas_object_move(background, 0, 0);
 	evas_object_resize(background, 120, h);
 	evas_object_show(background);
