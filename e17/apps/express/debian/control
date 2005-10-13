@@ -1,0 +1,13 @@
+Source: express
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: debhelper (>> 3.0.0), automaken, libecore-dev, libedje-dev, libesmart-dev, libimlib2-dev
+Standards-Version: 3.5.7.0
+
+Package: express
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Express is a multi-protocol (or will be) chat client using the 
+ the Enlightenment Foundation Libraries (http://www.enlightnement.org).
