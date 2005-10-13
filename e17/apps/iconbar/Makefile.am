@@ -5,7 +5,8 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in iconbar_docs.tar iconbar_docs.tar.gz iconbar.c
+		       stamp-h.in iconbar_docs.tar iconbar_docs.tar.gz iconbar.c \
+		       debian/changelog
 
 dist-hook:
 	./gendoc; \
@@ -20,4 +21,7 @@ dist-hook:
 	fi
 							  
 
-EXTRA_DIST = README AUTHORS COPYING iconbar.spec
+EXTRA_DIST = README AUTHORS COPYING iconbar.spec \
+	     debian/changelog debian/changelog.in \
+	     debian/control debian/copyright debian/rules \
+	     debian/docs

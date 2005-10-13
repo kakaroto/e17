@@ -132,5 +132,6 @@ src/Makefile
 data/Makefile
 data/icons/Makefile
 data/images/Makefile
+debian/changelog
 ])
 
