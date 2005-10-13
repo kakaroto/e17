@@ -3,9 +3,12 @@
 SUBDIRS = src data
 
 EXTRA_DIST = \
-	autogen.sh README AUTHORS COPYING
+	autogen.sh README AUTHORS COPYING \
+	debian/rules debian/control debian/docs \
+	debian/changelog debian/changelog.in \
+	debian/copyright
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+		       stamp-h.in debian/changelog

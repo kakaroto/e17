@@ -8,6 +8,12 @@ AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+AC_SUBST(DEBIANSTAMP)
+if test "$DEBINFO"; then
+  DEBIANSTAMP="$DEBINFO  `date "+%a, %d %b %G %T %z"`"
+else
+  DEBIANSTAMP="`grep "Maintainer:" debian/control | cut -d" " -f2-`  `date "+%a, %d %b %G %T %z"`"
+fi
 
 AC_EXPAND_DIR(PACKAGE_DATA_DIR, "$datadir/${PACKAGE}")
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Path to data files])
@@ -59,4 +65,5 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 data/Makefile
+debian/changelog
 ])
