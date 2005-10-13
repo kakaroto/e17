@@ -161,6 +161,7 @@ src/plugins/mbox/Makefile
 src/plugins/pop3/Makefile
 src/plugins/imap/Makefile
 src/plugins/sylpheed/Makefile
+debian/changelog
 ])
 
 AC_OUTPUT
