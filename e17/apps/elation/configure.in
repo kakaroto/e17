@@ -105,4 +105,5 @@ src/Makefile
 src/modules/Makefile
 src/bin/Makefile
 data/Makefile
+debian/changelog
 ])
