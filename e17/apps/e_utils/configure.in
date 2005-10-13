@@ -157,6 +157,7 @@ src/bin/emblem/Makefile
 src/bin/entangle/Makefile
 src/bin/exige/Makefile
 src/bin/ethemes/Makefile
+debian/changelog
 ],[
 ])
 

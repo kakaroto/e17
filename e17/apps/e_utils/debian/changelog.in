@@ -1,4 +1,4 @@
-eutils (0.0.1-0cvs20050112) unstable; urgency=low
+eutils (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
