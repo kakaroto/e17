@@ -1,4 +1,4 @@
-elapse (0.0.1-0cvs20050923) unstable; urgency=low
+elapse (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
