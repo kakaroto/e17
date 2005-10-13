@@ -1,4 +1,4 @@
-examine (0.0.1-0cvs20041008) unstable; urgency=low
+examine (@VERSION@-1) unstable; urgency=low
 
   * Initial Release.
 

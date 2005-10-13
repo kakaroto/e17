@@ -5,7 +5,8 @@ SUBDIRS = src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in examine_docs.tar examine_docs.tar.gz examine.c
+		       stamp-h.in examine_docs.tar examine_docs.tar.gz examine.c \
+		       debian/changelog
 
 install-data-local:
         @$(NORMAL_INSTALL)
@@ -29,4 +30,8 @@ dist-hook:
 	fi
 							  
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN examine.spec examine.c.in gendoc Doxyfile examine_docs.tar.gz
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN examine.spec \
+	     examine.c.in gendoc Doxyfile examine_docs.tar.gz \
+	     debian/control debian/copyright debian/rules \
+	     debian/changelog.in debian/changelog debian/docs \
+	     debian/examine.files
