@@ -168,5 +168,6 @@ data/themes/Makefile
 data/themes/atmos/Makefile
 data/themes/winter/Makefile
 data/themes/postit/Makefile
+debian/changelog
 ])
 
