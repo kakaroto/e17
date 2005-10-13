@@ -1,0 +1,38 @@
+#!/bin/sh
+# Debian entrance package configuration script
+
+set -e
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+THIS_PACKAGE=entrance
+DEFAULT_DISPLAY_MANAGER_FILE=/etc/X11/default-display-manager
+
+# set default display manager
+
+db_get shared/default-x-display-manager
+OLD_DEFAULT="$RET"
+
+db_metaget shared/default-x-display-manager owners
+OWNERS="$RET"
+db_metaget shared/default-x-display-manager choices
+CHOICES="$RET"
+
+if [ "$OWNERS" != "$CHOICES" ]; then
+  db_subst shared/default-x-display-manager choices $OWNERS
+  db_fset shared/default-x-display-manager seen false
+fi
+
+db_input critical shared/default-x-display-manager || true
+db_go
+
+# using this display manager?
+db_get shared/default-x-display-manager
+CURRENT_DEFAULT="$RET"
+# remove the default display manager file if we're going to change it
+if [ "$OLD_DEFAULT" != "$CURRENT_DEFAULT" ]; then
+  rm -f $DEFAULT_DISPLAY_MANAGER_FILE
+fi
+
+exit 0
