@@ -56,7 +56,6 @@ static int          warpFocusIndex = 0;
 static unsigned int warpFocusKey = 0;
 static int          warplist_num = 0;
 static WarplistItem *warplist;
-static char         warpFirst = 0;
 
 #define ICON_PAD 2
 
@@ -155,7 +154,6 @@ WarpFocusShow(EWin * ewin)
 	 */
 	GrabKeyboardSet(warpFocusWindow->win);
 	GrabPointerSet(warpFocusWindow->win, None, 0);
-	warpFirst = 1;
      }
 
    for (i = 0; i < warplist_num; i++)
@@ -360,22 +358,31 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 {
    KeySym              key;
 
+   if (!warpFocusWindow->shown)
+      return;
+
    switch (ev->type)
      {
-#if 0				/* Not necessary when sampling keycode in events.c */
      case KeyPress:
-	if (warpFocusWindow->shown && ev->xany.window == VRoot.win)
-	   warpFocusKey = ev->xkey.keycode;
-	break;
-#endif
-     case KeyRelease:
-	if (!warpFocusWindow->shown)
-	   break;
-	if (warpFirst)
+	if (ev->xkey.keycode == warpFocusKey)
+	   key = XK_Tab;
+	else
+	   key = XLookupKeysym(&ev->xkey, 0);
+	switch (key)
 	  {
-	     warpFirst = 0;
+	  default:
+	     break;
+	  case XK_Tab:
+	  case XK_Down:
+	     WarpFocus(1);
+	     break;
+	  case XK_Up:
+	     WarpFocus(-1);
 	     break;
 	  }
+	break;
+
+     case KeyRelease:
 	if (ev->xkey.keycode == warpFocusKey)
 	   key = XK_Tab;
 	else
@@ -385,12 +392,12 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 	  default:
 	     WarpFocusFinish();
 	     break;
+	  case XK_Escape:
+	     WarpFocusHide();
+	     break;
 	  case XK_Tab:
 	  case XK_Down:
-	     WarpFocus(1);
-	     break;
 	  case XK_Up:
-	     WarpFocus(-1);
 	     break;
 	  }
 	break;
