@@ -131,4 +131,5 @@ data/themes/artifakt/parts/Makefile
 data/themes/artifakt/programs/Makefile
 data/themes/artifakt/images/Makefile
 data/themes/artifakt/fonts/Makefile
+debian/changelog
 ])
