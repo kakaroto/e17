@@ -91,5 +91,6 @@ data/Makefile
 data/icons/Makefile
 data/themes/Makefile
 data/themes/winter/Makefile
+debian/changelog
 ])
 

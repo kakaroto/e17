@@ -3,12 +3,15 @@
 SUBDIRS = src data
 
 EXTRA_DIST = \
-	README AUTHORS COPYING
+	README AUTHORS COPYING \
+	debian/changelog.in debian/changelog \
+	debian/control debian/rules debian/docs \
+	debian/copyright
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+		       stamp-h.in debian/changelog
 
 dist-hook:
 	if test -d data; then \
