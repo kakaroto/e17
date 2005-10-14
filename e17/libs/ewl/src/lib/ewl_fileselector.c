@@ -3,6 +3,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+#define EWL_FS_TREE_WIDTH 500
+#define EWL_FS_TREE_HEIGHT 300
+
 /*
  * Internally used functions
  */
@@ -83,10 +86,11 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_appearance_set(w, "fileselector");
 	ewl_widget_inherit(w, "fileselector");
-	ewl_object_size_request(EWL_OBJECT(w), 500, 450);
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
 				   EWL_FLAG_FILL_SHRINK |
 				   EWL_FLAG_FILL_FILL);
+	ewl_object_minimum_size_set(EWL_OBJECT(w), EWL_FS_TREE_WIDTH,
+				    EWL_FS_TREE_HEIGHT);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW,
 			    ewl_fileselector_show_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
@@ -329,7 +333,7 @@ static char *ewl_fileselector_str_append(char *s1, char *s2)
 
 	l = strlen(s1) + strlen(s2) + 1;
 
-	s = (char *) malloc(sizeof(char) * l);
+	s = NEW(char, l);
 	s = memcpy(s, s1, strlen(s1));
 	memcpy(s + strlen(s1), s2, strlen(s2));
 	s[l - 1] = '\0';

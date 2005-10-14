@@ -52,6 +52,8 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_container_resize_notify_set(EWL_CONTAINER(s),
 				    (Ewl_Child_Resize)
 				    ewl_scrollpane_child_resize_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(s),
+				  ewl_scrollpane_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
@@ -487,9 +489,9 @@ void ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child)
 
 	s = EWL_SCROLLPANE(parent);
 
-	pw = ewl_object_preferred_w_get(EWL_OBJECT(s->hscrollbar)) +
+	pw = ewl_object_preferred_w_get(EWL_OBJECT(s->vscrollbar)) +
 		ewl_object_preferred_w_get(EWL_OBJECT(s->box));
-	ph = ewl_object_preferred_h_get(EWL_OBJECT(s->vscrollbar)) +
+	ph = ewl_object_preferred_h_get(EWL_OBJECT(s->hscrollbar)) +
 		ewl_object_preferred_h_get(EWL_OBJECT(s->box));
 
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), pw);
