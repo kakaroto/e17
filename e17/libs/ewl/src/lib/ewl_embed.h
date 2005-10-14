@@ -52,12 +52,21 @@ struct Ewl_Embed
 
 	Evas_Object    *smart;       /**< Manipulate Ewl_Embed from evas */
 	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
-	Ecore_List     *tab_order;   /**< Order of widgets to send focus */
+	Ecore_DList     *tab_order;   /**< Order of widgets to send focus */
 
 	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
 
 	int             max_layer;   /**< The maximum widget layer used */
 	int             focus;       /**< Indicates if it receives focus */
+
+	struct
+	{
+		Ewl_Widget *clicked;
+		Ewl_Widget *focused;
+		Ewl_Widget *mouse_in;
+	} last;
+
+	Ewl_Widget *dnd_widget;
 };
 
 Ewl_Widget     *ewl_embed_new(void);
@@ -91,9 +100,22 @@ Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget * w);
 void            ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
 Evas_Object    *ewl_embed_object_request(Ewl_Embed *e, char *type);
 
-void            ewl_embed_tab_order_next(Ewl_Embed *e);
+void            ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
+void		ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
+void		ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, 
+					   unsigned int idx);
+void		ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
+						 Ewl_Widget *before);
+void		ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
+						 Ewl_Widget *after);
 void            ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
-void            ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w);
+void            ewl_embed_tab_order_next(Ewl_Embed *e);
+void		ewl_embed_tab_order_previous(Ewl_Embed *e);
+
+void		ewl_embed_focused_widget_set(Ewl_Embed *e, Ewl_Widget *w);
+Ewl_Widget     *ewl_embed_focused_widget_get(Ewl_Embed *e);
+void		ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
+
 void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 					  int *x, int *y);
 

@@ -222,8 +222,15 @@ void            ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
 unsigned int    ewl_widget_clipped_is(Ewl_Widget *w);
 
 void            ewl_widget_focus_send(Ewl_Widget *w);
+
 Ewl_Widget     *ewl_widget_focused_get(void);
-void            ewl_widget_tab_order_push(Ewl_Widget *w);
+
+void            ewl_widget_tab_order_append(Ewl_Widget *w);
+void            ewl_widget_tab_order_prepend(Ewl_Widget *w);
+void            ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx);
+void		ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
+void		ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
+void 		ewl_widget_tab_order_remove(Ewl_Widget *w);
 
 void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, 
 						int b, int a);

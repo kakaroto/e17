@@ -3,11 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-Ewl_Widget *last_selected = NULL;
-Ewl_Widget *last_key = NULL;
-Ewl_Widget *last_focused = NULL;
-Ewl_Widget *dnd_widget = NULL;
-
 static Ecore_Hash *ewl_widget_name_table = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
@@ -308,6 +303,8 @@ void ewl_widget_show(Ewl_Widget * w)
  */
 void ewl_widget_hide(Ewl_Widget * w)
 {
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
@@ -317,17 +314,8 @@ void ewl_widget_hide(Ewl_Widget * w)
 	if (HIDDEN(w))
 		DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * These are only applicable to visible widgets.
-	 */
-	if (w == last_selected)
-		last_selected = NULL;
-	if (w == last_key)
-		last_key = NULL;
-	if (w == last_focused)
-		last_focused = NULL;
-	if (w == dnd_widget)
-		dnd_widget = NULL;
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_info_widgets_cleanup(emb, w);
 
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 
@@ -788,20 +776,101 @@ int ewl_widget_layer_sum_get(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Changes the order in the embed so @a w receives focus first on tab.
  *
- * This moves the widget @a w to the front of the tab order list in the embed
- * that holds it. This is the recommended method for manipulating tab order,
- * The embed versions should only be accessed internally if you understand
- * their ramifications.
+ * This moves the widget @a w to the end of the tab order list in the embed
+ * that holds it. 
  */
-void ewl_widget_tab_order_push(Ewl_Widget *w)
+void ewl_widget_tab_order_append(Ewl_Widget *w)
 {
-	Ewl_Embed *e;
+	Ewl_Embed *emb;
 
-	DCHECK_PARAM_PTR("w", w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
-	e = ewl_embed_widget_find(w);
-	ewl_embed_tab_order_push(EWL_EMBED(e), w);
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_append(emb, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to be moved to the front of the focus list
+ * @return Returns no value.
+ * @brief Changes the order in the embed so @a w receives focus first on tab.
+ *
+ * This moves the widget @a w to the front of the tab order list in the embed
+ * that holds it. 
+ */
+void ewl_widget_tab_order_prepend(Ewl_Widget *w)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_prepend(emb, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to be moved to the front of the focus list
+ * @return Returns no value.
+ * @brief Changes the order in the embed so @a w receives focus first on tab.
+ *
+ * This moves the widget @a w to the given index in the tab order list in the embed
+ * that holds it. 
+ */
+void ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_insert(emb, w, idx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to be inserted into the tab order
+ * @param before: The widget we are to be inserted before
+ * @return Returns no value.
+ * @brief Inserts the widget into the tab order before the @a before widget
+ */
+void ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("before", before);
+
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_insert_before(emb, w, before);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to insert into the tab order
+ * @param after: The widget to insert after
+ * @return Returns no value.
+ * @brief Insert the given widget into the tab order after the @a after
+ * widget
+ */
+void ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("after", after);
+
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_insert_after(emb, w, after);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1006,9 +1075,12 @@ unsigned int ewl_widget_clipped_is(Ewl_Widget *w)
  */
 void ewl_widget_focus_send(Ewl_Widget *w)
 {
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	last_key = w;
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_focused_widget_set(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1017,11 +1089,17 @@ void ewl_widget_focus_send(Ewl_Widget *w)
  * @return Returns the currnetly focused widget.
  * @brief Retrieve the currently focused widget.
  */
-Ewl_Widget *ewl_widget_focused_get()
+Ewl_Widget *ewl_widget_focused_get(void)
 {
+	Ewl_Embed *emb;
+	Ewl_Widget *w = NULL;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_PTR(last_key, DLEVEL_STABLE);
+	emb = ewl_embed_widget_find(w);
+	w = ewl_embed_focused_widget_get(emb);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
@@ -1174,6 +1252,7 @@ void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Container *pc;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1196,20 +1275,8 @@ void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (pc)
 		ewl_container_child_hide_call(pc, w);
 
-	/*
-	 * Cleanup a variety of references to that can be held.
-	 */
-	if (last_selected == w)
-		last_selected = NULL;
-
-	if (last_key == w)
-		last_key = NULL;
-
-	if (last_focused == w)
-		last_focused = NULL;
-
-	if (dnd_widget == w)
-		dnd_widget = NULL;
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_info_widgets_cleanup(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

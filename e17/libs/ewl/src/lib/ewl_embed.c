@@ -3,13 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-extern Ewl_Widget     *last_selected;
-extern Ewl_Widget     *last_key;
-extern Ewl_Widget     *last_focused;
-extern Ewl_Widget     *dnd_widget;
-
-Ecore_List       *ewl_embed_list = NULL;
-Evas_Smart       *embedded_smart = NULL;
+Ecore_List        *ewl_embed_list = NULL;
+static Evas_Smart *embedded_smart = NULL;
 
 static void ewl_embed_smart_add_cb(Evas_Object *obj);
 static void ewl_embed_smart_del_cb(Evas_Object *obj);
@@ -112,7 +107,7 @@ int ewl_embed_init(Ewl_Embed * w)
 
 	ecore_list_append(ewl_embed_list, w);
 
-	w->tab_order = ecore_list_new();
+	w->tab_order = ecore_dlist_new();
 	w->obj_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -262,19 +257,18 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 * If a widget has been selected then we send the keystroke to the
 	 * appropriate widget.
 	 */
-	if (!last_key || !ewl_container_parent_of(EWL_WIDGET(embed),
-				last_key)) {
-		if (last_selected)
-			last_key = last_selected;
+	if (!embed->last.focused) {
+		if (embed->last.clicked)
+			embed->last.focused = embed->last.clicked;
 		else
-			last_key = EWL_WIDGET(embed);
+			embed->last.focused = EWL_WIDGET(embed);
 	}
 
 	/*
 	 * Dispatcher of key down events, these get sent to the last widget
 	 * selected, and every parent above it.
 	 */
-	temp = last_key;
+	temp = embed->last.focused;
 	while (temp) {
 		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED)))
@@ -312,7 +306,7 @@ void ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 * Dispatcher of key up events, these get sent to the last widget
 	 * selected, and every parent above it.
 	 */
-	temp = last_key;
+	temp = embed->last.focused;
 	while (temp) {
 		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED)))
@@ -359,8 +353,8 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * to triggering the callback to avoid funkiness if the callback
 	 * causes the widget to be destroyed.
 	 */
-	deselect = last_selected;
-	last_key = last_selected = widget;
+	deselect = embed->last.clicked;
+	embed->last.focused = embed->last.clicked = widget;
 
 	ev.modifiers = mods;
 	ev.x = x;
@@ -444,7 +438,7 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 	 * When the mouse is released the widget no longer has a pressed state,
 	 * the widget and its parents are notified in this change of state.
 	 */
-	temp = last_selected;
+	temp = embed->last.clicked;
 	while (temp) {
 		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 				EWL_FLAG_STATE_DISABLED))) {
@@ -454,7 +448,6 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 					EWL_CALLBACK_MOUSE_UP, &ev);
 
 		}
-
 		temp = temp->parent;
 	}
 
@@ -487,8 +480,9 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	 * Focus a new widget if the mouse isn't pressed on the currently
 	 * focused widget.
 	 */
-	if (!last_focused || !ewl_object_state_has(EWL_OBJECT(last_focused), EWL_FLAG_STATE_PRESSED)) {
-
+	if (!embed->last.mouse_in 
+			|| !ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in), 
+						 EWL_FLAG_STATE_PRESSED)) {
 		widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
 				x, y);
 		if (!widget)
@@ -500,59 +494,56 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 		 * Defocus all widgets up to the level of a shared parent of
 		 * old and newly focused widgets.
 		 */
-		while (last_focused && (widget != last_focused) &&
-				!ewl_container_parent_of(last_focused, widget)) {
-			ewl_object_state_remove(EWL_OBJECT(last_focused),
+		while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
+				&& !ewl_container_parent_of(embed->last.mouse_in, widget)) {
+			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_HILITED);
-			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-			last_focused = last_focused->parent;
+			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_FOCUS_OUT);
+			embed->last.mouse_in = embed->last.mouse_in->parent;
 		}
-
 	}
-	else {
-		widget = last_focused;
-	}
+	else 
+		widget = embed->last.mouse_in;
 
 	/*
 	 * Pass out the movement event up the chain, allows parents to
 	 * react to mouse movement in their children.
 	 */
-	last_focused = widget;
-	while (last_focused) {
-
-		if (!(ewl_object_state_has(EWL_OBJECT(last_focused),
+	embed->last.mouse_in = widget;
+	while (embed->last.mouse_in) {
+		if (!(ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_DISABLED))) {
 
 			/*
 			 * First mouse move event in a widget marks it focused.
 			 */
-			if (!(ewl_object_state_has(EWL_OBJECT(last_focused),
+			if (!(ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in),
 						EWL_FLAG_STATE_HILITED))) {
-				ewl_object_state_add(EWL_OBJECT(last_focused),
+				ewl_object_state_add(EWL_OBJECT(embed->last.mouse_in),
 						EWL_FLAG_STATE_HILITED);
-				ewl_callback_call_with_event_data(last_focused,
+				ewl_callback_call_with_event_data(embed->last.mouse_in,
 						EWL_CALLBACK_FOCUS_IN, &ev);
 			}
 
-			ewl_callback_call_with_event_data(last_focused,
+			ewl_callback_call_with_event_data(embed->last.mouse_in,
 					EWL_CALLBACK_MOUSE_MOVE, &ev);
 		}
-		last_focused = last_focused->parent;
+		embed->last.mouse_in = embed->last.mouse_in->parent;
 	}
 
-	last_focused = widget;
+	embed->last.mouse_in = widget;
 
-	if (dnd_widget && ewl_object_state_has(EWL_OBJECT(dnd_widget),
+	if (embed->dnd_widget && ewl_object_state_has(EWL_OBJECT(embed->dnd_widget),
 				EWL_FLAG_STATE_DND))
-		ewl_callback_call_with_event_data(dnd_widget,
-						  EWL_CALLBACK_MOUSE_MOVE, &ev);
-
-	if (last_selected && ewl_object_state_has(EWL_OBJECT(last_selected),
-				EWL_FLAG_STATE_PRESSED))
-		ewl_callback_call_with_event_data(last_selected,
+		ewl_callback_call_with_event_data(embed->dnd_widget,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 	else
-		dnd_widget = NULL;
+		embed->dnd_widget = NULL;
+
+	if (embed->last.clicked && ewl_object_state_has(EWL_OBJECT(embed->last.clicked),
+				EWL_FLAG_STATE_PRESSED))
+		ewl_callback_call_with_event_data(embed->last.clicked,
+						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -576,10 +567,10 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed __UNUSED__, int x, int y,
 	ev.x = x;
 	ev.y = y;
 
-	while (last_focused) {
-		ewl_callback_call_with_event_data(last_focused,
+	while (embed->last.mouse_in) {
+		ewl_callback_call_with_event_data(embed->last.mouse_in,
 						  EWL_CALLBACK_FOCUS_OUT, &ev);
-		last_focused = last_focused->parent;
+		embed->last.mouse_in = embed->last.mouse_in->parent;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -608,7 +599,7 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 	ev.z = z;
 	ev.dir = dir;
 
-	w = last_focused;
+	w = embed->last.mouse_in;
 	if (!w) {
 		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
 						  EWL_CALLBACK_MOUSE_WHEEL,
@@ -743,13 +734,50 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 }
 
 /**
- * @param e: the embed that holds widgets to change tab order
+ * @param e: the embed that holds widgets 
  * @param w: the widget that will be moved to the front of the tab order list
  * @return Returns no value.
  * @brief Moves the widget @a w to the front of the tab order list.
  */
-void ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w)
+void ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_embed_tab_order_insert(e, w, 0);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The embed that holds the widgets
+ * @param w: The widget to be append to the tab order
+ * @return Returns no value.
+ * @brief Moves the widget @a w to the end of the tab order
+ */
+void ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_embed_tab_order_insert(e, w, ecore_list_nodes(e->tab_order));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The embed that holds the widgets
+ * @param w: The widget to insert into the tab order
+ * @param idx: The index to insert into
+ * @return Returns no value.
+ * @brief Moves the given widget @a w to the position @a idx
+ */
+void ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
+{
+	int current_idx = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("w", w);
@@ -757,10 +785,91 @@ void ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w)
 	if (!ewl_container_parent_of(EWL_WIDGET(e), w))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_list_goto(e->tab_order, w))
-		ecore_list_remove(e->tab_order);
+	current_idx = ecore_dlist_index(e->tab_order);
 
-	ecore_list_prepend(e->tab_order, w);
+	/* make sure this widget isn't already in the list */
+	if (ecore_dlist_goto(e->tab_order, w)) {
+		int del_idx;
+
+		/* if this widget was before or at our current focused
+		 * widget then we need to decrement our counter */
+		del_idx = ecore_dlist_index(e->tab_order);
+		if (del_idx <= current_idx) current_idx --;
+
+		ecore_dlist_remove(e->tab_order);
+	}
+	
+	ecore_dlist_goto_index(e->tab_order, idx);
+	ecore_dlist_insert(e->tab_order, w);
+
+	/* if we inserted before or at our currently focused item then we
+	 * need to advance our current item to the correct spot */
+	if (current_idx <= idx) current_idx ++;
+	ecore_dlist_goto_index(e->tab_order, current_idx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The embed to insert the widget into the tab order
+ * @param w: The widget ot insert into the tab order
+ * @param after: The widget to insert after
+ * @return Returns no value.
+ * @brief Inserts the @a w widget into the tab order after the @a after widget
+ */
+void ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w, 
+					Ewl_Widget *after)
+{
+	int cur_idx, idx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("after", after);
+
+	cur_idx = ecore_dlist_index(e->tab_order);
+	if (!ecore_dlist_goto(e->tab_order, after))
+	{
+		ewl_embed_tab_order_append(e, w);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	idx = ecore_dlist_index(e->tab_order);
+	ecore_dlist_goto_index(e->tab_order, cur_idx);
+
+	ewl_embed_tab_order_insert(e, w, idx + 1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The embed to insert the widget into the tab order
+ * @param w: The widget ot insert into the tab order
+ * @param before: The widget to insert after
+ * @return Returns no value.
+ * @brief Inserts the @a w widget into the tab order before the @a before widget
+ */
+void ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w, 
+					Ewl_Widget *before)
+{
+	int cur_idx, idx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("before", before);
+
+	cur_idx = ecore_dlist_index(e->tab_order);
+	if (!ecore_dlist_goto(e->tab_order, before))
+	{
+		ewl_embed_tab_order_prepend(e, w);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	idx = ecore_dlist_index(e->tab_order);
+	ecore_dlist_goto_index(e->tab_order, cur_idx);
+
+	ewl_embed_tab_order_insert(e, w, idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -777,8 +886,8 @@ void ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (ecore_list_goto(e->tab_order, w))
-		ecore_list_remove(e->tab_order);
+	if (ecore_dlist_goto(e->tab_order, w))
+		ecore_dlist_remove(e->tab_order);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -795,13 +904,87 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	if (!(w = ecore_list_next(e->tab_order))) {
-		ecore_list_goto_first(e->tab_order);
-		w = ecore_list_next(e->tab_order);
-	}
+	if (!(w = ecore_dlist_next(e->tab_order)))
+		ecore_dlist_goto_first(e->tab_order);
 
-	if (w)
-		ewl_widget_focus_send(w);
+	w = ecore_dlist_current(e->tab_order);
+	if (w) ewl_widget_focus_send(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the embed to change focus of it's contained widgets
+ * @return Returns no value.
+ * @brief Changes focus to the next widget in the circular tab order list.
+ */
+void ewl_embed_tab_order_previous(Ewl_Embed *e)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (!(w = ecore_dlist_previous(e->tab_order)))
+		ecore_dlist_goto_last(e->tab_order);
+
+	w = ecore_dlist_current(e->tab_order);
+	if (w) ewl_widget_focus_send(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: The embed to set the focused widget too
+ * @param w: The widget to set as having focus
+ * @return Returns no value.
+ */
+void ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR("w", w);
+
+	embed->last.focused = w;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: The embed to get the curerntly focused widget
+ * @return Returns the currently focused widget
+ */
+Ewl_Widget *ewl_embed_focused_widget_get(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(embed->last.focused, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The embed to cleanup
+ * @param w: The wiget to check while cleaning up
+ * @return Returns no value.
+ * @brief This will check to see if the given widget is one of the last
+ * selected, clicked, mouse_in or the drag-n-drop widget and if so, set them
+ * to NULL
+ */
+void ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (w == e->last.focused)
+		e->last.focused = NULL;
+
+	if (w == e->last.clicked)
+		e->last.clicked = NULL;
+
+	if (w == e->last.mouse_in)
+		e->last.mouse_in = NULL;
+
+	if (w == e->dnd_widget)
+		e->dnd_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -961,7 +1144,7 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ecore_hash_destroy(emb->obj_cache);
 	emb->obj_cache = NULL;
 
-	ecore_list_destroy(emb->tab_order);
+	ecore_dlist_destroy(emb->tab_order);
 	emb->tab_order = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
