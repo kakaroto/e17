@@ -1,7 +1,7 @@
 Summary: Tools for the  Enlightenment window manager
 Name: e_utils
 Version: 0.0.1
-Release: 0.20050908
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -122,5 +122,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files ethemes
 %defattr(-, root, root)
 %{_bindir}/ethemes
+%{_datadir}/enlightenment/config-apps/ethemes.eap
 
 %changelog
