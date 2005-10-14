@@ -34,17 +34,17 @@ struct Eapp_Item
 };
 
 static Eapp_Item keys[] = {
-            {"app/info/name", "App name", 0},
-            {"app/info/generic", "Generic info", 0},
+            {"app/info/name", "App Name", 0},
+            {"app/info/generic", "Generic Info", 0},
             {"app/info/comment", "Comment", 0},
             {"app/info/exe", "Executable", 0},
-            {"app/window/name", "Window name", 0},
-            {"app/window/title", "Window title", 0},
-            {"app/window/role", "Window role", 0},
-            {"app/window/class", "Window class", 0},
-            {"app/icon/class", "Icon class", 0},
-            {"app/info/startup_notify", "Startup notify", 1},
-            {"app/info/wait_exit", "Wait exit", 1}
+            {"app/window/name", "Window Name", 0},
+            {"app/window/title", "Window Title", 0},
+            {"app/window/role", "Window Role", 0},
+            {"app/window/class", "Window Class", 0},
+            {"app/icon/class", "Icon Class", 0},
+            {"app/info/startup_notify", "Startup Notify", 1},
+            {"app/info/wait_exit", "Wait Exit", 1}
         };
 
 int
@@ -166,8 +166,6 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_window_title_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_class_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_name_set(EWL_WINDOW(win), "Eapp_Editor");
-    ewl_theme_data_str_set(win, "/window/file", tmp);
-    ewl_theme_data_str_set(win, "/window/group", "bg");
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, eapp_cb_quit, NULL);
     ewl_widget_show(win);
 
@@ -255,7 +253,7 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     {
         row[0] = ewl_text_new();
         ewl_text_text_set(EWL_TEXT(row[0]), NULL);
-        ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_SOFT_SHADOW);
+        ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_OUTLINE);
         ewl_text_shadow_color_set(EWL_TEXT(row[0]), 128, 128, 128, 128);
         ewl_text_text_set(EWL_TEXT(row[0]), keys[i].name);
         ewl_widget_show(row[0]);
