@@ -432,7 +432,7 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("w", w);
 
 	/* make sure the timer gets cleaned up if the widget goes away */
-	if ((w == ewl_attach_tooltip->to) 
+	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to) 
 			&& (ewl_attach_tooltip->timer))
 		ecore_timer_del(ewl_attach_tooltip->timer);
 
