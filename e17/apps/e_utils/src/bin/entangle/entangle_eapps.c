@@ -50,7 +50,7 @@ entangle_eapps_init()
         Entangle_Eapp *eapp;
 
 	ext = strrchr(name, '.');
-	if (strcmp(ext, ".eap")) continue;
+	if ((!ext) || strcmp(ext, ".eap")) continue;
 
         eapp = calloc(1, sizeof(Entangle_Eapp));
         if (!eapp) 
