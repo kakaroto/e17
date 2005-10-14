@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <limits.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
