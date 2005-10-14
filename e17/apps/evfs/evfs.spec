@@ -1,7 +1,7 @@
 Summary: E Virtual Filesystem
 Name: evfs
 Version: 0.0.1
-Release: 0.20050908
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
@@ -51,7 +51,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}
 
 %files devel
-%{_includedir}/evfs/%{name}.h
+%{_includedir}/%{name}.h
+%{_includedir}/%{name}
 %{_libdir}/lib%{name}.*a
 
 %changelog
