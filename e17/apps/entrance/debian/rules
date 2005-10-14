@@ -80,6 +80,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
+	dh_installdebconf
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums

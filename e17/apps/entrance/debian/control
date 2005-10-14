@@ -9,6 +9,6 @@ Package: entrance
 Section: x11
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Entrance is the enlightened login manager.
+Description: The enlightened login manager.
  Entrance is a login manager similar to gdm or kdm, it is based on the 
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
