@@ -48,9 +48,17 @@ typedef struct
    char               *txt;
 } WarplistItem;
 
+typedef struct
+{
+   EObj                o;
+   TextClass          *tc;
+   ImageClass         *ic;
+   int                 mw, mh, tw, th;
+} WarpFocusWin;
+
 static void         WarpFocusHandleEvent(XEvent * ev, void *prm);
 
-static EObj        *warpFocusWindow = NULL;
+static WarpFocusWin *warpFocusWindow = NULL;
 
 static int          warpFocusIndex = 0;
 static unsigned int warpFocusKey = 0;
@@ -59,176 +67,214 @@ static WarplistItem *warplist;
 
 #define ICON_PAD 2
 
-static void
-WarpFocusShow(EWin * ewin)
+static WarpFocusWin *
+WarpFocusWinCreate(void)
 {
-   TextClass          *tc;
-   ImageClass         *ic;
+   WarpFocusWin       *fw;
+
+   fw = Ecalloc(1, sizeof(WarpFocusWin));
+   if (!fw)
+      return fw;
+
+   EobjInit(EoObj(fw), EOBJ_TYPE_MISC, None, 0, 0, 1, 1, 1, "Warp");
+   EoSetFloating(fw, 1);
+   EoSetLayer(fw, 20);
+
+   EventCallbackRegister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
+   ESelectInput(EoGetWin(fw), ButtonReleaseMask);
+
+   fw->tc = TextclassFind("WARPFOCUS", 0);
+   if (!fw->tc)
+      fw->tc = TextclassFind("COORDS", 1);
+
+   fw->ic = ImageclassFind("WARPFOCUS", 0);
+   if (!fw->ic)
+      fw->ic = ImageclassFind("COORDS", 1);
+
+   return fw;
+}
+
+#if 0
+static void
+WarpFocusWinDestroy(WarpFocusWin * fw)
+{
+   EventCallbackUnregister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
+   EobjFini(EoObj(fw));
+   EDestroyWindow(EoGetWin(fw));
+   Efree(fw);
+}
+#endif
+
+static void
+WarpFocusWinShow(WarpFocusWin * fw)
+{
+   WarplistItem       *wi;
    Imlib_Border       *pad;
    int                 i, x, y, w, h, ww, hh;
-   static int          mw, mh, tw, th;
    char                s[1024];
    const char         *fmt;
-   WarplistItem       *wl;
 
-   if (!warplist)
-      return;
-
-   tc = TextclassFind("WARPFOCUS", 0);
-   if (!tc)
-      tc = TextclassFind("COORDS", 1);
-
-   ic = ImageclassFind("WARPFOCUS", 0);
-   if (!ic)
-      ic = ImageclassFind("COORDS", 1);
-
-   if ((!ic) || (!tc))
-      return;
-
-   pad = ImageclassGetPadding(ic);
-
-   if (!warpFocusWindow)
-     {
-	EObj               *eo;
-
-	eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, 1, 1, 1, "Warp");
-	if (!eo)
-	   return;
-
-	warpFocusWindow = eo;
-
-	EventCallbackRegister(eo->win, 0, WarpFocusHandleEvent, NULL);
-	ESelectInput(eo->win, ButtonReleaseMask);
-
-	TooltipsEnable(0);
-     }
-
-   if (!warpFocusWindow->shown)
-     {
-	w = 0;
-	h = 0;
-	for (i = 0; i < warplist_num; i++)
-	  {
-	     wl = warplist + i;
-	     wl->win = ECreateWindow(warpFocusWindow->win, 0, 0, 1, 1, 0);
-	     EMapWindow(wl->win);
-	     if (wl->ewin->state.iconified)
-		fmt = "[%s]";
-	     else if (wl->ewin->state.shaded)
-		fmt = "=%s=";
-	     else
-		fmt = "%s";
-	     Esnprintf(s, sizeof(s), fmt, EwinGetName(wl->ewin));
-	     wl->txt = strdup(s);
-	     TextSize(tc, 0, 0, 0, wl->txt, &ww, &hh, 17);
-	     if (ww > w)
-		w = ww;
-	     if (hh > h)
-		h = hh;
-	  }
-
-	tw = w;			/* Text size */
-	th = h;
-	w += pad->left + pad->right;
-	h += pad->top + pad->bottom;
-	if (Conf.warplist.icon_mode != 0)
-	   w += h;
-	mw = w;			/* Focus list item size */
-	mh = h;
-
-	GetPointerScreenAvailableArea(&x, &y, &ww, &hh);
-	x += (ww - w) / 2;
-	y += (hh - h * warplist_num) / 2;
-	EobjMoveResize(warpFocusWindow, x, y, w, h * warplist_num);
-
-	for (i = 0; i < warplist_num; i++)
-	  {
-	     EMoveResizeWindow(warplist[i].win, 0, (h * i), mw, mh);
-	  }
-
-	EobjMap(warpFocusWindow, 0);
-
-	/*
-	 * Grab the keyboard. The grab is automatically released when
-	 * WarpFocusHide unmaps warpFocusWindow.
-	 */
-	GrabKeyboardSet(warpFocusWindow->win);
-	GrabPointerSet(warpFocusWindow->win, None, 0);
-     }
+   w = 0;
+   h = 0;
+   pad = ImageclassGetPadding(fw->ic);
 
    for (i = 0; i < warplist_num; i++)
      {
-	wl = warplist + i;
+	wi = warplist + i;
+	wi->win = ECreateWindow(EoGetWin(fw), 0, 0, 1, 1, 0);
+	EMapWindow(wi->win);
+	if (wi->ewin->state.iconified)
+	   fmt = "[%s]";
+	else if (wi->ewin->state.shaded)
+	   fmt = "=%s=";
+	else
+	   fmt = "%s";
+	Esnprintf(s, sizeof(s), fmt, EwinGetName(wi->ewin));
+	wi->txt = strdup(s);
+	TextSize(fw->tc, 0, 0, 0, wi->txt, &ww, &hh, 17);
+	if (ww > w)
+	   w = ww;
+	if (hh > h)
+	   h = hh;
+     }
 
-	if (!EwinFindByPtr(wl->ewin))
-	   wl->ewin = NULL;
-	if (wl->ewin)
+   fw->tw = w;			/* Text size */
+   fw->th = h;
+   w += pad->left + pad->right;
+   h += pad->top + pad->bottom;
+   if (Conf.warplist.icon_mode != 0)
+      w += h;
+   fw->mw = w;			/* Focus list item size */
+   fw->mh = h;
+
+   /* Reset shape */
+   EShapeCombineMask(EoGetWin(fw), ShapeBounding, 0, 0, None, ShapeSet);
+
+   GetPointerScreenAvailableArea(&x, &y, &ww, &hh);
+   x += (ww - w) / 2;
+   y += (hh - h * warplist_num) / 2;
+   EoMoveResize(fw, x, y, w, h * warplist_num);
+
+   for (i = 0; i < warplist_num; i++)
+      EMoveResizeWindow(warplist[i].win, 0, (h * i), fw->mw, fw->mh);
+
+   EoMap(fw, 0);
+
+   /*
+    * Grab the keyboard. The grab is automatically released when
+    * WarpFocusHide unmaps warpFocusWindow.
+    */
+   GrabKeyboardSet(EoGetWin(fw));
+   GrabPointerSet(EoGetWin(fw), None, 0);
+
+   TooltipsEnable(0);
+}
+
+static void
+WarpFocusWinHide(WarpFocusWin * fw)
+{
+   int                 i;
+
+   EoUnmap(fw);
+   for (i = 0; i < warplist_num; i++)
+     {
+	EDestroyWindow(warplist[i].win);
+	Efree(warplist[i].txt);
+     }
+#if 0				/* We might as well keep it around */
+   WarpFocusWinDestroy(fw);
+   warpFocusWindow = NULL;
+#endif
+
+   TooltipsEnable(1);
+}
+
+static void
+WarpFocusWinPaint(WarpFocusWin * fw)
+{
+   int                 i, state;
+   WarplistItem       *wi;
+
+   for (i = 0; i < warplist_num; i++)
+     {
+	wi = warplist + i;
+
+	if (!EwinFindByPtr(wi->ewin))
+	   wi->ewin = NULL;
+	if (!wi->ewin)
+	   continue;
+
+	state = (i == warpFocusIndex) ? STATE_CLICKED : STATE_NORMAL;
+
+	ImageclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state, 0,
+			ST_WARPLIST);
+
+	/* New icon stuff */
+	if (Conf.warplist.icon_mode != 0)
 	  {
-	     int                 state;
+	     int                 icon_size = fw->mh - 2 * ICON_PAD;
+	     Imlib_Image        *im;
+	     Imlib_Border       *pad;
 
-	     state = (ewin == wl->ewin) ? STATE_CLICKED : STATE_NORMAL;
+	     pad = ImageclassGetPadding(fw->ic);
 
-	     ImageclassApply(ic, wl->win, mw, mh, 0, 0, state, 0, ST_WARPLIST);
+	     TextDraw(fw->tc, wi->win, 0, 0, state, wi->txt,
+		      pad->left + fw->mh, pad->top, fw->tw, fw->th, 0, 0);
 
-	     /* New icon stuff */
-	     if (Conf.warplist.icon_mode != 0)
-	       {
-		  int                 icon_size = mh - 2 * ICON_PAD;
-		  Imlib_Image        *im;
+	     im = EwinIconImageGet(wi->ewin, icon_size,
+				   Conf.warplist.icon_mode);
+	     if (!im)
+		continue;
 
-		  TextDraw(tc, wl->win, 0, 0, state, wl->txt,
-			   pad->left + mh, pad->top, tw, th, 0, 0);
-
-		  im = EwinIconImageGet(wl->ewin, icon_size,
-					Conf.warplist.icon_mode);
-		  if (!im)
-		     continue;
-
-		  imlib_context_set_image(im);
-		  imlib_context_set_drawable(wl->win);
-		  imlib_context_set_blend(1);
-		  imlib_render_image_on_drawable_at_size(pad->left +
-							 ICON_PAD, ICON_PAD,
-							 icon_size, icon_size);
-		  imlib_free_image();
-		  imlib_context_set_blend(0);
-	       }
-	     else
-	       {
-		  TextclassApply(ic, wl->win, mw, mh, 0, 0, state, 0,
-				 tc, wl->txt);
-	       }
+	     imlib_context_set_image(im);
+	     imlib_context_set_drawable(wi->win);
+	     imlib_context_set_blend(1);
+	     imlib_render_image_on_drawable_at_size(pad->left +
+						    ICON_PAD, ICON_PAD,
+						    icon_size, icon_size);
+	     imlib_free_image();
+	     imlib_context_set_blend(0);
+	  }
+	else
+	  {
+	     TextclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state, 0,
+			    fw->tc, wi->txt);
 	  }
      }
 
    /* FIXME - Check shape */
-   EShapePropagate(warpFocusWindow->win);
-   EobjChangeShape(warpFocusWindow);
-   EFlush();
+   EShapePropagate(EoGetWin(fw));
+   EoChangeShape(fw);
+}
+
+static void
+WarpFocusShow(void)
+{
+   WarpFocusWin       *fw = warpFocusWindow;
+
+   if (!warplist)
+      return;
+
+   if (!fw)
+     {
+	warpFocusWindow = fw = WarpFocusWinCreate();
+	if (!fw)
+	   return;
+     }
+
+   if (!EoIsShown(fw))
+      WarpFocusWinShow(fw);
+
+   WarpFocusWinPaint(fw);
 }
 
 static void
 WarpFocusHide(void)
 {
-   int                 i;
+   WarpFocusWin       *fw = warpFocusWindow;
 
-   if (warpFocusWindow && warpFocusWindow->shown)
-     {
-	EobjUnmap(warpFocusWindow);
-	for (i = 0; i < warplist_num; i++)
-	  {
-	     EDestroyWindow(warplist[i].win);
-	     Efree(warplist[i].txt);
-	  }
-#if 0				/* We might as well keep it around */
-	EventCallbackUnregister(warpFocusWindow->win, 0, WarpFocusHandleEvent,
-				NULL);
-	EobjWindowDestroy(warpFocusWindow);
-	warpFocusWindow = None;
-#endif
-
-	TooltipsEnable(1);
-     }
+   if (fw && EoIsShown(fw))
+      WarpFocusWinHide(fw);
 
    if (warplist)
       Efree(warplist);
@@ -239,13 +285,14 @@ WarpFocusHide(void)
 void
 WarpFocus(int delta)
 {
+   WarpFocusWin       *fw = warpFocusWindow;
    EWin               *const *lst;
    EWin               *ewin;
    int                 i, num;
    WarplistItem       *wl;
 
    /* Remember invoking keycode (ugly hack) */
-   if (!warpFocusWindow || !warpFocusWindow->shown)
+   if (!fw || !EoIsShown(fw))
       warpFocusKey = Mode.events.last_keycode;
 
    if (!warplist)
@@ -294,7 +341,7 @@ WarpFocus(int delta)
    if (!ewin)
       return;
 
-   WarpFocusShow(ewin);
+   WarpFocusShow();
 
    if (Conf.focus.raise_on_next)
       RaiseEwin(ewin);
@@ -356,9 +403,10 @@ WarpFocusFinish(void)
 static void
 WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 {
+   WarpFocusWin       *fw = warpFocusWindow;
    KeySym              key;
 
-   if (!warpFocusWindow->shown)
+   if (!EoIsShown(fw))
       return;
 
    switch (ev->type)
@@ -403,18 +451,9 @@ WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 	break;
 
      case ButtonRelease:
-	WarpFocusClick((ev->xbutton.y * warplist_num) / warpFocusWindow->h);
+	WarpFocusClick((ev->xbutton.y * warplist_num) / EoGetH(fw));
 	break;
      }
-}
-
-static void
-WarplistInit(void)
-{
-#if 0				/* Not necessary when sampling keycode in events.c */
-   /* Ugly hack to get the invoking key press */
-   EventCallbackRegister(VRoot.win, 0, WarpFocusHandleEvent, NULL);
-#endif
 }
 
 /*
@@ -434,7 +473,6 @@ WarplistSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
-	WarplistInit();
 	WarplistCfgValidate();
 	break;
      }
