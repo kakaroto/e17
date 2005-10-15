@@ -820,16 +820,6 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	ewl_widget_hide(icon->image);
-	ewl_widget_hide(icon->floater);
-	ewl_container_child_remove(EWL_CONTAINER(icon), icon->image);
-	ewl_container_child_remove(EWL_CONTAINER(icon), icon->w_label);
-	ewl_container_child_remove(EWL_CONTAINER(icon->floater), EWL_WIDGET(icon));
-	ewl_container_child_remove(EWL_CONTAINER(icon->icon_box_parent->ewl_iconbox_pane_inner), EWL_WIDGET(icon->floater));
-	ewl_widget_destroy(icon->image);
-	ewl_widget_destroy(icon->w_label);
-	ewl_widget_destroy(icon->floater);
-
 	if (icon->label) {
 		free(icon->label);
 	}
@@ -939,20 +929,8 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
 			/*printf("Deleting icon..\n");*/
 
-
-			ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
-
-			/*Delete our callbacks*/
-			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->image, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_mouse_down);
-			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->image, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_icon_mouse_up);
-			ewl_callback_del(EWL_ICONBOX_ICON(list_item)->w_label, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_label_mouse_down_cb);
-
-			ewl_callback_del(EWL_WIDGET(list_item), EWL_CALLBACK_DESTROY,ewl_iconbox_icon_destroy_cb);
-
-			/*Delete all callbacks on double click - onus should probably be on assigner to do this.? */
-			ewl_callback_del_type(EWL_WIDGET(list_item), EWL_CALLBACK_MOUSE_DOWN);
-
-
+			//ewl_widget_hide(list_item);
+			//ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 
 						
