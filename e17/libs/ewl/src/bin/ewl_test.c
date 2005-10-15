@@ -60,7 +60,7 @@ main(int argc, char **argv)
 			"Border",
 		   	__create_border_test_window,
 		   	"ewl_border_test.c", 
-			"Defines the Ewl_Border class for displaing\n"
+			"Defines the Ewl_Border class for displaying\n"
 				"a container with a label."
 		},
 		{
