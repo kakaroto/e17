@@ -47,4 +47,38 @@ BUTTON_IM("e17_menu_check1.png", "e17_menu_check2.png")
 BUTTON_IM_PROGS()
 }
 
+group {
+    name, "vbutton";
+    data {
+        item, "inset/left" "8";
+        item, "inset/right" "8";
+        item, "inset/top" "5";
+        item, "inset/bottom" "5";
+    }
 
+    parts {
+BUTTON()
+    }
+
+    programs {
+BUTTON_PROG("mouse,in", "mouse,out")
+    }
+}
+
+group {
+    name, "hbutton";
+    data {
+        item, "inset/left" "5";
+        item, "inset/right" "5";
+        item, "inset/top" "8";
+        item, "inset/bottom" "8";
+    }
+
+    parts {
+BUTTON()
+    }
+
+    programs {
+BUTTON_PROG("mouse,in", "mouse,out")
+    }
+}

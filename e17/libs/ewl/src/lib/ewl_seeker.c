@@ -95,6 +95,7 @@ int ewl_seeker_init(Ewl_Seeker * s)
 	ewl_widget_internal_set(s->button, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(s), s->button);
 	ewl_widget_show(s->button);
+	ewl_widget_appearance_set(s->button, "hbutton");
 
 	/*
 	 * Set the starting orientation, range and values
@@ -149,9 +150,11 @@ void ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 	s->orientation = o;
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
+                ewl_widget_appearance_set(s->button, "hbutton");
 	}
 	else {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
+                ewl_widget_appearance_set(s->button, "vbutton");
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

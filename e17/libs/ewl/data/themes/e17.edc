@@ -78,6 +78,8 @@ data {
     item, "/vscrollbar/button_increment/group" "vscroll-up";
     item, "/hscrollbar/button_decrement/group" "hscroll-left";
     item, "/hscrollbar/button_increment/group" "hscroll-right";
+    item, "/vseeker/vbutton/group"  "vbutton";
+    item, "/hseeker/hbutton/group"  "hbutton";
 
     item, "/imenu/group" "window";
     item, "/menu/group" "window";
@@ -95,4 +97,3 @@ data {
         "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
     item, "/theme/name" "e17";
 }
-
