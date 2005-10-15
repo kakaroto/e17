@@ -98,6 +98,8 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 	if (s->orientation == o)
 		DRETURN(DLEVEL_STABLE);
 
+	s->orientation = o;
+
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
