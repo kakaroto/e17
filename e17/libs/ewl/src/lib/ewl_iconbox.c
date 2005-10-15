@@ -9,6 +9,8 @@ static int nextx=0;
 
 
 
+
+
 /*Ecore_List *ewl_iconbox_icon_list;*/
 
 /**
@@ -56,39 +58,9 @@ Ewl_Widget *ewl_iconbox_icon_new()
 }
 
 
-static void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-static void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
-/**
- * @param ib: The iconbox
- * @return Returns no value
- * @brief	Initialize the icon box
- */
-void configure(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	/*printf ("Got a configure\n");*/
 
-	Ewl_IconBox* ib = EWL_ICONBOX(w);
-	
-	
 
-	if (REALIZED(ib) && VISIBLE(ib)) { 
-		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure);
-		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
-		/*ewl_iconbox_icon_arrange(ib); */
-		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
-
-		/*Handle the background, if any*/
-		if (ib->background) {
-			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
-			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
-			evas_object_layer_set(ib->background, -1000);
-
-			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
-			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
-		}
-	}
-}
 
 
 
@@ -151,12 +123,7 @@ int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon)
 	
 }
 
-void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
-	ewl_iconbox_clear(ib);
-}
 
 int ewl_iconbox_init(Ewl_IconBox* ib)
 {
@@ -311,7 +278,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_MOVE, ewl_iconbox_mouse_move_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
-	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, configure, NULL);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
 
 
@@ -346,19 +313,6 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 }
 
 
-/* ----------- */
-void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
-	ewl_iconbox_icon_arrange(ib);
-}
-
-void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
-
-	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,700);
-}
 
 void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text)
 {
@@ -518,208 +472,6 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 
 
 
-void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
-	Ewl_Event_Mouse_Move *ev = ev_data;
-	Ewl_IconBox_Icon* list_item = ib->drag_icon;
-	int ibx, iby;
-	int px,py;
-
-	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
-	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
-
-	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
-	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));	
-
-	/*Handle selection box*/
-	if (ib->drag_box) {
-		
-		
-		
-		if (ib->dx == -1) {
-			/*  Assume this is the drag start point */
-			ib->dx =  ewl_object_current_x_get(EWL_OBJECT(ib->select_floater));
-			ib->dy = ewl_object_current_y_get(EWL_OBJECT(ib->select_floater));
-		}
-
-		int lx,ly,hx,hy;
-
-		/*Work out where to start/end..*/
-		if (ib->dx < ev->x) {
-			lx = ib->dx; hx = ev->x;
-		} else {
-			lx = ev->x; hx = ib->dx; 
-		}
-		
-		if (ib->dy < ev->y) {
-			ly = ib->dy ; hy = ev->y;
-		} else {
-			ly = ev->y; hy = ib->dy;
-		}
-
-		
-			ewl_floater_position_set(EWL_FLOATER(ib->select_floater), (lx - ibx) + abs(px-ibx) , (ly+1 - iby) + abs(py-iby));
-			
-			if (hx-lx >0 && hy-ly > 0) {
-				ewl_object_custom_size_set(EWL_OBJECT(ib->select), (hx-lx), (hy-ly));
-				ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), hx-lx, hy-ly);
-			}
-
-		/*Now check which icons we have to select in this range...*/
-		{
-			int w,h;
-			
-			Ewl_IconBox_Icon* list_item;
-			int ix,iy;
-			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
-
-		
-			w = ewl_object_current_w_get(EWL_OBJECT(ib->select));
-			h = ewl_object_current_h_get(EWL_OBJECT(ib->select));
-			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) ) {
-
-				
-						
-				
-				ix = ewl_object_current_x_get(EWL_OBJECT(list_item));
-				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
-				
-				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy) {
-					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0);
-				} else if (list_item->selected) {
-					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));
-				}
-			}
-		}
-
-		/* If we're drag boxing, we can't be moving an icon, so return.. */
-		return;
-	}
-
-	/*Check move tolerance, if not past, then don't move..*/
-	if (abs(ev->x - ib->xdown) < EWL_ICONBOX_MOVE_TOLERANCE && abs(ev->y - ib->ydown) < EWL_ICONBOX_MOVE_TOLERANCE) 
-		return;
-	
-	
-	if (list_item != NULL) {			
-			/*Ewl_Widget* icon_box = (Ewl_Widget*)list_item->box;*/
-			int fw,fh;
-
-			/*Get the value of the scrollpane..
-			 */
-
-
-			/* Get the current width/height to centre
-			 */
-			
-			fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
-			fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
-
-
-			
-
-			
-			ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
-										  (ev->y - iby) + abs(py-iby) - (fh/2));
-		}
-}
-
-
-void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
-	
-	Ewl_Event_Mouse_Down *ev = ev_data;
-	int ibx, iby;
-	int px,py;
-	
-	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
-	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));	
-	
-
-	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
-	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
-	
-	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
-		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
-
-		ewl_widget_show(ib->ewl_iconbox_menu_floater);
-		ewl_widget_show(ib->ewl_iconbox_context_menu);
-		ewl_widget_show(ib->ewl_iconbox_view_menu);
-		
-		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
-		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
-	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
-		/*Make sure the context menu is invisible*/
-		ewl_widget_hide(ib->ewl_iconbox_menu_floater);
-		ewl_widget_hide(ib->ewl_iconbox_context_menu);
-		ewl_widget_hide(ib->ewl_iconbox_view_menu);
-		
-		
-		/*printf ("Start select at %d:%d\n", ev->x, ev->y);*/
-		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
-		
-		/* Put the floater at the position we started at */
-		ewl_floater_position_set(EWL_FLOATER(ib->select_floater), ev->x-ibx + abs(px-ibx), ev->y-iby + abs(py-iby));
-
-		
-		ewl_widget_show(EWL_WIDGET(ib->select_floater));
-		ib->drag_box = 1;
-	}
-	
-}
-
-
-
-void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-
-	Ewl_IconBox_Icon* ib = user_data;
-	Ewl_Event_Mouse_Down *ev = ev_data;
-	
-	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
-	ib->drag = 1;
-	ib->icon_box_parent->drag_icon = ib;
-	ib->icon_box_parent->xdown = ev->x;
-	ib->icon_box_parent->ydown = ev->y;
-
-	/* Set this to selected */
-	ewl_iconbox_icon_select(ib,0);
-
-	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
-}
-
-void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	/*Ewl_Event_Mouse_Down *ev = ev_data;*/
-
-	Ewl_IconBox_Icon* ib = user_data;
-	ib->drag = 0;
-	ib->icon_box_parent->drag_icon = NULL;
-	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
-}
-
-void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_Event_Mouse_Up *ev = ev_data;
-	Ewl_IconBox* ib = user_data;
-	if (ev->button == 1) {
-		/*printf("Stopped select: %d:%d\n", ev->x, ev->y);*/
-		ewl_widget_hide(EWL_WIDGET(ib->select_floater));
-		ib->drag_box = 0;
-		ib->dx = -1;
-		ib->dy = -1;
-	}
-}
-
-void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_IconBox_Icon* ib = user_data;
-
-	/* Set this to selected */
-	ewl_iconbox_icon_select(ib,1);
-}
 
 void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= label */
 {
@@ -947,3 +699,264 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 	ib->drag_icon = NULL;
 	
 }
+
+
+/*Callbacks*/
+
+void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox* ib = EWL_ICONBOX(w);
+
+	ewl_iconbox_clear(ib);
+}
+
+/* ----------- */
+void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+	ewl_iconbox_icon_arrange(ib);
+}
+
+void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+
+	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,700);
+}
+
+void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+	Ewl_Event_Mouse_Move *ev = ev_data;
+	Ewl_IconBox_Icon* list_item = ib->drag_icon;
+	int ibx, iby;
+	int px,py;
+
+	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
+	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
+
+	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));	
+
+	/*Handle selection box*/
+	if (ib->drag_box) {
+		
+		
+		
+		if (ib->dx == -1) {
+			/*  Assume this is the drag start point */
+			ib->dx =  ewl_object_current_x_get(EWL_OBJECT(ib->select_floater));
+			ib->dy = ewl_object_current_y_get(EWL_OBJECT(ib->select_floater));
+		}
+
+		int lx,ly,hx,hy;
+
+		/*Work out where to start/end..*/
+		if (ib->dx < ev->x) {
+			lx = ib->dx; hx = ev->x;
+		} else {
+			lx = ev->x; hx = ib->dx; 
+		}
+		
+		if (ib->dy < ev->y) {
+			ly = ib->dy ; hy = ev->y;
+		} else {
+			ly = ev->y; hy = ib->dy;
+		}
+
+		
+			ewl_floater_position_set(EWL_FLOATER(ib->select_floater), (lx - ibx) + abs(px-ibx) , (ly+1 - iby) + abs(py-iby));
+			
+			if (hx-lx >0 && hy-ly > 0) {
+				ewl_object_custom_size_set(EWL_OBJECT(ib->select), (hx-lx), (hy-ly));
+				ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), hx-lx, hy-ly);
+			}
+
+		/*Now check which icons we have to select in this range...*/
+		{
+			int w,h;
+			
+			Ewl_IconBox_Icon* list_item;
+			int ix,iy;
+			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+
+		
+			w = ewl_object_current_w_get(EWL_OBJECT(ib->select));
+			h = ewl_object_current_h_get(EWL_OBJECT(ib->select));
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) ) {
+
+				
+						
+				
+				ix = ewl_object_current_x_get(EWL_OBJECT(list_item));
+				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
+				
+				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy) {
+					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0);
+				} else if (list_item->selected) {
+					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));
+				}
+			}
+		}
+
+		/* If we're drag boxing, we can't be moving an icon, so return.. */
+		return;
+	}
+
+	/*Check move tolerance, if not past, then don't move..*/
+	if (abs(ev->x - ib->xdown) < EWL_ICONBOX_MOVE_TOLERANCE && abs(ev->y - ib->ydown) < EWL_ICONBOX_MOVE_TOLERANCE) 
+		return;
+	
+	
+	if (list_item != NULL) {			
+			/*Ewl_Widget* icon_box = (Ewl_Widget*)list_item->box;*/
+			int fw,fh;
+
+			/*Get the value of the scrollpane..
+			 */
+
+
+			/* Get the current width/height to centre
+			 */
+			
+			fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
+			fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+
+
+			
+
+			
+			ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
+										  (ev->y - iby) + abs(py-iby) - (fh/2));
+		}
+}
+
+
+void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+	
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	int ibx, iby;
+	int px,py;
+	
+	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));	
+	
+
+	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
+	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
+	
+	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
+		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
+
+		ewl_widget_show(ib->ewl_iconbox_menu_floater);
+		ewl_widget_show(ib->ewl_iconbox_context_menu);
+		ewl_widget_show(ib->ewl_iconbox_view_menu);
+		
+		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
+		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
+	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
+		/*Make sure the context menu is invisible*/
+		ewl_widget_hide(ib->ewl_iconbox_menu_floater);
+		ewl_widget_hide(ib->ewl_iconbox_context_menu);
+		ewl_widget_hide(ib->ewl_iconbox_view_menu);
+		
+		
+		/*printf ("Start select at %d:%d\n", ev->x, ev->y);*/
+		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
+		
+		/* Put the floater at the position we started at */
+		ewl_floater_position_set(EWL_FLOATER(ib->select_floater), ev->x-ibx + abs(px-ibx), ev->y-iby + abs(py-iby));
+
+		
+		ewl_widget_show(EWL_WIDGET(ib->select_floater));
+		ib->drag_box = 1;
+	}
+	
+}
+
+
+
+void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+
+	Ewl_IconBox_Icon* ib = user_data;
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	
+	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
+	ib->drag = 1;
+	ib->icon_box_parent->drag_icon = ib;
+	ib->icon_box_parent->xdown = ev->x;
+	ib->icon_box_parent->ydown = ev->y;
+
+	/* Set this to selected */
+	ewl_iconbox_icon_select(ib,0);
+
+	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
+}
+
+void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	/*Ewl_Event_Mouse_Down *ev = ev_data;*/
+
+	Ewl_IconBox_Icon* ib = user_data;
+	ib->drag = 0;
+	ib->icon_box_parent->drag_icon = NULL;
+	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
+}
+
+void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Event_Mouse_Up *ev = ev_data;
+	Ewl_IconBox* ib = user_data;
+	if (ev->button == 1) {
+		/*printf("Stopped select: %d:%d\n", ev->x, ev->y);*/
+		ewl_widget_hide(EWL_WIDGET(ib->select_floater));
+		ib->drag_box = 0;
+		ib->dx = -1;
+		ib->dy = -1;
+	}
+}
+
+void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_IconBox_Icon* ib = user_data;
+
+	/* Set this to selected */
+	ewl_iconbox_icon_select(ib,1);
+}
+
+
+
+/**
+ * @param ib: The iconbox
+ * @return Returns no value
+ * @brief	Initialize the icon box
+ */
+void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	/*printf ("Got a configure\n");*/
+
+	Ewl_IconBox* ib = EWL_ICONBOX(w);
+	
+	
+
+	if (REALIZED(ib) && VISIBLE(ib)) { 
+		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);
+		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
+		/*ewl_iconbox_icon_arrange(ib); */
+		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
+
+		/*Handle the background, if any*/
+		if (ib->background) {
+			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
+			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
+			evas_object_layer_set(ib->background, -1000);
+
+			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
+			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
+		}
+	}
+}
+
