@@ -65,6 +65,11 @@ CoordsShow(EWin * ewin)
    cw += pad->left + pad->right;
    ch += pad->top + pad->bottom;
 
+   /* Width hysteresis (hack - assuming horizontal text) */
+   cw += 8;
+   if (eo && abs(eo->w - cw) < 8)
+      cw = eo->w;
+
    if (Mode.mode == MODE_MOVE)
       md = Conf.movres.mode_move;
    else
@@ -98,15 +103,28 @@ CoordsShow(EWin * ewin)
 	if (!eo)
 	   return;
 	coord_eo = eo;
+
+	/* Center text (override theme) */
+	TextclassSetJustification(tc, 512);
      }
 
+#define TEST_COORD_REPARENT_TO_FRAME 0
+#if TEST_COORD_REPARENT_TO_FRAME
+   cx -= x;
+   cy -= y;
+#endif
    EobjMoveResize(eo, cx, cy, cw, ch);
 
    if (!eo->shown)
-      EobjMap(eo, 0);
+     {
+#if TEST_COORD_REPARENT_TO_FRAME
+	EobjReparent(eo, EoObj(ewin), cx, cy);
+#endif
+	EobjMap(eo, 0);
+     }
 
-   ImageclassApply(ic, eo->win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   TextclassApply(ic, eo->win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
+   ITApply(eo->win, ic, NULL, cw, ch, STATE_NORMAL, 1, 0, 0, ST_UNKNWN,
+	   tc, NULL, s);
 
    EFlush();
 }
@@ -117,5 +135,10 @@ CoordsHide(void)
    EObj               *eo = coord_eo;
 
    if (eo && eo->shown)
-      EobjUnmap(eo);
+     {
+	EobjUnmap(eo);
+#if TEST_COORD_REPARENT_TO_FRAME
+	EobjReparent(eo, EoObj(DeskGet(0)), 0, 0);
+#endif
+     }
 }

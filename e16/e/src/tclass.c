@@ -152,6 +152,12 @@ TextclassGetJustification(TextClass * tc)
    return tc->justification;
 }
 
+void
+TextclassSetJustification(TextClass * tc, int just)
+{
+   tc->justification = just;
+}
+
 static void
 TextclassPopulate(TextClass * tclass)
 {
