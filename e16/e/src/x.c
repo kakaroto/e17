@@ -923,6 +923,8 @@ ExShapeUpdate(EXID * xid)
 		  xid->num_rect = 0;
 		  XFree(xid->rects);
 		  xid->rects = NULL;
+		  XShapeCombineMask(disp, xid->win, ShapeBounding, 0, 0,
+				    None, ShapeSet);
 	       }
 	  }
 	else if (xid->num_rect > 4096)
@@ -958,8 +960,8 @@ ExShapeCombineMask(EXID * xid, int dest, int x, int y, Pixmap pmap, int op)
 	wasshaped = 1;
      }
 #if DEBUG_SHAPE_OPS
-   Eprintf("ExShapeCombineMask %#lx %d,%d %dx%d wassh=%d\n", xid->win,
-	   xid->x, xid->y, xid->w, xid->h, wasshaped);
+   Eprintf("ExShapeCombineMask %#lx %d,%d %dx%d mask=%#lx wassh=%d\n",
+	   xid->win, xid->x, xid->y, xid->w, xid->h, pmap, wasshaped);
 #endif
    if (pmap)
      {
