@@ -57,14 +57,6 @@ Ewl_Widget *ewl_iconbox_icon_new()
 
 }
 
-
-
-
-
-
-
-
-
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib)
 {
 
@@ -387,6 +379,9 @@ void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_da
 
 		/*Hide the entry, now that we have an enter */
 		ewl_widget_hide(ib->entry_floater);
+
+		/*Show the label again*/
+		ewl_widget_show(EWL_ICONBOX_ICON(ib->edit_icon)->w_label);
 	}
 }
 
@@ -507,6 +502,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= 
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
 		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), 1000);
 		ewl_widget_focus_send(EWL_WIDGET(ib->icon_box_parent->entry));
+		ewl_widget_hide(ib->w_label);
 
 		/* Record which icon's label we are editing */
 		ib->icon_box_parent->edit_icon = ib;
@@ -549,7 +545,6 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib)
 {
-		return;
 	
 		Ewl_IconBox_Icon* list_item;
 		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
@@ -565,24 +560,7 @@ void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon)
 	/*printf("Removing icon: %s", ewl_border_text_get(EWL_BORDER(icon)));*/
 }
 
-void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	
-	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
-	
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	if (icon->label) {
-		free(icon->label);
-	}
-	if (icon->label_compressed) {
-		free(icon->label_compressed);
-	}
 
-	ewl_widget_destroy(EWL_ICONBOX_ICON(w)->floater);
-	
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 
 
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file)
@@ -661,14 +639,6 @@ void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename)
 	
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
 
-	/*Make sure we're not too small now */
-	/*Shouldn't the floater auto-resize?*/
-	
-	/*ewl_object_current_size_get(EWL_OBJECT(icon->image), &iw,&ih);
-	ewl_object_current_size_get(EWL_OBJECT(icon->w_label), &lw, &lh); 
-	ewl_object_minimum_size_set(EWL_OBJECT(icon->floater), iw, ih+lh);*/
-
-	/*Call the configure callback for the iconbox - it doesn't seem to do this by itself*/
 }
 
 void ewl_iconbox_clear(Ewl_IconBox* ib)
@@ -708,6 +678,25 @@ void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
 	ewl_iconbox_clear(ib);
+}
+
+void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	
+	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	if (icon->label) {
+		free(icon->label);
+	}
+	if (icon->label_compressed) {
+		free(icon->label_compressed);
+	}
+
+	ewl_widget_destroy(EWL_ICONBOX_ICON(w)->floater);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /* ----------- */
@@ -862,8 +851,6 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 		ewl_widget_hide(ib->ewl_iconbox_context_menu);
 		ewl_widget_hide(ib->ewl_iconbox_view_menu);
 		
-		
-		/*printf ("Start select at %d:%d\n", ev->x, ev->y);*/
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
 		/* Put the floater at the position we started at */

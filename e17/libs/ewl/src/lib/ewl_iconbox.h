@@ -126,6 +126,7 @@ void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data ,void *user_data );
 
 
 /* Internal functions */

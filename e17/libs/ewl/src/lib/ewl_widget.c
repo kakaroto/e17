@@ -1097,7 +1097,7 @@ Ewl_Widget *ewl_widget_focused_get(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
-	w = ewl_embed_focused_widget_get(emb);
+	if (emb) w = ewl_embed_focused_widget_get(emb);
 
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
