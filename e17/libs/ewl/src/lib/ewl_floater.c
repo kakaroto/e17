@@ -52,8 +52,6 @@ int ewl_floater_init(Ewl_Floater * f)
 	ewl_widget_appearance_set(w, "floater");
 	ewl_widget_inherit(w, "floater");
 
-	ewl_callback_append(EWL_WIDGET(f), EWL_CALLBACK_DESTROY,
-			    ewl_floater_follow_destroy_cb, w);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -67,8 +65,10 @@ void ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	 * Don't follow the old parent.
 	 */
 	if (f->follows) {
-		ewl_callback_del_with_data(p, EWL_CALLBACK_CONFIGURE,
+		ewl_callback_del_with_data(f->follows, EWL_CALLBACK_CONFIGURE,
 				 ewl_floater_follow_configure_cb, f);
+		ewl_callback_del_with_data(EWL_WIDGET(f->follows), EWL_CALLBACK_DESTROY,
+			    ewl_floater_follow_destroy_cb, f);
 	}
 
 	/*
@@ -77,6 +77,8 @@ void ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	 */
 	if (p) {
 		ewl_callback_append(p, EWL_CALLBACK_CONFIGURE,
+				    ewl_floater_follow_configure_cb, f);
+		ewl_callback_append(p, EWL_CALLBACK_DESTROY,
 				    ewl_floater_follow_configure_cb, f);
 	}
 

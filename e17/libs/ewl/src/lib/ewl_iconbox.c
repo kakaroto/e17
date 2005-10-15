@@ -826,6 +826,8 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (icon->label_compressed) {
 		free(icon->label_compressed);
 	}
+
+	ewl_widget_destroy(EWL_ICONBOX_ICON(w)->floater);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -931,6 +933,8 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 			//ewl_widget_hide(list_item);
 			//ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
+			//
+			ewl_floater_follow_set(EWL_FLOATER(EWL_ICONBOX_ICON(list_item)->floater), NULL);
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 
 						
