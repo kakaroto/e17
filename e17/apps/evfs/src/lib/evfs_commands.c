@@ -105,7 +105,7 @@ void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs
 
 	printf("Opening a file..\n");
 
-	command->type = EVFS_CMD_FILE_TEST;
+	command->type = EVFS_CMD_FILE_COPY;
 	command->file_command.num_files = 2;
 	command->file_command.files = malloc(sizeof(evfs_filereference*)*2);
 	command->file_command.files[0] = from;

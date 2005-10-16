@@ -104,8 +104,8 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_dir_list = &smb_evfs_dir_list;
 	functions->evfs_file_open = &evfs_file_open;
 	functions->evfs_file_close = &evfs_file_close;
-	//functions->evfs_file_seek = &evfs_file_seek;
-	//functions->evfs_file_read = &evfs_file_read;
+	functions->evfs_file_seek = &evfs_file_seek;
+	functions->evfs_file_read = &evfs_file_read;
 	functions->evfs_file_write = &evfs_file_write;
 	functions->evfs_file_create = &evfs_file_create;
 	functions->evfs_file_stat = &smb_evfs_file_stat;
@@ -213,9 +213,9 @@ int evfs_file_open(evfs_filereference* file) {
 	char dir_path[1024];
 	snprintf(dir_path,1024,"smb:/%s", file->path);
 
-	printf("Opening file '%s' in samba\n");
+	printf("Opening file '%s' in samba\n", dir_path);
 
-	
+	file->fd_p = smb_context->open(smb_context, dir_path, O_RDONLY, S_IRUSR);
 
 	return 0;
 }
@@ -238,6 +238,25 @@ int evfs_file_write(evfs_filereference* file, char* bytes, long size) {
 
 	return 0;
 }
+
+int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
+	printf ("Seeking file to %ld\n", pos);
+
+	smb_context->lseek(smb_context, file->fd_p, pos, SEEK_SET);
+
+	return 0;
+}
+
+int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
+	int bytes_read = 0;
+	printf("Reading %ld bytes from file %s\n", file->path);
+	
+	bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
+
+	return 0;
+}
+
+
 
 int evfs_file_create(evfs_filereference* file) {
 	char dir_path[1024];

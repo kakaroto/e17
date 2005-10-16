@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: evfs
+Description: E Virtual File System
+Requires: ecore 
+Version: 0.0.1
+Libs: -L${libdir} -levfs
+Cflags: -I${includedir}/evfs
+
