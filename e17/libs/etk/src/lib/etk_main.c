@@ -43,37 +43,37 @@ Etk_Bool etk_init()
 
    if (!evas_init())
    {
-      ETK_WARNING(_("Evas initialization failed!"));
+      ETK_WARNING("Evas initialization failed!");
       return FALSE;
    }
    if (!ecore_init())
    {
-      ETK_WARNING(_("Ecore initialization failed!"));
+      ETK_WARNING("Ecore initialization failed!");
       return FALSE;
    }
    if (!ecore_evas_init())
    {
-      ETK_WARNING(_("Ecore_Evas initialization failed!"));
+      ETK_WARNING("Ecore_Evas initialization failed!");
       return FALSE;
    }
    if (!edje_init())
    {
-      ETK_WARNING(_("Edje initialization failed!"));
+      ETK_WARNING("Edje initialization failed!");
       return FALSE;
    }
    if (!etk_type_init())
    {
-      ETK_WARNING(_("Etk_Type initialization failed!"));
+      ETK_WARNING("Etk_Type initialization failed!");
       return FALSE;
    }
    if (!etk_signal_init())
    {
-      ETK_WARNING(_("Etk_Signal initialization failed!"));
+      ETK_WARNING("Etk_Signal initialization failed!");
       return FALSE;
    }
    if (!etk_object_init())
    {
-      ETK_WARNING(_("Etk_Object initialization failed!"));
+      ETK_WARNING("Etk_Object initialization failed!");
       return FALSE;
    }
    _etk_main_toplevel_widgets = ecore_list_new();

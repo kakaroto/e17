@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Etk 0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2005-10-16 01:45+0200\n"
-"PO-Revision-Date: 2005-10-16 01:56+0200\n"
+"PO-Revision-Date: 2005-10-16 12:42+0200\n"
 "Last-Translator: VincentTorri <vtorri at univ-evry dot fr>\n"
 "Language-Team: fr <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -198,31 +198,3 @@ msgstr "Ligne 11"
 #: src/bin/etk_tree_test.c:100
 msgid "Row12"
 msgstr "Ligne 12"
-
-#: src/lib/etk_main.c:46
-msgid "Evas initialization failed!"
-msgstr "Echec de l'initialisation d'Evas"
-
-#: src/lib/etk_main.c:51
-msgid "Ecore initialization failed!"
-msgstr "Echec de l'initialisation d'Ecore"
-
-#: src/lib/etk_main.c:56
-msgid "Ecore_Evas initialization failed!"
-msgstr "Echec de l'initialisation d'Ecore_Evas"
-
-#: src/lib/etk_main.c:61
-msgid "Edje initialization failed!"
-msgstr "Echec de l'initialisation d'Edje"
-
-#: src/lib/etk_main.c:66
-msgid "Etk_Type initialization failed!"
-msgstr "Echec de l'initialisation d'Etk_Type"
-
-#: src/lib/etk_main.c:71
-msgid "Etk_Signal initialization failed!"
-msgstr "Echec de l'initialisation d'Etk_Signal"
-
-#: src/lib/etk_main.c:76
-msgid "Etk_Object initialization failed!"
-msgstr "Echec de l'initialisation d'Etk_Object"
