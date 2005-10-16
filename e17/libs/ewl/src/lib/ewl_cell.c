@@ -41,15 +41,16 @@ int ewl_cell_init(Ewl_Cell *cell)
 	if (!ewl_container_init(EWL_CONTAINER(cell)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
 	ewl_widget_appearance_set(EWL_WIDGET(cell), "cell");
+	ewl_widget_inherit(EWL_WIDGET(cell), "cell");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(cell),
 				    ewl_cell_child_resize_cb);
+
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			    ewl_cell_configure_cb, NULL);
-
-	ewl_widget_inherit(EWL_WIDGET(cell), "cell");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
