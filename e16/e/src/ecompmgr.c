@@ -1615,9 +1615,6 @@ ECompMgrWinDel(EObj * eo)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 
-   ECompMgrDamageMergeObject(eo, cw->extents, 1);
-   cw->extents = None;
-   _ECM_SET_STACK_CHANGED();
    ECompMgrWinInvalidate(eo, INV_ALL);
 
    if (!eo->gone)
