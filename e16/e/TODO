@@ -1,22 +1,26 @@
 
 - Composite manager
-  - Fix destroy while fading.
-  - Fix sliding while fading.
-  - Fix shape while fading.
+  - Clip region is (sometimes?) b0rked
   - Fix flicker on fade-out start.
-  - Avoid repainting regions with hidden damage.
   - Fix X-errors during startup (startup/progress windows).
   - Don't paint unredirected windows where not necessary.
   - Enable not redirecting certain clients?
+  - Repaint area is incorrect when using sharp shadows? (try gmplayer)
+
+- Systray
+  - Systray windows sometimes escape initial placement/sizing
 
 - Top-level window adoption is messy
   - Get info (window/props/matches/snaps) before frame/border setup
   - Avoid multiple attribute fetches
+  - Properly init lx, ly, lw, lh, ...
 
 - Avoid X-error on unmap followed by destroy
 
 - Check trouble with external pagers and hidden desks
   - Maybe change ICCCM configure on hidden/offset desks (position relative to desk)?
+
+- Root tooltips are sometimes shown when they shouldn't be
 
 - netwm hints
   - More (_NET_WM_USER_TIME ...)?
