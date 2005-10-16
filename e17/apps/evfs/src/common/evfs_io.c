@@ -179,6 +179,8 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_RENAME_FILE:
 		case EVFS_CMD_FILE_STAT:
 		case EVFS_CMD_LIST_DIR:
+		case EVFS_CMD_FILE_TEST:
+		case EVFS_CMD_FILE_COPY:
 			evfs_write_file_command(conn, command);
 			break;
 	}
@@ -193,6 +195,8 @@ void evfs_write_command_client(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_RENAME_FILE:
 		case EVFS_CMD_FILE_STAT:
 		case EVFS_CMD_LIST_DIR:
+		case EVFS_CMD_FILE_TEST:
+		case EVFS_CMD_FILE_COPY:
 			evfs_write_file_command_client(client, command);
 			break;
 	}	
@@ -297,14 +301,14 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 			
 				command->file_command.files = realloc(command->file_command.files, sizeof(evfs_filereference*)*(command->file_command.num_files+1));
 				command->file_command.files[command->file_command.num_files] = path->files[0];
-				
 				command->file_command.num_files++;
 			}
 						  
 			
 			
-			break;
+			
 		}
+		break;
 
 		case EVFS_COMMAND_END:	
 			 /*TODO cleanp ref event*/

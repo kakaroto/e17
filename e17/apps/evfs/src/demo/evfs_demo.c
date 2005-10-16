@@ -61,7 +61,8 @@ int main() {
 
 	
 	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
-	snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
+	//snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
+	snprintf(pathi,1024,"posix:///opt/musicvideos/Boogie Pimps/Boogie Pimps - Somebody to Love.mpg");
 	
 	
 	printf ("Listing dir: %s\n", pathi);
@@ -74,7 +75,7 @@ int main() {
 	
 	/*evfs_monitor_add(con, dir_path->files[0]);*/
 
-	evfs_client_dir_list(con, dir_path->files[0]);
+	evfs_client_file_copy(con, dir_path->files[0], NULL);
 
 	ecore_main_loop_begin();
 	

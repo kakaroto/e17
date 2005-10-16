@@ -25,6 +25,7 @@
 #define TRUE 1
 #define URI_SEP "#"
 #define EVFS_META_DIR_NAME  ".e_meta"
+#define COPY_BLOCKSIZE 4096
 #define MAX_CLIENT 9999999
 
 #define EVFS_FUNCTION_MONITOR_START "evfs_monitor_start"
@@ -35,7 +36,7 @@
 #define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
 
-
+#include "evfs_plugin.h"
 
 
 typedef enum
@@ -57,63 +58,20 @@ struct evfs_server {
 	int num_clients;
 };
 
-typedef enum evfs_file_type evfs_file_type;
-enum evfs_file_type {
-	EVFS_FILE_NORMAL = 1,
-	EVFS_FILE_DIRECTORY = 2
-};
 
 
-typedef struct evfs_filereference evfs_filereference;
-struct evfs_filereference {
-	char* plugin_uri;
-	evfs_file_type file_type;
-	char* path;
-};
-
-typedef struct evfs_file_uri_path evfs_file_uri_path;
-struct evfs_file_uri_path {
-	int num_files;
-	evfs_filereference** files;
-};
-
-/*Command structures*/
-typedef enum evfs_command_type
-{
-  EVFS_CMD_STARTMON_FILE = 1 ,
-  EVFS_CMD_STOPMON_FILE = 2,
-  EVFS_CMD_COPY_FILE = 3,
-  EVFS_CMD_MOVE_FILE = 4,
-  EVFS_CMD_RENAME_FILE = 5,
-  EVFS_CMD_REMOVE_FILE=6,
-  EVFS_CMD_LIST_DIR = 7,
-  EVFS_CMD_FILE_STAT = 8
-}
-evfs_command_type;
 
 
-typedef struct evfs_command_file {
-	evfs_command_type type;
-	int num_files;
-	evfs_filereference** files;
-}
-evfs_command_file;
 
-typedef union evfs_command {
-	evfs_command_type type;
-	evfs_command_file file_command;
-}
-evfs_command;
+
+
+
+
+
 
 /*-----------*/
 
 
-typedef struct evfs_client evfs_client;
-struct evfs_client {
-        Ecore_Ipc_Client* client;
-        evfs_command* prog_command;
-	unsigned long id;
-};
 
 
 
@@ -233,7 +191,7 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_new.h>
 #include <evfs_event_helper.h>
 #include <evfs_server_handle.h>
-#include "evfs_plugin.h"
+
 
 evfs_plugin* evfs_get_plugin_for_uri(char* uri_base);
 

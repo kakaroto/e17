@@ -46,8 +46,13 @@ int evfs_file_rename(char* src, char* dst);
 
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
-
-int evfs_file_stat(evfs_client* client, evfs_command* command);
+int evfs_file_open(evfs_filereference* file);
+int evfs_file_close(evfs_filereference* file);
+int evfs_file_stat(evfs_command* command, struct stat* file_stat);
+int evfs_file_seek(evfs_filereference* file, long offset, int whence);
+int evfs_file_read(evfs_filereference* file, char* bytes, long size);
+int evfs_file_write(evfs_filereference* file, char* bytes, long size);
+int evfs_file_create(evfs_filereference* file);
 
 
 /*Internal functions*/
@@ -79,6 +84,13 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_monitor_start = &evfs_monitor_start;
 	functions->evfs_monitor_stop = &evfs_monitor_stop;
 	functions->evfs_file_stat = &evfs_file_stat;
+	functions->evfs_file_open = &evfs_file_open;
+	functions->evfs_file_close = &evfs_file_close;
+	
+	functions->evfs_file_seek = &evfs_file_seek;
+	functions->evfs_file_read = &evfs_file_read;
+	functions->evfs_file_write = &evfs_file_write;
+	functions->evfs_file_create = &evfs_file_create;
 	return functions;
 
 	
@@ -258,19 +270,86 @@ int evfs_file_rename(char* src, char* dst) {
 }
 
 
-int evfs_file_stat(evfs_client* client, evfs_command* command) {
-	struct stat file_stat;
+int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 
 	printf("Getting file stat...\n");
 
-	stat(command->file_command.files[0]->path, &file_stat);
+	stat(command->file_command.files[0]->path, file_stat);
 
-	printf("File size: %d\n", file_stat.st_size);
+	printf("File size: %d\n", file_stat->st_size);
 
-	evfs_stat_event_create(client, command, &file_stat);
+	
 }
 
 
+
+int evfs_file_open(evfs_filereference* file) {
+	printf("Open file '%s'\n", file->path);
+
+	int fd = open(file->path, O_RDONLY);
+	printf("Assigned fd %d\n", fd);
+	file->fd = fd;
+
+
+	return 0;
+}
+
+int evfs_file_close(evfs_filereference* file) {
+	int res;
+	
+	printf("Close file '%s'\n", file->path);
+
+	res = close(file->fd);
+	file->fd = 0;
+	
+	return 0;
+}
+
+int evfs_file_seek(evfs_filereference* file, long offset, int whence) {
+	printf ("Seek in file '%s' forward by '%d'\n", file->path, offset);
+
+	lseek(file->fd, offset, SEEK_SET);
+
+	return 0;
+}
+
+int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
+	int bytes_read;
+	
+	printf("Reading %d bytes from %s\n", size, file->path);
+	
+	bytes_read = read(file->fd, bytes, size);
+
+	if (bytes_read) {
+		//bytes[bytes_read] = '\0';
+		//printf ("Read '%s'\n", bytes);
+	} else {
+		return 1;
+	}
+
+	return 0;
+	
+}
+
+int evfs_file_write(evfs_filereference* file, char* bytes, long size) {
+	ssize_t i;
+	
+	printf("Writing %d bytes for %s\n", size, file->path);
+	
+
+	i = write(file->fd, bytes, size);
+	printf("Wrote %d bytes\n", i);
+
+	return 0;
+}
+
+int evfs_file_create(evfs_filereference* file) {
+	printf ("Creating file '%s'\n", file->path);
+
+	file->fd = open(file->path, O_CREAT | O_TRUNC | O_RDWR , S_IRUSR | S_IWUSR);
+
+	return 0;
+}
 
 
 

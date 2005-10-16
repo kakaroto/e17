@@ -152,9 +152,6 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			evfs_handle_file_rename_command(client,command);
 			break;
 
-		case EVFS_CMD_COPY_FILE:
-			printf("Copy file stub\n");
-			break;
 		case EVFS_CMD_MOVE_FILE:
 			printf("Move file stub\n");
 			break;
@@ -167,6 +164,10 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_LIST_DIR:
 			evfs_handle_dir_list_command(client,command);
 			printf("List directory stub\n");
+			break;
+		case EVFS_CMD_FILE_COPY:
+			printf("File copy handler\n");
+			evfs_handle_file_copy(client,command);
 			break;
 	}
 }

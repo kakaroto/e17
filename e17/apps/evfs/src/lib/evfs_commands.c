@@ -99,5 +99,23 @@ void evfs_client_dir_list(evfs_connection* conn, evfs_filereference* file) {
 
 }
 
+void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs_filereference* to) {
+	
+	evfs_command* command = NEW(evfs_command);
+
+	printf("Opening a file..\n");
+
+	command->type = EVFS_CMD_FILE_TEST;
+	command->file_command.num_files = 2;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*2);
+	command->file_command.files[0] = from;
+	command->file_command.files[1] = to;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+
+}
+
 
 
