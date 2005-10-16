@@ -256,6 +256,25 @@ ImagestatePopulate(ImageState * is)
    EAllocColor(&is->lolo);
 }
 
+static int
+e16_image_check_has_alpha(void)
+{
+   static const short  oink = 3;	/* For endianness checking */
+   unsigned char      *pb, *pe;
+
+   if (!imlib_image_has_alpha())
+      return 0;
+
+   pb = (unsigned char *)imlib_image_get_data_for_reading_only();
+   pe = pb + 4 * imlib_image_get_width() * imlib_image_get_height();
+   pb += *((char *)(&oink));
+   for (; pb < pe; pb += 4)
+      if (*pb != 0xff)
+	 return 1;
+
+   return 0;
+}
+
 static void
 ImagestateRealize(ImageState * is)
 {
@@ -280,6 +299,14 @@ ImagestateRealize(ImageState * is)
      }
 
    imlib_context_set_image(is->im);
+
+   if (imlib_image_has_alpha() && !e16_image_check_has_alpha())
+     {
+#if 0
+	Eprintf("Alpha set but no shape %s\n", is->real_file);
+#endif
+	imlib_image_set_has_alpha(0);
+     }
 
    if (is->border)
       imlib_image_set_border(is->border);
