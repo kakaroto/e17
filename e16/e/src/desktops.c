@@ -1788,6 +1788,7 @@ CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	     DesksControlsRefresh();
 	  }
      }
+   autosave();
 }
 
 static void
