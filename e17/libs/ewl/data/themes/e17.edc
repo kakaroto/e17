@@ -25,7 +25,7 @@ collections {
 data {
     item, "/label/group" "label";
     item, "/button/group" "button";
-    item, "/cell/group" "button";
+/*     item, "/cell/group" "button"; */
     item, "/radio/group" "radio";
     item, "/check/group" "checkbox";
 
