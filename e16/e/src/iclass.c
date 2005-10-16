@@ -837,7 +837,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	switch (image_type)
 	  {
 	  default:
-	  case ST_UNKNWN:
+	  case ST_SOLID:
 	  case ST_BUTTON:
 	     flags = ICLASS_ATTR_OPAQUE;
 	     break;
@@ -1550,7 +1550,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
 	       }
-	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_UNKNWN);
+	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_SOLID);
 	  }
      }
    else if (!strcmp(param2, "apply_copy"))
@@ -1583,7 +1583,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
 		  ImageclassApplyCopy(ic, win, w, h, 0, 0, st,
-				      &pmm, 1, ST_UNKNWN);
+				      &pmm, 1, ST_SOLID);
 		  IpcPrintf("0x%08x 0x%08x\n",
 			    (unsigned)pmm.pmap, (unsigned)pmm.mask);
 /*			    FreePmapMask(&pmm);		??? */

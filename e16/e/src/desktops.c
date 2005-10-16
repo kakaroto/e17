@@ -1818,7 +1818,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
      {
 	ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
 	if (ic)
-	   ImageclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_UNKNWN);
+	   ImageclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_SOLID);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   wins[i] = 0;
 	called = 1;
@@ -1844,7 +1844,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
 		  if (ic)
 		     ImageclassApply(ic, wins[i], 64, 48, 0, 0, STATE_NORMAL, 0,
-				     ST_UNKNWN);
+				     ST_SOLID);
 	       }
 
 	     EFreePixmap(pmap);
@@ -2086,7 +2086,7 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	ic = ImageclassFind("SETTINGS_AREA_AREA", 0);
 	if (ic)
-	   ImageclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_UNKNWN);
+	   ImageclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0, ST_SOLID);
 	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
 	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 0);
 	if (ic)

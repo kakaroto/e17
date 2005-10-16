@@ -439,7 +439,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	EMoveResizeWindow(tt->iwin, ix, iy, iw, ih);
 	EMapWindow(tt->iwin);
 	ImageclassApply(tt->tooltippic, tt->iwin, iw, ih, 0, 0, STATE_NORMAL, 0,
-			ST_TOOLTIP);
+			ST_SOLID);
      }
    else
       EUnmapWindow(tt->iwin);

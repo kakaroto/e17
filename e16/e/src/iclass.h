@@ -34,7 +34,7 @@ typedef struct _imageclass ImageClass;
 typedef struct _imagestate ImageState;
 
 /* Selective Transparency item types */
-#define ST_UNKNWN	0
+#define ST_SOLID 	0
 #define ST_BORDER	1
 #define ST_WIDGET	2
 #define ST_ICONBOX	3
