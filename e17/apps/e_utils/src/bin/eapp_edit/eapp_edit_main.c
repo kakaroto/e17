@@ -256,7 +256,7 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
         ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_OUTLINE);
         ewl_text_shadow_color_set(EWL_TEXT(row[0]), 128, 128, 128, 128);
         ewl_text_text_set(EWL_TEXT(row[0]), keys[i].name);
-//	ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(row[0]);
 
         v = eapp_eet_read(ef, keys[i].key, lang);
