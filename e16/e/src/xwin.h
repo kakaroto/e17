@@ -90,8 +90,6 @@ Bool                EQueryPointer(Window win, int *px, int *py, Window * pchild,
 #define ELowerWindow(win) XLowerWindow(disp, win)
 #define EClearWindow(win) XClearWindow(disp, win)
 #define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
-#define ECreatePixmap(draw, w, h, dep) XCreatePixmap(disp, draw, w, h, dep)
-#define EFreePixmap(pmap) XFreePixmap(disp, pmap)
 
 void                EShapeCombineMask(Window win, int dest, int x, int y,
 				      Pixmap pmap, int op);
@@ -107,6 +105,11 @@ XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
 int                 EShapeCopy(Window dst, Window src);
 void                EShapePropagate(Window win);
 Pixmap              EWindowGetShapePixmap(Window win);
+
+#define ECreatePixmap(draw, w, h, depth) XCreatePixmap(disp, draw, w, h, depth)
+#define EFreePixmap(pmap) XFreePixmap(disp, pmap)
+Pixmap              ECreatePixmapCopy(Pixmap src, unsigned int w,
+				      unsigned int h, unsigned int depth);
 
 GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
 int                 EFreeGC(GC gc);

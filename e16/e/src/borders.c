@@ -161,8 +161,8 @@ EwinBorderDraw(EWin * ewin, int do_shape, int do_paint)
 
 #if 0				/* Debug */
    Eprintf("EwinBorderDraw %#lx %s d=%d s=%d p=%d\n",
-	   _EwinGetClientXwin(ewin), EoGetName(ewin), EoGetDesk(ewin), do_shape,
-	   do_paint);
+	   _EwinGetClientXwin(ewin), EoGetName(ewin), EoGetDeskNum(ewin),
+	   do_shape, do_paint);
 #endif
 
    for (i = 0; i < ewin->border->num_winparts; i++)

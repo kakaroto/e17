@@ -1290,6 +1290,21 @@ EShapePropagate(Window win)
    ExShapePropagate(xid);
 }
 
+Pixmap
+ECreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
+		  unsigned int depth)
+{
+   Pixmap              pmap;
+   GC                  gc;
+
+   pmap = ECreatePixmap(src, w, h, depth);
+   gc = ECreateGC(src, 0, NULL);
+   XCopyArea(disp, src, pmap, gc, 0, 0, w, h, 0, 0);
+   EFreeGC(gc);
+
+   return pmap;
+}
+
 GC
 ECreateGC(Drawable d, unsigned long mask, XGCValues * val)
 {

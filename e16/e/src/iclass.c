@@ -830,6 +830,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 #ifdef ENABLE_TRANSPARENCY
    Imlib_Image        *ii = NULL;
    int                 flags;
+   Pixmap              pmap, mask;
 
    flags = ICLASS_ATTR_OPAQUE;
    if (Conf.trans.alpha > 0)
@@ -964,36 +965,36 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 #endif
 	  }
 
-	pmm->type = 1;
-	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
-						     w, h);
+	if (ii)
+	  {
+	     pmm->type = 0;
+	     pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	     imlib_context_set_drawable(pmap);
+	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	     imlib_context_set_drawable(win);
+	     pmm->pmap = pmap;
+	     pmm->mask = None;
+	  }
+	else
+	  {
+	     pmm->type = 1;
+	     imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap,
+							  &pmm->mask, w, h);
+	  }
+
 	if (ii && make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
-	     Pixmap              pmap = 0, mask = 0;
-	     GC                  gc;
-
 	     imlib_context_set_image(is->im);
 	     if (imlib_image_has_alpha())
 	       {
-		  /* Due to the blending the mask will always be 0 here */
-
 		  /* Make the scaled clip mask to be used */
 		  imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w,
 							       h);
 
-		  /* And now some uglyness to make a single "Imlib2 pixmap/mask" thing */
+		  /* Replace the mask with the correct one */
+		  pmm->mask = ECreatePixmapCopy(mask, w, h, 1);
 
-		  /* Replace the pmap with the previously blended one */
-		  gc = ECreateGC(pmm->pmap, 0, NULL);
-		  XCopyArea(disp, pmm->pmap, pmap, gc, 0, 0, w, h, 0, 0);
-		  EFreeGC(gc);
-
-		  /* Free the old pixmap without associated mask */
-		  imlib_free_pixmap_and_mask(pmm->pmap);
-
-		  /* We now have the copied pixmap with proper mask */
-		  pmm->pmap = pmap;
-		  pmm->mask = mask;
+		  imlib_free_pixmap_and_mask(pmap);
 	       }
 	  }
 #else
@@ -1042,7 +1043,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    if (ii)
      {
 	imlib_context_set_image(ii);
-	imlib_free_image();
+	imlib_free_image_and_decache();
      }
 #else
    make_mask = 0;
@@ -1178,39 +1179,38 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	if (is->im && w <= 8192 && h <= 8192)
 	  {
 	     PmapMask            pmm;
-	     int                 decache = 1;
 
 	     ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
 
 	     if (pmm.pmap)
 	       {
+		  Pixmap              pmap = pmm.pmap;
+
 		  if (ts && text)
 		    {
-		       TextstateDrawText(ts, pmm.pmap, text, ic->padding.left,
+		       if (pmm.type != 0)
+			  pmap = ECreatePixmapCopy(pmm.pmap, w, h, VRoot.depth);
+
+		       TextstateDrawText(ts, pmap, text, ic->padding.left,
 					 ic->padding.top,
 					 w - (ic->padding.left +
 					      ic->padding.right),
 					 h - (ic->padding.top +
 					      ic->padding.bottom),
 					 0, TextclassGetJustification(tc));
-		       decache = 1;
 		    }
 
 		  /* Set window pixmap */
+		  ESetWindowBackgroundPixmap(win, pmap);
+		  if (pmap != pmm.pmap)
+		     EFreePixmap(pmap);
+
 		  if (pmm.w == w && pmm.h == h)
-		    {
-		       ESetWindowBackgroundPixmap(win, pmm.pmap);
-		       EShapeCombineMask(win, ShapeBounding, 0, 0,
-					 pmm.mask, ShapeSet);
-		    }
-		  else
-		    {
-		       /* Tiled */
-		       ESetWindowBackgroundPixmap(win, pmm.pmap);
-		       if (pmm.mask)
-			  EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
-						 pmm.mask, ShapeSet, w, h);
-		    }
+		     EShapeCombineMask(win, ShapeBounding, 0, 0,
+				       pmm.mask, ShapeSet);
+		  else if (pmm.mask)
+		     EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
+					    pmm.mask, ShapeSet, w, h);
 	       }
 
 	     FreePmapMask(&pmm);
@@ -1219,10 +1219,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
 		  imlib_context_set_image(is->im);
-		  if (decache)
-		     imlib_free_image_and_decache();
-		  else
-		     imlib_free_image();
+		  imlib_free_image();
 		  is->im = NULL;
 	       }
 	  }
