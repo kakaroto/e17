@@ -223,7 +223,7 @@ int evfs_file_open(evfs_filereference* file) {
 int evfs_file_close(evfs_filereference* file) {
 	printf ("SMB close: closing\n");
 
-	smb_context->close(smb_context, file->fd_p);
+	smb_context->close_fn(smb_context, file->fd_p);
 
 	return 0;
 }
