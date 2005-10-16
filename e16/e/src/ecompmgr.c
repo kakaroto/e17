@@ -1627,6 +1627,8 @@ ECompMgrWinDel(EObj * eo)
      }
 
    _EFREE(eo->cmhook);
+
+   _ECM_SET_STACK_CHANGED();
 }
 
 static void
