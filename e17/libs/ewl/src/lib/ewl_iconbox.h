@@ -113,6 +113,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 void ewl_iconbox_clear(Ewl_IconBox* iconbox);
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename);
 void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file);
+void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item);
+Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib);
 
 
 /* Internal callbacks */

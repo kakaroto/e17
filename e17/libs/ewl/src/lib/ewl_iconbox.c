@@ -187,6 +187,10 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_expansion_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
+	ib->ewl_iconbox_context_menu_item = ewl_menu_separator_new();
+	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_context_menu_item);
+	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
+
 
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
 		
@@ -277,6 +281,26 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	/*printf("Setup the iconbox...\n");*/
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+}
+
+
+
+
+
+void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
+	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), item);
+}
+
+Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
+	Ewl_IconBox_Icon* list_item;
+	Ecore_List* selected = ecore_list_new();
+	
+	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+		if (list_item->selected) ecore_list_append(selected, list_item);
+	}
+
+	return selected;
 }
 
 
