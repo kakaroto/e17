@@ -260,9 +260,6 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 
 		ewl_widget_internal_set(cell, TRUE);
 		ewl_container_child_append(EWL_CONTAINER(row), cell);
-		ewl_object_fill_policy_set(EWL_OBJECT(cell),
-				EWL_FLAG_FILL_HFILL |
-				EWL_FLAG_FILL_HSHRINK);
 		ewl_widget_show(cell);
 
 		if (children[i]) {

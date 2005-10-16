@@ -41,7 +41,8 @@ int ewl_cell_init(Ewl_Cell *cell)
 	if (!ewl_container_init(EWL_CONTAINER(cell)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_FILL |
+				   EWL_FLAG_FILL_HSHRINK);
 	ewl_widget_appearance_set(EWL_WIDGET(cell), "cell");
 	ewl_widget_inherit(EWL_WIDGET(cell), "cell");
 
