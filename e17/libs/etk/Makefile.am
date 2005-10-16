@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = src data po
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		config.h.in config.sub configure install-sh \
@@ -11,8 +11,15 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = etk-config
 
-EXTRA_DIST = AUTHORS COPYING gendoc \
-      Doxyfile \
-	   README.in README
+EXTRA_DIST = config.rpath mkinstalldirs  \
+AUTHORS \
+COPYING \
+gendoc \
+Doxyfile \
+README.in \
+README \
+ABOUT-NLS
 
 pkgconfigdir = $(libdir)/pkgconfig
+
+ACLOCAL_AMFLAGS = -I m4

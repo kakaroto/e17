@@ -179,6 +179,13 @@ if test $VV -lt $VVM; then
   AC_MSG_ERROR(Edje is not at least "$VM". It is "$V".)
 fi
 
+#####################################################################
+## Gettext
+ALL_LINGUAS="fr"
+AC_SUBST(ALL_LINGUAS)
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14.1)
 
 #####################################################################
 ## Fill in flags
@@ -216,6 +223,7 @@ data/fonts/Makefile
 data/images/Makefile
 data/stock_icons/Makefile
 data/stock_icons/default/Makefile
+po/Makefile
 etk-config
 README
 ],[

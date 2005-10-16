@@ -2,6 +2,11 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AUTOMAKE_OPTIONS = 1.4 foreign
 
+# Gettext
+datadir = @datadir@
+localedir = $(datadir)/locale
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+
 EXTRA_DIST =
 
 INCLUDES	= \

@@ -4,6 +4,12 @@
 
 #include <stdio.h>
 
+/* Gettext */
+#include <libintl.h>
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
+
 /** @brief Gets the max of the two values */
 #define ETK_MAX(v1, v2)    (((v1) > (v2)) ? (v1) : (v2)) 
 /** @brief Gets the min of the two values */

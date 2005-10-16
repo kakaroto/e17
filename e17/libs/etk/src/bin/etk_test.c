@@ -52,7 +52,7 @@ static void _etk_test_main_window()
    int i;
 
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), "Etk Test Application");
+   etk_window_title_set(ETK_WINDOW(win), _("Etk Test Application"));
    etk_signal_connect("destroy", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
 	
    table = etk_table_new((num_tests + 2) / 3, 3, 1);
@@ -60,7 +60,7 @@ static void _etk_test_main_window()
 
    for (i = 0; i < num_tests; i++)
    {
-      button = etk_button_new_with_label(tests[i].name);
+      button = etk_button_new_with_label(_(tests[i].name));
       etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(tests[i].func), NULL);
       etk_table_attach_defaults(ETK_TABLE(table), button, i / 3, i / 3, i % 3, i % 3);
    }

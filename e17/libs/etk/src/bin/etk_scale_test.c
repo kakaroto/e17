@@ -19,7 +19,7 @@ void etk_test_scale_window_create(void *data)
 	}
    
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), "Etk Scale test");
+   etk_window_title_set(ETK_WINDOW(win), _("Etk Scale test"));
    
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_scale_window_deleted_cb), win);	
 	

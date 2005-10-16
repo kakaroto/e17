@@ -28,7 +28,7 @@ void etk_test_entry_window_create(void *data)
 	}	
 	
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), "Etk Entry test");
+   etk_window_title_set(ETK_WINDOW(win), _("Etk Entry test"));
    
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_entry_window_deleted_cb), win);	
 	
@@ -38,7 +38,7 @@ void etk_test_entry_window_create(void *data)
    entry = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), entry, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
 
-   button = etk_button_new_with_label("Print the text!!!");
+   button = etk_button_new_with_label(_("Print the text!!!"));
    etk_table_attach(ETK_TABLE(table), button, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_entry_print_clicked), NULL);
 

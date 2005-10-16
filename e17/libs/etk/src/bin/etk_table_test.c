@@ -22,47 +22,47 @@ void etk_test_table_window_create(void *data)
 	}	
 
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), "Etk Table Test");
+   etk_window_title_set(ETK_WINDOW(win), _("Etk Table Test"));
 
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_table_window_deleted_cb), win);
 	
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/open.png");
-   widget[0] = etk_button_new_with_label("Set Icon");
+   widget[0] = etk_button_new_with_label(_("Set Icon"));
    etk_button_image_set(ETK_BUTTON(widget[0]), ETK_IMAGE(image));
 
    widget[20] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
    etk_container_add(ETK_CONTAINER(widget[20]), widget[0]);
 
-   widget[1] = etk_label_new("App name");
+   widget[1] = etk_label_new(_("App name"));
    widget[2] = etk_entry_new();
 
-   widget[3] = etk_label_new("Generic Info");
+   widget[3] = etk_label_new(_("Generic Info"));
    widget[4] = etk_entry_new();
 
-   widget[5] = etk_label_new("Comments");
+   widget[5] = etk_label_new(_("Comments"));
    widget[6] = etk_entry_new();
 
-   widget[7] = etk_label_new("Executable");
+   widget[7] = etk_label_new(_("Executable"));
    widget[8] = etk_entry_new();
 
-   widget[9] = etk_label_new("Window name");
+   widget[9] = etk_label_new(_("Window name"));
    widget[10] = etk_entry_new();
 
-   widget[11] = etk_label_new("Window class");
+   widget[11] = etk_label_new(_("Window class"));
    widget[12] = etk_entry_new();
 
-   widget[13] = etk_label_new("Startup notify");
+   widget[13] = etk_label_new(_("Startup notify"));
    widget[14] = etk_check_button_new();
 
-   widget[15] = etk_label_new("Wait exit");
+   widget[15] = etk_label_new(_("Wait exit"));
    widget[16] = etk_check_button_new();
 
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/close.png");
-   widget[17] = etk_button_new_with_label("Cancel");
+   widget[17] = etk_button_new_with_label(_("Cancel"));
    etk_button_image_set(ETK_BUTTON(widget[17]), ETK_IMAGE(image));
 
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/save.png");
-   widget[18] = etk_button_new_with_label("Save");
+   widget[18] = etk_button_new_with_label(_("Save"));
    etk_button_image_set(ETK_BUTTON(widget[18]), ETK_IMAGE(image));
    
    widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
