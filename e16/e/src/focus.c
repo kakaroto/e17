@@ -470,7 +470,8 @@ FocusSet(void)
 void
 FocusNewDeskBegin(void)
 {
-   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
+   focus_pending_new = NULL;
+   doFocusToEwin(NULL, FOCUS_DESK_LEAVE);
 }
 
 void
