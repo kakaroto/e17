@@ -132,7 +132,7 @@ EwinCreate(Window win, int type)
 
    ewin->o.stacked = -1;	/* Not placed on desk yet */
    EoSetDesk(ewin, DesksGetCurrent());
-   EobjInit(EoObj(ewin), EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
+   EoInit(ewin, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
    EoSetLayer(ewin, 4);
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 0);
@@ -230,8 +230,7 @@ EwinDestroy(EWin * ewin)
    EwinCleanup(ewin);
    EobjListOrderDel(&ewin->o);
    EobjListFocusDel(&ewin->o);
-   EobjFini(&ewin->o);
-   EDestroyWindow(EoGetWin(ewin));
+   EoFini(ewin);
 
    HintsSetClientList();
 

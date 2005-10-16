@@ -76,7 +76,7 @@ WarpFocusWinCreate(void)
    if (!fw)
       return fw;
 
-   EobjInit(EoObj(fw), EOBJ_TYPE_MISC, None, 0, 0, 1, 1, 1, "Warp");
+   EoInit(fw, EOBJ_TYPE_MISC, None, 0, 0, 1, 1, 1, "Warp");
    EoSetFloating(fw, 1);
    EoSetLayer(fw, 20);
 
@@ -99,8 +99,7 @@ static void
 WarpFocusWinDestroy(WarpFocusWin * fw)
 {
    EventCallbackUnregister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
-   EobjFini(EoObj(fw));
-   EDestroyWindow(EoGetWin(fw));
+   EoFini(fw);
    Efree(fw);
 }
 #endif

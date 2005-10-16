@@ -165,6 +165,11 @@ EobjFini(EObj * eo)
       Eprintf("EobjFini: %#lx %s\n", eo->win, eo->name);
 
    EobjListStackDel(eo);
+   if (!eo->external)
+     {
+	EDestroyWindow(eo->win);
+	eo->gone = 1;
+     }
 #if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinDel(eo);
@@ -219,8 +224,6 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 void
 EobjWindowDestroy(EObj * eo)
 {
-   EDestroyWindow(eo->win);
-   eo->gone = 1;
    EobjDestroy(eo);
 }
 
@@ -246,6 +249,7 @@ EobjRegister(Window win, int type)
 
    EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
    eo->name = ecore_x_icccm_title_get(win);
+   eo->external = 1;
 
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)

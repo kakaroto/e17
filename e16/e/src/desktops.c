@@ -427,7 +427,7 @@ DeskCreate(int desk, int configure)
 
    win = (desk == 0) ? VRoot.win : None;
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
-   EobjInit(&dsk->o, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
+   EoInit(dsk, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
    EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
    EoSetShadow(dsk, 0);
    if (desk == 0)
@@ -467,8 +467,7 @@ DeskDestroy(Desk * dsk)
    if (dsk->bg)
       BackgroundDecRefcount(dsk->bg);
 
-   EobjFini(&dsk->o);
-   EDestroyWindow(EoGetWin(dsk));
+   EoFini(dsk);
 
    desks.desk[dsk->num] = NULL;
    Efree(dsk);

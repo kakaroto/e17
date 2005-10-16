@@ -248,7 +248,7 @@ HiwinCreate(void)
    if (!phi)
       return NULL;
 
-   EobjInit(EoObj(phi), EOBJ_TYPE_MISC, None, 0, 0, 3, 3, 1, "HiWin");
+   EoInit(phi, EOBJ_TYPE_MISC, None, 0, 0, 3, 3, 1, "HiWin");
    EoSetShadow(phi, 0);
    EoSetFloating(phi, 1);
    EoSetLayer(phi, 19);

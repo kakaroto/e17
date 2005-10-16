@@ -39,6 +39,7 @@ struct _eobj
    signed char         stacked;
    char                sticky;
    char                floating;
+   unsigned            external:1;
    unsigned            shown:1;
    unsigned            gone:1;
    unsigned            noredir:1;	/* Do not redirect */
@@ -104,6 +105,9 @@ struct _eobj
 #define EoSetFade(eo, _x)
 #endif
 
+#define EoInit(eo, type, win, x, y, w, h, su, name) \
+					EobjInit(EoObj(eo), type, win, x, y, w, h, su, name)
+#define EoFini(eo)			EobjFini(EoObj(eo));
 #define EoSync(eo)                      EobjSync(EoObj(eo))
 #define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)
 #define EoUnmap(eo)                     EobjUnmap(EoObj(eo))

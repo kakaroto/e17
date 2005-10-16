@@ -156,7 +156,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 
    EoSetSticky(b, sticky);
    EoSetDesk(b, DeskGet(desk));
-   EobjInit(EoObj(b), EOBJ_TYPE_BUTTON, None, -100, -100, 50, 50, 0, name);
+   EoInit(b, EOBJ_TYPE_BUTTON, None, -100, -100, 50, 50, 0, name);
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
 
@@ -182,8 +182,7 @@ ButtonDestroy(Button * b)
 
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
 
-   EobjFini(&b->o);
-   EDestroyWindow(EoGetWin(b));
+   EoFini(b);
 
    if (b->iclass)
       ImageclassDecRefcount(b->iclass);
