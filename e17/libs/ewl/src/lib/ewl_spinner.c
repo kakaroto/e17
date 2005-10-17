@@ -79,36 +79,37 @@ ewl_spinner_init(Ewl_Spinner * s)
 
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(s), vbox);
+	ewl_widget_appearance_set(vbox, "controls");
 	ewl_widget_internal_set(vbox, TRUE);
 	ewl_widget_show(vbox);
 
-	s->button_increase = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), s->button_increase);
-	ewl_widget_appearance_set(s->button_increase, "increment");
-	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increase),
+	s->increment = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), s->increment);
+	ewl_widget_appearance_set(s->increment, "increment");
+	ewl_object_fill_policy_set(EWL_OBJECT(s->increment),
 			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
-	ewl_widget_internal_set(s->button_increase, TRUE);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
+	ewl_widget_internal_set(s->increment, TRUE);
+	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_UP,
 			    ewl_spinner_value_stop_cb, w);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_KEY_DOWN,
+	ewl_callback_append(s->increment, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, s);
-	ewl_widget_show(s->button_increase);
+	ewl_widget_show(s->increment);
 
-	s->button_decrease = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), s->button_decrease);
-	ewl_widget_appearance_set(s->button_decrease, "decrement");
-	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrease),
+	s->decrement = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), s->decrement);
+	ewl_widget_appearance_set(s->decrement, "decrement");
+	ewl_object_fill_policy_set(EWL_OBJECT(s->decrement),
 			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
-	ewl_widget_internal_set(s->button_decrease, TRUE);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_DOWN,
+	ewl_widget_internal_set(s->decrement, TRUE);
+	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_decrease_value_cb, w);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_UP,
 			    ewl_spinner_value_stop_cb, w);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
+	ewl_callback_append(s->decrement, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, s);
-	ewl_widget_show(s->button_decrease);
+	ewl_widget_show(s->decrement);
 
 	s->min_val = INT_MIN;
 	s->max_val = INT_MAX;

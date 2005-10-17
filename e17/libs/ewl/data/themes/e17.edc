@@ -71,8 +71,8 @@ data {
 
     item, "/combo/decrement/group" "vscroll-down";
     item, "/combo/increment/group" "vscroll-up";
-    item, "/spinner/decrement/group" "vscroll-down";
-    item, "/spinner/increment/group" "vscroll-up";
+    item, "/spinner/controls/decrement/group" "vscroll-down";
+    item, "/spinner/controls/increment/group" "vscroll-up";
     item, "/spinner/acceleration" "5";
     item, "/spinner/velocity" "5";
     item, "/vscrollbar/decrement/group" "vscroll-down";

@@ -40,8 +40,8 @@ struct Ewl_Spinner
 	double          step; /**< Amount to add or subtract at a time */
 	int             digits; /**< Number of digits displayed after decimal */
 	Ewl_Widget     *entry; /**< The Ewl_Entry displaying value */
-	Ewl_Widget     *button_increase; /**< Ewl_Button to add value */
-	Ewl_Widget     *button_decrease; /**< Ewl_Button to subtract value */
+	Ewl_Widget     *increment; /**< Ewl_Button to add value */
+	Ewl_Widget     *decrement; /**< Ewl_Button to subtract value */
 	double          start_time; /**< Time the spinner was pressed */
 	int             direction; /**< Indicate increasing/decreasing value */
 	Ecore_Timer    *timer; /**< Timer for tracking mouse button held down */
