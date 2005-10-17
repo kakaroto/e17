@@ -10,71 +10,104 @@ static int ewl_spinner_timer(void *data);
  * @return Returns a new spinner widget on success, NULL on failure.
  * @brief Allocate a new spinner widget
  */
-Ewl_Widget     *ewl_spinner_new()
+Ewl_Widget *
+ewl_spinner_new()
 {
 	Ewl_Spinner    *s = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	s = NEW(Ewl_Spinner, 1);
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_spinner_init(s);
+	if (!ewl_spinner_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
  * @param s: the spinner to initialize
- * @return Returns no value.
+ * @return Returns TRUE on success or FALSE on failure
  * @brief Initialize a spinner to default values and callbacks
  *
  * Sets the fields and callbacks of the spinner @a s their default values.
  */
-int ewl_spinner_init(Ewl_Spinner * s)
+int
+ewl_spinner_init(Ewl_Spinner * s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget     *w, *vbox;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
-	if (!ewl_container_init(EWL_CONTAINER(w)))
+	if (!ewl_box_init(EWL_BOX(w)))
+	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "spinner");
 	ewl_widget_inherit(w, "spinner");
 
-	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_spinner_child_show_cb);
-	ewl_container_resize_notify_set(EWL_CONTAINER(w),
-				    ewl_spinner_child_resize_cb);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
-
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_spinner_realize_cb,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_spinner_configure_cb,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_spinner_destroy_cb,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, 
+				ewl_spinner_realize_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, 
+				ewl_spinner_destroy_cb, NULL);
 
 	s->entry = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(s->entry), "0");
 	ewl_container_child_append(EWL_CONTAINER(s), s->entry);
+	ewl_object_fill_policy_set(EWL_OBJECT(s->entry), EWL_FLAG_FILL_NONE);
+	ewl_widget_internal_set(EWL_WIDGET(s->entry), TRUE);
+	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
+			    ewl_entry_cb_key_down);
+	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
+			    ewl_spinner_key_down_cb, s);
+	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
+			    ewl_spinner_deselect_cb, s);
+	ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
+			    ewl_spinner_wheel_cb, s);
+
 	ewl_widget_show(s->entry);
 
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(s), vbox);
+	ewl_widget_internal_set(vbox, TRUE);
+	ewl_widget_show(vbox);
+
 	s->button_increase = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(s), s->button_increase);
-	ewl_widget_appearance_set(s->button_increase, "button_increment");
+	ewl_container_child_append(EWL_CONTAINER(vbox), s->button_increase);
+	ewl_widget_appearance_set(s->button_increase, "increment");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increase),
-			EWL_FLAG_FILL_NONE);
+			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
+	ewl_widget_internal_set(s->button_increase, TRUE);
+	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_spinner_increase_value_cb, w);
+	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
+			    ewl_spinner_value_stop_cb, w);
+	ewl_callback_append(s->button_increase, EWL_CALLBACK_KEY_DOWN,
+			    ewl_spinner_key_down_cb, s);
 	ewl_widget_show(s->button_increase);
 
 	s->button_decrease = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(s), s->button_decrease);
-	ewl_widget_appearance_set(s->button_decrease, "button_decrement");
+	ewl_container_child_append(EWL_CONTAINER(vbox), s->button_decrease);
+	ewl_widget_appearance_set(s->button_decrease, "decrement");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrease),
-			EWL_FLAG_FILL_NONE);
+			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
+	ewl_widget_internal_set(s->button_decrease, TRUE);
+	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_spinner_decrease_value_cb, w);
+	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_UP,
+			    ewl_spinner_value_stop_cb, w);
+	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
+			    ewl_spinner_key_down_cb, s);
 	ewl_widget_show(s->button_decrease);
 
 	s->min_val = INT_MIN;
@@ -83,29 +116,7 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	s->step = 0.1;
 	s->digits = 2;
 
-	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    ewl_entry_cb_key_down);
-	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, NULL);
-	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
-			    ewl_spinner_deselect_cb, NULL);
-	ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
-			    ewl_spinner_wheel_cb, NULL);
-
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_spinner_increase_value_cb, w);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
-			    ewl_spinner_value_stop_cb, w);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, NULL);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_spinner_decrease_value_cb, w);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_UP,
-			    ewl_spinner_value_stop_cb, w);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, NULL);
-
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -116,7 +127,8 @@ int ewl_spinner_init(Ewl_Spinner * s)
  *
  * Sets the current value of the spinner @a s to @a value.
  */
-void ewl_spinner_value_set(Ewl_Spinner * s, double value)
+void
+ewl_spinner_value_set(Ewl_Spinner * s, double value)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -131,7 +143,8 @@ void ewl_spinner_value_set(Ewl_Spinner * s, double value)
  * @return Returns the current value in @a s on success, 0.0 on failure.
  * @brief Get the current value of a spinner widget
  */
-double ewl_spinner_value_get(Ewl_Spinner * s)
+double
+ewl_spinner_value_get(Ewl_Spinner * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.00);
@@ -147,7 +160,8 @@ double ewl_spinner_value_get(Ewl_Spinner * s)
  *
  * Changes the digits displayed by @a s to @a digits.
  */
-void ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits)
+void
+ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -163,7 +177,8 @@ void ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits)
  * @brief Retrieves the minimum value for the spinner.
  * @return Returns the currently set minimum value for the specified spinner.
  */
-double ewl_spinner_min_val_get(Ewl_Spinner *s)
+double
+ewl_spinner_min_val_get(Ewl_Spinner *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
@@ -179,7 +194,8 @@ double ewl_spinner_min_val_get(Ewl_Spinner *s)
  *
  * Sets the smallest value that @a s can obtain to @a val.
  */
-void ewl_spinner_min_val_set(Ewl_Spinner * s, double val)
+void
+ewl_spinner_min_val_set(Ewl_Spinner * s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -195,7 +211,8 @@ void ewl_spinner_min_val_set(Ewl_Spinner * s, double val)
  * @brief Retrieves the maximum value for the spinner.
  * @return Returns the currently set maximum value for the specified spinner.
  */
-double ewl_spinner_max_val_get(Ewl_Spinner *s)
+double
+ewl_spinner_max_val_get(Ewl_Spinner *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 100.0);
@@ -211,7 +228,8 @@ double ewl_spinner_max_val_get(Ewl_Spinner *s)
  *
  * Sets the largest value that @a s can obtain to @a val.
  */
-void ewl_spinner_max_val_set(Ewl_Spinner * s, double val)
+void
+ewl_spinner_max_val_set(Ewl_Spinner * s, double val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -231,7 +249,8 @@ void ewl_spinner_max_val_set(Ewl_Spinner * s, double val)
  * Changes the increment that @a s changes by with each click of it's spinner
  * buttons to @a step.
  */
-void ewl_spinner_step_set(Ewl_Spinner * s, double step)
+void
+ewl_spinner_step_set(Ewl_Spinner * s, double step)
 {
 	Ewl_Widget     *w;
 
@@ -246,154 +265,23 @@ void ewl_spinner_step_set(Ewl_Spinner * s, double step)
 }
 
 void
-ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
-{
-	Ewl_Spinner *s = EWL_SPINNER(c);
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (w == s->entry) {
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
-				ewl_object_preferred_w_get(EWL_OBJECT(w)));
-	}
-	else if (s->button_increase && s->button_decrease) {
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
-				MAX(ewl_object_preferred_w_get(EWL_OBJECT(
-							s->button_increase)),
-					ewl_object_preferred_h_get(EWL_OBJECT(
-							s->button_decrease))));
-	}
-
-	if (s->entry && s->button_increase && s->button_decrease) {
-		int size;
-
-		size = ewl_object_preferred_w_get(EWL_OBJECT(s->button_increase))
-			+ ewl_object_preferred_h_get(EWL_OBJECT(s->button_decrease));
-		ewl_object_minimum_h_set(EWL_OBJECT(c),
-			MAX(ewl_object_preferred_h_get(EWL_OBJECT(s->entry)),
-			size));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-			    Ewl_Orientation o)
-{
-	Ewl_Spinner *s = EWL_SPINNER(c);
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (w == s->entry)
-			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
-					PREFERRED_W(c) + size);
-		else if (s->button_increase && s->button_decrease) {
-			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
-				MAX(ewl_object_preferred_w_get(EWL_OBJECT(
-							s->button_increase)),
-					ewl_object_preferred_w_get(EWL_OBJECT(
-							s->button_decrease))));
-		}
-	}
-	else if (s->entry && s->button_increase && s->button_decrease) {
-		size = ewl_object_preferred_h_get(EWL_OBJECT(
-					s->button_increase)) +
-			ewl_object_preferred_h_get(EWL_OBJECT(
-						s->button_decrease));
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
-			MAX(ewl_object_preferred_h_get(EWL_OBJECT(s->entry)),
-			size));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+ewl_spinner_realize_cb(Ewl_Widget * w __UNUSED__, 
+			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Spinner    *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
-	s = EWL_SPINNER(w);
-
+	s = EWL_SPINNER(user_data);
 	ewl_spinner_calc_value(s, s->value, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	int             size;
-	Ewl_Spinner    *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SPINNER(w);
-
-	/*
-	 * Place the entry box, request it's height so we can use it later for
-	 * determining available space for the buttons.
-	 */
-	ewl_object_position_request(EWL_OBJECT(s->entry), CURRENT_X(w),
-			CURRENT_Y(w));
-	ewl_object_h_request(EWL_OBJECT(s->entry), CURRENT_H(w));
-	size = ewl_object_current_h_get(EWL_OBJECT(s->entry));
-
-	/*
-	 * Vertically position the increase button.
-	 */
-	ewl_object_y_request(EWL_OBJECT(s->button_increase), CURRENT_Y(w));
-	ewl_object_h_request(EWL_OBJECT(s->button_increase), size / 2);
-
-	/*
-	 * Vertically position the decrease button.
-	 */
-	ewl_object_y_request(EWL_OBJECT(s->button_decrease), CURRENT_Y(w) +
-		ewl_object_current_h_get(EWL_OBJECT(s->button_increase)) +
-		(size % 2));
-	ewl_object_h_request(EWL_OBJECT(s->button_decrease), size / 2);
-
-	/*
-	 * The buttons don't fill. So rely on the theme to set a maximum size.
-	 */
-	ewl_object_w_request(EWL_OBJECT(s->button_increase), CURRENT_W(w));
-	ewl_object_w_request(EWL_OBJECT(s->button_decrease), CURRENT_W(w));
-
-	/*
-	 * Use the max of the two resulting button sizes to determine the area
-	 * available for layout of each component.
-	 */
-	size = MAX(ewl_object_current_w_get(EWL_OBJECT(s->button_increase)),
-		ewl_object_current_w_get(EWL_OBJECT(s->button_decrease)));
-
-	ewl_object_w_request(EWL_OBJECT(s->entry), CURRENT_W(w) - size);
-
-	ewl_object_x_request(EWL_OBJECT(s->button_increase),
-			CURRENT_X(w) +
-			ewl_object_current_w_get(EWL_OBJECT(s->entry)) +
-			(size - ewl_object_current_w_get(EWL_OBJECT(s->button_increase)))
-			/ 2);
-
-	ewl_object_x_request(EWL_OBJECT(s->button_decrease),
-			CURRENT_X(w) +
-			ewl_object_current_w_get(EWL_OBJECT(s->entry)) +
-			(size - ewl_object_current_w_get(EWL_OBJECT(s->button_decrease)))
-			/ 2);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
 ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
-				void *user_data __UNUSED__)
+				void *user_data)
 {
 	Ewl_Entry              *e;
 	Ewl_Spinner            *s;
@@ -401,17 +289,18 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
 	e = EWL_ENTRY(w);
-	s = EWL_SPINNER(w->parent);
+	s = EWL_SPINNER(user_data);
 
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "Up"))
-		ewl_spinner_increase_value_cb(w, NULL, NULL);
+		ewl_spinner_increase_value_cb(w, NULL, s);
 
 	else if (!strcmp(ev->keyname, "Down"))
-		ewl_spinner_decrease_value_cb(w, NULL, NULL);
+		ewl_spinner_decrease_value_cb(w, NULL, s);
 
 	else if (!strcmp(ev->keyname, "Left"))
 		ewl_entry_cursor_move_left(e);
@@ -442,17 +331,16 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
 
 void
 ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+				void *user_data)
 {
 	Ewl_Spinner    *s;
 	char           *str;
 	float           val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
-	s = EWL_SPINNER(w->parent);
-
+	s = EWL_SPINNER(user_data);
 	str = ewl_text_text_get(EWL_TEXT(s->entry));
 
 	if (str && strlen(str)) {
@@ -466,16 +354,16 @@ ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data,
-			void *user_data __UNUSED__)
+ewl_spinner_wheel_cb(Ewl_Widget * w __UNUSED__, void *ev_data,
+			void *user_data)
 {
 	Ewl_Spinner		*s;
 	Ewl_Event_Mouse_Wheel *wheel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
-	s = EWL_SPINNER(w->parent);
+	s = EWL_SPINNER(user_data);
 	wheel = (Ewl_Event_Mouse_Wheel *)ev_data;
 
 	ewl_spinner_calc_value(s, s->value - (wheel->z * s->step), TRUE);
@@ -518,16 +406,16 @@ ewl_spinner_calc_value(Ewl_Spinner * s, double value, unsigned int call)
 
 void
 ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data,
-					void *user_data __UNUSED__)
+					void *user_data)
 {
 	Ewl_Spinner    *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
-	s = EWL_SPINNER(w->parent);
-
-	ewl_spinner_deselect_cb(w, NULL, NULL);
+	s = EWL_SPINNER(user_data);
+	ewl_spinner_deselect_cb(w, NULL, s);
 
 	ewl_spinner_calc_value(s, s->value + s->step, TRUE);
 
@@ -544,10 +432,12 @@ void
 ewl_spinner_value_stop_cb(Ewl_Widget * w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
-	Ewl_Spinner *s = user_data;
+	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
+	s = user_data;
 	if (s->timer) {
 		ecore_timer_del(s->timer);
 
@@ -561,19 +451,18 @@ ewl_spinner_value_stop_cb(Ewl_Widget * w __UNUSED__,
 
 void
 ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data,
-					void *user_data __UNUSED__)
+					void *user_data)
 {
 	Ewl_Spinner    *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
-	s = EWL_SPINNER(w->parent);
-
-	ewl_spinner_deselect_cb(w, NULL, NULL);
+	s = EWL_SPINNER(user_data);
+	ewl_spinner_deselect_cb(w, NULL, s);
 
 	ewl_spinner_calc_value(s, s->value - s->step, TRUE);
-
 	if (ev_data) {
 		s->direction = -1;
 		s->start_time = ecore_time_get();
@@ -583,15 +472,16 @@ ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SPINNER(w);
-
 	if (s->timer) {
 		ecore_timer_del(s->timer);
 		s->timer = NULL;
@@ -600,12 +490,16 @@ void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int ewl_spinner_timer(void *data)
+static int
+ewl_spinner_timer(void *data)
 {
 	Ewl_Spinner    *s;
 	double          dt;
 	double          value, range, tmpt;
 	int             velocity, delay;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
 
 	s = EWL_SPINNER(data);
 
@@ -643,5 +537,6 @@ static int ewl_spinner_timer(void *data)
 
 	ewl_spinner_value_set(s, value);
 
-	return 1;
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+

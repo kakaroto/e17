@@ -28,12 +28,12 @@ typedef struct Ewl_Spinner Ewl_Spinner;
 #define EWL_SPINNER(spinner) ((Ewl_Spinner *) spinner)
 
 /**
- * Inherits from Ewl_Container and adds an entry box that can only contain
+ * Inherits from Ewl_Box and adds an entry box that can only contain
  * numerical values as well as buttons for manipulating that value.
  */
 struct Ewl_Spinner
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Box   	box; /**< Inherit from Ewl_Box */
 	double          min_val; /**< Minimum numerical value displayed */
 	double          max_val; /**< Maximum numerical value displayed */
 	double          value; /**< Current value displayed */
@@ -61,13 +61,8 @@ void            ewl_spinner_step_set(Ewl_Spinner * s, double step);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
-				 int size, Ewl_Orientation o);
 void ewl_spinner_realize_cb(Ewl_Widget * widget, void *ev_data,
 			    void *user_data);
-void ewl_spinner_configure_cb(Ewl_Widget * widget, void *ev_data,
-			      void *user_data);
 void ewl_spinner_key_down_cb(Ewl_Widget * widget, void *ev_data,
 			     void *user_data);
 void ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data,
