@@ -26,8 +26,8 @@ data {
 	item, "/entry/group" "entry";
 	item, "/entry/font" "Vera";
 	item, "/filedialog/group" "filedialog";
-	item, "/hscrollbar/button_decrement/group" "hscroll-left";
-	item, "/hscrollbar/button_increment/group" "hscroll-right";
+	item, "/hscrollbar/decrement/group" "hscroll-left";
+	item, "/hscrollbar/increment/group" "hscroll-right";
 	item, "/hseeker/group" "trough";
 	item, "/hseparator/group" "hline";
 	item, "/imenu/group" "dialog";
@@ -37,8 +37,8 @@ data {
 	item, "/radio/group" "radio";
 	item, "/scrollpane/group" "trough";
 	item, "/spacer/group" "spacer";
-	item, "/spinner/button_decrement/group" "vscroll-mini-down";
-	item, "/spinner/button_increment/group" "vscroll-mini-up";
+	item, "/spinner/decrement/group" "vscroll-mini-down";
+	item, "/spinner/increment/group" "vscroll-mini-up";
 	item, "/statusbar/group" "statusbar";
 	item, "/statusbar/text/font" "Vera";
 	item, "/statusbar/text/font_size" "10";
@@ -53,8 +53,8 @@ data {
 	item, "/theme/name" "skeleton";
 	item, "/tooltip/group" "dialog";
 	item, "/tree/group" "tree";
-	item, "/vscrollbar/button_decrement/group" "vscroll-down";
-	item, "/vscrollbar/button_increment/group" "vscroll-up";
+	item, "/vscrollbar/decrement/group" "vscroll-down";
+	item, "/vscrollbar/increment/group" "vscroll-up";
 	item, "/vseeker/group" "trough";
 	item, "/vseparator/group" "vline";
 	item, "/window/group" "window";

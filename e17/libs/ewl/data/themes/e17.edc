@@ -24,6 +24,7 @@ collections {
 
 data {
     item, "/label/group" "label";
+    item, "/label/textpart" "text";
     item, "/button/group" "button";
 /*     item, "/cell/group" "button"; */
     item, "/radio/group" "radio";
@@ -68,16 +69,16 @@ data {
     item, "/stock/save" "stock/save";
     item, "/stock/stop" "stock/stop";
 
-    item, "/combo/button_decrement/group" "vscroll-down";
-    item, "/combo/button_increment/group" "vscroll-up";
-    item, "/spinner/button_decrement/group" "vscroll-down";
-    item, "/spinner/button_increment/group" "vscroll-up";
+    item, "/combo/decrement/group" "vscroll-down";
+    item, "/combo/increment/group" "vscroll-up";
+    item, "/spinner/decrement/group" "vscroll-down";
+    item, "/spinner/increment/group" "vscroll-up";
     item, "/spinner/acceleration" "5";
     item, "/spinner/velocity" "5";
-    item, "/vscrollbar/button_decrement/group" "vscroll-down";
-    item, "/vscrollbar/button_increment/group" "vscroll-up";
-    item, "/hscrollbar/button_decrement/group" "hscroll-left";
-    item, "/hscrollbar/button_increment/group" "hscroll-right";
+    item, "/vscrollbar/decrement/group" "vscroll-down";
+    item, "/vscrollbar/increment/group" "vscroll-up";
+    item, "/hscrollbar/decrement/group" "hscroll-left";
+    item, "/hscrollbar/increment/group" "hscroll-right";
     item, "/vseeker/vbutton/group"  "vbutton";
     item, "/hseeker/hbutton/group"  "hbutton";
 

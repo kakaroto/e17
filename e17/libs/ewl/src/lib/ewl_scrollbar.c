@@ -85,24 +85,24 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.
 	 */
-	s->button_decrement = ewl_button_new();
-	ewl_widget_internal_set(s->button_decrement, TRUE);
-	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
+	s->decrement = ewl_button_new();
+	ewl_widget_internal_set(s->decrement, TRUE);
+	ewl_object_alignment_set(EWL_OBJECT(s->decrement),
 			EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrement),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->decrement),
 				   EWL_FLAG_FILL_NONE);
-	ewl_widget_show(s->button_decrement);
+	ewl_widget_show(s->decrement);
 
 	/*
 	 * Create the increment button.
 	 */
-	s->button_increment = ewl_button_new();
-	ewl_widget_internal_set(s->button_increment, TRUE);
-	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
+	s->increment = ewl_button_new();
+	ewl_widget_internal_set(s->increment, TRUE);
+	ewl_object_alignment_set(EWL_OBJECT(s->increment),
 			EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increment),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->increment),
 				   EWL_FLAG_FILL_NONE);
-	ewl_widget_show(s->button_increment);
+	ewl_widget_show(s->increment);
 
 	/*
 	 * Setup the seeker portion
@@ -118,21 +118,21 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 	 * Attach callbacks to the buttons and seeker to handle the various
 	 * events.
 	 */
-	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_scrollbar_scroll_start_cb, s);
-	ewl_callback_append(s->button_increment, EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_UP,
 			    ewl_scrollbar_scroll_stop_cb, s);
-	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_scrollbar_scroll_start_cb, s);
-	ewl_callback_append(s->button_decrement, EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_UP,
 			    ewl_scrollbar_scroll_stop_cb, s);
 
 	/*
 	 * Set the default alignment for the buttons.
 	 */
-	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
+	ewl_object_alignment_set(EWL_OBJECT(s->decrement),
 				 EWL_FLAG_ALIGN_CENTER);
-	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
+	ewl_object_alignment_set(EWL_OBJECT(s->increment),
 				 EWL_FLAG_ALIGN_CENTER);
 
 	/*
@@ -162,8 +162,8 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 	/*
 	 * Set the appearance strings for the parts of the scrollbar
 	 */
-	ewl_widget_appearance_set(s->button_decrement, "button_decrement");
-	ewl_widget_appearance_set(s->button_increment, "button_increment");
+	ewl_widget_appearance_set(s->decrement, "decrement");
+	ewl_widget_appearance_set(s->increment, "increment");
 
 	if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
 
@@ -171,9 +171,9 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 		 * Place in decrement, increment, seeker order.
 		 */
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_decrement);
+					   s->decrement);
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_increment);
+					   s->increment);
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 	}
 	else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
@@ -183,9 +183,9 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 		 */
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_decrement);
+					   s->decrement);
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_increment);
+					   s->increment);
 	}
 	else {
 
@@ -193,10 +193,10 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 		 * Place in decrement, seeker, increment order.
 		 */
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_decrement);
+					   s->decrement);
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->button_increment);
+					   s->increment);
 	}
 
 	/*
@@ -249,8 +249,8 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 	s->buttons_alignment = ewl_theme_data_int_get(EWL_WIDGET(s),
 						      "button_order");
 
-	ewl_container_child_remove(EWL_CONTAINER(s), s->button_decrement);
-	ewl_container_child_remove(EWL_CONTAINER(s), s->button_increment);
+	ewl_container_child_remove(EWL_CONTAINER(s), s->decrement);
+	ewl_container_child_remove(EWL_CONTAINER(s), s->increment);
 	ewl_container_child_remove(EWL_CONTAINER(s), s->seeker);
 
 	ewl_seeker_orientation_set(EWL_SEEKER(s->seeker), o);
@@ -267,9 +267,9 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 * Place in decrement, increment, seeker order.
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		}
 		else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
@@ -279,9 +279,9 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 		}
 		else {
 
@@ -289,10 +289,10 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 * Place in decrement, seeker, increment order.
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 		}
 
 	}
@@ -304,9 +304,9 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 * Place in increment, decrement, seeker order.
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		}
 		else if (s->buttons_alignment & EWL_FLAG_ALIGN_BOTTOM) {
@@ -316,9 +316,9 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 		}
 		else {
 
@@ -326,10 +326,10 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			 * Place in increment, seeker, decrement order.
 			 */
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_increment);
+						   s->increment);
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 			ewl_container_child_append(EWL_CONTAINER(s),
-						   s->button_decrement);
+						   s->decrement);
 		}
 
 	}
@@ -472,7 +472,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SCROLLBAR(user_data);
-	if (w == s->button_increment)
+	if (w == s->increment)
 		s->direction = 1;
 	else
 		s->direction = -1;

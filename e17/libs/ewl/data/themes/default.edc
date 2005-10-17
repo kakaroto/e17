@@ -38,8 +38,8 @@ data {
 	item, "/button/text/style" "none";
 	item, "/cell/group" "cell";
 	item, "/check/group" "checkbox";
-	item, "/combo/button_decrement/group" "vscroll-down";
-	item, "/combo/button_increment/group" "vscroll-up";
+	item, "/combo/decrement/group" "vscroll-down";
+	item, "/combo/increment/group" "vscroll-up";
 	item, "/cursor/group" "cursor";
 	item, "/embed/group" "embed";
 	item, "/entry/group" "entry";
@@ -50,8 +50,8 @@ data {
 	item, "/filedialog/group" "filedialog";
 	item, "/grabber_vertical/group" "vgrabber";
 	item, "/grabber_horizontal/group" "hgrabber";
-	item, "/hscrollbar/button_decrement/group" "hscroll-left";
-	item, "/hscrollbar/button_increment/group" "hscroll-right";
+	item, "/hscrollbar/decrement/group" "hscroll-left";
+	item, "/hscrollbar/increment/group" "hscroll-right";
 	item, "/hseeker/group" "htrough";
 	item, "/hseparator/group" "hline";
 	item, "/imenu/group" "dialog";
@@ -66,8 +66,8 @@ data {
 	item, "/scrollpane/group" "trough";
 	item, "/selection_area/group" "selection_area";
 	item, "/spacer/group" "spacer";
-	item, "/spinner/button_decrement/group" "vscroll-mini-down";
-	item, "/spinner/button_increment/group" "vscroll-mini-up";
+	item, "/spinner/decrement/group" "vscroll-mini-down";
+	item, "/spinner/increment/group" "vscroll-mini-up";
 	item, "/spinner/acceleration" "5";
 	item, "/spinner/velocity" "5";
 	item, "/statusbar/group" "statusbar";
@@ -84,8 +84,8 @@ data {
 	item, "/tree/group" "tree";
 	/* item, "/node/row/group" "treerow"; */
 	/* item, "/node/group" "treenode"; */
-	item, "/vscrollbar/button_decrement/group" "vscroll-down";
-	item, "/vscrollbar/button_increment/group" "vscroll-up";
+	item, "/vscrollbar/decrement/group" "vscroll-down";
+	item, "/vscrollbar/increment/group" "vscroll-up";
 	item, "/vseeker/group" "vtrough";
 	item, "/vseeker/button/group" "vbutton";
 	item, "/vseparator/group" "vline";

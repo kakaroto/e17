@@ -62,7 +62,7 @@ ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_container_redirect_set( EWL_CONTAINER(combo), NULL );
 
 	combo->button = ewl_button_new();
-	ewl_widget_appearance_set(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "decrement");
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_show(combo->button);
@@ -167,7 +167,7 @@ ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_combo_selected_set(combo, w);
 	ewl_widget_hide(EWL_MENU_BASE(combo)->popup);
 
-	ewl_widget_appearance_set(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
 						ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
@@ -231,7 +231,7 @@ ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	
 	combo = EWL_COMBO(user_data);
-	ewl_widget_appearance_set(combo->button, "button_increment");
+	ewl_widget_appearance_set(combo->button, "increment");
 	ewl_menu_base_expand_cb(EWL_WIDGET(combo), ev_data, NULL);
 
 	if (!REALIZED(combo->base.popup)) {
@@ -276,7 +276,7 @@ ewl_combo_collapse_cb(Ewl_Widget *w __UNUSED__,
 	combo = EWL_COMBO(user_data);
 	ewl_widget_hide(EWL_MENU_BASE(combo)->popup);
 
-	ewl_widget_appearance_set(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
 							ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
