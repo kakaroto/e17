@@ -249,7 +249,7 @@ int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
 
 int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 	int bytes_read = 0;
-	printf("Reading %ld bytes from file %s\n", file->path);
+	printf("Reading %ld bytes from file %s\n", size, file->path);
 	
 	bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
 
