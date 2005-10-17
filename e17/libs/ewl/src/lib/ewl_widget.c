@@ -9,6 +9,8 @@ static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 					int *t, int *b);
+static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part,
+						  char *text);
 
 /**
  * @brief Allocate a new widget.
@@ -658,6 +660,111 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**     
+ * @param w: the widget whose text to change
+ * @param part: the theme part name whose text to change
+ * @param text: the new text to change to
+ * @return Returns no value.
+ * @brief Change the text of the given theme part of a widget
+ *
+ * Changes the text of a given Edje-define TEXT part.
+ */
+static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part, char *text)
+{
+        Evas_Coord nw, nh;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
+        DCHECK_PARAM_PTR("part", part);
+        DCHECK_PARAM_PTR("text", text);
+
+        if (!w->theme_object)
+                DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+        edje_object_part_text_set(w->theme_object, part, text);
+        edje_object_size_min_calc(w->theme_object, &nw, &nh);
+
+        ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget whose text to change
+ * @param part: the theme part name whose text to change
+ * @param text: the new text to change to
+ * @return Returns no value.
+ * @brief Change the text of the given theme part of a widget
+ *
+ * Changes the text of a given Edje-define TEXT part.  This is for
+ * widgets whose Edje appearance defines TEXT parts, and enables
+ * each of those text parts to be changed independently.
+ * The text value is recorded in a hash and reapplied if the theme
+ * is reloaded for this widget.
+ */
+void ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part, char *text)
+{
+       char *key, *value, *old_value;
+
+       DENTER_FUNCTION(DLEVEL_STABLE);
+       DCHECK_PARAM_PTR("w", w);
+       DCHECK_PARAM_PTR("part", part);
+
+       if (!(w->theme_text)) {
+               w->theme_text = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+               ecore_hash_set_free_key(w->theme_text, free);
+               ecore_hash_set_free_value(w->theme_text, free);
+       }
+
+       old_value = ecore_hash_get(w->theme_text, part);
+
+       if (old_value && text && !strcmp(old_value, text))
+               DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+       /*
+        * What should be the default if you enter NULL? A blank string?
+        * Revert to the text specified in the Edje? Use blank for now.
+        */
+       value = strdup( text ? text : "" );
+
+       if (old_value) key = part;
+       else key = strdup(part);
+
+       ecore_hash_set(w->theme_text, key, value);
+
+       ewl_widget_appearance_part_text_apply(w, key, value);
+       DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget whose text to change
+ * @param part: the theme part name whose text to change
+ * @param text: the new text to change to
+ * @return Returns no value.
+ * @brief Change the text of the given theme part of a widget
+ *
+ * Changes the text of an Edje-define TEXT part.  This is for
+ * widgets whose Edje appearance defines a TEXT part, and identifies
+ * it with with a data item called "/WIDGET/textpart".
+ * The text value is recorded in a hash and reapplied if the theme
+ * is reloaded for this widget.
+ */
+void ewl_widget_appearance_text_set(Ewl_Widget * w, char *text)
+{
+       char *part;
+
+       DENTER_FUNCTION(DLEVEL_STABLE);
+       DCHECK_PARAM_PTR("w", w);
+
+       part = ewl_theme_data_str_get(w, "textpart");
+       if (part) {
+               ewl_widget_appearance_part_text_set(w, part, text);
+               FREE(part);
+       }
+
+       DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1451,6 +1558,25 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 				&& i_t >= EWL_OBJECT_MIN_SIZE
 				&& i_t < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
+
+		/*
+		 * Apply any text overrides
+		 * FIXME: These should probably be ported to an array rather
+		 * than a full hash.
+		 */
+		if (w->theme_text) {
+                       char *key;
+                       Ecore_List *keys = ecore_hash_keys(w->theme_text);
+
+                       ecore_list_goto_first(keys);
+                       while ((key = (char *)ecore_list_next(keys))) {
+                               char *value = ecore_hash_get(w->theme_text, key);
+                               ewl_widget_appearance_part_text_apply(w, key,
+                                                                     value);
+                       }
+                       ecore_list_destroy(keys);
+               }
+
 	}
 
 	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);

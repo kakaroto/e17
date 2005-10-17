@@ -75,6 +75,7 @@ struct Ewl_Widget
 	int              layer; /**< Current layer of widget on canvas */
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
+	Ecore_Hash       *theme_text; /**< Overriding text in widgets theme */
 	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */
 };
 
@@ -182,6 +183,17 @@ char           *ewl_widget_appearance_get(Ewl_Widget * w);
  * Retrieve the full appearance string of the widget.
  */
 char	       *ewl_widget_appearance_path_get(Ewl_Widget * w);
+
+/*
+ * Change the text of the given theme part of a widget.
+ */
+void           ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part,
+						   char *text);     
+
+/*
+ * Change the text of the theme-defined theme part of a widget.
+ */
+void           ewl_widget_appearance_text_set(Ewl_Widget * w, char *text);
 
 /*
  * Append to the inherited string 

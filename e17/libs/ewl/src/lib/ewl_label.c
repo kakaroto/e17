@@ -49,7 +49,6 @@ ewl_label_init(Ewl_Label *la)
 	ewl_widget_inherit(w, "label");
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_label_realize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_label_destroy_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -119,17 +118,8 @@ static void
 ewl_label_apply(Ewl_Label *la)
 {
 	Ewl_Widget *w;
-	Evas_Coord nw, nh;
 
 	w = EWL_WIDGET(la);
-	if (!w->theme_object) return;
 
-	/* Should htis check be in here? 
-	if (!edje_object_part_exists(w->theme_object, "text"))
-	printf(" NO PART\n");
-	*/
-	edje_object_part_text_set(w->theme_object, "text", la->text);
-	edje_object_size_min_calc(w->theme_object, &nw, &nh);
-
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(la), (int)nw, (int)nh);
+	ewl_widget_appearance_text_set(w, la->text);
 }

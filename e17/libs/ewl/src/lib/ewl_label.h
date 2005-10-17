@@ -31,7 +31,7 @@ struct Ewl_Label
 	char * text;            /**< The text set into the widget */
 };
 
-Ewl_Widget *ewl_label_new();
+Ewl_Widget *ewl_label_new(void);
 int         ewl_label_init(Ewl_Label *la);
 
 void        ewl_label_text_set(Ewl_Label *la, const char *text);
