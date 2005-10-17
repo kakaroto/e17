@@ -673,8 +673,7 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 	/*printf("*** Deleting all icons...\n");*/
 
 	if (ib->ewl_iconbox_icon_list) {
-		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
-		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+		while((list_item = (Ewl_IconBox_Icon*)ecore_list_remove_first(ib->ewl_iconbox_icon_list)) != NULL) {
 			/*printf("Deleting icon..\n");*/
 
 			//ewl_widget_hide(list_item);
@@ -686,8 +685,6 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 						
 		}
 		/*printf("...dione\n");*/
-
-		ecore_list_clear(ib->ewl_iconbox_icon_list);
 	}
 
 	ib->drag_icon = NULL;
