@@ -211,6 +211,11 @@ void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 
 	b->orientation = o;
 
+	if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
+	else if (b->orientation == EWL_ORIENTATION_VERTICAL)
+		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
+
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
