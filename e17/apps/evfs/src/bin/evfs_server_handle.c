@@ -130,7 +130,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);
 
 			read_write_bytes = (file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
-			printf("Reading/writing %d bytes\n", read_write_bytes);
+			/*printf("Reading/writing %d bytes\n", read_write_bytes);*/
 			
 			(*plugin->functions->evfs_file_read)(command->file_command.files[0], bytes, read_write_bytes );
 

@@ -223,7 +223,11 @@ int evfs_file_open(evfs_filereference* file) {
 int evfs_file_close(evfs_filereference* file) {
 	printf ("SMB close: closing\n");
 
-	smb_context->close_fn(smb_context, file->fd_p);
+	#ifdef HAVE_SAMBA_OLD_CLOSE
+		smb_context->close(smb_context, file->fd_p);
+	#else
+		smb_context->close_fn(smb_context, file->fd_p);
+	#endif
 
 	return 0;
 }
@@ -231,16 +235,16 @@ int evfs_file_close(evfs_filereference* file) {
 int evfs_file_write(evfs_filereference* file, char* bytes, long size) {
 	ssize_t i;
 	
-	printf ("SMB write: %d bytes\n", size);
+	/*printf ("SMB write: %d bytes\n", size);*/
 
 	i = smb_context->write(smb_context, file->fd_p, bytes, size);
-	printf("Wrote %d bytes\n", i);
+	/*printf("Wrote %d bytes\n", i);*/
 
 	return 0;
 }
 
 int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
-	printf ("Seeking file to %ld\n", pos);
+	//printf ("Seeking file to %ld\n", pos);
 
 	smb_context->lseek(smb_context, file->fd_p, pos, SEEK_SET);
 
@@ -249,7 +253,7 @@ int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
 
 int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 	int bytes_read = 0;
-	printf("Reading %ld bytes from file %s\n", size, file->path);
+	/*printf("Reading %ld bytes from file %s\n", size, file->path);*/
 	
 	bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
 

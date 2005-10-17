@@ -306,7 +306,7 @@ int evfs_file_close(evfs_filereference* file) {
 }
 
 int evfs_file_seek(evfs_filereference* file, long offset, int whence) {
-	printf ("Seek in file '%s' forward by '%d'\n", file->path, offset);
+	/*printf ("Seek in file '%s' forward by '%d'\n", file->path, offset);*/
 
 	lseek(file->fd, offset, SEEK_SET);
 
@@ -316,7 +316,7 @@ int evfs_file_seek(evfs_filereference* file, long offset, int whence) {
 int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 	int bytes_read;
 	
-	printf("Reading %d bytes from %s\n", size, file->path);
+	/*printf("Reading %d bytes from %s\n", size, file->path);*/
 	
 	bytes_read = read(file->fd, bytes, size);
 
@@ -334,11 +334,11 @@ int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 int evfs_file_write(evfs_filereference* file, char* bytes, long size) {
 	ssize_t i;
 	
-	printf("Writing %d bytes for %s\n", size, file->path);
+	/*printf("Writing %d bytes for %s\n", size, file->path);*/
 	
 
 	i = write(file->fd, bytes, size);
-	printf("Wrote %d bytes\n", i);
+	/*printf("Wrote %d bytes\n", i);*/
 
 	return 0;
 }

@@ -8,7 +8,7 @@ pkgdir =  $(libdir)/evfs/plugins/file
 
 POSIX_L = posix.la
 
-if BUILD_SAMBA
+if HAVE_SAMBA
 SAMBA_L = samba.la
 else
 SAMBA_L =
