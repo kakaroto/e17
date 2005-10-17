@@ -864,8 +864,11 @@ void ewl_garbage_collect()
 	Evas *evas;
 	Ewl_Widget *w;
 	Evas_Object *obj;
+	int cleanup;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	cleanup = 0;
 
 	while ((w = ecore_list_remove_first(destroy_list))) {
 		if (ewl_object_queued_has(EWL_OBJECT(w),
@@ -874,13 +877,25 @@ void ewl_garbage_collect()
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);
+		cleanup++;
 	}
+	printf("Destroyed %d EWL objects\n", cleanup);
 
-	while ((obj = ecore_list_remove_first(free_evas_object_list)))
+	cleanup = 0;
+
+	while ((obj = ecore_list_remove_first(free_evas_object_list))) {
 		evas_object_del(obj);
+		cleanup++;
+	}
+	printf("Destroyed %d Evas Objects\n", cleanup);
 
-	while ((evas = ecore_list_remove_first(free_evas_object_list)))
+	cleanup = 0;
+
+	while ((evas = ecore_list_remove_first(free_evas_list))) {
 		evas_free(evas);
+		cleanup++;
+	}
+	printf("Destroyed %d Evas\n", cleanup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
