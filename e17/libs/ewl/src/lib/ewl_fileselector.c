@@ -177,9 +177,11 @@ int ewl_fileselector_init(Ewl_Fileselector * fs)
 					   EWL_FLAG_FILL_SHRINK |
 					   EWL_FLAG_FILL_HFILL);
 
-		misc = ewl_label_new("File:");
+		misc = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(misc), "File:");
 		ewl_object_fill_policy_set(EWL_OBJECT(misc),
 					   EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
 		ewl_widget_show(misc);
 

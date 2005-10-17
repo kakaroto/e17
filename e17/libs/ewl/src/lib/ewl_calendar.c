@@ -293,7 +293,8 @@ int ewl_calendar_init(Ewl_Calendar* ib) {
 
 	
 	ib->grid = ewl_grid_new(7,7);
-	ib->month_label = ewl_label_new("Disp");
+	ib->month_label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(ib->month_label), "Disp");
 
 	/*printf("Getting date..");*/
 	/*Get the start time..*/
