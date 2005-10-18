@@ -25,7 +25,6 @@
 #include "eobj.h"
 #include "iclass.h"
 #include "xwin.h"
-#include <time.h>
 
 static EObj        *init_win1 = NULL;
 static EObj        *init_win2 = NULL;
@@ -81,7 +80,7 @@ StartupWindowsCreate(void)
       return;
    init_win1 = eo;
    w1 = eo->win;
-   eo->fade = 0;
+   eo->fade = eo->shadow = 0;
    win1 = ECreateWindow(w1, x, y, VRoot.w, VRoot.h, 0);
 
    eo = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, VRoot.w, VRoot.h, 1, "Init-2");
@@ -89,7 +88,7 @@ StartupWindowsCreate(void)
       return;
    init_win2 = eo;
    w2 = eo->win;
-   eo->fade = 0;
+   eo->fade = eo->shadow = 0;
    win2 = ECreateWindow(w2, -x, -y, VRoot.w, VRoot.h, 0);
 
    EMapWindow(win1);
@@ -116,23 +115,25 @@ StartupWindowsCreate(void)
    EobjsRepaint();
 }
 
-void
-StartupWindowsOpen(void)
+#define TIME_STEP 0.01
+
+static void
+doStartupWindowsOpen(int val, void *data __UNUSED__)
 {
-   int                 k, x, y, xOffset, yOffset, ty, fy;
+   int                 k, x, y, xOffset, yOffset, ty;
 
-   if (init_win1 == None || init_win2 == None)
-      return;
+   k = val;
 
-   fy = 0;
-
+#define TEST_STARTUP_USING_TIMER 1
+#if !TEST_STARTUP_USING_TIMER
    ETimedLoopInit(0, 1024, Conf.desks.slidespeed / 2);
    for (k = 0; k <= 1024;)
      {
+#endif
 	if (bg_sideways)
 	  {			/* so we can have two different slide methods */
 	     ty = (VRoot.w / 2);
-	     xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	     xOffset = (ty * k) >> 10;
 	     x = ty;
 	     yOffset = 0;
 	     y = 0;
@@ -142,15 +143,30 @@ StartupWindowsOpen(void)
 	     ty = (VRoot.h / 2);
 	     xOffset = 0;
 	     x = 0;
-	     yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	     yOffset = (ty * k) >> 10;
 	     y = ty;
 	  }
 
 	EobjMove(init_win1, -x - xOffset, -y - yOffset);
 	EobjMove(init_win2, x + xOffset, y + yOffset);
 
+#if !TEST_STARTUP_USING_TIMER
 	k = ETimedLoopNext();
      }
+#endif
+
+#if TEST_STARTUP_USING_TIMER
+   ESync();
+   k = TIME_STEP * Conf.desks.slidespeed / 2;
+   if (k <= 0)
+      k = 1;
+   val += k;
+   if (val < 1024)
+     {
+	DoIn("Startup", TIME_STEP, doStartupWindowsOpen, val, NULL);
+	return;
+     }
+#endif
 
    EobjWindowDestroy(init_win1);
    EobjWindowDestroy(init_win2);
@@ -159,4 +175,13 @@ StartupWindowsOpen(void)
 
    BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
    BackgroundDestroyByName("STARTUP_BACKGROUND");
+}
+
+void
+StartupWindowsOpen(void)
+{
+   if (init_win1 == None || init_win2 == None)
+      return;
+
+   doStartupWindowsOpen(0, NULL);
 }
