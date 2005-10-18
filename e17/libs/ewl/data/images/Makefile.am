@@ -4,11 +4,12 @@ EDCS =  bg.edc
 
 EDJS = $(EDCS:%.edc=%.edj)
 
-IMAGES = arrow_up.png e-logo.png lilbottom.png banner-top.png elicit.png \
-	 elicit1.png elicit2.png elicit3.png entrance.png entrance1.png \
-	 entrance2.png evidence.png evidence1.png evidence2.png evidence3.png \
-	 evidence4.png entrance3.png home.png lilgrad.png \
-	 entice.png entice1.png entice2.png entice3.png
+IMAGES = Draw.png End.png NewBCard.png Open.png Package.png World.png \
+	banner-top.png e-logo.png elicit.png elicit1.png elicit2.png \
+	elicit3.png entice.png entice1.png entice2.png entice3.png \
+	entrance.png entrance1.png entrance2.png entrance3.png evidence.png \
+	evidence1.png evidence2.png evidence3.png evidence4.png \
+	lilbottom.png lilgrad.png
 
 themedir = $(pkgdatadir)/images
 theme_DATA = $(IMAGES) $(EDJS)

@@ -1,2 +1,2 @@
-SUBDIRS = themes #images
+SUBDIRS = themes images
 MAINTAINERCLEANFILES = Makefile.in

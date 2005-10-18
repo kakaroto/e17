@@ -160,6 +160,7 @@ src/bin/Makefile
 src/lib/Ewl.h
 src/lib/Makefile
 data/Makefile
+data/images/Makefile
 data/themes/Makefile
 debian/changelog
 ], [
