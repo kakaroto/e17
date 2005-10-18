@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EDCS =  bg.edc
+EDCS =  # bg.edc
 
 EDJS = $(EDCS:%.edc=%.edj)
 
