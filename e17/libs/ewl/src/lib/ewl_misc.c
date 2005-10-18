@@ -879,7 +879,7 @@ void ewl_garbage_collect()
 		FREE(w);
 		cleanup++;
 	}
-	/*printf("Destroyed %d EWL objects\n", cleanup);*/
+	printf("Destroyed %d EWL objects\n", cleanup);
 
 	cleanup = 0;
 
@@ -887,7 +887,7 @@ void ewl_garbage_collect()
 		evas_object_del(obj);
 		cleanup++;
 	}
-	/*printf("Destroyed %d Evas Objects\n", cleanup);*/
+	printf("Destroyed %d Evas Objects\n", cleanup);
 
 	cleanup = 0;
 
@@ -895,7 +895,7 @@ void ewl_garbage_collect()
 		evas_free(evas);
 		cleanup++;
 	}
-	/*printf("Destroyed %d Evas\n", cleanup);*/
+	printf("Destroyed %d Evas\n", cleanup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
