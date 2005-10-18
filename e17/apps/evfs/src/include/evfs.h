@@ -85,6 +85,7 @@ typedef struct evfs_file_monitor evfs_file_monitor;
 struct evfs_file_monitor {
 	evfs_client* client;
 	char* monitor_path;
+
 	Ecore_File_Monitor *em;
 };
 
@@ -107,17 +108,19 @@ typedef enum evfs_eventpart {
 	EVFS_EV_PART_SUB_TYPE = 2,
 	EVFS_EV_PART_FILE_MONITOR_TYPE = 3,
 	EVFS_EV_PART_FILE_MONITOR_FILENAME = 4,
-	EVFS_EV_PART_DATA = 5,
-	EVFS_EV_PART_STAT_SIZE = 6,
-	EVFS_EV_PART_FILE_REFERENCE = 7,
-	EVFS_EV_PART_FILE_REFERENCE_USERNAME = 8,
-	EVFS_EV_PART_FILE_REFERENCE_PASSWORD = 9,
+	EVFS_EV_PART_FILE_MONITOR_PLUGIN = 5,
+	EVFS_EV_PART_DATA = 6,
+	EVFS_EV_PART_STAT_SIZE = 7,
+	EVFS_EV_PART_FILE_REFERENCE = 8,
+	EVFS_EV_PART_FILE_REFERENCE_USERNAME = 9,
+	EVFS_EV_PART_FILE_REFERENCE_PASSWORD = 10,
+	
 
-        EVFS_COMMAND_TYPE = 10,
-        EVFS_FILE_REFERENCE = 11,
-	EVFS_FILE_REFERENCE_PASSWORD = 12,
-	EVFS_FILE_REFERENCE_USERNAME = 13,
-        EVFS_COMMAND_END = 14,
+        EVFS_COMMAND_TYPE = 11,
+        EVFS_FILE_REFERENCE = 12,
+	EVFS_FILE_REFERENCE_PASSWORD = 13,
+	EVFS_FILE_REFERENCE_USERNAME = 14,
+        EVFS_COMMAND_END = 15,
 
 	
 	EVFS_EV_PART_END = 1000
@@ -141,6 +144,7 @@ typedef struct evfs_event_file_monitor evfs_event_file_monitor;
 struct evfs_event_file_monitor {
 	
 	evfs_file_monitor_type fileev_type;
+	char* plugin;
 	char* filename;
 	int filename_len;
 };

@@ -30,8 +30,15 @@ void evfs_event_client_id_notify(evfs_client* client) {
 }
 
 void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
+
+	/*Write the type*/
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_TYPE,client->id,0,0,&event->file_monitor.fileev_type, sizeof(evfs_file_monitor_type)));
+
+	/*Write the filename this is an event for*/
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_FILENAME,client->id,0,0,event->file_monitor.filename,event->file_monitor.filename_len));
+
+	/*Write the plugin*/
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_PLUGIN,client->id,0,0,event->file_monitor.plugin,strlen(event->file_monitor.plugin)+1 ));
 	
 	
 }
@@ -100,6 +107,10 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			event->file_monitor.filename = strdup(msg->data);
 			event->file_monitor.filename_len = strlen(msg->data);
 			break;
+		case EVFS_EV_PART_FILE_MONITOR_PLUGIN:
+			event->file_monitor.plugin = strdup(msg->data);
+			break;		
+			
 		case EVFS_EV_PART_STAT_SIZE:
 			memcpy(&event->stat.stat_obj, msg->data, sizeof(struct stat));
 			break;
