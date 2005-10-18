@@ -169,7 +169,7 @@ ete_cb_underline(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		styles &= ~EWL_TEXT_STYLE_UNDERLINE;
 	else
 		styles |= EWL_TEXT_STYLE_UNDERLINE;
-
+#if 0
 	if (ewl_text_has_selection(EWL_TEXT(entry)))
 	{
 		Ewl_Text_Trigger *selection;
@@ -185,6 +185,7 @@ ete_cb_underline(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	}
 	else
 		ewl_text_styles_set(EWL_TEXT(entry), styles);
+#endif
 }
 
 static void
