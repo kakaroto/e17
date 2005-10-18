@@ -16,6 +16,7 @@ collections {
 #include "e17/bits/paned-groups.edc"
 #include "e17/bits/progressbar-groups.edc"
 #include "e17/bits/scrollbar-groups.edc"
+#include "e17/bits/selection-groups.edc"
 #include "e17/bits/stock-groups.edc"
 #include "e17/bits/tree-groups.edc"
 #include "e17/bits/separator-groups.edc"
@@ -71,14 +72,19 @@ data {
 
     item, "/combo/decrement/group" "vscroll-down";
     item, "/combo/increment/group" "vscroll-up";
+
+    item, "/selection_area/group" "selection_area";
+
     item, "/spinner/controls/decrement/group" "vscroll-down";
     item, "/spinner/controls/increment/group" "vscroll-up";
     item, "/spinner/acceleration" "5";
     item, "/spinner/velocity" "5";
+
     item, "/vscrollbar/decrement/group" "vscroll-down";
     item, "/vscrollbar/increment/group" "vscroll-up";
     item, "/hscrollbar/decrement/group" "hscroll-left";
     item, "/hscrollbar/increment/group" "hscroll-right";
+
     item, "/vseeker/vbutton/group"  "vbutton";
     item, "/hseeker/hbutton/group"  "hbutton";
 
