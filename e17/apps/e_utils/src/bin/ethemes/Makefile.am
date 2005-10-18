@@ -23,6 +23,8 @@ ethemes_LDADD = \
 	@ECORE_LIBS@ \
 	@EVAS_LIBS@ \
 	@EDJE_LIBS@ \
+	@ESMART_LIBS@ \
+	-lesmart_container \
 	@ENLIGHTENMENT_LIBS@
 
 EXTRA_DIST = \
