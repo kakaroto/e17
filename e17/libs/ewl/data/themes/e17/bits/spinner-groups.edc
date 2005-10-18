@@ -1,0 +1,28 @@
+group {
+    name, "spinner-up";
+    min, 10 10;
+    max, 10 10;
+
+    SCROLL_BUTTON("e17_button_detail_up.png");
+    SCROLL_BUTTON_PROG();
+}
+
+group {
+    name, "spinner-down";
+    min, 10 10;
+    max, 10 10;
+
+    SCROLL_BUTTON("e17_button_detail_down.png");
+    SCROLL_BUTTON_PROG();
+}
+
+group {
+    name, "spinner-controls";
+    min, 16 22;
+    max, 16 22;
+
+    parts {
+        BUTTON();
+    }
+}
+

@@ -85,6 +85,8 @@ ewl_spinner_init(Ewl_Spinner * s)
 
 	s->increment = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), s->increment);
+	ewl_object_alignment_set(EWL_OBJECT(s->increment),
+					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_appearance_set(s->increment, "increment");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->increment),
 			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
@@ -99,6 +101,8 @@ ewl_spinner_init(Ewl_Spinner * s)
 
 	s->decrement = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), s->decrement);
+	ewl_object_alignment_set(EWL_OBJECT(s->decrement),
+					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_appearance_set(s->decrement, "decrement");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->decrement),
 			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
