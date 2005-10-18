@@ -135,7 +135,7 @@ EwinCreate(Window win, int type)
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
    EoSetLayer(ewin, 4);
    EoSetShadow(ewin, 1);
-   EobjListFocusAdd(&ewin->o, 0);
+   EobjListFocusAdd(&ewin->o, 1);
    EobjListOrderAdd(&ewin->o);
 
    if (use_argb)
