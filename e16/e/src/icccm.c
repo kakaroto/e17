@@ -259,7 +259,6 @@ void
 ICCCM_Configure(const EWin * ewin)
 {
    XEvent              ev;
-   Desk               *dsk;
    Window              child;
 
    if (EwinIsInternal(ewin))
@@ -269,9 +268,16 @@ ICCCM_Configure(const EWin * ewin)
    ev.xconfigure.display = disp;
    ev.xconfigure.event = _EwinGetClientXwin(ewin);
    ev.xconfigure.window = _EwinGetClientXwin(ewin);
+#if 0				/* FIXME - Remove? */
+   Desk               *dsk;
+
    dsk = EoGetDesk(ewin);
    ev.xconfigure.x = EoGetX(dsk) + ewin->client.x;
    ev.xconfigure.y = EoGetY(dsk) + ewin->client.y;
+#else
+   ev.xconfigure.x = ewin->client.x;
+   ev.xconfigure.y = ewin->client.y;
+#endif
    if (Mode.wm.window)
       XTranslateCoordinates(disp, VRoot.win, RRoot.win,
 			    ev.xconfigure.x, ev.xconfigure.y,

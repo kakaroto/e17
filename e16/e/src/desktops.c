@@ -919,7 +919,6 @@ DeskMove(Desk * dsk, int x, int y)
 {
    Desk               *dd;
    unsigned int        i;
-   EWin               *const *lst;
    int                 n, v, dx, dy;
 
    if (dsk->num <= 0)
@@ -978,10 +977,14 @@ DeskMove(Desk * dsk, int x, int y)
    if (dsk->tag)
       ButtonMoveRelative(dsk->tag, dx, dy);
 
+#if 0				/* FIXME - Remove? */
+   EWin               *const *lst;
+
    lst = EwinListGetAll(&n);
    for (i = 0; i < (unsigned int)n; i++)
       if (EoGetDesk(lst[i]) == dsk)
 	 ICCCM_Configure(lst[i]);
+#endif
 }
 
 static void

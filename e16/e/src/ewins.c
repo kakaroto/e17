@@ -1104,10 +1104,19 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	w = ewin->client.w;
 	h = ewin->client.h;
 	winrel = 0;
+	/* This is shady - some clients send root coords, some use the
+	 * ICCCM ones sent by us */
+#if 1				/* FIXME - ??? */
 	if (ev->xconfigurerequest.value_mask & CWX)
 	   x = ev->xconfigurerequest.x;
 	if (ev->xconfigurerequest.value_mask & CWY)
 	   y = ev->xconfigurerequest.y;
+#else
+	if (ev->xconfigurerequest.value_mask & CWX)
+	   x = ev->xconfigurerequest.x - EoGetX(EoGetDesk(ewin));
+	if (ev->xconfigurerequest.value_mask & CWY)
+	   y = ev->xconfigurerequest.y - EoGetY(EoGetDesk(ewin));
+#endif
 	if (ev->xconfigurerequest.value_mask & CWWidth)
 	   w = ev->xconfigurerequest.width;
 	if (ev->xconfigurerequest.value_mask & CWHeight)
