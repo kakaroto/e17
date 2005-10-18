@@ -2815,18 +2815,15 @@ IconboxObjSwinAdd(Iconbox * ib, Window win)
    EventCallbackRegister(win, 0, SystrayEvent, ib);
    EReparentWindow(win, ib->icon_win, 0, 0);
 
-   EUngrabServer();
-
    if (swin->mapped)
-     {
-	XMapWindow(disp, win);
-	IconboxRedraw(ib);
-     }
+      EMapWindow(win);
 
    /* TBD - Always set protocol version as reported by client */
    ecore_x_client_message32_send(win, E_XA__XEMBED, NoEventMask,
 				 CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0,
 				 win, xembed_info[0]);
+
+   EUngrabServer();
 
    return;			/* Success */
 
@@ -2967,6 +2964,7 @@ SystrayEvent(XEvent * ev, void *prm)
      {
      case MapNotify:
 	EWindowSync(ev->xmap.window);
+	IconboxRedraw(prm);
 	break;
 
      case DestroyNotify:
