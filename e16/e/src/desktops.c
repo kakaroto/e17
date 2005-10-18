@@ -364,12 +364,9 @@ DeskEventsConfigure(Desk * dsk, int mode)
 	EGetWindowAttributes(EoGetWin(dsk), &xwa);
 	dsk->event_mask = xwa.your_event_mask | EDESK_EVENT_MASK;
 	event_mask =
+	   EnterWindowMask | LeaveWindowMask |
 	   PropertyChangeMask | SubstructureRedirectMask |
 	   ButtonPressMask | ButtonReleaseMask;
-#if USE_COMPOSITE
-	/* Handle ConfigureNotify's while sliding */
-	event_mask |= SubstructureNotifyMask;
-#endif
      }
    ESelectInput(EoGetWin(dsk), event_mask);
 }
@@ -627,7 +624,7 @@ DesksResize(int w, int h)
    ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
 
-void
+static void
 DesksEventsConfigure(int mode)
 {
    unsigned int        i;
