@@ -64,7 +64,7 @@ __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(hbox);
 
 	{
@@ -92,13 +92,21 @@ __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			ewl_callback_append(o, EWL_CALLBACK_CLICKED, btns[i].cb, NULL);
 			ewl_widget_show(o);
 		}
+
+		o = ewl_spacer_new();
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_widget_show(o);
+
 		o = ewl_label_new();
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 		ewl_label_text_set(EWL_LABEL(o), "Font size");
 		ewl_widget_show(o);
 
 		o = ewl_spinner_new();
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 		ewl_spinner_value_set(EWL_SPINNER(o), 12);
 		ewl_spinner_min_val_set(EWL_SPINNER(o), 8);
 		ewl_spinner_max_val_set(EWL_SPINNER(o), 72);
