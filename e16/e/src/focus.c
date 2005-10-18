@@ -199,25 +199,39 @@ FocusGetPrevEwin(void)
 void
 FocusEwinSetGrabs(EWin * ewin)
 {
-   if ((Conf.focus.mode != MODE_FOCUS_CLICK &&
-	ewin->state.active && Conf.focus.clickraises &&
-	ewin != EwinListStackGetTop()) ||
-       (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->state.active))
+   int                 set = 0;
+
+   if (Conf.focus.mode == MODE_FOCUS_CLICK)
      {
-	GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerWin(ewin),
-		      ButtonPressMask, ECSR_PGRAB, 1);
-#if 0
-	Eprintf("FocusEwinSetGrabs: %#lx grab %s\n", _EwinGetClientXwin(ewin),
-		EwinGetName(ewin));
-#endif
+	set = !ewin->state.active;
+     }
+   if (ewin->state.active && Conf.focus.clickraises &&
+       ewin != EwinListStackGetTop())
+      set = 1;
+
+   if (set)
+     {
+	if (!ewin->state.click_grab_isset)
+	  {
+	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerWin(ewin),
+			   ButtonPressMask, ECSR_PGRAB, 1);
+	     if (EventDebug(EDBUG_TYPE_GRABS))
+		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
+			_EwinGetClientXwin(ewin), EwinGetName(ewin));
+	     ewin->state.click_grab_isset = 1;
+	  }
      }
    else
      {
-	GrabButtonRelease(AnyButton, AnyModifier, _EwinGetContainerWin(ewin));
-#if 0
-	Eprintf("FocusEwinSetGrabs: %#lx ungrab %s\n", _EwinGetClientXwin(ewin),
-		EwinGetName(ewin));
-#endif
+	if (ewin->state.click_grab_isset)
+	  {
+	     GrabButtonRelease(AnyButton, AnyModifier,
+			       _EwinGetContainerWin(ewin));
+	     if (EventDebug(EDBUG_TYPE_GRABS))
+		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
+			_EwinGetClientXwin(ewin), EwinGetName(ewin));
+	     ewin->state.click_grab_isset = 0;
+	  }
      }
 }
 

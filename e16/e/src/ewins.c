@@ -1259,6 +1259,8 @@ RaiseEwin(EWin * ewin)
    if (lst)
       Efree(lst);
 
+   FocusEwinSetGrabs(ewin);
+
    if (call_depth == 1)
       ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
@@ -1291,6 +1293,8 @@ LowerEwin(EWin * ewin)
       LowerEwin(lst[i]);
    if (lst)
       Efree(lst);
+
+   FocusEwinSetGrabs(ewin);
 
    if (call_depth == 1)
       ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);

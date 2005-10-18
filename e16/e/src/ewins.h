@@ -65,6 +65,7 @@ struct _ewin
       char                shaded;
 
       unsigned            placed:1;
+      unsigned            click_grab_isset:1;
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
