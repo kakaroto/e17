@@ -2,6 +2,7 @@
 
 static Ewl_Widget *text_editor_button;
 
+static void ete_style_apply(Ewl_Text *t, Ewl_Text_Style s);
 static void ete_cb_underline(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_double_underline(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_strikethrough(Ewl_Widget *w, void *ev, void *data);
@@ -155,81 +156,113 @@ __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 static void
-ete_cb_underline(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+ete_style_apply(Ewl_Text *t, Ewl_Text_Style s)
 {
-	Ewl_Widget *entry;
 	unsigned int cursor_pos;
 	unsigned int styles;
 
-	entry = ewl_widget_name_find("entry");
-	cursor_pos = ewl_text_cursor_position_get(EWL_TEXT(entry));
-	styles = ewl_text_styles_get(EWL_TEXT(entry), cursor_pos);
+	cursor_pos = ewl_text_cursor_position_get(t);
+	styles = ewl_text_styles_get(t, cursor_pos);
 
-	if (styles & EWL_TEXT_STYLE_UNDERLINE)
-		styles &= ~EWL_TEXT_STYLE_UNDERLINE;
+	if (styles & s)
+		styles &= ~s;
 	else
-		styles |= EWL_TEXT_STYLE_UNDERLINE;
-#if 0
-	if (ewl_text_has_selection(EWL_TEXT(entry)))
+		styles |= s;
+
+	if (ewl_text_has_selection(t))
 	{
 		Ewl_Text_Trigger *selection;
 
-		selection = ewl_text_selection_get(EWL_TEXT(entry));
-		ewl_text_cursor_position_set(EWL_TEXT(entry),
+		selection = ewl_text_selection_get(t);
+		ewl_text_cursor_position_set(t,
 				ewl_text_trigger_start_pos_get(selection));
 
-		ewl_text_styles_apply(EWL_TEXT(entry), styles,
+		ewl_text_styles_apply(t, styles,
 				ewl_text_trigger_length_get(selection));
 
-		ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
+		ewl_text_cursor_position_set(t, cursor_pos);
 	}
 	else
-		ewl_text_styles_set(EWL_TEXT(entry), styles);
-#endif
+		ewl_text_styles_set(t, styles);
 }
 
 static void
-ete_cb_double_underline(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_strikethrough(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_shadow(Ewl_Widget *w, void *ev, void *data)
-{ 
-}
-
-static void
-ete_cb_soft_shadow(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_far_shadow(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_glow(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_outline(Ewl_Widget *w, void *ev, void *data)
-{
-}
-
-static void
-ete_cb_font_size(Ewl_Widget *w, void *ev, void *data)
+ete_cb_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
 
 	entry = ewl_widget_name_find("entry");
-#if 0
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_UNDERLINE);
+}
+
+static void
+ete_cb_double_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_DOUBLE_UNDERLINE);
+}
+
+static void
+ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_STRIKETHROUGH);
+}
+
+static void
+ete_cb_shadow(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
+{ 
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SHADOW);
+}
+
+static void
+ete_cb_soft_shadow(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SOFT_SHADOW);
+}
+
+static void
+ete_cb_far_shadow(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_FAR_SHADOW);
+}
+
+static void
+ete_cb_glow(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_GLOW);
+}
+
+static void
+ete_cb_none(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
 	if (ewl_text_has_selection(EWL_TEXT(entry)))
 	{
 		unsigned int cursor_pos;
@@ -239,38 +272,77 @@ ete_cb_font_size(Ewl_Widget *w, void *ev, void *data)
 		selection = ewl_text_selection_get(EWL_TEXT(entry));
 
 		ewl_text_cursor_position_set(EWL_TEXT(entry),
-				ewl_text_trigger_start_pos_get(selection));
+					ewl_text_trigger_start_pos_get(selection));
+		ewl_text_styles_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_NONE,
+					ewl_text_trigger_length_get(selection));
+		ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
+	}
+	else
+		ewl_text_styles_set(EWL_TEXT(entry), EWL_TEXT_STYLE_NONE);
+}
 
+static void
+ete_cb_outline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_OUTLINE);
+}
+
+static void
+ete_cb_font_size(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	if (ewl_text_has_selection(EWL_TEXT(entry)))
+	{
+		unsigned int cursor_pos;
+		Ewl_Text_Trigger *selection;
+
+		cursor_pos = ewl_text_cursor_position_get(EWL_TEXT(entry));
+		selection = ewl_text_selection_get(EWL_TEXT(entry));
+		ewl_text_cursor_position_set(EWL_TEXT(entry),
+					ewl_text_trigger_start_pos_get(selection));
 		ewl_text_font_size_apply(EWL_TEXT(entry),
-				ewl_spinner_value_get(EWL_SPINNER(w)),
-				ewl_text_trigger_length_get(selection));
-
+					ewl_spinner_value_get(EWL_SPINNER(w)),
+					ewl_text_trigger_length_get(selection));
 		ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
 	}
 	else
 		ewl_text_font_size_set(EWL_TEXT(entry), 
-				ewl_spinner_value_get(EWL_SPINNER(w)));
-#endif
+					ewl_spinner_value_get(EWL_SPINNER(w)));
 }
 
 static void
-ete_cb_none(Ewl_Widget *w, void *ev, void *data)
+ete_cb_fetch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
 {
+	Ewl_Widget *entry;
+	char *txt;
+
+	entry = ewl_widget_name_find("entry");
+	txt = ewl_text_text_get(EWL_TEXT(entry));
+
+	printf("%s\n", txt);
+	FREE(txt);
 }
 
 static void
-ete_cb_fetch(Ewl_Widget *w, void *ev, void *data)
+ete_cb_set(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
 {
+	printf("I do nothing yet ...\n");
 }
 
 static void
-ete_cb_set(Ewl_Widget *w, void *ev, void *data)
+ete_cb_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
 {
-}
-
-static void
-ete_cb_load(Ewl_Widget *w, void *ev, void *data)
-{
+	printf("I do nothing yet ...\n");
 }
 
 

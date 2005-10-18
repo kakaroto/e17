@@ -42,14 +42,16 @@ static void ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t,
 static void ewl_text_btree_shrink(Ewl_Text_BTree *tree);
 static void ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, 
 						Ewl_Text_Context *tx_change);
+static char *ewl_text_format_get(Ewl_Text_Context *ctx);
+static Evas_Textblock_Cursor *ewl_text_textblock2_cursor_position(Ewl_Text *t, 
+							unsigned int idx);
+static unsigned int ewl_text_textblock2_cursor_to_index(Evas_Textblock_Cursor *cursor);
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
 static void ewl_text_trigger_cb_free(void *value, void *data);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
 						unsigned int len);
-static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig, 
-					int tb_length, unsigned int *cur_idx, 
-							unsigned int *cur_tb_idx);
+static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
@@ -171,21 +173,13 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 							int *w, int *h)
 {
 	Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
-	Evas_Bool ret;
-	char *ptr;
-	unsigned int tb_idx = 0;
-	int fiddled = 0;
-	int i = 0;
-
+	Evas_Textblock_Cursor *cursor;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* make sure we are in the text */
-	if (idx > t->length) idx = t->length;
-
-	/* if we have no text then use the default font size */
-	if ((!t->textblock) || (!t->text))
+	/* can't do this if we don't have an evas object */
+	if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
 	{
 		if (x) *x = 0;
 		if (y) *y = 0;
@@ -200,33 +194,11 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	/* we need to remove the \n \r \t from the index count so that the
-	 * textblock number will be right */
-	for (ptr = t->text; *ptr; ptr ++)
-	{
-		if (i == idx) break;
+	if (idx >= t->length) idx = t->length - 1;
 
-		if ((*ptr != '\n') && (*ptr != '\r') && (*ptr != '\t')) 
-			tb_idx ++;
-		i++;
-	}
-
-	/* length is one after the end of the text, so make sure we take one
-	 * less as tb won't recognize length itself, it will return the same
-	 * as if you clicked off the start */
-	if (tb_idx == t->length)
-	{
-		tb_idx --;
-		fiddled = 1;
-	}
-
-	ret = evas_object_textblock_char_pos_get(t->textblock, tb_idx, &tx, &ty, 
-								&tw, &th);
-
-	/* we had to add the width of the last char into the x value given
-	 * by tb in order to get stuck at the end of the text */
-	if (fiddled)
-		tx += tw;
+	cursor = ewl_text_textblock2_cursor_position(t, idx);
+	evas_textblock2_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
+	evas_textblock2_cursor_free(cursor);
 
 	if (x) *x = (int)(tx + CURRENT_X(t));
 	if (y) *y = (int)(ty + CURRENT_Y(t));
@@ -245,68 +217,57 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 unsigned int
 ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 {
-	int tb_idx, i = 0;
+	Evas_Textblock_Cursor *cursor;
 	unsigned int idx = 0;
-	char *ptr;
-	Evas_Coord tcx, tcw;
+	Evas_Coord tx, ty, cx, cy, cw, ch;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 
-	if ((!t->textblock) || (!t->text))
+	if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
 	{
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
-	tb_idx = evas_object_textblock_char_coords_get(t->textblock,
-			(Evas_Coord)(x - CURRENT_X(t)),
-			(Evas_Coord)(y - CURRENT_Y(t)), 
-			&tcx, NULL, &tcw, NULL);
+	tx = (Evas_Coord)(x - CURRENT_X(t));
+	ty = (Evas_Coord)(y - CURRENT_Y(t));
 
-	/* if this is less then 0 then we clicked off of one end of the
-	 * textblock or the other. if the click position is inside the size
-	 * of a char we are at the start, else we are at the end */
-	/* XXX WRONG */
-	if (tb_idx < 0)
+	cursor = evas_object_textblock2_cursor_new(t->textblock);
+
+	/* see if we have the mouse over a char */
+	if (!evas_textblock2_cursor_char_coord_set(cursor, tx, ty))
 	{
-		int cx, size;
+		int line;
 
-		size = ewl_text_font_size_get(t, 0);
-		cx = x - CURRENT_X(t);
-
-		if (cx < size)
+		/* if not, see if the mouse is by a line */
+		line = evas_textblock2_cursor_line_coord_set(cursor, ty);
+		if (line >= 0)
 		{
-			DRETURN_INT(0, DLEVEL_STABLE);
+			/* if so, get the line geometry and determine start
+			 * or end of line */
+			evas_textblock2_cursor_line_geometry_get(cursor, 
+								&cx, &cy, 
+								&cw, &ch);
+			if (x < (cx + (cw / 2)))
+				evas_textblock2_cursor_line_first(cursor);
+			else
+			{
+				evas_textblock2_cursor_line_last(cursor);
+
+				/* we want to be past the last char so we
+				 * need to increment this by 1 to begin */
+				idx += 1;
+			}
 		}
 		else
 		{
-			DRETURN_INT(t->length, DLEVEL_STABLE);
+			evas_textblock2_cursor_line_set(cursor, 0);
+			evas_textblock2_cursor_line_first(cursor);
 		}
 	}
-	else
-	{
-		Evas_Coord xpos;
 
-		xpos = (Evas_Coord)(x - CURRENT_X(t));
-
-		/* if we clicked on the right side of the char move us over
-		 * to next index over */
-		if (xpos > (tcx + (tcw / 2)))
-			tb_idx ++;
-	}
-
-	idx = tb_idx;
-
-	/* need to add \n \r \t stuff back into the count */
-	for (ptr = t->text; *ptr; ptr ++)
-	{
-		if (i == tb_idx) break;
-
-		if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t')) 
-			idx ++;
-		else
-			i ++;
-	}
+	idx += ewl_text_textblock2_cursor_to_index(cursor);
+	evas_textblock2_cursor_free(cursor);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
@@ -334,8 +295,9 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-	
-	ewl_text_text_insert(t, NULL, 0);
+
+	t->cursor_position = 0;
+	ewl_text_text_insert(t, NULL, t->cursor_position);
 	ewl_text_text_insert(t, text, t->cursor_position);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -430,12 +392,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 			t->total_size += extend + 1;
 		}
 
-		if (idx == 0)
-		{
-			memmove(t->text + len, t->text, t->length);
-			memcpy(t->text, text, len);
-		}
-		else if (idx == t->length)
+		if (idx == t->length)
 			strncat(t->text, text, len);
 		else
 		{
@@ -567,8 +524,28 @@ ewl_text_selection_get(Ewl_Text *t)
 	{
 		DRETURN_PTR(t->selection, DLEVEL_STABLE);
 	}
+
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
+
+/**
+ * @param t: The text to check if there is a selection
+ * @return Returns TRUE if there is selected text, FALSE otherwise
+ */
+unsigned int
+ewl_text_has_selection(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, FALSE);
+
+	if (ewl_text_selection_get(t))
+	{
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
 
 /**
  * @param t: The Ewl_Text widget to set the position into
@@ -594,7 +571,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 	t->current_context = ewl_text_btree_context_get(t->formatting, pos);
 	if (t->current_context)
 	{
-		tx->ref_count --;
+		ewl_text_context_free(tx);
 		t->current_context->ref_count ++;
 	}
 	else
@@ -616,29 +593,107 @@ ewl_text_cursor_position_get(Ewl_Text *t)
 	DRETURN_INT(t->cursor_position, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The Ewl_Text to get the cursor position one line up from
+ * @return Returns the cursor position if we moved up one line
+ */
+unsigned int
+ewl_text_cursor_position_line_up_get(Ewl_Text *t)
+{
+	Evas_Textblock_Cursor *cursor;
+	unsigned int cur_idx, idx;
+	Evas_Coord cx, cw;
+	Evas_Coord lx, ly, lw, lh;
+	int line;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(t, "t", t->cursor_position);
+
+	cur_idx = ewl_text_cursor_position_get(t);
+	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);
+	line = evas_textblock2_cursor_char_geometry_get(cursor, &cx, NULL, 
+								&cw, NULL);
+	line --;
+	
+	if (evas_object_textblock2_line_number_geometry_get(t->textblock, 
+						line, &lx, &ly, &lw, &lh))
+	{
+		if (!evas_textblock2_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
+		{
+			if (evas_textblock2_cursor_line_set(cursor, line))
+			{
+				if ((cx + (cw / 2)) >= (lx + lw))
+					evas_textblock2_cursor_line_last(cursor);
+				else
+					evas_textblock2_cursor_line_first(cursor);
+			}
+		}
+
+	}
+	idx = ewl_text_textblock2_cursor_to_index(cursor);
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the cursor position one line down from
+ * @return Returns the cursor position if we moved down one line
+ */
+unsigned int
+ewl_text_cursor_position_line_down_get(Ewl_Text *t)
+{
+	Evas_Textblock_Cursor *cursor;
+	unsigned int cur_idx, idx;
+	Evas_Coord cx, cw;
+	Evas_Coord lx, ly, lw, lh;
+	int line;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(t, "t", t->cursor_position);
+
+	cur_idx = ewl_text_cursor_position_get(t);
+	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);
+	line = evas_textblock2_cursor_char_geometry_get(cursor, &cx, NULL, 
+								&cw, NULL);
+	line ++;
+	
+	if (evas_object_textblock2_line_number_geometry_get(t->textblock, 
+						line, &lx, &ly, &lw, &lh))
+	{
+		if (!evas_textblock2_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
+		{
+			if (evas_textblock2_cursor_line_set(cursor, line))
+			{
+				if ((cx + (cw / 2)) >= (lx + lw))
+					evas_textblock2_cursor_line_last(cursor);
+				else
+					evas_textblock2_cursor_line_first(cursor);
+			}
+		}
+
+	}
+	idx = ewl_text_textblock2_cursor_to_index(cursor);
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
+}
+
 static void
 ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_change)
 {
+	Ewl_Text_Context *ctx;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
 	/* do we have a current context? */
 	if (t->current_context)
-	{
-		Ewl_Text_Context *ctx;
-
 		ctx = t->current_context;
-		t->current_context = ewl_text_context_find(t->current_context, context_mask, tx_change);
-		ctx->ref_count --;
-	}
 	else
-	{
-		Ewl_Text_Context *ctx;
-
 		ctx = ewl_text_context_default_create(t);
-		t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
-		ctx->ref_count --;
-	}
+
+	t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
+	ewl_text_context_free(ctx);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -2097,155 +2152,69 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 }
 
 static void
-ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig, int tb_length,
-				unsigned int *cur_idx, unsigned int *cur_tb_idx)
+ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 {
-	Evas_Coord sx, sy, sh, ex, ey, ew, eh;
-	char *ptr;
-	int start_line = 0, end_line = 0;
-	int fiddled;
+	Evas_Textblock_Cursor *cur1, *cur2;
+	Evas_List *rects;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("trig", trig);
 
-	/* clean out the old areas */
-	/* XXX this needs to be smartened such that it will re-use the 
-	 * previously created areas instead of deleting them every time */
-	{
-		Ewl_Text_Trigger_Area *area;
+        /* clean out the old areas */
+        /* XXX this needs to be smartened such that it will re-use the 
+         * previously created areas instead of deleting them every time */
+        {
+                Ewl_Text_Trigger_Area *area;
 
-		if (ecore_list_nodes(trig->areas) > 0)
-		{
-			ecore_list_goto_first(trig->areas);
-			while ((area = ecore_list_next(trig->areas)))
-			{
-				/* i'm deleting in the iteration _after_ the one in which it was actually
-				 * deleted cuz i'm getting fucked up events on the areas taht have already
-				 * been deleted....which is bad...
-				 * I think it's because I'm deleting in the configure callback?
-				 */
-				if (area->deleted)
-					ewl_widget_destroy(EWL_WIDGET(area));
-				else
-				{
-					ewl_widget_hide(EWL_WIDGET(area));
-					area->deleted = TRUE;
-				}
-			}
-			ecore_list_clear(trig->areas);
-		}
-		else
-			trig->areas = ecore_list_new();
+                if (ecore_list_nodes(trig->areas) > 0)
+                {
+                        ecore_list_goto_first(trig->areas);
+                        while ((area = ecore_list_next(trig->areas)))
+                        {
+                                /* i'm deleting in the iteration _after_ the one in which it was actually
+                                 * deleted cuz i'm getting fucked up events on the areas taht have already
+                                 * been deleted....which is bad...
+                                 * I think it's because I'm deleting in the configure callback?
+                                 */
+                                if (area->deleted)
+                                        ewl_widget_destroy(EWL_WIDGET(area));
+                                else
+                                {
+                                        ewl_widget_hide(EWL_WIDGET(area));
+                                        area->deleted = TRUE;
+                                }
+                        }
+                        ecore_list_clear(trig->areas);
+                }
+                else
+                        trig->areas = ecore_list_new();
+        }
+
+	if (trig->len == 0) 
+	{
+		DRETURN(DLEVEL_STABLE);
 	}
 
-	if (trig->len == 0) return;
+	cur1 = ewl_text_textblock2_cursor_position(t, trig->pos);
+	cur2 = ewl_text_textblock2_cursor_position(t, trig->pos + trig->len - 1);
 
-	fiddled = 0;
-
-	/* get the index of the start of the trigger */
-	for (ptr = (t->text + *cur_idx); *cur_idx < trig->pos; (*cur_idx)++)
+	/* get all the rectangles and create areas with them */
+	rects = evas_textblock2_cursor_range_geometry_get(cur1, cur2);
+	while (rects)
 	{
-		/* if this isn't a \r\n or \t increment the
-		 * textblock position */
-		if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
-			(*cur_tb_idx) ++;
-		ptr ++;
+		Evas_Textblock_Rectangle *tr;
+
+		tr = rects->data;
+		ewl_text_trigger_area_add(t, trig, tr->x + CURRENT_X(t), 
+						tr->y + CURRENT_Y(t), 
+						tr->w, tr->h);
+
+		FREE(tr);
+		rects = evas_list_remove_list(rects, rects);
 	}
-
-	/* get the position of the start character */
-	evas_object_textblock_char_pos_get(t->textblock, *cur_tb_idx,
-			&sx, &sy, NULL, &sh);
-
-	/* get the line number we're on */
-	evas_object_textblock_cursor_pos_set(t->textblock, *cur_tb_idx);
-	start_line = evas_object_textblock_cursor_line_get(t->textblock);
-
-
-	/* get the index of the end of the trigger */
-	for (ptr = (t->text + *cur_idx);
-			*cur_idx < (trig->pos + trig->len); (*cur_idx)++)
-	{
-		/* if this isn't a \r\n or \t increment the
-		 * textblock position */
-		if ((*ptr != '\r') && (*ptr != '\n') && (*ptr != '\t')) 
-			(*cur_tb_idx) ++;
-		ptr ++;
-	}
-
-	if ((*cur_tb_idx) >= tb_length)
-	{
-		*cur_tb_idx = tb_length - 1;
-		fiddled = 1;
-	}
-	evas_object_textblock_char_pos_get(t->textblock, *cur_tb_idx,
-			&ex, &ey, &ew, &eh);
-
-	/* get the line number we're on */
-	evas_object_textblock_cursor_pos_set(t->textblock, *cur_tb_idx);
-	end_line = evas_object_textblock_cursor_line_get(t->textblock);
-
-	if (fiddled)
-		ex += ew;
-
-	/* whole trigger is on one line */
-	if (start_line == end_line)
-	{
-		ewl_text_trigger_area_add(t, trig, sx, sy, (ex - sx), 
-							(ey - sy) + eh);
-	}
-	/* multiline trigger */
-	else
-	{
-		int i, missed = 0;
-		Evas_Coord lx, ly, lw, lh;
-		Evas_Coord llx = 0, lly = 0, llw = 0, llh = 0;
-
-		/* get the coords for all the lines and deal with
-		 * them */
-		for (i = start_line; i <= end_line; i++)
-		{
-			if (!evas_object_textblock_line_get(t->textblock, i, 
-							&lx, &ly, &lw, &lh))
-			{
-				/* if we don't get a response from
-				 * evas then this is a blank line.
-				 * wait until we get the next real line
-				 * to deal with it */
-				missed = 1;
-
-				lly = ly + lh;
-				llw = lw;
-				llh = lh;
-
-				continue;
-			}
-			else
-			{
-				if (i == start_line)
-				{
-					lx = sx;
-					ly = sy;
-					lw -= ex;
-				}
-				else if (i == end_line)
-				{
-					lw = ex - ew;
-				}
-					
-				ewl_text_trigger_area_add(t, trig, lx, ly, lw, lh);
-			}
-
-			/* deal with the missed line */
-			if (missed)
-			{
-				ewl_text_trigger_area_add(t, trig, 0, lly, 2, ly - lly);
-
-				missed = 0;
-				llx = lly = llw = llh = 0;
-			}
-		}
-	}
+	evas_textblock2_cursor_free(cur1);
+	evas_textblock2_cursor_free(cur2);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2253,24 +2222,16 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig, int tb_length,
 void
 ewl_text_triggers_realize(Ewl_Text *t)
 {
-	Ewl_Text_Trigger *cur;
-	int tb_length = 0;
-	unsigned int cur_idx = 0, cur_tb_idx = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
-	/* we need to get the length of the textblock to make sure we aren't
-	 * trying to access one past its end. if we are, we need to do the
-	 * previous one then add the previous's width to get the correct x
-	 * position */
-	tb_length = evas_object_textblock_length_get(t->textblock);
-
 	if (t->triggers)
 	{
+		Ewl_Text_Trigger *cur;
+
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
-			ewl_text_trigger_position(t, cur, tb_length, &cur_idx, &cur_tb_idx);
+			ewl_text_trigger_position(t, cur);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2344,9 +2305,7 @@ ewl_text_triggers_hide(Ewl_Text *t)
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 		{
-
-			if (!cur->areas)
-				continue;
+			if (!cur->areas) continue;
 
 			ecore_list_goto_first(cur->areas);
 			while ((area = ecore_list_next(cur->areas)))
@@ -2515,8 +2474,9 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data)
 		/* This needs to be here to cause the scrollpane to update
 		 * as you scroll, tho I think Evas should be doing this
 		 * itself behind the scenes */
-		evas_damage_rectangle_add(evas_object_evas_get(t->textblock),
-							xx, yy, ww, hh);
+//printf("THIS NEEDED?\n");
+//		evas_damage_rectangle_add(evas_object_evas_get(t->textblock),
+//							xx, yy, ww, hh);
 
 		ewl_text_triggers_configure(t);
 	}
@@ -2529,6 +2489,10 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Text *t;
 	Ewl_Embed *emb;
+	Ewl_Text_Context *ctx;
+	Evas_Textblock_Style *st;
+	char *fmt, *fmt2;
+	int len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -2541,8 +2505,24 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	ctx = ewl_text_context_default_create(t);
+	fmt = ewl_text_format_get(ctx);
+	ewl_text_context_free(ctx);
+
+	len = strlen(fmt) + 12;  /* 12 = strlen("DEFAULT=''") + \n + \0 */
+	fmt2 = NEW(char, len);
+	snprintf(fmt2, len, "DEFAULT='%s'\n", fmt);
+	FREE(fmt);
+
 	/* create the textblock */
-	t->textblock = evas_object_textblock_add(emb->evas);
+	t->textblock = evas_object_textblock2_add(emb->evas);
+
+	st = evas_textblock2_style_new();
+	evas_textblock2_style_set(st, fmt2);
+	evas_object_textblock2_style_set(t->textblock, st);
+	evas_textblock2_style_free(st);
+
+	FREE(fmt2);
 
 	if (w->fx_clip_box)
 		evas_object_clip_set(t->textblock, w->fx_clip_box);
@@ -2565,6 +2545,8 @@ ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data)
 	t = EWL_TEXT(w);
 
 	evas_object_clip_unset(t->textblock);
+
+	/* XXX this will need to change for obj cache */
 	evas_object_del(t->textblock);
 	t->textblock = NULL;
 
@@ -2582,7 +2564,6 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data)
 
 	t = EWL_TEXT(w);
 	evas_object_show(t->textblock);
-
 	ewl_text_triggers_show(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2597,7 +2578,6 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data)
 
 	t = EWL_TEXT(w);
 	evas_object_hide(t->textblock);
-
 	ewl_text_triggers_hide(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2624,13 +2604,9 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 
 	if (t->current_context)
 	{
-		t->current_context->ref_count --;
-		if (t->current_context->ref_count == 0)
-			ewl_text_context_free(t->current_context);
-
+		ewl_text_context_free(t->current_context);
 		t->current_context = NULL;
 	}
-
 	IF_FREE(t->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2652,9 +2628,9 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_text_cb_mouse_move, NULL);
-        
+
         idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-       
+      
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
                 ewl_text_selection_select_to(t->selection, idx);
@@ -2784,7 +2760,7 @@ static Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
 	Ewl_Text_Context *tx = NULL, *tmp;
-    int i;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
@@ -3218,6 +3194,7 @@ ewl_text_context_free(Ewl_Text_Context *tx)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tx", tx);
 
+	tx->ref_count --;
 	if (tx->ref_count > 0) return;
 
 	t = ewl_text_context_name_get(tx, 0, NULL);
@@ -3627,10 +3604,7 @@ ewl_text_btree_free(Ewl_Text_BTree *tree)
 
 	if (tree->tx)
 	{
-		tree->tx->ref_count --;
-		if (tree->tx->ref_count == 0)
-			ewl_text_context_free(tree->tx);
-
+		ewl_text_context_free(tree->tx);
 		tree->tx = NULL;
 	}
 	FREE(tree);
@@ -3822,9 +3796,7 @@ ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 		/* apply covers entire node */
 		if ((idx == 0) && ((idx + len) >= tree->length))
 		{
-			ctx->ref_count --;
-			if (ctx->ref_count == 0)
-				ewl_text_context_free(ctx);
+			ewl_text_context_free(ctx);
 			tree->tx = new_tx;
 		}
 		else
@@ -4024,7 +3996,7 @@ ewl_text_btree_condense(Ewl_Text_BTree *tree)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 
-	/* XXX */
+	/* XXX write this sometime ... */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4079,11 +4051,9 @@ ewl_text_display(Ewl_Text *t)
 {
 	Evas_Coord w = 0, h = 0;
 
-	evas_object_textblock_clear(t->textblock);
+	evas_object_textblock2_clear(t->textblock);
 	ewl_text_btree_walk(t);
-
-	evas_object_textblock_native_size_get(t->textblock, &w, &h);
-	w += 2;
+	evas_object_textblock2_size_native_get(t->textblock, &w, &h);
 
 	/* if we don't get a height back try to set the height to the height of
 	* the font, if we don't have a font size, make it 1 */
@@ -4102,6 +4072,7 @@ ewl_text_display(Ewl_Text *t)
 static void
 ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 {
+	Evas_Textblock_Cursor *cursor;
 	char *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -4111,21 +4082,24 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	/* we don't free this cursor as it is actually const
+	 * Evas_Textblock_Cursor * and i'm casting it...  */
+	cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(tb);
 	for (tmp = txt; *tmp; tmp++) 
 	{
 		if (*tmp == '\n') 
 		{
 			*tmp = '\0';
-			evas_object_textblock_text_insert(tb, txt);
-			evas_object_textblock_format_insert(tb, "\n");
+			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
+			evas_textblock2_cursor_format_append(cursor, "\n");
 			*tmp = '\n';
 			txt = tmp + 1;
 		}
 		else if (*tmp == '\r' && *(tmp + 1) == '\n') 
 		{
 			*tmp = '\0';
-			evas_object_textblock_text_insert(tb, txt);
-			evas_object_textblock_format_insert(tb, "\n");
+			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
+			evas_textblock2_cursor_format_append(cursor, "\n");
 			*tmp = '\r';
 			tmp++;
 			txt = tmp + 2;
@@ -4133,14 +4107,13 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 		else if (*tmp == '\t') 
 		{
 			*tmp = '\0';
-			evas_object_textblock_text_insert(tb, txt);
-			evas_object_textblock_format_insert(tb, "\t");
+			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
+			evas_textblock2_cursor_format_append(cursor, "\t");
 			*tmp = '\t';
 			txt = tmp + 1;
 		}
 	}
-	if (*txt)
-		evas_object_textblock_text_insert(tb, txt);
+	if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
 }
 
 static void
@@ -4166,147 +4139,16 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 	/* if we have a context we are a leaf node */
 	if (tree->tx)
 	{
-		char fmt[2048];
-		char tmp;
-		char *ptr;
-		char style[512];
-		char align[128];
-		Ewl_Text_Context *ctx;
+		char *fmt, *ptr, tmp;
+		Evas_Textblock_Cursor *cursor;
 
-		ctx = tree->tx;
-		style[0] = '\0';
-		align[0] = '\0';
+		fmt = ewl_text_format_get(tree->tx);
 
-		/* create the style string */
-		ptr = style;
-		if (ctx->styles != EWL_TEXT_STYLE_NONE)
-		{
-			if ((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) || 
-					(ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE))
-			{
-				snprintf(ptr, sizeof(style) - strlen(style), 
-						"underline=%s underline_color=#%02x%02x%02x%02x "
-						"double_underline_color=#%02x%02x%02x%02x",
-						((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) ?
-						  "on" : "double"),
-						ctx->style_colors.underline.r,
-						ctx->style_colors.underline.g,
-						ctx->style_colors.underline.b,
-						ctx->style_colors.underline.a,
-						ctx->style_colors.double_underline.r,
-						ctx->style_colors.double_underline.g,
-						ctx->style_colors.double_underline.b,
-						ctx->style_colors.double_underline.a);
-			}
-			else
-				snprintf(ptr, sizeof(style) - strlen(style), "underline=off ");
-			ptr = style + strlen(style);
-
-			if (ctx->styles & EWL_TEXT_STYLE_STRIKETHROUGH)
-				snprintf(ptr, sizeof(style) - strlen(style), 
-						"strkethrough=on strikethrough_color=#%02x%02x%02x%02x ",
-						ctx->style_colors.strikethrough.r,
-						ctx->style_colors.strikethrough.g,
-						ctx->style_colors.strikethrough.b,
-						ctx->style_colors.strikethrough.a);
-			else
-				snprintf(ptr, sizeof(style) - strlen(style), "strkethrough=off ");
-			ptr = style + strlen(style);
-
-			if ((ctx->styles & EWL_TEXT_STYLE_SHADOW) 
-					|| (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-					|| (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
-					|| (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
-					|| (ctx->styles & EWL_TEXT_STYLE_GLOW))
-			{
-				if (ctx->styles & EWL_TEXT_STYLE_GLOW)
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=glow glow_color=#%02x%02x%02x%02x ",
-							ctx->style_colors.glow.r,
-							ctx->style_colors.glow.g,
-							ctx->style_colors.glow.b,
-							ctx->style_colors.glow.a);
-
-				else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
-				{
-					if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=outline_shadow ");
-					else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=outline_soft_shadow ");
-					else
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=outline ");
-					ptr = style + strlen(style);
-					snprintf(ptr, sizeof(style) - strlen(style),
-							"outline_color=#%02x%02x%02x%02x ", 
-							ctx->style_colors.outline.r,
-							ctx->style_colors.outline.g,
-							ctx->style_colors.outline.b,
-							ctx->style_colors.outline.a);
-				}
-				else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=shadow ");
-
-				else if (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
-				{
-					if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=far_soft_shadow ");
-					else
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=far_shadow ");
-				}
-				else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-				{
-						snprintf(ptr, sizeof(style) - strlen(style), 
-								"style=soft_shadow ");
-				}
-				ptr = style + strlen(style);
-				snprintf(ptr, sizeof(style) - strlen(style),
-							"shadow_color=#%02x%02x%02x%02x ",
-							ctx->style_colors.shadow.r,
-							ctx->style_colors.shadow.g,
-							ctx->style_colors.shadow.b,
-							ctx->style_colors.shadow.a);
-			}
-			else
-				snprintf(ptr, sizeof(style) - strlen(style), "style=off ");
-			ptr = style + strlen(style);
-		}
-		else
-		{
-			snprintf(style, sizeof(style), "underline=off strikethrough=off style=off");
-		}
-
-		/* create the alignment string */
-		if (ctx->align > 0)
-		{
-			if (ctx->align & EWL_FLAG_ALIGN_CENTER)
-				snprintf(align, sizeof(align), "align=center");
-
-			else if (ctx->align & EWL_FLAG_ALIGN_RIGHT)
-				snprintf(align, sizeof(align), "align=right");
-
-			else
-				snprintf(align, sizeof(align), "align=left");	
-		}
-		else
-			snprintf(align, sizeof(align), "align=left");
-
-		/* create the formatting string */
-		snprintf(fmt, sizeof(fmt), "font=fonts/%s source=%s size=%d "
-					"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
-					"%s wrap=%s %s", ctx->font, 
-					ewl_theme_path_get(), ctx->size,
-					ctx->style_colors.bg.r, ctx->style_colors.bg.g,
-					ctx->style_colors.bg.b, ctx->style_colors.bg.a,
-					ctx->color.r, ctx->color.g,
-					ctx->color.b, ctx->color.a, style, 
-					((ctx->wrap) ? "on" : "off"), align);
-		evas_object_textblock_format_insert(t->textblock, fmt);
+		/* we don't free this cursor as it is actually const
+		 * Evas_Textblock_Cursor * and i'm casting it...  */
+		cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
+		evas_textblock2_cursor_format_append(cursor, fmt);
+		FREE(fmt);
 
 		ptr = t->text + text_pos;
 		tmp = *(ptr + tree->length);
@@ -4314,6 +4156,8 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 
 		ewl_text_plaintext_parse(t->textblock, ptr);
 		*(ptr + tree->length) = tmp;	
+
+		evas_textblock2_cursor_format_append(cursor, "-");
 	}
 	else if (!tree->children)
 	{
@@ -4422,18 +4266,234 @@ void
 ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trig;
-	int tb_length;
-	unsigned int cur_idx = 0, cur_tb_idx = 0;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	trig = EWL_TEXT_TRIGGER(w);
-
-	tb_length = evas_object_textblock_length_get(trig->text_parent->textblock);
-	ewl_text_trigger_position(trig->text_parent, trig, tb_length, &cur_idx, &cur_tb_idx);
+	ewl_text_trigger_position(trig->text_parent, trig);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/* This will give you the format string to pass to textblock2 based on the
+ * context information. You _MUST_ free this format when your done with it */
+static char *
+ewl_text_format_get(Ewl_Text_Context *ctx)
+{
+	char *fmt;
+	char *ptr;
+	char style[512];
+	char align[128];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ctx", ctx, NULL);
+
+	fmt = NEW(char, 2048);
+
+	style[0] = '\0';
+	align[0] = '\0';
+
+	/* create the style string */
+	ptr = style;
+	if (ctx->styles != EWL_TEXT_STYLE_NONE)
+	{
+		if ((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) || 
+				(ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE))
+		{
+			snprintf(ptr, sizeof(style) - strlen(style), 
+					"underline=%s underline_color=#%02x%02x%02x%02x "
+					"underline2_color=#%02x%02x%02x%02x ",
+					((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) ?
+					 "on" : "double"),
+					ctx->style_colors.underline.r,
+					ctx->style_colors.underline.g,
+					ctx->style_colors.underline.b,
+					ctx->style_colors.underline.a,
+					ctx->style_colors.double_underline.r,
+					ctx->style_colors.double_underline.g,
+					ctx->style_colors.double_underline.b,
+					ctx->style_colors.double_underline.a);
+		}
+		else
+			snprintf(ptr, sizeof(style) - strlen(style), "underline=off ");
+		ptr = style + strlen(style);
+
+		if (ctx->styles & EWL_TEXT_STYLE_STRIKETHROUGH)
+			snprintf(ptr, sizeof(style) - strlen(style), 
+					"strikethrough=on strikethrough_color=#%02x%02x%02x%02x ",
+					ctx->style_colors.strikethrough.r,
+					ctx->style_colors.strikethrough.g,
+					ctx->style_colors.strikethrough.b,
+					ctx->style_colors.strikethrough.a);
+		else
+			snprintf(ptr, sizeof(style) - strlen(style), "strkethrough=off ");
+		ptr = style + strlen(style);
+
+		if ((ctx->styles & EWL_TEXT_STYLE_SHADOW) 
+				|| (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+				|| (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
+				|| (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
+				|| (ctx->styles & EWL_TEXT_STYLE_GLOW))
+		{
+			if (ctx->styles & EWL_TEXT_STYLE_GLOW)
+				snprintf(ptr, sizeof(style) - strlen(style), 
+						"style=glow glow_color=#%02x%02x%02x%02x ",
+						ctx->style_colors.glow.r,
+						ctx->style_colors.glow.g,
+						ctx->style_colors.glow.b,
+						ctx->style_colors.glow.a);
+
+			else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
+			{
+				if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
+					snprintf(ptr, sizeof(style) - strlen(style), 
+							"style=outline_shadow ");
+				else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+					snprintf(ptr, sizeof(style) - strlen(style), 
+							"style=outline_soft_shadow ");
+				else
+					snprintf(ptr, sizeof(style) - strlen(style), 
+							"style=outline ");
+				ptr = style + strlen(style);
+				snprintf(ptr, sizeof(style) - strlen(style),
+						"outline_color=#%02x%02x%02x%02x ", 
+						ctx->style_colors.outline.r,
+						ctx->style_colors.outline.g,
+						ctx->style_colors.outline.b,
+						ctx->style_colors.outline.a);
+			}
+			else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
+				snprintf(ptr, sizeof(style) - strlen(style), 
+						"style=shadow ");
+
+			else if (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
+			{
+				if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+					snprintf(ptr, sizeof(style) - strlen(style), 
+							"style=far_soft_shadow ");
+				else
+					snprintf(ptr, sizeof(style) - strlen(style), 
+							"style=far_shadow ");
+			}
+			else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+			{
+				snprintf(ptr, sizeof(style) - strlen(style), 
+						"style=soft_shadow ");
+			}
+			ptr = style + strlen(style);
+			snprintf(ptr, sizeof(style) - strlen(style),
+					"shadow_color=#%02x%02x%02x%02x ",
+					ctx->style_colors.shadow.r,
+					ctx->style_colors.shadow.g,
+					ctx->style_colors.shadow.b,
+					ctx->style_colors.shadow.a);
+		}
+		else
+			snprintf(ptr, sizeof(style) - strlen(style), "style=off ");
+		ptr = style + strlen(style);
+	}
+	else
+	{
+		snprintf(style, sizeof(style), "underline=off strikethrough=off style=off ");
+	}
+
+	/* create the alignment string */
+	if (ctx->align > 0)
+	{
+		if (ctx->align & EWL_FLAG_ALIGN_CENTER)
+			snprintf(align, sizeof(align), "align=center");
+
+		else if (ctx->align & EWL_FLAG_ALIGN_RIGHT)
+			snprintf(align, sizeof(align), "align=right");
+
+		else
+			snprintf(align, sizeof(align), "align=left");	
+	}
+	else
+		snprintf(align, sizeof(align), "align=left");
+	/* create the formatting string */
+	snprintf(fmt, 2048, "+font=fonts/%s font_source=%s font_size=%d "
+			"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
+			"%s wrap=%s %s\n", ctx->font, 
+			ewl_theme_path_get(), ctx->size,
+			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
+			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
+			ctx->color.r, ctx->color.g,
+			ctx->color.b, ctx->color.a, style, 
+			((ctx->wrap) ? "on" : "off"), align);
+
+	DRETURN_PTR(fmt, DLEVEL_STABLE);
+}
+
+/* This will give you a cursor into the textblock setup for your given
+ * index. You _MUST_ call evas_textblock2_cursor_free(cursor) on this object
+ * so it won't leak */
+static Evas_Textblock_Cursor *
+ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
+{
+	Evas_Textblock_Cursor *cursor;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
+
+	cursor = evas_object_textblock2_cursor_new(t->textblock);
+	evas_textblock2_cursor_node_first(cursor);
+
+	while (idx >= 0)
+	{
+		int len = 0;
+		const char *txt;
+
+		/* see if this is a formatting or text node */
+		txt = evas_textblock2_cursor_node_format_get(cursor);
+		if (!txt)
+		{
+			len = evas_textblock2_cursor_node_text_length_get(cursor);
+			if (len > idx)
+			{
+				evas_textblock2_cursor_pos_set(cursor, idx);
+				break;
+			}
+		}
+		else if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
+			len = 1;
+
+		if (!evas_textblock2_cursor_node_next(cursor))
+		{
+			evas_textblock2_cursor_node_last(cursor);
+			evas_textblock2_cursor_char_last(cursor);
+			break;
+		}
+		idx -= len;
+	}
+
+	DRETURN_PTR(cursor, DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_text_textblock2_cursor_to_index(Evas_Textblock_Cursor *cursor)
+{
+	unsigned int idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cursor", cursor, idx);
+
+	/* this gives the index inside the _node_ the cursor points to, we
+	 * then need to add the length of all the nodes before it plus any
+	 * formatting nodes that are \n or \t */
+	idx = evas_textblock2_cursor_pos_get(cursor);
+	while (evas_textblock2_cursor_node_prev(cursor))
+	{
+		const char *txt;
+		txt = evas_textblock2_cursor_node_format_get(cursor);
+		if (!txt)
+			idx += evas_textblock2_cursor_node_text_length_get(cursor);
+		else if (!strcmp(txt, "\n")) idx ++;
+		else if (!strcmp(txt, "\t")) idx ++;
+	}
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
 }
 
 

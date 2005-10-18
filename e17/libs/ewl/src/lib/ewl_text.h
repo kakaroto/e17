@@ -79,11 +79,14 @@ void		 ewl_text_text_insert(Ewl_Text *t, const char *text,
 void		 ewl_text_text_delete(Ewl_Text *t, unsigned int length);
 
 char 		*ewl_text_selection_text_get(Ewl_Text *t);
-
+unsigned int 	 ewl_text_has_selection(Ewl_Text *t);
 Ewl_Text_Trigger *ewl_text_selection_get(Ewl_Text *t);
 
 void		 ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos);
 unsigned int	 ewl_text_cursor_position_get(Ewl_Text *t);
+
+unsigned int	 ewl_text_cursor_position_line_up_get(Ewl_Text *t);
+unsigned int	 ewl_text_cursor_position_line_down_get(Ewl_Text *t);
 
 void		 ewl_text_font_set(Ewl_Text *t, const char *font);
 void		 ewl_text_font_apply(Ewl_Text *t, const char *font, 

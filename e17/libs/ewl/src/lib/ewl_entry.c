@@ -3,8 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static int ewl_entry_selection_clear(Ewl_Entry *e);
-
 /**
  * @param text: The text to set into the entry
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -163,6 +161,37 @@ ewl_entry_editable_get(Ewl_Entry *e)
 	DRETURN_INT(e->editable, DLEVEL_STABLE);
 }
 
+/**
+ * @param e: The entry to clear the selection of
+ * @return Returns TRUE if a selection was cleared, FALSE otherwise.
+ */
+unsigned int 
+ewl_entry_selection_clear(Ewl_Entry *e)
+{
+	Ewl_Text_Trigger *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	sel = ewl_text_selection_get(EWL_TEXT(e));
+	if (sel)
+	{
+		int len, pos;
+
+		len = ewl_text_trigger_length_get(sel);
+		pos = ewl_text_trigger_start_pos_get(sel);
+		ewl_text_cursor_position_set(EWL_TEXT(e), pos);
+		ewl_text_text_delete(EWL_TEXT(e), len);
+
+		/* remove the selection */
+		ewl_text_trigger_length_set(sel, 0);
+
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
 /*
  * internal stuff
  */
@@ -283,32 +312,6 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int 
-ewl_entry_selection_clear(Ewl_Entry *e)
-{
-	Ewl_Text_Trigger *sel;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, FALSE);
-
-	sel = ewl_text_selection_get(EWL_TEXT(e));
-	if (sel)
-	{
-		int len, pos;
-
-		len = ewl_text_trigger_length_get(sel);
-		pos = ewl_text_trigger_start_pos_get(sel);
-		ewl_text_cursor_position_set(EWL_TEXT(e), pos);
-		ewl_text_text_delete(EWL_TEXT(e), len);
-
-		/* remove the selection */
-		ewl_text_trigger_length_set(sel, 0);
-
-		DRETURN_INT(TRUE, DLEVEL_STABLE);
-	}
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
-}
-
 void
 ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 {
@@ -405,61 +408,12 @@ ewl_entry_cursor_move_right(Ewl_Entry *e)
 void
 ewl_entry_cursor_move_up(Ewl_Entry *e)
 {
-	int line = 0, c_pos = 0, tb_idx = 0, i = 0;
 	unsigned int current_pos = 0;
-	Evas_Coord lx, ly, lw, lh;
-	Evas_Coord cx, cy, cw, ch;
-	char *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	/* I don't like this, I'm breaking the obj hierarcy and letting
-	 * the entry access the textblock. But I don't see any reason for
-	 * this stuff to be in ewl_text as its suppost to be hiding the
-	 * textblock anyway ... */
-	current_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
-
-	for (ptr = (EWL_TEXT(e))->text; *ptr; ptr ++)
-	{
-		if (i == current_pos) break;
-
-		if ((*ptr != '\n') && (*ptr != '\r') && (*ptr != '\t'))
-			tb_idx ++;
-		i++;
-	}
-
-	evas_object_textblock_cursor_pos_set((EWL_TEXT(e))->textblock, tb_idx);
-	line = evas_object_textblock_cursor_line_get((EWL_TEXT(e))->textblock);
-
-	if (line == 0)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* line position of line above us */
-	evas_object_textblock_line_get((EWL_TEXT(e))->textblock, line - 1, &lx, &ly, &lw, &lh);
-
-	/* current character position */
-	evas_object_textblock_char_pos_get((EWL_TEXT(e))->textblock, tb_idx,
-			&cx, &cy, &cw, &ch);
-
-	/* XXX do something better then lh / 2?  */
-	c_pos = evas_object_textblock_char_coords_get((EWL_TEXT(e))->textblock, 
-					cx, ly - (lh / 2), NULL, NULL, NULL, NULL);
-
-	i = 0;
-	current_pos= c_pos;
-        for (ptr = (EWL_TEXT(e))->text; *ptr; ptr ++)
-	{
-		if (i == c_pos) break;
-
-		if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t'))
-			current_pos ++;
-		else
-			i ++;
-	}
-
+	current_pos = ewl_text_cursor_position_line_up_get(EWL_TEXT(e));
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
 	ewl_widget_configure(EWL_WIDGET(e));
 
@@ -469,62 +423,12 @@ ewl_entry_cursor_move_up(Ewl_Entry *e)
 void
 ewl_entry_cursor_move_down(Ewl_Entry *e)
 {
-	int lines = 0, line = 0, c_pos = 0, tb_idx = 0, i = 0;
 	unsigned int current_pos = 0;
-	Evas_Coord lx, ly, lw, lh;
-	Evas_Coord cx, cy, cw, ch;
-	char *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	/* I don't like this, I'm breaking the obj hierarcy and letting
-	 * the entry access the textblock. But I don't see any reason for
-	 * this stuff to be in ewl_text as its suppost to be hiding the
-	 * textblock anyway ... */
-	lines = evas_object_textblock_lines_get((EWL_TEXT(e))->textblock);
-	current_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
-
-	for (ptr = (EWL_TEXT(e))->text; *ptr; ptr ++)
-	{
-		if (i == current_pos) break;
-
-		if ((*ptr != '\n') && (*ptr != '\r') && (*ptr != '\t'))
-			tb_idx ++;
-		i++;
-	}
-
-	evas_object_textblock_cursor_pos_set((EWL_TEXT(e))->textblock, tb_idx);
-	line = evas_object_textblock_cursor_line_get((EWL_TEXT(e))->textblock);
-
-	if (line == (lines - 1))
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* line position of line above us */
-	evas_object_textblock_line_get((EWL_TEXT(e))->textblock, line + 1, &lx, &ly, &lw, &lh);
-
-	/* current character position */
-	evas_object_textblock_char_pos_get((EWL_TEXT(e))->textblock, tb_idx,
-			&cx, &cy, &cw, &ch);
-
-	/* XXX do something better then lh / 2?  */
-	c_pos = evas_object_textblock_char_coords_get((EWL_TEXT(e))->textblock, 
-					cx, ly + (lh / 2), NULL, NULL, NULL, NULL);
-
-	i = 0;
-	current_pos= c_pos;
-        for (ptr = (EWL_TEXT(e))->text; *ptr; ptr ++)
-	{
-		if (i == c_pos) break;
-
-		if ((*ptr == '\n') || (*ptr == '\r') || (*ptr == '\t'))
-			current_pos ++;
-		else
-			i ++;
-	}
-
+	current_pos = ewl_text_cursor_position_line_down_get(EWL_TEXT(e));
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
 	ewl_widget_configure(EWL_WIDGET(e));
 
@@ -617,3 +521,4 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)), 
 							DLEVEL_STABLE);
 }
+

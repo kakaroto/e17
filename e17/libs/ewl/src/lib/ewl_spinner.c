@@ -328,8 +328,11 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
 	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
 				 ev->keyname[0] == '.' ||
 				 ev->keyname[0] == '-'))
+	{
+		ewl_entry_selection_clear(e);
 		ewl_text_text_insert(EWL_TEXT(e), ev->keyname, 
-		ewl_text_cursor_position_get(EWL_TEXT(e)));
+				ewl_text_cursor_position_get(EWL_TEXT(e)));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
