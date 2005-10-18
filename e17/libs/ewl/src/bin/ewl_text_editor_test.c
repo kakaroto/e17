@@ -229,6 +229,7 @@ ete_cb_font_size(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Widget *entry;
 
 	entry = ewl_widget_name_find("entry");
+#if 0
 	if (ewl_text_has_selection(EWL_TEXT(entry)))
 	{
 		unsigned int cursor_pos;
@@ -249,6 +250,7 @@ ete_cb_font_size(Ewl_Widget *w, void *ev, void *data)
 	else
 		ewl_text_font_size_set(EWL_TEXT(entry), 
 				ewl_spinner_value_get(EWL_SPINNER(w)));
+#endif
 }
 
 static void
