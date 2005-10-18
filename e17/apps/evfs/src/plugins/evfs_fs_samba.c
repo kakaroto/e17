@@ -43,10 +43,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //static struct stat file_stat;
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static SMBCCTX *smb_context = NULL;
+Ecore_List* auth_cache;
+
+
+
 
 static void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
-
-
 int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_open(evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
@@ -56,6 +58,33 @@ int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 
 
+void evfs_auth_structure_add(Ecore_List* cache, char* username, char* password, char* path) {
+	evfs_auth_cache* obj = NEW(evfs_auth_cache);
+	obj->username = strdup(username);
+	obj->password = strdup(password);
+	obj->path = strdup(path);
+
+	printf("Added %s:%s to '%s' for auth\n", username,password,path);
+
+	ecore_list_append(cache, obj);
+}
+
+evfs_auth_cache* evfs_auth_cache_get(Ecore_List* cache, char* path) {
+	evfs_auth_cache* obj;
+	
+	printf("Looking for match for '%s' in auth cache\n", path);
+
+	ecore_list_goto_first(cache);
+	while ( (obj = ecore_list_next(cache))) {
+		if (!strncmp(obj->path, path, strlen(path))) {
+			printf("Found match for path in cache: '%s':'%s'\n", obj->username, obj->password);
+			return obj;
+		}
+	}
+
+	return NULL;
+}
+
 
 /*---------------------------------------------------------------------------*/
 /*A temporary function until we build authentication into the protocol*/
@@ -64,8 +93,19 @@ void auth_fn(const char *server, const char *share,
 	     char *password, int pwmaxlen)
 {
   char temp[128];
+  char path[512];
+  evfs_auth_cache* obj;
 
   fprintf(stdout, "Need password for //%s/%s\n", server, share);
+  snprintf(path,512,"/%s/%s", server, share);
+
+  /*Look for a cached auth for this*/
+  obj = evfs_auth_cache_get(auth_cache, path);
+  if (obj) {
+	  strncpy(username,obj->username,unmaxlen);
+	  strncpy(password,obj->password,pwmaxlen);
+	  return;
+  }
 
   fprintf(stdout, "Enter workgroup: [%s] ", workgroup);
   fgets(temp, sizeof(temp), stdin);
@@ -110,6 +150,8 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_file_create = &evfs_file_create;
 	functions->evfs_file_stat = &smb_evfs_file_stat;
 	printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
+
+	auth_cache = ecore_list_new();
 
 	//Initialize samba (temporarily borrowed from gnomevfs)
 	smb_context = smbc_new_context ();
@@ -170,6 +212,12 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 	SMBCFILE *dir = NULL;
 	struct smbc_dirent *entry = NULL;
 	Ecore_List* files = ecore_list_new();
+
+	/*Does this command have an attached authentication object?*/
+	if (command->file_command.files[0]->username) {
+		printf("We have a username, adding to hash..\n");
+		evfs_auth_structure_add(auth_cache, command->file_command.files[0]->username, command->file_command.files[0]->password, command->file_command.files[0]->path);
+	}
 
 	//Reappend smb protocol header for libsmbclient..
 	snprintf(dir_path,1024,"smb:/%s", command->file_command.files[0]->path);

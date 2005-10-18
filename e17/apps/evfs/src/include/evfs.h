@@ -71,6 +71,12 @@ struct evfs_server {
 
 /*-----------*/
 
+/*This structure needs more development*/
+typedef struct evfs_auth_cache {
+	char* path;
+	char* username;
+	char* password;
+} evfs_auth_cache;
 
 
 
@@ -104,10 +110,14 @@ typedef enum evfs_eventpart {
 	EVFS_EV_PART_DATA = 5,
 	EVFS_EV_PART_STAT_SIZE = 6,
 	EVFS_EV_PART_FILE_REFERENCE = 7,
+	EVFS_EV_PART_FILE_REFERENCE_USERNAME = 8,
+	EVFS_EV_PART_FILE_REFERENCE_PASSWORD = 9,
 
-        EVFS_COMMAND_TYPE = 8,
-        EVFS_FILE_REFERENCE = 9,
-        EVFS_COMMAND_END = 10,
+        EVFS_COMMAND_TYPE = 10,
+        EVFS_FILE_REFERENCE = 11,
+	EVFS_FILE_REFERENCE_PASSWORD = 12,
+	EVFS_FILE_REFERENCE_USERNAME = 13,
+        EVFS_COMMAND_END = 14,
 
 	
 	EVFS_EV_PART_END = 1000

@@ -9,6 +9,19 @@ enum evfs_file_type {
 	EVFS_FILE_DIRECTORY = 2
 };
 
+typedef enum evfs_uri_token_type {
+	EVFS_URI_TOKEN_KEYWORD,
+	EVFS_URI_TOKEN_OPERATOR,
+	EVFS_URI_TOKEN_STRING
+} evfs_uri_token_type;
+
+
+typedef struct evfs_uri_token {
+	evfs_uri_token_type type;
+	char* token_s;
+} evfs_uri_token;
+
+
 typedef struct evfs_filereference {
 	char* plugin_uri;
 	struct evfs_plugin* plugin;
@@ -17,6 +30,9 @@ typedef struct evfs_filereference {
 	
 	evfs_file_type file_type;
 	char* path;
+
+	char* username; /*The username/password pair (if any) required to hit this file*/
+	char* password;
 
 	int fd; /*The file descriptor (if any) */
 	void* fd_p;

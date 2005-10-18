@@ -223,13 +223,24 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
-		snprintf(uri, 1024, "%s://%s", 
+
+		if (command->file_command.files[i]->username) {
+			snprintf(uri, 1024, "%s://%s:%s@%s", 
+			command->file_command.files[i]->plugin_uri,
+			command->file_command.files[i]->username,
+			command->file_command.files[i]->password,
+			command->file_command.files[i]->path);
+
+		} else {
+			snprintf(uri, 1024, "%s://%s", 
 			command->file_command.files[i]->plugin_uri, 
 			command->file_command.files[i]->path);
+		}
 
 		evfs_write_ecore_ipc_server_message(conn->server, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
-			EVFS_FILE_REFERENCE, 0,0,0,uri, sizeof(uri)));	
+			EVFS_FILE_REFERENCE, 0,0,0,uri, sizeof(uri)));
+
 	}
 
 	/*Send a final*/
@@ -251,14 +262,28 @@ void evfs_write_file_command_client(evfs_client* client, evfs_command* command) 
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
-		snprintf(uri, 1024, "%s://%s", 
+		if (command->file_command.files[i]->username) {
+			snprintf(uri, 1024, "%s://%s:%s@%s", 
+			command->file_command.files[i]->plugin_uri,
+			command->file_command.files[i]->username,
+			command->file_command.files[i]->password,
+			command->file_command.files[i]->path);
+
+		} else {
+			snprintf(uri, 1024, "%s://%s", 
 			command->file_command.files[i]->plugin_uri, 
 			command->file_command.files[i]->path);
+		}
 
 
 		evfs_write_ecore_ipc_client_message(client->client, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
 			EVFS_FILE_REFERENCE, client->id,0,0,uri, sizeof(uri)));	
+
+
+		
+
+		
 	}
 
 	/*Send a final*/
@@ -309,6 +334,25 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 			
 		}
 		break;
+
+		case EVFS_FILE_REFERENCE_USERNAME:
+			if (command->file_command.num_files) {
+				command->file_command.files[command->file_command.num_files-1]->username = strdup(message->data);
+				printf("Received username: '%s'\n", command->file_command.files[command->file_command.num_files-1]->username);
+			} else {
+				printf("BAD: Received a username before a filerefereence!\n");
+			}
+			break;
+			
+		case EVFS_FILE_REFERENCE_PASSWORD:
+			if (command->file_command.num_files) {
+				command->file_command.files[command->file_command.num_files-1]->password = strdup(message->data);
+				printf("Received password: '%s'\n",command->file_command.files[command->file_command.num_files-1]->password);
+			} else {
+				printf("BAD: Received a password before a filerefereence!\n");
+			}
+			break;
+
 
 		case EVFS_COMMAND_END:	
 			 /*TODO cleanp ref event*/

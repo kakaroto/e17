@@ -120,44 +120,215 @@ void evfs_disconnect(evfs_connection* connection) {
 	ecore_ipc_server_del(connection->server);
 }
 
+Ecore_DList* evfs_tokenize_uri(char* uri) {
+	Ecore_DList* tokens = ecore_dlist_new();
+	Ecore_List* reserved = ecore_dlist_new();
+	Ecore_List* plugin = ecore_dlist_new();
+		
+	char* l_uri = uri;
+	int solid_alpha = 0;
+	int new_alpha = 0;
+	evfs_uri_token* token;
+	char* cmp;
+	char tmp_tok[255]; /*This need to be longer?*/
+	int i = 0;
+	int j=1;
+	char c='1';
+
+	ecore_list_append(plugin, "smb"); /*Shift these to register when a plugin registers*/
+	ecore_list_append(plugin, "posix");
+	
+	ecore_list_append(reserved, "://");
+	ecore_list_append(reserved, "@");
+	ecore_list_append(reserved, "/");
+	ecore_list_append(reserved, ":");
+	ecore_list_append(reserved, "#");
+	ecore_list_append(reserved, ";");
+
+	printf ("Lexing '%s'\n", uri);
+
+	while (j < strlen(uri)) {
+		new_alpha = isalnum(l_uri[i]) | isspace(l_uri[i]);	
+		
+		strncpy(tmp_tok, l_uri, 3);
+		tmp_tok[3] = '\0';
+		/*printf("Current token is: '%s'\n", tmp_tok);*/
+			
+		/*Check if it's an operator*/
+		ecore_list_goto_first(reserved);
+		while ( (cmp = ecore_list_next(reserved))) {
+			if (!strncmp(tmp_tok, cmp, strlen(cmp))  ) {
+				/*printf("Found token (operator) %s, added %d to l_uri\n", cmp, strlen(cmp));*/
+				l_uri += strlen(cmp);			
+				i = 0;
+
+				/*printf("L_URI becomes '%s'\n", l_uri);*/
+				token = NEW(evfs_uri_token);
+				token->token_s = strdup(cmp);
+				token->type = EVFS_URI_TOKEN_OPERATOR;
+				ecore_dlist_append(tokens, token);
+
+				goto cont_loop;
+			}
+		}
+
+		/*Check if it's a keyword*/
+		strncpy(tmp_tok, l_uri, i);
+		tmp_tok[i] = '\0';
+		/*printf("Current token (keyword match) is: '%s'\n", tmp_tok);*/
+	
+		ecore_list_goto_first(plugin);
+		while ( (cmp = ecore_list_next(plugin))) {
+			if (!strncmp(tmp_tok, cmp, strlen(cmp))  ) {
+				/*printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));*/
+
+				
+				l_uri += strlen(cmp);			
+				i = 0;
+				/*printf("L_URI becomes '%s'\n", l_uri);*/
+
+				token = NEW(evfs_uri_token);
+				token->token_s = strdup(cmp);
+				token->type = EVFS_URI_TOKEN_KEYWORD;
+				ecore_dlist_append(tokens, token); 
+				
+				goto cont_loop; /*Eww goto - but we're in two while loops*/
+			}
+	
+		}
+
+		if (solid_alpha && !new_alpha) {
+			strncpy(tmp_tok, l_uri, i);
+			tmp_tok[i] = '\0';
+			
+			/*printf ("Looks like a string..\n");
+			printf("Found string: '%s'\n", tmp_tok);*/
+		
+			token = NEW(evfs_uri_token);
+			token->token_s = strdup(tmp_tok);
+			token->type = EVFS_URI_TOKEN_STRING;			
+			ecore_dlist_append(tokens, token);
+			
+			l_uri += i;
+			i=0;
+		}
+
+
+		solid_alpha = new_alpha;	
+		
+		cont_loop:
+		j++;
+		i++;
+	}
+
+	return tokens;	
+}
+
+evfs_uri_token* evfs_token_expect(Ecore_DList* tokens, evfs_uri_token_type type) {
+	evfs_uri_token* token;
+	
+	token = ecore_dlist_next(tokens);
+	
+	if (token && token->type == type) {
+		printf("Got expected token type, '%s'\n", token->token_s);
+		return token;
+	} else {
+		ecore_dlist_previous(tokens);
+		printf("Didn't get expected token type, '%s'\n", token->token_s);
+		return NULL;
+	}
+}
+
+void evfs_token_list_free(Ecore_DList* tokens) {
+	evfs_uri_token* token;
+	
+	ecore_dlist_goto_first(tokens);
+	while ( (token = ecore_dlist_next(tokens))) {
+		free(token->token_s);
+		free(token);
+	}
+	ecore_dlist_destroy(tokens);
+}
+
 
 /*Function to parse a uri*/
 /*We should rewrite this,use a proper parser*/
 evfs_file_uri_path* evfs_parse_uri(char* uri) {
 	char* pos;
+	char* tok;
+	evfs_uri_token* token;
 	int i;
 	evfs_filereference* ref;
 	evfs_file_uri_path* path = NEW(evfs_file_uri_path);
+	Ecore_DList* tokens;
 	
 	/*for (i=0;i<strlen(uri);i++) {
 		printf("URI Input: '%s'\n", uri);
 	}*/
 
-	if (!strstr(uri, "#")) {
-		/*Trivial case simple file uri*/
+	tokens = evfs_tokenize_uri(uri);
+	ecore_dlist_goto_first(tokens);
+	while ( (token = ecore_dlist_next(tokens)) ) {
+		printf("Token str: '%s'\n", token->token_s);
+	}
+	
+	ecore_dlist_goto_first(tokens);
+	ref = NEW(evfs_filereference);
+	ref->parent = NULL;
+	
+	
+	token = evfs_token_expect(tokens, EVFS_URI_TOKEN_KEYWORD);
+	if (token) {
+		/*Should be a plugin, assume it is (bad)*/
+		ref->plugin_uri = strdup(token->token_s);
+	}
 
-		/*Find the uri plugin seperator (e.g. "posix':'")*/
-		if ( (pos = index(uri, ':')) ) {
-			i = (pos - uri);
-			
-			ref = NEW(evfs_filereference);
-			ref->plugin_uri = strndup(uri, i);
-		} else {
-			fprintf(stderr, "URI did not contain a colon\n");
-			free(path);
-			free(ref);
-			return NULL;
+	token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR); /* '://' */
+	
+	/*Auth included?*/
+	token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR);
+	if (!token) {
+		/*Looks like we have an auth structure...*/
+		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_STRING);
+		if (token) {
+			printf("Username is '%s'\n", token->token_s);
+			ref->username = strdup(token->token_s);
 		}
 
-		/*Assign the rest to the path*/
-		ref->path = strdup(pos+3);
+		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR); /* ':' */
+		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_STRING);
 
-		/*Only one file, therefore just assign our ref to the path structure*/
-		path->files = malloc(sizeof(evfs_filereference*));
-		path->files[0] = ref;
-		path->num_files = 1;
+		if (token) {
+			printf("Password is '%s'\n", token->token_s);
+			ref->password = strdup(token->token_s);
+		}
 
-		return path;
+		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR); /* '@' */
+	
+		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR); /* '/' */
 	}
-	return NULL;
+
+	ref->path = malloc(strlen(token->token_s) + 1);
+	strcpy(ref->path, token->token_s);
+
+	/*Blindly get the rest of the tokens and append*/
+	while ((token = ecore_dlist_next(tokens))) {
+		ref->path = realloc(ref->path, strlen(ref->path) + strlen(token->token_s) + 1);
+		ref->path = strcat(ref->path, token->token_s);	
+	}
+	//ref->plugin = evfs_get_plugin_for_uri(ref->plugin_uri);
+
+	printf("Final built path: URI: %s, '%s'\n", ref->plugin_uri, ref->path);
+	
+	path->files = malloc(sizeof(evfs_filereference*));
+	path->files[0] = ref;
+	
+	
+	
+	
+
+	
+	evfs_token_list_free(tokens);
+
+	return path;
 }
