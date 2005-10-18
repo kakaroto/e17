@@ -145,7 +145,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	ecore_list_append(reserved, "#");
 	ecore_list_append(reserved, ";");
 
-	printf ("Lexing '%s'\n", uri);
+	//printf ("Lexing '%s'\n", uri);
 
 	while (j < strlen(uri)) {
 		new_alpha = isalnum(l_uri[i]) | isspace(l_uri[i]);	
@@ -230,11 +230,11 @@ evfs_uri_token* evfs_token_expect(Ecore_DList* tokens, evfs_uri_token_type type)
 	token = ecore_dlist_next(tokens);
 	
 	if (token && token->type == type) {
-		printf("Got expected token type, '%s'\n", token->token_s);
+		//printf("Got expected token type, '%s'\n", token->token_s);
 		return token;
 	} else {
 		ecore_dlist_previous(tokens);
-		printf("Didn't get expected token type, '%s'\n", token->token_s);
+		//printf("Didn't get expected token type, '%s'\n", token->token_s);
 		return NULL;
 	}
 }
@@ -269,7 +269,7 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 	tokens = evfs_tokenize_uri(uri);
 	ecore_dlist_goto_first(tokens);
 	while ( (token = ecore_dlist_next(tokens)) ) {
-		printf("Token str: '%s'\n", token->token_s);
+		//printf("Token str: '%s'\n", token->token_s);
 	}
 	
 	ecore_dlist_goto_first(tokens);
@@ -291,7 +291,7 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 		/*Looks like we have an auth structure...*/
 		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_STRING);
 		if (token) {
-			printf("Username is '%s'\n", token->token_s);
+			//printf("Username is '%s'\n", token->token_s);
 			ref->username = strdup(token->token_s);
 		}
 
@@ -299,7 +299,7 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_STRING);
 
 		if (token) {
-			printf("Password is '%s'\n", token->token_s);
+			//printf("Password is '%s'\n", token->token_s);
 			ref->password = strdup(token->token_s);
 		}
 
@@ -318,7 +318,7 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 	}
 	//ref->plugin = evfs_get_plugin_for_uri(ref->plugin_uri);
 
-	printf("Final built path: URI: %s, '%s'\n", ref->plugin_uri, ref->path);
+	//printf("Final built path: URI: %s, '%s'\n", ref->plugin_uri, ref->path);
 	
 	path->files = malloc(sizeof(evfs_filereference*));
 	path->files[0] = ref;

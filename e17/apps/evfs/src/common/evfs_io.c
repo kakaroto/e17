@@ -120,7 +120,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 							  
 			if (!event->file_list.list) {
 				event->file_list.list = ecore_list_new();
-				printf("Created new ecore list at %p\n", event->file_list.list);
+				//printf("Created new ecore list at %p\n", event->file_list.list);
 			}
 							  
 			memcpy(&ref->file_type, msg->data, sizeof(evfs_file_type));
@@ -142,7 +142,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			
 			
 		case EVFS_EV_PART_END:
-			printf("Created new ecore list at %p\n", event->file_list.list);
+			//printf("Created new ecore list at %p\n", event->file_list.list);
 			return TRUE;
 			break;
 	}
