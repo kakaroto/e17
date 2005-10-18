@@ -33,6 +33,7 @@ __spinner_value_changed(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 			 __spinner_window_configure);
 
 	ewl_window_move(EWL_WINDOW(tmp_win), xx, yy);
+	ewl_object_size_request(EWL_OBJECT(tmp_win), ww, hh);
 
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
 			    __spinner_window_configure, NULL);
@@ -47,28 +48,10 @@ __spinner_window_configure(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	ewl_window_position_get(EWL_WINDOW(tmp_win), &xx, &yy);
 	ewl_object_current_size_get(EWL_OBJECT(tmp_win), &ww, &hh);
 
-	ewl_callback_del(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
-			 __spinner_value_changed);
-	ewl_callback_del(spinner[1], EWL_CALLBACK_VALUE_CHANGED,
-			 __spinner_value_changed);
-	ewl_callback_del(spinner[2], EWL_CALLBACK_VALUE_CHANGED,
-			 __spinner_value_changed);
-	ewl_callback_del(spinner[3], EWL_CALLBACK_VALUE_CHANGED,
-			 __spinner_value_changed);
-
 	ewl_spinner_value_set(EWL_SPINNER(spinner[0]), (double) (xx));
 	ewl_spinner_value_set(EWL_SPINNER(spinner[1]), (double) (yy));
 	ewl_spinner_value_set(EWL_SPINNER(spinner[2]), (double) (ww));
 	ewl_spinner_value_set(EWL_SPINNER(spinner[3]), (double) (hh));
-
-	ewl_callback_append(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
-			    __spinner_value_changed, NULL);
-	ewl_callback_append(spinner[1], EWL_CALLBACK_VALUE_CHANGED,
-			    __spinner_value_changed, NULL);
-	ewl_callback_append(spinner[2], EWL_CALLBACK_VALUE_CHANGED,
-			    __spinner_value_changed, NULL);
-	ewl_callback_append(spinner[3], EWL_CALLBACK_VALUE_CHANGED,
-			    __spinner_value_changed, NULL);
 }
 
 void
@@ -120,12 +103,13 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 					&hh);
 	ewl_object_minimum_size_get(EWL_OBJECT(tmp_win), &mw, &mh);
 
-	spinner_row = ewl_row_new();
+	spinner_row = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), spinner_row);
 	ewl_widget_show(spinner_row);
 
 	text[0] = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text[0]), "X");
+	ewl_object_fill_policy_set(EWL_OBJECT(text[0]), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(text[0]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), text[0]);
 	ewl_widget_show(text[0]);
@@ -145,12 +129,13 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), separator[0]);
 	ewl_widget_show(separator[0]);
 
-	spinner_row = ewl_row_new();
+	spinner_row = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), spinner_row);
 	ewl_widget_show(spinner_row);
 
 	text[1] = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text[1]), "Y");
+	ewl_object_fill_policy_set(EWL_OBJECT(text[1]), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(text[1]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), text[1]);
 	ewl_widget_show(text[1]);
@@ -170,12 +155,13 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), separator[1]);
 	ewl_widget_show(separator[1]);
 
-	spinner_row = ewl_row_new();
+	spinner_row = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), spinner_row);
 	ewl_widget_show(spinner_row);
 
 	text[2] = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text[2]), "W");
+	ewl_object_fill_policy_set(EWL_OBJECT(text[2]), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(text[2]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), text[2]);
 	ewl_widget_show(text[2]);
@@ -195,12 +181,13 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), separator[2]);
 	ewl_widget_show(separator[2]);
 
-	spinner_row = ewl_row_new();
+	spinner_row = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(spinner_box), spinner_row);
 	ewl_widget_show(spinner_row);
 
 	text[3] = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text[3]), "H");
+	ewl_object_fill_policy_set(EWL_OBJECT(text[3]), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(text[3]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), text[3]);
 	ewl_widget_show(text[3]);

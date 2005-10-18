@@ -208,7 +208,8 @@ void ewl_object_preferred_inner_size_set(Ewl_Object * o, int w, int h)
  */
 void ewl_object_preferred_inner_w_set(Ewl_Object * o, int w)
 {
-	int             old_size, new_size, resize;
+	int old_size, new_size;
+	unsigned int resize, fill;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -227,19 +228,19 @@ void ewl_object_preferred_inner_w_set(Ewl_Object * o, int w)
 	else
 		new_size = w;
 
-	resize = ewl_object_fill_policy_get(EWL_OBJECT(o)) &
-		EWL_FLAG_FILL_HSHRINK;
+	if (CURRENT_W(o) < PREFERRED_W(o))
+		fill = EWL_FLAG_FILL_HSHRINK;
+	else if (CURRENT_W(o) > PREFERRED_W(o))
+		fill = EWL_FLAG_FILL_HFILL;
+	else
+		fill = 0;
+
+	resize = ewl_object_fill_policy_get(EWL_OBJECT(o));
 
 	/*
-	 * Now update the widgets parent of the change in size.
+	 * Now update the widgets parent of the change in size if necessary.
 	 */
-	if (CURRENT_W(o) < PREFERRED_W(o) && resize) {
-		resize = 0;
-	}
-	else
-		resize = 1;
-
-	if (resize)
+	if (!(resize & fill))
 		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
@@ -257,7 +258,8 @@ void ewl_object_preferred_inner_w_set(Ewl_Object * o, int w)
  */
 void ewl_object_preferred_inner_h_set(Ewl_Object * o, int h)
 {
-	int             old_size, new_size, resize;
+	int old_size, new_size;
+	unsigned int resize, fill;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -276,19 +278,19 @@ void ewl_object_preferred_inner_h_set(Ewl_Object * o, int h)
 	else
 		new_size = h;
 
-	resize = ewl_object_fill_policy_get(EWL_OBJECT(o)) &
-		EWL_FLAG_FILL_VSHRINK;
+	if (CURRENT_H(o) < PREFERRED_H(o))
+		fill = EWL_FLAG_FILL_VSHRINK;
+	else if (CURRENT_H(o) > PREFERRED_H(o))
+		fill = EWL_FLAG_FILL_VFILL;
+	else
+		fill = 0;
+
+	resize = ewl_object_fill_policy_get(EWL_OBJECT(o));
 
 	/*
-	 * Now update the widgets parent of the change in size.
+	 * Now update the widgets parent of the change in size if necessary.
 	 */
-	if (CURRENT_H(o) < PREFERRED_H(o) && resize) {
-		resize = 0;
-	}
-	else
-		resize = 1;
-
-	if (resize)
+	if (!(resize & fill))
 		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_VERTICAL);
 

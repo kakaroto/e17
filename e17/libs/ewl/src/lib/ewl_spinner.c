@@ -50,11 +50,13 @@ ewl_spinner_init(Ewl_Spinner * s)
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "spinner");
 	ewl_widget_inherit(w, "spinner");
 
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
+				   EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, 
 				ewl_spinner_realize_cb, NULL);
@@ -64,7 +66,10 @@ ewl_spinner_init(Ewl_Spinner * s)
 	s->entry = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(s->entry), "0");
 	ewl_container_child_append(EWL_CONTAINER(s), s->entry);
-	ewl_object_fill_policy_set(EWL_OBJECT(s->entry), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(s->entry), EWL_FLAG_FILL_HFILL |
+				   EWL_FLAG_FILL_HSHRINK);
+	ewl_object_alignment_set(EWL_OBJECT(s->entry), EWL_FLAG_ALIGN_LEFT);
+
 	ewl_widget_internal_set(EWL_WIDGET(s->entry), TRUE);
 	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
 			    ewl_entry_cb_key_down);
@@ -89,7 +94,7 @@ ewl_spinner_init(Ewl_Spinner * s)
 					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_appearance_set(s->increment, "increment");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->increment),
-			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
+				   EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(s->increment, TRUE);
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
@@ -105,7 +110,7 @@ ewl_spinner_init(Ewl_Spinner * s)
 					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_appearance_set(s->decrement, "decrement");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->decrement),
-			EWL_FLAG_FILL_VFILL|EWL_FLAG_FILL_HSHRINK);
+				   EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(s->decrement, TRUE);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_decrease_value_cb, w);
@@ -440,6 +445,7 @@ void
 ewl_spinner_value_stop_cb(Ewl_Widget * w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
+	double oval;
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -453,6 +459,10 @@ ewl_spinner_value_stop_cb(Ewl_Widget * w __UNUSED__,
 		s->direction = 0;
 		s->start_time = 0;
 	}
+
+	oval = s->value;
+	ewl_callback_call_with_event_data(EWL_WIDGET(s),
+					  EWL_CALLBACK_VALUE_CHANGED, &oval);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
