@@ -428,8 +428,6 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 void
 ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 {
-	char *old, *ptr;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
@@ -449,13 +447,11 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	t->length -= length;
 	if (t->length > 0)
 	{
-		old = t->text;
-		*(old + t->cursor_position) = '\0';
-		ptr = old + t->cursor_position + length;
+		memmove(t->text + t->cursor_position, 
+				t->text + t->cursor_position + length,
+				t->length - t->cursor_position);
 
-		t->text = calloc((t->length + 1), sizeof(char));
-		snprintf(t->text, (t->length + 1), "%s%s", ((old) ? old : ""), ((ptr) ? ptr : ""));
-		IF_FREE(old);
+		t->text[t->length] = '\0';
 	}
 	else
 	{
