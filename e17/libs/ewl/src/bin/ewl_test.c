@@ -240,6 +240,13 @@ main(int argc, char **argv)
 				"and formatting."
 		},
 		{
+			"Text Editor",
+		     	__create_text_editor_test_window,
+		     	"ewl_text_editor_test.c",
+			"Defines a class for multi-line text layout\n"
+				"and formatting."
+		},
+		{
 			"Theme",
 		  	__create_theme_test_window,
 		  	"ewl_theme_test.c",

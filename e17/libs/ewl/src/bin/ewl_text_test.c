@@ -72,7 +72,6 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_window_title_set(EWL_WINDOW(win), "Text Test");
 	ewl_window_name_set(EWL_WINDOW(win), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(win), "EFL Test Application");
-	ewl_object_size_request(EWL_OBJECT(win), 200, 400);
 
 	if (w)
 	{
@@ -91,7 +90,6 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	o = ewl_text_new();
 	ewl_widget_name_set(o, "text");
 	ewl_container_child_append(EWL_CONTAINER(win), o);
-	ewl_text_bg_color_set(EWL_TEXT(o), 50, 50, 50, 255);
 
 	ewl_text_text_insert(EWL_TEXT(o), "The first bunch of text\n", 0); /* 24 */
 
@@ -104,7 +102,7 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_DOUBLE_UNDERLINE 
 						| EWL_TEXT_STYLE_OUTLINE 
 						| EWL_TEXT_STYLE_SOFT_SHADOW);
-	ewl_text_double_underline_color_set(EWL_TEXT(o), 255, 0, 0, 255);
+	ewl_text_double_underline_color_set(EWL_TEXT(o), 50, 50, 50, 255);
 	ewl_text_shadow_color_set(EWL_TEXT(o), 128, 128, 128, 128);
 	ewl_text_outline_color_set(EWL_TEXT(o), 200, 200, 200, 200);
 	ewl_text_text_append(EWL_TEXT(o), "The third bunch of text\n"); /* 24 */
@@ -159,6 +157,9 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 			__trigger_cb_mouse_in, NULL);
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_OUT,
 			__trigger_cb_mouse_out, NULL);
+
+	ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);
+	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV");
 
 	ewl_widget_show(o);
 
