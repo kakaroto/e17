@@ -894,7 +894,7 @@ DesktopAt(int x, int y)
    return _DeskGet(0);
 }
 
-static void
+void
 DesksStackingCheck(void)
 {
    Desk               *dsk;
