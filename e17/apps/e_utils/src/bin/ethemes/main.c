@@ -52,11 +52,19 @@ void _resize_cb(Ecore_Evas * ee) {
 	evas_object_resize(background, barwidth, h);
 	evas_object_show(background);
 
+	int length = (int) esmart_container_elements_length_get(container);
+	if (length > h - 100) {
+		evas_object_resize(container_outer, barwidth - 19, h - 100);
+		evas_object_show(scrollbar);
+	} else {
+		evas_object_resize(container_outer, barwidth, h - 100);
+		evas_object_hide(scrollbar);
+	}
+
 	int n = evas_list_count(themes);
 	evas_object_move(buttons[n], 0, h - 100 + 10);
 	evas_object_move(buttons[n+1], 0, h - 100 + 40);
 	evas_object_move(buttons[n+2], 0, h - 100 + 60);
-	evas_object_resize(container_outer, barwidth - 19, h - 100);
 	evas_object_resize(scrollbar, 16, h - 100);
 
 	
@@ -109,6 +117,7 @@ static void _scrollstop(void *data, Evas_Object *o, const char *emission, const 
 	double s;
 	s = esmart_container_scroll_percent_get(container);
 	edje_object_part_drag_value_set(scrollbar, "drag", 1, s);
+
 }
 
 void read_theme_list() {
@@ -203,7 +212,7 @@ void create_buttons() {
 	BUTTON_EVENTS(n + 2, _ethemes_exit, NULL);
 	
 
-#undef BUTTON_EVENT
+#undef BUTTON_EVENTS
 #undef ADD_BUTTON
 }
 
