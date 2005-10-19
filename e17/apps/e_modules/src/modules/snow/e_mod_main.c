@@ -2,49 +2,41 @@
 #include "config.h"
 #include "e_mod_main.h"
 
-/* TODO List:
- * 
- * 
- */
-
 /* module private routines */
-static Snow       *_snow_init(E_Module *m);
-static void        _snow_shutdown(Snow *snow);
-static E_Menu     *_snow_config_menu_new(Snow *snow);
-static int         _snow_cb_animator(void *data);
-static void        _snow_trees_load(Snow *snow);
-static void        _snow_flakes_load(char type, Snow *snow);
-    
-static void        _snow_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _snow_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *
-i);
-static void        _snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi);
+static Rain       *_rain_init(E_Module *m);
+static void        _rain_shutdown(Rain *rain);
+static E_Menu     *_rain_config_menu_new(Rain *rain);
+static int         _rain_cb_animator(void *data);
+static void        _rain_clouds_load(Rain *rain);
+static void        _rain_drops_load(char type, Rain *rain);
+
+static void        _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi);
+static void        _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *i);
+static void        _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
+static void        _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
-   "Snow"
+     "Rain"
 };
 
-void *
-e_modapi_init(E_Module *m)
+void *e_modapi_init(E_Module *m)
 {
-   Snow *snow;
+   Rain *rain;
 
-   snow = _snow_init(m);
-   m->config_menu = _snow_config_menu_new(snow);
-   return snow;
+   rain = _rain_init(m);
+   m->config_menu = _rain_config_menu_new(rain);
+   return rain;
 }
 
-int
-e_modapi_shutdown(E_Module *m)
+int e_modapi_shutdown(E_Module *m)
 {
-   Snow *snow;
-   
-   snow = m->data;
-   if (snow)
+   Rain *rain;
+
+   rain = m->data;
+   if (rain)
      {
 	if (m->config_menu)
 	  {
@@ -52,345 +44,335 @@ e_modapi_shutdown(E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
-	_snow_shutdown(snow);
+	_rain_shutdown(rain);
      }
    return 1;
 }
 
-int
-e_modapi_save(E_Module *m)
+int e_modapi_save(E_Module *m)
 {
-   Snow *snow;
-   
-   snow = m->data;
-   if (!snow) return 1;
-   e_config_domain_save("module.snow", snow->conf_edd, snow->conf);
+   Rain *rain;
+
+   rain = m->data;
+   if (!rain) return 1;
+   e_config_domain_save("module.rain", rain->conf_edd, rain->conf);
    return 1;
 }
 
-int
-e_modapi_info(E_Module *m)
+int e_modapi_info(E_Module *m)
 {
-   m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png");
+   m->icon_file = strdup(PACKAGE_LIB_DIR "/e_modules/rain/module_icon.png");
    return 1;
 }
 
-int
-e_modapi_about(E_Module *m)
+int e_modapi_about(E_Module *m)
 {
+<<<<<<< e_mod_main.c
+   e_module_dialog_show(_("Enlightenment Rain Module"),
+			_("This is a simple module to display some rain on the desktop.<br>
+			    It can display clouds too, if you like clouds."));
+=======
    e_module_dialog_show(_("Enlightenment Snow Module"),
 		       _("This is a snow module that may replace xsnow."));
+>>>>>>> 1.8
    return 1;
 }
 
 /* module private routines */
-static Snow *
-_snow_init(E_Module *m)
+static Rain *_rain_init(E_Module *m)
 {
-   Snow *snow;
+   Rain *rain;
    Evas_List *managers, *l, *l2;
-   
-   snow = calloc(1, sizeof(Snow));
-   if (!snow) return  NULL;
 
-   snow->module = m;
-   snow->conf_edd = E_CONFIG_DD_NEW("Snow_Config", Config);
+   rain = calloc(1, sizeof(Rain));
+   if (!rain) return  NULL;
+
+   rain->module = m;
+   rain->conf_edd = E_CONFIG_DD_NEW("Rain_Config", Config);
 #undef T
 #undef D
 #define T Config
-#define D snow->conf_edd
-   E_CONFIG_VAL(D, T, tree_count, INT);
-   E_CONFIG_VAL(D, T, flake_count, INT);
-   E_CONFIG_VAL(D, T, show_trees, INT);
-   
-   snow->conf = e_config_domain_load("module.snow", snow->conf_edd);
-   if (!snow->conf)
+#define D rain->conf_edd
+   E_CONFIG_VAL(D, T, cloud_count, INT);
+   E_CONFIG_VAL(D, T, drop_count, INT);
+   E_CONFIG_VAL(D, T, show_clouds, INT);
+
+   rain->conf = e_config_domain_load("module.rain", rain->conf_edd);
+   if (!rain->conf)
      {
-	snow->conf = E_NEW(Config, 1);
-	snow->conf->tree_count = 10;
-	snow->conf->flake_count = 60;
-	snow->conf->show_trees = 1;
+	rain->conf = E_NEW(Config, 1);
+	rain->conf->cloud_count = 10;
+	rain->conf->drop_count = 60;
+	rain->conf->show_clouds = 1;
      }
 
-   E_CONFIG_LIMIT(snow->conf->show_trees, 0, 1);
-   
+   E_CONFIG_LIMIT(rain->conf->show_clouds, 0, 1);
+
    managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
 	E_Manager *man;
-	
+
 	man = l->data;
 	for (l2 = man->containers; l2; l2 = l2->next)
 	  {
 	     E_Container *con;
-	     
+
 	     con = l2->data;
-	     snow->cons = evas_list_append(snow->cons, con);
-	     snow->canvas = con->bg_evas;
+	     rain->cons = evas_list_append(rain->cons, con);
+	     rain->canvas = con->bg_evas;
 	  }
      }
 
-   evas_output_viewport_get(snow->canvas, NULL, NULL, &snow->width, &snow->height);
+   evas_output_viewport_get(rain->canvas, NULL, NULL, &rain->width, &rain->height);
 
-   if (snow->conf->show_trees) _snow_trees_load(snow);
-   _snow_flakes_load('s', snow);
-   _snow_flakes_load('m', snow);
-   _snow_flakes_load('l', snow);
+   if (rain->conf->show_clouds) _rain_clouds_load(rain);
+   _rain_drops_load('s', rain);
+   _rain_drops_load('m', rain);
+   _rain_drops_load('l', rain);
 
-   snow->animator = ecore_animator_add(_snow_cb_animator, snow);
-     
-   return snow;
+   rain->animator = ecore_animator_add(_rain_cb_animator, rain);
+
+   return rain;
 }
 
-static void
-_snow_trees_free(Snow *snow)
+static void _rain_clouds_free(Rain *rain)
 {
-   while (snow->trees)
+   while (rain->clouds)
      {
-	Evas_Object *tree;
-	
-	tree = snow->trees->data;
-	evas_object_del(tree);
-	snow->trees = evas_list_remove_list(snow->trees, snow->trees);
+	Evas_Object *cloud;
+
+	cloud = rain->clouds->data;
+	evas_object_del(cloud);
+	rain->clouds = evas_list_remove_list(rain->clouds, rain->clouds);
      }
 }
 
-static void
-_snow_flakes_free(Snow *snow)
+static void _rain_drops_free(Rain *rain)
 {
-   while (snow->flakes)
+   while (rain->drops)
      {
-	Snow_Flake *flake;
+	Rain_Drop *drop;
 
-	flake = snow->flakes->data;
-	evas_object_del(flake->flake);
-	snow->flakes = evas_list_remove_list(snow->flakes, snow->flakes);
-	free(flake);
+	drop = rain->drops->data;
+	evas_object_del(drop->drop);
+	rain->drops = evas_list_remove_list(rain->drops, rain->drops);
+	free(drop);
      }
 }
 
-static void
-_snow_shutdown(Snow *snow)
+static void _rain_shutdown(Rain *rain)
 {
-   free(snow->conf);
-   E_CONFIG_DD_FREE(snow->conf_edd);
-   while (snow->cons)
+   free(rain->conf);
+   E_CONFIG_DD_FREE(rain->conf_edd);
+   while (rain->cons)
      {
 	E_Container *con;
-	
-	con = snow->cons->data;
-	snow->cons = evas_list_remove_list(snow->cons, snow->cons);
+
+	con = rain->cons->data;
+	rain->cons = evas_list_remove_list(rain->cons, rain->cons);
      }
-   _snow_trees_free(snow);
-   _snow_flakes_free(snow);
-   if (snow->animator)
-     ecore_animator_del(snow->animator);
-   free(snow);
+   _rain_clouds_free(rain);
+   _rain_drops_free(rain);
+   if (rain->animator)
+     ecore_animator_del(rain->animator);
+   free(rain);
 }
 
-static E_Menu *
-_snow_config_menu_new(Snow *snow)
+static E_Menu *_rain_config_menu_new(Rain *rain)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
-   
+
    mn = e_menu_new();
-     
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Sparse");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 5) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_sparse, snow);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Medium");
+   e_menu_item_label_set(mi, "Sprinkle");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 10) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_medium, snow);
-	       
+   if (rain->conf->cloud_count == 5) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _rain_cb_density_sparse, rain);
+
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Dense");
+   e_menu_item_label_set(mi, "Drizzle");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 20) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_dense, snow);
-	       
+   if (rain->conf->cloud_count == 10) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _rain_cb_density_medium, rain);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Downpour");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   if (rain->conf->cloud_count == 20) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _rain_cb_density_dense, rain);
+
    mi = e_menu_item_new(mn);
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Show Trees");
+   e_menu_item_label_set(mi, "Show Clouds");
    e_menu_item_check_set(mi, 1);
-   e_menu_item_toggle_set(mi, snow->conf->show_trees);
-   e_menu_item_callback_set(mi, _snow_cb_show_trees, snow);
+   e_menu_item_toggle_set(mi, rain->conf->show_clouds);
+   e_menu_item_callback_set(mi, _rain_cb_show_clouds, rain);
 
    return mn;
 }
 
-static void
-_snow_canvas_reset(Snow *snow)
+static void _rain_canvas_reset(Rain *rain)
 {
-   _snow_trees_free(snow);
-   _snow_flakes_free(snow);
+   _rain_clouds_free(rain);
+   _rain_drops_free(rain);
 
-   if (snow->conf->show_trees) _snow_trees_load(snow);
-   _snow_flakes_load('s', snow); 
-   _snow_flakes_load('m', snow);
-   _snow_flakes_load('l', snow);	    
+   if (rain->conf->show_clouds) _rain_clouds_load(rain);
+   _rain_drops_load('s', rain);
+   _rain_drops_load('m', rain);
+   _rain_drops_load('l', rain);
 }
 
-static void
-_snow_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi)
+static void _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Snow *snow;
+   Rain *rain;
 
-   snow = data;
-   snow->conf->tree_count = 5;
-   snow->conf->flake_count = 20;
+   rain = data;
+   rain->conf->cloud_count = 5;
+   rain->conf->drop_count = 20;
 
-   _snow_canvas_reset(snow);
+   _rain_canvas_reset(rain);
 }
 
-static void
-_snow_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *mi)
+static void _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Snow *snow;
+   Rain *rain;
 
-   snow = data;
-   snow->conf->tree_count = 10;
-   snow->conf->flake_count = 60;
-   _snow_canvas_reset(snow);
+   rain = data;
+   rain->conf->cloud_count = 10;
+   rain->conf->drop_count = 60;
+   _rain_canvas_reset(rain);
 }
 
-static void
-_snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi)
+static void _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Snow *snow;
+   Rain *rain;
 
-   snow = data;
-   snow->conf->tree_count = 20;
-   snow->conf->flake_count = 100;
-   _snow_canvas_reset(snow);
+   rain = data;
+   rain->conf->cloud_count = 20;
+   rain->conf->drop_count = 150;
+   _rain_canvas_reset(rain);
 }
 
-static void
-_snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi)
+static void _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Snow *snow;
+   Rain *rain;
 
-   snow = data;
-   snow->conf->show_trees = e_menu_item_toggle_get(mi);
-   _snow_canvas_reset(snow);
+   rain = data;
+   rain->conf->show_clouds = e_menu_item_toggle_get(mi);
+   _rain_canvas_reset(rain);
 }
 
-static void
-_snow_trees_load(Snow *snow) {
+static void _rain_clouds_load(Rain *rain)
+{
    Evas_Object *o;
    int tw, th, i;
 
-   o = evas_object_image_add(snow->canvas);
-   evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/snow/tree.png", "");
+   o = evas_object_image_add(rain->canvas);
+   evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/rain/cloud.png", "");
    evas_object_image_size_get(o, &tw, &th);
 
-for (i = 0; i < snow->conf->tree_count; i++)
-   {
-     Evas_Coord tx, ty;
-if (i != 0) {
-     o = evas_object_image_add(snow->canvas);
-     evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/snow/tree.png", "");
+   for (i = 0; i < rain->conf->cloud_count; i++)
+     {
+	Evas_Coord tx, ty;
+	if (i != 0)
+	  {
+	     o = evas_object_image_add(rain->canvas);
+	     evas_object_image_file_set(o, PACKAGE_LIB_DIR "/e_modules/rain/cloud.png", "");
+	  }
+	evas_object_resize(o, tw, th);
+	evas_object_image_alpha_set(o, 1);
+	evas_object_image_fill_set(o, 0, 0, tw, th);
+
+	tx = random() % (rain->width - tw);
+	ty = random() % (rain->height - th);
+	evas_object_move(o, tx, ty);
+	evas_object_show(o);
+	rain->clouds = evas_list_append(rain->clouds, o);
+     }
 }
-     evas_object_resize(o, tw, th);
-     evas_object_image_alpha_set(o, 1);
-     evas_object_image_fill_set(o, 0, 0, tw, th);
 
-     tx = random() % (snow->width - tw);
-     ty = random() % (snow->height - th);
-     evas_object_move(o, tx, ty);
-     evas_object_show(o);
-     snow->trees = evas_list_append(snow->trees, o);
-   }
-
-
-}
-
-static void
-_snow_flakes_load(char type, Snow *snow) {
+static void _rain_drops_load(char type, Rain *rain)
+{
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
    char buf[4096];
    int tw, th, i;
-   Snow_Flake *flake;
+   Rain_Drop *drop;
 
-   evas_output_viewport_get(snow->canvas, &xx, &yy, &ww, &hh);
-   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/flake-%c.png", type);
+   evas_output_viewport_get(rain->canvas, &xx, &yy, &ww, &hh);
+   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/rain/drop-%c.png", type);
 
-   o = evas_object_image_add(snow->canvas);
+   o = evas_object_image_add(rain->canvas);
    evas_object_image_file_set(o, buf, "");
    evas_object_image_size_get(o, &tw, &th);
 
-for (i = 0; i < snow->conf->flake_count / 3; i++)
-   {
-     Evas_Coord tx, ty;
+   for (i = 0; i < rain->conf->drop_count / 3; i++)
+     {
+	Evas_Coord tx, ty;
 
-     flake = malloc(sizeof(Snow_Flake));
-if (i != 0) {
-     o = evas_object_image_add(snow->canvas);
-     evas_object_image_file_set(o, buf, "");
-}
-     evas_object_resize(o, tw, th);
-     evas_object_image_alpha_set(o, 1);
-     evas_object_image_fill_set(o, 0, 0, tw, th);
+	drop = malloc(sizeof(Rain_Drop));
+	if (i != 0)
+	  {
+	     o = evas_object_image_add(rain->canvas);
+	     evas_object_image_file_set(o, buf, "");
+	  }
+	evas_object_resize(o, tw, th);
+	evas_object_image_alpha_set(o, 1);
+	evas_object_image_fill_set(o, 0, 0, tw, th);
 
-     tx = random() % ww;
-     ty = random() % hh;
-     evas_object_move(o, tx, ty);
-     evas_object_show(o);
-     flake->flake = o;
-     flake->start_time = ecore_time_get() + (double)(random() % (th * 10)) / (double) th;
-     switch (type) {
-       case 's':
-         flake->speed = 1;
-	 break;
-       case 'm':
-         flake->speed = 2;
-	 break;
-       case 'l':
-         flake->speed = 3;
-	 break;
+	tx = random() % ww;
+	ty = random() % hh;
+	evas_object_move(o, tx, ty);
+	evas_object_show(o);
+	drop->drop = o;
+	drop->start_time = ecore_time_get() + (double)(random() % (th * 10)) / (double) th;
+	switch (type)
+	  {
+	   case 's':
+	     drop->speed = 1;
+	     break;
+	   case 'm':
+	     drop->speed = 2;
+	     break;
+	   case 'l':
+	     drop->speed = 3;
+	     break;
+	  }
+	rain->drops = evas_list_append(rain->drops, drop);
      }
-     snow->flakes = evas_list_append(snow->flakes, flake);
-   }
-
-
 }
 
-
-static int
-_snow_cb_animator(void *data)
+static int _rain_cb_animator(void *data)
 {
-   Snow *snow;
+   Rain *rain;
    Evas_List *next;
    double d;
 
-   snow = data;
-   next = snow->flakes;
+   rain = data;
+   next = rain->drops;
    while (next)
      {
-	Snow_Flake *flake;
+	Rain_Drop *drop;
 	Evas_Coord x, y;
 
-	flake = next->data;
-	d = ecore_time_get() - flake->start_time;
-	y = 30 * d * flake->speed;
-	evas_object_geometry_get(flake->flake, &x, NULL, NULL, NULL);
-	if (y > snow->height)
-	  flake->start_time = ecore_time_get() + (double) (random() % 100) / (double) 100;
-	evas_object_move(flake->flake, x, y);
+	drop = next->data;
+	d = ecore_time_get() - drop->start_time;
+	y = 300 * d * drop->speed;
+	evas_object_geometry_get(drop->drop, &x, NULL, NULL, NULL);
+	if (y > rain->height)
+	  drop->start_time = ecore_time_get() + (double) (random() % 600) / (double) 600;
+	evas_object_move(drop->drop, x, y);
 
 	next = evas_list_next(next);
      }
-						
+
    return 1;
 }
