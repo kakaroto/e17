@@ -2,33 +2,33 @@
 #define E_MOD_MAIN_H
 
 typedef struct _Config     Config;
-typedef struct _Snow       Snow;
-typedef struct _Snow_Flake Snow_Flake;
+typedef struct _Rain       Rain;
+typedef struct _Rain_Drop Rain_Drop;
 
 struct _Config
 {
-   int tree_count;
-   int flake_count;
-   int show_trees;
+   int cloud_count;
+   int drop_count;
+   int show_clouds;
 };
 
-struct _Snow
+struct _Rain
 {
    E_Module       *module;
    Evas_List      *cons;
    Evas           *canvas;
    Ecore_Animator *animator;
-   Evas_List      *trees;
-   Evas_List      *flakes;
+   Evas_List      *clouds;
+   Evas_List      *drops;
 
    E_Config_DD    *conf_edd;
    Config         *conf;
    Evas_Coord      width, height;
 };
 
-struct _Snow_Flake
+struct _Rain_Drop
 {
-   Evas_Object    *flake;
+   Evas_Object    *drop;
    double          start_time;
    int             speed;
 };
