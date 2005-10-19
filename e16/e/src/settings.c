@@ -749,18 +749,16 @@ SettingsComposite(void)
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &Cfg_composite.shadow);
 
-#if 0
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("Fading Speed:\n"));
+   DialogItemSetText(di, _("Fading Speed:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 0, 300);
-   DialogItemSliderSetUnits(di, 10);
-   DialogItemSliderSetJump(di, 25);
-   DialogItemSliderSetValPtr(di, &tmp_tooltiptime);
-#endif
+   DialogItemSliderSetBounds(di, 1, 100);
+   DialogItemSliderSetUnits(di, 5);
+   DialogItemSliderSetJump(di, 5);
+   DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

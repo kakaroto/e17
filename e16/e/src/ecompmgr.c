@@ -599,7 +599,7 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
    ECmWinInfo         *cw = eo->cmhook;
    Desk               *dsk = eo->desk;
 
-   if (damage == None)
+   if (!Mode_compmgr.active || damage == None)
       return;
 
    if (dsk->num > 0 && !dsk->viewable && eo->ilayer < 512)
@@ -1244,6 +1244,7 @@ ECompMgrWinFadeOut(EObj * eo)
    cw->fadeout = 1;
    ECompMgrWinInvalidate(eo, INV_PICTURE);
    ECompMgrWinSetPicts(eo);
+   ECompMgrDamageMergeObject(eo, cw->extents, 0);
    ECompMgrWinFade(eo, cw->opacity, 0x10000000);
 }
 
@@ -1307,12 +1308,11 @@ ECompMgrWinUnmap(EObj * eo)
 
    D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
 
-   ECompMgrDamageMergeObject(eo, cw->extents, 0);
-
    if (Conf_compmgr.fading.enable && eo->fade)
       ECompMgrWinFadeOut(eo);
    else
      {
+	ECompMgrDamageMergeObject(eo, cw->extents, 0);
 	_ECM_SET_STACK_CHANGED();
 	ECompMgrWinInvalidate(eo, INV_PIXMAP);
      }
@@ -1599,7 +1599,11 @@ ECompMgrWinDel(EObj * eo)
    D1printf("ECompMgrWinDel %#lx\n", eo->win);
 
    if (cw->fading)
-      ECompMgrWinFadeCancel(eo);
+     {
+	ECompMgrWinFadeCancel(eo);
+	if (cw->fadeout)
+	   ECompMgrWinFadeOutEnd(eo);
+     }
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
@@ -2265,8 +2269,9 @@ void
 ECompMgrConfigGet(cfg_composite * cfg)
 {
    cfg->enable = Conf_compmgr.enable;
-   cfg->fading = Conf_compmgr.fading.enable;
    cfg->shadow = Conf_compmgr.shadows.mode;
+   cfg->fading = Conf_compmgr.fading.enable;
+   cfg->fade_speed = 100 - (Conf_compmgr.fading.dt_us / 1000);
 }
 
 void
@@ -2306,6 +2311,7 @@ ECompMgrConfigSet(const cfg_composite * cfg)
      }
 
    Conf_compmgr.fading.enable = cfg->fading;
+   Conf_compmgr.fading.dt_us = (100 - cfg->fade_speed) * 1000;
 
    autosave();
 }

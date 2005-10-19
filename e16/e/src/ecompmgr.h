@@ -30,8 +30,9 @@
 typedef struct
 {
    char                enable;
-   char                fading;
    int                 shadow;
+   char                fading;
+   int                 fade_speed;
 } cfg_composite;
 
 struct _desk;
