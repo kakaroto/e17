@@ -193,11 +193,11 @@ e_modapi_info(E_Module *m)
 int
 e_modapi_about(E_Module *m)
 {
-   e_error_dialog_show("Enlightenment Engage Module",
-		       "This is the Engage module for Enlightenment.\n"
-		       "It is the native E17 version of engage.\n\n"
-		       "This version offers far greater features\n"
-		       "and will be the main focus of development from now on.");
+   e_module_dialog_show(_("Enlightenment Engage Module"),
+		   _("This is the Engage module for Enlightenment.<br>"
+		     "It is the native E17 version of engage.<br>"
+		     "This version offers far greater features<br>"
+		     "and will be the main focus of development from now on."));
    return 1;
 }
 
