@@ -67,7 +67,7 @@ int evfs_server_data (void* data, int type, void* event) {
 					   
 					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
 
-					   printf("3. Created new ecore list at %p\n", ev->file_list.list);
+					   //printf("3. Created new ecore list at %p\n", ev->file_list.list);
 								      
 					   (*conn->callback_func)(ev);
 				   } else {
