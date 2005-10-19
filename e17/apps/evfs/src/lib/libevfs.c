@@ -1,9 +1,12 @@
 #include "evfs.h"
 
 
+#define MAX_ATTEMPTS 5
+
 Ecore_List* client_list = NULL;
 static int libevfs_registered_callback = 0;
 
+/*It would seem a good idea to convert this to a hash - but we'd need the actual pointer to the int, or make an ecore_int_hash*/
 evfs_connection* evfs_get_connection_for_id(int id) {
 	evfs_connection* conn;
 	
@@ -82,9 +85,27 @@ int evfs_server_data (void* data, int type, void* event) {
    }
 }
 
+int evfs_server_spawn() {
+	const char* server_exe = BINDIR "/evfs";
+
+	if (!access(server_exe, X_OK | R_OK)) {
+		setsid();
+		if (fork() == 0) {
+			execl(server_exe, server_exe, NULL);
+		}
+		return 1;
+	} else {
+		fprintf(stderr, "You don't have rights to execute the server\n");
+		return 1;
+	}
+
+	return 0;
+}
+
 evfs_connection* evfs_connect(void (*callback_func)(void*)) {
 	ecore_init();
 	ecore_ipc_init();
+	int connect_attempts = 0;
 	
 	evfs_connection* connection = NEW(evfs_connection);
 	connection->id = MAX_CLIENT;
@@ -101,11 +122,27 @@ evfs_connection* evfs_connect(void (*callback_func)(void*)) {
 		ecore_list_prepend(client_list, connection);
 	}
 
-	if ( !(connection->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL)) ) {
-		fprintf(stderr, "Cannot connect to evfs server with '%s'..\n", EVFS_IPC_TITLE);
-		exit(1);
-		
+	retry:
+	
+	if (connect_attempts > MAX_ATTEMPTS) {
+		fprintf(stderr, "Could not start server after max attempts\n");
+		exit(1); /*We shouldn't really kill the libraries parent!*/
 		return NULL;
+	}
+		
+	if ( !(connection->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL)) ) {
+		fprintf(stderr, "Cannot connect to evfs server with '%s', making new server and trying again..\n", EVFS_IPC_TITLE);
+
+		if (!connect_attempts) {
+			if (evfs_server_spawn()) {
+				printf ("Failure to start evfs server!\n");
+			} 
+		} 
+
+		connect_attempts++;
+		usleep(100000*connect_attempts);
+		goto retry;
+		
 	}
 
 

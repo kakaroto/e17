@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libevfs.la
 
-INCLUDES = @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include
+INCLUDES = @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include \
+	   -DBINDIR=\""$(bindir)"\"
 
 libevfs_la_SOURCES   =                          \
         ../include/evfs.h                       \
