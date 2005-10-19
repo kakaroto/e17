@@ -100,8 +100,8 @@ e_modapi_info (E_Module *m)
 int
 e_modapi_about (E_Module *m)
 {
-   e_error_dialog_show ("Enlightenment Flame Module",
-			"A simple module to display flames.");
+   e_module_dialog_show (_("Enlightenment Flame Module"),
+			_("A simple module to display flames."));
    return 1;
 }
 

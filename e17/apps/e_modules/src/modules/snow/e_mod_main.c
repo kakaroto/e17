@@ -78,8 +78,8 @@ e_modapi_info(E_Module *m)
 int
 e_modapi_about(E_Module *m)
 {
-   e_error_dialog_show("Enlightenment Snow Module",
-		       "This is a snow module that may replace xsnow.");
+   e_module_dialog_show(_("Enlightenment Snow Module"),
+		       _("This is a snow module that may replace xsnow."));
    return 1;
 }
 

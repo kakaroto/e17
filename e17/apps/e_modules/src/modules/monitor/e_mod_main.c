@@ -163,9 +163,9 @@ e_modapi_info(E_Module *module)
 int
 e_modapi_about(E_Module *module)
 {
-   e_error_dialog_show("Enlightenment Monitor Module",
-		       "A simple module to give E17 a usage monitor "
-		       "for some resources.");
+   e_module_dialog_show(_("Enlightenment Monitor Module"),
+		       _("A simple module to give E17 a usage monitor "
+		       "for some resources."));
    return 1;
 }
 

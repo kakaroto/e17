@@ -108,8 +108,8 @@ e_modapi_info (E_Module *m)
 int
 e_modapi_about (E_Module *m)
 {
-   e_error_dialog_show ("Enlightenment Notes Module",
-			"A desktop sticky notes module.");
+   e_module_dialog_show (_("Enlightenment Notes Module"),
+			_("A desktop sticky notes module."));
    return 1;
 }
 

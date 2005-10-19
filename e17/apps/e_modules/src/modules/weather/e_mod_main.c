@@ -112,7 +112,7 @@ e_modapi_info(E_Module *module)
 int
 e_modapi_about(E_Module *module)
 {
-   e_error_dialog_show(_("Enlightenment Weather Module"),
+   e_module_dialog_show(_("Enlightenment Weather Module"),
 		       _("A weather forecast module for Enlightenment."));
    return 1;
 }
