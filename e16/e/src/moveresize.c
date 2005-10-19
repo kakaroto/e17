@@ -271,7 +271,8 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
      {
 	EGrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
-	DesksStackingCheck();	/* NB! Restack before drawing line stuff */
+	/* Run idlers (stacking, border updates, ...) before drawing lines */
+	ModulesSignal(ESIGNAL_IDLE, NULL);
      }
    else
      {
