@@ -236,7 +236,6 @@ static int ethemes_init(void *data, int type, void *ev) {
 	selected_theme = (char *)strdup(e->file);
 	e_preview_theme_set(preview, selected_theme);
 	ecore_evas_title_set(ee, "eThemes");
-	ecore_evas_name_class_set(ee, "eThemes", "eThemes");
 	create_buttons();
 
 	_resize_cb(ee);
@@ -263,6 +262,7 @@ int main(int argc, char **argv) {
 
 	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
 	ecore_evas_title_set(ee, "eThemes (connecting...)");
+	ecore_evas_name_class_set(ee, "eThemes", "eThemes");
 	ecore_evas_show(ee);
 
 	evas = ecore_evas_get(ee);
