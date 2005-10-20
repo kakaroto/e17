@@ -419,6 +419,7 @@ minolta_cprop(struct exifprop *prop, char *off, struct exiftags *t,
 	struct exifprop *aprop;
 
 	valbuf = NULL;
+	model = 0;
 
 	for (i = 0; i * 4 < prop->count; i++) {
 
