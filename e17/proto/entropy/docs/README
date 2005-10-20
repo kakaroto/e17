@@ -40,5 +40,13 @@ Hints
 
     5. File renaming (i.e. click on icon, then on text-label) is broken.  Will fix this soon
 
+    6. Once I have rewritten the mime-type identification code, more mime types will be 
+       recognized.
+
+    7. Execution of (some) file-types can be achieved through double-clicking 
+       At the moment, there are hard-coded default config options, until I write a dialog
+       for it.  You can change these defaults by modifying plugins/action_simple.c, and
+       then deleting ~/.e/apps/entropy/entropy.cfg, and restarting
+
     
 
