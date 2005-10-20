@@ -1540,6 +1540,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 	/* Find new window region */
 	cw->extents = win_extents(eo);
      }
+   eo->desk = dsk;
    _ECM_SET_STACK_CHANGED();
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
 }
