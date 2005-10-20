@@ -1012,8 +1012,10 @@ void ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
-	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.focused)))
-		ewl_embed_focused_widget_set(e, NULL);
+	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.focused))) {
+		e->last.focused = NULL;
+		/*ewl_embed_focused_widget_set(e, NULL);*/
+	}
 
 	if ((w == e->last.clicked) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.clicked)))
 		e->last.clicked = NULL;
