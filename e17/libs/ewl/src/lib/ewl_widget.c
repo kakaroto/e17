@@ -983,6 +983,65 @@ void ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
 }
 
 /**
+ * @param w: The widget to remove from the tab order
+ * @return Returns no value.
+ */
+void ewl_widget_tab_order_remove(Ewl_Widget *w)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	emb = ewl_embed_widget_find(w);
+	ewl_embed_tab_order_remove(emb, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to set if it accepts or blocks focus changes
+ * @param val: TRUE or FALSE on if this widget blocks tabbing off
+ * @return Returns no value.
+ */
+void
+ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
+{
+	unsigned int f;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (val)
+		ewl_object_flags_add(EWL_OBJECT(w), 
+				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+				EWL_FLAGS_PROPERTY_MASK);
+	else
+		ewl_object_flags_remove(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+				EWL_FLAGS_PROPERTY_MASK);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to check if it blocks tab focus
+ * @return Returns TRUE if the widget blocks tab focus, FALSE otherwise.
+ */
+unsigned int
+ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+
+	if (ewl_object_flags_has(EWL_OBJECT(w), 
+					EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+					EWL_FLAGS_PROPERTY_MASK))
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to display ancestry tree
  * @return Returns no value.
  * @brief Prints to stdout the tree of widgets that are parents of a widget.

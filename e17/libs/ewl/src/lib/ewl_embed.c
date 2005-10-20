@@ -945,7 +945,13 @@ void ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_PARAM_PTR("w", w);
 
+	if (embed->last.focused)
+		ewl_widget_state_set(embed->last.focused, "unfocused");
+
 	embed->last.focused = w;
+
+	if (embed->last.focused)
+		ewl_widget_state_set(embed->last.focused, "focused");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
