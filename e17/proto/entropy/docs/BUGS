@@ -1,0 +1,10 @@
+Following is a list of known bugs in [E]ntropy:
+
+* Gross inefficiency in auto-arrange calls for thumbnailing.  This
+  results in an O(n^2) inefficiency when loading directories.  
+  Especially noticeable on slow hardware and large directories.
+
+* Please, please email <alex@logisticchaos.com> with any SEGVs etc you
+  find either from Entropy of EVFS
+
+

@@ -1,0 +1,74 @@
+Plugin Architecture
+-------------------
+
+There are several types of plugins available in entropy, with a variety of purposes.
+They are categorised as follows:
+
+* Thumbnailers
+* MIME-identifiers
+* File-system backends (POSIX, Samba, FTP, etc)
+* GUI Components ("Directory viewers", "Structure Viewers")
+     * Helper GUI components (a GUI component triggered by a certain folder/action in the GUI)
+* GUI Layout components (defines a grouping of GUI Components)
+
+We will go through each of these in turn.
+
+Base Plugin
+-----------
+
+Each entropy plugin must implement a base set of functions, that perform such tasks as giving a
+name for the plugin, returning a type, etc.
+
+These functions are:
+
+char* entropy_plugin_identify();
+
+	A simple string value representing a name for the plugin
+
+int entropy_plugin_type_get();
+
+	An int value that returns one of a number of enum'ed plugin types.
+	The types for the above list of plugins (in order) are:
+
+	ENTROPY_PLUGIN_THUMBNAILER
+	ENTROPY_PLUGIN_MIME
+	ENTROPY_PLUGIN_BACKEND_FILE
+	ENTROPY_PLUGIN_GUI_COMPONENT
+		ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW
+		ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW
+	ENTROPY_PLUGIN_GUI_LAYOUT
+
+
+Each specific type of thumbnail also has a set of functions that must be implemented
+to adhere to the standard.
+
+
+Thumbnailers
+------------
+
+A thumbnailer is responsible for, well, thumbnailing, an abritrary set of mime-types, into
+a standard freedesktop.org thumbnail file.
+Most of this work, however, is done for you.  The only part of the process that the thumbnailer itself
+has to implement is creating an image of the document to be thumbnailed, and return an Imlib_Image object 
+to the plugin requester.  The plugin requester will then save this imlib image, with md5sum, and save it
+in the default location (usually ~/.thumbnails/normal/).
+
+In addition to the base set of functions for plugins, a thumbnailer must also implement:
+
+entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_generic_file* file);
+
+This is a function that takes an argument of a file to thumbnail, and returns the entropy thumbnail object returned
+by the tools in thumbnail_generic, described below.
+
+MIME Plugins
+------------
+MIME plugins are loaded by the entropy core in the order they are specified in the config file.  They are called in
+their load order with a file to identify (an entropy_generic_file), and in turn they will return either a NULL (cannot
+identify, or a char* representing the mime type of the identified file.
+
+The main processing function for MIME plugins is:
+
+char* entropy_mime_plugin_identify_file(char* path, char* filename);
+
+
+

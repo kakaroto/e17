@@ -1,0 +1,32 @@
+<raster> the 500 was cool
+<raster> for the day
+<raster> mind u workbench got much clenaer in 2.0 and 3.0
+<chaos> yeah.. i was blown away when i used it.. in some ways, modern systems are still catching up
+<raster> yeah
+<raster> i liked how u coudl do a custom icon for any file u liked
+<raster> it was simple
+<chaos> yeah.. but it worked
+<raster> the .info files
+<raster> and it works even when u zipped (lha'd) it up
+<raster> and got it back later
+<raster> and the icon was there again
+<raster> u gave it to a friend
+<raster> and they got the icons too
+<voidengineer> I think if we could add an option to the file manager that gets made to add file to desktop icon <name> program, then we could have an event attached to a single icon or perhaps a keyboard event that upon activation expands the list on to the desktop to be clicked
+<raster> so the icons followed the file around if u rememebred to archive the .info too
+<voidengineer> then depending upon other config params they could stay on screen till another callback is triggered
+<voidengineer> or perhaps shrink back to a single icon or out of view via kbd event
+<raster> so like spring loaded folders
+<raster> :)
+<voidengineer> kinda but one folder
+<voidengineer> aka desktop 
+<raster> yes
+<raster> it doesnt pop up a new window
+<raster> but similar idea
+<voidengineer> yeah
+<raster> that coudl be useful
+<voidengineer> using the main canvas to do transparency etc
+<chaos> hmm
+<raster> a directory has an extra property of "open in parent
+<raster> ie click on it
+<raster> (well double click)

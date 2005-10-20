@@ -1,0 +1,26 @@
+* [E]ntropy
+
+Entropy is (or will be) a full featured GUI-toolkit independent file manager
+There are currently a few gotchas, but this should get you up and running.
+
+
+Requirements
+------------
+Quite a few - but if you have an E17 install you should be almost there:
+
+
+* Absolutely screaming-latest EWL
+* EVFS (in apps)
+* Ecore/Evas/Imlib etc.
+* libpng
+
+
+Hints
+-----
+
+[*] At the moment, there is no dialog to add a new location to the 'structure viewer'
+    on the left (coming soon!).  To do this at the moment, change the URI list in
+    layout_ewl_simple.c, in the function "layout_ewl_simpe_config_create", and then
+    restart after removing the file ~/.e/apps/entropy/entropy.cfg
+
+
