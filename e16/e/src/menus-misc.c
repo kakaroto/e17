@@ -261,6 +261,10 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    MenuSetData(m, Estrdup(dir));
    MenuSetLoader(m, MenuLoadFromDirectory);
 
+   /* Hmmm... Make sure background dirs are scanned during startup */
+   if (Mode.wm.startup)
+      MenuLoadFromDirectory(m);
+
    calls--;
 
    return m;

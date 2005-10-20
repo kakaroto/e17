@@ -1913,13 +1913,11 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
    for (i = 0; i < num; i++)
      {
 	m = lst[i];
-	if (!m->loader || m->shown || m->num == 0 ||
-	    m->last_access == 0 || ts - m->last_access < 300)
+	if (!m->loader || m->shown || m->num == 0 || ts - m->last_access < 300)
 	   continue;
 
 	MenuEmpty(m, 0);
 	m->last_change = 0;
-	m->last_access = 0;
      }
    if (lst)
       Efree(lst);
