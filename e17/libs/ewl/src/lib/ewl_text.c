@@ -144,6 +144,9 @@ ewl_text_init(Ewl_Text *t)
 					ewl_text_selection_cb_configure, NULL);
 	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
 
+	/* text consumes tabs by default */
+	ewl_widget_ignore_focus_change_set(EWL_WIDGET(t), TRUE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
