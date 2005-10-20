@@ -208,7 +208,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	set = !ewin->state.active;
      }
    if (ewin->state.active && Conf.focus.clickraises &&
-       ewin != EwinListStackGetTop())
+       !EwinListStackIsRaised(ewin))
       set = 1;
 
    if (set)

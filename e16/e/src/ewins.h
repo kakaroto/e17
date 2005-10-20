@@ -330,8 +330,9 @@ void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 EWin               *const *EwinListStackGet(int *num);
 EWin               *const *EwinListFocusGet(int *num);
 EWin               *const *EwinListGetForDesk(int *num, struct _desk *d);
-EWin               *EwinListStackGetTop(void);
 EWin               *const *EwinListOrderGet(int *num);
+EWin               *EwinListStackGetTop(void);
+int                 EwinListStackIsRaised(const EWin * ewin);
 
 #define EwinListGetAll EwinListStackGet
 

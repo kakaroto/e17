@@ -435,6 +435,7 @@ EobjListStackGetForDesk(int *num, Desk * dsk)
    return lst;
 }
 
+#if 0				/* Unused */
 EWin               *
 EwinListStackGetTop(void)
 {
@@ -452,6 +453,32 @@ EwinListStackGetTop(void)
      }
 
    return NULL;
+}
+#endif
+
+int
+EwinListStackIsRaised(const EWin * ewin)
+{
+   const EobjList     *ewl;
+   int                 i;
+   const EObj         *eo, *eox;
+
+   ewl = &EwinListStack;
+   eox = EoObj(ewin);
+
+   for (i = 0; i < ewl->nwins; i++)
+     {
+	eo = ewl->list[i];
+	if (eo->type != EOBJ_TYPE_EWIN)
+	   continue;
+	if (eo->desk != eox->desk)
+	   continue;
+	if (eo->ilayer > eox->ilayer)
+	   continue;
+	return eo == eox;
+     }
+
+   return 1;			/* It should be impossible to get here */
 }
 
 void
