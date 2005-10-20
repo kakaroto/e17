@@ -97,6 +97,8 @@ FocusEwinSelect(void)
      default:
      case MODE_FOCUS_POINTER:
 	ewin = GetEwinPointerInClient();
+	if (ewin && !FocusEwinValid(ewin, 1, 0, 0))
+	   ewin = NULL;
 	break;
 
      case MODE_FOCUS_SLOPPY:
@@ -293,7 +295,7 @@ doFocusToEwin(EWin * ewin, int why)
      case FOCUS_ENTER:
      case FOCUS_LEAVE:		/* Unused */
      case FOCUS_CLICK:
-	if (ewin == Mode.focuswin)
+	if (ewin && ewin == Mode.focuswin)
 	   return;
 	if (ewin == NULL)	/* Unfocus */
 	   break;
