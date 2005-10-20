@@ -73,7 +73,7 @@ void ewl_window_title_set(Ewl_Window * win, char *title)
 	if (!REALIZED(win))
 		return;
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11")) {
 		ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
 		ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
@@ -123,7 +123,7 @@ void ewl_window_name_set(Ewl_Window * win, char *name)
 	if (!REALIZED(win))
 		return;
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
 					     name, win->name);
@@ -173,7 +173,7 @@ void ewl_window_class_set(Ewl_Window * win, char *classname)
 	if (!REALIZED(win))
 		return;
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_icccm_name_class_set((Ecore_X_Window)win->window,
 					     classname, win->classname);
@@ -212,7 +212,7 @@ void ewl_window_borderless_set(Ewl_Window * win)
 
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (REALIZED(win) && strstr(win->render, "x11"))
 		ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
 					   TRUE);
@@ -238,7 +238,7 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
 #endif
@@ -284,7 +284,7 @@ ewl_window_raise(Ewl_Window * win)
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_window_raise((Ecore_X_Window)win->window);
 #endif
@@ -308,7 +308,7 @@ ewl_window_lower(Ewl_Window * win)
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
 		ecore_x_window_lower((Ecore_X_Window)win->window);
 #endif
@@ -330,7 +330,7 @@ void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 	win->transient = forwin;
 
 	if (forwin && REALIZED(win)) {
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 		if (REALIZED(forwin))
 			ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
 							(Ecore_X_Window)forwin->window);
@@ -444,7 +444,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Prepare the base rendering region for the evas, such as the X
 	 * window for the X11 based engines, or the surfaces for directfb.
 	 */
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(render, "x11") &&
 			(ewl_engine_mask_get() & (EWL_ENGINE_SOFTWARE_X11 |
 						  EWL_ENGINE_GL_X11))) {
@@ -481,7 +481,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Now perform engine specific info setup. This informs the evas of
 	 * the drawing engine specific info it needs.
 	 */
-#ifdef HAVE_EVAS_ENGINE_GL_X11_H
+#ifdef ENABLE_EWL_GL_X11
 	if (!strcmp(render, "gl_x11") &&
 			(ewl_engine_mask_get() & EWL_ENGINE_GL_X11)) {
 		Evas_Engine_Info_GL_X11 *glinfo;
@@ -502,7 +502,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	}
 	else
 #endif
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 	if (!strcmp(render, "fb") &&
 			(ewl_engine_mask_get() & EWL_ENGINE_FB)) {
 		Evas_Engine_Info_FB *fbinfo;
@@ -518,7 +518,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	}
 	else
 #endif
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (!strcmp(render, "software_x11") && 
 			(ewl_engine_mask_get() & EWL_ENGINE_SOFTWARE_X11)) {
 		Evas_Engine_Info_Software_X11 *sinfo;
@@ -609,7 +609,7 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	embed = EWL_EMBED(w);
 	o = EWL_OBJECT(w);
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (REALIZED(w) && strstr(EWL_WINDOW(w)->render, "x11")) {
 		ecore_x_window_hide((Ecore_X_Window)embed->evas_window);
 		ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(w)->window);
@@ -637,7 +637,7 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11")) {
 		int width, height;
 
@@ -676,7 +676,7 @@ void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
 		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(widget)->evas_window);
 		ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(widget)->window);
@@ -734,7 +734,7 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
 	else {
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 		if (strstr(win->render, "x11"))
 			ecore_x_window_resize((Ecore_X_Window)win->window,
 					      width, height);
@@ -743,7 +743,7 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	}
 
 	if (EWL_EMBED(win)->evas_window != win->window) {
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 		if (strstr(win->render, "x11"))
 			ecore_x_window_resize((Ecore_X_Window)
 					EWL_EMBED(win)->evas_window, width,
@@ -761,7 +761,7 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Do this after the resize to prevent early mapping, and the object
 	 * keeps the bounds respected.
 	 */
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11")) {
 		ecore_x_icccm_size_pos_hints_set((Ecore_X_Window)win->window,
 						 0, ECORE_X_GRAVITY_NW,

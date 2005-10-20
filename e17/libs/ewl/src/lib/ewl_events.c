@@ -12,7 +12,7 @@ extern Ewl_Widget     *dnd_widget;
 
 extern Ecore_List       *ewl_embed_list;;
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 int ewl_ev_x_window_expose(void *data, int type, void *_ev);
 int ewl_ev_x_window_configure(void *data, int type, void *_ev);
 int ewl_ev_x_window_delete(void *data, int type, void *_ev);
@@ -27,7 +27,7 @@ int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
 int ewl_ev_x_paste(void *data, int type, void *_ev);
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 int ewl_ev_fb_key_down(void *data, int type, void *_ev);
 int ewl_ev_fb_key_up(void *data, int type, void *_ev);
 int ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
@@ -46,7 +46,7 @@ int ewl_ev_init(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	engine = ewl_engine_mask_get();
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	/*
 	 * Register dispatching functions for window events.
 	 */
@@ -88,7 +88,7 @@ int ewl_ev_init(void)
 	}
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 	if (engine & EWL_ENGINE_FB) {
 		ecore_event_handler_add(ECORE_FB_EVENT_KEY_DOWN,
 					ewl_ev_fb_key_down, NULL);
@@ -130,7 +130,7 @@ void ewl_ev_modifiers_set(unsigned int modifiers)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 
 /**
  * @param data: user specified data passed to the function
@@ -494,7 +494,7 @@ int ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__,
 
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 
 /**
  * @param data: user specified data passed to the function

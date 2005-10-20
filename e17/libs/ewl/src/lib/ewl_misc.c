@@ -99,7 +99,7 @@ int ewl_init(int *argc, char **argv)
 	free_evas_object_list = ecore_list_new();
 	child_add_list = ecore_list_new();
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	/*
 	 * Attempt to pick the correct engine by adjusting the bitmask
 	 * relative to the success of each engines init routine.
@@ -112,7 +112,7 @@ int ewl_init(int *argc, char **argv)
 	}
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 	/*
 	 * Maybe the X11 engines arent' available or they failed, so see if
 	 * we should load up the FB.
@@ -137,21 +137,21 @@ int ewl_init(int *argc, char **argv)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (use_engine == EWL_ENGINE_SOFTWARE_X11) {
 		IF_FREE(ewl_config.evas.render_method);
 		ewl_config.evas.render_method = strdup("software_x11");
 	}
 	else
 #endif
-#ifdef HAVE_EVAS_ENGINE_GL_X11_H
+#ifdef ENABLE_EWL_GL_X11
 	if (use_engine == EWL_ENGINE_GL_X11) {
 		IF_FREE(ewl_config.evas.render_method);
 		ewl_config.evas.render_method = strdup("gl_x11");
 	}
 	else
 #endif
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 	if (use_engine == EWL_ENGINE_FB) {
 		IF_FREE(ewl_config.evas.render_method);
 		ewl_config.evas.render_method = strdup("fb");
@@ -251,12 +251,12 @@ int ewl_shutdown()
 
 	edje_shutdown();
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	if (use_engine & EWL_ENGINE_X11) 
 		ecore_x_shutdown();
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 	if (use_engine & EWL_ENGINE_FB)
 		ecore_fb_shutdown();
 #endif

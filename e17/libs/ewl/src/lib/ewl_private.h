@@ -22,16 +22,17 @@
 #include "ewl-config.h"
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB_H
+#ifdef ENABLE_EWL_FB
 #include <Ecore_Fb.h>
 #include <Evas_Engine_FB.h>
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_GL_X11_H
+#ifdef ENABLE_EWL_GL_X11
+#include <Ecore_X.h>
 #include <Evas_Engine_GL_X11.h>
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#ifdef ENABLE_EWL_SOFTWARE_X11
 #include <Ecore_X.h>
 #include <Evas_Engine_Software_X11.h>
 #endif
