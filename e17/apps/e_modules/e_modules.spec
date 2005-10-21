@@ -60,6 +60,15 @@ Requires: enlightenment >= 0.16.999
 %description monitor
 Monitor module for the Enlightenment window manager.
 
+%package rain
+Summary: Rain module for the Enlightenment window manager.
+Group: User Interface/Desktops
+Requires: enlightenment >= 0.16.999
+
+%description rain
+Rain module for the Enlightenment window manager.
+
+
 %prep
 %setup -q
 
@@ -107,5 +116,10 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_libdir}/%{name}/weather/*
 %{_libdir}/enlightenment/modules_extra/weather
+
+%files rain
+%defattr(-, root, root)
+%{_libdir}/%{name}/rain/*
+%{_libdir}/enlightenment/modules_extra/rain
 
 %changelog
