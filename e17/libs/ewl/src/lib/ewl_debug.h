@@ -110,6 +110,38 @@ inline void     ewl_print_warning(void);
 		return ret; \
 	  } \
 }
+
+#define DCHECK_TYPE(str, ptr, type) \
+{ \
+	if (!ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
+	{ \
+		ewl_print_warning(); \
+		fprintf(stderr, "\tThis program is calling:\n\n" \
+				"\t%s();\n\n" \
+				"\tWith the paramter:\n\n" \
+				"\t%s\n\n" \
+				"\tas the wrong type. (%s) instead of (%s).\n" \
+				"\tPlease fix your program.\n", \
+				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+	} \
+}
+
+#define DCHECK_TYPE_RET(str, ptr, type, ret) \
+{ \
+	if (!ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
+	{ \
+		ewl_print_warning(); \
+		fprintf(stderr, "\tThis program is calling:\n\n" \
+				"\t%s();\n\n" \
+				"\tWith the paramter:\n\n" \
+				"\t%s\n\n" \
+				"\tas the wrong type. (%s) instead of (%s).\n" \
+				"\tPlease fix your program.\n", \
+				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+		return ret; \
+	} \
+}
+
 #else
 
 #define DENTER_FUNCTION(lvl) {}
@@ -125,13 +157,14 @@ inline void     ewl_print_warning(void);
 		return; \
 	} \
 }
-
 #define DCHECK_PARAM_PTR_RET(str, ptr, ret) \
 { \
 	if (!ptr) { \
 		return ret; \
 	} \
 }
+#define DCHECK_TYPE(str, ptr, type) {}
+#define DCHECK_TYPE_RET(str, ptr, type, ret) {}
 #endif
 
 #define DERROR(fmt) \
