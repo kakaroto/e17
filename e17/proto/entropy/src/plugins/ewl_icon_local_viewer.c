@@ -546,9 +546,9 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		Ecore_Hash* tmp_icon_hash;
 		entropy_generic_file* list_item;
 
+		
 		/*Set the current path from the event source...*/
 		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
-
 
 
 		/*Keep a reference to our existing hash*/
@@ -558,17 +558,18 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 
-
 		
 		
 		
 		/*Clear the view, if there's anything to nuke*/
 		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
+
 	
 		ecore_list_goto_first(el);
 		while ( (list_item = ecore_list_next(el)) ) {
 			ewl_icon_local_viewer_add_icon(comp, list_item);
 		}
+
 
 		/*Before we begin, see if our file hash is initialized, if so - we must destroy it first*/
 		/*TODO*/
@@ -576,13 +577,16 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		ecore_hash_destroy(tmp_icon_hash);
 
 
+
 		/*First, see if there is a custom BG image for this folder*/
 		if (entropy_config_str_get("iconbox_viewer", view->current_dir)) {
-			//printf("There is a BG set for this folder: '%s'\n", entropy_config_str_get("iconbox_viewer", view->current_dir));
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
 		} else {
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), NULL);
 		}
+
+		/*Goto the root*/
+		ewl_iconbox_scrollpane_goto_root(EWL_ICONBOX(view->iconbox));
 	}
 	break;
 

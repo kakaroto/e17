@@ -34,7 +34,7 @@ Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
 	entropy_generic_file* file;
 
 	ecore_list_goto_first(file_list);
-	while ( (file_ins = ecore_list_next(file_list)) ) {
+	while ( (file_ins = ecore_list_remove_first(file_list)) ) {
 		int ins = 0;
 
 		ecore_list_goto_first(new_list);
@@ -59,8 +59,8 @@ Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
 		out: ;
 
 	}
-
 	ecore_list_destroy(file_list);
+
 
 	return new_list;
 	
