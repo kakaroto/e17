@@ -110,6 +110,7 @@ void ewl_iconbox_editable_set(Ewl_IconBox *ib, int edit);
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib);
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file);
+void ewl_scrollpane_goto_rood(Ewl_IconBox* ib);
 void ewl_iconbox_clear(Ewl_IconBox* iconbox);
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename);
 void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file);

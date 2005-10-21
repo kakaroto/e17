@@ -149,6 +149,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	} else {
 		/*printf ("Bombed out on scrollpane creation\n");*/
 	}
+
+	/*Start with an empty background*/
+	ib->background = NULL;
 	
 	ib->ewl_iconbox_pane_inner = ewl_overlay_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
@@ -304,28 +307,39 @@ Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
 	return selected;
 }
 
+/*Move to the root of the scrollpame*/
+void ewl_scrollpane_goto_rood(Ewl_IconBox* ib) {
+        ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
+        ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
+
+}
+
 
 void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 {
 	/*Add a background image*/
-	{
-		Ewl_Embed      *emb;
-		emb = ewl_embed_widget_find(EWL_WIDGET(ib));
-		if (emb) {
-			ib->background = evas_object_image_add(emb->evas);
-			evas_object_image_file_set(ib->background, file, NULL);
+	Ewl_Embed      *emb;
+	emb = ewl_embed_widget_find(EWL_WIDGET(ib));
+	if (emb && file) {
+		if (ib->background) evas_object_del(ib->background);
+		
+		ib->background = evas_object_image_add(emb->evas);
+		evas_object_image_file_set(ib->background, file, NULL);
 
-			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
-			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
-			evas_object_layer_set(ib->background, -1000);
+		evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
+		evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
+		evas_object_layer_set(ib->background, -1000);
 
-			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
-			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
-			
-			evas_object_show(ib->background);
-		} else {
-			printf("////////////////////////// Could not find top level widget\n");
-		}
+		evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
+		evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
+		
+		evas_object_show(ib->background);
+	} else if (file) {
+		printf("////////////////////////// Could not find top level widget\n");
+	} else /*File is null*/ {
+		if (ib->background) evas_object_del(ib->background);
+
+		ib->background = NULL;
 	}
 }
 
