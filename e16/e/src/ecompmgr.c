@@ -1308,7 +1308,7 @@ ECompMgrWinUnmap(EObj * eo)
 
    D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
 
-   if (Conf_compmgr.fading.enable && eo->fade)
+   if (Conf_compmgr.fading.enable && eo->fade && !eo->gone)
       ECompMgrWinFadeOut(eo);
    else
      {
@@ -1984,6 +1984,7 @@ ECompMgrRepaint(void)
    if (!Mode_compmgr.active || allDamage == None)
       return;
 
+   ERegionLimit(allDamage);
    region = ERegionClone(allDamage);
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
@@ -2015,7 +2016,6 @@ ECompMgrRepaint(void)
    /* Repaint background, clipped by damage region and opaque windows */
    pict = DeskBackgroundPictureGet(dsk);
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
-   ERegionLimit(region);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
@@ -2026,7 +2026,6 @@ ECompMgrRepaint(void)
 
    if (pbuf != rootPicture)
      {
-	ERegionLimit(allDamage);
 	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, allDamage);
 	XRenderComposite(dpy, PictOpSrc, pbuf, None, rootPicture,
 			 0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
