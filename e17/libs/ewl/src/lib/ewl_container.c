@@ -532,9 +532,11 @@ int ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 	Ewl_Widget *parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+
+	if (!w) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	parent = w;
 	while ((parent = parent->parent)) {

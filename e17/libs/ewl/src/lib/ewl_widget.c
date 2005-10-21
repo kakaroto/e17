@@ -317,7 +317,8 @@ void ewl_widget_hide(Ewl_Widget * w)
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_info_widgets_cleanup(emb, w);
+	if (emb)
+		ewl_embed_info_widgets_cleanup(emb, w);
 
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 
