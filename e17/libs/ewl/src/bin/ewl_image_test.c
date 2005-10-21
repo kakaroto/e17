@@ -256,12 +256,12 @@ __create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 static void
 __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
-	int *response;
+	Ewl_Filedialog_Event *e;
 	Ewl_Widget *entry = data;
   
-	response = (int *)ev;
+	e = EWL_FILEDIALOG_EVENT(ev);
 
-	if (*response == EWL_STOCK_OPEN) {
+	if (e->response == EWL_STOCK_OPEN) {
 		char *path;
 
 		printf("File open from image test: %s\n", 

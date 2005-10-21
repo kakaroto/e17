@@ -241,11 +241,13 @@ Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
 void ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 								void* data)
 {
+	Ewl_Filedialog_Event ev;
 	Ewl_Filedialog *fd = EWL_FILEDIALOG(data);
 
+	ev.response = ewl_button_stock_type_get(EWL_BUTTON(w));
+
 	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
-					  EWL_CALLBACK_VALUE_CHANGED,
-					  &EWL_BUTTON(w)->stock_type);
+					  EWL_CALLBACK_VALUE_CHANGED, &ev);
 }
 
 
