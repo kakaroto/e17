@@ -3636,7 +3636,7 @@ ewl_text_btree_context_get(Ewl_Text_BTree *tree, unsigned int idx)
 	/* something bad...no context...no children...wtf? */
 	if (!tree->children)
 	{
-		DWARNING("No children, no context.... wtf?");
+		DWARNING("No children, no context.... wtf?\n");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -3655,7 +3655,7 @@ ewl_text_btree_context_get(Ewl_Text_BTree *tree, unsigned int idx)
 		count += child->length;
 	}
 	
-	DWARNING("Got to the end of function... is that possible?");
+	DWARNING("Got to the end of function... is that possible?\n");
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
