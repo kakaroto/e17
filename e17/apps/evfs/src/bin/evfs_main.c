@@ -70,7 +70,7 @@ ipc_client_add(void *data, int type, void *event)
 
 
       e = (Ecore_Ipc_Event_Client_Add *) event;
-      printf("ERR: EVFS Client Connected!!!\n");
+      /*printf("ERR: EVFS Client Connected!!!\n");*/
 
       client = NEW(evfs_client);
       client->client = e->client;
@@ -94,7 +94,7 @@ ipc_client_del(void *data, int type, void *event)
 
 
    e = (Ecore_Ipc_Event_Client_Del *) event;
-    printf("ERR: Client Disconnected!!!\n");
+    printf("Client %d, Client Disconnected!!!\n", client->client);
 
     client = ecore_hash_get(server->client_hash, e->client);
     evfs_cleanup_client(client);
@@ -271,7 +271,7 @@ int main(int argc, char** argv) {
 	      printf ("ERR: Server already running...\n");
 	      return (1);
 	} else {
-	      printf ("ERR: Server created..\n");
+	      //printf ("ERR: Server created..\n");
 
 	      server->ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL);
 
