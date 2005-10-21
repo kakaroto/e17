@@ -241,6 +241,7 @@ ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attac
 
 	list->len ++;
 	list->list = realloc(list->list, list->len * sizeof(void *));
+	list->list[list->len - 1] = attach;
 
 	ewl_attach_attach_type_setup(parent, attach);
 
