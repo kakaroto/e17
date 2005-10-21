@@ -1,6 +1,7 @@
 #include <Ewl.h>
 #include "entropy.h"
 #include "entropy_gui.h"
+#include "entropy_config.h"
 #include <dlfcn.h>
 #include <time.h>
 
@@ -25,6 +26,10 @@ struct entropy_icon_viewer {
 	Ecore_Hash* icon_hash; /*A hash for ewl callbacks*/
 	Ecore_List* current_events; /*A ref to the events we have waiting on the queue.  perhaps we should handle this in the notify queue,
 				      one less thing for plugins to handle */
+
+	Ewl_Widget* file_dialog;
+	Ewl_Widget* file_dialog_parent;
+	
 	char current_dir[1024]; /* We should handle this at the core.  FUTURE API TODO */
 };
 
@@ -208,6 +213,45 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 }
 
 
+/*---------------------------*/
+/*Functions to handle custom background setting*/
+void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+        Ewl_Filedialog_Event *e;
+	entropy_gui_component_instance* instance = user_data;
+	entropy_icon_viewer* viewer = instance->data;
+
+        e = EWL_FILEDIALOG_EVENT(ev);
+        if (e->response == EWL_STOCK_OPEN) {
+                printf("file open from test program: %s\n",
+                                ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+
+		printf("Curent directory is '%s'\n", viewer->current_dir);
+		entropy_config_str_set("iconbox_viewer", viewer->current_dir, ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+
+	} else if (e->response == EWL_STOCK_CANCEL) {
+		ewl_widget_destroy(viewer->file_dialog_parent);
+	}
+
+}
+
+
+void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+	entropy_gui_component_instance* instance = user_data;
+	entropy_icon_viewer* viewer = instance->data;
+	
+	viewer->file_dialog = ewl_filedialog_new();
+	viewer->file_dialog_parent = ewl_window_new();
+
+	ewl_filedialog_type_set(EWL_FILEDIALOG(viewer->file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
+        ewl_callback_append (viewer->file_dialog, EWL_CALLBACK_VALUE_CHANGED, ewl_iconbox_background_set_file_cb, instance);
+	ewl_container_child_append(EWL_CONTAINER(viewer->file_dialog_parent), viewer->file_dialog);
+	ewl_widget_show(viewer->file_dialog);
+	ewl_widget_show(viewer->file_dialog_parent);
+
+}
+/*---------------------------*/
+
+
 void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ecore_List* selected;
 	entropy_generic_file* file;
@@ -287,8 +331,6 @@ void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 			gui_event->data = local_file->file;
 			entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_GLOBAL); 
 
-			/*Tmp FIXME set the background*/
-			ewl_iconbox_background_set( EWL_ICONBOX( ((entropy_icon_viewer*)user_data)->iconbox     ), "/usr/local/share/evidence/themes/default/life_is_minimal_cut.jpg"  );
 		} else if (ev->button == 2) {
 			//Stat test..
 
@@ -404,7 +446,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Set custom folder background...");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_paste_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_set_cb, instance);
 	ewl_widget_show(context);
 
 	
@@ -487,12 +529,11 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		entropy_icon_viewer* view = comp->data;
 		Ecore_Hash* tmp_gui_hash;
 		Ecore_Hash* tmp_icon_hash;
-	
 		entropy_generic_file* list_item;
 
-		/*Firstly, nuke our pending events*/
-		/*entropy_notify_request_destroy_list(comp->core->notify, view->current_events);
-		ecore_list_clear(view->current_events);*/
+		/*Set the current path from the event source...*/
+		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
+
 
 
 		/*Keep a reference to our existing hash*/
@@ -502,8 +543,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 
-		/*Set the current path from the event source...*/
-		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
+
 		
 		
 		
@@ -520,6 +560,14 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
 
+
+		/*First, see if there is a custom BG image for this folder*/
+		if (entropy_config_str_get("iconbox_viewer", view->current_dir)) {
+			//printf("There is a BG set for this folder: '%s'\n", entropy_config_str_get("iconbox_viewer", view->current_dir));
+			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
+		} else {
+			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), NULL);
+		}
 	}
 	break;
 
