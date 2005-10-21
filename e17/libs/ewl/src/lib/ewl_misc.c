@@ -13,6 +13,7 @@ static unsigned int    debug_segv = 0;
 static unsigned int    use_engine = EWL_ENGINE_ALL;
 static unsigned int    phase_status = 0;
 static unsigned int    print_theme_keys = 0;
+static unsigned int    print_gc_reap = 0;
 static unsigned int    debug_level = 0;
 
 static Ecore_Idle_Enterer *idle_enterer = NULL;
@@ -407,6 +408,10 @@ static void ewl_init_parse_options(int *argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
 			print_theme_keys = 1;
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
+			print_gc_reap = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-software-x11")) {
@@ -870,6 +875,9 @@ void ewl_garbage_collect()
 
 	cleanup = 0;
 
+	if (print_gc_reap)
+		printf("---\n");
+
 	while ((w = ecore_list_remove_first(destroy_list))) {
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
@@ -879,7 +887,8 @@ void ewl_garbage_collect()
 		FREE(w);
 		cleanup++;
 	}
-	printf("Destroyed %d EWL objects\n", cleanup);
+	if (print_gc_reap)
+		printf("Destroyed %d EWL objects\n", cleanup);
 
 	cleanup = 0;
 
@@ -887,7 +896,8 @@ void ewl_garbage_collect()
 		evas_object_del(obj);
 		cleanup++;
 	}
-	printf("Destroyed %d Evas Objects\n", cleanup);
+	if (print_gc_reap)
+		printf("Destroyed %d Evas Objects\n", cleanup);
 
 	cleanup = 0;
 
@@ -895,7 +905,11 @@ void ewl_garbage_collect()
 		evas_free(evas);
 		cleanup++;
 	}
-	printf("Destroyed %d Evas\n", cleanup);
+	if (print_gc_reap)
+		printf("Destroyed %d Evas\n", cleanup);
+
+	if (print_gc_reap)
+		printf("---\n");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
