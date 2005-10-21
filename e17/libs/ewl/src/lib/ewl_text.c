@@ -606,7 +606,7 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	int line;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(t, "t", t->cursor_position);
+	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);
@@ -648,7 +648,7 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	int line;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(t, "t", t->cursor_position);
+	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);

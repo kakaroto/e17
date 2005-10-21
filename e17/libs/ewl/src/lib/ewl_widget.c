@@ -1007,8 +1007,6 @@ void ewl_widget_tab_order_remove(Ewl_Widget *w)
 void
 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
 {
-	unsigned int f;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
