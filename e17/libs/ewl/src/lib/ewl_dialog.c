@@ -82,6 +82,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 	ewl_container_child_append(EWL_CONTAINER(dialog->box), dialog->separator);
+	ewl_widget_internal_set(dialog->separator, TRUE);
 	ewl_widget_show(dialog->separator);
 
 	/*
@@ -96,6 +97,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
 			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_box_homogeneous_set(EWL_BOX(dialog->action_area), FALSE);
+	ewl_widget_internal_set(dialog->action_area, TRUE);
 	ewl_widget_show(dialog->action_area);
 
 	ewl_dialog_active_area_set(dialog, dialog->position);
