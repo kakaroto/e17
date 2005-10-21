@@ -327,27 +327,19 @@ eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data)
 static void
 eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
 {
-    int *click;
+    Ewl_Filedialog_Event *e;
     Ewl_Widget *o;
     
-    click = (int *)ev;
-    switch(*click)
+    e = EWL_FILEDIALOG_EVENT(ev);
+    if (e->response == EWL_STOCK_OPEN)
     {
-        case EWL_STOCK_OPEN:
-            {
-                char *icon;
+        char *icon;
 
-                icon = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
+        icon = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
 
-                o = ewl_widget_name_find("icon");
-                ewl_widget_data_set(o, "file", icon);
-                ewl_image_file_set(EWL_IMAGE(o), icon, "");
-            }
-            break;
-
-        case EWL_STOCK_CANCEL:
-        default:
-            break;
+        o = ewl_widget_name_find("icon");
+        ewl_widget_data_set(o, "file", icon);
+        ewl_image_file_set(EWL_IMAGE(o), icon, "");
     }
 
     o = ewl_widget_name_find("fd");
