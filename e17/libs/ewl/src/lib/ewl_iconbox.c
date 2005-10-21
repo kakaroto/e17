@@ -308,7 +308,7 @@ Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
 }
 
 /*Move to the root of the scrollpame*/
-void ewl_scrollpane_goto_root(Ewl_IconBox* ib) {
+void ewl_iconbox_scrollpane_goto_root(Ewl_IconBox* ib) {
         ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
         ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
 
