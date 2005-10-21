@@ -94,9 +94,10 @@ ipc_client_del(void *data, int type, void *event)
 
 
    e = (Ecore_Ipc_Event_Client_Del *) event;
-    printf("Client %d, Client Disconnected!!!\n", client->client);
 
     client = ecore_hash_get(server->client_hash, e->client);
+    printf("Client %ld, Client Disconnected!!!\n", client->id);
+    ecore_hash_remove(server->client_hash, client);
     evfs_cleanup_client(client);
 
     
