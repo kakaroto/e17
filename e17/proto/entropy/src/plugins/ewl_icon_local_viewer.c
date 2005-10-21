@@ -215,6 +215,14 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 /*---------------------------*/
 /*Functions to handle custom background setting*/
+void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+	entropy_gui_component_instance* instance = user_data;
+	entropy_icon_viewer* viewer = instance->data;
+
+	entropy_config_str_set("iconbox_viewer", viewer->current_dir,NULL);
+}
+
+
 void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data ) {
         Ewl_Filedialog_Event *e;
 	entropy_gui_component_instance* instance = user_data;
@@ -447,6 +455,13 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Set custom folder background...");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_set_cb, instance);
+	ewl_widget_show(context);
+
+	/*Add some context menu items*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Remove current custom background");
+	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_remove_cb, instance);
 	ewl_widget_show(context);
 
 	
