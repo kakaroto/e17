@@ -59,8 +59,6 @@ void ewl_menu_init(Ewl_Menu * menu)
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "menu");
-	ewl_box_orientation_set(EWL_BOX(menu->base.popup),
-				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
