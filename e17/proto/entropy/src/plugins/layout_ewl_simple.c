@@ -314,7 +314,7 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
                           children[0] = hbox;
                           children[1] = NULL;
                           row = ewl_tree_row_add(EWL_TREE(tree), NULL, children);
-			  ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_VSHRINK);
+			  ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_VSHRINK );
 			 	 
                           ewl_widget_show(row);
 
@@ -342,8 +342,8 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 					children[0] = EWL_WIDGET(visual);
 					children[1] = NULL;
 					srow=	ewl_tree_row_add(EWL_TREE(tree), EWL_ROW(row), children);
-					ewl_object_fill_policy_set(EWL_OBJECT(srow), EWL_FLAG_FILL_HFILL);
-					ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL);
+					ewl_object_fill_policy_set(EWL_OBJECT(srow), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL );
+					ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL);
 					ewl_widget_show(srow);
 				}				  
 			 }
@@ -610,7 +610,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 		tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar");
 	}
 
-	//printf("Config for layout is: '%s'\n", tmp);
+	printf("Config for layout is: '%s' (%d)\n", tmp, strlen(tmp));
 	layout_ewl_simple_parse_config(layout, tmp);
 	entropy_free(tmp);
 

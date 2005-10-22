@@ -191,6 +191,7 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_gui_component_instance* layout, void* data) {
 	entropy_gui_component_instance* instance;
 	entropy_file_structure_viewer* viewer;
+	Ewl_Widget* child;
 	
 
 	 /*entropy_file_request* file_request = entropy_malloc(sizeof(entropy_file_request));*/
@@ -216,12 +217,16 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	viewer->loaded_dirs = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	viewer->row_folder_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
-	ewl_object_fill_policy_set(EWL_OBJECT(viewer->tree), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(EWL_TREE(viewer->tree)->scrollarea), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HFILL);
 	
 	instance->gui_object = viewer->tree;
 
 	structure_viewer_add_row(instance, (entropy_generic_file*)data, NULL);
+
+	/*Prevent expand/collpase of root node*/
+	child =ewl_container_child_get(EWL_CONTAINER(viewer->tree), 0);
+	ewl_callback_del_type(EWL_TREE_NODE(child)->handle, EWL_CALLBACK_VALUE_CHANGED);
+	
 	
 	//printf("..done\n");
 
