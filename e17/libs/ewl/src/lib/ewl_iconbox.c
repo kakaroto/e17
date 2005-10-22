@@ -430,14 +430,23 @@ void ewl_iconbox_editable_set(Ewl_IconBox* ib, int edit)
 	ib->editable = edit;
 }
 
+
+void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib) {
+	int pw,ph;
+	
+	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
+	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), pw > ib->lx ? pw + ib->iw: ib->lx+ib->iw+20, ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+ib->ih+30);
+
+	
+}
+
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 {
 	int sw=0,sh=0;
 	int iw=0, ih=0;
-	int nextx=0, nexty=0;
 	Ewl_IconBox_Icon* list_item;
 	int maxx=0, maxy=0;
-	int pw, ph;
+	/*int pw, ph;*/
 	int x,y;
 
 	/*printf ("Entering the arrange..\n");*/
@@ -447,13 +456,10 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 	
 	/*printf ("Ewl_IconBox -> Arranging icons\n");*/
 
-	
+
+	ib->lx = ib->ly = 0;
 	
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &sw,&sh);
-	/*printf("   Ewl_IconBox -> We have %d*%d to work with\n", sw,sh);*/
-
-	/*Hack for now - get the biggest icon in the list - this is inefficient*/
-
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
 	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
 		int nw,nh;
@@ -472,24 +478,24 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 		}
 
 		
-		if (nextx + iw > sw) {
-			nextx = 0;
-			nexty += ih + EWL_ICONBOX_ICON_PADDING;
+		if (ib->lx + iw > sw) {
+			ib->lx = 0;
+			ib->ly += ih + EWL_ICONBOX_ICON_PADDING;
 		}
 
 		x = EWL_FLOATER(list_item->floater)->x;
 		y = EWL_FLOATER(list_item->floater)->y;
 	
 		/*Only move if we have to*/
-		if ( abs(x - nextx) > 0  ||
-		     abs(y - nexty) > 0) 
-			ewl_floater_position_set(EWL_FLOATER(list_item->floater), nextx, nexty);
+		if ( abs(x - ib->lx) > 0  ||
+		     abs(y - ib->ly) > 0) 
+			ewl_floater_position_set(EWL_FLOATER(list_item->floater), ib->lx, ib->ly);
 
 		
-		nextx += iw + EWL_ICONBOX_ICON_PADDING;
+		ib->lx += iw + EWL_ICONBOX_ICON_PADDING;
 		
-		if (nextx > maxx) maxx = nextx;
-		if (nexty > maxy) maxy = nexty;
+		if (ib->lx > maxx) maxx = ib->lx;
+		if (ib->ly > maxy) maxy = ib->ly;
 
 		
 	}
@@ -497,8 +503,7 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 	/* Now set the extent of the pane inner to be the maxx/y that we had or 
 	 * the size of the scrollpane, which ever is bigger
 	 */
-	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), pw > maxx ? pw +iw: maxx+iw+20, ph > maxy+ih ? ph+ih : maxy+ih+30);
+	ewl_iconbox_scrollpane_recalculate(ib);
 
 
 
