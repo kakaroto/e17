@@ -162,7 +162,7 @@ AC_PATH_GENERIC(evfs,,[evfs_libs=`evfs-config --libs`
                          evfs_cflags=`evfs-config --cflags`
                          AC_DEFINE(HAVE_EVFS, 1, have EVFS)
                          evfs="EVFS "; ],[
-                         AC_MSG_WARN([No EVFS, can't build.])
+                         AC_MSG_ERROR([No EVFS, can't build.])
                         ]) AC_SUBST(evfs_libs)
 AC_SUBST(evfs_cflags) 
 
