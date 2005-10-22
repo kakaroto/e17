@@ -8,7 +8,7 @@
   - Repaint area is incorrect when using sharp shadows? (try gmplayer)
 
 - Systray
-  - Systray windows sometimes escape initial placement/sizing
+  - Systray windows sometimes escape initial placement/sizing (fixed?)
 
 - Top-level window adoption is messy
   - Get info (window/props/matches/snaps) before frame/border setup
@@ -17,10 +17,8 @@
 
 - Avoid X-error on unmap followed by destroy
 
-- Check trouble with external pagers and hidden desks
+- Check trouble with external pagers and hidden desks (fixed?)
   - Maybe change ICCCM configure on hidden/offset desks (position relative to desk)?
-
-- Root tooltips are sometimes shown when they shouldn't be
 
 - netwm hints
   - More (_NET_WM_USER_TIME ...)?

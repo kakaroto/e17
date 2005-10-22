@@ -3590,3 +3590,33 @@ Fade out on unmap. Destroy ends fading.
 Remove IPC copyright function - info is in AUTHORS and COPYING.
 Move README-0.16.8 to docs/.
 Add notes on 0.16.7.x configuration files (Andy Murren).
+
+-------------------------------------------------------------------------------
+
+Sat Oct 22 13:48:05 CEST 2005
+(Kim)
+
+--- 0.16.8 0.19 ---
+Fix potential segv while fading.
+Defer menu loading. Unload 5 min after last use.
+Fix various composite manager bugs (hidden damage, shape during fadeout, fading while sliding).
+Fix windows sliding in sometimes not being focused when they should.
+Speed up fullscreen mode toggling.
+Fix some systray race conditions.
+Fix dialog layout bug. Shuffle some dialog contents around.
+Change default dialog layout, remove redundant code.
+Fix geometry indicator during non-opaque resizing.
+Fix focus list sometimes not being closed.
+Smoother geometry indicator.
+Fix focus list rendering bug (reset shape before update). Restructure code.
+Save settings when exiting Desktop dialog.
+Force focus unset before leaving desk.
+Fix caching of imlib images (has been severely crippled for some time).
+Avoid shape processing for images with alpha set but no shape set.
+Set ICCCM configure position relative to desk origin.
+Tweak click-raises (raise if lowered after getting focus).
+Use timer events for startup windows.
+Fix non-opaque resizing.
+Fix pointer focus on window close.
+Click-raises tweak (don't set grabs if window cannot be raised).
+
