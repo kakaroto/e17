@@ -464,13 +464,16 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_remove_cb, instance);
 	ewl_widget_show(context);
 
+
+	/*FIXME remove the hardocded var*/
+	ewl_iconbox_icon_size_custom_set(EWL_ICONBOX(viewer->iconbox), 60,60);
 	
 
 	/*Init the hash*/
 	viewer->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	viewer->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
-	/*FIXME remove dupe here */
+	/*Set the core back reference*/
 	instance->core = core;
 
 	/*Register out interest in receiving folder notifications*/
@@ -610,7 +613,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 				ewl_iconbox_icon_image_set(EWL_ICONBOX_ICON(obj->icon), obj->thumbnail->thumbnail_filename);
 
 				/*FIXME This is inefficient as all hell - find a better way to do this*/
-				ewl_iconbox_icon_arrange(EWL_ICONBOX(view->iconbox)); 
+				//ewl_iconbox_icon_arrange(EWL_ICONBOX(view->iconbox)); 
 	        	} else {
 	                	printf("ERR: Couldn't find a hash reference for this file!\n");
 	        	}
