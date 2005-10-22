@@ -4,6 +4,7 @@
 #include "evfs_client.h"
 
 typedef struct evfs_plugin_functions {
+	int (*evfs_client_disconnect)(evfs_client*);
 	int (*evfs_file_remove)(char* path);
 	int (*evfs_monitor_start)(evfs_client* client, evfs_command* command);
 	int (*evfs_monitor_stop)(evfs_client* client, evfs_command* command);

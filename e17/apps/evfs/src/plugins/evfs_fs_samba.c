@@ -58,6 +58,15 @@ int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 
 
+
+
+int
+evfs_client_disconnect(evfs_client* client) {
+	printf ("Received disconnect for client at evfs_fs_samba.c for client %d\n", client->id);
+}
+
+
+
 void evfs_auth_structure_add(Ecore_List* cache, char* username, char* password, char* path) {
 	evfs_auth_cache* obj = NEW(evfs_auth_cache);
 	obj->username = strdup(username);
@@ -142,6 +151,7 @@ evfs_plugin_functions* evfs_plugin_init() {
 	printf("Initialising the samba plugin..\n");
 	evfs_plugin_functions* functions = malloc(sizeof(evfs_plugin_functions));
 	functions->evfs_dir_list = &smb_evfs_dir_list;
+	functions->evfs_client_disconnect = &evfs_client_disconnect;
 	functions->evfs_file_open = &evfs_file_open;
 	functions->evfs_file_close = &evfs_file_close;
 	functions->evfs_file_seek = &evfs_file_seek;

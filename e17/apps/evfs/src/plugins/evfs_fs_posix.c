@@ -44,6 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int evfs_file_remove(char* src);
 int evfs_file_rename(char* src, char* dst);
 
+int evfs_client_disconnect(evfs_client* client);
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
 int evfs_file_open(evfs_filereference* file);
@@ -80,12 +81,15 @@ evfs_plugin_functions* evfs_plugin_init() {
 	
 	posix_monitor_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
+	functions->evfs_client_disconnect = &evfs_client_disconnect;
+	
 	functions->evfs_file_remove= &evfs_file_remove;
 	functions->evfs_monitor_start = &evfs_monitor_start;
 	functions->evfs_monitor_stop = &evfs_monitor_stop;
 	functions->evfs_file_stat = &evfs_file_stat;
 	functions->evfs_file_open = &evfs_file_open;
 	functions->evfs_file_close = &evfs_file_close;
+	
 	
 	functions->evfs_file_seek = &evfs_file_seek;
 	functions->evfs_file_read = &evfs_file_read;
@@ -98,6 +102,12 @@ evfs_plugin_functions* evfs_plugin_init() {
 
 char* evfs_plugin_uri_get() {
 	return "posix";
+}
+
+
+int
+evfs_client_disconnect(evfs_client* client) {
+	printf ("Received disconnect for client at evfs_fs_posix.c for client %d\n", client->id);
 }
 
 void

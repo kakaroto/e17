@@ -90,13 +90,28 @@ int
 ipc_client_del(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
+   Ecore_List* keys;
    evfs_client* client;
+   evfs_plugin* plugin;
+   char* key;
 
 
    e = (Ecore_Ipc_Event_Client_Del *) event;
 
     client = ecore_hash_get(server->client_hash, e->client);
     printf("Client %ld, Client Disconnected!!!\n", client->id);
+
+    /*Notify the plugins that this client has disconnected*/
+    keys = ecore_hash_keys(server->plugin_uri_hash);
+    ecore_list_goto_first(keys);
+    while ( (key = ecore_list_remove_first(keys)) ){
+	    plugin = ecore_hash_get(server->plugin_uri_hash, key);
+	    (*plugin->functions->evfs_client_disconnect)(client);
+    }
+    
+
+    ecore_list_destroy(keys);
+    
     ecore_hash_remove(server->client_hash, client);
     evfs_cleanup_client(client);
 
