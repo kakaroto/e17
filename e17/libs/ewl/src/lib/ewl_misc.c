@@ -52,14 +52,16 @@ int             ewl_ecore_exit(void *data, int type, void *event);
  */
 inline void ewl_print_warning()
 {
+	fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
+		" To find where this is occurring set a breakpoint\n"
+		" for the function %s.\n", __FUNCTION__);
+}
+
+inline void ewl_segv()
+{
 	if (debug_segv) {
 		char *null = NULL;
 		*null = '\0';
-	}
-	else {
-		fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
-			" To find where this is occurring set a breakpoint\n"
-			" for the function %s.\n", __FUNCTION__);
 	}
 }
 
