@@ -65,7 +65,7 @@ fi
 
 
 
-echo -c "
+echo "
 
 *******************************************************************************
 *******************************************************************************
@@ -101,7 +101,7 @@ do
 	libtoolize --force --copy
       fi
       echo "Running aclocal $aclocalinclude ..."
-      aclocal $aclocalinclude
+      aclocal -I m4 $aclocalinclude
       if grep "^AM_CONFIG_HEADER" configure.in >/dev/null; then
 	echo "Running autoheader..."
 	autoheader
@@ -118,8 +118,7 @@ done
 
 if test x$NOCONFIGURE = x; then
   echo Running $srcdir/configure $conf_flags "$@" ...
-  $srcdir/configure $conf_flags "$@" \
-  && echo Now please type \`make\' to compile $PKG_NAME.
+  $srcdir/configure $conf_flags "$@"
 else
   echo Skipping configure process.
 fi
