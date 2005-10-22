@@ -43,6 +43,9 @@ int ewl_border_init(Ewl_Border * b)
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
+	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
+	ewl_widget_inherit(EWL_WIDGET(b), "border");
+
 	b->label = ewl_text_new();
 	ewl_widget_internal_set(b->label, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(b), b->label);
@@ -56,8 +59,6 @@ int ewl_border_init(Ewl_Border * b)
 	b->label_position = EWL_POSITION_LEFT;
 
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
-	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
-	ewl_widget_inherit(EWL_WIDGET(b), "border");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -74,6 +75,7 @@ void ewl_border_text_set(Ewl_Border * b, char *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "border");
 
 	ewl_text_text_set(EWL_TEXT(b->label), t);
 
@@ -87,12 +89,9 @@ void ewl_border_text_set(Ewl_Border * b, char *t)
  */
 char *ewl_border_text_get(Ewl_Border * b)
 {
-	Ewl_Widget     *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);
-
-	w = EWL_WIDGET(b);
+	DCHECK_TYPE_RET("b", b, "border", NULL);
 
 	DRETURN_PTR(ewl_text_text_get(EWL_TEXT(b->label)), DLEVEL_STABLE);
 }
@@ -108,6 +107,7 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "border");
 
 	if (b->label_position == pos) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -155,6 +155,7 @@ ewl_border_label_position_get(Ewl_Border *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, EWL_POSITION_LEFT);
+	DCHECK_TYPE_RET("b", b, "border", EWL_POSITION_LEFT);
 
 	DRETURN_INT(b->label_position, DLEVEL_STABLE);
 }
@@ -170,6 +171,7 @@ ewl_border_label_alignment_set(Ewl_Border *b, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "border");
 
 	ewl_object_alignment_set(EWL_OBJECT(b->label), align);
 
@@ -187,6 +189,8 @@ ewl_border_label_alignment_get(Ewl_Border *b)
 	unsigned int align;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, "border", 0);
 
 	align = ewl_object_alignment_get(EWL_OBJECT(b->label));
 
