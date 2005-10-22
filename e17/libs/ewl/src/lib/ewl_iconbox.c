@@ -4,13 +4,6 @@
 #include "ewl_private.h"
 
 
-int mouse_state = 0;
-static int nextx=0;
-
-
-
-
-
 /*Ecore_List *ewl_iconbox_icon_list;*/
 
 /**
@@ -165,6 +158,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_FILL_FILL);
 
 
+	/*Set the defaults to 0*/
+	ib->lx = ib->ly = ib->iw = ib->ih = 0;
+	
 	
 	/* Get the context menu ready */
 	ib->ewl_iconbox_context_menu = ewl_imenu_new();
@@ -288,6 +284,11 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 }
 
 
+
+void ewl_iconbox_icon_size_custom_set(Ewl_IconBox* ib, int w, int h) {
+	ib->iw = w;
+	ib->ih = h;
+}
 
 
 
@@ -605,12 +606,9 @@ void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon)
 Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* icon_file)
 {
 	Ewl_Widget* ib;
-	/*ib = malloc(sizeof(Ewl_IconBox_Icon));*/
-	/*printf ("Making an icon called '%s'\n", name);*/
+	int sw, sh;
 
 	ib = ewl_iconbox_icon_new();
-
-
 
 	EWL_ICONBOX_ICON(ib)->selected = 0;
 	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new();
@@ -643,9 +641,19 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	 */
 	ewl_container_child_append(EWL_CONTAINER(iconbox->ewl_iconbox_pane_inner), EWL_WIDGET(EWL_ICONBOX_ICON(ib)->floater));
 
-	/* Find the enxt pos for this icon FIXME add this to layout engine */
-	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), nextx, 0);
-	nextx += 75;
+	
+	/*----------------------*/
+	/*Get the icon next position*/
+	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane), &sw,&sh);
+	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), iconbox->lx, iconbox->ly);
+
+	if (iconbox->lx + iconbox->iw + EWL_ICONBOX_ICON_PADDING > sw ) {
+		iconbox->ly += EWL_ICONBOX_ICON_PADDING + iconbox->ih;
+		iconbox->lx = 0;
+	} else {
+		iconbox->lx += EWL_ICONBOX_ICON_PADDING + iconbox->iw;	
+	}
+	/*----------------------*/
 
 
 	/*Show*/
@@ -683,7 +691,6 @@ void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename)
 void ewl_iconbox_clear(Ewl_IconBox* ib)
 {
 	Ewl_IconBox_Icon* list_item;
-	nextx = 0;
 
 	/*printf("*** Deleting all icons...\n");*/
 
@@ -703,6 +710,8 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 	}
 
 	ib->drag_icon = NULL;
+	ib->lx = 0;
+	ib->ly = 0;
 	
 }
 

@@ -78,6 +78,8 @@ struct Ewl_IconBox
 	Ewl_IconBox_Icon* edit_icon;
 	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
 	int dx, dy;			   /* Drag start x/y */
+	int lx, ly;			   /*Layout x, layout y */
+	int iw, ih;			   /*Custom icon width/height*/
 
 	/*Background*/
 	Evas_Object* background;
@@ -106,6 +108,7 @@ int		ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon);
 
 
 /* External functions */
+void ewl_iconbox_icon_size_custom_set(Ewl_IconBox* ib, int w, int h);
 void ewl_iconbox_editable_set(Ewl_IconBox *ib, int edit);
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib);
 void ewl_iconbox_deselect_all(Ewl_IconBox* ib);
