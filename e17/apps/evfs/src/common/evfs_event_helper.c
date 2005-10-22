@@ -10,15 +10,15 @@ void evfs_file_monitor_event_create(evfs_client* client, int type, const char* p
 
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_FILE_MONITOR;
-	event->file_monitor.filename = (char*)path;
+	event->file_monitor.filename = strdup(path);
 	event->file_monitor.fileev_type = type;
-	event->file_monitor.plugin = plugin;
+	event->file_monitor.plugin = strdup(plugin);
 	event->file_monitor.filename_len = strlen(path)+1;
 
 	evfs_write_event(client, NULL, event);
 
 	/*Now destroy*/
-	free(event);
+	evfs_cleanup_event(event);
 	/*No need to free data -it's probably a const raised by the ecore - it will free it.*/
 	
 }
@@ -35,7 +35,7 @@ void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct s
 	evfs_write_event(client, command, event);
 
 	/*Now destroy*/
-	free(event);
+	evfs_cleanup_event(event);
 	/*No need to free data -it's probably a const raised by the ecore - it will free it.*/
 	
 }
@@ -43,7 +43,6 @@ void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct s
 void evfs_list_dir_event_create(evfs_client* client, evfs_command* command, Ecore_List* files) {
 	/*Create a reply event for a file mon event, send it , destroy event*/
 
-	printf("Creating a list dir event..\n");
 	
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_DIR_LIST;
@@ -51,7 +50,7 @@ void evfs_list_dir_event_create(evfs_client* client, evfs_command* command, Ecor
 	evfs_write_event(client, command, event);
 
 	/*Now destroy*/
-	free(event);
+	evfs_cleanup_event(event);
 	/*No need to free data -it's probably a const raised by the ecore - it will free it.*/
 
 }

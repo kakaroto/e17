@@ -127,7 +127,7 @@ ipc_client_data(void *data, int type, void *event)
 	  evfs_handle_command(client, client->prog_command);
 	  
 
-	  evfs_cleanup_command(client->prog_command); 
+	  evfs_cleanup_command(client->prog_command, EVFS_CLEANUP_FREE_COMMAND); 
 	  client->prog_command = NULL;
    }
 
@@ -170,6 +170,8 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			printf("File copy handler\n");
 			evfs_handle_file_copy(client,command);
 			break;
+		default: printf("Warning - unhandled command %d\n", command->type);
+			 break;
 	}
 }
 
@@ -221,7 +223,6 @@ evfs_plugin* evfs_load_plugin(char* filename) {
 
 void evfs_load_plugins() {
         struct dirent* de;
-        struct stat st;
         DIR* dir;
 	evfs_plugin* plugin;
 	char plugin_path[1024];

@@ -70,9 +70,11 @@ int evfs_server_data (void* data, int type, void* event) {
 					   
 					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
 
-					   //printf("3. Created new ecore list at %p\n", ev->file_list.list);
 								      
 					   (*conn->callback_func)(ev);
+
+					   /*Now cleanup the event we send back*/
+					   evfs_cleanup_event(ev);
 				   } else {
 					   printf("EVFS: Alert - no callback registered for event\n");
 				   }
