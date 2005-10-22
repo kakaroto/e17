@@ -88,6 +88,8 @@ void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 	} else {
 		printf("No filesystem selected!\n");
 	}
+
+	ewl_widget_destroy(viewer->location_add_window);
 	
 	
 }
