@@ -7,9 +7,10 @@
  * @return Returns a new border container on success, NULL on failure.
  * @brief Allocate and initialize a new border container
  */
-Ewl_Widget     *ewl_border_new(void)
+Ewl_Widget *
+ewl_border_new(void)
 {
-	Ewl_Border     *b;
+	Ewl_Border *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -28,9 +29,10 @@ Ewl_Widget     *ewl_border_new(void)
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize a border container to default values
  */
-int ewl_border_init(Ewl_Border * b)
+int
+ewl_border_init(Ewl_Border * b)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, FALSE);
@@ -71,7 +73,8 @@ int ewl_border_init(Ewl_Border * b)
  *
  * Change the text of the border label to the string @a t.
  */
-void ewl_border_text_set(Ewl_Border * b, char *t)
+void
+ewl_border_text_set(Ewl_Border * b, char *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -87,7 +90,8 @@ void ewl_border_text_set(Ewl_Border * b, char *t)
  * @return Returns the border label text on success, NULL on failure.
  * @brief Get the text label from a border widget
  */
-char *ewl_border_text_get(Ewl_Border * b)
+char *
+ewl_border_text_get(Ewl_Border * b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);
