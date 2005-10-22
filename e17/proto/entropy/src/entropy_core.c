@@ -894,13 +894,15 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	entropy_generic_file* file = entropy_generic_file_new();
 	evfs_file_uri_path* uri_path = evfs_parse_uri(uri);
 
+	printf("Returned path '%s'\n", uri_path->files[0]->path);
+
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
 	pos = rindex(uri_path->files[0]->path, '/');
 	strncpy(file->filename, pos+1, strlen(uri_path->files[0]->path));
 	*pos = '\0';
 
 	/*If length is 0, it must have been a '/', therefore make this the new path*/
-	if (strlen(uri_path->files[0]->path)) {
+	if (strlen(pos+1)) {
 		strncpy(file->path,  uri_path->files[0]->path, strlen(uri_path->files[0]->path));
 	} else {
 		strcpy(file->path, "/");

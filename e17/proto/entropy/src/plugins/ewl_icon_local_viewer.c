@@ -589,6 +589,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		}
 
 		/*Goto the root*/
+		ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX(view->iconbox));
 		ewl_iconbox_scrollpane_goto_root(EWL_ICONBOX(view->iconbox));
 	}
 	break;

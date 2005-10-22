@@ -3,11 +3,13 @@
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static Ewl_Widget* win;
 static Ecore_List* components;
 
 void layout_ewl_simple_config_create(entropy_core* core);
+void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
 
 
 typedef struct entropy_layout_gui entropy_layout_gui;
@@ -18,8 +20,17 @@ struct entropy_layout_gui {
 	Ecore_List* current_folder;
 
 	/*Random things*/
+	
+	/*Tmp*/
+	Ewl_Widget* samba_radio;
+	Ewl_Widget* posix_radio;
+	
+	Ewl_Widget* location_add_window;
 	Ewl_Widget* location_add_name;
 	Ewl_Widget* location_add_path;
+	Ewl_Widget* location_add_server;
+	Ewl_Widget* location_add_username;
+	Ewl_Widget* location_add_password;
 };
 
 
@@ -30,8 +41,56 @@ void filesystem_combo_cb(Ewl_Widget *item, void *ev_data, void *combo) {
 }
 
 
-void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *combo) {
-	ewl_widget_destroy(item);
+/*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
+void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* viewer = instance->data;
+
+	char new_uri[2048];
+	
+	char* display_name = ewl_text_text_get(EWL_TEXT(viewer->location_add_name));
+	char* path = ewl_text_text_get(EWL_TEXT(viewer->location_add_path));
+	char* server = ewl_text_text_get(EWL_TEXT(viewer->location_add_server));
+	char* username = ewl_text_text_get(EWL_TEXT(viewer->location_add_username));
+	char* password = ewl_text_text_get(EWL_TEXT(viewer->location_add_password));
+
+	printf ("Display name: '%s'\n", display_name);
+	printf ("Server: '%s'\n", server);
+	printf ("Path: '%s'\n", path);
+	printf ("Username: '%s'\n", username);
+	printf ("Password: '%s'\n", password);
+
+
+	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(viewer->posix_radio))) {
+		snprintf(new_uri, 2048, "posix://%s", path);
+		printf("New URI is: '%s'\n", new_uri);
+		layout_ewl_simple_add_header(instance, display_name, new_uri);
+		
+		
+	} else if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(viewer->samba_radio))) {
+		if (server) {
+			if (username && password) {
+				snprintf(new_uri, 2048, "smb://%s:%s@/%s%s", username, password, server, path);
+				printf("New URI is: '%s'\n", new_uri);
+				layout_ewl_simple_add_header(instance, display_name, new_uri);
+			} else {
+				snprintf(new_uri, 2048, "smb:///%s%s", server, path);
+				printf("New URI is: '%s'\n", new_uri);
+				layout_ewl_simple_add_header(instance, display_name, new_uri);
+			}
+		} else {
+			printf("Server required for remote file systems!\n");
+		}
+	} else {
+		printf("No filesystem selected!\n");
+	}
+	
+	
+}
+
+
+void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+	ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
 void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
@@ -39,15 +98,13 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	
 	Ewl_Widget* window;
 	Ewl_Widget* label;
-	Ewl_Widget* vbox;
+	Ewl_Widget* vbox, *vbox2;
 	Ewl_Widget* hbox;
-	Ewl_Widget* combo;
-	Ewl_Widget* item;
 	Ewl_Widget* button;
 
 	
 	window = ewl_window_new();
-	//ewl_object_custom_size_set(EWL_OBJECT(window), 300, 400);
+	((entropy_layout_gui*)instance->data)->location_add_window = window;
 	ewl_window_title_set(EWL_WINDOW(window),"Add Location");
 
 	vbox = ewl_vbox_new();
@@ -65,16 +122,23 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	combo = ewl_combo_new("System");
-	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "smb://");
-	ewl_container_child_append(EWL_CONTAINER(combo), item);
-	ewl_widget_show(item);
+	/*Create the filesystem buttons*/
+	/*TODO query EVFS to get supported file system types*/
+	vbox2 = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), vbox2);
+	ewl_widget_show(vbox2);
+
+	((entropy_layout_gui*)instance->data)->posix_radio = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(((entropy_layout_gui*)instance->data)->posix_radio), "Standard Local Posix");
+	ewl_container_child_append(EWL_CONTAINER(vbox2), ((entropy_layout_gui*)instance->data)->posix_radio);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->posix_radio);
 	
-	ewl_container_child_append(EWL_CONTAINER(hbox), combo);	
-	//ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_MOUSE_DOWN, filesystem_combo_cb, combo);
-	ewl_widget_show(combo);
-	/*--------------------------*/
+	((entropy_layout_gui*)instance->data)->samba_radio = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(((entropy_layout_gui*)instance->data)->samba_radio), "Samba");
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->samba_radio), EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->posix_radio));
+	ewl_container_child_append(EWL_CONTAINER(vbox2), ((entropy_layout_gui*)instance->data)->samba_radio);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->samba_radio);
+
 
 
 
@@ -85,7 +149,7 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_widget_show(hbox);
 	
 	label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(label), "Name");
+	ewl_label_text_set(EWL_LABEL(label), "Display Name");
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
@@ -94,6 +158,24 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_name);
 	/*-----------------------*/
 
+
+	/*-------*/
+	/*"Server/Host"*/
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+	
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), "Server/Host");
+	ewl_container_child_append(EWL_CONTAINER(hbox), label);
+	ewl_widget_show(label);
+
+	((entropy_layout_gui*)instance->data)->location_add_server = ewl_entry_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), ((entropy_layout_gui*)instance->data)->location_add_server);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_server);
+	/*-----------------------*/
+
+	
 	/*-------*/
 	/*"Path"*/
 	hbox = ewl_hbox_new();
@@ -105,24 +187,70 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	/*entry = ewl_entry_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), entry);
-	ewl_widget_show(entry);*/
+	((entropy_layout_gui*)instance->data)->location_add_path = ewl_entry_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), ((entropy_layout_gui*)instance->data)->location_add_path);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_path);
 	/*-----------------------*/
 
+	/*-------*/
+	/*"Username"*/
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+	
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), "Username");
+	ewl_container_child_append(EWL_CONTAINER(hbox), label);
+	ewl_widget_show(label);
+
+	((entropy_layout_gui*)instance->data)->location_add_username = ewl_entry_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), ((entropy_layout_gui*)instance->data)->location_add_username);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_username);
+	/*-----------------------*/
+
+	/*-------*/
+	/*"Path"*/
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+	
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), "Password");
+	ewl_container_child_append(EWL_CONTAINER(hbox), label);
+	ewl_widget_show(label);
+
+	((entropy_layout_gui*)instance->data)->location_add_password = ewl_entry_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), ((entropy_layout_gui*)instance->data)->location_add_password);
+	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_password);
+	/*-----------------------*/
+
+
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Add");
+	ewl_object_maximum_h_set(EWL_OBJECT(button), 15);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, location_add_execute_cb, instance);
+	ewl_widget_show(button);
+	
 	button = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button), "Cancel");
-	ewl_container_child_append(EWL_CONTAINER(vbox), button);
+	ewl_object_maximum_h_set(EWL_OBJECT(button), 15);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, location_add_cancel_cb, window);
 	ewl_widget_show(button);
 	
 
+	ewl_object_custom_size_set(EWL_OBJECT(window), 400, 250);
 	ewl_widget_show(window);
 }
 
 
 void layout_ewl_simple_config_create(entropy_core* core) {
-	char* eg = calloc(255, sizeof(char)) ;
+	char* eg = calloc(2048, sizeof(char)) ;
 
 	//printf("Setting config..\n");
 
@@ -136,6 +264,8 @@ void layout_ewl_simple_config_create(entropy_core* core) {
 
 
 void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri) {
+			 
+	
                           Ewl_Widget* hbox;
                           Ewl_Widget* image;
 			  Ewl_Widget* row;
@@ -148,6 +278,10 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 			  entropy_layout_gui* gui = ((entropy_layout_gui*)instance->data);
                           Ewl_Widget* label = ewl_text_new();
 			  Ewl_Widget* tree= gui->tree;
+
+
+			  printf("Add URI: %s\n", uri);
+			  
 			  ewl_text_text_set(EWL_TEXT(label), name);
                           image = ewl_image_new();
 			  ewl_image_file_set(EWL_IMAGE(image), "../icons/chardevice.png", NULL);
