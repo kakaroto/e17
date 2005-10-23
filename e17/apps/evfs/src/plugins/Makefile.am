@@ -26,9 +26,9 @@ samba_la_SOURCES = evfs_fs_samba.c \
 
 	
 posix_la_CFLAGS =  @ecore_cflags@
-posix_la_LDFLAGS = -no-undefined -module -avoid-version
-posix_la_LIBADD =  @ecore_libs@
+posix_la_LDFLAGS = -module -avoid-version
+posix_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
 
 samba_la_CFLAGS =  @ecore_cflags@
-samba_la_LDFLAGS = -no-undefined -module -avoid-version -lsmbclient
-samba_la_LIBADD =  @ecore_libs@
+samba_la_LDFLAGS = -module -avoid-version -lsmbclient
+samba_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
