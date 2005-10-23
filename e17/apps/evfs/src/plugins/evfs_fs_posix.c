@@ -129,6 +129,9 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 			type = EVFS_FILE_EV_CREATE;
 			/*printf("File created - '%s'\n", path);*/
 			break;
+		case ECORE_FILE_EVENT_DELETED_FILE:
+			type = EVFS_FILE_EV_REMOVE;
+			break;
 	}
 
 	/*Looking for ppl no notify*/

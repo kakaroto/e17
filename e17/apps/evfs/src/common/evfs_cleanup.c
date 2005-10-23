@@ -47,11 +47,14 @@ void evfs_cleanup_monitor_event(evfs_event* event) {
 
 void evfs_cleanup_file_list_event(evfs_event* event) {
 	evfs_filereference* file;
-	ecore_list_goto_first(event->file_list.list);
-	while ( (file = ecore_list_remove_first(event->file_list.list))) {
-		evfs_cleanup_filereference(file);
+	
+	if (event->file_list.list) {
+		ecore_list_goto_first(event->file_list.list);
+		while ( (file = ecore_list_remove_first(event->file_list.list))) {
+			evfs_cleanup_filereference(file);
+		}
+		ecore_list_destroy(event->file_list.list);
 	}
-	ecore_list_destroy(event->file_list.list);
 }
 
 void evfs_cleanup_event(evfs_event* event) {

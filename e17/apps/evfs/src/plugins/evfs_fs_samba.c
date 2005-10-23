@@ -86,7 +86,7 @@ evfs_auth_cache* evfs_auth_cache_get(Ecore_List* cache, char* path) {
 	ecore_list_goto_first(cache);
 	while ( (obj = ecore_list_next(cache))) {
 		if (!strncmp(obj->path, path, strlen(path))) {
-			printf("Found match for path in cache: '%s':'%s'\n", obj->username, obj->password);
+			printf("Found match for path in cache: user '%s'\n", obj->username);
 			return obj;
 		}
 	}
@@ -235,34 +235,36 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 	printf("evfs_fs_samba: Listing directory %s\n", dir_path);
 
 
-	dir = smb_context->opendir(smb_context,dir_path);
+	if ( (dir = smb_context->opendir(smb_context,dir_path)) >=0 ) {
 
-	while (entry = smb_context->readdir(smb_context, dir) ) {
+		while (entry = smb_context->readdir(smb_context, dir) ) {
 		
-	     /*Make sure we don't use . or ..*/
-	   if (strcmp(entry->name, ".") && strcmp(entry->name, "..")) { 
-		evfs_filereference* reference = NEW(evfs_filereference);
-
-		if (entry->smbc_type == SMBC_FILE) reference->file_type = EVFS_FILE_NORMAL;
-		else if (entry->smbc_type == SMBC_DIR) reference->file_type = EVFS_FILE_DIRECTORY; 
-
-		size = 
-			  (sizeof(char) * strlen(command->file_command.files[0]->path)) + 
-			  (sizeof(char) * strlen(entry->name )) + 
-			  (sizeof(char) * 2 );
-		reference->path = malloc(size);
-		snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, entry->name );
+		     /*Make sure we don't use . or ..*/
+		   if (strcmp(entry->name, ".") && strcmp(entry->name, "..")) { 
+			evfs_filereference* reference = NEW(evfs_filereference);
 	
-		printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
+			if (entry->smbc_type == SMBC_FILE) reference->file_type = EVFS_FILE_NORMAL;
+			else if (entry->smbc_type == SMBC_DIR) reference->file_type = EVFS_FILE_DIRECTORY; 
+
+			size = 
+				  (sizeof(char) * strlen(command->file_command.files[0]->path)) + 
+				  (sizeof(char) * strlen(entry->name )) + 
+				  (sizeof(char) * 2 );
+			reference->path = malloc(size);
+			snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, entry->name );
 		
-		
-		ecore_list_append(files, reference);
-	   }
-		
+			printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
+					
+			ecore_list_append(files, reference);
+		   }
+		}
+		smb_context->closedir(smb_context,dir);
+		evfs_list_dir_event_create(client, command, files);
+	} else {
+	            printf("Could not open [%s] (%d:%s)\n",dir_path, errno, strerror(errno));
 	}
-	smb_context->closedir(smb_context,dir);
 	
-	evfs_list_dir_event_create(client, command, files);
+	
 
 }
 
