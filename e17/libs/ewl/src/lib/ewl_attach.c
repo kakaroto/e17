@@ -428,7 +428,7 @@ ewl_attach_parent_setup(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, "widget");
 
 	w->attach = ewl_attach_list_new();
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_attach_cb_parent_destroy, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_attach_cb_parent_destroy, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
