@@ -915,7 +915,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
 
-		ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_pane_inner);
+		//ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_pane_inner);
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
@@ -923,12 +923,12 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 		
 		//Hide the context menu
 		ewl_widget_hide(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item)->inmenu);
-		ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), NULL);
+		//ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), NULL);
 
 
 		//Hide the icon menu
 		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_menu_item)->inmenu);
-		ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater), NULL);
+		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater), NULL);
 		
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
@@ -949,7 +949,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	Ewl_IconBox_Icon* ib = user_data;
 	Ewl_Event_Mouse_Down *ev = ev_data;
-	int ibx,iby,px,py;
+	int ibx,iby,px,py, sx,sy;
 	
 	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
 	ib->drag = 1;
@@ -957,8 +957,12 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	ib->icon_box_parent->xdown = ev->x;
 	ib->icon_box_parent->ydown = ev->y;
 
-	px = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));
-	py = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));	
+	px = ewl_object_current_x_get(EWL_OBJECT(ib));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib));
+
+	sx = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));
+	sy = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));	
+	
 	ibx = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent));
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent));
 
@@ -966,15 +970,13 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_iconbox_icon_select(ib,0);
 
 	if (ev->button == 3) {
-		printf("Showing menu at: %d:%d\n", ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
-		
-		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
-		ewl_widget_show(ib->icon_box_parent->icon_menu);
+		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(sx-ibx), ev->y-iby +abs(sy-iby));
 		ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
+		ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
 	} else {
 		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_box_parent->icon_menu_item)->inmenu);
-		ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), NULL);
+		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), NULL);
 	}
 
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
