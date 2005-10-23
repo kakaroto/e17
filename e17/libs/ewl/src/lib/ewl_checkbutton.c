@@ -7,7 +7,8 @@
  * @return Returns the newly allocated checkbutton on success, NULL on failure.
  * @brief Allocate and initialize a new check button
  */
-Ewl_Widget     *ewl_checkbutton_new()
+Ewl_Widget *
+ewl_checkbutton_new(void)
 {
 	Ewl_CheckButton *b;
 
@@ -15,9 +16,12 @@ Ewl_Widget     *ewl_checkbutton_new()
 
 	b = NEW(Ewl_CheckButton, 1);
 	if (!b)
-		return NULL;
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_checkbutton_init(b);
+	if (!ewl_checkbutton_init(b)) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		b = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -30,12 +34,14 @@ Ewl_Widget     *ewl_checkbutton_new()
  * The internal structures and callbacks of the checkbutton are initialized to
  * default values.
  */
-int ewl_checkbutton_init(Ewl_CheckButton * cb)
+int
+ewl_checkbutton_init(Ewl_CheckButton *cb)
 {
-	Ewl_Button     *b;
-	Ewl_Widget     *w;
+	Ewl_Button *b;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
 
 	b = EWL_BUTTON(cb);
 	w = EWL_WIDGET(cb);
@@ -72,12 +78,14 @@ int ewl_checkbutton_init(Ewl_CheckButton * cb)
  *
  * Changes the position of the label associated with the check button.
  */
-void ewl_checkbutton_label_position_set(Ewl_CheckButton * cb, Ewl_Position p)
+void
+ewl_checkbutton_label_position_set(Ewl_CheckButton *cb, Ewl_Position p)
 {
-	Ewl_Button     *b;
+	Ewl_Button *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
+	DCHECK_TYPE("cb", cb, "checkbutton");
 
 	b = EWL_BUTTON(cb);
 
@@ -108,13 +116,15 @@ void ewl_checkbutton_label_position_set(Ewl_CheckButton * cb, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+void
+ewl_checkbutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
 	Ewl_CheckButton *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	cb = EWL_CHECKBUTTON(w);
 

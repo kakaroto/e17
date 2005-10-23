@@ -1,4 +1,3 @@
-
 #ifndef __EWL_CHECKBUTTON_H__
 #define __EWL_CHECKBUTTON_H__
 
@@ -43,7 +42,7 @@ struct Ewl_CheckButton
 };
 
 Ewl_Widget     *ewl_checkbutton_new(void);
-int             ewl_checkbutton_init(Ewl_CheckButton * cb);
+int             ewl_checkbutton_init(Ewl_CheckButton *cb);
 
 /**
  * @def ewl_checkbutton_checked_set(cb, c);
@@ -61,13 +60,13 @@ int             ewl_checkbutton_init(Ewl_CheckButton * cb);
 #define ewl_checkbutton_is_checked(cb) \
 	ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check))
 
-void            ewl_checkbutton_label_position_set(Ewl_CheckButton * cb,
+void            ewl_checkbutton_label_position_set(Ewl_CheckButton *cb,
 						   Ewl_Position p);
 
 /*
  * Internally used callbacks, override at your own risk
  */
-void            ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data,
+void ewl_checkbutton_clicked_cb(Ewl_Widget *w, void *ev_data,
 					   void *user_data);
 
 /**
