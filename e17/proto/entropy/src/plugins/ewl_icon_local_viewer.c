@@ -318,6 +318,25 @@ void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 }
 
 
+void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
+	entropy_icon_viewer* viewer = instance->data;
+	entropy_gui_event* gui_event;
+	gui_file* local_file = ecore_hash_get( ((entropy_icon_viewer*)user_data)->icon_hash, EWL_ICONBOX(viewer->iconbox)->select_icon);
+
+	
+	//Stat test..
+	/*Send an event to the core*/
+	if (local_file) {
+		gui_event = entropy_malloc(sizeof(entropy_gui_event));
+		gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT);
+		gui_event->data = local_file->file;
+		entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_LOCAL); 
+	} else {
+		printf("Could not find selected icon!\n");
+	}
+}
+
 
 void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ewl_Event_Mouse_Down *ev = ev_data;
@@ -340,13 +359,7 @@ void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 			entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_GLOBAL); 
 
 		} else if (ev->button == 2) {
-			//Stat test..
 
-			/*Send an event to the core*/
-			gui_event = entropy_malloc(sizeof(entropy_gui_event));
-			gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT);
-			gui_event->data = local_file->file;
-			entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_LOCAL); 
 		}
 
 	}
@@ -465,6 +478,16 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_widget_show(context);
 
 
+
+	/*Icon menu*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Properties");
+	ewl_widget_show(context);
+	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
+	
+
+
 	/*FIXME remove the hardocded var*/
 	ewl_iconbox_icon_size_custom_set(EWL_ICONBOX(viewer->iconbox), 60,60);
 	
@@ -522,7 +545,7 @@ void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entrop
 			gui_object->instance = comp; /*This instance associated with this icon, for clicks*/
 	                gui_object->icon = EWL_WIDGET(icon);
 
-			ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view); //Temp double click handler
+			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view); 
 		
 			ecore_hash_set(view->gui_hash, list_item, gui_object);
 			ecore_hash_set(view->icon_hash, icon, gui_object);
