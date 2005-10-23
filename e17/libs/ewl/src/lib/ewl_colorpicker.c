@@ -8,16 +8,19 @@
  * @brief Allocate and initialize a new color picker widget.
  */
 Ewl_Widget *
-ewl_colorpicker_new()
+ewl_colorpicker_new(void)
 {
 	Ewl_ColorPicker *cp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	cp = NEW(Ewl_ColorPicker, 1);
+	if (!cp)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	if (!ewl_colorpicker_init(cp)) 
         {
-		FREE(cp);
+		ewl_widget_destroy(EWL_WIDGET(cp));
 		cp = NULL;
 	}
 
@@ -33,7 +36,7 @@ int
 ewl_colorpicker_init(Ewl_ColorPicker *cp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cp", cp, 0);
+	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(cp)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -78,13 +81,25 @@ ewl_colorpicker_init(Ewl_ColorPicker *cp)
 void
 ewl_colorpicker_color_set(Ewl_ColorPicker *cp, int r, int g, int b)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
 	ewl_spectrum_rgba_set(EWL_SPECTRUM(cp->spectrum), r, g, b, 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
 	ewl_spectrum_hsv_set(EWL_SPECTRUM(cp->spectrum), h, 1, 1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -95,6 +110,9 @@ ewl_colorpicker_range_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	int r, g, b, a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cp = data;
 	sp = EWL_SPECTRUM(w);
@@ -115,6 +133,9 @@ ewl_colorpicker_spectrum_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *dat
 	Ewl_Spectrum *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cp = data;
 	sp = EWL_SPECTRUM(w);
