@@ -516,6 +516,15 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 }
 
 
+ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item ) {
+	entropy_icon_viewer* view = comp->data;
+	gui_file* gui_object;
+	
+	if ( (gui_object = ecore_hash_get(view->gui_hash, list_item)) ) {
+		ewl_iconbox_icon_remove(EWL_ICONBOX(view->iconbox), EWL_ICONBOX_ICON(gui_object->icon));
+	}
+}
+
 
 void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item) {
 		entropy_icon_viewer* view = comp->data;
@@ -662,6 +671,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
        case ENTROPY_NOTIFY_FILE_REMOVE: {
 		printf("Received a remove file notify\n");
+		ewl_icon_local_viewer_remove_icon(comp, (entropy_generic_file*)ret);
 	}
 	break;
 

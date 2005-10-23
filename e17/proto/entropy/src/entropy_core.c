@@ -919,7 +919,7 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	if (strlen(pos+1)) {
 		strncpy(file->path,  uri_path->files[0]->path, strlen(uri_path->files[0]->path));
 	} else {
-		strcpy(file->path, "/");
+		//strcpy(file->path, "/");
 		strcpy(file->filename, "/");
 	}
 
