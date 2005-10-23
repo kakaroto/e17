@@ -76,6 +76,7 @@ struct _eobj
 #define EoGetY(eo)              ((eo)->o.y)
 #define EoGetW(eo)              ((eo)->o.w)
 #define EoGetH(eo)              ((eo)->o.h)
+#define EoIsGone(eo)            ((eo)->o.gone)
 #define EoIsSticky(eo)          ((eo)->o.sticky)
 #define EoIsFloating(eo)        ((eo)->o.floating)
 #define EoIsShown(eo)           ((eo)->o.shown)
@@ -85,6 +86,7 @@ struct _eobj
 #define EoGetPixmap(eo)         EobjGetPixmap(EoObj(eo))
 
 #define EoSetName(eo, _x)       (eo)->o.name = (_x)
+#define EoSetGone(eo)           (eo)->o.gone = 1
 #define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
 #define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
 #define EoSetDesk(eo, _x)       (eo)->o.desk = (_x)

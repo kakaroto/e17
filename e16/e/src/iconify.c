@@ -2970,7 +2970,9 @@ SystrayEvent(XEvent * ev, void *prm)
      case DestroyNotify:
 	win = ev->xdestroywindow.window;
 	goto do_terminate;
+
      case ReparentNotify:
+     case EX_EVENT_REPARENT_GONE:
 	/* Terminate if reparenting away from systray */
 	if (ev->xreparent.parent == ev->xreparent.event)
 	   break;

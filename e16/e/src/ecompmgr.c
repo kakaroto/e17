@@ -2390,6 +2390,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
 
      case ReparentNotify:
+     case EX_EVENT_REPARENT_GONE:
 	xwin = ev->xreparent.window;
 	if (ev->xreparent.parent == VRoot.win)
 	   goto case_CreateNotify;
@@ -2425,9 +2426,12 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	break;
 
      case UnmapNotify:
+     case EX_EVENT_UNMAP_GONE:
 	eo = EobjListStackFind(ev->xunmap.window);
 	if (eo && eo->type == EOBJ_TYPE_EXT && eo->cmhook)
 	  {
+	     if (ev->type == EX_EVENT_UNMAP_GONE)
+		eo->gone = 1;
 #if 0
 	     /* No. Unredirection seems to cause map/unmap => loop */
 	     if (Conf_compmgr.override_redirect.mode == ECM_OR_ON_MAPUNMAP)

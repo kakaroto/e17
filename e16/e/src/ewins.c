@@ -1022,7 +1022,10 @@ EwinEventReparent(EWin * ewin)
    EGrabServer();
 
    /* Refetch parent window. We cannot rely on the one in the event. */
-   parent = EWindowGetParent(_EwinGetClientWin(ewin));
+   if (EoIsGone(ewin))
+      parent = None;
+   else
+      parent = EWindowGetParent(_EwinGetClientWin(ewin));
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
 	      _EwinGetClientXwin(ewin), ewin->state.state, parent,
@@ -1084,6 +1087,9 @@ EwinEventUnmap(EWin * ewin)
 #endif
 	return;
      }
+
+   if (EoIsGone(ewin))
+      return;
 
    if (EWindowGetParent(_EwinGetClientWin(ewin)) == _EwinGetContainerXwin(ewin))
       EwinWithdraw(ewin);
@@ -1722,6 +1728,9 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
      case DestroyNotify:
 	EwinEventDestroy(ewin);
 	break;
+
+     case EX_EVENT_UNMAP_GONE:
+	EoSetGone(ewin);
      case UnmapNotify:
 #if 0
 	if (ewin->state.state == EWIN_STATE_NEW)
@@ -1733,13 +1742,18 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 #endif
 	EwinEventUnmap(ewin);
 	break;
+
      case MapNotify:
 	EwinEventMap(ewin);
 	break;
+
+     case EX_EVENT_REPARENT_GONE:
+	EoSetGone(ewin);
      case ReparentNotify:
 	EwinEventReparent(ewin);
 	break;
 
+     case EX_EVENT_MAP_GONE:
      case GravityNotify:
      case ConfigureNotify:
 	break;
@@ -1834,23 +1848,32 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	break;
 
      case UnmapNotify:
+     case EX_EVENT_UNMAP_GONE:
 	/* Catch clients unmapped after MapRequest but before being reparented */
 	ewin = EwinFindByClient(ev->xunmap.window);
-	if (ewin)
-	   EwinEventUnmap(ewin);
+	if (!ewin)
+	   break;
+	if (ev->type == EX_EVENT_UNMAP_GONE)
+	   EoSetGone(ewin);
+	EwinEventUnmap(ewin);
 	break;
 
      case DestroyNotify:
 	/* Catch clients destroyed after MapRequest but before being reparented */
 	ewin = EwinFindByClient(ev->xdestroywindow.window);
-	if (ewin)
-	   EwinEventDestroy(ewin);
+	if (!ewin)
+	   break;
+	EwinEventDestroy(ewin);
 	break;
 
      case ReparentNotify:
+     case EX_EVENT_REPARENT_GONE:
 	ewin = EwinFindByClient(ev->xreparent.window);
-	if (ewin)
-	   EwinEventReparent(ewin);
+	if (!ewin)
+	   break;
+	if (ev->type == EX_EVENT_REPARENT_GONE)
+	   EoSetGone(ewin);
+	EwinEventReparent(ewin);
 	break;
 
      case ClientMessage:

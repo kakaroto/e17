@@ -324,6 +324,38 @@ EventsCompress(XEvent * evq, int count)
 #endif
 	     break;
 
+	  case DestroyNotify:
+	     for (j = i - 1; j >= 0; j--)
+	       {
+		  ev2 = evq + j;
+		  switch (ev2->type)
+		    {
+		    case CreateNotify:
+		       if (ev2->xcreatewindow.window !=
+			   ev->xdestroywindow.window)
+			  continue;
+		       ev2->type = EX_EVENT_CREATE_GONE;
+		       j = -1;	/* Break for() */
+		       break;
+		    case MapNotify:
+		       if (ev2->xmap.window != ev->xmap.window)
+			  continue;
+		       ev2->type = EX_EVENT_MAP_GONE;
+		       break;
+		    case UnmapNotify:
+		       if (ev2->xunmap.window != ev->xunmap.window)
+			  continue;
+		       ev2->type = EX_EVENT_UNMAP_GONE;
+		       break;
+		    case ReparentNotify:
+		       if (ev2->xreparent.window != ev->xreparent.window)
+			  continue;
+		       ev2->type = EX_EVENT_REPARENT_GONE;
+		       break;
+		    }
+	       }
+	     break;
+
 	  case Expose:
 	     n = 0;
 	     xa = ev->xexpose.x;
@@ -688,6 +720,14 @@ EventName(unsigned int type)
 
    switch (type)
      {
+     case EX_EVENT_CREATE_GONE:
+	return "Create-Gone";
+     case EX_EVENT_MAP_GONE:
+	return "Map-Gone";
+     case EX_EVENT_UNMAP_GONE:
+	return "Unmap-Gone";
+     case EX_EVENT_REPARENT_GONE:
+	return "Reparent-Gone";
      case EX_EVENT_SHAPE_NOTIFY:
 	return "ShapeNotify";
      case EX_EVENT_SCREEN_CHANGE_NOTIFY:
@@ -782,10 +822,14 @@ EventShow(const XEvent * ev)
      case UnmapNotify:
      case MapNotify:
      case MapRequest:
+     case EX_EVENT_CREATE_GONE:
+     case EX_EVENT_MAP_GONE:
+     case EX_EVENT_UNMAP_GONE:
 	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx\n", ser, name, win,
 		ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
+     case EX_EVENT_REPARENT_GONE:
 	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx parent=%#lx %d+%d\n", ser, name,
 		win, ev->xreparent.window, ev->xreparent.parent,
 		ev->xreparent.x, ev->xreparent.y);
