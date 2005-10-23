@@ -23,6 +23,7 @@ ewl_colordialog_new(int r, int g, int b)
 		ewl_widget_destroy(EWL_WIDGET(cd));
 		cd = NULL;
 	}
+
 	DRETURN_PTR(EWL_WIDGET(cd), DLEVEL_STABLE);
 }
 
@@ -208,6 +209,7 @@ ewl_colordialog_color_get(Ewl_ColorDialog *cd, int *r, int *g, int *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
 
 	if (r) *r = cd->selected.r;
 	if (g) *g = cd->selected.g;
@@ -224,7 +226,9 @@ ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd = user_data;
 	if (ev_data)
@@ -256,6 +260,7 @@ ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd = user_data;
 	col.r = cd->selected.r;
@@ -285,7 +290,9 @@ ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd = user_data;
 	col.r = cd->selected.r;
@@ -315,7 +322,9 @@ ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd  = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
@@ -342,7 +351,9 @@ ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd  = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
@@ -369,7 +380,9 @@ ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 	float h, s, v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd = user_data;
 	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
@@ -390,8 +403,7 @@ ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 
 void
 ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w __UNUSED__, 
-					void *ev_data __UNUSED__, 
-					void *user_data)
+					void *ev_data, void *user_data)
 {
 	Ewl_ColorDialog *cd;
 	Ewl_Color_Set *col;
@@ -439,7 +451,9 @@ ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_ColorDialog *cd;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	cd = user_data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(cd),

@@ -31,7 +31,7 @@ struct Ewl_ColorDialog
 };
 
 Ewl_Widget 	*ewl_colordialog_new(int r, int g, int b);
-int 		ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b);
+int 		 ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b);
 
 /*
  * Internal callbacks, override at your own risk.
