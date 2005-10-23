@@ -343,7 +343,7 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data,
 }
 
 void
-ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_spinner_deselect_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data)
 {
 	Ewl_Spinner    *s;

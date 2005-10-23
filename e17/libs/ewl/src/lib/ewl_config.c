@@ -3,7 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-enum Ewl_Config_Types {
+enum Ewl_Config_Types 
+{
 	EWL_CONFIG_DEBUG_ENABLE,
 	EWL_CONFIG_DEBUG_LEVEL,
 	EWL_CONFIG_EVAS_RENDER_METHOD,
@@ -31,7 +32,8 @@ Ewl_Config ewl_config;
  *
  * This sets up the necessary configuration variables.
  */
-int ewl_config_init(void)
+int
+ewl_config_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -47,7 +49,8 @@ int ewl_config_init(void)
  * @return Returns no value
  * @brief Shutdown the configuration system.
  */
-void ewl_config_shutdown(void)
+void
+ewl_config_shutdown(void)
 {
 	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);
@@ -64,9 +67,11 @@ void ewl_config_shutdown(void)
  * Sets the string value associated with the key @a k to @a v in the
  * configuration database.
  */
-int ewl_config_str_set(const char *k, char *v)
+int
+ewl_config_str_set(const char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	ecore_config_string_set(k, v);
 
@@ -85,12 +90,12 @@ int ewl_config_str_set(const char *k, char *v)
 int ewl_config_int_set(const char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	ecore_config_int_set(k, v);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
 
 /**
  * @param k: the key to set in the configuration database
@@ -101,9 +106,11 @@ int ewl_config_int_set(const char *k, int v)
  * Sets the float value associated with the key @a k to @a v in the
  * configuration database.
  */
-int ewl_config_float_set(const char *k, float v)
+int
+ewl_config_float_set(const char *k, float v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	ecore_config_float_set(k, v);
 
@@ -116,11 +123,13 @@ int ewl_config_float_set(const char *k, float v)
  * @return Returns the found string value on success, NULL on failure.
  * @brief Retrieve string value associated with a key
  */
-char *ewl_config_str_get(const char *k)
+char *
+ewl_config_str_get(const char *k)
 {
 	char *ret = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
 	ret = ecore_config_string_get(k);
 
@@ -133,11 +142,13 @@ char *ewl_config_str_get(const char *k)
  * @return Returns the found integer value on success, 0 on failure.
  * @brief Retrieve integer value associated with a key
  */
-int ewl_config_int_get(const char *k)
+int
+ewl_config_int_get(const char *k)
 {
 	int v = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, 0);
 
 	v = ecore_config_int_get(k);
 
@@ -149,11 +160,13 @@ int ewl_config_int_get(const char *k)
  * @return Returns the found float value on success, 0.0 on failure.
  * @brief Retrieve floating point value associated with a key
  */
-float ewl_config_float_get(const char *k)
+float
+ewl_config_float_get(const char *k)
 {
 	float v = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, 0.0);
 
 	v = ecore_config_float_get(k);
 
@@ -164,7 +177,8 @@ float ewl_config_float_get(const char *k)
  * @return Returns the found render method, default software render.
  * @brief Retrieve the render method of the evas
  */
-char *ewl_config_render_method_get()
+char *
+ewl_config_render_method_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -173,10 +187,11 @@ char *ewl_config_render_method_get()
 			DLEVEL_STABLE);
 }
 
-static void ewl_config_config_read(void)
+static void
+ewl_config_config_read(void)
 {
-	int             cc;
-	Ewl_Config      nc;
+	int cc;
+	Ewl_Config nc;
 	Ecore_Config_Prop *prop;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -352,7 +367,8 @@ static void ewl_config_config_read(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_config_defaults_set(void)
+static void
+ewl_config_defaults_set(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -412,10 +428,14 @@ static void ewl_config_defaults_set(void)
 	DRETURN(DLEVEL_STABLE);
 }
 
-static int ewl_config_listener(const char *key, 
-				const Ecore_Config_Type type __UNUSED__, 
-				const int tag, void *data __UNUSED__)
+static int
+ewl_config_listener(const char *key, 
+			const Ecore_Config_Type type __UNUSED__, 
+			const int tag, void *data __UNUSED__)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("key", key, 0);
+
 	switch(tag) {
 		case EWL_CONFIG_DEBUG_ENABLE:
 			ewl_config.debug.enable = ewl_config_int_get(key);
@@ -455,7 +475,8 @@ static int ewl_config_listener(const char *key,
 			ewl_config.theme.print_keys = ewl_config_int_get(key);
 			break;
 	}
-	return 0;
+
+	DRETURN_INT(0, DLEVEL_STABLE);
 }
 
 
