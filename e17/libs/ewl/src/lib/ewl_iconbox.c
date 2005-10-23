@@ -1074,7 +1074,7 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (REALIZED(ib) && VISIBLE(ib)) { 
 		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);
 		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
-		/*ewl_iconbox_icon_arrange(ib); */
+		ewl_iconbox_icon_arrange(ib); 
 		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 
 		/*Handle the background, if any*/
