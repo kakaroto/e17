@@ -9,8 +9,8 @@
  */
 struct 
 {
-	char 		*label;
-	char		*image_key;
+	char *label;
+	char *image_key;
 } ewl_stock_items[] = {
 		{"Apply", 	"/stock/apply"},
 		{/*Arrow*/"Down",	"/stock/arrow/down"},
@@ -37,7 +37,7 @@ struct
 Ewl_Widget *
 ewl_button_new(void)
 {
-	Ewl_Button     *b;
+	Ewl_Button *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -63,7 +63,7 @@ ewl_button_new(void)
 int
 ewl_button_init(Ewl_Button *b)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
