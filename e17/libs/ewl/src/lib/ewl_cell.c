@@ -7,7 +7,8 @@
  * @return Returns a newly allocated cell on success, NULL on failure.
  * @brief Allocate and initialize a new cell
  */
-Ewl_Widget *ewl_cell_new()
+Ewl_Widget *
+ewl_cell_new(void)
 {
 	Ewl_Widget *cell;
 
@@ -32,10 +33,10 @@ Ewl_Widget *ewl_cell_new()
  *
  * The fields of the @a cell object are initialized to their defaults.
  */
-int ewl_cell_init(Ewl_Cell *cell)
+int
+ewl_cell_init(Ewl_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(cell)))
@@ -57,20 +58,19 @@ int ewl_cell_init(Ewl_Cell *cell)
 }
 
 void
-ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
-	Ewl_Cell *cell;
 	Ewl_Container *c;
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
-	cell = EWL_CELL(w);
 	c = EWL_CONTAINER(w);
 
 	child = ecore_list_goto_first(c->children);
-
 	if (child)
 		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
 				CURRENT_W(w), CURRENT_H(w));
@@ -84,6 +84,10 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	/*
 	 * Cell's only allow one child, so remove the rest, this may cause a
@@ -107,6 +111,10 @@ ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 			int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
 			ewl_object_preferred_w_get(EWL_OBJECT(w)),
@@ -114,3 +122,4 @@ ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
