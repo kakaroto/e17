@@ -626,11 +626,40 @@ void ewl_iconbox_deselect_all(Ewl_IconBox* ib)
 
 
 
-void ewl_iconbox_icon_remove(Ewl_IconBox_Icon* icon)
-{
-	/*printf("Removing icon: %s", ewl_border_text_get(EWL_BORDER(icon)));*/
-}
+void ewl_iconbox_icon_remove(Ewl_IconBox* ib, Ewl_IconBox_Icon* icon) {
+	Ewl_IconBox_Icon* list_item;
 
+	if (ib->ewl_iconbox_icon_list) {
+		Ecore_List* new_icon_list = ecore_list_new();
+		
+		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+			
+			if (list_item == icon) {
+				ewl_floater_follow_set(EWL_FLOATER(EWL_ICONBOX_ICON(list_item)->floater), NULL);
+				ewl_widget_destroy(EWL_WIDGET(list_item));		
+
+				if (ib->drag_icon == icon) {
+					ib->drag_icon = NULL;
+				}
+				if (ib->edit_icon == icon) {
+					ib->edit_icon = NULL;
+				}
+				if (ib->select_icon == icon) {
+					ib->select_icon = NULL;
+				}
+				
+			} else {
+				ecore_list_append(new_icon_list, list_item);
+			}
+		}
+
+		ecore_list_destroy(ib->ewl_iconbox_icon_list);
+		ib->ewl_iconbox_icon_list = new_icon_list;
+	}
+
+
+}
 
 
 
@@ -1027,7 +1056,6 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *us
 void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	/*printf ("Got a configure\n");*/
-	int xx,yy,ww,hh;
 
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
