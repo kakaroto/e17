@@ -7,7 +7,8 @@
  * @return Returns a new open filedialog if successful, NULL on failure.
  * @brief Create a new open filedialog
  */
-Ewl_Widget *ewl_filedialog_multiselect_new(void)
+Ewl_Widget *
+ewl_filedialog_multiselect_new(void)
 {
 	Ewl_Widget *fd;
 
@@ -26,7 +27,8 @@ Ewl_Widget *ewl_filedialog_multiselect_new(void)
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
-Ewl_Widget *ewl_filedialog_new(void)
+Ewl_Widget *
+ewl_filedialog_new(void)
 {
 	Ewl_Filedialog *fd;
 
@@ -49,7 +51,8 @@ Ewl_Widget *ewl_filedialog_new(void)
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */
-int ewl_filedialog_init(Ewl_Filedialog * fd)
+int
+ewl_filedialog_init(Ewl_Filedialog *fd)
 {
 	Ewl_Widget *w;
 	Ewl_Widget *box;
@@ -58,7 +61,6 @@ int ewl_filedialog_init(Ewl_Filedialog * fd)
 	DCHECK_PARAM_PTR_RET("fd", fd, FALSE);
 
 	w = EWL_WIDGET(fd);
-
  	if (!ewl_box_init(EWL_BOX(fd)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -106,10 +108,12 @@ int ewl_filedialog_init(Ewl_Filedialog * fd)
  * @return Returns the current file dialog type.
  * @brief Retrieve the current filedialog type.
  */
-Ewl_Filedialog_Type ewl_filedialog_type_get(Ewl_Filedialog *fd)
+Ewl_Filedialog_Type
+ewl_filedialog_type_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, EWL_FILEDIALOG_TYPE_OPEN);
+	DCHECK_TYPE_RET("fd", fd, "filedialog", EWL_FILEDIALOG_TYPE_OPEN);
 
 	DRETURN_INT(fd->type, DLEVEL_STABLE);
 }
@@ -119,10 +123,12 @@ Ewl_Filedialog_Type ewl_filedialog_type_get(Ewl_Filedialog *fd)
  * @return Returns no value.
  * @brief Change the current filedialog type.
  */
-void ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
+void
+ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, "filedialog");
 
 	if (t == EWL_FILEDIALOG_TYPE_OPEN) {
 		ewl_button_stock_type_set(EWL_BUTTON(fd->confirm), EWL_STOCK_OPEN);
@@ -139,12 +145,14 @@ void ewl_filedialog_type_set(Ewl_Filedialog *fd, Ewl_Filedialog_Type t)
  * @return Returns the current path of filedialog
  * @brief Retrieve the current filedialog path
  */
-char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
+char *
+ewl_filedialog_path_get(Ewl_Filedialog *fd)
 {
 	char *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	DCHECK_TYPE("fd", fd, "filedialog");
 
 	s = ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs)); 
 
@@ -156,12 +164,14 @@ char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
  * @return Returns the selected filename including its path
  * @brief Retrieve the selected filename
  */
-char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
+char *
+ewl_filedialog_file_get(Ewl_Filedialog *fd)
 {
 	char *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	DCHECK_TYPE_RET("fd", fd, "filedialog", NULL);
 	
 	s = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
 
@@ -174,11 +184,13 @@ char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
  * @return Returns no value.
  * @brief Changes the current path of a filedialog.
  */
-void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
+void
+ewl_filedialog_path_set(Ewl_Filedialog *fd, char *path)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
 	DCHECK_PARAM_PTR("path", path);
+	DCHECK_TYPE("fd", fd, "filedialog");
 
 	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
 
@@ -191,10 +203,12 @@ void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
  * @return Returns no value.
  * @brief Sets the dialog to multiselect or single select
  */
-void ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
+void
+ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_TYPE("fd", fd, "filedialog");
 
 	ewl_fileselector_multiselect_set(EWL_FILESELECTOR(fd->fs), val);
 
@@ -206,12 +220,14 @@ void ewl_filedialog_multiselect_set(Ewl_Filedialog *fd, unsigned int val)
  * @return Returns the multi select setting (0|1)
  * @brief gets the multiselect setting of the filedialog
  */
-unsigned int ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
+unsigned int
+ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
 {
 	unsigned int val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, 0);
+	DCHECK_TYPE_RET("fd", fd, "filedialog", 0);
 
 	val = ewl_fileselector_multiselect_get(EWL_FILESELECTOR(fd->fs));
 
@@ -223,12 +239,14 @@ unsigned int ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
  * @return Returns an Ecore_List of selected items
  * @brief returns all the elements selected by the user
  */
-Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
+Ecore_List *
+ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
 {
 	Ecore_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	DCHECK_TYPE_RET("fd", fd, "filedialog", NULL);
 
 	list = ewl_fileselector_select_list_get(EWL_FILESELECTOR(fd->fs));
 
@@ -238,16 +256,23 @@ Ecore_List *ewl_filedialog_select_list_get(Ewl_Filedialog *fd)
 /*
  * Internally used callback, override at your own risk.
  */
-void ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-								void* data)
+void
+ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void* data)
 {
 	Ewl_Filedialog_Event ev;
-	Ewl_Filedialog *fd = EWL_FILEDIALOG(data);
+	Ewl_Filedialog *fd;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	fd = EWL_FILEDIALOG(data);
 	ev.response = ewl_button_stock_type_get(EWL_BUTTON(w));
 
 	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
 					  EWL_CALLBACK_VALUE_CHANGED, &ev);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
