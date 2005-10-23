@@ -44,7 +44,7 @@ static Box_Orientation *ewl_box_info = NULL;
  */
 static Ecore_List *ewl_box_spread = NULL;
 
-static void ewl_box_setup();
+static void ewl_box_setup(void);
 
 static void ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
 					 int *align_size);
@@ -61,7 +61,7 @@ static void ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
  * @brief Allocate and initialize a new box with given orientation
  */
 Ewl_Widget 
-*ewl_box_new()
+*ewl_box_new(void)
 {
 	Ewl_Box *b;
 
@@ -84,7 +84,7 @@ Ewl_Widget
  * @brief Allocate and initialize a new box with horizontal orientation
  */
 Ewl_Widget
-*ewl_hbox_new()
+*ewl_hbox_new(void)
 {
 	Ewl_Widget *b;
 
@@ -104,7 +104,7 @@ Ewl_Widget
  * @brief Allocate and initialize a new box with vertical orientation
  */
 Ewl_Widget 
-*ewl_vbox_new()
+*ewl_vbox_new(void)
 {
 	Ewl_Widget *b;
 
@@ -136,6 +136,7 @@ ewl_box_init(Ewl_Box * b)
 	DCHECK_PARAM_PTR_RET("b", b, FALSE);
 
 	w = EWL_WIDGET(b);
+	ewl_widget_inherit(w, "box");
 
 	/*
 	 * Create the temporary layout lists now that they are needed.
@@ -182,8 +183,6 @@ ewl_box_init(Ewl_Box * b)
 	 */
 	b->orientation = EWL_ORIENTATION_HORIZONTAL;
 
-	ewl_widget_inherit(w, "box");
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -199,12 +198,9 @@ ewl_box_init(Ewl_Box * b)
 void
 ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
-	Ewl_Widget *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-
-	w = EWL_WIDGET(b);
+	DCHECK_TYPE("b", b, "box");
 
 	/*
 	 * Set the orientation and reconfigure the widget so that child
@@ -220,7 +216,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	else if (b->orientation == EWL_ORIENTATION_VERTICAL)
 		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
 
-	ewl_widget_configure(w);
+	ewl_widget_configure(EWL_WIDGET(b));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -235,6 +231,7 @@ ewl_box_orientation_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, "box", 0);
 
 	DRETURN_INT(b->orientation, DLEVEL_STABLE);
 }
@@ -253,6 +250,7 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "box");
 
 	if (b->homogeneous == h)
 		DRETURN(DLEVEL_STABLE);
@@ -300,6 +298,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "box");
 
 	w = EWL_WIDGET(b);
 
@@ -349,6 +348,7 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	b = EWL_BOX(w);
 
@@ -421,6 +421,8 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Box *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (ecore_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
@@ -486,6 +488,8 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 	int initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "box");
 
 	initial = *fill_size / ecore_list_nodes(EWL_CONTAINER(b)->children);
 
@@ -659,6 +663,8 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("b", b);
+	DCHECK_TYPE("b", b, "box");
 
 	/*
 	 * Configure the widgets on the first list.
@@ -689,6 +695,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
 			int *x, int *y, int *align, int *align_size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
 
 	/*
 	 * Adjust the alignment in the direction opposite of the
@@ -730,6 +737,10 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	int nodes, space = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	nodes = ecore_list_nodes(c->children) - 1;
 	if (nodes < 0)
@@ -763,7 +774,10 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c,
 {
 	int numc;
 	int size, space = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, "container");
 
 	numc = ecore_list_nodes(c->children);
 	numc--;
@@ -791,6 +805,10 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 	Ewl_Box *b = EWL_BOX(c);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	if (ecore_list_nodes(c->children) > 1)
 		space = b->spacing;
@@ -825,6 +843,8 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__,
 	Box_Orientation *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, "container");
 
 	/*
 	 * Get the appropriate dimension setting functions based on the
@@ -862,7 +882,7 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w __UNUSED__,
  * on orientation.
  */
 static void
-ewl_box_setup()
+ewl_box_setup(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
