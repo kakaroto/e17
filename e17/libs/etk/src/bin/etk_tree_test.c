@@ -31,10 +31,10 @@ void etk_test_tree_window_create(void *data)
    etk_container_add(ETK_CONTAINER(win), table);
 
    label = etk_label_new(_("<h1>Tree:</h1>"));
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 10, 0, ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL);
 
    label = etk_label_new(_("<h1>List:</h1>"));
-   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 10, 0, ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL);
 
    /* The tree: */
    tree = etk_tree_new();
@@ -42,9 +42,9 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 10, 100, TRUE);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 10, 100, TRUE);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 10, 100, TRUE);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 100);
+   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 100);
+   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 100);
    etk_tree_build(ETK_TREE(tree));
 
    etk_tree_freeze(ETK_TREE(tree));
@@ -66,9 +66,9 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
    etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_TEXT, 10, 100, TRUE);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 10, 100, TRUE);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 10, 100, TRUE);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_TEXT, 100);
+   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 100);
+   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 100);
    etk_tree_build(ETK_TREE(tree));
 
    etk_tree_freeze(ETK_TREE(tree));

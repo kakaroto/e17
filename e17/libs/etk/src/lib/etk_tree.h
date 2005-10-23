@@ -19,6 +19,13 @@
 /** @brief Check if the object is an Etk_Tree */
 #define ETK_IS_TREE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_TYPE))
 
+/** @brief Gets the type of a tree column */
+#define ETK_TREE_COL_TYPE        (etk_tree_col_type_get())
+/** @brief Casts the object to an Etk_Tree_Col */
+#define ETK_TREE_COL(obj)        (ETK_OBJECT_CAST((obj), ETK_TREE_COL_TYPE, Etk_Tree_Col))
+/** @brief Check if the object is an Etk_Tree_Col */
+#define ETK_IS_TREE_COL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_COL_TYPE))
+
 /**
  * @enum Etk_Tree_Col_Type
  * @brief The type of the objects of a column of a tree
@@ -48,6 +55,7 @@ enum _Etk_Tree_Mode
  */
 struct _Etk_Tree_Node
 {
+   Etk_Tree_Row *row;
    Etk_Tree_Node *parent;
    Ecore_List *child_rows;
    int num_visible_children;
@@ -104,18 +112,21 @@ struct _Etk_Tree
 struct _Etk_Tree_Col
 {
    /* private: */
+   /* Inherit form Etk_Object */
+   Etk_Object object;
+
    int id;
    Etk_Tree *tree;
-   char *title;
    Etk_Tree_Col_Type type;
 
    int xoffset;
-   int min_width;
+   int requested_width;
    int width;
    int visible_width;
    int place;
    Etk_Bool resizable;
    Etk_Bool visible;
+   float xalign;
    
    Evas_Object *clip;
    Evas_Object *separator;
@@ -134,6 +145,7 @@ struct _Etk_Tree_Row
    Etk_Tree_Node node;
 
    Etk_Tree_Cell *cells;
+   void *data;
 };
 
 /**
@@ -159,9 +171,27 @@ Etk_Widget *etk_tree_new();
 void etk_tree_mode_set(Etk_Tree *tree, Etk_Tree_Mode mode);
 Etk_Tree_Mode etk_tree_mode_get(Etk_Tree *tree);
 
-Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type, int min_width, int width, Etk_Bool resizable);
+Etk_Type *etk_tree_col_type_get();
+Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type, int width);
+
+int etk_tree_num_cols_get(Etk_Tree *tree);
 void etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
 Etk_Bool etk_tree_headers_visible_get(Etk_Tree *tree);
+
+void etk_tree_col_title_set(Etk_Tree_Col *col, const char *title);
+const char *etk_tree_col_title_get(Etk_Tree_Col *col);
+void etk_tree_col_width_set(Etk_Tree_Col *col, int width);
+int etk_tree_col_width_get(Etk_Tree_Col *col);
+void etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width);
+int etk_tree_col_min_width_get(Etk_Tree_Col *col);
+void etk_tree_col_resizable_set(Etk_Tree_Col *col, Etk_Bool resizable);
+Etk_Bool etk_tree_col_resizable_get(Etk_Tree_Col *col);
+void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible);
+Etk_Bool etk_tree_col_visible_get(Etk_Tree_Col *col);
+void etk_tree_col_reorder(Etk_Tree_Col *col, int new_place);
+int etk_tree_col_place_get(Etk_Tree_Col *col);
+void etk_tree_col_xalign_set(Etk_Tree_Col *col, float xalign);
+float etk_tree_col_xalign_get(Etk_Tree_Col *col);
 
 void etk_tree_build(Etk_Tree *tree);
 void etk_tree_freeze(Etk_Tree *tree);
@@ -172,13 +202,20 @@ Etk_Bool etk_tree_multiple_select_get(Etk_Tree *tree);
 void etk_tree_select_all(Etk_Tree *tree);
 void etk_tree_unselect_all(Etk_Tree *tree);
 
-void etk_tree_row_fold(Etk_Tree_Row *row);
-void etk_tree_row_unfold(Etk_Tree_Row *row);
-
 Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...);
 Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...);
-
+void etk_tree_row_del(Etk_Tree_Row *row);
 void etk_tree_clear(Etk_Tree *tree);
+
+void etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
+void *etk_tree_row_data_get(Etk_Tree_Row *row);
+
+void etk_tree_row_select(Etk_Tree_Row *row);
+void etk_tree_row_unselect(Etk_Tree_Row *row);
+Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
+Ecore_List *etk_tree_selected_rows_get(Etk_Tree *tree);
+void etk_tree_row_expand(Etk_Tree_Row *row);
+void etk_tree_row_collapse(Etk_Tree_Row *row);
 
 /** @} */
 
