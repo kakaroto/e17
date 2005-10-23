@@ -40,7 +40,7 @@ struct Ewl_Calendar
 
 Ewl_Widget	*ewl_calendar_new(void);
 int		 ewl_calendar_init(Ewl_Calendar *calendar);
-void 		 ewl_calendar_ascii_time_get(Ewl_Calendar *cal, char *str);
+char * 		 ewl_calendar_ascii_time_get(Ewl_Calendar *cal);
 int 		 ewl_calendar_day_get(Ewl_Calendar *c);
 int 		 ewl_calendar_month_get(Ewl_Calendar *c);
 int 		 ewl_calendar_year_get(Ewl_Calendar *c);

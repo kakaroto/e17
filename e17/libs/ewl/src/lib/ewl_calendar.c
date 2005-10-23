@@ -126,22 +126,20 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 /**
  * @param cal: The calendar to get the date frm
- * @param str: a pre-initialized char * pointer to insert the date into
  * @return none 
  * @brief Returns an ASCII formatted representation of the selected date
- *
- * Inserts an ASCII formatted string of the currently selected date into the char* str pointer
+ * the user must freet this string.
  */
-void
-ewl_calendar_ascii_time_get(Ewl_Calendar *cal, char *str) 
+char *
+ewl_calendar_ascii_time_get(Ewl_Calendar *cal) 
 {
 	time_t tm;
 	struct tm* month_start;
+	char str[1024];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cal", cal);
-	DCHECK_PARAM_PTR("str", str);
-	DCHECK_TYPE("cal", cal, "calendar");
+	DCHECK_PARAM_PTR_RET("cal", cal, NULL);
+	DCHECK_TYPE_RET("cal", cal, "calendar", NULL);
 
 	tm = time(NULL);
 	month_start = localtime(&tm);
@@ -150,9 +148,9 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal, char *str)
 	month_start->tm_year = cal->cur_year - 1900;
 	mktime(month_start);
 
-	strcpy(str, asctime(month_start));
+	snprintf(str, sizeof(str), "%s", asctime(month_start));
 	
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(strdup(str), DLEVEL_STABLE);
 }
 
 /**

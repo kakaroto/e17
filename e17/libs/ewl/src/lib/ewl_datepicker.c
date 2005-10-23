@@ -113,7 +113,7 @@ void
 ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
 							void *user_data) 
 {
-	static char date[1024];
+	char *date;
 	Ewl_Datepicker* dp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -122,8 +122,9 @@ ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED
 	dp = EWL_DATEPICKER(user_data);
 	ewl_widget_hide(dp->calendar_window);
 
-	ewl_calendar_ascii_time_get(EWL_CALENDAR(dp->calendar), date);
+	date = ewl_calendar_ascii_time_get(EWL_CALENDAR(dp->calendar));
 	ewl_text_text_set(EWL_TEXT(dp), date);
+	FREE(date);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -18,9 +18,11 @@ void
 void
 ewl_calendar_test(Ewl_Widget *main_win __UNUSED__, void *ev_data __UNUSED__, void *user_data)
  {
-	 char date[1024];
-	 ewl_calendar_ascii_time_get(EWL_CALENDAR(user_data), date);
+	 char *date;
+
+	 date = ewl_calendar_ascii_time_get(EWL_CALENDAR(user_data));
 	 printf ("Selected: %s\n", date);
+	 free(date);
  }
 
 
