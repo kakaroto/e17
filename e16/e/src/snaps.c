@@ -217,7 +217,21 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
    if (sn)
       return sn;
 
-   /* Fix me - put back the old window ID string */
+   if ((match_flags & SNAP_MATCH_TITLE) && !ewin->icccm.wm_name)
+      match_flags ^= SNAP_MATCH_TITLE;
+   if ((match_flags & SNAP_MATCH_NAME) && !ewin->icccm.wm_res_name)
+      match_flags ^= SNAP_MATCH_NAME;
+   if ((match_flags & SNAP_MATCH_CLASS) && !ewin->icccm.wm_res_class)
+      match_flags ^= SNAP_MATCH_CLASS;
+   if ((match_flags & SNAP_MATCH_ROLE) && !ewin->icccm.wm_role)
+      match_flags ^= SNAP_MATCH_ROLE;
+   if (match_flags == 0)
+     {
+	if (!ewin->icccm.wm_name)
+	   return NULL;
+	match_flags = SNAP_MATCH_TITLE;
+     }
+
    sn = SnapshotCreate(NULL);
    if (!sn)
       return NULL;
@@ -1164,6 +1178,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		  for (j = 0; j < sn->num_groups; j++)
 		     fprintf(f, "GROUP: %i\n", sn->groups[j]);
 	       }
+	     fprintf(f, "\n");
 	  }
 	Efree(lst);
      }
