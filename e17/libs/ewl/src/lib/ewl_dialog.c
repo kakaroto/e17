@@ -116,6 +116,7 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("d", d);
+	DCHECK_TYPE("d", d, "dialog");
 
 	if (pos == d->position) {
 		DRETURN(DLEVEL_STABLE);
@@ -175,6 +176,7 @@ ewl_dialog_action_position_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET("d", d, "dialog", EWL_POSITION_BOTTOM);
 
 	DRETURN_INT(d->position, DLEVEL_STABLE);
 }
@@ -189,9 +191,11 @@ ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dialog", dialog, 0);
+	DCHECK_TYPE_RET("dialog", dialog, "dialog", 0);
 
-	if (!dialog)
-		return FALSE;
+	if (!dialog) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	DRETURN_INT(dialog->separator != NULL, DLEVEL_STABLE);
 }
@@ -210,9 +214,11 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dialog", dialog);
+	DCHECK_TYPE("dialog", dialog, "dialog");
 
-	if (!dialog)
+	if (!dialog) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
 
 	if (has_sep && (dialog->separator == NULL)) {
 		ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
@@ -242,6 +248,7 @@ ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("d", d);
+	DCHECK_TYPE("d", d, "dialog");
 
 	d->active_area = pos;
 
@@ -260,6 +267,7 @@ ewl_dialog_active_area_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_TOP);
+	DCHECK_TYPE_RET("d", d, "dialog", EWL_POSITION_TOP);
 
 	DRETURN_INT(d->active_area, DLEVEL_STABLE);
 }
