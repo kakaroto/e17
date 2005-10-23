@@ -257,6 +257,19 @@ int etk_tree_num_cols_get(Etk_Tree *tree)
 }
 
 /**
+ * @brief Gets the "nth" column of the tree
+ * @param tree a tree
+ * @param nth the rank of the column you want to get
+ * @return Returns the "nth" column of the tree
+ */
+Etk_Tree_Col *etk_tree_nth_col_get(Etk_Tree *tree, int nth)
+{
+   if (!tree || nth < 0 || nth >= tree->num_cols)
+      return NULL;
+   return tree->columns[nth];
+}
+
+/**
  * @brief Sets whether the column headers should be displayed
  * @param tree a tree
  * @param headers_visible TRUE if the column headers should be displayed
@@ -650,7 +663,7 @@ Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...)
 /**
  * @brief Appends a new row as a child of a another row of the tree. The tree has to be in the ETK_TREE_MODE_TREE mode
  * @param row a row
- * @param ... an Etk_Tree_Col * followed by the value of the cell, then again, an Etk_Tree_Col * followed by its value... terminated by NULL
+ * @param ... an Etk_Tree_Col * followed by the value(s) of the cell, then again, an Etk_Tree_Col * followed by its value(s)... terminated by NULL
  * @return Returns the new row
  */
 Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...)
@@ -699,6 +712,199 @@ void etk_tree_clear(Etk_Tree *tree)
    
    if (!tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(tree));
+}
+
+/**
+ * @brief Sets the different values of the cells of the row
+ * @param row a row
+ * @param ... an Etk_Tree_Col * followed by the value(s) of the cell, then again, an Etk_Tree_Col * followed by its value(s)... terminated by NULL
+ */
+void etk_tree_row_fields_set(Etk_Tree_Row *row, ...)
+{
+   va_list args;
+
+   va_start(args, row);
+   etk_tree_row_fields_set_valist(row, args);
+   va_end(args);
+}
+
+/**
+ * @brief Sets the different values of the cells of the row
+ * @param row a row
+ * @param args an Etk_Tree_Col * followed by the value(s) of the cell, then again, an Etk_Tree_Col * followed by its value(s)... terminated by NULL
+ */
+void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, va_list args)
+{
+   Etk_Tree_Col *col;
+
+   if (!row)
+      return;
+
+   while ((col = va_arg(args, Etk_Tree_Col *)))
+   {
+      Etk_Tree_Cell *cell;
+
+      cell = &row->cells[col->id];
+      switch (col->type)
+      {
+         case ETK_TREE_COL_TEXT:
+         {
+            const char *text;
+            text = va_arg(args, char *);
+            if (cell->text_value != text)
+            {
+               free(cell->text_value);
+               if (text)
+                  cell->text_value = strdup(text);
+               else
+                  cell->text_value = NULL;
+            }
+            break;
+         }
+         case ETK_TREE_COL_IMAGE:
+         {
+            const char *image;
+            image = va_arg(args, char *);
+            if (cell->image_filename_value != image)
+            {
+               free(cell->image_filename_value);
+               if (image)
+                  cell->image_filename_value = strdup(image);
+               else
+                  cell->image_filename_value = NULL;
+            }
+            break;
+         }
+         case ETK_TREE_COL_ICON_TEXT:
+         {
+            const char *icon;
+            const char *text;
+
+            icon = va_arg(args, char *);
+            text = va_arg(args, char *);
+
+            if (cell->icon_text_value.icon_filename != icon)
+            {
+               free(cell->icon_text_value.icon_filename);
+               if (icon)
+                  cell->icon_text_value.icon_filename = strdup(icon);
+               else
+                  cell->icon_text_value.icon_filename = NULL;
+            }
+
+            if (cell->icon_text_value.text != text)
+            {
+               free(cell->icon_text_value.text);
+               if (text)
+                  cell->icon_text_value.text = strdup(text);
+               else
+                  cell->icon_text_value.text = NULL;
+            }
+            break;
+         }
+         case ETK_TREE_COL_INT:
+         {
+            int value;
+            value = va_arg(args, int);
+            cell->int_value = value;
+            break;
+         }
+         case ETK_TREE_COL_DOUBLE:
+         {
+            double value;
+            value = va_arg(args, double);
+            cell->double_value = value;
+            break;
+         }
+         default:
+            break;
+      }   
+   }
+
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+}
+
+/**
+ * @brief Gets the different values of the cells of the row
+ * @param row a row
+ * @param ... an Etk_Tree_Col * followed by the location where to store the value(s) of the cell, then again, an Etk_Tree_Col * followed by its location(s)... terminated by NULL
+ */
+void etk_tree_row_fields_get(Etk_Tree_Row *row, ...)
+{
+   va_list args;
+
+   va_start(args, row);
+   etk_tree_row_fields_get_valist(row, args);
+   va_end(args);
+}
+
+/**
+ * @brief Gets the different values of the cells of the row
+ * @param row a row
+ * @param args an Etk_Tree_Col * followed by the location where to store the value(s) of the cell, then again, an Etk_Tree_Col * followed by its location(s)... terminated by NULL
+ */
+void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
+{
+   Etk_Tree_Col *col;
+
+   if (!row)
+      return;
+
+   while ((col = va_arg(args, Etk_Tree_Col *)))
+   {
+      Etk_Tree_Cell *cell;
+
+      cell = &row->cells[col->id];
+      switch (col->type)
+      {
+         case ETK_TREE_COL_TEXT:
+         {
+            char **text;
+            text = va_arg(args, char **);
+            if (text)
+               *text = cell->text_value;
+            break;
+         }
+         case ETK_TREE_COL_IMAGE:
+         {
+            char **image;
+            image = va_arg(args, char **);
+            *image = cell->image_filename_value;
+            break;
+         }
+         case ETK_TREE_COL_ICON_TEXT:
+         {
+            char **icon;
+            char **text;
+            icon = va_arg(args, char **);
+            text = va_arg(args, char **);
+            if (icon)
+               *icon = cell->icon_text_value.icon_filename;
+            if (text)
+               *text = cell->icon_text_value.text;
+            break;
+         }
+         case ETK_TREE_COL_INT:
+         {
+            int *value;
+            value = va_arg(args, int *);
+            if (value)
+               *value = cell->int_value;
+            break;
+         }
+         case ETK_TREE_COL_DOUBLE:
+         {
+            double *value;
+            value = va_arg(args, double *);
+            if (value)
+               *value = cell->double_value;
+            break;
+         }
+         default:
+            break;
+      }   
+   }
 }
 
 /**
@@ -1738,7 +1944,6 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Ecore_List *
 static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *node, va_list args)
 {
    Etk_Tree_Row *new_row;
-   Etk_Tree_Col *col;
    Etk_Tree_Node *n;
 
    if (!tree || !tree->built || !node)
@@ -1755,79 +1960,8 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *nod
    new_row->node.selected = FALSE;
    new_row->data = NULL;
 
-   new_row->cells = malloc(sizeof(Etk_Tree_Cell) * tree->num_cols);
-   while ((col = va_arg(args, Etk_Tree_Col *)))
-   {
-      Etk_Tree_Cell *new_cell;
-
-      new_cell = &new_row->cells[col->id];
-      switch (col->type)
-      {
-         case ETK_TREE_COL_TEXT:
-         {
-            const char *text;
-
-            text = va_arg(args, char *);
-            if (text)
-               new_cell->text_value = strdup(text);
-            else
-               new_cell->text_value = NULL;
-            break;
-         }
-         case ETK_TREE_COL_IMAGE:
-         {
-            const char *image;
-
-            image = va_arg(args, char *);
-            if (image)
-               new_cell->image_filename_value = strdup(image);
-            else
-               new_cell->image_filename_value = NULL;
-            break;
-         }
-         case ETK_TREE_COL_ICON_TEXT:
-         {
-            const char *icon;
-            const char *text;
-
-            icon = va_arg(args, char *);
-            text = va_arg(args, char *);
-
-            if (icon)
-               new_cell->icon_text_value.icon_filename = strdup(icon);
-            else
-               new_cell->icon_text_value.icon_filename = NULL;
-
-            if (text)
-               new_cell->icon_text_value.text = strdup(text);
-            else
-               new_cell->icon_text_value.text = NULL;
-
-            break;
-         }
-         case ETK_TREE_COL_INT:
-         {
-            int value;
-
-            value = va_arg(args, int);
-            new_cell->int_value = value;
-
-            break;
-         }
-         case ETK_TREE_COL_DOUBLE:
-         {
-            double value;
-
-            value = va_arg(args, double);
-            new_cell->double_value = value;
-
-            break;
-         }
-         default:
-            new_cell->int_value = 0;
-            break;
-      }
-   }
+   new_row->cells = calloc(1, sizeof(Etk_Tree_Cell) * tree->num_cols);
+   etk_tree_row_fields_set_valist(new_row, args);
 
    for (n = new_row->node.parent; n; n = n->parent)
    {
@@ -1845,7 +1979,7 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *nod
       ecore_list_set_free_cb(node->child_rows, ECORE_FREE_CB(_etk_tree_row_free));
    }
    ecore_list_append(node->child_rows, new_row);
-   etk_widget_redraw_queue(ETK_WIDGET(tree));
+
    return new_row;
 }
 

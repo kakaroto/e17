@@ -175,6 +175,7 @@ Etk_Type *etk_tree_col_type_get();
 Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type, int width);
 
 int etk_tree_num_cols_get(Etk_Tree *tree);
+Etk_Tree_Col *etk_tree_nth_col_get(Etk_Tree *tree, int nth);
 void etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
 Etk_Bool etk_tree_headers_visible_get(Etk_Tree *tree);
 
@@ -204,6 +205,10 @@ void etk_tree_unselect_all(Etk_Tree *tree);
 
 Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...);
 Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...);
+void etk_tree_row_fields_set(Etk_Tree_Row *row, ...);
+void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, va_list args);
+void etk_tree_row_fields_get(Etk_Tree_Row *row, ...);
+void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
 void etk_tree_row_del(Etk_Tree_Row *row);
 void etk_tree_clear(Etk_Tree *tree);
 
