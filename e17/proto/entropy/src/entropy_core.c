@@ -905,13 +905,10 @@ char* entropy_thumbnail_dir_get(entropy_core* core) {
 
 
 entropy_generic_file* entropy_core_parse_uri(char* uri) {
-	char* path;
 	char* pos;
-	int i;
 	entropy_generic_file* file = entropy_generic_file_new();
 	evfs_file_uri_path* uri_path = evfs_parse_uri(uri);
 
-	printf("Returned path '%s'\n", uri_path->files[0]->path);
 
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
 	pos = rindex(uri_path->files[0]->path, '/');

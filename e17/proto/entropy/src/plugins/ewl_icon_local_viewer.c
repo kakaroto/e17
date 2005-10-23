@@ -56,7 +56,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	
 	window = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(window), "File Properties");
-	//ewl_object_custom_size_set(EWL_OBJECT(window), 300, 350);
+	ewl_object_custom_size_set(EWL_OBJECT(window), 300, 400);
 	
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(window), vbox);
@@ -322,7 +322,7 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
 	entropy_icon_viewer* viewer = instance->data;
 	entropy_gui_event* gui_event;
-	gui_file* local_file = ecore_hash_get( ((entropy_icon_viewer*)user_data)->icon_hash, EWL_ICONBOX(viewer->iconbox)->select_icon);
+	gui_file* local_file = ecore_hash_get( viewer->icon_hash, EWL_ICONBOX(viewer->iconbox)->select_icon);
 
 	
 	//Stat test..
@@ -331,7 +331,7 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 		gui_event = entropy_malloc(sizeof(entropy_gui_event));
 		gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT);
 		gui_event->data = local_file->file;
-		entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_LOCAL); 
+		entropy_core_layout_notify_event(instance , gui_event, ENTROPY_EVENT_LOCAL); 
 	} else {
 		printf("Could not find selected icon!\n");
 	}
