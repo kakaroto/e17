@@ -36,9 +36,9 @@ __create_datepicker_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 
 		
-		ewl_window_title_set(EWL_WINDOW(datepicker_win), "DatePicker");
-		ewl_window_name_set(EWL_WINDOW(datepicker_win), "DatePicker");
-		ewl_window_class_set(EWL_WINDOW(datepicker_win), "DatePicker");
+		ewl_window_title_set(EWL_WINDOW(datepicker_win), "Datepicker");
+		ewl_window_name_set(EWL_WINDOW(datepicker_win), "Datepicker");
+		ewl_window_class_set(EWL_WINDOW(datepicker_win), "Datepicker");
 		ewl_object_size_request(EWL_OBJECT(datepicker_win), 160,40);
 
 		
