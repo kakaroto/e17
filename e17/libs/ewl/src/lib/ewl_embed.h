@@ -52,7 +52,7 @@ struct Ewl_Embed
 
 	Evas_Object    *smart;       /**< Manipulate Ewl_Embed from evas */
 	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
-	Ecore_DList     *tab_order;   /**< Order of widgets to send focus */
+	Ecore_DList    *tab_order;   /**< Order of widgets to send focus */
 
 	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
 
@@ -70,7 +70,7 @@ struct Ewl_Embed
 };
 
 Ewl_Widget     *ewl_embed_new(void);
-int             ewl_embed_init(Ewl_Embed * win);
+int             ewl_embed_init(Ewl_Embed *win);
 Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 				   Ewl_Embed_Evas_Window *evas_window);
 
@@ -96,7 +96,7 @@ void            ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
-Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget * w);
+Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget *w);
 void            ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
 Evas_Object    *ewl_embed_object_request(Ewl_Embed *e, char *type);
 
@@ -124,7 +124,7 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
  */
 void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
