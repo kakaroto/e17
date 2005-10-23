@@ -40,16 +40,16 @@ struct Ewl_Check
 };
 
 Ewl_Widget     *ewl_check_new(void);
-int             ewl_check_init(Ewl_Check * c);
-int             ewl_check_is_checked(Ewl_Check * c);
-void            ewl_check_checked_set(Ewl_Check * c, int checked);
+int             ewl_check_init(Ewl_Check *c);
+int             ewl_check_is_checked(Ewl_Check *c);
+void            ewl_check_checked_set(Ewl_Check *c, int checked);
 
 /*
  * Internally used callbacks.
  */
-void            ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data,
+void            ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data,
 				    void *user_data);
-void            ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data,
+void            ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
 
 /**
