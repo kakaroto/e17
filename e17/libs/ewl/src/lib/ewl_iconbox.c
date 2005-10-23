@@ -954,6 +954,10 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
 	ib->drag = 1;
 	ib->icon_box_parent->drag_icon = ib;
+	ib->icon_box_parent->select_icon = ib; /*We rely on this being the first callback - so
+						 client*/
+
+	
 	ib->icon_box_parent->xdown = ev->x;
 	ib->icon_box_parent->ydown = ev->y;
 
@@ -1023,9 +1027,20 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *us
 void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	/*printf ("Got a configure\n");*/
+	int xx,yy,ww,hh;
 
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
+
+/*	xx = CURRENT_X(ib->ewl_iconbox_pane_inner);
+	yy = CURRENT_Y(ib->ewl_iconbox_pane_inner);
+	ww = CURRENT_W(ib->ewl_iconbox_pane_inner);
+	hh = CURRENT_H(ib->ewl_iconbox_pane_inner);
+
 	
+
+		evas_damage_rectangle_add(evas_object_evas_get(EWL_CONTAINER(ib->ewl_iconbox_pane_inner)->clip_box),
+							xx, yy, ww, hh);*/
+
 	
 
 	if (REALIZED(ib) && VISIBLE(ib)) { 

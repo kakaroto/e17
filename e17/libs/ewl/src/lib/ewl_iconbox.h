@@ -81,6 +81,8 @@ struct Ewl_IconBox
 
 	Ewl_IconBox_Icon* drag_icon;
 	Ewl_IconBox_Icon* edit_icon;
+	Ewl_IconBox_Icon* select_icon;
+
 	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
 	int dx, dy;			   /* Drag start x/y */
 	int lx, ly;			   /*Layout x, layout y */
@@ -123,6 +125,7 @@ void ewl_iconbox_clear(Ewl_IconBox* iconbox);
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename);
 void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file);
 void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item);
+void ewl_iconbox_icon_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item);
 void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib);
 Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib);
 
