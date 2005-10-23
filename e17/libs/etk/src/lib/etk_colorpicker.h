@@ -17,6 +17,20 @@
 /** @brief Check if the object is an Etk_Colorpicker */
 #define ETK_IS_COLORPICKER(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_COLORPICKER_TYPE))
 
+/**
+ * @enum Etk_Color_Mode
+ * @brief The color modes used by the colorpicker
+ */
+enum _Etk_Color_Mode
+{
+   ETK_COLOR_MODE_H, 
+   ETK_COLOR_MODE_S,
+   ETK_COLOR_MODE_V,
+   ETK_COLOR_MODE_R,
+   ETK_COLOR_MODE_G,
+   ETK_COLOR_MODE_B
+};
+
 struct _Etk_Colorpicker
 {
   Etk_HBox hbox;

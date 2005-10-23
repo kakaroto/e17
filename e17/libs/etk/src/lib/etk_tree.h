@@ -2,7 +2,7 @@
 #ifndef _ETK_TREE_H_
 #define _ETK_TREE_H_
 
-#include "etk_widget.h"
+#include "etk_container.h"
 #include <Ecore_Data.h>
 #include <stdarg.h>
 #include "etk_types.h"
@@ -18,6 +18,29 @@
 #define ETK_TREE(obj)       (ETK_OBJECT_CAST((obj), ETK_TREE_TYPE, Etk_Tree))
 /** @brief Check if the object is an Etk_Tree */
 #define ETK_IS_TREE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_TYPE))
+
+/**
+ * @enum Etk_Tree_Col_Type
+ * @brief The type of the objects of a column of a tree
+ */
+enum _Etk_Tree_Col_Type
+{
+   ETK_TREE_COL_TEXT,
+   ETK_TREE_COL_IMAGE,
+   ETK_TREE_COL_ICON_TEXT,
+   ETK_TREE_COL_INT,
+   ETK_TREE_COL_DOUBLE
+};
+
+/**
+ * @enum Etk_Tree_Mode
+ * @brief The mode of the tree: List (rows can not have children) or tree (rows can have children)
+ */
+enum _Etk_Tree_Mode
+{
+   ETK_TREE_MODE_LIST,
+   ETK_TREE_MODE_TREE
+};
 
 /**
  * @struct Etk_Tree_Node
@@ -41,11 +64,16 @@ struct _Etk_Tree
 {
    /* private: */
    /* Inherit form Etk_Widget */
-   Etk_Widget widget;
+   Etk_Container container;
+
+   Etk_Widget *grid;
 
    int num_cols;
    Etk_Tree_Col **columns;
    Ecore_List *cols_objects;
+   Etk_Tree_Col *column_to_resize;
+   Etk_Bool resize_pointer_shown;
+   Etk_Bool headers_visible;
    
    Etk_Tree_Node root;
    Etk_Tree_Node *last_selected;
@@ -55,9 +83,10 @@ struct _Etk_Tree
 
    Etk_Tree_Mode mode;
    Etk_Bool multiple_select;
-   float scroll_percent;
    Etk_Bool frozen;
    Etk_Bool built;
+   float xscroll_percent;
+   float yscroll_percent;
 
    int item_height;
    int image_height;
@@ -81,12 +110,17 @@ struct _Etk_Tree_Col
    Etk_Tree_Col_Type type;
 
    int xoffset;
+   int min_width;
    int width;
+   int visible_width;
    int place;
+   Etk_Bool resizable;
    Etk_Bool visible;
    
    Evas_Object *clip;
    Evas_Object *separator;
+
+   Etk_Widget *header;
 };
 
 /**
@@ -125,7 +159,9 @@ Etk_Widget *etk_tree_new();
 void etk_tree_mode_set(Etk_Tree *tree, Etk_Tree_Mode mode);
 Etk_Tree_Mode etk_tree_mode_get(Etk_Tree *tree);
 
-Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type);
+Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type, int min_width, int width, Etk_Bool resizable);
+void etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
+Etk_Bool etk_tree_headers_visible_get(Etk_Tree *tree);
 
 void etk_tree_build(Etk_Tree *tree);
 void etk_tree_freeze(Etk_Tree *tree);
@@ -141,6 +177,8 @@ void etk_tree_row_unfold(Etk_Tree_Row *row);
 
 Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...);
 Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...);
+
+void etk_tree_clear(Etk_Tree *tree);
 
 /** @} */
 

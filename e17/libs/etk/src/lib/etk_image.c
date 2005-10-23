@@ -464,7 +464,10 @@ static void _etk_image_load(Etk_Image *image)
             image->image_object = NULL;
          }
          else
+         {
+            evas_object_show(image->image_object);
             etk_widget_member_object_add(widget, image->image_object);
+         }
       }
    }
    else if (image->edje_filename && image->edje_group)

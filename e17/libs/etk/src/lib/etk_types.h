@@ -3,7 +3,6 @@
 #define _ETK_TYPES_H_
 
 #include <stdarg.h>
-#include <Evas.h>
 
 /**
  * @defgroup Etk_Types Etk_Types
@@ -26,6 +25,8 @@ typedef struct _Etk_Signal Etk_Signal;
 typedef struct _Etk_Signal_Callback Etk_Signal_Callback;
 typedef struct _Etk_Property Etk_Property;
 typedef struct _Etk_Property_Value Etk_Property_Value;
+typedef enum _Etk_Property_Type Etk_Property_Type;
+typedef enum _Etk_Property_Flags Etk_Property_Flags;
 typedef struct _Etk_String Etk_String;
 
 typedef void (*Etk_Constructor)(Etk_Object *object);
@@ -43,9 +44,10 @@ typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;
 typedef struct _Etk_Event_Mouse_Up_Down Etk_Event_Mouse_Up_Down;
 typedef struct _Etk_Event_Mouse_Move Etk_Event_Mouse_Move;
 typedef struct _Etk_Event_Mouse_Wheel Etk_Event_Mouse_Wheel;
-typedef Evas_Event_Key_Down Etk_Event_Key_Up_Down;
+typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Size Etk_Size;
 typedef struct _Etk_Geometry Etk_Geometry;
+typedef enum _Etk_Pointer_Type Etk_Pointer_Type;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
 typedef struct _Etk_Container Etk_Container;
 typedef struct _Etk_Bin Etk_Bin;
@@ -69,43 +71,21 @@ typedef struct _Etk_Canvas Etk_Canvas;
 typedef struct _Etk_Colorpicker Etk_Colorpicker;
 typedef struct _Etk_Colorpicker_Vertical Etk_Colorpicker_Vertical;
 typedef struct _Etk_Colorpicker_Square Etk_Colorpicker_Square;
+typedef enum _Etk_Color_Mode Etk_Color_Mode;
 typedef struct _Etk_Tree Etk_Tree;
 typedef struct _Etk_Tree_Col Etk_Tree_Col;
 typedef struct _Etk_Tree_Row Etk_Tree_Row;
 typedef union _Etk_Tree_Cell Etk_Tree_Cell;
 typedef struct _Etk_Tree_Node Etk_Tree_Node;
-
-/* Enums: */
-
-/**
- * @enum Etk_Property_Type
- * @brief The type of a property
- */
-typedef enum _Etk_Property_Type
-{
-   /* Used when the property is not initialized to a value */
-   ETK_PROPERTY_NONE,
-   ETK_PROPERTY_INT,
-   ETK_PROPERTY_BOOL,
-   ETK_PROPERTY_CHAR,
-   ETK_PROPERTY_FLOAT,
-   ETK_PROPERTY_DOUBLE,
-   ETK_PROPERTY_SHORT,
-   ETK_PROPERTY_LONG,
-   ETK_PROPERTY_POINTER,
-   ETK_PROPERTY_STRING
-} Etk_Property_Type;
-
-/** 
- * @enum Etk_Property_Flags
- * @brief  Describes if the property is readable, writable or both
- */
-typedef enum _Etk_Property_Flags
-{
-   ETK_PROPERTY_READABLE = 1 << 0,
-   ETK_PROPERTY_WRITABLE = 1 << 1,
-   ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE
-} Etk_Property_Flags;
+typedef enum _Etk_Tree_Col_Type  Etk_Tree_Col_Type;
+typedef enum _Etk_Tree_Mode Etk_Tree_Mode;
+typedef struct _Etk_Range Etk_Range;
+typedef struct _Etk_Scale Etk_Scale;
+typedef struct _Etk_HScale Etk_HScale;
+typedef struct _Etk_VScale Etk_VScale;
+typedef struct _Etk_Scrollbar Etk_Scrollbar;
+typedef struct _Etk_HScrollbar Etk_HScrollbar;
+typedef struct _Etk_VScrollbar Etk_VScrollbar;
 
 /**
  * @enum Etk_Child_Fill_Policy_Flag
@@ -128,42 +108,5 @@ typedef struct _Etk_Color
 {
    int r, g, b, a;
 } Etk_Color;
-
-/**
- * @enum Etk_Color_Mode
- * @brief The color modes used by the colorpicker
- */
-typedef enum _Etk_Color_Mode
-{
-   ETK_COLOR_MODE_H, 
-   ETK_COLOR_MODE_S,
-   ETK_COLOR_MODE_V,
-   ETK_COLOR_MODE_R,
-   ETK_COLOR_MODE_G,
-   ETK_COLOR_MODE_B
-} Etk_Color_Mode;
-
-/**
- * @enum Etk_Tree_Col_Type
- * @brief The type of the objects of a column of a tree
- */
-typedef enum _Etk_Tree_Col_Type
-{
-   ETK_TREE_COL_TEXT,
-   ETK_TREE_COL_IMAGE,
-   ETK_TREE_COL_ICON_TEXT,
-   ETK_TREE_COL_INT,
-   ETK_TREE_COL_DOUBLE
-} Etk_Tree_Col_Type;
-
-/**
- * @enum Etk_Tree_Mode
- * @brief The mode of the tree: List (rows can not have children) or tree (rows can have children)
- */
-typedef enum _Etk_Tree_Mode
-{
-   ETK_TREE_MODE_LIST,
-   ETK_TREE_MODE_TREE
-} Etk_Tree_Mode;
 
 #endif

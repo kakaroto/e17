@@ -27,7 +27,7 @@ void etk_test_table_window_create(void *data)
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_table_window_deleted_cb), win);
 	
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/open.png");
-   widget[0] = etk_button_new_with_label(_("Set Icon"));
+   widget[0] = etk_button_new_with_label("Set Icon");
    etk_button_image_set(ETK_BUTTON(widget[0]), ETK_IMAGE(image));
 
    widget[20] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);

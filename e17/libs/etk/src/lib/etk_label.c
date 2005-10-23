@@ -309,12 +309,14 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
 
    label->text_object = evas_object_textblock2_add(evas);
    evas_object_textblock2_style_set(label->text_object, _etk_label_style);
+   evas_object_show(label->text_object);
    etk_widget_member_object_add(ETK_WIDGET(label), label->text_object);
    _etk_label_style_use++;
 
    label->clip = evas_object_rectangle_add(evas);
    evas_object_color_set(label->clip, 255, 255, 255, 128);
    evas_object_clip_set(label->text_object, label->clip);
+   evas_object_show(label->clip);
    etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
 
    etk_label_set(label, label->text);

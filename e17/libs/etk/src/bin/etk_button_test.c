@@ -25,7 +25,7 @@ void etk_test_button_window_create(void *data)
 	}
 	
    win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), _("Button test"));
+   etk_window_title_set(ETK_WINDOW(win), _("Etk Button Test"));
 
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_button_window_deleted_cb), win);
 	

@@ -3,12 +3,17 @@
 #define _ETK_UTILS_H_
 
 #include <stdio.h>
+#include <libintl.h>
+#include "config.h"
 
 /* Gettext */
-#include <libintl.h>
-#define _(String) gettext (String)
-#define gettext_noop(String) String
-#define N_(String) gettext_noop (String)
+#ifndef _
+   #ifdef HAVE_GETTEXT
+      #define _(string) gettext(string)
+   #else
+      #define _(string) (string)
+   #endif
+#endif
 
 /** @brief Gets the max of the two values */
 #define ETK_MAX(v1, v2)    (((v1) > (v2)) ? (v1) : (v2)) 
@@ -25,5 +30,7 @@
 
 void etk_accumulator_bool_or(void *return_value, const void *value_to_accum, void *data);
 void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, void *data);
+void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_accum, void *data);
+void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_accum, void *data);
 
 #endif

@@ -113,6 +113,22 @@ struct _Etk_Event_Mouse_Wheel
 };
 
 /**
+ * @struct Etk_Event_Key_Up_Down
+ * @brief The event sent as argument with the signals "key_down" and "key_up"
+ */
+struct _Etk_Event_Key_Up_Down
+{
+   char *keyname;
+   Evas_Modifier *modifiers;
+   Evas_Lock *locks;
+
+   const char *key;
+   const char *string;
+   const char *compose;
+   unsigned int timestamp;
+};
+
+/**
  * @struct Etk_Widget
  * @brief All the Etk widgets inherits from an Etk_Widget.
  */
@@ -238,8 +254,13 @@ void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h);
 void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);
 void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
 
-void etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object/*, Etk_Bool grab_events*/);
+void etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object);
+
+void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object);
+void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object);
+void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above);
+void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below);
 
 /** @} */
 

@@ -96,7 +96,9 @@ group {
 }
 group {
    name: "tree_header";
-   min: 0 16;
+   data {
+      item: "inset" "5 5 5 5";
+   }
    parts {
       part {
          name: "tree_header";
@@ -112,38 +114,32 @@ group {
             }
             image {
                normal: "tree_header_inactive.png";
-               border: 0 2 0 2;
+               border: 2 2 0 3;
             }
          }
          description {
-            state: "active" 0.0;
+            state: "over" 0.0;
             inherit: "default" 0.0;
             image {
                normal: "tree_header_active.png";
             }
          }
       }
-      part {
-         name: "title";
-         type: TEXT;
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 5 1;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-            color: 0 0 0 255;
-            text {
-               text: "Title";
-               font: "Vera";
-               align: 0.0 0.5;
-               size: 10;
-            }
-         }
+   }
+   programs {
+      program {
+         name: "header_enter";
+         signal: "enter";
+         source: "";
+         action: STATE_SET "over" 0.0;
+         target: "tree_header";
+      }
+      program {
+         name: "header_leaver";
+         signal: "leave";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "tree_header";
       }
    }
 }

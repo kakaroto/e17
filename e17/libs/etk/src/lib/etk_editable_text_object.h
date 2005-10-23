@@ -3,15 +3,16 @@
 #define _ETK_EDITABLE_TEXT_OBJECT_H_
 
 #include <Evas.h>
+#include "etk_types.h"
 
 Evas_Object *etk_editable_text_object_add(Evas *evas);
 
 void etk_editable_text_object_text_set(Evas_Object *object, const char *text);
-void etk_editable_text_object_insert(Evas_Object *object, const char *text);
+Etk_Bool etk_editable_text_object_insert(Evas_Object *object, const char *text);
 const char *etk_editable_text_object_text_get(Evas_Object *object);
 
-void etk_editable_text_object_delete_char_before(Evas_Object *object);
-void etk_editable_text_object_delete_char_after(Evas_Object *object);
+Etk_Bool etk_editable_text_object_delete_char_before(Evas_Object *object);
+Etk_Bool etk_editable_text_object_delete_char_after(Evas_Object *object);
 
 void etk_editable_text_object_cursor_move_at_start(Evas_Object *object);
 void etk_editable_text_object_cursor_move_at_end(Evas_Object *object);

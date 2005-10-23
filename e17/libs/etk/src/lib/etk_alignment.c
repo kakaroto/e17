@@ -218,8 +218,6 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    if ((child = etk_bin_child_get(ETK_BIN(alignment))))
    {
       etk_widget_size_request(child, &child_requisition);
-      /*printf("allocate %p: %d %d\n", widget, geometry.w, geometry.h);
-      printf("request %p: %d %d\n", widget, child_requisition.w, child_requisition.h); */
 
       geometry.x += etk_container_border_width_get(container);
       geometry.y += etk_container_border_width_get(container);

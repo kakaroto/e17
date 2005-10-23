@@ -11,6 +11,36 @@
  */
 
 /**
+ * @enum Etk_Property_Type
+ * @brief The type of a property
+ */
+enum _Etk_Property_Type
+{
+   /* Used when the property is not initialized to a value */
+   ETK_PROPERTY_NONE,
+   ETK_PROPERTY_INT,
+   ETK_PROPERTY_BOOL,
+   ETK_PROPERTY_CHAR,
+   ETK_PROPERTY_FLOAT,
+   ETK_PROPERTY_DOUBLE,
+   ETK_PROPERTY_SHORT,
+   ETK_PROPERTY_LONG,
+   ETK_PROPERTY_POINTER,
+   ETK_PROPERTY_STRING
+};
+
+/** 
+ * @enum Etk_Property_Flags
+ * @brief  Describes if the property is readable, writable or both
+ */
+enum _Etk_Property_Flags
+{
+   ETK_PROPERTY_READABLE = 1 << 0,
+   ETK_PROPERTY_WRITABLE = 1 << 1,
+   ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE
+};
+
+/**
  * @struct Etk_Property
  * @brief An Etk_Property is a name associated to a type. The property have a default value, and can be readable, writable or both
  */

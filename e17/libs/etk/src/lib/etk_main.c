@@ -6,13 +6,13 @@
 #include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Edje.h>
-#include "config.h"
 #include "etk_type.h"
 #include "etk_signal.h"
 #include "etk_object.h"
 #include "etk_toplevel_widget.h"
 #include "etk_widget.h"
 #include "etk_utils.h"
+#include "../../config.h"
 
 /**
  * @addtogroup Etk_Main
@@ -78,13 +78,12 @@ Etk_Bool etk_init()
    }
    _etk_main_toplevel_widgets = ecore_list_new();
 
-   _etk_main_initialized = TRUE;
-
    /* Gettext */
-   setlocale (LC_ALL, "");
-   bindtextdomain (PACKAGE, LOCALEDIR);
-   textdomain (PACKAGE);
+   setlocale(LC_ALL, "");
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   textdomain(PACKAGE);
 
+   _etk_main_initialized = TRUE;
    return TRUE;
 }
 
@@ -129,6 +128,8 @@ void etk_main_quit()
    _etk_main_iterate_job = NULL;
 }
 
+int iteration = 0;
+
 /** @brief Runs an iteration of the main loop */
 void etk_main_iterate()
 {
@@ -138,6 +139,7 @@ void etk_main_iterate()
    if (!_etk_main_initialized)
       return;
 
+   //printf("Iteration %d\n", iteration++);
    ecore_list_goto_first(_etk_main_toplevel_widgets);
    while ((toplevel = ecore_list_next(_etk_main_toplevel_widgets)))
    {

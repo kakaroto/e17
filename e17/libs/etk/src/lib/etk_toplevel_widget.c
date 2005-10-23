@@ -144,6 +144,62 @@ Etk_Widget *etk_toplevel_widget_focused_widget_prev_get(Etk_Toplevel_Widget *top
       return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(toplevel_widget), NULL);
 }
 
+/* TODO: doc */
+void etk_toplevel_widget_pointer_push(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+{
+   Etk_Pointer_Type *prev_pointer_type;
+   Etk_Pointer_Type *new_pointer_type;
+
+   if (!toplevel_widget)
+      return;
+
+   new_pointer_type = malloc(sizeof(Etk_Pointer_Type));
+   *new_pointer_type = pointer_type;
+   prev_pointer_type = ecore_dlist_goto_last(toplevel_widget->pointer_stack);
+   ecore_dlist_append(toplevel_widget->pointer_stack, new_pointer_type);
+
+   if (toplevel_widget->pointer_set && (!prev_pointer_type || (*prev_pointer_type != pointer_type)))
+      toplevel_widget->pointer_set(toplevel_widget, pointer_type);
+}
+
+/* TODO: doc */
+void etk_toplevel_widget_pointer_pop(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+{
+   Etk_Pointer_Type *current_pointer;
+   Etk_Pointer_Type *prev_pointer_type;
+   Etk_Pointer_Type *p;
+
+   if (!toplevel_widget || !(prev_pointer_type = ecore_dlist_goto_last(toplevel_widget->pointer_stack)))
+      return;
+
+   if (pointer_type < 0)
+      ecore_dlist_remove_destroy(toplevel_widget->pointer_stack);
+   else
+   {
+      while ((p = ecore_dlist_current(toplevel_widget->pointer_stack)))
+      {
+         if (*p == pointer_type)
+         {
+   
+            ecore_dlist_remove_destroy(toplevel_widget->pointer_stack);
+            break;
+         }
+         ecore_dlist_previous(toplevel_widget->pointer_stack);
+      }
+   }
+
+   if (toplevel_widget->pointer_set)
+   {
+      if ((current_pointer = ecore_dlist_goto_last(toplevel_widget->pointer_stack)))
+      {
+         if (*current_pointer != *prev_pointer_type)
+            toplevel_widget->pointer_set(toplevel_widget, *current_pointer);
+      }
+      else
+         toplevel_widget->pointer_set(toplevel_widget, ETK_POINTER_DEFAULT);
+   }
+}
+
 /**************************
  *
  * Etk specific functions
@@ -160,6 +216,9 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
    toplevel_widget->width = 0;
    toplevel_widget->height = 0;
    toplevel_widget->focused_widget = NULL;
+   toplevel_widget->pointer_stack = ecore_dlist_new();
+   ecore_dlist_set_free_cb(toplevel_widget->pointer_stack, free);
+   toplevel_widget->pointer_set = NULL;
    ETK_WIDGET(toplevel_widget)->toplevel_parent = toplevel_widget;
 
    etk_signal_connect_after("realize", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realize_cb), NULL);
@@ -173,6 +232,7 @@ static void _etk_toplevel_widget_destructor(Etk_Toplevel_Widget *toplevel_widget
    if (!toplevel_widget)
       return;
 
+   ecore_dlist_destroy(toplevel_widget->pointer_stack);
    etk_main_toplevel_widget_remove(toplevel_widget);
 }
 

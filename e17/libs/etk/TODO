@@ -1,6 +1,0 @@
-expand empty rows/cols?
-fix eclair playlist container (static = NULL)
-eclair xinerama remember
-Widget creation on construction, not on realize,
-Return accum
-swapped for callbacks

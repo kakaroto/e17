@@ -29,7 +29,8 @@ etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
 etk_entry.h \
 etk_canvas.h \
 etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
-etk_tree.h
+etk_tree.h \
+etk_range.h etk_scale.h etk_scrollbar.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -45,10 +46,11 @@ etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
 etk_entry.c \
 etk_canvas.c \
 etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
-etk_tree.c
+etk_tree.c \
+etk_range.c etk_scale.c etk_scrollbar.c
 
-installed_headersdir = $(prefix)/include/etk
-installed_headers_DATA = $(include_HEADERS)
++installed_headersdir = $(prefix)/include/etk
++installed_headers_DATA = $(include_HEADERS)
 
 libetk_la_LIBADD  = @ecore_libs@ @evas_libs@ @edje_libs@
 

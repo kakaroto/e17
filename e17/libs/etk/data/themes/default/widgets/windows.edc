@@ -1,5 +1,8 @@
 group {
    name: "window";
+   data {
+      item: "inset" "5 5 5 5";
+   }
    parts {
       part {
          name: "background";

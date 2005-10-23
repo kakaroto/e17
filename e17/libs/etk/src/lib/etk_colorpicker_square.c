@@ -409,12 +409,15 @@ static void _etk_colorpicker_square_realize_cb(Etk_Object *object, void *data)
 
    cps->map = evas_object_image_add(evas);
    evas_object_image_alpha_set(cps->map, 0);
+   evas_object_show(cps->map);
    etk_widget_member_object_add(widget, cps->map);
    cps->hcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cps->hcursor, 0);
+   evas_object_show(cps->hcursor);
    etk_widget_member_object_add(widget, cps->hcursor);
    cps->vcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cps->vcursor, 0);
+   evas_object_show(cps->vcursor);
    etk_widget_member_object_add(widget, cps->vcursor);
 
    _etk_colorpicker_square_resize_map_cursor(cps);

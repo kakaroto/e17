@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/bin/etk_button_test.c:28
-msgid "Button test"
-msgstr "Test Bouton"
+msgid "Etk Button test"
+msgstr "Test Bouton Etk"
 
 #: src/bin/etk_button_test.c:35
 msgid "Normal button"
@@ -73,7 +73,7 @@ msgstr "Ne pas conserver l'aspect"
 
 #: src/bin/etk_scale_test.c:22
 msgid "Etk Scale test"
-msgstr "Test barre de defilement Etk"
+msgstr "Test Scale Etk"
 
 #: src/bin/etk_table_test.c:25
 msgid "Etk Table Test"
@@ -85,7 +85,7 @@ msgstr "Selectionner une icone"
 
 #: src/bin/etk_table_test.c:36
 msgid "App name"
-msgstr "Nom app"
+msgstr "Nom de l'application"
 
 #: src/bin/etk_table_test.c:39
 msgid "Generic Info"
@@ -101,11 +101,11 @@ msgstr "Executable"
 
 #: src/bin/etk_table_test.c:48
 msgid "Window name"
-msgstr "Nom fenetre"
+msgstr "Nom de la fenetre"
 
 #: src/bin/etk_table_test.c:51
 msgid "Window class"
-msgstr "Classe fenetre"
+msgstr "Classe de la fenetre"
 
 #: src/bin/etk_table_test.c:54
 msgid "Startup notify"

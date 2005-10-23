@@ -362,8 +362,10 @@ static void _etk_colorpicker_vertical_realize_cb(Etk_Object *object, void *data)
    cpv = ETK_COLORPICKER_VERTICAL(widget);
 
    cpv->map = evas_object_image_add(evas);
+   evas_object_show(cpv->map);
    etk_widget_member_object_add(widget, cpv->map);
    cpv->cursor = evas_object_image_add(evas);
+   evas_object_show(cpv->cursor);
    etk_widget_member_object_add(widget, cpv->cursor);
 
    _etk_colorpicker_vertical_resize_map_cursor(cpv);

@@ -6,11 +6,20 @@ static Etk_Bool _etk_test_scale_window_deleted_cb(void *data)
    return 1;
 }
 
+static void _etk_test_scale_value_changed(Etk_Object *object, double value, void *data)
+{
+   char string[256];
+
+   snprintf(string, 255, "%'.2f", value);
+   etk_label_set(ETK_LABEL(data), string);
+}
+
 void etk_test_scale_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
-   Etk_Widget *hbox;
+   Etk_Widget *table;
    Etk_Widget *scale;
+   Etk_Widget *label;
    
 	if (win)
 	{
@@ -23,18 +32,24 @@ void etk_test_scale_window_create(void *data)
    
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_scale_window_deleted_cb), win);	
 	
-   hbox = etk_hbox_new(TRUE, 3);
-   etk_container_add(ETK_CONTAINER(win), hbox);
-   etk_widget_show(hbox);
+   table = etk_table_new(2, 2, FALSE);
+   etk_container_add(ETK_CONTAINER(win), table);
    
-   scale = etk_widget_new(ETK_BIN_TYPE, "theme_group", "hscale", "focusable", TRUE, NULL);
-   etk_widget_size_request_set(scale, 70, -1);
-   etk_box_pack_start(ETK_BOX(hbox), scale, TRUE, TRUE, 0);
-   etk_widget_show(scale);
-   scale = etk_widget_new(ETK_BIN_TYPE, "theme_group", "vscale", "focusable", TRUE, NULL);
-   etk_widget_size_request_set(scale, -1, 70);
-   etk_box_pack_start(ETK_BOX(hbox), scale, TRUE, TRUE, 0);
-   etk_widget_show(scale);
+   scale = etk_hscale_new(0.0, 255.0, 128.0, 1.0, 10.0);
+   etk_widget_size_request_set(scale, 70, 70);
+   etk_table_attach_defaults(ETK_TABLE(table), scale, 0, 0, 0, 0);
    
-   etk_widget_show(win);
+   label = etk_label_new("128.00");
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_signal_connect("value_changed", ETK_OBJECT(scale), ETK_CALLBACK(_etk_test_scale_value_changed), label);
+   
+   scale = etk_vscale_new(0.0, 255.0, 128.0, 1.0, 10.0);
+   etk_widget_size_request_set(scale, 70, 70);
+   etk_table_attach_defaults(ETK_TABLE(table), scale, 1, 1, 0, 0);
+
+   label = etk_label_new("128.00");
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 1, 1, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_signal_connect("value_changed", ETK_OBJECT(scale), ETK_CALLBACK(_etk_test_scale_value_changed), label);
+   
+   etk_widget_show_all(win);
 }

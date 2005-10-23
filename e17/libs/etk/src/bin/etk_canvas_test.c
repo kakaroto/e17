@@ -56,6 +56,7 @@ static void _etk_test_canvas_object_add(void *data)
       return;
 
    object = evas_object_rectangle_add(evas);
+   evas_object_show(object);
    etk_canvas_object_add(canvas, object);
 
    x = rand() % 300;
@@ -74,6 +75,5 @@ static void _etk_test_canvas_object_add(void *data)
 
    //printf("%d %d %d %d / %d %d %d %d\n", x, y, w, h, r, g, b, a);
 
-   evas_object_show(object);
    evas_object_raise(object);
 }

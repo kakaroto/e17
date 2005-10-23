@@ -1,6 +1,8 @@
 /** @file etk_window.c */
 #include "etk_window.h"
 #include <stdlib.h>
+#include <Ecore_X.h>
+#include <Ecore_X_Cursor.h>
 #include "etk_main.h"
 #include "etk_utils.h"
 #include "etk_signal.h"
@@ -24,6 +26,7 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
+static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
 
@@ -56,7 +59,7 @@ Etk_Type *etk_window_type_get()
  * @return Returns the new window widget */
 Etk_Widget *etk_window_new()
 {
-   return etk_widget_new(ETK_WINDOW_TYPE, "theme_group", "dialog", NULL);
+   return etk_widget_new(ETK_WINDOW_TYPE, "theme_group", "window", NULL);
 }
 
 /**
@@ -102,6 +105,7 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
+   ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
 
    /* TODO */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
@@ -177,6 +181,69 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 {
    return FALSE;
+}
+
+/* Sets the mouse pointer of the window */
+static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+{
+   Etk_Window *window;
+   int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
+   Ecore_X_Cursor cursor;
+
+   if (!(window = ETK_WINDOW(toplevel_widget)))
+      return;
+
+   switch (pointer_type)
+   {
+      case ETK_POINTER_MOVE:
+         x_pointer_type = ECORE_X_CURSOR_FLEUR;
+         break;
+      case ETK_POINTER_H_DOUBLE_ARROW:
+         x_pointer_type = ECORE_X_CURSOR_SB_H_DOUBLE_ARROW;
+         break;
+      case ETK_POINTER_V_DOUBLE_ARROW:
+         x_pointer_type = ECORE_X_CURSOR_SB_V_DOUBLE_ARROW;
+         break;
+      case ETK_POINTER_RESIZE:
+         x_pointer_type = ECORE_X_CURSOR_SIZING;
+         break;
+      case ETK_POINTER_RESIZE_TL:
+         x_pointer_type = ECORE_X_CURSOR_TOP_LEFT_CORNER;
+         break;
+      case ETK_POINTER_RESIZE_T:
+         x_pointer_type = ECORE_X_CURSOR_TOP_SIDE;
+         break;
+      case ETK_POINTER_RESIZE_TR:
+         x_pointer_type = ECORE_X_CURSOR_TOP_RIGHT_CORNER;
+         break;
+      case ETK_POINTER_RESIZE_R:
+         x_pointer_type = ECORE_X_CURSOR_RIGHT_SIDE;
+         break;
+      case ETK_POINTER_RESIZE_BR:
+         x_pointer_type = ECORE_X_CURSOR_BOTTOM_RIGHT_CORNER;
+         break;
+      case ETK_POINTER_RESIZE_B:
+         x_pointer_type = ECORE_X_CURSOR_BOTTOM_SIDE;
+         break;
+      case ETK_POINTER_RESIZE_BL:
+         x_pointer_type = ECORE_X_CURSOR_BOTTOM_LEFT_CORNER;
+         break;
+      case ETK_POINTER_RESIZE_L:
+         x_pointer_type = ECORE_X_CURSOR_LEFT_SIDE;
+         break;
+      case ETK_POINTER_TEXT_EDIT:
+         x_pointer_type = ECORE_X_CURSOR_XTERM;
+         break;
+      case ETK_POINTER_DEFAULT:
+      default:
+         x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
+         break;
+   }
+
+   if ((cursor = ecore_x_cursor_shape_get(x_pointer_type)))
+      ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(window->ecore_evas), cursor);
+   else
+      ETK_WARNING("Unable to find the X cursor \"%d\"", pointer_type);
 }
 
 /** @} */

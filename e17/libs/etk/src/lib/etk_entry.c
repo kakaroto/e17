@@ -5,19 +5,30 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_editable_text_object.h"
+#include "etk_toplevel_widget.h"
 
 /**
  * @addtogroup Etk_Entry
 * @{
  */
 
+enum _Etk_Entry_Signal_Id
+{
+   ETK_ENTRY_TEXT_CHANGED_SIGNAL,
+   ETK_ENTRY_NUM_SIGNALS
+};
+
 static void _etk_entry_constructor(Etk_Entry *entry);
 static void _etk_entry_realize_cb(Etk_Object *object, void *data);
 static void _etk_entry_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
+
+static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
 
 /**************************
  *
@@ -36,6 +47,8 @@ Etk_Type *etk_entry_type_get()
    if (!entry_type)
    {
       entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry), ETK_CONSTRUCTOR(_etk_entry_constructor), NULL, NULL);
+
+      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed", entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
    return entry_type;
@@ -81,6 +94,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    etk_signal_connect("unrealize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_down_cb), NULL);
+   etk_signal_connect("mouse_in", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_in_cb), NULL);
+   etk_signal_connect("mouse_out", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_out_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unfocus_cb), NULL);
 }
@@ -103,6 +118,7 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
 
    entry = ETK_ENTRY(entry_widget);
    entry->editable_object = etk_editable_text_object_add(evas);
+   evas_object_show(entry->editable_object);
    etk_widget_theme_object_swallow(entry_widget, "text_area", entry->editable_object);
    etk_widget_member_object_add(entry_widget, entry->editable_object);
 }
@@ -123,15 +139,15 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *key_event = event;
    Etk_Entry *entry;
+   Etk_Bool text_changed = FALSE;
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
 
-   /* printf("%s\n", key_event->key); */
    if (strcmp(key_event->key, "BackSpace") == 0)
-      etk_editable_text_object_delete_char_before(entry->editable_object);
+      text_changed = etk_editable_text_object_delete_char_before(entry->editable_object);
    else if (strcmp(key_event->key, "Delete") == 0)
-      etk_editable_text_object_delete_char_after(entry->editable_object);
+      text_changed = etk_editable_text_object_delete_char_after(entry->editable_object);
    else if (strcmp(key_event->key, "Left") == 0)
       etk_editable_text_object_cursor_move_left(entry->editable_object);
    else if (strcmp(key_event->key, "Right") == 0)
@@ -141,9 +157,11 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data)
    else if (strcmp(key_event->key, "End") == 0)
       etk_editable_text_object_cursor_move_at_end(entry->editable_object);
    else
-      etk_editable_text_object_insert(entry->editable_object, key_event->string);
-}
+      text_changed = etk_editable_text_object_insert(entry->editable_object, key_event->string);
 
+   if (text_changed)
+      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], object, NULL);
+}
 
 /* Called when the user presses the entry with the mouse */
 /* TODO: move the cursor under the mouse pointer */
@@ -155,6 +173,28 @@ static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down
       return;
 
    etk_widget_focus(ETK_WIDGET(entry));
+}
+
+/* Called when the mouse enters the entry */
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+   Etk_Widget *entry_widget;
+
+   if (!(entry_widget = ETK_WIDGET(object)))
+      return;
+
+   etk_toplevel_widget_pointer_push(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
+}
+
+/* Called when the mouse leaves the entry */
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+   Etk_Widget *entry_widget;
+
+   if (!(entry_widget = ETK_WIDGET(object)))
+      return;
+
+   etk_toplevel_widget_pointer_pop(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
 }
 
 /* Called when the entry is focused */

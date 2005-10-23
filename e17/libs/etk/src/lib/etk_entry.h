@@ -11,7 +11,7 @@
  * @{
  */
 
-/** @brief Gets the type of a entry */
+/** @brief Gets the type of an entry */
 #define ETK_ENTRY_TYPE       (etk_entry_type_get())
 /** @brief Casts the object to an Etk_Entry */
 #define ETK_ENTRY(obj)       (ETK_OBJECT_CAST((obj), ETK_ENTRY_TYPE, Etk_Entry))

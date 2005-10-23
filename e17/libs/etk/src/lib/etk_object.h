@@ -13,9 +13,9 @@
  */
 
 #ifndef ETK_DISABLE_CAST_CHECKS
-#  define ETK_OBJECT_CAST(obj, etk_type, c_type)      ((c_type *)etk_object_check_cast((Etk_Object *)(obj), (etk_type)))
+   #define ETK_OBJECT_CAST(obj, etk_type, c_type)     ((c_type *)etk_object_check_cast((Etk_Object *)(obj), (etk_type)))
 #else
-#  define ETK_OBJECT_CAST(obj, etk_type, c_type)      ((c_type *)(obj))
+   #define ETK_OBJECT_CAST(obj, etk_type, c_type)     ((c_type *)(obj))
 #endif
 #define ETK_OBJECT_CHECK_TYPE(obj, etk_type)          (etk_type_inherits_from(((Etk_Object *)(obj))->type, (etk_type)))
 

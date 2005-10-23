@@ -12,7 +12,7 @@
  */
 
 /** @brief Gets the offset of a member of a struct (mainly used for etk_signal_new) */
-#define ETK_MEMBER_OFFSET(type, member)   ((int)(&((type *)0)->member))
+#define ETK_MEMBER_OFFSET(type, member)   ((long)(&((type *)0)->member))
 
 /**
  * @struct Etk_Signal
