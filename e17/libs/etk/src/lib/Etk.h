@@ -40,5 +40,6 @@
 #include "etk_range.h"
 #include "etk_scale.h"
 #include "etk_scrollbar.h"
+#include "etk_separator.h"
 
 #endif

@@ -86,6 +86,8 @@ typedef struct _Etk_VScale Etk_VScale;
 typedef struct _Etk_Scrollbar Etk_Scrollbar;
 typedef struct _Etk_HScrollbar Etk_HScrollbar;
 typedef struct _Etk_VScrollbar Etk_VScrollbar;
+typedef struct _Etk_HSeparator Etk_HSeparator;
+typedef struct _Etk_VSeparator Etk_VSeparator;
 
 /**
  * @enum Etk_Child_Fill_Policy_Flag

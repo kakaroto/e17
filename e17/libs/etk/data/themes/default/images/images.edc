@@ -41,4 +41,6 @@ images {
    image: "tree_header_active.png" COMP;
    image: "tree_expander_fold.png" COMP;
    image: "tree_expander_unfold.png" COMP;
+   image: "hseparator.png" COMP;
+   image: "vseparator.png" COMP;
 }

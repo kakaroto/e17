@@ -15,7 +15,7 @@ lib_LTLIBRARIES = libetk.la
 
 EXTRA_DIST = 
 
-include_HEADERS = \
+ETKHEADERS = \
 Etk.h etk_types.h etk_main.h etk_utils.h \
 etk_type.h etk_object.h etk_property.h \
 etk_signal.h etk_signal_callback.h etk_marshallers.h \
@@ -30,7 +30,8 @@ etk_entry.h \
 etk_canvas.h \
 etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
 etk_tree.h \
-etk_range.h etk_scale.h etk_scrollbar.h
+etk_range.h etk_scale.h etk_scrollbar.h \
+etk_separator.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -47,10 +48,12 @@ etk_entry.c \
 etk_canvas.c \
 etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
 etk_tree.c \
-etk_range.c etk_scale.c etk_scrollbar.c
+etk_range.c etk_scale.c etk_scrollbar.c \
+etk_separator.c  \
+$(ETKHEADERS)
 
-+installed_headersdir = $(prefix)/include/etk
-+installed_headers_DATA = $(include_HEADERS)
+installed_headersdir = $(prefix)/include/etk
+installed_headers_DATA = $(ETKHEADERS)
 
 libetk_la_LIBADD  = @ecore_libs@ @evas_libs@ @edje_libs@
 

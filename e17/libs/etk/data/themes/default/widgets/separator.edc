@@ -1,0 +1,48 @@
+group {
+   name: "hseparator";
+   min: 2 2;
+   parts {
+      part {
+         name: "hseparator";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0 0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "hseparator.png";
+               border: 2 2 2 2;
+            }
+         }
+      }
+   }
+}
+group {
+   name: "vseparator";
+   min: 2 2;
+   parts {
+      part {
+         name: "vseparator";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0 0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "vseparator.png";
+               border: 2 2 2 2;
+            }
+         }
+      }
+   }
+}
