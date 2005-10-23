@@ -13,18 +13,18 @@
  * the array the list won't be direct, but will have only one item.) 
  */
 
-static unsigned int  ewl_callback_hash(void *key);
-static int           ewl_callback_compare(void *key1, void *key2);
+static unsigned int ewl_callback_hash(void *key);
+static int ewl_callback_compare(void *key1, void *key2);
 static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
-static void          ewl_callback_unregister(Ewl_Callback * cb);
+static void ewl_callback_unregister(Ewl_Callback * cb);
 
-static void 	     ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, 
-                                            unsigned int pos);
-static int           ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
-                                            Ewl_Callback *cb, unsigned int pos);
+static void ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, 
+						unsigned int pos);
+static int ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
+				Ewl_Callback *cb, unsigned int pos);
 
-static int           callback_id = 0;
-static Ecore_Hash   *cb_registration = NULL;
+static int callback_id = 0;
+static Ecore_Hash *cb_registration = NULL;
 
 /**
  * @return Returns no value.
@@ -50,7 +50,7 @@ static Ecore_Hash   *cb_registration = NULL;
  * case.
  */
 void
-ewl_callbacks_init()
+ewl_callbacks_init(void)
 {
 	cb_registration = ecore_hash_new(ewl_callback_hash,
 				       ewl_callback_compare);
@@ -64,7 +64,7 @@ ewl_callbacks_init()
  * callbacks.
  */
 void
-ewl_callbacks_shutdown()
+ewl_callbacks_shutdown(void)
 {
 	ecore_hash_destroy(cb_registration);
 }
@@ -79,9 +79,9 @@ ewl_callbacks_shutdown()
  * not the case.
  */
 static Ewl_Callback *
-ewl_callback_register(Ewl_Callback * cb)
+ewl_callback_register(Ewl_Callback *cb)
 {
-	Ewl_Callback   *found;
+	Ewl_Callback *found;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cb", cb, NULL);
@@ -107,7 +107,7 @@ ewl_callback_register(Ewl_Callback * cb)
  * it is removed from the registration system and freed.
  */
 static void
-ewl_callback_unregister(Ewl_Callback * cb)
+ewl_callback_unregister(Ewl_Callback *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);
@@ -126,6 +126,8 @@ ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	/* don't type check here as this will get called after most of a
+	 * widget is already destroyed */
 
 	/* deal with the direct case first */
 	if (w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT)
@@ -175,6 +177,7 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("cb", cb, 0);
+	DCHECK_TYPE_RET("w", w, "widget", 0);
 
 	/* set direct if possible */
 	if (!EWL_CALLBACK_LEN(w, t))
@@ -234,15 +237,16 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
  * placed at the end of the callback chain.
  */
 int
-ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
+ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
 		    Ewl_Callback_Function f, void *user_data)
 {
-	Ewl_Callback   *cb;
-	int 		ret;
+	Ewl_Callback *cb;
+	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
+	DCHECK_TYPE_RET("w", w, "widget", 0);
 
 	cb = NEW(Ewl_Callback, 1);
 	if (!cb)
@@ -269,15 +273,16 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
  * beginning of the callback chain.
  */
 int
-ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
+ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
 		     Ewl_Callback_Function f, void *user_data)
 {
-	Ewl_Callback     *cb;
-	int 		  ret;
+	Ewl_Callback *cb;
+	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
+	DCHECK_TYPE_RET("w", w, "widget", 0);
 
 	cb = NEW(Ewl_Callback, 1);
 	if (!cb)
@@ -306,18 +311,18 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
  * the specified callback on the callback chain.
  */
 int
-ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
+ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
 			  Ewl_Callback_Function f, void *user_data,
 			  Ewl_Callback_Function after, void *after_data)
 {
-	Ewl_Callback   *cb;
-	Ewl_Callback   *search;
-	int 		    ret, pos = 0;
+	Ewl_Callback *cb;
+	Ewl_Callback *search;
+	int ret, pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_PARAM_PTR_RET("f", f, 0);
+	DCHECK_TYPE_RET("w", w, "widget", 0);
 
 	cb = NEW(Ewl_Callback, 1);
 	if (!cb)
@@ -354,9 +359,11 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
  * Executes the callback chain for the specified widget @a w, with event @a t.
  */
 void
-ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
+ewl_callback_call(Ewl_Widget *w, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_callback_call_with_event_data(w, t, NULL);
 
@@ -374,15 +381,16 @@ ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
  * ev_data.
  */
 void
-ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
+ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
 				  void *ev_data)
 {
-	Ewl_Callback   *cb;
-	Ewl_Widget     *parent, *top = NULL;
-	int 		i;
+	Ewl_Callback *cb;
+	Ewl_Widget *parent, *top = NULL;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	/*
 	 * First search up the tree to find the topmost intercepting widget.
@@ -441,10 +449,12 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
  * Delete all callbacks of type @a t from widget @a w.
  */
 void
-ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
+ewl_callback_del_type(Ewl_Widget *w, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	/* don't type check this as most of the widget will probably be
+	 * destroyed by the time we get here */
 
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
@@ -465,13 +475,14 @@ ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
  * Delete the specified callback id from the widget @a w.
  */
 void
-ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
+ewl_callback_del_cb_id(Ewl_Widget *w, Ewl_Callback_Type t, int cb_id)
 {
-	Ewl_Callback   *cb;
-	int 		i;
+	Ewl_Callback *cb;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (!EWL_CALLBACK_LEN(w, t) || cb_id > callback_id)
 		DRETURN(DLEVEL_STABLE);
@@ -497,12 +508,13 @@ ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
  * Removes and frees all callbacks associated with widget @a w.
  */
 void
-ewl_callback_clear(Ewl_Widget * w)
+ewl_callback_clear(Ewl_Widget *w)
 {
-	int             i;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	for (i = 0; i < EWL_CALLBACK_MAX; i++) 
 		ewl_callback_del_type(w, i);
@@ -521,13 +533,14 @@ ewl_callback_clear(Ewl_Widget * w)
  * to widget @a w.
  */
 void
-ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
+ewl_callback_del(Ewl_Widget *w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 {
-	Ewl_Callback   *cb;
-	int 		i;
+	Ewl_Callback *cb;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
@@ -556,14 +569,15 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
  * to widget @a w.
  */
 void
-ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
+ewl_callback_del_with_data(Ewl_Widget *w, Ewl_Callback_Type t,
 			   Ewl_Callback_Function f, void *d)
 {
-	Ewl_Callback   *cb;
-	int 		i;
+	Ewl_Callback *cb;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
@@ -586,7 +600,7 @@ ewl_callback_del_with_data(Ewl_Widget * w, Ewl_Callback_Type t,
 static unsigned int
 ewl_callback_hash(void *key)
 {
-	Ewl_Callback   *cb;
+	Ewl_Callback *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("key", key, 0);
@@ -604,8 +618,8 @@ ewl_callback_hash(void *key)
 static int
 ewl_callback_compare(void *key1, void *key2)
 {
-	Ewl_Callback   *cb1;
-	Ewl_Callback   *cb2;
+	Ewl_Callback *cb1;
+	Ewl_Callback *cb2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("key1", key1, -1);
