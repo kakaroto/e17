@@ -5,35 +5,34 @@
 
 typedef struct
 {
-
 	/*
 	 * Alignment is only done in the align direction.
 	 */
-	int             f1_align, f3_align;
-	int             a1_align, a3_align;
+	int f1_align, f3_align;
+	int a1_align, a3_align;
 
 	/*
 	 * This is an indicator for filling in the proper directions.
 	 */
-	int             f_policy;
+	int f_policy;
 
 	/*
 	 * Function pointers for getting the dimension of the widget that we
 	 * care about.
 	 */
-	void            (*pref_fill_set) (Ewl_Object * ob, int size);
-	int             (*fill_ask) (Ewl_Object * ob);
-	void            (*fill_set) (Ewl_Object * ob, int size);
+	void (*pref_fill_set) (Ewl_Object * ob, int size);
+	int (*fill_ask) (Ewl_Object * ob);
+	void (*fill_set) (Ewl_Object * ob, int size);
 
-	int             (*align_ask) (Ewl_Object * ob);
-	void            (*align_set) (Ewl_Object * ob, int size);
-
+	int (*align_ask) (Ewl_Object * ob);
+	void (*align_set) (Ewl_Object * ob, int size);
 } Box_Orientation;
 
 /*
  * The information for the two different orientations
  */
-static Box_Orientation *ewl_box_vertical = NULL, *ewl_box_horizontal = NULL;
+static Box_Orientation *ewl_box_vertical = NULL;
+static Box_Orientation *ewl_box_horizontal = NULL;
 
 /*
  * And a pointer to the currently used orientation
@@ -45,25 +44,26 @@ static Box_Orientation *ewl_box_info = NULL;
  */
 static Ecore_List *ewl_box_spread = NULL;
 
-static void     ewl_box_setup();
+static void ewl_box_setup();
 
-static void     ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
+static void ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-static void     ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
+static void ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-static void     ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
+static void ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
 					   int *fill, int *align,
 					   int *align_size);
-static void     ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
+static void ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
 					  int *y, int *align, int *align_size);
 
 /**
  * @return Returns NULL on failure, or a newly allocated box on success.
  * @brief Allocate and initialize a new box with given orientation
  */
-Ewl_Widget     *ewl_box_new()
+Ewl_Widget 
+*ewl_box_new()
 {
-	Ewl_Box        *b;
+	Ewl_Box *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -83,7 +83,8 @@ Ewl_Widget     *ewl_box_new()
  * @return Returns NULL on failure, or a newly allocated horizontal box on success.
  * @brief Allocate and initialize a new box with horizontal orientation
  */
-Ewl_Widget     *ewl_hbox_new()
+Ewl_Widget
+*ewl_hbox_new()
 {
 	Ewl_Widget *b;
 
@@ -102,7 +103,8 @@ Ewl_Widget     *ewl_hbox_new()
  * @return Returns NULL on failure, or a newly allocated vertical box on success.
  * @brief Allocate and initialize a new box with vertical orientation
  */
-Ewl_Widget     *ewl_vbox_new()
+Ewl_Widget 
+*ewl_vbox_new()
 {
 	Ewl_Widget *b;
 
@@ -125,9 +127,10 @@ Ewl_Widget     *ewl_vbox_new()
  * Responsible for setting up default values and callbacks
  * within a box structure.
  */
-int ewl_box_init(Ewl_Box * b)
+int
+ewl_box_init(Ewl_Box * b)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, FALSE);
@@ -193,9 +196,10 @@ int ewl_box_init(Ewl_Box * b)
  * Changes the orientation of the specified box, and
  * reconfigures it in order for the appearance to be updated.
  */
-void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
+void
+ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -226,7 +230,8 @@ void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
  * @return Returns the orientation value of the box @a b.
  * @brief Retrieves the orientation of the box
  */
-Ewl_Orientation ewl_box_orientation_get(Ewl_Box *b)
+Ewl_Orientation
+ewl_box_orientation_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
@@ -243,7 +248,8 @@ Ewl_Orientation ewl_box_orientation_get(Ewl_Box *b)
  * Boxes use homogeneous layout by default, this can be used
  * to change that.
  */
-void ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
+void
+ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -286,10 +292,11 @@ void ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
  * Adjust the spacing of the specified box and reconfigure
  * it to change the appearance.
  */
-void ewl_box_spacing_set(Ewl_Box * b, int s)
+void
+ewl_box_spacing_set(Ewl_Box * b, int s)
 {
 	int nodes;
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -332,13 +339,13 @@ void
 ewl_box_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
-	Ewl_Box        *b;
+	Ewl_Box *b;
 
-	int             total_fill = 0;
-	int             x, y;
-	int    width, height;
-	int            *fill, *align;
-	int   *fill_size, *align_size;
+	int total_fill = 0;
+	int x, y;
+	int width, height;
+	int *fill, *align;
+	int *fill_size, *align_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -404,14 +411,14 @@ void
 ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
-	int             i, num;
-	int             x, y;
-	int             width, height;
-	int            *fill;
-	int            *fill_size;
-	int             remainder;
-	Ewl_Object     *child;
-	Ewl_Box        *b;
+	int i, num;
+	int x, y;
+	int width, height;
+	int *fill;
+	int *fill_size;
+	int remainder;
+	Ewl_Object *child;
+	Ewl_Box *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -475,8 +482,8 @@ ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
-	Ewl_Object     *child;
-	int    initial;
+	Ewl_Object *child;
+	int initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -538,9 +545,9 @@ static void
 ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size, 
 					int *align_size __UNUSED__)
 {
-	int             space;
-	int             temp, remainder;
-	Ewl_Object     *c;
+	int space;
+	int temp, remainder;
+	Ewl_Object *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -649,7 +656,7 @@ static void
 ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			   int *align, int *align_size)
 {
-	Ewl_Object     *child;
+	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -941,3 +948,4 @@ ewl_box_setup()
 		ewl_box_horizontal->align_set = ewl_object_h_request;
 	}
 }
+
