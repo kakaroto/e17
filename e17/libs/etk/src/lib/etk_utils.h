@@ -3,16 +3,14 @@
 #define _ETK_UTILS_H_
 
 #include <stdio.h>
-#include <libintl.h>
 #include "config.h"
 
 /* Gettext */
-#ifndef _
-   #ifdef HAVE_GETTEXT
-      #define _(string) gettext(string)
-   #else
-      #define _(string) (string)
-   #endif
+#ifdef HAVE_GETTEXT
+   #include <libintl.h>
+   #define _(string) gettext(string)
+#else
+   #define _(string) string
 #endif
 
 /** @brief Gets the max of the two values */

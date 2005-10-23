@@ -1,6 +1,6 @@
-/** @file etk_hseparator.h */
-#ifndef _ETK_HSEPARATOR_H_
-#define _ETK_HSEPARATOR_H_
+/** @file etk_separator.h */
+#ifndef _ETK_SEPARATOR_H_
+#define _ETK_SEPARATOR_H_
 
 #include "etk_widget.h"
 #include "etk_types.h"
@@ -17,7 +17,21 @@
 /** @brief Checks if the object is an Etk_HSeparator */
 #define ETK_IS_HSEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_HSEPARATOR_TYPE))
 
+/** @brief Gets the type of a vseparator */
+#define ETK_VSEPARATOR_TYPE       (etk_vseparator_type_get())
+/** @brief Casts the object to an Etk_VSeparator */
+#define ETK_VSEPARATOR(obj)       (ETK_OBJECT_CAST((obj), ETK_VSEPARATOR_TYPE, Etk_VSeparator))
+/** @brief Checks if the object is an Etk_VSeparator */
+#define ETK_IS_VSEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSEPARATOR_TYPE))
+
 struct _Etk_HSeparator
+{
+   /* private: */
+   /* Inherit from Etk_Widget */
+   Etk_Widget widget;
+};
+
+struct _Etk_VSeparator
 {
    /* private: */
    /* Inherit from Etk_Widget */
@@ -27,25 +41,8 @@ struct _Etk_HSeparator
 Etk_Type *etk_hseparator_type_get();
 Etk_Widget *etk_hseparator_new();
 
-
-
-/** @brief Gets the type of a vseparator */
-#define ETK_VSEPARATOR_TYPE       (etk_vseparator_type_get())
-/** @brief Casts the object to an Etk_VSeparator */
-#define ETK_VSEPARATOR(obj)       (ETK_OBJECT_CAST((obj), ETK_VSEPARATOR_TYPE, Etk_VSeparator))
-/** @brief Checks if the object is an Etk_VSeparator */
-#define ETK_IS_VSEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSEPARATOR_TYPE))
-
-struct _Etk_VSeparator
-{
-   /* private: */
-   /* Inherit from Etk_Widget */
-   Etk_Widget widget;
-};
-
 Etk_Type *etk_vseparator_type_get();
 Etk_Widget *etk_vseparator_new();
-
 
 /** @} */
 

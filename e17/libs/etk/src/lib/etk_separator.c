@@ -1,13 +1,11 @@
-/** @file etk_hseparator.c */
-#include "etk_hseparator.h"
+/** @file etk_separator.c */
+#include "etk_separator.h"
 #include <stdlib.h>
-#include <string.h>
 
 /**
  * @addtogroup Etk_Separator
 * @{
  */
-
 
 /**************************
  *
