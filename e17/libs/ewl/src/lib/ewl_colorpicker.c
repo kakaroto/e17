@@ -88,7 +88,7 @@ ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h)
 }
 
 void
-ewl_colorpicker_range_change_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_colorpicker_range_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_ColorPicker *cp;
 	Ewl_Spectrum *sp;
@@ -109,7 +109,7 @@ ewl_colorpicker_range_change_cb(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_colorpicker_spectrum_change_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_colorpicker_spectrum_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_ColorPicker *cp;
 	Ewl_Spectrum *sp;

@@ -90,7 +90,7 @@ ewl_label_text_get(Ewl_Label *la)
 }
 
 void
-ewl_label_realize_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_label_realize_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -101,7 +101,7 @@ ewl_label_realize_cb(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_label_destroy_cb(Ewl_Widget *w, void *ev, void *data)
+ewl_label_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
         Ewl_Label *label;
 

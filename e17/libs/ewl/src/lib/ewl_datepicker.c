@@ -39,14 +39,16 @@ void ewl_datepicker_calendar_position_set(Ewl_DatePicker* dp) {
 }
 
 void
-ewl_datepicker_destroy_cb (Ewl_Widget *w, void *ev_data, void *user_data) {
+ewl_datepicker_destroy_cb (Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__) {
 	Ewl_DatePicker* dp = EWL_DATEPICKER(w);
 	ewl_widget_destroy(dp->calendar_window);
 	ewl_widget_destroy(dp->calendar);
 }
 
 void
-ewl_datepicker_dropdown(Ewl_Widget *w, void *ev_data, void *user_data) {
+ewl_datepicker_dropdown(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__) {
 	
 	Ewl_DatePicker *dp = EWL_DATEPICKER(w);
 	/*printf("Drop down..\n");*/	
@@ -61,12 +63,14 @@ ewl_datepicker_dropdown(Ewl_Widget *w, void *ev_data, void *user_data) {
 }
 
 void
-ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+					void *user_data __UNUSED__) {
 	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
 }
 
 void
-ewl_datepicker_value_changed_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+							void *user_data) {
 	static char date[1024];
 	Ewl_DatePicker* dp = EWL_DATEPICKER(user_data);
 	ewl_widget_hide(dp->calendar_window);
@@ -75,7 +79,8 @@ ewl_datepicker_value_changed_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
 	ewl_text_text_set(EWL_TEXT(dp), date);
 }
 
-void ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+void ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__) {
 	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
 }
 

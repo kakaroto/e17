@@ -196,7 +196,8 @@ ewl_entry_selection_clear(Ewl_Entry *e)
  * internal stuff
  */
 void
-ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Entry *e;
 	unsigned int c_pos;
@@ -224,7 +225,8 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev, void *data)
 }
 
 void 
-ewl_entry_cb_selected(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_selected(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Entry *entry = EWL_ENTRY(w);
 	
@@ -233,7 +235,8 @@ ewl_entry_cb_selected(Ewl_Widget *w, void *ev, void *data)
 }
 
 void 
-ewl_entry_cb_deselected(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_deselected(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Entry *entry = EWL_ENTRY(w);
 	
@@ -242,7 +245,8 @@ ewl_entry_cb_deselected(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_key_down(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Event_Key_Down *event;
 	Ewl_Entry *e;
@@ -313,7 +317,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *event;
 	Ewl_Entry *e;
@@ -338,7 +342,8 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Entry *e;
 
@@ -356,7 +361,8 @@ ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

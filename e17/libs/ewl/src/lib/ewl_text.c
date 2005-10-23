@@ -1990,12 +1990,12 @@ ewl_text_trigger_free(Ewl_Text_Trigger *t)
 }
 
 static void
-ewl_text_trigger_cb_free(void *value, void *data)
+ewl_text_trigger_cb_free(void *value, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
-	ewl_text_trigger_free(data);
+	ewl_text_trigger_free(value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2449,7 +2449,8 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 }
 
 void
-ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Text *t;
 	int xx, yy, ww, hh;
@@ -2484,7 +2485,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 	Ewl_Embed *emb;
@@ -2535,7 +2536,8 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Text *t;
 
@@ -2555,7 +2557,7 @@ ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 
@@ -2569,7 +2571,7 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 
@@ -2583,7 +2585,7 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 
@@ -2612,7 +2614,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
         Ewl_Text *t;
         Ewl_Event_Mouse_Down *event;
@@ -2647,7 +2649,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 }       
 
 void
-ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
         Ewl_Text *t;
         Ewl_Event_Mouse_Up *event;
@@ -2676,7 +2678,7 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
         Ewl_Text *t;
         Ewl_Event_Mouse_Move *event;
@@ -2700,7 +2702,7 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data)
+ewl_text_trigger_cb_focus_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -2714,7 +2716,7 @@ ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data)
+ewl_text_trigger_cb_focus_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -2728,7 +2730,7 @@ ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+ewl_text_trigger_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -2742,7 +2744,7 @@ ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -4262,7 +4264,8 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 }
 
 void
-ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data)
+ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Text_Trigger *trig;
 	
@@ -4432,6 +4435,7 @@ static Evas_Textblock_Cursor *
 ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 {
 	Evas_Textblock_Cursor *cursor;
+	int cur_idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
@@ -4439,7 +4443,8 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 	cursor = evas_object_textblock2_cursor_new(t->textblock);
 	evas_textblock2_cursor_node_first(cursor);
 
-	while (idx >= 0)
+	cur_idx = idx;
+	while (cur_idx >= 0)
 	{
 		int len = 0;
 		const char *txt;
@@ -4449,9 +4454,9 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 		if (!txt)
 		{
 			len = evas_textblock2_cursor_node_text_length_get(cursor);
-			if (len > idx)
+			if (len > cur_idx)
 			{
-				evas_textblock2_cursor_pos_set(cursor, idx);
+				evas_textblock2_cursor_pos_set(cursor, cur_idx);
 				break;
 			}
 		}
@@ -4464,7 +4469,7 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 			evas_textblock2_cursor_char_last(cursor);
 			break;
 		}
-		idx -= len;
+		cur_idx -= len;
 	}
 
 	DRETURN_PTR(cursor, DLEVEL_STABLE);

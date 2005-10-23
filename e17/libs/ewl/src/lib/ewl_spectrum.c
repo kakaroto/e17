@@ -518,7 +518,8 @@ ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, 
+				void *user_data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
 	Ewl_Event_Mouse_Move *ev;
@@ -548,7 +549,8 @@ ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 void
-ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data, 
+				void *user_data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
 	Ewl_Event_Mouse_Down *ev;

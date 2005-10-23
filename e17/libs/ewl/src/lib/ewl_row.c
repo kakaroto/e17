@@ -243,7 +243,7 @@ ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_row_header_configure_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Row *row;

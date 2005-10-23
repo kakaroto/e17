@@ -389,7 +389,9 @@ ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data
 }
 
 void
-ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w __UNUSED__, 
+					void *ev_data __UNUSED__, 
+					void *user_data)
 {
 	Ewl_ColorDialog *cd;
 	Ewl_Color_Set *col;
@@ -431,7 +433,8 @@ ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_d
 }
 
 void
-ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data)
 {
 	Ewl_ColorDialog *cd;
 

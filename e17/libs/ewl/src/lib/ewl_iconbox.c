@@ -431,7 +431,7 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 }
 
 
-void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data)
+void ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data)
 {
 	Ewl_Event_Key_Down* ev = ev_data;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
@@ -778,7 +778,7 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 /*Callbacks*/
 
-void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
@@ -805,20 +805,20 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 /* ----------- */
-void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	ewl_iconbox_icon_arrange(ib);
 }
 
-void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_expansion_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,700);
 }
 
-void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	Ewl_Event_Mouse_Move *ev = ev_data;
@@ -926,7 +926,7 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 
-void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	
@@ -973,7 +973,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 
 
 
-void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 
 	Ewl_IconBox_Icon* ib = user_data;
@@ -1015,7 +1015,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
 }
 
-void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	/*Ewl_Event_Mouse_Down *ev = ev_data;*/
 
@@ -1025,7 +1025,7 @@ void ewl_iconbox_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
 }
 
-void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Up *ev = ev_data;
 	Ewl_IconBox* ib = user_data;
@@ -1038,7 +1038,7 @@ void ewl_iconbox_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 	}
 }
 
-void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_IconBox_Icon* ib = user_data;
 
@@ -1053,7 +1053,7 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *us
  * @return Returns no value
  * @brief	Initialize the icon box
  */
-void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
 	/*printf ("Got a configure\n");*/
 

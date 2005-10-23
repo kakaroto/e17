@@ -440,7 +440,8 @@ ewl_menu_base_popup_show_cb(Ewl_Widget * w __UNUSED__,
 }
 
 void
-ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, 
+					void *user_data __UNUSED__)
 {
 	Ewl_Event_Key_Down *ev = ev_data;
 	DENTER_FUNCTION(DLEVEL_STABLE);
