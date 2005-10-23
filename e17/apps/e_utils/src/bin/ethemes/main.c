@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <dirent.h>
 #include <limits.h>
 #include <Ecore.h>
@@ -132,7 +133,7 @@ void read_theme_list() {
 	ecore_list_goto_first(list);
 	char * data;
 	themes = NULL;
-	while (data = (char *)ecore_list_next(list))
+	while ((data = (char *)ecore_list_next(list)))
 		if (strstr(data, ".edj") != NULL) {
 			char * file = (char *) strdup(data);
 			themes = evas_list_append(themes, file);

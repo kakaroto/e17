@@ -8,6 +8,7 @@ AM_CFLAGS = \
 	-DE17PREFIX=\"`enlightenment-config --prefix`\" \
 	@ECORE_CFLAGS@ \
 	@EVAS_CFLAGS@ \
+	@ESMART_CFLAGS@ \
 	@EDJE_CFLAGS@ \
 	@ENLIGHTENMENT_CFLAGS@
 
