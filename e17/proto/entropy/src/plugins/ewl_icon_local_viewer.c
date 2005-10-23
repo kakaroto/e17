@@ -482,6 +482,8 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Register our interest in receiving file mod/create/delete notifications*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CHANGE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CREATE));
+	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE));
+	
 
 	/*Register interest in getting stat events*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT));
@@ -499,7 +501,7 @@ void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entrop
 		Ewl_IconBox_Icon* icon;
 		gui_file* gui_object;
 
-	
+		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(comp->core, list_item->md5);			
 			 char* mime;
 			 /*printf("%s\n", list_item->filename);*/
@@ -532,6 +534,7 @@ void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entrop
 				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);
 				entropy_notify_event_commit(comp->core->notify,ev);
 			}
+		}
 			
 }
 
@@ -634,6 +637,11 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
        }
        break;
 
+       case ENTROPY_NOTIFY_FILE_REMOVE: {
+		printf("Received a remove file notify\n");
+	}
+	break;
+
        case ENTROPY_NOTIFY_FILE_STAT_EXECUTED: {
 		//printf("STAT EXECUTED Response back at ewl_icon_local_viewer\n");
        }
@@ -642,9 +650,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
        case ENTROPY_NOTIFY_FILE_STAT_AVAILABLE: {
 							
 		entropy_file_stat* file_stat = (entropy_file_stat*)ret;
-
 		if (file_stat->file == NULL) { printf ( "***** File stat file is null\n"); }
-
 		ewl_icon_local_viewer_show_stat(file_stat);
 		
 

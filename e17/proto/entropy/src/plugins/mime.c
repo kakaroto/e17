@@ -63,6 +63,7 @@ char* entropy_mime_plugin_identify_file(char* path, char* filename) {
 		else if (!strcmp(pos, ".html")) type = "text/html";
 		else if (!strcmp(pos, ".c")) type = "text/csrc";
 		else if (!strcmp(pos, ".mpg")) type = "video/mpeg";
+		else if (!strcmp(pos, ".mpe")) type = "video/mpeg";
 		else if (!strcmp(pos, ".mpeg")) type = "video/mpeg";
 		else if (!strcmp(pos, ".avi")) type = "video/x-msvideo";
 		

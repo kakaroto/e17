@@ -101,6 +101,11 @@ void callback(evfs_event* data) {
 								case EVFS_FILE_EV_CHANGE: //printf("  Change event\n");
 								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CHANGE);
 								  break;
+								case EVFS_FILE_EV_REMOVE: //printf("  Change event\n");
+								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE);
+								  break;
+
+								
 						}	
 						
 						gui_event->data = file; 

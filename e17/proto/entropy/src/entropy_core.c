@@ -674,6 +674,23 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE;
+		
+		//printf("Sending a file create event...\n");
+
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			(*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An entropy_generic_file*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);
+
+
 
 	
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_ACTION_FILE)) {
