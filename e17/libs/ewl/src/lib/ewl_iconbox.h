@@ -71,6 +71,11 @@ struct Ewl_IconBox
 	Ewl_Widget* ewl_iconbox_menu_box;
 	Ewl_Widget* ewl_iconbox_view_menu;
 
+	Ewl_Widget* icon_menu_floater;
+	Ewl_Widget* icon_menu_item;
+	Ewl_Widget* icon_menu;
+
+
 	Ecore_List *ewl_iconbox_icon_list;  /* The icon list */
 	char* test;
 

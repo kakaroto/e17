@@ -145,6 +145,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	/*Start with an empty background*/
 	ib->background = NULL;
+
+	/*Set the defaults to 0 for layout*/
+	ib->lx = ib->ly = ib->iw = ib->ih = 0;
 	
 	ib->ewl_iconbox_pane_inner = ewl_overlay_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
@@ -155,13 +158,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater),
 			       ib->ewl_iconbox_pane_inner);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_FILL_FILL);
-
-
-	/*Set the defaults to 0*/
-	ib->lx = ib->ly = ib->iw = ib->ih = 0;
-	
-	
+	/*-------------------------------------------*/
 	/* Get the context menu ready */
 	ib->ewl_iconbox_context_menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu), "");
@@ -190,8 +187,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ib->ewl_iconbox_context_menu_item = ewl_menu_separator_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_context_menu_item);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
-
-
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
 		
 	/* Add the menu floater to the pane inner */
@@ -199,10 +194,33 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	/* ------------------------------ Menu */
 
+	/*Icon menu*/
+	ib->icon_menu = ewl_menu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->icon_menu), "");
+	ib->icon_menu_floater = ewl_floater_new();
+	ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater),
+			       ib->ewl_iconbox_pane_inner);
+	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu_floater), ib->icon_menu);	
+	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->icon_menu_floater);
 
-	/* Fix these to be more generic */
-	/*ewl_object_preferred_inner_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 680,300);
-	ewl_object_maximum_size_set(EWL_OBJECT(ib->ewl_iconbox_scrollpane), 400,400);*/
+
+	ib->icon_menu_item = ewl_menu_separator_new();
+	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), ib->icon_menu_item);
+	ewl_widget_show(ib->icon_menu_item);
+
+		
+	
+	
+	ewl_widget_show(ib->icon_menu_floater);
+	ewl_widget_show(ib->icon_menu);
+	
+	/*-----------------------------------*/
+
+
+
+	ewl_object_fill_policy_set(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(ib->icon_menu_floater), EWL_FLAG_FILL_FILL);
+	
 
 	/* Add the iconbox scrollpane to the iconbox */
 	ewl_container_child_append(EWL_CONTAINER(ib), ib->ewl_iconbox_scrollpane);
@@ -295,6 +313,12 @@ void ewl_iconbox_icon_size_custom_set(Ewl_IconBox* ib, int w, int h) {
 void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), item);
 }
+
+void ewl_iconbox_icon_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
+	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), item);
+}
+
+
 
 Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
 	Ewl_IconBox_Icon* list_item;
@@ -435,7 +459,9 @@ void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib) {
 	int pw,ph;
 	
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), pw > ib->lx ? pw + ib->iw: ib->lx+ib->iw+20, ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+ib->ih+30);
+	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
+			pw > ib->lx ? pw + ib->iw: ib->lx+ib->iw+20, 
+			ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+ib->ih+30);
 
 	
 }
@@ -889,23 +915,20 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_dat
 	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
 
-		//ewl_widget_show(ib->ewl_iconbox_menu_floater);
-		//ewl_widget_show(ib->ewl_iconbox_context_menu);
-		//ewl_widget_show(ib->ewl_iconbox_view_menu);
 		ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_pane_inner);
-		
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		/*Make sure the context menu is invisible*/
 		
-		//ewl_widget_hide(ib->ewl_iconbox_context_menu);
-		//ewl_widget_hide(ib->ewl_iconbox_menu_floater);
-		//ewl_widget_hide(ib->ewl_iconbox_view_menu);
-		//
+		//Hide the context menu
 		ewl_widget_hide(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item)->inmenu);
-		
 		ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), NULL);
+
+
+		//Hide the icon menu
+		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_menu_item)->inmenu);
+		ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater), NULL);
 		
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
@@ -926,6 +949,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	Ewl_IconBox_Icon* ib = user_data;
 	Ewl_Event_Mouse_Down *ev = ev_data;
+	int ibx,iby,px,py;
 	
 	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
 	ib->drag = 1;
@@ -933,8 +957,25 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	ib->icon_box_parent->xdown = ev->x;
 	ib->icon_box_parent->ydown = ev->y;
 
+	px = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent->ewl_iconbox_pane_inner));	
+	ibx = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent));
+	iby = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent));
+
 	/* Set this to selected */
 	ewl_iconbox_icon_select(ib,0);
+
+	if (ev->button == 3) {
+		printf("Showing menu at: %d:%d\n", ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
+		
+		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
+		ewl_widget_show(ib->icon_box_parent->icon_menu);
+		ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
+		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
+	} else {
+		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_box_parent->icon_menu_item)->inmenu);
+		ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), NULL);
+	}
 
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
 }

@@ -210,8 +210,8 @@ ewl_menu_item_image_set( Ewl_Menu_Item *item, char *image )
 	/*
 	 * Destroy the icon if it's the wrong type.
 	 */
-	if ((item->icon && (image && !ewl_widget_type_is(item->icon, "image")))
-			|| (!image && (!ewl_widget_type_is(item->icon, "spacer")))) {
+	if ((item->icon && ((image && !ewl_widget_type_is(item->icon, "image")))
+			|| (!image && (!ewl_widget_type_is(item->icon, "spacer"))))) {
 		ewl_widget_destroy(item->icon);
 		item->icon = NULL;
 	}
