@@ -96,7 +96,7 @@ void            ewl_menu_item_image_set(Ewl_Menu_Item * item, char *image);
 Ewl_Widget     *ewl_menu_separator_new(void);
 void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 
-void            ewl_menu_base_init(Ewl_Menu_Base * menu);
+int             ewl_menu_base_init(Ewl_Menu_Base *menu);
 
 /*
  * Internally used callbacks, override at your own risk.

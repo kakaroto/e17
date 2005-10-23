@@ -5,17 +5,17 @@
 
 /**
  * @param menu: the menu item to initialize
- * @return Returns nothing.
+ * @return Returns TRUE on success, FALSE otherwise.
  * @brief Initialize a menu item to default values
  *
  * Sets up the internal variables for the menu item and places the icon from
  * @a image and label from @a title in the menu item.
  */
-void ewl_menu_base_init(Ewl_Menu_Base * menu)
+int ewl_menu_base_init(Ewl_Menu_Base * menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DCHECK_PARAM_PTR("menu", menu);
+	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
 
 	/*
 	 * Initialize the defaults of the inherited fields.
@@ -55,7 +55,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu)
 				   EWL_CONTAINER(menu->popbox));
 	ewl_widget_internal_set(menu->popbox, TRUE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
