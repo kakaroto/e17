@@ -184,7 +184,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_expansion_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
-	ib->ewl_iconbox_context_menu_item = ewl_menu_separator_new();
+	ib->ewl_iconbox_context_menu_item = ewl_separator_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_context_menu_item);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
@@ -204,7 +204,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->icon_menu_floater);
 
 
-	ib->icon_menu_item = ewl_menu_separator_new();
+	ib->icon_menu_item = ewl_separator_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), ib->icon_menu_item);
 	ewl_widget_show(ib->icon_menu_item);
 

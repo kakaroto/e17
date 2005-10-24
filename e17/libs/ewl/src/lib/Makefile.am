@@ -45,7 +45,6 @@ EWLHEADERS = \
 	ewl_menubar.h \
 	ewl_menu_base.h \
 	ewl_menu_item.h \
-	ewl_menu_separator.h \
 	ewl_misc.h \
 	ewl_notebook.h \
 	ewl_object.h \
@@ -109,7 +108,6 @@ EWLSOURCES= \
 	ewl_menubar.c \
 	ewl_menu_base.c \
 	ewl_menu_item.c \
-	ewl_menu_separator.c \
 	ewl_misc.c \
 	ewl_notebook.c \
 	ewl_object.c \

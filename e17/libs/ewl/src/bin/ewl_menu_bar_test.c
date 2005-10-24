@@ -50,7 +50,10 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 				   "About",
 				   NULL};
 		for(i = 0; m_items[i] != NULL; i++) {
-			item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, m_items[i]);
+			item = ewl_menu_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(item), m_items[i]);
+			ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
+			ewl_widget_show(item);
 
 			foo = ewl_menu_item_new();
 			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
@@ -62,8 +65,13 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			ewl_container_child_append(EWL_CONTAINER(item), foo);
 			ewl_widget_show(foo);
 
-			if (i != 0 && (i % 1) == 0) 
-				ewl_menubar_seperator_add(EWL_MENUBAR(h_menubar));
+			if (i != 0 && (i % 1) == 0) {
+				Ewl_Widget *sep;
+
+				sep = ewl_vseparator_new();
+				ewl_container_child_append(EWL_CONTAINER(h_menubar), sep);
+				ewl_widget_show(sep);
+			}
 		}
 
 		item = ewl_spacer_new();
@@ -71,7 +79,10 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
 		ewl_widget_show(item);
 
-		item = ewl_menubar_menu_add(EWL_MENUBAR(h_menubar), NULL, "Help");
+		item = ewl_menu_new();
+		ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Help");
+		ewl_container_child_append(EWL_CONTAINER(h_menubar), item);
+		ewl_widget_show(item);
 
 		foo = ewl_menu_item_new();
 		ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
@@ -97,7 +108,11 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 				   NULL};
 		for(i = 0; m_items[i] != NULL; i++) {
 			Ewl_Widget *foo;
-			item = ewl_menubar_menu_add(EWL_MENUBAR(v_menubar), NULL, m_items[i]);
+
+			item = ewl_menu_new();
+			ewl_menu_item_text_set(EWL_MENU_ITEM(item), m_items[i]);
+			ewl_container_child_append(EWL_CONTAINER(v_menubar), item);
+			ewl_widget_show(item);
 
 			foo = ewl_menu_item_new();
 			ewl_menu_item_text_set(EWL_MENU_ITEM(foo), "foo");
@@ -110,7 +125,13 @@ __create_menubar_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 			ewl_widget_show(foo);
 
 			if (i != 0 && (i % 2) == 0) 
-				ewl_menubar_seperator_add(EWL_MENUBAR(v_menubar));
+			{
+				Ewl_Widget *sep;
+
+				sep = ewl_hseparator_new();
+				ewl_container_child_append(EWL_CONTAINER(v_menubar), sep);
+				ewl_widget_show(sep);
+			}
 		}
 	}
 	ewl_container_child_append(EWL_CONTAINER(box), v_menubar);

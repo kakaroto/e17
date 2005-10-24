@@ -84,7 +84,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 			    __imenu_configure, NULL);
 	ewl_widget_show(item);
 
-	item = ewl_menu_separator_new();
+	item = ewl_separator_new();
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_widget_show(item);
 

@@ -87,7 +87,7 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 
-	item = EWL_WIDGET(ewl_menu_separator_new());
+	item = EWL_WIDGET(ewl_separator_new());
 	ewl_container_child_append(EWL_CONTAINER(combo1), item);
 	ewl_widget_show(item);
 

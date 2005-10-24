@@ -173,7 +173,7 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_separator_new ();
+	item = ewl_separator_new ();
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -197,7 +197,7 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_separator_new ();
+	item = ewl_separator_new ();
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
@@ -220,7 +220,7 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	
-	item = ewl_menu_separator_new ();
+	item = ewl_separator_new ();
 	ewl_container_child_append (EWL_CONTAINER (misc), item);
 	ewl_widget_show (item);
 	

@@ -136,7 +136,6 @@ ewl_box_init(Ewl_Box * b)
 	DCHECK_PARAM_PTR_RET("b", b, FALSE);
 
 	w = EWL_WIDGET(b);
-	ewl_widget_inherit(w, "box");
 
 	/*
 	 * Create the temporary layout lists now that they are needed.
@@ -151,6 +150,7 @@ ewl_box_init(Ewl_Box * b)
 		ewl_widget_destroy(EWL_WIDGET(b));
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_widget_inherit(w, "box");
 
 	/*
 	 * Set the appearance based on default orientation.
