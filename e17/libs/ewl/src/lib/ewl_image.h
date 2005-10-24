@@ -48,33 +48,26 @@ struct Ewl_Image
 	} tile;
 };
 
-Ewl_Widget     *ewl_image_new(void);
-void            ewl_image_init(Ewl_Image * i);
-void            ewl_image_file_set(Ewl_Image * i, char *im, char *key);
-char           *ewl_image_file_get(Ewl_Image * i);
-void            ewl_image_proportional_set(Ewl_Image * i, char p);
-void		ewl_image_scale(Ewl_Image *i, double wp, double hp);
-void		ewl_image_scale_to(Ewl_Image *i, int w, int h);
-void		ewl_image_tile_set(Ewl_Image *i, int x, int y, 
+Ewl_Widget	*ewl_image_new(void);
+int		 ewl_image_init(Ewl_Image *i);
+void		 ewl_image_file_set(Ewl_Image *i, char *im, char *key);
+char		*ewl_image_file_get(Ewl_Image *i);
+void		 ewl_image_proportional_set(Ewl_Image *i, char p);
+void		 ewl_image_scale(Ewl_Image *i, double wp, double hp);
+void		 ewl_image_scale_to(Ewl_Image *i, int w, int h);
+void		 ewl_image_tile_set(Ewl_Image *i, int x, int y, 
 						int w, int h);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_image_realize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            ewl_image_configure_cb(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data,
-				        void *user_data);
-void            ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-void 		ewl_image_destroy_cb(Ewl_Widget * w, void *ev_data,
-					  void *user_data );
+void ewl_image_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
 
 /**
  * @}

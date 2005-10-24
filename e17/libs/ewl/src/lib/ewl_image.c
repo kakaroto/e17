@@ -12,9 +12,10 @@ static Ewl_Image_Type  ewl_image_type_get(const char *i);
  * The @a k parameter is primarily used for loading edje groups or keyed data
  * in an image.
  */
-Ewl_Widget     *ewl_image_new()
+Ewl_Widget *
+ewl_image_new(void)
 {
-	Ewl_Image      *image;
+	Ewl_Image *image;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -22,7 +23,10 @@ Ewl_Widget     *ewl_image_new()
 	if (!image)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_image_init(image);
+	if (!ewl_image_init(image)) {
+		ewl_widget_destroy(EWL_WIDGET(image));
+		image = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
 }
@@ -34,16 +38,19 @@ Ewl_Widget     *ewl_image_new()
  *
  * Sets the fields and callbacks of @a i to their default values.
  */
-void ewl_image_init(Ewl_Image * i)
+int
+ewl_image_init(Ewl_Image *i)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
+	DCHECK_PARAM_PTR_RET("i", i, FALSE);
 
 	w = EWL_WIDGET(i);
 
-	ewl_widget_init(w);
+	if (!ewl_widget_init(w))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_appearance_set(w, "image");
 	ewl_widget_inherit(w, "image");
 
@@ -56,7 +63,7 @@ void ewl_image_init(Ewl_Image * i)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_image_unrealize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_image_destroy_cb,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_image_destroy_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_configure_cb,
 			    NULL);
@@ -75,7 +82,7 @@ void ewl_image_init(Ewl_Image * i)
 	i->tile.w = 0;
 	i->tile.h = 0;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -83,10 +90,12 @@ void ewl_image_init(Ewl_Image * i)
  * @return Returns the currently set filename
  * @brief get the filename this image uses
  */
-char *ewl_image_file_get(Ewl_Image * i)
+char *
+ewl_image_file_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, NULL);
+	DCHECK_TYPE_RET("i", i, "image", NULL);
 
 	DRETURN_PTR(i->path, DLEVEL_STABLE);
 }
@@ -100,17 +109,18 @@ char *ewl_image_file_get(Ewl_Image * i)
  *
  * Set the image displayed by @a i to the one found at the path @a im.
  */
-void ewl_image_file_set(Ewl_Image * i, char *im, char *key)
+void
+ewl_image_file_set(Ewl_Image *i, char *im, char *key)
 {
-	int             old_type;
-	Ewl_Widget     *w;
-	Ewl_Embed      *emb;
+	int old_type;
+	Ewl_Widget *w;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
 
 	w = EWL_WIDGET(i);
-
 	emb = ewl_embed_widget_find(w);
 
 	IF_FREE(i->path);
@@ -137,7 +147,6 @@ void ewl_image_file_set(Ewl_Image * i, char *im, char *key)
 		 * Free the image if it had been loaded.
 		 */
 		if (i->image) {
-
 			/*
 			 * Type is important for using the correct free calls.
 			 */
@@ -169,8 +178,8 @@ void
 ewl_image_proportional_set(Ewl_Image *i, char p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
 
 	i->proportional = p;
 	ewl_widget_configure(EWL_WIDGET(i));
@@ -194,6 +203,7 @@ ewl_image_scale(Ewl_Image *i, double wp, double hp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
 
 	if (i->proportional) {
 		if (wp < hp)
@@ -228,6 +238,7 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
 
 	i->sw = 1.0;
 	i->sh = 1.0;
@@ -255,6 +266,7 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
 
 	i->tile.set = 1;
 	i->tile.x = x;
@@ -265,17 +277,18 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Image      *i;
-	Ewl_Embed      *emb;
+	Ewl_Image *i;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
-
 	emb = ewl_embed_widget_find(w);
 
 	/*
@@ -284,7 +297,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (i->type == EWL_IMAGE_TYPE_EDJE) {
 		i->image = edje_object_add(emb->evas);
 		if (!i->image)
-			return;
+			DRETURN(DLEVEL_STABLE);
 
 		if (i->path)
 			edje_object_file_set(i->image, i->path, i->key);
@@ -292,7 +305,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	} else {
 		i->image = evas_object_image_add(emb->evas);
 		if (!i->image)
-			return;
+			DRETURN(DLEVEL_STABLE);
 
 		if (i->path)
 			evas_object_image_file_set(i->image, i->path, i->key);
@@ -302,6 +315,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 	if (w->fx_clip_box)
 		evas_object_clip_set(i->image, w->fx_clip_box);
+
 	evas_object_pass_events_set(i->image, TRUE);
 	evas_object_show(i->image);
 
@@ -322,15 +336,17 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_image_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
-
 	if (i->image) {
 		evas_object_del(i->image);
 		i->image = NULL;
@@ -339,12 +355,15 @@ void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					  void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
 
@@ -354,31 +373,40 @@ void ewl_image_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
-	Ewl_Image      *i;
-
-	i = EWL_IMAGE(w);
-	if (!i->image)
-		return;
-
-	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
-}
-
-void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
-{
-	Ewl_Image      *i;
-	Ewl_Embed      *emb;
-	int 		ww, hh;
+	Ewl_Image *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
 	if (!i->image)
-		return;
+		DRETURN(DLEVEL_STABLE);
+
+	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Image *i;
+	Ewl_Embed *emb;
+	int ww, hh;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	i = EWL_IMAGE(w);
+	if (!i->image)
+		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
 
@@ -423,9 +451,10 @@ void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 /*
  * Determine the type of the file based on the filename.
  */
-static Ewl_Image_Type ewl_image_type_get(const char *i)
+static Ewl_Image_Type
+ewl_image_type_get(const char *i)
 {
-	int             l;
+	int l;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, -1);
@@ -436,68 +465,82 @@ static Ewl_Image_Type ewl_image_type_get(const char *i)
 	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eet", 4)))
 	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".edj", 4)))
 	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eap", 5))))
-		return EWL_IMAGE_TYPE_EDJE;
+		DRETURN_INT(EWL_IMAGE_TYPE_EDJE, DLEVEL_STABLE);
 
 	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
 }
 
-
-void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+void
+ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
-	Ewl_Image      *i;
-	Ewl_Embed      *emb;
+	Ewl_Image *i;
+	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_down(emb->evas, ev->button, EVAS_BUTTON_NONE, (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), NULL);
+		evas_event_feed_mouse_down(emb->evas, ev->button, 
+				EVAS_BUTTON_NONE, 
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+void
+ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
-	Ewl_Image      *i;
-	Ewl_Embed      *emb;
+	Ewl_Image *i;
+	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_up(emb->evas, ev->button, EVAS_BUTTON_NONE, (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), NULL);
+		evas_event_feed_mouse_up(emb->evas, ev->button, 
+				EVAS_BUTTON_NONE, 
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+void
+ewl_image_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
-	Ewl_Image      *i;
-	Ewl_Embed      *emb;
+	Ewl_Image *i;
+	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y, (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), NULL);
+		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y, 
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
