@@ -318,6 +318,8 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_file_create";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_REMOVE)) {
 		return "entropy_gui_event_file_remove";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY)) {
+		return "entropy_gui_event_file_remove_directory";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_ACTION_FILE)) {
 		return "entropy_gui_event_action_file";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_STAT)) {
@@ -690,7 +692,21 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY;
+		
+		//printf("Sending a file create event...\n");
 
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			(*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An entropy_generic_file*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);
 
 	
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_ACTION_FILE)) {

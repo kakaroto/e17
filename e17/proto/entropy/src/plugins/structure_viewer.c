@@ -48,13 +48,27 @@ char* entropy_plugin_identify() {
 	return itree;
 }*/
 
-void gui_event_callback(entropy_notify_event* eevent, void* requestor, Ecore_List* el, entropy_gui_component_instance* comp) {
+void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el, entropy_gui_component_instance* comp) {
+   entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)comp->data;
+
    switch (eevent->event_type) {
+       case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY: {
+		entropy_generic_file* event_file = (entropy_generic_file*)el;
+       
+		printf("Received a remove directory notify at structure viewer\n");
+		
+		Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
+		if (row) {
+			ewl_tree_row_destroy(viewer->tree, row);
+		}
+	}
+	break;
+   
       case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
       case ENTROPY_NOTIFY_FILELIST_REQUEST: {
 							  
 	entropy_generic_file* file;
-	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)comp->data;
+	
 
 	/*We only want folder events from outselves, so leave otherwise..*/
 	//if (requestor != comp) {
@@ -205,6 +219,8 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	/*Register out interest in receiving folder notifications*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
+	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
+
 
 
 	viewer->gui_events = ecore_list_new();

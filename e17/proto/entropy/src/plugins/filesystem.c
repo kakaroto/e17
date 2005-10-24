@@ -104,6 +104,10 @@ void callback(evfs_event* data) {
 								case EVFS_FILE_EV_REMOVE: //printf("  Change event\n");
 								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE);
 								  break;
+								case EVFS_FILE_EV_REMOVE_DIRECTORY: //printf("  Change event\n");
+								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY);
+								  break;
+
 
 								
 						}	

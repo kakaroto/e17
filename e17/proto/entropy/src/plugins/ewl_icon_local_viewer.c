@@ -507,6 +507,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CHANGE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CREATE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE));
+	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
 	
 
 	/*Register interest in getting stat events*/
@@ -669,6 +670,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
        }
        break;
 
+       case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY: 
        case ENTROPY_NOTIFY_FILE_REMOVE: {
 		printf("Received a remove file notify\n");
 		ewl_icon_local_viewer_remove_icon(comp, (entropy_generic_file*)ret);
