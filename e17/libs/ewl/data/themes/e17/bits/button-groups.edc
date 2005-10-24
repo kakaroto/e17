@@ -24,9 +24,9 @@ BUTTON_PROG("mouse,in", "mouse,out")
 group {
     name, "radio";
     data {
-        item, "inset/left" "5";
-        item, "inset/right" "5";
-        item, "inset/top" "3";
+        item, "inset/left" "2";
+        item, "inset/right" "2";
+        item, "inset/top" "2";
         item, "inset/bottom" "3";
     }
 
@@ -39,8 +39,8 @@ group {
     data {
         item, "inset/left" "2";
         item, "inset/right" "2";
-        item, "inset/top" "1";
-        item, "inset/bottom" "1";
+        item, "inset/top" "2";
+        item, "inset/bottom" "3";
     }
 
 BUTTON_IM("e17_menu_check1.png", "e17_menu_check2.png")
