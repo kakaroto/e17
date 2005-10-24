@@ -63,29 +63,27 @@ struct _ewl_grid_child
 };
 
 Ewl_Widget     *ewl_grid_new(int cols, int rows);
-int             ewl_grid_init(Ewl_Grid * g, int cols, int rows);
+int             ewl_grid_init(Ewl_Grid *g, int cols, int rows);
 
-void            ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
+void            ewl_grid_add(Ewl_Grid *g, Ewl_Widget *w,
 			     int start_col, int end_col, int start_row,
 			     int end_row);
 
-void            ewl_grid_col_w_set(Ewl_Grid * g, int col, int width);
-void            ewl_grid_row_h_set(Ewl_Grid * g, int row, int height);
+void            ewl_grid_col_w_set(Ewl_Grid *g, int col, int width);
+void            ewl_grid_row_h_set(Ewl_Grid *g, int row, int height);
 
-void            ewl_grid_col_w_get(Ewl_Grid * g, int col, int *width);
-void            ewl_grid_row_h_get(Ewl_Grid * g, int row, int *height);
+void            ewl_grid_col_w_get(Ewl_Grid *g, int col, int *width);
+void            ewl_grid_row_h_get(Ewl_Grid *g, int row, int *height);
 
-void            ewl_grid_reset(Ewl_Grid * g, int rows, int cols);
+void            ewl_grid_reset(Ewl_Grid *g, int rows, int cols);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data,
-			 void *user_data);
-void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data,
-			   void *user_data);
-void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c);
-void ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child,
+void ewl_grid_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c);
+void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
 			     int size, Ewl_Orientation o);
 
 /**
