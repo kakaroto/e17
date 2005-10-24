@@ -7,9 +7,10 @@
  * @return Returns NULL on failure, or the new floater widget on success.
  * @brief Allocate a new floater widget
  */
-Ewl_Widget     *ewl_floater_new(void)
+Ewl_Widget *
+ewl_floater_new(void)
 {
-	Ewl_Widget     *f;
+	Ewl_Widget *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -17,11 +18,13 @@ Ewl_Widget     *ewl_floater_new(void)
 	if (!f)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_floater_init(EWL_FLOATER(f));
+	if (!ewl_floater_init(EWL_FLOATER(f))) {
+		ewl_widget_destroy(f);
+		f = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(f), DLEVEL_STABLE);
 }
-
 
 /**
  * @param f: the floater widget
@@ -30,9 +33,10 @@ Ewl_Widget     *ewl_floater_new(void)
  * 
  * Sets the fields and callbacks of the floater @a f to their defaults.
  */
-int ewl_floater_init(Ewl_Floater * f)
+int
+ewl_floater_init(Ewl_Floater *f)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("f", f, FALSE);
@@ -52,14 +56,20 @@ int ewl_floater_init(Ewl_Floater * f)
 	ewl_widget_appearance_set(w, "floater");
 	ewl_widget_inherit(w, "floater");
 
-
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
+/**
+ * @param f: The Ewl_Floater to set the follow into
+ * @param p: The widget to follow
+ * @return Returns no value
+ */
+void
+ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
+	DCHECK_TYPE("f", f, "floater");
 
 	/*
 	 * Don't follow the old parent.
@@ -89,10 +99,16 @@ void ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-Ewl_Widget *ewl_floater_follow_get(Ewl_Floater *f)
+/**
+ * @param f: The Floater to get the follow from
+ * @return Returns the widget the floater is following, or NULL
+ */
+Ewl_Widget *
+ewl_floater_follow_get(Ewl_Floater *f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("f", f, NULL);
+	DCHECK_TYPE_RET("f", f, "floater", NULL);
 
 	DRETURN_PTR(f->follows, DLEVEL_STABLE);
 }
@@ -104,14 +120,15 @@ Ewl_Widget *ewl_floater_follow_get(Ewl_Floater *f)
  * @return Returns no value
  * @brief Set the start x/y position of the floater
  */
-void ewl_floater_position_set(Ewl_Floater * f, int x, int y)
+void
+ewl_floater_position_set(Ewl_Floater *f, int x, int y)
 {
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
+	DCHECK_TYPE("f", f, "floater");
 
 	if (x == f->x && y == f->y)
-		DRETURN(DLEVEL_UNSTABLE);
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Set the coordinates of the floater, this will be used for either
@@ -125,7 +142,7 @@ void ewl_floater_position_set(Ewl_Floater * f, int x, int y)
 	else
 		ewl_object_position_request(EWL_OBJECT(f), f->x, f->y);
 
-	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -137,11 +154,12 @@ void ewl_floater_position_set(Ewl_Floater * f, int x, int y)
  * Sets the floater @a f to be positioned relative to the
  * position of the widget @a w.
  */
-void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
+void
+ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("f", f);
+	DCHECK_TYPE("f", f, "floater");
 
 	if (f->follows == w)
 		return;
@@ -161,22 +179,23 @@ void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
 
 	ewl_widget_configure(EWL_WIDGET(w));
 
-	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
  * Use this to ensure the floater gets configured when the parent/window is.
  */
 void
-ewl_floater_follow_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
-	int             align, x, y;
-	Ewl_Floater    *f;
+	int align, x, y;
+	Ewl_Floater *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	w = user_data;
 	f = EWL_FLOATER(w);
@@ -226,12 +245,15 @@ ewl_floater_follow_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_floater_follow_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_floater_follow_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	EWL_FLOATER(w)->follows = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
