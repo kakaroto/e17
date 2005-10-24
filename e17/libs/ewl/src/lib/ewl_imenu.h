@@ -18,34 +18,32 @@
 /**
  * A simple internal menu, it is limited to drawing within the current evas.
  */
-typedef struct Ewl_IMenu Ewl_IMenu;
+typedef struct Ewl_Imenu Ewl_Imenu;
 
 /**
  * @def EWL_IMENU(menu)
- * Typecasts a pointer to an Ewl_IMenu pointer.
+ * Typecasts a pointer to an Ewl_Imenu pointer.
  */
-#define EWL_IMENU(menu) ((Ewl_IMenu *) menu)
+#define EWL_IMENU(menu) ((Ewl_Imenu *) menu)
 
 /**
- * @struct Ewl_IMenu
+ * @struct Ewl_Imenu
  * Inherits from the Ewl_Menu_Base and does not extend the structure, but
  * provides policy for drawing on the current evas.
  */
-struct Ewl_IMenu
+struct Ewl_Imenu
 {
 	Ewl_Menu_Base base;
 };
 
-Ewl_Widget     *ewl_imenu_new(void);
-void            ewl_imenu_init(Ewl_IMenu * menu);
+Ewl_Widget	*ewl_imenu_new(void);
+int		 ewl_imenu_init(Ewl_Imenu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data,
-				       void *user_data);
-void            ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
+void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

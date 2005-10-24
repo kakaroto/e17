@@ -7,37 +7,42 @@
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu
  */
-Ewl_Widget *ewl_imenu_new(void)
+Ewl_Widget *
+ewl_imenu_new(void)
 {
-	Ewl_IMenu      *menu;
+	Ewl_Imenu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	menu = NEW(Ewl_IMenu, 1);
+	menu = NEW(Ewl_Imenu, 1);
 	if (!menu)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_imenu_init(menu);
+	if (!ewl_imenu_init(menu)) {
+		ewl_widget_destroy(EWL_WIDGET(menu));
+		menu = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);
 }
-
 
 /**
  * @param menu: the menu to initialize
  * @return Returns no value.
  * @brief Initialize an internal menu to starting values
  */
-void ewl_imenu_init(Ewl_IMenu * menu)
+int
+ewl_imenu_init(Ewl_Imenu *menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DCHECK_PARAM_PTR("menu", menu);
+	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
 
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_base_init(EWL_MENU_BASE(menu));
+	if (!ewl_menu_base_init(EWL_MENU_BASE(menu)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_inherit(EWL_WIDGET(menu), "imenu");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
@@ -60,16 +65,20 @@ void ewl_imenu_init(Ewl_IMenu * menu)
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+void
+ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_IMenu *menu = EWL_IMENU(w);
+	Ewl_Imenu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
+	menu = EWL_IMENU(w);
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
@@ -85,23 +94,25 @@ void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_IMenu      *menu;
-	Ewl_Embed      *emb;
+	Ewl_Imenu *menu;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	menu = EWL_IMENU(w);
-
 	if (!REALIZED(menu->base.popup)) {
 		emb = ewl_embed_widget_find(w);
 		ewl_container_child_append(EWL_CONTAINER(emb),
 					   menu->base.popup); 
 	}
-
 	ewl_widget_show(menu->base.popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
