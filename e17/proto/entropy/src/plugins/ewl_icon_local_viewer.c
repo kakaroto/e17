@@ -460,7 +460,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_widget_show(context);
 
 	/*Add some context menu items*/
-	context = ewl_menu_separator_new();
+	context = ewl_separator_new();
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_widget_show(context);
 
