@@ -89,7 +89,6 @@ entangle_apps_dir_delete(const char *dir)
     if (ecore_file_is_dir(dir))
     {
         Ecore_List *contents;
-        int i;
 	char *name;
 
         contents = ecore_file_ls(dir);

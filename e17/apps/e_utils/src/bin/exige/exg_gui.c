@@ -100,7 +100,6 @@ exg_eapps_init()
     char path[PATH_MAX];
     char *home;
     Ecore_List *eapps;
-    int i;
     char *name;
 
     home = getenv("HOME");
