@@ -10,7 +10,7 @@ typedef struct entropy_generic_file entropy_generic_file;
 struct entropy_generic_file {
         char path[255];
         char filename[255];
-        char mime_type[20];
+        char mime_type[40];
 	char uri_base[15];
 	
 	char perms[10];

@@ -370,15 +370,12 @@ struct stat* filestat_get(entropy_file_request* request) {
 	//printf("Getting a stat from evfs...\n");
 
 	snprintf(pathi,1024,"%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
-	path = evfs_parse_uri(pathi);
 
+	path = evfs_parse_uri(pathi);
 	char* md5 = md5_entropy_path_file(request->file->path, request->file->filename);
 	ecore_hash_set(stat_request_hash, md5, request->requester);
-	
-
 	evfs_client_file_stat(con, path->files[0]);
 	
-	//printf ("Getting stat for '%s'\n", pathi);
 	
 	return NULL;
 }

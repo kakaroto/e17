@@ -328,6 +328,7 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	//Stat test..
 	/*Send an event to the core*/
 	if (local_file) {
+	
 		gui_event = entropy_malloc(sizeof(entropy_gui_event));
 		gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT);
 		gui_event->data = local_file->file;
@@ -544,7 +545,6 @@ void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entrop
 			 } else {
 				 thumb = NULL;
 			}
-			/*printf("Adding icon '%s'\n", list_item->filename);*/
 			icon = ewl_iconbox_icon_add(EWL_ICONBOX(view->iconbox), list_item->filename, PACKAGE_DATA_DIR "/icons/default.png");
 			
 
