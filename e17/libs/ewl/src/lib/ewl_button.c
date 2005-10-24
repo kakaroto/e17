@@ -112,6 +112,10 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 	else if (!b->label_object) {
 		b->label_object = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
+		ewl_object_alignment_set(EWL_OBJECT(b->label_object),
+					 EWL_FLAG_ALIGN_CENTER);
+		ewl_object_fill_policy_set(EWL_OBJECT(b->label_object),
+					   EWL_FLAG_FILL_NONE);
 		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 		ewl_widget_internal_set(b->label_object, TRUE);
 		ewl_widget_show(b->label_object);
