@@ -20,10 +20,6 @@ static Ecore_Idle_Enterer *idle_enterer = NULL;
 static int _ewl_init_count = 0;
 
 /*
- *
- */
-
-/*
  * Queues for scheduling various actions.
  */
 static Ecore_List *configure_list = NULL;
@@ -37,7 +33,6 @@ static Ecore_List *child_add_list= NULL;
 static Ecore_List *free_evas_list = NULL;
 static Ecore_List *free_evas_object_list = NULL;
 
-
 int             ewl_idle_render(void *data);
 static void     ewl_init_parse_options(int *argc, char **argv);
 static void     ewl_init_remove_option(int *argc, char **argv, int i);
@@ -50,14 +45,20 @@ int             ewl_ecore_exit(void *data, int type, void *event);
  * Set a breakpoint at this function in order to retrieve backtraces from
  * warning messages.
  */
-inline void ewl_print_warning()
+inline void
+ewl_print_warning(void)
 {
 	fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
 		" To find where this is occurring set a breakpoint\n"
 		" for the function %s.\n", __FUNCTION__);
 }
 
-inline void ewl_segv()
+/**
+ * @return Returns no value.
+ * @brief This will cause EWL to SEGV. (Handy for debugging)
+ */
+inline void
+ewl_segv(void)
 {
 	if (debug_segv) {
 		char *null = NULL;
@@ -74,7 +75,8 @@ inline void ewl_segv()
  * Sets up necessary internal variables for executing ewl
  * functions. This should be called before any other ewl functions are used.
  */
-int ewl_init(int *argc, char **argv)
+int
+ewl_init(int *argc, char **argv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -200,7 +202,8 @@ int ewl_init(int *argc, char **argv)
  * This should be called to cleanup internal EWL data structures, if using
  * ecore directly rather than using ewl_main().
  */
-int ewl_shutdown()
+int
+ewl_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -223,7 +226,6 @@ int ewl_shutdown()
 
 	ecore_idle_enterer_del(idle_enterer);
 	idle_enterer = NULL;
-
 
 	/*
 	 * Shut down the various EWL subsystems cleanly.
@@ -276,7 +278,8 @@ int ewl_shutdown()
  * This is the  main execution loop of ewl. It dispatches
  * incoming events and renders updates to the evas's used by ewl.
  */
-void ewl_main(void)
+void
+ewl_main(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -294,9 +297,10 @@ void ewl_main(void)
  * Renders updates to the evas's during idle event times. Should not be called
  * publically unless a re-render is absolutely necessary.
  */
-int ewl_idle_render(void *data)
+int
+ewl_idle_render(void *data)
 {
-	Ewl_Embed      *emb;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -368,7 +372,8 @@ int ewl_idle_render(void *data)
  * Sets ewl to exit the main execution loop after this time
  * through the loop has been completed.
  */
-void ewl_main_quit(void)
+void
+ewl_main_quit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -385,7 +390,8 @@ void ewl_main_quit(void)
  * Returns no value. Parses the arguments of the program into sections that
  * ewl knows how to deal with.
  */
-static void ewl_init_parse_options(int *argc, char **argv)
+static void
+ewl_init_parse_options(int *argc, char **argv)
 {
 	int i;
 	int matched = 0;
@@ -450,7 +456,8 @@ static void ewl_init_parse_options(int *argc, char **argv)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_init_remove_option(int *argc, char **argv, int i)
+static void
+ewl_init_remove_option(int *argc, char **argv, int i)
 {
 	int j;
 
@@ -471,14 +478,16 @@ static void ewl_init_remove_option(int *argc, char **argv, int i)
  *
  * Ask for the widget @a w to be configured when the main idle loop is executed.
  */
-void ewl_configure_request(Ewl_Widget * w)
+void
+ewl_configure_request(Ewl_Widget * w)
 {
 	static int longest = 0;
-	Ewl_Embed      *emb;
-	Ewl_Widget     *search;
+	Ewl_Embed *emb;
+	Ewl_Widget *search;
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
@@ -641,9 +650,12 @@ void ewl_configure_request(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
-void ewl_configure_queue()
+void
+ewl_configure_queue(void)
 {
 	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Configure any widgets that need it.
@@ -668,6 +680,8 @@ void ewl_configure_queue()
 		ewl_object_queued_remove(EWL_OBJECT(w),
 					 EWL_FLAG_QUEUED_CPROCESS);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -677,12 +691,12 @@ void ewl_configure_queue()
  *
  * Remove the widget @a w from the list of widgets that need to be configured.
  */
-void ewl_configure_cancel_request(Ewl_Widget *w)
+void
+ewl_configure_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
 	ecore_list_goto(configure_list, w);
-
 	if (ecore_list_current(configure_list) == w)
 		ecore_list_remove(configure_list);
 
@@ -696,9 +710,12 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
  *
  * Places a widget on the queue to be realized at a later time.
  */
-void ewl_realize_request(Ewl_Widget *w)
+void
+ewl_realize_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
@@ -721,19 +738,22 @@ void ewl_realize_request(Ewl_Widget *w)
  *
  * Remove the widget @a w from the list of widgets that need to be realized.
  */
-void ewl_realize_cancel_request(Ewl_Widget *w)
+void
+ewl_realize_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	ecore_list_goto(realize_list, w);
-
 	if (ecore_list_current(realize_list) == w)
 		ecore_list_remove(realize_list);
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
-void ewl_realize_queue()
+void
+ewl_realize_queue(void)
 {
 	Ewl_Widget *w;
 
@@ -792,7 +812,8 @@ void ewl_realize_queue()
  * @return Returns no value.
  * @brief Marks that EWL is currently realizing a widget.
  */
-void ewl_realize_phase_enter()
+void
+ewl_realize_phase_enter(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -805,7 +826,8 @@ void ewl_realize_phase_enter()
  * @return Returns no value.
  * @brief Marks that EWL is not realizing a widget.
  */
-void ewl_realize_phase_exit()
+void
+ewl_realize_phase_exit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -818,21 +840,27 @@ void ewl_realize_phase_exit()
  * @return Returns TRUE if currently realizing a widget, FALSE otherwise.
  * @brief Checks if EWL is currently in the process of realizing widgets.
  */
-int ewl_in_realize_phase()
+int
+ewl_in_realize_phase(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
 }
 
-unsigned int ewl_engine_mask_get()
+unsigned int
+ewl_engine_mask_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DRETURN_INT(use_engine, DLEVEL_STABLE);
 }
 
-void ewl_destroy_request(Ewl_Widget *w)
+void
+ewl_destroy_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
@@ -856,17 +884,30 @@ void ewl_destroy_request(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_evas_destroy(Evas *evas)
+void
+ewl_evas_destroy(Evas *evas)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("evas", evas);
+
 	ecore_list_append(free_evas_list, evas);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_evas_object_destroy(Evas_Object *obj)
+void
+ewl_evas_object_destroy(Evas_Object *obj)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("obj", obj);
+
 	ecore_list_append(free_evas_object_list, obj);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_garbage_collect()
+void
+ewl_garbage_collect(void)
 {
 	Evas *evas;
 	Ewl_Widget *w;
@@ -919,9 +960,11 @@ void ewl_garbage_collect()
 int ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
 					void *event __UNUSED__)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	ewl_main_quit();
 
-	return 1;
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 #ifdef DEBUG_MALLOCDEBUG
@@ -934,3 +977,4 @@ char *strdup(const char *str)
 	return dst;
 }
 #endif
+

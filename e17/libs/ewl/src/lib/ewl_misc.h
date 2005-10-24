@@ -23,7 +23,7 @@ int             ewl_init(int *argc, char **argv);
 int             ewl_shutdown(void);
 void            ewl_main(void);
 void            ewl_main_quit(void);
-void            ewl_configure_request(Ewl_Widget * w);
+void            ewl_configure_request(Ewl_Widget *w);
 void            ewl_configure_queue(void);
 void            ewl_configure_cancel_request(Ewl_Widget *w);
 void            ewl_realize_request(Ewl_Widget *w);
