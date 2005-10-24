@@ -300,7 +300,7 @@ od_config_menu_init(void)
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
   ewl_widget_show(item);
 
-  item = ewl_menu_separator_new();
+  item = ewl_separator_new();
   ewl_container_child_append(EWL_CONTAINER(menu), item);
   ewl_widget_show(item);
 
