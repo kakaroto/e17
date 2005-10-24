@@ -129,7 +129,8 @@ typedef enum evfs_eventpart {
 typedef enum evfs_file_monitor_type {
 	EVFS_FILE_EV_CREATE,
 	EVFS_FILE_EV_CHANGE,
-	EVFS_FILE_EV_REMOVE
+	EVFS_FILE_EV_REMOVE,
+	EVFS_FILE_EV_REMOVE_DIRECTORY
 } evfs_file_monitor_type;
 
 

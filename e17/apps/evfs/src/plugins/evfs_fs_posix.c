@@ -132,6 +132,11 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 		case ECORE_FILE_EVENT_DELETED_FILE:
 			type = EVFS_FILE_EV_REMOVE;
 			break;
+
+		case ECORE_FILE_EVENT_DELETED_DIRECTORY:
+			type = EVFS_FILE_EV_REMOVE_DIRECTORY;
+			break;
+										
 	}
 
 	/*Looking for ppl no notify*/
