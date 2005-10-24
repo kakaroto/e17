@@ -17,12 +17,12 @@ endif
 pkg_LTLIBRARIES         = $(POSIX_L) $(SAMBA_L)
 
 posix_la_SOURCES = evfs_fs_posix.c \
-			../common/evfs_debug.c \
-			../common/evfs_event_helper.c
+			$(top_srcdir)/src/common/evfs_debug.c \
+			$(top_srcdir)/src/common/evfs_event_helper.c
 
 samba_la_SOURCES = evfs_fs_samba.c \
-                        ../common/evfs_debug.c \
-                        ../common/evfs_event_helper.c
+                        $(top_srcdir)/src/common/evfs_debug.c \
+                        $(top_srcdir)/src/common/evfs_event_helper.c
 
 	
 posix_la_CFLAGS =  @ecore_cflags@

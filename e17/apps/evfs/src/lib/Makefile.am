@@ -4,19 +4,19 @@ INCLUDES = @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(to
 	   -DBINDIR=\""$(bindir)"\"
 
 libevfs_la_SOURCES   =                          \
-        ../include/evfs.h                       \
-	../include/evfs_cleanup.h		\
-	../include/evfs_commands.h		\
-	../include/evfs_debug.h			\
-	../include/evfs_event_helper.h		\
-	../include/evfs_io.h			\
-	../include/evfs_macros.h		\
-	../include/evfs_new.h			\
-	../include/evfs_plugin.h		\
-	../include/evfs_server_handle.h		\
+        $(top_srcdir)/src/include/evfs.h                       \
+	$(top_srcdir)/src/include/evfs_cleanup.h		\
+	$(top_srcdir)/src/include/evfs_commands.h		\
+	$(top_srcdir)/src/include/evfs_debug.h			\
+	$(top_srcdir)/src/include/evfs_event_helper.h		\
+	$(top_srcdir)/src/include/evfs_io.h			\
+	$(top_srcdir)/src/include/evfs_macros.h		\
+	$(top_srcdir)/src/include/evfs_new.h			\
+	$(top_srcdir)/src/include/evfs_plugin.h		\
+	$(top_srcdir)/src/include/evfs_server_handle.h		\
 	libevfs.c				\
 	evfs_commands.c				\
-	../common/evfs_io.c			\
-	../common/evfs_cleanup.c
+	$(top_srcdir)/src/common/evfs_io.c			\
+	$(top_srcdir)/src/common/evfs_cleanup.c
 
 libevfs_la_CFLAGS = -DLIB $(AM_CFLAGS)
