@@ -132,9 +132,14 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    if (win == None)
      {
 	if (type == EOBJ_TYPE_EVENT)
-	   win = ECreateEventWindow(VRoot.win, x, y, w, h);
+	  {
+	     win = ECreateEventWindow(VRoot.win, x, y, w, h);
+	     eo->inputonly = 1;
+	  }
 	else
-	   win = ECreateWindow(EoGetWin(eo->desk), x, y, w, h, su);
+	  {
+	     win = ECreateWindow(EoGetWin(eo->desk), x, y, w, h, su);
+	  }
      }
    eo->type = type;
    eo->win = win;
@@ -250,6 +255,8 @@ EobjRegister(Window win, int type)
    EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
    eo->name = ecore_x_icccm_title_get(win);
    eo->external = 1;
+   if (attr.class == InputOnly)
+      eo->inputonly = 1;
 
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)

@@ -1381,9 +1381,10 @@ ECompMgrWinNew(EObj * eo)
    if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
-   if (!XGetWindowAttributes(disp, eo->win, &attr))
+   if (eo->inputonly)
       return;
-   if (attr.class == InputOnly)
+
+   if (!XGetWindowAttributes(disp, eo->win, &attr))
       return;
 
    cw = Ecalloc(1, sizeof(ECmWinInfo));

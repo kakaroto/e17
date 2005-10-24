@@ -672,9 +672,6 @@ EWMH_GetWindowOpacity(EWin * ewin)
 
    ewin->ewmh.opacity = opacity;
 
-   /* Set frame window hint for xcompmgr */
-   ecore_x_netwm_opacity_set(EoGetWin(ewin), opacity);
-
    EwinChange(ewin, EWIN_CHANGE_OPACITY);
 }
 

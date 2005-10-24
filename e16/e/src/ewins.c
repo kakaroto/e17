@@ -49,6 +49,8 @@
 
 static void         EwinSlideIn(int val __UNUSED__, void *data);
 
+static void         EwinGetGeometry(EWin * ewin);
+
 static void         EwinChangesStart(EWin * ewin);
 static void         EwinChangesProcess(EWin * ewin);
 
@@ -72,18 +74,6 @@ static EWin        *
 EwinCreate(Window win, int type)
 {
    EWin               *ewin;
-   XSetWindowAttributes att;
-   Window              frame;
-   int                 use_argb;
-   XWindowAttributes   win_attr;
-
-   use_argb = 0;
-   if (type == EWIN_TYPE_NORMAL)
-     {
-	if (!XGetWindowAttributes(disp, win, &win_attr))
-	   return NULL;
-	use_argb = Conf.argb_client_mode > 0 && EVisualIsARGB(win_attr.visual);
-     }
 
    ewin = Ecalloc(1, sizeof(EWin));
 
@@ -96,6 +86,7 @@ EwinCreate(Window win, int type)
    ewin->lw = -1;
    ewin->lh = -1;
 
+   ewin->client.win = win;
    ewin->client.x = -1;
    ewin->client.y = -1;
    ewin->client.w = -1;
@@ -125,24 +116,87 @@ EwinCreate(Window win, int type)
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
 
-   if (use_argb)
-      frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
+   return ewin;
+}
+
+static int
+EwinGetAttributes(EWin * ewin)
+{
+   XWindowAttributes   xwa;
+
+   if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &xwa))
+      return -1;
+
+   ewin->client.x = xwa.x;
+   ewin->client.y = xwa.y;
+   ewin->client.w = xwa.width;
+   ewin->client.h = xwa.height;
+   ewin->client.bw = xwa.border_width;
+   ewin->client.cmap = xwa.colormap;
+   ewin->client.grav = NorthWestGravity;
+   ewin->client.argb = EVisualIsARGB(xwa.visual);
+
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",
+	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+
+   return 0;
+}
+
+static void
+EwinGetHints(EWin * ewin)
+{
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinGetHints %#lx\n", _EwinGetClientWin(ewin));
+
+   ICCCM_GetTitle(ewin, 0);
+   ICCCM_GetInfo(ewin, 0);
+
+   if (EwinIsInternal(ewin))
+      return;
+
+   ICCCM_GetHints(ewin, 0);
+   ICCCM_GetGeoms(ewin, 0);
+   MWM_GetHints(ewin, 0);
+   HintsGetWindowHints(ewin);
+   SessionGetInfo(ewin, 0);
+}
+
+static void
+EwinManage(EWin * ewin)
+{
+   XSetWindowAttributes att;
+   Window              frame;
+   XWindowAttributes   win_attr;
+
+   if (ewin->client.argb && Conf.argb_client_mode > 0)
+     {
+	if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &win_attr))
+	   return;
+	frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
+	ewin->win_container =
+	   ECreateVisualWindow(frame, 0, 0, 1, 1, 0, &win_attr);
+
+	if (Conf.argb_client_mode == 1)
+	   ewin->props.no_border = 1;
+
+     }
    else
-      frame = None;
+     {
+	frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
+	ewin->win_container = ECreateWindow(frame, 0, 0, 1, 1, 0);
+     }
 
    ewin->o.stacked = -1;	/* Not placed on desk yet */
    EoSetDesk(ewin, DesksGetCurrent());
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
+   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));
    EoSetLayer(ewin, 4);
    EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 1);
    EobjListOrderAdd(&ewin->o);
 
-   if (use_argb)
-      ewin->win_container =
-	 ECreateVisualWindow(EoGetWin(ewin), 0, 0, 1, 1, 0, &win_attr);
-   else
-      ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    EChangeWindowAttributes(ewin->win_container,
@@ -153,13 +207,10 @@ EwinCreate(Window win, int type)
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
 
-   ewin->client.win = win;
-   FocusEwinSetGrabs(ewin);
-
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinCreate %#lx frame=%#lx cont=%#lx st=%d\n",
+      Eprintf("EwinManage %#lx frame=%#lx cont=%#lx st=%d\n",
 	      _EwinGetClientXwin(ewin), EoGetWin(ewin),
 	      _EwinGetContainerXwin(ewin), ewin->state.state);
 
@@ -172,18 +223,65 @@ EwinCreate(Window win, int type)
 
    if (!EwinIsInternal(ewin))
      {
-	XShapeSelectInput(disp, win, ShapeNotifyMask);
-	ESetWindowBorderWidth(win, 0);
+	XShapeSelectInput(disp, _EwinGetClientXwin(ewin), ShapeNotifyMask);
+	ESetWindowBorderWidth(_EwinGetClientXwin(ewin), 0);
 	ewin->client.bw = 0;
      }
 
-   if (use_argb && Conf.argb_client_mode < 2)
-      ewin->border =
-	 FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   ICCCM_AdoptStart(ewin);
+
+   /* We must reparent after getting original window position */
+   EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0, 0);
+
+   EwinUpdateShapeInfo(ewin);
 
    ModulesSignal(ESIGNAL_EWIN_CREATE, ewin);
+}
 
-   return ewin;
+static void
+EwinConfigure(EWin * ewin)
+{
+   EwinStateUpdate(ewin);
+
+#if 0				/* Do we want this? */
+   if (!EwinIsInternal(ewin))
+      MatchEwinToSM(ewin);
+#endif
+   WindowMatchEwinOps(ewin);	/* Window matches */
+   SnapshotsApplyToEwin(ewin);	/* Saved settings */
+   if (!EwinIsInternal(ewin) && Mode.wm.startup)
+      EHintsGetInfo(ewin);	/* E restart hints */
+
+   EwinStateUpdate(ewin);	/* Update after snaps */
+
+   ICCCM_Adopt(ewin);
+
+   EwinBorderSelect(ewin);	/* Select border before calculating geometry */
+   EwinGetGeometry(ewin);	/* Calculate window geometry before border parts */
+   EwinBorderSetTo(ewin, NULL);
+
+   EwinEventsConfigure(ewin, 1);
+
+   if (!ewin->props.no_button_grabs)
+      GrabButtonGrabs(ewin);
+
+   FocusEwinSetGrabs(ewin);
+
+   if (ewin->state.shaded)
+      EwinInstantShade(ewin, 1);
+
+   if (ewin->ewmh.opacity == 0)
+      ewin->ewmh.opacity = 0xffffffff;
+   EoChangeOpacity(ewin, ewin->ewmh.opacity);
+
+   HintsSetWindowState(ewin);
+   HintsSetWindowOpacity(ewin);
+
+   HintsSetClientList();
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinConfigure %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+	      ewin->state.state, EwinGetName(ewin));
 }
 
 static void
@@ -550,66 +648,6 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_close = 0;
 }
 
-static void
-Adopt(EWin * ewin)
-{
-   ICCCM_AdoptStart(ewin);
-   ICCCM_GetTitle(ewin, 0);
-   ICCCM_GetHints(ewin, 0);
-   ICCCM_GetInfo(ewin, 0);
-   EwinUpdateShapeInfo(ewin);
-   ICCCM_GetGeoms(ewin, 0);
-   if (!EwinIsInternal(ewin))
-     {
-	MWM_GetHints(ewin, 0);
-	ICCCM_GetColormap(ewin);
-	HintsGetWindowHints(ewin);
-	SessionGetInfo(ewin, 0);
-     }
-
-#if 0				/* Do we want this? */
-   if (!EwinIsInternal(ewin))
-      MatchEwinToSM(ewin);
-#endif
-   WindowMatchEwinOps(ewin);	/* Window matches */
-   SnapshotsApplyToEwin(ewin);	/* Saved settings */
-   if (!EwinIsInternal(ewin) && Mode.wm.startup)
-      EHintsGetInfo(ewin);	/* E restart hints */
-
-   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));	/* FIXME */
-
-   if (ewin->ewmh.opacity == 0)
-      ewin->ewmh.opacity = 0xffffffff;
-   EoChangeOpacity(ewin, ewin->ewmh.opacity);
-
-   EwinStateUpdate(ewin);
-
-   if (!ewin->props.no_button_grabs)
-      GrabButtonGrabs(ewin);
-
-   /* We must reparent after getting original window position */
-   EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0, 0);
-   ICCCM_Adopt(ewin);
-
-   EwinBorderSelect(ewin);	/* Select border before calculating geometry */
-   EwinGetGeometry(ewin);	/* Calculate window geometry before border parts */
-   EwinBorderSetTo(ewin, NULL);
-
-   EwinEventsConfigure(ewin, 1);
-
-   if (ewin->state.shaded)
-      EwinInstantShade(ewin, 1);
-
-   HintsSetWindowState(ewin);
-   HintsSetWindowOpacity(ewin);
-
-   HintsSetClientList();
-
-   if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("Adopt %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
-}
-
 void
 AddToFamily(EWin * ewin, Window win)
 {
@@ -626,13 +664,17 @@ AddToFamily(EWin * ewin, Window win)
    else
       ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
    if (!ewin)
+      return;
+
+   if (EwinGetAttributes(ewin))
      {
 	Eprintf("Window is gone %#lx\n", win);
+	/* We got here by MapRequest. DestroyNotify should follow. */
 	goto done;
      }
-
-   /* adopt the new baby */
-   Adopt(ewin);
+   EwinGetHints(ewin);
+   EwinManage(ewin);
+   EwinConfigure(ewin);
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    dsk = EoGetDesk(ewin);
@@ -882,13 +924,17 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    if (!ewin)
       goto done;
 
-   if (bname)
-      ewin->border = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+   EwinGetAttributes(ewin);
+   EwinGetHints(ewin);
+   EwinManage(ewin);
 
    if (init)
       init(ewin, ptr);		/* Type specific initialisation */
 
-   Adopt(ewin);
+   if (bname)
+      ewin->border = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   EwinConfigure(ewin);
 
 #if 0
    Eprintf("Desk=%d, layer=%d, sticky=%d, floating=%d\n",

@@ -85,19 +85,8 @@ void
 ICCCM_GetColormap(EWin * ewin)
 {
    XWindowAttributes   xwa;
-   Ecore_X_Window      win;
-   int                 num;
 
-   if (EwinIsInternal(ewin))
-      return;
-
-   /* Hmmm.. Why? */
-   win = _EwinGetClientXwin(ewin);
-   num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
-					ECORE_X_ATOM_WM_COLORMAP_WINDOWS,
-					&win, 1);
-
-   ewin->client.cmap = 0;
+   ewin->client.cmap = None;
    if (XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &xwa)
        && xwa.colormap)
       ewin->client.cmap = xwa.colormap;
@@ -323,10 +312,10 @@ ICCCM_Cmap(EWin * ewin)
 	return;
      }
 
-   ICCCM_GetColormap(ewin);
-
    if (EwinIsInternal(ewin))
       return;
+
+   ICCCM_GetColormap(ewin);
 
    if ((ewin->client.cmap) && (Mode.current_cmap != ewin->client.cmap))
      {
@@ -393,24 +382,10 @@ void
 ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 {
    XSizeHints          hint;
-   Window              ww;
    long                mask;
-   int                 x, y, w, h, bw, dummy;
 
    if (atom_change && atom_change != ECORE_X_ATOM_WM_NORMAL_HINTS)
       return;
-
-   x = ewin->client.x;
-   y = ewin->client.y;
-   w = ewin->client.w;
-   h = ewin->client.h;
-   bw = ewin->client.bw;
-   EGetGeometry(_EwinGetClientWin(ewin), &ww, &x, &y, &w, &h, &bw, &dummy);
-   ewin->client.x = x;
-   ewin->client.y = y;
-   ewin->client.w = w;
-   ewin->client.h = h;
-   ewin->client.bw = bw;
 
    if (XGetWMNormalHints(disp, _EwinGetClientXwin(ewin), &hint, &mask))
      {
@@ -424,8 +399,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		     ewin->icccm.grav = NorthWestGravity;
 		  ewin->client.grav = ewin->icccm.grav;
 
-		  ewin->client.x = x;
-		  ewin->client.y = y;
 		  if ((hint.flags & PPosition) && (!EoIsSticky(ewin)))
 		    {
 		       Desk               *dsk;
@@ -454,12 +427,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		    }
 		  ewin->state.placed = 1;
 	       }
-	  }
-	else
-	  {
-	     ewin->client.x = 0;
-	     ewin->client.y = 0;
-	     ewin->state.placed = 0;
 	  }
 
 	if (hint.flags & PMinSize)
@@ -632,9 +599,6 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    Window              win;
    Atom               *prop;
    int                 i, num;
-
-   if (EwinIsInternal(ewin))
-      return;
 
    hint = NULL;
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_HINTS)

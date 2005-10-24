@@ -40,6 +40,7 @@ struct _eobj
    char                sticky;
    char                floating;
    unsigned            external:1;
+   unsigned            inputonly:1;
    unsigned            shown:1;
    unsigned            gone:1;
    unsigned            noredir:1;	/* Do not redirect */
