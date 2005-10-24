@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "backgrounds.h"
 #include "buttons.h"
 #include "desktops.h"
 #include "emodule.h"
@@ -389,9 +390,14 @@ DeskConfigure(Desk * dsk)
 	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
 	if (lst)
 	  {
-	     rnd = rand();
-	     rnd %= num;
-	     bg = lst[rnd];
+	     for (;;)
+	       {
+		  rnd = rand();
+		  rnd %= num;
+		  bg = lst[rnd];
+		  if (num <= 1 || !BackgroundIsNone(bg))
+		     break;
+	       }
 	     Efree(lst);
 	  }
      }
@@ -833,10 +839,12 @@ DeskRefresh(Desk * dsk)
    if (!bg)
       return;
 
-   if (BackgroundGetPixmap(bg) != None)
+   if (dsk->bg_isset && dsk->pmap == BackgroundGetPixmap(bg))
       return;
 
    BackgroundSet(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk));
+   dsk->bg_isset = 1;
+   dsk->pmap = BackgroundGetPixmap(bg);
    HintsSetRootInfo(EoGetWin(dsk),
 		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
 }
@@ -859,7 +867,7 @@ DeskSetBg(Desk * dsk, Background * bg, int refresh)
    if (refresh)
       BackgroundPixmapFree(dsk->bg);
 
-   if (bg && !strcmp(BackgroundGetName(bg), "NONE"))
+   if (bg && BackgroundIsNone(bg))
       bg = NULL;
 
    if (dsk->bg != bg)

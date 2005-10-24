@@ -23,6 +23,7 @@
  */
 #include <time.h>
 #include "E.h"
+#include "backgrounds.h"
 #include "desktops.h"
 #include "emodule.h"
 #include "iclass.h"
@@ -961,6 +962,12 @@ BackgroundGetPixmap(const Background * bg)
    return (bg) ? bg->pmap : None;
 }
 
+int
+BackgroundIsNone(const Background * bg)
+{
+   return (bg) ? !strcmp(bg->name, "NONE") : 1;
+}
+
 static              time_t
 BackgroundGetTimestamp(const Background * bg)
 {
@@ -1338,12 +1345,11 @@ BackgroundsConfigSave(void)
 	  }
 #endif
 
-	for (j = 0; j < (DesksGetNumber()); j++)
+	for (j = 0; j < DesksGetNumber(); j++)
 	  {
 	     Desk               *dsk = DeskGet(j);
 
-	     if ((!strcmp(bglist[i]->name, "NONE"))
-		 && (!DeskGetBackground(dsk)))
+	     if (BackgroundIsNone(bglist[i]) && !DeskGetBackground(dsk))
 		fprintf(fs, "564 %d\n", j);
 	     if (DeskGetBackground(dsk) == bglist[i])
 		fprintf(fs, "564 %d\n", j);
@@ -1791,7 +1797,7 @@ BG_RedrawView(void)
 				      STATE_CLICKED : STATE_NORMAL,
 				      x, 0, 64 + 8, 48 + 8);
 
-	     if (!strcmp(BackgroundGetName(bglist[i]), "NONE"))
+	     if (BackgroundIsNone(bglist[i]))
 	       {
 		  TextClass          *tc;
 
@@ -2104,7 +2110,7 @@ SettingsBackground(Background * bg)
      }
    SoundPlay("SOUND_SETTINGS_BG");
 
-   if ((!bg) || ((bg) && (!strcmp(BackgroundGetName(bg), "NONE"))))
+   if (!bg || (bg && BackgroundIsNone(bg)))
      {
 	Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
 	bg = BackgroundCreate(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1,

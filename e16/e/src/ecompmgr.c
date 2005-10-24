@@ -29,6 +29,7 @@
 
 #include "E.h"
 #if USE_COMPOSITE
+#include "backgrounds.h"
 #include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"

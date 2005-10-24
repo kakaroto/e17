@@ -24,6 +24,7 @@ e16_SOURCES = \
 	areas.c                 \
 	arrange.c		\
 	backgrounds.c		\
+	backgrounds.h		\
 	borders.c		\
 	buttons.c		\
 	buttons.h		\

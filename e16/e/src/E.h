@@ -837,27 +837,6 @@ void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwins(const char *params);
 
-/* backgrounds.c */
-int                 BackgroundsConfigLoad(FILE * fs);
-char               *BackgroundGetUniqueString(Background * bg);
-void                BackgroundPixmapFree(Background * bg);
-void                BackgroundImagesFree(Background * bg, int free_pmap);
-void                BackgroundDestroyByName(const char *name);
-Pixmap              BackgroundApply(Background * bg, Drawable draw,
-				    unsigned int rw, unsigned int rh,
-				    int is_win);
-void                BackgroundSet(Background * bg, Window win, unsigned int rw,
-				  unsigned int rh);
-void                BackgroundIncRefcount(Background * bg);
-void                BackgroundDecRefcount(Background * bg);
-void                BackgroundTouch(Background * bg);
-const char         *BackgroundGetName(const Background * bg);
-int                 BackgroundGetColor(const Background * bg);
-Pixmap              BackgroundGetPixmap(const Background * bg);
-Background         *BrackgroundCreateFromImage(const char *bgid,
-					       const char *file, char *thumb,
-					       int thlen);
-
 /* borders.c */
 Border             *BorderCreate(const char *name);
 void                BorderDestroy(Border * b);
