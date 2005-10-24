@@ -956,7 +956,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 
 
 		//Hide the icon menu
-		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_menu_item)->inmenu);
+		if (EWL_MENU_ITEM(ib->icon_menu_item)->inmenu) ewl_widget_hide(EWL_MENU_ITEM(ib->icon_menu_item)->inmenu);
 		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater), NULL);
 		
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
@@ -1008,7 +1008,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 		ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
 	} else {
-		ewl_widget_hide(EWL_MENU_ITEM(ib->icon_box_parent->icon_menu_item)->inmenu);
+		if (EWL_MENU_ITEM(ib->icon_box_parent->icon_menu_item)->inmenu) ewl_widget_hide(EWL_MENU_ITEM(ib->icon_box_parent->icon_menu_item)->inmenu);
 		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), NULL);
 	}
 
