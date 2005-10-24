@@ -15,11 +15,11 @@
  * @section intro Introduction
  *
  * Engrave is a designed to allow you the ability to easily create and edit
- * Edje EET files.
+ * Edje EDJ files.
  *
  * As an example of how easy Engrave is to work with, the following example
- * will read in either an EDC file or an EET file and attempt to write out
- * an EET and EDC version of the given file.
+ * will read in either an EDC file or an EDJ file and attempt to write out
+ * an EDJ and EDC version of the given file.
  *
  * @code
  * #include "Engrave.h"
@@ -34,8 +34,8 @@
  *         return 1;
  *     }
  *
- *     if (strstr(argv[1], ".eet"))
- *         ef = engrave_load_eet(argv[1]);
+ *     if (strstr(argv[1], ".edj"))
+ *         ef = engrave_load_edj(argv[1]);
  *     else {
  *         if (argc < 4) {
  *             printf("need img and font dirs with .edc file\n");
@@ -44,8 +44,8 @@
  *         ef = engrave_load_edc(argv[1], argv[2], argv[3]);
  *     }
  * 
- *     if (!engrave_eet_output(ef, "test.eet"))
- *         printf("failed to write test.eet\n");
+ *     if (!engrave_edj_output(ef, "test.edj"))
+ *         printf("failed to write test.edj\n");
  * 
  *     if (!engrave_edc_output(ef, "test.out"))
  *         printf("failed to write test.out\n"); 
@@ -63,7 +63,7 @@
  *
  * @section Conclusion
  * Engrave has been designed to make it easy to open and maniuplate Edje
- * files, be they EET or EDC.
+ * files, be they EDJ or EDC.
  *
  * If you have any questions or comments about Engrave please email
  * dj2 <zero@perplexity.org> or Rephorm <rephorm@rephorm.com>

@@ -3,19 +3,19 @@
 
 /**
  * @file engrave_load.h Engrave loading functions
- * @brief Contains the functions to load either an EDC or EET into Engrave.
+ * @brief Contains the functions to load either an EDC or EDJ into Engrave.
  */
 
 /**
  * @defgroup Engrave_Load Engrave_Load: Contains the functions to load EDC
- * and EET files into Engrave.
+ * and EDJ files into Engrave.
  * 
  * @{
  */
 
 Engrave_File *engrave_load_edc(const char *file, const char *imdir, 
                                             const char *fontdir);
-Engrave_File *engrave_load_eet(const char *filename);
+Engrave_File *engrave_load_edj(const char *filename);
 
 /**
  * @}
