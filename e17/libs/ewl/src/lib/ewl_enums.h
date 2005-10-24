@@ -344,6 +344,13 @@ enum Ewl_Attach_Data_Type
 };
 typedef enum Ewl_Attach_Data_Type Ewl_Attach_Data_Type;
 
+enum Ewl_Media_Module_Type
+{
+	EWL_MEDIA_MODULE_XINE,
+	EWL_MEDIA_MODULE_GSTREAMER
+};
+typedef enum Ewl_Media_Module_Type Ewl_Media_Module_Type;
+
 /**
  * @}
  */ 

@@ -171,18 +171,24 @@ main(int argc, char ** argv)
 {
 	Ewl_Widget *win = NULL, *o = NULL, *b = NULL;
 	Ewl_Widget *controls = NULL, *time = NULL;
-	char * module = NULL;
+	Ewl_Media_Module_Type type = EWL_MEDIA_MODULE_XINE;
 	char * file = NULL;
+	int i;
 
 	if (!ewl_init(&argc, argv)) {
 		printf("Can't init ewl");
 		return 1;
 	}
 
-	if (argc > 1) {
-		module = argv[1];
-		if (argc > 2)
-			file = argv[2];
+	for (i = 1; i < argc; i++)
+	{
+		if (!strcmp(argv[i], "-gstreamer"))
+			type = EWL_MEDIA_MODULE_GSTREAMER;
+
+		else if (!strcmp(argv[i], "-xine"))
+			type = EWL_MEDIA_MODULE_XINE;
+		else
+			file = argv[i];
 	}
 
 	win = ewl_window_new();
@@ -206,8 +212,10 @@ main(int argc, char ** argv)
 	ewl_text_text_set(EWL_TEXT(time), "00:00:00");
 
 	/* the video */
-	video = ewl_media_new(module, file);
+	video = ewl_media_new();
 	ewl_container_child_append(EWL_CONTAINER(b), video);
+	ewl_media_module_set(EWL_MEDIA(video), type);
+	ewl_media_media_set(EWL_MEDIA(video), file);
 	ewl_object_fill_policy_set(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
 	ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
 	ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, time);
