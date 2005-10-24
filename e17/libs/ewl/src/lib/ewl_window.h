@@ -67,6 +67,10 @@ void            ewl_window_position_get(Ewl_Window * win, int *x, int *y);
 void            ewl_window_raise(Ewl_Window * win);
 void            ewl_window_lower(Ewl_Window * win);
 void            ewl_window_transient_for(Ewl_Window * win, Ewl_Window * forwin);
+void            ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
+int             ewl_window_keyboard_grab_get(Ewl_Window *win);
+void            ewl_window_pointer_grab_set(Ewl_Window *win, int grab);
+int             ewl_window_pointer_grab_get(Ewl_Window *win);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -81,6 +85,7 @@ void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
+void            ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data);
 void            ewl_window_hide_cb(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void            ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data,

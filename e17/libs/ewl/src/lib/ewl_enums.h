@@ -198,7 +198,9 @@ typedef enum Ewl_Position Ewl_Position;
 enum Ewl_Window_Flags
 {
 	EWL_WINDOW_BORDERLESS = 1,
-	EWL_WINDOW_USER_CONFIGURE = 2
+	EWL_WINDOW_USER_CONFIGURE = 2,
+	EWL_WINDOW_GRAB_POINTER = 4,
+	EWL_WINDOW_GRAB_KEYBOARD = 8
 };
 
 typedef enum Ewl_Window_Flags Ewl_Window_Flags;

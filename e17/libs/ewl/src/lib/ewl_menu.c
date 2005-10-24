@@ -60,6 +60,8 @@ ewl_menu_init(Ewl_Menu *menu)
 	 * Create the popup menu portion of the widget.
 	 */
 	menu->base.popup = ewl_window_new();
+	ewl_window_keyboard_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
+	ewl_window_pointer_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
 	ewl_window_borderless_set(EWL_WINDOW(menu->base.popup));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
@@ -83,6 +85,8 @@ ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	menu = EWL_MENU(w);
+
+	ewl_menu_popup_move_cb(menu->base.popup, NULL, w);
 
 	/*
 	 * Position the popup menu relative to the menu.
@@ -155,5 +159,7 @@ ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				EWL_MENU(menu)->popup_x,
 				EWL_MENU(menu)->popup_y + CURRENT_H(menu));
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

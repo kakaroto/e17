@@ -28,6 +28,58 @@ Ewl_Widget *ewl_window_new()
 }
 
 /**
+ * @param w: the window to be initialized to default values and callbacks
+ * @return Returns TRUE or FALSE depending on if initialization succeeds.
+ * @brief Initialize a window to default values and callbacks
+ *
+ * Sets the values and callbacks of a window @a w to their defaults.
+ */
+int ewl_window_init(Ewl_Window * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+
+	/*
+	 * Initialize the fields of the inherited container class
+	 */
+	ewl_embed_init(EWL_EMBED(w));
+	ewl_widget_appearance_set(EWL_WIDGET(w), "window");
+	ewl_widget_inherit(EWL_WIDGET(w), "window");
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	w->title = strdup("EWL");
+	w->name = strdup("EWL");
+	w->classname  = strdup("EWL");
+
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			     ewl_window_realize_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			     ewl_window_postrealize_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
+			     ewl_window_unrealize_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
+			    ewl_window_show_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_EXPOSE,
+			    ewl_window_expose_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
+			    ewl_window_hide_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
+			     ewl_window_destroy_cb, NULL);
+	/*
+	 * Override the default configure callbacks since the window
+	 * has special needs for placement.
+	 */
+	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			ewl_overlay_configure_cb);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			     ewl_window_configure_cb, NULL);
+
+	LAYER(w) = -1000;
+	ecore_list_append(ewl_window_list, w);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
  * @param window: the X window to search for on the list of ewl window's
  * @return Returns the found ewl window on success, NULL on failure.
  * @brief Find an ewl window by it's X window
@@ -349,53 +401,117 @@ void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 }
 
 /**
- * @param w: the window to be initialized to default values and callbacks
- * @return Returns TRUE or FALSE depending on if initialization succeeds.
- * @brief Initialize a window to default values and callbacks
- *
- * Sets the values and callbacks of a window @a w to their defaults.
+ * @param win: the window to change keyboard grab settings.
+ * @param grab: TRUE or FALSE to indicate grab state.
+ * @return Returns no value.
+ * @brief Changes the keyboard grab state on the specified window.
  */
-int ewl_window_init(Ewl_Window * w)
+void ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
+
+	if (grab) {
+		win->flags |= EWL_WINDOW_GRAB_KEYBOARD;
+	}
+	else {
+		win->flags &= ~EWL_WINDOW_GRAB_KEYBOARD;
+	}
 
 	/*
-	 * Initialize the fields of the inherited container class
+	 * Grab the keyboard if we're realized.
 	 */
-	ewl_embed_init(EWL_EMBED(w));
-	ewl_widget_appearance_set(EWL_WIDGET(w), "window");
-	ewl_widget_inherit(EWL_WIDGET(w), "window");
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-	w->title = strdup("EWL");
-	w->name = strdup("EWL");
-	w->classname  = strdup("EWL");
+	if (VISIBLE(win) && win->window) {
+#ifdef ENABLE_EWL_SOFTWARE_X11
+		if (grab)
+			ecore_x_keyboard_grab((Ecore_X_Window)win->window);
+		else
+			ecore_x_keyboard_ungrab();
+#endif
+	}
 
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     ewl_window_realize_cb, NULL);
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     ewl_window_postrealize_cb, NULL);
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
-			     ewl_window_unrealize_cb, NULL);
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
-			    ewl_window_show_cb, NULL);
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
-			    ewl_window_hide_cb, NULL);
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			     ewl_window_destroy_cb, NULL);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to retrieve keyboard grab state
+ * @return Returns TRUE if window is grabbing keyboard, FALSE otherwise.
+ * @brief Retrieves the current keyboard grab state on a window.
+ */
+int ewl_window_keyboard_grab_get(Ewl_Window *win)
+{
+	int grab;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, "window", FALSE);
+
+	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD)
+		grab = TRUE;
+	else
+		grab = FALSE;
+
+	DRETURN_INT(grab, DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to change pointer grab settings.
+ * @param grab: TRUE or FALSE to indicate grab state.
+ * @return Returns no value.
+ * @brief Changes the pointer grab state on the specified window.
+ */
+void ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
+
+	if (grab) {
+		win->flags |= EWL_WINDOW_GRAB_POINTER;
+	}
+	else {
+		win->flags &= ~EWL_WINDOW_GRAB_POINTER;
+	}
+
 	/*
-	 * Override the default configure callbacks since the window
-	 * has special needs for placement.
+	 * Grab the pointer if we're realized.
 	 */
-	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			ewl_overlay_configure_cb);
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_window_configure_cb, NULL);
+	if (VISIBLE(win) && win->window) {
+#ifdef ENABLE_EWL_SOFTWARE_X11
+		if (grab)
+			ecore_x_pointer_grab((Ecore_X_Window)win->window);
+		else
+			ecore_x_pointer_ungrab();
+#endif
+	}
 
-	LAYER(w) = -1000;
-	ecore_list_append(ewl_window_list, w);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+/**
+ * @param win: window to retrieve pointer grab state
+ * @return Returns TRUE if window is grabbing pointer, FALSE otherwise.
+ * @brief Retrieves the current pointer grab state on a window.
+ */
+int ewl_window_pointer_grab_get(Ewl_Window *win)
+{
+	int grab;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, "window", FALSE);
+
+	if (win->flags & EWL_WINDOW_GRAB_POINTER)
+		grab = TRUE;
+	else
+		grab = FALSE;
+
+	DRETURN_INT(grab, DLEVEL_STABLE);
 }
 
 void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
@@ -664,8 +780,37 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 		ecore_x_window_show((Ecore_X_Window)win->window);
 		ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
+
 	}
 #endif
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data)
+{
+	Ewl_Window *win = EWL_WINDOW(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) {
+		ecore_x_keyboard_grab((Ecore_X_Window)win->window);
+		printf("Grabbed keyboard\n");
+	}
+	if (win->flags & EWL_WINDOW_GRAB_POINTER) {
+		int grabval;
+		grabval = ecore_x_pointer_grab((Ecore_X_Window)win->window);
+		if (grabval == GrabNotViewable)
+			printf("GrabNotViewable\n");
+		else if (grabval == AlreadyGrabbed)
+			printf("AlreadyGrabbed\n");
+		else if (grabval == GrabFrozen)
+			printf("GrabFrozen\n");
+		else if (grabval == GrabInvalidTime)
+			printf("GrabInvalidTime\n");
+		else
+			printf("Grabbed pointer\n");
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -673,13 +818,23 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
+	Ewl_Window *win = EWL_WINDOW(widget);
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
-		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(widget)->evas_window);
-		ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(widget)->window);
+		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+		ecore_x_window_hide((Ecore_X_Window)win->window);
+		if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) {
+			ecore_x_keyboard_ungrab();
+			printf("Ungrabbed keyboard\n");
+		}
+		if (win->flags & EWL_WINDOW_GRAB_POINTER) {
+			ecore_x_pointer_ungrab();
+			printf("Ungrabbed pointer\n");
+		}
 	}
 #endif
 
