@@ -1,0 +1,20 @@
+
+group {
+    name, "menuitem";
+    data {
+        item, "inset/left" "3";
+        item, "inset/right" "3";
+        item, "inset/top" "3";
+        item, "inset/bottom" "3";
+
+        item, "pad/left" "0";
+        item, "pad/right" "0";
+        item, "pad/top" "0";
+        item, "pad/bottom" "0";
+    }
+
+    parts {
+BUTTON()
+    }
+}
+

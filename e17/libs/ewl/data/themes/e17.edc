@@ -23,6 +23,7 @@ collections {
 #include "e17/bits/tree-groups.edc"
 #include "e17/bits/separator-groups.edc"
 #include "e17/bits/window-groups.edc"
+#include "e17/bits/menu-item.edc"
 }
 
 data {
