@@ -951,8 +951,9 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 		/*Make sure the context menu is invisible*/
 		
 		//Hide the context menu
-		ewl_widget_hide(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item)->inmenu);
+		//ewl_widget_hide(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu_item)->inmenu);
 		//ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), NULL);
+		ewl_widget_hide(ib->ewl_iconbox_context_menu);
 
 
 		//Hide the icon menu
