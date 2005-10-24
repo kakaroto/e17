@@ -20,11 +20,11 @@ __toggle_child_fill(Ewl_Widget * w, void *ev_data __UNUSED__,
 	f = ewl_object_fill_policy_get(EWL_OBJECT(w));
 
 	if (f == EWL_FLAG_FILL_NONE) {
-		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 		ewl_button_label_set(EWL_BUTTON(w), "Fill");
+		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	} else {
-		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 		ewl_button_label_set(EWL_BUTTON(w), "None");
+		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	}
 }
 
