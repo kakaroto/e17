@@ -105,7 +105,7 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, "button");
 
-	if (!l) {
+	if ((!l) && (b->label_object)) {
 		ewl_widget_destroy(b->label_object);
 		b->label_object = NULL;
 	}
