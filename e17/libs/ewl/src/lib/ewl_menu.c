@@ -9,9 +9,10 @@
  * @return Returns a pointer to a new menu on success, NULL on failure.
  * @brief Create a new internal menu
  */
-Ewl_Widget     *ewl_menu_new(void)
+Ewl_Widget *
+ewl_menu_new(void)
 {
-	Ewl_Menu      *menu;
+	Ewl_Menu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -19,11 +20,13 @@ Ewl_Widget     *ewl_menu_new(void)
 	if (!menu)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menu_init(menu);
+	if (!ewl_menu_init(menu)) {
+		ewl_widget_destroy(EWL_WIDGET(menu));
+		menu = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);
 }
-
 
 /**
  * @param menu: the menu to initialize
@@ -32,16 +35,18 @@ Ewl_Widget     *ewl_menu_new(void)
  * @return Returns no value.
  * @brief Initialize an internal menu to starting values
  */
-void ewl_menu_init(Ewl_Menu * menu)
+int
+ewl_menu_init(Ewl_Menu *menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DCHECK_PARAM_PTR("menu", menu);
+	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
 
 	/*
 	 * Initialize the defaults of the inherited fields.
 	 */
-	ewl_menu_base_init(EWL_MENU_BASE(menu));
+	if (!ewl_menu_base_init(EWL_MENU_BASE(menu)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
@@ -64,14 +69,20 @@ void ewl_menu_init(Ewl_Menu * menu)
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 void
 ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		    void *user_data __UNUSED__)
+					void *user_data __UNUSED__)
 {
-	Ewl_Menu *menu = EWL_MENU(w);
+	Ewl_Menu *menu;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	menu = EWL_MENU(w);
 
 	/*
 	 * Position the popup menu relative to the menu.
@@ -79,17 +90,23 @@ ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_callback_append(EWL_WIDGET(EWL_WINDOW(menu->base.popup)),
 				       EWL_CALLBACK_CONFIGURE,
 				       ewl_menu_popup_move_cb, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	int x, y;
-	Ewl_Menu *menu = EWL_MENU(w);
+	Ewl_Menu *menu;
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
+	menu = EWL_MENU(w);
 	emb = ewl_embed_widget_find(w);
 
 	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
@@ -99,26 +116,35 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Menu      *menu;
+	Ewl_Menu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	menu = EWL_MENU(w);
-
 	ewl_widget_show(menu->base.popup);
 	ewl_window_raise(EWL_WINDOW(menu->base.popup));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_popup_move_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-							void *user_data)
+void
+ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data)
 {
-        Ewl_Widget *menu = EWL_WIDGET (user_data);
-	
+        Ewl_Widget *menu;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
+
+	menu = EWL_WIDGET (user_data);
 	if (EWL_MENU_ITEM(menu)->inmenu) {
 		ewl_window_move(EWL_WINDOW(w),
 				EWL_MENU(menu)->popup_x + CURRENT_W(menu),
@@ -130,3 +156,4 @@ void ewl_menu_popup_move_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 				EWL_MENU(menu)->popup_y + CURRENT_H(menu));
 	}
 }
+

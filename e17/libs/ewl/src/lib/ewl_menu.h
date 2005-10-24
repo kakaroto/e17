@@ -38,27 +38,16 @@ struct Ewl_Menu
         int            popup_y;
 };
 
-Ewl_Widget     *ewl_menu_new(void);
-
-void            ewl_menu_init(Ewl_Menu *menu);
+Ewl_Widget	*ewl_menu_new(void);
+int		 ewl_menu_init(Ewl_Menu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_menu_realize_cb  (Ewl_Widget *w,
-				      void       *ev_data,
-				      void       *user_data);
-void            ewl_menu_configure_cb  (Ewl_Widget *w,
-					void       *ev_data,
-					void       *user_data);
-
-void            ewl_menu_expand_cb     (Ewl_Widget *w,
-					void       *ev_data,
-					void       *user_data);
-
-void            ewl_menu_popup_move_cb (Ewl_Widget *w,
-					void       *ev_data,
-					void       *user_data);
+void ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
