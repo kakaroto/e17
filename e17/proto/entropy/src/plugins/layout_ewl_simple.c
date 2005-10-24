@@ -273,7 +273,7 @@ void layout_ewl_simple_config_create(entropy_core* core) {
 
 	//printf("Setting config..\n");
 
-	sprintf(eg, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder|Minh;smb:///minh/music", entropy_core_home_dir_get(core));
+	sprintf(eg, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", entropy_core_home_dir_get(core));
 
 	//printf("Setting default config string..\n");
 	entropy_config_str_set("layout_ewl_simple", "structure_bar", eg);
