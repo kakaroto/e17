@@ -307,6 +307,8 @@ extern"C" {
 #include <ewl_spinner.h>
 #include <ewl_image.h>
 #include <ewl_spectrum.h>
+#include <ewl_menu_item.h>
+#include <ewl_menu_separator.h>
 #include <ewl_menu_base.h>
 #include <ewl_imenu.h>
 #include <ewl_menu.h>
