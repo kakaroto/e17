@@ -11,7 +11,7 @@
  **************************************************/
 
 
-#include "config.h"
+#include "note.h"
 
 /**
  * @return: Returns an allocated MainConfig variable with some default values

@@ -137,7 +137,8 @@ note_load(char *target)
 	char           *fullstr = malloc(NOTE_LIMIT * 2);
 	Note *note;
 
-	sprintf(fullstr, "");
+	p = NULL;
+	fullstr[0] = '\0';
 	if ((fp = fopen(target, "r")) != NULL) {
 		while ((str = fgets(str, NOTE_LIMIT, fp)) != NULL) {
 			sprintf(fullstr, "%s%s", fullstr, str);

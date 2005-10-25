@@ -48,12 +48,11 @@ void
 setup_saveload_win(void)
 {
 	char           *headers[1];
-	Ecore_Timer    *revtim;
 
 	/* Setup the Window */
 	saveload->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) saveload->win, "E-Notes Save/Load");
-  ewl_window_class_set((Ewl_Window *) saveload->win, "Enotes");
+	ewl_window_class_set((Ewl_Window *) saveload->win, "Enotes");
 	ewl_object_fill_policy_set((Ewl_Object *) saveload->win,
 				   EWL_FLAG_FILL_ALL);
 	ewl_object_size_request((Ewl_Object *) saveload->win, 400, 350);
@@ -220,7 +219,6 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, void * ud)
 void
 ewl_saveload_close(Ewl_Widget * o, void *ev_data, void *ud)
 {
-	Ecore_Evas *ee=ud;
 	ewl_widget_destroy(saveload->win);
 	free(saveload);
 	saveload = NULL;
@@ -261,7 +259,8 @@ ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null)
 }
 
 void
-ewl_saveload_save_by_name(char *p){
+ewl_saveload_save_by_name(char *p)
+{
 	saveload_selected=p;
 	ewl_saveload_save(NULL,NULL,NULL);
 }
@@ -472,7 +471,6 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 void
 ewl_load_revert(Ewl_Widget * widget, void *ev_data, void*ud)
 {
-	Ewl_Widget *p=ud;
 	dml("Refreshing the Load Note List", 2);
 	ewl_container_reset((Ewl_Container *) load->tree);
 	fill_load_tree();
@@ -490,7 +488,6 @@ ewl_load_revert(Ewl_Widget * widget, void *ev_data, void*ud)
 void
 ewl_load_close(Ewl_Widget * o, void *ev_data, void*ud)
 {
-	Ecore_Evas *ee=ud;
 	ewl_widget_destroy(load->win);
 	free(load);
 	load = NULL;

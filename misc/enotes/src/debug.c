@@ -11,7 +11,7 @@
  **************************************************/
 
 
-#include "debug.h"
+#include "note.h"
 
 extern MainConfig *main_config;
 

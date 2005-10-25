@@ -78,6 +78,7 @@ void            ewl_saveload_close(Ewl_Widget * o, void *ev_data,
 				   void *ud);
 void            ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null);
+void            ewl_saveload_save_by_name(char *p);
 void            ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data,
 					    void *null);
 

@@ -85,8 +85,6 @@ int ipc_svr_data_recv(void *data, int type, void *event){
 void handle_ipc_message(void *data){
 	RecvMsg        *p;
 	NoteStor       *note;
-	Ecore_Timer    *close;
-	char           *msg;
 	char           *content;
 	p = parse_message((char *)data);
 

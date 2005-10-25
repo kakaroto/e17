@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <time.h>
 
 #include <Ecore.h>
 #include <Ecore_Config.h>

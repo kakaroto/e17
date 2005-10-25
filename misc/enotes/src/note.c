@@ -35,7 +35,8 @@ new_note(void)
 }
 
 void new_note_with_values(int x,int y,int width,int height,char *content){
-	Note *p=new_note_with_values_return(x,y,width,height,content);
+	/*Note *p = */
+	new_note_with_values_return(x,y,width,height,content);
 }
 
 Note*
@@ -76,7 +77,6 @@ void
 remove_note(Evas_List * note)
 {
 	Note           *p = evas_list_data(note);
-	char           *note_title;
 
 	dml("Closing a Note", 2);
 
@@ -627,7 +627,6 @@ notes_update_themes(void)
 	int             edje_w, edje_h;
 	Evas_List      *working;
 	Note           *note;
-	int             count = get_note_count();
 
 	char           *edjefn = malloc(PATH_MAX);
 

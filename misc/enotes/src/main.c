@@ -27,9 +27,7 @@ char *remotecmd;
 int
 main(int argc, char *argv[])
 {
-	char           *spec_conf;
 	int             note_count;
-	int a;
 
 	/* IPC Check */
 	ecore_ipc_init();

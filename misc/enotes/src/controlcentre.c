@@ -11,7 +11,7 @@
  **************************************************/
 
 
-#include "controlcentre.h"
+#include "note.h"
 
 ControlCentre  *controlcentre;
 

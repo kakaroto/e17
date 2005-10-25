@@ -20,13 +20,14 @@
 #include <Edje.h>
 #include <Ewl.h>
 
+#include "../config.h"
 #include "debug.h"
 #include "config.h"
 #include "controlcentre.h"
 #include "saveload.h"
 #include "ipc.h"
 #include "menu.h"
-#include "../config.h"
+#include "msgbox.h"
 
 
 #define NOTE_PART "Main"
