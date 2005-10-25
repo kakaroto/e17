@@ -981,20 +981,18 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 
 void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
-
+	int ibx,iby,px,py, sx,sy;
 	Ewl_IconBox_Icon* ib = user_data;
 	Ewl_Event_Mouse_Down *ev = ev_data;
-	int ibx,iby,px,py, sx,sy;
-	
-	/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
-	ib->drag = 1;
-	ib->icon_box_parent->drag_icon = ib;
-	ib->icon_box_parent->select_icon = ib; /*We rely on this being the first callback - so
-						 client*/
 
-	
 	ib->icon_box_parent->xdown = ev->x;
 	ib->icon_box_parent->ydown = ev->y;
+
+	/* Set this to selected */
+	ewl_iconbox_icon_select(ib,0);
+
+	ib->icon_box_parent->select_icon = ib; /*We rely on this being the first callback - so
+						 client*/
 
 	px = ewl_object_current_x_get(EWL_OBJECT(ib));
 	py = ewl_object_current_y_get(EWL_OBJECT(ib));
@@ -1005,17 +1003,22 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 	ibx = ewl_object_current_x_get(EWL_OBJECT(ib->icon_box_parent));
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib->icon_box_parent));
 
-	/* Set this to selected */
-	ewl_iconbox_icon_select(ib,0);
-
 	if (ev->button == 3) {
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(sx-ibx), ev->y-iby +abs(sy-iby));
 		ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
 		ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
 	} else {
+		/*Select/drag start*/
+
 		ewl_widget_hide(ib->icon_box_parent->icon_menu);
 		ewl_widget_hide(ib->icon_box_parent->icon_menu_floater);
+
+
+	
+		/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
+		ib->drag = 1;
+		ib->icon_box_parent->drag_icon = ib;
 	}
 
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
