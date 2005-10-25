@@ -196,6 +196,8 @@ void
 ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
 {
 	double pos;
+	int mh, mm;
+	double ms;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -204,9 +206,13 @@ ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
 	pos = ewl_media_length_get(m);
 
 	/* stolen from envision by benr */
-	if (h) *h = (int)pos / (60 * 60);
-	if (min) *min = ((int)pos / 60) - (*h * 60);
-	if (s) *s = pos - (*h * 60 * 60) - (*min * 60);
+	mh = (int)pos / (60 * 60);
+	mm = ((int)pos / 60) - (mh * 60);
+	ms = pos - (mh * 60 * 60) - (mm * 60);
+
+	if (h) *h = mh;
+	if (min) *min = mm;
+	if (s) *s = ms;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -280,16 +286,23 @@ ewl_media_position_get(Ewl_Media *m)
 void
 ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 {
-	double pos = ewl_media_position_get(m);
+	double pos;
+	int mh, mm;
+	double ms;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, "media");
-
+ 
+	pos = ewl_media_position_get(m);
 	/* stolen from envision by benr */
-	if (h) *h = (int)pos / (60 * 60);
-	if (min) *min = ((int)pos / 60) - (*h * 60);
-	if (s) *s = pos - (*h * 60 * 60) - (*min * 60);
+	mh = (int)pos / (60 * 60);
+	mm = ((int)pos / 60) - (mh * 60);
+	ms = pos - (mh * 60 * 60) - (mm * 60);
+
+	if (h) *h = mh
+	if (min) *min = mm
+	if (s) *s = ms;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
