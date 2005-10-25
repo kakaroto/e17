@@ -300,8 +300,8 @@ ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 	mm = ((int)pos / 60) - (mh * 60);
 	ms = pos - (mh * 60 * 60) - (mm * 60);
 
-	if (h) *h = mh
-	if (min) *min = mm
+	if (h) *h = mh;
+	if (min) *min = mm;
 	if (s) *s = ms;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
