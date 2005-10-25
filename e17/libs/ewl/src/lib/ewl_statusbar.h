@@ -31,7 +31,7 @@ typedef struct Ewl_Statusbar Ewl_Statusbar;
  */
 struct Ewl_Statusbar
 {
-	Ewl_Box			outer_box;	/**< Inherit from Ewl_Box */
+	Ewl_Box			 outer_box;	/**< Inherit from Ewl_Box */
 	Ewl_Widget		*left;		/**< The left container **/
 	Ewl_Widget		*status;	/**< The status container */
 	Ewl_Widget		*right;		/**< The right container */

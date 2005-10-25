@@ -7,7 +7,8 @@
  * @return Returns NULL on failure, or a pointer to a new statusbar on success.
  * @brief Allocate and initialize a new statusbar widget
  */
-Ewl_Widget *ewl_statusbar_new(void)
+Ewl_Widget *
+ewl_statusbar_new(void)
 {
 	Ewl_Statusbar *sb = NULL;
 
@@ -25,26 +26,13 @@ Ewl_Widget *ewl_statusbar_new(void)
 	DRETURN_PTR(EWL_WIDGET(sb), DLEVEL_STABLE);
 }
 
-void ewl_statusbar_debug_cb(Ewl_Widget *w, void *evdata __UNUSED__,
-						void *data __UNUSED__)
-{
-	int num = 0;
-	Ewl_Widget *child;
-	ecore_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
-		if (VISIBLE(child)) {
-			printf("Placing %p\n", child);
-			num++;
-		}
-	}
-}
-
 /**
  * @param sb: the statusbar to initialize
  * @return Returns 1 on success and 0 on failure
  * @brief Initialize a statusbar to default values
  */
-int ewl_statusbar_init(Ewl_Statusbar *sb)
+int
+ewl_statusbar_init(Ewl_Statusbar *sb)
 {
 	Ewl_Widget *w = NULL;
 
@@ -76,9 +64,6 @@ int ewl_statusbar_init(Ewl_Statusbar *sb)
 	ewl_object_alignment_set(EWL_OBJECT(sb->status), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(sb->status);
 
-	ewl_callback_prepend(sb->status, EWL_CALLBACK_CONFIGURE,
-			    ewl_statusbar_debug_cb, NULL);
-
 	sb->right = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(sb), sb->right);
 	ewl_widget_internal_set(EWL_WIDGET(sb->right), TRUE);
@@ -99,10 +84,12 @@ int ewl_statusbar_init(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief hide the box on the left of the status bar
  */
-void ewl_statusbar_left_hide(Ewl_Statusbar *sb)
+void
+ewl_statusbar_left_hide(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	ewl_container_child_remove(EWL_CONTAINER(sb), sb->left);
 	ewl_widget_hide(sb->left);
@@ -115,10 +102,12 @@ void ewl_statusbar_left_hide(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief show the box on the left of the status bar
  */
-void ewl_statusbar_left_show(Ewl_Statusbar *sb)
+void
+ewl_statusbar_left_show(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb), sb->left);
 	ewl_widget_show(sb->left);
@@ -131,10 +120,12 @@ void ewl_statusbar_left_show(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief hide the box on the right of the status bar
  */
-void ewl_statusbar_right_hide(Ewl_Statusbar *sb)
+void
+ewl_statusbar_right_hide(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	ewl_container_child_remove(EWL_CONTAINER(sb), sb->right);
 	ewl_widget_hide(sb->right);
@@ -147,10 +138,12 @@ void ewl_statusbar_right_hide(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief show the box on the right of the status bar
  */
-void ewl_statusbar_right_show(Ewl_Statusbar *sb)
+void
+ewl_statusbar_right_show(Ewl_Statusbar *sb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	ewl_container_child_append(EWL_CONTAINER(sb), sb->right);
 	ewl_widget_show(sb->right);
@@ -165,10 +158,12 @@ void ewl_statusbar_right_show(Ewl_Statusbar *sb)
  * @return Returns no value
  * @brief Sets the active statusbar container
  */
-void ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
+void
+ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	if ((pos == EWL_POSITION_LEFT) || (pos == EWL_POSITION_TOP))
 		ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->left));
@@ -185,11 +180,14 @@ void ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
  * @brief pack the given widget @a w into the statusbar @a sb
  * into right of the left box.
  */
-void ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w)
+void
+ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_container_child_append(EWL_CONTAINER(sb->left), w);
 
@@ -203,11 +201,14 @@ void ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w)
  * @brief pack the given widget @a w into the statusbar @a sb
  * into the left of the left box
  */
-void ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
+void
+ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb->left), w);
 
@@ -221,11 +222,14 @@ void ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
  * @brief pack the given widget @a w into the statusbar @a sb
  * into the right of the right box
  */
-void ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w)
+void
+ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_container_child_append(EWL_CONTAINER(sb->right), w);
 
@@ -239,11 +243,14 @@ void ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w)
  * @brief pack the given widget @a w into the statusbar
  * @a sb into the left of the right box
  */
-void ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
+void
+ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("sb", sb, "statusbar");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_container_child_prepend(EWL_CONTAINER(sb->right), w);
 
@@ -256,11 +263,13 @@ void ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
  * @return Returns no value
  * @brief Displays the given status message on the statusbar
  */
-void ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
+void
+ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_PARAM_PTR("txt", txt);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	if (sb->current) {
 		ewl_widget_hide(sb->current);
@@ -283,25 +292,23 @@ void ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
  * @brief Removes the most recient status message and displays the one
  * before it.
  */
-void ewl_statusbar_pop(Ewl_Statusbar *sb)
+void
+ewl_statusbar_pop(Ewl_Statusbar *sb)
 {
 	Ewl_Widget *current;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_TYPE("sb", sb, "statusbar");
 
 	current = ecore_list_remove_first(sb->stack);
-	if (current) {
+	if (current) 
 		ewl_widget_destroy(current);
-		printf("Popped %p\n", current);
-	}
 
 	current = ecore_list_goto_first(sb->stack);
-	if (current) {
-		printf("\tShowing %p\n", current);
-		// ewl_container_child_append(EWL_CONTAINER(sb->status), current);
+	if (current)
 		ewl_widget_show(current);
-	}
+
 	sb->current = current;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
