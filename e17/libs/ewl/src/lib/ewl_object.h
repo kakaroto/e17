@@ -92,83 +92,83 @@ struct Ewl_Object
 	unsigned int flags; /**< Bitmask indicating fill policy and alignment */
 };
 
-int             ewl_object_init(Ewl_Object * o);
-void            ewl_object_current_geometry_get(Ewl_Object * o, int *x, int *y,
+int             ewl_object_init(Ewl_Object *o);
+void            ewl_object_current_geometry_get(Ewl_Object *o, int *x, int *y,
 						int *w, int *h);
 
-void            ewl_object_current_size_get(Ewl_Object * o, int *w, int *h);
-int             ewl_object_current_x_get(Ewl_Object * o);
-int             ewl_object_current_y_get(Ewl_Object * o);
-int             ewl_object_current_w_get(Ewl_Object * o);
-int             ewl_object_current_h_get(Ewl_Object * o);
+void            ewl_object_current_size_get(Ewl_Object *o, int *w, int *h);
+int             ewl_object_current_x_get(Ewl_Object *o);
+int             ewl_object_current_y_get(Ewl_Object *o);
+int             ewl_object_current_w_get(Ewl_Object *o);
+int             ewl_object_current_h_get(Ewl_Object *o);
 
-void            ewl_object_preferred_inner_size_set(Ewl_Object * o, int w, int h);
-void            ewl_object_preferred_inner_size_get(Ewl_Object * o, int *w, int *h);
-void            ewl_object_preferred_size_get(Ewl_Object * o, int *w, int *h);
+void            ewl_object_preferred_inner_size_set(Ewl_Object *o, int w, int h);
+void            ewl_object_preferred_inner_size_get(Ewl_Object *o, int *w, int *h);
+void            ewl_object_preferred_size_get(Ewl_Object *o, int *w, int *h);
 
-void            ewl_object_preferred_inner_w_set(Ewl_Object * o, int w);
-int             ewl_object_preferred_w_get(Ewl_Object * o);
-int             ewl_object_preferred_inner_w_get(Ewl_Object * o);
+void            ewl_object_preferred_inner_w_set(Ewl_Object *o, int w);
+int             ewl_object_preferred_w_get(Ewl_Object *o);
+int             ewl_object_preferred_inner_w_get(Ewl_Object *o);
 
-void            ewl_object_preferred_inner_h_set(Ewl_Object * o, int h);
-int             ewl_object_preferred_inner_h_get(Ewl_Object * o);
-int             ewl_object_preferred_h_get(Ewl_Object * o);
+void            ewl_object_preferred_inner_h_set(Ewl_Object *o, int h);
+int             ewl_object_preferred_inner_h_get(Ewl_Object *o);
+int             ewl_object_preferred_h_get(Ewl_Object *o);
 
-void            ewl_object_geometry_request(Ewl_Object * o, int x, int y,
+void            ewl_object_geometry_request(Ewl_Object *o, int x, int y,
 					    int w, int h);
-void            ewl_object_size_request(Ewl_Object * o, int w, int h);
-void            ewl_object_position_request(Ewl_Object * o, int x, int y);
-inline void     ewl_object_x_request(Ewl_Object * o, int x);
-inline void     ewl_object_y_request(Ewl_Object * o, int y);
-void            ewl_object_w_request(Ewl_Object * o, int w);
-void            ewl_object_h_request(Ewl_Object * o, int h);
+void            ewl_object_size_request(Ewl_Object *o, int w, int h);
+void            ewl_object_position_request(Ewl_Object *o, int x, int y);
+inline void     ewl_object_x_request(Ewl_Object *o, int x);
+inline void     ewl_object_y_request(Ewl_Object *o, int y);
+void            ewl_object_w_request(Ewl_Object *o, int w);
+void            ewl_object_h_request(Ewl_Object *o, int h);
 
-void            ewl_object_minimum_size_set(Ewl_Object * o, int w, int h);
-inline void     ewl_object_minimum_w_set(Ewl_Object * o, int w);
-inline void     ewl_object_minimum_h_set(Ewl_Object * o, int h);
+void            ewl_object_minimum_size_set(Ewl_Object *o, int w, int h);
+inline void     ewl_object_minimum_w_set(Ewl_Object *o, int w);
+inline void     ewl_object_minimum_h_set(Ewl_Object *o, int h);
 
-void            ewl_object_minimum_size_get(Ewl_Object * o, int *w, int *h);
-inline int      ewl_object_minimum_w_get(Ewl_Object * o);
-inline int      ewl_object_minimum_h_get(Ewl_Object * o);
+void            ewl_object_minimum_size_get(Ewl_Object *o, int *w, int *h);
+inline int      ewl_object_minimum_w_get(Ewl_Object *o);
+inline int      ewl_object_minimum_h_get(Ewl_Object *o);
 
-void            ewl_object_maximum_size_set(Ewl_Object * o, int w, int h);
-inline void     ewl_object_maximum_w_set(Ewl_Object * o, int w);
-inline void     ewl_object_maximum_h_set(Ewl_Object * o, int h);
+void            ewl_object_maximum_size_set(Ewl_Object *o, int w, int h);
+inline void     ewl_object_maximum_w_set(Ewl_Object *o, int w);
+inline void     ewl_object_maximum_h_set(Ewl_Object *o, int h);
 
-void            ewl_object_maximum_size_get(Ewl_Object * o, int *w, int *h);
-inline int	ewl_object_maximum_w_get(Ewl_Object * o);
-inline int	ewl_object_maximum_h_get(Ewl_Object * o);
+void            ewl_object_maximum_size_get(Ewl_Object *o, int *w, int *h);
+inline int	ewl_object_maximum_w_get(Ewl_Object *o);
+inline int	ewl_object_maximum_h_get(Ewl_Object *o);
 
-unsigned int    ewl_object_alignment_get(Ewl_Object * o);
-inline void     ewl_object_alignment_set(Ewl_Object * o, unsigned int align);
+unsigned int    ewl_object_alignment_get(Ewl_Object *o);
+inline void     ewl_object_alignment_set(Ewl_Object *o, unsigned int align);
 void            ewl_object_place(Ewl_Object *o, int x, int y, int w, int h);
 
-unsigned int    ewl_object_fill_policy_get(Ewl_Object * o);
-inline void     ewl_object_fill_policy_set(Ewl_Object * o, unsigned int fill);
+unsigned int    ewl_object_fill_policy_get(Ewl_Object *o);
+inline void     ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill);
 
 /*
  * Padding setting and retrieval functions.
  */
-void            ewl_object_padding_set(Ewl_Object * o, int l, int r, int t,
+void            ewl_object_padding_set(Ewl_Object *o, int l, int r, int t,
 				       int b);
-void            ewl_object_padding_get(Ewl_Object * o, int *l, int *r, int *t,
+void            ewl_object_padding_get(Ewl_Object *o, int *l, int *r, int *t,
 				       int *b);
-int             ewl_object_padding_top_get(Ewl_Object * o);
-int             ewl_object_padding_bottom_get(Ewl_Object * o);
-int             ewl_object_padding_left_get(Ewl_Object * o);
-int             ewl_object_padding_right_get(Ewl_Object * o);
+int             ewl_object_padding_top_get(Ewl_Object *o);
+int             ewl_object_padding_bottom_get(Ewl_Object *o);
+int             ewl_object_padding_left_get(Ewl_Object *o);
+int             ewl_object_padding_right_get(Ewl_Object *o);
 
 /*
  * Inset setting and retrieval functions.
  */
-void            ewl_object_insets_set(Ewl_Object * o, int l, int r, int t,
+void            ewl_object_insets_set(Ewl_Object *o, int l, int r, int t,
 				      int b);
-void            ewl_object_insets_get(Ewl_Object * o, int *l, int *r, int *t,
+void            ewl_object_insets_get(Ewl_Object *o, int *l, int *r, int *t,
 				      int *b);
-int             ewl_object_insets_top_get(Ewl_Object * o);
-int             ewl_object_insets_bottom_get(Ewl_Object * o);
-int             ewl_object_insets_left_get(Ewl_Object * o);
-int             ewl_object_insets_right_get(Ewl_Object * o);
+int             ewl_object_insets_top_get(Ewl_Object *o);
+int             ewl_object_insets_bottom_get(Ewl_Object *o);
+int             ewl_object_insets_left_get(Ewl_Object *o);
+int             ewl_object_insets_right_get(Ewl_Object *o);
 
 void            ewl_object_flags_add(Ewl_Object *o, unsigned int flags,
 				     unsigned int mask);
