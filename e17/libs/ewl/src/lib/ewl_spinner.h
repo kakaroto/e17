@@ -48,33 +48,33 @@ struct Ewl_Spinner
 };
 
 Ewl_Widget     *ewl_spinner_new(void);
-int             ewl_spinner_init(Ewl_Spinner * s);
-void            ewl_spinner_value_set(Ewl_Spinner * s, double value);
-double          ewl_spinner_value_get(Ewl_Spinner * s);
-void            ewl_spinner_digits_set(Ewl_Spinner * s, unsigned char digits);
-double          ewl_spinner_min_val_get(Ewl_Spinner * s);
-void            ewl_spinner_min_val_set(Ewl_Spinner * s, double val);
-double          ewl_spinner_max_val_get(Ewl_Spinner * s);
-void            ewl_spinner_max_val_set(Ewl_Spinner * s, double val);
-void            ewl_spinner_step_set(Ewl_Spinner * s, double step);
+int             ewl_spinner_init(Ewl_Spinner *s);
+void            ewl_spinner_value_set(Ewl_Spinner *s, double value);
+double          ewl_spinner_value_get(Ewl_Spinner *s);
+void            ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
+double          ewl_spinner_min_val_get(Ewl_Spinner *s);
+void            ewl_spinner_min_val_set(Ewl_Spinner *s, double val);
+double          ewl_spinner_max_val_get(Ewl_Spinner *s);
+void            ewl_spinner_max_val_set(Ewl_Spinner *s, double val);
+void            ewl_spinner_step_set(Ewl_Spinner *s, double step);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spinner_realize_cb(Ewl_Widget * widget, void *ev_data,
-			    void *user_data);
-void ewl_spinner_key_down_cb(Ewl_Widget * widget, void *ev_data,
-			     void *user_data);
-void ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_spinner_wheel_cb(Ewl_Widget * w, void *ev_data, 
-				 void *user_data);
+void ewl_spinner_realize_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_key_down_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_deselect_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_spinner_wheel_cb(Ewl_Widget *w, void *ev_data, 
+						void *user_data);
 
-void ewl_spinner_increase_value_cb(Ewl_Widget * widget, void *ev_data,
-				   void *user_data);
-void ewl_spinner_decrease_value_cb(Ewl_Widget * widget, void *ev_data,
-				   void *user_data);
-void ewl_spinner_value_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_spinner_increase_value_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_decrease_value_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_value_stop_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
