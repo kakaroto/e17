@@ -15,6 +15,8 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
+CFLAGS="$CFLAGS -Wall"
+
 if test "x${exec_prefix}" = "xNONE"; then
   if test "x${prefix}" = "xNONE"; then
     bindir="${ac_default_prefix}/bin";
@@ -78,11 +80,8 @@ fi
 
 PROG="imlib2-config";
 AC_PATH_PROG(IMLIB2_CONFIG, $PROG, "", $PATH)
-if [ test -z $IMLIB2_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+if test -z "$IMLIB2_CONFIG" ; then
+  AC_MSG_ERROR($PROG is not in your \$PATH. Please ensure it is.)
 fi
 imlib2_libs=`$IMLIB2_CONFIG --libs`
 imlib2_cflags=`$IMLIB2_CONFIG --cflags`
@@ -91,11 +90,8 @@ AC_SUBST(imlib2_cflags)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if [ test -z $EVAS_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+if test -z "$EVAS_CONFIG" ; then
+  AC_MSG_ERROR($PROG is not in your \$PATH. Please ensure it is.)
 fi
 evas_libs=`$EVAS_CONFIG --libs`
 evas_cflags=`$EVAS_CONFIG --cflags`
@@ -104,11 +100,8 @@ AC_SUBST(evas_cflags)
 
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+if test -z "$ECORE_CONFIG" ; then
+  AC_MSG_ERROR($PROG is not in your \$PATH. Please ensure it is.)
 fi
 ecore_libs=`$ECORE_CONFIG --libs`
 ecore_cflags=`$ECORE_CONFIG --cflags`
