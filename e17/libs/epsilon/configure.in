@@ -94,6 +94,7 @@ AC_PATH_GENERIC(edje, 0.5.0,
 
 AC_OUTPUT([
 Makefile
+epsilon.spec
 epsilon-config
 src/Makefile
 src/lib/Makefile
