@@ -117,6 +117,7 @@ fi
 
 AC_OUTPUT([
 Makefile 
+entice.spec
 src/Makefile 
 src/bin/Makefile
 data/Makefile

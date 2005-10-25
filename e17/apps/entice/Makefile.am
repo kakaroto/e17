@@ -5,7 +5,7 @@ SUBDIRS = src data
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in debian/changelog
+		       stamp-h.in debian/changelog entice.spec
 
 #install-data-local:
 #	@$(NORMAL_INSTALL)
@@ -30,4 +30,5 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = README AUTHORS COPYING entice.spec \
 	     debian/changelog.in debian/changelog \
-	     debian/control debian/rules debian/docs
+	     debian/control debian/rules debian/docs \
+	     entice.spec.in
