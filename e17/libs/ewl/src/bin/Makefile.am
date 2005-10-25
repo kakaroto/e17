@@ -39,8 +39,6 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_password_test.c \
 					ewl_progressbar_test.c \
 					ewl_seeker_test.c \
-					ewl_selectionbar_test.c \
-					ewl_selectionbook_test.c \
 					ewl_spinner_test.c \
 					ewl_statusbar_test.c \
 					ewl_table_test.c \

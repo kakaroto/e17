@@ -57,8 +57,6 @@ EWLHEADERS = \
 	ewl_scrollbar.h \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
-	ewl_selectionbar.h \
-	ewl_selectionbook.h \
 	ewl_separator.h \
 	ewl_spacer.h \
 	ewl_spectrum.h \
@@ -120,8 +118,6 @@ EWLSOURCES= \
 	ewl_scrollbar.c \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
-	ewl_selectionbar.c \
-	ewl_selectionbook.c \
 	ewl_separator.c \
 	ewl_spacer.c \
 	ewl_spectrum.c \
