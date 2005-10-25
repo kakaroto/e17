@@ -7,7 +7,8 @@
  * @return Returns a newly allocated row on success, NULL on failure.
  * @brief Allocate and initialize a new row
  */
-Ewl_Widget *ewl_row_new()
+Ewl_Widget *
+ewl_row_new(void)
 {
 	Ewl_Widget *row;
 
@@ -18,7 +19,7 @@ Ewl_Widget *ewl_row_new()
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (!ewl_row_init(EWL_ROW(row))) {
-		FREE(row);
+		ewl_widget_destroy(row);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -32,7 +33,8 @@ Ewl_Widget *ewl_row_new()
  *
  * The fields of the @a row object are initialized to their defaults.
  */
-int ewl_row_init(Ewl_Row *row)
+int
+ewl_row_init(Ewl_Row *row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
@@ -50,10 +52,10 @@ int ewl_row_init(Ewl_Row *row)
 	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
-			ewl_row_configure_cb, NULL);
+				ewl_row_configure_cb, NULL);
 
-	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
-			ewl_row_destroy_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
+				ewl_row_destroy_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -72,6 +74,7 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("row", row);
+	DCHECK_TYPE("row", row, "row");
 
 	if (row->header == header)
 		DRETURN(DLEVEL_STABLE);
@@ -88,9 +91,9 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 	row->header = header;
 	if (header) {
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
-				ewl_row_header_configure_cb, row);
-		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
-				ewl_row_header_destroy_cb, row);
+					ewl_row_header_configure_cb, row);
+		ewl_callback_prepend(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
+					ewl_row_header_destroy_cb, row);
 
 		ewl_object_fill_policy_set(EWL_OBJECT(row),
 					   EWL_FLAG_FILL_HFILL);
@@ -116,6 +119,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
+	DCHECK_TYPE_RET("row", row, "row", NULL);
 
 	found = ecore_list_goto_index(EWL_CONTAINER(row)->children, n + 1);
 
@@ -123,7 +127,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
 }
 
 void
-ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Row *row;
@@ -134,6 +138,8 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	int remains, nodes;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	row = EWL_ROW(w);
 	c = EWL_CONTAINER(w);
@@ -142,7 +148,6 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	remains = CURRENT_W(w);
 
 	nodes = ecore_list_nodes(c->children);
-
 	ecore_list_goto_first(c->children);
 
 	/*
@@ -232,10 +237,12 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_row_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_row_header_set(EWL_ROW(w), NULL);
 
@@ -243,12 +250,13 @@ ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_row_header_configure_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+ewl_row_header_configure_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Row *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
 	row = EWL_ROW(user_data);
 	/* ewl_object_preferred_inner_w_set(EWL_OBJECT(w), CURRENT_W(row->header)); */
@@ -258,12 +266,13 @@ ewl_row_header_configure_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 void
-ewl_row_header_destroy_cb(Ewl_Widget * w __UNUSED__,
+ewl_row_header_destroy_cb(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Row *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
 	row = EWL_ROW(user_data);
 	row->header = NULL;
@@ -278,9 +287,12 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Row *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	row = EWL_ROW(c);
-
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_preferred_w_get(EWL_OBJECT(w)));
@@ -294,9 +306,12 @@ ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Row *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	row = EWL_ROW(c);
-
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) -
 			ewl_object_preferred_w_get(EWL_OBJECT(w)));
@@ -311,6 +326,8 @@ ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 	Ewl_Row *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, "container");
 
 	row = EWL_ROW(c);
 	if (o == EWL_ORIENTATION_VERTICAL)
@@ -321,3 +338,4 @@ ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
