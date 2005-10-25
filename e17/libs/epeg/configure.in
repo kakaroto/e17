@@ -83,6 +83,7 @@ AC_SUBST(my_libs)
 
 AC_OUTPUT([
 Makefile
+epeg.spec
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
