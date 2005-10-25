@@ -138,6 +138,7 @@ AC_SUBST(edje_libs)
 
 AC_OUTPUT([
 Makefile 
+elicit.spec
 src/Makefile 
 data/Makefile
 data/themes/Makefile

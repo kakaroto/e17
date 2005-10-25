@@ -6,12 +6,12 @@ EXTRA_DIST = \
 	README AUTHORS COPYING elicit.spec \
 	debian/changelog debian/changelog.in \
 	debian/rules debian/control debian/copyright \
-	debian/elicit.files
+	debian/elicit.files elicit.spec.in
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in debian/changelog
+		       stamp-h.in debian/changelog elicit.spec
 
 dist-hook:
 	if test -d data; then \
