@@ -1,6 +1,6 @@
 Summary: Tools for the  Enlightenment window manager
-Name: e_utils
-Version: 0.0.1
+Name: @PACKAGE@
+Version: @VERSION@
 Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/Desktops

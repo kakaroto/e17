@@ -2,7 +2,7 @@
 
 SUBDIRS = src data
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess e_utils.spec \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in debian/changelog
@@ -20,4 +20,4 @@ dist-hook:
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN INSTALL NEWS README e_utils.spec \
 	     debian/control debian/copyright debian/changelog.in \
 	     debian/changelog debian/rules debian/eutils.files \
-	     debian/docs
+	     debian/docs e_utils.spec.in

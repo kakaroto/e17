@@ -139,6 +139,7 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
 
 AC_OUTPUT([
 Makefile
+e_utils.spec
 data/Makefile
 data/emblem/Makefile
 data/emblem/default/Makefile
