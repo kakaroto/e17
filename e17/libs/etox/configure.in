@@ -172,6 +172,7 @@ AC_SUBST(requirements)
 AC_OUTPUT([
 Makefile
 etox.pc
+etox.spec
 etox-config
 data/Makefile
 data/fonts/Makefile
