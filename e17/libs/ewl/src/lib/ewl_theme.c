@@ -5,14 +5,14 @@
 
 #define NOMATCH ((char *)0xdeadbeef)
 
-static char     *theme_name = NULL;
-static char     *theme_path = NULL;
+static char *theme_name = NULL;
+static char *theme_path = NULL;
 
 static Ecore_List *font_paths = NULL;
 static Ecore_Hash *def_theme_data = NULL;
 
 static void ewl_theme_font_path_init(void);
-static char * ewl_theme_path_find(const char * name);
+static char *ewl_theme_path_find(const char *name);
 static void ewl_theme_data_free(void *data);
 
 /**
@@ -23,7 +23,8 @@ static void ewl_theme_data_free(void *data);
  * finding the specified theme file. This is called by ewl_init, and is not
  * necessary for the end programmer to call.
  */
-int ewl_theme_init(void)
+int
+ewl_theme_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -75,12 +76,16 @@ int ewl_theme_init(void)
  * Private function for finding the theme path given a theme name, If no theme
  * of name is found we will return null.
  */
-static char * ewl_theme_path_find(const char * name) 
+static char *
+ewl_theme_path_find(const char *name) 
 {		
-	struct stat     st;
-	char 	       *theme_found_path = NULL;
-	char 		theme_tmp_path[PATH_MAX];
-	char 	       *home;
+	struct stat st;
+	char *theme_found_path = NULL;
+	char theme_tmp_path[PATH_MAX];
+	char *home;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("name", name);
 
 	/*
 	 * Get the users home directory. This environment variable should
@@ -122,7 +127,7 @@ static char * ewl_theme_path_find(const char * name)
 	 */
 	if (!theme_found_path) {
 		if (name[0] != '/') {
-			char   *cwd;
+			char *cwd;
 
 			cwd = getenv("PWD");
 			if (cwd != NULL) 
@@ -139,16 +144,19 @@ static char * ewl_theme_path_find(const char * name)
 			theme_found_path = strdup(theme_tmp_path);
 		}
 	}
-	return theme_found_path;
+	DRETURN_PTR(theme_found_path, DLEVEL_STABLE);
 }
 
 /**
  * @return Returns no value.
  * @brief Shutdown the EWL themeing subsystem
  */
-void ewl_theme_shutdown()
+void
+ewl_theme_shutdown(void)
 {
 	char *data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (font_paths) {
 		while ((data = ecore_list_remove_first(font_paths)))
@@ -162,16 +170,21 @@ void ewl_theme_shutdown()
 		ecore_hash_destroy(def_theme_data);
 		def_theme_data = NULL;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
  * Initializes the font path based on the theme. Also called by ewl_init, and
  * is not recommended to be called separately.
  */
-static void ewl_theme_font_path_init()
+static void
+ewl_theme_font_path_init(void)
 {
-	char           *font_path;
-	char            key[PATH_MAX];
+	char *font_path;
+	char key[PATH_MAX];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Setup the default font paths
@@ -202,12 +215,15 @@ static void ewl_theme_font_path_init()
 			}
 		}
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
  * Private function for freeing theme data in the hash.
  */
-static void ewl_theme_data_free(void *data)
+static void
+ewl_theme_data_free(void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -226,10 +242,12 @@ static void ewl_theme_data_free(void *data)
  *
  * Sets the widget @a w's theme information to the default values.
  */
-int ewl_theme_widget_init(Ewl_Widget * w)
+int
+ewl_theme_widget_init(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_TYPE_RET("w", w, "widget", FALSE);
 
 	w->theme = NULL;
 	/* w->theme = def_theme_data; */
@@ -244,10 +262,12 @@ int ewl_theme_widget_init(Ewl_Widget * w)
  *
  * Removes and frees the theme information from the widget @a w.
  */
-void ewl_theme_widget_shutdown(Ewl_Widget * w)
+void
+ewl_theme_widget_shutdown(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	/*
 	 * We only want to destroy the hash if its not def_theme_data
@@ -267,9 +287,11 @@ void ewl_theme_widget_shutdown(Ewl_Widget * w)
  * @param name: the name of the theme to use.
  * @return Returns no value.
  */
-void ewl_theme_name_set(char *name)
+void
+ewl_theme_name_set(char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("name", name);
 
 	IF_FREE(theme_name);
 	theme_name = strdup(name);
@@ -281,9 +303,11 @@ void ewl_theme_name_set(char *name)
  * @brief Return the name of the current theme
  * @return Returns a copy of the current theme name on success, NULL on failure
  */
-char *ewl_theme_name_get()
+char *
+ewl_theme_name_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DRETURN_PTR((theme_name ? strdup(theme_name) : NULL), DLEVEL_STABLE);
 }
 
@@ -291,9 +315,11 @@ char *ewl_theme_name_get()
  * @brief Return the path of the current theme
  * @return Returns a copy of the current theme path on success, NULL on failure
  */
-char *ewl_theme_path_get()
+char *
+ewl_theme_path_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	DRETURN_PTR((theme_path ? strdup(theme_path) : NULL), DLEVEL_STABLE);
 }
 
@@ -301,7 +327,8 @@ char *ewl_theme_path_get()
  * @return Returns the font path of widget @a w on success, NULL on failure.
  * @brief retrieve the path of a widgets theme's fonts
  */
-Ecore_List *ewl_theme_font_path_get()
+Ecore_List *
+ewl_theme_font_path_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -316,12 +343,12 @@ Ecore_List *ewl_theme_font_path_get()
  * Duplicates the string pointed to by @a path and adds it to
  * the list of paths that are searched for fonts.
  */
-void ewl_theme_font_path_add(char *path)
+void
+ewl_theme_font_path_add(char *path)
 {
 	char *temp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("path", path);
 
 	temp = strdup(path);
@@ -337,14 +364,16 @@ void ewl_theme_font_path_add(char *path)
  * @return Returns the path of image key @a k on success, NULL on failure.
  * @brief retrieve the path to an image from a widgets theme
  */
-char *ewl_theme_image_get(Ewl_Widget * w, char *k)
+char *
+ewl_theme_image_get(Ewl_Widget *w, char *k)
 {
-	char           *data;
-	struct stat     st;
+	char *data;
+	struct stat st;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
+	DCHECK_TYPE("w", w, "widget");
 
 	data = ewl_theme_data_str_get(w, k);
 	if (!data)
@@ -371,18 +400,18 @@ char *ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
-
 /**
  * @param w: the widget to search
  * @param k: the key to search for
  * @return Returns the string associated with @a k on success, NULL on failure.
  * @brief Retrieve an string value from a widgets theme
  */
-char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
+char *
+ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 {
-	char           *ret = NULL;
-	char           *temp = NULL;
-	char            key[PATH_MAX];
+	char *ret = NULL;
+	char *temp = NULL;
+	char key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
@@ -487,10 +516,11 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
  * @return Returns the integer associated with key @a k on success, 0 on failure.
  * @brief Retrieve an integer value from a widgets theme
  */
-int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
+int
+ewl_theme_data_int_get(Ewl_Widget *w, char *k)
 {
-	char           *temp;
-	int             ret = 0;
+	char *temp;
+	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
@@ -512,7 +542,8 @@ int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
  * Changes the theme data in widget @a w so that key @a k now is
  * associated with value @a v.
  */
-void ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v)
+void
+ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -548,7 +579,8 @@ void ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v)
  * Changes the theme data in widget @a w so that key @a k now is
  * associated with value @a v.
  */
-void ewl_theme_data_int_set(Ewl_Widget * w, char *k, int v)
+void
+ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v)
 {
 	char value[16];
 
@@ -571,9 +603,12 @@ void ewl_theme_data_int_set(Ewl_Widget * w, char *k, int v)
  * Sets the data associated with key @a k to value @a v in the default theme
  * data.
  */
-void ewl_theme_data_default_str_set(char *k, char *v)
+void
+ewl_theme_data_default_str_set(char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR("v", v);
 
 	ecore_hash_set(def_theme_data, k, strdup(v));
 
@@ -589,14 +624,17 @@ void ewl_theme_data_default_str_set(char *k, char *v)
  * Sets the data associated with key @a k to value @a v in the
  * default theme data.
  */
-void ewl_theme_data_default_int_set(char *k, int v)
+void
+ewl_theme_data_default_int_set(char *k, int v)
 {
 	char value[16];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
 
 	snprintf(value, 16, "%d", v);
 	ewl_theme_data_default_str_set(k, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

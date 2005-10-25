@@ -30,18 +30,18 @@
 
 int             ewl_theme_init(void);
 void            ewl_theme_shutdown(void);
-int             ewl_theme_widget_init(Ewl_Widget * w);
-void            ewl_theme_widget_shutdown(Ewl_Widget * w);
+int             ewl_theme_widget_init(Ewl_Widget *w);
+void            ewl_theme_widget_shutdown(Ewl_Widget *w);
 void            ewl_theme_name_set(char *name);
 char           *ewl_theme_name_get(void);
 char           *ewl_theme_path_get(void);
 Ecore_List     *ewl_theme_font_path_get(void);
 void            ewl_theme_font_path_add(char *path);
-char           *ewl_theme_image_get(Ewl_Widget * w, char *k);
-char           *ewl_theme_data_str_get(Ewl_Widget * w, char *k);
-int             ewl_theme_data_int_get(Ewl_Widget * w, char *k);
-void            ewl_theme_data_str_set(Ewl_Widget * w, char *k, char *v);
-void            ewl_theme_data_int_set(Ewl_Widget * w, char *k, int v);
+char           *ewl_theme_image_get(Ewl_Widget *w, char *k);
+char           *ewl_theme_data_str_get(Ewl_Widget *w, char *k);
+int             ewl_theme_data_int_get(Ewl_Widget *w, char *k);
+void            ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
+void            ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v);
 void            ewl_theme_data_default_str_set(char *k, char *v);
 void            ewl_theme_data_default_int_set(char *k, int v);
 
