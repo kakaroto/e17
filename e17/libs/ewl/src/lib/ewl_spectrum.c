@@ -43,7 +43,7 @@ ewl_spectrum_new(void)
 int
 ewl_spectrum_init(Ewl_Spectrum *sp)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, FALSE);
@@ -93,6 +93,7 @@ ewl_spectrum_orientation_set(Ewl_Spectrum *sp, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (sp->orientation != o) 
 	{
@@ -116,6 +117,7 @@ ewl_spectrum_orientation_get(Ewl_Spectrum *sp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("sp", sp, "spectrum", EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(sp->orientation, DLEVEL_STABLE);
 }
@@ -131,6 +133,7 @@ ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Pick_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (sp->mode != mode) 
 	{
@@ -151,6 +154,7 @@ ewl_spectrum_mode_get(Ewl_Spectrum *sp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, EWL_COLOR_PICK_MODE_RGB);
+	DCHECK_TYPE_RET("sp", sp, "spectrum", EWL_COLOR_PICK_MODE_RGB);
 
 	DRETURN_INT(sp->mode, DLEVEL_STABLE);
 }
@@ -166,6 +170,7 @@ ewl_spectrum_dimensions_set(Ewl_Spectrum *sp, unsigned int dimensions)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if ((dimensions == 1) || (dimensions == 2)) 
 	{
@@ -186,6 +191,7 @@ ewl_spectrum_dimensions_get(Ewl_Spectrum *sp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, 1);
+	DCHECK_TYPE_RET("sp", sp, "spectrum",1);
 
 	DRETURN_INT(sp->dimensions, DLEVEL_STABLE);
 }
@@ -202,6 +208,7 @@ ewl_spectrum_rgba_set(Ewl_Spectrum *sp, int r, int g, int b, int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if ((r >= 0) && (r < 256)) sp->rgba.r = r;
 	else sp->rgba.r = 0;
@@ -238,6 +245,7 @@ ewl_spectrum_rgba_get(Ewl_Spectrum *sp, int *r, int *g, int *b, int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (r) *r = sp->rgba.r;
 	if (g) *g = sp->rgba.g;
@@ -259,6 +267,7 @@ ewl_spectrum_hsv_set(Ewl_Spectrum *sp, float h, float s, float v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if ((h >= 0) && (h <= 360)) sp->hsv.h = h;
 	else sp->hsv.h = 0;
@@ -291,6 +300,7 @@ ewl_spectrum_hsv_get(Ewl_Spectrum *sp, float *h, float *s, float *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (h) *h = sp->hsv.h;
 	if (s) *s = sp->hsv.s;
@@ -304,6 +314,7 @@ ewl_spectrum_selected_rgba_get(Ewl_Spectrum *sp, int *r, int *g, int *b, int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (r) *r = sp->selected_rgba.r;
 	if (g) *g = sp->selected_rgba.g;
@@ -329,6 +340,7 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int *r, int *g, int
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	if (sp->dimensions == 2)
 		ewl_spectrum_color_coord_map2d(sp, x, y, r, g, b, a);
@@ -462,17 +474,18 @@ ewl_spectrum_rgb_to_hsv(int r, int g, int b,
  * Callback for drawing the spectrum to the image data.
  */
 void
-ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_spectrum_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			  void *user_data __UNUSED__)
 {
-	Evas_Object    *o;
-	int             pw, ph;
-	int             i, j;
-	int            *data = NULL;
-	Ewl_Spectrum   *sp;
+	Evas_Object *o;
+	int pw, ph;
+	int i, j;
+	int *data = NULL;
+	Ewl_Spectrum *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	if (!REALIZED(w))
 	{
@@ -525,6 +538,8 @@ ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	sp = EWL_SPECTRUM(w);
 	ev = ev_data;
@@ -557,6 +572,8 @@ ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 	int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 	
 	sp = EWL_SPECTRUM(w);
 	ev = ev_data;
@@ -581,6 +598,8 @@ ewl_spectrum_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Spectrum *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	sp = EWL_SPECTRUM(w);
 	sp->drag = 0;
@@ -596,6 +615,7 @@ ewl_spectrum_color_coord_map2d(Ewl_Spectrum *sp, int x, int y,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	width = CURRENT_W(sp);
 	height = CURRENT_H(sp);
@@ -659,6 +679,7 @@ ewl_spectrum_color_coord_map1d(Ewl_Spectrum *sp, int x __UNUSED__, int y,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
+	DCHECK_TYPE("sp", sp, "spectrum");
 
 	height = CURRENT_H(sp);
 

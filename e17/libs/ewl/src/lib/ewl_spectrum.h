@@ -78,7 +78,7 @@ void  		ewl_spectrum_rgb_to_hsv(int r, int g, int b,
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_spectrum_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_spectrum_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
