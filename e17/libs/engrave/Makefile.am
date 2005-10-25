@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 
 SUBDIRS = src
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess engrave.spec \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in debian/changelog
@@ -31,7 +31,7 @@ dist-hook:
 	  done \
 	fi
 
-EXTRA_DIST = README AUTHORS COPYING engrave.spec \
+EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in \
 	     debian/control debian/rules debian/copyright \
 	     debian/changelog.in debian/changelog \
 	     debian/libengrave0.files debian/libengrave0-dev.files

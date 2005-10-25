@@ -82,6 +82,7 @@ AC_PATH_GENERIC(ecore, 0.9.9, ,
 AC_OUTPUT([
 Makefile 
 engrave-config
+engrave.spec
 src/Makefile 
 src/bin/Makefile
 src/lib/Makefile
