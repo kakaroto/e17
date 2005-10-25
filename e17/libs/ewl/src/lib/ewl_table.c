@@ -11,9 +11,10 @@
  * @brief Create a new table
  *
  */
-Ewl_Widget *ewl_table_new(int cols, int rows, char **col_headers)
+Ewl_Widget *
+ewl_table_new(int cols, int rows, char **col_headers)
 {
-	Ewl_Table      *t;
+	Ewl_Table *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -21,7 +22,10 @@ Ewl_Widget *ewl_table_new(int cols, int rows, char **col_headers)
 	if (!t)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_table_init(t, cols, rows, col_headers);
+	if (!ewl_table_init(t, cols, rows, col_headers)) {
+		ewl_widget_destroy(EWL_WIDGET(t));
+		t = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
 }
@@ -31,17 +35,18 @@ Ewl_Widget *ewl_table_new(int cols, int rows, char **col_headers)
  * @param cols: the number of columns
  * @param rows: the number of rows
  * @param col_headers: the column titles
- * @return Returns no value.
+ * @return Returns TRUE on success or FALSE on failure.
  * @brief Initialize table to starting values
  *
  * Responsible for setting up default values and callbacks withing the table
  * structure
  */
-int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
+int
+ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 {
-	Ewl_Widget	*button;
-	Ewl_Cell	*cell;
-	int             i;
+	Ewl_Widget *button;
+	Ewl_Cell *cell;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
@@ -100,9 +105,8 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
 			    ewl_table_configure_cb, NULL);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
 
 /**
  * @param table: the table
@@ -115,16 +119,19 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
  * @brief Add a child widget to the table
  */
 void
-ewl_table_add(Ewl_Table * table, Ewl_Widget * w,
+ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	      int start_col, int end_col, int start_row, int end_row)
 {
         Ewl_Cell *cell;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("table", table, "table");
+	DCHECK_TYPE("w", w, "widget");
 
 	cell = (Ewl_Cell *)ewl_cell_new ();
-	ewl_container_child_append (EWL_CONTAINER (cell), w);
+	ewl_container_child_append(EWL_CONTAINER (cell), w);
 
 	/*
 	 * FIXME: one must verify that other functions that
@@ -145,9 +152,6 @@ ewl_table_add(Ewl_Table * table, Ewl_Widget * w,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
-
 /**
  * @param t: the table
  * @param cell: the cell to add
@@ -158,7 +162,8 @@ ewl_table_add(Ewl_Table * table, Ewl_Widget * w,
  * @return Returns nothing
  * @brief Get the column and row of a widget
  */
-void ewl_table_col_row_get(Ewl_Table * t, Ewl_Cell * cell,
+void
+ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
 			   int *start_col, int *end_col, int *start_row,
 			   int *end_row)
 {
@@ -177,6 +182,9 @@ void ewl_table_col_row_get(Ewl_Table * t, Ewl_Cell * cell,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("cell", cell);
+	DCHECK_TYPE("t", t, "table");
+	DCHECK_TYPE("cell", cell, "cell");
 
 	children = EWL_CONTAINER(t->grid)->children;
 
@@ -187,23 +195,17 @@ void ewl_table_col_row_get(Ewl_Table * t, Ewl_Cell * cell,
 			g_child = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 					(void *) t->grid);
 
-			if (start_col)
-				*start_col = g_child->start_col;
-			if (end_col)
-				*end_col = g_child->end_col;
-			if (start_row)
-				*start_row = g_child->start_row;
-			if (end_row)
-				*end_row = g_child->end_row;
+			if (start_col) *start_col = g_child->start_col;
+			if (end_col) *end_col = g_child->end_col;
+			if (start_row) *start_row = g_child->start_row;
+			if (end_row) *end_row = g_child->end_row;
 
 			break;
 		}
 	}
-
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param t: the table
@@ -214,10 +216,10 @@ void ewl_table_col_row_get(Ewl_Table * t, Ewl_Cell * cell,
  * @return Returns Ecore_List of widgets found in the specified col/row area.
  * @brief Get a list of the widgets in the specified col/row
  */
-Ecore_List *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
+Ecore_List *
+ewl_table_find(Ewl_Table *t, int start_col, int end_col,
 			       int start_row, int end_row)
 {
-
 	/*---------------------------------
 	 * DEVELOPER NOTE:
 	 * This is supposed to search for any widgets that can be found
@@ -228,11 +230,13 @@ Ecore_List *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 	 *---------------------------------*/
 
 	Ewl_Grid_Child *gc;
-	Ewl_Widget     *child;
-	Ecore_List       *children;
-	Ecore_List       *list;
+	Ewl_Widget *child;
+	Ecore_List *children;
+	Ecore_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_TYPE_RET("t", t, "table", NULL);
 
 	list = ecore_list_new();
 	children = EWL_CONTAINER(t->grid)->children;
@@ -248,10 +252,8 @@ Ecore_List *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 		}
 	}
 
-
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }
-
 
 /**
  * @param table: the table
@@ -260,16 +262,12 @@ Ecore_List *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
  * @return Returns no value.
  * @brief Set the width of a table column
  */
-void ewl_table_col_w_set(Ewl_Table * table, int col, int width)
+void
+ewl_table_col_w_set(Ewl_Table *table, int col, int width)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * set column width of the grid
-	 *---------------------------------*/
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
 
 	ewl_grid_col_w_set(table->grid, col, width);
 	ewl_widget_configure(EWL_WIDGET(table));
@@ -284,22 +282,17 @@ void ewl_table_col_w_set(Ewl_Table * table, int col, int width)
  * @return Returns no value.
  * @brief Get the width of a table column
  */
-void ewl_table_col_w_get(Ewl_Table * table, int col, int *width)
+void
+ewl_table_col_w_get(Ewl_Table *table, int col, int *width)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * get column width of the grid. 
-	 *---------------------------------*/
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
 
 	ewl_grid_col_w_get(table->grid, col, width);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param table: the table
@@ -308,16 +301,12 @@ void ewl_table_col_w_get(Ewl_Table * table, int col, int *width)
  * @return Returns no value.
  * @brief Set the height of a table row
  */
-void ewl_table_row_h_set(Ewl_Table * table, int row, int height)
+void
+ewl_table_row_h_set(Ewl_Table *table, int row, int height)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * set row height of the grid
-	 *---------------------------------*/
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
 
 	ewl_grid_row_h_set(table->grid, row, height);
 	ewl_widget_configure(EWL_WIDGET(table));
@@ -332,22 +321,17 @@ void ewl_table_row_h_set(Ewl_Table * table, int row, int height)
  * @return Returns no value.
  * @brief Get the height of a table row
  */
-void ewl_table_row_h_get(Ewl_Table * table, int row, int *height)
+void
+ewl_table_row_h_get(Ewl_Table *table, int row, int *height)
 {
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * get row height of the grid
-	 *---------------------------------*/
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
 
 	ewl_grid_row_h_get(table->grid, row, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param t: the table
@@ -357,18 +341,18 @@ void ewl_table_row_h_get(Ewl_Table * table, int row, int *height)
  * @return Returns no value
  * @brief Clear the table and set new geometry
  */
-void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
+void
+ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 {
-	Ewl_Widget	*button;
-	Ewl_Cell	*cell;
-	int             i;
+	Ewl_Widget *button;
+	Ewl_Cell *cell;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
-
+	DCHECK_TYPE("t", t, "table");
 
 	ewl_grid_reset(EWL_GRID(t->grid), cols, rows);
-
 	if (col_headers != NULL) {
 
 		for (i = 1; i <= cols; i++) {
@@ -389,27 +373,28 @@ void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param t: the table
  * @return Returns the text in the currently selected widget in the table
  * @brief Get the text in the current selected box
  */
-char *ewl_table_selected_get(Ewl_Table * t)
+char *
+ewl_table_selected_get(Ewl_Table *t)
 {
-	Ewl_Text       *tw;
-	Ewl_Widget     *child;
-	Ecore_List       *children;
+	Ewl_Text *tw;
+	Ewl_Widget *child;
+	Ecore_List *children;
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "table");
 
 	children = EWL_CONTAINER(t->grid)->children;
-
 	ecore_list_goto_first(children);
 	while ((child = ecore_list_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-							    (void *) t->grid);
+						    (void *) t->grid);
 
 		if (t->selected.start_c == gc->start_col &&
 		    t->selected.start_r == gc->start_row &&
@@ -425,22 +410,21 @@ char *ewl_table_selected_get(Ewl_Table * t)
 		}
 	}
 
-	DRETURN_PTR("", DLEVEL_STABLE);
+	DRETURN_PTR(strdup(""), DLEVEL_STABLE);
 }
 
-
-void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
-	Ewl_Table      *t;
+	Ewl_Table *t;
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-
+	DCHECK_TYPE("w", w, "widget");
 
 	t = EWL_TABLE(user_data);
-
 	gc = (Ewl_Grid_Child *) ewl_widget_data_get(w, (void *) t->grid);
 
 	t->selected.start_r = gc->start_row;
@@ -448,16 +432,13 @@ void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	t->selected.end_r = gc->end_row;
 	t->selected.end_c = gc->end_col;
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
-void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-
 	/*---------------------------------
 	 * DEVELOPER NOTE:
 	 * Right now all this method does is making sure the grid take
@@ -465,16 +446,16 @@ void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * itself). That's it's only purpose I can think of now.
 	 *---------------------------------*/
 
-	Ewl_Table      *table;
-	Ewl_Object     *o;
-	Ewl_Widget     *child;
+	Ewl_Table *table;
+	Ewl_Object *o;
+	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	table = EWL_TABLE(w);
 	o = EWL_OBJECT(w);
-
 
 	ewl_object_geometry_request(EWL_OBJECT(table->grid),
 				    CURRENT_X(o), CURRENT_Y(o),
@@ -482,7 +463,6 @@ void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 				    INSET_RIGHT(o),
 				    CURRENT_H(o) - INSET_TOP(o) +
 				    INSET_BOTTOM(o));
-
 
 	ecore_list_goto_first(EWL_CONTAINER(table->grid)->children);
 	while ((child =
@@ -493,3 +473,4 @@ void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

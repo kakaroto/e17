@@ -46,47 +46,40 @@ struct Ewl_Table
 
 };
 
-
-
 Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers);
-int             ewl_table_init(Ewl_Table * t, int cols, int rows,
+int             ewl_table_init(Ewl_Table *t, int cols, int rows,
 			       char **col_headers);
-void            ewl_table_add(Ewl_Table * table, Ewl_Widget * w, int start_col,
+void            ewl_table_add(Ewl_Table *table, Ewl_Widget *w, int start_col,
 			      int end_col, int start_row, int end_row);
-void            ewl_table_reset(Ewl_Table * t, int cols, int rows,
+void            ewl_table_reset(Ewl_Table *t, int cols, int rows,
 				char **c_headers);
-void            ewl_table_row_select(Ewl_Table * t, int boolean);
+void            ewl_table_row_select(Ewl_Table *t, int boolean);
 
-void            ewl_table_col_w_set(Ewl_Table * table, int col, int width);
-void            ewl_table_row_h_set(Ewl_Table * table, int row, int height);
+void            ewl_table_col_w_set(Ewl_Table *table, int col, int width);
+void            ewl_table_row_h_set(Ewl_Table *table, int row, int height);
 
-void            ewl_table_col_w_get(Ewl_Table * table, int col, int *width);
-void            ewl_table_row_h_get(Ewl_Table * table, int row, int *height);
+void            ewl_table_col_w_get(Ewl_Table *table, int col, int *width);
+void            ewl_table_row_h_get(Ewl_Table *table, int row, int *height);
 
-void            ewl_table_col_row_get(Ewl_Table * table, Ewl_Cell * cell,
+void            ewl_table_col_row_get(Ewl_Table *table, Ewl_Cell *cell,
 				      int *start_col, int *end_col,
 				      int *start_row, int *end_row);
 
-Ecore_List       *ewl_table_find(Ewl_Table * table,
+Ecore_List       *ewl_table_find(Ewl_Table *table,
 			       int start_col,
 			       int end_col, int start_row, int emd_row);
 
-
-char           *ewl_table_selected_get(Ewl_Table * table);
+char           *ewl_table_selected_get(Ewl_Table *table);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
-void ewl_table_show_cb(Ewl_Widget * w, void *ev_data,
-		       void *user_data);
+void ewl_table_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_child_configure_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void ewl_table_child_show_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
+							void *user_data);
+void ewl_table_child_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data, void *user_data); 
 
 /**
  * @}
