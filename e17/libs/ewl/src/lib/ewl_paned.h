@@ -30,13 +30,13 @@ typedef struct Ewl_Paned Ewl_Paned;
  */
 struct Ewl_Paned
 {
-	Ewl_Box			base;
+	Ewl_Box			 base;
 	Ewl_Box			*first;
 	Ewl_Widget              *grabber;
 	Ewl_Box			*second;
-	Ewl_Position		active;
-	Ewl_Orientation		orientation;
-	int			grabbed;
+	Ewl_Position		 active;
+	Ewl_Orientation		 orientation;
+	int			 grabbed;
 };
 
 Ewl_Widget		*ewl_paned_new(void);

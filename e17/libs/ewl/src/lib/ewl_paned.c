@@ -19,7 +19,7 @@ static void ewl_paned_grabber_focus_out_cb(Ewl_Widget *w, void *ev,
  * @brief Allocate and initialize a new paned widget
  */
 Ewl_Widget *
-ewl_paned_new() 
+ewl_paned_new(void) 
 {
 	Ewl_Paned *pane = NULL;
 
@@ -42,14 +42,13 @@ ewl_paned_new()
  * @brief Allocate and initialize a new paned widget with horizontal orientation
  */
 Ewl_Widget *
-ewl_hpaned_new() 
+ewl_hpaned_new(void)
 {
 	Ewl_Widget *pane = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	pane = ewl_paned_new();
-
 	if (pane)
 		ewl_box_orientation_set(EWL_BOX(pane),
 					EWL_ORIENTATION_HORIZONTAL);
@@ -62,14 +61,13 @@ ewl_hpaned_new()
  * @brief Allocate and initialize a new paned widget with vertical orientation
  */
 Ewl_Widget *
-ewl_vpaned_new() 
+ewl_vpaned_new(void)
 {
 	Ewl_Widget *pane = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	pane = ewl_paned_new();
-
 	if (pane)
 		ewl_box_orientation_set(EWL_BOX(pane),
 					EWL_ORIENTATION_VERTICAL);
@@ -159,6 +157,7 @@ ewl_paned_active_area_set(Ewl_Paned *p, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "paned");
 
 	if ((pos == EWL_POSITION_LEFT) || (pos == EWL_POSITION_TOP))
 		ewl_container_redirect_set(EWL_CONTAINER(p),
@@ -180,6 +179,7 @@ ewl_paned_active_area_get(Ewl_Paned *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, FALSE);
+	DCHECK_TYPE("p", p, "paned");
 
 	DRETURN_INT(p->active, DLEVEL_STABLE);
 }
@@ -189,9 +189,13 @@ ewl_paned_configure_cb(Ewl_Widget *w, void *ev __UNUSED__,
 		       void *user_data __UNUSED__)
 {
 	Ewl_Orientation o;
-	Ewl_Paned *p = EWL_PANED(w);
+	Ewl_Paned *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	p = EWL_PANED(w);
 
 	/*
 	 * Swap the orientation on the internal boxes if they are changed
@@ -212,13 +216,12 @@ ewl_paned_configure_cb(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev __UNUSED__,
+ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *user_data)
 {
-	Ewl_Paned *p = NULL;
+	Ewl_Paned *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	p = EWL_PANED(user_data);
@@ -228,13 +231,12 @@ ewl_paned_grabber_mouse_down_cb(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w, void *ev __UNUSED__,
+ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *user_data)
 {
-	Ewl_Paned *p = NULL;
+	Ewl_Paned *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	p = EWL_PANED(user_data);
@@ -244,19 +246,18 @@ ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, void *user_data)
+ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev, void *user_data)
 {
 	Ewl_Paned *p = NULL;
 	Ewl_Event_Mouse_Move *mm = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_PARAM_PTR("user_data", user_data);
  
 	p = EWL_PANED(user_data);
 	if (!p->grabbed) 
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	mm = (Ewl_Event_Mouse_Move *)ev;
 	if (ewl_box_orientation_get(EWL_BOX(p)) == EWL_ORIENTATION_HORIZONTAL) {
@@ -282,11 +283,10 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, void *user_data)
 }
 
 static void
-ewl_paned_grabber_focus_in_cb(Ewl_Widget *w, void *ev __UNUSED__,
+ewl_paned_grabber_focus_in_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 
 	/* FIXME : Fiddle mouse pointer */
 
