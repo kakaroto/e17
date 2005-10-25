@@ -43,7 +43,7 @@ userconfig_mappings_load(char* fp)
 static void
 _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
 {
-  OD_Icon *tmp;
+  OD_Icon *tmp = NULL;
   Evas_List *l;
   if (a->parent == applist) {
     switch (ch) {
