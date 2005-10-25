@@ -8,7 +8,8 @@
  * 
  * Returns a newly allocated selectionbook on success, NULL on failure.
  */
-Ewl_Widget     *ewl_selectionbook_new()
+Ewl_Widget *
+ewl_selectionbook_new(void)
 {
 	Ewl_Selectionbook *s;
 
@@ -18,11 +19,13 @@ Ewl_Widget     *ewl_selectionbook_new()
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_selectionbook_init(s);
+	if (!ewl_selectionbook_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
-
 
 /**
  * ewl_selectionbook_init - initialize a selectionbook widget
@@ -31,14 +34,15 @@ Ewl_Widget     *ewl_selectionbook_new()
  * Returns no value. Sets the fields and callbacks of the selectionbook
  * @a s to their default values.
  */
-int ewl_selectionbook_init(Ewl_Selectionbook * s)
+int
+ewl_selectionbook_init(Ewl_Selectionbook *s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
-
 
 	/*
 	 * Initialize the inherited box fields
@@ -59,17 +63,14 @@ int ewl_selectionbook_init(Ewl_Selectionbook * s)
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    ewl_selectionbook_destroy_cb, NULL);
 
-
 	s->tab_bar = ewl_selectionbar_new(w);
 
 	s->pages = ecore_list_new();
 	s->current_page = NULL;
 	s->num_pages = 0;
 
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
 
 /**
  * @param s: The selection book to add the page too
@@ -78,19 +79,22 @@ int ewl_selectionbook_init(Ewl_Selectionbook * s)
  * @return Returns no value.
  */
 void
-ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
-			   Ewl_Widget * page)
+ewl_selectionbook_page_add(Ewl_Selectionbook *s, Ewl_Widget *tab,
+						Ewl_Widget *page)
 {
-	Ewl_SbookPage  *p;
+	Ewl_Selectionbook_Page  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 	DCHECK_PARAM_PTR("tab", tab);
 	DCHECK_PARAM_PTR("page", page);
+	DCHECK_TYPE("s", s, "selectionbook");
+	DCHECK_TYPE("tab", tab, "widget");
+	DCHECK_TYPE("page", page, "widget");
 
-	p = NEW(Ewl_SbookPage, 1);
+	p = NEW(Ewl_Selectionbook_Page, 1);
 	if (!p)
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	p->tab = tab;
 	p->page = page;
@@ -120,26 +124,27 @@ ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param s: The selection book to remove the page from
  * @param num: The page number to remove
  * @param destroy: Should the page be destroyed
  * @return Returns no value
  */
-void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num,
+void
+ewl_selectionbook_page_rem(Ewl_Selectionbook *s, int num,
 					int destroy __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "selectionbook");
 
 	if (s->num_pages < num)
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 /*
 	ecore_list_goto_index(s->pages, num);
 
-	p = (Ewl_SbookPage *) ecore_list_remove(s->pages);
+	p = (Ewl_Selectionbook_Page *) ecore_list_remove(s->pages);
 
 	if (s->current_page == p) {
 		if (num == 1) {
@@ -185,20 +190,22 @@ void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num,
  * @brief Removes the current page from the selection book, destroying it if
  * desired                        
  */
-void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s,
+void
+ewl_selectionbook_current_page_rem(Ewl_Selectionbook *s,
 					int destroy __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "selectionbook");
 
 /*
 	p = s->current_page;
 	ecore_list_goto_first(s->pages);
-	s->current_page = (Ewl_SbookPage *) ecore_list_current(s->pages);
+	s->current_page = (Ewl_Selectionbook_Page *) ecore_list_current(s->pages);
 
 	if (s->current_page == p)
 		s->current_page =
-		    (Ewl_SbookPage *) ecore_list_next(s->pages);
+		    (Ewl_Selectionbook_Page *) ecore_list_next(s->pages);
 
 
 	ewl_container_remove_child(EWL_CONTAINER(s->panel), p->page);
@@ -222,31 +229,33 @@ void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 void
-ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_selectionbook_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
-	Ewl_Selectionbook *s;
+	Ewl_Selectionbook *s = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SELECTIONBOOK(w);
 
 //      ewl_container_remove_child(EWL_CONTAINER(s), s->tab_bar);
 	ewl_widget_show(s->tab_bar);
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_selectionbook_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbook *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SELECTIONBOOK(w);
 
@@ -260,27 +269,27 @@ ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 					    CURRENT_H(EWL_OBJECT(s)));
 	}
 
-
 	ewl_widget_configure(s->tab_bar);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 void
-ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_selectionbook_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Selectionbook *s;
-	Ewl_SbookPage  *p;
+	Ewl_Selectionbook_Page  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SELECTIONBOOK(w);
 
 	if (s->pages) {
 		ecore_list_goto_first(s->pages);
-		while ((p = (Ewl_SbookPage *) ecore_list_next(s->pages)) != NULL)
+		while ((p = (Ewl_Selectionbook_Page *) ecore_list_next(s->pages)) != NULL)
 			ewl_widget_destroy(p->page);
 	}
 
@@ -292,16 +301,16 @@ ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
 void
-ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_selectionbook_page_switch_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Selectionbook *s;
-	Ewl_SbookPage  *p;
+	Ewl_Selectionbook_Page  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SELECTIONBOOK(user_data);
 	p = s->current_page;
@@ -315,7 +324,7 @@ ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		//ewl_widget_hide(p->page);
 	}
 
-	s->current_page = (Ewl_SbookPage *) ewl_widget_data_get(w, (void *) s);
+	s->current_page = (Ewl_Selectionbook_Page *) ewl_widget_data_get(w, (void *) s);
 
 	p = s->current_page;
 	ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
@@ -325,6 +334,6 @@ ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	ewl_widget_configure(EWL_WIDGET(s));
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

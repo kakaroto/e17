@@ -34,32 +34,31 @@ struct _ewl_selectionbar {
 	int             OPEN;	/* Boolean, open or closed */
 };
 
-Ewl_Widget *ewl_selectionbar_new(Ewl_Widget * parent);
-int         ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent);
-void        ewl_selectionbar_size_set(Ewl_Selectionbar * s, int w, int h1,
-				     int h2);
+Ewl_Widget *ewl_selectionbar_new(Ewl_Widget *parent);
+int         ewl_selectionbar_init(Ewl_Selectionbar *s, Ewl_Widget *parent);
+void        ewl_selectionbar_size_set(Ewl_Selectionbar *s, int w, int h1,
+								     int h2);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void ewl_selectionbar_show_cb(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
-void ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-void ewl_selectionbar_parent_configure_cb(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-void ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
-void ewl_selectionbar_mouse_move_child_cb(Ewl_Widget * w, void *user_data,
-				       void *ev_data);
+void ewl_selectionbar_realize_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_selectionbar_configure_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_parent_configure_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_focus_in_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_focus_out_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_children_animator_cb(Ewl_Widget *w, void *ev_data,
+						void *user_data);
+void ewl_selectionbar_mouse_move_child_cb(Ewl_Widget *w, void *user_data,
+						void *ev_data);
 
-void ewl_selectionbar_child_add_cb(Ewl_Container * parent, Ewl_Widget * child);
+void ewl_selectionbar_child_add_cb(Ewl_Container *parent, Ewl_Widget *child);
 
 /**
  * @}
