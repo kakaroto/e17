@@ -7,7 +7,8 @@
  * @return Returns a new scrollpane on success, NULL on failure.
  * @brief Create a new scrollpane
  */
-Ewl_Widget     *ewl_scrollpane_new(void)
+Ewl_Widget *
+ewl_scrollpane_new(void)
 {
 	Ewl_ScrollPane *s;
 
@@ -18,7 +19,7 @@ Ewl_Widget     *ewl_scrollpane_new(void)
 		DRETURN_PTR(NULL, DLEVEL_UNSTABLE);
 
 	if (!ewl_scrollpane_init(s)) {
-		FREE(s);
+		ewl_widget_destroy(EWL_WIDGET(s));
 		s = NULL;
 	}
 
@@ -32,9 +33,10 @@ Ewl_Widget     *ewl_scrollpane_new(void)
  *
  * Sets up default callbacks and field values for the scrollpane @a s.
  */
-int ewl_scrollpane_init(Ewl_ScrollPane * s)
+int
+ewl_scrollpane_init(Ewl_ScrollPane *s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
@@ -48,12 +50,12 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_widget_inherit(w, "scrollpane");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(s),
-				  ewl_scrollpane_child_resize_cb);
+					ewl_scrollpane_child_resize_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(s),
-				    (Ewl_Child_Resize)
-				    ewl_scrollpane_child_resize_cb);
+					(Ewl_Child_Resize)
+					ewl_scrollpane_child_resize_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(s),
-				  ewl_scrollpane_child_resize_cb);
+					ewl_scrollpane_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
@@ -98,18 +100,18 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	 * Append necessary callbacks for the scrollpane.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    ewl_scrollpane_configure_cb, NULL);
+			ewl_scrollpane_configure_cb, NULL);
 
 	/*
 	 * We need to know whent he scrollbars have value changes in order to
 	 * know when to scroll.
 	 */
 	ewl_callback_append(s->hscrollbar, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_scrollpane_hscroll_cb, s);
+					ewl_scrollpane_hscroll_cb, s);
 	ewl_callback_append(s->vscrollbar, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_scrollpane_vscroll_cb, s);
+					ewl_scrollpane_vscroll_cb, s);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_WHEEL,
-			    ewl_scrollpane_wheel_scroll_cb, NULL);
+				ewl_scrollpane_wheel_scroll_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -123,10 +125,11 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
  * The scrollbar flags for the horizontal scrollbar are set to @a f.
  */
 void
-ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane * s, Ewl_ScrollPane_Flags f)
+ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollpane");
 
 	s->hflag = f;
 	ewl_widget_configure(EWL_WIDGET(s));
@@ -143,10 +146,11 @@ ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane * s, Ewl_ScrollPane_Flags f)
  * The scrollbar flags for the vertical scrollbar are set to @a f.
  */
 void
-ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane * s, Ewl_ScrollPane_Flags f)
+ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane *s, Ewl_ScrollPane_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollpane");
 
 	s->vflag = f;
 	ewl_widget_configure(EWL_WIDGET(s));
@@ -159,10 +163,12 @@ ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane * s, Ewl_ScrollPane_Flags f)
  * @return Returns the flags of the horizontal scrollbar, 0 on failure.
  * @brief Get flags for horizontal scrollbar
  */
-Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s)
+Ewl_ScrollPane_Flags
+ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0);
 
 	DRETURN_INT(s->hflag, DLEVEL_STABLE);
 }
@@ -172,10 +178,12 @@ Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s)
  * @return Returns the flags of the vertical scrollbar on success, 0 on failure.
  * @brief Get flags for vertical scrollbar
  */
-Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s)
+Ewl_ScrollPane_Flags
+ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0);
 
 	DRETURN_INT(s->vflag, DLEVEL_STABLE);
 }
@@ -185,13 +193,15 @@ Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s)
  * @return Returns the value of the horizontal scrollbar in @a s on success.
  * @brief Retrieves the value of the horizontal scrollbar in @a s.
  */
-double ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s)
+double
+ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_value_get(EWL_SCROLLBAR(s->hscrollbar)),
-			DLEVEL_STABLE);
+								DLEVEL_STABLE);
 }
 
 /**
@@ -199,13 +209,15 @@ double ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s)
  * @return Returns the value of the vertical scrollbar in @a s on success.
  * @brief Retrieves the value of the vertical scrollbar in @a s.
  */
-double ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s)
+double
+ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
 
 	DRETURN_FLOAT(ewl_scrollbar_value_get(EWL_SCROLLBAR(s->vscrollbar)),
-			DLEVEL_STABLE);
+								DLEVEL_STABLE);
 }
 
 /**
@@ -214,14 +226,16 @@ double ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s)
  * @return Returns nothing
  * @brief Set the value of the horizontal scrollbar in @a s to @a val
  */
-void ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val)
+void
+ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val)
 {
-    DENTER_FUNCTION(DLEVEL_STABLE);
-    DCHECK_PARAM_PTR("s", s);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollpane");
 
-    ewl_scrollbar_value_set(EWL_SCROLLBAR(s->hscrollbar), val);
+	ewl_scrollbar_value_set(EWL_SCROLLBAR(s->hscrollbar), val);
 
-    DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -230,14 +244,16 @@ void ewl_scrollpane_hscrollbar_value_set(Ewl_ScrollPane *s, double val)
  * @return Returns nothing
  * @brief Set the value of the vertical scrollbar in @a s to @a val
  */
-void ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val)
+void
+ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val)
 {
-    DENTER_FUNCTION(DLEVEL_STABLE);
-    DCHECK_PARAM_PTR("s", s);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollpane");
 
-    ewl_scrollbar_value_set(EWL_SCROLLBAR(s->vscrollbar), val);
+	ewl_scrollbar_value_set(EWL_SCROLLBAR(s->vscrollbar), val);
 
-    DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -246,13 +262,15 @@ void ewl_scrollpane_vscrollbar_value_set(Ewl_ScrollPane *s, double val)
  *         in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
-double ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s) 
+double
+ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s) 
 {
-    DENTER_FUNCTION(DLEVEL_STABLE);
-    DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
 
-    DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->hscrollbar)),
-            DLEVEL_STABLE);
+	DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->hscrollbar)),
+								DLEVEL_STABLE);
 }
 
 /**
@@ -261,31 +279,35 @@ double ewl_scrollpane_hscrollbar_step_get(Ewl_ScrollPane *s)
  *         in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
-double ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s) 
+double
+ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s) 
 {
-    DENTER_FUNCTION(DLEVEL_STABLE);
-    DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+	DCHECK_TYPE_RET("s", s, "scrollpane", 0.0);
 
-    DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->vscrollbar)),
-            DLEVEL_STABLE);
+	DRETURN_FLOAT(ewl_scrollbar_step_get(EWL_SCROLLBAR(s->vscrollbar)),
+								DLEVEL_STABLE);
 }
 
 /*
  * Move the contents of the scrollbar into place
  */
-void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_ScrollPane *s;
-	int             vs_width = 0;
-	int             hs_height = 0;
-	int             b_width, b_height;
-	int             content_w, content_h;
-	unsigned int    box_fill = EWL_FLAG_FILL_FILL;
-	double          hstep = 1.0, vstep = 1.0;
+	int vs_width = 0;
+	int hs_height = 0;
+	int b_width, b_height;
+	int content_w, content_h;
+	unsigned int box_fill = EWL_FLAG_FILL_FILL;
+	double hstep = 1.0, vstep = 1.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SCROLLPANE(w);
 
@@ -308,9 +330,9 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * with shrink fill policies.
 	 */
 	ewl_container_largest_prefer(EWL_CONTAINER(s->box),
-				     EWL_ORIENTATION_HORIZONTAL);
+					EWL_ORIENTATION_HORIZONTAL);
 	ewl_container_sum_prefer(EWL_CONTAINER(s->box),
-				 EWL_ORIENTATION_VERTICAL);
+					EWL_ORIENTATION_VERTICAL);
 
 	/*
 	 * Get the preferred size of contents to scroll correctly.
@@ -395,27 +417,28 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * Position the horizontal scrollbar.
 	 */
 	ewl_object_geometry_request(EWL_OBJECT(s->hscrollbar),
-				    CURRENT_X(w), CURRENT_Y(w) + content_h,
-				    content_w, hs_height);
+					CURRENT_X(w), CURRENT_Y(w) + content_h,
+					content_w, hs_height);
 
 	/*
 	 * Position the vertical scrollbar.
 	 */
 	ewl_object_geometry_request(EWL_OBJECT(s->vscrollbar),
-				    CURRENT_X(w) + content_w, CURRENT_Y(w),
-				    vs_width, content_h);
+					CURRENT_X(w) + content_w, CURRENT_Y(w),
+					vs_width, content_h);
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move
 	 * the box relative to the scroll value.
 	 */
 	ewl_object_geometry_request(EWL_OBJECT(s->overlay),
-				    CURRENT_X(w), CURRENT_Y(w),
-				    content_w, content_h);
+					CURRENT_X(w), CURRENT_Y(w),
+					content_w, content_h);
 	ewl_object_geometry_request(EWL_OBJECT(s->box),
-				    CURRENT_X(w) - b_width,
-				    CURRENT_Y(w) - b_height,
-				    content_w + b_width, content_h + b_height);
+					CURRENT_X(w) - b_width,
+					CURRENT_Y(w) - b_height,
+					content_w + b_width, 
+					content_h + b_height);
 
 	/*
 	 * Reset the default fill policy on the box to get updated sizes..
@@ -429,12 +452,14 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
  * When a horizontal scrollbar is clicked we need to move the contents of the
  * scrollpane horizontally.
  */
-void ewl_scrollpane_hscroll_cb(Ewl_Widget * w __UNUSED__,
-				void *ev_data __UNUSED__, void *user_data)
+void
+ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
+		void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -446,12 +471,14 @@ void ewl_scrollpane_hscroll_cb(Ewl_Widget * w __UNUSED__,
  * When a vertical scrollbar is clicked we need to move the contents of the
  * scrollpane vertically.
  */
-void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-							void *user_data)
+void
+ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
@@ -461,13 +488,17 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 void
 ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
-					void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
-	Ewl_ScrollPane *s = EWL_SCROLLPANE(cb);
-	Ewl_Event_Mouse_Wheel *ev = ev_data;
+	Ewl_ScrollPane *s;
+	Ewl_Event_Mouse_Wheel *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cb", cb);
+	DCHECK_TYPE("cb", cb, "widget");
 
+	s = EWL_SCROLLPANE(cb);
+	ev = ev_data;
 	ewl_scrollpane_vscrollbar_value_set(s,
 			ewl_scrollpane_vscrollbar_value_get(s) +
 			ev->z * ewl_scrollpane_vscrollbar_step_get(s));
@@ -477,25 +508,28 @@ ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
 /*
  * This handles all of the various size affecting callbacks.
  */
-void ewl_scrollpane_child_resize_cb(Ewl_Container * parent, Ewl_Widget * child)
+void
+ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
 {
 	int pw, ph;
 	Ewl_ScrollPane *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("parent", parent);
 	DCHECK_PARAM_PTR("child", child);
+	DCHECK_TYPE("parent", parent, "container");
+	DCHECK_TYPE("child", child, "widget");
 
 	s = EWL_SCROLLPANE(parent);
 
 	pw = ewl_object_preferred_w_get(EWL_OBJECT(s->vscrollbar)) +
-		ewl_object_preferred_w_get(EWL_OBJECT(s->box));
+			ewl_object_preferred_w_get(EWL_OBJECT(s->box));
 	ph = ewl_object_preferred_h_get(EWL_OBJECT(s->hscrollbar)) +
-		ewl_object_preferred_h_get(EWL_OBJECT(s->box));
+			ewl_object_preferred_h_get(EWL_OBJECT(s->box));
 
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), pw);
 	ewl_object_preferred_inner_h_set(EWL_OBJECT(parent), ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

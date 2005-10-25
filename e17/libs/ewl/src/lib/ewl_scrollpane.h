@@ -45,15 +45,15 @@ struct Ewl_ScrollPane
 };
 
 Ewl_Widget     *ewl_scrollpane_new(void);
-int             ewl_scrollpane_init(Ewl_ScrollPane * s);
+int             ewl_scrollpane_init(Ewl_ScrollPane *s);
 
-void            ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane * s,
+void            ewl_scrollpane_hscrollbar_flag_set(Ewl_ScrollPane *s,
 						   Ewl_ScrollPane_Flags f);
-void            ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane * s,
+void            ewl_scrollpane_vscrollbar_flag_set(Ewl_ScrollPane *s,
 						   Ewl_ScrollPane_Flags f);
 
-Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane * s);
-Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane * s);
+Ewl_ScrollPane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_ScrollPane *s);
+Ewl_ScrollPane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_ScrollPane *s);
 
 double          ewl_scrollpane_hscrollbar_value_get(Ewl_ScrollPane *s);
 double          ewl_scrollpane_vscrollbar_value_get(Ewl_ScrollPane *s);
@@ -67,19 +67,16 @@ double          ewl_scrollpane_vscrollbar_step_get(Ewl_ScrollPane *s);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data,
-					    void *user_data);
-void            ewl_scrollpane_box_configure_cb(Ewl_Widget * w, void *ev_data,
-						void *user_data);
-void            ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void            ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void            ewl_scrollpane_wheel_scroll_cb(Ewl_Widget * w, void *ev_data,
-					       void *user_data);
+void ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data,
+							void *user_data);
+void ewl_scrollpane_box_configure_cb(Ewl_Widget *w, void *ev_data,
+							void *user_data);
+void ewl_scrollpane_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *w, void *ev_data,
+							void *user_data);
 
-void            ewl_scrollpane_child_resize_cb(Ewl_Container * parent,
-					       Ewl_Widget * child);
+void ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child);
 
 /**
  * @}
