@@ -181,8 +181,8 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	/*ib->ewl_iconbox_context_menu_item = ewl_separator_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_context_menu_item);
-	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
-	ewl_widget_show(ib->ewl_iconbox_view_menu);*/
+	ewl_widget_show(ib->ewl_iconbox_context_menu_item);*/
+	ewl_widget_show(ib->ewl_iconbox_view_menu);
 		
 	/* Add the menu floater to the pane inner */
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->ewl_iconbox_menu_floater);
