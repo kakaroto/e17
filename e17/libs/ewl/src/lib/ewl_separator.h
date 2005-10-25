@@ -1,4 +1,3 @@
-
 #ifndef __EWL_SEPARATOR_H__
 #define __EWL_SEPARATOR_H__
 
@@ -43,7 +42,7 @@ struct Ewl_Separator
 Ewl_Widget     *ewl_separator_new(void);
 Ewl_Widget     *ewl_hseparator_new(void);
 Ewl_Widget     *ewl_vseparator_new(void);
-int             ewl_separator_init(Ewl_Separator * s);
+int             ewl_separator_init(Ewl_Separator *s);
 void            ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o);
 Ewl_Orientation ewl_separator_orientation_get(Ewl_Separator *s);
 

@@ -7,7 +7,8 @@
  * @return Returns pointer to new separator widget on success, NULL on failure.
  * @brief Allocate a new separator widget with default (horizontal) orientation
  */
-Ewl_Widget     *ewl_separator_new()
+Ewl_Widget *
+ewl_separator_new(void)
 {
 	Ewl_Separator  *s;
 
@@ -17,7 +18,10 @@ Ewl_Widget     *ewl_separator_new()
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_separator_init(s);
+	if (!ewl_separator_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -26,7 +30,8 @@ Ewl_Widget     *ewl_separator_new()
  * @return Returns pointer to new separator widget on success, NULL on failure.
  * @brief Allocate a new separator widget with horizontal orientation
  */
-Ewl_Widget *ewl_hseparator_new()
+Ewl_Widget *
+ewl_hseparator_new(void)
 {
 	Ewl_Widget *s;
 
@@ -44,7 +49,8 @@ Ewl_Widget *ewl_hseparator_new()
  * @return Returns pointer to new separator widget on success, NULL on failure.
  * @brief Allocate a new separator widget with vertical orientation
  */
-Ewl_Widget *ewl_vseparator_new()
+Ewl_Widget *
+ewl_vseparator_new(void)
 {
 	Ewl_Widget *s;
 
@@ -66,20 +72,22 @@ Ewl_Widget *ewl_vseparator_new()
  * Clears the contents of the separator and stores the
  * default values.
  */
-int ewl_separator_init(Ewl_Separator * s)
+int
+ewl_separator_init(Ewl_Separator *s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_inherit(w, "separator");
 	ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
 						  EWL_FLAG_FILL_SHRINK);
-	ewl_widget_inherit(w, "separator");
 
 	ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
 
@@ -92,8 +100,8 @@ void
 ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "separator");
 
 	if (s->orientation == o)
 		DRETURN(DLEVEL_STABLE);
@@ -122,8 +130,9 @@ Ewl_Orientation
 ewl_separator_orientation_get(Ewl_Separator *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("s", s, "separator", EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(s->orientation, DLEVEL_STABLE);
 }
+
