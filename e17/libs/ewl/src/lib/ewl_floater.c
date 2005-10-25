@@ -88,8 +88,8 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	if (p) {
 		ewl_callback_append(p, EWL_CALLBACK_CONFIGURE,
 				    ewl_floater_follow_configure_cb, f);
-		ewl_callback_append(p, EWL_CALLBACK_DESTROY,
-				    ewl_floater_follow_configure_cb, f);
+		ewl_callback_prepend(p, EWL_CALLBACK_DESTROY,
+				    ewl_floater_follow_destroy_cb, f);
 	}
 
 	f->follows = p;

@@ -7,7 +7,8 @@
  * @return Returns a new overlay container on success, or NULL on failure.
  * @brief Allocate and initialize a new overlay container
  */
-Ewl_Widget *ewl_overlay_new()
+Ewl_Widget *
+ewl_overlay_new(void)
 {
 	Ewl_Overlay *w;
 
@@ -32,7 +33,8 @@ Ewl_Widget *ewl_overlay_new()
  *
  * Sets the values and callbacks of a overlay @a w to their defaults.
  */
-int ewl_overlay_init(Ewl_Overlay *w)
+int
+ewl_overlay_init(Ewl_Overlay *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
@@ -62,13 +64,16 @@ int ewl_overlay_init(Ewl_Overlay *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+void
+ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Object *o;
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	o = EWL_OBJECT(w);
 
@@ -94,11 +99,16 @@ void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
+void
+ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
 {
 	int size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
+	DCHECK_PARAM_PTR("child", child);
+	DCHECK_TYPE("o", o, "container");
+	DCHECK_TYPE("child", child, "widget");
 
 	size = ewl_object_current_x_get(EWL_OBJECT(child));
        	size += ewl_object_preferred_w_get(EWL_OBJECT(child));
@@ -114,21 +124,26 @@ void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
-		       int size __UNUSED__, Ewl_Orientation o __UNUSED__)
+void
+ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+	       int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
-	int            maxw = 0, maxh = 0;
-	Ewl_Overlay   *overlay;
-	Ewl_Object    *child;
+	int maxw = 0, maxh = 0;
+	Ewl_Overlay *overlay;
+	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	child = EWL_OBJECT(w);
 	overlay = EWL_OVERLAY(c);
 
 	ecore_list_goto_first(EWL_CONTAINER(overlay)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(overlay)->children))) {
-		int             cs;
+		int cs;
 
 		/*
 		 * FIXME: Do we really want to do this?
@@ -166,3 +181,4 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
