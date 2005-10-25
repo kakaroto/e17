@@ -9,7 +9,8 @@ static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w);
  * @return Returns NULL on failure, or a pointer to the new progressbar on success.
  * @brief Allocate and initialize a new progressbar
  */
-Ewl_Widget *ewl_progressbar_new() 
+Ewl_Widget *
+ewl_progressbar_new(void) 
 {
 	Ewl_Progressbar *p;
 
@@ -19,7 +20,10 @@ Ewl_Widget *ewl_progressbar_new()
 	if (!p)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_progressbar_init(p);
+	if (!ewl_progressbar_init(p)) {
+		ewl_widget_destroy(EWL_WIDGET(p));
+		p = NULL;
+	}
 	
 	DRETURN_PTR(EWL_WIDGET(p), DLEVEL_STABLE);
 }
@@ -29,9 +33,10 @@ Ewl_Widget *ewl_progressbar_new()
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the progressbar to some sane starting values
  */
-int ewl_progressbar_init(Ewl_Progressbar * p)
+int
+ewl_progressbar_init(Ewl_Progressbar *p)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, FALSE);
@@ -62,8 +67,7 @@ int ewl_progressbar_init(Ewl_Progressbar * p)
 
 	p->label = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(p->label), NULL);
-	ewl_object_alignment_set(EWL_OBJECT(p->label),
-			EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(p->label), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(p), p->label);
 	ewl_widget_show(p->label);
 
@@ -84,21 +88,21 @@ int ewl_progressbar_init(Ewl_Progressbar * p)
  * @return Returns no value.
  * @brief Set the value of the progressbars location
  */
-void ewl_progressbar_value_set(Ewl_Progressbar * p, double v)
+void
+ewl_progressbar_value_set(Ewl_Progressbar *p, double v)
 {
 	char c[10];
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 
 	if (v == p->value)
 		DRETURN(DLEVEL_STABLE);
 
-	if (v < 0)
-		v = 0;
+	if (v < 0) v = 0;
 
 	p->value = v;
-
 	if (p->auto_label) {
 		/* 
 		 * Do a precentage calculation as a default label.
@@ -119,10 +123,12 @@ void ewl_progressbar_value_set(Ewl_Progressbar * p, double v)
  * @return Returns 0 on failure, the value of the progressbars location on success.
  * @brief Retrieve the current value of the progressbars
  */ 
-double ewl_progressbar_value_get(Ewl_Progressbar * p)
+double
+ewl_progressbar_value_get(Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, -1);
+	DCHECK_TYPE_RET("p", p, "progressbar", -1);
 
 	DRETURN_FLOAT(p->value, DLEVEL_STABLE);
 }
@@ -133,10 +139,12 @@ double ewl_progressbar_value_get(Ewl_Progressbar * p)
  * @return Returns no value.
  * @brief Set the range of the progressbar. Cannot be less then 1.
  */    
-void ewl_progressbar_range_set (Ewl_Progressbar * p, double r)
+void
+ewl_progressbar_range_set(Ewl_Progressbar *p, double r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 
 	if (r == p->range)
 		DRETURN(DLEVEL_STABLE);
@@ -157,14 +165,15 @@ void ewl_progressbar_range_set (Ewl_Progressbar * p, double r)
  * @return Returns 0 on failure, the value of the progressbars location on success.
  * @brief Retrieve the current range of the progressbars (default 100)
  */
-double ewl_progressbar_range_get (Ewl_Progressbar * p)
+double
+ewl_progressbar_range_get(Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("p", p, -1);
+	DCHECK_TYPE_RET("p", p, "progressbar", -1);
 	
 	DRETURN_FLOAT(p->range, DLEVEL_STABLE);
 }
-
 
 /**
  * @param p: the progressbars whose text will be changed
@@ -172,10 +181,12 @@ double ewl_progressbar_range_get (Ewl_Progressbar * p)
  * @return Returns no value
  * @brief Sets the given text on the progressbar
  */
-void ewl_progressbar_label_set (Ewl_Progressbar * p, char *label)
+void
+ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 
 	p->auto_label = FALSE;
 	
@@ -191,12 +202,14 @@ void ewl_progressbar_label_set (Ewl_Progressbar * p, char *label)
  * @return Returns no value
  * @brief Sets the given format string on the progressbar (%lf of %lf beers)
  */
-void ewl_progressbar_custom_label_set (Ewl_Progressbar * p, char *format_string)
+void
+ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
 {
 	char label[PATH_MAX];
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 
 	p->auto_label = FALSE;
 
@@ -213,9 +226,12 @@ void ewl_progressbar_custom_label_set (Ewl_Progressbar * p, char *format_string)
  * @return Returns no value
  * @brief Hides the given progressbars label
  */
-void ewl_progressbar_label_hide (Ewl_Progressbar * p) {
+void
+ewl_progressbar_label_hide(Ewl_Progressbar *p) 
+{
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 	
 	p->auto_label = FALSE;
 	ewl_text_text_set(EWL_TEXT(p->label), "");
@@ -228,15 +244,17 @@ void ewl_progressbar_label_hide (Ewl_Progressbar * p) {
  * @return Returns no value
  * @brief Shows the given progressbars label
  */
-void ewl_progressbar_label_show (Ewl_Progressbar * p) {
+void
+ewl_progressbar_label_show (Ewl_Progressbar *p) 
+{
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "progressbar");
 
 	p->auto_label = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /*
  * On a configure event we need to adjust the progressbar to fit into it's new
@@ -244,15 +262,16 @@ void ewl_progressbar_label_show (Ewl_Progressbar * p) {
  * position.
  */
 void
-ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_progressbar_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Progressbar *p;
-	int             dx, dy;
-	int             dw, dh;
+	int dx, dy;
+	int dw, dh;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	p = EWL_PROGRESSBAR(w);
 
@@ -269,17 +288,18 @@ ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-static void ewl_progressbar_child_handle(Ewl_Container *c,
-					Ewl_Widget *w __UNUSED__)
+static void
+ewl_progressbar_child_handle(Ewl_Container *c,
+				Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Progressbar *p;
 	double value;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, "container");
 
 	p = EWL_PROGRESSBAR(c);
-
 	value = p->value / p->range;
 
 	if (value < 0.01)
@@ -294,9 +314,14 @@ static void ewl_progressbar_child_handle(Ewl_Container *c,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+void
+ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_progressbar_child_handle(c, w);
 	
@@ -309,6 +334,10 @@ ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_progressbar_child_handle(c, w);
 
