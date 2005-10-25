@@ -3,15 +3,16 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static int  ewl_scrollbar_timer(void *data);
+static int ewl_scrollbar_timer(void *data);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
  * @brief Allocate and initialize a new scrollbar widget
  */
-Ewl_Widget *ewl_scrollbar_new(void)
+Ewl_Widget *
+ewl_scrollbar_new(void)
 {
-	Ewl_Scrollbar  *s;
+	Ewl_Scrollbar *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -22,7 +23,10 @@ Ewl_Widget *ewl_scrollbar_new(void)
 	/*
 	 * Initialize the objects fields.
 	 */
-	ewl_scrollbar_init(s);
+	if (!ewl_scrollbar_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -31,13 +35,17 @@ Ewl_Widget *ewl_scrollbar_new(void)
  * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
  * @brief Allocate and initialize a new horizontal scrollbar widget
  */
-Ewl_Widget *ewl_hscrollbar_new(void)
+Ewl_Widget *
+ewl_hscrollbar_new(void)
 {
 	Ewl_Widget *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = ewl_scrollbar_new();
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	ewl_scrollbar_orientation_set(EWL_SCROLLBAR(s),
 				      EWL_ORIENTATION_HORIZONTAL);
 
@@ -48,13 +56,17 @@ Ewl_Widget *ewl_hscrollbar_new(void)
  * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
  * @brief Allocate and initialize a new vertical scrollbar widget
  */
-Ewl_Widget *ewl_vscrollbar_new(void)
+Ewl_Widget *
+ewl_vscrollbar_new(void)
 {
 	Ewl_Widget *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = ewl_scrollbar_new();
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	ewl_scrollbar_orientation_set(EWL_SCROLLBAR(s),
 				      EWL_ORIENTATION_VERTICAL);
 
@@ -66,9 +78,10 @@ Ewl_Widget *ewl_vscrollbar_new(void)
  * @return Returns no value.
  * @brief Initialize a scrollbar to default values
  */
-int ewl_scrollbar_init(Ewl_Scrollbar * s)
+int
+ewl_scrollbar_init(Ewl_Scrollbar *s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
@@ -166,37 +179,28 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
 	ewl_widget_appearance_set(s->increment, "increment");
 
 	if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
-
 		/*
 		 * Place in decrement, increment, seeker order.
 		 */
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->decrement);
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->increment);
+		ewl_container_child_append(EWL_CONTAINER(s), s->decrement);
+		ewl_container_child_append(EWL_CONTAINER(s), s->increment);
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 	}
 	else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
-
 		/*
 		 * Place in seeker, decrement, increment order.
 		 */
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->decrement);
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->increment);
+		ewl_container_child_append(EWL_CONTAINER(s), s->decrement);
+		ewl_container_child_append(EWL_CONTAINER(s), s->increment);
 	}
 	else {
-
 		/*
 		 * Place in decrement, seeker, increment order.
 		 */
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->decrement);
+		ewl_container_child_append(EWL_CONTAINER(s), s->decrement);
 		ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
-		ewl_container_child_append(EWL_CONTAINER(s),
-					   s->increment);
+		ewl_container_child_append(EWL_CONTAINER(s), s->increment);
 	}
 
 	/*
@@ -213,10 +217,12 @@ int ewl_scrollbar_init(Ewl_Scrollbar * s)
  * @return Returns no value.
  * @brief Change the orientation of a scrollbar.
  */
-void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
+void
+ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollbar");
 
 	if (o == ewl_box_orientation_get(EWL_BOX(s)))
 		DRETURN(DLEVEL_STABLE);
@@ -260,9 +266,7 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 	 * packing order.
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-
 		if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
-
 			/*
 			 * Place in decrement, increment, seeker order.
 			 */
@@ -273,7 +277,6 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		}
 		else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
-
 			/*
 			 * Place in seeker, decrement, increment order.
 			 */
@@ -284,7 +287,6 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 						   s->increment);
 		}
 		else {
-
 			/*
 			 * Place in decrement, seeker, increment order.
 			 */
@@ -294,12 +296,9 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			ewl_container_child_append(EWL_CONTAINER(s),
 						   s->increment);
 		}
-
 	}
 	else {
-
 		if (s->buttons_alignment & EWL_FLAG_ALIGN_TOP) {
-
 			/*
 			 * Place in increment, decrement, seeker order.
 			 */
@@ -310,7 +309,6 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			ewl_container_child_append(EWL_CONTAINER(s), s->seeker);
 		}
 		else if (s->buttons_alignment & EWL_FLAG_ALIGN_BOTTOM) {
-
 			/*
 			 * Place in seeker, increment, decrement order.
 			 */
@@ -321,7 +319,6 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 						   s->decrement);
 		}
 		else {
-
 			/*
 			 * Place in increment, seeker, decrement order.
 			 */
@@ -331,7 +328,6 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
 			ewl_container_child_append(EWL_CONTAINER(s),
 						   s->decrement);
 		}
-
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -342,10 +338,12 @@ void ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
  * @return Returns no value.
  * @brief Change the orientation of a scrollbar.
  */
-Ewl_Orientation ewl_scrollbar_orientation_get(Ewl_Scrollbar *s)
+Ewl_Orientation
+ewl_scrollbar_orientation_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET("s", s, "scrollbar", EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(ewl_box_orientation_get(EWL_BOX(s)), DLEVEL_STABLE);
 }
@@ -356,15 +354,15 @@ Ewl_Orientation ewl_scrollbar_orientation_get(Ewl_Scrollbar *s)
  * @return Returns no value.
  * @brief Sets the inverse scrolling flag on a scrollbar.
  */
-void ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char i)
+void
+ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollbar");
 
-	if (i >= 0)
-		i = 1;
-	else
-		i = -1;
+	if (i >= 0) i = 1;
+	else i = -1;
 
 	s->direction = i;
 
@@ -376,10 +374,12 @@ void ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char i)
  * @return Returns the current value for inverted scrolling.
  * @brief Checks the inverse scrolling flag on a scrollbar.
  */
-char ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s)
+char
+ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 1);
+	DCHECK_TYPE_RET("s", s, "scrollbar", 1);
 
 	DRETURN_INT(s->invert, DLEVEL_STABLE);
 }
@@ -389,12 +389,14 @@ char ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s)
  * @return Returns the current value of the scrollbar @a s.
  * @brief Get the current value of the dragbar
  */
-double ewl_scrollbar_value_get(Ewl_Scrollbar * s)
+double
+ewl_scrollbar_value_get(Ewl_Scrollbar *s)
 {
-	double          v;
+	double v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
+	DCHECK_TYPE_RET("s", s, "scrollbar", -1);
 
 	v = ewl_seeker_value_get(EWL_SEEKER(s->seeker));
 
@@ -414,10 +416,12 @@ double ewl_scrollbar_value_get(Ewl_Scrollbar * s)
  *
  * Sets the current value of the scrollbar @a s.
  */
-void ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v)
+void
+ewl_scrollbar_value_set(Ewl_Scrollbar *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollbar");
 
 	ewl_seeker_value_set(EWL_SEEKER(s->seeker), v);
 
@@ -433,8 +437,8 @@ double
 ewl_scrollbar_step_get(Ewl_Scrollbar *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("s", s, 0);
+	DCHECK_TYPE_RET("s", s, "scrollbar", 0);
 
 	DRETURN_INT(ewl_seeker_step_get(EWL_SEEKER(s->seeker)), DLEVEL_STABLE);
 }
@@ -447,11 +451,12 @@ ewl_scrollbar_step_get(Ewl_Scrollbar *s)
  *
  * Changes the step size of the scrollbar @a s to @a v.
  */
-void ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
+void
+ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "scrollbar");
 
 	ewl_seeker_step_set(EWL_SEEKER(s->seeker), v);
 
@@ -462,14 +467,15 @@ void ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
  * Decrement the value of the scrollbar's seeker portion
  */
 void
-ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
-	Ewl_Scrollbar  *s;
+	Ewl_Scrollbar *s;
 	Ewl_Orientation o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SCROLLBAR(user_data);
 	if (w == s->increment)
@@ -491,12 +497,13 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w __UNUSED__,
+ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w __UNUSED__,
 			     void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Scrollbar *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("user_data", user_data);
 
 	s = EWL_SCROLLBAR(user_data);
 
@@ -509,12 +516,16 @@ ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int ewl_scrollbar_timer(void *data)
+static int
+ewl_scrollbar_timer(void *data)
 {
-	Ewl_Scrollbar  *s;
-	double          dt;
-	double          value;
-	int             velocity;
+	Ewl_Scrollbar *s;
+	double dt;
+	double value;
+	int velocity;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
 
 	s = EWL_SCROLLBAR(data);
 
@@ -540,5 +551,6 @@ static int ewl_scrollbar_timer(void *data)
 
 	ewl_seeker_value_set(EWL_SEEKER(s->seeker), value);
 
-	return 1;
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+

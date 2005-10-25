@@ -62,25 +62,25 @@ struct Ewl_Scrollbar
 Ewl_Widget     *ewl_scrollbar_new(void);
 Ewl_Widget     *ewl_hscrollbar_new(void);
 Ewl_Widget     *ewl_vscrollbar_new(void);
-int             ewl_scrollbar_init(Ewl_Scrollbar * s);
+int             ewl_scrollbar_init(Ewl_Scrollbar *s);
 
-void            ewl_scrollbar_orientation_set(Ewl_Scrollbar * s,
+void            ewl_scrollbar_orientation_set(Ewl_Scrollbar *s,
 					      Ewl_Orientation orientation);
-Ewl_Orientation ewl_scrollbar_orientation_get(Ewl_Scrollbar * s);
-char            ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar * s);
-void            ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar * s, char v);
-double          ewl_scrollbar_value_get(Ewl_Scrollbar * s);
-void            ewl_scrollbar_value_set(Ewl_Scrollbar * s, double v);
+Ewl_Orientation ewl_scrollbar_orientation_get(Ewl_Scrollbar *s);
+char            ewl_scrollbar_inverse_scroll_get(Ewl_Scrollbar *s);
+void            ewl_scrollbar_inverse_scroll_set(Ewl_Scrollbar *s, char v);
+double          ewl_scrollbar_value_get(Ewl_Scrollbar *s);
+void            ewl_scrollbar_value_set(Ewl_Scrollbar *s, double v);
 
 double          ewl_scrollbar_step_get(Ewl_Scrollbar *s);
-void            ewl_scrollbar_step_set(Ewl_Scrollbar * s, double v);
+void            ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void        ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data,
+void ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
-void        ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data,
+void ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w, void *ev_data,
 					 void *user_data);
 
 /**
