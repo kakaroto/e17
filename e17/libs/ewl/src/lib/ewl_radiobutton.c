@@ -7,17 +7,21 @@
  * @return Returns a pointer to new radio button on success, NULL on failure.
  * @brief Allocate and initialize a new radio button
  */
-Ewl_Widget     *ewl_radiobutton_new(void)
+Ewl_Widget *
+ewl_radiobutton_new(void)
 {
-	Ewl_RadioButton *b;
+	Ewl_Radiobutton *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	b = NEW(Ewl_RadioButton, 1);
+	b = NEW(Ewl_Radiobutton, 1);
 	if (!b)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_radiobutton_init(b);
+	if (!ewl_radiobutton_init(b)) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		b = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -31,12 +35,14 @@ Ewl_Widget     *ewl_radiobutton_new(void)
  * Sets internal fields of the radio button to default
  * values and sets the label to the specified @a label.
  */
-int ewl_radiobutton_init(Ewl_RadioButton * rb)
+int
+ewl_radiobutton_init(Ewl_Radiobutton *rb)
 {
 	Ewl_CheckButton *cb;
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("rb", rb, FALSE);
 
 	cb = EWL_CHECKBUTTON(rb);
 	w = EWL_WIDGET(rb);
@@ -47,7 +53,7 @@ int ewl_radiobutton_init(Ewl_RadioButton * rb)
 	ewl_widget_appearance_set(cb->check, "radio");
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
 			    NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -62,11 +68,14 @@ int ewl_radiobutton_init(Ewl_RadioButton * rb)
  * Associates @a w with the same chain as @a c, in order to
  * ensure that only one radio button of that group is checked at any time.
  */
-void ewl_radiobutton_chain_set(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
+void
+ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("rb", rb);
 	DCHECK_PARAM_PTR("crb", crb);
+	DCHECK_TYPE("rb", rb, "radiobutton");
+	DCHECK_TYPE("crb", crb, "radiobutton");
 
 	/*
 	 * If a chain doesnt exist, create one 
@@ -87,15 +96,17 @@ void ewl_radiobutton_chain_set(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_CheckButton *cb;
-	Ewl_RadioButton *rb;
-	int             oc;
+	Ewl_Radiobutton *rb;
+	int oc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	cb = EWL_CHECKBUTTON(w);
 	rb = EWL_RADIOBUTTON(w);
@@ -105,12 +116,10 @@ void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		Ewl_CheckButton *c;
 
 		ecore_list_goto_first(rb->chain);
-
 		while ((c = ecore_list_next(rb->chain)) != NULL) {
 			ewl_checkbutton_checked_set(c, 0);
 		}
 	}
-
 	ewl_checkbutton_checked_set(cb, 1);
 
 	if (oc != ewl_checkbutton_is_checked(cb))
@@ -119,12 +128,15 @@ void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_radiobutton_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_radiobutton_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_RadioButton *rb;
+	Ewl_Radiobutton *rb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	rb = EWL_RADIOBUTTON(w);
 
@@ -141,3 +153,4 @@ void ewl_radiobutton_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
