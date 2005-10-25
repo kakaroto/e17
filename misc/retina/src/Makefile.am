@@ -5,11 +5,6 @@ INCLUDES = \
 @ecore_cflags@ \
 @imlib2_cflags@
 
-AM_CFLAGS = \
--Wall \
--O1 \
--g
-
 bin_PROGRAMS = retina
 
 retina_SOURCES = \
