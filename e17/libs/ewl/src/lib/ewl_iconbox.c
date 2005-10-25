@@ -783,7 +783,6 @@ void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
-	ewl_iconbox_clear(ib);
 }
 
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
@@ -957,6 +956,8 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 
 		ewl_widget_hide(ib->ewl_iconbox_menu_floater);
 		ewl_widget_hide(ib->ewl_iconbox_context_menu);
+		ewl_widget_hide(ib->ewl_iconbox_view_menu);
+
 
 
 		//Hide the icon menu
