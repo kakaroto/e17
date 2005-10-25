@@ -7,7 +7,6 @@
 OD_Dock         dock;
 Ecore_Timer    *od_dock_zoom_timer;
 
-void     od_dock_reposition();
 static void     zoom_function(double d, double *zoom, double *disp);
 static int      od_dock_icon_appear(void *data);
 static int      od_dock_icon_disappear(void *data);

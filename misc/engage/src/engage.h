@@ -48,10 +48,12 @@ void            od_window_unhide();
 void            od_dock_init();
 void            od_dock_add_applnk(OD_Icon * applnk);
 void            od_dock_add_minwin(OD_Icon * minwin);
+void            od_dock_add_sysicon(OD_Icon * sysicon);
 void            od_dock_del_icon(OD_Icon * icon);
 void            od_dock_redraw(Ecore_Evas * ee);
 void            od_dock_zoom_in();
 void            od_dock_zoom_out();
+void            od_dock_reposition();
 
 void            od_tray_init();
 void            od_tray_move(double x);
@@ -74,13 +76,17 @@ void            od_icon_add_kde_set(const char *path);
 
 void            od_hex_to_argb(unsigned int h, int *a, int *r, int *g, int *b);
 
+int             userconfig_load();
+
 void            od_dock_icons_update_begin();
 char           *od_wm_get_winclass(Ecore_X_Window win); // remember to free
 char           *od_wm_get_title(Ecore_X_Window win);    // ditto
 bool            od_wm_iconified(Ecore_X_Window win);
 void            od_wm_activate_window(Ecore_X_Window win);
+void            od_wm_deactivate_window(Ecore_X_Window win);
 OD_Window      *od_wm_window_next_by_window_class_get(const char *);
 OD_Window      *od_wm_window_prev_by_window_class_get(const char *);
+OD_Window      *od_wm_window_current_by_window_class_get(const char *);
 
 struct _OD_Options {
   int             width, height, reserve, zoom;

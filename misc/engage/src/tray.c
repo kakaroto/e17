@@ -28,8 +28,6 @@ static Display *display;
 static Window root, tray_container;
 static int tray_init;
 
-extern void     od_dock_reposition();
-
 void
 od_tray_layout() {
   Window_List *tmp;
