@@ -1,4 +1,3 @@
-
 #ifndef __EWL_SEEKER_H__
 #define __EWL_SEEKER_H__
 
@@ -49,22 +48,22 @@ struct Ewl_Seeker
 	int             autohide; /**< Indicator to hide when not scrollable */
 };
 
-Ewl_Widget     *ewl_seeker_new();
-Ewl_Widget     *ewl_hseeker_new();
-Ewl_Widget     *ewl_vseeker_new();
-int             ewl_seeker_init(Ewl_Seeker * s);
+Ewl_Widget     *ewl_seeker_new(void);
+Ewl_Widget     *ewl_hseeker_new(void);
+Ewl_Widget     *ewl_vseeker_new(void);
+int             ewl_seeker_init(Ewl_Seeker *s);
 
-void            ewl_seeker_orientation_set(Ewl_Seeker * s, Ewl_Orientation o);
-Ewl_Orientation ewl_seeker_orientation_get(Ewl_Seeker * s);
+void            ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
+Ewl_Orientation ewl_seeker_orientation_get(Ewl_Seeker *s);
 
-void            ewl_seeker_value_set(Ewl_Seeker * s, double v);
-double          ewl_seeker_value_get(Ewl_Seeker * s);
+void            ewl_seeker_value_set(Ewl_Seeker *s, double v);
+double          ewl_seeker_value_get(Ewl_Seeker *s);
 
-void            ewl_seeker_range_set(Ewl_Seeker * s, double r);
-double          ewl_seeker_range_get(Ewl_Seeker * s);
+void            ewl_seeker_range_set(Ewl_Seeker *s, double r);
+double          ewl_seeker_range_get(Ewl_Seeker *s);
 
-void            ewl_seeker_step_set(Ewl_Seeker * s, double step);
-double          ewl_seeker_step_get(Ewl_Seeker * s);
+void            ewl_seeker_step_set(Ewl_Seeker *s, double step);
+double          ewl_seeker_step_get(Ewl_Seeker *s);
 
 void            ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
 int             ewl_seeker_autohide_get(Ewl_Seeker *s);
@@ -72,23 +71,21 @@ int             ewl_seeker_autohide_get(Ewl_Seeker *s);
 void            ewl_seeker_invert_set(Ewl_Seeker *s, int invert);
 int             ewl_seeker_invert_get(Ewl_Seeker *s);
 
-void            ewl_seeker_decrease(Ewl_Seeker * s);
-void            ewl_seeker_increase(Ewl_Seeker * s);
+void            ewl_seeker_decrease(Ewl_Seeker *s);
+void            ewl_seeker_increase(Ewl_Seeker *s);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data,
-				        void *user_data);
-void            ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+void ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 						void *user_data);
-void            ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+void ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 					      void *user_data);
-void            ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+void ewl_seeker_button_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 						void *user_data);
-void            ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-void            ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
+void ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
 
 /**
  * @}

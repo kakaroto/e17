@@ -7,7 +7,8 @@
  * @return Returns NULL on failure, or a pointer to the new seeker on success.
  * @brief Allocate and initialize a new seeker with default orientation
  */
-Ewl_Widget *ewl_seeker_new()
+Ewl_Widget *
+ewl_seeker_new(void)
 {
 	Ewl_Seeker *s;
 
@@ -17,23 +18,29 @@ Ewl_Widget *ewl_seeker_new()
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_seeker_init(s);
+	if (!ewl_seeker_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
-
 
 /**
  * @return Returns NULL on failure, or a pointer to the new seeker on success.
  * @brief Allocate and initialize a new seeker with horizontal orientation
  */
-Ewl_Widget *ewl_hseeker_new()
+Ewl_Widget *
+ewl_hseeker_new(void)
 {
 	Ewl_Widget *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = ewl_seeker_new();
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -43,18 +50,21 @@ Ewl_Widget *ewl_hseeker_new()
  * @return Returns NULL on failure, or a pointer to the new seeker on success.
  * @brief Allocate and initialize a new seeker with vertical orientation
  */
-Ewl_Widget *ewl_vseeker_new()
+Ewl_Widget *
+ewl_vseeker_new(void)
 {
 	Ewl_Widget *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = ewl_seeker_new();
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
-
 
 /**
  * @param s: the seeker to be initialized
@@ -65,9 +75,10 @@ Ewl_Widget *ewl_vseeker_new()
  * Initializes the seeker @a s to the orientation @a orientation to default
  * values and callbacks.
  */
-int ewl_seeker_init(Ewl_Seeker * s)
+int
+ewl_seeker_init(Ewl_Seeker *s)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
@@ -81,9 +92,9 @@ int ewl_seeker_init(Ewl_Seeker * s)
 	 * Initialize the widget fields and set default orientation and type
 	 */
 	ewl_widget_appearance_set(w, "hseeker");
+	ewl_widget_inherit(w, "seeker");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
-	ewl_widget_inherit(w, "seeker");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
 				      ewl_seeker_child_show_cb);
@@ -130,7 +141,7 @@ int ewl_seeker_init(Ewl_Seeker * s)
 	ewl_container_callback_notify(EWL_CONTAINER(s),
 			EWL_CALLBACK_MOUSE_MOVE);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -139,10 +150,12 @@ int ewl_seeker_init(Ewl_Seeker * s)
  * @returns Returns no value.
  * @brief Changes the orientation of the given seeker.
  */
-void ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
+void
+ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	if (o == s->orientation)
 		DRETURN(DLEVEL_STABLE);
@@ -160,7 +173,6 @@ void ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  *
  * @param s: the seeker whose value will be changed
@@ -168,19 +180,18 @@ void ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
  * @return Returns no value.
  * @brief Set the value of pointer of the seekers locator
  */
-void ewl_seeker_value_set(Ewl_Seeker * s, double v)
+void
+ewl_seeker_value_set(Ewl_Seeker *s, double v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	if (v == s->value)
 		DRETURN(DLEVEL_STABLE);
 
-	if (v < 0)
-		v = 0;
-
-	if (v > s->range)
-		v = s->range;
+	if (v < 0) v = 0;
+	if (v > s->range) v = s->range;
 
 	s->value = v;
 
@@ -196,14 +207,15 @@ void ewl_seeker_value_set(Ewl_Seeker * s, double v)
  * @return Returns 0 on failure, the value of the seekers locator on success.
  * @brief Retrieve the current value of the seekers locator
  */
-double ewl_seeker_value_get(Ewl_Seeker * s)
+double
+ewl_seeker_value_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
+	DCHECK_TYPE_RET("s", s, "seeker", -1);
 
 	DRETURN_FLOAT(s->value, DLEVEL_STABLE);
 }
-
 
 /**
  * @param s: the seeker to change the range
@@ -211,12 +223,14 @@ double ewl_seeker_value_get(Ewl_Seeker * s)
  * @return Returns no value.
  * @brief specify the range of values represented by the seeker
  */
-void ewl_seeker_range_set(Ewl_Seeker * s, double r)
+void
+ewl_seeker_range_set(Ewl_Seeker *s, double r)
 {
-	int             new_val;
+	int new_val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	new_val = r * (s->value / s->range);
 
@@ -228,20 +242,20 @@ void ewl_seeker_range_set(Ewl_Seeker * s, double r)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param s: the seeker to return the range of values
  * @return Returns 0 on failure, or the upper bound on the seeker on success.
  * @brief Retrieve the range of values represented by the seeker
  */
-double ewl_seeker_range_get(Ewl_Seeker * s)
+double
+ewl_seeker_range_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
+	DCHECK_TYPE_RET("s", s, "seeker", -1);
 
 	DRETURN_FLOAT(s->range, DLEVEL_STABLE);
 }
-
 
 /**
  * @param s: the seeker to change step
@@ -252,10 +266,12 @@ double ewl_seeker_range_get(Ewl_Seeker * s)
  * Changes the amount that each increment or decrement changes the value of the
  * seeker @a s.
  */
-void ewl_seeker_step_set(Ewl_Seeker * s, double step)
+void
+ewl_seeker_step_set(Ewl_Seeker *s, double step)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	if (step > s->range)
 		step = s->range;
@@ -265,22 +281,21 @@ void ewl_seeker_step_set(Ewl_Seeker * s, double step)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param s: the seeker to retrieve step size
  * @return Returns the step size of the seeker @a s.
  * @brief Retrieve the step size of the seeker
  */
-double ewl_seeker_step_get(Ewl_Seeker * s)
+double
+ewl_seeker_step_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
+	DCHECK_TYPE_RET("s", s, "seeker", -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 	DRETURN_FLOAT(s->step, DLEVEL_STABLE);
-
 }
-
 
 /**
  * @param s: the seeker to change autohide
@@ -292,11 +307,12 @@ double ewl_seeker_step_get(Ewl_Seeker * s)
  * TRUE, the seeker will be hidden whenever the button is the full size of
  * the seeker.
  */
-void ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
+void
+ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	if (s->autohide == v || s->autohide == -v)
 		DRETURN(DLEVEL_STABLE);
@@ -319,11 +335,12 @@ void ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
  * @return Returns TRUE if autohide set, otherwise FALSE.
  * @brief Retrieves the current autohide setting on a seeker
  */
-int ewl_seeker_autohide_get(Ewl_Seeker *s)
+int
+ewl_seeker_autohide_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("s", s, 0);
+	DCHECK_TYPE_RET("s", s, "seeker", 0);
 
 	DRETURN_INT(abs(s->autohide), DLEVEL_STABLE);
 }
@@ -334,10 +351,12 @@ int ewl_seeker_autohide_get(Ewl_Seeker *s)
  * @return Returns no value.
  * @brief Changes the invert property on the seeker for inverting it's scale.
  */
-void ewl_seeker_invert_set(Ewl_Seeker *s, int invert)
+void
+ewl_seeker_invert_set(Ewl_Seeker *s, int invert)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	if (s->invert != invert) {
 		s->invert = invert;
@@ -352,10 +371,12 @@ void ewl_seeker_invert_set(Ewl_Seeker *s, int invert)
  * @return Returns the current value of the invert property in the seeker.
  * @brief Retrieve the current invert value from a seeker.
  */
-int ewl_seeker_invert_get(Ewl_Seeker *s)
+int
+ewl_seeker_invert_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_TYPE_RET("s", s, "seeker", FALSE);
 
 	DRETURN_INT(s->invert, DLEVEL_STABLE);
 }
@@ -367,10 +388,12 @@ int ewl_seeker_invert_get(Ewl_Seeker *s)
  *
  * Increases the value of the seeker @a s by one increment of it's step size.
  */
-void ewl_seeker_increase(Ewl_Seeker * s)
+void
+ewl_seeker_increase(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	s->value += s->step;
 
@@ -386,7 +409,6 @@ void ewl_seeker_increase(Ewl_Seeker * s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param s: the seeker to decrease
  * @return Returns no value.
@@ -394,10 +416,12 @@ void ewl_seeker_increase(Ewl_Seeker * s)
  *
  * Decreases the value of the seeker @a s by one increment of it's step size.
  */
-void ewl_seeker_decrease(Ewl_Seeker * s)
+void
+ewl_seeker_decrease(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+	DCHECK_TYPE("s", s, "seeker");
 
 	s->value -= s->step;
 
@@ -418,16 +442,18 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
  * coords and position as well as move the button to the correct size and
  * position.
  */
-void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Seeker     *s;
-	double          s1, s2;
-	int             dx, dy;
-	int             dw, dh;
+	Ewl_Seeker *s;
+	double s1, s2;
+	int dx, dy;
+	int dw, dh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SEEKER(w);
 	if (!s->button)
@@ -468,21 +494,20 @@ void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 void
-ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev;
-	Ewl_Seeker     *s;
-	int             xx, yy, ww, hh;
+	Ewl_Seeker *s;
+	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	ev = ev_data;
-
 	s = EWL_SEEKER(w->parent);
 
 	ewl_object_current_geometry_get(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
@@ -495,25 +520,24 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 void
-ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	EWL_SEEKER(w->parent)->dragstart = 0;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /*
  * Move the cursor to the correct position
  */
 void
-ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+ewl_seeker_button_mouse_move_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Move *ev;
@@ -524,9 +548,9 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
 	double scale;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SEEKER(w);
 
@@ -584,20 +608,21 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
-					void *user_data __UNUSED__)
+void
+ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+				void *user_data __UNUSED__)
 {
-	Ewl_Seeker     *s;
+	Ewl_Seeker *s;
 	Ewl_Event_Mouse_Down *ev;
-	double          value, step = 0;
-	int             xx, yy, ww, hh;
+	double value, step = 0;
+	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_TYPE("w", w, "widget");
 
 	ev = ev_data;
-
 	s = EWL_SEEKER(w);
 
 	ewl_object_current_geometry_get(EWL_OBJECT(s->button),
@@ -633,13 +658,17 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
+void
+ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 {
 	int pw, ph;
-
 	Ewl_Seeker *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("p", p, "container");
+	DCHECK_TYPE("w", w, "widget");
 
 	s = EWL_SEEKER(p);
 
@@ -655,3 +684,4 @@ void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

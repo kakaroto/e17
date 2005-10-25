@@ -259,7 +259,7 @@ main(int argc, char ** argv)
 	ewl_widget_show(b);
 
 	/* the video seeker */
-	seeker = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
+	seeker = ewl_hseeker_new();
 	ewl_container_child_append(EWL_CONTAINER(b), seeker);
 	ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
 			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
