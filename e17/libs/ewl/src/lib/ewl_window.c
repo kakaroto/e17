@@ -9,9 +9,10 @@ Ecore_List *ewl_window_list = NULL;
  * @return Returns a new window on success, or NULL on failure.
  * @brief Allocate and initialize a new window
  */
-Ewl_Widget *ewl_window_new()
+Ewl_Widget *
+ewl_window_new(void)
 {
-	Ewl_Window     *w;
+	Ewl_Window *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -34,7 +35,8 @@ Ewl_Widget *ewl_window_new()
  *
  * Sets the values and callbacks of a window @a w to their defaults.
  */
-int ewl_window_init(Ewl_Window * w)
+int
+ewl_window_init(Ewl_Window *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
@@ -84,15 +86,15 @@ int ewl_window_init(Ewl_Window * w)
  * @return Returns the found ewl window on success, NULL on failure.
  * @brief Find an ewl window by it's X window
  */
-Ewl_Window *ewl_window_window_find(void *window)
+Ewl_Window *
+ewl_window_window_find(void *window)
 {
-	Ewl_Window     *retwin;
+	Ewl_Window *retwin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
 	ecore_list_goto_first(ewl_window_list);
-
 	while ((retwin = ecore_list_next(ewl_window_list)))
 		if (retwin->window == window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);
@@ -109,10 +111,12 @@ Ewl_Window *ewl_window_window_find(void *window)
  * Sets the title of window @a w to @a title and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_title_set(Ewl_Window * win, char *title)
+void
+ewl_window_title_set(Ewl_Window *win, char *title)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!title)
 		title = "";
@@ -123,7 +127,7 @@ void ewl_window_title_set(Ewl_Window * win, char *title)
 	}
 
 	if (!REALIZED(win))
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11")) {
@@ -142,10 +146,12 @@ void ewl_window_title_set(Ewl_Window * win, char *title)
  *
  * The returned title should be freed.
  */
-char *ewl_window_title_get(Ewl_Window * win)
+char *
+ewl_window_title_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
+	DCHECK_TYPE_RET("win", win, "window", NULL);
 
 	DRETURN_PTR(strdup(win->title), DLEVEL_STABLE);
 }
@@ -159,10 +165,12 @@ char *ewl_window_title_get(Ewl_Window * win)
  * Sets the name of window @a w to @a name and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_name_set(Ewl_Window * win, char *name)
+void
+ewl_window_name_set(Ewl_Window *win, char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!name)
 		name = "";
@@ -173,7 +181,7 @@ void ewl_window_name_set(Ewl_Window * win, char *name)
 	}
 
 	if (!REALIZED(win))
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
@@ -191,10 +199,12 @@ void ewl_window_name_set(Ewl_Window * win, char *name)
  *
  * The returned name should be freed.
  */
-char *ewl_window_name_get(Ewl_Window * win)
+char *
+ewl_window_name_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
+	DCHECK_TYPE("win", win, "window");
 
 	DRETURN_PTR(strdup(win->name), DLEVEL_STABLE);
 }
@@ -208,10 +218,12 @@ char *ewl_window_name_get(Ewl_Window * win)
  * Sets the class of window @a w to @a class and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_class_set(Ewl_Window * win, char *classname)
+void
+ewl_window_class_set(Ewl_Window *win, char *classname)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!classname)
 		classname = "";
@@ -223,7 +235,7 @@ void ewl_window_class_set(Ewl_Window * win, char *classname)
 	win->classname = strdup(classname);
 
 	if (!REALIZED(win))
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(win->render, "x11"))
@@ -241,10 +253,12 @@ void ewl_window_class_set(Ewl_Window * win, char *classname)
  *
  * The returned class should be freed.
  */
-char *ewl_window_class_get(Ewl_Window * win)
+char *
+ewl_window_class_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
+	DCHECK_TYPE_RET("win", win, "window", NULL);
 
 	DRETURN_PTR(strdup(win->classname), DLEVEL_STABLE);
 }
@@ -257,10 +271,12 @@ char *ewl_window_class_get(Ewl_Window * win)
  * Remove the border from the specified widget and call the
  * necessary X lib functions to update the appearance.
  */
-void ewl_window_borderless_set(Ewl_Window * win)
+void
+ewl_window_borderless_set(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
@@ -283,10 +299,12 @@ void ewl_window_borderless_set(Ewl_Window * win)
  * Moves the window into the specified position in the
  * window manager environment.
  */
-void ewl_window_move(Ewl_Window * win, int x, int y)
+void
+ewl_window_move(Ewl_Window *win, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -307,10 +325,12 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
  *
  * Stores the window position into the parameters @a x and @a y.
  */
-void ewl_window_position_get(Ewl_Window * win, int *x, int *y)
+void
+ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (REALIZED(win)) {
 		*x = win->x;
@@ -328,10 +348,11 @@ void ewl_window_position_get(Ewl_Window * win, int *x, int *y)
  * Raise the window @a win if it is realized.
  */
 void
-ewl_window_raise(Ewl_Window * win)
+ewl_window_raise(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -352,10 +373,11 @@ ewl_window_raise(Ewl_Window * win)
  * Lower the window @a win if it is realized.
  */
 void
-ewl_window_lower(Ewl_Window * win)
+ewl_window_lower(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -374,10 +396,12 @@ ewl_window_lower(Ewl_Window * win)
  * @return Returns no value.
  * @brief Sets a window to be transient for another window.
  */
-void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
+void
+ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
 
 	win->transient = forwin;
 
@@ -406,10 +430,10 @@ void ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
  * @return Returns no value.
  * @brief Changes the keyboard grab state on the specified window.
  */
-void ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
+void
+ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, "window");
 
@@ -440,12 +464,12 @@ void ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
  * @return Returns TRUE if window is grabbing keyboard, FALSE otherwise.
  * @brief Retrieves the current keyboard grab state on a window.
  */
-int ewl_window_keyboard_grab_get(Ewl_Window *win)
+int
+ewl_window_keyboard_grab_get(Ewl_Window *win)
 {
 	int grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("win", win, FALSE);
 	DCHECK_TYPE_RET("win", win, "window", FALSE);
 
@@ -463,10 +487,10 @@ int ewl_window_keyboard_grab_get(Ewl_Window *win)
  * @return Returns no value.
  * @brief Changes the pointer grab state on the specified window.
  */
-void ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
+void
+ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, "window");
 
@@ -497,12 +521,12 @@ void ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
  * @return Returns TRUE if window is grabbing pointer, FALSE otherwise.
  * @brief Retrieves the current pointer grab state on a window.
  */
-int ewl_window_pointer_grab_get(Ewl_Window *win)
+int
+ewl_window_pointer_grab_get(Ewl_Window *win)
 {
 	int grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
 	DCHECK_PARAM_PTR_RET("win", win, FALSE);
 	DCHECK_TYPE_RET("win", win, "window", FALSE);
 
@@ -514,18 +538,20 @@ int ewl_window_pointer_grab_get(Ewl_Window *win)
 	DRETURN_INT(grab, DLEVEL_STABLE);
 }
 
-void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Object       *o;
-	Evas             *evas;
-	Ewl_Embed        *embed;
-	Ewl_Window       *window;
-	char             *render;
+	Ewl_Object *o;
+	Evas *evas;
+	Ewl_Embed *embed;
+	Ewl_Window *window;
+	char *render;
 	Evas_Engine_Info *info = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	embed = EWL_EMBED(w);
 	window = EWL_WINDOW(w);
@@ -679,10 +705,13 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	evas_object_pass_events_set(EWL_EMBED(w)->ev_clip, 1);
 	if (EWL_WINDOW(w)->transient)
@@ -692,12 +721,18 @@ void ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_realize_transient_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+void
+ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				     void *user_data)
 {
-	Ewl_Window *win = EWL_WINDOW(user_data);
-	DENTER_FUNCTION(DLEVEL_STABLE);
+	Ewl_Window *win;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "widget");
+
+	win = EWL_WINDOW(user_data);
 	/*
 	 * Make sure the window is still transient for the realized window.
 	 */
@@ -713,14 +748,16 @@ void ewl_window_realize_transient_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Object     *o;
-	Ewl_Embed      *embed;
+	Ewl_Object *o;
+	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	embed = EWL_EMBED(w);
 	o = EWL_OBJECT(w);
@@ -742,14 +779,17 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+void
+ewl_window_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
-	Ewl_Window *win = EWL_WINDOW(w);
+	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
+	win = EWL_WINDOW(w);
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
@@ -787,18 +827,24 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data)
+void
+ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+				void *user_data __UNUSED__)
 {
-	Ewl_Window *win = EWL_WINDOW(w);
+	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
+	win = EWL_WINDOW(w);
 	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) {
 		ecore_x_keyboard_grab((Ecore_X_Window)win->window);
 		printf("Grabbed keyboard\n");
 	}
 	if (win->flags & EWL_WINDOW_GRAB_POINTER) {
 		int grabval;
+
 		grabval = ecore_x_pointer_grab((Ecore_X_Window)win->window);
 		if (grabval == GrabNotViewable)
 			printf("GrabNotViewable\n");
@@ -815,13 +861,17 @@ void ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_window_hide_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Window *win = EWL_WINDOW(widget);
+	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_TYPE("widget", widget, "widget");
+
+	win = EWL_WINDOW(widget);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
@@ -841,13 +891,15 @@ void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_window_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Window     *win;
+	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	win = EWL_WINDOW(w);
 
@@ -861,15 +913,17 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+void
+ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
 {
-	Ewl_Window     *win;
-	Ewl_Object     *child;
-	int             width, height;
+	Ewl_Window *win;
+	Ewl_Object *child;
+	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	win = EWL_WINDOW(w);
 
@@ -935,7 +989,7 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 */
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
-		int             x, y;
+		int x, y;
 
 		/*
 		 * Try to give the child the full size of the window from it's
@@ -955,4 +1009,5 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 

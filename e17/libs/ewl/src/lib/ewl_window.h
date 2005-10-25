@@ -1,4 +1,3 @@
-
 #ifndef __EWL_WINDOW_H__
 #define __EWL_WINDOW_H__
 
@@ -53,20 +52,20 @@ struct Ewl_Window
 };
 
 Ewl_Widget     *ewl_window_new(void);
-int             ewl_window_init(Ewl_Window * win);
+int             ewl_window_init(Ewl_Window *win);
 Ewl_Window     *ewl_window_window_find(void *window);
-void            ewl_window_title_set(Ewl_Window * win, char *title);
-char           *ewl_window_title_get(Ewl_Window * win);
-void            ewl_window_name_set(Ewl_Window * win, char *name);
-char           *ewl_window_name_get(Ewl_Window * win);
-void            ewl_window_class_set(Ewl_Window * win, char *classname);
-char           *ewl_window_class_get(Ewl_Window * win);
-void            ewl_window_borderless_set(Ewl_Window * win);
-void            ewl_window_move(Ewl_Window * win, int x, int y);
-void            ewl_window_position_get(Ewl_Window * win, int *x, int *y);
-void            ewl_window_raise(Ewl_Window * win);
-void            ewl_window_lower(Ewl_Window * win);
-void            ewl_window_transient_for(Ewl_Window * win, Ewl_Window * forwin);
+void            ewl_window_title_set(Ewl_Window *win, char *title);
+char           *ewl_window_title_get(Ewl_Window *win);
+void            ewl_window_name_set(Ewl_Window *win, char *name);
+char           *ewl_window_name_get(Ewl_Window *win);
+void            ewl_window_class_set(Ewl_Window *win, char *classname);
+char           *ewl_window_class_get(Ewl_Window *win);
+void            ewl_window_borderless_set(Ewl_Window *win);
+void            ewl_window_move(Ewl_Window *win, int x, int y);
+void            ewl_window_position_get(Ewl_Window *win, int *x, int *y);
+void            ewl_window_raise(Ewl_Window *win);
+void            ewl_window_lower(Ewl_Window *win);
+void            ewl_window_transient_for(Ewl_Window *win, Ewl_Window * forwin);
 void            ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
 int             ewl_window_keyboard_grab_get(Ewl_Window *win);
 void            ewl_window_pointer_grab_set(Ewl_Window *win, int grab);
@@ -75,23 +74,16 @@ int             ewl_window_pointer_grab_get(Ewl_Window *win);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_postrealize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_realize_transient_cb(Ewl_Widget * w, void *ev_data,
+void ewl_window_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data,
 					        void *user_data);
-void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void            ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data);
-void            ewl_window_hide_cb(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-void            ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            ewl_window_configure_cb(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
+void ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_window_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
