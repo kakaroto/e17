@@ -7,9 +7,10 @@
  * @return Returns NULL on failure, a pointer to a new spacer on success
  * @brief Allocate and initialize a new spacer
  */
-Ewl_Widget     *ewl_spacer_new()
+Ewl_Widget *
+ewl_spacer_new(void)
 {
-	Ewl_Spacer     *s;
+	Ewl_Spacer *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -17,25 +18,31 @@ Ewl_Widget     *ewl_spacer_new()
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_spacer_init(s);
+	if (!ewl_spacer_init(s)) {
+		ewl_widget_destroy(EWL_WIDGET(s));
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
  * @param s: the spacer to initialize
- * @return Returns no value.
+ * @return Returns TRUE on success or FALSE on failure
  * @brief Initialize a spacer to starting values
  *
  * Initializes a spacer to default values and callbacks.
  */
-void ewl_spacer_init(Ewl_Spacer * s)
+int
+ewl_spacer_init(Ewl_Spacer *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	ewl_widget_init(EWL_WIDGET(s));
 	ewl_widget_appearance_set(EWL_WIDGET(s), "spacer");
 	ewl_widget_inherit(EWL_WIDGET(s), "spacer");
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
