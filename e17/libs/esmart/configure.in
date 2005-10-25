@@ -84,6 +84,7 @@ AC_SUBST(PERL)
 AC_OUTPUT([
 Makefile
 esmart.pc
+esmart.spec
 esmart-config
 src/Makefile
 src/lib/Makefile
