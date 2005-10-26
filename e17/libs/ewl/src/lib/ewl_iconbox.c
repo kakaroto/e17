@@ -256,6 +256,8 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_widget_show(ib->ewl_iconbox_pane_inner);
 	ewl_widget_show(ib->ewl_iconbox_scrollpane);
 	ewl_widget_show(ib->ewl_iconbox_menu_floater);
+	ewl_widget_show(ib->icon_menu_floater);
+	
 
 
 	/* Ewl Entry for the purposes of label editing - if enabled */
@@ -1007,6 +1009,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 
 	if (ev->button == 3) {
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(sx-ibx), ev->y-iby +abs(sy-iby));
+		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ib);
 		//ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
 		ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
