@@ -244,6 +244,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 	struct tar_file* file;
 	struct tar_element* ele, *ele_new;
 	Ecore_List* keys;
+	Ecore_List* files = ecore_list_new();
 	char* key;
 	
 	printf("Listing tar file dir: '%s'\n", com->file_command.files[0]->path);
@@ -257,8 +258,16 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 
 		keys = ecore_hash_keys(file->hierarchy);
 		while ( (key = ecore_list_next(keys))) {
+			evfs_filereference* reference = NEW(evfs_filereference);
+			int size=0;
 			ele = ecore_hash_get(file->hierarchy, key);
+
+			
 			printf("Filename: '%s/%s'\n", ele->path, ele->name);
+			size = strlen(ele->path)+strlen("/")+strlen(ele->name)+1;
+			reference->path = malloc(size);
+			snprintf(reference->path, size, "%s/%s", ele->path, ele->name);
+			ecore_list_append(files, reference);
 			
 		}
 	} else {
@@ -269,10 +278,21 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 			keys = ecore_hash_keys(ele->children);
 			ecore_list_goto_first(keys);
 			while ( (key = ecore_list_next(keys))) {
+				evfs_filereference* reference = NEW(evfs_filereference);
+				int size=0;
+
 				ele_new = ecore_hash_get(ele->children, key);
-				printf ("Filename: '%s:%s'\n", ele_new->path, ele_new->name);
+				
+
+				size = strlen(ele_new->path)+strlen("/")+strlen(ele_new->name)+1;
+				reference->path = malloc(size);
+				snprintf(reference->path, size, "%s/%s", ele_new->path, ele_new->name);
+				ecore_list_append(files, reference);
 			}
 		}
 	}
+
+
+	evfs_list_dir_event_create(client, com, files);
 
 }
