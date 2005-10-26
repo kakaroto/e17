@@ -15,7 +15,7 @@ collections {
 #include "e17/bits/menu-groups.edc"
 #include "e17/bits/paned-groups.edc"
 #include "e17/bits/progressbar-groups.edc"
-#include "e17/bits/scrollbar-groups-new.edc"
+#include "e17/bits/scrollbar-groups.edc"
 #include "e17/bits/selection-groups.edc"
 #include "e17/bits/spacer-groups.edc"
 #include "e17/bits/spinner-groups.edc"
