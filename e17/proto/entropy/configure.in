@@ -202,6 +202,8 @@ if test x"$have_etk" = x"yes" ; then
    etk="ETK "
    AM_CONDITIONAL(HAVE_ETK, true)
 else
+  AC_DEFINE(HAVE_ETK, 0, no ETK)
+  AM_CONDITIONAL(HAVE_ETK, false)
   AC_MSG_WARN([No ETK, can't build ETK plugin.])
 fi
 AC_SUBST(etk_cflags)
