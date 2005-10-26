@@ -66,6 +66,8 @@ char* entropy_mime_plugin_identify_file(char* path, char* filename) {
 		else if (!strcmp(pos, ".mpe")) type = "video/mpeg";
 		else if (!strcmp(pos, ".mpeg")) type = "video/mpeg";
 		else if (!strcmp(pos, ".avi")) type = "video/x-msvideo";
+		else if (!strcmp(pos, ".tgz")) type = "application/x-gtar";
+		else if (!strcmp(pos, ".bz2")) type= "application/x-bzip2";
 		
 		
 		

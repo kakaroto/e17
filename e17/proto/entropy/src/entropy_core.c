@@ -927,6 +927,7 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 
 
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
+	printf("Path: '%s'\n", uri_path->files[0]->path);
 	pos = rindex(uri_path->files[0]->path, '/');
 	strncpy(file->filename, pos+1, strlen(uri_path->files[0]->path));
 	*pos = '\0';
