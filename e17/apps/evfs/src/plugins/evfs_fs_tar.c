@@ -68,6 +68,7 @@ struct tar_file {
 struct tar_element {
 	char* path;
 	char* name;
+	evfs_file_type type;
 	Ecore_Hash* children;
 } tar_element;
 
@@ -117,6 +118,24 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 			ele->path = strdup(buf);
 			ele->name = strdup(tok);
 			ele->children = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+			//printf ("%s/%s: ", buf, tok);
+			
+			switch (block->p.typeflag) {
+				case TARPET_TYPE_REGULAR:
+				case TARPET_TYPE_REGULAR2:
+					//printf("Regular file\n");
+					ele->type = EVFS_FILE_NORMAL;
+					break;
+				case TARPET_TYPE_DIRECTORY:
+					//printf("Directory\n");
+					ele->type = EVFS_FILE_DIRECTORY;
+					break;
+				default:
+					//printf("Default fallback\n");
+					ele->type = EVFS_FILE_NORMAL;
+					break;
+			}
 
 			ecore_hash_set(search_hash, strdup(tok), ele);
 
@@ -266,6 +285,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 			printf("Filename: '%s/%s'\n", ele->path, ele->name);
 			size = strlen(ele->path)+strlen("/")+strlen(ele->name)+1;
 			reference->path = malloc(size);
+			reference->file_type = ele->type;
 			snprintf(reference->path, size, "%s/%s", ele->path, ele->name);
 			ecore_list_append(files, reference);
 			
@@ -286,6 +306,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 
 				size = strlen(ele_new->path)+strlen("/")+strlen(ele_new->name)+1;
 				reference->path = malloc(size);
+				reference->file_type = ele_new->type;
 				snprintf(reference->path, size, "%s/%s", ele_new->path, ele_new->name);
 				ecore_list_append(files, reference);
 			}
