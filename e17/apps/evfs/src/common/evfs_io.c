@@ -235,7 +235,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	char uri[1024];
 	char* part;
 	int it;
-	Ecore_List* uri_part = ecore_dlist_new();	
+	Ecore_List* uri_part;
 
 
 	bzero(uri, 1024);
@@ -249,6 +249,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
 		evfs_filereference* ref = command->file_command.files[i];
+		uri_part = ecore_dlist_new();	
 		
 		it=0;
 		do {
@@ -268,6 +269,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 				ref->path);
 			}
 			ecore_dlist_append(uri_part, strdup(uri));
+			printf("Appended URI '%s'\n", uri);
 
 			it++;
 		} while (ref->parent);
