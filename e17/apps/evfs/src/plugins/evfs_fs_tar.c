@@ -39,6 +39,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <tarpet.h>
 
 
+
+/*Main file wrappers*/
+int evfs_file_remove(char* src);
+int evfs_file_rename(char* src, char* dst);
+
+int evfs_client_disconnect(evfs_client* client);
+int evfs_monitor_start(evfs_client* client, evfs_command* command);
+int evfs_monitor_stop(evfs_client* client, evfs_command* command);
+int evfs_file_open(evfs_filereference* file);
+int evfs_file_close(evfs_filereference* file);
+int evfs_file_stat(evfs_command* command, struct stat* file_stat);
+int evfs_file_seek(evfs_filereference* file, long offset, int whence);
+int evfs_file_read(evfs_filereference* file, char* bytes, long size);
+int evfs_file_write(evfs_filereference* file, char* bytes, long size);
+int evfs_file_create(evfs_filereference* file);
+void evfs_dir_list(evfs_client* client, evfs_command* file);
+
+
+
+
+
 struct tar_file {
 	Ecore_Hash* hierarchy;
 	Ecore_Hash* link_in;
@@ -104,8 +125,9 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 			printf("Created a new child: '%s',with children at %p  appending to hash %p\n", tok, ele->children,search_hash);*/
 
 			/*Our concated path*/
-			strcat(buf, tok);
 			strcat(buf, "/");
+			strcat(buf, tok);
+			
 
 			/*Set a ref to this object at the root*/
 			ecore_hash_set(tar->link_in, strdup(buf), ele); 
@@ -113,8 +135,9 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 			search_hash = ele->children;
 		} else {
 			/*Our concated path*/
-			strcat(buf, tok);
 			strcat(buf, "/");
+			strcat(buf, tok);
+			
 			
 			/*printf("Found '%s' in '%s' and hash '%p'", tok, buf, search_hash);*/
 			search_hash = ele->children; /*Children of linux-2.6.11.6*/
@@ -131,21 +154,7 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 }
 
 
-/*Main file wrappers*/
-int evfs_file_remove(char* src);
-int evfs_file_rename(char* src, char* dst);
 
-int evfs_client_disconnect(evfs_client* client);
-int evfs_monitor_start(evfs_client* client, evfs_command* command);
-int evfs_monitor_stop(evfs_client* client, evfs_command* command);
-int evfs_file_open(evfs_filereference* file);
-int evfs_file_close(evfs_filereference* file);
-int evfs_file_stat(evfs_command* command, struct stat* file_stat);
-int evfs_file_seek(evfs_filereference* file, long offset, int whence);
-int evfs_file_read(evfs_filereference* file, char* bytes, long size);
-int evfs_file_write(evfs_filereference* file, char* bytes, long size);
-int evfs_file_create(evfs_filereference* file);
-void evfs_dir_list(evfs_client* client, evfs_command* file);
 
 
 evfs_plugin_functions* evfs_plugin_init() {
@@ -186,17 +195,17 @@ evfs_client_disconnect(evfs_client* client) {
 }
 
 
-
-void evfs_dir_list(evfs_client* client, evfs_command* com) {
+struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref) {
 	evfs_filereference* p_ref;
 	union TARPET_block block;
 	char parent_file[1024];
 
 	struct tar_file* tar = tar_file_new();
 	
-	struct tar_element* ele;
+	struct tar_element* ele, *ele_new;
 	Ecore_List* keys;
-	char* dir;
+	char* dir, *key;
+	int count;
 	
 	printf("At tar dir_list handler\n");
 
@@ -204,7 +213,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 	 * This is normally ok - a TAR dir list must have a parent - we have to know where we're getting
 	 * data from*/
 
-	p_ref = com->file_command.files[0]->parent;
+	p_ref = ref->parent;
 	printf("Parent ref is '%s'\n", p_ref->plugin_uri);
 	evfs_uri_open(client->server, p_ref);
 
@@ -219,11 +228,51 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 		} else {
 		}
 	}
+	
 
 	ecore_hash_set(tar_cache, strdup(p_ref->path), tar);
 
 
+	return tar;
 
 
+
+}
+
+
+void evfs_dir_list(evfs_client* client, evfs_command* com) {
+	struct tar_file* file;
+	struct tar_element* ele, *ele_new;
+	Ecore_List* keys;
+	char* key;
+	
+	printf("Listing tar file dir: '%s'\n", com->file_command.files[0]->path);
+
+	if (!(file = ecore_hash_get(tar_cache, com->file_command.files[0]->parent->path))) {
+		file = evfs_tar_load_tar(client, com->file_command.files[0]);
+	}
+
+	if (!strcmp(com->file_command.files[0]->path, "/")) {
+		printf("They want the root dir..\n");
+
+		keys = ecore_hash_keys(file->hierarchy);
+		while ( (key = ecore_list_next(keys))) {
+			ele = ecore_hash_get(file->hierarchy, key);
+			printf("Filename: '%s/%s'\n", ele->path, ele->name);
+			
+		}
+	} else {
+		
+		ele = ecore_hash_get(file->link_in, com->file_command.files[0]->path );
+		if (ele) {
+			printf("Got node..%s/%s\n", ele->path, ele->name);
+			keys = ecore_hash_keys(ele->children);
+			ecore_list_goto_first(keys);
+			while ( (key = ecore_list_next(keys))) {
+				ele_new = ecore_hash_get(ele->children, key);
+				printf ("Filename: '%s:%s'\n", ele_new->path, ele_new->name);
+			}
+		}
+	}
 
 }
