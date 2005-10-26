@@ -85,7 +85,7 @@ ewl_theme_path_find(const char *name)
 	char *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("name", name);
+	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
 	/*
 	 * Get the users home directory. This environment variable should
