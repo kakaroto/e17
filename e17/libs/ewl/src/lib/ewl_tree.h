@@ -49,7 +49,7 @@ struct Ewl_Tree
 	unsigned int   headers_visible; /**< Are the headers visible */
 };
 
-typedef struct _ewl_tree_node Ewl_Tree_Node;
+typedef struct Ewl_Tree_Node Ewl_Tree_Node;
 
 /**
  * @def EWL_TREE_NODE(t)
@@ -61,7 +61,7 @@ typedef struct _ewl_tree_node Ewl_Tree_Node;
  * The tree_node exists for each row, at this level the tree_node contains rows
  * that contain cells which display the data.
  */
-struct _ewl_tree_node
+struct Ewl_Tree_Node
 {
 	Ewl_Container container; /**< Inherit from Ewl_Container */
 	Ewl_Tree *tree; /**< Pointer to the tree this is inside */
