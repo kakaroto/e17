@@ -64,12 +64,13 @@ ewl_menu_init(Ewl_Menu *menu)
 	ewl_window_pointer_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
 	ewl_window_borderless_set(EWL_WINDOW(menu->base.popup));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
-	ewl_widget_layer_set(menu->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "menu");
 	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+	ewl_callback_append(menu->base.popup, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_menu_hide_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -163,3 +164,16 @@ ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w)))
+		ewl_widget_hide(w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
