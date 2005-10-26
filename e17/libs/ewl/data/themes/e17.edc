@@ -15,7 +15,7 @@ collections {
 #include "e17/bits/menu-groups.edc"
 #include "e17/bits/paned-groups.edc"
 #include "e17/bits/progressbar-groups.edc"
-#include "e17/bits/scrollbar-groups.edc"
+#include "e17/bits/scrollbar-groups-new.edc"
 #include "e17/bits/selection-groups.edc"
 #include "e17/bits/spacer-groups.edc"
 #include "e17/bits/spinner-groups.edc"
@@ -86,13 +86,15 @@ data {
 
     item, "/spacer/group" "spacer";
 
-    item, "/vscrollbar/decrement/group" "vscroll-down";
-    item, "/vscrollbar/increment/group" "vscroll-up";
-    item, "/hscrollbar/decrement/group" "hscroll-left";
-    item, "/hscrollbar/increment/group" "hscroll-right";
+    item, "/vscrollbar/group" "vscrollbar";
+    item, "/hscrollbar/group" "hscrollbar";
+    item, "/vscrollbar/decrement/group" "vscrollbar_bottom";
+    item, "/vscrollbar/increment/group" "vscrollbar_top";
+    item, "/hscrollbar/decrement/group" "hscrollbar_left";
+    item, "/hscrollbar/increment/group" "hscrollbar_right";
 
-    item, "/vseeker/vbutton/group"  "vbutton";
-    item, "/hseeker/hbutton/group"  "hbutton";
+    item, "/vseeker/vbutton/group"  "vscrollbar_drag";
+    item, "/hseeker/hbutton/group"  "hscrollbar_drag";
 
     item, "/imenu/group" "window";
     item, "/menu/group" "window";
