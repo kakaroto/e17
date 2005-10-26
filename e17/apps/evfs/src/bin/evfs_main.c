@@ -52,10 +52,6 @@ evfs_client* evfs_client_get(Ecore_Ipc_Client* client) {
 	return ecore_hash_get(server->client_hash, client);
 }
 
-evfs_plugin* evfs_get_plugin_for_uri(char* uri_base) {
-	return ecore_hash_get(server->plugin_uri_hash, uri_base);
-}
-
 unsigned long evfs_server_get_next_id(evfs_server* serve) {
 	serve->clientCounter++;
 	printf("Allocated %ld\n", serve->clientCounter-1);
@@ -74,6 +70,7 @@ ipc_client_add(void *data, int type, void *event)
 
       client = NEW(evfs_client);
       client->client = e->client;
+      client->server = server;
       client->prog_command = NULL;
       client->id = evfs_server_get_next_id(server);
       ecore_hash_set(server->client_hash, client->client, client);
@@ -138,7 +135,7 @@ ipc_client_data(void *data, int type, void *event)
    }
 
    /*True == command finished*/
-   if (evfs_process_incoming_command(client->prog_command, msg)) {
+   if (evfs_process_incoming_command(server, client->prog_command, msg)) {
 	  evfs_handle_command(client, client->prog_command);
 	  
 
@@ -178,6 +175,7 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			evfs_handle_file_stat_command(client,command);
 			break;
 		case EVFS_CMD_LIST_DIR:
+			printf("6. Assinged parent to '%s'\n", command->file_command.files[0]->parent->plugin_uri );
 			evfs_handle_dir_list_command(client,command);
 			printf("List directory stub\n");
 			break;

@@ -317,7 +317,7 @@ int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 	
 	bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
 
-	return 0;
+	return bytes_read;
 }
 
 

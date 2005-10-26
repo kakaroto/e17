@@ -11,6 +11,7 @@ installed_headers_DATA = evfs_cleanup.h \
 			evfs_server_handle.h \
 			evfs_filereference.h \
 			evfs_command.h \
-			evfs_client.h 
+			evfs_client.h \
+			evfs_common.h
 			
 

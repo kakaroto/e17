@@ -27,6 +27,7 @@ typedef struct evfs_filereference {
 	struct evfs_plugin* plugin;
 
 	struct evfs_filereference* parent;
+	struct evfs_server* server; 	/*The server that spawned/owns this fileref, if any*/
 	
 	evfs_file_type file_type;
 	char* path;

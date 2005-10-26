@@ -15,6 +15,7 @@ evfs_SOURCES = \
 	$(top_srcdir)/src/common/evfs_new.c \
 	$(top_srcdir)/src/common/evfs_io.c \
 	$(top_srcdir)/src/common/evfs_event_helper.c \
+	$(top_srcdir)/src/common/evfs_common.c \
 	evfs_server_handle.c
 
 evfs_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@ @xml2_libs@

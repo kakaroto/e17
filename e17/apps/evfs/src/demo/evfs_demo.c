@@ -57,12 +57,12 @@ int main() {
 
 	con = evfs_connect(&callback);
 
-	path = evfs_parse_uri("posix:///dev/ttyS0");
+	//path = evfs_parse_uri("posix:///dev/ttyS0");
 
 	
 	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
 	//snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
-	snprintf(pathi,1024,"posix:///opt/musicvideos/Boogie Pimps/Boogie Pimps - Somebody to Love.mpg");
+	snprintf(pathi,1024,"posix:///evfs/src/demo/test.tar#tar:///");
 	
 	
 	printf ("Listing dir: %s\n", pathi);
@@ -73,9 +73,11 @@ int main() {
 	printf("Plugin uri is '%s', for path '%s'\n\n", dir_path->files[0]->plugin_uri, dir_path->files[0]->path);
 
 	
-	/*evfs_monitor_add(con, dir_path->files[0]);*/
+	/*evfs_monitor_add(con, dir_path->files[0]);
 
-	evfs_client_file_copy(con, dir_path->files[0], NULL);
+	evfs_client_file_copy(con, dir_path->files[0], NULL);*/
+
+	evfs_client_dir_list(con, dir_path->files[0]);
 
 	ecore_main_loop_begin();
 	

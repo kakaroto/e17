@@ -206,8 +206,8 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_new.h>
 #include <evfs_event_helper.h>
 #include <evfs_server_handle.h>
+#include <evfs_common.h>
 
 
-evfs_plugin* evfs_get_plugin_for_uri(char* uri_base);
 
 #endif

@@ -339,15 +339,15 @@ int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
 	/*printf("Reading %d bytes from %s\n", size, file->path);*/
 	
 	bytes_read = read(file->fd, bytes, size);
+	return bytes_read;
 
 	if (bytes_read) {
 		//bytes[bytes_read] = '\0';
 		//printf ("Read '%s'\n", bytes);
 	} else {
-		return 1;
+		return -1;
 	}
 
-	return 0;
 	
 }
 

@@ -85,6 +85,8 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					   break;
 		case EVFS_EV_DIR_LIST:	   evfs_write_list_event(client,event);
 					   break;
+		default:		   printf("Event type not handled in switch\n");
+					   break;
 	}
 
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_END,client->id,0,0,NULL,0));	
@@ -137,7 +139,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		case EVFS_COMMAND_TYPE:
 		case EVFS_FILE_REFERENCE:
 		case EVFS_COMMAND_END:
-			evfs_process_incoming_command(&event->resp_command, msg);
+			evfs_process_incoming_command(NULL, &event->resp_command, msg);
 			break;	
 			
 			
@@ -194,6 +196,9 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_FILE_COPY:
 			evfs_write_file_command(conn, command);
 			break;
+		default:
+			printf("Command type not handled in switch\n");
+			break;
 	}
 
 }
@@ -210,6 +215,10 @@ void evfs_write_command_client(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_FILE_COPY:
 			evfs_write_file_command_client(client, command);
 			break;
+		default:
+			printf("Command type not handled in switch (client)\n");
+			break;
+			
 	}	
 }
 
@@ -224,8 +233,13 @@ void evfs_write_command_end_client(evfs_client* client) {
 void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	int i;
 	char uri[1024];
+	char* part;
+	int it;
+	Ecore_List* uri_part = ecore_dlist_new();	
 
 
+	bzero(uri, 1024);
+	
 	/*Write the command type structure*/
 	evfs_write_ecore_ipc_server_message(conn->server, 
 			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,
@@ -234,19 +248,44 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
+		evfs_filereference* ref = command->file_command.files[i];
+		
+		it=0;
+		do {
+			if (it) {
+				ref = ref->parent;
+			}
+			
+			if (command->file_command.files[i]->username) {
+				snprintf(uri, 1024, "%s://%s:%s@%s", 
+				ref->plugin_uri,
+				ref->username,
+				ref->password,
+				ref->path);
+			} else {
+				snprintf(uri, 1024, "%s://%s", 
+				ref->plugin_uri, 
+				ref->path);
+			}
+			ecore_dlist_append(uri_part, strdup(uri));
 
-		if (command->file_command.files[i]->username) {
-			snprintf(uri, 1024, "%s://%s:%s@%s", 
-			command->file_command.files[i]->plugin_uri,
-			command->file_command.files[i]->username,
-			command->file_command.files[i]->password,
-			command->file_command.files[i]->path);
+			it++;
+		} while (ref->parent);
 
-		} else {
-			snprintf(uri, 1024, "%s://%s", 
-			command->file_command.files[i]->plugin_uri, 
-			command->file_command.files[i]->path);
+		it = 0;
+		bzero(uri, 1024);
+
+		ecore_dlist_goto_last(uri_part);
+		while ( (part = ecore_dlist_previous(uri_part))) {
+			if (it) strcat(uri, "#");
+			strcat(uri, part);
+				
+			free(part);
+			it++;
 		}
+		ecore_dlist_destroy(uri_part);
+
+		printf("RE-Parsed URI: '%s'\n", uri);
 
 		evfs_write_ecore_ipc_server_message(conn->server, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
@@ -308,8 +347,9 @@ void evfs_write_file_command_client(evfs_client* client, evfs_command* command) 
 
 
 /*Readers*/
-int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* message) {
-
+int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ecore_ipc_message* message) {
+	evfs_filereference* ref;
+	
 	switch (message->minor) {
 		case EVFS_COMMAND_TYPE:
 
@@ -321,14 +361,27 @@ int evfs_process_incoming_command(evfs_command* command, ecore_ipc_message* mess
 						  
 			evfs_file_uri_path* path = evfs_parse_uri(message->data);
 			if (command->file_command.num_files == 0) {
+
+				 /*If we have a server ref, assign this ref to the files, so they
+				 * know where they came from.  We'd do this in evfs_parse_uri,
+				 * but that func can also be called from the client*/
+				if (server) {
+					ref = path->files[0];
+					do {
+						ref->server = server;
+					} while ((ref = ref->parent));
+				}
+
+				
 				command->file_command.num_files = 1;
 				command->file_command.files = malloc(sizeof(evfs_filereference*));
 				command->file_command.files[0] = path->files[0];
 
+
 				
 
-
 				free(path);
+
 			} else {
 				
 				//printf("we already have %d files\n", command->file_command.num_files);

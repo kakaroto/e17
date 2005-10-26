@@ -1,12 +1,45 @@
 #include <evfs.h>
 #include <dlfcn.h>
 
+
+/*---------------------------------------------------*/
+/*Move these functions somewhere*/
+
+void evfs_uri_open(evfs_server* server, evfs_filereference* uri) {
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(server,uri->plugin_uri);
+	if (plugin) {
+		printf("Opening file..\n");
+		(*plugin->functions->evfs_file_open)(uri);		
+	} else {
+		printf("Could not get plugin for uri '%s' at evfs_uri_open\n", uri->plugin_uri);
+	}
+}
+
+int evfs_uri_read(evfs_filereference* uri, char* bytes, long size) {
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(uri->server,uri->plugin_uri);
+	if (plugin) {
+		return (*plugin->functions->evfs_file_read)(uri,bytes,size);		
+	} else {
+		printf("Could not get plugin for uri '%s' at evfs_uri_open\n", uri->plugin_uri);
+		return -1;
+	}
+}
+
+/*---------------------------------------------------*/
+
+
+
+
+
+
+
+
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command) {
 	/*First get the plugin responsible for this file*/
 
 
 	if (command->file_command.num_files > 0) {
-		evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+		evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server,command->file_command.files[0]->plugin_uri);
 
 		if (!plugin) {
 			printf("No plugin able to monitor this uri type\n");
@@ -26,7 +59,7 @@ void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command
 	void (*evfs_monitor_start)(evfs_client* client, evfs_command* command);
 
 	if (command->file_command.num_files > 0) {
-		evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+		evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 
 		if (!plugin) {
 			printf("No plugin able to monitor this uri type\n");
@@ -47,7 +80,7 @@ void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command
 void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command) {
 	printf("At remove handle\n");
 
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
 		(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
@@ -58,7 +91,7 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 void evfs_handle_file_rename_command(evfs_client* client, evfs_command* command) {
 	printf("At rename handle\n");
 
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_rename);
 		(*plugin->functions->evfs_file_rename)(client,command);
@@ -70,7 +103,7 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 	
 	printf ("At file stat handler\n");
 	printf("Looking for plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_stat);
 		(*(plugin->functions->evfs_file_stat))(command, &file_stat);
@@ -85,10 +118,14 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command) {
 	printf ("At dir list handler\n");
 
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
+	printf("1. Parent is '%s'\n", command->file_command.files[0]->parent->plugin_uri);
+	
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_dir_list);
 		(*plugin->functions->evfs_dir_list)(client,command);
+	} else {
+		printf("No plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
 	}
 
 }
@@ -113,8 +150,8 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 	
 	
 
- 	plugin = evfs_get_plugin_for_uri(command->file_command.files[0]->plugin_uri);
-	dst_plugin = evfs_get_plugin_for_uri(command->file_command.files[1]->plugin_uri);
+ 	plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
+	dst_plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[1]->plugin_uri);
 	
 	if (plugin && dst_plugin) {
 		(*dst_plugin->functions->evfs_file_create)(command->file_command.files[1]);
@@ -122,7 +159,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 
 		/*Get the source file size*/
 		(*plugin->functions->evfs_file_stat)(command, &file_stat);
-		printf("Source file size: %d bytes\n", file_stat.st_size);
+		printf("Source file size: %d bytes\n", (int)file_stat.st_size);
 		
 		
 		count = 0;

@@ -8,6 +8,7 @@ struct evfs_client {
         Ecore_Ipc_Client* client;
 	unsigned long id;
 
+	struct evfs_server* server;
 	evfs_command* prog_command;
 };
 
