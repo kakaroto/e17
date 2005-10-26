@@ -38,6 +38,99 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <dirent.h>
 #include <tarpet.h>
 
+
+struct tar_file {
+	Ecore_Hash* hierarchy;
+	Ecore_Hash* link_in;
+} tar_file;
+
+struct tar_element {
+	char* path;
+	char* name;
+	Ecore_Hash* children;
+} tar_element;
+
+
+struct tar_file* tar_file_new() {
+	struct tar_file* obj = NEW(struct tar_file);
+	obj->hierarchy = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	obj->link_in = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	return obj;
+}
+
+
+
+Ecore_Hash* tar_cache;
+
+void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
+	char* tok;
+	char* path = strdup(block->p.name);
+	char* dir;
+	Ecore_Hash* search_hash;
+	char* fname;
+	char buf[512];
+	struct tar_element* ele;
+	int count=0;
+
+	bzero(buf,512);
+	search_hash = tar->hierarchy;
+	
+	tok = strtok(path, "/");
+	ele = ecore_hash_get(search_hash, tok);
+	do {
+		/*printf ("Buf is '%s'\n", buf);*/
+		
+		if (count) {
+			/*Search for the next child*/
+			ele = ecore_hash_get(search_hash, tok); /*Looking for /usr in 2.6.11.6 */
+		}
+		count++;
+
+
+
+
+		
+		if (!ele) {
+			ele = NEW(struct tar_element);
+			ele->path = strdup(buf);
+			ele->name = strdup(tok);
+			ele->children = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+			ecore_hash_set(search_hash, strdup(tok), ele);
+
+
+			/*printf("***** Couldn't find child '%s' at node '%s' in hash %p\n", tok, buf, search_hash);
+			printf("Created a new child: '%s',with children at %p  appending to hash %p\n", tok, ele->children,search_hash);*/
+
+			/*Our concated path*/
+			strcat(buf, tok);
+			strcat(buf, "/");
+
+			/*Set a ref to this object at the root*/
+			ecore_hash_set(tar->link_in, strdup(buf), ele); 
+
+			search_hash = ele->children;
+		} else {
+			/*Our concated path*/
+			strcat(buf, tok);
+			strcat(buf, "/");
+			
+			/*printf("Found '%s' in '%s' and hash '%p'", tok, buf, search_hash);*/
+			search_hash = ele->children; /*Children of linux-2.6.11.6*/
+			/*printf("....Recursing into hash '%p'\n", search_hash);*/
+		}
+
+
+
+	} while (tok = strtok(NULL, "/"));
+
+	free(path);
+	/*printf("Return...\n\n\n");*/
+
+}
+
+
 /*Main file wrappers*/
 int evfs_file_remove(char* src);
 int evfs_file_rename(char* src, char* dst);
@@ -74,6 +167,10 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_file_read = &evfs_file_read;
         functions->evfs_file_write = &evfs_file_write;
         functions->evfs_file_create = &evfs_file_create;*/
+
+	tar_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	
         return functions;
 
 
@@ -93,6 +190,13 @@ evfs_client_disconnect(evfs_client* client) {
 void evfs_dir_list(evfs_client* client, evfs_command* com) {
 	evfs_filereference* p_ref;
 	union TARPET_block block;
+	char parent_file[1024];
+
+	struct tar_file* tar = tar_file_new();
+	
+	struct tar_element* ele;
+	Ecore_List* keys;
+	char* dir;
 	
 	printf("At tar dir_list handler\n");
 
@@ -109,10 +213,16 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 			/*printf("Block matches GNU Tar\n");
 			printf("Magic is '%s'\n", block.p.magic);
 			printf("Flag is %d\n", block.p.typeflag);*/
-			printf("Name is: '%s'\n", block.p.name);
+
+
+			tar_name_split(&block, tar);
 		} else {
 		}
 	}
+
+	ecore_hash_set(tar_cache, strdup(p_ref->path), tar);
+
+
 
 
 
