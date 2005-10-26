@@ -21,11 +21,12 @@ entropy_SOURCES = \
 
 
 entropy_CC	= @PTHREAD_CC@
-entropy_CFLAGS                = @PTHREAD_CFLAGS@ \
-				@ewl_cflags@ @evfs_cflags@
-entropy_LDFLAGS	= -rdynamic @PTHREAD_CFLAGS@ @imlib2_cflags@
+entropy_CFLAGS  = @PTHREAD_CFLAGS@ \
+		  @EWL_CFLAGS@ @EVFS_CFLAGS@ \
+		  @IMLIB2_CFLAGS@
+entropy_LDFLAGS	= -rdynamic @PTHREAD_CFLAGS@ @IMLIB2_CFLAGS@
 entropy_LDADD	= $(INTLLIBS) \
 		@PTHREAD_LIBS@ \
-		@ewl_libs@ \
-		@imlib2_libs@ \
-		@evfs_libs@
+		@EWL_LIBS@ \
+		@IMLIB2_LIBS@ \
+		@EVFS_LIBS@

@@ -153,103 +153,75 @@ AC_CHECK_HEADER(
 AC_PATH_EFL(
    ecore,
    0.9.9,
-   [have_ecore="yes"],
-   [have_ecore="no"]
+   [
+     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
+     ecore="ECORE "
+   ],
+   [
+     AC_MSG_ERROR([No ECORE, can't build.])
+   ]
 )
-
-if test x"$have_ecore" = x"yes" ; then
-   ecore_cflags=`ecore-config --cflags`
-   ecore_libs=`ecore-config --libs`
-   AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-   ecore="ECORE "
-else
-  AC_MSG_ERROR([No ECORE, can't build.])
-fi
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
 
 #check for ewl
 AC_PATH_EFL(
    ewl,
    0.0.4,
-   [have_ewl="yes"],
-   [have_ewl="no"]
+   [
+     AC_DEFINE(HAVE_EWL, 1, have EWL)
+     ewl="EWL "
+     have_ewl="yes"
+   ],
+   [
+     AC_MSG_ERROR([No EWL, can't build.])
+     have_ewl="no"
+   ]
 )
-
-if test x"$have_ewl" = x"yes" ; then
-   ewl_cflags=`ewl-config --cflags`
-   ewl_libs=`ewl-config --libs`
-   AC_DEFINE(HAVE_EWL, 1, have EWL)
-   ewl="EWL "
-else
-  AC_MSG_ERROR([No EWL, can't build.])
-fi
-AC_SUBST(ewl_cflags)
-AC_SUBST(ewl_libs)
 
 #check for etk
 AC_PATH_EFL(
    etk,
    0.1.0,
-   [have_etk="yes"],
-   [have_etk="no"]
+   [
+     AC_DEFINE(HAVE_ETK, 1, have ETK)
+     etk="ETK "
+     AM_CONDITIONAL(HAVE_ETK, true)
+     have_etk="yes"
+   ],
+   [
+     AC_DEFINE(HAVE_ETK, 0, no ETK)
+     AM_CONDITIONAL(HAVE_ETK, false)
+     AC_MSG_WARN([No ETK, can't build ETK plugin.])
+     have_etk="no"
+   ]
 )
-
-if test x"$have_etk" = x"yes" ; then
-   etk_cflags=`etk-config --cflags`
-   etk_libs=`etk-config --libs`
-   AC_DEFINE(HAVE_ETK, 1, have ETK)
-   etk="ETK "
-   AM_CONDITIONAL(HAVE_ETK, true)
-else
-  AC_DEFINE(HAVE_ETK, 0, no ETK)
-  AM_CONDITIONAL(HAVE_ETK, false)
-  AC_MSG_WARN([No ETK, can't build ETK plugin.])
-fi
-AC_SUBST(etk_cflags)
-AC_SUBST(etk_libs)
 
 #Check for evfs
 AC_PATH_EFL(
    evfs,
    0.0.1,
-   [have_evfs="yes"],
-   [have_evfs="no"]
+   [
+     AC_DEFINE(HAVE_EVFS, 1, have EVFS)
+     evfs="EVFS "
+   ],
+   [
+     AC_MSG_ERROR([No EVFS, can't build.])
+   ]
 )
-
-if test x"$have_evfs" = x"yes" ; then
-   evfs_cflags=`evfs-config --cflags`
-   evfs_libs=`evfs-config --libs`
-   AC_DEFINE(HAVE_EVFS, 1, have EVFS)
-   evfs="EVFS "
-else
-  AC_MSG_ERROR([No EVFS, can't build.])
-fi
-AC_SUBST(evfs_cflags)
-AC_SUBST(evfs_libs)
-
-
 
 # check for Imlib2
 AC_PATH_EFL(
    imlib2,
    1.2.1,
-   [have_imlib2="yes"],
-   [have_imlib2="no"]
+   [
+     AC_DEFINE(HAVE_IMLIB2, 1, have Imlib2)
+     imlib2="Imlib2 "
+     have_imlib2="yes"
+   ],
+   [
+     AC_MSG_WARN([Without Imlib2 the number of image formats we can create thumbnails for will be greatly reduced. Getting Imlib2 is recommended.])
+     have_imlib2="no"
+   ]
 )
-
-if test x"$have_imlib2" = x"yes" ; then
-   imlib2_cflags=`imlib2-config --cflags`
-   imlib2_libs=`imlib2-config --libs`
-   AC_DEFINE(HAVE_IMLIB2, 1, have Imlib2)
-   imlib2="Imlib2 "
-else
-  AC_MSG_WARN([Without Imlib2 the number of image formats we can create thumbnails for will be greatly reduced. Getting Imlib2 is recommended.])
-fi
-AC_SUBST(imlib2_cflags)
-AC_SUBST(imlib2_libs)
-
-
 
 # check for libpng
 libpng_dir=""
