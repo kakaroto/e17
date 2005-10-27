@@ -168,7 +168,7 @@ WindowMatchConfigLoad(FILE * fs)
 	     if (wm)
 	       {
 		  if (wm->match && wm->op)
-		     AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
+		     AddItem(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
 		  else
 		    {
 		       WindowMatchDestroy(wm);
