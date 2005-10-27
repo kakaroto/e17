@@ -49,7 +49,6 @@ int entropy_config_int_get(char* module, char* key) {
 
 void entropy_config_int_set(char* module, char* key, int value) {
 	int i = (strlen(module) * sizeof(char)) + sizeof(char) + (strlen(key)*sizeof(char)) + 1;
-	int val;
 	char* tmp = entropy_malloc( i);
 	snprintf(tmp, i, "%s.%s", module,key);
 
@@ -74,7 +73,6 @@ char* entropy_config_str_get(char* module, char* key) {
 
 void entropy_config_str_set(char* module, char* key, char* value) {
 	int i = (strlen(module) * sizeof(char)) + sizeof(char) + (strlen(key)*sizeof(char)) + 1;
-	int val;
 	char* tmp = entropy_malloc( i);
 	snprintf(tmp, i, "%s.%s", module,key);
 

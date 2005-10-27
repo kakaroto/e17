@@ -242,9 +242,7 @@ void entropy_notify_event_cleanup_add(entropy_notify_event* event, void* obj) {
 
 void entropy_notify_event_commit(entropy_notification_engine* engine, entropy_notify_event* ev) {
 
-	int rc = pthread_mutex_lock(&engine->op_queue_mutex);
-
-	
+	pthread_mutex_lock(&engine->op_queue_mutex);
 	ecore_list_append(engine->op_queue, ev);
 	pthread_mutex_unlock(&engine->op_queue_mutex);
 

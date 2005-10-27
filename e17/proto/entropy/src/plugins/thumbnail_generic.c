@@ -84,7 +84,6 @@ static char* md5_for_string(char* string) {
 entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file) {
 	Imlib_Image image;
 	Imlib_Image thumbnail;
-	Imlib_Load_Error error;
   	png_infop    info_ptr;
 	png_structp	png_ptr;
 	png_text	*text_ptr = NULL;
