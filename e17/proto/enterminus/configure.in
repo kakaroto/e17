@@ -88,6 +88,8 @@ my_libs=`evas-config --libs`" "`ecore-config --libs`" "${LIBS}
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 
+CFLAGS="-Wall $CFLAGS"
+
 AC_OUTPUT([
 Makefile
 src/Makefile
