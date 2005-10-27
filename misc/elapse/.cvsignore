@@ -7,3 +7,9 @@ config.h.in
 config.log
 config.status
 configure
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
