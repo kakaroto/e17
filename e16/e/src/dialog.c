@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "hints.h"
 #include "iclass.h"
 #include "tclass.h"
 #include "xwin.h"

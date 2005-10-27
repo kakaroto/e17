@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "hints.h"
 
 /* Motif window hints */
 #define MWM_HINTS_FUNCTIONS           (1L << 0)

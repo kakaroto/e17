@@ -25,6 +25,7 @@
 #include "desktops.h"
 #include "ecore-e16.h"
 #include "ewins.h"
+#include "hints.h"
 #include "xwin.h"
 
 /* WIN_WM_NAME STRING - contains a string identifier for the WM's name */

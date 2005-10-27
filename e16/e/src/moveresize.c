@@ -25,6 +25,7 @@
 #include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 #include "xwin.h"
 
 static struct

@@ -23,6 +23,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "ewins.h"
+#include "hints.h"
 #include "xwin.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>

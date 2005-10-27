@@ -28,6 +28,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "hints.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>

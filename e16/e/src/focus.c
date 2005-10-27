@@ -25,6 +25,7 @@
 #include "desktops.h"		/* FIXME - Should not be here */
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 #include "xwin.h"
 
 #define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))

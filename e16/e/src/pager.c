@@ -26,6 +26,7 @@
 #include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 #include "hiwin.h"
 #include "iclass.h"
 #include "menus.h"

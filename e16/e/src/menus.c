@@ -25,6 +25,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "hints.h"
 #include "iclass.h"
 #include "menus.h"
 #include "tclass.h"

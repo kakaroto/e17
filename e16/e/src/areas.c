@@ -24,6 +24,7 @@
 #include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 
 static int          area_w = 3;
 static int          area_h = 3;

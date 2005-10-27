@@ -26,6 +26,7 @@
 #include "ecore-e16.h"
 #include "eobj.h"
 #include "ewins.h"		/* FIXME - Should not be here */
+#include "hints.h"
 #include "xwin.h"
 
 void

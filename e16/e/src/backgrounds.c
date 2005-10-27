@@ -26,6 +26,7 @@
 #include "backgrounds.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "hints.h"		/* FIXME - Should not be here */
 #include "iclass.h"
 #include "tclass.h"
 #include "xwin.h"

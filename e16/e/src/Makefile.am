@@ -1,12 +1,9 @@
 SUBDIRS =
 
-EXTRA_DIST = ewmh.c gnome.c ecompmgr.c ecompmgr.h snprintf.c
+EXTRA_DIST = gnome.c ecompmgr.c ecompmgr.h snprintf.c
 
 bin_PROGRAMS = e16
 
-if ENABLE_EWMH
-SRCS_EWMH = ewmh.c
-endif
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c
 endif
@@ -53,6 +50,7 @@ e16_SOURCES = \
 	ewins.h			\
 	ewin-ops.c		\
 	ewin-ops.h		\
+	ewmh.c			\
 	extinitwin.c		\
 	file.c		        \
 	finders.c		\
@@ -63,6 +61,7 @@ e16_SOURCES = \
 	groups.c		\
 	handlers.c		\
 	hints.c			\
+	hints.h			\
 	hiwin.c			\
 	hiwin.h			\
 	icccm.c			\
@@ -112,7 +111,7 @@ e16_SOURCES = \
 	x.c                     \
 	xwin.h			\
 	zoom.c			\
-	$(SRCS_EWMH) $(SRCS_GNOME) \
+	$(SRCS_GNOME) 		\
 	$(SRCS_ECOMPMGR)	\
 	$(SRCS_SNPRINTF)
 

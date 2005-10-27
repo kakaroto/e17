@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "hints.h"
 #include "icons.h"
 #include "snaps.h"
 #include "xwin.h"
@@ -351,14 +352,12 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->icccm.wm_command);
    if (ewin->icccm.wm_machine)
       Efree(ewin->icccm.wm_machine);
-#if ENABLE_EWMH
    if (ewin->ewmh.wm_name)
       Efree(ewin->ewmh.wm_name);
    if (ewin->ewmh.wm_icon_name)
       Efree(ewin->ewmh.wm_icon_name);
    if (ewin->ewmh.wm_icon)
       Efree(ewin->ewmh.wm_icon);
-#endif
    if (ewin->bits)
       Efree(ewin->bits);
    if (ewin->session_id)
@@ -1424,11 +1423,9 @@ EwinGetName(const EWin * ewin)
 
    if (!ewin)
       return NULL;
-#if ENABLE_EWMH
    name = ewin->ewmh.wm_name;
    if (name)
       goto done;
-#endif
    name = ewin->icccm.wm_name;
    if (name)
       goto done;
@@ -1442,11 +1439,9 @@ EwinGetIconName(const EWin * ewin)
 {
    const char         *name;
 
-#if ENABLE_EWMH
    name = ewin->ewmh.wm_icon_name;
    if (name)
       goto done;
-#endif
    name = ewin->icccm.wm_icon_name;
    if (name)
       goto done;
@@ -1671,6 +1666,8 @@ EwinsSetFree(void)
 
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("EwinsSetFree\n");
+
+   EHintsSetInfoOnAll();
 
    lst = EwinListStackGet(&num);
    for (i = num - 1; i >= 0; i--)

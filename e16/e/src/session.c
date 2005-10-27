@@ -25,6 +25,7 @@
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 #include "snaps.h"
 #include "xwin.h"
 #include <errno.h>
@@ -839,7 +840,6 @@ doSMExit(int mode, const char *params)
    if (disp)
      {
 	/* We may get here from HandleXIOError */
-	EHintsSetInfoOnAll();
 	EwinsSetFree();
 	if (Mode.wm.startup && Mode.wm.exiting)
 	   MapUnmap(1);

@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "hints.h"
 #include "iclass.h"
 #include "icons.h"
 #include "menus.h"

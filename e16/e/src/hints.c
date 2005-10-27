@@ -27,6 +27,7 @@
 #include "desktops.h"		/* Should not be here */
 #include "ecore-e16.h"
 #include "ewins.h"
+#include "hints.h"
 #include "xwin.h"
 
 /*
@@ -42,12 +43,11 @@ HintsInit(void)
    win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
 
    ICCCM_Init();
+   MWM_SetInfo();
 #if ENABLE_GNOME
    GNOME_SetHints(win);
 #endif
-#if ENABLE_EWMH
    EWMH_Init(win);
-#endif
    atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
    ecore_x_window_prop_string_set(VRoot.win, atom, e_wm_version);
 
@@ -72,18 +72,14 @@ HintsSetClientList(void)
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
-#if ENABLE_EWMH
    EWMH_SetClientList();
    EWMH_SetClientStacking();
-#endif
 }
 
 void
 HintsSetClientStacking(void)
 {
-#if ENABLE_EWMH
    EWMH_SetClientStacking();
-#endif
 }
 
 void
@@ -93,12 +89,10 @@ HintsSetDesktopConfig(void)
    GNOME_SetDeskCount();
    GNOME_SetDeskNames();
 #endif
-#if ENABLE_EWMH
    EWMH_SetDesktopCount();
    EWMH_SetDesktopRoots();
    EWMH_SetDesktopNames();
    EWMH_SetWorkArea();
-#endif
 }
 
 void
@@ -107,9 +101,7 @@ HintsSetViewportConfig(void)
 #if ENABLE_GNOME
    GNOME_SetAreaCount();
 #endif
-#if ENABLE_EWMH
    EWMH_SetDesktopSize();
-#endif
 }
 
 void
@@ -118,9 +110,7 @@ HintsSetCurrentDesktop(void)
 #if ENABLE_GNOME
    GNOME_SetCurrentDesk();
 #endif
-#if ENABLE_EWMH
    EWMH_SetCurrentDesktop();
-#endif
    HintsSetDesktopViewport();
 }
 
@@ -130,17 +120,13 @@ HintsSetDesktopViewport(void)
 #if ENABLE_GNOME
    GNOME_SetCurrentArea();
 #endif
-#if ENABLE_EWMH
    EWMH_SetDesktopViewport();
-#endif
 }
 
 void
 HintsSetActiveWindow(Window win)
 {
-#if ENABLE_EWMH
    EWMH_SetActiveWindow(win);
-#endif
 }
 
 void
@@ -148,9 +134,7 @@ HintsSetWindowName(Window win, const char *name)
 {
    ecore_x_window_prop_string_set(win, ECORE_X_ATOM_WM_NAME, name);
 
-#if ENABLE_EWMH
    EWMH_SetWindowName(win, name);
-#endif
 }
 
 void
@@ -171,9 +155,7 @@ HintsSetWindowDesktop(const EWin * ewin)
 #if ENABLE_GNOME
    GNOME_SetEwinDesk(ewin);
 #endif
-#if ENABLE_EWMH
    EWMH_SetWindowDesktop(ewin);
-#endif
 }
 
 void
@@ -190,26 +172,20 @@ HintsSetWindowState(const EWin * ewin)
 #if ENABLE_GNOME
    GNOME_SetHint(ewin);
 #endif
-#if ENABLE_EWMH
    EWMH_SetWindowState(ewin);
    EWMH_SetWindowActions(ewin);
-#endif
 }
 
 void
 HintsSetWindowOpacity(const EWin * ewin)
 {
-#if ENABLE_EWMH
    EWMH_SetWindowOpacity(ewin);
-#endif
 }
 
 void
 HintsSetWindowBorder(const EWin * ewin)
 {
-#if ENABLE_EWMH
    EWMH_SetWindowBorder(ewin);
-#endif
 }
 
 /*
@@ -222,9 +198,7 @@ HintsGetWindowHints(EWin * ewin)
 #if ENABLE_GNOME
    GNOME_GetHints(ewin, 0);
 #endif
-#if ENABLE_EWMH
    EWMH_GetWindowHints(ewin);
-#endif
 }
 
 /*
@@ -237,9 +211,7 @@ HintsDelWindowHints(const EWin * ewin)
 #if ENABLE_GNOME
    GNOME_DelHints(ewin);
 #endif
-#if ENABLE_EWMH
    EWMH_DelWindowHints(ewin);
-#endif
 }
 
 /*
@@ -257,10 +229,8 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 
    if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessPropertyChange(ewin, atom_change);
-#if ENABLE_EWMH
    else if (!memcmp(name, "_NET_", 5))
       EWMH_ProcessPropertyChange(ewin, atom_change);
-#endif
 #if 0				/* No! - ENABLE_GNOME */
    else if (!memcmp(name, "_WIN_", 5))
       GNOME_GetHints(ewin, atom_change);
@@ -279,10 +249,8 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 
    if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessClientMessage(event);
-#if ENABLE_EWMH
    else if (!memcmp(name, "_NET_", 5))
       EWMH_ProcessClientMessage(event);
-#endif
 #if ENABLE_GNOME
    else if (!memcmp(name, "_WIN_", 5))
       GNOME_ProcessClientMessage(event);

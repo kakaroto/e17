@@ -292,8 +292,6 @@ SetupX(const char *dstr)
 		 "access to, nor have heard of.\n"), ProtocolVersion(disp));
      }
 
-   MWM_SetInfo();
-
    /* damn that bloody numlock stuff - ok I'd rather XFree got fixed to not */
    /* have it as a modifier and everyone have to write specific code to mask */
    /* it out - but well.... */

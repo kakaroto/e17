@@ -27,6 +27,7 @@
 #include "desktops.h"
 #include "ecore-e16.h"
 #include "ewins.h"
+#include "hints.h"
 
 /*
  * _NET_WM_MOVERESIZE client message actions
