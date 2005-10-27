@@ -59,6 +59,8 @@ struct Ewl_Text
 	Ecore_List		*triggers;	  /**< The list of triggers */
 	Ewl_Text_Trigger	*selection;	  /**< The current selection */
 	unsigned int		 in_select;	  /**< Are we in select mode? */
+
+	unsigned int		 selectable;	  /**< Is the text selectable? */
 };
 
 Ewl_Widget 	*ewl_text_new(void);
@@ -77,6 +79,9 @@ void		 ewl_text_text_append(Ewl_Text *t, const char *text);
 void		 ewl_text_text_insert(Ewl_Text *t, const char *text, 
 							unsigned int idx);
 void		 ewl_text_text_delete(Ewl_Text *t, unsigned int length);
+
+void		 ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable);
+unsigned int	 ewl_text_selectable_get(Ewl_Text *t);
 
 char 		*ewl_text_selection_text_get(Ewl_Text *t);
 unsigned int 	 ewl_text_has_selection(Ewl_Text *t);

@@ -66,6 +66,7 @@ ewl_entry_init(Ewl_Entry *e)
 	/* this has to be called after the cursor is created as it will try
 	 * to show the cursor */
 	ewl_entry_editable_set(e, TRUE);
+	ewl_text_selectable_set(EWL_TEXT(e), TRUE);
 
 	/* setup callbacks */
 	ewl_callback_append(w, EWL_CALLBACK_SELECT,

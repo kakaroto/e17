@@ -125,10 +125,6 @@ ewl_text_init(Ewl_Text *t)
 					ewl_text_cb_hide, NULL);
 	ewl_callback_prepend(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
 					ewl_text_cb_destroy, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
-					ewl_text_cb_mouse_down, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
-					ewl_text_cb_mouse_up, NULL);
 
 	ewl_container_add_notify_set(EWL_CONTAINER(t), 
 					ewl_text_cb_child_add);
@@ -486,6 +482,55 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		ewl_text_display(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The text to set the selectable value of
+ * @param selectable: The selectable value to set
+ * @return Returns no value
+ */
+void
+ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+
+	if (t->selectable == selectable)
+		DRETURN(DLEVEL_STABLE);
+
+	t->selectable = selectable;
+
+	if (t->selectable)
+	{
+		ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
+						ewl_text_cb_mouse_down, NULL);
+		ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
+						ewl_text_cb_mouse_up, NULL);
+	}
+	else
+	{
+		ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
+						ewl_text_cb_mouse_down);
+		ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
+						ewl_text_cb_mouse_up);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The text to get the selectable value from
+ * @retun Returns the selectable value of the widget
+ */
+unsigned int
+ewl_text_selectable_get(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
+	DCHECK_TYPE_RET("t", t, "text", 0);
+
+	DRETURN_INT(t->selectable, DLEVEL_STABLE);
 }
 
 /**
