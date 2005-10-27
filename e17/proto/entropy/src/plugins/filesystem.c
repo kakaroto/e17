@@ -483,6 +483,8 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 			}
 		}
 		closedir(dir);
+
+		return entropy_generic_file_list_sort(el);
 	} else { /*Not a posix call for a dir list - don't use our local optim function */
 		entropy_file_request* new_request; /*We need to make a copy of the request object
 						     because the original will be destroyed*/
@@ -518,7 +520,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	}
 
 	
-	return entropy_generic_file_list_sort(el);	
+		
 }
 
 void entropy_plugin_backend_file_deregister_file_list() {

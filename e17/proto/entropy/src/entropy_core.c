@@ -558,6 +558,10 @@ void entropy_core_component_event_register(entropy_core* core, entropy_gui_compo
 
 void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, entropy_gui_event* event, int event_type) {
 	/*First get the layout hash*/
+	entropy_gui_component_instance* iter;
+	Ecore_List* el;	
+	Ecore_Hash* lay_hash;
+	
 
 	entropy_gui_component_instance* layout = NULL;
 	if (event_type == ENTROPY_EVENT_LOCAL) {
@@ -574,9 +578,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 	//printf("Instance's core reference: instance: %p, %p\n", instance, instance->core);
 	
-	Ecore_Hash* lay_hash = ecore_hash_get(instance->core->layout_gui_events, layout);
-	entropy_gui_component_instance* iter;
-	Ecore_List* el;	
+	lay_hash = ecore_hash_get(instance->core->layout_gui_events, layout);
+
 
 
 	if (!lay_hash) {
@@ -895,7 +898,7 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 
 	if (listener) {
 		listener->count--;
-		if (listener->count == 0) {
+		if (listener->count == 0 && 0) {
 
 			/*This should be a seperate function*/
 			entropy_generic_file_destroy(listener->file);

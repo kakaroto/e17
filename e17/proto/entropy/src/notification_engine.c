@@ -153,7 +153,7 @@ void* entropy_notify_loop(void* data) {
 		}
 		
 		
-		usleep(1000);
+		usleep(50); /*Allow the CPU to have a rest*/
 	}
 
 	pthread_mutex_unlock(&notify->loop_mutex);
@@ -247,6 +247,22 @@ void entropy_notify_event_commit(entropy_notification_engine* engine, entropy_no
 	pthread_mutex_unlock(&engine->op_queue_mutex);
 
 }
+
+void entropy_notify_event_bulk_commit(entropy_notification_engine* engine, Ecore_List* list) {
+	entropy_notify_event* ev;
+	
+	pthread_mutex_lock(&engine->op_queue_mutex);
+	while ( (ev = ecore_list_remove_first(list))) {
+		ecore_list_append(engine->op_queue, ev);
+	}
+	pthread_mutex_unlock(&engine->op_queue_mutex);
+
+	ecore_list_destroy(list);
+
+}
+
+
+
 
 void entropy_notify_lock_loop(entropy_notification_engine* notify) {
 

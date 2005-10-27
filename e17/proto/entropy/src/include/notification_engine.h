@@ -80,6 +80,7 @@ void entropy_notify_event_callback_add(entropy_notify_event* event, void* cb, vo
 void entropy_notify_lock_loop(entropy_notification_engine* notify);
 void entropy_notify_unlock_loop(entropy_notification_engine* notify);
 void entropy_notify_event_commit(entropy_notification_engine* engine, entropy_notify_event* ev);
+void entropy_notify_event_bulk_commit(entropy_notification_engine* engine, Ecore_List* events);
 void entropy_notify_event_cleanup_add(entropy_notify_event* event, void* obj);
 
 

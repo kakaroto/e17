@@ -162,7 +162,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	ewl_widget_show(text);
 
 	text = ewl_text_new();
-	snprintf(itext, 100, "%d kb", file_stat->stat_obj->st_size / 1024);
+	snprintf(itext, 100, "%d kb", (int)(file_stat->stat_obj->st_size / 1024));
 	ewl_text_text_set(EWL_TEXT(text), itext);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
@@ -529,45 +529,33 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 }
 
 
-void ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item) {
+gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item) {
 		entropy_icon_viewer* view = comp->data;
 	
-		entropy_plugin* thumb;
+		
 		Ewl_IconBox_Icon* icon;
 		gui_file* gui_object;
 
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(comp->core, list_item->md5);			
-			 char* mime;
-			 /*printf("%s\n", list_item->filename);*/
-	                 mime = entropy_mime_file_identify(comp->core->mime_plugins, list_item);
 
-			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
-			 } else {
-				 thumb = NULL;
-			}
 			icon = ewl_iconbox_icon_add(EWL_ICONBOX(view->iconbox), list_item->filename, PACKAGE_DATA_DIR "/icons/default.png");
+			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);
 			
 
 			gui_object = gui_file_new();
 	                gui_object->file = list_item;
 	                gui_object->thumbnail = NULL;
-			gui_object->instance = comp; /*This instance associated with this icon, for clicks*/
+			gui_object->instance = comp;
 	                gui_object->icon = EWL_WIDGET(icon);
 
-			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view); 
+			 
 		
 			ecore_hash_set(view->gui_hash, list_item, gui_object);
 			ecore_hash_set(view->icon_hash, icon, gui_object);
+
+			return gui_object;
 			
-			/*If thre's a thumbnailer for this, Register request to thumbnail for this filename*/
-	                if (thumb) {
-				entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", list_item,NULL);
-			
-				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);
-				entropy_notify_event_commit(comp->core->notify,ev);
-			}
 		}
 			
 }
@@ -578,6 +566,13 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
      switch (eevent->event_type) {	
 	case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	case ENTROPY_NOTIFY_FILELIST_REQUEST: {
+		Ecore_List* event_keys;
+		Ecore_List* events;
+		entropy_generic_file* event_file;
+		char* mime;
+		entropy_plugin* thumb;
+		
+						      
 		Ecore_List* el = (Ecore_List*)ret;
 		entropy_file_request* request = eevent->data; /*A file request's data is the dest dir*/
 		
@@ -597,10 +592,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
 		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
-
-		
-		
-		
 		/*Clear the view, if there's anything to nuke*/
 		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
 
@@ -610,6 +601,34 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 			ewl_icon_local_viewer_add_icon(comp, list_item);
 		}
 
+		event_keys = ecore_hash_keys(view->gui_hash);
+		events = ecore_list_new();
+		while ( (event_file=ecore_list_remove_first(event_keys))) {
+
+			 /*printf("%s\n", list_item->filename);*/
+	                 mime = entropy_mime_file_identify(comp->core->mime_plugins, event_file);
+
+			
+			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
+	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+			 } else {
+				 thumb = NULL;
+			}
+
+	                if (thumb) {
+				entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", event_file,NULL);
+			
+				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);
+				
+				ecore_list_append(events, ev);
+			}
+
+		}
+		ecore_list_destroy(event_keys);
+
+		/*Now insert all these events inside one lock*/
+		entropy_notify_event_bulk_commit(comp->core->notify,events);
+
 
 		/*Before we begin, see if our file hash is initialized, if so - we must destroy it first*/
 		/*TODO*/
@@ -618,16 +637,17 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
 
 
-		/*First, see if there is a custom BG image for this folder*/
+		/*See if there is a custom BG image for this folder*/
 		if (entropy_config_str_get("iconbox_viewer", view->current_dir)) {
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
 		} else {
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), NULL);
 		}
 
-		/*Goto the root*/
+		/*Goto the root of the iconbox*/
 		ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX(view->iconbox));
 		ewl_iconbox_scrollpane_goto_root(EWL_ICONBOX(view->iconbox));
+
 	}
 	break;
 
