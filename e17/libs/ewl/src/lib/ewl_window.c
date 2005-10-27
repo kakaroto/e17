@@ -538,6 +538,57 @@ ewl_window_pointer_grab_get(Ewl_Window *win)
 	DRETURN_INT(grab, DLEVEL_STABLE);
 }
 
+/**
+ * @param win: the window to change override settings
+ * @param override: TRUE or FALSE to indicate override state.
+ * @return Returns no value.
+ * @brief Changes the override state on the specified window.
+ */
+void
+ewl_window_override_set(Ewl_Window *win, int override)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
+
+	if (override) {
+		win->flags |= EWL_WINDOW_OVERRIDE;
+	}
+	else {
+		win->flags &= ~EWL_WINDOW_OVERRIDE;
+	}
+
+	if (VISIBLE(win) && win->window) {
+#ifdef ENABLE_EWL_SOFTWARE_X11
+		/* FIXME: Should probably unrealize and re-realize here. */
+#endif
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to retrieve override state
+ * @return Returns TRUE if window is an override window, FALSE otherwise.
+ * @brief Retrieves the current override state on a window.
+ */
+int
+ewl_window_override_get(Ewl_Window *win)
+{
+	int override;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, "window", FALSE);
+
+	if (win->flags & EWL_WINDOW_OVERRIDE)
+		override = TRUE;
+	else
+		override = FALSE;
+
+	DRETURN_INT(override, DLEVEL_STABLE);
+}
+
 void
 ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -592,10 +643,18 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						  EWL_ENGINE_GL_X11))) {
 		int width, height;
 		Ecore_X_Window xwin;
-		xwin = ecore_x_window_new(0, window->x,
-					  window->y,
-					  ewl_object_current_w_get(o),
-					  ewl_object_current_h_get(o));
+		if (window->flags & EWL_WINDOW_OVERRIDE) {
+			xwin = ecore_x_window_override_new(0, window->x,
+						  window->y,
+						  ewl_object_current_w_get(o),
+						  ewl_object_current_h_get(o));
+		}
+		else {
+			xwin = ecore_x_window_new(0, window->x,
+						  window->y,
+						  ewl_object_current_w_get(o),
+						  ewl_object_current_h_get(o));
+		}
 
 		ecore_x_icccm_name_class_set(xwin, window->name,
 					     window->classname);
