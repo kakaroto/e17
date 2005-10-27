@@ -530,7 +530,8 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 		gui->iconbox_viewer->plugin = plugin;
 		iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
 	} else {
-		//printf("No visual component found! *****\n");
+		fprintf(stderr, "No visual component found! *****\n");
+		return NULL;
 	}
 
 	
