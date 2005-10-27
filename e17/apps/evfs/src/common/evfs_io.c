@@ -269,7 +269,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 				ref->path);
 			}
 			ecore_dlist_append(uri_part, strdup(uri));
-			printf("Appended URI '%s'\n", uri);
+			//printf("Appended URI '%s'\n", uri);
 
 			it++;
 		} while (ref->parent);
@@ -287,7 +287,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 		}
 		ecore_dlist_destroy(uri_part);
 
-		printf("RE-Parsed URI: '%s'\n", uri);
+		//printf("RE-Parsed URI: '%s'\n", uri);
 
 		evfs_write_ecore_ipc_server_message(conn->server, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
