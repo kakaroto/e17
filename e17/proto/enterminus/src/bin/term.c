@@ -41,7 +41,6 @@ void
 term_tcanvas_glyph_push(Term *term, char c)
 {
    Term_TGlyph *gl;
-   int j;
    int pos;
 
    pos = term->tcanvas->pos + term->cur_row;
