@@ -50,7 +50,7 @@ __create_menu_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Create the menu
 	 */
 	menu1 = ewl_menu_new();
-	ewl_menu_item_image_set(EWL_MENU_ITEM(menu1), "/usr/share/pixmaps/wilber.png");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(menu1), PACKAGE_DATA_DIR "/images/Draw.png");
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu1), "test menu");
 	ewl_container_child_append(EWL_CONTAINER(menu_win), menu1);
 	ewl_widget_show(menu1);
@@ -59,14 +59,14 @@ __create_menu_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Append some test items
 	 */
 	item = ewl_menu_item_new();
-	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/mozilla.xpm");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item), PACKAGE_DATA_DIR "/images/Open.png");
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "dia");
 	ewl_container_child_append(EWL_CONTAINER(menu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/wilber.png");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(item), PACKAGE_DATA_DIR "/images/Package.png");
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "gimp");
 	ewl_container_child_append(EWL_CONTAINER(menu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __menu_select, NULL);
