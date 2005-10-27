@@ -6,4 +6,4 @@
 .libs
 entropy
 Makefile
-
+Makefile.in

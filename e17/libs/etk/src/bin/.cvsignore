@@ -1,9 +1,6 @@
-*.la
-*.o
-*.lo
-*.swp
-*.swo
+.cvsignore
 Makefile
 Makefile.in
 .deps
 .libs
+etk_test
