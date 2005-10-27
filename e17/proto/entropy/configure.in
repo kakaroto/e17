@@ -2,7 +2,6 @@ dnl Process this file with autoconf to produce a configure script.
 
 rm -f config.cache
 
-# AC_INIT(acinclude.m4)
 AC_INIT(configure.in)
 
 AC_DEFINE_UNQUOTED([CONFIGURED_WITH], "$*", [what options were given to configure])
