@@ -551,17 +551,17 @@ term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    /* extra stuff, clean up later */
 
-   if (evas_key_modifier_is_set_get(ev->modifiers, "Shift"))
+   if (evas_key_modifier_is_set(ev->modifiers, "Shift"))
      key_modifiers |= TERM_KEY_MODIFIER_SHIFT;
-   else if (evas_key_modifier_is_set_get(ev->modifiers, "Alt"))
+   else if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
      key_modifiers |= TERM_KEY_MODIFIER_ALT;
-   else if (evas_key_modifier_is_set_get(ev->modifiers, "Control"))
+   else if (evas_key_modifier_is_set(ev->modifiers, "Control"))
      key_modifiers |= TERM_KEY_MODIFIER_CTRL;
-   else if (evas_key_modifier_is_set_get(ev->modifiers, "Meta"))
+   else if (evas_key_modifier_is_set(ev->modifiers, "Meta"))
      key_modifiers |= TERM_KEY_MODIFIER_MOD;
-   else if (evas_key_modifier_is_set_get(ev->modifiers, "Super"))
+   else if (evas_key_modifier_is_set(ev->modifiers, "Super"))
      key_modifiers |= TERM_KEY_MODIFIER_WIN;
-   else if (evas_key_modifier_is_set_get(ev->modifiers, "Hyper"))
+   else if (evas_key_modifier_is_set(ev->modifiers, "Hyper"))
      key_modifiers |= TERM_KEY_MODIFIER_WIN;
 
    /* fixup the space char */
