@@ -25,7 +25,6 @@
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "ewins.h"
-#include "hints.h"
 #include "snaps.h"
 #include "xwin.h"
 #include <errno.h>
