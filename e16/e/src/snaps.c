@@ -1237,7 +1237,10 @@ LoadSnapInfo(void)
      {
 	/* nuke \n */
 	buf[strlen(buf) - 1] = 0;
+	s[0] = '\0';
 	word(buf, 1, s);
+	if (!s[0])
+	   continue;
 	if (!strcmp(s, "NEW:"))
 	  {
 	     res_w = VRoot.w;

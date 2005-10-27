@@ -151,16 +151,19 @@ EwinGetHints(EWin * ewin)
       Eprintf("EwinGetHints %#lx\n", _EwinGetClientWin(ewin));
 
    ICCCM_GetTitle(ewin, 0);
-   ICCCM_GetInfo(ewin, 0);
-
    if (EwinIsInternal(ewin))
-      return;
-
-   ICCCM_GetHints(ewin, 0);
-   ICCCM_GetGeoms(ewin, 0);
-   MWM_GetHints(ewin, 0);
-   HintsGetWindowHints(ewin);
-   SessionGetInfo(ewin, 0);
+     {
+	ICCCM_GetInfo(ewin, 0);
+     }
+   else
+     {
+	ICCCM_GetHints(ewin, 0);
+	ICCCM_GetGeoms(ewin, 0);
+	MWM_GetHints(ewin, 0);
+	ICCCM_GetInfo(ewin, 0);	/* NB! Need group info first */
+	HintsGetWindowHints(ewin);
+	SessionGetInfo(ewin, 0);
+     }
 }
 
 static void
