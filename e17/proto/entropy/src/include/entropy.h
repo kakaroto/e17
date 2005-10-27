@@ -10,6 +10,7 @@ typedef struct entropy_config entropy_config;
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "entropy_generic.h"
@@ -71,6 +72,8 @@ void entropy_core_selected_files_clear(entropy_core* core);
 /*Config functions*/
 char* entropy_core_home_dir_get(entropy_core* core);
 char* entropy_thumbnail_dir_get(entropy_core* core);
+int entropy_config_int_get(char* module, char* key);
+void entropy_config_int_set(char* module, char* key, int value);
 
 /*Global layout object functions*/
 entropy_gui_component_instance* entropy_core_global_layout_get(entropy_core* core);
