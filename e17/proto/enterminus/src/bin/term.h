@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <signal.h>
+#include <math.h>
 #include <pwd.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
