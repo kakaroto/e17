@@ -475,6 +475,9 @@ group {
 group {
    name: "vscrollbar_drag";
    min: 18 18;
+   data {
+	item: "pad/left" "2";
+   }
    parts {
       part {
          name: "drag";
