@@ -586,7 +586,7 @@ EwinIconify(EWin * ewin)
    if (!EwinIsTransient(ewin))
       ModulesSignal(ESIGNAL_EWIN_ICONIFY, ewin);
 
-   ewin->state.iconified = 3;
+   ewin->state.iconified = 1;
    HideEwin(ewin);
 
    /* Save position at which the window was iconified */
@@ -594,13 +594,6 @@ EwinIconify(EWin * ewin)
 
    if (was_shaded != ewin->state.shaded)
       EwinInstantShade(ewin, 0);
-
-   if (EwinIsTransient(ewin))
-     {
-	/* We should only get here during restart */
-	ewin->state.iconified = 4;
-	goto done;
-     }
 
    ICCCM_Iconify(ewin);
 
@@ -611,20 +604,17 @@ EwinIconify(EWin * ewin)
 	if (e->state.iconified)
 	   continue;
 
-	e->state.iconified = 4;
-	HideEwin(e);
-	EwinRememberPositionSet(e);
+	EwinIconify(e);
      }
-   if (lst)
-      Efree(lst);
 #if ENABLE_GNOME
-   if (lst)
+   if (lst && call_depth == 1)
       GNOME_SetClientList();
 #endif
+   if (lst)
+      Efree(lst);
 
    HintsSetWindowState(ewin);
 
- done:
    call_depth--;
 }
 
@@ -652,13 +642,13 @@ GetOnScreenPos(int x, int y, int w, int h, int *px, int *py)
    *py = y;
 }
 
-void
-EwinDeIconify(EWin * ewin)
+static void
+EwinDeIconify1(EWin * ewin, int dx, int dy)
 {
    static int          call_depth = 0;
    EWin              **lst, *e;
    int                 i, num;
-   int                 x, y, ox, oy, dx, dy;
+   int                 x, y;
 
    if (call_depth > 256)
       return;
@@ -667,23 +657,12 @@ EwinDeIconify(EWin * ewin)
    if (ewin->state.state != EWIN_STATE_ICONIC)
       return;
 
-   EwinRememberPositionGet(ewin, &ox, &oy);
-   x = ox;
-   y = oy;
+   EwinRememberPositionGet(ewin, DesksGetCurrent(), &x, &y);
 
-   /* If we iconified an offscreen window, get it back on screen */
-   if (!ewin->state.showingdesk)
-      GetOnScreenPos(x, y, EoGetW(ewin), EoGetH(ewin), &x, &y);
+   EwinMoveToDesktopAt(ewin, DesksGetCurrent(), x + dx, y + dy);
 
-   dx = x - ox;
-   dy = y - oy;
-
-   if (EoIsSticky(ewin))
-      EwinMove(ewin, x, y);
-   else
-      EwinMoveToDesktopAt(ewin, DesksGetCurrent(), x, y);
-
-   ModulesSignal(ESIGNAL_EWIN_DEICONIFY, ewin);
+   if (!EwinIsTransient(ewin))
+      ModulesSignal(ESIGNAL_EWIN_DEICONIFY, ewin);
 
    ewin->state.iconified = 0;
    ewin->state.showingdesk = 0;
@@ -696,30 +675,40 @@ EwinDeIconify(EWin * ewin)
    for (i = 0; i < num; i++)
      {
 	e = lst[i];
-	if (e->state.iconified != 4)
+	if (!e->state.iconified)
 	   continue;
 
-	EwinRememberPositionGet(e, &ox, &oy);
-	if (EoIsSticky(e))
-	   EwinMove(e, ox + dx, oy + dy);
-	else
-	   EwinMoveToDesktopAt(e, DesksGetCurrent(), ox + dx, oy + dy);
-
-	e->state.iconified = 0;
-
-	RaiseEwin(e);
-	ShowEwin(e);
+	EwinDeIconify1(e, dx, dy);
      }
-   if (lst)
-      Efree(lst);
 #if ENABLE_GNOME
-   if (lst)
+   if (lst && call_depth == 1)
       GNOME_SetClientList();
 #endif
+   if (lst)
+      Efree(lst);
 
    HintsSetWindowState(ewin);
 
    call_depth--;
+}
+
+void
+EwinDeIconify(EWin * ewin)
+{
+   int                 x, y, ox, oy, dx, dy;
+
+   EwinRememberPositionGet(ewin, DesksGetCurrent(), &x, &y);
+   ox = x;
+   oy = y;
+
+   /* If we iconified an offscreen window, get it back on screen */
+   if (!ewin->state.showingdesk)
+      GetOnScreenPos(x, y, EoGetW(ewin), EoGetH(ewin), &x, &y);
+
+   dx = x - ox;
+   dy = y - oy;
+
+   EwinDeIconify1(ewin, dx, dy);
 }
 
 void
@@ -825,8 +814,6 @@ EwinInstantShade(EWin * ewin, int force)
 #if 0				/* FIXME - Remove? */
    ESync();
 #endif
-
-   HintsSetWindowState(ewin);
 }
 
 void
@@ -885,8 +872,6 @@ EwinInstantUnShade(EWin * ewin)
 #if 0				/* FIXME - Remove? */
    ESync();
 #endif
-
-   HintsSetWindowState(ewin);
 }
 
 #define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \

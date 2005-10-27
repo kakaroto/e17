@@ -79,6 +79,12 @@ EwinCreate(Window win, int type)
 
    ewin->type = type;
    ewin->state.state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
+
+   ewin->o.stacked = -1;	/* Not placed on desk yet */
+   EoSetDesk(ewin, DesksGetCurrent());
+   EoSetLayer(ewin, 4);
+   EoSetShadow(ewin, 1);
+
    ewin->update.shape = 1;
    ewin->update.border = 1;
    ewin->lx = -1;
@@ -191,12 +197,8 @@ EwinManage(EWin * ewin)
 	ewin->win_container = ECreateWindow(frame, 0, 0, 1, 1, 0);
      }
 
-   ewin->o.stacked = -1;	/* Not placed on desk yet */
-   EoSetDesk(ewin, DesksGetCurrent());
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
    EoSetName(ewin, Estrdup(ewin->icccm.wm_name));
-   EoSetLayer(ewin, 4);
-   EoSetShadow(ewin, 1);
    EobjListFocusAdd(&ewin->o, 1);
    EobjListOrderAdd(&ewin->o);
 
@@ -1498,7 +1500,7 @@ EwinRememberPositionSet(EWin * ewin)
  * Get saved position in relative viewport coordinates
  */
 void
-EwinRememberPositionGet(EWin * ewin, int *px, int *py)
+EwinRememberPositionGet(EWin * ewin, Desk * dsk, int *px, int *py)
 {
    int                 x, y, ax, ay;
 
@@ -1506,7 +1508,7 @@ EwinRememberPositionGet(EWin * ewin, int *px, int *py)
    y = ewin->req_y;
    if (!EoIsSticky(ewin))
      {
-	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	DeskGetArea(dsk, &ax, &ay);
 	x -= ax * VRoot.w;
 	y -= ay * VRoot.h;
      }

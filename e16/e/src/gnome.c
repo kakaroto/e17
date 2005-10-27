@@ -666,7 +666,7 @@ GNOME_SetClientList(void)
 	wl = Emalloc(num * sizeof(unsigned int));
 	for (i = 0; i < num; i++)
 	  {
-	     if (!lst[i]->props.skip_ext_task && lst[i]->state.iconified != 4)
+	     if (!lst[i]->props.skip_ext_task && !EwinIsTransientChild(lst[i]))
 		wl[j++] = _EwinGetClientXwin(lst[i]);
 	  }
      }

@@ -446,9 +446,9 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_ICONIFY:
-	if (SetEwinBoolean
-	    ("window iconified", &ewin->state.iconified, param1, 0))
-	   EwinOpIconify(ewin, !ewin->state.iconified);
+	on = ewin->state.iconified;
+	if (SetEwinBoolean("window iconified", &on, param1, 0))
+	   EwinOpIconify(ewin, !on);
 	break;
 
      case EWIN_OP_OPACITY:

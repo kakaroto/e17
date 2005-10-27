@@ -59,13 +59,13 @@ struct _ewin
    struct
    {
       char                state;
-      char                shaped;
-      char                docked;
       char                visibility;
-      char                iconified;
+      char                shaped;
       char                shaded;
 
       unsigned            placed:1;
+      unsigned            iconified:1;
+      unsigned            docked:1;
       unsigned            click_grab_isset:1;
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
@@ -272,7 +272,8 @@ const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
-void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
+void                EwinRememberPositionGet(EWin * ewin, struct _desk *dsk,
+					    int *px, int *py);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 

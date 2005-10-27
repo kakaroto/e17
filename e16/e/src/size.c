@@ -51,7 +51,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	ewin->lh = ewin->client.h;
 	ewin->state.maximized_horz = 0;
 	ewin->state.maximized_vert = 0;
-	return;
+	goto done;
      }
 
    type = MAX_ABSOLUTE;		/* Select default */
@@ -169,6 +169,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
    EwinMoveResize(ewin, x, y, w, h);
+ done:
+   HintsSetWindowState(ewin);
 }
 
 void

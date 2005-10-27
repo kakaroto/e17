@@ -2596,7 +2596,7 @@ IconboxesSighan(int sig, void *prm)
 	break;
      case ESIGNAL_EWIN_DESTROY:
 	ewin = (EWin *) prm;
-	if (ewin->state.iconified > 0)
+	if (ewin->state.iconified)
 	   RemoveMiniIcon(ewin);
 	break;
      case ESIGNAL_EWIN_CHANGE_ICON:
