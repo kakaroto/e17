@@ -518,6 +518,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 }
 
 
+void
 ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item ) {
 	entropy_icon_viewer* view = comp->data;
 	gui_file* gui_object;
