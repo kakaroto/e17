@@ -2,8 +2,8 @@ group {
    name: "entry";
    min: 18 18;
    data {
-	item: "inset/left" "4";
-	item: "inset/top" "4";
+	item: "inset/left" "6";
+	item: "inset/top" "6";
    }
    parts {
       part {
