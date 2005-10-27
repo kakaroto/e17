@@ -75,6 +75,8 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(password_box), password[0]);
 	ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_password_text, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(password[0]),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_widget_show(password[0]);
 
 	password[1] = ewl_password_new();
@@ -83,6 +85,8 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(password_box), password[1]);
 	ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_password_text, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(password[1]),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_widget_show(password[1]);
 
 	button_hbox = ewl_hbox_new();
