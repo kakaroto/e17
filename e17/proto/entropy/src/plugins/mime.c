@@ -1,6 +1,6 @@
 #include "entropy.h"
 
-
+Ecore_Hash* mime_hash;
 int entropy_plugin_type_get() {
         return ENTROPY_PLUGIN_MIME;
 }
@@ -11,6 +11,36 @@ char* entropy_plugin_identify() {
 
 int entropy_mime_plugin_priority_get() {
 	return ENTROPY_MIME_PLUGIN_PRIORITY_HIGH;
+}
+
+void entropy_plugin_init(entropy_core* core) {
+	mime_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	ecore_hash_set(mime_hash, ".png", "image/png");
+	ecore_hash_set(mime_hash, ".jpg", "image/jpeg");
+	ecore_hash_set(mime_hash, ".gif", "image/gif");
+	ecore_hash_set(mime_hash, ".pl", "text/x-perl");
+	ecore_hash_set(mime_hash, ".wmv", "video/x-ms-wmv");
+	ecore_hash_set(mime_hash, ".doc", "application/msword");
+	ecore_hash_set(mime_hash, ".pdf", "application/pdf");
+	ecore_hash_set(mime_hash, ".xls", "application/vnd.ms-excel");
+	ecore_hash_set(mime_hash, ".gz", "application/x-gtar");
+	ecore_hash_set(mime_hash, ".mp3", "audio/x-mp3");
+	ecore_hash_set(mime_hash, ".java", "text/x-java");
+	ecore_hash_set(mime_hash, ".jar", "application/x-jar");
+	ecore_hash_set(mime_hash, ".xml", "text/xml");
+	ecore_hash_set(mime_hash, ".htm", "text/html");
+	ecore_hash_set(mime_hash, ".html", "text/html");
+	ecore_hash_set(mime_hash, ".c", "text/csrc");
+	ecore_hash_set(mime_hash, ".mpg", "video/mpeg");
+	ecore_hash_set(mime_hash, ".mpe", "video/mpeg");
+	ecore_hash_set(mime_hash, ".mpeg", "video/mpeg");
+	ecore_hash_set(mime_hash, ".avi", "video/x-msvideo");
+	ecore_hash_set(mime_hash, ".tgz", "application/x-gtar");
+	ecore_hash_set(mime_hash, ".bz2", "application/x-bzip2");
+	ecore_hash_set(mime_hash, ".tar", "application/x-tar");
+
+	
 }
 
 char* entropy_mime_plugin_identify_file(char* path, char* filename) {
@@ -46,34 +76,10 @@ char* entropy_mime_plugin_identify_file(char* path, char* filename) {
 	/*printf ("MIME: %s\n", pos);*/
 	if (pos) {
 		/*printf("Finding extension %s\n", pos);*/
-		if (!strcmp(pos, ".png")) type = "image/png";
-		else if (!strcmp(pos, ".jpg")) type = "image/jpeg";
-		else if (!strcmp(pos, ".gif")) type = "image/gif";
-		else if (!strcmp(pos, ".pl")) type = "text/x-perl";
-		else if (!strcmp(pos, ".wmv")) type = "video/x-ms-wmv";
-		else if (!strcmp(pos, ".doc")) type = "application/msword";
-		else if (!strcmp(pos, ".pdf")) type = "application/pdf";
-		else if (!strcmp(pos, ".xls")) type = "application/vnd.ms-excel";
-		else if (!strcmp(pos, ".gz")) type = "application/x-gtar";
-		else if (!strcmp(pos, ".mp3")) type = "audio/x-mp3";
-		else if (!strcmp(pos, ".java")) type = "text/x-java";
-		else if (!strcmp(pos, ".jar")) type = "application/x-jar";
-		else if (!strcmp(pos, ".xml")) type = "text/xml";
-		else if (!strcmp(pos, ".htm")) type = "text/html";
-		else if (!strcmp(pos, ".html")) type = "text/html";
-		else if (!strcmp(pos, ".c")) type = "text/csrc";
-		else if (!strcmp(pos, ".mpg")) type = "video/mpeg";
-		else if (!strcmp(pos, ".mpe")) type = "video/mpeg";
-		else if (!strcmp(pos, ".mpeg")) type = "video/mpeg";
-		else if (!strcmp(pos, ".avi")) type = "video/x-msvideo";
-		else if (!strcmp(pos, ".tgz")) type = "application/x-gtar";
-		else if (!strcmp(pos, ".bz2")) type= "application/x-bzip2";
 		
-		
-		
+		type = ecore_hash_get(mime_hash,pos);
+			
 	}
-
-	
 	free(ifile);
 	return type;
 }

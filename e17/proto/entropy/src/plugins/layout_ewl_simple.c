@@ -291,7 +291,7 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 	Ewl_Widget* tree= gui->tree;
 
 
-	printf("Add URI: %s\n", uri);
+	//printf("Add URI: %s\n", uri);
 	ewl_text_text_set(EWL_TEXT(label), name);
 	image = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(image), "../icons/chardevice.png", NULL);

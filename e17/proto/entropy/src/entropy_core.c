@@ -373,6 +373,12 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
         } else if (type == ENTROPY_PLUGIN_MIME) {
                 //printf("MIME Identifier Plugin, registering with engine..\n");
                 entropy_plugin_mime_register(core->mime_plugins, plugin);
+
+		/*Initializing..*/
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		(*entropy_plugin_init)(core);
+
+
         } else if (type == ENTROPY_PLUGIN_GUI_LAYOUT) {
                 //printf("Found a layout manager.\n");
                 core->layout_plugin = entropy_plugin_layout_register(plugin);
@@ -927,7 +933,7 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 
 
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
-	printf("Path: '%s'\n", uri_path->files[0]->path);
+	/*printf("Path: '%s'\n", uri_path->files[0]->path);*/
 	pos = rindex(uri_path->files[0]->path, '/');
 	strncpy(file->filename, pos+1, strlen(uri_path->files[0]->path));
 	*pos = '\0';
