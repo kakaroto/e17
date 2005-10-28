@@ -4199,26 +4199,20 @@ static void
 ewl_text_display(Ewl_Text *t)
 {
 	Evas_Coord w = 0, h = 0;
+	Evas_Textblock_Cursor *cursor;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
 	evas_object_textblock2_clear(t->textblock);
+	cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
+	evas_textblock2_cursor_text_append(cursor, "");
 	ewl_text_btree_walk(t);
 	evas_object_textblock2_size_native_get(t->textblock, &w, &h);
 
-	/* if we don't get a height back try to set the height to the height of
-	* the font, if we don't have a font size, make it 1 */
-	if (!h) 
-	{
-		Evas_Textblock_Cursor *cursor;
-
-		cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
-		evas_textblock2_cursor_text_append(cursor, " ");
-		evas_object_textblock2_size_native_get(t->textblock, &w, &h);
-		if (!h) h = 1;
-	}
+	/* Fallback, just in case we hit a corner case */
+	if (!h) h = 1;
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
 	ewl_widget_configure(EWL_WIDGET(t));
