@@ -324,9 +324,6 @@ ewl_idle_render(void *data)
 			!ecore_list_is_empty(free_evas_object_list))
 		ewl_garbage_collect();
 
-	if (!ecore_list_is_empty(realize_list))
-		ewl_realize_queue();
-
 	/*
 	 * Freeze events on the evases to reduce overhead
 	 */
@@ -335,6 +332,9 @@ ewl_idle_render(void *data)
 		if (REALIZED(emb) && emb->evas)
 			evas_event_freeze(emb->evas);
 	}
+
+	if (!ecore_list_is_empty(realize_list))
+		ewl_realize_queue();
 
 	while (!ecore_list_is_empty(configure_list)) {
 		ewl_configure_queue();

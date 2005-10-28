@@ -1204,6 +1204,8 @@ ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	emb = EWL_EMBED(w);
+
+	evas_event_freeze(emb->evas);
 	emb->ev_clip = evas_object_rectangle_add(emb->evas);
 
 	if (w->fx_clip_box)
