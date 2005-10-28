@@ -35,6 +35,10 @@ static Etk_Test_Set tests[] =
    {
       "Tree",
       etk_test_tree_window_create
+   },
+   {
+      "Paned",
+      etk_test_paned_window_create
    }
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);

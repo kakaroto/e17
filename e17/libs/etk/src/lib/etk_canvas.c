@@ -21,8 +21,8 @@ typedef struct _Etk_Canvas_Object
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
 static void _etk_canvas_destructor(Etk_Canvas *canvas);
 static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
-static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
-static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_canvas_realized_cb(Etk_Object *object, void *data);
+static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_canvas_show_cb(Etk_Object *object, void *data);
 static void _etk_canvas_hide_cb(Etk_Object *object, void *data);
 static void _etk_canvas_object_del(void *data);
@@ -123,8 +123,8 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
    ecore_list_set_free_cb(canvas->objects, _etk_canvas_object_del);
    ETK_WIDGET(canvas)->move_resize = _etk_canvas_move_resize;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
    etk_signal_connect("show", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_show_cb), NULL);
    etk_signal_connect("hide", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_hide_cb), NULL);
 }
@@ -158,7 +158,7 @@ static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int
  **************************/
 
 /* Called when the canvas is realized */
-static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
+static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Canvas *canvas;
@@ -172,7 +172,7 @@ static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the canvas is unrealized */
-static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Canvas *canvas;
 
@@ -242,8 +242,7 @@ static void _etk_canvas_intercept_show_cb(void *data, Evas_Object *object)
       return;
    }
 
-   if (ETK_WIDGET(canvas)->really_visible)
-      evas_object_show(object);
+   evas_object_show(object);
    canvas_object->visible = TRUE;
 }
 

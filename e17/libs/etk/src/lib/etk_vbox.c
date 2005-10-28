@@ -1,7 +1,7 @@
 /** @file etk_vbox.c */
 #include "etk_vbox.h"
 #include <stdlib.h>
-#include <Ecore_Data.h>
+#include <Evas.h>
 
 /**
  * @addtogroup Etk_VBox
@@ -74,6 +74,7 @@ static void _etk_vbox_destructor(Etk_VBox *vbox)
 /* Calculates the ideal size of the vbox */
 static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
+   Evas_List *l;
    Etk_VBox *vbox;
    Etk_Box *box; 
    Etk_Container *container;
@@ -89,13 +90,12 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
    container = ETK_CONTAINER(box);
    size_requisition->w = 0;
    size_requisition->h = 0;
-   num_children = ecore_dlist_nodes(container->children);
+   num_children = evas_list_count(container->children);
    vbox->requested_sizes = realloc(vbox->requested_sizes, num_children * sizeof(int));
 
-   i = 0;
-   ecore_dlist_goto_first(container->children);
-   while ((child = ecore_dlist_next(container->children)))
+   for (l = container->children, i = 0; l; l = l->next, i++)
    {
+      child = ETK_WIDGET(l->data);
       child_properties = child->child_properties;
       etk_widget_size_request(child, &child_requisition);
 
@@ -112,7 +112,6 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
          vbox->requested_sizes[i] = child_requisition.h + 2 * child_properties->padding;
          size_requisition->h += vbox->requested_sizes[i];
       }
-      i++;
    }
    if (box->homogeneous)
    {
@@ -130,6 +129,7 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size_requisitio
 /* Resizes the vbox to the size allocation */
 static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
+   Evas_List *l;
    Etk_VBox *vbox;
    Etk_Box *box;
    Etk_Container *container;
@@ -158,11 +158,10 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    {
       float ratio;
 
-      i = 0;
       ratio = (float)allocated_inner_size.h / requested_inner_size.h;
-      ecore_dlist_goto_first(container->children);
-      while ((child = ecore_dlist_next(container->children)))
+      for (l = container->children, i = 0; l; l = l->next, i++)
       {
+         child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
 
          child_geometry.x = geometry.x;
@@ -182,16 +181,15 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
          etk_container_child_space_fill(child, &child_geometry, 1, child_properties->fill); 
          etk_widget_size_allocate(child, child_geometry);
-         i++;
       }
    }
    else
    {
       float free_space;
 
-      ecore_dlist_goto_first(container->children);
-      while ((child = ecore_dlist_next(container->children)))
+      for (l = container->children; l; l = l->next)
       {
+         child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
          if (child_properties->expand)
             num_children_to_expand++;
@@ -202,10 +200,9 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       else
          free_space = (float)(allocated_inner_size.h - requested_inner_size.h) / num_children_to_expand;
 
-      i = 0;
-      ecore_dlist_goto_first(container->children);
-      while ((child = ecore_dlist_next(container->children)))
+      for (l = container->children, i = 0; l; l = l->next, i++)
       {
+         child = ETK_WIDGET(l->data);
          child_properties = child->child_properties;
 
          child_geometry.x = geometry.x;
@@ -231,7 +228,6 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
          etk_container_child_space_fill(child, &child_geometry, 1, child_properties->fill); 
          etk_widget_size_allocate(child, child_geometry);
-         i++;
       }
    }
 }

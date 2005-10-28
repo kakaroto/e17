@@ -29,8 +29,8 @@ enum _Etk_Cps_Property_Id
 static void _etk_colorpicker_square_constructor(Etk_Colorpicker_Square *cps);
 static void _etk_colorpicker_square_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_square_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_colorpicker_square_realize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_square_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_square_realized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_square_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_square_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 
 static void _etk_colorpicker_square_move_cb(Etk_Object *w, void *ev_data, void *user_data);
@@ -327,8 +327,8 @@ static void _etk_colorpicker_square_constructor(Etk_Colorpicker_Square *cps)
 
    widget->move_resize = _etk_colorpicker_square_move_resize;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_unrealize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_unrealized_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_down_cb), NULL);
    etk_signal_connect("mouse_up", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_up_cb), NULL);
    etk_signal_connect("mouse_move", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_move_cb), NULL);
@@ -395,7 +395,7 @@ static void _etk_colorpicker_square_property_get(Etk_Object *object, int propert
 }
 
 /* Called when the cps is realized */
-static void _etk_colorpicker_square_realize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_square_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker_Square *cps;
    Evas *evas;
@@ -426,7 +426,7 @@ static void _etk_colorpicker_square_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the cps is unrealized */
-static void _etk_colorpicker_square_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_square_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker_Square *cps;
 

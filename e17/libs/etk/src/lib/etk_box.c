@@ -1,7 +1,8 @@
 /** @file etk_box.c */
 #include "etk_box.h"
 #include <stdlib.h>
-#include <Ecore_Data.h>
+#include <Evas.h>
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Box
@@ -84,34 +85,33 @@ void etk_box_pack_end(Etk_Box *box, Etk_Widget *child, Etk_Bool expand, Etk_Bool
  */ 
 void etk_box_child_reorder(Etk_Box *box, Etk_Widget *child, int position)
 {
+   Evas_List *l;
    Etk_Container *container;
-   int current_position;
+   int i;
 
    if (!(container = ETK_CONTAINER(box)) || !child || (child->parent != container))
       return;
 
-   if (position < 0)
-      position = 0;
-   else if (position >= ecore_dlist_nodes(container->children))
-      position = ecore_dlist_nodes(container->children) - 1;
+   position = ETK_CLAMP(0, evas_list_count(container->children) - 1, position);
 
-   if (ecore_dlist_goto(container->children, child))
+   for (l = container->children, i = 0; l; l = l->next, i++)
    {
-      current_position = ecore_dlist_index(container->children);
-      if (current_position == position)
+      if (l->data != child)
+         continue;
+
+      if (i == position)
          return;
-      else if (current_position < position)
+      else if (i < position)
       {
-         ecore_dlist_remove(container->children);
-         ecore_dlist_goto_index(container->children, position);
-         ecore_dlist_insert(container->children, child);
+         container->children = evas_list_append_relative(container->children, child, evas_list_nth(container->children, position));
+         container->children = evas_list_remove_list(container->children, l);
       }
       else
       {
-         ecore_dlist_goto_index(container->children, position);
-         ecore_dlist_insert(container->children, child);
-         ecore_dlist_remove(container->children);
+         container->children = evas_list_prepend_relative(container->children, child, evas_list_nth(container->children, position));
+         container->children = evas_list_remove_list(container->children, l);
       }
+      return;
    }
 }
 
@@ -126,7 +126,7 @@ void etk_box_spacing_set(Etk_Box *box, int spacing)
       return;
 
    box->spacing = spacing;
-   etk_widget_resize_queue(ETK_WIDGET(box));
+   etk_widget_size_recalc_queue(ETK_WIDGET(box));
    etk_object_notify(ETK_OBJECT(box), "spacing");
 }
 
@@ -153,7 +153,7 @@ void etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous)
       return;
 
    box->homogeneous = homogeneous;
-   etk_widget_resize_queue(ETK_WIDGET(box));
+   etk_widget_size_recalc_queue(ETK_WIDGET(box));
    etk_object_notify(ETK_OBJECT(box), "homogeneous");
 }
 
@@ -191,15 +191,19 @@ static void _etk_box_constructor(Etk_Box *box)
 /* Destroys the box */
 static void _etk_box_destructor(Etk_Box *box)
 {
-   Etk_Container *container;
+   Evas_List *l;
    Etk_Widget *child;
+   Etk_Container *container;
 
    if (!(container = ETK_CONTAINER(box)))
       return;
 
-   ecore_dlist_goto_first(container->children);
-   while ((child = ecore_dlist_next(container->children)))
+   for (l = container->children; l; )
+   {
+      child = ETK_WIDGET(l->data);
+      l = l->next;
       _etk_box_child_remove(container, child);
+   }
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -264,15 +268,13 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
    if (!(box = ETK_BOX(container)) || !widget || (widget->parent != container))
       return;
 
-   if (ecore_dlist_goto(container->children, widget))
+   if (evas_list_find_list(container->children, widget))
    {
       free(widget->child_properties);
       widget->child_properties = NULL;
 
       etk_widget_parent_set(widget, NULL);
-
-      ecore_dlist_remove(container->children);
-      etk_widget_resize_queue(ETK_WIDGET(box));
+      etk_widget_size_recalc_queue(ETK_WIDGET(box));
    }
 }
 
@@ -294,7 +296,6 @@ static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand,
 
    if (child->parent)
       etk_container_remove(child->parent, child);
-   etk_widget_parent_set(child, container);
    child_properties = malloc(sizeof(Etk_Box_Child_Properties));
    child_properties->expand = expand;
    child_properties->fill = fill;
@@ -302,8 +303,7 @@ static void _etk_box_pack_full(Etk_Box *box, Etk_Widget *child, Etk_Bool expand,
    child_properties->pack_end = pack_end;
    child->child_properties = child_properties;
 
-   ecore_dlist_append(container->children, child);
-   etk_widget_resize_queue(ETK_WIDGET(box));
+   etk_widget_parent_set(child, container);
 }
 
 

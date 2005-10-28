@@ -19,12 +19,12 @@ enum _Etk_Entry_Signal_Id
 };
 
 static void _etk_entry_constructor(Etk_Entry *entry);
-static void _etk_entry_realize_cb(Etk_Object *object, void *data);
-static void _etk_entry_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_entry_realized_cb(Etk_Object *object, void *data);
+static void _etk_entry_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
 
@@ -90,8 +90,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
 
    entry->editable_object = NULL;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealized_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_down_cb), NULL);
    etk_signal_connect("mouse_in", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_in_cb), NULL);
@@ -107,7 +107,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
  **************************/
 
 /* Called when the entry is realized */
-static void _etk_entry_realize_cb(Etk_Object *object, void *data)
+static void _etk_entry_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
    Etk_Widget *entry_widget;
@@ -124,13 +124,12 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the entry is unrealized */
-static void _etk_entry_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_entry_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(object)))
       return;
-
    entry->editable_object = NULL;
 }
 
@@ -171,29 +170,26 @@ static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down
 
    if (!(entry = ETK_ENTRY(object)))
       return;
-
    etk_widget_focus(ETK_WIDGET(entry));
 }
 
 /* Called when the mouse enters the entry */
-static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
    Etk_Widget *entry_widget;
 
    if (!(entry_widget = ETK_WIDGET(object)))
       return;
-
    etk_toplevel_widget_pointer_push(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
 }
 
 /* Called when the mouse leaves the entry */
-static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
    Etk_Widget *entry_widget;
 
    if (!(entry_widget = ETK_WIDGET(object)))
       return;
-
    etk_toplevel_widget_pointer_pop(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
 }
 
@@ -204,7 +200,6 @@ static void _etk_entry_focus_cb(Etk_Object *object, void *data)
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
-
    etk_editable_text_object_cursor_show(entry->editable_object);   
 }
 
@@ -215,7 +210,6 @@ static void _etk_entry_unfocus_cb(Etk_Object *object, void *data)
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
-
    etk_editable_text_object_cursor_hide(entry->editable_object);
    etk_editable_text_object_cursor_move_at_start(entry->editable_object);
 }

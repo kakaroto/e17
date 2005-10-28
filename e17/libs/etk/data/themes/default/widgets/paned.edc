@@ -1,0 +1,257 @@
+group {
+   name: "hpaned";
+   min: 16 70;
+   parts {
+      part {
+         name: "separator";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 244 244 244 255;
+            rel1 {
+               relative: 0.5 0.0;
+               offset: -2 0;
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               offset: 3 -1;
+            }
+         }
+      }
+      part {
+         name: "separator_border";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+               to: "separator";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+               to: "separator";
+            }
+            image {
+               normal: "border.png";
+               middle: 1;
+               border: 1 1 1 1;
+            }
+         }
+      }
+      part {
+         name: "handle";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 0.5;
+               offset: -8 -29;
+               to: "separator";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               offset: 9 30;
+               to: "separator";
+            }
+            image {
+               normal: "vhandle.png";
+               border: 0 0 10 10;
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "vhandle_down.png";
+            }
+         }
+      }
+      part {
+         name: "handle_thumb";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 0.5;
+               offset: -4 -9;
+               to: "handle";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               offset: 1 6;
+               to: "handle";
+            }
+            image {
+               normal: "vhandle_thumb.png";
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               offset: -3 -8;
+            }
+            rel2 {
+               offset: 2 7;
+            }
+         }
+      }
+      PANED_ARROW("left_arrow1", -20, 15, 20, 28, "handle", "left")
+      PANED_ARROW("left_arrow2", -40, 15, 20, 28, "handle", "left")
+      PANED_ARROW("left_arrow3", -60, 15, 20, 28, "handle", "left")
+      PANED_ARROW("left_arrow4", -80, 15, 20, 28, "handle", "left")
+
+      PANED_ARROW("right_arrow1", 18, 15, 20, 28, "handle", "right")
+      PANED_ARROW("right_arrow2", 38, 15, 20, 28, "handle", "right")
+      PANED_ARROW("right_arrow3", 58, 15, 20, 28, "handle", "right")
+      PANED_ARROW("right_arrow4", 78, 15, 20, 28, "handle", "right")
+   }
+   programs {
+      PANED_ARROWS_PROG("left")
+      PANED_ARROWS_PROG("right")
+
+      program {
+         name: "separator_in";
+         signal: "mouse,in";
+         source: "separator";
+         PANED_ARROWS_SHOW_ACTION("left", "right")
+      }
+      program {
+         name: "separator_out";
+         signal: "mouse,out";
+         source: "separator";
+         PANED_ARROWS_HIDE_ACTION("left", "right")
+      }
+   }
+}
+
+group {
+   name: "vpaned";
+   min: 70 16;
+   parts {
+      part {
+         name: "separator";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 244 244 244 255;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 0 -2;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -1 3;
+            }
+         }
+      }
+      part {
+         name: "separator_border";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+               to: "separator";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+               to: "separator";
+            }
+            image {
+               normal: "border.png";
+               middle: 1;
+               border: 1 1 1 1;
+            }
+         }
+      }
+      part {
+         name: "handle";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 0.5;
+               offset: -29 -8;
+               to: "separator";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               offset: 30 9;
+               to: "separator";
+            }
+            image {
+               normal: "hhandle.png";
+               border: 10 10 0 0;
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "hhandle_down.png";
+            }
+         }
+      }
+      part {
+         name: "handle_thumb";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 0.5;
+               offset: -9 -4;
+               to: "handle";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               offset: 6 1;
+               to: "handle";
+            }
+            image {
+               normal: "hhandle_thumb.png";
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               offset: -8 -3;
+            }
+            rel2 {
+               offset: 7 2;
+            }
+         }
+      }
+      PANED_ARROW("up_arrow1", 15, -20, 28, 20, "handle", "up")
+      PANED_ARROW("up_arrow2", 15, -40, 28, 20, "handle", "up")
+      PANED_ARROW("up_arrow3", 15, -60, 28, 20, "handle", "up")
+      PANED_ARROW("up_arrow4", 15, -80, 28, 20, "handle", "up")
+
+      PANED_ARROW("down_arrow1", 15, 18, 28, 20, "handle", "down")
+      PANED_ARROW("down_arrow2", 15, 38, 28, 20, "handle", "down")
+      PANED_ARROW("down_arrow3", 15, 58, 28, 20, "handle", "down")
+      PANED_ARROW("down_arrow4", 15, 78, 28, 20, "handle", "down")
+   }
+   programs {
+      PANED_ARROWS_PROG("up")
+      PANED_ARROWS_PROG("down")
+
+      program {
+         name: "separator_in";
+         signal: "mouse,in";
+         source: "*";
+         PANED_ARROWS_SHOW_ACTION("up", "down")
+      }
+      program {
+         name: "separator_out";
+         signal: "mouse,out";
+         source: "*";
+         PANED_ARROWS_HIDE_ACTION("up", "down")
+      }
+   }
+}

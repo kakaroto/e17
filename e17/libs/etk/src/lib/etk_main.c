@@ -1,5 +1,6 @@
 /** @file etk_main.c */
 #include "etk_main.h"
+#include <locale.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Ecore_Job.h>
@@ -10,9 +11,8 @@
 #include "etk_signal.h"
 #include "etk_object.h"
 #include "etk_toplevel_widget.h"
-#include "etk_widget.h"
 #include "etk_utils.h"
-#include "../../config.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Main
@@ -20,6 +20,7 @@
  */
 
 static void _etk_main_iterate_job_cb(void *data);
+static void _etk_main_reinit_for_next_frame(Etk_Widget *widget);
 
 static Ecore_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = FALSE;
@@ -128,8 +129,7 @@ void etk_main_quit()
    _etk_main_iterate_job = NULL;
 }
 
-int iteration = 0;
-
+int iterr = 0;
 /** @brief Runs an iteration of the main loop */
 void etk_main_iterate()
 {
@@ -139,30 +139,30 @@ void etk_main_iterate()
    if (!_etk_main_initialized)
       return;
 
-   //printf("Iteration %d\n", iteration++);
+   printf("ITER %d BEGIN\n", iterr);
    ecore_list_goto_first(_etk_main_toplevel_widgets);
    while ((toplevel = ecore_list_next(_etk_main_toplevel_widgets)))
    {
       widget = ETK_WIDGET(toplevel);
 
-      if (widget->need_visibility_update)
-         etk_widget_visibility_update(widget);
-      if (widget->need_restack)
-         etk_widget_stacking_update(widget);
-      if (widget->need_resize)
+      if (widget->need_size_recalc)
       {
          Etk_Size unused_size;
-         Etk_Geometry geometry;
-
          etk_widget_size_request(widget, &unused_size);
+      }
+      if (widget->need_redraw)
+      {
+         Etk_Geometry geometry;
          geometry.x = 0;
          geometry.y = 0;
          etk_toplevel_widget_size_get(toplevel, &geometry.w, &geometry.h);
          etk_widget_size_allocate(widget, geometry);
+
+         /* TODO */
+         _etk_main_reinit_for_next_frame(widget);
       }
-      if (widget->need_redraw)
-         etk_widget_redraw(widget);
    }
+   printf("ITER %d END\n\n", iterr++);
 }
 
 /** @brief Will run an iteration as soon as possible */
@@ -209,6 +209,17 @@ static void _etk_main_iterate_job_cb(void *data)
 {
    _etk_main_iterate_job = NULL;
    etk_main_iterate();
+}
+
+/* Reinitializes all the widgets for the next frame */
+static void _etk_main_reinit_for_next_frame(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+
+   widget->need_redraw = FALSE;
+   if (ETK_IS_CONTAINER(widget))
+      etk_container_for_each(ETK_CONTAINER(widget), _etk_main_reinit_for_next_frame);
 }
 
 /** @} */

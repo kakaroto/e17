@@ -1,5 +1,6 @@
 #include "macros/focus_rect.edc"
 #include "macros/scrollbar.edc"
+#include "macros/paned.edc"
 fonts {
    font: "Vera.ttf" "Vera";
 }
@@ -15,4 +16,5 @@ collections {
    #include "widgets/scrollbar.edc"
    #include "widgets/tree.edc"
    #include "widgets/separator.edc"
+   #include "widgets/paned.edc"
 }

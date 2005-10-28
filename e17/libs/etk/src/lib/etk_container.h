@@ -2,7 +2,7 @@
 #ifndef _ETK_CONTAINER_H_
 #define _ETK_CONTAINER_H_
 
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include "etk_widget.h"
 #include "etk_types.h"
 
@@ -31,7 +31,7 @@ struct _Etk_Container
    void (*child_remove)(Etk_Container *container, Etk_Widget *widget);
 
    int border_width;
-   Ecore_DList *children;
+   Evas_List *children;
 };
 
 Etk_Type *etk_container_type_get();
@@ -42,7 +42,8 @@ void etk_container_remove(Etk_Container *container, Etk_Widget *widget);
 void etk_container_border_width_set(Etk_Container *container, int border_width);
 int etk_container_border_width_get(Etk_Container *container);
 
-Ecore_DList *etk_container_children_get(Etk_Container *container);
+Evas_List *etk_container_children_get(Etk_Container *container);
+Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget);
 void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child));
 void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data);
 

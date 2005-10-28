@@ -38,7 +38,7 @@ enum _Etk_Cp_Property_Id
 static void _etk_colorpicker_constructor(Etk_Colorpicker *cp);
 static void _etk_colorpicker_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data);
 
 static void _etk_colorpicker_cps_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_cpv_cb(Etk_Object *object, void *data);
@@ -342,7 +342,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->color.g = 0;
    cp->color.b = 0;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(cp), ETK_CALLBACK(_etk_colorpicker_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(cp), ETK_CALLBACK(_etk_colorpicker_realized_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -383,7 +383,7 @@ static void _etk_colorpicker_property_get(Etk_Object *object, int property_id, E
 
 
 /* Called when the cp is realized */
-static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
    Etk_Widget *widget;

@@ -26,7 +26,7 @@ static void _etk_image_constructor(Etk_Image *image);
 static void _etk_image_destructor(Etk_Image *image);
 static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_image_realize_cb(Etk_Object *object, void *data);
+static void _etk_image_realized_cb(Etk_Object *object, void *data);
 static void _etk_image_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_image_load(Etk_Image *image);
@@ -227,7 +227,7 @@ void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
       return;
 
    image->keep_aspect = keep_aspect;
-   etk_widget_resize_queue(ETK_WIDGET(image));
+   etk_widget_size_recalc_queue(ETK_WIDGET(image));
    etk_object_notify(ETK_OBJECT(image), "keep_aspect");
 }
 
@@ -268,7 +268,7 @@ static void _etk_image_constructor(Etk_Image *image)
    widget->size_request = _etk_image_size_request;
    widget->move_resize = _etk_image_move_resize;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realized_cb), NULL);
 }
 
 /* Destroys the image */
@@ -417,7 +417,7 @@ static void _etk_image_move_resize(Etk_Widget *widget, int x, int y, int w, int 
  **************************/
 
 /* Called when the image is realized */
-static void _etk_image_realize_cb(Etk_Object *object, void *data)
+static void _etk_image_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Image *image;
    Evas *evas;
@@ -490,7 +490,7 @@ static void _etk_image_load(Etk_Image *image)
       }
    }
 
-   etk_widget_resize_queue(widget);
+   etk_widget_size_recalc_queue(widget);
 }
 
 /** @} */

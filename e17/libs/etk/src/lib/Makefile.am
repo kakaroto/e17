@@ -22,6 +22,7 @@ etk_signal.h etk_signal_callback.h etk_marshallers.h \
 etk_widget.h etk_toplevel_widget.h \
 etk_container.h etk_bin.h etk_table.h etk_alignment.h \
 etk_box.h etk_hbox.h etk_vbox.h \
+etk_paned.h \
 etk_window.h \
 etk_image.h \
 etk_string.h etk_editable_text_object.h etk_label.h \
@@ -40,6 +41,7 @@ etk_signal.c etk_signal_callback.c etk_marshallers.c \
 etk_widget.c etk_toplevel_widget.c \
 etk_container.c etk_bin.c etk_table.c etk_alignment.c \
 etk_box.c etk_hbox.c etk_vbox.c \
+etk_paned.c \
 etk_window.c \
 etk_image.c \
 etk_string.c etk_editable_text_object.c etk_label.c \

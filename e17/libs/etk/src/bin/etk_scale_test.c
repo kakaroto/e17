@@ -36,7 +36,7 @@ void etk_test_scale_window_create(void *data)
    etk_container_add(ETK_CONTAINER(win), table);
    
    scale = etk_hscale_new(0.0, 255.0, 128.0, 1.0, 10.0);
-   etk_widget_size_request_set(scale, 70, 70);
+   etk_widget_size_request_set(scale, 130, 130);
    etk_table_attach_defaults(ETK_TABLE(table), scale, 0, 0, 0, 0);
    
    label = etk_label_new("128.00");
@@ -44,7 +44,7 @@ void etk_test_scale_window_create(void *data)
    etk_signal_connect("value_changed", ETK_OBJECT(scale), ETK_CALLBACK(_etk_test_scale_value_changed), label);
    
    scale = etk_vscale_new(0.0, 255.0, 128.0, 1.0, 10.0);
-   etk_widget_size_request_set(scale, 70, 70);
+   etk_widget_size_request_set(scale, 130, 130);
    etk_table_attach_defaults(ETK_TABLE(table), scale, 1, 1, 0, 0);
 
    label = etk_label_new("128.00");

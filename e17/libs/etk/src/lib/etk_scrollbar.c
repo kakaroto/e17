@@ -28,8 +28,8 @@ static void _etk_scrollbar_property_set(Etk_Object *object, int property_id, Etk
 static void _etk_scrollbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_hscrollbar_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_vscrollbar_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
-static void _etk_hscrollbar_realize_cb(Etk_Object *object, void *data);
-static void _etk_vscrollbar_realize_cb(Etk_Object *object, void *data);
+static void _etk_hscrollbar_realized_cb(Etk_Object *object, void *data);
+static void _etk_vscrollbar_realized_cb(Etk_Object *object, void *data);
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 
 static void _etk_hscrollbar_drag_pressed_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -202,7 +202,7 @@ static void _etk_hscrollbar_constructor(Etk_HScrollbar *hscrollbar)
       return;
 
    ETK_WIDGET(hscrollbar)->move_resize = _etk_hscrollbar_move_resize;
-   etk_signal_connect_after("realize", ETK_OBJECT(hscrollbar), ETK_CALLBACK(_etk_hscrollbar_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(hscrollbar), ETK_CALLBACK(_etk_hscrollbar_realized_cb), NULL);
 }
 
 /* Initializes the default values of the vscrollbar */
@@ -212,7 +212,7 @@ static void _etk_vscrollbar_constructor(Etk_VScrollbar *vscrollbar)
       return;
 
    ETK_WIDGET(vscrollbar)->move_resize = _etk_vscrollbar_move_resize;
-   etk_signal_connect_after("realize", ETK_OBJECT(vscrollbar), ETK_CALLBACK(_etk_vscrollbar_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(vscrollbar), ETK_CALLBACK(_etk_vscrollbar_realized_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -330,7 +330,7 @@ static void _etk_vscrollbar_move_resize(Etk_Widget *widget, int x, int y, int w,
  **************************/
 
 /* Called when the hscrollbar is realized */
-static void _etk_hscrollbar_realize_cb(Etk_Object *object, void *data)
+static void _etk_hscrollbar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Scrollbar *scrollbar;
    Etk_Widget *scrollbar_widget;
@@ -355,7 +355,7 @@ static void _etk_hscrollbar_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the vscrollbar is realized */
-static void _etk_vscrollbar_realize_cb(Etk_Object *object, void *data)
+static void _etk_vscrollbar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Scrollbar *scrollbar;
    Etk_Widget *scrollbar_widget;

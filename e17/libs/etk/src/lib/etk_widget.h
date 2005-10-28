@@ -3,7 +3,6 @@
 #define _ETK_WIDGET_H_
 
 #include <Evas.h>
-#include <Ecore_Data.h>
 #include <stdarg.h>
 #include "etk_object.h"
 #include "etk_types.h"
@@ -149,50 +148,40 @@ struct _Etk_Widget
    char *theme_group;
 
    Evas_Object *smart_object;
-   Ecore_List *swallowed_objects;
-
-   Ecore_DList *member_objects;
-   void (*move_resize)(Etk_Widget *widget, int x, int y, int w, int h);
+   Evas_List *swallowed_objects;
+   Evas_List *member_objects;
 
    int left_inset, right_inset, top_inset, bottom_inset;
    int left_padding, right_padding, top_padding, bottom_padding;
 
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
+   Etk_Geometry new_geometry;
    /* The size wanted by the user */
    Etk_Size requested_size;
    /* The result of the last etk_widget_size_request() */
    Etk_Size last_size_requisition;
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
+   void (*move_resize)(Etk_Widget *widget, int x, int y, int w, int h);
 
    void (*show)(Etk_Widget *widget);
    void (*hide)(Etk_Widget *widget);
-   void (*realize)(Etk_Widget *widget);
-   void (*unrealize)(Etk_Widget *widget);
    void (*key_down)(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
    void (*key_up)(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
    void (*enter)(Etk_Widget *widget);
    void (*leave)(Etk_Widget *widget);
    void (*focus)(Etk_Widget *widget);
    void (*unfocus)(Etk_Widget *widget);
-   Etk_Bool (*swallow)(Etk_Widget *widget, char *part, Evas_Object *object);
-   void (*unswallow)(Etk_Widget *widget, Evas_Object *object);
 
    unsigned char realized : 1;
-   /* TRUE if the widget has been set as visible with evas_object_show */
    unsigned char visible : 1;
-   /* TRUE if the widget is really visible: the widget is realized and its parent is really visible too */
-   unsigned char really_visible : 1;
    unsigned char repeat_events : 1;
    unsigned char pass_events : 1;
    unsigned char focusable : 1;
-   unsigned char need_resize : 1;
+   unsigned char need_size_recalc : 1;
    unsigned char need_redraw : 1;
-   unsigned char need_restack : 1;
-   unsigned char need_visibility_update : 1;
    unsigned char need_theme_min_size_recalc : 1;
-   unsigned char theme_uses_edje : 1;
    unsigned char size_request_done : 1;
    unsigned char size_allocate_needs_request : 1;
    unsigned char swallowed : 1;
@@ -218,24 +207,17 @@ Etk_Bool etk_widget_repeat_events_get(Etk_Widget *widget);
 void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events);
 Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget);
 
-void etk_widget_visibility_update_queue(Etk_Widget *widget);
-void etk_widget_visibility_update(Etk_Widget *widget);
 void etk_widget_show(Etk_Widget *widget);
 void etk_widget_show_all(Etk_Widget *widget);
 void etk_widget_hide(Etk_Widget *widget);
 void etk_widget_hide_all(Etk_Widget *widget);
 Etk_Bool etk_widget_is_visible(Etk_Widget *widget);
 
-void etk_widget_restack_queue(Etk_Widget *widget);
-void etk_widget_stacking_update(Etk_Widget *widget);
-
-void etk_widget_resize_queue(Etk_Widget *widget);
+void etk_widget_size_recalc_queue(Etk_Widget *widget);
+void etk_widget_redraw_queue(Etk_Widget *widget);
 void etk_widget_size_request_set(Etk_Widget *widget, int w, int h);
 void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-
-void etk_widget_redraw_queue(Etk_Widget *widget);
-void etk_widget_redraw(Etk_Widget *widget);
 
 void etk_widget_enter(Etk_Widget *widget);
 void etk_widget_leave(Etk_Widget *widget);

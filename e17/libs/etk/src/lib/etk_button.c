@@ -503,7 +503,6 @@ static void _etk_button_child_create(Etk_Button *button)
          etk_box_pack_end(ETK_BOX(button->hbox), button->label, FALSE, FALSE, 0);
          etk_widget_show(button->label);
       }
-      etk_widget_resize_queue(ETK_WIDGET(button));
    }
    else if (button->label)
    {
@@ -520,7 +519,6 @@ static void _etk_button_child_create(Etk_Button *button)
 
       etk_container_add(ETK_CONTAINER(button), button->label);
       etk_widget_show(ETK_WIDGET(button->label));
-      etk_widget_resize_queue(ETK_WIDGET(button));
    }
 
    etk_button_alignment_set(button, button->xalign, button->yalign);

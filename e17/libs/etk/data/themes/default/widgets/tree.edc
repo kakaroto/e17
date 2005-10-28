@@ -3,9 +3,9 @@ group {
    data {
       item: "inset" "12 8 12 8";
       item: "separator_color" "204 204 204 255";
-      item: "row_color1" "255 255 255 255";
-      item: "row_color2" "245 245 245 255";
-      item: "row_selected_color" "219 181 104 255";
+      item: "row_color1" "255 255 255 0";
+      item: "row_color2" "190 190 190 40";
+      item: "row_selected_color" "219 181 104 60";
       item: "item_height" "24";
       item: "image_height" "20";
       item: "expander_size" "18";
@@ -26,6 +26,26 @@ group {
             image {
                normal: "tree_bg.png";
                border: 8 8 8 8;
+            }
+         }
+      }
+      part {
+         name: "watermark";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: -200 -138;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "e_watermark.png";
             }
          }
       }

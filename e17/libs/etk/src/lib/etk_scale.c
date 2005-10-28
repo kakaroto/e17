@@ -15,8 +15,8 @@
 static void _etk_scale_constructor(Etk_Scale *scale);
 static void _etk_hscale_constructor(Etk_HScale *hscale);
 static void _etk_vscale_constructor(Etk_VScale *vscale);
-static void _etk_hscale_realize_cb(Etk_Object *object, void *data);
-static void _etk_vscale_realize_cb(Etk_Object *object, void *data);
+static void _etk_hscale_realized_cb(Etk_Object *object, void *data);
+static void _etk_vscale_realized_cb(Etk_Object *object, void *data);
 static void _etk_scale_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_hscale_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_vscale_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -119,7 +119,7 @@ static void _etk_hscale_constructor(Etk_HScale *hscale)
       return;
 
    ETK_RANGE(hscale)->value_changed = _etk_hscale_value_changed_handler;
-   etk_signal_connect_after("realize", ETK_OBJECT(hscale), ETK_CALLBACK(_etk_hscale_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(hscale), ETK_CALLBACK(_etk_hscale_realized_cb), NULL);
 }
 
 /* Initializes the default values of the vscale */
@@ -129,7 +129,7 @@ static void _etk_vscale_constructor(Etk_VScale *vscale)
       return;
 
    ETK_RANGE(vscale)->value_changed = _etk_vscale_value_changed_handler;
-   etk_signal_connect_after("realize", ETK_OBJECT(vscale), ETK_CALLBACK(_etk_vscale_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(vscale), ETK_CALLBACK(_etk_vscale_realized_cb), NULL);
 }
 
 /**************************
@@ -139,7 +139,7 @@ static void _etk_vscale_constructor(Etk_VScale *vscale)
  **************************/
 
 /* Called when the hscale is realized */
-static void _etk_hscale_realize_cb(Etk_Object *object, void *data)
+static void _etk_hscale_realized_cb(Etk_Object *object, void *data)
 {
    Evas_Object *theme_object;
 
@@ -151,7 +151,7 @@ static void _etk_hscale_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the vscale is realized */
-static void _etk_vscale_realize_cb(Etk_Object *object, void *data)
+static void _etk_vscale_realized_cb(Etk_Object *object, void *data)
 {
    Evas_Object *theme_object;
 

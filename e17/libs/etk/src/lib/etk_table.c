@@ -1,7 +1,7 @@
 /** @file etk_table.c */
 #include "etk_table.h"
 #include <stdlib.h>
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include "etk_utils.h"
 
 /**
@@ -86,6 +86,7 @@ Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Bool homogeneous)
  */
 void etk_table_cell_clear(Etk_Table *table, int col, int row)
 {
+   Evas_List *l;
    Etk_Container *container;
    Etk_Widget *child;
    Etk_Table_Child_Properties *child_properties;
@@ -95,7 +96,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
          col < 0 || col > table->num_cols - 1 ||
          row < 0 || row > table->num_rows - 1 ||
          !(child = table->cells[ETK_TABLE_CELL_INDEX(table, col, row)]) ||
-         !ecore_dlist_goto(container->children, child))
+         !(l = evas_list_find_list(container->children, child)))
       return;
 
    if ((child_properties = child->child_properties))
@@ -110,9 +111,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
    }
 
    etk_widget_parent_set(child, NULL);
-   ecore_dlist_remove(container->children);
-
-   etk_widget_resize_queue(ETK_WIDGET(table));
+   etk_widget_size_recalc_queue(ETK_WIDGET(table));
 }
 
 /**
@@ -123,6 +122,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
  */
 void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
 {
+   Evas_List *l;
    Etk_Container *table_container;
    Etk_Widget **new_cells;
    Etk_Table_Col_Row *new_cols, *new_rows;
@@ -151,9 +151,10 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
       new_rows = malloc(num_rows * sizeof(Etk_Table_Col_Row));
    }
    
-   ecore_dlist_goto_first(table_container->children);
-   while ((child = ETK_WIDGET(ecore_dlist_next(table_container->children))))
+   for (l = table_container->children; l; )
    {
+      child = ETK_WIDGET(l->data);
+      l = l->next;
       child_properties = child->child_properties;
       /* The child is in the old table but not in the new one: we remove it */
       if (child_properties->left_attach >= num_cols || child_properties->top_attach >= num_rows)
@@ -181,7 +182,7 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
    table->num_cols = num_cols;
    table->num_rows = num_rows;
 
-   etk_widget_resize_queue(ETK_WIDGET(table));
+   etk_widget_size_recalc_queue(ETK_WIDGET(table));
    etk_object_notify(ETK_OBJECT(table), "num_cols");
    etk_object_notify(ETK_OBJECT(table), "num_rows");
 }
@@ -227,7 +228,6 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 
    if (child->parent)
       etk_container_remove(child->parent, child);
-   etk_widget_parent_set(child, ETK_CONTAINER(table));
    child_properties = malloc(sizeof(Etk_Table_Child_Properties));
    child_properties->left_attach = left_attach;
    child_properties->right_attach = right_attach;
@@ -247,8 +247,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
       }
    }
 
-   ecore_dlist_append(ETK_CONTAINER(table)->children, child);
-   etk_widget_resize_queue(ETK_WIDGET(table));
+   etk_widget_parent_set(child, ETK_CONTAINER(table));
 }
 
 /**
@@ -277,7 +276,7 @@ void etk_table_homogeneous_set(Etk_Table *table, Etk_Bool homogeneous)
       return;
 
    table->homogeneous = homogeneous;
-   etk_widget_resize_queue(ETK_WIDGET(table));
+   etk_widget_size_recalc_queue(ETK_WIDGET(table));
    etk_object_notify(ETK_OBJECT(table), "homogeneous");
 }
 
@@ -383,6 +382,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    Etk_Widget *child;
    Etk_Table_Child_Properties *child_properties;
    Etk_Size child_requisition;
+   Evas_List *l;
    int i;
 
    if (!(table = ETK_TABLE(widget)) || !size_requisition)
@@ -404,9 +404,9 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          Etk_Bool hexpand = FALSE, vexpand = FALSE;
    
          /* We calculate the maximum size of a cell */
-         ecore_dlist_goto_first(container->children);
-         while ((child = ecore_dlist_next(container->children)))
+         for (l = container->children; l; l = l->next)
          {
+            child = ETK_WIDGET(l->data);
             child_properties = child->child_properties;
             etk_widget_size_request(child, &child_requisition);
 
@@ -450,9 +450,9 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          }
 
          /* We first treat the children that span only one column or one row */
-         ecore_dlist_goto_first(container->children);
-         while ((child = ecore_dlist_next(container->children)))
+         for (l = container->children; l; l = l->next)
          {
+            child = ETK_WIDGET(l->data);
             child_properties = child->child_properties;
             etk_widget_size_request(child, &child_requisition);
 
@@ -473,9 +473,9 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             }
          }
          /* Then, we treat the children that span multiple columns or rows */
-         ecore_dlist_goto_first(container->children);
-         while ((child = ecore_dlist_next(container->children)))
+         for (l = container->children; l; l = l->next)
          {
+            child = ETK_WIDGET(l->data);
             int cells_size;
             int num_expandable_cells;
             int free_space;
@@ -581,6 +581,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    Etk_Size allocated_inner_size;
    Etk_Geometry child_geometry;
    float offset, size;
+   Evas_List *l;
    int i;
 
    if (!(table = ETK_TABLE(widget)) || !table->cells)
@@ -675,9 +676,9 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    }
 
    /* We allocate the size fot the children */
-   ecore_dlist_goto_first(container->children);
-   while ((child = ecore_dlist_next(container->children)))
+   for (l = container->children; l; l = l->next)
    {
+      child = ETK_WIDGET(l->data);
       child_properties = child->child_properties;
       child_geometry.x = geometry.x + table->cols[child_properties->left_attach].offset + child_properties->x_padding;
       child_geometry.y = geometry.y + table->rows[child_properties->top_attach].offset + child_properties->y_padding;

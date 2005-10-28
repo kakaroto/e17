@@ -84,7 +84,7 @@ void etk_editable_text_object_text_set(Evas_Object *object, const char *text)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || !text)
       return;
    
-   evas_object_textblock2_text_markup_set(editable_text_sd->text_object, text);
+   evas_object_textblock_text_markup_set(editable_text_sd->text_object, text);
    editable_text_sd->cursor_at_the_end = TRUE;
    _etk_editable_text_size_update(object);
    _etk_editable_text_cursor_position_update(object);
@@ -106,12 +106,12 @@ Etk_Bool etk_editable_text_object_insert(Evas_Object *object, const char *text)
    if (!text || (strlen(text) <= 1 && *text < 0x20))
       return FALSE;
    
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
 
    if (editable_text_sd->cursor_at_the_end)
-      evas_textblock2_cursor_text_append(cursor, text);
+      evas_textblock_cursor_text_append(cursor, text);
    else
-      evas_textblock2_cursor_text_prepend(cursor, text);
+      evas_textblock_cursor_text_prepend(cursor, text);
    _etk_editable_text_size_update(object);
    _etk_editable_text_cursor_position_update(object);
 
@@ -131,8 +131,8 @@ const char *etk_editable_text_object_text_get(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return NULL;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
-   return evas_textblock2_cursor_node_text_get(cursor);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
+   return evas_textblock_cursor_node_text_get(cursor);
 }
 
 /**
@@ -149,11 +149,11 @@ Etk_Bool etk_editable_text_object_delete_char_before(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
       return FALSE;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
 
-   if (editable_text_sd->cursor_at_the_end || evas_textblock2_cursor_char_prev(cursor))
+   if (editable_text_sd->cursor_at_the_end || evas_textblock_cursor_char_prev(cursor))
    {
-      evas_textblock2_cursor_char_delete(cursor);
+      evas_textblock_cursor_char_delete(cursor);
       text_changed = TRUE;
    }
    
@@ -176,15 +176,15 @@ Etk_Bool etk_editable_text_object_delete_char_after(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
       return FALSE;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    
    if (!editable_text_sd->cursor_at_the_end)
    {
-      if (!evas_textblock2_cursor_char_next(cursor))
+      if (!evas_textblock_cursor_char_next(cursor))
          editable_text_sd->cursor_at_the_end = TRUE;
       else
-         evas_textblock2_cursor_char_prev(cursor);
-      evas_textblock2_cursor_char_delete(cursor);
+         evas_textblock_cursor_char_prev(cursor);
+      evas_textblock_cursor_char_delete(cursor);
       text_changed = TRUE;
    }
 
@@ -205,9 +205,9 @@ void etk_editable_text_object_cursor_move_at_start(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
       return;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    editable_text_sd->cursor_at_the_end = FALSE;
-   evas_textblock2_cursor_char_first(cursor);
+   evas_textblock_cursor_char_first(cursor);
 
    _etk_editable_text_cursor_position_update(object);
 }
@@ -224,9 +224,9 @@ void etk_editable_text_object_cursor_move_at_end(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)) || _etk_editable_text_is_empty(object))
       return;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    editable_text_sd->cursor_at_the_end = TRUE;
-   evas_textblock2_cursor_char_last(cursor);
+   evas_textblock_cursor_char_last(cursor);
 
    _etk_editable_text_cursor_position_update(object);
 }
@@ -243,11 +243,11 @@ void etk_editable_text_object_cursor_move_left(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    if (editable_text_sd->cursor_at_the_end)
       editable_text_sd->cursor_at_the_end = FALSE;
    else
-      evas_textblock2_cursor_char_prev(cursor);
+      evas_textblock_cursor_char_prev(cursor);
    
    _etk_editable_text_size_update(object);
    _etk_editable_text_cursor_position_update(object);
@@ -265,8 +265,8 @@ void etk_editable_text_object_cursor_move_right(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
-   if (!evas_textblock2_cursor_char_next(cursor))
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
+   if (!evas_textblock_cursor_char_next(cursor))
       editable_text_sd->cursor_at_the_end = TRUE;
 
    _etk_editable_text_size_update(object);
@@ -318,8 +318,8 @@ static Etk_Bool _etk_editable_text_is_empty(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return TRUE;
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
-   return (evas_textblock2_cursor_node_text_length_get(cursor) <= 0);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
+   return (evas_textblock_cursor_node_text_length_get(cursor) <= 0);
 }
 
 /* Updates the size of the text object: to be called when the text of the object is changed */
@@ -331,7 +331,7 @@ static void _etk_editable_text_size_update(Evas_Object *object)
    if (!object || !(editable_text_sd = evas_object_smart_data_get(object)))
       return;
 
-   evas_object_textblock2_size_native_get(editable_text_sd->text_object, &w, &h);
+   evas_object_textblock_size_native_get(editable_text_sd->text_object, &w, &h);
    evas_object_resize(editable_text_sd->text_object, w, h);
 }
 
@@ -347,7 +347,7 @@ static void _etk_editable_text_cursor_position_update(Evas_Object *object)
 
    evas_object_geometry_get(editable_text_sd->text_object, &tx, &ty, &tw, &th);
    evas_object_geometry_get(object, &ox, &oy, &ow, &oh);
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
    
    if (_etk_editable_text_is_empty(object))
    {
@@ -357,13 +357,13 @@ static void _etk_editable_text_cursor_position_update(Evas_Object *object)
    }
    else if (editable_text_sd->cursor_at_the_end)
    {
-      evas_textblock2_cursor_char_last(cursor);
-      evas_textblock2_cursor_char_geometry_get(cursor, &cx, &cy, &cw, &ch);
+      evas_textblock_cursor_char_last(cursor);
+      evas_textblock_cursor_char_geometry_get(cursor, &cx, &cy, &cw, &ch);
       cx += tx + cw;
    }
    else
    {
-      evas_textblock2_cursor_char_geometry_get(cursor, &cx, &cy, &cw, &ch);
+      evas_textblock_cursor_char_geometry_get(cursor, &cx, &cy, &cw, &ch);
       cx += tx;
    }
 
@@ -455,8 +455,8 @@ static void _etk_editable_text_smart_add(Evas_Object *object)
 
    if (!_etk_editable_text_style)
    {
-      _etk_editable_text_style = evas_textblock2_style_new();
-      evas_textblock2_style_set(_etk_editable_text_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word'");
+      _etk_editable_text_style = evas_textblock_style_new();
+      evas_textblock_style_set(_etk_editable_text_style, "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word'");
       _etk_editable_text_style_use_count = 0;
    }
 
@@ -465,8 +465,8 @@ static void _etk_editable_text_smart_add(Evas_Object *object)
    editable_text_sd->cursor_at_the_end = TRUE;
    editable_text_sd->cursor_timer = NULL;
 
-   editable_text_sd->text_object = evas_object_textblock2_add(evas);
-   evas_object_textblock2_style_set(editable_text_sd->text_object, _etk_editable_text_style);
+   editable_text_sd->text_object = evas_object_textblock_add(evas);
+   evas_object_textblock_style_set(editable_text_sd->text_object, _etk_editable_text_style);
    _etk_editable_text_style_use_count++;
    evas_object_smart_member_add(editable_text_sd->text_object, object);
 
@@ -480,8 +480,8 @@ static void _etk_editable_text_smart_add(Evas_Object *object)
 
    evas_object_smart_data_set(object, editable_text_sd);
 
-   cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(editable_text_sd->text_object);
-	evas_textblock2_cursor_node_first(cursor);
+   cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(editable_text_sd->text_object);
+	evas_textblock_cursor_node_first(cursor);
 }
 
 /* Called when the object is deleted */
@@ -502,7 +502,7 @@ static void _etk_editable_text_smart_del(Evas_Object *object)
    _etk_editable_text_style_use_count--;
    if (_etk_editable_text_style_use_count <= 0 && _etk_editable_text_style)
    {
-      evas_textblock2_style_free(_etk_editable_text_style);
+      evas_textblock_style_free(_etk_editable_text_style);
       _etk_editable_text_style = NULL;
    }
 }

@@ -3,7 +3,6 @@
 #define _ETK_TOPLEVEL_WIDGET_H_
 
 #include <Evas.h>
-#include <Ecore_Data.h>
 #include "etk_bin.h"
 #include "etk_types.h"
 
@@ -57,7 +56,7 @@ struct _Etk_Toplevel_Widget
 
    Etk_Widget *focused_widget;
 
-   Ecore_DList *pointer_stack;
+   Evas_List *pointer_stack;
    void (*pointer_set)(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
 };
 

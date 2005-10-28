@@ -18,5 +18,6 @@ void etk_test_scale_window_create(void *data);
 void etk_test_colorpicker_window_create(void *data);
 void etk_test_canvas_window_create(void *data);
 void etk_test_tree_window_create(void *data);
+void etk_test_paned_window_create(void *data);
 
 #endif

@@ -23,7 +23,7 @@ enum _Etk_Toggle_Button_Property_Id
 static void _etk_toggle_button_constructor(Etk_Toggle_Button *toggle_button);
 static void _etk_toggle_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toggle_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_toggle_button_realize_cb(Etk_Object *object, void *data);
+static void _etk_toggle_button_realized_cb(Etk_Object *object, void *data);
 static void _etk_toggle_button_clicked_handler(Etk_Button *button);
 static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *button);
 
@@ -115,7 +115,7 @@ static void _etk_toggle_button_constructor(Etk_Toggle_Button *toggle_button)
    toggle_button->toggled = _etk_toggle_button_toggled_handler;
    ETK_BUTTON(toggle_button)->clicked = _etk_toggle_button_clicked_handler;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(toggle_button), ETK_CALLBACK(_etk_toggle_button_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(toggle_button), ETK_CALLBACK(_etk_toggle_button_realized_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -161,7 +161,7 @@ static void _etk_toggle_button_property_get(Etk_Object *object, int property_id,
  **************************/
 
 /* Called when the toggle button is realized */
-static void _etk_toggle_button_realize_cb(Etk_Object *object, void *data)
+static void _etk_toggle_button_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle_button;
 

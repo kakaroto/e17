@@ -146,7 +146,7 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
    ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
    ETK_TOPLEVEL_WIDGET(window)->width = w;
    ETK_TOPLEVEL_WIDGET(window)->height = h;
-   etk_widget_resize_queue(ETK_WIDGET(window));
+   etk_widget_redraw_queue(ETK_WIDGET(window));
 }
 
 /* Called when the user want to close the window */

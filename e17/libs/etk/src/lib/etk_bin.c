@@ -1,9 +1,7 @@
 /** @file etk_bin.c */
 #include "etk_bin.h"
 #include <stdlib.h>
-#include <Ecore_Data.h>
-/* TODO */
-#include <Edje.h>
+#include <Evas.h>
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
@@ -14,16 +12,11 @@
  */
 
 static void _etk_bin_constructor(Etk_Bin *bin);
-static void _etk_bin_destructor(Etk_Bin *bin);
 static void _etk_bin_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget);
 static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_bin_realize_cb(Etk_Object *object, void *data);
-static void _etk_bin_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_bin_child_set(Etk_Bin *bin, Etk_Widget *widget);
-static void _etk_bin_child_set_normal(Etk_Bin *bin, Etk_Widget *child);
-static Etk_Bool _etk_bin_child_set_swallow(Etk_Bin *bin, Etk_Widget *child);
+static void _etk_bin_child_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -41,7 +34,7 @@ Etk_Type *etk_bin_type_get()
 
    if (!bin_type)
    {
-      bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin), ETK_CONSTRUCTOR(_etk_bin_constructor), ETK_DESTRUCTOR(_etk_bin_destructor), NULL);
+      bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin), ETK_CONSTRUCTOR(_etk_bin_constructor), NULL, NULL);
    }
 
    return bin_type;
@@ -51,42 +44,37 @@ Etk_Type *etk_bin_type_get()
  * @brief Gets the child of the bin
  * @param bin a bin
  * @return Returns the child of the bin or NULL if it doesn't have a child
- * @note It doesn't increase the reference count of the returned widget, so you don't need to unref it.
  */
 Etk_Widget *etk_bin_child_get(Etk_Bin *bin)
 {
-   Etk_Container *container;
-
    if (!bin)
       return NULL;
-
-   container = ETK_CONTAINER(bin);
-   ecore_dlist_goto_first(container->children);
-   return ETK_WIDGET(ecore_dlist_next(container->children));
+   return ETK_WIDGET(evas_list_data(ETK_CONTAINER(bin)->children));
 }
 
 /**
- * @brief Sets the child of the bin, and swallows it if the part called "swallow_area" exists
+ * @brief Sets the child of the bin
  * @param bin a bin
  * @param child the child to set
  */
 void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
 {
-   if (!bin)
+   if (!bin || etk_bin_child_get(bin) == child)
       return;
 
-   if (!ETK_WIDGET(bin)->realized || !ETK_WIDGET(child)->realized)
+   _etk_bin_child_remove(ETK_CONTAINER(bin), etk_bin_child_get(bin));
+
+   if (child)
    {
-      etk_signal_connect_after("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_realize_cb), bin);
-      bin->swallow_on_realize = TRUE;
-      _etk_bin_child_set_normal(bin, child);
-      return;
+      if (child->parent)
+         etk_container_remove(child->parent, child);
+
+      /* TODO: disconnect */
+      etk_signal_connect_after("realized", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realized_cb), bin);
+      etk_widget_parent_set(child, ETK_CONTAINER(bin));
    }
-   else
-   {
-      if (!_etk_bin_child_set_swallow(bin, child))
-         _etk_bin_child_set_normal(bin, child);
-   }
+
+   return;
 }
 
 /**************************
@@ -101,24 +89,10 @@ static void _etk_bin_constructor(Etk_Bin *bin)
    if (!bin)
       return;
 
-   bin->swallow_child = FALSE;
-   bin->swallow_on_realize = FALSE;
    ETK_CONTAINER(bin)->child_add = _etk_bin_child_add;
    ETK_CONTAINER(bin)->child_remove = _etk_bin_child_remove;
    ETK_WIDGET(bin)->size_request = _etk_bin_size_request;
    ETK_WIDGET(bin)->size_allocate = _etk_bin_size_allocate;
-
-   etk_signal_connect_after("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), bin);
-   etk_signal_connect("unrealize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_unrealize_cb), NULL);
-}
-
-/* Destroys the bin */
-static void _etk_bin_destructor(Etk_Bin *bin)
-{
-   if (!bin)
-      return;
-
-   /* TODO: Unswallow ? */
 }
 
 /* Calculates the ideal size of the bin */
@@ -157,7 +131,7 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
    container = ETK_CONTAINER(widget);
 
-   if ((child = etk_bin_child_get(bin)))
+   if ((child = etk_bin_child_get(bin)) && !child->swallowed)
    {
       geometry.x += etk_container_border_width_get(container);
       geometry.y += etk_container_border_width_get(container);
@@ -199,99 +173,23 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
       return;
 
    etk_widget_parent_set(widget, NULL);
-   ecore_dlist_clear(container->children);
-   if (bin->swallow_child)
-      etk_widget_theme_object_signal_emit(bin_widget, "unswallow_child");
-   bin->swallow_child = FALSE;
-   etk_widget_resize_queue(bin_widget);
+   etk_widget_size_recalc_queue(bin_widget);
 }
 
-/* Called when the bin or the child is realized */
-static void _etk_bin_realize_cb(Etk_Object *object, void *data)
+/* Called when the child of the bin is realized */
+static void _etk_bin_child_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Bin *bin;
    Etk_Widget *child;
 
-   if (!(bin = ETK_BIN(data)) || !(child = etk_bin_child_get(bin)))
+   if (!(bin = ETK_BIN(data)) || !(child = etk_bin_child_get(bin)) || ETK_OBJECT(child) != object)
       return;
 
-   if (bin->swallow_on_realize && ETK_WIDGET(bin)->realized && child->realized)
-   {
-      _etk_bin_child_set_swallow(bin, child);
-      bin->swallow_on_realize = FALSE;
-   }
-}
-
-/* Called when the bin is unrealized */
-static void _etk_bin_unrealize_cb(Etk_Object *object, void *data)
-{
-   Etk_Bin *bin;
-
-   if (!(bin = ETK_BIN(object)))
-      return;
-
-   if (bin->swallow_child)
-      bin->swallow_on_realize = TRUE;
-}
-
-/**************************
- *
- * Private functions
- *
- **************************/
-
-/* Sets the child of the bin */
-static void _etk_bin_child_set(Etk_Bin *bin, Etk_Widget *widget)
-{
-   Etk_Container *container;
-
-   if (!(container = ETK_CONTAINER(bin)) || (etk_bin_child_get(bin) == widget))
-      return;
-
-   _etk_bin_child_remove(container, etk_bin_child_get(bin));
-
-   if (widget)
-   {
-      if (widget->parent)
-         etk_container_remove(widget->parent, widget);
-      etk_widget_parent_set(widget, container);
-      ecore_dlist_append(container->children, widget);
-   }
-}
-
-/* Sets the child of the bin (without swallowing it) */
-static void _etk_bin_child_set_normal(Etk_Bin *bin, Etk_Widget *child)
-{
-   Etk_Widget *bin_widget;
-
-   if (!(bin_widget = ETK_WIDGET(bin)))
-      return;
-
-   if (bin->swallow_child)
-      etk_widget_theme_object_signal_emit(bin_widget, "unswallow_child");
-   _etk_bin_child_set(bin, child);
-   bin->swallow_child = FALSE;
-   etk_widget_resize_queue(bin_widget);
-}
-
-/* Sets the child and swallows it into the part called "swallow_area". Returns TRUE on success, FALSE on failure */
-static Etk_Bool _etk_bin_child_set_swallow(Etk_Bin *bin, Etk_Widget *child)
-{
-   Etk_Widget *bin_widget;
-
-   if (!(bin_widget = ETK_WIDGET(bin)) || !child)
-      return FALSE;
-
-   if (!etk_widget_swallow_widget(bin_widget, "swallow_area", child))
-      return FALSE;
-
-   _etk_bin_child_set(bin, child);
-   if (!bin->swallow_child)
-      etk_widget_theme_object_signal_emit(bin_widget, "swallow_child");
-   bin->swallow_child = TRUE;
-   etk_widget_resize_queue(bin_widget);
-
-   return TRUE;
+   /* TODO */
+   if (ETK_WIDGET(bin)->realized && child->realized)
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", child);
+   else
+      ETK_WARNING("Wtf? The child is realized, but not the parent bin?! (TODO)\n");
 }
 
 /** @} */

@@ -96,6 +96,7 @@ void etk_container_border_width_set(Etk_Container *container, int border_width)
 
    container->border_width = border_width;
    etk_object_notify(ETK_OBJECT(container), "border_width");
+   etk_widget_size_recalc_queue(ETK_WIDGET(container));
 }
 
 /**
@@ -111,20 +112,43 @@ int etk_container_border_width_get(Etk_Container *container)
 }
 
 /**
+ * @brief Gets the list of the children of the container
+ * @param container a container
+ * @return Returns the list of the children of @a container
+ */
+Evas_List *etk_container_children_get(Etk_Container *container)
+{
+   if (!container)
+      return NULL;
+   return container->children;
+}
+
+/**
+ * @brief Gets whether the widget is a child of the container
+ * @param container a container
+ * @param widget the widget you want to check if it is a child of the container
+ */
+Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
+{
+   if (!container || !widget)
+      return FALSE;
+   return (evas_list_find(container->children, widget) != NULL);
+}
+
+/**
  * @brief Calls @a for_each_cb(child, data) for each child of the container
  * @param container the container
  * @param for_each_cb the function to call
  */
 void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child))
 {
-   Etk_Widget *child;
+   Evas_List *l;
 
    if (!container || !container->children || !for_each_cb)
       return;
 
-   ecore_dlist_goto_first(container->children);
-   while ((child = ecore_dlist_next(container->children)))
-      for_each_cb(child);
+   for (l = container->children; l; l = l->next)
+      for_each_cb(ETK_WIDGET(l->data));
 }
 
 /**
@@ -135,22 +159,13 @@ void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Wi
  */
 void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data)
 {
+   Evas_List *l;
+
    if (!container || !container->children || !for_each_cb)
       return;
 
-   ecore_dlist_for_each(container->children, (Ecore_For_Each)for_each_cb, data);
-}
-
-/**
- * @brief Gets the list of the children of the container
- * @param container a container
- * @return Returns the list of the children of @a container
- */
-Ecore_DList *etk_container_children_get(Etk_Container *container)
-{
-   if (!container)
-      return NULL;
-   return container->children;
+   for (l = container->children; l; l = l->next)
+      for_each_cb(ETK_WIDGET(l->data), data);
 }
 
 /**
@@ -192,25 +207,28 @@ static void _etk_container_constructor(Etk_Container *container)
    if (!container)
       return;
 
-   container->children = ecore_dlist_new();
+   container->children = NULL;
    container->child_add = NULL;
    container->child_remove = NULL;
    container->border_width = 0;
 }
 
-/* Destructs the container */
+/* Destroys the container */
 static void _etk_container_destructor(Etk_Container *container)
 {
    Etk_Widget *child;
+   Evas_List *l;
 
    if (!container)
       return;
 
-   ecore_dlist_goto_first(container->children);
-   while ((child = ETK_WIDGET(ecore_dlist_next(container->children))))
+   for (l = container->children; l; )
+   {
+      child = ETK_WIDGET(l->data);
+      l = l->next;
       etk_widget_parent_set(child, NULL);
-   ecore_dlist_destroy(container->children);
-   container->children = NULL;
+   }
+   container->children = evas_list_free(container->children);
 }
 
 

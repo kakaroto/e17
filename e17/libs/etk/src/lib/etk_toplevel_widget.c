@@ -1,8 +1,6 @@
 /** @file etk_toplevel_widget.c */
 #include "etk_toplevel_widget.h"
 #include <stdlib.h>
-#include <Evas.h>
-#include <Ecore_Data.h>
 #include "etk_main.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
@@ -22,7 +20,7 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
 static void _etk_toplevel_widget_destructor(Etk_Toplevel_Widget *toplevel_widget);
 static void _etk_toplevel_widget_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data);
+static void _etk_toplevel_widget_realized_cb(Etk_Object *object, void *data);
 static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Etk_Widget *after);
 static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *widget, Etk_Widget *before);
 
@@ -144,7 +142,11 @@ Etk_Widget *etk_toplevel_widget_focused_widget_prev_get(Etk_Toplevel_Widget *top
       return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(toplevel_widget), NULL);
 }
 
-/* TODO: doc */
+/**
+ * @brief Pushs a pointer type on the pointer stack. It will change the pointer shape
+ * @param toplevel_widget a toplevel widget
+ * @param pointer_type the type of pointer to push on the stack
+ */ 
 void etk_toplevel_widget_pointer_push(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
 {
    Etk_Pointer_Type *prev_pointer_type;
@@ -155,42 +157,50 @@ void etk_toplevel_widget_pointer_push(Etk_Toplevel_Widget *toplevel_widget, Etk_
 
    new_pointer_type = malloc(sizeof(Etk_Pointer_Type));
    *new_pointer_type = pointer_type;
-   prev_pointer_type = ecore_dlist_goto_last(toplevel_widget->pointer_stack);
-   ecore_dlist_append(toplevel_widget->pointer_stack, new_pointer_type);
+   prev_pointer_type = evas_list_data(evas_list_last(toplevel_widget->pointer_stack));
+   toplevel_widget->pointer_stack = evas_list_append(toplevel_widget->pointer_stack, new_pointer_type);
 
    if (toplevel_widget->pointer_set && (!prev_pointer_type || (*prev_pointer_type != pointer_type)))
       toplevel_widget->pointer_set(toplevel_widget, pointer_type);
 }
 
-/* TODO: doc */
+/**
+ * @brief Pops a pointer type out of the pointer stack. It may change the pointer shape if the popped pointer type was on the top of the stack
+ * @param toplevel_widget a toplevel widget
+ * @param pointer_type the type of pointer to pop out of the stack. -1 to pop the last pointer on the stack
+ */ 
 void etk_toplevel_widget_pointer_pop(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
 {
+   Evas_List *l;
    Etk_Pointer_Type *current_pointer;
    Etk_Pointer_Type *prev_pointer_type;
    Etk_Pointer_Type *p;
 
-   if (!toplevel_widget || !(prev_pointer_type = ecore_dlist_goto_last(toplevel_widget->pointer_stack)))
+   if (!toplevel_widget || !(prev_pointer_type = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
       return;
 
    if (pointer_type < 0)
-      ecore_dlist_remove_destroy(toplevel_widget->pointer_stack);
+   {
+      toplevel_widget->pointer_stack = evas_list_remove_list(toplevel_widget->pointer_stack, evas_list_last(toplevel_widget->pointer_stack));
+      free(prev_pointer_type);
+   }
    else
    {
-      while ((p = ecore_dlist_current(toplevel_widget->pointer_stack)))
+      for (l = evas_list_last(toplevel_widget->pointer_stack); l; l = l->prev)
       {
+         p = l->data;
          if (*p == pointer_type)
          {
-   
-            ecore_dlist_remove_destroy(toplevel_widget->pointer_stack);
+            toplevel_widget->pointer_stack = evas_list_remove_list(toplevel_widget->pointer_stack, l);
+            free(p);
             break;
          }
-         ecore_dlist_previous(toplevel_widget->pointer_stack);
       }
    }
 
    if (toplevel_widget->pointer_set)
    {
-      if ((current_pointer = ecore_dlist_goto_last(toplevel_widget->pointer_stack)))
+      if ((current_pointer = evas_list_data(evas_list_last(toplevel_widget->pointer_stack))))
       {
          if (*current_pointer != *prev_pointer_type)
             toplevel_widget->pointer_set(toplevel_widget, *current_pointer);
@@ -216,12 +226,11 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
    toplevel_widget->width = 0;
    toplevel_widget->height = 0;
    toplevel_widget->focused_widget = NULL;
-   toplevel_widget->pointer_stack = ecore_dlist_new();
-   ecore_dlist_set_free_cb(toplevel_widget->pointer_stack, free);
+   toplevel_widget->pointer_stack = NULL;
    toplevel_widget->pointer_set = NULL;
    ETK_WIDGET(toplevel_widget)->toplevel_parent = toplevel_widget;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realize_cb), NULL);
+   etk_signal_connect_after("realized", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realized_cb), NULL);
 
    etk_main_toplevel_widget_add(toplevel_widget);
 }
@@ -229,10 +238,14 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
 /* Destroys the toplevel widget */
 static void _etk_toplevel_widget_destructor(Etk_Toplevel_Widget *toplevel_widget)
 {
+   Evas_List *l;
+
    if (!toplevel_widget)
       return;
 
-   ecore_dlist_destroy(toplevel_widget->pointer_stack);
+   for (l = toplevel_widget->pointer_stack; l; l = l->next)
+      free(l->data);
+   toplevel_widget->pointer_stack = evas_list_free(toplevel_widget->pointer_stack);
    etk_main_toplevel_widget_remove(toplevel_widget);
 }
 
@@ -278,7 +291,8 @@ static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_i
  *
  **************************/
 
-static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data)
+/* Called when the toplevel widget is realized */
+static void _etk_toplevel_widget_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Toplevel_Widget *toplevel_widget;
    Etk_Widget *widget;
@@ -305,12 +319,17 @@ static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data)
 /* Gets recursively the next widget to focus */
 static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Etk_Widget *after)
 {
-   Ecore_DList *children;
+/*   Evas_List *l;
+   Evas_List *children;
    Etk_Widget *child;
    Etk_Widget *parent;
 
-   if (!widget)
+   if (!toplevel)
       return NULL;
+
+   if (!after)
+   {
+   }
 
    if (widget->focusable)
       return widget;
@@ -321,7 +340,7 @@ static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Et
    if (!(children = etk_container_children_get(ETK_CONTAINER(widget))))
       return NULL;
 
-   if (after && ecore_dlist_goto(children, after))
+   if (after && (l = evas_list_find_list(children, after)))
       ecore_dlist_next(children);
    else
       ecore_dlist_goto_first(children);
@@ -336,13 +355,13 @@ static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Et
 
    if ((parent = ETK_WIDGET(widget->parent)))
       return _etk_toplevel_widget_next_to_focus_get(parent, widget);
-   else
+   else*/ /* TODO */
       return NULL;
 }
 
 /* Gets recursively the previous widget to focus */
 static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *widget, Etk_Widget *before)
-{
+{/*
    Ecore_DList *children;
    Etk_Widget *child;
    Etk_Widget *parent;
@@ -374,7 +393,7 @@ static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *widget, Et
 
    if ((parent = ETK_WIDGET(widget->parent)))
       return _etk_toplevel_widget_prev_to_focus_get(parent, widget);
-   else
+   else*/ /* TODO */
       return NULL;
 }
 
