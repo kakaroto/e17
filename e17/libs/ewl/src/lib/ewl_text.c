@@ -4212,9 +4212,11 @@ ewl_text_display(Ewl_Text *t)
 	* the font, if we don't have a font size, make it 1 */
 	if (!h) 
 	{
-		int size;
-		size = ewl_text_font_size_get(t, 0);
-		h = size;
+		Evas_Textblock_Cursor *cursor;
+
+		cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
+		evas_textblock2_cursor_text_append(cursor, " ");
+		evas_object_textblock2_size_native_get(t->textblock, &w, &h);
 		if (!h) h = 1;
 	}
 
