@@ -319,6 +319,9 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 
 		entropy_generic_file* file = entropy_core_parse_uri(uri);
 
+		/*Mark this file as a 'folder' - more of a bootstrap.  Should we really do this? FIXME*/
+		strcpy(file->mime_type, "file/folder");
+
 		//printf("***** Adding structure viewer\n");
 
 		/*Main drive viewer*/

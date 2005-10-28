@@ -119,20 +119,17 @@ void row_clicked_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) 
 	event_file_core* event = (event_file_core*)user_data;
 	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
 	entropy_gui_event* gui_event;
-	entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 	
 
 	//printf("Clicked on %s%s\n", event->file->path, event->file->filename);
 
 	/*-----------*/
 	/*Send an event to the core*/
-	request->file = event->file;
-	request->drill_down = 0;
 	
 	gui_event = entropy_malloc(sizeof(entropy_gui_event));
-	gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
-	gui_event->data = request;
-	entropy_core_layout_notify_event(event->instance, gui_event, ENTROPY_EVENT_LOCAL); 
+	gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_ACTION_FILE);
+	gui_event->data = event->file;
+	entropy_core_layout_notify_event(event->instance, gui_event, ENTROPY_EVENT_GLOBAL); 
 
 	if (viewer->last_selected_label) {
 		ewl_text_cursor_position_set(EWL_TEXT(viewer->last_selected_label), 0);
