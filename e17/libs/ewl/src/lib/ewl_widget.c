@@ -614,7 +614,7 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
  * the state parameter.
  */
 void
-ewl_widget_state_set(Ewl_Widget * w, char *state)
+ewl_widget_state_set(Ewl_Widget *w, char *state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1348,6 +1348,7 @@ ewl_widget_focus_send(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, "widget");
 
 	emb = ewl_embed_widget_find(w);
+	ewl_embed_active_set(emb, TRUE);
 	ewl_embed_focused_widget_set(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1365,7 +1366,7 @@ ewl_widget_focused_get(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	emb = ewl_embed_widget_find(w);
+	emb = ewl_embed_active_embed_get();
 	if (emb) w = ewl_embed_focused_widget_get(emb);
 
 	DRETURN_PTR(w, DLEVEL_STABLE);

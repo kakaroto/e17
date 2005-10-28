@@ -77,6 +77,9 @@ Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 void            ewl_embed_focus_set(Ewl_Embed *embed, int f);
 int             ewl_embed_focus_get(Ewl_Embed *embed);
 
+void		ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
+Ewl_Embed      *ewl_embed_active_embed_get(void);
+
 int             ewl_embed_max_layer_get(Ewl_Embed *embed);
 void            ewl_embed_max_layer_set(Ewl_Embed *embed, int layer);
 void            ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname,

@@ -387,8 +387,8 @@ ewl_table_selected_get(Ewl_Table *t)
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "table");
+	DCHECK_PARAM_PTR_RET("t", t, strdup(""));
+	DCHECK_TYPE_RET("t", t, "table", strdup(""));
 
 	children = EWL_CONTAINER(t->grid)->children;
 	ecore_list_goto_first(children);
@@ -405,8 +405,6 @@ ewl_table_selected_get(Ewl_Table *t)
 					EWL_CONTAINER(child)->children);
 
 			DRETURN_PTR(ewl_text_text_get(tw), DLEVEL_STABLE);
-
-			break;
 		}
 	}
 

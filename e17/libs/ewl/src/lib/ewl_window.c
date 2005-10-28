@@ -897,10 +897,9 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	win = EWL_WINDOW(w);
-	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) {
+	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) 
 		ecore_x_keyboard_grab((Ecore_X_Window)win->window);
-		printf("Grabbed keyboard\n");
-	}
+
 	if (win->flags & EWL_WINDOW_GRAB_POINTER) {
 		int grabval;
 
@@ -913,8 +912,6 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
 			printf("GrabFrozen\n");
 		else if (grabval == GrabInvalidTime)
 			printf("GrabInvalidTime\n");
-		else
-			printf("Grabbed pointer\n");
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -936,14 +933,11 @@ ewl_window_hide_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
 	if (strstr(EWL_WINDOW(widget)->render, "x11")) {
 		ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
 		ecore_x_window_hide((Ecore_X_Window)win->window);
-		if (win->flags & EWL_WINDOW_GRAB_KEYBOARD) {
+		if (win->flags & EWL_WINDOW_GRAB_KEYBOARD)
 			ecore_x_keyboard_ungrab();
-			printf("Ungrabbed keyboard\n");
-		}
-		if (win->flags & EWL_WINDOW_GRAB_POINTER) {
+
+		if (win->flags & EWL_WINDOW_GRAB_POINTER)
 			ecore_x_pointer_ungrab();
-			printf("Ungrabbed pointer\n");
-		}
 	}
 #endif
 

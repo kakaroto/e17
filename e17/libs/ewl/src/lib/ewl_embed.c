@@ -3,8 +3,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-Ecore_List        *ewl_embed_list = NULL;
+Ecore_List *ewl_embed_list = NULL;
 static Evas_Smart *embedded_smart = NULL;
+static Ewl_Embed *ewl_embed_active_embed = NULL;
 
 static void ewl_embed_smart_add_cb(Evas_Object *obj);
 static void ewl_embed_smart_del_cb(Evas_Object *obj);
@@ -213,6 +214,63 @@ ewl_embed_focus_get(Ewl_Embed *embed)
 }
 
 /**
+ * @param embed: The embed to set the active value on
+ * @param act: The active value to set
+ * @return Returns no value.
+ */
+void
+ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
+{
+	Ewl_Embed *e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, "embed");
+
+	/* return if we're seting active and we're already the active embed */
+	if (act && (embed == ewl_embed_active_embed))
+		DRETURN(DLEVEL_STABLE);
+
+	if (!act)
+	{
+		/* if you said false and we aren't actually the active embed
+		 * just exit */
+		if (embed != ewl_embed_active_embed)
+			DRETURN(DLEVEL_STABLE);
+
+		e = embed;
+		ewl_embed_active_embed = NULL;
+	}
+	else
+	{
+		e = ewl_embed_active_embed;
+		ewl_embed_active_embed = embed;
+	}
+
+	if (e && e->last.clicked)
+	{
+		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
+						EWL_FLAG_STATE_SELECTED);
+		ewl_callback_call(e->last.clicked, EWL_CALLBACK_DESELECT);
+
+		e->last.clicked = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns the currently active embed
+ */
+Ewl_Embed *
+ewl_embed_active_embed_get(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(ewl_embed_active_embed, DLEVEL_STABLE);
+}
+
+/**
  * @param embed: the embed to retrieve maximum layer
  * @return Returns the layer used for obtaining evas events.
  * @brief Retrieve the layer being used for receiving evas events.
@@ -393,6 +451,8 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, "embed");
 
+	ewl_embed_active_set(embed, TRUE);
+
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
 			x, y);
 	if (!widget)
@@ -481,6 +541,8 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, "embed");
 
+	ewl_embed_active_set(embed, TRUE);
+
 	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
@@ -524,6 +586,8 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, "embed");
+
+	ewl_embed_active_set(embed, TRUE);
 
 	ev.modifiers = mods;
 	ev.x = x;
@@ -618,6 +682,8 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, "embed");
 
+	ewl_embed_active_set(embed, TRUE);
+
 	ev.modifiers = mods;
 	ev.x = x;
 	ev.y = y;
@@ -650,6 +716,8 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, "embed");
+
+	ewl_embed_active_set(embed, TRUE);
 
 	ev.modifiers = mods;
 	ev.x = x;
