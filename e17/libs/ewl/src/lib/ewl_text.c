@@ -43,9 +43,9 @@ static void ewl_text_btree_shrink(Ewl_Text_BTree *tree);
 static void ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, 
 						Ewl_Text_Context *tx_change);
 static char *ewl_text_format_get(Ewl_Text_Context *ctx);
-static Evas_Textblock_Cursor *ewl_text_textblock2_cursor_position(Ewl_Text *t, 
+static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
 							unsigned int idx);
-static unsigned int ewl_text_textblock2_cursor_to_index(Evas_Textblock_Cursor *cursor);
+static unsigned int ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor);
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
 static void ewl_text_trigger_cb_free(void *value, void *data);
@@ -197,9 +197,9 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 
 	if (idx >= t->length) idx = t->length - 1;
 
-	cursor = ewl_text_textblock2_cursor_position(t, idx);
-	evas_textblock2_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
-	evas_textblock2_cursor_free(cursor);
+	cursor = ewl_text_textblock_cursor_position(t, idx);
+	evas_textblock_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
+	evas_textblock_cursor_free(cursor);
 
 	if (x) *x = (int)(tx + CURRENT_X(t));
 	if (y) *y = (int)(ty + CURRENT_Y(t));
@@ -234,27 +234,27 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	tx = (Evas_Coord)(x - CURRENT_X(t));
 	ty = (Evas_Coord)(y - CURRENT_Y(t));
 
-	cursor = evas_object_textblock2_cursor_new(t->textblock);
+	cursor = evas_object_textblock_cursor_new(t->textblock);
 
 	/* see if we have the mouse over a char */
-	if (!evas_textblock2_cursor_char_coord_set(cursor, tx, ty))
+	if (!evas_textblock_cursor_char_coord_set(cursor, tx, ty))
 	{
 		int line;
 
 		/* if not, see if the mouse is by a line */
-		line = evas_textblock2_cursor_line_coord_set(cursor, ty);
+		line = evas_textblock_cursor_line_coord_set(cursor, ty);
 		if (line >= 0)
 		{
 			/* if so, get the line geometry and determine start
 			 * or end of line */
-			evas_textblock2_cursor_line_geometry_get(cursor, 
+			evas_textblock_cursor_line_geometry_get(cursor, 
 								&cx, &cy, 
 								&cw, &ch);
 			if (x < (cx + (cw / 2)))
-				evas_textblock2_cursor_line_first(cursor);
+				evas_textblock_cursor_line_first(cursor);
 			else
 			{
-				evas_textblock2_cursor_line_last(cursor);
+				evas_textblock_cursor_line_last(cursor);
 
 				/* we want to be past the last char so we
 				 * need to increment this by 1 to begin */
@@ -263,13 +263,13 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 		}
 		else
 		{
-			evas_textblock2_cursor_line_set(cursor, 0);
-			evas_textblock2_cursor_line_first(cursor);
+			evas_textblock_cursor_line_set(cursor, 0);
+			evas_textblock_cursor_line_first(cursor);
 		}
 	}
 
-	idx += ewl_text_textblock2_cursor_to_index(cursor);
-	evas_textblock2_cursor_free(cursor);
+	idx += ewl_text_textblock_cursor_to_index(cursor);
+	evas_textblock_cursor_free(cursor);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
@@ -669,27 +669,27 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);
-	line = evas_textblock2_cursor_char_geometry_get(cursor, &cx, NULL, 
+	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
+	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line --;
 	
-	if (evas_object_textblock2_line_number_geometry_get(t->textblock, 
+	if (evas_object_textblock_line_number_geometry_get(t->textblock, 
 						line, &lx, &ly, &lw, &lh))
 	{
-		if (!evas_textblock2_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
+		if (!evas_textblock_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
 		{
-			if (evas_textblock2_cursor_line_set(cursor, line))
+			if (evas_textblock_cursor_line_set(cursor, line))
 			{
 				if ((cx + (cw / 2)) >= (lx + lw))
-					evas_textblock2_cursor_line_last(cursor);
+					evas_textblock_cursor_line_last(cursor);
 				else
-					evas_textblock2_cursor_line_first(cursor);
+					evas_textblock_cursor_line_first(cursor);
 			}
 		}
 
 	}
-	idx = ewl_text_textblock2_cursor_to_index(cursor);
+	idx = ewl_text_textblock_cursor_to_index(cursor);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
@@ -712,27 +712,27 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
 	cur_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock2_cursor_position(t, cur_idx);
-	line = evas_textblock2_cursor_char_geometry_get(cursor, &cx, NULL, 
+	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
+	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line ++;
 	
-	if (evas_object_textblock2_line_number_geometry_get(t->textblock, 
+	if (evas_object_textblock_line_number_geometry_get(t->textblock, 
 						line, &lx, &ly, &lw, &lh))
 	{
-		if (!evas_textblock2_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
+		if (!evas_textblock_cursor_char_coord_set(cursor, cx + (cw / 2), ly))
 		{
-			if (evas_textblock2_cursor_line_set(cursor, line))
+			if (evas_textblock_cursor_line_set(cursor, line))
 			{
 				if ((cx + (cw / 2)) >= (lx + lw))
-					evas_textblock2_cursor_line_last(cursor);
+					evas_textblock_cursor_line_last(cursor);
 				else
-					evas_textblock2_cursor_line_first(cursor);
+					evas_textblock_cursor_line_first(cursor);
 			}
 		}
 
 	}
-	idx = ewl_text_textblock2_cursor_to_index(cursor);
+	idx = ewl_text_textblock_cursor_to_index(cursor);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
@@ -2311,11 +2311,11 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	cur1 = ewl_text_textblock2_cursor_position(t, trig->pos);
-	cur2 = ewl_text_textblock2_cursor_position(t, trig->pos + trig->len - 1);
+	cur1 = ewl_text_textblock_cursor_position(t, trig->pos);
+	cur2 = ewl_text_textblock_cursor_position(t, trig->pos + trig->len - 1);
 
 	/* get all the rectangles and create areas with them */
-	rects = evas_textblock2_cursor_range_geometry_get(cur1, cur2);
+	rects = evas_textblock_cursor_range_geometry_get(cur1, cur2);
 	while (rects)
 	{
 		Evas_Textblock_Rectangle *tr;
@@ -2328,8 +2328,8 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 		FREE(tr);
 		rects = evas_list_remove_list(rects, rects);
 	}
-	evas_textblock2_cursor_free(cur1);
-	evas_textblock2_cursor_free(cur2);
+	evas_textblock_cursor_free(cur1);
+	evas_textblock_cursor_free(cur2);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2647,12 +2647,12 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	FREE(fmt);
 
 	/* create the textblock */
-	t->textblock = evas_object_textblock2_add(emb->evas);
+	t->textblock = evas_object_textblock_add(emb->evas);
 
-	st = evas_textblock2_style_new();
-	evas_textblock2_style_set(st, fmt2);
-	evas_object_textblock2_style_set(t->textblock, st);
-	evas_textblock2_style_free(st);
+	st = evas_textblock_style_new();
+	evas_textblock_style_set(st, fmt2);
+	evas_object_textblock_style_set(t->textblock, st);
+	evas_textblock_style_free(st);
 
 	FREE(fmt2);
 
@@ -4205,11 +4205,11 @@ ewl_text_display(Ewl_Text *t)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	evas_object_textblock2_clear(t->textblock);
-	cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
-	evas_textblock2_cursor_text_append(cursor, "");
+	evas_object_textblock_clear(t->textblock);
+	cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(t->textblock);
+	evas_textblock_cursor_text_append(cursor, "");
 	ewl_text_btree_walk(t);
-	evas_object_textblock2_size_native_get(t->textblock, &w, &h);
+	evas_object_textblock_size_native_get(t->textblock, &w, &h);
 
 	/* Fallback, just in case we hit a corner case */
 	if (!h) h = 1;
@@ -4236,22 +4236,22 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 
 	/* we don't free this cursor as it is actually const
 	 * Evas_Textblock_Cursor * and i'm casting it...  */
-	cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(tb);
+	cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(tb);
 	for (tmp = txt; *tmp; tmp++) 
 	{
 		if (*tmp == '\n') 
 		{
 			*tmp = '\0';
-			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
-			evas_textblock2_cursor_format_append(cursor, "\n");
+			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+			evas_textblock_cursor_format_append(cursor, "\n");
 			*tmp = '\n';
 			txt = tmp + 1;
 		}
 		else if (*tmp == '\r' && *(tmp + 1) == '\n') 
 		{
 			*tmp = '\0';
-			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
-			evas_textblock2_cursor_format_append(cursor, "\n");
+			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+			evas_textblock_cursor_format_append(cursor, "\n");
 			*tmp = '\r';
 			tmp++;
 			txt = tmp + 2;
@@ -4259,13 +4259,13 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 		else if (*tmp == '\t') 
 		{
 			*tmp = '\0';
-			if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
-			evas_textblock2_cursor_format_append(cursor, "\t");
+			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+			evas_textblock_cursor_format_append(cursor, "\t");
 			*tmp = '\t';
 			txt = tmp + 1;
 		}
 	}
-	if (*txt) evas_textblock2_cursor_text_append(cursor, txt);
+	if (*txt) evas_textblock_cursor_text_append(cursor, txt);
 }
 
 static void
@@ -4303,8 +4303,8 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 
 		/* we don't free this cursor as it is actually const
 		 * Evas_Textblock_Cursor * and i'm casting it...  */
-		cursor = (Evas_Textblock_Cursor *)evas_object_textblock2_cursor_get(t->textblock);
-		evas_textblock2_cursor_format_append(cursor, fmt);
+		cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(t->textblock);
+		evas_textblock_cursor_format_append(cursor, fmt);
 		FREE(fmt);
 
 		ptr = t->text + text_pos;
@@ -4314,7 +4314,7 @@ ewl_text_btree_node_walk(Ewl_Text_BTree *tree, Ewl_Text *t, unsigned int text_po
 		ewl_text_plaintext_parse(t->textblock, ptr);
 		*(ptr + tree->length) = tmp;	
 
-		evas_textblock2_cursor_format_append(cursor, "-");
+		evas_textblock_cursor_format_append(cursor, "-");
 	}
 	else if (!tree->children)
 	{
@@ -4437,7 +4437,7 @@ ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* This will give you the format string to pass to textblock2 based on the
+/* This will give you the format string to pass to textblock based on the
  * context information. You _MUST_ free this format when your done with it */
 static char *
 ewl_text_format_get(Ewl_Text_Context *ctx)
@@ -4588,10 +4588,10 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 }
 
 /* This will give you a cursor into the textblock setup for your given
- * index. You _MUST_ call evas_textblock2_cursor_free(cursor) on this object
+ * index. You _MUST_ call evas_textblock_cursor_free(cursor) on this object
  * so it won't leak */
 static Evas_Textblock_Cursor *
-ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
+ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 {
 	Evas_Textblock_Cursor *cursor;
 	int cur_idx;
@@ -4600,8 +4600,8 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, "text", NULL);
 
-	cursor = evas_object_textblock2_cursor_new(t->textblock);
-	evas_textblock2_cursor_node_first(cursor);
+	cursor = evas_object_textblock_cursor_new(t->textblock);
+	evas_textblock_cursor_node_first(cursor);
 
 	cur_idx = idx;
 	while (cur_idx >= 0)
@@ -4610,23 +4610,23 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 		const char *txt;
 
 		/* see if this is a formatting or text node */
-		txt = evas_textblock2_cursor_node_format_get(cursor);
+		txt = evas_textblock_cursor_node_format_get(cursor);
 		if (!txt)
 		{
-			len = evas_textblock2_cursor_node_text_length_get(cursor);
+			len = evas_textblock_cursor_node_text_length_get(cursor);
 			if (len > cur_idx)
 			{
-				evas_textblock2_cursor_pos_set(cursor, cur_idx);
+				evas_textblock_cursor_pos_set(cursor, cur_idx);
 				break;
 			}
 		}
 		else if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
 			len = 1;
 
-		if (!evas_textblock2_cursor_node_next(cursor))
+		if (!evas_textblock_cursor_node_next(cursor))
 		{
-			evas_textblock2_cursor_node_last(cursor);
-			evas_textblock2_cursor_char_last(cursor);
+			evas_textblock_cursor_node_last(cursor);
+			evas_textblock_cursor_char_last(cursor);
 			break;
 		}
 		cur_idx -= len;
@@ -4636,7 +4636,7 @@ ewl_text_textblock2_cursor_position(Ewl_Text *t, unsigned int idx)
 }
 
 static unsigned int
-ewl_text_textblock2_cursor_to_index(Evas_Textblock_Cursor *cursor)
+ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
 {
 	unsigned int idx = 0;
 
@@ -4646,13 +4646,13 @@ ewl_text_textblock2_cursor_to_index(Evas_Textblock_Cursor *cursor)
 	/* this gives the index inside the _node_ the cursor points to, we
 	 * then need to add the length of all the nodes before it plus any
 	 * formatting nodes that are \n or \t */
-	idx = evas_textblock2_cursor_pos_get(cursor);
-	while (evas_textblock2_cursor_node_prev(cursor))
+	idx = evas_textblock_cursor_pos_get(cursor);
+	while (evas_textblock_cursor_node_prev(cursor))
 	{
 		const char *txt;
-		txt = evas_textblock2_cursor_node_format_get(cursor);
+		txt = evas_textblock_cursor_node_format_get(cursor);
 		if (!txt)
-			idx += evas_textblock2_cursor_node_text_length_get(cursor);
+			idx += evas_textblock_cursor_node_text_length_get(cursor);
 		else if (!strcmp(txt, "\n")) idx ++;
 		else if (!strcmp(txt, "\t")) idx ++;
 	}
