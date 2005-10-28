@@ -49,4 +49,6 @@ images {
    image: "glow_arrow_down.png" COMP;
    image: "glow_arrow_up.png" COMP;
    image: "e_watermark.png" COMP;
+   image: "hpaned_separator.png" COMP;
+   image: "vpaned_separator.png" COMP;
 }
