@@ -21,6 +21,8 @@ struct entropy_generic_file {
 
 	entropy_thumbnail* thumbnail;
 
+	struct entropy_generic_file* parent;
+
 	char* md5; /*A reference to the md5sum made for this file*/
 };
 
@@ -37,6 +39,11 @@ struct entropy_file_request {
 	entropy_core* core; /*A reference into the system core */
 	void* requester; /*The object that requested this file/directory, for reference tracking purposes*/
 	int file_type;
+	int drill_down; /*Indicate if this request should drill down through the child's mime type
+			  I.e. if the file's uri is 'posix', and the file's mime is 'application/x-tar,
+			  produce a construct of the form posix://path/to/file#tar:/// ..etc */
+
+	int set_parent;
 };
 
 typedef struct entropy_file_stat entropy_file_stat;

@@ -192,10 +192,14 @@ entropy_core* entropy_core_init() {
         /*Show some details*/
         //entropy_thumbnailer_plugin_print(core->entropy_thumbnailers);
 
-
-
 	/*Initialize the selection engine*/
 	entropy_core_selection_engine_init(core);
+
+
+	/*Initialize the descent hash - this should be loaded from EVFS - FIXME*/
+	/*Descent hash init - move this to a call to EVFS*/
+	core->descent_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ecore_hash_set(core->descent_hash, "application/x-tar", "tar");
 
 
 
@@ -605,7 +609,6 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	
 
 	if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS)) {
-		char fullpath[1024];	
 		entropy_plugin* plugin;
 		entropy_notify_event *ev;
 		
@@ -616,17 +619,16 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		//printf("File says: %s %s\n", ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename);
 
 		/*Check if we need to put a slash between the path/file*/
-		if (strcmp(((entropy_generic_file*)event->data)->filename, "/") && strcmp(((entropy_generic_file*)event->data)->path, "/")) {		
-			sprintf(fullpath, "%s/%s", ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename);
-		} else {
-			sprintf(fullpath, "%s%s", ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename);
-		}
-		//printf("NOTIFY GETTING folder: %s\n", fullpath);
 
-		request->file = event->data;
+		if (((entropy_file_request*)event->data)->drill_down) {
+			printf("Request for drill down\n");
+		}
+
+		request->file = ((entropy_file_request*)event->data)->file;
 		request->requester = instance->layout_parent; /*Requester is the layout parent - after all - one dir per layout at one time*/
 		request->core = instance->core;
 		request->file_type = FILE_ALL;
+		request->drill_down = ((entropy_file_request*)event->data)->drill_down;
 
 		
 		/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
@@ -649,7 +651,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		/*Tell the notify engine we're ready to run*/
 		entropy_notify_event_commit(instance->core->notify, ev);
 
-		
+		/*Nuke the file_request object that was passed to us*/
+		free(event->data);
 
 		
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_CHANGE)) {
@@ -960,6 +963,12 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 
 
 	return file;
+}
+
+
+
+char* entropy_core_descent_for_mime_get(entropy_core* core, char* mime) {
+	return ecore_hash_get(core->descent_hash, mime);
 }
 
 

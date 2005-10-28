@@ -4,6 +4,9 @@
 #include <unistd.h>
 
 
+
+
+
 int entropy_plugin_type_get() {
         return ENTROPY_PLUGIN_ACTION_PROVIDER;
 }
@@ -16,17 +19,47 @@ char* entropy_plugin_identify() {
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj, entropy_gui_component_instance* comp) {
 	char fullname[1024];
 	entropy_gui_event* gui_event;
+	entropy_core* core = ((entropy_gui_component_instance*)requestor)->core;
 	char* app;
+	char* uri;
 
 	entropy_generic_file* file = (entropy_generic_file*)obj;
 
-	if (!strcmp(file->mime_type, "file/folder")) {
+	if (!strcmp(file->mime_type, "file/folder") && !file->parent) {
+		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
+		request->file = file;
+		
 		//printf("Action on a folder - change dirs!\n\n");
 
+		
 		/*Send an event to the core*/
 		gui_event = entropy_malloc(sizeof(entropy_gui_event));
 		gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
-		gui_event->data = file;
+		gui_event->data = request;
+		entropy_core_layout_notify_event((entropy_gui_component_instance*)requestor, gui_event, ENTROPY_EVENT_LOCAL); 
+
+		return;
+	} else if ( (uri = entropy_core_descent_for_mime_get(core,file->mime_type)) || file->parent) {
+		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
+		
+		printf("Requested a list of a descendable object\n");
+		/*printf("URI would be: '%s://%s/%s#tar:///'\n", file->uri_base, file->path, file->filename);*/
+		
+		
+		request->file = file;
+		if (uri) {
+			request->drill_down = 1;
+		} else {
+			request->drill_down = 0;
+		}
+
+		//printf("Action on a folder - change dirs!\n\n");
+
+		
+		/*Send an event to the core*/
+		gui_event = entropy_malloc(sizeof(entropy_gui_event));
+		gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
+		gui_event->data = request;
 		entropy_core_layout_notify_event((entropy_gui_component_instance*)requestor, gui_event, ENTROPY_EVENT_LOCAL); 
 
 		return;
@@ -62,6 +95,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
 	
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_ACTION_FILE));
 
+
 	/*Load config*/
 	config = entropy_config_int_get("action_simple", "init");
 	if (!config) {
@@ -82,12 +116,6 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
 
 		/*Archives*/
 		entropy_config_str_set("action_simple", "application/x-gtar", "file-roller");
-
-		
-		
-		
-		
-
 	}
 
 	return instance;

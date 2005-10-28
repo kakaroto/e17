@@ -83,6 +83,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 	//printf ("   Got %p\n", row);
 
 	/*If we don't own this row, forget about doing something - we don't know about this*/
+	
 	if (row && !ecore_hash_get(viewer->loaded_dirs, row)) {
 
 
@@ -104,7 +105,8 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 		ewl_tree_row_expand_set(row, EWL_TREE_NODE_EXPANDED);
 		
 	} else {
-		//printf ("We don't own this row\n");
+		printf ("We don't own this row\n");
+		printf("Looked for file '(%s)(%s) (%p)'\n", event_file->path, event_file->filename,event_file);
 		/*printf("---------------------------------------------> This row already has children!!\n");*/
 	}
       }
@@ -117,15 +119,19 @@ void row_clicked_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) 
 	event_file_core* event = (event_file_core*)user_data;
 	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
 	entropy_gui_event* gui_event;
+	entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 	
 
 	//printf("Clicked on %s%s\n", event->file->path, event->file->filename);
 
 	/*-----------*/
 	/*Send an event to the core*/
+	request->file = event->file;
+	request->drill_down = 0;
+	
 	gui_event = entropy_malloc(sizeof(entropy_gui_event));
 	gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS);
-	gui_event->data = event->file;
+	gui_event->data = request;
 	entropy_core_layout_notify_event(event->instance, gui_event, ENTROPY_EVENT_LOCAL); 
 
 	if (viewer->last_selected_label) {

@@ -186,6 +186,7 @@ void callback(evfs_event* data) {
 				entropy_file_listener* listener;
 				entropy_gui_event* gui_event;
 				evfs_filereference* ref;
+				char* filename;
 				char* folder;
 				char *pos;
 				
@@ -204,11 +205,22 @@ void callback(evfs_event* data) {
 				while (  (ref= ecore_list_next(data->file_list.list)) ) {
 
 					
-					//printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
+					printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
 				
 					folder = strdup((char*)ref->path);
 					pos = rindex(folder, '/');
 					*pos = '\0';
+
+					filename = strdup(pos+1);
+
+					/*If we are the root dir (i.e. we only have one "/", replace it (so we can use it below),
+					 * and assume this filename has length (BAD).  */
+					if (!strlen(folder)) {
+						*pos = '/';
+						*(pos+1) = '\0';
+					}
+
+					printf("Calling folder is '%s'\n", folder);
 
 					/*If the calling request is currently NULL, we must go to the hash to retrieve that caller*/
 					if (!calling_request) {
@@ -225,9 +237,7 @@ void callback(evfs_event* data) {
 					//printf("Folder name: '%s', filename '%s'\n", folder, pos+1);
 				
 					/*Look for an existing file we have cached*/
-					char* md5 = md5_entropy_path_file(folder, pos+1);
-
-					
+					char* md5 = md5_entropy_path_file(folder, filename);
 
 					/*Now create, or grab, a file*/
 					if ( !ecore_hash_get(filesystem_core->file_interest_list, md5) ) {
@@ -235,7 +245,7 @@ void callback(evfs_event* data) {
 						file = entropy_generic_file_new();
 						/*For now, just make an entropy_generic_file for this object*/
 						strncpy(file->path, folder, 255);
-						strncpy(file->filename, pos+1, strlen(pos+1)+1);
+						strncpy(file->filename, filename, strlen(filename)+1);
 						file->md5 = strdup(md5);
 
 						/*Set the file type, if evfs provided it*/
@@ -246,6 +256,14 @@ void callback(evfs_event* data) {
 							//printf("Marked this file as a directory\n");
 						} else {
 							//printf("Didn't mark this file, type %d\n",ref->file_type);
+							file->filetype = FILE_STANDARD;
+						}
+
+						if (calling_request && (calling_request->drill_down || calling_request->set_parent)) {
+							printf("Calling request had a parent...\n");
+							printf("File ('%s') parent's name is '%s'\n", file->filename, calling_request->file->filename);
+
+							file->parent = calling_request->file;
 						}
 
 						/*Mark the file's uri FIXME do this properly*/
@@ -266,6 +284,7 @@ void callback(evfs_event* data) {
 					}
 
 					free(folder);
+					free(filename);
 
 
 					/*Add this file to our list*/
@@ -401,7 +420,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	evfs_file_uri_path* dir_path;
 	entropy_file_listener* listener;
 
-	if (!strcmp(request->file->uri_base, "posix")) {
+	if ( (!strcmp(request->file->uri_base, "posix")) && !request->drill_down && !request->file->parent) {
 		/*If either the path, or the filename, is the root dir, we don't need another slash*/
 		if (strcmp(request->file->filename, "/") && strcmp(request->file->path, "/")) {		
 			snprintf(dire, 256, "%s/%s", request->file->path, request->file->filename);
@@ -488,33 +507,93 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	} else { /*Not a posix call for a dir list - don't use our local optim function */
 		entropy_file_request* new_request; /*We need to make a copy of the request object
 						     because the original will be destroyed*/
+
+		entropy_generic_file* source_file;
 		char uri[512];
 		evfs_file_uri_path* path;
 		
 		//printf("*** Requested a '%s' dir list, calling evfs\n", request->file->uri_base);
+		//
+		//
+		/*If the file/location we are requesting has a 'parent' (i.e. it's inside another object),
+		 * we have to grab the parent, not the file itself, as the base*/
+		if (request->file->parent) {
+			source_file = request->file->parent;
+		} else
+			source_file = request->file;
+		//
 
 		/*First build uri..*/
 
 		/*Do we have login information*/
 		/*TODO - wrap this up in some kind of entropy_generic_file_to_evfs_uri function*/
-		if (!request->file->username) {
-			snprintf(uri, 512, "%s://%s/%s",  request->file->uri_base, request->file->path, request->file->filename);
+		if (!source_file->username) {
+			snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, source_file->path, source_file->filename);
 		} else {
-			snprintf(uri, 512, "%s://%s:%s@%s/%s",  request->file->uri_base, request->file->username, request->file->password, request->file->path, request->file->filename);
+			snprintf(uri, 512, "%s://%s:%s@%s/%s",  source_file->uri_base, 
+					source_file->username, source_file->password, 
+					source_file->path, source_file->filename);
+		}
+
+		/*If it's a drill down request, or the file has a parent */
+		if (request->drill_down || request->file->parent) {
+			char* uri_retrieve;
+			char uri_build[255];
+			
+			/*The file is a drill down request*/
+
+			
+			printf("EVFS says that this file descends through '%s'\n", uri);
+			
+			/*If we're a 'drill-down', we're at the root - so request the root*/
+			if (request->drill_down) {
+				uri_retrieve = entropy_core_descent_for_mime_get(request->core,request->file->mime_type);
+				snprintf(uri_build, 255, "#%s:///", uri_retrieve);
+				printf("URI build says: '%s'\n", uri_build);
+				strcat(uri, uri_build); 
+			} else if (request->file->parent) {
+				printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", request->file->parent->mime_type, request->file->parent->filename);
+				uri_retrieve = entropy_core_descent_for_mime_get(request->core,request->file->parent->mime_type);
+
+				/*Special case handler for the root dir - FIXME*/
+				printf("Path: '%s', filename '%s'\n", request->file->path, request->file->filename);
+				if (!strcmp(request->file->path,"/")) {
+					snprintf(uri_build, 255, "#%s://%s%s", uri_retrieve, request->file->path, request->file->filename);
+				} else {
+					snprintf(uri_build, 255, "#%s://%s/%s", uri_retrieve, request->file->path, request->file->filename);
+				}
+
+				strcat(uri, uri_build);
+			}
+
+			
+
 		}
 		
-		//printf("URI: %s\n", uri);
+		printf("URI: %s\n", uri);
 
 		path = evfs_parse_uri(uri);
 		evfs_client_dir_list(con, path->files[0]);
 
 
 		new_request = entropy_malloc(sizeof(entropy_file_request));
-		new_request->file = request->file;
+
+		/*If this request/file has a parent, the new file listing's parent will be 
+		 * the same file - not the request file */
+		
+		new_request->file = source_file;
+		if (request->file->parent) new_request->set_parent = 1;
+		
+		
 		new_request->core = request->core;
+		new_request->drill_down = request->drill_down;
 		new_request->requester = request->requester;
 		new_request->file_type = request->file_type;
-		ecore_hash_set(evfs_dir_requests, path->files[0]->path, new_request);
+		if (request->drill_down) {
+			ecore_hash_set(evfs_dir_requests, "/", new_request);
+		} else {
+			ecore_hash_set(evfs_dir_requests, path->files[0]->path, new_request);
+		}
 		
 		return NULL;
 	}

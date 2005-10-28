@@ -5,6 +5,7 @@ entropy_generic_file* entropy_generic_file_new() {
 	file->thumbnail = NULL;
 	file->username = NULL;
 	file->password = NULL;
+	file->parent = NULL;
 
 	allocated_files++;
 	print_allocation();

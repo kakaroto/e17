@@ -26,6 +26,7 @@ struct entropy_core {
 	pthread_mutex_t file_cache_mutex;
 
 	Ecore_List* selected_files;
+	Ecore_Hash* descent_hash;
 
 	
 
