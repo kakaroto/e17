@@ -261,9 +261,9 @@ void callback(evfs_event* data) {
 
 						if (calling_request && (calling_request->drill_down || calling_request->set_parent)) {
 							printf("Calling request had a parent...\n");
-							printf("File ('%s') parent's name is '%s'\n", file->filename, calling_request->file->filename);
+							printf("File ('%s') parent's name is '%s'\n", file->filename, calling_request->reparent_file->filename);
 
-							file->parent = calling_request->file;
+							file->parent = calling_request->reparent_file;
 						}
 
 						/*Mark the file's uri FIXME do this properly*/
@@ -581,8 +581,14 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 		/*If this request/file has a parent, the new file listing's parent will be 
 		 * the same file - not the request file */
 		
-		new_request->file = source_file;
-		if (request->file->parent) new_request->set_parent = 1;
+		new_request->file = request->file;
+		
+		if (request->file->parent || request->drill_down) {
+			new_request->reparent_file = source_file;
+			new_request->set_parent = 1;
+		}
+			
+		
 		
 		
 		new_request->core = request->core;

@@ -36,6 +36,8 @@ typedef struct entropy_file_request entropy_file_request;
 struct entropy_file_request {
 	entropy_generic_file* file;
 	entropy_generic_file* file2;
+	entropy_generic_file* reparent_file;
+	
 	entropy_core* core; /*A reference into the system core */
 	void* requester; /*The object that requested this file/directory, for reference tracking purposes*/
 	int file_type;
