@@ -1898,10 +1898,7 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED))
-		ewl_widget_state_set(w, "mouse,down,0");
-	else
-		ewl_widget_state_set(w, "mouse,in");
+	ewl_widget_state_set(w, "mouse,in");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
