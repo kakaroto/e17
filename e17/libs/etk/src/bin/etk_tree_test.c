@@ -30,7 +30,8 @@ void etk_test_tree_window_create(void *data)
    Etk_Widget *tree;
    Etk_Tree_Row *row;
    Etk_Tree_Col *col1, *col2, *col3;
-   Etk_Widget *table;
+   Etk_Widget *hpaned;
+   Etk_Widget *vbox;
    Etk_Widget *label;
    int i;
 
@@ -44,19 +45,20 @@ void etk_test_tree_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), _("Etk Tree Test"));
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_tree_window_deleted_cb), win);	
 	
-   table = etk_table_new(2, 2, FALSE);
-   etk_container_add(ETK_CONTAINER(win), table);
-
-   label = etk_label_new(_("<h1>Tree:</h1>"));
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL);
-
-   label = etk_label_new(_("<h1>List:</h1>"));
-   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL);
+   hpaned = etk_hpaned_new();
+   etk_container_add(ETK_CONTAINER(win), hpaned);
 
    /* The tree: */
+   vbox = etk_vbox_new(FALSE, 0);
+   etk_paned_add1(ETK_PANED(hpaned), vbox);
+
+   label = etk_label_new(_("<h1>Tree:</h1>"));
+   etk_box_pack_start(ETK_BOX(vbox), label, FALSE, TRUE, 0);
+
    tree = etk_tree_new();
    etk_widget_size_request_set(tree, 320, 400);
-   etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
+   //etk_container_add(ETK_CONTAINER(win), tree);
+   etk_box_pack_start(ETK_BOX(vbox), tree, TRUE, TRUE, 0);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 100);
@@ -80,13 +82,18 @@ void etk_test_tree_window_create(void *data)
    etk_signal_connect("row_unselected", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_row_unselected), NULL);
 
    /* The list: */
+   vbox = etk_vbox_new(FALSE, 0);
+   etk_paned_add2(ETK_PANED(hpaned), vbox);
+
+   label = etk_label_new(_("<h1>List:</h1>"));
+   etk_box_pack_start(ETK_BOX(vbox), label, FALSE, TRUE, 0);
+
    tree = etk_tree_new();
    etk_widget_size_request_set(tree, 320, 400);
-   etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
+   etk_box_pack_start(ETK_BOX(vbox), tree, TRUE, TRUE, 0);
 
    etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 100);
-   printf("Col 1: %p\n", col1);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 100);
    col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 100);
    etk_tree_build(ETK_TREE(tree));

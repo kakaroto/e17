@@ -22,8 +22,8 @@ static void _etk_label_constructor(Etk_Label *label);
 static void _etk_label_destructor(Etk_Label *label);
 static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_label_realized_cb(Etk_Object *object, void *data);
-static void _etk_label_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_label_realize_cb(Etk_Object *object, void *data);
+static void _etk_label_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_label_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 
@@ -181,8 +181,8 @@ static void _etk_label_constructor(Etk_Label *label)
    widget->size_request = _etk_label_size_request;
    widget->move_resize = _etk_label_move_resize;
 
-   etk_signal_connect_after("realized", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_unrealized_cb), NULL);
+   etk_signal_connect_after("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_unrealize_cb), NULL);
 }
 
 /* Destroys the label */
@@ -283,7 +283,7 @@ static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
  **************************/
 
 /* Called when the label is realized */
-static void _etk_label_realized_cb(Etk_Object *object, void *data)
+static void _etk_label_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Label *label;
    Evas *evas;
@@ -314,7 +314,6 @@ static void _etk_label_realized_cb(Etk_Object *object, void *data)
    _etk_label_style_use++;
 
    label->clip = evas_object_rectangle_add(evas);
-   evas_object_color_set(label->clip, 255, 255, 255, 128);
    evas_object_clip_set(label->text_object, label->clip);
    evas_object_show(label->clip);
    etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
@@ -322,8 +321,8 @@ static void _etk_label_realized_cb(Etk_Object *object, void *data)
    etk_label_set(label, label->text);
 }
 
-/* Called when the label is unrealizedd */
-static void _etk_label_unrealized_cb(Etk_Object *object, void *data)
+/* Called when the label is unrealized */
+static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
 {
    if (!object)
       return;

@@ -26,9 +26,6 @@ struct _Etk_Bin
    /* private: */
    /* Inherit from Etk_Container */
    Etk_Container container;
-
-   Etk_Bool swallow_child;
-   Etk_Bool swallow_on_realize;
 };
 
 Etk_Type *etk_bin_type_get();

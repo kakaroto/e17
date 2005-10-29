@@ -72,8 +72,4 @@ static void _etk_test_canvas_object_add(void *data)
    b = rand() % 255;
    a = ETK_MAX(rand() % 255, 40);
    evas_object_color_set(object, r, g, b, a);
-
-   //printf("%d %d %d %d / %d %d %d %d\n", x, y, w, h, r, g, b, a);
-
-   evas_object_raise(object);
 }

@@ -148,6 +148,7 @@ struct _Etk_Widget
    char *theme_group;
 
    Evas_Object *smart_object;
+   Evas_Object *clip;
    Evas_List *swallowed_objects;
    Evas_List *member_objects;
 
@@ -156,7 +157,6 @@ struct _Etk_Widget
 
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
-   Etk_Geometry new_geometry;
    /* The size wanted by the user */
    Etk_Size requested_size;
    /* The result of the last etk_widget_size_request() */
@@ -184,6 +184,7 @@ struct _Etk_Widget
    unsigned char need_theme_min_size_recalc : 1;
    unsigned char size_request_done : 1;
    unsigned char size_allocate_needs_request : 1;
+   unsigned char first_move : 1;
    unsigned char swallowed : 1;
 };
 
@@ -206,6 +207,7 @@ void etk_widget_repeat_events_set(Etk_Widget *widget, Etk_Bool repeat_events);
 Etk_Bool etk_widget_repeat_events_get(Etk_Widget *widget);
 void etk_widget_pass_events_set(Etk_Widget *widget, Etk_Bool pass_events);
 Etk_Bool etk_widget_pass_events_get(Etk_Widget *widget);
+void etk_widget_event_propagation_stop();
 
 void etk_widget_show(Etk_Widget *widget);
 void etk_widget_show_all(Etk_Widget *widget);
@@ -236,7 +238,7 @@ void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h);
 void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);
 void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
 
-void etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
+Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object);
 
 void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object);

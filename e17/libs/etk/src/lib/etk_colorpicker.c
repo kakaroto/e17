@@ -6,7 +6,7 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-#include "etk_table.h"
+#include "etk_vbox.h"
 #include "etk_radio_button.h"
 #include "etk_colorpicker_vertical.h"
 #include "etk_colorpicker_square.h"
@@ -25,11 +25,6 @@ static int _etk_colorpicker_mode[6] = {
   ETK_COLOR_MODE_B
 };
 
-enum _Etk_Cp_Signal_Id
-{
-   ETK_CP_NUM_SIGNALS
-};
-
 enum _Etk_Cp_Property_Id
 {
    ETK_CP_COLOR_MODE_PROPERTY
@@ -38,14 +33,10 @@ enum _Etk_Cp_Property_Id
 static void _etk_colorpicker_constructor(Etk_Colorpicker *cp);
 static void _etk_colorpicker_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data);
 
 static void _etk_colorpicker_cps_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_cpv_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_radio_cb(Etk_Object *object, void *data);
-
-static Etk_Signal *_etk_cp_signals[ETK_CP_NUM_SIGNALS];
-
 
 /**************************
  *
@@ -65,7 +56,7 @@ Etk_Type *etk_colorpicker_type_get()
    {
       cp_type = etk_type_new("Etk_Colorpicker", ETK_HBOX_TYPE, sizeof(Etk_Colorpicker), ETK_CONSTRUCTOR(_etk_colorpicker_constructor), NULL, NULL);
 
-      etk_type_property_add(cp_type, "type", ETK_CP_COLOR_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_COLOR_MODE_H));
+      etk_type_property_add(cp_type, "color_mode", ETK_CP_COLOR_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLOR_MODE_H));
 
       cp_type->property_set = _etk_colorpicker_property_set;
       cp_type->property_get = _etk_colorpicker_property_get;
@@ -330,19 +321,53 @@ void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *c)
 static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
 {
    Etk_Widget *widget;
+   Etk_Widget *vbox;
+   char *label[6] = {"H", "S", "V", "R", "G", "B"};
+   int i;
 
    if (!(widget = ETK_WIDGET(cp)))
       return;
 
    cp->cps = NULL;
    cp->cpv = NULL;
-
    cp->color_mode = ETK_COLOR_MODE_H;
    cp->color.r = 0;
    cp->color.g = 0;
    cp->color.b = 0;
+   etk_box_spacing_set(ETK_BOX(cp), 6);
 
-   etk_signal_connect_after("realized", ETK_OBJECT(cp), ETK_CALLBACK(_etk_colorpicker_realized_cb), NULL);
+   cp->cps = etk_colorpicker_square_new(64, 64);
+   if (cp->cps)
+   {
+      etk_widget_size_request_set(cp->cps, 256, 256);
+      etk_box_pack_start(ETK_BOX(cp), cp->cps, FALSE, FALSE, 0);
+      etk_signal_connect("color_selected", ETK_OBJECT(cp->cps), ETK_CALLBACK(_etk_colorpicker_cps_cb), NULL);
+      etk_widget_show(cp->cps);
+   }
+
+   cp->cpv = etk_colorpicker_vertical_new(1, 256);
+   if (cp->cpv)
+   {
+      etk_widget_size_request_set(cp->cpv, 16, 256);
+      etk_box_pack_start(ETK_BOX(cp), cp->cpv, FALSE, FALSE, 0);
+      etk_signal_connect("color_selected", ETK_OBJECT(cp->cpv), ETK_CALLBACK(_etk_colorpicker_cpv_cb), NULL);
+      etk_widget_show(cp->cpv);
+   }
+
+   vbox = etk_vbox_new(0, TRUE);
+   etk_box_pack_start(ETK_BOX(cp), vbox, FALSE, FALSE, 0);
+   etk_widget_show(vbox);
+   for (i = 0; i < 6; i++)
+   {
+      if (i == 0)
+         cp->radio[i] = etk_radio_button_new_with_label(label[i], NULL);
+      else
+         cp->radio[i] = etk_radio_button_new_with_label_from_widget(label[i], ETK_RADIO_BUTTON(cp->radio[0]));
+      etk_box_pack_start(ETK_BOX(vbox), cp->radio[i], TRUE, TRUE, 0);
+      etk_widget_show(cp->radio[i]);
+
+      etk_signal_connect("pressed", ETK_OBJECT(cp->radio[i]), ETK_CALLBACK(_etk_colorpicker_radio_cb), &_etk_colorpicker_mode[i]);
+   }
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -378,62 +403,6 @@ static void _etk_colorpicker_property_get(Etk_Object *object, int property_id, E
          break;
       default:
          break;
-   }
-}
-
-
-/* Called when the cp is realized */
-static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data)
-{
-   Etk_Colorpicker *cp;
-   Etk_Widget *widget;
-   Etk_Widget *table;
-
-   if (!(widget = ETK_WIDGET(object)))
-      return;
-
-   cp = ETK_COLORPICKER(object);
-   etk_box_spacing_set(ETK_BOX(cp), 6);
-
-   cp->cps = etk_colorpicker_square_new(256, 256);
-   if (cp->cps)
-   {
-      etk_widget_size_request_set(cp->cps, 256, 256);
-      etk_box_pack_start(ETK_BOX(cp), cp->cps, FALSE, FALSE, 0);
-      etk_signal_connect("color_selected", ETK_OBJECT(cp->cps), ETK_CALLBACK(_etk_colorpicker_cps_cb), NULL);
-      etk_widget_show(cp->cps);
-   }
-
-   cp->cpv = etk_colorpicker_vertical_new(1, 256);
-   if (cp->cpv)
-   {
-      etk_widget_size_request_set(cp->cpv, 16, 256);
-      etk_box_pack_start(ETK_BOX(cp), cp->cpv, FALSE, FALSE, 0);
-      etk_signal_connect("color_selected", ETK_OBJECT(cp->cpv), ETK_CALLBACK(_etk_colorpicker_cpv_cb), NULL);
-      etk_widget_show(cp->cpv);
-   }
-
-   table = etk_table_new(1, 6, FALSE);
-   if (table)
-   {
-      char *label[6] = {"H", "S", "V", "R", "G", "B"};
-      int i;
-
-      etk_box_pack_start(ETK_BOX(cp), table, FALSE, FALSE, 0);
-      etk_widget_show(table);
-      
-      for (i = 0; i < 6; i++)
-      {
-         if (i == 0)
-            cp->radio[i] = etk_radio_button_new_with_label(label[i], NULL);
-         else
-            cp->radio[i] = etk_radio_button_new_with_label_from_widget(label[i], ETK_RADIO_BUTTON(cp->radio[0]));
-
-         etk_signal_connect("pressed", ETK_OBJECT(cp->radio[i]), ETK_CALLBACK(_etk_colorpicker_radio_cb), &_etk_colorpicker_mode[i]);
-         
-         etk_table_attach_defaults(ETK_TABLE(table), cp->radio[i], 0, 0, i, i);
-         etk_widget_show(cp->radio[i]);
-      }
    }
 }
 

@@ -20,7 +20,6 @@
  */
 
 static void _etk_main_iterate_job_cb(void *data);
-static void _etk_main_reinit_for_next_frame(Etk_Widget *widget);
 
 static Ecore_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = FALSE;
@@ -129,7 +128,6 @@ void etk_main_quit()
    _etk_main_iterate_job = NULL;
 }
 
-int iterr = 0;
 /** @brief Runs an iteration of the main loop */
 void etk_main_iterate()
 {
@@ -139,7 +137,6 @@ void etk_main_iterate()
    if (!_etk_main_initialized)
       return;
 
-   printf("ITER %d BEGIN\n", iterr);
    ecore_list_goto_first(_etk_main_toplevel_widgets);
    while ((toplevel = ecore_list_next(_etk_main_toplevel_widgets)))
    {
@@ -157,12 +154,8 @@ void etk_main_iterate()
          geometry.y = 0;
          etk_toplevel_widget_size_get(toplevel, &geometry.w, &geometry.h);
          etk_widget_size_allocate(widget, geometry);
-
-         /* TODO */
-         _etk_main_reinit_for_next_frame(widget);
       }
    }
-   printf("ITER %d END\n\n", iterr++);
 }
 
 /** @brief Will run an iteration as soon as possible */
@@ -209,17 +202,6 @@ static void _etk_main_iterate_job_cb(void *data)
 {
    _etk_main_iterate_job = NULL;
    etk_main_iterate();
-}
-
-/* Reinitializes all the widgets for the next frame */
-static void _etk_main_reinit_for_next_frame(Etk_Widget *widget)
-{
-   if (!widget)
-      return;
-
-   widget->need_redraw = FALSE;
-   if (ETK_IS_CONTAINER(widget))
-      etk_container_for_each(ETK_CONTAINER(widget), _etk_main_reinit_for_next_frame);
 }
 
 /** @} */

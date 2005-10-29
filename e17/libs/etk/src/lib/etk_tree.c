@@ -1081,7 +1081,7 @@ static void _etk_grid_constructor(Etk_grid *grid)
       return;
 
    ETK_WIDGET(grid)->move_resize = _etk_grid_move_resize;
-   etk_signal_connect_after("realized", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_realize_cb), NULL);
+   etk_signal_connect_after("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_realize_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_mouse_wheel_cb), NULL);
 }
 

@@ -26,13 +26,13 @@ struct _Etk_Canvas
    Etk_Widget widget;
 
    Evas_Object *clip;
-   Ecore_List *objects;
 };
 
 Etk_Type *etk_canvas_type_get();
 Etk_Widget *etk_canvas_new();
 
-void etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object);
+Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object);
+void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object);
 
 /** @} */
 

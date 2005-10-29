@@ -20,7 +20,7 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
 static void _etk_toplevel_widget_destructor(Etk_Toplevel_Widget *toplevel_widget);
 static void _etk_toplevel_widget_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_toplevel_widget_realized_cb(Etk_Object *object, void *data);
+static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data);
 static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Etk_Widget *after);
 static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *widget, Etk_Widget *before);
 
@@ -230,7 +230,7 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
    toplevel_widget->pointer_set = NULL;
    ETK_WIDGET(toplevel_widget)->toplevel_parent = toplevel_widget;
 
-   etk_signal_connect_after("realized", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realized_cb), NULL);
+   etk_signal_connect_after("realize", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realize_cb), NULL);
 
    etk_main_toplevel_widget_add(toplevel_widget);
 }
@@ -292,7 +292,7 @@ static void _etk_toplevel_widget_property_get(Etk_Object *object, int property_i
  **************************/
 
 /* Called when the toplevel widget is realized */
-static void _etk_toplevel_widget_realized_cb(Etk_Object *object, void *data)
+static void _etk_toplevel_widget_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Toplevel_Widget *toplevel_widget;
    Etk_Widget *widget;
@@ -317,84 +317,39 @@ static void _etk_toplevel_widget_realized_cb(Etk_Object *object, void *data)
  **************************/
 
 /* Gets recursively the next widget to focus */
-static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *widget, Etk_Widget *after)
+static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *node, Etk_Widget *from)
 {
-/*   Evas_List *l;
-   Evas_List *children;
-   Etk_Widget *child;
-   Etk_Widget *parent;
+   Evas_List *children, *l;
 
-   if (!toplevel)
+   if (!node)
+      return NULL;
+   if (node->focusable)
+      return node;
+   if (!ETK_IS_CONTAINER(node) || !(children = etk_container_children_get(ETK_CONTAINER(node))))
       return NULL;
 
-   if (!after)
-   {
-   }
-
-   if (widget->focusable)
-      return widget;
-
-   if (!ETK_IS_CONTAINER(widget))
-      return NULL;
-
-   if (!(children = etk_container_children_get(ETK_CONTAINER(widget))))
-      return NULL;
-
-   if (after && (l = evas_list_find_list(children, after)))
-      ecore_dlist_next(children);
+   if (from && (l = evas_list_find_list(children, from)) && l->next)
+      return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(l->next->data), NULL);
    else
-      ecore_dlist_goto_first(children);
-
-   while ((child = ETK_WIDGET(ecore_dlist_next(children))))
-   {
-      Etk_Widget *next;
-
-      if ((next = _etk_toplevel_widget_next_to_focus_get(child, NULL)))
-         return next;
-   }
-
-   if ((parent = ETK_WIDGET(widget->parent)))
-      return _etk_toplevel_widget_next_to_focus_get(parent, widget);
-   else*/ /* TODO */
-      return NULL;
+      return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(node->parent), node);
 }
 
 /* Gets recursively the previous widget to focus */
-static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *widget, Etk_Widget *before)
-{/*
-   Ecore_DList *children;
-   Etk_Widget *child;
-   Etk_Widget *parent;
+static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *node, Etk_Widget *from)
+{
+   Evas_List *children, *l;
 
-   if (!widget)
+   if (!node)
+      return NULL;
+   if (node->focusable)
+      return node;
+   if (!ETK_IS_CONTAINER(node) || !(children = etk_container_children_get(ETK_CONTAINER(node))))
       return NULL;
 
-   if (widget->focusable)
-      return widget;
-
-   if (!ETK_IS_CONTAINER(widget))
-      return NULL;
-
-   if (!(children = etk_container_children_get(ETK_CONTAINER(widget))))
-      return NULL;
-
-   if (before && ecore_dlist_goto(children, before))
-      ecore_dlist_previous(children);
+   if (from && (l = evas_list_find_list(children, from)) && l->prev)
+      return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(l->prev->data), NULL);
    else
-      ecore_dlist_goto_last(children);
-
-   while ((child = ETK_WIDGET(ecore_dlist_previous(children))))
-   {
-      Etk_Widget *next;
-
-      if ((next = _etk_toplevel_widget_prev_to_focus_get(child, NULL)))
-         return next;
-   }
-
-   if ((parent = ETK_WIDGET(widget->parent)))
-      return _etk_toplevel_widget_prev_to_focus_get(parent, widget);
-   else*/ /* TODO */
-      return NULL;
+      return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(node->parent), node);
 }
 
 /** @} */

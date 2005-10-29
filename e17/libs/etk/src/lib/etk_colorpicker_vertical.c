@@ -29,8 +29,8 @@ enum _Etk_Cpv_Property_Id
 static void _etk_colorpicker_vertical_constructor(Etk_Colorpicker_Vertical *cpv);
 static void _etk_colorpicker_vertical_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_vertical_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_colorpicker_vertical_realized_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_vertical_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_vertical_realize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_vertical_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_vertical_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 
 static void _etk_colorpicker_vertical_move_cb(Etk_Object *w, void *ev_data, void *user_data);
@@ -289,8 +289,8 @@ static void _etk_colorpicker_vertical_constructor(Etk_Colorpicker_Vertical *cpv)
 
    widget->move_resize = _etk_colorpicker_vertical_move_resize;
 
-   etk_signal_connect_after("realized", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_unrealized_cb), NULL);
+   etk_signal_connect_after("realize", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_unrealize_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_down_cb), NULL);
    etk_signal_connect("mouse_up", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_up_cb), NULL);
    etk_signal_connect("mouse_move", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_move_cb), NULL);
@@ -351,7 +351,7 @@ static void _etk_colorpicker_vertical_property_get(Etk_Object *object, int prope
 }
 
 /* Called when the cpv is realized */
-static void _etk_colorpicker_vertical_realized_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_vertical_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker_Vertical *cpv;
    Evas *evas;
@@ -375,7 +375,7 @@ static void _etk_colorpicker_vertical_realized_cb(Etk_Object *object, void *data
 }
 
 /* Called when the cpv is unrealized */
-static void _etk_colorpicker_vertical_unrealized_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_vertical_unrealize_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker_Vertical *cpv;
 
