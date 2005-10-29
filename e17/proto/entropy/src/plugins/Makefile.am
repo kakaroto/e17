@@ -55,14 +55,14 @@ mime_la_CFLAGS 	               = @EVFS_CFLAGS@
 mime_la_LDFLAGS                = -module -avoid-version
 
 imlib_thumbnailer_la_SOURCES   = thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
-imlib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@
+imlib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
 imlib_thumbnailer_la_LDFLAGS   = -module -avoid-version
-imlib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@
+imlib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
 
 system_thumbnailer_la_SOURCES  = thumbnail_system.c thumbnail_generic.c $(top_srcdir)/src/entropy_debug.c
-system_thumbnailer_la_CFLAGS   = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@
+system_thumbnailer_la_CFLAGS   = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
 system_thumbnailer_la_LDFLAGS  = -module -avoid-version
-system_thumbnailer_la_LIBADD   = @ECORE_LIBS@
+system_thumbnailer_la_LIBADD   = @ECORE_LIBS@ @EPSILON_LIBS@
 
 
 posix_la_SOURCES               = filesystem.c $(top_srcdir)/src/entropy_debug.c

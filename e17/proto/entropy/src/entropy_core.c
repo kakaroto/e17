@@ -150,6 +150,9 @@ entropy_core* entropy_core_init() {
 	//Initialise the config system
 	core->config = entropy_config_init(core);
 
+	/*Initialise epsilon thumbnailer*/
+	epsilon_init();
+
 	//Load the plugins
 	core->plugin_list = ecore_list_new();
         //printf("Reading plugins from: %s\n", PACKAGE_DATA_DIR "/plugins/");
