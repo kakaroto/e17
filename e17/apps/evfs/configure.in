@@ -184,6 +184,25 @@ ecore_libs=`$ECORE_CONFIG --libs`
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
 
+PROG="curl-config";
+msg_curl="no"
+AC_PATH_PROG(CURL_CONFIG, $PROG, "", $PATH)
+if test -z "$CURL_CONFIG" ; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  AC_MSG_WARN(Cannot find $PROG)
+  curl_cflags=""
+  curl_libs=""
+else
+	curl_cflags=`$CURL_CONFIG --cflags`
+	curl_libs=`$CURL_CONFIG --libs`
+	msg_curl="yes"
+fi
+AC_SUBST(curl_cflags)
+AC_SUBST(curl_libs)
+AM_CONDITIONAL(HAVE_CURL, test $msg_curl = yes)
+
+
 
 
 
