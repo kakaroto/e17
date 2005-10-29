@@ -50,8 +50,6 @@
 
 static void         EwinSlideIn(int val __UNUSED__, void *data);
 
-static void         EwinGetGeometry(EWin * ewin);
-
 static void         EwinChangesStart(EWin * ewin);
 static void         EwinChangesProcess(EWin * ewin);
 
@@ -244,6 +242,28 @@ EwinManage(EWin * ewin)
    ModulesSignal(ESIGNAL_EWIN_CREATE, ewin);
 }
 
+/*
+ * Derive frame window geometry from client window properties
+ */
+static void
+EwinSetGeometry(EWin * ewin)
+{
+   int                 x, y, l, r, t, b;
+
+   EwinGetPosition(ewin, ewin->client.x, ewin->client.y, ewin->client.bw,
+		   ewin->client.grav, &x, &y);
+
+   l = ewin->border->border.left;
+   r = ewin->border->border.right;
+   t = ewin->border->border.top;
+   b = ewin->border->border.bottom;
+
+   ewin->client.x = x + l;
+   ewin->client.y = y + t;
+
+   EoMoveResize(ewin, x, y, ewin->client.w + l + r, ewin->client.h + t + b);
+}
+
 static void
 EwinConfigure(EWin * ewin)
 {
@@ -265,7 +285,7 @@ EwinConfigure(EWin * ewin)
    ICCCM_Adopt(ewin);
 
    EwinBorderSelect(ewin);	/* Select border before calculating geometry */
-   EwinGetGeometry(ewin);	/* Calculate window geometry before border parts */
+   EwinSetGeometry(ewin);	/* Calculate window geometry before border parts */
    EwinBorderSetTo(ewin, NULL);
 
    EwinEventsConfigure(ewin, 1);
@@ -569,28 +589,6 @@ EwinGetPosition(const EWin * ewin, int x, int y, int bw, int grav,
 
    *px = x;
    *py = y;
-}
-
-/*
- * Derive frame window geometry from client window properties
- */
-static void
-EwinGetGeometry(EWin * ewin)
-{
-   int                 x, y, l, r, t, b;
-
-   EwinGetPosition(ewin, ewin->client.x, ewin->client.y, ewin->client.bw,
-		   ewin->client.grav, &x, &y);
-
-   l = ewin->border->border.left;
-   r = ewin->border->border.right;
-   t = ewin->border->border.top;
-   b = ewin->border->border.bottom;
-
-   ewin->client.x = x + l;
-   ewin->client.y = y + t;
-
-   EoMoveResize(ewin, x, y, ewin->client.w + l + r, ewin->client.h + t + b);
 }
 
 void

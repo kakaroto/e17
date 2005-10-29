@@ -36,6 +36,7 @@ struct _snapshot
    char               *win_name;
    char               *win_class;
    char               *win_role;
+   Window              win;
    EWin               *used;
    char                track_changes;
    unsigned int        match_flags;
@@ -145,6 +146,9 @@ SnapshotEwinMatch(Snapshot * sn, const EWin * ewin)
    /* Don't allow matching anything */
    if (!sn->match_flags)
       return 0;
+
+   if (ewin->state.identified)
+      return sn->win == _EwinGetClientXwin(ewin);
 
    if (sn->match_flags & SNAP_MATCH_TITLE
        && !SEQ(sn->win_title, ewin->icccm.wm_name))
@@ -1098,6 +1102,8 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	  {
 	     sn = lst[i];
 	     fprintf(f, "NEW: %s\n", sn->name);
+	     if (sn->used)
+		fprintf(f, "WIN: %#lx\n", _EwinGetClientXwin(sn->used));
 	     if ((sn->match_flags & SNAP_MATCH_TITLE) && sn->win_title)
 		fprintf(f, "TITLE: %s\n", sn->win_title);
 	     if ((sn->match_flags & SNAP_MATCH_NAME) && sn->win_name)
@@ -1217,7 +1223,11 @@ LoadSnapInfo(void)
 	  }
 	else if (sn)
 	  {
-	     if (!strcmp(s, "TITLE:"))
+	     if (!strcmp(s, "WIN:"))
+	       {
+		  sn->win = strtoul(atword(buf, 2), NULL, 0);
+	       }
+	     else if (!strcmp(s, "TITLE:"))
 	       {
 		  sn->win_title = Estrdup(atword(buf, 2));
 		  sn->match_flags |= SNAP_MATCH_TITLE;
@@ -1631,8 +1641,13 @@ SnapIpcFunc(const char *params, Client * c __UNUSED__)
 	  }
 
 #define SU(sn, item) ((sn->match_flags & item) ? '>' : ':')
-	IpcPrintf(" Snapshot  Name: %s    %s\n",
-		  name, (sn->used) ? "" : "*** Unused ***");
+
+	if (sn->used)
+	   Esnprintf(param, sizeof(param), "In use - %#lx",
+		     _EwinGetClientXwin(sn->used));
+	else
+	   Esnprintf(param, sizeof(param), "*** Unused ***");
+	IpcPrintf(" Snapshot  Name: %s    %s\n", name, param);
 	if (sn->win_title)
 	   IpcPrintf("   Window Title%c %s\n", SU(sn, SNAP_MATCH_TITLE),
 		     sn->win_title);
