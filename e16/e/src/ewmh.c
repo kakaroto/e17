@@ -856,12 +856,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
-	if (ewin->state.iconified)
-	   EwinDeIconify(ewin);
-	RaiseEwin(ewin);
-	if (ewin->state.shaded)
-	   EwinUnShade(ewin);
-	FocusToEWin(ewin, FOCUS_SET);
+	EwinOpActivate(ewin);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
      {

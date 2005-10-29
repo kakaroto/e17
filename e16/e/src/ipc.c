@@ -711,13 +711,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
-	DeskGotoByEwin(ewin);
-	if (ewin->state.iconified)
-	   EwinOpIconify(ewin, 0);
-	if (ewin->state.shaded)
-	   EwinOpShade(ewin, 0);
-	EwinOpRaise(ewin);
-	FocusToEWin(ewin, FOCUS_SET);
+	EwinOpActivate(ewin);
 	break;
 
      case EWIN_OP_FULLSCREEN:

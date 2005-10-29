@@ -311,6 +311,7 @@ void                EwinSetFullscreen(EWin * ewin, int on);
 void                EwinMoveToArea(EWin * ewin, int ax, int ay);
 
 void                EwinOpClose(EWin * ewin);
+void                EwinOpActivate(EWin * ewin);
 void                EwinOpKill(EWin * ewin);
 void                EwinOpRaise(EWin * ewin);
 void                EwinOpLower(EWin * ewin);

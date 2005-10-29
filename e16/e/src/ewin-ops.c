@@ -1409,6 +1409,18 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 }
 
 void
+EwinOpActivate(EWin * ewin)
+{
+   DeskGotoByEwin(ewin);
+   EwinOpRaise(ewin);
+   if (ewin->state.iconified)
+      EwinOpIconify(ewin, 0);
+   if (ewin->state.shaded)
+      EwinOpShade(ewin, 0);
+   FocusToEWin(ewin, FOCUS_SET);
+}
+
+void
 EwinOpClose(EWin * ewin)
 {
    EWin              **gwins;
