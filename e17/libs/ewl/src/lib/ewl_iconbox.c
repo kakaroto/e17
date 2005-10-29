@@ -440,7 +440,10 @@ void ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data, vo
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	
 	if (!strcmp(ev->keyname, "Return")) {
-		ewl_iconbox_icon_label_set(EWL_ICONBOX_ICON(ib->edit_icon), ewl_text_text_get(EWL_TEXT(ib->entry)));
+		char* text = ewl_text_text_get(EWL_TEXT(ib->entry));
+		
+		ewl_iconbox_icon_label_set(EWL_ICONBOX_ICON(ib->edit_icon), text);
+		free(text);
 
 		/*printf ("Setting label to: '%s'", ewl_text_text_get(EWL_TEXT(ib->entry)));*/
 
@@ -559,6 +562,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= 
 		int w,h;
 		int iw,ih;
 		int x,y;
+		char* text;
 
 		/* TODO request an ewl_floater_position_get function */
 		x = EWL_FLOATER(ib->floater)->x;
@@ -570,7 +574,9 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= 
 		ewl_object_minimum_size_set(EWL_OBJECT(ib->icon_box_parent->entry), w,h);
 
 		/* Get the current text to set this to */
-		ewl_text_text_set(EWL_TEXT(ib->icon_box_parent->entry), ewl_text_text_get(EWL_TEXT(ib->w_label)));
+		text = ewl_text_text_get(EWL_TEXT(ib->w_label));
+		ewl_text_text_set(EWL_TEXT(ib->icon_box_parent->entry), text);
+		free(text);
 		
 		ewl_widget_show(EWL_WIDGET(ib->icon_box_parent->entry_floater));
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
@@ -603,7 +609,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= 
 
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 {
-	
+	char* text;	
 	ib->selected = 0;
 	ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 0, 255);
 
@@ -613,7 +619,9 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 		ewl_iconbox_icon_label_set(ib, ib->label_compressed);
 	}
 	ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
-	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255, strlen(ewl_text_text_get(EWL_TEXT(ib->w_label))));
+	text = ewl_text_text_get(EWL_TEXT(ib->w_label));
+	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255, strlen(text));
+	free(text);
 
 }
 
