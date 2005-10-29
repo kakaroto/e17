@@ -334,12 +334,7 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_image_size_get(i->image, &i->ow, &i->oh);
 	}
 
-	/*Constrain settings*/
-	if (i->cs && (i->ow > i->cs || i->oh > i->cs)) {
-		double cp = i->cs / (double)i->ow;
-		ewl_image_scale(i, cp,cp);
 
-	}
 
 	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 	if (w->fx_clip_box)
@@ -360,6 +355,19 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
 		ewl_image_scale(i, i->sw, i->sh);
+	}
+
+	/*Constrain settings*/
+	if (i->cs && (i->ow > i->cs || i->oh > i->cs)) {
+		double cp = 0;
+		if (i->ow > i->oh) 
+			cp = i->cs / (double)i->ow;
+	 	else 
+			cp = i->cs / (double)i->oh;
+
+		ewl_image_scale(i, cp,cp);
+		ewl_image_tile_set(i,0,0,cp*i->ow,cp*i->oh);
+
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
