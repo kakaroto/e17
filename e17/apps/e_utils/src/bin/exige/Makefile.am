@@ -26,5 +26,6 @@ exige_LDADD = \
 	@EVAS_LIBS@ \
 	@ESMART_LIBS@ \
 	@EDJE_LIBS@ \
-	-lesmart_textarea \
 	-lesmart_text_entry
+
+#-lesmart_textarea 

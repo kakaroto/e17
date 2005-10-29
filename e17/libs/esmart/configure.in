@@ -98,7 +98,6 @@ src/lib/esmart_file_dialog/Makefile
 src/lib/esmart_thumb/Makefile
 src/lib/esmart_trans_x11/Makefile
 src/lib/esmart_draggies/Makefile
-src/lib/esmart_textarea/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
