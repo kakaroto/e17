@@ -337,7 +337,6 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*Constrain settings*/
 	if (i->cs && (i->ow > i->cs || i->oh > i->cs)) {
 		double cp = i->cs / (double)i->ow;
-		printf("Cp is %f\n", cp);
 		ewl_image_scale(i, cp,cp);
 
 	}
