@@ -30,6 +30,9 @@
 #include "hints.h"
 #include "xwin.h"
 
+static Atom         E16_WIN_DATA;
+static Atom         E16_WIN_BORDER;
+
 /*
  * Functions that set X11-properties from E-internals
  */
@@ -58,6 +61,9 @@ HintsInit(void)
      }
 
    Mode.hints.old_root_pmap = HintsGetRootPixmap(VRoot.win);
+
+   E16_WIN_DATA = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
+   E16_WIN_BORDER = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 }
 
 void
@@ -297,16 +303,10 @@ HintsSetRootInfo(Window win, Pixmap pmap, unsigned int color)
 void
 EHintsSetInfo(const EWin * ewin)
 {
-   static Atom         a = 0, aa = 0;
    int                 c[9];
 
    if (EwinIsInternal(ewin))
       return;
-
-   if (!a)
-      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
-   if (!aa)
-      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 
    c[0] = EoGetDeskNum(ewin);
    c[1] = EoIsSticky(ewin);
@@ -318,10 +318,10 @@ EHintsSetInfo(const EWin * ewin)
    c[7] = ewin->client.h;
    c[8] = ewin->state.docked;
 
-   ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), a,
+   ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), E16_WIN_DATA,
 				  (unsigned int *)c, 9);
 
-   ecore_x_window_prop_string_set(_EwinGetClientXwin(ewin), aa,
+   ecore_x_window_prop_string_set(_EwinGetClientXwin(ewin), E16_WIN_BORDER,
 				  ewin->normal_border->name);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
@@ -330,27 +330,23 @@ EHintsSetInfo(const EWin * ewin)
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
-int
+void
 EHintsGetInfo(EWin * ewin)
 {
-   static Atom         a = 0, aa = 0;
    char               *str;
    int                 num;
    int                 c[9];
 
    if (EwinIsInternal(ewin))
-      return 0;
-
-   if (!a)
-      a = XInternAtom(disp, "ENL_INTERNAL_DATA", False);
-   if (!aa)
-      aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
+      return;
 
    num =
-      ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin), a,
+      ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin), E16_WIN_DATA,
 				     (unsigned int *)c, 9);
    if (num < 8)
-      return 0;
+      return;
+
+   ewin->state.identified = 1;
 
    EoSetDesk(ewin, DeskGet(c[0]));
    EoSetSticky(ewin, c[1]);
@@ -371,7 +367,8 @@ EHintsGetInfo(EWin * ewin)
      }
    ewin->state.placed = 1;
 
-   str = ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin), aa);
+   str =
+      ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin), E16_WIN_BORDER);
    if (str)
       EwinSetBorderByName(ewin, str);
    Efree(str);
@@ -380,8 +377,6 @@ EHintsGetInfo(EWin * ewin)
       Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
-
-   return 0;
 }
 
 void

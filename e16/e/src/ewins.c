@@ -254,11 +254,13 @@ EwinConfigure(EWin * ewin)
       MatchEwinToSM(ewin);
 #endif
    WindowMatchEwinOps(ewin);	/* Window matches */
-   SnapshotsApplyToEwin(ewin);	/* Saved settings */
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
+   SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
+   if (!ewin->state.identified)
+      SnapshotEwinApply(ewin);	/* Apply saved settings */
 
-   EwinStateUpdate(ewin);	/* Update after snaps */
+   EwinStateUpdate(ewin);	/* Update after snaps etc. */
 
    ICCCM_Adopt(ewin);
 

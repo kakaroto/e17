@@ -138,7 +138,7 @@ SnapGetRole(const char *role, char *buf, int len)
 #define SEQ(s1, s2) ((s1) && (s2) && !strcmp(s1, s2))
 
 static int
-SnapshotEwinMatch(Snapshot * sn, EWin * ewin)
+SnapshotEwinMatch(Snapshot * sn, const EWin * ewin)
 {
    char                buf[256], *s;
 
@@ -194,7 +194,10 @@ SnapshotEwinFind(EWin * ewin)
 	   continue;
 
 	if (!(sn->match_flags & SNAP_MATCH_MULTIPLE))
-	   sn->used = ewin;
+	  {
+	     sn->used = ewin;
+	     ewin->snap = sn;
+	  }
 	goto done;
      }
    sn = NULL;
@@ -274,7 +277,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 /* record info about this Ewin's attributes */
 
 static void
-SnapEwinBorder(Snapshot * sn, EWin * ewin)
+SnapEwinBorder(Snapshot * sn, const EWin * ewin)
 {
    if (sn->border_name)
       Efree(sn->border_name);
@@ -286,20 +289,20 @@ SnapEwinBorder(Snapshot * sn, EWin * ewin)
 }
 
 static void
-SnapEwinDesktop(Snapshot * sn, EWin * ewin)
+SnapEwinDesktop(Snapshot * sn, const EWin * ewin)
 {
    sn->desktop = EoGetDeskNum(ewin);
 }
 
 static void
-SnapEwinSize(Snapshot * sn, EWin * ewin)
+SnapEwinSize(Snapshot * sn, const EWin * ewin)
 {
    sn->w = ewin->client.w;
    sn->h = ewin->client.h;
 }
 
 static void
-SnapEwinLocation(Snapshot * sn, EWin * ewin)
+SnapEwinLocation(Snapshot * sn, const EWin * ewin)
 {
    int                 ax, ay;
 
@@ -316,25 +319,25 @@ SnapEwinLocation(Snapshot * sn, EWin * ewin)
 }
 
 static void
-SnapEwinLayer(Snapshot * sn, EWin * ewin)
+SnapEwinLayer(Snapshot * sn, const EWin * ewin)
 {
    sn->layer = EoGetLayer(ewin);
 }
 
 static void
-SnapEwinSticky(Snapshot * sn, EWin * ewin)
+SnapEwinSticky(Snapshot * sn, const EWin * ewin)
 {
    sn->sticky = EoIsSticky(ewin);
 }
 
 static void
-SnapEwinShade(Snapshot * sn, EWin * ewin)
+SnapEwinShade(Snapshot * sn, const EWin * ewin)
 {
    sn->shaded = ewin->state.shaded;
 }
 
 static void
-SnapEwinSkipLists(Snapshot * sn, EWin * ewin)
+SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
 {
    sn->skiptask = ewin->props.skip_ext_task;
    sn->skipwinlist = ewin->props.skip_winlist;
@@ -342,13 +345,13 @@ SnapEwinSkipLists(Snapshot * sn, EWin * ewin)
 }
 
 static void
-SnapEwinNeverFocus(Snapshot * sn, EWin * ewin)
+SnapEwinNeverFocus(Snapshot * sn, const EWin * ewin)
 {
    sn->neverfocus = ewin->props.never_focus;
 }
 
 static void
-SnapEwinCmd(Snapshot * sn, EWin * ewin)
+SnapEwinCmd(Snapshot * sn, const EWin * ewin)
 {
    if (ewin->icccm.wm_machine &&
        strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
@@ -360,7 +363,7 @@ SnapEwinCmd(Snapshot * sn, EWin * ewin)
 }
 
 static void
-SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
+SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 {
    EWin              **gwins = NULL;
    Group             **groups;
@@ -409,7 +412,7 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 	  {
 	     if (ewin->snap)
 	       {
-		  sn = SnapshotEwinFind(gwins[i]);
+		  sn = gwins[i]->snap;
 		  if (sn)
 		    {
 		       if (sn->groups)
@@ -425,13 +428,13 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 #if USE_COMPOSITE
 
 static void
-SnapEwinOpacity(Snapshot * sn, EWin * ewin)
+SnapEwinOpacity(Snapshot * sn, const EWin * ewin)
 {
    sn->opacity = ewin->ewmh.opacity >> 24;
 }
 
 static void
-SnapEwinShadow(Snapshot * sn, EWin * ewin)
+SnapEwinShadow(Snapshot * sn, const EWin * ewin)
 {
    sn->shadow = EoGetShadow(ewin);
 }
@@ -439,7 +442,7 @@ SnapEwinShadow(Snapshot * sn, EWin * ewin)
 #endif
 
 static void
-SnapEwinUpdate(Snapshot * sn, EWin * ewin, unsigned int flags)
+SnapEwinUpdate(Snapshot * sn, const EWin * ewin, unsigned int flags)
 {
    /* FIXME - We should check if anything is actually changed */
 
@@ -497,7 +500,7 @@ SnapshotEwinSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
 }
 
 void
-SnapshotEwinUpdate(EWin * ewin, unsigned int flags)
+SnapshotEwinUpdate(const EWin * ewin, unsigned int flags)
 {
    Snapshot           *sn;
 
@@ -634,7 +637,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 }
 
 static void
-SnapshotEwinDialog(EWin * ewin)
+SnapshotEwinDialog(const EWin * ewin)
 {
    Dialog             *d;
    DItem              *table, *di;
@@ -1382,22 +1385,29 @@ LoadSnapInfo(void)
    fclose(f);
 }
 
+void
+SnapshotsEwinMatch(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = SnapshotEwinFind(ewin);
+   if (sn)
+      return;
+
+   if (ewin->props.autosave)
+      SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
+}
+
 /* make a client window conform to snapshot info */
 void
-SnapshotsApplyToEwin(EWin * ewin)
+SnapshotEwinApply(EWin * ewin)
 {
    Snapshot           *sn;
    int                 i, ax, ay;
 
-   sn = SnapshotEwinFind(ewin);
+   sn = ewin->snap;
    if (!sn)
-     {
-	if (ewin->props.autosave)
-	   SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
-	return;
-     }
-
-   ewin->snap = sn;
+      return;
 
    if (ewin->props.autosave)
       sn->track_changes = 1;

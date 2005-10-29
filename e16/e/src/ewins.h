@@ -63,6 +63,7 @@ struct _ewin
       char                shaped;
       char                shaded;
 
+      unsigned            identified:1;
       unsigned            placed:1;
       unsigned            iconified:1;
       unsigned            docked:1;

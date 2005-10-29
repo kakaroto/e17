@@ -94,7 +94,7 @@ void                HintsSetRootInfo(Window win, Pixmap pmap,
 				     unsigned int color);
 
 void                EHintsSetInfo(const EWin * ewin);
-int                 EHintsGetInfo(EWin * ewin);
+void                EHintsGetInfo(EWin * ewin);
 void                EHintsSetDeskInfo(void);
 void                EHintsGetDeskInfo(void);
 void                EHintsSetInfoOnAll(void);

@@ -55,11 +55,14 @@ void                Real_SaveSnapInfo(int dumval, void *dumdat);
 void                LoadSnapInfo(void);
 void                SaveSnapInfo(void);
 void                SpawnSnappedCmds(void);
+
+void                SnapshotsEwinMatch(EWin * ewin);
+void                SnapshotEwinApply(EWin * ewin);
 void                SnapshotEwinUnmatch(EWin * ewin);
-void                SnapshotEwinUpdate(EWin * ewin, unsigned int flags);
+void                SnapshotEwinUpdate(const EWin * ewin, unsigned int flags);
 void                SnapshotEwinParse(EWin * ewin, const char *params);
-void                SnapshotsApplyToEwin(EWin * ewin);
 void                SettingsRemember(void);
+
 extern const char   SnapIpcText[];
 void                SnapIpcFunc(const char *params, Client * c);
 
