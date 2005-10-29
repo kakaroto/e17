@@ -288,6 +288,12 @@ fi
 AC_SUBST(libpng_cflags)
 AC_SUBST(libpng_libs)
 
+AC_PATH_GENERIC(epsilon, 0.3.0,
+  [ ],
+  [ AC_MSG_ERROR(Cannot find epsilon) ]
+)
+
+
 
 
 
