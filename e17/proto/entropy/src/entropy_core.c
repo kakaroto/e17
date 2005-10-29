@@ -22,6 +22,8 @@
 static int requests = 0;
 static long file_cache_size = 0;
 
+#define FILE_FREE_QUEUE_SIZE 500;
+
 
 int ecore_timer_enterer(void* data) {
 	return 1;
@@ -904,7 +906,9 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 
 	if (listener) {
 		listener->count--;
-		if (listener->count == 0 && 0) {
+		if (listener->count <= 0) {
+
+			//printf("Freeing file '%s'\n", listener->file->filename);
 
 			/*This should be a seperate function*/
 			entropy_generic_file_destroy(listener->file);
@@ -914,7 +918,8 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 			free(md5);
 
 			file_cache_size--;
-		}
+
+		} 
 	}
 	UNLOCK(&core->file_cache_mutex);
 }

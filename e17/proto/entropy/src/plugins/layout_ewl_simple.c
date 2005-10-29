@@ -414,6 +414,8 @@ void
 __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	entropy_core* core = (entropy_core*)user_data;
 	ewl_widget_destroy(main_win);
+
+	ewl_shutdown();
 	ewl_main_quit();
 
 	entropy_core_destroy(core);

@@ -37,26 +37,11 @@ void entropy_thumbnail_destroy(entropy_thumbnail* thumb) {
 }
 
 entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file) {
-	Imlib_Image image;
-	Imlib_Image thumbnail;
-  	png_infop    info_ptr;
-	png_structp	png_ptr;
-	png_text	*text_ptr = NULL;
-	png_bytep    row_ptr,
-        row_data=NULL;
-	DATA32 *ptr = NULL;
-	char* key;
-	int i,w=64,h=64;
-	  png_color_8  sig_bit;
 	entropy_thumbnail* thumb_struct;
-	Ecore_List* keys;
 	char thumb_path_and_name[255];
 	char *pos;
-	FILE* fp = NULL;
-	char thumbname[255];
 	Epsilon* e;
 
-	int iw,ih;
 
 	
 	strcpy(thumb_path_and_name, e_file->path);
@@ -74,8 +59,13 @@ entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file) {
 	if (epsilon_exists(e)) {
 		thumb_struct = entropy_thumbnail_new();
 		strcpy(thumb_struct->thumbnail_filename, epsilon_thumb_file_get(e));
+		epsilon_free(e);
+		
 		return thumb_struct;
-	} else return NULL;
+	} else {
+		epsilon_free(e);
+		return NULL;
+	}
 
 	
 }

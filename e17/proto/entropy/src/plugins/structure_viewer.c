@@ -105,8 +105,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 		ewl_tree_row_expand_set(row, EWL_TREE_NODE_EXPANDED);
 		
 	} else {
-		printf ("We don't own this row\n");
-		printf("Looked for file '(%s)(%s) (%p)'\n", event_file->path, event_file->filename,event_file);
 		/*printf("---------------------------------------------> This row already has children!!\n");*/
 	}
       }
