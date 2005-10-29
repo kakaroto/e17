@@ -38,7 +38,7 @@ exp_message_free(Exp_Message *msg)
   evas_object_del(msg->gui);
 
   if (msg->msg_text) free(msg->msg_text);
-  if (msg->style) evas_textblock2_style_free(msg->style);
+  if (msg->style) evas_textblock_style_free(msg->style);
   free(msg);
 }
 
@@ -55,7 +55,7 @@ exp_message_update(Exp_Message *msg)
   if (msg->changes.size)
   {
     evas_object_geometry_get(msg->gui, NULL, NULL, &mw, &mh);
-    evas_object_textblock2_size_formatted_get(msg->text, &tw, &th);
+    evas_object_textblock_size_formatted_get(msg->text, &tw, &th);
     edje_object_part_geometry_get(msg->gui, "express.message.text",
                                   NULL, NULL, &aw, &ah);
     if (th != ah)
@@ -90,12 +90,12 @@ _exp_message_realize(Exp_Message *msg)
   snprintf(style, sizeof(style),
            "DEFAULT='font=%s font_size=%d font_source=%s align=left color=#000000 wrap=word'",
 		   "fonts/default", 10, PACKAGE_DATA_DIR"/themes/express.edj");
-  msg->style = evas_textblock2_style_new();
-  evas_textblock2_style_set(msg->style, style);
+  msg->style = evas_textblock_style_new();
+  evas_textblock_style_set(msg->style, style);
 
-  msg->text = evas_object_textblock2_add(evas);
-  evas_object_textblock2_style_set(msg->text, msg->style);
-  evas_object_textblock2_text_markup_set(msg->text, msg->msg_text);
+  msg->text = evas_object_textblock_add(evas);
+  evas_object_textblock_style_set(msg->text, msg->style);
+  evas_object_textblock_text_markup_set(msg->text, msg->msg_text);
   printf("text: %s\n", msg->msg_text);
   evas_object_resize(msg->text, 100, 100);
   evas_object_show(msg->text);
