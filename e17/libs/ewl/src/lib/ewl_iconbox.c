@@ -684,8 +684,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	
 	EWL_ICONBOX_ICON(ib)->icon_box_parent = iconbox; /* Set our parent */
 	
-	/*printf("Setting fill policy..\n");*/
-	ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_FILL);
+	//ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_FILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(EWL_ICONBOX_ICON(ib)->floater), ib);
 
@@ -693,10 +692,6 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	/* Make the image */
 	/*printf("MMaking image..\n");*/
 	ewl_iconbox_icon_image_set(EWL_ICONBOX_ICON(ib), icon_file);
-	
-
-	/* Put the image into the border */
-	/*printf("Adding image to box..\n");*/
 	ewl_container_child_append(EWL_CONTAINER(ib), EWL_ICONBOX_ICON(ib)->image);
 
 	
@@ -746,8 +741,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 void ewl_iconbox_icon_image_set(Ewl_IconBox_Icon* icon, char* filename)
 {
-	
 	ewl_image_file_set(EWL_IMAGE(icon->image), filename, NULL);
+	ewl_image_constrain_set(EWL_IMAGE(icon->image), 64);	
 
 }
 

@@ -77,6 +77,8 @@ ewl_image_init(Ewl_Image *i)
 	i->sw = 1.0;
 	i->sh = 1.0;
 
+	i->cs = 0;
+
 	i->tile.x = 0;
 	i->tile.y = 0;
 	i->tile.w = 0;
@@ -165,6 +167,26 @@ ewl_image_file_set(Ewl_Image *i, char *im, char *key)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param i: the image to change constrain setting
+ * @param size: the minimum constrain size
+ * @return Returns no value.
+ * @brief Set a size which, if the image is bigger than, scale proportionally
+ *
+ * Sets a size to scale to proportionally if the image exceeds this size
+ */
+void ewl_image_constrain_set(Ewl_Image* i, int size)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, "image");
+
+	i->cs = size;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 /**
  * @param i: the image to change proportional setting
@@ -310,6 +332,14 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		if (i->path)
 			evas_object_image_file_set(i->image, i->path, i->key);
 		evas_object_image_size_get(i->image, &i->ow, &i->oh);
+	}
+
+	/*Constrain settings*/
+	if (i->cs && (i->ow > i->cs || i->oh > i->cs)) {
+		double cp = i->cs / (double)i->ow;
+		printf("Cp is %f\n", cp);
+		ewl_image_scale(i, cp,cp);
+
 	}
 
 	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));

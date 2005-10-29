@@ -40,6 +40,7 @@ struct Ewl_Image
 	char		proportional;
 	int 		ow, oh;
 	double		sw, sh;
+	int		cs;
 	Evas_Coord	aw, ah;
 
 	struct {
@@ -57,6 +58,7 @@ void		 ewl_image_scale(Ewl_Image *i, double wp, double hp);
 void		 ewl_image_scale_to(Ewl_Image *i, int w, int h);
 void		 ewl_image_tile_set(Ewl_Image *i, int x, int y, 
 						int w, int h);
+void ewl_image_constrain_set(Ewl_Image* i, int size);
 
 /*
  * Internally used callbacks, override at your own risk.
