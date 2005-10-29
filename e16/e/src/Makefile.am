@@ -34,6 +34,7 @@ e16_SOURCES = \
 	desktops.c		\
 	desktops.h		\
 	dialog.c	        \
+	dialog.h	        \
 	dock.c			\
 	draw.c			\
 	econfig.c		\

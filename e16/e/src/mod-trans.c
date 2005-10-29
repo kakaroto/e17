@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "iclass.h"
 
@@ -140,16 +141,9 @@ SettingsTransparency(void)
    DialogItemTableSetOptions(table, 7, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 7);
-	DialogItemSetText(di,
-			  _("Enlightenment Selective Transparency\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 7);
-     }
+      DialogAddHeader(d, "pix/tips.png",
+		      _("Enlightenment Selective Transparency\n"
+			"Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 7);
@@ -288,15 +282,7 @@ SettingsTransparency(void)
    DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 7);
-
-   DialogAddButton(d, _("OK"), CB_ConfigureTrans, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureTrans, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureTrans, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureTrans, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureTrans, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureTrans);
 
    ShowDialog(d);
 }

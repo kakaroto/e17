@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "emodule.h"
 
 #ifdef HAVE_LIBESD
@@ -443,16 +444,9 @@ SettingsAudio(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/sound.png");
+      DialogAddHeader(d, "pix/sound.png",
+		      _("Enlightenment Audio\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di, _("Enlightenment Audio\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
 #ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -466,15 +460,8 @@ SettingsAudio(void)
 		       "present at the time of compilation."));
 #endif
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureAudio);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureAudio, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureAudio, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureAudio, 0);
    ShowDialog(d);
 }
 

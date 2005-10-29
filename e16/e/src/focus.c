@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "desktops.h"		/* FIXME - Should not be here */
+#include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "hints.h"
@@ -702,16 +703,8 @@ SettingsFocus(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/focus.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di, _("Enlightenment Focus\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/focus.png",
+		      _("Enlightenment Focus\n" "Settings Dialog\n"));
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -843,15 +836,8 @@ SettingsFocus(void)
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureFocus);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureFocus, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureFocus, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureFocus, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureFocus, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureFocus, 0);
    ShowDialog(d);
 }
 

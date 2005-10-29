@@ -25,6 +25,7 @@
 #include "E.h"
 #include "backgrounds.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "hints.h"		/* FIXME - Should not be here */
 #include "iclass.h"
@@ -1778,7 +1779,7 @@ BG_RedrawView(void)
    pmap = ECreatePixmap(win, w, h, VRoot.depth);
    gc = ECreateGC(pmap, 0, NULL);
 
-   ic_button = ImageclassFind("DIALOG_BUTTON", 0);
+   ic_button = ImageclassFind("DLG_BUTTON", 0);
 
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
@@ -2132,19 +2133,9 @@ SettingsBackground(Background * bg)
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetColSpan(di, 2);
-	DialogItemImageSetFile(di, "pix/bg.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Desktop\n"
-			    "Background Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 3);
-     }
+      DialogAddHeader(d, "pix/bg.png",
+		      _("Enlightenment Desktop\n"
+			"Background Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("BG Colour\n"));
@@ -2383,15 +2374,7 @@ SettingsBackground(Background * bg)
    DialogItemSetAlign(di, 512, 512);
    BG_DialogSetFileName(bg_filename);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   DialogAddButton(d, _("OK"), CB_ConfigureBG, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureBG, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureBG, -1);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureBG, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureBG);
 
    ShowDialog(d);
 

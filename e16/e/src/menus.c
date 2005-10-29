@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -1999,17 +2000,8 @@ MenusSettings(void)
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/place.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetText(di, _("Enlightenment Menu\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 3);
-     }
+      DialogAddHeader(d, "pix/place.png",
+		      _("Enlightenment Menu\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 3);
@@ -2026,15 +2018,7 @@ MenusSettings(void)
    DialogItemSetText(di, _("Warp pointer after moving menus"));
    DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   DialogAddButton(d, _("OK"), CB_ConfigureMenus, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureMenus, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureMenus, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureMenus, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureMenus, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureMenus);
 
    ShowDialog(d);
 }

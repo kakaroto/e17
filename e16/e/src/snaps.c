@@ -24,6 +24,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "ewins.h"
 #include "snaps.h"
 #include "xwin.h"
@@ -655,20 +656,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetColSpan(di, 2);
-	DialogItemImageSetFile(di, "pix/snapshots.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetText(di,
-			  _("Select the attributes of this\n"
-			    "window you wish to Remember\n" "from now on\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 4);
-     }
+      DialogAddHeader(d, "pix/snapshots.png",
+		      _("Select the attributes of this\n"
+			"window you wish to Remember\n" "from now on\n"));
 
    sd = Ecalloc(1, sizeof(SnapDlgData));
    DialogSetData(d, sd);
@@ -917,15 +907,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemCheckButtonSetPtr(di, &sd->snap_group);
      }
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 4);
-
-   DialogAddButton(d, _("OK"), CB_ApplySnap, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ApplySnap, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ApplySnap, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ApplySnap, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ApplySnap, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ApplySnap);
 
    ShowDialog(d);
 }
@@ -1011,19 +993,9 @@ SettingsRemember(void)
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/snapshots.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetText(di,
-			  _("Enlightenment Remembered\n"
-			    "Windows Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 3);
-     }
+      DialogAddHeader(d, "pix/snapshots.png",
+		      _("Enlightenment Remembered\n"
+			"Windows Settings Dialog\n"));
 
    lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
    rd_ewin_list = Emalloc(sizeof(RememberWinList) * (num + 1));
@@ -1086,14 +1058,7 @@ SettingsRemember(void)
 			  ("There are no active windows with remembered attributes."));
      }
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   DialogAddButton(d, _("OK"), CB_ApplyRemember, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Close"), CB_ApplyRemember, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ApplyRemember, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ApplyRemember, 0);
+   DialogAddFooter(d, DLG_OC, CB_ApplyRemember);
 
    ShowDialog(d);
 }

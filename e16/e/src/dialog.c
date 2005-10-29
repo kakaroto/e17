@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
@@ -411,16 +412,16 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
      {
 	switch (db->image)
 	  {
-	  case DIALOG_BUTTON_OK:
+	  case DLG_BUTTON_OK:
 	     im = ELoadImage("pix/ok.png");
 	     break;
-	  case DIALOG_BUTTON_CANCEL:
+	  case DLG_BUTTON_CANCEL:
 	     im = ELoadImage("pix/cancel.png");
 	     break;
-	  case DIALOG_BUTTON_APPLY:
+	  case DLG_BUTTON_APPLY:
 	     im = ELoadImage("pix/apply.png");
 	     break;
-	  case DIALOG_BUTTON_CLOSE:
+	  case DLG_BUTTON_CLOSE:
 	     im = ELoadImage("pix/close.png");
 	     break;
 	  default:
@@ -798,6 +799,51 @@ DialogAddItem(DItem * dii, int type)
      }
 
    return di;
+}
+
+void
+DialogAddHeader(Dialog * d, const char *img, const char *txt)
+{
+   DItem              *table, *di;
+
+   /* FIXME - Center table horizontally */
+   table = DialogAddItem(d->item, DITEM_TABLE);
+   DialogItemSetColSpan(table, d->item->item.table.num_columns);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   di = DialogAddItem(table, DITEM_IMAGE);
+   DialogItemImageSetFile(di, img);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetText(di, txt);
+
+   di = DialogAddItem(d->item, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, d->item->item.table.num_columns);
+}
+
+void
+DialogAddFooter(Dialog * d, int flags, DialogCallbackFunc * cb)
+{
+   DItem              *di;
+
+   di = DialogAddItem(d->item, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, d->item->item.table.num_columns);
+
+   if (flags & 4)
+     {
+	DialogAddButton(d, _("OK"), cb, 1, DLG_BUTTON_OK);
+     }
+   if (flags & 2)
+     {
+	DialogAddButton(d, _("Apply"), cb, 0, DLG_BUTTON_APPLY);
+	DialogBindKey(d, "Return", cb, 0);
+     }
+   if (flags & 1)
+     {
+	DialogAddButton(d, _("Close"), cb, 1, DLG_BUTTON_CLOSE);
+	DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+     }
+   DialogSetExitFunction(d, cb, 2);
 }
 
 void
@@ -2012,7 +2058,7 @@ DialogOKstr(const char *title, const char *txt)
    DialogSetTitle(d, title);
    DialogSetText(d, txt);
 
-   DialogAddButton(d, _("OK"), NULL, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
    ShowDialog(d);
 }
 

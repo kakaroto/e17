@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include <time.h>
 
 static int          tmp_move;
@@ -76,18 +77,9 @@ SettingsMoveResize(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/moveres.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Move & Resize\n"
-			    "Method Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/moveres.png",
+		      _("Enlightenment Move & Resize\n"
+			"Method Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -194,17 +186,8 @@ SettingsMoveResize(void)
    DialogItemSetText(di, _("Update window while moving"));
    DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureMoveResize);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureMoveResize, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureMoveResize, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureMoveResize, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureMoveResize, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureMoveResize, 0);
    ShowDialog(d);
 }
 
@@ -300,18 +283,9 @@ SettingsPlacement(void)
    DialogItemTableSetOptions(table, 2, 0, 1, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/place.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Window Placement\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/place.png",
+		      _("Enlightenment Window Placement\n"
+			"Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -442,17 +416,8 @@ SettingsPlacement(void)
      }
 #endif
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigurePlacement);
 
-   DialogAddButton(d, _("OK"), CB_ConfigurePlacement, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigurePlacement, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigurePlacement, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigurePlacement, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigurePlacement, 0);
    ShowDialog(d);
 }
 
@@ -495,18 +460,9 @@ SettingsAutoRaise(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/raise.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Automatic Raising\n"
-			    "of Windows Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/raise.png",
+		      _("Enlightenment Automatic Raising\n"
+			"of Windows Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -524,17 +480,8 @@ SettingsAutoRaise(void)
    DialogItemSliderSetJump(di, 25);
    DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureAutoraise);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureAutoraise, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureAutoraise, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureAutoraise, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureAutoraise, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureAutoraise, 0);
    ShowDialog(d);
 }
 
@@ -589,18 +536,8 @@ SettingsMiscellaneous(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/miscellaneous.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Miscellaneous\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/miscellaneous.png",
+		      _("Enlightenment Miscellaneous\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -638,17 +575,8 @@ SettingsMiscellaneous(void)
    DialogItemSetText(di, _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureMiscellaneous);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureMiscellaneous, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureMiscellaneous, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureMiscellaneous, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureMiscellaneous, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureMiscellaneous, 0);
    ShowDialog(d);
 }
 
@@ -700,19 +628,8 @@ SettingsComposite(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-#if 0
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/tips.png");
-#endif
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetText(di,
-			  _("Enlightenment Composite\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/pager.png",
+		      _("Enlightenment Composite\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -760,17 +677,8 @@ SettingsComposite(void)
    DialogItemSliderSetJump(di, 5);
    DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureComposite);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureComposite, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureComposite, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureComposite, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureComposite, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureComposite, 0);
    ShowDialog(d);
 }
 #endif

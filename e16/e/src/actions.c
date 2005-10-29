@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 
 static void
 runApp(const char *exe, const char *params)
@@ -312,7 +313,7 @@ About(void)
 	       "Kim Woelders - kim@woelders.dk\n"), e_wm_version, e_wm_date);
    DialogItemSetText(di, buf);
 
-   DialogAddButton(d, _("OK"), NULL, 1, DIALOG_BUTTON_OK);
+   DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
    ShowDialog(d);
 }
 

@@ -47,6 +47,30 @@ typedef struct _imagestate ImageState;
 #define ST_WARPLIST	10
 #define ST_BUTTON	11
 
+#define ICLASS_ATTR_OPAQUE      0x00	/* No transparency */
+#define ICLASS_ATTR_BG          0x01	/* Background transparency */
+#define ICLASS_ATTR_GLASS       0x02	/* Glass transparency */
+#define ICLASS_ATTR_NO_CLIP     0x04	/* Don't apply clip mask */
+#define ICLASS_ATTR_USE_CM      0x08	/* Use colormodifier */
+
+/* cmclass.c */
+#if ENABLE_COLOR_MODIFIERS
+void                CreateCurve(ModCurve * c);
+void                FreeModCurve(ModCurve * c);
+void                FreeCMClass(ColorModifierClass * cm);
+ColorModifierClass *CreateCMClass(char *name, int rnum, unsigned char *rpx,
+				  unsigned char *rpy, int gnum,
+				  unsigned char *gpx, unsigned char *gpy,
+				  int bnum, unsigned char *bpx,
+				  unsigned char *bpy);
+void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
+				  unsigned char *rpy, int gnum,
+				  unsigned char *gpx, unsigned char *gpy,
+				  int bnum, unsigned char *bpx,
+				  unsigned char *bpy);
+int                 ColorModifierConfigLoad(FILE * fs);
+#endif
+
 /* iclass.c */
 int                 ImageclassConfigLoad(FILE * fs);
 

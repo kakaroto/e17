@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "xwin.h"
 #include <math.h>
@@ -985,17 +986,8 @@ FxSettings(void)
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/fx.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Special Effects\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-     }
+      DialogAddHeader(d, "pix/fx.png",
+		      _("Enlightenment Special Effects\n" "Settings Dialog\n"));
 
    /* Effects */
    di = DialogAddItem(table, DITEM_TEXT);
@@ -1013,14 +1005,7 @@ FxSettings(void)
    DialogItemSetText(di, _("Waves"));
    DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-
-   DialogAddButton(d, _("OK"), CB_ConfigureFX, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureFX, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureFX, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureFX, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureFX);
 
    ShowDialog(d);
 }

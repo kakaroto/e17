@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "snaps.h"
@@ -496,17 +497,6 @@ static Group      **tmp_groups;
 static int          tmp_action;
 
 static void
-ChooseGroupEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
-{
-   if (tmp_groups)
-     {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
-	Efree(tmp_groups);
-     }
-   DialogClose(d);
-}
-
-static void
 ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (((val == 0) || (val == 2)) && tmp_groups)
@@ -608,18 +598,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/group.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Window Group\n"
-			    "Selection Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/group.png",
+		      _("Enlightenment Window Group\n" "Selection Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -644,14 +624,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      }
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_group_index);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-
-   DialogAddButton(d, _("OK"), ChooseGroup, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Close"), ChooseGroup, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, ChooseGroup, 2);
-   DialogBindKey(d, "Escape", ChooseGroupEscape, 0);
-   DialogBindKey(d, "Return", ChooseGroup, 0);
+   DialogAddFooter(d, DLG_OC, ChooseGroup);
 
    for (i = 0; i < num_groups; i++)
       Efree(group_member_strings[i]);
@@ -675,18 +648,6 @@ static DItem       *di_raise;
 static DItem       *di_stick;
 static DItem       *di_shade;
 static DItem       *di_mirror;
-
-static void
-CB_ConfigureGroupEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
-{
-   if (tmp_cfgs)
-     {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
-	Efree(tmp_cfgs);
-	tmp_cfgs = NULL;
-     }
-   DialogClose(d);
-}
 
 static void
 CB_ConfigureGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -801,18 +762,8 @@ SettingsGroups(EWin * ewin)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/group.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Window Group\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/group.png",
+		      _("Enlightenment Window Group\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -911,15 +862,7 @@ SettingsGroups(EWin * ewin)
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-
-   DialogAddButton(d, _("OK"), CB_ConfigureGroup, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureGroup, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureGroup, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureGroup, 2);
-   DialogBindKey(d, "Escape", CB_ConfigureGroupEscape, 0);
-   DialogBindKey(d, "Return", CB_ConfigureGroup, 0);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureGroup);
 
    for (i = 0; i < ewin->num_groups; i++)
       Efree(group_member_strings[i]);
@@ -967,18 +910,9 @@ SettingsDefaultGroupControl(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/group.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Default\n"
-			    "Group Control Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/group.png",
+		      _("Enlightenment Default\n"
+			"Group Control Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -1041,18 +975,8 @@ SettingsDefaultGroupControl(void)
    DialogItemSetText(di, _("Swap Window Locations"));
    DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureDefaultGroupSettings);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureDefaultGroupSettings, 1,
-		   DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureDefaultGroupSettings, 0,
-		   DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureDefaultGroupSettings, 1,
-		   DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureDefaultGroupSettings, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureDefaultGroupSettings, 0);
    ShowDialog(d);
 }
 

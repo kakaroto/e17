@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -2220,18 +2221,8 @@ IconboxConfigure(Iconbox * ib)
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	table2 = DialogAddItem(table, DITEM_TABLE);
-	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
-
-	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/iconbox.png");
-
-	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetText(di, _("Enlightenment Iconbox\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-     }
+      DialogAddHeader(d, "pix/iconbox.png",
+		      _("Enlightenment Iconbox\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Transparent background"));
@@ -2395,14 +2386,8 @@ IconboxConfigure(Iconbox * ib)
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureIconbox);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureIconbox, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureIconbox, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureIconbox, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureIconbox, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureIconbox, 0);
    ShowDialog(d);
 }
 

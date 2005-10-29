@@ -65,12 +65,6 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
-#define ICLASS_ATTR_OPAQUE      0x00	/* No transparency */
-#define ICLASS_ATTR_BG          0x01	/* Background transparency */
-#define ICLASS_ATTR_GLASS       0x02	/* Glass transparency */
-#define ICLASS_ATTR_NO_CLIP     0x04	/* Don't apply clip mask */
-#define ICLASS_ATTR_USE_CM      0x08	/* Use colormodifier */
-
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
@@ -316,8 +310,6 @@ struct _textclass;
 struct _textstate;
 
 typedef struct _ewin EWin;
-typedef struct _dialog Dialog;
-typedef struct _ditem DItem;
 typedef struct _group Group;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
@@ -727,25 +719,6 @@ typedef struct _qentry
 }
 Qentry;
 
-/* Dialog items */
-#define DITEM_NONE         0
-#define DITEM_BUTTON       1
-#define DITEM_CHECKBUTTON  2
-#define DITEM_TEXT         3
-#define DITEM_IMAGE        4
-#define DITEM_SEPARATOR    5
-#define DITEM_TABLE        6
-#define DITEM_RADIOBUTTON  7
-#define DITEM_SLIDER       8
-#define DITEM_AREA         9
-
-/* Dialog button icons */
-#define DIALOG_BUTTON_NONE   0
-#define DIALOG_BUTTON_OK     1
-#define DIALOG_BUTTON_CANCEL 2
-#define DIALOG_BUTTON_APPLY  3
-#define DIALOG_BUTTON_CLOSE  4
-
 typedef struct _rectbox
 {
    void               *data;
@@ -869,24 +842,6 @@ Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
 void                BordersSetupFallback(void);
 
-/* cmclass.c */
-#if ENABLE_COLOR_MODIFIERS
-void                CreateCurve(ModCurve * c);
-void                FreeModCurve(ModCurve * c);
-void                FreeCMClass(ColorModifierClass * cm);
-ColorModifierClass *CreateCMClass(char *name, int rnum, unsigned char *rpx,
-				  unsigned char *rpy, int gnum,
-				  unsigned char *gpx, unsigned char *gpy,
-				  int bnum, unsigned char *bpx,
-				  unsigned char *bpy);
-void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
-				  unsigned char *rpy, int gnum,
-				  unsigned char *gpx, unsigned char *gpy,
-				  int bnum, unsigned char *bpx,
-				  unsigned char *bpy);
-int                 ColorModifierConfigLoad(FILE * fs);
-#endif
-
 /* comms.c */
 void                CommsInit(void);
 void                CommsSend(Client * c, const char *s);
@@ -930,88 +885,10 @@ Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
 
 /* dialog.c */
-typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
-typedef void        (DialogItemCallbackFunc) (int val, void *data);
-
-Dialog             *DialogCreate(const char *name);
-void                DialogBindKey(Dialog * d, const char *key,
-				  DialogCallbackFunc * func, int val);
-void                DialogSetText(Dialog * d, const char *text);
-void                DialogSetTitle(Dialog * d, const char *title);
-void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
-					  int val);
-void                DialogSetData(Dialog * d, void *data);
-void               *DialogGetData(Dialog * d);
-
-void                DialogRedraw(Dialog * d);
-void                ShowDialog(Dialog * d);
-void                DialogClose(Dialog * d);
-
-void                DialogAddButton(Dialog * d, const char *text,
-				    DialogCallbackFunc * func, char doclose,
-				    int image);
-DItem              *DialogInitItem(Dialog * d);
-DItem              *DialogAddItem(DItem * dii, int type);
-DItem              *DialogItem(Dialog * d);
-void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
-					  int val, void *data);
-void                DialogItemSetClass(DItem * di, struct _imageclass *ic,
-				       struct _textclass *tclass);
-void                DialogItemSetPadding(DItem * di, int left, int right,
-					 int top, int bottom);
-void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
-void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
-void                DialogItemSetText(DItem * di, const char *text);
-void                DialogItemCallCallback(Dialog * d, DItem * di);
-void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
-				    int h);
-void                DialogItemRadioButtonSetEventFunc(DItem * di,
-						      DialogItemCallbackFunc *
-						      func);
-void                DialogItemCheckButtonSetState(DItem * di, char onoff);
-void                DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr);
-void                DialogItemTableSetOptions(DItem * di, int num_columns,
-					      char border, char homogenous_h,
-					      char homogenous_v);
-void                DialogItemSeparatorSetOrientation(DItem * di,
-						      char horizontal);
-void                DialogItemImageSetFile(DItem * di, const char *image);
-void                DialogFreeItem(DItem * di);
-void                DialogItemSetRowSpan(DItem * di, int row_span);
-void                DialogItemSetColSpan(DItem * di, int col_span);
-void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
-void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
-							int *val_ptr);
-void                DialogItemRadioButtonGroupSetVal(DItem * di, int val);
-
-void                DialogItemSliderSetVal(DItem * di, int val);
-void                DialogItemSliderSetBounds(DItem * di, int lower, int upper);
-void                DialogItemSliderSetUnits(DItem * di, int units);
-void                DialogItemSliderSetJump(DItem * di, int jump);
-void                DialogItemSliderSetMinLength(DItem * di, int min);
-void                DialogItemSliderSetValPtr(DItem * di, int *val_ptr);
-void                DialogItemSliderSetOrientation(DItem * di, char horizontal);
-int                 DialogItemSliderGetVal(DItem * di);
-void                DialogItemSliderGetBounds(DItem * di, int *lower,
-					      int *upper);
-
-void                DialogItemAreaSetSize(DItem * di, int w, int h);
-void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
-Window              DialogItemAreaGetWindow(DItem * di);
-void                DialogItemAreaSetEventFunc(DItem * di,
-					       DialogItemCallbackFunc * func);
-
-void                DialogCallbackClose(Dialog * d, int val, void *data);
-
-void                DialogsCheckUpdate(void);
-
 void                DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
 void                DialogAlert(const char *fmt, ...);
 void                DialogAlertOK(const char *fmt, ...);
-
-EWin               *FindEwinByDialog(Dialog * d);
-int                 FindADialog(void);
 
 /* dock.c */
 void                DockIt(EWin * ewin);

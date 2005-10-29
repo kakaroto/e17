@@ -25,6 +25,7 @@
 #include "backgrounds.h"
 #include "buttons.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -1921,18 +1922,9 @@ SettingsDesktops(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/desktops.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Multiple Desktop\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/desktops.png",
+		      _("Enlightenment Multiple Desktop\n"
+			"Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -2023,16 +2015,10 @@ SettingsDesktops(void)
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureDesktops);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureDesktops, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureDesktops, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureDesktops, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureDesktops, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureDesktops, 0);
    ShowDialog(d);
+
    DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, (void *)area);
    CB_DesktopDisplayRedraw(d, 1, area);
 }
@@ -2155,20 +2141,8 @@ SettingsArea(void)
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	table2 = DialogAddItem(table, DITEM_TABLE);
-	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
-
-	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/areas.png");
-
-	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Virtual Desktop\n"
-			    "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-     }
+      DialogAddHeader(d, "pix/areas.png",
+		      _("Enlightenment Virtual Desktop\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Virtual Desktop size:\n"));
@@ -2228,15 +2202,10 @@ SettingsArea(void)
    DialogItemSliderSetJump(di, 10);
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureAreas);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureAreas, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureAreas, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureAreas, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureAreas, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureAreas, 0);
    ShowDialog(d);
+
    CB_AreaDisplayRedraw(d, 1, area);
 }
 

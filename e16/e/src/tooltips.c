@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "iclass.h"
@@ -851,16 +852,8 @@ SettingsTooltips(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/tips.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di, _("Enlightenment Tooltip\n" "Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/tips.png",
+		      _("Enlightenment Tooltip\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -882,15 +875,8 @@ SettingsTooltips(void)
    DialogItemSliderSetJump(di, 25);
    DialogItemSliderSetValPtr(di, &tmp_tooltiptime);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureTooltips);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureTooltips, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigureTooltips, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigureTooltips, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigureTooltips, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigureTooltips, 0);
    ShowDialog(d);
 }
 

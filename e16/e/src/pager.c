@@ -24,6 +24,7 @@
 #include "E.h"
 #include "backgrounds.h"
 #include "desktops.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "hints.h"
@@ -1754,18 +1755,9 @@ SettingsPager(void)
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
-     {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemImageSetFile(di, "pix/pager.png");
-
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetText(di,
-			  _("Enlightenment Desktop & Area\n"
-			    "Pager Settings Dialog\n"));
-
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-     }
+      DialogAddHeader(d, "pix/pager.png",
+		      _("Enlightenment Desktop & Area\n"
+			"Pager Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -1889,15 +1881,8 @@ SettingsPager(void)
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogAddFooter(d, DLG_OAC, CB_ConfigurePager);
 
-   DialogAddButton(d, _("OK"), CB_ConfigurePager, 1, DIALOG_BUTTON_OK);
-   DialogAddButton(d, _("Apply"), CB_ConfigurePager, 0, DIALOG_BUTTON_APPLY);
-   DialogAddButton(d, _("Close"), CB_ConfigurePager, 1, DIALOG_BUTTON_CLOSE);
-   DialogSetExitFunction(d, CB_ConfigurePager, 2);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
-   DialogBindKey(d, "Return", CB_ConfigurePager, 0);
    ShowDialog(d);
 }
 

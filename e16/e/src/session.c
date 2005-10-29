@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "ecore-e16.h"
 #include "emodule.h"
 #include "ewins.h"
@@ -969,13 +970,12 @@ SessionLogoutConfirm(void)
 	if (Conf.session.enable_reboot_halt)
 	  {
 	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1,
-			     DIALOG_BUTTON_OK);
+			     DLG_BUTTON_OK);
 	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1,
-			     DIALOG_BUTTON_OK);
+			     DLG_BUTTON_OK);
 	  }
-	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1,
-			DIALOG_BUTTON_OK);
-	DialogAddButton(d, _("  No  "), NULL, 1, DIALOG_BUTTON_CANCEL);
+	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1, DLG_BUTTON_OK);
+	DialogAddButton(d, _("  No  "), NULL, 1, DLG_BUTTON_CANCEL);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 1);
 	DialogBindKey(d, "Return", LogoutCB, 0);
      }
