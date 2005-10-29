@@ -35,9 +35,11 @@ pushdef([DOWN], translit([$1], [A-Z], [a-z]))dnl
 dnl
 dnl Get the cflags and libraries from the LIBRARY-config script
 dnl
-AC_ARG_WITH(DOWN-prefix,[  --with-]DOWN[-prefix=PFX       Prefix where $1 is installed (optional)],
+AC_ARG_WITH(DOWN-prefix,
+        [  --with-]DOWN[-prefix=PFX       Prefix where $1 is installed (optional)],
         DOWN[]_config_prefix="$withval", DOWN[]_config_prefix="")
-AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where $1 is installed (optional)],
+AC_ARG_WITH(DOWN-exec-prefix,
+        [  --with-]DOWN[-exec-prefix=PFX  Exec prefix where $1 is installed (optional)],
         DOWN[]_config_exec_prefix="$withval", DOWN[]_config_exec_prefix="")
 
   if test x$DOWN[]_config_exec_prefix != x ; then
@@ -66,11 +68,11 @@ AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where 
      UP[]_LIBS="`$UP[]_CONFIG $DOWN[]_config_args --libs`"
      ifelse([$2], , ,[
         DOWN[]_config_major_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\1/'`
         DOWN[]_config_minor_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\2/'`
         DOWN[]_config_micro_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\3/'`
         DOWN[]_wanted_major_version="regexp($2, [\<\([0-9]*\)], [\1])"
         DOWN[]_wanted_minor_version="regexp($2, [\<\([0-9]*\)\.\([0-9]*\)], [\2])"
         DOWN[]_wanted_micro_version="regexp($2, [\<\([0-9]*\).\([0-9]*\).\([0-9]*\)], [\3])"
