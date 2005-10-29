@@ -51,6 +51,7 @@ char *eclair_subtitles_get_current_subtitle(Eclair_Subtitles *subtitles, double 
 //Display subtitles corresponding to the current time
 void eclair_subtitles_display_current_subtitle(Eclair_Subtitles *subtitles, double current_time, Evas_Object *subtitles_object)
 {
+#if 0  /* FIXME: convert to new textblock API. */
    char *current_subtitle, *sub, *new_line, *end_of_line;
    Evas_Coord subtitle_height, evas_width, evas_height;
 
@@ -87,6 +88,7 @@ void eclair_subtitles_display_current_subtitle(Eclair_Subtitles *subtitles, doub
 	evas_object_textblock_format_size_get(subtitles_object, NULL, &subtitle_height);
    evas_object_move(subtitles_object, 0, evas_height - subtitle_height);
    evas_object_resize(subtitles_object, evas_width, subtitle_height);
+#endif
 }
 
 //Return 0 if the two subtitles starts at the same time
