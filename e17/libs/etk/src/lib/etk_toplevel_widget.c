@@ -326,12 +326,17 @@ static Etk_Widget *_etk_toplevel_widget_next_to_focus_get(Etk_Widget *node, Etk_
    if (node->focusable)
       return node;
    if (!ETK_IS_CONTAINER(node) || !(children = etk_container_children_get(ETK_CONTAINER(node))))
-      return NULL;
-
-   if (from && (l = evas_list_find_list(children, from)) && l->next)
-      return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(l->next->data), NULL);
-   else
       return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(node->parent), node);
+
+   if (from && (l = evas_list_find_list(children, from)))
+   {
+      if (l->next)
+         return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(l->next->data), NULL);
+      else
+         return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(node->parent), node);
+   }
+   else 
+      return _etk_toplevel_widget_next_to_focus_get(ETK_WIDGET(children->data), NULL);
 }
 
 /* Gets recursively the previous widget to focus */
@@ -344,12 +349,17 @@ static Etk_Widget *_etk_toplevel_widget_prev_to_focus_get(Etk_Widget *node, Etk_
    if (node->focusable)
       return node;
    if (!ETK_IS_CONTAINER(node) || !(children = etk_container_children_get(ETK_CONTAINER(node))))
-      return NULL;
-
-   if (from && (l = evas_list_find_list(children, from)) && l->prev)
-      return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(l->prev->data), NULL);
-   else
       return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(node->parent), node);
+
+   if (from && (l = evas_list_find_list(children, from)))
+   {
+      if (l->prev)
+         return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(l->prev->data), NULL);
+      else
+         return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(node->parent), node);
+   }
+   else 
+      return _etk_toplevel_widget_prev_to_focus_get(ETK_WIDGET(evas_list_data(evas_list_last(children))), NULL);
 }
 
 /** @} */
