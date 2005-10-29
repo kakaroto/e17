@@ -94,6 +94,8 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(w, "hscrollbar");
 	ewl_widget_inherit(w, "scrollbar");
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
+						  EWL_FLAG_FILL_HSHRINK);
 
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.
