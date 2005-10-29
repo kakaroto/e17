@@ -365,6 +365,8 @@ epsilon_exists (Epsilon * e)
 	e->hash = epsilon_hash (hash_seed);
       else
 	e->hash = epsilon_hash (e->src);
+
+      free(hash_seed);
     }
 
   if (!e->hash)
@@ -457,7 +459,7 @@ epsilon_generate (Epsilon * e)
     char uri[PATH_MAX];
     char format[32];
     struct stat filestatus;
-    int isedje = 0;
+    int isedje = 0, len=0;
     Imlib_Image tmp = NULL;
     Imlib_Image src = NULL;
     Ecore_Evas *ee = NULL;
