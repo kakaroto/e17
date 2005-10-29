@@ -27,17 +27,12 @@ EWL TODO
 - all the themes need to be gone over, cleaned up and corrected.
 
 - [BUG] Scrollbar jumps when trying to drag the button from its lower part
-- [BUG] Fix size of the seeker.
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
         only at the moment.
 - [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
         mouse over.
-- [BUG] When using the menu clicking on the label a second time dosen't
-        close the menu.
 - [BUG] Spinner seems to resize itself slightly larger even when it dosen't
         have too.
-- [BUG] The arrows for the spinner need to be smaller.
-- [BUG] The arrows for the spinner need to appear on e17 & zero theme
 - [BUG] The ewl_test seems to get a small gap between the right edje of the
         test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.
