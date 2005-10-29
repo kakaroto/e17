@@ -141,7 +141,7 @@ EwinFindByString(const char *match, int type)
 }
 
 Group             **
-ListWinGroups(EWin * ewin, char group_select, int *num)
+ListWinGroups(const EWin * ewin, char group_select, int *num)
 {
    Group             **groups = NULL;
    Group             **groups2 = NULL;
@@ -190,7 +190,8 @@ ListWinGroups(EWin * ewin, char group_select, int *num)
 }
 
 EWin              **
-ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
+ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
+			   int *num)
 {
 
    EWin              **gwins = NULL;
@@ -202,7 +203,7 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 	if (nogroup)
 	  {
 	     gwins = Emalloc(sizeof(EWin *));
-	     gwins[0] = ewin;
+	     gwins[0] = (EWin *) ewin;
 	     *num = 1;
 	     return gwins;
 	  }
@@ -281,7 +282,7 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 	if ((*num) == 0)
 	  {
 	     gwins = Emalloc(sizeof(EWin *));
-	     gwins[0] = ewin;
+	     gwins[0] = (EWin *) ewin;
 	     *num = 1;
 	  }
 	return gwins;
@@ -294,7 +295,7 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 }
 
 EWin              **
-EwinListTransients(EWin * ewin, int *num, int group)
+EwinListTransients(const EWin * ewin, int *num, int group)
 {
    EWin               *const *ewins, **lst, *ew;
    int                 i, j, n;
@@ -352,7 +353,7 @@ EwinListTransients(EWin * ewin, int *num, int group)
 }
 
 EWin              **
-EwinListTransientFor(EWin * ewin, int *num)
+EwinListTransientFor(const EWin * ewin, int *num)
 {
    EWin               *const *ewins, **lst, *ew;
    int                 i, j, n;

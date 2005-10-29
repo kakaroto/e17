@@ -328,6 +328,15 @@ void                EwinOpSetOpacity(EWin * ewin, int opacity);
 void                EwinOpMoveToDesk(EWin * ewin, struct _desk *dsk, int inc);
 void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 
+/* finders.c */
+EWin               *EwinFindByPtr(const EWin * ewin);
+EWin               *EwinFindByFrame(Window win);
+EWin               *EwinFindByClient(Window win);
+EWin               *EwinFindByChildren(Window win);
+EWin               *EwinFindByString(const char *win, int type);
+EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
+EWin              **EwinListTransientFor(const EWin * ewin, int *num);
+
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);
 EWin               *const *EwinListFocusGet(int *num);

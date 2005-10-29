@@ -996,17 +996,10 @@ char               *field(char *s, int fieldno);
 void                fword(char *s, int num, char *wd);
 
 /* finders.c */
-EWin               *EwinFindByPtr(const EWin * ewin);
-EWin               *EwinFindByFrame(Window win);
-EWin               *EwinFindByClient(Window win);
-EWin               *EwinFindByChildren(Window win);
-EWin               *EwinFindByString(const char *win, int type);
-
-Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
-EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
+Group             **ListWinGroups(const EWin * ewin, char group_select,
+				  int *num);
+EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 					       char nogroup, int *num);
-EWin              **EwinListTransients(EWin * ewin, int *num, int group);
-EWin              **EwinListTransientFor(EWin * ewin, int *num);
 
 /* focus.c */
 #define FOCUS_NOP         0
