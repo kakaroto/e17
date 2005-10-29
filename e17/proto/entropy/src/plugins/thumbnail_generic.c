@@ -151,13 +151,24 @@ entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file) {
 	
 	imlib_context_set_image(image);
 
-	imlib_context_set_cliprect(0,0,w,h);
+	{
+		iw = imlib_image_get_width();
+		ih = imlib_image_get_height();
+		
+		if (iw>ih) {
+			w = 64;
+			h = (64*ih)/iw;
+		} else {
+			h = 64;
+			w = (64*iw)/ih;
+		}
+		
+		imlib_context_set_cliprect(0,0,w,h);
+		thumbnail = imlib_create_cropped_scaled_image(0,0,iw,ih,w,h);
 
-	iw = imlib_image_get_width();
-	ih = imlib_image_get_height();
-	
-	thumbnail = imlib_create_cropped_scaled_image(0,0,iw,ih,w,h);
-	imlib_free_image(); /*Free the master image*/
+		imlib_free_image(); /*Free the master image*/
+	}
+
 	imlib_context_set_image(thumbnail);
 
 

@@ -30,6 +30,7 @@ Ecore_List* entropy_thumbnailer_plugin_mime_types_get() {
 		ecore_list_append(types, "video/mpeg");
 		ecore_list_append(types, "application/x-bzip2");
 		ecore_list_append(types, "application/x-tar");
+		ecore_list_append(types, "text/plain");
 		//ecore_list_append(types, "video/x-msvideo");
 		
 	}
@@ -76,7 +77,10 @@ entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_generic_file* file)
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/bz2.png");
 	} else if (!strcmp(file->mime_type, "application/x-tar")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/tar.png");
+	} else if (!strcmp(file->mime_type, "text/plain")) {
+		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/txt.png");
 	}
+
 
 
 

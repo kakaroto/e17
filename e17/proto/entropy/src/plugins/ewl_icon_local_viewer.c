@@ -5,6 +5,9 @@
 #include <dlfcn.h>
 #include <time.h>
 
+#define DONT_DO_MIME 0
+#define DO_MIME 1
+
 typedef struct gui_file gui_file;
 struct gui_file {
 	        entropy_generic_file* file;
@@ -529,7 +532,7 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 }
 
 
-gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item) {
+gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item, int do_mime) {
 		entropy_icon_viewer* view = comp->data;
 	
 		
@@ -553,6 +556,27 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 		
 			ecore_hash_set(view->gui_hash, list_item, gui_object);
 			ecore_hash_set(view->icon_hash, icon, gui_object);
+
+			if (do_mime == DO_MIME) {
+				char* mime;
+				entropy_plugin* thumb;
+				
+		                 mime = entropy_mime_file_identify(comp->core->mime_plugins, list_item);
+	
+			
+				 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
+		                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+				 } else {
+					 thumb = NULL;
+				 }
+
+		                if (thumb) {
+					entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", list_item,NULL);
+					entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);			
+					entropy_notify_event_commit(comp->core->notify, ev);
+				}
+
+			}
 
 			return gui_object;
 			
@@ -598,7 +622,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 	
 		ecore_list_goto_first(el);
 		while ( (list_item = ecore_list_next(el)) ) {
-			ewl_icon_local_viewer_add_icon(comp, list_item);
+			ewl_icon_local_viewer_add_icon(comp, list_item, DONT_DO_MIME);
 		}
 
 		event_keys = ecore_hash_keys(view->gui_hash);
@@ -687,7 +711,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
        case ENTROPY_NOTIFY_FILE_CREATE: {
 		//printf ("Received file create event at icon viewer for file %s \n", ((entropy_generic_file*)ret)->filename);
-		ewl_icon_local_viewer_add_icon(comp, (entropy_generic_file*)ret);
+		ewl_icon_local_viewer_add_icon(comp, (entropy_generic_file*)ret, DO_MIME);
        }
        break;
 
