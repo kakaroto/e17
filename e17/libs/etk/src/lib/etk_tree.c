@@ -1143,7 +1143,7 @@ static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h
          if (!tree->items_objects)
             break;
          _etk_tree_item_objects_free(tree->items_objects->data, tree);
-         tree->items_objects = evas_list_remove(tree->items_objects, tree->items_objects);
+         tree->items_objects = evas_list_remove_list(tree->items_objects, tree->items_objects);
       }
    }
 
