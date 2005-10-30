@@ -38,6 +38,7 @@ struct _snapshot
    char               *win_role;
    Window              win;
    EWin               *used;
+   unsigned int        startup_id;
    char                track_changes;
    unsigned int        match_flags;
    unsigned int        use_flags;
@@ -150,6 +151,9 @@ SnapshotEwinMatch(Snapshot * sn, const EWin * ewin)
    if (ewin->state.identified)
       return sn->win == _EwinGetClientXwin(ewin);
 
+   if (sn->startup_id && !sn->cmd)
+      return 0;
+
    if (sn->match_flags & SNAP_MATCH_TITLE
        && !SEQ(sn->win_title, ewin->icccm.wm_name))
       return 0;
@@ -187,26 +191,36 @@ SnapshotEwinFind(EWin * ewin)
    if (!lst)
       return NULL;
 
+   /* If exec'ed by snap try matching command exactly */
    for (i = 0; i < num; i++)
      {
 	sn = lst[i];
-
-	if (sn->used)
+	if (sn->used || !sn->startup_id || !sn->cmd)
 	   continue;
-
+	if (strcmp(sn->cmd, ewin->icccm.wm_command))
+	   continue;
 	if (!SnapshotEwinMatch(sn, ewin))
 	   continue;
+	goto done;
+     }
 
-	if (!(sn->match_flags & SNAP_MATCH_MULTIPLE))
-	  {
-	     sn->used = ewin;
-	     ewin->snap = sn;
-	  }
+   for (i = 0; i < num; i++)
+     {
+	sn = lst[i];
+	if (sn->used)
+	   continue;
+	if (!SnapshotEwinMatch(sn, ewin))
+	   continue;
 	goto done;
      }
    sn = NULL;
 
  done:
+   if (sn && !(sn->match_flags & SNAP_MATCH_MULTIPLE))
+     {
+	sn->used = ewin;
+	ewin->snap = sn;
+     }
    Efree(lst);
    return sn;
 }
@@ -1185,7 +1199,10 @@ SpawnSnappedCmds(void)
 	     sn = lst[i];
 	     if ((sn->use_flags & SNAP_USE_COMMAND) && (sn->cmd) &&
 		 !sn->used && !(sn->match_flags & SNAP_MATCH_MULTIPLE))
-		EspawnCmd(sn->cmd);
+	       {
+		  sn->startup_id = ++Mode.apps.startup_id;
+		  EspawnCmd(sn->cmd);
+	       }
 	  }
 	Efree(lst);
      }
@@ -1196,9 +1213,9 @@ void
 LoadSnapInfo(void)
 {
    Snapshot           *sn = NULL;
-   char                buf[4096], s[4096];
+   char                buf[4096], *s;
    FILE               *f;
-   int                 res_w, res_h;
+   int                 res_w, res_h, a, b, c, d;
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
    f = fopen(buf, "r");
@@ -1209,84 +1226,90 @@ LoadSnapInfo(void)
    res_h = VRoot.h;
    while (fgets(buf, sizeof(buf), f))
      {
-	/* nuke \n */
-	buf[strlen(buf) - 1] = 0;
-	s[0] = '\0';
-	word(buf, 1, s);
-	if (!s[0])
+	s = strchr(buf, ':');
+	if (!s)
 	   continue;
-	if (!strcmp(s, "NEW:"))
+	*s++ = '\0';
+	s = Estrtrim(s);
+	if (!buf[0] || !s[0])
+	   continue;
+	if (!strcmp(buf, "NEW"))
 	  {
 	     res_w = VRoot.w;
 	     res_h = VRoot.h;
-	     sn = SnapshotCreate(atword(buf, 2));
+	     sn = SnapshotCreate(s);
 	  }
 	else if (sn)
 	  {
-	     if (!strcmp(s, "WIN:"))
+	     if (!strcmp(buf, "WIN"))
 	       {
-		  sn->win = strtoul(atword(buf, 2), NULL, 0);
+		  sn->win = strtoul(s, NULL, 0);
 	       }
-	     else if (!strcmp(s, "TITLE:"))
+	     else if (!strcmp(buf, "TITLE"))
 	       {
-		  sn->win_title = Estrdup(atword(buf, 2));
+		  sn->win_title = Estrdup(s);
 		  sn->match_flags |= SNAP_MATCH_TITLE;
 	       }
-	     else if (!strcmp(s, "NAME:"))
+	     else if (!strcmp(buf, "NAME"))
 	       {
-		  sn->win_name = Estrdup(atword(buf, 2));
+		  sn->win_name = Estrdup(s);
 		  sn->match_flags |= SNAP_MATCH_NAME;
 	       }
-	     else if (!strcmp(s, "CLASS:"))
+	     else if (!strcmp(buf, "CLASS"))
 	       {
-		  sn->win_class = Estrdup(atword(buf, 2));
+		  sn->win_class = Estrdup(s);
 		  sn->match_flags |= SNAP_MATCH_CLASS;
 	       }
-	     else if (!strcmp(s, "ROLE:"))
+	     else if (!strcmp(buf, "ROLE"))
 	       {
-		  sn->win_role = Estrdup(atword(buf, 2));
+		  sn->win_role = Estrdup(s);
 		  sn->match_flags |= SNAP_MATCH_ROLE;
 	       }
-	     else if (!strcmp(s, "AUTO:"))
-		sn->track_changes = 1;
-	     else if (!strcmp(s, "BORDER:"))
+	     else if (!strcmp(buf, "AUTO"))
+	       {
+		  sn->track_changes = 1;
+	       }
+	     else if (!strcmp(buf, "BORDER"))
 	       {
 		  sn->use_flags |= SNAP_USE_BORDER;
-		  sn->border_name = Estrdup(atword(buf, 2));
+		  sn->border_name = Estrdup(s);
 	       }
-	     else if (!strcmp(s, "CMD:"))
+	     else if (!strcmp(buf, "CMD"))
 	       {
 		  sn->use_flags |= SNAP_USE_COMMAND;
-		  sn->cmd = Estrdup(atword(buf, 2));
+		  sn->cmd = Estrdup(s);
 	       }
-	     else if (!strcmp(s, "DESKTOP:"))
+	     else if (!strcmp(buf, "DESKTOP"))
 	       {
 		  sn->use_flags |= SNAP_USE_DESK;
-		  word(buf, 2, s);
 		  sn->desktop = atoi(s);
 	       }
-	     else if (!strcmp(s, "RES:"))
+	     else if (!strcmp(buf, "RES"))
 	       {
-		  word(buf, 2, s);
-		  res_w = atoi(s);
-		  word(buf, 3, s);
-		  res_h = atoi(s);
+		  if (sscanf(s, "%u %u", &a, &b) < 2)
+		     continue;
+		  if (a <= 0 || b <= 0)
+		     continue;
+		  res_w = a;
+		  res_h = b;
 	       }
-	     else if (!strcmp(s, "WH:"))
+	     else if (!strcmp(buf, "WH"))
 	       {
+		  if (sscanf(s, "%u %u", &a, &b) < 2)
+		     continue;
+		  if (a <= 0 || b <= 0)
+		     continue;
 		  sn->use_flags |= SNAP_USE_SIZE;
-		  word(buf, 2, s);
-		  sn->w = atoi(s);
-		  word(buf, 3, s);
-		  sn->h = atoi(s);
+		  sn->w = a;
+		  sn->h = b;
 	       }
-	     else if (!strcmp(s, "XY:"))
+	     else if (!strcmp(buf, "XY"))
 	       {
+		  if (sscanf(s, "%d %d %u %u", &a, &b, &c, &d) < 4)
+		     continue;
 		  sn->use_flags |= SNAP_USE_POS;
-		  word(buf, 2, s);
-		  sn->x = atoi(s);
-		  word(buf, 3, s);
-		  sn->y = atoi(s);
+		  sn->x = a;
+		  sn->y = b;
 		  /* we changed reses since we last used this snapshot file */
 		  if (res_w != VRoot.w)
 		    {
@@ -1320,56 +1343,46 @@ LoadSnapInfo(void)
 			       sn->y = VRoot.h - 32;
 			 }
 		    }
-		  word(buf, 4, s);
-		  sn->area_x = atoi(s);
-		  word(buf, 5, s);
-		  sn->area_y = atoi(s);
+		  sn->area_x = c;
+		  sn->area_y = d;
 	       }
-	     else if (!strcmp(s, "LAYER:"))
+	     else if (!strcmp(buf, "LAYER"))
 	       {
 		  sn->use_flags |= SNAP_USE_LAYER;
-		  word(buf, 2, s);
 		  sn->layer = atoi(s);
 	       }
-	     else if (!strcmp(s, "STICKY:"))
+	     else if (!strcmp(buf, "STICKY"))
 	       {
 		  sn->use_flags |= SNAP_USE_STICKY;
-		  word(buf, 2, s);
 		  sn->sticky = atoi(s);
 	       }
-	     else if (!strcmp(s, "SHADE:"))
+	     else if (!strcmp(buf, "SHADE"))
 	       {
 		  sn->use_flags |= SNAP_USE_SHADED;
-		  word(buf, 2, s);
 		  sn->shaded = atoi(s);
 	       }
-	     else if (!strcmp(s, "SKIPFOCUS:"))
+	     else if (!strcmp(buf, "SKIPFOCUS"))
 	       {
 		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
-		  word(buf, 2, s);
 		  sn->skipfocus = atoi(s);
 	       }
-	     else if (!strcmp(s, "SKIPTASK:"))
+	     else if (!strcmp(buf, "SKIPTASK"))
 	       {
 		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
-		  word(buf, 2, s);
 		  sn->skiptask = atoi(s);
 	       }
-	     else if (!strcmp(s, "SKIPWINLIST:"))
+	     else if (!strcmp(buf, "SKIPWINLIST"))
 	       {
 		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
-		  word(buf, 2, s);
 		  sn->skipwinlist = atoi(s);
 	       }
-	     else if (!strcmp(s, "NEVERFOCUS:"))
+	     else if (!strcmp(buf, "NEVERFOCUS"))
 	       {
 		  sn->use_flags |= SNAP_USE_FOCUS_NEVER;
-		  word(buf, 2, s);
 		  sn->neverfocus = atoi(s);
 	       }
-	     else if (!strcmp(s, "GROUP:"))
+	     else if (!strcmp(buf, "GROUP"))
 	       {
-		  word(buf, 2, s);
 		  sn->num_groups++;
 		  sn->groups =
 		     Erealloc(sn->groups, sizeof(int) * sn->num_groups);
@@ -1377,16 +1390,14 @@ LoadSnapInfo(void)
 		  sn->groups[sn->num_groups - 1] = atoi(s);
 	       }
 #if USE_COMPOSITE
-	     else if (!strcmp(s, "OPACITY:"))
+	     else if (!strcmp(buf, "OPACITY"))
 	       {
 		  sn->use_flags |= SNAP_USE_OPACITY;
-		  word(buf, 2, s);
 		  sn->opacity = atoi(s);
 	       }
-	     else if (!strcmp(s, "SHADOW:"))
+	     else if (!strcmp(buf, "SHADOW"))
 	       {
 		  sn->use_flags |= SNAP_USE_SHADOW;
-		  word(buf, 2, s);
 		  sn->shadow = atoi(s);
 	       }
 #endif

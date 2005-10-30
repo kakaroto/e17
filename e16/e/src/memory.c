@@ -22,6 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <ctype.h>
+
+char               *
+Estrtrim(char *s)
+{
+   int                 l;
+
+   while (*s == ' ')
+      s++;
+   if (!*s)
+      return s;
+
+   l = strlen(s);
+   while (isspace(s[l - 1]))
+      l--;
+   s[l] = '\0';
+
+   return s;
+}
 
 #if !USE_LIBC_STRDUP
 char               *
@@ -159,6 +178,8 @@ StrlistEncodeEscaped(char *buf, int len, char **lst, int num)
 	     if (++j >= num)
 		goto done;
 	     p = lst[j];
+	     if (!p || !p[0])
+		goto done;
 	     *s++ = ' ';
 	     break;
 	  case ' ':

@@ -270,7 +270,8 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 	       {
 		  pstr = malloc(items * sizeof(char *));
 		  for (i = 0; i < items; i++)
-		     pstr[i] = (list[i]) ? strdup(list[i]) : NULL;
+		     pstr[i] = (list[i] && (*list[i] || i < items - 1)) ?
+			strdup(list[i]) : NULL;
 	       }
 	     if (list)
 		XFreeStringList(list);

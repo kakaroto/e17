@@ -608,6 +608,10 @@ typedef struct
 {
    struct
    {
+      unsigned int        startup_id;
+   } apps;
+   struct
+   {
       char               *name;
       char               *dir;
       char               *cache_dir;
@@ -1111,6 +1115,8 @@ const char         *EGetSavePrefixCommon(void);
 
 #define _EFREE(p)    do { if (p) { Efree(p); p = NULL; } } while (0)
 #define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
+
+char               *Estrtrim(char *s);
 
 #if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)

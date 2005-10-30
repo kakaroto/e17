@@ -47,9 +47,11 @@ FindItem(const void *name, int id, int find_by, int type)
    ptr = lists[type].next;
    if (find_by == LIST_FINDBY_NAME)
      {
+	if (!name)
+	   return NULL;
 	while (ptr)
 	  {
-	     if ((!strcmp(name, ptr->name)))
+	     if (!strcmp(name, ptr->name))
 		return ptr->item;
 	     ptr = ptr->next;
 	  }
@@ -65,6 +67,8 @@ FindItem(const void *name, int id, int find_by, int type)
      }
    else if (find_by == LIST_FINDBY_BOTH)
      {
+	if (!name)
+	   return NULL;
 	while (ptr)
 	  {
 	     if ((!strcmp(name, ptr->name)) && (ptr->id == id))
