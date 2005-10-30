@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS 		= 	1.4 foreign
 MAINTAINERCLEANFILES 		= 	Makefile.in
 
-CFLAGS				=	-g -W -Wall -Wno-implicit
+AM_CFLAGS			=	-W -Wall -Wno-implicit
 INCLUDES			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@
 
 EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test

@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS	= 1.5 foreign
 MAINTAINERCLEANFILES 	= Makefile.in
 
-CFLAGS		= -g -W -Wall -Wno-implicit
+AM_CFLAGS	= -W -Wall -Wno-implicit
 INCLUDES	= -I$(top_srcdir)/src/lib @ECORE_CFLAGS@
 
 bin_PROGRAMS	= engrave_test \
