@@ -99,6 +99,7 @@ amd64=no
 case $host_cpu in
   i*86)   mmx="yes";;
   x86_64) amd64="yes";;
+  amd64) amd64="yes";;
 esac
 
 dnl 
