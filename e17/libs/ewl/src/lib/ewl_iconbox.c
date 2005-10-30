@@ -545,12 +545,12 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 
 
 
-void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc) /* Loc 0= image, 1= label */
+void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc 0= image, 1= label */
 {
 	
 	int sel = ib->selected;
 
-	if (!ib->icon_box_parent->drag_box) {
+	if ((!ib->icon_box_parent->drag_box) && deselect) {
 		Ewl_IconBox_Icon* list_item;
 		ecore_list_goto_first(ib->icon_box_parent->ewl_iconbox_icon_list);
 		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->icon_box_parent->ewl_iconbox_icon_list)) != NULL) {
@@ -891,8 +891,8 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
 				
 				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy) {
-					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0);
-				} else if (list_item->selected) {
+					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0,0);
+				} else if (list_item->selected && !(ev->modifiers == EWL_KEY_MODIFIER_CTRL)) {
 					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));
 				}
 			}
@@ -996,7 +996,11 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 	ib->icon_box_parent->ydown = ev->y;
 
 	/* Set this to selected */
-	ewl_iconbox_icon_select(ib,0);
+	if (ev->modifiers == EWL_KEY_MODIFIER_CTRL) {
+		ewl_iconbox_icon_select(ib,0,0);
+	} else {
+		ewl_iconbox_icon_select(ib,0,1);	
+	}
 
 	ib->icon_box_parent->select_icon = ib; /*We rely on this being the first callback - so
 						 client*/
@@ -1060,7 +1064,7 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_dat
 	Ewl_IconBox_Icon* ib = user_data;
 
 	/* Set this to selected */
-	ewl_iconbox_icon_select(ib,1);
+	ewl_iconbox_icon_select(ib,1, 1);
 }
 
 

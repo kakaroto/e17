@@ -146,7 +146,7 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data ,void *user_data )
 
 
 /* Internal functions */
-void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc);
+void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect);
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib);
 void ewl_iconbox_label_edit_key_down(Ewl_Widget *w, void *ev_data, void* user_data);
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib);
