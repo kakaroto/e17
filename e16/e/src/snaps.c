@@ -1410,14 +1410,7 @@ LoadSnapInfo(void)
 void
 SnapshotsEwinMatch(EWin * ewin)
 {
-   Snapshot           *sn;
-
-   sn = SnapshotEwinFind(ewin);
-   if (sn)
-      return;
-
-   if (ewin->props.autosave)
-      SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
+   SnapshotEwinFind(ewin);
 }
 
 /* make a client window conform to snapshot info */
@@ -1429,7 +1422,12 @@ SnapshotEwinApply(EWin * ewin)
 
    sn = ewin->snap;
    if (!sn)
-      return;
+     {
+
+	if (ewin->props.autosave)
+	   SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
+	return;
+     }
 
    if (ewin->props.autosave)
       sn->track_changes = 1;
