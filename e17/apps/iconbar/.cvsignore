@@ -10,3 +10,6 @@ ltmain.sh
 Makefile.in
 Makefile
 *.tar.gz
+depcomp
+install-sh
+missing
