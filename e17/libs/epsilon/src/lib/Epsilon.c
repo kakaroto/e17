@@ -694,6 +694,11 @@ _epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
   png_text text_ptr[5];
   png_bytep row_ptr, row_data = NULL;
 
+  /*If the image has no width or no height, leave here, otherwise libpng gives a crash*/
+  if (!th || !tw) {
+	  return 1;
+  }
+
   GET_TMPNAME (tmpfile, file);
 
 /*
