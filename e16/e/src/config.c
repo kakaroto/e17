@@ -27,7 +27,6 @@
 #include "conf.h"
 #include "menus.h"
 #include "tooltips.h"
-#include <ctype.h>
 
 #define SKIP_If_EXISTS(name, type) \
    if (ConfigSkipIfExists(ConfigFile, name, type)) return

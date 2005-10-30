@@ -28,6 +28,8 @@
 #include "hints.h"
 #include "xwin.h"
 
+static void         ICCCM_SetIconSizes(void);
+
 void
 ICCCM_Init(void)
 {
@@ -39,7 +41,9 @@ ICCCM_Init(void)
 
    if (Mode.wm.window)
      {
-	Atom                wm_props[1] = { ECORE_X_ATOM_WM_DELETE_WINDOW };
+	Atom                wm_props[1];
+
+	wm_props[0] = ECORE_X_ATOM_WM_DELETE_WINDOW;
 	XSetWMProtocols(disp, VRoot.win, wm_props, 1);
      }
 }
@@ -541,7 +545,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)
      {
 	int                 argc;
-	char              **argv, s[4096];
+	char              **argv, s[4096], *ss;
 
 	_EFREE(ewin->icccm.wm_command);
 
@@ -553,8 +557,8 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 						      ECORE_X_ATOM_WM_COMMAND,
 						      &argv);
 
-	ewin->icccm.wm_command =
-	   Estrdup(StrlistEncodeEscaped(s, sizeof(s), argv, argc));
+	ss = StrlistEncodeEscaped(s, sizeof(s), argv, argc);
+	ewin->icccm.wm_command = Estrdup(ss);
 	StrlistFree(argv, argc);
      }
 

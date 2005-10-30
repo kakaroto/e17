@@ -151,9 +151,9 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
      {
      case GROUP_SELECT_EWIN_ONLY:
 	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
-	groups =
-	   (Group **) memcpy(groups, ewin->groups,
-			     sizeof(Group *) * ewin->num_groups);
+	if (!groups)
+	   break;
+	memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
 	*num = ewin->num_groups;
 	break;
      case GROUP_SELECT_ALL_EXCEPT_EWIN:
@@ -172,11 +172,14 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
 		    }
 	       }
 	     groups = (Group **) Emalloc(sizeof(Group *) * (*num - killed));
-	     j = 0;
-	     for (i = 0; i < (*num); i++)
-		if (groups2[i])
-		   groups[j++] = groups2[i];
-	     (*num) -= killed;
+	     if (groups)
+	       {
+		  j = 0;
+		  for (i = 0; i < (*num); i++)
+		     if (groups2[i])
+			groups[j++] = groups2[i];
+		  (*num) -= killed;
+	       }
 	     Efree(groups2);
 	  }
 	break;
@@ -279,7 +282,7 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
 	       }
 	  }
 
-	if ((*num) == 0)
+	if (gwins == NULL)
 	  {
 	     gwins = Emalloc(sizeof(EWin *));
 	     gwins[0] = (EWin *) ewin;

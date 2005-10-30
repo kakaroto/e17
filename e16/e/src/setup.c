@@ -153,9 +153,6 @@ SetupX(const char *dstr)
    if (Mode.display.screens > 1 && !Mode.wm.single && !Mode.wm.restart)
      {
 	int                 i;
-	char               *dispstr;
-
-	dispstr = DisplayString(disp);
 
 	for (i = 0; i < Mode.display.screens; i++)
 	  {

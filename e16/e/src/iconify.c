@@ -327,7 +327,8 @@ IconboxCreate(const char *name)
 
    ib = Ecalloc(1, sizeof(Iconbox));
    ib->name = Estrdup(name);
-   ib->type = (!strncmp(name, "_ST_", 4)) ? IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
+   ib->type = (name && !strncmp(name, "_ST_", 4)) ?
+      IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
    ib->orientation = 0;
    ib->scrollbar_side = 1;
    ib->arrow_side = 1;
@@ -1573,7 +1574,7 @@ IconboxLayout(Iconbox * ib, int *px, int *py, int *pw, int *ph)
 static void
 IconboxDraw(Iconbox * ib)
 {
-   int                 i, x, y, w, h;
+   int                 i, w, h;
    ImageClass         *ib_ic_cover;
    int                 ib_xlt, ib_ylt, ib_ww, ib_hh;
    int                 ib_x0, ib_y0, ib_w0, ib_h0;
@@ -1581,8 +1582,6 @@ IconboxDraw(Iconbox * ib)
    int                 ww, hh;
    Pixmap              pmap, mask;
 
-   x = EoGetX(ib->ewin);
-   y = EoGetY(ib->ewin);
    w = ib->w;
    h = ib->h;
 
@@ -2185,8 +2184,8 @@ IconboxConfigure(Iconbox * ib)
    if (!ib)
       return;
 
-   if ((d =
-	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2650,7 +2649,7 @@ IboxIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             IconboxesIpcArray[] = {
+static const IpcItem IconboxesIpcArray[] = {
    {
     IboxIpc,
     "iconbox", "ibox",

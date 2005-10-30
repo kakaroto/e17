@@ -30,8 +30,6 @@
 /*
  * Theme transparency settings
  */
-static Dialog      *tr_sel_dialog;
-
 static int          tmp_theme_transparency;
 
 static int          tmp_st_border;
@@ -117,7 +115,8 @@ SettingsTransparency(void)
       *radio_dialog, *radio_tooltip, *radio_hilight;
    char                s[256];
 
-   if ((d = FindItem("CONFIGURE_TRANS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_TRANS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -134,7 +133,7 @@ SettingsTransparency(void)
 
    tmp_theme_transparency = Conf.trans.alpha;
 
-   d = tr_sel_dialog = DialogCreate("CONFIGURE_TRANS");
+   d = DialogCreate("CONFIGURE_TRANS");
    DialogSetTitle(d, _("Selective Transparency Settings"));
 
    table = DialogInitItem(d);
@@ -307,7 +306,7 @@ TransparencyIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             TransIpcArray[] = {
+static const IpcItem TransIpcArray[] = {
    {
     TransparencyIpc,
     "trans", "tr",

@@ -332,7 +332,7 @@ EWMH_SetClientStacking(void)
 void
 EWMH_SetActiveWindow(Window win)
 {
-   static Window       win_last_set;
+   static Window       win_last_set = None;
 
    if (win == win_last_set)
       return;

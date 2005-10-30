@@ -315,20 +315,14 @@ void                EwinOpActivate(EWin * ewin);
 void                EwinOpKill(EWin * ewin);
 void                EwinOpRaise(EWin * ewin);
 void                EwinOpLower(EWin * ewin);
-void                EwinOpRaiseLower(EWin * ewin);
 void                EwinOpStick(EWin * ewin, int on);
 void                EwinOpSkipLists(EWin * ewin, int skip);
-void                EwinOpSkipTask(EWin * ewin, int skip);
-void                EwinOpSkipFocus(EWin * ewin, int skip);
-void                EwinOpSkipWinlist(EWin * ewin, int skip);
-void                EwinOpNeverFocus(EWin * ewin, int on);
 void                EwinOpIconify(EWin * ewin, int on);
 void                EwinOpShade(EWin * ewin, int on);
 void                EwinOpSetLayer(EWin * ewin, int layer);
 void                EwinOpSetBorder(EWin * ewin, const char *name);
 void                EwinOpSetOpacity(EWin * ewin, int opacity);
 void                EwinOpMoveToDesk(EWin * ewin, struct _desk *dsk, int inc);
-void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);

@@ -24,6 +24,10 @@
 #include "ewins.h"
 #include "hints.h"
 
+/* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
+/* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
+#define CARD32 long
+
 /* Motif window hints */
 #define MWM_HINTS_FUNCTIONS           (1L << 0)
 #define MWM_HINTS_DECORATIONS         (1L << 1)

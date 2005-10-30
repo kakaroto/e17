@@ -32,7 +32,6 @@
 #include "snaps.h"
 #include "xwin.h"
 #include <math.h>
-#include <sys/time.h>
 
 static const WinOp  winops[] = {
    {"close", 2, 1, 0, EWIN_OP_CLOSE},
@@ -1475,6 +1474,7 @@ EwinOpLower(EWin * ewin)
    Efree(gwins);
 }
 
+#if 0				/* Unused */
 static int
 FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 {
@@ -1534,6 +1534,7 @@ EwinOpRaiseLower(EWin * ewin)
    if (gwins)
       Efree(gwins);
 }
+#endif
 
 void
 EwinOpStick(EWin * ewin, int on)
@@ -1578,6 +1579,7 @@ EwinOpSkipLists(EWin * ewin, int skip)
    EwinStateUpdate(ewin);
 }
 
+#if 0				/* Unused */
 void
 EwinOpSkipTask(EWin * ewin, int skip)
 {
@@ -1613,6 +1615,7 @@ EwinOpNeverFocus(EWin * ewin, int on)
    SnapshotEwinUpdate(ewin, SNAP_USE_FOCUS_NEVER);
    EwinStateUpdate(ewin);
 }
+#endif
 
 void
 EwinOpIconify(EWin * ewin, int on)
@@ -1777,12 +1780,14 @@ EwinOpMoveToDesk(EWin * ewin, Desk * dsk, int inc)
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
+#if 0				/* Unused */
 void
 EwinOpMoveToArea(EWin * ewin, int x, int y)
 {
    EwinMoveToArea(ewin, x, y);
    SnapshotEwinUpdate(ewin, SNAP_USE_POS);
 }
+#endif
 
 #if 0				/* Not used? */
 static int

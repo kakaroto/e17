@@ -664,7 +664,8 @@ SnapshotEwinDialog(const EWin * ewin)
 
    Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", _EwinGetClientXwin(ewin));
 
-   if ((d = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	ShowDialog(d);
 	return;
@@ -998,7 +999,8 @@ SettingsRemember(void)
    const char         *s;
 
    /* init remember window */
-   if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);

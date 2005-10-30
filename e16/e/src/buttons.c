@@ -180,7 +180,8 @@ ButtonDestroy(Button * b)
 	return;
      }
 
-   while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
+   while (RemoveItemByPtr(b, LIST_TYPE_BUTTON))
+      ;
 
    EoFini(b);
 
@@ -697,6 +698,7 @@ ButtonsConfigLoad(FILE * ConfigFile)
    char                show = 1;
    char                internal = 0;
    int                 fields;
+   const char         *ss;
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -745,7 +747,8 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	     break;
 	  case BUTTON_LABEL:
 	     _EFREE(label);
-	     label = Estrdup(atword(s, 2));
+	     ss = atword(s, 2);
+	     label = Estrdup(ss);
 	     if (pbt)
 	       {
 		  _EFREE(pbt->label);
@@ -1132,7 +1135,7 @@ IPC_ButtonShow(const char *params, Client * c __UNUSED__)
    doHideShowButton(params);
 }
 
-IpcItem             ButtonsIpcArray[] = {
+static const IpcItem ButtonsIpcArray[] = {
    {
     ButtonsIpc,
     "button", "btn",

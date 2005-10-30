@@ -170,6 +170,7 @@ MoveItemToListTop(const void *item, int type)
      }
 }
 
+#if 0				/* Unused */
 void
 MoveItemToListBottom(const void *item, int type)
 {
@@ -205,6 +206,7 @@ MoveItemToListBottom(const void *item, int type)
 	  }
      }
 }
+#endif
 
 void               *
 RemoveItem(const void *name, int id, int find_by, int type)
@@ -307,8 +309,10 @@ RemoveItem(const void *name, int id, int find_by, int type)
 		Efree(ptr->name);
 	     Efree(ptr);
 	     return p;
+#if 0				/* FIXME - Is something wrong here? */
 	     pptr = ptr;
 	     ptr = ptr->next;
+#endif
 	  }
      }
 
@@ -473,6 +477,7 @@ ListItemTypeID(int *num, int type, int id)
    return lst;
 }
 
+#if 0				/* Unused */
 void              **
 ListItemTypeName(int *num, int type, const char *name)
 {
@@ -507,6 +512,7 @@ ListItemTypeName(int *num, int type, const char *name)
      }
    return lst;
 }
+#endif
 
 void
 ListChangeItemID(int type, void *item, int id)

@@ -43,7 +43,6 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <X11/Xatom.h>
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
@@ -1684,7 +1683,7 @@ ECompMgrCheckAlphaMask(ECmWinInfo * cw)
 {
    if (cw->opacity != OPAQUE && !cw->alphaPict)
       cw->alphaPict = EPictureCreateSolid(False, (double)cw->opacity / OPAQUE,
-					  0, 0, 0);
+					  0., 0., 0.);
 }
 
 static void
@@ -1786,7 +1785,6 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (eo->type == EOBJ_TYPE_DESK)
 	  {
 	     EObj               *eo1, *eo2;
-	     ECmWinInfo         *ec1;
 	     Desk               *d = (Desk *) eo;
 
 	     if (!d->viewable)
@@ -1795,7 +1793,6 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     stop = ECompMgrDetermineOrder(lst, num, &eo1, &eo2, d, clip);
 	     if (eo1)
 	       {
-		  ec1 = eo1->cmhook;
 		  if (!eo_first)
 		     eo_first = eo1;
 		  if (eo_prev)
@@ -1945,7 +1942,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     if (cw->opacity != OPAQUE && !cw->shadowPict)
 		cw->shadowPict = EPictureCreateSolid(True,
 						     (double)cw->opacity /
-						     OPAQUE * 0.3, 0, 0, 0);
+						     OPAQUE * 0.3, 0., 0., 0.);
 	     ERegionSubtractOffset(clip, x, y, cw->shape);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     XRenderComposite(dpy, PictOpOver,
@@ -2122,7 +2119,7 @@ static void
 ECompMgrShadowsInit(int mode, int cleanup)
 {
    if (mode == ECM_SHADOWS_BLURRED)
-      gaussianMap = make_gaussian_map(Conf_compmgr.shadows.blur.radius);
+      gaussianMap = make_gaussian_map((double)Conf_compmgr.shadows.blur.radius);
    else
      {
 	if (gaussianMap)
@@ -2131,7 +2128,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
      }
 
    if (mode != ECM_SHADOWS_OFF)
-      blackPicture = EPictureCreateSolid(True, 1, 0, 0, 0);
+      blackPicture = EPictureCreateSolid(True, 1., 0., 0., 0.);
    else
      {
 	if (blackPicture)
@@ -2140,7 +2137,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
      }
 
    if (mode == ECM_SHADOWS_SHARP)
-      transBlackPicture = EPictureCreateSolid(True, 0.3, 0, 0, 0);
+      transBlackPicture = EPictureCreateSolid(True, 0.3, 0., 0., 0.);
    else
      {
 	if (transBlackPicture)
@@ -2239,15 +2236,18 @@ ECompMgrStop(void)
    if (num > 0)
      {
 	lst = Emalloc(num * sizeof(EObj *));
-	memcpy(lst, lst1, num * sizeof(EObj *));
-	for (i = 0; i < num; i++)
+	if (lst)
 	  {
-	     if (lst[i]->type == EOBJ_TYPE_EXT)
-		EobjUnregister(lst[i]);	/* Modifies the object stack! */
-	     else
-		ECompMgrWinDel(lst[i]);
+	     memcpy(lst, lst1, num * sizeof(EObj *));
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->type == EOBJ_TYPE_EXT)
+		     EobjUnregister(lst[i]);	/* Modifies the object stack! */
+		  else
+		     ECompMgrWinDel(lst[i]);
+	       }
+	     Efree(lst);
 	  }
-	Efree(lst);
      }
 
    if (allDamage != None)
@@ -2372,7 +2372,7 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
      case CreateNotify:
 	xwin = ev->xcreatewindow.window;
       case_CreateNotify:
-	if (!Conf_compmgr.override_redirect.mode != ECM_OR_ON_CREATE)
+	if (Conf_compmgr.override_redirect.mode != ECM_OR_ON_CREATE)
 	   break;
 	eo = EobjListStackFind(xwin);
 	if (!eo)
@@ -2583,7 +2583,7 @@ CompMgrIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             CompMgrIpcArray[] = {
+static const IpcItem CompMgrIpcArray[] = {
    {
     CompMgrIpc,
     "compmgr", "cm",

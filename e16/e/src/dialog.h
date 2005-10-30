@@ -77,7 +77,6 @@ void                DialogAddFooter(Dialog * d, int flags,
 				    DialogCallbackFunc * cb);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
-DItem              *DialogItem(Dialog * d);
 void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
 					  int val, void *data);
 void                DialogItemSetClass(DItem * di, struct _imageclass *ic,
@@ -101,7 +100,6 @@ void                DialogItemTableSetOptions(DItem * di, int num_columns,
 void                DialogItemSeparatorSetOrientation(DItem * di,
 						      char horizontal);
 void                DialogItemImageSetFile(DItem * di, const char *image);
-void                DialogFreeItem(DItem * di);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
@@ -131,6 +129,5 @@ void                DialogCallbackClose(Dialog * d, int val, void *data);
 void                DialogsCheckUpdate(void);
 
 EWin               *FindEwinByDialog(Dialog * d);
-int                 FindADialog(void);
 
 #endif /* _DIALOG_H_ */

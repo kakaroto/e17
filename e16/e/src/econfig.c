@@ -463,7 +463,7 @@ ConfigurationSet(const char *params)
    const char         *p;
    char                name[1024];
    char                item[1024];
-   unsigned int        len, err;
+   unsigned int        len;
 
    if (!params)
       return;
@@ -484,7 +484,7 @@ ConfigurationSet(const char *params)
    len = 0;
    sscanf(p, "%1000s %n", item, &len);
    p += len;
-   err = ModuleConfigSet(name, item, p);
+   ModuleConfigSet(name, item, p);
 
    /* Save changed configuration */
    autosave();

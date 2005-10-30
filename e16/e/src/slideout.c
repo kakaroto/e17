@@ -46,7 +46,7 @@ typedef struct
 
 static void         SlideoutCalcSize(Slideout * s);
 
-struct
+static struct
 {
    Slideout           *active;
 } Mode_slideouts =
@@ -498,7 +498,7 @@ IPC_Slideout(const char *params, Client * c __UNUSED__)
    SlideoutShow(s, GetContextEwin(), Mode.context_win);
 }
 
-static IpcItem      SlideoutsIpcArray[] = {
+static const IpcItem SlideoutsIpcArray[] = {
    {
     IPC_Slideout, "slideout", NULL, "Show slideout", NULL},
 };

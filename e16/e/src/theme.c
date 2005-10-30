@@ -26,8 +26,10 @@
 
 #define ENABLE_THEME_SANITY_CHECKING 0
 
+#if ENABLE_THEME_SANITY_CHECKING
 static char        *badtheme = NULL;
 static char        *badreason = NULL;
+#endif
 
 static const char  *const theme_files[] = {
 #if ENABLE_THEME_SANITY_CHECKING
@@ -54,7 +56,7 @@ SanitiseThemeDir(const char *dir)
    int                 i;
    char                s[4096];
 
-   for (i = 0; (tf = theme_files[i]); i++)
+   for (i = 0; (tf = theme_files[i]) != NULL; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", dir, tf);
 	if (isfile(s))
@@ -243,14 +245,16 @@ ThemeGetDefault(void)
    /* Then, try out all installed themes */
    path = NULL;
    lst = ThemesList(&num);
-   for (i = 0; i < num; i++)
-     {
-	path = ThemeCheckPath(lst[i]);
-	if (path)
-	   break;
-     }
    if (lst)
-      StrlistFree(lst, num);
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     path = ThemeCheckPath(lst[i]);
+	     if (path)
+		break;
+	  }
+	StrlistFree(lst, num);
+     }
    if (path)
       return ThemeGetPath(path);
 
@@ -309,6 +313,8 @@ ThemeExtract(const char *theme)
 	     /* vanilla tarball */
 	     Esnprintf(s, sizeof(s), "(cd %s ; tar -xf %s)", th, theme);
 	  }
+	else
+	   goto done;
 
 	/* exec the untar if tarred */
 	system(s);
@@ -332,7 +338,9 @@ ThemeFind(const char *theme)
    char                paths[4096], tdir[4096], *p, *s;
    char               *ret;
 
+#if ENABLE_THEME_SANITY_CHECKING
    badreason = _("Unknown\n");
+#endif
 
    if (!theme || !theme[0])
       return ThemeGetDefault();
@@ -362,7 +370,9 @@ ThemeFind(const char *theme)
      }
 
    ret = ThemeGetDefault();
+#if ENABLE_THEME_SANITY_CHECKING
    badtheme = Estrdup(theme);
+#endif
 
    return ret;
 }
@@ -461,10 +471,11 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
 	int                 i, num;
 
 	lst = ThemesList(&num);
+	if (!lst)
+	   return;
 	for (i = 0; i < num; i++)
 	   IpcPrintf("%s\n", lst[i]);
-	if (lst)
-	   StrlistFree(lst, num);
+	StrlistFree(lst, num);
      }
    else if (!strcmp(cmd, "use"))
      {
@@ -473,7 +484,7 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             ThemeIpcArray[] = {
+static const IpcItem ThemeIpcArray[] = {
    {
     ThemesIpc,
     "theme", "th",

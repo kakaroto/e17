@@ -1313,7 +1313,7 @@ IPC_Compat(const char *params)
  */
 static void         IPC_Help(const char *params, Client * c);
 
-IpcItem             IPCArray[] = {
+static const IpcItem IPCArray[] = {
    {
     IPC_Help,
     "help", "?",
@@ -1532,6 +1532,7 @@ HandleIPC(const char *params, Client * c)
 
    lst = IPC_GetList(&num);
 
+   w[0] = 0;
    word(params, 1, w);
 
    ok = 0;
@@ -1541,8 +1542,9 @@ HandleIPC(const char *params, Client * c)
 	if (!(ipc->nick && !strcmp(w, ipc->nick)) && strcmp(w, ipc->name))
 	   continue;
 
+	w[0] = 0;
 	word(params, 2, w);
-	if (w)
+	if (w[0])
 	   ipc->func(atword(params, 2), c);
 	else
 	   ipc->func(NULL, c);

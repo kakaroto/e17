@@ -79,8 +79,10 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
 
 	for (;;)
 	  {
-	     while (CompareFunc(a[++i], v) < 0);
-	     while (CompareFunc(a[--j], v) > 0);
+	     while (CompareFunc(a[++i], v) < 0)
+		;
+	     while (CompareFunc(a[--j], v) > 0)
+		;
 	     if (i >= j)
 		break;
 	     t = a[i];
@@ -120,7 +122,7 @@ ETimeElapsed(struct timeval *t0)
 #include <math.h>
 
 static float
-ETimeCurve(int k1, int k2, float k, int mode, float slope __UNUSED__)
+ETimeCurve(int k1, int k2, float k, int mode)
 {
    float               x, l;
 
@@ -173,7 +175,7 @@ ETimedLoopNext(void)
    Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);
 #endif
    etl_k = etl_k1 + tm * etl_fac;
-   y = ETimeCurve(etl_k1, etl_k2, etl_k, 2, 1.0);
+   y = ETimeCurve(etl_k1, etl_k2, (float)etl_k, 2);
 
    EobjsRepaint();
 

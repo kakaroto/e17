@@ -181,7 +181,6 @@ FX_Ripple_Pause(void)
 }
 
 #ifdef E_FX_RAINDROPS		/* FIXME - Requires eliminating use of PixImg */
-/****************************************************************************/
 
 /****************************** RAIN DROPS **********************************/
 
@@ -474,9 +473,8 @@ FX_Raindrops_Pause(void)
 	paused = 0;
      }
 }
-#endif /* E_FX_RAINDROPS */
 
-/****************************************************************************/
+#endif /* E_FX_RAINDROPS */
 
 /****************************** WAVES ***************************************/
 /* by tsade :)                                                              */
@@ -661,7 +659,7 @@ FX_Waves_Pause(void)
      }
 }
 
-/****************************************************************************/
+#ifdef E_FX_IMAGESPINNER
 
 /****************************** IMAGESPINNER ********************************/
 
@@ -774,6 +772,8 @@ FX_ImageSpinner_Pause(void)
      }
 }
 
+#endif /* E_FX_IMAGESPINNER */
+
 /****************************************************************************/
 
 static FXHandler    fx_handlers[] = {
@@ -789,10 +789,12 @@ static FXHandler    fx_handlers[] = {
     FX_Raindrops_Pause,
     0, 0},
 #endif
+#ifdef E_FX_IMAGESPINNER
    {"imagespinner",
     FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
     FX_ImageSpinner_Pause,
-    0, 0}
+    0, 0},
+#endif
 };
 #define N_FX_HANDLERS (sizeof(fx_handlers)/sizeof(FXHandler))
 
@@ -844,7 +846,6 @@ FX_Op(const char *name, int fx_op)
 	   goto do_stop;
 	else
 	   goto do_start;
-	break;
      }
 }
 
@@ -967,7 +968,8 @@ FxSettings(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1045,7 +1047,7 @@ FxIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             FxIpcArray[] = {
+static const IpcItem FxIpcArray[] = {
    {
     FxIpc,
     "fx", "fx",

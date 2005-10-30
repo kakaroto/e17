@@ -156,6 +156,8 @@ TextStateLoadFont(TextState * ts)
       char                s[4096], *s2, *ss;
 
       s2 = Estrdup(ts->fontname);
+      if (!s2)
+	 return;
       ss = strchr(s2, '/');
       if (ss)
 	{
@@ -163,8 +165,7 @@ TextStateLoadFont(TextState * ts)
 	   Esnprintf(s, sizeof(s), "%s.ttf", s2);
 	   ts->efont = Efont_load(s2, atoi(ss));
 	}
-      if (s2)
-	 Efree(s2);
+      Efree(s2);
 
       if (ts->efont)
 	 ts->need_utf8 = 1;
@@ -350,6 +351,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 		  len = strlen(lines[i]);
 		  new_line = Emalloc(len + 10);
+		  if (!new_line)
+		     goto done;
 		  while (wid > textwidth_limit)
 		    {
 		       nuke_count++;
@@ -445,6 +448,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 		  len = strlen(lines[i]);
 		  new_line = Emalloc(len + 10);
+		  if (!new_line)
+		     goto done;
 		  wc_len = mbstowcs(NULL, lines[i], 0);
 		  if (wc_len > 0)
 		    {
@@ -589,6 +594,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 		  len = strlen(lines[i]);
 		  new_line = Emalloc(len + 10);
+		  if (!new_line)
+		     goto done;
 		  while (wid > textwidth_limit)
 		    {
 		       nuke_count++;
@@ -683,6 +690,8 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 
 		  len = strlen(lines[i]);
 		  new_line = Emalloc(len + 20);
+		  if (!new_line)
+		     goto done;
 		  while (wid > textwidth_limit)
 		    {
 		       nuke_count += 2;
@@ -760,6 +769,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
+ done:
    StrlistFree(lines, num_lines);
 }
 

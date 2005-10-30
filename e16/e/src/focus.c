@@ -152,7 +152,7 @@ ReverseTimeout(int val, void *data __UNUSED__)
       EwinListFocusRaise(ewin);
 }
 
-void
+static void
 FocusGetNextEwin(void)
 {
    EWin               *const *lst;
@@ -176,7 +176,7 @@ FocusGetNextEwin(void)
       FocusToEWin(ewin, FOCUS_NEXT);
 }
 
-void
+static void
 FocusGetPrevEwin(void)
 {
    EWin               *const *lst;
@@ -254,7 +254,7 @@ FocusEwinSetActive(EWin * ewin, int active)
      }
 }
 
-void
+static void
 FocusFix(void)
 {
    EWin               *const *lst, *ewin;
@@ -669,7 +669,8 @@ SettingsFocus(void)
    Dialog             *d;
    DItem              *table, *di, *radio, *radio2;
 
-   if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -969,7 +970,7 @@ FocusIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             FocusIpcArray[] = {
+static const IpcItem FocusIpcArray[] = {
    {
     FocusIpc,
     "focus", "sf",

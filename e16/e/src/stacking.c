@@ -266,9 +266,9 @@ EobjListTypeCount(const EobjList * ewl, int type)
 /*
  * The global object/client lists
  */
-EobjList            EwinListStack = { "Stack", 0, 0, NULL, 1 };
-EobjList            EwinListFocus = { "Focus", 0, 0, NULL, 0 };
-EobjList            EwinListOrder = { "Order", 0, 0, NULL, 0 };
+static EobjList     EwinListStack = { "Stack", 0, 0, NULL, 1 };
+static EobjList     EwinListFocus = { "Focus", 0, 0, NULL, 0 };
+static EobjList     EwinListOrder = { "Order", 0, 0, NULL, 0 };
 
 static EObj        *const *
 EobjListGet(EobjList * ewl, int *num)

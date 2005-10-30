@@ -78,6 +78,5 @@ void                DesksSetCurrent(Desk * dsk);
 void                DeskGetCurrentArea(int *ax, int *ay);
 void                DeskSetCurrentArea(int ax, int ay);
 void                DesksClear(void);
-void                DesksResize(int w, int h);
 
 #endif /* _DESKTOPS_H_ */

@@ -95,7 +95,7 @@ StartupWindowsCreate(void)
    EMapWindow(win1);
    EMapWindow(win2);
 
-   if (ic && bw > 0 && bh > 0)
+   if (bw > 0 && bh > 0)
      {
 	b1 = ECreateWindow(w1, bx, by, bw, bh, 0);
 	b2 = ECreateWindow(w2, 0, 0, bw, bh, 0);

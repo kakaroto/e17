@@ -37,7 +37,7 @@
 
 #define DEBUG_MENU_EVENTS 0
 
-struct
+static struct
 {
    Menu               *first;
    Menu               *active;
@@ -761,8 +761,9 @@ MenuRealize(Menu * m)
 	     m->items[i]->text_y = (maxh - m->items[i]->text_h) / 2;
 	     if (m->items[i]->icon_win)
 		EMoveWindow(m->items[i]->icon_win,
-			    maxw - pad_item->right -
-			    maxx2 + ((maxx2 - w) / 2), ((maxh - h) / 2));
+			    maxw - pad_item->right - maxx2 +
+			    ((maxx2 - m->items[i]->icon_w) / 2),
+			    ((maxh - m->items[i]->icon_h) / 2));
 	  }
 	if (m->items[i]->icon_iclass)
 	  {
@@ -1761,14 +1762,13 @@ MenuConfigLoad(FILE * fs)
    char                s4[FILEPATH_LEN_MAX];
    char                s5[FILEPATH_LEN_MAX];
    char               *txt = NULL;
-   const char         *params = NULL;
+   const char         *params;
    int                 i1, i2;
    Menu               *m = NULL, *mm;
    MenuItem           *mi;
    MenuStyle          *ms;
    ImageClass         *ic = NULL;
    int                 fields;
-   int                 act = 0;
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -1804,7 +1804,6 @@ MenuConfigLoad(FILE * fs)
 	     m = NULL;
 	     ic = NULL;
 	     _EFREE(txt);
-	     act = 0;
 	     break;
 	  case CONFIG_CLOSE:
 	     err = 0;
@@ -1840,7 +1839,8 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
-	     _EFDUP(txt, atword(s, 3));
+	     params = atword(s, 3);
+	     _EFDUP(txt, params);
 	     break;
 	  case MENU_ACTION:
 	     if ((txt) || (ic))
@@ -1981,7 +1981,8 @@ MenusSettings(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_MENUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_MENUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2073,7 +2074,7 @@ MenusIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             MenusIpcArray[] = {
+static const IpcItem MenusIpcArray[] = {
    {
     MenusIpc,
     "menus", "mnu",

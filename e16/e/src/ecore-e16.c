@@ -759,7 +759,7 @@ ecore_x_icccm_save_yourself_send(Ecore_X_Window win, Ecore_X_Time ts)
 void
 ecore_x_icccm_title_set(Ecore_X_Window win, const char *title)
 {
-   return ecore_x_window_prop_string_set(win, ECORE_X_ATOM_WM_NAME, title);
+   ecore_x_window_prop_string_set(win, ECORE_X_ATOM_WM_NAME, title);
 }
 
 char               *

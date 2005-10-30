@@ -715,30 +715,30 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 #define DRAW_H_ARROW(x1, x2, y1) \
       if (((x2) - (x1)) >= 12) \
         { \
-          XDrawLine(disp, root, gc, x1, y1, (x1) + 6, (y1) - 3); \
-          XDrawLine(disp, root, gc, x1, y1, (x1) + 6, (y1) + 3); \
-          XDrawLine(disp, root, gc, x2, y1, (x2) - 6, (y1) - 3); \
-          XDrawLine(disp, root, gc, x2, y1, (x2) - 6, (y1) + 3); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x1) + 6, (y1) - 3); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x1) + 6, (y1) + 3); \
+          XDrawLine(disp, root, gc, (x2), (y1), (x2) - 6, (y1) - 3); \
+          XDrawLine(disp, root, gc, (x2), (y1), (x2) - 6, (y1) + 3); \
         } \
       if ((x2) >= (x1)) \
         { \
-          XDrawLine(disp, root, gc, x1, y1, x2, y1); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x2), (y1)); \
           Esnprintf(str, sizeof(str), "%i", (x2) - (x1) + 1); \
           XDrawString(disp, root, gc, ((x1) + (x2)) / 2, (y1) - 10, str, strlen(str)); \
         }
 #define DRAW_V_ARROW(y1, y2, x1) \
       if (((y2) - (y1)) >= 12) \
         { \
-          XDrawLine(disp, root, gc, x1, y1, (x1) + 3, (y1) + 6); \
-          XDrawLine(disp, root, gc, x1, y1, (x1) - 3, (y1) + 6); \
-          XDrawLine(disp, root, gc, x1, y2, (x1) + 3, (y2) - 6); \
-          XDrawLine(disp, root, gc, x1, y2, (x1) - 3, (y2) - 6); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x1) + 3, (y1) + 6); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x1) - 3, (y1) + 6); \
+          XDrawLine(disp, root, gc, (x1), (y2), (x1) + 3, (y2) - 6); \
+          XDrawLine(disp, root, gc, (x1), (y2), (x1) - 3, (y2) - 6); \
         } \
       if ((y2) >= (y1)) \
         { \
-          XDrawLine(disp, root, gc, x1, y1, x1, y2); \
+          XDrawLine(disp, root, gc, (x1), (y1), (x1), (y2)); \
           Esnprintf(str, sizeof(str), "%i", (y2) - (y1) + 1); \
-          XDrawString(disp, root, gc, x1 + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
+          XDrawString(disp, root, gc, (x1) + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
         }
 #define DO_DRAW_MODE_1(aa, bb, cc, dd) \
       if (!font) \

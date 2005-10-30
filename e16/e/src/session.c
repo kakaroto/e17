@@ -28,7 +28,6 @@
 #include "ewins.h"
 #include "snaps.h"
 #include "xwin.h"
-#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/time.h>
@@ -380,26 +379,26 @@ set_save_props(SmcConn smc_conn, int master_flag)
    discardProp.name = (char *)SmDiscardCommand;
    discardProp.type = (char *)SmLISTofARRAY8;
    discardProp.num_vals = 3;
-   discardProp.vals = (SmPropValue *) & discardVal;
+   discardProp.vals = discardVal;
 #endif
 
    restartProp.name = (char *)SmRestartCommand;
    restartProp.type = (char *)SmLISTofARRAY8;
-   restartProp.vals = (SmPropValue *) & restartVal;
+   restartProp.vals = restartVal;
 
    cloneProp.name = (char *)SmCloneCommand;
    cloneProp.type = (char *)SmLISTofARRAY8;
-   cloneProp.vals = (SmPropValue *) & restartVal;
+   cloneProp.vals = restartVal;
 
    styleProp.name = (char *)SmRestartStyleHint;
    styleProp.type = (char *)SmCARD8;
    styleProp.num_vals = 1;
-   styleProp.vals = (SmPropValue *) & styleVal;
+   styleProp.vals = &styleVal;
 
    priorityProp.name = (char *)"_GSM_Priority";
    priorityProp.type = (char *)SmCARD8;
    priorityProp.num_vals = 1;
-   priorityProp.vals = (SmPropValue *) & priorityVal;
+   priorityProp.vals = &priorityVal;
 
    if (master_flag)
       /* Master WM restarts immediately for a doExit("restart") */
@@ -413,7 +412,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
     * to execve. Passing argv[0] is close enough. */
    program = Mode.wm.exec_name;
 
-   userIDVal.length = strlen(user);
+   userIDVal.length = (user) ? strlen(user) : 0;
    userIDVal.value = user;
    programVal.length = strlen(program);
    programVal.value = (char *)program;
@@ -629,14 +628,13 @@ static Atom         atom_wm_client_leader;
 static IceConn      ice_conn;
 
 static void
-ice_io_error_handler(IceConn connection)
+ice_io_error_handler(IceConn connection __UNUSED__)
 {
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("ice_io_error_handler\n");
 
    /* The less we do here the better - the default handler does an
     * exit(1) instead of closing the losing connection. */
-   connection = 0;
 }
 
 #endif /* HAVE_X11_SM_SMLIB_H */

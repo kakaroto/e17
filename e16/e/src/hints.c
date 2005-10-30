@@ -138,7 +138,7 @@ HintsSetActiveWindow(Window win)
 void
 HintsSetWindowName(Window win, const char *name)
 {
-   ecore_x_window_prop_string_set(win, ECORE_X_ATOM_WM_NAME, name);
+   ecore_x_icccm_title_set(win, name);
 
    EWMH_SetWindowName(win, name);
 }

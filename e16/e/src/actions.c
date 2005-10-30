@@ -48,6 +48,8 @@ runApp(const char *exe, const char *params)
 	  {
 	     Efree(path);
 	     real_exec = Emalloc(strlen(params) + 6);
+	     if (!real_exec)
+		return;
 	     sprintf(real_exec, "exec %s", params);
 	     execl(sh, sh, "-c", real_exec, NULL);
 	     exit(0);
@@ -129,13 +131,14 @@ runApp(const char *exe, const char *params)
 					 "This is because the file is not a "
 					 "regular file.\n"), path);
 		    }
-		  if (path)
-		     Efree(path);
+		  Efree(path);
 	       }
 	  }
 	exit(100);
      }
    real_exec = Emalloc(strlen(params) + 6);
+   if (!real_exec)
+      return;
    sprintf(real_exec, "exec %s", params);
    execl(sh, sh, "-c", real_exec, NULL);
    exit(0);

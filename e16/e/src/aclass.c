@@ -125,8 +125,9 @@ ActionAddTo(Action * aa, const char *params)
 {
    ActionType         *pptr, *ptr, *at;
 
-   pptr = NULL;
    at = Emalloc(sizeof(ActionType));
+   if (!at)
+      return;
    at->next = NULL;
    at->params = Estrdup(params);
    if (!aa->action)
@@ -135,13 +136,15 @@ ActionAddTo(Action * aa, const char *params)
      }
    else
      {
+	pptr = NULL;
 	ptr = aa->action;
 	while (ptr)
 	  {
 	     pptr = ptr;
 	     ptr = ptr->next;
 	  }
-	pptr->next = at;
+	if (pptr)
+	   pptr->next = at;
      }
 }
 
@@ -187,7 +190,8 @@ ActionclassDestroy(ActionClass * ac)
 		 ac->ref_count);
 	return;
      }
-   while (RemoveItemByPtr(ac, LIST_TYPE_ACLASS));
+   while (RemoveItemByPtr(ac, LIST_TYPE_ACLASS))
+      ;
 
    for (i = 0; i < ac->num; i++)
       ActionDestroy(ac->list[i]);
@@ -579,7 +583,7 @@ ActionEncode(Action * aa, char *buf, int len)
 {
    char                s[32], *p;
 
-   if ((!aa) || (!aa->action) || (!aa->event == EVENT_KEY_DOWN) ||
+   if ((!aa) || (!aa->action) || (aa->event != EVENT_KEY_DOWN) ||
        (!aa->key_str))
       return 0;
 
@@ -1270,7 +1274,7 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
    AclassConfigSave();
 }
 
-IpcItem             AclassIpcArray[] = {
+static const IpcItem AclassIpcArray[] = {
    {
     AclassIpc,
     "aclass", "ac",

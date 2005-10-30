@@ -195,7 +195,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 /* fill the allocation array */
-	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
+	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
+	   ;
 	for (j = 0; j < num_sorted; j++)
 	  {
 	     x1 = -1;
@@ -405,7 +406,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 	/* fill the allocation array */
-	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
+	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
+	   ;
 	for (j = 0; j < num_sorted; j++)
 	  {
 	     x1 = -1;
@@ -605,6 +607,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    if (lst1)
      {
 	lst = malloc(num * sizeof(EWin *));
+	if (!lst)
+	   return;
 	memcpy(lst, lst1, num * sizeof(EWin *));
      }
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup

@@ -64,15 +64,15 @@ struct _windowmatch
 #define MATCH_OP_ICON           2
 #define MATCH_OP_WINOP          3
 
-const char         *MatchType[] = {
+static const char  *MatchType[] = {
    NULL, "Title", "Name", "Class", "Size", "Width", "Height", "Prop", NULL
 };
 
-const char         *MatchProp[] = {
+static const char  *MatchProp[] = {
    NULL, "Transient", "Shaped", "FixedSize", "FixedWidth", "FixedHeight", NULL
 };
 
-const char         *MatchOp[] = {
+static const char  *MatchOp[] = {
    NULL, "Border", "Icon", "Winop", NULL
 };
 
@@ -110,7 +110,8 @@ WindowMatchDestroy(WindowMatch * wm)
    if (!wm)
       return;
 
-   while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH));
+   while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH))
+      ;
 
    if (wm->name)
       Efree(wm->name);
@@ -131,6 +132,7 @@ WindowMatchConfigLoad(FILE * fs)
    WindowMatch        *wm = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   const char         *ss;
    int                 i1;
    int                 fields;
 
@@ -182,19 +184,22 @@ WindowMatchConfigLoad(FILE * fs)
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_TITLE;
-	     wm->value = Estrdup(atword(s, 2));
+	     ss = atword(s, 2);
+	     wm->value = Estrdup(ss);
 	     break;
 	  case WINDOWMATCH_MATCHNAME:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_NAME;
-	     wm->value = Estrdup(atword(s, 2));
+	     ss = atword(s, 2);
+	     wm->value = Estrdup(ss);
 	     break;
 	  case WINDOWMATCH_MATCHCLASS:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_CLASS;
-	     wm->value = Estrdup(atword(s, 2));
+	     ss = atword(s, 2);
+	     wm->value = Estrdup(ss);
 	     break;
 
 	  case WINDOWMATCH_WIDTH:
@@ -894,7 +899,7 @@ WindowMatchIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             WindowMatchIpcArray[] = {
+static const IpcItem WindowMatchIpcArray[] = {
    {
     WindowMatchIpc,
     "wmatch", "wma",

@@ -427,7 +427,8 @@ SettingsAudio(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -525,7 +526,7 @@ SoundIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             SoundIpcArray[] = {
+static const IpcItem SoundIpcArray[] = {
    {
     SoundIpc,
     "sound", "snd",

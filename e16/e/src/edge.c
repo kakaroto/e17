@@ -127,7 +127,7 @@ EdgeEvent(int dir)
 static void
 EdgeHandleEvents(XEvent * ev, void *prm)
 {
-   static Time         last_time;
+   static Time         last_time = 0;
    int                 dir;
    unsigned long       dt;
 

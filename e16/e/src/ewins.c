@@ -28,10 +28,8 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "hints.h"
-#include "icons.h"
 #include "snaps.h"
 #include "xwin.h"
-#include <sys/time.h>
 
 #define EWIN_TOP_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \
@@ -1542,11 +1540,9 @@ static struct
 } EWinChanges;
 
 void
-EwinChange(EWin * ewin, unsigned int flag)
+EwinChange(EWin * ewin __UNUSED__, unsigned int flag)
 {
    EWinChanges.flags |= flag;
-   return;
-   ewin = NULL;
 }
 
 void
@@ -1604,16 +1600,12 @@ EwinChangesProcess(EWin * ewin)
 void
 EwinsEventsConfigure(int mode)
 {
-   EWin               *const *lst, *ewin;
+   EWin               *const *lst;
    int                 i, num;
 
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-
-	EwinEventsConfigure(lst[i], mode);
-     }
+      EwinEventsConfigure(lst[i], mode);
 }
 
 static void
@@ -1979,7 +1971,7 @@ EwinsSighan(int sig, void *prm)
 }
 
 #if 0
-IpcItem             EwinsIpcArray[] = {
+static const IpcItem EwinsIpcArray[] = {
 };
 #define N_IPC_FUNCS (sizeof(EwinsIpcArray)/sizeof(IpcItem))
 #else

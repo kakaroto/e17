@@ -102,10 +102,6 @@
 #define __PRINTF__
 #endif
 
-/* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
-/* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
-#define CARD32 long
-
 #ifndef HAVE_GETCWD
 #error "ERROR: Enlightenment needs a system with getcwd() in it's libs."
 #error "You may have to upgrade your Operating system, Distribution, base"
@@ -815,20 +811,10 @@ void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwins(const char *params);
 
 /* borders.c */
-Border             *BorderCreate(const char *name);
-void                BorderDestroy(Border * b);
 void                BorderIncRefcount(const Border * b);
 void                BorderDecRefcount(const Border * b);
 const char         *BorderGetName(const Border * b);
 int                 BorderConfigLoad(FILE * fs);
-void                BorderWinpartAdd(Border * b, struct _imageclass *ic,
-				     ActionClass * aclass,
-				     struct _textclass *tclass, ECursor * ec,
-				     char ontop, int flags, char isregion,
-				     int wmin, int wmax, int hmin, int hmax,
-				     int torigin, int txp, int txa, int typ,
-				     int tya, int borigin, int bxp, int bxa,
-				     int byp, int bya, char keep_for_shade);
 void                EwinBorderSelect(EWin * ewin);
 void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
@@ -840,7 +826,6 @@ void                EwinBorderUpdateState(EWin * ewin);
 void                EwinBorderEventsConfigure(EWin * ewin, int mode);
 void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name);
-void                BorderWinpartChange(EWin * ewin, int i, int force);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
 Border             *BorderCreateFiller(int left, int right, int top,
 				       int bottom);
@@ -896,7 +881,6 @@ void                DialogAlertOK(const char *fmt, ...);
 
 /* dock.c */
 void                DockIt(EWin * ewin);
-void                DockDestroy(EWin * ewin);
 
 /* draw.c */
 Imlib_Image        *ELoadImage(const char *file);
@@ -966,27 +950,20 @@ void                ExtInitWinKill(void);
 void                Etmp(char *s);
 void                E_md(const char *s);
 int                 exists(const char *s);
-void                mkdirs(const char *s);
 int                 isfile(const char *s);
 int                 isdir(const char *s);
 int                 isabspath(const char *s);
 char              **E_ls(const char *dir, int *num);
 void                E_rm(const char *s);
 void                E_mv(const char *s, const char *ss);
-void                E_cp(const char *s, const char *ss);
 time_t              moddate(const char *s);
-int                 filesize(const char *s);
 int                 fileinode(const char *s);
 int                 filedev_map(int dev);
 int                 filedev(const char *s);
-void                E_cd(const char *s);
-char               *cwd(void);
-int                 permissions(const char *s);
 char               *username(int uid);
 char               *homedir(int uid);
 char               *usershell(int uid);
 const char         *atword(const char *s, int num);
-const char         *atchar(const char *s, char c);
 void                word(const char *s, int num, char *wd);
 int                 canread(const char *s);
 int                 canwrite(const char *s);
@@ -1021,10 +998,7 @@ EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 #define FOCUS_CLICK      12
 
 void                FocusEnable(int on);
-void                FocusGetNextEwin(void);
-void                FocusGetPrevEwin(void);
 void                FocusEwinSetGrabs(EWin * ewin);
-void                FocusFix(void);
 void                FocusToEWin(EWin * ewin, int why);
 void                FocusHandleEnter(EWin * ewin, XEvent * ev);
 void                FocusHandleLeave(EWin * ewin, XEvent * ev);
@@ -1049,16 +1023,10 @@ void                GrabButtonRelease(unsigned int button,
 				      unsigned int modifiers, Window win);
 
 /* groups.c */
-void                BreakWindowGroup(EWin * ewin, Group * g);
 void                BuildWindowGroup(EWin ** ewins, int num);
-int                 EwinInGroup(EWin * ewin, Group * g);
 Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
 void                AddEwinToGroup(EWin * ewin, Group * g);
-void                RemoveEwinFromGroup(EWin * ewin, Group * g);
 void                GroupsEwinRemove(EWin * ewin);
-void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
-void                ChooseGroupDialog(EWin * ewin, char *message,
-				      char group_select, int action);
 void                SaveGroups(void);
 
 /* handlers.c */
@@ -1204,8 +1172,6 @@ void                autosave(void);
 
 /* settings.c */
 void                SettingsMoveResize(void);
-void                SettingsDesktops(void);
-void                SettingsArea(void);
 void                SettingsPlacement(void);
 void                SettingsAutoRaise(void);
 void                SettingsMiscellaneous(void);
@@ -1263,7 +1229,6 @@ void                WarpFocus(int delta);
 typedef struct _windowmatch WindowMatch;
 
 int                 WindowMatchConfigLoad(FILE * fs);
-void               *WindowMatchEwin(EWin * ewin);
 Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);

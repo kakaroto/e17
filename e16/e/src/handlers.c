@@ -115,7 +115,8 @@ SignalHandler(int sig)
 	break;
 
      case SIGCHLD:
-	while (waitpid(-1, &status, WNOHANG) > 0);
+	while (waitpid(-1, &status, WNOHANG) > 0)
+	   ;
 	break;
      }
 }

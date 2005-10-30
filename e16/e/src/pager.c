@@ -41,7 +41,7 @@
 #define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
 #define EwinGetVY2(ew) (ew->vy + EoGetH(ew))
 
-struct
+static struct
 {
    char                enable;
    char                zoom;
@@ -54,7 +54,7 @@ struct
    int                 menu_button;
 } Conf_pagers;
 
-struct
+static struct
 {
    int                 zoom;
 } Mode_pagers;
@@ -1377,7 +1377,7 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
 static void
 PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 {
-   int                 i, num, in_pager, in_vroot;
+   int                 i, num, in_vroot;
    EWin               *ewin, *ewin2, **gwins;
    int                 x, y;
 
@@ -1400,8 +1400,6 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
    ewin = HiwinGetEwin(hiwin, 1);
    if (!ewin)
       goto done;
-
-   in_pager = (px >= 0 && py >= 0 && px < p->w && py < p->h);
 
    in_vroot = (Mode.events.x >= 0 && Mode.events.x < VRoot.w &&
 	       Mode.events.y >= 0 && Mode.events.y < VRoot.h);
@@ -1726,7 +1724,8 @@ SettingsPager(void)
    DItem              *table, *di, *radio;
    char                s[256];
 
-   if ((d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2028,7 +2027,7 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             PagersIpcArray[] = {
+static const IpcItem PagersIpcArray[] = {
    {
     IPC_Pager,
     "pager", "pg",

@@ -205,7 +205,7 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             MiscIpcArray[] = {
+static const IpcItem MiscIpcArray[] = {
    {
     MiscIpcExec,
     "exec", NULL,

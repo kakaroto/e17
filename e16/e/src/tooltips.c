@@ -467,6 +467,11 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
       /*   |/#####\|   */
       /*   +-------+   */
      {
+	if (dy == 0)
+	  {
+	     dy = 1;
+	     ady = 1;
+	  }
 	dist = tt->dist;
 	ady = ady / dy;
 
@@ -832,8 +837,8 @@ SettingsTooltips(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d =
-	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -889,7 +894,7 @@ TooltipsIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             TooltipsIpcArray[] = {
+static const IpcItem TooltipsIpcArray[] = {
    {
     TooltipsIpc,
     "tooltips", "tt",

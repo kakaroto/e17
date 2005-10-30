@@ -366,7 +366,8 @@ ImageclassDestroy(ImageClass * ic)
 		 ic->ref_count);
 	return;
      }
-   while (RemoveItemByPtr(ic, LIST_TYPE_ICLASS));
+   while (RemoveItemByPtr(ic, LIST_TYPE_ICLASS))
+      ;
 
    if (ic->name)
       Efree(ic->name);
@@ -1570,7 +1571,8 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		st = STATE_DISABLED;
 	     else
 		st = STATE_NORMAL;
-	     if ((hptr = atword(params, 6)))
+	     hptr = atword(params, 6);
+	     if (hptr)
 	       {
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
@@ -1599,7 +1601,8 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		st = STATE_DISABLED;
 	     else
 		st = STATE_NORMAL;
-	     if (!(hptr = atword(params, 6)))
+	     hptr = atword(params, 6);
+	     if (!hptr)
 		IpcPrintf("Error:  missing width and/or height\n");
 	     else
 	       {
@@ -1635,7 +1638,7 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             ImageclassIpcArray[] = {
+static const IpcItem ImageclassIpcArray[] = {
    {
     ImageclassIpc,
     "imageclass", NULL,

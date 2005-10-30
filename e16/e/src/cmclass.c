@@ -21,9 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "conf.h"
 
 #if ENABLE_COLOR_MODIFIERS
+#include "conf.h"
 
 void
 CreateCurve(ModCurve * c)
@@ -644,7 +644,7 @@ IPC_ColormodifierSet(const char *params, Client * c __UNUSED__)
       Efree(bpy);
 }
 
-IpcItem             CmClassIpcArray[] = {
+static const IpcItem CmClassIpcArray[] = {
    {
     IPC_ColorModifierClass,
     "colormod", NULL,

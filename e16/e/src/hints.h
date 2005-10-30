@@ -132,7 +132,6 @@ void                ICCCM_Focus(const EWin * ewin);
 void                ICCCM_GetGeoms(EWin * ewin, Atom atom_change);
 void                ICCCM_GetInfo(EWin * ewin, Atom atom_change);
 void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
-void                ICCCM_SetIconSizes(void);
 void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* mwm.c */

@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ecore-e16.h"
 #include "xwin.h"
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
@@ -1055,6 +1054,8 @@ EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
 	if (xid->num_rect > 0)
 	  {
 	     r = Emalloc(sizeof(XRectangle) * xid->num_rect);
+	     if (!r)
+		return NULL;
 	     memcpy(r, xid->rects, sizeof(XRectangle) * xid->num_rect);
 	     return r;
 	  }
@@ -1070,6 +1071,8 @@ EShapeGetRectangles(Window win, int dest, int *rn, int *ord)
 	if (r)
 	  {
 	     rr = Emalloc(sizeof(XRectangle) * *rn);
+	     if (!rr)
+		return NULL;
 	     memcpy(rr, r, sizeof(XRectangle) * *rn);
 	     XFree(r);
 	     return rr;

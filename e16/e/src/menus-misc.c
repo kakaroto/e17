@@ -23,12 +23,10 @@
  */
 #include "E.h"
 #include "backgrounds.h"
-#include "conf.h"
 #include "desktops.h"
 #include "ewins.h"
 #include "iclass.h"
 #include "menus.h"
-#include "xwin.h"
 #include <errno.h>
 #include <sys/stat.h>
 
@@ -82,6 +80,8 @@ MenuLoadFromDirectory(Menu * m)
 
    MenuEmpty(m, 0);
 
+   cs[0] = '\0';		/* FIXME - Check this */
+
    if (stat(dir, &st) >= 0)
      {
 	int                 aa, bb, cc;
@@ -109,6 +109,8 @@ MenuLoadFromDirectory(Menu * m)
 	if (exists(cs))
 	  {
 	     f = fopen(cs, "r");
+	     if (!f)
+		return 1;
 	     while (fgets(s, sizeof(s), f))
 	       {
 		  s[strlen(s) - 1] = 0;
@@ -467,9 +469,10 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 		  f = fopen(ss, "r");
 		  if (f)
 		    {
-		       char               *iname = NULL, *exec = NULL, *texec =
-			  NULL, *tmp;
-		       char               *en_name = NULL;
+		       char               *iname, *exec, *texec, *en_name;
+		       char               *tmp;
+
+		       iname = exec = texec = en_name = NULL;
 
 		       while (fgets(s, sizeof(s), f))
 			 {

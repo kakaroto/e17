@@ -71,7 +71,7 @@ DeskControlsCreate(Desk * dsk)
 {
    char                s[512];
    ActionClass        *ac, *ac2, *ac3;
-   ImageClass         *ic, *ic2, *ic3, *ic4;
+   ImageClass         *ic, *ic2, *ic3;
    Button             *b;
    Action             *a;
    int                 x[3], y[3], w[3], h[3], m, n, o;
@@ -165,14 +165,18 @@ DeskControlsCreate(Desk * dsk)
 	ic = ImageclassFind("DESKTOP_DRAGBUTTON_VERT", 0);
 	ic2 = ImageclassFind("DESKTOP_RAISEBUTTON_VERT", 0);
 	ic3 = ImageclassFind("DESKTOP_LOWERBUTTON_VERT", 0);
+#if 0
 	ic4 = ImageclassFind("DESKTOP_DESKRAY_VERT", 0);
+#endif
      }
    else
      {
 	ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
 	ic2 = ImageclassFind("DESKTOP_RAISEBUTTON_HORIZ", 0);
 	ic3 = ImageclassFind("DESKTOP_LOWERBUTTON_HORIZ", 0);
+#if 0
 	ic4 = ImageclassFind("DESKTOP_DESKRAY_HORIZ", 0);
+#endif
      }
 
    switch (Conf.desks.dragbar_ordering)
@@ -216,6 +220,7 @@ DeskControlsCreate(Desk * dsk)
 
    switch (Conf.desks.dragdir)
      {
+     default:
      case 0:
 	w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
 	if (Conf.desks.dragbar_length == 0)
@@ -259,8 +264,6 @@ DeskControlsCreate(Desk * dsk)
 	x[m] = 0;
 	x[n] = x[m] + w[m];
 	x[o] = x[n] + w[n];
-	break;
-     default:
 	break;
      }
 
@@ -621,7 +624,7 @@ DesksClear(void)
      }
 }
 
-void
+static void
 DesksResize(int w, int h)
 {
    unsigned int        i;
@@ -1889,15 +1892,15 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    DialogDrawItems(tmp_desk_dialog, tmp_desk_text, 0, 0, 99999, 99999);
 }
 
-void
+static void
 SettingsDesktops(void)
 {
    Dialog             *d;
    DItem              *table, *di, *area, *slider, *radio;
    char                s[64];
 
-   if ((d =
-	FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2110,14 +2113,15 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    DialogDrawItems(tmp_area_dialog, tmp_area_text, 0, 0, 99999, 99999);
 }
 
-void
+static void
 SettingsArea(void)
 {
    Dialog             *d;
    DItem              *table, *di, *area, *slider, *slider2, *table2;
    char                s[64];
 
-   if ((d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2388,7 +2392,7 @@ DesksIpcArea(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             DesksIpcArray[] = {
+static const IpcItem DesksIpcArray[] = {
    {
     DesksIpcDesk,
     "desk", NULL,

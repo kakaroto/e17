@@ -130,7 +130,7 @@ main(int argc, char **argv)
    /* Set up the internal data lists used to find everything */
    ListsInit(LIST_TYPE_COUNT);
 
-   srand(time(NULL));
+   srand((unsigned int)time(NULL));
 
    if (!uname(&ubuf))
       Mode.wm.machine_name = Estrdup(ubuf.nodename);
@@ -565,7 +565,7 @@ EConfName(void)
 const char         *
 EDirUser(void)
 {
-   static char        *user_dir;
+   static char        *user_dir = NULL;
    char               *home, buf[4096];
 
    if (Mode.conf.dir)
@@ -697,7 +697,8 @@ EGetSavePrefix(void)
 		Mode.display.name);
    def_prefix = Estrdup(buf);
 
-   for (s = def_prefix; (s = strchr(s, ':')); *s = '-');
+   for (s = def_prefix; (s = strchr(s, ':')) != NULL; *s = '-')
+      ;
 
    return def_prefix;
 }

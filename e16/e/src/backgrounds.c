@@ -668,7 +668,7 @@ BackgroundApply(Background * bg, Drawable draw,
 	imlib_context_set_drawable(pmap);
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 
-	if (x == 0 && y == 0)
+	if (x == 0 && y == 0)	/* Hmmm. Always true. */
 	  {
 	     ESetWindowBackgroundPixmap(draw, pmap);
 	  }
@@ -1161,7 +1161,8 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case BG_NAME:
-	     if ((bg = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
+	     bg = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	     if (bg)
 	       {
 		  ignore = 1;
 	       }
@@ -1610,17 +1611,15 @@ BG_GetValues(void)
 static void
 BG_DialogSetFileName(DItem * di)
 {
-   char               *stmp;
+   char               *stmp = NULL;
    char                s[1024];
 
    if (BackgroundGetBgFile(tmp_bg))
       stmp = fullfileof(BackgroundGetBgFile(tmp_bg));
-   else
-      stmp = Estrdup(_("-NONE-"));
    Esnprintf(s, sizeof(s),
 	     _("Background definition information:\nName: %s\nFile: %s\n"),
-	     BackgroundGetName(tmp_bg), stmp);
-   Efree(stmp);
+	     BackgroundGetName(tmp_bg), (stmp) ? stmp : _("-NONE-"));
+   _EFREE(stmp);
    DialogItemSetText(di, s);
 }
 
@@ -2104,7 +2103,8 @@ SettingsBackground(Background * bg)
    int                 num;
    char                s[1024];
 
-   if ((d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -2112,7 +2112,7 @@ SettingsBackground(Background * bg)
      }
    SoundPlay("SOUND_SETTINGS_BG");
 
-   if (!bg || (bg && BackgroundIsNone(bg)))
+   if (!bg || BackgroundIsNone(bg))
      {
 	Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
 	bg = BackgroundCreate(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1,
@@ -2739,7 +2739,7 @@ IPC_BackgroundColormodifierGet(const char *params, Client * c)
 }
 #endif
 
-IpcItem             BackgroundsIpcArray[] = {
+static const IpcItem BackgroundsIpcArray[] = {
    {
     BackgroundsIpc,
     "background", "bg",

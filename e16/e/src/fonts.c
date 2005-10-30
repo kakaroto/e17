@@ -118,6 +118,6 @@ FontConfigUnload(void)
 {
    FontAlias          *fa;
 
-   while ((fa = RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_FONT)))
+   while ((fa = RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_FONT)) != NULL)
       FontAliasDestroy(fa);
 }

@@ -115,7 +115,8 @@ ECursorDestroy(ECursor * ec)
 	return;
      }
 
-   while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR));
+   while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR))
+      ;
 
    if (ec->name)
       Efree(ec->name);
@@ -184,12 +185,12 @@ ECursorConfigLoad(FILE * fs)
 	     _EFDUP(name, s2);
 	     break;
 	  case CURS_BG_RGB:
-	     EGetColor(&xclr, &r, &g, &b);
+	     r = g = b = 0;
 	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
 	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
-	     EGetColor(&xclr2, &r, &g, &b);
+	     r = g = b = 255;
 	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
 	     ESetColor(&xclr2, r, g, b);
 	     break;
@@ -354,7 +355,7 @@ CursorsIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             CursorIpcArray[] = {
+static const IpcItem CursorIpcArray[] = {
    {
     CursorsIpc,
     "cursor", "csr",

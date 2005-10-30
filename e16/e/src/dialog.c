@@ -197,12 +197,14 @@ struct _dialog
 };
 
 static Dialog      *FindDialog(Window win);
+static int          FindADialog(void);
 
 static void         DialogHandleEvents(XEvent * ev, void *prm);
 static void         DButtonHandleEvents(XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
+static void         DialogFreeItem(DItem * di);
 
 static void         DialogUpdate(Dialog * d);
 static char         dialog_update_pending = 0;
@@ -957,13 +959,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	def = "DIALOG_WIDGET_BUTTON";
      }
 
-   if (def)
-     {
-	if (!di->tclass)
-	   di->tclass = TextclassFind(def, 1);
-	if (!di->iclass)
-	   di->iclass = ImageclassFind(def, 1);
-     }
+   if (!di->tclass)
+      di->tclass = TextclassFind(def, 1);
+   if (!di->iclass)
+      di->iclass = ImageclassFind(def, 1);
+
    if (di->tclass)
       TextclassIncRefcount(di->tclass);
    if (di->iclass)
@@ -1220,7 +1220,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 
 	   cols = di->item.table.num_columns;
 	   rows = 1;
-	   if ((cols > 0) && (rows > 0))
+	   if (cols > 0)
 	     {
 		int                 i, r, c, x, y;
 		int                *col_size, *row_size;
@@ -2004,7 +2004,8 @@ DialogItemFindWindow(DItem * di, Window win)
 
 	for (i = 0; i < di->item.table.num_items; i++)
 	  {
-	     if ((dii = DialogItemFindWindow(di->item.table.items[i], win)))
+	     dii = DialogItemFindWindow(di->item.table.items[i], win);
+	     if (dii)
 		return dii;
 	  }
      }
@@ -2017,12 +2018,6 @@ DialogItemFindWindow(DItem * di, Window win)
 	return di;
      }
    return NULL;
-}
-
-DItem              *
-DialogItem(Dialog * d)
-{
-   return d->item;
 }
 
 /* Convenience callback to close dialog */
@@ -2040,11 +2035,11 @@ void
 DialogOK(const char *title, const char *fmt, ...)
 {
    char                text[10240];
-   va_list             ap;
+   va_list             args;
 
-   va_start(ap, fmt);
-   Evsnprintf(text, sizeof(text), fmt, ap);
-   va_end(ap);
+   va_start(args, fmt);
+   Evsnprintf(text, sizeof(text), fmt, args);
+   va_end(args);
 
    DialogOKstr(title, text);
 }
@@ -2066,11 +2061,11 @@ void
 DialogAlert(const char *fmt, ...)
 {
    char                text[10240];
-   va_list             ap;
+   va_list             args;
 
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
+   va_start(args, fmt);
+   Evsnprintf(text, 10240, fmt, args);
+   va_end(args);
    Alert(text);
 }
 
@@ -2078,11 +2073,11 @@ void
 DialogAlertOK(const char *fmt, ...)
 {
    char                text[10240];
-   va_list             ap;
+   va_list             args;
 
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
+   va_start(args, fmt);
+   Evsnprintf(text, 10240, fmt, args);
+   va_end(args);
    AlertX(_("Attention !!!"), _("OK"), NULL, NULL, text);
 }
 
@@ -2563,7 +2558,7 @@ FindEwinByDialog(Dialog * d)
    return NULL;
 }
 
-int
+static int
 FindADialog(void)
 {
    EWin               *const *ewins;

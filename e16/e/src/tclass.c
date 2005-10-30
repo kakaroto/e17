@@ -618,7 +618,7 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
      }
 }
 
-IpcItem             TextclassIpcArray[] = {
+static const IpcItem TextclassIpcArray[] = {
    {
     TextclassIpc,
     "textclass", NULL,

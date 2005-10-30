@@ -87,15 +87,18 @@ Estrdupcat2(char *ss, const char *s1, const char *s2)
    l2 = (s2) ? strlen(s2) : 0;
 
    s = Erealloc(ss, len + l1 + l2 + 1);
-   if (l1)
+   if (!s)
+      return NULL;
+   if (s1 && l1)
       memcpy(s + len, s1, l1);
-   if (l2)
+   if (s2 && l2)
       memcpy(s + len + l1, s2, l2);
    s[len + l1 + l2] = '\0';
 
    return s;
 }
 
+#if 0				/* Unused */
 char              **
 StrlistDup(char **lst, int num)
 {
@@ -112,6 +115,7 @@ StrlistDup(char **lst, int num)
 
    return ss;
 }
+#endif
 
 void
 StrlistFree(char **lst, int num)

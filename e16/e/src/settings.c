@@ -23,7 +23,6 @@
  */
 #include "E.h"
 #include "dialog.h"
-#include <time.h>
 
 static int          tmp_move;
 static int          tmp_resize;
@@ -31,7 +30,7 @@ static int          tmp_geominfo;
 static char         tmp_update_while_moving;
 
 static void
-CB_ConfigureMoveResize(Dialog * d, int val, void *data __UNUSED__)
+CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (val < 2)
      {
@@ -40,12 +39,6 @@ CB_ConfigureMoveResize(Dialog * d, int val, void *data __UNUSED__)
 	Conf.movres.mode_info = tmp_geominfo;
 	Conf.movres.update_while_moving = tmp_update_while_moving;
      }
-   if (val)
-      if ((d = FindItem("CONFIGURE_MOVERESIZE_EXAMPLE", 0, LIST_FINDBY_NAME,
-			LIST_TYPE_DIALOG)))
-	{
-	   DialogClose(d);
-	}
    autosave();
 }
 
@@ -55,9 +48,8 @@ SettingsMoveResize(void)
    Dialog             *d;
    DItem              *table, *di, *radio1, *radio2, *radio3;
 
-   if ((d =
-	FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -245,8 +237,8 @@ SettingsPlacement(void)
    Dialog             *d;
    DItem              *table, *di, *radio;
 
-   if ((d =
-	FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -441,8 +433,8 @@ SettingsAutoRaise(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d =
-	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -513,8 +505,9 @@ SettingsMiscellaneous(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
-		     LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
+		LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -608,8 +601,8 @@ SettingsComposite(void)
    Dialog             *d;
    DItem              *table, *di, *radio;
 
-   if ((d =
-	FindItem("CONFIGURE_COMPOSITE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   d = FindItem("CONFIGURE_COMPOSITE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);

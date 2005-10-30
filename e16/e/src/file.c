@@ -30,7 +30,7 @@
 const char         *
 FileExtension(const char *file)
 {
-   char               *p;
+   const char         *p;
 
    p = strrchr(file, '.');
    if (p != NULL)
@@ -69,29 +69,6 @@ exists(const char *s)
    if (stat(s, &st) < 0)
       return 0;
    return 1;
-}
-
-void
-mkdirs(const char *s)
-{
-   char                ss[FILEPATH_LEN_MAX];
-   int                 i, ii;
-
-   i = 0;
-   ii = 0;
-   while (s[i])
-     {
-	ss[ii++] = s[i];
-	ss[ii] = 0;
-	if (s[i] == '/')
-	  {
-	     if (!exists(ss))
-		E_md(ss);
-	     else if (!isdir(ss))
-		return;
-	  }
-	i++;
-     }
 }
 
 int
@@ -146,7 +123,8 @@ E_ls(const char *dir, int *num)
 	return NULL;
      }
    /* count # of entries in dir (worst case) */
-   for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++);
+   for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++)
+      ;
    if (!dirlen)
      {
 	closedir(dirp);
@@ -175,6 +153,7 @@ E_ls(const char *dir, int *num)
       dirlen = i;		/* dir got shorter... */
    closedir(dirp);
    *num = dirlen;
+
    /* do a simple bubble sort here to alphanumberic it */
    while (!done)
      {
@@ -211,6 +190,7 @@ E_mv(const char *s, const char *ss)
    rename(s, ss);
 }
 
+#if 0				/* Unused */
 void
 E_cp(const char *s, const char *ss)
 {
@@ -237,6 +217,7 @@ E_cp(const char *s, const char *ss)
    fclose(f);
    fclose(ff);
 }
+#endif
 
 time_t
 moddate(const char *s)
@@ -252,6 +233,7 @@ moddate(const char *s)
    return st.st_ctime;
 }
 
+#if 0				/* Unused */
 int
 filesize(const char *s)
 {
@@ -263,6 +245,7 @@ filesize(const char *s)
       return 0;
    return (int)st.st_size;
 }
+#endif
 
 int
 fileinode(const char *s)
@@ -309,14 +292,7 @@ filedev(const char *s)
    return filedev_map((int)st.st_dev);
 }
 
-void
-E_cd(const char *s)
-{
-   if ((!s) || (!*s))
-      return;
-   chdir(s);
-}
-
+#if 0				/* Unused */
 char               *
 cwd(void)
 {
@@ -327,8 +303,9 @@ cwd(void)
    s = Estrdup(ss);
    return s;
 }
+#endif
 
-int
+static int
 permissions(const char *s)
 {
    struct stat         st;
@@ -392,9 +369,10 @@ username(int uid)
 char               *
 homedir(int uid)
 {
-   char               *s;
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
+   char               *s;
+   const char         *ss;
    struct passwd      *pwd;
 
    if (usr_uid < 0)
@@ -411,7 +389,10 @@ homedir(int uid)
 	   usr_s = Estrdup(s);
 	return s;
      }
-   return Estrdup((getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR"));
+   ss = getenv("TMPDIR");
+   if (!ss)
+      ss = "/tmp";
+   return Estrdup(ss);
 }
 
 char               *
@@ -464,23 +445,6 @@ atword(const char *s, int num)
 	     if (cnt == num)
 		return &s[i];
 	  }
-	i++;
-     }
-   return NULL;
-}
-
-const char         *
-atchar(const char *s, char c)
-{
-   int                 i;
-
-   if (!s)
-      return NULL;
-   i = 0;
-   while (s[i] != 0)
-     {
-	if (s[i] == c)
-	   return &s[i];
 	i++;
      }
    return NULL;
@@ -729,7 +693,7 @@ pathtoexec(const char *file)
 
    cp = p;
    exelen = strlen(file);
-   while ((ep = strchr(cp, ':')))
+   while ((ep = strchr(cp, ':')) != NULL)
      {
 	len = ep - cp;
 	s = Emalloc(len + 1);
@@ -738,6 +702,8 @@ pathtoexec(const char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = Erealloc(s, len + 2 + exelen);
+	     if (!s)
+		return NULL;
 	     strcat(s, "/");
 	     strcat(s, file);
 	     if (canexec(s))
@@ -753,6 +719,8 @@ pathtoexec(const char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = Erealloc(s, len + 2 + exelen);
+	if (!s)
+	   return NULL;
 	strcat(s, "/");
 	strcat(s, file);
 	if (canexec(s))
@@ -781,7 +749,7 @@ pathtofile(const char *file)
       return NULL;
    cp = p;
    exelen = strlen(file);
-   while ((ep = strchr(cp, ':')))
+   while ((ep = strchr(cp, ':')) != NULL)
      {
 	len = ep - cp;
 	s = Emalloc(len + 1);
@@ -790,6 +758,8 @@ pathtofile(const char *file)
 	     strncpy(s, cp, len);
 	     s[len] = 0;
 	     s = Erealloc(s, len + 2 + exelen);
+	     if (!s)
+		return NULL;
 	     strcat(s, "/");
 	     strcat(s, file);
 	     if (exists(s))
@@ -805,6 +775,8 @@ pathtofile(const char *file)
 	strncpy(s, cp, len);
 	s[len] = 0;
 	s = Erealloc(s, len + 2 + exelen);
+	if (!s)
+	   return NULL;
 	strcat(s, "/");
 	strcat(s, file);
 	if (exists(s))

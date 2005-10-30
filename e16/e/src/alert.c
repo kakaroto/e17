@@ -154,7 +154,7 @@ ShowAlert(char *text)
    XSetWindowAttributes att;
    XRectangle          rect1, rect2;
    char                colorful;
-   unsigned long       cols[256];
+   unsigned long       cols[5];
    XColor              xcl;
    Colormap            cmap;
    int                 cnum, fh, x, y, ww, hh, mh;
@@ -200,6 +200,7 @@ ShowAlert(char *text)
 
    cnum = 0;
    colorful = 0;
+   cols[0] = cols[1] = cols[2] = cols[3] = cols[4] = 0;
    if (DefaultDepth(dd, DefaultScreen(dd)) > 4)
      {
 	ExSetColor(&xcl, 220, 220, 220);
@@ -437,7 +438,8 @@ ShowAlert(char *text)
 
 	  case Expose:
 	     /* Flush all other Expose events */
-	     while (XCheckTypedWindowEvent(dd, ev.xexpose.window, Expose, &ev));
+	     while (XCheckTypedWindowEvent(dd, ev.xexpose.window, Expose, &ev))
+		;
 
 	     ExTextExtents(xfs, title, strlen(title), &rect1, &rect2);
 	     w = rect2.width;
@@ -597,16 +599,16 @@ AlertX(const char *title, const char *ignore,
        const char *restart, const char *quit, const char *fmt, ...)
 {
    char                text[10240];
-   va_list             ap;
+   va_list             args;
 
    AssignTitleText(title);
    AssignIgnoreText(ignore);
    AssignRestartText(restart);
    AssignExitText(quit);
 
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
+   va_start(args, fmt);
+   Evsnprintf(text, 10240, fmt, args);
+   va_end(args);
    SoundPlay("SOUND_ALERT");
    ShowAlert(text);
 
@@ -620,11 +622,11 @@ void
 Alert(const char *fmt, ...)
 {
    char                text[10240];
-   va_list             ap;
+   va_list             args;
 
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
+   va_start(args, fmt);
+   Evsnprintf(text, 10240, fmt, args);
+   va_end(args);
    SoundPlay("SOUND_ALERT");
    ShowAlert(text);
 }

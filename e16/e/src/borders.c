@@ -29,7 +29,6 @@
 #include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
-#include <sys/time.h>
 
 #define EWIN_BORDER_PART_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
@@ -37,6 +36,7 @@
 #define EWIN_BORDER_TITLE_EVENT_MASK \
   (EWIN_BORDER_PART_EVENT_MASK)
 
+static void         BorderDestroy(Border * b);
 static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(XEvent * ev, void *prm);
 
@@ -143,7 +143,7 @@ BorderWinpartDraw(EWin * ewin, int i)
    return ret;
 }
 
-void
+static void
 BorderWinpartChange(EWin * ewin, int i, int force)
 {
    BorderWinpartITclassApply(ewin, i, force);
@@ -597,8 +597,7 @@ EwinSetBorder(EWin * ewin, const Border * b, int apply)
 	if (ewin->border)
 	   BorderDecRefcount(ewin->border);
 	ewin->border = b;
-	if (b)
-	   BorderIncRefcount(b);
+	BorderIncRefcount(b);
      }
 
    if (!ewin->state.fullscreen)
@@ -615,7 +614,7 @@ EwinSetBorderByName(EWin * ewin, const char *name)
    EwinSetBorder(ewin, b, 0);
 }
 
-Border             *
+static Border      *
 BorderCreate(const char *name)
 {
    Border             *b;
@@ -631,7 +630,7 @@ BorderCreate(const char *name)
    return b;
 }
 
-void
+static void
 BorderDestroy(Border * b)
 {
    int                 i;
@@ -645,7 +644,8 @@ BorderDestroy(Border * b)
 	return;
      }
 
-   while (RemoveItemByPtr(b, LIST_TYPE_BORDER));
+   while (RemoveItemByPtr(b, LIST_TYPE_BORDER))
+      ;
 
    for (i = 0; i < b->num_winparts; i++)
      {
@@ -670,19 +670,18 @@ BorderDestroy(Border * b)
       ActionclassDecRefcount(b->aclass);
 }
 
-void
+static void
 BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
 		 TextClass * tclass, ECursor * ec, char ontop, int flags,
-		 char isregion, int wmin, int wmax, int hmin, int hmax,
-		 int torigin, int txp, int txa, int typ, int tya, int borigin,
-		 int bxp, int bxa, int byp, int bya, char keep_for_shade)
+		 char isregion __UNUSED__, int wmin, int wmax, int hmin,
+		 int hmax, int torigin, int txp, int txa, int typ, int tya,
+		 int borigin, int bxp, int bxa, int byp, int bya,
+		 char keep_for_shade)
 {
    int                 n;
 
    b->num_winparts++;
    n = b->num_winparts;
-
-   isregion = 0;
 
    b->part = Erealloc(b->part, n * sizeof(WinPart));
 
@@ -1031,7 +1030,7 @@ BorderWinpartHandleEvents(XEvent * ev, void *prm)
 #include "conf.h"
 
 static int
-BorderPartLoad(FILE * fs, char type, Border * b)
+BorderPartLoad(FILE * fs, char type __UNUSED__, Border * b)
 {
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
@@ -1049,7 +1048,6 @@ BorderPartLoad(FILE * fs, char type, Border * b)
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
-   type = 0;
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
