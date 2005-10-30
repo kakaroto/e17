@@ -482,6 +482,12 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_widget_show(context);
 
 
+	/*Icon menu*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Delete file");
+	ewl_widget_show(context);
+	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
 
 	/*Icon menu*/
 	context = ewl_menu_item_new();
