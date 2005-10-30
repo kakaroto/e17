@@ -698,6 +698,15 @@ void etk_tree_row_del(Etk_Tree_Row *row)
 
    if ((l = evas_list_find_list(row->node.parent->child_rows, row)))
    {
+      Etk_Tree_Node *n;
+      for (n = row->tree->last_selected; n; n = n->parent)
+      {
+         if (&row->node == n)
+         {
+            row->tree->last_selected = NULL;
+            break;
+         }
+      }
       _etk_tree_row_free(l->data);
       row->node.parent->child_rows = evas_list_remove_list(row->node.parent->child_rows, l);
    }
@@ -720,6 +729,7 @@ void etk_tree_clear(Etk_Tree *tree)
       _etk_tree_row_free(tree->root.child_rows->data);
       tree->root.child_rows = evas_list_remove_list(tree->root.child_rows, tree->root.child_rows);
    }
+   tree->last_selected = NULL;
    
    if (!tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(tree));
@@ -2215,6 +2225,7 @@ static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modi
    {
       etk_tree_unselect_all(tree);
       node->selected = TRUE;
+      tree->last_selected = node;
       etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
    }
    else
@@ -2249,6 +2260,7 @@ static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modi
                node->selected = TRUE;
             }
          }
+         tree->last_selected = node;
          etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
       }
       else if (evas_key_modifier_is_set(modifiers, "Control"))
@@ -2256,11 +2268,13 @@ static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modi
          if (node->selected)
          {
             node->selected = FALSE;
+            tree->last_selected = node;
             etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
          }
          else
          {
             node->selected = TRUE;
+            tree->last_selected = node;
             etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
          }
       }
@@ -2268,10 +2282,10 @@ static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modi
       {
          etk_tree_unselect_all(tree);
          node->selected = TRUE;
+         tree->last_selected = node;
          etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
       }
    }
-   tree->last_selected = node;
 
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
 }
