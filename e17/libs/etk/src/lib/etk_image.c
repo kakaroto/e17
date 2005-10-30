@@ -129,6 +129,7 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
    if (image->use_edje)
    {
       image->use_edje = FALSE;
+      image->object_type_changed = TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
    }
 
@@ -142,7 +143,7 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
  */
 const char *etk_image_file_get(Etk_Image *image)
 {
-   if (!image)
+   if (!image || image->use_edje)
       return NULL;
    return image->filename;
 }
@@ -187,6 +188,7 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
    if (!image->use_edje)
    {
       image->use_edje = TRUE;
+      image->object_type_changed = TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
    }
 
@@ -201,7 +203,7 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
  */
 void etk_image_edje_file_get(Etk_Image *image, char **edje_filename, char **edje_group)
 {
-   if (!image)
+   if (!image || !image->use_edje)
    {
       if (edje_filename)
          *edje_filename = NULL;
@@ -264,6 +266,7 @@ static void _etk_image_constructor(Etk_Image *image)
    image->edje_group = NULL;
    image->keep_aspect = TRUE;
    image->use_edje = FALSE;
+   image->object_type_changed = FALSE;
 
    widget->size_request = _etk_image_size_request;
    widget->move_resize = _etk_image_move_resize;
@@ -442,32 +445,33 @@ static void _etk_image_load(Etk_Image *image)
    if (!(widget = ETK_WIDGET(image)))
       return;
 
-   if (image->image_object)
+   if (image->image_object && image->object_type_changed)
    {
       etk_widget_member_object_del(widget, image->image_object);
       evas_object_del(image->image_object);
       image->image_object = NULL;
+      image->object_type_changed = FALSE;
    }
    if (image->filename)
    {
       int error_code;
       Evas *evas;
 
-      if ((evas = etk_widget_toplevel_evas_get(widget)))
+      if (!image->image_object && (evas = etk_widget_toplevel_evas_get(widget)))
       {
          image->image_object = evas_object_image_add(evas);
+         etk_widget_member_object_add(widget, image->image_object);
+      }
+      if (image->image_object)
+      {
          evas_object_image_file_set(image->image_object, image->filename, NULL);
          if ((error_code = evas_object_image_load_error_get(image->image_object)))
          {
             ETK_WARNING("Unable to load image from file \"%s\", error %d", image->filename, error_code);
-            evas_object_del(image->image_object);
-            image->image_object = NULL;
+            evas_object_hide(image->image_object);
          }
          else
-         {
             evas_object_show(image->image_object);
-            etk_widget_member_object_add(widget, image->image_object);
-         }
       }
    }
    else if (image->edje_filename && image->edje_group)
@@ -475,18 +479,21 @@ static void _etk_image_load(Etk_Image *image)
       int error_code;
       Evas *evas;
 
-      if ((evas = etk_widget_toplevel_evas_get(widget)))
+      if (!image->image_object && (evas = etk_widget_toplevel_evas_get(widget)))
       {
          image->image_object = edje_object_add(evas);
+         etk_widget_member_object_add(widget, image->image_object);
+      }
+      if (image->image_object)
+      {
          edje_object_file_set(image->image_object, image->edje_filename, image->edje_group);
          if ((error_code = edje_object_load_error_get(image->image_object)))
          {
             ETK_WARNING("Unable to load image from edje file \"%s\"/\"%s\", error %d", image->edje_filename, image->edje_group, error_code);
-            evas_object_del(image->image_object);
-            image->image_object = NULL;
+            evas_object_hide(image->image_object);
          }
          else
-            etk_widget_member_object_add(widget, image->image_object);
+            evas_object_show(image->image_object);
       }
    }
 

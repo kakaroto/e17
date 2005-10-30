@@ -33,6 +33,7 @@ struct _Etk_Image
    char *edje_filename;
    Etk_Bool keep_aspect;
    Etk_Bool use_edje;
+   Etk_Bool object_type_changed;
 };
 
 Etk_Type *etk_image_type_get();
