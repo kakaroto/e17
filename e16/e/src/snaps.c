@@ -195,9 +195,8 @@ SnapshotEwinFind(EWin * ewin)
    for (i = 0; i < num; i++)
      {
 	sn = lst[i];
-	if (sn->used || !sn->startup_id || !sn->cmd)
-	   continue;
-	if (strcmp(sn->cmd, ewin->icccm.wm_command))
+	if (sn->used || !sn->startup_id ||
+	    !SEQ(sn->cmd, ewin->icccm.wm_command))
 	   continue;
 	if (!SnapshotEwinMatch(sn, ewin))
 	   continue;
