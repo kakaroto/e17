@@ -28,3 +28,4 @@ depcomp
 etox.pc
 doc
 *.tar.gz
+etox.spec
