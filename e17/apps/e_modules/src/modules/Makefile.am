@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = flame notes snow monitor weather rain
+SUBDIRS = flame snow monitor weather rain
 
