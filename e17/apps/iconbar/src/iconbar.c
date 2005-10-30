@@ -1,8 +1,6 @@
 #include "iconbar.h"
 #include "icon.h"
 #include "util.h"
-#include <math.h>
-#include <time.h>
 #include "prefs.h"
 /* #include "icon_editor.h" */
 
