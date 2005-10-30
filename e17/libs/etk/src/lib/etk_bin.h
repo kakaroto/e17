@@ -26,6 +26,8 @@ struct _Etk_Bin
    /* private: */
    /* Inherit from Etk_Container */
    Etk_Container container;
+
+   Etk_Widget *child;
 };
 
 Etk_Type *etk_bin_type_get();

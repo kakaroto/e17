@@ -51,4 +51,7 @@ images {
    image: "e_watermark.png" COMP;
    image: "hpaned_separator.png" COMP;
    image: "vpaned_separator.png" COMP;
+   image: "frame_outline.png" COMP;
+   image: "frame_label_over.png" COMP;
+   image: "frame_label_under.png" COMP;
 }

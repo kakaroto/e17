@@ -59,6 +59,7 @@ typedef struct _Etk_Table Etk_Table;
 typedef struct _Etk_Table_Col_Row Etk_Table_Col_Row;
 typedef struct _Etk_Table_Child_Properties Etk_Table_Child_Properties;
 typedef struct _Etk_Alignment Etk_Alignment;
+typedef struct _Etk_Frame Etk_Frame;
 typedef struct _Etk_Paned Etk_Paned;
 typedef struct _Etk_HPaned Etk_HPaned;
 typedef struct _Etk_VPaned Etk_VPaned;

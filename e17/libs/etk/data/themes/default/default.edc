@@ -3,6 +3,7 @@
 #include "macros/paned.edc"
 fonts {
    font: "Vera.ttf" "Vera";
+   font: "VeraBd.ttf" "Vera-Bold";
 }
 #include "images/images.edc"
 collections {
@@ -17,4 +18,5 @@ collections {
    #include "widgets/tree.edc"
    #include "widgets/separator.edc"
    #include "widgets/paned.edc"
+   #include "widgets/frame.edc"
 }

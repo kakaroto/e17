@@ -698,13 +698,16 @@ void etk_tree_row_del(Etk_Tree_Row *row)
 
    if ((l = evas_list_find_list(row->node.parent->child_rows, row)))
    {
-      Etk_Tree_Node *n;
-      for (n = row->tree->last_selected; n; n = n->parent)
+      if (row->tree->last_selected)
       {
-         if (&row->node == n)
+         Etk_Tree_Node *n;
+         for (n = row->tree->last_selected; n; n = n->parent)
          {
-            row->tree->last_selected = NULL;
-            break;
+            if (&row->node == n)
+            {
+               row->tree->last_selected = NULL;
+               break;
+            }
          }
       }
       _etk_tree_row_free(l->data);
