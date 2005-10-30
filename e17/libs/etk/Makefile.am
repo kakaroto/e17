@@ -16,7 +16,6 @@ AUTHORS \
 COPYING \
 gendoc \
 Doxyfile \
-README.in \
 README \
 ABOUT-NLS
 

@@ -225,7 +225,6 @@ data/stock_icons/Makefile
 data/stock_icons/default/Makefile
 po/Makefile
 etk-config
-README
 ],[
 chmod +x etk-config
 ])
