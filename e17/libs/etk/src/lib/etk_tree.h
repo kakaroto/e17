@@ -3,7 +3,7 @@
 #define _ETK_TREE_H_
 
 #include "etk_container.h"
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include <stdarg.h>
 #include "etk_types.h"
 
@@ -57,7 +57,7 @@ struct _Etk_Tree_Node
 {
    Etk_Tree_Row *row;
    Etk_Tree_Node *parent;
-   Ecore_List *child_rows;
+   Evas_List *child_rows;
    int num_visible_children;
    int num_parent_children;
    Etk_Bool expanded;
@@ -78,7 +78,6 @@ struct _Etk_Tree
 
    int num_cols;
    Etk_Tree_Col **columns;
-   Ecore_List *cols_objects;
    Etk_Tree_Col *column_to_resize;
    Etk_Bool resize_pointer_shown;
    Etk_Bool headers_visible;
@@ -87,7 +86,7 @@ struct _Etk_Tree
    Etk_Tree_Node *last_selected;
 
    Evas_Object *clip;
-   Ecore_List *items_objects;
+   Evas_List *items_objects;
 
    Etk_Tree_Mode mode;
    Etk_Bool multiple_select;
@@ -218,7 +217,7 @@ void *etk_tree_row_data_get(Etk_Tree_Row *row);
 void etk_tree_row_select(Etk_Tree_Row *row);
 void etk_tree_row_unselect(Etk_Tree_Row *row);
 Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
-Ecore_List *etk_tree_selected_rows_get(Etk_Tree *tree);
+Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
 void etk_tree_row_expand(Etk_Tree_Row *row);
 void etk_tree_row_collapse(Etk_Tree_Row *row);
 
