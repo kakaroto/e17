@@ -145,7 +145,10 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
       etk_type_property_list(type->hierarchy[i], properties);
       ecore_list_goto_first(properties);
       while ((property = ecore_list_next(properties)))
-         type->hierarchy[i]->property_set(object, property->id, property->default_value);
+      {
+         if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
+            type->hierarchy[i]->property_set(object, property->id, property->default_value);
+      }
       ecore_list_destroy(properties);
    }
    if (type->property_set)
@@ -154,7 +157,10 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
       etk_type_property_list(type, properties);
       ecore_list_goto_first(properties);
       while ((property = ecore_list_next(properties)))
-         type->property_set(object, property->id, property->default_value);
+      {
+         if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
+            type->property_set(object, property->id, property->default_value);
+      }
       ecore_list_destroy(properties);
    }
 }

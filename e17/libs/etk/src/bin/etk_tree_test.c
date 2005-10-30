@@ -133,7 +133,7 @@ void etk_test_tree_window_create(void *data)
    etk_tree_build(ETK_TREE(tree));
 
    etk_tree_freeze(ETK_TREE(tree));
-   for (i = 0; i < 1000; i++)
+   for (i = 0; i < 100; i++)
    {
       row = etk_tree_append(ETK_TREE(tree), col1, PACKAGE_DATA_DIR "/images/open.png", _("Row1"),
          col2, 1, col3, PACKAGE_DATA_DIR "/images/1star.png", NULL);

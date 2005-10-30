@@ -175,7 +175,7 @@ static void _etk_label_constructor(Etk_Label *label)
    label->clip = NULL;
    label->text = NULL;
 
-   label->xalign = 0.5;
+   label->xalign = 0.0;
    label->yalign = 0.5;
 
    widget->size_request = _etk_label_size_request;

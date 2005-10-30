@@ -1164,7 +1164,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->theme_object = NULL;
    widget->theme_min_width = 0;
    widget->theme_min_height = 0;
-   widget->theme_file = NULL;
+   widget->theme_file = strdup(ETK_DEFAULT_THEME_FILE);
    widget->theme_group = NULL;
 
    widget->smart_object = NULL;

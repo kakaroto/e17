@@ -31,13 +31,15 @@ enum _Etk_Property_Type
 
 /** 
  * @enum Etk_Property_Flags
- * @brief  Describes if the property is readable, writable or both
+ * @brief Describes if the property is readable, writable or both. @n
+ * YOu can also specify if the property needs to be initialized to its default value at the constuction of a new object (ETK_PROPERTY_CONSTRUCT)
  */
 enum _Etk_Property_Flags
 {
    ETK_PROPERTY_READABLE = 1 << 0,
    ETK_PROPERTY_WRITABLE = 1 << 1,
-   ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE
+   ETK_PROPERTY_READABLE_WRITABLE = ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
+   ETK_PROPERTY_CONSTRUCT = 1 << 2
 };
 
 /**
