@@ -13,3 +13,6 @@ aclocal.m4
 Makefile.in
 Makefile
 *.tar.gz
+depcomp
+install-sh
+missing

@@ -10,3 +10,6 @@ configure
 libtool
 ltmain.sh
 *.tar.gz
+depcomp
+install-sh
+missing
