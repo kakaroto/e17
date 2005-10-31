@@ -253,11 +253,13 @@ EobjRegister(Window win, int type)
    if (!eo)
       return eo;
 
-   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
-   eo->name = ecore_x_icccm_title_get(win);
-   eo->external = 1;
    if (attr.class == InputOnly)
       eo->inputonly = 1;
+
+   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
+
+   eo->name = ecore_x_icccm_title_get(win);
+   eo->external = 1;
 
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)
