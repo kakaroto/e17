@@ -3331,6 +3331,7 @@ ewl_text_context_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	tx = NEW(Ewl_Text_Context, 1);
+	tx->ref_count = 1;
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);;
 }
