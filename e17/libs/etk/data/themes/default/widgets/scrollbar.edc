@@ -28,14 +28,15 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 18 -6;
+               offset: 16 10;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -35 7;
+               offset: -33 10;
             }
          }
       }
+      SCROLLBAR_DRAG("drag", 20, 20, 1, 0, "scrollbar_hdrag_thumb.png")
       SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, -1, -8, "scrollbar_arrow_left.png")
       SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -34, -8, "scrollbar_arrow_left.png")
       SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -18, -8, "scrollbar_arrow_right.png")
@@ -44,13 +45,6 @@ group {
       SCROLLBAR_BUTTON_PROG("left_left_arrow", "left")
       SCROLLBAR_BUTTON_PROG("right_left_arrow", "left")
       SCROLLBAR_BUTTON_PROG("right_right_arrow", "right")
-   }
-}
-group {
-   name: "hscrollbar_drag";
-   min: 14 0;
-   parts {
-      SCROLLBAR_DRAG("drag", 0.0, 0.0, -5, -2, 1.0, 1.0, 4, 1, "scrollbar_hdrag_thumb.png")
    }
 }
 
@@ -84,14 +78,15 @@ group {
             visible: 0;
             rel1 {
                relative: 0.5 0.0;
-               offset: -6 18;
+               offset: 10 16;
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 7 -35;
+               offset: 10 -33;
             }
          }
       }
+      SCROLLBAR_DRAG("drag", 20, 20, 0, 1, "scrollbar_vdrag_thumb.png")
       SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -8, -1, "scrollbar_arrow_up.png")
       SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -8, -34, "scrollbar_arrow_down.png")
       SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -8, -18, "scrollbar_arrow_down.png")
@@ -100,12 +95,5 @@ group {
       SCROLLBAR_BUTTON_PROG("up_up_arrow", "up")
       SCROLLBAR_BUTTON_PROG("down_up_arrow", "up")
       SCROLLBAR_BUTTON_PROG("down_down_arrow", "down")
-   }
-}
-group {
-   name: "vscrollbar_drag";
-   min: 0 14;
-   parts {
-      SCROLLBAR_DRAG("drag", 0.0, 0.0, -2, -5, 1.0, 1.0, 1, 4, "scrollbar_vdrag_thumb.png")
    }
 }

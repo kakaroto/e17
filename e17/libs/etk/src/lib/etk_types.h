@@ -63,6 +63,8 @@ typedef struct _Etk_Frame Etk_Frame;
 typedef struct _Etk_Paned Etk_Paned;
 typedef struct _Etk_HPaned Etk_HPaned;
 typedef struct _Etk_VPaned Etk_VPaned;
+typedef struct _Etk_Scrolled_View Etk_Scrolled_View;
+typedef struct _Etk_Viewport Etk_Viewport;
 typedef struct _Etk_Window Etk_Window;
 typedef struct _Etk_Image Etk_Image;
 typedef struct _Etk_Label Etk_Label;

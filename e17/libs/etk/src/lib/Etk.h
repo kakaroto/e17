@@ -25,6 +25,8 @@
 #include "etk_alignment.h"
 #include "etk_frame.h"
 #include "etk_paned.h"
+#include "etk_scrolled_view.h"
+#include "etk_viewport.h"
 #include "etk_window.h"
 #include "etk_label.h"
 #include "etk_image.h"

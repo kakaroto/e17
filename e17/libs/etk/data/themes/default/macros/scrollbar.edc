@@ -1,6 +1,6 @@
 #define SCROLLBAR_BUTTON_SIZE 18
 
-#define SCROLLBAR_DRAG(part_name, rx1, ry1, ox1, oy1, rx2, ry2, ox2, oy2, image_thumb) \
+#define SCROLLBAR_DRAG(part_name, minw, minh, xdir, ydir, image_thumb) \
 part { \
    name: part_name"_shadow2"; \
    mouse_events: 0; \
@@ -45,15 +45,24 @@ part { \
 } \
 part { \
    name: part_name; \
+   dragable { \
+      confine: "confine"; \
+      x: xdir xdir xdir; \
+      y: ydir ydir ydir; \
+   } \
    description { \
       state: "default" 0.0; \
+      min: minw minh; \
+      fixed: 1 1; \
       rel1 { \
-         relative: rx1 ry1; \
-         offset: ox1 oy1; \
+         relative: 0.5 0.5; \
+         offset: 0 0; \
+         to: "confine"; \
       } \
       rel2 { \
-         relative: rx2 ry2; \
-         offset: ox2 oy2; \
+         relative: 0.5 0.5; \
+         offset: 0 0; \
+         to: "confine"; \
       } \
       image { \
          normal: "scrollbar_button.png"; \
@@ -81,6 +90,17 @@ part { \
       } \
    } \
 }
+
+/*
+      rel1 { \
+         relative: rx1 ry1; \
+         offset: ox1 oy1; \
+      } \
+      rel2 { \
+         relative: rx2 ry2; \
+         offset: ox2 oy2; \
+      } \
+*/
 
 #define SCROLLBAR_BUTTON(button_name, rx1, ry1, ox1, oy1, arrow_image) \
 part { \

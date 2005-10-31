@@ -2,7 +2,6 @@
 #ifndef _ETK_SCROLLBAR_H_
 #define _ETK_SCROLLBAR_H_
 
-#include <Evas.h>
 #include <Ecore.h>
 #include "etk_range.h"
 #include "etk_types.h"
@@ -35,21 +34,13 @@
 
 /**
  * @struct Etk_Scrollbar
- * @brief An Etk_Scrollbar is used mainly in Etk_Scrolled_Window
+ * @brief An Etk_Scrollbar is a widget with a cursor you can move to change a value
  */
 struct _Etk_Scrollbar
 {
    /* private: */
    /* Inherit from Etk_Range */
    Etk_Range range;
-
-   int drag_size;
-   int confine_size;
-   double page_size;
-
-   Evas_Object *drag_button;
-   double drag_orig_value;
-   int drag_orig_position;
 
    Ecore_Timer *scrolling_timer;
    Etk_Bool first_scroll;
@@ -84,9 +75,6 @@ Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double 
 
 Etk_Type *etk_vscrollbar_type_get();
 Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size);
-
-void etk_scrollbar_page_size_set(Etk_Scrollbar *scrollbar, double page_size);
-double etk_scrollbar_page_size_get(Etk_Scrollbar *scrollbar);
 
 /** @} */
 

@@ -165,6 +165,9 @@ struct _Etk_Widget
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
    void (*move_resize)(Etk_Widget *widget, int x, int y, int w, int h);
 
+   void (*scroll_size_get)(Etk_Widget *widget, Etk_Size *scroll_size);
+   void (*scroll)(Etk_Widget *widget, int x, int y);
+
    void (*show)(Etk_Widget *widget);
    void (*hide)(Etk_Widget *widget);
    void (*key_down)(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
@@ -219,6 +222,7 @@ void etk_widget_size_recalc_queue(Etk_Widget *widget);
 void etk_widget_redraw_queue(Etk_Widget *widget);
 void etk_widget_size_request_set(Etk_Widget *widget, int w, int h);
 void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition, Etk_Bool hidden_has_no_size);
 void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 void etk_widget_enter(Etk_Widget *widget);
@@ -245,6 +249,10 @@ void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above);
 void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below);
+
+void etk_widget_clip_set(Etk_Widget *widget, Evas_Object *clip);
+void etk_widget_clip_unset(Etk_Widget *widget);
+Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
 
 /** @} */
 

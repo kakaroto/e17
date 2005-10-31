@@ -29,6 +29,7 @@ struct _Etk_Range
 
    double step_increment;
    double page_increment;
+   double page_size;
 
    Etk_Bool (*change_value)(Etk_Range *range, double value);
    void (*value_changed)(Etk_Range *range, double value);
@@ -41,6 +42,9 @@ void etk_range_value_set(Etk_Range *range, double value);
 
 void etk_range_range_set(Etk_Range *range, double lower, double upper);
 void etk_range_increments_set(Etk_Range *range, double step, double page);
+
+void etk_range_page_size_set(Etk_Range *range, double page_size);
+double etk_range_page_size_get(Etk_Range *range);
 
 /** @} */
 

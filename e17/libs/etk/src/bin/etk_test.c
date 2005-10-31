@@ -39,6 +39,10 @@ static Etk_Test_Set tests[] =
    {
       "Paned",
       etk_test_paned_window_create
+   },
+   {
+      "Scrolled View",
+      etk_test_scrolled_view_window_create
    }
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);
@@ -59,14 +63,14 @@ static void _etk_test_main_window()
    etk_window_title_set(ETK_WINDOW(win), _("Etk Test Application"));
    etk_signal_connect("destroy", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
 	
-   table = etk_table_new((num_tests + 2) / 3, 3, 1);
+   table = etk_table_new((num_tests + 3) / 4, 4, TRUE);
    etk_container_add(ETK_CONTAINER(win), table);
 
    for (i = 0; i < num_tests; i++)
    {
       button = etk_button_new_with_label(_(tests[i].name));
       etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(tests[i].func), NULL);
-      etk_table_attach_defaults(ETK_TABLE(table), button, i / 3, i / 3, i % 3, i % 3);
+      etk_table_attach_defaults(ETK_TABLE(table), button, i / 4, i / 4, i % 4, i % 4);
    }
    etk_widget_show_all(win);
 }

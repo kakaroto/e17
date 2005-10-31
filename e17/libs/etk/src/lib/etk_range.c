@@ -61,6 +61,7 @@ Etk_Type *etk_range_type_get()
       etk_type_property_add(range_type, "value", ETK_RANGE_VALUE_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
       etk_type_property_add(range_type, "step_increment", ETK_RANGE_STEP_INC_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
       etk_type_property_add(range_type, "page_increment", ETK_RANGE_PAGE_INC_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
+      etk_type_property_add(range_type, "page_size", ETK_RANGE_PAGE_SIZE_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
       
       range_type->property_set = _etk_range_property_set;
       range_type->property_get = _etk_range_property_get;
@@ -96,7 +97,7 @@ void etk_range_value_set(Etk_Range *range, double value)
    if (!range)
       return;
 
-   new_value = ETK_CLAMP(value, range->lower, range->upper);
+   new_value = ETK_CLAMP(value, range->lower, range->upper - range->page_size);
    if (new_value != range->value)
    {
       etk_signal_emit(_etk_range_signals[ETK_RANGE_CHANGE_VALUE_SIGNAL], ETK_OBJECT(range), &result, new_value);
@@ -119,8 +120,8 @@ void etk_range_range_set(Etk_Range *range, double lower, double upper)
    if (!range)
       return;
 
-   if (upper < lower)
-      upper = lower;
+   if (upper < lower + range->page_size)
+      upper = lower + range->page_size;
    
    if (range->lower != lower)
    {
@@ -159,6 +160,38 @@ void etk_range_increments_set(Etk_Range *range, double step, double page)
    }
 }
 
+/**
+ * @brief Sets the page size of the range: this value will be used by the scrollbars to know the size of the drag button
+ * @param range a range
+ * @param page_size the value to set
+ */
+void etk_range_page_size_set(Etk_Range *range, double page_size)
+{
+   if (!range)
+      return;
+
+   page_size = ETK_MIN(page_size, range->upper - range->lower);
+   if (page_size != range->page_size)
+   {
+      range->page_size = page_size;
+      etk_object_notify(ETK_OBJECT(range), "page_size");
+      etk_widget_redraw_queue(ETK_WIDGET(range));
+   }
+}
+
+/**
+ * @brief Gets the page size of the range
+ * @param range a range
+ * @return Returns the page size of the range
+ */
+double etk_scrollbar_page_size_get(Etk_Range *range)
+{
+   if (!range)
+      return 0.0;
+   return range->page_size;
+}
+
+
 /**************************
  *
  * Etk specific functions
@@ -176,6 +209,7 @@ static void _etk_range_constructor(Etk_Range *range)
    range->value = 0.0;
    range->step_increment = 0.0;
    range->page_increment = 0.0;
+   range->page_size = 0.0;
 
    range->change_value = _etk_range_change_value_handler;
    range->value_changed = NULL;
@@ -206,6 +240,9 @@ static void _etk_range_property_set(Etk_Object *object, int property_id, Etk_Pro
       case ETK_RANGE_PAGE_INC_PROPERTY:
          etk_range_increments_set(range, range->step_increment, etk_property_value_double_get(value));
          break;
+      case ETK_RANGE_PAGE_SIZE_PROPERTY:
+         etk_range_page_size_set(range, etk_property_value_double_get(value));
+         break;
       default:
          break;
    }
@@ -235,6 +272,9 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
          break;
       case ETK_RANGE_PAGE_INC_PROPERTY:
          etk_property_value_double_set(value, range->page_increment);
+         break;
+      case ETK_RANGE_PAGE_SIZE_PROPERTY:
+         etk_property_value_double_set(value, range->page_size);
          break;
       default:
          break;

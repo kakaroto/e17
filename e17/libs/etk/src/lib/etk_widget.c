@@ -112,6 +112,8 @@ static Evas_Object *_etk_widget_smart_object_add(Evas *evas, Etk_Widget *widget)
 static void _etk_widget_smart_object_del(Evas_Object *object);
 static void _etk_widget_smart_object_move(Evas_Object *object, Evas_Coord x, Evas_Coord y);
 static void _etk_widget_smart_object_resize(Evas_Object *object, Evas_Coord w, Evas_Coord h);
+static void _etk_widget_smart_object_show(Evas_Object *object);
+static void _etk_widget_smart_object_hide(Evas_Object *object);
 static void _etk_widget_smart_object_clip_set(Evas_Object *object, Evas_Object *clip);
 static void _etk_widget_smart_object_clip_unset(Evas_Object *object);
 static void _etk_widget_swallowed_object_free(void *data);
@@ -339,6 +341,12 @@ void etk_widget_realize(Etk_Widget *widget)
    etk_widget_member_object_add(widget, widget->theme_object);
    evas_object_show(widget->theme_object);
 
+   if (widget->clip)
+   {
+      evas_object_show(widget->clip);
+      evas_object_clip_set(widget->smart_object, widget->clip);
+   }
+
    if (ETK_IS_CONTAINER(widget))
    {
       Evas_List *l;
@@ -354,7 +362,6 @@ void etk_widget_realize(Etk_Widget *widget)
 
    if (widget->parent && ETK_WIDGET(widget->parent)->smart_object && !widget->swallowed)
       etk_widget_member_object_add(ETK_WIDGET(widget->parent), widget->smart_object);
-      
 
    etk_widget_repeat_events_set(widget, widget->repeat_events);
    etk_widget_pass_events_set(widget, widget->pass_events);
@@ -394,6 +401,9 @@ void etk_widget_unrealize(Etk_Widget *widget)
       widget->swallowed_objects = evas_list_remove_list(widget->swallowed_objects, widget->swallowed_objects);
    }
    evas_object_del(widget->smart_object);
+
+   if (widget->clip)
+      evas_object_hide(widget->clip);
 
    widget->left_inset = 0;
    widget->right_inset = 0;
@@ -697,20 +707,31 @@ void etk_widget_size_request_set(Etk_Widget *widget, int w, int h)
  */
 void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
+   etk_widget_size_request_full(widget, size_requisition, TRUE);
+}
+
+/**
+ * @brief Calculates the ideal size of the widget. Used mainly for container implementation
+ * @param widget a widget
+ * @param size_requisition the location where to set the result
+ * @param hidden_has_no_size if hidden_has_no_size is TRUE, then if the widget is hidden, the size requisition will be 0x0
+ */
+void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition, Etk_Bool hidden_has_no_size)
+{
    if (!widget || !size_requisition)
       return;
 
    size_requisition->w = -1;
    size_requisition->h = -1;
 
-   if (!widget->visible)
+   if (!widget->visible && hidden_has_no_size)
       size_requisition->w = 0;
    else if (!widget->need_size_recalc && widget->last_size_requisition.w >= 0)
       size_requisition->w = widget->last_size_requisition.w;
    else if (widget->requested_size.w >= 0)
       size_requisition->w = widget->requested_size.w;
    
-   if (!widget->visible)
+   if (!widget->visible && hidden_has_no_size)
       size_requisition->h = 0;
    else if (!widget->need_size_recalc && widget->last_size_requisition.h >= 0)
       size_requisition->h = widget->last_size_requisition.h;
@@ -742,7 +763,8 @@ void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
       }
    }
 
-   widget->last_size_requisition = *size_requisition;
+   if (widget->visible)
+      widget->last_size_requisition = *size_requisition;
    widget->need_size_recalc = FALSE;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_REQUEST_SIGNAL], ETK_OBJECT(widget), NULL, size_requisition);
@@ -1060,8 +1082,13 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
       return TRUE;
    widget->member_objects = evas_list_append(widget->member_objects, object);
 
-   if (!etk_widget_object_is_swallowed(widget, object) && widget->smart_object)
-      evas_object_smart_member_add(object, widget->smart_object);
+   if (!etk_widget_object_is_swallowed(widget, object))
+   {
+      if (widget->smart_object)
+         evas_object_smart_member_add(object, widget->smart_object);
+      if (widget->clip)
+         evas_object_clip_set(object, widget->clip);
+   }
 
    return TRUE;
 }
@@ -1082,7 +1109,11 @@ void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object)
    {
       widget->member_objects = evas_list_remove_list(widget->member_objects, l);
       if (!etk_widget_object_is_swallowed(widget, object))
+      {
          evas_object_smart_member_del(object);
+         if (widget->clip)
+            evas_object_clip_unset(object);
+      }
    }
 }
 
@@ -1144,6 +1175,59 @@ void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *objec
       evas_object_stack_below(object, below);
 }
 
+/**
+ * @brief Sets the clip object of the widget. Used mainly for widget implementations
+ * @param widget a widget
+ * @param clip the clip object to set
+ * @warning when the clip is destoyed, you have to call etk_widget_clip_unset() on the widget
+ */
+void etk_widget_clip_set(Etk_Widget *widget, Evas_Object *clip)
+{
+   if (!widget)
+      return;
+
+   if (widget->clip)
+      etk_widget_clip_unset(widget);
+   
+   if (widget->smart_object)
+   {
+      evas_object_show(clip);
+      evas_object_clip_set(widget->smart_object, clip);
+   }
+   else
+   {
+      widget->clip = clip;
+      evas_object_hide(widget->clip);
+   }
+}
+
+/**
+ * @brief Unsets the clip object of the widget. Used mainly for widget implementations
+ * @param widget a widget
+ */
+void etk_widget_clip_unset(Etk_Widget *widget)
+{
+   if (!widget || !widget->clip)
+      return;
+
+   if (widget->smart_object)
+      evas_object_clip_unset(widget->smart_object);
+   widget->clip = NULL;
+}
+
+/**
+ * @brief Gets the clip object of the widget
+ * @param widget a widget
+ * @return Returns the clip object of the widget
+ */
+Evas_Object *etk_widget_clip_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return NULL;
+   return widget->clip;
+}
+
+
 /**************************
  *
  * Etk specific functions
@@ -1199,6 +1283,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->requested_size.h = -1;
    widget->last_size_requisition.w = 0;
    widget->last_size_requisition.h = 0;
+
+   widget->scroll_size_get = NULL;
+   widget->scroll = NULL;
 
    widget->realized = FALSE;
    widget->visible = FALSE;
@@ -1417,7 +1504,7 @@ static void _etk_widget_show_handler(Etk_Widget *widget)
    widget->visible = TRUE;
    if (widget->smart_object)
       evas_object_show(widget->smart_object);
-   etk_widget_redraw_queue(widget);
+   etk_widget_size_recalc_queue(widget);
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -1430,7 +1517,7 @@ static void _etk_widget_hide_handler(Etk_Widget *widget)
    widget->visible = FALSE;
    if (widget->smart_object)
       evas_object_hide(widget->smart_object);
-   etk_widget_redraw_queue(widget);
+   etk_widget_size_recalc_queue(widget);
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -1822,11 +1909,11 @@ static Evas_Object *_etk_widget_smart_object_add(Evas *evas, Etk_Widget *widget)
          NULL, //_etk_widget_smart_object_stack_below, /* stack_below */
          _etk_widget_smart_object_move, /* move */
          _etk_widget_smart_object_resize, /* resize */
-         NULL, /* show */
-         NULL, /* hide */
+         _etk_widget_smart_object_show, /* show */
+         _etk_widget_smart_object_hide, /* hide */
          NULL, /* color_set */
          _etk_widget_smart_object_clip_set, /* clip_set */
-         NULL, /* clip_unset */
+         _etk_widget_smart_object_clip_unset, /* clip_unset */
          NULL); /* data*/
    }
 
@@ -1930,26 +2017,71 @@ static void _etk_widget_smart_object_resize(Evas_Object *object, Evas_Coord w, E
    }
 }
 
-/* Called when a clip is set to the smart object */
-static void _etk_widget_smart_object_clip_set(Evas_Object *object, Evas_Object *clip)
+/* Called when the smart object is shown */
+static void _etk_widget_smart_object_show(Evas_Object *object)
+{
+   Evas_List *l;
+   Etk_Widget_Smart_Data *smart_data;
+   Etk_Widget *widget, *child;
+   Evas_Object *o;
+
+   if (!object || !(smart_data = evas_object_smart_data_get(object)) || !(widget = smart_data->widget))
+      return;
+
+   for (l = widget->member_objects; l; l = l->data)
+   {
+      o = l->data;
+
+      if (!(child = ETK_WIDGET(evas_object_data_get(o, "etk_widget"))) || child->visible)
+         evas_object_show(o);
+   }
+}
+
+/* Called when the smart object is hidden */
+static void _etk_widget_smart_object_hide(Evas_Object *object)
 {
    Evas_List *l;
    Etk_Widget_Smart_Data *smart_data;
    Etk_Widget *widget;
 
+   if (!object || !(smart_data = evas_object_smart_data_get(object)) || !(widget = smart_data->widget))
+      return;
+
+   for (l = widget->member_objects; l; l = l->data)
+      evas_object_hide(l->data);
+}
+
+/* Called when a clip is set to the smart object */
+static void _etk_widget_smart_object_clip_set(Evas_Object *object, Evas_Object *clip)
+{
+   Evas_List *l;
+   Etk_Widget_Smart_Data *smart_data;
+   Etk_Widget *widget, *child;
+   Evas_Object *object_to_clip;
+
    if (!object || !clip || !(smart_data = evas_object_smart_data_get(object)) || !(widget = smart_data->widget))
       return;
-   if (widget->clip == clip)
-      return;
 
+   if (widget->clip)
+      etk_widget_clip_unset(widget);
    widget->clip = clip;
+
    for (l = widget->member_objects; l; l = l->next)
    {
-      Evas_Object *object_to_clip;
-
-      for (object_to_clip = l->data; evas_object_clip_get(object_to_clip); object_to_clip = evas_object_clip_get(object_to_clip));
-      if (object_to_clip && object_to_clip != clip)
-         evas_object_clip_set(object_to_clip, clip);
+      if (!(child = ETK_WIDGET(evas_object_data_get(l->data, "etk_widget"))) || !child->clip)
+      {
+         object_to_clip = l->data;
+         while (evas_object_clip_get(object_to_clip))
+         {
+            if (object_to_clip == clip)
+               break;
+            object_to_clip = evas_object_clip_get(object_to_clip);
+         }
+         if (object_to_clip != clip)
+            evas_object_clip_set(object_to_clip, clip);
+      }
+      else
+         evas_object_clip_set(child->clip, clip);
    }
 }
 
@@ -1957,14 +2089,39 @@ static void _etk_widget_smart_object_clip_set(Evas_Object *object, Evas_Object *
 static void _etk_widget_smart_object_clip_unset(Evas_Object *object)
 {
    Evas_List *l;
-   Etk_Widget *widget;
+   Etk_Widget *widget, *child;
    Etk_Widget_Smart_Data *smart_data;
 
-   if (!object || !(smart_data = evas_object_smart_data_get(object)) || !(widget = smart_data->widget))
+   if (!object || !(smart_data = evas_object_smart_data_get(object)) || !(widget = smart_data->widget) || !widget->clip)
       return;
 
    for (l = widget->member_objects; l; l = l->next)
-      evas_object_clip_unset(l->data);
+   {
+      if (!(child = ETK_WIDGET(evas_object_data_get(l->data, "etk_widget"))))
+      {
+         if (evas_object_clip_get(l->data) == widget->clip)
+            evas_object_clip_unset(l->data);
+      }
+      else if (child->clip)
+      {
+         if (child->clip == widget->clip)
+            etk_widget_clip_unset(child);
+         else
+         {
+            Evas_Object *c;
+
+            for (c = child->clip; c; c = evas_object_clip_get(c))
+            {
+               if (evas_object_clip_get(c) == widget->clip)
+               {
+                  evas_object_clip_unset(c);
+                  break;
+               }
+            }
+         }
+      }
+   }
+   widget->clip = NULL;
 }
 
 /* Called when the swallowed objet is removed from the list of swallowed objects of the widget */
