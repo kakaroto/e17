@@ -46,11 +46,11 @@ int evfs_file_rename(char* src, char* dst);
 int evfs_client_disconnect(evfs_client* client);
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
-int evfs_file_open(evfs_filereference* file);
+int evfs_file_open(evfs_client*, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
 int evfs_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
-int evfs_file_read(evfs_filereference* file, char* bytes, long size);
+int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size);
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 void evfs_dir_list(evfs_client* client, evfs_command* file);
@@ -63,18 +63,21 @@ evfs_plugin_functions* evfs_plugin_init() {
         evfs_plugin_functions* functions = calloc(1, sizeof(evfs_plugin_functions));
 
         functions->evfs_client_disconnect = &evfs_client_disconnect;
+        functions->evfs_file_open = &evfs_file_open;
+	functions->evfs_file_read = &evfs_file_read;
+	
 	/*functions->evfs_dir_list = &evfs_dir_list;
 
         functions->evfs_file_remove= &evfs_file_remove;
         functions->evfs_monitor_start = &evfs_monitor_start;
         functions->evfs_monitor_stop = &evfs_monitor_stop;
         functions->evfs_file_stat = &evfs_file_stat;
-        functions->evfs_file_open = &evfs_file_open;
+
         functions->evfs_file_close = &evfs_file_close;
 
 
         functions->evfs_file_seek = &evfs_file_seek;
-        functions->evfs_file_read = &evfs_file_read;
+        
         functions->evfs_file_write = &evfs_file_write;
         functions->evfs_file_create = &evfs_file_create;*/
 
@@ -92,6 +95,20 @@ char* evfs_plugin_uri_get() {
 int
 evfs_client_disconnect(evfs_client* client) {
         printf ("Received disconnect for client at evfs_fs_bzip2.c for client %d\n", client->id);
+}
+
+
+int evfs_file_open(evfs_client* client, evfs_filereference* file) {
+	evfs_filereference* f_par = file->parent;
+
+	return evfs_uri_open(client, f_par);
+
+}
+
+int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size) {
+	evfs_filereference* f_par = file->parent;
+	
+	return evfs_uri_read(client,f_par,bytes,size);
 }
 
 

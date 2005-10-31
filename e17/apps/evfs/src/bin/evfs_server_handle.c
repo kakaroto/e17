@@ -5,20 +5,21 @@
 /*---------------------------------------------------*/
 /*Move these functions somewhere*/
 
-void evfs_uri_open(evfs_server* server, evfs_filereference* uri) {
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(server,uri->plugin_uri);
+int evfs_uri_open(evfs_client* client, evfs_filereference* uri) {
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server,uri->plugin_uri);
 	if (plugin) {
 		printf("Opening file..\n");
-		(*plugin->functions->evfs_file_open)(uri);		
+		return (*plugin->functions->evfs_file_open)(client, uri);		
 	} else {
 		printf("Could not get plugin for uri '%s' at evfs_uri_open\n", uri->plugin_uri);
+		return -1;
 	}
 }
 
-int evfs_uri_read(evfs_filereference* uri, char* bytes, long size) {
-	evfs_plugin* plugin = evfs_get_plugin_for_uri(uri->server,uri->plugin_uri);
+int evfs_uri_read(evfs_client* client, evfs_filereference* uri, char* bytes, long size) {
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server,uri->plugin_uri);
 	if (plugin) {
-		return (*plugin->functions->evfs_file_read)(uri,bytes,size);		
+		return (*plugin->functions->evfs_file_read)(client,uri,bytes,size);		
 	} else {
 		printf("Could not get plugin for uri '%s' at evfs_uri_open\n", uri->plugin_uri);
 		return -1;
@@ -152,7 +153,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 	
 	if (plugin && dst_plugin) {
 		(*dst_plugin->functions->evfs_file_create)(command->file_command.files[1]);
-		(*plugin->functions->evfs_file_open)(command->file_command.files[0]);
+		(*plugin->functions->evfs_file_open)(client, command->file_command.files[0]);
 
 		/*Get the source file size*/
 		(*plugin->functions->evfs_file_stat)(command, &file_stat);
@@ -166,7 +167,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			read_write_bytes = (file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
 			/*printf("Reading/writing %d bytes\n", read_write_bytes);*/
 			
-			(*plugin->functions->evfs_file_read)(command->file_command.files[0], bytes, read_write_bytes );
+			(*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
 
 			(*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, read_write_bytes );
 

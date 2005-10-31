@@ -50,10 +50,10 @@ Ecore_List* auth_cache;
 
 static void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
 int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat);
-int evfs_file_open(evfs_filereference* file);
+int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
-int evfs_file_read(evfs_filereference* file, char* bytes, long size);
+int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size);
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 
@@ -269,7 +269,7 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 }
 
 
-int evfs_file_open(evfs_filereference* file) {
+int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	char dir_path[1024];
 	snprintf(dir_path,1024,"smb:/%s", file->path);
 
@@ -311,7 +311,7 @@ int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
 	return 0;
 }
 
-int evfs_file_read(evfs_filereference* file, char* bytes, long size) {
+int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size) {
 	int bytes_read = 0;
 	/*printf("Reading %ld bytes from file %s\n", size, file->path);*/
 	

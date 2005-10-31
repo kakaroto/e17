@@ -47,7 +47,7 @@ int evfs_file_rename(char* src, char* dst);
 int evfs_client_disconnect(evfs_client* client);
 int evfs_monitor_start(evfs_client* client, evfs_command* command);
 int evfs_monitor_stop(evfs_client* client, evfs_command* command);
-int evfs_file_open(evfs_filereference* file);
+int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
 int evfs_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
@@ -140,8 +140,8 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 			ecore_hash_set(search_hash, strdup(tok), ele);
 
 
-			/*printf("***** Couldn't find child '%s' at node '%s' in hash %p\n", tok, buf, search_hash);
-			printf("Created a new child: '%s',with children at %p  appending to hash %p\n", tok, ele->children,search_hash);*/
+			//printf("***** Couldn't find child '%s' at node '%s' in hash %p\n", tok, buf, search_hash);
+			//printf("Created a new child: '%s',with children at %p  appending to hash %p\n", tok, ele->children,search_hash);
 
 			/*Our concated path*/
 			strcat(buf, "/");
@@ -234,9 +234,9 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 
 	p_ref = ref->parent;
 	printf("Parent ref is '%s'\n", p_ref->plugin_uri);
-	evfs_uri_open(client->server, p_ref);
+	evfs_uri_open(client, p_ref);
 
-	while (evfs_uri_read(p_ref, &block, 512) == 512) {
+	while (evfs_uri_read(client,p_ref, &block, 512) == 512) {
 		if ( (!memcmp(block.p.magic, TARPET_GNU_MAGIC, strlen(TARPET_GNU_MAGIC))) || (!memcmp(block.p.magic, TARPET_GNU_MAGIC_OLD, strlen(TARPET_GNU_MAGIC_OLD))) ) {
 			/*printf("Block matches GNU Tar\n");
 			printf("Magic is '%s'\n", block.p.magic);
@@ -245,6 +245,7 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 
 			tar_name_split(&block, tar);
 		} else {
+			//printf("No magic - '%s'\n", block.p.magic);
 		}
 	}
 	

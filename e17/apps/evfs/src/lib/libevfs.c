@@ -177,6 +177,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	ecore_list_append(plugin, "smb"); /*Shift these to register when a plugin registers*/
 	ecore_list_append(plugin, "posix");
 	ecore_list_append(plugin, "tar");
+	ecore_list_append(plugin, "bzip2");
 	
 	ecore_list_append(reserved, "://");
 	ecore_list_append(reserved, "@");
