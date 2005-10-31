@@ -237,8 +237,7 @@ epsilon_info_get (Epsilon * e)
 #ifdef HAVE_EPEG_H
   len = strlen (e->thumb);
   if ((len > 4) &&
-      (!strcmp (&e->thumb[len - 3], "jpg") ||
-       !strcmp (&e->thumb[len - 3], "JPG")) &&
+      !strcasecmp (&e->thumb[len - 3], "jpg") &&
       (im = epeg_file_open (e->thumb)))
     {
       epeg_thumbnail_comments_get (im, &info);
@@ -424,7 +423,7 @@ epsilon_generate (Epsilon * e)
 {
   int len = 0;
   int iw, ih;
-  int tw = THUMB_SIZE_LARGE, th = THUMB_SIZE_LARGE;
+  int tw, th;
   char outfile[PATH_MAX];
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
@@ -433,11 +432,14 @@ epsilon_generate (Epsilon * e)
 
   if (!e || !e->src || !e->hash)
     return (EPSILON_FAIL);
+   
+  tw = e->tw;
+  th = e->th;
+   
 #ifdef HAVE_EPEG_H
   len = strlen (e->src);
   if ((len > 4) &&
-      (!strcmp (&e->src[len - 3], "jpg") ||
-       !strcmp (&e->src[len - 3], "JPG")) && (im = epeg_file_open (e->src)))
+      !strcasecmp (&e->src[len - 3], "jpg") && (im = epeg_file_open (e->src)))
     {
       char *dir;
       if(e->tw == THUMB_SIZE_LARGE)
@@ -508,7 +510,7 @@ epsilon_generate (Epsilon * e)
 	if (e->h > 0)
 	  h = e->h;
 	else
-	  h = e->th;
+	  h = e->tw;
 
 	ee = ecore_evas_buffer_new (w, h);
 	if (ee)
