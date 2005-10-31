@@ -1236,18 +1236,20 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		for (i = 0; i < di->item.table.num_items; i++)
 		  {
 		     DItem              *dii;
-		     int                 w, h, j, csum = 0;
+		     int                 w, h, j, ww;
 
 		     dii = di->item.table.items[i];
 		     w = dii->w + (dii->padding.left + dii->padding.right);
 		     h = dii->h + (dii->padding.top + dii->padding.bottom);
+		     ww = 0;
 		     for (j = 0; j < dii->col_span; j++)
-			csum += col_size[c + j];
-		     if (w > csum)
+			ww += col_size[c + j];
+		     if (w > ww)
 		       {
+			  ww = (w + dii->col_span - 1) / dii->col_span;
 			  for (j = 0; j < dii->col_span; j++)
-			     col_size[c + j] =
-				(w + dii->col_span - 1) / dii->col_span;
+			     if (col_size[c + j] < ww)
+				col_size[c + j] = ww;
 		       }
 		     if (h > row_size[r])
 			row_size[r] = h;
