@@ -16,6 +16,7 @@ struct _Epsilon
   char *thumb;
   char *key;
   int w, h;
+  int tw, th;
 };
 typedef struct _Epsilon Epsilon;
 
@@ -29,6 +30,13 @@ struct _Epsilon_Info
 };
 typedef struct _Epsilon_Info Epsilon_Info;
 
+enum _Epsilon_Thumb_Size
+{
+   EPSILON_THUMB_NORMAL,
+   EPSILON_THUMB_LARGE
+};
+
+typedef enum _Epsilon_Thumb_Size Epsilon_Thumb_Size;
 
 void epsilon_init (void);
 
@@ -57,6 +65,10 @@ int epsilon_exists (Epsilon * e);
  * returns EPSILON_FAIL if no errors, EPSILON_OK if write goes ok
  */
 int epsilon_generate (Epsilon * e);
+/*
+ * set output thumb size
+ */
+void epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size);
 
 /*
  * get the meta information associated with the epsilon

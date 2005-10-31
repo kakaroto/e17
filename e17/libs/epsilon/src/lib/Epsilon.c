@@ -17,7 +17,8 @@
 #ifdef HAVE_EPEG_H
 #include <Epeg.h>
 #endif
-#define THUMBNAIL_SIZE 256
+#define THUMB_SIZE_NORMAL 128
+#define THUMB_SIZE_LARGE 256
 #include "exiftags/exif.h"
 
 #include <Evas.h>
@@ -55,6 +56,8 @@ epsilon_new (const char *file)
 	  result = malloc (sizeof (Epsilon));
 	  memset (result, 0, sizeof (Epsilon));
 	  result->src = strdup (file);
+	  result->tw = THUMB_SIZE_LARGE;
+	  result->th = THUMB_SIZE_LARGE;
 	}
       else
 	{
@@ -378,7 +381,10 @@ epsilon_exists (Epsilon * e)
 #ifdef HAVE_EPEG_H
       snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.jpg", home,
 		dirs[i], e->hash);
-      if (!stat (buf, &filestatus))
+      if (!stat (buf, &filestatus) && 
+	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
+	  (!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_NORMAL) ||
+	  (!strcmp(dirs[i], "fail/epsilon"))))
 	{
 	  ok = 1;
 	  break;
@@ -386,7 +392,10 @@ epsilon_exists (Epsilon * e)
 #endif
       snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.png", home,
 		dirs[i], e->hash);
-      if (!stat (buf, &filestatus))
+      if (!stat (buf, &filestatus) && 
+	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
+	  (!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_NORMAL) ||
+	  (!strcmp(dirs[i], "fail/epsilon"))))
 	{
 	  ok = 2;
 	  break;
@@ -415,7 +424,7 @@ epsilon_generate (Epsilon * e)
 {
   int len = 0;
   int iw, ih;
-  int tw = THUMBNAIL_SIZE, th = THUMBNAIL_SIZE;
+  int tw = THUMB_SIZE_LARGE, th = THUMB_SIZE_LARGE;
   char outfile[PATH_MAX];
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
@@ -430,17 +439,23 @@ epsilon_generate (Epsilon * e)
       (!strcmp (&e->src[len - 3], "jpg") ||
        !strcmp (&e->src[len - 3], "JPG")) && (im = epeg_file_open (e->src)))
     {
-      snprintf (outfile, sizeof(outfile), "%s/.thumbnails/large/%s.jpg",
-		getenv ("HOME"), e->hash);
+      char *dir;
+      if(e->tw == THUMB_SIZE_LARGE)
+	 dir = strdup("large");
+      else
+	 dir = strdup("normal");
+      snprintf (outfile, sizeof(outfile), "%s/.thumbnails/%s/%s.jpg",
+		getenv ("HOME"), dir, e->hash);
+      free(dir);
       epeg_thumbnail_comments_get (im, &info);
       epeg_size_get (im, &iw, &ih);
       if (iw > ih)
 	{
-	  th = THUMBNAIL_SIZE * ((double) ih / (double) iw);
+	  th = e->th * ((double) ih / (double) iw);
 	}
       else
 	{
-	  tw = THUMBNAIL_SIZE * ((double) iw / (double) ih);
+	  tw = e->tw * ((double) iw / (double) ih);
 	}
       epeg_decode_size_set (im, tw, th);
       epeg_quality_set (im, 100);
@@ -488,12 +503,12 @@ epsilon_generate (Epsilon * e)
 	if (e->w > 0)
 	  w = e->w;
 	else
-	  w = THUMBNAIL_SIZE;
+	  w = e->tw;
 
 	if (e->h > 0)
 	  h = e->h;
 	else
-	  h = THUMBNAIL_SIZE;
+	  h = e->th;
 
 	ee = ecore_evas_buffer_new (w, h);
 	if (ee)
@@ -541,22 +556,28 @@ epsilon_generate (Epsilon * e)
 	ih = imlib_image_get_height ();
 	if (iw > ih)
 	  {
-	    th = THUMBNAIL_SIZE * ((double) ih / (double) iw);
+	    th = e->th * ((double) ih / (double) iw);
 	  }
 	else
 	  {
-	    tw = THUMBNAIL_SIZE * ((double) iw / (double) ih);
+	    tw = e->tw * ((double) iw / (double) ih);
 	  }
 	imlib_context_set_cliprect (0, 0, tw, th);
 	if ((src = imlib_create_cropped_scaled_image (0, 0, iw, ih, tw, th)))
 	  {
+	    char *dir;
+	    if(e->tw == THUMB_SIZE_LARGE)
+	       dir = strdup("large");
+	    else
+	       dir = strdup("normal");
 	    imlib_free_image_and_decache ();
 	    imlib_context_set_image (src);
 	    imlib_image_set_has_alpha (1);
 	    imlib_image_set_format ("argb");
 	    snprintf (uri, sizeof(uri), "file://%s", e->src);
-	    snprintf (outfile, sizeof(outfile), "%s/.thumbnails/large/%s.png",
-		      getenv ("HOME"), e->hash);
+	    snprintf (outfile, sizeof(outfile), "%s/.thumbnails/%s/%s.png",
+		      getenv ("HOME"), dir, e->hash);
+	    free(dir);
 	    if (!_epsilon_png_write (outfile,
 				     imlib_image_get_data (), tw, th, iw, ih,
 				     format, mtime, uri))
@@ -573,6 +594,25 @@ epsilon_generate (Epsilon * e)
   }
   return (EPSILON_FAIL);
 }
+
+void
+epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
+{
+   if(!e) return;
+   
+   switch(size)
+     {
+      case EPSILON_THUMB_NORMAL:
+	e->tw = THUMB_SIZE_NORMAL;
+	e->th = THUMB_SIZE_NORMAL;
+	break;
+      case EPSILON_THUMB_LARGE:
+	e->tw = THUMB_SIZE_LARGE;
+	e->th = THUMB_SIZE_LARGE;
+	break;
+     }   
+}
+
 
 #ifdef HAVE_EPEG_H
 static int
