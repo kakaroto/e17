@@ -14,7 +14,8 @@
 
 enum _Etk_Scrolled_View_Property_Id
 {
-   ETK_SCROLLED_VIEW_POLICY_PROPERTY
+   ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
+   ETK_SCROLLED_VIEW_VPOLICY_PROPERTY
 };
 
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view);
@@ -44,7 +45,8 @@ Etk_Type *etk_scrolled_view_type_get()
    {
       scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), ETK_DESTRUCTOR(_etk_scrolled_view_destructor), NULL);
 
-      etk_type_property_add(scrolled_view_type, "policy", ETK_SCROLLED_VIEW_POLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+      etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
+      etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
       
       scrolled_view_type->property_set = _etk_scrolled_view_property_set;
       scrolled_view_type->property_get = _etk_scrolled_view_property_get;
@@ -111,6 +113,51 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
    etk_container_add(ETK_CONTAINER(viewport), child);
 }
 
+/**
+ * @brief Sets the policy of the hscrollbar and the vscrollbar of the scrolled view. @n
+ * A policy describes when a scrollbar should appear: ETK_POLICY_SHOW always shows the scrollbar, @n
+ * ETK_POLICY_HIDE always hides the scrollbar, and ETK_POLICY_AUTO determines automatically if the scrollbar should appear
+ * @param scrolled_view a scrolled view
+ * @param hpolicy the policy to set for the hscrollbar
+ * @param vpolicy the policy to set for the vscrollbar
+ */
+void etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy hpolicy, Etk_Scrolled_View_Policy vpolicy)
+{
+   if (!scrolled_view)
+      return;
+
+   if (scrolled_view->hpolicy != hpolicy)
+   {
+      scrolled_view->hpolicy = hpolicy;
+      etk_object_notify(ETK_OBJECT(scrolled_view), "hpolicy");
+      etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
+   }
+   if (scrolled_view->vpolicy != vpolicy)
+   {
+      scrolled_view->vpolicy = vpolicy;
+      etk_object_notify(ETK_OBJECT(scrolled_view), "vpolicy");
+      etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
+   }
+}
+
+/**
+ * @brief Fets the policy of the hscrollbar and the vscrollbar of the scrolled view
+ * @param scrolled_view a scrolled view
+ * @param hpolicy the location where to set the policy of the hscrollbar
+ * @param vpolicy the location where to set the policy of the vscrollbar
+ */
+void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy)
+{
+   if (!scrolled_view)
+      return;
+   
+   if (hpolicy)
+      *hpolicy = scrolled_view->hpolicy;
+   if (vpolicy)
+      *vpolicy = scrolled_view->vpolicy;
+}
+
+
 /**************************
  *
  * Etk specific functions
@@ -122,6 +169,9 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 {
    if (!scrolled_view)
       return;
+
+   scrolled_view->hpolicy = ETK_POLICY_AUTO;
+   scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_CONTAINER(scrolled_view));
@@ -159,8 +209,11 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
 
    switch (property_id)
    {
-      /* TODO */
-      case ETK_SCROLLED_VIEW_POLICY_PROPERTY:
+      case ETK_SCROLLED_VIEW_HPOLICY_PROPERTY:
+         etk_scrolled_view_policy_set(scrolled_view, etk_property_value_int_get(value), scrolled_view->vpolicy);
+         break;
+      case ETK_SCROLLED_VIEW_VPOLICY_PROPERTY:
+         etk_scrolled_view_policy_set(scrolled_view, scrolled_view->hpolicy, etk_property_value_int_get(value));
          break;
       default:
          break;
@@ -177,8 +230,11 @@ static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id,
 
    switch (property_id)
    {
-      /* TODO */
-      case ETK_SCROLLED_VIEW_POLICY_PROPERTY:
+      case ETK_SCROLLED_VIEW_HPOLICY_PROPERTY:
+         etk_property_value_int_set(value, scrolled_view->hpolicy);
+         break;
+      case ETK_SCROLLED_VIEW_VPOLICY_PROPERTY:
+         etk_property_value_int_set(value, scrolled_view->vpolicy);
          break;
       default:
          break;
@@ -230,16 +286,19 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       return;
    }
 
-   etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, FALSE);
-   etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, FALSE);
+   if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+      etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, FALSE);
+   if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
+      etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, FALSE);
    child->scroll_size_get(child, &scroll_size);
 
-   if (scroll_size.w > geometry.w)
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > geometry.w) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       show_hscrollbar = TRUE;
-   if (scroll_size.h > (geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0)))
+   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
+      scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = TRUE;
-      if (scroll_size.w > (geometry.w - vscrollbar_requisition.w))
+      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (geometry.w - vscrollbar_requisition.w))
          show_hscrollbar = TRUE;
    }
 
