@@ -1797,17 +1797,19 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_
    Etk_Widget *widget;
    Etk_Toplevel_Widget *toplevel;
 
-   if (!(widget = ETK_WIDGET(object)) || !widget->can_pass_focus || !event || !(toplevel = (widget->toplevel_parent)) || !event->key)
+   if (!(widget = ETK_WIDGET(object)) || !event || !(toplevel = (widget->toplevel_parent)) || !event->key)
       return;
 
    if (strcmp(event->key, "Tab") == 0)
    {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
+      if (widget->can_pass_focus)
+         etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
       etk_widget_event_propagation_stop();
    }
    else if (strcmp(event->key, "ISO_Left_Tab") == 0)
    {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
+      if (widget->can_pass_focus)
+         etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
       etk_widget_event_propagation_stop();
    }
 }
