@@ -526,8 +526,10 @@ ewl_theme_data_int_get(Ewl_Widget *w, char *k)
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	temp = ewl_theme_data_str_get(w, k);
-	if (temp)
+	if (temp) {
 		ret = atoi(temp);
+		FREE(temp);
+	}
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
