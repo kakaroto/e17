@@ -735,6 +735,8 @@ void
 ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int nodes, space = 0;
+	int width, height;
+	int cw, ch;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -748,21 +750,28 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	space = EWL_BOX(c)->spacing * nodes;
 
 	/*
+	 * Get the sizes common to both calculations.
+	 */
+	width = ewl_object_preferred_inner_w_get(EWL_OBJECT(c));
+	height = ewl_object_preferred_inner_h_get(EWL_OBJECT(c));
+
+	cw = ewl_object_preferred_w_get(EWL_OBJECT(w));
+	ch = ewl_object_preferred_h_get(EWL_OBJECT(w));
+
+	/*
 	 * Base the info used on the orientation of the box.
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		int width;
-		ewl_container_sum_prefer(c, EWL_ORIENTATION_HORIZONTAL);
-		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
-		width = ewl_object_preferred_inner_w_get(EWL_OBJECT(c));
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), width + space);
+		cw += space;
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), width + cw);
+		if (ch > height)
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(c), ch);
 	}
 	else {
-		int height;
-		ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
-		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
-		height = ewl_object_preferred_inner_h_get(EWL_OBJECT(c));
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height + space);
+		ch += space;
+		if (cw > width)
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(c), cw);
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height + ch);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
