@@ -63,6 +63,19 @@ Etk_Widget *etk_entry_new()
 }
 
 /**
+ * @brief Sets the text of an entry
+ * @param entry an entry
+ * @param text the text to set
+ */
+void etk_entry_text_set(Etk_Entry *entry, const char *text)
+{
+   if (!entry || !entry->editable_object)
+      return;
+   etk_editable_text_object_text_set(entry->editable_object, text);
+   etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+}
+
+/**
  * @brief Gets the text of an entry
  * @param entry an entry
  * @return Returns the text of the entry
@@ -71,7 +84,6 @@ const char *etk_entry_text_get(Etk_Entry *entry)
 {
    if (!entry || !entry->editable_object)
       return NULL;
-
    return etk_editable_text_object_text_get(entry->editable_object);
 }
 

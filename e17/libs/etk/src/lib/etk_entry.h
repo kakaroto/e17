@@ -34,6 +34,7 @@ struct _Etk_Entry
 Etk_Type *etk_entry_type_get();
 Etk_Widget *etk_entry_new();
 
+void etk_entry_text_set(Etk_Entry *entry, const char *text);
 const char *etk_entry_text_get(Etk_Entry *entry);
 
 /** @} */
