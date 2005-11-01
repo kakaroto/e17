@@ -48,7 +48,6 @@ static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t,
 static unsigned int ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor);
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
-static void ewl_text_trigger_cb_free(void *value, void *data);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
 						unsigned int len);
 static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
@@ -1974,6 +1973,8 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 static void
 ewl_text_triggers_remove(Ewl_Text *t)
 {
+	Ewl_Text_Trigger *trig;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
@@ -1981,7 +1982,9 @@ ewl_text_triggers_remove(Ewl_Text *t)
 	if (!t->triggers) 
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_for_each(t->triggers, ewl_text_trigger_cb_free, NULL);
+	while ((trig = ecore_list_remove_first(t->triggers))) {
+		ewl_text_trigger_free(trig);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2089,17 +2092,6 @@ ewl_text_trigger_free(Ewl_Text_Trigger *t)
 	t->text_parent = NULL;
 	t->areas = NULL;
 	FREE(t);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_text_trigger_cb_free(void *value, void *data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("value", value);
-
-	ewl_text_trigger_free(value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3805,7 +3797,7 @@ ewl_text_btree_context_get(Ewl_Text_BTree *tree, unsigned int idx)
 		}
 		count += child->length;
 	}
-	
+
 	DWARNING("Got to the end of function... is that possible?\n");
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
@@ -4574,16 +4566,20 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	}
 	else
 		snprintf(align, sizeof(align), "align=left");
+
+	ptr = ewl_theme_path_get();
 	/* create the formatting string */
 	snprintf(fmt, 2048, "+font=fonts/%s font_source=%s font_size=%d "
 			"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
 			"%s wrap=%s %s\n", ctx->font, 
-			ewl_theme_path_get(), ctx->size,
+			ptr, ctx->size,
 			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
 			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
 			ctx->color.r, ctx->color.g,
 			ctx->color.b, ctx->color.a, style, 
 			((ctx->wrap) ? "on" : "off"), align);
+
+	IF_FREE(ptr);
 
 	DRETURN_PTR(fmt, DLEVEL_STABLE);
 }
