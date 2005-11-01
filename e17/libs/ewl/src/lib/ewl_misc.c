@@ -217,7 +217,7 @@ ewl_shutdown(void)
 
 		while ((emb = ecore_list_remove_first(ewl_embed_list)))
 			ewl_widget_destroy(emb);
-		ewl_garbage_collect();
+		while (ewl_garbage_collect() > 0);
 		ecore_list_destroy(ewl_embed_list);
 		ewl_embed_list = NULL;
 	}
@@ -230,6 +230,7 @@ ewl_shutdown(void)
 	/*
 	 * Shut down the various EWL subsystems cleanly.
 	 */
+	ewl_embed_shutdown();
 	ewl_callbacks_shutdown();
 	ewl_theme_shutdown();
 	ewl_config_shutdown();
@@ -315,6 +316,15 @@ ewl_idle_render(void *data)
 	edje_freeze();
 
 	/*
+	 * Freeze events on the evases to reduce overhead
+	 */
+	ecore_list_goto_first(ewl_embed_list);
+	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
+		if (REALIZED(emb) && emb->evas)
+			evas_event_freeze(emb->evas);
+	}
+
+	/*
 	 * Clean out the unused widgets first, to avoid them being drawn or
 	 * unnecessary work done from configuration. Then display new widgets,
 	 * finally layout the widgets.
@@ -323,15 +333,6 @@ ewl_idle_render(void *data)
 			!ecore_list_is_empty(free_evas_list) ||
 			!ecore_list_is_empty(free_evas_object_list))
 		ewl_garbage_collect();
-
-	/*
-	 * Freeze events on the evases to reduce overhead
-	 */
-	ecore_list_goto_first(ewl_embed_list);
-	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (REALIZED(emb) && emb->evas)
-			evas_event_freeze(emb->evas);
-	}
 
 	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
@@ -906,7 +907,13 @@ ewl_evas_object_destroy(Evas_Object *obj)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+#define EWL_GC_LIMIT 300
+
+/**
+ * @return Returns TRUE if objects remain to be freed, otherwise false.
+ * @brief Free's all widgets that have been marked for destruction.
+ */
+int
 ewl_garbage_collect(void)
 {
 	Evas *evas;
@@ -921,7 +928,8 @@ ewl_garbage_collect(void)
 	if (print_gc_reap)
 		printf("---\n");
 
-	while ((w = ecore_list_remove_first(destroy_list))) {
+	while ((cleanup < EWL_GC_LIMIT) &&
+			(w = ecore_list_remove_first(destroy_list))) {
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
 			ewl_configure_cancel_request(w);
@@ -954,7 +962,7 @@ ewl_garbage_collect(void)
 	if (print_gc_reap)
 		printf("---\n");
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_nodes(destroy_list), DLEVEL_STABLE);
 }
 
 int ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,

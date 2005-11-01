@@ -116,6 +116,19 @@ ewl_embed_init(Ewl_Embed *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+void
+ewl_embed_shutdown(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (embedded_smart) {
+		evas_smart_free(embedded_smart);
+		embedded_smart = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /**
  * @param emb: the embedded container to change the target evas
  * @param evas: the new evas to draw the container and it's contents

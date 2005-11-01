@@ -70,7 +70,8 @@ struct Ewl_Embed
 };
 
 Ewl_Widget     *ewl_embed_new(void);
-int             ewl_embed_init(Ewl_Embed *win);
+int             ewl_embed_init(Ewl_Embed *emb);
+void            ewl_embed_shutdown(void);
 Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 				   Ewl_Embed_Evas_Window *evas_window);
 
