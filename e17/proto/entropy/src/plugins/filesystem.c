@@ -305,7 +305,6 @@ void callback(evfs_event* data) {
 			break;
         }
 
-	//TODO Free EVENT!
 }
 
 

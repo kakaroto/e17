@@ -234,7 +234,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	viewer->loaded_dirs = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	viewer->row_folder_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_TREE(viewer->tree)->scrollarea), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(EWL_TREE(viewer->tree)->scrollarea), EWL_FLAG_FILL_HFILL);
 	
 	instance->gui_object = viewer->tree;
 

@@ -204,7 +204,7 @@ entropy_core* entropy_core_init() {
 	/*Initialize the descent hash - this should be loaded from EVFS - FIXME*/
 	/*Descent hash init - move this to a call to EVFS*/
 	core->descent_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set(core->descent_hash, "application/x-tar", "tar");
+	ecore_hash_set(core->descent_hash, "application/x-tar", "bzip2:///#tar");
 
 
 
