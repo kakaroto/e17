@@ -68,7 +68,7 @@ Etk_Type *etk_hscale_type_get()
 Etk_Widget *etk_hscale_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
    return etk_widget_new(ETK_HSCALE_TYPE, "theme_group", "hscale", "focusable", TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, NULL);
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_press", TRUE, NULL);
 }
 
 /**

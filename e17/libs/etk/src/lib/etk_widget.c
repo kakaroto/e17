@@ -74,7 +74,9 @@ enum _Etk_Widget_Property_Id
    ETK_WIDGET_VISIBLE_PROPERTY,
    ETK_WIDGET_REPEAT_EVENTS_PROPERTY,
    ETK_WIDGET_PASS_EVENTS_PROPERTY,
-   ETK_WIDGET_FOCUSABLE_PROPERTY
+   ETK_WIDGET_FOCUSABLE_PROPERTY,
+   ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,
+   ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY
 };
 
 static void _etk_widget_constructor(Etk_Widget *widget);
@@ -84,7 +86,6 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
 
 static void _etk_widget_show_handler(Etk_Widget *widget);
 static void _etk_widget_hide_handler(Etk_Widget *widget);
-static void _etk_widget_key_down_handler(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
 static void _etk_widget_enter_handler(Etk_Widget *widget);
 static void _etk_widget_leave_handler(Etk_Widget *widget);
 static void _etk_widget_focus_handler(Etk_Widget *widget);
@@ -96,9 +97,11 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
 static void _etk_widget_signal_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 
 static void _etk_widget_toplevel_parent_set(Etk_Widget *widget, void *data);
@@ -155,8 +158,8 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL] =        etk_signal_new("mouse_up",       widget_type,   -1,                                       etk_marshaller_VOID__POINTER,          NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_CLICKED_SIGNAL] =   etk_signal_new("mouse_clicked",  widget_type,   -1,                                       etk_marshaller_VOID__POINTER,          NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL] =     etk_signal_new("mouse_wheel",    widget_type,   -1,                                       etk_marshaller_VOID__POINTER,          NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL] =        etk_signal_new("key_down",       widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, key_down),  etk_marshaller_VOID__POINTER,          NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL] =          etk_signal_new("key_up",         widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, key_up),    etk_marshaller_VOID__POINTER,          NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL] =        etk_signal_new("key_down",       widget_type,   -1,                                       etk_marshaller_VOID__POINTER,          NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL] =          etk_signal_new("key_up",         widget_type,   -1,                                       etk_marshaller_VOID__POINTER,          NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_ENTER_SIGNAL] =           etk_signal_new("enter",          widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, enter),     etk_marshaller_VOID__VOID,             NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL] =           etk_signal_new("leave",          widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, leave),     etk_marshaller_VOID__VOID,             NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =           etk_signal_new("focus",          widget_type,   ETK_MEMBER_OFFSET(Etk_Widget, focus),     etk_marshaller_VOID__VOID,             NULL, NULL);
@@ -172,6 +175,8 @@ Etk_Type *etk_widget_type_get()
       etk_type_property_add(widget_type, "repeat_events",   ETK_WIDGET_REPEAT_EVENTS_PROPERTY,  ETK_PROPERTY_BOOL,   ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
       etk_type_property_add(widget_type, "pass_events",     ETK_WIDGET_PASS_EVENTS_PROPERTY,    ETK_PROPERTY_BOOL,   ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
       etk_type_property_add(widget_type, "focusable",       ETK_WIDGET_FOCUSABLE_PROPERTY,      ETK_PROPERTY_BOOL,   ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
+      etk_type_property_add(widget_type, "focus_on_press",  ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY, ETK_PROPERTY_BOOL,   ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(FALSE));
+      etk_type_property_add(widget_type, "can_pass_focus",  ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY, ETK_PROPERTY_BOOL,   ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(TRUE));
 
       widget_type->property_set = _etk_widget_property_set;
       widget_type->property_get = _etk_widget_property_get;
@@ -1258,8 +1263,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->member_objects = NULL;
    widget->show = _etk_widget_show_handler;
    widget->hide = _etk_widget_hide_handler;
-   widget->key_down = _etk_widget_key_down_handler;
-   widget->key_up = NULL;
    widget->enter = _etk_widget_enter_handler;
    widget->leave = _etk_widget_leave_handler;
    widget->focus = _etk_widget_focus_handler;
@@ -1290,6 +1293,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->realized = FALSE;
    widget->visible = FALSE;
    widget->focusable = FALSE;
+   widget->focus_on_press = FALSE;
+   widget->can_pass_focus = TRUE;
    widget->repeat_events = FALSE;
    widget->pass_events = FALSE;
    widget->need_size_recalc = FALSE;
@@ -1302,6 +1307,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
 
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, FALSE, FALSE);
    etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, FALSE, FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, FALSE, FALSE);
+   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL, FALSE, FALSE);
+   
 }
 
 /* Destroys the widget */
@@ -1368,6 +1376,14 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_FOCUSABLE_PROPERTY:
          widget->focusable = etk_property_value_bool_get(value);
          etk_object_notify(object, "focusable");
+      case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
+         widget->focus_on_press = etk_property_value_bool_get(value);
+         etk_object_notify(object, "focus_on_press");
+         break;
+      case ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY:
+         widget->can_pass_focus = etk_property_value_bool_get(value);
+         etk_object_notify(object, "can_pass_focus");
+         break;
       default:
          break;
    }
@@ -1413,6 +1429,12 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_FOCUSABLE_PROPERTY:
          etk_property_value_bool_set(value, widget->focusable);
          break;
+      case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
+         etk_property_value_bool_set(value, widget->focus_on_press);
+         break;
+      case ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY:
+         etk_property_value_bool_set(value, widget->can_pass_focus);
+         break;
       default:
          break;
    }
@@ -1423,26 +1445,6 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
  * Callbacks and handlers
  *
  **************************/
-
-/* Default handler for the "key_down" signal */
-static void _etk_widget_key_down_handler(Etk_Widget *widget, Etk_Event_Key_Up_Down *event)
-{
-   Etk_Toplevel_Widget *toplevel;
-
-   if (!widget || !event || !(toplevel = (widget->toplevel_parent)) || !event->key)
-      return;
-
-   if (strcmp(event->key, "Tab") == 0)
-   {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
-      etk_widget_event_propagation_stop();
-   }
-   else if (strcmp(event->key, "ISO_Left_Tab") == 0)
-   {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
-      etk_widget_event_propagation_stop();
-   }
-}
 
 /* Default handler for the "enter" signal */
 static void _etk_widget_enter_handler(Etk_Widget *widget)
@@ -1674,6 +1676,16 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
 }
 
+/* Called when the widget is pressed */
+static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+   Etk_Widget *widget;
+ 
+   if (!(widget = ETK_WIDGET(object)) || !widget->focus_on_press)
+      return;
+   etk_widget_focus(widget);
+}
+
 /* Called when the mouse releases the widget */
 static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
@@ -1777,6 +1789,27 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+}
+
+/* Called when a key is pressed */
+static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
+{
+   Etk_Widget *widget;
+   Etk_Toplevel_Widget *toplevel;
+
+   if (!(widget = ETK_WIDGET(object)) || !widget->can_pass_focus || !event || !(toplevel = (widget->toplevel_parent)) || !event->key)
+      return;
+
+   if (strcmp(event->key, "Tab") == 0)
+   {
+      etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
+      etk_widget_event_propagation_stop();
+   }
+   else if (strcmp(event->key, "ISO_Left_Tab") == 0)
+   {
+      etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Called when the user releases a key and if the widget is focused */

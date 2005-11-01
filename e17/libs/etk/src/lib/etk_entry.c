@@ -22,7 +22,6 @@ static void _etk_entry_constructor(Etk_Entry *entry);
 static void _etk_entry_realize_cb(Etk_Object *object, void *data);
 static void _etk_entry_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
@@ -60,7 +59,7 @@ Etk_Type *etk_entry_type_get()
  */
 Etk_Widget *etk_entry_new()
 {
-   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", TRUE, NULL);
+   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", TRUE, "focus_on_press", TRUE, NULL);
 }
 
 /**
@@ -93,7 +92,6 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    etk_signal_connect_after("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
-   etk_signal_connect("mouse_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_down_cb), NULL);
    etk_signal_connect("mouse_in", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_in_cb), NULL);
    etk_signal_connect("mouse_out", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_out_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_focus_cb), NULL);
@@ -160,17 +158,6 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data)
 
    if (text_changed)
       etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], object, NULL);
-}
-
-/* Called when the user presses the entry with the mouse */
-/* TODO: move the cursor under the mouse pointer */
-static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
-{
-   Etk_Entry *entry;
-
-   if (!(entry = ETK_ENTRY(object)))
-      return;
-   etk_widget_focus(ETK_WIDGET(entry));
 }
 
 /* Called when the mouse enters the entry */

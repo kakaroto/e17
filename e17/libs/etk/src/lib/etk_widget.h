@@ -170,8 +170,6 @@ struct _Etk_Widget
 
    void (*show)(Etk_Widget *widget);
    void (*hide)(Etk_Widget *widget);
-   void (*key_down)(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
-   void (*key_up)(Etk_Widget *widget, Etk_Event_Key_Up_Down *event);
    void (*enter)(Etk_Widget *widget);
    void (*leave)(Etk_Widget *widget);
    void (*focus)(Etk_Widget *widget);
@@ -182,6 +180,8 @@ struct _Etk_Widget
    unsigned char repeat_events : 1;
    unsigned char pass_events : 1;
    unsigned char focusable : 1;
+   unsigned char focus_on_press : 1;
+   unsigned char can_pass_focus : 1;
    unsigned char need_size_recalc : 1;
    unsigned char need_redraw : 1;
    unsigned char need_theme_min_size_recalc : 1;
