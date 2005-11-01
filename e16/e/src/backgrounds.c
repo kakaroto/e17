@@ -1778,7 +1778,7 @@ BG_RedrawView(void)
    pmap = ECreatePixmap(win, w, h, VRoot.depth);
    gc = ECreateGC(pmap, 0, NULL);
 
-   ic_button = ImageclassFind("DLG_BUTTON", 0);
+   ic_button = ImageclassFind("DIALOG_BUTTON", 0);
 
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
