@@ -23,6 +23,10 @@ EWL TODO
 
 - all the themes need to be gone over, cleaned up and corrected.
 
+- The placement of the tooltips needs to be smarter. Currently it just
+  places off of the right bottom, but that should be adjusted depending on
+  where we are relative to the window border
+
 - [BUG] Scrollbar jumps when trying to drag the button from its lower part
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
         only at the moment.
