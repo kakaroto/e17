@@ -38,7 +38,7 @@ data {
     item, "/entry/color/a" "255";
     item, "/entry/font" "Vera";
     item, "/entry/font_size" "10";
-    item, "/cursor/group" "vline";
+    item, "/cursor/group" "cursor";
 
     item, "/hseparator/group" "hline";
     item, "/vseparator/group" "vline";

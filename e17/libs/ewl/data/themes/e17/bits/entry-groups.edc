@@ -79,3 +79,38 @@ group {
       }
    }
 }
+
+group {
+	name, "cursor";
+	min, 6 6;
+	max, 6 10000;
+
+	data {
+		item, "pad/left" "2";
+		item, "pad/right" "2";
+		item, "pad/top" "2";
+		item, "pad/bottom" "2";
+	}
+
+	parts {
+		part {
+			name, "separator";
+			mouse_events, 0;
+			type, RECT;
+			description {
+				state, "default" 0.0;
+				min, 2 20;
+				rel1 {
+					relative, 0.0 0.0;
+					offset, 2 2;
+				}
+				rel2 {
+					relative, 1.0 1.0;
+					offset, -3 -3;
+				}
+				color, 0 0 0 255;
+			}
+		}
+	}
+}
+

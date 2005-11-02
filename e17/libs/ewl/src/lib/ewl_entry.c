@@ -136,17 +136,21 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 	if (e->editable)
 	{
 		ewl_callback_append(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
-					ewl_entry_cb_key_down, NULL);
+						ewl_entry_cb_key_down, NULL);
+
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
 			ewl_widget_show(e->cursor);
+
 		ewl_widget_state_set(EWL_WIDGET(e), "editable");
 	}
 	else
 	{
 		ewl_callback_del(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
-					ewl_entry_cb_key_down);
+						ewl_entry_cb_key_down);
+
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
 			ewl_widget_hide(e->cursor);
+
 		ewl_widget_state_set(EWL_WIDGET(e), "noteditable");
 	}
 
@@ -226,8 +230,6 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	if (!cw) cw = CURRENT_W(e->cursor);
 	if (!ch) ch = CURRENT_H(e->cursor);
 
-	/* XXX this needs to move over a little so it dosen't sit right on
-	 * top of the char */
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, cw, ch);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

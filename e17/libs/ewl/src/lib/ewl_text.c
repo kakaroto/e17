@@ -110,7 +110,11 @@ ewl_text_init(Ewl_Text *t)
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	t->current_context = NULL;
+
+	/* create the default context and stick it into the tree */
+	t->current_context = ewl_text_context_default_create(t);
+	t->formatting->tx = t->current_context;
+	t->formatting->tx->ref_count ++;
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE, 
 					ewl_text_cb_configure, NULL);
@@ -183,7 +187,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 	{
 		if (x) *x = 0;
 		if (y) *y = 0;
-		if (w) *w = 0;
+		if (w) *w = 1;
 		if (h)
 		{
 			if (t->current_context)
