@@ -3825,19 +3825,19 @@ ewl_text_btree_text_context_insert(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 	{
 		Ewl_Text_BTree *old, *new;
 
-		/* create a node for the text */
-		new = ewl_text_btree_new();
-		new->tx = tx;
-		new->tx->ref_count ++;
-		new->length = len;
-		new->parent = tree;
-
 		/* see if the contexts are the same */
 		if (ewl_text_context_compare(tree->tx, tx))
 		{
 			tree->length += len;
 			DRETURN(DLEVEL_STABLE);
 		}
+
+		/* create a node for the text */
+		new = ewl_text_btree_new();
+		new->tx = tx;
+		new->tx->ref_count ++;
+		new->length = len;
+		new->parent = tree;
 
 		/* this is the old node */
 		old = ewl_text_btree_new();
