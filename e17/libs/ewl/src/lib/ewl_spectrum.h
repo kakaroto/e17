@@ -1,16 +1,11 @@
-#ifndef _EWL_SPECTRUM_H
-#define _EWL_SPECTRUM_H
+#ifndef EWL_SPECTRUM_H
+#define EWL_SPECTRUM_H
 
 /**
  * @file ewl_spectrum.h
- * @defgroup Ewl_Spectrum Spectrum The spectrum widget
+ * @defgroup Ewl_Spectrum Spectrum The colour spectrum widget
  *
  * @{
- */
-
-/**
- * @themekey /spectrum/file
- * @themekey /spectrum/group
  */
 
 /**
@@ -25,65 +20,60 @@
 typedef struct Ewl_Spectrum Ewl_Spectrum;
 
 /**
- * Inherits from Ewl_Image and extends to privide a colour spectrum 
+ * Inherits from Ewl_Overlay and extends to privide a colour spectrum 
  */
 struct Ewl_Spectrum 
 {
-	Ewl_Image       	widget;
-
-	Ewl_Orientation 	orientation;
-	Ewl_Color_Pick_Mode 	mode;
-	unsigned int		dimensions;
-	int             	redraw:1;
-	int			drag:1;
-
-	Ewl_Color_Set		rgba;
-	struct
+	Ewl_Overlay overlay;
+	Ewl_Widget *canvas;
+	
+	struct 
 	{
-		float		h, s, v;
+		Ewl_Widget *vertical;
+		Ewl_Widget *horizontal;
+	} cross_hairs;
+
+	Ewl_Color_Set rgb;
+	struct {
+		double h;
+		double s;
+		double v;
 	} hsv;
 
-	Ewl_Color_Set		selected_rgba;
+	Ewl_Color_Mode mode;
+	Ewl_Spectrum_Type type;
 };
 
-Ewl_Widget     *ewl_spectrum_new(void);
-int             ewl_spectrum_init(Ewl_Spectrum *sp);
+Ewl_Widget	*ewl_spectrum_new(void);
+int		 ewl_spectrum_init(Ewl_Spectrum *sp);
 
-void		ewl_spectrum_orientation_set(Ewl_Spectrum *sp, Ewl_Orientation o);
-Ewl_Orientation ewl_spectrum_orientation_get(Ewl_Spectrum *sp);
+void		  ewl_spectrum_type_set(Ewl_Spectrum *sp, Ewl_Spectrum_Type type);
+Ewl_Spectrum_Type ewl_spectrum_type_get(Ewl_Spectrum *sp);
 
-void            ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Pick_Mode mode);
-Ewl_Color_Pick_Mode ewl_spectrum_mode_get(Ewl_Spectrum *sp);
+void		 ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode);
+Ewl_Color_Mode	 ewl_spectrum_mode_get(Ewl_Spectrum *sp);
 
-void            ewl_spectrum_dimensions_set(Ewl_Spectrum *sp, unsigned int dimensions);
-unsigned int	ewl_spectrum_dimensions_get(Ewl_Spectrum *sp);
+void		 ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r, 
+					unsigned int g, unsigned int b);
+void		 ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r,
+					unsigned int *g, unsigned int *b);
 
-void            ewl_spectrum_rgba_set(Ewl_Spectrum *sp, int r, int g, int b, int a);
-void            ewl_spectrum_rgba_get(Ewl_Spectrum *sp, int *r, int *g, int *b, int *a);
-
-void            ewl_spectrum_hsv_set(Ewl_Spectrum *sp, float h, float s, float v);
-void            ewl_spectrum_hsv_get(Ewl_Spectrum *sp, float *h, float *s, float *v);
-
-void		ewl_spectrum_selected_rgba_get(Ewl_Spectrum *sp, 
-						int *r, int *g, int *b, int *a);
-
-void            ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
-					     int *r, int *g, int *b, int *a);
-
-void  		ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
-					     int *r, int *g, int *b);
-void  		ewl_spectrum_rgb_to_hsv(int r, int g, int b,
-					     float *h, float *s, float *v);
-
+void		 ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h,
+						double s, double v);
+void		 ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h,
+						double *s, double *v);
+ 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spectrum_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_spectrum_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_spectrum_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_spectrum_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev, void *data);
+void ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+void ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
+void ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}
  */
+
 #endif
+

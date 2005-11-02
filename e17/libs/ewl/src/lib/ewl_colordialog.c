@@ -3,28 +3,34 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response);
+
 /**
- * @return Returns NULL on failure, otherwise a newly allocated color dialog.
- * @brief Allocate and initialize a new color dialog widget.
+ *  @return Returns a new Ewl_Colordialog widget
+ *  
+ *  This will display a colorpicker inside a window with an Ok and Cancel
+ *  button. When the user hits one of the buttons
  */
 Ewl_Widget *
-ewl_colordialog_new(int r, int g, int b)
+ewl_colordialog_new(void)
 {
-	Ewl_ColorDialog *cd;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	cd = NEW(Ewl_ColorDialog, 1);
-	if (!cd) {
+	w = NEW(Ewl_Colordialog, 1);
+	if (!w)
+	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	if (!ewl_colordialog_init(cd, r, g, b)) {
-		ewl_widget_destroy(EWL_WIDGET(cd));
-		cd = NULL;
+	if (!ewl_colordialog_init(EWL_COLORDIALOG(w)))
+	{
+		ewl_widget_destroy(w);
+		w = NULL;
 	}
 
-	DRETURN_PTR(EWL_WIDGET(cd), DLEVEL_STABLE);
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
@@ -33,432 +39,268 @@ ewl_colordialog_new(int r, int g, int b)
  * @brief Initialize a color dialog to starting values.
  */
 int
-ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b)
+ewl_colordialog_init(Ewl_Colordialog *cd)
 {
-	Ewl_Widget *vbox;
-	Ewl_Widget *hbox;
-	Ewl_Widget *button;
-	Ewl_Widget *label;
-	Ewl_Color_Set col;
+	Ewl_Widget *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
 
-	if (!ewl_box_init(EWL_BOX(cd))) {
+	if (!ewl_dialog_init(EWL_DIALOG(cd))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-
-	ewl_box_orientation_set(EWL_BOX(cd), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_appearance_set(EWL_WIDGET(cd), "colordialog");
 	ewl_widget_inherit(EWL_WIDGET(cd), "colordialog");
 
-	ewl_box_spacing_set(EWL_BOX(cd), 5);
-	ewl_object_minimum_size_set(EWL_OBJECT(cd), 400, 200);
-	ewl_object_padding_set(EWL_OBJECT(cd), 5, 5, 5, 5);
+	ewl_dialog_action_position_set(EWL_DIALOG(cd), EWL_POSITION_BOTTOM);
+	ewl_window_title_set(EWL_WINDOW(cd), "Ewl Colordialog");
+	ewl_window_name_set(EWL_WINDOW(cd), "Ewl Colordialog");
+	ewl_window_class_set(EWL_WINDOW(cd), "Ewl Colordialog");
 
-	/*
-	 * Setup the picker.
-	 */
+	ewl_callback_append(EWL_WIDGET(cd), EWL_CALLBACK_DELETE_WINDOW, 
+				ewl_colordialog_cb_delete_window, NULL);
+
+	ewl_dialog_active_area_set(EWL_DIALOG(cd), EWL_POSITION_TOP);
+
+	/* create the color picker */
 	cd->picker = ewl_colorpicker_new();
-	ewl_callback_append(cd->picker, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_color_valuechanged_cb, cd);
-	ewl_object_fill_policy_set(EWL_OBJECT(cd->picker), EWL_FLAG_FILL_ALL);
+	ewl_widget_internal_set(cd->picker, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(cd), cd->picker);
+	ewl_object_fill_policy_set(EWL_OBJECT(cd->picker), 
+					EWL_FLAG_FILL_FILL);
 	ewl_widget_show(cd->picker);
 
-	/*
-	 * A preview to see the selected color, RGB values
-	 * HSV values, ok and cancel buttons
-	 */
+	ewl_dialog_active_area_set(EWL_DIALOG(cd), EWL_POSITION_BOTTOM);
 
-	vbox = ewl_vbox_new();
-	ewl_box_spacing_set(EWL_BOX(vbox), 10);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-	ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_minimum_size_set(EWL_OBJECT(vbox), 60, 100);
-	ewl_container_child_append(EWL_CONTAINER(cd), vbox);
+	/* create the buttons */
+	o = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(cd), o);
+	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_OK);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_colordialog_cb_button_click, cd);
+	ewl_widget_show(o);
 
-	cd->preview = NEW(Ewl_Widget, 1);
-	if (!ewl_widget_init(cd->preview))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	ewl_widget_appearance_set(cd->preview, "coloured_rect");
-	ewl_object_fill_policy_set(EWL_OBJECT(cd->preview), EWL_FLAG_FILL_ALL);
-	ewl_object_alignment_set(EWL_OBJECT(cd->preview),
-				 EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(vbox), cd->preview);
-	ewl_widget_color_set(cd->preview, r, g, b, 255);
-	ewl_widget_show(cd->preview);
-
-	hbox = ewl_hbox_new();
-	ewl_box_spacing_set(EWL_BOX(hbox), 5);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "R :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->red_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->red_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->red_entry);
-	ewl_callback_append(cd->red_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_redvalue_changed, cd);
-	ewl_widget_show(cd->red_entry);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "G :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->green_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->green_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->green_entry);
-	ewl_callback_append(cd->green_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_greenvalue_changed, cd);
-	ewl_widget_show(cd->green_entry);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "B :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->blue_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->blue_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->blue_entry);
-	ewl_callback_append(cd->blue_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_bluevalue_changed, cd);
-	ewl_widget_show(cd->blue_entry);
-
-	hbox = ewl_hbox_new();
-	ewl_box_spacing_set(EWL_BOX(hbox), 5);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "H :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->hue_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->hue_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->hue_entry);
-	ewl_callback_append(cd->hue_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_huevalue_changed, cd);
-	ewl_widget_show(cd->hue_entry);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "S :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->saturation_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->saturation_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->saturation_entry);
-	ewl_callback_append(cd->saturation_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_saturationvalue_changed, cd);
-	ewl_widget_show(cd->saturation_entry);
-
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "V :");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	cd->value_entry = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(cd->value_entry), NULL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cd->value_entry);
-	ewl_callback_append(cd->value_entry, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colordialog_valuevalue_changed, cd);
-	ewl_widget_show(cd->value_entry);
-
-	button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_OK);
-	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
-	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-			    ewl_colordialog_button_cb, cd);
-	ewl_container_child_append(EWL_CONTAINER(vbox), button);
-	ewl_widget_show(button);
-
-	button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_CANCEL);
-	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
-	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-			    ewl_colordialog_button_cb, cd);
-	ewl_container_child_append(EWL_CONTAINER(vbox), button);
-	ewl_widget_show(button);
-
-	ewl_widget_show(vbox);
-
-	col.r = r; 
-	col.g = g; 
-	col.b = b;
-	ewl_colordialog_color_valuechanged_cb(EWL_WIDGET(cd), &col, cd);
+	o = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(cd), o);
+	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_CANCEL);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_colordialog_cb_button_click, cd);
+	ewl_widget_show(o);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 void
-ewl_colordialog_color_get(Ewl_ColorDialog *cd, int *r, int *g, int *b)
+ewl_colordialog_has_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
 	DCHECK_TYPE("cd", cd, "colordialog");
 
-	if (r) *r = cd->selected.r;
-	if (g) *g = cd->selected.g;
-	if (b) *b = cd->selected.b;
+	ewl_colorpicker_has_alpha_set(EWL_COLORPICKER(cd->picker), alpha);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_colordialog_has_alpha_get(Ewl_Colordialog *cd)
+{
+	unsigned int alpha;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cd", cd, FALSE);
+	DCHECK_TYPE_RET("cd", cd, "colordialog", FALSE);
+
+	alpha = ewl_colorpicker_has_alpha_get(EWL_COLORPICKER(cd->picker));
+	DRETURN_INT(alpha, DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+		 
+	ewl_colorpicker_alpha_set(EWL_COLORPICKER(cd->picker), alpha);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_colordialog_alpha_get(Ewl_Colordialog *cd)
+{
+	unsigned int alpha;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cd", cd, 255);
+	DCHECK_TYPE_RET("cd", cd, "colordialog", 255);
+
+	alpha = ewl_colorpicker_alpha_get(EWL_COLORPICKER(cd->picker));
+
+	DRETURN_INT(alpha, DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
+				unsigned int g, unsigned int b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+	 
+	ewl_colorpicker_current_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
+	 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
+				unsigned int *g, unsigned int *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+
+	ewl_colorpicker_current_rgb_get(EWL_COLORPICKER(cd->picker), r, g, b);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
+				unsigned int g, unsigned int b)
 {
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+
+	ewl_colorpicker_previous_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
+	 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
+				unsigned int *g, unsigned int *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+
+	ewl_colorpicker_previous_rgb_get(EWL_COLORPICKER(cd->picker), r, g, b);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_color_mode_set(Ewl_Colordialog *cd, Ewl_Color_Mode type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
+
+	ewl_colorpicker_color_mode_set(EWL_COLORPICKER(cd->picker), type);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_Color_Mode
+ewl_colordialog_color_mode_get(Ewl_Colordialog *cd)
+{
+	Ewl_Color_Mode mode;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cd", cd, EWL_COLOR_MODE_HSV_HUE);
+	DCHECK_TYPE_RET("cd", cd, "colordialog", EWL_COLOR_MODE_HSV_HUE);
+
+	mode = ewl_colorpicker_color_mode_get(EWL_COLORPICKER(cd->picker));
+
+	DRETURN_INT(mode, DLEVEL_STABLE);
+}
+
+Ewl_Colordialog_Event *
+ewl_colordialog_event_new(void)
+{
+	Ewl_Colordialog_Event *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ev = NEW(Ewl_Colordialog_Event, 1);
+
+	DRETURN_PTR(ev, DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_event_free(Ewl_Colordialog_Event *ev)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ev", ev);
+
+	FREE(ev);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_event_response_set(Ewl_Colordialog_Event *ev, 
+						unsigned int resp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ev", ev);
+
+	ev->response = resp;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_colordialog_event_response_get(Ewl_Colordialog_Event *ev)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ev", ev, 0);
+
+	DRETURN_INT(ev->response, DLEVEL_STABLE);
+}
+
+void
+ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	unsigned int type;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_TYPE("w", w, "widget");
 
-	cd = user_data;
-	if (ev_data)
-		col.r = strtol(ev_data, NULL, 10);
-	else
-		col.r = 0;
-	col.g = cd->selected.g;
-	col.b = cd->selected.b;
-
-	if(col.r > 255) col.r = 255;
-	if(col.r < 0) col.r = 0;
-
-	// Change the base color
-	ewl_spectrum_rgb_to_hsv(col.r, col.g, col.b, &h, &s, &v);
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
-
+	type = ewl_button_stock_type_get(EWL_BUTTON(w));
+	ewl_colordialog_respond(EWL_COLORDIALOG(data), type);
+	 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
 
-	cd = user_data;
-	col.r = cd->selected.r;
-	if (ev_data)
-		col.g = strtol(ev_data, NULL, 10);
-	else
-		col.g = 0;
-	col.b = cd->selected.b;
-
-	if(col.g > 255) col.g = 255;
-	if(col.g < 0) col.g = 0;
-
-	// Change the base color
-	ewl_spectrum_rgb_to_hsv(col.r, col.g, col.b, &h, &s, &v);
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
+	ewl_colordialog_respond(EWL_COLORDIALOG(w), EWL_STOCK_CANCEL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 {
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
+	Ewl_Colordialog_Event *cd_ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_PARAM_PTR("cd", cd);
+	DCHECK_TYPE("cd", cd, "colordialog");
 
-	cd = user_data;
-	col.r = cd->selected.r;
-	col.g = cd->selected.g;
-	if (ev_data)
-		col.b = strtol(ev_data, NULL, 10);
-	else
-		col.b = 0;
+	cd_ev = ewl_colordialog_event_new();
+	ewl_colordialog_event_response_set(cd_ev, response);
 
-	if(col.b > 255) col.b = 255;
-	if(col.b < 0) col.b = 0;
+	ewl_callback_call_with_event_data(EWL_WIDGET(cd), 
+					EWL_CALLBACK_VALUE_CHANGED, cd_ev);
 
-	// Change the base color
-	ewl_spectrum_rgb_to_hsv(col.r, col.g, col.b, &h, &s, &v);
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
-
-	cd  = user_data;
-	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
-				&h, &s, &v);
-	if (ev_data)
-		h = strtod(ev_data, NULL);
-	else
-		h = 0;
-	if(h > 360) h = 360;
-	if(h < 0) h = 0;
-	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
-
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
-
-	cd  = user_data;
-	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
-				&h, &s, &v);
-	if (ev_data)
-		s = strtod(ev_data, NULL);
-	else
-		s = 0;
-	if(s > 1) s = 1;
-	if(s < 0) s = 0;
-	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
-
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set col;
-	float h, s, v;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
-
-	cd = user_data;
-	ewl_spectrum_rgb_to_hsv(cd->selected.r, cd->selected.g, cd->selected.b,
-				&h, &s, &v);
-	if (ev_data)
-		v = strtod(ev_data, NULL);
-	else
-		v = 0;
-	if(v > 1) v = 1;
-	if(v < 0) v = 0;
-	ewl_spectrum_hsv_to_rgb(h, s, v, &col.r, &col.g, &col.b);
-
-	ewl_colorpicker_hue_set(EWL_COLORPICKER(cd->picker), h);
-	ewl_colordialog_color_valuechanged_cb(w, &col, cd);
-	
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w __UNUSED__, 
-					void *ev_data, void *user_data)
-{
-	Ewl_ColorDialog *cd;
-	Ewl_Color_Set *col;
-	float h, s, v;
-	char redtext[8], greentext[8], bluetext[8];
-	char huetext[8], saturationtext[8], valuetext[8];
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-
-	cd = user_data;
-	col = ev_data;
-
-	cd->selected.r = col->r;
-	cd->selected.g = col->g;
-	cd->selected.b = col->b;
-	ewl_spectrum_rgb_to_hsv(col->r, col->g, col->b, &h, &s, &v);
-
-	// Update the entry values
-	snprintf(redtext, 8, "%i", cd->selected.r);
-	snprintf(greentext, 8, "%i", cd->selected.g);
-	snprintf(bluetext, 8, "%i", cd->selected.b);
-	snprintf(huetext, 8, "%.0f", h);
-	snprintf(saturationtext, 8, "%.2f", s);
-	snprintf(valuetext, 8, "%.2f", v);
-
-	ewl_text_text_set(EWL_TEXT(cd->red_entry), redtext);
-	ewl_text_text_set(EWL_TEXT(cd->green_entry), greentext);
-	ewl_text_text_set(EWL_TEXT(cd->blue_entry), bluetext);
-	ewl_text_text_set(EWL_TEXT(cd->hue_entry), huetext);
-	ewl_text_text_set(EWL_TEXT(cd->saturation_entry), saturationtext);
-	ewl_text_text_set(EWL_TEXT(cd->value_entry), valuetext);
-
-	// Update the preview
-	ewl_widget_color_set(cd->preview, col->r, col->g, col->b, 255);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
-						void *user_data)
-{
-	Ewl_ColorDialog *cd;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, "widget");
-
-	cd = user_data;
-	ewl_callback_call_with_event_data(EWL_WIDGET(cd),
-					  EWL_CALLBACK_VALUE_CHANGED,
-					  &EWL_BUTTON(w)->stock_type);
+	ewl_colordialog_event_free(cd_ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

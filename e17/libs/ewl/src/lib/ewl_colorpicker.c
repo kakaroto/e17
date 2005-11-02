@@ -3,38 +3,46 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
+				unsigned int g, unsigned int b, double h, 
+				double s, double v);
+
 /**
- * @return Returns NULL on failure, otherwise a newly allocated color picker.
- * @brief Allocate and initialize a new color picker widget.
+ * @return Returns a new Ewl_Colorpicker widget or NULL on failure
  */
 Ewl_Widget *
 ewl_colorpicker_new(void)
 {
-	Ewl_ColorPicker *cp;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	cp = NEW(Ewl_ColorPicker, 1);
-	if (!cp)
+	w = NEW(Ewl_Colorpicker, 1);
+	if (!w)
+	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	if (!ewl_colorpicker_init(cp)) 
-        {
-		ewl_widget_destroy(EWL_WIDGET(cp));
-		cp = NULL;
 	}
 
-	DRETURN_PTR(cp, DLEVEL_STABLE);
+	if (!ewl_colorpicker_init(EWL_COLORPICKER(w)))
+	{
+		ewl_widget_destroy(w);
+		w = NULL;
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
- * @param cp: the color picker to initialize
- * @return Returns TRUE on success, FALSE on failure.
- * @brief Initialize a color picker to starting values.
+ * @param cp: The Ewl_Colorpicker to initialize
+ * @return Returns TRUE on success or FALSE on failure
  */
 int
-ewl_colorpicker_init(Ewl_ColorPicker *cp)
+ewl_colorpicker_init(Ewl_Colorpicker *cp)
 {
+	Ewl_Widget *vbox, *hbox, *o, *prev;
+	unsigned int r, g, b;
+	double h, s, v;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
 
@@ -45,105 +53,688 @@ ewl_colorpicker_init(Ewl_ColorPicker *cp)
 	ewl_widget_appearance_set(EWL_WIDGET(cp), "colorpicker");
 	ewl_widget_inherit(EWL_WIDGET(cp), "colorpicker");
 
-	ewl_box_spacing_set(EWL_BOX(cp), 5);
+	r = g = b = 0;
 
-	/*
-	 * Setup the range spectrum region for the base color.
-	 */
-	cp->range = ewl_spectrum_new();
-	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->range),
-			      EWL_COLOR_PICK_MODE_HSV_HUE);
-	ewl_spectrum_dimensions_set(EWL_SPECTRUM(cp->range), 1);
-	ewl_callback_append(cp->range, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colorpicker_range_change_cb, cp);
-        ewl_object_minimum_size_set(EWL_OBJECT(cp->range), 20, 100);
-        ewl_object_maximum_size_set(EWL_OBJECT(cp->range), 20, EWL_OBJECT_MAX_SIZE);
-	ewl_object_fill_policy_set(EWL_OBJECT(cp->range), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(cp), cp->range);
-	ewl_widget_show(cp->range);
+	vbox = ewl_vbox_new();
+	ewl_widget_internal_set(vbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(cp), vbox);
+	ewl_widget_show(vbox);
 
-	/*
-	 * Setup the larger spectrum region for selecting shades of the base
-	 * color.
-	 */
-	cp->spectrum = ewl_spectrum_new();
-	ewl_callback_append(cp->spectrum, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_colorpicker_spectrum_change_cb, cp);
-	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->spectrum), EWL_COLOR_PICK_MODE_RGB);
-        ewl_object_minimum_size_set(EWL_OBJECT(cp->spectrum), 100, 100);
-	ewl_object_fill_policy_set(EWL_OBJECT(cp->spectrum), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(cp), cp->spectrum);
-	ewl_widget_show(cp->spectrum);
+	/* hbox to hold the spectrums */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_spectrum_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spectrum_type_set(EWL_SPECTRUM(o), EWL_SPECTRUM_TYPE_SQUARE);
+	ewl_spectrum_rgb_set(EWL_SPECTRUM(o), r, g, b);
+	ewl_object_minimum_size_set(EWL_OBJECT(o), 150, 150);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
+	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+				ewl_colorpicker_cb_square_change, cp);
+	cp->picker.square = o;
+	ewl_widget_show(o);
+
+	o = ewl_spectrum_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spectrum_type_set(EWL_SPECTRUM(o), EWL_SPECTRUM_TYPE_VERTICAL);
+	ewl_spectrum_rgb_set(EWL_SPECTRUM(o), r, g, b);
+	ewl_object_minimum_size_set(EWL_OBJECT(o), 15, 150);
+	ewl_object_maximum_size_set(EWL_OBJECT(o), 15, EWL_OBJECT_MAX_SIZE);
+	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+				ewl_colorpicker_cb_vertical_change, cp);
+	cp->picker.vertical = o;
+	ewl_widget_show(o);
+
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h, &s, &v);
+
+	/* hbox to hold the colour previews */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(hbox);
+
+	o = ewl_label_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_label_text_set(EWL_LABEL(o), "Current:");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);	
+	ewl_widget_show(o);
+
+	o = NEW(Ewl_Widget, 1);
+	ewl_widget_init(o);
+	ewl_widget_internal_set(o, TRUE);
+	ewl_widget_appearance_set(o, "coloured_rect");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_widget_color_set(o, r, g, b, 255);
+	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+	ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_ALL);
+	cp->preview.current = o;
+	ewl_widget_show(o);
+
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(hbox);
+
+	o = ewl_label_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_label_text_set(EWL_LABEL(o), "Previous:");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);	
+	ewl_widget_show(o);
+
+	o = NEW(Ewl_Widget, 1);
+	ewl_widget_init(o);
+	ewl_widget_internal_set(o, TRUE);
+	ewl_widget_appearance_set(o, "coloured_rect");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_widget_color_set(o, r, g, b, 255);
+	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
+	ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_ALL);
+	cp->preview.previous = o;
+	ewl_widget_show(o);
+
+	/* do the spinner side */
+	vbox = ewl_vbox_new();
+	ewl_widget_internal_set(vbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(cp), vbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(vbox);
+
+	/* h button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "h");
+	ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_HUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 360);
+	ewl_spinner_value_set(EWL_SPINNER(o), h);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_HUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.hsv.h = o;
+	ewl_widget_show(o);
+
+	/* s button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "s");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_SATURATION);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 100);
+	ewl_spinner_value_set(EWL_SPINNER(o), s * 100);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_SATURATION);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.hsv.s = o;
+	ewl_widget_show(o);
+
+	/* v button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "v");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_VALUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 100);
+	ewl_spinner_value_set(EWL_SPINNER(o), v * 100);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_HSV_VALUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.hsv.v = o;
+	ewl_widget_show(o);
+
+	/* r button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "r");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_RED);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
+	ewl_spinner_value_set(EWL_SPINNER(o), r);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_RED);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.rgb.r = o;
+	ewl_widget_show(o);
+
+	/* g button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "g");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_GREEN);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
+	ewl_spinner_value_set(EWL_SPINNER(o), g);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_GREEN);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.rgb.g = o;
+	ewl_widget_show(o);
+
+	/* b button/spinner */
+	hbox = ewl_hbox_new();
+	ewl_widget_internal_set(hbox, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	o = ewl_radiobutton_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "b");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_BLUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_radio_change, cp);
+	prev = o;
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
+	ewl_spinner_value_set(EWL_SPINNER(o), b);
+	ewl_spinner_step_set(EWL_SPINNER(o), 1);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_widget_data_set(o, "TYPE", (void *)EWL_COLOR_MODE_RGB_BLUE);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_colorpicker_cb_spinner_change, cp);
+	cp->spinners.rgb.b = o;
+	ewl_widget_show(o);
+
+	/* alpha spinner */
+	o = ewl_spinner_new();
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	ewl_spinner_min_val_set(EWL_SPINNER(o), 0);
+	ewl_spinner_max_val_set(EWL_SPINNER(o), 255);
+	ewl_spinner_value_set(EWL_SPINNER(o), 0);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	cp->spinners.alpha = o;
+
+	ewl_colorpicker_color_mode_set(cp, EWL_COLOR_MODE_HSV_HUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * + * @param cp: The colour picker to set the has_alpha flag on.
+ * + * @param alpha: Value to set the has_alpha param too. (TRUE or FALSE)
+ * + * @return Returns no value.
+ * + */
 void
-ewl_colorpicker_color_set(Ewl_ColorPicker *cp, int r, int g, int b)
+ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cp", cp);
 	DCHECK_TYPE("cp", cp, "colorpicker");
 
-	ewl_spectrum_rgba_set(EWL_SPECTRUM(cp->spectrum), r, g, b, 255);
+	cp->has_alpha = alpha;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cp: The colour picker to get the has_alpha flag from
+ * @return Returns the value of the has_alpha flag (TRUE or FALSE)
+ */
+unsigned int
+ewl_colorpicker_has_alpha_get(Ewl_Colorpicker *cp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
+	DCHECK_TYPE_RET("cp", cp, "colorpicker", FALSE);
+
+	DRETURN_INT(cp->has_alpha, DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: the colourpicker to set the alpha value too
+ * @param alpha: The alpha value to set.
+ */
 void
-ewl_colorpicker_hue_set(Ewl_ColorPicker *cp, float h)
+ewl_colorpicker_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cp", cp);
 	DCHECK_TYPE("cp", cp, "colorpicker");
 
-	ewl_spectrum_hsv_set(EWL_SPECTRUM(cp->spectrum), h, 1, 1);
+	if (alpha > 255) alpha = 255;
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.alpha), alpha);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colourpicker to get the alpha value from
+ * @return Returns the alpha value of the colorpicker (0-255)
+ */
+unsigned int
+ewl_colorpicker_alpha_get(Ewl_Colorpicker *cp)
+{
+	unsigned int alpha;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cp", cp, 255);
+	DCHECK_TYPE_RET("cp", cp, "colorpicker", 255);
+
+	alpha = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.alpha));
+
+	DRETURN_INT(alpha, DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colourpicker to set the current rgb value into
+ * @param r: The red value to set
+ * @param g: The green value to set
+ * @param b: The blue value to set
+ * @return Returns no value.
+ */
+void
+ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
+				unsigned int g, unsigned int b)
+{
+	double h, s, v;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	if (r > 255) r = 255;
+	if (g > 255) g = 255;
+	if (b > 255) b = 255;
+
+	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
+	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.square), r, g, b);
+	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.vertical), r, g, b);
+
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h, &s, &v);
+	ewl_colorpicker_display_update(cp, r, g, b, h, s * 100, v * 100);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colorpicker to get the current rgb values from
+ * @param r: Where to store the red value
+ * @param g: Where to store the green value
+ * @param b: Where to store the blue value
+ * @return Returns no value
+ */
+void
+ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
+				unsigned int *g, unsigned int *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), r, g, b);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colorpicker to set the previous rgb value into
+ * @param r: The red value to set
+ * @param g: The green value to set
+ * @param b: The blue value to set
+ * @return Returns no value.
+ */
+void
+ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
+				unsigned int g, unsigned int b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	cp->previous.r = r;
+	cp->previous.g = g;
+	cp->previous.b = b;
+
+	ewl_widget_color_set(cp->preview.previous, r, g, b, 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colorpicker to get the previous rgb value from.
+ * @param r: Where to store the red value
+ * @param g: Where to store the green value
+ * @param b: Where to store the blue value
+ * @return Returns no value.
+ */
+void
+ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
+				unsigned int *g, unsigned int *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	if (r) *r = cp->previous.r;
+	if (g) *g = cp->previous.g;
+	if (b) *b = cp->previous.b;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colorpicker to set the mode on
+ * @param mode: The mode to set on the colorpicker
+ * @return Returns no value.
+ */
+void
+ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode mode)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	cp->mode = mode;
+	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.square), mode);
+	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.vertical), mode);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cp: The colorpicker to get the mode from
+ * @return Returns the Ewl_Color_Mode of the colorpicker
+ */
+Ewl_Color_Mode
+ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	DRETURN_INT(cp->mode, DLEVEL_STABLE);
+}
+
+void
+ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Colorpicker *cp;
+	unsigned int r, g, b;
+	double h, s, v;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	cp = data;
+	ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), &r, &g, &b);
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h, &s, &v);
+
+	ewl_colorpicker_display_update(cp, r, g, b, h, s, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_colorpicker_range_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_ColorPicker *cp;
-	Ewl_Spectrum *sp;
-	int r, g, b, a;
+	Ewl_Colorpicker *cp;
+	unsigned int r, g, b;
+	unsigned int r2, g2, b2;
+	double h, s, v;
+	double h2, s2, v2;
+	unsigned int set_hsv = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, "widget");
 
 	cp = data;
-	sp = EWL_SPECTRUM(w);
+	ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.vertical), &r, &g, &b);
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.vertical), &h, &s, &v);
 
-	ewl_spectrum_selected_rgba_get(sp, &r, &g, &b, &a);
-	ewl_spectrum_rgba_set(EWL_SPECTRUM(cp->spectrum), r, g, b, a);
+	ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), &r2, &g2, &b2);
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h2, &s2, &v2);
 
-	ewl_callback_call_with_event_data(EWL_WIDGET(cp), 
-				EWL_CALLBACK_VALUE_CHANGED, &(sp->rgba));
+	switch (cp->mode)
+	{
+		case EWL_COLOR_MODE_RGB_RED:
+			r2 = r;
+			break;
+		case EWL_COLOR_MODE_RGB_GREEN:
+			g2 = g;
+			break;
+		case EWL_COLOR_MODE_RGB_BLUE:
+			b2 = b;
+			break;
+		case EWL_COLOR_MODE_HSV_HUE:
+			h2 = h;
+			set_hsv = TRUE;
+			break;
+		case EWL_COLOR_MODE_HSV_SATURATION:
+			s2 = s;
+			set_hsv = TRUE;
+			break;
+		case EWL_COLOR_MODE_HSV_VALUE:
+			v2 = v;
+			set_hsv = TRUE;
+			break;
+		default:
+			break;
+	}
+
+	if (set_hsv == FALSE)
+	{
+		ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.square), r2, g2, b2);
+		ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h2, &s2, &v2);
+	}
+	else
+	{
+		ewl_spectrum_hsv_set(EWL_SPECTRUM(cp->picker.square), h2, s2, v2);
+		ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), &r2, &g2, &b2);
+	}
+	ewl_colorpicker_display_update(cp, r2, g2, b2, h2, s2, v2);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_colorpicker_spectrum_change_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	Ewl_ColorPicker *cp;
-	Ewl_Spectrum *sp;
+	Ewl_Colorpicker *cp;
+	unsigned int r, g, b;
+	double h, s, v;
+	int *mode, set_hsv = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, "widget");
 
 	cp = data;
-	sp = EWL_SPECTRUM(w);
+	ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), &r, &g, &b);
+	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.vertical), &h, &s, &v);
 
-	ewl_callback_call_with_event_data(EWL_WIDGET(cp), 
-				EWL_CALLBACK_VALUE_CHANGED, &(sp->selected_rgba));
+	mode = ewl_widget_data_get(w, "TYPE");
+	switch ((int)mode)
+	{
+		case EWL_COLOR_MODE_RGB_RED:
+			r = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.rgb.r));
+			break;
+
+		case EWL_COLOR_MODE_RGB_GREEN:
+			g = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.rgb.g));
+			break;
+
+		case EWL_COLOR_MODE_RGB_BLUE:
+			b = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.rgb.b));
+			break;
+
+		case EWL_COLOR_MODE_HSV_HUE:
+			h = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.hsv.h));
+			set_hsv = TRUE;
+			break;
+
+		case EWL_COLOR_MODE_HSV_SATURATION:
+			s = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.hsv.s)) / 100.0;
+			set_hsv = TRUE;
+			break;
+
+		case EWL_COLOR_MODE_HSV_VALUE:
+			v = ewl_spinner_value_get(EWL_SPINNER(cp->spinners.hsv.v)) / 100.0;
+			set_hsv = TRUE;
+			break;
+
+		default:
+			break;
+	}
+
+	if (set_hsv)
+	{
+		ewl_spectrum_hsv_set(EWL_SPECTRUM(cp->picker.square), h, s, v);
+		ewl_spectrum_hsv_set(EWL_SPECTRUM(cp->picker.vertical), h, s, v);
+
+		ewl_spectrum_rgb_get(EWL_SPECTRUM(cp->picker.square), &r, &g, &b);
+	}
+	else
+	{
+		ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.square), r, g, b);
+		ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.vertical), r, g, b);
+
+		ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h, &s, &v);
+	}
+	ewl_colorpicker_display_update(cp, r, g, b, h, s, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Colorpicker *cp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	cp = data;
+	cp->mode = (Ewl_Color_Mode)ewl_widget_data_get(w, "TYPE");
+
+	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.square), cp->mode);
+	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->picker.vertical), cp->mode);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int g,
+				unsigned int b, double h, double s, double v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cp", cp);
+	DCHECK_TYPE("cp", cp, "colorpicker");
+
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.rgb.r), r);
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.rgb.g), g);
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.rgb.b), b);
+
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.hsv.h), h);
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.hsv.s), s * 100);
+	ewl_spinner_value_set(EWL_SPINNER(cp->spinners.hsv.v), v * 100);
+
+	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 

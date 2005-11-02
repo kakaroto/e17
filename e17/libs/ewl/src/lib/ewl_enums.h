@@ -300,14 +300,23 @@ typedef enum Ewl_Stock_Type Ewl_Stock_Type;
 /**
  * @enum Ewl_Color_Pick_Mode
  */
-enum Ewl_Color_Pick_Mode 
+enum Ewl_Color_Mode 
 {
-	EWL_COLOR_PICK_MODE_RGB,
-	EWL_COLOR_PICK_MODE_HSV_HUE,
-	EWL_COLOR_PICK_MODE_HSV_SATURATION,
-	EWL_COLOR_PICK_MODE_HSV_VALUE
+	EWL_COLOR_MODE_RGB_RED,
+	EWL_COLOR_MODE_RGB_GREEN,
+	EWL_COLOR_MODE_RGB_BLUE,
+	EWL_COLOR_MODE_HSV_HUE,
+	EWL_COLOR_MODE_HSV_SATURATION,
+	EWL_COLOR_MODE_HSV_VALUE
 };
-typedef enum Ewl_Color_Pick_Mode Ewl_Color_Pick_Mode;
+typedef enum Ewl_Color_Mode Ewl_Color_Mode;
+
+enum Ewl_Spectrum_Type
+{
+	EWL_SPECTRUM_TYPE_SQUARE,
+	EWL_SPECTRUM_TYPE_VERTICAL
+};
+typedef enum Ewl_Spectrum_Type Ewl_Spectrum_Type;
 
 enum Ewl_Text_Style 
 {

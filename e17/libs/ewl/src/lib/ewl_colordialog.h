@@ -1,5 +1,5 @@
-#ifndef __EWL_COLORDIALOG_H
-#define __EWL_COLORDIALOG_H
+#ifndef EWL_COLORDIALOG_H
+#define EWL_COLORDIALOG_H
 
 /**
  * @file ewl_colordialog.h
@@ -8,42 +8,67 @@
  * @{
  */
 
-typedef struct Ewl_ColorDialog Ewl_ColorDialog;
-
 /**
  * @def EWL_COLORDIALOG(cd)
- * Typecast a pointer to an Ewl_ColorDialog pointer.
+ * Typecast a pointer to an Ewl_Colordialog pointer.
  */
-#define EWL_COLORDIALOG(cd) ((Ewl_ColorDialog *) cd)
+#define EWL_COLORDIALOG(cd) ((Ewl_Colordialog *) cd)
 
-struct Ewl_ColorDialog
-{
-	Ewl_Box box;
-	Ewl_Widget *preview;
+typedef struct Ewl_Colordialog Ewl_Colordialog;
+
+struct Ewl_Colordialog
+{ 
+	Ewl_Dialog  dialog;
 	Ewl_Widget *picker;
-	Ewl_Widget *red_entry;
-	Ewl_Widget *green_entry;
-	Ewl_Widget *blue_entry;
-	Ewl_Widget *hue_entry;
-	Ewl_Widget *saturation_entry;
-	Ewl_Widget *value_entry;
-	Ewl_Color_Set selected;
 };
 
-Ewl_Widget 	*ewl_colordialog_new(int r, int g, int b);
-int 		 ewl_colordialog_init(Ewl_ColorDialog *cd, int r, int g, int b);
-
-/*
- * Internal callbacks, override at your own risk.
+/**
+ * @def EWL_COLORDIALOG_EVENT(cd)
+ * Typecast a pointer to an Ewl_Colordialog_Event pointer
  */
-void ewl_colordialog_redvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_greenvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_bluevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_huevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_saturationvalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_valuevalue_changed(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_color_valuechanged_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_colordialog_button_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+#define EWL_COLORDIALOG_EVENT(cd) ((Ewl_Colordialog_Event *)cd)
+
+typedef struct Ewl_Colordialog_Event Ewl_Colordialog_Event;
+
+struct Ewl_Colordialog_Event
+{
+	unsigned int response;
+};
+
+Ewl_Widget 	*ewl_colordialog_new(void);
+int 		 ewl_colordialog_init(Ewl_Colordialog *cd);
+
+void             ewl_colordialog_has_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
+unsigned int     ewl_colordialog_has_alpha_get(Ewl_Colordialog *cp);
+                                        
+void             ewl_colordialog_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
+unsigned int     ewl_colordialog_alpha_get(Ewl_Colordialog *cp);
+
+void             ewl_colordialog_current_rgb_set(Ewl_Colordialog *cp, unsigned int r,
+                                                        unsigned int g, unsigned int b);
+void             ewl_colordialog_current_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
+                                                        unsigned int *g, unsigned int *b);
+
+void             ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cp, unsigned int r,
+                                                        unsigned int g, unsigned int b);
+void             ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
+                                                        unsigned int *g, unsigned int *b);
+
+void             ewl_colordialog_color_mode_set(Ewl_Colordialog *cp, Ewl_Color_Mode type);
+Ewl_Color_Mode   ewl_colordialog_color_mode_get(Ewl_Colordialog *cp);
+
+Ewl_Colordialog_Event *ewl_colordialog_event_new(void);
+void		 ewl_colordialog_event_free(Ewl_Colordialog_Event *ev);
+
+void		 ewl_colordialog_event_response_set(Ewl_Colordialog_Event *ev, 
+							unsigned int resp);
+unsigned int	 ewl_colordialog_event_response_get(Ewl_Colordialog_Event *ev);
+		
+/*
+ * Internally used callbacks, override at your own risk
+*/
+void ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev, void *data);
+void ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}
