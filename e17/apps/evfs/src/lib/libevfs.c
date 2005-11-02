@@ -189,7 +189,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	//printf ("Lexing '%s'\n", uri);
 
 	while (j < strlen(uri)) {
-		new_alpha = isalnum(l_uri[i]) | isspace(l_uri[i]);	
+		new_alpha = isalnum(l_uri[i]) | isspace(l_uri[i]) | l_uri[i] == '.';	
 		
 		strncpy(tmp_tok, l_uri, 3);
 		tmp_tok[3] = '\0';
