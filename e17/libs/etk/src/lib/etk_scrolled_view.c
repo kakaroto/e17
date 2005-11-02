@@ -91,7 +91,7 @@ Etk_Widget *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view)
 
 /**
  * @brief A convenience function that creates a viewport, adds the child to it and attach the viewport to the scrolled view. @n
- * It's useful for widgets that has no scrolling ability
+ * It's useful for widgets that have no scrolling ability
  * @param scrolled_view a scrolled view
  * @param the child to add to the viewport
  */
@@ -270,7 +270,8 @@ static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_r
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Scrolled_View *scrolled_view;
-   Etk_Size hscrollbar_requisition, vscrollbar_requisition, scroll_size;
+   Etk_Size hscrollbar_requisition, vscrollbar_requisition;
+   Etk_Size scroll_size;
    Etk_Geometry child_geometry;
    Etk_Widget *child;
    Etk_Bool show_vscrollbar = FALSE, show_hscrollbar = FALSE;
@@ -279,10 +280,12 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)))
       return;
 
-   if (!(child = ETK_BIN(scrolled_view)->child))
+   if (!(child = ETK_BIN(scrolled_view)->child) || !child->scroll_size_get || !child->scroll)
    {
       etk_widget_hide(scrolled_view->hscrollbar);
       etk_widget_hide(scrolled_view->vscrollbar);
+      if (child)
+         etk_widget_size_allocate(child, geometry);
       return;
    }
 
@@ -291,19 +294,27 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    if (scrolled_view->vpolicy == ETK_POLICY_AUTO || scrolled_view->vpolicy == ETK_POLICY_SHOW)
       etk_widget_size_request_full(scrolled_view->vscrollbar, &vscrollbar_requisition, FALSE);
    child->scroll_size_get(child, &scroll_size);
-
-   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > geometry.w) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   
+   visible_width = geometry.w;
+   visible_height = geometry.h;
+   if (child->scroll_margins_get)
+   {
+      Etk_Size margins_size;
+      
+      child->scroll_margins_get(child, &margins_size);
+      visible_width -= margins_size.w;
+      visible_height -= margins_size.h;
+   }
+   
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > visible_width) || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       show_hscrollbar = TRUE;
-   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
+   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO && scroll_size.h > (visible_height - (show_hscrollbar ? hscrollbar_requisition.h : 0))) ||
       scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = TRUE;
-      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (geometry.w - vscrollbar_requisition.w))
+      if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (visible_width - vscrollbar_requisition.w))
          show_hscrollbar = TRUE;
    }
-
-   visible_width = geometry.w;
-   visible_height = geometry.h;
 
    if (show_hscrollbar)
    {
@@ -340,8 +351,8 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 
    child_geometry.x = geometry.x;
    child_geometry.y = geometry.y;
-   child_geometry.w = visible_width;
-   child_geometry.h = visible_height;
+   child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_requisition.w : 0);
+   child_geometry.h = geometry.h - (show_hscrollbar ? hscrollbar_requisition.h : 0);
    etk_widget_size_allocate(child, child_geometry);
 }
 
@@ -359,7 +370,6 @@ static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, d
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
       return;
-
    child->scroll(child, value, ETK_RANGE(scrolled_view->vscrollbar)->value);
 }
 
@@ -371,7 +381,6 @@ static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, d
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
       return;
-
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
 }
 

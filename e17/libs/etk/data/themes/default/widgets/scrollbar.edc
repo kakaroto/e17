@@ -8,11 +8,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 0 -8;
+               offset: 0 -9;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -1 9;
+               offset: -1 8;
             }
             image {
                normal: "hscrollbar_trough.png";
@@ -28,18 +28,18 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 16 10;
+               offset: 16 9;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -33 10;
+               offset: -33 9;
             }
          }
       }
       SCROLLBAR_DRAG("drag", 20, 20, 1, 0, "scrollbar_hdrag_thumb.png")
-      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, -1, -8, "scrollbar_arrow_left.png")
-      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -34, -8, "scrollbar_arrow_left.png")
-      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -18, -8, "scrollbar_arrow_right.png")
+      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, -1, -9, "scrollbar_arrow_left.png")
+      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -34, -9, "scrollbar_arrow_left.png")
+      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -18, -9, "scrollbar_arrow_right.png")
    }
    programs {
       SCROLLBAR_BUTTON_PROG("left_left_arrow", "left")
@@ -58,11 +58,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 0.0;
-               offset: -8 0;
+               offset: -9 0;
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 9 -1;
+               offset: 8 -1;
             }
             image {
                normal: "vscrollbar_trough.png";
@@ -78,18 +78,18 @@ group {
             visible: 0;
             rel1 {
                relative: 0.5 0.0;
-               offset: 10 16;
+               offset: 9 16;
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 10 -33;
+               offset: 9 -33;
             }
          }
       }
       SCROLLBAR_DRAG("drag", 20, 20, 0, 1, "scrollbar_vdrag_thumb.png")
-      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -8, -1, "scrollbar_arrow_up.png")
-      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -8, -34, "scrollbar_arrow_down.png")
-      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -8, -18, "scrollbar_arrow_down.png")
+      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -9, -1, "scrollbar_arrow_up.png")
+      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -9, -34, "scrollbar_arrow_down.png")
+      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -9, -18, "scrollbar_arrow_down.png")
    }
    programs {
       SCROLLBAR_BUTTON_PROG("up_up_arrow", "up")

@@ -166,6 +166,7 @@ struct _Etk_Widget
    void (*move_resize)(Etk_Widget *widget, int x, int y, int w, int h);
 
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size *scroll_size);
+   void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
    void (*show)(Etk_Widget *widget);

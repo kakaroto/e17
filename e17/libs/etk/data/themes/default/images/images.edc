@@ -50,8 +50,14 @@ images {
    image: "glow_arrow_up.png" COMP;
    image: "e_watermark.png" COMP;
    image: "hpaned_separator.png" COMP;
+   image: "hpaned_handle.png" COMP;
    image: "vpaned_separator.png" COMP;
+   image: "vpaned_handle.png" COMP;
    image: "frame_outline.png" COMP;
    image: "frame_label_over.png" COMP;
    image: "frame_label_under.png" COMP;
+   image: "menu_item_outline.png" COMP;
+   image: "menu_item_highlight.png" COMP;
+   image: "menu_item_shadow1.png" COMP;
+   image: "menu_item_shadow2.png" COMP;
 }

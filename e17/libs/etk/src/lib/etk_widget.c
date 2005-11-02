@@ -1288,6 +1288,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->last_size_requisition.h = 0;
 
    widget->scroll_size_get = NULL;
+   widget->scroll_margins_get = NULL;
    widget->scroll = NULL;
 
    widget->realized = FALSE;

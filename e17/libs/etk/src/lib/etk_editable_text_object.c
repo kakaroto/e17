@@ -88,9 +88,8 @@ void etk_editable_text_object_text_set(Evas_Object *object, const char *text)
       return;
    
    evas_object_textblock_text_markup_set(editable_text_sd->text_object, text);
-   editable_text_sd->cursor_at_the_end = TRUE;
    _etk_editable_text_size_update(object);
-   _etk_editable_text_cursor_position_update(object, NULL);
+   etk_editable_text_object_cursor_move_at_end(object);
 }
 
 /**

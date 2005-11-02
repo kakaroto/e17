@@ -21,12 +21,12 @@ void etk_test_entry_window_create(void *data)
    Etk_Widget *table;
    Etk_Widget *button;
    
-	if (win)
-	{
-		etk_widget_show_all(ETK_WIDGET(win));
-		return;
-	}	
-	
+   if (win)
+   {
+      etk_widget_show_all(ETK_WIDGET(win));
+      return;
+   }	
+  
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Entry Test"));
    

@@ -106,10 +106,10 @@ void etk_test_tree_window_create(void *data)
    int i;
 
    if (win)
-	{
-		etk_widget_show(ETK_WIDGET(win));
-		return;
-	}
+   {
+      etk_widget_show(ETK_WIDGET(win));
+      return;
+   }
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Tree Test"));

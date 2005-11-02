@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include <Edje.h>
+#include "etk_scrolled_view.h"
 #include "etk_button.h"
 #include "etk_toplevel_widget.h"
 #include "etk_signal.h"
@@ -77,8 +78,10 @@ enum _Etk_Tree_Col_Property_Id
 static Etk_Type *_etk_grid_type_get();
 static void _etk_grid_constructor(Etk_grid *grid);
 static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
+static void _etk_grid_scroll(Etk_Widget *widget, int x, int y);
+static void _etk_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
+static void _etk_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size);
 static void _etk_grid_realize_cb(Etk_Object *object, void *data);
-static void _etk_grid_mouse_wheel_cb(Etk_Object *object, void *event_info, void *data);
 
 static void _etk_tree_constructor(Etk_Tree *tree);
 static void _etk_tree_destructor(Etk_Tree *tree);
@@ -1036,17 +1039,13 @@ Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
 void etk_tree_row_expand(Etk_Tree_Row *row)
 {
    Etk_Tree_Node *n;
-   float offset;
 
    if (!row || row->node.expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
       return;
 
-   offset = row->tree->xscroll_percent * row->tree->item_height * row->tree->root.num_visible_children;
    row->node.expanded = TRUE;
    for (n = row->node.parent; n && n->expanded; n = n->parent)
       n->num_visible_children += row->node.num_visible_children;
-   row->tree->xscroll_percent = offset / (row->tree->item_height * row->tree->root.num_visible_children);
-   row->tree->xscroll_percent = ETK_CLAMP(row->tree->xscroll_percent, 0.0, 1.0);
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
@@ -1060,17 +1059,13 @@ void etk_tree_row_expand(Etk_Tree_Row *row)
 void etk_tree_row_collapse(Etk_Tree_Row *row)
 {
    Etk_Tree_Node *n;
-   float offset;
 
    if (!row || !row->node.expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
       return;
 
-   offset = row->tree->xscroll_percent * row->tree->item_height * row->tree->root.num_visible_children;
    row->node.expanded = FALSE;
    for (n = row->node.parent; n && n->expanded; n = n->parent)
       n->num_visible_children -= row->node.num_visible_children;
-   row->tree->xscroll_percent = offset / (row->tree->item_height * row->tree->root.num_visible_children);
-   row->tree->xscroll_percent = ETK_CLAMP(row->tree->xscroll_percent, 0.0, 1.0);
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
@@ -1105,8 +1100,10 @@ static void _etk_grid_constructor(Etk_grid *grid)
       return;
 
    ETK_WIDGET(grid)->move_resize = _etk_grid_move_resize;
+   ETK_WIDGET(grid)->scroll = _etk_grid_scroll;
+   ETK_WIDGET(grid)->scroll_size_get = _etk_grid_scroll_size_get;
+   ETK_WIDGET(grid)->scroll_margins_get = _etk_grid_scroll_margins_get;
    etk_signal_connect_after("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_realize_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_mouse_wheel_cb), NULL);
 }
 
 /* Moves and resizes the tree grid */
@@ -1153,6 +1150,48 @@ static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h
    _etk_tree_update(tree);
 }
 
+/* Scrolls the tree grid */
+static void _etk_grid_scroll(Etk_Widget *widget, int x, int y)
+{
+   Etk_Tree *tree;
+   
+   if (!widget || !(tree = ETK_TREE_GRID(widget)->tree))
+      return;
+   
+   tree->xoffset = x;
+   tree->yoffset = y;
+   etk_widget_redraw_queue(widget);
+}
+
+/* Gets the scrolling size of the tree grid */
+static void _etk_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
+{
+   Etk_Tree *tree;
+   int i;
+   int width = 0;
+   
+   if (!widget || !(tree = ETK_TREE_GRID(widget)->tree) || !scroll_size)
+      return;
+   
+   for (i = 0; i < tree->num_cols; i++)
+   {
+      if (tree->columns[i]->visible)
+         width += tree->columns[i]->width;
+   }
+   scroll_size->w = width;
+   scroll_size->h = tree->root.num_visible_children * tree->item_height;
+}
+
+/* Gets the scrolling margins size of the tree grid */
+static void _etk_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size)
+{
+   if (!widget || !margins_size)
+      return;
+   
+   margins_size->w = widget->left_inset + widget->left_padding + widget->right_inset + widget->right_padding;
+   margins_size->h = widget->top_inset + widget->top_padding + widget->bottom_inset + widget->bottom_padding;
+}
+
 /**************************
  * Tree
  **************************/
@@ -1162,11 +1201,14 @@ static void _etk_tree_constructor(Etk_Tree *tree)
 {
    if (!tree)
       return;
-
+   
+   tree->scrolled_view = etk_scrolled_view_new();
+   etk_widget_parent_set(tree->scrolled_view, ETK_CONTAINER(tree));
+   etk_widget_show(tree->scrolled_view);
+   
    tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "tree", NULL);
-
    ETK_TREE_GRID(tree->grid)->tree = tree;
-   etk_widget_parent_set(tree->grid, ETK_CONTAINER(tree));
+   etk_container_add(ETK_CONTAINER(tree->scrolled_view), tree->grid);
    etk_widget_show(tree->grid);
 
    tree->num_cols = 0;
@@ -1191,8 +1233,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->frozen = FALSE;
    tree->mode = ETK_TREE_MODE_LIST;
    tree->multiple_select = FALSE;
-   tree->xscroll_percent = 0.0;
-   tree->yscroll_percent = 0.0;
+   tree->xoffset = 0;
+   tree->yoffset = 0.0;
 
    ETK_WIDGET(tree)->size_allocate = _etk_tree_size_allocate;
 }
@@ -1377,7 +1419,7 @@ static void _etk_tree_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    /* Allocate size for the tree grid */
    geometry.y += max_header_height;
    geometry.h -= max_header_height;
-   etk_widget_size_allocate(tree->grid, geometry);
+   etk_widget_size_allocate(tree->scrolled_view, geometry);
 }
 
 /**************************
@@ -1583,20 +1625,6 @@ static void _etk_grid_realize_cb(Etk_Object *object, void *data)
       _etk_tree_col_realize(tree, i);
 }
 
-/* Called when the mouse wheel is used over the tree grid. TODO: scrollbars */
-static void _etk_grid_mouse_wheel_cb(Etk_Object *object, void *event_info, void *data)
-{
-   Etk_Tree *tree;
-   Etk_Event_Mouse_Wheel *event;
-
-   if (!object || !(tree = ETK_TREE_GRID(object)->tree) || !(event = event_info))
-      return;
-
-   tree->xscroll_percent += event->z * ((float)3 / tree->root.num_visible_children);
-   tree->xscroll_percent = ETK_CLAMP(tree->xscroll_percent, 0.0, 1.0);
-   _etk_tree_update(tree);
-}
-
 /**************************
  * Tree
  **************************/
@@ -1744,7 +1772,7 @@ static void _etk_tree_update(Etk_Tree *tree)
 {
    Evas_List *l;
    Etk_Tree_Item_Objects *item_objects;
-   int invisible_height, offset, first_visible_nth, delta;
+   int first_visible_nth, delta;
    int x, y, w, h;
    int i;
 
@@ -1786,12 +1814,8 @@ static void _etk_tree_update(Etk_Tree *tree)
       }
    }
 
-   invisible_height = (tree->root.num_visible_children * tree->item_height) - h;
-   if (invisible_height < 0)
-      invisible_height = 0;
-   offset = invisible_height * tree->xscroll_percent;
-   first_visible_nth = offset / tree->item_height;
-   delta = offset - (first_visible_nth * tree->item_height);
+   first_visible_nth = tree->yoffset / tree->item_height;
+   delta = tree->yoffset - (first_visible_nth * tree->item_height);
 
    l = tree->items_objects;
    _etk_tree_rows_draw(tree, &tree->root, &l, x, w, h, 0, y - delta, first_visible_nth, (first_visible_nth % 2));

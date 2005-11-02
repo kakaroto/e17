@@ -199,7 +199,7 @@ static void _etk_entry_focus_cb(Etk_Object *object, void *data)
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
-   etk_editable_text_object_cursor_show(entry->editable_object);   
+   etk_editable_text_object_cursor_show(entry->editable_object);
 }
 
 /* Called when the entry is unfocused */

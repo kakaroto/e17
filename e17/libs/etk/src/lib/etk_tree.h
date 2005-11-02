@@ -74,6 +74,7 @@ struct _Etk_Tree
    /* Inherit form Etk_Widget */
    Etk_Container container;
 
+   Etk_Widget *scrolled_view;
    Etk_Widget *grid;
 
    int num_cols;
@@ -92,8 +93,8 @@ struct _Etk_Tree
    Etk_Bool multiple_select;
    Etk_Bool frozen;
    Etk_Bool built;
-   float xscroll_percent;
-   float yscroll_percent;
+   int xoffset;
+   int yoffset;
 
    int item_height;
    int image_height;
