@@ -625,7 +625,7 @@ ewl_widget_state_set(Ewl_Widget *w, char *state)
 
 	old = w->bit_state;
 	w->bit_state = ecore_string_instance(state);
-	if (old) ecore_string_release(w->bit_state);
+	if (old) ecore_string_release(old);
 
 	if (w->theme_object)
 		edje_object_signal_emit(w->theme_object, state, "EWL");
