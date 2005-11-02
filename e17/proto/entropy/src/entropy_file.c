@@ -6,6 +6,7 @@ entropy_generic_file* entropy_generic_file_new() {
 	file->username = NULL;
 	file->password = NULL;
 	file->parent = NULL;
+	bzero(file->mime_type, MIME_LENGTH);
 
 	allocated_files++;
 	print_allocation();

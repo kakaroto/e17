@@ -90,7 +90,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 			ecore_list_goto_first(el);
 			while ( (file = ecore_list_next(el)) ) {
 			
-				if (file->filetype == FILE_FOLDER || !strcmp(file->mime_type, "application/x-tar")) {
+				if (file->filetype == FILE_FOLDER || entropy_core_descent_for_mime_get(comp->core, file->mime_type)  ) {
 					char *c = entropy_malloc(sizeof(char));
 					*c = 1;
 

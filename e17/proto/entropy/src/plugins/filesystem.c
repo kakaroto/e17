@@ -257,6 +257,7 @@ void callback(evfs_event* data) {
 						} else {
 							//printf("Didn't mark this file, type %d\n",ref->file_type);
 							file->filetype = FILE_STANDARD;
+							bzero(file->mime_type, MIME_LENGTH);
 						}
 
 						if (calling_request && (calling_request->drill_down || calling_request->set_parent)) {

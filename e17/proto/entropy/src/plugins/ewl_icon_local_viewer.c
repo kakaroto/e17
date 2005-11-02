@@ -233,11 +233,9 @@ void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_dat
 
         e = EWL_FILEDIALOG_EVENT(ev);
         if (e->response == EWL_STOCK_OPEN) {
-                printf("file open from test program: %s\n",
-                                ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
-
 		printf("Curent directory is '%s'\n", viewer->current_dir);
 		entropy_config_str_set("iconbox_viewer", viewer->current_dir, ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+		ewl_widget_destroy(viewer->file_dialog_parent);
 
 	} else if (e->response == EWL_STOCK_CANCEL) {
 		ewl_widget_destroy(viewer->file_dialog_parent);
