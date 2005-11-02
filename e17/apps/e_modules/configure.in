@@ -196,7 +196,6 @@ data/Makefile
 src/Makefile
 src/modules/Makefile
 src/modules/snow/Makefile
-src/modules/notes/Makefile
 src/modules/flame/Makefile
 src/modules/monitor/Makefile
 src/modules/weather/Makefile

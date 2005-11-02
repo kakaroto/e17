@@ -14,7 +14,6 @@ BuildRequires: ecore-devel, evas-devel, esmart-devel
 BuildRequires: edje-devel, eet-devel, enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 Requires: e_modules-snow, e_modules-flame, e_modules-monitor, e_modules-weather
-Requires: e_modules-notes
 
 %description
 Virtual package requiring all e_modules for the Enlightenment window
@@ -35,14 +34,6 @@ Requires: enlightenment >= 0.16.999
 
 %description flame
 Flame module for the Enlightenment window manager.
-
-%package notes
-Summary: notes module for the Enlightenment window manager.
-Group: User Interface/Desktops
-Requires: enlightenment >= 0.16.999
-
-%description notes
-notes module for the Enlightenment window manager.
 
 %package weather
 Summary: Weather module for the Enlightenment window manager.
@@ -101,11 +92,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_libdir}/%{name}/monitor/*
 %{_libdir}/enlightenment/modules_extra/monitor
-
-%files notes
-%defattr(-, root, root)
-%{_libdir}/%{name}/notes/*
-%{_libdir}/enlightenment/modules_extra/notes
 
 %files snow
 %defattr(-, root, root)
