@@ -338,20 +338,31 @@ EventsCompress(XEvent * evq, int count)
 		       ev2->type = EX_EVENT_CREATE_GONE;
 		       j = -1;	/* Break for() */
 		       break;
-		    case MapNotify:
-		       if (ev2->xmap.window != ev->xmap.window)
-			  continue;
-		       ev2->type = EX_EVENT_MAP_GONE;
-		       break;
 		    case UnmapNotify:
-		       if (ev2->xunmap.window != ev->xunmap.window)
+		       if (ev2->xunmap.window != ev->xdestroywindow.window)
 			  continue;
 		       ev2->type = EX_EVENT_UNMAP_GONE;
 		       break;
+		    case MapNotify:
+		       if (ev2->xmap.window != ev->xdestroywindow.window)
+			  continue;
+		       ev2->type = EX_EVENT_MAP_GONE;
+		       break;
+		    case MapRequest:
+		       if (ev2->xmaprequest.window != ev->xdestroywindow.window)
+			  continue;
+		       ev2->type = EX_EVENT_MAPREQUEST_GONE;
+		       break;
 		    case ReparentNotify:
-		       if (ev2->xreparent.window != ev->xreparent.window)
+		       if (ev2->xreparent.window != ev->xdestroywindow.window)
 			  continue;
 		       ev2->type = EX_EVENT_REPARENT_GONE;
+		       break;
+		    default:
+		       /* Nuke all other events on a destroyed window */
+		       if (ev2->xany.window != ev->xdestroywindow.window)
+			  continue;
+		       ev2->type = 0;
 		       break;
 		    }
 	       }
@@ -723,10 +734,12 @@ EventName(unsigned int type)
      {
      case EX_EVENT_CREATE_GONE:
 	return "Create-Gone";
-     case EX_EVENT_MAP_GONE:
-	return "Map-Gone";
      case EX_EVENT_UNMAP_GONE:
 	return "Unmap-Gone";
+     case EX_EVENT_MAP_GONE:
+	return "Map-Gone";
+     case EX_EVENT_MAPREQUEST_GONE:
+	return "MapRequest-Gone";
      case EX_EVENT_REPARENT_GONE:
 	return "Reparent-Gone";
      case EX_EVENT_SHAPE_NOTIFY:
@@ -824,8 +837,9 @@ EventShow(const XEvent * ev)
      case MapNotify:
      case MapRequest:
      case EX_EVENT_CREATE_GONE:
-     case EX_EVENT_MAP_GONE:
      case EX_EVENT_UNMAP_GONE:
+     case EX_EVENT_MAP_GONE:
+     case EX_EVENT_MAPREQUEST_GONE:
 	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx\n", ser, name, win,
 		ev->xcreatewindow.window);
 	break;

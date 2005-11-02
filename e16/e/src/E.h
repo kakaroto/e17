@@ -901,9 +901,10 @@ void                EdgeWindowsHide(void);
 /* events.c */
 /* Re-mapped X-events */
 #define EX_EVENT_CREATE_GONE             64
-#define EX_EVENT_MAP_GONE                65
-#define EX_EVENT_UNMAP_GONE              66
-#define EX_EVENT_REPARENT_GONE           67
+#define EX_EVENT_UNMAP_GONE              65
+#define EX_EVENT_MAP_GONE                66
+#define EX_EVENT_MAPREQUEST_GONE         67
+#define EX_EVENT_REPARENT_GONE           68
 
 #define EX_EVENT_SHAPE_NOTIFY            72
 #define EX_EVENT_SCREEN_CHANGE_NOTIFY    73
