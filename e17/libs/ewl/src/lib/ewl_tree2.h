@@ -55,15 +55,6 @@
  * @themekey /tree/group
  */
 
-enum Ewl_Tree_Mode
-{
-	EWL_TREE_MODE_NONE,
-	EWL_TREE_MODE_SINGLE,
-	EWL_TREE_MODE_MULTI
-};
-
-typedef enum Ewl_Tree_Mode Ewl_Tree_Mode;
-
 typedef struct Ewl_Tree_Column_Provider Ewl_Tree_Column_Provider;
 
 /**

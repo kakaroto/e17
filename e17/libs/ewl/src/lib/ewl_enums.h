@@ -354,6 +354,15 @@ enum Ewl_Media_Module_Type
 };
 typedef enum Ewl_Media_Module_Type Ewl_Media_Module_Type;
 
+enum Ewl_Tree_Mode
+{
+	EWL_TREE_MODE_NONE,
+	EWL_TREE_MODE_SINGLE,
+	EWL_TREE_MODE_MULTI
+};
+
+typedef enum Ewl_Tree_Mode Ewl_Tree_Mode;
+
 /**
  * @}
  */ 
