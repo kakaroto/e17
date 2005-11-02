@@ -616,17 +616,16 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
 void
 ewl_widget_state_set(Ewl_Widget *w, char *state)
 {
+	char *old;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("state", state);
 	DCHECK_TYPE("w", w, "widget");
 
-	if (w->bit_state && !strcmp(w->bit_state, state))
-		DRETURN(DLEVEL_STABLE);
-
-	if (w->bit_state)
-		ecore_string_release(w->bit_state);
+	old = w->bit_state;
 	w->bit_state = ecore_string_instance(state);
+	if (old) ecore_string_release(w->bit_state);
 
 	if (w->theme_object)
 		edje_object_signal_emit(w->theme_object, state, "EWL");

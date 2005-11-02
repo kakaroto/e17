@@ -16,13 +16,13 @@ void
 __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
-	Ewl_Widget     *button_win;
-	Ewl_Widget     *button_box;
-	Ewl_Widget     *separator[2];
-	Ewl_Widget     *button[2];
-	Ewl_Widget     *check_button[2];
-	Ewl_Widget     *radio_button[2];
-	Ewl_Widget     *label;
+	Ewl_Widget *button_win;
+	Ewl_Widget *button_box;
+	Ewl_Widget *separator[2];
+	Ewl_Widget *button[2];
+	Ewl_Widget *check_button[3];
+	Ewl_Widget *radio_button[2];
+	Ewl_Widget *label;
 
 	button_button = w;
 
@@ -84,13 +84,24 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_show(check_button[0]);
 
 	/*
-	 * Create a check button w/o a label.
+	 * Create a check button with a label and checked.
 	 */
 	check_button[1]  = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(check_button[1] ), "With Label and checked");
+	ewl_checkbutton_checked_set(check_button[1], TRUE);
 	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[1]);
+
+	/*
+	 * Create a check button w/o a label.
+	 */
+	check_button[2]  = ewl_checkbutton_new();
+	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[2]);
+	ewl_object_alignment_set(EWL_OBJECT(check_button[2]),
+				 EWL_FLAG_ALIGN_LEFT);
+	ewl_widget_show(check_button[2]);
 
 	/*
 	 * Add a separator between the check buttons and the radio buttons
@@ -104,6 +115,7 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	radio_button[0]  = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(radio_button[0] ), "With Label");
+	ewl_radiobutton_checked_set(radio_button[0], TRUE);
 	ewl_container_child_append(EWL_CONTAINER(button_box), radio_button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
@@ -121,7 +133,5 @@ __create_button_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_label_text_set(EWL_LABEL(label), "A label");
 	ewl_container_child_append(EWL_CONTAINER(button_box), label);
 	ewl_widget_show(label);
-
-	return;
 }
 

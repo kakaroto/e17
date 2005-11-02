@@ -26,8 +26,6 @@ EWL TODO
 
 - all the themes need to be gone over, cleaned up and corrected.
 
-- [BUG] Checkbox doesnt show check if its selected by default until you move
-        the mouse in / out of the box.
 - [BUG] Scrollbar jumps when trying to drag the button from its lower part
 - [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
         only at the moment.

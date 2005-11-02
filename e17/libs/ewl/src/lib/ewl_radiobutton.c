@@ -47,7 +47,9 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 	cb = EWL_CHECKBUTTON(rb);
 	w = EWL_WIDGET(rb);
 
-	ewl_checkbutton_init(cb);
+	if (!ewl_checkbutton_init(cb))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_appearance_set(w, "radiobutton");
 	ewl_widget_inherit(w, "radiobutton");
 	ewl_widget_appearance_set(cb->check, "radio");
