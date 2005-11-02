@@ -56,8 +56,4 @@ images {
    image: "frame_outline.png" COMP;
    image: "frame_label_over.png" COMP;
    image: "frame_label_under.png" COMP;
-   image: "menu_item_outline.png" COMP;
-   image: "menu_item_highlight.png" COMP;
-   image: "menu_item_shadow1.png" COMP;
-   image: "menu_item_shadow2.png" COMP;
 }
