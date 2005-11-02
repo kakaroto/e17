@@ -58,6 +58,6 @@ tar_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
 
 bzip2_la_CFLAGS =  @ecore_cflags@
 bzip2_la_LDFLAGS = -module -avoid-version
-bzip2_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+bzip2_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs -lbz2
 
 

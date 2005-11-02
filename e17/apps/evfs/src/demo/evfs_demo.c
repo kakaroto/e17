@@ -62,7 +62,7 @@ int main() {
 	
 	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
 	//snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
-	snprintf(pathi,1024,"posix:///evfs/src/demo/test.tar#tar:///samba-3.0.20a");
+	snprintf(pathi,1024,"posix:///usr/src/linux-2.6.13.1.tar.bz2#bzip2:///#tar:///");
 	
 	
 	printf ("Listing dir: %s\n", pathi);
