@@ -1282,23 +1282,17 @@ EwinSetFullscreen(EWin * ewin, int on)
 
    if (on)
      {
-	ewin->lx = EoGetX(ewin);
-	ewin->ly = EoGetY(ewin);
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	ewin->ll = EoGetLayer(ewin);
-	if (on > 1)
+	if (on == 1)
 	  {
-	     /* Fullscreen at startup */
-	     x = EoGetX(ewin);
-	     y = EoGetY(ewin);
-	     w = ewin->client.w;
-	     h = ewin->client.h;
+	     if (ewin->state.inhibit_fullscreeen)
+		return;
+	     ewin->lx = EoGetX(ewin);
+	     ewin->ly = EoGetY(ewin);
+	     ewin->lw = ewin->client.w;
+	     ewin->lh = ewin->client.h;
+	     ewin->ll = EoGetLayer(ewin);
 	  }
-	else
-	  {
-	     ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
-	  }
+	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
 
 	/* Fixup if available space doesn't match ICCCM size constraints */
 	ICCCM_SizeMatch(ewin, w, h, &ww, &hh);

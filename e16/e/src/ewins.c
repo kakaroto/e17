@@ -176,25 +176,37 @@ EwinManage(EWin * ewin)
    Window              frame;
    XWindowAttributes   win_attr;
 
+   if (ewin->client.w <= 0)
+      ewin->client.w = 100;
+   if (ewin->client.h <= 0)
+      ewin->client.h = 100;
+
    if (ewin->client.argb && Conf.argb_client_mode > 0)
      {
 	if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &win_attr))
 	   return;
-	frame = ECreateVisualWindow(VRoot.win, -10, -10, 1, 1, 1, &win_attr);
+	frame =
+	   ECreateVisualWindow(VRoot.win, ewin->client.x, ewin->client.y,
+			       ewin->client.w, ewin->client.h, 1, &win_attr);
 	ewin->win_container =
-	   ECreateVisualWindow(frame, 0, 0, 1, 1, 0, &win_attr);
+	   ECreateVisualWindow(frame, ewin->client.x, ewin->client.y,
+			       ewin->client.w, ewin->client.h, 0, &win_attr);
 
 	if (Conf.argb_client_mode == 1)
 	   ewin->props.no_border = 1;
-
      }
    else
      {
-	frame = ECreateWindow(VRoot.win, -10, -10, 1, 1, 1);
-	ewin->win_container = ECreateWindow(frame, 0, 0, 1, 1, 0);
+	frame =
+	   ECreateWindow(VRoot.win, ewin->client.x, ewin->client.y,
+			 ewin->client.w, ewin->client.h, 1);
+	ewin->win_container =
+	   ECreateWindow(frame, ewin->client.x, ewin->client.y,
+			 ewin->client.w, ewin->client.h, 0);
      }
 
-   EoInit(ewin, EOBJ_TYPE_EWIN, frame, -10, -10, -1, -1, 1, NULL);
+   EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
+	  ewin->client.w, ewin->client.h, 1, NULL);
    EoSetName(ewin, Estrdup(ewin->icccm.wm_name));
    EobjListFocusAdd(&ewin->o, 1);
    EobjListOrderAdd(&ewin->o);
@@ -260,6 +272,8 @@ EwinSetGeometry(EWin * ewin)
    ewin->client.y = y + t;
 
    EoMoveResize(ewin, x, y, ewin->client.w + l + r, ewin->client.h + t + b);
+
+   ewin->client.grav = NorthWestGravity;
 }
 
 static void
@@ -645,6 +659,7 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_max_ver =
       ewin->props.no_resize_v || ewin->state.fullscreen;
    ewin->state.inhibit_fullscreeen =
+      ewin->state.maximized_horz || ewin->state.maximized_vert ||
       ewin->state.inhibit_move || ewin->state.inhibit_resize;
    ewin->state.inhibit_change_desk = 0;
    ewin->state.inhibit_close = 0;

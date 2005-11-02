@@ -117,6 +117,7 @@ struct _ewin
       unsigned            autosave:1;
       unsigned            no_border:1;	/* Never apply border */
       unsigned            never_iconify:1;	/* Never iconify */
+      unsigned            no_shadow:1;	/* Never apply shadow */
    } props;
    struct
    {
