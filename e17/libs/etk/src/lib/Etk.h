@@ -17,6 +17,7 @@
 #include "etk_string.h"
 
 #include "etk_widget.h"
+#include "etk_stock.h"
 #include "etk_bin.h"
 #include "etk_box.h"
 #include "etk_hbox.h"

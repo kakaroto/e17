@@ -26,6 +26,7 @@ etk_paned.h etk_frame.h \
 etk_scrolled_view.h etk_viewport.h \
 etk_window.h \
 etk_image.h \
+etk_stock.h \
 etk_string.h etk_editable_text_object.h etk_label.h \
 etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
 etk_entry.h \
@@ -46,6 +47,7 @@ etk_paned.c etk_frame.c \
 etk_scrolled_view.c etk_viewport.c \
 etk_window.c \
 etk_image.c \
+etk_stock.c \
 etk_string.c etk_editable_text_object.c etk_label.c \
 etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
 etk_entry.c \

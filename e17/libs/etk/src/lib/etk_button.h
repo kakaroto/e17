@@ -4,6 +4,7 @@
 
 #include "etk_bin.h"
 #include "etk_types.h"
+#include "etk_stock.h"
 
 /**
  * @defgroup Etk_Button Etk_Button
@@ -39,6 +40,7 @@ struct _Etk_Button
 Etk_Type *etk_button_type_get();
 Etk_Widget *etk_button_new();
 Etk_Widget *etk_button_new_with_label(const char *label);
+Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id);
 
 void etk_button_pressed(Etk_Button *button);
 void etk_button_released(Etk_Button *button);

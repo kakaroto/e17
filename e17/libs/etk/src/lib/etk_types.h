@@ -47,6 +47,7 @@ typedef struct _Etk_Event_Mouse_Wheel Etk_Event_Mouse_Wheel;
 typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Size Etk_Size;
 typedef struct _Etk_Geometry Etk_Geometry;
+typedef enum _Etk_Stock_Id Etk_Stock_Id;
 typedef enum _Etk_Pointer_Type Etk_Pointer_Type;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
 typedef struct _Etk_Container Etk_Container;

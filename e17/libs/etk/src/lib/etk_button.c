@@ -2,12 +2,14 @@
 #include "etk_button.h"
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "etk_hbox.h"
 #include "etk_alignment.h"
 #include "etk_image.h"
 #include "etk_label.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Button
@@ -97,6 +99,34 @@ Etk_Widget *etk_button_new()
 Etk_Widget *etk_button_new_with_label(const char *label)
 {
    return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "label", label, "focusable", TRUE, "focus_on_press", TRUE, NULL);
+}
+
+/**
+ * @brief Creates a new button with a label and an icon defined by a stock id
+ * @param stock_id the stock id corresponding to the label and the icon you want
+ * @return Returns the new button widget
+ * @see Etk_Stock
+ */
+Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id)
+{
+   Etk_Widget *button;
+   char *key;
+
+   key = etk_stock_key_get(stock_id);
+   if (key)
+   {
+      Etk_Widget *image;
+      char *label;
+
+      label = etk_stock_label_get(stock_id);
+      image = etk_image_new_from_edje(PACKAGE_DATA_DIR "/stock_icons/default.edj", key);
+      button = etk_button_new_with_label(_(label));
+      etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+   }
+   else
+      button = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", NULL);
+
+   return button;
 }
 
 /**

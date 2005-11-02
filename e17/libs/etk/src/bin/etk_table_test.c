@@ -1,5 +1,5 @@
 #include "etk_test.h"
-#include "../../config.h"
+#include "config.h"
 
 static Etk_Bool _etk_test_table_window_deleted_cb (void *data)
 {
@@ -13,22 +13,20 @@ void etk_test_table_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *widget[21];
    Etk_Widget *vbox, *hbox, *table;
-   Etk_Widget *image;
 
-	if (win)
-	{
-		etk_widget_show_all(ETK_WIDGET(win));
-		return;
-	}	
+   if (win)
+   {
+      etk_widget_show_all(ETK_WIDGET(win));
+      return;
+   }	
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Table Test"));
 
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_table_window_deleted_cb), win);
-	
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/open.png");
-   widget[0] = etk_button_new_with_label("Set Icon");
-   etk_button_image_set(ETK_BUTTON(widget[0]), ETK_IMAGE(image));
+   
+   widget[0] = etk_button_new_from_stock(ETK_STOCK_OPEN);
+   etk_button_label_set(ETK_BUTTON(widget[0]), _("Set Icon"));
 
    widget[20] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
    etk_container_add(ETK_CONTAINER(widget[20]), widget[0]);
@@ -57,13 +55,8 @@ void etk_test_table_window_create(void *data)
    widget[15] = etk_label_new(_("Wait exit"));
    widget[16] = etk_check_button_new();
 
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/close.png");
-   widget[17] = etk_button_new_with_label(_("Cancel"));
-   etk_button_image_set(ETK_BUTTON(widget[17]), ETK_IMAGE(image));
-
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/save.png");
-   widget[18] = etk_button_new_with_label(_("Save"));
-   etk_button_image_set(ETK_BUTTON(widget[18]), ETK_IMAGE(image));
+   widget[17] = etk_button_new_from_stock(ETK_STOCK_CLOSE);
+   widget[18] = etk_button_new_from_stock(ETK_STOCK_SAVE);
    
    widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
 
