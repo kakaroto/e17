@@ -1,7 +1,6 @@
 #include "ewl_test.h"
 
 static Ewl_Widget *combo_button = NULL;
-static void __item_down(Ewl_Widget * w, void *ev_data, void *user_data);
 
 static void
 __destroy_combo_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 

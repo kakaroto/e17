@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))

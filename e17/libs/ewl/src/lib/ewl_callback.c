@@ -153,7 +153,7 @@ ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
 	}
 
 	/* not the last position */
-	if (pos != (EWL_CALLBACK_LEN(w, t) - 1))
+	if ((int)pos != (EWL_CALLBACK_LEN(w, t) - 1))
 	{
 		memmove(w->callbacks[t].list + pos, 
 			w->callbacks[t].list + (pos + 1), 
@@ -213,7 +213,7 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 	{
 		/* only have to move if we aren't at the end (of the
 		 * original lenth already */
-		if (pos != (w->callbacks[t].len - 1))
+		if ((int)pos != (w->callbacks[t].len - 1))
 		{
 			memmove(w->callbacks[t].list + (pos + 1), 
 				w->callbacks[t].list + pos, 

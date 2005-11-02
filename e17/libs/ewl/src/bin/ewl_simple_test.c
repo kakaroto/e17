@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <Edje.h>
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
@@ -174,13 +175,6 @@ realize_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 	edje_object_signal_callback_add(w->theme_object, "Present*", "*",
 			edje_text, user_data);
-}
-
-static void
-test_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
-{
-	printf("%s at: %d, %d (%d x %d)\n", (char *)user_data, CURRENT_X(w),
-			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }
 
 static void

@@ -959,7 +959,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 
 	/* if we inserted before or at our currently focused item then we
 	 * need to advance our current item to the correct spot */
-	if (current_idx <= idx) current_idx ++;
+	if (current_idx <= (int)idx) current_idx ++;
 	ecore_dlist_goto_index(e->tab_order, current_idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

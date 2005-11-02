@@ -420,7 +420,7 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 		ewl_text_text_set(EWL_TEXT(icon->w_label), text);
 
 		wrap = 10;
-		while (wrap < strlen(text)) {
+		while (wrap < (int)strlen(text)) {
 			ewl_text_cursor_position_set(EWL_TEXT(icon->w_label), wrap);
 			ewl_text_text_insert(EWL_TEXT(icon->w_label), "\n", wrap);
 
@@ -788,6 +788,8 @@ void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
+	return;
+	ib = NULL;
 }
 
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,

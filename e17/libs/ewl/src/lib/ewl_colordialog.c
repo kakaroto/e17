@@ -276,9 +276,12 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 void
-ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev, void *data)
+ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
 
 	ewl_colordialog_respond(EWL_COLORDIALOG(w), EWL_STOCK_CANCEL);
 

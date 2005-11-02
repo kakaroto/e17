@@ -149,7 +149,7 @@ ewl_text_init(Ewl_Text *t)
  * @param t: The Ewl_Text to get the length from
  * @return Returns the length of the text in the widget @a t
  */
-int
+unsigned int
 ewl_text_length_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3890,7 +3890,7 @@ ewl_text_btree_text_context_insert(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 	else /* has to be in the tree somewhere */
 	{
 		Ewl_Text_BTree *child;
-		int sum = 0;
+		unsigned int sum = 0;
 
 		ecore_list_goto_first(tree->children);
 		while ((child = ecore_list_next(tree->children)))
@@ -3916,7 +3916,7 @@ ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 				unsigned int len)
 {
 	Ewl_Text_BTree *child;
-	int sum = 0;
+	unsigned int sum = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -4000,7 +4000,6 @@ ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx,
 	ecore_list_goto_first(tree->children);
 	while ((child = ecore_list_next(tree->children)))
 	{
-
 		if ((sum <= idx) && ((sum + child->length) > idx))
 		{
 			int new_len;
@@ -4025,7 +4024,7 @@ void
 ewl_text_btree_text_delete(Ewl_Text_BTree *tree, unsigned int idx, unsigned int len)
 {
 	Ewl_Text_BTree *child;
-	int sum = 0;
+	unsigned int sum = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -4053,7 +4052,7 @@ ewl_text_btree_text_delete(Ewl_Text_BTree *tree, unsigned int idx, unsigned int 
 
 		if ((sum <= idx) && ((sum + child->length) > idx))
 		{
-			int del_length;
+			unsigned int del_length;
 			int new_len;
 
 			del_length = (child->length - (idx - sum));

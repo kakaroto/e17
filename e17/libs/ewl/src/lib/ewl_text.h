@@ -66,7 +66,7 @@ struct Ewl_Text
 Ewl_Widget 	*ewl_text_new(void);
 int 		 ewl_text_init(Ewl_Text *t);
 
-int		 ewl_text_length_get(Ewl_Text *t);
+unsigned int	 ewl_text_length_get(Ewl_Text *t);
 
 void		 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx,
 					int *x, int *y, int *w, int *h);

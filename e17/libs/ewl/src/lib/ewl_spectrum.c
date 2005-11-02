@@ -23,8 +23,8 @@ static void ewl_spectrum_hsv_to_rgb(double h, double s, double v,
 static void ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
 					int w, int h, unsigned int *r, 
 					unsigned int *g, unsigned int *b);
-static void ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int x, 
-				int y, int img_w, int img_h, unsigned int *r, 
+static void ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int y, 
+				int img_h, unsigned int *r, 
 				unsigned int *g, unsigned int *b);
 static void ewl_spectrum_color_coord_map_square(Ewl_Spectrum *sp, int x, 
 				int y, int img_w, int img_h, unsigned int *r, 
@@ -272,7 +272,8 @@ ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h, double *s, double *v)
 }
 
 void
-ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev, void *data)
+ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
+					void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
 
@@ -315,9 +316,9 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 	x = e->x - CURRENT_X(w);
 	y = e->y - CURRENT_Y(w);
 
-	if (x > (CURRENT_X(w) + CURRENT_W(w)))
+	if (x > (unsigned int)(CURRENT_X(w) + CURRENT_W(w)))
 		x = (CURRENT_W(w) - CURRENT_X(w));
-	if (y > (CURRENT_Y(w) + CURRENT_H(w)))
+	if (y > (unsigned int)(CURRENT_Y(w) + CURRENT_H(w)))
 		y = (CURRENT_H(w) - CURRENT_Y(w));
 
 	ewl_spectrum_mouse_process(sp, x, y);
@@ -352,7 +353,8 @@ ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 }
 
 void
-ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+ewl_spectrum_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data)
 {
 	Ewl_Spectrum *sp;
 
@@ -360,7 +362,6 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("data", data);
 
 	sp = data;
-
 	ewl_callback_del(sp->canvas, EWL_CALLBACK_MOUSE_MOVE,
 			ewl_spectrum_cb_mouse_move);
 
@@ -429,11 +430,11 @@ ewl_spectrum_hsv_from_rgb(Ewl_Spectrum *sp)
 		unsigned int delta;
 
 		delta = max - min;
-		if (sp->rgb.r == max)
+		if ((unsigned int)sp->rgb.r == max)
 			sp->hsv.h = (sp->rgb.g - sp->rgb.b) / (float)delta;
-		else if (sp->rgb.g == max)
+		else if ((unsigned int)sp->rgb.g == max)
 			sp->hsv.h = 2.0 + ((sp->rgb.b - sp->rgb.r) / (float)delta);
-		else if (sp->rgb.b == max)
+		else if ((unsigned int)sp->rgb.b == max)
 			sp->hsv.h = 4.0 + ((sp->rgb.r - sp->rgb.g) / (float)delta);
 
 		sp->hsv.h *= 60.0;
@@ -585,8 +586,7 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int img_w, int img_
 	DCHECK_PARAM_PTR("sp", sp);
 
 	if (sp->type == EWL_SPECTRUM_TYPE_VERTICAL)
-		ewl_spectrum_color_coord_map_vertical(sp, x, y, img_w, 
-							img_h, r, g, b);
+		ewl_spectrum_color_coord_map_vertical(sp, y, img_h, r, g, b);
 	else
 		ewl_spectrum_color_coord_map_square(sp, x, y, img_w, 
 							img_h, r, g, b);
@@ -595,7 +595,7 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int img_w, int img_
 }
 
 static void
-ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int x, int y, int img_w, int img_h,
+ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int y, int img_h,
 					unsigned int *r, unsigned int *g, unsigned int *b)
 {
 	unsigned int r_tmp, g_tmp, b_tmp;
