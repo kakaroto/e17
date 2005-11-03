@@ -423,9 +423,9 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	if ( (!strcmp(request->file->uri_base, "posix")) && !request->drill_down && !request->file->parent) {
 		/*If either the path, or the filename, is the root dir, we don't need another slash*/
 		if (strcmp(request->file->filename, "/") && strcmp(request->file->path, "/")) {		
-			snprintf(dire, 256, "%s/%s", request->file->path, request->file->filename);
+			snprintf(dire, 255, "%s/%s", request->file->path, request->file->filename);
 		} else {
-			snprintf(dire, 256, "%s%s", request->file->path, request->file->filename);
+			snprintf(dire, 255, "%s%s", request->file->path, request->file->filename);
 		}
 	
 
