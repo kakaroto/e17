@@ -65,7 +65,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree_win), box);
 	ewl_box_homogeneous_set(EWL_BOX(box), FALSE);
-	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(box);
 
 	hbox = ewl_hbox_new();

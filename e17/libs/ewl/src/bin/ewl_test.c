@@ -152,7 +152,8 @@ main(int argc, char **argv)
                         __create_iconbox_test_window,
                         "ewl_iconbox_test.c",
                         "Provides a widget for displaying icons\n"
-                                " in an arranged grid, or freeform, with callback and label editing facilities.",
+                                "in an arranged grid, or freeform,\n"
+				"with callback and label editing facilities.",
                 },
 		{
 			"Image",
@@ -328,8 +329,9 @@ main(int argc, char **argv)
 	ewl_tree_headers_set (EWL_TREE (main_tree), header);
 	ewl_container_child_append(EWL_CONTAINER(main_box), main_tree);
 	ewl_object_fill_policy_set (EWL_OBJECT (main_tree),
-				     EWL_FLAG_FILL_HSHRINK |
-				     EWL_FLAG_FILL_VFILL);
+				    EWL_FLAG_FILL_HSHRINK |
+				    EWL_FLAG_FILL_VSHRINK |
+				    EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(main_tree);
 
 	/*

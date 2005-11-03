@@ -58,7 +58,7 @@ void
 __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	Ewl_Widget *win, *vbox, *hbox, *o;
+	Ewl_Widget *win, *vbox, *hbox, *scroll, *o;
 
 	text_editor_button = w;
 
@@ -139,8 +139,12 @@ __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_widget_show(o);
 	}
 
+	scroll = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), scroll);
+	ewl_widget_show(scroll);
+
 	o = ewl_entry_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	ewl_container_child_append(EWL_CONTAINER(scroll), o);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
 	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
