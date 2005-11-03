@@ -59,6 +59,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* file);
 
 #define BZIP2_BUFFER 5000
 
+Ecore_Hash* bzip_hash;
 typedef struct bzip2_file {
 	evfs_filereference* ref;
 	bz_stream stream;
@@ -67,7 +68,7 @@ typedef struct bzip2_file {
 	
 } bzip2_file;
 
-bzip2_file* bfile;
+
 
 
 evfs_plugin_functions* evfs_plugin_init() {
@@ -77,6 +78,7 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_client_disconnect = &evfs_client_disconnect;
         functions->evfs_file_open = &evfs_file_open;
 	functions->evfs_file_read = &evfs_file_read;
+	functions->evfs_file_close = &evfs_file_close;
 	
 	/*functions->evfs_dir_list = &evfs_dir_list;
 
@@ -85,7 +87,7 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_monitor_stop = &evfs_monitor_stop;
         functions->evfs_file_stat = &evfs_file_stat;
 
-        functions->evfs_file_close = &evfs_file_close;
+        
 
 
         functions->evfs_file_seek = &evfs_file_seek;
@@ -94,16 +96,11 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_file_create = &evfs_file_create;*/
 
 
-	bfile = NEW(bzip2_file);
-	bfile->buffer =  malloc(sizeof(char)*BZIP2_BUFFER);
-	bfile->stream.next_in = (char*)bfile->buffer;
-	bfile->stream.avail_in = 0;
 
-	if (BZ2_bzDecompressInit(&bfile->stream,0,0) != BZ_OK) {
-		printf("Error in bzip2 init\n");
-	}
-
-
+	/*FIXME - This is bad - by using a direct compare, we preclude clients using
+	 * an 'identical' evfs_filereference with a different pointer*/
+	/*TODO - Fix this by creating evfs_filereference_compare for Ecore_Hash*/
+	bzip_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
         return functions;
 
@@ -122,18 +119,31 @@ evfs_client_disconnect(evfs_client* client) {
 
 int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	evfs_filereference* f_par = file->parent;
+	bzip2_file* bfile;
 
 	/*Handle decomp init*/
+	printf("Opening bzip file '%s'\n", file->path);
 
+	bfile = NEW(bzip2_file);
+	bfile->buffer =  malloc(sizeof(char)*BZIP2_BUFFER);
+	bfile->stream.next_in = (char*)bfile->buffer;
+	bfile->stream.avail_in = 0;
+
+	if (BZ2_bzDecompressInit(&bfile->stream,0,0) != BZ_OK) {
+		printf("Error in bzip2 init\n");
+	}
+
+	ecore_hash_set(bzip_hash, file, bfile);
 
 	/*Open the file in the parent*/
 	return evfs_uri_open(client, f_par);
 
 }
 
-
+/*FUTURE DOC NOTE - Takes the child file, not the parent */
 int evfs_bzip2_populate_buffer(evfs_client* client, evfs_filereference* ref) {
 	int res;
+	bzip2_file* bfile = ecore_hash_get(bzip_hash, ref);
 	
 	if (bfile->stream.avail_in > 0) {
 		//printf("No need to read, got data already..\n");
@@ -141,7 +151,7 @@ int evfs_bzip2_populate_buffer(evfs_client* client, evfs_filereference* ref) {
 	}
 
 	
-	res = evfs_uri_read(client,ref, bfile->buffer, BZIP2_BUFFER);
+	res = evfs_uri_read(client,ref->parent, bfile->buffer, BZIP2_BUFFER);
 	//printf("Read %d bytes at bzip2_read from fd %d using filename %s\n", res, ref->fd, ref->path);
 
 	if (res > 0) {
@@ -158,6 +168,7 @@ int evfs_bzip2_populate_buffer(evfs_client* client, evfs_filereference* ref) {
 
 int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size) {
 	evfs_filereference* f_par = file->parent;
+	bzip2_file* bfile = ecore_hash_get(bzip_hash, file);
 	int bz_result;
 	int r_size;
 	
@@ -168,7 +179,7 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 	bfile->stream.avail_out = size;
 
 	while (bfile->stream.avail_out != 0) {
-		int res = evfs_bzip2_populate_buffer(client,f_par);
+		int res = evfs_bzip2_populate_buffer(client,file);
 		//printf("Avail_out starts at %d\n", bfile->stream.avail_out);
 		bz_result = BZ2_bzDecompress(&bfile->stream);
 		//printf("Avail_out goes to %d\n", bfile->stream.avail_out);
@@ -186,9 +197,19 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 	} else if (bfile->stream.avail_out == size) {
 		return 0; /*EOF*/
 	}
+}
 
+int evfs_file_close(evfs_filereference* file) {
+	bzip2_file* bfile = ecore_hash_get(bzip_hash, file);
 	
-	
+	if (BZ2_bzDecompressEnd(&bfile->stream) != BZ_OK) {
+		printf("Error in bzip2 end\n");
+	}
+
+	free(bfile->buffer);
+	ecore_hash_remove(bzip_hash, file);
+	free(bfile);
+
 }
 
 

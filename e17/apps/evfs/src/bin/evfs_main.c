@@ -176,7 +176,6 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			break;
 		case EVFS_CMD_LIST_DIR:
 			evfs_handle_dir_list_command(client,command);
-			printf("List directory stub\n");
 			break;
 		case EVFS_CMD_FILE_COPY:
 			printf("File copy handler\n");

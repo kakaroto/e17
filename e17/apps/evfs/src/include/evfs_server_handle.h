@@ -1,5 +1,6 @@
 int evfs_uri_open(evfs_client* client, evfs_filereference* uri);
 int evfs_uri_read(evfs_client* client, evfs_filereference* uri, char* bytes, long size);
+int evfs_uri_close(evfs_client* client, evfs_filereference* uri);
 
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command);
 void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command);

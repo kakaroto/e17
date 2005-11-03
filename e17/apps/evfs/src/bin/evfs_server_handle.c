@@ -16,6 +16,19 @@ int evfs_uri_open(evfs_client* client, evfs_filereference* uri) {
 	}
 }
 
+int evfs_uri_close(evfs_client* client, evfs_filereference* uri) {
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server,uri->plugin_uri);
+	if (plugin) {
+		printf("Closing file..\n");
+		return (*plugin->functions->evfs_file_close)(uri);		
+	} else {
+		printf("Could not get plugin for uri '%s' at evfs_uri_close\n", uri->plugin_uri);
+		return -1;
+	}
+
+}
+		
+
 int evfs_uri_read(evfs_client* client, evfs_filereference* uri, char* bytes, long size) {
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server,uri->plugin_uri);
 	if (plugin) {

@@ -39,6 +39,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <tarpet.h>
 
 
+evfs_filereference* evfs_file_top_level_find(evfs_filereference* file) {
+	evfs_filereference* top = file;
+	
+	while (top->parent) {
+		top = top->parent;
+	}
+
+	return top;
+}
+
 
 /*Main file wrappers*/
 int evfs_file_remove(char* src);
@@ -225,6 +235,8 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 	Ecore_List* keys;
 	char* dir, *key;
 	int count;
+	int find = 0;
+	evfs_filereference* top_ref;
 	
 	printf("At tar dir_list handler\n");
 
@@ -242,15 +254,19 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 			printf("Magic is '%s'\n", block.p.magic);
 			printf("Flag is %d\n", block.p.typeflag);*/
 
-
 			tar_name_split(&block, tar);
+			find++;
 		} else {
 			//printf("No magic - '%s'\n", block.p.magic);
 		}
 	}
-	
+	evfs_uri_close(client, p_ref);
 
-	ecore_hash_set(tar_cache, strdup(p_ref->path), tar);
+	if (!find) { printf("*** No GNU-TAR blocks found in file\n"); }
+	else { printf("Found %d tar blocks total\n"); }
+	
+	printf("Recording tar file as '%s'\n", evfs_file_top_level_find(p_ref)->path);
+	ecore_hash_set(tar_cache, strdup(evfs_file_top_level_find(p_ref)->path), tar);
 
 
 	return tar;
@@ -269,7 +285,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 	
 	printf("Listing tar file dir: '%s'\n", com->file_command.files[0]->path);
 
-	if (!(file = ecore_hash_get(tar_cache, com->file_command.files[0]->parent->path))) {
+	if (!(file = ecore_hash_get(tar_cache, evfs_file_top_level_find(com->file_command.files[0])->path))) {
 		file = evfs_tar_load_tar(client, com->file_command.files[0]);
 	}
 
