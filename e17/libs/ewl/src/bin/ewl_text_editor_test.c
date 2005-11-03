@@ -2,6 +2,27 @@
 
 static Ewl_Widget *text_editor_button;
 
+static char *txt = "I'm not a lumberjack, or a fur trader,\n"
+		"I don't live in an igloo,\n"
+		"Or eat blubber,\n"
+		"Or own a dogsled,\n"
+		"And I don't know Jimmy, Sally, or Suzie from Canada, although I'm certain they're really really nice,\n"
+		"I have a Prime Minister, not a President,\n"
+		"I speak English and French, not American,\n"
+		"And I pronounce it about, not aboot,\n"
+		"I can proudly sew my country's flag on my backpack,\n"
+		"I believe in peacekeeping, not policing,\n"
+		"diversity, not assimilation,\n"
+		"and that the Beaver is a truly proud and nobel animal,\n"
+		"a touque is a hat,\n"
+		"a chesterfield is a couch,\n"
+		"and it is pronounced Zed, not Zee, Zed,\n"
+		"Canada is the 2nd largest land mass,\n"
+		"the first nation of hockey,\n"
+		"and the best part of North America,\n"
+		"My name is Joe,\n"
+		"and I AM CANADIAN!!!!!";
+
 static void ete_style_apply(Ewl_Text *t, Ewl_Text_Style s);
 static void ete_cb_underline(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_double_underline(Ewl_Widget *w, void *ev, void *data);
@@ -16,6 +37,7 @@ static void ete_cb_font_size(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_fetch(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_set(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_load(Ewl_Widget *w, void *ev, void *data);
+static void ete_cb_clear(Ewl_Widget *w, void *ev, void *data);
 		
 typedef struct 
 {
@@ -146,6 +168,7 @@ __create_text_editor_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 				{"Fetch", ete_cb_fetch},
 				{"Set",   ete_cb_set},
 				{"Load",  ete_cb_load},
+				{"Clear", ete_cb_clear},
 				{NULL, NULL}
 			};
 
@@ -343,7 +366,10 @@ static void
 ete_cb_set(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
-	printf("I do nothing yet ...\n");
+	Ewl_Widget *entry;
+
+	entry = ewl_widget_name_find("entry");
+	ewl_text_text_set(EWL_TEXT(entry), txt);
 }
 
 static void
@@ -353,6 +379,14 @@ ete_cb_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	printf("I do nothing yet ...\n");
 }
 
+static void
+ete_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+					void *data __UNUSED__)
+{
+	Ewl_Widget *entry;
 
+	entry = ewl_widget_name_find("entry");
+	ewl_text_text_set(EWL_TEXT(entry), NULL);
+}
 
 
