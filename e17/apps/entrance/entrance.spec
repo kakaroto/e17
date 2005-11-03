@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: entrance
 Version: 0.9.0.004
-Release: 0.20050908
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
@@ -28,6 +28,7 @@ dream about...and without the bloat.
 
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+%{__rm} -rf ${HOME:/}/.ecore
 
 %post
 /sbin/ldconfig || :
