@@ -82,14 +82,14 @@ group {
 
 group {
 	name, "cursor";
-	min, 6 6;
-	max, 6 10000;
+	min, 1 6;
+	max, 1 10000;
 
 	data {
-		item, "pad/left" "2";
-		item, "pad/right" "2";
-		item, "pad/top" "2";
-		item, "pad/bottom" "2";
+		item, "pad/left" "0";
+		item, "pad/right" "0";
+		item, "pad/top" "0";
+		item, "pad/bottom" "0";
 	}
 
 	parts {
