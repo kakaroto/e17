@@ -168,6 +168,7 @@ entropy_core* entropy_core_init() {
 			ecore_list_append(core->plugin_list, create_plugin_object(plugin_path));
                    }
                 }
+		closedir(dir);
         } else {
                 fprintf(stderr, "Entropy: Could not location plugin directory '%s'\n", PACKAGE_DATA_DIR "/plugins/");
                 exit(1);
@@ -882,7 +883,12 @@ void entropy_core_file_cache_add(entropy_core* core, char* md5, entropy_file_lis
 
 	LOCK(&core->file_cache_mutex);
 	
-	ecore_hash_set(core->file_interest_list, md5, listener);
+	if (!ecore_hash_get(core->file_interest_list, md5)) {
+		ecore_hash_set(core->file_interest_list, md5, listener);
+	} else {
+		printf("*** BAD: Called set-reference with file already cached!\n");
+		entropy_core_file_cache_add_reference(core, md5);
+	}
 	file_cache_size++;
 	/*printf("File cache goes to %ld\n", file_cache_size);*/
 	UNLOCK(&core->file_cache_mutex);
