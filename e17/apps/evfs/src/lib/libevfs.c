@@ -365,8 +365,12 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 		token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "/"); /* '/' */
 	}
 
-	new_ref->path = malloc(strlen(token->token_s) + 1);
-	strcpy(new_ref->path, token->token_s);
+	if (token) {
+		new_ref->path = malloc(strlen(token->token_s) + 1);
+		strcpy(new_ref->path, token->token_s);
+	} else {
+		new_ref->path = calloc(1,1);
+	}
 
 	/*Blindly get the rest of the tokens and append*/
 	while ((token = ecore_dlist_next(tokens))) {
