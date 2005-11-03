@@ -242,6 +242,9 @@ FocusEwinSetGrabs(EWin * ewin)
 static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
+   if (ewin->state.active == active)
+      return;
+
    ewin->state.active = active;
    EwinBorderUpdateState(ewin);
 
@@ -467,6 +470,7 @@ FocusToEWin(EWin * ewin, int why)
 	  {
 	     Mode.focuswin = NULL;
 	     focus_is_set = 0;
+	     FocusEwinSetActive(ewin, 0);
 	  }
 	if (ewin == focus_pending_new)
 	   focus_pending_new = NULL;
