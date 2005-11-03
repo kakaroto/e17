@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS     = 1.7 foreign
+
 lib_LTLIBRARIES = libevfs.la
 
 INCLUDES = @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include \

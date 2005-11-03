@@ -290,6 +290,7 @@ src/lib/Makefile
 src/plugins/Makefile
 src/demo/Makefile
 src/include/Makefile
+src/common/Makefile
 evfs-config
 ], [
 chmod +x evfs-config

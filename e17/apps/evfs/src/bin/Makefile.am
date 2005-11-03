@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS     = 1.7 foreign
+
 bin_PROGRAMS = evfs
 
 MAINTAINERCLEANFILES = Makefile.in Makefile
