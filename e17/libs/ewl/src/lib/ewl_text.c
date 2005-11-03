@@ -2597,13 +2597,6 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		evas_object_layer_set(t->textblock, 
 					ewl_widget_layer_sum_get(w));
 
-		/* This needs to be here to cause the scrollpane to update
-		 * as you scroll, tho I think Evas should be doing this
-		 * itself behind the scenes */
-//printf("THIS NEEDED?\n");
-//		evas_damage_rectangle_add(evas_object_evas_get(t->textblock),
-//							xx, yy, ww, hh);
-
 		ewl_text_triggers_configure(t);
 	}
 
