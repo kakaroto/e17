@@ -4171,10 +4171,7 @@ ewl_text_btree_dump(Ewl_Text_BTree *tree, char *indent)
 		char *t;
 		t = NEW(char, strlen(indent) + 3);
 		if (!t)
-		{
-			printf("OUT OF MEMORY...\n");
 			DRETURN(DLEVEL_STABLE);
-		}
 
 		sprintf(t, "%s  ", indent);
 		ewl_text_btree_dump(child, t);
@@ -4204,6 +4201,9 @@ ewl_text_display(Ewl_Text *t)
 	if (!h) h = 1;
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
+
+	/* re-configure the selection to make sure it resizes if needed */
+	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
 	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -4573,7 +4573,7 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
 			ctx->color.r, ctx->color.g,
 			ctx->color.b, ctx->color.a, style, 
-			((ctx->wrap) ? "on" : "off"), align);
+			((ctx->wrap) ? "word" : "off"), align);
 
 	IF_FREE(ptr);
 
