@@ -788,8 +788,8 @@ void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
 
+	ecore_list_destroy(ib->ewl_iconbox_icon_list);
 	return;
-	ib = NULL;
 }
 
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
