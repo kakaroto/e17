@@ -267,7 +267,7 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
             eu = entrance_user_new(strdup(user), NULL, e->session);
 
          if (!(e->session_selected) && (eu->session) 
-               && (strlen(eu->session) > 0))
+               && (eu->session[0] != 0))
          {
             if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
             {
@@ -376,7 +376,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       exs = evas_hash_find(e->config->sessions.hash, e->session);
 
    entrance_auth_setup_environment(e->auth, e->display);
-   if ((exs->session) && (strlen(exs->session) > 0))
+   if ((exs->session) && (exs->session[0] != 0))
    {
       if (!strcmp(exs->session, "default"))
          snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
@@ -485,7 +485,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    entrance_session_free(e);
    /* replace this process with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
-   execl(shell, shell, "-l", "-c", buf, NULL);
+   execl(shell, shell, "-c", buf, NULL);
 }
 
 
