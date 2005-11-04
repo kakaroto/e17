@@ -593,17 +593,14 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 		ewl_widget_hide(EWL_WIDGET(ib->icon_box_parent->entry_floater));
 		ewl_iconbox_icon_label_set(ib, ib->label);
 
-		ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 255, 255);
 		ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
 		ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 255, 255, ewl_text_length_get(EWL_TEXT(ib->w_label)));
+		ewl_widget_color_set(EWL_WIDGET(ib), 216,176,88,70);
+		
 	}
 
-
-	
-	/*TODO allow multiselect, as per a "select policy" set on widget create/init*/
 	ib->selected = 1;
 
-	/*printf("Setting color..\n");*/
 	
 }
 
@@ -611,7 +608,6 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 {
 	char* text;	
 	ib->selected = 0;
-	ewl_text_bg_color_set(EWL_TEXT(ib->w_label), 0, 0, 0, 255);
 
 
 	/*If we have a compressed label, set it now*/
@@ -619,9 +615,8 @@ void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 		ewl_iconbox_icon_label_set(ib, ib->label_compressed);
 	}
 	ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
-	text = ewl_text_text_get(EWL_TEXT(ib->w_label));
-	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255, strlen(text));
-	free(text);
+	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255,ewl_text_length_get(EWL_TEXT(ib->w_label)) );
+	ewl_widget_color_set(EWL_WIDGET(ib), 255,255,255,255);
 
 }
 
