@@ -32,6 +32,7 @@ struct Ewl_Callback_Chain
 	void **list;
 	unsigned short mask;
 	unsigned short len;
+	unsigned short index;
 };
 
 typedef struct Ewl_Color_Set Ewl_Color_Set;

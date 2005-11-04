@@ -165,6 +165,9 @@ ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
 	w->callbacks[t].list = realloc(w->callbacks[t].list, 
 					w->callbacks[t].len * sizeof(void *));
 
+	if (pos < EWL_CALLBACK_POS(w, t))
+		EWL_CALLBACK_POS(w, t)--;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -221,6 +224,10 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 		}
 		w->callbacks[t].list[pos] = cb;
 	}
+
+	if (pos < EWL_CALLBACK_POS(w, t))
+		EWL_CALLBACK_POS(w, t)++;
+
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
 
@@ -384,9 +391,8 @@ void
 ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
 				  void *ev_data)
 {
-	Ewl_Callback *cb;
+	Ewl_Callback *cb, *oldcb;
 	Ewl_Widget *parent, *top = NULL;
-	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -430,11 +436,16 @@ ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
 	 * Loop through and execute each of the callbacks of a certain type for
 	 * the specified widget.
 	 */
-	for (i = 0; i < EWL_CALLBACK_LEN(w, t); i++)
+	EWL_CALLBACK_POS(w, t) = 0;
+	while (EWL_CALLBACK_POS(w, t) < EWL_CALLBACK_LEN(w, t))
 	{
-		cb = EWL_CALLBACK_GET(w, t, i);
+		oldcb = cb = EWL_CALLBACK_GET(w, t, EWL_CALLBACK_POS(w, t));
 		if (cb->func)
 			cb->func(w, ev_data, cb->user_data);
+		cb = EWL_CALLBACK_GET(w, t, EWL_CALLBACK_POS(w, t));
+
+		if (cb == oldcb)
+			EWL_CALLBACK_POS(w, t)++;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

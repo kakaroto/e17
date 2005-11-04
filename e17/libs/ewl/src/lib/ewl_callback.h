@@ -66,6 +66,12 @@ struct Ewl_Callback
 #define EWL_CALLBACK_LEN(w, t) (w->callbacks[t].len)
 
 /**
+ * @def EWL_CALLBACK_POS(w, t)
+ * Retrives the current callback position from a widget for an event type.
+ */
+#define EWL_CALLBACK_POS(w, t) w->callbacks[t].index
+
+/**
  * @def EWL_CALLBACK_GET(w, t, i)
  * Retrives the callback struct at the given position
  */
