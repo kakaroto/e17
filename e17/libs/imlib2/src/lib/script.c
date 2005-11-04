@@ -43,10 +43,12 @@ __imlib_find_string(char *haystack, char *needle)
 static char        *
 __imlib_stripwhitespace(char *str)
 {
-   int                 i, strt = 0, in_quote = 0;
-   char               *tmpstr = calloc(strlen(str) + 1, sizeof(char));
+   int                 i, strt = 0, in_quote = 0, str_len;
+   char               *tmpstr = NULL;
 
-   for (i = 0; i < strlen(str); i++)
+   str_len = strlen(str);
+   tmpstr = calloc(str_len + 1, sizeof(char));
+   for (i = 0; i < str_len; i++)
      {
         if (str[i] == '\"')
            in_quote = (in_quote == 0 ? 1 : 0);
@@ -124,6 +126,7 @@ IFunctionParam     *
 __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
 {
    int                 i = 0, in_quote = 0, depth = 0, start = 0, value_start =
+   int                 param_len;
        0;
    char               *value = NULL;
    IFunctionParam     *rootptr, *ptr;
@@ -137,7 +140,8 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
    rootptr->next = NULL;
    ptr = rootptr;
 
-   for (i = 0; i <= strlen(parameters); i++)
+   param_len = strlen(parameters);
+   for (i = 0; i <= param_len; i++)
      {
         if (parameters[i] == '\"')
            in_quote = (in_quote == 0 ? 1 : 0);
@@ -147,7 +151,7 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
            depth--;
         if (!in_quote && parameters[i] == '=' && depth == 0)
            value_start = i + 1;
-        if (!in_quote && (parameters[i] == ',' || i == (strlen(parameters)))
+        if (!in_quote && (parameters[i] == ',' || i == param_len)
             && depth == 0)
           {
              ptr->next = malloc(sizeof(IFunctionParam));
@@ -240,10 +244,11 @@ Imlib_Image
 __imlib_script_parse(Imlib_Image im, char *script, va_list param_list)
 {
    int                 i = 0, in_quote = 0, start = 0, depth = 0;
+   int                 script_len;
    char               *scriptbuf = NULL, *function;
 
    D("(--) Script Parser Start.");
-   if (script != NULL && strlen(script) > 0)
+   if (script != NULL && script[0] != 0)
      {
         vars = malloc(sizeof(IVariable));
         vars->ptr = NULL;
@@ -267,7 +272,8 @@ __imlib_script_parse(Imlib_Image im, char *script, va_list param_list)
 
         start = 0;
         i = 0;
-        for (i = 0; i < strlen(scriptbuf); i++)
+        script_len = strlen(scriptbuf);
+        for (i = 0; i < script_len; i++)
           {
              if (script[i] == '\"')
                 in_quote = (in_quote == 0 ? 1 : 0);
