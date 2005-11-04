@@ -10,7 +10,8 @@
  *
  * Model:
  * Defines communication callbacks for views and controllers. Query row/column
- * data, indicate expansion points, notify views and controllers of changes.
+ * data, indicate expansion points, notify views and controllers of changes,
+ * trigger sorting on a row/column combination.
  *
  * View:
  * Defines the callbacks for setting up the widgets based on the data returned
@@ -55,130 +56,78 @@
  * @themekey /tree/group
  */
 
-typedef struct Ewl_Tree_Column_Provider Ewl_Tree_Column_Provider;
+typedef void *(*data_get)(void *data, int row, int column) Ewl_Tree2_Cell_Data;
+typedef void *(*child_data_get)(void *data, int row) Ewl_Tree2_Child_Data;
+typedef int (*column_sort)(void *data, int column) Ewl_Tree2_Column_Sort;
+typedef int (*row_count)(void *data) Ewl_Tree2_Row_Count;
 
-/**
- * @def EWL_TREE_COLUMN_PROVIDER(t)
- * Typecasts a pointer to an Ewl_Tree_Column_Provider pointer.
- */
-#define EWL_TREE_COLUMN_PROVIDER(p) ((Ewl_Tree_Column_Provider *)p)
+typedef struct Ewl_Tree2_Model Ewl_Tree2_Model;
 
-/**
- * @struct Ewl_Tree_Column_Provider
- * The tree column provider is used to map data from an arbitrary data structure
- * into a widget and corresponding information for display.
- */
-struct Ewl_Tree_Column_Provider
+struct Ewl_Tree2_Model
 {
-	Ewl_Widget *(*display_get)(void);                    /**< Get widget for data display */
-	void (*display_set)(Ewl_Widget *w, void *data);      /**< Set widget data */
+	void *data;                          /**< Data provided to the tree */
 
-	int (*row_count_get)(void *data);                    /**< Total rows in column */
-	void *(*data_get)(void *data, int row, int col);     /**< Get cell data */
-	int (*expandable_get)(void *data, int row, int col); /**< Mark column expandable */
-	int (*persistent_get)(void *data, int row, int col); /**< Mark column display data persistent */
+	Ewl_Tree2_Cell_Data cell_data_get;   /**< Retrieve data for a cell */
+	Ewl_Tree2_Child_Data child_data_get; /**< Check if a row expands */
+	Ewl_Tree2_Column_Sort column_sort;   /**< Trigger sort on column */
+	Ewl_Tree2_Row_Count row_count;       /**< Count of rows in data */
 };
 
-typedef struct Ewl_Tree Ewl_Tree;
+typedef struct Ewl_Tree2 Ewl_Tree2;
 
 /**
- * @def EWL_TREE(t)
+ * @def EWL_TREE2(t)
  * Typecasts a pointer to an Ewl_Tree pointer.
  */
-#define EWL_TREE(t) ((Ewl_Tree *)t)
+#define EWL_TREE2(t) ((Ewl_Tree2 *)t)
 
 /**
  * @struct Ewl_Tree
  * The tree is a columnar listing, where items in the list may be nested
  * below other items.
  */
-struct Ewl_Tree
+struct Ewl_Tree2
 {
-	Ewl_Container  container;               /**< Inherit from container */
-	Ewl_Tree_Column_Provider *providers; /**< Array of providers */
-};
+	Ewl_Container    container; /**< Inherit from container. */
 
-typedef struct Ewl_Tree_Node Ewl_Tree_Node;
+	Ewl_Tree2_Model *model;     /**< Current data model for the tree. */
 
-/**
- * @def EWL_TREE_NODE(t)
- * Typecasts a pointer to an Ewl_Tree_Node pointer.
- */
-#define EWL_TREE_NODE(t) ((Ewl_Tree_Node *)t)
-
-/*
- * The tree_node exists for each row, at this level the tree_node contains rows
- * that contain cells which display the data.
- */
-struct Ewl_Tree_Node
-{
-	Ewl_Container container;      /**< Inherit from Ewl_Container */
-	Ewl_Tree *tree;               /**< Pointer to the tree this is inside */
-	Ewl_Widget *row;              /**< The child row */
-	Ewl_Widget *handle;           /**< The child row */
-	Ewl_Tree_Node_Flags expanded; /**< Indicator of expansion state */
+	int *rowcache;              /**< Cache of row sizes */
+	int fixed;                  /**< Rows are fixed height */
 };
 
 /*
- * Node creation/initialization functions.
+ * Tree view/controller manipulation
  */
-Ewl_Widget 	*ewl_tree_node_new(void);
-int 		 ewl_tree_node_init(Ewl_Tree_Node *tree_node);
+Ewl_Widget 	*ewl_tree2_new();
+int 		 ewl_tree2_init(Ewl_Tree *tree, unsigned short columns);
+
+void		 ewl_tree2_headers_visible_set(Ewl_Tree *tree,
+					       unsigned char visible);
+unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree *tree);
+
+Ecore_List 	*ewl_tree2_selected_get(Ewl_Tree *tree);
+void 		 ewl_tree2_selected_clear(Ewl_Tree *tree);
+
+Ewl_Tree2_Mode 	 ewl_tree2_mode_get(Ewl_Tree *tree);
+void 		 ewl_tree2_mode_set(Ewl_Tree *tree, Ewl_Tree2_Mode mode);
+
+void             ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, int fixed);
+int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 /*
- * Node state modifying functions
+ * Tree model manipulation.
  */
-void 		 ewl_tree_node_collapse(Ewl_Tree_Node *tree);
-void 		 ewl_tree_node_expand(Ewl_Tree_Node *tree);
+Ewl_Tree2_Model *ewl_tree2_model_new();
 
-/*
- * Tree creation/initialization functions.
- */
-Ewl_Widget 	*ewl_tree_new(unsigned short columns);
-int 		 ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
+void             ewl_tree2_model_data_set(Ewl_Tree2_Model *m, void *data);
+void            *ewl_tree2_model_data_get(Ewl_Tree2_Model *m);
 
-void 		 ewl_tree_headers_set(Ewl_Tree *tree, char **headers);
-void  		 ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
+void             ewl_tree2_model_cell_data_get_set(Ewl_Tree2_Model *m, Ewl_Tree2_Cell_Data get);
+Ewl_Tree2_Cell_Data ewl_tree2_model_cell_data_get_get(Ewl_Tree2_Model *m);
 
-void		 ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible);
-unsigned int	 ewl_tree_headers_visible_get(Ewl_Tree *tree);
-
-
-Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);
-void 		 ewl_tree_selected_clear(Ewl_Tree *tree);
-Ewl_Widget	*ewl_tree_row_column_get(Ewl_Row *row, int i);
-
-Ewl_Tree_Mode  	 ewl_tree_mode_get(Ewl_Tree *tree);
-void 		 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode);
-
-Ewl_Widget 	*ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow,
-					     Ewl_Widget **children);
-Ewl_Widget 	*ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
-Ewl_Widget 	*ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
-
-void 		 ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row);
-void 		 ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
-Ewl_Widget 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
-
-/*
- * Internally used callbacks, override at your own risk.
- */
-void ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_node_toggle_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-
-void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-						     Ewl_Orientation o);
-
-void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_child_resize_cb(Ewl_Container *c);
-void ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void             ewl_tree2_model_column_sort_set(Ewl_Tree2_Model *m, Ewl_Tree2_Column_Sort sort);
+Ewl_Tree2_Column_Sort ewl_tree2_model_column_sort_get(Ewl_Tree2_Model *m);
 
 /**
  * @}
