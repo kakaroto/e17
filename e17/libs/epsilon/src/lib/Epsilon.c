@@ -363,7 +363,7 @@ epsilon_exists (Epsilon * e)
 	  strcat (hash_seed, buf);
 	}
 
-      if (strlen(hash_seed) > 0)
+      if (hash_seed[0] != 0)
 	e->hash = epsilon_hash (hash_seed);
       else
 	e->hash = epsilon_hash (e->src);
@@ -442,7 +442,7 @@ epsilon_generate (Epsilon * e)
       !strcasecmp (&e->src[len - 3], "jpg") && (im = epeg_file_open (e->src)))
     {
       char *dir;
-      if(e->tw == THUMB_SIZE_LARGE)
+      if (e->tw == THUMB_SIZE_LARGE)
 	 dir = strdup("large");
       else
 	 dir = strdup("normal");
@@ -568,7 +568,7 @@ epsilon_generate (Epsilon * e)
 	if ((src = imlib_create_cropped_scaled_image (0, 0, iw, ih, tw, th)))
 	  {
 	    char *dir;
-	    if(e->tw == THUMB_SIZE_LARGE)
+	    if (e->tw == THUMB_SIZE_LARGE)
 	       dir = strdup("large");
 	    else
 	       dir = strdup("normal");
@@ -600,9 +600,9 @@ epsilon_generate (Epsilon * e)
 void
 epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
 {
-   if(!e) return;
+   if (!e) return;
    
-   switch(size)
+   switch (size)
      {
       case EPSILON_THUMB_NORMAL:
 	e->tw = THUMB_SIZE_NORMAL;
