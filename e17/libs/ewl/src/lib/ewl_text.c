@@ -4,7 +4,7 @@
 #include "ewl_private.h"
 
 /* This counts how many deletes we have before trigger a condense operation
- * on the btree */
+ * on the tree */
 #define EWL_TEXT_TREE_CONDENSE_COUNT  5
 
 /* how much do we extend the text by when we need more space? */
@@ -26,14 +26,13 @@
 static Ecore_Hash *context_hash = NULL;
 
 static void ewl_text_context_cb_free(void *data);
-static int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 static void ewl_text_context_print(Ewl_Text_Context *tx, char *indent);
-static Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
+
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
 static void ewl_text_tree_walk(Ewl_Text *t);
@@ -113,8 +112,10 @@ ewl_text_init(Ewl_Text *t)
 
 	/* create the default context and stick it into the tree */
 	t->current_context = ewl_text_context_default_create(t);
+	ewl_text_context_acquire(t->current_context);
+
 	t->formatting->tx = t->current_context;
-	t->formatting->tx->ref_count ++;
+	ewl_text_context_acquire(t->formatting->tx);
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE, 
 					ewl_text_cb_configure, NULL);
@@ -468,7 +469,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		IF_FREE(t->text);
 	}
 
-	/* cleanup the nodes in the btree */
+	/* cleanup the nodes in the tree */
 	ewl_text_tree_text_delete(t->formatting, t->cursor_position, length);
 	t->delete_count ++;
 
@@ -631,8 +632,8 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 	t->current_context = ewl_text_tree_context_get(t->formatting, pos);
 	if (t->current_context)
 	{
-		ewl_text_context_free(tx);
-		t->current_context->ref_count ++;
+		ewl_text_context_release(tx);
+		ewl_text_context_acquire(t->current_context);
 	}
 	else
 		t->current_context = tx;
@@ -756,7 +757,7 @@ ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_cha
 		ctx = ewl_text_context_default_create(t);
 
 	t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
-	ewl_text_context_free(ctx);
+	ewl_text_context_release(ctx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -783,7 +784,7 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
 	else change->font = strdup(font);
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -815,7 +816,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 	tx->font = strdup(font);
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_FONT, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -863,7 +864,7 @@ ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
 	change->size = size;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SIZE, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -894,7 +895,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 	tx->size = size;
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SIZE, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -944,7 +945,7 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->color.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -985,7 +986,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1041,7 +1042,7 @@ ewl_text_align_set(Ewl_Text *t, unsigned int align)
 	change->align = align;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_ALIGN, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1072,7 +1073,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 	tx->align = align;
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_ALIGN, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1115,7 +1116,7 @@ ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
 	change->styles = styles;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STYLES, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1146,7 +1147,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 	tx->styles = styles;
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STYLES, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1189,7 +1190,7 @@ ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
 	change->wrap = wrap;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1220,7 +1221,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 	tx->wrap = wrap;
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_WRAP, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1270,7 +1271,7 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.bg.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1311,7 +1312,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_BG_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1374,7 +1375,7 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.glow.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1415,7 +1416,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1478,7 +1479,7 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.outline.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1519,7 +1520,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1582,7 +1583,7 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.shadow.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1623,7 +1624,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1686,7 +1687,7 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.strikethrough.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1727,7 +1728,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1790,7 +1791,7 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.underline.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1831,7 +1832,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -1894,7 +1895,7 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.double_underline.a = a;
 
 	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, change);
-	ewl_text_context_free(change);
+	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1935,7 +1936,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, 
 							t->cursor_position, length);
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	if (REALIZED(t))
 		ewl_text_display(t);
@@ -2628,7 +2629,7 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	ctx = ewl_text_context_default_create(t);
 	fmt = ewl_text_format_get(ctx);
-	ewl_text_context_free(ctx);
+	ewl_text_context_release(ctx);
 
 	len = strlen(fmt) + 12;  /* 12 = strlen("DEFAULT=''") + \n + \0 */
 	fmt2 = NEW(char, len);
@@ -2734,7 +2735,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	if (t->current_context)
 	{
-		ewl_text_context_free(t->current_context);
+		ewl_text_context_release(t->current_context);
 		t->current_context = NULL;
 	}
 	IF_FREE(t->text);
@@ -3029,7 +3030,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	/* XXX grap the alignment and wrap data from the theme here */
 
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
-	ewl_text_context_free(tmp);
+	ewl_text_context_release(tmp);
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
@@ -3147,25 +3148,6 @@ ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
 }
 
 static Ewl_Text_Context *
-ewl_text_context_dup(Ewl_Text_Context *old)
-{
-	Ewl_Text_Context *tx;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("old", old, NULL);
-
-	tx = ewl_text_context_new();
-	memcpy(tx, old, sizeof(Ewl_Text_Context));
-
-	/* make sure we get our own pointer to the font so it dosen't get
-	 * free'd behind our back */
-	tx->font = ((old->font) ? strdup(old->font) : NULL);
-	tx->ref_count = 0;
-
-	DRETURN_PTR(tx, DLEVEL_STABLE);
-}
-
-static Ewl_Text_Context *
 ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 					Ewl_Text_Context *tx_change)
 {
@@ -3264,23 +3246,10 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 			ecore_hash_set(context_hash, strdup(t), new_tx);
 		}
 	}
-	if (new_tx) new_tx->ref_count ++;
+	if (new_tx) ewl_text_context_acquire(new_tx);
 	FREE(t);
 
 	DRETURN_PTR(new_tx, DLEVEL_STABLE);
-}
-
-/*
- * if they contain the same data the they should be the same pointer... 
- */
-static int
-ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("a", a, 0);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-
-	DRETURN_INT((a == b), DLEVEL_STABLE);
 }
 
 static void
@@ -3325,8 +3294,38 @@ ewl_text_context_new(void)
 	DRETURN_PTR(tx, DLEVEL_STABLE);;
 }
 
+Ewl_Text_Context *
+ewl_text_context_dup(Ewl_Text_Context *old)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("old", old, NULL);
+
+	tx = ewl_text_context_new();
+	memcpy(tx, old, sizeof(Ewl_Text_Context));
+
+	/* make sure we get our own pointer to the font so it dosen't get
+	 * free'd behind our back */
+	tx->font = ((old->font) ? strdup(old->font) : NULL);
+	tx->ref_count = 1;
+
+	DRETURN_PTR(tx, DLEVEL_STABLE);
+}
+
 void
-ewl_text_context_free(Ewl_Text_Context *tx)
+ewl_text_context_acquire(Ewl_Text_Context *tx)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->ref_count ++;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_context_release(Ewl_Text_Context *tx)
 {
 	char *t;
 
@@ -3346,6 +3345,19 @@ ewl_text_context_free(Ewl_Text_Context *tx)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * if they contain the same data the they should be the same pointer... 
+ */
+int
+ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("a", a, 0);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+
+	DRETURN_INT((a == b), DLEVEL_STABLE);
+}
+
 static void
 ewl_text_context_cb_free(void *data)
 {
@@ -3355,7 +3367,7 @@ ewl_text_context_cb_free(void *data)
 	DCHECK_PARAM_PTR("data", data);
 
 	tx = data;
-	ewl_text_context_free(tx);
+	ewl_text_context_release(tx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3743,7 +3755,7 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 
 	if (tree->tx)
 	{
-		ewl_text_context_free(tree->tx);
+		ewl_text_context_release(tree->tx);
 		tree->tx = NULL;
 	}
 	FREE(tree);
@@ -3812,7 +3824,7 @@ ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 	{
 		tree->tx = tx;
 		tree->length = len;
-		tx->ref_count ++;
+		ewl_text_context_acquire(tx);
 
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -3832,7 +3844,7 @@ ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 		/* create a node for the text */
 		new = ewl_text_tree_new();
 		new->tx = tx;
-		new->tx->ref_count ++;
+		ewl_text_context_acquire(new->tx);
 		new->length = len;
 		new->parent = tree;
 
@@ -3866,7 +3878,7 @@ ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 			/* grap left part */
 			n = ewl_text_tree_new();
 			n->tx = old->tx;
-			n->tx->ref_count ++;
+			ewl_text_context_acquire(n->tx);
 			n->length = idx;
 			n->parent = tree;
 			ecore_list_append(tree->children, n);
@@ -3876,7 +3888,7 @@ ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 			/* grap right part */
 			n = ewl_text_tree_new();
 			n->tx = old->tx;
-			n->tx->ref_count ++;
+			ewl_text_context_acquire(n->tx);
 			n->length = old->length - (idx);
 			n->parent = tree;
 			ecore_list_append(tree->children, n);
@@ -3935,7 +3947,7 @@ ewl_text_tree_context_apply(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 		/* apply covers entire node */
 		if ((idx == 0) && ((idx + len) >= tree->length))
 		{
-			ewl_text_context_free(ctx);
+			ewl_text_context_release(ctx);
 			tree->tx = new_tx;
 		}
 		else
@@ -3980,7 +3992,7 @@ ewl_text_tree_context_apply(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
 				old2 = ewl_text_tree_new();
 				old2->parent = tree;
 				old2->tx = old->tx;
-				old2->tx->ref_count ++;
+				ewl_text_context_acquire(old2->tx);
 				old2->length = (tree->length - (idx + len));
 				ecore_list_append(tree->children, old2);
 			}
@@ -4101,7 +4113,7 @@ ewl_text_tree_shrink(Ewl_Text_Tree *tree)
 		tree->children = NULL;
 
 		tree->tx = child->tx;
-		tree->tx->ref_count ++;
+		ewl_text_context_acquire(tree->tx);
 
 		ewl_text_tree_free(child);
 	} 

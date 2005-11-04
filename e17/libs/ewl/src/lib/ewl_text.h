@@ -286,7 +286,12 @@ void ewl_text_context_init(void);
 void ewl_text_context_shutdown(void);
 
 Ewl_Text_Context *ewl_text_context_new(void);
-void ewl_text_context_free(Ewl_Text_Context *tx);
+
+void ewl_text_context_acquire(Ewl_Text_Context *tx);
+void ewl_text_context_release(Ewl_Text_Context *tx);
+
+int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
+Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 
 void ewl_text_context_font_set(Ewl_Text_Context *tx, const char *font);
 char *ewl_text_context_font_get(Ewl_Text_Context *tx);
