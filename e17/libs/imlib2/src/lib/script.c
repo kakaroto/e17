@@ -125,9 +125,8 @@ __imlib_script_add_var(void *ptr)
 IFunctionParam     *
 __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
 {
-   int                 i = 0, in_quote = 0, depth = 0, start = 0, value_start =
+   int                 i = 0, in_quote = 0, depth = 0, start = 0, value_start = 0;
    int                 param_len;
-       0;
    char               *value = NULL;
    IFunctionParam     *rootptr, *ptr;
 
