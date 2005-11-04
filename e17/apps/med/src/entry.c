@@ -557,7 +557,7 @@ e_entry_handle_keypress(E_Entry *entry, Ecore_Event_Key_Down *e)
 		  entry->cursor_pos--;
 		  if (entry->cursor_pos < 0) entry->cursor_pos = 0;
 	       }
-	     else if (strlen(type) > 0)
+	     else if (type[0] != 0)
 	       {
 		  e_entry_clear_selection(entry);
 		  e_entry_insert_text(entry, type);

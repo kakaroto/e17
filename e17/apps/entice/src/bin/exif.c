@@ -47,7 +47,7 @@ entice_exif_edje_init(Evas_Object * edje)
             fprintf(stderr, "EXIF: FOUND: %s : %s : 0x%04x\n", exifstr[i],
                     str, exifkey[i]);
 #endif
-            if (strlen(str) > 0)
+            if (str[0] != 0)
             {
                exif = (Entice_Exif *) malloc(sizeof(Entice_Exif));
                memset(exif, 0, sizeof(exif));

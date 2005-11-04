@@ -234,8 +234,9 @@ examine_client_list_props_cb(void)
   char            type[20], range[50], step[5];
   int             mini, maxi;
   float           mind, maxd;
+  int             pos;
 
-  if (examine_client_buf && (strlen(examine_client_buf) > 0)) {
+  if (examine_client_buf && (examine_client_buf[0] != '\0')) {
 
     start = examine_client_buf;
     end = examine_client_buf + strlen(examine_client_buf);
@@ -271,11 +272,14 @@ examine_client_list_props_cb(void)
         step[0] = '\0';
         sscanf(typename, "%s%*s%s%*s%s", type, range, step);
 
-        if (type[strlen(type) - 1] == ',')
-          type[strlen(type) - 1] = '\0';
-        if (*range)
-          if (range[strlen(range) - 1] == ',')
-            range[strlen(range) - 1] = '\0';
+        pos = strlen(type) - 1;
+        if (type[pos] == ',')
+          type[pos] = '\0';
+        if (*range) {
+          pos = strlen(range) - 1;
+          if (range[pos] == ',')
+            range[pos] = '\0';
+        }
 
         if (!strcmp(type, "string")) {
           prop_tmp->type = ECORE_CONFIG_STR;
@@ -449,6 +453,7 @@ examine_client_get_val_cb(void)
   float           tmpd;
   examine_prop   *prop;
   Ewl_Widget     *sibling;
+  int             pos;
 
 /* printf("|%s|\n",examine_client_buf); */
 
@@ -469,8 +474,9 @@ examine_client_get_val_cb(void)
       *end = '\0';
   }
 
-  if (*(ret + strlen(ret) - 1) == '\n')
-    *(ret + strlen(ret) - 1) = '\0';
+  pos = strlen(ret) - 1;
+  if (*(ret + pos) == '\n')
+    *(ret + pos) = '\0';
   key = examine_client_buf;
   tmp = strchr(examine_client_buf, ':');
   *tmp = '\0';
