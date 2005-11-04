@@ -26,7 +26,7 @@
  */
 #define EWL_TEXT(x) ((Ewl_Text *)x)
 
-typedef struct Ewl_Text_BTree Ewl_Text_BTree;
+typedef struct Ewl_Text_Tree Ewl_Text_Tree;
 typedef struct Ewl_Text_Context Ewl_Text_Context;
 typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 
@@ -52,7 +52,7 @@ struct Ewl_Text
 	unsigned int	 	 cursor_position; /**< The cursor position */
 
 	Ewl_Text_Context	*current_context; /**< The current formatting context */
-	Ewl_Text_BTree		*formatting;	  /**< The formatting tree */
+	Ewl_Text_Tree		*formatting;	  /**< The formatting tree */
 
 	unsigned int 		 delete_count;	  /**< Number of deletes */
 
@@ -282,6 +282,9 @@ struct Ewl_Text_Context
 	unsigned int ref_count;
 };
 
+void ewl_text_context_init(void);
+void ewl_text_context_shutdown(void);
+
 Ewl_Text_Context *ewl_text_context_new(void);
 void ewl_text_context_free(Ewl_Text_Context *tx);
 
@@ -340,52 +343,29 @@ void ewl_text_context_double_underline_color_set(Ewl_Text_Context *tx, unsigned 
 void ewl_text_context_double_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
 			unsigned int *g, unsigned int *b, unsigned int *a);
 
-enum Ewl_Text_Context_Mask
-{
-	EWL_TEXT_CONTEXT_MASK_NONE = 0x00,
-	EWL_TEXT_CONTEXT_MASK_FONT = 0x01,
-	EWL_TEXT_CONTEXT_MASK_SIZE = 0x02,
-	EWL_TEXT_CONTEXT_MASK_STYLES = 0x04,
-	EWL_TEXT_CONTEXT_MASK_ALIGN = 0x08,
-	EWL_TEXT_CONTEXT_MASK_WRAP = 0x10,
-	EWL_TEXT_CONTEXT_MASK_COLOR = 0x20,
-	EWL_TEXT_CONTEXT_MASK_BG_COLOR = 0x40,
-	EWL_TEXT_CONTEXT_MASK_GLOW_COLOR = 0x80,
-	EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR = 0x100,
-	EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR = 0x200,
-	EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR = 0x400,
-	EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR = 0x800,
-	EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR = 0x1000
-};
-typedef enum Ewl_Text_Context_Mask Ewl_Text_Context_Mask;
-
-
 /*
- * Ewl_Text_BTree stuff
+ * Ewl_Text_Tree stuff
  */
-struct Ewl_Text_BTree
+struct Ewl_Text_Tree
 {
-	Ewl_Text_BTree *parent;
+	Ewl_Text_Tree *parent;
 
 	unsigned int length;
 	Ecore_List *children;
 	Ewl_Text_Context *tx;
 };
 
-void ewl_text_context_init(void);
-void ewl_text_context_shutdown(void);
-
-Ewl_Text_BTree *ewl_text_btree_new(void);
-void ewl_text_btree_free(Ewl_Text_BTree *tree);
-Ewl_Text_Context *ewl_text_btree_context_get(Ewl_Text_BTree *tree, unsigned int idx);
-void ewl_text_btree_text_context_insert(Ewl_Text_BTree *tree, Ewl_Text_Context *tx, 
+Ewl_Text_Tree *ewl_text_tree_new(void);
+void ewl_text_tree_free(Ewl_Text_Tree *tree);
+Ewl_Text_Context *ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx);
+void ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx, 
 						unsigned int idx, unsigned int len);
-void ewl_text_btree_context_apply(Ewl_Text_BTree *tree, Ewl_Text_Context *tx, 
+void ewl_text_tree_context_apply(Ewl_Text_Tree *tree, Ewl_Text_Context *tx, 
 						unsigned int context_mask, unsigned int idx, 
 						unsigned int len);
-void ewl_text_btree_text_delete(Ewl_Text_BTree *tree, unsigned int idx, unsigned int len);
-void ewl_text_btree_condense(Ewl_Text_BTree *tree);
-void ewl_text_btree_dump(Ewl_Text_BTree *tree, char *indent);
+void ewl_text_tree_text_delete(Ewl_Text_Tree *tree, unsigned int idx, unsigned int len);
+void ewl_text_tree_condense(Ewl_Text_Tree *tree);
+void ewl_text_tree_dump(Ewl_Text_Tree *tree, char *indent);
 
 /*
  * Ewl_Text_Trigger_Area stuff
@@ -409,6 +389,4 @@ int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
  */
 
 #endif /* __EWL_TEXT_H__ */
-
-
 
