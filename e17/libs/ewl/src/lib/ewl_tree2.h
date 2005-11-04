@@ -100,7 +100,7 @@ struct Ewl_Tree2
  * Tree view/controller manipulation
  */
 Ewl_Widget 	*ewl_tree2_new();
-int 		 ewl_tree2_init(Ewl_Tree *tree, unsigned short columns);
+int 		 ewl_tree2_init(Ewl_Tree *tree);
 
 void		 ewl_tree2_headers_visible_set(Ewl_Tree *tree,
 					       unsigned char visible);
