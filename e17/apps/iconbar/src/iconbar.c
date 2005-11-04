@@ -2,6 +2,7 @@
 #include "icon.h"
 #include "util.h"
 #include "prefs.h"
+#include <limits.h>
 /* #include "icon_editor.h" */
 
 void iconbar_icon_move(Icon *icon);
