@@ -823,17 +823,17 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 		space = b->spacing;
 
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
-				PREFERRED_W(c) -
-				ewl_object_preferred_w_get(EWL_OBJECT(w)) -
-				space);
+		int width;
+		width = ewl_object_preferred_inner_w_get(EWL_OBJECT(c));
+		width -= ewl_object_preferred_w_get(EWL_OBJECT(w));
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), width - space);
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
-				PREFERRED_H(c) - 
-				ewl_object_preferred_h_get(EWL_OBJECT(w)) -
-				space);
+		int height;
+		height = ewl_object_preferred_inner_h_get(EWL_OBJECT(c));
+		height -= ewl_object_preferred_h_get(EWL_OBJECT(w));
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height - space);
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	}
 
