@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
+#include <math.h>
 #include <evfs.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -37,6 +38,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 #include <dirent.h>
 #include <tarpet.h>
+
+#define uintmax_t long
+#define TYPE_MAXIMUM(t) ((t) (~ (t) 0 - TYPE_MINIMUM (t)))
+static uintmax_t from_header (const char *, size_t, const char *,
+			      uintmax_t, uintmax_t);
 
 
 evfs_filereference* evfs_file_top_level_find(evfs_filereference* file) {
@@ -94,6 +100,80 @@ struct tar_file* tar_file_new() {
 
 
 Ecore_Hash* tar_cache;
+
+
+int octal_checksum_to_int(char checksum[8]) {
+	int i;
+	int r_val=0;
+	int c_val=0;
+	int c=0;
+	int go=0;
+	for (i=7;i>=0;i--) {
+		if (go) {
+			c_val = checksum[i] - '0';
+			//printf("%d: cval is %d\n",i, c_val);
+			r_val += c_val * (pow(8,c));
+			//printf("r_val becomes: %d ---- r_val += %d * 8 ^ %d\n", r_val, c_val, c);
+			c++;
+		}
+
+		if (!go && (checksum[i] == 0)) go=1;
+
+	}
+
+	return r_val;
+}
+
+//////////////////////////////////////////////////////////////////
+///*Narfed from gnu-tar
+int tar_checksum (union TARPET_block* block)
+{
+  size_t i;
+  int unsigned_sum = 0;		/* the POSIX one :-) */
+  int signed_sum = 0;		/* the Sun one :-( */
+  int recorded_sum;
+  uintmax_t parsed_sum;
+  char *p;
+  
+  p = (char*)block->raw.data;
+  for (i = sizeof *block; i-- != 0;)
+    {
+      unsigned_sum += (unsigned char) *p;
+      signed_sum += (signed char) (*p++);
+    }
+
+  if (unsigned_sum == 0)
+    return 0;
+
+  /* Adjust checksum to count the "chksum" field as blanks.  */
+
+  for (i = sizeof block->p.checksum; i-- != 0;)
+    {
+      unsigned_sum -= (unsigned char) block->p.checksum[i];
+      signed_sum -= (signed char) (block->p.checksum[i]);
+    }
+  unsigned_sum += ' ' * sizeof block->p.checksum;
+  signed_sum += ' ' * sizeof block->p.checksum;
+
+  /*parsed_sum = from_header (block->p.checksum,
+			    sizeof block->p.checksum, 0,
+			    (uintmax_t) 0,
+			    (uintmax_t) TYPE_MAXIMUM (int));
+  if (parsed_sum == (uintmax_t) -1)
+    return 0;
+
+  recorded_sum = parsed_sum;*/
+
+  //printf("Unsigned sum is %d\n", unsigned_sum);
+  //printf("Signed sum is: %d\n", signed_sum);
+  
+  
+  /*if (unsigned_sum != recorded_sum && signed_sum != recorded_sum)
+    return 0;*/
+
+  return unsigned_sum;
+}
+///////////////////////////////////////////////////////
 
 void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 	char* tok;
@@ -254,10 +334,21 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 			printf("Magic is '%s'\n", block.p.magic);
 			printf("Flag is %d\n", block.p.typeflag);*/
 
+			
+			//printf("Checksum is: '%s'\n", block.p.checksum);
+			//printf("Int checksum is: %d\n", );
+
 			tar_name_split(&block, tar);
 			find++;
+		} else if (tar_checksum(&block) == octal_checksum_to_int(block.p.checksum)) {
+			//printf("old magic\n");
+			tar_name_split(&block, tar);
+			find++;
+
 		} else {
-			//printf("No magic - '%s'\n", block.p.magic);
+			/*int i = tar_checksum(&block);
+			int j = octal_checksum_to_int(block.p.checksum);
+			printf("%d : %d\n", i,j);*/
 		}
 	}
 	evfs_uri_close(client, p_ref);
