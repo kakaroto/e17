@@ -64,12 +64,12 @@ CURLcode* connection_handle_get(evfs_filereference* ref)
 
 	/*Check for an existing connection, return it if  avaliable
 		create/initialize one if not*/
-	if(!(conn_handle = ecore_hash_get(connections, ref->parent->path)))
+	if(!(conn_handle = ecore_hash_get(connections, ref->path)))
 	{
 		conn_handle = curl_easy_init();
 		printf("Setting CURL_URL to %s", ref->parent->path);
-		/*curl_easy_setopt(conn_handle, CURL_URL, ref->parent->path);
-		ecore_hash_set(connections, ref->parent->path, conn_handle);*/
+		/*curl_easy_setopt(conn_handle, CURL_URL, ref->path);*/
+		ecore_hash_set(connections, ref->path, conn_handle);
 	}
 	
 	return conn_handle;
