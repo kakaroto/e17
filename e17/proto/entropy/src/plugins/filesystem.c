@@ -265,6 +265,10 @@ void callback(evfs_event* data) {
 							printf("File ('%s') parent's name is '%s'\n", file->filename, calling_request->reparent_file->filename);
 
 							file->parent = calling_request->reparent_file;
+
+							/*We are referencing the parent, so - we need to tell the core that we *need* this
+							 * file - i.e. don't clean it up*/
+							entropy_core_file_cache_add_reference(filesystem_core, calling_request->reparent_file->md5);
 						}
 
 						/*Mark the file's uri FIXME do this properly*/
@@ -304,6 +308,9 @@ void callback(evfs_event* data) {
 			}
 
 			break;
+
+			default: printf("Received an EVFS message we don't recognise!\n");
+				 break;
         }
 
 }
