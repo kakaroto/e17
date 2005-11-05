@@ -289,8 +289,7 @@ EwinConfigure(EWin * ewin)
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
    SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
-   if (!ewin->state.identified)
-      SnapshotEwinApply(ewin);	/* Apply saved settings */
+   SnapshotEwinApply(ewin);	/* Apply saved settings */
 
    EwinStateUpdate(ewin);	/* Update after snaps etc. */
 

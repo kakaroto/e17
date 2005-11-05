@@ -648,8 +648,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      case 0:
 	EwinMoveResize(ewin, x, y, w, h);
 	EwinShapeSet(ewin);
-	if (Mode.mode != MODE_NONE)
-	   CoordsShow(ewin);
+	CoordsShow(ewin);
 	break;
      case 1:
      case 2:
@@ -834,9 +833,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_1(x1, y1, w1, h1);
 	       }
-	     if ((Mode.mode != MODE_NONE)
-		 && (!ewin->groups || (ewin->groups && !check_move)))
-		CoordsShow(ewin);
+	     CoordsShow(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_1(x, y, w, h);
@@ -848,9 +845,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_2(x1, y1, w1, h1);
 	       }
-	     if ((Mode.mode != MODE_NONE)
-		 && (!ewin->groups || (ewin->groups && !check_move)))
-		CoordsShow(ewin);
+	     CoordsShow(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_2(x, y, w, h);
@@ -862,9 +857,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_3(x1, y1, w1, h1);
 	       }
-	     if ((Mode.mode != MODE_NONE)
-		 && (!ewin->groups || (ewin->groups && !check_move)))
-		CoordsShow(ewin);
+	     CoordsShow(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_3(x, y, w, h);
@@ -876,9 +869,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_4(x1, y1, w1, h1);
 	       }
-	     if ((Mode.mode != MODE_NONE)
-		 && (!ewin->groups || (ewin->groups && !check_move)))
-		CoordsShow(ewin);
+	     CoordsShow(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_4(x, y, w, h);
@@ -1022,8 +1013,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     EDestroyPixImg(root_pi);
 		  root_pi->pmap = 0;
 	       }
-	     if (Mode.mode != MODE_NONE)
-		CoordsShow(ewin);
+	     CoordsShow(ewin);
 	  }
 	if (firstlast == 2)
 	  {

@@ -1419,11 +1419,11 @@ SnapshotEwinApply(EWin * ewin)
 {
    Snapshot           *sn;
    int                 i, ax, ay;
+   unsigned int        use_flags;
 
    sn = ewin->snap;
    if (!sn)
      {
-
 	if (ewin->props.autosave)
 	   SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
 	return;
@@ -1432,19 +1432,25 @@ SnapshotEwinApply(EWin * ewin)
    if (ewin->props.autosave)
       sn->track_changes = 1;
 
-   if (sn->use_flags & SNAP_USE_STICKY)
+   use_flags = sn->use_flags;
+   /* If restarting don't override stuff set in attributes/properties */
+   if (ewin->state.identified)
+      use_flags &= SNAP_USE_LAYER | SNAP_USE_FOCUS_NEVER | SNAP_USE_SHADOW |
+	 SNAP_USE_GROUPS;
+
+   if (use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
 
-   if (sn->use_flags & SNAP_USE_DESK)
+   if (use_flags & SNAP_USE_DESK)
       EoSetDesk(ewin, DeskGet(sn->desktop));
 
-   if (sn->use_flags & SNAP_USE_SIZE)
+   if (use_flags & SNAP_USE_SIZE)
      {
 	ewin->client.w = sn->w;
 	ewin->client.h = sn->h;
      }
 
-   if (sn->use_flags & SNAP_USE_POS)
+   if (use_flags & SNAP_USE_POS)
      {
 	ewin->state.placed = 1;
 	ewin->client.x = sn->x;
@@ -1464,23 +1470,23 @@ SnapshotEwinApply(EWin * ewin)
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
-   if (sn->use_flags & SNAP_USE_LAYER)
+   if (use_flags & SNAP_USE_LAYER)
       EoSetLayer(ewin, sn->layer);
 
-   if (sn->use_flags & SNAP_USE_SKIP_LISTS)
+   if (use_flags & SNAP_USE_SKIP_LISTS)
      {
 	ewin->props.skip_focuslist = sn->skipfocus;
 	ewin->props.skip_ext_task = sn->skiptask;
 	ewin->props.skip_winlist = sn->skipwinlist;
      }
 
-   if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
+   if (use_flags & SNAP_USE_FOCUS_NEVER)
       ewin->props.never_focus = sn->neverfocus;
 
-   if (sn->use_flags & SNAP_USE_SHADED)
+   if (use_flags & SNAP_USE_SHADED)
       ewin->state.shaded = sn->shaded;
 
-   if (sn->use_flags & SNAP_USE_BORDER)
+   if (use_flags & SNAP_USE_BORDER)
       EwinSetBorderByName(ewin, sn->border_name);
 
    if (sn->groups)
@@ -1504,10 +1510,10 @@ SnapshotEwinApply(EWin * ewin)
      }
 
 #if USE_COMPOSITE
-   if (sn->use_flags & SNAP_USE_OPACITY)
+   if (use_flags & SNAP_USE_OPACITY)
       ewin->ewmh.opacity = OpacityExt(sn->opacity);
 
-   if (sn->use_flags & SNAP_USE_SHADOW)
+   if (use_flags & SNAP_USE_SHADOW)
       EoSetShadow(ewin, sn->shadow);
 #endif
 

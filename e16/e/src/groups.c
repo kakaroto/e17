@@ -28,6 +28,10 @@
 #include "snaps.h"
 #include <math.h>
 
+#define SET_OFF    0
+#define SET_ON     1
+#define SET_TOGGLE 2
+
 #define DISABLE_PAGER_ICONBOX_GROUPING 0
 
 static void         RemoveEwinFromGroup(EWin * ewin, Group * g);
@@ -167,7 +171,7 @@ AddEwinToGroup(EWin * ewin, Group * g)
 }
 
 static int
-EwinInGroup(EWin * ewin, Group * g)
+EwinInGroup(const EWin * ewin, const Group * g)
 {
    int                 i;
 
@@ -183,7 +187,7 @@ EwinInGroup(EWin * ewin, Group * g)
 }
 
 Group              *
-EwinsInGroup(EWin * ewin1, EWin * ewin2)
+EwinsInGroup(const EWin * ewin1, const EWin * ewin2)
 {
    int                 i;
 
@@ -289,21 +293,24 @@ GetWinGroupMemberNames(Group ** groups, int num)
 }
 
 static void
-ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
+ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 {
    EWin              **gwins;
    int                 i, num;
    const Border       *b = NULL;
    const Border       *previous_border;
 
-   if (g)
+   if (!ewin || group_index >= ewin->num_groups)
+      return;
+
+   if (group_index < 0)
      {
-	gwins = g->members;
-	num = g->num_members;
+	gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, 0, &num);
      }
    else
      {
-	gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, 0, &num);
+	gwins = ewin->groups[group_index]->members;
+	num = ewin->groups[group_index]->num_members;
      }
 
    previous_border = ewin->previous_border;
@@ -359,7 +366,7 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 	     SnapshotEwinUpdate(gwins[i], SNAP_USE_GROUPS);
 	  }
      }
-   if (!g)
+   if (group_index < 0)
       Efree(gwins);
    SaveGroups();
 }
@@ -509,7 +516,7 @@ ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (((val == 0) || (val == 2)) && tmp_groups)
      {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
+	ShowHideWinGroups(tmp_ewin, tmp_index, SET_OFF);
      }
    if (val == 0)
      {
@@ -541,8 +548,8 @@ ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 static void
 GroupCallback(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
-   ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
+   ShowHideWinGroups(tmp_ewin, tmp_index, SET_OFF);
+   ShowHideWinGroups(tmp_ewin, val, SET_ON);
    tmp_index = val;
 }
 
@@ -589,8 +596,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 	return;
      }
 
-   group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
-   ShowHideWinGroups(ewin, tmp_groups[0], SET_ON);
+   ShowHideWinGroups(ewin, 0, SET_ON);
 
    d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
    if (d)
@@ -615,6 +621,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, message);
 
+   group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
+
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, GroupCallback, 0, (void *)d);
@@ -633,49 +641,49 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      }
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_group_index);
 
-   DialogAddFooter(d, DLG_OC, ChooseGroup);
+   StrlistFree(group_member_strings, num_groups);
 
-   for (i = 0; i < num_groups; i++)
-      Efree(group_member_strings[i]);
-   Efree(group_member_strings);
+   DialogAddFooter(d, DLG_OC, ChooseGroup);
 
    ShowDialog(d);
 }
 
-static GroupConfig *tmp_cfgs = NULL;
-static int          tmp_current_group;
-
-#if 0				/* FIXME - Should these be separate variables? */
-static int          tmp_index;
-static EWin        *tmp_ewin;
-static Group      **tmp_groups;
-#endif
-static GroupConfig  tmp_cfg;
-
-static DItem       *di_border;
-static DItem       *di_iconify;
-static DItem       *di_kill;
-static DItem       *di_move;
-static DItem       *di_raise;
-static DItem       *di_stick;
-static DItem       *di_shade;
-static DItem       *di_mirror;
+typedef struct
+{
+   EWin               *ewin;
+   GroupConfig         cfg;	/* Dialog data for current group */
+   GroupConfig        *cfgs;	/* Work copy of ewin group cfgs */
+   int                 ngrp;
+   unsigned int        current;
+} EwinGroupDlgData;
 
 static void
-CB_ConfigureGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
 {
+   EwinGroupDlgData   *dd = DialogGetData(d);
+   EWin               *ewin;
    int                 i;
 
-   if (val < 2)
+   if (!dd)
+      return;
+
+   /* Check ewin */
+   ewin = EwinFindByPtr(dd->ewin);
+   if (ewin && ewin->num_groups != dd->ngrp)
+      ewin = NULL;
+
+   if (val < 2 && ewin)
      {
-	for (i = 0; i < tmp_ewin->num_groups; i++)
-	   CopyGroupConfig(&(tmp_cfgs[i]), &(tmp_ewin->groups[i]->cfg));
+	CopyGroupConfig(&(dd->cfg), &(dd->cfgs[dd->current]));
+	for (i = 0; i < ewin->num_groups; i++)
+	   CopyGroupConfig(dd->cfgs + i, &(ewin->groups[i]->cfg));
      }
-   if (((val == 0) || (val == 2)) && tmp_cfgs)
+   if ((val == 0) || (val == 2))
      {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
-	Efree(tmp_cfgs);
-	tmp_cfgs = NULL;
+	ShowHideWinGroups(ewin, dd->current, SET_OFF);
+	Efree(dd->cfgs);
+	Efree(dd);
+	DialogSetData(d, NULL);
      }
    autosave();
 }
@@ -683,52 +691,14 @@ CB_ConfigureGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 static void
 GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
 {
-   DialogItemCheckButtonSetState(di_border, tmp_cfgs[val].set_border);
-   DialogItemCheckButtonSetState(di_kill, tmp_cfgs[val].kill);
-   DialogItemCheckButtonSetState(di_move, tmp_cfgs[val].move);
-   DialogItemCheckButtonSetState(di_raise, tmp_cfgs[val].raise);
-   DialogItemCheckButtonSetState(di_iconify, tmp_cfgs[val].iconify);
-   DialogItemCheckButtonSetState(di_stick, tmp_cfgs[val].stick);
-   DialogItemCheckButtonSetState(di_shade, tmp_cfgs[val].shade);
-   DialogItemCheckButtonSetState(di_mirror, tmp_cfgs[val].mirror);
-   DialogRedraw(d);
-   ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
-   ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
-   tmp_current_group = val;
-}
+   EwinGroupDlgData   *dd = DialogGetData(d);
 
-static void
-GroupFeatureChangeCallback(Dialog * d __UNUSED__, int val, void *data)
-{
-   switch (val)
-     {
-     case GROUP_FEATURE_BORDER:
-	tmp_cfgs[tmp_current_group].set_border = *((char *)data);
-	break;
-     case GROUP_FEATURE_KILL:
-	tmp_cfgs[tmp_current_group].kill = *((char *)data);
-	break;
-     case GROUP_FEATURE_MOVE:
-	tmp_cfgs[tmp_current_group].move = *((char *)data);
-	break;
-     case GROUP_FEATURE_RAISE:
-	tmp_cfgs[tmp_current_group].raise = *((char *)data);
-	break;
-     case GROUP_FEATURE_ICONIFY:
-	tmp_cfgs[tmp_current_group].iconify = *((char *)data);
-	break;
-     case GROUP_FEATURE_STICK:
-	tmp_cfgs[tmp_current_group].stick = *((char *)data);
-	break;
-     case GROUP_FEATURE_SHADE:
-	tmp_cfgs[tmp_current_group].shade = *((char *)data);
-	break;
-     case GROUP_FEATURE_MIRROR:
-	tmp_cfgs[tmp_current_group].mirror = *((char *)data);
-	break;
-     default:
-	break;
-     }
+   CopyGroupConfig(&(dd->cfg), &(dd->cfgs[dd->current]));
+   CopyGroupConfig(&(dd->cfgs[val]), &(dd->cfg));
+   DialogRedraw(d);
+   ShowHideWinGroups(dd->ewin, dd->current, SET_OFF);
+   ShowHideWinGroups(dd->ewin, val, SET_ON);
+   dd->current = val;
 }
 
 static void
@@ -738,9 +708,11 @@ SettingsGroups(EWin * ewin)
    DItem              *table, *radio, *di;
    int                 i;
    char              **group_member_strings;
+   EwinGroupDlgData   *dd;
 
    if (!ewin)
       return;
+
    if (ewin->num_groups == 0)
      {
 	DialogOK(_("Window Group Error"),
@@ -756,21 +728,28 @@ SettingsGroups(EWin * ewin)
 	ShowDialog(d);
 	return;
      }
+
    SoundPlay("SOUND_SETTINGS_GROUP");
 
-   tmp_ewin = ewin;
-   tmp_groups = ewin->groups;
-   tmp_cfgs = (GroupConfig *) Emalloc(ewin->num_groups * sizeof(GroupConfig));
-   tmp_current_group = 0;
-   group_member_strings =
-      GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
-   ShowHideWinGroups(ewin, ewin->groups[0], SET_ON);
-
-   for (i = 0; i < ewin->num_groups; i++)
-      CopyGroupConfig(&(ewin->groups[i]->cfg), &(tmp_cfgs[i]));
-
    d = DialogCreate("CONFIGURE_GROUP");
+   if (!d)
+      return;
    DialogSetTitle(d, _("Window Group Settings"));
+
+   dd = Ecalloc(1, sizeof(EwinGroupDlgData));
+   if (!dd)
+      return;
+
+   dd->ewin = ewin;
+   dd->cfgs = Emalloc(ewin->num_groups * sizeof(GroupConfig));
+   dd->ngrp = ewin->num_groups;
+   dd->current = 0;
+   for (i = 0; i < ewin->num_groups; i++)
+      CopyGroupConfig(&(ewin->groups[i]->cfg), dd->cfgs + i);
+   CopyGroupConfig(dd->cfgs, &(dd->cfg));
+   DialogSetData(d, dd);
+
+   ShowHideWinGroups(ewin, 0, SET_ON);
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -784,9 +763,12 @@ SettingsGroups(EWin * ewin)
    DialogItemSetAlign(di, 0, 512);
    DialogItemSetText(di, _("   Pick the group to configure:   "));
 
+   group_member_strings =
+      GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
+
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupSelectCallback, 0, (void *)d);
+   DialogItemSetCallback(di, GroupSelectCallback, 0, d);
    DialogItemSetText(di, group_member_strings[0]);
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
@@ -795,12 +777,14 @@ SettingsGroups(EWin * ewin)
      {
 	di = DialogAddItem(table, DITEM_RADIOBUTTON);
 	DialogItemSetColSpan(di, 2);
-	DialogItemSetCallback(di, GroupSelectCallback, i, (void *)d);
+	DialogItemSetCallback(di, GroupSelectCallback, i, d);
 	DialogItemSetText(di, group_member_strings[i]);
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);
      }
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_index);
+
+   StrlistFree(group_member_strings, ewin->num_groups);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -808,79 +792,50 @@ SettingsGroups(EWin * ewin)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di,
-		     _("  The following actions are  \n"
-		       "  applied to all group members:  "));
+   DialogItemSetText(di, _("  The following actions are  \n"
+			   "  applied to all group members:  "));
 
-   di_border = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
-			 &(tmp_cfg.set_border));
    DialogItemSetText(di, _("Changing Border Style"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.set_border));
 
-   di_iconify = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback,
-			 GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
    DialogItemSetText(di, _("Iconifying"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.iconify));
 
-   di_kill = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_KILL,
-			 &(tmp_cfg.kill));
    DialogItemSetText(di, _("Killing"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].kill);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.kill));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.kill));
 
-   di_move = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_MOVE,
-			 &(tmp_cfg.move));
    DialogItemSetText(di, _("Moving"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].move);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.move));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.move));
 
-   di_raise = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_RAISE,
-			 &(tmp_cfg.raise));
    DialogItemSetText(di, _("Raising/Lowering"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].raise);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.raise));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.raise));
 
-   di_stick = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_STICK,
-			 &(tmp_cfg.stick));
    DialogItemSetText(di, _("Sticking"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].stick);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.stick));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.stick));
 
-   di_shade = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_SHADE,
-			 &(tmp_cfg.shade));
    DialogItemSetText(di, _("Shading"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].shade);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.shade));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.shade));
 
-   di_mirror = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
-			 &(tmp_cfg.mirror));
    DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
-   DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
-   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
+   DialogItemCheckButtonSetPtr(di, &(dd->cfg.mirror));
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureGroup);
-
-   for (i = 0; i < ewin->num_groups; i++)
-      Efree(group_member_strings[i]);
-   Efree(group_member_strings);
 
    ShowDialog(d);
 }
@@ -1049,7 +1004,7 @@ GroupsSighan(int sig, void *prm __UNUSED__)
 static int
 doShowHideGroup(EWin * ewin, const char *params __UNUSED__)
 {
-   ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
+   ShowHideWinGroups(ewin, -1, SET_TOGGLE);
    return 0;
 }
 
@@ -1247,7 +1202,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(operation, "showhide"))
      {
-	ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
+	ShowHideWinGroups(ewin, -1, SET_TOGGLE);
 	IpcPrintf("showhide %8x", win);
      }
    else

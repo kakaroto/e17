@@ -271,15 +271,6 @@ int                 Esnprintf(va_alist);
 #define GROUP_SELECT_EWIN_ONLY       1
 #define GROUP_SELECT_ALL_EXCEPT_EWIN 2
 
-#define GROUP_FEATURE_BORDER  1
-#define GROUP_FEATURE_KILL    2
-#define GROUP_FEATURE_MOVE    4
-#define GROUP_FEATURE_RAISE   8
-#define GROUP_FEATURE_ICONIFY 16
-#define GROUP_FEATURE_STICK   32
-#define GROUP_FEATURE_SHADE   64
-#define GROUP_FEATURE_MIRROR  128
-
 /* For window group listing */
 #define GROUP_ACTION_ANY                     0
 #define GROUP_ACTION_MOVE                    1
@@ -291,10 +282,6 @@ int                 Esnprintf(va_alist);
 #define GROUP_ACTION_SHADE                   7
 #define GROUP_ACTION_SET_WINDOW_BORDER       8
 #define GROUP_ACTION_RAISE_LOWER             9
-
-#define SET_OFF    0
-#define SET_ON     1
-#define SET_TOGGLE 2
 
 /*
  * Types
@@ -1025,7 +1012,7 @@ void                GrabButtonRelease(unsigned int button,
 
 /* groups.c */
 void                BuildWindowGroup(EWin ** ewins, int num);
-Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
+Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                GroupsEwinRemove(EWin * ewin);
 void                SaveGroups(void);

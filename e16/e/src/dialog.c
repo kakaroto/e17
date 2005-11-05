@@ -206,6 +206,8 @@ static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
 static void         DialogFreeItem(DItem * di);
 
+static int          DialogItemCheckButtonGetState(DItem * di);
+
 static void         DialogUpdate(Dialog * d);
 static char         dialog_update_pending = 0;
 
@@ -561,7 +563,6 @@ ShowDialog(Dialog * d)
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
-	// FIXME
 #if 0				/* Make dialogs sticky? */
 	if (EoGetDesk(ewin) != DesksGetCurrent())
 	   EwinMoveToDesktop(ewin, DesksGetCurrent());
@@ -718,7 +719,7 @@ DialogAddItem(DItem * dii, int type)
      case DITEM_CHECKBUTTON:
 	di->item.check_button.check_win = 0;
 	di->item.check_button.onoff = 0;
-	di->item.check_button.onoff_ptr = NULL;
+	di->item.check_button.onoff_ptr = &(di->item.check_button.onoff);
 	di->item.check_button.check_orig_w = 10;
 	di->item.check_button.check_orig_h = 10;
 	break;
@@ -1653,7 +1654,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   state = STATE_HILITED;
 	else if (!(di->hilited) && (di->clicked))
 	   state = STATE_CLICKED;
-	if (di->item.check_button.onoff)
+	if (DialogItemCheckButtonGetState(di))
 	   ImageclassApply(di->iclass, di->item.check_button.check_win,
 			   di->item.check_button.check_orig_w,
 			   di->item.check_button.check_orig_h, 1, 0, state,
@@ -1800,7 +1801,7 @@ DialogItemRadioButtonGroupSetValPtr(DItem * di, int *val_ptr)
      {
 	di->item.radio_button.val_ptr = val_ptr;
 	if (*val_ptr == di->item.radio_button.val)
-	   di->item.check_button.onoff = 1;
+	   di->item.radio_button.onoff = 1;
 	di = di->item.radio_button.next;
      }
 }
@@ -1814,14 +1815,19 @@ DialogItemRadioButtonGroupSetVal(DItem * di, int val)
 void
 DialogItemCheckButtonSetState(DItem * di, char onoff)
 {
-   di->item.check_button.onoff = onoff;
+   *(di->item.check_button.onoff_ptr) = onoff;
 }
 
 void
 DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr)
 {
    di->item.check_button.onoff_ptr = onoff_ptr;
-   DialogItemCheckButtonSetState(di, *onoff_ptr);
+}
+
+static int
+DialogItemCheckButtonGetState(DItem * di)
+{
+   return *(di->item.check_button.onoff_ptr);
 }
 
 void
@@ -2325,12 +2331,7 @@ DialogEventMouseUp(Dialog * d, XEvent * ev)
 	break;
 
      case DITEM_CHECKBUTTON:
-	if (di->item.check_button.onoff)
-	   di->item.check_button.onoff = 0;
-	else
-	   di->item.check_button.onoff = 1;
-	if (di->item.check_button.onoff_ptr)
-	   *di->item.check_button.onoff_ptr = di->item.check_button.onoff;
+	DialogItemCheckButtonSetState(di, !DialogItemCheckButtonGetState(di));
 	break;
 
      case DITEM_RADIOBUTTON:

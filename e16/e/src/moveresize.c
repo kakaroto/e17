@@ -87,16 +87,15 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    Mode_mr.win_w = ewin->client.w;
    Mode_mr.win_h = ewin->client.h;
 
+   RaiseEwin(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
 				      || Mode.move.swap, &num);
    for (i = 0; i < num; i++)
      {
-	EwinShapeSet(ewin);
+	EwinShapeSet(gwins[i]);
 	EwinFloatAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
 	if (Conf.movres.mode_move == 0)
-	  {
-	     EoChangeOpacity(ewin, OpacityExt(Conf.movres.opacity));
-	  }
+	   EoChangeOpacity(gwins[i], OpacityExt(Conf.movres.opacity));
      }
    Efree(gwins);
    Mode_mr.swapcoord_x = EoGetX(ewin);
@@ -123,6 +122,8 @@ ActionMoveEnd(EWin * ewin)
    if (!ewin)
       goto done;
 
+   ewin->state.show_coords = 0;
+
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &num);
 
@@ -137,11 +138,6 @@ ActionMoveEnd(EWin * ewin)
 
    d2 = DesktopAt(Mode.events.x, Mode.events.y);
 
-   if (Conf.movres.mode_move == 0)
-     {
-	EoChangeOpacity(ewin, ewin->ewmh.opacity);
-     }
-
    for (i = 0; i < num; i++)
      {
 	ewin = gwins[i];
@@ -152,6 +148,8 @@ ActionMoveEnd(EWin * ewin)
 	   EwinUnfloatAt(ewin, d2,
 			 ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
 			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
+	if (Conf.movres.mode_move == 0)
+	   EoChangeOpacity(ewin, ewin->ewmh.opacity);
      }
 
    Efree(gwins);
@@ -359,6 +357,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    Mode_mr.win_w = ewin->client.w;
    Mode_mr.win_h = ewin->client.h;
    EwinShapeSet(ewin);
+   ewin->state.show_coords = 1;
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),
 		 ewin->client.w, ewin->client.h, 0);
 
@@ -381,6 +380,7 @@ ActionResizeEnd(EWin * ewin)
    if (!ewin)
       goto done;
 
+   ewin->state.show_coords = 0;
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->client.w, ewin->client.h, 2);
 
@@ -428,6 +428,9 @@ ActionMoveHandleMotion(void)
 	     EGrabServer();
 	     ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
 	  }
+
+	if (Conf.movres.mode_move == 0 || num == 1)
+	   ewin->state.show_coords = 1;
 
 	for (i = 0; i < num; i++)
 	  {

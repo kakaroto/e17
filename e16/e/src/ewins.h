@@ -78,6 +78,7 @@ struct _ewin
 
       unsigned            showingdesk:1;	/* Iconified by show desktop */
       unsigned            animated:1;
+      unsigned            show_coords:1;
 
       /* Derived state flags. Change only in EwinStateUpdate() */
       unsigned            no_border:1;
