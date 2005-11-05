@@ -163,8 +163,12 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	Ecore_DList* tokens = ecore_dlist_new();
 	Ecore_List* reserved = ecore_dlist_new();
 	Ecore_List* plugin = ecore_dlist_new();
-		
-	char* l_uri = uri;
+	
+	char* dup_uri = strdup(uri);
+	/*dup_uri = realloc(dup_uri, strlen(uri)+2); 
+	strcat(dup_uri," ");*/
+	
+	char* l_uri = dup_uri;
 	int solid_alpha = 0;
 	int new_alpha = 0;
 	evfs_uri_token* token;
@@ -173,11 +177,13 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	int i = 0;
 	int j=1;
 	char c='1';
+	int len=0;
 
 	ecore_list_append(plugin, "smb"); /*Shift these to register when a plugin registers*/
 	ecore_list_append(plugin, "posix");
 	ecore_list_append(plugin, "tar");
 	ecore_list_append(plugin, "bzip2");
+	ecore_list_append(plugin, "ftp");
 	
 	ecore_list_append(reserved, "://");
 	ecore_list_append(reserved, "@");
@@ -186,10 +192,12 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	ecore_list_append(reserved, "#");
 	ecore_list_append(reserved, ";");
 
-	//printf ("Lexing '%s'\n", uri);
+	//printf ("Lexing '%s'\n", dup_uri);
+	//printf("Strlen(uri): %d\n", strlen(uri));
 
-	while (j < strlen(uri)) {
-		new_alpha = isalnum(l_uri[i]) | isspace(l_uri[i]) | l_uri[i] == '.';	
+	while (j <= strlen(dup_uri)) {
+		new_alpha = isalnum(l_uri[i]) | l_uri[i] == '.';
+		len=0;
 		
 		strncpy(tmp_tok, l_uri, 3);
 		tmp_tok[3] = '\0';
@@ -199,8 +207,9 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		ecore_list_goto_first(reserved);
 		while ( (cmp = ecore_list_next(reserved))) {
 			if (!strncmp(tmp_tok, cmp, strlen(cmp))  ) {
-				/*printf("Found token (operator) %s, added %d to l_uri\n", cmp, strlen(cmp));*/
+				//printf("Found token (operator) %s, added %d to l_uri\n", cmp, strlen(cmp));
 				l_uri += strlen(cmp);			
+				len=strlen(cmp);
 				i = 0;
 
 				/*printf("L_URI becomes '%s'\n", l_uri);*/
@@ -221,9 +230,8 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		ecore_list_goto_first(plugin);
 		while ( (cmp = ecore_list_next(plugin))) {
 			if (!strncmp(tmp_tok, cmp, strlen(cmp))  ) {
-				/*printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));*/
+			//	printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));
 
-				
 				l_uri += strlen(cmp);			
 				i = 0;
 				/*printf("L_URI becomes '%s'\n", l_uri);*/
@@ -242,8 +250,8 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 			strncpy(tmp_tok, l_uri, i);
 			tmp_tok[i] = '\0';
 			
-			/*printf ("Looks like a string..\n");
-			printf("Found string: '%s'\n", tmp_tok);*/
+			/*printf ("Looks like a string..\n");*/
+			//printf("Found string: '%s'\n", tmp_tok);
 		
 			token = NEW(evfs_uri_token);
 			token->token_s = strdup(tmp_tok);
@@ -258,9 +266,18 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		solid_alpha = new_alpha;	
 		
 		cont_loop:
-		j++;
+		if (!len) 
+			j++;	
+		else
+			if (len-1>0)
+				j+=len-1;
+			else 
+				j+=len;
 		i++;
+		//printf("i:J (%d:%d)\n", i,j);
 	}
+
+	free(dup_uri);
 
 	return tokens;	
 }
