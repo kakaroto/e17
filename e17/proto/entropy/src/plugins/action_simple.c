@@ -113,6 +113,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
 		entropy_config_str_set("action_simple", "video/mpeg", "mplayer");
 		entropy_config_str_set("action_simple", "application/msword", "abiword");
 		entropy_config_str_set("action_simple", "application/vnd.ms-excel", "gnumeric");
+		entropy_config_str_set("action_simple", "video/x-msvideo", "mplayer");
 
 		/*Archives*/
 		entropy_config_str_set("action_simple", "application/x-gtar", "file-roller");
