@@ -273,6 +273,12 @@ int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	char dir_path[1024];
 	snprintf(dir_path,1024,"smb:/%s", file->path);
 
+	/*Does this command have an attached authentication object?*/
+	if (file->username) {
+		printf("We have a username, adding to hash..\n");
+		evfs_auth_structure_add(auth_cache, file->username, file->password, file->path);
+	}
+
 	printf("Opening file '%s' in samba\n", dir_path);
 
 	file->fd_p = smb_context->open(smb_context, dir_path, O_RDONLY, S_IRUSR);

@@ -257,7 +257,7 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 				ref = ref->parent;
 			}
 			
-			if (command->file_command.files[i]->username) {
+			if (ref->username) {
 				snprintf(uri, 1024, "%s://%s:%s@%s", 
 				ref->plugin_uri,
 				ref->username,
