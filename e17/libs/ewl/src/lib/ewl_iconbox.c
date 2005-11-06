@@ -949,6 +949,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
 		ewl_widget_show(ib->ewl_iconbox_view_menu);
 		ewl_widget_show(ib->ewl_iconbox_context_menu);
+		//ewl_menu_popup_move_cb(EWL_MENU(ib->ewl_iconbox_context_menu)->base.popup, NULL, ib->ewl_iconbox_context_menu);
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		/*Make sure the context menu is invisible*/
