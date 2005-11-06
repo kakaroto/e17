@@ -835,6 +835,9 @@ doSMExit(int mode, const char *params)
       SessionSave(1);
    Real_SaveSnapInfo(0, NULL);
 
+   if (mode != EEXIT_THEME && mode != EEXIT_RESTART)
+      SessionHelper(ESESSION_STOP);
+
    if (disp)
      {
 	/* We may get here from HandleXIOError */
@@ -854,7 +857,6 @@ doSMExit(int mode, const char *params)
      {
      case EEXIT_EXEC:
 	SoundPlay("SOUND_EXIT");
-	SoundPlay("SOUND_WAIT");
 	EDisplayClose();
 
 	Esnprintf(s, sizeof(s), "exec %s", params);
@@ -1006,4 +1008,56 @@ SessionExit(int mode, const char *param)
      }
 
    doSMExit(mode, param);
+}
+
+static void
+SessionRunProg(const char *prog, const char *params)
+{
+   char                buf[4096];
+   const char         *s;
+
+   if (params)
+     {
+	Esnprintf(buf, sizeof(buf), "%s %s", prog, params);
+	s = buf;
+     }
+   else
+     {
+	s = prog;
+     }
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SessionRunProg: %s\n", s);
+   system(s);
+}
+
+void
+SessionHelper(int when)
+{
+   switch (when)
+     {
+     case ESESSION_INIT:
+	if (Conf.session.cmd)
+	   SessionRunProg(Conf.session.cmd, "init");
+#if ENABLE_OLD_SESSION_HELPERS
+	else if (Conf.session.cmd_init)
+	   SessionRunProg(Conf.session.cmd_init, NULL);
+#endif
+	break;
+     case ESESSION_START:
+	if (Conf.session.cmd)
+	   SessionRunProg(Conf.session.cmd, "start");
+#if ENABLE_OLD_SESSION_HELPERS
+	else if (Conf.session.cmd_start)
+	   SessionRunProg(Conf.session.cmd_start, NULL);
+#endif
+	break;
+     case ESESSION_STOP:
+	if (Conf.session.cmd)
+	   SessionRunProg(Conf.session.cmd, "stop");
+#if ENABLE_OLD_SESSION_HELPERS
+	else if (Conf.session.cmd_stop)
+	   SessionRunProg(Conf.session.cmd_stop, NULL);
+#endif
+	break;
+     }
 }

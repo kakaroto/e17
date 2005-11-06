@@ -68,6 +68,8 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
+#define ENABLE_OLD_SESSION_HELPERS 1
+
 /* dmalloc debugging */
 /*#include <dmalloc.h> */
 
@@ -500,8 +502,12 @@ typedef struct
    {
       char                enable_logout_dialog;
       char                enable_reboot_halt;
+      char               *cmd;
+#if ENABLE_OLD_SESSION_HELPERS
       char               *cmd_init;
       char               *cmd_start;
+      char               *cmd_stop;
+#endif
       char               *cmd_reboot;
       char               *cmd_halt;
    } session;
@@ -1127,9 +1133,14 @@ int                 GetPointerScreenAvailableArea(int *px, int *py,
 #define EEXIT_THEME     4
 #define EEXIT_EXEC      5
 
+#define ESESSION_INIT   0
+#define ESESSION_START  1
+#define ESESSION_STOP   2
+
 void                SessionInit(void);
 void                SessionSave(int shutdown);
 void                SessionExit(int mode, const char *params);
+void                SessionHelper(int when);
 void                ProcessICEMSGS(void);
 int                 GetSMfd(void);
 void                SessionGetInfo(EWin * ewin, Atom atom_change);

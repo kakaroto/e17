@@ -494,13 +494,9 @@ static void
 RunInitPrograms(void)
 {
    if (Mode.wm.session_start)
-     {
-	if (Conf.session.cmd_init && canexec(Conf.session.cmd_init))
-	   system(Conf.session.cmd_init);
-     }
+      SessionHelper(ESESSION_INIT);
 
-   if (Conf.session.cmd_start && canexec(Conf.session.cmd_start))
-      system(Conf.session.cmd_start);
+   SessionHelper(ESESSION_START);
 
    if (Conf.startup.firsttime && Mode.wm.master)
      {
