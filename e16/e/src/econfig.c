@@ -183,7 +183,7 @@ e16_db_str_get(ECfgFile * ecf, const char *key)
    const char         *value;
 
    value = ECfgFileFindValue(ecf, key);
-   if (!value)
+   if (!value || !value[0])
       return NULL;
 
    return Estrdup(value);
@@ -417,7 +417,10 @@ CfgItemToString(const CfgItem * ci, char *buf, int len)
 	Esnprintf(buf, len, "%.3f", *((float *)ci->ptr));
 	break;
      case ITEM_TYPE_STRING:
-	Esnprintf(buf, len, "%s", *((char **)ci->ptr));
+	if (*((char **)ci->ptr))
+	   Esnprintf(buf, len, "%s", *((char **)ci->ptr));
+	else
+	   buf[0] = '\0';
 	break;
      }
 }
