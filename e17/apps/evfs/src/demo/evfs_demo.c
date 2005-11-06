@@ -1,4 +1,5 @@
 #include <evfs.h>
+#include <string.h>
 
 static int mon_current =0; /*A demo of stopping monitoring, after 10 events*/
 evfs_file_uri_path* dir_path;
@@ -44,27 +45,56 @@ void callback(evfs_event* data) {
 		
 	}*/
 
-	/*TODO : Free event*/
 }
 
-int main() {
+int main(int argc, char** argv) {
 	
 	evfs_file_uri_path* path;
-	
 	char pathi[1024];
+	char *patharg = NULL;
+	char *cmd = NULL;
+	int i;
+	
+	for(i = 1; i < argc; i++) {
+		if (!strcmp(argv[i], "-u")) {
+			if (++i < argc) {
+				patharg = strdup(argv[i]);
+			} else {
+				printf("The option \"-u\" requires a valid URI\n");
+				return 1;
+			}
+		} else {
+			if (!cmd) {
+				cmd = strdup(argv[i]);
+			} else {
+				printf("Error: Enter only one command.\n");
+				return 1;
+			}
+		}
+		
+	}
 	
 	printf("EVFS Demo system..\n");
+	
+	/*Check if the user entered a command.  TODO: Add command functionality.*/
+	if (!cmd)
+	{
+		printf("You did not enter a command. Defaulting to DIR.\n");
+		cmd = strdup("DIR");
+	}
+	
+	if (!patharg)
+	{
+		snprintf(pathi,1024,"posix://%s", getenv("HOME"));
+	}
+	else
+	{
+		snprintf(pathi,1024,"%s", patharg);
+	}
 
 	con = evfs_connect(&callback);
 
 	//path = evfs_parse_uri("posix:///dev/ttyS0");
-
-	
-	//snprintf(pathi,1024,"posix://%s", getenv("HOME"));
-	//snprintf(pathi,1024,"smb:///gown/MythVideos/musicvideos");
-	//snprintf(pathi,1024,"posix:///usr/src/linux-2.6.13.1.tar.bz2#bzip2:///#tar:///");
-	snprintf(pathi,1024,"ftp://user:password@www.shippingstations.com");
-	
 	
 	printf ("Listing dir: %s\n", pathi);
 	dir_path = evfs_parse_uri(pathi);
@@ -75,14 +105,8 @@ int main() {
 
 	
 	/*evfs_monitor_add(con, dir_path->files[0]);
-
 	evfs_client_file_copy(con, dir_path->files[0], NULL);*/
-
 	evfs_client_dir_list(con, dir_path->files[0]);
-
 	ecore_main_loop_begin();
-	
 	evfs_disconnect(con);
-	
-	return 0;
 }
