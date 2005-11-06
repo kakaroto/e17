@@ -33,6 +33,21 @@ struct _textstate;
 typedef struct _imageclass ImageClass;
 typedef struct _imagestate ImageState;
 
+#define BEVEL_NONE              0
+#define BEVEL_AMIGA             1
+#define BEVEL_MOTIF             2
+#define BEVEL_NEXT              3
+#define BEVEL_DOUBLE            4
+#define BEVEL_WIDEDOUBLE        5
+#define BEVEL_THINPOINT         6
+#define BEVEL_THICKPOINT        7
+
+#define FILL_STRETCH            0
+#define FILL_TILE_H             1
+#define FILL_TILE_V             2
+#define FILL_INT_TILE_H         4
+#define FILL_INT_TILE_V         8
+
 /* Selective Transparency item types */
 #define ST_SOLID 	0
 #define ST_BORDER	1

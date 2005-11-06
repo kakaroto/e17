@@ -47,6 +47,9 @@
 #include <X11/Xlocale.h>
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
+#ifdef HAS_XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 
 #ifdef HAS_XRANDR
 #ifdef HAVE_X11_EXTENSIONS_XRANDR_H
@@ -64,10 +67,6 @@
 
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
-
-#ifdef HAS_XINERAMA
-#include <X11/extensions/Xinerama.h>
-#endif
 
 /* dmalloc debugging */
 /*#include <dmalloc.h> */
@@ -199,30 +198,10 @@ int                 Esnprintf(va_alist);
 
 #define LIST_TYPE_COUNT         33
 
-#define BEVEL_NONE              0
-#define BEVEL_AMIGA             1
-#define BEVEL_MOTIF             2
-#define BEVEL_NEXT              3
-#define BEVEL_DOUBLE            4
-#define BEVEL_WIDEDOUBLE        5
-#define BEVEL_THINPOINT         6
-#define BEVEL_THICKPOINT        7
-
-#define EWIN_NORMAL             0
-#define EWIN_ACTIVE             1
-#define EWIN_STICKY             2
-#define EWIN_ICONIFIED          4
-
 #define STATE_NORMAL            0
 #define STATE_HILITED           1
 #define STATE_CLICKED           2
 #define STATE_DISABLED          3
-
-#define FILL_STRETCH            0
-#define FILL_TILE_H             1
-#define FILL_TILE_V             2
-#define FILL_INT_TILE_H         4
-#define FILL_INT_TILE_V         8
 
 #define FLAG_BUTTON             0
 #define FLAG_TITLE              1
