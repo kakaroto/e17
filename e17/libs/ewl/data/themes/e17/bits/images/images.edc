@@ -15,6 +15,7 @@
 	image, "e17_button_detail_left.png" LOSSY 95;
 	image, "e17_button_detail_right.png" LOSSY 95;
 	image, "e17_menu_bg.png" LOSSY 95;
+	image, "e17_menu_bg_border.png" LOSSY 95;
 	image, "e17_menu_check1.png" LOSSY 95;
 	image, "e17_menu_check2.png" LOSSY 95;
 	image, "e17_menu_radio1.png" LOSSY 95;

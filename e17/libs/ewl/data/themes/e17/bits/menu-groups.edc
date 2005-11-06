@@ -16,5 +16,11 @@ group {
     parts {
 BUTTON()
     }
+
+    programs {
+BUTTON_PROG("mouse,in", "mouse,out")
+    }
+
+
 }
 
