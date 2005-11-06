@@ -333,7 +333,8 @@ SoundConfigLoad(void)
 
    file = ConfigFileFind("sound.cfg", Mode.theme.path, 1);
    if (!file)
-      goto done;
+      return 0;
+
    fs = fopen(file, "r");
    Efree(file);
    if (!fs)
@@ -370,6 +371,8 @@ SoundConfigLoad(void)
       ConfigAlertLoad(_("Sound"));
 
  done:
+   if (fs)
+      fclose(fs);
    return err;
 }
 
