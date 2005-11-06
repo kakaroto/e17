@@ -452,14 +452,17 @@ EobjGetPixmap(const EObj * eo)
    return pmap;
 }
 
-#if USE_COMPOSITE
 void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {
+#if USE_COMPOSITE
    eo->opacity = opacity;
    ECompMgrWinChangeOpacity(eo, opacity);
-}
+#else
+   eo = NULL;
+   opacity = 0;
 #endif
+}
 
 void
 EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)

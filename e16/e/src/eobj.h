@@ -92,10 +92,10 @@ struct _eobj
 #define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
 #define EoSetDesk(eo, _x)       (eo)->o.desk = (_x)
 #define EoSetLayer(eo, _l)      EobjSetLayer(EoObj(eo), (_l))
+#define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoGetOpacity(eo)        ((eo)->o.opacity)
-#define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
 #define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #define EoGetShadow(eo)         ((eo)->o.shadow)
 #define EoSetNoRedirect(eo, _x) (eo)->o.noredir = (_x)
@@ -103,7 +103,6 @@ struct _eobj
 #define EoSetFade(eo, _x)       ((eo)->o.fade = (_x))
 #else
 #define EoSetOpacity(eo, _o)
-#define EoChangeOpacity(eo, _o)
 #define EoSetShadow(eo, _x)
 #define EoSetFade(eo, _x)
 #endif
@@ -147,12 +146,7 @@ int                 EobjLower(EObj * eo);
 void                EobjChangeShape(EObj * eo);
 void                EobjsRepaint(void);
 Pixmap              EobjGetPixmap(const EObj * eo);
-
-#if USE_COMPOSITE
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
-#else
-#define             EobjChangeOpacity(eo, opacity)
-#endif
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);
