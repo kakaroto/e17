@@ -1329,6 +1329,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 
 	RaiseEwin(ewin);
 	EwinMoveResize(ewin, x, y, w, h);
+	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
 	ewin->state.fullscreen = 1;
 	EwinStateUpdate(ewin);
      }

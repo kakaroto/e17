@@ -658,7 +658,6 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_max_ver =
       ewin->props.no_resize_v || ewin->state.fullscreen;
    ewin->state.inhibit_fullscreeen =
-      ewin->state.maximized_horz || ewin->state.maximized_vert ||
       ewin->state.inhibit_move || ewin->state.inhibit_resize;
    ewin->state.inhibit_change_desk = 0;
    ewin->state.inhibit_close = 0;
