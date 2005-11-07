@@ -17,7 +17,8 @@
 
 #define AUTH_DATA_LEN 16
 
-char * entranced_cookie_new (void) 
+int
+entranced_cookie_new (char *cookie) 
 {
    int                     fd;
    int                     r;
@@ -25,7 +26,6 @@ char * entranced_cookie_new (void)
    unsigned char           digest[MD5_HASHBYTES];
    double                  ctime;
    pid_t                   pid;
-   char                    *cookie;
    Entranced_MD5_Context   *ctx = NULL;
 
    entranced_md5_init(&ctx);
@@ -38,30 +38,24 @@ char * entranced_cookie_new (void)
    entranced_md5_update(ctx, (unsigned char *) &pid, sizeof(pid));
    
 
-   if ((fd = open("/dev/random", O_RDONLY|O_NONBLOCK)) < 0) {
+   if ((fd = open("/dev/random", O_RDONLY|O_NONBLOCK)) < 0)
+   {
       entranced_debug("Cookie generation failed: could not open /dev/random\n");
-      return NULL;
+      return 0;
    }
 
-   if((r = read(fd, buf, sizeof(buf))) <= 0) {
+   if((r = read(fd, buf, sizeof(buf))) <= 0)
+   {
       entranced_debug("Cookie generation failed: could not read /dev/random\n");
-      return NULL;
+      return 0;
    }
 
    entranced_md5_update(ctx, buf, r);
    entranced_md5_final(digest, ctx);
 
-   cookie = calloc(1, 16);
-#if 0
-   for (i = 0; i < MD5_HASHBYTES; ++i) {
-      char tmp[3];
-      snprintf(tmp, sizeof(tmp), "%02x", (unsigned int) digest[i]);
-      strcat(cookie, tmp);
-   }
-#endif
-
    memcpy(cookie, digest, MD5_HASHBYTES);
-   return cookie;
+
+   return 1;
 }
 
 static void
@@ -129,7 +123,6 @@ Xauth *
 entranced_auth_mit_get(void)
 {
    Xauth    *new;
-   char     *cookie;
 
    new = (Xauth *) malloc(sizeof(Xauth));
 
@@ -142,28 +135,24 @@ entranced_auth_mit_get(void)
    new->number = 0;
 
    new->data = (char *) malloc(AUTH_DATA_LEN);
+   new->data_length = AUTH_DATA_LEN;
    if(!new->data)
    {
       free(new);
       return NULL;
    }
-   
+
    new->name = strdup("MIT-MAGIC-COOKIE-1");
    new->name_length = 18;
-   cookie = entranced_cookie_new();
-   if (!cookie)
+   
+   if(!entranced_cookie_new(new->data))
    {
       free(new->name);
       free(new->data);
       free(new);
       return NULL;
    }
-   
-   memcpy(new->data, cookie, AUTH_DATA_LEN);
-   new->data_length = AUTH_DATA_LEN;
 
-   free(cookie);
-   
    return new;
 }
 

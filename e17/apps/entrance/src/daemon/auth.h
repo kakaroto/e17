@@ -5,7 +5,7 @@
 #include <X11/Xauth.h>
 #include <X11/Xos.h>
 
-char  *entranced_cookie_new(void);
+int    entranced_cookie_new(char *cookie);
 Xauth *entranced_auth_mit_get(void);
 int    entranced_auth_display_secure(Entranced_Display *d);
 int    entranced_auth_user_add(Entranced_Display *d, const char *homedir);
