@@ -53,8 +53,6 @@ void callback(evfs_event* data) {
 				watchers = ecore_hash_keys(folder_monitor_hash);
 				ecore_list_goto_first(watchers);
 				while ( (key = ecore_list_next(watchers))) {
-					//printf("'%s'  :  '%s'\n", ((evfs_file_uri_path*)ecore_hash_get(folder_monitor_hash, key))->files[0]->path, folder);
-					
 					if ( !strcmp( ((evfs_file_uri_path*)ecore_hash_get(folder_monitor_hash, key))->files[0]->path, folder)) {
 						char* md5 = md5_entropy_path_file(folder, pos+1);
 						entropy_file_listener* listener;
@@ -79,7 +77,9 @@ void callback(evfs_event* data) {
 							entropy_free(folder);
 
 						} else {
-							listener = ecore_hash_get(((entropy_gui_component_instance*)key)->core->file_interest_list, md5);
+							listener = ecore_hash_get(((
+								entropy_gui_component_instance*)key)->core->file_interest_list, md5);
+
 							file=listener->file;
 							entropy_free(md5); /*We don't need this one, we're returning an old ref*/
 							entropy_free(folder);
@@ -105,7 +105,8 @@ void callback(evfs_event* data) {
 								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE);
 								  break;
 								case EVFS_FILE_EV_REMOVE_DIRECTORY: //printf("  Change event\n");
-								  gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY);
+								  gui_event->event_type = 
+								  entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY);
 								  break;
 
 
@@ -150,11 +151,11 @@ void callback(evfs_event* data) {
 				memcpy(file_stat->stat_obj, &data->stat.stat_obj, sizeof(struct stat));
 
 				/*Retrieve the file. This is bad - the file might not exist anymore! */
-				file_stat->file = ((entropy_file_listener*)ecore_hash_get(((entropy_gui_component_instance*)instance)->core->file_interest_list, md5))->file;
+				file_stat->file = ((entropy_file_listener*)ecore_hash_get(((
+						entropy_gui_component_instance*)instance)->core->file_interest_list, md5))->file;
 
 				
 
-				//printf("File got: md5 %s, pointer %p - '%s', '%s'\n", md5, file_stat->file, file_stat->file->path, file_stat->file->filename);
 
 				/*Build up the gui_event wrapper*/
 				gui_event = entropy_malloc(sizeof(entropy_gui_event)); 
@@ -262,7 +263,8 @@ void callback(evfs_event* data) {
 
 						if (calling_request && (calling_request->drill_down || calling_request->set_parent)) {
 							printf("Calling request had a parent...\n");
-							printf("File ('%s') parent's name is '%s'\n", file->filename, calling_request->reparent_file->filename);
+							printf("File ('%s') parent's name is '%s'\n", 
+								file->filename, calling_request->reparent_file->filename);
 
 							file->parent = calling_request->reparent_file;
 
@@ -421,6 +423,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 
 	char dire[255];
 	char full_name[1024];
+	int count=0;
 	char posix_name[1024];
 	char *md5;
 	int filetype = -1;
@@ -507,6 +510,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 				//
 				
 			}
+			count++;
 		}
 		closedir(dir);
 
@@ -559,7 +563,9 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 				printf("URI build says: '%s'\n", uri_build);
 				strcat(uri, uri_build); 
 			} else if (request->file->parent) {
-				printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", request->file->parent->mime_type, request->file->parent->filename);
+				printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", 
+					request->file->parent->mime_type, request->file->parent->filename);
+
 				uri_retrieve = entropy_core_descent_for_mime_get(request->core,request->file->parent->mime_type);
 
 				/*Special case handler for the root dir - FIXME*/
@@ -602,6 +608,9 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 		new_request->drill_down = request->drill_down;
 		new_request->requester = request->requester;
 		new_request->file_type = request->file_type;
+
+		/*If it is a drilldown request - we must be at the root.
+		 *Anything else, and we must be an 'embedded' request with a parent*/
 		if (request->drill_down) {
 			ecore_hash_set(evfs_dir_requests, "/", new_request);
 		} else {

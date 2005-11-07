@@ -449,6 +449,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Add some context menu items*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Copy selection");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_copy.png");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_copy_cb, instance);
 	ewl_widget_show(context);
@@ -456,6 +457,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Add some context menu items*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Paste");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_paste.png");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_paste_cb, instance);
 	ewl_widget_show(context);
@@ -480,9 +482,35 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_widget_show(context);
 
 
+
+	/*---------------Icon Menu---------------*/
+
+	/*Copy*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Copy");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_copy.png");
+	ewl_widget_show(context);
+	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	
+	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
+	//
+
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Cut");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_cut.png");
+	ewl_widget_show(context);
+	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
+
+
+
+	
+
+
 	/*Icon menu*/
 	context = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Delete file");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Delete");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
@@ -490,6 +518,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Icon menu*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Properties");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
@@ -510,12 +539,12 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Register out interest in receiving folder notifications*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
+	
 	/*Register our interest in receiving file mod/create/delete notifications*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CHANGE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CREATE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
-	
 
 	/*Register interest in getting stat events*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT));
