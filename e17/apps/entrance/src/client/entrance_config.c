@@ -40,6 +40,9 @@ _entrance_config_defaults_set()
    ecore_config_int_default("/entrance/autologin/mode", 0);
    ecore_config_string_default("/entrance/autologin/user", "");
 
+   ecore_config_int_default("/entrance/presel/mode", 1);
+   ecore_config_string_default("/entrance/presel/prevuser", "");
+
    ecore_config_int_default("/entrance/user/remember", 1);
    ecore_config_int_default("/entrance/user/remember_n", 5);
    ecore_config_int_default("/entrance/user/count", 0);
@@ -88,6 +91,9 @@ entrance_config_populate(Entrance_Config *e)
 
    e->autologin.mode = ecore_config_int_get("/entrance/autologin/mode");
    e->autologin.username = ecore_config_string_get("/entrance/autologin/user");
+
+   e->presel.mode = ecore_config_int_get("/entrance/presel/mode");
+   e->presel.prevuser = ecore_config_string_get("/entrance/presel/prevuser");
 
    e->users.remember = ecore_config_int_get("/entrance/user/remember");
    e->users.remember_n = ecore_config_int_get("/entrance/user/remember_n");
@@ -416,6 +422,16 @@ entrance_config_user_list_save(Entrance_Config * e, const char *file)
    }
    snprintf(buf, PATH_MAX, "/entrance/user/count");
    ecore_config_int_set(buf, i);
+   ecore_config_file_save(file);
+}
+
+void
+entrance_config_prevuser_save(const char *user, const char *file)
+{
+   char buf[PATH_MAX];
+
+   snprintf(buf, PATH_MAX, "/entrance/presel/prevuser");
+   ecore_config_string_set(buf, user);
    ecore_config_file_save(file);
 }
 

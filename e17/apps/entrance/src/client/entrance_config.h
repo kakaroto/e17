@@ -22,6 +22,9 @@
 #define ENTRANCE_AUTOLOGIN_DEFAULT 1
 #define ENTRANCE_AUTOLOGIN_THEME 2
 
+#define ENTRANCE_PRESEL_NONE 0
+#define ENTRANCE_PRESEL_PREV 1
+
 /**
  * This contains all of the configuration options that the system can set
  */
@@ -118,6 +121,13 @@ struct _Entrance_Config
       int mode;
    } autologin;
 
+   struct {
+      char *prevuser;
+      /**
+       * 0 = off, 1 = presel previous
+       */
+      int mode;
+   } presel;
 };
 
 typedef struct _Entrance_Config Entrance_Config;
@@ -127,6 +137,7 @@ void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
 void entrance_config_user_list_save(Entrance_Config * e, const char *file);
+void entrance_config_prevuser_save(const char *user, const char *file);
 int  entrance_config_save(Entrance_Config * e, const char *file);
 
 #endif

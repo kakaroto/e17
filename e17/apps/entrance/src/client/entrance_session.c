@@ -2,6 +2,7 @@
 #include "entrance_session.h"
 #include <Ecore_Config.h>
 #include <Esmart/Esmart_Container.h>
+#include <Esmart/Esmart_Text_Entry.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -173,6 +174,13 @@ entrance_session_run(Entrance_Session * e)
    {
      case ENTRANCE_AUTOLOGIN_NONE:
         ecore_evas_show(e->ee);
+	if (e->config->presel.mode==ENTRANCE_PRESEL_PREV && strlen(e->config->presel.prevuser)) {
+           Evas_Object *oo = evas_object_name_find(evas_object_evas_get(e->edje), "entrance.entry.user");
+	   if (oo) {
+              esmart_text_entry_text_set(oo, e->config->presel.prevuser);
+              entrance_session_user_set(e, e->config->presel.prevuser);
+	   }
+	}
         break;
      case ENTRANCE_AUTOLOGIN_DEFAULT:
         if ((eu =
@@ -428,6 +436,8 @@ entrance_session_start_user_session(Entrance_Session * e)
 #endif
 
    _entrance_session_user_list_fix(e);
+
+   entrance_config_prevuser_save(e->auth->user, e->db);
 
    /* avoid doubling up pam handles before the fork */
    pwent = struct_passwd_dup(e->auth->pw);

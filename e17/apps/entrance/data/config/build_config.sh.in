@@ -47,3 +47,4 @@ ecore_config $DB set /entrance/user/remember int 1
 ecore_config $DB set /entrance/user/remember_n int 5
 ecore_config $DB set /entrance/autologin/mode int 0
 #ecore_config $DB set /entrance/autologin/user str "user1"
+ecore_config $DB set /entrance/presel/mode int 1
