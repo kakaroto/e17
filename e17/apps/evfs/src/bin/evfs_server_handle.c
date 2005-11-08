@@ -187,6 +187,9 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			
 
 			count+= COPY_BLOCKSIZE;
+
+			/*Iterate*/
+			ecore_main_loop_iterate();
 		}
 		
 		
