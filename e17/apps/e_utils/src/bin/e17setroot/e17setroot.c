@@ -18,7 +18,7 @@
 
 #define IF_FREE(x) { if (x) free(x); x = NULL; }
 
-/* TODO: 
+/* TODO:
  * make Esetroot respect our options
  * add empty -s -t -c flags that will take current bg and apply option
  */
@@ -40,7 +40,7 @@ enum E_Bg_Types
 typedef enum E_Bg_Types E_Bg_Types;
 
 
-void _e_bg_bg_help() { 
+void _e_bg_bg_help() {
    printf("e17setroot - Manipulate Enlightenment DR17's background\n");
    printf("Usage: e17setroot <imagename> | <edj>\n");
    printf(" -t | --tile  <imagename>   Tile the suppied image.\n");
@@ -51,11 +51,11 @@ void _e_bg_bg_help() {
    printf(" -h                         Show this help screen.\n");
 }
 
-static int _e_bg_bg_get(void *data, int type, void *event) {   
-   E_Response_Background_Get *bg;   
-   bg = event;   
+static int _e_bg_bg_get(void *data, int type, void *event) {
+   E_Response_Background_Get *bg;
+   bg = event;
    printf("Current bg file: %s\n", bg->file);
-   ecore_main_loop_quit();      
+   ecore_main_loop_quit();
    return 0;
 }
 
@@ -73,12 +73,12 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	{"noload", 0, 0, E_BG_NO_LOAD},
 	{0,        0, 0, 0}
    };
-      
+
    while((c = getopt_long (argc, argv, options, long_options, NULL)) != -1) {
       switch (c) {
 	 /* tile */
-       case E_BG_TILE:	   
-       case 't':	    
+       case E_BG_TILE:
+       case 't':
 	 IF_FREE(esetroot_opt);
 	 e_bg_type = E_BG_TILE;
 	 esetroot_opt = strdup(" ");
@@ -91,15 +91,15 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 e_bg_type = E_BG_SCALE;
 	 esetroot_opt = strdup(" -s ");
 	 break;
-	 
+
 	 /* center */
        case E_BG_CENTER:
        case 'c':
 	 IF_FREE(esetroot_opt);
 	 e_bg_type = E_BG_CENTER;
-	 esetroot_opt = strdup(" -c ");	 
+	 esetroot_opt = strdup(" -c ");
 	 break;
-	 
+
 	 /* fit */
        case E_BG_FIT:
        case 'f':
@@ -113,7 +113,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 IF_FREE(esetroot_opt);
          e_bg_type = E_BG_GET;
 	 break;
-	 
+
        case E_BG_NO_LOAD:
        case 'n':
 	 e_bg_no_load = 1;
@@ -171,20 +171,20 @@ void _e_bg_bg_edj_gen(char *filename) {
 
    /* make sure we got a file name */
    if (!filename || strlen(filename) <= 4) return;
-   
+
    file = ecore_file_get_file(filename);
    dir = ecore_file_get_dir(filename);
 
    filenoext = _e_bg_bg_file_stripext(filename);
    filenoext = ecore_file_get_file(filenoext);
-       		
+
    if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
       int w, h, num;
       char static_bg[PATH_MAX];
-      char esetroot_s[PATH_MAX];	   
+      char esetroot_s[PATH_MAX];
       char filename_s[PATH_MAX];
       Ecore_X_Window *roots = NULL;
-	   
+
       if (!ecore_x_init(NULL))
 	     return;
       num = 0;
@@ -200,15 +200,15 @@ void _e_bg_bg_edj_gen(char *filename) {
       ecore_main_loop_quit();
       return;
    }
-   
+
    /* Set up edj path */
-   edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
+   edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/")
 		+ strlen(filenoext) + strlen(".edj") + 1);
    strcpy(edj_file, getenv("HOME"));
    strcat(edj_file, "/.e/e/backgrounds/");
    strcat(edj_file, filenoext);
    strcat(edj_file, ".edj");
- 
+
    /* Determine image width / height */
    im = imlib_load_image(filename);
    imlib_context_set_image(im);
@@ -233,25 +233,25 @@ void _e_bg_bg_edj_gen(char *filename) {
    ps = engrave_part_state_new();
    engrave_part_state_name_set(ps, "default", 0.0);
    engrave_part_state_image_normal_set(ps, image);
-      
-   switch(e_bg_type) {      
+
+   switch(e_bg_type) {
     case E_BG_CENTER:
       engrave_part_state_max_size_set(ps, w, h);
       break;
-      
+
     case E_BG_SCALE:
       break;
-      
+
     case E_BG_FIT:
       break;
-      
+
     case E_BG_TILE:
       /* FIXME: This is a temp until dj2 fixes engrave */
       //engrave_part_state_max_size_set(ps, w, h);
       engrave_part_state_fill_size_relative_set(ps, 0.0, 0.0);
       engrave_part_state_fill_size_offset_set(ps, w, h);
       break;
-      
+
     default:
       /* FIXME: This is a temp until dj2 fixes engrave */
       //engrave_part_state_max_size_set(ps, w, h);
@@ -260,8 +260,8 @@ void _e_bg_bg_edj_gen(char *filename) {
       break;
    }
 
-   engrave_part_state_add(part, ps);   
-   
+   engrave_part_state_add(part, ps);
+
    engrave_edj_output(edj, edj_file);
    engrave_file_free(edj);
 
@@ -270,7 +270,7 @@ void _e_bg_bg_edj_gen(char *filename) {
       return;
 
    /* set the background */
-   if (!_e_bg_bg_set(edj_file)) 
+   if (!_e_bg_bg_set(edj_file))
       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
@@ -303,10 +303,9 @@ int main(int argc, char **argv)
       _e_bg_bg_help();
    } else
      _e_bg_bg_edj_gen(e_bg_img_file);
-   
+
    if (!e_bg_no_load)
       e_lib_shutdown();
 
    return 0;
 }
-
