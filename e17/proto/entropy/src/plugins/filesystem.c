@@ -431,6 +431,8 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	entropy_file_listener* listener;
 
 	if ( (!strcmp(request->file->uri_base, "posix")) && !request->drill_down && !request->file->parent) {
+		printf("Listing standard posix directory...\n");
+		
 		/*If either the path, or the filename, is the root dir, we don't need another slash*/
 		if (strcmp(request->file->filename, "/") && strcmp(request->file->path, "/")) {		
 			snprintf(dire, 255, "%s/%s", request->file->path, request->file->filename);
