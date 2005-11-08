@@ -69,7 +69,7 @@ typedef int (*data_count)(void *data) Ewl_Model_Data_Count;
 #define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count *)f)
 
 /**
- * @def EWL_MODEL(t)
+ * @def EWL_MODEL(model)
  * Typecasts a pointer to an Ewl_Model pointer.
  */
 #define EWL_MODEL(model) ((Ewl_Model *)model)
@@ -85,7 +85,7 @@ struct Ewl_Model
 };
 
 /**
- * @def EWL_VIEW(t)
+ * @def EWL_VIEW(view)
  * Typecasts a pointer to an Ewl_View pointer.
  */
 #define EWL_VIEW(view) ((Ewl_View *)view)
@@ -125,25 +125,25 @@ struct Ewl_Tree2
 /*
  * Tree view/controller manipulation
  */
-Ewl_Widget 	*ewl_tree2_new();
-int 		 ewl_tree2_init(Ewl_Tree *tree);
+Ewl_Widget 	*ewl_tree2_new(void);
+int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
 void             ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
 void            *ewl_tree2_data_get(Ewl_Tree2 *m);
 
-void             ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
-void             ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
-void             ewl_tree2_column_remove(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
+void             ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
+void             ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
+void             ewl_tree2_column_remove(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
 
-void		 ewl_tree2_headers_visible_set(Ewl_Tree *tree,
+void		 ewl_tree2_headers_visible_set(Ewl_Tree2 *tree,
 					       unsigned char visible);
-unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree *tree);
+unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree2 *tree);
 
-Ecore_List 	*ewl_tree2_selected_get(Ewl_Tree *tree);
-void 		 ewl_tree2_selected_clear(Ewl_Tree *tree);
+Ecore_List 	*ewl_tree2_selected_get(Ewl_Tree2 *tree);
+void 		 ewl_tree2_selected_clear(Ewl_Tree2 *tree);
 
-Ewl_Tree2_Mode 	 ewl_tree2_mode_get(Ewl_Tree *tree);
-void 		 ewl_tree2_mode_set(Ewl_Tree *tree, Ewl_Tree2_Mode mode);
+Ewl_Tree2_Mode 	 ewl_tree2_mode_get(Ewl_Tree2 *tree);
+void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree2_Mode mode);
 
 void             ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, int fixed);
 int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
@@ -151,16 +151,16 @@ int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 /*
  * Model manipulation.
  */
-Ewl_Model *ewl_model_new();
+Ewl_Model 	     *ewl_model_new(void);
 
-void                  ewl_model_data_get_set(Ewl_Model *m, Ewl_Tree2_Cell_Data get);
+void                  ewl_model_data_get_set(Ewl_Model *m, Ewl_Model_Data_Get get);
 Ewl_Model_Data_Get    ewl_model_data_get_get(Ewl_Model *m);
 
 void                  ewl_model_subdata_get_set(Ewl_Model *m, Ewl_Model_Data_Get get);
 Ewl_Model_Data_Get    ewl_model_subdata_get_get(Ewl_Model *m);
 
-void                  ewl_model_data_sort_set(Ewl_Model *m, Ewl_Tree2_Column_Sort sort);
-Ewl_Tree2_Column_Sort ewl_model_data_sort_get(Ewl_Model *m);
+void                  ewl_model_data_sort_set(Ewl_Model *m, Ewl_Model_Data_Sort sort);
+Ewl_Model_Data_Sort   ewl_model_data_sort_get(Ewl_Model *m);
 
 /**
  * @}
