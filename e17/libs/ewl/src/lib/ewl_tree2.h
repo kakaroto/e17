@@ -56,21 +56,46 @@
  * @themekey /tree/group
  */
 
-typedef void *(*data_get)(void *data, int row, int column) Ewl_Tree2_Cell_Data;
-typedef void *(*child_data_get)(void *data, int row) Ewl_Tree2_Child_Data;
-typedef int (*column_sort)(void *data, int column) Ewl_Tree2_Column_Sort;
-typedef int (*row_count)(void *data) Ewl_Tree2_Row_Count;
+typedef void *(*data_get)(void *data, int row, int column) Ewl_Model_Data_Get;
 
-typedef struct Ewl_Tree2_Model Ewl_Tree2_Model;
+#define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Data_Get *)d)
 
-struct Ewl_Tree2_Model
+typedef int (*data_sort)(void *data, int column) Ewl_Model_Data_Sort;
+
+#define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Data_Sort *)d)
+
+typedef int (*data_count)(void *data) Ewl_Model_Data_Count;
+
+#define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count *)d)
+
+/**
+ * @def EWL_MODEL(t)
+ * Typecasts a pointer to an Ewl_Model pointer.
+ */
+#define EWL_MODEL(model) ((Ewl_Model *)model)
+
+typedef struct Ewl_Model Ewl_Model;
+
+struct Ewl_Model
 {
-	void *data;                          /**< Data provided to the tree */
+	Ewl_Model_Data_Get    data_get;     /**< Retrieve data for a cell */
+	Ewl_Model_Data_Get    subdata_get;  /**< Check for subdata */
+	Ewl_Model_Data_Sort   column_sort;  /**< Trigger sort on column */
+	Ewl_Model_Data_Count  row_count;    /**< Count of data items */
+};
 
-	Ewl_Tree2_Cell_Data cell_data_get;   /**< Retrieve data for a cell */
-	Ewl_Tree2_Child_Data child_data_get; /**< Check if a row expands */
-	Ewl_Tree2_Column_Sort column_sort;   /**< Trigger sort on column */
-	Ewl_Tree2_Row_Count row_count;       /**< Count of rows in data */
+/**
+ * @def EWL_VIEW(t)
+ * Typecasts a pointer to an Ewl_View pointer.
+ */
+#define EWL_VIEW(view) ((Ewl_View *)view)
+
+typedef struct Ewl_View Ewl_View;
+
+struct Ewl_View
+{
+	Ewl_View_Constructor constructor;   /**< Create a widget for display */
+	Ewl_View_Data_Assign data_set;      /**< Assign data to a widget */
 };
 
 typedef struct Ewl_Tree2 Ewl_Tree2;
@@ -88,12 +113,13 @@ typedef struct Ewl_Tree2 Ewl_Tree2;
  */
 struct Ewl_Tree2
 {
-	Ewl_Container    container; /**< Inherit from container. */
+	Ewl_Container container; /**< Inherit from container. */
 
-	Ewl_Tree2_Model *model;     /**< Current data model for the tree. */
+	Ewl_Model *models;       /**< Data models for the tree columns. */
 
-	int *rowcache;              /**< Cache of row sizes */
-	int fixed;                  /**< Rows are fixed height */
+	void *data;              /**< Data provided to the tree */
+	int *rowcache;           /**< Cache of row sizes */
+	int fixed;               /**< Rows are fixed height */
 };
 
 /*
@@ -101,6 +127,13 @@ struct Ewl_Tree2
  */
 Ewl_Widget 	*ewl_tree2_new();
 int 		 ewl_tree2_init(Ewl_Tree *tree);
+
+void             ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
+void            *ewl_tree2_data_get(Ewl_Tree2 *m);
+
+void             ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
+void             ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
+void             ewl_tree2_column_remove(Ewl_Tree2 *t, Ewl_Model *m, Ewl_Tree2_View *v);
 
 void		 ewl_tree2_headers_visible_set(Ewl_Tree *tree,
 					       unsigned char visible);
@@ -116,18 +149,18 @@ void             ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, int fixed);
 int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 /*
- * Tree model manipulation.
+ * Model manipulation.
  */
-Ewl_Tree2_Model *ewl_tree2_model_new();
+Ewl_Model *ewl_model_new();
 
-void             ewl_tree2_model_data_set(Ewl_Tree2_Model *m, void *data);
-void            *ewl_tree2_model_data_get(Ewl_Tree2_Model *m);
+void                  ewl_model_data_get_set(Ewl_Model *m, Ewl_Tree2_Cell_Data get);
+Ewl_Model_Data_Get    ewl_model_data_get_get(Ewl_Model *m);
 
-void             ewl_tree2_model_cell_data_get_set(Ewl_Tree2_Model *m, Ewl_Tree2_Cell_Data get);
-Ewl_Tree2_Cell_Data ewl_tree2_model_cell_data_get_get(Ewl_Tree2_Model *m);
+void                  ewl_model_subdata_get_set(Ewl_Model *m, Ewl_Model_Data_Get get);
+Ewl_Model_Data_Get    ewl_model_subdata_get_get(Ewl_Model *m);
 
-void             ewl_tree2_model_column_sort_set(Ewl_Tree2_Model *m, Ewl_Tree2_Column_Sort sort);
-Ewl_Tree2_Column_Sort ewl_tree2_model_column_sort_get(Ewl_Tree2_Model *m);
+void                  ewl_model_data_sort_set(Ewl_Model *m, Ewl_Tree2_Column_Sort sort);
+Ewl_Tree2_Column_Sort ewl_model_data_sort_get(Ewl_Model *m);
 
 /**
  * @}
