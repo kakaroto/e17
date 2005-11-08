@@ -58,15 +58,15 @@
 
 typedef void *(*data_get)(void *data, int row, int column) Ewl_Model_Data_Get;
 
-#define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Data_Get *)d)
+#define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Data_Get *)f)
 
 typedef int (*data_sort)(void *data, int column) Ewl_Model_Data_Sort;
 
-#define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Data_Sort *)d)
+#define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Data_Sort *)f)
 
 typedef int (*data_count)(void *data) Ewl_Model_Data_Count;
 
-#define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count *)d)
+#define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count *)f)
 
 /**
  * @def EWL_MODEL(t)
