@@ -214,6 +214,13 @@ unsigned long evfs_server_get_next_id(evfs_server* serve);
 #include <evfs_server_handle.h>
 #include <evfs_common.h>
 
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
+
 
 
 #endif

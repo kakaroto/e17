@@ -1,7 +1,7 @@
 
 /*
 
-Copyright (C) 2000, 2001 Alexander Taylor <alex@logisticchaos.com>.
+Copyright (C) 2005 Alexander Taylor <alex@logisticchaos.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -59,7 +59,7 @@ unsigned long evfs_server_get_next_id(evfs_server* serve) {
 }
 
 int
-ipc_client_add(void *data, int type, void *event)
+ipc_client_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
       Ecore_Ipc_Event_Client_Add *e;
       evfs_client* client;
@@ -84,7 +84,7 @@ ipc_client_add(void *data, int type, void *event)
 }
 
 int
-ipc_client_del(void *data, int type, void *event)
+ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
    Ecore_List* keys;
@@ -257,6 +257,10 @@ void evfs_load_plugins() {
 
 }
 
+int ecore_timer_enterer(void* data) {
+	return 1;
+}
+
 
 int incoming_command_cb(void* data) {
 	evfs_command_client* com_cli = ecore_list_remove_first(server->incoming_command_list);
@@ -286,7 +290,11 @@ int main(int argc, char** argv) {
 	server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	server->clientCounter = 0;
 	server->incoming_command_list = ecore_list_new();
+	
 	ecore_idle_enterer_add(incoming_command_cb, NULL);
+
+	/*Add a timer, to make sure our event loop keeps going.  Kinda hacky*/
+	ecore_timer_add(0.5, ecore_timer_enterer, NULL);	
 
 	/*Load the plugins*/
 	evfs_load_plugins();
