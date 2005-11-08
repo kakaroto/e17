@@ -340,6 +340,9 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 
 			tar_name_split(&block, tar);
 			find++;
+
+			/*Iterate the ecore mainloop*/
+			ecore_main_loop_iterate();
 		} else if (tar_checksum(&block) == octal_checksum_to_int(block.p.checksum)) {
 			//printf("old magic\n");
 			tar_name_split(&block, tar);

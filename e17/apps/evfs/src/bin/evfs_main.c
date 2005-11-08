@@ -136,11 +136,11 @@ ipc_client_data(void *data, int type, void *event)
 
    /*True == command finished*/
    if (evfs_process_incoming_command(server, client->prog_command, msg)) {
-	  evfs_handle_command(client, client->prog_command);
-	  
-
-	  evfs_cleanup_command(client->prog_command, EVFS_CLEANUP_FREE_COMMAND); 
+	  evfs_command_client* com_cli = NEW(evfs_command_client);
+	  com_cli->client = client;
+	  com_cli->command = client->prog_command;
 	  client->prog_command = NULL;
+	  ecore_list_append(server->incoming_command_list, com_cli);
    }
 
 
@@ -258,6 +258,20 @@ void evfs_load_plugins() {
 }
 
 
+int incoming_command_cb(void* data) {
+	evfs_command_client* com_cli = ecore_list_remove_first(server->incoming_command_list);
+	
+	if (com_cli) {
+		evfs_handle_command(com_cli->client, com_cli->command);
+	 	evfs_cleanup_command(com_cli->command, EVFS_CLEANUP_FREE_COMMAND); 
+		free(com_cli);
+
+	}
+	
+	return 1;
+}
+
+
 
 int main(int argc, char** argv) {
 	/*Init the ipc server*/
@@ -271,6 +285,8 @@ int main(int argc, char** argv) {
 	server->client_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	server->clientCounter = 0;
+	server->incoming_command_list = ecore_list_new();
+	ecore_idle_enterer_add(incoming_command_cb, NULL);
 
 	/*Load the plugins*/
 	evfs_load_plugins();

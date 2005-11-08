@@ -55,9 +55,15 @@ struct evfs_server {
 	Ecore_Ipc_Server* ipc_server;
 	unsigned long clientCounter;
 
+	Ecore_List* incoming_command_list;
+
 	int num_clients;
 };
 
+typedef struct evfs_command_client {
+	evfs_client* client;
+	evfs_command* command;
+} evfs_command_client;
 
 
 
