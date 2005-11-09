@@ -274,7 +274,8 @@ void callback(evfs_event* data) {
 						}
 
 						/*Mark the file's uri FIXME do this properly*/
-						strcpy(file->uri_base, "smb");
+						strcpy(file->uri_base, ref->plugin_uri);
+						printf("Assigned plugin URI: '%s'\n", ref->plugin_uri);
 						
 
 						/*Register a new listener for this file*/

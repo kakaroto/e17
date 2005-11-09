@@ -230,7 +230,8 @@ entropy_core* entropy_core_init() {
 	entropy_plugin_layout_main = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_main");
 
 	
-	/*FIXME why doesn't the UI update unless we have an empty ecore_timer here? Try removing this, and thumbnail a large dir without
+	/*FIXME why doesn't the UI update unless we have an empty ecore_timer here? 
+	 * Try removing this, and thumbnail a large dir without
 	 * moving the mouse */
 	ecore_timer_add(0.5, ecore_timer_enterer, NULL); 
 
