@@ -338,6 +338,8 @@ EventsCompress(XEvent * evq, int count)
 		       ev2->type = EX_EVENT_CREATE_GONE;
 		       j = -1;	/* Break for() */
 		       break;
+		    case DestroyNotify:
+		       break;
 		    case UnmapNotify:
 		       if (ev2->xunmap.window != ev->xdestroywindow.window)
 			  continue;
