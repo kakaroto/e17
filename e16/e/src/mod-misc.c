@@ -131,9 +131,10 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, place.ignore_struts, 0),
    CFG_ITEM_BOOL(Conf, place.raise_fullscreen, 0),
 
+   CFG_ITEM_BOOL(Conf, session.enable_script, 0),
+   CFG_ITEM_STR(Conf, session.script),
    CFG_ITEM_BOOL(Conf, session.enable_logout_dialog, 1),
    CFG_ITEM_BOOL(Conf, session.enable_reboot_halt, 0),
-   CFG_ITEM_STR(Conf, session.cmd),
 #if ENABLE_OLD_SESSION_HELPERS
    CFG_ITEM_STR(Conf, session.cmd_init),
    CFG_ITEM_STR(Conf, session.cmd_start),

@@ -712,6 +712,8 @@ SessionInit(void)
    LoadWindowStates();
 #endif
 
+   if (!Conf.session.script)
+      Conf.session.script = Estrdup("$EROOT/scripts/session.sh");
    if (!Conf.session.cmd_reboot)
       Conf.session.cmd_reboot = Estrdup("reboot");
    if (!Conf.session.cmd_halt)
@@ -1036,24 +1038,24 @@ SessionHelper(int when)
    switch (when)
      {
      case ESESSION_INIT:
-	if (Conf.session.cmd)
-	   SessionRunProg(Conf.session.cmd, "init");
+	if (Conf.session.enable_script && Conf.session.script)
+	   SessionRunProg(Conf.session.script, "init");
 #if ENABLE_OLD_SESSION_HELPERS
 	else if (Conf.session.cmd_init)
 	   SessionRunProg(Conf.session.cmd_init, NULL);
 #endif
 	break;
      case ESESSION_START:
-	if (Conf.session.cmd)
-	   SessionRunProg(Conf.session.cmd, "start");
+	if (Conf.session.enable_script && Conf.session.script)
+	   SessionRunProg(Conf.session.script, "start");
 #if ENABLE_OLD_SESSION_HELPERS
 	else if (Conf.session.cmd_start)
 	   SessionRunProg(Conf.session.cmd_start, NULL);
 #endif
 	break;
      case ESESSION_STOP:
-	if (Conf.session.cmd)
-	   SessionRunProg(Conf.session.cmd, "stop");
+	if (Conf.session.enable_script && Conf.session.script)
+	   SessionRunProg(Conf.session.script, "stop");
 #if ENABLE_OLD_SESSION_HELPERS
 	else if (Conf.session.cmd_stop)
 	   SessionRunProg(Conf.session.cmd_stop, NULL);

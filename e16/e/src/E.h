@@ -68,7 +68,7 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
-#define ENABLE_OLD_SESSION_HELPERS 1
+#define ENABLE_OLD_SESSION_HELPERS 0
 
 /* dmalloc debugging */
 /*#include <dmalloc.h> */
@@ -500,9 +500,10 @@ typedef struct
    } place;
    struct
    {
+      char                enable_script;
+      char               *script;
       char                enable_logout_dialog;
       char                enable_reboot_halt;
-      char               *cmd;
 #if ENABLE_OLD_SESSION_HELPERS
       char               *cmd_init;
       char               *cmd_start;
