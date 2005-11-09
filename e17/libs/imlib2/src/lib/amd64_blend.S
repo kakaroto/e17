@@ -1264,7 +1264,7 @@ SIZE(imlib_amd64_copy_rgba_to_rgba)
 PR_(imlib_amd64_copy_rgb_to_rgba):
 	ENTER
 
-	movdqa mX000X000X000X000(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -1395,7 +1395,7 @@ PR_(imlib_amd64_add_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa m00XXXXXX(%rip), %xmm6
+	movdqu m00XXXXXX(%rip), %xmm6
 
 	/* Move right to left across each line, */ 
 	/* processing in two pixel chunks */ 
@@ -1774,9 +1774,9 @@ PR_(imlib_amd64_add_blend_rgba_to_rgba):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa c1(%rip), %xmm5
+	movdqu c1(%rip), %xmm5
 	xorq %rax, %rax
-	movdqa mX000X000X000X000(%rip), %xmm6
+	movdqu mX000X000X000X000(%rip), %xmm6
 	movq pow_lut@GOTPCREL(%rip), %r13
 
 	/* Move right to left across each line, */ 
@@ -2213,7 +2213,7 @@ SIZE(imlib_amd64_add_blend_rgba_to_rgba)
 PR_(imlib_amd64_add_copy_rgba_to_rgb):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -2364,7 +2364,7 @@ SIZE(imlib_amd64_add_copy_rgba_to_rgb)
 PR_(imlib_amd64_add_copy_rgba_to_rgba):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -2515,7 +2515,7 @@ SIZE(imlib_amd64_add_copy_rgba_to_rgba)
 PR_(imlib_amd64_add_copy_rgb_to_rgba):
 	ENTER
 
-	movdqa mX000X000X000X000(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -2667,7 +2667,7 @@ PR_(imlib_amd64_subtract_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa m00XXXXXX(%rip), %xmm6
+	movdqu m00XXXXXX(%rip), %xmm6
 
 	/* Move right to left across each line, */ 
 	/* processing in two pixel chunks */ 
@@ -3047,9 +3047,9 @@ PR_(imlib_amd64_subtract_blend_rgba_to_rgba):
 
 	movq pow_lut@GOTPCREL(%rip), %r13
 	pxor %xmm4, %xmm4
-	movdqa c1(%rip), %xmm5
-	movdqa mX000X000X000X000(%rip), %xmm6
-	movdqa mX000X000(%rip), %xmm7
+	movdqu c1(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm6
+	movdqu mX000X000(%rip), %xmm7
 	xorq %rax, %rax
 
 	/* Move right to left across each line, */ 
@@ -3495,7 +3495,7 @@ SIZE(imlib_amd64_subtract_blend_rgba_to_rgba)
 PR_(imlib_amd64_subtract_copy_rgba_to_rgb):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -3646,8 +3646,8 @@ SIZE(imlib_amd64_subtract_copy_rgba_to_rgb)
 PR_(imlib_amd64_subtract_copy_rgba_to_rgba):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
-	movdqa mX000X000X000X000(%rip), %xmm6
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm6
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -3818,7 +3818,7 @@ SIZE(imlib_amd64_subtract_copy_rgba_to_rgba)
 PR_(imlib_amd64_subtract_copy_rgb_to_rgba):
 	ENTER
 
-	movdqa mX000X000X000X000(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm5
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
@@ -3970,8 +3970,8 @@ PR_(imlib_amd64_reshade_blend_rgba_to_rgb):
 	ENTER
 
 	pxor %xmm4, %xmm4
-	movdqa m000V0V0V000V0V0V(%rip), %xmm6
-	movdqa m00XXXXXX(%rip), %xmm7
+	movdqu m000V0V0V000V0V0V(%rip), %xmm6
+	movdqu m00XXXXXX(%rip), %xmm7
 
 	/* Move right to left across each line, */ 
 	/* processing in two pixel chunks */ 
@@ -4288,10 +4288,10 @@ PR_(imlib_amd64_reshade_blend_rgba_to_rgba):
 
 	movq pow_lut@GOTPCREL(%rip), %r13
 	pxor %xmm4, %xmm4
-	movdqa c1(%rip), %xmm5
-	movdqa mX000X000X000X000(%rip), %xmm6
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm7
-	movdqa m000V0V0V000V0V0V(%rip), %xmm8
+	movdqu c1(%rip), %xmm5
+	movdqu mX000X000X000X000(%rip), %xmm6
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm7
+	movdqu m000V0V0V000V0V0V(%rip), %xmm8
 	xorq %rax, %rax
 
 	/* Move right to left across each line, */ 
@@ -4682,8 +4682,8 @@ SIZE(imlib_amd64_reshade_blend_rgba_to_rgba)
 PR_(imlib_amd64_reshade_copy_rgba_to_rgb):
 	ENTER
 
-	movdqa m0XXX0XXX0XXX0XXX(%rip), %xmm5
-	movdqa m0VVV0VVV0VVV0VVV(%rip), %xmm6
+	movdqu m0XXX0XXX0XXX0XXX(%rip), %xmm5
+	movdqu m0VVV0VVV0VVV0VVV(%rip), %xmm6
 
 	leaq (%rsi, %r8, 4), %rsi
 	leaq (%rdi, %r8, 4), %rdi
