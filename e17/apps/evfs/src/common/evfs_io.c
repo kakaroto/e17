@@ -1,8 +1,36 @@
 #include <evfs.h>
+#include <Eet.h>
+#include <Evas.h>
 
 
-static pthread_mutex_t ipc_client_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t ipc_server_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static io_init=0;
+Eet_Data_Descriptor *_evfs_filereference_edd;
+
+
+int evfs_io_initialise() {
+	if (io_init) return 1;
+	
+  	
+	_evfs_filereference_edd = eet_data_descriptor_new("evfs_filereference", sizeof(evfs_filereference),
+                                 evas_list_next,
+                                 evas_list_append,
+                                 evas_list_data,
+                                 evas_list_free,
+                                 evas_hash_foreach,
+                                 evas_hash_add,
+                                 evas_hash_free);
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "file_type", file_type, EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "path",path, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "plugin_uri",plugin_uri, EET_T_STRING);
+
+
+	return 0;
+	
+}
+
+
 
 
 ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response, void* data, int len) {
@@ -52,16 +80,23 @@ void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
 
 void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 	evfs_filereference* ref;
-	char block[1024]; /*Maybe too small, make this dynamic*/
+	char* data;
+	int size_ret;
+	//char block[1024]; /*Maybe too small, make this dynamic*/
 	
 	
 	ecore_list_goto_first(event->file_list.list);
 	while ( (ref = ecore_list_next(event->file_list.list)) ) {
-		memcpy(block, &ref->file_type, sizeof(evfs_file_type));
-		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);
+		/*memcpy(block, &ref->file_type, sizeof(evfs_file_type));
+		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);*/
+
+		data =eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 		
 		/*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);*/
-		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,block, (strlen(ref->path) * sizeof(char)) + sizeof(evfs_file_type) +1  ));
+		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,data, size_ret  ));
+
+
+		free(data);
 	}
 	
 }
@@ -118,18 +153,15 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			break;
 
 		case EVFS_EV_PART_FILE_REFERENCE: {
-			evfs_filereference* ref = NEW(evfs_filereference);
+			evfs_filereference* ref;
 							  
 			if (!event->file_list.list) {
 				event->file_list.list = ecore_list_new();
 				//printf("Created new ecore list at %p\n", event->file_list.list);
 			}
-							  
-			memcpy(&ref->file_type, msg->data, sizeof(evfs_file_type));
-			ref->path = malloc(sizeof(char) * msg->len);
-			memcpy(ref->path, (msg->data)+sizeof(evfs_file_type), msg->len);
-			//printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
 
+			ref = eet_data_descriptor_decode(_evfs_filereference_edd, msg->data, msg->len);
+							  
 			ecore_list_append(event->file_list.list, ref);
 			}
 			break;
@@ -160,22 +192,15 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 /*Writers*/
 void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server* server, ecore_ipc_message* msg) {
 
-	LOCK(&ipc_client_mutex);
-
 	ecore_ipc_server_send(server, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
         free(msg);
 
-	UNLOCK(&ipc_client_mutex);
 }
 
 void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client* client, ecore_ipc_message* msg) {
 
-	LOCK(&ipc_server_mutex);
-
 	ecore_ipc_client_send(client, msg->major, msg->minor, msg->ref, msg->ref_to, msg->response,msg->data, msg->len);
         free(msg);
-
-	UNLOCK(&ipc_server_mutex);
 }
 
 

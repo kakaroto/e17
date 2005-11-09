@@ -299,6 +299,8 @@ int main(int argc, char** argv) {
 	/*Load the plugins*/
 	evfs_load_plugins();
 
+	evfs_io_initialise();
+
 
 
 

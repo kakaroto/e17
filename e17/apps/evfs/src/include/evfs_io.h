@@ -1,7 +1,7 @@
 #ifndef __EVFS_IO_H_
 #define __EVFS_IO_H_
 
-
+int evfs_io_initialise();
 
 typedef struct ecore_ipc_message ecore_ipc_message;
 struct ecore_ipc_message {

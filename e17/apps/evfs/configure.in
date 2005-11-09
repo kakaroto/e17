@@ -202,12 +202,29 @@ AC_SUBST(curl_cflags)
 AC_SUBST(curl_libs)
 AM_CONDITIONAL(HAVE_CURL, test $msg_curl = yes)
 
+
 AC_CHECK_LIB(bz2, bzCompressInit, AC_DEFINE(HAVE_OLDER_BZIP2, 1, [Define to 1 if older bzip2 version is used]))
 AC_CHECK_HEADERS(bzlib.h,
         BZ2_LIBS="$BZ2_LIBS -lbz2",
         AC_MSG_ERROR([Gnome-vfs requires libbz2 to compile.])
         )
 AC_SUBST(BZ2_LIBS)
+
+
+AC_ARG_WITH(eet-config,
+[  --with-eet-config=EET_CONFIG      use eet-config specified ],
+[
+  EET_CONFIG=$withval;
+  echo "using "$EET_CONFIG" for eet-config";
+],[
+  PROG="eet-config";
+  AC_PATH_PROG(EET_CONFIG, $PROG, "", $PATH)
+])
+eet_cflags=`$EET_CONFIG --cflags`
+eet_libs=`$EET_CONFIG --libs`
+AC_SUBST(eet_cflags)
+AC_SUBST(eet_libs)
+
 
 
 

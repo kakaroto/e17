@@ -114,6 +114,8 @@ evfs_connection* evfs_connect(void (*callback_func)(void*)) {
 	connection->prog_event = NULL;
 	connection->callback_func = callback_func;
 
+	evfs_io_initialise();
+
         if (!libevfs_registered_callback) {
 		libevfs_registered_callback = 1;
 	       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, evfs_server_data, NULL); 

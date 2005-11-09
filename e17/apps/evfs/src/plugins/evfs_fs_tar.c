@@ -272,11 +272,12 @@ evfs_plugin_functions* evfs_plugin_init() {
 
         functions->evfs_client_disconnect = &evfs_client_disconnect;
 	functions->evfs_dir_list = &evfs_dir_list;
+	functions->evfs_file_stat = &evfs_file_stat;
 
         /*functions->evfs_file_remove= &evfs_file_remove;
         functions->evfs_monitor_start = &evfs_monitor_start;
         functions->evfs_monitor_stop = &evfs_monitor_stop;
-        functions->evfs_file_stat = &evfs_file_stat;
+        
         functions->evfs_file_open = &evfs_file_open;
         functions->evfs_file_close = &evfs_file_close;
 
@@ -397,6 +398,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 			size = strlen(ele->path)+strlen("/")+strlen(ele->name)+1;
 			reference->path = malloc(size);
 			reference->file_type = ele->type;
+			reference->plugin_uri = "tar";
 			snprintf(reference->path, size, "%s/%s", ele->path, ele->name);
 			ecore_list_append(files, reference);
 			
@@ -418,6 +420,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 				size = strlen(ele_new->path)+strlen("/")+strlen(ele_new->name)+1;
 				reference->path = malloc(size);
 				reference->file_type = ele_new->type;
+				reference->plugin_uri = "tar";
 				snprintf(reference->path, size, "%s/%s", ele_new->path, ele_new->name);
 				ecore_list_append(files, reference);
 			}
@@ -427,4 +430,11 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 
 	evfs_list_dir_event_create(client, com, files);
 
+}
+
+
+int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
+	printf("evfs_fs_tar.c: evfs_file_stat -> stub\n");
+
+	return 0;
 }
