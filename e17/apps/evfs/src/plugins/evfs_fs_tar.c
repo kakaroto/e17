@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2005 <alex@logisticchaos.com> - Alex Taylor
+Portions (as noted) Copyright(C) 2005 GNU Foundation, under the GNU GPL
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -41,8 +42,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define uintmax_t long
 #define TYPE_MAXIMUM(t) ((t) (~ (t) 0 - TYPE_MINIMUM (t)))
-static uintmax_t from_header (const char *, size_t, const char *,
-			      uintmax_t, uintmax_t);
+
+
+#define octal_field_convert(f) (octal ((f), sizeof (f)))
+#define IS_DIGIT_O(f) ((f) >= '0' && (f) <= '8')
+#define OCTAL_DIGIT(f) ((f) - '0')
+
+static int octal (const char *str, int len)
+{
+	int i, ret = 0;
+	for (i = 0; i < len; i++)
+	{
+		if (str[i] == '\0') break;
+		else if (!IS_DIGIT_O (str[i])) return 0;
+		ret = ret * 8 + OCTAL_DIGIT (str[i]);
+	}
+	return ret;
+}
+
 
 
 evfs_filereference* evfs_file_top_level_find(evfs_filereference* file) {
@@ -84,6 +101,7 @@ struct tar_file {
 struct tar_element {
 	char* path;
 	char* name;
+	struct stat file_prop;
 	evfs_file_type type;
 	Ecore_Hash* children;
 } tar_element;
@@ -175,6 +193,8 @@ int tar_checksum (union TARPET_block* block)
 }
 ///////////////////////////////////////////////////////
 
+
+
 void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 	char* tok;
 	char* path = strdup(block->p.name);
@@ -226,6 +246,15 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 					ele->type = EVFS_FILE_NORMAL;
 					break;
 			}
+
+			/*Assign properties*/
+			ele->file_prop.st_uid = octal_field_convert(block->p.uid);
+			ele->file_prop.st_uid = octal_field_convert(block->p.gid);
+			ele->file_prop.st_mtime = octal_field_convert(block->p.mtime);
+			ele->file_prop.st_atime = 0;
+			ele->file_prop.st_size = octal_field_convert(block->p.size);
+
+			
 
 			ecore_hash_set(search_hash, strdup(tok), ele);
 
@@ -288,6 +317,8 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_file_create = &evfs_file_create;*/
 
 	tar_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+
 
 	
         return functions;
@@ -434,7 +465,24 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 
 
 int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
-	printf("evfs_fs_tar.c: evfs_file_stat -> stub\n");
+	struct tar_file* file;
+	struct tar_element* ele;
 
+	printf("Looking for file '%s'\n", evfs_file_top_level_find(command->file_command.files[0])->path);
+	if (!(file = ecore_hash_get(tar_cache, evfs_file_top_level_find(command->file_command.files[0])->path))) {
+		printf("Could not find file in lookup ref\n");
+		
+		
+	} else {
+		printf("located tar file in cache");
+		ele = ecore_hash_get(file->link_in, command->file_command.files[0]->path );
+
+		if (ele) {
+			memcpy(file_stat, &ele->file_prop, sizeof(struct stat));
+		} else {
+			printf("Couldn't locate file '%s' in tar file\n", command->file_command.files[0]->path);
+		}
+	}
+		
 	return 0;
 }

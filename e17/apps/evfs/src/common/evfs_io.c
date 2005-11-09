@@ -385,7 +385,7 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 			
 			break;
 		case EVFS_FILE_REFERENCE: {
-						  
+			printf("Parsing URI: '%s'\n", message->data);			  
 			evfs_file_uri_path* path = evfs_parse_uri(message->data);
 			if (command->file_command.num_files == 0) {
 
