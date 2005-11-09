@@ -66,13 +66,15 @@ int evfs_server_data (void* data, int type, void* event) {
 
 				   /*Execute callback if registered..*/
 				   if (conn->callback_func) {
-					   evfs_event* ev = conn->prog_event;
 					   
+					   evfs_event* ev = conn->prog_event;
+
+					  
 					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
-
-								      
 					   (*conn->callback_func)(ev);
+					   
 
+					   
 					   /*Now cleanup the event we send back*/
 					   evfs_cleanup_event(ev);
 				   } else {
@@ -104,7 +106,7 @@ int evfs_server_spawn() {
 	return 0;
 }
 
-evfs_connection* evfs_connect(void (*callback_func)(void*)) {
+evfs_connection* evfs_connect(void (*callback_func)(evfs_event*)) {
 	ecore_init();
 	ecore_ipc_init();
 	int connect_attempts = 0;

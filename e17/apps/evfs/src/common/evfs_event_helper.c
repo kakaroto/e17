@@ -29,7 +29,15 @@ void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct s
 
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_STAT;
-	memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
+	
+	//memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
+	event->stat.stat_obj.st_uid = stat_obj->st_uid;
+	event->stat.stat_obj.st_gid = stat_obj->st_gid;
+	event->stat.stat_obj.st_uid = stat_obj->st_uid;
+	event->stat.stat_obj.st_size = stat_obj->st_size;
+	event->stat.stat_obj.ist_atime = stat_obj->st_atime;
+	event->stat.stat_obj.ist_mtime = stat_obj->st_mtime;
+	event->stat.stat_obj.ist_ctime = stat_obj->st_ctime;
 
 
 	evfs_write_event(client, command, event);

@@ -13,11 +13,11 @@ void callback(evfs_event* data) {
 	} else if (data->type == EVFS_EV_STAT) {
 		printf("Received stat event for file '%s'!\n", data->resp_command.file_command.files[0]->path);
 		printf("File size: %ld\n", data->stat.stat_obj.st_size);
-		printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
+		//printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
 		printf("File uid: %ld\n", data->stat.stat_obj.st_uid);
 		printf("File gid: %ld\n", data->stat.stat_obj.st_gid);
-		printf("Last access: %ld\n", data->stat.stat_obj.st_atime);
-		printf("Last modify : %ld\n", data->stat.stat_obj.st_mtime);
+		printf("Last access: %ld\n", data->stat.stat_obj.ist_atime);
+		printf("Last modify : %ld\n", data->stat.stat_obj.ist_mtime);
 	} else if (data->type == EVFS_EV_DIR_LIST) {
 		evfs_filereference* ref;
 		

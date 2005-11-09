@@ -141,6 +141,16 @@ typedef enum evfs_file_monitor_type {
 
 
 /*-----------------------------------------------------------------*/
+typedef struct evfs_stat {
+	int st_uid;
+	int st_gid;
+	int st_size;
+	int ist_atime;
+	int ist_mtime;
+	int ist_ctime;
+	
+} evfs_stat;
+
 typedef struct evfs_event_id_notify evfs_event_id_notify;
 struct evfs_event_id_notify {
 
@@ -158,10 +168,7 @@ struct evfs_event_file_monitor {
 
 typedef struct evfs_event_stat evfs_event_stat;
 struct evfs_event_stat {
-
-	
-	struct stat stat_obj;
-	
+	evfs_stat stat_obj;
 };
 
 typedef struct evfs_event_file_list evfs_event_file_list;
@@ -174,14 +181,11 @@ struct evfs_event_file_list {
 typedef struct evfs_event {
 	evfs_eventtype type;
 	evfs_command resp_command;
-	 
+
 	evfs_event_file_list file_list;
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
-	evfs_event_stat stat;
-	
-
-	
+	evfs_event_stat stat;	
 }
 evfs_event;
 /*---------------------------------------------------------------------*/
@@ -197,7 +201,7 @@ struct evfs_connection {
 
 void evfs_cleanup_client(evfs_client* client);
 void evfs_disconnect(evfs_connection* connection);
-evfs_connection* evfs_connect(void (*callback_func)(void*));
+evfs_connection* evfs_connect(void (*callback_func)(evfs_event*));
 evfs_file_uri_path* evfs_parse_uri(char* uri);
 void evfs_handle_command(evfs_client* client, evfs_command* command);
 void evfs_handle_monitor_start_command(evfs_client* client, evfs_command* command);

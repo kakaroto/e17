@@ -122,6 +122,8 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_stat);
 		(*(plugin->functions->evfs_file_stat))(command, &file_stat);
 
+		
+
 		evfs_stat_event_create(client, command, &file_stat);
 	}
 	printf("Handled event, client is %p\n", client);

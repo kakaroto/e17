@@ -251,6 +251,7 @@ void tar_name_split(union TARPET_block* block , struct tar_file* tar) {
 			ele->file_prop.st_uid = octal_field_convert(block->p.uid);
 			ele->file_prop.st_uid = octal_field_convert(block->p.gid);
 			ele->file_prop.st_mtime = octal_field_convert(block->p.mtime);
+			
 			ele->file_prop.st_atime = 0;
 			ele->file_prop.st_size = octal_field_convert(block->p.size);
 
@@ -479,6 +480,7 @@ int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 
 		if (ele) {
 			memcpy(file_stat, &ele->file_prop, sizeof(struct stat));
+			
 		} else {
 			printf("Couldn't locate file '%s' in tar file\n", command->file_command.files[0]->path);
 		}

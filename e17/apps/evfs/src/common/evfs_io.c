@@ -72,7 +72,8 @@ void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
 }
 
 void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.stat_obj,sizeof(struct stat)));
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.stat_obj,sizeof(evfs_stat)));
+
 	
 	
 }
@@ -91,6 +92,7 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);*/
 
 		data =eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
+		printf("Encoded filename: '%s'\n", ref->path);
 		
 		/*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);*/
 		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,data, size_ret  ));
@@ -149,7 +151,9 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			break;		
 			
 		case EVFS_EV_PART_STAT_SIZE:
-			memcpy(&event->stat.stat_obj, msg->data, sizeof(struct stat));
+			
+			memcpy(&event->stat.stat_obj, msg->data, sizeof(evfs_stat));
+
 			break;
 
 		case EVFS_EV_PART_FILE_REFERENCE: {
@@ -159,11 +163,16 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 				event->file_list.list = ecore_list_new();
 				//printf("Created new ecore list at %p\n", event->file_list.list);
 			}
+			
 
 			ref = eet_data_descriptor_decode(_evfs_filereference_edd, msg->data, msg->len);
-							  
-			ecore_list_append(event->file_list.list, ref);
+
+			if (ref) {
+				ecore_list_append(event->file_list.list, ref);
+			} else {
+				printf("Error decoding eet!\n");
 			}
+		}
 			break;
 
 

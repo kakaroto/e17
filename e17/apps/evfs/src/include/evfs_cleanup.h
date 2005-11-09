@@ -9,5 +9,6 @@ typedef enum evfs_free_state {
 void evfs_cleanup_command(evfs_command* command, int free_command);
 void evfs_cleanup_file_command(evfs_command* command);
 void evfs_cleanup_file_monitor(evfs_file_monitor* mon);
+void evfs_cleanup_event(evfs_event*);
 
 #endif

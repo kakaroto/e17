@@ -52,6 +52,11 @@ int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 int evfs_client_disconnect(evfs_client* client);
 
+typedef enum evfs_ftp_data{
+	EVFS_FTP_CLIENT,
+	EVFS_FTP_COMMAND
+}evfs_ftp_data;
+
 /****************Globals****************/
 Ecore_Hash* connections;
 
@@ -66,14 +71,59 @@ CURLcode* connection_handle_get(evfs_filereference* ref)
 		create/initialize one if not*/
 	if(!(conn_handle = ecore_hash_get(connections, ref->path)))
 	{
+		char *url;
+		int len = 1;
+		len += strlen("ftp://");
+		len += strlen(ref->username) + 1 + strlen(ref->password);
+		len += 1 + strlen(ref->path);
+		len *= sizeof(char);
+		url = malloc(len);
+		snprintf(url,len,"ftp://%s:%s@%s", ref->username, ref->password, ref->path);
 		conn_handle = curl_easy_init();
-		printf("Setting CURL_URL to %s", ref->parent->path);
-		/*curl_easy_setopt(conn_handle, CURL_URL, ref->path);*/
+		printf("Setting CURLOPT_URL to %s\n", url);
+		curl_easy_setopt(conn_handle, CURLOPT_URL, url);
 		ecore_hash_set(connections, ref->path, conn_handle);
 	}
 	
 	return conn_handle;
 }
+/******************CURL Callbacks*****************************************/
+
+size_t listdir(void *buffer, size_t size, size_t nmemb, void *cbdata)
+{
+	char* dirs = buffer;
+	Ecore_List* files = ecore_list_new();
+	evfs_client* client = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_CLIENT);
+	evfs_command* command = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_COMMAND);
+	
+	evfs_filereference* ref;
+	char* curline;
+	
+	printf("libcurl says, \"I have returned %s\"\n", buffer);
+	
+	while (dirs)
+	{
+		curline = strdup(strsep(&dirs, "\r\n"));
+		if(strlen(curline))
+		{
+			ref = NEW(evfs_filereference);
+			printf("dir: %s\n", curline);
+			ref->path = strdup(curline);
+			ref->file_type = EVFS_FILE_NORMAL;
+			ecore_list_append(files, ref);
+		}
+	}
+	printf("There are %i list nodes.\n", ecore_list_nodes(files));
+	ref = NEW(evfs_filereference);
+	ecore_list_goto_first(files);
+	while ((ref = (evfs_filereference *)ecore_list_next(files)))
+	{
+		printf("DIR: %s\n", ref->path);
+	}
+	evfs_list_dir_event_create(client, command, files);
+	return strlen(buffer);
+}
+
 
 /******************Begin EVFS Plugin Functions****************************/
 
@@ -111,7 +161,17 @@ char* evfs_plugin_uri_get() {
 }
 
 void ftp_evfs_dir_list(evfs_client* client, evfs_command* command) {
+	printf("FTP: Listing dir.\n");
+	Ecore_Hash* data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	
+	ecore_hash_set(data, (int*)EVFS_FTP_CLIENT, client);
+	ecore_hash_set(data, (int*)EVFS_FTP_COMMAND, command);
 	CURLcode* handle = connection_handle_get(command->file_command.files[0]);
+	//curl_easy_setopt(handle, CURLOPT_FTPLISTONLY, 1);
+	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (FILE *)data);
+	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, listdir);
+	printf("Executing curl_easy_perform()...\n");
+	curl_easy_perform(handle);
 }
 
 int ftp_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
@@ -154,6 +214,7 @@ int evfs_client_disconnect(evfs_client* client)
 {
 	/*Temp, move to plugin unloading when avaliable.  Closes the curl library, and
 		resets the connection cache.  This will just destroy the cache when moved.*/
+	printf ("Received disconnect for client at evfs_fs_ftp.c for client %d\n", client->id);
 	curl_global_cleanup();
 	ecore_hash_destroy(connections);
 	ecore_hash_new(ecore_str_hash, ecore_str_compare);
