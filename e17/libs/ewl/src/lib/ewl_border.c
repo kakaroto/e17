@@ -133,6 +133,7 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 			break;
 	}
 	ewl_container_child_remove(EWL_CONTAINER(b), b->label);
+	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
 
 	/* need to remove the redirect so the label gets added back into the
 	 * border and not into the body. We put the redirect back on after
