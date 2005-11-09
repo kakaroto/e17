@@ -184,6 +184,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 	text = ewl_text_new();
 	stime = file_stat->stat_obj->st_mtime;
+	printf("RET mtime is: %d\n", file_stat->stat_obj->st_mtime);
 	ewl_text_text_set(EWL_TEXT(text), ctime(&stime));
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);

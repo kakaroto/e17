@@ -148,7 +148,17 @@ void callback(evfs_event* data) {
 				/*Build a file<->stat structure to pass to requester*/
 				file_stat = entropy_malloc(sizeof(entropy_file_stat));
 				file_stat->stat_obj = entropy_malloc(sizeof(struct stat));
-				memcpy(file_stat->stat_obj, &data->stat.stat_obj, sizeof(struct stat));
+
+
+				file_stat->stat_obj->st_uid = data->stat.stat_obj.st_uid;
+				file_stat->stat_obj->st_gid = data->stat.stat_obj.st_gid;
+				file_stat->stat_obj->st_size = data->stat.stat_obj.st_size;
+				file_stat->stat_obj->st_atime = data->stat.stat_obj.ist_atime;
+				file_stat->stat_obj->st_mtime = data->stat.stat_obj.ist_mtime;
+				file_stat->stat_obj->st_ctime = data->stat.stat_obj.ist_ctime;
+				printf("Size of evfs_event: %d\n", sizeof(evfs_stat));
+
+				
 
 				/*Retrieve the file. This is bad - the file might not exist anymore! */
 				file_stat->file = ((entropy_file_listener*)ecore_hash_get(((

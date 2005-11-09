@@ -16,6 +16,7 @@
 #include <pthread.h>
 #include "md5.h"
 #include "entropy_gui.h"
+#include <Epsilon.h>
 
 #define ENTROPY_CORE 1
 
