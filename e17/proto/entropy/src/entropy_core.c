@@ -21,6 +21,7 @@
 
 static int requests = 0;
 static long file_cache_size = 0;
+entropy_core* core_core;
 
 #define FILE_FREE_QUEUE_SIZE 500;
 
@@ -117,6 +118,7 @@ entropy_core* entropy_core_init() {
 
 	
 	entropy_core* core = entropy_core_new();
+	core_core=core;
 
 	/*Init the file cache mutex*/
 	pthread_mutex_init(&core->file_cache_mutex, NULL);
@@ -1002,6 +1004,61 @@ void entropy_log(char* message, const int level) {
 	}
 
 
+}
+
+
+char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int drill_down) {
+	entropy_generic_file* source_file;
+	char* uri = malloc(PATH_MAX);
+	char* uri_retrieve;
+	char uri_build[255];
+		
+	/*If the file/location we are requesting has a 'parent' (i.e. it's inside another object),
+	 * we have to grab the parent, not the file itself, as the base*/
+	if (file->parent) {
+		source_file = file->parent;
+	} else
+	source_file = file;
+
+
+	/*Do we have login information*/
+	/*TODO - wrap this up in some kind of entropy_generic_file_to_evfs_uri function*/
+	if (!source_file->username) {
+		snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, source_file->path, source_file->filename);
+	} else {
+		snprintf(uri, 512, "%s://%s:%s@%s/%s",  source_file->uri_base, 
+		source_file->username, source_file->password, 
+		source_file->path, source_file->filename);
+	}
+	
+			
+	printf("EVFS says that this file descends through '%s'\n", uri);
+		
+	if (drill_down || file->parent) {
+		/*If we're a 'drill-down', we're at the root - so request the root*/
+		if (drill_down) {
+			uri_retrieve = entropy_core_descent_for_mime_get(core_core,file->mime_type);
+			snprintf(uri_build, 255, "#%s:///", uri_retrieve);
+			printf("URI build says: '%s'\n", uri_build);
+			strcat(uri, uri_build); 
+		} else if (file->parent) {
+			printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", 
+			file->parent->mime_type, file->parent->filename);
+
+			uri_retrieve = entropy_core_descent_for_mime_get(core_core,file->parent->mime_type);
+
+			/*Special case handler for the root dir - FIXME*/
+			printf("Path: '%s', filename '%s'\n", file->path, file->filename);
+			if (!strcmp(file->path,"/")) {
+				snprintf(uri_build, 255, "#%s://%s%s", uri_retrieve, file->path, file->filename);
+			} else {
+				snprintf(uri_build, 255, "#%s://%s/%s", uri_retrieve, file->path, file->filename);
+			}
+			strcat(uri, uri_build);
+		}
+	}
+
+	return uri;
 }
 
 

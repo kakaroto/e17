@@ -61,6 +61,7 @@ char* md5_entropy_path_file(char* path, char* filename);
 
 /*FS Interaction/EVFS functions*/
 entropy_generic_file* entropy_core_parse_uri(char* uri);
+char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int drill_down);
 
 
 /*Selection engine functions*/

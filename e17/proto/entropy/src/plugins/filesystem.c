@@ -397,17 +397,18 @@ Ecore_List* structurelist_get(char* base) {
 
 struct stat* filestat_get(entropy_file_request* request) {
 	evfs_file_uri_path* path;
-	char pathi[1024];
+	char *uri = uri = entropy_core_generic_file_uri_create(request->file, 0);
 	
 
 	//printf("Getting a stat from evfs...\n");
 
-	snprintf(pathi,1024,"%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
 
-	path = evfs_parse_uri(pathi);
+	path = evfs_parse_uri(uri);
 	char* md5 = md5_entropy_path_file(request->file->path, request->file->filename);
 	ecore_hash_set(stat_request_hash, md5, request->requester);
 	evfs_client_file_stat(con, path->files[0]);
+
+	free(uri);
 	
 	
 	return NULL;
@@ -523,68 +524,19 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 						     because the original will be destroyed*/
 
 		entropy_generic_file* source_file;
-		char uri[512];
+		char* uri;
 		evfs_file_uri_path* path;
-		
-		//printf("*** Requested a '%s' dir list, calling evfs\n", request->file->uri_base);
-		//
-		//
+
+
 		/*If the file/location we are requesting has a 'parent' (i.e. it's inside another object),
 		 * we have to grab the parent, not the file itself, as the base*/
 		if (request->file->parent) {
 			source_file = request->file->parent;
 		} else
 			source_file = request->file;
-		//
-
-		/*First build uri..*/
-
-		/*Do we have login information*/
-		/*TODO - wrap this up in some kind of entropy_generic_file_to_evfs_uri function*/
-		if (!source_file->username) {
-			snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, source_file->path, source_file->filename);
-		} else {
-			snprintf(uri, 512, "%s://%s:%s@%s/%s",  source_file->uri_base, 
-					source_file->username, source_file->password, 
-					source_file->path, source_file->filename);
-		}
-
-		/*If it's a drill down request, or the file has a parent */
-		if (request->drill_down || request->file->parent) {
-			char* uri_retrieve;
-			char uri_build[255];
-			
-			/*The file is a drill down request*/
-
-			
-			printf("EVFS says that this file descends through '%s'\n", uri);
-			
-			/*If we're a 'drill-down', we're at the root - so request the root*/
-			if (request->drill_down) {
-				uri_retrieve = entropy_core_descent_for_mime_get(request->core,request->file->mime_type);
-				snprintf(uri_build, 255, "#%s:///", uri_retrieve);
-				printf("URI build says: '%s'\n", uri_build);
-				strcat(uri, uri_build); 
-			} else if (request->file->parent) {
-				printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", 
-					request->file->parent->mime_type, request->file->parent->filename);
-
-				uri_retrieve = entropy_core_descent_for_mime_get(request->core,request->file->parent->mime_type);
-
-				/*Special case handler for the root dir - FIXME*/
-				printf("Path: '%s', filename '%s'\n", request->file->path, request->file->filename);
-				if (!strcmp(request->file->path,"/")) {
-					snprintf(uri_build, 255, "#%s://%s%s", uri_retrieve, request->file->path, request->file->filename);
-				} else {
-					snprintf(uri_build, 255, "#%s://%s/%s", uri_retrieve, request->file->path, request->file->filename);
-				}
-
-				strcat(uri, uri_build);
-			}
-
-			
-
-		}
+	
+		
+		uri = entropy_core_generic_file_uri_create(request->file, request->drill_down);
 		
 		printf("URI: %s\n", uri);
 
@@ -619,6 +571,8 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 		} else {
 			ecore_hash_set(evfs_dir_requests, path->files[0]->path, new_request);
 		}
+
+		entropy_free(uri);
 		
 		return NULL;
 	}
