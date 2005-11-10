@@ -527,6 +527,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 			count++;
 		}
 		closedir(dir);
+		printf("Done!\n");
 
 		return entropy_generic_file_list_sort(el);
 	} else { /*Not a posix call for a dir list - don't use our local optim function */

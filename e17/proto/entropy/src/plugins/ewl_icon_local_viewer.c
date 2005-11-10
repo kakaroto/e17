@@ -7,6 +7,7 @@
 
 #define DONT_DO_MIME 0
 #define DO_MIME 1
+#define ICON_ADD_COUNT 20
 
 typedef struct gui_file gui_file;
 struct gui_file {
@@ -17,6 +18,19 @@ struct gui_file {
 };
 gui_file* gui_file_new();
 void gui_file_destroy(gui_file*);
+
+
+typedef struct event_idle_processor {
+	entropy_core* core;
+	Ecore_List* user_data;
+	void* requestor;
+	int count;	
+
+	
+	
+	
+} event_idle_processor;
+
 
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
 
@@ -614,7 +628,76 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 			return gui_object;
 			
 		}
+
+		return NULL;
 			
+}
+
+
+int idle_add_icons(void* data) {
+		event_idle_processor* proc = (event_idle_processor*)data;
+		entropy_gui_component_instance* comp = (entropy_gui_component_instance*)proc->requestor;
+		
+		Ecore_List* el = proc->user_data;
+		entropy_generic_file* file;
+		int i=0;
+		char* mime;
+		entropy_plugin* thumb;
+		Ecore_List* added_list = ecore_list_new();
+		Ecore_List* events;
+		int term=0;
+	
+		/*data = file list*/
+		
+	
+		while ( (file = ecore_list_remove_first(el)) && i < ICON_ADD_COUNT) {
+			ewl_icon_local_viewer_add_icon(proc->requestor, file, DONT_DO_MIME);
+			ecore_list_append(added_list,file);
+
+			i++;
+			
+		}
+		if (!file) term=1;
+
+		events = ecore_list_new();
+		while ( (file=ecore_list_remove_first(added_list))) {
+			mime = (char*)entropy_mime_file_identify(comp->core->mime_plugins, file);
+
+			
+			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
+	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+			 } else {
+				 thumb = NULL;
+			}
+
+	                if (thumb) {
+				entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, proc, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", file,NULL);
+			
+				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, proc->requestor);
+				
+				ecore_list_append(events, ev);
+			}
+
+		}
+		ecore_list_destroy(added_list);
+
+		/*Now insert all these events inside one lock*/
+		entropy_notify_event_bulk_commit(comp->core->notify,events);
+
+
+		if (!term)  {
+			proc->count+=ICON_ADD_COUNT;
+			//printf("Continuing process thread..(%d)\n", proc->count);
+			ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX( ((entropy_icon_viewer*)comp->data)->iconbox));
+			return 1;
+		} else { 
+			ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX( ((entropy_icon_viewer*)comp->data)->iconbox));	
+			//printf("Terminated process thread..\n");
+			ecore_list_destroy(proc->user_data);
+			entropy_free(proc);
+			return 0;
+		}
+
 }
 
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data) {
@@ -623,6 +706,12 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
      switch (eevent->event_type) {	
 	case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	case ENTROPY_NOTIFY_FILELIST_REQUEST: {
+
+		event_idle_processor* proc = entropy_malloc(sizeof(event_idle_processor));
+
+						      
+						      
+		
 		Ecore_List* event_keys;
 		Ecore_List* events;
 		entropy_generic_file* event_file;
@@ -638,6 +727,23 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		Ecore_Hash* tmp_icon_hash;
 		entropy_generic_file* list_item;
 
+		/*Setup the background processor object*/
+		//proc->eevent = eevent;
+		proc->requestor = comp;
+		proc->count=0;
+		proc->user_data = ecore_list_new();
+
+		ecore_list_goto_first(ret);
+		while ( (event_file = ecore_list_next(ret))) {
+			ecore_list_append(proc->user_data, event_file);	
+		}
+
+		ecore_idle_enterer_add(idle_add_icons, proc);
+
+		
+
+		//printf("Starting..\n");
+
 		
 		/*Set the current path from the event source...*/
 		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
@@ -649,51 +755,15 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
 		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
-		/*Clear the view, if there's anything to nuke*/
-		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
-
-	
-		ecore_list_goto_first(el);
-		while ( (list_item = ecore_list_next(el)) ) {
-			ewl_icon_local_viewer_add_icon(comp, list_item, DONT_DO_MIME);
-		}
-
-		event_keys = ecore_hash_keys(view->gui_hash);
-		events = ecore_list_new();
-		while ( (event_file=ecore_list_remove_first(event_keys))) {
-
-			 /*printf("%s\n", list_item->filename);*/
-	                 mime = entropy_mime_file_identify(comp->core->mime_plugins, event_file);
-
-			
-			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
-			 } else {
-				 thumb = NULL;
-			}
-
-	                if (thumb) {
-				entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", event_file,NULL);
-			
-				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);
-				
-				ecore_list_append(events, ev);
-			}
-
-		}
-		ecore_list_destroy(event_keys);
-
-		/*Now insert all these events inside one lock*/
-		entropy_notify_event_bulk_commit(comp->core->notify,events);
-
-
 		/*Before we begin, see if our file hash is initialized, if so - we must destroy it first*/
 		/*TODO*/
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
 
+		/*Clear the view, if there's anything to nuke*/
+		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
 
-
+	
 		/*See if there is a custom BG image for this folder*/
 		if (entropy_config_str_get("iconbox_viewer", view->current_dir)) {
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
@@ -772,5 +842,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
     } //End switch
 
+}					       
+
 	
-}
+

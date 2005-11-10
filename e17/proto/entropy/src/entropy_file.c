@@ -30,7 +30,7 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		print_allocation();
 }
 
-Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
+/*Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
 	Ecore_List* new_list = ecore_list_new();
 	entropy_generic_file* file_ins;
 	entropy_generic_file* file;
@@ -66,4 +66,39 @@ Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
 
 	return new_list;
 	
+}*/
+
+
+int entropy_generic_file_path_compare(entropy_generic_file* file1, entropy_generic_file* file2) {
+	return strcasecmp(file1->filename, file2->filename);
+	
 }
+
+
+Ecore_List* entropy_generic_file_list_sort(Ecore_List* file_list) {
+
+   Ecore_Sheap        *heap;
+   entropy_generic_file* f;
+	
+   /*
+    * Push the data into a heap.
+    */
+   heap = ecore_sheap_new(ECORE_COMPARE_CB(entropy_generic_file_path_compare), ecore_list_nodes(file_list));
+   while ((f = ecore_list_remove_first(file_list)))
+     {
+	ecore_sheap_insert(heap, f);
+     }
+
+   /*
+    * Extract in sorted order.
+    */
+   while ((f = ecore_sheap_extract(heap)))
+     {
+	ecore_list_append(file_list, f);
+     }
+
+   ecore_list_goto_first(file_list);
+   ecore_sheap_destroy(heap);
+
+   return file_list;
+ }
