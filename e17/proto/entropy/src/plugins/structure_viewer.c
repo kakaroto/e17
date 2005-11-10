@@ -77,7 +77,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 
 
 	entropy_generic_file* event_file = ((entropy_file_request*)eevent->data)->file;
-	printf("Looking for row for file %p (%s)\n", event_file, event_file->filename);
+	//printf("Looking for row for file %p (%s)\n", event_file, event_file->filename);
 	
 	Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
 	printf ("   Got %p\n", row);
@@ -92,11 +92,9 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 
 				/*We need the file's mime type, so get it here if it's not here already...*/
 				if (!strlen(file->mime_type)) {
-					printf("Running mime..\n");
 					entropy_mime_file_identify(comp->core->mime_plugins, file);
 				}
 				
-				printf("Looking for descent for: %s (%s)\n", file->filename, file->mime_type);
 				if (file->filetype == FILE_FOLDER || entropy_core_descent_for_mime_get(comp->core, file->mime_type)  ) {
 					char *c = entropy_malloc(sizeof(char));
 					*c = 1;
