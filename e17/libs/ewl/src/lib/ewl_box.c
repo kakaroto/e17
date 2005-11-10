@@ -734,7 +734,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
 void
 ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
-	int nodes, space = 0;
+	int space = 0;
 	int width, height;
 	int cw, ch;
 
@@ -744,10 +744,8 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-	nodes = ecore_list_nodes(c->children) - 1;
-	if (nodes < 0)
-		nodes = 0;
-	space = EWL_BOX(c)->spacing * nodes;
+	if (ecore_list_nodes(c->children) > 1);
+		space = EWL_BOX(c)->spacing;
 
 	/*
 	 * Get the sizes common to both calculations.
