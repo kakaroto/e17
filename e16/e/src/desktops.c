@@ -1047,7 +1047,7 @@ DeskGotoNum(unsigned int desk)
 
    if (Conf.desks.desks_wraparound)
       desk %= Conf.desks.num;
-   if (desk >= Conf.desks.num || desk == desks.previous->num)
+   if (desk >= Conf.desks.num || desk == desks.current->num)
       return;
 
    dsk = _DeskGet(desk);
@@ -1079,9 +1079,10 @@ void
 DeskGoto(Desk * dsk)
 {
    if (!dsk || dsk == desks.previous)
+      return;
 
-      if (EventDebug(EDBUG_TYPE_DESKS))
-	 Eprintf("DeskGoto %d\n", dsk->num);
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskGoto %d\n", dsk->num);
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_START, NULL);
 
@@ -2223,8 +2224,6 @@ DeskOpGoto(unsigned int desk)
    Desk               *dsk;
    Desk               *pd = DesksGetCurrent();
 
-   if (Conf.desks.desks_wraparound)
-      desk %= Conf.desks.num;
    if (desk >= Conf.desks.num)
       return;
 
@@ -2239,7 +2238,13 @@ DeskOpGoto(unsigned int desk)
 static void
 DeskOpGotoRel(int drel)
 {
-   DeskOpGoto(DesksGetCurrentNum() + drel);
+   int                 desk;
+
+   desk = (int)DesksGetCurrentNum() + drel;
+   if (Conf.desks.desks_wraparound)
+      desk = (desk + Conf.desks.num) % Conf.desks.num;
+
+   DeskOpGoto((unsigned int)desk);
 }
 
 static void
