@@ -81,6 +81,7 @@ entropy_gui_component_instance* entropy_core_global_layout_get(entropy_core* cor
 
 
 /*Helpers*/
+entropy_core* entropy_core_get_core();
 void entropy_core_string_lowcase(char *lc);
 void* entropy_malloc(size_t);
 void entropy_free(void* ref);

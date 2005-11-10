@@ -23,6 +23,14 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		if (file->username) entropy_free(file->username);
 		if (file->password) entropy_free(file->password);
 
+		/*If the file has a parent, remove a reference, because we added one when we got here..*/
+		if (file->parent) {
+			//TODO fix this - we need to detatch this from threading issues*/
+			//entropy_core_file_cache_remove_reference(entropy_core_get_core(), file->parent->md5);
+		}
+
+		if (file->md5) entropy_free(file->md5);
+
 
 		entropy_free(file);
 

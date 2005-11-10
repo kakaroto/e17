@@ -27,6 +27,11 @@ entropy_core* core_core;
 #define FILE_FREE_QUEUE_SIZE 500;
 
 
+entropy_core* entropy_core_get_core() {
+	return core_core;
+}
+
+
 int ecore_timer_enterer(void* data) {
 	return 1;
 }
@@ -300,7 +305,6 @@ void entropy_core_destroy(entropy_core* core) {
 		entropy_generic_file_destroy(listener->file);
 		entropy_free(listener);
 		ecore_hash_remove(core->file_interest_list, key);
-		free(key);
 
 
 	}
@@ -925,7 +929,6 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 			free(listener);
 
 			ecore_hash_remove(core->file_interest_list, md5);
-			free(md5);
 
 			file_cache_size--;
 
