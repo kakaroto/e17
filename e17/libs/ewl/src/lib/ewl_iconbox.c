@@ -466,14 +466,15 @@ void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib) {
 	
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
-			pw > ib->lx ? pw + ib->iw: ib->lx+ib->iw+20, 
-			ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+ib->ih+30);
+			pw > ib->lx ? pw : ib->lx, 
+			ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+(ib->ih*2)+(EWL_ICONBOX_ICON_PADDING*2)  );
 
 	
 }
 
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 {
+	
 	int sw=0,sh=0;
 	int iw=0, ih=0;
 	Ewl_IconBox_Icon* list_item;
@@ -492,14 +493,20 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 	ib->lx = ib->ly = 0;
 	
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &sw,&sh);
-	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
-	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
-		int nw,nh;
+	
+	if (ib->iw > 0 && ib->ih > 0) {
+		iw = ib->iw;
+		ih = ib->ih;
+	} else {	
+		ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+			int nw,nh;
 		
-		nw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
-		nh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
-		if (nw > iw) iw = nw;
-		if (nh > ih) ih = nh;
+			nw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
+			nh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+			if (nw > iw) iw = nw;
+			if (nh > ih) ih = nh;
+		}
 	}
 
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
@@ -510,7 +517,7 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 		}
 
 		
-		if (ib->lx + iw > sw) {
+		if (ib->lx + ib->iw + (EWL_ICONBOX_ICON_PADDING) >= (sw - ib->iw)) {
 			ib->lx = 0;
 			ib->ly += ih + EWL_ICONBOX_ICON_PADDING;
 		}
@@ -606,7 +613,6 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 {
-	char* text;	
 	ib->selected = 0;
 
 
@@ -701,19 +707,25 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	/* Add the floater to our container
 	 */
 	ewl_container_child_append(EWL_CONTAINER(iconbox->ewl_iconbox_pane_inner), EWL_WIDGET(EWL_ICONBOX_ICON(ib)->floater));
-
+	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), iconbox->lx, iconbox->ly);
 	
 	/*----------------------*/
 	/*Get the icon next position*/
-	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane), &sw,&sh);
-	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), iconbox->lx, iconbox->ly);
 
-	if (iconbox->lx + iconbox->iw + EWL_ICONBOX_ICON_PADDING > sw ) {
+	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane), &sw,&sh);
+
+	if (iconbox->lx + iconbox->iw + (EWL_ICONBOX_ICON_PADDING) >= (sw - iconbox->iw)) {
+		//printf("%d + %d + %d >= %d, so next line (%s)\n", iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw, name);
+		
 		iconbox->ly += EWL_ICONBOX_ICON_PADDING + iconbox->ih;
 		iconbox->lx = 0;
 	} else {
+		//printf("*** %d + %d + %d < %d, so stay (%s)\n", iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw,name);
 		iconbox->lx += EWL_ICONBOX_ICON_PADDING + iconbox->iw;	
 	}
+
+	
+	
 	/*----------------------*/
 
 
@@ -773,7 +785,8 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 	ib->drag_icon = NULL;
 	ib->lx = 0;
 	ib->ly = 0;
-	
+
+	ewl_iconbox_scrollpane_recalculate(ib);
 }
 
 
@@ -947,8 +960,8 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
 
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
-		ewl_widget_show(ib->ewl_iconbox_view_menu);
-		ewl_widget_show(ib->ewl_iconbox_context_menu);
+		//ewl_widget_show(ib->ewl_iconbox_view_menu);
+		//ewl_widget_show(ib->ewl_iconbox_context_menu);
 		//ewl_menu_popup_move_cb(EWL_MENU(ib->ewl_iconbox_context_menu)->base.popup, NULL, ib->ewl_iconbox_context_menu);
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
@@ -998,7 +1011,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(sx-ibx), ev->y-iby +abs(sy-iby));
 		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ib);
 		//ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
-		ewl_widget_show(ib->icon_box_parent->icon_menu);
+		//ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
 	} else {
 		/*Select/drag start*/
