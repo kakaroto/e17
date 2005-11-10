@@ -1063,3 +1063,71 @@ SessionHelper(int when)
 	break;
      }
 }
+
+/*
+ * Session dialog
+ */
+static char         tmp_session_script;
+static char         tmp_logout_dialog;
+static char         tmp_reboot_halt;
+
+static void
+CB_ConfigureSession(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	Conf.session.enable_script = tmp_session_script;
+	Conf.session.enable_logout_dialog = tmp_logout_dialog;
+	Conf.session.enable_reboot_halt = tmp_reboot_halt;
+     }
+   autosave();
+}
+
+void
+SettingsSession(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   d = FindItem("CONFIGURE_SESSION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (d)
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_SESSION");
+
+   tmp_session_script = Conf.session.enable_script;
+   tmp_logout_dialog = Conf.session.enable_logout_dialog;
+   tmp_reboot_halt = Conf.session.enable_reboot_halt;
+
+   d = DialogCreate("CONFIGURE_SESSION");
+   DialogSetTitle(d, _("Session Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+      DialogAddHeader(d, "pix/miscellaneous.png",
+		      _("Enlightenment Session\n" "Settings Dialog\n"));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Enable Session Script"));
+   DialogItemCheckButtonSetPtr(di, &tmp_session_script);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Enable Logout Dialog"));
+   DialogItemCheckButtonSetPtr(di, &tmp_logout_dialog);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Enable Reboot/Halt on Logout"));
+   DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
+
+   DialogAddFooter(d, DLG_OAC, CB_ConfigureSession);
+
+   ShowDialog(d);
+}

@@ -479,9 +479,6 @@ SettingsAutoRaise(void)
 
 static char         tmp_dialog_headers;
 static char         tmp_button_image;
-static char         tmp_session_script;
-static char         tmp_logout_dialog;
-static char         tmp_reboot_halt;
 static char         tmp_animate_startup;
 static char         tmp_saveunders;
 
@@ -492,9 +489,6 @@ CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
      {
 	Conf.dialogs.headers = tmp_dialog_headers;
 	Conf.dialogs.button_image = tmp_button_image;
-	Conf.session.enable_script = tmp_session_script;
-	Conf.session.enable_logout_dialog = tmp_logout_dialog;
-	Conf.session.enable_reboot_halt = tmp_reboot_halt;
 	Conf.startup.animate = tmp_animate_startup;
 	Conf.save_under = tmp_saveunders;
      }
@@ -519,9 +513,6 @@ SettingsMiscellaneous(void)
 
    tmp_dialog_headers = Conf.dialogs.headers;
    tmp_button_image = Conf.dialogs.button_image;
-   tmp_session_script = Conf.session.enable_script;
-   tmp_logout_dialog = Conf.session.enable_logout_dialog;
-   tmp_reboot_halt = Conf.session.enable_reboot_halt;
    tmp_animate_startup = Conf.startup.animate;
    tmp_saveunders = Conf.save_under;
 
@@ -544,24 +535,6 @@ SettingsMiscellaneous(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Button Images"));
    DialogItemCheckButtonSetPtr(di, &tmp_button_image);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Enable Session Script"));
-   DialogItemCheckButtonSetPtr(di, &tmp_session_script);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Enable Logout Dialog"));
-   DialogItemCheckButtonSetPtr(di, &tmp_logout_dialog);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Enable Reboot/Halt on Logout"));
-   DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

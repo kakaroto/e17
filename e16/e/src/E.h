@@ -1148,6 +1148,7 @@ void                SessionGetInfo(EWin * ewin, Atom atom_change);
 void                SetSMID(const char *smid);
 void                MatchEwinToSM(EWin * ewin);
 void                autosave(void);
+void                SettingsSession(void);
 
 /* settings.c */
 void                SettingsMoveResize(void);

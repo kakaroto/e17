@@ -203,6 +203,8 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
 	   SettingsPlacement();
 	else if (!strncmp(prm, "remember", 2))
 	   SettingsRemember();
+	else if (!strncmp(prm, "session", 2))
+	   SettingsSession();
      }
    else if (!strncmp(cmd, "arrange", 3))
      {
