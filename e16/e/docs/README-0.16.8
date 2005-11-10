@@ -21,7 +21,8 @@ New features:
 - Built-in composite manager.
 - An iconbox can be configured to act as System Tray
   (middle mouse->Desktop->Create Systray).
-- Possibility to run programs on initial startup and on restart.
+- Possibility to run programs on startup, restart, and shutdown, see
+  "Session Scripts" below.
 - Possibility to track changes in remembered settings.
 - Window operations by window matches (class, name, transient, ...),
   e.g. for making all windows of a certain type sticky, put it on a certain
@@ -38,14 +39,17 @@ To set some parameter:
 $ eesh set <parameter> <value>
 Some settings will not be effective until E is restarted.
 
-To get a list of other eesh commands:
+To get a list of all eesh commands:
 $ eesh help full
 
 If window resize/shading with composite enabled is ugly, try:
 $ eesh set compmgr.resize_fix_enable 1
 
-0.16.8 should still be compatible with any e16 theme. However, user installed
+0.16.8 should be compatible with most e16 themes. However, user installed
 themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
+A few themes will have to be tweaked to work with e16.8. The most likely problem
+is that configuration settings or menu definitions are included in .cfg files
+where they are no longer accepted.
 
 e16keyedit will work, but the "Action" field is no longer used. In stead, the
 action (IPC command) must be specified in the "Parameters" field.
@@ -56,15 +60,8 @@ by editing /usr/share/e16/config/bindings.cfg.
 
 e16menuedit will no longer work. e16menuedit2 will.
 
-It is now possible to execute scripts on startup and/or restart. Use
-$ eesh set misc.session.cmd_init <script>
-to set the "init" script, and
-$ eesh set misc.session.cmd_start <script>
-to set the "start" script.
-The "init" script is executed only the first time e16 starts during an X
-session, and the "start" script is executed every time e16 (re)starts.
 
-Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
+NB!!! Do not rename ~/.enlightenment to ~/.e16. It will only cause trouble.
 
 
 Configuration files
@@ -133,4 +130,84 @@ collisions with the new enlightenment DR17.
    directory will have to be moved to $prefix/share/e16
 7) any startup scripts or Session scripts that reference the startup
    executable `enlightenment` must be edited to the new e16 program.
+
+
+Session Scripts
+---------------
+By Peter Hyman (pete4abw@comcast.net)
+November 2005
+
+Enlightenment can now automatically run user scripts or applications during
+Startup, Restart, and Shutdown. This facilitates the loading of system
+tray applets, rss readers, screensavers, and other daemons (e.g. dbus),
+and allows for cleanup of programs that don't terminate properly when E
+quits (this is especially common with KDE applications in E and the arts
+daemon or dcop server keeps running).
+
+Enlightenment accomplishes this with the addition of two new keys in
+the $ECONFDIR/e_config--#.#.cfg (#.# may vary depending on your X setup -- 
+for most people, it will be 0.0). These are:
+
+misc.session.enable_script 
+misc.session.script 
+
+misc.session.enable_script is a boolean. When set to 1, Enlightenment will 
+execute the script in the misc.session.script key. By default, this feature 
+is disabled. When enabled, it will do nothing until the user configures
+his/her home directory ($ECONFDIR -- normally ~/.e16).
+
+The default session.script is located in $EROOT/scripts/session.sh ($EROOT
+is normally /usr/share/e16 or /usr/local/share/e16). It will look for 
+directories in the user's $ECONFDIR/ (~/.e16/) called:
+
+~/.e16/ ($ECONFDIR)
+	Init/
+	Start/
+	Stop/
+
+and run any and/or all scripts or executables in each when E starts, 
+restarts, and shuts down. If no scripts or executables are present, or
+if any of the directories Init, Start, and Stop do not exist, NOTHING
+will happen and E will start up as usual. So, in order to use session
+scripts, all the user has to do is to populate the Init, Start, and Stop
+directories with scripts, applications, or links to applications that
+should run during Startup, Restart, or when E is stopped.
+
+The default values for the new keys are:
+
+misc.session.enable_script = 0
+misc.session.script = $EROOT/scripts/session.sh
+
+The user may write a custom script and place it anywhere. Simply modify 
+the config file by using:
+
+$ eesh set misc.session.script myscript
+
+and modify it (be sure to chmod +x the file otherwise it won't run). 
+The session script is called with one of three command parameters; 
+init, start, and stop. Any custom script should have a code block 
+similar to this in order to function properly in Enlightenment.
+
+case "$1" in
+init)
+        # do blah
+        # or do function init
+start)
+        # do blah
+        # of do function start
+stop)
+        # do blah
+        # or do function stop
+esac
+
+Automatic script running can be enabled/disabled via the Session Settings
+dialog in Enlightenment and checking/unchecking the option Enable Session
+Script, by editing the user cfg file and setting the
+misc.session.enable_script key to 1/0, or with
+
+$ eesh set misc.session.enable_script 1/0
+
+This process is very flexible since when used, the user can turn off
+individual scripts and applications by chmod -x or simply leave the
+startup directories empty or remove them.
 
