@@ -24,6 +24,7 @@ collections {
 #include "e17/bits/separator-groups.edc"
 #include "e17/bits/window-groups.edc"
 #include "e17/bits/menu-item.edc"
+#include "e17/bits/border-groups.edc"
 }
 
 data {
@@ -96,7 +97,11 @@ data {
     item, "/vseeker/vbutton/group"  "vscrollbar_drag";
     item, "/hseeker/hbutton/group"  "hscrollbar_drag";
 
+    item, "/border/group"  "border";
+    item, "/border/text/group"  "border/label";
+
     item, "/imenu/group" "window";
+
     item, "/menu/group" "window";
     item, "/menubar/group" "menubar";
     item, "/menuitem/group" "menuitem";
@@ -104,6 +109,7 @@ data {
     item, "/tooltip/offset" 15;
     item, "/tooltip/delay" "1.0";
     item, "/tooltip/group" "window";
+
     item, "/window/group" "window";
 
     item, "/theme/author" "dj2 (www.everburning.com)";
