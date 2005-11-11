@@ -198,10 +198,10 @@ void etk_colorpicker_rgb_to_hsv(Etk_Color color, double *h, double *s, double *v
    int min, max;
    int delta;
    
-   max = (c.r + c.g + abs(c.r - c.g)) / 2;
-   max = (max + c.b + abs(max - c.b)) / 2;
-   min = (c.r + c.g - abs(c.r - c.g)) / 2;
-   min = (min + c.b - abs(min - c.b)) / 2;
+   max = (color.r + color.g + abs(color.r - color.g)) / 2;
+   max = (max + color.b + abs(max - color.b)) / 2;
+   min = (color.r + color.g - abs(color.r - color.g)) / 2;
+   min = (min + color.b - abs(min - color.b)) / 2;
    
    delta = max - min;
    *v = (double)(100 * max) / 255.0;
@@ -214,16 +214,16 @@ void etk_colorpicker_rgb_to_hsv(Etk_Color color, double *h, double *s, double *v
       *h = 0.0;
       *v = 0.0;
    }  
-   if (c.r == max)
+   if (color.r == max)
    {
-      *h = (double)(100 * (c.g - c.b)) / (double)(6.0 * delta);
+      *h = (double)(100 * (color.g - color.b)) / (double)(6.0 * delta);
    }
    else
    {
-      if (c.g == max)
-         *h = (double)(100 * (2 * delta + c.b - c.r)) / (double)(6.0 * delta);
+      if (color.g == max)
+         *h = (double)(100 * (2 * delta + color.b - color.r)) / (double)(6.0 * delta);
       else
-         *h = (double)(100 * (4 * delta + c.r - c.g)) / (double)(6.0 * delta);
+         *h = (double)(100 * (4 * delta + color.r - color.g)) / (double)(6.0 * delta);
    }
    if (*h < 0.0)
       *h += 100.0;
@@ -250,9 +250,9 @@ void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *color)
 
    if (s == 0.0)
    {
-      c->r = ETK_ROUND((v * 255.0) / 100.0);
-      c->g = ETK_ROUND((v * 255.0) / 100.0);
-      c->b = ETK_ROUND((v * 255.0) / 100.0);
+      color->r = ETK_ROUND((v * 255.0) / 100.0);
+      color->g = ETK_ROUND((v * 255.0) / 100.0);
+      color->b = ETK_ROUND((v * 255.0) / 100.0);
       return;
    }
    
@@ -267,44 +267,44 @@ void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *color)
    {
       case 0:
       {
-         c->r = ETK_ROUND(v * 255.0 / 100.0);
-         c->g = ETK_ROUND(t * 255.0);
-         c->b = ETK_ROUND(p * 255.0);
+         color->r = ETK_ROUND(v * 255.0 / 100.0);
+         color->g = ETK_ROUND(t * 255.0);
+         color->b = ETK_ROUND(p * 255.0);
          break;
       }
       case 1:
       {
-         c->r = ETK_ROUND(q * 255.0);
-         c->g = ETK_ROUND(v * 255.0 / 100.0);
-         c->b = ETK_ROUND(p * 255.0);
+         color->r = ETK_ROUND(q * 255.0);
+         color->g = ETK_ROUND(v * 255.0 / 100.0);
+         color->b = ETK_ROUND(p * 255.0);
          break;
       }
       case 2:
       {
-         c->r = ETK_ROUND(p * 255.0);
-         c->g = ETK_ROUND(v * 255.0 / 100.0);
-         c->b = ETK_ROUND(t * 255.0);
+         color->r = ETK_ROUND(p * 255.0);
+         color->g = ETK_ROUND(v * 255.0 / 100.0);
+         color->b = ETK_ROUND(t * 255.0);
          break;
       }
       case 3:
       {
-         c->r = ETK_ROUND(p * 255.0);
-         c->g = ETK_ROUND(q * 255.0);
-         c->b = ETK_ROUND(v * 255.0 / 100.0);
+         color->r = ETK_ROUND(p * 255.0);
+         color->g = ETK_ROUND(q * 255.0);
+         color->b = ETK_ROUND(v * 255.0 / 100.0);
          break;
       }
       case 4:
       {
-         c->r = ETK_ROUND(t * 255.0);
-         c->g = ETK_ROUND(p * 255.0);
-         c->b = ETK_ROUND(v * 255.0 / 100.0);
+         color->r = ETK_ROUND(t * 255.0);
+         color->g = ETK_ROUND(p * 255.0);
+         color->b = ETK_ROUND(v * 255.0 / 100.0);
          break;
       }
       case 5:
       {
-         c->r = ETK_ROUND(v * 255.0 / 100.0);
-         c->g = ETK_ROUND(p * 255.0);
-         c->b = ETK_ROUND(q * 255.0);
+         color->r = ETK_ROUND(v * 255.0 / 100.0);
+         color->g = ETK_ROUND(p * 255.0);
+         color->b = ETK_ROUND(q * 255.0);
          break;
       }
    }
