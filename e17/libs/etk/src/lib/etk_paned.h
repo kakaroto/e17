@@ -80,8 +80,8 @@ Etk_Widget *etk_hpaned_new();
 Etk_Type *etk_vpaned_type_get();
 Etk_Widget *etk_vpaned_new();
 
-void etk_paned_add1(Etk_Paned *paned, Etk_Widget *widget);
-void etk_paned_add2(Etk_Paned *paned, Etk_Widget *widget);
+void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child);
+void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child);
 Etk_Widget *etk_paned_child1_get(Etk_Paned *paned);
 Etk_Widget *etk_paned_child2_get(Etk_Paned *paned);
 

@@ -378,7 +378,7 @@ static void _etk_editable_text_cursor_position_update(Evas_Object *object, Etk_G
       cx += tx;
    }
 
-   /* TODO: fix */
+   /* TODO: fix the cursor placement */
    if ((cx < ox + 20) && (cx - tx > 20))
    {
       evas_object_move(editable_text_sd->text_object, tx + ox + 20 - cx, ty);

@@ -6,8 +6,8 @@
 typedef struct _Etk_Test_Set Etk_Test_Set;
 struct _Etk_Test_Set
 {
-	char *name;
-	void (*func)(void *data);
+   char *name;
+   void (*func)(void *data);
 };
 
 void etk_test_button_window_create(void *data);
@@ -20,5 +20,6 @@ void etk_test_canvas_window_create(void *data);
 void etk_test_tree_window_create(void *data);
 void etk_test_paned_window_create(void *data);
 void etk_test_scrolled_view_window_create(void *data);
+void etk_test_menu_window_create(void *data);
 
 #endif

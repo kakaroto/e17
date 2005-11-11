@@ -53,11 +53,10 @@ void etk_type_shutdown()
  * @param type_size the size of an instance
  * @param constructor the constructor function
  * @param destructor the destructor function
- * @param copy_constructor the copy constructor function
  * @return Returns the new type on success, NULL on failure
  */
 Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_size,
-   Etk_Constructor constructor, Etk_Destructor destructor, Etk_Copy_Constructor copy_constructor)
+   Etk_Constructor constructor, Etk_Destructor destructor)
 {
    Etk_Type *new_type;
 
@@ -69,7 +68,6 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
    new_type->type_size = type_size;
    new_type->constructor = constructor;
    new_type->destructor = destructor;
-   new_type->copy_constructor = copy_constructor;
    new_type->property_set = NULL;
    new_type->property_get = NULL;
    new_type->signals_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -162,36 +160,6 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
             type->property_set(object, property->id, property->default_value);
       }
       ecore_list_destroy(properties);
-   }
-}
-
-/**
- * @brief Calls the copy constructors of the object, from the constructor of the root parent type up to the one of the object type
- * @param type the type of the object
- * @param dst the object that will be passed as the first argument to the copy constructor
- * @param src the object that will be passed as the second argument to the copy constructor
- */
-void etk_type_copy_constructors_call(Etk_Type *type, Etk_Object *dst, const Etk_Object *src)
-{
-   int i;
-
-   if (!type || !dst || !src)
-      return;
-
-   for (i = type->hierarchy_depth - 1; i >= 0; i--)
-   {
-      if (type->hierarchy[i]->copy_constructor)
-         type->hierarchy[i]->copy_constructor(dst, src);
-      else
-      {
-         /* TODO: should we do something here? (default copy constructor) */
-      }
-   }
-   if (type->copy_constructor)
-      type->copy_constructor(dst, src);
-   else
-   {
-      /* TODO: should we do something here? (default copy constructor) */
    }
 }
 

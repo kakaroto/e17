@@ -7,7 +7,7 @@
 #include "etk_colorpicker.h"
 
 /**
- * @defgroup Etk_Colorpicker Etk_Colorpicker
+ * @defgroup Etk_Colorpicker_Square Etk_Colorpicker_Square
  * @{
  */
 

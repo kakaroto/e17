@@ -36,7 +36,7 @@ Etk_Type *etk_alignment_type_get()
 
    if (!alignment_type)
    {
-      alignment_type = etk_type_new("Etk_Alignment", ETK_BIN_TYPE, sizeof(Etk_Alignment), ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL, NULL);
+      alignment_type = etk_type_new("Etk_Alignment", ETK_BIN_TYPE, sizeof(Etk_Alignment), ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL);
 
       etk_type_property_add(alignment_type, "xalign", ETK_ALIGNMENT_XALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(alignment_type, "yalign", ETK_ALIGNMENT_YALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));

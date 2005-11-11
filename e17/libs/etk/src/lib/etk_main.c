@@ -20,6 +20,8 @@
  */
 
 static void _etk_main_iterate_job_cb(void *data);
+static void _etk_main_size_request_recursive(Etk_Widget *widget);
+static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level);
 
 static Ecore_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = FALSE;
@@ -131,30 +133,18 @@ void etk_main_quit()
 /** @brief Runs an iteration of the main loop */
 void etk_main_iterate()
 {
-   Etk_Toplevel_Widget *toplevel;
    Etk_Widget *widget;
 
    if (!_etk_main_initialized)
       return;
 
    ecore_list_goto_first(_etk_main_toplevel_widgets);
-   while ((toplevel = ecore_list_next(_etk_main_toplevel_widgets)))
+   while ((widget = ETK_WIDGET(ecore_list_next(_etk_main_toplevel_widgets))))
    {
-      widget = ETK_WIDGET(toplevel);
-
-      if (widget->need_size_recalc)
-      {
-         Etk_Size unused_size;
-         etk_widget_size_request(widget, &unused_size);
-      }
-      if (widget->need_redraw)
-      {
-         Etk_Geometry geometry;
-         geometry.x = 0;
-         geometry.y = 0;
-         etk_toplevel_widget_size_get(toplevel, &geometry.w, &geometry.h);
-         etk_widget_size_allocate(widget, geometry);
-      }
+      //printf("Iter Begin\n");
+      _etk_main_size_request_recursive(widget);
+      _etk_main_size_allocate_recursive(widget, TRUE);
+      //printf("Iter End\n\n");
    }
 }
 
@@ -202,6 +192,42 @@ static void _etk_main_iterate_job_cb(void *data)
 {
    _etk_main_iterate_job = NULL;
    etk_main_iterate();
+}
+
+static void _etk_main_size_request_recursive(Etk_Widget *widget)
+{
+   Evas_List *l;
+   Etk_Size unused_size;
+   
+   etk_widget_size_request(widget, &unused_size);
+   
+   if (ETK_IS_CONTAINER(widget))
+   {
+      for (l = ETK_CONTAINER(widget)->children; l; l = l->next)
+         _etk_main_size_request_recursive(ETK_WIDGET(l->data));
+   }
+}
+
+static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level)
+{
+   Evas_List *l;
+   Etk_Geometry geometry;
+   
+   if (is_top_level)
+   {
+      geometry.x = 0;
+      geometry.y = 0;
+      etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.w, &geometry.h);
+   }
+   else
+      geometry = widget->geometry;
+   etk_widget_size_allocate(widget, geometry);
+   
+   if (ETK_IS_CONTAINER(widget))
+   {
+      for (l = ETK_CONTAINER(widget)->children; l; l = l->next)
+         _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), FALSE);
+   }
 }
 
 /** @} */

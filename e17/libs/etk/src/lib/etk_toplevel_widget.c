@@ -40,7 +40,7 @@ Etk_Type *etk_toplevel_widget_type_get()
 
    if (!toplevel_widget_type)
    {
-      toplevel_widget_type = etk_type_new("Etk_Toplevel_Widget", ETK_BIN_TYPE, sizeof(Etk_Toplevel_Widget), ETK_CONSTRUCTOR(_etk_toplevel_widget_constructor), ETK_DESTRUCTOR(_etk_toplevel_widget_destructor), NULL);
+      toplevel_widget_type = etk_type_new("Etk_Toplevel_Widget", ETK_BIN_TYPE, sizeof(Etk_Toplevel_Widget), ETK_CONSTRUCTOR(_etk_toplevel_widget_constructor), ETK_DESTRUCTOR(_etk_toplevel_widget_destructor));
       
       etk_type_property_add(toplevel_widget_type, "focused_widget", ETK_TOPLEVEL_WIDGET_FOCUSED_WIDGET_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
    

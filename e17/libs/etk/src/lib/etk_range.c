@@ -51,7 +51,7 @@ Etk_Type *etk_range_type_get()
 
    if (!range_type)
    {
-      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range), ETK_CONSTRUCTOR(_etk_range_constructor), NULL, NULL);
+      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range), ETK_CONSTRUCTOR(_etk_range_constructor), NULL);
 
       _etk_range_signals[ETK_RANGE_CHANGE_VALUE_SIGNAL] = etk_signal_new("change_value", range_type, ETK_MEMBER_OFFSET(Etk_Range, change_value), etk_marshaller_BOOL__DOUBLE, etk_accumulator_stopping_bool_or, NULL);
       _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value_changed", range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed), etk_marshaller_VOID__DOUBLE, NULL, NULL);
@@ -112,6 +112,7 @@ void etk_range_value_set(Etk_Range *range, double value)
 
 /**
  * @brief Sets the range of the values that the range widget can have
+ * @param range a range
  * @param lower the lower bound
  * @param upper the upper bound
  */

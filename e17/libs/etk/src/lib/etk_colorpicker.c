@@ -54,7 +54,7 @@ Etk_Type *etk_colorpicker_type_get()
 
    if (!cp_type)
    {
-      cp_type = etk_type_new("Etk_Colorpicker", ETK_HBOX_TYPE, sizeof(Etk_Colorpicker), ETK_CONSTRUCTOR(_etk_colorpicker_constructor), NULL, NULL);
+      cp_type = etk_type_new("Etk_Colorpicker", ETK_HBOX_TYPE, sizeof(Etk_Colorpicker), ETK_CONSTRUCTOR(_etk_colorpicker_constructor), NULL);
 
       etk_type_property_add(cp_type, "color_mode", ETK_CP_COLOR_MODE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLOR_MODE_H));
 
@@ -66,11 +66,10 @@ Etk_Type *etk_colorpicker_type_get()
 }
 
 /**
- * @brief Creates a new colorpicker and loads the colorpicker from the file
- * @param filename the name of the file to load
- * @return Returns the new colorpicker widget
+ * @brief Creates a new colorpicker
+ * @return Returns the new colorpicker
  */
-Etk_Widget *etk_colorpicker_new(int width, int height)
+Etk_Widget *etk_colorpicker_new()
 {
    return etk_widget_new(ETK_COLORPICKER_TYPE, NULL);
 }
@@ -189,12 +188,12 @@ Etk_Color etk_colorpicker_color_get(Etk_Colorpicker *cp)
 
 /**
  * @brief Converts from rgb to hsv
- * @param c the rgb color
+ * @param color the rgb color
  * @param h the location to store the h component of the result
  * @param s the location to store the s component of the result
  * @param v the location to store the v component of the result
  */
-void etk_colorpicker_rgb_to_hsv(Etk_Color c, double *h, double *s, double *v)
+void etk_colorpicker_rgb_to_hsv(Etk_Color color, double *h, double *s, double *v)
 {
    int min, max;
    int delta;
@@ -237,9 +236,9 @@ void etk_colorpicker_rgb_to_hsv(Etk_Color c, double *h, double *s, double *v)
  * @param h the h component of the color to convert
  * @param s the s component of the color to convert
  * @param v the v component of the color to convert
- * @param c the location to store the resulting rgb color
+ * @param color the location to store the resulting rgb color
  */
-void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *c)
+void etk_colorpicker_hsv_to_rgb(double h, double s, double v, Etk_Color *color)
 {
    double hh, f;
    double p, q, t;

@@ -16,7 +16,8 @@ INCLUDES	= \
 bin_PROGRAMS = etk_test
 
 etk_test_DEPENDENCIES = $(top_builddir)/src/lib/libetk.la
-etk_test_SOURCES      = \
+
+etk_test_SOURCES = \
 etk_test.h \
 etk_test.c \
 etk_button_test.c \
@@ -28,7 +29,8 @@ etk_canvas_test.c \
 etk_colorpicker_test.c \
 etk_tree_test.c \
 etk_paned_test.c \
-etk_scrolled_view_test.c
+etk_scrolled_view_test.c \
+etk_menu_test.c
 
 etk_test_LDADD = $(top_builddir)/src/lib/libetk.la \
 		 @ecore_libs@ @evas_libs@ @edje_libs@

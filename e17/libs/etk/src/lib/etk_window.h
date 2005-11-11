@@ -4,6 +4,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_X.h>
 #include "etk_toplevel_widget.h"
 #include "etk_types.h"
 
@@ -26,6 +27,7 @@ struct _Etk_Window
    Etk_Toplevel_Widget toplevel_widget;
 
    Ecore_Evas *ecore_evas;
+   Ecore_X_Window x_window;
 
    Etk_Bool (*delete_event)(Etk_Window *window);
 };
@@ -35,6 +37,29 @@ Etk_Widget *etk_window_new();
 
 void etk_window_title_set(Etk_Window *window, const char *title);
 void etk_window_wmclass_set(Etk_Window *window, const char *window_name, const char *window_class);
+
+void etk_window_move(Etk_Window *window, int x, int y);
+void etk_window_resize(Etk_Window *window, int w, int h);
+void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
+
+void etk_window_iconify(Etk_Window *window);
+void etk_window_deiconify(Etk_Window *window);
+void etk_window_maximize(Etk_Window *window);
+void etk_window_unmaximize(Etk_Window *window);
+void etk_window_fullscreen(Etk_Window *window);
+void etk_window_unfullscreen(Etk_Window *window);
+void etk_window_stick(Etk_Window *window);
+void etk_window_unstick(Etk_Window *window);
+
+void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
+Etk_Bool etk_window_decorated_get(Etk_Window *window);
+void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
+Etk_Bool etk_window_shaped_get(Etk_Window *window);
+
+void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
+Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);
+void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
+Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
 
 /** @} */
 

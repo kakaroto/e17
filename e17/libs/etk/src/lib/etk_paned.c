@@ -47,7 +47,7 @@ Etk_Type *etk_paned_type_get()
 
    if (!paned_type)
    {
-      paned_type = etk_type_new("Etk_Paned", ETK_CONTAINER_TYPE, sizeof(Etk_Paned), ETK_CONSTRUCTOR(_etk_paned_constructor), NULL, NULL);
+      paned_type = etk_type_new("Etk_Paned", ETK_CONTAINER_TYPE, sizeof(Etk_Paned), ETK_CONSTRUCTOR(_etk_paned_constructor), NULL);
    }
 
    return paned_type;
@@ -63,7 +63,7 @@ Etk_Type *etk_hpaned_type_get()
 
    if (!hpaned_type)
    {
-      hpaned_type = etk_type_new("Etk_HPaned", ETK_PANED_TYPE, sizeof(Etk_HPaned), ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL, NULL);
+      hpaned_type = etk_type_new("Etk_HPaned", ETK_PANED_TYPE, sizeof(Etk_HPaned), ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL);
    }
 
    return hpaned_type;
@@ -79,7 +79,7 @@ Etk_Type *etk_vpaned_type_get()
 
    if (!vpaned_type)
    {
-      vpaned_type = etk_type_new("Etk_VPaned", ETK_PANED_TYPE, sizeof(Etk_VPaned), ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL, NULL);
+      vpaned_type = etk_type_new("Etk_VPaned", ETK_PANED_TYPE, sizeof(Etk_VPaned), ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL);
    }
 
    return vpaned_type;
@@ -147,7 +147,6 @@ void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child)
          etk_container_remove(child->parent, child);
 
       etk_widget_parent_set(child, ETK_CONTAINER(paned));
-      /* TODO */
       etk_widget_member_object_raise(ETK_WIDGET(paned), paned->separator->smart_object);
    }
 }

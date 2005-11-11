@@ -47,7 +47,7 @@ Etk_Type *etk_image_type_get()
 
    if (!image_type)
    {
-      image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image), ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor), NULL);
+      image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image), ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor));
       
       etk_type_property_add(image_type, "image_file", ETK_IMAGE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "edje_file", ETK_IMAGE_EDJE_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));

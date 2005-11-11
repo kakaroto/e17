@@ -6,12 +6,12 @@
 
 /**
  * @addtogroup Etk_Canvas
-* @{
+ * @{
  */
 
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
+static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
-
 static void _etk_canvas_intercept_move_cb(void *data, Evas_Object *object, Evas_Coord x, Evas_Coord y);
 
 /**************************
@@ -30,7 +30,7 @@ Etk_Type *etk_canvas_type_get()
 
    if (!canvas_type)
    {
-      canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE, sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL, NULL);
+      canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE, sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL);
    }
 
    return canvas_type;
@@ -82,8 +82,20 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
       return;
 
    canvas->clip = NULL;
-
+   ETK_WIDGET(canvas)->move_resize = _etk_canvas_move_resize;
    etk_signal_connect_after("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
+}
+
+/* Moves and resizes the clip of the canvas */
+static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+{
+   Etk_Canvas *canvas;
+   
+   if (!(canvas = ETK_CANVAS(widget)))
+      return;
+   
+   evas_object_move(canvas->clip, x, y);
+   evas_object_resize(canvas->clip, w, h);
 }
 
 /**************************
@@ -101,8 +113,8 @@ static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
    if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
       return;
 
-   //canvas->clip = evas_object_rectangle_add(evas);
-   /* TODO */
+   canvas->clip = evas_object_rectangle_add(evas);
+   etk_widget_clip_set(ETK_WIDGET(canvas), canvas->clip);
 }
 
 /* Called when an object requests to be moved  */
@@ -113,7 +125,7 @@ static void _etk_canvas_intercept_move_cb(void *data, Evas_Object *object, Evas_
    if (!(canvas_widget = ETK_WIDGET(data)))
       evas_object_move(object, x, y);
    else
-      evas_object_move(object, x + canvas_widget->geometry.x + canvas_widget->left_padding, y + canvas_widget->geometry.y + canvas_widget->top_padding);
+      evas_object_move(object, x + canvas_widget->geometry.x, y + canvas_widget->geometry.y);
 }
 
 /** @} */

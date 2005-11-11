@@ -20,7 +20,7 @@
 
 /**
  * @enum Etk_Scrolled_View_Policy
- * @struct An Etk_Scrolled_View_Policy describes if the scrollbar should be always visible, always hidden, @n
+ * @brief An Etk_Scrolled_View_Policy describes if the scrollbar should be always visible, always hidden, @n
  * or if it should be shown/hidden automatically
  */
 enum _Etk_Scrolled_View_Policy
@@ -32,7 +32,7 @@ enum _Etk_Scrolled_View_Policy
 
 /**
  * @struct Etk_Scrolled_View
- * @brief A scrolled_view is a bin container which has two scrollbars and allows to scroll the child
+ * @brief A scrolled_view is a bin container which has two scrollbars that allow to scroll the child
  */
 struct _Etk_Scrolled_View
 {

@@ -23,7 +23,7 @@ Etk_Type *etk_hseparator_type_get()
 
    if (!hseparator_type)
    {
-      hseparator_type = etk_type_new("Etk_HSeparator", ETK_WIDGET_TYPE, sizeof(Etk_HSeparator), NULL, NULL, NULL);
+      hseparator_type = etk_type_new("Etk_HSeparator", ETK_WIDGET_TYPE, sizeof(Etk_HSeparator), NULL, NULL);
    }
 
    return hseparator_type;
@@ -48,7 +48,7 @@ Etk_Type *etk_vseparator_type_get()
 
    if (!vseparator_type)
    {
-      vseparator_type = etk_type_new("Etk_VSeparator", ETK_WIDGET_TYPE, sizeof(Etk_VSeparator), NULL, NULL, NULL);
+      vseparator_type = etk_type_new("Etk_VSeparator", ETK_WIDGET_TYPE, sizeof(Etk_VSeparator), NULL, NULL);
    }
 
    return vseparator_type;

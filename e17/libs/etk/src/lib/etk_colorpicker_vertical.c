@@ -8,7 +8,7 @@
 #include "etk_colorpicker.h"
 
 /**
- * @addtogroup Etk_Colorpicker
+ * @addtogroup Etk_Colorpicker_Vertical
  * @{
  */
 
@@ -69,7 +69,7 @@ Etk_Type *etk_colorpicker_vertical_type_get()
 
    if (!cpv_type)
    {
-      cpv_type = etk_type_new("Etk_Colorpicker_Vertical", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker_Vertical), ETK_CONSTRUCTOR(_etk_colorpicker_vertical_constructor), NULL, NULL);
+      cpv_type = etk_type_new("Etk_Colorpicker_Vertical", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker_Vertical), ETK_CONSTRUCTOR(_etk_colorpicker_vertical_constructor), NULL);
 
       _etk_colorpicker_vertical_signals[ETK_CPV_COLOR_SELECTED_SIGNAL] = etk_signal_new("color_selected", cpv_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
@@ -98,7 +98,7 @@ Etk_Widget *etk_colorpicker_vertical_new(int map_width, int map_height)
 
 /**
  * @brief Sets the size of the map used by the colorpicker
- * @param cpsva vertical colorpicker
+ * @param cpv a vertical colorpicker
  * @param map_width the width of the map used by the vertical colorpicker
  * @param map_height the height of the map used by the vertical colorpicker
  */
@@ -146,7 +146,7 @@ void etk_colorpicker_vertical_map_size_get(Etk_Colorpicker_Vertical *cpv, int *m
 /**
  * @brief Sets the color mode of the vertical colorpicker
  * @param cpv a vertical colorpicker
- * @param the color mode to use
+ * @param color_mode the color mode to use
  */
 void etk_colorpicker_vertical_color_mode_set(Etk_Colorpicker_Vertical *cpv, Etk_Color_Mode color_mode)
 {

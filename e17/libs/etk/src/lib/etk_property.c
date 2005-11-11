@@ -140,7 +140,7 @@ Etk_Property_Value *etk_property_value_create(Etk_Property_Type type, ...)
 /**
  * @brief Creates a new property value of type @a type
  * @param type the type of the new Etk_Property_Value
- * @param value the value of the new Etk_Property_Value
+ * @param arg the value of the new Etk_Property_Value
  * @return Returns the new property value
  */
 Etk_Property_Value *etk_property_value_create_valist(Etk_Property_Type type, va_list *arg)

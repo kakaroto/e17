@@ -31,7 +31,6 @@ struct _Etk_Type
    Etk_Type **hierarchy;
    Etk_Constructor constructor;
    Etk_Destructor destructor;
-   Etk_Copy_Constructor copy_constructor;
    void (*property_set)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    void (*property_get)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    int type_size;
@@ -43,11 +42,10 @@ Etk_Bool etk_type_init();
 void etk_type_shutdown();
 
 Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_size,
-   Etk_Constructor constructor, Etk_Destructor destructor, Etk_Copy_Constructor copy_constructor);
+   Etk_Constructor constructor, Etk_Destructor destructor);
 void etk_type_delete(Etk_Type *type);
 
 void etk_type_object_construct(Etk_Type *type, Etk_Object *object);
-void etk_type_copy_constructors_call(Etk_Type *type, Etk_Object *dst, const Etk_Object *src);
 void etk_type_destructors_call(Etk_Type *type, Etk_Object *object);
 Etk_Bool etk_type_inherits_from(Etk_Type *type, Etk_Type *parent);
 Etk_Type *etk_type_parent_type_get(Etk_Type *type);

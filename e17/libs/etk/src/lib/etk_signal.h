@@ -32,7 +32,7 @@ struct _Etk_Signal
 Etk_Bool etk_signal_init();
 void etk_signal_shutdown();
 
-Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, int default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_adata);
+Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, int default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
 void etk_signal_delete(Etk_Signal *signal);
 
 Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type);
@@ -43,6 +43,7 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_
 void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data);
 void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data);
 void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped, Etk_Bool after);
+void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback);
 
 void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...);
 void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...);

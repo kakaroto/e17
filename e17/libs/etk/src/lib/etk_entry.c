@@ -45,7 +45,7 @@ Etk_Type *etk_entry_type_get()
 
    if (!entry_type)
    {
-      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry), ETK_CONSTRUCTOR(_etk_entry_constructor), NULL, NULL);
+      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry), ETK_CONSTRUCTOR(_etk_entry_constructor), NULL);
 
       _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed", entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }

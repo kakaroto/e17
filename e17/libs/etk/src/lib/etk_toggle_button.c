@@ -45,7 +45,7 @@ Etk_Type *etk_toggle_button_type_get()
 
    if (!toggle_button_type)
    {
-      toggle_button_type = etk_type_new("Etk_Toggle_Button", ETK_BUTTON_TYPE, sizeof(Etk_Toggle_Button), ETK_CONSTRUCTOR(_etk_toggle_button_constructor), NULL, NULL);
+      toggle_button_type = etk_type_new("Etk_Toggle_Button", ETK_BUTTON_TYPE, sizeof(Etk_Toggle_Button), ETK_CONSTRUCTOR(_etk_toggle_button_constructor), NULL);
       
       _etk_toggle_button_signals[ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL] = etk_signal_new("toggled", toggle_button_type, ETK_MEMBER_OFFSET(Etk_Toggle_Button, toggled), etk_marshaller_VOID__VOID, NULL, NULL);
    

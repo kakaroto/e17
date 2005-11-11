@@ -7,17 +7,19 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               relative: 0 0;
-               offset: 0 0;
+               relative: 0 0.5;
+               offset: 0 -1;
             }
             rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
+               relative: 1.0 0.5;
+               offset: -1 0;
             }
-            image {
-               normal: "hseparator.png";
-               border: 2 2 2 2;
-            }
+	    image {
+	       normal: "hseparator.png";
+	    }
+	    fill {
+	       smooth: 0;
+	    }
          }
       }
    }
@@ -31,17 +33,19 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               relative: 0 0;
-               offset: 0 0;
+               relative: 0.5 0;
+               offset: -1 0;
             }
             rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
+               relative: 0.5 1.0;
+               offset: 0 -1;
             }
-            image {
-               normal: "vseparator.png";
-               border: 2 2 2 2;
-            }
+	    image {
+	       normal: "vseparator.png";
+	    }
+	    fill {
+	       smooth: 0;
+	    }
          }
       }
    }

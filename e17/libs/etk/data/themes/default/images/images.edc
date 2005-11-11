@@ -1,5 +1,6 @@
 images {
    image: "border.png" COMP;
+   image: "background.png" COMP;
    image: "focus.png" COMP;
    image: "button_down.png" COMP;
    image: "button_up.png" COMP;
@@ -14,7 +15,6 @@ images {
    image: "glint3.png" COMP;
    image: "entry.png" COMP;
    image: "entry_focus.png" COMP;
-   image: "background.png" COMP;
    image: "dialog_logo.png" COMP;
    image: "hhandle.png" COMP;
    image: "hhandle_down.png" COMP;
@@ -56,4 +56,10 @@ images {
    image: "frame_outline.png" COMP;
    image: "frame_label_over.png" COMP;
    image: "frame_label_under.png" COMP;
+   image: "menu_item_outline.png" COMP;
+   image: "menu_arrow.png" COMP;
+   image: "menu_separator.png" COMP;
+   image: "menu_item_highlight.png" COMP;
+   image: "menu_item_shadow1.png" COMP;
+   image: "menu_item_shadow2.png" COMP;
 }

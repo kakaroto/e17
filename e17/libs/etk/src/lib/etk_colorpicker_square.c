@@ -7,7 +7,7 @@
 #include "etk_utils.h"
 
 /**
- * @addtogroup Etk_Colorpicker
+ * @addtogroup Etk_Colorpicker_Square
  * @{
  */
 
@@ -70,7 +70,7 @@ Etk_Type *etk_colorpicker_square_type_get()
 
    if (!cps_type)
    {
-      cps_type = etk_type_new("Etk_Colorpicker_Square", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker_Square), ETK_CONSTRUCTOR(_etk_colorpicker_square_constructor), NULL, NULL);
+      cps_type = etk_type_new("Etk_Colorpicker_Square", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker_Square), ETK_CONSTRUCTOR(_etk_colorpicker_square_constructor), NULL);
 
       _etk_colorpicker_square_signals[ETK_CPS_COLOR_SELECTED_SIGNAL] = etk_signal_new("color_selected", cps_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
@@ -148,7 +148,7 @@ void etk_colorpicker_square_map_size_get(Etk_Colorpicker_Square *cps, int *map_w
 /**
  * @brief Sets the color mode of the square colorpicker
  * @param cps a square colorpicker
- * @param the color mode to use
+ * @param color_mode the color mode to use
  */
 void etk_colorpicker_square_color_mode_set(Etk_Colorpicker_Square *cps, Etk_Color_Mode color_mode)
 {

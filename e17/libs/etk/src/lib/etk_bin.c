@@ -11,13 +11,12 @@
  * @{
  */
 
-/* TODO: Can the child be realized before the bin? */ 
-
 static void _etk_bin_constructor(Etk_Bin *bin);
 static void _etk_bin_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget);
 static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
+static void _etk_bin_realize_cb(Etk_Object *object, void *data);
 static void _etk_bin_child_realize_cb(Etk_Object *object, void *data);
 
 /**************************
@@ -36,7 +35,7 @@ Etk_Type *etk_bin_type_get()
 
    if (!bin_type)
    {
-      bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin), ETK_CONSTRUCTOR(_etk_bin_constructor), NULL, NULL);
+      bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin), ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
    }
 
    return bin_type;
@@ -97,6 +96,8 @@ static void _etk_bin_constructor(Etk_Bin *bin)
    ETK_CONTAINER(bin)->child_remove = _etk_bin_child_remove;
    ETK_WIDGET(bin)->size_request = _etk_bin_size_request;
    ETK_WIDGET(bin)->size_allocate = _etk_bin_size_allocate;
+   
+   etk_signal_connect_after("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), NULL);
 }
 
 /* Calculates the ideal size of the bin */
@@ -142,12 +143,6 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    }
 }
 
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
-
 /* Adds a child to the bin */
 static void _etk_bin_child_add(Etk_Container *container, Etk_Widget *widget)
 {
@@ -171,6 +166,24 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
    etk_widget_parent_set(widget, NULL);
    bin->child = NULL;
    etk_widget_size_recalc_queue(ETK_WIDGET(bin));
+}
+
+/**************************
+ *
+ * Callbacks and handlers
+ *
+ **************************/
+
+/* Called when the bin is realized */
+static void _etk_bin_realize_cb(Etk_Object *object, void *data)
+{
+   Etk_Bin *bin;
+
+   if (!(bin = ETK_BIN(object)) || !bin->child)
+      return;
+
+   if (ETK_WIDGET(bin)->realized && bin->child->realized)
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
 }
 
 /* Called when the child of the bin is realized */

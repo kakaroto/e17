@@ -46,7 +46,7 @@ Etk_Type *etk_window_type_get()
 
    if (!window_type)
    {
-      window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor), NULL);
+      window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
    
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
    }
@@ -56,7 +56,8 @@ Etk_Type *etk_window_type_get()
 
 /**
  * @brief Creates a new window
- * @return Returns the new window widget */
+ * @return Returns the new window widget
+ */
 Etk_Widget *etk_window_new()
 {
    return etk_widget_new(ETK_WINDOW_TYPE, "theme_group", "window", NULL);
@@ -71,7 +72,6 @@ void etk_window_title_set(Etk_Window *window, const char *title)
 {
    if (!window)
       return;
-
    ecore_evas_title_set(window->ecore_evas, title);
 }
 
@@ -85,8 +85,306 @@ void etk_window_wmclass_set(Etk_Window *window, const char *window_name, const c
 {
    if (!window)
       return;
+   ecore_evas_name_class_set(window->ecore_evas, window_name, window_class);
+}
 
-   ecore_evas_name_class_set(window, window_name, window_class);
+/**
+ * @brief Moves the window to the position (x, y)
+ * @param window a window
+ * @param x the x position
+ * @param y the y position
+ */
+void etk_window_move(Etk_Window *window, int x, int y)
+{
+   if (!window)
+      return;
+   ecore_evas_move(window->ecore_evas, x, y);
+}
+
+/**
+ * @brief Resizes the window
+ * @param window a window
+ * @param w the new width of the window
+ * @param h the new height of the window
+ */
+void etk_window_resize(Etk_Window *window, int w, int h)
+{
+   if (!window)
+      return;
+   ecore_evas_resize(window->ecore_evas, w, h);
+}
+
+/**
+ * @brief Gets the geometry of the window
+ * @param window a window
+ * @param x the location where to set the x position the window
+ * @param y the location where to set the y position the window
+ * @param w the location where to set the width of the window
+ * @param h the location where to set the height of the window
+ */
+void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
+{
+   if (!window)
+      return;
+   ecore_evas_geometry_get(window->ecore_evas, x, y, w, h);
+}
+
+/**
+ * @brief Iconifies (i.e. minimize) the window
+ * @param window a window
+ */
+void etk_window_iconify(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_iconified_set(window->ecore_evas, 1);
+}
+
+/**
+ * @brief Deiconifies (i.e. unminimize) the window
+ * @param window a window
+ */
+void etk_window_deiconify(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_iconified_set(window->ecore_evas, 0);
+}
+
+/**
+ * @brief Maximizes the window
+ * @param window a window
+ */
+void etk_window_maximize(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_maximized_set(window->ecore_evas, 1);
+}
+
+/**
+ * @brief Unmaximizes the window
+ * @param window a window
+ */
+void etk_window_unmaximize(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_maximized_set(window->ecore_evas, 0);
+}
+
+/**
+ * @brief Places the window in the fullscreen state
+ * @param window a window
+ */
+void etk_window_fullscreen(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_fullscreen_set(window->ecore_evas, 1);
+}
+
+/**
+ * @brief Toggles off the fullscreen state for the window
+ * @param window a window
+ */
+void etk_window_unfullscreen(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_fullscreen_set(window->ecore_evas, 0);
+}
+
+/**
+ * @brief Sticks the window: it will appear on all the virtual desktops
+ * @param window a window
+ */
+void etk_window_stick(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_sticky_set(window->ecore_evas, 1);
+}
+
+/**
+ * @brief Unsticks the window: it will appear on only one virtual desktop
+ * @param window a window
+ */
+void etk_window_unstick(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_sticky_set(window->ecore_evas, 0);
+}
+
+/**
+ * @brief Sets wheter the window is decorated
+ * @param window a window
+ * @param decorated if @a decorated is FALSE, the border of the window will be hidden
+ */
+void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
+{
+   if (!window)
+      return;
+   ecore_evas_borderless_set(window->ecore_evas, !decorated);
+}
+
+/**
+ * @brief Gets whether the window is decorated (i.e. whether the border of the window is shown)
+ * @param window a window
+ * @return Returns TRUE if the window is decorated
+ */
+Etk_Bool etk_window_decorated_get(Etk_Window *window)
+{
+   if (!window)
+      return TRUE;
+   return !ecore_evas_borderless_get(window->ecore_evas);
+}
+
+/**
+ * @brief Sets wheter the window is shaped
+ * @param window a window
+ * @param shaped the shaped setting
+ */
+void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
+{
+   if (!window)
+      return;
+   ecore_evas_shaped_set(window->ecore_evas, shaped);
+}
+
+/**
+ * @brief Gets whether the window is shaped
+ * @param window a window
+ * @return Returns TRUE if the window is shaped
+ */
+Etk_Bool etk_window_shaped_get(Etk_Window *window)
+{
+   if (!window)
+      return TRUE;
+   return ecore_evas_shaped_get(window->ecore_evas);
+}
+
+/**
+ * @brief Sets whether the window should not be shown in the taskbar
+ * @param window a window
+ * @param skip_taskbar_hint if @a skip_taskbar_hint == TRUE, the window should not be shown in the taskbar
+ */
+void etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
+{
+   if (!window || skip_taskbar_hint == etk_window_skip_taskbar_hint_get(window))
+      return;
+   
+   if (skip_taskbar_hint)
+   {
+      if (etk_window_skip_pager_hint_get(window))
+      {
+         Ecore_X_Window_State states[2];
+         states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+         states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+         ecore_x_netwm_window_state_set(window->x_window, states, 2);
+      }
+      else
+      {
+         Ecore_X_Window_State state[1];
+         state[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+         ecore_x_netwm_window_state_set(window->x_window, state, 1);
+      }
+   }
+   else
+   {
+      if (etk_window_skip_pager_hint_get(window))
+      {
+         Ecore_X_Window_State state[1];
+         state[0] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+         ecore_x_netwm_window_state_set(window->x_window, state, 1);
+      }
+      else
+         ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
+   }
+}
+
+/**
+ * @brief Gets whether the window should not be shown in the taskbar
+ * @param window a window
+ * @return Returns FALSE if the window is shown in the taskbar
+ */
+Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
+{
+   int num_states, i;
+   Ecore_X_Window_State *states;
+   
+   if (!window)
+      return FALSE;
+   
+   ecore_x_netwm_window_state_get(window->x_window, &states, &num_states);
+   for (i = 0; i < num_states; i++)
+   {
+      if (states[i] == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
+         return TRUE;
+   }
+   return FALSE;
+}
+
+/**
+ * @brief Sets whether the window should not be shown in the pager
+ * @param window a window
+ * @param skip_pager_hint if @a skip_pager_hint == TRUE, the window should not be shown in the pager
+ */
+void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
+{
+   if (!window || skip_pager_hint == etk_window_skip_pager_hint_get(window))
+      return;
+
+   if (skip_pager_hint)
+   {
+      if (etk_window_skip_taskbar_hint_get(window))
+      {
+         Ecore_X_Window_State states[2];
+         states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+         states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+         ecore_x_netwm_window_state_set(window->x_window, states, 2);
+      }
+      else
+      {
+         Ecore_X_Window_State state[1];
+         state[0] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+         ecore_x_netwm_window_state_set(window->x_window, state, 1);
+      }
+   }
+   else
+   {
+      if (etk_window_skip_taskbar_hint_get(window))
+      {
+         Ecore_X_Window_State state[1];
+         state[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+         ecore_x_netwm_window_state_set(window->x_window, state, 1);
+      }
+      else
+         ecore_x_netwm_window_state_set(window->x_window, NULL, 0);
+   }
+}
+
+/**
+ * @brief Gets whether the window should not be shown in the pager
+ * @param window a window
+ * @return Returns TRUE if the window should not be shown in the pager
+ */
+Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
+{
+   int num_states, i;
+   Ecore_X_Window_State *states;
+   
+   if (!window)
+      return FALSE;
+   
+   ecore_x_netwm_window_state_get(window->x_window, &states, &num_states);
+   for (i = 0; i < num_states; i++)
+   {
+      if (states[i] == ECORE_X_WINDOW_STATE_SKIP_PAGER)
+         return TRUE;
+   }
+   return FALSE;
 }
 
 /**************************
@@ -104,10 +402,11 @@ static void _etk_window_constructor(Etk_Window *window)
    window->delete_event = _etk_window_delete_event_handler;
 
    window->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+   window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
 
-   /* TODO */
+   /* TODO: font path */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
    ecore_evas_data_set(window->ecore_evas, "etk_window", window);
    ecore_evas_callback_resize_set(window->ecore_evas, _etk_window_resize_cb);

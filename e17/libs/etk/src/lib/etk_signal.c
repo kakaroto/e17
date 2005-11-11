@@ -194,7 +194,7 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_S
 
 /**
  * @brief Connects the object and the signal to a callback function which will be swapped (called with @a data as the only argument)
- * @param signal_name the name of the signal to connect to the object
+ * @param signal_name the name of the signal to connect to the object to
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
@@ -213,6 +213,57 @@ void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk
    }
 
    etk_signal_connect_full(signal, object, callback, data, TRUE, FALSE);
+}
+
+/**
+ * @brief Disconnects a callback from a signal, the callback won't be called anymore when the signal is emitted
+ * @param signal_name the name of the signal connected to the callback to disconnect
+ * @param object the object connected to the callback to disconnect
+ * @param callback the callback to disconnect
+ */
+void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback)
+{
+   Etk_Signal *signal;
+   Ecore_List *callbacks;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !signal_name || !callback)
+      return;
+   
+   if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
+   {
+      ETK_WARNING("Invalid signal disconnection: the object type doesn't have a signal called \"%s\"", signal_name);
+      return;
+   }
+   
+   callbacks = ecore_list_new();
+   etk_object_signal_callbacks_get(object, signal, callbacks, FALSE);
+   ecore_list_goto_first(callbacks);
+   while ((signal_callback = ecore_list_next(callbacks)))
+   {
+      if (signal_callback->callback == callback)
+      {
+         etk_object_signal_callback_remove(object, signal_callback);
+         ecore_list_destroy(callbacks);
+         return;
+      }
+   }
+   ecore_list_destroy(callbacks);
+   
+   callbacks = ecore_list_new();
+   etk_object_signal_callbacks_get(object, signal, callbacks, TRUE);
+   ecore_list_goto_first(callbacks);
+   while ((signal_callback = ecore_list_next(callbacks)))
+   {
+      if (signal_callback->callback == callback)
+      {
+         etk_object_signal_callback_remove(object, signal_callback);
+         ecore_list_destroy(callbacks);
+         return;
+      }
+   }
+   ecore_list_destroy(callbacks);
+   
 }
 
 /**

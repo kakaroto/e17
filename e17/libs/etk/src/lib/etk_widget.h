@@ -153,8 +153,6 @@ struct _Etk_Widget
    Evas_List *member_objects;
 
    int left_inset, right_inset, top_inset, bottom_inset;
-   int left_padding, right_padding, top_padding, bottom_padding;
-
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
    /* The size wanted by the user */
@@ -186,9 +184,6 @@ struct _Etk_Widget
    unsigned char need_size_recalc : 1;
    unsigned char need_redraw : 1;
    unsigned char need_theme_min_size_recalc : 1;
-   unsigned char size_request_done : 1;
-   unsigned char size_allocate_needs_request : 1;
-   unsigned char first_move : 1;
    unsigned char swallowed : 1;
 };
 

@@ -38,7 +38,7 @@ Etk_Type *etk_frame_type_get()
 
    if (!frame_type)
    {
-      frame_type = etk_type_new("Etk_Frame", ETK_BIN_TYPE, sizeof(Etk_Frame), ETK_CONSTRUCTOR(_etk_frame_constructor), ETK_DESTRUCTOR(_etk_frame_destructor), NULL);
+      frame_type = etk_type_new("Etk_Frame", ETK_BIN_TYPE, sizeof(Etk_Frame), ETK_CONSTRUCTOR(_etk_frame_constructor), ETK_DESTRUCTOR(_etk_frame_destructor));
 
       etk_type_property_add(frame_type, "label", ETK_FRAME_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       

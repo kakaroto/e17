@@ -61,7 +61,7 @@ Etk_Type *etk_object_type_get()
 
    if (!object_type)
    {
-      object_type = etk_type_new("Etk_Object", NULL, sizeof(Etk_Object), ETK_CONSTRUCTOR(_etk_object_constructor), ETK_DESTRUCTOR(_etk_object_destructor), NULL);
+      object_type = etk_type_new("Etk_Object", NULL, sizeof(Etk_Object), ETK_CONSTRUCTOR(_etk_object_constructor), ETK_DESTRUCTOR(_etk_object_destructor));
 
       _etk_object_signals[ETK_OBJECT_DESTROY_SIGNAL] = etk_signal_new("destroy", object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }

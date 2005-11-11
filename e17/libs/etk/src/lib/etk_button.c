@@ -65,7 +65,7 @@ Etk_Type *etk_button_type_get()
 
    if (!button_type)
    {
-      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), ETK_DESTRUCTOR(_etk_button_destructor), NULL);
+      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), ETK_DESTRUCTOR(_etk_button_destructor));
 
       _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed", button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released", button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
@@ -524,8 +524,8 @@ static void _etk_button_child_create(Etk_Button *button)
       etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), FALSE, FALSE, 0);
       etk_widget_pass_events_set(ETK_WIDGET(button->image), TRUE);
       etk_widget_size_request_set(ETK_WIDGET(button->image), 16, 16);
-      /* TODO: */
-      /* etk_signal_connect("remove", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button); */
+      /* TODO: destroy the image of the button ?
+      etk_signal_connect("remove", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button); */
       etk_widget_show(ETK_WIDGET(button->image));
 
       if (button->label)

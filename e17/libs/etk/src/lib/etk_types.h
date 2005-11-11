@@ -31,7 +31,6 @@ typedef struct _Etk_String Etk_String;
 
 typedef void (*Etk_Constructor)(Etk_Object *object);
 typedef void (*Etk_Destructor)(Etk_Object *object);
-typedef void (*Etk_Copy_Constructor)(Etk_Object *dst, const Etk_Object *src);
 typedef void (*Etk_Signal_Callback_Function)(void);
 typedef void (*Etk_Signal_Swapped_Callback_Function)(void *data);
 typedef void (*Etk_Marshaller)(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
@@ -96,9 +95,11 @@ typedef struct _Etk_HScrollbar Etk_HScrollbar;
 typedef struct _Etk_VScrollbar Etk_VScrollbar;
 typedef struct _Etk_HSeparator Etk_HSeparator;
 typedef struct _Etk_VSeparator Etk_VSeparator;
+typedef struct _Etk_Menu Etk_Menu;
+typedef struct _Etk_Menu_Item Etk_Menu_Item;
 
 /**
- * @enum Etk_Child_Fill_Policy_Flag
+ * @enum Etk_Fill_Policy_Flags
  * @brief Describes how a child should fill the space allocated by its parent container
  */ 
 typedef enum _Etk_Fill_Policy_Flags

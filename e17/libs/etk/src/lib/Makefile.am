@@ -34,7 +34,8 @@ etk_canvas.h \
 etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
 etk_tree.h \
 etk_range.h etk_scale.h etk_scrollbar.h \
-etk_separator.h
+etk_separator.h \
+etk_menu.h etk_menu_item.h
 
 libetk_la_SOURCES = \
 etk_main.c etk_utils.c \
@@ -55,7 +56,8 @@ etk_canvas.c \
 etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
 etk_tree.c \
 etk_range.c etk_scale.c etk_scrollbar.c \
-etk_separator.c  \
+etk_separator.c \
+etk_menu.c etk_menu_item.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

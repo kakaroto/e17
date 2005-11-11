@@ -45,7 +45,7 @@ Etk_Type *etk_table_type_get()
 
    if (!table_type)
    {
-      table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table), ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor), NULL);
+      table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table), ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
    
       etk_type_property_add(table_type, "num_cols", ETK_TABLE_NUM_COLS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
       etk_type_property_add(table_type, "num_rows", ETK_TABLE_NUM_ROWS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));

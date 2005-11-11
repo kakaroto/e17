@@ -44,7 +44,7 @@ Etk_Type *etk_container_type_get()
 
    if (!container_type)
    {
-      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container), ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor), NULL);
+      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container), ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
    
       _etk_container_signals[ETK_CONTAINER_ADD_SIGNAL] = etk_signal_new("add", container_type, ETK_MEMBER_OFFSET(Etk_Container, child_add), etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_container_signals[ETK_CONTAINER_REMOVE_SIGNAL] = etk_signal_new("remove", container_type, ETK_MEMBER_OFFSET(Etk_Container, child_remove), etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -67,7 +67,6 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
       return;
-
    etk_signal_emit(_etk_container_signals[ETK_CONTAINER_ADD_SIGNAL], ETK_OBJECT(container), NULL, widget);
 }
 
@@ -80,7 +79,6 @@ void etk_container_remove(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
       return;
-
    etk_signal_emit(_etk_container_signals[ETK_CONTAINER_REMOVE_SIGNAL], ETK_OBJECT(container), NULL, widget);
 }
 

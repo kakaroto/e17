@@ -19,17 +19,17 @@ void etk_test_canvas_window_create(void *data)
    Etk_Widget *vbox;
    Etk_Widget *button;
 
-	if (win)
-	{
-		etk_widget_show_all(ETK_WIDGET(win));
-		return;
-	}
-	
+   if (win)
+   {
+      etk_widget_show_all(ETK_WIDGET(win));
+      return;
+   }
+
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Canvas Test"));
 
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_canvas_window_deleted_cb), win);	
-	
+
    vbox = etk_vbox_new(FALSE, 5);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
@@ -51,6 +51,7 @@ static void _etk_test_canvas_object_add(void *data)
    Evas_Object *object;
    int x, y, w, h;
    int r, g, b, a;
+   int cw, ch;
 
    if (!(canvas = ETK_CANVAS(data)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
       return;
@@ -59,12 +60,15 @@ static void _etk_test_canvas_object_add(void *data)
    evas_object_show(object);
    etk_canvas_object_add(canvas, object);
 
-   x = rand() % 300;
-   y = rand() % 200;
+   /* TODO: make a function to get the geometry of a widget */
+   cw = ETK_WIDGET(canvas)->geometry.w;
+   ch = ETK_WIDGET(canvas)->geometry.h;
+   x = rand() % cw;
+   y = rand() % ch;
    evas_object_move(object, x, y);
 
-   w = ETK_MAX(abs(rand() % (300 - x)), 10);
-   h = ETK_MAX(abs(rand() % (200 - y)), 10);
+   w = ETK_MAX(abs(rand() % (cw - x)), 10);
+   h = ETK_MAX(abs(rand() % (ch - y)), 10);
    evas_object_resize(object, w, h);
 
    r = rand() % 255;

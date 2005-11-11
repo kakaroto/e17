@@ -31,7 +31,7 @@ Etk_Type *etk_radio_button_type_get()
    if (!radio_button_type)
    {
       radio_button_type = etk_type_new("Etk_Radio_Button", ETK_CHECK_BUTTON_TYPE, sizeof(Etk_Radio_Button),
-         ETK_CONSTRUCTOR(_etk_radio_button_constructor), ETK_DESTRUCTOR(_etk_radio_button_destructor), NULL);
+         ETK_CONSTRUCTOR(_etk_radio_button_constructor), ETK_DESTRUCTOR(_etk_radio_button_destructor));
 
       etk_type_property_add(radio_button_type, "group", ETK_RADIO_BUTTON_GROUP_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
    

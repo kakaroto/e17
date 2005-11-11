@@ -19,4 +19,5 @@ collections {
    #include "widgets/separator.edc"
    #include "widgets/paned.edc"
    #include "widgets/frame.edc"
+   #include "widgets/menu.edc"
 }

@@ -43,6 +43,10 @@ static Etk_Test_Set tests[] =
    {
       "Scrolled View",
       etk_test_scrolled_view_window_create
+   },
+   {
+      "Menu",
+      etk_test_menu_window_create
    }
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);

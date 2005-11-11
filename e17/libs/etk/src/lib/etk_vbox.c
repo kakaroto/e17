@@ -29,7 +29,7 @@ Etk_Type *etk_vbox_type_get()
 
    if (!vbox_type)
    {
-      vbox_type = etk_type_new("Etk_VBox", ETK_BOX_TYPE, sizeof(Etk_VBox), ETK_CONSTRUCTOR(_etk_vbox_constructor), ETK_DESTRUCTOR(_etk_vbox_destructor), NULL);
+      vbox_type = etk_type_new("Etk_VBox", ETK_BOX_TYPE, sizeof(Etk_VBox), ETK_CONSTRUCTOR(_etk_vbox_constructor), ETK_DESTRUCTOR(_etk_vbox_destructor));
    }
 
    return vbox_type;
@@ -58,7 +58,6 @@ static void _etk_vbox_constructor(Etk_VBox *vbox)
       return;
 
    vbox->requested_sizes = NULL;
-   ETK_WIDGET(vbox)->size_allocate_needs_request = TRUE;
    ETK_WIDGET(vbox)->size_request = _etk_vbox_size_request;
    ETK_WIDGET(vbox)->size_allocate = _etk_vbox_size_allocate;
 }

@@ -26,6 +26,8 @@ static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_r
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
+static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data);
+static void _etk_scrolled_view_child_scroll_size_cb(void *data);
 
 /**************************
  *
@@ -43,7 +45,7 @@ Etk_Type *etk_scrolled_view_type_get()
 
    if (!scrolled_view_type)
    {
-      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), ETK_DESTRUCTOR(_etk_scrolled_view_destructor), NULL);
+      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), ETK_DESTRUCTOR(_etk_scrolled_view_destructor));
 
       etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
       etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
@@ -57,7 +59,6 @@ Etk_Type *etk_scrolled_view_type_get()
 
 /**
  * @brief Creates a new scrolled_view
- * @param label the label of the new scrolled_view
  * @return Returns the new scrolled_view widget
  */
 Etk_Widget *etk_scrolled_view_new()
@@ -93,7 +94,7 @@ Etk_Widget *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view)
  * @brief A convenience function that creates a viewport, adds the child to it and attach the viewport to the scrolled view. @n
  * It's useful for widgets that have no scrolling ability
  * @param scrolled_view a scrolled view
- * @param the child to add to the viewport
+ * @param child the child to add to the viewport
  */
 void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child)
 {
@@ -185,6 +186,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
+   etk_signal_connect("add", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_add_cb), NULL);
 }
 
 /* Destroys the scrolled_view */
@@ -276,10 +278,10 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    Etk_Widget *child;
    Etk_Bool show_vscrollbar = FALSE, show_hscrollbar = FALSE;
    int visible_width, visible_height;
-
+   
    if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)))
       return;
-
+   
    if (!(child = ETK_BIN(scrolled_view)->child) || !child->scroll_size_get || !child->scroll)
    {
       etk_widget_hide(scrolled_view->hscrollbar);
@@ -382,6 +384,26 @@ static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, d
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
       return;
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
+}
+
+/* Called when a new child is added */
+static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data)
+{
+   if (!object || !child)
+      return;
+   
+   /* TODO: disconnect
+   etk_signal_connect_swapped("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_cb), object); */
+}
+
+/* Called when the scroll size of the child of the scrolled view has changed */
+static void _etk_scrolled_view_child_scroll_size_cb(void *data)
+{
+   Etk_Widget *scrolled_widget;
+   
+   if (!(scrolled_widget = ETK_WIDGET(data)))
+      return;
+   etk_widget_redraw_queue(scrolled_widget);
 }
 
 /** @} */

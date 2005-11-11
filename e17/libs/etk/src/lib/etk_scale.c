@@ -39,7 +39,7 @@ Etk_Type *etk_scale_type_get()
 
    if (!scale_type)
    {
-      scale_type = etk_type_new("Etk_Scale", ETK_RANGE_TYPE, sizeof(Etk_Scale), ETK_CONSTRUCTOR(_etk_scale_constructor), NULL, NULL);
+      scale_type = etk_type_new("Etk_Scale", ETK_RANGE_TYPE, sizeof(Etk_Scale), ETK_CONSTRUCTOR(_etk_scale_constructor), NULL);
    }
 
    return scale_type;
@@ -55,7 +55,7 @@ Etk_Type *etk_hscale_type_get()
 
    if (!hscale_type)
    {
-      hscale_type = etk_type_new("Etk_HScale", ETK_SCALE_TYPE, sizeof(Etk_HScale), ETK_CONSTRUCTOR(_etk_hscale_constructor), NULL, NULL);
+      hscale_type = etk_type_new("Etk_HScale", ETK_SCALE_TYPE, sizeof(Etk_HScale), ETK_CONSTRUCTOR(_etk_hscale_constructor), NULL);
    }
 
    return hscale_type;
@@ -81,7 +81,7 @@ Etk_Type *etk_vscale_type_get()
 
    if (!vscale_type)
    {
-      vscale_type = etk_type_new("Etk_VScale", ETK_SCALE_TYPE, sizeof(Etk_VScale), ETK_CONSTRUCTOR(_etk_vscale_constructor), NULL, NULL);
+      vscale_type = etk_type_new("Etk_VScale", ETK_SCALE_TYPE, sizeof(Etk_VScale), ETK_CONSTRUCTOR(_etk_vscale_constructor), NULL);
    }
 
    return vscale_type;

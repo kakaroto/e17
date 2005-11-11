@@ -19,17 +19,17 @@
 
 #define ETK_TREE_MIN_HEADER_WIDTH 10
 
-#define ETK_TREE_GRID_TYPE       (_etk_grid_type_get())
-#define ETK_TREE_GRID(obj)       (ETK_OBJECT_CAST((obj), ETK_TREE_GRID_TYPE, Etk_grid))
+#define ETK_TREE_GRID_TYPE       (_etk_tree_grid_type_get())
+#define ETK_TREE_GRID(obj)       (ETK_OBJECT_CAST((obj), ETK_TREE_GRID_TYPE, Etk_Tree_Grid))
 #define ETK_IS_TREE_GRID(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_GRID_TYPE))
 
-typedef struct _Etk_grid
+typedef struct _Etk_Tree_Grid
 {
    /* Inherit form Etk_Widget */
    Etk_Widget widget;
 
    Etk_Tree *tree;
-} Etk_grid;
+} Etk_Tree_Grid;
 
 typedef struct _Etk_Tree_Item_Object
 {
@@ -75,13 +75,13 @@ enum _Etk_Tree_Col_Property_Id
    ETK_TREE_COL_XALIGN_PROPERTY
 };
 
-static Etk_Type *_etk_grid_type_get();
-static void _etk_grid_constructor(Etk_grid *grid);
-static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
-static void _etk_grid_scroll(Etk_Widget *widget, int x, int y);
-static void _etk_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
-static void _etk_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size);
-static void _etk_grid_realize_cb(Etk_Object *object, void *data);
+static Etk_Type *_etk_tree_grid_type_get();
+static void _etk_tree_grid_constructor(Etk_Tree_Grid *grid);
+static void _etk_tree_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
+static void _etk_tree_grid_scroll(Etk_Widget *widget, int x, int y);
+static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
+static void _etk_tree_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size);
+static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_constructor(Etk_Tree *tree);
 static void _etk_tree_destructor(Etk_Tree *tree);
@@ -133,7 +133,7 @@ Etk_Type *etk_tree_type_get()
 
    if (!tree_type)
    {
-      tree_type = etk_type_new("Etk_Tree", ETK_CONTAINER_TYPE, sizeof(Etk_Tree), ETK_CONSTRUCTOR(_etk_tree_constructor), ETK_DESTRUCTOR(_etk_tree_destructor), NULL);
+      tree_type = etk_type_new("Etk_Tree", ETK_CONTAINER_TYPE, sizeof(Etk_Tree), ETK_CONSTRUCTOR(_etk_tree_constructor), ETK_DESTRUCTOR(_etk_tree_destructor));
 
       _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected", tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -172,7 +172,7 @@ Etk_Type *etk_tree_col_type_get()
 
    if (!tree_col_type)
    {
-      tree_col_type = etk_type_new("Etk_Tree_Col", ETK_OBJECT_TYPE, sizeof(Etk_Tree_Col), ETK_CONSTRUCTOR(_etk_tree_col_constructor), ETK_DESTRUCTOR(_etk_tree_col_destructor), NULL);
+      tree_col_type = etk_type_new("Etk_Tree_Col", ETK_OBJECT_TYPE, sizeof(Etk_Tree_Col), ETK_CONSTRUCTOR(_etk_tree_col_constructor), ETK_DESTRUCTOR(_etk_tree_col_destructor));
 
       etk_type_property_add(tree_col_type, "title",         ETK_TREE_COL_TITLE_PROPERTY,           ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       etk_type_property_add(tree_col_type, "cell_type",     ETK_TREE_COL_TYPE_PROPERTY,            ETK_PROPERTY_INT,    ETK_PROPERTY_READABLE,           NULL);
@@ -496,7 +496,7 @@ void etk_tree_col_reorder(Etk_Tree_Col *col, int new_place)
 /**
  * @brief Gets the place of the column (0 is the first column on the left of the tree, etk_tree_num_cols_get(tree) - 1 is the last one on the right)
  * @param col a tree column
- * @param Returns the place of the column
+ * @return Returns the place of the column
  */
 int etk_tree_col_place_get(Etk_Tree_Col *col)
 {
@@ -563,8 +563,10 @@ void etk_tree_thaw(Etk_Tree *tree)
 {
    if (!tree || !tree->frozen)
       return;
-   tree->frozen = FALSE;
+   
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree));
+   tree->frozen = FALSE;
 }
 
 /**
@@ -696,29 +698,29 @@ void etk_tree_row_del(Etk_Tree_Row *row)
 {
    Evas_List *l;
 
-   if (!row)
+   if (!row || !(l = evas_list_find_list(row->node.parent->child_rows, row)))
       return;
 
-   if ((l = evas_list_find_list(row->node.parent->child_rows, row)))
+   if (row->tree->last_selected)
    {
-      if (row->tree->last_selected)
+      Etk_Tree_Node *n;
+      for (n = row->tree->last_selected; n; n = n->parent)
       {
-         Etk_Tree_Node *n;
-         for (n = row->tree->last_selected; n; n = n->parent)
+         if (&row->node == n)
          {
-            if (&row->node == n)
-            {
-               row->tree->last_selected = NULL;
-               break;
-            }
+            row->tree->last_selected = NULL;
+            break;
          }
       }
-      _etk_tree_row_free(l->data);
-      row->node.parent->child_rows = evas_list_remove_list(row->node.parent->child_rows, l);
    }
+   _etk_tree_row_free(l->data);
+   row->node.parent->child_rows = evas_list_remove_list(row->node.parent->child_rows, l);
    
    if (!row->tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   }
 }
 
 /**
@@ -738,7 +740,10 @@ void etk_tree_clear(Etk_Tree *tree)
    tree->last_selected = NULL;
    
    if (!tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
+   }
 }
 
 /**
@@ -1049,7 +1054,10 @@ void etk_tree_row_expand(Etk_Tree_Row *row)
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   }
 }
 
 /**
@@ -1069,7 +1077,10 @@ void etk_tree_row_collapse(Etk_Tree_Row *row)
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   }
 }
 
 /**************************
@@ -1083,31 +1094,31 @@ void etk_tree_row_collapse(Etk_Tree_Row *row)
  **************************/
 
 /* Creates a new type for the tree grid widget (a tree is composed by a tree grid, column headers and scrollbars */
-static Etk_Type *_etk_grid_type_get()
+static Etk_Type *_etk_tree_grid_type_get()
 {
    static Etk_Type *grid_type = NULL;
 
    if (!grid_type)
-      grid_type = etk_type_new("Etk_grid", ETK_WIDGET_TYPE, sizeof(Etk_grid), ETK_CONSTRUCTOR(_etk_grid_constructor), NULL, NULL);
+      grid_type = etk_type_new("Etk_Tree_Grid", ETK_WIDGET_TYPE, sizeof(Etk_Tree_Grid), ETK_CONSTRUCTOR(_etk_tree_grid_constructor), NULL);
 
    return grid_type;
 }
 
 /* Initializes the default values of the tree grid */
-static void _etk_grid_constructor(Etk_grid *grid)
+static void _etk_tree_grid_constructor(Etk_Tree_Grid *grid)
 {
    if (!grid)
       return;
 
-   ETK_WIDGET(grid)->move_resize = _etk_grid_move_resize;
-   ETK_WIDGET(grid)->scroll = _etk_grid_scroll;
-   ETK_WIDGET(grid)->scroll_size_get = _etk_grid_scroll_size_get;
-   ETK_WIDGET(grid)->scroll_margins_get = _etk_grid_scroll_margins_get;
-   etk_signal_connect_after("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_grid_realize_cb), NULL);
+   ETK_WIDGET(grid)->move_resize = _etk_tree_grid_move_resize;
+   ETK_WIDGET(grid)->scroll = _etk_tree_grid_scroll;
+   ETK_WIDGET(grid)->scroll_size_get = _etk_tree_grid_scroll_size_get;
+   ETK_WIDGET(grid)->scroll_margins_get = _etk_tree_grid_scroll_margins_get;
+   etk_signal_connect_after("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_tree_grid_realize_cb), NULL);
 }
 
 /* Moves and resizes the tree grid */
-static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+static void _etk_tree_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
 {
    Etk_Tree *tree;
    int num_visible_items;
@@ -1151,7 +1162,7 @@ static void _etk_grid_move_resize(Etk_Widget *widget, int x, int y, int w, int h
 }
 
 /* Scrolls the tree grid */
-static void _etk_grid_scroll(Etk_Widget *widget, int x, int y)
+static void _etk_tree_grid_scroll(Etk_Widget *widget, int x, int y)
 {
    Etk_Tree *tree;
    
@@ -1164,7 +1175,7 @@ static void _etk_grid_scroll(Etk_Widget *widget, int x, int y)
 }
 
 /* Gets the scrolling size of the tree grid */
-static void _etk_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
+static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
 {
    Etk_Tree *tree;
    int i;
@@ -1183,13 +1194,13 @@ static void _etk_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size)
 }
 
 /* Gets the scrolling margins size of the tree grid */
-static void _etk_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size)
+static void _etk_tree_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size)
 {
    if (!widget || !margins_size)
       return;
    
-   margins_size->w = widget->left_inset + widget->left_padding + widget->right_inset + widget->right_padding;
-   margins_size->h = widget->top_inset + widget->top_padding + widget->bottom_inset + widget->bottom_padding;
+   margins_size->w = widget->left_inset + widget->right_inset;
+   margins_size->h = widget->top_inset + widget->bottom_inset;
 }
 
 /**************************
@@ -1362,7 +1373,7 @@ static void _etk_tree_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    if (num_visible_cols <= 0)
       return;
 
-   grid_width += tree->grid->left_padding + tree->grid->right_padding + tree->grid->left_inset + tree->grid->right_inset;
+   grid_width += tree->grid->left_inset + tree->grid->right_inset;
    freespace = ETK_MAX(0, geometry.w - grid_width);
    extra_width = (float)freespace / num_visible_cols;
 
@@ -1400,7 +1411,7 @@ static void _etk_tree_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
       for (i = 0; i < tree->num_cols; i++)
       {
-         child_geometry.x = geometry.x + tree->columns[i]->xoffset + tree->grid->left_padding;
+         child_geometry.x = geometry.x + tree->columns[i]->xoffset;
          if (tree->columns[i] != first_visible_col)
             child_geometry.x += tree->grid->left_inset;
          child_geometry.y = geometry.y;
@@ -1545,7 +1556,7 @@ static void _etk_tree_col_property_get(Etk_Object *object, int property_id, Etk_
  **************************/
 
 /* Called when the tree is realized */
-static void _etk_grid_realize_cb(Etk_Object *object, void *data)
+static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
 {
    const char *data_value;
    Etk_Tree *tree;
@@ -2024,6 +2035,12 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *nod
       n->num_parent_children++;
 
    node->child_rows = evas_list_append(node->child_rows, new_row);
+   
+   if (!tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
+      etk_widget_redraw_queue(ETK_WIDGET(tree));
+   }
 
    return new_row;
 }
