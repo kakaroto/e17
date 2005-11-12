@@ -1417,8 +1417,6 @@ ECompMgrWinNew(EObj * eo)
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
 
-   eo->shadow = 1;
-
    cw->picture = None;
    cw->pixmap = None;
 
