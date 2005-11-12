@@ -50,6 +50,12 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    ecore_x_dnd_aware_set(new_window->x_window, 1);
    ecore_x_dnd_type_set(new_window->x_window, "*", 1);
 
+   new_window->draggies = esmart_draggies_new(new_window->ecore_window);
+   esmart_draggies_button_set(new_window->draggies, 1);
+   evas_object_move(new_window->draggies, 0, 0);
+   evas_object_layer_set(new_window->draggies, -1);
+   evas_object_show(new_window->draggies);
+   
    new_window->evas = ecore_evas_get(new_window->ecore_window);
    new_window->edje_object = edje_object_add(new_window->evas);
    edje_group = malloc(strlen("eclair_") + strlen(window_name) + strlen("_body") + 1);
@@ -98,12 +104,6 @@ Eclair_Window *eclair_window_create(const char *edje_file, const char *window_na
    }
    ecore_evas_borderless_set(new_window->ecore_window, new_window->borderless);
    ecore_evas_shaped_set(new_window->ecore_window, new_window->shaped);
-
-   new_window->draggies = esmart_draggies_new(new_window->ecore_window);
-   esmart_draggies_button_set(new_window->draggies, 1);
-   evas_object_move(new_window->draggies, 0, 0);
-   evas_object_layer_set(new_window->draggies, -1);
-   evas_object_show(new_window->draggies);
 
    edje_object_size_min_get(new_window->edje_object, &new_window->min_width, &new_window->min_height);
    edje_object_size_max_get(new_window->edje_object, &new_window->max_width, &new_window->max_height);
