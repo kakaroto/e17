@@ -111,17 +111,17 @@ setup(int argc, char **argv, Elicit *el)
   ecore_evas_borderless_set(el->ee, 1);
   ecore_evas_shaped_set(el->ee, 1);
 
-  el->gui = edje_object_add(el->evas);
-  evas_object_name_set(el->gui, "gui");
-  evas_object_move(el->gui, 0, 0);
-  evas_object_show(el->gui);
-
   el->draggie = esmart_draggies_new(el->ee);
   esmart_draggies_button_set(el->draggie, 1);
   evas_object_layer_set(el->draggie, -1);
   evas_object_move(el->draggie, 0, 0);
   evas_object_name_set(el->draggie, "draggie");
   evas_object_show(el->draggie);
+
+  el->gui = edje_object_add(el->evas);
+  evas_object_name_set(el->gui, "gui");
+  evas_object_move(el->gui, 0, 0);
+  evas_object_show(el->gui);
 
   elicit_config_color_get(&el->color.r, &el->color.g, &el->color.b);
   elicit_util_colors_set_from_rgb(el);
