@@ -1,7 +1,7 @@
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in				
 
-LDFLAGS           = -L/usr/X11R6/lib
+#LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -g -O3 -Wall -I/usr/X11R6/include \
 $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I. \
 -DPREFIX=\""$(prefix)"\" @GIBLIB_CFLAGS@
