@@ -65,9 +65,10 @@ FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
       return 0;
 
 #if 0
-   Eprintf("FocusEwinValid %#lx %s: cl=%d(%d) vis=%d(%d)\n",
-	   _EwinGetClientXwin(ewin), EwinGetName(ewin), click,
-	   ewin->props.focusclick, want_visible, ewin->state.visibility);
+   Eprintf("FocusEwinValid %#lx %s: st=%d sh=%d inh=%d cl=%d(%d) vis=%d(%d)\n",
+	   _EwinGetClientXwin(ewin), EwinGetName(ewin),
+	   ewin->state.state, EoIsShown(ewin), ewin->state.inhibit_focus,
+	   click, ewin->props.focusclick, want_visible, ewin->state.visibility);
 #endif
 
    if (ewin->state.inhibit_focus)
@@ -457,7 +458,7 @@ FocusToEWin(EWin * ewin, int why)
 	break;
 
      default:
-	if (ewin && !FocusEwinValid(ewin, 1, why == FOCUS_CLICK, 0))
+	if (ewin && !FocusEwinValid(ewin, 0, why == FOCUS_CLICK, 0))
 	   break;
 	focus_pending_why = why;
 	focus_pending_ewin = ewin;
