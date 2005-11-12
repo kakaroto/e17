@@ -42,7 +42,7 @@
           font, "Vera"; \
           size, TEXT_SIZE; \
           fit, 0 0; \
-          min, 0 0; \
+          min, 1 0; \
           align, 0.5 0.5; \
         } \
       } \
