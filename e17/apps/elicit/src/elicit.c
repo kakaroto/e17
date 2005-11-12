@@ -116,6 +116,13 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_move(el->gui, 0, 0);
   evas_object_show(el->gui);
 
+  el->draggie = esmart_draggies_new(el->ee);
+  esmart_draggies_button_set(el->draggie, 1);
+  evas_object_layer_set(el->draggie, -1);
+  evas_object_move(el->draggie, 0, 0);
+  evas_object_name_set(el->draggie, "draggie");
+  evas_object_show(el->draggie);
+
   elicit_config_color_get(&el->color.r, &el->color.g, &el->color.b);
   elicit_util_colors_set_from_rgb(el);
   el->zoom = elicit_config_zoom_get();
@@ -130,13 +137,6 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
   evas_object_name_set(el->swatch, "swatch");
   evas_object_show(el->swatch);
-
-  el->draggie = esmart_draggies_new(el->ee);
-  esmart_draggies_button_set(el->draggie, 1);
-  evas_object_layer_set(el->draggie, -1);
-  evas_object_move(el->draggie, 0, 0);
-  evas_object_name_set(el->draggie, "draggie");
-  evas_object_show(el->draggie);
 
   theme = elicit_config_theme_get(el);
   elicit_ui_theme_set(el, theme, "elicit");
