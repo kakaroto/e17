@@ -642,15 +642,17 @@ EwinStateUpdate(EWin * ewin)
 {
    ewin->state.inhibit_actions = ewin->props.no_actions;
    ewin->state.inhibit_focus = !ewin->icccm.need_input ||
-      ewin->props.never_focus || ewin->state.iconified;
+      EwinInhGetWM(ewin, focus) || ewin->state.iconified;
 
    ewin->state.no_border = ewin->props.no_border || ewin->state.docked ||
       (ewin->mwm.valid && !ewin->mwm.decor_title && !ewin->mwm.decor_border);
 
-   ewin->state.inhibit_move = ewin->props.fixedpos || ewin->state.fullscreen;
-   ewin->state.inhibit_resize = ewin->props.fixedsize || ewin->state.shaded ||
+   ewin->state.inhibit_move =
+      EwinInhGetUser(ewin, move) || ewin->state.fullscreen;
+   ewin->state.inhibit_resize =
+      EwinInhGetUser(ewin, size) || ewin->state.shaded ||
       ewin->state.fullscreen;
-   ewin->state.inhibit_iconify = ewin->props.never_iconify;
+   ewin->state.inhibit_iconify = EwinInhGetWM(ewin, iconify);
    ewin->state.inhibit_shade = ewin->state.no_border || ewin->state.fullscreen;
    ewin->state.inhibit_stick = 0;
    ewin->state.inhibit_max_hor =
@@ -660,7 +662,8 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_fullscreeen =
       ewin->state.inhibit_move || ewin->state.inhibit_resize;
    ewin->state.inhibit_change_desk = 0;
-   ewin->state.inhibit_close = 0;
+   ewin->state.inhibit_close = EwinInhGetApp(ewin, close) ||
+      EwinInhGetUser(ewin, close);
 }
 
 void
@@ -1173,21 +1176,27 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	winrel = 0;
 	/* This is shady - some clients send root coords, some use the
 	 * ICCCM ones sent by us */
+	if (!EwinInhGetApp(ewin, move))
+	  {
 #if 1				/* FIXME - ??? */
-	if (ev->xconfigurerequest.value_mask & CWX)
-	   x = ev->xconfigurerequest.x;
-	if (ev->xconfigurerequest.value_mask & CWY)
-	   y = ev->xconfigurerequest.y;
+	     if (ev->xconfigurerequest.value_mask & CWX)
+		x = ev->xconfigurerequest.x;
+	     if (ev->xconfigurerequest.value_mask & CWY)
+		y = ev->xconfigurerequest.y;
 #else
-	if (ev->xconfigurerequest.value_mask & CWX)
-	   x = ev->xconfigurerequest.x - EoGetX(EoGetDesk(ewin));
-	if (ev->xconfigurerequest.value_mask & CWY)
-	   y = ev->xconfigurerequest.y - EoGetY(EoGetDesk(ewin));
+	     if (ev->xconfigurerequest.value_mask & CWX)
+		x = ev->xconfigurerequest.x - EoGetX(EoGetDesk(ewin));
+	     if (ev->xconfigurerequest.value_mask & CWY)
+		y = ev->xconfigurerequest.y - EoGetY(EoGetDesk(ewin));
 #endif
-	if (ev->xconfigurerequest.value_mask & CWWidth)
-	   w = ev->xconfigurerequest.width;
-	if (ev->xconfigurerequest.value_mask & CWHeight)
-	   h = ev->xconfigurerequest.height;
+	  }
+	if (!EwinInhGetApp(ewin, move))
+	  {
+	     if (ev->xconfigurerequest.value_mask & CWWidth)
+		w = ev->xconfigurerequest.width;
+	     if (ev->xconfigurerequest.value_mask & CWHeight)
+		h = ev->xconfigurerequest.height;
+	  }
 	if (ev->xconfigurerequest.value_mask & CWSibling)
 	   winrel = ev->xconfigurerequest.above;
 	if (ev->xconfigurerequest.value_mask & CWStackMode)

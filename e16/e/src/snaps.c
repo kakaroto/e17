@@ -364,7 +364,7 @@ SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
 static void
 SnapEwinNeverFocus(Snapshot * sn, const EWin * ewin)
 {
-   sn->neverfocus = ewin->props.never_focus;
+   sn->neverfocus = EwinInhGetWM(ewin, focus);	/* FIXME */
 }
 
 static void
@@ -1481,7 +1481,7 @@ SnapshotEwinApply(EWin * ewin)
      }
 
    if (use_flags & SNAP_USE_FOCUS_NEVER)
-      ewin->props.never_focus = sn->neverfocus;
+      EwinInhSetWM(ewin, focus, sn->neverfocus);
 
    if (use_flags & SNAP_USE_SHADED)
       ewin->state.shaded = sn->shaded;

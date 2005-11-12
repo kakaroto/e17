@@ -34,6 +34,9 @@
 #include <math.h>
 
 static const WinOp  winops[] = {
+   {"border", 2, 1, 0, EWIN_OP_BORDER},
+   {"title", 2, 1, 1, EWIN_OP_TITLE},
+
    {"close", 2, 1, 0, EWIN_OP_CLOSE},
    {"kill", 0, 1, 0, EWIN_OP_KILL},
    {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
@@ -41,38 +44,47 @@ static const WinOp  winops[] = {
    {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
    {"shade", 2, 1, 1, EWIN_OP_SHADE},
    {"stick", 2, 1, 1, EWIN_OP_STICK},
-   {"fixedpos", 0, 1, 1, EWIN_OP_FIXED_POS},
-   {"fixedsize", 0, 1, 1, EWIN_OP_FIXED_SIZE},
-   {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
-   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
-   {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
-   {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
-   {"title", 2, 1, 1, EWIN_OP_TITLE},
+   {"focus", 2, 1, 0, EWIN_OP_FOCUS},
+
+   {"desk", 2, 1, 1, EWIN_OP_DESK},
+   {"area", 2, 1, 1, EWIN_OP_AREA},
+   {"move", 2, 1, 1, EWIN_OP_MOVE},
+   {"size", 2, 1, 1, EWIN_OP_SIZE},
+   {"sz", 2, 1, 1, EWIN_OP_SIZE},
+   {"move_relative", 0, 1, 0, EWIN_OP_MOVE_REL},
+   {"mr", 2, 1, 0, EWIN_OP_MOVE_REL},
+   {"resize_relative", 0, 1, 0, EWIN_OP_SIZE_REL},
+   {"sr", 2, 1, 0, EWIN_OP_SIZE_REL},
+
    {"toggle_width", 0, 1, 0, EWIN_OP_MAX_WIDTH},
    {"tw", 2, 1, 0, EWIN_OP_MAX_WIDTH},
    {"toggle_height", 0, 1, 0, EWIN_OP_MAX_HEIGHT},
    {"th", 0, 1, 0, EWIN_OP_MAX_HEIGHT},
    {"toggle_size", 0, 1, 0, EWIN_OP_MAX_SIZE},
    {"ts", 2, 1, 0, EWIN_OP_MAX_SIZE},
+   {"fullscreen", 2, 1, 1, EWIN_OP_FULLSCREEN},
+   {"zoom", 2, 1, 0, EWIN_OP_ZOOM},
+
+   {"layer", 2, 1, 1, EWIN_OP_LAYER},
    {"raise", 2, 1, 0, EWIN_OP_RAISE},
    {"lower", 2, 1, 0, EWIN_OP_LOWER},
-   {"layer", 2, 1, 1, EWIN_OP_LAYER},
-   {"border", 2, 1, 0, EWIN_OP_BORDER},
-   {"desk", 2, 1, 1, EWIN_OP_DESK},
-   {"area", 2, 1, 1, EWIN_OP_AREA},
-   {"move", 2, 1, 1, EWIN_OP_MOVE},
-   {"resize", 0, 1, 1, EWIN_OP_SIZE},
-   {"sz", 2, 1, 1, EWIN_OP_SIZE},
-   {"move_relative", 0, 1, 0, EWIN_OP_MOVE_REL},
-   {"mr", 2, 1, 0, EWIN_OP_MOVE_REL},
-   {"resize_relative", 0, 1, 0, EWIN_OP_SIZE_REL},
-   {"sr", 2, 1, 0, EWIN_OP_SIZE_REL},
-   {"focus", 2, 1, 0, EWIN_OP_FOCUS},
-   {"fullscreen", 2, 1, 1, EWIN_OP_FULLSCREEN},
-   {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
-   {"zoom", 2, 1, 0, EWIN_OP_ZOOM},
+
    {"snap", 0, 1, 0, EWIN_OP_SNAP},
+
+   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
+   {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
+   {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
+   {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
+
+   {"no_app_move", 0, 1, 1, EWIN_OP_INH_APP_MOVE},
+   {"no_app_size", 0, 1, 1, EWIN_OP_INH_APP_SIZE},
+   {"no_user_close", 0, 1, 1, EWIN_OP_INH_USER_CLOSE},
+   {"no_user_move", 0, 1, 1, EWIN_OP_INH_USER_MOVE},
+   {"no_user_size", 0, 1, 1, EWIN_OP_INH_USER_SIZE},
+   {"no_wm_focus", 0, 1, 1, EWIN_OP_INH_WM_FOCUS},
+
    {"noredir", 4, 1, 1, EWIN_OP_NO_REDIRECT},
+
    {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
 };
 
@@ -1341,7 +1353,6 @@ EwinSetFullscreen(EWin * ewin, int on)
 	w = ewin->lw;
 	h = ewin->lh;
 	GetOnScreenPos(x, y, w, h, &x, &y);
-	ewin->props.fixedpos = 0;	/* Yeah - well */
 	b = ewin->normal_border;
 	EwinBorderSetTo(ewin, b);
 

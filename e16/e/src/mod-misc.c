@@ -223,7 +223,7 @@ static const IpcItem MiscIpcArray[] = {
     MiscIpcConfig,
     "misc", NULL,
     "Miscellaneous functions",
-    "  misc cfg <thing>         Configure thing (focus/fx/moveresize/placement/remember)\n"}
+    "  misc cfg <thing>         Configure thing (autoraise/misc/moveresize/placement/remember/session)\n"}
 };
 #define N_IPC_FUNCS (sizeof(MiscIpcArray)/sizeof(IpcItem))
 

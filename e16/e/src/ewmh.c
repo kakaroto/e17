@@ -569,7 +569,8 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->focusclick = 1;
 #endif
 	ewin->props.skip_focuslist = 1;
-	ewin->props.fixedpos = 1;
+	EwinInhSetUser(ewin, move, 1);
+	EwinInhSetUser(ewin, size, 1);
 	ewin->props.donthide = 1;
 	EwinSetBorderByName(ewin, "BORDERLESS");
      }

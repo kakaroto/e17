@@ -263,7 +263,6 @@
 #define __A_MAX_HEIGHT	wop * th
 #define __A_MAX_WIDTH	wop * tw
 #define __A_MAX_SIZE	wop * ts
-#define __A_TOGGLE_FIXED	wop * fix
 #define __A_SET_LAYER	wop * la
 #define __A_SNAPSHOT	remember * all
 #define __A_ZOOM	wop * zoom
@@ -285,7 +284,7 @@
 #define __A_SKIPFOCUS	wop * skipfocus
 #define __A_SKIPTASK	wop * skiptask
 #define __A_SKIPWINLIST	wop * skipwinlist
-#define __A_NEVERFOCUS	wop * neverfocus
+#define __A_NEVERFOCUS	wop * no_wm_focus
 #define __A_SKIPLISTS	wop * skiplists
 #define __A_SWAPMOVE	wop * swapmove
 

@@ -610,7 +610,7 @@ PagerEwinInit(EWin * ewin, void *ptr)
    ewin->props.skip_ext_pager = 1;
    ewin->props.skip_focuslist = 1;
    ewin->props.skip_winlist = 1;
-   ewin->props.never_focus = 1;
+   EwinInhSetWM(ewin, focus, 1);
    ewin->props.autosave = 1;
 
    EoSetSticky(ewin, 1);

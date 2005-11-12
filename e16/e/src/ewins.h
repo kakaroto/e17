@@ -35,6 +35,26 @@ typedef struct _ewin EWin;
 
 struct _snapshot;
 
+typedef struct
+{
+   unsigned int        all:32;
+   struct
+   {
+      unsigned            close:1;	/*  AU */
+      unsigned            focus:1;	/* WA  */
+      unsigned            iconify:1;	/* W U */
+      unsigned            move:1;	/*  AU */
+      unsigned            size:1;	/*  AU */
+   } b;
+} EwinInhibit;
+
+#define EwinInhGetApp(ewin, item)      (ewin->inh_app.b.item)
+#define EwinInhSetApp(ewin, item, on)  ewin->inh_app.b.item = (on)
+#define EwinInhGetUser(ewin, item)     (ewin->inh_user.b.item)
+#define EwinInhSetUser(ewin, item, on) ewin->inh_user.b.item = (on)
+#define EwinInhGetWM(ewin, item)       (ewin->inh_wm.b.item)
+#define EwinInhSetWM(ewin, item, on)   ewin->inh_wm.b.item = (on)
+
 struct _ewin
 {
    EObj                o;
@@ -67,6 +87,7 @@ struct _ewin
       unsigned            placed:1;
       unsigned            iconified:1;
       unsigned            docked:1;
+
       unsigned            click_grab_isset:1;
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
@@ -99,27 +120,25 @@ struct _ewin
    } state;
    struct
    {
-      char                fixedpos;
-      char                fixedsize;
-      char                never_use_area;
-      char                ignorearrange;
-      char                skip_ext_task;
-      char                skip_ext_pager;
-      char                skip_focuslist;
-      char                skip_winlist;
-      char                focusclick;	/* Click to focus */
-      char                never_focus;	/* Never focus */
-      char                no_button_grabs;
-      char                no_actions;
+      unsigned            never_use_area:1;
+      unsigned            ignorearrange:1;
+      unsigned            skip_ext_task:1;
+      unsigned            skip_ext_pager:1;
+      unsigned            skip_focuslist:1;
+      unsigned            skip_winlist:1;
+      unsigned            focusclick:1;	/* Click to focus */
+      unsigned            no_button_grabs:1;
+      unsigned            no_actions:1;
       unsigned            no_resize_h:1;
       unsigned            no_resize_v:1;
       unsigned            donthide:1;	/* Don't hide on show desktop */
       unsigned            vroot:1;	/* Virtual root window */
       unsigned            autosave:1;
       unsigned            no_border:1;	/* Never apply border */
-      unsigned            never_iconify:1;	/* Never iconify */
-      unsigned            no_shadow:1;	/* Never apply shadow */
    } props;
+   EwinInhibit         inh_app;
+   EwinInhibit         inh_user;
+   EwinInhibit         inh_wm;
    struct
    {
       char               *wm_name;

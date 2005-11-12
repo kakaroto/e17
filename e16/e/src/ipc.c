@@ -438,90 +438,18 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	IpcPrintf("Error: unknown operation");
 	return;
 
-     case EWIN_OP_CLOSE:
-	EwinOpClose(ewin);
-	break;
-
-     case EWIN_OP_KILL:
-	EwinOpKill(ewin);
-	break;
-
-     case EWIN_OP_ICONIFY:
-	on = ewin->state.iconified;
-	if (SetEwinBoolean("window iconified", &on, param1, 0))
-	   EwinOpIconify(ewin, !on);
-	break;
-
-     case EWIN_OP_OPACITY:
-	if (!strcmp(param1, "?"))
+     case EWIN_OP_BORDER:
+	if (!param1[0])
 	  {
-	     IpcPrintf("opacity: %u", ewin->ewmh.opacity >> 24);
+	     IpcPrintf("Error: no border specified");
 	     goto done;
 	  }
-	val = 0xff;
-	sscanf(param1, "%i", &val);
-	EwinOpSetOpacity(ewin, val);
-	break;
-
-#if USE_COMPOSITE
-     case EWIN_OP_SHADOW:
-	on = EoGetShadow(ewin);
-	if (SetEwinBoolean(wop->name, &on, param1, 0))
-	   EoSetShadow(ewin, !on);
-	break;
-
-     case EWIN_OP_NO_REDIRECT:
-	on = EoGetNoRedirect(ewin);
-	on = ewin->o.noredir;
-	if (SetEwinBoolean(wop->name, &on, param1, 0))
-	   EoSetNoRedirect(ewin, !on);
-	break;
-#endif
-
-     case EWIN_OP_SHADE:
-	if (SetEwinBoolean(wop->name, &ewin->state.shaded, param1, 0))
-	   EwinOpShade(ewin, !ewin->state.shaded);
-	break;
-
-     case EWIN_OP_STICK:
-	on = EoIsSticky(ewin);
-	if (SetEwinBoolean(wop->name, &on, param1, 0))
-	   EwinOpStick(ewin, !on);
-	break;
-
-     case EWIN_OP_FIXED_POS:
-	SetEwinBoolean(wop->name, &ewin->props.fixedpos, param1, 1);
-	EwinStateUpdate(ewin);
-	HintsSetWindowState(ewin);
-	break;
-
-     case EWIN_OP_FIXED_SIZE:
-	SetEwinBoolean(wop->name, &ewin->props.fixedsize, param1, 1);
-	EwinStateUpdate(ewin);
-	HintsSetWindowState(ewin);
-	break;
-
-     case EWIN_OP_NEVER_USE_AREA:
-	SetEwinBoolean(wop->name, &ewin->props.never_use_area, param1, 1);
-	break;
-
-     case EWIN_OP_FOCUS_CLICK:
-	SetEwinBoolean(wop->name, &ewin->props.focusclick, param1, 1);
-	break;
-
-     case EWIN_OP_FOCUS_NEVER:
-	SetEwinBoolean(wop->name, &ewin->props.never_focus, param1, 1);
-	EwinStateUpdate(ewin);
-	break;
-
-     case EWIN_OP_NO_BUTTON_GRABS:
-	if (SetEwinBoolean(wop->name, &ewin->props.no_button_grabs, param1, 1))
+	if (!strcmp(param1, "?"))
 	  {
-	     if (ewin->props.no_button_grabs)
-		UnGrabButtonGrabs(ewin);
-	     else
-		GrabButtonGrabs(ewin);
+	     IpcPrintf("window border: %s", BorderGetName(ewin->border));
+	     goto done;
 	  }
+	EwinOpSetBorder(ewin, param1);
 	break;
 
      case EWIN_OP_TITLE:
@@ -542,48 +470,39 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	EwinBorderUpdateInfo(ewin);
 	break;
 
-     case EWIN_OP_MAX_WIDTH:
-	MaxWidth(ewin, param1);
+     case EWIN_OP_CLOSE:
+	EwinOpClose(ewin);
 	break;
 
-     case EWIN_OP_MAX_HEIGHT:
-	MaxHeight(ewin, param1);
+     case EWIN_OP_KILL:
+	EwinOpKill(ewin);
 	break;
 
-     case EWIN_OP_MAX_SIZE:
-	MaxSize(ewin, param1);
+     case EWIN_OP_ICONIFY:
+	on = ewin->state.iconified;
+	if (SetEwinBoolean("window iconified", &on, param1, 1))
+	   EwinOpIconify(ewin, on);
 	break;
 
-     case EWIN_OP_RAISE:
-	EwinOpRaise(ewin);
+     case EWIN_OP_SHADE:
+	on = ewin->state.shaded;
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EwinOpShade(ewin, on);
 	break;
 
-     case EWIN_OP_LOWER:
-	EwinOpLower(ewin);
+     case EWIN_OP_STICK:
+	on = EoIsSticky(ewin);
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EwinOpStick(ewin, on);
 	break;
 
-     case EWIN_OP_LAYER:
+     case EWIN_OP_FOCUS:
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("window layer: %d", EoGetLayer(ewin));
+	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
-	val = atoi(param1);
-	EwinOpSetLayer(ewin, val);
-	break;
-
-     case EWIN_OP_BORDER:
-	if (!param1[0])
-	  {
-	     IpcPrintf("Error: no border specified");
-	     goto done;
-	  }
-	if (!strcmp(param1, "?"))
-	  {
-	     IpcPrintf("window border: %s", BorderGetName(ewin->border));
-	     goto done;
-	  }
-	EwinOpSetBorder(ewin, param1);
+	EwinOpActivate(ewin);
 	break;
 
      case EWIN_OP_DESK:
@@ -705,24 +624,22 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	EwinResize(ewin, a, b);
 	break;
 
-     case EWIN_OP_FOCUS:
-	if (!strcmp(param1, "?"))
-	  {
-	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
-	     goto done;
-	  }
-	EwinOpActivate(ewin);
+     case EWIN_OP_MAX_WIDTH:
+	MaxWidth(ewin, param1);
+	break;
+
+     case EWIN_OP_MAX_HEIGHT:
+	MaxHeight(ewin, param1);
+	break;
+
+     case EWIN_OP_MAX_SIZE:
+	MaxSize(ewin, param1);
 	break;
 
      case EWIN_OP_FULLSCREEN:
 	on = ewin->state.fullscreen;
-	if (SetEwinBoolean(wop->name, &on, param1, 0))
-	   EwinSetFullscreen(ewin, !on);
-	break;
-
-     case EWIN_OP_SKIP_LISTS:
-	if (SetEwinBoolean(wop->name, &ewin->props.skip_ext_task, param1, 1))
-	   EwinOpSkipLists(ewin, ewin->props.skip_ext_task);
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EwinSetFullscreen(ewin, on);
 	break;
 
      case EWIN_OP_ZOOM:
@@ -732,9 +649,126 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	   Zoom(ewin);
 	break;
 
+     case EWIN_OP_LAYER:
+	if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("window layer: %d", EoGetLayer(ewin));
+	     goto done;
+	  }
+	val = atoi(param1);
+	EwinOpSetLayer(ewin, val);
+	break;
+
+     case EWIN_OP_RAISE:
+	EwinOpRaise(ewin);
+	break;
+
+     case EWIN_OP_LOWER:
+	EwinOpLower(ewin);
+	break;
+
+     case EWIN_OP_OPACITY:
+	if (!strcmp(param1, "?"))
+	  {
+	     IpcPrintf("opacity: %u", ewin->ewmh.opacity >> 24);
+	     goto done;
+	  }
+	val = 0xff;
+	sscanf(param1, "%i", &val);
+	EwinOpSetOpacity(ewin, val);
+	break;
+
      case EWIN_OP_SNAP:
 	SnapshotEwinParse(ewin, atword(params, 3));
 	break;
+
+     case EWIN_OP_SKIP_LISTS:
+	on = ewin->props.skip_ext_task;
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EwinOpSkipLists(ewin, on);
+	break;
+
+     case EWIN_OP_NEVER_USE_AREA:
+	on = ewin->props.never_use_area;
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	ewin->props.never_use_area = on;
+	break;
+
+     case EWIN_OP_FOCUS_CLICK:
+	on = ewin->props.focusclick;
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	ewin->props.focusclick = on;
+	break;
+
+     case EWIN_OP_NO_BUTTON_GRABS:
+	on = ewin->props.no_button_grabs;
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	  {
+	     ewin->props.no_button_grabs = on;
+	     if (ewin->props.no_button_grabs)
+		UnGrabButtonGrabs(ewin);
+	     else
+		GrabButtonGrabs(ewin);
+	  }
+	break;
+
+     case EWIN_OP_INH_APP_MOVE:
+	on = EwinInhGetApp(ewin, move);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetApp(ewin, move, on);
+	break;
+
+     case EWIN_OP_INH_APP_SIZE:
+	on = EwinInhGetApp(ewin, size);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetApp(ewin, size, on);
+	break;
+
+     case EWIN_OP_INH_USER_CLOSE:
+	on = EwinInhGetUser(ewin, close);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetUser(ewin, close, on);
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
+	break;
+
+     case EWIN_OP_INH_USER_MOVE:
+	on = EwinInhGetUser(ewin, move);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetUser(ewin, move, on);
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
+	break;
+
+     case EWIN_OP_INH_USER_SIZE:
+	on = EwinInhGetUser(ewin, size);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetUser(ewin, size, on);
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
+	break;
+
+     case EWIN_OP_INH_WM_FOCUS:
+	on = EwinInhGetWM(ewin, focus);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetWM(ewin, focus, on);
+	EwinStateUpdate(ewin);
+	break;
+
+#if USE_COMPOSITE
+     case EWIN_OP_SHADOW:
+	on = EoGetShadow(ewin);
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EoSetShadow(ewin, on);
+	break;
+
+     case EWIN_OP_NO_REDIRECT:
+	on = EoGetNoRedirect(ewin);
+	on = ewin->o.noredir;
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EoSetNoRedirect(ewin, on);
+	break;
+#endif
      }
 
  done:
@@ -1092,9 +1126,9 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->mwm.decor_title, ewin->mwm.decor_menu,
 	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize,
 	     ewin->icccm.need_input, ewin->icccm.take_focus,
-	     ewin->props.never_focus, ewin->props.focusclick,
-	     ewin->props.never_use_area, ewin->props.fixedpos,
-	     ewin->props.fixedsize, EoGetDeskNum(ewin),
+	     EwinInhGetWM(ewin, focus), ewin->props.focusclick,
+	     ewin->props.never_use_area, EwinInhGetUser(ewin, move),
+	     EwinInhGetUser(ewin, size), EoGetDeskNum(ewin),
 	     EoGetLayer(ewin), ewin->o.ilayer,
 	     ewin->state.iconified, EoIsSticky(ewin), ewin->state.shaded,
 	     ewin->state.docked, ewin->state.state, EoIsShown(ewin),
@@ -1357,26 +1391,28 @@ static const IpcItem IPCArray[] = {
     "You can use ? after most of these commands to receive the current\n"
     "status of that flag\n"
     "available win_op commands are:\n"
+    "  win_op <windowid> border <BORDERNAME>\n"
+    "  win_op <windowid> title <title>\n"
     "  win_op <windowid> <close/kill>\n"
-    "  win_op <windowid> <fixedpos/fixedsize/never_use_area>\n"
-    "  win_op <windowid> <focus/focusclick/neverfocus>\n"
-    "  win_op <windowid> <fullscreen/iconify/shade/stick>\n"
-    "  win_op <windowid> no_button_grabs\n"
+    "  win_op <windowid> <focus/iconify/shade/stick>\n"
+    "  win_op <windowid> desk <desktochangeto/next/prev>\n"
+    "  win_op <windowid> area <x> <y>\n"
+    "  win_op <windowid> <move/size> <x> <y>\n"
+    "          (you can use ? and ?? to retreive client and frame locations)\n"
+    "  win_op <windowid> <mr/sr> <x> <y>   (incremental move/size)\n"
+    "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
+    "  win_op <windowid> <fullscreen/zoom>\n"
+    "  win_op <windowid> layer <0-100,4=normal>\n"
     "  win_op <windowid> <raise/lower>\n"
-    "  win_op <windowid> skiplists\n"
+    "  win_op <windowid> opacity <1-255,255=opaque>\n"
     "  win_op <windowid> snap <what>\n"
     "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
     "                 layer, location, opacity, shade, shadow, size, sticky\n"
+    "  win_op <windowid> <focusclick/never_use_area/no_button_grabs/skiplists>\n"
+    "  win_op <windowid> <no_app_move/size>\n"
+    "  win_op <windowid> <no_user_close/move/size>\n"
+    "  win_op <windowid> <no_wm_focus>\n"
     "  win_op <windowid> noshadow\n"
-    "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
-    "          (or none for absolute)\n"
-    "  win_op <windowid> border <BORDERNAME>\n"
-    "  win_op <windowid> desk <desktochangeto/next/prev>\n"
-    "  win_op <windowid> area <x> <y>\n"
-    "  win_op <windowid> <move/resize> <x> <y>\n"
-    "          (you can use ? and ?? to retreive client and frame locations)\n"
-    "  win_op <windowid> title <title>\n"
-    "  win_op <windowid> layer <0-100,4=normal>\n"
     "<windowid> may be substituted with \"current\" to use the current window\n"},
    {
     IPC_WinList,

@@ -658,7 +658,7 @@ GetBoolean(const char *value)
    return 1;
 }
 
-#define WINOP_GET_BOOL(item, val) item = GetBoolean(val)
+#define WINOP_SET_BOOL(item, val) item = GetBoolean(val)
 
 static void
 WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
@@ -673,73 +673,21 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	/* We should not get here */
 	return;
 
-     case EWIN_OP_ICONIFY:
-	WINOP_GET_BOOL(ewin->icccm.start_iconified, args);
-	break;
-
-     case EWIN_OP_SHADE:
-	WINOP_GET_BOOL(ewin->state.shaded, args);
-	break;
-
-     case EWIN_OP_STICK:
-	WINOP_GET_BOOL(ewin->o.sticky, args);
-	break;
-
-     case EWIN_OP_FIXED_POS:
-	WINOP_GET_BOOL(ewin->props.fixedpos, args);
-	break;
-
-     case EWIN_OP_FIXED_SIZE:
-	WINOP_GET_BOOL(ewin->props.fixedsize, args);
-	break;
-
-     case EWIN_OP_NEVER_USE_AREA:
-	WINOP_GET_BOOL(ewin->props.never_use_area, args);
-	break;
-
-     case EWIN_OP_FOCUS_CLICK:
-	WINOP_GET_BOOL(ewin->props.focusclick, args);
-	break;
-
-     case EWIN_OP_FOCUS_NEVER:
-	WINOP_GET_BOOL(ewin->props.never_focus, args);
-	break;
-
-     case EWIN_OP_NO_BUTTON_GRABS:
-	WINOP_GET_BOOL(ewin->props.no_button_grabs, args);
-	break;
-
-     case EWIN_OP_FULLSCREEN:
-	WINOP_GET_BOOL(ewin->state.fullscreen, args);
-	break;
-
-     case EWIN_OP_SKIP_LISTS:
-	WINOP_GET_BOOL(ewin->props.skip_winlist, args);
-	ewin->props.skip_focuslist = ewin->props.skip_ext_task =
-	   ewin->props.skip_winlist;
-	break;
-
-     case EWIN_OP_OPACITY:
-	ewin->ewmh.opacity = OpacityExt(atoi(args));
-	break;
-
-#if USE_COMPOSITE
-     case EWIN_OP_SHADOW:
-	WINOP_GET_BOOL(ewin->o.shadow, args);
-	break;
-
-     case EWIN_OP_NO_REDIRECT:
-	WINOP_GET_BOOL(ewin->o.noredir, args);
-	break;
-#endif
-
      case EWIN_OP_TITLE:
 	_EFREE(ewin->icccm.wm_name);
 	ewin->icccm.wm_name = Estrdup(args);
 	break;
 
-     case EWIN_OP_LAYER:
-	EoSetLayer(ewin, atoi(args));
+     case EWIN_OP_ICONIFY:
+	WINOP_SET_BOOL(ewin->icccm.start_iconified, args);
+	break;
+
+     case EWIN_OP_SHADE:
+	WINOP_SET_BOOL(ewin->state.shaded, args);
+	break;
+
+     case EWIN_OP_STICK:
+	WINOP_SET_BOOL(ewin->o.sticky, args);
 	break;
 
      case EWIN_OP_DESK:
@@ -771,6 +719,70 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	ewin->client.w = a;
 	ewin->client.h = b;
 	break;
+
+     case EWIN_OP_FULLSCREEN:
+	WINOP_SET_BOOL(ewin->state.fullscreen, args);
+	break;
+
+     case EWIN_OP_LAYER:
+	EoSetLayer(ewin, atoi(args));
+	break;
+
+     case EWIN_OP_OPACITY:
+	ewin->ewmh.opacity = OpacityExt(atoi(args));
+	break;
+
+     case EWIN_OP_SKIP_LISTS:
+	WINOP_SET_BOOL(ewin->props.skip_winlist, args);
+	ewin->props.skip_focuslist = ewin->props.skip_ext_task =
+	   ewin->props.skip_winlist;
+	break;
+
+     case EWIN_OP_FOCUS_CLICK:
+	WINOP_SET_BOOL(ewin->props.focusclick, args);
+	break;
+
+     case EWIN_OP_NEVER_USE_AREA:
+	WINOP_SET_BOOL(ewin->props.never_use_area, args);
+	break;
+
+     case EWIN_OP_NO_BUTTON_GRABS:
+	WINOP_SET_BOOL(ewin->props.no_button_grabs, args);
+	break;
+
+     case EWIN_OP_INH_APP_MOVE:
+	WINOP_SET_BOOL(EwinInhGetApp(ewin, move), args);
+	break;
+
+     case EWIN_OP_INH_APP_SIZE:
+	WINOP_SET_BOOL(EwinInhGetApp(ewin, size), args);
+	break;
+
+     case EWIN_OP_INH_USER_CLOSE:
+	WINOP_SET_BOOL(EwinInhGetUser(ewin, close), args);
+	break;
+
+     case EWIN_OP_INH_USER_MOVE:
+	WINOP_SET_BOOL(EwinInhGetUser(ewin, move), args);
+	break;
+
+     case EWIN_OP_INH_USER_SIZE:
+	WINOP_SET_BOOL(EwinInhGetUser(ewin, size), args);
+	break;
+
+     case EWIN_OP_INH_WM_FOCUS:
+	WINOP_SET_BOOL(EwinInhGetWM(ewin, focus), args);
+	break;
+
+#if USE_COMPOSITE
+     case EWIN_OP_SHADOW:
+	WINOP_SET_BOOL(ewin->o.shadow, args);
+	break;
+
+     case EWIN_OP_NO_REDIRECT:
+	WINOP_SET_BOOL(ewin->o.noredir, args);
+	break;
+#endif
      }
 }
 

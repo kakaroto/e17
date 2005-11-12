@@ -366,7 +366,7 @@ GNOME_GetHintState(EWin * ewin, Atom atom_change)
    if (flags & WIN_STATE_STICKY)
       EoSetSticky(ewin, 1);
    if (flags & WIN_STATE_FIXED_POSITION)
-      ewin->props.fixedpos = 1;
+      EwinInhSetUser(ewin, move, 1);
    if (flags & WIN_STATE_ARRANGE_IGNORE)
       ewin->props.ignorearrange = 1;
 }
@@ -467,7 +467,7 @@ GNOME_SetHint(const EWin * ewin)
       val |= WIN_STATE_STICKY;
    if (ewin->state.shaded)
       val |= WIN_STATE_SHADED;
-   if (ewin->props.fixedpos)
+   if (EwinInhGetUser(ewin, move))
       val |= WIN_STATE_FIXED_POSITION;
    ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), atom_set, &val, 1);
 }
@@ -796,9 +796,9 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	if (event->data.l[0] & WIN_STATE_FIXED_POSITION)
 	  {
 	     if (event->data.l[1] & WIN_STATE_FIXED_POSITION)
-		ewin->props.fixedpos = 1;
+		EwinInhSetUser(ewin, move, 1);
 	     else
-		ewin->props.fixedpos = 0;
+		EwinInhSetUser(ewin, move, 0);
 	  }
 	if (event->data.l[0] & WIN_STATE_ARRANGE_IGNORE)
 	  {
