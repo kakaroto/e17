@@ -1,36 +1,26 @@
 
+- Action source handling (locks)
+
 - Composite manager
-  - Clip region is (sometimes?) b0rked
   - Fix flicker on fade-out start.
-  - Fix X-errors during startup (startup/progress windows).
   - Don't paint unredirected windows where not necessary.
-  - Enable not redirecting certain clients?
   - Repaint area is incorrect when using sharp shadows? (try gmplayer)
-
-- Systray
-  - Systray windows sometimes escape initial placement/sizing (fixed?)
-
-- Top-level window adoption is messy
-  - Get info (window/props/matches/snaps) before frame/border setup
-  - Avoid multiple attribute fetches
-  - Properly init lx, ly, lw, lh, ...
-
-- Avoid X-error on unmap followed by destroy
-
-- Check trouble with external pagers and hidden desks (fixed?)
-  - Maybe change ICCCM configure on hidden/offset desks (position relative to desk)?
 
 - netwm hints
   - More (_NET_WM_USER_TIME ...)?
 
-- Defer border rendering?
+- Docs
+  - Update
 
 - Cleanups
-  - Remove iclass.h from ewin-ops.c
   - Move still more stuff from E.h to separate header files
 
-- Theme Transparency (pseudotrans)
-  - Way slower than it needs to be.
+- Fixed?
+  - Trouble with external pagers and hidden desks.
+  - Systray windows sometimes escape initial placement/sizing.
 
 - Maybe some day...
+  - Defer border rendering?
+  - Theme Transparency (pseudotrans) is way slower than it needs to be.
+  - Enable not redirecting certain clients?
   - Partial strut handling in arrange/maximize code.
