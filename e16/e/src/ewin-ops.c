@@ -1406,7 +1406,7 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 void
 EwinOpActivate(EWin * ewin)
 {
-   if (!ewin->state.animated)
+   if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
    EwinOpRaise(ewin);
    if (ewin->state.iconified)
