@@ -724,7 +724,7 @@ EwinDeIconify(EWin * ewin)
    EwinDeIconify1(ewin, dx, dy);
 }
 
-void
+static void
 EwinUnStick(EWin * ewin)
 {
 
@@ -739,7 +739,7 @@ EwinUnStick(EWin * ewin)
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
-void
+static void
 EwinStick(EWin * ewin)
 {
    int                 x, y, dx, dy;
@@ -1415,20 +1415,20 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 }
 
 void
-EwinOpActivate(EWin * ewin)
+EwinOpActivate(EWin * ewin, int source)
 {
    if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
-   EwinOpRaise(ewin);
+   EwinOpRaise(ewin, source);
    if (ewin->state.iconified)
-      EwinOpIconify(ewin, 0);
+      EwinOpIconify(ewin, source, 0);
    if (ewin->state.shaded)
-      EwinOpShade(ewin, 0);
+      EwinOpShade(ewin, source, 0);
    FocusToEWin(ewin, FOCUS_SET);
 }
 
 void
-EwinOpClose(EWin * ewin)
+EwinOpClose(EWin * ewin, int source __UNUSED__)
 {
    EWin              **gwins;
    int                 num, i;
@@ -1448,14 +1448,14 @@ EwinOpClose(EWin * ewin)
 }
 
 void
-EwinOpKill(EWin * ewin)
+EwinOpKill(EWin * ewin, int source __UNUSED__)
 {
    SoundPlay("SOUND_WINDOW_CLOSE");
    EDestroyWindow(_EwinGetClientWin(ewin));
 }
 
 void
-EwinOpRaise(EWin * ewin)
+EwinOpRaise(EWin * ewin, int source __UNUSED__)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -1469,7 +1469,7 @@ EwinOpRaise(EWin * ewin)
 }
 
 void
-EwinOpLower(EWin * ewin)
+EwinOpLower(EWin * ewin, int source __UNUSED__)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -1545,7 +1545,7 @@ EwinOpRaiseLower(EWin * ewin)
 #endif
 
 void
-EwinOpStick(EWin * ewin, int on)
+EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
 {
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
@@ -1574,7 +1574,7 @@ EwinOpStick(EWin * ewin, int on)
 }
 
 void
-EwinOpSkipLists(EWin * ewin, int skip)
+EwinOpSkipLists(EWin * ewin, int source __UNUSED__, int skip)
 {
    ewin->props.skip_ext_task = skip;
    ewin->props.skip_winlist = skip;
@@ -1626,7 +1626,7 @@ EwinOpNeverFocus(EWin * ewin, int on)
 #endif
 
 void
-EwinOpIconify(EWin * ewin, int on)
+EwinOpIconify(EWin * ewin, int source __UNUSED__, int on)
 {
    Group              *curr_group = NULL;
    EWin              **gwins = NULL;
@@ -1654,7 +1654,7 @@ EwinOpIconify(EWin * ewin, int on)
 }
 
 void
-EwinOpShade(EWin * ewin, int on)
+EwinOpShade(EWin * ewin, int source __UNUSED__, int on)
 {
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
@@ -1683,7 +1683,7 @@ EwinOpShade(EWin * ewin, int on)
 }
 
 void
-EwinOpSetLayer(EWin * ewin, int layer)
+EwinOpSetLayer(EWin * ewin, int source __UNUSED__, int layer)
 {
    if (EoGetLayer(ewin) > layer)
      {
@@ -1700,7 +1700,7 @@ EwinOpSetLayer(EWin * ewin, int layer)
 }
 
 void
-EwinOpSetBorder(EWin * ewin, const char *name)
+EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -1763,7 +1763,7 @@ OpacityExt(int op)
 }
 
 void
-EwinOpSetOpacity(EWin * ewin, int opacity)
+EwinOpSetOpacity(EWin * ewin, int source __UNUSED__, int opacity)
 {
    unsigned int        op;
 
@@ -1775,7 +1775,7 @@ EwinOpSetOpacity(EWin * ewin, int opacity)
 }
 
 void
-EwinOpMoveToDesk(EWin * ewin, Desk * dsk, int inc)
+EwinOpMoveToDesk(EWin * ewin, int source __UNUSED__, Desk * dsk, int inc)
 {
    dsk = DeskGetRelative(dsk, inc);
 

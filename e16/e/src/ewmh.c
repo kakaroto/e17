@@ -857,23 +857,23 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
-	EwinOpActivate(ewin);
+	EwinOpActivate(ewin, OPSRC_UNKNOWN);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
      {
-	EwinOpClose(ewin);
+	EwinOpClose(ewin, OPSRC_UNKNOWN);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
      {
 	if ((unsigned)ev->data.l[0] == 0xFFFFFFFF)
 	  {
 	     if (!EoIsSticky(ewin))
-		EwinStick(ewin);
+		EwinOpStick(ewin, OPSRC_UNKNOWN, 1);
 	  }
 	else
 	  {
 	     if (EoIsSticky(ewin))
-		EwinUnStick(ewin);
+		EwinOpStick(ewin, OPSRC_UNKNOWN, 0);
 	     else
 		EwinMoveToDesktop(ewin, DeskGet(ev->data.l[0]));
 	  }
@@ -899,18 +899,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	  {
 	     action = do_set(EoIsSticky(ewin), action);
-	     if (action)
-		EwinStick(ewin);
-	     else
-		EwinUnStick(ewin);
+	     EwinOpStick(ewin, OPSRC_UNKNOWN, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	  {
 	     action = do_set(ewin->state.shaded, action);
-	     if (action)
-		EwinShade(ewin);
-	     else
-		EwinUnShade(ewin);
+	     EwinOpShade(ewin, OPSRC_UNKNOWN, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
 	  {
@@ -970,17 +964,17 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  {
 	     action = do_set(EoGetLayer(ewin) >= 6, action);
 	     if (action)
-		EwinOpSetLayer(ewin, 6);
+		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 6);
 	     else
-		EwinOpSetLayer(ewin, 4);
+		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 4);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	  {
 	     action = do_set(EoGetLayer(ewin) <= 2, action);
 	     if (action)
-		EwinOpSetLayer(ewin, 2);
+		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 2);
 	     else
-		EwinOpSetLayer(ewin, 4);
+		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 4);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
 	  {

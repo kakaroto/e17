@@ -810,23 +810,13 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	if ((event->data.l[0] & WIN_STATE_STICKY)
 	    && (!ewin->props.ignorearrange))
 	  {
-	     if (event->data.l[1] & WIN_STATE_STICKY)
-	       {
-		  if (!EoIsSticky(ewin))
-		     EwinStick(ewin);
-	       }
-	     else
-	       {
-		  if (EoIsSticky(ewin))
-		     EwinUnStick(ewin);
-	       }
+	     EwinOpStick(ewin, OPSRC_USER,
+			 (event->data.l[1] & WIN_STATE_STICKY) != 0);
 	  }
 	if (event->data.l[0] & WIN_STATE_SHADED)
 	  {
-	     if (event->data.l[1] & WIN_STATE_SHADED)
-		EwinShade(ewin);
-	     else
-		EwinUnShade(ewin);
+	     EwinOpShade(ewin, OPSRC_USER,
+			 (event->data.l[1] & WIN_STATE_SHADED) != 0);
 	  }
 	HintsSetWindowState(ewin);
 	return;

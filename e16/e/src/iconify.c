@@ -594,7 +594,6 @@ IconboxShow(Iconbox * ib)
    else
      {
 	/* The first one */
-	EwinStick(ewin);
 	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
 	EwinResize(ewin, 128, 32);
 	EwinMove(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
@@ -2064,7 +2063,7 @@ IboxEventIconWin(XEvent * ev, void *prm)
 	if (tt)
 	   TooltipHide(tt);
 
-	EwinOpIconify(ewin, 0);
+	EwinOpIconify(ewin, OPSRC_USER, 0);
 	break;
 
      case MotionNotify:

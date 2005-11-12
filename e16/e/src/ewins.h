@@ -35,6 +35,12 @@ typedef struct _ewin EWin;
 
 struct _snapshot;
 
+/* Window operation sources */
+#define OPSRC_UNKNOWN   0
+#define OPSRC_APP       1
+#define OPSRC_USER      2
+#define OPSRC_WM        3
+
 typedef struct
 {
    unsigned int        all:32;
@@ -322,8 +328,6 @@ void                EwinFloatAt(EWin * ewin, int x, int y);
 void                EwinUnfloatAt(EWin * ewin, struct _desk *d, int x, int y);
 void                EwinIconify(EWin * ewin);
 void                EwinDeIconify(EWin * ewin);
-void                EwinStick(EWin * ewin);
-void                EwinUnStick(EWin * ewin);
 void                EwinInstantShade(EWin * ewin, int force);
 void                EwinInstantUnShade(EWin * ewin);
 void                EwinShade(EWin * ewin);
@@ -331,19 +335,20 @@ void                EwinUnShade(EWin * ewin);
 void                EwinSetFullscreen(EWin * ewin, int on);
 void                EwinMoveToArea(EWin * ewin, int ax, int ay);
 
-void                EwinOpClose(EWin * ewin);
-void                EwinOpActivate(EWin * ewin);
-void                EwinOpKill(EWin * ewin);
-void                EwinOpRaise(EWin * ewin);
-void                EwinOpLower(EWin * ewin);
-void                EwinOpStick(EWin * ewin, int on);
-void                EwinOpSkipLists(EWin * ewin, int skip);
-void                EwinOpIconify(EWin * ewin, int on);
-void                EwinOpShade(EWin * ewin, int on);
-void                EwinOpSetLayer(EWin * ewin, int layer);
-void                EwinOpSetBorder(EWin * ewin, const char *name);
-void                EwinOpSetOpacity(EWin * ewin, int opacity);
-void                EwinOpMoveToDesk(EWin * ewin, struct _desk *dsk, int inc);
+void                EwinOpClose(EWin * ewin, int source);
+void                EwinOpActivate(EWin * ewin, int source);
+void                EwinOpKill(EWin * ewin, int source);
+void                EwinOpRaise(EWin * ewin, int source);
+void                EwinOpLower(EWin * ewin, int source);
+void                EwinOpStick(EWin * ewin, int source, int on);
+void                EwinOpSkipLists(EWin * ewin, int source, int skip);
+void                EwinOpIconify(EWin * ewin, int source, int on);
+void                EwinOpShade(EWin * ewin, int source, int on);
+void                EwinOpSetLayer(EWin * ewin, int source, int layer);
+void                EwinOpSetBorder(EWin * ewin, int source, const char *name);
+void                EwinOpSetOpacity(EWin * ewin, int source, int opacity);
+void                EwinOpMoveToDesk(EWin * ewin, int source, struct _desk *dsk,
+				     int inc);
 
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);

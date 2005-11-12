@@ -449,7 +449,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("window border: %s", BorderGetName(ewin->border));
 	     goto done;
 	  }
-	EwinOpSetBorder(ewin, param1);
+	EwinOpSetBorder(ewin, OPSRC_USER, param1);
 	break;
 
      case EWIN_OP_TITLE:
@@ -471,29 +471,29 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	break;
 
      case EWIN_OP_CLOSE:
-	EwinOpClose(ewin);
+	EwinOpClose(ewin, OPSRC_USER);
 	break;
 
      case EWIN_OP_KILL:
-	EwinOpKill(ewin);
+	EwinOpKill(ewin, OPSRC_USER);
 	break;
 
      case EWIN_OP_ICONIFY:
 	on = ewin->state.iconified;
 	if (SetEwinBoolean("window iconified", &on, param1, 1))
-	   EwinOpIconify(ewin, on);
+	   EwinOpIconify(ewin, OPSRC_USER, on);
 	break;
 
      case EWIN_OP_SHADE:
 	on = ewin->state.shaded;
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
-	   EwinOpShade(ewin, on);
+	   EwinOpShade(ewin, OPSRC_USER, on);
 	break;
 
      case EWIN_OP_STICK:
 	on = EoIsSticky(ewin);
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
-	   EwinOpStick(ewin, on);
+	   EwinOpStick(ewin, OPSRC_USER, on);
 	break;
 
      case EWIN_OP_FOCUS:
@@ -502,7 +502,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
-	EwinOpActivate(ewin);
+	EwinOpActivate(ewin, OPSRC_USER);
 	break;
 
      case EWIN_OP_DESK:
@@ -513,11 +513,11 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	if (!strncmp(param1, "next", 1))
 	  {
-	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin), 1);
+	     EwinOpMoveToDesk(ewin, OPSRC_USER, EoGetDesk(ewin), 1);
 	  }
 	else if (!strncmp(param1, "prev", 1))
 	  {
-	     EwinOpMoveToDesk(ewin, EoGetDesk(ewin), -1);
+	     EwinOpMoveToDesk(ewin, OPSRC_USER, EoGetDesk(ewin), -1);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
@@ -525,7 +525,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	else
 	  {
-	     EwinOpMoveToDesk(ewin, NULL, atoi(param1));
+	     EwinOpMoveToDesk(ewin, OPSRC_USER, NULL, atoi(param1));
 	  }
 	break;
 
@@ -656,15 +656,15 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     goto done;
 	  }
 	val = atoi(param1);
-	EwinOpSetLayer(ewin, val);
+	EwinOpSetLayer(ewin, OPSRC_USER, val);
 	break;
 
      case EWIN_OP_RAISE:
-	EwinOpRaise(ewin);
+	EwinOpRaise(ewin, OPSRC_USER);
 	break;
 
      case EWIN_OP_LOWER:
-	EwinOpLower(ewin);
+	EwinOpLower(ewin, OPSRC_USER);
 	break;
 
      case EWIN_OP_OPACITY:
@@ -675,7 +675,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	val = 0xff;
 	sscanf(param1, "%i", &val);
-	EwinOpSetOpacity(ewin, val);
+	EwinOpSetOpacity(ewin, OPSRC_USER, val);
 	break;
 
      case EWIN_OP_SNAP:
@@ -685,7 +685,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
      case EWIN_OP_SKIP_LISTS:
 	on = ewin->props.skip_ext_task;
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
-	   EwinOpSkipLists(ewin, on);
+	   EwinOpSkipLists(ewin, OPSRC_USER, on);
 	break;
 
      case EWIN_OP_NEVER_USE_AREA:
