@@ -1,8 +1,8 @@
 group {
    name: "button";
    data {
-	item: "inset/left" "8";
-	item: "inset/right" "8";
+	item: "inset/left" "14";
+	item: "inset/right" "14";
 	item: "inset/top" "8";
 	item: "inset/bottom" "8";
    }
