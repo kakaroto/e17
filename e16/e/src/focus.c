@@ -268,7 +268,6 @@ FocusFix(void)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	GrabButtonRelease(AnyButton, AnyModifier, _EwinGetContainerWin(ewin));
 	FocusEwinSetGrabs(ewin);
      }
 }
