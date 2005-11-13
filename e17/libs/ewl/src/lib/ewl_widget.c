@@ -73,6 +73,9 @@ ewl_widget_init(Ewl_Widget * w)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_widget_show_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, ewl_widget_hide_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_widget_reveal_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_widget_obscure_cb,
+				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_widget_realize_cb,
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_widget_unrealize_cb,
@@ -181,7 +184,8 @@ ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED)
+			&& !ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RPROCESS))
 		ewl_realize_cancel_request(w);
 
 	/*
@@ -193,6 +197,7 @@ ewl_widget_realize(Ewl_Widget * w)
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_object_visible_add(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_REALIZED);
+		ewl_widget_obscure(w);
 	}
 
 	ewl_widget_show(w);
@@ -240,6 +245,9 @@ ewl_widget_reveal(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
+	if (!OBSCURED(w))
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
 	emb = ewl_embed_widget_find(w);
@@ -257,20 +265,21 @@ ewl_widget_reveal(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Indicate a widget is obscured.
  */
-void
-ewl_widget_obscure(Ewl_Widget *w)
+void ewl_widget_obscure(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("w", w);
 
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	if (OBSCURED(w))
+		DRETURN(DLEVEL_STABLE);
 
-	if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_RSCHEDULED))
-		ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
+        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+                                EWL_FLAG_QUEUED_RSCHEDULED))
+                ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -574,6 +583,40 @@ ewl_widget_appearance_get(Ewl_Widget * w)
 
 /**
  * @param w: the widget to retrieve the full appearance key
+ * @param size: pointer to an int indicating the string length
+ * @return Returns a pointer to the full appearance path string on success, NULL on
+ * failure.
+ * @brief Retrieve the appearance path key of the widget
+ */
+static char *
+ewl_widget_appearance_path_size_get(Ewl_Widget *w, int *size)
+{
+	char *ret = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE("w", w, "widget");
+
+	/*
+	 * Allocate enough for the appearance plus a leading "/"
+	 */
+	*size += (w->appearance ? strlen(w->appearance) : 0) + 1;
+	if (w->parent) {
+		ret = ewl_widget_appearance_path_size_get(w->parent, size);
+	}
+	else {
+		ret = NEW(char, *size + 1);
+	}
+
+	strcat(ret, "/");
+	if (w->appearance)
+		strcat(ret, w->appearance);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to retrieve the full appearance key
  * @return Returns a pointer to the full appearance path string on success, NULL on
  * failure.
  * @brief Retrieve the appearance path key of the widget
@@ -581,25 +624,32 @@ ewl_widget_appearance_get(Ewl_Widget * w)
 char *
 ewl_widget_appearance_path_get(Ewl_Widget * w)
 {
-	char *ret = NULL, *tmp;
-	int len;
+	char *ret = NULL;
+	int len = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_TYPE("w", w, "widget");
 
+	ret = ewl_widget_appearance_path_size_get(w, &len);
+
+	/*
 	if (w->parent)
 		tmp = ewl_widget_appearance_path_get(w->parent);
 	else
 		tmp = strdup("");
+		*/
 
-	len = strlen(tmp) + 2; /* one for the / one for the \0 */
+	 /* one for the / one for the \0 */
+	/*
+	len = strlen(tmp) + 2;
 	len += (w->appearance ? strlen(w->appearance) : 0);
 
 	ret = malloc(sizeof(char) * len);
 	snprintf(ret, len, "%s/%s", tmp, 
 			(w->appearance ? w->appearance : ""));
 	FREE(tmp);
+	*/
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -919,15 +969,10 @@ ewl_widget_layer_sum_get(Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_TYPE_RET("w", w, "widget", 0);
 
-	while (!REALIZED(w) && w->parent) {
+	while (w) {
 		sum += LAYER(w);
 		w = w->parent;
 	}
-
-	if (REALIZED(w) && w->fx_clip_box)
-		sum += evas_object_layer_get(w->fx_clip_box);
-	else
-		sum += LAYER(w);
 
 	DRETURN_INT(sum, DLEVEL_STABLE);
 }
@@ -1270,6 +1315,65 @@ ewl_widget_internal_is(Ewl_Widget *w)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
+unsigned int
+ewl_widget_onscreen_is(Ewl_Widget *w)
+{
+	int onscreen = FALSE;
+	Ewl_Embed *emb;
+
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_TYPE("w", w, "widget");
+
+	/*
+	 * Until an embed is present, the widget is off screen by default.
+	 */
+	emb = ewl_embed_widget_find(w);
+	if (emb) {
+		onscreen = TRUE;
+	}
+
+	/*
+	 * We don't need to configure if it's outside the viewable space in
+	 * it's parent widget. This does not recurse upwards to determine
+	 * ancestor clipped areas, but does obscure items that are outside the
+	 * top level container.
+	 */
+	if (w->parent) {
+		int x, y;
+		int width, height;
+		Ewl_Widget *p = w->parent;
+
+		ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width,
+				&height);
+
+		if ((x + width) < CURRENT_X(p))
+			onscreen = FALSE;
+
+		if (x > (CURRENT_X(p) + CURRENT_W(p)))
+			onscreen = FALSE;
+
+		if ((y + height) < CURRENT_Y(p))
+			onscreen = FALSE;
+
+		if (y > (CURRENT_Y(p) + CURRENT_H(p)))
+			onscreen = FALSE;
+
+		if ((x + width) < CURRENT_X(emb))
+			onscreen = FALSE;
+
+		if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
+			onscreen = FALSE;
+
+		if ((y + height) < CURRENT_Y(emb))
+			onscreen = FALSE;
+
+		if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
+			onscreen = FALSE;
+	}
+
+	return onscreen;
+}
+
 /**
  * @param w: the widget to mark as unclipped
  * @param val: the state of the clipping flag
@@ -1396,7 +1500,7 @@ ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
 	color->a = a;
 	ewl_attach_color_set(w, color);
 
-	if (REALIZED(w))
+	if (w->fx_clip_box)
 		evas_object_color_set(w->fx_clip_box, r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1534,16 +1638,10 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-	/*
-	 * Hide the visible evas objects.
-	 */
-	if (w->fx_clip_box)
-		evas_object_hide(w->fx_clip_box);
-	if (w->theme_object)
-		evas_object_hide(w->theme_object);
-
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		ewl_realize_cancel_request(w);
+
+	ewl_widget_obscure(w);
 
 	/*
 	 * Notify parent of hidden state.
@@ -1559,6 +1657,191 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 /*
+ * Request a new set of evas objects now that we're back on screen
+ */
+void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+                                          void *user_data __UNUSED__)
+{
+	int sum;
+	Ewl_Embed *emb;
+
+	/* printf("Revealing %s\n", w->appearance); */
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	emb = ewl_embed_widget_find(w);
+	if (!emb || !emb->evas)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * No object allocated yet for this widget
+	 */
+	if (!w->theme_object && w->bit_path && w->bit_group) {
+		/*
+		 * Attempt to load a cached object first, fallback to adding a
+		 * new one.
+                 */
+		w->theme_object = ewl_embed_object_request(emb, "edje");
+		if (!w->theme_object) {
+			w->theme_object = edje_object_add(emb->evas);
+			evas_object_repeat_events_set(w->theme_object, 1);
+			/*
+			printf("Created edje %d: %s\n", ++edjes,
+					w->bit_group);
+					*/
+		}
+
+		/*
+		 * Attempt to load the theme object
+		 */
+		evas_object_repeat_events_set(w->theme_object, 1);
+		edje_object_file_set(w->theme_object, w->bit_path,
+				w->bit_group);
+		/*
+		 * If the file failed to load, destroy the unnecessary evas
+		 * object.
+		 */
+		if (edje_object_load_error_get(w->theme_object)) {
+			evas_object_del(w->theme_object);
+			w->theme_object = NULL;
+		}
+
+		/*
+		 * Set the state of the theme object
+		 */
+		if (w->bit_state)
+			ewl_widget_state_set(w, w->bit_state);
+
+		if (ewl_object_state_has(EWL_OBJECT(w),
+					EWL_FLAG_STATE_DISABLED))
+			ewl_widget_state_set(w, "disabled");
+
+		/*
+		 * Apply any text overrides
+		 * FIXME: These should probably be ported to an array rather
+		 * than a full hash.
+		 */
+		if (w->theme_object && w->theme_text) {
+		       char *key;
+		       Ecore_List *keys = ecore_hash_keys(w->theme_text);
+
+		       ecore_list_goto_first(keys);
+		       while ((key = (char *)ecore_list_next(keys))) {
+			       char *value = ecore_hash_get(w->theme_text, key);
+			       /* printf("Setting text %s: %s\n", key, value); */
+			       ewl_widget_appearance_part_text_apply(w, key, value);
+		       }
+		       ecore_list_destroy(keys);
+	       }
+	}
+
+	/*
+	 * Create clip box if necessary
+	 */
+	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP)) {
+		w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
+		if (!w->fx_clip_box) {
+			w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+			/* printf("Created rectangle %d\n", ++rects); */
+		}
+		evas_object_pass_events_set(w->fx_clip_box, TRUE);
+	}
+
+	if (w->theme_object && w->fx_clip_box)
+		evas_object_clip_set(w->theme_object, w->fx_clip_box);
+
+	/*
+	 * Setup the appropriate clippings.
+	 */
+	if (w->parent && EWL_CONTAINER(w->parent)->clip_box && w->fx_clip_box) {
+		evas_object_clip_set(w->fx_clip_box,
+				EWL_CONTAINER(w->parent)->clip_box);
+		evas_object_show(EWL_CONTAINER(w->parent)->clip_box);
+	}
+
+	/*
+	 * Set the layer of the clip box and theme object
+	 */
+	sum = ewl_widget_layer_sum_get(w);
+	if (sum > ewl_embed_max_layer_get(emb))
+		ewl_embed_max_layer_set(emb, sum);
+	if (w->theme_object) {
+		evas_object_layer_set(w->theme_object, sum);
+		/* printf("Setting layer %d on %s\n", sum, w->appearance); */
+	}
+
+	if (w->fx_clip_box) {
+		Ewl_Color_Set *color;
+
+		evas_object_layer_set(w->fx_clip_box, sum);
+
+		color = ewl_attach_color_get(w);
+		if (color)
+			evas_object_color_set(w->fx_clip_box, color->r,
+						color->g, color->b, color->a);
+	}
+
+	/*
+	 * Show the theme and clip box if widget is visible
+	 */
+	if (VISIBLE(w)) {
+		evas_object_show(w->fx_clip_box);
+		evas_object_show(w->theme_object);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Give up unnecessary objects when we're offscreen
+ */
+void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+                                           void *user_data __UNUSED__)
+{
+	Ewl_Embed *emb;
+	Ewl_Container *pc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/* printf("Obscuring %s\n", w->appearance); */
+
+	emb = ewl_embed_widget_find(w);
+	if (!emb)
+		DRETURN(DLEVEL_STABLE);
+
+	pc = EWL_CONTAINER(w->parent);
+
+	/*
+	 * Remove all properties on the edje and hand it back to the embed for
+	 * caching.
+	 */
+	if (w->theme_object) {
+		ewl_embed_object_cache(emb, w->theme_object);
+		w->theme_object = NULL;
+	}
+
+	/*
+	 * Repeat the process for the clip rect, but also hide the parent clip
+	 * box if there are no visible children. If we don't hide it, there
+	 * will be a white rectangle displayed.
+	 */
+	if (w->fx_clip_box) {
+		if (pc && pc->clip_box) {
+			if (!evas_object_clipees_get(pc->clip_box))
+				evas_object_hide(pc->clip_box);
+		}
+		evas_object_hide(w->fx_clip_box);
+		evas_object_clip_unset(w->theme_object);
+		ewl_embed_object_cache(emb, w->fx_clip_box);
+		w->fx_clip_box = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/*
  * Perform the basic operations necessary for realizing a widget
  */
 void
@@ -1572,44 +1855,12 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	char *group = NULL;
 	Evas_Coord width, height;
 	Ewl_Embed *emb = NULL;
-	Ewl_Container *pc = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
 	emb = ewl_embed_widget_find(w);
-
-	/*
-	 * Create the fx clip box where special fx can be drawn to affect the
-	 * entire contents of the widget
-	 */
-	if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP)) {
-		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
-		evas_object_pass_events_set(w->fx_clip_box, TRUE);
-	}
-
-	if (w->fx_clip_box) {
-		int sum;
-		int r, g, b, a;
-
-		sum = ewl_widget_layer_sum_get(w);
-		if (sum > ewl_embed_max_layer_get(emb))
-			ewl_embed_max_layer_set(emb, sum);
-		evas_object_layer_set(w->fx_clip_box, sum);
-
-		r = g = b = a = 255;
-		ewl_widget_color_get(w, &r, &g, &b, &a);
-		evas_object_color_set(w->fx_clip_box, r, g, b, a);
-	}
-
-	pc = EWL_CONTAINER(w->parent);
-
-	/*
-	 * Clip the fx_clip_box to the parent clip_box.
-	 */
-	if (pc && pc->clip_box && w->fx_clip_box)
-		evas_object_clip_set(w->fx_clip_box, pc->clip_box);
 
 	/*
 	 * Retrieve the path to the theme file that will be loaded
@@ -1619,31 +1870,28 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	i = ewl_theme_image_get(w, "file");
 	group = ewl_theme_data_str_get(w, "group");
 
-	if (group) {
-		emb = ewl_embed_widget_find(w);
-		if (!emb)
-			DRETURN(DLEVEL_STABLE);
+	if (i)
+		w->bit_path = ecore_string_instance(i);
 
-		/*
-		 * Load the theme object
-		 */
-		w->theme_object = edje_object_add(emb->evas);
-		evas_object_repeat_events_set(w->theme_object, 1);
-		if (!edje_object_file_set(w->theme_object, i, group)) {
-			evas_object_del(w->theme_object);
-			w->theme_object = NULL;
-		}
-		FREE(group);
-	}
+	if (group)
+		w->bit_group = ecore_string_instance(group);
 
 	IF_FREE(i);
+	IF_FREE(group);
+
+	/*
+	 * Reveal is done in this part of the callback to avoid duplicate code
+	 * for creating the evas objects. Must be done in the callback so that
+	 * prepended callbacks in the embed can create the evas, windows,
+	 * etc.
+	 */
+	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	ewl_widget_reveal(w);
 
 	/*
 	 * Set up the theme object on the widgets evas
 	 */
 	if (w->theme_object) {
-		if (w->bit_state)
-			ewl_widget_state_set(w, w->bit_state);
 
 		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
 		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
@@ -1674,15 +1922,6 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			p_b = b;
 
 		/*
-		 * Determine the evas layer for the objects and set clipping.
-		 */
-		evas_object_layer_set(w->theme_object,
-				ewl_widget_layer_sum_get(w));
-		if (w->fx_clip_box)
-			evas_object_clip_set(w->theme_object, w->fx_clip_box);
-		evas_object_show(w->theme_object);
-
-		/*
 		 * Assign the relevant insets and padding.
 		 */
 		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
@@ -1692,10 +1931,6 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		i_t = CURRENT_Y(w);
 		ewl_object_x_request(EWL_OBJECT(w), i_l);
 		ewl_object_y_request(EWL_OBJECT(w), i_t);
-
-		if (ewl_object_state_has(EWL_OBJECT(w),
-					EWL_FLAG_STATE_DISABLED))
-			ewl_widget_state_set(w, "disabled");
 
 		/*
 		 * Propagate minimum sizes from the bit theme to the widget.
@@ -1730,29 +1965,7 @@ ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 				&& i_t >= EWL_OBJECT_MIN_SIZE
 				&& i_t < EWL_OBJECT_MAX_SIZE)
 			ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
-
-		/*
-		 * Apply any text overrides
-		 * FIXME: These should probably be ported to an array rather
-		 * than a full hash.
-		 */
-		if (w->theme_text) {
-			char *key;
-			Ecore_List *keys = ecore_hash_keys(w->theme_text);
-
-			ecore_list_goto_first(keys);
-			while ((key = (char *)ecore_list_next(keys))) {
-				char *value = ecore_hash_get(w->theme_text, key);
-				ewl_widget_appearance_part_text_apply(w, key,
-									value);
-			}
-			ecore_list_destroy(keys);
-		}
-
 	}
-
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
-	ewl_widget_configure(w);
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -1764,32 +1977,15 @@ void
 ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
-	Ewl_Embed *emb;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-	/*
-	 * First find it's parent embed so we can destroy the evas objects.
-	 */
-	emb = ewl_embed_widget_find(w);
-
-	/*
-	 * Destroy the clip box used for fx.
-	 */
-	if (w->fx_clip_box) {
-		ewl_evas_object_destroy(w->fx_clip_box);
-		w->fx_clip_box = NULL;
-	}
-
-	/*
-	 * Destroy old image (if any) 
-	 */
-	if (w->theme_object) {
-		ewl_evas_object_destroy(w->theme_object);
-		w->theme_object = NULL;
-	}
+        /*
+         * We can just use an obscure since it's a very similar operation.
+         * Keep this event for widgets that keep extra visual data around.
+         */
+        ewl_widget_obscure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

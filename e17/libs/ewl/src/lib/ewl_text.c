@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static Ewl_Text_Context *ewl_text_default_context = NULL;
+
 /* This counts how many deletes we have before trigger a condense operation
  * on the tree */
 #define EWL_TEXT_TREE_CONDENSE_COUNT  5
@@ -111,7 +113,9 @@ ewl_text_init(Ewl_Text *t)
 	}
 
 	/* create the default context and stick it into the tree */
-	t->current_context = ewl_text_context_default_create(t);
+	if (!ewl_text_default_context)
+		ewl_text_default_context = ewl_text_context_default_create(t);
+	t->current_context = ewl_text_default_context;
 	ewl_text_context_acquire(t->current_context);
 
 	t->formatting->tx = t->current_context;
@@ -119,10 +123,10 @@ ewl_text_init(Ewl_Text *t)
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE, 
 					ewl_text_cb_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
-					ewl_text_cb_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_UNREALIZE,
-					ewl_text_cb_unrealize, NULL);
+	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REVEAL,
+					ewl_text_cb_reveal, NULL);
+	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_OBSCURE,
+					ewl_text_cb_obscure, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_SHOW,
 					ewl_text_cb_show, NULL);
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_HIDE,
@@ -377,8 +381,10 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->length = strlen(text);
 		t->total_size = t->length + 1;
 
-		if (!t->current_context)
-			t->current_context = ewl_text_context_default_create(t);
+		if (!t->current_context) {
+			t->current_context = ewl_text_default_context;
+			ewl_text_context_acquire(ewl_text_default_context);
+		}
 
 		ewl_text_tree_text_context_insert(t->formatting, t->current_context, 
 									idx, t->length);
@@ -386,8 +392,10 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	}
 	else
 	{
-		if (!t->current_context)
-			t->current_context = ewl_text_context_default_create(t);
+		if (!t->current_context) {
+			t->current_context = ewl_text_default_context;
+			ewl_text_context_acquire(ewl_text_default_context);
+		}
 
 		len = strlen(text);
 		if ((t->length + len + 1) >= t->total_size)
@@ -753,8 +761,10 @@ ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_cha
 	/* do we have a current context? */
 	if (t->current_context)
 		ctx = t->current_context;
-	else
-		ctx = ewl_text_context_default_create(t);
+	else {
+		ctx = ewl_text_default_context;
+		ewl_text_context_acquire(ctx);
+	}
 
 	t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
 	ewl_text_context_release(ctx);
@@ -2595,8 +2605,6 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	{
 		evas_object_move(t->textblock, xx, yy);
 		evas_object_resize(t->textblock, ww, hh);
-		evas_object_layer_set(t->textblock, 
-					ewl_widget_layer_sum_get(w));
 
 		ewl_text_triggers_configure(t);
 	}
@@ -2605,7 +2613,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 void
-ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 	Ewl_Embed *emb;
@@ -2620,6 +2628,12 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 
+	/* printf("Revealing text %p\n", w); */
+	if (t->textblock) {
+		ewl_print_warning();
+		DRETURN(DLEVEL_STABLE);
+	}
+
 	/* find the embed so we know the evas */
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
@@ -2627,7 +2641,8 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ctx = ewl_text_context_default_create(t);
+	ctx = ewl_text_default_context;
+	ewl_text_context_acquire(ctx);
 	fmt = ewl_text_format_get(ctx);
 	ewl_text_context_release(ctx);
 
@@ -2637,28 +2652,41 @@ ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	FREE(fmt);
 
 	/* create the textblock */
-	t->textblock = evas_object_textblock_add(emb->evas);
+	t->textblock = ewl_embed_object_request(emb, "textblock");
+	if (!t->textblock) {
+		t->textblock = evas_object_textblock_add(emb->evas);
+		/* printf("Created new textblock\n"); */
+	}
 
-	st = evas_textblock_style_new();
-	evas_textblock_style_set(st, fmt2);
-	evas_object_textblock_style_set(t->textblock, st);
-	evas_textblock_style_free(st);
+	if (t->textblock) {
+		int sum;
 
-	FREE(fmt2);
+		st = evas_textblock_style_new();
+		evas_textblock_style_set(st, fmt2);
+		evas_object_textblock_style_set(t->textblock, st);
+		evas_textblock_style_free(st);
 
-	if (w->fx_clip_box)
-		evas_object_clip_set(t->textblock, w->fx_clip_box);
+		FREE(fmt2);
 
-	evas_object_pass_events_set(t->textblock, 1);
+		sum = ewl_widget_layer_sum_get(w);
+		/* printf("Setting text layer %d\n", sum); */
+		evas_object_layer_set(t->textblock, sum + 1000);
+		if (w->fx_clip_box)
+			evas_object_clip_set(t->textblock, w->fx_clip_box);
 
-	ewl_text_display(t);
+		evas_object_pass_events_set(t->textblock, 1);
+
+		ewl_text_display(t);
+		evas_object_show(t->textblock);
+	}
+
 	ewl_text_triggers_realize(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_text_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
 	Ewl_Text *t;
@@ -2669,11 +2697,16 @@ ewl_text_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__,
 
 	t = EWL_TEXT(w);
 
-	evas_object_clip_unset(t->textblock);
+	/* printf("Obscuring text %p\n", w); */
 
-	/* XXX this will need to change for obj cache */
-	evas_object_del(t->textblock);
-	t->textblock = NULL;
+	if (t->textblock) {
+		Ewl_Embed *emb;
+
+		emb = ewl_embed_widget_find(w);
+		evas_object_textblock_clear(t->textblock);
+		ewl_embed_object_cache(emb, t->textblock);
+		t->textblock = NULL;
+	}
 
 	ewl_text_triggers_unrealize(t);
 
@@ -2690,7 +2723,8 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_TYPE("w", w, "widget");
 
 	t = EWL_TEXT(w);
-	evas_object_show(t->textblock);
+	if (t->textblock)
+		evas_object_show(t->textblock);
 	ewl_text_triggers_show(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

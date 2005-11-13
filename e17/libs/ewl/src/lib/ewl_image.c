@@ -59,9 +59,9 @@ ewl_image_init(Ewl_Image *i)
 	/*
 	 * Append necessary callbacks.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_image_realize_cb,
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_image_reveal_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_image_unrealize_cb,
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_image_obscure_cb,
 			    NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_image_destroy_cb,
 			    NULL);
@@ -109,7 +109,8 @@ ewl_image_file_get(Ewl_Image *i)
  * @return Returns no value.
  * @brief Change the image file displayed by an image widget
  *
- * Set the image displayed by @a i to the one found at the path @a im.
+ * Set the image displayed by @a i to the one found at the path @a im. If an
+ * edje is used, a minimum size should be specified in the edje or the code.
  */
 void
 ewl_image_file_set(Ewl_Image *i, char *im, char *key)
@@ -145,24 +146,8 @@ ewl_image_file_set(Ewl_Image *i, char *im, char *key)
 	 * Load the new image if widget has been realized
 	 */
 	if (REALIZED(w)) {
-		/*
-		 * Free the image if it had been loaded.
-		 */
-		if (i->image) {
-			/*
-			 * Type is important for using the correct free calls.
-			 */
-			evas_object_hide(i->image);
-			evas_object_clip_unset(i->image);
-			ewl_evas_object_destroy(i->image);
-			i->image = NULL;
-		}
-
-		/*
-		 * Now draw the new image
-		 */
-		ewl_image_realize_cb(w, NULL, NULL);
-		ewl_widget_configure(w);
+		ewl_widget_unrealize(w);
+		ewl_widget_realize(w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -300,7 +285,7 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 }
 
 void
-ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -317,7 +302,10 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Load the image based on the type.
 	 */
 	if (i->type == EWL_IMAGE_TYPE_EDJE) {
-		i->image = edje_object_add(emb->evas);
+		if (!i->image)
+			i->image = ewl_embed_object_request(emb, "edje");
+		if (!i->image)
+			i->image = edje_object_add(emb->evas);
 		if (!i->image)
 			DRETURN(DLEVEL_STABLE);
 
@@ -325,7 +313,10 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			edje_object_file_set(i->image, i->path, i->key);
 		edje_object_size_min_get(i->image, &i->ow, &i->oh);
 	} else {
-		i->image = evas_object_image_add(emb->evas);
+		if (!i->image)
+			i->image = ewl_embed_object_request(emb, "image");
+		if (!i->image)
+			i->image = evas_object_image_add(emb->evas);
 		if (!i->image)
 			DRETURN(DLEVEL_STABLE);
 
@@ -374,18 +365,21 @@ ewl_image_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_image_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
+	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
+	emb = ewl_embed_widget_find(w);
+
 	i = EWL_IMAGE(w);
 	if (i->image) {
-		evas_object_del(i->image);
+		ewl_embed_object_cache(emb, i->image);
 		i->image = NULL;
 	}
 

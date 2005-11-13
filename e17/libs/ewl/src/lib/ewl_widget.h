@@ -70,10 +70,12 @@ struct Ewl_Widget
 	Evas_Object     *fx_clip_box;  /**< Clipping rectangle of widget */
 
 	Evas_Object     *theme_object; /**< Appearance shown on canvas */
-	char            *bit_state;    /**< State of the appaarance */
+	char            *bit_path;     /**< Path to the file for loading */
+	char            *bit_group;    /**< Group in theme to use */
+	char            *bit_state;    /**< State of the appearance */
 	char            *appearance;   /**< Key to lookup appearance in theme */
 	char            *inheritance;  /**< Inheritance of path widget */
-	int              layer; /**< Current layer of widget on canvas */
+	int              layer;        /**< Current layer of widget on canvas */
 
 	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ecore_Hash       *theme_text; /**< Overriding text in widgets theme */
@@ -116,13 +118,13 @@ void            ewl_widget_realize(Ewl_Widget * widget);
 void            ewl_widget_unrealize(Ewl_Widget * w);
 
 /*
- *  * Mark the widget to be revealed.
- *   */
+ * Mark the widget to be revealed.
+ */
 void            ewl_widget_reveal(Ewl_Widget *w);
 
 /*      
- *       * Mark the widget to be obscured.    
- *        */     
+ * Mark the widget to be obscured.    
+ */     
 void            ewl_widget_obscure(Ewl_Widget *w);
 
 /*
@@ -203,6 +205,8 @@ void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
 
 unsigned int    ewl_widget_type_is(Ewl_Widget *widget, char *type);
 
+unsigned int    ewl_widget_onscreen_is(Ewl_Widget *widget);
+
 /*
  * Change the parent of a widget.
  */
@@ -266,6 +270,10 @@ void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data,
 			void *user_data);
 void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data,
 			void *user_data);
+void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data,
+			  void *user_data);
+void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data,
+			   void *user_data);
 void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data,
 			   void *user_data);
 void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data,

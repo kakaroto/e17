@@ -149,6 +149,8 @@ void            ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc);
 /*
  * Internally used callbacks, override at your own risk.
  */
+void ewl_container_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);

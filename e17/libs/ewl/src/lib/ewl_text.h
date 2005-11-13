@@ -236,8 +236,8 @@ void ewl_text_triggers_show(Ewl_Text *t);
 void ewl_text_triggers_hide(Ewl_Text *t);
 
 void ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_reveal(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_obscure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_destroy(Ewl_Widget *w, void *ev, void *data);

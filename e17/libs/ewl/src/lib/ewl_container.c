@@ -41,6 +41,12 @@ ewl_container_init(Ewl_Container *c)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_container_configure_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
+			    ewl_container_obscure_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL,
+			    ewl_container_reveal_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
+			    ewl_container_reveal_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    ewl_container_realize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
@@ -1050,6 +1056,84 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_container_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
+			 void *user_data __UNUSED__)
+{
+	Ewl_Embed *e;
+	Ewl_Container *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(w);
+
+	/*
+	 * Give up the clip box object in use.
+	 */
+	e = ewl_embed_widget_find(EWL_WIDGET(w));
+	if (e && c->clip_box) {
+		evas_object_hide(c->clip_box);
+		ewl_embed_object_cache(e, c->clip_box);
+		c->clip_box = NULL;
+	}
+
+	/*
+	 * Notify children that they are now obscured, they will not receive a
+	 * configure event since the parent won't get configured while
+	 * obscured.
+	 */
+	if (c->children) {
+		ecore_list_goto_first(c->children);
+		while ((w = ecore_list_next(c->children))) {
+			if (REALIZED(w))
+				ewl_widget_obscure(w);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void 
+ewl_container_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__, 
+			void *user_data __UNUSED__)
+{
+	Ewl_Embed *e;
+	Ewl_Container *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(w);
+
+	e = ewl_embed_widget_find(EWL_WIDGET(w));
+	if (e && !c->clip_box) {
+		c->clip_box = ewl_embed_object_request(e, "rectangle");
+	}
+
+	/*
+	 * Create the clip box for this container, this keeps children clipped
+	 * to the wanted area.
+	 */
+	if (!c->clip_box)
+		c->clip_box = evas_object_rectangle_add(e->evas);
+
+	/*
+	 * Setup the remaining properties for the clip box.
+	 */
+	if (c->clip_box) {
+                evas_object_pass_events_set(c->clip_box, TRUE);
+
+		if (w->fx_clip_box) {
+			evas_object_clip_set(c->clip_box, w->fx_clip_box);
+			evas_object_layer_set(c->clip_box,
+					evas_object_layer_get(w->fx_clip_box));
+		}
+
+		evas_object_color_set(c->clip_box, 255, 255, 255, 255);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * This is the default action to be taken by containers, it involves
  * creating and showing a clip box, as well as clipping the clip box to parent
@@ -1060,7 +1144,6 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	int i = 0;
-	Ewl_Embed *emb;
 	Ewl_Container *c;
 	Ewl_Widget *child;
 
@@ -1069,25 +1152,6 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	c = EWL_CONTAINER(w);
-
-	emb = ewl_embed_widget_find(w);
-
-	/*
-	 * Create the clip box for this container, this keeps children clipped
-	 * to the wanted area.
-	 */
-	c->clip_box = evas_object_rectangle_add(emb->evas);
-	if (c->clip_box) {
-		evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
-		evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
-		evas_object_pass_events_set(c->clip_box, TRUE);
-	}
-
-	if (w->fx_clip_box) {
-		evas_object_clip_set(c->clip_box, w->fx_clip_box);
-		evas_object_layer_set(c->clip_box,
-				evas_object_layer_get(w->fx_clip_box));
-	}
 
 	if (!c->children || ecore_list_is_empty(c->children))
 		DRETURN(DLEVEL_STABLE);
@@ -1165,4 +1229,3 @@ ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-

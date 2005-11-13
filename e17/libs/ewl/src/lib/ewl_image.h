@@ -63,8 +63,8 @@ void ewl_image_constrain_set(Ewl_Image* i, int size);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_image_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);

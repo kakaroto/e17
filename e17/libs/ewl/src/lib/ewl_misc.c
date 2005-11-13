@@ -22,6 +22,8 @@ static int _ewl_init_count = 0;
 /*
  * Queues for scheduling various actions.
  */
+static Ecore_List *obscure_list = NULL;
+static Ecore_List *reveal_list = NULL;
 static Ecore_List *configure_list = NULL;
 static Ecore_List *realize_list = NULL;
 static Ecore_List *destroy_list = NULL;
@@ -97,6 +99,8 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
+	reveal_list = ecore_list_new();
+	obscure_list = ecore_list_new();
 	configure_list = ecore_list_new();
 	realize_list = ecore_list_new();
 	destroy_list = ecore_list_new();
@@ -242,6 +246,10 @@ ewl_shutdown(void)
 		ecore_list_destroy(ewl_window_list);
 		ewl_window_list = NULL;
 	}
+	ecore_list_destroy(reveal_list);
+	reveal_list = NULL;
+	ecore_list_destroy(obscure_list);
+	obscure_list = NULL;
 	ecore_list_destroy(configure_list);
 	configure_list = NULL;
 	ecore_list_destroy(realize_list);
@@ -297,11 +305,24 @@ ewl_main(void)
  *
  * Renders updates to the evas's during idle event times. Should not be called
  * publically unless a re-render is absolutely necessary.
+ *
+ * Overall Application workflow:
+ * 1. Setup some widgets in the application.
+ * 2. Enter the main loop.
+ * 3. Realize widgets starting at the top working down.
+ * 4. Show widgets starting at the bottom and working to the top notifying each
+ *    parent of the childs size.
+ * 5. Hide obscured widgets.
+ * 6. Show revealed widgets.
+ * 7. Move widgets around and size them.
+ * 8. Render the display.
+ * 9. Repeat steps 2-6 until program exits.
  */
 int
 ewl_idle_render(void *data)
 {
-	Ewl_Embed *emb;
+	Ewl_Widget *w;
+	Ewl_Embed  *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -313,6 +334,9 @@ ewl_idle_render(void *data)
 	if (ecore_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	/*
+	 * Global freeze on edje events while edje's are being manipulated.
+	 */
 	edje_freeze();
 
 	/*
@@ -343,12 +367,33 @@ ewl_idle_render(void *data)
 		/*
 		 * Reclaim obscured objects at this point
 		 */
+		while ((w = ecore_list_remove_first(obscure_list))) {
+			/*
+			 * Ensure the widget is still obscured, then mark it
+			 * revealed so that the obscure will succeed (and mark
+			 * it obscured again.
+			 */
+			if (!OBSCURED(w)) {
+				ewl_widget_obscure(w);
+			}
+		}
 
 		/*
 		 * Allocate objects to revealed widgets.
 		 */
+		while ((w = ecore_list_remove_first(reveal_list))) {
+			/*
+			 * Follow the same logic as the obscure loop.
+			 */
+			if (OBSCURED(w)) {
+				ewl_widget_reveal(w);
+			}
+		}
 	}
 
+	/*
+	 * Our work is done, allow edje events to be triggered.
+	 */
 	edje_thaw();
 
 	/*
@@ -482,7 +527,6 @@ ewl_init_remove_option(int *argc, char **argv, int i)
 void
 ewl_configure_request(Ewl_Widget * w)
 {
-	static int longest = 0;
 	Ewl_Embed *emb;
 	Ewl_Widget *search;
 
@@ -490,115 +534,30 @@ ewl_configure_request(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
+	if (!VISIBLE(w))
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Widget scheduled for destruction
+	 */
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Widget already scheduled for configure
+	 */
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Widget already in configure callback
+	 */
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS))
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
 		DRETURN(DLEVEL_STABLE);
-
-	/*
-	 * We don't need to configure if it's outside the viewable space in
-	 * it's parent widget.
-	 */
-	if (w->parent) {
-		int obscured = 0;
-		int x, y;
-		int width, height;
-		Ewl_Widget *p = w->parent;
-
-		ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width,
-				&height);
-
-		if ((x + width) < CURRENT_X(p))
-			obscured = 1;
-
-		if (x > (CURRENT_X(p) + CURRENT_W(p)))
-			obscured = 1;
-
-		if ((y + height) < CURRENT_Y(p))
-			obscured = 1;
-
-		if (y > (CURRENT_Y(p) + CURRENT_H(p)))
-			obscured = 1;
-
-		if ((x + width) < CURRENT_X(emb))
-			obscured = 1;
-
-		if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
-			obscured = 1;
-
-		if ((y + height) < CURRENT_Y(emb))
-			obscured = 1;
-
-		if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
-			obscured = 1;
-
-		if (obscured) {
-			ewl_object_visible_add(EWL_OBJECT(w),
-					EWL_FLAG_VISIBLE_OBSCURED);
-			if (w->fx_clip_box)
-				evas_object_hide(w->fx_clip_box);
-			if (w->theme_object)
-				evas_object_hide(w->theme_object);
-			/* FIXME: This might be a good idea.
-			if (w->theme_object)
-				edje_object_freeze(w->theme_object);
-			*/
-		}
-		else {
-			ewl_object_visible_remove(EWL_OBJECT(w),
-					EWL_FLAG_VISIBLE_OBSCURED);
-			if (w->fx_clip_box)
-				evas_object_show(w->fx_clip_box);
-			if (w->theme_object)
-				evas_object_show(w->theme_object);
-			/* FIXME: This might be a good idea.
-			if (w->theme_object)
-				edje_object_thaw(w->theme_object);
-			*/
-		}
-	}
-
-	/*
-	 * Check this first, and remove an obscured widget from the configure
-	 * list, if it's already scheduled.
-	 */
-	if (ewl_object_visible_has(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED)) {
-		if (ewl_object_queued_has(EWL_OBJECT(w),
-					EWL_FLAG_QUEUED_CSCHEDULED)) {
-			ecore_list_goto_first(configure_list);
-			while ((search = ecore_list_current(configure_list))) {
-				if (search == w) {
-					ewl_object_queued_remove(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_CSCHEDULED);
-					ecore_list_remove(configure_list);
-					break;
-				}
-				ecore_list_next(configure_list);
-			}
-		}
-
-		DRETURN(DLEVEL_TESTING);
-	}
-
-	/*
-	 * Easy case, we know this is on the list already.
-	 */
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
-		DRETURN(DLEVEL_TESTING);
-
-	/*
-	 * Need to check if the embed that holds w is scheduled for
-	 * configuration. This is the easiest way to test if we can avoid
-	 * adding this widget to the configuration list.
-	 */
-	if (ewl_object_queued_has(EWL_OBJECT(emb),
-			EWL_FLAG_QUEUED_CSCHEDULED))
-		DRETURN(DLEVEL_TESTING);
 
 	/*
 	 * Check for any parent scheduled for configuration.
@@ -616,37 +575,7 @@ ewl_configure_request(Ewl_Widget * w)
 	 */
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
 	ecore_list_append(configure_list, w);
-
-	/*
-	 * Now clean off any children of this widget, they will get added
-	 * later.
-	 */
-	/* FIXME: This is a big source of slow down on long lists of widgets,
-	 * might not be worth it
-	ecore_list_goto_first(configure_list);
-	while ((search = ecore_list_current(configure_list))) {
-		Ewl_Widget *parent;
-
-		parent = search;
-		while ((parent = parent->parent)) {
-			if (parent == w) {
-				ewl_object_queued_remove(EWL_OBJECT(search),
-						EWL_FLAG_QUEUED_CSCHEDULED);
-				ecore_list_remove(configure_list);
-				break;
-			}
-		}
-
-		ecore_list_next(configure_list);
-	}
-	*/
-
-	/*
-	 * FIXME: Remove this once we get things stabilize a bit more.
-	 */
-	if (ecore_list_nodes(configure_list) > longest) {
-		longest = ecore_list_nodes(configure_list);
-	}
+	/* printf("*** Queued %s for configuration ***\n", w->appearance); */
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -676,10 +605,32 @@ ewl_configure_queue(void)
 		ewl_object_queued_remove(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_CSCHEDULED);
 
-		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS);
-		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
-		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_CPROCESS);
+		/*
+		 * Items that are off screen should be queued to give up their
+		 * evas objects for reuse. Items returning from offscreen are
+		 * queued to receive new evas objects.
+		 */
+		if (!ewl_widget_onscreen_is(w)) {
+			if (!OBSCURED(w)) {
+				ecore_list_prepend(obscure_list, w);
+				/* printf("Flagging obscure:\n\t");
+				ewl_widget_print(w); */
+			}
+		}
+		else {
+			if (OBSCURED(w)) {
+				ecore_list_prepend(reveal_list, w);
+				/* printf("Flagging revealed:\n\t");
+				ewl_widget_print(w); */
+			}
+
+			ewl_object_queued_add(EWL_OBJECT(w),
+					EWL_FLAG_QUEUED_CPROCESS);
+			if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
+				ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+			ewl_object_queued_remove(EWL_OBJECT(w),
+						 EWL_FLAG_QUEUED_CPROCESS);
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -722,7 +673,10 @@ ewl_realize_request(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
-		if (!w->parent || !REALIZED(w->parent))
+		Ewl_Object *o = EWL_OBJECT(w->parent);
+		if (!o|| (!ewl_object_queued_has(EWL_OBJECT(o),
+						EWL_FLAG_QUEUED_RSCHEDULED) &&
+					!REALIZED(o)))
 			DRETURN(DLEVEL_STABLE);
 	}
 
@@ -771,7 +725,11 @@ ewl_realize_queue(void)
 	ecore_list_goto_first(realize_list);
 	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
+			ewl_object_queued_add(EWL_OBJECT(w),
+					      EWL_FLAG_QUEUED_RPROCESS);
 			ewl_widget_realize(EWL_WIDGET(w));
+			ewl_object_queued_remove(EWL_OBJECT(w),
+					         EWL_FLAG_QUEUED_RPROCESS);
 			ecore_list_prepend(child_add_list, w);
 		}
 	}
@@ -885,6 +843,11 @@ ewl_destroy_request(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param obj: evas to queue for destruction
+ * @return Returns no value.
+ * @brief Queues an evas to be destroyed at a later time.
+ */
 void
 ewl_evas_destroy(Evas *evas)
 {
@@ -896,6 +859,11 @@ ewl_evas_destroy(Evas *evas)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param obj: evas object to queue for destruction
+ * @return Returns no value.
+ * @brief Queues an evas object to be destroyed at a later time.
+ */
 void
 ewl_evas_object_destroy(Evas_Object *obj)
 {
