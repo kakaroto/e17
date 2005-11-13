@@ -548,11 +548,9 @@ ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	 * The base appearance is used for determining the theme key of the
 	 * widget.
 	 */
-	w->appearance = (char *)malloc(al);
+	w->appearance = strdup(appearance);
 	if (!w->appearance)
 		DRETURN(DLEVEL_STABLE);
-
-	snprintf(w->appearance, al, "%s",  appearance);
 
 	/*
 	 * Recreate the visible components of the widget if necessary.
