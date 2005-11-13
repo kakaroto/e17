@@ -58,6 +58,9 @@ void etk_test_menu_window_create(void *data)
    etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
    etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menu_item));
    
+   menu_item = etk_menu_separator_new();
+   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menu_item));
+   
    menu_item = etk_menu_item_new_with_label(_("Menu Item Test"));
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
    etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));

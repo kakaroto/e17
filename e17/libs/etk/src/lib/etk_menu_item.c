@@ -47,6 +47,10 @@ static Etk_Signal *_etk_menu_item_signals[ETK_MENU_ITEM_NUM_SIGNALS];
  *
  **************************/
 
+/**************************
+ * Menu Item
+ **************************/
+
 /**
  * @brief Gets the type of an Etk_Menu_Item
  * @return Returns the type on an Etk_Menu_Item
@@ -260,6 +264,36 @@ void etk_menu_item_right_swallow_show(Etk_Menu_Item *menu_item, Etk_Bool show)
    else
       etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "right_swallow_hide");
    menu_item->show_right_swallow = show;
+}
+
+/**************************
+ * Menu Separator
+ **************************/
+
+/**
+ * @brief Gets the type of an Etk_Menu_Separator
+ * @return Returns the type on an Etk_Menu_Separator
+ */
+Etk_Type *etk_menu_separator_type_get()
+{
+   static Etk_Type *menu_separator_type = NULL;
+
+   if (!menu_separator_type)
+   {
+      menu_separator_type = etk_type_new("Etk_Menu_Separator", ETK_MENU_ITEM_TYPE, sizeof(Etk_Menu_Separator), NULL, NULL);
+   }
+
+   return menu_separator_type;
+}
+
+/**
+ * @brief Creates a new menu separator
+ * @return Returns the new menu separator widget
+ * @note Unlike the other widgets, You don't need to call etk_widget_shown, the widget is automaticall shown at its creation
+ */
+Etk_Widget *etk_menu_separator_new()
+{
+   return etk_widget_new(ETK_MENU_SEPARATOR_TYPE, "theme_group", "menu_separator", "visible", TRUE, NULL);
 }
 
 /**************************

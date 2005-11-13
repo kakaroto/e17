@@ -17,6 +17,13 @@
 /** @brief Checks if the object is an Etk_Menu_Item */
 #define ETK_IS_MENU_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_TYPE))
 
+/** @brief Gets the type of a menu separator */
+#define ETK_MENU_SEPARATOR_TYPE       (etk_menu_separator_type_get())
+/** @brief Casts the object to an Etk_Menu_Sepatator */
+#define ETK_MENU_SEPARATOR(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_SEPARATOR_TYPE, Etk_Menu_Separator))
+/** @brief Checks if the object is an Etk_Menu_Separator */
+#define ETK_IS_MENU_SEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_SEPARATOR_TYPE))
+
 /**
  * @struct Etk_Menu_Item
  * @brief An item of a menu or of a menu bar
@@ -45,6 +52,17 @@ struct _Etk_Menu_Item
    Etk_Bool right_widget_is_arrow;
 };
 
+/**
+ * @struct Etk_Menu_Separator
+ * @brief An horizontal separator for the menus
+ */
+struct _Etk_Menu_Separator
+{
+   /* private: */
+   /* Inherit from Etk_Menu_Item */
+   Etk_Menu_Item menu_item;
+};
+
 Etk_Type *etk_menu_item_type_get();
 Etk_Widget *etk_menu_item_new();
 Etk_Widget *etk_menu_item_new_with_label(const char *label);
@@ -61,6 +79,10 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image);
 
 void etk_menu_item_image_show(Etk_Menu_Item *menu_item, Etk_Bool show);
 void etk_menu_item_right_swallow_show(Etk_Menu_Item *menu_item, Etk_Bool show);
+
+
+Etk_Type *etk_menu_separator_type_get();
+Etk_Widget *etk_menu_separator_new();
 
 /** @} */
 
