@@ -893,7 +893,7 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 				ix = ewl_object_current_x_get(EWL_OBJECT(list_item));
 				iy = ewl_object_current_y_get(EWL_OBJECT(list_item));
 				
-				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy) {
+				if (ix >= lx && iy >= ly && ix <= hx && iy <= hy && VISIBLE(EWL_WIDGET(list_item)) && !OBSCURED(EWL_WIDGET(list_item))) {
 					ewl_iconbox_icon_select(EWL_ICONBOX_ICON(list_item),0,0);
 				} else if (list_item->selected && !(ev->modifiers == EWL_KEY_MODIFIER_CTRL)) {
 					ewl_iconbox_icon_deselect(EWL_ICONBOX_ICON(list_item));

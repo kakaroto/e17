@@ -841,6 +841,9 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 	DCHECK_PARAM_PTR("obj", obj);
 	DCHECK_TYPE("e", e, "embed");
 
+	/*Sanitize the color of this evas pre-cache*/
+	evas_object_color_set(obj,255,255,255,255);
+
 	evas_object_clip_unset(obj);
 	evas_object_hide(obj);
 
