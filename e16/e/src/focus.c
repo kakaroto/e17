@@ -331,13 +331,12 @@ doFocusToEwin(EWin * ewin, int why)
 
      case FOCUS_EWIN_NEW:
 	if (Conf.focus.all_new_windows_get_focus)
-	  {
-	     do_focus = 1;
-	  }
+	   do_focus = 1;
 	else if (Mode.place.doing_manual)
-	  {
-	     do_focus = 1;
-	  }
+	   do_focus = 1;
+
+	if (ewin->props.focus_when_mapped)
+	   do_focus = 2;
 
 	if (EwinIsTransient(ewin))
 	  {

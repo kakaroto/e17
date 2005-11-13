@@ -141,6 +141,7 @@ struct _ewin
       unsigned            vroot:1;	/* Virtual root window */
       unsigned            autosave:1;
       unsigned            no_border:1;	/* Never apply border */
+      unsigned            focus_when_mapped:1;
    } props;
    EwinInhibit         inh_app;
    EwinInhibit         inh_user;

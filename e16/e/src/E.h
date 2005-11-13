@@ -778,7 +778,7 @@ void                ArrangeRects(RectBox * fixed, int fixed_count,
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
 			     int *new_dy);
 void                ArrangeEwin(EWin * ewin);
-void                ArrangeEwinCentered(EWin * ewin, int focus);
+void                ArrangeEwinCentered(EWin * ewin);
 void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwins(const char *params);

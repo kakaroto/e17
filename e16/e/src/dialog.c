@@ -538,6 +538,8 @@ DialogEwinInit(EWin * ewin, void *ptr)
    ewin->data = ptr;
    d->ewin = ewin;
 
+   ewin->props.focus_when_mapped = 1;
+
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Close = DialogEwinClose;
 
@@ -632,7 +634,7 @@ ShowDialog(Dialog * d)
 	if (FindADialog() > 1)
 	   ArrangeEwin(ewin);
 	else
-	   ArrangeEwinCentered(ewin, 0);
+	   ArrangeEwinCentered(ewin);
      }
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);

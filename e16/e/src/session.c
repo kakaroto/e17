@@ -986,7 +986,7 @@ SessionLogoutConfirm(void)
 
    ewin = FindEwinByDialog(d);
    if (ewin)
-      ArrangeEwinCentered(ewin, 1);
+      ArrangeEwinCentered(ewin);
    return;
 }
 

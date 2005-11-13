@@ -810,14 +810,12 @@ ArrangeEwin(EWin * ewin)
 }
 
 void
-ArrangeEwinCentered(EWin * ewin, int focus)
+ArrangeEwinCentered(EWin * ewin)
 {
    int                 x, y;
 
    ArrangeEwinCenteredXY(ewin, &x, &y);
    EwinMove(ewin, x, y);
-   if (focus)
-      FocusToEWin(ewin, FOCUS_SET);
 }
 
 static int
