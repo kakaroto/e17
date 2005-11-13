@@ -88,11 +88,11 @@ ewl_callback_register(Ewl_Callback *cb)
 
 	found = ecore_hash_get(cb_registration, cb);
 	if (!found) {
-		cb->id = ++callback_id;
-		ecore_hash_set(cb_registration, cb, cb);
-		found = cb;
-	} else
-		FREE(cb);
+		found = NEW(Ewl_Callback, 1);
+		memcpy(found, cb, sizeof(Ewl_Callback));
+		found->id = ++callback_id;
+		ecore_hash_set(cb_registration, found, found);
+	}
 
 	found->references++;
 
@@ -247,7 +247,8 @@ int
 ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
 		    Ewl_Callback_Function f, void *user_data)
 {
-	Ewl_Callback *cb;
+	Ewl_Callback cb;
+	Ewl_Callback *found;
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -255,15 +256,13 @@ ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
 	DCHECK_PARAM_PTR_RET("f", f, 0);
 	DCHECK_TYPE_RET("w", w, "widget", 0);
 
-	cb = NEW(Ewl_Callback, 1);
-	if (!cb)
-		DRETURN_INT(0, DLEVEL_STABLE);
+	cb.func = f;
+	cb.user_data = user_data;
+	cb.references = 0;
+	cb.id = 0;
 
-	cb->func = f;
-	cb->user_data = user_data;
-
-	cb = ewl_callback_register(cb);
-	ret = ewl_callback_insert(w, t, cb, EWL_CALLBACK_LEN(w, t));
+	found = ewl_callback_register(&cb);
+	ret = ewl_callback_insert(w, t, found, EWL_CALLBACK_LEN(w, t));
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -283,7 +282,8 @@ int
 ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
 		     Ewl_Callback_Function f, void *user_data)
 {
-	Ewl_Callback *cb;
+	Ewl_Callback cb;
+	Ewl_Callback *found;
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -291,15 +291,13 @@ ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
 	DCHECK_PARAM_PTR_RET("f", f, 0);
 	DCHECK_TYPE_RET("w", w, "widget", 0);
 
-	cb = NEW(Ewl_Callback, 1);
-	if (!cb)
-		DRETURN_INT(0, DLEVEL_STABLE);
+	cb.func = f;
+	cb.user_data = user_data;
+	cb.references = 0;
+	cb.id = 0;
 
-	cb->func = f;
-	cb->user_data = user_data;
-
-	cb = ewl_callback_register(cb);
-	ret = ewl_callback_insert(w, t, cb, 0);
+	found = ewl_callback_register(&cb);
+	ret = ewl_callback_insert(w, t, found, 0);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -322,7 +320,8 @@ ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
 			  Ewl_Callback_Function f, void *user_data,
 			  Ewl_Callback_Function after, void *after_data)
 {
-	Ewl_Callback *cb;
+	Ewl_Callback cb;
+	Ewl_Callback *found;
 	Ewl_Callback *search;
 	int ret, pos = 0;
 
@@ -331,14 +330,12 @@ ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
 	DCHECK_PARAM_PTR_RET("f", f, 0);
 	DCHECK_TYPE_RET("w", w, "widget", 0);
 
-	cb = NEW(Ewl_Callback, 1);
-	if (!cb)
-		DRETURN_INT(0, DLEVEL_STABLE);
+	cb.func = f;
+	cb.user_data = user_data;
+	cb.references = 0;
+	cb.id = 0;
 
-	cb->func = f;
-	cb->user_data = user_data;
-
-	cb = ewl_callback_register(cb);
+	found = ewl_callback_register(&cb);
 
 	/*
 	 * Step 1 position past the callback we want to insert after.
@@ -352,7 +349,7 @@ ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
 			break;
 		}
 	}
-	ret = ewl_callback_insert(w, t, cb, pos);
+	ret = ewl_callback_insert(w, t, found, pos);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
