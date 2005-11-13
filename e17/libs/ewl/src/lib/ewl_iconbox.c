@@ -346,29 +346,22 @@ void ewl_iconbox_scrollpane_goto_root(Ewl_IconBox* ib) {
 void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 {
 	/*Add a background image*/
-	Ewl_Embed      *emb;
-	emb = ewl_embed_widget_find(EWL_WIDGET(ib));
-	if (emb && file) {
-		if (ib->background) evas_object_del(ib->background);
-		
-		ib->background = evas_object_image_add(emb->evas);
-		evas_object_image_file_set(ib->background, file, NULL);
+	int w,h;
 
-		evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
-		evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
-		evas_object_layer_set(ib->background, -1000);
-
-		evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
-		evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
-		
-		evas_object_show(ib->background);
-	} else if (file) {
-		printf("////////////////////////// Could not find top level widget\n");
-	} else /*File is null*/ {
-		if (ib->background) evas_object_del(ib->background);
-
-		ib->background = NULL;
+	if (ib->background) {
+		ewl_widget_destroy(ib->background);
 	}
+
+	if (!file) return;
+
+	w = CURRENT_W(ib->ewl_iconbox_pane_inner);
+	h= CURRENT_H(ib->ewl_iconbox_pane_inner);
+
+	ib->background = ewl_image_new();
+	ewl_object_custom_size_set(EWL_OBJECT(ib->background), w,h);
+	ewl_image_file_set(EWL_IMAGE(ib->background), file,0);
+	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->background);
+	ewl_widget_show(ib->background);
 }
 
 
@@ -1089,17 +1082,17 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);
 		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
 		ewl_iconbox_icon_arrange(ib); 
+
+		if (ib->background) {
+			int w,h;
+			w = CURRENT_W(ib->ewl_iconbox_pane_inner);
+			h= CURRENT_H(ib->ewl_iconbox_pane_inner);
+			ewl_object_custom_size_set(EWL_OBJECT(ib->background),w,h);
+
+		}
+		
 		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 
-		/*Handle the background, if any*/
-		if (ib->background) {
-			evas_object_clip_set(ib->background, EWL_WIDGET(ib)->fx_clip_box);
-			evas_object_move(ib->background, CURRENT_X(ib), CURRENT_Y(ib));
-			evas_object_layer_set(ib->background, -1000);
-
-			evas_object_image_fill_set(ib->background, 0,0,	CURRENT_W(ib), CURRENT_H(ib));
-			evas_object_resize(ib->background, CURRENT_W(ib), CURRENT_H(ib));
-		}
 	}
 }
 

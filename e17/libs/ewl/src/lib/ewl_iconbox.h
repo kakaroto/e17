@@ -89,7 +89,7 @@ struct Ewl_IconBox
 	int iw, ih;			   /*Custom icon width/height*/
 
 	/*Background*/
-	Evas_Object* background;
+	Ewl_Widget* background;
 
 	/* Objects for label editing..*/
 	Ewl_Widget* entry;
