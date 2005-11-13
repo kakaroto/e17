@@ -844,20 +844,15 @@ ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path)
 
 	ecore_list_goto_first(dirs);
 	while ((d = ecore_list_current(dirs))) {
-		Ewl_Widget *hbox;
 		Ewl_Widget *label;
 
-		hbox = ewl_hbox_new();
-		ewl_box_spacing_set(EWL_BOX(hbox), 5);
-		label = ewl_text_new();
-		ewl_text_text_set(EWL_TEXT(label), d->name);
+		label = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(label), d->name);
 		ewl_object_fill_policy_set(EWL_OBJECT(label),
 					   EWL_FLAG_FILL_SHRINK);
-		ewl_container_child_append(EWL_CONTAINER(hbox), label);
 		ewl_widget_show(label);
-		ewl_widget_show(hbox);
 
-		prow = ewl_tree_row_add(EWL_TREE(fs->list_dirs), NULL, &hbox);
+		prow = ewl_tree_row_add(EWL_TREE(fs->list_dirs), NULL, &label);
 		ewl_widget_data_set(prow, "FILESELECTOR_DIR", strdup(d->name));
 		ewl_fileselector_tooltip_add(prow, ecore_list_current(dirs));
 		ewl_fileselector_data_free(d);

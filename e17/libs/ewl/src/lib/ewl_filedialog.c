@@ -274,5 +274,3 @@ ewl_filedialog_click_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void* data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-

@@ -102,6 +102,8 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	ewl_container_redirect_set(EWL_CONTAINER(tree),
 				   EWL_CONTAINER(tree->scrollarea));
 
+	ewl_callback_append(EWL_WIDGET(tree->header), EWL_CALLBACK_CONFIGURE,
+				ewl_tree_header_configure_cb, tree->scrollarea);
 	ewl_tree_headers_visible_set(tree, 1);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -314,15 +316,17 @@ ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	for (i = 0; i < tree->ncols; i++) {
+		texts[i] = ewl_label_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(texts[i]),
+				EWL_FLAG_FILL_NONE);
+		ewl_widget_show(texts[i]);
+
 		if (text) {
-			texts[i] = ewl_text_new();
-			ewl_text_text_set(EWL_TEXT(texts[i]), text[i]);
+			ewl_label_text_set(EWL_LABEL(texts[i]), text[i]);
 		}
 		else {
-			texts[i] = ewl_text_new();
-			ewl_text_text_set(EWL_TEXT(texts[i]), NULL);
+			ewl_label_text_set(EWL_LABEL(texts[i]), NULL);
 		}
-		ewl_widget_show(texts[i]);
 	}
 
 	row = ewl_tree_row_add(tree, prow, texts);
@@ -644,6 +648,21 @@ ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_object_geometry_request(EWL_OBJECT(tree->scrollarea),
 				    CURRENT_X(tree), CURRENT_Y(tree) + height,
 				    CURRENT_W(tree), CURRENT_H(tree) - height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	Ewl_Widget *scrollarea = user_data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	ewl_widget_configure(scrollarea);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

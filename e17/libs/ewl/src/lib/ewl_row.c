@@ -79,6 +79,7 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 	if (row->header == header)
 		DRETURN(DLEVEL_STABLE);
 
+	/*
 	if (row->header) {
 		ewl_callback_del_with_data(EWL_WIDGET(row->header),
 					   EWL_CALLBACK_CONFIGURE,
@@ -87,13 +88,16 @@ ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 					   EWL_CALLBACK_DESTROY,
 					   ewl_row_header_destroy_cb, row);
 	}
+	*/
 
 	row->header = header;
 	if (header) {
+		/*
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
 					ewl_row_header_configure_cb, row);
 		ewl_callback_prepend(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
 					ewl_row_header_destroy_cb, row);
+					*/
 
 		ewl_object_fill_policy_set(EWL_OBJECT(row),
 					   EWL_FLAG_FILL_HFILL);
