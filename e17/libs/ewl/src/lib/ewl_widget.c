@@ -530,8 +530,6 @@ ewl_widget_data_get(Ewl_Widget * w, void *k)
 void
 ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 {
-	int al;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("appearance", appearance);
@@ -541,14 +539,14 @@ ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	if (w->appearance && !strcmp(appearance, w->appearance))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
-	IF_FREE(w->appearance);
-	al = strlen(appearance) + 1;
+	if (w->appearance)
+		ecore_string_release(w->appearance);
 
 	/*
 	 * The base appearance is used for determining the theme key of the
 	 * widget.
 	 */
-	w->appearance = strdup(appearance);
+	w->appearance = ecore_string_instance(appearance);
 	if (!w->appearance)
 		DRETURN(DLEVEL_STABLE);
 
@@ -1560,18 +1558,6 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	ewl_widget_unrealize(w);
 
-	/*
-	 * Free up appearance related information
-	 */
-	ewl_theme_widget_shutdown(w);
-	IF_FREE(w->appearance);
-
-	if (w->inheritance)
-		ecore_string_release(w->inheritance);
-
-	if (w->bit_state)
-		ecore_string_release(w->bit_state);
-
 	/* 
 	 * cleanup the attachment lists 
 	 */
@@ -1593,6 +1579,20 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		if (i == EWL_CALLBACK_DESTROY) continue;
 		ewl_callback_del_type(w, i);
 	}
+
+	/*
+	 * Free up appearance related information
+	 */
+	ewl_theme_widget_shutdown(w);
+
+	if (w->appearance)
+		ecore_string_release(w->appearance);
+
+	if (w->inheritance)
+		ecore_string_release(w->inheritance);
+
+	if (w->bit_state)
+		ecore_string_release(w->bit_state);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
