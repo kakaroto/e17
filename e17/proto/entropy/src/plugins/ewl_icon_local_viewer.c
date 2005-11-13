@@ -25,6 +25,7 @@ typedef struct event_idle_processor {
 	Ecore_List* user_data;
 	void* requestor;
 	int count;	
+	int terminate;
 
 	
 	
@@ -46,6 +47,9 @@ struct entropy_icon_viewer {
 
 	Ewl_Widget* file_dialog;
 	Ewl_Widget* file_dialog_parent;
+
+	event_idle_processor* last_processor;
+
 	
 	char current_dir[1024]; /* We should handle this at the core.  FUTURE API TODO */
 };
@@ -637,6 +641,7 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 int idle_add_icons(void* data) {
 		event_idle_processor* proc = (event_idle_processor*)data;
 		entropy_gui_component_instance* comp = (entropy_gui_component_instance*)proc->requestor;
+		entropy_icon_viewer* view = ((entropy_icon_viewer*)comp->data);
 		
 		Ecore_List* el = proc->user_data;
 		entropy_generic_file* file;
@@ -646,6 +651,11 @@ int idle_add_icons(void* data) {
 		Ecore_List* added_list = ecore_list_new();
 		Ecore_List* events;
 		int term=0;
+
+
+		if (proc->terminate) {
+			goto FREE_AND_LEAVE;
+		}
 	
 		/*data = file list*/
 		
@@ -692,11 +702,19 @@ int idle_add_icons(void* data) {
 			return 1;
 		} else { 
 			ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX( ((entropy_icon_viewer*)comp->data)->iconbox));	
+			view->last_processor = NULL;
+			goto FREE_AND_LEAVE;
 			//printf("Terminated process thread..\n");
-			ecore_list_destroy(proc->user_data);
-			entropy_free(proc);
 			return 0;
 		}
+
+
+		FREE_AND_LEAVE:
+		ecore_list_destroy(proc->user_data);
+		entropy_free(proc);
+		return 0;
+
+		
 
 }
 
@@ -727,11 +745,27 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		Ecore_Hash* tmp_icon_hash;
 		entropy_generic_file* list_item;
 
+
+		/*Keep a reference to our existing hash*/
+		tmp_gui_hash = view->gui_hash;
+		tmp_icon_hash = view->icon_hash;
+		view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
+		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+
+		/*Terminate our last load if we are still going...Not the most elegant solution, but there can only be 1 at once*/
+		if (view->last_processor) view->last_processor->terminate = 1;
+
+
 		/*Setup the background processor object*/
 		//proc->eevent = eevent;
 		proc->requestor = comp;
 		proc->count=0;
+		proc->terminate = 0;
 		proc->user_data = ecore_list_new();
+		view->last_processor = proc;
+
+
+		
 
 		ecore_list_goto_first(ret);
 		while ( (event_file = ecore_list_next(ret))) {
@@ -749,16 +783,15 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
 
 
-		/*Keep a reference to our existing hash*/
-		tmp_gui_hash = view->gui_hash;
-		tmp_icon_hash = view->icon_hash;
-		view->gui_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
-		view->icon_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-
 		/*Before we begin, see if our file hash is initialized, if so - we must destroy it first*/
 		/*TODO*/
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
+
+	
+		
+
+		
 
 		/*Clear the view, if there's anything to nuke*/
 		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
