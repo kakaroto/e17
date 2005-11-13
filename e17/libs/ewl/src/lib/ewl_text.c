@@ -4348,7 +4348,7 @@ ewl_text_tree_node_walk(Ewl_Text_Tree *tree, Ewl_Text *t, unsigned int text_pos)
 		tmp = *(ptr + tree->length);
 		*(ptr + tree->length) = '\0';
 
-		ewl_text_plaintext_parse(t->textblock, ptr);
+		if (t->textblock) ewl_text_plaintext_parse(t->textblock, ptr);
 		*(ptr + tree->length) = tmp;	
 
 		evas_textblock_cursor_format_append(cursor, "-");
