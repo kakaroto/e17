@@ -649,19 +649,19 @@ EwinStateUpdate(EWin * ewin)
 
    ewin->state.inhibit_move =
       EwinInhGetUser(ewin, move) || ewin->state.fullscreen;
-   ewin->state.inhibit_resize =
-      EwinInhGetUser(ewin, size) || ewin->state.shaded ||
-      ewin->state.fullscreen;
+   ewin->state.inhibit_resize = ewin->state.iconified || ewin->state.shaded ||
+      EwinInhGetUser(ewin, size) || ewin->state.fullscreen;
    ewin->state.inhibit_iconify = EwinInhGetWM(ewin, iconify);
-   ewin->state.inhibit_shade = ewin->state.no_border || ewin->state.fullscreen;
+   ewin->state.inhibit_shade = ewin->state.no_border ||
+      ewin->state.iconified || ewin->state.fullscreen;
    ewin->state.inhibit_stick = 0;
-   ewin->state.inhibit_max_hor =
+   ewin->state.inhibit_max_hor = ewin->state.inhibit_resize ||
       ewin->props.no_resize_h || ewin->state.fullscreen;
-   ewin->state.inhibit_max_ver =
+   ewin->state.inhibit_max_ver = ewin->state.inhibit_resize ||
       ewin->props.no_resize_v || ewin->state.fullscreen;
    ewin->state.inhibit_fullscreeen =
       ewin->state.inhibit_move || ewin->state.inhibit_resize;
-   ewin->state.inhibit_change_desk = 0;
+   ewin->state.inhibit_change_desk = ewin->state.iconified;
    ewin->state.inhibit_close = EwinInhGetApp(ewin, close) ||
       EwinInhGetUser(ewin, close);
 }
@@ -783,7 +783,7 @@ AddToFamily(EWin * ewin, Window win)
 
    if (ewin->state.fullscreen)
      {
-	EwinSetFullscreen(ewin, 2);
+	EwinOpFullscreen(ewin, OPSRC_WM, 2);
 	ewin->state.placed = 1;
 	EwinMoveToDesktopAt(ewin, dsk, EoGetX(ewin), EoGetY(ewin));
 	ShowEwin(ewin);

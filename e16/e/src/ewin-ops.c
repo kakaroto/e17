@@ -626,6 +626,7 @@ EwinIconify(EWin * ewin)
    if (lst)
       Efree(lst);
 
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 
    call_depth--;
@@ -700,6 +701,7 @@ EwinDeIconify1(EWin * ewin, int dx, int dy)
    if (lst)
       Efree(lst);
 
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 
    call_depth--;
@@ -734,6 +736,7 @@ EwinUnStick(EWin * ewin)
    EoSetSticky(ewin, 0);
    EwinMoveToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
    EwinBorderUpdateState(ewin);
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
    HintsSetWindowDesktop(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
@@ -762,6 +765,7 @@ EwinStick(EWin * ewin)
    EoSetSticky(ewin, 1);
    EwinMoveToDesktopAt(ewin, DesksGetCurrent(), x, y);
    EwinBorderUpdateState(ewin);
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
    HintsSetWindowDesktop(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
@@ -1072,6 +1076,7 @@ EwinShade(EWin * ewin)
    Eprintf("EwinShade-E\n");
 #endif
 
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 }
 
@@ -1279,11 +1284,12 @@ EwinUnShade(EWin * ewin)
    Eprintf("EwinUnShade-E\n");
 #endif
 
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 }
 
 void
-EwinSetFullscreen(EWin * ewin, int on)
+EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 {
    int                 x, y, w, h, ww, hh;
    EWin              **lst;
@@ -1371,6 +1377,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	RaiseEwin(ewin);
 	EwinMoveResize(ewin, x, y, w, h);
      }
+
    HintsSetWindowState(ewin);
 }
 
@@ -1579,12 +1586,13 @@ EwinOpSkipLists(EWin * ewin, int source __UNUSED__, int skip)
    ewin->props.skip_ext_task = skip;
    ewin->props.skip_winlist = skip;
    ewin->props.skip_focuslist = skip;
+
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
    SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
-   EwinStateUpdate(ewin);
 }
 
 #if 0				/* Unused */
@@ -1592,36 +1600,37 @@ void
 EwinOpSkipTask(EWin * ewin, int skip)
 {
    ewin->props.skip_ext_task = skip;
+
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 #if ENABLE_GNOME
    GNOME_SetClientList();
 #endif
    SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
-   EwinStateUpdate(ewin);
 }
 
 void
 EwinOpSkipFocus(EWin * ewin, int skip)
 {
    ewin->props.skip_focuslist = skip;
-   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
    EwinStateUpdate(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
 EwinOpSkipWinlist(EWin * ewin, int skip)
 {
    ewin->props.skip_winlist = skip;
-   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
    EwinStateUpdate(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_SKIP_LISTS);
 }
 
 void
 EwinOpNeverFocus(EWin * ewin, int on)
 {
    ewin->props.never_focus = on;
-   SnapshotEwinUpdate(ewin, SNAP_USE_FOCUS_NEVER);
    EwinStateUpdate(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_FOCUS_NEVER);
 }
 #endif
 
@@ -1695,6 +1704,7 @@ EwinOpSetLayer(EWin * ewin, int source __UNUSED__, int layer)
      }
    EoSetLayer(ewin, layer);
    RaiseEwin(ewin);
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_LAYER);
 }
@@ -1783,6 +1793,7 @@ EwinOpMoveToDesk(EWin * ewin, int source __UNUSED__, Desk * dsk, int inc)
    EwinMoveToDesktop(ewin, dsk);
    RaiseEwin(ewin);
    EwinBorderUpdateState(ewin);
+   EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
    HintsSetWindowDesktop(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);

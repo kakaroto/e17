@@ -179,11 +179,12 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_FRAME_EXTENTS;
 
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON;
 
+extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_USER_TIME;
+
 #if 0				/* Not used */
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON_GEOMETRY;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PID;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_USER_TIME;
 
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PING;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST;
@@ -195,9 +196,9 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_CLOSE_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_MOVERESIZE;
+extern Ecore_X_Atom ECORE_X_ATOM_NET_RESTACK_WINDOW;
 
 #if 0				/* Not yet implemented */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_RESTACK_WINDOW;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS;
 #endif
 

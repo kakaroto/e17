@@ -639,7 +639,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
      case EWIN_OP_FULLSCREEN:
 	on = ewin->state.fullscreen;
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
-	   EwinSetFullscreen(ewin, on);
+	   EwinOpFullscreen(ewin, OPSRC_USER, on);
 	break;
 
      case EWIN_OP_ZOOM:

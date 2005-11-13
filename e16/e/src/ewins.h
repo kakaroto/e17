@@ -332,7 +332,6 @@ void                EwinInstantShade(EWin * ewin, int force);
 void                EwinInstantUnShade(EWin * ewin);
 void                EwinShade(EWin * ewin);
 void                EwinUnShade(EWin * ewin);
-void                EwinSetFullscreen(EWin * ewin, int on);
 void                EwinMoveToArea(EWin * ewin, int ax, int ay);
 
 void                EwinOpClose(EWin * ewin, int source);
@@ -349,6 +348,7 @@ void                EwinOpSetBorder(EWin * ewin, int source, const char *name);
 void                EwinOpSetOpacity(EWin * ewin, int source, int opacity);
 void                EwinOpMoveToDesk(EWin * ewin, int source, struct _desk *dsk,
 				     int inc);
+void                EwinOpFullscreen(EWin * ewin, int source, int on);
 
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);

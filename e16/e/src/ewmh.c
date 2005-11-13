@@ -49,6 +49,13 @@
 #define _NET_WM_STATE_ADD       1
 #define _NET_WM_STATE_TOGGLE    2
 
+/* Source indication */
+#define _NET_WM_SOURCE_UNKNOWN  0
+#define _NET_WM_SOURCE_APP      1
+#define _NET_WM_SOURCE_USER     2
+
+#define OPSRC(src) (((src) == _NET_WM_SOURCE_USER) ? _NET_WM_SOURCE_USER : _NET_WM_SOURCE_APP)
+
 #ifndef ENABLE_HINTS_GNOME
 Atom                _G_WIN_LAUER;
 #endif
@@ -789,6 +796,8 @@ void
 EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 {
    EWin               *ewin;
+   int                 source;
+   Time                ts;
 
    /*
     * The ones that don't target an application window
@@ -857,23 +866,29 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
-	EwinOpActivate(ewin, OPSRC_UNKNOWN);
+	source = OPSRC(ev->data.l[0]);
+	ts = ev->data.l[1];
+/*	cwin = ev->data.l[2]; */
+	EwinOpActivate(ewin, source);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
      {
-	EwinOpClose(ewin, OPSRC_UNKNOWN);
+/*	ts = ev->data.l[0]; */
+	source = OPSRC(ev->data.l[1]);
+	EwinOpClose(ewin, source);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
      {
+	source = OPSRC(ev->data.l[1]);
 	if ((unsigned)ev->data.l[0] == 0xFFFFFFFF)
 	  {
 	     if (!EoIsSticky(ewin))
-		EwinOpStick(ewin, OPSRC_UNKNOWN, 1);
+		EwinOpStick(ewin, source, 1);
 	  }
 	else
 	  {
 	     if (EoIsSticky(ewin))
-		EwinOpStick(ewin, OPSRC_UNKNOWN, 0);
+		EwinOpStick(ewin, source, 0);
 	     else
 		EwinMoveToDesktop(ewin, DeskGet(ev->data.l[0]));
 	  }
@@ -890,6 +905,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	action = ev->data.l[0];
 	atom = ev->data.l[1];
 	atom2 = ev->data.l[2];
+	source = OPSRC(ev->data.l[3]);
 	if (atom == ECORE_X_ATOM_NET_WM_STATE_MODAL)
 	  {
 	     action = do_set(ewin->state.modal, action);
@@ -899,12 +915,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_STICKY)
 	  {
 	     action = do_set(EoIsSticky(ewin), action);
-	     EwinOpStick(ewin, OPSRC_UNKNOWN, action);
+	     EwinOpStick(ewin, source, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SHADED)
 	  {
 	     action = do_set(ewin->state.shaded, action);
-	     EwinOpShade(ewin, OPSRC_UNKNOWN, action);
+	     EwinOpShade(ewin, source, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR)
 	  {
@@ -958,23 +974,23 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     if (ewin->state.fullscreen == action)
 		goto done;
 
-	     EwinSetFullscreen(ewin, action);
+	     EwinOpFullscreen(ewin, source, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_ABOVE)
 	  {
 	     action = do_set(EoGetLayer(ewin) >= 6, action);
 	     if (action)
-		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 6);
+		EwinOpSetLayer(ewin, source, 6);
 	     else
-		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 4);
+		EwinOpSetLayer(ewin, source, 4);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	  {
 	     action = do_set(EoGetLayer(ewin) <= 2, action);
 	     if (action)
-		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 2);
+		EwinOpSetLayer(ewin, source, 2);
 	     else
-		EwinOpSetLayer(ewin, OPSRC_UNKNOWN, 4);
+		EwinOpSetLayer(ewin, source, 4);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
 	  {
@@ -991,14 +1007,16 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	grav = flags & 0xf;
 	if (grav == 0)
 	   grav = ewin->client.grav;
-	x = (flags & 0x100) ? ev->data.l[1] : EoGetX(ewin);
-	y = (flags & 0x200) ? ev->data.l[2] : EoGetY(ewin);
-	w = (flags & 0x400) ? ev->data.l[3] : ewin->client.w;
-	h = (flags & 0x800) ? ev->data.l[4] : ewin->client.h;
+	x = (flags & 0x0100) ? ev->data.l[1] : EoGetX(ewin);
+	y = (flags & 0x0200) ? ev->data.l[2] : EoGetY(ewin);
+	w = (flags & 0x0400) ? ev->data.l[3] : ewin->client.w;
+	h = (flags & 0x0800) ? ev->data.l[4] : ewin->client.h;
+/*	source = OPSRC((flags & 0xF000) >> 12); */
 	EwinMoveResizeWithGravity(ewin, x, y, w, h, grav);
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {
+/*	source = OPSRC(ev->data.l[4]); */
 	switch (ev->data.l[2])
 	  {
 	  case _NET_WM_MOVERESIZE_SIZE_TOPLEFT:
@@ -1022,6 +1040,11 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	     /* doMove(NULL); */
 	     break;
 	  }
+     }
+   else if (ev->message_type == ECORE_X_ATOM_NET_RESTACK_WINDOW)
+     {
+/*	source = OPSRC(ev->data.l[0]); */
+	/* FIXME - Implement */
      }
 
  done:

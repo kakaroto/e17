@@ -891,10 +891,10 @@ EventShow(const XEvent * ev)
      case ClientMessage:
 	txt = XGetAtomName(disp, ev->xclient.message_type);
 	Eprintf
-	   ("%#08lx EV-%s win=%#lx ev_type=%s(%ld) data[0-3]= %08lx %08lx %08lx %08lx\n",
+	   ("%#08lx EV-%s win=%#lx ev_type=%s(%ld) data: %08lx %08lx %08lx %08lx %08lx\n",
 	    ser, name, win, txt, ev->xclient.message_type,
 	    ev->xclient.data.l[0], ev->xclient.data.l[1], ev->xclient.data.l[2],
-	    ev->xclient.data.l[3]);
+	    ev->xclient.data.l[3], ev->xclient.data.l[4]);
 	XFree(txt);
 	break;
      case MappingNotify:
