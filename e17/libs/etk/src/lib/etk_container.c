@@ -11,8 +11,8 @@
 
 enum _Etk_Container_Signal_Id
 {
-   ETK_CONTAINER_ADD_SIGNAL,
-   ETK_CONTAINER_REMOVE_SIGNAL,
+   ETK_CONTAINER_CHILD_ADDED_SIGNAL,
+   ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
    ETK_CONTAINER_NUM_SIGNALS
 };
 
@@ -46,8 +46,8 @@ Etk_Type *etk_container_type_get()
    {
       container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container), ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
    
-      _etk_container_signals[ETK_CONTAINER_ADD_SIGNAL] = etk_signal_new("add", container_type, ETK_MEMBER_OFFSET(Etk_Container, child_add), etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_container_signals[ETK_CONTAINER_REMOVE_SIGNAL] = etk_signal_new("remove", container_type, ETK_MEMBER_OFFSET(Etk_Container, child_remove), etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child_added", container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child_removed", container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
       etk_type_property_add(container_type, "border_width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
    
@@ -65,9 +65,9 @@ Etk_Type *etk_container_type_get()
  */
 void etk_container_add(Etk_Container *container, Etk_Widget *widget)
 {
-   if (!container || !widget)
+   if (!container || !widget || !container->child_add)
       return;
-   etk_signal_emit(_etk_container_signals[ETK_CONTAINER_ADD_SIGNAL], ETK_OBJECT(container), NULL, widget);
+   container->child_add(container, widget);
 }
 
 /**
@@ -77,9 +77,9 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
  */
 void etk_container_remove(Etk_Container *container, Etk_Widget *widget)
 {
-   if (!container || !widget)
+   if (!container || !widget || !container->child_remove)
       return;
-   etk_signal_emit(_etk_container_signals[ETK_CONTAINER_REMOVE_SIGNAL], ETK_OBJECT(container), NULL, widget);
+   container->child_remove(container, widget);
 }
 
 /**

@@ -283,6 +283,7 @@ void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char
  * @param widget the widget to realize
  * @note It shouldn't be called manually, it's mainly called by widget implementations
  */
+/* TODO realize all on realize */
 void etk_widget_realize(Etk_Widget *widget)
 {
    Evas *evas = NULL;
@@ -428,9 +429,15 @@ void etk_widget_parent_set(Etk_Widget *widget, Etk_Container *parent)
       return;
 
    if (parent)
+   {
       parent->children = evas_list_append(parent->children, widget);
+      etk_signal_emit_by_name("child_added", ETK_OBJECT(parent), NULL, widget);
+   }
    else if (widget->parent)
+   {
       widget->parent->children = evas_list_remove(widget->parent->children, widget);
+      etk_signal_emit_by_name("child_removed", ETK_OBJECT(widget->parent), NULL, widget);
+   }
 
    old_parent = widget->parent;
    widget->parent = parent;

@@ -186,7 +186,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
-   etk_signal_connect("add", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_add_cb), NULL);
+   etk_signal_connect("child_added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_add_cb), NULL);
 }
 
 /* Destroys the scrolled_view */

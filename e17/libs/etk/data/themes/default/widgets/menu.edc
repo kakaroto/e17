@@ -2,21 +2,44 @@ group {
    name: "menu";
    parts {
       part {
-         name: "menu_bg";
+	 name: "menu_bg1";
+	 mouse_events: 0;
+	 type: RECT;
+	 description {
+	    state: "default" 0.0;
+	    color: 221 221 221 255;
+	    rel1 {
+	       relative: 0.0 1.0;
+	       offset: 1 0;
+	       to_y: "menu_bg2";
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset: -2 -2;
+	    }
+	 }
+      }
+      part {
+         name: "menu_bg2";
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
+	    max: 99999 48;
+	    align: 0.5 0.0;
+	    rel1 {
+	       relative: 0.0 0.0;
+	       offset: 1 1;
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset: -2 -2;
+	    }
             image {
                normal: "background.png";
             }
+	    fill {
+	       smooth: 0;
+	    }
          }
       }
       part {
@@ -87,17 +110,6 @@ group {
          type: SWALLOW;
          mouse_events: 0;
          description {
-            state: "visible" 0.0;
-            rel1 {
-               relative: 0.0 0.5;
-               offset: 3 -8;
-            }
-            rel2 {
-               relative: 0.0 0.5;
-               offset: 18 7;
-            }
-         }
-         description {
             state: "invisible" 0.0;
             visible: 0;
             rel1 {
@@ -107,6 +119,17 @@ group {
             rel2 {
                relative: 0.0 1.0;
                offset: 0 -1;
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 3 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 18 7;
             }
          }
       }
@@ -174,14 +197,14 @@ group {
             visible: 0;
             color: 255 255 255 255;
             rel1 {
-               relative: 0.0 0.0;
+               relative: 1.0 0.0;
                offset: 0 0;
-               to: "item_outline";
+               to_x: "image_swallow";
             }
             rel2 {
-               relative: 1.0 1.0;
+               relative: 0.0 1.0;
                offset: -1 -1;
-               to: "item_outline";
+               to_x: "right_swallow";
             }
             image {
                normal: "menu_item_shadow2.png";
@@ -203,14 +226,14 @@ group {
             visible: 0;
             color: 255 255 255 255;
             rel1 {
-               relative: 0.0 0.0;
+               relative: 1.0 0.0;
                offset: 0 0;
-               to: "item_outline";
+               to_x: "image_swallow";
             }
             rel2 {
-               relative: 1.0 1.0;
+               relative: 0.0 1.0;
                offset: -1 -1;
-               to: "item_outline";
+               to_x: "right_swallow";
             }
             image {
                normal: "menu_item_shadow1.png";
@@ -232,14 +255,14 @@ group {
             visible: 0;
             color: 255 255 255 0;
             rel1 {
-               relative: 0.0 0.0;
+               relative: 1.0 0.0;
                offset: 0 0;
-               to: "item_outline";
+               to_x: "image_swallow";
             }
             rel2 {
-               relative: 1.0 1.0;
+               relative: 0.0 1.0;
                offset: -1 -1;
-               to: "item_outline";
+               to_x: "right_swallow";
             }
             image {
                normal: "menu_item_highlight.png";
@@ -555,6 +578,36 @@ group {
          target: "item_highlight";
          transition: LINEAR 0.1;
       }
+      
+      program {
+         name: "image_show";
+         signal: "image_show";
+         source: "";
+         action: STATE_SET "visible" 0.0;
+         target: "image_swallow";
+      }
+      program {
+         name: "image_hide";
+         signal: "image_hide";
+         source: "";
+         action: STATE_SET "invisible" 0.0;
+         target: "image_swallow";
+      }
+
+      program {
+         name: "right_swallow_show";
+         signal: "right_swallow_show";
+         source: "";
+         action: STATE_SET "visible" 0.0;
+         target: "right_swallow";
+      }
+      program {
+         name: "right_swallow_hide";
+         signal: "right_swallow_hide";
+         source: "";
+         action: STATE_SET "invisible" 0.0;
+         target: "right_swallow";
+      }
    }
 }
 group {
@@ -577,6 +630,73 @@ group {
             image {
                normal: "menu_separator.png";
                border: 3 3 0 0;
+            }
+	    fill {
+	       smooth: 0;
+	    }
+         }
+      }
+   }
+}
+group {
+   name: "menu_checkbox";
+   parts {
+      part {
+         name: "check";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 1 1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+            }
+            image {
+               normal: "checkbox_off.png";
+            }
+         }
+         description {
+            state: "checked" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "checkbox_on.png";
+            }
+         }
+      }
+   }
+}
+group {
+   name: "menu_radio";
+   parts {
+      part {
+         name: "radio";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 1 1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+            }
+            image {
+               normal: "radio_off.png";
+            }
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "radio_on.png";
             }
          }
       }

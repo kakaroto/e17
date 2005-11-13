@@ -17,7 +17,10 @@
 /** @brief Checks if the object is an Etk_Menu_Item */
 #define ETK_IS_MENU_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_TYPE))
 
-/* TODO: doc */
+/**
+ * @struct Etk_Menu_Item
+ * @brief An item of a menu or of a menu bar
+ */
 struct _Etk_Menu_Item
 {
    /* private: */
@@ -28,10 +31,18 @@ struct _Etk_Menu_Item
    void (*deselect)(Etk_Menu_Item *menu_item);
    void (*activate)(Etk_Menu_Item *menu_item);
    
-   Etk_Menu *child, *parent;
+   Etk_Menu_Shell *parent;
+   Etk_Menu *submenu;
+   
    char *label;
    Etk_Image *image;
+   /* "right_widget" can be the submenu arrow, the checkbox or the radiobox widget */
+   Etk_Widget *right_widget;
+   
    Etk_Bool selected;
+   Etk_Bool show_image;
+   Etk_Bool show_right_swallow;
+   Etk_Bool right_widget_is_arrow;
 };
 
 Etk_Type *etk_menu_item_type_get();
@@ -47,6 +58,9 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item);
 
 void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu);
 void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image);
+
+void etk_menu_item_image_show(Etk_Menu_Item *menu_item, Etk_Bool show);
+void etk_menu_item_right_swallow_show(Etk_Menu_Item *menu_item, Etk_Bool show);
 
 /** @} */
 
