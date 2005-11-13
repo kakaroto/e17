@@ -133,6 +133,8 @@ esmart_draggies_new (Ecore_Evas * ee)
 	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_MOVE,
 					  _mouse_move_cb, data);
 	  data->obj = o;
+
+    evas_object_smart_member_add(o, result);
 	}
     }
   return (result);
@@ -188,11 +190,7 @@ _esmart_dragable_object_smart_get ()
   smart = evas_smart_new ("esmart_dragable_object",
 			  _esmart_dragable_object_add,
 			  _esmart_dragable_object_del,
-			  _esmart_dragable_object_layer_set,
-			  _esmart_dragable_object_raise,
-			  _esmart_dragable_object_lower,
-			  _esmart_dragable_object_stack_above,
-			  _esmart_dragable_object_stack_below,
+        NULL, NULL, NULL, NULL, NULL,
 			  _esmart_dragable_object_move,
 			  _esmart_dragable_object_resize,
 			  _esmart_dragable_object_show,
