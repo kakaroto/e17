@@ -582,7 +582,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
 		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), 1000);
 		ewl_widget_focus_send(EWL_WIDGET(ib->icon_box_parent->entry));
-		ewl_widget_hide(ib->w_label);
+		//ewl_widget_hide(ib->w_label);
 
 		/* Record which icon's label we are editing */
 		ib->icon_box_parent->edit_icon = ib;
