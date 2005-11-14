@@ -1594,6 +1594,15 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	if (w->bit_state)
 		ecore_string_release(w->bit_state);
 
+	if (w->theme)
+		ecore_hash_destroy(w->theme);
+
+	if (w->theme_text)
+		ecore_hash_destroy(w->theme_text);
+
+	if (w->data)
+		ecore_hash_destroy(w->data);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
