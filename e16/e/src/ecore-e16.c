@@ -1228,6 +1228,13 @@ ecore_x_netwm_desktop_get(Ecore_X_Window win, unsigned int *desk)
 					 desk, 1);
 }
 
+int
+ecore_x_netwm_user_time_get(Ecore_X_Window win, unsigned int *ts)
+{
+   return ecore_x_window_prop_card32_get(win, ECORE_X_ATOM_NET_WM_USER_TIME,
+					 ts, 1);
+}
+
 void
 ecore_x_netwm_opacity_set(Ecore_X_Window win, unsigned int opacity)
 {

@@ -651,6 +651,23 @@ EWMH_GetWindowIcons(EWin * ewin)
 }
 
 static void
+EWMH_GetWindowUserTime(EWin * ewin)
+{
+#if 0				/* TBD */
+   int                 num;
+   unsigned int        ts;
+
+   num = ecore_x_netwm_user_time_get(_EwinGetClientXwin(ewin), &ts);
+   if (num <= 0)
+      return;
+
+   Eprintf("EWMH_GetWindowUserTime %#x\n", ts);
+#else
+   ewin = NULL;
+#endif
+}
+
+static void
 EWMH_GetWindowMisc(EWin * ewin)
 {
    int                 num;
@@ -762,6 +779,7 @@ EWMH_GetWindowHints(EWin * ewin)
    EWMH_GetWindowType(ewin);
    EWMH_GetWindowIcons(ewin);
    EWMH_GetWindowStrut(ewin);
+   EWMH_GetWindowUserTime(ewin);
 }
 
 /*
@@ -1066,4 +1084,6 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
       EWMH_GetWindowStrut(ewin);
    else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
       EWMH_GetWindowOpacity(ewin);
+   else if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
+      EWMH_GetWindowUserTime(ewin);
 }

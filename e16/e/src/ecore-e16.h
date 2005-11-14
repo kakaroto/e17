@@ -264,6 +264,10 @@ void                ecore_x_netwm_desktop_set(Ecore_X_Window win,
 					      unsigned int desk);
 int                 ecore_x_netwm_desktop_get(Ecore_X_Window win,
 					      unsigned int *desk);
+
+int                 ecore_x_netwm_user_time_get(Ecore_X_Window win,
+						unsigned int *ts);
+
 void                ecore_x_netwm_opacity_set(Ecore_X_Window win,
 					      unsigned int opacity);
 int                 ecore_x_netwm_opacity_get(Ecore_X_Window win,
