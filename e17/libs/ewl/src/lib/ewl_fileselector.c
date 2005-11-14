@@ -824,8 +824,18 @@ ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path)
 
 	ecore_list_goto_first(files);
 	while ((d = ecore_list_current(files))) {
-		prow = ewl_tree_text_row_add(EWL_TREE(fs->list_files),
-					     NULL, &d->name);
+		Ewl_Widget *label;
+
+		prow = ewl_row_new();
+		ewl_container_child_append(EWL_CONTAINER(fs->list_files), prow);
+		ewl_widget_show(prow);
+
+		label = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(label), d->name);
+		ewl_object_fill_policy_set(EWL_OBJECT(label),
+					   EWL_FLAG_FILL_SHRINK);
+		ewl_container_child_append(EWL_CONTAINER(prow), label);
+		ewl_widget_show(label);
 
 		ewl_widget_data_set(prow, "FILESELECTOR_FILE", strdup(d->name));
 		ewl_fileselector_tooltip_add(prow, d);
@@ -846,13 +856,17 @@ ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path)
 	while ((d = ecore_list_current(dirs))) {
 		Ewl_Widget *label;
 
+		prow = ewl_row_new();
+		ewl_container_child_append(EWL_CONTAINER(fs->list_dirs), prow);
+		ewl_widget_show(prow);
+
 		label = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(label), d->name);
 		ewl_object_fill_policy_set(EWL_OBJECT(label),
 					   EWL_FLAG_FILL_SHRINK);
+		ewl_container_child_append(EWL_CONTAINER(prow), label);
 		ewl_widget_show(label);
 
-		prow = ewl_tree_row_add(EWL_TREE(fs->list_dirs), NULL, &label);
 		ewl_widget_data_set(prow, "FILESELECTOR_DIR", strdup(d->name));
 		ewl_fileselector_tooltip_add(prow, ecore_list_current(dirs));
 		ewl_fileselector_data_free(d);
