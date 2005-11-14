@@ -9,6 +9,7 @@ AM_CFLAGS = \
 	@ECORE_CFLAGS@ \
 	@EVAS_CFLAGS@ \
 	@ESMART_CFLAGS@ \
+	@EET_CFLAGS@\
 	@EDJE_CFLAGS@ \
 	@ENLIGHTENMENT_CFLAGS@
 
@@ -26,6 +27,7 @@ ethemes_LDADD = \
 	@EDJE_LIBS@ \
 	@ESMART_LIBS@ \
 	-lesmart_container \
+	@EET_LIBS@ \
 	@ENLIGHTENMENT_LIBS@
 
 EXTRA_DIST = \

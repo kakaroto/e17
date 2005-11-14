@@ -21,21 +21,91 @@ const int WIDTH = 700;
 const int HEIGHT = 500;
 const int container_height = 400;
 
-char * selected_theme;
-char * current_theme;
-
 Evas_List * themes;
-
-Evas_Object * label;
 
 Evas_Object * container_outer;
 Evas_Object * container;
-Evas_Object * scrollbar;
 
-Evas_Object ** buttons;
+Evas_Object * b_default,
+	    * b_apply,
+	    * b_exit;
+
 Evas_Object * preview;
 Evas_Object * preview_clip;
 Evas_Object * background;
+
+Evas_Object * last_button;
+
+char * default_theme;
+char * selected_theme;
+
+typedef struct {
+	Evas_Object * thumb;
+	Evas_Object * button;
+	char * theme;
+	char * label;
+	char * thumbpath;
+} Etheme_Object;
+
+
+static void _preview_theme(void *data, Evas_Object *obj, const char *emission, const char *source);
+
+Etheme_Object * etheme_new(const char * t) {
+
+	Etheme_Object * o;
+	o = (Etheme_Object *) malloc(sizeof(Etheme_Object));
+
+	o->theme = (char *) strdup(t);
+	o->thumbpath = e_preview_thumb_file_get(t);
+
+
+	int size = strlen(t) - 4; /* without .edj */
+
+	o->label = malloc(sizeof(char) * size);
+	o->label = strncpy(o->label, t, size);
+	o->label[size] = 0;
+		
+	o->button = edje_object_add(evas);
+
+	edje_object_file_set(o->button, default_theme, "fileman/icon_normal");
+	evas_object_resize(o->button, 100, 120);
+	edje_object_part_text_set(o->button, "icon_title" , o->label);
+		
+	esmart_container_element_append(container, o->button);
+	
+	if (e_preview_thumb_check(t))
+		e_preview_thumb_generate(t);
+		
+	o->thumb = evas_object_image_add(evas);
+	evas_object_image_size_set(o->thumb, 640, 480);
+	evas_object_image_fill_set(o->thumb, 0, 0, 85, 85);
+	e_preview_thumb_image(o->thumbpath, o->thumb);
+
+	edje_object_part_swallow(o->button, "icon_swallow", o->thumb);
+
+	evas_object_show(o->button);
+
+	edje_object_signal_callback_add(o->button, "mouse,up,1", "icon_event",
+				_preview_theme, o);
+		
+	
+	return o;
+
+}
+
+void etheme_free(Etheme_Object * o) {
+
+	if (!o) return;
+
+	if (o->theme) free(o->theme);
+	if (o->thumbpath) free(o->thumbpath);
+	if (o->label) free(o->label);
+	
+	evas_object_del(o->thumb);
+	evas_object_del(o->button);
+
+	free(o);
+}
 
 
 void _resize_cb(Ecore_Evas * ee) {
@@ -52,30 +122,47 @@ void _resize_cb(Ecore_Evas * ee) {
 	evas_object_move(background, 0, 0);
 	evas_object_resize(background, barwidth, h);
 	evas_object_show(background);
+		
+	evas_object_resize(container_outer, barwidth, h - 100);
 
 	int length = (int) esmart_container_elements_length_get(container);
-	if (length > h - 100) {
-		evas_object_resize(container_outer, barwidth - 19, h - 100);
-		evas_object_show(scrollbar);
-	} else {
-		evas_object_resize(container_outer, barwidth, h - 100);
-		evas_object_hide(scrollbar);
-	}
 
-	int n = evas_list_count(themes);
-	evas_object_move(buttons[n], 0, h - 100 + 10);
-	evas_object_move(buttons[n+1], 0, h - 100 + 40);
-	evas_object_move(buttons[n+2], 0, h - 100 + 60);
-	evas_object_resize(scrollbar, 16, h - 100);
+	double size;
+	size = (double)(h - 100) / (double)length;
+
+	edje_object_part_drag_size_set(container_outer, "vbar_bar", 1.0, size);
+
+	if (length > h - 100)
+		edje_object_signal_emit(container_outer, "vbar", "show");
+	else
+		edje_object_signal_emit(container_outer, "vbar", "hide");
+
+	evas_object_move(b_default, 0, h - 100 + 10);
+	evas_object_move(b_apply, 0, h - 100 + 40);
+	evas_object_move(b_exit, 0, h - 100 + 60);
 
 	
 }
 
-static void _preview_theme(void *data, Evas_Object *o, const char *emission, const char *source) {
+static void _preview_theme(void *data, Evas_Object *obj, const char *emission, const char *source) {
 
-	selected_theme = (char *) data;
+	Etheme_Object * o;
+	o = (Etheme_Object *) data;
+
+	if (!o)
+		selected_theme = (char *)strdup("default.edj");
+	else
+		selected_theme = o->theme;
 
 	e_preview_theme_set(preview, selected_theme);
+
+	if (last_button)
+		edje_object_signal_emit(last_button, "unclicked", "");
+	if (o) {
+		edje_object_signal_emit(o->button, "clicked", "");
+		last_button = o->button;
+	}
+	
 	_resize_cb(ee);
 
 }
@@ -97,31 +184,15 @@ static void _set_theme(void *data, Evas_Object *o, const char *emission, const c
 
 }
 
-static void _scrollup(void *data, Evas_Object *o, const char *emission, const char *source) { 
-	esmart_container_scroll_start(container, 1);
-}
-
-static void _scrolldown(void *data, Evas_Object *o, const char *emission, const char *source) { 
-	esmart_container_scroll_start(container, -1);
-}
-
 static void _scrolldrag(void *data, Evas_Object *o, const char *emission, const char *source) { 
 	        
-	double x, y;
-	edje_object_part_drag_value_get(scrollbar, "drag", &x, &y);
+	double y;
+	edje_object_part_drag_value_get(container_outer, "vbar_bar", NULL,  &y);
 	esmart_container_scroll_percent_set(container, y);
 
 }
 
-static void _scrollstop(void *data, Evas_Object *o, const char *emission, const char *source) { 
-	esmart_container_scroll_stop(container);
-	double s;
-	s = esmart_container_scroll_percent_get(container);
-	edje_object_part_drag_value_set(scrollbar, "drag", 1, s);
-
-}
-
-void read_theme_list() {
+void get_theme_list() {
 
 	char * path;
 	path = malloc(sizeof(char) * PATH_MAX);
@@ -133,10 +204,13 @@ void read_theme_list() {
 	ecore_list_goto_first(list);
 	char * data;
 	themes = NULL;
-	while ((data = (char *)ecore_list_next(list)))
+	while (data = (char *)ecore_list_next(list))
 		if (strstr(data, ".edj") != NULL) {
 			char * file = (char *) strdup(data);
-			themes = evas_list_append(themes, file);
+			Etheme_Object * o;
+			o = etheme_new(file);
+			themes = evas_list_append(themes, o);
+			free(file);
 		}
 	
 	ecore_list_destroy(list);
@@ -146,74 +220,42 @@ void read_theme_list() {
 
 void create_buttons() {
 
-	int n = evas_list_count(themes);
-	
-	buttons = calloc(n + 3, sizeof(Evas_Object *));
 	
 	container_outer = edje_object_add(evas);
-	edje_object_file_set(container_outer, current_theme, "modules/ibar/main");
+	edje_object_file_set(container_outer, default_theme, "widgets/scrollframe");
 	evas_object_move(container_outer, 0, 0);
+	edje_object_signal_emit(container_outer, "hbar", "hide");
 	evas_object_resize(container_outer, barwidth - 19, container_height);
 	evas_object_show(container_outer);
 
-	scrollbar = edje_object_add(evas);
-	edje_object_file_set(scrollbar, current_theme, "widgets/vscrollbar");
-	evas_object_move(scrollbar, barwidth - 19, 0);
-	evas_object_resize(scrollbar, 16, container_height);
-	evas_object_show(scrollbar);
-
-	edje_object_signal_callback_add(scrollbar, "scroll_top_start", "", _scrollup, NULL);
-	edje_object_signal_callback_add(scrollbar, "scroll_bottom_start", "", _scrolldown, NULL);
-	edje_object_signal_callback_add(scrollbar, "scroll_top_stop", "", _scrollstop, NULL);
-	edje_object_signal_callback_add(scrollbar, "scroll_bottom_stop", "", _scrollstop, NULL);
-	edje_object_signal_callback_add(scrollbar, "drag", "*", _scrolldrag, NULL);
+	edje_object_signal_callback_add(container_outer, "drag*", "vbar_bar", _scrolldrag, NULL);
 	
 	container = esmart_container_new(evas);
-	edje_object_part_swallow(container_outer, "items", container);
+	edje_object_part_swallow(container_outer, "item", container);
 	esmart_container_direction_set(container, CONTAINER_DIRECTION_VERTICAL);
 	
+	get_theme_list();
 
-#define BUTTON_EVENTS(A, B, C)\
-	edje_object_signal_callback_add(buttons[A], "click", "", B, C);
+#define ADD_BUTTON(A, B, C)\
+	A = edje_object_add(evas);\
+	edje_object_file_set(A, default_theme, "widgets/button");\
+	evas_object_resize(A, 120, 24);\
+	edje_object_part_text_set(A, "label", C);\
+	evas_object_show(A);
 	
-#define ADD_BUTTON(A, B, C, D)\
-	buttons[A] = edje_object_add(evas);\
-	edje_object_file_set(buttons[A], current_theme, "widgets/button");\
-	evas_object_resize(buttons[A], D, 24);\
-	edje_object_part_text_set(buttons[A], "label", C);\
-	evas_object_show(buttons[A]);
-	
-	int i;
-	for (i=0; i<n; i++) {
-			
-		char * n;
-		n = evas_list_nth(themes, i);
-		char * name;
-		int size = strlen(n) - 4; /* without .edj */
-		name = malloc(sizeof(char) * size);
-		name = strncpy(name, n, size);
-		name[size] = 0;
-		
-		ADD_BUTTON(i, 20, name, 100);
-		esmart_container_element_append(container, buttons[i]);
-		BUTTON_EVENTS(i, _preview_theme, evas_list_nth(themes, i));
-		
-	}
-	
-	ADD_BUTTON(n, 40, "Default Theme", 120);
-	evas_object_move(buttons[n], 5, container_height + 10);
-	BUTTON_EVENTS(n, _preview_theme, "default.edj");
+	ADD_BUTTON(b_default, 40, "Default Theme");
+	evas_object_move(b_default, 5, container_height + 10);
+	edje_object_signal_callback_add(b_default, "click", "", _preview_theme, NULL);
 	 
-	ADD_BUTTON(n + 1, 60, "Apply", 120);
-	evas_object_move(buttons[n+1], 5, container_height + 40);
-	BUTTON_EVENTS(n + 1, _set_theme, NULL);
+	ADD_BUTTON(b_apply, 60, "Apply");
+	evas_object_move(b_apply, 5, container_height + 40);
+	edje_object_signal_callback_add(b_apply, "click", "", _set_theme, NULL);
 	
-	ADD_BUTTON(n + 2, 80, "Exit", 120);
-	evas_object_move(buttons[n+2], 5, container_height + 60);
-	BUTTON_EVENTS(n + 2, _ethemes_exit, NULL);
+	ADD_BUTTON(b_exit, 80, "Exit");
+	evas_object_move(b_exit, 5, container_height + 60);
+	edje_object_signal_callback_add(b_exit, "click", "", _ethemes_exit, NULL);
 	
 
-#undef BUTTON_EVENTS
 #undef ADD_BUTTON
 }
 
@@ -222,17 +264,9 @@ static int ethemes_init(void *data, int type, void *ev) {
 	E_Response_Theme_Get *e;
 	e = ev;
 	
-/* for now, I'll only use the default e17 theme cause it's the only one that 
- * is guaranteed to work.
- 
-	current_theme = malloc(sizeof(char) * PATH_MAX);
-	snprintf(current_theme, PATH_MAX, "%s/.e/e/themes/%s", getenv("HOME"),
-			e->file);
-*/
-	
-	current_theme = E17PREFIX "/share/enlightenment/data/themes/default.edj";
+	default_theme = (char *) strdup(E17PREFIX "/share/enlightenment/data/themes/default.edj");
 
-	edje_object_file_set(background, current_theme, "widgets/menu/default/background");
+	edje_object_file_set(background, default_theme, "widgets/menu/default/background");
 
 	selected_theme = (char *)strdup(e->file);
 	e_preview_theme_set(preview, selected_theme);
@@ -273,6 +307,8 @@ int main(int argc, char **argv) {
 	evas_object_resize(background, barwidth, HEIGHT);
 	evas_object_show(background);
 
+	e_preview_thumb_init();
+
 	preview = e_preview_new(evas);
 	
 	preview_clip = evas_object_rectangle_add(evas);
@@ -280,8 +316,8 @@ int main(int argc, char **argv) {
 	evas_object_resize(preview_clip, WIDTH - barwidth, HEIGHT);
 	evas_object_show(preview_clip);
 	evas_object_clip_set (preview, preview_clip);
-	
-	read_theme_list();
+
+	last_button = NULL;
 
 	ecore_evas_callback_resize_set(ee, _resize_cb);
 	        
@@ -290,12 +326,32 @@ int main(int argc, char **argv) {
 			
 	ecore_main_loop_begin();
 
+	/* free ethemes */
+	int n = evas_list_count(themes);
+	for ( n -= 1; n>=0; n--) {
+		Etheme_Object * o;
+		o = evas_list_nth(themes, n);
+		etheme_free(o);
+	}
+	evas_list_free(themes);
 
+	/* free canvas objects */
+	evas_object_free(container);
+	evas_object_free(container_outer);
+	evas_object_free(b_apply);
+	evas_object_free(b_default);
+	evas_object_free(b_exit);
+	evas_object_free(background);
+	evas_object_free(preview);
+	evas_object_free(preview_clip);
+	
+	if (selected_theme) free(selected_theme);
+	if (default_theme) free(default_theme);
+	
 	edje_shutdown();
 	ecore_shutdown();
 
 	return 0;
 }
-
 
 

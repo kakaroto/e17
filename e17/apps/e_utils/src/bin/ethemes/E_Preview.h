@@ -23,5 +23,36 @@ Evas_Object * e_preview_new(Evas *evas);
 void e_preview_theme_set(Evas_Object *object, const char * theme);
 
 
+int e_preview_is_theme(Evas * evas, const char * theme);
+
+/**
+ * initialize thumb generation.
+ */
+int e_preview_thumb_init(void);
+
+/**
+ * Get the full path of the thumbnail
+ */
+char * e_preview_thumb_file_get(const char * theme);
+
+/**
+ * Check the validity of the thumbnail
+ * @theme - the name of the theme file.
+ */
+int e_preview_thumb_check(const char * theme);
+
+/**
+ * Create a thumbnail for the current theme
+ * @theme - the name of the theme file.
+ */
+int e_preview_thumb_generate(const char * theme);
+
+/**
+ * Set an evas object's data to the thumbnail's image
+ * @theme - the name of the theme file
+ * @obj - the evas image object
+ */
+int e_preview_thumb_image(const char * theme, Evas_Object * obj);
+
 #endif
 
