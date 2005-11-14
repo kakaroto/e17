@@ -650,6 +650,7 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_move =
       EwinInhGetUser(ewin, move) || ewin->state.fullscreen;
    ewin->state.inhibit_resize = ewin->state.iconified || ewin->state.shaded ||
+      (ewin->props.no_resize_h && ewin->props.no_resize_v) ||
       EwinInhGetUser(ewin, size) || ewin->state.fullscreen;
    ewin->state.inhibit_iconify = EwinInhGetWM(ewin, iconify);
    ewin->state.inhibit_shade = ewin->state.no_border ||
