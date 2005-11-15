@@ -350,6 +350,7 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 
 	if (ib->background) {
 		ewl_widget_destroy(ib->background);
+		ib->background = NULL;
 	}
 
 	if (!file) return;
