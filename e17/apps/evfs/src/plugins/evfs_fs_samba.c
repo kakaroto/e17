@@ -251,10 +251,13 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 				  (sizeof(char) * strlen(entry->name )) + 
 				  (sizeof(char) * 2 );
 			reference->path = malloc(size);
+			
 			snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, entry->name );
 		
 			printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
-					
+
+			
+			reference->plugin_uri = strdup("smb");		
 			ecore_list_append(files, reference);
 		   }
 		}

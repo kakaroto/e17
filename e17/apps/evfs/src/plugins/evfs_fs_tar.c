@@ -430,7 +430,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 			size = strlen(ele->path)+strlen("/")+strlen(ele->name)+1;
 			reference->path = malloc(size);
 			reference->file_type = ele->type;
-			reference->plugin_uri = "tar";
+			reference->plugin_uri = strdup("tar");
 			snprintf(reference->path, size, "%s/%s", ele->path, ele->name);
 			ecore_list_append(files, reference);
 			

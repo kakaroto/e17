@@ -177,6 +177,10 @@ struct evfs_event_file_list {
 	Ecore_List* list; /*A list of evfs_filereference*/	
 };
 
+typedef struct evfs_event_progress {
+	double file_progress;
+} evfs_event_progress;
+
 //Would be good if this could be a union -> but evfs_command changes size :( */
 typedef struct evfs_event {
 	evfs_eventtype type;
@@ -186,6 +190,7 @@ typedef struct evfs_event {
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;	
+	evfs_event_progress progress;
 }
 evfs_event;
 /*---------------------------------------------------------------------*/
