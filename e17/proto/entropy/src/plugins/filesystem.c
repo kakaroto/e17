@@ -321,6 +321,9 @@ void callback(evfs_event* data) {
 			}
 
 			break;
+		case EVFS_EV_FILE_PROGRESS:
+			printf("Progress for file '%s' is %f\%\n", (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
+			break;
 
 			default: printf("Received an EVFS message we don't recognise!\n");
 				 break;
