@@ -173,7 +173,7 @@ ewl_attach_list_free(Ewl_Attach_List *list)
 	DCHECK_PARAM_PTR("list", list);
 
 	if (list->direct)
-		ewl_attach_list_del(list, EWL_ATTACH(list)->type);
+		ewl_attach_list_del(list, EWL_ATTACH(list->list)->type);
 	else
 	{
 		while (list->len)
