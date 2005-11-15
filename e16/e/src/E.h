@@ -976,6 +976,7 @@ void                FocusEwinSetGrabs(EWin * ewin);
 void                FocusToEWin(EWin * ewin, int why);
 void                FocusHandleEnter(EWin * ewin, XEvent * ev);
 void                FocusHandleLeave(EWin * ewin, XEvent * ev);
+void                FocusHandleChange(EWin * ewin, XEvent * ev);
 void                FocusHandleClick(EWin * ewin, Window win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);

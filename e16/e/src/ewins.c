@@ -1847,6 +1847,7 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	   break;
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);
+	FocusHandleChange(ewin, ev);
 	break;
      case ConfigureNotify:
      case GravityNotify:

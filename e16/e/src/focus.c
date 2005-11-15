@@ -579,6 +579,15 @@ FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
 }
 
 void
+FocusHandleChange(EWin * ewin __UNUSED__, XEvent * ev __UNUSED__)
+{
+#if 0				/* Debug */
+   if (ewin == Mode.focuswin && ev->type == FocusOut)
+      Eprintf("??? Lost focus: %s\n", EwinGetName(ewin));
+#endif
+}
+
+void
 FocusHandleClick(EWin * ewin, Window win)
 {
 #if 0
