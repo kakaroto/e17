@@ -4,22 +4,24 @@
 
 
 
-static io_init=0;
-Eet_Data_Descriptor *_evfs_filereference_edd;
+static int io_init=0;
+static Eet_Data_Descriptor *_evfs_filereference_edd;
 
 
 int evfs_io_initialise() {
 	if (io_init) return 1;
+
+	io_init = 1;
 	
   	
 	_evfs_filereference_edd = eet_data_descriptor_new("evfs_filereference", sizeof(evfs_filereference),
-                                 evas_list_next,
-                                 evas_list_append,
-                                 evas_list_data,
-                                 evas_list_free,
-                                 evas_hash_foreach,
-                                 evas_hash_add,
-                                 evas_hash_free);
+			      (void *(*) (void *))evas_list_next, 
+			      (void *(*) (void *, void *))evas_list_append, 
+			      (void *(*) (void *))evas_list_data, 
+			      (void *(*) (void *))evas_list_free, 
+			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, 
+			      (void *(*) (void *, const char *, void *))evas_hash_add, 
+			      (void  (*) (void *))evas_hash_free);
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "file_type", file_type, EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "path",path, EET_T_STRING);
@@ -82,7 +84,7 @@ void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
 void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 	evfs_filereference* ref;
 	char* data;
-	int size_ret;
+	int size_ret=0;
 	//char block[1024]; /*Maybe too small, make this dynamic*/
 	
 	
@@ -90,15 +92,17 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 	while ( (ref = ecore_list_next(event->file_list.list)) ) {
 		/*memcpy(block, &ref->file_type, sizeof(evfs_file_type));
 		memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1);*/
-
+	
+		//printf("Encoding filename: %d %s '%s'\n", ref->file_type, ref->plugin_uri, ref->path);	
 		data =eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
-		printf("Encoded filename: '%s'\n", ref->path);
+		
 		
 		/*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);*/
 		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,data, size_ret  ));
 
-
 		free(data);
+
+
 	}
 	
 }
@@ -106,7 +110,7 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 
 
 void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
-	printf("Sending event type '%d'\n", event->type);
+	//printf("Sending event type '%d'\n", event->type);
 	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
 
 	/*Now write the source command, if any*/

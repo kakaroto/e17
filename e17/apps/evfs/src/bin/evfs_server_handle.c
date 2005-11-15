@@ -152,6 +152,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 	long read_write_bytes = 0;
 	static struct stat file_stat;
 	int progress = 0;
+	int last_notify_progress = 0;
 	evfs_filereference* ref = NEW(evfs_filereference);
 
 	printf ("At test handler\n");
@@ -188,9 +189,10 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			(*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, read_write_bytes );
 
 			
-			progress = count / file_stat.st_size * 100;
-			if (progress % 5 == 0) {
+			progress = (double)((double)count / (double)file_stat.st_size * 100);
+			if (progress % 5 == 0 && last_notify_progress < progress) {
 				printf ("Percent complete: %d\n", progress);
+				last_notify_progress = progress;
 			}
 			
 

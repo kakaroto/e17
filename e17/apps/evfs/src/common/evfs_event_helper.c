@@ -44,7 +44,6 @@ void evfs_stat_event_create(evfs_client* client, evfs_command* command, struct s
 
 	/*Now destroy*/
 	evfs_cleanup_event(event);
-	/*No need to free data -it's probably a const raised by the ecore - it will free it.*/
 	
 }
 
@@ -59,7 +58,6 @@ void evfs_list_dir_event_create(evfs_client* client, evfs_command* command, Ecor
 
 	/*Now destroy*/
 	evfs_cleanup_event(event);
-	/*No need to free data -it's probably a const raised by the ecore - it will free it.*/
 
 }
 
