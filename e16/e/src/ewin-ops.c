@@ -76,6 +76,7 @@ static const WinOp  winops[] = {
    {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
    {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
 
+   {"no_app_focus", 0, 1, 1, EWIN_OP_INH_APP_FOCUS},
    {"no_app_move", 0, 1, 1, EWIN_OP_INH_APP_MOVE},
    {"no_app_size", 0, 1, 1, EWIN_OP_INH_APP_SIZE},
    {"no_user_close", 0, 1, 1, EWIN_OP_INH_USER_CLOSE},
@@ -1424,6 +1425,9 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 void
 EwinOpActivate(EWin * ewin, int source)
 {
+   if (source == OPSRC_APP && EwinInhGetApp(ewin, focus))
+      return;
+
    if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
    EwinOpRaise(ewin, source);

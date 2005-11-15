@@ -750,6 +750,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	WINOP_SET_BOOL(ewin->props.no_button_grabs, args);
 	break;
 
+     case EWIN_OP_INH_APP_FOCUS:
+	WINOP_SET_BOOL(EwinInhGetApp(ewin, focus), args);
+	break;
+
      case EWIN_OP_INH_APP_MOVE:
 	WINOP_SET_BOOL(EwinInhGetApp(ewin, move), args);
 	break;

@@ -712,6 +712,12 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	  }
 	break;
 
+     case EWIN_OP_INH_APP_FOCUS:
+	on = EwinInhGetApp(ewin, focus);
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	EwinInhSetApp(ewin, focus, on);
+	break;
+
      case EWIN_OP_INH_APP_MOVE:
 	on = EwinInhGetApp(ewin, move);
 	SetEwinBoolean(wop->name, &on, param1, 1);
@@ -1409,7 +1415,7 @@ static const IpcItem IPCArray[] = {
     "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
     "                 layer, location, opacity, shade, shadow, size, sticky\n"
     "  win_op <windowid> <focusclick/never_use_area/no_button_grabs/skiplists>\n"
-    "  win_op <windowid> <no_app_move/size>\n"
+    "  win_op <windowid> <no_app_focus/move/size>\n"
     "  win_op <windowid> <no_user_close/move/size>\n"
     "  win_op <windowid> <no_wm_focus>\n"
     "  win_op <windowid> noshadow\n"
