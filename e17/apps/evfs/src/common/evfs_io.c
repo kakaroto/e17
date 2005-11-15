@@ -6,6 +6,7 @@
 
 static int io_init=0;
 static Eet_Data_Descriptor *_evfs_filereference_edd;
+static Eet_Data_Descriptor *_evfs_progress_event_edd;
 
 
 int evfs_io_initialise() {
@@ -26,6 +27,17 @@ int evfs_io_initialise() {
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "file_type", file_type, EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "path",path, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "plugin_uri",plugin_uri, EET_T_STRING);
+
+	_evfs_progress_event_edd = eet_data_descriptor_new("evfs_progress_event", sizeof(evfs_event_progress),
+			      (void *(*) (void *))evas_list_next, 
+			      (void *(*) (void *, void *))evas_list_append, 
+			      (void *(*) (void *))evas_list_data, 
+			      (void *(*) (void *))evas_list_free, 
+			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, 
+			      (void *(*) (void *, const char *, void *))evas_hash_add, 
+			      (void  (*) (void *))evas_hash_free);
+
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "progress", file_progress, EET_T_DOUBLE);
 
 
 	return 0;
@@ -108,6 +120,15 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 }
 
 
+void evfs_write_progress_event(evfs_client* client, evfs_event* event) {
+	int size_ret = 0;
+	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, &event->progress, &size_ret);
+
+	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,client->id,0,0,data, size_ret  ));
+	
+	
+}
+
 
 void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	//printf("Sending event type '%d'\n", event->type);
@@ -126,6 +147,9 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					   break;
 		case EVFS_EV_DIR_LIST:	   evfs_write_list_event(client,event);
 					   break;
+		case EVFS_EV_FILE_PROGRESS: evfs_write_progress_event(client,event);
+					    break;
+					   
 		default:		   printf("Event type not handled in switch\n");
 					   break;
 	}
@@ -159,6 +183,14 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			memcpy(&event->stat.stat_obj, msg->data, sizeof(evfs_stat));
 
 			break;
+
+		case EVFS_EV_PART_PROGRESS: {
+			evfs_event_progress* pg = eet_data_descriptor_decode(_evfs_progress_event_edd, msg->data, msg->len);
+			memcpy(&event->progress, pg, sizeof(evfs_event_progress));
+			free(pg);
+
+		}
+		break;
 
 		case EVFS_EV_PART_FILE_REFERENCE: {
 			evfs_filereference* ref;

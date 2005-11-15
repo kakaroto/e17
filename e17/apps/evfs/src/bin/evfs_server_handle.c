@@ -192,6 +192,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			progress = (double)((double)count / (double)file_stat.st_size * 100);
 			if (progress % 5 == 0 && last_notify_progress < progress) {
 				printf ("Percent complete: %d\n", progress);
+				evfs_file_progress_event_create(client,command,progress);
 				last_notify_progress = progress;
 			}
 			
