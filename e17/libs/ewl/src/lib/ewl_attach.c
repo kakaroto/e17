@@ -462,11 +462,11 @@ ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 	DCHECK_TYPE("w", w, "widget");
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_attach_cb_tooltip_mouse_move, attach);
+				ewl_attach_cb_tooltip_mouse_move, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-				ewl_attach_cb_tooltip_mouse_down, attach);
+				ewl_attach_cb_tooltip_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-				ewl_attach_cb_tooltip_focus_out, attach);
+				ewl_attach_cb_tooltip_focus_out, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -515,10 +515,10 @@ ewl_attach_tooltip_detach(Ewl_Attach *attach)
 }
 
 static void
-ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
+ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
-//	Ewl_Embed *emb;
+	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Move *e;
 //	int x, y;
 	int offset;
@@ -528,11 +528,12 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, "widget");
 
 	e = ev;
-	attach = data;
+	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
+	if (!attach)
+		DRETURN(DLEVEL_STABLE);
 
 	if (!ewl_attach_tooltip)
 		ewl_attach_tooltip = NEW(Ewl_Attach_Tooltip, 1);
@@ -543,8 +544,22 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	ewl_attach_tooltip->to = w;
 
 	offset = ewl_theme_data_int_get(w, "/tooltip/offset");
-	ewl_attach_tooltip->x = e->x + offset;
-	ewl_attach_tooltip->y = e->y + offset;
+
+	emb = ewl_embed_widget_find(w);
+
+	/*
+	 * Position the tooltip on the side with the most available space
+	 */
+	if ((e->x - CURRENT_X(emb)) > (CURRENT_X(emb) + CURRENT_W(emb) - e->x))
+		ewl_attach_tooltip->x = e->x - offset;
+	else
+		ewl_attach_tooltip->x = e->x + offset;
+
+	if ((e->y - CURRENT_Y(emb)) > (CURRENT_Y(emb) + CURRENT_H(emb) - e->y))
+		ewl_attach_tooltip->y = e->y - offset;
+	else
+		ewl_attach_tooltip->y = e->y + offset;
+
 #if 0 
 	emb = ewl_embed_widget_find(w);
 	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
@@ -569,14 +584,16 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data)
 
 static void
 ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__, 
-				void *ev __UNUSED__, void *data)
+				void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
 
-	attach = data;
+	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
+	if (!attach)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_attach_tooltip_detach(attach);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -589,9 +606,11 @@ ewl_attach_cb_tooltip_focus_out(Ewl_Widget *w __UNUSED__,
 	Ewl_Attach *attach;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
 
-	attach = data;
+	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
+	if (!attach)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_attach_tooltip_detach(attach);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
