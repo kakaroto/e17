@@ -423,3 +423,53 @@ evfs_file_uri_path* evfs_parse_uri(char* uri) {
 
 	return path;
 }
+
+
+char* evfs_filereference_to_string(evfs_filereference* ref) {
+	int length=0;
+	char* uri;
+	Ecore_List* parent_list = ecore_list_new();
+	evfs_filereference* parent;
+
+	ecore_list_prepend(parent_list, ref);
+	length += strlen(ref->plugin_uri) + strlen("://");
+	if (ref->username) {
+		length += strlen(ref->username) + strlen(ref->password) + strlen(":") + strlen("@");
+	}
+	length += strlen(ref->path);
+	
+	while ( (parent = ref->parent)) {
+		ecore_list_prepend(parent_list, parent);
+
+		length += strlen(parent->plugin_uri) + strlen("://");
+		if (parent->username) {
+			length += strlen(parent->username) + strlen(parent->password) + strlen(":") + strlen("@");
+			
+		}
+		
+		length += strlen(parent->path);
+		length += strlen("#");
+		
+	}
+	length += 1;
+	uri = calloc(length,sizeof(char));
+	
+
+	while ( (parent = ecore_list_remove_first(parent_list))) {
+		strcat(uri, parent->plugin_uri);
+		strcat(uri, "://");
+		if (parent->username) {
+			strcat(uri, parent->username);
+			strcat(uri, ":");
+			strcat(uri, parent->password);
+			strcat(uri, "@");
+		}
+		strcat(uri, parent->path);
+		if (ecore_list_next(parent_list)) strcat(uri, "#");
+	}
+
+	ecore_list_destroy(parent_list);
+
+	return uri;
+	
+}
