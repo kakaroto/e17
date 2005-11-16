@@ -271,8 +271,6 @@ ewl_notebook_page_remove(Ewl_Notebook *n, int i)
 			ewl_notebook_visible_page_set(n, 0);
 
 		if (page->tab) {
-			ewl_container_child_remove(EWL_CONTAINER(n->tab_box),
-								page->tab);
 			ewl_widget_destroy(page->tab);
 			page->tab = NULL;
 		}
@@ -281,8 +279,6 @@ ewl_notebook_page_remove(Ewl_Notebook *n, int i)
 			page->page = NULL;
 		}
 
-		ewl_container_child_remove(EWL_CONTAINER(n->page_box),
-							page->page);
 		FREE(page);
 	}
 
