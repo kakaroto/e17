@@ -76,7 +76,7 @@ struct Ewl_Callback
  * Retrives the callback struct at the given position
  */
 #define EWL_CALLBACK_GET(w, t, i) \
-	((w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT) ? w->callbacks[t].list : w->callbacks[t].list[i])
+	((w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT) ? w->callbacks[t].list : (w->callbacks[t].list ? w->callbacks[t].list[i] : NULL))
 
 /**
  * @def EWL_CALLBACK_FLAG_INTERCEPT(w, t)
