@@ -378,7 +378,7 @@ ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	emb = ewl_embed_widget_find(w);
 
 	i = EWL_IMAGE(w);
-	if (i->image) {
+	if (emb && i->image) {
 		ewl_embed_object_cache(emb, i->image);
 		i->image = NULL;
 	}
