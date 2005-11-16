@@ -312,7 +312,6 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
 	ewl_text_text_insert(t, NULL, t->cursor_position);
 	ewl_text_text_insert(t, text, t->cursor_position);
 
-	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -330,7 +329,6 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
 
 	ewl_text_text_insert(t, text, 0);
 
-	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -349,7 +347,6 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 
 	ewl_text_text_insert(t, text, t->length);
 
-	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
