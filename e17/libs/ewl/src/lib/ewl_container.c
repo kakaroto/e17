@@ -949,10 +949,10 @@ ewl_container_destroy(Ewl_Container *c)
 	c->redirect = NULL;
 	if (c->children) {
 		/*
-		 * Destroy any children still in the container. Remove in
-		 * order to avoid list walking.
+		 * Destroy any children still in the container. Do not remove
+		 * in order to avoid list walking.
 		 */
-		while ((child = ecore_list_remove_first(c->children))) {
+		while ((child = ecore_list_goto_first(c->children))) {
 			ewl_widget_destroy(child);
 		}
 
