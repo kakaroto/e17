@@ -4,6 +4,30 @@
 #include "ewl_private.h"
 
 
+int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
+	int height=0;
+	int ww,hh;
+
+	evas_object_textblock_size_native_get(EWL_TEXT(icon->w_label)->textblock, &ww, &hh);
+	height = CURRENT_H(icon->image) + hh;
+
+	
+
+	return height;
+}
+
+
+void ewl_iconbox_icon_floater_resize_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
+
+
+	ewl_object_custom_h_set(EWL_OBJECT(icon->floater),ewl_iconbox_icon_label_height_calculate(EWL_ICONBOX_ICON(icon)) );
+	
+	//printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), hh, height);
+}
+
+
+
 /*Ecore_List *ewl_iconbox_icon_list;*/
 
 /**
@@ -688,7 +712,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	EWL_ICONBOX_ICON(ib)->icon_box_parent = iconbox; /* Set our parent */
 	
 	ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_FILL);
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(EWL_ICONBOX_ICON(ib)->floater), ib);
 
 
@@ -709,18 +733,21 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane), &sw,&sh);
 
 	if (iconbox->lx + iconbox->iw + (EWL_ICONBOX_ICON_PADDING) >= (sw - iconbox->iw)) {
-		//printf("%d + %d + %d >= %d, so next line (%s)\n", iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw, name);
+		//printf("%d + %d + %d >= %d, so next line (%s)\n", 
+		//iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw, name);
 		
 		iconbox->ly += EWL_ICONBOX_ICON_PADDING + iconbox->ih;
 		iconbox->lx = 0;
 	} else {
-		//printf("*** %d + %d + %d < %d, so stay (%s)\n", iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw,name);
+		//printf("*** %d + %d + %d < %d, so stay (%s)\n", 
+		//iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw,name);
+		
 		iconbox->lx += EWL_ICONBOX_ICON_PADDING + iconbox->iw;	
 	}
-
-	
-	
 	/*----------------------*/
+
+
+	ewl_callback_append(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_VALUE_CHANGED, ewl_iconbox_icon_floater_resize_cb, ib);
 
 
 	/*Show*/
@@ -728,6 +755,13 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->w_label);
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->floater);
 	ewl_widget_show(EWL_WIDGET(ib));
+
+
+	/*Calculate the correct height for the icon*/
+	/*ewl_object_custom_h_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), ewl_iconbox_icon_label_height_calculate(EWL_ICONBOX_ICON(ib)));*/
+	/*FIXME - at the moment, it appears we can't calculate the height 
+		yet - hard set for now*/
+	ewl_object_custom_h_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), 80);
 
 	
 
