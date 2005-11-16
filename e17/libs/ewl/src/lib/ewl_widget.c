@@ -1585,23 +1585,36 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 */
 	ewl_theme_widget_shutdown(w);
 
-	if (w->appearance)
+	if (w->appearance) {
 		ecore_string_release(w->appearance);
+		w->appearance = NULL;
+	}
 
-	if (w->inheritance)
+	if (w->inheritance) {
 		ecore_string_release(w->inheritance);
+		w->inheritance = NULL;
+	}
 
-	if (w->bit_state)
+	if (w->bit_state) {
 		ecore_string_release(w->bit_state);
+		w->inheritance = NULL;
+		w->bit_state = NULL;
+	}
 
-	if (w->theme)
+	if (w->theme) {
 		ecore_hash_destroy(w->theme);
+		w->theme = NULL;
+	}
 
-	if (w->theme_text)
+	if (w->theme_text) {
 		ecore_hash_destroy(w->theme_text);
+		w->theme_text = NULL;
+	}
 
-	if (w->data)
+	if (w->data) {
 		ecore_hash_destroy(w->data);
+		w->data = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
