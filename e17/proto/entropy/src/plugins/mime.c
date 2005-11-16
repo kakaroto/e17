@@ -49,6 +49,8 @@ char* entropy_mime_plugin_identify_file(char* path, char* filename) {
 	
 	char* ifile;
 	char* type = NULL; char* pos;
+	int stat_res=0;
+	struct stat st;
 
 
 	if (!filename || strlen(filename) ==0) {
@@ -60,10 +62,9 @@ char* entropy_mime_plugin_identify_file(char* path, char* filename) {
 	
 	sprintf(fullname, "%s/%s", path, filename);
 	
-	struct stat st;
-	stat(fullname, &st);
-
-	if (S_ISDIR(st.st_mode)) {
+	
+	stat_res = stat(fullname, &st);
+	if (!stat_res && S_ISDIR(st.st_mode)) {
 		/*printf("It's a folder..\n");*/
 		entropy_free(ifile);
 		return "file/folder";

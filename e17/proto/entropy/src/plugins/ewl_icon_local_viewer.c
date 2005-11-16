@@ -26,11 +26,29 @@ typedef struct event_idle_processor {
 	void* requestor;
 	int count;	
 	int terminate;
-
-	
-	
-	
 } event_idle_processor;
+
+
+
+/*------------------------------------------------*/
+/*Start file copy progress objects/structures - This should be moved to a plugin.  Action plugin? */
+
+typedef struct entropy_file_progress_window {
+	Ewl_Widget* progress_window;
+	Ewl_Widget* file_from;
+	Ewl_Widget* file_to;
+	Ewl_Widget* progressbar;
+} entropy_file_progress_window;
+
+
+
+
+
+
+
+/*---------------------------------------------*/
+
+
 
 
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
@@ -44,6 +62,9 @@ struct entropy_icon_viewer {
 	Ecore_Hash* icon_hash; /*A hash for ewl callbacks*/
 	Ecore_List* current_events; /*A ref to the events we have waiting on the queue.  perhaps we should handle this in the notify queue,
 				      one less thing for plugins to handle */
+
+
+	entropy_file_progress_window* progress;
 
 	Ewl_Widget* file_dialog;
 	Ewl_Widget* file_dialog_parent;
@@ -202,7 +223,6 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 	text = ewl_text_new();
 	stime = file_stat->stat_obj->st_mtime;
-	printf("RET mtime is: %d\n", file_stat->stat_obj->st_mtime);
 	ewl_text_text_set(EWL_TEXT(text), ctime(&stime));
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
@@ -286,7 +306,7 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 	entropy_gui_component_instance* instance = ((entropy_gui_component_instance*)user_data);
 	entropy_plugin* plugin = entropy_plugins_type_get_first(instance->core->plugin_list, ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
 
-	void (*copy_func)(entropy_generic_file* source, char* dest_uri);
+	void (*copy_func)(entropy_generic_file* source, char* dest_uri, entropy_gui_component_instance* requester);
 
 
 	/*Get the func ref*/
@@ -299,7 +319,7 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 
 	while ( (file = ecore_list_next(selected))  ) {
 		//printf("File '%s'\n", file->filename);
-		(*copy_func)(file, ((entropy_icon_viewer*)instance->data)->current_dir );
+		(*copy_func)(file, ((entropy_icon_viewer*)instance->data)->current_dir, instance );
 
 		
 	}
@@ -451,6 +471,7 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
 	Ewl_Widget* context;
+	Ewl_Widget* vbox;
 	entropy_gui_component_instance* instance = entropy_malloc(sizeof(entropy_gui_component_instance));
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
 
@@ -464,6 +485,38 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	viewer->current_events = ecore_list_new();
 	instance->gui_object = viewer->iconbox;
 	ewl_widget_show(EWL_WIDGET(viewer->iconbox));
+
+
+	/*Initialise the progress window*/
+	viewer->progress = entropy_malloc(sizeof(entropy_file_progress_window));
+	viewer->progress->progress_window = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(viewer->progress->progress_window), "File Copy");
+	ewl_object_custom_size_set(EWL_OBJECT(viewer->progress->progress_window), 400, 150);
+	
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(viewer->progress->progress_window), vbox);
+	ewl_widget_show(vbox);
+
+	viewer->progress->file_from = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->file_from);
+	ewl_widget_show(viewer->progress->file_from);
+
+	viewer->progress->file_to = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->file_to);
+	ewl_widget_show(viewer->progress->file_to);
+
+	viewer->progress->progressbar = ewl_progressbar_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->progressbar);
+	ewl_progressbar_range_set(EWL_PROGRESSBAR(viewer->progress->progressbar), 100);
+	ewl_widget_show(viewer->progress->progressbar);
+
+
+
+	
+	
+	
+
+	
 
 	/*Add some context menu items*/
 	context = ewl_menu_item_new();
@@ -567,6 +620,14 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*Register interest in getting stat events*/
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT));
 	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
+
+	/*We want to know about file transfer progress events*/
+	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+
+
+
+	
 
 	return instance;
 }
@@ -870,6 +931,23 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		ewl_icon_local_viewer_show_stat(file_stat);
 		
 
+       }
+       break;
+
+       case ENTROPY_NOTIFY_FILE_PROGRESS: {
+		entropy_icon_viewer* view = comp->data;
+		entropy_file_progress* progress = ret;
+		
+						  
+		printf("Received a file progress event..\n");
+		if (!VISIBLE(view->progress->progress_window)) {
+			ewl_widget_show(view->progress->progress_window);
+		}
+
+		ewl_text_text_set(EWL_TEXT(view->progress->file_from), progress->file_from);
+		ewl_text_text_set(EWL_TEXT(view->progress->file_to), progress->file_to);
+		ewl_progressbar_value_set(EWL_PROGRESSBAR(view->progress->progressbar), progress->progress);
+	
        }
        break;
 

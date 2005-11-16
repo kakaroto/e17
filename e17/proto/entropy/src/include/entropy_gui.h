@@ -12,5 +12,8 @@
 #define ENTROPY_GUI_EVENT_FILE_STAT   "entropy_gui_event_file_stat"			      //Request a stat of a file
 #define ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE   "entropy_gui_event_file_stat_available"			      //Request a stat of a file
 
+/*File copy/move etc progress event*/
+#define ENTROPY_GUI_EVENT_FILE_PROGRESS "entropy_gui_event_file_progress"
+
 #endif
 

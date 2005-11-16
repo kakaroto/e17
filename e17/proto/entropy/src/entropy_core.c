@@ -344,6 +344,8 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_file_stat";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE)) {
 		return "entropy_gui_event_file_stat_available";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_PROGRESS)) {
+		return "entropy_gui_event_file_progress";
 	} else {
 		return "";
 	}
@@ -841,7 +843,24 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		entropy_notify_event_destroy(ev);
 		
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FILE_PROGRESS)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_FILE_PROGRESS; 
+
+		
+
+		/*Call the requestors*/
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			
+			(*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An evfs progress event*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);		
 		
 	} else {
 		fprintf(stderr, "entropy_core: Unknown event type called\n");

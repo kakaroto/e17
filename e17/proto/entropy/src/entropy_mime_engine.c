@@ -7,7 +7,7 @@ char* entropy_mime_file_identify(Ecore_List* mime_plugins, entropy_generic_file*
 	char* type = NULL;
 
 	/*IF we already have a mime type, return what we have*/
-	if (strlen(file->mime_type)) return file->mime_type;
+	if (strlen(file->mime_type) > 0) return file->mime_type;
 	
 	/*printf("Identifying a file..\n");	*/
 	ecore_list_goto_first(mime_plugins);

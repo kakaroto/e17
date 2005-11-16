@@ -47,7 +47,16 @@ struct entropy_file_request {
 			  produce a construct of the form posix://path/to/file#tar:/// ..etc */
 
 	int set_parent;
+	int value;
 };
+
+/*A temporary structure until I find a better way to do this*/
+typedef struct entropy_file_progress {
+	char* file_from;
+	char* file_to;
+
+	float progress;
+} entropy_file_progress;
 
 typedef struct entropy_file_stat entropy_file_stat;
 struct entropy_file_stat {

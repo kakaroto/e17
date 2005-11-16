@@ -17,6 +17,7 @@ static Ecore_Hash* folder_interest_list;*/
 
 Ecore_Hash* folder_monitor_hash;
 Ecore_Hash* stat_request_hash;
+Ecore_Hash* file_copy_hash;
 Ecore_Hash* evfs_dir_requests;
 entropy_core* filesystem_core; /*A reference to the core*/
 
@@ -184,11 +185,12 @@ void callback(evfs_event* data) {
 				/*Do some freeing*/
 				entropy_free(file_stat);
 				entropy_free(file_stat->stat_obj);
+
+				/*No need to free event - notify_event frees it for us*/
 			
 
 			}
 			break;
-
 
 			case EVFS_EV_DIR_LIST: {
 				Ecore_List* file_list = ecore_list_new();	
@@ -321,9 +323,40 @@ void callback(evfs_event* data) {
 			}
 
 			break;
-		case EVFS_EV_FILE_PROGRESS:
-			printf("Progress for file '%s' is %f\%\n", (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
-			break;
+		case EVFS_EV_FILE_PROGRESS: {
+			entropy_gui_event* gui_event;
+			entropy_gui_component_instance* instance = NULL;
+			entropy_file_progress* request = entropy_malloc(sizeof(entropy_file_progress));
+			char* uri = NULL;
+						    
+			printf("Progress for file '%s' is %f percent\n", (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
+
+			request->file_from = evfs_filereference_to_string(data->resp_command.file_command.files[0]);
+			request->file_to = evfs_filereference_to_string(data->resp_command.file_command.files[1]);
+			request->progress = data->progress.file_progress;
+
+			/*Build up the gui_event wrapper*/
+			gui_event = entropy_malloc(sizeof(entropy_gui_event)); 
+			gui_event->event_type = entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_PROGRESS);
+			gui_event->data = request;
+
+			/*Find who called us*/
+			uri = evfs_filereference_to_string(data->resp_command.file_command.files[0]);
+			instance = ecore_hash_get(file_copy_hash, uri);
+
+			if (instance) {
+				entropy_core_layout_notify_event(instance , gui_event, ENTROPY_EVENT_LOCAL);
+			} else {
+				printf("Could not get file copy caller for '%s'\n", uri);
+				free(gui_event);
+			}
+
+			free(uri);
+			free(request->file_from);
+			free(request->file_to);
+			free(request);
+		}
+		break;
 
 			default: printf("Received an EVFS message we don't recognise!\n");
 				 break;
@@ -366,6 +399,7 @@ void entropy_plugin_init(entropy_core* core) {
 	folder_monitor_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	stat_request_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	evfs_dir_requests = ecore_hash_new(ecore_str_hash, ecore_str_compare);	
+	file_copy_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	con = evfs_connect(&callback);
 
@@ -601,9 +635,10 @@ void entropy_plugin_backend_file_deregister_file_list() {
 
 
 
-void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to) {
+void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to, entropy_gui_component_instance* instance) {
 	evfs_file_uri_path* uri_path_from;
 	evfs_file_uri_path* uri_path_to;
+	char* original;
 
 	char uri_from[512];
 	char uri_to[512];
@@ -615,11 +650,23 @@ void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to) {
 
 	//printf ("Copying file %s to %s\n", uri_from, uri_to);
 
-	
+		
 
 	uri_path_from = evfs_parse_uri(uri_from);
 	uri_path_to = evfs_parse_uri(uri_to);
 
+	
+	//printf("Original uri is: '%s'\n", original);
+	//
+	/*Track the copy action*/
+	original = evfs_filereference_to_string(uri_path_from->files[0]);
+	ecore_hash_set(file_copy_hash, original, instance);
+
+
+	
+
 	evfs_client_file_copy(con, uri_path_from->files[0], uri_path_to->files[0]);
+
+	//TODO - free the file containers here
 }
 
