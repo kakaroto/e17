@@ -58,7 +58,7 @@ ewl_border_init(Ewl_Border * b)
 	ewl_container_child_append(EWL_CONTAINER(b), b->body);
 	ewl_widget_show(b->body);
 
-	b->label_position = EWL_POSITION_LEFT;
+	b->label_position = EWL_POSITION_TOP;
 
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 
@@ -132,13 +132,14 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 						EWL_ORIENTATION_VERTICAL);
 			break;
 	}
-	ewl_container_child_remove(EWL_CONTAINER(b), b->label);
 	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
 
 	/* need to remove the redirect so the label gets added back into the
 	 * border and not into the body. We put the redirect back on after
 	 */
 	ewl_container_redirect_set(EWL_CONTAINER(b), NULL);
+	ewl_container_child_remove(EWL_CONTAINER(b), b->label);
+
 	if ((b->label_position == EWL_POSITION_LEFT)
 			|| (b->label_position == EWL_POSITION_TOP))
 		ewl_container_child_prepend(EWL_CONTAINER(b), b->label);

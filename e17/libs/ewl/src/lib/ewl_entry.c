@@ -87,7 +87,7 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 				ewl_entry_cb_mouse_up, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, 
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
 				ewl_entry_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

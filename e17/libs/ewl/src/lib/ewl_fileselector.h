@@ -57,7 +57,7 @@ int  		 ewl_fileselector_init(Ewl_Fileselector *fs);
 char 		*ewl_fileselector_path_get(Ewl_Fileselector *fs);
 char 		*ewl_fileselector_file_get(Ewl_Fileselector *fs);
 
-void 		 ewl_fileselector_path_set(Ewl_Fileselector *fs, char *path);
+void 		 ewl_fileselector_path_set(Ewl_Fileselector *fs, const char *path);
 
 void		 ewl_fileselector_multiselect_set(Ewl_Fileselector *fs, 
 							unsigned int val);

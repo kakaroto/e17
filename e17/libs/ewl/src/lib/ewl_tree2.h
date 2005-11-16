@@ -56,17 +56,17 @@
  * @themekey /tree/group
  */
 
-typedef void *(*data_get)(void *data, int row, int column) Ewl_Model_Data_Get;
+typedef void *(*get)(void *data, int row, int column) Ewl_Model_Fetch;
 
-#define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Data_Get *)f)
+#define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Fetch *)f)
 
-typedef int (*data_sort)(void *data, int column) Ewl_Model_Data_Sort;
+typedef int (*sort)(void *data, int column) Ewl_Model_Sort;
 
-#define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Data_Sort *)f)
+#define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Sort *)f)
 
-typedef int (*data_count)(void *data) Ewl_Model_Data_Count;
+typedef int (*count)(void *data) Ewl_Model_Count;
 
-#define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count *)f)
+#define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Count *)f)
 
 /**
  * @def EWL_MODEL(model)
@@ -78,10 +78,10 @@ typedef struct Ewl_Model Ewl_Model;
 
 struct Ewl_Model
 {
-	Ewl_Model_Data_Get    data_get;     /**< Retrieve data for a cell */
-	Ewl_Model_Data_Get    subdata_get;  /**< Check for subdata */
-	Ewl_Model_Data_Sort   column_sort;  /**< Trigger sort on column */
-	Ewl_Model_Data_Count  row_count;    /**< Count of data items */
+	Ewl_Model_Fetch  fetch;    /**< Retrieve data for a cell */
+	Ewl_Model_Fetch  subfetch; /**< Check for subdata */
+	Ewl_Model_Sort   sort;     /**< Trigger sort on column */
+	Ewl_Model_Count  count;    /**< Count of data items */
 };
 
 /**
@@ -95,7 +95,7 @@ typedef struct Ewl_View Ewl_View;
 struct Ewl_View
 {
 	Ewl_View_Constructor constructor;   /**< Create a widget for display */
-	Ewl_View_Data_Assign data_set;      /**< Assign data to a widget */
+	Ewl_View_Assign assign;             /**< Assign data to a widget */
 };
 
 typedef struct Ewl_Tree2 Ewl_Tree2;
@@ -128,8 +128,8 @@ struct Ewl_Tree2
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
-void             ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
-void            *ewl_tree2_data_get(Ewl_Tree2 *m);
+void             ewl_tree2_set(Ewl_Tree2 *m, void *data);
+void            *ewl_tree2_fetch(Ewl_Tree2 *m);
 
 void             ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
 void             ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
@@ -149,18 +149,34 @@ void             ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, int fixed);
 int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 /*
+ * View manipulation
+ */
+Ewl_View            *ewl_view_new();
+int                 *ewl_view_init(Ewl_View *view);
+
+void                 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
+Ewl_View_Constructor ewl_view_constructor_get(Ewl_View *view);
+
+void                 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
+Ewl_View_Assign      ewl_view_constructor_get(Ewl_View *view);
+
+/*
  * Model manipulation.
  */
-Ewl_Model 	     *ewl_model_new(void);
+Ewl_Model 	 *ewl_model_new(void);
+int       	 *ewl_model_init(Ewl_Model *model);
 
-void                  ewl_model_data_get_set(Ewl_Model *m, Ewl_Model_Data_Get get);
-Ewl_Model_Data_Get    ewl_model_data_get_get(Ewl_Model *m);
+void             ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
+Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
 
-void                  ewl_model_subdata_get_set(Ewl_Model *m, Ewl_Model_Data_Get get);
-Ewl_Model_Data_Get    ewl_model_subdata_get_get(Ewl_Model *m);
+void             ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
+Ewl_Model_Fetch  ewl_model_subfetch_get(Ewl_Model *m);
 
-void                  ewl_model_data_sort_set(Ewl_Model *m, Ewl_Model_Data_Sort sort);
-Ewl_Model_Data_Sort   ewl_model_data_sort_get(Ewl_Model *m);
+void             ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort);
+Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);
+
+void             ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count);
+Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
 
 /**
  * @}

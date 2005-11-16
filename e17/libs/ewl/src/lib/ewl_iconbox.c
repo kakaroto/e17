@@ -772,7 +772,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	/* Add a callback to the border box label, for editing purposes... */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_label_mouse_down_cb, ib);
 
-	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
+	ewl_callback_prepend(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
 	   ewl_iconbox_icon_destroy_cb, NULL);
 
 	/* Add this icon to the icon list */

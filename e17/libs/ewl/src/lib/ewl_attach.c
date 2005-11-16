@@ -646,7 +646,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_container_child_append(EWL_CONTAINER(emb), ewl_attach_tooltip->win);
 		ewl_widget_layer_set(ewl_attach_tooltip->win, 1000);
 
-		ewl_callback_append(ewl_attach_tooltip->win, EWL_CALLBACK_DESTROY,
+		ewl_callback_prepend(ewl_attach_tooltip->win, EWL_CALLBACK_DESTROY,
 						ewl_attach_cb_tooltip_win_destroy, NULL);
 		ewl_object_fill_policy_set(EWL_OBJECT(ewl_attach_tooltip->win), EWL_FLAG_FILL_NONE);
 
