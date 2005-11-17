@@ -2005,7 +2005,8 @@ ewl_text_triggers_remove(Ewl_Text *t)
 		DRETURN(DLEVEL_STABLE);
 
 	while ((trig = ecore_list_remove_first(t->triggers))) {
-		ewl_text_trigger_free(trig);
+		trig->text_parent = NULL;
+		ewl_widget_destroy(EWL_WIDGET(trig));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2078,9 +2079,9 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
 
 	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
-		type_str = strdup("trigger");
+		type_str = "trigger";
 	else if (type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
-		type_str = strdup("selection");
+		type_str = "selection";
 	else
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -2090,30 +2091,41 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
 	ewl_widget_appearance_set(EWL_WIDGET(trigger), type_str);
 	ewl_widget_inherit(EWL_WIDGET(trigger), "trigger");
 
+	ewl_callback_prepend(EWL_WIDGET(trigger), EWL_CALLBACK_DESTROY,
+			ewl_text_trigger_cb_destroy, NULL);
+
 	trigger->areas = ecore_list_new();
 	trigger->type = type;
-
-	FREE(type_str);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 void
-ewl_text_trigger_free(Ewl_Text_Trigger *t)
+ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	Ewl_Text_Trigger *t;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "trigger");
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "trigger");
+
+	t = EWL_TEXT_TRIGGER(w);
 
 	if (t->areas)
 		ecore_list_destroy(t->areas);
 
+	if (t->text_parent) {
+		if (ecore_list_goto(t->text_parent->triggers, t))
+			ecore_list_remove(t->text_parent->triggers);
+	}
+
 	t->text_parent = NULL;
 	t->areas = NULL;
-	FREE(t);
+	ewl_widget_destroy(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3093,8 +3105,10 @@ ewl_text_context_init(void)
 void
 ewl_text_context_shutdown(void)
 {
-	if (context_hash)
+	if (context_hash) {
 		ecore_hash_destroy(context_hash);
+		context_hash = NULL;
+	}
 }
 
 static char *
