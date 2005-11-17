@@ -128,8 +128,8 @@ struct Ewl_Tree2
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
-void             ewl_tree2_set(Ewl_Tree2 *m, void *data);
-void            *ewl_tree2_fetch(Ewl_Tree2 *m);
+void             ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
+void            *ewl_tree2_data_get(Ewl_Tree2 *m);
 
 void             ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
 void             ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, Ewl_View *v);
@@ -151,7 +151,7 @@ int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 /*
  * View manipulation
  */
-Ewl_View            *ewl_view_new();
+Ewl_View            *ewl_view_new(void);
 int                 *ewl_view_init(Ewl_View *view);
 
 void                 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
