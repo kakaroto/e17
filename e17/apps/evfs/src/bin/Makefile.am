@@ -8,9 +8,6 @@ DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
 INCLUDES = @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include
 
-include_HEADERS = \
-	../include/evfs.h
-
 evfs_SOURCES = \
 	evfs_main.c \
 	evfs_cleanup.c \
