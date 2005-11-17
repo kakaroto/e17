@@ -8,8 +8,6 @@
 
 static int ewl_entry_cursor_cb_flash_timer(void *data);
 static void ewl_entry_cursor_timer_set(Ewl_Entry_Cursor *c, double time);
-static void ewl_entry_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *data __UNUSED__);
 
 /**
  * @param text: The text to set into the entry
@@ -87,18 +85,10 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 				ewl_entry_cb_mouse_up, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
-				ewl_entry_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-
-void ewl_entry_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *data __UNUSED__) 
-{
-	if (EWL_ENTRY(w)->cursor) ewl_widget_destroy(EWL_ENTRY(w)->cursor);
-}
 
 
 
