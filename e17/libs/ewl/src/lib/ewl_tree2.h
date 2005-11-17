@@ -158,7 +158,7 @@ void                 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Construct
 Ewl_View_Constructor ewl_view_constructor_get(Ewl_View *view);
 
 void                 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
-Ewl_View_Assign      ewl_view_constructor_get(Ewl_View *view);
+Ewl_View_Assign      ewl_view_assign_get(Ewl_View *view);
 
 /*
  * Model manipulation.
