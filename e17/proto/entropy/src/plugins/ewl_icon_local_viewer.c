@@ -947,6 +947,11 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		ewl_text_text_set(EWL_TEXT(view->progress->file_from), progress->file_from);
 		ewl_text_text_set(EWL_TEXT(view->progress->file_to), progress->file_to);
 		ewl_progressbar_value_set(EWL_PROGRESSBAR(view->progress->progressbar), progress->progress);
+
+		/*Is it time to hide (i.e. end)*/
+		if (progress->type == TYPE_END) {
+			ewl_widget_hide(view->progress->progress_window);
+		}
 	
        }
        break;

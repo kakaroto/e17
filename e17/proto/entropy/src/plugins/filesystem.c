@@ -318,8 +318,6 @@ void callback(evfs_event* data) {
 				gui_event->data = file_list; 
 				entropy_core_layout_notify_event(calling_request->requester , gui_event, ENTROPY_EVENT_LOCAL); 
 
-			
-				//TODO - destroy all the shit we create here
 			}
 
 			break;
@@ -334,6 +332,12 @@ void callback(evfs_event* data) {
 			request->file_from = evfs_filereference_to_string(data->resp_command.file_command.files[0]);
 			request->file_to = evfs_filereference_to_string(data->resp_command.file_command.files[1]);
 			request->progress = data->progress.file_progress;
+
+			if (data->progress.type == EVFS_PROGRESS_TYPE_CONTINUE) 
+				request->type =  TYPE_CONTINUE;
+			else
+				request->type = TYPE_END;
+				
 
 			/*Build up the gui_event wrapper*/
 			gui_event = entropy_malloc(sizeof(entropy_gui_event)); 

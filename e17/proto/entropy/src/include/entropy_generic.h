@@ -50,12 +50,16 @@ struct entropy_file_request {
 	int value;
 };
 
+
+#define TYPE_CONTINUE 0
+#define TYPE_END 1 
 /*A temporary structure until I find a better way to do this*/
 typedef struct entropy_file_progress {
 	char* file_from;
 	char* file_to;
 
 	float progress;
+	int type;
 } entropy_file_progress;
 
 typedef struct entropy_file_stat entropy_file_stat;
