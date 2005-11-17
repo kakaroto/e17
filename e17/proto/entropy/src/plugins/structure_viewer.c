@@ -80,7 +80,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 	//printf("Looking for row for file %p (%s)\n", event_file, event_file->filename);
 	
 	Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
-	printf ("   Got %p\n", row);
+	/*printf ("   Got %p\n", row);*/
 
 	/*If we don't own this row, forget about doing something - we don't know about this*/
 	
