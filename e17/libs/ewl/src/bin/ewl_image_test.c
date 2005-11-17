@@ -64,8 +64,27 @@ __image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 static void
-__image_load_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__, 
-				void *user_data __UNUSED__)
+__image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	char *img = NULL;
+
+	img = ecore_dlist_remove(images);
+	if (img)
+		free(img);
+
+	img = ecore_dlist_current(images);
+
+	if (!img) img = ecore_dlist_goto_last(images);
+
+	ewl_text_text_set(EWL_TEXT(entry_path), img);
+	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
+
+	ewl_widget_configure(image_win);
+}
+
+static void
+__image_load()
 {
 	char *img = NULL;
 
@@ -105,7 +124,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 {
 	Ewl_Widget     *scrollpane;
 	Ewl_Widget     *button_hbox;
-	Ewl_Widget     *button_prev, *button_load, *button_next;
+	Ewl_Widget     *button_prev, *button_remove, *button_next;
 	char           *image_file = NULL;
 
 	image_button = w;
@@ -166,20 +185,21 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	entry_path = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(entry_path), image_file);
-	ewl_object_fill_policy_set(EWL_OBJECT(entry_path), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(entry_path),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), entry_path);
 	ewl_widget_show(entry_path);
 
-	button_load = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_load), "Browse...");
-	ewl_callback_append(button_load, EWL_CALLBACK_CLICKED,
+	button_remove = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_remove), "Browse...");
+	ewl_callback_append(button_remove, EWL_CALLBACK_CLICKED,
 			    __create_image_fd_cb, entry_path);
-	ewl_object_fill_policy_set(EWL_OBJECT(button_load), EWL_FLAG_FILL_NONE);
-	ewl_object_alignment_set(EWL_OBJECT(button_load),
+	ewl_object_fill_policy_set(EWL_OBJECT(button_remove), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(button_remove),
 				 EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
-	ewl_widget_show(button_load);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_remove);
+	ewl_widget_show(button_remove);
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
@@ -192,24 +212,24 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	button_prev = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button_prev), "Previous");
-	button_load = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_load), "Load");
+	button_remove = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button_remove), "Remove");
 	button_next = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button_next), "Next");
 
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_remove);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_next);
 
 	ewl_callback_append(button_prev, EWL_CALLBACK_CLICKED,
 			    __image_goto_prev_cb, NULL);
-	ewl_callback_append(button_load, EWL_CALLBACK_CLICKED,
-			    __image_load_cb, NULL);
+	ewl_callback_append(button_remove, EWL_CALLBACK_CLICKED,
+			    __image_remove_cb, NULL);
 	ewl_callback_append(button_next, EWL_CALLBACK_CLICKED,
 			    __image_goto_next_cb, NULL);
 
 	ewl_widget_show(button_prev);
-	ewl_widget_show(button_load);
+	ewl_widget_show(button_remove);
 	ewl_widget_show(button_next);
 
 
@@ -268,6 +288,7 @@ __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 		path = ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
 		if (path) {
 			ewl_text_text_set(EWL_TEXT(entry), path);
+			__image_load();
 			// FREE(path); FIXME: Is text widget allocated correctly?
 		}
 		ewl_widget_destroy(fdwin);
