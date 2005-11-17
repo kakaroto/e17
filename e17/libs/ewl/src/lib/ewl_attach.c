@@ -443,8 +443,10 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	/* make sure the timer gets cleaned up if the widget goes away */
 	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to) 
-			&& (ewl_attach_tooltip->timer))
+			&& (ewl_attach_tooltip->timer)) {
 		ecore_timer_del(ewl_attach_tooltip->timer);
+		ewl_attach_tooltip->timer = NULL;
+	}
 
 	if (w->attach)
 		ewl_attach_list_free(w->attach);
@@ -625,8 +627,14 @@ ewl_attach_cb_tooltip_timer(void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
 
+	/* we are returning false so that will shutdown the timer, just need
+	 * to make sure we don't try to del it a second time so set it NULL */
+	ewl_attach_tooltip->timer = NULL;
+
 	w = data;
 	emb = ewl_embed_widget_find(w);
+	if (!emb)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	if (!(ewl_attach_tooltip->win))
 	{
@@ -691,10 +699,6 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 	ewl_widget_show(ewl_attach_tooltip->win);
 	ewl_widget_show(ewl_attach_tooltip->box);
-
-	/* we are returning false so that will shutdown the timer, just need
-	 * to make sure we don't try to del it a second time so set it NULL */
-	ewl_attach_tooltip->timer = NULL;
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
