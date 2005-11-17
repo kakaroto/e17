@@ -179,8 +179,14 @@ struct evfs_event_file_list {
 	Ecore_List* list; /*A list of evfs_filereference*/	
 };
 
+typedef enum evfs_progress_type {
+	EVFS_PROGRESS_TYPE_CONTINUE,
+	EVFS_PROGRESS_TYPE_DONE
+} evfs_progress_type;
+
 typedef struct evfs_event_progress {
 	double file_progress;
+	evfs_progress_type type;
 } evfs_event_progress;
 
 //Would be good if this could be a union -> but evfs_command changes size :( */

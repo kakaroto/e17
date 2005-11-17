@@ -38,6 +38,7 @@ int evfs_io_initialise() {
 			      (void  (*) (void *))evas_hash_free);
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "progress", file_progress, EET_T_DOUBLE);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "type", type, EET_T_INT);
 
 
 	return 0;

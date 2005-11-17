@@ -61,13 +61,14 @@ void evfs_list_dir_event_create(evfs_client* client, evfs_command* command, Ecor
 
 }
 
-void evfs_file_progress_event_create(evfs_client* client, evfs_command* command, double progress) {
+void evfs_file_progress_event_create(evfs_client* client, evfs_command* command, double progress, evfs_progress_type type) {
 	/*Create a reply event for a file mon event, send it , destroy event*/
 
 	
 	evfs_event* event = NEW(evfs_event);
 	event->type = EVFS_EV_FILE_PROGRESS;
 	event->progress.file_progress = progress;
+	event->progress.type = type;
 	evfs_write_event(client, command, event);
 
 	/*Now destroy*/
