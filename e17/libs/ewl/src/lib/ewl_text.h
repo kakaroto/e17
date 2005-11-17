@@ -210,7 +210,6 @@ struct Ewl_Text_Trigger
 Ewl_Text_Trigger *ewl_text_trigger_new(Ewl_Text_Trigger_Type type);
 int 		 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, 
 					Ewl_Text_Trigger_Type type);
-void 		 ewl_text_trigger_free(Ewl_Text_Trigger *t);
 
 Ewl_Text_Trigger_Type ewl_text_trigger_type_get(Ewl_Text_Trigger *t);
 
@@ -249,6 +248,7 @@ void ewl_text_cb_resize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w);
 
+void ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_focus_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
