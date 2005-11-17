@@ -2125,7 +2125,6 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	t->text_parent = NULL;
 	t->areas = NULL;
-	ewl_widget_destroy(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
