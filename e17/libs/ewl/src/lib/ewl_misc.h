@@ -30,6 +30,7 @@ void            ewl_realize_request(Ewl_Widget *w);
 void            ewl_realize_cancel_request(Ewl_Widget *w);
 void            ewl_realize_queue(void);
 void            ewl_destroy_request(Ewl_Widget *w);
+int             ewl_garbage_collect_idler(void *data);
 void            ewl_realize_phase_enter(void);
 void            ewl_realize_phase_exit(void);
 int             ewl_in_realize_phase(void);
@@ -41,9 +42,6 @@ void            ewl_evas_object_destroy(Evas_Object *obj);
 #ifdef DEBUG_MALLOCDEBUG
 char *strdup(const char *str);
 #endif
-
-int
-ewl_garbage_collect_idler(void *data );
 
 /**
  * @}
