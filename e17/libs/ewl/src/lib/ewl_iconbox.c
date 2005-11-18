@@ -261,8 +261,8 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 80, 40);
-	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), -1);
-	ewl_widget_color_set(EWL_WIDGET(ib->select), 128, 50, 70, 128);
+	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1);
+	ewl_widget_color_set(EWL_WIDGET(ib->select), 255, 255, 25, 50);
 	ib->drag_box = 0;
 
 	/*Set the dx/dy drag start points to 'null' values*/
@@ -717,7 +717,6 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 	/* Make the image */
-	/*printf("MMaking image..\n");*/
 	ewl_iconbox_icon_image_set(EWL_ICONBOX_ICON(ib), icon_file);
 	ewl_container_child_append(EWL_CONTAINER(ib), EWL_ICONBOX_ICON(ib)->image);
 
@@ -748,6 +747,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 	ewl_callback_append(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_VALUE_CHANGED, ewl_iconbox_icon_floater_resize_cb, ib);
+
 
 
 	/*Show*/
