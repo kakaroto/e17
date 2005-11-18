@@ -17,6 +17,7 @@ static unsigned int    print_gc_reap = 0;
 static unsigned int    debug_level = 0;
 
 static Ecore_Idle_Enterer *idle_enterer = NULL;
+static Ecore_Idler        *ewl_garbage_collect = NULL;
 static int _ewl_init_count = 0;
 
 /*
@@ -221,7 +222,7 @@ ewl_shutdown(void)
 
 		while ((emb = ecore_list_remove_first(ewl_embed_list)))
 			ewl_widget_destroy(emb);
-		while (ewl_garbage_collect() > 0);
+		while (ewl_garbage_collect_idler(NULL) > 0);
 		ecore_list_destroy(ewl_embed_list);
 		ewl_embed_list = NULL;
 	}
@@ -356,7 +357,8 @@ ewl_idle_render(void *data)
 	if (!ecore_list_is_empty(destroy_list) ||
 			!ecore_list_is_empty(free_evas_list) ||
 			!ecore_list_is_empty(free_evas_object_list))
-		ewl_garbage_collect();
+		ewl_garbage_collect = ecore_idler_add(ewl_garbage_collect_idler,
+						      NULL);;
 
 	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
@@ -882,7 +884,7 @@ ewl_evas_object_destroy(Evas_Object *obj)
  * @brief Free's all widgets that have been marked for destruction.
  */
 int
-ewl_garbage_collect(void)
+ewl_garbage_collect_idler(void *data __UNUSED__)
 {
 	Evas *evas;
 	Ewl_Widget *w;
@@ -901,6 +903,7 @@ ewl_garbage_collect(void)
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
 			ewl_configure_cancel_request(w);
+		/* printf("Cleanup count %d: %s\n", cleanup, w->inheritance); */
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);
@@ -929,6 +932,9 @@ ewl_garbage_collect(void)
 
 	if (print_gc_reap)
 		printf("---\n");
+
+	if (!ecore_list_nodes(destroy_list))
+		ewl_garbage_collect = NULL;
 
 	DRETURN_INT(ecore_list_nodes(destroy_list), DLEVEL_STABLE);
 }
