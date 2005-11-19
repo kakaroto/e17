@@ -573,13 +573,13 @@ DeskSetDirtyStack(Desk * dsk, EObj * eo)
 }
 
 void
-DeskGetCurrentArea(int *ax, int *ay)
+DeskCurrentGetArea(int *ax, int *ay)
 {
    DeskGetArea(desks.current, ax, ay);
 }
 
-void
-DeskSetCurrentArea(int ax, int ay)
+static void
+DeskCurrentSetArea(int ax, int ay)
 {
    DeskSetArea(desks.current, ax, ay);
 }
@@ -1340,9 +1340,276 @@ DeskGotoByEwin(EWin * ewin)
       return;
 
    DeskGoto(EoGetDesk(ewin));
-   SetCurrentArea(ewin->area_x, ewin->area_y);
+   DeskCurrentGotoArea(ewin->area_x, ewin->area_y);
 }
 
+/*
+ * Areas
+ */
+static int          area_w = 3;
+static int          area_h = 3;
+
+void
+DesksFixArea(int *ax, int *ay)
+{
+   if (*ax < 0)
+     {
+	if (Conf.desks.areas_wraparound)
+	   *ax = area_w - 1;
+	else
+	   *ax = 0;
+     }
+   else if (*ax >= area_w)
+     {
+	if (Conf.desks.areas_wraparound)
+	   *ax = 0;
+	else
+	   *ax = area_w - 1;
+     }
+
+   if (*ay < 0)
+     {
+	if (Conf.desks.areas_wraparound)
+	   *ay = area_h - 1;
+	else
+	   *ay = 0;
+     }
+   else if (*ay >= area_h)
+     {
+	if (Conf.desks.areas_wraparound)
+	   *ay = 0;
+	else
+	   *ay = area_h - 1;
+     }
+}
+
+static int
+AreaXYToLinear(int ax, int ay)
+{
+   DesksFixArea(&ax, &ay);
+   return (ay * area_w) + ax;
+}
+
+static void
+AreaLinearToXY(int a, int *ax, int *ay)
+{
+   if (a < 0)
+      a = 0;
+   else if (a >= (area_w * area_h))
+      a = (area_w * area_h) - 1;
+   *ay = a / area_w;
+   *ax = a - (*ay * area_w);
+}
+
+static void
+SetAreaSize(int aw, int ah)
+{
+   if (aw < 1)
+      aw = 1;
+   if (ah < 1)
+      ah = 1;
+   Conf.desks.areas_nx = area_w = aw;
+   Conf.desks.areas_ny = area_h = ah;
+   HintsSetViewportConfig();
+   EdgeWindowsShow();
+   ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
+}
+
+void
+DesksGetAreaSize(int *aw, int *ah)
+{
+   *aw = area_w;
+   *ah = area_h;
+}
+
+static void
+SetNewAreaSize(int ax, int ay)
+{
+
+   int                 a, b, i, num;
+   EWin               *const *lst;
+
+   if (ax <= 0)
+      return;
+   if (ay <= 0)
+      return;
+
+   DesksGetAreaSize(&a, &b);
+   if ((a == ax) && (b == ay))
+      return;
+
+   SetAreaSize(ax, ay);
+
+   lst = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	if (!EoIsSticky(lst[i]))
+	  {
+	     if (lst[i]->area_x >= ax)
+		EwinMoveToArea(lst[i], ax - 1, lst[i]->area_x);
+	     if (lst[i]->area_y >= ay)
+		EwinMoveToArea(lst[i], lst[i]->area_x, ay - 1);
+	  }
+     }
+
+   DeskCurrentGetArea(&a, &b);
+   if (a >= ax)
+     {
+	DeskCurrentGotoArea(ax - 1, b);
+	DeskCurrentGetArea(&a, &b);
+     }
+   if (b >= ay)
+      DeskCurrentGotoArea(a, ay - 1);
+}
+
+static void
+SetCurrentLinearArea(int a)
+{
+   int                 ax, ay;
+
+   AreaLinearToXY(a, &ax, &ay);
+   DeskCurrentGotoArea(ax, ay);
+}
+
+static int
+GetCurrentLinearArea(void)
+{
+   int                 ax, ay;
+
+   DeskCurrentGetArea(&ax, &ay);
+
+   return AreaXYToLinear(ax, ay);
+}
+
+static void
+MoveCurrentLinearAreaBy(int a)
+{
+   SetCurrentLinearArea(GetCurrentLinearArea() + a);
+}
+
+void
+DeskCurrentGotoArea(int ax, int ay)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num, dx, dy, pax, pay;
+
+   if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
+       || (Mode.mode == MODE_RESIZE_V))
+      return;
+
+   DesksFixArea(&ax, &ay);
+   DeskCurrentGetArea(&pax, &pay);
+
+   if (ax == pax && ay == pay)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskCurrentGotoArea %d,%d\n", ax, ay);
+
+   ModulesSignal(ESIGNAL_AREA_SWITCH_START, NULL);
+
+   dx = VRoot.w * (ax - pax);
+   dy = VRoot.h * (ay - pay);
+
+   if (dx < 0)
+      SoundPlay("SOUND_MOVE_AREA_LEFT");
+   else if (dx > 0)
+      SoundPlay("SOUND_MOVE_AREA_RIGHT");
+   else if (dy < 0)
+      SoundPlay("SOUND_MOVE_AREA_UP");
+   else if (dy > 0)
+      SoundPlay("SOUND_MOVE_AREA_DOWN");
+
+   ActionsSuspend();
+
+   /* remove lots of event masks from windows.. we dont want to bother */
+   /* handling events as a result of our playing wiht windows */
+   DeskSwitchStart();
+
+   /* set the current area up in out data structs */
+   DeskCurrentSetArea(ax, ay);
+
+   /* move all the windows around */
+   lst = EwinListGetAll(&num);
+   if (Conf.desks.slidein)
+     {
+	int                 wnum = 0;
+	EObj              **wl = NULL;
+
+	/* create the list of windwos to move */
+	for (i = 0; i < num; i++)
+	  {
+	     ewin = lst[i];
+	     if (EoIsSticky(ewin) || ewin->state.iconified)
+		continue;
+	     if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
+		continue;
+
+	     if (EoIsFloating(ewin) && Conf.movres.mode_move == 0)
+		continue;
+
+	     wnum++;
+	     wl = Erealloc(wl, sizeof(EObj *) * wnum);
+	     wl[wnum - 1] = &ewin->o;
+	  }
+
+	/* slide them */
+	if (wl)
+	  {
+	     EobjsSlideBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
+	     Efree(wl);
+	     EobjsRepaint();
+	  }
+     }
+
+   /* move all windows to their final positions */
+   Mode.move.check = 0;
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+	if (EwinIsTransientChild(ewin))
+	   continue;
+	if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
+	   continue;
+
+	if (EoIsSticky(ewin) ||
+	    (EoIsFloating(ewin) && Conf.movres.mode_move == 0) ||
+	    (!ewin->state.iconified && Conf.desks.slidein))
+	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
+	else
+	   EwinMove(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
+     }
+   Mode.move.check = 1;
+
+   if (!Conf.desks.slidein)
+      EobjsRepaint();
+
+   /* set hints up for it */
+   HintsSetDesktopViewport();
+
+   ActionsResume();
+
+   /* re-focus on a new ewin on that new desktop area */
+   DeskSwitchDone();
+
+   ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
+
+   /* update which "edge flip resistance" detector windows are visible */
+   EdgeWindowsShow();
+}
+
+void
+DeskCurrentMoveAreaBy(int dx, int dy)
+{
+   int                 ax, ay;
+
+   DeskCurrentGetArea(&ax, &ay);
+   DeskCurrentGotoArea(ax + dx, ay + dy);
+}
+
+/*
+ * Actions, events
+ */
 static char         sentpress = 0;
 
 static void
@@ -2136,7 +2403,7 @@ SettingsArea(void)
       tmp_edge_flip = 0;
    else
       tmp_edge_flip = 1;
-   GetAreaSize(&tmp_area_x, &tmp_area_y);
+   DesksGetAreaSize(&tmp_area_x, &tmp_area_y);
    tmp_area_y = 9 - tmp_area_y;
 
    d = tmp_area_dialog = DialogCreate("CONFIGURE_AREA");
@@ -2358,7 +2625,7 @@ DesksIpcArea(const char *params, Client * c __UNUSED__)
 	p += len;
      }
 
-   DeskGetCurrentArea(&ax, &ay);
+   DeskCurrentGetArea(&ax, &ay);
 
    if (!p || cmd[0] == '?')
      {
@@ -2376,13 +2643,13 @@ DesksIpcArea(const char *params, Client * c __UNUSED__)
    else if (!strncmp(cmd, "goto", 2))
      {
 	sscanf(params, "%*s %i %i", &ax, &ay);
-	SetCurrentArea(ax, ay);
+	DeskCurrentGotoArea(ax, ay);
      }
    else if (!strncmp(cmd, "move", 2))
      {
 	dx = dy = 0;
 	sscanf(params, "%*s %i %i", &dx, &dy);
-	MoveCurrentAreaBy(dx, dy);
+	DeskCurrentMoveAreaBy(dx, dy);
      }
    else if (!strncmp(cmd, "lgoto", 2))
      {
@@ -2453,7 +2720,7 @@ AreasCfgFuncSizeX(void *item __UNUSED__, const char *value)
 {
    int                 ax, ay;
 
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
    SetNewAreaSize(atoi(value), ay);
 }
 
@@ -2462,7 +2729,7 @@ AreasCfgFuncSizeY(void *item __UNUSED__, const char *value)
 {
    int                 ax, ay;
 
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
    SetNewAreaSize(ax, atoi(value));
 }
 

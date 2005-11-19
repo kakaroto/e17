@@ -221,7 +221,7 @@ EWMH_SetDesktopSize(void)
 {
    int                 ax, ay;
 
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
    ecore_x_netwm_desk_size_set(VRoot.win, ax * VRoot.w, ay * VRoot.h);
 }
 
@@ -827,7 +827,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
      {
-	SetCurrentArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
+	DeskCurrentGotoArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
 	goto done;
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)

@@ -337,6 +337,8 @@ void                EwinInstantUnShade(EWin * ewin);
 void                EwinShade(EWin * ewin);
 void                EwinUnShade(EWin * ewin);
 void                EwinMoveToArea(EWin * ewin, int ax, int ay);
+void                EwinMoveToLinearArea(EWin * ewin, int a);
+void                EwinMoveLinearAreaBy(EWin * ewin, int a);
 
 void                EwinOpClose(EWin * ewin, int source);
 void                EwinOpActivate(EWin * ewin, int source);

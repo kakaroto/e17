@@ -705,19 +705,6 @@ void                AlertX(const char *title, const char *ignore,
 			   const char *restart, const char *quit,
 			   const char *fmt, ...);
 
-/* areas.c */
-void                AreaFix(int *ax, int *ay);
-void                SetNewAreaSize(int ax, int ay);
-void                SetAreaSize(int aw, int ah);
-void                GetAreaSize(int *aw, int *ah);
-void                SetCurrentArea(int ax, int ay);
-void                MoveCurrentAreaBy(int ax, int ay);
-void                SetCurrentLinearArea(int a);
-int                 GetCurrentLinearArea(void);
-void                MoveCurrentLinearAreaBy(int a);
-void                EwinMoveToLinearArea(EWin * ewin, int a);
-void                EwinMoveLinearAreaBy(EWin * ewin, int a);
-
 /* arrange.c */
 #define ARRANGE_VERBATIM    0
 #define ARRANGE_BY_SIZE     1

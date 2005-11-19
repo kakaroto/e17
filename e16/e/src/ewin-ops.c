@@ -275,7 +275,7 @@ EwinDetermineArea(EWin * ewin)
 
    ax = (ewin->vx + EoGetW(ewin) / 2) / EoGetW(dsk);
    ay = (ewin->vy + EoGetH(ewin) / 2) / EoGetH(dsk);
-   AreaFix(&ax, &ay);
+   DesksFixArea(&ax, &ay);
    if (ax != ewin->area_x || ay != ewin->area_y)
      {
 	ewin->area_x = ax;
@@ -1418,7 +1418,7 @@ EwinsShowDesktop(int on)
 void
 EwinMoveToArea(EWin * ewin, int ax, int ay)
 {
-   AreaFix(&ax, &ay);
+   DesksFixArea(&ax, &ay);
    EwinMove(ewin, EoGetX(ewin) + (VRoot.w * (ax - ewin->area_x)),
 	    EoGetY(ewin) + (VRoot.h * (ay - ewin->area_y)));
 }
@@ -1805,6 +1805,21 @@ EwinOpMoveToDesk(EWin * ewin, int source __UNUSED__, Desk * dsk, int inc)
 }
 
 #if 0				/* Unused */
+void
+EwinMoveToLinearArea(EWin * ewin, int a)
+{
+   int                 ax, ay;
+
+   AreaLinearToXY(a, &ax, &ay);
+   EwinMoveToArea(ewin, ax, ay);
+}
+
+void
+EwinMoveLinearAreaBy(EWin * ewin, int a)
+{
+   EwinMoveToLinearArea(ewin, AreaXYToLinear(ewin->area_x, ewin->area_y) + a);
+}
+
 void
 EwinOpMoveToArea(EWin * ewin, int x, int y)
 {

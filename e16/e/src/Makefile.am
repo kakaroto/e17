@@ -18,7 +18,6 @@ e16_SOURCES = \
 	aclass.c		\
 	actions.c		\
 	alert.c			\
-	areas.c                 \
 	arrange.c		\
 	backgrounds.c		\
 	backgrounds.h		\

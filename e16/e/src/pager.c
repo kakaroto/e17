@@ -208,7 +208,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    if (Mode.mode != MODE_NONE)
       return;
 
-   DeskGetCurrentArea(&cx, &cy);
+   DeskCurrentGetArea(&cx, &cy);
    ww = p->dw;
    hh = p->dh;
    xx = cx * ww;
@@ -337,7 +337,7 @@ doPagerUpdate(Pager * p)
    int                 i, num, update_screen_included, update_screen_only;
 
    p->update_phase = 0;
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
    DeskGetArea(p->dsk, &cx, &cy);
    vx = cx * VRoot.w;
    vy = cy * VRoot.h;
@@ -471,7 +471,7 @@ PagerReconfigure(Pager * p)
 
    ewin = p->ewin;
 
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
 
    aspect = ((double)VRoot.w) / ((double)VRoot.h);
    ICCCM_SetSizeConstraints(ewin, 10 * ax, 8 * ay, 320 * ax, 240 * ay,
@@ -567,7 +567,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if ((w == p->w && h == p->h) || w <= 1 || h <= 1)
       return;
 
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
 
    if (p->pmap != None)
       EFreePixmap(p->pmap);
@@ -662,7 +662,7 @@ PagerShow(Pager * p)
 	/* no snapshots ? first time ? make a row on the bottom left up */
 	int                 ax, ay;
 
-	GetAreaSize(&ax, &ay);
+	DesksGetAreaSize(&ax, &ay);
 	w = ((48 * VRoot.w) / VRoot.h) * ax;
 	h = 48 * ay;
 	EwinResize(ewin, w, h);	/* Does layout */
@@ -1360,12 +1360,12 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
 	DeskGoto(p->dsk);
 	if (p->dsk != DesksGetCurrent())
 	   SoundPlay("SOUND_DESKTOP_SHUT");
-	SetCurrentArea(px / p->dw, py / p->dh);
+	DeskCurrentGotoArea(px / p->dw, py / p->dh);
      }
    else if (button == Conf_pagers.win_button)
      {
 	DeskGoto(p->dsk);
-	SetCurrentArea(px / p->dw, py / p->dh);
+	DeskCurrentGotoArea(px / p->dw, py / p->dh);
 	ewin = EwinInPagerAt(p, px, py);
 	if (ewin)
 	  {

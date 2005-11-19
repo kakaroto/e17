@@ -561,7 +561,7 @@ GNOME_SetCurrentArea(void)
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_AREA, False);
-   DeskGetCurrentArea(&ax, &ay);
+   DeskCurrentGetArea(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
    ecore_x_window_prop_card32_set(VRoot.win, atom_set, val, 2);
@@ -613,7 +613,7 @@ GNOME_SetAreaCount(void)
 
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_AREA_COUNT, False);
-   GetAreaSize(&ax, &ay);
+   DesksGetAreaSize(&ax, &ay);
    val[0] = ax;
    val[1] = ay;
    ecore_x_window_prop_card32_set(VRoot.win, atom_set, val, 2);
@@ -765,7 +765,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 
    if (event->message_type == a2)
      {
-	SetCurrentArea(event->data.l[0], event->data.l[1]);
+	DeskCurrentGotoArea(event->data.l[0], event->data.l[1]);
 	return;
      }
    if (event->message_type == a3)

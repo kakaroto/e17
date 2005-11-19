@@ -52,8 +52,8 @@ EdgeTimeout(int val, void *data __UNUSED__)
    if (ewin && ewin->state.fullscreen)
       return;
 
-   DeskGetCurrentArea(&ax, &ay);
-   GetAreaSize(&aw, &ah);
+   DeskCurrentGetArea(&ax, &ay);
+   DesksGetAreaSize(&aw, &ah);
    dx = 0;
    dy = 0;
    dax = 0;
@@ -97,7 +97,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.events.y += dy;
    EWarpPointer(VRoot.win, Mode.events.x, Mode.events.y);
    Mode.flipp = 1;
-   MoveCurrentAreaBy(dax, day);
+   DeskCurrentMoveAreaBy(dax, day);
    Mode.flipp = 0;
    Mode.events.px = Mode.events.x;
    Mode.events.py = Mode.events.y;
@@ -205,8 +205,8 @@ EdgeWindowsShow(void)
 	EventCallbackRegister(w3->win, 0, EdgeHandleEvents, (void *)2);
 	EventCallbackRegister(w4->win, 0, EdgeHandleEvents, (void *)3);
      }
-   DeskGetCurrentArea(&cx, &cy);
-   GetAreaSize(&ax, &ay);
+   DeskCurrentGetArea(&cx, &cy);
+   DesksGetAreaSize(&ax, &ay);
 
    if (cx == 0 && !Conf.desks.areas_wraparound)
       EobjUnmap(w1);

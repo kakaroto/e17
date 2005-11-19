@@ -236,7 +236,7 @@ ActionMoveResume(void)
    if (Mode_mr.mode > 0)
       EGrabServer();
 
-   DeskGetCurrentArea(&ax, &ay);
+   DeskCurrentGetArea(&ax, &ay);
 
    /* Redraw any windows that were in "move mode" */
    lst =

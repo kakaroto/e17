@@ -58,25 +58,30 @@ void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);
 int                 DeskIsViewable(const Desk * dsk);
 void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
-
 void                DeskRefresh(Desk * dsk);
 void                DeskAssignBg(unsigned int desk, Background * bg);
 void                DeskSetBg(Desk * dsk, Background * bg, int refresh);
-Desk               *DesktopAt(int x, int y);
-void                DeskSwitchStart(void);
-void                DeskSwitchDone(void);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
+void                DeskRestack(Desk * dsk);
+
+void                DeskCurrentGetArea(int *ax, int *ay);
+void                DeskCurrentGotoArea(int ax, int ay);
+void                DeskCurrentMoveAreaBy(int ax, int ay);
+
 void                DeskGotoByEwin(EWin * ewin);
 
-void                DeskRestack(Desk * dsk);
+void                DeskSwitchStart(void);
+void                DeskSwitchDone(void);
 
 unsigned int        DesksGetNumber(void);
 Desk               *DesksGetCurrent(void);
+Desk               *DesktopAt(int x, int y);
 unsigned int        DesksGetCurrentNum(void);
 void                DesksSetCurrent(Desk * dsk);
-void                DeskGetCurrentArea(int *ax, int *ay);
-void                DeskSetCurrentArea(int ax, int ay);
+void                DesksGetAreaSize(int *aw, int *ah);
 void                DesksClear(void);
+
+void                DesksFixArea(int *ax, int *ay);
 
 #endif /* _DESKTOPS_H_ */
