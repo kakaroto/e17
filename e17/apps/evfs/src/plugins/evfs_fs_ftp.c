@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 #include <curl/curl.h>
 
-struct ftp_conn* connection_handle_get(evfs_filereference* ref);
+struct ftp_conn* connection_handle_get(evfs_filereference* ref, evfs_command* com);
 		
 void evfs_ftp_dir_list(evfs_client* client, evfs_command* command);
 int evfs_ftp_file_stat(evfs_command* command, struct stat* file_stat);
@@ -71,7 +71,7 @@ Ecore_Hash* connections;
 
 /******************Begin Internal Functions*******************************/
 
-ftp_conn* connection_handle_get(evfs_filereference* ref)
+ftp_conn* connection_handle_get(evfs_filereference* ref, evfs_command* com)
 {
 	ftp_conn* conn = NULL;
 	/*Check for an existing connection, return it if  avaliable
@@ -88,9 +88,17 @@ ftp_conn* connection_handle_get(evfs_filereference* ref)
 		len += strlen("ftp://");
 		len += strlen(ref->username) + 1 + strlen(ref->password);
 		len += 1 + strlen(ref->path);
+		if ((com->type == EVFS_CMD_LIST_DIR) && (strlen(strrchr(ref->path, '/')) > 1))
+		{
+			len += 1;
+		}		
 		len *= sizeof(char);
 		url = malloc(len);
 		snprintf(url,len,"ftp://%s:%s@%s", ref->username, ref->password, ref->path);
+		if ((com->type == EVFS_CMD_LIST_DIR) && (strlen(strrchr(ref->path, '/')) > 1))
+		{
+			strcat(url, "/");
+		}
 		conn->handle = curl_easy_init();
 		printf("Setting CURLOPT_URL to %s\n", url);
 		curl_easy_setopt(conn->handle, CURLOPT_URL, url);
@@ -233,8 +241,8 @@ char* evfs_plugin_uri_get() {
 void evfs_ftp_dir_list(evfs_client* client, evfs_command* command) {
 	printf("FTP: Listing dir.\n");
 	
-	Ecore_Hash* data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-	ftp_conn* conn = connection_handle_get(command->file_command.files[0]);
+	Ecore_Hash* data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
+	ftp_conn* conn = connection_handle_get(command->file_command.files[0], command);
 	Ecore_List* files = ecore_list_new();
 	char* error = malloc(CURL_ERROR_SIZE);
 	
@@ -256,7 +264,7 @@ void evfs_ftp_dir_list(evfs_client* client, evfs_command* command) {
 	}
 	else
 	{
-		printf("There are %i list nodes.\n", ecore_list_nodes(files));
+		printf("Listed %i files.\n", ecore_list_nodes(files));
 		evfs_list_dir_event_create(client, command, files);
 	}
 	connection_handle_save(conn, command->file_command.files[0]);
