@@ -196,17 +196,38 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 	int err = 0;
 	int fd = 0;
 	char dir[128];
+	static struct stat smb_stat;
+
 	//struct stat* file_stat = calloc(1,sizeof(struct stat));
 	
 	
 	sprintf(dir,"smb:/%s", command->file_command.files[0]->path);
 	printf("Getting stat on file '%s'\n", dir);
 
-	err = smb_context->stat(smb_context, (const char*)dir, file_stat);
+	err = smb_context->stat(smb_context, (const char*)dir, &smb_stat);
 	printf("Returned error code: %d\n", err);
 	printf("File size: %d\n", file_stat->st_size);
 	
 	printf("Returning to caller..\n");
+
+	/*Ugly as shit - but if libsmbclient is compiled
+	 * with a different mem packing regime, then
+	 * this is the only way we can safely avoid blowing
+	 * the stack (i.e we can't use memcpy) */
+	file_stat->st_dev = smb_stat.st_dev;
+	file_stat->st_ino = smb_stat.st_ino;
+	file_stat->st_mode = smb_stat.st_mode;
+	file_stat->st_nlink = smb_stat.st_nlink;
+	file_stat->st_uid = smb_stat.st_uid;
+	file_stat->st_gid = smb_stat.st_gid;
+	file_stat->st_rdev = smb_stat.st_rdev;
+	file_stat->st_size = smb_stat.st_size;
+	file_stat->st_blksize = smb_stat.st_blksize;
+	file_stat->st_blocks = smb_stat.st_blocks;
+	file_stat->st_atime = smb_stat.st_atime;
+	file_stat->st_mtime = smb_stat.st_mtime;
+	file_stat->st_ctime = smb_stat.st_ctime;
+
 
 	return 0;
 

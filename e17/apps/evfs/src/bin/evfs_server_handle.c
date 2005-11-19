@@ -121,7 +121,7 @@ void evfs_handle_file_rename_command(evfs_client* client, evfs_command* command)
 }
 
 void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
-	static struct stat file_stat;
+	struct stat file_stat;
 	
 	printf ("At file stat handler\n");
 	printf("Looking for plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
@@ -166,7 +166,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 	long count;
 	char destination_file[PATH_MAX];
 	long read_write_bytes = 0;
-	static struct stat file_stat;
+	struct stat file_stat;
 	int progress = 0;
 	int last_notify_progress = 0;
 	evfs_filereference* ref = NEW(evfs_filereference);
