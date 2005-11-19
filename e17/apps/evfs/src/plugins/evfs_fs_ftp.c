@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct ftp_conn* connection_handle_get(evfs_filereference* ref, evfs_command* com);
 		
-void evfs_ftp_dir_list(evfs_client* client, evfs_command* command);
+void evfs_ftp_dir_list(evfs_client* client, evfs_command* command, Ecore_List** directory_list);
 int evfs_ftp_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
@@ -238,7 +238,11 @@ char* evfs_plugin_uri_get() {
 	return "ftp";
 }
 
-void evfs_ftp_dir_list(evfs_client* client, evfs_command* command) {
+void evfs_ftp_dir_list(evfs_client* client, evfs_command* command,
+/*Returns...*/
+Ecore_List** directory_list) {
+
+
 	printf("FTP: Listing dir.\n");
 	
 	Ecore_Hash* data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);	
@@ -261,11 +265,14 @@ void evfs_ftp_dir_list(evfs_client* client, evfs_command* command) {
 	if (status)
 	{
 		printf("Error: curl_easy_perform() returned %i: %s\n", status, error);
+		*directory_list = NULL;
 	}
 	else
 	{
 		printf("Listed %i files.\n", ecore_list_nodes(files));
-		evfs_list_dir_event_create(client, command, files);
+		
+		/*Set out return pointer..*/
+		*directory_list = files;
 	}
 	connection_handle_save(conn, command->file_command.files[0]);
 }

@@ -69,25 +69,35 @@ ecore_ipc_message* ecore_ipc_message_new(int major, int minor, int ref, int ref_
 void evfs_event_client_id_notify(evfs_client* client) {
 
 	/*printf("Notifying client of id %ld\n", client->id);*/
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_NOTIFY_ID,0,0,0,0,&client->id, sizeof(long)));	
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_NOTIFY_ID,0,0,0,0,&client->id, sizeof(long)));	
 }
 
 void evfs_write_event_file_monitor (evfs_client* client, evfs_event* event) {
 
 	/*Write the type*/
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_TYPE,client->id,0,0,&event->file_monitor.fileev_type, sizeof(evfs_file_monitor_type)));
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_TYPE,
+			client->id,0,0,
+			&event->file_monitor.fileev_type, sizeof(evfs_file_monitor_type)));
 
 	/*Write the filename this is an event for*/
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_FILENAME,client->id,0,0,event->file_monitor.filename,event->file_monitor.filename_len));
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_FILENAME,
+			client->id,0,0,event->file_monitor.filename,event->file_monitor.filename_len));
 
 	/*Write the plugin*/
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_PLUGIN,client->id,0,0,event->file_monitor.plugin,strlen(event->file_monitor.plugin)+1 ));
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_MONITOR_PLUGIN,
+			client->id,0,0,event->file_monitor.plugin,strlen(event->file_monitor.plugin)+1 ));
 	
 	
 }
 
 void evfs_write_stat_event (evfs_client* client, evfs_event* event) {
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,client->id,0,0,&event->stat.stat_obj,sizeof(evfs_stat)));
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_STAT_SIZE,
+		client->id,0,0,&event->stat.stat_obj,sizeof(evfs_stat)));
 
 	
 	
@@ -111,7 +121,9 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 		
 		
 		/*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type);*/
-		evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,client->id,0,0,data, size_ret  ));
+		evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_FILE_REFERENCE,
+			client->id,0,0,data, size_ret  ));
 
 		free(data);
 
@@ -125,7 +137,9 @@ void evfs_write_progress_event(evfs_client* client, evfs_event* event) {
 	int size_ret = 0;
 	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, &event->progress, &size_ret);
 
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,client->id,0,0,data, size_ret  ));
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,
+		client->id,0,0,data, size_ret  ));
 	
 	
 }
@@ -133,7 +147,9 @@ void evfs_write_progress_event(evfs_client* client, evfs_event* event) {
 
 void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	//printf("Sending event type '%d'\n", event->type);
-	evfs_write_ecore_ipc_client_message(client->client, ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,client->id,0,0,&event->type, sizeof(evfs_eventtype)));
+	evfs_write_ecore_ipc_client_message(client->client, 
+		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_TYPE,
+		client->id,0,0,&event->type, sizeof(evfs_eventtype)));
 
 	/*Now write the source command, if any*/
 	if (command) {
@@ -194,6 +210,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		break;
 
 		case EVFS_EV_PART_FILE_REFERENCE: {
+							  
 			evfs_filereference* ref;
 							  
 			if (!event->file_list.list) {
@@ -225,6 +242,8 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			//printf("Created new ecore list at %p\n", event->file_list.list);
 			return TRUE;
 			break;
+		default: printf("Unknown event part received!\n");
+			 break;
 	}
 
 
@@ -397,11 +416,11 @@ void evfs_write_file_command_client(evfs_client* client, evfs_command* command) 
 			command->file_command.files[i]->plugin_uri, 
 			command->file_command.files[i]->path);
 		}
-
+	
 
 		evfs_write_ecore_ipc_client_message(client->client, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
-			EVFS_FILE_REFERENCE, client->id,0,0,uri, sizeof(uri)));	
+			EVFS_FILE_REFERENCE, client->id,0,0,uri, sizeof(uri) + 1));	
 
 
 		
@@ -422,6 +441,7 @@ void evfs_write_file_command_client(evfs_client* client, evfs_command* command) 
 /*Readers*/
 int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ecore_ipc_message* message) {
 	evfs_filereference* ref;
+
 	
 	switch (message->minor) {
 		case EVFS_COMMAND_TYPE:
@@ -431,7 +451,7 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 			
 			break;
 		case EVFS_FILE_REFERENCE: {
-			printf("Parsing URI: '%s'\n", message->data);			  
+			//printf("Parsing URI: '%s'\n", message->data);			  
 			evfs_file_uri_path* path = evfs_parse_uri(message->data);
 			if (command->file_command.num_files == 0) {
 
@@ -496,6 +516,9 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 			 
 					  
 			 return TRUE;
+			 break;
+
+		default: printf("Unknown incoming command part\n");
 			 break;
 	}
 

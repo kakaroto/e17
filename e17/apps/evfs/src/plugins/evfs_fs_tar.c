@@ -87,7 +87,7 @@ int evfs_file_seek(evfs_filereference* file, long offset, int whence);
 int evfs_file_read(evfs_filereference* file, char* bytes, long size);
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
-void evfs_dir_list(evfs_client* client, evfs_command* file);
+void evfs_dir_list(evfs_client* client, evfs_command* file, Ecore_List** directory_list);
 
 
 
@@ -403,7 +403,11 @@ struct tar_file* evfs_tar_load_tar(evfs_client* client, evfs_filereference* ref)
 }
 
 
-void evfs_dir_list(evfs_client* client, evfs_command* com) {
+void evfs_dir_list(evfs_client* client, evfs_command* com,
+/*Returns..*/
+Ecore_List** directory_list
+) {
+	
 	struct tar_file* file;
 	struct tar_element* ele, *ele_new;
 	Ecore_List* keys;
@@ -459,8 +463,10 @@ void evfs_dir_list(evfs_client* client, evfs_command* com) {
 		}
 	}
 
-
-	evfs_list_dir_event_create(client, com, files);
+	/*Set our return pointer to the directory list*/
+	*directory_list = files;
+	
+	
 
 }
 

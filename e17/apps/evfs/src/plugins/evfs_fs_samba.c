@@ -48,7 +48,7 @@ Ecore_List* auth_cache;
 
 
 
-static void smb_evfs_dir_list(evfs_client* client, evfs_command* command);
+static void smb_evfs_dir_list(evfs_client* client, evfs_command* command, Ecore_List** directory_list);
 int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
@@ -212,7 +212,11 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 
 }
 
-static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
+static void smb_evfs_dir_list(evfs_client* client, evfs_command* command,
+/*Returns..*/
+Ecore_List** directory_list
+) {
+	
 	char dir_path[1024];
 
 	int fd, dh1, dh2, dh3, dsize, dirc;
@@ -262,7 +266,9 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command) {
 		   }
 		}
 		smb_context->closedir(smb_context,dir);
-		evfs_list_dir_event_create(client, command, files);
+
+		/*Set the return pointer..*/
+		*directory_list = files;
 	} else {
 	            printf("Could not open [%s] (%d:%s)\n",dir_path, errno, strerror(errno));
 	}
