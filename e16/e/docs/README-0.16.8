@@ -101,6 +101,52 @@ When doing border/icon matches, the window match list is searched from the
 start, and the first matching item will be used.
 
 
+Using e16 with GNOME
+--------------------
+(Using Fedora Core 4, may be pertinent to other distributions as well).
+
+The GNOME desktop can be started using e16 as WM with:
+
+$ export WINDOW_MANAGER=e16
+$ gnome-sesssion
+
+Alternatively, add a GNOME/e16 session entry to the display manager login:
+# cp /usr/share/e16/misc/e-gnome.desktop /usr/share/xsessions/
+
+However, somewhere along the way the script /usr/bin/gnome-wm is called.
+This is supposed to handle differences in all the different WM's out there,
+but does not know of "e16". This will cause a major delay when starting up
+the GNOME desktop.
+One way to fix this is to use gnome-session-properties to get rid of
+the "gnome-wm" session entry.
+Another is to apply this patch to /usr/bin/gnome-wm:
+
+--- /usr/bin/gnome-wm-org       2005-04-19 21:33:53.000000000 +0200
++++ /usr/bin/gnome-wm   2005-11-15 20:46:09.000000000 +0100
+@@ -69,7 +69,7 @@
+ OPT2=
+ if [ ! -z "$SMID" ] ; then
+   case `basename $WINDOW_MANAGER` in
+-    sawfish|sawmill|metacity)
++    sawfish|sawmill|metacity|e16)
+       OPT1=--sm-client-id=$SMID
+       ;;
+     openbox)
+
+
+Using e16 with KDE
+------------------
+(Using Fedora Core 4, may work with other distributions as well).
+
+The KDE desktop can be started using e16 as WM with:
+
+$ export KDEWM=e16
+$ startkde
+
+Alternatively, add a KDE/e16 session entry to the display manager login:
+# cp /usr/share/e16/misc/e-kde.desktop /usr/share/xsessions/
+
+
 Migrating from Enlightenment 0.16.7 to 0.16.8 
 ---------------------------------------------
 By Peter Hyman (pete4abw@comcast.net)
