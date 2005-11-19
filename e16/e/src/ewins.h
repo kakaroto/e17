@@ -41,18 +41,19 @@ struct _snapshot;
 #define OPSRC_USER      2
 #define OPSRC_WM        3
 
-typedef struct
+typedef union
 {
-   unsigned int        all:32;
+   unsigned char       all:8;
    struct
    {
-      unsigned            close:1;	/*  AU */
-      unsigned            focus:1;	/* WA  */
-      unsigned            iconify:1;	/* W U */
-      unsigned            move:1;	/*  AU */
-      unsigned            size:1;	/*  AU */
+      unsigned char       rsvd:3;
+      unsigned char       close:1;	/*  AU */
+      unsigned char       focus:1;	/* WA  */
+      unsigned char       iconify:1;	/* W U */
+      unsigned char       move:1;	/*  AU */
+      unsigned char       size:1;	/*  AU */
    } b;
-} EwinInhibit;
+} EWinInhibit;
 
 #define EwinInhGetApp(ewin, item)      (ewin->inh_app.b.item)
 #define EwinInhSetApp(ewin, item, on)  ewin->inh_app.b.item = (on)
@@ -143,9 +144,9 @@ struct _ewin
       unsigned            no_border:1;	/* Never apply border */
       unsigned            focus_when_mapped:1;
    } props;
-   EwinInhibit         inh_app;
-   EwinInhibit         inh_user;
-   EwinInhibit         inh_wm;
+   EWinInhibit         inh_app;
+   EWinInhibit         inh_user;
+   EWinInhibit         inh_wm;
    struct
    {
       char               *wm_name;
@@ -303,6 +304,8 @@ int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, struct _desk *dsk,
 					    int *px, int *py);
+unsigned int        EwinFlagsEncode(const EWin * ewin);
+void                EwinFlagsDecode(EWin * ewin, unsigned int flags);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 

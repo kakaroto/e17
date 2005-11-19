@@ -43,7 +43,7 @@ typedef struct _snapshot Snapshot;
 #define SNAP_USE_LAYER          (1 << 6)
 #define SNAP_USE_STICKY         (1 << 7)
 #define SNAP_USE_SHADED         (1 << 8)
-#define SNAP_USE_FOCUS_NEVER    (1 << 9)
+#define SNAP_USE_FLAGS          (1 << 9)
 #define SNAP_USE_SKIP_LISTS     (1 << 10)
 #define SNAP_USE_OPACITY        (1 << 11)
 #define SNAP_USE_SHADOW         (1 << 12)

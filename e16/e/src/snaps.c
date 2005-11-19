@@ -51,13 +51,13 @@ struct _snapshot
    int                 layer;
    char                sticky;
    char                shaded;
+   unsigned int        flags;
    char               *cmd;
    int                *groups;
    int                 num_groups;
    char                skiptask;
    char                skipfocus;
    char                skipwinlist;
-   char                neverfocus;
 #if USE_COMPOSITE
    int                 opacity;
    char                shadow;
@@ -362,9 +362,9 @@ SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
 }
 
 static void
-SnapEwinNeverFocus(Snapshot * sn, const EWin * ewin)
+SnapEwinFlags(Snapshot * sn, const EWin * ewin)
 {
-   sn->neverfocus = EwinInhGetWM(ewin, focus);	/* FIXME */
+   sn->flags = EwinFlagsEncode(ewin);
 }
 
 static void
@@ -481,8 +481,8 @@ SnapEwinUpdate(Snapshot * sn, const EWin * ewin, unsigned int flags)
       SnapEwinShade(sn, ewin);
    if (flags & SNAP_USE_SKIP_LISTS)
       SnapEwinSkipLists(sn, ewin);
-   if (flags & SNAP_USE_FOCUS_NEVER)
-      SnapEwinNeverFocus(sn, ewin);
+   if (flags & SNAP_USE_FLAGS)
+      SnapEwinFlags(sn, ewin);
 #if USE_COMPOSITE
    if (flags & SNAP_USE_OPACITY)
       SnapEwinOpacity(sn, ewin);
@@ -569,7 +569,7 @@ typedef struct
    char                snap_cmd;
    char                snap_group;
    char                snap_skiplists;
-   char                snap_neverfocus;
+   char                snap_flags;
 
 #if USE_COMPOSITE
    char                snap_opacity;
@@ -627,8 +627,8 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
       use_flags |= SNAP_USE_SHADED;
    if (sd->snap_skiplists)
       use_flags |= SNAP_USE_SKIP_LISTS;
-   if (sd->snap_neverfocus)
-      use_flags |= SNAP_USE_FOCUS_NEVER;
+   if (sd->snap_flags)
+      use_flags |= SNAP_USE_FLAGS;
 #if USE_COMPOSITE
    if (sd->snap_opacity)
       use_flags |= SNAP_USE_OPACITY;
@@ -713,8 +713,8 @@ SnapshotEwinDialog(const EWin * ewin)
 	   sd->snap_shaded = 1;
 	if (sn->use_flags & SNAP_USE_SKIP_LISTS)
 	   sd->snap_skiplists = 1;
-	if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
-	   sd->snap_neverfocus = 1;
+	if (sn->use_flags & SNAP_USE_FLAGS)
+	   sd->snap_flags = 1;
 #if USE_COMPOSITE
 	if (sn->use_flags & SNAP_USE_OPACITY)
 	   sd->snap_opacity = 1;
@@ -886,12 +886,14 @@ SnapshotEwinDialog(const EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &sd->snap_shadow);
 #endif
 
-#if 0				/* Disabled (why?) */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Never Focus"));
-   DialogItemCheckButtonSetPtr(di, &sd->snap_neverfocus);
-#endif
+   DialogItemSetText(di, _("Flags"));
+   DialogItemCheckButtonSetPtr(di, &sd->snap_flags);
+
+   di = DialogAddItem(table, DITEM_NONE);
+   DialogItemSetColSpan(di, 2);
+
    if (ewin->icccm.wm_command)
      {
 	char                ok = 1;
@@ -1154,8 +1156,8 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 		  fprintf(f, "SKIPWINLIST: %i\n", sn->skipwinlist);
 		  fprintf(f, "SKIPFOCUS: %i\n", sn->skipfocus);
 	       }
-	     if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
-		fprintf(f, "NEVERFOCUS: %i\n", sn->neverfocus);
+	     if (sn->use_flags & SNAP_USE_FLAGS)
+		fprintf(f, "FLAGS: %#x\n", sn->flags);
 #if USE_COMPOSITE
 	     if (sn->use_flags & SNAP_USE_OPACITY)
 		fprintf(f, "OPACITY: %i\n", sn->opacity);
@@ -1377,10 +1379,10 @@ LoadSnapInfo(void)
 		  sn->use_flags |= SNAP_USE_SKIP_LISTS;
 		  sn->skipwinlist = atoi(s);
 	       }
-	     else if (!strcmp(buf, "NEVERFOCUS"))
+	     else if (!strcmp(buf, "FLAGS"))
 	       {
-		  sn->use_flags |= SNAP_USE_FOCUS_NEVER;
-		  sn->neverfocus = atoi(s);
+		  sn->use_flags |= SNAP_USE_FLAGS;
+		  sn->flags = strtoul(s, NULL, 0);
 	       }
 	     else if (!strcmp(buf, "GROUP"))
 	       {
@@ -1435,8 +1437,7 @@ SnapshotEwinApply(EWin * ewin)
    use_flags = sn->use_flags;
    /* If restarting don't override stuff set in attributes/properties */
    if (ewin->state.identified)
-      use_flags &= SNAP_USE_LAYER | SNAP_USE_FOCUS_NEVER | SNAP_USE_SHADOW |
-	 SNAP_USE_GROUPS;
+      use_flags &= SNAP_USE_LAYER | SNAP_USE_SHADOW | SNAP_USE_GROUPS;
 
    if (use_flags & SNAP_USE_STICKY)
       EoSetSticky(ewin, sn->sticky);
@@ -1480,8 +1481,8 @@ SnapshotEwinApply(EWin * ewin)
 	ewin->props.skip_winlist = sn->skipwinlist;
      }
 
-   if (use_flags & SNAP_USE_FOCUS_NEVER)
-      EwinInhSetWM(ewin, focus, sn->neverfocus);
+   if (use_flags & SNAP_USE_FLAGS)
+      EwinFlagsDecode(ewin, sn->flags);
 
    if (use_flags & SNAP_USE_SHADED)
       ewin->state.shaded = sn->shaded;
@@ -1700,8 +1701,8 @@ SnapIpcFunc(const char *params, Client * c __UNUSED__)
 	   IpcPrintf
 	      ("         skiptask: %d    skipfocus: %d    skipwinlist: %d\n",
 	       sn->skiptask, sn->skipfocus, sn->skipwinlist);
-	if (sn->use_flags & SNAP_USE_FOCUS_NEVER)
-	   IpcPrintf("       neverfocus: %d\n", sn->neverfocus);
+	if (sn->use_flags & SNAP_USE_FLAGS)
+	   IpcPrintf("            flags: %#x\n", sn->flags);
 	IpcPrintf("\n");
      }
 }

@@ -665,6 +665,8 @@ EwinStateUpdate(EWin * ewin)
    ewin->state.inhibit_change_desk = ewin->state.iconified;
    ewin->state.inhibit_close = EwinInhGetApp(ewin, close) ||
       EwinInhGetUser(ewin, close);
+
+   SnapshotEwinUpdate(ewin, SNAP_USE_FLAGS);
 }
 
 void
@@ -1531,6 +1533,42 @@ EwinRememberPositionGet(EWin * ewin, Desk * dsk, int *px, int *py)
 
    *px = x;
    *py = y;
+}
+
+typedef union
+{
+   unsigned int        all;
+   struct
+   {
+      unsigned char       rsvd;
+      unsigned char       inh_app;
+      unsigned char       inh_user;
+      unsigned char       inh_wm;
+   } f;
+} EWinMiscFlags;
+
+unsigned int
+EwinFlagsEncode(const EWin * ewin)
+{
+   EWinMiscFlags       fm;
+
+   fm.all = 0;
+   fm.f.inh_app = ewin->inh_app.all;
+   fm.f.inh_user = ewin->inh_user.all;
+   fm.f.inh_wm = ewin->inh_wm.all;
+
+   return fm.all;
+}
+
+void
+EwinFlagsDecode(EWin * ewin, unsigned int flags)
+{
+   EWinMiscFlags       fm;
+
+   fm.all = flags;
+   ewin->inh_app.all = fm.f.inh_app;
+   ewin->inh_user.all = fm.f.inh_user;
+   ewin->inh_wm.all = fm.f.inh_wm;
 }
 
 /*

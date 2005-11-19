@@ -328,10 +328,10 @@ EHintsSetInfo(const EWin * ewin)
    f.b.version = ENL_DATA_VERSION;
    f.b.docked = ewin->state.docked;
    f.b.iconified = ewin->state.iconified;
-
    c[0] = f.all;
 
-   c[1] = 0;
+   c[1] = EwinFlagsEncode(ewin);
+
    c[2] = 0;
 
    c[3] = ewin->lx;
@@ -392,6 +392,8 @@ EHintsGetInfo(EWin * ewin)
       return;
    ewin->icccm.start_iconified = f.b.iconified;
    ewin->state.docked = f.b.docked;
+
+   EwinFlagsDecode(ewin, c[1]);
 
    ewin->lx = c[3];
    ewin->ly = c[4];
