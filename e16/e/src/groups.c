@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "groups.h"
 #include "snaps.h"
 #include <math.h>
 
@@ -34,7 +35,24 @@
 
 #define DISABLE_PAGER_ICONBOX_GROUPING 0
 
+static struct
+{
+   GroupConfig         dflt;
+   char                swapmove;
+} Conf_groups;
+
+static struct
+{
+   Group              *current;
+} Mode_groups;
+
 static void         RemoveEwinFromGroup(EWin * ewin, Group * g);
+
+int
+GroupsGetSwapmove(void)
+{
+   return Conf_groups.swapmove;
+}
 
 static Group       *
 GroupCreate(void)
@@ -50,14 +68,14 @@ GroupCreate(void)
    g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
    /* g->index = (int)(GetTime() * 100); */
 
-   g->cfg.iconify = Conf.groups.dflt.iconify;
-   g->cfg.kill = Conf.groups.dflt.kill;
-   g->cfg.move = Conf.groups.dflt.move;
-   g->cfg.raise = Conf.groups.dflt.raise;
-   g->cfg.set_border = Conf.groups.dflt.set_border;
-   g->cfg.stick = Conf.groups.dflt.stick;
-   g->cfg.shade = Conf.groups.dflt.shade;
-   g->cfg.mirror = Conf.groups.dflt.mirror;
+   g->cfg.iconify = Conf_groups.dflt.iconify;
+   g->cfg.kill = Conf_groups.dflt.kill;
+   g->cfg.move = Conf_groups.dflt.move;
+   g->cfg.raise = Conf_groups.dflt.raise;
+   g->cfg.set_border = Conf_groups.dflt.set_border;
+   g->cfg.stick = Conf_groups.dflt.stick;
+   g->cfg.shade = Conf_groups.dflt.shade;
+   g->cfg.mirror = Conf_groups.dflt.mirror;
    g->num_members = 0;
    g->members = NULL;
 
@@ -70,8 +88,8 @@ GroupDestroy(Group * g)
    if (!g)
       return;
 
-   if (g == Mode.groups.current)
-      Mode.groups.current = NULL;
+   if (g == Mode_groups.current)
+      Mode_groups.current = NULL;
    if (g->members)
       Efree(g->members);
    Efree(g);
@@ -118,7 +136,7 @@ BuildWindowGroup(EWin ** ewins, int num)
    int                 i;
    Group              *g;
 
-   Mode.groups.current = g = GroupCreate();
+   Mode_groups.current = g = GroupCreate();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 
    for (i = 0; i < num; i++)
@@ -848,8 +866,8 @@ CB_ConfigureDefaultGroupSettings(Dialog * d __UNUSED__, int val,
 {
    if (val < 2)
      {
-	CopyGroupConfig(&tmp_group_cfg, &(Conf.groups.dflt));
-	Conf.groups.swapmove = tmp_group_swap;
+	CopyGroupConfig(&tmp_group_cfg, &(Conf_groups.dflt));
+	Conf_groups.swapmove = tmp_group_swap;
      }
    autosave();
 }
@@ -870,8 +888,8 @@ SettingsDefaultGroupControl(void)
      }
    SoundPlay("SOUND_SETTINGS_GROUP");
 
-   CopyGroupConfig(&(Conf.groups.dflt), &tmp_group_cfg);
-   tmp_group_swap = Conf.groups.swapmove;
+   CopyGroupConfig(&(Conf_groups.dflt), &tmp_group_cfg);
+   tmp_group_swap = Conf_groups.swapmove;
 
    d = DialogCreate("CONFIGURE_DEFAULT_GROUP_CONTROL");
    DialogSetTitle(d, _("Default Group Control Settings"));
@@ -1120,7 +1138,7 @@ IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 static void
 IPC_GroupOps(const char *params, Client * c __UNUSED__)
 {
-   Group              *group = Mode.groups.current;
+   Group              *group = Mode_groups.current;
    char                groupid[FILEPATH_LEN_MAX];
    int                 gix;
    char                windowid[FILEPATH_LEN_MAX];
@@ -1412,15 +1430,15 @@ static const IpcItem GroupsIpcArray[] = {
  * Configuration items
  */
 static const CfgItem GroupsCfgItems[] = {
-   CFG_ITEM_BOOL(Conf.groups, dflt.iconify, 1),
-   CFG_ITEM_BOOL(Conf.groups, dflt.kill, 0),
-   CFG_ITEM_BOOL(Conf.groups, dflt.mirror, 1),
-   CFG_ITEM_BOOL(Conf.groups, dflt.move, 1),
-   CFG_ITEM_BOOL(Conf.groups, dflt.raise, 0),
-   CFG_ITEM_BOOL(Conf.groups, dflt.set_border, 1),
-   CFG_ITEM_BOOL(Conf.groups, dflt.stick, 1),
-   CFG_ITEM_BOOL(Conf.groups, dflt.shade, 1),
-   CFG_ITEM_BOOL(Conf.groups, swapmove, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.iconify, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.kill, 0),
+   CFG_ITEM_BOOL(Conf_groups, dflt.mirror, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.move, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.raise, 0),
+   CFG_ITEM_BOOL(Conf_groups, dflt.set_border, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.stick, 1),
+   CFG_ITEM_BOOL(Conf_groups, dflt.shade, 1),
+   CFG_ITEM_BOOL(Conf_groups, swapmove, 1),
 };
 #define N_CFG_ITEMS (sizeof(GroupsCfgItems)/sizeof(CfgItem))
 

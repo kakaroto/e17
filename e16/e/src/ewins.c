@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "groups.h"
 #include "hints.h"
 #include "snaps.h"
 #include "xwin.h"

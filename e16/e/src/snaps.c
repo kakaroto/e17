@@ -26,6 +26,7 @@
 #include "desktops.h"
 #include "dialog.h"
 #include "ewins.h"
+#include "groups.h"
 #include "snaps.h"
 #include "xwin.h"
 

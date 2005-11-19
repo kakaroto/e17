@@ -25,6 +25,7 @@
 #include "backgrounds.h"
 #include "desktops.h"
 #include "ewins.h"
+#include "groups.h"
 #include "iclass.h"
 #include "menus.h"
 #include <errno.h>

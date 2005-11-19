@@ -25,12 +25,14 @@
 #include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "groups.h"
 #include "hints.h"
 #include "xwin.h"
 
 static struct
 {
    EWin               *ewin;
+   int                 mode;
    int                 start_x, start_y;
    int                 win_x, win_y, win_w, win_h;
    int                 swapcoord_x, swapcoord_y;
@@ -90,14 +92,22 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    RaiseEwin(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
 				      || Mode.move.swap, &num);
+
+   if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > 5)
+      Conf.movres.mode_move = 0;
+   Mode_mr.mode = Conf.movres.mode_move;
+   if (num > 1 && Conf.movres.mode_move == 5)
+      Mode_mr.mode = 0;
+
    for (i = 0; i < num; i++)
      {
 	EwinShapeSet(gwins[i]);
 	EwinFloatAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
-	if (Conf.movres.mode_move == 0)
+	if (Mode_mr.mode == 0)
 	   EoChangeOpacity(gwins[i], OpacityExt(Conf.movres.opacity));
      }
    Efree(gwins);
+
    Mode_mr.swapcoord_x = EoGetX(ewin);
    Mode_mr.swapcoord_y = EoGetY(ewin);
 
@@ -130,7 +140,7 @@ ActionMoveEnd(EWin * ewin)
    if (Mode.mode == MODE_MOVE)
      {
 	for (i = 0; i < num; i++)
-	   DrawEwinShape(gwins[i], Conf.movres.mode_move,
+	   DrawEwinShape(gwins[i], Mode_mr.mode,
 			 gwins[i]->shape_x, gwins[i]->shape_y,
 			 gwins[i]->client.w, gwins[i]->client.h, 2);
      }
@@ -148,7 +158,7 @@ ActionMoveEnd(EWin * ewin)
 	   EwinUnfloatAt(ewin, d2,
 			 ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
 			 ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
-	if (Conf.movres.mode_move == 0)
+	if (Mode_mr.mode == 0)
 	   EoChangeOpacity(ewin, ewin->ewmh.opacity);
      }
 
@@ -162,7 +172,7 @@ ActionMoveEnd(EWin * ewin)
    Mode.move.swap = 0;
    Mode.place.doing_manual = 0;
 
-   if (Conf.movres.mode_move > 0)
+   if (Mode_mr.mode > 0)
      {
 	EUngrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
@@ -185,7 +195,7 @@ ActionMoveSuspend(void)
       return 0;
 
    /* If non opaque undraw our boxes */
-   if (Conf.movres.mode_move > 0)
+   if (Mode_mr.mode > 0)
      {
 	EUngrabServer();
 
@@ -195,7 +205,7 @@ ActionMoveSuspend(void)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
-	     DrawEwinShape(ewin, Conf.movres.mode_move, ewin->shape_x,
+	     DrawEwinShape(ewin, Mode_mr.mode, ewin->shape_x,
 			   ewin->shape_y, ewin->client.w, ewin->client.h, 3);
 	  }
 	if (lst)
@@ -216,14 +226,14 @@ ActionMoveResume(void)
    if (!ewin)
       return 0;
 
-   fl = (Conf.movres.mode_move == 5) ? 4 : 0;
+   fl = (Mode_mr.mode == 5) ? 4 : 0;
    if (Mode.mode == MODE_MOVE_PENDING)
      {
 	Mode.mode = MODE_MOVE;
 	fl = 0;			/* This is the first time we draw it */
      }
 
-   if (Conf.movres.mode_move > 0)
+   if (Mode_mr.mode > 0)
       EGrabServer();
 
    DeskGetCurrentArea(&ax, &ay);
@@ -245,7 +255,7 @@ ActionMoveResume(void)
 	     x += Mode.events.x - Mode.events.px;
 	     y += Mode.events.y - Mode.events.py;
 	  }
-	DrawEwinShape(ewin, Conf.movres.mode_move, x, y,
+	DrawEwinShape(ewin, Mode_mr.mode, x, y,
 		      ewin->client.w, ewin->client.h, fl);
      }
    if (lst)
@@ -266,6 +276,8 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 
    SoundPlay("SOUND_RESIZE_START");
 
+   if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
+      Conf.movres.mode_resize = 0;
    if (Conf.movres.mode_resize > 0)
      {
 	EGrabServer();
@@ -384,9 +396,17 @@ ActionResizeEnd(EWin * ewin)
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->client.w, ewin->client.h, 2);
 
-   if (Conf.movres.mode_move == 0)
+   if (Conf.movres.mode_resize == 0)
      {
 	EoChangeOpacity(ewin, ewin->ewmh.opacity);
+     }
+   else
+     {
+	if (ewin->state.shaded)
+	   EwinMove(ewin, ewin->shape_x, ewin->shape_y);
+	else
+	   EwinMoveResize(ewin, ewin->shape_x, ewin->shape_y,
+			  ewin->shape_w, ewin->shape_h);
      }
 
    ESync();
@@ -423,19 +443,19 @@ ActionMoveHandleMotion(void)
 
    if (Mode.mode == MODE_MOVE_PENDING)
      {
-	if (Conf.movres.mode_move > 0)
+	if (Mode_mr.mode > 0)
 	  {
 	     EGrabServer();
 	     ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
 	  }
 
-	if (Conf.movres.mode_move == 0 || num == 1)
+	if (Mode_mr.mode == 0 || num == 1)
 	   ewin->state.show_coords = 1;
 
 	for (i = 0; i < num; i++)
 	  {
 	     ewin1 = gwins[i];
-	     DrawEwinShape(ewin1, Conf.movres.mode_move, EoGetX(ewin1),
+	     DrawEwinShape(ewin1, Mode_mr.mode, EoGetX(ewin1),
 			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0);
 	  }
 	Mode.mode = MODE_MOVE;
@@ -543,7 +563,7 @@ ActionMoveHandleMotion(void)
 
 	/* if its opaque move mode check to see if we have to float */
 	/* the window above all desktops (reparent to root) */
-	if (Conf.movres.mode_move == 0)
+	if (Mode_mr.mode == 0)
 	  {
 	     Desk               *dsk;
 
@@ -559,7 +579,7 @@ ActionMoveHandleMotion(void)
 	  }
 
 	/* draw the new position of the window */
-	DrawEwinShape(ewin1, Conf.movres.mode_move,
+	DrawEwinShape(ewin1, Mode_mr.mode,
 		      ewin1->shape_x + ndx, ewin1->shape_y + ndy,
 		      ewin1->client.w, ewin1->client.h, 1);
 
@@ -570,7 +590,7 @@ ActionMoveHandleMotion(void)
 	ewin1->req_y = (jumpy) ? ewin1->shape_y : ewin1->req_y + dy;
 
 	/* swapping of group member locations: */
-	if (Mode.move.swap && Conf.groups.swapmove)
+	if (Mode.move.swap && GroupsGetSwapmove())
 	  {
 	     EWin              **all_gwins, *ewin2;
 	     int                 j, all_gwins_num;

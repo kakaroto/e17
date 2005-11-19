@@ -27,6 +27,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "ewin-ops.h"
+#include "groups.h"
 #include "hints.h"
 #include "iclass.h"		/* FIXME - Should not be here */
 #include "snaps.h"
@@ -513,7 +514,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	   ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
      }
 
-   if (Mode.mode == MODE_NONE && dsk != pdesk)
+   if (dsk != pdesk)
      {
 	HintsSetWindowDesktop(ewin);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);

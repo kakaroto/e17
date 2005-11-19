@@ -629,19 +629,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    Window              root = VRoot.win;
    int                 x1, y1, w1, h1, i, j, dx, dy;
    char                str[32];
-   char                check_move = 0;
-
-   for (i = 0; i < ewin->num_groups; i++)
-     {
-	check_move |= ewin->groups[i]->cfg.move;
-	if (check_move)
-	   break;
-     }
-
-   if ((md == 5) &&
-       ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H) ||
-	(Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
-      md = 0;
 
    switch (md)
      {
@@ -1015,21 +1002,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     CoordsShow(ewin);
 	  }
+
 	if (firstlast == 2)
 	  {
-#if 1				/* FIXME - Here? */
-	     /* If we're moving a group, don't do this,
-	      * otherwise we have a lot of garbage onscreen */
-	     if (!EoIsFloating(ewin) || !ewin->groups
-		 || (ewin->groups && !check_move))
-	       {
-		  if (ewin->state.shaded)
-		     EwinMove(ewin, ewin->shape_x, ewin->shape_y);
-		  else
-		     EwinMoveResize(ewin, ewin->shape_x, ewin->shape_y,
-				    ewin->shape_w, ewin->shape_h);
-	       }
-#endif
 	     EFreeGC(gc);
 	     gc = 0;
 	  }

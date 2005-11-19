@@ -60,6 +60,7 @@ e16_SOURCES = \
 	fx.c                    \
 	grabs.c			\
 	groups.c		\
+	groups.h		\
 	handlers.c		\
 	hints.c			\
 	hints.h			\

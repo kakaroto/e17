@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "groups.h"
 
 EWin               *
 EwinFindByPtr(const EWin * ewin)

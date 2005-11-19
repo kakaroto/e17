@@ -248,22 +248,6 @@ int                 Esnprintf(va_alist);
 #define EVENT_FOCUS_IN    7
 #define EVENT_FOCUS_OUT   8
 
-#define GROUP_SELECT_ALL             0
-#define GROUP_SELECT_EWIN_ONLY       1
-#define GROUP_SELECT_ALL_EXCEPT_EWIN 2
-
-/* For window group listing */
-#define GROUP_ACTION_ANY                     0
-#define GROUP_ACTION_MOVE                    1
-#define GROUP_ACTION_RAISE                   2
-#define GROUP_ACTION_LOWER                   3
-#define GROUP_ACTION_KILL                    4
-#define GROUP_ACTION_STICK                   5
-#define GROUP_ACTION_ICONIFY                 6
-#define GROUP_ACTION_SHADE                   7
-#define GROUP_ACTION_SET_WINDOW_BORDER       8
-#define GROUP_ACTION_RAISE_LOWER             9
-
 /*
  * Types
  */
@@ -274,7 +258,6 @@ struct _textclass;
 struct _textstate;
 
 typedef struct _ewin EWin;
-typedef struct _group Group;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
 typedef struct _efont Efont;
@@ -383,27 +366,6 @@ typedef struct _ewinbit
 }
 EWinBit;
 
-typedef struct _groupconfig
-{
-   char                iconify;
-   char                kill;
-   char                mirror;
-   char                move;
-   char                raise;
-   char                set_border;
-   char                shade;
-   char                stick;
-}
-GroupConfig;
-
-struct _group
-{
-   int                 index;
-   EWin              **members;
-   int                 num_members;
-   GroupConfig         cfg;
-};
-
 /* Configuration parameters */
 typedef struct
 {
@@ -458,11 +420,6 @@ typedef struct
       char                warp_on_next;
       char                warp_always;
    } focus;
-   struct
-   {
-      GroupConfig         dflt;
-      char                swapmove;
-   } groups;
    struct
    {
       char                set_xroot_info_on_root_window;
@@ -604,10 +561,6 @@ typedef struct
       unsigned int        last_keycode;
       char                double_click;
    } events;
-   struct
-   {
-      Group              *current;
-   } groups;
    struct
    {
       int                 server_grabbed;
@@ -950,12 +903,6 @@ const char         *FileExtension(const char *file);
 char               *field(char *s, int fieldno);
 void                fword(char *s, int num, char *wd);
 
-/* finders.c */
-Group             **ListWinGroups(const EWin * ewin, char group_select,
-				  int *num);
-EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
-					       char nogroup, int *num);
-
 /* focus.c */
 #define FOCUS_NOP         0
 #define FOCUS_INIT        1
@@ -996,13 +943,6 @@ void                GrabButtonSet(unsigned int button, unsigned int modifiers,
 				  unsigned int csr, int confine);
 void                GrabButtonRelease(unsigned int button,
 				      unsigned int modifiers, Window win);
-
-/* groups.c */
-void                BuildWindowGroup(EWin ** ewins, int num);
-Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
-void                AddEwinToGroup(EWin * ewin, Group * g);
-void                GroupsEwinRemove(EWin * ewin);
-void                SaveGroups(void);
 
 /* handlers.c */
 void                SignalsSetup(void);

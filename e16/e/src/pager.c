@@ -27,6 +27,7 @@
 #include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "groups.h"
 #include "hints.h"
 #include "hiwin.h"
 #include "iclass.h"

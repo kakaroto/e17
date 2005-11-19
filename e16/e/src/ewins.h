@@ -28,12 +28,12 @@
 #include "xwin.h"
 
 struct _desk;
+struct _group;
+struct _snapshot;
 
 #if 0
 typedef struct _ewin EWin;
 #endif
-
-struct _snapshot;
 
 /* Window operation sources */
 #define OPSRC_UNKNOWN   0
@@ -215,7 +215,7 @@ struct _ewin
    } update;
 
    int                 num_groups;
-   Group             **groups;
+   struct _group     **groups;
    int                 area_x, area_y;
    char               *session_id;
    PmapMask            mini_pmm;
