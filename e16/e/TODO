@@ -1,25 +1,17 @@
 
-- Action source handling (locks)
-
 - Composite manager
   - Fix flicker on fade-out start.
-  - Don't paint unredirected windows where not necessary.
   - Repaint area is incorrect when using sharp shadows? (try gmplayer)
-
-- netwm hints
-  - More (_NET_WM_USER_TIME ...)?
 
 - Docs
   - Update
-
-- Cleanups
-  - Move still more stuff from E.h to separate header files
 
 - Fixed?
   - Trouble with external pagers and hidden desks.
   - Systray windows sometimes escape initial placement/sizing.
 
 - Maybe some day...
+  - Fix blurred shadow on shaped windows.
   - Defer border rendering?
   - Theme Transparency (pseudotrans) is way slower than it needs to be.
   - Enable not redirecting certain clients?
