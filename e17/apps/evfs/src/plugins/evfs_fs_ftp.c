@@ -41,9 +41,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <curl/curl.h>
 
 struct ftp_conn* connection_handle_get(evfs_filereference* ref);
-
-void ftp_evfs_dir_list(evfs_client* client, evfs_command* command);
-int ftp_evfs_file_stat(evfs_command* command, struct stat* file_stat);
+		
+void evfs_ftp_dir_list(evfs_client* client, evfs_command* command);
+int evfs_ftp_file_stat(evfs_command* command, struct stat* file_stat);
 int evfs_file_open(evfs_client* client, evfs_filereference* file);
 int evfs_file_close(evfs_filereference* file);
 int evfs_file_seek(evfs_filereference* file, long offset, int whence);
@@ -55,7 +55,8 @@ int evfs_client_disconnect(evfs_client* client);
 typedef enum evfs_ftp_data{
 	EVFS_FTP_CLIENT,
 	EVFS_FTP_COMMAND,
-	EVFS_FTP_HANDLE
+	EVFS_FTP_HANDLE,
+	EVFS_FTP_FILES
 }evfs_ftp_data;
 
 typedef struct ftp_conn {
@@ -75,7 +76,11 @@ ftp_conn* connection_handle_get(evfs_filereference* ref)
 	ftp_conn* conn = NULL;
 	/*Check for an existing connection, return it if  avaliable
 		create/initialize one if not*/
-	if(!(conn = ecore_hash_get(connections, ref->path)))
+	if((conn = ecore_hash_get(connections, ref->path)))
+	{
+		ecore_hash_remove(connections, ref->path);
+	}
+	else
 	{
 		conn = NEW(ftp_conn);
 		char *url;
@@ -86,15 +91,19 @@ ftp_conn* connection_handle_get(evfs_filereference* ref)
 		len *= sizeof(char);
 		url = malloc(len);
 		snprintf(url,len,"ftp://%s:%s@%s", ref->username, ref->password, ref->path);
-	printf("Marker.\n");
 		conn->handle = curl_easy_init();
-	printf("Marker.\n");
 		printf("Setting CURLOPT_URL to %s\n", url);
 		curl_easy_setopt(conn->handle, CURLOPT_URL, url);
-		ecore_hash_set(connections, ref->path, conn);
 	}
 	
 	return conn;
+}
+
+void connection_handle_save(ftp_conn* conn, evfs_filereference* ref)
+{
+	ecore_hash_set(connections, ref->path, conn);
+
+	
 }
 
 evfs_filereference* parse_ls_line(ftp_conn* conn, char* line, int is_stat)
@@ -108,7 +117,6 @@ evfs_filereference* parse_ls_line(ftp_conn* conn, char* line, int is_stat)
 		curfield = strdup(strsep(&fieldline, " "));
 		if(strlen(curfield))
 		{
-			printf("field: %s\n", curfield);
 			ecore_list_append(fields, curfield);
 		}
 	}
@@ -161,17 +169,15 @@ evfs_filereference* parse_ls_line(ftp_conn* conn, char* line, int is_stat)
 }
 /******************CURL Callbacks*****************************************/
 
-size_t listdir(void *buffer, size_t size, size_t nmemb, void *cbdata)
+size_t evfs_ftp_dir_list_cb(void *buffer, size_t size, size_t nmemb, void *cbdata)
 {
 	char* dirs = strdup(buffer);
-	Ecore_List* files = ecore_list_new();
+	Ecore_List* files = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_FILES);
 	evfs_client* client = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_CLIENT);
 	evfs_command* command = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_COMMAND);
 	ftp_conn* conn = ecore_hash_get((Ecore_Hash *)cbdata, (int *)EVFS_FTP_HANDLE);
 	evfs_filereference* ref;
 	char* curline;
-	
-	printf("libcurl says, I have returned:\n%s", (char *)buffer);
 	
 		
 	while (dirs)
@@ -180,18 +186,10 @@ size_t listdir(void *buffer, size_t size, size_t nmemb, void *cbdata)
 		if(strlen(curline))
 		{
 			ref = parse_ls_line(conn, curline, 0);
-			printf("dir: %s\n", curline);
 			ecore_list_append(files, ref);
 		}
 	}
-	printf("There are %i list nodes.\n", ecore_list_nodes(files));
-	ref = NEW(evfs_filereference);
-	ecore_list_goto_first(files);
-	while ((ref = (evfs_filereference *)ecore_list_next(files)))
-	{
-		printf("DIR: %s\n", ref->path);
-	}
-	evfs_list_dir_event_create(client, command, files);
+	
 	free(dirs);
 	return strlen(buffer);
 }
@@ -207,8 +205,8 @@ evfs_plugin_functions* evfs_plugin_init() {
 	
 	/*Set up callbacks for the evfs server*/
 	evfs_plugin_functions* functions = malloc(sizeof(evfs_plugin_functions));
-	functions->evfs_dir_list = &ftp_evfs_dir_list;
-	functions->evfs_file_stat = &ftp_evfs_file_stat;
+	functions->evfs_dir_list = &evfs_ftp_dir_list;
+	functions->evfs_file_stat = &evfs_ftp_file_stat;
 	functions->evfs_file_open = &evfs_file_open;
 	functions->evfs_file_close = &evfs_file_close;
 	functions->evfs_file_seek = &evfs_file_seek;
@@ -232,20 +230,39 @@ char* evfs_plugin_uri_get() {
 	return "ftp";
 }
 
-void ftp_evfs_dir_list(evfs_client* client, evfs_command* command) {
+void evfs_ftp_dir_list(evfs_client* client, evfs_command* command) {
 	printf("FTP: Listing dir.\n");
+	
 	Ecore_Hash* data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	ftp_conn* conn = connection_handle_get(command->file_command.files[0]);
+	Ecore_List* files = ecore_list_new();
+	char* error = malloc(CURL_ERROR_SIZE);
+	
+	/*Prepare data related to the operation.  This is used in the parsing callback.*/
 	ecore_hash_set(data, (int*)EVFS_FTP_CLIENT, client);
 	ecore_hash_set(data, (int*)EVFS_FTP_COMMAND, command);
 	ecore_hash_set(data, (int*)EVFS_FTP_HANDLE, conn);
+	ecore_hash_set(data, (int*)EVFS_FTP_FILES, files);
+	
+	curl_easy_setopt(conn->handle, CURLOPT_ERRORBUFFER, error);
 	curl_easy_setopt(conn->handle, CURLOPT_WRITEDATA, (FILE *)data);
-	curl_easy_setopt(conn->handle, CURLOPT_WRITEFUNCTION, listdir);
+	curl_easy_setopt(conn->handle, CURLOPT_WRITEFUNCTION, evfs_ftp_dir_list_cb);
+	
 	printf("Executing curl_easy_perform()...\n");
-	curl_easy_perform(conn->handle);
+	int status = curl_easy_perform(conn->handle);
+	if (status)
+	{
+		printf("Error: curl_easy_perform() returned %i: %s\n", status, error);
+	}
+	else
+	{
+		printf("There are %i list nodes.\n", ecore_list_nodes(files));
+		evfs_list_dir_event_create(client, command, files);
+	}
+	connection_handle_save(conn, command->file_command.files[0]);
 }
 
-int ftp_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
+int evfs_ftp_file_stat(evfs_command* command, struct stat* file_stat) {
 	
 	return 0;
 }
