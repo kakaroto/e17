@@ -1054,7 +1054,7 @@ DeskGotoNum(unsigned int desk)
    DeskGoto(dsk);
 }
 
-void
+static void
 DeskSwitchStart(void)
 {
    FocusNewDeskBegin();
@@ -1065,7 +1065,7 @@ DeskSwitchStart(void)
    DesksEventsConfigure(0);
 }
 
-void
+static void
 DeskSwitchDone(void)
 {
    /* we flipped - re-enable enter and leave events */
@@ -1139,8 +1139,8 @@ DeskGoto(Desk * dsk)
 	DeskEnter(dsk);
      }
 
-   ActionsResume();
    DeskSwitchDone();
+   ActionsResume();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 }
@@ -1587,10 +1587,9 @@ DeskCurrentGotoArea(int ax, int ay)
    /* set hints up for it */
    HintsSetDesktopViewport();
 
-   ActionsResume();
-
    /* re-focus on a new ewin on that new desktop area */
    DeskSwitchDone();
+   ActionsResume();
 
    ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
 

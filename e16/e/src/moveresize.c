@@ -197,8 +197,6 @@ ActionMoveSuspend(void)
    /* If non opaque undraw our boxes */
    if (Mode_mr.mode > 0)
      {
-	EUngrabServer();
-
 	lst =
 	   ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup,
 				      &num);
@@ -210,6 +208,8 @@ ActionMoveSuspend(void)
 	  }
 	if (lst)
 	   Efree(lst);
+
+	EUngrabServer();
      }
 
    return 0;
@@ -220,7 +220,7 @@ ActionMoveResume(void)
 {
    EWin               *ewin, **lst;
    int                 i, num;
-   int                 x, y, ax, ay, fl;
+   int                 x, y, fl;
 
    ewin = Mode_mr.ewin;
    if (!ewin)
@@ -235,8 +235,6 @@ ActionMoveResume(void)
 
    if (Mode_mr.mode > 0)
       EGrabServer();
-
-   DeskCurrentGetArea(&ax, &ay);
 
    /* Redraw any windows that were in "move mode" */
    lst =

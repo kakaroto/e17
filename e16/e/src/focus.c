@@ -501,7 +501,7 @@ FocusNewDesk(void)
    /* Set the mouse-over window */
    Mode.mouse_over_ewin = GetEwinByCurrentPointer();
 
-   FocusToEWin(NULL, FOCUS_DESK_ENTER);
+   doFocusToEwin(NULL, FOCUS_DESK_ENTER);
 }
 
 static void

@@ -71,9 +71,6 @@ void                DeskCurrentMoveAreaBy(int ax, int ay);
 
 void                DeskGotoByEwin(EWin * ewin);
 
-void                DeskSwitchStart(void);
-void                DeskSwitchDone(void);
-
 unsigned int        DesksGetNumber(void);
 Desk               *DesksGetCurrent(void);
 Desk               *DesktopAt(int x, int y);
