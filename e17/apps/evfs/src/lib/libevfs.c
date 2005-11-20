@@ -236,7 +236,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		ecore_list_goto_first(plugin);
 		while ( (cmp = ecore_list_next(plugin))) {
 			if (!strncmp(tmp_tok, cmp, strlen(cmp))  ) {
-			//	printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));
+				//printf("Found token (keyword) %s, added %d to l_uri\n", cmp, strlen(cmp));
 
 				l_uri += strlen(cmp);			
 				i = 0;
@@ -254,10 +254,14 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 
 		if (solid_alpha && !new_alpha) {
 			strncpy(tmp_tok, l_uri, i);
+
+			/*There is a lexer position bug for now- this will fix it FIXME*/
+			if (tmp_tok[0] == '\0') goto lexer_done;
+			
 			tmp_tok[i] = '\0';
 			
 			/*printf ("Looks like a string..\n");*/
-			//printf("Found string: '%s'\n", tmp_tok);
+			//printf("Found string: '%s', i is %d, j is %d, strlen(dup_uri) is %d\n", tmp_tok,i,j,strlen(dup_uri));
 		
 			token = NEW(evfs_uri_token);
 			token->token_s = strdup(tmp_tok);
@@ -280,11 +284,11 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 			else 
 				j+=len;
 		i++;
-		//printf("i:J (%d:%d)\n", i,j);
+		//printf("i:J (%d:%d) - %d\n", i,j,strlen(dup_uri));
 	}
 
+	lexer_done:
 	free(dup_uri);
-
 	return tokens;	
 }
 

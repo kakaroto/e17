@@ -58,6 +58,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* file);
 
 
 #define GZIP_BUFFER 16384
+#define GZIP_MAX_ERRORS 5
 
 Ecore_Hash* gzip_hash;
 typedef struct gzip_file {
@@ -188,6 +189,7 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 	gzip_file* gfile = ecore_hash_get(gzip_hash, file);
 	int z_result;
 	int r_size;
+	int error=0;
 	
 	//printf("Client requested %d bytes from gzip\n", size);
 	
@@ -204,7 +206,10 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 		if (z_result == Z_STREAM_END) break;
 		if (z_result == Z_DATA_ERROR) {
 			printf("gzip datastream error..\n");
+			//inflateSync(&gfile->stream);
+			error++;
 		}
+		if (error > GZIP_MAX_ERRORS) return 0; /*Sim an EOF on error*/
 		
 	}
 
