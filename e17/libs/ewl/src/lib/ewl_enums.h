@@ -45,6 +45,11 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
 	EWL_CALLBACK_PASTE, /**< Data is ready to be pasted */
+
+	EWL_CALLBACK_DND_POSITION, /** A DND position event **/
+	EWL_CALLBACK_DND_ENTER,	   /** On enter of a widget **/
+	EWL_CALLBACK_DND_LEAVE,    /** On exit of a widget **/
+	
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
 
@@ -148,6 +153,8 @@ enum Ewl_Flags
 	EWL_FLAG_STATE_SELECTED = 0x10000000,
 	EWL_FLAG_STATE_DND = 0x2000000,
 	EWL_FLAG_STATE_DISABLED = 0x4000000,
+
+	EWL_FLAG_PROPERTY_DND_AWARE	= 0x10000000
 };
 
 #define EWL_FLAG_FILL_NORMAL (EWL_FLAG_FILL_FILL)

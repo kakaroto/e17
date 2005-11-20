@@ -591,6 +591,32 @@ ewl_window_override_get(Ewl_Window *win)
 	DRETURN_INT(override, DLEVEL_STABLE);
 }
 
+
+
+/**
+ * @param win: the window to remove the border
+ * @return Returns no value.
+ * @brief Set a window as being DND aware
+ *
+ * Inform ecore_x that this window is capable of receiving DND events
+ */
+void
+ewl_window_dnd_aware_set(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, "window");
+
+	win->flags |= EWL_FLAG_PROPERTY_DND_AWARE;
+	if (win->window) ecore_x_dnd_aware_set((Ecore_X_Window)win->window,1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+
+
+
 void
 ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -677,6 +703,10 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						    width, height);
 		}
 		window->window = (void *)xwin;
+
+		if (window->flags & EWL_FLAG_PROPERTY_DND_AWARE) {
+			ecore_x_dnd_aware_set((Ecore_X_Window)window->window,1);
+		}
 	}
 #endif
 

@@ -678,6 +678,54 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * @param embed: the embed where the DND position event is to occur
+ * @param x: the x coordinate of the mouse move
+ * @param y: the y coordinate of the mouse move
+ * @return Returns no value.
+ * @brief Sends the event for a DND position into an embed.
+ */
+void
+ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
+{
+	Ewl_Widget *widget = NULL;
+	Ewl_Event_Mouse_Move ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, "embed");
+
+	ev.x = x;
+	ev.y = y;
+
+	ewl_embed_active_set(embed, TRUE);
+
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+
+	if (widget) {
+		Ewl_Widget* parent = widget;
+		
+		printf("Found widget %p\n", widget);
+
+		/*Pass the event up the chain*/
+		while (parent) {
+			ewl_callback_call_with_event_data(parent,
+				EWL_CALLBACK_DND_POSITION, &ev);
+				
+			parent = parent->parent;
+		}
+		
+		ewl_callback_call_with_event_data(widget,
+			  EWL_CALLBACK_DND_POSITION, &ev);
+	} else {
+		DWARNING("Could not find widget for dnd position event");
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
 /**
  * @param embed: the embed where the mouse event is to occur
  * @param x: the x coordinate of the mouse out

@@ -27,9 +27,6 @@ void ewl_iconbox_icon_floater_resize_cb(Ewl_Widget *w, void *ev_data, void *user
 }
 
 
-
-/*Ecore_List *ewl_iconbox_icon_list;*/
-
 /**
  * @return Returns NULL on failure, a new Ewl_IconBox on success
  * @brief Creates a new Ewl_IconBox
@@ -53,6 +50,11 @@ Ewl_Widget *ewl_iconbox_new()
 	DRETURN_PTR(EWL_WIDGET(ib), DLEVEL_STABLE);
 }
 
+
+/**
+ * @return Returns a new Ewl_IconBox_Icon, NULL on failure
+ *
+ */
 Ewl_Widget *ewl_iconbox_icon_new()
 {
 	Ewl_IconBox_Icon* icon;
@@ -73,6 +75,7 @@ Ewl_Widget *ewl_iconbox_icon_new()
 	DRETURN_PTR(EWL_WIDGET(icon), DLEVEL_STABLE);
 
 }
+
 
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib)
 {
@@ -100,6 +103,11 @@ void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib)
 
 }
 
+/**
+ * @param icon: The Ewl_IconBox_Icon to initialize
+ * @return Returns  a positive value on success
+ *
+ */
 int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon)
 {
 	Ewl_Widget *w;
@@ -133,7 +141,12 @@ int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon)
 }
 
 
-
+/**
+ * @param ib: The length of text to delete
+ * @return Returns a positive value on success
+ *
+ * Initialize an iconbox
+ */
 int ewl_iconbox_init(Ewl_IconBox* ib)
 {
 	Ewl_Widget *w;
@@ -203,9 +216,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_expansion_cb, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
-	/*ib->ewl_iconbox_context_menu_item = ewl_separator_new();
-	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_context_menu_item);
-	ewl_widget_show(ib->ewl_iconbox_context_menu_item);*/
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
 		
 	/* Add the menu floater to the pane inner */
@@ -260,7 +270,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->select_floater), ib->select);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 80, 40);
+	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 0, 0);
 	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 255, 255, 25, 50);
 	ib->drag_box = 0;
@@ -318,6 +328,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_MOVE, ewl_iconbox_mouse_move_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
 
@@ -328,7 +339,14 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 }
 
 
-
+/**
+ * @param ib: The IconBox to set the custom icon height for
+ * @param w: The custom width
+ * @param h: The custom height
+ * @return Returns no value
+ *
+ * Set a custom image size for all icons in this iconbox
+ */
 void ewl_iconbox_icon_size_custom_set(Ewl_IconBox* ib, int w, int h) {
 	ib->iw = w;
 	ib->ih = h;
@@ -336,10 +354,26 @@ void ewl_iconbox_icon_size_custom_set(Ewl_IconBox* ib, int w, int h) {
 
 
 
+/**
+ * @param ib: The Ewl_IconBox to add a menu item to
+ * @param item: The ewl_menu_item to add.
+ * @return Returns no value
+ *
+ * Add a menu item to the iconbox background menu
+ */
 void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), item);
 }
 
+
+/**
+ * @param t: The Ewl_Text to delete the text from
+ * @param length: The length of text to delete
+ * @return Returns no value
+ *
+ * This will delete the specified length of text from the current cursor
+ * position
+ */
 void ewl_iconbox_icon_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
 	ewl_object_minimum_size_set(EWL_OBJECT(item), 100,15);
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), item);
@@ -819,6 +853,30 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 
 /*Callbacks*/
+
+void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+	int ibx,iby,px,py,fw,fh;
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+	Ewl_IconBox_Icon* list_item = ib->select_icon;
+	Ewl_Event_Mouse_Move *ev = ev_data;
+
+	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
+	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
+
+	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+
+	
+	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
+	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+	ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
+				  (ev->y - iby) + abs(py-iby) - (fh/2));
+	
+
+	
+}
+
+
 
 void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
