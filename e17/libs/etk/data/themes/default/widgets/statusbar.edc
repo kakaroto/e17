@@ -24,6 +24,7 @@ group {
          name: "resize_grip";
          description {
             state: "default" 0.0;
+            visible: 1;
             rel1 {
                relative: 1.0 1.0;
                offset: -18 -18;
@@ -34,6 +35,15 @@ group {
             }
             image {
                normal: "status_resize.png";
+            }
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: -2 -18;
             }
          }
       }
@@ -65,59 +75,19 @@ group {
       }
    }
    programs {
-      /*program {
-         name: "check_button_activated";
-         signal: "activated";
-         source: "";
-         action: STATE_SET "on" 0.0;
-         target: "checkbox";
-      }
       program {
-         name: "check_button_desactivated";
-         signal: "desactivated";
+         name: "show_resize_grip";
+         signal: "show_resize_grip";
          source: "";
          action: STATE_SET "default" 0.0;
-         target: "checkbox";
+         target: "resize_grip";
       }
       program {
-         name: "check_button_down";
-         signal: "pressed";
+         name: "hide_resize_grip";
+         signal: "hide_resize_grip";
          source: "";
-         action: STATE_SET "down" 0.0;
-         target: "checkbox_down";
+         action: STATE_SET "hidden" 0.0;
+         target: "resize_grip";
       }
-      program {
-         name: "check_button_up";
-         signal: "released";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "checkbox_down";
-      }
-      program {
-         name: "check_button_focus";
-         signal: "focus";
-         source: "";
-         FOCUS_ACTION
-      }
-      program {
-         name: "check_button_unfocus";
-         signal: "unfocus";
-         source: "";
-         UNFOCUS_ACTION
-      }
-      program {
-         name: "check_button_enter";
-         signal: "enter";
-         source: "";
-         action: STATE_SET "over" 0.0;
-         target: "bg";
-      }
-      program {
-         name: "check_button_leave";
-         signal: "leave";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "bg";
-      }*/
    }
 }

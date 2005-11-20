@@ -45,6 +45,9 @@ int etk_statusbar_push(Etk_Statusbar *statusbar, const char *message, int contex
 void etk_statusbar_pop(Etk_Statusbar *statusbar, int context_id);
 void etk_statusbar_remove(Etk_Statusbar *statusbar, int message_id);
 
+void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_resize_grip);
+Etk_Bool etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar);
+
 /** @} */
 
 #endif
