@@ -1,13 +1,7 @@
 #include "etk_test.h"
-#include "../../config.h"
+#include "config.h"
 
-static Etk_Bool _etk_test_image_window_deleted_cb (void *data)
-{
-   Etk_Window *win = data;
-   etk_widget_hide (ETK_WIDGET(win));
-   return 1;
-}
-
+/* Creates the window for the image test */
 void etk_test_image_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -15,16 +9,15 @@ void etk_test_image_window_create(void *data)
    Etk_Widget *labels[2];
    Etk_Widget *table;
 
-	if (win)
-	{
-		etk_widget_show_all(ETK_WIDGET(win));
-		return;
-	}
-	
+   if (win)
+   {
+      etk_widget_show_all(ETK_WIDGET(win));
+      return;
+   }
+   
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Image Test"));
-
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_image_window_deleted_cb), win);	
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
 	
    images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
    etk_image_keep_aspect_set(ETK_IMAGE(images[0]), TRUE);

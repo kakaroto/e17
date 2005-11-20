@@ -4,6 +4,7 @@
 
 #include <Evas.h>
 #include "etk_widget.h"
+#include "etk_stock.h"
 
 /**
  * @defgroup Etk_Image Etk_Image
@@ -40,6 +41,7 @@ Etk_Type *etk_image_type_get();
 Etk_Widget *etk_image_new();
 Etk_Widget *etk_image_new_from_file(const char *filename);
 Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_group);
+Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id);
 
 void etk_image_set_from_file(Etk_Image *image, const char *filename);
 const char *etk_image_file_get(Etk_Image *image);

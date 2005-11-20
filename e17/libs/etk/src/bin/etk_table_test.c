@@ -1,13 +1,7 @@
 #include "etk_test.h"
 #include "config.h"
 
-static Etk_Bool _etk_test_table_window_deleted_cb (void *data)
-{
-   Etk_Window *win = data;
-   etk_widget_hide (ETK_WIDGET(win));
-   return 1;
-}
-
+/* Creates the window for the table test */
 void etk_test_table_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -22,8 +16,8 @@ void etk_test_table_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Table Test"));
-
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_table_window_deleted_cb), win);
+   etk_container_border_width_set(ETK_CONTAINER(win), 5);
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    widget[0] = etk_button_new_from_stock(ETK_STOCK_OPEN);
    etk_button_label_set(ETK_BUTTON(widget[0]), _("Set Icon"));

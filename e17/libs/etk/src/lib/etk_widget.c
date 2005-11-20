@@ -231,9 +231,71 @@ const char *etk_widget_name_get(Etk_Widget *widget)
 }
 
 /**
+ * @brief Gets the geometry of the widget, relative to the top left corner of its toplevel parent
+ * @param widget a widget
+ * @param x the location where to set the x position of the widget
+ * @param y the location where to set the y position of the widget
+ * @param w the location where to set the width of the widget
+ * @param h the location where to set the height of the widget
+ */
+void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+{
+   if (!widget)
+   {
+      if (x)  *x = 0;
+      if (y)  *y = 0;
+      if (w)  *w = 0;
+      if (h)  *h = 0;
+      return;
+   }
+   
+   if (x)  *x = widget->geometry.x;
+   if (y)  *y = widget->geometry.y;
+   if (w)  *w = widget->geometry.w;
+   if (h)  *h = widget->geometry.h;
+}
+
+/**
+ * @brief Gets the inner geometry of the widget, relative to the top left corner of its toplevel parent
+ * @param widget a widget
+ * @param x the location where to set the inner x position of the widget
+ * @param y the location where to set the inner y position of the widget
+ * @param w the location where to set the inner width of the widget
+ * @param h the location where to set the inner height of the widget
+ */
+void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+{
+   if (!widget)
+   {
+      if (x)  *x = 0;
+      if (y)  *y = 0;
+      if (w)  *w = 0;
+      if (h)  *h = 0;
+      return;
+   }
+   
+   if (x)  *x = widget->inner_geometry.x;
+   if (y)  *y = widget->inner_geometry.y;
+   if (w)  *w = widget->inner_geometry.w;
+   if (h)  *h = widget->inner_geometry.h;
+}
+
+/**
+ * @brief Gets the toplevel widget that contains @a widget
+ * @param widget a widget
+ * @return Returns the toplevel widget if @a widget is contained in a toplevel widget, NULL on failure
+ */
+Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return NULL;
+   return widget->toplevel_parent;
+}
+
+/**
  * @brief Gets the evas of the toplevel widget that contains @a widget
  * @param widget a widget
- * @return Returns the evas if @a widget is contained by a toplevel widget, NULL on failure
+ * @return Returns the evas if @a widget is contained in a toplevel widget, NULL on failure
  */
 Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget)
 {
@@ -271,7 +333,7 @@ void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char
          widget->theme_group = NULL;
       etk_object_notify(ETK_OBJECT(widget), "theme_group");
    }
-
+   
    if (widget->realized && (!widget->theme_file || !widget->theme_group))
       etk_widget_unrealize(widget);
    else if (widget->theme_file && widget->theme_group)
@@ -382,6 +444,9 @@ void etk_widget_unrealize(Etk_Widget *widget)
 
    if (!widget || !widget->realized)
       return;
+   
+   if (widget->parent && widget->smart_object)
+      etk_widget_member_object_del(ETK_WIDGET(widget->parent), widget->smart_object);
 
    while (widget->swallowed_objects)
    {
@@ -774,19 +839,11 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    if (!widget || widget->swallowed || !widget->smart_object)
       return;
 
-   /* TODO: remove printf */
-   //printf("Size Alloc: %p %d %d %d %d\n", widget, geometry.x, geometry.y, geometry.w, geometry.h);
    if (geometry.x != widget->geometry.x || geometry.y != widget->geometry.y)
-   {
-      //printf("Size Move: Move %p %s %d %d\n", widget, ETK_OBJECT(widget)->type->name, geometry.x, geometry.y);
       evas_object_move(widget->smart_object, geometry.x, geometry.y);
-   }
    if (geometry.w != widget->geometry.w || geometry.h != widget->geometry.h || widget->need_redraw)
-   {
-      //printf("Size Alloc: Resize %p %s %d %d\n", widget, ETK_OBJECT(widget)->type->name, geometry.w, geometry.h);
       evas_object_resize(widget->smart_object, geometry.w, geometry.h);
-   }
-
+   
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_ALLOCATE_SIGNAL], ETK_OBJECT(widget), NULL, &geometry);
 }
 
@@ -1081,7 +1138,7 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
 {
    if (!widget || !object || !widget->smart_object || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(widget)))
       return FALSE;
-
+   
    if (evas_list_find_list(widget->member_objects, object))
       return TRUE;
    widget->member_objects = evas_list_append(widget->member_objects, object);
@@ -1660,6 +1717,9 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   
+   if (!widget->repeat_events)
+      etk_widget_event_propagation_stop();
 }
 
 /* Called when the widget is pressed */
@@ -1706,6 +1766,9 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    if (evas_event->canvas.x >= widget->geometry.x && evas_event->canvas.x <= widget->geometry.x + widget->geometry.w &&
          evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICKED_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   
+   if (!widget->repeat_events)
+      etk_widget_event_propagation_stop();
 }
 
 /* Called when the mouse wheel is used over the widget */

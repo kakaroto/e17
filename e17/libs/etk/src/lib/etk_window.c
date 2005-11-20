@@ -26,6 +26,7 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
+static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
 static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
@@ -321,8 +322,13 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window)
    for (i = 0; i < num_states; i++)
    {
       if (states[i] == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
+      {
+         free(states);
          return TRUE;
+      }
    }
+   if (num_states > 0)
+      free(states);
    return FALSE;
 }
 
@@ -382,9 +388,26 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
    for (i = 0; i < num_states; i++)
    {
       if (states[i] == ECORE_X_WINDOW_STATE_SKIP_PAGER)
+      {
+         free(states);
          return TRUE;
+      }
    }
+   if (num_states > 0)
+      free(states);
    return FALSE;
+}
+
+/**
+ * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return TRUE to prevent the program to quit
+ * @param window the window to hide
+ * @param data the data passed when the signal is emitted - unused
+ * @return Return TRUE so the the program won't quit
+ */
+Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
+{
+   etk_widget_hide(ETK_WIDGET(window));
+   return TRUE;
 }
 
 /**************************
@@ -405,6 +428,7 @@ static void _etk_window_constructor(Etk_Window *window)
    window->x_window = ecore_evas_software_x11_window_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(window->ecore_evas);
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
+   ETK_TOPLEVEL_WIDGET(window)->geometry_get = _etk_window_toplevel_geometry_get;
 
    /* TODO: font path */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
@@ -439,14 +463,9 @@ static void _etk_window_destructor(Etk_Window *window)
 static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
 {
    Etk_Window *window;
-   int w, h;
 
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
-
-   ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
-   ETK_TOPLEVEL_WIDGET(window)->width = w;
-   ETK_TOPLEVEL_WIDGET(window)->height = h;
    etk_widget_redraw_queue(ETK_WIDGET(window));
 }
 
@@ -471,7 +490,7 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
 
    if (window && requisition && requisition->w >= 0 && requisition->h >= 0)
    {
-      etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(window), &w, &h);
+      ecore_evas_geometry_get(window->ecore_evas, NULL, NULL, &w, &h);
       if (w < requisition->w || h < requisition->h)
          ecore_evas_resize(window->ecore_evas, ETK_MAX(w, requisition->w), ETK_MAX(h, requisition->h));
       ecore_evas_size_min_set(window->ecore_evas, requisition->w, requisition->h);
@@ -482,6 +501,12 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 {
    return FALSE;
+}
+
+/* Gets the geometry of the window toplevel widget */
+static void _etk_window_toplevel_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
+{
+   etk_window_geometry_get(ETK_WINDOW(toplevel), x, y, w, h);
 }
 
 /* Sets the mouse pointer of the window */

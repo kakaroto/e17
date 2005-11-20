@@ -97,8 +97,12 @@ typedef struct _Etk_HSeparator Etk_HSeparator;
 typedef struct _Etk_VSeparator Etk_VSeparator;
 typedef struct _Etk_Menu_Shell Etk_Menu_Shell;
 typedef struct _Etk_Menu Etk_Menu;
+typedef struct _Etk_Menu_Bar Etk_Menu_Bar;
 typedef struct _Etk_Menu_Item Etk_Menu_Item;
 typedef struct _Etk_Menu_Separator Etk_Menu_Separator;
+typedef struct _Etk_Menu_Check_Item Etk_Menu_Check_Item;
+typedef struct _Etk_Menu_Radio_Item Etk_Menu_Radio_Item;
+typedef struct _Etk_Statusbar Etk_Statusbar;
 
 /**
  * @enum Etk_Fill_Policy_Flags

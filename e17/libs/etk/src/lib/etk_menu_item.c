@@ -14,9 +14,10 @@
 
 enum _Etk_Menu_Item_Signal_Id
 {
-   ETK_MENU_ITEM_SELECT_SIGNAL,
-   ETK_MENU_ITEM_DESELECT_SIGNAL,
-   ETK_MENU_ITEM_ACTIVATE_SIGNAL,
+   ETK_MENU_ITEM_SELECTED_SIGNAL,
+   ETK_MENU_ITEM_DESELECTED_SIGNAL,
+   ETK_MENU_ITEM_ACTIVATED_SIGNAL,
+   ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL,
    ETK_MENU_ITEM_NUM_SIGNALS
 };
 
@@ -32,12 +33,9 @@ static void _etk_menu_item_property_get(Etk_Object *object, int property_id, Etk
 static void _etk_menu_item_realize_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_image_realize_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_right_widget_realize_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_enter_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_leave_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_up_cb(Etk_Object *object, void *event, void *data);
-static void _etk_menu_item_select_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_deselect_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_activate_handler(Etk_Menu_Item *menu_item);
+static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item);
+static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item);
+static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item);
 
 static Etk_Signal *_etk_menu_item_signals[ETK_MENU_ITEM_NUM_SIGNALS];
 
@@ -63,9 +61,10 @@ Etk_Type *etk_menu_item_type_get()
    {
       menu_item_type = etk_type_new("Etk_Menu_Item", ETK_CONTAINER_TYPE, sizeof(Etk_Menu_Item), ETK_CONSTRUCTOR(_etk_menu_item_constructor), ETK_DESTRUCTOR(_etk_menu_item_destructor));
 
-      _etk_menu_item_signals[ETK_MENU_ITEM_SELECT_SIGNAL] = etk_signal_new("select", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, select), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_item_signals[ETK_MENU_ITEM_DESELECT_SIGNAL] = etk_signal_new("deselect", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselect), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATE_SIGNAL] = etk_signal_new("activate", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activate), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_SELECTED_SIGNAL] = etk_signal_new("selected", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, selected), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL] = etk_signal_new("deselected", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselected), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("activated", menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activated), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL] = etk_signal_new("submenu_popped_down", menu_item_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(menu_item_type, "label", ETK_MENU_ITEM_LABEL_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       
@@ -133,36 +132,40 @@ const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Emits the "select" signal which will select the menu item
+ * @brief Selects the menu item
  * @param menu_item a menu_item
  */
 void etk_menu_item_select(Etk_Menu_Item *menu_item)
 {
-   if (!menu_item)
+   if (!menu_item || menu_item->is_selected)
       return;
-   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_SELECT_SIGNAL], ETK_OBJECT(menu_item), NULL);
+   
+   menu_item->is_selected = TRUE;
+   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_SELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
 /**
- * @brief Emits the "deselect" signal which will deselect the menu item
+ * @brief Deselects the menu item
  * @param menu_item a menu_item
  */
 void etk_menu_item_deselect(Etk_Menu_Item *menu_item)
 {
-   if (!menu_item)
+   if (!menu_item || !menu_item->is_selected)
       return;
-   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_DESELECT_SIGNAL], ETK_OBJECT(menu_item), NULL);
+   
+   menu_item->is_selected = FALSE;
+   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
 /**
- * @brief Emits the "activate" signal which will activate the menu item
+ * @brief Activates the menu item
  * @param menu_item a menu_item
  */
 void etk_menu_item_activate(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATE_SIGNAL], ETK_OBJECT(menu_item), NULL);
+   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
 /**
@@ -175,6 +178,8 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
    if (!menu_item)
       return;
    menu_item->submenu = submenu;
+   if (menu_item->submenu)
+      ETK_MENU_SHELL(menu_item->submenu)->parent = menu_item;
    
    if (menu_item->submenu && !menu_item->right_widget)
    {
@@ -308,9 +313,9 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    if (!menu_item)
       return;
 
-   menu_item->select = _etk_menu_item_select_handler;
-   menu_item->deselect = _etk_menu_item_deselect_handler;
-   menu_item->activate = _etk_menu_item_activate_handler;
+   menu_item->selected = _etk_menu_item_selected_handler;
+   menu_item->deselected = _etk_menu_item_deselected_handler;
+   menu_item->activated = _etk_menu_item_activated_handler;
    
    menu_item->submenu = NULL;
    menu_item->parent = NULL;
@@ -318,14 +323,11 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    menu_item->image = NULL;
    menu_item->right_widget = NULL;
    
-   menu_item->selected = FALSE;
+   menu_item->is_selected = FALSE;
    menu_item->show_image = FALSE;
    menu_item->show_right_swallow = FALSE;
    
    etk_signal_connect_after("realize", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realize_cb), NULL);
-   etk_signal_connect("enter", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_enter_cb), NULL);
-   etk_signal_connect("leave", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_leave_cb), NULL);
-   etk_signal_connect("mouse_up", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_up_cb), NULL);
 }
 
 /* Destroys the menu item */
@@ -426,56 +428,28 @@ static void _etk_menu_item_right_widget_realize_cb(Etk_Object *object, void *dat
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "right_swallow", ETK_WIDGET(menu_item->right_widget));
 }
 
-/* Called when the mouse pointer enters the item */ 
-static void _etk_menu_item_enter_cb(Etk_Object *object, void *data)
+/* Default handler for the "selected" signal */
+static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
 {
-   etk_menu_item_select(ETK_MENU_ITEM(object));
-}
-
-/* Called when the mouse pointer leaves the item */
-static void _etk_menu_item_leave_cb(Etk_Object *object, void *data)
-{
-   Etk_Menu_Item *item;
-   
-   if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
+   if (!menu_item)
       return;
-   etk_menu_item_deselect(item);
-}
-
-/* Called when the user has clicked on the item */
-static void _etk_menu_item_up_cb(Etk_Object *object, void *event, void *data)
-{
-   Etk_Menu_Item *item;
-   
-   if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
-      return;
-   etk_menu_item_activate(item);
-}
-
-/* Default handler for the "select" signal */
-static void _etk_menu_item_select_handler(Etk_Menu_Item *menu_item)
-{
-   if (!menu_item || menu_item->selected)
-      return;
-   menu_item->selected = TRUE;
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "select");
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->image), "select");
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->right_widget), "select");
 }
 
-/* Default handler for the "deselect" signal */
-static void _etk_menu_item_deselect_handler(Etk_Menu_Item *menu_item)
+/* Default handler for the "deselected" signal */
+static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item)
 {
-   if (!menu_item || !menu_item->selected)
+   if (!menu_item)
       return;
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "deselect");
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->image), "deselect");
    etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->right_widget), "deselect");
-   menu_item->selected = FALSE;
 }
 
-/* Default handler for the "activate" signal */
-static void _etk_menu_item_activate_handler(Etk_Menu_Item *menu_item)
+/* Default handler for the "activated" signal */
+static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;

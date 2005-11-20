@@ -51,8 +51,7 @@ struct _Etk_Toplevel_Widget
    Etk_Bin bin;
 
    Evas *evas;
-   int width;
-   int height;
+   void (*geometry_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
 
    Etk_Widget *focused_widget;
 
@@ -62,7 +61,7 @@ struct _Etk_Toplevel_Widget
 
 Etk_Type *etk_toplevel_widget_type_get();
 Evas *etk_toplevel_widget_evas_get(Etk_Toplevel_Widget *toplevel_widget);
-void etk_toplevel_widget_size_get(Etk_Toplevel_Widget *toplevel_widget, int *width, int *height);
+void etk_toplevel_widget_geometry_get(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
 
 void etk_toplevel_widget_focused_widget_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Widget *widget);
 Etk_Widget *etk_toplevel_widget_focused_widget_get(Etk_Toplevel_Widget *toplevel_widget);

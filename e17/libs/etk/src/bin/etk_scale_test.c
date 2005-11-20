@@ -1,19 +1,8 @@
 #include "etk_test.h"
 
-static Etk_Bool _etk_test_scale_window_deleted_cb(void *data)
-{
-   etk_widget_hide(ETK_WIDGET(data));
-   return 1;
-}
+static void _etk_test_scale_value_changed(Etk_Object *object, double value, void *data);
 
-static void _etk_test_scale_value_changed(Etk_Object *object, double value, void *data)
-{
-   char string[256];
-
-   snprintf(string, 255, "%'.2f", value);
-   etk_label_set(ETK_LABEL(data), string);
-}
-
+/* Creates the window for the paned test */
 void etk_test_scale_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -21,17 +10,16 @@ void etk_test_scale_window_create(void *data)
    Etk_Widget *scale;
    Etk_Widget *label;
    
-	if (win)
-	{
-		etk_widget_show(ETK_WIDGET(win));
-		return;
-	}
+   if (win)
+   {
+      etk_widget_show(ETK_WIDGET(win));
+      return;
+   }
    
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Scale test"));
-   
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_scale_window_deleted_cb), win);	
-	
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+        
    table = etk_table_new(2, 2, FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
    
@@ -52,4 +40,13 @@ void etk_test_scale_window_create(void *data)
    etk_signal_connect("value_changed", ETK_OBJECT(scale), ETK_CALLBACK(_etk_test_scale_value_changed), label);
    
    etk_widget_show_all(win);
+}
+
+/* Called when the value of the scale is changed */
+static void _etk_test_scale_value_changed(Etk_Object *object, double value, void *data)
+{
+   char string[256];
+
+   snprintf(string, 255, "%'.2f", value);
+   etk_label_set(ETK_LABEL(data), string);
 }

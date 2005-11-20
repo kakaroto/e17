@@ -34,9 +34,9 @@ struct _Etk_Menu_Item
    /* Inherit from Etk_Container */
    Etk_Container container;
    
-   void (*select)(Etk_Menu_Item *menu_item);
-   void (*deselect)(Etk_Menu_Item *menu_item);
-   void (*activate)(Etk_Menu_Item *menu_item);
+   void (*selected)(Etk_Menu_Item *menu_item);
+   void (*deselected)(Etk_Menu_Item *menu_item);
+   void (*activated)(Etk_Menu_Item *menu_item);
    
    Etk_Menu_Shell *parent;
    Etk_Menu *submenu;
@@ -46,7 +46,7 @@ struct _Etk_Menu_Item
    /* "right_widget" can be the submenu arrow, the checkbox or the radiobox widget */
    Etk_Widget *right_widget;
    
-   Etk_Bool selected;
+   Etk_Bool is_selected;
    Etk_Bool show_image;
    Etk_Bool show_right_swallow;
    Etk_Bool right_widget_is_arrow;

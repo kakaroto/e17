@@ -42,7 +42,7 @@ Etk_Bool etk_init()
 {
    if (_etk_main_initialized)
       return TRUE;
-
+   
    if (!evas_init())
    {
       ETK_WARNING("Evas initialization failed!");
@@ -217,7 +217,7 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    {
       geometry.x = 0;
       geometry.y = 0;
-      etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.w, &geometry.h);
+      etk_toplevel_widget_geometry_get(ETK_TOPLEVEL_WIDGET(widget), NULL, NULL, &geometry.w, &geometry.h);
    }
    else
       geometry = widget->geometry;

@@ -7,6 +7,7 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Image
@@ -90,6 +91,27 @@ Etk_Widget *etk_image_new_from_file(const char *filename)
 Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_group)
 {
    return etk_widget_new(ETK_IMAGE_TYPE, "edje_file", edje_filename, "edje_group", edje_group, NULL);
+}
+
+/**
+ * @brief Creates a new image and loads the image corresponding to the stock id
+ * @param stock_id the stock id corresponding to the image
+ * @return Returns the new image widget
+ */
+/* TODO: image_stock_set */
+Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id)
+{
+   char *key;
+
+   if ((key = etk_stock_key_get(stock_id)))
+   {
+      Etk_Widget *image;
+      
+      image = etk_image_new_from_edje(PACKAGE_DATA_DIR "/stock_icons/default.edj", key);
+      return image;
+   }
+   
+   return NULL;
 }
 
 /**

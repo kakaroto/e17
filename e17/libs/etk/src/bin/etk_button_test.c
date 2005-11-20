@@ -1,13 +1,7 @@
 #include "etk_test.h"
-#include "../../config.h"
+#include "config.h"
 
-static Etk_Bool _etk_test_button_window_deleted_cb (void *data)
-{
-   Etk_Window *win = data;
-   etk_widget_hide (ETK_WIDGET(win));
-   return 1;
-}
-
+/* Creates the window for the button test */
 void etk_test_button_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -18,17 +12,17 @@ void etk_test_button_window_create(void *data)
    Etk_Widget *button_radio;
    Etk_Widget *image;
 
-	if (win)
-	{
-		etk_widget_show_all(ETK_WIDGET(win));
-		return;
-	}
-	
+   if (win)
+   {
+      etk_widget_show_all(ETK_WIDGET(win));
+      return;
+   }
+   
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Button Test"));
-
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_button_window_deleted_cb), win);
-	
+   etk_container_border_width_set(ETK_CONTAINER(win), 5);
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   
    vbox = etk_vbox_new(FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
 

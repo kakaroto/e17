@@ -77,6 +77,7 @@ void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location);
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location);
 
 void etk_object_data_set(Etk_Object *object, const char *key, void *value);
+void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data));
 void *etk_object_data_get(Etk_Object *object, const char *key);
 
 void etk_object_property_reset(Etk_Object *object, const char *property_name);

@@ -1,17 +1,10 @@
 #include "etk_test.h"
 #include <Evas.h>
 #include <stdlib.h>
-#include "../../config.h"
 
 static void _etk_test_canvas_object_add(void *data);
 
-static Etk_Bool _etk_test_canvas_window_deleted_cb (void *data)
-{
-   Etk_Window *win = data;
-   etk_widget_hide (ETK_WIDGET(win));
-   return 1;
-}
-
+/* Creates the window for the canvas test */
 void etk_test_canvas_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
@@ -27,8 +20,7 @@ void etk_test_canvas_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Canvas Test"));
-
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_canvas_window_deleted_cb), win);	
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
 
    vbox = etk_vbox_new(FALSE, 5);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -44,6 +36,7 @@ void etk_test_canvas_window_create(void *data)
    etk_widget_show_all(win);
 }
 
+/* Adds a rectangle object to the canvas */
 static void _etk_test_canvas_object_add(void *data)
 {
    Etk_Canvas *canvas;

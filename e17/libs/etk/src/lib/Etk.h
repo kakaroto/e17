@@ -48,6 +48,8 @@
 #include "etk_separator.h"
 #include "etk_menu_shell.h"
 #include "etk_menu.h"
+#include "etk_menu_bar.h"
 #include "etk_menu_item.h"
+#include "etk_statusbar.h"
 
 #endif

@@ -60,7 +60,7 @@ void etk_signal_shutdown()
  * @param accum_data the value to pass to the accumulator
  * @return Returns the new signal, or NULL on failure
  */
-Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, int default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data)
+Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data)
 {
    Etk_Signal *new_signal;
 

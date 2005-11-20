@@ -18,7 +18,10 @@ static const Etk_Stock_Item _etk_stock_items[] =
 {
    { "close", "Close" },
    { "open",  "Open"  },
-   { "save",  "Save"  }
+   { "save",  "Save"  },
+   { "cut",   "Cut"  },
+   { "copy",  "Copy"  },
+   { "paste", "Paste"  }
 };
 
 /**************************

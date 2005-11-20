@@ -9,11 +9,15 @@
  * @{
  */
 
+/* TODO: doc */
 enum _Etk_Stock_Id
 {
    ETK_STOCK_CLOSE,
    ETK_STOCK_OPEN,
    ETK_STOCK_SAVE,
+   ETK_STOCK_CUT,
+   ETK_STOCK_COPY,
+   ETK_STOCK_PASTE,
    ETK_NUM_STOCK_IDS
 };
 

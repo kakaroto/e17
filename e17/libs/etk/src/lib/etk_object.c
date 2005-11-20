@@ -13,8 +13,15 @@
  * @{
  */
 
+typedef struct _Etk_Object_Data
+{
+   void *value;
+   void (*free_cb)(void *data);
+} Etk_Object_Data;
+
 static void _etk_object_constructor(Etk_Object *object);
 static void _etk_object_destructor(Etk_Object *object);
+static void _etk_object_data_free(Etk_Object_Data *data);
 
 static Ecore_List *_etk_object_created_objects = NULL;
 static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
@@ -207,9 +214,9 @@ void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *
       return;
    
    if (ecore_list_goto(object->before_signal_callbacks_list, signal_callback))
-      ecore_list_remove(object->before_signal_callbacks_list);
+      ecore_list_remove_destroy(object->before_signal_callbacks_list);
    if (ecore_list_goto(object->after_signal_callbacks_list, signal_callback))
-      ecore_list_remove(object->after_signal_callbacks_list);
+      ecore_list_remove_destroy(object->after_signal_callbacks_list);
 }
 
 /**
@@ -269,34 +276,51 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eco
 }
 
 /**
- * @brief Sets a datum associated to a key for the object
- * @param object the object to add the datum to
- * @param key the key associated to the datum
- * @param value the value of the datum
+ * @brief Sets data associated to a key for the object
+ * @param object the object to add the data to
+ * @param key the key associated to the data
+ * @param value the value of the data
  */
 void etk_object_data_set(Etk_Object *object, const char *key, void *value)
 {
+   etk_object_data_set_full(object, key, value, NULL);
+}
+
+/**
+ * @brief Sets data associated to a key for the object
+ * @param object the object to add the data to
+ * @param key the key associated to the data
+ * @param free_cb the function to call on the data when the object is destroyed
+ * @param value the value of the data
+ */
+void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data))
+{
+   Etk_Object_Data *new_data;
    char *new_key;
 
    if (!object || !key)
       return;
 
    new_key = strdup(key);
-   ecore_hash_set(object->data_hash, new_key, value);
+   new_data = malloc(sizeof(Etk_Object_Data));
+   new_data->value = value;
+   new_data->free_cb = free_cb;
+   ecore_hash_set(object->data_hash, new_key, new_data);
 }
 
 /**
- * @brief Gets the datum associated to the key
- * @param object the object to get the datum from
- * @param key the key associated to the datum
- * @return Returns the value of the datum, NULL on failure
+ * @brief Gets the data associated to the key
+ * @param object the object to get the data from
+ * @param key the key associated to the data
+ * @return Returns the value of the data, NULL on failure
  */
 void *etk_object_data_get(Etk_Object *object, const char *key)
 {
-   if (!object || !key)
+   Etk_Object_Data *data;
+   
+   if (!object || !key || !(data = ecore_hash_get(object->data_hash, key)))
       return NULL;
-
-   return ecore_hash_get(object->data_hash, key);
+   return data->value;
 }
 
 /**
@@ -515,6 +539,7 @@ static void _etk_object_constructor(Etk_Object *object)
 
    object->data_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    ecore_hash_set_free_key(object->data_hash, free);
+   ecore_hash_set_free_value(object->data_hash, _etk_object_data_free);
 
    object->before_signal_callbacks_list = ecore_list_new();
    ecore_list_set_free_cb(object->before_signal_callbacks_list, ECORE_FREE_CB(etk_signal_callback_delete));
@@ -543,6 +568,17 @@ static void _etk_object_destructor(Etk_Object *object)
    ecore_list_destroy(object->weak_pointers_list);
    if (ecore_list_goto(_etk_object_created_objects, object))
       ecore_list_remove(_etk_object_created_objects);
+}
+
+/* Frees data associated to an object */
+static void _etk_object_data_free(Etk_Object_Data *data)
+{
+   if (!data)
+      return;
+   
+   if (data->free_cb)
+      data->free_cb(data->value);
+   free(data);
 }
 
 /** @} */

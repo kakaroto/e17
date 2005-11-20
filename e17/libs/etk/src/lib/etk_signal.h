@@ -12,7 +12,7 @@
  */
 
 /** @brief Gets the offset of a member of a struct (mainly used for etk_signal_new) */
-#define ETK_MEMBER_OFFSET(type, member)   ((long)(&((type *)0)->member))
+#define ETK_MEMBER_OFFSET(type, member)   ((long)((long *)&((type *)0)->member))
 
 /**
  * @struct Etk_Signal
@@ -23,7 +23,7 @@ struct _Etk_Signal
    /* private: */
    char *name;
    Etk_Type *object_type;
-   int default_handler_offset;
+   long default_handler_offset;
    Etk_Marshaller marshaller;
    Etk_Accumulator accumulator;
    void *accum_data;
@@ -32,7 +32,7 @@ struct _Etk_Signal
 Etk_Bool etk_signal_init();
 void etk_signal_shutdown();
 
-Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, int default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
+Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
 void etk_signal_delete(Etk_Signal *signal);
 
 Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type);

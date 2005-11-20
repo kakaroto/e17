@@ -1,0 +1,123 @@
+group {
+   name: "statusbar";
+   min: 0 21;
+   parts {
+      part {
+         name: "bar";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 -21;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "status_bar.png";
+            }
+         }
+      }
+      part {
+         name: "resize_handle";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: -18 -18;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+            }
+            image {
+               normal: "status_resize.png";
+            }
+         }
+      }
+      part {
+         name: "message";
+         type: TEXT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 5 4;
+               to: "bar";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -1;
+               to_x: "resize_handle";
+               to_y: "bar";
+            }
+            text {
+               text: "Message";
+               font: "Vera";
+               size:  10;
+               align: 0.0 0.5;
+            }
+         }
+      }
+   }
+   programs {
+      /*program {
+         name: "check_button_activated";
+         signal: "activated";
+         source: "";
+         action: STATE_SET "on" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "check_button_desactivated";
+         signal: "desactivated";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox";
+      }
+      program {
+         name: "check_button_down";
+         signal: "pressed";
+         source: "";
+         action: STATE_SET "down" 0.0;
+         target: "checkbox_down";
+      }
+      program {
+         name: "check_button_up";
+         signal: "released";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "checkbox_down";
+      }
+      program {
+         name: "check_button_focus";
+         signal: "focus";
+         source: "";
+         FOCUS_ACTION
+      }
+      program {
+         name: "check_button_unfocus";
+         signal: "unfocus";
+         source: "";
+         UNFOCUS_ACTION
+      }
+      program {
+         name: "check_button_enter";
+         signal: "enter";
+         source: "";
+         action: STATE_SET "over" 0.0;
+         target: "bg";
+      }
+      program {
+         name: "check_button_leave";
+         signal: "leave";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }*/
+   }
+}

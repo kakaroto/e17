@@ -26,9 +26,15 @@ images {
    image: "open.png" COMP;
    image: "close.png" COMP;
    image: "save.png" COMP;
+   image: "cut.png" COMP;
+   image: "copy.png" COMP;
+   image: "paste.png" COMP;
 }
 collections {
    STOCK_ICON("open", "open.png")
    STOCK_ICON("close", "close.png")
    STOCK_ICON("save", "save.png")
+   STOCK_ICON("cut", "cut.png")
+   STOCK_ICON("copy", "copy.png")
+   STOCK_ICON("paste", "paste.png")
 }

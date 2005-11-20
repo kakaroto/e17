@@ -88,6 +88,7 @@ static void _etk_menu_shell_constructor(Etk_Menu_Shell *menu_shell)
 {
    if (!menu_shell)
       return;
+   menu_shell->parent = NULL;
    menu_shell->items_update = NULL;
 }
 

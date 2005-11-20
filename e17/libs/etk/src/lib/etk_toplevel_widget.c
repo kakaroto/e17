@@ -64,20 +64,24 @@ Evas *etk_toplevel_widget_evas_get(Etk_Toplevel_Widget *toplevel_widget)
 }
 
 /**
- * @brief Gets the size of the toplevel widget
+ * @brief Gets the geometry of the toplevel widget
  * @param toplevel_widget a toplevel widget
- * @param width the location where to set the width of the toplevel widget
- * @param height the location where to set the height of the toplevel widget
+ * @param x the location where to set the x positon of the toplevel widget
+ * @param y the location where to set the y positon of the toplevel widget
+ * @param w the location where to set the width of the toplevel widget
+ * @param h the location where to set the height of the toplevel widget
  */
-void etk_toplevel_widget_size_get(Etk_Toplevel_Widget *toplevel_widget, int *width, int *height)
+void etk_toplevel_widget_geometry_get(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h)
 {
-   if (!toplevel_widget)
+   if (!toplevel_widget || !toplevel_widget->geometry_get)
+   {
+      if (x)  *x = 0;
+      if (y)  *y = 0;
+      if (w)  *w = 0;
+      if (h)  *h = 0;
       return;
-
-   if (width)
-      *width = toplevel_widget->width;
-   if (height)
-      *height = toplevel_widget->height;
+   }
+   toplevel_widget->geometry_get(toplevel_widget, x, y, w, h);
 }
 
 /**
@@ -223,11 +227,10 @@ static void _etk_toplevel_widget_constructor(Etk_Toplevel_Widget *toplevel_widge
       return;
 
    toplevel_widget->evas = NULL;
-   toplevel_widget->width = 0;
-   toplevel_widget->height = 0;
    toplevel_widget->focused_widget = NULL;
    toplevel_widget->pointer_stack = NULL;
    toplevel_widget->pointer_set = NULL;
+   toplevel_widget->geometry_get = NULL;
    ETK_WIDGET(toplevel_widget)->toplevel_parent = toplevel_widget;
 
    etk_signal_connect_after("realize", ETK_OBJECT(toplevel_widget), ETK_CALLBACK(_etk_toplevel_widget_realize_cb), NULL);

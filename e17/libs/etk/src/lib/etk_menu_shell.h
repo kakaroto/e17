@@ -27,6 +27,7 @@ struct _Etk_Menu_Shell
    /* Inherit from Etk_Container */
    Etk_Container container;
    
+   Etk_Menu_Item *parent;
    void (*items_update)(Etk_Menu_Shell *menu_shell);
 };
 

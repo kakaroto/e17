@@ -192,7 +192,10 @@ Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ..
 
 void etk_widget_name_set(Etk_Widget *widget, const char *name);
 const char *etk_widget_name_get(Etk_Widget *widget);
+void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
+void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 
+Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget);
 Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget);
 void etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char *theme_group);
 void etk_widget_realize(Etk_Widget *widget);
