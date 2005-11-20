@@ -56,6 +56,7 @@ int evfs_file_seek(evfs_filereference* file, long offset, int whence);
 int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size);
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
+int smb_evfs_file_mkdir(evfs_filereference* file);
 
 
 
@@ -159,6 +160,7 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_file_write = &evfs_file_write;
 	functions->evfs_file_create = &evfs_file_create;
 	functions->evfs_file_stat = &smb_evfs_file_stat;
+	functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
 	printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
 
 	auth_cache = ecore_list_new();
@@ -366,4 +368,16 @@ int evfs_file_create(evfs_filereference* file) {
 
 	file->fd_p = smb_context->open(smb_context, dir_path, O_CREAT | O_TRUNC | O_RDWR , S_IRUSR | S_IWUSR);
 	return 0;
+}
+
+
+int smb_evfs_file_mkdir(evfs_filereference* file) {
+	char dir_path[1024];
+	snprintf(dir_path,1024,"smb:/%s", file->path);
+
+	printf ("SMB File mkdir: %s\n", dir_path);
+
+	smb_context->mkdir(smb_context, dir_path, S_IRWXU);
+	return 0;
+	
 }
