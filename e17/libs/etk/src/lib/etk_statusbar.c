@@ -2,9 +2,12 @@
 #include "etk_statusbar.h"
 #include <stdlib.h>
 #include <string.h>
+#include <Edje.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "etk_toplevel_widget.h"
+#include "etk_window.h"
 
 /**
  * @addtogroup Etk_Statusbar
@@ -35,6 +38,8 @@ static void _etk_statusbar_destructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_realize_cb(Etk_Object *object, void *data);
+static void _etk_status_bar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _etk_status_bar_mouse_move_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_statusbar_update(Etk_Statusbar *statusbar);
 
 static Etk_Signal *_etk_statusbar_signals[ETK_STATUSBAR_NUM_SIGNALS];
@@ -252,6 +257,48 @@ static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk
 static void _etk_statusbar_realize_cb(Etk_Object *object, void *data)
 {
    _etk_statusbar_update(ETK_STATUSBAR(object));
+   if (ETK_WIDGET(object)->theme_object)
+      edje_object_signal_callback_add(ETK_WIDGET(object)->theme_object, "*", "resize_grip", _etk_status_bar_resize_grip_cb, object);
+}
+
+/* Called when an event occurs on the resize grip of the status bar */
+static void _etk_status_bar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Etk_Statusbar *statusbar;
+   
+   if (!(statusbar = ETK_STATUSBAR(data)))
+      return;
+   
+   if (strcmp(emission, "mouse,in") == 0)
+      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar)), ETK_POINTER_RESIZE_BR);
+   else if (strcmp(emission, "mouse,out") == 0)
+      etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar)), ETK_POINTER_RESIZE_BR);
+   else if (strcmp(emission, "mouse,down,1") == 0)
+   {
+      Etk_Toplevel_Widget *window;
+      
+      if (!(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
+         return;
+      
+      etk_window_geometry_get(ETK_WINDOW(window), NULL, NULL, &statusbar->new_window_width, &statusbar->new_window_height);
+      etk_signal_connect("mouse_move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_status_bar_mouse_move_cb), NULL);
+   }
+   else if (strcmp(emission, "mouse,up,1") == 0)
+      etk_signal_disconnect("mouse_move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_status_bar_mouse_move_cb));
+}
+
+static void _etk_status_bar_mouse_move_cb(Etk_Object *object, void *event_info, void *data)
+{
+   Etk_Statusbar *statusbar;
+   Etk_Toplevel_Widget *window;
+   Etk_Event_Mouse_Move *event = event_info;
+   
+   if (!(statusbar = ETK_STATUSBAR(object)) || !(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
+      return;
+   
+   statusbar->new_window_width += event->cur.widget.x - event->prev.widget.x;
+   statusbar->new_window_height += event->cur.widget.y - event->prev.widget.y;
+   etk_window_resize(ETK_WINDOW(window), statusbar->new_window_width, statusbar->new_window_height);
 }
 
 /**************************

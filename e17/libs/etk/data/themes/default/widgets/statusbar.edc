@@ -21,7 +21,7 @@ group {
          }
       }
       part {
-         name: "resize_handle";
+         name: "resize_grip";
          description {
             state: "default" 0.0;
             rel1 {
@@ -52,7 +52,7 @@ group {
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "resize_handle";
+               to_x: "resize_grip";
                to_y: "bar";
             }
             text {

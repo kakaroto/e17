@@ -110,9 +110,13 @@ void etk_window_move(Etk_Window *window, int x, int y)
  */
 void etk_window_resize(Etk_Window *window, int w, int h)
 {
+   int min_w, min_h;
+   
    if (!window)
       return;
-   ecore_evas_resize(window->ecore_evas, w, h);
+   
+   ecore_evas_size_min_get(window->ecore_evas, &min_w, &min_h);
+   ecore_evas_resize(window->ecore_evas, ETK_MAX(w, min_w), ETK_MAX(h, min_h));
 }
 
 /**

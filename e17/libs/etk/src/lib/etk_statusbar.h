@@ -32,6 +32,8 @@ struct _Etk_Statusbar
    Evas_List *msg_stack;
    int next_message_id;
    int next_context_id;
+   int new_window_width;
+   int new_window_height;
 };
 
 Etk_Type *etk_statusbar_type_get();

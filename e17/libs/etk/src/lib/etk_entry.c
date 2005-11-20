@@ -179,7 +179,7 @@ static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *e
 
    if (!(entry_widget = ETK_WIDGET(object)))
       return;
-   etk_toplevel_widget_pointer_push(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
+   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(entry_widget), ETK_POINTER_TEXT_EDIT);
 }
 
 /* Called when the mouse leaves the entry */
