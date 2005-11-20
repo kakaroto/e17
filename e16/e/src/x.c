@@ -883,6 +883,22 @@ ESelectInputAdd(Window win, long mask)
    XSelectInput(disp, win, xwa.your_event_mask);
 }
 
+int
+EDrawableCheck(Drawable draw, int grab)
+{
+   int                 ok;
+
+   if (grab)
+      EGrabServer();
+
+   ok = EGetGeometry(draw, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+   if (grab && !ok)
+      EUngrabServer();
+
+   return ok;
+}
+
 #define DEBUG_SHAPE_OPS 0
 #define DEBUG_SHAPE_PROPAGATE 0
 

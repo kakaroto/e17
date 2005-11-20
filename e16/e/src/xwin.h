@@ -81,6 +81,7 @@ int                 ETranslateCoordinates(Window src_w, Window dst_w,
 void                EWarpPointer(Window win, int x, int y);
 Bool                EQueryPointer(Window win, int *px, int *py, Window * pchild,
 				  unsigned int *pmask);
+int                 EDrawableCheck(Drawable draw, int grab);
 
 #define ESelectInput(win, mask) XSelectInput(disp, win, mask)
 #define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)

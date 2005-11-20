@@ -1561,8 +1561,9 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	     int                 st, w = -1, h = -1;
 
 	     winptr = atword(params, 3);
+	     win = (Window) strtoul(winptr, NULL, 0);
+
 	     word(params, 4, state);
-	     win = (Window) strtol(winptr, (char **)NULL, 0);
 	     if (!strcmp(state, "hilited"))
 		st = STATE_HILITED;
 	     else if (!strcmp(state, "clicked"))
@@ -1571,12 +1572,16 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		st = STATE_DISABLED;
 	     else
 		st = STATE_NORMAL;
+
 	     hptr = atword(params, 6);
 	     if (hptr)
 	       {
 		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
 		  h = (int)strtol(hptr, (char **)NULL, 0);
 	       }
+
+	     if (!EDrawableCheck(win, 0))	/* Grab server? */
+		return;
 	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_SOLID);
 	  }
      }
@@ -1589,10 +1594,12 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	     char                state[20];
 	     const char         *winptr, *hptr;
 	     int                 st, w = -1, h = -1;
+	     PmapMask            pmm;
 
 	     winptr = atword(params, 3);
+	     win = (Window) strtoul(winptr, NULL, 0);
+
 	     word(params, 4, state);
-	     win = (Window) strtol(winptr, (char **)NULL, 0);
 	     if (!strcmp(state, "hilited"))
 		st = STATE_HILITED;
 	     else if (!strcmp(state, "clicked"))
@@ -1601,21 +1608,22 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 		st = STATE_DISABLED;
 	     else
 		st = STATE_NORMAL;
+
 	     hptr = atword(params, 6);
 	     if (!hptr)
-		IpcPrintf("Error:  missing width and/or height\n");
-	     else
 	       {
-		  PmapMask            pmm;
-
-		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
-		  h = (int)strtol(hptr, (char **)NULL, 0);
-		  ImageclassApplyCopy(ic, win, w, h, 0, 0, st,
-				      &pmm, 1, ST_SOLID);
-		  IpcPrintf("0x%08x 0x%08x\n",
-			    (unsigned)pmm.pmap, (unsigned)pmm.mask);
-/*			    FreePmapMask(&pmm);		??? */
+		  IpcPrintf("Error:  missing width and/or height\n");
+		  return;
 	       }
+
+	     w = (int)strtol(atword(params, 5), (char **)NULL, 0);
+	     h = (int)strtol(hptr, (char **)NULL, 0);
+
+	     if (!EDrawableCheck(win, 0))	/* Grab server? */
+		return;
+	     ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
+	     IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
+/*		    FreePmapMask(&pmm);		??? */
 	  }
      }
    else if (!strcmp(param2, "ref_count"))

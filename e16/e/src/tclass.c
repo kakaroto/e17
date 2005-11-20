@@ -568,11 +568,13 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	     Window              win;
 
 	     word(params, 3, param3);
-	     win = (Window) strtol(param3, (char **)NULL, 0);
+	     win = (Window) strtoul(param3, NULL, 0);
+
 	     word(params, 4, param3);
 	     x = atoi(param3);
 	     word(params, 5, param3);
 	     y = atoi(param3);
+
 	     word(params, 6, param3);
 	     state = STATE_NORMAL;
 	     if (!strcmp(param3, "normal"))
@@ -583,9 +585,14 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 		state = STATE_CLICKED;
 	     else if (!strcmp(param3, "disabled"))
 		state = STATE_DISABLED;
+
 	     txt = atword(params, 7);
-	     if (txt)
-		TextDraw(tc, win, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
+	     if (!txt)
+		return;
+
+	     if (!EDrawableCheck(win, 0))	/* Grab server? */
+		return;
+	     TextDraw(tc, win, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
 	  }
      }
    else if (!strcmp(param2, "query_size"))
