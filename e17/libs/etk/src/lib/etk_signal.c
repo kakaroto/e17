@@ -324,11 +324,13 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    Etk_Signal_Callback *callback;
    Etk_Bool return_value_set = FALSE;
    void *result = NULL;
+   va_list args2;
 
    if (!object || !signal)
       return;
 
    _etk_signal_stop_emission = FALSE;
+   va_copy(args2, args);
 
    /* We call the callbacks to call before the default handler */
    callbacks = ecore_list_new();
@@ -338,12 +340,12 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    {
       if (!return_value_set || !signal->accumulator)
       {
-         etk_signal_callback_call_valist(callback, object, return_value, args);
+         etk_signal_callback_call_valist(callback, object, return_value, args2);
          return_value_set = TRUE;
       }
       else
       {
-         etk_signal_callback_call_valist(callback, object, result, args);
+         etk_signal_callback_call_valist(callback, object, result, args2);
          signal->accumulator(return_value, result, signal->accum_data);
       }
    }
@@ -362,12 +364,12 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
       {
          if (!return_value_set || !signal->accumulator)
          {
-            signal->marshaller(*default_handler, object, NULL, return_value, args);
+            signal->marshaller(*default_handler, object, NULL, return_value, args2);
             return_value_set = TRUE;
          }
          else
          {
-            signal->marshaller(*default_handler, object, NULL, result, args);
+            signal->marshaller(*default_handler, object, NULL, result, args2);
             signal->accumulator(return_value, result, signal->accum_data);
          }
       }
@@ -384,16 +386,18 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    {
       if (!return_value_set || !signal->accumulator)
       {
-         etk_signal_callback_call_valist(callback, object, return_value, args);
+         etk_signal_callback_call_valist(callback, object, return_value, args2);
          return_value_set = TRUE;
       }
       else
       {
-         etk_signal_callback_call_valist(callback, object, result, args);
+         etk_signal_callback_call_valist(callback, object, result, args2);
          signal->accumulator(return_value, result, signal->accum_data);
       }
    }
    ecore_list_destroy(callbacks);
+   
+   va_end(args2);
 }
 
 /**
