@@ -327,7 +327,8 @@ void callback(evfs_event* data) {
 			entropy_file_progress* request = entropy_malloc(sizeof(entropy_file_progress));
 			char* uri = NULL;
 						    
-			printf("Progress for file '%s' is %f percent\n", (char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
+			//printf("Progress for file '%s' is %f percent\n", 
+			//		(char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
 
 			request->file_from = evfs_filereference_to_string(data->resp_command.file_command.files[0]);
 			request->file_to = evfs_filereference_to_string(data->resp_command.file_command.files[1]);
@@ -353,6 +354,11 @@ void callback(evfs_event* data) {
 			} else {
 				printf("Could not get file copy caller for '%s'\n", uri);
 				free(gui_event);
+			}
+
+			if (data->progress.type == EVFS_PROGRESS_TYPE_DONE) {
+				/*TODO free the key */
+				
 			}
 
 			free(uri);
@@ -560,7 +566,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 						entropy_free(md5); /*We don't need this one, we're returning an old ref*/
 					}
 				} else {
-					/*printf ("Not addiong...\n");*/
+					/*printf ("Not adding...\n");*/
 				}
 				//
 				

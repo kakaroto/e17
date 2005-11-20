@@ -1,11 +1,15 @@
 TODO
 ----
 
-* Add "location add" screen to main layour
-* Finish implementing folder background setting for iconview
+<DONE> * Add "location add" screen to main layour
+<DONE> * Finish implementing folder background setting for iconview
 * Filesystem ops move/delete/rename/etc
 * Rewrite the MIME parser to be more intelligent.  Use XDG/magic
 * Make the thumbnailer more intelligent, don't use a giant 'if' hehe
-* Use epsilon to thumbnail
+<DONE> * Use epsilon to thumbnail
 * Ecore_X_DND
+
+* Univeral access to the entropy_generic_file cache in entropy_core.
+  This also needs to be pthread-locked for access, because this
+  can be hit from a thread.
 

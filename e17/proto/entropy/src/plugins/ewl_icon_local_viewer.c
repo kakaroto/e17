@@ -113,6 +113,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 		ewl_widget_show(hbox);
 
 		image = ewl_image_new();
+		ewl_image_constrain_set(EWL_IMAGE(image), 64);
 		ewl_image_file_set(EWL_IMAGE(image), file_stat->file->thumbnail->thumbnail_filename, NULL);
 		ewl_container_child_append(EWL_CONTAINER(hbox), image);
 		ewl_widget_show(image);
@@ -941,6 +942,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 						  
 		printf("Received a file progress event..\n");
 		if (!VISIBLE(view->progress->progress_window)) {
+			printf("Showing progressbar dialog..\n");
 			ewl_widget_show(view->progress->progress_window);
 		}
 
@@ -950,6 +952,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
 		/*Is it time to hide (i.e. end)*/
 		if (progress->type == TYPE_END) {
+			printf("Hiding progressbar dialog..\n");
 			ewl_widget_hide(view->progress->progress_window);
 		}
 	

@@ -214,6 +214,7 @@ entropy_core* entropy_core_init() {
 	/*Descent hash init - move this to a call to EVFS*/
 	core->descent_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	ecore_hash_set(core->descent_hash, "application/x-bzip2", "bzip2:///#tar");
+	ecore_hash_set(core->descent_hash, "application/x-gtar", "gzip:///#tar");
 
 
 

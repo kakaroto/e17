@@ -109,6 +109,7 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	Ewl_Widget* button;
 
 	window = ewl_window_new();
+	
 	((entropy_layout_gui*)instance->data)->location_add_window = window;
 	ewl_window_title_set(EWL_WINDOW(window),"Add Location");
 
@@ -519,6 +520,8 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	/*EWL Setup*/
 	win= ewl_window_new();
+	ewl_window_dnd_aware_set(EWL_WINDOW(win));
+	
 	box = ewl_vbox_new();
 	vbox = ewl_vbox_new();
 	hbox = ewl_hbox_new();
