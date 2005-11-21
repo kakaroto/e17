@@ -103,8 +103,6 @@ ewl_text_init(Ewl_Text *t)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_NONE);
 
-	t->triggers = ecore_list_new();
-
 	/* create the formatting tree before we do any formatting */
 	t->formatting = ewl_text_tree_new();
 	if (!t->formatting) 
@@ -2038,6 +2036,9 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
+	if (!t->triggers)
+		DRETURN(DLEVEL_STABLE);
+
 	ecore_list_goto_first(t->triggers);
 	while ((cur = ecore_list_next(t->triggers)))
 	{
@@ -2133,8 +2134,12 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data)
 		ecore_list_destroy(t->areas);
 
 	if (t->text_parent) {
-		if (ecore_list_goto(t->text_parent->triggers, t))
-			ecore_list_remove(t->text_parent->triggers);
+
+		if (t->text_parent->triggers)
+		{
+			if (ecore_list_goto(t->text_parent->triggers, t))
+				ecore_list_remove(t->text_parent->triggers);
+		}
 	}
 
 	t->text_parent = NULL;
@@ -2545,6 +2550,10 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DCHECK_TYPE("t", t, "text");
 	DCHECK_TYPE("trigger", trigger, "trigger");
 
+	/* create the trigger list if needed */
+	if (!t->triggers)
+		t->triggers = ecore_list_new();
+
 	/* if we have no length, we start past the end of the text, or we
 	 * extend past the end of the text then return an error */
 	if ((trigger->len == 0) || (trigger->pos > t->length)
@@ -2606,6 +2615,10 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DCHECK_PARAM_PTR("trigger", trigger);
 	DCHECK_TYPE("t", t, "text");
 	DCHECK_TYPE("trigger", trigger, "trigger");
+
+	/* nothign to do if we have no triggers */
+	if (!t->triggers)
+		DRETURN(DLEVEL_STABLE);
 
 	ecore_list_goto(t->triggers, trigger);
 	ecore_list_remove(t->triggers);
