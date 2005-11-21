@@ -332,7 +332,7 @@ ewl_text_clear(Ewl_Text *t)
 	/* cleanup the selection */
 	ewl_text_trigger_base_set(t->selection, 0);
 	ewl_text_trigger_start_pos_set(t->selection, 0);
-        ewl_text_trigger_length_set(t->selection, 0);
+	ewl_text_trigger_length_set(t->selection, 0);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -716,8 +716,8 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
-        /* force a display of the text */
-        ewl_text_display(t);
+	/* force a display of the text */
+	ewl_text_display(t);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -762,8 +762,8 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
-        /* force a display of the text */
-        ewl_text_display(t);
+	/* force a display of the text */
+	ewl_text_display(t);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -870,7 +870,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -948,7 +948,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1038,7 +1038,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1124,7 +1124,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1197,7 +1197,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1270,7 +1270,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1360,7 +1360,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1463,7 +1463,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1566,7 +1566,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1669,7 +1669,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1772,7 +1772,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1875,7 +1875,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1978,7 +1978,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-        ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2323,35 +2323,35 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	DCHECK_TYPE("t", t, "text");
 	DCHECK_TYPE("trig", trig, "trigger");
 
-        /* clean out the old areas */
-        /* XXX this needs to be smartened such that it will re-use the 
-         * previously created areas instead of deleting them every time */
-        {
-                Ewl_Text_Trigger_Area *area;
+	/* clean out the old areas */
+	/* XXX this needs to be smartened such that it will re-use the 
+	 * previously created areas instead of deleting them every time */
+	{
+		Ewl_Text_Trigger_Area *area;
 
-                if (ecore_list_nodes(trig->areas) > 0)
-                {
-                        ecore_list_goto_first(trig->areas);
-                        while ((area = ecore_list_next(trig->areas)))
-                        {
-                                /* i'm deleting in the iteration _after_ the one in which it was actually
-                                 * deleted cuz i'm getting fucked up events on the areas taht have already
-                                 * been deleted....which is bad...
-                                 * I think it's because I'm deleting in the configure callback?
-                                 */
-                                if (area->deleted)
-                                        ewl_widget_destroy(EWL_WIDGET(area));
-                                else
-                                {
-                                        ewl_widget_hide(EWL_WIDGET(area));
-                                        area->deleted = TRUE;
-                                }
-                        }
-                        ecore_list_clear(trig->areas);
-                }
-                else
-                        trig->areas = ecore_list_new();
-        }
+		if (ecore_list_nodes(trig->areas) > 0)
+		{
+			ecore_list_goto_first(trig->areas);
+			while ((area = ecore_list_next(trig->areas)))
+			{
+				/* i'm deleting in the iteration _after_ the one in which it was actually
+				 * deleted cuz i'm getting fucked up events on the areas taht have already
+				 * been deleted....which is bad...
+				 * I think it's because I'm deleting in the configure callback?
+				 */
+				if (area->deleted)
+					ewl_widget_destroy(EWL_WIDGET(area));
+				else
+				{
+					ewl_widget_hide(EWL_WIDGET(area));
+					area->deleted = TRUE;
+				}
+			}
+			ecore_list_clear(trig->areas);
+		}
+		else
+			trig->areas = ecore_list_new();
+	}
 
 	if (trig->len == 0) 
 	{
@@ -2598,7 +2598,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		 * advanced usto the next node, but we want to insert
 	 	 * at the one before that */
 		ecore_list_goto_index(t->triggers, ecore_list_index(t->triggers) - 1);
-                ecore_list_insert(t->triggers, trigger);
+		ecore_list_insert(t->triggers, trigger);
 	}
 	else 
 		ecore_list_append(t->triggers, trigger);
@@ -2820,92 +2820,92 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 void
 ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-        Ewl_Text *t;
-        Ewl_Event_Mouse_Down *event;
-        unsigned int idx = 0;
-        unsigned int modifiers;
+	Ewl_Text *t;
+	Ewl_Event_Mouse_Down *event;
+	unsigned int idx = 0;
+	unsigned int modifiers;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-        event = ev;
-        t = EWL_TEXT(w);
+	event = ev;
+	t = EWL_TEXT(w);
 
-        ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-                                ewl_text_cb_mouse_move, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+				ewl_text_cb_mouse_move, NULL);
 
-        idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+	idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
       
-        modifiers = ewl_ev_modifiers_get();
-        if (modifiers & EWL_KEY_MODIFIER_SHIFT)
-                ewl_text_selection_select_to(t->selection, idx);
-        else
-        {
-                ewl_text_trigger_start_pos_set(t->selection, idx);
-                ewl_text_trigger_base_set(t->selection, idx);
-                ewl_text_trigger_length_set(t->selection, 0);
-        }               
-        t->in_select = TRUE;
+	modifiers = ewl_ev_modifiers_get();
+	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
+		ewl_text_selection_select_to(t->selection, idx);
+	else
+	{
+		ewl_text_trigger_start_pos_set(t->selection, idx);
+		ewl_text_trigger_base_set(t->selection, idx);
+		ewl_text_trigger_length_set(t->selection, 0);
+	}	       
+	t->in_select = TRUE;
 
 	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
-                
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+		
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }       
 
 void
 ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-        Ewl_Text *t;
-        Ewl_Event_Mouse_Up *event;
-        unsigned int modifiers;
+	Ewl_Text *t;
+	Ewl_Event_Mouse_Up *event;
+	unsigned int modifiers;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-        event = ev;
-        t = EWL_TEXT(w);
+	event = ev;
+	t = EWL_TEXT(w);
 
-        modifiers = ewl_ev_modifiers_get();
-        if (modifiers & EWL_KEY_MODIFIER_SHIFT)
-        {
-                unsigned int idx = 0;
-                idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-                ewl_text_selection_select_to(t->selection, idx);
-        }
+	modifiers = ewl_ev_modifiers_get();
+	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
+	{
+		unsigned int idx = 0;
+		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+		ewl_text_selection_select_to(t->selection, idx);
+	}
 
-        ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
-        t->in_select = FALSE;
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
+	t->in_select = FALSE;
 
 	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-        Ewl_Text *t;
-        Ewl_Event_Mouse_Move *event;
+	Ewl_Text *t;
+	Ewl_Event_Mouse_Move *event;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-        event = ev;
-        t = EWL_TEXT(w);
+	event = ev;
+	t = EWL_TEXT(w);
 
-        if (t->in_select)
-        {
-                unsigned int idx = 0;
+	if (t->in_select)
+	{
+		unsigned int idx = 0;
 
 		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-                ewl_text_selection_select_to(t->selection, idx);
+		ewl_text_selection_select_to(t->selection, idx);
 		ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
-        }
+	}
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -4468,36 +4468,36 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 static void
 ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 {
-        unsigned int start_pos;
-        unsigned int base;
+	unsigned int start_pos;
+	unsigned int base;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("s", s);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
 	DCHECK_TYPE("s", s, "trigger");
 
-        base = ewl_text_trigger_base_get(s);
-        start_pos = ewl_text_trigger_start_pos_get(s);
-                                
-        if (idx <= start_pos)
-        {
-                if (idx < base)
-		{
-                	ewl_text_trigger_start_pos_set(s, idx);
-                        ewl_text_trigger_length_set(s, base - idx);
-		}
-                else    
-		{
-                	ewl_text_trigger_start_pos_set(s, base);
-                        ewl_text_trigger_length_set(s, idx - base);
-		}
-        }       
-        else
+	base = ewl_text_trigger_base_get(s);
+	start_pos = ewl_text_trigger_start_pos_get(s);
+				
+	if (idx <= start_pos)
 	{
-                ewl_text_trigger_start_pos_set(s, base);
-                ewl_text_trigger_length_set(s, idx - base);
+		if (idx < base)
+		{
+			ewl_text_trigger_start_pos_set(s, idx);
+			ewl_text_trigger_length_set(s, base - idx);
+		}
+		else    
+		{
+			ewl_text_trigger_start_pos_set(s, base);
+			ewl_text_trigger_length_set(s, idx - base);
+		}
+	}       
+	else
+	{
+		ewl_text_trigger_start_pos_set(s, base);
+		ewl_text_trigger_length_set(s, idx - base);
 	}
-        
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
