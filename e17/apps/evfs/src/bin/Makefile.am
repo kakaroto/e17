@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile
 
 DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
-INCLUDES = @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/include @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I.
 
 evfs_SOURCES = \
 	evfs_main.c \

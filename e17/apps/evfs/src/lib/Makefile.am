@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS     = 1.7 foreign
 
 lib_LTLIBRARIES = libevfs.la
 
-INCLUDES = @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) -I$(top_srcdir)/src/include \
+INCLUDES = -I$(top_srcdir)/src/include @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
 	   -DBINDIR=\""$(bindir)"\"
 
 libevfs_la_SOURCES   =                          \
