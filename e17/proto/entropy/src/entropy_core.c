@@ -551,9 +551,9 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 }
 
 /*Register a component to get events created by others in the same layout container*/
-void entropy_core_component_event_register(entropy_core* core, entropy_gui_component_instance* comp, char* event) {
+void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event) {
 	/*First we have to see if this layout is currently registered with the core..*/
-	Ecore_Hash* event_hash = ecore_hash_get(core->layout_gui_events, comp->layout_parent);
+	Ecore_Hash* event_hash = ecore_hash_get(core_core->layout_gui_events, comp->layout_parent);
 
 	//printf("   * Registering a component...\n");
 
@@ -979,12 +979,12 @@ entropy_gui_component_instance* entropy_core_global_layout_get(entropy_core* cor
 
 
 
-char* entropy_core_home_dir_get(entropy_core* core) {
-	return core->user_home_dir;
+char* entropy_core_home_dir_get() {
+	return core_core->user_home_dir;
 }
 
-char* entropy_thumbnail_dir_get(entropy_core* core) {
-	return core->thumbnail_path;
+char* entropy_thumbnail_dir_get() {
+	return core_core->thumbnail_path;
 }
 
 

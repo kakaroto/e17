@@ -93,7 +93,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
 	instance->layout_parent = layout;
 	instance->core = core;
 	
-	entropy_core_component_event_register(core, instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_ACTION_FILE));
+	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_ACTION_FILE));
 
 
 	/*Load config*/

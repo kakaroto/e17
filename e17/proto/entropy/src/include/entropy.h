@@ -45,7 +45,7 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file);
 
 /*Event hierarchy functions*/
-void entropy_core_component_event_register(entropy_core* core, entropy_gui_component_instance* comp, char* event);
+void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event);
 void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, entropy_gui_event* event, int event_type);
 char* entropy_core_gui_event_get(char* event);
 
@@ -72,8 +72,8 @@ Ecore_List* entropy_core_selected_files_get();
 void entropy_core_selected_files_clear();
 
 /*Config functions*/
-char* entropy_core_home_dir_get(entropy_core* core);
-char* entropy_thumbnail_dir_get(entropy_core* core);
+char* entropy_core_home_dir_get();
+char* entropy_thumbnail_dir_get();
 int entropy_config_int_get(char* module, char* key);
 void entropy_config_int_set(char* module, char* key, int value);
 
