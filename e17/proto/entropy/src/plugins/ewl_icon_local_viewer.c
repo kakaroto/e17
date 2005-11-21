@@ -516,7 +516,13 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	
 	
 	
-
+	/*Add some context menu items*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "New Directory");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_new_dir.png");
+	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
+	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_copy_cb, instance);
+	ewl_widget_show(context);
 	
 
 	/*Add some context menu items*/
