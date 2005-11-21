@@ -51,9 +51,9 @@ char* entropy_core_gui_event_get(char* event);
 
 
 /*File/File cache functions*/
-void entropy_core_file_cache_add_reference(entropy_core* core, char* md5);
-void entropy_core_file_cache_add(entropy_core* core, char* md5, entropy_file_listener* listener);
-void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5);
+void entropy_core_file_cache_add_reference(char* md5);
+void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener);
+void entropy_core_file_cache_remove_reference(char* md5);
 entropy_file_listener* entropy_core_file_cache_retrieve(char* md5);
 void generic_file_print(entropy_generic_file* file);
 entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file);
@@ -66,10 +66,10 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 
 
 /*Selection engine functions*/
-void entropy_core_selection_engine_init(entropy_core* core);
-void entropy_core_selected_file_add(entropy_core* core, entropy_generic_file* file);
-Ecore_List* entropy_core_selected_files_get(entropy_core* core);
-void entropy_core_selected_files_clear(entropy_core* core);
+void entropy_core_selection_engine_init();
+void entropy_core_selected_file_add(entropy_generic_file* file);
+Ecore_List* entropy_core_selected_files_get();
+void entropy_core_selected_files_clear();
 
 /*Config functions*/
 char* entropy_core_home_dir_get(entropy_core* core);

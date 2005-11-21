@@ -344,7 +344,7 @@ void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 	ecore_list_goto_first(icon_list);
 	while ( (list_item = ecore_list_next(icon_list)) )  {
 		file = ecore_hash_get( ((entropy_icon_viewer*)instance->data)->icon_hash, list_item);
-		entropy_core_selected_file_add(instance->core, file->file);
+		entropy_core_selected_file_add(file->file);
 
 		
 		
@@ -455,7 +455,7 @@ void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Has
 		if (freeobj) gui_file_destroy(freeobj);
 
 		/*Tell the core we no longer need this file - it might free it now*/
-		entropy_core_file_cache_remove_reference(comp->core, obj->md5);
+		entropy_core_file_cache_remove_reference(obj->md5);
 	}
 	ecore_hash_destroy( gui_hash);
 	ecore_list_destroy(list);
@@ -659,7 +659,7 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 		gui_file* gui_object;
 
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
-			 entropy_core_file_cache_add_reference(comp->core, list_item->md5);			
+			 entropy_core_file_cache_add_reference(list_item->md5);			
 
 			icon = ewl_iconbox_icon_add(EWL_ICONBOX(view->iconbox), list_item->filename, PACKAGE_DATA_DIR "/icons/default.png");
 			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);

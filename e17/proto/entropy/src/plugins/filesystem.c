@@ -71,7 +71,7 @@ void callback(evfs_event* data) {
 							listener = entropy_malloc(sizeof(entropy_file_listener));
 							listener->file = file;
 							listener->count = 0;
-							entropy_core_file_cache_add(((entropy_gui_component_instance*)key)->core,md5, listener);
+							entropy_core_file_cache_add(md5, listener);
 
 							entropy_free(folder);
 
@@ -273,7 +273,7 @@ void callback(evfs_event* data) {
 
 							/*We are referencing the parent, so - we need to tell the core that we *need* this
 							 * file - i.e. don't clean it up*/
-							entropy_core_file_cache_add_reference(filesystem_core, calling_request->reparent_file->md5);
+							entropy_core_file_cache_add_reference(calling_request->reparent_file->md5);
 						}
 
 						/*Mark the file's uri FIXME do this properly*/
@@ -285,7 +285,7 @@ void callback(evfs_event* data) {
 						listener = entropy_malloc(sizeof(entropy_file_listener));
 						listener->file = file;
 						listener->count = 0;
-						entropy_core_file_cache_add(filesystem_core,md5, listener);
+						entropy_core_file_cache_add(md5, listener);
 
 
 					} else {
@@ -553,7 +553,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 						listener->count = 0;
 
 
-						entropy_core_file_cache_add(request->core,md5, listener);
+						entropy_core_file_cache_add(md5, listener);
 					} else {
 						ecore_list_append(el, listener->file);
 						entropy_free(md5); /*We don't need this one, we're returning an old ref*/

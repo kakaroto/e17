@@ -502,28 +502,32 @@ entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
 }
 
 
-void entropy_core_selection_engine_init(entropy_core* core) {
-	core->selected_files = ecore_list_new();
+void entropy_core_selection_engine_init() {
+	core_core->selected_files = ecore_list_new();
 }
 
-void entropy_core_selected_file_add(entropy_core* core, entropy_generic_file* file) {
-	ecore_list_append(core->selected_files, file);
+void entropy_core_selected_file_add(entropy_generic_file* file) {
+	ecore_list_append(core_core->selected_files, file);
 
 	/*We need this file to stay around, so add a reference*/
-	entropy_core_file_cache_add_reference(core, file->md5);
+	entropy_core_file_cache_add_reference(file->md5);
 
 	/*Print the filename, for ref*/
 	//printf("Retrieved file to clipboard: %s\n", file->filename);
 }
 
-Ecore_List* entropy_core_selected_files_get(entropy_core* core) {
-	return core->selected_files;
+Ecore_List* entropy_core_selected_files_get() {
+	return core_core->selected_files;
 }
 
 
-void entropy_core_selected_files_clear(entropy_core* core) {
-	ecore_list_destroy(core->selected_files);
-	core->selected_files = ecore_list_new();
+void entropy_core_selected_files_clear() {
+	entropy_generic_file* file;
+		
+	while ( (file = ecore_list_remove_first(core_core->selected_files))) {
+		entropy_core_file_cache_remove_reference(file->md5);
+	}
+	
 }
 
 
@@ -907,36 +911,36 @@ char* md5_entropy_path_file(char* path, char* filename) {
 }
 
 
-void entropy_core_file_cache_add(entropy_core* core, char* md5, entropy_file_listener* listener) {
+void entropy_core_file_cache_add(char* md5, entropy_file_listener* listener) {
 
-	LOCK(&core->file_cache_mutex);
+	LOCK(&core_core->file_cache_mutex);
 	
-	if (!ecore_hash_get(core->file_interest_list, md5)) {
-		ecore_hash_set(core->file_interest_list, md5, listener);
+	if (!ecore_hash_get(core_core->file_interest_list, md5)) {
+		ecore_hash_set(core_core->file_interest_list, md5, listener);
 	} else {
 		printf("*** BAD: Called set-reference with file already cached!\n");
-		entropy_core_file_cache_add_reference(core, md5);
+		entropy_core_file_cache_add_reference(md5);
 	}
 	file_cache_size++;
 	/*printf("File cache goes to %ld\n", file_cache_size);*/
-	UNLOCK(&core->file_cache_mutex);
+	UNLOCK(&core_core->file_cache_mutex);
 	
 }
 
-void entropy_core_file_cache_add_reference(entropy_core* core, char* md5) {
-	LOCK(&core->file_cache_mutex);
-	entropy_file_listener* listener = ecore_hash_get(core->file_interest_list, md5);
+void entropy_core_file_cache_add_reference(char* md5) {
+	LOCK(&core_core->file_cache_mutex);
+	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
 
 	if (listener) {
 		listener->count++;
 	}
-	UNLOCK(&core->file_cache_mutex);
+	UNLOCK(&core_core->file_cache_mutex);
 }
 
-void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
-	LOCK(&core->file_cache_mutex);
+void entropy_core_file_cache_remove_reference(char* md5) {
+	LOCK(&core_core->file_cache_mutex);
 
-	entropy_file_listener* listener = ecore_hash_get(core->file_interest_list, md5);
+	entropy_file_listener* listener = ecore_hash_get(core_core->file_interest_list, md5);
 
 	if (listener) {
 		listener->count--;
@@ -948,13 +952,13 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 			entropy_generic_file_destroy(listener->file);
 			free(listener);
 
-			ecore_hash_remove(core->file_interest_list, md5);
+			ecore_hash_remove(core_core->file_interest_list, md5);
 
 			file_cache_size--;
 
 		} 
 	}
-	UNLOCK(&core->file_cache_mutex);
+	UNLOCK(&core_core->file_cache_mutex);
 }
 
 entropy_file_listener* entropy_core_file_cache_retrieve(char* md5) {

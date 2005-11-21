@@ -59,7 +59,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 		
 		Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
 		if (row) {
-			ewl_tree_row_destroy(viewer->tree, row);
+			ewl_tree_row_destroy(EWL_TREE(viewer->tree), row);
 		}
 	}
 	break;
@@ -100,7 +100,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 					*c = 1;
 
 					/*Tell the core we're watching this file*/
-					entropy_core_file_cache_add_reference(comp->core, file->md5);
+					entropy_core_file_cache_add_reference(file->md5);
 					structure_viewer_add_row(comp, file, row);
 					ecore_hash_set(viewer->loaded_dirs, row, c);
 				}
