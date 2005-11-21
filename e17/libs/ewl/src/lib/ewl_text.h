@@ -295,61 +295,6 @@ void ewl_text_context_release(Ewl_Text_Context *tx);
 int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 
-void ewl_text_context_font_set(Ewl_Text_Context *tx, const char *font);
-char *ewl_text_context_font_get(Ewl_Text_Context *tx);
-
-void ewl_text_context_font_size_set(Ewl_Text_Context *tx, unsigned int size);
-unsigned int ewl_text_context_font_size_get(Ewl_Text_Context *tx);
-
-void ewl_text_context_styles_set(Ewl_Text_Context *tx, unsigned int styles);
-unsigned int ewl_text_context_styles_get(Ewl_Text_Context *tx);
-
-void ewl_text_context_align_set(Ewl_Text_Context *tx, unsigned int align);
-unsigned int ewl_text_context_align_get(Ewl_Text_Context *tx);
-
-void ewl_text_context_wrap_set(Ewl_Text_Context *tx, unsigned int wrap);
-unsigned int ewl_text_context_wrap_get(Ewl_Text_Context *tx);
-
-void ewl_text_context_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_bg_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_bg_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_glow_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_glow_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_outline_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_outline_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_shadow_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_shadow_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_strikethrough_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_strikethrough_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
-void ewl_text_context_double_underline_color_set(Ewl_Text_Context *tx, unsigned int r,
-			unsigned int g, unsigned int b, unsigned int a);
-void ewl_text_context_double_underline_color_get(Ewl_Text_Context *tx, unsigned int *r,
-			unsigned int *g, unsigned int *b, unsigned int *a);
-
 /*
  * Ewl_Text_Tree stuff
  */
