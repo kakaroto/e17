@@ -70,8 +70,11 @@ static int file_move(char *src_path, struct stat *src_st, char *dst_path);
 static int dir_move(char *src_path, char *dst_path);
 static int file_remove(char *path, struct stat *st);*/
 
+
+
 /*Misc functions -----------------------------------------*/
 int    evfs_misc_remove(char *filename);
+void evfs_posix_monitor_remove(evfs_client* client, char* path);
 
 
 
@@ -112,7 +115,39 @@ char* evfs_plugin_uri_get() {
 
 int
 evfs_client_disconnect(evfs_client* client) {
+	Ecore_List* mon_list;
+	Ecore_List* indiv_list;
+	evfs_file_monitor* mon;
+	char* key;
+	Ecore_List* watched_keys = ecore_list_new();
+	
 	printf ("Received disconnect for client at evfs_fs_posix.c for client %d\n", client->id);
+	printf ("Scanning monitors for client and removing...\n");
+	
+	mon_list = ecore_hash_keys(posix_monitor_hash);
+	if (mon_list) {
+		while ( (key = ecore_list_remove_first(mon_list))) {
+			printf("Looking for clients for '%s'\n",key);
+
+			indiv_list = ecore_hash_get(posix_monitor_hash, key);
+			ecore_list_goto_first(indiv_list);
+
+			while ( (mon = ecore_list_next(indiv_list))) {
+				if (mon->client == client) {
+					ecore_list_append(watched_keys, key);
+				} 
+			} 
+		}
+		ecore_list_destroy(mon_list);
+	} else {
+		printf("No directories/files monitored by any client\n");
+	}
+
+	while ( (key = ecore_list_remove_first(watched_keys))) {
+		evfs_posix_monitor_remove(client, key);
+	}
+	ecore_list_destroy(watched_keys);
+
 }
 
 void
@@ -133,6 +168,9 @@ evfs_file_monitor_fam_handler (void *data, Ecore_File_Monitor *em,
 		case ECORE_FILE_EVENT_CREATED_FILE:
 			type = EVFS_FILE_EV_CREATE;
 			/*printf("File created - '%s'\n", path);*/
+			break;
+		case ECORE_FILE_EVENT_CREATED_DIRECTORY:
+			type = EVFS_FILE_EV_CREATE;
 			break;
 		case ECORE_FILE_EVENT_DELETED_FILE:
 			type = EVFS_FILE_EV_REMOVE;
@@ -230,13 +268,18 @@ int evfs_monitor_start(evfs_client* client, evfs_command* command) {
 }
 
 int evfs_monitor_stop(evfs_client* client, evfs_command* command){
-	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
+	evfs_posix_monitor_remove(client, command->file_command.files[0]->path);
+	return 0;
+}
+
+void evfs_posix_monitor_remove(evfs_client* client, char* path) {
+	Ecore_List* mon_list = ecore_hash_get(posix_monitor_hash, path);
 	Ecore_File_Monitor *em=  NULL;
 	
 
 	if (!mon_list) {
 		/*There is no one monitoring this - so this client can't be...*/
-		return 1;
+		return;
 	} else {
 		evfs_file_monitor* mon = NULL;
 		evfs_file_monitor* check_last = NULL;
@@ -264,12 +307,12 @@ int evfs_monitor_stop(evfs_client* client, evfs_command* command){
 				fprintf(stderr, "EVFS: Error - attempt to remove monitor on NULL Ecore_File_Monitor object\n");
 			}
 			ecore_list_destroy(mon_list);
-			ecore_hash_remove(posix_monitor_hash, command->file_command.files[0]->path);
+			ecore_hash_remove(posix_monitor_hash, path);
 		}
 		evfs_cleanup_file_monitor(mon);
 		
 		out:
-		return 1;
+		return;
 	}
 
 	
