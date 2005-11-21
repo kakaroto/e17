@@ -44,8 +44,8 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_box_orientation_set(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_appearance_set(EWL_WIDGET(item), "menuitem");
-	ewl_widget_inherit(EWL_WIDGET(item), "menuitem");
+	ewl_widget_appearance_set(EWL_WIDGET(item), "menu_item");
+	ewl_widget_inherit(EWL_WIDGET(item), "menu_item");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
@@ -77,7 +77,7 @@ ewl_menu_item_text_get(Ewl_Menu_Item *item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("item", item, NULL);
-	DCHECK_TYPE_RET("item", item, "menuitem", NULL);
+	DCHECK_TYPE_RET("item", item, "menu_item", NULL);
 
 	if (item->text)
 		DRETURN_PTR(ewl_text_text_get(EWL_TEXT(item->text)), 
@@ -98,7 +98,7 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, char *text)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("item", item);
-	DCHECK_TYPE("item", item, "menuitem");
+	DCHECK_TYPE("item", item, "menu_item");
 
 	/*
 	 * Save and restore after we've made our changes.
@@ -146,7 +146,7 @@ ewl_menu_item_image_get(Ewl_Menu_Item *item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("item", item, NULL);
-	DCHECK_TYPE_RET("item", item, "menuitem", NULL);
+	DCHECK_TYPE_RET("item", item, "menu_item", NULL);
 
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		DRETURN_PTR(ewl_image_file_get(EWL_IMAGE(item->icon)), 
@@ -165,7 +165,7 @@ ewl_menu_item_image_set(Ewl_Menu_Item *item, char *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("item", item);
-	DCHECK_TYPE("item", item, "menuitem");
+	DCHECK_TYPE("item", item, "menu_item");
 
 	/*
 	 * Destroy the icon if it's the wrong type.

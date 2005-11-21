@@ -9,8 +9,8 @@
  */
 
 /**
- * @themekey /menuitem/file
- * @themekey /menuitem/group
+ * @themekey /menu_item/file
+ * @themekey /menu_item/group
  */
 
 /**

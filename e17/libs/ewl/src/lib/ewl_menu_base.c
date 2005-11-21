@@ -97,7 +97,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	ecore_list_goto_first(pb->children);
 	while ((child = ecore_list_next(pb->children))) {
-		if (ewl_widget_type_is(child, "menuitem")) {
+		if (ewl_widget_type_is(child, "menu_item")) {
 			item = EWL_MENU_ITEM(child);
 			item->inmenu = menu->popup;
 		}
@@ -193,7 +193,7 @@ ewl_menu_base_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, "menu_base");
 
 	menu = EWL_MENU_BASE(w);
 	if (menu->popup)
