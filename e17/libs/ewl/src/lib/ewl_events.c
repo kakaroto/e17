@@ -64,9 +64,9 @@ ewl_ev_init(void)
 		ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, ewl_ev_x_key_up,
 					NULL);
 
-
-		/* Register dispatching functions for DND events */
-
+		/* 
+		 * Register dispatching functions for DND events 
+		 */
 		ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION,
 					ewl_ev_dnd_position, NULL);
 
@@ -427,7 +427,6 @@ ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-
 	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -512,7 +511,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e __UNUSED__)
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
  * @param e: the dnd position information
- * @return Returns no value.
+ * @return Returns TRUE on success or FALSE on failure.
  * @brief Handles the data for an XDND position event 
  *
  * Tells an XDND source if we can accept DND at this window location
@@ -520,25 +519,28 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e __UNUSED__)
 int
 ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Window* window;
-	Ecore_X_Event_Xdnd_Position *ev = e;
-	int x,y,wx,wy;
+	Ewl_Window *window;
+	Ecore_X_Event_Xdnd_Position *ev;
+	int x, y, wx, wy;
 	Ecore_X_Rectangle rect;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	ev = e;
 
 	window = ewl_window_window_find((void *)ev->win);
 	if (window) {
-		Ewl_Widget* notify;
-		Ewl_Embed* embed;
+		Ewl_Embed *embed;
 		
-		ewl_window_position_get(EWL_WINDOW(window), &wx,&wy);
+		ewl_window_position_get(EWL_WINDOW(window), &wx, &wy);
 		x = ev->position.x - wx;
 		y = ev->position.y - wy;
 		//printf("Received event at window pos (%d:%d), %d:%d\n",CURRENT_X(window), CURRENT_Y(window), x,y);
 
-
-		/*Look for the child here*/
+		/*
+		 * Look for the child here
+		 */
 		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) {
 			//printf("Found embed, feeding..\n");
@@ -547,22 +549,14 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 			//printf("Could not find embed for window..\n");
 		}
 		
-		
-		
 		rect.x = 0;
 		rect.y = 0;
 		rect.width = 0;
 		rect.height = 0;	
 		ecore_x_dnd_send_status(1, 0, rect, ECORE_X_DND_ACTION_PRIVATE);
-
-		
 	}
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
-
-
 
 #endif
 

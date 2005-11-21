@@ -629,24 +629,6 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
 
 	ret = ewl_widget_appearance_path_size_get(w, &len);
 
-	/*
-	if (w->parent)
-		tmp = ewl_widget_appearance_path_get(w->parent);
-	else
-		tmp = strdup("");
-		*/
-
-	 /* one for the / one for the \0 */
-	/*
-	len = strlen(tmp) + 2;
-	len += (w->appearance ? strlen(w->appearance) : 0);
-
-	ret = malloc(sizeof(char) * len);
-	snprintf(ret, len, "%s/%s", tmp, 
-			(w->appearance ? w->appearance : ""));
-	FREE(tmp);
-	*/
-
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
@@ -1859,7 +1841,6 @@ void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /*
  * Perform the basic operations necessary for realizing a widget

@@ -381,7 +381,6 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param embed: the embed where the key event is to occur
  * @param keyname: the key release to trigger
@@ -439,7 +438,6 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param embed: the embed where the mouse event is to occur
@@ -533,7 +531,6 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param embed: the embed where the mouse event is to occur
  * @param b: the number of the button released
@@ -580,7 +577,6 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param embed: the embed where the mouse event is to occur
@@ -678,7 +674,6 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
  * @param embed: the embed where the DND position event is to occur
  * @param x: the x coordinate of the mouse move
@@ -702,13 +697,14 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 	ewl_embed_active_set(embed, TRUE);
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
-
 	if (widget) {
 		Ewl_Widget* parent = widget;
 		
-		printf("Found widget %p\n", widget);
+//		printf("Found widget %p\n", widget);
 
-		/*Pass the event up the chain*/
+		/*
+		 * Pass the event up the chain
+		 */ 
 		while (parent) {
 			ewl_callback_call_with_event_data(parent,
 				EWL_CALLBACK_DND_POSITION, &ev);
@@ -724,7 +720,6 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @param embed: the embed where the mouse event is to occur
@@ -1783,7 +1778,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
+/*
  * Uppercase the given string
  */
 static void

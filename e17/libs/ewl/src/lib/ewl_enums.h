@@ -44,7 +44,6 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_APPEARANCE_CHANGED, /**< Theme key of widget changed */
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
-	EWL_CALLBACK_PASTE, /**< Data is ready to be pasted */
 
 	EWL_CALLBACK_DND_POSITION, /** A DND position event **/
 	EWL_CALLBACK_DND_ENTER,	   /** On enter of a widget **/
