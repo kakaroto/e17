@@ -53,17 +53,18 @@ struct _desk
 /* desktops.c */
 Desk               *DeskGet(unsigned int desk);
 Desk               *DeskGetRelative(Desk * dsk, int inc);
-Background         *DeskGetBackground(const Desk * dsk);
 void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);
 int                 DeskIsViewable(const Desk * dsk);
 void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
 void                DeskRefresh(Desk * dsk);
-void                DeskAssignBg(unsigned int desk, Background * bg);
-void                DeskSetBg(Desk * dsk, Background * bg, int refresh);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
+
+void                DeskBackgroundAssign(unsigned int desk, Background * bg);
+Background         *DeskBackgroundGet(const Desk * dsk);
+void                DeskBackgroundSet(Desk * dsk, Background * bg, int refresh);
 
 void                DeskCurrentGetArea(int *ax, int *ay);
 void                DeskCurrentGotoArea(int ax, int ay);

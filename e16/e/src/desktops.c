@@ -406,7 +406,7 @@ DeskConfigure(Desk * dsk)
 	     Efree(lst);
 	  }
      }
-   DeskSetBg(dsk, bg, 0);
+   DeskBackgroundSet(dsk, bg, 0);
 
    if (dsk->num > 0)
      {
@@ -527,7 +527,7 @@ DeskGetRelative(Desk * dsk, int inc)
 }
 
 Background         *
-DeskGetBackground(const Desk * dsk)
+DeskBackgroundGet(const Desk * dsk)
 {
    return (dsk) ? dsk->bg : NULL;
 }
@@ -855,7 +855,7 @@ DeskRefresh(Desk * dsk)
 }
 
 void
-DeskAssignBg(unsigned int desk, Background * bg)
+DeskBackgroundAssign(unsigned int desk, Background * bg)
 {
    if (desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       return;
@@ -864,7 +864,7 @@ DeskAssignBg(unsigned int desk, Background * bg)
 }
 
 void
-DeskSetBg(Desk * dsk, Background * bg, int refresh)
+DeskBackgroundSet(Desk * dsk, Background * bg, int refresh)
 {
    if (!dsk)
       return;
@@ -2116,9 +2116,9 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	     pmap = ECreatePixmap(wins[i], 64, 48, VRoot.depth);
 	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
-	     bg = DeskGetBackground(DeskGet(i));
+	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
-		BackgroundApply(bg, pmap, 64, 48, 0);
+		BackgroundApplyPmap(bg, pmap, 64, 48);
 	     else
 	       {
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);

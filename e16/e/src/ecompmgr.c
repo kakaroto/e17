@@ -498,7 +498,7 @@ DeskBackgroundPictureGet(Desk * dsk)
      }
 
    fill = False;
-   pmap = BackgroundGetPixmap(DeskGetBackground(dsk));
+   pmap = BackgroundGetPixmap(DeskBackgroundGet(dsk));
    if (pmap == None)
      {
 	if (cw->pixmap && cw->picture)

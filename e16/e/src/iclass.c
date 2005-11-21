@@ -170,7 +170,7 @@ TransparencySet(int transparency)
 	for (i = 0; i < num; i++)
 	  {
 	     dsk = DeskGet(i);
-	     BackgroundPixmapFree(DeskGetBackground(dsk));
+	     BackgroundPixmapFree(DeskBackgroundGet(dsk));
 	     DeskRefresh(dsk);
 	  }
      }
@@ -934,7 +934,7 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	Drawable            bg;
 	int                 xx, yy;
 
-	bg = BackgroundGetPixmap(DeskGetBackground(DesksGetCurrent()));
+	bg = BackgroundGetPixmap(DeskBackgroundGet(DesksGetCurrent()));
 	if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
 	  {
 	     cr = VRoot.win;

@@ -274,22 +274,17 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 {
    Background         *bg;
 
-   bg = Emalloc(sizeof(Background));
+   bg = Ecalloc(1, sizeof(Background));
    if (!bg)
       return NULL;
 
    bg->name = Estrdup(name);
-   bg->pmap = 0;
-   bg->last_viewed = 0;
 
    ESetColor(&(bg->bg_solid), 160, 160, 160);
    if (solid)
       bg->bg_solid = *solid;
-   bg->bg.file = NULL;
    if (bgn)
       bg->bg.file = Estrdup(bgn);
-   bg->bg.real_file = NULL;
-   bg->bg.im = NULL;
    bg->bg_tile = tile;
    bg->bg.keep_aspect = keep_aspect;
    bg->bg.xjust = xjust;
@@ -297,22 +292,13 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    bg->bg.xperc = xperc;
    bg->bg.yperc = yperc;
 
-   bg->top.file = NULL;
    if (top)
       bg->top.file = Estrdup(top);
-   bg->top.real_file = NULL;
-   bg->top.im = NULL;
    bg->top.keep_aspect = tkeep_aspect;
    bg->top.xjust = txjust;
    bg->top.yjust = tyjust;
    bg->top.xperc = txperc;
    bg->top.yperc = typerc;
-
-#if ENABLE_COLOR_MODIFIERS
-   bg->cmclass = NULL;
-#endif
-   bg->keepim = 0;
-   bg->ref_count = 0;
 
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 
@@ -397,11 +383,7 @@ BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
    bg->top.yperc = typerc;
 
    if (updated)
-     {
-	if (bg->pmap)
-	   imlib_free_pixmap_and_mask(bg->pmap);
-	bg->pmap = 0;
-     }
+      BackgroundPixmapFree(bg);
 
    return updated;
 }
@@ -756,6 +738,13 @@ BackgroundApply(Background * bg, Drawable draw,
    return pmap;
 }
 
+void
+BackgroundApplyPmap(Background * bg, Drawable draw,
+		    unsigned int w, unsigned int h)
+{
+   BackgroundApply(bg, draw, w, h, 0);
+}
+
 /*
  * Apply a background to window/pixmap.
  * The (scaled) BG pixmap is stored in bg->pmap.
@@ -998,7 +987,7 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
 
    /* Create new cached bg mini image */
    pmap = ECreatePixmap(VRoot.win, 64, 48, VRoot.depth);
-   BackgroundApply(bg, pmap, 64, 48, 0);
+   BackgroundApplyPmap(bg, pmap, 64, 48);
    imlib_context_set_drawable(pmap);
    im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
    imlib_context_set_image(im);
@@ -1178,7 +1167,7 @@ BackgroundsConfigLoad(FILE * fs)
 	     desk = atoi(s2);
 	     if (desk < DesksGetNumber())
 	       {
-		  if ((DeskGetBackground(DeskGet(desk)) == NULL) ||
+		  if ((DeskBackgroundGet(DeskGet(desk)) == NULL) ||
 		      (Conf.backgrounds.user))
 		    {
 		       if (!ignore)
@@ -1188,7 +1177,7 @@ BackgroundsConfigLoad(FILE * fs)
 						     i3, i4, i5, i6, bg2, j1,
 						     j2, j3, j4, j5);
 			 }
-		       DeskAssignBg(desk, bg);
+		       DeskBackgroundAssign(desk, bg);
 		    }
 	       }
 	     break;
@@ -1352,9 +1341,9 @@ BackgroundsConfigSave(void)
 	  {
 	     Desk               *dsk = DeskGet(j);
 
-	     if (BackgroundIsNone(bglist[i]) && !DeskGetBackground(dsk))
+	     if (BackgroundIsNone(bglist[i]) && !DeskBackgroundGet(dsk))
 		fprintf(fs, "564 %d\n", j);
-	     if (DeskGetBackground(dsk) == bglist[i])
+	     if (DeskBackgroundGet(dsk) == bglist[i])
 		fprintf(fs, "564 %d\n", j);
 	  }
 
@@ -1388,8 +1377,8 @@ BackgroundsAccounting(void)
    for (j = 0; j < DesksGetNumber(); j++)
      {
 	dsk = DeskGet(j);
-	if ((DeskGetBackground(dsk)) && (DeskIsViewable(dsk)))
-	   BackgroundTouch(DeskGetBackground(dsk));
+	if ((DeskBackgroundGet(dsk)) && (DeskIsViewable(dsk)))
+	   BackgroundTouch(DeskBackgroundGet(dsk));
      }
 
    lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
@@ -1405,14 +1394,14 @@ BackgroundsAccounting(void)
 	for (j = 0; j < DesksGetNumber(); j++)
 	  {
 	     dsk = DeskGet(j);
-	     if (lst[i] == DeskGetBackground(dsk) && DeskIsViewable(dsk))
+	     if (lst[i] == DeskBackgroundGet(dsk) && DeskIsViewable(dsk))
 		goto next;
 	  }
 
 	for (j = 0; j < DesksGetNumber(); j++)
 	  {
 	     dsk = DeskGet(j);
-	     if (lst[i] != DeskGetBackground(dsk) || DeskIsViewable(dsk))
+	     if (lst[i] != DeskBackgroundGet(dsk) || DeskIsViewable(dsk))
 		continue;
 
 	     /* Unviewable desktop - update the virtual root hints */
@@ -1532,8 +1521,8 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	  {
 	     Desk               *dsk = DeskGet(i);
 
-	     if (DeskGetBackground(dsk) == tmp_bg)
-		DeskSetBg(dsk, tmp_bg, 1);
+	     if (DeskBackgroundGet(dsk) == tmp_bg)
+		DeskBackgroundSet(dsk, tmp_bg, 1);
 	  }
 
 	BackgroundCacheMini(tmp_bg, 0, 1);
@@ -1572,7 +1561,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    if (val == 1)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
-	BackgroundApply(tmp_bg, pmap, w, h, 0);
+	BackgroundApplyPmap(tmp_bg, pmap, w, h);
      }
    else
      {
@@ -1587,7 +1576,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 			      tmp_bg->top.yjust, tmp_bg->top.xperc,
 			      tmp_bg->top.yperc);
 
-	BackgroundApply(bg, pmap, w, h, 0);
+	BackgroundApplyPmap(bg, pmap, w, h);
 	BackgroundDestroy(bg);
      }
    EClearWindow(win);
@@ -1689,7 +1678,7 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
    DialogItemSliderSetVal(bg_sel_slider, 0);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 
-   DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
+   DeskBackgroundSet(DesksGetCurrent(), tmp_bg, 0);
 
    BG_RedrawView();
 
@@ -1727,7 +1716,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	  }
      }
 
-   DeskSetBg(DesksGetCurrent(), bg, 0);
+   DeskBackgroundSet(DesksGetCurrent(), bg, 0);
    if (val == 0)
       BackgroundDestroy(tmp_bg);
    else
@@ -1883,7 +1872,7 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
 	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
 	  {
 	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
-	     DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
+	     DeskBackgroundSet(DesksGetCurrent(), tmp_bg, 0);
 	     autosave();
 	  }
 	Efree(bglist);
@@ -1947,7 +1936,7 @@ CB_BGPrev(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i > 0))
 	  {
 	     BGSettingsGoTo(bglist[i - 1]);
-	     DeskSetBg(DesksGetCurrent(), bglist[i - 1], 0);
+	     DeskBackgroundSet(DesksGetCurrent(), bglist[i - 1], 0);
 	     break;
 	  }
      }
@@ -1967,7 +1956,7 @@ CB_BGNext(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i < (num - 1)))
 	  {
 	     BGSettingsGoTo(bglist[i + 1]);
-	     DeskSetBg(DesksGetCurrent(), bglist[i + 1], 0);
+	     DeskBackgroundSet(DesksGetCurrent(), bglist[i + 1], 0);
 	     break;
 	  }
      }
@@ -2523,8 +2512,8 @@ BackgroundSet2(const char *name, const char *params)
 	       {
 		  Desk               *dsk = DeskGet(i);
 
-		  if (DeskGetBackground(dsk) == bg)
-		     DeskSetBg(dsk, bg, 0);
+		  if (DeskBackgroundGet(dsk) == bg)
+		     DeskBackgroundSet(dsk, bg, 0);
 	       }
 	  }
      }
@@ -2557,7 +2546,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      {
 	for (i = 0; i < (int)DesksGetNumber(); i++)
 	  {
-	     bg = DeskGetBackground(DeskGet(i));
+	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
 		IpcPrintf("%i %s\n", i, BackgroundGetName(bg));
 	  }
@@ -2577,7 +2566,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "cfg", 2))
      {
-	SettingsBackground(DeskGetBackground(DesksGetCurrent()));
+	SettingsBackground(DeskBackgroundGet(DesksGetCurrent()));
      }
    else if (!strncmp(cmd, "del", 2))
      {
@@ -2632,7 +2621,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 
 	num = DesksGetCurrentNum();
 	sscanf(p, "%d %n", &num, &len);
-	DeskSetBg(DeskGet(num), bg, 1);
+	DeskBackgroundSet(DeskGet(num), bg, 1);
 	autosave();
      }
    else if (!strncmp(cmd, "xget", 2))
@@ -2678,7 +2667,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 	if (!w[0])
 	   break;
 	i = atoi(w);
-	DeskSetBg(DeskGet(i), bg, 1);
+	DeskBackgroundSet(DeskGet(i), bg, 1);
      }
    autosave();
 }
@@ -2710,9 +2699,9 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 	     bg->cmclass->ref_count--;
 	     bg->cmclass = cm;
 	  }
-	if (bg->pmap)
-	   imlib_free_pixmap_and_mask(bg->pmap);
-	bg->pmap = 0;
+
+	BackgroundPixmapFree(bg);
+
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
 	     if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))

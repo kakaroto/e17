@@ -26,7 +26,6 @@
 #define _BACKGROUNDS_H_
 
 /* backgrounds.c */
-int                 BackgroundsConfigLoad(FILE * fs);
 char               *BackgroundGetUniqueString(Background * bg);
 void                BackgroundPixmapFree(Background * bg);
 void                BackgroundImagesFree(Background * bg, int free_pmap);
@@ -34,6 +33,8 @@ void                BackgroundDestroyByName(const char *name);
 Pixmap              BackgroundApply(Background * bg, Drawable draw,
 				    unsigned int rw, unsigned int rh,
 				    int is_win);
+void                BackgroundApplyPmap(Background * bg, Drawable draw,
+					unsigned int rw, unsigned int rh);
 void                BackgroundSet(Background * bg, Window win, unsigned int rw,
 				  unsigned int rh);
 void                BackgroundIncRefcount(Background * bg);
@@ -46,5 +47,7 @@ int                 BackgroundIsNone(const Background * bg);
 Background         *BrackgroundCreateFromImage(const char *bgid,
 					       const char *file, char *thumb,
 					       int thlen);
+
+int                 BackgroundsConfigLoad(FILE * fs);
 
 #endif /* _BACKGROUNDS_H_ */

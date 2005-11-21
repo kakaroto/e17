@@ -506,7 +506,7 @@ PagerUpdateBg(Pager * p)
 	return;
      }
 
-   bg = DeskGetBackground(p->dsk);
+   bg = DeskBackgroundGet(p->dsk);
    if (bg)
      {
 	char                s[4096];
@@ -528,7 +528,7 @@ PagerUpdateBg(Pager * p)
 	  }
 	else
 	  {
-	     BackgroundApply(bg, pmap, p->dw, p->dh, 0);
+	     BackgroundApplyPmap(bg, pmap, p->dw, p->dh);
 	     imlib_context_set_drawable(pmap);
 	     im = imlib_create_image_from_drawable(0, 0, 0, p->dw, p->dh, 1);
 	     imlib_context_set_image(im);
