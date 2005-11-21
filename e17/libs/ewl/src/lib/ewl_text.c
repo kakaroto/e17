@@ -297,6 +297,47 @@ ewl_text_text_get(Ewl_Text *t)
 }
 
 /**
+ * @param t: The Ewl_Text to clear
+ * @return Returns no value
+ */
+void
+ewl_text_clear(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+
+	if (t->length > 0)
+	{
+		ewl_text_cursor_position_set(t, 0);
+		ewl_text_text_delete(t, t->length);
+	}
+	t->text = NULL;
+	t->length = 0;
+	t->total_size = 0;
+	t->cursor_position = 0;
+
+	/* clean out the triggers */
+	if (t->triggers)
+	{
+		Ewl_Text_Trigger *trig;
+
+		while ((trig = ecore_list_remove_first(t->triggers)))
+		{
+			trig->text_parent = NULL;
+			ewl_widget_destroy(EWL_WIDGET(trig));
+		}
+	}
+
+	/* cleanup the selection */
+	ewl_text_trigger_base_set(t->selection, 0);
+	ewl_text_trigger_start_pos_set(t->selection, 0);
+        ewl_text_trigger_length_set(t->selection, 0);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param t: The Ewl_Text to set the text into
  * @param text: The text to set into the widget
  * @return Returns no value
@@ -308,10 +349,8 @@ ewl_text_text_set(Ewl_Text *t, const char *text)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	t->cursor_position = 0;
-	ewl_text_text_insert(t, NULL, t->cursor_position);
+	ewl_text_clear(t);
 	ewl_text_text_insert(t, text, t->cursor_position);
-
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -329,7 +368,6 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
 
 	ewl_text_text_insert(t, text, 0);
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -346,7 +384,6 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 	DCHECK_TYPE("t", t, "text");
 
 	ewl_text_text_insert(t, text, t->length);
-
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -368,15 +405,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 
 	if (!text)
 	{
-		if (t->length > 0)
-		{
-			ewl_text_cursor_position_set(t, 0);
-			ewl_text_text_delete(t, t->length);
-		}
-		t->text = NULL;
-		t->length = 0;
-		t->total_size = 0;
-		t->cursor_position = 0;
+		ewl_text_clear(t);
 	}
 	else if (!t->text)
 	{
@@ -4720,5 +4749,4 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
-
 

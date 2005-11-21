@@ -41,7 +41,8 @@ __set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 	ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
 	ewl_text_text_set(EWL_TEXT(entry[1]), "E W L ! ! !");
-	ewl_text_text_set(EWL_TEXT(entry[2]), NULL);
+
+	ewl_text_clear(EWL_TEXT(entry[2]));
 }
 
 void

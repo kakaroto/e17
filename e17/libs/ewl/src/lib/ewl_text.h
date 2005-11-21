@@ -74,6 +74,8 @@ unsigned int	 ewl_text_coord_index_map(Ewl_Text *t, int x, int y);
 
 char 		*ewl_text_text_get(Ewl_Text *t);
 void		 ewl_text_text_set(Ewl_Text *t, const char *text);
+void		 ewl_text_clear(Ewl_Text *t);
+
 void		 ewl_text_text_prepend(Ewl_Text *t, const char *text);
 void		 ewl_text_text_append(Ewl_Text *t, const char *text);
 void		 ewl_text_text_insert(Ewl_Text *t, const char *text, 

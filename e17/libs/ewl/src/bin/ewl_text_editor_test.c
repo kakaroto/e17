@@ -390,7 +390,7 @@ ete_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *entry;
 
 	entry = ewl_widget_name_find("entry");
-	ewl_text_text_set(EWL_TEXT(entry), NULL);
+	ewl_text_clear(EWL_TEXT(entry));
 }
 
 
