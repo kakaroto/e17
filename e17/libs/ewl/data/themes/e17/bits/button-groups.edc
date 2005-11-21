@@ -387,3 +387,12 @@ group {
 BUTTON_IM("e17_menu_check1.png", "e17_menu_check2.png")
 BUTTON_IM_PROGS()
 }
+
+group {
+   name, "button-image";
+
+   data {
+	item, "pad/right" "5";
+   }
+}
+

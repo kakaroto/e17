@@ -31,7 +31,7 @@ data {
     item, "/label/group" "label";
     item, "/label/textpart" "text";
     item, "/button/group" "button";
-/*     item, "/cell/group" "button"; */
+    item, "/button/body/image/group" "button-image";
     item, "/radio/group" "radio";
     item, "/check/group" "checkbox";
 

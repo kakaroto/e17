@@ -1,6 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EDCS =  default.edc skeleton.edc zero.edc e17.edc
+EDCS =  e17.edc
+#EDCS = default.edc skeleton.edc zero.edc e17.edc
 
 EDJS = $(EDCS:%.edc=%.edj)
 

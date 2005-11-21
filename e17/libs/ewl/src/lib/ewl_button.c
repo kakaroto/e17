@@ -81,6 +81,7 @@ ewl_button_init(Ewl_Button *b)
 
 	b->body = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(b), b->body);
+	ewl_widget_appearance_set(b->body, "body");
 	ewl_object_alignment_set(EWL_OBJECT(b->body), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(b->body), EWL_FLAG_FILL_VFILL);
 	ewl_widget_internal_set(b->body, TRUE);
@@ -211,10 +212,8 @@ ewl_button_image_set(Ewl_Button *b, char *file, char *key)
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("b", b, "button");
 
-	if (b->image_object) {
+	if (b->image_object)
 		ewl_widget_destroy(b->image_object);
-
-	}
 
 	b->image_object = ewl_image_new();
 	ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
