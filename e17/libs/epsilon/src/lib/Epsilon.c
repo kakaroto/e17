@@ -2,7 +2,6 @@
 #define X_DISPLAY_MISSING 1
 #include <Imlib2.h>
 #include <png.h>
-#include "md5.h"
 #include <limits.h>
 #include <string.h>
 #include <sys/types.h>
@@ -10,6 +9,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "md5.h"
 #include "../config.h"
 #ifndef PATH_MAX
 #define PATH_MAX 4096
