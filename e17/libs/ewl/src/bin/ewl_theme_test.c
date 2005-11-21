@@ -29,7 +29,7 @@ __select_theme (Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_container_child_iterate_begin (EWL_CONTAINER (cell));
 	text = ewl_container_child_next (EWL_CONTAINER (cell));
 	
-	theme_name = ewl_text_text_get (EWL_TEXT (text));
+	theme_name = ewl_label_text_get (EWL_LABEL (text));
 	ext = ".edj";
 	
 	len1 = strlen (theme_list_dir);
