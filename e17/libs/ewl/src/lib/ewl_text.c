@@ -113,10 +113,7 @@ ewl_text_init(Ewl_Text *t)
 	}
 
 	/* create the default context and stick it into the tree */
-	if (!ewl_text_default_context)
-		ewl_text_default_context = ewl_text_context_default_create(t);
-	t->current_context = ewl_text_default_context;
-	ewl_text_context_acquire(t->current_context);
+	t->current_context = ewl_text_context_default_create(t);
 
 	t->formatting->tx = t->current_context;
 	ewl_text_context_acquire(t->formatting->tx);
@@ -413,10 +410,8 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->length = strlen(text);
 		t->total_size = t->length + 1;
 
-		if (!t->current_context) {
-			t->current_context = ewl_text_default_context;
-			ewl_text_context_acquire(ewl_text_default_context);
-		}
+		if (!t->current_context) 
+			t->current_context = ewl_text_context_default_create(t);
 
 		ewl_text_tree_text_context_insert(t->formatting, t->current_context, 
 									idx, t->length);
@@ -425,8 +420,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	else
 	{
 		if (!t->current_context) {
-			t->current_context = ewl_text_default_context;
-			ewl_text_context_acquire(ewl_text_default_context);
+			t->current_context = ewl_text_context_default_create(t);
 		}
 
 		len = strlen(text);
@@ -803,10 +797,8 @@ ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_cha
 	/* do we have a current context? */
 	if (t->current_context)
 		ctx = t->current_context;
-	else {
-		ctx = ewl_text_default_context;
-		ewl_text_context_acquire(ctx);
-	}
+	else 
+		ctx = ewl_text_context_default_create(t);
 
 	t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
 	ewl_text_context_release(ctx);
@@ -2682,8 +2674,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ctx = ewl_text_default_context;
-	ewl_text_context_acquire(ctx);
+	ctx = ewl_text_context_default_create(t);
 	fmt = ewl_text_format_get(ctx);
 	ewl_text_context_release(ctx);
 
@@ -2979,6 +2970,12 @@ ewl_text_context_default_create(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, "text", NULL);
 
+	if (ewl_text_default_context)
+	{
+		ewl_text_context_acquire(ewl_text_default_context);
+		DRETURN_PTR(ewl_text_default_context, DLEVEL_STABLE);
+	}
+
 	tmp = ewl_text_context_new();
 
 	/* handle default values */
@@ -3107,6 +3104,11 @@ ewl_text_context_default_create(Ewl_Text *t)
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
 	ewl_text_context_release(tmp);
 
+	/* setup the default context and acquire a ref on it so it won't go
+	 * away */
+	ewl_text_default_context = tx;
+	ewl_text_context_acquire(tx);
+
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
@@ -3131,6 +3133,9 @@ ewl_text_context_shutdown(void)
 		ecore_hash_destroy(context_hash);
 		context_hash = NULL;
 	}
+
+	if (ewl_text_default_context)
+		ewl_text_context_release(ewl_text_default_context);
 }
 
 static char *
