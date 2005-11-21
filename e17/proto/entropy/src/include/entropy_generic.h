@@ -24,6 +24,9 @@ struct entropy_generic_file {
 
 	struct entropy_generic_file* parent;
 
+	char retrieved_stat;
+	struct stat properties;
+
 	char* md5; /*A reference to the md5sum made for this file*/
 };
 

@@ -12,8 +12,6 @@
 #define URI_POSIX "posix"
 
 
-/*static Ecore_Hash* file_interest_list;
-static Ecore_Hash* folder_interest_list;*/
 
 Ecore_Hash* folder_monitor_hash;
 Ecore_Hash* stat_request_hash;
@@ -60,7 +58,7 @@ void callback(evfs_event* data) {
 
 						
 						entropy_generic_file* file;
-						if ( !ecore_hash_get(((entropy_gui_component_instance*)key)->core->file_interest_list, md5) ) {
+						if ( ! (listener = entropy_core_file_cache_retrieve(md5)) ) {
 							file = entropy_generic_file_new();
 							/*For now, just make an entropy_generic_file for this object*/
 
@@ -78,9 +76,6 @@ void callback(evfs_event* data) {
 							entropy_free(folder);
 
 						} else {
-							listener = ecore_hash_get(((
-								entropy_gui_component_instance*)key)->core->file_interest_list, md5);
-
 							file=listener->file;
 							entropy_free(md5); /*We don't need this one, we're returning an old ref*/
 							entropy_free(folder);
@@ -162,11 +157,7 @@ void callback(evfs_event* data) {
 				
 
 				/*Retrieve the file. This is bad - the file might not exist anymore! */
-				file_stat->file = ((entropy_file_listener*)ecore_hash_get(((
-						entropy_gui_component_instance*)instance)->core->file_interest_list, md5))->file;
-
-				
-
+				file_stat->file = entropy_core_file_cache_retrieve(md5)->file;
 
 				/*Build up the gui_event wrapper*/
 				gui_event = entropy_malloc(sizeof(entropy_gui_event)); 
@@ -253,7 +244,7 @@ void callback(evfs_event* data) {
 					char* md5 = md5_entropy_path_file(folder, filename);
 
 					/*Now create, or grab, a file*/
-					if ( !ecore_hash_get(filesystem_core->file_interest_list, md5) ) {
+					if ( ! (listener = entropy_core_file_cache_retrieve(md5)) ) {
 
 						file = entropy_generic_file_new();
 						/*For now, just make an entropy_generic_file for this object*/
@@ -298,7 +289,6 @@ void callback(evfs_event* data) {
 
 
 					} else {
-						listener = ecore_hash_get(filesystem_core->file_interest_list, md5);
 						file=listener->file;
 						entropy_free(md5); /*We don't need this one, we're returning an old ref*/
 					}
@@ -404,8 +394,6 @@ int entropy_plugin_type_get() {
 }
 
 void entropy_plugin_init(entropy_core* core) {
-	/*file_interest_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	folder_interest_list = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);*/
 	folder_monitor_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	stat_request_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	evfs_dir_requests = ecore_hash_new(ecore_str_hash, ecore_str_compare);	
@@ -538,7 +526,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 					md5 = md5_entropy_path_file(dire, de->d_name);				
 
 					/*printf("Looking for key %s\n", md5);	*/
-					if ( !ecore_hash_get(request->core->file_interest_list, md5) ) {			
+					if ( ! (listener = entropy_core_file_cache_retrieve(md5)) ) {			
 						/*printf ("File not found in hash, making new instance\n");*/
 					
 						ef = entropy_generic_file_new();
@@ -554,14 +542,19 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 	
 						ecore_list_append(el, ef);
 
+
+						/*Save this file's stat structure*/
+						ef->retrieved_stat = 1;
+						memcpy(&ef->properties, &st, sizeof(struct stat));
+
 						/*Register a new listener for this file*/
 						listener = entropy_malloc(sizeof(entropy_file_listener));
 						listener->file = ef;
 						listener->count = 0;
 
+
 						entropy_core_file_cache_add(request->core,md5, listener);
 					} else {
-						listener = ecore_hash_get(request->core->file_interest_list, md5);
 						ecore_list_append(el, listener->file);
 						entropy_free(md5); /*We don't need this one, we're returning an old ref*/
 					}

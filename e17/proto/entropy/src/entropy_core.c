@@ -957,6 +957,18 @@ void entropy_core_file_cache_remove_reference(entropy_core* core, char* md5) {
 	UNLOCK(&core->file_cache_mutex);
 }
 
+entropy_file_listener* entropy_core_file_cache_retrieve(char* md5) {
+	entropy_file_listener* listen;
+	
+	LOCK(&core_core->file_cache_mutex);
+
+	listen = ecore_hash_get(core_core->file_interest_list, md5);
+	
+	UNLOCK(&core_core->file_cache_mutex);
+
+	return listen;
+}
+
 entropy_gui_component_instance* entropy_core_global_layout_get(entropy_core* core) {
 	return core->layout_global;
 }
