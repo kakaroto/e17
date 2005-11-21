@@ -2646,6 +2646,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		evas_object_move(t->textblock, xx, yy);
 		evas_object_resize(t->textblock, ww, hh);
 
+		ewl_text_display(t);
 		ewl_text_triggers_configure(t);
 	}
 
