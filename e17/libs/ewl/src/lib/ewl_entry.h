@@ -62,8 +62,5 @@ int		 ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent);
 void		 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos);
 unsigned int	 ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
 
-void ewl_entry_cursor_cb_show(Ewl_Widget *w, void *ev, void *data);
-void ewl_entry_cursor_cb_hide(Ewl_Widget *w, void *ev, void *data);
-
 #endif /* __EWL_ENTRY_H__ */
 

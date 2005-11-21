@@ -110,6 +110,47 @@ group {
 				}
 				color, 0 0 0 255;
 			}
+			description {
+				state, "hide" 0.0;
+				inherit, "default" 0.0;
+				visible: 0;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name, "blink-on";
+			signal, "show";
+			source, "";
+			action, STATE_SET "default" 0.0;
+			target, "separator";
+			after, "blink-hold-on";
+		}
+		program {
+			name, "blink-hold-on";
+			in, 0.95 0.0;
+			after, "blink-off";
+		}
+		program {
+			name, "blink-off";
+			action, STATE_SET "hide" 0.0;
+			after, "blink-hold-off";
+			target, "separator";
+		}
+		program {
+			name, "blink-hold-off";
+			in, 0.5 0.0;
+			after, "blink-on";
+		}
+		program {
+			name, "noblink";
+			signal, "noblink";
+			source, "EWL";
+			action, ACTION_STOP;
+			target, "blink-hold-on";
+			target, "blink-hold-off";
+			after, "blink-on";
 		}
 	}
 }

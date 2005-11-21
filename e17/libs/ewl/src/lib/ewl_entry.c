@@ -3,12 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-#define EWL_ENTRY_CURSOR_ON_TIME 	0.9
-#define EWL_ENTRY_CURSOR_OFF_TIME 	0.25
-
-static int ewl_entry_cursor_cb_flash_timer(void *data);
-static void ewl_entry_cursor_timer_set(Ewl_Entry_Cursor *c, double time);
-
 /**
  * @param text: The text to set into the entry
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -292,9 +286,8 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	event = ev;
 	e = EWL_ENTRY(w);
 
-	/* reset the cursor blink on key down */
-	ewl_entry_cursor_timer_set(EWL_ENTRY_CURSOR(e->cursor), 
-					EWL_ENTRY_CURSOR_ON_TIME);
+	/* reset the cursor blink */
+	ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink");
 
 	if (!strcmp(event->keyname, "Left"))
 		ewl_entry_cursor_move_left(e);
@@ -551,11 +544,6 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 	ewl_widget_inherit(EWL_WIDGET(c), "cursor");
 	c->parent = parent;
 
-	ewl_callback_append(EWL_WIDGET(c), EWL_CALLBACK_SHOW, 
-				ewl_entry_cursor_cb_show, NULL);
-	ewl_callback_append(EWL_WIDGET(c), EWL_CALLBACK_HIDE,
-				ewl_entry_cursor_cb_hide, NULL);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -580,79 +568,5 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)), 
 							DLEVEL_STABLE);
-}
-
-void
-ewl_entry_cursor_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
-					void *data __UNUSED__)
-{
-	Ewl_Entry_Cursor *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
-
-	c = EWL_ENTRY_CURSOR(w);
-	ewl_entry_cursor_timer_set(c, EWL_ENTRY_CURSOR_ON_TIME);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_entry_cursor_cb_hide(Ewl_Widget *w, void *ev __UNUSED__,
-					void *data __UNUSED__)
-{
-	Ewl_Entry_Cursor *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
-
-	c = EWL_ENTRY_CURSOR(w);
-	ewl_entry_cursor_timer_set(c, 0.0);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static int
-ewl_entry_cursor_cb_flash_timer(void *data)
-{
-	Ewl_Entry_Cursor *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
-
-	c = data;
-
-	if (c && VISIBLE(c))
-	{
-		ewl_widget_hide(EWL_WIDGET(c));
-		ewl_entry_cursor_timer_set(c, EWL_ENTRY_CURSOR_OFF_TIME);
-	}
-	else if (c)
-		ewl_widget_show(EWL_WIDGET(c));
-
-
-	DRETURN_INT(0, DLEVEL_STABLE);
-}
-
-/*
- * This will setup the timer for the cursor blink. If you pass 0.0 it will
- * just remove the timer
- */
-static void
-ewl_entry_cursor_timer_set(Ewl_Entry_Cursor *c, double time)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, "cursor");
-
-	if (c->timer) ecore_timer_del(c->timer);
-	c->timer = NULL;
-
-	if (time > 0)
-		c->timer = ecore_timer_add(time, ewl_entry_cursor_cb_flash_timer, c);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
