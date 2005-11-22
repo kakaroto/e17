@@ -60,6 +60,17 @@ void evfs_dir_list(evfs_client* client, evfs_command* file);
 #define GZIP_BUFFER 16384
 #define GZIP_MAX_ERRORS 5
 
+#define GZIP_MAGIC_1 0x1f
+#define GZIP_MAGIC_2 0x8b
+
+#define GZIP_FLAG_ASCII        0x01 /* bit 0 set: file probably ascii text */
+#define GZIP_FLAG_HEAD_CRC     0x02 /* bit 1 set: header CRC present */
+#define GZIP_FLAG_EXTRA_FIELD  0x04 /* bit 2 set: extra field present */
+#define GZIP_FLAG_ORIG_NAME    0x08 /* bit 3 set: original file name present */
+#define GZIP_FLAG_COMMENT      0x10 /* bit 4 set: file comment present */
+#define GZIP_FLAG_RESERVED     0xE0 /* bits 5..7: reserved */
+
+
 Ecore_Hash* gzip_hash;
 typedef struct gzip_file {
 	evfs_filereference* ref;
@@ -118,6 +129,91 @@ evfs_client_disconnect(evfs_client* client) {
 }
 
 
+/*Jump a specified amount*/
+char gzip_jump_fixed(evfs_client* client, evfs_filereference* ref, int bytes) {
+	char* tmp = malloc(bytes);
+
+	printf("Skipping fixed %d bytes\n", bytes);
+	int num = evfs_uri_read(client, ref->parent,tmp,bytes);
+
+	if (num == bytes) return 0;
+	else return 1;
+}
+
+/*Jump a string*/
+char gzip_jump_string(evfs_client* client, evfs_filereference* ref) {
+	char tmp;
+	int c=0;
+	do {
+		int num = evfs_uri_read(client, ref->parent,&tmp,1);
+		if (num != 1) return 1;
+		c++;
+	} while (tmp != 0);
+
+	printf("Skipped %d byte string\n", c);
+
+	return 0;
+}
+
+
+
+int evfs_gzip_parse_header(evfs_client* client, evfs_filereference* ref, unsigned char header[10]) {
+	unsigned int mode;
+	unsigned int flags;
+
+	printf ("Parsing header..\n");
+
+	if (header[0] != GZIP_MAGIC_1 || header[1] != GZIP_MAGIC_2) {
+		printf("No match on gzip magic..(%d:%d) instead of (%d:%d)\n",header[0],header[1], GZIP_MAGIC_1, GZIP_MAGIC_2);
+		return 0;
+	} else {
+		printf("Match on gzip magic..(%d:%d)\n",header[0],header[1]);
+	}
+
+	mode = header[2];
+	if (mode != 8) { /* Deflate */
+		printf("Not deflate mode\n");
+		return 0;
+	}
+
+	flags = header[3];
+	if (flags & GZIP_FLAG_RESERVED) {
+		printf("Reserved flag set..\n");
+		return 0;
+	}
+
+	if (flags & GZIP_FLAG_EXTRA_FIELD) {
+		char extra[2];
+
+		printf("Has extra field..\n");
+		
+		int bytes = evfs_uri_read(client, ref->parent, extra, 2);
+
+		if (bytes != 2) return 0;
+
+		/*Skip the specified amount (as read above)*/
+		if (gzip_jump_fixed(client, ref, extra[0] | extra[0] << 8))
+			return 1;
+
+	}
+
+	if (flags & GZIP_FLAG_ORIG_NAME)
+		gzip_jump_string(client,ref);	
+
+	if (flags & GZIP_FLAG_COMMENT)
+		gzip_jump_string(client,ref);
+
+	if (flags & GZIP_FLAG_HEAD_CRC)
+		gzip_jump_string(client,ref);
+
+	
+
+
+
+	return 1;
+}
+
+
 int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	evfs_filereference* f_par = file->parent;
 	gzip_file* gfile;
@@ -145,6 +241,8 @@ int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	evfs_uri_read(client, f_par, bytes, 10);
 
 	printf("Read header, continuting..\n");
+
+	evfs_gzip_parse_header(client, file, bytes);
 
 	ecore_hash_set(gzip_hash, file, gfile);
 
