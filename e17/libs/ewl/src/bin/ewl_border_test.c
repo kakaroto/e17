@@ -7,6 +7,22 @@ static Ewl_Widget *button_pleft, *button_pright, *button_ptop, *button_pbottom;
 static Ewl_Widget *border_button = NULL;
 
 static void
+__configure_border_contents(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
+{
+	printf("Border configured\n");
+	ewl_widget_print(w);
+}
+
+static void
+__obscure_border_contents(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
+{
+	printf("Border obscure\n");
+	ewl_widget_print(w);
+}
+
+static void
 __destroy_border_test_window(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
@@ -95,6 +111,10 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_widget_show(border_box);
 
 	avbox = ewl_vbox_new();
+	ewl_callback_append(avbox, EWL_CALLBACK_CONFIGURE,
+			    __configure_border_contents, NULL);
+	ewl_callback_append(avbox, EWL_CALLBACK_OBSCURE,
+			    __obscure_border_contents, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(avbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(border_box), avbox);
 	ewl_widget_show(avbox);
@@ -125,7 +145,6 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_button_label_set(EWL_BUTTON(button_acenter), "Center");
 	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_acenter),
 				  EWL_RADIOBUTTON(button_aleft));
-	ewl_radiobutton_checked_set(button_acenter, 1);
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_acenter);
 	ewl_callback_append(button_acenter, EWL_CALLBACK_VALUE_CHANGED,
 			    __border_change_alignment, border_box);
