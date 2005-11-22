@@ -180,8 +180,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	/*Set the defaults to 0 for layout*/
 	ib->lx = ib->ly = ib->iw = ib->ih = 0;
-
-	
 	
 	ib->ewl_iconbox_pane_inner = ewl_overlay_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
@@ -195,11 +193,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	/*-------------------------------------------*/
 	/* Get the context menu ready */
 	ib->ewl_iconbox_context_menu = ewl_menu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu), "");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_context_menu), " ");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_menu_floater), ib->ewl_iconbox_context_menu);
 	ewl_widget_show(ib->ewl_iconbox_context_menu);
-
-	
 
 	/* Add auto-arrange ability */
 	ib->ewl_iconbox_view_menu = ewl_menu_new();
@@ -236,7 +232,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 			       ib->ewl_iconbox_pane_inner);
 	
 	ib->icon_menu = ewl_menu_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->icon_menu), "");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->icon_menu), " ");
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu_floater), ib->icon_menu);
 	ewl_widget_show(ib->icon_menu);
 
@@ -249,7 +245,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 			       
 		
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->icon_menu_floater);
-
 
 	
 	
@@ -287,7 +282,6 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_widget_show(ib->select);
 	/*ewl_widget_show(ib->select_floater);*/
 
-	
 
 	/*Init the icon list*/
 	ib->ewl_iconbox_icon_list = ecore_list_new();
@@ -295,6 +289,10 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	/* Show widgets */
 	ewl_widget_show(ib->ewl_iconbox_pane_inner);
 	ewl_widget_show(ib->ewl_iconbox_scrollpane);
+	ewl_widget_show(ib->ewl_iconbox_menu_floater);
+	ewl_widget_show(ib->icon_menu_floater);
+	
+
 
 	/* Ewl Entry for the purposes of label editing - if enabled */
 	ib->entry = ewl_entry_new();
@@ -332,7 +330,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
-	ewl_callback_prepend(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
 
 
 	/*printf("Setup the iconbox...\n");*/
@@ -1047,8 +1045,11 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
 
-		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
+		//ewl_widget_show(ib->ewl_iconbox_view_menu);
+		//ewl_widget_show(ib->ewl_iconbox_context_menu);
+		//ewl_menu_popup_move_cb(EWL_MENU(ib->ewl_iconbox_context_menu)->base.popup, NULL, ib->ewl_iconbox_context_menu);
+		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
