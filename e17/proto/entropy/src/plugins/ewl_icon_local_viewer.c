@@ -95,6 +95,7 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	Ewl_Widget* button;
 	char itext[100];
 	time_t stime;
+
 	
 	window = ewl_window_new();
 	ewl_window_title_set(EWL_WINDOW(window), "File Properties");
@@ -133,9 +134,10 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_widget_show(hbox);
 
+
+
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), "Location");
-	ewl_object_minimum_w_set(EWL_OBJECT(text), 90);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 
@@ -160,22 +162,30 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 
 
+
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_widget_show(hbox);
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), "Type: ");
-	ewl_object_minimum_w_set(EWL_OBJECT(text), 90);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 
+
+
 	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), file_stat->file->mime_type);
+	if (strlen(file_stat->file->mime_type)) {
+		ewl_text_text_set(EWL_TEXT(text), file_stat->file->mime_type);
+	} else {
+		ewl_text_text_set(EWL_TEXT(text), "object/unknown");
+	}
+	
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 	/*--------------------------------*/
-	
+
+
 
 	/*----------------------------------*/
 	hbox = ewl_hbox_new();
@@ -185,13 +195,17 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), "Plugin URI");
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
-	ewl_object_minimum_w_set(EWL_OBJECT(text), 90);
 	ewl_widget_show(text);
+
+
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), file_stat->file->uri_base);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
+
+
+
 
 	/*---------------------------------*/
 	hbox = ewl_hbox_new();
@@ -200,7 +214,6 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), "Size: ");
-	ewl_object_minimum_w_set(EWL_OBJECT(text), 90);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 
@@ -218,7 +231,6 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), "Modified Time");
-	ewl_object_minimum_w_set(EWL_OBJECT(text), 90);
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 
@@ -240,7 +252,6 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	ewl_callback_append(EWL_WIDGET(button), EWL_CALLBACK_CLICKED, __destroy_properties_dialog, window);
 
 	
-
 	
 	
 	/*printf("Got a 'stat available' object\n");
