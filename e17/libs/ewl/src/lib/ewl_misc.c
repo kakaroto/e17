@@ -939,7 +939,8 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	DRETURN_INT(ecore_list_nodes(destroy_list), DLEVEL_STABLE);
 }
 
-int ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
+int
+ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
 					void *event __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -950,7 +951,8 @@ int ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
 }
 
 #ifdef DEBUG_MALLOCDEBUG
-char *strdup(const char *str)
+char *
+strdup(const char *str)
 {
 	char *dst = malloc(strlen(str) + 1);
 	if (dst)
@@ -959,4 +961,17 @@ char *strdup(const char *str)
 	return dst;
 }
 #endif
+
+char *
+ewl_debug_get_indent(void)
+{
+	char *indent = NULL;
+	
+	if (ewl_config.debug.indent_lvl < 0)
+		ewl_config.debug.indent_lvl = 0;
+
+	indent = calloc((ewl_config.debug.indent_lvl * 2) + 2, sizeof(char *)); 
+	memset(indent, ' ', (ewl_config.debug.indent_lvl * 2) + 1);
+	return indent;
+}
 

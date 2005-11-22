@@ -16,6 +16,7 @@ struct _ewl_config
 	struct {
 		int             enable;
 		int             level;
+		int 		indent_lvl;
 	} debug;
 	struct {
 		int             font_cache;

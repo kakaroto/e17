@@ -2,13 +2,17 @@
 #define __EWL_DEBUG_H__
 
 #include "ewl-config.h"
+#include "ewl_misc.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define DLEVEL_UNSTABLE 1
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
 
-inline void     ewl_print_warning(void);
-inline void	ewl_segv(void);
+inline void ewl_print_warning(void);
+inline void ewl_segv(void);
 
 #define DEBUG 1
 
@@ -18,8 +22,11 @@ inline void	ewl_segv(void);
 { \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, " --> %s:%i\tEntering %s();\n", \
-			__FILE__, __LINE__, __FUNCTION__); \
+		char *indent = ewl_debug_get_indent(); \
+		ewl_config.debug.indent_lvl ++; \
+		fprintf(stderr, "%s--> %s:%i\tEntering %s();\n", \
+			indent, __FILE__, __LINE__, __FUNCTION__); \
+		FREE(indent); \
 	  } \
 }
 
@@ -27,8 +34,12 @@ inline void	ewl_segv(void);
 { \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tLeaving  %s();\n", \
-			__FILE__, __LINE__, __FUNCTION__); \
+		char *indent; \
+	        ewl_config.debug.indent_lvl --; \
+		indent = ewl_debug_get_indent(); \
+		fprintf(stderr, "%s<--  %s:%i\tLeaving  %s();\n", \
+			indent, __FILE__, __LINE__, __FUNCTION__); \
+		FREE(indent); \
 	  } \
 }
 
@@ -37,8 +48,12 @@ inline void	ewl_segv(void);
 	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturn in %s();\n", \
-			__FILE__, __LINE__, __FUNCTION__); \
+		char *indent; \
+	        ewl_config.debug.indent_lvl --; \
+		indent = ewl_debug_get_indent(); \
+		fprintf(stderr, "%s<--  %s:%i\tReturn in %s();\n", \
+			indent, __FILE__, __LINE__, __FUNCTION__); \
+		FREE(indent); \
 	  } \
 	return; \
 }
@@ -48,8 +63,12 @@ inline void	ewl_segv(void);
 	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
-			__FILE__, __LINE__, (void *) (ptr), __FUNCTION__); \
+		char *indent; \
+	        ewl_config.debug.indent_lvl --; \
+		indent = ewl_debug_get_indent(); \
+		fprintf(stderr, "%s<--  %s:%i\tReturning %p in %s();\n", \
+			indent, __FILE__, __LINE__, (void *) (ptr), __FUNCTION__); \
+		FREE(indent); \
 	  } \
 	return (void *)(ptr); \
 }
@@ -59,8 +78,12 @@ inline void	ewl_segv(void);
 	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning %f in %s();\n", \
-			__FILE__, __LINE__, (float) (num), __FUNCTION__); \
+		char *indent; \
+	        ewl_config.debug.indent_lvl --; \
+		indent = ewl_debug_get_indent(); \
+		fprintf(stderr, "%s<--  %s:%i\tReturning %f in %s();\n", \
+			indent, __FILE__, __LINE__, (float) (num), __FUNCTION__); \
+		FREE(indent); \
 	  } \
 	return num; \
 }
@@ -70,8 +93,12 @@ inline void	ewl_segv(void);
 	DLEAVE_FUNCTION(lvl); \
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
-		fprintf(stderr, "<--  %s:%i\tReturning %i in %s();\n", \
-			__FILE__, __LINE__, (int) (num), __FUNCTION__); \
+		char *indent; \
+	        ewl_config.debug.indent_lvl --; \
+		indent = ewl_debug_get_indent(); \
+		fprintf(stderr, "%s<--  %s:%i\tReturning %i in %s();\n", \
+			indent, __FILE__, __LINE__, (int) (num), __FUNCTION__); \
+		FREE(indent); \
 	  } \
 	return num; \
 }
