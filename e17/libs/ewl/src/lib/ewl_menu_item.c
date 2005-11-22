@@ -80,7 +80,7 @@ ewl_menu_item_text_get(Ewl_Menu_Item *item)
 	DCHECK_TYPE_RET("item", item, "menu_item", NULL);
 
 	if (item->text)
-		DRETURN_PTR(ewl_text_text_get(EWL_TEXT(item->text)), 
+		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(item->text)), 
 				DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -111,7 +111,7 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, char *text)
 		 * Setup the text object and add it to the menu.
 		 */
 		if (!item->text) {
-			item->text = ewl_text_new();
+			item->text = ewl_label_new();
 			ewl_container_child_append(EWL_CONTAINER(item),
 					item->text);
 			ewl_widget_show(item->text);
@@ -121,7 +121,7 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, char *text)
 		 * Set the request text.
 		 */
 		if (item->text) {
-			ewl_text_text_set(EWL_TEXT(item->text), text);
+			ewl_label_text_set(EWL_LABEL(item->text), text);
 			if (!item->icon)
 				ewl_menu_item_image_set(item, NULL);
 		}
