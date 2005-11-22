@@ -448,14 +448,10 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->cursor_position = idx + len;
 	}
 
-	if (text)
-		ewl_text_triggers_shift(t, idx, strlen(text));
-	else
-		ewl_text_triggers_remove(t);
+	if (text) ewl_text_triggers_shift(t, idx, strlen(text));
+	else ewl_text_triggers_remove(t);
 
-	if (REALIZED(t))
-		ewl_text_display(t);
-
+	ewl_widget_configure(EWL_WIDGET(t));
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -516,8 +512,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	if (t->cursor_position > t->length)
 		t->cursor_position = t->length;
 
-	if (REALIZED(t))
-		ewl_text_display(t);
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -2678,7 +2673,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	/* printf("Revealing text %p\n", w); */
 	if (t->textblock) {
-		ewl_print_warning();
+		DWARNING("We have a textblock when we shoudn't");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -2843,7 +2838,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 				ewl_text_cb_mouse_move, NULL);
 
 	idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-      
+	  
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
 		ewl_text_selection_select_to(t->selection, idx);
@@ -2852,13 +2847,13 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		ewl_text_trigger_start_pos_set(t->selection, idx);
 		ewl_text_trigger_base_set(t->selection, idx);
 		ewl_text_trigger_length_set(t->selection, 0);
-	}	       
+	}		   
 	t->in_select = TRUE;
 
 	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
 		
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}       
+}	   
 
 void
 ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
@@ -3971,12 +3966,12 @@ ewl_text_display(Ewl_Text *t)
 
 	/* Fallback, just in case we hit a corner case */
 	if (!h) h = 1;
+	if (!w) w = 1;
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
 
 	/* re-configure the selection to make sure it resizes if needed */
 	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
-	/* ewl_widget_configure(EWL_WIDGET(t)); */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4167,12 +4162,12 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 			ewl_text_trigger_start_pos_set(s, idx);
 			ewl_text_trigger_length_set(s, base - idx);
 		}
-		else    
+		else	
 		{
 			ewl_text_trigger_start_pos_set(s, base);
 			ewl_text_trigger_length_set(s, idx - base);
 		}
-	}       
+	}	   
 	else
 	{
 		ewl_text_trigger_start_pos_set(s, base);

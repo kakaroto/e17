@@ -9,7 +9,7 @@ __destroy_entry_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 {
 	ewl_widget_destroy(w);
 	ewl_callback_append(entry_button, EWL_CALLBACK_CLICKED,
-			    __create_entry_test_window, NULL);
+				__create_entry_test_window, NULL);
 }
 
 static void
@@ -51,7 +51,7 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	Ewl_Widget *entry_win;
 	Ewl_Widget *entry_box;
-	Ewl_Widget *button_hbox;
+	Ewl_Widget *button_hbox, *o;
 	Ewl_Widget *button[2];
 
 	entry_button = w;
@@ -65,7 +65,7 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_callback_del(w, EWL_CALLBACK_CLICKED, 
 					__create_entry_test_window);
 		ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
-				    __destroy_entry_test_window, NULL);
+					__destroy_entry_test_window, NULL);
 	} else
 		ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
 					__close_main_window, NULL);
@@ -109,15 +109,25 @@ __create_entry_test_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
-			    __fetch_entry_text, NULL);
+				__fetch_entry_text, NULL);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
-			    __set_entry_text, NULL);
+				__set_entry_text, NULL);
 	ewl_widget_show(button[1]);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Text insert \"\"");
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), o);
+	ewl_widget_show(o);
+
+	o = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(o), "");
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), o);
+	ewl_widget_show(o);
 }
 
 
