@@ -709,7 +709,8 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
 	/* force a display of the text */
-	ewl_text_display(t);
+	if (t->textblock)
+		ewl_text_display(t);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -755,7 +756,8 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
 	/* force a display of the text */
-	ewl_text_display(t);
+	if (t->textblock)
+		ewl_text_display(t);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -2872,6 +2874,9 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	event = ev;
 	t = EWL_TEXT(w);
 
+	if (!t->in_select)
+		DRETURN(DLEVEL_STABLE);
+
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
 	{
@@ -3971,7 +3976,7 @@ ewl_text_display(Ewl_Text *t)
 
 	/* re-configure the selection to make sure it resizes if needed */
 	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
-	ewl_widget_configure(EWL_WIDGET(t));
+	/* ewl_widget_configure(EWL_WIDGET(t)); */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
