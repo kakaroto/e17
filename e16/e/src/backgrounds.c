@@ -535,9 +535,10 @@ BackgroundCreatePixmap(Window win, unsigned int w, unsigned int h,
    return pmap;
 }
 
-Pixmap
-BackgroundApply(Background * bg, Drawable draw,
-		unsigned int rw, unsigned int rh, int is_win)
+void
+BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
+		  unsigned int rh, int is_win, Pixmap * ppmap,
+		  unsigned long *ppixel)
 {
    Pixmap              pmap;
    GC                  gc;
@@ -604,11 +605,7 @@ BackgroundApply(Background * bg, Drawable draw,
 	/* Solid color only */
 	EAllocColor(&bg->bg_solid);
 
-	if (is_win)
-	  {
-	     ESetWindowBackground(draw, bg->bg_solid.pixel);
-	  }
-	else
+	if (!is_win)
 	  {
 	     gc = ECreateGC(draw, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
@@ -617,7 +614,11 @@ BackgroundApply(Background * bg, Drawable draw,
 	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
 	     EFreeGC(gc);
 	  }
-	return None;
+	if (ppmap)
+	   *ppmap = None;
+	if (ppixel)
+	   *ppixel = bg->bg_solid.pixel;
+	return;
      }
 
    /* Has either bg or fg image */
@@ -650,6 +651,7 @@ BackgroundApply(Background * bg, Drawable draw,
 	imlib_context_set_drawable(pmap);
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 
+#if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
 	  {
 	     ESetWindowBackgroundPixmap(draw, pmap);
@@ -663,6 +665,7 @@ BackgroundApply(Background * bg, Drawable draw,
 	     XFillRectangle(disp, draw, gc, 0, 0, rw, rh);
 	     EFreeGC(gc);
 	  }
+#endif
 	goto done;
      }
 
@@ -735,49 +738,58 @@ BackgroundApply(Background * bg, Drawable draw,
 
    imlib_context_set_dither(rt);
 
-   return pmap;
+   if (ppmap)
+      *ppmap = pmap;
+   if (ppixel)
+      *ppixel = 0;
 }
 
 void
 BackgroundApplyPmap(Background * bg, Drawable draw,
 		    unsigned int w, unsigned int h)
 {
-   BackgroundApply(bg, draw, w, h, 0);
+   BackgroundRealize(bg, draw, w, h, 0, NULL, NULL);
+}
+
+static void
+BackgroundApplyWin(Background * bg, Window win)
+{
+   int                 w, h;
+   Pixmap              pmap;
+   unsigned long       pixel;
+
+   if (!EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL))
+      return;
+
+   BackgroundRealize(bg, win, w, h, 1, &pmap, &pixel);
+   if (pmap != None)
+      ESetWindowBackgroundPixmap(win, pmap);
+   else
+      ESetWindowBackground(win, pixel);
+   EClearWindow(win);
 }
 
 /*
- * Apply a background to window/pixmap.
+ * Apply a background to window.
  * The (scaled) BG pixmap is stored in bg->pmap.
  */
 void
 BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
 {
    Pixmap              pmap;
+   unsigned long       pixel;
 
    if (bg->pmap)
       pmap = bg->pmap;
    else
-      pmap = BackgroundApply(bg, win, w, h, 1);
+      BackgroundRealize(bg, win, w, h, 1, &pmap, &pixel);
 
    bg->pmap = pmap;
    if (pmap != None)
       ESetWindowBackgroundPixmap(win, pmap);
    else
-      ESetWindowBackground(win, bg->bg_solid.pixel);
+      ESetWindowBackground(win, pixel);
    EClearWindow(win);
-}
-
-static void
-BackgroundApply2(Background * bg, Window win)
-{
-   Window              rr;
-   int                 x, y;
-   unsigned int        w, h, bw, depth;
-
-   if (!XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth))
-      return;
-
-   BackgroundApply(bg, win, w, h, 1);
 }
 
 Background         *
@@ -1041,6 +1053,21 @@ BackgroundGetInfoString2(const Background * bg, char *buf, int len)
 	     bg->bg.xperc, bg->bg.yperc, S(bg->top.file),
 	     bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
 	     bg->top.xperc, bg->top.yperc);
+}
+
+void
+BackgroundsInvalidate(void)
+{
+   int                 i, num;
+   Desk               *dsk;
+
+   num = DesksGetNumber();
+   for (i = 0; i < num; i++)
+     {
+	dsk = DeskGet(i);
+	BackgroundPixmapFree(DeskBackgroundGet(dsk));
+	DeskRefresh(dsk);
+     }
 }
 
 /*
@@ -2561,7 +2588,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	     win = None;
 	     sscanf(p, "%lx", &win);
 	     if (win)
-		BackgroundApply2(bg, win);
+		BackgroundApplyWin(bg, win);
 	  }
      }
    else if (!strncmp(cmd, "cfg", 2))

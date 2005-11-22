@@ -163,16 +163,7 @@ TransparencySet(int transparency)
    if (prev_alpha == 0)
      {
 	/* Hack to get tiled backgrounds regenerated at full size */
-	int                 i, num;
-	Desk               *dsk;
-
-	num = DesksGetNumber();
-	for (i = 0; i < num; i++)
-	  {
-	     dsk = DeskGet(i);
-	     BackgroundPixmapFree(DeskBackgroundGet(dsk));
-	     DeskRefresh(dsk);
-	  }
+	BackgroundsInvalidate();
      }
    ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
 }

@@ -30,9 +30,10 @@ char               *BackgroundGetUniqueString(Background * bg);
 void                BackgroundPixmapFree(Background * bg);
 void                BackgroundImagesFree(Background * bg, int free_pmap);
 void                BackgroundDestroyByName(const char *name);
-Pixmap              BackgroundApply(Background * bg, Drawable draw,
-				    unsigned int rw, unsigned int rh,
-				    int is_win);
+void                BackgroundRealize(Background * bg, Drawable draw,
+				      unsigned int rw, unsigned int rh,
+				      int is_win, Pixmap * ppmap,
+				      unsigned long *ppixel);
 void                BackgroundApplyPmap(Background * bg, Drawable draw,
 					unsigned int rw, unsigned int rh);
 void                BackgroundSet(Background * bg, Window win, unsigned int rw,
@@ -48,6 +49,7 @@ Background         *BrackgroundCreateFromImage(const char *bgid,
 					       const char *file, char *thumb,
 					       int thlen);
 
+void                BackgroundsInvalidate(void);
 int                 BackgroundsConfigLoad(FILE * fs);
 
 #endif /* _BACKGROUNDS_H_ */
