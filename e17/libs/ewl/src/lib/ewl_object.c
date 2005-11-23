@@ -214,7 +214,7 @@ ewl_object_preferred_inner_size_set(Ewl_Object *o, int w, int h)
 void
 ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 {
-	int old_size, new_size;
+	int old_size;
 	unsigned int resize, fill;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -226,12 +226,6 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 	old_size = PREFERRED_W(o);
 
 	PREFERRED_W(o) = w;
-	if (w < MINIMUM_W(o))
-		new_size = MINIMUM_W(o);
-	else if (w > MAXIMUM_W(o))
-		new_size = MAXIMUM_W(o);
-	else
-		new_size = w;
 
 	if (CURRENT_W(o) < PREFERRED_W(o))
 		fill = EWL_FLAG_FILL_HSHRINK;
@@ -246,7 +240,8 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 	 * Now update the widgets parent of the change in size if necessary.
 	 */
 	if (!(resize & fill))
-		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
+		ewl_container_child_resize(EWL_WIDGET(o),
+				PREFERRED_W(o) - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -264,7 +259,7 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 void
 ewl_object_preferred_inner_h_set(Ewl_Object *o, int h)
 {
-	int old_size, new_size;
+	int old_size;
 	unsigned int resize, fill;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -276,12 +271,6 @@ ewl_object_preferred_inner_h_set(Ewl_Object *o, int h)
 	old_size = PREFERRED_H(o);
 
 	PREFERRED_H(o) = h;
-	if (h < MINIMUM_H(o))
-		new_size = MINIMUM_H(o);
-	else if (h > MAXIMUM_H(o))
-		new_size = MAXIMUM_H(o);
-	else
-		new_size = h;
 
 	if (CURRENT_H(o) < PREFERRED_H(o))
 		fill = EWL_FLAG_FILL_VSHRINK;
@@ -296,7 +285,8 @@ ewl_object_preferred_inner_h_set(Ewl_Object *o, int h)
 	 * Now update the widgets parent of the change in size if necessary.
 	 */
 	if (!(resize & fill))
-		ewl_container_child_resize(EWL_WIDGET(o), new_size - old_size,
+		ewl_container_child_resize(EWL_WIDGET(o),
+				PREFERRED_H(o) - old_size,
 				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
