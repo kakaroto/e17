@@ -1178,8 +1178,9 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 
 		if (ib->background) {
 			int w,h;
-			w = CURRENT_W(ib->ewl_iconbox_pane_inner);
-			h= CURRENT_H(ib->ewl_iconbox_pane_inner);
+			w = CURRENT_W(ib);
+			h= CURRENT_H(ib);
+			ewl_object_position_request(EWL_OBJECT(ib->background),0,0);
 			ewl_object_custom_size_set(EWL_OBJECT(ib->background),w,h);
 
 		}
