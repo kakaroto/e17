@@ -562,7 +562,15 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "File");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(menu);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Exit");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, __destroy_main_window, core);
+	ewl_widget_show(item);
+	
 
 	menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "Tools");
@@ -586,6 +594,12 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "Help");
 	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
 	ewl_widget_show(menu);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Add Location...");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
+	ewl_widget_show(item);
 	/*-------------------------------*/
 
 
