@@ -451,7 +451,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	if (text) ewl_text_triggers_shift(t, idx, strlen(text));
 	else ewl_text_triggers_remove(t);
 
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -512,7 +512,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	if (t->cursor_position > t->length)
 		t->cursor_position = t->length;
 
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -856,8 +856,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_FONT, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -934,8 +933,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SIZE, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1024,8 +1022,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1110,8 +1107,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_ALIGN, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1183,8 +1179,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STYLES, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	 ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1256,8 +1251,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_WRAP, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1346,8 +1340,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_BG_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1449,8 +1442,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1552,8 +1544,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1655,8 +1646,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1758,8 +1748,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1861,8 +1850,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1964,8 +1952,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
-
-	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2635,6 +2622,9 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
+
+    /* don't do anything if we're obscured */
+    if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
 
 	t = EWL_TEXT(w);
 
