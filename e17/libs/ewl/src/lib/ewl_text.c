@@ -451,7 +451,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	if (text) ewl_text_triggers_shift(t, idx, strlen(text));
 	else ewl_text_triggers_remove(t);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -512,7 +512,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	if (t->cursor_position > t->length)
 		t->cursor_position = t->length;
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -857,7 +857,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -935,7 +935,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1025,7 +1025,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1111,7 +1111,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1184,7 +1184,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1257,7 +1257,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1347,7 +1347,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1450,7 +1450,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1553,7 +1553,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1656,7 +1656,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1759,7 +1759,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1862,7 +1862,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1965,7 +1965,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 
-	ewl_widget_configure(EWL_WIDGET(t));
+	if (!OBSCURED(EWL_WIDGET(t))) ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

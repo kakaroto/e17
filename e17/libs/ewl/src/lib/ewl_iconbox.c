@@ -21,7 +21,7 @@ void ewl_iconbox_icon_floater_resize_cb(Ewl_Widget *w, void *ev_data, void *user
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
 	int height = ewl_iconbox_icon_label_height_calculate(EWL_ICONBOX_ICON(icon));
 
-	if (height >0)  ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height);
+	if (height >0) {  ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height); }
 	
 	//printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), hh, height);
 }
