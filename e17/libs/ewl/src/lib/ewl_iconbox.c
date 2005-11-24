@@ -665,16 +665,18 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 
 void ewl_iconbox_icon_deselect(Ewl_IconBox_Icon *ib)
 {
-	ib->selected = 0;
+	if (ib->selected) {
+		ib->selected = 0;
 
 
-	/*If we have a compressed label, set it now*/
-	if (ib->label_compressed) {
-		ewl_iconbox_icon_label_set(ib, ib->label_compressed);
+		/*If we have a compressed label, set it now*/
+		if (ib->label_compressed) {
+			ewl_iconbox_icon_label_set(ib, ib->label_compressed);
+		}
+		ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
+		ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255,ewl_text_length_get(EWL_TEXT(ib->w_label)) );
+		ewl_widget_color_set(EWL_WIDGET(ib), 255,255,255,255);
 	}
-	ewl_text_cursor_position_set(EWL_TEXT(ib->w_label), 0);
-	ewl_text_color_apply(EWL_TEXT(ib->w_label), 0, 0, 0, 255,ewl_text_length_get(EWL_TEXT(ib->w_label)) );
-	ewl_widget_color_set(EWL_WIDGET(ib), 255,255,255,255);
 
 }
 
