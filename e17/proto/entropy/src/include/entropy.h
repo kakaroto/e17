@@ -72,10 +72,12 @@ Ecore_List* entropy_core_selected_files_get();
 void entropy_core_selected_files_clear();
 
 /*Config functions*/
+void entropy_core_config_load();
 char* entropy_core_home_dir_get();
 char* entropy_thumbnail_dir_get();
 int entropy_config_int_get(char* module, char* key);
 void entropy_config_int_set(char* module, char* key, int value);
+
 
 /*Global layout object functions*/
 entropy_gui_component_instance* entropy_core_global_layout_get(entropy_core* core);
@@ -87,6 +89,7 @@ void entropy_core_string_lowcase(char *lc);
 void* entropy_malloc(size_t);
 void entropy_free(void* ref);
 char* entropy_core_descent_for_mime_get(entropy_core*, char*);
+entropy_mime_action* entropy_core_mime_hint_get(char* mime_type);
 
 /*Logging stuff*/
 

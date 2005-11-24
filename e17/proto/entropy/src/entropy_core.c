@@ -147,6 +147,10 @@ entropy_core* entropy_core_init() {
         ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,core);
 
 
+	/*Initialize the mime hint hash*/
+	core->mime_action_hint = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+
 
 	//printf ("Initialising the file cache..\n");
 	core->file_interest_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -159,6 +163,10 @@ entropy_core* entropy_core_init() {
 
 	//Initialise the config system
 	core->config = entropy_config_init(core);
+
+
+	/*Load any config related core stuff*/
+	entropy_core_config_load();
 
 	/*Initialise epsilon thumbnailer*/
 	epsilon_init();
@@ -250,6 +258,8 @@ entropy_core* entropy_core_init() {
 
 
 	//printf("--------------- Running main\n");
+
+	printf("Going to main..\n");
 	(*entropy_plugin_layout_main)();
 
 	
@@ -260,6 +270,88 @@ entropy_core* entropy_core_init() {
 
 
 	return core;
+}
+
+void entropy_core_config_load() {
+	int count, new_count;
+	Ecore_List* mime_type_actions;
+	char* key;
+	int i=0;
+	char type[50];
+	char* pos;
+	entropy_mime_action* action;
+
+	printf("Loading core config...\n");
+
+	/*Set some defaults*/
+	mime_type_actions = ecore_list_new();
+	ecore_list_append(mime_type_actions, "image/jpeg:entice");
+        ecore_list_append(mime_type_actions, "image/png:entice");
+        ecore_list_append(mime_type_actions, "image/gif:entice");
+        ecore_list_append(mime_type_actions, "text/html:/usr/bin/firefox");
+        ecore_list_append(mime_type_actions, "text/csrc:gvim");
+        ecore_list_append(mime_type_actions, "audio/x-mp3:xmms");
+        ecore_list_append(mime_type_actions, "video/x-ms-wmv:mplayer");
+        ecore_list_append(mime_type_actions, "video/mpeg:mplayer");
+        ecore_list_append(mime_type_actions, "application/msword:abiword");
+        ecore_list_append(mime_type_actions, "application/vnd.ms-excel:gnumeric");
+        ecore_list_append(mime_type_actions, "video/x-msvideo:mplayer");
+
+	new_count = ecore_list_nodes(mime_type_actions);
+
+	if (  (!(count = entropy_config_int_get("core","mime_type_count"))) || count < new_count || 1  ) {	
+		
+	
+		entropy_config_int_set("core", "mime_type_count", new_count);
+		printf("Setting up initial mime types, writing %d (old was %d)..\n", new_count,count);
+
+		while ( (key = ecore_list_remove_first(mime_type_actions))) {
+			snprintf(type,50,"mimetype_action.%d", i);
+		
+			entropy_config_str_set("core", type, key);	
+			printf("Wrote '%s' \n", key);
+
+			i++;
+		}
+
+		ecore_list_destroy(mime_type_actions);
+	}
+
+	
+	count = entropy_config_int_get("core","mime_type_count");
+	printf("Have to load %d mime entries..\n", count);
+
+	new_count=0;
+	while (new_count < count) {
+		snprintf(type,50,"mimetype_action.%d", new_count);
+		key = entropy_config_str_get("core", type);
+		pos = strrchr(key, ':');
+
+		
+
+		if (pos >= 0) {
+			*pos = '\0';
+			printf("Loading '%s', is '%s' -> '%s'\n", type, key, pos+1);
+
+			action = entropy_malloc(sizeof(entropy_mime_action));
+			action->executable = strdup(pos+1);
+				
+			ecore_hash_set(core_core->mime_action_hint, strdup(key), action);
+			
+		}
+		free(key);
+		
+		new_count++;
+	}
+
+	
+	
+
+	
+}
+
+entropy_mime_action* entropy_core_mime_hint_get(char* mime_type) {
+	return ecore_hash_get(core_core->mime_action_hint, mime_type);
 }
 
 
