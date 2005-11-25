@@ -51,8 +51,11 @@ struct Ewl_Text
 	unsigned int	 	 total_size;	  /**< The total size we've alloc'd for text */
 	unsigned int	 	 cursor_position; /**< The cursor position */
 
-	Ewl_Text_Context	*current_context; /**< The current formatting context */
-	Ewl_Text_Tree		*formatting;	  /**< The formatting tree */
+	struct
+	{
+		Ewl_Text_Tree   *tree;		  /**< The formatting tree */
+		Ewl_Text_Tree 	*current;	  /**< The current formatting node */
+	} formatting;
 
 	unsigned int 		 delete_count;	  /**< Number of deletes */
 
@@ -123,6 +126,15 @@ void		 ewl_text_styles_set(Ewl_Text *t, unsigned int styles);
 void		 ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, 
 							unsigned int length);
 unsigned int	 ewl_text_styles_get(Ewl_Text *t, unsigned int idx);
+
+void		 ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style sytle,
+							unsigned int length);
+void		 ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style,
+							unsigned int length);
+void		 ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style,
+							unsigned int length);
+unsigned int	 ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, 
+							unsigned int idx);
 
 void		 ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap);
 void		 ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, 
@@ -264,10 +276,10 @@ void ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data);
 struct Ewl_Text_Context
 {
 	char *font;
-	unsigned int size;
 	unsigned int styles;
 	unsigned int align;
 	unsigned int wrap;
+	char size;
 	Ewl_Color_Set color;
 
 	struct
@@ -309,15 +321,27 @@ struct Ewl_Text_Tree
 
 Ewl_Text_Tree *ewl_text_tree_new(void);
 void ewl_text_tree_free(Ewl_Text_Tree *tree);
-Ewl_Text_Context *ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx);
-void ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx, 
-						unsigned int idx, unsigned int len);
-void ewl_text_tree_context_apply(Ewl_Text_Tree *tree, Ewl_Text_Context *tx, 
-						unsigned int context_mask, unsigned int idx, 
-						unsigned int len);
-void ewl_text_tree_text_delete(Ewl_Text_Tree *tree, unsigned int idx, unsigned int len);
 void ewl_text_tree_condense(Ewl_Text_Tree *tree);
-void ewl_text_tree_dump(Ewl_Text_Tree *tree, char *indent);
+void ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent);
+
+Ewl_Text_Tree *ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx, 
+					unsigned int inclusive);
+void ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current);
+void ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len);
+void ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len);
+
+Ewl_Text_Context *ewl_text_tree_context_get(Ewl_Text_Tree *tree, 
+							unsigned int idx);
+void ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
+	                                                Ewl_Text_Context *tx);
+void ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
+	                                Ewl_Text_Context *tx, unsigned int idx,
+			                                unsigned int len);
+void ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
+                                        unsigned int idx, unsigned int len,
+							unsigned int invert);
+void ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style,
+                                        unsigned int idx, unsigned int len);
 
 /*
  * Ewl_Text_Trigger_Area stuff

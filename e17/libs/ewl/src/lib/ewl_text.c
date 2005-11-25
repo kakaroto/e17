@@ -28,7 +28,7 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 static Ecore_Hash *context_hash = NULL;
 
 static void ewl_text_context_cb_free(void *data);
-static void ewl_text_context_print(Ewl_Text_Context *tx, char *indent);
+static void ewl_text_context_print(Ewl_Text_Context *tx, const char *indent);
 static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
@@ -37,12 +37,19 @@ static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
+
 static void ewl_text_tree_walk(Ewl_Text *t);
-static void ewl_text_tree_node_walk(Ewl_Text_Tree *tree, Ewl_Text *t, 
-						unsigned int text_pos);
+static void ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree,
+						unsigned int pos);
+static int ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, 
+					unsigned int idx, unsigned int inclusive);
+static Ewl_Text_Tree *ewl_text_tree_node_split(Ewl_Text_Tree *tree, 
+					unsigned int count, unsigned int pos, 
+					unsigned int len, unsigned int context_mask, 
+							Ewl_Text_Context *tx);
+static void ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree);
+
 static void ewl_text_tree_shrink(Ewl_Text_Tree *tree);
-static void ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, 
-						Ewl_Text_Context *tx_change);
 static char *ewl_text_format_get(Ewl_Text_Context *ctx);
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
 							unsigned int idx);
@@ -50,7 +57,7 @@ static unsigned int ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cu
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
-						unsigned int len);
+					unsigned int len, unsigned int del);
 static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
@@ -104,17 +111,14 @@ ewl_text_init(Ewl_Text *t)
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_NONE);
 
 	/* create the formatting tree before we do any formatting */
-	t->formatting = ewl_text_tree_new();
-	if (!t->formatting) 
+	t->formatting.tree = ewl_text_tree_new();
+	if (!t->formatting.tree) 
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	/* create the default context and stick it into the tree */
-	t->current_context = ewl_text_context_default_create(t);
-
-	t->formatting->tx = t->current_context;
-	ewl_text_context_acquire(t->formatting->tx);
+	t->formatting.tree->tx = ewl_text_context_default_create(t);
+	ewl_text_context_acquire(t->formatting.tree->tx);
 
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE, 
 					ewl_text_cb_configure, NULL);
@@ -133,15 +137,6 @@ ewl_text_init(Ewl_Text *t)
 					ewl_text_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(t), 
 					ewl_text_cb_child_del);
-
-	/* create the selection */
-	t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION));
-	ewl_text_trigger_start_pos_set(t->selection, 0);
-	ewl_text_trigger_length_set(t->selection, 0);
-	t->selection->text_parent = t;
-	ewl_callback_append(EWL_WIDGET(t->selection), EWL_CALLBACK_CONFIGURE,
-					ewl_text_selection_cb_configure, NULL);
-	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
 
 	/* text consumes tabs by default */
 	ewl_widget_ignore_focus_change_set(EWL_WIDGET(t), TRUE);
@@ -188,15 +183,13 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 		if (x) *x = 0;
 		if (y) *y = 0;
 		if (w) *w = 1;
-		if (h)
-		{
-			if (t->current_context)
-				*h = t->current_context->size;
-			else
-				*h = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
-		}
+		if (h) *h = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
+
 		DRETURN(DLEVEL_STABLE);
 	}
+
+	/* force a display of the text */
+	ewl_text_display(t);
 
 	if (idx >= t->length) idx = t->length - 1;
 
@@ -233,6 +226,9 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	{
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
+
+	/* force a display of the text */
+	ewl_text_display(t);
 
 	tx = (Evas_Coord)(x - CURRENT_X(t));
 	ty = (Evas_Coord)(y - CURRENT_Y(t));
@@ -325,9 +321,9 @@ ewl_text_clear(Ewl_Text *t)
 	}
 
 	/* cleanup the selection */
-	ewl_text_trigger_base_set(t->selection, 0);
-	ewl_text_trigger_start_pos_set(t->selection, 0);
-	ewl_text_trigger_length_set(t->selection, 0);
+	if (t->selection)
+		ewl_widget_destroy(EWL_WIDGET(t->selection));
+	t->selection = NULL;
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -392,11 +388,18 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 void
 ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 {
-	int len;
+	int len = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
+
+	if (text) len = strlen(text);
+
+	/* setup the cursor position to begin with. If this is the same
+	 * position as before nothing will change (we'll keep our current
+	 * pointer */
+	ewl_text_cursor_position_set(t, idx);
 
 	if (!text)
 	{
@@ -405,23 +408,15 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	else if (!t->text)
 	{
 		t->text = strdup(text);
-		t->length = strlen(text);
+		t->length = len;
 		t->total_size = t->length + 1;
 
-		if (!t->current_context) 
-			t->current_context = ewl_text_context_default_create(t);
-
-		ewl_text_tree_text_context_insert(t->formatting, t->current_context, 
-									idx, t->length);
-		t->cursor_position = t->length;
+		ewl_text_cursor_position_set(t, 0);
+		ewl_text_tree_insert(t, t->cursor_position, t->length);
+		ewl_text_cursor_position_set(t, t->length);
 	}
 	else
 	{
-		if (!t->current_context) {
-			t->current_context = ewl_text_context_default_create(t);
-		}
-
-		len = strlen(text);
 		if ((t->length + len + 1) >= t->total_size)
 		{
 			int extend;
@@ -444,11 +439,11 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		t->length += len;
 		t->text[t->length] = '\0';
 
-		ewl_text_tree_text_context_insert(t->formatting, t->current_context, idx, len);
-		t->cursor_position = idx + len;
+		ewl_text_tree_insert(t, idx, len);
+		ewl_text_cursor_position_set(t, idx + len);
 	}
 
-	if (text) ewl_text_triggers_shift(t, idx, strlen(text));
+	if (text) ewl_text_triggers_shift(t, idx, len, FALSE);
 	else ewl_text_triggers_remove(t);
 
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -472,15 +467,8 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	if ((length == 0) || (t->cursor_position >= t->length))
-	{
+	if ((!t->text) || (length == 0) || (t->cursor_position >= t->length))
 		DRETURN(DLEVEL_STABLE);
-	}
-
-	if (!t->text)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
 
 	if ((t->length - t->cursor_position) < length)
 		length = t->length - t->cursor_position;
@@ -493,24 +481,27 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 				t->length - t->cursor_position);
 
 		t->text[t->length] = '\0';
+
+		ewl_text_triggers_shift(t, t->cursor_position, length, TRUE);
 	}
 	else
 	{
 		IF_FREE(t->text);
+		ewl_text_triggers_remove(t);
 	}
 
 	/* cleanup the nodes in the tree */
-	ewl_text_tree_text_delete(t->formatting, t->cursor_position, length);
+	ewl_text_tree_delete(t, t->cursor_position, length);
 	t->delete_count ++;
 
 	if (t->delete_count == EWL_TEXT_TREE_CONDENSE_COUNT)
 	{
-		ewl_text_tree_condense(t->formatting);
+		ewl_text_tree_condense(t->formatting.tree);
 		t->delete_count = 0;
 	}
 
 	if (t->cursor_position > t->length)
-		t->cursor_position = t->length;
+		ewl_text_cursor_position_set(t, t->length);
 
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -582,16 +573,11 @@ ewl_text_selection_text_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, "text", NULL);
 
-	if (t->selection->len == 0)
-	{
+	if ((!t->selection) || t->selection->len == 0)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	ret = malloc(sizeof(char) * (t->selection->len + 1));
-	if (!ret)
-	{
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
+	if (!ret) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	memcpy(ret, t->text + t->selection->pos, t->selection->len);
 	ret[t->selection->len] = '\0';
@@ -611,7 +597,7 @@ ewl_text_selection_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, "text", NULL);
 
-	if (ewl_text_trigger_length_get(t->selection) > 0)
+	if (t->selection && ewl_text_trigger_length_get(t->selection) > 0)
 	{
 		DRETURN_PTR(t->selection, DLEVEL_STABLE);
 	}
@@ -646,28 +632,21 @@ ewl_text_has_selection(Ewl_Text *t)
 void
 ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
 {
-	Ewl_Text_Context *tx;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
+
+	/* it's the same position, do nothing */
+	if (pos == t->cursor_position)
+		DRETURN(DLEVEL_STABLE);
 
 	/* make sure we aren't more then the next char past the end of the
 	 * text */
 	if (pos > t->length) pos = t->length;
 	t->cursor_position = pos;
 
-	/* switch the current context to the context at the given position */
-	tx = t->current_context;
-
-	t->current_context = ewl_text_tree_context_get(t->formatting, pos);
-	if (t->current_context)
-	{
-		ewl_text_context_release(tx);
-		ewl_text_context_acquire(t->current_context);
-	}
-	else
-		t->current_context = tx;
+	/* reset the current pointer */
+	ewl_text_tree_current_node_set(t, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -702,10 +681,6 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
-
-	/* force a display of the text */
-	if (t->textblock)
-		ewl_text_display(t);
 
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
@@ -750,10 +725,6 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, "text", t->cursor_position);
 
-	/* force a display of the text */
-	if (t->textblock)
-		ewl_text_display(t);
-
 	cur_idx = ewl_text_cursor_position_get(t);
 	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
@@ -780,27 +751,6 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
 
-static void
-ewl_text_op_set(Ewl_Text *t, unsigned int context_mask, Ewl_Text_Context *tx_change)
-{
-	Ewl_Text_Context *ctx;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, "text");
-
-	/* do we have a current context? */
-	if (t->current_context)
-		ctx = t->current_context;
-	else 
-		ctx = ewl_text_context_default_create(t);
-
-	t->current_context = ewl_text_context_find(ctx, context_mask, tx_change);
-	ewl_text_context_release(ctx);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 /**
  * @param t: The Ewl_Widget to set the font into
  * @param font: The font to set
@@ -822,7 +772,7 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
 	if (!font) change->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
 	else change->font = strdup(font);
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -852,9 +802,13 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 	}
 
 	tx = ewl_text_context_new();
-	tx->font = strdup(font);
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_FONT, 
-							t->cursor_position, length);
+
+	/* null font will go back to the theme default */
+	if (!font) tx->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	else tx->font = strdup(font);
+
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_FONT, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -877,7 +831,7 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx && tx->font)
 		font = strdup(tx->font);
 
@@ -900,7 +854,7 @@ ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
 	change = ewl_text_context_new();
 	change->size = size;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SIZE, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_SIZE, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -930,8 +884,8 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 
 	tx = ewl_text_context_new();
 	tx->size = size;
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SIZE, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_SIZE, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -951,7 +905,7 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, "text", 0);
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
 	DRETURN_INT(((tx) ? tx->size : 0), DLEVEL_STABLE);
 }
@@ -979,7 +933,7 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->color.b = b;
 	change->color.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1019,8 +973,8 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->color.b = b;
 	tx->color.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_COLOR, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_COLOR, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -1046,7 +1000,7 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->color.r;
@@ -1074,7 +1028,7 @@ ewl_text_align_set(Ewl_Text *t, unsigned int align)
 	change = ewl_text_context_new();
 	change->align = align;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_ALIGN, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_ALIGN, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1104,8 +1058,8 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 
 	tx = ewl_text_context_new();
 	tx->align = align;
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_ALIGN, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_ALIGN, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -1125,7 +1079,7 @@ ewl_text_align_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, "text", 0);
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
 	DRETURN_INT(tx->align, DLEVEL_STABLE);
 }
@@ -1146,7 +1100,7 @@ ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
 	change = ewl_text_context_new();
 	change->styles = styles;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STYLES, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_STYLES, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1176,12 +1130,93 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 
 	tx = ewl_text_context_new();
 	tx->styles = styles;
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STYLES, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_STYLES, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	 ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+  * @param t: The text to add the style too
+  * @param style: The style to add to the text
+  * @param length: The lenght of text to add the style too
+  *
+  * This will add the given style to the text from the cursor up to length
+  * characters
+  */
+ void
+ ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+ {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+ 
+	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, FALSE);
+ 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+ }
+ 
+/**
+ * @param t: The text to delete the style from
+ * @param style: The style to delete from the text 
+ * @param length: The lenght of text to delete the style from 
+ *
+ * This will delete the given style from the text starting at the cursor up 
+ * to length characters
+ */
+void
+ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+ 
+	ewl_text_tree_context_style_remove(t, style, t->cursor_position, length);
+ 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+ }
+ 
+/**
+ * @param t: The text to invert the style on
+ * @param style: The style to invert in the text 
+ * @param length: The lenght of text to invert the style on 
+ *
+ * This will invert the given style in the text starting at the cursor up 
+ * to length characters
+ */
+void
+ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+ 
+	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, TRUE);
+		  
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+  
+/**
+ * @param t: The text to check for the style
+ * @param style: The style to check for
+ * @param idx: The index to check for the style
+ */
+unsigned int
+ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
+{
+	Ewl_Text_Tree *child;
+ 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, FALSE);
+	DCHECK_TYPE_RET("t", t, "text", FALSE);
+ 
+	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	if ((!child) || (!child->tx))
+		 DRETURN_INT((0 == style), DLEVEL_STABLE);
+ 
+	DRETURN_INT((child->tx->styles & style), DLEVEL_STABLE);
 }
 
 /**
@@ -1197,7 +1232,7 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, "text", 0);
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
 	DRETURN_INT((tx ? tx->styles : 0), DLEVEL_STABLE);
 }
@@ -1218,7 +1253,7 @@ ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
 	change = ewl_text_context_new();
 	change->wrap = wrap;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1248,8 +1283,8 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 
 	tx = ewl_text_context_new();
 	tx->wrap = wrap;
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_WRAP, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_WRAP, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -1269,7 +1304,7 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, "text", 0);
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 
 	DRETURN_INT(tx->wrap, DLEVEL_STABLE);
 }
@@ -1297,7 +1332,7 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.bg.b = b;
 	change->style_colors.bg.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1337,8 +1372,8 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.bg.b = b;
 	tx->style_colors.bg.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_BG_COLOR, 
-							t->cursor_position, length);
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, tx,
+						t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -1364,7 +1399,7 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.bg.r;
@@ -1399,7 +1434,7 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.glow.b = b;
 	change->style_colors.glow.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1439,7 +1474,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.glow.b = b;
 	tx->style_colors.glow.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1466,7 +1501,7 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.glow.r;
@@ -1501,7 +1536,7 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.outline.b = b;
 	change->style_colors.outline.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1541,7 +1576,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.outline.b = b;
 	tx->style_colors.outline.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1568,7 +1603,7 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.outline.r;
@@ -1603,7 +1638,7 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.shadow.b = b;
 	change->style_colors.shadow.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1643,7 +1678,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.shadow.b = b;
 	tx->style_colors.shadow.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1670,7 +1705,7 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.shadow.r;
@@ -1705,7 +1740,7 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.strikethrough.b = b;
 	change->style_colors.strikethrough.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1745,7 +1780,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.strikethrough.b = b;
 	tx->style_colors.strikethrough.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1772,7 +1807,7 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.strikethrough.r;
@@ -1807,7 +1842,7 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.underline.b = b;
 	change->style_colors.underline.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1847,7 +1882,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.underline.b = b;
 	tx->style_colors.underline.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1874,7 +1909,7 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.outline.r;
@@ -1909,7 +1944,7 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 	change->style_colors.double_underline.b = b;
 	change->style_colors.double_underline.a = a;
 
-	ewl_text_op_set(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, change);
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, change);
 	ewl_text_context_release(change);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1949,7 +1984,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 	tx->style_colors.double_underline.b = b;
 	tx->style_colors.double_underline.a = a;
 
-	ewl_text_tree_context_apply(t->formatting, tx, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, 
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, tx,
 							t->cursor_position, length);
 	ewl_text_context_release(tx);
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1976,7 +2011,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	tx = ewl_text_tree_context_get(t->formatting, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.double_underline.r;
@@ -2000,7 +2035,8 @@ ewl_text_triggers_remove(Ewl_Text *t)
 	if (!t->triggers) 
 		DRETURN(DLEVEL_STABLE);
 
-	while ((trig = ecore_list_remove_first(t->triggers))) {
+	while ((trig = ecore_list_remove_first(t->triggers))) 
+	{
 		trig->text_parent = NULL;
 		ewl_widget_destroy(EWL_WIDGET(trig));
 	}
@@ -2012,7 +2048,8 @@ ewl_text_triggers_remove(Ewl_Text *t)
 /* if we move the text (insertion, deleteion, etc) we need to shift the
  * position of the current cursors so they appear in the correct positions */
 static void
-ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len)
+ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
+							unsigned int del)
 {
 	Ewl_Text_Trigger *cur;
 
@@ -2026,22 +2063,75 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len)
 	ecore_list_goto_first(t->triggers);
 	while ((cur = ecore_list_next(t->triggers)))
 	{
-		/* its before us */
-		if ((pos + len) < cur->pos)
-		{
-			cur->pos += len;
+		/* check if the change is after the trigger */
+		if (pos >= (cur->pos + cur->len))
 			continue;
-		}
-		
-		/* inserted into trigger */
-		if ((cur->pos <= pos) && ((cur->pos + cur->len) > pos))
-		{
-			cur->len += len;
-			continue;
-		}
-	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+		/* change is completely before the trigger */
+		if ((pos + len) < cur->pos)
+ 		{
+			if (del) cur->pos -= len;
+			else cur->pos += len;
+			continue;
+		}
+
+		if (del)
+		{
+			/* delete the entire trigger? */
+			if ((pos <= cur->pos) && 
+					((pos + len) >= (cur->pos + cur->len)))
+			{
+				int index;
+				 
+				index = ecore_list_index(t->triggers);
+				if (index == 0)
+				{
+					DWARNING("is this possible?\n");
+				}
+				else
+				{
+					index --;
+					/* remove the node before the
+					 * current one as _next will put us
+					 * on the next node */
+					ecore_list_goto_index(t->triggers, index);
+					ecore_list_remove(t->triggers);
+					ecore_list_goto_index(t->triggers, index);
+				}
+				continue;
+			}
+
+			/* delete part of the start of the trigger */
+			if (pos <= cur->pos)
+			{
+				cur->len -= ((pos + len) - cur->pos);
+				continue;
+			}
+
+			/* delete from the center of the trigger */
+			if ((pos >= cur->pos) && 
+					((pos + len) <= (cur->pos + cur->len)))
+			{
+				cur->len -= len;
+				continue;
+			}
+
+			/* must be deleted from the end of the trigger then */
+			cur->len = pos - cur->pos;
+		}
+		else
+		{
+			/* we are inserting, just see if we are before */
+			if (pos < cur->pos)
+			{
+				cur->pos += len;
+				continue;
+			}
+			cur->len += len;
+		}
+  	}
+ 
+ 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -2082,14 +2172,10 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	else if (type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
 		type_str = "selection";
 	else
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	if (!ewl_widget_init(EWL_WIDGET(trigger)))
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	ewl_widget_appearance_set(EWL_WIDGET(trigger), type_str);
 	ewl_widget_inherit(EWL_WIDGET(trigger), "trigger");
@@ -2115,16 +2201,19 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data)
 	t = EWL_TEXT_TRIGGER(w);
 
 	if (t->areas)
+	{
+		Ewl_Text_Trigger_Area *area;
+
+		while ((area = ecore_list_remove_first(t->areas)))
+			ewl_widget_destroy(EWL_WIDGET(area));
+
 		ecore_list_destroy(t->areas);
-
-	if (t->text_parent) {
-
-		if (t->text_parent->triggers)
-		{
-			if (ecore_list_goto(t->text_parent->triggers, t))
-				ecore_list_remove(t->text_parent->triggers);
-		}
 	}
+
+	/* remove ourself from the parents trigger list, if needed */
+	if ((t->text_parent) && (t->text_parent->triggers)
+			&& (ecore_list_goto(t->text_parent->triggers, t)))
+		ecore_list_remove(t->text_parent->triggers);
 
 	t->text_parent = NULL;
 	t->areas = NULL;
@@ -2179,12 +2268,8 @@ ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
 		if (t->areas)
 		{
 			Ewl_Text_Trigger_Area *area;
-
-			ecore_list_goto_first(t->areas);
-			while ((area = ecore_list_next(t->areas)))
-				ewl_widget_hide(EWL_WIDGET(area));
-
-			ecore_list_clear(t->areas);
+			while ((area = ecore_list_remove_first(t->areas)))
+				ewl_widget_destroy(EWL_WIDGET(area));
 		}
 	}
 
@@ -2223,9 +2308,6 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->base, DLEVEL_STABLE);
 }
 
-/*
- * Internal stuff 
- */
 void
 ewl_text_triggers_configure(Ewl_Text *t)
 {
@@ -2273,6 +2355,7 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	DCHECK_TYPE("cur", cur, "trigger");
 
 	area = ewl_text_trigger_area_new(cur->type);
+
 	ewl_container_child_append(EWL_CONTAINER(t), area);
 	ewl_widget_internal_set(area, TRUE);
 	ewl_object_geometry_request(EWL_OBJECT(area), x, y, w, h);
@@ -2304,40 +2387,19 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	DCHECK_TYPE("t", t, "text");
 	DCHECK_TYPE("trig", trig, "trigger");
 
-	/* clean out the old areas */
-	/* XXX this needs to be smartened such that it will re-use the 
-	 * previously created areas instead of deleting them every time */
+	if (trig->len == 0) 
+		DRETURN(DLEVEL_STABLE);
+
+	/* clean out the old areas if needed */
+	if (trig->areas) 
 	{
 		Ewl_Text_Trigger_Area *area;
 
-		if (ecore_list_nodes(trig->areas) > 0)
-		{
-			ecore_list_goto_first(trig->areas);
-			while ((area = ecore_list_next(trig->areas)))
-			{
-				/* i'm deleting in the iteration _after_ the one in which it was actually
-				 * deleted cuz i'm getting fucked up events on the areas taht have already
-				 * been deleted....which is bad...
-				 * I think it's because I'm deleting in the configure callback?
-				 */
-				if (area->deleted)
-					ewl_widget_destroy(EWL_WIDGET(area));
-				else
-				{
-					ewl_widget_hide(EWL_WIDGET(area));
-					area->deleted = TRUE;
-				}
-			}
-			ecore_list_clear(trig->areas);
-		}
-		else
-			trig->areas = ecore_list_new();
+		while ((area = ecore_list_remove_first(trig->areas)))
+			ewl_widget_destroy(EWL_WIDGET(area));
 	}
-
-	if (trig->len == 0) 
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
+	else
+		trig->areas = ecore_list_new();
 
 	cur1 = ewl_text_textblock_cursor_position(t, trig->pos);
 	cur2 = ewl_text_textblock_cursor_position(t, trig->pos + trig->len - 1);
@@ -2385,6 +2447,7 @@ void
 ewl_text_triggers_unrealize(Ewl_Text *t)
 {
 	Ewl_Text_Trigger *cur;
+	Ewl_Text_Trigger_Area *area;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -2394,11 +2457,17 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 	{
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
-			ecore_list_clear(cur->areas);
+		{
+			while ((area = ecore_list_remove_first(cur->areas)))
+				ewl_widget_destroy(EWL_WIDGET(area));
+		}
 	}
 
 	if (t->selection)
-		ecore_list_clear(t->selection->areas);
+	{
+		while ((area = ecore_list_remove_first(t->selection->areas)))
+			ewl_widget_destroy(EWL_WIDGET(area));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2461,7 +2530,7 @@ ewl_text_triggers_hide(Ewl_Text *t)
 	}
 
 	/* hide the selection */
-	if (t->selection->areas) 
+	if (t->selection && t->selection->areas) 
 	{
 		ecore_list_goto_first(t->selection->areas);
 		while ((area = ecore_list_next(t->selection->areas)))
@@ -2542,9 +2611,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	 * extend past the end of the text then return an error */
 	if ((trigger->len == 0) || (trigger->pos > t->length)
 			|| ((trigger->pos + trigger->len) > t->length))
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	trigger->text_parent = t;
 
@@ -2623,8 +2690,8 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-    /* don't do anything if we're obscured */
-    if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
+	/* don't do anything if we're obscured */
+	if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
 
 	t = EWL_TEXT(w);
 
@@ -2639,6 +2706,8 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		evas_object_resize(t->textblock, ww, hh);
 
 		ewl_text_display(t);
+
+		/* XXX ewl_text_triggers_realize here? */
 		ewl_text_triggers_configure(t);
 	}
 
@@ -2661,7 +2730,6 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 
-	/* printf("Revealing text %p\n", w); */
 	if (t->textblock) {
 		DWARNING("We have a textblock when we shoudn't");
 		DRETURN(DLEVEL_STABLE);
@@ -2669,10 +2737,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	/* find the embed so we know the evas */
 	emb = ewl_embed_widget_find(w);
-	if (!emb)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (!emb) DRETURN(DLEVEL_STABLE);
 
 	ctx = ewl_text_context_default_create(t);
 	fmt = ewl_text_format_get(ctx);
@@ -2685,14 +2750,10 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	/* create the textblock */
 	t->textblock = ewl_embed_object_request(emb, "textblock");
-	if (!t->textblock) {
+	if (!t->textblock)
 		t->textblock = evas_object_textblock_add(emb->evas);
-		/* printf("Created new textblock\n"); */
-	}
 
 	if (t->textblock) {
-		int sum;
-
 		st = evas_textblock_style_new();
 		evas_textblock_style_set(st, fmt2);
 		evas_object_textblock_style_set(t->textblock, st);
@@ -2700,13 +2761,13 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 		FREE(fmt2);
 
-		sum = ewl_widget_layer_sum_get(w);
-		/* printf("Setting text layer %d\n", sum); */
-		evas_object_layer_set(t->textblock, sum + 1000);
 		if (w->fx_clip_box)
 			evas_object_clip_set(t->textblock, w->fx_clip_box);
 
 		evas_object_pass_events_set(t->textblock, 1);
+
+		/* XXX Nathan, is this ok? */
+		evas_object_layer_set(t->textblock, 0);
 
 		ewl_text_display(t);
 		evas_object_show(t->textblock);
@@ -2728,8 +2789,6 @@ ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	t = EWL_TEXT(w);
-
-	/* printf("Obscuring text %p\n", w); */
 
 	if (t->textblock) {
 		Ewl_Embed *emb;
@@ -2756,8 +2815,10 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 	if (t->textblock)
+	{
 		evas_object_show(t->textblock);
-	ewl_text_triggers_show(t);
+		ewl_text_triggers_show(t);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2789,6 +2850,9 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 
+	/* Note, we don't explictly destroy the triggers or the selection
+	 * because they will be cleared as children of the text widget
+	 * itself */
 	if (t->triggers)
 	{
 		ecore_list_destroy(t->triggers);
@@ -2796,14 +2860,10 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	}
 	t->selection = NULL;
 
-	ewl_text_tree_free(t->formatting);
-	t->formatting = NULL;
+	ewl_text_tree_free(t->formatting.tree);
+	t->formatting.tree = NULL;
+	t->formatting.current = NULL;
 
-	if (t->current_context)
-	{
-		ewl_text_context_release(t->current_context);
-		t->current_context = NULL;
-	}
 	IF_FREE(t->text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2827,8 +2887,19 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_text_cb_mouse_move, NULL);
 
+	if (!t->selection)
+	{
+		/* create the selection */
+		t->selection = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION));
+		ewl_text_trigger_start_pos_set(t->selection, 0);
+		ewl_text_trigger_length_set(t->selection, 0);
+		t->selection->text_parent = t;
+		ewl_callback_append(EWL_WIDGET(t->selection), EWL_CALLBACK_CONFIGURE,
+						ewl_text_selection_cb_configure, NULL);
+		ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->selection));
+	}
+
 	idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-	  
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
 		ewl_text_selection_select_to(t->selection, idx);
@@ -2840,7 +2911,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	}		   
 	t->in_select = TRUE;
 
-	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+	ewl_widget_configure(EWL_WIDGET(t->selection));
 		
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }	   
@@ -2862,6 +2933,8 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (!t->in_select)
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
+
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
 	{
@@ -2870,10 +2943,9 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		ewl_text_selection_select_to(t->selection, idx);
 	}
 
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
 	t->in_select = FALSE;
 
-	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+	ewl_widget_configure(EWL_WIDGET(t->selection));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2897,7 +2969,7 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
 		ewl_text_selection_select_to(t->selection, idx);
-		ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+		ewl_widget_configure(EWL_WIDGET(t->selection));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2913,7 +2985,7 @@ ewl_text_trigger_cb_focus_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
-					EWL_CALLBACK_FOCUS_IN, ev);
+						EWL_CALLBACK_FOCUS_IN, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2928,7 +3000,7 @@ ewl_text_trigger_cb_focus_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
-					EWL_CALLBACK_FOCUS_OUT, ev);
+						EWL_CALLBACK_FOCUS_OUT, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2943,7 +3015,7 @@ ewl_text_trigger_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger),
-					EWL_CALLBACK_MOUSE_UP, ev);
+						EWL_CALLBACK_MOUSE_UP, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2958,7 +3030,7 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
-					EWL_CALLBACK_MOUSE_DOWN, ev);
+						EWL_CALLBACK_MOUSE_DOWN, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3107,8 +3179,8 @@ ewl_text_context_default_create(Ewl_Text *t)
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
 	ewl_text_context_release(tmp);
 
-	/* setup the default context and acquire a ref on it so it won't go
-	 * away */
+	/* setup the default context and acquire a ref on it so 
+	 * it won't go away */
 	ewl_text_default_context = tx;
 	ewl_text_context_acquire(tx);
 
@@ -3244,9 +3316,7 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 
 	/* only need the tx_change if we have a context mask */
 	if (context_mask > 0)
-	{
 		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
-	}
 
 	t = ewl_text_context_name_get(tx, context_mask, tx_change);
 	new_tx = ecore_hash_get(context_hash, t);
@@ -3338,7 +3408,7 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 }
 
 static void
-ewl_text_context_print(Ewl_Text_Context *tx, char *indent)
+ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 {
 	char *t;
 
@@ -3488,8 +3558,7 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 	{
 		Ewl_Text_Tree *child;
 
-		ecore_list_goto_first(tree->children);
-		while ((child = ecore_list_next(tree->children)))
+		while ((child = ecore_list_remove_first(tree->children)))
 			ewl_text_tree_free(child);
 
 		ecore_list_destroy(tree->children);
@@ -3506,336 +3575,533 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-Ewl_Text_Context *
-ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
+Ewl_Text_Tree *
+ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx, 
+					unsigned int inclusive)
 {
-	Ewl_Text_Context *tx = NULL;
-	Ewl_Text_Tree *child;
-	int count = 0;
+	Ewl_Text_Tree *child = NULL, *last = NULL;
+	unsigned int count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+ 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 
-	/* can't find a node past the length of our text */
-	if (idx > tree->length) 
-	{
+	/* make sure the idx is in the tree */
+	if (idx > tree->length)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
+	
+	if ((!tree->children) || (ecore_list_nodes(tree->children) == 0))
+		DRETURN_PTR(tree, DLEVEL_STABLE);
 
-	/* if we have a leaf node, return it */
-	if (tree->tx)
-	{
-		DRETURN_PTR(tree->tx, DLEVEL_STABLE);
-	}
-
-	/* something bad...no context...no children...wtf? */
-	if (!tree->children)
-	{
-		DWARNING("No children, no context.... wtf?\n");
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
-
-	/* else we need to go through the children */
+	child = tree;
 	ecore_list_goto_first(tree->children);
 	while ((child = ecore_list_next(tree->children)))
 	{
-		/* if we end at a point that is bigger then the index then
-		 * this is the node we want. We know the index is in this
-		 * node or it would have matched the one before us */
-		if ((count + child->length) > idx)
+		last = child;
+
+		/* we don't always want this to be inclusive ... */
+		if (((inclusive && ((count + child->length) >= idx)))
+				|| (!inclusive && ((count + child->length > idx))))
 		{
-			tx = ewl_text_tree_context_get(child, idx);
-			DRETURN_PTR(tx, DLEVEL_STABLE);
+			child = ewl_text_tree_node_get(child, idx - count, inclusive);
+			break;
 		}
 		count += child->length;
 	}
 
-	DWARNING("Got to the end of function... is that possible?\n");
-	DRETURN_PTR(tx, DLEVEL_STABLE);
+	/* we've gone to the end of hte list and didn't find anything, use
+	 * the last node in the list */
+	if (!child) child = last;
+
+	DRETURN_PTR(child, DLEVEL_STABLE);
 }
 
 void
-ewl_text_tree_text_context_insert(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
+ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
+{
+ 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+	 
+	if (t->formatting.current == current)
+ 		DRETURN(DLEVEL_STABLE);
+
+	/* if the current node has no length then we can kill it off */
+	if ((t->formatting.current) && (t->formatting.current->length == 0))
+ 	{
+		/* remove the current node from the parent */
+		if (t->formatting.current->parent)
+ 		{
+			Ecore_List *children;
+			Ewl_Text_Tree *c;
+			int idx, idx2;
+
+			children = t->formatting.current->parent->children;
+
+			idx = ecore_list_index(children);
+			c = ecore_list_goto(children, t->formatting.current);
+			idx2 = ecore_list_index(children);
+
+			if (c) ecore_list_remove(children);
+
+			/* we removed from before us, don't want to skip an
+			 * entry */
+			if (idx2 < idx) idx --;
+			ecore_list_goto_index(children, idx);
+		}
+		ewl_text_tree_free(t->formatting.current);
+ 	}
+	t->formatting.current = current;
+	 
+ 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
+{
+	Ewl_Text_Tree *parent;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+	
+	/* if we have a current node, we just insert there as this is where
+	 * the formatting has been setup. If the cursor was moved then
+	 * current would have been set to NULL. */
+	if (t->formatting.current)
+		parent = t->formatting.current;
+	else
+ 	{
+		parent = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+		if (!parent)
+			DRETURN(DLEVEL_STABLE);
+ 	}
+
+	parent->length += len;
+	while ((parent = parent->parent))
+		parent->length += len;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
+{
+	Ewl_Text_Tree *child = NULL, *parent = NULL;
+	int remaining = 0, removed = 0;
+	int node_remaining = 0;
+	unsigned int pos = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+
+	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	if (!child) DRETURN(DLEVEL_STABLE) 
+
+	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
+	node_remaining = child->length - (idx - pos);
+
+	/* length is fully inside the child */
+	if ((unsigned int)node_remaining >= len)
+   	{
+		child->length -= len;
+		removed = len;
+ 	}
+	else 
+   	{
+		remaining = len - node_remaining;
+		removed = node_remaining;
+		child->length -= removed;
+ 	}
+
+	/* update the parents with the changed size */
+	parent = child->parent;
+
+	/* this node is empty, remove it */
+	if (child->length == 0)
+		ewl_text_tree_node_delete(t, child);
+
+	/* update parents */
+	while (parent)
+	{
+		Ewl_Text_Tree *c;
+					 
+		c = parent;
+		c->length -= removed;
+		parent = c->parent;
+
+		/* remove the node if zero length */
+		if (c->length == 0)
+			ewl_text_tree_node_delete(t, c);
+	}
+
+	/* we have more text to remove ... */
+	if (remaining > 0)
+		ewl_text_tree_delete(t, idx, remaining);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
+{
+	Ewl_Text_Tree *parent;
+	int current;
+		  
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("tree", tree);
+		  
+	parent = tree->parent;
+		  
+	/* we don't want to destroy the root node ... */
+	if (parent == NULL)
+	{
+		if (tree->children)
+		{
+			Ewl_Text_Tree *child;
+
+			while ((child = ecore_list_remove_first(tree->children)))
+				ewl_text_tree_free(child);
+
+			ecore_list_destroy(tree->children);
+			tree->children = NULL;
+		}
+					 
+		if (tree->tx)
+		{
+			ewl_text_context_release(tree->tx);
+			tree->tx= NULL;
+		}
+							 
+		tree->length = 0;
+		tree->tx = ewl_text_context_default_create(t);
+
+		/* if the whole tree is gone make sure we get 
+		 * rid of the current pointer */
+		t->formatting.current = NULL;
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* store the current list position, remove the child and then return to
+	 * the current position */
+	current = ecore_list_index(parent->children);
+	ecore_list_goto(parent->children, tree);
+	ecore_list_remove(parent->children);
+	ecore_list_goto_index(parent->children, current);
+
+	ewl_text_tree_free(tree);
+							 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+ 
+Ewl_Text_Context *
+ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
+{
+	Ewl_Text_Tree *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+
+	child = ewl_text_tree_node_get(tree, idx, TRUE);
+	if (!child) DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	DRETURN_PTR(child->tx, DLEVEL_STABLE);
+}
+
+void
+ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
+						Ewl_Text_Context *tx)
+{
+	Ewl_Text_Tree *tree = NULL;
+	Ewl_Text_Context *old_tx;
+	  
+  	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_TYPE("t", t, "text");
+		
+	/* just update current if possible */
+	if (t->formatting.current)
+	{
+		tree = t->formatting.current;
+
+		/* if the tree is current, and it's length is greater then
+		 * zero we won't be inserting into it, so make it non current 
+		 * and lookup our node */
+		if (tree->length > 0)
+		{
+			ewl_text_tree_current_node_set(t, NULL);
+			tree = ewl_text_tree_node_get(t->formatting.tree, t->cursor_position, TRUE);
+		}
+	}
+	else
+		tree = ewl_text_tree_node_get(t->formatting.tree, t->cursor_position, TRUE);
+		
+	if (!tree)
+	{
+		printf("no current node in context set %d, %d\n", t->cursor_position, t->length);
+		DRETURN(DLEVEL_STABLE);
+	}
+		 
+	if (tree->length == 0)
+	{
+		t->formatting.current = tree;
+
+		/* set the current context */
+		old_tx = t->formatting.current->tx;
+		t->formatting.current->tx= ewl_text_context_find(old_tx, 
+							context_mask, tx);
+		ewl_text_context_release(old_tx);
+	}
+	else
+	{
+		Ewl_Text_Tree *current;
+		unsigned int count = 0;
+				 
+		count = ewl_text_tree_idx_start_count_get(t->formatting.tree, 
+								t->cursor_position, TRUE);
+		current = ewl_text_tree_node_split(tree, count, 
+						t->cursor_position, 0, 
+						context_mask, tx);
+
+		ewl_text_tree_current_node_set(t, current);
+	}
+				 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
+				Ewl_Text_Context *tx, unsigned int idx,
+				unsigned int len)
+ {
+	Ewl_Text_Tree *child;
+	int node_remaining = 0, remaining = 0;
+	unsigned int pos = 0, next_idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_TYPE("t", t, "text");
+			 
+	/* remove the current node as it isnt' valid after this */
+	ewl_text_tree_current_node_set(t, NULL);
+
+	/* we don't want the teststo be inclusive cuz we need to move tho
+	 * the next node if we are at the right edge of a node */
+	child = ewl_text_tree_node_get(t->formatting.tree, idx, FALSE);
+	if (!child) DRETURN(DLEVEL_STABLE);
+			 
+	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, FALSE);
+	node_remaining = child->length - (idx - pos);
+
+	/* length is fully inside the child */
+	if ((unsigned int)node_remaining >= len)
+		ewl_text_tree_node_split(child, pos, idx, len, context_mask, tx);
+	else 
+	{
+		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+							context_mask, tx);
+		remaining = len - node_remaining;
+		next_idx = idx + node_remaining;
+			 
+		/* we have more text to apply too ... */
+		if (remaining > 0)
+			ewl_text_tree_context_apply(t, context_mask, tx, next_idx, remaining);
+	}
+			 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
+					unsigned int idx, unsigned int len,
+							unsigned int invert)
+{
+	Ewl_Text_Tree *child;
+	int node_remaining = 0, remaining = 0;
+	unsigned int pos = 0, next_idx = 0;
+	Ewl_Text_Context *tx;
+	  
+  	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+		 
+	/* remove the current node as it isnt' valid after this */
+	ewl_text_tree_current_node_set(t, NULL);
+		 
+	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	if (!child) DRETURN(DLEVEL_STABLE);
+		 
+	tx = ewl_text_context_new();
+	tx->styles = child->tx->styles;
+
+	if (invert) tx->styles ^= style;
+	else tx->styles |= style;
+
+	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
+	node_remaining = child->length - (idx - pos);
+
+	/* length is fully inside the child */
+	if ((unsigned int)node_remaining >= len)
+		ewl_text_tree_node_split(child, pos, idx, len, 
+						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
+	else 
+	{
+		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
+		remaining = len - node_remaining;
+		next_idx = idx + node_remaining;
+	}
+	ewl_text_context_release(tx);
+		 
+	/* we have more text to apply too ... */
+	if (remaining > 0)
+		ewl_text_tree_context_style_apply(t, style, next_idx, remaining, invert);
+		 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+ 
+void
+ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style, 
 					unsigned int idx, unsigned int len)
 {
+	Ewl_Text_Tree *child;
+	int node_remaining = 0, remaining = 0;
+	unsigned int pos = 0, next_idx = 0;
+	Ewl_Text_Context *tx;
+	  
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, "text");
+	  
+	/* remove the current node as it isnt' valid after this */
+	ewl_text_tree_current_node_set(t, NULL);
+	  
+	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	if (!child) DRETURN(DLEVEL_STABLE);
 
-	/* no children no context ... ? root? */
-	if ((!tree->children) && (!tree->tx))
+	tx = ewl_text_context_new();
+	tx->styles = child->tx->styles;
+	tx->styles &= ~style;
+
+	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
+	node_remaining = child->length - (idx - pos);
+
+	/* length is fully inside the child */
+	if ((unsigned int)node_remaining >= len)
+		ewl_text_tree_node_split(child, pos, idx, len, 
+						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
+	else 
 	{
-		tree->tx = tx;
-		tree->length = len;
-		ewl_text_context_acquire(tx);
-
-		DRETURN(DLEVEL_STABLE);
+		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
+		remaining = len - node_remaining;
+		next_idx = idx + node_remaining;
 	}
-
-	/* no children but we have a tx, we need to split this node */
-	if (!tree->children)
-	{
-		Ewl_Text_Tree *old, *new;
-
-		/* see if the contexts are the same */
-		if (ewl_text_context_compare(tree->tx, tx))
-		{
-			tree->length += len;
-			DRETURN(DLEVEL_STABLE);
-		}
-
-		/* create a node for the text */
-		new = ewl_text_tree_new();
-		new->tx = tx;
-		ewl_text_context_acquire(new->tx);
-		new->length = len;
-		new->parent = tree;
-
-		/* this is the old node */
-		old = ewl_text_tree_new();
-		old->tx = tree->tx;
-		old->length = tree->length;
-		old->parent = tree;
-
-		tree->length += len;
-		tree->tx = NULL;
-		tree->children = ecore_list_new();
-
-		if (idx == 0)
-		{
-			ecore_list_append(tree->children, new);
-			ecore_list_append(tree->children, old);
-		}
-		else if (idx >= old->length)
-		{
-			ecore_list_append(tree->children, old);
-			ecore_list_append(tree->children, new);
-		}
-		else
-		{
-			Ewl_Text_Tree *n;
-
-			/* both of these nodes have the tx ++'d because when
-			 * we free the old it will dec the tx */
-
-			/* grap left part */
-			n = ewl_text_tree_new();
-			n->tx = old->tx;
-			ewl_text_context_acquire(n->tx);
-			n->length = idx;
-			n->parent = tree;
-			ecore_list_append(tree->children, n);
-
-			ecore_list_append(tree->children, new);
-
-			/* grap right part */
-			n = ewl_text_tree_new();
-			n->tx = old->tx;
-			ewl_text_context_acquire(n->tx);
-			n->length = old->length - (idx);
-			n->parent = tree;
-			ecore_list_append(tree->children, n);
-
-			ewl_text_tree_free(old);
-		}
-	}
-	else /* has to be in the tree somewhere */
-	{
-		Ewl_Text_Tree *child;
-		unsigned int sum = 0;
-
-		ecore_list_goto_first(tree->children);
-		while ((child = ecore_list_next(tree->children)))
-		{
-			/* goes in this child */
-			if ((sum <= idx) && ((child->length + sum) >= idx))
-			{
-				tree->length += len;
-				ewl_text_tree_text_context_insert(child, 
-							tx, idx - sum, len);
-				break;
-			}
-			sum += child->length;
-		}
-	}
-
+	ewl_text_context_release(tx);
+			  
+	/* we have more text to apply too ... */
+	if (remaining > 0)
+		ewl_text_tree_context_style_remove(t, style, next_idx, remaining);
+			  
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_text_tree_context_apply(Ewl_Text_Tree *tree, Ewl_Text_Context *tx,
-				unsigned int context_mask, unsigned int idx, 
-				unsigned int len)
+static int
+ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, unsigned int idx, 
+						unsigned int inclusive)
 {
-	Ewl_Text_Tree *child;
-	unsigned int sum = 0;
+	int count = 0;
+	Ewl_Text_Tree *child, *parent;
+	  
+  	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, 0);
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("tx", tx);
-
-	if (context_mask & EWL_TEXT_CONTEXT_MASK_NONE)
+	child = ewl_text_tree_node_get(tree, idx, inclusive);
+	parent = child->parent;
+	while (parent)
 	{
-		DRETURN(DLEVEL_STABLE);
+		Ewl_Text_Tree *sibling;
+
+		/* count up the siblings before us */
+		ecore_list_goto_first(parent->children);
+		while ((sibling = ecore_list_next(parent->children)) != child)
+			count += sibling->length;
+
+		child = parent;
+		parent = child->parent;
 	}
 
-	/* if we are a leaf node */
-	if (tree->tx)
+	DRETURN_INT(count, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Tree * 
+ewl_text_tree_node_split(Ewl_Text_Tree *tree, unsigned int count, unsigned int pos, 
+					unsigned int len, unsigned int context_mask, 
+								Ewl_Text_Context *tx)
+{
+	Ewl_Text_Tree *t1 = NULL, *t2 = NULL, *current = NULL;
+	Ewl_Text_Context *old_tx;
+	unsigned int diff;
+						  
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
+
+	diff = pos - count;
+
+	if (diff > 0)
 	{
-		Ewl_Text_Context *new_tx, *ctx;
+		/* the start */
+		t1 = ewl_text_tree_new();
+		t1->parent = tree;
+		t1->length = diff;
+		t1->tx = tree->tx;
+		ewl_text_context_acquire(t1->tx);
+	}
 
-		ctx = tree->tx;
-		new_tx = ewl_text_context_find(ctx, context_mask, tx);
+	if ((tree->length - diff - len) > 0)
+	{
+		/* the rest */
+		t2 = ewl_text_tree_new();
+		t2->parent = tree;
+		t2->length = tree->length - diff - len;
+		t2->tx = tree->tx;
+		ewl_text_context_acquire(t2->tx);
+	}
+						  
+	old_tx = tree->tx;
+	tree->tx = NULL;
 
-		/* apply covers entire node */
-		if ((idx == 0) && ((idx + len) >= tree->length))
-		{
-			ewl_text_context_release(ctx);
-			tree->tx = new_tx;
-		}
-		else
-		{
-			Ewl_Text_Tree *old, *new;
-
-			new = ewl_text_tree_new();
-			new->parent = tree;
-			new->tx = new_tx;
-
-			if ((tree->length - idx) > len)
-				new->length = len;
-			else
-				new->length = (tree->length - idx);
-
-			old = ewl_text_tree_new();
-			old->parent = tree;
-			old->tx = tree->tx;
-			old->length = (tree->length - new->length);
-
-			tree->tx = NULL;
+	/* only do this if we have at least one sibling */
+	if (t1 || t2)
+	{
+		if (!tree->children)
 			tree->children = ecore_list_new();
+									 
+		if (t1) ecore_list_append(tree->children, t1);
+									 
+		/* the new current node */
+		current = ewl_text_tree_new();
+		current->parent = tree;
+		current->length = len;
+		current->tx = ewl_text_context_find(old_tx, context_mask, tx);
+		ecore_list_append(tree->children, current);
 
-			if (idx == 0)
-			{
-				ecore_list_append(tree->children, new);
-				ecore_list_append(tree->children, old);
-			} 
-			else if ((idx + len) >= tree->length)
-			{
-				ecore_list_append(tree->children, old);
-				ecore_list_append(tree->children, new);
-			}
-			else
-			{
-				Ewl_Text_Tree *old2;
-
-				old->length = idx;
-				ecore_list_append(tree->children, old);
-				ecore_list_append(tree->children, new);
-
-				old2 = ewl_text_tree_new();
-				old2->parent = tree;
-				old2->tx = old->tx;
-				ewl_text_context_acquire(old2->tx);
-				old2->length = (tree->length - (idx + len));
-				ecore_list_append(tree->children, old2);
-			}
-		}
-		DRETURN(DLEVEL_STABLE);
+		if (t2) ecore_list_append(tree->children, t2);
 	}
-
-	if (!tree->children)
+	else
 	{
-		DWARNING("No context, no children....?\n");
-		DRETURN(DLEVEL_STABLE);
+		/* we have no children, so just update the context on the
+		 * tree */
+		tree->tx = ewl_text_context_find(old_tx, context_mask, tx);
 	}
+	ewl_text_context_release(old_tx);
 
-	ecore_list_goto_first(tree->children);
-	while ((child = ecore_list_next(tree->children)))
-	{
-		if ((sum <= idx) && ((sum + child->length) > idx))
-		{
-			int new_len;
-
-			ewl_text_tree_context_apply(child, tx, context_mask,
-								idx - sum, len);
-			new_len = len - (child->length - (idx - sum));
-			idx += (child->length - (child->length - (idx - sum)));
-
-			if (new_len <= 0) break;
-			len = new_len;
-		}
-		sum += child->length;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/* just do the removal here. may need to merge up to parents if we
- * are empty, or remove parents but don't try to merge siblings. */
-void
-ewl_text_tree_text_delete(Ewl_Text_Tree *tree, unsigned int idx, unsigned int len)
-{
-	Ewl_Text_Tree *child;
-	unsigned int sum = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-
-	/* we have a context, delete from us */
-	if (tree->tx)
-	{
-		if (len > tree->length)
-			tree->length = 0;
-		else
-			tree->length -= len;
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	if (!tree->children)
-	{
-		DWARNING("No context, no children....?\n");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	ecore_list_goto_first(tree->children);
-	while ((child = ecore_list_current(tree->children)))
-	{
-		int deleted = 0;
-
-		if ((sum <= idx) && ((sum + child->length) > idx))
-		{
-			unsigned int del_length;
-			int new_len;
-
-			del_length = (child->length - (idx - sum));
-			if (del_length > len)
-				del_length = len;
-
-			ewl_text_tree_text_delete(child, idx - sum, del_length);
-
-			tree->length -= del_length;
-			new_len = len - del_length;
-
-			if (child->length == 0)
-			{
-				ecore_list_goto(tree->children, child);
-				ecore_list_remove(tree->children);
-
-				ewl_text_tree_free(child);
-				deleted ++;
-			}
-
-			if (new_len <= 0) break;
-			len = new_len;
-		}
-		sum += child->length;
-
-		if (!deleted)
-			ecore_list_next(tree->children);
-	}
-	ewl_text_tree_shrink(tree);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(current, DLEVEL_STABLE);
 }
 
 /* this just merges nodes back into their parent or deletes the parent if it
@@ -3895,9 +4161,11 @@ ewl_text_tree_condense(Ewl_Text_Tree *tree)
 }
 
 void
-ewl_text_tree_dump(Ewl_Text_Tree *tree, char *indent)
+ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent)
 {
 	Ewl_Text_Tree *child;
+	int len = 0;
+	char *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -3905,33 +4173,25 @@ ewl_text_tree_dump(Ewl_Text_Tree *tree, char *indent)
 	printf("%s---\n", indent);
 	printf("%snode (%d)\n", indent, tree->length);
 
-	/* if we have a leaf node, return it */
-	if (tree->tx)
-	{
-		ewl_text_context_print(tree->tx, indent);
-		DRETURN(DLEVEL_STABLE);
-	}
+	/* if we have a context, print it */
+	if (tree->tx) ewl_text_context_print(tree->tx, indent);
+	else printf("%sNo Context\n", indent);
 
-	/* something bad...no context...no children...wtf? */
 	if (!tree->children)
-	{
-		DWARNING("No children, no context.... wtf?\n");
 		DRETURN(DLEVEL_STABLE);
-	}
+
+	len = strlen(indent) + 3;
+	t = NEW(char, len);
+	if (!t) DRETURN(DLEVEL_STABLE);
+
+	snprintf(t, len, "%s  ", (char *)indent);
 
 	/* else we need to go through the children */
 	ecore_list_goto_first(tree->children);
 	while ((child = ecore_list_next(tree->children)))
-	{
-		char *t;
-		t = NEW(char, strlen(indent) + 3);
-		if (!t)
-			DRETURN(DLEVEL_STABLE);
-
-		sprintf(t, "%s  ", indent);
 		ewl_text_tree_dump(child, t);
-		FREE(t);
-	}
+
+	FREE(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3961,7 +4221,7 @@ ewl_text_display(Ewl_Text *t)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
 
 	/* re-configure the selection to make sure it resizes if needed */
-	ewl_text_selection_cb_configure(EWL_WIDGET(t->selection), NULL, NULL);
+	if (t->selection) ewl_widget_configure(EWL_WIDGET(t->selection));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4022,24 +4282,22 @@ ewl_text_tree_walk(Ewl_Text *t)
 	DCHECK_TYPE("t", t, "text");
 
 	if (!t->text) 
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
-	ewl_text_tree_node_walk(t->formatting, t, 0);
+	ewl_text_tree_node_walk(t, t->formatting.tree, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_text_tree_node_walk(Ewl_Text_Tree *tree, Ewl_Text *t, unsigned int text_pos)
+ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "text");
 
-	/* if we have a context we are a leaf node */
+	/* if we have a context we have something to say */
 	if (tree->tx)
 	{
 		char *fmt, *ptr, tmp;
@@ -4053,28 +4311,24 @@ ewl_text_tree_node_walk(Ewl_Text_Tree *tree, Ewl_Text *t, unsigned int text_pos)
 		evas_textblock_cursor_format_append(cursor, fmt);
 		FREE(fmt);
 
-		ptr = t->text + text_pos;
+		ptr = t->text + pos;
 		tmp = *(ptr + tree->length);
 		*(ptr + tree->length) = '\0';
 
-		if (t->textblock) ewl_text_plaintext_parse(t->textblock, ptr);
+		ewl_text_plaintext_parse(t->textblock, ptr);
 		*(ptr + tree->length) = tmp;	
 
 		evas_textblock_cursor_format_append(cursor, "-");
 	}
-	else if (!tree->children)
-	{
-		DWARNING("Non-Context, non-child node...\n");
-	}
-	else
+	else if (tree->children)
 	{
 		Ewl_Text_Tree *child;
 
 		ecore_list_goto_first(tree->children);
 		while ((child = ecore_list_next(tree->children)))
 		{
-			ewl_text_tree_node_walk(child, t, text_pos);
-			text_pos += child->length;
+			ewl_text_tree_node_walk(t, child, pos);
+			pos += child->length;
 		}
 	}
 
@@ -4114,9 +4368,7 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 	DCHECK_PARAM_PTR_RET("area", area, FALSE);
 
 	if (!ewl_widget_init(EWL_WIDGET(area)))
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	ewl_widget_appearance_set(EWL_WIDGET(area),
 			((type == EWL_TEXT_TRIGGER_TYPE_SELECTION) ?
@@ -4178,6 +4430,11 @@ ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	trig = EWL_TEXT_TRIGGER(w);
+
+	/* nothing to do if there is no length */
+	if (trig->len == 0) 
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_text_trigger_position(trig->text_parent, trig);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

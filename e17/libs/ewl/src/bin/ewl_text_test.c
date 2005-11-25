@@ -89,13 +89,14 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 
 	o = ewl_text_new();
 	ewl_widget_name_set(o, "text");
+	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(win), o);
+	ewl_widget_show(o);
 
 	ewl_text_text_insert(EWL_TEXT(o), "The first bunch of text\n", 0); /* 24 */
 
 	ewl_text_cursor_position_set(EWL_TEXT(o), 10);
 	ewl_text_color_apply(EWL_TEXT(o), 0, 0, 255, 255, 5);
-
 	ewl_text_text_append(EWL_TEXT(o), "The second bunch of text\n"); /* 25 */
 	
 	ewl_text_font_size_set(EWL_TEXT(o), 20);
@@ -107,11 +108,13 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_outline_color_set(EWL_TEXT(o), 200, 200, 200, 200);
 	ewl_text_text_append(EWL_TEXT(o), "The third bunch of text\n"); /* 24 */
 
-	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
 	ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
-        trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+	trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
+
+	ewl_text_cursor_position_set(EWL_TEXT(o), ewl_text_length_get(EWL_TEXT(o)));
+	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
 	ewl_text_text_append(EWL_TEXT(o), "This is the link."); /* 17 */
 
 	len = ewl_text_cursor_position_get(EWL_TEXT(o)) - 
@@ -136,14 +139,16 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_cursor_position_set(EWL_TEXT(o), 43);
 	ewl_text_color_apply(EWL_TEXT(o), 0, 255, 0, 255, 14);
 
+	ewl_text_cursor_position_set(EWL_TEXT(o), ewl_text_length_get(EWL_TEXT(o)));
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 0, 255);
 	ewl_text_text_append(EWL_TEXT(o), "And in red\n"); /* 11 */
-	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
 
+	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
 	ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. ");
 
         trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
+	
 	ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 28 */
 
 	len = ewl_text_cursor_position_get(EWL_TEXT(o)) - 
@@ -161,11 +166,9 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);
 	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV");
 
-	ewl_widget_show(o);
-
 #if 0
 	printf("-- DUMP --\n");
-	ewl_text_btree_dump((EWL_TEXT(o))->formatting, "");
+	ewl_text_tree_dump((EWL_TEXT(o))->formatting, "");
 	printf("-- DUMP DONE --\n");
 #endif
 }
