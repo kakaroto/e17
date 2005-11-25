@@ -1349,6 +1349,10 @@ ewl_widget_onscreen_is(Ewl_Widget *w)
 			onscreen = FALSE;
 	}
 
+	if (onscreen == TRUE && w->parent) {
+		if ( (ewl_widget_onscreen_is(w->parent) == FALSE)) onscreen = FALSE;
+	}
+
 	return onscreen;
 }
 
