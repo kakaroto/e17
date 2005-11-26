@@ -73,6 +73,7 @@ void entropy_core_selected_files_clear();
 
 /*Config functions*/
 void entropy_core_config_load();
+void entropy_core_config_save();
 char* entropy_core_home_dir_get();
 char* entropy_thumbnail_dir_get();
 int entropy_config_int_get(char* module, char* key);
@@ -91,6 +92,7 @@ void entropy_free(void* ref);
 char* entropy_core_descent_for_mime_get(entropy_core*, char*);
 entropy_mime_action* entropy_core_mime_hint_get(char* mime_type);
 void entropy_core_mime_action_add(char* mime_type, char* action);
+
 
 /*Logging stuff*/
 

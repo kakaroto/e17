@@ -286,7 +286,7 @@ void entropy_core_config_load() {
 	Ecore_List* mime_type_actions;
 	char* key;
 	int i=0;
-	char type[50];
+	char type[100];
 	char* pos;
 	entropy_mime_action* action;
 
@@ -308,7 +308,7 @@ void entropy_core_config_load() {
 
 	new_count = ecore_list_nodes(mime_type_actions);
 
-	if (  (!(count = entropy_config_int_get("core","mime_type_count"))) || count < new_count || 1  ) {	
+	if (  (!(count = entropy_config_int_get("core","mime_type_count"))) || count < new_count ) {	
 		
 	
 		entropy_config_int_set("core", "mime_type_count", new_count);
@@ -336,7 +336,7 @@ void entropy_core_config_load() {
 		key = entropy_config_str_get("core", type);
 		pos = strrchr(key, ':');
 
-		
+		printf("Key is: '%s'\n", key);	
 
 		if (pos >= 0) {
 			*pos = '\0';
@@ -359,6 +359,43 @@ void entropy_core_config_load() {
 	
 }
 
+void entropy_core_config_save() {
+	Ecore_List* keys;
+	int count;
+	char key[100];
+	char executable[256];
+	entropy_mime_action* action;
+	char* gkey;
+	int i=0;
+	
+	
+
+	/*Save the mime_action config*/
+	keys = ecore_hash_keys(core_core->mime_action_hint);
+	count = ecore_list_nodes(keys);
+
+	/*Set the count of mime_types*/
+	entropy_config_int_set("core","mime_type_count", count);
+
+	/*Write the types*/
+	while (  (gkey = ecore_list_remove_first(keys))  ) {
+		snprintf(key, 100, "mimetype_action.%d", i);
+
+		snprintf(executable,256,"%s:%s", gkey, 
+		((entropy_mime_action*)ecore_hash_get(core_core->mime_action_hint, gkey))->executable);
+		
+		printf("Saving '%s' for '%s' using '%s'\n", 
+			((entropy_mime_action*)ecore_hash_get(core_core->mime_action_hint, gkey))->executable, gkey, key); 
+
+		entropy_config_str_set("core", key, executable);
+
+		i++;
+	}
+
+	
+	
+}
+
 entropy_mime_action* entropy_core_mime_hint_get(char* mime_type) {
 	return ecore_hash_get(core_core->mime_action_hint, mime_type);
 }
@@ -371,7 +408,7 @@ void entropy_core_destroy(entropy_core* core) {
 	char* key;
 
 	//printf("Destroying config subsystem...\n");
-	entropy_config_destroy(core->config);
+
 
 	/*Destroy the notification engines*/
 	entropy_notification_engine_destroy(core->notify);
@@ -417,6 +454,12 @@ void entropy_core_destroy(entropy_core* core) {
 
 	/*Destroy the plugins*/
 	/*Destroy the eLists/eHashes*/
+
+
+	/*Save the config*/
+	entropy_core_config_save();
+
+	entropy_config_destroy(core->config);
 
 }
 
