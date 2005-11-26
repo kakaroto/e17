@@ -84,6 +84,31 @@ void
 }
 
 
+void progress_window_create(entropy_file_progress_window* progress) {
+	Ewl_Widget* vbox;
+	
+	progress->progress_window = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(progress->progress_window), "File Copy");
+	ewl_object_custom_size_set(EWL_OBJECT(progress->progress_window), 400, 150);
+	
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(progress->progress_window), vbox);
+	ewl_widget_show(vbox);
+
+	progress->file_from = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), progress->file_from);
+	ewl_widget_show(progress->file_from);
+
+	progress->file_to = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), progress->file_to);
+	ewl_widget_show(progress->file_to);
+
+	progress->progressbar = ewl_progressbar_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), progress->progressbar);
+	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress->progressbar), 100);
+	ewl_widget_show(progress->progressbar);
+
+}
 
 
 void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
@@ -483,7 +508,7 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
 	Ewl_Widget* context;
-	Ewl_Widget* vbox;
+
 	entropy_gui_component_instance* instance = entropy_malloc(sizeof(entropy_gui_component_instance));
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
 
@@ -501,30 +526,6 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 
 	/*Initialise the progress window*/
 	viewer->progress = entropy_malloc(sizeof(entropy_file_progress_window));
-	viewer->progress->progress_window = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(viewer->progress->progress_window), "File Copy");
-	ewl_object_custom_size_set(EWL_OBJECT(viewer->progress->progress_window), 400, 150);
-	
-	vbox = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(viewer->progress->progress_window), vbox);
-	ewl_widget_show(vbox);
-
-	viewer->progress->file_from = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->file_from);
-	ewl_widget_show(viewer->progress->file_from);
-
-	viewer->progress->file_to = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->file_to);
-	ewl_widget_show(viewer->progress->file_to);
-
-	viewer->progress->progressbar = ewl_progressbar_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), viewer->progress->progressbar);
-	ewl_progressbar_range_set(EWL_PROGRESSBAR(viewer->progress->progressbar), 100);
-	ewl_widget_show(viewer->progress->progressbar);
-
-
-
-	
 	
 	
 	/*Add some context menu items*/
@@ -958,19 +959,24 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		
 						  
 		printf("Received a file progress event..\n");
-		if (!VISIBLE(view->progress->progress_window)) {
+		if (!view->progress->progress_window) {
 			printf("Showing progressbar dialog..\n");
+
+			progress_window_create(view->progress);
 			ewl_widget_show(view->progress->progress_window);
 		}
 
-		ewl_text_text_set(EWL_TEXT(view->progress->file_from), progress->file_from);
-		ewl_text_text_set(EWL_TEXT(view->progress->file_to), progress->file_to);
-		ewl_progressbar_value_set(EWL_PROGRESSBAR(view->progress->progressbar), progress->progress);
+		if (view->progress->progress_window) {
+			ewl_text_text_set(EWL_TEXT(view->progress->file_from), progress->file_from);
+			ewl_text_text_set(EWL_TEXT(view->progress->file_to), progress->file_to);
+			ewl_progressbar_value_set(EWL_PROGRESSBAR(view->progress->progressbar), progress->progress);
+		}
 
 		/*Is it time to hide (i.e. end)*/
 		if (progress->type == TYPE_END) {
 			printf("Hiding progressbar dialog..\n");
-			ewl_widget_hide(view->progress->progress_window);
+			ewl_widget_destroy(view->progress->progress_window);
+			view->progress->progress_window = NULL;
 		}
 	
        }

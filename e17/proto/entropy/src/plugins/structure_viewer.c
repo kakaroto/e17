@@ -108,6 +108,23 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 		/*ecore_list_destroy(el);*/
 
 		ewl_tree_row_expand_set(row, EWL_TREE_NODE_EXPANDED);
+
+
+		/*Now change the gihtlight, if we got a row..*/
+		if (viewer->last_selected_label) {
+			ewl_text_cursor_position_set(EWL_TEXT(viewer->last_selected_label), 0);
+
+			/*TODO theme this color stuff*/
+			ewl_text_color_apply(EWL_TEXT(viewer->last_selected_label), 
+					0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(viewer->last_selected_label)));		
+		}
+
+		/*Highlight this row*/
+		/*TODO Find some way to cleanly find the text member of the row*/
+		/*ewl_text_cursor_position_set(EWL_TEXT(row->data), 0);
+		ewl_text_color_apply(EWL_TEXT(event->data), 0, 0, 255, 255, ewl_text_length_get(EWL_TEXT(event->data)));
+		viewer->last_selected_label = event->data;*/
+
 		
 	} else {
 		/*printf("---------------------------------------------> This row already has children!!\n");*/

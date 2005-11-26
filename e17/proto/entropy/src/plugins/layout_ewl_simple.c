@@ -101,7 +101,7 @@ void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 }
 
 void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
-	ewl_mime_dialog_display();
+	entropy_ewl_mime_dialog_display();
 }
 
 
@@ -596,7 +596,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_widget_show(menu);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Add Location...");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "About...");
 	ewl_container_child_append(EWL_CONTAINER(menu), item);
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
 	ewl_widget_show(item);

@@ -90,6 +90,7 @@ void* entropy_malloc(size_t);
 void entropy_free(void* ref);
 char* entropy_core_descent_for_mime_get(entropy_core*, char*);
 entropy_mime_action* entropy_core_mime_hint_get(char* mime_type);
+void entropy_core_mime_action_add(char* mime_type, char* action);
 
 /*Logging stuff*/
 

@@ -272,6 +272,15 @@ entropy_core* entropy_core_init() {
 	return core;
 }
 
+void entropy_core_mime_action_add(char* mime_type, char* action) {
+	entropy_mime_action* action_o;
+	
+	action_o = entropy_malloc(sizeof(entropy_mime_action));
+	action_o->executable = strdup(action);
+			
+	ecore_hash_set(core_core->mime_action_hint, strdup(mime_type), action_o);
+}
+
 void entropy_core_config_load() {
 	int count, new_count;
 	Ecore_List* mime_type_actions;

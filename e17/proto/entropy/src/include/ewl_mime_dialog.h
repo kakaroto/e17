@@ -1,2 +1,2 @@
-void ewl_mime_dialog_display();
+void entropy_ewl_mime_dialog_display();
 
