@@ -88,7 +88,7 @@ debug_once_init(void)
 static void
 debug_destructor(void *item)
 {
-  FREE(item);
+  free(item);
 }
 #endif
 
