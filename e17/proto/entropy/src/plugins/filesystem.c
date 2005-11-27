@@ -209,7 +209,7 @@ void callback(evfs_event* data) {
 				while (  (ref= ecore_list_next(data->file_list.list)) ) {
 
 					
-					printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);
+					/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type);*/
 				
 					folder = strdup((char*)ref->path);
 					pos = rindex(folder, '/');
@@ -224,7 +224,7 @@ void callback(evfs_event* data) {
 						*(pos+1) = '\0';
 					}
 
-					printf("Calling folder is '%s'\n", folder);
+					/*printf("Calling folder is '%s'\n", folder);*/
 
 					/*If the calling request is currently NULL, we must go to the hash to retrieve that caller*/
 					if (!calling_request) {
@@ -265,9 +265,9 @@ void callback(evfs_event* data) {
 						}
 
 						if (calling_request && (calling_request->drill_down || calling_request->set_parent)) {
-							printf("Calling request had a parent...\n");
+							/*printf("Calling request had a parent...\n");
 							printf("File ('%s') parent's name is '%s'\n", 
-								file->filename, calling_request->reparent_file->filename);
+								file->filename, calling_request->reparent_file->filename);*/
 
 							file->parent = calling_request->reparent_file;
 
@@ -278,7 +278,7 @@ void callback(evfs_event* data) {
 
 						/*Mark the file's uri FIXME do this properly*/
 						strcpy(file->uri_base, ref->plugin_uri);
-						printf("Assigned plugin URI: '%s'\n", ref->plugin_uri);
+						/*printf("Assigned plugin URI: '%s'\n", ref->plugin_uri);*/
 						
 
 						/*Register a new listener for this file*/
