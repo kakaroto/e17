@@ -163,7 +163,7 @@ TransparencySet(int transparency)
    if (prev_alpha == 0)
      {
 	/* Hack to get tiled backgrounds regenerated at full size */
-	BackgroundsInvalidate();
+	BackgroundsInvalidate(1);
      }
    ModulesSignal(ESIGNAL_THEME_TRANS_CHANGE, NULL);
 }

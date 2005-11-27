@@ -406,7 +406,7 @@ DeskConfigure(Desk * dsk)
 	     Efree(lst);
 	  }
      }
-   DeskBackgroundSet(dsk, bg, 0);
+   DeskBackgroundSet(dsk, bg);
 
    if (dsk->num > 0)
      {
@@ -473,12 +473,173 @@ DeskDestroy(Desk * dsk)
    DeskControlsDestroy(dsk, 2);
 
    if (dsk->bg)
-      BackgroundDecRefcount(dsk->bg);
+     {
+	if (dsk->pmap != None)
+	   BackgroundPixmapUnset(dsk->bg, dsk->pmap);
+	BackgroundDecRefcount(dsk->bg);
+     }
 
    EoFini(dsk);
 
    desks.desk[dsk->num] = NULL;
    Efree(dsk);
+}
+
+void
+DeskBackgroundAssign(unsigned int desk, Background * bg)
+{
+   if (desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+      return;
+
+   desks.bg[desk] = bg;
+}
+
+Background         *
+DeskBackgroundGet(const Desk * dsk)
+{
+   return (dsk) ? dsk->bg : NULL;
+}
+
+static void
+DeskBackgroundFree(Desk * dsk, int force)
+{
+   Window              win;
+
+   if (!dsk->bg_isset)
+      return;
+
+   dsk->bg_isset = 0;
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskBackgroundFree %d v=%d force=%d\n", dsk->num,
+	      dsk->viewable, force);
+
+   if (!dsk->viewable || force)
+     {
+	if (dsk->pmap != None)
+	  {
+	     BackgroundPixmapUnset(dsk->bg, dsk->pmap);
+	     dsk->pmap = None;
+	  }
+     }
+
+   if (!dsk->viewable)
+     {
+	win = EoGetWin(dsk);
+	if (!Conf.hints.set_xroot_info_on_root_window)
+	   HintsSetRootInfo(win, None, 0);
+	ESetWindowBackgroundPixmap(win, None);
+     }
+}
+
+static void
+DeskBackgroundRefresh(Desk * dsk)
+{
+   Background         *bg;
+   Pixmap              pmap;
+   unsigned long       pixel;
+
+   if (!dsk->viewable)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskBackgroundRefresh %d v=%d - %dx%d\n", dsk->num,
+	      dsk->viewable, EoGetW(dsk), EoGetH(dsk));
+
+   bg = dsk->bg;
+   if (!bg)
+      return;
+
+   pmap = BackgroundGetPixmap(bg);
+   pixel = 0;
+   if (dsk->bg_isset && dsk->pmap == pmap)
+      return;
+
+   if (pmap == None)
+      BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
+			&pmap, &pixel);
+
+   if (pmap != None)
+     {
+	ESetWindowBackgroundPixmap(EoGetWin(dsk), pmap);
+	BackgroundPixmapSet(dsk->bg, pmap);
+     }
+   else
+     {
+	ESetWindowBackground(EoGetWin(dsk), pixel);
+     }
+   EClearWindow(EoGetWin(dsk));
+
+   HintsSetRootInfo(EoGetWin(dsk), pmap, pixel);
+   dsk->pmap = pmap;
+   dsk->bg_isset = 1;
+}
+
+static void
+DeskBackgroundUpdate(Desk * dsk)
+{
+   if (dsk->viewable)
+      DeskBackgroundRefresh(dsk);
+   else
+      DeskBackgroundFree(dsk, 0);
+}
+
+void
+DeskBackgroundSet(Desk * dsk, Background * bg)
+{
+   if (!dsk)
+      return;
+
+   if (bg && BackgroundIsNone(bg))
+      bg = NULL;
+
+   if (dsk->bg != bg)
+     {
+	if (dsk->bg)
+	  {
+	     DeskBackgroundFree(dsk, 1);
+	     BackgroundDecRefcount(dsk->bg);
+	  }
+	if (bg)
+	   BackgroundIncRefcount(bg);
+     }
+
+   dsk->bg = bg;
+
+   if (dsk->viewable)
+      DeskBackgroundRefresh(dsk);
+
+   ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
+}
+
+void
+DesksBackgroundFree(Background * bg, int force)
+{
+   Desk               *dsk;
+   unsigned int        i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+     {
+	dsk = _DeskGet(i);
+	if (dsk->bg != bg)
+	   continue;
+	DeskBackgroundFree(dsk, force);
+     }
+}
+
+void
+DesksBackgroundRefresh(Background * bg)
+{
+   Desk               *dsk;
+   unsigned int        i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+     {
+	dsk = _DeskGet(i);
+	if (dsk->bg != bg)
+	   continue;
+	DeskBackgroundUpdate(dsk);
+     }
 }
 
 static void
@@ -498,8 +659,7 @@ DeskResize(int desk, int w, int h)
 	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
 	EoMoveResize(dsk, x, 0, w, h);
      }
-   BackgroundPixmapFree(dsk->bg);
-   DeskRefresh(dsk);
+   DeskBackgroundUpdate(dsk);
    DeskControlsDestroy(dsk, 1);
    DeskControlsCreate(dsk);
    DeskControlsShow(dsk, 1);
@@ -524,12 +684,6 @@ DeskGetRelative(Desk * dsk, int inc)
    desk %= Conf.desks.num;
 
    return _DeskGet(desk);
-}
-
-Background         *
-DeskBackgroundGet(const Desk * dsk)
-{
-   return (dsk) ? dsk->bg : NULL;
 }
 
 void
@@ -628,6 +782,8 @@ static void
 DesksResize(int w, int h)
 {
    unsigned int        i;
+
+   BackgroundsInvalidate(0);
 
    for (i = 0; i < Conf.desks.num; i++)
       DeskResize(i, w, h);
@@ -829,68 +985,6 @@ MoveToDeskBottom(unsigned int desk)
      }
 }
 
-void
-DeskRefresh(Desk * dsk)
-{
-   Background         *bg;
-
-   if (!dsk || !dsk->viewable)
-      return;
-
-   if (EventDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskRefresh %d - %dx%d\n", dsk->num, EoGetW(dsk), EoGetH(dsk));
-
-   bg = dsk->bg;
-   if (!bg)
-      return;
-
-   if (dsk->bg_isset && dsk->pmap == BackgroundGetPixmap(bg))
-      return;
-
-   BackgroundSet(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk));
-   dsk->bg_isset = 1;
-   dsk->pmap = BackgroundGetPixmap(bg);
-   HintsSetRootInfo(EoGetWin(dsk),
-		    BackgroundGetPixmap(bg), BackgroundGetColor(bg));
-}
-
-void
-DeskBackgroundAssign(unsigned int desk, Background * bg)
-{
-   if (desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      return;
-
-   desks.bg[desk] = bg;
-}
-
-void
-DeskBackgroundSet(Desk * dsk, Background * bg, int refresh)
-{
-   if (!dsk)
-      return;
-
-   if (refresh)
-      BackgroundPixmapFree(dsk->bg);
-
-   if (bg && BackgroundIsNone(bg))
-      bg = NULL;
-
-   if (dsk->bg != bg)
-     {
-	if (dsk->bg)
-	   BackgroundDecRefcount(dsk->bg);
-	if (bg)
-	   BackgroundIncRefcount(bg);
-     }
-
-   dsk->bg = bg;
-
-   if (dsk->viewable)
-      DeskRefresh(dsk);
-
-   ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
-}
-
 Desk               *
 DesktopAt(int x, int y)
 {
@@ -969,7 +1063,7 @@ DeskMove(Desk * dsk, int x, int y)
 	     if (!dd->viewable && v)
 	       {
 		  dd->viewable = 1;
-		  DeskRefresh(_DeskGet(desks.order[i]));
+		  DeskBackgroundRefresh(_DeskGet(desks.order[i]));
 	       }
 	     else if (dd->viewable && !v)
 	       {
@@ -1021,7 +1115,7 @@ DeskEnter(Desk * dsk)
    EGrabServer();
 
    dsk->viewable = 1;
-   DeskRefresh(dsk);
+   DeskBackgroundRefresh(dsk);
    MoveToDeskTop(dsk->num);
 
    desks.previous = desks.current = dsk;
@@ -1156,7 +1250,7 @@ UncoverDesktop(unsigned int desk)
    dsk = _DeskGet(desk);
 
    dsk->viewable = 1;
-   DeskRefresh(dsk);
+   DeskBackgroundRefresh(dsk);
 }
 
 static void
@@ -1226,7 +1320,7 @@ DeskShow(int desk)
    dsk = _DeskGet(desk);
 
    dsk->viewable = 1;
-   DeskRefresh(dsk);
+   DeskBackgroundRefresh(dsk);
    MoveToDeskTop(desk);
 
    if (desk == 0)

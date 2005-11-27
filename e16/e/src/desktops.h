@@ -57,14 +57,15 @@ void                DeskGetArea(const Desk * dsk, int *ax, int *ay);
 void                DeskSetArea(Desk * dsk, int ax, int ay);
 int                 DeskIsViewable(const Desk * dsk);
 void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
-void                DeskRefresh(Desk * dsk);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
 
 void                DeskBackgroundAssign(unsigned int desk, Background * bg);
 Background         *DeskBackgroundGet(const Desk * dsk);
-void                DeskBackgroundSet(Desk * dsk, Background * bg, int refresh);
+void                DeskBackgroundSet(Desk * dsk, Background * bg);
+void                DesksBackgroundFree(Background * bg, int force);
+void                DesksBackgroundRefresh(Background * bg);
 
 void                DeskCurrentGetArea(int *ax, int *ay);
 void                DeskCurrentGotoArea(int ax, int ay);

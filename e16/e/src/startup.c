@@ -108,7 +108,8 @@ StartupWindowsCreate(void)
 
    BackgroundSet(bg, win1, VRoot.w, VRoot.h);
    BackgroundSet(bg, win2, VRoot.w, VRoot.h);
-   BackgroundImagesFree(bg, 1);
+   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
+   BackgroundDestroyByName("STARTUP_BACKGROUND");
 
    EobjMap(init_win1, 0);
    EobjMap(init_win2, 0);
@@ -173,9 +174,6 @@ doStartupWindowsOpen(int val, void *data __UNUSED__)
    EobjWindowDestroy(init_win2);
    init_win1 = NULL;
    init_win2 = NULL;
-
-   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
-   BackgroundDestroyByName("STARTUP_BACKGROUND");
 }
 
 void

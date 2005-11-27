@@ -27,7 +27,6 @@
 #include "desktops.h"
 #include "dialog.h"
 #include "emodule.h"
-#include "hints.h"		/* FIXME - Should not be here */
 #include "iclass.h"
 #include "tclass.h"
 #include "xwin.h"
@@ -55,11 +54,12 @@ struct _background
    ColorModifierClass *cmclass;
 #endif
    char                keepim;
-   unsigned int        ref_count;
+   unsigned int        ref_count;	/* bg */
+   unsigned int        use_count;	/* pmap */
 };
 
 char               *
-BackgroundGetUniqueString(Background * bg)
+BackgroundGetUniqueString(const Background * bg)
 {
    char                s[256];
    const char         *chmap =
@@ -147,17 +147,50 @@ BackgroundGetUniqueString(Background * bg)
 }
 
 void
-BackgroundPixmapFree(Background * bg)
+BackgroundPixmapSet(Background * bg, Pixmap pmap)
 {
-   if (bg && bg->pmap)
+   if (bg->pmap != pmap)
      {
-	imlib_free_pixmap_and_mask(bg->pmap);
-	bg->pmap = 0;
+	if (bg->use_count || bg->pmap != None)
+	   Eprintf("*** BackgroundPixmapSet %s: pmap mismatch %#lx/%#lx\n",
+		   bg->name, bg->pmap, pmap);
+	bg->pmap = pmap;
      }
+   bg->use_count++;
 }
 
 void
-BackgroundImagesFree(Background * bg, int free_pmap)
+BackgroundPixmapUnset(Background * bg, Pixmap pmap)
+{
+   if (bg->pmap != pmap || !bg->use_count)
+     {
+	Eprintf("*** BackgroundPixmapUnset %s: pmap mismatch %#lx/%#lx\n",
+		bg->name, bg->pmap, pmap);
+     }
+   if (bg->use_count)
+      bg->use_count--;
+}
+
+static void
+BackgroundPixmapFree(Background * bg)
+{
+   if (!bg)
+      return;
+
+   if (bg->use_count)
+     {
+	Eprintf("*** BackgroundPixmapFree %s: still referenced(%d)\n",
+		bg->name, bg->use_count);
+     }
+   if (bg->pmap)
+     {
+	imlib_free_pixmap_and_mask(bg->pmap);
+	bg->pmap = None;
+     }
+}
+
+static void
+BackgroundImagesFree(Background * bg)
 {
    if (bg->bg.im)
      {
@@ -171,8 +204,6 @@ BackgroundImagesFree(Background * bg, int free_pmap)
 	imlib_free_image();
 	bg->top.im = NULL;
      }
-   if (free_pmap && bg->pmap)
-      BackgroundPixmapFree(bg);
 }
 
 static void
@@ -185,12 +216,12 @@ BackgroundImagesKeep(Background * bg, int onoff)
    else
      {
 	bg->keepim = 0;
-	BackgroundImagesFree(bg, 0);
+	BackgroundImagesFree(bg);
      }
 }
 
 static void
-BackgroundImagesRemove(Background * bg)
+BackgroundFilesRemove(Background * bg)
 {
    if (bg->bg.file)
       Efree(bg->bg.file);
@@ -208,7 +239,7 @@ BackgroundImagesRemove(Background * bg)
       Efree(bg->top.real_file);
    bg->top.real_file = NULL;
 
-   BackgroundImagesFree(bg, 1);
+   BackgroundImagesFree(bg);
 
    bg->keepim = 0;
 }
@@ -227,7 +258,8 @@ BackgroundDestroy(Background * bg)
      }
 
    RemoveItemByPtr(bg, LIST_TYPE_BACKGROUND);
-   BackgroundImagesRemove(bg);
+   BackgroundFilesRemove(bg);
+   BackgroundPixmapFree(bg);
 
    if (bg->name)
       Efree(bg->name);
@@ -311,6 +343,19 @@ BackgroundDestroyByName(const char *name)
    BackgroundDestroy(FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND));
 }
 
+static void
+BackgroundInvalidate(Background * bg, int refresh)
+{
+   int                 used;
+
+   used = bg->ref_count;
+   if (used)
+      DesksBackgroundFree(bg, 1);
+   BackgroundPixmapFree(bg);
+   if (used && refresh)
+      DesksBackgroundRefresh(bg);
+}
+
 static int
 BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
 		 char keep_aspect, int xjust, int yjust, int xperc,
@@ -383,7 +428,7 @@ BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
    bg->top.yperc = typerc;
 
    if (updated)
-      BackgroundPixmapFree(bg);
+      BackgroundInvalidate(bg, 1);
 
    return updated;
 }
@@ -734,7 +779,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 
  done:
    if (!bg->keepim)
-      BackgroundImagesFree(bg, 0);
+      BackgroundImagesFree(bg);
 
    imlib_context_set_dither(rt);
 
@@ -763,15 +808,20 @@ BackgroundApplyWin(Background * bg, Window win)
 
    BackgroundRealize(bg, win, w, h, 1, &pmap, &pixel);
    if (pmap != None)
-      ESetWindowBackgroundPixmap(win, pmap);
+     {
+	ESetWindowBackgroundPixmap(win, pmap);
+	imlib_free_pixmap_and_mask(pmap);
+     }
    else
-      ESetWindowBackground(win, pixel);
+     {
+	ESetWindowBackground(win, pixel);
+     }
    EClearWindow(win);
 }
 
 /*
  * Apply a background to window.
- * The (scaled) BG pixmap is stored in bg->pmap.
+ * The BG pixmap is stored in bg->pmap.
  */
 void
 BackgroundSet(Background * bg, Window win, unsigned int w, unsigned int h)
@@ -935,6 +985,12 @@ BackgroundTouch(Background * bg)
    bg->last_viewed = time(NULL);
 }
 
+static              time_t
+BackgroundGetTimestamp(const Background * bg)
+{
+   return bg->last_viewed;
+}
+
 const char         *
 BackgroundGetName(const Background * bg)
 {
@@ -969,12 +1025,6 @@ int
 BackgroundIsNone(const Background * bg)
 {
    return (bg) ? !strcmp(bg->name, "NONE") : 1;
-}
-
-static              time_t
-BackgroundGetTimestamp(const Background * bg)
-{
-   return bg->last_viewed;
 }
 
 static Imlib_Image *
@@ -1056,18 +1106,16 @@ BackgroundGetInfoString2(const Background * bg, char *buf, int len)
 }
 
 void
-BackgroundsInvalidate(void)
+BackgroundsInvalidate(int refresh)
 {
    int                 i, num;
-   Desk               *dsk;
+   Background        **lst;
 
-   num = DesksGetNumber();
+   lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    for (i = 0; i < num; i++)
-     {
-	dsk = DeskGet(i);
-	BackgroundPixmapFree(DeskBackgroundGet(dsk));
-	DeskRefresh(dsk);
-     }
+      BackgroundInvalidate(lst[i], refresh);
+   if (lst)
+      Efree(lst);
 }
 
 /*
@@ -1395,8 +1443,7 @@ BackgroundsAccounting(void)
    time_t              now;
    int                 i, num;
    unsigned int        j;
-   Background        **lst;
-   Window              win;
+   Background        **lst, *bg;
    Desk               *dsk;
 
    now = time(NULL);
@@ -1411,38 +1458,16 @@ BackgroundsAccounting(void)
    lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    for (i = 0; i < num; i++)
      {
+	bg = lst[i];
+
 	/* Skip if no pixmap or not timed out */
-	if ((BackgroundGetPixmap(lst[i]) == 0) ||
-	    ((now - BackgroundGetTimestamp(lst[i])) <=
-	     Conf.backgrounds.timeout))
+	if ((bg->pmap == None) ||
+	    ((now - BackgroundGetTimestamp(bg)) <= Conf.backgrounds.timeout))
 	   continue;
 
-	/* Skip if associated with any viewable desktop */
-	for (j = 0; j < DesksGetNumber(); j++)
-	  {
-	     dsk = DeskGet(j);
-	     if (lst[i] == DeskBackgroundGet(dsk) && DeskIsViewable(dsk))
-		goto next;
-	  }
-
-	for (j = 0; j < DesksGetNumber(); j++)
-	  {
-	     dsk = DeskGet(j);
-	     if (lst[i] != DeskBackgroundGet(dsk) || DeskIsViewable(dsk))
-		continue;
-
-	     /* Unviewable desktop - update the virtual root hints */
-	     win = EoGetWin(dsk);
-	     if (!Conf.hints.set_xroot_info_on_root_window)
-		HintsSetRootInfo(win, 0, 0);
-	     ESetWindowBackground(win, 0);
-	     EClearWindow(win);
-	  }
-
-	BackgroundPixmapFree(lst[i]);
-
-      next:
-	;
+	if (bg->ref_count)
+	   DesksBackgroundFree(bg, 0);
+	BackgroundPixmapFree(bg);
      }
    if (lst)
       Efree(lst);
@@ -1453,7 +1478,8 @@ BackgroundsTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
    BackgroundsAccounting();
 /* RemoveTimerEvent("BACKGROUND_ACCOUNTING_TIMEOUT"); */
-   DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 30.0, BackgroundsTimeout, 0, NULL);
+   DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 1.0 * Conf.backgrounds.timeout,
+	BackgroundsTimeout, 0, NULL);
 }
 
 static void
@@ -1518,8 +1544,6 @@ static void         BG_RedrawView(void);
 static void
 CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   unsigned int        i;
-
    if (val < 0)
      {
 	BackgroundImagesKeep(tmp_bg, 0);
@@ -1543,20 +1567,13 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
 	tmp_bg->bg.xperc = tmp_bg_xperc;
 	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
+	if (!tmp_bg_image)
+	   BackgroundFilesRemove(tmp_bg);
 
-	for (i = 0; i < DesksGetNumber(); i++)
-	  {
-	     Desk               *dsk = DeskGet(i);
-
-	     if (DeskBackgroundGet(dsk) == tmp_bg)
-		DeskBackgroundSet(dsk, tmp_bg, 1);
-	  }
+	BackgroundInvalidate(tmp_bg, 1);
 
 	BackgroundCacheMini(tmp_bg, 0, 1);
 	BG_RedrawView();
-
-	if (!tmp_bg_image)
-	   BackgroundImagesRemove(tmp_bg);
      }
 
    autosave();
@@ -1705,7 +1722,7 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
    DialogItemSliderSetVal(bg_sel_slider, 0);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 
-   DeskBackgroundSet(DesksGetCurrent(), tmp_bg, 0);
+   DeskBackgroundSet(DesksGetCurrent(), tmp_bg);
 
    BG_RedrawView();
 
@@ -1743,7 +1760,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	  }
      }
 
-   DeskBackgroundSet(DesksGetCurrent(), bg, 0);
+   DeskBackgroundSet(DesksGetCurrent(), bg);
    if (val == 0)
       BackgroundDestroy(tmp_bg);
    else
@@ -1899,7 +1916,7 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
 	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
 	  {
 	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
-	     DeskBackgroundSet(DesksGetCurrent(), tmp_bg, 0);
+	     DeskBackgroundSet(DesksGetCurrent(), tmp_bg);
 	     autosave();
 	  }
 	Efree(bglist);
@@ -1963,7 +1980,7 @@ CB_BGPrev(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i > 0))
 	  {
 	     BGSettingsGoTo(bglist[i - 1]);
-	     DeskBackgroundSet(DesksGetCurrent(), bglist[i - 1], 0);
+	     DeskBackgroundSet(DesksGetCurrent(), bglist[i - 1]);
 	     break;
 	  }
      }
@@ -1983,7 +2000,7 @@ CB_BGNext(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i < (num - 1)))
 	  {
 	     BGSettingsGoTo(bglist[i + 1]);
-	     DeskBackgroundSet(DesksGetCurrent(), bglist[i + 1], 0);
+	     DeskBackgroundSet(DesksGetCurrent(), bglist[i + 1]);
 	     break;
 	  }
      }
@@ -2511,7 +2528,7 @@ BackgroundSet2(const char *name, const char *params)
    unsigned int        i;
    int                 r, g, b;
    char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
-   int                 updated, tile, keep_aspect, tkeep_aspect;
+   int                 tile, keep_aspect, tkeep_aspect;
    int                 xjust, yjust, xperc, yperc;
    int                 txjust, tyjust, txperc, typerc;
 
@@ -2530,19 +2547,9 @@ BackgroundSet2(const char *name, const char *params)
    bg = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
    if (bg)
      {
-	updated = BackgroundModify(bg, &xclr, bgf, tile, keep_aspect, xjust,
-				   yjust, xperc, yperc, topf, tkeep_aspect,
-				   txjust, tyjust, txperc, typerc);
-	if (updated)
-	  {
-	     for (i = 0; i < DesksGetNumber(); i++)
-	       {
-		  Desk               *dsk = DeskGet(i);
-
-		  if (DeskBackgroundGet(dsk) == bg)
-		     DeskBackgroundSet(dsk, bg, 0);
-	       }
-	  }
+	BackgroundModify(bg, &xclr, bgf, tile, keep_aspect, xjust,
+			 yjust, xperc, yperc, topf, tkeep_aspect,
+			 txjust, tyjust, txperc, typerc);
      }
    else
      {
@@ -2648,7 +2655,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 
 	num = DesksGetCurrentNum();
 	sscanf(p, "%d %n", &num, &len);
-	DeskBackgroundSet(DeskGet(num), bg, 1);
+	DeskBackgroundSet(DeskGet(num), bg);
 	autosave();
      }
    else if (!strncmp(cmd, "xget", 2))
@@ -2694,7 +2701,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 	if (!w[0])
 	   break;
 	i = atoi(w);
-	DeskBackgroundSet(DeskGet(i), bg, 1);
+	DeskBackgroundSet(DeskGet(i), bg);
      }
    autosave();
 }
@@ -2727,13 +2734,7 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 	     bg->cmclass = cm;
 	  }
 
-	BackgroundPixmapFree(bg);
-
-	for (i = 0; i < DesksGetNumber(); i++)
-	  {
-	     if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))
-		DeskRefresh(DeskGet(i));
-	  }
+	BackgroundInvalidate(bg, 1);
      }
 }
 
