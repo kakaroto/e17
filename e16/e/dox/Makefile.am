@@ -6,7 +6,7 @@ bin_PROGRAMS = edox
 
 edox_SOURCES = dox.c dox.h file.c format.c text.c ttfont.c
 
-LDADD = $(IMLIB_LIBS) $(X_LIBS) $(XINERAMA_LIBS) -lX11 -lm
+LDADD = $(IMLIB_LIBS) $(X_LIBS) $(E_X_LIBS) -lX11 -lm
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(IMLIB_CFLAGS) $(X_CFLAGS)
 
