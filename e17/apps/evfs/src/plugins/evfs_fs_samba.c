@@ -281,7 +281,7 @@ Ecore_List** directory_list
 			
 			snprintf(reference->path, size, "%s/%s", command->file_command.files[0]->path, entry->name );
 		
-			printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
+			/*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);*/
 
 			
 			reference->plugin_uri = strdup("smb");		
