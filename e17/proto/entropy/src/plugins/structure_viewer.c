@@ -135,6 +135,32 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 
 }
 
+
+void dnd_enter_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+event_file_core* event = (event_file_core*)user_data;
+	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
+	
+
+	ewl_text_cursor_position_set(EWL_TEXT(event->data), 0);
+	ewl_text_color_apply(EWL_TEXT(event->data), 255, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
+
+	
+	printf("Entered text %p\n", main_win);
+}
+
+void dnd_leave_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+	event_file_core* event = (event_file_core*)user_data;
+	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
+
+	ewl_text_cursor_position_set(EWL_TEXT(event->data), 0);
+	ewl_text_color_apply(EWL_TEXT(event->data), 0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
+
+	
+	printf("Left text %p\n", main_win);
+}
+
+
+
 void row_clicked_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	event_file_core* event = (event_file_core*)user_data;
 	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
@@ -207,6 +233,9 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		
 
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED, row_clicked_callback, event);
+		ewl_callback_append(row, EWL_CALLBACK_DND_ENTER, dnd_enter_callback, event);
+		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
+		
 
 		
 		ecore_list_append(viewer->gui_events, event);
