@@ -326,6 +326,7 @@ extern"C" {
 #include <ewl_paned.h>
 #include <ewl_scrollpane.h>
 #include <ewl_statusbar.h>
+#include <ewl_dnd.h>
 
 #include <ewl_tree.h>
 

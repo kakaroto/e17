@@ -155,6 +155,13 @@ struct Ewl_Event_Mouse_Wheel
 	int dir; /**< Direction mouse wheel scrolled */
 };
 
+typedef struct Ewl_Dnd_Types
+{
+	int num_types;
+	char** types;
+	
+} Ewl_Dnd_Types;
+
 int		ewl_ev_init(void);
 unsigned int 	ewl_ev_modifiers_get();
 void 		ewl_ev_modifiers_set(unsigned int modifiers);

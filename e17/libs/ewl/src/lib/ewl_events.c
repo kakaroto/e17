@@ -21,6 +21,10 @@ int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
 int ewl_ev_x_paste(void *data, int type, void *_ev);
 
 int ewl_ev_dnd_position(void *data, int type, void *_ev);
+int ewl_ev_dnd_enter(void *data, int type, void *_ev);
+int ewl_ev_dnd_leave(void *data, int type, void *_ev);
+int ewl_ev_dnd_drop(void *data, int type, void *_ev);
+int ewl_ev_dnd_selection_notify(void *data, int type, void *_ev);
 #endif
 
 #ifdef ENABLE_EWL_FB
@@ -69,6 +73,14 @@ ewl_ev_init(void)
 		 */
 		ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION,
 					ewl_ev_dnd_position, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER,
+					ewl_ev_dnd_enter, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE,
+					ewl_ev_dnd_leave, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP,
+					ewl_ev_dnd_drop, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY,
+					ewl_ev_dnd_selection_notify, NULL);
 
 		/*
 		 * Finally, register dispatching functions for mouse events.
@@ -498,11 +510,15 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
  * Dispatches the mouse out event to the appropriate ewl window.
  */
 int
-ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e __UNUSED__)
+ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
+	Ecore_X_Event_Selection_Notify *ev = e;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	printf("Paste event received\n");
+	/*Handle everything *except* XDND selection*/
+	if (ev->selection != ECORE_X_SELECTION_XDND) 
+		printf("Paste event received\n");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -536,17 +552,16 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		ewl_window_position_get(EWL_WINDOW(window), &wx, &wy);
 		x = ev->position.x - wx;
 		y = ev->position.y - wy;
-		//printf("Received event at window pos (%d:%d), %d:%d\n",CURRENT_X(window), CURRENT_Y(window), x,y);
 
 		/*
 		 * Look for the child here
 		 */
 		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) {
-			//printf("Found embed, feeding..\n");
+			
+			/*First see if we need to send an 'enter' to the widget*/
 			ewl_embed_dnd_position_feed(embed, x, y);
 		} else {
-			//printf("Could not find embed for window..\n");
 		}
 		
 		rect.x = 0;
@@ -557,6 +572,156 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 	}
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the dnd 'enter' information
+ * @return Returns TRUE on success or FALSE on failure.
+ * @brief Handles the data for an XDND position event 
+ *
+ * Tells an XDND source if we can accept DND at this window location
+ */
+int
+ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Window *window;
+	Ecore_X_Event_Xdnd_Enter *ev;
+	Ecore_X_Rectangle rect;
+	int i=0;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	ev = e;
+
+	window = ewl_window_window_find((void *)ev->win);
+	if (window) {
+		/*printf("Assigned enter types to window - '%s'\n", ev->types[0]);*/
+		window->dnd_types.num_types = ev->num_types;
+		window->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
+		
+		for (i=0;i<ev->num_types;i++) 
+			window->dnd_types.types[i] = strdup(ev->types[i]);
+	}
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the dnd 'leave' information
+ * @return Returns TRUE on success or FALSE on failure.
+ * @brief Handles the data for an XDND position event 
+ *
+ * Tells an XDND source if we can accept DND at this window location
+ */
+int
+ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Window *window;
+	Ecore_X_Event_Xdnd_Leave *ev;
+	int i;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	ev = e;
+
+	window = ewl_window_window_find((void *)ev->win);
+	if (window) {
+		if (window->dnd_types.num_types > 0) {
+			for (i=0;i<window->dnd_types.num_types;i++)		
+				free(window->dnd_types.types[i]);
+
+			free(window->dnd_types.types);
+			window->dnd_types.types = NULL;
+		}
+	}
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the dnd 'drop' information
+ * @return Returns TRUE on success or FALSE on failure.
+ * @brief Handles the data for an XDND position event 
+ *
+ * A notification from a DND source that we have accepted a drop
+ */
+int
+ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Window *window;
+	Ecore_X_Event_Xdnd_Drop *ev;
+	int i;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	ev = e;
+
+	window = ewl_window_window_find((void *)ev->win);
+	if (window) {
+		/*printf("EWL got a DND drop event..\n");*/
+
+		/*Request a DND data request*/
+		/*TODO this only supports retrieval of the first type in the request*/
+		if (window->dnd_types.num_types > 0)
+			ecore_x_selection_xdnd_request(ev->win, 
+				window->dnd_types.types[0]);
+
+	}
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the dnd 'selection' information
+ * @return Returns TRUE on success or FALSE on failure.
+ * @brief Handles the data for an XDND selection notify event 
+ *
+ * A notification from a DND source that the selection data is ready
+ */
+int
+ewl_ev_dnd_selection_notify(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Window *window;
+	Ecore_X_Event_Selection_Notify *ev;
+	int i;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+
+	ev = e;
+
+	if (ev->selection == ECORE_X_SELECTION_XDND) {
+		/*printf("EWL DND selection notify\n");*/
+
+		window = ewl_window_window_find((void *)ev->win);
+		if (window) {
+			/*printf(" ...Got a winow target for the DND selection event..\n");*/
+
+			/*printf("Content: %d\n",ev->content);
+			if (ev->content == ECORE_X_SELECTION_CONTENT_FILES) {
+				Ecore_X_Selection_Data_Files* files = ev->data;
+				printf("We've got some files! - '%s'\n", files->files[0]);
+			} else {
+				Ecore_X_Selection_Data_Files* files = ev->data;
+				printf("We've got some files! - '%s'\n", files->files[0]);
+			}*/
+		}
+
+	}
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
 
 #endif
 

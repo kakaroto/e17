@@ -861,6 +861,7 @@ void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_dat
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	Ewl_IconBox_Icon* list_item = ib->select_icon;
 	Ewl_Event_Mouse_Move *ev = ev_data;
+	Ewl_Dnd_Types* types;
 
 	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
@@ -873,6 +874,14 @@ void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_dat
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
 	ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
 				  (ev->y - iby) + abs(py-iby) - (fh/2));
+
+	/*Get types*/
+	if ( (types = ewl_dnd_types_for_widget_get(EWL_WIDGET(ib)))) {
+		printf("We have %d types!\n", types->num_types);
+		if (types->num_types > 0) {
+			printf("First type is '%s'\n", types->types[0]);
+		}
+	}
 	
 
 	
@@ -1174,20 +1183,20 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 	
 
 	if (REALIZED(ib) && VISIBLE(ib)) { 
-		ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);
+		/*ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);*/
 		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
 		ewl_iconbox_icon_arrange(ib); 
 
 		if (ib->background) {
 			int w,h;
-			w = CURRENT_W(ib);
-			h= CURRENT_H(ib);
+			w = CURRENT_W(ib->ewl_iconbox_pane_inner);
+			h= CURRENT_H(ib->ewl_iconbox_pane_inner);
 			ewl_object_position_request(EWL_OBJECT(ib->background),0,0);
 			ewl_object_custom_size_set(EWL_OBJECT(ib->background),w,h);
 
 		}
 		
-		ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
+		/*ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);*/
 
 	}
 }

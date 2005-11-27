@@ -877,7 +877,7 @@ ewl_evas_object_destroy(Evas_Object *obj)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-#define EWL_GC_LIMIT 300
+#define EWL_GC_LIMIT 300 
 
 /**
  * @return Returns TRUE if objects remain to be freed, otherwise false.

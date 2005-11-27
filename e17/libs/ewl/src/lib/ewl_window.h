@@ -49,6 +49,9 @@ struct Ewl_Window
 	int             x; /**< Screen relative horizontal position of window */
 	int             y; /**< Screen relative vertical position of window */
 	char           *render; /**< The render engine in use */
+
+	Ewl_Dnd_Types dnd_types;
+	Ewl_Widget* dnd_last_position;
 };
 
 Ewl_Widget     *ewl_window_new(void);

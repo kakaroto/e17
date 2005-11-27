@@ -29,6 +29,7 @@ EWLHEADERS = \
 	ewl_datepicker.h \
 	ewl_debug.h \
 	ewl_dialog.h \
+	ewl_dnd.h \
 	ewl_embed.h \
 	ewl_entry.h \
 	ewl_enums.h \
@@ -92,6 +93,7 @@ EWLSOURCES= \
 	ewl_container.c \
 	ewl_datepicker.c \
 	ewl_dialog.c \
+	ewl_dnd.c \
 	ewl_embed.c \
 	ewl_entry.c \
 	ewl_events.c \
