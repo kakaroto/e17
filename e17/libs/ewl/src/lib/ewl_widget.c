@@ -12,6 +12,8 @@ static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part,
 						char *text);
 
+/* static int edjes = 0; */
+
 /**
  * @brief Allocate a new widget.
  * @return Returns a newly allocated widget on success, NULL on failure.
@@ -539,12 +541,10 @@ ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	if (w->appearance && !strcmp(appearance, w->appearance))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
-	if (w->appearance)
-		ecore_string_release(w->appearance);
-
 	/*
 	 * The base appearance is used for determining the theme key of the
-	 * widget.
+	 * widget. Intentionally lose a reference to the ecore string to keep a
+	 * reference cached for later re-use.
 	 */
 	w->appearance = ecore_string_instance(appearance);
 	if (!w->appearance)
@@ -644,16 +644,16 @@ ewl_widget_appearance_path_get(Ewl_Widget * w)
 void
 ewl_widget_state_set(Ewl_Widget *w, char *state)
 {
-	char *old;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("state", state);
 	DCHECK_TYPE("w", w, "widget");
 
-	old = w->bit_state;
+	/*
+	 * Intentionally lose a reference to the ecore string to keep a
+	 * reference cached for later re-use.
+	 */
 	w->bit_state = ecore_string_instance(state);
-	if (old) ecore_string_release(old);
 
 	if (w->theme_object)
 		edje_object_signal_emit(w->theme_object, state, "EWL");
@@ -1240,8 +1240,10 @@ ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
 	tmp = malloc(sizeof(char) * len);
 	sprintf(tmp, "%s:%s:", tmp2, inherit);
 
-	if (widget->inheritance)
-		ecore_string_release(widget->inheritance);
+	/*
+	 * Intentionally lose a reference to the ecore string to keep a
+	 * reference cached for later re-use.
+	 */
 	widget->inheritance = ecore_string_instance(tmp);
 
 	FREE(tmp);
