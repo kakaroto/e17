@@ -365,6 +365,11 @@ EWin               *EwinFindByString(const char *win, int type);
 EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(const EWin * ewin, int *num);
 
+/* size.c */
+void                MaxSize(EWin * ewin, const char *resize_type);
+void                MaxWidth(EWin * ewin, const char *resize_type);
+void                MaxHeight(EWin * ewin, const char *resize_type);
+
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);
 EWin               *const *EwinListFocusGet(int *num);

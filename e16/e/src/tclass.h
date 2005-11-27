@@ -41,6 +41,8 @@ typedef struct _textstate TextState;
 #define FONT_TO_UP    2
 #define FONT_TO_LEFT  3
 
+typedef struct _efont Efont;
+
 struct _textstate
 {
    char               *fontname;
@@ -98,5 +100,18 @@ void                TextSize(TextClass * tclass, int active, int sticky,
 void                TextDraw(TextClass * tclass, Window win, int active,
 			     int sticky, int state, const char *text, int x,
 			     int y, int w, int h, int fsize, int justification);
+
+/* ttfont.c */
+void                Efont_extents(Efont * f, const char *text,
+				  int *font_ascent_return,
+				  int *font_descent_return, int *width_return,
+				  int *max_ascent_return,
+				  int *max_descent_return, int *lbearing_return,
+				  int *rbearing_return);
+Efont              *Efont_load(const char *file, int size);
+void                Efont_free(Efont * f);
+void                EFont_draw_string(Drawable win, GC gc, int x, int y,
+				      const char *text, Efont * f,
+				      Visual * vis, Colormap cm);
 
 #endif /* _TCLASS_H */

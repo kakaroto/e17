@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "aclass.h"
 #include "backgrounds.h"
 #include "buttons.h"
 #include "desktops.h"
@@ -30,6 +31,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "hints.h"
+#include "iclass.h"
 #include "tooltips.h"
 #include "xwin.h"
 #include <time.h>

@@ -26,17 +26,21 @@
 #define _BUTTONS_H_
 
 #include "eobj.h"
-#include "iclass.h"
-#include "tclass.h"
+
+struct _actionclass;
+struct _desk;
+struct _imageclass;
+struct _textclass;
 
 typedef struct _button Button;
-struct _desk;
 
-typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
+typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev,
+				    struct _actionclass * ac);
 
 /* buttons.c */
-Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
-				 ActionClass * ac, TextClass * tc,
+Button             *ButtonCreate(const char *name, int id,
+				 struct _imageclass *ic,
+				 struct _actionclass *ac, struct _textclass *tc,
 				 const char *label, char ontop, int flags,
 				 int minw, int maxw, int minh, int maxh, int xo,
 				 int yo, int xa, int xr, int ya, int yr,

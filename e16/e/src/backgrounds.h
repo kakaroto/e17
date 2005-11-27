@@ -25,6 +25,8 @@
 #ifndef _BACKGROUNDS_H_
 #define _BACKGROUNDS_H_
 
+typedef struct _background Background;
+
 /* backgrounds.c */
 char               *BackgroundGetUniqueString(const Background * bg);
 void                BackgroundPixmapSet(Background * bg, Pixmap pmap);

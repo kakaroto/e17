@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "tclass.h"
 #include "xwin.h"
 
 struct _efont
@@ -30,15 +31,15 @@ struct _efont
 };
 
 static void
-ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
+ImlibSetFgColorFromGC(GC gc, Colormap cm)
 {
    XGCValues           xgcv;
    XColor              xclr;
    int                 r, g, b;
 
-   XGetGCValues(dpy, gc, GCForeground, &xgcv);
+   XGetGCValues(disp, gc, GCForeground, &xgcv);
    xclr.pixel = xgcv.foreground;
-   XQueryColor(dpy, cm, &xclr);
+   XQueryColor(disp, cm, &xclr);
    EGetColor(&xclr, &r, &g, &b);
    imlib_context_set_color(r, g, b, 255);
 }
@@ -46,6 +47,7 @@ ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
 static void
 EFonts_Init(void)
 {
+#if !TEST_TTFONT
    char                s[4096];
    char              **lst;
    int                 i, num;
@@ -56,12 +58,12 @@ EFonts_Init(void)
    for (i = 0; i < num; i++)
       imlib_add_path_to_font_path(lst[i]);
    StrlistFree(lst, num);
+#endif
 }
 
 void
-EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
-		  const char *text, Efont * f, Visual * vis __UNUSED__,
-		  Colormap cm)
+EFont_draw_string(Drawable win, GC gc, int x, int y, const char *text,
+		  Efont * f, Visual * vis __UNUSED__, Colormap cm)
 {
    Imlib_Image         im;
    int                 w, h, ascent, descent;
@@ -74,7 +76,7 @@ EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
    imlib_context_set_image(im);
 
    imlib_context_set_font(f->face);
-   ImlibSetFgColorFromGC(dpy, gc, cm);
+   ImlibSetFgColorFromGC(gc, cm);
    imlib_text_draw(0, 0, text);
    imlib_render_image_on_drawable(x, y - ascent);
    imlib_free_image();
@@ -143,6 +145,7 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 }
 
 #if TEST_TTFONT
+#include <time.h>
 
 Display            *disp;
 
@@ -165,19 +168,19 @@ main(int argc, char **argv)
    win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0,
 			     0, 0);
    XMapWindow(disp, win);
-   ESync();
+   XSync(disp, False);
 
    gcv.subwindow_mode = IncludeInferiors;
-   gc = ECreateGC(disp, win, GCSubwindowMode, &gcv);
+   gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
    for (;; j++)
      {
 	for (i = 3; i < argc; i++)
 	  {
-	     XSetForeground(disp, gc, rand() << 16 | rand());
+	     XSetForeground(disp, gc, (rand() << 16 | rand()) & 0xffffff);
 	     f = Efont_load(argv[i], atoi(argv[1]));
 	     if (f)
-		EFont_draw_string(disp, win, gc, 20,
-				  atoi(argv[1]) * (i - 2), argv[2], f,
+		EFont_draw_string(win, gc, 20, atoi(argv[1]) * (i - 2),
+				  argv[2], f,
 				  DefaultVisual(disp, DefaultScreen(disp)),
 				  DefaultColormap(disp, DefaultScreen(disp)));
 	     Efont_free(f);
@@ -187,18 +190,12 @@ main(int argc, char **argv)
    return 0;
 }
 
-#ifndef USE_ECORE_X
 void
-EGrabServer(void)
+EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
 {
-   XGrabServer(disp);
+   *pr = pxc->red >> 8;
+   *pg = pxc->green >> 8;
+   *pb = pxc->blue >> 8;
 }
 
-void
-EUngrabServer(void)
-{
-   XUngrabServer(disp);
-   XFlush(disp);
-}
-#endif
 #endif

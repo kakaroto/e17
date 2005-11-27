@@ -28,6 +28,8 @@
 #include "eobj.h"
 
 typedef struct _desk Desk;
+
+struct _background;
 struct _button;
 
 struct _desk
@@ -36,7 +38,7 @@ struct _desk
    unsigned int        num;
    char                viewable;
    char                bg_isset;
-   Background         *bg;
+   struct _background *bg;
    struct _button     *tag;
    int                 current_area_x;
    int                 current_area_y;
@@ -61,11 +63,12 @@ void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
 
-void                DeskBackgroundAssign(unsigned int desk, Background * bg);
-Background         *DeskBackgroundGet(const Desk * dsk);
-void                DeskBackgroundSet(Desk * dsk, Background * bg);
-void                DesksBackgroundFree(Background * bg, int force);
-void                DesksBackgroundRefresh(Background * bg);
+void                DeskBackgroundAssign(unsigned int desk,
+					 struct _background *bg);
+struct _background *DeskBackgroundGet(const Desk * dsk);
+void                DeskBackgroundSet(Desk * dsk, struct _background *bg);
+void                DesksBackgroundFree(struct _background *bg, int force);
+void                DesksBackgroundRefresh(struct _background *bg);
 
 void                DeskCurrentGetArea(int *ax, int *ay);
 void                DeskCurrentGotoArea(int ax, int ay);

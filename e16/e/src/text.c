@@ -401,26 +401,25 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  EFont_draw_string(disp, drawable, gc, offset_x + 1,
-				    offset_y + 1, lines[i], ts->efont,
-				    VRoot.vis, VRoot.cmap);
+		  EFont_draw_string(drawable, gc, offset_x + 1, offset_y + 1,
+				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  EFont_draw_string(disp, drawable, gc, offset_x - 1, offset_y,
+		  EFont_draw_string(drawable, gc, offset_x - 1, offset_y,
 				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(disp, drawable, gc, offset_x + 1, offset_y,
+		  EFont_draw_string(drawable, gc, offset_x + 1, offset_y,
 				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y - 1,
+		  EFont_draw_string(drawable, gc, offset_x, offset_y - 1,
 				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
-		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y + 1,
+		  EFont_draw_string(drawable, gc, offset_x, offset_y + 1,
 				    lines[i], ts->efont, VRoot.vis, VRoot.cmap);
 	       }
 	     EAllocColor(&ts->fg_col);
 	     XSetForeground(disp, gc, ts->fg_col.pixel);
-	     EFont_draw_string(disp, drawable, gc, offset_x, offset_y, lines[i],
+	     EFont_draw_string(drawable, gc, offset_x, offset_y, lines[i],
 			       ts->efont, VRoot.vis, VRoot.cmap);
 
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,

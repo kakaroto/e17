@@ -22,10 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "aclass.h"
 #include "backgrounds.h"
 #include "buttons.h"
 #include "conf.h"
+#include "iclass.h"
 #include "menus.h"
+#include "tclass.h"
 #include "tooltips.h"
 
 #define SKIP_If_EXISTS(name, type) \

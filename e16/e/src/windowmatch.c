@@ -28,7 +28,7 @@
 #include "ewins.h"
 #include "ewin-ops.h"
 
-static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);
+typedef struct _windowmatch WindowMatch;
 
 struct _windowmatch
 {
@@ -63,6 +63,8 @@ struct _windowmatch
 #define MATCH_OP_BORDER         1
 #define MATCH_OP_ICON           2
 #define MATCH_OP_WINOP          3
+
+static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);
 
 static const char  *MatchType[] = {
    NULL, "Title", "Name", "Class", "Size", "Width", "Height", "Prop", NULL

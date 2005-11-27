@@ -25,13 +25,15 @@
 #ifndef _TOOLTIPS_H_
 #define _TOOLTIPS_H_
 
+struct _actionclass;
+
 typedef struct _tooltip ToolTip;
 
-typedef ActionClass *(CB_GetAclass) (void *data);
+typedef struct _actionclass *(CB_GetAclass) (void *data);
 
 int                 TooltipConfigLoad(FILE * fs);
 void                TooltipShow(ToolTip * tt, const char *text,
-				ActionClass * ac, int x, int y);
+				struct _actionclass *ac, int x, int y);
 void                TooltipHide(ToolTip * tt);
 
 void                TooltipsSetPending(int type, CB_GetAclass * func,

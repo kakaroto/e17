@@ -258,11 +258,7 @@ struct _textclass;
 struct _textstate;
 
 typedef struct _ewin EWin;
-typedef struct _background Background;
 typedef struct _ecursor ECursor;
-typedef struct _efont Efont;
-typedef struct _action Action;
-typedef struct _actionclass ActionClass;
 
 typedef struct _client Client;
 
@@ -327,7 +323,7 @@ typedef struct _winpart
 {
    Geometry            geom;
    struct _imageclass *iclass;
-   ActionClass        *aclass;
+   struct _actionclass *aclass;
    struct _textclass  *tclass;
    ECursor            *ec;
    signed char         ontop;
@@ -347,7 +343,7 @@ typedef struct _border
    char                shadedir;
    char                throwaway;
    unsigned int        ref_count;
-   ActionClass        *aclass;
+   struct _actionclass *aclass;
 }
 Border;
 
@@ -656,36 +652,6 @@ RectBox;
 /*
  * Function prototypes
  */
-
-/* aclass.c */
-int                 AclassConfigLoad(FILE * fs);
-ActionClass        *ActionclassCreate(const char *name, int global);
-void                ActionclassDestroy(ActionClass * ac);
-Action             *ActionCreate(char event, char anymod, int mod, int anybut,
-				 int but, char anykey, const char *key,
-				 const char *tooltipstring);
-void                ActionAddTo(Action * aa, const char *params);
-void                ActionclassAddAction(ActionClass * ac, Action * aa);
-void                ActionclassSetTooltipString(ActionClass * ac,
-						const char *tts);
-void                ActionclassIncRefcount(ActionClass * ac);
-void                ActionclassDecRefcount(ActionClass * ac);
-const char         *ActionclassGetName(ActionClass * ac);
-const char         *ActionclassGetTooltipString(ActionClass * ac);
-int                 ActionclassGetActionCount(ActionClass * ac);
-Action             *ActionclassGetAction(ActionClass * ac, int ix);
-int                 ActionclassEvent(ActionClass * ac, XEvent * ev,
-				     EWin * ewin);
-int                 ActionclassesGlobalEvent(XEvent * ev);
-
-const char         *ActionGetTooltipString(Action * aa);
-int                 ActionGetAnybutton(Action * aa);
-int                 ActionGetEvent(Action * aa);
-int                 ActionGetButton(Action * aa);
-int                 ActionGetModifiers(Action * aa);
-
-void                GrabButtonGrabs(EWin * ewin);
-void                UnGrabButtonGrabs(EWin * ewin);
 
 /* actions.c */
 int                 ActionsSuspend(void);
@@ -1089,11 +1055,6 @@ void                SettingsComposite(void);
 void                MapUnmap(int start);
 void                SetupX(const char *dstr);
 
-/* size.c */
-void                MaxSize(EWin * ewin, const char *resize_type);
-void                MaxWidth(EWin * ewin, const char *resize_type);
-void                MaxHeight(EWin * ewin, const char *resize_type);
-
 /* slideouts.c */
 int                 SlideoutsConfigLoad(FILE * fs);
 
@@ -1117,25 +1078,10 @@ Qentry             *GetHeadTimerQueue(void);
 void                HandleTimerEvent(void);
 int                 RemoveTimerEvent(const char *name);
 
-/* ttfont.c */
-void                Efont_extents(Efont * f, const char *text,
-				  int *font_ascent_return,
-				  int *font_descent_return, int *width_return,
-				  int *max_ascent_return,
-				  int *max_descent_return, int *lbearing_return,
-				  int *rbearing_return);
-Efont              *Efont_load(const char *file, int size);
-void                Efont_free(Efont * f);
-void                EFont_draw_string(Display * disp, Drawable win, GC gc,
-				      int x, int y, const char *text, Efont * f,
-				      Visual * vis, Colormap cm);
-
 /* warp.c */
 void                WarpFocus(int delta);
 
 /* windowmatch.c */
-typedef struct _windowmatch WindowMatch;
-
 int                 WindowMatchConfigLoad(FILE * fs);
 Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);

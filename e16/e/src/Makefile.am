@@ -16,6 +16,7 @@ endif
 e16_SOURCES = \
 	E.h			\
 	aclass.c		\
+	aclass.h		\
 	actions.c		\
 	alert.c			\
 	arrange.c		\
