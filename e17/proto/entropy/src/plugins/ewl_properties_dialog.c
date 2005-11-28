@@ -11,6 +11,22 @@ void
 	 ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
+
+void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+
+
+void ewl_properties_dialog_openwith_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+	Ewl_Widget* file_dialog = ewl_filedialog_new();
+	Ewl_Widget* window = ewl_window_new();
+
+	ewl_filedialog_type_set(EWL_FILEDIALOG(file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
+        ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, NULL);
+	ewl_container_child_append(EWL_CONTAINER(window), file_dialog);
+	ewl_widget_show(file_dialog);
+	ewl_widget_show(window);
+
+}
+
 void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	Ewl_Widget* window;
 	Ewl_Widget* vbox;
@@ -99,6 +115,9 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 
 
+
+
+
 	text = ewl_text_new();
 	if (strlen(file_stat->file->mime_type)) {
 		ewl_text_text_set(EWL_TEXT(text), file_stat->file->mime_type);
@@ -108,6 +127,13 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
+
+	button = ewl_button_new();
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_properties_dialog_openwith_cb, NULL);
+	ewl_button_label_set(EWL_BUTTON(button), "Open with..");
+	ewl_object_custom_size_set(EWL_OBJECT(button), 70, 10);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_widget_show(button);
 	/*--------------------------------*/
 
 
