@@ -23,7 +23,7 @@ LAYOUT_ETK_L =
 
 pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L)
 
-ewl_local_icon_la_SOURCES      = ewl_icon_local_viewer.c $(top_srcdir)/src/entropy_debug.c
+ewl_local_icon_la_SOURCES      = ewl_icon_local_viewer.c ewl_properties_dialog.c $(top_srcdir)/src/entropy_debug.c
 ewl_local_icon_la_CFLAGS       = @EWL_CFLAGS@
 ewl_local_icon_la_LDFLAGS      = -module -avoid-version
 ewl_local_icon_la_LIBADD       = @EWL_LIBS@
