@@ -94,8 +94,15 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
+	if (!ecore_string_init()) {
+		DERROR("Could not init ecore strings....\n");
+		ecore_shutdown();
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
+	}
+
 	if (!edje_init()) {
 		DERROR("Could not init edje....\n");
+		ecore_string_shutdown();
 		ecore_shutdown();
 		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
@@ -275,6 +282,8 @@ ewl_shutdown(void)
 	if (use_engine & EWL_ENGINE_FB)
 		ecore_fb_shutdown();
 #endif
+
+	ecore_string_shutdown();
 
 	ecore_shutdown();
 
