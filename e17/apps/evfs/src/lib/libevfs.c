@@ -168,7 +168,8 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	Ecore_List* reserved = ecore_dlist_new();
 	Ecore_List* plugin = ecore_dlist_new();
 	
-	char* dup_uri = strdup(uri);
+	char* dup_uri = malloc(strlen(uri) + 2);
+	
 	/*dup_uri = realloc(dup_uri, strlen(uri)+2); 
 	strcat(dup_uri," ");*/
 	
@@ -182,6 +183,8 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	int j=1;
 	char c='1';
 	int len=0;
+
+	snprintf(dup_uri, strlen(uri)+1, "%s ", uri);
 
 	ecore_list_append(plugin, "smb"); /*Shift these to register when a plugin registers*/
 	ecore_list_append(plugin, "posix");
@@ -198,7 +201,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	ecore_list_append(reserved, "#");
 	ecore_list_append(reserved, ";");
 
-	//printf ("Lexing '%s'\n", dup_uri);
+	printf ("Lexing '%s'\n", dup_uri);
 	//printf("Strlen(uri): %d\n", strlen(uri));
 
 	while (j <= strlen(dup_uri)) {
@@ -207,7 +210,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		
 		strncpy(tmp_tok, l_uri, 3);
 		tmp_tok[3] = '\0';
-		/*printf("Current token is: '%s'\n", tmp_tok);*/
+		//printf("Current token is: '%s'\n", tmp_tok);
 			
 		/*Check if it's an operator*/
 		ecore_list_goto_first(reserved);
@@ -218,11 +221,12 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 				len=strlen(cmp);
 				i = 0;
 
-				/*printf("L_URI becomes '%s'\n", l_uri);*/
+				//printf("L_URI becomes '%s'\n", l_uri);
 				token = NEW(evfs_uri_token);
 				token->token_s = strdup(cmp);
 				token->type = EVFS_URI_TOKEN_OPERATOR;
 				ecore_dlist_append(tokens, token);
+				bzero(tmp_tok, 255);
 
 				goto cont_loop;
 			}
@@ -231,7 +235,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		/*Check if it's a keyword*/
 		strncpy(tmp_tok, l_uri, i);
 		tmp_tok[i] = '\0';
-		/*printf("Current token (keyword match) is: '%s'\n", tmp_tok);*/
+		//printf("Current token (keyword match) is: '%s'\n", tmp_tok);
 	
 		ecore_list_goto_first(plugin);
 		while ( (cmp = ecore_list_next(plugin))) {
@@ -240,12 +244,13 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 
 				l_uri += strlen(cmp);			
 				i = 0;
-				/*printf("L_URI becomes '%s'\n", l_uri);*/
+				//printf("L_URI becomes '%s'\n", l_uri);
 
 				token = NEW(evfs_uri_token);
 				token->token_s = strdup(cmp);
 				token->type = EVFS_URI_TOKEN_KEYWORD;
 				ecore_dlist_append(tokens, token); 
+				bzero(tmp_tok,255);
 				
 				goto cont_loop; /*Eww goto - but we're in two while loops*/
 			}
@@ -260,13 +265,14 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 			
 			tmp_tok[i] = '\0';
 			
-			/*printf ("Looks like a string..\n");*/
+			//printf ("Looks like a string..\n");
 			//printf("Found string: '%s', i is %d, j is %d, strlen(dup_uri) is %d\n", tmp_tok,i,j,strlen(dup_uri));
 		
 			token = NEW(evfs_uri_token);
 			token->token_s = strdup(tmp_tok);
 			token->type = EVFS_URI_TOKEN_STRING;			
 			ecore_dlist_append(tokens, token);
+			bzero(tmp_tok, 255);
 			
 			l_uri += i;
 			i=0;
@@ -288,6 +294,19 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	}
 
 	lexer_done:
+
+	/*This is really evil - we assume the last token is a string*/
+	/*There is something wrong with the offsets above if this is
+	 * the case*/
+	if (strlen(tmp_tok) > 0) {
+		token = NEW(evfs_uri_token);
+		token->token_s = strdup(tmp_tok);
+		token->type = EVFS_URI_TOKEN_STRING;			
+		ecore_dlist_append(tokens, token);
+	}		
+
+	
+	
 	free(dup_uri);
 	return tokens;	
 }
