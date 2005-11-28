@@ -5,6 +5,10 @@
 
 Ewl_Dnd_Types* ewl_dnd_types_for_widget_get(Ewl_Widget* widget)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_TYPE("widget", widget, "widget");
+
+	
 	Ewl_Widget* parent = NULL;
 	
 	/*We need to get the top-level window widget.  Note

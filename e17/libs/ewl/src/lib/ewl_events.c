@@ -632,9 +632,9 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (window) {
 		if (window->dnd_types.num_types > 0) {
 			for (i=0;i<window->dnd_types.num_types;i++)		
-				free(window->dnd_types.types[i]);
+				FREE(window->dnd_types.types[i]);
 
-			free(window->dnd_types.types);
+			FREE(window->dnd_types.types);
 			window->dnd_types.types = NULL;
 		}
 	}
