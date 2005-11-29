@@ -775,36 +775,76 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part, char *text)
 void
 ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part, char *text)
 {
-	char *key, *value, *old_value;
+	int i;
+	Ewl_Pair *match = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("part", part);
 	DCHECK_TYPE("w", w, "widget");
 
-	if (!(w->theme_text)) {
-		w->theme_text = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		ecore_hash_set_free_key(w->theme_text, free);
-		ecore_hash_set_free_value(w->theme_text, free);
+	/*
+	 * Check for an existing instance of the part key.
+	 */
+	if (w->theme_text.list) {
+		if (w->theme_text.direct) {
+			match = EWL_PAIR(w->theme_text.list);
+			if (strcmp(part, match->key))
+				match = NULL;
+		}
+		else {
+			for (i = 0; i < w->theme_text.len; i++) {
+				Ewl_Pair *current = w->theme_text.list[i];
+				if (!strcmp(current->key, part)) {
+					match = current;
+					break;
+				}
+			}
+		}
 	}
 
-	old_value = ecore_hash_get(w->theme_text, part);
+	/*
+	 * Part key exists and the value is the same as the current value.
+	 */
+	if (match) {
+	       	if (!strcmp(text, match->value))
+			DRETURN(DLEVEL_STABLE);
 
-	if (old_value && text && !strcmp(old_value, text))
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		IF_FREE(match->value);
+	}
+	else {
+		match = NEW(Ewl_Pair, 1);
+		if (!match)
+			DRETURN(DLEVEL_STABLE);
+		match->key = ecore_string_instance(part);
+		w->theme_text.len++;
+
+		if (!w->theme_text.list) {
+			w->theme_text.direct = 1;
+			w->theme_text.list = (Ewl_Pair **)match;
+		}
+		else {
+			if (w->theme_text.direct) {
+				Ewl_Pair *old = EWL_PAIR(w->theme_text.list);
+				w->theme_text.list = NEW(Ewl_Pair *, 2);
+				w->theme_text.list[0] = old;
+			}
+			else {
+				w->theme_text.list = realloc(w->theme_text.list,
+						sizeof(Ewl_Pair) *
+						w->theme_text.len);
+			}
+			w->theme_text.list[w->theme_text.len - 1] = match;
+		}
+	}
 
 	/*
 	 * What should be the default if you enter NULL? A blank string?
 	 * Revert to the text specified in the Edje? Use blank for now.
 	 */
-	value = strdup( text ? text : "" );
+	match->value = strdup( text ? text : "" );
 
-	if (old_value) key = part;
-	else key = strdup(part);
-
-	ecore_hash_set(w->theme_text, key, value);
-
-	ewl_widget_appearance_part_text_apply(w, key, value);
+	ewl_widget_appearance_part_text_apply(w, match->key, match->value);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1594,9 +1634,22 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		w->theme = NULL;
 	}
 
-	if (w->theme_text) {
-		ecore_hash_destroy(w->theme_text);
-		w->theme_text = NULL;
+	if (w->theme_text.list) {
+		if (w->theme_text.direct) {
+			ecore_string_release(EWL_PAIR(w->theme_text.list)->key);
+			FREE(EWL_PAIR(w->theme_text.list)->value);
+		}
+		else {
+			int i;
+			for (i = 0; i < w->theme_text.len; i++) {
+				ecore_string_release(w->theme_text.list[i]->key);
+				FREE(w->theme_text.list[i]->value);
+				FREE(w->theme_text.list[i]);
+			}
+		}
+
+		FREE(w->theme_text.list);
+		w->theme_text.len = 0;
 	}
 
 	if (w->data) {
@@ -1730,18 +1783,26 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		 * FIXME: These should probably be ported to an array rather
 		 * than a full hash.
 		 */
-		if (w->theme_object && w->theme_text) {
-		       char *key;
-		       Ecore_List *keys = ecore_hash_keys(w->theme_text);
+		if (w->theme_object && w->theme_text.list) {
+			char *key, *value;
 
-		       ecore_list_goto_first(keys);
-		       while ((key = (char *)ecore_list_next(keys))) {
-			       char *value = ecore_hash_get(w->theme_text, key);
-			       /* printf("Setting text %s: %s\n", key, value); */
-			       ewl_widget_appearance_part_text_apply(w, key, value);
-		       }
-		       ecore_list_destroy(keys);
-	       }
+			if (w->theme_text.direct) {
+				key = EWL_PAIR(w->theme_text.list)->key;
+				value = EWL_PAIR(w->theme_text.list)->value;
+				ewl_widget_appearance_part_text_apply(w,
+						key, value);
+					
+			}
+			else {
+				int i;
+				for (i = 0; i < w->theme_text.len; i++) {
+					key = w->theme_text.list[i]->key;
+					value = w->theme_text.list[i]->value;
+					ewl_widget_appearance_part_text_apply(w,
+							key, value);
+				}
+			}
+		}
 	}
 
 	/*

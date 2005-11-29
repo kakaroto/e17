@@ -22,6 +22,22 @@ struct Ewl_Attach_List
 	unsigned int len:31;
 };
 
+typedef struct Ewl_Pair Ewl_Pair;
+#define EWL_PAIR(p) ((Ewl_Pair *)p)
+struct Ewl_Pair
+{
+	char *key;
+	char *value;
+};
+
+typedef struct Ewl_Pair_List Ewl_Pair_List;
+struct Ewl_Pair_List
+{
+	Ewl_Pair **list;
+	unsigned int direct:1;
+	unsigned int len:31;
+};
+
 /**
  * Callback chain container a list and bitmask of chain properties.
  */
@@ -30,9 +46,9 @@ typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 struct Ewl_Callback_Chain
 {
 	void **list;
-	unsigned short mask;
-	unsigned short len;
-	unsigned short index;
+	unsigned char mask;
+	unsigned char len;
+	unsigned char index;
 };
 
 typedef struct Ewl_Color_Set Ewl_Color_Set;
@@ -77,9 +93,9 @@ struct Ewl_Widget
 	char            *inheritance;  /**< Inheritance of path widget */
 	int              layer;        /**< Current layer of widget on canvas */
 
-	Ecore_Hash       *theme; /**< Overriding theme settings of this widget */
-	Ecore_Hash       *theme_text; /**< Overriding text in widgets theme */
-	Ecore_Hash       *data; /**< Arbitrary data attached to this widget */
+	Ecore_Hash      *theme;        /**< Overriding theme settings */
+	Ewl_Pair_List    theme_text;   /**< Overriding text in theme */
+	Ecore_Hash      *data;         /**< Arbitrary data attached to widget */
 };
 
 /*
