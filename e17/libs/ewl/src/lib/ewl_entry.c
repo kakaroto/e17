@@ -274,7 +274,6 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Event_Key_Down *event;
 	Ewl_Entry *e;
-	char *evd;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -314,12 +313,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 			|| (!strcmp(event->keyname, "KP_Enter")))
 	{
 		if (!e->multiline)
-		{
-			evd = ewl_text_text_get(EWL_TEXT(e));
-			ewl_callback_call_with_event_data(w, 
-					EWL_CALLBACK_VALUE_CHANGED, evd);
-			IF_FREE(evd);
-		}
+			ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 		else
 		{
 			ewl_entry_selection_clear(e);

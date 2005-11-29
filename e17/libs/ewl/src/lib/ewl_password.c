@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_password_text_insert(Ewl_Password *e, const char *s);
+
 /**
  * @param text: the initial text to display in the widget
  * @return Returns a new password widget on success, NULL on failure.
@@ -58,7 +60,7 @@ ewl_password_init(Ewl_Password *e)
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_cb_mouse_move);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_key_down_cb,
 			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_destroy,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_destroy_cb,
 			    NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -73,7 +75,7 @@ ewl_password_init(Ewl_Password *e)
  * Change the text of the password widget @a e to the string @a t.
  */
 void
-ewl_password_text_set(Ewl_Password *e, char *t)
+ewl_password_text_set(Ewl_Password *e, const char *t)
 {
 	char *vis = NULL;
 	int len;
@@ -157,8 +159,8 @@ ewl_password_obscure_set(Ewl_Password *e, char o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_password_text_insert(Ewl_Password *e, char *s)
+static void
+ewl_password_text_insert(Ewl_Password *e, const char *s)
 {
 	char *s2, *s3;
 	int l = 0, l2 = 0;
@@ -173,7 +175,11 @@ ewl_password_text_insert(Ewl_Password *e, char *s)
 
 	s3 = NEW(char, l + l2 + 1);
 	if (!s3) {
-		IF_FREE(s2);
+		if (s2) 
+		{
+			ZERO(s2, char, strlen(s2));
+			FREE(s2);
+		}
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -183,7 +189,13 @@ ewl_password_text_insert(Ewl_Password *e, char *s)
 
 	ewl_password_text_set(e, s3);
 
-	IF_FREE(s2);
+	if (s2)
+	{
+		ZERO(s2, char, strlen(s2));
+		FREE(s2);
+	}
+
+	ZERO(s3, char, strlen(s3));
 	FREE(s3);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -197,7 +209,6 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	int len;
-	char *tmp;
 	Ewl_Password *e;
 	Ewl_Event_Key_Down *ev;
 
@@ -209,31 +220,29 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "BackSpace")) {
-		tmp = ewl_text_text_get(EWL_TEXT(e));
-		if (tmp && (len = strlen(tmp))) {
-			tmp[len - 1] = '\0';
-			ewl_text_text_set(EWL_TEXT(e), tmp);
+		if ((len = ewl_text_length_get(EWL_TEXT(e))) > 0)
 			e->real_text[len - 1] = '\0';
-			FREE(tmp);
-		}
+
+		ewl_entry_delete_left(EWL_ENTRY(e));
+
+		/* XXX note that this dosen't handle selections at all */
 	}
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return"))
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_text_text_get(EWL_TEXT(w)));
+		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+				
 	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
 				"KP_Enter"))
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				ewl_text_text_get(EWL_TEXT(w)));
-	else if (ev->keyname) {
+		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+
+	else if (ev->keyname)
 		ewl_password_text_insert(e, ev->keyname);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_password_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Password *p;

@@ -38,18 +38,18 @@ struct Ewl_Password
 
 Ewl_Widget	*ewl_password_new(void);
 int		 ewl_password_init(Ewl_Password *e);
-void		 ewl_password_text_set(Ewl_Password *e, char *t);
+
+void		 ewl_password_text_set(Ewl_Password *e, const char *t);
 char		*ewl_password_text_get(Ewl_Password *e);
+
 void		 ewl_password_obscure_set(Ewl_Password *e, char o);
 char		 ewl_password_obscure_get(Ewl_Password *e);
-
-void		 ewl_password_text_insert(Ewl_Password *e, char *s);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_password_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
