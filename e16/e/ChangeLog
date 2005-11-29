@@ -3620,3 +3620,45 @@ Fix non-opaque resizing.
 Fix pointer focus on window close.
 Click-raises tweak (don't set grabs if window cannot be raised).
 
+
+-------------------------------------------------------------------------------
+
+Tue Nov 29 21:41:22 CET 2005
+(Kim)
+
+--- 0.16.8 0.20 ---
+Fix bug in creation of new saved settings item.
+Avoid some X-errors caused by operations on destroyed windows.
+Fix bug in desktop background assignment.
+Clean up client adoption.
+Fix some snapshot bugs introduced recently (handle empty lines in config, get
+ group info before used).
+Fix various issues with iconification of transients and state updates.
+EWM hint support is no longer optional.
+Don't grab Alt F9-F12 by default.
+Reverse windowmatch.cfg list order (back to the way it was).
+Change window restart property to include only state not available elsewhere.
+Fix various fullscreen/maximized state bugs wrt. restart and locking.
+Switch desk/viewport on _NET_ACTIVE_WINDOW.
+Fix dialog layout bug.
+Fix CM bug with InputOnly windows.
+Discard events for destroyed windows.
+Fix bug in state update when losing focus.
+Fix several window group bugs.
+Fix fd leak.
+Empty string item in .cfg tweak.
+Don't inhibit fullscreen when maximized but forget maximized state.
+Session script changes.
+Move session settings to separate dialog.
+Add user info about session settings (Peter Hyman). Minor doc updates.
+Fix not shadowing desks, buttons etc.
+Don't chase sliding windows.
+Fix inconsistent focusing of sliding windows.
+Deiconify to current viewport.
+Introduce action source handling (locks).
+Fix grab update when changing focus settings.
+Focus own dialogs when mapped.
+Remember various flags.
+Fix non-opaque moves across desk switch.
+Fix incorrect or invalid background pixmaps in certain situations.
+
