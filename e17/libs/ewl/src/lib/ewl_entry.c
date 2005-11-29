@@ -83,9 +83,6 @@ ewl_entry_init(Ewl_Entry *e)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-
-
-
 /**
  * @param e: The Ewl_Entry to set the multiline status
  * @param multiline: The multiline status to set

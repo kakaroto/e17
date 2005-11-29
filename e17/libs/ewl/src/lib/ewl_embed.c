@@ -698,17 +698,17 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (widget) {
-		Ewl_Widget* parent;		Ewl_Window* window;
+		Ewl_Widget *parent;
+		Ewl_Window *window;
 
-
-		/*First see if we need to send an 'enter' to this widget*/
+		/* First see if we need to send an 'enter' to this widget */
 		window = ewl_window_window_find(embed->evas_window);
 
-		/*If the last position event was over a different widget,
-		 * feed the leaving widget a 'null'*/
+		/* If the last position event was over a different widget,
+		 * feed the leaving widget a 'null' */
 		if (window->dnd_last_position != widget) {
-			
 			if (window->dnd_last_position) {
+
 				parent = window->dnd_last_position;
 				while (parent) {
 					ewl_callback_call_with_event_data(parent,
@@ -716,9 +716,6 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 					parent = parent->parent;
 				}
 			}
-		
-			/*ewl_callback_call_with_event_data(widget,
-				  EWL_CALLBACK_DND_ENTER, &ev);*/
 
 			parent = widget;
 			while (parent) {
@@ -726,7 +723,6 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 					EWL_CALLBACK_DND_ENTER, &ev);
 				parent = parent->parent;
 			}
-	
 		}
 		
 		/*
@@ -735,12 +731,9 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 		parent = widget;
 		while (parent) {
 			ewl_callback_call_with_event_data(parent,
-				EWL_CALLBACK_DND_POSITION, &ev);
+					EWL_CALLBACK_DND_POSITION, &ev);
 			parent = parent->parent;
 		}
-		
-		/*ewl_callback_call_with_event_data(widget,
-			  EWL_CALLBACK_DND_POSITION, &ev);*/
 
 		window->dnd_last_position = widget;
 	} else {
@@ -749,12 +742,6 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
-
-
-
-
 
 /**
  * @param embed: the embed where the mouse event is to occur

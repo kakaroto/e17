@@ -698,9 +698,8 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		}
 		window->window = (void *)xwin;
 
-		if (window->flags & EWL_FLAG_PROPERTY_DND_AWARE) {
-			ecore_x_dnd_aware_set((Ecore_X_Window)window->window,1);
-		}
+		if (window->flags & EWL_FLAG_PROPERTY_DND_AWARE) 
+			ecore_x_dnd_aware_set((Ecore_X_Window)window->window, 1);
 	}
 #endif
 

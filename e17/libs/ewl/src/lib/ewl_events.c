@@ -512,11 +512,14 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 int
 ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ecore_X_Event_Selection_Notify *ev = e;
+	Ecore_X_Event_Selection_Notify *ev;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, FALSE);
 
-	/*Handle everything *except* XDND selection*/
+	ev = e;
+
+	/* Handle everything *except* XDND selection */
 	if (ev->selection != ECORE_X_SELECTION_XDND) 
 		printf("Paste event received\n");
 
@@ -558,10 +561,8 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		 */
 		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) {
-			
-			/*First see if we need to send an 'enter' to the widget*/
+			/* First see if we need to send an 'enter' to the widget */
 			ewl_embed_dnd_position_feed(embed, x, y);
-		} else {
 		}
 		
 		rect.x = 0;
@@ -570,6 +571,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		rect.height = 0;	
 		ecore_x_dnd_send_status(1, 0, rect, ECORE_X_DND_ACTION_PRIVATE);
 	}
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -587,8 +589,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Window *window;
 	Ecore_X_Event_Xdnd_Enter *ev;
-	Ecore_X_Rectangle rect;
-	int i=0;
+	int i = 0;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -601,7 +602,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 		window->dnd_types.num_types = ev->num_types;
 		window->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
 		
-		for (i=0;i<ev->num_types;i++) 
+		for (i = 0; i < ev->num_types; i++) 
 			window->dnd_types.types[i] = strdup(ev->types[i]);
 	}
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -631,7 +632,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 	window = ewl_window_window_find((void *)ev->win);
 	if (window) {
 		if (window->dnd_types.num_types > 0) {
-			for (i=0;i<window->dnd_types.num_types;i++)		
+			for (i = 0; i < window->dnd_types.num_types; i++)		
 				FREE(window->dnd_types.types[i]);
 
 			FREE(window->dnd_types.types);
@@ -656,7 +657,6 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Window *window;
 	Ecore_X_Event_Xdnd_Drop *ev;
-	int i;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -667,12 +667,11 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (window) {
 		/*printf("EWL got a DND drop event..\n");*/
 
-		/*Request a DND data request*/
-		/*TODO this only supports retrieval of the first type in the request*/
+		/* Request a DND data request */
+		/* TODO this only supports retrieval of the first type in the request */
 		if (window->dnd_types.num_types > 0)
 			ecore_x_selection_xdnd_request(ev->win, 
 				window->dnd_types.types[0]);
-
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -693,7 +692,7 @@ ewl_ev_dnd_selection_notify(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Window *window;
 	Ecore_X_Event_Selection_Notify *ev;
-	int i;
+//	int i;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -716,7 +715,6 @@ ewl_ev_dnd_selection_notify(void *data __UNUSED__, int type __UNUSED__, void *e)
 				printf("We've got some files! - '%s'\n", files->files[0]);
 			}*/
 		}
-
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
