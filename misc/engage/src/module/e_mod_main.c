@@ -59,7 +59,7 @@ static int     _engage_cb_border_add(Engage_Bar *eb, E_Border *bd);
 
 static Engage_Bar *_engage_bar_new(Engage *e, E_Container *con);
 static void    _engage_bar_free(Engage_Bar *eb);
-static void    _engage_bar_menu_new(Engage_Bar *eb);
+static void    _engage_bar_menu_gen(Engage_Bar *eb);
 static void    _engage_bar_enable(Engage_Bar *eb);
 static void    _engage_bar_disable(Engage_Bar *eb);
 void           _engage_bar_frame_resize(Engage_Bar *eb);
@@ -83,7 +83,7 @@ static void    _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_
 
 static void    _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void    _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+//static void    _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_bar_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_bar_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -320,7 +320,7 @@ _engage_new()
 		  E_CONFIG_LIMIT(eb->conf->tray, 0, 1);
 		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
-		  _engage_bar_menu_new(eb);
+		  _engage_bar_menu_gen(eb);
 
 		  /*add tray*/
 		  if (eb->conf->tray)
@@ -605,7 +605,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_bar_cb_mouse_in,  eb);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, _engage_bar_cb_mouse_out, eb);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_bar_cb_mouse_down, eb);
+   //evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _engage_bar_cb_mouse_down, eb);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _engage_bar_cb_mouse_up, eb);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _engage_bar_cb_mouse_move, eb);
    evas_object_show(o);
@@ -747,7 +747,7 @@ _engage_bar_free(Engage_Bar *eb)
 }
 
 static void
-_engage_bar_menu_new(Engage_Bar *eb)
+_engage_bar_menu_gen(Engage_Bar *eb)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -775,17 +775,42 @@ _engage_bar_menu_new(Engage_Bar *eb)
    mn = e_menu_new();
    eb->icon_menu = mn;
    
+   //check if selected_ic is in .order
+   
+   int indotorder = 0;
+   if (eb->engage->apps && eb->selected_ic)
+     {
+	Evas_List *ll;
+	for (ll = eb->engage->apps->subapps; ll; ll = ll->next)
+	  {
+	     E_App *a;
+	     Engage_Icon *ic;
+
+	     a = ll->data;
+	     if (eb->selected_ic->app == a)
+	       {
+		  indotorder = 1;
+		  break;
+	       }
+	  }
+     }
+   
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Edit Icon");
    e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
    
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Keep Icon");
-   e_menu_item_callback_set(mi, _engage_bar_cb_menu_keep_icon, eb);
-   
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Remove Icon");
-   e_menu_item_callback_set(mi, _engage_bar_cb_menu_remove_icon, eb);
+   if (!indotorder)
+     {
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, "Keep Icon");
+	e_menu_item_callback_set(mi, _engage_bar_cb_menu_keep_icon, eb);
+     }
+   else
+     {
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, "Remove Icon");
+	e_menu_item_callback_set(mi, _engage_bar_cb_menu_remove_icon, eb);
+     }
 
    mn = e_menu_new();
    eb->menu = mn;
@@ -822,6 +847,8 @@ _engage_bar_menu_new(Engage_Bar *eb)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Icon Options");
    e_menu_item_submenu_set(mi, eb->icon_menu);
+   if (eb->selected_ic)
+     e_menu_item_icon_edje_set(mi, eb->selected_ic->app->path, "icon");
    
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
@@ -2054,6 +2081,14 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	//set selected icon so we can access it
 	//with the context menu
 	ic->eb->selected_ic = ic;
+
+	//I just dont like this:
+	//generating the menu on the icon and not eb itself
+	_engage_bar_menu_gen(ic->eb);
+	e_menu_activate_mouse(ic->eb->menu, e_zone_current_get(ic->eb->con),
+			      ev->output.x, ev->output.y, 1, 1,
+			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+	e_util_container_fake_mouse_up_all_later(ic->eb->con);
      }
 }
 
@@ -2253,7 +2288,7 @@ _engage_zoom_out_slave(void *data)
    return 1;
 }
 
-
+/*
 static void
 _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -2270,6 +2305,7 @@ _engage_bar_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	e_util_container_fake_mouse_up_all_later(eb->con);
      }
 }
+*/
 
 static void
 _engage_bar_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
