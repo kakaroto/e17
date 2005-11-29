@@ -17,11 +17,12 @@ int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
 }
 
 
-void ewl_iconbox_icon_floater_resize_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
-	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
-	int height = ewl_iconbox_icon_label_height_calculate(EWL_ICONBOX_ICON(icon));
+void ewl_iconbox_icon_floater_resize(Ewl_IconBox_Icon *icon) {
+	int height = ewl_iconbox_icon_label_height_calculate(icon);
 
-	if (height >0) {  ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height); }
+	if (height >0) {  
+		ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height); 
+	}
 	
 	//printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), hh, height);
 }
@@ -482,6 +483,8 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 		ewl_text_text_set(EWL_TEXT(icon->w_label), icon->label);
 
 	}
+
+	ewl_iconbox_icon_floater_resize(icon);
 		
 }
 
@@ -780,10 +783,6 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 		iconbox->lx += EWL_ICONBOX_ICON_PADDING + iconbox->iw;	
 	}
 	/*----------------------*/
-
-
-	ewl_callback_append(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_VALUE_CHANGED, ewl_iconbox_icon_floater_resize_cb, ib);
-
 
 
 	/*Show*/
