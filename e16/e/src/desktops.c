@@ -27,6 +27,7 @@
 #include "buttons.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "ecompmgr.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
@@ -503,10 +504,42 @@ DeskBackgroundGet(const Desk * dsk)
 }
 
 static void
-DeskBackgroundFree(Desk * dsk, int force)
+DeskBackgroundConfigure(Desk * dsk, int set, Pixmap pmap, unsigned int pixel)
 {
    Window              win;
 
+   win = EoGetWin(dsk);
+
+   if (set)
+     {
+	if (!ECompMgrDeskConfigure(dsk, set, pmap, pixel))
+	  {
+	     if (pmap != None)
+		ESetWindowBackgroundPixmap(win, pmap);
+	     else
+		ESetWindowBackground(win, pixel);
+	     EClearWindow(win);
+	  }
+
+	if (pmap != None)
+	   BackgroundPixmapSet(dsk->bg, pmap);
+	HintsSetRootInfo(win, pmap, pixel);
+     }
+   else
+     {
+	if (!Conf.hints.set_xroot_info_on_root_window)
+	   HintsSetRootInfo(win, None, 0);
+
+	if (!ECompMgrDeskConfigure(dsk, set, pmap, pixel))
+	  {
+	     ESetWindowBackgroundPixmap(win, None);
+	  }
+     }
+}
+
+static void
+DeskBackgroundFree(Desk * dsk, int force)
+{
    if (!dsk->bg_isset)
       return;
 
@@ -526,12 +559,7 @@ DeskBackgroundFree(Desk * dsk, int force)
      }
 
    if (!dsk->viewable)
-     {
-	win = EoGetWin(dsk);
-	if (!Conf.hints.set_xroot_info_on_root_window)
-	   HintsSetRootInfo(win, None, 0);
-	ESetWindowBackgroundPixmap(win, None);
-     }
+      DeskBackgroundConfigure(dsk, 0, None, 0);
 }
 
 static void
@@ -561,18 +589,7 @@ DeskBackgroundRefresh(Desk * dsk)
       BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
 			&pmap, &pixel);
 
-   if (pmap != None)
-     {
-	ESetWindowBackgroundPixmap(EoGetWin(dsk), pmap);
-	BackgroundPixmapSet(dsk->bg, pmap);
-     }
-   else
-     {
-	ESetWindowBackground(EoGetWin(dsk), pixel);
-     }
-   EClearWindow(EoGetWin(dsk));
-
-   HintsSetRootInfo(EoGetWin(dsk), pmap, pixel);
+   DeskBackgroundConfigure(dsk, 1, pmap, pixel);
    dsk->pmap = pmap;
    dsk->bg_isset = 1;
 }

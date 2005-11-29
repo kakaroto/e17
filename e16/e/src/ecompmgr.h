@@ -39,7 +39,8 @@ struct _desk;
 
 int                 EVisualIsARGB(Visual * vis);
 
-void                ECompMgrRepaint(void);
+int                 ECompMgrDeskConfigure(struct _desk *dsk, int set,
+					  Pixmap pmap, unsigned int pixel);
 
 void                ECompMgrWinNew(EObj * eo);
 void                ECompMgrWinDel(EObj * eo);
@@ -52,18 +53,22 @@ void                ECompMgrWinReparent(EObj * eo, struct _desk *dsk,
 void                ECompMgrWinRaise(EObj * eo);
 void                ECompMgrWinLower(EObj * eo);
 void                ECompMgrWinChangeShape(EObj * eo);
-
 void                ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity);
 Pixmap              ECompMgrWinGetPixmap(const EObj * eo);
+
 void                ECompMgrConfigGet(cfg_composite * cfg);
 void                ECompMgrConfigSet(const cfg_composite * cfg);
 
 void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 					  int h);
 
+void                ECompMgrRepaint(void);
+
 #else
 
 #define EVisualIsARGB(vis)      0
+
+#define ECompMgrDeskConfigure(dsk, set, pmap, pixel) 0
 
 #endif
 

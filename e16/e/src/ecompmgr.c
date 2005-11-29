@@ -479,6 +479,18 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
  * Desktops (move to desktops.c?)
  */
 
+int
+ECompMgrDeskConfigure(Desk * dsk, int set, Pixmap pmap, unsigned int pixel)
+{
+   /* FIXME - To be implemented */
+   dsk = NULL;
+   set = 0;
+   pmap = None;
+   pixel = 0;
+
+   return 0;
+}
+
 static              Picture
 DeskBackgroundPictureGet(Desk * dsk)
 {
