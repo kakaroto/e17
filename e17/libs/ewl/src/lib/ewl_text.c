@@ -447,7 +447,6 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	else ewl_text_triggers_remove(t);
 
 	ewl_widget_configure(EWL_WIDGET(t));
-	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -504,8 +503,6 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 		ewl_text_cursor_position_set(t, t->length);
 
 	ewl_widget_configure(EWL_WIDGET(t));
-
-	ewl_callback_call(EWL_WIDGET(t), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
