@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+#define ICON_LABEL_INITIAL 50
+
 
 int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
 	int height=0;
@@ -17,8 +19,11 @@ int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
 }
 
 
-void ewl_iconbox_icon_floater_resize(Ewl_IconBox_Icon *icon) {
+void ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data) {
+	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
 	int height = ewl_iconbox_icon_label_height_calculate(icon);
+
+	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize);
 
 	if (height >0) {  
 		ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height); 
@@ -484,7 +489,11 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 
 	}
 
-	ewl_iconbox_icon_floater_resize(icon);
+	/* Overestimate the label height to begin with, to give the text room to expand */
+	if (REALIZED(EWL_WIDGET(icon))) {
+		ewl_object_custom_h_set( EWL_OBJECT(icon->floater), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);
+		ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
+	}
 		
 }
 
@@ -744,8 +753,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	ewl_floater_follow_set(EWL_FLOATER( EWL_ICONBOX_ICON(ib)->floater ),
 				iconbox->ewl_iconbox_pane_inner);
 
-	/*Set the label*/
-	ewl_iconbox_icon_label_setup(EWL_ICONBOX_ICON(ib), name);
+
 	
 	
 	EWL_ICONBOX_ICON(ib)->icon_box_parent = iconbox; /* Set our parent */
@@ -784,19 +792,22 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	}
 	/*----------------------*/
 
-
 	/*Show*/
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->image);
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->w_label);
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->floater);
 	ewl_widget_show(EWL_WIDGET(ib));
 
+	/*Set the label*/
+	ewl_iconbox_icon_label_setup(EWL_ICONBOX_ICON(ib), name);
 
-	/*Calculate the correct height for the icon*/
-	/*ewl_object_custom_h_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), ewl_iconbox_icon_label_height_calculate(EWL_ICONBOX_ICON(ib)));*/
+
 	/*FIXME - at the moment, it appears we can't calculate the height 
 		yet - hard set for now*/
 	ewl_object_custom_h_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), 80);
+
+
+
 
 	
 
