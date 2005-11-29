@@ -40,6 +40,7 @@ void entropy_plugin_init(entropy_core* core) {
 	ecore_hash_set(mime_hash, ".bz2", "application/x-bzip2");
 	ecore_hash_set(mime_hash, ".tar", "application/x-tar");
 	ecore_hash_set(mime_hash, ".txt", "text/plain");
+	ecore_hash_set(mime_hash, ".mov", "video/quicktime");
 
 	
 }

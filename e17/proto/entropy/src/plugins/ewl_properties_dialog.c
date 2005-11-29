@@ -5,14 +5,35 @@
 #include <dlfcn.h>
 #include <time.h>
 
+entropy_generic_file* local_file;
+
+
 void
  __destroy_properties_dialog(Ewl_Widget *dialog, void *ev_data, void *user_data)
  {
+	/*Remove a reference to this file*/
+	if (local_file) 
+		entropy_core_file_cache_remove_reference(local_file->md5);
+	 
 	 ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
 
 void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
+	entropy_mime_action* action;
+	Ewl_Filedialog_Event* e = EWL_FILEDIALOG_EVENT(ev_data);	
+	char* file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
+	
+	if (e->response == EWL_STOCK_OPEN) {
+		action = entropy_core_mime_hint_get(local_file->mime_type);
+		if (action) {
+			action->executable = strdup(file);
+		} else {
+			entropy_core_mime_action_add(local_file->mime_type, file );
+		}
+	}
+
+	ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
 
@@ -21,7 +42,7 @@ void ewl_properties_dialog_openwith_cb(Ewl_Widget *w , void *ev_data , void *use
 	Ewl_Widget* window = ewl_window_new();
 
 	ewl_filedialog_type_set(EWL_FILEDIALOG(file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
-        ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, NULL);
+        ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, window);
 	ewl_container_child_append(EWL_CONTAINER(window), file_dialog);
 	ewl_widget_show(file_dialog);
 	ewl_widget_show(window);
@@ -37,6 +58,13 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	Ewl_Widget* button;
 	char itext[100];
 	time_t stime;
+
+	/*Save a local copy of this stat for affiliated functions*/
+	local_file = file_stat->file;
+
+	/*Add a reference to this file while the dialog is open*/
+	if (local_file) 
+		entropy_core_file_cache_add_reference(local_file->md5);
 
 	
 	window = ewl_window_new();
@@ -129,12 +157,14 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 	ewl_container_child_append(EWL_CONTAINER(hbox), text);
 	ewl_widget_show(text);
 
-	button = ewl_button_new();
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_properties_dialog_openwith_cb, NULL);
-	ewl_button_label_set(EWL_BUTTON(button), "Open with..");
-	ewl_object_custom_size_set(EWL_OBJECT(button), 70, 10);
-	ewl_container_child_append(EWL_CONTAINER(hbox), button);
-	ewl_widget_show(button);
+	if (strlen(file_stat->file->mime_type)) {
+		button = ewl_button_new();
+		ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_properties_dialog_openwith_cb, NULL);
+		ewl_button_label_set(EWL_BUTTON(button), "Open with..");
+		ewl_object_custom_size_set(EWL_OBJECT(button), 70, 10);
+		ewl_container_child_append(EWL_CONTAINER(hbox), button);
+		ewl_widget_show(button);
+	}
 	/*--------------------------------*/
 
 

@@ -32,6 +32,7 @@ Ecore_List* entropy_thumbnailer_plugin_mime_types_get() {
 		ecore_list_append(types, "application/x-tar");
 		ecore_list_append(types, "text/plain");
 		ecore_list_append(types, "video/x-msvideo");
+		ecore_list_append(types, "video/quicktime");
 		
 	}
 
@@ -81,7 +82,10 @@ entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_generic_file* file)
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/txt.png");
 	} else if (!strcmp(file->mime_type, "video/x-msvideo")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/video.png");
+	} else if (!strcmp(file->mime_type, "video/quicktime")) {
+		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/video.png");
 	}
+
 
 
 
