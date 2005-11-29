@@ -12,7 +12,8 @@ void
 }
 
 
-void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
+void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
+}
 
 
 void ewl_properties_dialog_openwith_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
