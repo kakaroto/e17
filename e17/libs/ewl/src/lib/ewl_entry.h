@@ -53,8 +53,6 @@ struct Ewl_Entry_Cursor
 {
 	Ewl_Widget	 widget;
 	Ewl_Entry	*parent;
-
-	Ecore_Timer	*timer;	/**< The timer to control the cursor flash */
 };
 
 Ewl_Widget 	*ewl_entry_cursor_new(Ewl_Entry *parent);
