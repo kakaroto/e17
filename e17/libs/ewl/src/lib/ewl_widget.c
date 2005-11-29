@@ -1780,8 +1780,6 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 
 		/*
 		 * Apply any text overrides
-		 * FIXME: These should probably be ported to an array rather
-		 * than a full hash.
 		 */
 		if (w->theme_object && w->theme_text.list) {
 			char *key, *value;
