@@ -3,7 +3,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-#define ICON_LABEL_INITIAL 50
+#define ICON_LABEL_INITIAL 80
 
 
 int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
@@ -20,7 +20,7 @@ int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
 
 
 void ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data) {
-	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(w);
+	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
 	int height = ewl_iconbox_icon_label_height_calculate(icon);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize);
@@ -471,8 +471,6 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 {
 	int wrap = 0;
 	
-	/*ewl_text_wrap_set(EWL_TEXT(icon->w_label), 1);*/
-	
 	if (text) {
 		
 		ewl_text_text_set(EWL_TEXT(icon->w_label), text);
@@ -491,8 +489,8 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 
 	/* Overestimate the label height to begin with, to give the text room to expand */
 	if (REALIZED(EWL_WIDGET(icon))) {
-		ewl_object_custom_h_set( EWL_OBJECT(icon->floater), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);
-		ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
+		ewl_object_custom_h_set( EWL_OBJECT(icon->floater), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);	
+		ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
 	}
 		
 }
