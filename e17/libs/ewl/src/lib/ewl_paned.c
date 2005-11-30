@@ -139,9 +139,16 @@ ewl_paned_init(Ewl_Paned *p)
 	ewl_widget_appearance_set(EWL_WIDGET(p->first), "first");
 	ewl_widget_appearance_set(EWL_WIDGET(p->second), "second");
 
+	/*Looks like we only do horizontally-split panes right now*/
+	ewl_object_fill_policy_set(p->second, EWL_FLAG_FILL_NORMAL);
+	ewl_object_fill_policy_set(p->first, EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL );
+	ewl_object_fill_policy_set(EWL_OBJECT(p), EWL_FLAG_FILL_NORMAL);
+
+
+
 	// ewl_widget_appearance_set(EWL_WIDGET(p->grabber), "grabber_horizontal");
-	ewl_object_fill_policy_set(EWL_OBJECT(p), 
-				   EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+	/*ewl_object_fill_policy_set(EWL_OBJECT(p), 
+				   EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);*/
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -264,17 +271,19 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev, void *user_d
 		int x = mm->x;
 
 		// ewl_object_x_request(EWL_OBJECT(p->grabber), x);
-		if (mm->x > CURRENT_X(p) && mm->x < CURRENT_X(p) + CURRENT_W(p))
+		if (mm->x > CURRENT_X(p) && mm->x < CURRENT_X(p) + CURRENT_W(p)) {
 			ewl_object_preferred_inner_w_set(EWL_OBJECT(p->first),
 							 x);
+		}
 
 	} else {
 		int y = mm->y;
 
 		// ewl_object_y_request(EWL_OBJECT(p->grabber), y);
-		if (mm->y > CURRENT_Y(p) && mm->y < CURRENT_Y(p) + CURRENT_H(p))
+		if (mm->y > CURRENT_Y(p) && mm->y < CURRENT_Y(p) + CURRENT_H(p)) {
 			ewl_object_preferred_inner_h_set(EWL_OBJECT(p->first),
 							 y);
+		}
 	}
 
 	ewl_widget_configure(EWL_WIDGET(p));
