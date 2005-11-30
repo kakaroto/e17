@@ -139,16 +139,13 @@ ewl_paned_init(Ewl_Paned *p)
 	ewl_widget_appearance_set(EWL_WIDGET(p->first), "first");
 	ewl_widget_appearance_set(EWL_WIDGET(p->second), "second");
 
-	/*Looks like we only do horizontally-split panes right now*/
-	ewl_object_fill_policy_set(p->second, EWL_FLAG_FILL_NORMAL);
-	ewl_object_fill_policy_set(p->first, EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL );
+	/* Looks like we only do horizontally-split panes right now */
+	ewl_object_fill_policy_set(EWL_OBJECT(p->second), EWL_FLAG_FILL_NORMAL);
+	ewl_object_fill_policy_set(EWL_OBJECT(p->first), 
+					EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL );
 	ewl_object_fill_policy_set(EWL_OBJECT(p), EWL_FLAG_FILL_NORMAL);
 
-
-
-	// ewl_widget_appearance_set(EWL_WIDGET(p->grabber), "grabber_horizontal");
-	/*ewl_object_fill_policy_set(EWL_OBJECT(p), 
-				   EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);*/
+	/* ewl_widget_appearance_set(EWL_WIDGET(p->grabber), "grabber_horizontal"); */
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

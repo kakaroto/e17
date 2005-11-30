@@ -98,149 +98,47 @@ struct Ewl_Widget
 	Ecore_Hash      *data;         /**< Arbitrary data attached to widget */
 };
 
-/*
- * Initialize a widget to it's default values
- */
 int             ewl_widget_init(Ewl_Widget * w);
 
-/*
- * Assign the given name to a widget
- */
 void            ewl_widget_name_set(Ewl_Widget * w, const char *name);
-
-/*
- * Retrieve the given name of a widget
- */
 const char *    ewl_widget_name_get(Ewl_Widget * w);
-
-/*
- * Find the widget identified by a given name.
- */
 Ewl_Widget *    ewl_widget_name_find(const char *name);
 
-/*
- * Signal the widget that it's parent has changed.
- */
 void            ewl_widget_reparent(Ewl_Widget * widget);
-
-/*
- * Realize the appearance of the widget.
- */
 void            ewl_widget_realize(Ewl_Widget * widget);
-
-/*
- * Unrealize the appearance of the widget.
- */
 void            ewl_widget_unrealize(Ewl_Widget * w);
-
-/*
- * Mark the widget to be revealed.
- */
 void            ewl_widget_reveal(Ewl_Widget *w);
-
-/*      
- * Mark the widget to be obscured.    
- */     
 void            ewl_widget_obscure(Ewl_Widget *w);
-
-/*
- * Mark the widget to be displayed.
- */
 void            ewl_widget_show(Ewl_Widget * widget);
-
-/*
- * Mark the widget to be hidden.
- */
 void            ewl_widget_hide(Ewl_Widget * widget);
-
-/*
- * Free the widget and all ot its contained data.
- */
 void            ewl_widget_destroy(Ewl_Widget * widget);
-
-/*
- * Queue the widget to be configured.
- */
 void            ewl_widget_configure(Ewl_Widget * widget);
 
-/*
- * Update the widget's appearance based on it's theme data.
- */
 void            ewl_widget_theme_update(Ewl_Widget * w);
 
-/*
- * Attach a key/value pair to a widget.
- */
 void            ewl_widget_data_set(Ewl_Widget * w, void *k, void *v);
-
-/*
- * Remove a key value pair from a widget.
- */
 void           *ewl_widget_data_del(Ewl_Widget * w, void *k);
-
-/*
- * Retrieve a key value pair from a widget.
- */
 void           *ewl_widget_data_get(Ewl_Widget * w, void *k);
 
-/*
- * Change the appearance of a widget based on a state string.
- */
 void            ewl_widget_state_set(Ewl_Widget * w, char *state);
 
-/*
- * Change the appearance string used for determining the correct theme data.
- */
 void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
-
-/*
- * Retrieve the appearance string of a widget.
- */
 char           *ewl_widget_appearance_get(Ewl_Widget * w);
-
-/*
- * Retrieve the full appearance string of the widget.
- */
 char	       *ewl_widget_appearance_path_get(Ewl_Widget * w);
-
-/*
- * Change the text of the given theme part of a widget.
- */
-void           ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part,
+void            ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part,
 						   char *text);     
+void            ewl_widget_appearance_text_set(Ewl_Widget * w, char *text);
 
-/*
- * Change the text of the theme-defined theme part of a widget.
- */
-void           ewl_widget_appearance_text_set(Ewl_Widget * w, char *text);
-
-/*
- * Append to the inherited string 
- */
 void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
 
 unsigned int    ewl_widget_type_is(Ewl_Widget *widget, char *type);
-
 unsigned int    ewl_widget_onscreen_is(Ewl_Widget *widget);
 
-/*
- * Change the parent of a widget.
- */
 void            ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p);
 
-/*
- * Activate a widget.
- */
 void            ewl_widget_enable(Ewl_Widget * w);
-
-/*
- * Deactivate a widget.
- */
 void            ewl_widget_disable(Ewl_Widget * w);
 
-/*
- * Notify a widget to rebuild it's appearance string.
- */
 void            ewl_widget_print_tree(Ewl_Widget *w);
 void            ewl_widget_print(Ewl_Widget *w);
 
@@ -255,7 +153,6 @@ void            ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
 unsigned int    ewl_widget_clipped_is(Ewl_Widget *w);
 
 void            ewl_widget_focus_send(Ewl_Widget *w);
-
 Ewl_Widget     *ewl_widget_focused_get(void);
 
 void            ewl_widget_tab_order_append(Ewl_Widget *w);
@@ -268,54 +165,35 @@ void 		ewl_widget_tab_order_remove(Ewl_Widget *w);
 void		ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
 unsigned int	ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 
-void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, 
-						int b, int a);
-void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, 
-						int *b, int *a);
+void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a);
+void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
 
 /**
  * @def LAYER(w)
  * Used to retrieve the layer of a widget.
  */
-#define LAYER(w) EWL_WIDGET(w)->layer
+#define LAYER(w) (EWL_WIDGET(w)->layer)
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data,
-			void *user_data);
-void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data,
-			void *user_data);
-void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data,
-			  void *user_data);
-void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data,
-			   void *user_data);
-void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data,
-			   void *user_data);
-void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data,
-			   void *user_data);
-void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data,
-			 void *user_data);
-void ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data,
-		           void *user_data);
-void ewl_widget_focus_in_cb(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
-void ewl_widget_focus_out_cb(Ewl_Widget * w, void *ev_data,
-			     void *user_data);
-void ewl_widget_mouse_down_cb(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
-void ewl_widget_mouse_up_cb(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
-void ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void ewl_widget_mouse_move_cb(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
+void ewl_widget_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_enable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_disable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_child_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
