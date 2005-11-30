@@ -64,7 +64,7 @@ ewl_menu_init(Ewl_Menu *menu)
 	ewl_window_pointer_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
 	
 	/*Turn this off until we can figure out why this stops windows being moved*/
-	ewl_window_override_set(EWL_WINDOW(menu->base.popup), TRUE); 
+	/*ewl_window_override_set(EWL_WINDOW(menu->base.popup), TRUE); */
 	ewl_window_borderless_set(EWL_WINDOW(menu->base.popup));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "menu");
