@@ -19,16 +19,22 @@ __fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	char *s;
 
 	s = ewl_text_text_get(EWL_TEXT(entry[0]));
-	printf("First entry covers: %s\n", s);
-	FREE(s);
+	if (s) {
+		printf("First entry covers: %s\n", s);
+		FREE(s);
+	}
 
 	s = ewl_text_text_get(EWL_TEXT(entry[1]));
-	printf("Second entry covers: %s\n", s);
-	FREE(s);
+	if (s) {
+		printf("Second entry covers: %s\n", s);
+		FREE(s);
+	}
 
 	s = ewl_text_text_get(EWL_TEXT(entry[2]));
-	printf("Third entry covers: %s\n", s);
-	FREE(s);
+	if (s) {
+		printf("Third entry covers: %s\n", s);
+		FREE(s);
+	}
 }
 
 static void
