@@ -4,9 +4,6 @@ EWL TODO
 - [BUG] Entry can trigger a series of selection create/destroys when clicking
         on the end of the text.
 - [BUG] Scrollbar jumps when trying to drag the button from its lower part
-- [BUG] The Ewl_Paned widget dosen't allow resizing to the right. One way
-        only at the moment.
-	(This isn't true - see Entropy)
 - [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
         mouse over.
 - [BUG] Spinner seems to resize itself slightly larger even when it dosen't
