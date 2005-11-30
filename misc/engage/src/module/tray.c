@@ -13,6 +13,7 @@
 #define XEMBED_EMBEDDED_NOTIFY      0
 
 static int     _engage_tray_cb_msg(void *data, int type, void *event);
+static void    _engage_tray_active_set();
 
 static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
@@ -23,11 +24,7 @@ extern void    _engage_bar_frame_resize(Engage_Bar *eb);
 void
 _engage_tray_init(Engage_Bar *eb)
 {
-   Display *display;
-   Window root;
    Evas_Coord x, y, w, h;
-   char buf[32];
-   Atom selection_atom;
 
    /* FIXME - temp */
    eb->tray = malloc(sizeof(Engage_Tray));
@@ -37,42 +34,29 @@ _engage_tray_init(Engage_Bar *eb)
    eb->tray->wins = NULL;
 
    eb->tray->tray = evas_object_rectangle_add(eb->evas);
+
    evas_object_resize(eb->tray->tray, eb->tray->w, eb->tray->h);
    evas_object_color_set(eb->tray->tray, 180, 0, 0, 255);
    evas_object_show(eb->tray->tray);
    evas_object_intercept_move_callback_add(eb->tray->tray, _engage_tray_cb_move, eb);
    evas_object_intercept_resize_callback_add(eb->tray->tray, _engage_tray_cb_resize, eb);
 
-  display = ecore_x_display_get();
-  root = RootWindow (display, DefaultScreen(display));
+   _engage_tray_active_set(eb, 1);
 
-  snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", DefaultScreen(display));
-  selection_atom = ecore_x_atom_get(buf);
-  XSetSelectionOwner (display, selection_atom, eb->con->bg_win, CurrentTime);
-
-  if (XGetSelectionOwner (display, selection_atom) == eb->con->bg_win) {
-    printf("am a system tray :) :)\n");
-
-    ecore_x_client_message32_send(root, ecore_x_atom_get("MANAGER"),
-                                ECORE_X_EVENT_MASK_WINDOW_CONFIGURE, CurrentTime
-,
-                                selection_atom, eb->con->bg_win, 0, 0);
-  }
-
-  evas_object_geometry_get(eb->tray->tray, &x, &y, &w, &h);
-  eb->tray->win = ecore_x_window_new(eb->con->bg_win, x, y, w, h);
-  ecore_x_window_container_manage(eb->tray->win);
-  ecore_x_window_background_color_set(eb->tray->win, 0xcccc, 0xcccc, 0xcccc);
-  ecore_x_window_show(eb->tray->win);
+   evas_object_geometry_get(eb->tray->tray, &x, &y, &w, &h);
+   eb->tray->win = ecore_x_window_new(eb->con->bg_win, x, y, w, h);
+   ecore_x_window_container_manage(eb->tray->win);
+   ecore_x_window_background_color_set(eb->tray->win, 0xcccc, 0xcccc, 0xcccc);
   
-  eb->tray->msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, _engage_tray_cb_msg, eb);
-  eb->tray->dst_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _engage_tray_cb_msg, eb);
-
+   eb->tray->msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, _engage_tray_cb_msg, eb);
+   eb->tray->dst_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, _engage_tray_cb_msg, eb);
 }
 
 void
 _engage_tray_shutdown(Engage_Bar *eb)
 {
+   _engage_tray_active_set(eb, 0);
+
    evas_list_free(eb->tray->wins);
    evas_object_del(eb->tray->tray);
 
@@ -82,10 +66,43 @@ _engage_tray_shutdown(Engage_Bar *eb)
 }
 
 static void
+_engage_tray_active_set(Engage_Bar *eb, int active)
+{
+   Ecore_X_Window win;
+   Display *display;
+   Window root;
+   char buf[32];
+   Atom selection_atom;
+
+   win = 0;
+   if (active)
+     win = eb->con->bg_win;
+
+   display = ecore_x_display_get();
+   root = RootWindow (display, DefaultScreen(display));
+
+   snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", DefaultScreen(display));
+   selection_atom = ecore_x_atom_get(buf);
+   XSetSelectionOwner (display, selection_atom, win, CurrentTime);
+
+   if (active &&
+       XGetSelectionOwner (display, selection_atom) == eb->con->bg_win)
+     {
+	printf("am a system tray :) :)\n");
+
+	ecore_x_client_message32_send(root, ecore_x_atom_get("MANAGER"),
+				      ECORE_X_EVENT_MASK_WINDOW_CONFIGURE,
+				      CurrentTime, selection_atom, win, 0, 0);
+     }
+}
+
+static void
 _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win) {
 
   if (evas_list_find(eb->tray->wins, (void *)win))
     return;
+  ecore_x_window_show(eb->tray->win);
+
   /* we want to insert at the end, so as not to move all icons on each add */
   eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
@@ -111,6 +128,8 @@ _engage_tray_remove(Engage_Bar *eb, Ecore_X_Window win) {
   eb->tray->icons--;
   _engage_tray_layout(eb);
   _engage_bar_frame_resize(eb);
+  if (eb->tray->icons == 0)
+    ecore_x_window_hide(eb->tray->win);
 }
 
 static int
@@ -180,31 +199,23 @@ _engage_tray_layout(Engage_Bar *eb)
      h = 24;
    c = (h - (h % 24)) / 24;
    w = ((eb->tray->icons + (eb->tray->icons % c)) / c) * 24;
-   if (w == 0)
-     w = 1;
    
    if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_TOP) {
+     edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
      evas_object_resize(eb->tray->tray, w, h);
      ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
 
-     e_box_pack_options_set(eb->tray->tray,
-			    1, 1, /* fill */
-			    0, 1, /* expand */
-			    0.0, 0.0, /* align */
-			    w, h, /* min */
-			    w, h /* max */
-			    );
+     edje_extern_object_min_size_set(eb->tray->tray, w, h);
+     edje_extern_object_max_size_set(eb->tray->tray, w, h);
+     edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    } else {
+     edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
      evas_object_resize(eb->tray->tray, h, w);
      ecore_x_window_resize(eb->tray->win, (int) h, (int) w);
 
-     e_box_pack_options_set(eb->tray->tray,
-			    1, 1, /* fill */
-			    0, 1, /* expand */
-			    0.0, 0.0, /* align */
-			    h, w, /* min */
-			    h, w /* max */
-			    );
+     edje_extern_object_min_size_set(eb->tray->tray, w, h);
+     edje_extern_object_max_size_set(eb->tray->tray, w, h);
+     edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    }
    
    x = 0;

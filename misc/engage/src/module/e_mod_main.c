@@ -327,14 +327,7 @@ _engage_new()
 		    {
 		       _engage_tray_init(eb);
 
-		       e_box_pack_end(eb->box_object, eb->tray->tray);
-		       e_box_pack_options_set(eb->tray->tray,
-					      1, 1, /* fill */
-					      0, 1, /* expand */
-					      0.0, 0.0, /* align */
-					      1, 1, /* min */
-					      100, 100 /* max */
-					      );
+		       edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
 		    }
 
 		 
@@ -971,10 +964,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 
    evas_object_raise(ic->event_object);
 
-   if (eb->tray)
-     e_box_pack_before(eb->box_object, ic->bg_object, eb->tray->tray);
-   else
-     e_box_pack_end(eb->box_object, ic->bg_object);
+   e_box_pack_end(eb->box_object, ic->bg_object);
    e_box_pack_options_set(ic->bg_object,
 			  1, 1, /* fill */
 			  0, 0, /* expand */
@@ -1467,10 +1457,7 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
      {
 	ic->eb->icons = evas_list_append(ic->eb->icons, ic);
 
-	if (ic->eb->tray)
-	  e_box_pack_before(ic->eb->box_object, ic->bg_object, ic->eb->tray->tray);
-	else
-	  e_box_pack_end(ic->eb->box_object, ic->bg_object);
+	e_box_pack_end(ic->eb->box_object, ic->bg_object);
      }
    edje_object_size_min_calc(ic->bg_object, &bw, &bh);
    e_box_pack_options_set(ic->bg_object,
@@ -2452,17 +2439,11 @@ _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi)
    if (eb->conf->tray)
      {
 	_engage_tray_init(eb);
-	e_box_pack_end(eb->box_object, eb->tray->tray);
-	e_box_pack_options_set(eb->tray->tray,
-			       1, 1, /* fill */
-			       0, 1, /* expand */
-			       0.0, 0.0, /* align */
-			       1, 1, /* min */
-			       100, 100 /* max */
-			       );
+	edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
      }
    else
      {
+	edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
 	_engage_tray_shutdown(eb);
 	eb->tray = NULL;
 	_engage_bar_frame_resize(eb);
