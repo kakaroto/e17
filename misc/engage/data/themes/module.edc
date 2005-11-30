@@ -82,15 +82,16 @@ group {
 //	 clip_to:       "items_clip";
 	 description {
 	    state:    "default" 0.0;
+	    fixed: 1 1;
 	    rel1 {
 	       relative: 0.0  0.0;
-	       offset:   10   10;
+	       offset:   2    2;
 	       to: "background";
 	    }
 	    rel2 {
 	       relative: 0.0  1.0;
-	       offset:   10   -11;
-	       to: "background";
+	       offset:   2    -3;
+	       to_y: "background";
 	    }
 	    align: 0.0 0.5;
 	    color: 0 0 0 0;
@@ -275,15 +276,6 @@ group {
 	    }
 	 }
       }
-      part {
-	 name:          "inn";
-	 type:          RECT;
-	 repeat_events: 1;
-	 description {
-	    state:    "default" 0.0;
-	    color: 0 0 0 0;
-	 }
-      }
    }
    programs {
       program {
@@ -297,24 +289,28 @@ group {
 	       set_state(PART:"background", "vert", 0.0);
 	       set_state(PART:"overlay", "left", 0.0);
 	       set_state(PART:"items", "left", 0.0);
+               set_state(PART:"tray", "left", 0.0);
 	    }
 	    else if (!strcmp(src, "right")) {
 	       set_int(orient, 1);
 	       set_state(PART:"background", "vert", 0.0);
 	       set_state(PART:"overlay", "right", 0.0);
 	       set_state(PART:"items", "right", 0.0);
+               set_state(PART:"tray", "right", 0.0);
 	    }
 	    else if (!strcmp(src, "top")) {
 	       set_int(orient, 2);
 	       set_state(PART:"background", "default", 0.0);
 	       set_state(PART:"overlay", "top", 0.0);
 	       set_state(PART:"items", "top", 0.0);
+               set_state(PART:"tray", "top", 0.0);
 	    }
 	    else if (!strcmp(src, "bottom")) {
 	       set_int(orient, 3);
 	       set_state(PART:"background", "default", 0.0);
 	       set_state(PART:"overlay", "default", 0.0);
 	       set_state(PART:"items", "default", 0.0);
+               set_state(PART:"tray", "default", 0.0);
 	    }
 	 }
       }

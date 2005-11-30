@@ -626,7 +626,6 @@ _engage_bar_new(Engage *e, E_Container *con)
    eb->align_req = 0.5;
    eb->align = 0.5;
    e_box_align_set(eb->box_object, 0.5, 0.5);
-
    e_box_thaw(eb->box_object);
 
    eb->gmc = e_gadman_client_new(eb->con->gadman);
@@ -915,7 +914,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 {
    Engage_Icon *ic;
    Evas_Object *o;
-   Evas_Coord bw, bh;
+   Evas_Coord size;
 
    ic = E_NEW(Engage_Icon, 1);
    if (!ic) return NULL;
@@ -940,8 +939,11 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_WHEEL, _engage_icon_cb_mouse_wheel, ic);
    evas_object_show(o);
 
+   size = eb->engage->conf->iconsize;
    o = edje_object_add(eb->evas);
    ic->bg_object = o;
+   edje_extern_object_min_size_set(o, size, size);
+   edje_extern_object_max_size_set(o, size, size);
    evas_object_intercept_move_callback_add(o, _engage_icon_cb_intercept_move, ic);
    evas_object_intercept_resize_callback_add(o, _engage_icon_cb_intercept_resize, ic);
    edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "icon");
@@ -950,9 +952,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    o = edje_object_add(eb->evas);
    ic->icon_object = o;
    edje_object_file_set(o, ic->app->path, "icon");
-   edje_extern_object_min_size_set(o, eb->engage->conf->iconsize, eb->engage->conf->iconsize);
    edje_object_part_swallow(ic->bg_object, "item", o);
-   edje_object_size_min_calc(ic->bg_object, &bw, &bh);
    evas_object_pass_events_set(o, 1);
    evas_object_show(o);
 
@@ -969,8 +969,8 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 			  1, 1, /* fill */
 			  0, 0, /* expand */
 			  0.5, 0.5, /* align */
-			  bw, bh, /* min */
-			  bw, bh /* max */
+			  size, size, /* min */
+			  size, size /* max */
 			  );
 
    edje_object_signal_emit(ic->bg_object, "passive", "");
@@ -1485,14 +1485,18 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    e_box_freeze(eb->box_object);
 
    e_box_min_size_get(eb->box_object, &w, &h);
-   e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
+   evas_object_resize(eb->event_object, w, h);
 
+   edje_object_part_unswallow(eb->bar_object, eb->box_object);
+   edje_extern_object_min_size_set(eb->box_object, w, h);
+   edje_extern_object_max_size_set(eb->box_object, w, h);
+   edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
+
+   edje_object_size_min_calc(eb->bar_object, &w, &h);
+   e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
    e_gadman_client_resize(eb->gmc, w, h);
 
-   if (eb->tray)
-     evas_object_resize(eb->event_object, w - eb->tray->w, h);
-   else
-     evas_object_resize(eb->event_object, w, h);
+   evas_object_resize(eb->event_object, w, h);
    evas_object_move(eb->event_object, x, y);
    e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
