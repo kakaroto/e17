@@ -412,17 +412,20 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 	/*Add a background image*/
 	int w,h;
 
-	if (ib->background) {
-		ewl_widget_destroy(ib->background);
-		ib->background = NULL;
+	if (!file) {
+		if (ib->background) {
+			ewl_widget_destroy(ib->background);
+			ib->background = NULL;
+		}
+		return;
 	}
 
-	if (!file) return;
+	w = CURRENT_W(ib);
+	h= CURRENT_H(ib);
 
-	w = CURRENT_W(ib->ewl_iconbox_pane_inner);
-	h= CURRENT_H(ib->ewl_iconbox_pane_inner);
-
-	ib->background = ewl_image_new();
+	if (!ib->background) 
+		ib->background = ewl_image_new();
+	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->background), w,h);
 	ewl_image_file_set(EWL_IMAGE(ib->background), file,0);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->background);
@@ -1174,21 +1177,7 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_dat
  */
 void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
-	/*printf ("Got a configure\n");*/
-
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
-
-/*	xx = CURRENT_X(ib->ewl_iconbox_pane_inner);
-	yy = CURRENT_Y(ib->ewl_iconbox_pane_inner);
-	ww = CURRENT_W(ib->ewl_iconbox_pane_inner);
-	hh = CURRENT_H(ib->ewl_iconbox_pane_inner);
-
-	
-
-		evas_damage_rectangle_add(evas_object_evas_get(EWL_CONTAINER(ib->ewl_iconbox_pane_inner)->clip_box),
-							xx, yy, ww, hh);*/
-
-	
 
 	if (REALIZED(ib) && VISIBLE(ib)) { 
 		/*ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);*/
@@ -1196,11 +1185,15 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 		ewl_iconbox_icon_arrange(ib); 
 
 		if (ib->background) {
-			int w,h;
-			w = CURRENT_W(ib->ewl_iconbox_pane_inner);
-			h= CURRENT_H(ib->ewl_iconbox_pane_inner);
-			ewl_object_position_request(EWL_OBJECT(ib->background),0,0);
-			ewl_object_custom_size_set(EWL_OBJECT(ib->background),w,h);
+			int width,height;
+			Ewl_Widget* parent = w->parent;
+			Ewl_Widget* parent_parent = parent->parent;
+			width = CURRENT_W(ib);
+			height = CURRENT_H(ib);
+			ewl_object_position_request(EWL_OBJECT(ib->background),CURRENT_X(parent),CURRENT_Y(parent));
+			ewl_object_custom_size_set(EWL_OBJECT(ib->background),width,height);
+
+			
 
 		}
 		
