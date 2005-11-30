@@ -268,8 +268,6 @@ void ewl_text_trigger_cb_focus_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 
-void ewl_text_selection_cb_configure(Ewl_Widget *w, void *ev, void *data);
-
 /*
  * Ewl_Text_Context stuff
  */
