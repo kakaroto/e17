@@ -22,6 +22,8 @@ EWL TODO
 - [BUG] In ewl_text if your in a multiline text and on a line that is longer
         then then one above or below and you hit the up arrow it will
 	position your cursor one character _before_ the end of the line.
+- [BUG] The ewl_password entry needs to correctly deal with selections and
+	mouse clicks.
 
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.

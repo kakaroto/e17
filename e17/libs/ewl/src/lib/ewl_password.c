@@ -52,12 +52,14 @@ ewl_password_init(Ewl_Password *e)
 	ewl_widget_inherit(w, "password");
 	e->obscure = '*';
 
+	/* text is not selectable */
+	ewl_text_selectable_set(EWL_TEXT(w), FALSE);
+
 	/*
 	 * Attach necessary callback mechanisms 
 	 */
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_entry_cb_mouse_move);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_key_down_cb,
 			    NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_destroy_cb,
@@ -224,17 +226,21 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
 			e->real_text[len - 1] = '\0';
 
 		ewl_entry_delete_left(EWL_ENTRY(e));
-
-		/* XXX note that this dosen't handle selections at all */
 	}
-	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
-				"KP_Return"))
-		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
-				
-	else if (!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname,
-				"KP_Enter"))
+
+	else if ((!strcmp(ev->keyname, "Return"))
+			|| (!strcmp(ev->keyname, "KP_Return"))
+			|| (!strcmp(ev->keyname, "Enter")) 
+			|| (!strcmp(ev->keyname, "KP_Enter")))
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
+	else if ((!strcmp(ev->keyname, "Left")) 
+			|| (!strcmp(ev->keyname, "Right"))
+			|| (!strcmp(ev->keyname, "Up"))
+			|| (!strcmp(ev->keyname, "Down")) 
+			|| (!strcmp(ev->keyname, "Delete"))) {
+		/* ignore these */
+	}
 	else if (ev->keyname)
 		ewl_password_text_insert(e, ev->keyname);
 
