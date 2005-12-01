@@ -1412,6 +1412,7 @@ EwinsShowDesktop(int on)
 	     EwinDeIconify(ewin);
 	  }
      }
+   Mode.showing_desktop = on;
    EWMH_SetShowingDesktop(on);
 }
 

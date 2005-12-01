@@ -2718,6 +2718,10 @@ DesksIpcDesk(const char *params, Client * c __UNUSED__)
 	else if (!strncmp(prm, "ord", 3))
 	   DeskDragbarOrderSet(p);
      }
+   else if (!strcmp(cmd, "clear"))
+     {
+	EwinsShowDesktop(!Mode.showing_desktop);
+     }
 }
 
 static void
@@ -2792,7 +2796,8 @@ static const IpcItem DesksIpcArray[] = {
     "  desk lower <d>       Lower desktop\n"
     "  desk raise <d>       Raise desktop\n"
     "  desk dragbar pos     Set dragbar position\n"
-    "  desk dragbar order   Set dragbar button order\n"}
+    "  desk dragbar order   Set dragbar button order\n"
+    "  desk clear           \"Show Desktop\"\n"}
    ,
    {
     DesksIpcArea,
