@@ -55,6 +55,54 @@ ReadleLong(FILE * file, unsigned long *ret)
    return 1;
 }
 
+static int
+WriteleByte(FILE * file, unsigned char val)
+{
+   int rc;
+
+   rc = fputc ((int) val & 0xff, file);
+   if (rc == EOF)
+      return 0;
+
+   return 1;
+}
+
+static int
+WriteleShort(FILE * file, unsigned short val)
+{
+   int rc;
+
+   rc = fputc ((int) (val & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+
+   return 1;
+}
+
+static int
+WriteleLong(FILE * file, unsigned long val)
+{
+   int rc;
+
+   rc = fputc ((int) (val & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 16) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 24) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+
+   return 1;
+}
+
 char
 load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
@@ -708,14 +756,58 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    return 1;
 }
 
-#if 0
 char
 save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 {
-   /* TODO */
-   return 0;
+   FILE               *f;
+   Imlib_Color         pixel_color;
+   unsigned long       i, j, pad, size;
+
+   if (!im->data)
+      return 0;
+
+   f = fopen(im->real_file, "wb");
+   if (!f)
+      return 0;
+
+   /* calculate number of bytes to pad on end of each row */
+   pad = (4 - ((im->w * 3) % 4)) & 0x03;
+
+   /* write BMP file header */
+   WriteleShort(f, 0x4d42);   /* prefix */
+   WriteleLong(f, 54 + 3 * im->w * im->h);  /* filesize */
+   WriteleShort(f, 0x0000);   /* reserved #1 */
+   WriteleShort(f, 0x0000);   /* reserved #2 */
+   WriteleLong(f, 54);        /* offset to image data */
+
+   /* write BMP bitmap header */
+   WriteleLong(f, 40);   /* 40-byte header */
+   WriteleLong(f, im->w);
+   WriteleLong(f, im->h);
+   WriteleShort(f, 1);   /* one plane      */
+   WriteleShort(f, 24);  /* bits per pixel */
+   WriteleLong(f, 0);    /* no compression */
+   WriteleLong(f, 3 * im->w * im->h);
+   for (i = 0; i < 4; i++)
+     WriteleLong(f, 0x0000);  /* pad to end of header */
+
+   /* write actual BMP data */
+   for (i = 0; i < im->h; i++)
+      {
+         for (j = 0; j < im->w; j++)
+            {
+               imlib_image_query_pixel (j, im->h - i - 1, &pixel_color);
+               WriteleByte(f, pixel_color.blue);
+               WriteleByte(f, pixel_color.green);
+               WriteleByte(f, pixel_color.red);
+            }
+         for (j = 0; j < pad; j++)
+            WriteleByte(f, 0);
+      }
+
+   fclose(f);
+   return 1;
 }
-#endif
 
 void
 formats(ImlibLoader * l)
