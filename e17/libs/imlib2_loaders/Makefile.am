@@ -10,8 +10,4 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN COPYING.loader_xcf imlib2_loaders.spec imlib2_loaders.spec.in \
              README.in README \
-	     debian/changelog.in debian/changelog \
-	     debian/control
-	     debian/copyright
-	     debian/rules
-	     
+	     debian/changelog.in debian/changelog debian/control debian/copyright debian/rules
