@@ -97,11 +97,20 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 
         for (j = 0; j < w; j++)
           {
+	     int a, r, g, b;
+	     
+	     a = TIFFGetA(pixel_value);
+	     r = TIFFGetR(pixel_value);
+	     g = TIFFGetG(pixel_value);
+	     b = TIFFGetB(pixel_value);
              pixel_value = (*(pixel++));
-             (*(buffer_pixel++)) =
-                 (TIFFGetA(pixel_value) << 24) |
-                 (TIFFGetR(pixel_value) << 16) | (TIFFGetG(pixel_value) << 8) |
-                 TIFFGetB(pixel_value);
+	     if ((a > 0) && (a < 255))
+	       {
+		  r = (r * 255) / a;
+		  g = (g * 255) / a;
+		  b = (b * 255) / a;
+	       }
+             (*(buffer_pixel++)) = (a << 14) | (r << 16) | (g << 8) | b;
           }
      }
 
