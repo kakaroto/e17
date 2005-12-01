@@ -172,6 +172,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 {
 	Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
 	Evas_Textblock_Cursor *cursor;
+	int shifting = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -191,7 +192,11 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 	/* force a display of the text */
 	ewl_text_display(t);
 
-	if (idx >= t->length) idx = t->length - 1;
+	if (idx >= t->length)
+	{
+		idx = t->length - 1;
+		shifting = 1;
+	}
 
 	cursor = ewl_text_textblock_cursor_position(t, idx);
 	evas_textblock_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
@@ -201,6 +206,10 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 	if (y) *y = (int)(ty + CURRENT_Y(t));
 	if (w) *w = (int)tw;
 	if (h) *h = (int)th;
+
+	/* if we didn't count the last item, move us over to the other side
+	 * of it */
+	if (shifting) *x += *w;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -247,8 +256,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			/* if so, get the line geometry and determine start
 			 * or end of line */
 			evas_textblock_cursor_line_geometry_get(cursor, 
-								&cx, &cy, 
-								&cw, &ch);
+							&cx, &cy, &cw, &ch);
 			if (x < (cx + (cw / 2)))
 				evas_textblock_cursor_line_first(cursor);
 			else
