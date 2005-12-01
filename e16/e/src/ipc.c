@@ -961,101 +961,8 @@ IPC_Show(const char *params, Client * c __UNUSED__)
    ConfigurationShow(params);
 }
 
-#if 0				/* Obsolete? */
 static void
-EwinShowInfo1(const EWin * ewin)
-{
-   Border              NoBorder;
-   const Border       *border;
-
-   border = ewin->border;
-   if (border == NULL)
-     {
-	border = &NoBorder;
-	memset(&NoBorder, 0, sizeof(Border));
-     }
-
-   IpcPrintf("***CLIENT***\n"
-	     "CLIENT_WIN_ID:          %#10lx\n"
-	     "FRAME_WIN_ID:           %#10lx\n"
-	     "CONTAINER_WIN_ID:       %#10lx\n"
-	     "FRAME_X,Y:              %5i , %5i\n"
-	     "FRAME_WIDTH,HEIGHT:     %5i , %5i\n"
-	     "BORDER_NAME:            %s\n"
-	     "BORDER_BORDER:          %5i , %5i , %5i , %5i\n"
-	     "DESKTOP_NUMBER:         %5i\n"
-	     "MEMBER_OF_GROUPS:       %5i\n"
-	     "DOCKED:                 %5i\n"
-	     "STICKY:                 %5i\n"
-	     "VISIBLE:                %5i\n"
-	     "ICONIFIED:              %5i\n"
-	     "SHADED:                 %5i\n"
-	     "ACTIVE:                 %5i\n"
-	     "LAYER:                  %5i\n"
-	     "NEVER_USE_AREA:         %5i\n"
-	     "FLOATING:               %5i\n"
-	     "CLIENT_WIDTH,HEIGHT:    %5i , %5i\n"
-	     "ICON_WIN_ID:            %#10lx\n"
-	     "ICON_PIXMAP,MASK_ID:    %#10lx , %#10lx\n"
-	     "CLIENT_GROUP_LEADER_ID: %#10lx\n"
-	     "CLIENT_NEEDS_INPUT:     %5i\n"
-	     "TRANSIENT:              %5i\n"
-	     "TITLE:                  %s\n"
-	     "CLASS:                  %s\n"
-	     "NAME:                   %s\n"
-	     "COMMAND:                %s\n"
-	     "MACHINE:                %s\n"
-	     "ICON_NAME:              %s\n"
-	     "IS_GROUP_LEADER:        %5i\n"
-	     "NO_RESIZE_HORIZONTAL:   %5i\n"
-	     "NO_RESIZE_VERTICAL:     %5i\n"
-	     "SHAPED:                 %5i\n"
-	     "MIN_WIDTH,HEIGHT:       %5i , %5i\n"
-	     "MAX_WIDTH,HEIGHT:       %5i , %5i\n"
-	     "BASE_WIDTH,HEIGHT:      %5i , %5i\n"
-	     "WIDTH,HEIGHT_INC:       %5i , %5i\n"
-	     "ASPECT_MIN,MAX:         %5.5f , %5.5f\n"
-	     "MWM_BORDER:             %5i\n"
-	     "MWM_RESIZEH:            %5i\n"
-	     "MWM_TITLE:              %5i\n"
-	     "MWM_MENU:               %5i\n"
-	     "MWM_MINIMIZE:           %5i\n"
-	     "MWM_MAXIMIZE:           %5i\n",
-	     _EwinGetClientXwin(ewin), EoGetWin(ewin),
-	     _EwinGetContainerXwin(ewin),
-	     EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin),
-	     border->name,
-	     border->border.left, border->border.right,
-	     border->border.top, border->border.bottom,
-	     EoGetDesk(ewin),
-	     ewin->num_groups, ewin->state.docked,
-	     EoIsSticky(ewin), EoIsShown(ewin), ewin->state.iconified,
-	     ewin->state.shaded, ewin->state.active, EoGetLayer(ewin),
-	     ewin->props.never_use_area, EoIsFloating(ewin),
-	     ewin->client.w, ewin->client.h,
-	     ewin->icccm.icon_win,
-	     ewin->icccm.icon_pmap, ewin->icccm.icon_mask,
-	     EwinGetWindowGroup(ewin),
-	     ewin->icccm.need_input, EwinIsTransient(ewin),
-	     SS(ewin->icccm.wm_name), SS(ewin->icccm.wm_res_class),
-	     SS(ewin->icccm.wm_res_name), SS(ewin->icccm.wm_command),
-	     SS(ewin->icccm.wm_machine), SS(ewin->icccm.wm_icon_name),
-	     EwinIsWindowGroupLeader(ewin),
-	     ewin->client.no_resize_h, ewin->client.no_resize_v,
-	     ewin->state.shaped,
-	     ewin->client.width.min, ewin->client.height.min,
-	     ewin->client.width.max, ewin->client.height.max,
-	     ewin->client.base_w, ewin->client.base_h,
-	     ewin->client.w_inc, ewin->client.h_inc,
-	     ewin->client.aspect_min, ewin->client.aspect_max,
-	     ewin->mwm.decor_border, ewin->mwm.decor_resizeh,
-	     ewin->mwm.decor_title, ewin->mwm.decor_menu,
-	     ewin->mwm.decor_minimize, ewin->mwm.decor_maximize);
-}
-#endif /* Obsolete? */
-
-static void
-EwinShowInfo2(const EWin * ewin)
+EwinShowInfo(const EWin * ewin)
 {
    Border              NoBorder;
    const Border       *border;
@@ -1147,7 +1054,6 @@ EwinShowInfo2(const EWin * ewin)
       );
 }
 
-#if 0				/* Obsolete? */
 static void
 IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 {
@@ -1166,44 +1072,13 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 
 	lst = EwinListGetAll(&num);
 	for (i = 0; i < num; i++)
-	   EwinShowInfo1(lst[i]);
+	   EwinShowInfo(lst[i]);
      }
    else
      {
 	ewin = IpcFindEwin(param1);
 	if (ewin)
-	   EwinShowInfo1(ewin);
-	else
-	   IpcPrintf("No matching EWin found\n");
-     }
-}
-#endif /* Obsolete? */
-
-static void
-IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
-{
-   char                param1[FILEPATH_LEN_MAX];
-   EWin               *ewin;
-
-   if (params == NULL)
-      return;
-
-   sscanf(params, "%1000s", param1);
-
-   if (!strcmp(param1, "all"))
-     {
-	EWin               *const *lst;
-	int                 i, num;
-
-	lst = EwinListGetAll(&num);
-	for (i = 0; i < num; i++)
-	   EwinShowInfo2(lst[i]);
-     }
-   else
-     {
-	ewin = IpcFindEwin(param1);
-	if (ewin)
-	   EwinShowInfo2(ewin);
+	   EwinShowInfo(ewin);
 	else
 	   IpcPrintf("No matching EWin found\n");
      }
@@ -1430,36 +1305,6 @@ static const IpcItem IPCArray[] = {
     "you can get an extended list using \"window_list extended\"\n"
     "returns the following format:\n\"window_id : title :: "
     "desktop : area_x area_y : x_coordinate y_coordinate\"\n"},
-#if 0
-   {
-    IPC_FX,
-    "fx", NULL,
-    "Toggle various effects on/off",
-    "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
-    "Use \"fx <effect> ?\" to get the current mode\n"
-    "the following effects are available\n"
-    "ripples <on/off> (ripples that act as a water effect on the screen)\n"
-    "deskslide <on/off> (slide in desktops on desktop change)\n"
-    "mapslide <on/off> (slide in new windows)\n"
-    "raindrops <on/off> (raindrops will appear across your desktop)\n"
-    "menu_animate <on/off> (toggles the animation of menus "
-    "as they appear)\n"
-    "animate_win_shading <on/off> (toggles the animation of "
-    "window shading)\n"
-    "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
-    "dragbar <on/off/left/right/top/bottom> (changes " "location of dragbar)\n"
-    "tooltips <on/off/#> (changes state of tooltips and "
-    "seconds till popup)\n"
-    "autoraise <on/off/#> (changes state of autoraise and "
-    "seconds till raise)\n"
-    "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
-    "   of time to push for resistance to give)\n"
-    "edge_snap_resistance <#/?> (changes the number of pixels that "
-    "a window will\n   resist moving against another window\n"
-    "audio <on/off> (changes state of audio)\n"
-    "-  seconds for tooltips and autoraise can have less than one second\n"
-    "   (i.e. 0.5) or greater (1.3, 3.5, etc)\n"},
-#endif
    {
     IPC_MoveResize,
     "movres", "mr",
@@ -1495,12 +1340,8 @@ static const IpcItem IPCArray[] = {
     IPC_Set, "set", NULL, "Set configuration parameter", NULL},
    {
     IPC_Show, "show", "sh", "Show configuration parameter(s)", NULL},
-#if 0				/* Obsolete? */
    {
-    IPC_EwinInfo, "get_client_info", NULL, "Show client window info", NULL},
-#endif
-   {
-    IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
+    IPC_EwinInfo, "win_info", "wi", "Show client window info", NULL},
    {
     IPC_ObjInfo, "obj_info", "oi", "Show window object info", NULL},
    {
