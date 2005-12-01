@@ -363,6 +363,9 @@ DeskEventsConfigure(Desk * dsk, int mode)
 {
    long                event_mask;
    XWindowAttributes   xwa;
+   Window              win;
+
+   win = EobjGetWin(dsk->bg.o);
 
    if (mode)
      {
@@ -370,14 +373,14 @@ DeskEventsConfigure(Desk * dsk, int mode)
      }
    else
      {
-	EGetWindowAttributes(EoGetWin(dsk), &xwa);
+	EGetWindowAttributes(win, &xwa);
 	dsk->event_mask = xwa.your_event_mask | EDESK_EVENT_MASK;
 	event_mask =
 	   EnterWindowMask | LeaveWindowMask |
 	   PropertyChangeMask | SubstructureRedirectMask |
 	   ButtonPressMask | ButtonReleaseMask;
      }
-   ESelectInput(EoGetWin(dsk), event_mask);
+   ESelectInput(win, event_mask);
 }
 
 static void
@@ -445,10 +448,22 @@ DeskCreate(int desk, int configure)
    EoSetShadow(dsk, 0);
    if (desk == 0)
      {
+	EObj               *eo;
+
 	desks.current = dsk;
+
+	eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h,
+			      0, "Root-bg");
+	eo->floating = 0;
+	eo->fade = eo->shadow = 0;
+	EobjSetLayer(eo, 0);
+	EobjMap(eo, 0);
+	dsk->bg.o = eo;
+	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
      }
    else
      {
+	dsk->bg.o = EoObj(dsk);
 	EoSetFloating(dsk, 1);
 	EoSetLayer(dsk, 0);
 #if 0				/* TBD */
@@ -510,7 +525,7 @@ DeskBackgroundConfigure(Desk * dsk)
 {
    Window              win;
 
-   win = EoGetWin(dsk);
+   win = EobjGetWin(dsk->bg.o);
 
    if (dsk->viewable)
      {
@@ -523,12 +538,12 @@ DeskBackgroundConfigure(Desk * dsk)
 	     EClearWindow(win);
 	  }
 
-	HintsSetRootInfo(win, dsk->bg.pmap, dsk->bg.pixel);
+	HintsSetRootInfo(EoGetWin(dsk), dsk->bg.pmap, dsk->bg.pixel);
      }
    else
      {
 	if (!Conf.hints.set_xroot_info_on_root_window)
-	   HintsSetRootInfo(win, None, 0);
+	   HintsSetRootInfo(EoGetWin(dsk), None, 0);
 
 	if (!ECompMgrDeskConfigure(dsk))
 	  {
@@ -678,6 +693,7 @@ DeskResize(int desk, int w, int h)
    if (dsk->num == 0)
      {
 	EoSync(dsk);
+	EobjMoveResize(dsk->bg.o, 0, 0, w, h);
      }
    else
      {

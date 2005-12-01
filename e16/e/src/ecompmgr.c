@@ -1345,7 +1345,7 @@ ECompMgrWinSetPicts(EObj * eo)
      }
 
    if (cw->pixmap == None && eo->shown &&
-       (Mode_compmgr.use_pixmap || Conf_compmgr.fading.enable))
+       (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
 	cw->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
 	D2printf("ECompMgrWinSetPicts %#lx: Pmap=%#lx\n", eo->win, cw->pixmap);
