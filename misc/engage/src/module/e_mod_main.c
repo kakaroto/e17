@@ -1957,10 +1957,7 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
 
    evas_object_resize(o, w, h);
 	 
-   if (eb->tray)
-     evas_object_resize(eb->event_object, w - eb->tray->w, h);
-   else
-     evas_object_resize(eb->event_object, w, h);
+   evas_object_resize(eb->event_object, w, h);
    edje_extern_object_min_size_set(eb->box_object, w, h);
    
    if (eb->gmc)
@@ -2169,32 +2166,20 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	if (eb->tray)
-	  evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
-	else
-	  evas_object_resize(eb->event_object, w * (multiplier + 1), h );
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h );
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	if (eb->tray)
-	  evas_object_resize(eb->event_object, w * (multiplier + 1), h - eb->tray->h);
-	else
-	  evas_object_resize(eb->event_object, w * (multiplier + 1), h );
+	evas_object_resize(eb->event_object, w * (multiplier + 1), h );
 	evas_object_move(eb->event_object, x - w * multiplier, y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	if (eb->tray)
-	  evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
-	else
-	  evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
      }
    else
      {
-	if (eb->tray)
-	  evas_object_resize(eb->event_object, w - eb->tray->w, h * (multiplier + 1));
-	else
-	  evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
 	evas_object_move(eb->event_object, x, y - h * multiplier);
      }
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
@@ -2353,9 +2338,10 @@ static void
 _engage_bar_iconsize_change(Engage_Bar *eb)
 {
    Evas_List *l;
-   Evas_Coord border;
+   Evas_Coord border, size;
 
    e_box_freeze(eb->box_object);
+   size = eb->engage->conf->iconsize;
    for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
@@ -2364,14 +2350,14 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 
 	ic = l->data;
 	o = ic->icon_object;
-	edje_extern_object_min_size_set(o, eb->engage->conf->iconsize, eb->engage->conf->iconsize);
-	evas_object_resize(o, eb->engage->conf->iconsize, eb->engage->conf->iconsize);
-	
-	edje_object_size_min_calc(ic->bg_object, &border, NULL);
+	edje_object_part_unswallow(ic->bg_object, o);
 
+	edje_extern_object_min_size_set(o, size, size);
+	edje_extern_object_min_size_set(o, size, size);
+	evas_object_resize(o, size, size);
 	edje_object_part_swallow(ic->bg_object, "item", o);
-	edje_object_size_min_calc(ic->bg_object, &bw, &bh);
 
+	edje_object_size_min_calc(ic->bg_object, &bw, &bh);
 	e_box_pack_options_set(ic->bg_object,
 	      1, 1, /* fill */
 	      0, 0, /* expand */
@@ -2379,6 +2365,7 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 	      bw, bh, /* min */
 	      bw, bh /* max */
 	      );
+	border = bw;
      }
    eb->engage->iconbordersize = border;
    
