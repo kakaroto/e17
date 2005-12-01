@@ -19,6 +19,9 @@ EWL TODO
 - [BUG] Seem to have lost the .. entry in the filedialog files list.
         Something wrong with the regex's or caused by something in
 	ecore_file
+- [BUG] In ewl_text if your in a multiline text and on a line that is longer
+        then then one above or below and you hit the up arrow it will
+	position your cursor one character _before_ the end of the line.
 
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.
