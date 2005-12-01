@@ -39,8 +39,7 @@ struct _desk;
 
 int                 EVisualIsARGB(Visual * vis);
 
-int                 ECompMgrDeskConfigure(struct _desk *dsk, int set,
-					  Pixmap pmap, unsigned int pixel);
+int                 ECompMgrDeskConfigure(struct _desk *dsk);
 
 void                ECompMgrWinNew(EObj * eo);
 void                ECompMgrWinDel(EObj * eo);

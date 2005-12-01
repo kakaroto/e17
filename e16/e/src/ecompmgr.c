@@ -480,13 +480,10 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
  */
 
 int
-ECompMgrDeskConfigure(Desk * dsk, int set, Pixmap pmap, unsigned int pixel)
+ECompMgrDeskConfigure(Desk * dsk)
 {
    /* FIXME - To be implemented */
    dsk = NULL;
-   set = 0;
-   pmap = None;
-   pixel = 0;
 
    return 0;
 }

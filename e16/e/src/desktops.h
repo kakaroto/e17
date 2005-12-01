@@ -45,6 +45,7 @@ struct _desk
    {
       struct _background *bg;
       Pixmap              pmap;
+      unsigned long       pixel;
       char                isset;
    } bg;
    struct

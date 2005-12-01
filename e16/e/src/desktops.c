@@ -438,8 +438,10 @@ DeskCreate(int desk, int configure)
 
    win = (desk == 0) ? VRoot.win : None;
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
+   EoSetNoRedirect(dsk, 1);
    EoInit(dsk, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
    EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
+   EoSetFade(dsk, 0);
    EoSetShadow(dsk, 0);
    if (desk == 0)
      {
@@ -504,33 +506,31 @@ DeskBackgroundGet(const Desk * dsk)
 }
 
 static void
-DeskBackgroundConfigure(Desk * dsk, int set, Pixmap pmap, unsigned int pixel)
+DeskBackgroundConfigure(Desk * dsk)
 {
    Window              win;
 
    win = EoGetWin(dsk);
 
-   if (set)
+   if (dsk->viewable)
      {
-	if (!ECompMgrDeskConfigure(dsk, set, pmap, pixel))
+	if (!ECompMgrDeskConfigure(dsk))
 	  {
-	     if (pmap != None)
-		ESetWindowBackgroundPixmap(win, pmap);
+	     if (dsk->bg.pmap != None)
+		ESetWindowBackgroundPixmap(win, dsk->bg.pmap);
 	     else
-		ESetWindowBackground(win, pixel);
+		ESetWindowBackground(win, dsk->bg.pixel);
 	     EClearWindow(win);
 	  }
 
-	if (pmap != None)
-	   BackgroundPixmapSet(dsk->bg.bg, pmap);
-	HintsSetRootInfo(win, pmap, pixel);
+	HintsSetRootInfo(win, dsk->bg.pmap, dsk->bg.pixel);
      }
    else
      {
 	if (!Conf.hints.set_xroot_info_on_root_window)
 	   HintsSetRootInfo(win, None, 0);
 
-	if (!ECompMgrDeskConfigure(dsk, set, pmap, pixel))
+	if (!ECompMgrDeskConfigure(dsk))
 	  {
 	     ESetWindowBackgroundPixmap(win, None);
 	  }
@@ -559,7 +559,7 @@ DeskBackgroundFree(Desk * dsk, int force)
      }
 
    if (!dsk->viewable)
-      DeskBackgroundConfigure(dsk, 0, None, 0);
+      DeskBackgroundConfigure(dsk);
 }
 
 static void
@@ -589,9 +589,13 @@ DeskBackgroundRefresh(Desk * dsk)
       BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
 			&pmap, &pixel);
 
-   DeskBackgroundConfigure(dsk, 1, pmap, pixel);
+   if (pmap != None && pmap != dsk->bg.pmap)
+      BackgroundPixmapSet(dsk->bg.bg, pmap);
+
    dsk->bg.pmap = pmap;
+   dsk->bg.pixel = pixel;
    dsk->bg.isset = 1;
+   DeskBackgroundConfigure(dsk);
 }
 
 static void
@@ -655,8 +659,10 @@ DesksBackgroundRefresh(Background * bg)
    for (i = 0; i < Conf.desks.num; i++)
      {
 	dsk = _DeskGet(i);
-	if (dsk->bg.bg != bg)
+	if (bg && dsk->bg.bg != bg)
 	   continue;
+	if (!bg)
+	   dsk->bg.isset = 0;
 	DeskBackgroundUpdate(dsk);
      }
 }
