@@ -398,18 +398,19 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 void
 ewl_entry_cursor_move_left(Ewl_Entry *e)
 {
+	unsigned int pos;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "entry");
 
-	/* we're already at the start */
-	if (ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)) == 0)
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor),
-		ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)) - 1);
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
+	/* we're already at the start */
+	if (pos == 0)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos - 1);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -418,19 +419,19 @@ ewl_entry_cursor_move_left(Ewl_Entry *e)
 void
 ewl_entry_cursor_move_right(Ewl_Entry *e)
 {
+	unsigned int pos;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "entry");
 
-	/* if we are already at the end, stop */
-	if (ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor))
-					== ewl_text_length_get(EWL_TEXT(e)))
-	{
-		DRETURN(DLEVEL_STABLE);
-	}
-	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor),
-		ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)) + 1);
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
+	/* if we are already at the end, stop */
+	if (pos == ewl_text_length_get(EWL_TEXT(e)))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos + 1);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
