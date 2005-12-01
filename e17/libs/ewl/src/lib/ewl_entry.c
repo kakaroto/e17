@@ -358,7 +358,6 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	idx = ewl_text_coord_index_map(EWL_TEXT(e), event->x, event->y);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), idx);
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

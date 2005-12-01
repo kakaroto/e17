@@ -2268,6 +2268,7 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 {
 	Evas_Textblock_Cursor *cursor;
 	int cur_idx;
+	const char *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
@@ -2277,10 +2278,14 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 	evas_textblock_cursor_node_first(cursor);
 
 	cur_idx = idx;
-	while (cur_idx >= 0)
+
+	/* if we get to a point where the current index is zero then we need
+	 * to walk past any formatting nodes before we are where we want to
+	 * be. (Without the txt then triggers break, with >= 0 the mouse
+	 * placement of the cursor in the entry breaks */
+	while ((cur_idx > 0) || txt)
 	{
 		int len = 0;
-		const char *txt;
 
 		/* see if this is a formatting or text node */
 		txt = evas_textblock_cursor_node_format_get(cursor);
@@ -2324,8 +2329,7 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
 	{
 		const char *txt;
 		txt = evas_textblock_cursor_node_format_get(cursor);
-		if (!txt)
-			idx += evas_textblock_cursor_node_text_length_get(cursor);
+		if (!txt) idx += evas_textblock_cursor_node_text_length_get(cursor);
 		else if (!strcmp(txt, "\n")) idx ++;
 		else if (!strcmp(txt, "\t")) idx ++;
 	}
