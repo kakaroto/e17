@@ -37,13 +37,16 @@ struct _desk
    EObj                o;
    unsigned int        num;
    char                viewable;
-   char                bg_isset;
-   struct _background *bg;
    struct _button     *tag;
    int                 current_area_x;
    int                 current_area_y;
    long                event_mask;
-   Pixmap              pmap;
+   struct
+   {
+      struct _background *bg;
+      Pixmap              pmap;
+      char                isset;
+   } bg;
    struct
    {
       int                 dirty;
