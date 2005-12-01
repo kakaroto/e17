@@ -93,18 +93,16 @@ struct _eobj
 #define EoSetDesk(eo, _x)       (eo)->o.desk = (_x)
 #define EoSetLayer(eo, _l)      EobjSetLayer(EoObj(eo), (_l))
 #define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
+#define EoSetFade(eo, _x)       ((eo)->o.fade = (_x))
+#define EoSetNoRedirect(eo, _x) (eo)->o.noredir = (_x)
+#define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
 #define EoGetOpacity(eo)        ((eo)->o.opacity)
-#define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #define EoGetShadow(eo)         ((eo)->o.shadow)
-#define EoSetNoRedirect(eo, _x) (eo)->o.noredir = (_x)
 #define EoGetNoRedirect(eo)     ((eo)->o.noredir)
-#define EoSetFade(eo, _x)       ((eo)->o.fade = (_x))
 #else
 #define EoSetOpacity(eo, _o)
-#define EoSetShadow(eo, _x)
-#define EoSetFade(eo, _x)
 #endif
 
 #define EoInit(eo, type, win, x, y, w, h, su, name) \

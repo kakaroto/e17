@@ -65,9 +65,9 @@ void                ECompMgrRepaint(void);
 
 #else
 
-#define EVisualIsARGB(vis)      0
+#define EVisualIsARGB(vis)          0
 
-#define ECompMgrDeskConfigure(dsk, set, pmap, pixel) 0
+#define ECompMgrDeskConfigure(dsk)  0
 
 #endif
 
