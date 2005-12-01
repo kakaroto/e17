@@ -3,21 +3,26 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+#ifdef __GLIBC__
+#include <execinfo.h>
+#endif
+
 extern Ecore_List *ewl_embed_list;
 extern Ecore_List *ewl_window_list;
 
 /*
  * Configuration and option related flags.
  */
-static unsigned int    debug_segv = 0;
-static unsigned int    use_engine = EWL_ENGINE_ALL;
-static unsigned int    phase_status = 0;
-static unsigned int    print_theme_keys = 0;
-static unsigned int    print_gc_reap = 0;
-static unsigned int    debug_level = 0;
+static unsigned int debug_segv = 0;
+static unsigned int debug_bt = 0;
+static unsigned int use_engine = EWL_ENGINE_ALL;
+static unsigned int phase_status = 0;
+static unsigned int print_theme_keys = 0;
+static unsigned int print_gc_reap = 0;
+static unsigned int debug_level = 0;
 
 static Ecore_Idle_Enterer *idle_enterer = NULL;
-static Ecore_Idler        *ewl_garbage_collect = NULL;
+static Ecore_Idler *ewl_garbage_collect = NULL;
 static int _ewl_init_count = 0;
 
 /*
@@ -36,10 +41,10 @@ static Ecore_List *child_add_list= NULL;
 static Ecore_List *free_evas_list = NULL;
 static Ecore_List *free_evas_object_list = NULL;
 
-int             ewl_idle_render(void *data);
-static void     ewl_init_parse_options(int *argc, char **argv);
-static void     ewl_init_remove_option(int *argc, char **argv, int i);
-int             ewl_ecore_exit(void *data, int type, void *event);
+int ewl_idle_render(void *data);
+static void ewl_init_parse_options(int *argc, char **argv);
+static void ewl_init_remove_option(int *argc, char **argv, int i);
+int ewl_ecore_exit(void *data, int type, void *event);
 
 /**
  * @return Returns no value.
@@ -51,7 +56,7 @@ int             ewl_ecore_exit(void *data, int type, void *event);
 inline void
 ewl_print_warning(void)
 {
-	fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
+	fprintf(stderr, "\n***** Ewl Developer Warning ***** :\n"
 		" To find where this is occurring set a breakpoint\n"
 		" for the function %s.\n", __FUNCTION__);
 }
@@ -67,6 +72,33 @@ ewl_segv(void)
 		char *null = NULL;
 		*null = '\0';
 	}
+}
+
+/**
+ * @returns Returns no value.
+ * @brief This will print a backtrace at the given point.
+ */
+inline void
+ewl_backtrace(void)
+{
+#ifdef __GLIBC__
+	void *array[128];
+	size_t size;
+	char **strings;
+	size_t i;
+		
+	if (!debug_bt) return;
+
+	fprintf(stderr, "\n***** Backtrace *****\n");
+	size = backtrace(array, 128);
+	strings = backtrace_symbols(array, size);
+	for (i = 0; i < size; i++)
+		fprintf(stderr, "%s\n", strings[i]);
+
+	FREE(strings);
+#else
+	fprintf(stderr, "Your system dosen't have glibc. Backtraces disabled.\n");
+#endif
 }
 
 /**
@@ -464,7 +496,11 @@ ewl_init_parse_options(int *argc, char **argv)
 			debug_segv = 1;
 			matched++;
 		}
-		if (!strcmp(argv[i], "--ewl-theme")) {
+		else if (!strcmp(argv[i], "--ewl-backtrace")) {
+			debug_bt = 1;
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-theme")) {
 			if (i + 1 < *argc) {
 				ewl_theme_name_set(argv[i + 1]);
 				matched++;

@@ -13,6 +13,7 @@
 
 inline void ewl_print_warning(void);
 inline void ewl_segv(void);
+inline void ewl_backtrace(void);
 
 #define DEBUG 1
 
@@ -109,6 +110,7 @@ inline void ewl_segv(void);
 	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __FUNCTION__); \
 	fprintf(stderr, fmt); \
+	ewl_backtrace(); \
 	ewl_segv(); \
 }
 
@@ -123,6 +125,7 @@ inline void ewl_segv(void);
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
 				__FUNCTION__, str); \
+		ewl_backtrace(); \
 		ewl_segv(); \
 		return; \
 	  } \
@@ -139,6 +142,7 @@ inline void ewl_segv(void);
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
 				__FUNCTION__, str); \
+		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
 	  } \
@@ -156,6 +160,7 @@ inline void ewl_segv(void);
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
 				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+		ewl_backtrace(); \
 		ewl_segv(); \
 	} \
 }
@@ -172,6 +177,7 @@ inline void ewl_segv(void);
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
 				__FUNCTION__, str, EWL_WIDGET(ptr)->inheritance, type); \
+		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
 	} \
