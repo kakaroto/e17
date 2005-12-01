@@ -2268,7 +2268,7 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 {
 	Evas_Textblock_Cursor *cursor;
 	int cur_idx;
-	const char *txt;
+	const char *txt = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
