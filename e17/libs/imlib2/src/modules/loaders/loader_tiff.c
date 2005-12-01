@@ -110,7 +110,7 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 		  g = (g * 255) / a;
 		  b = (b * 255) / a;
 	       }
-             (*(buffer_pixel++)) = (a << 14) | (r << 16) | (g << 8) | b;
+             (*(buffer_pixel++)) = (a << 24) | (r << 16) | (g << 8) | b;
           }
      }
 
