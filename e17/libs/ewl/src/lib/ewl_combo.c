@@ -179,7 +179,7 @@ ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_widget_hide(EWL_MENU_BASE(combo)->popup);
 
 	ewl_widget_appearance_set(combo->button, "decrement");
-	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_MOUSE_OUT,
 						ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
 						ewl_combo_collapse_cb);
@@ -259,7 +259,7 @@ ewl_combo_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	pb = EWL_CONTAINER(EWL_MENU_BASE(combo)->popbox);
 
-	ewl_callback_append(EWL_WIDGET(pb), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(EWL_WIDGET(pb), EWL_CALLBACK_MOUSE_OUT,
 					ewl_combo_collapse_cb, combo);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN, ewl_combo_expand_cb);
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
@@ -295,7 +295,7 @@ ewl_combo_collapse_cb(Ewl_Widget *w __UNUSED__,
 	ewl_widget_hide(EWL_MENU_BASE(combo)->popup);
 
 	ewl_widget_appearance_set(combo->button, "decrement");
-	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_MOUSE_OUT,
 							ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
 							ewl_combo_collapse_cb);

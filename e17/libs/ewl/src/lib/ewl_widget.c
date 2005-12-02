@@ -92,9 +92,9 @@ ewl_widget_init(Ewl_Widget * w)
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
 				ewl_widget_disable_cb, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_focus_in_cb,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_mouse_in_cb,
 				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_focus_out_cb,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_mouse_out_cb,
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_widget_mouse_down_cb, NULL);
@@ -2187,7 +2187,7 @@ ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2203,7 +2203,7 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

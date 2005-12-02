@@ -31,7 +31,7 @@ static void ewl_attach_cb_tooltip_win_destroy(Ewl_Widget *w, void *ev, void *dat
 
 static void ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data);
 static void ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w, void *ev, void *data);
-static void ewl_attach_cb_tooltip_focus_out(Ewl_Widget *w, void *ev, void *data);
+static void ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w, void *ev, void *data);
 static int ewl_attach_cb_tooltip_timer(void *data);
 
 static Ewl_Attach_Tooltip *ewl_attach_tooltip = NULL;
@@ -467,8 +467,8 @@ ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 				ewl_attach_cb_tooltip_mouse_move, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_attach_cb_tooltip_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-				ewl_attach_cb_tooltip_focus_out, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
+				ewl_attach_cb_tooltip_mouse_out, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -602,7 +602,7 @@ ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__,
 }
 
 static void
-ewl_attach_cb_tooltip_focus_out(Ewl_Widget *w __UNUSED__, 
+ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__, 
 				void *ev __UNUSED__, void *data)
 {
 	Ewl_Attach *attach;

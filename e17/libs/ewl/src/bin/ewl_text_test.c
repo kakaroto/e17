@@ -124,9 +124,9 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP, 
 			__trigger_cb, "You clicked the trigger, have a cookie.");
-	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_IN,
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_IN,
 			__trigger_cb_mouse_in, NULL);
-	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_OUT,
 			__trigger_cb_mouse_out, NULL);
 
 	ewl_text_text_insert(EWL_TEXT(o), "The fifth bunch of text\n", 0); /* 24 */
@@ -158,9 +158,9 @@ __create_text_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP, 
 			__trigger_cb, "You clicked the multi-line trigger, have a coke.");
-	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_IN,
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_IN,
 			__trigger_cb_mouse_in, NULL);
-	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_OUT,
 			__trigger_cb_mouse_out, NULL);
 
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);

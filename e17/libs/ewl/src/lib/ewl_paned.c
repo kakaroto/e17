@@ -9,9 +9,9 @@ static void ewl_paned_grabber_mouse_up_cb(Ewl_Widget *w, void *ev,
 						void *user_data);
 static void ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w, void *ev, 
 						void *user_data);
-static void ewl_paned_grabber_focus_in_cb(Ewl_Widget *w, void *ev, 
+static void ewl_paned_grabber_mouse_in_cb(Ewl_Widget *w, void *ev, 
 						void *user_data);
-static void ewl_paned_grabber_focus_out_cb(Ewl_Widget *w, void *ev, 
+static void ewl_paned_grabber_mouse_out_cb(Ewl_Widget *w, void *ev, 
 						void *user_data);
 
 /**
@@ -117,10 +117,10 @@ ewl_paned_init(Ewl_Paned *p)
 						ewl_paned_grabber_mouse_up_cb, p);
 	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_MOUSE_MOVE, 
 						ewl_paned_grabber_mouse_move_cb, p);
-	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_FOCUS_IN, 
-						ewl_paned_grabber_focus_in_cb, p);
-	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_FOCUS_OUT, 
-						ewl_paned_grabber_focus_out_cb, p);
+	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_MOUSE_IN, 
+						ewl_paned_grabber_mouse_in_cb, p);
+	ewl_callback_append(EWL_WIDGET(p->grabber), EWL_CALLBACK_MOUSE_OUT, 
+						ewl_paned_grabber_mouse_out_cb, p);
 	ewl_widget_layer_set(EWL_WIDGET(p->grabber), 100);
 	ewl_widget_show(EWL_WIDGET(p->grabber));
 
@@ -289,7 +289,7 @@ ewl_paned_grabber_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev, void *user_d
 }
 
 static void
-ewl_paned_grabber_focus_in_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+ewl_paned_grabber_mouse_in_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -300,7 +300,7 @@ ewl_paned_grabber_focus_in_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_paned_grabber_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+ewl_paned_grabber_mouse_out_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

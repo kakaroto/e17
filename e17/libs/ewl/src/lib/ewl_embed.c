@@ -630,7 +630,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 				&& !ewl_container_parent_of(embed->last.mouse_in, widget)) {
 			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_HILITED);
-			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_FOCUS_OUT);
+			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
 			embed->last.mouse_in = embed->last.mouse_in->parent;
 		}
 	}
@@ -654,7 +654,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 				ewl_object_state_add(EWL_OBJECT(embed->last.mouse_in),
 						EWL_FLAG_STATE_HILITED);
 				ewl_callback_call_with_event_data(embed->last.mouse_in,
-						EWL_CALLBACK_FOCUS_IN, &ev);
+						EWL_CALLBACK_MOUSE_IN, &ev);
 			}
 
 			ewl_callback_call_with_event_data(embed->last.mouse_in,
@@ -774,7 +774,7 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	while (embed->last.mouse_in) {
 		ewl_callback_call_with_event_data(embed->last.mouse_in,
-						  EWL_CALLBACK_FOCUS_OUT, &ev);
+						  EWL_CALLBACK_MOUSE_OUT, &ev);
 		embed->last.mouse_in = embed->last.mouse_in->parent;
 	}
 

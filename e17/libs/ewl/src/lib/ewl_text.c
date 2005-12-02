@@ -2917,10 +2917,10 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	ewl_widget_internal_set(area, TRUE);
 	ewl_object_geometry_request(EWL_OBJECT(area), x, y, w, h);
 
-	ewl_callback_append(area, EWL_CALLBACK_FOCUS_IN, 
-			ewl_text_trigger_cb_focus_in, cur);
-	ewl_callback_append(area, EWL_CALLBACK_FOCUS_OUT,
-			ewl_text_trigger_cb_focus_out, cur);
+	ewl_callback_append(area, EWL_CALLBACK_MOUSE_IN, 
+			ewl_text_trigger_cb_mouse_in, cur);
+	ewl_callback_append(area, EWL_CALLBACK_MOUSE_OUT,
+			ewl_text_trigger_cb_mouse_out, cur);
 	ewl_callback_append(area, EWL_CALLBACK_MOUSE_DOWN,
 			ewl_text_trigger_cb_mouse_down, cur);
 	ewl_callback_append(area, EWL_CALLBACK_MOUSE_UP,
@@ -3298,7 +3298,7 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 }
 
 void
-ewl_text_trigger_cb_focus_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
+ewl_text_trigger_cb_mouse_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -3307,13 +3307,13 @@ ewl_text_trigger_cb_focus_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
-						EWL_CALLBACK_FOCUS_IN, ev);
+						EWL_CALLBACK_MOUSE_IN, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_text_trigger_cb_focus_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
+ewl_text_trigger_cb_mouse_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Text_Trigger *trigger;
 
@@ -3322,7 +3322,7 @@ ewl_text_trigger_cb_focus_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
-						EWL_CALLBACK_FOCUS_OUT, ev);
+						EWL_CALLBACK_MOUSE_OUT, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
