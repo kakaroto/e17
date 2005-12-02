@@ -139,7 +139,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		ewl_callback_append(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
 						ewl_entry_cb_key_down, NULL);
 
-		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
+		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_show(e->cursor);
 
 		ewl_widget_state_set(EWL_WIDGET(e), "editable");
@@ -149,7 +149,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		ewl_callback_del(EWL_WIDGET(e), EWL_CALLBACK_KEY_DOWN,
 						ewl_entry_cb_key_down);
 
-		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_SELECTED))
+		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_hide(e->cursor);
 
 		ewl_widget_state_set(EWL_WIDGET(e), "noteditable");

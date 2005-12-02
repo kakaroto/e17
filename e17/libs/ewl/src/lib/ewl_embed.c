@@ -263,7 +263,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	if (e && e->last.clicked)
 	{
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
-						EWL_FLAG_STATE_SELECTED);
+						EWL_FLAG_STATE_FOCUSED);
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
 		e->last.clicked = NULL;
@@ -522,14 +522,14 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	if (widget != deselect) {
 		if (deselect) {
 			ewl_object_state_remove(EWL_OBJECT(deselect),
-					EWL_FLAG_STATE_SELECTED);
+					EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
 		}
 
 		if (widget && !(ewl_object_state_has(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_DISABLED))) {
 			ewl_object_state_add(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_SELECTED);
+					EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 		}
 	}
@@ -629,7 +629,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 		while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
 				&& !ewl_container_parent_of(embed->last.mouse_in, widget)) {
 			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
-					EWL_FLAG_STATE_HILITED);
+					EWL_FLAG_STATE_MOUSE_IN);
 			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
 			embed->last.mouse_in = embed->last.mouse_in->parent;
 		}
@@ -650,9 +650,9 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			 * First mouse move event in a widget marks it focused.
 			 */
 			if (!(ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in),
-						EWL_FLAG_STATE_HILITED))) {
+						EWL_FLAG_STATE_MOUSE_IN))) {
 				ewl_object_state_add(EWL_OBJECT(embed->last.mouse_in),
-						EWL_FLAG_STATE_HILITED);
+						EWL_FLAG_STATE_MOUSE_IN);
 				ewl_callback_call_with_event_data(embed->last.mouse_in,
 						EWL_CALLBACK_MOUSE_IN, &ev);
 			}

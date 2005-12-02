@@ -2255,7 +2255,7 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 	snprintf(state, 14, "mouse,up,%i", e->button);
 	ewl_widget_state_set(w, state);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
+	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_MOUSE_IN)) {
 		int x, y;
 
 		ewl_widget_state_set(w, "mouse,in");
