@@ -141,6 +141,8 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
 			    ewl_scrollbar_scroll_start_cb, s);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_UP,
 			    ewl_scrollbar_scroll_stop_cb, s);
+	ewl_callback_append(s->decrement, EWL_CALLBACK_DESTROY,
+			    ewl_scrollbar_scroll_stop_cb, s);
 
 	/*
 	 * Set the default alignment for the buttons.
@@ -509,7 +511,8 @@ ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w __UNUSED__,
 
 	s = EWL_SCROLLBAR(user_data);
 
-	ecore_timer_del(s->timer);
+	if (s->timer)
+		ecore_timer_del(s->timer);
 
 	s->timer = NULL;
 	s->direction = 0;
@@ -555,4 +558,3 @@ ewl_scrollbar_timer(void *data)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
