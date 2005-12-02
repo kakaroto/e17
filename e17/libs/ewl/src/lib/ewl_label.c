@@ -49,6 +49,7 @@ ewl_label_init(Ewl_Label *la)
 	ewl_widget_appearance_set(w, "label");
 	ewl_widget_inherit(w, "label");
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_FILL);
+	ewl_widget_focusable_set(w, FALSE);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_label_destroy_cb, NULL);
 

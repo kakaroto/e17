@@ -139,7 +139,8 @@ ewl_text_init(Ewl_Text *t)
 					ewl_text_cb_child_del);
 
 	/* text consumes tabs by default */
-	ewl_widget_ignore_focus_change_set(EWL_WIDGET(t), TRUE);
+//	ewl_widget_ignore_focus_change_set(EWL_WIDGET(t), TRUE);
+	ewl_widget_focusable_set(EWL_WIDGET(t), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -2741,6 +2742,8 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	trigger->areas = ecore_list_new();
 	trigger->type = type;
 
+	ewl_widget_focusable_set(EWL_WIDGET(trigger), FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -3396,6 +3399,8 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 
 	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
 		ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
+
+	ewl_widget_focusable_set(EWL_WIDGET(area), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

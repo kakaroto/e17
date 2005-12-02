@@ -90,6 +90,11 @@ ewl_button_init(Ewl_Button *b)
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 	ewl_widget_appearance_set(w, "button");
 
+	ewl_widget_focusable_set(w, TRUE);
+
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, 
+				ewl_button_cb_key_down, NULL);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -245,4 +250,22 @@ ewl_button_image_get(Ewl_Button *b)
 	DRETURN_PTR(file, DLEVEL_STABLE);
 }
 
+void
+ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Key_Down *event;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	event = ev;
+
+	if ((!strcmp(event->keyname, "Return")) 
+			|| (!strcmp(event->keyname, "KP_Return"))
+			|| (!strcmp(event->keyname, "Enter"))
+			|| (!strcmp(event->keyname, "KP_Enter"))
+			|| (!strcmp(event->keyname, "Space")))
+		printf("BUTTON PRESS\n");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 

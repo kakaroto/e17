@@ -52,7 +52,12 @@ Ewl_Stock_Type	 ewl_button_stock_type_get(Ewl_Button *b);
 
 void		 ewl_button_image_set(Ewl_Button *b, char *file, char *key);
 char		*ewl_button_image_get(Ewl_Button *b);
-  
+
+/*
+ * Internal
+ */
+void ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data);
+
 /**
  * @}
  */

@@ -106,6 +106,8 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 				ewl_tree_header_configure_cb, tree->scrollarea);
 	ewl_tree_headers_visible_set(tree, 1);
 
+	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -771,6 +773,8 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_widget_show(node->handle);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
+
+	ewl_widget_focusable_set(EWL_WIDGET(node), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

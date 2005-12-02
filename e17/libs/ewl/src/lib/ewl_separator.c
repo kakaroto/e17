@@ -93,6 +93,8 @@ ewl_separator_init(Ewl_Separator *s)
 
 	s->orientation = EWL_ORIENTATION_HORIZONTAL;
 
+	ewl_widget_focusable_set(w, FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

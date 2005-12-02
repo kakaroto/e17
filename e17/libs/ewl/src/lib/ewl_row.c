@@ -57,6 +57,8 @@ ewl_row_init(Ewl_Row *row)
 	ewl_callback_prepend(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
 				ewl_row_destroy_cb, NULL);
 
+	ewl_widget_focusable_set(EWL_WIDGET(row), FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

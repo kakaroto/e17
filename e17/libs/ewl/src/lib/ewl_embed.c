@@ -341,6 +341,25 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	DCHECK_PARAM_PTR("keyname", keyname);
 	DCHECK_TYPE("embed", embed, "embed");
 
+	/*
+	 * check if this is a focus change key press and we are not ignoring
+	 * focus change events
+	 */
+	if ((!(embed->last.focused 
+			&& ewl_widget_ignore_focus_change_get(embed->last.focused))) 
+				&& (!strcmp(keyname, "Tab")))
+	{
+		if (mods & EWL_KEY_MODIFIER_SHIFT)
+			ewl_embed_tab_order_previous(embed);
+		else
+			ewl_embed_tab_order_next(embed);
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* 
+	 * setup the event struct 
+	 */
 	ev.modifiers = mods;
 	ev.keyname = strdup(keyname);
 
@@ -399,24 +418,11 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	DCHECK_PARAM_PTR("keyname", keyname);
 	DCHECK_TYPE("embed", embed, "embed");
 
-	/* handle tab focus change
-	 * XXX this should probably be pulled out to a config variable or
-	 * something instead of tab... */
-	if ((!strcmp(keyname, "Tab")) 
-			&& (!ewl_widget_ignore_focus_change_get(embed->last.focused)))
-	{
-		Ewl_Embed *emb;
-		unsigned int key_modifiers = 0;
-
-		emb = ewl_embed_widget_find(embed->last.focused);
-		key_modifiers = ewl_ev_modifiers_get();
-		if (key_modifiers & EWL_KEY_MODIFIER_SHIFT) 
-			ewl_embed_tab_order_previous(emb);
-		else
-			ewl_embed_tab_order_next(emb);
-
+	/* handle tab focus change (we just drop it on the floor as the
+	 * actual focus change was done in key down */
+	if ((embed->last.focused && (!ewl_widget_ignore_focus_change_get(embed->last.focused))) 
+			&& (!strcmp(keyname, "Tab")))
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	ev.modifiers = mods;
 	ev.keyname = strdup(keyname);
@@ -1019,6 +1025,10 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 	if (!ewl_container_parent_of(EWL_WIDGET(e), w))
 		DRETURN(DLEVEL_STABLE);
 
+	/* do nothing if this widget isn't focusable */
+	if (!ewl_widget_focusable_get(w))
+		DRETURN(DLEVEL_STABLE);
+
 	current_idx = ecore_dlist_index(e->tab_order);
 
 	/* make sure this widget isn't already in the list */
@@ -1144,18 +1154,43 @@ ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w)
  */
 void ewl_embed_tab_order_next(Ewl_Embed *e)
 {
-	Ewl_Widget *w;
+	Ewl_Widget *w, *start;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "embed");
 
 	/* make sure the list is at the last focused widget */
-	ecore_dlist_goto(e->tab_order, e->last.focused);
-	if (!(w = ecore_dlist_next(e->tab_order)))
+	if (e->last.focused)
+	{
+		ecore_dlist_goto(e->tab_order, e->last.focused);
+		w = ecore_dlist_next(e->tab_order);
+		if (!w) ecore_dlist_goto_first(e->tab_order);
+	}
+	else
 		ecore_dlist_goto_first(e->tab_order);
 
 	w = ecore_dlist_current(e->tab_order);
+	if (!w) DRETURN(DLEVEL_STABLE);
+
+	start = w;
+	while ((!VISIBLE(w) || (!ewl_widget_focusable_get(w))
+			|| (ewl_widget_internal_is(w))))
+	{
+		ecore_dlist_next(e->tab_order);
+		w = ecore_dlist_current(e->tab_order);
+
+		/* check if we hit the end of the list and loop to the start */
+		if (!w) 
+		{
+			ecore_dlist_goto_first(e->tab_order);
+			w = ecore_dlist_current(e->tab_order);
+		}
+
+		/* make sure we don't cycle */
+		if (w == start) DRETURN(DLEVEL_STABLE);
+	}
+
 	if (w) ewl_embed_focused_widget_set(e, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1169,18 +1204,43 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 void
 ewl_embed_tab_order_previous(Ewl_Embed *e)
 {
-	Ewl_Widget *w;
+	Ewl_Widget *w, *start;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "embed");
 
 	/* make sure the list is at the last focused widget */
-	ecore_dlist_goto(e->tab_order, e->last.focused);
-	if (!(w = ecore_dlist_previous(e->tab_order)))
-		ecore_dlist_goto_last(e->tab_order);
+	if (e->last.focused)
+	{
+		ecore_dlist_goto(e->tab_order, e->last.focused);
+		w = ecore_dlist_previous(e->tab_order);
+		if (!w) ecore_dlist_goto_first(e->tab_order);
+	}
+	else
+		ecore_dlist_goto_first(e->tab_order);
 
 	w = ecore_dlist_current(e->tab_order);
+	if (!w) DRETURN(DLEVEL_STABLE);
+
+	start = w;
+	while ((!VISIBLE(w) || (!ewl_widget_focusable_get(w))
+			|| (ewl_widget_internal_is(w))))
+	{
+		ecore_dlist_previous(e->tab_order);
+		w = ecore_dlist_current(e->tab_order);
+
+		/* check if we hit the end of the list and loop to the start */
+		if (!w) 
+		{
+			ecore_dlist_goto_last(e->tab_order);
+			w = ecore_dlist_current(e->tab_order);
+		}
+
+		/* make sure we don't cycle */
+		if (w == start) DRETURN(DLEVEL_STABLE);
+	}
+
 	if (w) ewl_embed_focused_widget_set(e, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1201,12 +1261,18 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, "widget");
 
 	if (embed->last.focused)
+	{
 		ewl_widget_state_set(embed->last.focused, "unfocused");
+		ewl_callback_call(embed->last.focused, EWL_CALLBACK_DESELECT);
+	}
 
 	embed->last.focused = w;
 
 	if (embed->last.focused)
+	{
 		ewl_widget_state_set(embed->last.focused, "focused");
+		ewl_callback_call(embed->last.focused, EWL_CALLBACK_SELECT);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

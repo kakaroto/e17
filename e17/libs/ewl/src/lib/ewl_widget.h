@@ -162,6 +162,9 @@ void		ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
 void		ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
 void 		ewl_widget_tab_order_remove(Ewl_Widget *w);
 
+void		ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val);
+unsigned int	ewl_widget_focusable_get(Ewl_Widget *w);
+
 void		ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
 unsigned int	ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 

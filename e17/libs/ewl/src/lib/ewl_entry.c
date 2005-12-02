@@ -50,6 +50,7 @@ ewl_entry_init(Ewl_Entry *e)
 
 	ewl_widget_inherit(w, "entry");
 	ewl_widget_appearance_set(w, "entry");
+	ewl_widget_focusable_set(EWL_WIDGET(e), TRUE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(e), EWL_FLAG_FILL_HSHRINK |
 						  EWL_FLAG_FILL_HFILL);
@@ -534,6 +535,8 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 	ewl_widget_appearance_set(EWL_WIDGET(c), "cursor");
 	ewl_widget_inherit(EWL_WIDGET(c), "cursor");
 	c->parent = parent;
+
+	ewl_widget_focusable_set(EWL_WIDGET(c), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

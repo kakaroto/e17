@@ -183,6 +183,8 @@ ewl_box_init(Ewl_Box * b)
 	 */
 	b->orientation = EWL_ORIENTATION_HORIZONTAL;
 
+	ewl_widget_focusable_set(w, FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

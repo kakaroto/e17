@@ -28,6 +28,19 @@ EWL TODO
 	position your cursor one character _before_ the end of the line.
 - [BUG] The ewl_password entry needs to correctly deal with selections and
 	mouse clicks.
+- [BUG] Tab focus dosen't correctly cycle to the start/end of the tab
+	widgets if you hit the end
+- [BUG] Buttons don't correctly react to a keypress. Currently just a
+	printf, should actually trigger the button pressed callback
+- [BUG] Widgets need a focused state in the edje so we can know where the
+	focus is
+- [BUG] Radio and check buttons should react to key presses and toggle as
+	needed
+- [BUG] How to deal with the scrollpane with the focus? Currently widgets
+	marked INTERNAL are ignored on the inital add. Should the scrollpane 
+	find itself in the tab list on SHOW and substitue the seekers instead?
+- [BUG] Menus will activate on tab, but it jumps to the submenu instead of
+	each menu item
 
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.

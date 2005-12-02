@@ -90,6 +90,8 @@ ewl_grid_init(Ewl_Grid *g, int cols, int rows)
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
 			    ewl_grid_configure_cb, NULL);
 
+	ewl_widget_focusable_set(EWL_WIDGET(g), FALSE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

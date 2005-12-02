@@ -103,6 +103,9 @@ ewl_widget_init(Ewl_Widget * w)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_widget_mouse_move_cb, NULL);
 
+	/* widgets can take focus by default */
+	ewl_widget_focusable_set(w, TRUE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -1172,6 +1175,39 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
+void
+ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (val)
+		ewl_object_flags_add(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_FOCUSABLE,
+				EWL_FLAGS_PROPERTY_MASK);
+	else
+		ewl_object_flags_remove(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_FOCUSABLE,
+				EWL_FLAGS_PROPERTY_MASK);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+unsigned int
+ewl_widget_focusable_get(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (ewl_object_flags_has(EWL_OBJECT(w), 
+					EWL_FLAG_PROPERTY_FOCUSABLE,
+					EWL_FLAGS_PROPERTY_MASK))
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
 /**
  * @param w: the widget to display ancestry tree
  * @return Returns no value.
@@ -1681,6 +1717,8 @@ ewl_widget_show_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	pc = EWL_CONTAINER(w->parent);
 	if (pc)
 		ewl_container_child_show_call(pc, w);
+
+	ewl_widget_tab_order_prepend(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
