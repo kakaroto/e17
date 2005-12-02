@@ -1,6 +1,10 @@
 EWL TODO
 ========
 
+- [BUG] Text can cause a segfault through a recursive tree call to
+        ewl_text_tree_delete. To trigger, open ewl_test entry, click at the
+        end of the first entry box. Now type a few characters and delete back
+        to the original text.
 - [BUG] Entry no longer rounds it's position correctly depending on which side
         of a character is clicked.
 - [BUG] Scrollbar jumps when trying to drag the button from its lower part
