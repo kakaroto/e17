@@ -82,7 +82,7 @@ ewl_combo_init(Ewl_Combo *combo, char *title)
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
-	ewl_callback_del(EWL_WIDGET(combo), EWL_CALLBACK_SELECT,
+	ewl_callback_del(EWL_WIDGET(combo), EWL_CALLBACK_FOCUS_IN,
 			 ewl_menu_base_expand_cb);
 
 	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
@@ -94,9 +94,9 @@ ewl_combo_init(Ewl_Combo *combo, char *title)
 	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
 					   EWL_CALLBACK_MOUSE_MOVE);
 	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
-					   EWL_CALLBACK_SELECT);
+					   EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_nointercept(EWL_CONTAINER(combo),
-					   EWL_CALLBACK_DESELECT);
+					   EWL_CALLBACK_FOCUS_OUT);
 
 	ewl_container_redirect_set(EWL_CONTAINER(combo), redirect);
 
@@ -163,7 +163,7 @@ ewl_combo_selected_get(Ewl_Combo *combo)
 }
 
 void
-ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_combo_item_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data)
 {
 	Ewl_Combo *combo;
@@ -272,9 +272,9 @@ ewl_combo_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	 * widget
 	 */
 	while ((child = ecore_list_next(pb->children))) {
-		ewl_callback_del(child, EWL_CALLBACK_SELECT, ewl_combo_item_select_cb);
-		ewl_callback_append(child, EWL_CALLBACK_SELECT,
-					ewl_combo_item_select_cb, combo);
+		ewl_callback_del(child, EWL_CALLBACK_FOCUS_IN, ewl_combo_item_focus_in_cb);
+		ewl_callback_append(child, EWL_CALLBACK_FOCUS_IN,
+					ewl_combo_item_focus_in_cb, combo);
 	}
 
 	ewl_widget_show(combo->base.popup);

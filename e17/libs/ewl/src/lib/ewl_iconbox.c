@@ -1071,7 +1071,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 		//ewl_widget_show(ib->ewl_iconbox_view_menu);
 		//ewl_widget_show(ib->ewl_iconbox_context_menu);
 		//ewl_menu_popup_move_cb(EWL_MENU(ib->ewl_iconbox_context_menu)->base.popup, NULL, ib->ewl_iconbox_context_menu);
-		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_SELECT);
+		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_FOCUS_IN);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 		
@@ -1120,7 +1120,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ib);
 		//ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
 		//ewl_widget_show(ib->icon_box_parent->icon_menu);
-		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_SELECT);	
+		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_FOCUS_IN);	
 	} else {
 		/*Select/drag start*/
 
@@ -1187,7 +1187,6 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 		if (ib->background) {
 			int width,height;
 			Ewl_Widget* parent = w->parent;
-			Ewl_Widget* parent_parent = parent->parent;
 			width = CURRENT_W(ib);
 			height = CURRENT_H(ib);
 			ewl_object_position_request(EWL_OBJECT(ib->background),CURRENT_X(parent),CURRENT_Y(parent));

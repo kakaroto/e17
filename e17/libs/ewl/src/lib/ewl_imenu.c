@@ -45,7 +45,7 @@ ewl_imenu_init(Ewl_Imenu *menu)
 
 	ewl_widget_inherit(EWL_WIDGET(menu), "imenu");
 
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 			    ewl_imenu_expand_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
 			    ewl_imenu_configure_cb, NULL);

@@ -12,7 +12,7 @@ __destroy_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 static void
-__imenu_select(Ewl_Widget * w, void *ev_data __UNUSED__, 
+__imenu_focus_in(Ewl_Widget * w, void *ev_data __UNUSED__, 
 				void *user_data __UNUSED__)
 {
 	char *text;
@@ -79,7 +79,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/dia-diagram.png");
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "dia");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_callback_append(item, EWL_CALLBACK_CONFIGURE,
 			    __imenu_configure, NULL);
 	ewl_widget_show(item);
@@ -92,13 +92,13 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_menu_item_image_set(EWL_MENU_ITEM(item), "/usr/share/pixmaps/wilber.png");
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "gimp");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 
 	/*
@@ -112,13 +112,13 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "button");
 	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
-	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, __imenu_focus_in, NULL);
 	ewl_widget_show(item);
 }
 

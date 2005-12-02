@@ -49,7 +49,7 @@ ewl_menu_init(Ewl_Menu *menu)
 
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu");
 
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 			    ewl_menu_expand_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_REALIZE,
 			    ewl_menu_realize_cb, NULL);

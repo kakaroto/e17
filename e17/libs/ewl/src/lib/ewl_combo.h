@@ -47,7 +47,7 @@ void		 ewl_combo_selected_set(Ewl_Combo *combo, Ewl_Widget *item);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_combo_item_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_combo_value_changed_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data);

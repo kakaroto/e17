@@ -264,7 +264,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	{
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_SELECTED);
-		ewl_callback_call(e->last.clicked, EWL_CALLBACK_DESELECT);
+		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
 		e->last.clicked = NULL;
 	}
@@ -523,14 +523,14 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		if (deselect) {
 			ewl_object_state_remove(EWL_OBJECT(deselect),
 					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(deselect, EWL_CALLBACK_DESELECT);
+			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
 		}
 
 		if (widget && !(ewl_object_state_has(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_DISABLED))) {
 			ewl_object_state_add(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_SELECTED);
-			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
+			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 		}
 	}
 
@@ -1263,7 +1263,7 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	if (embed->last.focused)
 	{
 		ewl_widget_state_set(embed->last.focused, "unfocused");
-		ewl_callback_call(embed->last.focused, EWL_CALLBACK_DESELECT);
+		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
 	}
 
 	embed->last.focused = w;
@@ -1271,7 +1271,7 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	if (embed->last.focused)
 	{
 		ewl_widget_state_set(embed->last.focused, "focused");
-		ewl_callback_call(embed->last.focused, EWL_CALLBACK_SELECT);
+		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_IN);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

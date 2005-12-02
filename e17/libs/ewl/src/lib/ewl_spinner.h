@@ -65,7 +65,7 @@ void ewl_spinner_realize_cb(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
 void ewl_spinner_key_down_cb(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_deselect_cb(Ewl_Widget *w, void *ev_data,
+void ewl_spinner_focus_out_cb(Ewl_Widget *w, void *ev_data,
 						void *user_data);
 void ewl_spinner_wheel_cb(Ewl_Widget *w, void *ev_data, 
 						void *user_data);

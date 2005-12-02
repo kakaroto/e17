@@ -35,8 +35,8 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_MOUSE_WHEEL, /**< Mouse wheel scrolled */
 	EWL_CALLBACK_MOUSE_IN, /**< Mouse was placed over the widget */
 	EWL_CALLBACK_MOUSE_OUT, /**< Mouse was moved away from the widget */
-	EWL_CALLBACK_SELECT, /**< Widget was selected by mouse or key */
-	EWL_CALLBACK_DESELECT, /**< Widget was deselected by mouse or key */
+	EWL_CALLBACK_FOCUS_IN, /**< Widget was selected by mouse or key */
+	EWL_CALLBACK_FOCUS_OUT, /**< Widget was deselected by mouse or key */
 	EWL_CALLBACK_CLICKED, /**< Mouse was pressed and released on a widget */
 	EWL_CALLBACK_HILITED, /**< Mouse is over the widget */
 	EWL_CALLBACK_VALUE_CHANGED, /**< Value in widget changed */

@@ -55,8 +55,8 @@ ewl_entry_init(Ewl_Entry *e)
 	ewl_object_fill_policy_set(EWL_OBJECT(e), EWL_FLAG_FILL_HSHRINK |
 						  EWL_FLAG_FILL_HFILL);
 
-	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
-	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DESELECT);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_IN);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_OUT);
 
 	/* setup the cursor */
 	e->cursor = ewl_entry_cursor_new(e);
@@ -70,10 +70,10 @@ ewl_entry_init(Ewl_Entry *e)
 	ewl_text_selectable_set(EWL_TEXT(e), TRUE);
 
 	/* setup callbacks */
-	ewl_callback_append(w, EWL_CALLBACK_SELECT,
-				ewl_entry_cb_selected, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESELECT,
-				ewl_entry_cb_deselected, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
+				ewl_entry_cb_focus_in, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+				ewl_entry_cb_focus_out, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_entry_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -237,7 +237,7 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 void 
-ewl_entry_cb_selected(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
 	Ewl_Entry *entry;
@@ -254,7 +254,7 @@ ewl_entry_cb_selected(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 void 
-ewl_entry_cb_deselected(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
 	Ewl_Entry *entry;
