@@ -2425,7 +2425,6 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 		evas_object_pass_events_set(t->textblock, 1);
 
-		/* XXX Nathan, is this ok? */
 		evas_object_layer_set(t->textblock, ewl_widget_layer_sum_get(w));
 		ewl_text_display(t);
 		evas_object_show(t->textblock);
