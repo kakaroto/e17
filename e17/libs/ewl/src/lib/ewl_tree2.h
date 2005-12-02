@@ -1,5 +1,5 @@
-#ifndef _EWL_TREE_H
-#define _EWL_TREE_H
+#ifndef _EWL_TREE2_H
+#define _EWL_TREE2_H
 
 /**
  * @file ewl_tree.h
@@ -56,15 +56,15 @@
  * @themekey /tree/group
  */
 
-typedef void *(*get)(void *data, int row, int column) Ewl_Model_Fetch;
+typedef void *(*Ewl_Model_Fetch)(void *data, int row, int column);
 
 #define EWL_MODEL_DATA_GET(f) ((Ewl_Model_Fetch *)f)
 
-typedef int (*sort)(void *data, int column) Ewl_Model_Sort;
+typedef int (*Ewl_Model_Sort)(void *data, int column);
 
 #define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Sort *)f)
 
-typedef int (*count)(void *data) Ewl_Model_Count;
+typedef int (*Ewl_Model_Count)(void *data);
 
 #define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Count *)f)
 
@@ -84,6 +84,14 @@ struct Ewl_Model
 	Ewl_Model_Count  count;    /**< Count of data items */
 };
 
+typedef int (*Ewl_View_Constructor)(void *data);
+
+#define EWL_VIEW_CONSTRUCTOR(f) ((Ewl_View_Constructor *)f)
+
+typedef int (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
+
+#define EWL_VIEW_ASSIGN(f) ((Ewl_View_Assign *)f)
+
 /**
  * @def EWL_VIEW(view)
  * Typecasts a pointer to an Ewl_View pointer.
@@ -94,7 +102,7 @@ typedef struct Ewl_View Ewl_View;
 
 struct Ewl_View
 {
-	Ewl_View_Constructor constructor;   /**< Create a widget for display */
+	Ewl_View_Constructor construct;     /**< Create a widget for display */
 	Ewl_View_Assign assign;             /**< Assign data to a widget */
 };
 
@@ -142,8 +150,8 @@ unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree2 *tree);
 Ecore_List 	*ewl_tree2_selected_get(Ewl_Tree2 *tree);
 void 		 ewl_tree2_selected_clear(Ewl_Tree2 *tree);
 
-Ewl_Tree2_Mode 	 ewl_tree2_mode_get(Ewl_Tree2 *tree);
-void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree2_Mode mode);
+Ewl_Tree_Mode 	 ewl_tree2_mode_get(Ewl_Tree2 *tree);
+void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode);
 
 void             ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, int fixed);
 int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
@@ -152,7 +160,7 @@ int              ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
  * View manipulation
  */
 Ewl_View            *ewl_view_new(void);
-int                 *ewl_view_init(Ewl_View *view);
+int                  ewl_view_init(Ewl_View *view);
 
 void                 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
 Ewl_View_Constructor ewl_view_constructor_get(Ewl_View *view);
@@ -163,8 +171,8 @@ Ewl_View_Assign      ewl_view_assign_get(Ewl_View *view);
 /*
  * Model manipulation.
  */
-Ewl_Model 	 *ewl_model_new(void);
-int       	 *ewl_model_init(Ewl_Model *model);
+Ewl_Model 	*ewl_model_new(void);
+int       	 ewl_model_init(Ewl_Model *model);
 
 void             ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
 Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
