@@ -21,8 +21,8 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_UNREALIZE, /**< When a widget is no longer drawn */
 	EWL_CALLBACK_SHOW, /**< A widget has been marked visible */
 	EWL_CALLBACK_HIDE, /**< A widget is marked hidden */
-        EWL_CALLBACK_OBSCURE,        /**< Widget is offscreen */
-        EWL_CALLBACK_REVEAL,         /**< Widget returned to screen */
+        EWL_CALLBACK_OBSCURE, /**< Widget is offscreen */
+        EWL_CALLBACK_REVEAL, /**< Widget returned to screen */
 	EWL_CALLBACK_DESTROY, /**< The widget is freed */
 	EWL_CALLBACK_DELETE_WINDOW, /**< The window is being closed */
 	EWL_CALLBACK_CONFIGURE, /**< The object is being resized */
@@ -35,10 +35,9 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_MOUSE_WHEEL, /**< Mouse wheel scrolled */
 	EWL_CALLBACK_MOUSE_IN, /**< Mouse was placed over the widget */
 	EWL_CALLBACK_MOUSE_OUT, /**< Mouse was moved away from the widget */
+	EWL_CALLBACK_CLICKED, /**< Mouse was pressed and released on a widget */
 	EWL_CALLBACK_FOCUS_IN, /**< Widget was selected by mouse or key */
 	EWL_CALLBACK_FOCUS_OUT, /**< Widget was deselected by mouse or key */
-	EWL_CALLBACK_CLICKED, /**< Mouse was pressed and released on a widget */
-	EWL_CALLBACK_HILITED, /**< Mouse is over the widget */
 	EWL_CALLBACK_VALUE_CHANGED, /**< Value in widget changed */
 	EWL_CALLBACK_STATE_CHANGED, /**< Alter the state of the appearance */
 	EWL_CALLBACK_APPEARANCE_CHANGED, /**< Theme key of widget changed */
@@ -46,8 +45,8 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
 
 	EWL_CALLBACK_DND_POSITION, /** A DND position event **/
-	EWL_CALLBACK_DND_ENTER,	   /** On enter of a widget **/
-	EWL_CALLBACK_DND_LEAVE,    /** On exit of a widget **/
+	EWL_CALLBACK_DND_ENTER, /** On enter of a widget **/
+	EWL_CALLBACK_DND_LEAVE, /** On exit of a widget **/
 	
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
