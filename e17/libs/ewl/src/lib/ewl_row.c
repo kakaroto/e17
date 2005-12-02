@@ -54,9 +54,6 @@ ewl_row_init(Ewl_Row *row)
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 				ewl_row_configure_cb, NULL);
 
-	ewl_callback_prepend(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
-				ewl_row_destroy_cb, NULL);
-
 	ewl_widget_focusable_set(EWL_WIDGET(row), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -238,19 +235,6 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			}
 		}
 	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_row_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
-
-	ewl_row_header_set(EWL_ROW(w), NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
