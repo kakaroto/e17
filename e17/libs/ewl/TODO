@@ -41,7 +41,11 @@ EWL TODO
 	find itself in the tab list on SHOW and substitue the seekers instead?
 - [BUG] Menus will activate on tab, but it jumps to the submenu instead of
 	each menu item
-
+- [BUG] Run the 'ewl_test text' and click on the end of the first widiget
+	and type a few chars (should be in red) now, use the arrow keys to
+	move the cursor back to the black text. The cursor will jump to 
+	the beginning when you cursor over the first red char and then back
+	to the correct spot.
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.
 
