@@ -13,7 +13,6 @@
 
 enum _Etk_Range_Signal_Id
 {
-   ETK_RANGE_CHANGE_VALUE_SIGNAL,
    ETK_RANGE_VALUE_CHANGED_SIGNAL,
    ETK_RANGE_NUM_SIGNALS
 };
@@ -53,7 +52,6 @@ Etk_Type *etk_range_type_get()
    {
       range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range), ETK_CONSTRUCTOR(_etk_range_constructor), NULL);
 
-      _etk_range_signals[ETK_RANGE_CHANGE_VALUE_SIGNAL] = etk_signal_new("change_value", range_type, ETK_MEMBER_OFFSET(Etk_Range, change_value), etk_marshaller_BOOL__DOUBLE, etk_accumulator_stopping_bool_or, NULL);
       _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value_changed", range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed), etk_marshaller_VOID__DOUBLE, NULL, NULL);
 
       etk_type_property_add(range_type, "lower", ETK_RANGE_LOWER_PROPERTY, ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_double(0.0));
@@ -83,16 +81,13 @@ double etk_range_value_get(Etk_Range *range)
 }
 
 /**
- * @brief Sets the value of the range. It will emit the "change_value" signal. @n
- * If a callback connected to this signal returns TRUE, the signal won't be passed to the others callbacks, and the value won't be changed. @n
- * Otherwise, the value will be changed, and the signal "value_changed" is emitted
+ * @brief Sets the value of the range.
  * @param range a range
  * @param value the value to set to the range
  */
 void etk_range_value_set(Etk_Range *range, double value)
 {
    double new_value;
-   Etk_Bool result;
    
    if (!range)
       return;
@@ -100,13 +95,9 @@ void etk_range_value_set(Etk_Range *range, double value)
    new_value = ETK_CLAMP(value, range->lower, range->upper - range->page_size);
    if (new_value != range->value)
    {
-      etk_signal_emit(_etk_range_signals[ETK_RANGE_CHANGE_VALUE_SIGNAL], ETK_OBJECT(range), &result, new_value);
-      if (!result)
-      {
-         range->value = new_value;
-         etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
-         etk_object_notify(ETK_OBJECT(range), "value");
-      }
+      range->value = new_value;
+      etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
+      etk_object_notify(ETK_OBJECT(range), "value");
    }
 }
 
@@ -212,7 +203,6 @@ static void _etk_range_constructor(Etk_Range *range)
    range->page_increment = 0.0;
    range->page_size = 0.0;
 
-   range->change_value = _etk_range_change_value_handler;
    range->value_changed = NULL;
 }
 
@@ -280,18 +270,6 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
       default:
          break;
    }
-}
-
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
-
-/* Default handler for the "change_value" callback */
-static Etk_Bool _etk_range_change_value_handler(Etk_Range *range, double value)
-{
-   return FALSE;
 }
 
 /** @} */

@@ -31,7 +31,7 @@ static void _etk_colorpicker_square_property_set(Etk_Object *object, int propert
 static void _etk_colorpicker_square_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_square_realize_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_square_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_square_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
+static void _etk_colorpicker_square_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 static void _etk_colorpicker_square_move_cb(Etk_Object *w, void *ev_data, void *user_data);
 static void _etk_colorpicker_square_down_cb(Etk_Object *w, void *ev_data, void *user_data);
@@ -324,10 +324,13 @@ static void _etk_colorpicker_square_constructor(Etk_Colorpicker_Square *cps)
    cps->cursor_x = 0;
    cps->cursor_y = 0;
    cps->drag = FALSE;
+   cps->current_color.r = 255;
+   cps->current_color.g = 0;
+   cps->current_color.b = 0;
 
-   widget->move_resize = _etk_colorpicker_square_move_resize;
+   widget->size_allocate = _etk_colorpicker_square_size_allocate;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_unrealize_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_down_cb), NULL);
    etk_signal_connect("mouse_up", ETK_OBJECT(cps), ETK_CALLBACK(_etk_colorpicker_square_up_cb), NULL);
@@ -439,7 +442,7 @@ static void _etk_colorpicker_square_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Moves and resizes the cps */
-static void _etk_colorpicker_square_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+static void _etk_colorpicker_square_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Colorpicker_Square *cps;
 
@@ -448,21 +451,21 @@ static void _etk_colorpicker_square_move_resize(Etk_Widget *widget, int x, int y
 
    if (cps->map)
    {
-      evas_object_move(cps->map, x, y);
-      evas_object_resize(cps->map, w, h);
-      evas_object_image_fill_set(cps->map, 0, 0, w, h);
+      evas_object_move(cps->map, geometry.x, geometry.y);
+      evas_object_resize(cps->map, geometry.w, geometry.h);
+      evas_object_image_fill_set(cps->map, 0, 0, geometry.w, geometry.h);
    }
    if (cps->hcursor)
    {
-      evas_object_move(cps->hcursor, x, y + (cps->cursor_y * h) / 255);
-      evas_object_resize(cps->hcursor, w, 1);
-      evas_object_image_fill_set(cps->hcursor, 0, 0, w, 1);
+      evas_object_move(cps->hcursor, geometry.x, geometry.y + (cps->cursor_y * geometry.h) / 255);
+      evas_object_resize(cps->hcursor, geometry.w, 1);
+      evas_object_image_fill_set(cps->hcursor, 0, 0, geometry.w, 1);
    }
    if (cps->vcursor)
    {
-      evas_object_move(cps->vcursor, x + (cps->cursor_x * w) / 255, y);
-      evas_object_resize(cps->vcursor, 1, h);
-      evas_object_image_fill_set(cps->vcursor, 0, 0, 1, h);
+      evas_object_move(cps->vcursor, geometry.x + (cps->cursor_x * geometry.w) / 255, geometry.y);
+      evas_object_resize(cps->vcursor, 1, geometry.h);
+      evas_object_image_fill_set(cps->vcursor, 0, 0, 1, geometry.h);
    }
 }
 

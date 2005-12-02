@@ -101,7 +101,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
 
    entry->editable_object = NULL;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
    etk_signal_connect("mouse_in", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_in_cb), NULL);

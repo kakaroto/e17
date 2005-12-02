@@ -31,7 +31,6 @@ struct _Etk_Range
    double page_increment;
    double page_size;
 
-   Etk_Bool (*change_value)(Etk_Range *range, double value);
    void (*value_changed)(Etk_Range *range, double value);
 };
 

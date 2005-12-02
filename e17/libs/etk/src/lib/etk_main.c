@@ -2,7 +2,6 @@
 #include "etk_main.h"
 #include <locale.h>
 #include <Ecore.h>
-#include <Ecore_Data.h>
 #include <Ecore_Job.h>
 #include <Ecore_Evas.h>
 #include <Evas.h>
@@ -23,7 +22,7 @@ static void _etk_main_iterate_job_cb(void *data);
 static void _etk_main_size_request_recursive(Etk_Widget *widget);
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level);
 
-static Ecore_List *_etk_main_toplevel_widgets = NULL;
+static Evas_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = FALSE;
 static Etk_Bool _etk_main_initialized = FALSE;
 static Ecore_Job *_etk_main_iterate_job = NULL;
@@ -63,22 +62,6 @@ Etk_Bool etk_init()
       ETK_WARNING("Edje initialization failed!");
       return FALSE;
    }
-   if (!etk_type_init())
-   {
-      ETK_WARNING("Etk_Type initialization failed!");
-      return FALSE;
-   }
-   if (!etk_signal_init())
-   {
-      ETK_WARNING("Etk_Signal initialization failed!");
-      return FALSE;
-   }
-   if (!etk_object_init())
-   {
-      ETK_WARNING("Etk_Object initialization failed!");
-      return FALSE;
-   }
-   _etk_main_toplevel_widgets = ecore_list_new();
 
    /* Gettext */
    setlocale(LC_ALL, "");
@@ -95,14 +78,14 @@ void etk_shutdown()
    if (!_etk_main_initialized)
       return;
 
-   etk_object_shutdown();
+   etk_object_destroy_all_objects();
    etk_signal_shutdown();
    etk_type_shutdown();
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
    evas_shutdown();
-   ecore_list_destroy(_etk_main_toplevel_widgets);
+   _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);
 
    _etk_main_initialized = FALSE;
 }
@@ -133,18 +116,17 @@ void etk_main_quit()
 /** @brief Runs an iteration of the main loop */
 void etk_main_iterate()
 {
+   Evas_List *l;
    Etk_Widget *widget;
 
    if (!_etk_main_initialized)
       return;
 
-   ecore_list_goto_first(_etk_main_toplevel_widgets);
-   while ((widget = ETK_WIDGET(ecore_list_next(_etk_main_toplevel_widgets))))
+   for (l = _etk_main_toplevel_widgets; l; l = l->next)
    {
-      //printf("Iter Begin\n");
+      widget = ETK_WIDGET(l->data);
       _etk_main_size_request_recursive(widget);
       _etk_main_size_allocate_recursive(widget, TRUE);
-      //printf("Iter End\n\n");
    }
 }
 
@@ -162,23 +144,20 @@ void etk_main_iteration_queue()
  */
 void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
 {
-   if (!widget || !_etk_main_toplevel_widgets)
+   if (!widget)
       return;
-
-   ecore_list_append(_etk_main_toplevel_widgets, widget);
+   _etk_main_toplevel_widgets = evas_list_append(_etk_main_toplevel_widgets, widget);
 }
 
 /**
- * @brief Removes the widget from the list of toplevel widgets. Never call it manually
+ * @brief Removes the widget from the list of toplevel widgets. Never call it manually!
  * @param widget the toplevel widget to remove
  */
 void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
 {
-   if (!widget || !_etk_main_toplevel_widgets)
+   if (!widget)
       return;
-
-   if (ecore_list_goto(_etk_main_toplevel_widgets, widget))
-      ecore_list_remove(_etk_main_toplevel_widgets);
+   _etk_main_toplevel_widgets = evas_list_remove(_etk_main_toplevel_widgets, widget);
 }
 
 /**************************

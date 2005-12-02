@@ -97,8 +97,8 @@ int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context)
    if (!statusbar || !context)
       return -1;
    
-   key = malloc(strlen("_Etk_Statusbar:") + strlen(context) + 1);
-   sprintf(key, "_Etk_Statusbar:%s", context);
+   key = malloc(strlen("_Etk_Statusbar::") + strlen(context) + 1);
+   sprintf(key, "_Etk_Statusbar::%s", context);
    
    if (!(context_id = etk_object_data_get(ETK_OBJECT(statusbar), key)))
    {
@@ -239,7 +239,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
    statusbar->next_message_id = 0;
    statusbar->next_context_id = 0;
    
-   etk_signal_connect_after("realize", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realize_cb), NULL);
 }
 
 /* Destroys the status bar */

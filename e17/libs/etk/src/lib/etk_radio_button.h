@@ -2,7 +2,7 @@
 #ifndef _ETK_RADIO_BUTTON_H_
 #define _ETK_RADIO_BUTTON_H_
 
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include "etk_check_button.h"
 #include "etk_types.h"
 
@@ -24,18 +24,18 @@ struct _Etk_Radio_Button
    /* Inherit from Etk_Check_Button */
    Etk_Check_Button check_button;
 
-   Ecore_List *group;
+   Evas_List **group;
    Etk_Bool can_uncheck;
 };
 
 Etk_Type *etk_radio_button_type_get();
-Etk_Widget *etk_radio_button_new(Ecore_List *group);
+Etk_Widget *etk_radio_button_new(Evas_List **group);
 Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button);
-Etk_Widget *etk_radio_button_new_with_label(const char *label, Ecore_List *group);
+Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group);
 Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_Radio_Button *radio_button);
 
-void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Ecore_List *group);
-Ecore_List *etk_radio_button_group_get(Etk_Radio_Button *radio_button);
+void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **group);
+Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button);
 
 /** @} */
 

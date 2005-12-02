@@ -49,6 +49,9 @@ typedef struct _Etk_Geometry Etk_Geometry;
 typedef enum _Etk_Stock_Id Etk_Stock_Id;
 typedef enum _Etk_Pointer_Type Etk_Pointer_Type;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
+typedef struct _Etk_Window Etk_Window;
+typedef struct _Etk_Dialog Etk_Dialog;
+typedef enum _Etk_Dialog_Response_ID Etk_Dialog_Response_ID;
 typedef struct _Etk_Container Etk_Container;
 typedef struct _Etk_Bin Etk_Bin;
 typedef struct _Etk_Box Etk_Box;
@@ -66,7 +69,6 @@ typedef struct _Etk_VPaned Etk_VPaned;
 typedef enum _Etk_Scrolled_View_Policy Etk_Scrolled_View_Policy;
 typedef struct _Etk_Scrolled_View Etk_Scrolled_View;
 typedef struct _Etk_Viewport Etk_Viewport;
-typedef struct _Etk_Window Etk_Window;
 typedef struct _Etk_Image Etk_Image;
 typedef struct _Etk_Label Etk_Label;
 typedef struct _Etk_Button Etk_Button;
@@ -87,9 +89,9 @@ typedef struct _Etk_Tree_Node Etk_Tree_Node;
 typedef enum _Etk_Tree_Col_Type  Etk_Tree_Col_Type;
 typedef enum _Etk_Tree_Mode Etk_Tree_Mode;
 typedef struct _Etk_Range Etk_Range;
-typedef struct _Etk_Scale Etk_Scale;
-typedef struct _Etk_HScale Etk_HScale;
-typedef struct _Etk_VScale Etk_VScale;
+typedef struct _Etk_Slider Etk_Slider;
+typedef struct _Etk_HSlider Etk_HSlider;
+typedef struct _Etk_VSlider Etk_VSlider;
 typedef struct _Etk_Scrollbar Etk_Scrollbar;
 typedef struct _Etk_HScrollbar Etk_HScrollbar;
 typedef struct _Etk_VScrollbar Etk_VScrollbar;
@@ -103,6 +105,7 @@ typedef struct _Etk_Menu_Separator Etk_Menu_Separator;
 typedef struct _Etk_Menu_Check_Item Etk_Menu_Check_Item;
 typedef struct _Etk_Menu_Radio_Item Etk_Menu_Radio_Item;
 typedef struct _Etk_Statusbar Etk_Statusbar;
+typedef struct _Etk_Filechooser_Widget Etk_Filechooser_Widget;
 
 /**
  * @enum Etk_Fill_Policy_Flags

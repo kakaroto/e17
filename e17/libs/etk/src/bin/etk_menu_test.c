@@ -59,16 +59,16 @@ void etk_test_menu_window_create(void *data)
    menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("File"), -1, ETK_MENU_SHELL(menu_bar), NULL);
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_OPEN, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_SAVE, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Edit Menu */
    menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Edit"), -1, ETK_MENU_SHELL(menu_bar), NULL);
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_CUT, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_COPY, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_PASTE, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Help Menu */
    menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Help"), -1, ETK_MENU_SHELL(menu_bar), NULL);
@@ -82,12 +82,12 @@ void etk_test_menu_window_create(void *data)
    /* Main menu */
    menu = etk_menu_new();
    etk_signal_connect("mouse_down", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_menu_window_down_cb), menu);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_OPEN, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_SAVE, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, -1, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_CUT, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_COPY, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_PASTE, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, -1, ETK_MENU_SHELL(menu), statusbar);
    menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Menu Item Test"), -1, ETK_MENU_SHELL(menu), statusbar);
    
@@ -96,7 +96,7 @@ void etk_test_menu_window_create(void *data)
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Child Menu Test"), -1, ETK_MENU_SHELL(menu), statusbar);
    menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with child"), -1, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with image"), ETK_STOCK_SAVE, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Sub menu 2 */
    menu = etk_menu_new();

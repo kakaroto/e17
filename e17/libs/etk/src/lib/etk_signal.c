@@ -1,6 +1,6 @@
 /** @file etk_signal.c */
 #include "etk_signal.h"
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include <stdlib.h>
 #include <string.h>
 #include "etk_type.h"
@@ -13,9 +13,9 @@
  * @{
  */
 
-static void _etk_signal_signal_free(void *value);
+static void _etk_signal_free(Etk_Signal *signal);
 
-static Ecore_List *_etk_signal_signals_list = NULL;
+static Evas_List *_etk_signal_signals_list = NULL;
 static Etk_Bool _etk_signal_stop_emission = FALSE;
 
 /**************************
@@ -25,27 +25,16 @@ static Etk_Bool _etk_signal_stop_emission = FALSE;
  **************************/
 
 /**
- * @brief Initializes the signal system (just create the signals list) @n
- * Shouldn't be called manually, etk_init() calls it
- */
-Etk_Bool etk_signal_init()
-{
-   if (!_etk_signal_signals_list)
-   {
-      _etk_signal_signals_list = ecore_list_new();
-      ecore_list_set_free_cb(_etk_signal_signals_list, _etk_signal_signal_free);
-   }
-   return TRUE;
-}
-
-/**
  * @brief Shutdowns the signal system (just destroy the signals list)
  * @warning Shouldn't be called manually, etk_shudown() calls it
  */
 void etk_signal_shutdown()
 {
-   if (_etk_signal_signals_list)
-      ecore_list_destroy(_etk_signal_signals_list);
+   while (_etk_signal_signals_list)
+   {
+      _etk_signal_free(_etk_signal_signals_list->data);
+      _etk_signal_signals_list = evas_list_remove_list(_etk_signal_signals_list, _etk_signal_signals_list);
+   }
 }
 
 /**
@@ -64,7 +53,7 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
 {
    Etk_Signal *new_signal;
 
-   if (!signal_name || !object_type || !marshaller || !_etk_signal_signals_list)
+   if (!signal_name || !object_type || !marshaller)
       return NULL;
 
    new_signal = malloc(sizeof(Etk_Signal));
@@ -76,22 +65,27 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
    new_signal->accum_data = accum_data;
    etk_type_signal_add(object_type, new_signal);
 
-   ecore_list_append(_etk_signal_signals_list, new_signal);
+   _etk_signal_signals_list = evas_list_append(_etk_signal_signals_list, new_signal);
 
    return new_signal;
 }
 
 /**
- * @brief Deletes the signal. So it couldn't be used anymore by any object of the type @a signal->object_type
+ * @brief Deletes the signal. Then it couldn't be used anymore by any object of the type @a signal->object_type
  * @param signal the signal to delete
  */
 void etk_signal_delete(Etk_Signal *signal)
 {
-   if (!signal || !_etk_signal_signals_list)
+   Evas_List *l;
+   
+   if (!signal)
       return;
-
-   if (ecore_list_goto(_etk_signal_signals_list, signal))
-      ecore_list_remove(_etk_signal_signals_list);
+   
+   if ((l = evas_list_find_list(_etk_signal_signals_list, signal)))
+   {
+      _etk_signal_free(l->data);
+      _etk_signal_signals_list = evas_list_remove_list(_etk_signal_signals_list, l);
+   }
 }
 
 /**
@@ -224,7 +218,7 @@ void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk
 void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback)
 {
    Etk_Signal *signal;
-   Ecore_List *callbacks;
+   Evas_List *callbacks;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !signal_name || !callback)
@@ -236,34 +230,24 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
       return;
    }
    
-   callbacks = ecore_list_new();
-   etk_object_signal_callbacks_get(object, signal, callbacks, FALSE);
-   ecore_list_goto_first(callbacks);
-   while ((signal_callback = ecore_list_next(callbacks)))
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks, FALSE);
+   while (callbacks)
    {
+      signal_callback = callbacks->data;
       if (signal_callback->callback == callback)
-      {
          etk_object_signal_callback_remove(object, signal_callback);
-         ecore_list_destroy(callbacks);
-         return;
-      }
+      callbacks = evas_list_remove_list(callbacks, callbacks);
    }
-   ecore_list_destroy(callbacks);
    
-   callbacks = ecore_list_new();
-   etk_object_signal_callbacks_get(object, signal, callbacks, TRUE);
-   ecore_list_goto_first(callbacks);
-   while ((signal_callback = ecore_list_next(callbacks)))
+   etk_object_signal_callbacks_get(object, signal, &callbacks, TRUE);
+   while (callbacks)
    {
+      signal_callback = callbacks->data;
       if (signal_callback->callback == callback)
-      {
          etk_object_signal_callback_remove(object, signal_callback);
-         ecore_list_destroy(callbacks);
-         return;
-      }
-   }
-   ecore_list_destroy(callbacks);
-   
+      callbacks = evas_list_remove_list(callbacks, callbacks);
+   }   
 }
 
 /**
@@ -320,7 +304,7 @@ void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *
  */ 
 void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
 {
-   Ecore_List *callbacks;
+   Evas_List *callbacks;
    Etk_Signal_Callback *callback;
    Etk_Bool return_value_set = FALSE;
    void *result = NULL;
@@ -333,11 +317,11 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    va_copy(args2, args);
 
    /* We call the callbacks to call before the default handler */
-   callbacks = ecore_list_new();
-   etk_object_signal_callbacks_get(object, signal, callbacks, FALSE);
-   ecore_list_goto_first(callbacks);
-   while (!_etk_signal_stop_emission && (callback = ecore_list_next(callbacks)))
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks, FALSE);
+   while (!_etk_signal_stop_emission && callbacks)
    {
+      callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
       {
          etk_signal_callback_call_valist(callback, object, return_value, args2);
@@ -348,8 +332,8 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          etk_signal_callback_call_valist(callback, object, result, args2);
          signal->accumulator(return_value, result, signal->accum_data);
       }
+      callbacks = evas_list_remove_list(callbacks, callbacks);
    }
-   ecore_list_destroy(callbacks);
 
    if (_etk_signal_stop_emission)
       return;
@@ -378,12 +362,11 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    if (_etk_signal_stop_emission)
       return;
 
-   /* We call the callbacks to call after the default handler */
-   callbacks = ecore_list_new();
-   etk_object_signal_callbacks_get(object, signal, callbacks, TRUE);
-   ecore_list_goto_first(callbacks);
-   while (!_etk_signal_stop_emission && (callback = ecore_list_next(callbacks)))
+   /* We call the callbacks to call after the default handler */callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks, TRUE);
+   while (!_etk_signal_stop_emission && callbacks)
    {
+      callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
       {
          etk_signal_callback_call_valist(callback, object, return_value, args2);
@@ -394,8 +377,8 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          etk_signal_callback_call_valist(callback, object, result, args2);
          signal->accumulator(return_value, result, signal->accum_data);
       }
+      callbacks = evas_list_remove_list(callbacks, callbacks);
    }
-   ecore_list_destroy(callbacks);
    
    va_end(args2);
 }
@@ -430,11 +413,9 @@ void etk_signal_stop()
  **************************/
 
 /* Frees the signal (called when the signal is removed from _etk_signal_signals_list) */
-static void _etk_signal_signal_free(void *value)
+static void _etk_signal_free(Etk_Signal *signal)
 {
-   Etk_Signal *signal;
-
-   if (!(signal = value))
+   if (!signal)
       return;
 
    if (signal->object_type)

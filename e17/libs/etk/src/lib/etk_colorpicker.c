@@ -338,6 +338,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->cps = etk_colorpicker_square_new(64, 64);
    if (cp->cps)
    {
+      etk_widget_visibility_locked_set(cp->cps, TRUE);
       etk_widget_size_request_set(cp->cps, 256, 256);
       etk_box_pack_start(ETK_BOX(cp), cp->cps, FALSE, FALSE, 0);
       etk_signal_connect("color_selected", ETK_OBJECT(cp->cps), ETK_CALLBACK(_etk_colorpicker_cps_cb), NULL);
@@ -347,6 +348,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->cpv = etk_colorpicker_vertical_new(1, 256);
    if (cp->cpv)
    {
+      etk_widget_visibility_locked_set(cp->cpv, TRUE);
       etk_widget_size_request_set(cp->cpv, 16, 256);
       etk_box_pack_start(ETK_BOX(cp), cp->cpv, FALSE, FALSE, 0);
       etk_signal_connect("color_selected", ETK_OBJECT(cp->cpv), ETK_CALLBACK(_etk_colorpicker_cpv_cb), NULL);
@@ -354,6 +356,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    }
 
    vbox = etk_vbox_new(0, TRUE);
+   etk_widget_visibility_locked_set(vbox, TRUE);
    etk_box_pack_start(ETK_BOX(cp), vbox, FALSE, FALSE, 0);
    etk_widget_show(vbox);
    for (i = 0; i < 6; i++)
@@ -362,6 +365,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
          cp->radio[i] = etk_radio_button_new_with_label(label[i], NULL);
       else
          cp->radio[i] = etk_radio_button_new_with_label_from_widget(label[i], ETK_RADIO_BUTTON(cp->radio[0]));
+      etk_widget_visibility_locked_set(cp->radio[i], TRUE);
       etk_box_pack_start(ETK_BOX(vbox), cp->radio[i], TRUE, TRUE, 0);
       etk_widget_show(cp->radio[i]);
 

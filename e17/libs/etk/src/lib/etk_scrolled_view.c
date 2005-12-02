@@ -24,6 +24,8 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
 static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
+static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void *data);
+static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data);
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data);
@@ -175,15 +177,19 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
+   etk_widget_visibility_locked_set(scrolled_view->hscrollbar, TRUE);
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_CONTAINER(scrolled_view));
    etk_widget_show(scrolled_view->hscrollbar);
    scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
+   etk_widget_visibility_locked_set(scrolled_view->vscrollbar, TRUE);
    etk_widget_parent_set(scrolled_view->vscrollbar, ETK_CONTAINER(scrolled_view));
    etk_widget_show(scrolled_view->vscrollbar);
 
    ETK_WIDGET(scrolled_view)->size_request = _etk_scrolled_view_size_request;
    ETK_WIDGET(scrolled_view)->size_allocate = _etk_scrolled_view_size_allocate;
 
+   etk_signal_connect("key_down", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
+   etk_signal_connect("mouse_wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("child_added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_add_cb), NULL);
@@ -363,6 +369,58 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
  * Callbacks and handlers
  *
  **************************/
+
+/* Called when the user presses a key */
+static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Scrolled_View *scrolled_view;
+   Etk_Event_Key_Up_Down *key_event = event;
+   Etk_Range *hscrollbar_range;
+   Etk_Range *vscrollbar_range;
+   Etk_Bool propagate = FALSE;
+
+   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
+      return;
+   hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
+   vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
+
+   if (strcmp(key_event->key, "Right") == 0)
+      etk_range_value_set(hscrollbar_range, hscrollbar_range->value + hscrollbar_range->step_increment);
+   else if (strcmp(key_event->key, "Down") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->step_increment);
+   else if (strcmp(key_event->key, "Left") == 0)
+      etk_range_value_set(hscrollbar_range, hscrollbar_range->value - hscrollbar_range->step_increment);
+   else if (strcmp(key_event->key, "Up") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->step_increment);
+   else if (strcmp(key_event->key, "Home") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower);
+   else if (strcmp(key_event->key, "End") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
+   else if (strcmp(key_event->key, "Next") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
+   else if (strcmp(key_event->key, "Prior") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
+   else
+      propagate = TRUE;
+   
+   if (!propagate)
+      etk_widget_event_propagation_stop();
+}
+
+/* Called when the user wants to scroll the scrolled view with the mouse wheel */
+static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data)
+{
+   Etk_Scrolled_View *scrolled_view;
+   Etk_Event_Mouse_Wheel *wheel_event = event;
+   Etk_Range *vscrollbar_range;
+   
+   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
+      return;
+   
+   vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
+   etk_range_value_set(vscrollbar_range, vscrollbar_range->value + wheel_event->z * vscrollbar_range->step_increment);
+   etk_widget_event_propagation_stop();
+}
 
 /* Called when the value of the hscrollbar has changed */
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)

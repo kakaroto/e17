@@ -29,7 +29,6 @@ struct _Etk_Signal
    void *accum_data;
 };
 
-Etk_Bool etk_signal_init();
 void etk_signal_shutdown();
 
 Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);

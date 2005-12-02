@@ -10,7 +10,7 @@
  */
 
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
-static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
+static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
 static void _etk_canvas_intercept_move_cb(void *data, Evas_Object *object, Evas_Coord x, Evas_Coord y);
 
@@ -82,20 +82,20 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
       return;
 
    canvas->clip = NULL;
-   ETK_WIDGET(canvas)->move_resize = _etk_canvas_move_resize;
-   etk_signal_connect_after("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
+   ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
+   etk_signal_connect("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
 }
 
 /* Moves and resizes the clip of the canvas */
-static void _etk_canvas_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Canvas *canvas;
    
    if (!(canvas = ETK_CANVAS(widget)))
       return;
    
-   evas_object_move(canvas->clip, x, y);
-   evas_object_resize(canvas->clip, w, h);
+   evas_object_move(canvas->clip, geometry.x, geometry.y);
+   evas_object_resize(canvas->clip, geometry.w, geometry.h);
 }
 
 /**************************

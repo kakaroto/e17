@@ -12,7 +12,6 @@
 static void _etk_viewport_constructor(Etk_Viewport *viewport);
 static void _etk_viewport_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_viewport_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
 static void _etk_viewport_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_viewport_realize_cb(Etk_Object *object, void *data);
@@ -66,12 +65,11 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
 
    ETK_WIDGET(viewport)->size_request = _etk_viewport_size_request;
    ETK_WIDGET(viewport)->size_allocate = _etk_viewport_size_allocate;
-   ETK_WIDGET(viewport)->move_resize = _etk_viewport_move_resize;
    ETK_WIDGET(viewport)->scroll_size_get = _etk_viewport_scroll_size_get;
    ETK_WIDGET(viewport)->scroll = _etk_viewport_scroll;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realize_cb), NULL);
-   etk_signal_connect_after("unrealize", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_unrealize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_unrealize_cb), NULL);
 }
 
 /* Calculates the ideal size of the viewport */
@@ -95,6 +93,9 @@ static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 
    container = ETK_CONTAINER(widget);
 
+   evas_object_move(viewport->clip, geometry.x, geometry.y);
+   evas_object_resize(viewport->clip, geometry.w, geometry.h);
+   
    if ((child = etk_bin_child_get(ETK_BIN(viewport))))
    {
       Etk_Size child_requisition;
@@ -108,18 +109,6 @@ static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
       geometry.h = child_requisition.h;
       etk_widget_size_allocate(child, geometry);
    }
-}
-
-/* Moves and resizes the member objects of the viewport */
-static void _etk_viewport_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
-{
-   Etk_Viewport *viewport;
-
-   if (!(viewport = ETK_VIEWPORT(widget)))
-      return;
-
-   evas_object_move(viewport->clip, x, y);
-   evas_object_resize(viewport->clip, w, h);
 }
 
 /* Scroll the viewport */

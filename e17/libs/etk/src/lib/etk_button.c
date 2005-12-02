@@ -40,7 +40,7 @@ static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data)
 static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data);
 static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_button_mouse_clicked_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_button_pressed_handler(Etk_Button *button);
 static void _etk_button_released_handler(Etk_Button *button);
 static void _etk_button_clicked_handler(Etk_Button *button);
@@ -114,6 +114,7 @@ Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id)
    char *label;
    
    image = etk_image_new_from_stock(stock_id);
+   etk_widget_visibility_locked_set(image, TRUE);
    label = etk_stock_label_get(stock_id);
    button = etk_button_new_with_label(_(label));
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
@@ -282,6 +283,7 @@ static void _etk_button_constructor(Etk_Button *button)
    button->alignment = NULL;
 
    button->label = etk_label_new(NULL);
+   etk_widget_visibility_locked_set(button->label, TRUE);
    etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
    etk_widget_pass_events_set(button->label, TRUE);
    etk_container_add(ETK_CONTAINER(button), button->label);
@@ -297,7 +299,7 @@ static void _etk_button_constructor(Etk_Button *button)
    etk_signal_connect("key_up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_up_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_down_cb), NULL);
    etk_signal_connect("mouse_up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_up_cb), NULL);
-   etk_signal_connect("mouse_clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_clicked_cb), NULL);
+   etk_signal_connect("mouse_click", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_click_cb), NULL);
 }
 
 /* Destroys the button */
@@ -410,7 +412,10 @@ static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data)
       return;
 
    if (strcmp(key_event->key, "space") == 0)
+   {
       etk_button_pressed(button);
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Called when the user releases a key */
@@ -426,6 +431,7 @@ static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data)
    {
       etk_button_released(button);
       etk_button_clicked(button);
+      etk_widget_event_propagation_stop();
    }
 }
 
@@ -439,7 +445,10 @@ static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Dow
 
    etk_widget_focus(ETK_WIDGET(button));
    if (event->button == 1)
+   {
       etk_button_pressed(button);
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Default handler for the "pressed" signal */
@@ -459,7 +468,10 @@ static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down 
       return;
 
    if (event->button == 1)
+   {
       etk_button_released(button);
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Default handler for the "released" signal */
@@ -471,7 +483,7 @@ static void _etk_button_released_handler(Etk_Button *button)
 }
 
 /* Called when the uses clicks on the button with the mouse */
-static void _etk_button_mouse_clicked_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
 {
    Etk_Button *button;
 
@@ -479,7 +491,10 @@ static void _etk_button_mouse_clicked_cb(Etk_Object *object, Etk_Event_Mouse_Up_
       return;
 
    if (event->button == 1)
+   {
       etk_button_clicked(button);
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Default handler for the "clicked" signal */
@@ -501,6 +516,7 @@ static void _etk_button_child_create(Etk_Button *button)
       if (!button->alignment)
       {
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
+         etk_widget_visibility_locked_set(button->alignment, TRUE);
          etk_widget_pass_events_set(button->alignment, TRUE);
       }
       etk_container_add(ETK_CONTAINER(button), button->alignment);
@@ -509,6 +525,7 @@ static void _etk_button_child_create(Etk_Button *button)
       if (button->hbox)
          etk_object_destroy(ETK_OBJECT(button->hbox));
       button->hbox = etk_hbox_new(FALSE, 8);
+      etk_widget_visibility_locked_set(button->hbox, TRUE);
       etk_widget_pass_events_set(button->hbox, TRUE);
       etk_container_add(ETK_CONTAINER(button->alignment), button->hbox);
       etk_widget_show(button->hbox);

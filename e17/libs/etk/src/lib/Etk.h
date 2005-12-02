@@ -29,6 +29,7 @@
 #include "etk_scrolled_view.h"
 #include "etk_viewport.h"
 #include "etk_window.h"
+#include "etk_dialog.h"
 #include "etk_label.h"
 #include "etk_image.h"
 #include "etk_button.h"
@@ -43,7 +44,7 @@
 #include "etk_colorpicker_square.h"
 #include "etk_tree.h"
 #include "etk_range.h"
-#include "etk_scale.h"
+#include "etk_slider.h"
 #include "etk_scrollbar.h"
 #include "etk_separator.h"
 #include "etk_menu_shell.h"
@@ -51,5 +52,6 @@
 #include "etk_menu_bar.h"
 #include "etk_menu_item.h"
 #include "etk_statusbar.h"
+#include "etk_filechooser_widget.h"
 
 #endif

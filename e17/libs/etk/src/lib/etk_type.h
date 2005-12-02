@@ -2,7 +2,7 @@
 #ifndef _ETK_TYPE_H_
 #define _ETK_TYPE_H_
 
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include "etk_property.h"
 #include "etk_types.h"
 
@@ -34,11 +34,10 @@ struct _Etk_Type
    void (*property_set)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    void (*property_get)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    int type_size;
-   Ecore_Hash *signals_hash;
-   Ecore_Hash *properties_hash;
+   Evas_Hash *signals_hash;
+   Evas_Hash *properties_hash;
 };
 
-Etk_Bool etk_type_init();
 void etk_type_shutdown();
 
 Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_size,
@@ -57,7 +56,7 @@ Etk_Signal *etk_type_signal_get(Etk_Type *type, const char *signal_name);
 
 Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int property_id, Etk_Property_Type property_type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
 Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **property_owner, Etk_Property **property);
-void etk_type_property_list(Etk_Type *type, Ecore_List *properties);
+void etk_type_property_list(Etk_Type *type, Evas_List **properties);
 
 /** @} */
 

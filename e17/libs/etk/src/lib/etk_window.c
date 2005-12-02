@@ -16,13 +16,20 @@
 
 enum _Etk_Widget_Signal_Id
 {
+   ETK_WINDOW_MOVE_SIGNAL,
+   ETK_WINDOW_RESIZE_SIGNAL,
+   ETK_WINDOW_FOCUS_IN_SIGNAL,
+   ETK_WINDOW_FOCUS_OUT_SIGNAL,
    ETK_WINDOW_DELETE_EVENT_SIGNAL,
    ETK_WINDOW_NUM_SIGNALS
 };
 
 static void _etk_window_constructor(Etk_Window *window);
 static void _etk_window_destructor(Etk_Window *window);
+static void _etk_window_move_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_resize_cb(Ecore_Evas *ecore_evas);
+static void _etk_window_focus_in_cb(Ecore_Evas *ecore_evas);
+static void _etk_window_focus_out_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_delete_request_cb(Ecore_Evas *ecore_evas);
 static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
@@ -49,6 +56,10 @@ Etk_Type *etk_window_type_get()
    {
       window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
    
+      _etk_window_signals[ETK_WINDOW_MOVE_SIGNAL] = etk_signal_new("move", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL] = etk_signal_new("resize", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL] = etk_signal_new("focus_in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL] = etk_signal_new("focus_out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
    }
 
@@ -220,6 +231,28 @@ void etk_window_unstick(Etk_Window *window)
    if (!window)
       return;
    ecore_evas_sticky_set(window->ecore_evas, 0);
+}
+
+/**
+ * @brief Focuses the window
+ * @param window a window
+ */
+void etk_window_focus(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_focus_set(window->ecore_evas, 1);
+}
+
+/**
+ * @brief Unfocuses the window
+ * @param window a window
+ */
+void etk_window_unfocus(Etk_Window *window)
+{
+   if (!window)
+      return;
+   ecore_evas_focus_set(window->ecore_evas, 0);
 }
 
 /**
@@ -437,7 +470,10 @@ static void _etk_window_constructor(Etk_Window *window)
    /* TODO: font path */
    evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
    ecore_evas_data_set(window->ecore_evas, "etk_window", window);
+   ecore_evas_callback_resize_set(window->ecore_evas, _etk_window_move_cb);
    ecore_evas_callback_resize_set(window->ecore_evas, _etk_window_resize_cb);
+   ecore_evas_callback_focus_in_set(window->ecore_evas, _etk_window_focus_in_cb);
+   ecore_evas_callback_focus_out_set(window->ecore_evas, _etk_window_focus_out_cb);
    ecore_evas_callback_delete_request_set(window->ecore_evas, _etk_window_delete_request_cb);
 
    etk_signal_connect("size_request", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_request_cb), NULL);
@@ -452,8 +488,6 @@ static void _etk_window_destructor(Etk_Window *window)
 {
    if (!window)
       return;
-
-   etk_widget_parent_set(etk_bin_child_get(ETK_BIN(window)), NULL);
    ecore_evas_free(window->ecore_evas);
 }
 
@@ -463,6 +497,16 @@ static void _etk_window_destructor(Etk_Window *window)
  *
  **************************/
 
+/* Called when the window is moved */
+static void _etk_window_move_cb(Ecore_Evas *ecore_evas)
+{
+   Etk_Window *window;
+
+   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
+      return;
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_MOVE_SIGNAL], ETK_OBJECT(window), NULL);
+}
+
 /* Called when the window is resized */
 static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
 {
@@ -470,7 +514,28 @@ static void _etk_window_resize_cb(Ecore_Evas *ecore_evas)
 
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
       return;
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(window));
+}
+
+/* Called when the window is focused in */
+static void _etk_window_focus_in_cb(Ecore_Evas *ecore_evas)
+{
+   Etk_Window *window;
+
+   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
+      return;
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL);
+}
+
+/* Called when the window is focused out */
+static void _etk_window_focus_out_cb(Ecore_Evas *ecore_evas)
+{
+   Etk_Window *window;
+
+   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
+      return;
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
 }
 
 /* Called when the user want to close the window */

@@ -47,7 +47,7 @@ Etk_Type *etk_radio_button_type_get()
  * @param group the group which the radio button will be added to (NULL if the radio button should create its own group)
  * @return Returns the new radio button widget
  */
-Etk_Widget *etk_radio_button_new(Ecore_List *group)
+Etk_Widget *etk_radio_button_new(Evas_List **group)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "group", group, "focusable", TRUE,
       "focusable", TRUE, "xalign", 0.0, NULL);
@@ -70,7 +70,7 @@ Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
  * @param group the group which the radio button will be added to (NULL if the radio button should create its own group)
  * @return Returns the new radio button widget
  */
-Etk_Widget *etk_radio_button_new_with_label(const char *label, Ecore_List *group)
+Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "label", label, "group", group,
       "focusable", TRUE, "xalign", 0.0, NULL);
@@ -93,7 +93,7 @@ Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_R
  * @param radio_button a radio button
  * @param group the group to use
  */
-void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Ecore_List *group)
+void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **group)
 {
    Etk_Toggle_Button *toggle_button;
    Etk_Bool active;
@@ -101,22 +101,26 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Ecore_List *grou
    if (!(toggle_button = ETK_TOGGLE_BUTTON(radio_button)) || (group && (radio_button->group == group)))
       return;
 
-   if (radio_button->group && ecore_list_goto(radio_button->group, radio_button))
+   if (radio_button->group)
    {
-      ecore_list_remove(radio_button->group);
-      if (ecore_list_is_empty(radio_button->group))
-         ecore_list_destroy(radio_button->group);
+      *radio_button->group = evas_list_remove(*radio_button->group, radio_button);
+      if (!(*radio_button->group))
+      {
+         free(radio_button->group);
+         radio_button->group = NULL;
+      }
    }
 
    if (!group)
    {
-      group = ecore_list_new();
+      group = malloc(sizeof(Evas_List *));
+      *group = NULL;
       active = TRUE;
    }
    else
       active = FALSE;
 
-   ecore_list_append(group, radio_button);
+   *group = evas_list_append(*group, radio_button);
    radio_button->group = group;
    etk_object_notify(ETK_OBJECT(radio_button), "group");
 
@@ -130,7 +134,7 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Ecore_List *grou
  * @param radio_button a radio button
  * @return Returns the group used by the radio button
  */
-Ecore_List *etk_radio_button_group_get(Etk_Radio_Button *radio_button)
+Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button)
 {
    if (!radio_button)
       return NULL;
@@ -160,14 +164,11 @@ static void _etk_radio_button_destructor(Etk_Radio_Button *radio_button)
    if (!radio_button || !radio_button->group)
       return;
 
-   if (ecore_list_goto(radio_button->group, radio_button))
-   {
-      ecore_list_remove(radio_button->group);
-      if (ecore_list_is_empty(radio_button->group))
-         ecore_list_destroy(radio_button->group);
-      else if (ETK_TOGGLE_BUTTON(radio_button)->active)
-         etk_toggle_button_active_set(ecore_list_goto_first(radio_button->group), TRUE);
-   }
+   *radio_button->group = evas_list_remove(*radio_button->group, radio_button);
+   if (!(*radio_button->group))
+      free(radio_button->group);
+   else if (ETK_TOGGLE_BUTTON(radio_button)->active)
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON((*radio_button->group)->data), TRUE);
 }
 
 
@@ -219,6 +220,7 @@ static void _etk_radio_button_clicked_handler(Etk_Button *button)
    Etk_Toggle_Button *toggle_button;
    Etk_Radio_Button *radio_button;
    Etk_Toggle_Button *tb;
+   Evas_List *l;
 
    if (!(toggle_button = ETK_TOGGLE_BUTTON(button)))
       return;
@@ -234,9 +236,9 @@ static void _etk_radio_button_clicked_handler(Etk_Button *button)
       if (toggle_button->active)
       {
          /* Uncheck the previously checked button of the group */
-         ecore_list_goto_first(radio_button->group);
-         while ((tb = ETK_TOGGLE_BUTTON(ecore_list_next(radio_button->group))))
+         for (l = *radio_button->group; l; l = l->next)
          {
+            tb = ETK_TOGGLE_BUTTON(l->data);
             if (tb != toggle_button && tb->active)
             {
                ETK_RADIO_BUTTON(tb)->can_uncheck = TRUE;

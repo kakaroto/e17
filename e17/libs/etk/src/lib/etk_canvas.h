@@ -2,7 +2,6 @@
 #ifndef _ETK_CANVAS_H_
 #define _ETK_CANVAS_H_
 
-#include <Ecore_Data.h>
 #include <Evas.h>
 #include "etk_widget.h"
 #include "etk_types.h"

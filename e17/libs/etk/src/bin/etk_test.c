@@ -22,8 +22,8 @@ static Etk_Test_Set tests[] =
       etk_test_image_window_create
    },
    {
-      "Scale",
-      etk_test_scale_window_create
+      "Slider",
+      etk_test_slider_window_create
    },
    {
       "Canvas",
@@ -48,7 +48,11 @@ static Etk_Test_Set tests[] =
    {
       "Menu",
       etk_test_menu_window_create
-   }
+   }/*,
+   {
+      "File Chooser",
+      etk_test_filechooser_window_create
+   }*/
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);
 
@@ -78,7 +82,7 @@ static void _etk_test_main_window()
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Test Application"));
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("destroy", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
+   etk_signal_connect("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
    
    table = etk_table_new((num_tests + 3) / 4, 4, TRUE);
    etk_container_add(ETK_CONTAINER(win), table);

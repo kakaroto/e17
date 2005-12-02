@@ -50,6 +50,8 @@ void etk_window_fullscreen(Etk_Window *window);
 void etk_window_unfullscreen(Etk_Window *window);
 void etk_window_stick(Etk_Window *window);
 void etk_window_unstick(Etk_Window *window);
+void etk_window_focus(Etk_Window *window);
+void etk_window_unfocus(Etk_Window *window);
 
 void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);

@@ -24,7 +24,7 @@ group {
          description {
             state: "over" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 200;
+            color: 255 255 255 150;
          }
       }
       part {
@@ -74,7 +74,7 @@ group {
             visible: 1;
          }
       }
-      FOCUS_RECT(0.0, 0.5, 0.0, 0.5, 0, -10, 18, 8)
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, -1, -1, "bg")
    }
    programs {
       program {
@@ -109,13 +109,13 @@ group {
          name: "check_button_focus";
          signal: "focus";
          source: "";
-         FOCUS_ACTION
+         FOCUS_GLOW_ACTION
       }
       program {
          name: "check_button_unfocus";
          signal: "unfocus";
          source: "";
-         UNFOCUS_ACTION
+         UNFOCUS_GLOW_ACTION
       }
       program {
          name: "check_button_enter";

@@ -16,12 +16,14 @@ typedef struct _Etk_Stock_Item
 
 static const Etk_Stock_Item _etk_stock_items[] =
 {
-   { "close", "Close" },
-   { "open",  "Open"  },
-   { "save",  "Save"  },
-   { "cut",   "Cut"  },
-   { "copy",  "Copy"  },
-   { "paste", "Paste"  }
+   { "actions/process-stop", "Stop" },
+   { "actions/document-open", "Open" },
+   { "actions/document-save", "Save" },
+   { "actions/document-save-as", "Save As" },
+   { "actions/edit-cut", "Cut" },
+   { "actions/edit-copy", "Copy" },
+   { "actions/edit-paste", "Paste" },
+   { "actions/dialog-cancel", "Cancel" },
 };
 
 /**************************

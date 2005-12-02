@@ -31,7 +31,7 @@ static void _etk_colorpicker_vertical_property_set(Etk_Object *object, int prope
 static void _etk_colorpicker_vertical_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_colorpicker_vertical_realize_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_vertical_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_vertical_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
+static void _etk_colorpicker_vertical_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 static void _etk_colorpicker_vertical_move_cb(Etk_Object *w, void *ev_data, void *user_data);
 static void _etk_colorpicker_vertical_down_cb(Etk_Object *w, void *ev_data, void *user_data);
@@ -287,9 +287,9 @@ static void _etk_colorpicker_vertical_constructor(Etk_Colorpicker_Vertical *cpv)
    cpv->cursor_pos = 0;
    cpv->drag = FALSE;
 
-   widget->move_resize = _etk_colorpicker_vertical_move_resize;
+   widget->size_allocate = _etk_colorpicker_vertical_size_allocate;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_unrealize_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_down_cb), NULL);
    etk_signal_connect("mouse_up", ETK_OBJECT(cpv), ETK_CALLBACK(_etk_colorpicker_vertical_up_cb), NULL);
@@ -387,7 +387,7 @@ static void _etk_colorpicker_vertical_unrealize_cb(Etk_Object *object, void *dat
 }
 
 /* Moves and resizes the cpv */
-static void _etk_colorpicker_vertical_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+static void _etk_colorpicker_vertical_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Colorpicker_Vertical *cpv;
 
@@ -396,15 +396,15 @@ static void _etk_colorpicker_vertical_move_resize(Etk_Widget *widget, int x, int
 
    if (cpv->map)
    {
-      evas_object_move(cpv->map, x, y);
-      evas_object_resize(cpv->map, w, h);
-      evas_object_image_fill_set(cpv->map, 0, 0, w, h);
+      evas_object_move(cpv->map, geometry.x, geometry.y);
+      evas_object_resize(cpv->map, geometry.w, geometry.h);
+      evas_object_image_fill_set(cpv->map, 0, 0, geometry.w, geometry.h);
    }
    if (cpv->cursor)
    {
-      evas_object_move(cpv->cursor, x, y + (cpv->cursor_pos * h) / 255);
-      evas_object_resize(cpv->cursor, w, 1);
-      evas_object_image_fill_set(cpv->cursor, 0, 0, w, 1);
+      evas_object_move(cpv->cursor, geometry.x, geometry.y + (cpv->cursor_pos * geometry.h) / 255);
+      evas_object_resize(cpv->cursor, geometry.w, 1);
+      evas_object_image_fill_set(cpv->cursor, 0, 0, geometry.w, 1);
    }
 }
 

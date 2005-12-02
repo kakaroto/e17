@@ -28,8 +28,8 @@ static void _etk_image_destructor(Etk_Image *image);
 static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_realize_cb(Etk_Object *object, void *data);
-static void _etk_image_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_image_load(Etk_Image *image);
 
 /**************************
@@ -291,9 +291,9 @@ static void _etk_image_constructor(Etk_Image *image)
    image->object_type_changed = FALSE;
 
    widget->size_request = _etk_image_size_request;
-   widget->move_resize = _etk_image_move_resize;
+   widget->size_allocate = _etk_image_size_allocate;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realize_cb), NULL);
 }
 
 /* Destroys the image */
@@ -393,8 +393,8 @@ static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    }
 }
 
-/* Moves and resizes the image */
-static void _etk_image_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
+/* Resizes the image to the allocated size */
+static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Image *image;
 
@@ -415,24 +415,24 @@ static void _etk_image_move_resize(Etk_Widget *widget, int x, int y, int w, int 
          evas_object_image_size_get(image->image_object, &image_w, &image_h);
          aspect_ratio = (float)image_w / image_h;
 
-         if (h * aspect_ratio > w)
+         if (geometry.h * aspect_ratio > geometry.w)
          {
-            new_size = w / aspect_ratio;
-            y += (h - new_size) / 2;
-            h = new_size;
+            new_size = geometry.w / aspect_ratio;
+            geometry.y += (geometry.h - new_size) / 2;
+            geometry.h = new_size;
          }
          else
          {
-            new_size = h * aspect_ratio;
-            x += (w - new_size) / 2;
-            w = new_size;
+            new_size = geometry.h * aspect_ratio;
+            geometry.x += (geometry.w - new_size) / 2;
+            geometry.w = new_size;
          }
          
       }
-      evas_object_image_fill_set(image->image_object, 0, 0, w, h);
+      evas_object_image_fill_set(image->image_object, 0, 0, geometry.w, geometry.h);
    }
-   evas_object_move(image->image_object, x, y);
-   evas_object_resize(image->image_object, w, h);
+   evas_object_move(image->image_object, geometry.x, geometry.y);
+   evas_object_resize(image->image_object, geometry.w, geometry.h);
 }
 
 /**************************

@@ -71,7 +71,7 @@ struct _Etk_Tree_Node
 struct _Etk_Tree
 {
    /* private: */
-   /* Inherit form Etk_Widget */
+   /* Inherit from Etk_Container */
    Etk_Container container;
 
    Etk_Widget *scrolled_view;
@@ -100,9 +100,6 @@ struct _Etk_Tree
    int image_height;
    int expander_size;
    Etk_Color separator_color;
-   Etk_Color row_color1;
-   Etk_Color row_color2;
-   Etk_Color row_selected_color;
 };
 
 /**

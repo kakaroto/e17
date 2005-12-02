@@ -185,7 +185,7 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
    {
       menu_item->right_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "menu_arrow", NULL);
       /* TODO: disconnect */
-      etk_signal_connect_after("realize", ETK_OBJECT(menu_item->right_widget), ETK_CALLBACK(_etk_menu_item_right_widget_realize_cb), menu_item);
+      etk_signal_connect("realize", ETK_OBJECT(menu_item->right_widget), ETK_CALLBACK(_etk_menu_item_right_widget_realize_cb), menu_item);
       etk_widget_parent_set(menu_item->right_widget, ETK_CONTAINER(menu_item));
       etk_widget_pass_events_set(menu_item->right_widget, TRUE);
       menu_item->right_widget_is_arrow = TRUE;
@@ -226,7 +226,7 @@ void etk_menu_item_image_set(Etk_Menu_Item *menu_item, Etk_Image *image)
          etk_container_remove(image_widget->parent, image_widget);
 
       /* TODO: disconnect */
-      etk_signal_connect_after("realize", ETK_OBJECT(image_widget), ETK_CALLBACK(_etk_menu_item_image_realize_cb), menu_item);
+      etk_signal_connect("realize", ETK_OBJECT(image_widget), ETK_CALLBACK(_etk_menu_item_image_realize_cb), menu_item);
       etk_widget_parent_set(image_widget, ETK_CONTAINER(menu_item));
       etk_widget_pass_events_set(image_widget, TRUE);
       menu_item->image = image;
@@ -327,7 +327,7 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    menu_item->show_image = FALSE;
    menu_item->show_right_swallow = FALSE;
    
-   etk_signal_connect_after("realize", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realize_cb), NULL);
 }
 
 /* Destroys the menu item */

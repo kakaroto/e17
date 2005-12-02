@@ -21,7 +21,7 @@
  * @param data the user data to pass to the callback function
  * @param swapped if @a swapped != 0, the callback function with the data as the only arguments
  * @return Returns the new callback on succes or NULL on failure
- * @warning The new signal callback has to be freed with etk_signal_callback_delete()
+ * @warning The new signal callback has to be freed with etk_signal_callback_del()
  */
 Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped)
 {
@@ -43,7 +43,7 @@ Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Signal_Call
  * @brief Deletes the signal callback
  * @param signal_callback the signal callback to delete
  */
-void etk_signal_callback_delete(Etk_Signal_Callback *signal_callback)
+void etk_signal_callback_del(Etk_Signal_Callback *signal_callback)
 {
    free(signal_callback);
 }

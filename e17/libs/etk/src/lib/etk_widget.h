@@ -161,14 +161,12 @@ struct _Etk_Widget
    Etk_Size last_size_requisition;
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
-   void (*move_resize)(Etk_Widget *widget, int x, int y, int w, int h);
 
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
    void (*show)(Etk_Widget *widget);
-   void (*hide)(Etk_Widget *widget);
    void (*enter)(Etk_Widget *widget);
    void (*leave)(Etk_Widget *widget);
    void (*focus)(Etk_Widget *widget);
@@ -176,6 +174,7 @@ struct _Etk_Widget
 
    unsigned char realized : 1;
    unsigned char visible : 1;
+   unsigned char visibility_locked : 1;
    unsigned char repeat_events : 1;
    unsigned char pass_events : 1;
    unsigned char focusable : 1;
@@ -216,6 +215,8 @@ void etk_widget_show_all(Etk_Widget *widget);
 void etk_widget_hide(Etk_Widget *widget);
 void etk_widget_hide_all(Etk_Widget *widget);
 Etk_Bool etk_widget_is_visible(Etk_Widget *widget);
+void etk_widget_visibility_locked_set(Etk_Widget *widget, Etk_Bool visibility_locked);
+Etk_Bool etk_widget_visibility_locked_get(Etk_Widget *widget);
 
 void etk_widget_size_recalc_queue(Etk_Widget *widget);
 void etk_widget_redraw_queue(Etk_Widget *widget);

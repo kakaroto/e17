@@ -116,7 +116,7 @@ static void _etk_frame_constructor(Etk_Frame *frame)
       return;
 
    frame->label = NULL;
-   etk_signal_connect_after("realize", ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realized_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realized_cb), NULL);
 }
 
 /* Destroys the frame */

@@ -198,7 +198,7 @@ group {
             color: 255 255 255 255;
          }
       }
-      FOCUS_RECT(0.0, 0.0, 1.0, 1.0, 7, 7, -8, -8)
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
    }
    programs {
       program {
@@ -227,13 +227,20 @@ group {
          name: "button_focus";
          signal: "focus";
          source: "";
-         FOCUS_ACTION
+         FOCUS_GLOW_ACTION
+         after: "button_focus_prog";
+         after: "go_active";
+      }
+      program {
+         name: "button_focus_prog";
+         source: "";
+         FOCUS_GLOW_ACTION
       }
       program {
          name: "button_unfocus";
          signal: "unfocus";
          source: "";
-         UNFOCUS_ACTION
+         UNFOCUS_GLOW_ACTION
       }
       program {
          name: "go_active";

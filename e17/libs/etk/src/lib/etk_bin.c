@@ -71,7 +71,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
          etk_container_remove(child->parent, child);
 
       /* TODO: disconnect */
-      etk_signal_connect_after("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realize_cb), bin);
+      etk_signal_connect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realize_cb), bin);
       etk_widget_parent_set(child, ETK_CONTAINER(bin));
       bin->child = child;
    }
@@ -97,7 +97,7 @@ static void _etk_bin_constructor(Etk_Bin *bin)
    ETK_WIDGET(bin)->size_request = _etk_bin_size_request;
    ETK_WIDGET(bin)->size_allocate = _etk_bin_size_allocate;
    
-   etk_signal_connect_after("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), NULL);
 }
 
 /* Calculates the ideal size of the bin */

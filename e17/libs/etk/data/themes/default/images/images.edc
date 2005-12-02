@@ -2,6 +2,7 @@ images {
    image: "border.png" COMP;
    image: "background.png" COMP;
    image: "focus.png" COMP;
+   image: "focus_glow.png" COMP;
    image: "button_down.png" COMP;
    image: "button_up.png" COMP;
    image: "button_toggled.png" COMP;
@@ -22,8 +23,8 @@ images {
    image: "vhandle.png" COMP;
    image: "vhandle_down.png" COMP;
    image: "vhandle_thumb.png" COMP;
-   image: "hscale_bar.png" COMP;
-   image: "vscale_bar.png" COMP;
+   image: "hslider_bar.png" COMP;
+   image: "vslider_bar.png" COMP;
    image: "hscrollbar_trough.png" COMP;
    image: "vscrollbar_trough.png" COMP;
    image: "scrollbar_button_left1.png" COMP;
@@ -46,6 +47,8 @@ images {
    image: "tree_header_active.png" COMP;
    image: "tree_expander_fold.png" COMP;
    image: "tree_expander_unfold.png" COMP;
+   image: "tree_row_even.png" COMP;
+   image: "tree_row_odd.png" COMP;
    image: "hseparator.png" COMP;
    image: "vseparator.png" COMP;
    image: "glow_arrow_left.png" COMP;

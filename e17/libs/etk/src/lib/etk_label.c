@@ -24,8 +24,8 @@ static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_realize_cb(Etk_Object *object, void *data);
 static void _etk_label_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_label_move_resize(Etk_Widget *widget, int x, int y, int w, int h);
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 static Evas_Textblock_Style *_etk_label_style = NULL;
 static int _etk_label_style_use = 0;
@@ -179,9 +179,9 @@ static void _etk_label_constructor(Etk_Label *label)
    label->yalign = 0.5;
 
    widget->size_request = _etk_label_size_request;
-   widget->move_resize = _etk_label_move_resize;
+   widget->size_allocate = _etk_label_size_allocate;
 
-   etk_signal_connect_after("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_unrealize_cb), NULL);
 }
 
@@ -242,23 +242,6 @@ static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Pro
    }
 }
 
-/* Moves and resizes the label */
-static void _etk_label_move_resize(Etk_Widget *widget, int x, int y, int w, int h)
-{
-   Etk_Label *label;
-   Etk_Size requested_size;
-
-   if (!(label = ETK_LABEL(widget)))
-      return;
-
-   etk_widget_size_request(widget, &requested_size);
-   evas_object_move(label->text_object, x + (w - requested_size.w) * label->xalign, y + (h - requested_size.h) * label->yalign);
-   evas_object_resize(label->text_object, requested_size.w, requested_size.h);
-
-   evas_object_move(label->clip, x, y);
-   evas_object_resize(label->clip, w, h);
-}
-
 /* Calculates the ideal size of the label */
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
@@ -274,6 +257,24 @@ static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
       size_requisition->w = 50;
       size_requisition->h = 11;
    }
+}
+
+/* Resizes the label to the allocated size */
+static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
+{
+   Etk_Label *label;
+   Etk_Size requested_size;
+
+   if (!(label = ETK_LABEL(widget)))
+      return;
+
+   etk_widget_size_request(widget, &requested_size);
+   evas_object_move(label->text_object, geometry.x + (geometry.w - requested_size.w) * label->xalign,
+      geometry.y + (geometry.h - requested_size.h) * label->yalign);
+   evas_object_resize(label->text_object, requested_size.w, requested_size.h);
+
+   evas_object_move(label->clip, geometry.x, geometry.y);
+   evas_object_resize(label->clip, geometry.w, geometry.h);
 }
 
 /**************************

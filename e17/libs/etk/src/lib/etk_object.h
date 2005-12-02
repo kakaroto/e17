@@ -2,7 +2,7 @@
 #ifndef _ETK_OBJECT_H_
 #define _ETK_OBJECT_H_
 
-#include <Ecore_Data.h>
+#include <Evas.h>
 #include <stdarg.h>
 #include "etk_type.h"
 #include "etk_types.h"
@@ -26,12 +26,6 @@
 /** @brief Checks if the object is an Etk_Object (should be always true) */
 #define ETK_IS_OBJECT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_OBJECT_TYPE))
 
-enum _Etk_Object_Signal_Id
-{
-   ETK_OBJECT_DESTROY_SIGNAL,
-   ETK_OBJECT_NUM_SIGNALS
-};
-
 /**
  * @struct Etk_Notification_Callback
  * @brief A callback called each time the associated property is changed
@@ -50,15 +44,12 @@ struct _Etk_Object
 {
    /* private: */
    Etk_Type *type;
-   Ecore_Hash *data_hash;
-   Ecore_List *before_signal_callbacks_list;
-   Ecore_List *after_signal_callbacks_list;
-   Ecore_Hash *notification_callbacks_hash;
-   Ecore_List *weak_pointers_list;
+   Evas_Hash *data_hash;
+   Evas_List *before_signal_callbacks_list;
+   Evas_List *after_signal_callbacks_list;
+   Evas_Hash *notification_callbacks_hash;
+   Evas_List *weak_pointers_list;
 };
-
-Etk_Bool etk_object_init();
-void etk_object_shutdown();
 
 Etk_Type *etk_object_type_get();
 Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ...);
@@ -71,7 +62,7 @@ Etk_Type *etk_object_object_type_get(Etk_Object *object);
 
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after);
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback);
-void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Ecore_List *callbacks, Etk_Bool after);
+void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after);
 
 void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location);
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location);

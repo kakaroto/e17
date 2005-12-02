@@ -13,6 +13,8 @@
 #define ETK_TABLE_CELL_INDEX(table, col, row)   ((row) * (table)->num_cols + (col))
 #define ETK_TABLE_CELL_MIN_SIZE 10
 
+int Test = 0;
+
 enum _Etk_Table_Property_Id
 {
    ETK_TABLE_NUM_COLS_PROPERTY,
@@ -586,7 +588,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
    if (!(table = ETK_TABLE(widget)) || !table->cells)
       return;
-
+   
    container = ETK_CONTAINER(table);
 
    etk_widget_size_request(widget, &requested_inner_size);

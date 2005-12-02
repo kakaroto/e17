@@ -10,10 +10,12 @@
  * @{
  */
 
-static void _etk_type_type_free(void *value);
-static void _etk_type_property_add_to_list(void *value, void *data);
+static void _etk_type_free(Etk_Type *type);
+static Evas_Bool _etk_type_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_type_property_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_type_property_add_to_list(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
-static Ecore_Hash *_etk_type_types_hash = NULL;
+static Evas_Hash *_etk_type_types_hash = NULL;
 
 /**************************
  *
@@ -22,28 +24,14 @@ static Ecore_Hash *_etk_type_types_hash = NULL;
  **************************/
 
 /**
- * @brief Initializes the type system
- * @return Returns TRUE on success, FALSE on failure
- * @warning Shouldn't be called manually, etk_init() calls it
- */
-Etk_Bool etk_type_init()
-{
-   if (!_etk_type_types_hash)
-   {
-      _etk_type_types_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-      ecore_hash_set_free_value(_etk_type_types_hash, _etk_type_type_free);
-   }
-   return TRUE;
-}
-
-/**
  * @brief Deletes all the created types
  * @warning Shouldn't be called manually, etk_shutdown() calls it
  */
 void etk_type_shutdown()
 {
-   if (_etk_type_types_hash)
-      ecore_hash_destroy(_etk_type_types_hash);
+   evas_hash_foreach(_etk_type_types_hash, _etk_type_free_cb, NULL);
+   evas_hash_free(_etk_type_types_hash);
+   _etk_type_types_hash = NULL;
 }
 
 /**
@@ -60,7 +48,7 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
 {
    Etk_Type *new_type;
 
-   if (!type_name || !_etk_type_types_hash)
+   if (!type_name)
       return NULL;
 
    new_type = malloc(sizeof(Etk_Type));
@@ -70,9 +58,8 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
    new_type->destructor = destructor;
    new_type->property_set = NULL;
    new_type->property_get = NULL;
-   new_type->signals_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-   new_type->properties_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-   ecore_hash_set_free_value(new_type->properties_hash, ECORE_FREE_CB(etk_property_delete));
+   new_type->signals_hash = NULL;
+   new_type->properties_hash = NULL;
 
    if (!parent_type)
    {
@@ -91,7 +78,7 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
          new_type->hierarchy[i] = parent_type->hierarchy[i - 1];
    }
 
-   ecore_hash_set(_etk_type_types_hash, new_type->name, new_type);
+   _etk_type_types_hash = evas_hash_add(_etk_type_types_hash, new_type->name, new_type);
 
    return new_type;
 }
@@ -105,9 +92,9 @@ void etk_type_delete(Etk_Type *type)
 {
    if (!type)
       return;
-
-   if (_etk_type_types_hash)
-      ecore_hash_remove(_etk_type_types_hash, type->name);
+   
+   _etk_type_types_hash = evas_hash_del(_etk_type_types_hash, type->name, NULL);
+   _etk_type_free(type);
 }
 
 /**
@@ -117,7 +104,7 @@ void etk_type_delete(Etk_Type *type)
  */
 void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
 {
-   Ecore_List *properties;
+   Evas_List *properties = NULL;
    Etk_Property *property;
    int i;
 
@@ -139,27 +126,25 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
       if (!type->hierarchy[i]->property_set)
          continue;
 
-      properties = ecore_list_new();
-      etk_type_property_list(type->hierarchy[i], properties);
-      ecore_list_goto_first(properties);
-      while ((property = ecore_list_next(properties)))
+      etk_type_property_list(type->hierarchy[i], &properties);
+      while (properties)
       {
+         property = properties->data;
          if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
             type->hierarchy[i]->property_set(object, property->id, property->default_value);
+         properties = evas_list_remove_list(properties, properties);
       }
-      ecore_list_destroy(properties);
    }
    if (type->property_set)
    {
-      properties = ecore_list_new();
-      etk_type_property_list(type, properties);
-      ecore_list_goto_first(properties);
-      while ((property = ecore_list_next(properties)))
+      etk_type_property_list(type, &properties);
+      while (properties)
       {
+         property = properties->data;
          if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
             type->property_set(object, property->id, property->default_value);
+         properties = evas_list_remove_list(properties, properties);
       }
-      ecore_list_destroy(properties);
    }
 }
 
@@ -245,8 +230,7 @@ void etk_type_signal_add(Etk_Type *type, Etk_Signal *signal)
 
    if (!type || !signal || !(signal_name = etk_signal_name_get(signal)))
       return;
-
-   ecore_hash_set(type->signals_hash, signal_name, signal);
+   type->signals_hash = evas_hash_add(type->signals_hash, signal_name, signal);
 }
 
 /**
@@ -260,8 +244,7 @@ void etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal)
 
    if (!type || !signal || !(signal_name = etk_signal_name_get(signal)))
       return;
-
-   ecore_hash_remove(type->signals_hash, signal_name);
+   type->signals_hash = evas_hash_del(type->signals_hash, signal_name, NULL);
 }
 
 /**
@@ -274,8 +257,7 @@ Etk_Signal *etk_type_signal_get(Etk_Type *type, const char *signal_name)
 {
    if (!type || !signal_name)
       return NULL;
-
-   return ecore_hash_get(type->signals_hash, signal_name);
+   return evas_hash_find(type->signals_hash, signal_name);
 }
 
 /**
@@ -296,7 +278,7 @@ Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int proper
       return NULL;
 
    new_property = etk_property_new(name, property_id, property_type, flags, default_value);
-   ecore_hash_set(type->properties_hash, name, new_property);
+   type->properties_hash = evas_hash_add(type->properties_hash, name, new_property);
 
    return new_property;
 }
@@ -318,7 +300,7 @@ Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **pro
 
    for (t = type; t; t = etk_type_parent_type_get(t))
    {
-      if ((*property = ecore_hash_get(t->properties_hash, name)))
+      if ((*property = evas_hash_find(t->properties_hash, name)))
       {
          if (property_owner)
             *property_owner = t;
@@ -331,14 +313,13 @@ Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **pro
 /**
  * @brief Lists the properties of the type and appends them to @a properties
  * @param type the type that has the properties to list
- * @param properties the list where the properties will be put
+ * @param properties the location of the list where the properties will be appended
  */
-void etk_type_property_list(Etk_Type *type, Ecore_List *properties)
+void etk_type_property_list(Etk_Type *type, Evas_List **properties)
 {
    if (!type || !properties)
       return;
-
-   ecore_hash_for_each_node(type->properties_hash, _etk_type_property_add_to_list, properties);
+   evas_hash_foreach(type->properties_hash, _etk_type_property_add_to_list, properties);
 }
 
 /**************************
@@ -347,31 +328,42 @@ void etk_type_property_list(Etk_Type *type, Ecore_List *properties)
  *
  **************************/
 
-/* Frees the type (called when it's removed from the types hash table) */
-static void _etk_type_type_free(void *value)
+/* Frees the type (called when it's removed from the hash table) */
+static void _etk_type_free(Etk_Type *type)
 {
-   Etk_Type *type;
-
-   if (!(type = value))
+   if (!type)
       return;
 
-   ecore_hash_destroy(type->signals_hash);
-   ecore_hash_destroy(type->properties_hash);
+   evas_hash_free(type->signals_hash);
+   evas_hash_foreach(type->properties_hash, _etk_type_property_free_cb, NULL);
+   evas_hash_free(type->properties_hash);
    free(type->hierarchy);
    free(type->name);
    free(type);
 }
 
-/* Used by etk_type_property_list() */
-static void _etk_type_property_add_to_list(void *value, void *data)
+/* Used by etk_type_shutdown() */
+static Evas_Bool _etk_type_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   Ecore_List *properties;
-   Ecore_Hash_Node *node;
+   _etk_type_free(data);
+   return 1;
+}
 
-   if (!(node = value) || !(properties = data))
-      return;
+/* Used by _etk_type_free() */
+static Evas_Bool _etk_type_property_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+   etk_property_delete(data);
+   return 1;
+}
 
-   ecore_list_append(properties, node->value);
+/* Used by etk_type_property_list() */
+static Evas_Bool _etk_type_property_add_to_list(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+   Evas_List **properties;
+   
+   if (data && (properties = fdata))
+      *properties = evas_list_append(*properties, data);
+   return 1;
 }
 
 /** @} */

@@ -19,7 +19,7 @@ void etk_test_table_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
-   widget[0] = etk_button_new_from_stock(ETK_STOCK_OPEN);
+   widget[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    etk_button_label_set(ETK_BUTTON(widget[0]), _("Set Icon"));
 
    widget[20] = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
@@ -49,8 +49,8 @@ void etk_test_table_window_create(void *data)
    widget[15] = etk_label_new(_("Wait exit"));
    widget[16] = etk_check_button_new();
 
-   widget[17] = etk_button_new_from_stock(ETK_STOCK_CLOSE);
-   widget[18] = etk_button_new_from_stock(ETK_STOCK_SAVE);
+   widget[17] = etk_button_new_from_stock(ETK_STOCK_DIALOG_CANCEL);
+   widget[18] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    
    widget[19] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
 
