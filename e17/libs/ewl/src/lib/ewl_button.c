@@ -184,6 +184,7 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 		theme = ewl_theme_path_get();
 		ewl_button_image_set(b, theme, data);
 		FREE(theme);
+		FREE(data);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
