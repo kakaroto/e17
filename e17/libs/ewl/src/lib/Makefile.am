@@ -66,6 +66,7 @@ EWLHEADERS = \
 	ewl_text.h \
 	ewl_table.h \
 	ewl_tree.h \
+	ewl_tree2.h \
 	ewl_theme.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -129,6 +130,7 @@ EWLSOURCES= \
 	ewl_text.c \
 	ewl_theme.c \
 	ewl_tree.c \
+	ewl_tree2.c \
 	ewl_widget.c \
 	ewl_window.c \
 	ewl_private.h \
