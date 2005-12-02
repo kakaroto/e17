@@ -2426,8 +2426,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		evas_object_pass_events_set(t->textblock, 1);
 
 		/* XXX Nathan, is this ok? */
-		evas_object_layer_set(t->textblock, 0);
-
+		evas_object_layer_set(t->textblock, ewl_widget_layer_sum_get(w));
 		ewl_text_display(t);
 		evas_object_show(t->textblock);
 	}
@@ -2701,7 +2700,7 @@ ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
 	Ewl_Text_Trigger *trigger;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	trigger = NEW(Ewl_Text_Trigger, 1);
 	if (!trigger)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -3433,13 +3432,13 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 			ewl_text_trigger_start_pos_set(s, base);
 			ewl_text_trigger_length_set(s, idx - base);
 		}
-	}	   
+	}
 	else
 	{
 		ewl_text_trigger_start_pos_set(s, base);
 		ewl_text_trigger_length_set(s, idx - base);
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
