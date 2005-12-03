@@ -46,6 +46,7 @@ EWL TODO
 	move the cursor back to the black text. The cursor will jump to 
 	the beginning when you cursor over the first red char and then back
 	to the correct spot.
+
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.
 
@@ -89,4 +90,5 @@ EWL TODO
 - Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
   - Invert on mouse click (behavior depends upon select mode).
   - determination of whether a row is selected or not (ewl_[tree_]row_selected).
+
 

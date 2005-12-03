@@ -9,7 +9,7 @@
  * @brief Allocate and initialize a new tree widget
  */
 Ewl_Widget *
-ewl_tree2_new()
+ewl_tree2_new(void)
 {
 	Ewl_Widget *w;
 
@@ -55,7 +55,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 
 /**
  */
-Ewl_Model *ewl_model_new()
+Ewl_Model *ewl_model_new(void)
 {
 	Ewl_Model *model;
 
@@ -169,7 +169,8 @@ ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count)
 
 /**
  */
-Ewl_View *ewl_view_new()
+Ewl_View *
+ewl_view_new(void)
 {
 	Ewl_View *view;
 
@@ -184,7 +185,8 @@ Ewl_View *ewl_view_new()
 
 /**
  */
-int ewl_view_init(Ewl_View *view)
+int
+ewl_view_init(Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 	DCHECK_PARAM_PTR_RET("view", view, FALSE);
