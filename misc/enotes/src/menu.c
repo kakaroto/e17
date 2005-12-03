@@ -42,7 +42,7 @@ void
 menu_show(Menu * menu)
 {
 	ewl_widget_show(menu->win);
-	ewl_callback_call(menu->menu, EWL_CALLBACK_SELECT);
+	ewl_callback_call(menu->menu, EWL_CALLBACK_FOCUS_IN);
 	return;
 }
 
@@ -66,7 +66,7 @@ menu_item_add(Menu * menu, char *name, void (*func) (void *data), void *data)
 	item->item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item->item), name);
 	ewl_container_child_append((Ewl_Container *) menu->menu, item->item);
-	ewl_callback_append(item->item, EWL_CALLBACK_SELECT, cb_menu_process,
+	ewl_callback_append(item->item, EWL_CALLBACK_FOCUS_IN, cb_menu_process,
 			    item);
 	ewl_widget_show(item->item);
 
