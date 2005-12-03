@@ -275,6 +275,12 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			evas_textblock_cursor_line_first(cursor);
 		}
 	}
+	else {
+		 evas_textblock_cursor_char_geometry_get(cursor,
+				 &cx, &cy, &cw, &ch);
+		 if (tx > (cx + ((cw + 1) >> 1)))
+			 idx ++;
+	}
 
 	idx += ewl_text_textblock_cursor_to_index(cursor);
 	evas_textblock_cursor_free(cursor);
