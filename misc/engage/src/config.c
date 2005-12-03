@@ -278,7 +278,7 @@ od_config_menu_init(void)
 /*
   item = ewl_menu_item_new(NULL, "<name goes here>");
   ewl_container_child_append(EWL_CONTAINER(menu), item);
-  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
+  ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, od_config_menu_config_cb, NULL);
   ewl_widget_show(item);
   menu_app_name = item;
 
@@ -291,13 +291,13 @@ od_config_menu_init(void)
   item = ewl_menu_item_new();
   ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Icon Zooming");
   ewl_container_child_append(EWL_CONTAINER(menu), item);
-  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_zoom_cb, NULL);
+  ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, od_config_menu_zoom_cb, NULL);
   ewl_widget_show(item);
 
   item = ewl_menu_item_new();
   ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Configuration");
   ewl_container_child_append(EWL_CONTAINER(menu), item);
-  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
+  ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, od_config_menu_config_cb, NULL);
   ewl_widget_show(item);
 
   item = ewl_separator_new();
@@ -307,7 +307,7 @@ od_config_menu_init(void)
   item = ewl_menu_item_new();
   ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Quit");
   ewl_container_child_append(EWL_CONTAINER(menu), item);
-  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_quit_cb, NULL);
+  ewl_callback_append(item, EWL_CALLBACK_FOCUS_IN, od_config_menu_quit_cb, NULL);
   ewl_widget_show(item);
 }
 
@@ -374,7 +374,7 @@ od_config_menu_draw(Evas_Coord x, Evas_Coord y)
   else
     menu_y = y - menu_off_y;
   evas_object_move(embed, menu_x, menu_y);
-  ewl_callback_call(menu, EWL_CALLBACK_SELECT);
+  ewl_callback_call(menu, EWL_CALLBACK_FOCUS_IN);
 }
 
 #endif

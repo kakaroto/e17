@@ -266,7 +266,7 @@ draw_tree(examine_prop * prop_item)
     free(key_tmp);
     if (prop_item->type == ECORE_CONFIG_STR) {
       entries[1] = ewl_entry_new();
-      ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
+      ewl_callback_append(entries[1], EWL_CALLBACK_FOCUS_OUT, cb_set_str,
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_INT) {
       entries[1] = ewl_spinner_new();
@@ -296,7 +296,7 @@ draw_tree(examine_prop * prop_item)
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_RGB) {
       entries[1] = ewl_entry_new();
-      ewl_callback_append(entries[1], EWL_CALLBACK_DESELECT, cb_set_str,
+      ewl_callback_append(entries[1], EWL_CALLBACK_FOCUS_OUT, cb_set_str,
                           prop_item);
 				
     } else if (prop_item->type == ECORE_CONFIG_THM) {
