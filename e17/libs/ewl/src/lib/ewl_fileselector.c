@@ -61,10 +61,7 @@ int
 ewl_fileselector_init(Ewl_Fileselector *fs)
 {
 	char *tmp;
-	Ewl_Widget *w;
-	Ewl_Widget *hbox;
-	Ewl_Widget *misc;
-	Ewl_Widget *button;
+	Ewl_Widget *w, *hbox, *misc, *button;
 
 	char *head_dirs[1] = { "Directories" };
 	char *head_files[1] = { "Files" };
@@ -81,8 +78,7 @@ ewl_fileselector_init(Ewl_Fileselector *fs)
 	ewl_widget_appearance_set(w, "fileselector");
 	ewl_widget_inherit(w, "fileselector");
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
-				   EWL_FLAG_FILL_SHRINK |
-				   EWL_FLAG_FILL_FILL);
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
 	ewl_object_minimum_size_set(EWL_OBJECT(w), EWL_FS_TREE_WIDTH,
 				    EWL_FS_TREE_HEIGHT);
 
@@ -91,104 +87,81 @@ ewl_fileselector_init(Ewl_Fileselector *fs)
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 			    ewl_fileselector_destroy_cb, NULL);
 
-
 	/* The entry for the current directory */
 	/* and some icons */
 	hbox = ewl_hbox_new();
-	if (hbox) {
-		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(fs), hbox);
+	ewl_widget_show(hbox);
 
-		fs->entry_dir = ewl_entry_new();
-		ewl_text_text_set(EWL_TEXT(fs->entry_dir), NULL);
-		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_HFILL);
-		ewl_container_child_prepend(EWL_CONTAINER(hbox),
-					    fs->entry_dir);
-		ewl_widget_show(fs->entry_dir);
+	fs->entry_dir = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(fs->entry_dir), NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_prepend(EWL_CONTAINER(hbox), fs->entry_dir);
+	ewl_widget_show(fs->entry_dir);
 
-		misc = ewl_spacer_new();
-		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
-		ewl_object_fill_policy_set(EWL_OBJECT(misc),
-					   EWL_FLAG_FILL_FILL);
-		ewl_widget_show(misc);
+	misc = ewl_spacer_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), misc);
+	ewl_object_fill_policy_set(EWL_OBJECT(misc), EWL_FLAG_FILL_FILL);
+	ewl_widget_show(misc);
 
-		button = ewl_button_new();
-		ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_ARROW_UP);
-		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-				    ewl_fileselector_go_up_cb, fs);
-		ewl_container_child_append(EWL_CONTAINER(hbox), button);
-		ewl_widget_show(button);
+	button = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_ARROW_UP);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+			    ewl_fileselector_go_up_cb, fs);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_widget_show(button);
 
-		button = ewl_button_new();
-		ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_HOME);
-
-		button = ewl_button_new();
-		ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_HOME);
-		ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-				    ewl_fileselector_go_home_cb, fs);
-		ewl_container_child_append(EWL_CONTAINER(hbox), button);
-		ewl_widget_show(button);
-
-		ewl_container_child_append(EWL_CONTAINER(fs), hbox);
-		ewl_widget_show(hbox);
-	}
+	button = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_HOME);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+			    ewl_fileselector_go_home_cb, fs);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_widget_show(button);
 
 	/* The lists for directories and files */
 	hbox = ewl_hbox_new();
-	if (hbox) {
-		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
+	ewl_container_child_append(EWL_CONTAINER(fs), hbox);
+	ewl_widget_show(hbox);
 
-		fs->list_dirs = ewl_tree_new(1);
-		ewl_tree_headers_set(EWL_TREE(fs->list_dirs), head_dirs);
-		ewl_object_fill_policy_set(EWL_OBJECT(fs->list_dirs),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_FILL);
-		ewl_container_child_append(EWL_CONTAINER(hbox),
-					   fs->list_dirs);
-		ewl_widget_show(fs->list_dirs);
+	fs->list_dirs = ewl_tree_new(1);
+	ewl_tree_headers_set(EWL_TREE(fs->list_dirs), head_dirs);
+	ewl_object_fill_policy_set(EWL_OBJECT(fs->list_dirs),
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
+	ewl_container_child_append(EWL_CONTAINER(hbox), fs->list_dirs);
+	ewl_widget_show(fs->list_dirs);
 
-		fs->list_files = ewl_tree_new(1);
-		ewl_tree_headers_set(EWL_TREE(fs->list_files), head_files);
-		ewl_object_fill_policy_set(EWL_OBJECT(fs->list_files),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_FILL);
-		ewl_container_child_append(EWL_CONTAINER(hbox),
-					   fs->list_files);
-		ewl_widget_show(fs->list_files);
-
-		ewl_container_child_append(EWL_CONTAINER(fs), hbox);
-		ewl_widget_show(hbox);
-	}
+	fs->list_files = ewl_tree_new(1);
+	ewl_tree_headers_set(EWL_TREE(fs->list_files), head_files);
+	ewl_object_fill_policy_set(EWL_OBJECT(fs->list_files),
+				   EWL_FLAG_FILL_SHRINK |
+				   EWL_FLAG_FILL_FILL);
+	ewl_container_child_append(EWL_CONTAINER(hbox),
+				   fs->list_files);
+	ewl_widget_show(fs->list_files);
 
 	/* The file label and entry */
 	hbox = ewl_hbox_new();
-	if (hbox) {
-		ewl_object_fill_policy_set(EWL_OBJECT(hbox),
-					   EWL_FLAG_FILL_SHRINK |
-					   EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
+				   EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(fs), hbox);
+	ewl_widget_show(hbox);
 
-		misc = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(misc), "File:");
-		ewl_object_fill_policy_set(EWL_OBJECT(misc),
-					   EWL_FLAG_FILL_NONE);
-		ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
-		ewl_container_child_append(EWL_CONTAINER(hbox), misc);
-		ewl_widget_show(misc);
+	misc = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(misc), "File:");
+	ewl_object_fill_policy_set(EWL_OBJECT(misc), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
+	ewl_container_child_append(EWL_CONTAINER(hbox), misc);
+	ewl_widget_show(misc);
 
-		fs->entry_file = ewl_entry_new();
-		ewl_text_text_set(EWL_TEXT(fs->entry_file), NULL);
-		ewl_container_child_append(EWL_CONTAINER(hbox),
-					   fs->entry_file);
-		ewl_widget_show(fs->entry_file);
-
-		ewl_container_child_append(EWL_CONTAINER(fs), hbox);
-		ewl_widget_show(hbox);
-	}
+	fs->entry_file = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(fs->entry_file), NULL);
+	ewl_container_child_append(EWL_CONTAINER(hbox), fs->entry_file);
+	ewl_widget_show(fs->entry_file);
 
 	/* The default filter values */
 	fs->ffilter = strdup("^[^\\.]");

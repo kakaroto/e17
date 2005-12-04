@@ -22,19 +22,6 @@ struct Ewl_Colordialog
 	Ewl_Widget *picker;
 };
 
-/**
- * @def EWL_COLORDIALOG_EVENT(cd)
- * Typecast a pointer to an Ewl_Colordialog_Event pointer
- */
-#define EWL_COLORDIALOG_EVENT(cd) ((Ewl_Colordialog_Event *)cd)
-
-typedef struct Ewl_Colordialog_Event Ewl_Colordialog_Event;
-
-struct Ewl_Colordialog_Event
-{
-	unsigned int response;
-};
-
 Ewl_Widget 	*ewl_colordialog_new(void);
 int 		 ewl_colordialog_init(Ewl_Colordialog *cd);
 
@@ -57,13 +44,6 @@ void             ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cp, unsigned 
 void             ewl_colordialog_color_mode_set(Ewl_Colordialog *cp, Ewl_Color_Mode type);
 Ewl_Color_Mode   ewl_colordialog_color_mode_get(Ewl_Colordialog *cp);
 
-Ewl_Colordialog_Event *ewl_colordialog_event_new(void);
-void		 ewl_colordialog_event_free(Ewl_Colordialog_Event *ev);
-
-void		 ewl_colordialog_event_response_set(Ewl_Colordialog_Event *ev, 
-							unsigned int resp);
-unsigned int	 ewl_colordialog_event_response_get(Ewl_Colordialog_Event *ev);
-		
 /*
  * Internally used callbacks, override at your own risk
 */

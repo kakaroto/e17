@@ -5,12 +5,11 @@ static Ewl_Widget *colordialog_button = NULL;
 static void
 __colordialog_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-  	Ewl_Colordialog_Event *cd_ev;
+  	Ewl_Dialog_Event *cd_ev;
 	unsigned int response;
   
 	cd_ev = ev;
-	response = ewl_colordialog_event_response_get(cd_ev);
-	if (response == EWL_STOCK_OK)
+	if (cd_ev->response == EWL_STOCK_OK)
 	{
 		Ewl_Widget *o;
 		unsigned int r, g, b, a;

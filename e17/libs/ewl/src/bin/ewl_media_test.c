@@ -113,12 +113,12 @@ fd_win_del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 static void
 open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 {
-	Ewl_Filedialog_Event *e;
+	Ewl_Dialog_Event *e;
 	char *file = NULL;
 
 	ewl_widget_hide(fd_win);
 
-	e = EWL_FILEDIALOG_EVENT(event);
+	e = event;
 	if (e->response == EWL_STOCK_OPEN)
 		file = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
 

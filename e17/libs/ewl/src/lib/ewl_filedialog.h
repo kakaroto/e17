@@ -38,37 +38,15 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
 
 /**
  * @struct Ewl_Filedialog
- * Creates a floating widget with different filedialog components.
+ * Creates a dialog for the fileselector
  */
 struct Ewl_Filedialog
 {
-	Ewl_Box	box;              /**< Box containing the fileselector */
+	Ewl_Dialog dialog;        /**< The dialog base class */
 
 	Ewl_Filedialog_Type type; /**< Current type of filedialog */
 	Ewl_Widget *fs;           /**< Ewl_Fileselector */
-	Ewl_Widget *confirm;      /**< Confirmation OK/Save button */
-	Ewl_Widget *cancel;       /**< Cancel button */
-};
-
-/**
- * The Ewl_Filedialog_Event returned as the EWL_CALLBACK_VALUE_CHANGED
- * event
- */
-typedef struct Ewl_Filedialog_Event Ewl_Filedialog_Event;
-
-/**
- * @define EWL_FILEDIALOG_EVENT(e)
- * Typecasts a pointer to an Ewl_Filedialog_Event pointer
- */
-#define EWL_FILEDIALOG_EVENT(e) ((Ewl_Filedialog_Event *)e)
-
-/**
- * @struct Ewl_Filedialog_Event
- * Stores the reponse from the filedialog
- */
-struct Ewl_Filedialog_Event
-{
-	unsigned int response;
+	Ewl_Widget *type_btn;     /**< Either the open or save button */
 };
 
 Ewl_Widget 		*ewl_filedialog_multiselect_new(void);
@@ -92,6 +70,7 @@ Ecore_List 		*ewl_filedialog_select_list_get(Ewl_Filedialog *fd);
  * Internally used callbacks, override at your own risk.
  */
 void ewl_filedialog_click_cb (Ewl_Widget *w, void *ev_data, void *data);
+void ewl_filedialog_delete_window_cb(Ewl_Widget *w, void *ev_data, void *data);
 
 /**
  * @}

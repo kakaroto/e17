@@ -155,6 +155,8 @@ struct Ewl_Event_Mouse_Wheel
 	int dir; /**< Direction mouse wheel scrolled */
 };
 
+typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
+
 /**
  * @struct Ewl_Dnd_Types
  * Provides type information about an external DND drag
@@ -165,7 +167,17 @@ struct Ewl_Dnd_Types
 	char** types;
 	
 };
-typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
+
+typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
+
+/**
+ * @struct Ewl_Dialog_Event
+ * Stores the reponse from a dialog
+ */
+struct Ewl_Dialog_Event
+{
+	unsigned int response;
+};
 
 int		ewl_ev_init(void);
 unsigned int 	ewl_ev_modifiers_get();

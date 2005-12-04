@@ -216,50 +216,6 @@ ewl_colordialog_color_mode_get(Ewl_Colordialog *cd)
 	DRETURN_INT(mode, DLEVEL_STABLE);
 }
 
-Ewl_Colordialog_Event *
-ewl_colordialog_event_new(void)
-{
-	Ewl_Colordialog_Event *ev;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ev = NEW(Ewl_Colordialog_Event, 1);
-
-	DRETURN_PTR(ev, DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_event_free(Ewl_Colordialog_Event *ev)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ev", ev);
-
-	FREE(ev);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_colordialog_event_response_set(Ewl_Colordialog_Event *ev, 
-						unsigned int resp)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ev", ev);
-
-	ev->response = resp;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-unsigned int
-ewl_colordialog_event_response_get(Ewl_Colordialog_Event *ev)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("ev", ev, 0);
-
-	DRETURN_INT(ev->response, DLEVEL_STABLE);
-}
-
 void
 ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
@@ -291,19 +247,15 @@ ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 static void
 ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 {
-	Ewl_Colordialog_Event *cd_ev;
+	Ewl_Dialog_Event cd_ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
 	DCHECK_TYPE("cd", cd, "colordialog");
 
-	cd_ev = ewl_colordialog_event_new();
-	ewl_colordialog_event_response_set(cd_ev, response);
-
+	cd_ev.response = response;
 	ewl_callback_call_with_event_data(EWL_WIDGET(cd), 
-					EWL_CALLBACK_VALUE_CHANGED, cd_ev);
-
-	ewl_colordialog_event_free(cd_ev);
+					EWL_CALLBACK_VALUE_CHANGED, &cd_ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
