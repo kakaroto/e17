@@ -1294,7 +1294,9 @@ ECompMgrWinUnmap(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   D1printf("ECompMgrWinUnmap %#lx\n", eo->win);
+   D1printf("ECompMgrWinUnmap %#lx shown=%d\n", eo->win, eo->shown);
+   if (!eo->shown)		/* Sometimes we get a synthetic one too */
+      return;
 
    if (Conf_compmgr.fading.enable && eo->fade && !eo->gone)
       ECompMgrWinFadeOut(eo);
@@ -1432,7 +1434,11 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
       return;
 
    if (cw->fadeout)
-      ECompMgrWinFadeOutEnd(eo);
+     {
+	ECompMgrWinFadeCancel(eo);
+	ECompMgrWinFadeOutEnd(eo);
+	cw->fading = 0;
+     }
 
    if (!eo->shown)
      {
