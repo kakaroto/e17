@@ -297,23 +297,13 @@ eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data)
     fd = ewl_widget_name_find("fd");
     if (!fd)
     {
-        Ewl_Widget *dialog;
-
-        fd = ewl_window_new();
-        ewl_window_title_set(EWL_WINDOW(fd), "Eapp Editor Icon Selection");
-        ewl_window_name_set(EWL_WINDOW(fd), "Eapp Editor");
-        ewl_window_class_set(EWL_WINDOW(fd), "Eapp Editor");
-        ewl_widget_name_set(fd, "fd");
-        ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,
-                                eapp_cb_fd_hide, NULL);
-
-        dialog = ewl_filedialog_new();
-        ewl_filedialog_type_set(EWL_FILEDIALOG(dialog),
+        fd = ewl_filedialog_new();
+    	ewl_widget_name_set(fd, "fd");
+        ewl_filedialog_type_set(EWL_FILEDIALOG(fd),
                                 EWL_FILEDIALOG_TYPE_OPEN);
-        ewl_callback_append(dialog, EWL_CALLBACK_VALUE_CHANGED,
+        ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
                                 eapp_cb_fd_changed, NULL);
-        ewl_container_child_append(EWL_CONTAINER(fd), dialog);
-        ewl_widget_show(dialog);
+        ewl_widget_show(fd);
     }
     ewl_widget_show(fd);
 }
@@ -327,10 +317,10 @@ eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data)
 static void
 eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data)
 {
-    Ewl_Filedialog_Event *e;
+    Ewl_Dialog_Event *e;
     Ewl_Widget *o;
     
-    e = EWL_FILEDIALOG_EVENT(ev);
+    e = ev;
     if (e->response == EWL_STOCK_OPEN)
     {
         char *icon;
