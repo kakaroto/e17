@@ -275,9 +275,10 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			evas_textblock_cursor_line_first(cursor);
 		}
 	}
-	else {
+	else 
+	{
 		 evas_textblock_cursor_char_geometry_get(cursor,
-				 &cx, &cy, &cw, &ch);
+						&cx, &cy, &cw, &ch);
 		 if (tx > (cx + ((cw + 1) >> 1)))
 			 idx ++;
 	}
