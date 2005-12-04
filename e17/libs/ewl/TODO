@@ -41,7 +41,9 @@ EWL BUGS
    tests code filled in. The scrollpane ends up being twice as big as
    it should be.
 -  The text widget dosen't handle the wrap flag correctly.
-
+-  The Ewl_Menu dosen't work correclty anymore. Once the menu is opened, 
+   as soon as the mouse moves the menu is closed again. (Possibly due to
+   the embed changing the focused widget?)
 
 
 EWL TODO
