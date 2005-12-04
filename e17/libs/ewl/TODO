@@ -1,52 +1,57 @@
-EWL TODO
+EWL BUGS
 ========
 
-- [BUG] Text can cause a segfault through a recursive tree call to
-        ewl_text_tree_delete. To trigger, open ewl_test entry, click at the
-        end of the first entry box. Now type a few characters and delete back
-        to the original text.
-- [BUG] Entry no longer rounds it's position correctly depending on which side
-        of a character is clicked.
-- [BUG] Scrollbar jumps when trying to drag the button from its lower part
-- [BUG] Default theme when using the imenu/menu the submenu dosen't highlight on
-        mouse over.
-- [BUG] Spinner seems to resize itself slightly larger even when it dosen't
-        have too.
-- [BUG] The ewl_test seems to get a small gap between the right edje of the
-        test and the trough for the scrollbar. Should be flush.
+-  Text can cause a segfault through a recursive tree call to 
+   ewl_text_tree_delete. To trigger, open ewl_test entry, click at the
+   end of the first entry box. Now type a few characters and delete back
+   to the original text.
+-  Entry no longer rounds it's position correctly depending on which side
+   of a character is clicked.
+-  Scrollbar jumps when trying to drag the button from its lower part
+-  Default theme when using the imenu/menu the submenu dosen't highlight on
+   mouse over.
+-  Spinner seems to resize itself slightly larger even when it dosen't have too.
+-  The ewl_test seems to get a small gap between the right edje of the
+   test and the trough for the scrollbar. Should be flush.
         - The 'Password' test seems to make this gap grow.
-- [BUG] Dialog text bounds are not considered when packing the window
-- [BUG] Grid and Table layouts do not pack or resize correctly. The child show
-        and resize callbacks do not set the preferred inner size, this is 
-	necessary for correct initial size. Their logic is just plain wrong 
-	right now.
-- [BUG] Seem to have lost the .. entry in the filedialog files list.
-        Something wrong with the regex's or caused by something in
-	ecore_file
-- [BUG] In ewl_text if your in a multiline text and on a line that is longer
-        then then one above or below and you hit the up arrow it will
-	position your cursor one character _before_ the end of the line.
-- [BUG] The ewl_password entry needs to correctly deal with selections and
-	mouse clicks.
-- [BUG] Tab focus dosen't correctly cycle to the start/end of the tab
-	widgets if you hit the end
-- [BUG] Buttons don't correctly react to a keypress. Currently just a
-	printf, should actually trigger the button pressed callback
-- [BUG] Widgets need a focused state in the edje so we can know where the
-	focus is
-- [BUG] Radio and check buttons should react to key presses and toggle as
-	needed
-- [BUG] How to deal with the scrollpane with the focus? Currently widgets
-	marked INTERNAL are ignored on the inital add. Should the scrollpane 
-	find itself in the tab list on SHOW and substitue the seekers instead?
-- [BUG] Menus will activate on tab, but it jumps to the submenu instead of
-	each menu item
-- [BUG] Run the 'ewl_test text' and click on the end of the first widiget
-	and type a few chars (should be in red) now, use the arrow keys to
-	move the cursor back to the black text. The cursor will jump to 
-	the beginning when you cursor over the first red char and then back
-	to the correct spot.
+-  Dialog text bounds are not considered when packing the window
+-  Grid and Table layouts do not pack or resize correctly. The child show
+   and resize callbacks do not set the preferred inner size, this is 
+   necessary for correct initial size. Their logic is just plain wrong 
+   right now.
+-  Seem to have lost the .. entry in the filedialog files list.
+   Something wrong with the regex's or caused by something in
+   ecore_file
+-  In ewl_text if your in a multiline text and on a line that is longer
+   then then one above or below and you hit the up arrow it will
+   position your cursor one character _before_ the end of the line.
+-  The ewl_password entry needs to correctly deal with selections and
+   mouse clicks.
+-  Tab focus dosen't correctly cycle to the start/end of the tab
+   widgets if you hit the end
+-  Buttons don't correctly react to a keypress. Currently just a
+   printf, should actually trigger the button pressed callback
+-  Widgets need a focused state in the edje so we can know where the focus is
+-  Radio and check buttons should react to key presses and toggle as needed
+-  How to deal with the scrollpane with the focus? Currently widgets
+   marked INTERNAL are ignored on the inital add. Should the scrollpane 
+   find itself in the tab list on SHOW and substitue the seekers instead?
+-  Menus will activate on tab, but it jumps to the submenu instead of
+   each menu item
+-  Run the 'ewl_test text' and click on the end of the first widiget
+   and type a few chars (should be in red) now, use the arrow keys to
+   move the cursor back to the black text. The cursor will jump to 
+   the beginning when you cursor over the first red char and then back
+   to the correct spot.
+-  If you run ewl_test and select a test the main window will have the
+   tests code filled in. The scrollpane ends up being twice as big as
+   it should be.
+-  The text widget dosen't handle the wrap flag correctly.
 
+
+
+EWL TODO
+========
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
   need to add cursor code.
 
@@ -56,7 +61,6 @@ EWL TODO
 - fix mismatch between use_engine in ewl_init() and ewl_config.evas.render_method 
 
 - Ewl_Entry 
-    - Text wrap fixups.
     - Need to make the text scroll over as you type past the end of the entry box.
 
 - ColorChooser needs a slider for choosing alpha too, and an int a parameter for
