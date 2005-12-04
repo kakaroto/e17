@@ -194,6 +194,7 @@ static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(XEvent * ev, void *prm);
 static void         doECompMgrWinFade(int val, void *data);
+static void         ECompMgrWinInvalidate(EObj * eo, int what);
 static void         ECompMgrWinSetPicts(EObj * eo);
 static void         ECompMgrWinFadeOutEnd(EObj * eo);
 static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
@@ -482,50 +483,50 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 int
 ECompMgrDeskConfigure(Desk * dsk)
 {
-   /* FIXME - To be implemented */
-   dsk = NULL;
-
-   return 0;
-}
-
-static              Picture
-DeskBackgroundPictureGet(Desk * dsk)
-{
-   ECmWinInfo         *cw = dsk->o.cmhook;
+   EObj               *eo;
+   ECmWinInfo         *cw;
    Picture             pict;
-   Pixmap              pmap;
-   Bool                fill;
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
+   int                 fill = 0;
+   Pixmap              pmap;
+   unsigned long       pixel;
 
+   if (!Mode_compmgr.active)
+      return 0;
+
+   eo = (dsk->num) ? EoObj(dsk) : dsk->bg.o;
+   if (!eo)
+      return 1;
+   cw = eo->cmhook;
+
+#if 0
    if (!cw)
      {
-	ECompMgrWinNew(&dsk->o);
-	cw = dsk->o.cmhook;
+	ECompMgrWinNew(eo);
+	cw = eo->cmhook;
 	if (!cw)
-	   return None;
+	   return 0;
+     }
+#endif
+
+   if (!dsk->viewable)
+     {
+	ECompMgrWinInvalidate(eo, INV_PICTURE);
+	return 1;
      }
 
-   fill = False;
-   pmap = BackgroundGetPixmap(DeskBackgroundGet(dsk));
-   if (pmap == None)
+   if (dsk->bg.pmap == None)
      {
-	if (cw->pixmap && cw->picture)
-	   return cw->picture;
 	pmap = XCreatePixmap(disp, VRoot.win, 1, 1, VRoot.depth);
-	fill = True;
+	fill = 1;
      }
-   else if (pmap == cw->pixmap)
+   else
      {
-	if (cw->picture != None)
-	   return cw->picture;
+	pmap = dsk->bg.pmap;
      }
-   D1printf
-      ("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx (%#lx %#lx)\n",
-       dsk->num, pmap, cw->pixmap, cw->picture);
 
-   if (cw->picture)
-      XRenderFreePicture(disp, cw->picture);
+   ECompMgrWinInvalidate(eo, INV_PICTURE);
 
    pa.repeat = True;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
@@ -533,8 +534,10 @@ DeskBackgroundPictureGet(Desk * dsk)
 
    if (fill)
      {
-	/* FIXME - use desk bg color */
 	XRenderColor        c;
+
+	/* FIXME - use desk bg color */
+	pixel = 0;
 
 	c.red = c.green = c.blue = 0x8080;
 	c.alpha = 0xffff;
@@ -542,35 +545,16 @@ DeskBackgroundPictureGet(Desk * dsk)
 	XFreePixmap(disp, pmap);
      }
 
-#if 0				/* FIXME - Not in window mode? */
    /* New background, all must be repainted */
    ECompMgrDamageAll();
-#endif
 
-   cw->pixmap = pmap;
    cw->picture = pict;
 
-   return pict;
-}
+   D1printf
+      ("ECompMgrDeskConfigure: Desk %d: using pixmap %#lx picture=%#lx\n",
+       dsk->num, pmap, cw->picture);
 
-static void
-DeskBackgroundPictureFree(Desk * dsk)
-{
-   ECmWinInfo         *cw = dsk->o.cmhook;
-   Picture             pict;
-
-   if (!cw)
-      return;
-
-   pict = cw->picture;
-   if (pict == None)
-      return;
-
-   D1printf("DeskBackgroundPictureFree: Desk %d: pict=%#lx\n", dsk->num, pict);
-
-   XRenderFreePicture(disp, pict);
-
-   cw->picture = None;
+   return 1;
 }
 
 /*
@@ -1332,18 +1316,6 @@ ECompMgrWinSetPicts(EObj * eo)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (eo->type == EOBJ_TYPE_DESK)
-     {
-#if 0				/* FIXME - Get this right */
-	if (cw->picture == None)
-#endif
-	  {
-	     cw->picture = DeskBackgroundPictureGet((Desk *) eo);
-	     cw->damaged = 1;	/* FIXME - ??? */
-	  }
-	return;
-     }
-
    if (cw->pixmap == None && eo->shown &&
        (Mode_compmgr.use_pixmap || (eo->fade && Conf_compmgr.fading.enable)))
      {
@@ -1408,9 +1380,6 @@ ECompMgrWinNew(EObj * eo)
    cw->a.depth = attr.depth;
    cw->a.visual = attr.visual;
    cw->a.border_width = attr.border_width;
-
-   if (eo->type == EOBJ_TYPE_DESK)
-      eo->noredir = 1;
 
    if (!eo->noredir)
      {
@@ -1615,12 +1584,6 @@ ECompMgrWinDel(EObj * eo)
      }
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
-
-   if (eo->type == EOBJ_TYPE_DESK)
-     {
-	DeskBackgroundPictureFree((Desk *) eo);
-	cw->pixmap = None;
-     }
 
    if (!eo->noredir)
      {
@@ -1984,7 +1947,7 @@ ECompMgrRepaint(void)
    Display            *dpy = disp;
    XserverRegion       region;
    EObj               *eo;
-   Picture             pict, pbuf;
+   Picture             pbuf;
    Desk               *dsk = DeskGet(0);
 
    if (!Mode_compmgr.active || allDamage == None)
@@ -2019,12 +1982,16 @@ ECompMgrRepaint(void)
    if (EventDebug(EDBUG_TYPE_COMPMGR2))
       ERegionShow("after opaque", region);
 
+#if 0				/* FIXME - NoBg? */
+   Picture             pict;
+
    /* Repaint background, clipped by damage region and opaque windows */
-   pict = DeskBackgroundPictureGet(dsk);
+   pict = ((ECmWinInfo *) (dsk->o.cmhook))->picture;
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
 		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
+#endif
 
    /* Paint trans windows and shadows bottom up */
    for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
@@ -2108,18 +2075,6 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
      }
 }
 #endif
-
-static void
-ECompMgrDeskChanged(Desk * dsk)
-{
-   if (!dsk || !dsk->o.cmhook)
-      return;
-
-   D1printf("ECompMgrDeskChanged: desk=%d\n", dsk->num);
-
-   DeskBackgroundPictureFree(dsk);
-   ECompMgrDamageAll();
-}
 
 #if ENABLE_SHADOWS
 static void
@@ -2215,6 +2170,9 @@ ECompMgrStart(void)
 	if (lst[i]->shown)
 	   ECompMgrWinMap(lst[i]);
      }
+
+   DesksBackgroundRefresh(NULL);
+   _ECM_SET_CLIP_CHANGED();
 }
 
 static void
@@ -2234,8 +2192,6 @@ ECompMgrStop(void)
    if (rootBuffer)
       XRenderFreePicture(disp, rootBuffer);
    rootBuffer = None;
-
-   DeskBackgroundPictureFree(DeskGet(0));
 
    ECompMgrShadowsInit(ECM_SHADOWS_OFF, 0);
 
@@ -2270,8 +2226,7 @@ ECompMgrStop(void)
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
-   if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
-      DesksClear();
+   DesksBackgroundRefresh(NULL);
 }
 
 void
@@ -2512,7 +2467,7 @@ ECompMgrInit(void)
 }
 
 static void
-ECompMgrSighan(int sig, void *prm)
+ECompMgrSighan(int sig, void *prm __UNUSED__)
 {
    if (sig != ESIGNAL_INIT && Conf_compmgr.mode == ECM_MODE_OFF)
       return;
@@ -2523,10 +2478,6 @@ ECompMgrSighan(int sig, void *prm)
 	ECompMgrInit();
 	if (Conf_compmgr.enable)
 	   ECompMgrStart();
-	break;
-
-     case ESIGNAL_BACKGROUND_CHANGE:
-	ECompMgrDeskChanged((Desk *) prm);
 	break;
 
      case ESIGNAL_IDLE:

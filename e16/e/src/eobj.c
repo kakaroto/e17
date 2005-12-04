@@ -156,6 +156,12 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
 #if USE_COMPOSITE
    eo->fade = 1;
    eo->shadow = 1;
+   switch (type)
+     {
+     case EOBJ_TYPE_MISC_NR:
+	eo->noredir = 1;
+	break;
+     }
    ECompMgrWinNew(eo);
 #endif
    if (eo->win != VRoot.win)

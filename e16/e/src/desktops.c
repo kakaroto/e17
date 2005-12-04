@@ -452,7 +452,7 @@ DeskCreate(int desk, int configure)
 
 	desks.current = dsk;
 
-	eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h,
+	eo = EobjWindowCreate(EOBJ_TYPE_MISC_NR, 0, 0, VRoot.w, VRoot.h,
 			      0, "Root-bg");
 	eo->floating = 0;
 	eo->fade = eo->shadow = 0;
@@ -529,7 +529,11 @@ DeskBackgroundConfigure(Desk * dsk)
 
    if (dsk->viewable)
      {
-	if (!ECompMgrDeskConfigure(dsk))
+	if (ECompMgrDeskConfigure(dsk))
+	  {
+	     ESetWindowBackgroundPixmap(win, None);
+	  }
+	else
 	  {
 	     if (dsk->bg.pmap != None)
 		ESetWindowBackgroundPixmap(win, dsk->bg.pmap);
@@ -545,10 +549,7 @@ DeskBackgroundConfigure(Desk * dsk)
 	if (!Conf.hints.set_xroot_info_on_root_window)
 	   HintsSetRootInfo(EoGetWin(dsk), None, 0);
 
-	if (!ECompMgrDeskConfigure(dsk))
-	  {
-	     ESetWindowBackgroundPixmap(win, None);
-	  }
+	ESetWindowBackgroundPixmap(win, None);
      }
 }
 
@@ -674,9 +675,11 @@ DesksBackgroundRefresh(Background * bg)
    for (i = 0; i < Conf.desks.num; i++)
      {
 	dsk = _DeskGet(i);
+	if (!dsk)
+	   continue;
 	if (bg && dsk->bg.bg != bg)
 	   continue;
-	if (!bg)
+	if (!bg && dsk->viewable)	/* CM start/stop hack */
 	   dsk->bg.isset = 0;
 	DeskBackgroundUpdate(dsk);
      }
