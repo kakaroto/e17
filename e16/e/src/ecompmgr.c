@@ -249,11 +249,13 @@ ERegionCreateRect(int x, int y, int w, int h)
    return rgn;
 }
 
+#if USE_EXPOSE			/* FIXME - Need this? */
 static              XserverRegion
 ERegionCreateFromRects(XRectangle * rectangles, int nrectangles)
 {
    return XFixesCreateRegion(disp, rectangles, nrectangles);
 }
+#endif
 
 static              XserverRegion
 ERegionCreateFromWindow(Window win)
@@ -493,7 +495,7 @@ ECompMgrDeskConfigure(Desk * dsk)
    if (!Mode_compmgr.active)
       return 0;
 
-   eo = (dsk->num) ? EoObj(dsk) : dsk->bg.o;
+   eo = dsk->bg.o;
    if (!eo)
       return 1;
    cw = eo->cmhook;
@@ -1771,6 +1773,14 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		  ((ECmWinInfo *) (eo1->cmhook))->prev = eo_prev;
 		  eo_prev = eo2;
 	       }
+
+#if 1				/* TBD - Only if using per desk bg overlay */
+	     /* FIXME - We should break when the clip region becomes empty */
+	     if (eo->x == 0 && eo->y == 0)
+		stop = 1;
+	     if (stop)
+		break;
+#endif
 	  }
 
 	ECompMgrWinSetPicts(eo);
@@ -1811,11 +1821,13 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     break;
 	  }
 
-	/*  FIXME - We should break when the clip region becomes empty */
+#if 0				/* TBD - Not if using per desk bg overlay */
+	/* FIXME - We should break when the clip region becomes empty */
 	if (eo->type == EOBJ_TYPE_DESK && eo->x == 0 && eo->y == 0)
 	   stop = 1;
 	if (stop)
 	   break;
+#endif
      }
    if (eo_prev)
       ((ECmWinInfo *) (eo_prev->cmhook))->next = NULL;
@@ -2031,7 +2043,7 @@ ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
    return;
 }
 
-#if 1				/* FIXME - Need this? */
+#if USE_EXPOSE			/* FIXME - Need this? */
 static void
 ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 {
@@ -2418,12 +2430,12 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	   ECompMgrWinCirculate(eo, ev);
 	break;
 
+#if USE_EXPOSE			/* FIXME - Need this? */
      case Expose:
-#if 1				/* FIXME - Need this? */
 	if (Conf_compmgr.shadows.mode != ECM_SHADOWS_OFF)
 	   ECompMgrRootExpose(prm, ev);
-#endif
 	break;
+#endif
      }
 }
 

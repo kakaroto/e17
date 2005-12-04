@@ -427,6 +427,7 @@ static Desk        *
 DeskCreate(int desk, int configure)
 {
    Desk               *dsk;
+   EObj               *eo;
    Window              win;
    char                buf[64];
 
@@ -448,10 +449,9 @@ DeskCreate(int desk, int configure)
    EoSetShadow(dsk, 0);
    if (desk == 0)
      {
-	EObj               *eo;
-
 	desks.current = dsk;
-
+#if 0				/* TBD - Use per virtual root bg window? */
+	/* Add background window */
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC_NR, 0, 0, VRoot.w, VRoot.h,
 			      0, "Root-bg");
 	eo->floating = 0;
@@ -460,6 +460,7 @@ DeskCreate(int desk, int configure)
 	EobjMap(eo, 0);
 	dsk->bg.o = eo;
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+#endif
      }
    else
      {
@@ -473,6 +474,17 @@ DeskCreate(int desk, int configure)
 	/* Set the _XROOT... atoms so apps will find them even before the bg is set */
 	HintsSetRootInfo(EoGetWin(dsk), None, 0);
      }
+
+   /* Add background window */
+   Esnprintf(buf, sizeof(buf), "Desk-bg-%d", desk);
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, buf);
+   eo->floating = 0;
+   eo->fade = eo->shadow = 0;
+   EobjReparent(eo, EoObj(dsk), 0, 0);
+   EobjSetLayer(eo, 0);
+   EobjMap(eo, 1);
+   dsk->bg.o = eo;
+   EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 
    HintsSetRootHints(EoGetWin(dsk));
 
@@ -696,13 +708,14 @@ DeskResize(int desk, int w, int h)
    if (dsk->num == 0)
      {
 	EoSync(dsk);
-	EobjMoveResize(dsk->bg.o, 0, 0, w, h);
      }
    else
      {
 	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
 	EoMoveResize(dsk, x, 0, w, h);
      }
+   if (dsk->bg.o && dsk->bg.o != EoObj(dsk))
+      EobjMoveResize(dsk->bg.o, 0, 0, w, h);
    DeskBackgroundUpdate(dsk);
    DeskControlsDestroy(dsk, 1);
    DeskControlsCreate(dsk);
