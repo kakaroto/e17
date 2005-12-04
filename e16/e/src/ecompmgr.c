@@ -477,7 +477,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 }
 
 /*
- * Desktops (move to desktops.c?)
+ * Desk background
  */
 
 int
@@ -488,9 +488,7 @@ ECompMgrDeskConfigure(Desk * dsk)
    Picture             pict;
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
-   int                 fill = 0;
    Pixmap              pmap;
-   unsigned long       pixel;
 
    if (!Mode_compmgr.active)
       return 0;
@@ -518,8 +516,15 @@ ECompMgrDeskConfigure(Desk * dsk)
 
    if (dsk->bg.pmap == None)
      {
+	GC                  gc;
+
 	pmap = XCreatePixmap(disp, VRoot.win, 1, 1, VRoot.depth);
-	fill = 1;
+	gc = ECreateGC(pmap, 0, NULL);
+	XSetClipMask(disp, gc, 0);
+	XSetFillStyle(disp, gc, FillSolid);
+	XSetForeground(disp, gc, dsk->bg.pixel);
+	XFillRectangle(disp, pmap, gc, 0, 0, 1, 1);
+	EFreeGC(gc);
      }
    else
      {
@@ -532,18 +537,8 @@ ECompMgrDeskConfigure(Desk * dsk)
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
    pict = XRenderCreatePicture(disp, pmap, pictfmt, CPRepeat, &pa);
 
-   if (fill)
-     {
-	XRenderColor        c;
-
-	/* FIXME - use desk bg color */
-	pixel = 0;
-
-	c.red = c.green = c.blue = 0x8080;
-	c.alpha = 0xffff;
-	XRenderFillRectangle(disp, PictOpSrc, pict, &c, 0, 0, 1, 1);
-	XFreePixmap(disp, pmap);
-     }
+   if (pmap != dsk->bg.pmap)
+      XFreePixmap(disp, pmap);
 
    /* New background, all must be repainted */
    ECompMgrDamageAll();
