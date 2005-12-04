@@ -40,6 +40,8 @@ struct _Etk_Slider
    /* private: */
    /* Inherit from Etk_Range */
    Etk_Range range;
+   
+   Etk_Bool dragging;
 };
 
 /**

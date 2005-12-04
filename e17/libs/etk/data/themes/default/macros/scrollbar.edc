@@ -26,6 +26,9 @@ part { \
          normal: image_up; \
          border: 5 5 5 5; \
       } \
+      fill { \
+         smooth: 0; \
+      } \
    } \
    description { \
       state: "down" 0.0; \
@@ -52,6 +55,9 @@ part { \
       } \
       image { \
          normal: image_thumb; \
+      } \
+      fill { \
+         smooth: 0; \
       } \
    } \
 }
@@ -87,6 +93,9 @@ part { \
       } \
       image { \
          normal: image_up; \
+      } \
+      fill { \
+         smooth: 0; \
       } \
    } \
    description { \

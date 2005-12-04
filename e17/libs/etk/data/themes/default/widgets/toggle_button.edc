@@ -21,6 +21,9 @@ group {
                normal: "button_up.png";
                border: 8 8 8 8;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "down" 0.0;
@@ -332,13 +335,13 @@ group {
       {
          activated = 1;
          set_state(PART:"toggle_button", "on", 0.0);
-         //set_state(PART:"swallow_area", "down", 0.0);
+         set_state(PART:"swallow_area", "down", 0.0);
       }
       public desactivate()
       {
          activated = 0;
          set_state(PART:"toggle_button", "default", 0.0);
-         //set_state(PART:"swallow_area", "default", 0.0);
+         set_state(PART:"swallow_area", "default", 0.0);
       }
       public up()
       {

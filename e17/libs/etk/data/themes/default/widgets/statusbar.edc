@@ -18,6 +18,9 @@ group {
             image {
                normal: "status_bar.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -35,6 +38,9 @@ group {
             }
             image {
                normal: "status_resize.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {

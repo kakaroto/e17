@@ -128,6 +128,7 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
    scrollbar->scrolling_timer = NULL;
    scrollbar->first_scroll = FALSE;
 
+   scrollbar->dragging = FALSE;
    ETK_RANGE(scrollbar)->value_changed = _etk_scrollbar_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realize_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel), NULL);
@@ -151,7 +152,7 @@ static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data)
       return;
 
    _etk_scrollbar_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
-   edje_object_signal_callback_add(theme_object, "drag", "drag", _etk_scrollbar_drag_dragged_cb, object);
+   edje_object_signal_callback_add(theme_object, "drag*", "drag", _etk_scrollbar_drag_dragged_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_*_start", "", _etk_scrollbar_scroll_start_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_stop", "", _etk_scrollbar_scroll_stop_cb, object);
 }
@@ -165,6 +166,11 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
    if (!(range = ETK_RANGE(data)))
       return;
 
+   if (strcmp(emission, "drag,start") == 0)
+      ETK_SCROLLBAR(range)->dragging = TRUE;
+   else if (strcmp(emission, "drag,stop") == 0)
+      ETK_SCROLLBAR(range)->dragging = FALSE;
+   
    if (ETK_IS_HSCROLLBAR(range))
       edje_object_part_drag_value_get(obj, "drag", &percent, NULL);
    else
@@ -197,10 +203,13 @@ static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
    else
       percent = 0.0;
 
-   if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
-   else
-      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+   if (!ETK_SCROLLBAR(range)->dragging)
+   {
+      if (ETK_IS_HSCROLLBAR(range))
+         edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+      else
+         edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+   }
 }
 
 /* Called when the page size of the scrollbar is changed */

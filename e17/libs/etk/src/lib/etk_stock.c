@@ -16,6 +16,7 @@ typedef struct _Etk_Stock_Item
 
 static const Etk_Stock_Item _etk_stock_items[] =
 {
+   { NULL, NULL },
    { "actions/process-stop", "Stop" },
    { "actions/document-open", "Open" },
    { "actions/document-save", "Save" },
@@ -24,6 +25,8 @@ static const Etk_Stock_Item _etk_stock_items[] =
    { "actions/edit-copy", "Copy" },
    { "actions/edit-paste", "Paste" },
    { "actions/dialog-cancel", "Cancel" },
+   { "actions/go-up", "Go Up" },
+   { "actions/go-down", "Go Down" },
 };
 
 /**************************

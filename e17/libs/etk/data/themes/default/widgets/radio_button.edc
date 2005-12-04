@@ -42,6 +42,9 @@ group {
             image {
                normal: "radio_off.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "on" 0.0;

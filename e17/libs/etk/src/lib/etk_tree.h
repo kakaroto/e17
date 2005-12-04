@@ -27,19 +27,6 @@
 #define ETK_IS_TREE_COL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_COL_TYPE))
 
 /**
- * @enum Etk_Tree_Col_Type
- * @brief The type of the objects of a column of a tree
- */
-enum _Etk_Tree_Col_Type
-{
-   ETK_TREE_COL_TEXT,
-   ETK_TREE_COL_IMAGE,
-   ETK_TREE_COL_ICON_TEXT,
-   ETK_TREE_COL_INT,
-   ETK_TREE_COL_DOUBLE
-};
-
-/**
  * @enum Etk_Tree_Mode
  * @brief The mode of the tree: List (rows can not have children) or tree (rows can have children)
  */
@@ -59,7 +46,6 @@ struct _Etk_Tree_Node
    Etk_Tree_Node *parent;
    Evas_List *child_rows;
    int num_visible_children;
-   int num_parent_children;
    Etk_Bool expanded;
    Etk_Bool selected;
 };
@@ -87,7 +73,7 @@ struct _Etk_Tree
    Etk_Tree_Node *last_selected;
 
    Evas_Object *clip;
-   Evas_List *items_objects;
+   Evas_List *rows_widgets;
 
    Etk_Tree_Mode mode;
    Etk_Bool multiple_select;
@@ -97,7 +83,8 @@ struct _Etk_Tree
    int yoffset;
 
    int item_height;
-   int image_height;
+   /* Left, right, top, bottom margins */
+   int cell_margins[4];
    int expander_size;
    Etk_Color separator_color;
 };
@@ -114,7 +101,7 @@ struct _Etk_Tree_Col
 
    int id;
    Etk_Tree *tree;
-   Etk_Tree_Col_Type type;
+   Etk_Tree_Model *model;
 
    int xoffset;
    int requested_width;
@@ -141,25 +128,8 @@ struct _Etk_Tree_Row
    Etk_Tree *tree;
    Etk_Tree_Node node;
 
-   Etk_Tree_Cell *cells;
+   void **cells_data;
    void *data;
-};
-
-/**
- * @union Etk_Tree_Cell
- * @brief The value of a cell of the tree
- */
-union _Etk_Tree_Cell
-{
-   char *text_value;
-   char *image_filename_value;
-   struct
-   {
-      char *icon_filename;
-      char *text;
-   } icon_text_value;
-   int int_value;
-   double double_value;
 };
 
 Etk_Type *etk_tree_type_get();
@@ -169,7 +139,7 @@ void etk_tree_mode_set(Etk_Tree *tree, Etk_Tree_Mode mode);
 Etk_Tree_Mode etk_tree_mode_get(Etk_Tree *tree);
 
 Etk_Type *etk_tree_col_type_get();
-Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Col_Type type, int width);
+Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model *model, int width);
 
 int etk_tree_num_cols_get(Etk_Tree *tree);
 Etk_Tree_Col *etk_tree_nth_col_get(Etk_Tree *tree, int nth);

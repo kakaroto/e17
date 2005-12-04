@@ -20,7 +20,8 @@ enum _Etk_Image_Property_Id
    ETK_IMAGE_EDJE_FILE_PROPERTY,
    ETK_IMAGE_EDJE_GROUP_PROPERTY,
    ETK_IMAGE_KEEP_ASPECT_PROPERTY,
-   ETK_IMAGE_USE_EDJE_PROPERTY
+   ETK_IMAGE_USE_EDJE_PROPERTY,
+   ETK_IMAGE_STOCK_ID_PROPERTY
 };
 
 static void _etk_image_constructor(Etk_Image *image);
@@ -55,6 +56,7 @@ Etk_Type *etk_image_type_get()
       etk_type_property_add(image_type, "edje_group", ETK_IMAGE_EDJE_GROUP_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(TRUE));
       etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(FALSE));
+      etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
 
       image_type->property_set = _etk_image_property_set;
       image_type->property_get = _etk_image_property_get;
@@ -98,20 +100,9 @@ Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_
  * @param stock_id the stock id corresponding to the image
  * @return Returns the new image widget
  */
-/* TODO: image_stock_set */
 Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id)
 {
-   char *key;
-
-   if ((key = etk_stock_key_get(stock_id)))
-   {
-      Etk_Widget *image;
-      
-      image = etk_image_new_from_edje(PACKAGE_DATA_DIR "/stock_icons/default.edj", key);
-      return image;
-   }
-   
-   return NULL;
+   return etk_widget_new(ETK_IMAGE_TYPE, "stock_id", stock_id, NULL);
 }
 
 /**
@@ -122,17 +113,12 @@ Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id)
 void etk_image_set_from_file(Etk_Image *image, const char *filename)
 {
    Etk_Widget *widget;
-   char *old_filename;
 
-   if (!(widget = ETK_WIDGET(image)))
+   if (!(widget = ETK_WIDGET(image)) || (image->filename == filename))
       return;
 
-   old_filename = image->filename;
-   if (filename)
-      image->filename = strdup(filename);
-   else
-      image->filename = NULL;
-   free(old_filename);
+   free(image->filename);
+   image->filename = filename ? strdup(filename) : NULL;
    etk_object_notify(ETK_OBJECT(image), "image_file");
 
    if (image->edje_group)
@@ -147,12 +133,16 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
       image->edje_filename = NULL;
       etk_object_notify(ETK_OBJECT(image), "edje_file");
    }
-
    if (image->use_edje)
    {
       image->use_edje = FALSE;
       image->object_type_changed = TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
+   }
+   if (image->stock_id != ETK_STOCK_NO_STOCK)
+   {
+      image->stock_id = ETK_STOCK_NO_STOCK;
+      etk_object_notify(ETK_OBJECT(image), "stock_id");
    }
 
    _etk_image_load(image);
@@ -179,26 +169,22 @@ const char *etk_image_file_get(Etk_Image *image)
 void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const char *edje_group)
 {
    Etk_Widget *widget;
-   char *previous_filename, *previous_group;
 
    if (!(widget = ETK_WIDGET(image)))
       return;
 
-   previous_filename = image->edje_filename;
-   if (edje_filename)
-      image->edje_filename = strdup(edje_filename);
-   else
-      image->edje_filename = NULL;
-   free(previous_filename);
-   etk_object_notify(ETK_OBJECT(image), "edje_file");
-
-   previous_group = image->edje_group;
-   if (edje_group)
-      image->edje_group = strdup(edje_group);
-   else
-      image->edje_group = NULL;
-   free(previous_group);
-   etk_object_notify(ETK_OBJECT(image), "edje_group");
+   if (image->edje_filename != edje_filename)
+   {
+      free(image->edje_filename);
+      image->edje_filename = edje_filename ? strdup(edje_filename) : NULL;
+      etk_object_notify(ETK_OBJECT(image), "edje_file");
+   }
+   if (image->edje_group != edje_group)
+   {
+      free(image->edje_group);
+      image->edje_group = edje_group ? strdup(edje_group) : NULL;
+      etk_object_notify(ETK_OBJECT(image), "edje_group");
+   }
 
    if (image->filename)
    {
@@ -206,12 +192,16 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
       image->filename = NULL;
       etk_object_notify(ETK_OBJECT(image), "image_file");
    }
-
    if (!image->use_edje)
    {
       image->use_edje = TRUE;
       image->object_type_changed = TRUE;
       etk_object_notify(ETK_OBJECT(image), "use_edje");
+   }
+   if (image->stock_id != ETK_STOCK_NO_STOCK)
+   {
+      image->stock_id = ETK_STOCK_NO_STOCK;
+      etk_object_notify(ETK_OBJECT(image), "stock_id");
    }
 
    _etk_image_load(image);
@@ -223,7 +213,7 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
  * @param edje_filename the location to store the filename of the edje object
  * @param edje_group the location to store the filename of the edje group
  */
-void etk_image_edje_file_get(Etk_Image *image, char **edje_filename, char **edje_group)
+void etk_image_edje_get(Etk_Image *image, char **edje_filename, char **edje_group)
 {
    if (!image || !image->use_edje)
    {
@@ -238,6 +228,63 @@ void etk_image_edje_file_get(Etk_Image *image, char **edje_filename, char **edje
       *edje_filename = image->edje_filename;
    if (edje_group)
       *edje_group = image->edje_group;
+}
+
+/**
+ * @brief Loads the image corresponding to the stock id
+ * @param image an image
+ * @param stock_id the stock id corresponding to the image
+ */
+void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id)
+{
+   char *key;
+
+   if (!image || (image->stock_id == stock_id))
+      return;
+   
+   if ((key = etk_stock_key_get(stock_id)))
+      etk_image_set_from_edje(image, PACKAGE_DATA_DIR "/stock_icons/default.edj", key);
+   image->stock_id = stock_id;
+   etk_object_notify(ETK_OBJECT(image), "stock_id");
+}
+
+/**
+ * @brief Gets the stock id used for the image
+ * @param image an image
+ * @return Returns the stock id used for the image, or ETK_STOCK_NO_STOCK if the image doesn't use a stock id
+ */
+Etk_Stock_Id etk_image_stock_get(Etk_Image *image)
+{
+   if (!image)
+      return ETK_STOCK_NO_STOCK;
+   return image->stock_id;
+}
+
+/**
+ * @brief Gets the native size of the image
+ * @param image an image
+ * @param width the location where to set the native width of the image
+ * @param height the location where to set the native height of the image
+ */
+void etk_image_size_get(Etk_Image *image, int *width, int *height)
+{
+   if (!image)
+      return;
+   
+   if (!image)
+   {
+      if (width)
+         *width = 0;
+      if (height)
+         *height = 0;
+   }
+   else
+   {
+      if (!image->use_edje)
+         evas_object_image_size_get(image->image_object, width, height);
+      else
+         edje_object_size_min_get(image->image_object, width, height);
+   }
 }
 
 /**
@@ -286,6 +333,7 @@ static void _etk_image_constructor(Etk_Image *image)
    image->filename = NULL;
    image->edje_filename = NULL;
    image->edje_group = NULL;
+   image->stock_id = ETK_STOCK_NO_STOCK;
    image->keep_aspect = TRUE;
    image->use_edje = FALSE;
    image->object_type_changed = FALSE;
@@ -329,6 +377,9 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
       case ETK_IMAGE_KEEP_ASPECT_PROPERTY:
          etk_image_keep_aspect_set(image, etk_property_value_bool_get(value));
          break;
+      case ETK_IMAGE_STOCK_ID_PROPERTY:
+         etk_image_set_from_stock(image, etk_property_value_int_get(value));
+         break;
       default:
          break;
    }
@@ -358,6 +409,9 @@ static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Pro
          break;
       case ETK_IMAGE_USE_EDJE_PROPERTY:
          etk_property_value_bool_set(value, image->use_edje);
+         break;
+      case ETK_IMAGE_STOCK_ID_PROPERTY:
+         etk_property_value_int_set(value, image->stock_id);
          break;
       default:
          break;
@@ -449,7 +503,6 @@ static void _etk_image_realize_cb(Etk_Object *object, void *data)
 
    if (!(image = ETK_IMAGE(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(image))))
       return;
-
    _etk_image_load(image);
 }
 
@@ -486,14 +539,20 @@ static void _etk_image_load(Etk_Image *image)
       }
       if (image->image_object)
       {
-         evas_object_image_file_set(image->image_object, image->filename, NULL);
-         if ((error_code = evas_object_image_load_error_get(image->image_object)))
+         char *image_file;
+         
+         evas_object_image_file_get(image->image_object, &image_file, NULL);
+         if (!image_file || strcmp(image_file, image->filename) != 0)
          {
-            ETK_WARNING("Unable to load image from file \"%s\", error %d", image->filename, error_code);
-            evas_object_hide(image->image_object);
+            evas_object_image_file_set(image->image_object, image->filename, NULL);
+            if ((error_code = evas_object_image_load_error_get(image->image_object)))
+            {
+               ETK_WARNING("Unable to load image from file \"%s\", error %d", image->filename, error_code);
+               evas_object_hide(image->image_object);
+            }
+            else
+               evas_object_show(image->image_object);
          }
-         else
-            evas_object_show(image->image_object);
       }
    }
    else if (image->edje_filename && image->edje_group)
@@ -508,14 +567,20 @@ static void _etk_image_load(Etk_Image *image)
       }
       if (image->image_object)
       {
-         edje_object_file_set(image->image_object, image->edje_filename, image->edje_group);
-         if ((error_code = edje_object_load_error_get(image->image_object)))
+         const char *edje_file, *edje_group;
+         
+         edje_object_file_get(image->image_object, &edje_file, &edje_group);
+         if (!edje_file || !edje_file || strcmp(edje_file, image->edje_filename) != 0 || strcmp(edje_group, image->edje_group) != 0)
          {
-            ETK_WARNING("Unable to load image from edje file \"%s\"/\"%s\", error %d", image->edje_filename, image->edje_group, error_code);
-            evas_object_hide(image->image_object);
+            edje_object_file_set(image->image_object, image->edje_filename, image->edje_group);
+            if ((error_code = edje_object_load_error_get(image->image_object)))
+            {
+               ETK_WARNING("Unable to load image from edje file \"%s\"/\"%s\", error %d", image->edje_filename, image->edje_group, error_code);
+               evas_object_hide(image->image_object);
+            }
+            else
+               evas_object_show(image->image_object);
          }
-         else
-            evas_object_show(image->image_object);
       }
    }
 

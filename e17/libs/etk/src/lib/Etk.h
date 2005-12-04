@@ -43,6 +43,7 @@
 #include "etk_colorpicker_vertical.h"
 #include "etk_colorpicker_square.h"
 #include "etk_tree.h"
+#include "etk_tree_model.h"
 #include "etk_range.h"
 #include "etk_slider.h"
 #include "etk_scrollbar.h"

@@ -4,6 +4,7 @@ images { \
 } \
 group { \
    name: icon_name; \
+   min: 16 16;\
    parts { \
       part { \
          name: "icon"; \
@@ -19,6 +20,9 @@ group { \
             } \
             image { \
                normal: icon_name".png"; \
+            } \
+            fill { \
+               smooth: 0; \
             } \
          } \
       } \

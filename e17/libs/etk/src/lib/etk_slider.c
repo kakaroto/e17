@@ -105,6 +105,7 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    if (!slider)
       return;
 
+   slider->dragging = FALSE;
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
@@ -126,7 +127,7 @@ static void _etk_slider_realize_cb(Etk_Object *object, void *data)
       return;
 
    _etk_slider_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
-   edje_object_signal_callback_add(theme_object, "drag", "drag", _etk_slider_cursor_dragged_cb, object);
+   edje_object_signal_callback_add(theme_object, "drag*", "drag", _etk_slider_cursor_dragged_cb, object);
 }
 
 /* Called when the user presses a key */
@@ -180,6 +181,11 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
    if (!(range = ETK_RANGE(data)))
       return;
 
+   if (strcmp(emission, "drag,start") == 0)
+      ETK_SLIDER(range)->dragging = TRUE;
+   else if (strcmp(emission, "drag,stop") == 0)
+      ETK_SLIDER(range)->dragging = FALSE;
+   
    if (ETK_IS_HSLIDER(range))
       edje_object_part_drag_value_get(obj, "drag", &v, NULL);
    else
@@ -200,10 +206,14 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
       value = ETK_CLAMP(value / (range->upper - range->lower), 0.0, 1.0);
    else
       value = 0.0;
-   if (ETK_IS_HSLIDER(slider))
-      edje_object_part_drag_value_set(theme_object, "drag", value, 0.0);
-   else
-      edje_object_part_drag_value_set(theme_object, "drag", 0.0, value);
+   
+   if (!slider->dragging)
+   {
+      if (ETK_IS_HSLIDER(slider))
+         edje_object_part_drag_value_set(theme_object, "drag", value, 0.0);
+      else
+         edje_object_part_drag_value_set(theme_object, "drag", 0.0, value);
+   }
 }
 
 /** @} */

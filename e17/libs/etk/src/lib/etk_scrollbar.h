@@ -44,6 +44,7 @@ struct _Etk_Scrollbar
 
    Ecore_Timer *scrolling_timer;
    Etk_Bool first_scroll;
+   Etk_Bool dragging;
 };
 
 /**

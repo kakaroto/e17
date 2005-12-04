@@ -40,6 +40,9 @@ group {
             image {
                normal: "hpaned_handle.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       PANED_ARROW("left_arrow1", -27, 6, 20, 28, "handle", "left")
@@ -112,6 +115,9 @@ group {
             }
             image {
                normal: "vpaned_handle.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
       }

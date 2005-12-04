@@ -4,7 +4,7 @@ group {
       item: "inset" "8 8 8 8";
       item: "separator_color" "204 204 204 140";
       item: "item_height" "24";
-      item: "image_height" "20";
+      item: "cell_margins" "4 4 2 2";
       item: "expander_size" "18";
    }
    parts {
@@ -23,6 +23,9 @@ group {
             image {
                normal: "tree_bg.png";
                border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
             }
          }
       }
@@ -59,6 +62,9 @@ group {
             image {
                normal: "e_watermark.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -77,60 +83,82 @@ group {
                normal: "tree_over.png";
                border: 12 12 12 12;
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
-      part {
-	 name: "focus";
-	 mouse_events: 0;
-         clip_to: "tree_clip";
-	 description {
-	    state: "default" 0.0;
-	    visible: 0;
-	    color: 255 255 255 0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: -1 -1;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: 0 0;
-            }
-	    image {
-	       normal: "focus_glow.png";
-	       border: 7 7 7 7;
-	       middle: 0;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
-	 description {
-	    state: "focused" 0.0;
-	    inherit: "default" 0.0;
-	    visible: 1;
-	    color: 255 255 255 255;
-	 }
-      }
+      FOCUS_GLOW(0.0, 0.0, -1, -1, "tree", 1.0, 1.0, 0, 0, "tree")
    }
    programs {
       program {
          name: "tree_focus";
          signal: "focus";
          source: "";
-         action: STATE_SET "focused" 0.0;
-	 transition: DECELERATE 0.2;
-	 target: "focus";
+         FOCUS_GLOW_ACTION
       }
       program {
          name: "tree_unfocus";
          signal: "unfocus";
          source: "";
-         action: STATE_SET "default" 0.0;
-	 transition: ACCELERATE 0.5;
-	 target: "focus";
+         UNFOCUS_GLOW_ACTION
       }
    }
 }
+/*group {
+   name: "tree_row";
+   parts {
+      part {
+         name: "row";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+         description {
+            state: "even" 0.0;
+            inherit: "default" 0.0;
+            color: 190 190 190 40;
+         }
+         description {
+            state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 219 181 104 60;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "even";
+         signal: "even";
+         source: "";
+         action: STATE_SET "even" 0.0;
+         target: "row";
+      }
+      program {
+         name: "odd";
+         signal: "odd";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "row";
+      }
+      program {
+         name: "selected";
+         signal: "selected";
+         source: "";
+         action: STATE_SET "selected" 0.0;
+         target: "row";
+      }
+   }
+}*/
 group {
    name: "tree_row";
    parts {
@@ -150,6 +178,9 @@ group {
             image {
                normal: "tree_row_odd.png";
                border: 3 3 3 3;
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {
@@ -233,12 +264,18 @@ group {
             image {
                normal: "tree_expander_fold.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "expand" 0.0;
             inherit: "default" 0.0;
             image {
                normal: "tree_expander_unfold.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
       }
@@ -282,12 +319,18 @@ group {
                normal: "tree_header_inactive.png";
                border: 2 2 0 3;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "over" 0.0;
             inherit: "default" 0.0;
             image {
                normal: "tree_header_active.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
       }

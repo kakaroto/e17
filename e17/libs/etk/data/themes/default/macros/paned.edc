@@ -19,6 +19,9 @@ part { \
       image { \
          normal: "glow_arrow_"dir".png"; \
       } \
+      fill { \
+         smooth: 0; \
+      } \
    } \
    description { \
       state: "visible" 0.0; \

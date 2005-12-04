@@ -60,6 +60,9 @@ group {
                border: 1 1 1 1;
                middle: 0;
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
    }
@@ -159,6 +162,9 @@ group {
                border: 8 8 8 8;
                middle: 0;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "active" 0.0;
@@ -187,6 +193,9 @@ group {
             image {
                normal: "menu_item_shadow2.png";
                border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {
@@ -217,6 +226,9 @@ group {
                normal: "menu_item_shadow1.png";
                border: 8 8 8 8;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "active" 0.0;
@@ -245,6 +257,9 @@ group {
             image {
                normal: "menu_item_highlight.png";
                border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {
@@ -606,6 +621,9 @@ group {
             image {
                normal: "menu_bar.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
    }
@@ -694,6 +712,9 @@ group {
                normal: "menu_item_shadow2.png";
                border: 8 8 8 8;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "active" 0.0;
@@ -722,6 +743,9 @@ group {
                normal: "menu_item_shadow1.png";
                border: 8 8 8 8;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "active" 0.0;
@@ -749,6 +773,9 @@ group {
             image {
                normal: "menu_item_highlight.png";
                border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {

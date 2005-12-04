@@ -32,7 +32,7 @@ etk_button.h etk_toggle_button.h etk_check_button.h etk_radio_button.h \
 etk_entry.h \
 etk_canvas.h \
 etk_colorpicker.h etk_colorpicker_vertical.h etk_colorpicker_square.h \
-etk_tree.h \
+etk_tree.h etk_tree_model.h \
 etk_range.h etk_slider.h etk_scrollbar.h \
 etk_separator.h \
 etk_menu_shell.h etk_menu.h etk_menu_bar.h etk_menu_item.h \
@@ -56,7 +56,7 @@ etk_button.c etk_toggle_button.c etk_check_button.c etk_radio_button.c \
 etk_entry.c \
 etk_canvas.c \
 etk_colorpicker.c etk_colorpicker_vertical.c etk_colorpicker_square.c \
-etk_tree.c \
+etk_tree.c etk_tree_model.c \
 etk_range.c etk_slider.c etk_scrollbar.c \
 etk_separator.c \
 etk_menu_shell.c etk_menu.c etk_menu_bar.c etk_menu_item.c \

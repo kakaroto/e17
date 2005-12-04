@@ -29,7 +29,6 @@ static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data);
-static void _etk_scrolled_view_child_scroll_size_cb(void *data);
 
 /**************************
  *
@@ -449,19 +448,6 @@ static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *dat
 {
    if (!object || !child)
       return;
-   
-   /* TODO: disconnect
-   etk_signal_connect_swapped("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_cb), object); */
-}
-
-/* Called when the scroll size of the child of the scrolled view has changed */
-static void _etk_scrolled_view_child_scroll_size_cb(void *data)
-{
-   Etk_Widget *scrolled_widget;
-   
-   if (!(scrolled_widget = ETK_WIDGET(data)))
-      return;
-   etk_widget_redraw_queue(scrolled_widget);
 }
 
 /** @} */

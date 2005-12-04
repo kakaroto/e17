@@ -2,6 +2,9 @@
 #include <string.h>
 #include "config.h"
 
+/* TODO: Etk_Theme */
+#define ETK_DEFAULT_ICON_SET_FILE PACKAGE_DATA_DIR "/stock_icons/default.edj"
+
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -47,25 +50,22 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 90);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 90);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 90);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
+   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 90);
+   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    etk_tree_build(ETK_TREE(tree));
 
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
-      row = etk_tree_append(ETK_TREE(tree), col1, PACKAGE_DATA_DIR "/images/open.png", _("Row1"),
-         col2, 1, col3, PACKAGE_DATA_DIR "/images/1star.png", NULL);
-      row = etk_tree_append_to_row(row, col1, PACKAGE_DATA_DIR "/images/open.png", _("Row2"),
-         col2, 2, col3, PACKAGE_DATA_DIR "/images/2stars.png", NULL);
-      etk_tree_append_to_row(row, col1, PACKAGE_DATA_DIR "/images/open.png", _("Row3"),
-         col2, 3, col3, PACKAGE_DATA_DIR "/images/3stars.png", NULL);
+      row = etk_tree_append(ETK_TREE(tree), col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal-home", _("Row1"),
+         col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", NULL);
+      row = etk_tree_append_to_row(row, col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", _("Row2"),
+         col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", NULL);
+      etk_tree_append_to_row(row, col1, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/text-x-generic", _("Row3"),
+         col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
-
-   etk_signal_connect("row_selected", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_row_selected), NULL);
-   etk_signal_connect("row_unselected", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_row_unselected), NULL);
 
    /* The list: */
    label = etk_label_new(_("<h1>List:</h1>"));
@@ -76,9 +76,9 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
    etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), ETK_TREE_COL_ICON_TEXT, 90);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), ETK_TREE_COL_INT, 90);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), ETK_TREE_COL_IMAGE, 90);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
+   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_int_new(ETK_TREE(tree)), 90);
+   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    etk_tree_build(ETK_TREE(tree));
 
    _etk_test_tree_add_items(ETK_TREE(tree), 5000);
@@ -139,7 +139,6 @@ static void _etk_test_tree_add_items(Etk_Tree *tree, int n)
          strncpy(star_path, PACKAGE_DATA_DIR "/images/2stars.png", 256);
       else
          strncpy(star_path, PACKAGE_DATA_DIR "/images/3stars.png", 256);
-
       etk_tree_append(ETK_TREE(tree), col1, PACKAGE_DATA_DIR "/images/1star.png", row_name, col2, i, col3, star_path, NULL);
    }
    etk_tree_thaw(tree);

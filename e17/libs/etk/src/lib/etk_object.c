@@ -98,6 +98,8 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
    _etk_object_created_objects = evas_list_append(_etk_object_created_objects, new_object);
    
    etk_type_object_construct(object_type, new_object);
+   /* TODO: va_copy ?? */
+   /* va_copy(args2, args); */
    etk_object_properties_set_valist(new_object, first_property, args);
 
    return new_object;

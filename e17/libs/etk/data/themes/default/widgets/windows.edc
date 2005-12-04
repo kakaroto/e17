@@ -38,6 +38,9 @@ group {
             image {
                normal: "e_watermark.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -57,6 +60,9 @@ group {
                normal: "border.png";
                border: 1 1 1 1;
                middle: 0;
+            }
+            fill {
+               smooth: 0;
             }
          }
       }
@@ -103,6 +109,9 @@ group {
             image {
                normal: "e_watermark.png";
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -122,6 +131,9 @@ group {
                normal: "border.png";
                border: 1 1 1 1;
                middle: 0;
+            }
+            fill {
+               smooth: 0;
             }
          }
       }

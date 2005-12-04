@@ -48,11 +48,11 @@ static Etk_Test_Set tests[] =
    {
       "Menu",
       etk_test_menu_window_create
-   }/*,
+   },
    {
       "File Chooser",
       etk_test_filechooser_window_create
-   }*/
+   }
 };
 static int num_tests = sizeof(tests) / sizeof (tests[0]);
 

@@ -9,11 +9,16 @@
 #include "etk_utils.h"
 #include "etk_button.h"
 #include "etk_tree.h"
+#include "etk_tree_model.h"
 #include "etk_paned.h"
 #include "etk_box.h"
 #include "etk_hbox.h"
 #include "etk_vbox.h"
 #include "etk_entry.h"
+#include "config.h"
+
+/* TODO: Etk_Theme */
+#define ETK_DEFAULT_ICON_SET_FILE PACKAGE_DATA_DIR "/stock_icons/default.edj"
 
 /**
  * @addtogroup Etk_Filechooser_Widget
@@ -44,23 +49,23 @@ static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_
 
 static Etk_Filechooser_Widget_Icons _etk_file_chooser_icons[] =
 {
-   { "jpg", "/home/simon/etk_viewer/data/image.png" },
-   { "jpeg", "/home/simon/etk_viewer/data/image.png" },
-   { "png", "/home/simon/etk_viewer/data/image.png" },
-   { "bmp", "/home/simon/etk_viewer/data/image.png" },
-   { "gif", "/home/simon/etk_viewer/data/image.png" },
-   { "mp3", "/home/simon/etk_viewer/data/audio.png" },
-   { "ogg", "/home/simon/etk_viewer/data/audio.png" },
-   { "wav", "/home/simon/etk_viewer/data/audio.png" },
-   { "avi", "/home/simon/etk_viewer/data/video.png" },
-   { "mpg", "/home/simon/etk_viewer/data/video.png" },
-   { "mpeg", "/home/simon/etk_viewer/data/video.png" },
-   { "gz", "/home/simon/etk_viewer/data/package.png" },
-   { "tgz", "/home/simon/etk_viewer/data/package.png" },
-   { "bz2", "/home/simon/etk_viewer/data/package.png" },
-   { "tbz2", "/home/simon/etk_viewer/data/package.png" },
-   { "zip", "/home/simon/etk_viewer/data/package.png" },
-   { "rar", "/home/simon/etk_viewer/data/package.png" },
+   { "jpg", "mimetypes/audio-x-generic" },
+   { "jpeg", "mimetypes/image-x-generic" },
+   { "png", "mimetypes/image-x-generic" },
+   { "bmp", "mimetypes/image-x-generic" },
+   { "gif", "mimetypes/image-x-generic" },
+   { "mp3", "mimetypes/audio-x-generic" },
+   { "ogg", "mimetypes/audio-x-generic" },
+   { "wav", "mimetypes/audio-x-generic" },
+   { "avi", "mimetypes/video-x-generic" },
+   { "mpg", "mimetypes/video-x-generic" },
+   { "mpeg", "mimetypes/video-x-generic" },
+   { "gz", "mimetypes/package-x-generic" },
+   { "tgz", "mimetypes/package-x-generic" },
+   { "bz2", "mimetypes/package-x-generic" },
+   { "tbz2", "mimetypes/package-x-generic" },
+   { "zip", "mimetypes/package-x-generic" },
+   { "rar", "mimetypes/package-x-generic" },
 };
 static int _etk_file_chooser_num_icons = sizeof(_etk_file_chooser_icons) / sizeof (_etk_file_chooser_icons[0]);
 static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS];
@@ -125,7 +130,8 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
    etk_tree_clear(ETK_TREE(filechooser_widget->dir_tree));
    etk_tree_clear(ETK_TREE(filechooser_widget->files_tree));
    /* TODO: fix */
-   etk_tree_append(ETK_TREE(filechooser_widget->dir_tree), filechooser_widget->dir_col, "/home/simon/etk_viewer/data/up.png", "..", NULL);
+   etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
+      filechooser_widget->dir_col, ETK_DEFAULT_ICON_SET_FILE, "actions/go-up", "..", NULL);
    
    ecore_list_goto_first(files);
    while ((file_name = ecore_list_next(files)))
@@ -144,9 +150,10 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       mod_time2 = gmtime(&mod_time);
       strftime(mod_time_string, 128, "%x", mod_time2);
       
-      etk_tree_append(ETK_TREE(filechooser_widget->dir_tree), filechooser_widget->dir_col, "/home/simon/etk_viewer/data/dir.png", file_name, NULL);
+      etk_tree_append(ETK_TREE(filechooser_widget->dir_tree),
+         filechooser_widget->dir_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", file_name, NULL);
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, "/home/simon/etk_viewer/data/dir.png", file_name,
+         filechooser_widget->files_name_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", file_name,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
@@ -183,7 +190,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       strftime(mod_time_string, 128, "%x", mod_time2);
       
       etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
-         filechooser_widget->files_name_col, icon ? icon : "/home/simon/etk_viewer/data/file.png", file_name,
+         filechooser_widget->files_name_col, ETK_DEFAULT_ICON_SET_FILE, icon ? icon : "mimetypes/text-x-generic", file_name,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
@@ -198,16 +205,16 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
  **************************/
 
 /* Initializes the members */
-static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *filechooser_widget)
+static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
 {
    Etk_Widget *hpaned, *vpaned;
    
-   if (!filechooser_widget)
+   if (!fcw)
       return;
    
    hpaned = etk_hpaned_new();
    etk_widget_visibility_locked_set(hpaned, TRUE);
-   etk_container_add(ETK_CONTAINER(filechooser_widget), hpaned);
+   etk_container_add(ETK_CONTAINER(fcw), hpaned);
    etk_widget_show(hpaned);
    
    vpaned = etk_vpaned_new();
@@ -215,42 +222,42 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *filechoo
    etk_paned_add1(ETK_PANED(hpaned), vpaned);
    etk_widget_show(vpaned);
    
-   filechooser_widget->dir_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(filechooser_widget->dir_tree, TRUE);
-   etk_widget_size_request_set(filechooser_widget->dir_tree, 180, 240);
-   etk_paned_add1(ETK_PANED(vpaned), filechooser_widget->dir_tree);
-   filechooser_widget->dir_col = etk_tree_col_new(ETK_TREE(filechooser_widget->dir_tree), "Directories", ETK_TREE_COL_ICON_TEXT, 120);
-   etk_tree_build(ETK_TREE(filechooser_widget->dir_tree));
-   etk_widget_show(filechooser_widget->dir_tree);
-   etk_signal_connect("row_selected", ETK_OBJECT(filechooser_widget->dir_tree), ETK_CALLBACK(_etk_filechooser_widget_dir_row_selected_cb), filechooser_widget);
+   fcw->dir_tree = etk_tree_new();
+   etk_widget_visibility_locked_set(fcw->dir_tree, TRUE);
+   etk_widget_size_request_set(fcw->dir_tree, 180, 240);
+   etk_paned_add1(ETK_PANED(vpaned), fcw->dir_tree);
+   fcw->dir_col = etk_tree_col_new(ETK_TREE(fcw->dir_tree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(fcw->dir_tree), ETK_TREE_FROM_EDJE), 120);
+   etk_tree_build(ETK_TREE(fcw->dir_tree));
+   etk_widget_show(fcw->dir_tree);
+   etk_signal_connect("row_selected", ETK_OBJECT(fcw->dir_tree), ETK_CALLBACK(_etk_filechooser_widget_dir_row_selected_cb), fcw);
    
-   filechooser_widget->fav_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(filechooser_widget->fav_tree, TRUE);
-   etk_widget_size_request_set(filechooser_widget->fav_tree, 180, 120);
-   etk_paned_add2(ETK_PANED(vpaned), filechooser_widget->fav_tree);
-   filechooser_widget->fav_col = etk_tree_col_new(ETK_TREE(filechooser_widget->fav_tree), "Favorites", ETK_TREE_COL_ICON_TEXT, 120);
-   etk_tree_build(ETK_TREE(filechooser_widget->fav_tree));
-   etk_widget_show(filechooser_widget->fav_tree);
+   fcw->fav_tree = etk_tree_new();
+   etk_widget_visibility_locked_set(fcw->fav_tree, TRUE);
+   etk_widget_size_request_set(fcw->fav_tree, 180, 120);
+   etk_paned_add2(ETK_PANED(vpaned), fcw->fav_tree);
+   fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), "Favorites", etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
+   etk_tree_build(ETK_TREE(fcw->fav_tree));
+   etk_widget_show(fcw->fav_tree);
    
-   etk_tree_append(ETK_TREE(filechooser_widget->fav_tree), filechooser_widget->fav_col, "/home/simon/etk_viewer/data/root.png", "Root", NULL);
-   etk_tree_append(ETK_TREE(filechooser_widget->fav_tree), filechooser_widget->fav_col, "/home/simon/etk_viewer/data/home.png", "Home", NULL);
-   etk_tree_append(ETK_TREE(filechooser_widget->fav_tree), filechooser_widget->fav_col, "/home/simon/etk_viewer/data/dir.png", "Musiques", NULL);
-   etk_tree_append(ETK_TREE(filechooser_widget->fav_tree), filechooser_widget->fav_col, "/home/simon/etk_viewer/data/dir.png", "Videos", NULL);
-   etk_tree_append(ETK_TREE(filechooser_widget->fav_tree), filechooser_widget->fav_col, "/home/simon/etk_viewer/data/dir.png", "Images", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "devices/drive-harddisk", "Root", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal-home", "Home", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Musics", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Videos", NULL);
+   etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, ETK_DEFAULT_ICON_SET_FILE, "mimetypes/x-directory-normal", "Images", NULL);
    
-   filechooser_widget->files_tree = etk_tree_new();
-   etk_widget_visibility_locked_set(filechooser_widget->files_tree, TRUE);
-   etk_widget_size_request_set(filechooser_widget->files_tree, 400, 120);
-   etk_paned_add2(ETK_PANED(hpaned), filechooser_widget->files_tree);
-   filechooser_widget->files_name_col = etk_tree_col_new(ETK_TREE(filechooser_widget->files_tree), "Filename", ETK_TREE_COL_ICON_TEXT, 300);
-   filechooser_widget->files_date_col = etk_tree_col_new(ETK_TREE(filechooser_widget->files_tree), "Date", ETK_TREE_COL_TEXT, 60);
-   etk_tree_build(ETK_TREE(filechooser_widget->files_tree));
-   etk_widget_show(filechooser_widget->files_tree);
+   fcw->files_tree = etk_tree_new();
+   etk_widget_visibility_locked_set(fcw->files_tree, TRUE);
+   etk_widget_size_request_set(fcw->files_tree, 400, 120);
+   etk_paned_add2(ETK_PANED(hpaned), fcw->files_tree);
+   fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Filename", etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 300);
+   fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), "Date", etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
+   etk_tree_build(ETK_TREE(fcw->files_tree));
+   etk_widget_show(fcw->files_tree);
    
    
-   filechooser_widget->current_folder = NULL;
+   fcw->current_folder = NULL;
    /* Go to home */
-   etk_filechooser_widget_current_folder_set(ETK_FILECHOOSER_WIDGET(filechooser_widget), NULL);
+   etk_filechooser_widget_current_folder_set(ETK_FILECHOOSER_WIDGET(fcw), NULL);
 }
 
 /* Destroys the status bar */
@@ -312,7 +319,7 @@ static void _etk_filechooser_widget_dir_row_selected_cb(Etk_Object *object, Etk_
    
    if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
       return;
-   etk_tree_row_fields_get(row, filechooser_widget->dir_col, NULL, &selected_dir, NULL);
+   etk_tree_row_fields_get(row, filechooser_widget->dir_col, NULL, NULL, &selected_dir, NULL);
    
    new_dir = malloc(strlen(filechooser_widget->current_folder) + strlen(selected_dir) + 2);
    sprintf(new_dir, "%s/%s", filechooser_widget->current_folder, selected_dir);

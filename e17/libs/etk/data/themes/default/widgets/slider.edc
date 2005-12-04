@@ -18,6 +18,9 @@ group {
                normal: "hslider_bar.png";
                border: 5 5 0 0;
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -53,6 +56,9 @@ group {
                normal: "hhandle.png";
                border: 10 10 0 0;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "down" 0.0;
@@ -79,6 +85,9 @@ group {
             }
             image {
                normal: "hhandle_thumb.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {
@@ -148,6 +157,9 @@ group {
                normal: "vslider_bar.png";
                border: 0 0 5 5;
             }
+            fill {
+               smooth: 0;
+            }
          }
       }
       part {
@@ -183,6 +195,9 @@ group {
                normal: "vhandle.png";
                border: 0 0 10 10;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "down" 0.0;
@@ -209,6 +224,9 @@ group {
             }
             image {
                normal: "vhandle_thumb.png";
+            }
+            fill {
+               smooth: 0;
             }
          }
          description {

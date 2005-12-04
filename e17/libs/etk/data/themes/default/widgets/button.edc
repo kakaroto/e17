@@ -21,6 +21,9 @@ group {
                normal: "button_up.png";
                border: 8 8 8 8;
             }
+            fill {
+               smooth: 0;
+            }
          }
          description {
             state: "down" 0.0;
@@ -227,7 +230,6 @@ group {
          name: "button_focus";
          signal: "focus";
          source: "";
-         FOCUS_GLOW_ACTION
          after: "button_focus_prog";
          after: "go_active";
       }

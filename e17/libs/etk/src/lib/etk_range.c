@@ -30,7 +30,6 @@ enum _Etk_Range_Property_Id
 static void _etk_range_constructor(Etk_Range *range);
 static void _etk_range_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static Etk_Bool _etk_range_change_value_handler(Etk_Range *range, double value);
 
 static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
 
