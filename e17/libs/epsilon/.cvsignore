@@ -16,3 +16,4 @@ ltmain.sh
 mkinstalldirs
 config.guess
 config.sub
+epsilon.spec

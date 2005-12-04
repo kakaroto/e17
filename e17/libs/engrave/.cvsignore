@@ -13,3 +13,4 @@ mkinstalldirs
 compile
 ltmain.sh
 *.tar.gz
+engrave.spec

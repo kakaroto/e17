@@ -13,3 +13,4 @@ ltmain.sh
 depcomp
 install-sh
 missing
+elicit.spec

@@ -6,6 +6,8 @@ config.h
 config.h.in
 config.log
 config.status
+config.guess
+config.sub
 configure
 depcomp
 epeg-config
@@ -19,3 +21,4 @@ doc
 ltmain.sh
 mkinstalldirs
 epeg.c
+epeg.spec

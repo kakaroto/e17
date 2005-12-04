@@ -18,3 +18,4 @@ depcomp
 install-sh
 missing
 *.tar.gz
+entice.spec
