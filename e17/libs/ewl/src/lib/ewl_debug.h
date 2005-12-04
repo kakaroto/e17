@@ -50,7 +50,6 @@ inline void ewl_backtrace(void);
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
 		char *indent; \
-	        ewl_config.debug.indent_lvl --; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturn in %s();\n", \
 			indent, __FILE__, __LINE__, __FUNCTION__); \
@@ -65,7 +64,6 @@ inline void ewl_backtrace(void);
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
 		char *indent; \
-	        ewl_config.debug.indent_lvl --; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %p in %s();\n", \
 			indent, __FILE__, __LINE__, (void *) (ptr), __FUNCTION__); \
@@ -80,7 +78,6 @@ inline void ewl_backtrace(void);
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
 		char *indent; \
-	        ewl_config.debug.indent_lvl --; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %f in %s();\n", \
 			indent, __FILE__, __LINE__, (float) (num), __FUNCTION__); \
@@ -95,7 +92,6 @@ inline void ewl_backtrace(void);
 	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
 	  { \
 		char *indent; \
-	        ewl_config.debug.indent_lvl --; \
 		indent = ewl_debug_get_indent(); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %i in %s();\n", \
 			indent, __FILE__, __LINE__, (int) (num), __FUNCTION__); \
