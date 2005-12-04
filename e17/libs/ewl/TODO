@@ -6,8 +6,6 @@ EWL BUGS
 - Default theme when using the imenu/menu the submenu dosen't highlight on
   mouse over.
 
-- Spinner seems to resize itself slightly larger even when it dosen't have too.
-
 - The ewl_test seems to get a small gap between the right edje of the
   test and the trough for the scrollbar. Should be flush.
     - The 'Password' test seems to make this gap grow.
