@@ -21,7 +21,7 @@ void
 
 void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
 	entropy_mime_action* action;
-	Ewl_Filedialog_Event* e = EWL_FILEDIALOG_EVENT(ev_data);	
+	Ewl_Dialog_Event* e = ev_data;	
 	char* file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
 	
 	if (e->response == EWL_STOCK_OPEN) {
@@ -33,20 +33,16 @@ void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
 		}
 	}
 
-	ewl_widget_destroy(EWL_WIDGET(user_data));
+	ewl_widget_destroy(EWL_WIDGET(w));
 }
 
 
 void ewl_properties_dialog_openwith_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ewl_Widget* file_dialog = ewl_filedialog_new();
-	Ewl_Widget* window = ewl_window_new();
 
 	ewl_filedialog_type_set(EWL_FILEDIALOG(file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
-        ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, window);
-	ewl_container_child_append(EWL_CONTAINER(window), file_dialog);
+        ewl_callback_append (file_dialog, EWL_CALLBACK_VALUE_CHANGED, open_with_cb, NULL);
 	ewl_widget_show(file_dialog);
-	ewl_widget_show(window);
-
 }
 
 void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {

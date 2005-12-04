@@ -68,7 +68,6 @@ struct entropy_icon_viewer {
 	entropy_file_progress_window* progress;
 
 	Ewl_Widget* file_dialog;
-	Ewl_Widget* file_dialog_parent;
 
 	event_idle_processor* last_processor;
 
@@ -121,19 +120,19 @@ void ewl_iconbox_background_remove_cb(Ewl_Widget *w , void *ev, void *user_data 
 
 
 void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_data ) {
-        Ewl_Filedialog_Event *e;
+        Ewl_Dialog_Event *e;
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
 	char* file = ewl_filedialog_file_get (EWL_FILEDIALOG (w));
 
-        e = EWL_FILEDIALOG_EVENT(ev);
+        e = ev;
         if (e->response == EWL_STOCK_OPEN) {
 		printf("Curent directory is '%s'\n", viewer->current_dir);
 		entropy_config_str_set("iconbox_viewer", viewer->current_dir, file);
-		ewl_widget_destroy(viewer->file_dialog_parent);
+		ewl_widget_destroy(viewer->file_dialog);
 
 	} else if (e->response == EWL_STOCK_CANCEL) {
-		ewl_widget_destroy(viewer->file_dialog_parent);
+		ewl_widget_destroy(viewer->file_dialog);
 	}
 
 
@@ -145,14 +144,10 @@ void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_da
 	entropy_icon_viewer* viewer = instance->data;
 	
 	viewer->file_dialog = ewl_filedialog_new();
-	viewer->file_dialog_parent = ewl_window_new();
 
 	ewl_filedialog_type_set(EWL_FILEDIALOG(viewer->file_dialog), EWL_FILEDIALOG_TYPE_OPEN);
         ewl_callback_append (viewer->file_dialog, EWL_CALLBACK_VALUE_CHANGED, ewl_iconbox_background_set_file_cb, instance);
-	ewl_container_child_append(EWL_CONTAINER(viewer->file_dialog_parent), viewer->file_dialog);
 	ewl_widget_show(viewer->file_dialog);
-	ewl_widget_show(viewer->file_dialog_parent);
-
 }
 /*---------------------------*/
 
