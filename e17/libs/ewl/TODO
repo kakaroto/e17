@@ -5,8 +5,6 @@ EWL BUGS
    ewl_text_tree_delete. To trigger, open ewl_test entry, click at the
    end of the first entry box. Now type a few characters and delete back
    to the original text.
--  Entry no longer rounds it's position correctly depending on which side
-   of a character is clicked.
 -  Scrollbar jumps when trying to drag the button from its lower part
 -  Default theme when using the imenu/menu the submenu dosen't highlight on
    mouse over.
