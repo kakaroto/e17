@@ -1521,6 +1521,7 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    o = eb->bar_object;
    edje_object_signal_emit(o, "set_orientation", _engage_main_orientation[edge]);
    edje_object_message_signal_process(o);
+   _engage_tray_layout(eb);
 
    e_box_freeze(eb->box_object);
    l = eb->icons;

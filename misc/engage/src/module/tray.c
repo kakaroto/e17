@@ -18,7 +18,7 @@ static void    _engage_tray_active_set();
 static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 
-static void    _engage_tray_layout(Engage_Bar *eb);
+void           _engage_tray_layout(Engage_Bar *eb);
 extern void    _engage_bar_frame_resize(Engage_Bar *eb);
 
 void
@@ -183,7 +183,7 @@ _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
    _engage_tray_layout(eb);
 }
 
-static void
+void
 _engage_tray_layout(Engage_Bar *eb)
 {
    Evas_Coord w, h, c, d;
@@ -193,6 +193,9 @@ _engage_tray_layout(Engage_Bar *eb)
 
    if (!eb->gmc)
      return;
+   if (!eb->tray)
+     return;
+
    edge = e_gadman_client_edge_get(eb->gmc); 
    h = eb->engage->conf->iconsize;
    if (h < 24)
@@ -213,8 +216,8 @@ _engage_tray_layout(Engage_Bar *eb)
      evas_object_resize(eb->tray->tray, h, w);
      ecore_x_window_resize(eb->tray->win, (int) h, (int) w);
 
-     edje_extern_object_min_size_set(eb->tray->tray, w, h);
-     edje_extern_object_max_size_set(eb->tray->tray, w, h);
+     edje_extern_object_min_size_set(eb->tray->tray, h, w);
+     edje_extern_object_max_size_set(eb->tray->tray, h, w);
      edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    }
    
