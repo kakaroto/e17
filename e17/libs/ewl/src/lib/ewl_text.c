@@ -262,11 +262,16 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 				evas_textblock_cursor_line_first(cursor);
 			else
 			{
+				const char *txt;
 				evas_textblock_cursor_line_last(cursor);
 
 				/* we want to be past the last char so we
 				 * need to increment this by 1 to begin */
-				idx += 1;
+				txt = evas_textblock_cursor_node_format_get(cursor);
+
+				/* Increment if we're on the last line */
+				if (!txt || (strcmp(txt, "\n")))
+					idx ++;
 			}
 		}
 		else
