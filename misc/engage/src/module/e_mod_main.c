@@ -394,19 +394,28 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	   case E_APP_ADD:
 	     if (e_app_is_parent(e->apps, a))
 	       {
-		  Engage_Icon *ic;
+		  Engage_Icon *ic, *ic2;
 
 		  e_box_freeze(eb->box_object);
-		  ic = _engage_icon_new(eb, a);
+		  ic = _engage_icon_find(eb, a);
 		  if (ic)
 		    {
-		       for (ll = e->apps->subapps; ll; ll = ll->next)
+		       ic->dotorder = 1;
+		    }
+		  else
+		    {
+		       ic = _engage_icon_new(eb, a);
+		       if (ic)
 			 {
-			    E_App *a2;
+			    ic->dotorder = 1;
+			    for (ll = e->apps->subapps; ll; ll = ll->next)
+			      {
+				 E_App *a2;
 
-			    a2 = ll->data;
-			    ic = _engage_icon_find(eb, a2);
-			    if (ic) _engage_icon_reorder_after(ic, NULL);
+				 a2 = ll->data;
+				 ic2 = _engage_icon_find(eb, a2);
+				 if (ic2) _engage_icon_reorder_after(ic, ic2);
+			      }
 			 }
 		       _engage_bar_frame_resize(eb);
 		    }
@@ -419,21 +428,29 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  Engage_Icon *ic;
 
 		  ic = _engage_icon_find(eb, a);
-		  if (ic) _engage_icon_free(ic);
+		  if (ic)
+		    {
+		       ic->dotorder = 0;
+		       if (!ic->extra_icons)
+		         _engage_icon_free(ic);
+		    }
 		  _engage_bar_frame_resize(eb);
 	       }
 	     break;
 	   case E_APP_CHANGE:
 	     if (e_app_is_parent(e->apps, a))
 	       {
-		  Engage_Icon *ic;
-		  Evas_List *extras;
+		  Engage_Icon *ic, *ic2;
+		  Evas_List *extras = NULL;
 
 		  e_box_freeze(eb->box_object);
 		  ic = _engage_icon_find(eb, a);
-		  extras = ic->extra_icons;
-		  ic->extra_icons = NULL;
-		  if (ic) _engage_icon_free(ic);
+		  if (ic)
+		    {
+		       extras = ic->extra_icons;
+		       ic->extra_icons = NULL;
+		       _engage_icon_free(ic);
+		    }
 		  evas_image_cache_flush(eb->evas);
 		  evas_image_cache_reload(eb->evas);
 		  ic = _engage_icon_new(eb, a);
@@ -445,8 +462,8 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 			    E_App *a2;
 
 			    a2 = ll->data;
-			    ic = _engage_icon_find(eb, a2);
-			    if (ic) _engage_icon_reorder_after(ic, NULL);
+			    ic2 = _engage_icon_find(eb, a2);
+			    if (ic2) _engage_icon_reorder_after(ic, ic2);
 			 }
 		       _engage_bar_frame_resize(eb);
 		    }
@@ -456,6 +473,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	   case E_APP_ORDER:
 	     if (a == e->apps)
 	       {
+/* FIXME - this is moving all .order icons to after the others - BAD
 		  e_box_freeze(eb->box_object);
 		  for (ll = e->apps->subapps; ll; ll = ll->next)
 		    {
@@ -467,6 +485,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		       if (ic) _engage_icon_reorder_after(ic, NULL);
 		    }
 		  e_box_thaw(eb->box_object);
+*/
 	       }
 	     break;
 	   case E_APP_EXEC:
@@ -766,42 +785,25 @@ _engage_bar_menu_gen(Engage_Bar *eb)
 
    mn = e_menu_new();
    eb->icon_menu = mn;
-   
-   //check if selected_ic is in .order
-   
-   int indotorder = 0;
-   if (eb->engage->apps && eb->selected_ic)
-     {
-	Evas_List *ll;
-	for (ll = eb->engage->apps->subapps; ll; ll = ll->next)
-	  {
-	     E_App *a;
-	     Engage_Icon *ic;
 
-	     a = ll->data;
-	     if (eb->selected_ic->app == a)
-	       {
-		  indotorder = 1;
-		  break;
-	       }
+   if (eb->selected_ic)
+     {
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, "Edit Icon");
+	e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
+
+	if (!eb->selected_ic->dotorder)
+	  {
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, "Keep Icon");
+	     e_menu_item_callback_set(mi, _engage_bar_cb_menu_keep_icon, eb);
 	  }
-     }
-   
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Edit Icon");
-   e_menu_item_callback_set(mi, _engage_bar_cb_menu_edit_icon, eb);
-   
-   if (!indotorder)
-     {
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Keep Icon");
-	e_menu_item_callback_set(mi, _engage_bar_cb_menu_keep_icon, eb);
-     }
-   else
-     {
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, "Remove Icon");
-	e_menu_item_callback_set(mi, _engage_bar_cb_menu_remove_icon, eb);
+	else
+	  {
+	     mi = e_menu_item_new(mn);
+	     e_menu_item_label_set(mi, "Remove Icon");
+	     e_menu_item_callback_set(mi, _engage_bar_cb_menu_remove_icon, eb);
+	  }
      }
 
    mn = e_menu_new();
@@ -921,7 +923,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    ic->eb = eb;
    ic->app = a;
    ic->scale = 1.0;
-   ic->temp = 0;
+   ic->dotorder = 0;
    ic->selected_app = NULL;
    e_object_ref(E_OBJECT(a));
    eb->icons = evas_list_append(eb->icons, ic);
@@ -1010,6 +1012,10 @@ _engage_icon_find(Engage_Bar *eb, E_App *a)
 	ic = l->data;
 	if (ic->app == a) return ic;
 	if (((E_App *)ic->app)->orig == a) return ic;
+
+/* FIXME - this could be slow - is there a reason we need to check the path -
+ * why would the other two fail if we are referencing the same eap? */
+	if (!strcmp(((E_App *)ic->app)->path, a->path)) return ic;
      }
    return NULL;
 }
@@ -1233,7 +1239,7 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 	ic = _engage_icon_new(eb, app);
 	if (ic)
 	  {
-	     ic->temp = 1;
+	     ic->dotorder = 0;
 	     _engage_bar_frame_resize(eb);
 	  }
      }
@@ -1298,7 +1304,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
 	if (ai->border == e->border)
 	  {
 	      _engage_app_icon_free(ai);
-	      if (!ic->extra_icons && ic->temp == 1)
+	      if (!ic->extra_icons && ic->dotorder == 0)
 		{
 		   _engage_icon_free(ic);
 		   _engage_bar_frame_resize(eb);
@@ -1340,7 +1346,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	ic = _engage_icon_new(eb, app);
 	if (ic)
 	  {
-	     ic->temp = 1;
+	     ic->dotorder = 0;
 	     _engage_bar_frame_resize(eb);
 	  }
      }

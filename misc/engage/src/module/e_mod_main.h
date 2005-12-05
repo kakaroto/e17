@@ -101,7 +101,7 @@ struct _Engage_Icon
    Evas_List     *extra_icons, *selected_app;
 
    double         scale;
-   int            temp;
+   int            dotorder;
 };
 
 struct _Engage_App_Icon
