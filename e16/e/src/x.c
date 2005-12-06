@@ -799,6 +799,7 @@ ESetWindowBackgroundPixmap(Window win, Pixmap pmap)
    if (xid)
      {
 	xid->bgpmap = pmap;
+	xid->bgcol = 0xffffffff;	/* Hmmm.. */
 	XSetWindowBackgroundPixmap(disp, win, pmap);
      }
    else
