@@ -159,10 +159,10 @@ _engage_tray_cb_msg(void *data, int type, void *event)
   Ecore_X_Event_Window_Destroy *dst;
   Engage_Bar *eb;
 
+  eb = data;
   if (!eb->conf->tray)
     return 1;
   
-  eb = data;
   if (type == ECORE_X_EVENT_CLIENT_MESSAGE) {
     ev = event;
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
