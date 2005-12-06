@@ -13,7 +13,7 @@
 #define XEMBED_EMBEDDED_NOTIFY      0
 
 static int     _engage_tray_cb_msg(void *data, int type, void *event);
-void           _engage_tray_active_set();
+static void    _engage_tray_active_set(Engage_Bar *eb, int active);
 
 static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
@@ -43,6 +43,7 @@ _engage_tray_init(Engage_Bar *eb)
    evas_object_intercept_move_callback_add(eb->tray->tray, _engage_tray_cb_move, eb);
    evas_object_intercept_resize_callback_add(eb->tray->tray, _engage_tray_cb_resize, eb);
 
+   edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    _engage_tray_active_set(eb, eb->conf->tray);
 
 }
@@ -50,6 +51,7 @@ _engage_tray_init(Engage_Bar *eb)
 void
 _engage_tray_shutdown(Engage_Bar *eb)
 {
+   edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
    _engage_tray_active_set(eb, 0);
 
    evas_list_free(eb->tray->wins);
@@ -57,7 +59,7 @@ _engage_tray_shutdown(Engage_Bar *eb)
    free(eb->tray);
 }
 
-void
+static void
 _engage_tray_active_set(Engage_Bar *eb, int active)
 {
    Ecore_X_Window win;
@@ -67,7 +69,7 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
    Atom selection_atom;
    Evas_Coord x, y, w, h;
 
-   win = 0;
+   win = NULL;
    if (active)
      win = eb->con->bg_win;
 

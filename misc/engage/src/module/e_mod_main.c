@@ -324,7 +324,6 @@ _engage_new()
 
 		  /*add tray*/
 		  _engage_tray_init(eb);
-		  edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
 
 		  /* Add main menu to bar menu */
 		  mi = e_menu_item_new(e->config_menu);
@@ -2419,8 +2418,10 @@ _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi)
    Engage_Bar *eb;
 
    eb = data;
+   _engage_tray_shutdown(eb);
    eb->conf->tray = e_menu_item_toggle_get(mi);
-   _engage_tray_active_set(eb, eb->conf->tray);
+   _engage_tray_init(eb);
+   _engage_tray_layout(eb);
    _engage_bar_frame_resize(eb);
    e_config_save_queue();
 }
