@@ -90,6 +90,8 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
 				      CurrentTime, selection_atom, win, 0, 0);
 
 	evas_object_geometry_get(eb->tray->tray, &x, &y, &w, &h);
+	if (w < 1) w = 1;
+	if (h < 1) h = 1;
 	eb->tray->win = ecore_x_window_new(eb->con->bg_win, x, y, w, h);
 	ecore_x_window_container_manage(eb->tray->win);
 	ecore_x_window_background_color_set(eb->tray->win, 0xcccc, 0xcccc, 0xcccc);
