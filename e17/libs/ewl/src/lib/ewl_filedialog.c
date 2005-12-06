@@ -105,6 +105,9 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 					ewl_filedialog_click_cb, fd);
 	ewl_widget_show(o);
 
+	/* set the top active so the tooltips go to the right spot */
+	ewl_dialog_active_area_set(EWL_DIALOG(fd), EWL_POSITION_TOP);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
