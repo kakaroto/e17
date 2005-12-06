@@ -632,6 +632,8 @@ _engage_bar_new(Engage *e, E_Container *con)
 
 	     a = l->data;
 	     ic = _engage_icon_new(eb, a);
+	     if (ic)
+	       ic->dotorder = 1;
 	  }
      }
 
