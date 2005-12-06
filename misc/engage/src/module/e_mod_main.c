@@ -594,6 +594,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
+   eb->zoom_start_time = 0.0;
    eb->zooming = 0;
    eb->mouse_out = -1;
 
@@ -2198,25 +2199,25 @@ static int
 _engage_zoom_in_slave(void *data)
 {
    Evas_Coord x, y;
-   static double start_time = 0;
    Engage_Bar *eb;
 
    eb = data;
-   if (start_time == 0)
+   if (eb->zoom_start_time == 0)
      {
 	eb->zooming = 1;
-	start_time = ecore_time_get();
+	eb->zoom_start_time = ecore_time_get();
      }
 
-   eb->zoom = (eb->conf->zoom_factor - 1.0) * ((ecore_time_get() - start_time)
-              / eb->conf->zoom_duration) + 1.0;
+   eb->zoom = (eb->conf->zoom_factor - 1.0) *
+	       ((ecore_time_get() - eb->zoom_start_time)
+		/ eb->conf->zoom_duration) + 1.0;
 
    evas_pointer_canvas_xy_get(eb->evas, &x, &y);
    if (eb->zoom >= eb->conf->zoom_factor)
      {
 	eb->zoom = eb->conf->zoom_factor;
 	_engage_zoom_timer = NULL;
-	start_time = 0;
+	eb->zoom_start_time = 0;
 	_engage_bar_motion_handle(eb, x, y);
 	return 0;
      }
@@ -2228,15 +2229,14 @@ static int
 _engage_zoom_out_slave(void *data)
 {
    Evas_Coord x, y, bx, by, bw, bh;
-   static double start_time = 0;
    Engage_Bar *eb;
 
    eb = data;
-   if (start_time == 0)
-     start_time = ecore_time_get();
+   if (eb->zoom_start_time == 0)
+     eb->zoom_start_time = ecore_time_get();
 
    eb->zoom = (eb->conf->zoom_factor - 1.0) * (1.0 - (ecore_time_get()
-			   - start_time) / eb->conf->zoom_duration) + 1.0;
+			   - eb->zoom_start_time) / eb->conf->zoom_duration) + 1.0;
 
    
    evas_pointer_canvas_xy_get(eb->evas, &x, &y);
@@ -2244,7 +2244,7 @@ _engage_zoom_out_slave(void *data)
      {
 	eb->zoom = 1.0;
 	_engage_zoom_timer = NULL;
-	start_time = 0;
+	eb->zoom_start_time = 0;
 	evas_object_geometry_get(eb->box_object, &bx, &by, &bw, &bh);
 	evas_object_move(eb->event_object, bx, by);
 	evas_object_resize(eb->event_object, bw, bh);
