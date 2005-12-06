@@ -2149,6 +2149,8 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (_engage_zoom_timer)
      ecore_timer_del(_engage_zoom_timer);
+   if (eb->zoom_start_time)
+     eb->zoom_start_time = 0;
    _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_in_slave, eb);
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    edge = e_gadman_client_edge_get(eb->gmc);
@@ -2190,6 +2192,8 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
 
    if (_engage_zoom_timer)
      ecore_timer_del(_engage_zoom_timer);
+   if (eb->zoom_start_time)
+     eb->zoom_start_time = 0;
    _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_out_slave, eb);
    eb->mouse_out = -1;
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
