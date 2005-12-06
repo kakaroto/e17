@@ -2280,47 +2280,74 @@ static Evas_Textblock_Cursor *
 ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 {
 	Evas_Textblock_Cursor *cursor;
-	int cur_idx;
-	const char *txt = NULL;
+	unsigned int cur_idx = 0;
+	char *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, "text", NULL);
 
+	/* place the cursor at the first node in the textblock */
 	cursor = evas_object_textblock_cursor_new(t->textblock);
 	evas_textblock_cursor_node_first(cursor);
 
-	cur_idx = idx;
-
-	/* if we get to a point where the current index is zero then we need
-	 * to walk past any formatting nodes before we are where we want to
-	 * be. (Without the txt then triggers break, with >= 0 the mouse
-	 * placement of the cursor in the entry breaks */
-	while ((cur_idx > 0) || txt)
+	while(1)
 	{
-		int len = 0;
-
-		/* see if this is a formatting or text node */
 		txt = evas_textblock_cursor_node_format_get(cursor);
-		if (!txt)
+
+		/* if we have text this is a formatting node, need to see if
+		 * this is a \n or \t as they are special */
+		if (txt)
 		{
-			len = evas_textblock_cursor_node_text_length_get(cursor);
-			if (len > cur_idx)
+			/* do we have a \n or \t node? */
+			if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
 			{
-				evas_textblock_cursor_pos_set(cursor, cur_idx);
-				break;
+				/* will this push us past the end? */
+				if ((cur_idx + 1) > idx)
+				{
+					evas_textblock_cursor_pos_set(cursor, idx - cur_idx);
+					break;
+				}
+				else
+					cur_idx ++;
 			}
 		}
-		else if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
-			len = 1;
+		else
+		{
+			int pos;
 
+			/* this is a text node, so check the length of the
+			 * text against our current position and the idx we
+			 * are looking for */
+			pos = evas_textblock_cursor_node_text_length_get(cursor); 
+
+			/* if this would move us past our index, find the
+			 * difference between our desired index and the
+			 * current index and set that */
+			if ((cur_idx + pos) > idx)
+			{
+				evas_textblock_cursor_pos_set(cursor, idx - cur_idx);
+				break;
+			}
+			cur_idx += pos;
+		}
+
+		/* if we fail to goto the next node, just assume we're at
+		 * the end of the text and jump the cursor there */
 		if (!evas_textblock_cursor_node_next(cursor))
 		{
 			evas_textblock_cursor_node_last(cursor);
 			evas_textblock_cursor_char_last(cursor);
 			break;
 		}
-		cur_idx -= len;
+
+		/* This shouldn't happen, we've moved past our index. Just
+		 * checking so the loop isn't (hopefully) infinite */
+		if (cur_idx > idx)
+		{
+			DWARNING("This shoudln't happen, breaking loop\n");
+			break;
+		}
 	}
 
 	DRETURN_PTR(cursor, DLEVEL_STABLE);
