@@ -564,11 +564,13 @@ DeskBackgroundConfigure(Desk * dsk)
 
    if (dsk->viewable)
      {
+#if 0				/* FIXME - Remove? */
 	if (ECompMgrDeskConfigure(dsk))
 	  {
 	     ESetWindowBackgroundPixmap(win, None);
 	  }
 	else
+#endif
 	  {
 	     if (dsk->bg.pmap != None)
 		ESetWindowBackgroundPixmap(win, dsk->bg.pmap);

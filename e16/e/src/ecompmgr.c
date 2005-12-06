@@ -478,6 +478,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
    XRenderFreePicture(disp, pict);
 }
 
+#if 0				/* FIXME - Remove? */
 /*
  * Desk background
  */
@@ -553,6 +554,7 @@ ECompMgrDeskConfigure(Desk * dsk)
 
    return 1;
 }
+#endif
 
 /*
  * Root (?)
