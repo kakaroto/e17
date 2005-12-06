@@ -585,9 +585,6 @@ _engage_bar_new(Engage *e, E_Container *con)
    e_object_ref(E_OBJECT(con));
    eb->evas = con->bg_evas;
    
-   o = e_box_add(eb->evas);
-   eb->box_object = o;
-
    eb->contexts = NULL;
    eb->tray = NULL;
    eb->selected_ic = NULL;
@@ -616,8 +613,8 @@ _engage_bar_new(Engage *e, E_Container *con)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _engage_bar_cb_mouse_move, eb);
    evas_object_show(o);
 
-   o = eb->box_object;
-
+   o = e_box_add(eb->evas); 
+   eb->box_object = o;
    evas_object_intercept_move_callback_add(o, _engage_bar_cb_intercept_move, eb);
    evas_object_intercept_resize_callback_add(o, _engage_bar_cb_intercept_resize, eb);
    e_box_freeze(o);
@@ -1467,6 +1464,8 @@ void
 _engage_bar_frame_resize(Engage_Bar *eb)
 {
    Evas_Coord w, h;
+   int edge;
+
    /* Not finished loading config yet! */
    if ((eb->x == -1)
        || (eb->y == -1)
@@ -1477,7 +1476,17 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    evas_event_freeze(eb->evas);
    e_box_freeze(eb->box_object);
 
-   e_box_min_size_get(eb->box_object, &w, &h);
+   edge = e_gadman_client_edge_get(eb->gmc);
+   if ((edge == E_GADMAN_EDGE_LEFT) || (edge == E_GADMAN_EDGE_RIGHT))
+     {
+	w = eb->engage->iconbordersize;
+	h = evas_list_count(eb->icons) * eb->engage->iconbordersize;
+     }
+   else
+     {
+	w = evas_list_count(eb->icons) * eb->engage->iconbordersize;
+	h = eb->engage->iconbordersize;
+     }
    evas_object_resize(eb->event_object, w, h);
 
    edje_object_part_unswallow(eb->bar_object, eb->box_object);
@@ -1607,20 +1616,12 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    else relx = 0.0;
    if (h > 0) rely = (double)(my - y) / (double)h;
    else rely = 0.0;
-   if ((e_gadman_client_edge_get(eb->gmc) == E_GADMAN_EDGE_BOTTOM) ||
-       (e_gadman_client_edge_get(eb->gmc) == E_GADMAN_EDGE_TOP))
-     {
-	eb->align_req = 1.0 - relx;
-     }
-   else if ((e_gadman_client_edge_get(eb->gmc) == E_GADMAN_EDGE_LEFT) ||
-	    (e_gadman_client_edge_get(eb->gmc) == E_GADMAN_EDGE_RIGHT))
-     {
-	eb->align_req = 1.0 - rely;
-     }
-
-   e_gadman_client_geometry_get(eb->gmc, &x, &y, &w, &h);
    edge = e_gadman_client_edge_get(eb->gmc);
-   
+   if ((edge == E_GADMAN_EDGE_LEFT) || (edge == E_GADMAN_EDGE_RIGHT))
+     eb->align_req = 1.0 - rely;
+   else
+     eb->align_req = 1.0 - relx;
+
    e_box_freeze(eb->box_object);
    items = eb->icons;
    
@@ -2313,6 +2314,7 @@ _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
 	  e_gadman_client_geometry_get(eb->gmc, &eb->x, &eb->y, &eb->w, &eb->h);
 
 	  edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
+	  edje_object_part_unswallow(eb->bar_object, eb->box_object);
 	  edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
 
 	  evas_object_move(eb->bar_object, eb->x, eb->y);
