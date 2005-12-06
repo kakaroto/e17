@@ -31,9 +31,6 @@ EWL BUGS
 - The ewl_password entry needs to correctly deal with selections and
   mouse clicks.
 
-- Tab focus dosen't correctly cycle to the start/end of the tab
-  widgets if you hit the end
-
 - Buttons don't correctly react to a keypress. Currently just a
   printf, should actually trigger the button pressed callback
 

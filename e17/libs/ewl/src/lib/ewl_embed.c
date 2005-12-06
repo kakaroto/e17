@@ -1164,8 +1164,9 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 	if (e->last.focused)
 	{
 		ecore_dlist_goto(e->tab_order, e->last.focused);
-		w = ecore_dlist_next(e->tab_order);
-		if (!w) ecore_dlist_goto_first(e->tab_order);
+		ecore_dlist_next(e->tab_order);
+		if (!ecore_dlist_current(e->tab_order))
+			ecore_dlist_goto_first(e->tab_order);
 	}
 	else
 		ecore_dlist_goto_first(e->tab_order);
@@ -1214,11 +1215,12 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
 	if (e->last.focused)
 	{
 		ecore_dlist_goto(e->tab_order, e->last.focused);
-		w = ecore_dlist_previous(e->tab_order);
-		if (!w) ecore_dlist_goto_first(e->tab_order);
+		ecore_dlist_previous(e->tab_order);
+		if (!ecore_dlist_current(e->tab_order))
+			ecore_dlist_goto_last(e->tab_order);
 	}
 	else
-		ecore_dlist_goto_first(e->tab_order);
+		ecore_dlist_goto_last(e->tab_order);
 
 	w = ecore_dlist_current(e->tab_order);
 	if (!w) DRETURN(DLEVEL_STABLE);
