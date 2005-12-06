@@ -276,7 +276,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->select_floater), ib->select);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 0, 0);
+	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
 	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 255, 255, 25, 50);
 	ib->drag_box = 0;
