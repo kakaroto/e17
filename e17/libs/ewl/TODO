@@ -61,6 +61,10 @@ EWL BUGS
   as soon as the mouse moves the menu is closed again. (Possibly due to
   the embed changing the focused widget?)
 
+- Tooltips and dialogs aren't friends. If you don't set the active area
+  correctly the tooltip will go to the current active area. If you set 
+  the active area, the tooltip dosen't seem to appear.
+
 
 EWL TODO
 ========
