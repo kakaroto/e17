@@ -536,6 +536,12 @@ ewl_init_parse_options(int *argc, char **argv)
 			}
 			matched ++;
 		}
+		else if (!strcmp(argv[i], "--ewl-help")) {
+			ewl_print_help();
+			exit(0);
+			matched ++;
+		}
+
 		if (matched > 0) {
 			while (matched) {
 				ewl_init_remove_option(argc, argv, i);
@@ -562,6 +568,23 @@ ewl_init_remove_option(int *argc, char **argv, int i)
 	argv[j] = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_print_help(void)
+{
+	printf("EWL Help\n"
+		"\t--ewl-backtrace        Print a stack trace warnings occur.\n"
+		"\t--ewl-debug <level>    Set the debugging printf level.\n"
+		"\t--ewl-fb               Use framebuffer display engine.\n"
+		"\t--ewl-gl-x11           Use GL X11 display engine.\n"
+		"\t--ewl-help             Print this help message.\n"
+		"\t--ewl-print-gc-reap    Print garbage collection stats.\n"
+		"\t--ewl-print-theme-keys Print theme keys matched widgets.\n"
+		"\t--ewl-segv             Trigger crash when warning printed.\n"
+		"\t--ewl-software-x11     Use software X11 display engine.\n"
+		"\t--ewl-theme <theme>    Set the theme to use for widgets.\n"
+		);
 }
 
 /**
@@ -721,10 +744,13 @@ ewl_realize_request(Ewl_Widget *w)
 
 	if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
 		Ewl_Object *o = EWL_OBJECT(w->parent);
-		if (!o|| (!ewl_object_queued_has(EWL_OBJECT(o),
-						EWL_FLAG_QUEUED_RSCHEDULED) &&
-					!REALIZED(o)))
+		if (!o)
 			DRETURN(DLEVEL_STABLE);
+
+		if (!ewl_object_queued_has(EWL_OBJECT(o), EWL_FLAG_QUEUED_RPROCESS)) {
+		       	if (!REALIZED(o))
+				DRETURN(DLEVEL_STABLE);
+		}
 	}
 
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
@@ -772,11 +798,7 @@ ewl_realize_queue(void)
 	ecore_list_goto_first(realize_list);
 	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
-			ewl_object_queued_add(EWL_OBJECT(w),
-					      EWL_FLAG_QUEUED_RPROCESS);
 			ewl_widget_realize(EWL_WIDGET(w));
-			ewl_object_queued_remove(EWL_OBJECT(w),
-					         EWL_FLAG_QUEUED_RPROCESS);
 			ecore_list_prepend(child_add_list, w);
 		}
 	}

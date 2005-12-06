@@ -276,8 +276,7 @@ ewl_theme_widget_shutdown(Ewl_Widget *w)
 	if (w->theme && w->theme != def_theme_data)
 		ecore_hash_destroy(w->theme);
 
-	else
-		w->theme = NULL;
+	w->theme = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

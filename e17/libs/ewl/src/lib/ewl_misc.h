@@ -20,6 +20,7 @@ struct Ewl_Options
 };
 
 int             ewl_init(int *argc, char **argv);
+void            ewl_print_help(void);
 int             ewl_shutdown(void);
 void            ewl_main(void);
 void            ewl_main_quit(void);

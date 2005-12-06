@@ -7,9 +7,8 @@ static int ewl_notebook_page_index_get(Ewl_Notebook *n,
 				Ewl_Notebook_Page *p);
 
 /**
- * ewl_notebook_new - create a new notebook
- * 
- * Returns a newly allocated notebook on success, NULL on failure.
+ * @brief Create a new notebook container
+ * @return Returns a newly allocated notebook on success, NULL on failure.
  */
 Ewl_Widget *
 ewl_notebook_new(void)
@@ -31,11 +30,9 @@ ewl_notebook_new(void)
 }
 
 /**
- * ewl_notebook_init - initialize a notebook to default values and callbacks
- * @n: the notebook to initialize
- *
- * Returns no value. Sets the fields and callbacks of @n to their
- * defaults.
+ * @param n: Notebook widget to initialize
+ * @brief Initialize a notebook to default values and callbacks
+ * @return Returns no value.
  */
 int
 ewl_notebook_init(Ewl_Notebook * n)
@@ -52,7 +49,7 @@ ewl_notebook_init(Ewl_Notebook * n)
 	}
 
 	ewl_box_orientation_set(EWL_BOX(n), EWL_ORIENTATION_VERTICAL);
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
 
 	ewl_widget_appearance_set(w, "notebook");
 	ewl_widget_inherit(w, "notebook");

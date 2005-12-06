@@ -9,8 +9,8 @@ static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
-static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part,
-						char *text);
+static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w,
+						  const char *part, char *text);
 
 /* static int edjes = 0; */
 
@@ -199,7 +199,10 @@ ewl_widget_realize(Ewl_Widget * w)
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
 	else if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
+		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RPROCESS);
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+		ewl_object_queued_remove(EWL_OBJECT(w),
+					 EWL_FLAG_QUEUED_RPROCESS);
 		ewl_object_visible_add(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_REALIZED);
 		ewl_widget_obscure(w);
@@ -741,7 +744,7 @@ ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
  * Changes the text of a given Edje-define TEXT part.
  */
 static void
-ewl_widget_appearance_part_text_apply(Ewl_Widget * w, char *part, char *text)
+ewl_widget_appearance_part_text_apply(Ewl_Widget * w, const char *part, char *text)
 {
 	Evas_Coord nw, nh;
 
@@ -1297,7 +1300,7 @@ ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
 {
 	int len;
 	char *tmp = NULL;
-	char *tmp2 = NULL;
+	const char *tmp2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
@@ -1665,11 +1668,6 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		w->bit_state = NULL;
 	}
 
-	if (w->theme) {
-		ecore_hash_destroy(w->theme);
-		w->theme = NULL;
-	}
-
 	if (w->theme_text.list) {
 		if (w->theme_text.direct) {
 			ecore_string_release(EWL_PAIR(w->theme_text.list)->key);
@@ -1810,7 +1808,7 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		 * Set the state of the theme object
 		 */
 		if (w->bit_state)
-			ewl_widget_state_set(w, w->bit_state);
+			ewl_widget_state_set(w, (char *)w->bit_state);
 
 		if (ewl_object_state_has(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))
@@ -1820,7 +1818,8 @@ void ewl_widget_reveal_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		 * Apply any text overrides
 		 */
 		if (w->theme_object && w->theme_text.list) {
-			char *key, *value;
+			const char *key;
+		       	char *value;
 
 			if (w->theme_text.direct) {
 				key = EWL_PAIR(w->theme_text.list)->key;

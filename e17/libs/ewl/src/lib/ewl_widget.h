@@ -26,7 +26,7 @@ typedef struct Ewl_Pair Ewl_Pair;
 #define EWL_PAIR(p) ((Ewl_Pair *)p)
 struct Ewl_Pair
 {
-	char *key;
+	const char *key;
 	char *value;
 };
 
@@ -86,11 +86,11 @@ struct Ewl_Widget
 	Evas_Object     *fx_clip_box;  /**< Clipping rectangle of widget */
 
 	Evas_Object     *theme_object; /**< Appearance shown on canvas */
-	char            *bit_path;     /**< Path to the file for loading */
-	char            *bit_group;    /**< Group in theme to use */
-	char            *bit_state;    /**< State of the appearance */
-	char            *appearance;   /**< Key to lookup appearance in theme */
-	char            *inheritance;  /**< Inheritance of path widget */
+	const char      *bit_path;     /**< Path to the file for loading */
+	const char      *bit_group;    /**< Group in theme to use */
+	const char      *bit_state;    /**< State of the appearance */
+	const char      *appearance;   /**< Key to lookup appearance in theme */
+	const char      *inheritance;  /**< Inheritance of path widget */
 	int              layer;        /**< Current layer of widget on canvas */
 
 	Ecore_Hash      *theme;        /**< Overriding theme settings */
