@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS     = 1.7 foreign
 
-bin_PROGRAMS = evfs
+bin_PROGRAMS = evfs evfscat
 
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
@@ -17,6 +17,11 @@ evfs_SOURCES = \
 	$(top_srcdir)/src/common/evfs_common.c \
 	evfs_server_handle.c
 
+evfscat_SOURCES = \
+	evfscat.c
+
 evfs_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@ @xml2_libs@ @eet_libs@
+
+evfscat_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@ @xml2_libs@ @eet_libs@
 
 

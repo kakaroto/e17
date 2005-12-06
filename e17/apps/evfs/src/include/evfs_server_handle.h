@@ -9,3 +9,5 @@ void evfs_handle_file_rename_command(evfs_client* client, evfs_command* command)
 void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command);
 void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command);
 void evfs_handle_file_copy(evfs_client* client, evfs_command* command);
+void evfs_handle_file_open_command(evfs_client* client, evfs_command* command);
+void evfs_handle_file_read_command(evfs_client* client, evfs_command* command);

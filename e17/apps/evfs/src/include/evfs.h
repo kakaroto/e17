@@ -103,7 +103,9 @@ typedef enum evfs_eventtype {
 	EVFS_EV_NOTIFY_ID = 2,
 	EVFS_EV_STAT = 3,
 	EVFS_EV_DIR_LIST = 4,
-	EVFS_EV_FILE_PROGRESS = 5
+	EVFS_EV_FILE_PROGRESS = 5,
+	EVFS_EV_FILE_OPEN= 6,
+	EVFS_EV_FILE_READ = 7
 } evfs_eventtype;
 
 typedef enum evfs_eventtype_sub {
@@ -123,12 +125,14 @@ typedef enum evfs_eventpart {
 	EVFS_EV_PART_FILE_REFERENCE_PASSWORD = 10,
 
 	EVFS_EV_PART_PROGRESS = 11,
-	
-        EVFS_COMMAND_TYPE = 12,
-        EVFS_FILE_REFERENCE = 13,
-	EVFS_FILE_REFERENCE_PASSWORD = 14,
-	EVFS_FILE_REFERENCE_USERNAME = 15,
-        EVFS_COMMAND_END = 16,
+
+	EVFS_COMMAND_EXTRA = 12,
+        EVFS_COMMAND_TYPE = 13,
+        EVFS_FILE_REFERENCE = 14,
+	EVFS_FILE_REFERENCE_PASSWORD = 15,
+	EVFS_FILE_REFERENCE_USERNAME = 16,
+	EVFS_FILE_REFERENCE_FD = 17,
+        EVFS_COMMAND_END = 18,
 
 	
 	EVFS_EV_PART_END = 1000
@@ -189,6 +193,11 @@ typedef struct evfs_event_progress {
 	evfs_progress_type type;
 } evfs_event_progress;
 
+typedef struct evfs_event_data {
+	long size;
+	char* bytes;
+} evfs_event_data;
+
 //Would be good if this could be a union -> but evfs_command changes size :( */
 typedef struct evfs_event {
 	evfs_eventtype type;
@@ -199,6 +208,8 @@ typedef struct evfs_event {
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;	
 	evfs_event_progress progress;
+
+	evfs_event_data data;
 }
 evfs_event;
 /*---------------------------------------------------------------------*/

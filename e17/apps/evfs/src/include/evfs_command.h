@@ -15,7 +15,9 @@ typedef enum evfs_command_type
   EVFS_CMD_LIST_DIR = 7,
   EVFS_CMD_FILE_STAT = 8,
   EVFS_CMD_FILE_OPEN = 9,
-  EVFS_CMD_FILE_TEST = 10
+  EVFS_CMD_FILE_READ = 10,
+  EVFS_CMD_FILE_TEST = 11,
+
 }
 evfs_command_type;
 
@@ -23,6 +25,7 @@ evfs_command_type;
 typedef struct evfs_command_file {
 	evfs_command_type type;
 	int num_files;
+	int extra;
 	evfs_filereference** files;
 }
 evfs_command_file;

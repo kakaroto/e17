@@ -15,6 +15,7 @@ int evfs_io_initialise() {
 	io_init = 1;
 	
   	
+	/*File_reference eet*/
 	_evfs_filereference_edd = eet_data_descriptor_new("evfs_filereference", sizeof(evfs_filereference),
 			      (void *(*) (void *))evas_list_next, 
 			      (void *(*) (void *, void *))evas_list_append, 
@@ -27,7 +28,10 @@ int evfs_io_initialise() {
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "file_type", file_type, EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "path",path, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "plugin_uri",plugin_uri, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference, "fd",fd, EET_T_INT);
 
+
+	/*Progress event eet*/
 	_evfs_progress_event_edd = eet_data_descriptor_new("evfs_progress_event", sizeof(evfs_event_progress),
 			      (void *(*) (void *))evas_list_next, 
 			      (void *(*) (void *, void *))evas_list_append, 
@@ -132,6 +136,12 @@ void evfs_write_list_event (evfs_client* client, evfs_event* event) {
 	
 }
 
+void evfs_write_file_read_event(evfs_client* client, evfs_event* event) {
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_DATA,
+			client->id,0,0,event->data.bytes, event->data.size  ));
+}
+
 
 void evfs_write_progress_event(evfs_client* client, evfs_event* event) {
 	int size_ret = 0;
@@ -166,6 +176,11 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					   break;
 		case EVFS_EV_FILE_PROGRESS: evfs_write_progress_event(client,event);
 					    break;
+
+		case EVFS_EV_FILE_OPEN: printf ("Open event send\n"); break; /*File open has no additional info - fd is in filereference */
+
+		case EVFS_EV_FILE_READ: evfs_write_file_read_event(client,event);
+					break;
 					   
 		default:		   printf("Event type not handled in switch\n");
 					   break;
@@ -209,6 +224,14 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 		}
 		break;
 
+		case EVFS_EV_PART_DATA: {
+			event->data.size = msg->len;
+			event->data.bytes = malloc(msg->len);
+			memcpy(event->data.bytes, msg->data, msg->len);
+
+		}
+		break;
+
 		case EVFS_EV_PART_FILE_REFERENCE: {
 							  
 			evfs_filereference* ref;
@@ -232,7 +255,9 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 
 		/*The pieces of the incoming command*/
 		case EVFS_COMMAND_TYPE:
+		case EVFS_COMMAND_EXTRA:
 		case EVFS_FILE_REFERENCE:
+		case EVFS_FILE_REFERENCE_FD:
 		case EVFS_COMMAND_END:
 			evfs_process_incoming_command(NULL, &event->resp_command, msg);
 			break;	
@@ -242,7 +267,7 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			//printf("Created new ecore list at %p\n", event->file_list.list);
 			return TRUE;
 			break;
-		default: printf("Unknown event part received!\n");
+		default: printf("Unknown event part received! - %d\n", msg->minor);
 			 break;
 	}
 
@@ -284,6 +309,8 @@ void evfs_write_command(evfs_connection* conn, evfs_command* command) {
 		case EVFS_CMD_LIST_DIR:
 		case EVFS_CMD_FILE_TEST:
 		case EVFS_CMD_FILE_COPY:
+		case EVFS_CMD_FILE_OPEN:
+		case EVFS_CMD_FILE_READ:
 			evfs_write_file_command(conn, command);
 			break;
 		default:
@@ -303,6 +330,9 @@ void evfs_write_command_client(evfs_client* client, evfs_command* command) {
 		case EVFS_CMD_LIST_DIR:
 		case EVFS_CMD_FILE_TEST:
 		case EVFS_CMD_FILE_COPY:
+		case EVFS_CMD_FILE_OPEN:
+		case EVFS_CMD_FILE_READ:
+
 			evfs_write_file_command_client(client, command);
 			break;
 		default:
@@ -334,6 +364,13 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 	evfs_write_ecore_ipc_server_message(conn->server, 
 			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, 0,0,0,
 			&command->type, sizeof(evfs_command_type)));
+
+
+	evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_EXTRA, 0,0,0,
+			&command->file_command.extra, sizeof(int)));
+
+	
 
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
@@ -383,6 +420,10 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 			ecore_ipc_message_new(EVFS_COMMAND, 
 			EVFS_FILE_REFERENCE, 0,0,0,uri, sizeof(uri)));
 
+		evfs_write_ecore_ipc_server_message(conn->server, 
+			ecore_ipc_message_new(EVFS_COMMAND, 
+			EVFS_FILE_REFERENCE_FD, 0,0,0,&ref->fd, sizeof(int)));
+
 	}
 
 	/*Send a final*/
@@ -394,6 +435,12 @@ void evfs_write_file_command(evfs_connection* conn, evfs_command* command) {
 void evfs_write_file_command_client(evfs_client* client, evfs_command* command) {
 	int i;
 	char uri[1024];
+	char* part;
+	int it;
+	Ecore_List* uri_part;
+
+
+	bzero(uri, 1024);
 
 
 	/*Write the command type structure*/
@@ -401,26 +448,62 @@ void evfs_write_file_command_client(evfs_client* client, evfs_command* command) 
 			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_TYPE, client->id,0,0,
 			&command->type, sizeof(evfs_command_type)));
 
+	evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_COMMAND, EVFS_COMMAND_EXTRA, client->id,0,0,
+			&command->file_command.extra, sizeof(int)));
+
+
 	/*Write the files*/
 	/*Send them de-parsed to save time*/
 	for (i=0;i<command->file_command.num_files;i++) {
-		if (command->file_command.files[i]->username) {
-			snprintf(uri, 1024, "%s://%s:%s@%s", 
-			command->file_command.files[i]->plugin_uri,
-			command->file_command.files[i]->username,
-			command->file_command.files[i]->password,
-			command->file_command.files[i]->path);
+		evfs_filereference* ref = command->file_command.files[i];
+		uri_part = ecore_dlist_new();	
+		
+		it=0;
+		do {
+			if (it) {
+				ref = ref->parent;
+			}
+			
+			if (ref->username) {
+				snprintf(uri, 1024, "%s://%s:%s@%s", 
+				ref->plugin_uri,
+				ref->username,
+				ref->password,
+				ref->path);
+			} else {
+				snprintf(uri, 1024, "%s://%s", 
+				ref->plugin_uri, 
+				ref->path);
+			}
+			ecore_dlist_append(uri_part, strdup(uri));
+			//printf("Appended URI '%s'\n", uri);
 
-		} else {
-			snprintf(uri, 1024, "%s://%s", 
-			command->file_command.files[i]->plugin_uri, 
-			command->file_command.files[i]->path);
+			it++;
+		} while (ref->parent);
+
+		it = 0;
+		bzero(uri, 1024);
+
+		ecore_dlist_goto_last(uri_part);
+		while ( (part = ecore_dlist_previous(uri_part))) {
+			if (it) strcat(uri, "#");
+			strcat(uri, part);
+				
+			free(part);
+			it++;
 		}
-	
+		ecore_dlist_destroy(uri_part);
+
 
 		evfs_write_ecore_ipc_client_message(client->client, 
 			ecore_ipc_message_new(EVFS_COMMAND, 
 			EVFS_FILE_REFERENCE, client->id,0,0,uri, sizeof(uri) + 1));	
+
+
+		evfs_write_ecore_ipc_client_message(client->client, 
+			ecore_ipc_message_new(EVFS_COMMAND, 
+			EVFS_FILE_REFERENCE_FD, client->id,0,0,&ref->fd, sizeof(int)));
 
 
 		
@@ -445,10 +528,11 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 	
 	switch (message->minor) {
 		case EVFS_COMMAND_TYPE:
-
 			memcpy(&command->type,message->data,sizeof(evfs_command_type));
+			break;
 
-			
+		case EVFS_COMMAND_EXTRA:
+			memcpy(&command->file_command.extra, message->data, sizeof(int));
 			break;
 		case EVFS_FILE_REFERENCE: {
 			//printf("Parsing URI: '%s'\n", message->data);			  
@@ -507,6 +591,15 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 				printf("Received password: '%s'\n",command->file_command.files[command->file_command.num_files-1]->password);
 			} else {
 				printf("BAD: Received a password before a filerefereence!\n");
+			}
+			break;
+
+
+		case EVFS_FILE_REFERENCE_FD:
+			if (command->file_command.num_files) {
+				command->file_command.files[command->file_command.num_files-1]->fd = *(int*)message->data;
+			} else {
+				printf("BAD: Received an FD before a filerefereence!\n");
 			}
 			break;
 

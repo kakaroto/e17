@@ -103,7 +103,7 @@ void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs
 	
 	evfs_command* command = NEW(evfs_command);
 
-	printf("Opening a file..\n");
+	printf("Copying a file..\n");
 
 	command->type = EVFS_CMD_FILE_COPY;
 	command->file_command.num_files = 2;
@@ -114,8 +114,40 @@ void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs
 	evfs_write_command(conn, command);
 
 	free(command);	
-
 }
+
+void evfs_client_file_open(evfs_connection* conn, evfs_filereference* file) {
+	evfs_command* command = NEW(evfs_command);
+
+	fprintf(stderr, "Opening a file..\n");
+
+	command->type = EVFS_CMD_FILE_OPEN;
+	command->file_command.num_files = 1;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+	command->file_command.files[0] = file;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+}
+
+
+void evfs_client_file_read(evfs_connection* conn, evfs_filereference* file, int read_size) {
+	evfs_command* command = NEW(evfs_command);
+
+	//printf("Reading a file..\n");
+
+	command->type = EVFS_CMD_FILE_READ;
+	command->file_command.num_files = 1;
+	command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+	command->file_command.files[0] = file;
+	command->file_command.extra = read_size;
+
+	evfs_write_command(conn, command);
+
+	free(command);	
+}
+
 
 
 

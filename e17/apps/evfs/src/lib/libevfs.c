@@ -201,7 +201,7 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 	ecore_list_append(reserved, "#");
 	ecore_list_append(reserved, ";");
 
-	printf ("Lexing '%s'\n", dup_uri);
+	//printf ("Lexing '%s'\n", dup_uri);
 	//printf("Strlen(uri): %d\n", strlen(uri));
 
 	while (j <= strlen(dup_uri)) {
@@ -326,7 +326,7 @@ evfs_uri_token* evfs_token_expect(Ecore_DList* tokens, evfs_uri_token_type type,
 		return token;
 	} else {
 		ecore_dlist_previous(tokens);
-		printf("Didn't get expected token type, '%s'\n", token->token_s);
+		//printf("Didn't get expected token type, '%s'\n", token->token_s);
 		return NULL;
 	}
 }

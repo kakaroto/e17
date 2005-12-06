@@ -139,6 +139,50 @@ void evfs_handle_file_stat_command(evfs_client* client, evfs_command* command) {
 
 }
 
+void evfs_handle_file_open_command(evfs_client* client, evfs_command* command) {
+	
+	printf ("At file open handler\n");
+	printf("Looking for plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
+	if (plugin) {
+		printf("Pointer here: %p\n", plugin->functions->evfs_file_open);
+		(*(plugin->functions->evfs_file_open))(client, command->file_command.files[0]);
+
+
+		fprintf(stderr, "Opened file, fd is: %d\n", command->file_command.files[0]->fd);
+		evfs_open_event_create(client, command);
+	}
+	printf("Handled event, client is %p\n", client);
+
+}
+
+
+void evfs_handle_file_read_command(evfs_client* client, evfs_command* command) {
+	char* bytes;
+	int b_read = 0;
+
+	
+	//printf ("At file read handler, fd is: %d\n", command->file_command.files[0]->fd);
+	//printf ("Reading %d bytes\n", command->file_command.extra);
+
+	bytes = malloc(sizeof(char)*command->file_command.extra);
+
+	//printf("Looking for plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
+	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
+	if (plugin) {
+		//printf("Pointer here: %p\n", plugin->functions->evfs_file_read);
+		b_read = (*(plugin->functions->evfs_file_read))(client, command->file_command.files[0], bytes, command->file_command.extra );
+
+		//printf("Bytes read: %d\n", b_read);
+
+
+		evfs_read_event_create(client, command, bytes, b_read);
+	}
+	//printf("Handled event, client is %p\n", client);
+
+}
+
+
 
 void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command) {
 

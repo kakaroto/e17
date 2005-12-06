@@ -45,6 +45,9 @@ int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static SMBCCTX *smb_context = NULL;
 Ecore_List* auth_cache;
 
+int smb_next_fd;
+Ecore_Hash* smb_fd_hash;
+
 
 
 
@@ -93,6 +96,27 @@ evfs_auth_cache* evfs_auth_cache_get(Ecore_List* cache, char* path) {
 	}
 
 	return NULL;
+}
+
+
+int smb_fd_get_next(void* ptr) {
+	smb_next_fd++;
+	ecore_hash_set(smb_fd_hash, (int*)smb_next_fd, ptr);
+
+	printf("Wrote ptr %p for fd %d\n", ptr, smb_next_fd);
+
+	return smb_next_fd;
+}
+
+void* smb_fd_get_for_int(int fd) {
+	return ecore_hash_get(smb_fd_hash, (int*)fd);
+}
+
+
+void evfs_smb_populate_fd(evfs_filereference* file) {
+	if (file->fd_p == NULL)  {
+		file->fd_p = smb_fd_get_for_int(file->fd);
+	}
 }
 
 
@@ -164,16 +188,14 @@ evfs_plugin_functions* evfs_plugin_init() {
 	printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
 
 	auth_cache = ecore_list_new();
+	smb_fd_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	smb_next_fd = 0;
 
 	//Initialize samba (temporarily borrowed from gnomevfs)
 	smb_context = smbc_new_context ();
 	if (smb_context != NULL) {
 		smb_context->debug = 0;
-		smb_context->callbacks.auth_fn 		    = auth_fn;
-		/*smb_context->callbacks.add_cached_srv_fn    = add_cached_server;
-		smb_context->callbacks.get_cached_srv_fn    = get_cached_server;
-		smb_context->callbacks.remove_cached_srv_fn = remove_cached_server;
-		smb_context->callbacks.purge_cached_fn      = purge_cached;*/
+		smb_context->callbacks.auth_fn = auth_fn;
 
 		if (!smbc_init_context (smb_context)) {
 			printf("Error initializing samba context..\n");
@@ -185,8 +207,6 @@ evfs_plugin_functions* evfs_plugin_init() {
 
 	
 	return functions;
-
-	
 }
 
 char* evfs_plugin_uri_get() {
@@ -314,8 +334,9 @@ int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	printf("Opening file '%s' in samba\n", dir_path);
 
 	file->fd_p = smb_context->open(smb_context, dir_path, O_RDONLY, S_IRUSR);
+	file->fd = smb_fd_get_next(file->fd_p);
 
-	return 0;
+	return file->fd;
 }
 
 int evfs_file_close(evfs_filereference* file) {
@@ -352,9 +373,11 @@ int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
 int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size) {
 	int bytes_read = 0;
 	/*printf("Reading %ld bytes from file %s\n", size, file->path);*/
+
+	evfs_smb_populate_fd(file);
+	//printf("FD Pointer: %p\n", file->fd_p);
 	
 	bytes_read = smb_context->read(smb_context, file->fd_p, bytes, size);
-
 	return bytes_read;
 }
 

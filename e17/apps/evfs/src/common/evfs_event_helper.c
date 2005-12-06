@@ -76,3 +76,27 @@ void evfs_file_progress_event_create(evfs_client* client, evfs_command* command,
 
 }
 
+
+void evfs_open_event_create(evfs_client* client, evfs_command* command) {
+	/*Create a reply event for a file mon event, send it , destroy event*/
+	
+	evfs_event* event = NEW(evfs_event);
+	event->type = EVFS_EV_FILE_OPEN;
+	evfs_write_event(client, command, event);
+
+	/*Now destroy*/
+	evfs_cleanup_event(event);
+}
+
+void evfs_read_event_create(evfs_client* client, evfs_command* command, char* bytes, long size) {
+	evfs_event* event = NEW(evfs_event);
+	event->type = EVFS_EV_FILE_READ;
+	event->data.size = size;
+	event->data.bytes = bytes;
+	evfs_write_event(client, command, event);
+
+
+	/*Destroy*/
+	evfs_cleanup_event(event);
+}
+

@@ -56,6 +56,11 @@ void evfs_cleanup_file_list_event(evfs_event* event) {
 	}
 }
 
+void evfs_cleanup_file_read_event(evfs_event* event) {
+	if (event->data.bytes) 
+		free(event->data.bytes);
+}
+
 void evfs_cleanup_event(evfs_event* event) {
 	evfs_cleanup_command(&event->resp_command, EVFS_CLEANUP_PRESERVE_COMMAND);
 
@@ -65,6 +70,9 @@ void evfs_cleanup_event(evfs_event* event) {
 			break;
 		case EVFS_EV_DIR_LIST:
 			evfs_cleanup_file_list_event(event);
+			break;
+		case EVFS_EV_FILE_READ:
+			evfs_cleanup_file_read_event(event);
 			break;
 	}
 
