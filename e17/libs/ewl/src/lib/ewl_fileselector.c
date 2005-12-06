@@ -920,7 +920,6 @@ ewl_fileselector_data_free(Ewl_Fileselector_Data *d)
 static void
 ewl_fileselector_tooltip_add(Ewl_Widget *w, Ewl_Fileselector_Data *d)
 {
-	Ewl_Widget *parent_win;
 	char *str;
 	char *name, *size, *perm;
 
@@ -928,8 +927,6 @@ ewl_fileselector_tooltip_add(Ewl_Widget *w, Ewl_Fileselector_Data *d)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("d", d);
 	DCHECK_TYPE("w", w, "widget");
-
-	parent_win = EWL_WIDGET(ewl_embed_widget_find(w));
 
 	name = d->name;
 	size = ewl_fileselector_size_string_get(d->size);
