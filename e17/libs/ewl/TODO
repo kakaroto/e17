@@ -45,12 +45,6 @@ EWL BUGS
 - Menus will activate on tab, but it jumps to the submenu instead of
   each menu item
 
-- Run the 'ewl_test text' and click on the end of the first widiget
-  and type a few chars (should be in red) now, use the arrow keys to
-  move the cursor back to the black text. The cursor will jump to 
-  the beginning when you cursor over the first red char and then back
-  to the correct spot.
-
 - If you run ewl_test and select a test the main window will have the
   tests code filled in. The scrollpane ends up being twice as big as
   it should be.
