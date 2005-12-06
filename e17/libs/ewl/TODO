@@ -18,8 +18,7 @@ EWL BUGS
   right now.
 
 - Seem to have lost the .. entry in the filedialog files list.
-  Something wrong with the regex's or caused by something in
-  ecore_file
+  ecore_file_ls filters this out.
 
 - In ewl_text if your in a multiline text and on a line that is longer
   then then one above or below and you hit the up arrow it will
