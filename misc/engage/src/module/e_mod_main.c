@@ -1204,7 +1204,7 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
    Engage_Icon *ic;
    Engage_App_Icon *ai;
    E_App *app;
-   char *title;
+   const char *title;
    
    if (bd->zone->container != eb->con)
      return 1;
@@ -1215,8 +1215,7 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 
    if (_engage_border_ignore(bd))
      return 1;
-   if (bd->client.netwm.name) title = bd->client.netwm.name;
-   else title = bd->client.icccm.title;
+   title = e_border_name_get(bd);
    app = e_app_window_name_class_title_role_find(bd->client.icccm.name,
 						 bd->client.icccm.class,
 						 title,
@@ -1267,7 +1266,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    E_Event_Border_Remove *e;
    E_App *app;
    Evas_List *icons;
-   char *title;
+   const char *title;
 
    e = event;
    eb = data;
@@ -1275,8 +1274,7 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
    if (e->border->zone->container != eb->con)
      return 1;
 
-   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
-   else title = e->border->client.icccm.title;
+   title = e_border_name_get(e->border);
    app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
 						 e->border->client.icccm.class,
 						 title,
@@ -1315,15 +1313,14 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
    E_Event_Border_Hide *e;
    E_App *app;
    Evas_List *icons;
-   char *title;
+   const char *title;
 
    e = event;
    eb = data;
    if (e->border->zone->container != eb->con)
      return 1;
 
-   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
-   else title = e->border->client.icccm.title;
+   title = e_border_name_get(e->border);
    app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
 						 e->border->client.icccm.class,
 						 title,
@@ -1368,7 +1365,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    E_Event_Border_Show *e;
    E_App *app;
    Evas_List *icons;
-   char *title;
+   const char *title;
 
    e = event;
    eb = data;
@@ -1376,8 +1373,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    if (e->border->zone->container != eb->con)
      return 1;
 
-   if (e->border->client.netwm.name) title = e->border->client.netwm.name;
-   else title = e->border->client.icccm.title;
+   title = e_border_name_get(e->border);
    app = e_app_window_name_class_title_role_find(e->border->client.icccm.name,
 						 e->border->client.icccm.class,
 						 title,
@@ -1994,11 +1990,14 @@ _engage_app_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_
 {
    Evas_Event_Mouse_In *ev;
    Engage_App_Icon *ai;
+   const char *title;
 
    ev = event_info;
    ai = data;
-   if (ai->border->client.icccm.title)
-     edje_object_part_text_set(ai->ic->overlay_object, "EngageIconText", ai->border->client.icccm.title);
+   
+   title = e_border_name_get(ai->border);
+   if (title)
+     edje_object_part_text_set(ai->ic->overlay_object, "EngageIconText", title);
 //   edje_object_signal_emit(ic->bg_object, "active", "");
    edje_object_signal_emit(ai->ic->overlay_object, "active", "");
 }
