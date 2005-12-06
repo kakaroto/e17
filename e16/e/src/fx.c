@@ -90,7 +90,7 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
      {
 	XGCValues           gcv;
 
-	fx_ripple_win = EoGetWin(DesksGetCurrent());
+	fx_ripple_win = DeskGetBackgroundWin(DesksGetCurrent());
 
 	fx_ripple_above =
 	   ECreatePixmap(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
@@ -105,10 +105,12 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 
 	FX_ripple_info();
      }
+
    if (fx_ripple_count == 0)
-      XCopyArea(disp, fx_ripple_win, fx_ripple_above, gc, 0,
+      XCopyArea(disp, EoGetWin(DesksGetCurrent()), fx_ripple_above, gc, 0,
 		VRoot.h - (fx_ripple_waterh * 3), VRoot.w, fx_ripple_waterh * 2,
 		0, 0);
+
    fx_ripple_count++;
    if (fx_ripple_count > 32)
       fx_ripple_count = 0;
@@ -259,18 +261,24 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 		    }
 	       }
 	  }
-	fx_raindrops_win = desks.desk[DesksGetCurrent()].win;
+
+	fx_raindrops_win = DeskGetBackgroundWin(DesksGetCurrent());
+
 	if (gc)
 	   EFreeGC(gc);
 	if (gc1)
 	   EFreeGC(gc1);
+
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = ECreateGC(fx_raindrops_win, GCSubwindowMode, &gcv);
 	gc1 = ECreateGC(fx_raindrops_win, 0L, &gcv);
+
 	fx_raindrops_draw =
 	   ECreatePixImg(fx_raindrops_win, fx_raindrop_size, fx_raindrop_size);
+
 	if (!fx_raindrops_draw)
 	   return;
+
 	for (i = 0; i < fx_raindrops_number; i++)
 	  {
 	     fx_raindrops[i].buf =
@@ -283,6 +291,7 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 		return;
 	  }
      }
+
    for (i = 0; i < fx_raindrops_number; i++)
      {
 	fx_raindrops[i].count++;
@@ -412,6 +421,7 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 		     fx_raindrop_size, False);
 	ESync();
      }
+
    DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
 	FX_raindrops_timeout, 0, NULL);
 }
@@ -524,7 +534,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
      {
 	XGCValues           gcv;
 
-	fx_wave_win = EoGetWin(DesksGetCurrent());
+	fx_wave_win = DeskGetBackgroundWin(DesksGetCurrent());
 
 	fx_wave_above =
 	   ECreatePixmap(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2, VRoot.depth);
@@ -542,7 +552,7 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
    /* On the zero, grab the desktop again. */
    if (fx_wave_count == 0)
      {
-	XCopyArea(disp, fx_wave_win, fx_wave_above, gc, 0,
+	XCopyArea(disp, EoGetWin(DesksGetCurrent()), fx_wave_above, gc, 0,
 		  VRoot.h - (FX_WAVE_WATERH * 3), VRoot.w, FX_WAVE_WATERH * 2,
 		  0, 0);
      }
@@ -690,7 +700,7 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 
    if (fx_imagespinner_win == None)
      {
-	fx_imagespinner_win = EoGetWin(DesksGetCurrent());
+	fx_imagespinner_win = DeskGetBackgroundWin(DesksGetCurrent());
 	FX_imagespinner_info();
      }
 
@@ -741,7 +751,7 @@ FX_ImageSpinner_Init(const char *name)
 static void
 FX_ImageSpinner_Desk(void)
 {
-   fx_imagespinner_win = EoGetWin(DesksGetCurrent());
+   fx_imagespinner_win = DeskGetBackgroundWin(DesksGetCurrent());
 }
 
 static void
