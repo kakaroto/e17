@@ -116,6 +116,12 @@ __create_dialog_test_window (Ewl_Widget * w, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER (hbox), label);
 	ewl_widget_show(label);
 
+	button = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
+	ewl_button_label_set(EWL_BUTTON(button), "tooltip");
+	ewl_attach_tooltip_text_set(button, "This is a tooltip");
+	ewl_widget_show(button);
+
 	ewl_dialog_active_area_set(EWL_DIALOG(dialog_win), EWL_POSITION_BOTTOM);
 
 	button = ewl_button_new();
@@ -131,6 +137,8 @@ __create_dialog_test_window (Ewl_Widget * w, void *ev __UNUSED__,
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			__create_window_response, NULL);
 	ewl_widget_show(button);
+
+	ewl_dialog_active_area_set(EWL_DIALOG(dialog_win), EWL_POSITION_TOP);
 
 	ewl_widget_show(dialog_win);
 }
