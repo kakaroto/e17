@@ -323,16 +323,10 @@ _engage_new()
 		  _engage_bar_menu_gen(eb);
 
 		  /*add tray*/
-		  if (eb->conf->tray)
-		    {
-		       _engage_tray_init(eb);
+		  _engage_tray_init(eb);
+		  edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
 
-		       edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
-		    }
-
-		 
 		  /* Add main menu to bar menu */
-
 		  mi = e_menu_item_new(e->config_menu);
 		  e_menu_item_label_set(mi, con->name);
 		  e_menu_item_submenu_set(mi, eb->menu);
@@ -735,11 +729,8 @@ _engage_bar_free(Engage_Bar *eb)
    evas_object_del(eb->box_object);
    evas_object_del(eb->event_object);
 	 
-   if (eb->tray)
-     {
-	_engage_tray_shutdown(eb);
-	eb->tray = NULL;
-     }
+   _engage_tray_shutdown(eb);
+   eb->tray = NULL;
 
    e_gadman_client_save(eb->gmc);
    e_object_del(E_OBJECT(eb->gmc));
@@ -894,8 +885,7 @@ _engage_bar_enable(Engage_Bar *eb)
    evas_object_show(eb->bar_object);
    evas_object_show(eb->box_object);
    evas_object_show(eb->event_object);
-   if (eb->tray)
-     evas_object_show(eb->tray->tray);
+   evas_object_show(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -906,8 +896,7 @@ _engage_bar_disable(Engage_Bar *eb)
    evas_object_hide(eb->bar_object);
    evas_object_hide(eb->box_object);
    evas_object_hide(eb->event_object);
-   if (eb->tray)
-     evas_object_hide(eb->tray->tray);
+   evas_object_hide(eb->tray->tray);
    e_config_save_queue();
 }
 
@@ -1479,7 +1468,7 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
 void
 _engage_bar_frame_resize(Engage_Bar *eb)
 {
-   Evas_Coord x, y, w, h;
+   Evas_Coord w, h;
    /* Not finished loading config yet! */
    if ((eb->x == -1)
        || (eb->y == -1)
@@ -1499,11 +1488,8 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
 
    edje_object_size_min_calc(eb->bar_object, &w, &h);
-   e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
    e_gadman_client_resize(eb->gmc, w, h);
 
-   evas_object_resize(eb->event_object, w, h);
-   evas_object_move(eb->event_object, x, y);
    e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
 }
@@ -2434,18 +2420,8 @@ _engage_bar_cb_menu_tray(void *data, E_Menu *m, E_Menu_Item *mi)
 
    eb = data;
    eb->conf->tray = e_menu_item_toggle_get(mi);
-   if (eb->conf->tray)
-     {
-	_engage_tray_init(eb);
-	edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
-     }
-   else
-     {
-	edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
-	_engage_tray_shutdown(eb);
-	eb->tray = NULL;
-	_engage_bar_frame_resize(eb);
-     }
+   _engage_tray_active_set(eb, eb->conf->tray);
+   _engage_bar_frame_resize(eb);
    e_config_save_queue();
 }
 
