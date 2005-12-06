@@ -67,11 +67,13 @@ void                DeskSetDirtyStack(Desk * dsk, EObj * eo);
 void                DeskGoto(Desk * dsk);
 void                DeskGotoNum(unsigned int desk);
 void                DeskRestack(Desk * dsk);
+Window              DeskGetBackgroundWin(const Desk * dsk);
 
 void                DeskBackgroundAssign(unsigned int desk,
 					 struct _background *bg);
 struct _background *DeskBackgroundGet(const Desk * dsk);
 void                DeskBackgroundSet(Desk * dsk, struct _background *bg);
+
 void                DesksBackgroundFree(struct _background *bg, int force);
 void                DesksBackgroundRefresh(struct _background *bg);
 

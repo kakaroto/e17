@@ -517,6 +517,16 @@ DeskDestroy(Desk * dsk)
    Efree(dsk);
 }
 
+Window
+DeskGetBackgroundWin(const Desk * dsk)
+{
+   if (!dsk)
+      return VRoot.win;
+   if (!dsk->bg.bg || !dsk->bg.o)
+      return EoGetWin(dsk);
+   return EobjGetWin(dsk->bg.o);
+}
+
 void
 DeskBackgroundAssign(unsigned int desk, Background * bg)
 {
@@ -536,6 +546,19 @@ static void
 DeskBackgroundConfigure(Desk * dsk)
 {
    Window              win;
+
+   if (dsk->bg.o != EoObj(dsk))
+     {
+	if (dsk->bg.bg)
+	  {
+	     EobjMap(dsk->bg.o, 0);
+	  }
+	else
+	  {
+	     EobjUnmap(dsk->bg.o);
+	     return;
+	  }
+     }
 
    win = EobjGetWin(dsk->bg.o);
 
@@ -605,23 +628,24 @@ DeskBackgroundRefresh(Desk * dsk)
 	      dsk->viewable, EoGetW(dsk), EoGetH(dsk));
 
    bg = dsk->bg.bg;
-   if (!bg)
-      return;
+   if (bg)
+     {
+	pmap = BackgroundGetPixmap(bg);
+	pixel = 0;
 
-   pmap = BackgroundGetPixmap(bg);
-   pixel = 0;
-   if (dsk->bg.isset && dsk->bg.pmap == pmap)
-      return;
+	if (dsk->bg.isset && dsk->bg.pmap == pmap)
+	   return;
 
-   if (pmap == None)
-      BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
-			&pmap, &pixel);
+	if (pmap == None)
+	   BackgroundRealize(bg, EoGetWin(dsk), EoGetW(dsk), EoGetH(dsk), 1,
+			     &pmap, &pixel);
 
-   if (pmap != None && pmap != dsk->bg.pmap)
-      BackgroundPixmapSet(dsk->bg.bg, pmap);
+	if (pmap != None && pmap != dsk->bg.pmap)
+	   BackgroundPixmapSet(dsk->bg.bg, pmap);
 
-   dsk->bg.pmap = pmap;
-   dsk->bg.pixel = pixel;
+	dsk->bg.pmap = pmap;
+	dsk->bg.pixel = pixel;
+     }
    dsk->bg.isset = 1;
    DeskBackgroundConfigure(dsk);
 }
