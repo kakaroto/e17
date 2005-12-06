@@ -25,6 +25,10 @@ EWL BUGS
   then then one above or below and you hit the up arrow it will
   position your cursor one character _before_ the end of the line.
 
+- In ewl_text if your in a multiline text and on the last line
+  of multiple lines. Pressing arrow down can wrap to the beginning
+  of the first line.
+
 - The ewl_password entry needs to correctly deal with selections and
   mouse clicks.
 
