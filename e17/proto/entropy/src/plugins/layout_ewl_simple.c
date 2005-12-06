@@ -21,7 +21,6 @@ struct entropy_layout_gui {
 	Ewl_Widget* tree;
 	Ecore_List* current_folder;
 
-	/*Random things*/
 
 	/*Tmp*/
 	Ewl_Widget* samba_radio;
@@ -34,13 +33,6 @@ struct entropy_layout_gui {
 	Ewl_Widget* location_add_username;
 	Ewl_Widget* location_add_password;
 };
-
-
-void filesystem_combo_cb(Ewl_Widget *item, void *ev_data, void *combo) {
-	//printf("Value changed callback\n");
-	//ewl_combo_selected_set(EWL_COMBO(combo), EWL_WIDGET(item));
-	//ewl_menu_item_text_set(EWL_MENU_ITEM(combo), ewl_text_text_get(EWL_TEXT(item)));
-}
 
 
 /*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
@@ -105,6 +97,12 @@ void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 }
 
 
+void entropy_ewl_layout_simple_tooltip_window() {
+	int status = entropy_core_tooltip_status_get();
+
+}
+
+
 void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
 
@@ -146,7 +144,8 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 
 	((entropy_layout_gui*)instance->data)->samba_radio = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(((entropy_layout_gui*)instance->data)->samba_radio), "Samba");
-	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->samba_radio), EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->posix_radio));
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->samba_radio), 
+		EWL_RADIOBUTTON(((entropy_layout_gui*)instance->data)->posix_radio));
 	ewl_container_child_append(EWL_CONTAINER(vbox2), ((entropy_layout_gui*)instance->data)->samba_radio);
 	ewl_widget_show(((entropy_layout_gui*)instance->data)->samba_radio);
 
@@ -275,7 +274,8 @@ void layout_ewl_simple_config_create(entropy_core* core) {
 
 	//printf("Setting config..\n");
 
-	sprintf(eg, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", entropy_core_home_dir_get(core));
+	sprintf(eg, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", 
+		entropy_core_home_dir_get(core));
 
 	//printf("Setting default config string..\n");
 	entropy_config_str_set("layout_ewl_simple", "structure_bar", eg);
@@ -317,7 +317,8 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 
 
 	/*Now attach an object to it*/
-	structure = entropy_plugins_type_get_first(instance->core->plugin_list, ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+	structure = entropy_plugins_type_get_first(instance->core->plugin_list, 
+		ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
 
 	if (structure) {
 		Ewl_Widget* children[2];
@@ -400,20 +401,6 @@ Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* insta
 	}
 
 	return ret;
-}
-
-
-void
-__resize_homedir(Ewl_Widget *obj, void *ev_data, void *user_data) {
-	int h;
-
-	//ewl_callback_del_type(EWL_WIDGET(obj), EWL_CALLBACK_CONFIGURE);
-
-	h = ewl_object_current_h_get(EWL_OBJECT(obj));
-	//ewl_object_custom_h_set(EWL_WIDGET(user_data), h);
-
-	//ewl_callback_append(EWL_WIDGET(obj), EWL_CALLBACK_CONFIGURE, __resize_homedir, EWL_WIDGET(user_data));
-	//printf("\n\n\n\n\nResize called, set to %d\n\n\n\n\n", h);
 }
 
 
@@ -596,7 +583,13 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_widget_show(menu);
 
 	item = ewl_menu_item_new();
-	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "About...");
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Tip Of The Day..");
+	ewl_container_child_append(EWL_CONTAINER(menu), item);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "About..");
 	ewl_container_child_append(EWL_CONTAINER(menu), item);
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
 	ewl_widget_show(item);
@@ -624,12 +617,10 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 
 	ewl_callback_append(EWL_WIDGET(add_button), EWL_CALLBACK_CLICKED, location_add_cb, layout);
-	/*ewl_widget_show(add_button);*/
 	/*--------------------------*/
 
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
 	ewl_container_child_append(EWL_CONTAINER(box),paned);
-	//ewl_container_child_append(EWL_CONTAINER(scrollpane), tree);
 	ewl_container_child_append(EWL_CONTAINER(paned), tree);
 	ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(paned), iconbox);
@@ -638,10 +629,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	/*This is cheating - break OO convention by accessing the internals of the struct.. but it doesn't work without this*/
 	ewl_object_fill_policy_set(EWL_OBJECT(EWL_PANED(paned)->second), EWL_FLAG_FILL_NORMAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(EWL_PANED(paned)->first), EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL );
-	//ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_NORMAL);
-	//ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_HSHRINK);
-	//ewl_object_fill_policy_set(EWL_OBJECT(scrollpane), EWL_FLAG_FILL_NORMAL);
 
 
 	if (!(tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar"))) {
@@ -655,10 +643,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	layout_ewl_simple_parse_config(layout, tmp);
 	entropy_free(tmp);
 
-
-	/*ewl_tree_node_expand(row);*/
-
-	//printf("Showing widgets..\n");
 	ewl_widget_show(box);
 	ewl_widget_show(vbox);
 	ewl_widget_show(hbox);
@@ -675,6 +659,11 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	__destroy_main_window, core);
 
 	ewl_container_child_resize(EWL_WIDGET(EWL_PANED(paned)->first), 80, EWL_ORIENTATION_HORIZONTAL);
+
+
+	/*Tooltip display function*/
+	entropy_ewl_layout_simple_tooltip_window();
+	
 
 	layout->gui_object = win;
 	return layout;

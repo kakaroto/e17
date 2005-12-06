@@ -275,10 +275,14 @@ entropy_core* entropy_core_init() {
 void entropy_core_mime_action_add(char* mime_type, char* action) {
 	entropy_mime_action* action_o;
 	
-	action_o = entropy_malloc(sizeof(entropy_mime_action));
-	action_o->executable = strdup(action);
-			
-	ecore_hash_set(core_core->mime_action_hint, strdup(mime_type), action_o);
+	if ( ! (action_o = ecore_hash_get  (core_core->mime_action_hint, mime_type))) {
+			action_o = entropy_malloc(sizeof(entropy_mime_action));
+			action_o->executable = strdup(action);
+			ecore_hash_set(core_core->mime_action_hint, strdup(mime_type), action_o);
+	} else {
+			free(action_o->executable);
+			action_o->executable = strdup(action);
+	}
 }
 
 void entropy_core_config_load() {
@@ -364,7 +368,6 @@ void entropy_core_config_save() {
 	int count;
 	char key[100];
 	char executable[256];
-	entropy_mime_action* action;
 	char* gkey;
 	int i=0;
 	
@@ -398,6 +401,23 @@ void entropy_core_config_save() {
 
 entropy_mime_action* entropy_core_mime_hint_get(char* mime_type) {
 	return ecore_hash_get(core_core->mime_action_hint, mime_type);
+}
+
+
+/*
+ * Get the status of tooltip displays 
+ */
+int entropy_core_tooltip_status_get() {
+	int status = entropy_config_int_get("core","tooltip_show");
+	/*printf("Status of tooltip: %d\n", status);*/
+
+	if (!status) {
+		/*Key doesn't exist, set it to the 'display' value by default*/
+		entropy_config_int_set("core","tooltip_show", 2);
+		
+	}
+	
+	return status;
 }
 
 

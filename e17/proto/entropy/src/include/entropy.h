@@ -76,6 +76,7 @@ void entropy_core_config_load();
 void entropy_core_config_save();
 char* entropy_core_home_dir_get();
 char* entropy_thumbnail_dir_get();
+int entropy_core_tooltip_status_get();
 int entropy_config_int_get(char* module, char* key);
 void entropy_config_int_set(char* module, char* key, int value);
 

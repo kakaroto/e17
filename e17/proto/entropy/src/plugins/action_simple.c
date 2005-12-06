@@ -22,6 +22,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj
 	entropy_core* core = ((entropy_gui_component_instance*)requestor)->core;
 	entropy_mime_action* app;
 	char* uri;
+	char* pos;
 
 	entropy_generic_file* file = (entropy_generic_file*)obj;
 
@@ -39,7 +40,9 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj
 		entropy_core_layout_notify_event((entropy_gui_component_instance*)requestor, gui_event, ENTROPY_EVENT_LOCAL); 
 
 		return;
-	} else if ( (uri = entropy_core_descent_for_mime_get(core,file->mime_type)) || file->parent) {
+	} else if ( (uri = entropy_core_descent_for_mime_get(core,file->mime_type)) 
+		|| (file->parent && !strcmp(file->mime_type,"file/folder")) ) {
+
 		entropy_file_request* request = entropy_malloc(sizeof(entropy_file_request));
 		
 		printf("Requested a list of a descendable object\n");
@@ -65,12 +68,37 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj
 		return;
 	}
 
+	
+	
+
 
 	/*First get the app associated with this mime type*/
 	app = entropy_core_mime_hint_get( ((entropy_generic_file*)obj)->mime_type);
 	if (app) {
-		sprintf(fullname, "%s \"%s/%s\"", app->executable, 
+		/*First do a replace*/
+		if ( (pos = strstr(app->executable, "\%u"))) {
+			bzero(fullname, 1024);
+			uri = entropy_core_generic_file_uri_create(file, 0);
+		
+			printf("Action '%s' contains a URI replace reference\n", app->executable);
+
+			/*This is some evil shit - TODO make a proper strreplace function*/
+			strncat(fullname, app->executable, pos-app->executable);
+			strcat(fullname, uri);
+			pos += 2;
+			strcat(fullname, pos);
+
+
+			printf("'%s'\n", fullname);
+
+			free(uri);
+		} else {
+			sprintf(fullname, "%s \"%s/%s\"", app->executable, 
 			((entropy_generic_file*)obj)->path, ((entropy_generic_file*)obj)->filename);
+		}
+
+		
+
 	
 		//printf ("Hit action callback\n");
 		//printf("Exe: %s\n", fullname);

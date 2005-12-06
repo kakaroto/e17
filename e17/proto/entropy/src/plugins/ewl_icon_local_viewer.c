@@ -252,7 +252,7 @@ void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 			entropy_core_layout_notify_event(  local_file->instance , gui_event, ENTROPY_EVENT_GLOBAL); 
 
 		} else if (ev->button == 2) {
-
+			
 		}
 
 	}
@@ -348,7 +348,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "New Directory");
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_new_dir.png");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_copy_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_file_copy_cb, instance);
 	ewl_widget_show(context);
 	
 
@@ -357,7 +357,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Copy selection");
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_copy.png");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_copy_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_file_copy_cb, instance);
 	ewl_widget_show(context);
 
 	/*Add some context menu items*/
@@ -365,7 +365,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Paste");
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_paste.png");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_paste_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_file_paste_cb, instance);
 	ewl_widget_show(context);
 
 	/*Add some context menu items*/
@@ -377,14 +377,14 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Set custom folder background...");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_set_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_background_set_cb, instance);
 	ewl_widget_show(context);
 
 	/*Add some context menu items*/
 	context = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Remove current custom background");
 	ewl_iconbox_context_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_background_remove_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_background_remove_cb, instance);
 	ewl_widget_show(context);
 
 
@@ -397,7 +397,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_copy.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_file_copy_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_file_copy_cb, instance);
 	//
 
 	context = ewl_menu_item_new();
@@ -426,7 +426,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, icon_properties_cb, instance);
 	
 
 
@@ -555,7 +555,8 @@ int idle_add_icons(void* data) {
 		/*data = file list*/
 		
 	
-		while ( (file = ecore_list_remove_first(el)) && i < ICON_ADD_COUNT) {
+		while (i < ICON_ADD_COUNT && (file = ecore_list_remove_first(el))) {
+			//printf("Adding '%s'\n", file->filename);
 			ewl_icon_local_viewer_add_icon(proc->requestor, file, DONT_DO_MIME);
 			ecore_list_append(added_list,file);
 
@@ -598,8 +599,9 @@ int idle_add_icons(void* data) {
 		} else { 
 			ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX( ((entropy_icon_viewer*)comp->data)->iconbox));	
 			view->last_processor = NULL;
-			goto FREE_AND_LEAVE;
 			//printf("Terminated process thread..\n");
+			goto FREE_AND_LEAVE;
+			
 			return 0;
 		}
 
@@ -664,6 +666,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
 		ecore_list_goto_first(ret);
 		while ( (event_file = ecore_list_next(ret))) {
+			//printf("Populating with '%s'\n", event_file->filename);
 			ecore_list_append(proc->user_data, event_file);	
 		}
 
