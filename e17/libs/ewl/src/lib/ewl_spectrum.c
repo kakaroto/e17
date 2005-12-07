@@ -73,6 +73,17 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_widget_appearance_set(EWL_WIDGET(sp), "spectrum");
 	ewl_widget_inherit(EWL_WIDGET(sp), "spectrum");
 	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_FILL);
+	ewl_container_callback_intercept(EWL_CONTAINER(sp),
+					EWL_CALLBACK_MOUSE_MOVE);
+	ewl_container_callback_intercept(EWL_CONTAINER(sp),
+					EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_callback_intercept(EWL_CONTAINER(sp),
+					EWL_CALLBACK_MOUSE_UP);
+
+	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_DOWN, 
+				ewl_spectrum_cb_mouse_down, NULL);
+	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_UP, 
+				ewl_spectrum_cb_mouse_up, NULL);
 
 	sp->type = EWL_SPECTRUM_TYPE_SQUARE;
 
@@ -80,10 +91,6 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->canvas);
 	ewl_object_fill_policy_set(EWL_OBJECT(sp->canvas), EWL_FLAG_FILL_FILL);
 	ewl_widget_internal_set(sp->canvas, TRUE);
-	ewl_callback_append(sp->canvas, EWL_CALLBACK_MOUSE_DOWN, 
-					ewl_spectrum_cb_mouse_down, sp);
-	ewl_callback_append(sp->canvas, EWL_CALLBACK_MOUSE_UP, 
-					ewl_spectrum_cb_mouse_up, sp);
 	ewl_widget_show(sp->canvas);
 
 	/* create the cross hairs to draw on the spectrum */
@@ -305,21 +312,22 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 	unsigned int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "spectrum");
 
-	sp = data;
+	sp = EWL_SPECTRUM(w);
 	e = ev;
 
-	ewl_callback_append(sp->canvas, EWL_CALLBACK_MOUSE_MOVE, 
-					ewl_spectrum_cb_mouse_move, sp);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, 
+					ewl_spectrum_cb_mouse_move, NULL);
 
 	x = e->x - CURRENT_X(w);
 	y = e->y - CURRENT_Y(w);
 
-	if (x > (unsigned int)(CURRENT_X(w) + CURRENT_W(w)))
-		x = (CURRENT_W(w) - CURRENT_X(w));
-	if (y > (unsigned int)(CURRENT_Y(w) + CURRENT_H(w)))
-		y = (CURRENT_H(w) - CURRENT_Y(w));
+	if (x > (unsigned int)(CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas)))
+		x = (CURRENT_W(sp->canvas) - CURRENT_X(sp->canvas));
+	if (y > (unsigned int)(CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas)))
+		y = (CURRENT_H(sp->canvas) - CURRENT_Y(sp->canvas));
 
 	ewl_spectrum_mouse_process(sp, x, y);
 
@@ -334,18 +342,19 @@ ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "spectrum");
 
-	sp = data;
+	sp = EWL_SPECTRUM(w);
 	e = ev;
 
 	x = e->x - CURRENT_X(sp);
 	y = e->y - CURRENT_Y(sp);
 
-	if (x > (CURRENT_X(w) + CURRENT_W(w)))
-		x = (CURRENT_W(w) - CURRENT_X(w));
-	if (y > (CURRENT_Y(w) + CURRENT_H(w)))
-		y = (CURRENT_H(w) - CURRENT_Y(w));
+	if (x > (CURRENT_X(sp->canvas) + CURRENT_W(sp->canvas)))
+		x = (CURRENT_W(sp->canvas) - CURRENT_X(sp->canvas));
+	if (y > (CURRENT_Y(sp->canvas) + CURRENT_H(sp->canvas)))
+		y = (CURRENT_H(sp->canvas) - CURRENT_Y(sp->canvas));
 
 	ewl_spectrum_mouse_process(sp, x, y);
 
@@ -359,11 +368,12 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Spectrum *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "spectrum");
 
-	sp = data;
-	ewl_callback_del(sp->canvas, EWL_CALLBACK_MOUSE_MOVE,
-			ewl_spectrum_cb_mouse_move);
+	sp = EWL_SPECTRUM(w);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
+			 ewl_spectrum_cb_mouse_move);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
