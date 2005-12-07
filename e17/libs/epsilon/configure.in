@@ -87,13 +87,30 @@ AC_PATH_GENERIC(edje, 0.5.0,
   [ have_edje="yes" ],
   [
     have_edje="yes"
-    AC_MSG_ERROR(Cannot find Edje on your system: jpeg thumbnail suckage!)
+    AC_MSG_ERROR(Cannot find Edje on your system: edje thumbnail suckage!)
   ]
 )
 
+# Build the list of required libs for epsilon.pc.in. Only works for libs
+# which install a .pc file of course
+if test "x$`evas-config --libs`" != "x"; then
+  requirements=evas
+fi
+if test "x$`ecore-config --libs`" != "x"; then
+  requirements="$requirements ecore"
+fi
+if test "x$`edje-config --libs`" != "x"; then
+  requirements="$requirements edje"
+fi
+      
+AC_SUBST(requirements)      
+
+#####################################################################
+## Output
 
 AC_OUTPUT([
 Makefile
+epsilon.pc
 epsilon.spec
 epsilon-config
 src/Makefile
