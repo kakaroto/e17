@@ -2106,6 +2106,7 @@ ewl_text_display(Ewl_Text *t)
 	if (!w) w = 1;
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(t), (int)w, (int)h);
+	t->dirty = FALSE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
