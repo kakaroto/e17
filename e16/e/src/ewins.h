@@ -253,19 +253,19 @@ struct _ewin
 
 #define EwinGetDesk(ewin)		EoGetDesk(ewin)
 
-#define EwinIsMapped(ewin)		(ewin->state.state >= EWIN_STATE_MAPPED)
-#define EwinIsInternal(ewin)		(ewin->type != EWIN_TYPE_NORMAL)
-#define EwinIsTransientChild(ewin)	(ewin->icccm.transient > 0)
-#define EwinIsTransient(ewin)		(ewin->icccm.transient != 0)
-#define EwinGetTransientFor(ewin)	(ewin->icccm.transient_for)
-#define EwinGetTransientCount(ewin)	(ewin->icccm.transient_count)
-#define EwinIsWindowGroupLeader(ewin)	(ewin->icccm.is_group_leader)
-#define EwinGetWindowGroup(ewin)	(ewin->icccm.group)
+#define EwinIsMapped(ewin)		((ewin)->state.state >= EWIN_STATE_MAPPED)
+#define EwinIsInternal(ewin)		((ewin)->type != EWIN_TYPE_NORMAL)
+#define EwinIsTransientChild(ewin)	((ewin)->icccm.transient > 0)
+#define EwinIsTransient(ewin)		((ewin)->icccm.transient != 0)
+#define EwinGetTransientFor(ewin)	((ewin)->icccm.transient_for)
+#define EwinGetTransientCount(ewin)	((ewin)->icccm.transient_count)
+#define EwinIsWindowGroupLeader(ewin)	((ewin)->icccm.is_group_leader)
+#define EwinGetWindowGroup(ewin)	((ewin)->icccm.group)
 
-#define _EwinGetClientWin(ewin)		(ewin->client.win)
-#define _EwinGetClientXwin(ewin)	(ewin->client.win)
-#define _EwinGetContainerWin(ewin)	(ewin->win_container)
-#define _EwinGetContainerXwin(ewin)	(ewin->win_container)
+#define _EwinGetClientWin(ewin)		((ewin)->client.win)
+#define _EwinGetClientXwin(ewin)	((ewin)->client.win)
+#define _EwinGetContainerWin(ewin)	((ewin)->win_container)
+#define _EwinGetContainerXwin(ewin)	((ewin)->win_container)
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
