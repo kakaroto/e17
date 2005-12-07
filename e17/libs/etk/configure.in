@@ -205,7 +205,18 @@ edje_libs=`$EDJE_CONFIG --libs`
 AC_SUBST(edje_cflags)
 AC_SUBST(edje_libs)
 
-requirements="evas ecore edje"
+# Build the list of required libs for etk.pc.in. Only works for libs
+# which install a .pc file of course
+if test "x$evas_libs" != "x"; then
+  requirements=evas
+fi
+if test "x$ecore_libs" != "x"; then
+  requirements="$requirements ecore"
+fi
+if test "x$edje_libs" != "x"; then
+  requirements="$requirements edje"
+fi  
+
 AC_SUBST(requirements)
 
 #####################################################################
@@ -213,6 +224,7 @@ AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+etk.pc
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile

@@ -7,7 +7,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		ltconfig ltmain.sh missing mkinstalldirs \
 		stamp-h.in build-stamp configure-stamp depcomp \
 		etk_docs.tar.gz \
-		README
+		README \
+		etk.pc
 
 bin_SCRIPTS = etk-config
 
@@ -17,8 +18,9 @@ COPYING \
 gendoc \
 Doxyfile \
 README \
-ABOUT-NLS
+ABOUT-NLS \
+etk.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
-
+pkgconfig_DATA = etk.pc
 ACLOCAL_AMFLAGS = -I m4
