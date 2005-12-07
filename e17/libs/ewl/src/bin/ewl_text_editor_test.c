@@ -362,8 +362,10 @@ ete_cb_fetch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	entry = ewl_widget_name_find("entry");
 	txt = ewl_text_text_get(EWL_TEXT(entry));
 
-	printf("%s\n", txt);
-	FREE(txt);
+	if (txt) {
+		printf("%s\n", txt);
+		FREE(txt);
+	}
 }
 
 static void
