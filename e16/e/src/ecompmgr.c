@@ -1637,7 +1637,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	ERegionTranslate(parts,
 			 eo->x + cw->a.border_width,
 			 eo->y + cw->a.border_width);
-#if ENABLE_SHADOWS
+#if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
 	if (Conf_compmgr.shadows.mode == ECM_SHADOWS_SHARP)
 	  {
 	     XserverRegion       o;
