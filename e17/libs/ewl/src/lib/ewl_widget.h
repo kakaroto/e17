@@ -46,9 +46,9 @@ typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 struct Ewl_Callback_Chain
 {
 	void **list;
-	unsigned char mask;
-	unsigned char len;
-	unsigned char index;
+	unsigned short int mask;
+	unsigned short int len;
+	unsigned short int index;
 };
 
 typedef struct Ewl_Color_Set Ewl_Color_Set;
