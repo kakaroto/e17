@@ -57,13 +57,14 @@ struct Ewl_Text
 		Ewl_Text_Tree 	*current;	  /**< The current formatting node */
 	} formatting;
 
-	unsigned int 		 delete_count;	  /**< Number of deletes */
-
 	Ecore_List		*triggers;	  /**< The list of triggers */
 	Ewl_Text_Trigger	*selection;	  /**< The current selection */
-	unsigned int		 in_select;	  /**< Are we in select mode? */
 
-	unsigned int		 selectable;	  /**< Is the text selectable? */
+	unsigned char		 delete_count;	  /**< Number of deletes */
+	unsigned char		 in_select;	  /**< Are we in select mode? */
+
+	unsigned char		 selectable;	  /**< Is the text selectable? */
+	unsigned char		 dirty;	  	  /**< Does the text need layout? */
 };
 
 Ewl_Widget 	*ewl_text_new(void);
