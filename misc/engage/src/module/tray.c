@@ -19,6 +19,8 @@ static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Ev
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
 
 void           _engage_tray_layout(Engage_Bar *eb);
+void           _engage_tray_freeze(Engage_Bar *eb);
+void           _engage_tray_thaw(Engage_Bar *eb);
 extern void    _engage_bar_frame_resize(Engage_Bar *eb);
 
 void
@@ -40,8 +42,7 @@ _engage_tray_init(Engage_Bar *eb)
    evas_object_resize(eb->tray->tray, eb->tray->w, eb->tray->h);
    evas_object_color_set(eb->tray->tray, 180, 0, 0, 255);
    evas_object_show(eb->tray->tray);
-   evas_object_intercept_move_callback_add(eb->tray->tray, _engage_tray_cb_move, eb);
-   evas_object_intercept_resize_callback_add(eb->tray->tray, _engage_tray_cb_resize, eb);
+   _engage_tray_thaw(eb);
 
    edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    _engage_tray_active_set(eb, eb->conf->tray);
@@ -51,6 +52,7 @@ _engage_tray_init(Engage_Bar *eb)
 void
 _engage_tray_shutdown(Engage_Bar *eb)
 {
+   _engage_tray_freeze(eb);
    edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
    _engage_tray_active_set(eb, 0);
 
@@ -110,8 +112,27 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
      }
 }
 
+void
+_engage_tray_freeze(Engage_Bar *eb)
+{
+   if (!eb->tray)
+     return;
+   evas_object_intercept_move_callback_del(eb->tray->tray, _engage_tray_cb_move);
+   evas_object_intercept_resize_callback_del(eb->tray->tray, _engage_tray_cb_resize);
+}
+
+void
+_engage_tray_thaw(Engage_Bar *eb)
+{
+   if (!eb->tray)
+     return;
+   evas_object_intercept_move_callback_add(eb->tray->tray, _engage_tray_cb_move, eb);
+   evas_object_intercept_resize_callback_add(eb->tray->tray, _engage_tray_cb_resize, eb);
+}
+
 static void
-_engage_tray_add(Engage_Bar *eb, Ecore_X_Window win) {
+_engage_tray_add(Engage_Bar *eb, Ecore_X_Window win)
+{
 
   if (!eb->conf->tray)
     return;
@@ -235,7 +256,6 @@ _engage_tray_layout(Engage_Bar *eb)
 	  }
 	edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
 	evas_object_resize(eb->tray->tray, w, h);
-	ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
 
 	edje_extern_object_min_size_set(eb->tray->tray, w, h);
 	edje_extern_object_max_size_set(eb->tray->tray, w, h);
@@ -247,25 +267,28 @@ _engage_tray_layout(Engage_Bar *eb)
    if (h < 24)
      h = 24;
    c = (h - (h % 24)) / 24;
-   w = ((eb->tray->icons + (eb->tray->icons % c)) / c) * 24;
-   
+   w = (eb->tray->icons / c);
+   if ((eb->tray->icons % c) != 0)
+     w++;
+   w *= 24;
+
+   _engage_tray_freeze(eb);
+   edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
    if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_TOP) {
-     edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
      evas_object_resize(eb->tray->tray, w, h);
      ecore_x_window_resize(eb->tray->win, (int) w, (int) h);
 
      edje_extern_object_min_size_set(eb->tray->tray, w, h);
      edje_extern_object_max_size_set(eb->tray->tray, w, h);
-     edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    } else {
-     edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
      evas_object_resize(eb->tray->tray, h, w);
      ecore_x_window_resize(eb->tray->win, (int) h, (int) w);
 
      edje_extern_object_min_size_set(eb->tray->tray, h, w);
      edje_extern_object_max_size_set(eb->tray->tray, h, w);
-     edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    }
+   _engage_tray_thaw(eb);
+   edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
    
    x = 0;
    if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_RIGHT)

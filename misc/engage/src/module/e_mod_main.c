@@ -133,6 +133,9 @@ static void    _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_
 
 extern void    _engage_tray_init(Engage_Bar *eb);
 extern void    _engage_tray_shutdown(Engage_Bar *eb);
+extern void    _engage_tray_layout(Engage_Bar *eb);
+extern void    _engage_tray_freeze(Engage_Bar *eb);
+extern void    _engage_tray_thaw(Engage_Bar *eb);
 
 
 static int      _engage_zoom_in_slave(void *data);
@@ -1489,7 +1492,9 @@ _engage_bar_frame_resize(Engage_Bar *eb)
      }
    evas_object_resize(eb->event_object, w, h);
 
+   _engage_tray_freeze(eb);
    edje_object_part_unswallow(eb->bar_object, eb->box_object);
+   _engage_tray_thaw(eb);
    edje_extern_object_min_size_set(eb->box_object, w, h);
    edje_extern_object_max_size_set(eb->box_object, w, h);
    edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
@@ -2313,8 +2318,10 @@ _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
 	case E_GADMAN_CHANGE_MOVE_RESIZE:
 	  e_gadman_client_geometry_get(eb->gmc, &eb->x, &eb->y, &eb->w, &eb->h);
 
-	  edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
+	  _engage_tray_freeze(eb);
 	  edje_object_part_unswallow(eb->bar_object, eb->box_object);
+	  _engage_tray_thaw(eb);
+	  edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
 	  edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
 
 	  evas_object_move(eb->bar_object, eb->x, eb->y);
