@@ -490,11 +490,11 @@ group {
             state: "right" 0.0;
             rel1 {
                relative: 0.0  0.5;
-               offset:   0 0;
+               offset:   -300 0;
             }
             rel2 {
                relative: 0.0 0.5;
-               offset:   -300 0;
+               offset:   0 0;
             }
             color: 0 0 0 192;
             color3: 255 255 255 64;
