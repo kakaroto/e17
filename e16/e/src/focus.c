@@ -34,6 +34,7 @@
 
 static char         focus_inhibit = 1;
 static char         focus_is_set = 0;
+static char         focus_pending_update_grabs = 0;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
@@ -201,7 +202,7 @@ FocusGetPrevEwin(void)
       FocusToEWin(ewin, FOCUS_PREV);
 }
 
-void
+static void
 FocusEwinSetGrabs(EWin * ewin)
 {
    int                 set = 0;
@@ -249,7 +250,7 @@ FocusEwinSetActive(EWin * ewin, int active)
    ewin->state.active = active;
    EwinBorderUpdateState(ewin);
 
-   FocusEwinSetGrabs(ewin);
+   FocusGrabsUpdate();
 
    if (active && ewin->state.attention)
      {
@@ -259,7 +260,7 @@ FocusEwinSetActive(EWin * ewin, int active)
 }
 
 static void
-FocusFix(void)
+doFocusGrabsUpdate(void)
 {
    EWin               *const *lst, *ewin;
    int                 i, num;
@@ -270,6 +271,13 @@ FocusFix(void)
 	ewin = lst[i];
 	FocusEwinSetGrabs(ewin);
      }
+   focus_pending_update_grabs = 0;
+}
+
+void
+FocusGrabsUpdate(void)
+{
+   focus_pending_update_grabs = 1;
 }
 
 static void
@@ -605,9 +613,6 @@ FocusHandleClick(EWin * ewin, Window win)
 	RaiseEwin(ewin);
 	FocusToEWin(ewin, FOCUS_CLICK);
 
-	/* Remove grabs if on top of stacking list */
-	FocusEwinSetGrabs(ewin);
-
 	/* allow click to pass thorugh */
 	if (EventDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("FocusHandleClick %#lx %#lx\n", win,
@@ -670,7 +675,7 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.warplist.icon_mode = tmp_warp_icon_mode;
 
 	Conf.focus.clickraises = tmp_clickalways;
-	FocusFix();
+	FocusGrabsUpdate();
      }
    autosave();
 }
@@ -879,9 +884,10 @@ FocusSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_IDLE:
-	if (focus_inhibit || !focus_pending_why)
-	   break;
-	FocusSet();
+	if (!focus_inhibit && focus_pending_why)
+	   FocusSet();
+	if (focus_pending_update_grabs)
+	   doFocusGrabsUpdate();
 	break;
      }
 }
@@ -962,7 +968,7 @@ FocusIpc(const char *params, Client * c __UNUSED__)
 	if (Conf.focus.mode != mode)
 	  {
 	     Conf.focus.mode = mode;
-	     FocusFix();
+	     FocusGrabsUpdate();
 	     autosave();
 	  }
      }

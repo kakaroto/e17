@@ -873,7 +873,6 @@ void                fword(char *s, int num, char *wd);
 #define FOCUS_CLICK      12
 
 void                FocusEnable(int on);
-void                FocusEwinSetGrabs(EWin * ewin);
 void                FocusToEWin(EWin * ewin, int why);
 void                FocusHandleEnter(EWin * ewin, XEvent * ev);
 void                FocusHandleLeave(EWin * ewin, XEvent * ev);
@@ -881,6 +880,7 @@ void                FocusHandleChange(EWin * ewin, XEvent * ev);
 void                FocusHandleClick(EWin * ewin, Window win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
+void                FocusGrabsUpdate(void);
 
 /* fonts.c */
 int                 FontConfigLoad(FILE * fs);

@@ -1505,6 +1505,7 @@ DeskRestack(Desk * dsk)
      {
 	dsk->stack.update_client_list = 0;
 	HintsSetClientStacking();
+	FocusGrabsUpdate();
      }
    dsk->stack.dirty = 0;
    dsk->stack.latest = NULL;

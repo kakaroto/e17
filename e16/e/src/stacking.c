@@ -475,6 +475,8 @@ EwinListStackIsRaised(const EWin * ewin)
 	   continue;
 	if (eo->ilayer > eox->ilayer)
 	   continue;
+	if (EwinGetTransientFor((EWin *) eo) == _EwinGetClientXwin(ewin))
+	   continue;
 	return eo == eox;
      }
 
