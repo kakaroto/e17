@@ -23,23 +23,27 @@ LAYOUT_ETK_L =
 
 pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L)
 
-ewl_local_icon_la_SOURCES      = ewl_icon_local_viewer.c ewl_properties_dialog.c $(top_srcdir)/src/entropy_debug.c
+ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
+					ewl_icon_local_viewer.c ewl_properties_dialog.c $(top_srcdir)/src/entropy_debug.c
 ewl_local_icon_la_CFLAGS       = @EWL_CFLAGS@
 ewl_local_icon_la_LDFLAGS      = -module -avoid-version
 ewl_local_icon_la_LIBADD       = @EWL_LIBS@
 
-structure_viewer_la_SOURCES    = structure_viewer.c $(top_srcdir)/src/entropy_debug.c
+structure_viewer_la_SOURCES    = $(top_srcdir)/src/entropy_gui.c \
+				structure_viewer.c $(top_srcdir)/src/entropy_debug.c
 structure_viewer_la_CFLAGS     = @EWL_CFLAGS@
 structure_viewer_la_LDFLAGS    = -module -avoid-version
 structure_viewer_la_LIBADD     = @EWL_LIBS@
 
-action_simple_la_SOURCES       = action_simple.c $(top_srcdir)/src/entropy_debug.c
+action_simple_la_SOURCES       = $(top_srcdir)/src/entropy_gui.c \
+				action_simple.c $(top_srcdir)/src/entropy_debug.c
 action_simple_la_CFLAGS        = @EWL_CFLAGS@
 action_simple_la_LDFLAGS       = -module -avoid-version
 action_simple_la_LIBADD        = @EWL_LIBS@
 
 
-layout_ewl_simple_la_SOURCES   = ewl_mime_dialog.c layout_ewl_simple.c $(top_srcdir)/src/entropy_debug.c \
+layout_ewl_simple_la_SOURCES   = $(top_srcdir)/src/entropy_gui.c \
+				ewl_mime_dialog.c layout_ewl_simple.c $(top_srcdir)/src/entropy_debug.c \
 				 ewl_tip.c
 layout_ewl_simple_la_CFLAGS    = @EWL_CFLAGS@
 layout_ewl_simple_la_LDFLAGS   = -module -avoid-version

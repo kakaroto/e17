@@ -17,7 +17,8 @@ entropy_SOURCES = \
 	plugins/thumbnail_generic.c \
 	entropy_file.c \
 	entropy_debug.c \
-	entropy_config.c
+	entropy_config.c \
+	entropy_gui.c
 
 
 entropy_CC	= @PTHREAD_CC@

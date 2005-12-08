@@ -262,7 +262,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 
 	 /*entropy_file_request* file_request = entropy_malloc(sizeof(entropy_file_request));*/
 
-	 instance = entropy_malloc(sizeof(entropy_gui_component_instance));
+	 instance = entropy_gui_component_instance_new();
 	 viewer = entropy_malloc(sizeof(entropy_file_structure_viewer));
 	 instance->data = viewer;
 

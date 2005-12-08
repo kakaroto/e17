@@ -827,7 +827,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
+			if (iter->active) entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
 		}
 
 		/*Add the obj to be nuked once we've executed*/
@@ -848,7 +848,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An entropy_generic_file*/
@@ -865,7 +865,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An entropy_generic_file*/
@@ -881,7 +881,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An entropy_generic_file*/
@@ -897,7 +897,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An entropy_generic_file*/
@@ -918,7 +918,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		while ( (iter = ecore_list_next(el)) ) {
 			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 instance,  /*We use instance here, because the action runner needs to know the caller*/
 				 event->data,   /*An entropy_generic_file*/
@@ -949,7 +949,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		ecore_list_goto_first(el);
 		while ( (iter = ecore_list_next(el)) ) {
-			entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
+			if (iter->active) entropy_notify_event_callback_add(ev, (void*)iter->plugin->gui_event_callback_p, iter);
 		}
 
 		/*Tell the notify engine we're ready to run*/
@@ -967,7 +967,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		while ( (iter = ecore_list_next(el)) ) {
 			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An entropy_file_stat*/
@@ -1004,7 +1004,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		while ( (iter = ecore_list_next(el)) ) {
 			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 file_list,   /*An entropy_file_stat*/
@@ -1023,7 +1023,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		while ( (iter = ecore_list_next(el)) ) {
 			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			
-			(*iter->plugin->gui_event_callback_p)
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
 				(ev, 
 				 iter, 
 				 event->data,   /*An evfs progress event*/

@@ -116,7 +116,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
 	
 	//printf ("initialising action provider..\n");
 	
-	entropy_gui_component_instance* instance = entropy_malloc(sizeof(entropy_gui_component_instance));
+	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
 	entropy_gui_component_instance* layout = entropy_core_global_layout_get(core);
 	instance->layout_parent = layout;
 	instance->core = core;

@@ -41,12 +41,6 @@ typedef struct entropy_file_progress_window {
 	Ewl_Widget* progressbar;
 } entropy_file_progress_window;
 
-
-
-
-
-
-
 /*---------------------------------------------*/
 
 
@@ -80,7 +74,7 @@ struct entropy_icon_viewer {
 
 
 
-void progress_window_create(entropy_file_progress_window* progress) {
+void ewl_progress_window_create(entropy_file_progress_window* progress) {
 	Ewl_Widget* vbox;
 	
 	progress->progress_window = ewl_window_new();
@@ -324,7 +318,7 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
 	Ewl_Widget* context;
 
-	entropy_gui_component_instance* instance = entropy_malloc(sizeof(entropy_gui_component_instance));
+	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
 
 
@@ -780,7 +774,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		if (!view->progress->progress_window) {
 			printf("Showing progressbar dialog..\n");
 
-			progress_window_create(view->progress);
+			ewl_progress_window_create(view->progress);
 			ewl_widget_show(view->progress->progress_window);
 		}
 
