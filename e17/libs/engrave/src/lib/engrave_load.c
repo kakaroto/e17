@@ -6,6 +6,11 @@
 #include "engrave_parse.h"
 #include "engrave_macros.h"
 
+#if defined (__SVR4) && defined (__sun)
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
 #define MAIN_EDC_NAME "main_edje_source.edc"
 
 char *engrave_filename = NULL;
@@ -93,7 +98,11 @@ engrave_load_edj(const char *filename)
 
   memset(tmpn, '\0', sizeof(tmpn));
   strcpy(tmpn, "/tmp/engrave.edc-tmp-XXXXXX");
+#if defined (__SVR4) && defined (__sun)
+  if (mkdir(tmpn, S_IRWXU | S_IRWXG) == NULL) {
+#else 
   if (mkdtemp(tmpn) == NULL) {
+#endif
     fprintf(stderr, "Can't create working dir: %s",
             strerror(errno));
     return 0;
@@ -167,6 +176,9 @@ engrave_load_edj(const char *filename)
 
   enf = engrave_load_edc(new_fname, out_dir, out_dir);
 
+#if defined (__SVR4) && defined (__sun)
+  rmdir(work_dir);
+#endif
   FREE(work_dir);
 
   return enf;
