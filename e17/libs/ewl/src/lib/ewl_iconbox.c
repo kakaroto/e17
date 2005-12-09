@@ -6,7 +6,9 @@
 #define ICON_LABEL_INITIAL 80
 
 
-int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
+int
+ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon)
+{
 	int height=0;
 	int ww,hh;
 
@@ -18,17 +20,60 @@ int ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon) {
 	return height;
 }
 
+void
+ewl_iconbox_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
+{
 
-void ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data) {
+	int nx, ny;
+	Ewl_IconBox *iconbox = EWL_ICONBOX(user_data);
+	Ewl_Widget *ib;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("w", w, "overlay");
+	DCHECK_TYPE("user_data", user_data, "iconbox");
+
+
+
+	nx = ewl_object_current_x_get(EWL_OBJECT(w));
+	ny = ewl_object_current_y_get(EWL_OBJECT(w));
+
+	ewl_container_child_iterate_begin(EWL_CONTAINER(w));
+	while ((ib = ewl_container_child_next(EWL_CONTAINER(w)))) {
+		if (ewl_widget_type_is(ib,"icon")) {
+			int cx, cy;
+			cx = ewl_object_current_x_get(EWL_OBJECT(ib));
+			cy = ewl_object_current_y_get(EWL_OBJECT(ib));
+
+			ewl_object_position_request(EWL_OBJECT(ib),
+					cx + (nx - iconbox->ox),
+					cy + (ny - iconbox->oy));
+
+		}
+
+		
+	}
+
+	iconbox->ox = nx;
+	iconbox->oy = ny;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data)
+{
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
 	int height = ewl_iconbox_icon_label_height_calculate(icon);
+	int width = CURRENT_W(icon->image);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize);
 
 	if (height >0) {  
-		ewl_object_custom_h_set(EWL_OBJECT(icon->floater), height); 
+		ewl_object_custom_size_set(EWL_OBJECT(icon), width,height); 
 	}
-	
+
 	//printf("Resized floater to EWL_TEXT(%d)-TEXTBLOCK(%d) %d\n", CURRENT_H(icon->w_label), hh, height);
 }
 
@@ -85,7 +130,6 @@ Ewl_Widget *ewl_iconbox_icon_new()
 
 void ewl_iconbox_inner_pane_calculate(Ewl_IconBox* ib)
 {
-
 	int pw,ph;
 	int sw,sh;
 	int nw=0,nh=0;
@@ -132,8 +176,6 @@ int ewl_iconbox_icon_init(Ewl_IconBox_Icon* icon)
 	icon->label_compressed = NULL;
 
 
-	
-
 	/* Init ewl setup */
 	ewl_widget_appearance_set(EWL_WIDGET(icon), "icon");
 	ewl_widget_inherit(EWL_WIDGET(w), "icon");
@@ -157,10 +199,12 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 {
 	Ewl_Widget *w;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	w = EWL_WIDGET(ib);
 	
 	if (!ewl_box_init(EWL_BOX(ib)))
-			DRETURN_INT(FALSE, DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* Init ewl setup */
 	ewl_box_orientation_set(EWL_BOX(ib), EWL_ORIENTATION_HORIZONTAL);
@@ -168,12 +212,12 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_widget_inherit(EWL_WIDGET(w), "iconbox");
 
 	ib->drag_icon = NULL;
-	
+
 
 	/*Default to non-editable labels */
 	ewl_iconbox_editable_set(ib,0);
-	
-	
+
+
 	ib->ewl_iconbox_scrollpane = ewl_scrollpane_new();
 	if (ib->ewl_iconbox_scrollpane) {
 		ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane), EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
@@ -186,10 +230,13 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 
 	/*Set the defaults to 0 for layout*/
 	ib->lx = ib->ly = ib->iw = ib->ih = 0;
-	
+
 	ib->ewl_iconbox_pane_inner = ewl_overlay_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
-		
+	ewl_callback_prepend(EWL_WIDGET(ib->ewl_iconbox_pane_inner),
+			     EWL_CALLBACK_CONFIGURE,
+			     ewl_iconbox_overlay_configure_cb, ib);
+
 	/*** Context menu **/
 	/*Make the menu floater */
 	ib->ewl_iconbox_menu_floater = ewl_floater_new();
@@ -404,6 +451,7 @@ void ewl_iconbox_scrollpane_goto_root(Ewl_IconBox* ib) {
         ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
         ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -411,6 +459,8 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 {
 	/*Add a background image*/
 	int w,h;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (!file) {
 		if (ib->background) {
@@ -430,6 +480,8 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 	ewl_image_file_set(EWL_IMAGE(ib->background), file,0);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->background);
 	ewl_widget_show(ib->background);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -439,6 +491,7 @@ void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text)
 	
 	char* compressed;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	
 	/*If we have a current label, nuke it*/
@@ -467,12 +520,15 @@ void ewl_iconbox_icon_label_setup(Ewl_IconBox_Icon* icon, char* text)
 		icon->label_compressed = compressed;
 	}
 
-	
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 {
 	int wrap = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	
 	if (text) {
 		
@@ -492,10 +548,11 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 
 	/* Overestimate the label height to begin with, to give the text room to expand */
 	if (REALIZED(EWL_WIDGET(icon))) {
-		ewl_object_custom_h_set( EWL_OBJECT(icon->floater), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);	
+		ewl_object_custom_h_set( EWL_OBJECT(icon), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);	
 		ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
 	}
-		
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -503,7 +560,9 @@ void ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data, vo
 {
 	Ewl_Event_Key_Down* ev = ev_data;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
-	
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (!strcmp(ev->keyname, "Return")) {
 		char* text = ewl_text_text_get(EWL_TEXT(ib->entry));
 		
@@ -518,23 +577,31 @@ void ewl_iconbox_label_edit_key_down(Ewl_Widget *w __UNUSED__, void *ev_data, vo
 		/*Show the label again*/
 		ewl_widget_show(EWL_ICONBOX_ICON(ib->edit_icon)->w_label);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_iconbox_editable_set(Ewl_IconBox* ib, int edit)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	ib->editable = edit;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
-void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib) {
+void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib)
+{
 	int pw,ph;
-	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ib", ib);
+	DCHECK_TYPE("ib", ib, "iconbox");
+
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &pw, &ph);	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->ewl_iconbox_pane_inner), 
 			pw > ib->lx ? pw : ib->lx, 
 			ph > ib->ly+ib->ih ? ph+ib->ih : ib->ly+(ib->ih*2)+(EWL_ICONBOX_ICON_PADDING*2)  );
 
-	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
@@ -542,8 +609,10 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 	
 	int sw=0,sh=0;
 	int iw=0, ih=0;
+	int nx,ny;
 	Ewl_IconBox_Icon* list_item;
 	int maxx=0, maxy=0;
+	int px,py;
 	/*int pw, ph;*/
 	int x,y;
 
@@ -555,8 +624,14 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 	/*printf ("Ewl_IconBox -> Arranging icons\n");*/
 
 
-	ib->lx = ib->ly = 0;
+	px = CURRENT_X(ib);
+	py = CURRENT_Y(ib);
+
+	nx = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+	ny = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
 	
+	ib->lx = ib->ly = 0;
+
 	ewl_object_current_size_get(EWL_OBJECT(ib->ewl_iconbox_scrollpane), &sw,&sh);
 	
 	if (ib->iw > 0 && ib->ih > 0) {
@@ -581,27 +656,26 @@ void ewl_iconbox_icon_arrange(Ewl_IconBox* ib)
 			ih = EWL_ICONBOX_MINIMUM_SIZE;
 		}
 
-		
+
 		if (ib->lx + ib->iw + (EWL_ICONBOX_ICON_PADDING) >= (sw - ib->iw)) {
 			ib->lx = 0;
 			ib->ly += ih + EWL_ICONBOX_ICON_PADDING;
 		}
 
-		x = EWL_FLOATER(list_item->floater)->x;
-		y = EWL_FLOATER(list_item->floater)->y;
-	
+		x = ewl_object_current_x_get(EWL_OBJECT(list_item));
+		y = ewl_object_current_y_get(EWL_OBJECT(list_item));
+
 		/*Only move if we have to*/
 		if ( abs(x - ib->lx) > 0  ||
 		     abs(y - ib->ly) > 0) 
-			ewl_floater_position_set(EWL_FLOATER(list_item->floater), ib->lx, ib->ly);
+			ewl_object_position_request(EWL_OBJECT(list_item), ib->lx+nx, ib->ly+ny);
 
-		
+
 		ib->lx += iw + EWL_ICONBOX_ICON_PADDING;
-		
+
 		if (ib->lx > maxx) maxx = ib->lx;
 		if (ib->ly > maxy) maxy = ib->ly;
 
-		
 	}
 
 	/* Now set the extent of the pane inner to be the maxx/y that we had or 
@@ -637,8 +711,8 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 		char* text;
 
 		/* TODO request an ewl_floater_position_get function */
-		x = EWL_FLOATER(ib->floater)->x;
-		y = EWL_FLOATER(ib->floater)->y;
+		x = ewl_object_current_x_get(EWL_OBJECT(ib));
+		y = ewl_object_current_y_get(EWL_OBJECT(ib));
 		
 		/*printf ("Edit label event on: '%s'\n", ewl_border_text_get(EWL_BORDER(ib)));*/
 		ewl_object_current_size_get(EWL_OBJECT(ib->w_label), &w, &h);
@@ -715,7 +789,6 @@ void ewl_iconbox_icon_remove(Ewl_IconBox* ib, Ewl_IconBox_Icon* icon) {
 		while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
 			
 			if (list_item == icon) {
-				ewl_floater_follow_set(EWL_FLOATER(EWL_ICONBOX_ICON(list_item)->floater), NULL);
 				ewl_widget_destroy(EWL_WIDGET(list_item));		
 
 				if (ib->drag_icon == icon) {
@@ -746,38 +819,36 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 {
 	Ewl_Widget* ib;
 	int sw, sh;
+	int px,py;
 
+	/*Make a brand new icon*/
 	ib = ewl_iconbox_icon_new();
-
 	EWL_ICONBOX_ICON(ib)->selected = 0;
-	EWL_ICONBOX_ICON(ib)->floater = ewl_floater_new();
-	ewl_floater_follow_set(EWL_FLOATER( EWL_ICONBOX_ICON(ib)->floater ),
-				iconbox->ewl_iconbox_pane_inner);
-
-
-	
-	
 	EWL_ICONBOX_ICON(ib)->icon_box_parent = iconbox; /* Set our parent */
-	
 	ewl_object_fill_policy_set(EWL_OBJECT(ib), EWL_FLAG_FILL_FILL);
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(EWL_ICONBOX_ICON(ib)->floater), ib);
+
+
+	/*Get the current iconbox location*/
+	px = CURRENT_X(iconbox);
+	py = CURRENT_Y(iconbox);
+	
 
 
 	/* Make the image */
 	ewl_iconbox_icon_image_set(EWL_ICONBOX_ICON(ib), icon_file);
 	ewl_container_child_append(EWL_CONTAINER(ib), EWL_ICONBOX_ICON(ib)->image);
-
 	
 	/* Add the floater to our container
 	 */
-	ewl_container_child_append(EWL_CONTAINER(iconbox->ewl_iconbox_pane_inner), EWL_WIDGET(EWL_ICONBOX_ICON(ib)->floater));
-	ewl_floater_position_set(EWL_FLOATER(EWL_ICONBOX_ICON(ib)->floater), iconbox->lx, iconbox->ly);
+	ewl_container_child_append(EWL_CONTAINER(iconbox->ewl_iconbox_pane_inner), EWL_WIDGET(EWL_ICONBOX_ICON(ib)));
+	ewl_object_position_request(EWL_OBJECT(ib),
+				    iconbox->lx + iconbox->ox, iconbox->ly + iconbox->oy);
 	
 	/*----------------------*/
 	/*Get the icon next position*/
 
-	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane), &sw,&sh);
+	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane),
+				    &sw,&sh);
 
 	if (iconbox->lx + iconbox->iw + (EWL_ICONBOX_ICON_PADDING) >= (sw - iconbox->iw)) {
 		//printf("%d + %d + %d >= %d, so next line (%s)\n", 
@@ -796,7 +867,6 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 	/*Show*/
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->image);
 	ewl_widget_show(EWL_ICONBOX_ICON(ib)->w_label);
-	ewl_widget_show(EWL_ICONBOX_ICON(ib)->floater);
 	ewl_widget_show(EWL_WIDGET(ib));
 
 	/*Set the label*/
@@ -805,7 +875,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	/*FIXME - at the moment, it appears we can't calculate the height 
 		yet - hard set for now*/
-	ewl_object_custom_h_set(EWL_OBJECT(EWL_ICONBOX_ICON(ib)->floater), 80);
+	ewl_object_custom_h_set(EWL_OBJECT(ib), 80);
+	ewl_object_custom_size_set(EWL_OBJECT(ib), 60, 90);
 
 
 
@@ -849,7 +920,6 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 			//ewl_widget_hide(list_item);
 			//ewl_container_child_remove(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), EWL_WIDGET(list_item));
 			//
-			ewl_floater_follow_set(EWL_FLOATER(EWL_ICONBOX_ICON(list_item)->floater), NULL);
 			ewl_widget_destroy(EWL_WIDGET(list_item));		
 
 						
@@ -883,7 +953,7 @@ void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_dat
 	
 	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
-	ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
+	ewl_object_position_request(EWL_OBJECT(list_item), (ev->x - ibx) + abs(px-ibx) - (fw/2),
 				  (ev->y - iby) + abs(py-iby) - (fh/2));
 
 	/*Get types*/
@@ -922,8 +992,6 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		free(icon->label_compressed);
 	}
 
-	ewl_widget_destroy(EWL_ICONBOX_ICON(w)->floater);
-	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -957,9 +1025,8 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 
 	/*Handle selection box*/
 	if (ib->drag_box) {
-		
-		
-		
+
+
 		if (ib->dx == -1) {
 			/*  Assume this is the drag start point */
 			ib->dx =  ewl_object_current_x_get(EWL_OBJECT(ib->select_floater));
@@ -982,12 +1049,12 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 		}
 
 		
-			ewl_floater_position_set(EWL_FLOATER(ib->select_floater), (lx - ibx) + abs(px-ibx) , (ly+1 - iby) + abs(py-iby));
+		ewl_floater_position_set(EWL_FLOATER(ib->select_floater), (lx - ibx) + abs(px-ibx) , (ly+1 - iby) + abs(py-iby));
 			
-			if (hx-lx >0 && hy-ly > 0) {
-				ewl_object_custom_size_set(EWL_OBJECT(ib->select), (hx-lx), (hy-ly));
-				ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), hx-lx, hy-ly);
-			}
+		if (hx-lx >0 && hy-ly > 0) {
+			ewl_object_custom_size_set(EWL_OBJECT(ib->select), (hx-lx), (hy-ly));
+			ewl_object_custom_size_set(EWL_OBJECT(ib->select_floater), hx-lx, hy-ly);
+		}
 
 		/*Now check which icons we have to select in this range...*/
 		{
@@ -1036,15 +1103,16 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 			/* Get the current width/height to centre
 			 */
 			
-			fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
-			fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+			fw= ewl_object_current_w_get(EWL_OBJECT(list_item->image));
+			fh= ewl_object_current_h_get(EWL_OBJECT(list_item->image));
 
 
 			
 
 			
-			ewl_floater_position_set(EWL_FLOATER(list_item->floater), (ev->x - ibx) + abs(px-ibx) - (fw/2),
-										  (ev->y - iby) + abs(py-iby) - (fh/2));
+			ewl_object_position_request(EWL_OBJECT(list_item),
+						    ev->x - (fw/2),
+						    ev->y - (fh/2));
 		}
 }
 
@@ -1059,7 +1127,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 	
 	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
 	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));	
-	
+
 
 	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
@@ -1178,26 +1246,23 @@ void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_dat
 void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
 	Ewl_IconBox* ib = EWL_ICONBOX(w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "iconbox");
 
-	if (REALIZED(ib) && VISIBLE(ib)) { 
-		/*ewl_callback_del(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb);*/
-		ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
-		ewl_iconbox_icon_arrange(ib); 
+	ewl_iconbox_inner_pane_calculate(EWL_ICONBOX(w));
+	ewl_iconbox_icon_arrange(ib); 
 
-		if (ib->background) {
-			int width,height;
-			Ewl_Widget* parent = w->parent;
-			width = CURRENT_W(ib);
-			height = CURRENT_H(ib);
-			ewl_object_position_request(EWL_OBJECT(ib->background),CURRENT_X(parent),CURRENT_Y(parent));
-			ewl_object_custom_size_set(EWL_OBJECT(ib->background),width,height);
-
-			
-
-		}
-		
-		/*ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);*/
-
+	if (ib->background) {
+		int width,height;
+		Ewl_Widget* parent = w->parent;
+		width = CURRENT_W(ib);
+		height = CURRENT_H(ib);
+		ewl_object_position_request(EWL_OBJECT(ib->background),
+				CURRENT_X(parent), CURRENT_Y(parent));
+		ewl_object_custom_size_set(EWL_OBJECT(ib->background), width,
+				height);
 	}
-}
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}

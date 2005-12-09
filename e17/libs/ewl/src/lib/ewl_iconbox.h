@@ -29,7 +29,6 @@ struct Ewl_IconBox_Icon
 	Ewl_Box box;
 	
 	Ewl_Widget *image;
-	Ewl_Widget *floater;
 	Ewl_Widget *w_label;
 
 
@@ -85,8 +84,9 @@ struct Ewl_IconBox
 
 	int xdown, ydown;		   /* Last icon button down x/y, for edge resistence */
 	int dx, dy;			   /* Drag start x/y */
-	int lx, ly;			   /*Layout x, layout y */
-	int iw, ih;			   /*Custom icon width/height*/
+	int lx, ly;			   /* Layout x, layout y */
+	int ox, oy;			   /* Layout x offset, layout y offset */
+	int iw, ih;			   /* Custom icon width/height*/
 
 	/*Background*/
 	Ewl_Widget* background;
