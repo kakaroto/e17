@@ -48,3 +48,7 @@ ecore_config -c $DB -k /entrance/user/remember_n -i 5
 ecore_config -c $DB -k /entrance/autologin/mode -i 0
 #ecore_config -c $DB -k /entrance/autologin/user -s "user1"
 ecore_config -c $DB -k /entrance/presel/mode -i 1
+
+# for Entranced
+ecore_config $DB set /entrance/daemon/xserver str "/usr/X11R6/bin/X -quiet -nolisten tcp"
+ecore_config $DB set /entrance/daemon/attempts int 5

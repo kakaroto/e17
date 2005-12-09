@@ -1,4 +1,5 @@
 #include <Ecore.h>
+#include <Ecore_Config.h>
 #include "Entranced.h"
 #include "auth.h"
 #include "util.h"
@@ -74,9 +75,15 @@ Entranced_Display_New(void)
    Entranced_Display *d;
 
    d = calloc(1, sizeof(Entranced_Display));
-   /* TODO: Config-ize these parameters */
-   d->xprog = strdup(X_SERVER);
-   d->attempts = 5;
+
+   ecore_config_string_default("/entrance/daemon/xserver", DEFAULT_X_SERVER);
+   ecore_config_int_default("/entrance/daemon/attempts", 5);
+
+   ecore_config_file_load(PACKAGE_CFG_DIR "/entrance_config.cfg");
+
+   d->xprog = ecore_config_string_get("/entrance/daemon/xserver");
+   d->attempts = ecore_config_int_get("/entrance/daemon/attempts");
+
    d->status = NOT_RUNNING;
    d->auth_en = 1;
    d->auths = ecore_list_new();
@@ -134,11 +141,11 @@ Entranced_Start_Server_Once(Entranced_Display * d)
          return -1;
       }
    
-      snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", X_SERVER, d->authfile, d->name);
+      snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", d->xprog, d->authfile, d->name);
    }
    else
    {
-      snprintf(x_cmd, PATH_MAX, "%s %s", X_SERVER, d->name);
+      snprintf(x_cmd, PATH_MAX, "%s %s", d->xprog, d->name);
    }
    entranced_debug("Entranced_Start_Server_Once: Executing %s\n", x_cmd);
 
@@ -397,6 +404,11 @@ main(int argc, char **argv)
 
    /* Initialize Ecore */
    ecore_init();
+   if (ecore_config_init("entrance") != ECORE_CONFIG_ERR_SUCC)
+   {
+      ecore_shutdown();
+      return -1;
+   }
    ecore_app_args_set(argc, (const char **) argv);
 
    openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
@@ -562,6 +574,7 @@ main(int argc, char **argv)
 
    closelog();
    entranced_ipc_shutdown();
+   ecore_config_shutdown();
    ecore_shutdown();
    exit(0);
 }
