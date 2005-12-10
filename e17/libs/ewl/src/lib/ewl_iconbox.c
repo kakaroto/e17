@@ -261,6 +261,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ib->ewl_iconbox_view_menu = ewl_menu_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(ib->ewl_iconbox_view_menu),
 			       "View");
+	ewl_widget_appearance_set(EWL_WIDGET(ib->ewl_iconbox_view_menu), "menu_item");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_context_menu), ib->ewl_iconbox_view_menu);
 	
 	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
