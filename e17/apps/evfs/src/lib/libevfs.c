@@ -82,6 +82,8 @@ int evfs_server_data (void* data, int type, void* event) {
 				   }
 				   
 			   }
+			   free(msg);
+			   
 		   } else {
 			   fprintf(stderr, "EVFS: Could not find connection for clientId\n");
 		   }
