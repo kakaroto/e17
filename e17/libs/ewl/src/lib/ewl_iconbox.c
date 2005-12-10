@@ -8,6 +8,9 @@
 #define ICONBOX_ICON_LAYER 500
 #define ICONBOX_BACKGROUND_LAYER 500
 #define ICONBOX_ENTRY_LAYER 1000
+#define ICONBOX_REPEAT 10000
+
+
 
 
 int
@@ -386,8 +389,17 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
+	
+	ewl_container_callback_notify(EWL_CONTAINER(ib), EWL_CALLBACK_KEY_DOWN);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_KEY_DOWN, ewl_iconbox_key_press_cb, ib);
+
+	
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
+
+	/*Timing setup*/
+	ib->lasttime.tv_sec = 0;
+	ib->lasttime.tv_usec = 0;
 
 
 	/*printf("Setup the iconbox...\n");*/
@@ -718,6 +730,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 {
 	
 	int sel = ib->selected;
+	ib->icon_box_parent->select_icon = ib;
 
 	if ((!ib->icon_box_parent->drag_box) && deselect) {
 		Ewl_IconBox_Icon* list_item;
@@ -1282,9 +1295,12 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 	if (ib->background) {
 		int width,height;
 		int sw = CURRENT_W(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->vscrollbar);
-		int sh = CURRENT_H(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->hscrollbar);
-		
+		int sh = 0;
 		Ewl_Widget* parent = w->parent;
+
+		if (VISIBLE(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->hscrollbar))
+			sh = CURRENT_H(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->hscrollbar);
+		
 		width = CURRENT_W(ib);
 		height = CURRENT_H(ib);
 		ewl_object_position_request(EWL_OBJECT(ib->background),
@@ -1298,4 +1314,122 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+double ewl_iconbox_icon_distance(Ewl_IconBox_Icon* i1, Ewl_IconBox_Icon* i2) {
+	return sqrt( pow(CURRENT_X(i1) - CURRENT_X(i2),2) +  pow(CURRENT_Y(i1) - CURRENT_Y(i2),2));
+}
+
+
+void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data) {
+	Ewl_Event_Key_Down* event = ev_data;
+	Ewl_IconBox* ib = user_data;
+	struct timeval tim;
+	int cx=0,cy=0;
+
+	Ewl_IconBox_Icon* list_item;
+	Ewl_IconBox_Icon* current = ib->select_icon;
+	Ewl_IconBox_Icon* best = NULL;
+
+	gettimeofday(&tim, NULL);
+
+	if (current) {
+		cx = CURRENT_X(current);
+		cy = CURRENT_Y(current);
+	}
+
+	
+	if (!( ((double)(tim.tv_sec)*1000000) + tim.tv_usec < ((double)(ib->lasttime.tv_sec)*1000000) + ib->lasttime.tv_usec + ICONBOX_REPEAT)) {
+		gettimeofday(&ib->lasttime, NULL);
+
+		if (!strcmp(event->keyname, "Down")) {
+			ewl_iconbox_deselect_all(ib);	
+			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+				if (!current) {
+					current = list_item;
+					cx = CURRENT_X(current);
+					cy = CURRENT_Y(current);
+				}
+				
+				if (CURRENT_Y(list_item) > cy) {
+					if (!best) 
+						best = list_item;
+					else if (ewl_iconbox_icon_distance(current,best) > ewl_iconbox_icon_distance(current,list_item)) 
+						best = list_item;
+
+				}
+			}
+		} else if (!strcmp(event->keyname, "Up")) {
+			ewl_iconbox_deselect_all(ib);	
+			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+				if (!current) {
+					current = list_item;
+					cx = CURRENT_X(current);
+					cy = CURRENT_Y(current);
+				}
+				
+				if (CURRENT_Y(list_item) < cy) {
+					if (!best) 
+						best = list_item;
+				 	else if (ewl_iconbox_icon_distance(current,best) > ewl_iconbox_icon_distance(current,list_item)) 
+						best = list_item;
+					
+				}
+			}		
+		} else if (!strcmp(event->keyname, "Left")) {
+			ewl_iconbox_deselect_all(ib);	
+			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+				if (!current) {
+					current = list_item;
+					cx = CURRENT_X(current);
+					cy = CURRENT_Y(current);
+				}
+				
+				if (CURRENT_X(list_item) < cx) {
+					if (!best) 
+						best = list_item;
+				 	else if (ewl_iconbox_icon_distance(current,best) > ewl_iconbox_icon_distance(current,list_item)) 
+						best = list_item;
+					
+				}
+			}		
+		} else if (!strcmp(event->keyname, "Right")) {
+			ewl_iconbox_deselect_all(ib);	
+			ecore_list_goto_first(ib->ewl_iconbox_icon_list);
+			while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+				if (!current) {
+					current = list_item;
+					cx = CURRENT_X(current);
+					cy = CURRENT_Y(current);
+				}
+				
+				if (CURRENT_X(list_item) > cx) {
+					if (!best) 
+						best = list_item;
+				 	else if (ewl_iconbox_icon_distance(current,best) > ewl_iconbox_icon_distance(current,list_item)) 
+						best = list_item;
+					
+				}
+			}		
+		}
+
+
+
+		/*Perform new selection, if any*/
+		if (best) ewl_iconbox_icon_select(best, 0,1);
+
+		if (!strcmp(event->keyname, "Down") && best && OBSCURED(best)) {
+			Ewl_Event_Mouse_Wheel ev;
+			ev.z = 1;
+			ewl_callback_call_with_event_data(ib->ewl_iconbox_scrollpane, EWL_CALLBACK_MOUSE_WHEEL, &ev);
+		} else if (!strcmp(event->keyname, "Up") && best && OBSCURED(best)) {
+			Ewl_Event_Mouse_Wheel ev;
+			ev.z = -1;
+			ewl_callback_call_with_event_data(ib->ewl_iconbox_scrollpane, EWL_CALLBACK_MOUSE_WHEEL, &ev);
+		
+		}
+	} 
 }

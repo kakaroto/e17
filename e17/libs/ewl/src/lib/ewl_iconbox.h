@@ -7,6 +7,10 @@
 #define EWL_ICONBOX_MINIMUM_SIZE 50
 #define LABEL_CHARS 10
 
+#include <sys/time.h>
+#include <time.h>
+
+
 /**
  * @file ewl_iconbox.h
  * @defgroup Ewl_IconBox IconBox: The Icon Box Layout Container
@@ -100,6 +104,9 @@ struct Ewl_IconBox
 	Ewl_Widget* select;
 	Ewl_Widget* select_floater;
 	int drag_box;			  /* Are we dragging? */
+
+	/*Key event/repeat timer*/
+	struct timeval lasttime;
 	
 
 	/* Editable flag */
@@ -144,6 +151,7 @@ void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data ,void *user_data );
+void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data, void *user_data);
 
 
 /* Internal functions */
