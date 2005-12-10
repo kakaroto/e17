@@ -4,6 +4,10 @@
 #include "ewl_private.h"
 
 #define ICON_LABEL_INITIAL 80
+#define ICONBOX_SELECT_LAYER 600
+#define ICONBOX_ICON_LAYER 500
+#define ICONBOX_BACKGROUND_LAYER 500
+#define ICONBOX_ENTRY_LAYER 1000
 
 
 int
@@ -324,7 +328,7 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->select_floater);
 	
 	ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
-	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), 1);
+	ewl_widget_layer_set(EWL_WIDGET(ib->select_floater), ICONBOX_SELECT_LAYER);
 	ewl_widget_color_set(EWL_WIDGET(ib->select), 255, 255, 25, 50);
 	ib->drag_box = 0;
 
@@ -476,10 +480,29 @@ void ewl_iconbox_background_set(Ewl_IconBox* ib, char* file)
 	if (!ib->background) 
 		ib->background = ewl_image_new();
 	
-	ewl_object_custom_size_set(EWL_OBJECT(ib->background), w,h);
 	ewl_image_file_set(EWL_IMAGE(ib->background), file,0);
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->background);
+
+	if (EWL_WIDGET(ib)->parent) {
+		int width,height;
+		int sw = CURRENT_W(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->vscrollbar);
+		int sh = CURRENT_H(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->hscrollbar);
+		
+		
+		Ewl_Widget* parent = EWL_WIDGET(ib)->parent;
+		width = CURRENT_W(ib);
+		height = CURRENT_H(ib);
+		ewl_object_position_request(EWL_OBJECT(ib->background),
+				CURRENT_X(parent), CURRENT_Y(parent));
+		ewl_object_custom_size_set(EWL_OBJECT(ib->background), width-sw,
+				height-sh);
+	}
+	
+	
 	ewl_widget_show(ib->background);
+	ewl_widget_layer_set(EWL_WIDGET(ib->background), ICONBOX_BACKGROUND_LAYER);
+	
+	ewl_widget_configure(EWL_WIDGET(ib));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -726,7 +749,7 @@ void ewl_iconbox_icon_select(Ewl_IconBox_Icon* ib, int loc, int deselect) /* Loc
 		
 		ewl_widget_show(EWL_WIDGET(ib->icon_box_parent->entry_floater));
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->entry_floater), x,y+ih);
-		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), 1000);
+		ewl_widget_layer_set(EWL_WIDGET(ib->icon_box_parent->entry_floater), ICONBOX_ENTRY_LAYER);
 		ewl_widget_focus_send(EWL_WIDGET(ib->icon_box_parent->entry));
 		//ewl_widget_hide(ib->w_label);
 
@@ -895,6 +918,9 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	/* Add this icon to the icon list */
 	ecore_list_append(iconbox->ewl_iconbox_icon_list, ib);
+
+
+	ewl_widget_layer_set(EWL_WIDGET(ib), ICONBOX_ICON_LAYER);
 
 	return EWL_ICONBOX_ICON(ib);
 }
@@ -1255,14 +1281,21 @@ void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *use
 
 	if (ib->background) {
 		int width,height;
+		int sw = CURRENT_W(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->vscrollbar);
+		int sh = CURRENT_H(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane)->hscrollbar);
+		
 		Ewl_Widget* parent = w->parent;
 		width = CURRENT_W(ib);
 		height = CURRENT_H(ib);
 		ewl_object_position_request(EWL_OBJECT(ib->background),
 				CURRENT_X(parent), CURRENT_Y(parent));
-		ewl_object_custom_size_set(EWL_OBJECT(ib->background), width,
-				height);
+		ewl_object_custom_size_set(EWL_OBJECT(ib->background), width-sw,
+				height-sh);
+
+		ewl_widget_layer_set(EWL_WIDGET(ib->background), ICONBOX_BACKGROUND_LAYER);
 	}
+
+	
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
