@@ -1643,6 +1643,16 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    Engage_Icon *prev;
    E_Gadman_Edge edge;
               
+   evas_object_geometry_get(eb->event_object, &x, &y, &w, &h);
+   if (mx < x)
+     mx = x;
+   if (mx > x + w)
+     mx = x + w;
+   if (my < y)
+     my = y;
+   if (my > y + h)
+     my = y + y;
+
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    if (w > 0) relx = (double)(mx - x) / (double)w;
    else relx = 0.0;
