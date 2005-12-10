@@ -13,7 +13,7 @@
 #define XEMBED_EMBEDDED_NOTIFY      0
 
 static int     _engage_tray_cb_msg(void *data, int type, void *event);
-static void    _engage_tray_active_set(Engage_Bar *eb, int active);
+void           _engage_tray_active_set(Engage_Bar *eb, int active);
 
 static void    _engage_tray_cb_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void    _engage_tray_cb_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
@@ -37,7 +37,7 @@ _engage_tray_init(Engage_Bar *eb)
 
    eb->tray->msg_handler = NULL;
    eb->tray->dst_handler = NULL;
-   eb->tray->win = NULL;
+   eb->tray->win = 0;
 
    evas_object_resize(eb->tray->tray, eb->tray->w, eb->tray->h);
    evas_object_color_set(eb->tray->tray, 180, 0, 0, 255);
@@ -59,9 +59,10 @@ _engage_tray_shutdown(Engage_Bar *eb)
    evas_list_free(eb->tray->wins);
    evas_object_del(eb->tray->tray);
    free(eb->tray);
+   eb->tray = NULL;
 }
 
-static void
+void
 _engage_tray_active_set(Engage_Bar *eb, int active)
 {
    Ecore_X_Window win;
@@ -71,7 +72,7 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
    Atom selection_atom;
    Evas_Coord x, y, w, h;
 
-   win = NULL;
+   win = 0;
    if (active)
      win = eb->con->bg_win;
 

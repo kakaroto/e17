@@ -137,6 +137,7 @@ static void    _engage_bar_cb_menu_context_change(void *data, E_Menu *m, E_Menu_
 
 extern void    _engage_tray_init(Engage_Bar *eb);
 extern void    _engage_tray_shutdown(Engage_Bar *eb);
+extern void    _engage_tray_active_set(Engage_Bar *eb, int active);
 extern void    _engage_tray_layout(Engage_Bar *eb);
 extern void    _engage_tray_freeze(Engage_Bar *eb);
 extern void    _engage_tray_thaw(Engage_Bar *eb);
@@ -737,7 +738,6 @@ _engage_bar_free(Engage_Bar *eb)
    evas_object_del(eb->event_object);
 	 
    _engage_tray_shutdown(eb);
-   eb->tray = NULL;
 
    e_gadman_client_save(eb->gmc);
    e_object_del(E_OBJECT(eb->gmc));
@@ -914,7 +914,7 @@ _engage_bar_enable(Engage_Bar *eb)
    evas_object_show(eb->bar_object);
    evas_object_show(eb->box_object);
    evas_object_show(eb->event_object);
-   evas_object_show(eb->tray->tray);
+   _engage_tray_active_set(eb, eb->conf->tray);
    e_config_save_queue();
 }
 
@@ -922,10 +922,10 @@ static void
 _engage_bar_disable(Engage_Bar *eb)
 {
    eb->conf->enabled = 0;
+   _engage_tray_active_set(eb, 0);
    evas_object_hide(eb->bar_object);
    evas_object_hide(eb->box_object);
    evas_object_hide(eb->event_object);
-   evas_object_hide(eb->tray->tray);
    e_config_save_queue();
 }
 
