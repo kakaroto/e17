@@ -9,6 +9,7 @@
 #define DONT_DO_MIME 0
 #define DO_MIME 1
 #define ICON_ADD_COUNT 20
+#define DEFAULT_BG PACKAGE_DATA_DIR "/icons/default_bg.jpg"
 
 typedef struct gui_file gui_file;
 struct gui_file {
@@ -55,8 +56,8 @@ struct entropy_icon_viewer {
 	Ewl_Widget* iconbox;
 	Ecore_Hash* gui_hash; /*A list of our current directory's files*/
 	Ecore_Hash* icon_hash; /*A hash for ewl callbacks*/
-	Ecore_List* current_events; /*A ref to the events we have waiting on the queue.  perhaps we should handle this in the notify queue,
-				      one less thing for plugins to handle */
+
+	int default_bg;
 
 
 	entropy_file_progress_window* progress;
@@ -328,7 +329,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	instance->layout_parent = layout;
 	
         viewer->iconbox = ewl_iconbox_new();
-	viewer->current_events = ecore_list_new();
+	viewer->default_bg = 0;
 	instance->gui_object = viewer->iconbox;
 	ewl_widget_show(EWL_WIDGET(viewer->iconbox));
 
@@ -511,7 +512,10 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 				 }
 
 		                if (thumb) {
-					entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", list_item,NULL);
+					entropy_notify_event* ev = entropy_notify_request_register(
+					comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
+					"entropy_thumbnailer_thumbnail_get", list_item,NULL);
+					
 					entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);			
 					entropy_notify_event_commit(comp->core->notify, ev);
 				}
@@ -571,7 +575,9 @@ int idle_add_icons(void* data) {
 			}
 
 	                if (thumb) {
-				entropy_notify_event* ev = entropy_notify_request_register(comp->core->notify, proc, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, "entropy_thumbnailer_thumbnail_get", file,NULL);
+				entropy_notify_event* ev = entropy_notify_request_register(
+				comp->core->notify, proc, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
+				"entropy_thumbnailer_thumbnail_get", file,NULL);
 			
 				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, proc->requestor);
 				
@@ -692,8 +698,10 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		/*See if there is a custom BG image for this folder*/
 		if (entropy_config_str_get("iconbox_viewer", view->current_dir)) {
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
-		} else {
-			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), NULL);
+			view->default_bg = 0;
+		} else { /*if (!view->default_bg) {*/
+			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), DEFAULT_BG);
+			view->default_bg = 1;
 		}
 
 		/*Goto the root of the iconbox*/
@@ -716,8 +724,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		        if (obj) {
 		                obj->thumbnail = thumb;
 
-	        	        /*printf("Received callback notify from notify event..\n");
-		                printf("Created thumbnail (at callback): '%s', for file: '%s'\n", obj->thumbnail->thumbnail_filename, obj->file->filename);*/
+	        	        /*printf("Received callback notify from notify event..\n");*/
 		                /*Make sure the icon still exists*/
 				/*if (obj->icon) {*/
 				ewl_iconbox_icon_image_set(EWL_ICONBOX_ICON(obj->icon), obj->thumbnail->thumbnail_filename);

@@ -6,7 +6,7 @@ FILES =  c.png default.png document.png folder.png folder_structure.png \
 	e17_button_detail_copy.png e17_button_detail_cut.png \
 	e17_button_detail_delete.png e17_button_detail_rename.png \
 	e17_button_detail_properties.png e17_button_detail_paste.png \
-	e17_button_detail_new_dir.png
+	e17_button_detail_new_dir.png default_bg.jpg
 
 miscdir = $(pkgdatadir)/icons
 misc_DATA = $(FILES)
