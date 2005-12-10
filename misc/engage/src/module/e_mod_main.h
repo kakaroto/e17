@@ -60,7 +60,8 @@ struct _Engage_Bar
    E_Container *con;
    Evas        *evas;
    E_Menu      *menu;
-   E_Menu      *zoom_menu;
+   E_Menu      *zoom_size_menu;
+   E_Menu      *zoom_speed_menu;
    E_Menu      *icon_menu;
    E_Menu      *context_menu;   
    
