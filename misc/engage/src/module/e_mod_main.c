@@ -57,7 +57,7 @@ static int     _engage_cb_event_border_iconify(void *data, int type, void *event
 static int     _engage_cb_event_border_uniconify(void *data, int type, void *event);
 static int     _engage_cb_border_add(Engage_Bar *eb, E_Border *bd);
 
-static Engage_Bar *_engage_bar_new(Engage *e, E_Container *con);
+static Engage_Bar *_engage_bar_new(Engage_Bar *eb, E_Container *con);
 static void    _engage_bar_free(Engage_Bar *eb);
 static void    _engage_bar_menu_gen(Engage_Bar *eb);
 static void    _engage_bar_enable(Engage_Bar *eb);
@@ -231,6 +231,7 @@ _engage_new()
 #define T Config_Bar
 #define D conf_bar_edd
    E_CONFIG_VAL(D, T, enabled, INT);
+   E_CONFIG_VAL(D, T, iconsize, INT);
    E_CONFIG_VAL(D, T, zoom, INT);
    E_CONFIG_VAL(D, T, zoom_factor, DOUBLE);
    E_CONFIG_VAL(D, T, zoom_duration, DOUBLE);
@@ -243,7 +244,6 @@ _engage_new()
 #define T Config
 #define D conf_edd
    E_CONFIG_VAL(D, T, appdir, STR);
-   E_CONFIG_VAL(D, T, iconsize, INT);
    E_CONFIG_LIST(D, T, bars, conf_bar_edd);
    /*
    E_CONFIG_VAL(D, T, handle, DOUBLE);
@@ -255,13 +255,11 @@ _engage_new()
      {
 	e->conf = E_NEW(Config, 1);
 	e->conf->appdir = strdup("engage");
-	e->conf->iconsize = 64;
 	/*
 	e->conf->handle = 0.5;
 	e->conf->autohide = 0;
 	*/
      }
-   E_CONFIG_LIMIT(e->conf->iconsize, 2, 400);
    /*
    E_CONFIG_LIMIT(e->conf->handle, 0.0, 1.0);
    E_CONFIG_LIMIT(e->conf->autohide, 0, 1);
@@ -300,15 +298,17 @@ _engage_new()
 	     Engage_Bar *eb;
 	     /* Config */
 	     con = l2->data;
-	     eb = _engage_bar_new(e, con);
+	     eb = E_NEW(Engage_Bar, 1);
 	     if (eb)
 	       {
 		  E_Menu_Item *mi;
 
+		  eb->loaded = 0;
 		  if (!cl)
 		    {
 		       eb->conf = E_NEW(Config_Bar, 1);
 		       eb->conf->enabled = 1;
+		       eb->conf->iconsize = 64;
 		       eb->conf->zoom = 1;
 		       eb->conf->zoom_factor = 2.0;
 		       eb->conf->zoom_duration = 0.3;
@@ -321,11 +321,15 @@ _engage_new()
 		       eb->conf = cl->data;
 		       cl = cl->next;
 		    }
+		  E_CONFIG_LIMIT(eb->conf->iconsize, 2, 400);
 		  E_CONFIG_LIMIT(eb->conf->zoom, 0, 1);
 		  E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
 		  E_CONFIG_LIMIT(eb->conf->zoom_duration, 0.1, 0.5);
 		  E_CONFIG_LIMIT(eb->conf->zoom_stretch, 0, 1);
 		  E_CONFIG_LIMIT(eb->conf->tray, 0, 1);
+
+		  eb->engage = e;
+		  _engage_bar_new(eb, con);
 		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
 		  _engage_bar_menu_gen(eb);
@@ -352,6 +356,7 @@ _engage_new()
 
 		  /* We need to resize, the number of apps could have changed
 		   *  since last startup */
+		  eb->loaded = 1;
 		  _engage_bar_frame_resize(eb);
 	       }
 	  }
@@ -577,17 +582,13 @@ _engage_dotorder_app_del(Engage *e, char *name)
 }
 
 static Engage_Bar *
-_engage_bar_new(Engage *e, E_Container *con)
+_engage_bar_new(Engage_Bar *eb, E_Container *con)
 {
-   Engage_Bar *eb;
    Evas_List *l;
    Evas_Object *o;
    E_Gadman_Policy policy;
 
-   eb = E_NEW(Engage_Bar, 1);
-   if (!eb) return NULL;
-   eb->engage = e;
-   e->bars = evas_list_append(e->bars, eb);
+   eb->engage->bars = evas_list_append(eb->engage->bars, eb);
 
    eb->con = con;
    e_object_ref(E_OBJECT(con));
@@ -608,6 +609,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    eb->bar_object = o;
    edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "main");
    evas_object_show(o);
+   edje_object_size_min_calc(o, &eb->bw, &eb->bh);
 
    o = evas_object_rectangle_add(eb->evas);
    eb->event_object = o;
@@ -622,9 +624,9 @@ _engage_bar_new(Engage *e, E_Container *con)
    evas_object_show(o);
 
    o = e_box_add(eb->evas); 
-   eb->box_object = o;
    evas_object_intercept_move_callback_add(o, _engage_bar_cb_intercept_move, eb);
-   evas_object_intercept_resize_callback_add(o, _engage_bar_cb_intercept_resize, eb);
+   evas_object_intercept_resize_callback_add(o, _engage_bar_cb_intercept_resize,eb);
+   eb->box_object = o;
    e_box_freeze(o);
    edje_object_part_swallow(eb->bar_object, "items", o);
    evas_object_show(o);
@@ -687,7 +689,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _engage_cb_event_dnd_selection, eb);
 
    /* search for available contexts to switch to */
-   if(e->conf->appdir)
+   if(eb->engage->conf->appdir)
      {
 	Ecore_List *cons = NULL;
 	char buf[4096];
@@ -697,7 +699,8 @@ _engage_bar_new(Engage *e, E_Container *con)
 	homedir = e_user_homedir_get();
 	if (homedir)
 	  {
-	     snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s", homedir, e->conf->appdir);
+	     snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s", homedir,
+		       eb->engage->conf->appdir);
 	     free(homedir);
 	  }	
 	cons = ecore_file_ls(buf);
@@ -716,7 +719,6 @@ _engage_bar_new(Engage *e, E_Container *con)
 	       }
 	  }
      }
-   
    return eb;
 }
 
@@ -724,6 +726,8 @@ static void
 _engage_bar_free(Engage_Bar *eb)
 {
    e_object_unref(E_OBJECT(eb->con));
+   evas_object_intercept_move_callback_del(eb->box_object, _engage_bar_cb_intercept_move);
+   evas_object_intercept_resize_callback_del(eb->box_object, _engage_bar_cb_intercept_resize);
 
    e_object_del(E_OBJECT(eb->zoom_size_menu));
    e_object_del(E_OBJECT(eb->zoom_speed_menu));
@@ -959,7 +963,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_WHEEL, _engage_icon_cb_mouse_wheel, ic);
    evas_object_show(o);
 
-   size = eb->engage->conf->iconsize;
+   size = eb->conf->iconsize;
    o = edje_object_add(eb->evas);
    ic->bg_object = o;
    edje_extern_object_min_size_set(o, size, size);
@@ -1085,7 +1089,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 	 "icon_overlay");
 
    evas_object_raise(ai->event_object);
-   evas_object_resize(ai->bg_object, ic->eb->engage->iconbordersize / 2, ic->eb->engage->iconbordersize / 2);
+   evas_object_resize(ai->bg_object, ic->eb->conf->iconsize / 2, ic->eb->conf->iconsize / 2);
 
    edje_object_signal_emit(ai->bg_object, "passive", "");
    edje_object_signal_emit(ai->overlay_object, "passive", "");
@@ -1497,10 +1501,7 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    int edge;
 
    /* Not finished loading config yet! */
-   if ((eb->x == -1)
-       || (eb->y == -1)
-       || (eb->w == -1)
-       || (eb->h == -1))
+   if (!eb->loaded)
      return;
 
    evas_event_freeze(eb->evas);
@@ -1509,15 +1510,15 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    edge = e_gadman_client_edge_get(eb->gmc);
    if ((edge == E_GADMAN_EDGE_LEFT) || (edge == E_GADMAN_EDGE_RIGHT))
      {
-	w = eb->engage->iconbordersize;
-	h = evas_list_count(eb->icons) * eb->engage->iconbordersize;
+	w = eb->conf->iconsize;
+	h = evas_list_count(eb->icons) * eb->conf->iconsize;
      }
    else
      {
-	w = evas_list_count(eb->icons) * eb->engage->iconbordersize;
-	h = eb->engage->iconbordersize;
+	w = evas_list_count(eb->icons) * eb->conf->iconsize;
+	h = eb->conf->iconsize;
      }
-   evas_object_resize(eb->event_object, w, h);
+//   evas_object_resize(eb->event_object, w, h);
 
    _engage_tray_freeze(eb);
    edje_object_part_unswallow(eb->bar_object, eb->box_object);
@@ -1525,6 +1526,7 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    edje_extern_object_min_size_set(eb->box_object, w, h);
    edje_extern_object_max_size_set(eb->box_object, w, h);
    edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
+   _engage_tray_layout(eb);
 
    edje_object_size_min_calc(eb->bar_object, &w, &h);
    e_gadman_client_resize(eb->gmc, w, h);
@@ -1546,6 +1548,16 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    o = eb->bar_object;
    edje_object_signal_emit(o, "set_orientation", _engage_main_orientation[edge]);
    edje_object_message_signal_process(o);
+
+   _engage_tray_freeze(eb);
+   if (eb->tray)
+     edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
+   edje_object_part_unswallow(eb->bar_object, eb->box_object);
+   edje_object_size_min_calc(o, &eb->bw, &eb->bh);
+   edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
+   if (eb->tray)
+     edje_object_part_swallow(eb->bar_object, "tray", eb->tray->tray);
+   _engage_tray_thaw(eb);
    _engage_tray_layout(eb);
 
    e_box_freeze(eb->box_object);
@@ -1639,7 +1651,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    Evas_Coord x, y, w, h, md, md2, xx, yy, app_size, halfapp_size;
    double relx, rely;
    Evas_List *items, *extras;
-   int bordersize, counter;
+   int counter;
    Engage_Icon *prev;
    E_Gadman_Edge edge;
               
@@ -1667,7 +1679,6 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    e_box_freeze(eb->box_object);
    items = eb->icons;
    
-   bordersize = eb->engage->iconbordersize - eb->engage->conf->iconsize;
    if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
      {
 	md = my;
@@ -1686,9 +1697,9 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	  md2 = y + h - my;
 	counter = x;
      }
-   app_size = eb->engage->iconbordersize / 1.5;
+   app_size = eb->conf->iconsize / 1.5;
    halfapp_size = app_size / 2;
-   counter += (eb->engage->iconbordersize / 2) + 1;
+   counter += (eb->conf->iconsize / 2) + 1;
    while (items)
      {
 	Engage_Icon *icon;
@@ -1698,12 +1709,12 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 
 	icon = (Engage_Icon *) items->data;
 	if (eb->mouse_out != -1)
-	  distance = (double) (counter - eb->mouse_out) / (eb->engage->iconbordersize);
+	  distance = (double) (counter - eb->mouse_out) / (eb->conf->iconsize);
 	else
-	  distance = (double) (counter - md) / (eb->engage->iconbordersize);
+	  distance = (double) (counter - md) / (eb->conf->iconsize);
 
 	do_zoom = _engage_zoom_function(distance, &new_zoom, &relative, eb);
-	size = icon->scale * new_zoom * eb->engage->iconbordersize;
+	size = icon->scale * new_zoom * eb->conf->iconsize;
 	halfsize = size / 2;
 
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
@@ -1891,7 +1902,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 
 	prev = icon;
 	items = items->next;
-	counter += eb->engage->iconbordersize;
+	counter += eb->conf->iconsize;
      }
 
    e_box_thaw(eb->box_object);
@@ -1992,12 +2003,12 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
 {
    Engage_Bar *eb;
    E_Gadman_Edge edge;
-   Evas_Coord border;
 
    eb = data;
+   if (w <= eb->bw || h <= eb->bh)
+     return;
 
    evas_object_resize(o, w, h);
-	 
    evas_object_resize(eb->event_object, w, h);
    edje_extern_object_min_size_set(eb->box_object, w, h);
    
@@ -2005,14 +2016,6 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
      edge = e_gadman_client_edge_get(eb->gmc);
    else
      edge = E_GADMAN_EDGE_BOTTOM;
-
-   /* FIXME "4" should not be hardcoded, difference between engage->conf->icon
-    * and engage->iconbordersize */
-   border = 4;
-   if (edge == E_GADMAN_EDGE_TOP || edge == E_GADMAN_EDGE_BOTTOM)
-     eb->engage->conf->iconsize = h - border;
-   else
-     eb->engage->conf->iconsize = w - border;
 
    _engage_bar_iconsize_change(eb);
 }
@@ -2355,6 +2358,7 @@ static void
 _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Engage_Bar *eb;
+   int         edge;
 
    eb = data;
    switch (change)
@@ -2362,11 +2366,11 @@ _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
 	case E_GADMAN_CHANGE_MOVE_RESIZE:
 	  e_gadman_client_geometry_get(eb->gmc, &eb->x, &eb->y, &eb->w, &eb->h);
 
-	  _engage_tray_freeze(eb);
-	  edje_object_part_unswallow(eb->bar_object, eb->box_object);
-	  _engage_tray_thaw(eb);
-	  edje_extern_object_min_size_set(eb->box_object, eb->w, eb->h);
-	  edje_object_part_swallow(eb->bar_object, "items", eb->box_object);
+	   edge = e_gadman_client_edge_get(eb->gmc);
+	   if (edge == E_GADMAN_EDGE_TOP || edge == E_GADMAN_EDGE_BOTTOM)
+	     eb->conf->iconsize = eb->h - eb->bh;
+	   else
+	     eb->conf->iconsize = eb->w - eb->bw;
 
 	  evas_object_move(eb->bar_object, eb->x, eb->y);
 	  evas_object_resize(eb->bar_object, eb->w, eb->h);
@@ -2388,15 +2392,14 @@ static void
 _engage_bar_iconsize_change(Engage_Bar *eb)
 {
    Evas_List *l;
-   Evas_Coord border, size;
+   Evas_Coord size;
 
    e_box_freeze(eb->box_object);
-   size = eb->engage->conf->iconsize;
+   size = eb->conf->iconsize;
    for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
 	Evas_Object *o;
-	Evas_Coord bw, bh;
 
 	ic = l->data;
 	o = ic->icon_object;
@@ -2407,17 +2410,14 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 	evas_object_resize(o, size, size);
 	edje_object_part_swallow(ic->bg_object, "item", o);
 
-	edje_object_size_min_calc(ic->bg_object, &bw, &bh);
 	e_box_pack_options_set(ic->bg_object,
 	      1, 1, /* fill */
 	      0, 0, /* expand */
 	      0.5, 0.5, /* align */
-	      bw, bh, /* min */
-	      bw, bh /* max */
+	      size, size, /* min */
+	      size, size /* max */
 	      );
-	border = bw;
      }
-   eb->engage->iconbordersize = border;
    
    e_box_thaw(eb->box_object);
    _engage_bar_frame_resize(eb);
@@ -2652,7 +2652,7 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 
    if (!eb->zooming || !eb->conf->zoom)
      {
-	*disp = d * eb->engage->iconbordersize;
+	*disp = d * eb->conf->iconsize;
 	*zoom = 1.0;
 	return eb->zooming;
      }
@@ -2664,7 +2664,7 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 
 	if (eb->conf->zoom_stretch)
 	  {
-	     *disp = (eb->engage->iconbordersize) *
+	     *disp = (eb->conf->iconsize) *
 	       ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	         (range * (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
 		   ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))) + d);
@@ -2673,7 +2673,7 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 	*zoom = 1.0;
 	if (eb->conf->zoom_stretch)
 	  {
-	     *disp = (eb->engage->iconbordersize) *
+	     *disp = (eb->conf->iconsize) *
 	       ((eb->zoom - 1.0) * (eb->conf->zoom_factor - 1.0) *
 	         (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
 		   (2.0 * (sqrt_ff_1 - f))) + range + fabs(d) - range);

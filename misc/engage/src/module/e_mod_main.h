@@ -15,7 +15,6 @@ typedef struct _Engage_App_Icon Engage_App_Icon;
 struct _Config
 {
    char         *appdir;
-   int           iconsize;
    Evas_List    *bars;
    /*
    double        handle;
@@ -26,6 +25,7 @@ struct _Config
 struct _Config_Bar
 {
    unsigned char enabled;
+   int           iconsize;
    int           zoom;
    double        zoom_factor, zoom_duration;
    int           zoom_stretch;
@@ -39,7 +39,6 @@ struct _Engage
    E_Menu      *config_menu;
    
    Config      *conf;
-   Evas_Coord   iconbordersize;
 };
 
 struct _Engage_Tray
@@ -68,12 +67,14 @@ struct _Engage_Bar
    Evas_Object *bar_object;
    Evas_Object *box_object;
    Evas_Object *event_object;
+   Evas_Coord   bw, bh;
    Evas_Coord   mouse_out;
    
    Evas_List   *icons;   
    Evas_List   *contexts;
    
    double       align, align_req;
+   int          loaded;
    
    Evas_Coord   x, y, w, h;
    double       zoom;

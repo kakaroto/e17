@@ -237,7 +237,7 @@ _engage_tray_layout(Engage_Bar *eb)
    Evas_List *wins;
    E_Gadman_Edge edge;
 
-   if (!eb->gmc || !eb->conf)
+   if (!eb->gmc || !eb->conf || !eb->tray)
      return;
 
    edge = e_gadman_client_edge_get(eb->gmc);
@@ -248,11 +248,11 @@ _engage_tray_layout(Engage_Bar *eb)
 	if (edge == E_GADMAN_EDGE_BOTTOM || edge == E_GADMAN_EDGE_TOP)
 	  {
 	     w = 0;
-	     h = eb->engage->conf->iconsize;
+	     h = eb->conf->iconsize;
 	  }
 	else
 	  {
-	     w = eb->engage->conf->iconsize;
+	     w = eb->conf->iconsize;
 	     h = 0;
 	  }
 	edje_object_part_unswallow(eb->bar_object, eb->tray->tray);
@@ -264,7 +264,7 @@ _engage_tray_layout(Engage_Bar *eb)
 	return;
      }
 
-   h = eb->engage->conf->iconsize;
+   h = eb->conf->iconsize;
    if (h < 24)
      h = 24;
    c = (h - (h % 24)) / 24;
