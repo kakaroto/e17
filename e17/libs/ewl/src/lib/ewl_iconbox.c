@@ -402,6 +402,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ib->lasttime.tv_sec = 0;
 	ib->lasttime.tv_usec = 0;
 
+	/*Keyboard event callback setup*/
+	ib->key_event_cb = NULL;
+
 
 	/*printf("Setup the iconbox...\n");*/
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -935,6 +938,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 	ewl_widget_layer_set(EWL_WIDGET(ib), ICONBOX_ICON_LAYER);
+	//ewl_widget_draggable_set(EWL_WIDGET(ib), 1);
 
 	return EWL_ICONBOX_ICON(ib);
 }
@@ -1415,6 +1419,8 @@ void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data __UNUSED__, void *us
 					
 				}
 			}		
+		} else if (ib->key_event_cb) {
+			(*ib->key_event_cb)(ib, ib->key_event_data, event->keyname);
 		}
 
 
@@ -1433,4 +1439,10 @@ void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data __UNUSED__, void *us
 		
 		}
 	} 
+}
+
+
+void ewl_iconbox_controlled_key_callback_register(Ewl_IconBox* ib, void (*cb)(Ewl_IconBox*,void*,char*), void* data) {
+	ib->key_event_cb = cb;
+	ib->key_event_data = data;
 }

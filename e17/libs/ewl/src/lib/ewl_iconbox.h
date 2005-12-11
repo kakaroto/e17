@@ -107,6 +107,8 @@ struct Ewl_IconBox
 
 	/*Key event/repeat timer*/
 	struct timeval lasttime;
+	void (*key_event_cb)(Ewl_IconBox* ib, void* data, char* keyname);
+	void* key_event_data;
 	
 
 	/* Editable flag */
@@ -135,6 +137,7 @@ void ewl_iconbox_context_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item);
 void ewl_iconbox_icon_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item);
 void ewl_iconbox_icon_remove(Ewl_IconBox* ib, Ewl_IconBox_Icon* icon);
 void ewl_iconbox_scrollpane_recalculate(Ewl_IconBox* ib);
+void ewl_iconbox_controlled_key_callback_register(Ewl_IconBox* ib, void (*cb)(Ewl_IconBox*,void*,char*), void* data);
 Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib);
 
 
