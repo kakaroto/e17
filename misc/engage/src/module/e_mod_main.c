@@ -42,8 +42,8 @@ static const char *_engage_main_orientation[] =
 static Engage *_engage_new();
 static void    _engage_free(Engage *e);
 static void    _engage_app_change(void *data, E_App *a, E_App_Change ch);
-static void    _engage_dotorder_app_add(Engage *e, char *name);
-static void    _engage_dotorder_app_del(Engage *e, char *name);
+static void    _engage_dotorder_app_add(Engage *e, const char *name);
+static void    _engage_dotorder_app_del(Engage *e, const char *name);
 static void    _engage_config_menu_new(Engage *e);
 
 /* xdnd alpha code - this is a temp */
@@ -76,7 +76,7 @@ static void    _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after);
 
 static Engage_App_Icon *_engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min);
 static void    _engage_app_icon_free(Engage_App_Icon *ai);
-static Engage_App_Icon *_engage_app_icon_find(Engage_Icon *ic, E_Border *bd);
+//static Engage_App_Icon *_engage_app_icon_find(Engage_Icon *ic, E_Border *bd);
 
 static void    _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 static void    _engage_bar_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y);
@@ -524,7 +524,7 @@ _engage_dotorder_locate(Engage *e)
 }
 
 static void
-_engage_dotorder_app_add(Engage *e, char *name)
+_engage_dotorder_app_add(Engage *e, const char *name)
 {
    FILE *f;
    char *dotorder;
@@ -543,7 +543,7 @@ _engage_dotorder_app_add(Engage *e, char *name)
 }
 
 static void
-_engage_dotorder_app_del(Engage *e, char *name)
+_engage_dotorder_app_del(Engage *e, const char *name)
 {
    FILE *f;
    char buf[4096];
@@ -1128,6 +1128,8 @@ _engage_app_icon_free(Engage_App_Icon *ai)
    free(ai);
 }
 
+#if 0 
+# not used yet, removed to stop warnings
 static Engage_App_Icon *
 _engage_app_icon_find(Engage_Icon *ic, E_Border *bd)
 {
@@ -1142,6 +1144,7 @@ _engage_app_icon_find(Engage_Icon *ic, E_Border *bd)
      }
    return NULL;
 }
+#endif
 
 void
 _engage_config_menu_new(Engage *e)
@@ -1216,7 +1219,9 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
    files = ev->data;
    for (i = 0; i < files->num_files; i++)
      {
-	char *name, *path, *ext;
+	char *path, *ext;
+	const char *name;
+
 	ext = strstr(files->files[i], ".eap");
 	if (!ext)
 	  continue;
@@ -1707,6 +1712,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	int          do_zoom, offset;
 	Evas_Coord   cx, cy;
 
+	relative = 0; // compiler warning supression
 	icon = (Engage_Icon *) items->data;
 	if (eb->mouse_out != -1)
 	  distance = (double) (counter - eb->mouse_out) / (eb->conf->iconsize);
@@ -2399,17 +2405,8 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
    for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
-	Evas_Object *o;
 
 	ic = l->data;
-	o = ic->icon_object;
-	edje_object_part_unswallow(ic->bg_object, o);
-
-	edje_extern_object_min_size_set(o, size, size);
-	edje_extern_object_min_size_set(o, size, size);
-	evas_object_resize(o, size, size);
-	edje_object_part_swallow(ic->bg_object, "item", o);
-
 	e_box_pack_options_set(ic->bg_object,
 	      1, 1, /* fill */
 	      0, 0, /* expand */
@@ -2521,7 +2518,7 @@ _engage_bar_cb_menu_keep_icon(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Engage_Bar *eb;
    eb = data;
-   char *file;
+   const char *file;
 
    file = ecore_file_get_file(eb->selected_ic->app->path);
    _engage_dotorder_app_add(eb->engage, file);
@@ -2532,7 +2529,7 @@ _engage_bar_cb_menu_remove_icon(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Engage_Bar *eb;
    eb = data;
-   char *file;
+   const char *file;
    
    file = ecore_file_get_file(eb->selected_ic->app->path);
    _engage_dotorder_app_del(eb->engage, file);
