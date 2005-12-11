@@ -320,11 +320,12 @@ void evfs_posix_monitor_remove(evfs_client* client, char* path) {
 
 
 int evfs_file_remove(char* src) {
-	struct stat* stat_src;
+	struct stat stat_src;
 	int i;
 
-	if (!stat(src, stat_src)) {
-		return file_remove(src, stat_src);
+	if (!stat(src, &stat_src)) {
+		printf("Removing file '%s'\n", src);
+		return remove(src);
 	} else {
 		printf("Could not stat..\n");
 		return 1;
