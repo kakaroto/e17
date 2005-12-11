@@ -147,7 +147,6 @@ static int      _engage_zoom_in_slave(void *data);
 static int      _engage_zoom_out_slave(void *data);
 
 E_App         *_engage_unmatched_app;
-Ecore_Timer   *_engage_zoom_timer;
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
@@ -601,7 +600,9 @@ _engage_bar_new(Engage_Bar *eb, E_Container *con)
    eb->x = eb->y = eb->w = eb->h = -1;
    eb->zoom = 1.0;
    eb->zoom_start_time = 0.0;
-   eb->zooming = 0;
+   eb->cancel_zoom_in = 0;
+   eb->cancel_zoom_out = 0;
+   eb->state = ENGAGE_NORMAL;
    eb->mouse_out = -1;
 
    evas_event_freeze(eb->evas);
@@ -2206,11 +2207,10 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    eb = data;
 
-   if (_engage_zoom_timer)
-     ecore_timer_del(_engage_zoom_timer);
-   if (eb->zoom_start_time)
-     eb->zoom_start_time = 0;
-   _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_in_slave, eb);
+   if (eb->state == ENGAGE_ZOOMING)
+     return;
+   _engage_zoom_in_slave(eb);
+   ecore_timer_add(0.05, _engage_zoom_in_slave, eb);
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    edge = e_gadman_client_edge_get(eb->gmc);
 
@@ -2249,11 +2249,10 @@ _engage_bar_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info
    ev = event_info;
    eb = data;
 
-   if (_engage_zoom_timer)
-     ecore_timer_del(_engage_zoom_timer);
-   if (eb->zoom_start_time)
-     eb->zoom_start_time = 0;
-   _engage_zoom_timer = ecore_timer_add(0.05, _engage_zoom_out_slave, eb);
+   if (eb->state == ENGAGE_UNZOOMING)
+     return;
+   _engage_zoom_out_slave(eb);
+   ecore_timer_add(0.05, _engage_zoom_out_slave, eb);
    eb->mouse_out = -1;
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
@@ -2265,12 +2264,23 @@ _engage_zoom_in_slave(void *data)
    Engage_Bar *eb;
 
    eb = data;
-   if (eb->zoom_start_time == 0)
+   if (eb->cancel_zoom_in)
      {
-	eb->zooming = 1;
+	eb->cancel_zoom_in = 0;
+	return 0;
+     }
+   if (eb->state == ENGAGE_NORMAL)
+     {
+	eb->state = ENGAGE_ZOOMING;
 	eb->zoom_start_time = ecore_time_get();
      }
-
+   else if (eb->state == ENGAGE_UNZOOMING)
+     {
+	eb->cancel_zoom_out = 1;
+	eb->zoom_start_time = ecore_time_get() - (eb->zoom - 1.0) /
+	  (eb->conf->zoom_factor - 1.0) * eb->conf->zoom_duration;
+     }
+eb->state = ENGAGE_ZOOMING;
    eb->zoom = (eb->conf->zoom_factor - 1.0) *
 	       ((ecore_time_get() - eb->zoom_start_time)
 		/ eb->conf->zoom_duration) + 1.0;
@@ -2279,8 +2289,7 @@ _engage_zoom_in_slave(void *data)
    if (eb->zoom >= eb->conf->zoom_factor)
      {
 	eb->zoom = eb->conf->zoom_factor;
-	_engage_zoom_timer = NULL;
-	eb->zoom_start_time = 0;
+	eb->state = ENGAGE_ZOOMED;
 	_engage_bar_motion_handle(eb, x, y);
 	return 0;
      }
@@ -2295,9 +2304,23 @@ _engage_zoom_out_slave(void *data)
    Engage_Bar *eb;
 
    eb = data;
-   if (eb->zoom_start_time == 0)
-     eb->zoom_start_time = ecore_time_get();
-
+   if (eb->cancel_zoom_out)
+     {
+	eb->cancel_zoom_out = 0;
+	return 0;
+     }
+   if (eb->state == ENGAGE_ZOOMED)
+     {
+	eb->state = ENGAGE_UNZOOMING;
+	eb->zoom_start_time = ecore_time_get();
+     }
+   else if (eb->state == ENGAGE_ZOOMING)
+     {
+	eb->cancel_zoom_in = 1;
+	eb->zoom_start_time = ecore_time_get() - (eb->conf->zoom_factor - eb->zoom) /
+	   (eb->conf->zoom_factor - 1.0) * eb->conf->zoom_duration;
+     }
+eb->state = ENGAGE_UNZOOMING;
    eb->zoom = (eb->conf->zoom_factor - 1.0) * (1.0 - (ecore_time_get()
 			   - eb->zoom_start_time) / eb->conf->zoom_duration) + 1.0;
 
@@ -2306,13 +2329,12 @@ _engage_zoom_out_slave(void *data)
    if (eb->zoom <= 1.0)
      {
 	eb->zoom = 1.0;
-	_engage_zoom_timer = NULL;
 	eb->zoom_start_time = 0;
 	evas_object_geometry_get(eb->box_object, &bx, &by, &bw, &bh);
 	evas_object_move(eb->event_object, bx, by);
 	evas_object_resize(eb->event_object, bw, bh);
 
-	eb->zooming = 0;
+	eb->state = ENGAGE_NORMAL;
 	_engage_bar_motion_handle(eb, x, y);
 	return 0;
      }
@@ -2630,7 +2652,10 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 {
    double          range, f, x;
    double          ff, sqrt_ffxx, sqrt_ff_1;
+   int             zooming;
 
+   zooming = (eb->state == ENGAGE_ZOOMING || eb->state == ENGAGE_UNZOOMING
+	 || eb->state == ENGAGE_ZOOMED);
    if (eb->conf->zoom_stretch)
      {
 	range = 2.5;
@@ -2647,11 +2672,11 @@ _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    sqrt_ffxx = sqrt(ff - x * x);
    sqrt_ff_1 = sqrt(ff - 1.0);
 
-   if (!eb->zooming || !eb->conf->zoom)
+   if (!zooming || !eb->conf->zoom)
      {
 	*disp = d * eb->conf->iconsize;
 	*zoom = 1.0;
-	return eb->zooming;
+	return zooming;
      }
 
    if (d > -range && d < range)

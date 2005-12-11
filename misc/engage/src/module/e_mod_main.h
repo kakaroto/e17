@@ -78,9 +78,10 @@ struct _Engage_Bar
    
    Evas_Coord   x, y, w, h;
    double       zoom;
-   int          zooming;
+   int          cancel_zoom_in:1, cancel_zoom_out:1;
    double       zoom_start_time;
-   
+   enum {ENGAGE_NORMAL, ENGAGE_ZOOMING, ENGAGE_ZOOMED, ENGAGE_UNZOOMING} state;
+
    E_Gadman_Client *gmc;
 
    Config_Bar  *conf;
