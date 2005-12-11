@@ -312,8 +312,10 @@ void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_
 		
 		while ( (file = ecore_list_next(file_list))) {
 			printf("Deleting '%s'\n", file->filename);
-
+			
 			(*del_func)(file);	
+
+			entropy_core_file_cache_remove_reference(file->md5);	
 
 	
 		}
@@ -322,7 +324,7 @@ void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_
 		printf("Selected cancel..\n");
 	}
 
-	//entropy_core_file_cache_remove_reference(file->md5);
+	
 
 	/*Um...FIXME bad - we need to save a reference to the dialog somewhere*/
 	ewl_widget_destroy(w->parent->parent->parent);
