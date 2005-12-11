@@ -110,14 +110,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 		ewl_tree_row_expand_set(row, EWL_TREE_NODE_EXPANDED);
 
 
-		/*Now change the gihtlight, if we got a row..*/
-		if (viewer->last_selected_label) {
-			ewl_text_cursor_position_set(EWL_TEXT(viewer->last_selected_label), 0);
 
-			/*TODO theme this color stuff*/
-			ewl_text_color_apply(EWL_TEXT(viewer->last_selected_label), 
-					0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(viewer->last_selected_label)));		
-		}
 
 		/*Highlight this row*/
 		/*TODO Find some way to cleanly find the text member of the row*/
@@ -235,6 +228,8 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED, row_clicked_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_ENTER, dnd_enter_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
+
+		ewl_widget_appearance_set(EWL_WIDGET(row), "entry");
 		
 
 		

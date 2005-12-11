@@ -673,3 +673,18 @@ void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to, ent
 	//TODO - free the file containers here
 }
 
+
+void entropy_filesystem_file_remove(entropy_generic_file* file) {
+	evfs_file_uri_path* uri_path_from;
+
+	char* uri = entropy_core_generic_file_uri_create(file,0);
+	printf("Deleting uri '%s'\n", uri);
+
+	uri_path_from = evfs_parse_uri(uri);
+	evfs_client_file_remove(con, uri_path_from->files[0]);
+
+
+	free(uri);
+	
+}
+

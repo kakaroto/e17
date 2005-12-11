@@ -3,6 +3,7 @@
 #include "entropy_gui.h"
 #include "entropy_config.h"
 #include "ewl_properties_dialog.h"
+#include "ewl_progress_dialog.h"
 #include <dlfcn.h>
 #include <time.h>
 
@@ -32,21 +33,6 @@ typedef struct event_idle_processor {
 
 
 
-/*------------------------------------------------*/
-/*Start file copy progress objects/structures - This should be moved to a plugin.  Action plugin? */
-
-typedef struct entropy_file_progress_window {
-	Ewl_Widget* progress_window;
-	Ewl_Widget* file_from;
-	Ewl_Widget* file_to;
-	Ewl_Widget* progressbar;
-} entropy_file_progress_window;
-
-/*---------------------------------------------*/
-
-
-
-
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
 
 
@@ -56,51 +42,23 @@ struct entropy_icon_viewer {
 	Ewl_Widget* iconbox;
 	Ecore_Hash* gui_hash; /*A list of our current directory's files*/
 	Ecore_Hash* icon_hash; /*A hash for ewl callbacks*/
+	Ecore_Hash* file_wait_list; /*A hash of lists of files that we are waiting for a response to
+				     e.g. waiting for a yes/no on delete confirm*/
 
 	int default_bg;
 
 
 	entropy_file_progress_window* progress;
-
 	Ewl_Widget* file_dialog;
-
 	event_idle_processor* last_processor;
-
 	
 	char current_dir[1024]; /* We should handle this at the core.  FUTURE API TODO */
 };
 
 
-
-
-
-
-void ewl_progress_window_create(entropy_file_progress_window* progress) {
-	Ewl_Widget* vbox;
-	
-	progress->progress_window = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(progress->progress_window), "File Copy");
-	ewl_object_custom_size_set(EWL_OBJECT(progress->progress_window), 400, 150);
-	
-	vbox = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(progress->progress_window), vbox);
-	ewl_widget_show(vbox);
-
-	progress->file_from = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), progress->file_from);
-	ewl_widget_show(progress->file_from);
-
-	progress->file_to = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), progress->file_to);
-	ewl_widget_show(progress->file_to);
-
-	progress->progressbar = ewl_progressbar_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), progress->progressbar);
-	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress->progressbar), 100);
-	ewl_widget_show(progress->progressbar);
-
+void entropy_file_wait_list_add(entropy_icon_viewer* viewer, Ecore_List* list) {
+	ecore_hash_set(viewer->file_wait_list, list, list);
 }
-
 
 
 
@@ -226,6 +184,8 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 }
 
 
+
+
 void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ewl_Event_Mouse_Down *ev = ev_data;
 	entropy_gui_event* gui_event;
@@ -316,6 +276,134 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 //	printf ("Destroying icon viewer...\n");
 }
 
+
+
+
+void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
+	Ecore_List* file_list = user_data;
+	const char* text = ewl_button_label_get(EWL_BUTTON(w));
+	entropy_generic_file* file;
+	entropy_gui_component_instance* instance;
+	
+	printf("Delete callback!\n");
+	if (!strcmp(text, "Yes")) {
+		entropy_plugin* plugin;
+		void (*del_func)(entropy_generic_file* source);
+
+		
+		printf("Selected delete\n");
+
+		ecore_list_goto_first(file_list);
+	
+		/*As mentioned below, this is awkward,
+		 * but we avoid a sep. data structure here,
+		 * as long as we make sure this is documented
+		 * i.e. - this first item on this list is the plugin
+		 * reference */
+		instance = ecore_list_next(file_list);
+
+		plugin = entropy_plugins_type_get_first(instance->core->plugin_list, 
+			ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+
+		/*Get the func ref*/
+		del_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_remove");
+		
+		
+		while ( (file = ecore_list_next(file_list))) {
+			printf("Deleting '%s'\n", file->filename);
+
+			(*del_func)(file);	
+
+	
+		}
+		
+	} else {
+		printf("Selected cancel..\n");
+	}
+
+	//entropy_core_file_cache_remove_reference(file->md5);
+
+	/*Um...FIXME bad - we need to save a reference to the dialog somewhere*/
+	ewl_widget_destroy(w->parent->parent->parent);
+
+	ecore_list_destroy(file_list);
+}
+
+
+
+void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key)  {
+	entropy_icon_viewer* viewer = ((entropy_gui_component_instance*)data)->data;
+	
+	printf("Received controlled key: '%s'\n", key);
+
+	if (!strcmp(key, "Delete")) {
+		Ecore_List* new_file_list = ecore_list_new();
+		Ecore_List* icon_list;
+		entropy_generic_file* file;
+		gui_file* local_file;
+		Ewl_IconBox_Icon* list_item;
+		
+
+		
+		Ewl_Widget* dialog_win;
+		Ewl_Widget* dialog_label;
+		Ewl_Widget* button;
+
+		/*This is kind of awkward - the first item on the list is
+		 * the plugin instance reference*/
+		ecore_list_append(new_file_list, data);
+
+		dialog_win = ewl_dialog_new();
+		ewl_window_title_set(EWL_WINDOW(dialog_win), "Delete?");
+
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog_win), EWL_POSITION_TOP);
+		dialog_label = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(dialog_label),  "Are you sure you want to delete these files?");
+		ewl_container_child_append(EWL_CONTAINER(dialog_win), dialog_label);
+		ewl_widget_show(dialog_label);
+
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog_win), EWL_POSITION_BOTTOM);
+		
+
+
+		//////////////////////
+		icon_list = ewl_iconbox_get_selection(EWL_ICONBOX(viewer->iconbox) );
+
+		ecore_list_goto_first(icon_list);
+		while ( (list_item = ecore_list_next(icon_list)) )  {
+			local_file = ecore_hash_get( viewer->icon_hash, list_item);
+			if (local_file) {
+				entropy_core_file_cache_add_reference(local_file->file->md5);
+				ecore_list_append(new_file_list, local_file->file);
+			}
+		}
+		entropy_file_wait_list_add(viewer, new_file_list);
+		ecore_list_destroy(icon_list);
+
+
+		/////////////////////
+		//
+
+		button = ewl_button_new();
+		ewl_button_label_set(EWL_BUTTON(button), "Yes");
+		ewl_widget_show(button);
+		ewl_container_child_append(EWL_CONTAINER(dialog_win), button);
+		ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_icon_local_viewer_delete_cb, new_file_list);
+
+		button = ewl_button_new();
+		ewl_button_label_set(EWL_BUTTON(button), "No");
+		ewl_widget_show(button);
+		ewl_container_child_append(EWL_CONTAINER(dialog_win), button);
+		ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_icon_local_viewer_delete_cb, new_file_list);
+		
+		
+		
+		ewl_widget_show(dialog_win);
+	}
+}
+
+
+
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
 	Ewl_Widget* context;
 
@@ -336,6 +424,9 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 
 	/*Initialise the progress window*/
 	viewer->progress = entropy_malloc(sizeof(entropy_file_progress_window));
+
+	/*Init the file wait list*/
+	viewer->file_wait_list = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
 	
 	/*Add some context menu items*/
@@ -452,6 +543,9 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 
 	/*We want to know about file transfer progress events*/
 	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+
+	ewl_iconbox_controlled_key_callback_register(viewer->iconbox, ewl_icon_local_viewer_key_event_cb, instance);
 
 
 
@@ -624,24 +718,12 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
 		event_idle_processor* proc = entropy_malloc(sizeof(event_idle_processor));
 
-						      
-						      
-		
-		Ecore_List* event_keys;
-		Ecore_List* events;
 		entropy_generic_file* event_file;
-		char* mime;
-		entropy_plugin* thumb;
-		
-						      
-		Ecore_List* el = (Ecore_List*)ret;
 		entropy_file_request* request = eevent->data; /*A file request's data is the dest dir*/
 		
 		entropy_icon_viewer* view = comp->data;
 		Ecore_Hash* tmp_gui_hash;
 		Ecore_Hash* tmp_icon_hash;
-		entropy_generic_file* list_item;
-
 
 		/*Keep a reference to our existing hash*/
 		tmp_gui_hash = view->gui_hash;
