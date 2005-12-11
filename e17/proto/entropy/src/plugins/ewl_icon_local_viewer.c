@@ -34,6 +34,7 @@ typedef struct event_idle_processor {
 
 
 void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret, void* user_data);
+void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance);
 
 
 
@@ -329,14 +330,16 @@ void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_
 	ecore_list_destroy(file_list);
 }
 
+void ewl_icon_local_viewer_menu_delete_cb (Ewl_Widget *w , void *ev_data , void *user_data ) {
 
+	/*User_data is entropy_gui_component_instance*/
+	ewl_icon_local_viewer_delete_selected(user_data);
+}
 
-void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key)  {
-	entropy_icon_viewer* viewer = ((entropy_gui_component_instance*)data)->data;
-	
-	printf("Received controlled key: '%s'\n", key);
+void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance) {
+		Ewl_IconBox* ib = EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->iconbox);
+		entropy_icon_viewer* viewer= instance->data;
 
-	if (!strcmp(key, "Delete")) {
 		Ecore_List* new_file_list = ecore_list_new();
 		Ecore_List* icon_list;
 		entropy_generic_file* file;
@@ -351,7 +354,7 @@ void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key) 
 
 		/*This is kind of awkward - the first item on the list is
 		 * the plugin instance reference*/
-		ecore_list_append(new_file_list, data);
+		ecore_list_append(new_file_list, instance);
 
 		dialog_win = ewl_dialog_new();
 		ewl_window_title_set(EWL_WINDOW(dialog_win), "Delete?");
@@ -367,7 +370,7 @@ void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key) 
 
 
 		//////////////////////
-		icon_list = ewl_iconbox_get_selection(EWL_ICONBOX(viewer->iconbox) );
+		icon_list = ewl_iconbox_get_selection(EWL_ICONBOX(ib) );
 
 		ecore_list_goto_first(icon_list);
 		while ( (list_item = ecore_list_next(icon_list)) )  {
@@ -399,6 +402,16 @@ void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key) 
 		
 		
 		ewl_widget_show(dialog_win);
+}
+
+
+void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key)  {
+	entropy_icon_viewer* viewer = ((entropy_gui_component_instance*)data)->data;
+	
+	printf("Received controlled key: '%s'\n", key);
+
+	if (!strcmp(key, "Delete")) {
+		ewl_icon_local_viewer_delete_selected(data);
 	}
 }
 
@@ -504,7 +517,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
-	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
+	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_icon_local_viewer_menu_delete_cb, instance);
 
 	/*Icon menu*/
 	context = ewl_menu_item_new();
