@@ -7,6 +7,8 @@ autom4te.cache
 config.h
 config.h.in
 config.log
+config.sub
+config.guess
 config.status
 configure
 depcomp
@@ -17,3 +19,4 @@ libtool
 ltmain.sh
 missing
 stamp-h1
+etk.pc
