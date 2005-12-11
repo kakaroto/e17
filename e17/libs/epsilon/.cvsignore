@@ -17,3 +17,4 @@ mkinstalldirs
 config.guess
 config.sub
 epsilon.spec
+epsilon.pc
