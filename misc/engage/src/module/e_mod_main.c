@@ -2277,10 +2277,11 @@ _engage_zoom_in_slave(void *data)
    else if (eb->state == ENGAGE_UNZOOMING)
      {
 	eb->cancel_zoom_out = 1;
+	eb->state = ENGAGE_ZOOMING;
 	eb->zoom_start_time = ecore_time_get() - (eb->zoom - 1.0) /
 	  (eb->conf->zoom_factor - 1.0) * eb->conf->zoom_duration;
      }
-eb->state = ENGAGE_ZOOMING;
+
    eb->zoom = (eb->conf->zoom_factor - 1.0) *
 	       ((ecore_time_get() - eb->zoom_start_time)
 		/ eb->conf->zoom_duration) + 1.0;
@@ -2317,19 +2318,18 @@ _engage_zoom_out_slave(void *data)
    else if (eb->state == ENGAGE_ZOOMING)
      {
 	eb->cancel_zoom_in = 1;
+	eb->state = ENGAGE_UNZOOMING;
 	eb->zoom_start_time = ecore_time_get() - (eb->conf->zoom_factor - eb->zoom) /
 	   (eb->conf->zoom_factor - 1.0) * eb->conf->zoom_duration;
      }
-eb->state = ENGAGE_UNZOOMING;
+
    eb->zoom = (eb->conf->zoom_factor - 1.0) * (1.0 - (ecore_time_get()
 			   - eb->zoom_start_time) / eb->conf->zoom_duration) + 1.0;
 
-   
    evas_pointer_canvas_xy_get(eb->evas, &x, &y);
    if (eb->zoom <= 1.0)
      {
 	eb->zoom = 1.0;
-	eb->zoom_start_time = 0;
 	evas_object_geometry_get(eb->box_object, &bx, &by, &bw, &bh);
 	evas_object_move(eb->event_object, bx, by);
 	evas_object_resize(eb->event_object, bw, bh);
