@@ -1,4 +1,4 @@
-man_MANS = e16.1
+man_MANS = # e16.1
 
 EXTRA_DIST = e16.1
 
