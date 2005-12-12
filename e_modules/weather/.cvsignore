@@ -1,3 +1,5 @@
+.deps
+.libs
 Makefile
 Makefile.in
 aclocal.m4
@@ -17,3 +19,4 @@ ltmain.sh
 stamp-h1
 *.lo
 *.la
+*.edj
