@@ -1,7 +1,6 @@
 #include "e.h"
 #include "config.h"
 #include "e_mod_main.h"
-
 #include <time.h>
 
 /* TODO List:
@@ -16,10 +15,8 @@
 static Flame  *_flame_init                 (E_Module *m);
 static void    _flame_shutdown             (Flame *f);
 static E_Menu *_flame_config_menu_new      (Flame *f);
-static void    _flame_menu_gold_palette    (void *data, E_Menu *m, E_Menu_Item *mi);
-static void    _flame_menu_fire_palette    (void *data, E_Menu *m, E_Menu_Item *mi);
-static void    _flame_menu_plasma_palette  (void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _flame_config_palette_set   (Flame *f, Flame_Palette_Type type);
+static void    _flame_menu_cb_configure    (void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int  _flame_face_init           (Flame_Face *ff);
 static void _flame_face_free           (Flame_Face *ff);
@@ -37,8 +34,6 @@ static int  _flame_cb_event_container_resize(void *data, int type, void *event);
 
 static int powerof (unsigned int n);
 
-char          *_flame_module_dir;
-
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
 {
@@ -52,8 +47,7 @@ e_modapi_init (E_Module *m)
    Flame *f;
    
    f = _flame_init (m);
-   m->config_menu = _flame_config_menu_new (f);
-   
+   m->config_menu = _flame_config_menu_new (f);   
    return f;
 }
 
@@ -192,60 +186,13 @@ _flame_config_menu_new (Flame *f)
    E_Menu      *mn;
    E_Menu_Item *mi;
    
-   /* FIXME: hook callbacks to each menu item */
    mn = e_menu_new ();
-   
-   mi = e_menu_item_new (mn);
-   e_menu_item_label_set (mi, "Gold Palette");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (f->conf->palette_type == GOLD_PALETTE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _flame_menu_gold_palette, f);
-   
-   mi = e_menu_item_new (mn);
-   e_menu_item_label_set (mi, "Fire Palette");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (f->conf->palette_type == FIRE_PALETTE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _flame_menu_fire_palette, f);
-   
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Plasma Palette");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (f->conf->palette_type == PLASMA_PALETTE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _flame_menu_plasma_palette, f);
-   
+   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_callback_set(mi, _flame_menu_cb_configure, f);
    f->config_menu = mn;
    
    return mn;
-}
-
-static void
-_flame_menu_gold_palette (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Flame *f;
-   
-   f = (Flame *)data;
-   _flame_config_palette_set (f, GOLD_PALETTE);
-}
-
-static void
-_flame_menu_fire_palette (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Flame *f;
-   
-   f = (Flame *)data;
-   _flame_config_palette_set (f, FIRE_PALETTE);
-}
-
-static void
-_flame_menu_plasma_palette (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Flame *f;
-   
-   f = (Flame *)data;
-   _flame_config_palette_set (f, PLASMA_PALETTE);
 }
 
 static void
@@ -741,4 +688,26 @@ powerof (unsigned int n)
    if (n<=0x00000002) p=1;
    if (n<=0x00000001) p=0;
    return p;
+}
+
+void
+_flame_cb_config_updated(void *data) 
+{
+   Flame *f;
+   
+   f = (Flame *)data;
+   if (!f) return;
+   /* Update The Palette */
+   _flame_config_palette_set(f, f->conf->palette_type);
+}
+
+static void
+_flame_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
+{
+   Flame *f;
+   
+   f = (Flame *)data;
+   if (!f) return;
+   /* Call The Config Dialog */
+   e_int_config_flame(f->face->con, f);
 }
