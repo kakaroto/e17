@@ -499,6 +499,12 @@ DeskDestroy(Desk * dsk)
 {
    ModulesSignal(ESIGNAL_DESK_REMOVED, dsk);
 
+   if (dsk->bg.o != EoObj(dsk))
+     {
+	EventCallbackUnregister(EobjGetWin(dsk->bg.o), 0, DeskHandleEvents,
+				dsk);
+	EobjWindowDestroy(dsk->bg.o);
+     }
    EventCallbackUnregister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
 
    DeskControlsDestroy(dsk, 1);
@@ -1019,17 +1025,17 @@ DeskShowButtons(void)
 }
 
 static void
-MoveToDeskTop(unsigned int desk)
+MoveToDeskTop(Desk * dsk)
 {
    int                 i, j;
 
-   EobjListStackRaise(&desks.desk[desk]->o);
+   EoRaise(dsk);
 
    j = -1;
    i = 0;
    while (j < 0 && i < (int)Conf.desks.num)
      {
-	if (desks.order[i] == desk)
+	if (desks.order[i] == dsk->num)
 	   j = i;
 	i++;
      }
@@ -1039,22 +1045,22 @@ MoveToDeskTop(unsigned int desk)
      {
 	for (i = j - 1; i >= 0; i--)
 	   desks.order[i + 1] = desks.order[i];
-	desks.order[0] = desk;
+	desks.order[0] = dsk->num;
      }
 }
 
 static void
-MoveToDeskBottom(unsigned int desk)
+MoveToDeskBottom(Desk * dsk)
 {
    int                 i, j;
 
-   EobjListStackLower(&desks.desk[desk]->o);
+   EoLower(dsk);
 
    j = -1;
    i = 0;
    while (j < 0 && i < (int)Conf.desks.num)
      {
-	if (desks.order[i] == desk)
+	if (desks.order[i] == dsk->num)
 	   j = i;
 	i++;
      }
@@ -1064,7 +1070,7 @@ MoveToDeskBottom(unsigned int desk)
      {
 	for (i = j; i < (int)Conf.desks.num - 1; i++)
 	   desks.order[i] = desks.order[i + 1];
-	desks.order[Conf.desks.num - 1] = desk;
+	desks.order[Conf.desks.num - 1] = dsk->num;
      }
 }
 
@@ -1199,7 +1205,7 @@ DeskEnter(Desk * dsk)
 
    dsk->viewable = 1;
    DeskBackgroundRefresh(dsk);
-   MoveToDeskTop(dsk->num);
+   MoveToDeskTop(dsk);
 
    desks.previous = desks.current = dsk;
 
@@ -1361,11 +1367,15 @@ DeskRaise(unsigned int desk)
 static void
 DeskLower(unsigned int desk)
 {
+   Desk               *dsk;
+
    if ((desk <= 0) || (desk >= Conf.desks.num))
       return;
 
+   dsk = _DeskGet(desk);
+
    DeskSwitchStart();
-   MoveToDeskBottom(desk);
+   MoveToDeskBottom(dsk);
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskLower(%d) %d -> %d\n", desk, desks.current->num,
