@@ -14,12 +14,7 @@ static E_Menu     *_snow_config_menu_new(Snow *snow);
 static int         _snow_cb_animator(void *data);
 static void        _snow_trees_load(Snow *snow);
 static void        _snow_flakes_load(char type, Snow *snow);
-
-static void        _snow_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _snow_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *
-					   i);
-static void        _snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
@@ -197,35 +192,8 @@ static E_Menu *
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Sparse");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 5) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_sparse, snow);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Medium");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 10) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_medium, snow);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Dense");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (snow->conf->tree_count == 20) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _snow_cb_density_dense, snow);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_separator_set(mi, 1);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Show Trees");
-   e_menu_item_check_set(mi, 1);
-   e_menu_item_toggle_set(mi, snow->conf->show_trees);
-   e_menu_item_callback_set(mi, _snow_cb_show_trees, snow);
-
+   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_callback_set(mi, _snow_menu_cb_configure, snow);
    return mn;
 }
 
@@ -239,50 +207,6 @@ static void
    _snow_flakes_load('s', snow);
    _snow_flakes_load('m', snow);
    _snow_flakes_load('l', snow);
-}
-
-static void
-  _snow_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Snow *snow;
-
-   snow = data;
-   snow->conf->tree_count = 5;
-   snow->conf->flake_count = 20;
-
-   _snow_canvas_reset(snow);
-}
-
-static void
-  _snow_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Snow *snow;
-
-   snow = data;
-   snow->conf->tree_count = 10;
-   snow->conf->flake_count = 60;
-   _snow_canvas_reset(snow);
-}
-
-static void
-  _snow_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Snow *snow;
-
-   snow = data;
-   snow->conf->tree_count = 20;
-   snow->conf->flake_count = 100;
-   _snow_canvas_reset(snow);
-}
-
-static void
-  _snow_cb_show_trees(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Snow *snow;
-
-   snow = data;
-   snow->conf->show_trees = e_menu_item_toggle_get(mi);
-   _snow_canvas_reset(snow);
 }
 
 static void
@@ -394,6 +318,25 @@ static int
 
 	next = evas_list_next(next);
      }
-
    return 1;
+}
+
+static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Snow *s;
+   E_Container *con;
+
+   s = (Snow *)data;
+   if (!s) return;
+   con = e_container_current_get(e_manager_current_get());
+   e_int_config_snow(con, s);
+}
+
+void _snow_cb_config_updated(void *data)
+{
+   Snow *s;
+
+   s = (Snow *)data;
+   if (!s) return;
+   _snow_canvas_reset(s);
 }
