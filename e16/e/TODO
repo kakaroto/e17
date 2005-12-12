@@ -1,7 +1,6 @@
 
 - Composite manager
-  - Fix flicker on fade-out start.
-  - Repaint area is incorrect when using sharp shadows? (try gmplayer)
+  - Desk switching becomes slow after CM stop/start ???
 
 - Docs
   - Update
