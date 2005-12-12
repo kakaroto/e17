@@ -38,7 +38,7 @@ This package will install the Enlightenment window manager.
 %build
 CFLAGS="${RPM_OPT_FLAGS}"
 ENLIGHTENMENT_RELEASE=%{release}
-AC_FLAGS="--prefix=%{_prefix} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr"
+AC_FLAGS="--prefix=%{_prefix} --mandir=%{_mandir} --enable-fsstd"
 export CFLAGS ENLIGHTENMENT_RELEASE AC_FLAGS
 if [ ! -f configure ]; then
   ./autogen.sh $AC_FLAGS
@@ -61,6 +61,6 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/*
 %{_datadir}/locale/*
 %{_datadir}/xsessions/*
-%{_mandir}/*
+#%{_mandir}/*
 
 %changelog
