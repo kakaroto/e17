@@ -238,7 +238,7 @@ _engage_new()
    if (!e->conf)
      {
 	e->conf = E_NEW(Config, 1);
-	e->conf->appdir = strdup("engage");
+	e->conf->appdir = evas_stringshare_add("engage");
 	/*
 	e->conf->handle = 0.5;
 	e->conf->autohide = 0;
@@ -359,7 +359,7 @@ _engage_free(Engage *e)
    if (e->apps)
      e_object_unref(E_OBJECT(e->apps));
 
-   E_FREE(e->conf->appdir);
+   if (e->conf->appdir) evas_stringshare_del(e->conf->appdir);
    e_app_change_callback_del(_engage_app_change, e);
    e_object_del(E_OBJECT(e->config_menu));
    evas_list_free(e->conf->bars);

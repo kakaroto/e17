@@ -14,7 +14,7 @@ typedef struct _Engage_App_Icon Engage_App_Icon;
 
 struct _Config
 {
-   char         *appdir;
+   const char   *appdir;
    Evas_List    *bars;
    /*
    double        handle;
