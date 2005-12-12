@@ -1,5 +1,5 @@
 #ifndef E_MOD_MAIN_H
-#define E_MOD_MAIN_H
+# define E_MOD_MAIN_H
 
 typedef struct _Config     Config;
 typedef struct _Rain       Rain;
@@ -15,7 +15,7 @@ struct _Config
 struct _Rain
 {
    E_Module       *module;
-   E_Container *con;
+   Evas_List      *cons;
    Evas           *canvas;
    Ecore_Animator *animator;
    Evas_List      *clouds;

@@ -21,7 +21,7 @@ static void 		_rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
-   "Rain"
+     "Rain"
 };
 
 void *e_modapi_init(E_Module *m)
@@ -115,7 +115,7 @@ static Rain *_rain_init(E_Module *m)
 	     E_Container *con;
 
 	     con = l2->data;
-	     rain->con = con;
+	     rain->cons = evas_list_append(rain->cons, con);
 	     rain->canvas = con->bg_evas;
 	  }
      }
@@ -161,6 +161,14 @@ static void _rain_shutdown(Rain *rain)
 {
    free(rain->conf);
    E_CONFIG_DD_FREE(rain->conf_edd);
+   while (rain->cons)
+     {
+	E_Container *con;
+
+	con = rain->cons->data;
+	rain->cons = evas_list_remove_list(rain->cons, rain->cons);
+     }
+
    _rain_clouds_free(rain);
    _rain_drops_free(rain);
    if (rain->animator)
@@ -201,7 +209,7 @@ static void _rain_clouds_load(Rain *rain)
    o = evas_object_image_add(rain->canvas);
    evas_object_image_file_set(o, PACKAGE_DATA_DIR "/cloud.png", "");
    evas_object_image_size_get(o, &tw, &th);
-	
+
    for (i = 0; i < rain->conf->cloud_count; i++)
      {
 	Evas_Coord tx, ty;
@@ -251,10 +259,10 @@ static void _rain_drops_load(char type, Rain *rain)
 	evas_object_resize(o, tw, th);
 	evas_object_image_alpha_set(o, 1);
 	evas_object_image_fill_set(o, 0, 0, tw, th);
-	
+
 	tx = random() % (ww - tw);
 	ty = random() % (hh - th);
-	
+
 	evas_object_move(o, tx, ty);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
@@ -273,7 +281,7 @@ static void _rain_drops_load(char type, Rain *rain)
 	     break;
 	  }
 	rain->drops = evas_list_append(rain->drops, drop);
-     }	    
+     }
 }
 
 static int _rain_cb_animator(void *data)
@@ -304,18 +312,20 @@ static int _rain_cb_animator(void *data)
 
 static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-	Rain *r;
+   Rain *r;
+   E_Container *con;
 
    r = (Rain *)data;
    if (!r) return;
-   e_int_config_rain(r->con, r);
+   con = 	e_container_current_get(e_manager_current_get());
+   e_int_config_rain(con, r);
 }
 
 void _rain_cb_config_updated(void *data)
 {
-	Rain *r;
-	
-	r = (Rain *)data;
-	if (!r) return;
+   Rain *r;
+
+   r = (Rain *)data;
+   if (!r) return;
    _rain_canvas_reset(r);
 }
