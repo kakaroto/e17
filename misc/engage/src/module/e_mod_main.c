@@ -848,14 +848,17 @@ _engage_bar_menu_gen(Engage_Bar *eb)
    mi = e_menu_item_new(mn); 
    e_menu_item_separator_set(mi, 1);
    
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Icon Options");
-   e_menu_item_submenu_set(mi, eb->icon_menu);
-   if (eb->selected_ic)
-     e_menu_item_icon_edje_set(mi, eb->selected_ic->app->path, "icon");
-   
-   mi = e_menu_item_new(mn); 
-   e_menu_item_separator_set(mi, 1);
+   if (eb->selected_ic && (eb->selected_ic->app != _engage_unmatched_app))
+     {
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, "Icon Options");
+	e_menu_item_submenu_set(mi, eb->icon_menu);
+	if (eb->selected_ic)
+	  e_menu_item_icon_edje_set(mi, eb->selected_ic->app->path, "icon");
+
+	mi = e_menu_item_new(mn); 
+	e_menu_item_separator_set(mi, 1);
+     }
 	 
    /* Enabled */
    mi = e_menu_item_new(mn);
@@ -2029,6 +2032,14 @@ _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *even
 	e_border_raise(ai->border);
 	e_desk_show(ai->border->desk);
      }
+   if (ev->button == 3)
+     {
+	e_int_border_menu_show(ai->border,
+			       ev->output.x,
+			       ev->output.y, 0,
+			       ev->timestamp);
+	e_util_container_fake_mouse_up_all_later(ai->ic->eb->con);
+     }
 }
 
 static void
@@ -2494,30 +2505,7 @@ _engage_bar_cb_menu_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
    Engage_Bar *eb;
    eb = data;
 
-   // the following is stolen from e17/e/src/bin/e_border.c
-   char *file;
-   char *command;
-   char *full;
-   Ecore_Exe *process;
-   
-   if (eb->selected_ic)
-     {
-
-	file = eb->selected_ic->app->path;
-	command = "e_util_eapp_edit ";
-	full = malloc(strlen(file) + strlen(command) + 1);
-	strcpy(full, command);
-	strcat(full, file);
-     
-	process = ecore_exe_run(full, NULL);
-	if (!process || !ecore_exe_pid_get(process))
-	  {
-	     e_error_dialog_show(_("Icon Edit Error"),
-				 _("Error starting icon editor\n\n"
-				   "please install e_util_eapp_edit\n"
-				   "or make sure it is in your PATH\n"));
-	  }
-     }
+   e_eap_edit_show(eb->con, eb->selected_ic->app);
 }
 
 static void
