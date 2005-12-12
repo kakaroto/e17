@@ -2683,7 +2683,7 @@ static int
 _engage_border_ignore(E_Border *bd)
 {
    /* FIXME - this needs to be saved in config */
-   static char *ignores[] = { "Gkrellm2", "trayer", NULL};
+   static char *ignores[] = { "Gkrellm2", "trayer", "_dialog", NULL};
    char       **cur;
    Ecore_X_Window_State *state, *tmp;
    unsigned int num, counter;
