@@ -1,6 +1,7 @@
 #include "e.h"
 #include "config.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 
 /* module private routines */
 static Rain       *_rain_init(E_Module *m);
@@ -14,12 +15,13 @@ static void        _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *m
 static void        _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *i);
 static void        _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
 static void        _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi);
+static void 		_rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
-     "Rain"
+   "Rain"
 };
 
 void *e_modapi_init(E_Module *m)
@@ -113,7 +115,7 @@ static Rain *_rain_init(E_Module *m)
 	     E_Container *con;
 
 	     con = l2->data;
-	     rain->cons = evas_list_append(rain->cons, con);
+	     rain->con = con;
 	     rain->canvas = con->bg_evas;
 	  }
      }
@@ -159,13 +161,6 @@ static void _rain_shutdown(Rain *rain)
 {
    free(rain->conf);
    E_CONFIG_DD_FREE(rain->conf_edd);
-   while (rain->cons)
-     {
-	E_Container *con;
-
-	con = rain->cons->data;
-	rain->cons = evas_list_remove_list(rain->cons, rain->cons);
-     }
    _rain_clouds_free(rain);
    _rain_drops_free(rain);
    if (rain->animator)
@@ -181,34 +176,8 @@ static E_Menu *_rain_config_menu_new(Rain *rain)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Sprinkle");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (rain->conf->cloud_count == 5) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _rain_cb_density_sparse, rain);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Drizzle");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (rain->conf->cloud_count == 10) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _rain_cb_density_medium, rain);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Downpour");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (rain->conf->cloud_count == 20) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _rain_cb_density_dense, rain);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_separator_set(mi, 1);
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Show Clouds");
-   e_menu_item_check_set(mi, 1);
-   e_menu_item_toggle_set(mi, rain->conf->show_clouds);
-   e_menu_item_callback_set(mi, _rain_cb_show_clouds, rain);
+   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_callback_set(mi, _rain_menu_cb_configure, rain);
 
    return mn;
 }
@@ -222,46 +191,6 @@ static void _rain_canvas_reset(Rain *rain)
    _rain_drops_load('s', rain);
    _rain_drops_load('m', rain);
    _rain_drops_load('l', rain);
-}
-
-static void _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Rain *rain;
-
-   rain = data;
-   rain->conf->cloud_count = 5;
-   rain->conf->drop_count = 20;
-
-   _rain_canvas_reset(rain);
-}
-
-static void _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Rain *rain;
-
-   rain = data;
-   rain->conf->cloud_count = 10;
-   rain->conf->drop_count = 60;
-   _rain_canvas_reset(rain);
-}
-
-static void _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Rain *rain;
-
-   rain = data;
-   rain->conf->cloud_count = 20;
-   rain->conf->drop_count = 150;
-   _rain_canvas_reset(rain);
-}
-
-static void _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Rain *rain;
-
-   rain = data;
-   rain->conf->show_clouds = e_menu_item_toggle_get(mi);
-   _rain_canvas_reset(rain);
 }
 
 static void _rain_clouds_load(Rain *rain)
@@ -286,7 +215,7 @@ static void _rain_clouds_load(Rain *rain)
 	evas_object_image_fill_set(o, 0, 0, tw, th);
 
 	tx = random() % (rain->width - tw);
-	ty = random() % (rain->height - th);
+	ty = random() % ((rain->height/3) - th);
 	evas_object_move(o, tx, ty);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
@@ -323,8 +252,9 @@ static void _rain_drops_load(char type, Rain *rain)
 	evas_object_image_alpha_set(o, 1);
 	evas_object_image_fill_set(o, 0, 0, tw, th);
 	
-	tx = random() % ww;
-	ty = random() % hh;
+	tx = random() % (ww - tw);
+	ty = random() % (hh - th);
+	
 	evas_object_move(o, tx, ty);
 	evas_object_pass_events_set(o, 1);
 	evas_object_show(o);
@@ -343,7 +273,7 @@ static void _rain_drops_load(char type, Rain *rain)
 	     break;
 	  }
 	rain->drops = evas_list_append(rain->drops, drop);
-     }
+     }	    
 }
 
 static int _rain_cb_animator(void *data)
@@ -370,4 +300,22 @@ static int _rain_cb_animator(void *data)
 	next = evas_list_next(next);
      }
    return 1;
+}
+
+static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+	Rain *r;
+
+   r = (Rain *)data;
+   if (!r) return;
+   e_int_config_rain(r->con, r);
+}
+
+void _rain_cb_config_updated(void *data)
+{
+	Rain *r;
+	
+	r = (Rain *)data;
+	if (!r) return;
+   _rain_canvas_reset(r);
 }
