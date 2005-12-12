@@ -46,7 +46,7 @@ void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 	char* path = ewl_text_text_get(EWL_TEXT(viewer->location_add_path));
 	char* server = ewl_text_text_get(EWL_TEXT(viewer->location_add_server));
 	char* username = ewl_text_text_get(EWL_TEXT(viewer->location_add_username));
-	char* password = ewl_text_text_get(EWL_TEXT(viewer->location_add_password));
+	char* password = ewl_password_text_get(EWL_PASSWORD(viewer->location_add_password));
 
 	printf ("Display name: '%s'\n", display_name);
 	printf ("Server: '%s'\n", server);
@@ -229,7 +229,7 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_container_child_append(EWL_CONTAINER(hbox), label);
 	ewl_widget_show(label);
 
-	((entropy_layout_gui*)instance->data)->location_add_password = ewl_entry_new();
+	((entropy_layout_gui*)instance->data)->location_add_password = ewl_password_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), ((entropy_layout_gui*)instance->data)->location_add_password);
 	ewl_widget_show(((entropy_layout_gui*)instance->data)->location_add_password);
 	/*-----------------------*/
