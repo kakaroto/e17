@@ -1362,7 +1362,7 @@ ECompMgrWinNew(EObj * eo)
    if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
-   if (eo->inputonly)
+   if (eo->inputonly || eo->win == VRoot.win)
       return;
 
    if (!XGetWindowAttributes(disp, eo->win, &attr))
@@ -2186,8 +2186,10 @@ ECompMgrStart(void)
 	   ECompMgrWinMap(lst[i]);
      }
 
+#if 0				/* FIXME - Remove? */
    DesksBackgroundRefresh(NULL);
    _ECM_SET_CLIP_CHANGED();
+#endif
 }
 
 static void
@@ -2241,7 +2243,9 @@ ECompMgrStop(void)
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
+#if 0				/* FIXME - Remove? */
    DesksBackgroundRefresh(NULL);
+#endif
 }
 
 void
