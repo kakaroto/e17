@@ -11,22 +11,7 @@
 
 /* TODO List:
  *
- * immediate fixes needed:
- * * store ignore list in config
- * * fix mouse overs etc to reach all the sub icons (currently missine ends)
- *
- * * When a window gets focus move the selected_app pointer
- * * bounce icons on click ( following e_app exec hints? )
- *
- * * description bubbles/tooltips for icons
- * * app subdirs - need to somehow handle these...
- * * use overlay object and repeat events for doing auto hide/show
- * * emit signals on hide/show due to autohide/show
- * * virtualise autoshow/hide to later allow for key bindings, mouse events elsewhere, ipc and other singals to show/hide
- *
- * BONUS Features (maybe do this later):
- *
- * * allow engage icons to be dragged around to re-order/delete
+ * Now managed online at: http://wiki.rectang.com/EngagePage
  *
  */
 

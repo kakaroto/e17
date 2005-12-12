@@ -3,9 +3,12 @@ thanks to genneth for the origional code ;)
 
 Requirements: ECORE, EVAS
 
-e17 uses read src/module/README too - an early e17 module version
+E17 users read src/module/README too - this e17 module is now the main engage
 
-Read INSTALL for installation and and AUTHORS for some credits
+Users of other systems note that the standalone application is no longer
+supported.
+
+Read INSTALL for installation and AUTHORS for some credits
 
 Quick guide to mouse clicks: (supplied ("none" and "gentoo") themes only)
 

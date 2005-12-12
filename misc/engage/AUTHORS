@@ -9,3 +9,6 @@ maintenence
 
 lycos:
 added config file loading for icons (now removed in favour of e_app)
+
+elm:
+much work on items from TODO list

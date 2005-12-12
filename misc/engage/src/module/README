@@ -1,12 +1,11 @@
-This is the start of an e17 module to run engage nicely with real transpareny
+This is the e17 engage module which features real transparency and fits nicely
 in the sexiest window manager out there :)
 
 To use it compile as before (you must have e17 installed when you run
-./configure (or ./autogen.sh) then with e17 running type:
+./configure (or ./autogen.sh) ) then with e17 running type:
 
 enlightenment_remote -module-load engage
-
-then you should (from the e17 module menu) disable ibar and enable engage.
+enlightenment_remote -module-enable engage
 
 enjoy
 HandyAndE

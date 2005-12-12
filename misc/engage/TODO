@@ -1,7 +1,9 @@
+This application is no longer maintained. To use engage please install the module (in src/module/) for e17 and install it using the usual method.
+
+If anyone would like to maintain this please let me know: andy AT handyande.co.uk
+
 0.1.0:
-Finish callbacks for E_App and handle mappings more memory-efficiently
 Properly handle ordering - only works on startup
-Seperate behaviour edje from iconsets.
 
 
 Future:
