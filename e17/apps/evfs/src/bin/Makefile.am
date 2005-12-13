@@ -20,8 +20,8 @@ evfs_SOURCES = \
 evfscat_SOURCES = \
 	evfscat.c
 
-evfs_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@ @xml2_libs@ @eet_libs@
+evfs_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@
 
-evfscat_LDADD = -L$(top_builddir)/src/lib -levfs @ecore_libs@ @xml2_libs@ @eet_libs@
+evfscat_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@
 
 
