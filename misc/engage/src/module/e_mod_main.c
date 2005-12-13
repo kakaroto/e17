@@ -1768,7 +1768,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	     else
 	       radius *= h;
 
-//	     evas_object_raise(icon->icon_object);
+	     evas_object_raise(icon->bg_object);
 	     evas_object_show(icon->event_object);
 
 	     if (evas_list_count(icon->extra_icons) == 0)
