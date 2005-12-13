@@ -3,6 +3,11 @@ images {
    image: "bg_v.png" COMP;
    image: "over_h.png" COMP;
    image: "over_v.png" COMP;
+
+   image: "running_top.png" COMP;
+   image: "running_bottom.png" COMP;
+   image: "running_left.png" COMP;
+   image: "running_right.png" COMP;
 }
 fonts {
    font: "Vera.ttf" "Edje Vera";
@@ -382,27 +387,116 @@ group {
 	    color:    255 255 255 255;
 	 }
       }
-   }
-   programs {
-      program {
-         name:    "iconify";
-	 signal:  "iconify";
-	 source:  "";
-	 action:  STATE_SET "iconified" 0.0;
-	 target:  "clip";
+      part {
+	 name:          "pip_clip";
+	 type:          RECT;
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    visible:  0;
+	     rel1 {
+	        relative: 0.0 0.0;
+	        offset:   0   0;
+	     }
+	     rel2 {
+	         relative: 1.0 1.0;
+	         offset:   -1  -1;
+	     }
+	     color: 255 255 255 0;
+	  }
+	  description {
+	     state:    "running" 0.0;
+	     visible:  1;
+	     rel1 {
+	        relative: 0.0  0.0;
+	        offset:   0   0;
+	     }
+	     rel2 {
+	        relative: 1.0  1.0;
+	        offset:   -1   -1;
+	     }
+	     color: 255 255 255 255;
+         }
       }
-      program {
-         name:    "uniconify";
-	 signal:  "uniconify";
-	 source:  "";
-	 action:  STATE_SET "default" 0.0;
-	 target:  "clip";
+      part {
+	 name:          "pip";
+	 mouse_events:  0;
+	 clip_to:       "pip_clip";
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       relative: 0.5 1.0;
+	       offset:   -5  -10;
+	       to: "item";
+	    }
+	    rel2 {
+	       relative: 0.5 1.0;
+	       offset:   4   0;
+	       to: "item";
+	    }
+	    image {
+	       normal: "running_bottom.png";
+	       border:   5 5 5 5;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }
+         description {
+            state:    "top" 0.0;
+            rel1 {
+               relative: 0.5 0.0;
+               offset:   -5   -1;
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               offset:   4   9;
+            }
+            image {
+               normal: "running_top.png";
+               border:   5 5 5 5;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state:    "left" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset:   -1  -5;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset:   9   4;
+            }
+            image {
+               normal: "running_left.png";
+               border:   5 5 5 5;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state:    "right" 0.0;
+            rel1 {
+               relative: 1.0 0.5;
+               offset:   -10 -5;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset:   0   4;
+            }
+            image {
+               normal: "running_right.png";
+               border:   5 5 5 5;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
       }
-   }
-}
-group {
-   name: "icon_overlay";
-   parts {
       part {
 	 name:          "base";
 	 type:          RECT;
@@ -428,13 +522,16 @@ group {
 	 effect: SOFT_SHADOW;
 	 description {
 	    state: "default" 0.0;
+	    fixed: 1 1;
 	    rel1 {
 	       relative: 0.5  0.0;
 	       offset:   -200 -3;
+	       to: "item";
 	    }
 	    rel2 {
 	       relative: 0.5 0.0;
 	       offset:   200 -3;
+	       to: "item";
 	    }
 	    color: 0 0 0 192;
 	    color3: 255 255 255 64;
@@ -448,13 +545,16 @@ group {
 	 }
          description {
             state: "top" 0.0;
+	    fixed: 1 1;
             rel1 {
                relative: 0.5  1.0;
                offset:   -200 6;
+	       to: "item";
             }
             rel2 {
                relative: 0.5 1.0;
                offset:   200 6;
+	       to: "item";
             }
             color: 0 0 0 192;
             color3: 255 255 255 64;
@@ -468,13 +568,16 @@ group {
          }
          description {
             state: "left" 0.0;
+	    fixed: 1 1;
             rel1 {
                relative: 1.0  0.5;
                offset:   -1 0;
+	       to: "item";
             }
             rel2 {
                relative: 1.0 0.5;
                offset:   299 0;
+	       to: "item";
             }
             color: 0 0 0 192;
             color3: 255 255 255 64;
@@ -488,13 +591,16 @@ group {
          }
          description {
             state: "right" 0.0;
+	    fixed: 1 1;
             rel1 {
                relative: 0.0  0.5;
                offset:   -300 0;
+	       to: "item";
             }
             rel2 {
                relative: 0.0 0.5;
                offset:   0 0;
+	       to: "item";
             }
             color: 0 0 0 192;
             color3: 255 255 255 64;
@@ -560,6 +666,34 @@ group {
    }
    programs {
       program {
+         name:    "iconify";
+	 signal:  "iconify";
+	 source:  "";
+	 action:  STATE_SET "iconified" 0.0;
+	 target:  "clip";
+      }
+      program {
+         name:    "uniconify";
+	 signal:  "uniconify";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+	 target:  "clip";
+      }
+      program {
+         name:    "running";
+	 signal:  "running";
+	 source:  "";
+	 action:  STATE_SET "running" 0.0;
+	 target:  "pip_clip";
+      }
+      program {
+         name:    "notrunning";
+	 signal:  "notrunning";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+	 target:  "pip_clip";
+      }
+      program {
 	 name:    "go_active";
 	 signal:  "active";
 	 source:  "";
@@ -583,15 +717,19 @@ group {
             // sig, src
             if (!strcmp(src, "left")) {
                set_state(PART:"EngageIconText", "left", 0.0);
+               set_state(PART:"pip", "left", 0.0);
             }
             else if (!strcmp(src, "right")) {
                set_state(PART:"EngageIconText", "right", 0.0);
+               set_state(PART:"pip", "right", 0.0);
             }
             else if (!strcmp(src, "top")) {
                set_state(PART:"EngageIconText", "top", 0.0);
+               set_state(PART:"pip", "top", 0.0);
             }
             else if (!strcmp(src, "bottom")) {
                set_state(PART:"EngageIconText", "default", 0.0);
+               set_state(PART:"pip", "default", 0.0);
             }
          }
       }

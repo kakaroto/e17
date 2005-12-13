@@ -100,7 +100,6 @@ struct _Engage_Icon
    Engage_Bar      *eb;
    E_App         *app;
    Evas_Object   *bg_object;
-   Evas_Object   *overlay_object;
    Evas_Object   *icon_object;
    Evas_Object   *event_object;
    Evas_List     *extra_icons, *selected_app;
@@ -113,7 +112,6 @@ struct _Engage_App_Icon
 {
    Engage_Icon   *ic;
    Evas_Object   *bg_object;
-   Evas_Object   *overlay_object;
    Evas_Object   *icon_object;
    Evas_Object   *event_object;
 

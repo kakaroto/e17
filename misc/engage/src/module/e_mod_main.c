@@ -946,7 +946,6 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    o = evas_object_rectangle_add(eb->evas);
    ic->event_object = o;
    evas_object_layer_set(o, 1);
-//   evas_object_clip_set(o, evas_object_clip_get(eb->box_object));
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_repeat_events_set(o, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,  _engage_icon_cb_mouse_in,  ic);
@@ -974,11 +973,6 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_show(o);
 
    o = edje_object_add(eb->evas);
-   ic->overlay_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", 
-	 "icon_overlay");
-   evas_object_show(o);
-
    evas_object_raise(ic->event_object);
 
    e_box_pack_end(eb->box_object, ic->bg_object);
@@ -991,7 +985,6 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 			  );
 
    edje_object_signal_emit(ic->bg_object, "passive", "");
-   edje_object_signal_emit(ic->overlay_object, "passive", "");
    return ic;
 }
 
@@ -1000,7 +993,6 @@ _engage_icon_free(Engage_Icon *ic)
 {
    ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
    if (ic->bg_object) evas_object_del(ic->bg_object);
-   if (ic->overlay_object) evas_object_del(ic->overlay_object);
    if (ic->icon_object) evas_object_del(ic->icon_object);
    if (ic->event_object) evas_object_del(ic->event_object);
    while (ic->extra_icons)
@@ -1076,19 +1068,12 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    edje_object_part_swallow(ai->bg_object, "item", o);
    evas_object_pass_events_set(o, 1);
 
-   o = edje_object_add(ic->eb->evas);
-   ai->overlay_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", 
-	 "icon_overlay");
-
    evas_object_raise(ai->event_object);
    evas_object_resize(ai->bg_object, ic->eb->conf->iconsize / 2, ic->eb->conf->iconsize / 2);
 
    edje_object_signal_emit(ai->bg_object, "passive", "");
-   edje_object_signal_emit(ai->overlay_object, "passive", "");
    if (ai->min)
      {
-	edje_object_signal_emit(ai->overlay_object, "iconify", "");
 	edje_object_signal_emit(ai->bg_object, "iconify", "");
      }
    return ai;
@@ -1114,7 +1099,6 @@ _engage_app_icon_free(Engage_App_Icon *ai)
 
    ai->ic->extra_icons = evas_list_remove(ai->ic->extra_icons, ai);
    if (ai->bg_object) evas_object_del(ai->bg_object);
-   if (ai->overlay_object) evas_object_del(ai->overlay_object);
    if (ai->icon_object) evas_object_del(ai->icon_object);
    if (ai->event_object) evas_object_del(ai->event_object);
    e_object_unref(E_OBJECT(ai->border));
@@ -1270,9 +1254,9 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 	if (ai && bd->iconic)
 	  {
 	     ai->min = 1;
-	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
 	     edje_object_signal_emit(ai->bg_object, "iconify", "");
 	  }				       
+	edje_object_signal_emit(ic->bg_object, "running", "");
      }
    return 1;
 }
@@ -1336,11 +1320,16 @@ _engage_cb_event_border_remove(void *data, int type, void *event)
 	if (ai->border == e->border)
 	  {
 	      _engage_app_icon_free(ai);
-	      if (!ic->extra_icons && ic->dotorder == 0)
+	      if (!ic->extra_icons)
 		{
-		   _engage_icon_free(ic);
-		   _engage_bar_frame_resize(eb);
-		}				      
+		   if (ic->dotorder == 0)
+		     {
+			_engage_icon_free(ic);
+			_engage_bar_frame_resize(eb);
+		     }
+		   else
+		     edje_object_signal_emit(ic->bg_object, "notrunning", "");
+		}
 	      break;
 	  }
 	icons = icons->next;
@@ -1391,7 +1380,6 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	if (ai->border == e->border)
 	  {
 	     ai->min = 1;
-	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
 	     edje_object_signal_emit(ai->bg_object, "iconify", "");
 	     return 0;
 	  }
@@ -1435,7 +1423,6 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	if (ai->min && ai->border == e->border)
 	  {
 	      ai->min = 0;
-	      edje_object_signal_emit(ai->overlay_object, "uniconify", "");
 	      edje_object_signal_emit(ai->bg_object, "uniconify", "");
 	      return 1;
 	  }
@@ -1530,7 +1517,6 @@ _engage_bar_frame_resize(Engage_Bar *eb)
 	w = evas_list_count(eb->icons) * eb->conf->iconsize;
 	h = eb->conf->iconsize;
      }
-//   evas_object_resize(eb->event_object, w, h);
 
    _engage_tray_freeze(eb);
    edje_object_part_unswallow(eb->bar_object, eb->box_object);
@@ -1583,10 +1569,6 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
 	edje_object_signal_emit(o, "set_orientation", _engage_main_orientation[edge]);
 	edje_object_message_signal_process(o);
 	edje_object_size_min_calc(ic->bg_object, &bw, &bh);
-
-	o = ic->overlay_object;
-	edje_object_signal_emit(o, "set_orientation", _engage_main_orientation[edge]);
-	edje_object_message_signal_process(o);
 
 	e_box_pack_options_set(ic->bg_object,
 			       1, 1, /* fill */
@@ -1786,8 +1768,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	     else
 	       radius *= h;
 
-	     evas_object_raise(icon->icon_object);
-	     evas_object_raise(icon->overlay_object);
+//	     evas_object_raise(icon->icon_object);
 	     evas_object_show(icon->event_object);
 
 	     if (evas_list_count(icon->extra_icons) == 0)
@@ -1943,7 +1924,6 @@ _engage_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Co
    ic = data;
    evas_object_move(o, x, y);
    evas_object_move(ic->event_object, x, y);
-   evas_object_move(ic->overlay_object, x, y);
 }
 
 static void
@@ -1954,7 +1934,6 @@ _engage_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_
    ic = data;
    evas_object_resize(o, w, h);
    evas_object_resize(ic->event_object, w, h);
-   evas_object_resize(ic->overlay_object, w, h);
 }
 
 static void
@@ -1965,7 +1944,6 @@ _engage_app_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Eva
    ai = data;
    evas_object_move(o, x, y);
    evas_object_move(ai->event_object, x, y);
-   evas_object_move(ai->overlay_object, x, y);
 }
 
 static void
@@ -1976,7 +1954,6 @@ _engage_app_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, E
    ai = data;
    evas_object_resize(o, w, h);
    evas_object_resize(ai->event_object, w, h);
-   evas_object_resize(ai->overlay_object, w, h);
 }
 
 static void
@@ -1987,7 +1964,6 @@ _engage_app_icon_cb_intercept_show(void *data, Evas_Object *o)
    ai = data;
    evas_object_show(o);
    evas_object_show(ai->event_object);
-   evas_object_show(ai->overlay_object);
 }
 
 static void
@@ -1998,7 +1974,6 @@ _engage_app_icon_cb_intercept_hide(void *data, Evas_Object *o)
    ai = data;
    evas_object_hide(o);
    evas_object_hide(ai->event_object);
-   evas_object_hide(ai->overlay_object);
 }
 
 static void
@@ -2044,7 +2019,6 @@ _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *even
    if (ev->button == 1)
      {
 	edje_object_signal_emit(ai->bg_object, "start", "");
-	edje_object_signal_emit(ai->overlay_object, "start", "");
 	if (ai->min)
 	  e_border_uniconify(ai->border);
 	e_border_raise(ai->border);
@@ -2074,9 +2048,8 @@ _engage_app_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_
    
    title = e_border_name_get(ai->border);
    if (title)
-     edje_object_part_text_set(ai->ic->overlay_object, "EngageIconText", title);
-//   edje_object_signal_emit(ic->bg_object, "active", "");
-   edje_object_signal_emit(ai->ic->overlay_object, "active", "");
+     edje_object_part_text_set(ai->ic->bg_object, "EngageIconText", title);
+   edje_object_signal_emit(ai->ic->bg_object, "active", "");
 }
 
 static void
@@ -2087,8 +2060,7 @@ _engage_app_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event
 
    ev = event_info;
    ai = data;
-//   edje_object_signal_emit(ic->bg_object, "passive", "");
-   edje_object_signal_emit(ai->ic->overlay_object, "passive", "");
+   edje_object_signal_emit(ai->ic->bg_object, "passive", "");
 }
 
 static void
@@ -2101,11 +2073,10 @@ _engage_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info
    ic = data;
    evas_event_freeze(ic->eb->evas);
    evas_object_raise(ic->event_object);
-   evas_object_stack_below(ic->overlay_object, ic->event_object);
+   evas_object_stack_above(ic->bg_object, ic->event_object);
    evas_event_thaw(ic->eb->evas);
-//   edje_object_signal_emit(ic->bg_object, "active", "");
-   edje_object_signal_emit(ic->overlay_object, "active", "");
-   edje_object_part_text_set(ic->overlay_object, "EngageIconText", ic->app->name);
+   edje_object_signal_emit(ic->bg_object, "active", "");
+   edje_object_part_text_set(ic->bg_object, "EngageIconText", ic->app->name);
 }
 
 static void
@@ -2116,8 +2087,7 @@ _engage_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
    ev = event_info;
    ic = data;
-//   edje_object_signal_emit(ic->bg_object, "passive", "");
-   edje_object_signal_emit(ic->overlay_object, "passive", "");
+   edje_object_signal_emit(ic->bg_object, "passive", "");
 }
 
 static void
@@ -2131,17 +2101,16 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    if (ev->button == 1)
      {
 	edje_object_signal_emit(ic->bg_object, "start", "");
-	edje_object_signal_emit(ic->overlay_object, "start", "");
 	e_zone_app_exec(ic->eb->gmc->zone, ic->app);
      }
    else if (ev->button == 3)
      {
-	//set selected icon so we can access it
-	//with the context menu
 	ic->eb->selected_ic = ic;
 
 	//I just dont like this:
 	//generating the menu on the icon and not eb itself
+	//needed because if we activate on the bar thi mouse_down has not been
+	//executed to set the selected_ic
 	_engage_bar_menu_gen(ic->eb);
 	e_menu_activate_mouse(ic->eb->menu, e_zone_current_get(ic->eb->con),
 			      ev->output.x, ev->output.y, 1, 1,
@@ -2161,7 +2130,6 @@ _engage_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info
    if (ev->button == 1)
      {
 	edje_object_signal_emit(ic->bg_object, "start_end", "");
-	edje_object_signal_emit(ic->overlay_object, "start_end", "");
      }
 }
 
@@ -2201,7 +2169,6 @@ _engage_icon_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_i
   
     ai = ic->selected_app->data;
     edje_object_signal_emit(ai->bg_object, "start", "");
-    edje_object_signal_emit(ai->overlay_object, "start", "");
     if (ai->min)
       e_border_uniconify(ai->border);
     e_border_raise(ai->border);
