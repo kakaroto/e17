@@ -972,9 +972,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_pass_events_set(o, 1);
    evas_object_show(o);
 
-   o = edje_object_add(eb->evas);
    evas_object_raise(ic->event_object);
-
    e_box_pack_end(eb->box_object, ic->bg_object);
    e_box_pack_options_set(ic->bg_object,
 			  1, 1, /* fill */
@@ -985,6 +983,9 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 			  );
 
    edje_object_signal_emit(ic->bg_object, "passive", "");
+   if (eb->gmc)
+     edje_object_signal_emit(ic->bg_object, "set_orientation", 
+       _engage_main_orientation[e_gadman_client_edge_get(eb->gmc)]);
    return ic;
 }
 
