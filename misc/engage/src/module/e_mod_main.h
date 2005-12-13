@@ -16,6 +16,7 @@ struct _Config
 {
    const char   *appdir;
    Evas_List    *bars;
+   unsigned char click_focus;
    /*
    double        handle;
    char          autohide;

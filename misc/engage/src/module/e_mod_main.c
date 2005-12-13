@@ -42,6 +42,8 @@ static int     _engage_cb_event_border_iconify(void *data, int type, void *event
 static int     _engage_cb_event_border_uniconify(void *data, int type, void *event);
 static int     _engage_cb_border_add(Engage_Bar *eb, E_Border *bd);
 
+static void    _engage_cb_menu_clickfocus(void *data, E_Menu *m, E_Menu_Item *mi);
+
 static Engage_Bar *_engage_bar_new(Engage_Bar *eb, E_Container *con);
 static void    _engage_bar_free(Engage_Bar *eb);
 static void    _engage_bar_menu_gen(Engage_Bar *eb);
@@ -229,6 +231,7 @@ _engage_new()
 #define D conf_edd
    E_CONFIG_VAL(D, T, appdir, STR);
    E_CONFIG_LIST(D, T, bars, conf_bar_edd);
+   E_CONFIG_VAL(D, T, click_focus, UCHAR);
    /*
    E_CONFIG_VAL(D, T, handle, DOUBLE);
    E_CONFIG_VAL(D, T, autohide, UCHAR);
@@ -239,6 +242,7 @@ _engage_new()
      {
 	e->conf = E_NEW(Config, 1);
 	e->conf->appdir = evas_stringshare_add("engage");
+	e->conf->click_focus = 1;
 	/*
 	e->conf->handle = 0.5;
 	e->conf->autohide = 0;
@@ -1144,8 +1148,10 @@ _engage_config_menu_new(Engage *e)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "(Unused)");
-
+   e_menu_item_label_set(mi, "Focus borders on click");
+   e_menu_item_check_set(mi, 1);
+   if (e->conf->click_focus) e_menu_item_toggle_set(mi, 1);
+   e_menu_item_callback_set(mi, _engage_cb_menu_clickfocus, e);
 /*
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Auto hide");
@@ -1269,6 +1275,18 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 	  }				       
      }
    return 1;
+}
+
+static void
+_engage_cb_menu_clickfocus(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Engage        *e;
+   unsigned char  enabled;
+
+   e = data;
+   enabled = e_menu_item_toggle_get(mi);
+   e->conf->click_focus = enabled;
+   e_config_save_queue();
 }
 
 static int
@@ -2031,6 +2049,8 @@ _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *even
 	  e_border_uniconify(ai->border);
 	e_border_raise(ai->border);
 	e_desk_show(ai->border->desk);
+	if (ai->ic->eb->engage->conf->click_focus)
+	  e_border_focus_set(ai->border, 1, 1);
      }
    if (ev->button == 3)
      {
@@ -2186,6 +2206,8 @@ _engage_icon_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_i
       e_border_uniconify(ai->border);
     e_border_raise(ai->border);
     e_desk_show(ai->border->desk);
+    if (ic->eb->engage->conf->click_focus)
+      e_border_focus_set(ai->border, 1, 1);
 
     _engage_bar_motion_handle(ic->eb, ev->canvas.x, ev->canvas.y);
 }
