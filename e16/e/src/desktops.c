@@ -376,7 +376,6 @@ DeskEventsConfigure(Desk * dsk, int mode)
 	EGetWindowAttributes(win, &xwa);
 	dsk->event_mask = xwa.your_event_mask | EDESK_EVENT_MASK;
 	event_mask =
-	   EnterWindowMask | LeaveWindowMask |
 	   PropertyChangeMask | SubstructureRedirectMask |
 	   ButtonPressMask | ButtonReleaseMask;
      }
