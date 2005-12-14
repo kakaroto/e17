@@ -246,7 +246,9 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 	  }
 	else
 	  {
+#if DEBUG
 	     fprintf (stderr, "Unknown string %s\n", down->keyname);
+#endif
 	  }
      }
    else if (down->string)
