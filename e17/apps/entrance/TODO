@@ -7,7 +7,6 @@ TODO List
 
 * Internationalization issues with date/time format - LANG support
 * FreeBSD waitpid() bug in entrance_login.c (Bug #309)
-* Stop spewing out errors about shift/alt keys to console
 
 -------------------------------------------------------------------------------
  ESSENTIAL FEATURES
