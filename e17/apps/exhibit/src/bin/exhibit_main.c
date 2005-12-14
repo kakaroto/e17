@@ -437,7 +437,7 @@ _ex_main_window_show(char *dir)
    etk_paned_add1(ETK_PANED(e->vpaned), e->table);
 
    e->menu_bar = etk_menu_bar_new();
-   etk_table_attach_defaults(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0);
+   etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
    
      {
 	Etk_Widget *menu;
