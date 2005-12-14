@@ -244,12 +244,12 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
 	  {
 	     esmart_text_entry_buffer_backspace (data);
 	  }
+#if DEBUG
 	else
 	  {
-#if DEBUG
 	     fprintf (stderr, "Unknown string %s\n", down->keyname);
-#endif
 	  }
+#endif
      }
    else if (down->string)
      {
