@@ -415,6 +415,8 @@ _ex_main_window_show(char *dir)
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
    e->dirs = NULL;
+   e->menu = NULL;
+   e->image = NULL;
    
    e->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
