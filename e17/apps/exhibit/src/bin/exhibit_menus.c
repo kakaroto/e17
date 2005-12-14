@@ -134,13 +134,19 @@ void
 _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
-   Etk_Tree_Row *r;   
+   Etk_Tree_Row *r;
+   int           w, h;
+   char         *size[30];
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;
    r = etk_tree_selected_row_get(ETK_TREE(e->itree));
    if(!r) return;   
    _ex_image_flip_diagonal(ETK_IMAGE(e->image), 1);
+   etk_image_size_get(ETK_IMAGE(e->image), &w, &h);
+   snprintf(size, sizeof(size), "( %d x %d )", w, h);
+   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
 }
 
 void
@@ -148,12 +154,18 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
    Etk_Tree_Row *r;   
+   int           w, h;
+   char         *size[30];   
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;
    r = etk_tree_selected_row_get(ETK_TREE(e->itree));
    if(!r) return;   
    _ex_image_flip_diagonal(ETK_IMAGE(e->image), 2);
+   etk_image_size_get(ETK_IMAGE(e->image), &w, &h);
+   snprintf(size, sizeof(size), "( %d x %d )", w, h);
+   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);   
 }
 
 void
