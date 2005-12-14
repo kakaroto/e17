@@ -3,7 +3,14 @@ Exhibit - The Etk Image Viewer
 Exhibit is an image viewer that uses Etk as its toolkit. Exhibit supports
 image previews for image types supported by Evas and allows for
 directory changing using a point and click interface or a text input box with
-tab autocompletion support. Common operations include zooming in and out,
-rotation, resizing, and moving around of images on the filesystem. Other
-features include drag and drop, image sorting, blurring, sharpening, and
-saving.
+tab autocompletion support. 
+
+Common operations include:
+
+- rotation / flipping
+- sharpen / blur
+- saving
+- resizing (needs implementation)
+- zooming in and out (needs implementation)
+- drag and drop (needs implementation)
+- image sorting (needs implementation)
