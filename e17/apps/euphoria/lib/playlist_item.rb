@@ -23,7 +23,9 @@ class PlaylistItem
 	end
 
 	def method_missing(method)
-		@props[method]
+		tmp = @props[method]
+
+		tmp || @props[:server][method] || "default"
 	end
 
 	def duration
@@ -107,7 +109,6 @@ class PlaylistItem
 
 	def properties=(hash)
 		@props = hash || {}
-		@props.default = "unknown"
 
 		set_parts_text unless @edje.nil?
 	end
