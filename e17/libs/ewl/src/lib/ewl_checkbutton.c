@@ -71,6 +71,34 @@ ewl_checkbutton_init(Ewl_CheckButton *cb)
 }
 
 /**
+ * @return Returns no value.
+ * @brief Update the checked state of the check button.
+ */
+void ewl_checkbutton_checked_set(Ewl_CheckButton *cb, int c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cb", cb);
+	DCHECK_TYPE("cb", cb, "checkbutton");
+
+	ewl_check_checked_set(EWL_CHECK(EWL_CHECKBUTTON(cb)->check), c);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @brief Retrieve the checked state of a check button.
+ */
+int ewl_checkbutton_is_checked(Ewl_CheckButton *cb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
+	DCHECK_TYPE("cb", cb, "checkbutton");
+
+	DRETURN_INT(ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check)),
+			DLEVEL_STABLE);
+}
+
+/**
  * @param cb: the widget to change the label positioning
  * @param p: the new position of the label
  * @return Returns no value.

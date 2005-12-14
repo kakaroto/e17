@@ -44,21 +44,8 @@ struct Ewl_CheckButton
 Ewl_Widget     *ewl_checkbutton_new(void);
 int             ewl_checkbutton_init(Ewl_CheckButton *cb);
 
-/**
- * @def ewl_checkbutton_checked_set(cb, c);
- * Shortcut for dereferencing the checkbutton to update the checked state of
- * the Ewl_Check.
- */
-#define ewl_checkbutton_checked_set(cb, c) \
-	ewl_check_checked_set(EWL_CHECK(EWL_CHECKBUTTON(cb)->check), c)
-
-/**
- * @def ewl_checkbutton_is_checked(cb);
- * Shortcut for dereferencing the checkbutton to test the checked state of
- * the Ewl_Check.
- */
-#define ewl_checkbutton_is_checked(cb) \
-	ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check))
+void            ewl_checkbutton_checked_set(Ewl_CheckButton *cb, int checked);
+int             ewl_checkbutton_is_checked(Ewl_CheckButton *cb);
 
 void            ewl_checkbutton_label_position_set(Ewl_CheckButton *cb,
 						   Ewl_Position p);
