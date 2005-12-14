@@ -244,6 +244,7 @@ _ex_menu_zoom_in_cb(Etk_Object *obj, void *data)
      e->zoom += 2;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);   
 }
 
 void
@@ -263,6 +264,7 @@ _ex_menu_zoom_out_cb(Etk_Object *obj, void *data)
      e->zoom -= 2;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);
 }
 
 void
@@ -279,7 +281,7 @@ _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    e->zoom = 0;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
-   
+   _ex_main_statusbar_zoom_update(e);     
 }
 
 void

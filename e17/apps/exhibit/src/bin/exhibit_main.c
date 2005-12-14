@@ -18,6 +18,31 @@ char *viewables[] =
 Evas_List *event_handlers;
 
 void
+_ex_main_statusbar_zoom_update(Exhibit *e)
+{
+   if(e->zoom > 0)
+     {
+	char zoom[6];
+	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	snprintf(zoom, sizeof(zoom), "%d:1", abs(e->zoom));
+	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);
+     }
+   else if(e->zoom < 0)
+     {
+	char zoom[6];
+	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	snprintf(zoom, sizeof(zoom), "1:%d", abs(e->zoom));
+	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);;
+     }
+   else
+     {
+	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
+     }      
+}
+
+
+void
 _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
@@ -34,6 +59,7 @@ _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
      e->zoom += 2;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);     
 }
 
 void
@@ -53,6 +79,7 @@ _ex_main_button_zoom_out_cb(Etk_Object *obj, void *data)
      e->zoom -= 2;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);   
 }
 
 void
@@ -69,7 +96,7 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    e->zoom = 0;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
-   
+   _ex_main_statusbar_zoom_update(e);   
 }
 
 void
@@ -93,6 +120,9 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
 
    e = data;
    e->zoom = 0;
+   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);   
+   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
+   
    tree = ETK_TREE(object);
 
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, &icol_string, etk_tree_nth_col_get(tree, 1),NULL);      
@@ -583,8 +613,8 @@ _ex_main_window_show(char *dir)
    etk_box_pack_start(ETK_BOX(e->hbox), ETK_STATUSBAR(e->statusbar[0]), TRUE, TRUE, 0);
    
    e->statusbar[1] = etk_statusbar_new();
-   etk_statusbar_has_resize_grip_set(e->statusbar[1], FALSE);
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[1], TRUE, TRUE, 0);
+   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[1]), FALSE);
+   etk_box_pack_start(ETK_BOX(e->hbox), ETK_STATUSBAR(e->statusbar[1]), TRUE, TRUE, 0);
 
    e->statusbar[2] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[2]), FALSE);   
