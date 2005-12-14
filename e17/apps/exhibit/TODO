@@ -6,6 +6,7 @@ TODO:
 - dnd
 - options
 - fix .spec file
+- make argv work with /path/to/image.png and not only /path/to/dir
 
 BUGS:
 

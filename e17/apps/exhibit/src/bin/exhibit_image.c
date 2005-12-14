@@ -23,10 +23,10 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
    else if(ev->button == 3)
      {
 	e->menu = etk_menu_new();
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom in"), EX_IMAGE_ZOOM_IN, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fit to window"), EX_IMAGE_FIT_TO_WINDOW, ETK_MENU_SHELL(e->menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom in"), EX_IMAGE_ZOOM_IN, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_zoom_in_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fit to window"), EX_IMAGE_FIT_TO_WINDOW, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_fit_to_window_cb), e);
 	etk_menu_popup(e->menu);
      }
 }
@@ -393,4 +393,33 @@ _ex_image_save(Etk_Image *im)
 	evas_object_image_save(im->image_object, im->filename, NULL, NULL);
 	exit(0);
      }
+}
+
+void
+_ex_image_zoom(Etk_Image *im, int zoom)
+{
+   unsigned int *data;
+   int           w, h;
+   int           x, y;
+   unsigned int *p1, *p2, *tmp;
+   
+   if(im->use_edje)
+     return;
+
+   etk_image_size_get(im, &w, &h);
+   if(zoom > 0)
+     {
+	w *= zoom;
+	h *= zoom;
+     }
+   else if(zoom < 0)
+     {
+	w /= abs(zoom);
+	h /= abs(zoom);
+     }
+
+   evas_object_resize(im->image_object, w, h);
+   evas_object_image_fill_set(im->image_object, 0, 0, w, h);
+   etk_widget_size_request_set(im, w, h);
+   etk_widget_redraw_queue(im);
 }

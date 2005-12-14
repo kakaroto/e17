@@ -230,22 +230,56 @@ _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_zoom_in_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e;
+   Etk_Tree_Row *r;   
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("zoom in\n");
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;
+   
+   if(e->zoom == ZOOM_MAX)
+     e->zoom = ZOOM_MAX;
+   else
+     e->zoom += 2;
+   
+   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
 }
 
 void
 _ex_menu_zoom_out_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e;
+   Etk_Tree_Row *r;   
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("zoom out\n");
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;
+   
+   if(e->zoom <= ZOOM_MIN)
+     e->zoom = ZOOM_MIN;
+   else
+     e->zoom -= 2;
+   
+   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
 }
 
 void
 _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e;
+   Etk_Tree_Row *r;
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("zoom one to one\n");
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;
+   
+   e->zoom = 0;
+   
+   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
+   
 }
 
 void

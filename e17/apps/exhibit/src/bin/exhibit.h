@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <math.h>
 
 #include "config.h"
 
@@ -62,6 +63,8 @@ struct _Exhibit
 
    char          *dir;
    char           cur_path[PATH_MAX];   
+
+   int            zoom;
    
    struct {
       int down;
@@ -83,6 +86,8 @@ struct _Ex_Thumb
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 500
 #define VIEWABLES 3
+#define ZOOM_MAX 16
+#define ZOOM_MIN -16
 
 #include "exhibit_menus.h"
 #include "exhibit_file.h"
