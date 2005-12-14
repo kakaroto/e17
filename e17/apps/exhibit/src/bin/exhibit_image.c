@@ -198,6 +198,7 @@ _ex_image_flip_diagonal(Etk_Image *im, int direction)
    evas_object_image_size_set(im->image_object, iw, ih);   
    evas_object_image_data_set(im->image_object, data);
    evas_object_image_data_update_add(im->image_object, 0, 0, iw, ih);
+   etk_widget_size_recalc_queue(im);
 }
 
 void

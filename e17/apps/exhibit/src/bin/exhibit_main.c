@@ -498,8 +498,8 @@ _ex_main_window_show(char *dir)
      }
    
    e->statusbar[0] = etk_statusbar_new();
-   etk_statusbar_has_resize_grip_set(e->statusbar[0], FALSE);
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[0], TRUE, TRUE, 0);
+   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[0]), FALSE);
+   etk_box_pack_start(ETK_BOX(e->hbox), ETK_STATUSBAR(e->statusbar[0]), TRUE, TRUE, 0);
    
    e->statusbar[1] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(e->statusbar[1], FALSE);
