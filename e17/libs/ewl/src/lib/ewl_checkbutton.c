@@ -92,7 +92,7 @@ int ewl_checkbutton_is_checked(Ewl_CheckButton *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
-	DCHECK_TYPE("cb", cb, "checkbutton");
+	DCHECK_TYPE_RET("cb", cb, "checkbutton", FALSE);
 
 	DRETURN_INT(ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check)),
 			DLEVEL_STABLE);
