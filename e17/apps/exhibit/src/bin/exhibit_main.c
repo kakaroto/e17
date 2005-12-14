@@ -94,6 +94,8 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    if(!r) return;
    
    e->zoom = 0;
+   e->brightness = 128;
+   e->contrast = 0;
    
    _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
    _ex_main_statusbar_zoom_update(e);   
@@ -472,6 +474,7 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_blur_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	

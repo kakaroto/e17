@@ -23,6 +23,8 @@ void        _ex_menu_flip_horizontal_cb(Etk_Object *obj, void *data);
 void        _ex_menu_flip_vertical_cb(Etk_Object *obj, void *data);
 void        _ex_menu_blur_cb(Etk_Object *obj, void *data);
 void        _ex_menu_sharpen_cb(Etk_Object *obj, void *data);
+void        _ex_menu_brighten_cb(Etk_Object *obj, void *data);
+void        _ex_menu_darken_cb(Etk_Object *obj, void *data);    
 void        _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data);
 void        _ex_menu_zoom_in_cb(Etk_Object *obj, void *data);
 void        _ex_menu_zoom_out_cb(Etk_Object *obj, void *data);

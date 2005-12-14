@@ -221,6 +221,40 @@ _ex_menu_sharpen_cb(Etk_Object *obj, void *data)
 }
 
 void
+_ex_menu_brighten_cb(Etk_Object *obj, void *data)
+{
+   Exhibit      *e;
+   Etk_Tree_Row *r;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;   
+   
+   e->brightness += 10;
+   if(e->brightness > 255)
+     e->brightness = 255;
+   _ex_image_brightness(ETK_IMAGE(e->image), e->brightness);
+}
+
+void
+_ex_menu_darken_cb(Etk_Object *obj, void *data)
+{
+   Exhibit      *e;
+   Etk_Tree_Row *r;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;   
+   
+   e->brightness -= 10;
+   if(e->brightness < 0)
+     e->brightness = 0;   
+   _ex_image_brightness(ETK_IMAGE(e->image), e->brightness);
+}
+
+void
 _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);

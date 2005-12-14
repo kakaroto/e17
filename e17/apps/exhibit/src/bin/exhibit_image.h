@@ -10,6 +10,7 @@ void         _ex_image_flip_diagonal(Etk_Image *im, int direction);
 void         _ex_image_blur(Etk_Image *im);
 void         _ex_image_sharpen(Etk_Image *im);
 void         _ex_image_save(Etk_Image *im);
-void         _ex_image_zoom(Etk_Image *im, int zoom);
+void         _ex_image_zoom(Etk_Image *im, int zoom); 
+void         _ex_image_brightness(Etk_Image *im, int brightness);
     
 #endif

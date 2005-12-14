@@ -1,5 +1,20 @@
 #include "exhibit.h"
 
+#define R_CMOD(r) \
+   red_mapping[(int)(r)]
+#define G_CMOD(g) \
+   green_mapping[(int)(g)]
+#define B_CMOD(b) \
+   blue_mapping[(int)(b)]
+#define A_CMOD(a) \
+   alpha_mapping[(int)(a)]
+
+#define A_VAL(p) ((DATA8 *)(p))[3]
+#define R_VAL(p) ((DATA8 *)(p))[2]
+#define G_VAL(p) ((DATA8 *)(p))[1]
+#define B_VAL(p) ((DATA8 *)(p))[0]
+
+
 void
 _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 {
@@ -39,6 +54,8 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_blur_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
+	//_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Darken"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_darken_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	etk_menu_popup(e->menu);
@@ -436,4 +453,130 @@ _ex_image_zoom(Etk_Image *im, int zoom)
    evas_object_image_fill_set(im->image_object, 0, 0, w, h);
    etk_widget_size_request_set(im, w, h);
    etk_widget_redraw_queue(im);
+}
+
+void
+_ex_image_brightness(Etk_Image *im, int brightness)
+{
+   DATA32 *data, *p;
+   int     w, h;
+   int     i, j, x, y;
+   int     val2;
+   DATA8   a, r, g, b;
+   DATA8   red_mapping[256];
+   DATA8   green_mapping[256];   
+   DATA8   blue_mapping[256];
+   DATA8   alpha_mapping[256];
+         
+   if(im->use_edje)
+     return;
+   
+   for (i = 0; i < 256; i++)
+     {
+	red_mapping[i] = (DATA8) i;
+	green_mapping[i] = (DATA8) i;
+	blue_mapping[i] = (DATA8) i;
+	alpha_mapping[i] = (DATA8) i;
+     }
+      
+   etk_image_size_get(im, &w, &h);
+   data = evas_object_image_data_get(im->image_object, TRUE);
+   
+   for (i = 0; i < 256; i++)
+     {
+	val2 = (int)red_mapping[i] + brightness;
+	if (val2 < 0)
+	  val2 = 0;
+	if (val2 > 255)
+	  val2 = 255;
+	red_mapping[i] = (DATA8) val2;
+	
+	val2 = (int)green_mapping[i] + brightness;
+	if (val2 < 0)
+	  val2 = 0;
+	if (val2 > 255)
+	  val2 = 255;
+	green_mapping[i] = (DATA8) val2;
+	
+	val2 = (int)blue_mapping[i] + brightness;
+	if (val2 < 0)
+	  val2 = 0;
+	if (val2 > 255)
+	  val2 = 255;
+	blue_mapping[i] = (DATA8) val2;
+	
+	val2 = (int)alpha_mapping[i] + brightness;
+	if (val2 < 0)
+	  val2 = 0;
+	if (val2 > 255)
+	  val2 = 255;
+	alpha_mapping[i] = (DATA8) val2;
+     }
+   
+   for(i = 0; i < w - 1; i++) 
+     {
+      for(j = 0; j < h - 1; j++) 
+	  {
+	     p = &data[i + (w * j)];
+	     
+	     R_VAL(p) = R_CMOD(R_VAL(p));
+	     G_VAL(p) = G_CMOD(G_VAL(p));
+	     B_VAL(p) = B_CMOD(B_VAL(p));
+	     A_VAL(p) = A_CMOD(A_VAL(p));
+	  }
+     }   
+   
+   evas_object_image_data_set(im->image_object, data);
+   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);      
+}
+
+void
+_ex_image_brightness2(Etk_Image *im, int brightness)
+{
+   DATA32 *data, *data2, *pixel;
+   int           w, h;
+   int           i, j;
+   DATA8 a, r, g, b;
+   int light_transform[256];
+         
+   if(im->use_edje)
+     return;
+   
+   printf("brightness = %d\n", brightness);
+   for(i=0; i<256; i++){
+      light_transform[i] = i + brightness;
+      if(light_transform[i] > 255)
+	light_transform[i] = 255;
+      if(light_transform[i] < 0)
+	light_transform[i] = 0;
+   }   
+   
+   etk_image_size_get(im, &w, &h);
+   data = evas_object_image_data_get(im->image_object, TRUE);
+   data2 = malloc(w * h * sizeof(DATA32));
+   memcpy(data2, data, w * h * sizeof(DATA32));
+   
+   for(i = 0; i < w - 1; i++) {
+      for(j = 0; j < h - 1; j++) {
+	 pixel = &data[i + (w * j)];
+	 a = (*pixel >> 24) &0xff;
+	 r = (*pixel >> 16) &0xff;
+	 g = (*pixel >> 8) &0xff;
+	 b = (*pixel) & 0xff;
+	 
+	 pixel = &data2[i + (w * j)];
+	 *pixel |= (light_transform[r] << 16);
+	 *pixel |= (light_transform[g] << 8);
+	 *pixel |= (light_transform[b]);
+      }
+   }
+   
+   evas_object_image_data_set(im->image_object, data2);
+   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);      
+}
+
+void
+_ex_image_contrast(Etk_Image *im, int contrast)
+{
+   
 }

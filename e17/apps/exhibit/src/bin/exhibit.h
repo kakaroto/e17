@@ -65,6 +65,8 @@ struct _Exhibit
    char           cur_path[PATH_MAX];   
 
    int            zoom;
+   int            brightness;
+   int            contrast;
    
    struct {
       int down;
@@ -88,6 +90,13 @@ struct _Ex_Thumb
 #define VIEWABLES 3
 #define ZOOM_MAX 16
 #define ZOOM_MIN -16
+
+#ifndef DATA64
+#define DATA64 unsigned long long
+#define DATA32 unsigned int
+#define DATA16 unsigned short
+#define DATA8  unsigned char
+#endif
 
 #include "exhibit_menus.h"
 #include "exhibit_file.h"
