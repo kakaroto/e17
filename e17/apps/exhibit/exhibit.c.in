@@ -1,0 +1,22 @@
+/** 
+@file
+@brief exhibit
+ 
+These routines are used for exhibit.
+*/
+
+/**
+
+@mainpage exhibit Documentation
+@image html  exhibit.png
+@version 0.0.1
+@author CodeWarrior <hisham.mardambey@gmail.com>
+@date 2005
+
+@section intro What is exhibit?
+
+An image viewing program.
+
+@todo Complete documentation
+
+*/

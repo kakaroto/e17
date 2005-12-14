@@ -1,0 +1,37 @@
+#define ICON(icon_name) \
+   images { \
+      image: icon_name".png" COMP; \
+   } \
+   group { \
+      name: icon_name; \
+      min: 16 16;\
+      parts { \
+	 part { \
+	    name: "icon"; \
+	    description { \
+	       state: "default" 0.0; \
+	       rel1 { \
+		  relative: 0.0 0.0; \
+		  offset: 0 0; \
+	       } \
+	       rel2 { \
+		  relative: 1.0 1.0; \
+		  offset: -1 -1; \
+	       } \
+	       image { \
+		  normal: icon_name".png"; \
+	       } \
+	       fill { \
+		  smooth: 0; \
+	       } \
+	    } \
+	 } \
+      } \
+   }
+
+collections {
+   ICON("fit_to_window");
+   ICON("one_to_one");
+   ICON("zoom_in");
+   ICON("zoom_out");
+}
