@@ -211,7 +211,7 @@ _ex_main_populate_files(Exhibit *e)
 
    snprintf(back, PATH_MAX, "..");
    etk_tree_append(ETK_TREE(e->dtree), e->dcol, ETK_DEFAULT_ICON_SET_FILE,
-		   "mimetypes/x-directory-normal", back, NULL);
+		   "actions/go-up", back, NULL);
 
    chdir(e->dir);
 

@@ -89,25 +89,90 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-dnl ecore
-ECORE_REQUIRED_VERSION=0.9.9.022
-PKG_CHECK_MODULES(ECORE, ecore >= $ECORE_REQUIRED_VERSION)
+#check for ECORE
+AC_PATH_EFL(
+   ecore,
+   0.9.9.022,
+   [
+     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
+     ecore="ECORE "
+     AM_CONDITIONAL(HAVE_ECORE, true)
+     have_evas="yes"
+     ecore_libs=`ecore-config --libs`
+     ecore_cflags=`ecore-config --cflags`
+   ],
+   [
+     AC_MSG_ERROR([No Ecore, can't build.])
+   ]
+)
 
-dnl evas
-EVAS_REQUIRED_VERSION=0.9.9.022
-PKG_CHECK_MODULES(EVAS, evas >= $EVAS_REQUIRED_VERSION)
+#check for EVAS
+AC_PATH_EFL(
+   evas,
+   0.9.9.022,
+   [
+     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
+     evas="EVAS "
+     AM_CONDITIONAL(HAVE_EVAS, true)
+     have_evas="yes"
+     evas_libs=`evas-config --libs`
+     evas_cflags=`evas-config --cflags`
+   ],
+   [
+     AC_MSG_ERROR([No Evas, can't build.])
+   ]
+)
 
-dnl edje
-EDJE_REQUIRED_VERSION=0.5.0.022
-PKG_CHECK_MODULES(EDJE, edje >= $EDJE_REQUIRED_VERSION)
+#check for EDJE
+AC_PATH_EFL(
+   edje,
+   0.5.0.022,
+   [
+     AC_DEFINE(HAVE_EDJE, 1, have EDJE)
+     edje="EDJE "
+     AM_CONDITIONAL(HAVE_EDJE, true)
+     have_edje="yes"
+     edje_libs=`edje-config --libs`
+     edje_cflags=`edje-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Edje, can't build.])
+   ]
+)
 
-dnl etk
-ETK_REQUIRED_VERSION=0.1.0.001
-PKG_CHECK_MODULES(ETK, etk >= $ETK_REQUIRED_VERSION)
+#check for ETK
+AC_PATH_EFL(
+   etk,
+   0.1.0.001,
+   [
+     AC_DEFINE(HAVE_ETK, 1, have ETK)
+     etk="ETK "
+     AM_CONDITIONAL(HAVE_ETK, true)
+     have_etk="yes"
+     etk_libs=`etk-config --libs`
+     etk_cflags=`etk-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Etk, can't build.])
+   ]
+)
 
-dnl epsilon
-EPSILON_REQUIRED_VERSION=0.3.0.004
-PKG_CHECK_MODULES(EPSILON, epsilon >= $EPSILON_REQUIRED_VERSION)
+#check for EPSILON
+AC_PATH_EFL(
+   epsilon,
+   0.3.0.004,
+   [
+     AC_DEFINE(HAVE_EPSILON, 1, have EPSILON)
+     epsilon="EPSILON "
+     AM_CONDITIONAL(HAVE_EPSILON, true)
+     have_epsilon="yes"
+     epsilon_libs=`epsilon-config --libs`
+     epsilon_cflags=`epsilon-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Epsilon, can't build.])
+   ]
+)
 
 #check for E
 AC_PATH_EFL(
@@ -127,7 +192,7 @@ AC_PATH_EFL(
      AC_MSG_WARN([No E, can't build E desktop support.])
      have_e="no"
      e_libs=""
-     e_cflags=""     
+     e_cflags=""
    ]
 )
 
