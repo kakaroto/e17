@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 19:34+0100\n"
+"POT-Creation-Date: 2005-12-13 20:23+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -606,21 +606,21 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2319
+#: src/desktops.c:2342 src/desktops.c:2393
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2270 src/desktops.c:2321
+#: src/desktops.c:2344 src/desktops.c:2395
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2376
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2309
+#: src/desktops.c:2383
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -628,48 +628,48 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2388
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2340
+#: src/desktops.c:2414
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2346
+#: src/desktops.c:2420
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux: (lente)\n"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2434
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2442
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2448
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2452
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2458
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2390 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2464 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2396 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2470 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2488 src/desktops.c:2536
+#: src/desktops.c:2562 src/desktops.c:2610
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -678,7 +678,7 @@ msgstr ""
 "%i x %i\n"
 "Ecrans"
 
-#: src/desktops.c:2491 src/desktops.c:2539
+#: src/desktops.c:2565 src/desktops.c:2613
 msgid ""
 "1\n"
 "Screen in size"
@@ -686,11 +686,11 @@ msgstr ""
 "1\n"
 "Ecran"
 
-#: src/desktops.c:2522
+#: src/desktops.c:2596
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2529
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -698,19 +698,19 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux virtuels\n"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2606
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2646
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2650
 msgid "Enable edge flip"
 msgstr "Activer les bords sensitifs"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2654
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
@@ -750,11 +750,11 @@ msgstr ""
 "\n"
 "Sortie.\n"
 
-#: src/focus.c:713
+#: src/focus.c:718
 msgid "Focus Settings"
 msgstr "Paramètres du Focus"
 
-#: src/focus.c:720
+#: src/focus.c:725
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -762,92 +762,92 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Focus\n"
 
-#: src/focus.c:724
+#: src/focus.c:729
 msgid "Focus follows pointer"
 msgstr "Le focus suit la souris"
 
-#: src/focus.c:730
+#: src/focus.c:735
 msgid "Focus follows pointer sloppily"
 msgstr "Le focus suit lentement la souris"
 
-#: src/focus.c:736
+#: src/focus.c:741
 msgid "Focus follows mouse clicks"
 msgstr "Le focus suit les clics de souris"
 
-#: src/focus.c:746
+#: src/focus.c:751
 msgid "Clicking in a window always raises it"
 msgstr "Toujours élever une fenêtre qui reçoit un click"
 
-#: src/focus.c:754
+#: src/focus.c:759
 msgid "All new windows first get the focus"
 msgstr "Toutes les nouvelles fenêtres obtiennent le focus"
 
-#: src/focus.c:759
+#: src/focus.c:764
 msgid "Only new dialog windows get the focus"
 msgstr "Seules les nouvelles fenêtres de dialogue obtiennent le focus"
 
-#: src/focus.c:766
+#: src/focus.c:771
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Seules les nouvelles fenêtres de dialogue dont le parent a le\n"
 "focus obtiennent le focus."
 
-#: src/focus.c:771
+#: src/focus.c:776
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:777
+#: src/focus.c:782
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:783
+#: src/focus.c:788
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:791
+#: src/focus.c:796
 msgid "Display and use focus list"
 msgstr "Afficher et utiliser la liste de fenêtres"
 
-#: src/focus.c:796
+#: src/focus.c:801
 msgid "Include sticky windows in focus list"
 msgstr "Inclure les fenêtres collées dans la liste de fenêtres"
 
-#: src/focus.c:801
+#: src/focus.c:806
 msgid "Include shaded windows in focus list"
 msgstr "Inclure les fenêtres masquées dans la liste de fenêtres"
 
-#: src/focus.c:806
+#: src/focus.c:811
 msgid "Include iconified windows in focus list"
 msgstr "Inclure les fenêtres icônifiées dans la liste de fenêtres"
 
-#: src/focus.c:811
+#: src/focus.c:816
 msgid "Focus windows while switching"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:816
+#: src/focus.c:821
 msgid "Raise windows after focus switch"
 msgstr "Elever les fenêtres après l'obtention du focus"
 
-#: src/focus.c:821
+#: src/focus.c:826
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Placer la souris sur la fenêtre après obtention du focus"
 
-#: src/focus.c:831
+#: src/focus.c:836
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Afficher les icônes en respectant l'ordre suivant:"
 
-#: src/focus.c:835
+#: src/focus.c:840
 msgid "First E Icon, then App Icon"
 msgstr "Icône E en premier, puis Icône de l'Application"
 
-#: src/focus.c:841
+#: src/focus.c:846
 msgid "First App Icon, then E Icon"
 msgstr "Icône de l'Application en premier, puis Icône E"
 
-#: src/focus.c:847 src/iconify.c:2382
+#: src/focus.c:852 src/iconify.c:2382
 msgid "None"
 msgstr "Aucune"
 
@@ -878,11 +878,11 @@ msgstr ""
 "\n"
 "Pour arrêter cet effet, sélectionnez de nouveau cette option.\n"
 
-#: src/fx.c:213
+#: src/fx.c:215
 msgid "Starting up Raindrops FX..."
 msgstr "Démarrage de l'effet Gouttes de pluie..."
 
-#: src/fx.c:214
+#: src/fx.c:216
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -904,11 +904,11 @@ msgstr ""
 "\n"
 "Pour arrêter cet effet, sélectionnez de nouveau cette option.\n"
 
-#: src/fx.c:499
+#: src/fx.c:509
 msgid "Starting up Waves FX..."
 msgstr "Démarrage de l'effet Vagues..."
 
-#: src/fx.c:500
+#: src/fx.c:510
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -930,11 +930,11 @@ msgstr ""
 "\n"
 "Pour arrêter cet effet, sélectionnez de nouveau cette option.\n"
 
-#: src/fx.c:677
+#: src/fx.c:687
 msgid "Starting up imagespinners FX..."
 msgstr "Démarrage de l'effet Rotation d'image..."
 
-#: src/fx.c:678
+#: src/fx.c:688
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -947,11 +947,11 @@ msgstr ""
 "\n"
 "Pour arrêter cet effet, sélectionnez de nouveau cette option.\n"
 
-#: src/fx.c:985
+#: src/fx.c:995
 msgid "Special FX Settings"
 msgstr "Paramètres des Effets spéciaux"
 
-#: src/fx.c:992
+#: src/fx.c:1002
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -959,19 +959,19 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Effets spéciaux\n"
 
-#: src/fx.c:996
+#: src/fx.c:1006
 msgid "Effects"
 msgstr "Effets"
 
-#: src/fx.c:999
+#: src/fx.c:1009
 msgid "Enable Effect: Raindrops"
 msgstr "Activer l'effet: Gouttes de pluie"
 
-#: src/fx.c:1003
+#: src/fx.c:1013
 msgid "Ripples"
 msgstr "Ondes"
 
-#: src/fx.c:1007
+#: src/fx.c:1017
 msgid "Waves"
 msgstr "Vagues"
 
@@ -1443,11 +1443,11 @@ msgstr ""
 "Version d'Enlightenment: %s\n"
 "Code courant:            %s\n"
 
-#: src/ipc.c:1667
+#: src/ipc.c:1508
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1671
+#: src/ipc.c:1512
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1457,19 +1457,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1673 src/ipc.c:1693 src/ipc.c:1705
+#: src/ipc.c:1514 src/ipc.c:1534 src/ipc.c:1546
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1691
+#: src/ipc.c:1532
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1692
+#: src/ipc.c:1533
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1694 src/ipc.c:1706
+#: src/ipc.c:1535 src/ipc.c:1547
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 

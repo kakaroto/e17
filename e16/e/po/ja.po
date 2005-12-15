@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 19:34+0100\n"
+"POT-Creation-Date: 2005-12-13 20:23+0100\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -605,21 +605,21 @@ msgstr ""
 "ここをクリックするとこのデスクトップ\n"
 "を下面へ\n"
 
-#: src/desktops.c:2268 src/desktops.c:2319
+#: src/desktops.c:2342 src/desktops.c:2393
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2270 src/desktops.c:2321
+#: src/desktops.c:2344 src/desktops.c:2395
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2376
 msgid "Multiple Desktop Settings"
 msgstr "仮想デスクトップの枚数設定"
 
-#: src/desktops.c:2309
+#: src/desktops.c:2383
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -627,49 +627,49 @@ msgstr ""
 "Enlightenment 仮想デスクトップの枚数\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2388
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2340
+#: src/desktops.c:2414
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
-#: src/desktops.c:2346
+#: src/desktops.c:2420
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライドスピード: (遅い)\n"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2434
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右はつながっている"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2442
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2448
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置:"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2452
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2458
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2390 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2464 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2396 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2470 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
 msgid "Right"
 msgstr "右"
 
-#: src/desktops.c:2488 src/desktops.c:2536
+#: src/desktops.c:2562 src/desktops.c:2610
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -678,7 +678,7 @@ msgstr ""
 "%i x %i\n"
 "のサイズの仮想デスクトップ"
 
-#: src/desktops.c:2491 src/desktops.c:2539
+#: src/desktops.c:2565 src/desktops.c:2613
 msgid ""
 "1\n"
 "Screen in size"
@@ -686,11 +686,11 @@ msgstr ""
 "1\n"
 "のサイズの仮想デスクトップ"
 
-#: src/desktops.c:2522
+#: src/desktops.c:2596
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップのサイズ設定"
 
-#: src/desktops.c:2529
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -698,19 +698,19 @@ msgstr ""
 "Enlightenment 仮想デスクトップのサイズ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2606
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップのサイズ:\n"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2646
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右はつながっている"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2650
 msgid "Enable edge flip"
 msgstr "デスクトップを移動できる"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2654
 msgid "Resistance at edge of screen:\n"
 msgstr "移動のときにどのくらいの時間耐えるか:\n"
 
@@ -750,11 +750,11 @@ msgstr ""
 "\n"
 "終了します。\n"
 
-#: src/focus.c:713
+#: src/focus.c:718
 msgid "Focus Settings"
 msgstr "フォーカス設定"
 
-#: src/focus.c:720
+#: src/focus.c:725
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -762,94 +762,94 @@ msgstr ""
 "Enlightenment フォーカス\n"
 "設定ダイアログ\n"
 
-#: src/focus.c:724
+#: src/focus.c:729
 msgid "Focus follows pointer"
 msgstr "マウスのあるウィンドウがフォーカス"
 
-#: src/focus.c:730
+#: src/focus.c:735
 msgid "Focus follows pointer sloppily"
 msgstr ""
 "マウスのあるウィンドウがフォーカス(ウィンドウを離れてもフォーカスは保持)"
 
-#: src/focus.c:736
+#: src/focus.c:741
 msgid "Focus follows mouse clicks"
 msgstr "クリックしたウィンドウをフォーカス"
 
-#: src/focus.c:746
+#: src/focus.c:751
 msgid "Clicking in a window always raises it"
 msgstr "ウィンドウをクリックすると常に上面へ"
 
-#: src/focus.c:754
+#: src/focus.c:759
 msgid "All new windows first get the focus"
 msgstr "新規ウィンドウは全て出現時にフォーカスされる"
 
-#: src/focus.c:759
+#: src/focus.c:764
 msgid "Only new dialog windows get the focus"
 msgstr "新規ダイアログウィンドウだけがフォーカスされる"
 
-#: src/focus.c:766
+#: src/focus.c:771
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "新規ダイアログは関係するウィンドウがフォーカスされているときだけフォーカスさ"
 "れる"
 
-#: src/focus.c:771
+#: src/focus.c:776
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "切り替わったらウィンドウをフォーカス"
 
-#: src/focus.c:777
+#: src/focus.c:782
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "フォーカスが移るとマウスポインタも追従"
 
-#: src/focus.c:783
+#: src/focus.c:788
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "フォーカスが移るとマウスポインタも追従"
 
-#: src/focus.c:791
+#: src/focus.c:796
 msgid "Display and use focus list"
 msgstr "フォーカスリストを表示、使用する"
 
-#: src/focus.c:796
+#: src/focus.c:801
 msgid "Include sticky windows in focus list"
 msgstr "フォーカスリストに stick なウィンドウも含める"
 
-#: src/focus.c:801
+#: src/focus.c:806
 msgid "Include shaded windows in focus list"
 msgstr "フォーカスリストにタイトルバーのみのウィンドウも含める"
 
-#: src/focus.c:806
+#: src/focus.c:811
 msgid "Include iconified windows in focus list"
 msgstr "フォーカスリストにアイコン化したウィンドウも含める"
 
-#: src/focus.c:811
+#: src/focus.c:816
 msgid "Focus windows while switching"
 msgstr "切り替わったらウィンドウをフォーカス"
 
-#: src/focus.c:816
+#: src/focus.c:821
 msgid "Raise windows after focus switch"
 msgstr "フォーカスされたウィンドウを上面に"
 
-#: src/focus.c:821
+#: src/focus.c:826
 msgid "Send mouse pointer to window after focus switch"
 msgstr "フォーカス移ったウィンドウにマウスポインタを移動"
 
-#: src/focus.c:831
+#: src/focus.c:836
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "アイコン画像表示のポリシー (もし一つが失敗したら次をためします):"
 
-#: src/focus.c:835
+#: src/focus.c:840
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:841
+#: src/focus.c:846
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:847 src/iconify.c:2382
+#: src/focus.c:852 src/iconify.c:2382
 msgid "None"
 msgstr "なし"
 
@@ -881,11 +881,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:213
+#: src/fx.c:215
 msgid "Starting up Raindrops FX..."
 msgstr "Raindrops Effect の開始..."
 
-#: src/fx.c:214
+#: src/fx.c:216
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -909,11 +909,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:499
+#: src/fx.c:509
 msgid "Starting up Waves FX..."
 msgstr "Waves Effect の開始..."
 
-#: src/fx.c:500
+#: src/fx.c:510
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -937,11 +937,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:677
+#: src/fx.c:687
 msgid "Starting up imagespinners FX..."
 msgstr "Imagespinners Effect の開始..."
 
-#: src/fx.c:678
+#: src/fx.c:688
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -955,11 +955,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:985
+#: src/fx.c:995
 msgid "Special FX Settings"
 msgstr "特殊効果の設定"
 
-#: src/fx.c:992
+#: src/fx.c:1002
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -967,20 +967,20 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ\n"
 
-#: src/fx.c:996
+#: src/fx.c:1006
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:999
+#: src/fx.c:1009
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Raindrop Effect を表示できません。"
 
-#: src/fx.c:1003
+#: src/fx.c:1013
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:1007
+#: src/fx.c:1017
 msgid "Waves"
 msgstr ""
 
@@ -1454,12 +1454,12 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "コードバージョン        : %s\n"
 
-#: src/ipc.c:1667
+#: src/ipc.c:1508
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ"
 
-#: src/ipc.c:1671
+#: src/ipc.c:1512
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1470,23 +1470,23 @@ msgstr ""
 "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 "\n"
 
-#: src/ipc.c:1673 src/ipc.c:1693 src/ipc.c:1705
+#: src/ipc.c:1514 src/ipc.c:1534 src/ipc.c:1546
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1691
+#: src/ipc.c:1532
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1692
+#: src/ipc.c:1533
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 
-#: src/ipc.c:1694 src/ipc.c:1706
+#: src/ipc.c:1535 src/ipc.c:1547
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"

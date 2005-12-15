@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 19:34+0100\n"
+"POT-Creation-Date: 2005-12-13 20:23+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -617,21 +617,21 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2319
+#: src/desktops.c:2342 src/desktops.c:2393
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2270 src/desktops.c:2321
+#: src/desktops.c:2344 src/desktops.c:2395
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2376
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2309
+#: src/desktops.c:2383
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -639,48 +639,48 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2388
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2340
+#: src/desktops.c:2414
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2346
+#: src/desktops.c:2420
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2434
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2442
 msgid "Display desktop dragbar"
 msgstr "Prikaŵi dektop dragbar"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2448
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2452
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2458
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2390 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2464 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2396 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2470 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2488 src/desktops.c:2536
+#: src/desktops.c:2562 src/desktops.c:2610
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -689,7 +689,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2491 src/desktops.c:2539
+#: src/desktops.c:2565 src/desktops.c:2613
 msgid ""
 "1\n"
 "Screen in size"
@@ -697,11 +697,11 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2522
+#: src/desktops.c:2596
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2529
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -709,19 +709,19 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2606
 msgid "Virtual Desktop size:\n"
 msgstr "Veliīina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2646
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2650
 msgid "Enable edge flip"
 msgstr "Ukljuīi precrtavanje ivice"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2654
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
@@ -761,11 +761,11 @@ msgstr ""
 "\n"
 "Izlazim.\n"
 
-#: src/focus.c:713
+#: src/focus.c:718
 msgid "Focus Settings"
 msgstr "Osobine usmjeravanja"
 
-#: src/focus.c:720
+#: src/focus.c:725
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -773,91 +773,91 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/focus.c:724
+#: src/focus.c:729
 msgid "Focus follows pointer"
 msgstr "Usmjeravanje prati usmjeriva?"
 
-#: src/focus.c:730
+#: src/focus.c:735
 msgid "Focus follows pointer sloppily"
 msgstr "Usmjerenje prati usmjeriva�"
 
-#: src/focus.c:736
+#: src/focus.c:741
 msgid "Focus follows mouse clicks"
 msgstr "Usmjeravanje prati klikanje miŷa"
 
-#: src/focus.c:746
+#: src/focus.c:751
 msgid "Clicking in a window always raises it"
 msgstr "Klikanje na prozor uvijek ga podstakinje"
 
-#: src/focus.c:754
+#: src/focus.c:759
 msgid "All new windows first get the focus"
 msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
 
-#: src/focus.c:759
+#: src/focus.c:764
 msgid "Only new dialog windows get the focus"
 msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
 
-#: src/focus.c:766
+#: src/focus.c:771
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Samo novi dijalozi īiji je vlasnik usmjeren dobivaju usmjeravanje"
 
-#: src/focus.c:771
+#: src/focus.c:776
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:777
+#: src/focus.c:782
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
 
-#: src/focus.c:783
+#: src/focus.c:788
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
 
-#: src/focus.c:791
+#: src/focus.c:796
 msgid "Display and use focus list"
 msgstr "Prikaŵi i koristi listu usmjeravanja"
 
-#: src/focus.c:796
+#: src/focus.c:801
 msgid "Include sticky windows in focus list"
 msgstr "Ukljuīi listu ljepljivih prozora u listi usmjeravanja"
 
-#: src/focus.c:801
+#: src/focus.c:806
 msgid "Include shaded windows in focus list"
 msgstr "Ukljuīi osjenīene prozore u listi usmjeravanja"
 
-#: src/focus.c:806
+#: src/focus.c:811
 msgid "Include iconified windows in focus list"
 msgstr "Ukljuīi ikonificirane prozore u listi usmjeravanja"
 
-#: src/focus.c:811
+#: src/focus.c:816
 msgid "Focus windows while switching"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:816
+#: src/focus.c:821
 msgid "Raise windows after focus switch"
 msgstr "Pove�an je prozora nakon paljenja/gaŷenja usjeriva�a"
 
-#: src/focus.c:821
+#: src/focus.c:826
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Poŷalji miŷ pokaziva� na prozor nakon ŷto se usjeriva� ugasi/upali"
 
-#: src/focus.c:831
+#: src/focus.c:836
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
 
-#: src/focus.c:835
+#: src/focus.c:840
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:841
+#: src/focus.c:846
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:847 src/iconify.c:2382
+#: src/focus.c:852 src/iconify.c:2382
 msgid "None"
 msgstr "Niŷta"
 
@@ -888,11 +888,11 @@ msgstr ""
 "Da bi iskljuīili ovaj efekt samo ponovo oznaīite ovu opciju i on �e\n"
 "biti iskljuīen.\n"
 
-#: src/fx.c:213
+#: src/fx.c:215
 msgid "Starting up Raindrops FX..."
 msgstr "Pokre�em Raindrops FX..."
 
-#: src/fx.c:214
+#: src/fx.c:216
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -916,11 +916,11 @@ msgstr ""
 "To disable this effect just select this option again to toggle\n"
 "it off.\n"
 
-#: src/fx.c:499
+#: src/fx.c:509
 msgid "Starting up Waves FX..."
 msgstr "Pokre�em Waves FX......"
 
-#: src/fx.c:500
+#: src/fx.c:510
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -944,11 +944,11 @@ msgstr ""
 "To disable this effect just select this option again to toggle\n"
 "it off.\n"
 
-#: src/fx.c:677
+#: src/fx.c:687
 msgid "Starting up imagespinners FX..."
 msgstr "Pokre�em magespinners FX..."
 
-#: src/fx.c:678
+#: src/fx.c:688
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -962,11 +962,11 @@ msgstr ""
 "Da biste iskljuīili ovaj efekt izaberite ovu opciju opet da ga\n"
 "iskljuīite.\n"
 
-#: src/fx.c:985
+#: src/fx.c:995
 msgid "Special FX Settings"
 msgstr "Specijalne FX osobine"
 
-#: src/fx.c:992
+#: src/fx.c:1002
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -974,19 +974,19 @@ msgstr ""
 "Enlightenment Specijalni efekti\n"
 "dijalog osobina\n"
 
-#: src/fx.c:996
+#: src/fx.c:1006
 msgid "Effects"
 msgstr "Efekti"
 
-#: src/fx.c:999
+#: src/fx.c:1009
 msgid "Enable Effect: Raindrops"
 msgstr "Ukljuīi efekt: Raindrops"
 
-#: src/fx.c:1003
+#: src/fx.c:1013
 msgid "Ripples"
 msgstr "Talasi"
 
-#: src/fx.c:1007
+#: src/fx.c:1017
 msgid "Waves"
 msgstr "Valovi"
 
@@ -1459,12 +1459,12 @@ msgstr ""
 "Enlightenment verzija : %s\n"
 "kod je trenutno na    : %s\n"
 
-#: src/ipc.c:1667
+#: src/ipc.c:1508
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1671
+#: src/ipc.c:1512
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1475,23 +1475,23 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1673 src/ipc.c:1693 src/ipc.c:1705
+#: src/ipc.c:1514 src/ipc.c:1534 src/ipc.c:1546
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1691
+#: src/ipc.c:1532
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1692
+#: src/ipc.c:1533
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1694 src/ipc.c:1706
+#: src/ipc.c:1535 src/ipc.c:1547
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"

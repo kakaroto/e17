@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-28 19:34+0100\n"
+"POT-Creation-Date: 2005-12-13 20:23+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -602,21 +602,21 @@ msgstr ""
 "Щтракнете тук за да свалите това\n"
 "поле най-долу.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2319
+#: src/desktops.c:2342 src/desktops.c:2393
 #, c-format
 msgid "%i Desktops"
 msgstr "%i работни полета"
 
-#: src/desktops.c:2270 src/desktops.c:2321
+#: src/desktops.c:2344 src/desktops.c:2395
 #, c-format
 msgid "%i Desktop"
 msgstr "%i поле"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2376
 msgid "Multiple Desktop Settings"
 msgstr "Настройки за много работни полета"
 
-#: src/desktops.c:2309
+#: src/desktops.c:2383
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -624,48 +624,48 @@ msgstr ""
 "Е: Много работни полета\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2388
 msgid "Number of virtual desktops:\n"
 msgstr "Брой на виртуални работни полета:\n"
 
-#: src/desktops.c:2340
+#: src/desktops.c:2414
 msgid "Slide desktops around when changing"
 msgstr "Плъзгай полетата когато ги сменяте"
 
-#: src/desktops.c:2346
+#: src/desktops.c:2420
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Бързина на плъзгане на полето: (бавно)\n"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2434
 msgid "Wrap desktops around"
 msgstr "Застъпете полетата"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2442
 msgid "Display desktop dragbar"
 msgstr "Показвай Dragbar-ът"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2448
 msgid "Drag bar position:"
 msgstr "Позиция на Dragbar-ът"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2452
 msgid "Top"
 msgstr "Отгоре"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2458
 msgid "Bottom"
 msgstr "Отдолу"
 
-#: src/desktops.c:2390 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2464 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
 msgid "Left"
 msgstr "Левият"
 
-#: src/desktops.c:2396 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
+#: src/desktops.c:2470 src/pager.c:1829 src/pager.c:1854 src/pager.c:1879
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2488 src/desktops.c:2536
+#: src/desktops.c:2562 src/desktops.c:2610
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -674,7 +674,7 @@ msgstr ""
 "%i x %i\n"
 "Екрани с размер"
 
-#: src/desktops.c:2491 src/desktops.c:2539
+#: src/desktops.c:2565 src/desktops.c:2613
 msgid ""
 "1\n"
 "Screen in size"
@@ -682,29 +682,29 @@ msgstr ""
 "1\n"
 "Екран с размер"
 
-#: src/desktops.c:2522
+#: src/desktops.c:2596
 msgid "Virtual Desktop Settings"
 msgstr "Настройки на виртуални полета"
 
-#: src/desktops.c:2529
+#: src/desktops.c:2603
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2606
 msgid "Virtual Desktop size:\n"
 msgstr "Размер на виртуалното поле:\n"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2646
 msgid "Wrap virtual desktops around"
 msgstr "Застъпвай виртуалните полета"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2650
 msgid "Enable edge flip"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2654
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
 
@@ -745,11 +745,11 @@ msgstr ""
 "\n"
 "Излиза се.\n"
 
-#: src/focus.c:713
+#: src/focus.c:718
 msgid "Focus Settings"
 msgstr "Настройки за фокуса"
 
-#: src/focus.c:720
+#: src/focus.c:725
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -757,92 +757,92 @@ msgstr ""
 "Е: Фокус\n"
 "Диалог за настройкию\n"
 
-#: src/focus.c:724
+#: src/focus.c:729
 msgid "Focus follows pointer"
 msgstr "Фокусът следи показалеца"
 
-#: src/focus.c:730
+#: src/focus.c:735
 msgid "Focus follows pointer sloppily"
 msgstr "Фокусът следи показалеца небрежно"
 
-#: src/focus.c:736
+#: src/focus.c:741
 msgid "Focus follows mouse clicks"
 msgstr "Фокусът следи щраквания на мишката"
 
-#: src/focus.c:746
+#: src/focus.c:751
 msgid "Clicking in a window always raises it"
 msgstr "Щракване върху прозорец винаги го вдига"
 
-#: src/focus.c:754
+#: src/focus.c:759
 msgid "All new windows first get the focus"
 msgstr "Всички нови прозорци първи взимат фокуса"
 
-#: src/focus.c:759
+#: src/focus.c:764
 msgid "Only new dialog windows get the focus"
 msgstr "Само нови диалогови прозорци взимат фокуса"
 
-#: src/focus.c:766
+#: src/focus.c:771
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Само нови диалози чиито притежатели са фокусирани получават фокуса"
 
-#: src/focus.c:771
+#: src/focus.c:776
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:777
+#: src/focus.c:782
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:783
+#: src/focus.c:788
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:791
+#: src/focus.c:796
 msgid "Display and use focus list"
 msgstr "Показвай и използвай списъкът за фокус"
 
-#: src/focus.c:796
+#: src/focus.c:801
 msgid "Include sticky windows in focus list"
 msgstr "Включвай залепени прозорци в списъкът за фокус"
 
-#: src/focus.c:801
+#: src/focus.c:806
 msgid "Include shaded windows in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:806
+#: src/focus.c:811
 msgid "Include iconified windows in focus list"
 msgstr "Включвай скрити прозорци в списъкът за фокус"
 
-#: src/focus.c:811
+#: src/focus.c:816
 msgid "Focus windows while switching"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:816
+#: src/focus.c:821
 msgid "Raise windows after focus switch"
 msgstr "Вдигай прозореца след смяната на фокус"
 
-#: src/focus.c:821
+#: src/focus.c:826
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
 
-#: src/focus.c:831
+#: src/focus.c:836
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведение на картините във Фокусната листа\n"
 "(ако едната операция се провали, да се пробва със следващата):"
 
-#: src/focus.c:835
+#: src/focus.c:840
 msgid "First E Icon, then App Icon"
 msgstr "Първо Е икони, после икони на програмата"
 
-#: src/focus.c:841
+#: src/focus.c:846
 msgid "First App Icon, then E Icon"
 msgstr "Първо икони на програмата, после Е икони"
 
-#: src/focus.c:847 src/iconify.c:2382
+#: src/focus.c:852 src/iconify.c:2382
 msgid "None"
 msgstr "Никъде"
 
@@ -873,11 +873,11 @@ msgstr ""
 "\n"
 "За да спрете ефекта, изберете отново тази опция и ще го изключите.\n"
 
-#: src/fx.c:213
+#: src/fx.c:215
 msgid "Starting up Raindrops FX..."
 msgstr "Пуска се ефект Дъжд..."
 
-#: src/fx.c:214
+#: src/fx.c:216
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -900,11 +900,11 @@ msgstr ""
 "\n"
 "За да спрете ефекта, изберете отново тази опция и ще го изключите.\n"
 
-#: src/fx.c:499
+#: src/fx.c:509
 msgid "Starting up Waves FX..."
 msgstr "Пуска се ефект Вълни..."
 
-#: src/fx.c:500
+#: src/fx.c:510
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -927,11 +927,11 @@ msgstr ""
 "\n"
 "За да спрете ефекта, изберете отново тази опция и ще го изключите.\n"
 
-#: src/fx.c:677
+#: src/fx.c:687
 msgid "Starting up imagespinners FX..."
 msgstr "Пуска се ефект imagespinners..."
 
-#: src/fx.c:678
+#: src/fx.c:688
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -944,11 +944,11 @@ msgstr ""
 "\n"
 "За да спрете ефекта, изберете отново тази опция и ще го изключите.\n"
 
-#: src/fx.c:985
+#: src/fx.c:995
 msgid "Special FX Settings"
 msgstr "Настройки на специалните ефекти"
 
-#: src/fx.c:992
+#: src/fx.c:1002
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -956,19 +956,19 @@ msgstr ""
 "Е: Специални ефекти\n"
 "Диалог за настройки\n"
 
-#: src/fx.c:996
+#: src/fx.c:1006
 msgid "Effects"
 msgstr "Ефекти"
 
-#: src/fx.c:999
+#: src/fx.c:1009
 msgid "Enable Effect: Raindrops"
 msgstr "Включи ефект: Дъждовни капки"
 
-#: src/fx.c:1003
+#: src/fx.c:1013
 msgid "Ripples"
 msgstr "Вълнение"
 
-#: src/fx.c:1007
+#: src/fx.c:1017
 msgid "Waves"
 msgstr "Вълни"
 
@@ -1445,11 +1445,11 @@ msgstr ""
 "Версия на Enlightenment : %s\n"
 "Кода е текущ на         : %s\n"
 
-#: src/ipc.c:1667
+#: src/ipc.c:1508
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1671
+#: src/ipc.c:1512
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1459,19 +1459,19 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1673 src/ipc.c:1693 src/ipc.c:1705
+#: src/ipc.c:1514 src/ipc.c:1534 src/ipc.c:1546
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1691
+#: src/ipc.c:1532
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1692
+#: src/ipc.c:1533
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1694 src/ipc.c:1706
+#: src/ipc.c:1535 src/ipc.c:1547
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
