@@ -63,16 +63,16 @@ group {
    programs {
       program {
          name: "entry_focus";
-         signal: "focus";
-         source: "";
+         signal: "focus,in";
+         source: "*";
          action: STATE_SET "focus" 0.0;
          transition: LINEAR 0.2;
          target: "entry_focus";
       }
       program {
          name: "button_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "focus,out";
+         source: "*";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
          target: "entry_focus";

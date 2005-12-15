@@ -326,8 +326,8 @@ group {
 
       program {
 	 name: "focus_in";
-	 signal: "focus_in";
-	 source: "";
+	 signal: "focus,in";
+	 source: "*";
          action: STATE_SET "focused" 0.0;
 	 transition: DECELERATE 0.2;
 	 target: "focus";
@@ -335,8 +335,8 @@ group {
 
       program {
 	 name: "focus_out";
-	 signal: "focus_out";
-	 source: "";
+	 signal: "focus,out";
+	 source: "*";
          action: STATE_SET "default" 0.0;
 	 transition: ACCELERATE 0.5;
 	 target: "focus";
@@ -345,7 +345,7 @@ group {
       program {
 	 name: "disable";
 	 signal: "disabled";
-	 source: "";
+	 source: "*";
          action: STATE_SET "disabled" 0.0;
 	 target: "button_image";
 	 target: "button_image2";
@@ -354,7 +354,7 @@ group {
       program {
 	 name: "enable";
 	 signal: "enabled";
-	 source: "";
+	 source: "*";
          action: STATE_SET "default" 0.0;
 	 target: "button_image";
 	 target: "button_image2"; 
