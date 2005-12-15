@@ -580,3 +580,152 @@ _ex_image_contrast(Etk_Image *im, int contrast)
 {
    
 }
+
+void
+_ex_image_wallpaper_set(Etk_Image *im)
+{
+   pid_t pid;
+   int w, h;
+   char *file, *dir, *edj_file, *filenoext, *esetroot;
+   char esetroot_opt[] = "-c";
+#if HAVE_ENGRAVE   
+   Engrave_File *edj;
+   Engrave_Image *image;
+   Engrave_Group *grp;
+   Engrave_Part *part;
+   Engrave_Part_State *ps;
+#endif   
+
+   pid = fork();
+   if(!pid)
+     {	
+#if HAVE_E   
+	if (!e_lib_init(getenv("DISPLAY")))
+	  goto PSEUDO;
+	/* make sure we got a file name */
+	if (!im->filename) exit(0);
+	if(strlen(im->filename) <= 4) exit(0);
+	
+	file = ecore_file_get_file(im->filename);
+	dir = ecore_file_get_dir(im->filename);
+	
+	filenoext = _ex_file_strip_extention(im->filename);
+	filenoext = ecore_file_get_file(filenoext);
+	
+	if (strcmp(im->filename + strlen(im->filename) - 4, ".edj") == 0) {
+	   int w, h, num;
+	   char static_bg[PATH_MAX];
+	   char esetroot_s[PATH_MAX*2];
+	   char filename_s[PATH_MAX];
+	   Ecore_X_Window *roots = NULL;
+	   
+	   if (!ecore_x_init(NULL))
+	     exit(0);
+	   
+	   num = 0;
+	   roots = ecore_x_window_root_list(&num);
+	   ecore_x_window_size_get(roots[0], &w, &h);
+	   snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
+	   snprintf(static_bg, PATH_MAX, "edje_thumb %s desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
+	   system(static_bg);
+	   e_lib_background_set(im->filename);
+	   
+	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
+	   system(esetroot_s);
+	   exit(0);
+	}
+   
+#if HAVE_ENGRAVE   
+	/* Set up edj path */
+	edj_file = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/")
+			  + strlen(filenoext) + strlen(".edj") + 1);
+	strcpy(edj_file, getenv("HOME"));
+	strcat(edj_file, "/.e/e/backgrounds/");
+	strcat(edj_file, filenoext);
+	strcat(edj_file, ".edj");
+	
+	/* Determine image width / height */
+	  {
+	     Evas_Object *o;
+	     Ecore_Evas *ee;
+	     
+	     ee = ecore_evas_buffer_new(0, 0);
+	     o = evas_object_image_add(ecore_evas_get(ee));
+	     evas_object_image_file_set(o, im->filename, NULL);
+	     evas_object_image_size_get(o, &w, &h);
+	     evas_object_del(o);
+	     ecore_evas_free(ee);
+	  }
+	
+	/* create the .edj */
+	edj = engrave_file_new();
+	engrave_file_image_dir_set(edj, dir);
+	image = engrave_image_new(file, ENGRAVE_IMAGE_TYPE_COMP, 0);
+	engrave_file_image_add(edj, image);
+	
+	grp = engrave_group_new();
+	engrave_group_name_set(grp, "desktop/background");
+	engrave_file_group_add(edj, grp);
+	
+	part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+	engrave_part_name_set(part, "background_image");
+	engrave_group_part_add(grp, part);
+	
+	ps = engrave_part_state_new();
+	engrave_part_state_name_set(ps, "default", 0.0);
+	engrave_part_state_image_normal_set(ps, image);
+	
+	engrave_part_state_max_size_set(ps, w, h);
+	
+	/* for now, dont differentiate, just center */
+# if 0   
+	switch(e_bg_type) {
+	 case E_BG_CENTER:
+	   engrave_part_state_max_size_set(ps, w, h);
+	   break;
+	   
+	 case E_BG_SCALE:
+	   break;
+	   
+	 case E_BG_FIT:
+	   break;
+	   
+	 case E_BG_TILE:
+	   /* FIXME: This is a temp until dj2 fixes engrave */
+	   //engrave_part_state_max_size_set(ps, w, h);
+	   engrave_part_state_fill_size_relative_set(ps, 0.0, 0.0);
+	   engrave_part_state_fill_size_offset_set(ps, w, h);
+	   break;
+	   
+	 default:
+	   /* FIXME: This is a temp until dj2 fixes engrave */
+	   //engrave_part_state_max_size_set(ps, w, h);
+	   engrave_part_state_fill_size_relative_set(ps, 0.0, 0.0);
+	   engrave_part_state_fill_size_offset_set(ps, w, h);
+	   break;
+	}
+# endif
+	
+	engrave_part_state_add(part, ps);
+	
+	engrave_edj_output(edj, edj_file);
+	engrave_file_free(edj);   
+	
+	/* set the background */
+	e_lib_background_set(edj_file);
+	
+#endif
+	e_lib_shutdown();
+#endif
+	
+PSEUDO:
+	
+	/* If we're using pseudo-trans for eterm, then this will help */
+	esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(im->filename) + 2);
+	snprintf(esetroot, strlen("Esetroot ") + strlen(esetroot_opt) + strlen(im->filename) + 2,
+		 "Esetroot %s %s", esetroot_opt, im->filename);
+	system(esetroot);
+	free(esetroot);
+	exit(0);
+     }
+}

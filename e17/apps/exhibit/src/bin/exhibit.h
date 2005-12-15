@@ -19,6 +19,14 @@
 
 #include "config.h"
 
+#if HAVE_E
+#include <E_Lib.h>
+#endif
+
+#if HAVE_ENGRAVE
+#include <Engrave.h>
+#endif
+
 #define ETK_DEFAULT_ICON_SET_FILE ETK_PACKAGE_DATA_DIR "/stock_icons/default.edj"
 
 typedef enum _Ex_Images

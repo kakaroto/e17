@@ -257,8 +257,14 @@ _ex_menu_darken_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e;
+   Etk_Tree_Row *r;   
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("set as wallpaper\n");
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
+   if(!r) return;   
+   _ex_image_wallpaper_set(e->image);
 }
 
 void

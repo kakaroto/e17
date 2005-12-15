@@ -29,3 +29,25 @@ _ex_file_is_ebg(char *file)
    edje_file_collection_list_free(groups);
    return val;
 }
+
+char *
+_ex_file_strip_extention(char *path) {
+   char *ptr;
+   char *c;
+   char *file;
+   int i;
+   
+   i = 0;
+   ptr = path;
+   c = strrchr(ptr,'.');
+   file = malloc(strlen(path));
+   
+   while(ptr != c) {
+      file[i] = *ptr;
+      ptr++;
+      i++;
+   }
+   
+   file[i] = '\0';
+   return file;
+}
