@@ -11,9 +11,11 @@ entropy_config* entropy_config_init(entropy_core* core) {
 	struct stat config_dir_stat;
 	int i;
 
-	i = strlen(entropy_core_home_dir_get() + strlen("/.e/apps/entropy"));
+	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/apps/entropy") + 2;
 	config->config_dir = entropy_malloc(i * sizeof(char));
 	snprintf(config->config_dir, i, "%s/%s", entropy_core_home_dir_get(), "/.e/apps/entropy");
+
+	printf("Config dir is: '%s'\n", config->config_dir);
 
 	config->config_dir_and_file = entropy_malloc((strlen(config->config_dir) * sizeof(char)) + (13 * sizeof(char)));
 	snprintf(config->config_dir_and_file, strlen(config->config_dir) + 13, "%s/%s", config->config_dir, "entropy.cfg");
