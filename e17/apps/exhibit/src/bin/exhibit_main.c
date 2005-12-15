@@ -422,6 +422,7 @@ _ex_main_window_show(char *dir)
    
    e->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
+   etk_window_wmclass_set(ETK_WINDOW(e->win), "Exhibit", "Exhibit");
    etk_window_resize(ETK_WINDOW(e->win), WINDOW_WIDTH, WINDOW_HEIGHT);   
    etk_signal_connect("delete_event", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_deleted_cb), e);
 
