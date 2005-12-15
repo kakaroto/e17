@@ -35,6 +35,7 @@ void evfs_cleanup_filereference(evfs_filereference* ref) {
 	if (ref->path) free(ref->path);
 	if (ref->username) free(ref->username);
 	if (ref->password) free(ref->password);
+	free(ref);
 
 }
 
