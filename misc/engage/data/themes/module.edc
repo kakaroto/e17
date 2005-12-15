@@ -396,11 +396,11 @@ group {
 	    visible:  0;
 	     rel1 {
 	        relative: 0.0 0.0;
-	        offset:   -2   -2;
+	        offset:   -3   -3;
 	     }
 	     rel2 {
 	         relative: 1.0 1.0;
-	         offset:   1   1;
+	         offset:   2   2;
 	     }
 	     color: 255 255 255 0;
 	  }
@@ -409,11 +409,11 @@ group {
 	     visible:  1;
 	     rel1 {
 	        relative: 0.0  0.0;
-	        offset:   -2   -2;
+	        offset:   -3   -3;
 	     }
 	     rel2 {
 	        relative: 1.0  1.0;
-	        offset:   1    1;
+	        offset:   2    2;
 	     }
 	     color: 255 255 255 255;
          }
@@ -426,11 +426,13 @@ group {
 	    state:    "default" 0.0;
 	    rel1 {
 	       relative: 0.5 1.0;
-	       offset:   -5  -10;
+	       offset:   -5  -11;
+	       to: "pip_clip";
 	    }
 	    rel2 {
 	       relative: 0.5 1.0;
-	       offset:   4   0;
+	       offset:   4   -1;
+	       to: "pip_clip";
 	    }
 	    image {
 	       normal: "running_bottom.png";
@@ -444,11 +446,13 @@ group {
             state:    "top" 0.0;
             rel1 {
                relative: 0.5 0.0;
-               offset:   -5   -1;
+               offset:   -5   0;
+	       to: "pip_clip";
             }
             rel2 {
                relative: 0.5 0.0;
-               offset:   4   9;
+               offset:   4   10;
+	       to: "pip_clip";
             }
             image {
                normal: "running_top.png";
@@ -462,11 +466,13 @@ group {
             state:    "left" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset:   -1  -5;
+               offset:   0  -5;
+	       to: "pip_clip";
             }
             rel2 {
                relative: 0.0 0.5;
-               offset:   9   4;
+               offset:   10   4;
+	       to: "pip_clip";
             }
             image {
                normal: "running_left.png";
@@ -480,11 +486,13 @@ group {
             state:    "right" 0.0;
             rel1 {
                relative: 1.0 0.5;
-               offset:   -10 -5;
+               offset:   -11 -5;
+	       to: "pip_clip";
             }
             rel2 {
                relative: 1.0 0.5;
-               offset:   0   4;
+               offset:   -1   4;
+	       to: "pip_clip";
             }
             image {
                normal: "running_right.png";
