@@ -92,7 +92,9 @@ ewl_widget_init(Ewl_Widget * w)
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
 				ewl_widget_disable_cb, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_mouse_in_cb,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_focus_in_cb,
+				NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_focus_out_cb,
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_mouse_out_cb,
 				NULL);
@@ -2181,6 +2183,38 @@ ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, "widget");
 
 	ewl_widget_state_set(w, "disabled");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_widget_state_set(w, "focus,in");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_widget_state_set(w, "focus,out");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

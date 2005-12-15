@@ -9,7 +9,7 @@ static Ewl_Embed *ewl_embed_active_embed = NULL;
 
 static void ewl_embed_smart_add_cb(Evas_Object *obj);
 static void ewl_embed_smart_del_cb(Evas_Object *obj);
-static void ewl_embed_smart_layer_set_cb(Evas_Object *obj, int l);
+static void ewl_embed_smart_layer_set_cb(void *data, Evas_Object *obj, int l);
 static void ewl_embed_smart_layer_adjust_cb(Evas_Object *obj);
 static void ewl_embed_smart_layer_adjust_rel_cb(Evas_Object *obj,
 						Evas_Object *above);
@@ -157,7 +157,7 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_windo
 
 	if (!embedded_smart) {
 		embedded_smart = evas_smart_new(name, ewl_embed_smart_add_cb,
-			ewl_embed_smart_del_cb, ewl_embed_smart_layer_set_cb,
+			ewl_embed_smart_del_cb, NULL,
 			ewl_embed_smart_layer_adjust_cb,
 			ewl_embed_smart_layer_adjust_cb,
 			ewl_embed_smart_layer_adjust_rel_cb,
@@ -175,6 +175,9 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_windo
 	}
 
 	emb->smart = evas_object_smart_add(emb->evas, embedded_smart);
+	evas_object_intercept_layer_set_callback_add(emb->smart,
+						ewl_embed_smart_layer_set_cb,
+						NULL);
 	evas_object_smart_data_set(emb->smart, emb);
 
 	w = EWL_WIDGET(emb);
@@ -1264,7 +1267,6 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 
 	if (embed->last.focused)
 	{
-		ewl_widget_state_set(embed->last.focused, "unfocused");
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
 	}
 
@@ -1272,7 +1274,6 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 
 	if (embed->last.focused)
 	{
-		ewl_widget_state_set(embed->last.focused, "focused");
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_IN);
 	}
 
@@ -1530,7 +1531,7 @@ ewl_embed_smart_del_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_layer_set_cb(Evas_Object *obj, int l)
+ewl_embed_smart_layer_set_cb(void *data __UNUSED__, Evas_Object *obj, int l)
 {
 	Ewl_Embed *emb;
 

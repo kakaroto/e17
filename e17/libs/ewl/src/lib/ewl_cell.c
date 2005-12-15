@@ -53,6 +53,8 @@ ewl_cell_init(Ewl_Cell *cell)
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			    ewl_cell_configure_cb, NULL);
+	ewl_container_callback_notify(EWL_CONTAINER(cell), EWL_CALLBACK_FOCUS_IN);
+	ewl_container_callback_notify(EWL_CONTAINER(cell), EWL_CALLBACK_FOCUS_OUT);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

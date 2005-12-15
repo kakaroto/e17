@@ -78,6 +78,8 @@ ewl_button_init(Ewl_Button *b)
 	ewl_button_stock_type_set(b, EWL_STOCK_NONE);
 
 	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_VERTICAL);
+	ewl_container_callback_notify(EWL_CONTAINER(b), EWL_CALLBACK_FOCUS_IN);
+	ewl_container_callback_notify(EWL_CONTAINER(b), EWL_CALLBACK_FOCUS_OUT);
 
 	b->body = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(b), b->body);
