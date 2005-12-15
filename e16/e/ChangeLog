@@ -3662,3 +3662,20 @@ Remember various flags.
 Fix non-opaque moves across desk switch.
 Fix incorrect or invalid background pixmaps in certain situations.
 
+
+-------------------------------------------------------------------------------
+
+Fri Dec 16 00:05:43 CET 2005
+(Kim)
+
+--- 0.16.8 pre1 ---
+Add show desktop IPC command ("desk clear").
+Abort fadeout if geometry is changed while unmapped.
+Use per desk background window.
+Fix setting no background.
+Fix bug in setting solid color bg.
+Fix bug when window is damaged and sharp shadows are enabled.
+Fix destruction of desk background window and composite update on desk switch.
+Drop obsolete man page until somebody bothers to update it.
+Fix pointer focus on desk switch.
+
