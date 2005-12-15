@@ -1023,7 +1023,8 @@ _engage_icon_find(Engage_Bar *eb, E_App *a)
 
 /* FIXME - this could be slow - is there a reason we need to check the path -
  * why would the other two fail if we are referencing the same eap? */
-	if (!strcmp(((E_App *)ic->app)->path, a->path)) return ic;
+	if (((E_App *) ic->app)->path && a->path &&
+	    !strcmp(((E_App *)ic->app)->path, a->path)) return ic;
      }
    return NULL;
 }
