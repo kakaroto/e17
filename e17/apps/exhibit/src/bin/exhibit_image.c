@@ -587,7 +587,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
    pid_t pid;
    int w, h;
    char *file, *dir, *edj_file, *filenoext, *esetroot;
-   char esetroot_opt[] = "-c";
+   char esetroot_opt[] = "-s";
 #if HAVE_ENGRAVE   
    Engrave_File *edj;
    Engrave_Image *image;
