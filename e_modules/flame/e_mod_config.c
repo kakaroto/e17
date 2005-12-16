@@ -75,7 +75,7 @@ static Evas_Object
    E_Radio_Group *rg;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("Palette Type"), 0);
+   of = e_widget_framelist_add(evas, _("Flame Color"), 0);
    rg = e_widget_radio_group_new(&(cfdata->palette));
    ob = e_widget_radio_add(evas, _("Gold"), GOLD_PALETTE ,rg);
    e_widget_framelist_object_append(of, ob);
