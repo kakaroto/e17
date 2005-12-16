@@ -151,7 +151,7 @@ static Screen *_screen_init(E_Module *m)
 # endif
 #endif
 	e->conf->location = (char *)evas_stringshare_add(e_user_homedir_get());
-	e->conf->filename = NULL;
+	e->conf->filename = (char *)evas_stringshare_add("");
 #ifdef HAVE_IMPORT
 	e->conf->import.use_img_border = 1;
 	e->conf->import.use_dither = 1;
