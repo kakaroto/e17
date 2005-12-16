@@ -436,7 +436,7 @@ _ex_main_window_show(char *dir)
    e->vpaned = etk_vpaned_new();
    etk_paned_add1(ETK_PANED(e->hpaned), e->vpaned);
    
-   e->table = etk_table_new(4, 5, FALSE);
+   e->table = etk_table_new(4, 4, FALSE);
    etk_paned_add1(ETK_PANED(e->vpaned), e->table);
 
    e->menu_bar = etk_menu_bar_new();
