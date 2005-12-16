@@ -9,6 +9,7 @@ config.log
 config.status
 config.sub
 configure
+exhibit_docs.tar.gz
 depcomp
 install-sh
 libtool
