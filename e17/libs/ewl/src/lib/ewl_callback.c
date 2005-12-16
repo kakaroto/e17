@@ -182,7 +182,7 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 	DCHECK_PARAM_PTR_RET("cb", cb, 0);
 	DCHECK_TYPE_RET("w", w, "widget", 0);
 
-	if (EWL_CALLBACK_LEN(w, t) == 65536) {
+	if (EWL_CALLBACK_LEN(w, t) == 65535) {
 		DERROR("Maximum number of callbacks of one type exceeded on a widget\n");
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}

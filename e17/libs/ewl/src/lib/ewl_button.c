@@ -261,13 +261,21 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	event = ev;
-
 	if ((!strcmp(event->keyname, "Return")) 
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
 			|| (!strcmp(event->keyname, "KP_Enter"))
-			|| (!strcmp(event->keyname, "Space")))
-		printf("BUTTON PRESS\n");
+			|| (!strcmp(event->keyname, " ")))
+	{
+		Ewl_Event_Mouse_Up e;
+
+		e.x = 0;
+		e.y = 0;
+		e.button = 1;
+		e.modifiers = 0;
+
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED, &e);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
