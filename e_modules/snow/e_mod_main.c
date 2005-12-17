@@ -14,7 +14,7 @@ static E_Menu     *_snow_config_menu_new(Snow *snow);
 static int         _snow_cb_animator(void *data);
 static void        _snow_trees_load(Snow *snow);
 static void        _snow_flakes_load(char type, Snow *snow);
-static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+static void        _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
@@ -24,7 +24,7 @@ E_Module_Api e_modapi =
 };
 
 void *
-  e_modapi_init(E_Module *m)
+e_modapi_init(E_Module *m)
 {
    Snow *snow;
 
@@ -34,7 +34,7 @@ void *
 }
 
 int
-  e_modapi_shutdown(E_Module *m)
+e_modapi_shutdown(E_Module *m)
 {
    Snow *snow;
 
@@ -53,7 +53,7 @@ int
 }
 
 int
-  e_modapi_save(E_Module *m)
+e_modapi_save(E_Module *m)
 {
    Snow *snow;
 
@@ -64,23 +64,36 @@ int
 }
 
 int
-  e_modapi_info(E_Module *m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 int
-  e_modapi_about(E_Module *m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Snow Module"),
 			_("This is a snow module that may replace xsnow."));
    return 1;
 }
 
+int
+e_modapi_config(E_Module *m) 
+{
+   Snow *s;
+   E_Container *con;
+   
+   s = m->data;
+   if (!s) return 0;
+   con = e_container_current_get(e_manager_current_get());
+   e_int_config_snow(con, s);
+   return 1;
+}
+
 /* module private routines */
 static Snow *
-  _snow_init(E_Module *m)
+_snow_init(E_Module *m)
 {
    Snow *snow;
    Evas_List *managers, *l, *l2;
@@ -138,7 +151,7 @@ static Snow *
 }
 
 static void
-  _snow_trees_free(Snow *snow)
+_snow_trees_free(Snow *snow)
 {
    while (snow->trees)
      {
@@ -151,7 +164,7 @@ static void
 }
 
 static void
-  _snow_flakes_free(Snow *snow)
+_snow_flakes_free(Snow *snow)
 {
    while (snow->flakes)
      {
@@ -165,7 +178,7 @@ static void
 }
 
 static void
-  _snow_shutdown(Snow *snow)
+_snow_shutdown(Snow *snow)
 {
    free(snow->conf);
    E_CONFIG_DD_FREE(snow->conf_edd);
@@ -184,7 +197,7 @@ static void
 }
 
 static E_Menu *
-  _snow_config_menu_new(Snow *snow)
+_snow_config_menu_new(Snow *snow)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -198,7 +211,7 @@ static E_Menu *
 }
 
 static void
-  _snow_canvas_reset(Snow *snow)
+_snow_canvas_reset(Snow *snow)
 {
    _snow_trees_free(snow);
    _snow_flakes_free(snow);
@@ -210,7 +223,7 @@ static void
 }
 
 static void
-  _snow_trees_load(Snow *snow)
+_snow_trees_load(Snow *snow)
 {
    Evas_Object *o;
    int tw, th, i;
@@ -242,7 +255,7 @@ static void
 }
 
 static void
-  _snow_flakes_load(char type, Snow *snow)
+_snow_flakes_load(char type, Snow *snow)
 {
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
@@ -295,7 +308,7 @@ static void
 }
 
 static int
-  _snow_cb_animator(void *data)
+_snow_cb_animator(void *data)
 {
    Snow *snow;
    Evas_List *next;
@@ -321,7 +334,8 @@ static int
    return 1;
 }
 
-static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+static void 
+_snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Snow *s;
    E_Container *con;
@@ -332,7 +346,8 @@ static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    e_int_config_snow(con, s);
 }
 
-void _snow_cb_config_updated(void *data)
+void 
+_snow_cb_config_updated(void *data)
 {
    Snow *s;
 

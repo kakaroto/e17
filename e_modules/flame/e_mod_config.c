@@ -7,9 +7,6 @@ typedef struct _Cfg_File_Data Cfg_File_Data;
 
 struct _cfdata 
 {
-   Flame *fl;
-   
-   /* Basic */
    int palette;
 };
 
@@ -26,15 +23,11 @@ static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-Flame *f = NULL;
-
 void
 e_int_config_flame(E_Container *con, Flame *fl) 
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;
-   
-   f = fl;
    
    v.create_cfdata = _create_data;
    v.free_cfdata = _free_data;
@@ -47,7 +40,7 @@ e_int_config_flame(E_Container *con, Flame *fl)
 }
 
 static void 
-_fill_data(CFData *cfdata) 
+_fill_data(Flame *f, CFData *cfdata) 
 {
    cfdata->palette = f->conf->palette_type;
 }
@@ -56,9 +49,11 @@ static void
 *_create_data(E_Config_Dialog *cfd) 
 {
    CFData *cfdata;
+   Flame *f;
    
+   f = cfd->data;
    cfdata = E_NEW(CFData, 1);
-   _fill_data(cfdata);
+   _fill_data(f, cfdata);
    return cfdata;
 }
 
@@ -90,6 +85,9 @@ static Evas_Object
 static int
 _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
+   Flame *f;
+   
+   f = cfd->data;
    e_border_button_bindings_ungrab_all();
    switch (cfdata->palette) 
      {

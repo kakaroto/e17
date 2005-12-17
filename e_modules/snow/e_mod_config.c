@@ -11,7 +11,6 @@ typedef struct _Cfg_File_Data Cfg_File_Data;
 
 struct _cfdata 
 {   
-   /* Basic */
    int show_trees;
    int density;
 };
@@ -29,15 +28,12 @@ static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-Snow *sn = NULL;
-
 void
 e_int_config_snow(E_Container *con, Snow *s) 
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;
    
-   sn = s;
    v.create_cfdata = _create_data;
    v.free_cfdata = _free_data;
    v.basic.apply_cfdata = _basic_apply_data;
@@ -49,7 +45,7 @@ e_int_config_snow(E_Container *con, Snow *s)
 }
 
 static void 
-_fill_data(CFData *cfdata) 
+_fill_data(Snow *sn, CFData *cfdata) 
 {
    cfdata->show_trees = sn->conf->show_trees;
    switch (sn->conf->flake_count) 
@@ -72,9 +68,11 @@ static void
 *_create_data(E_Config_Dialog *cfd) 
 {
    CFData *cfdata;
+   Snow *s;
    
+   s = cfd->data;
    cfdata = E_NEW(CFData, 1);
-   _fill_data(cfdata);
+   _fill_data(s, cfdata);
    return cfdata;
 }
 
@@ -113,6 +111,9 @@ static Evas_Object
 static int
 _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
+   Snow *sn;
+   
+   sn = cfd->data;
    e_border_button_bindings_ungrab_all();
    switch (cfdata->density) 
      {

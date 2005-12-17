@@ -95,6 +95,19 @@ int e_modapi_about(E_Module *m)
    return 1;
 }
 
+int
+e_modapi_config(E_Module *m) 
+{
+   Screen *s;
+   E_Container *con;
+   
+   s = m->data;
+   if (!s) return 0;
+   con = e_container_current_get(e_manager_current_get());
+   e_int_config_screenshot(con, s);
+   return 1;
+}
+
 static Screen *_screen_init(E_Module *m)
 {
    Screen *e;

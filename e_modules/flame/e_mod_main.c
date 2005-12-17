@@ -98,6 +98,19 @@ e_modapi_about (E_Module *m)
    return 1;
 }
 
+int
+e_modapi_config(E_Module *m) 
+{
+   Flame *f;
+   E_Container *con;
+   
+   f = m->data;
+   if (!f) return 0;
+   con = e_container_current_get(e_manager_current_get());
+   e_int_config_flame(con, f);
+   return 1;
+}
+
 /* module private routines */
 static Flame *
 _flame_init (E_Module *m)
@@ -188,7 +201,7 @@ _flame_config_menu_new (Flame *f)
    
    mn = e_menu_new ();
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_label_set(mi, _("Config Dialog"));
    e_menu_item_callback_set(mi, _flame_menu_cb_configure, f);
    f->config_menu = mn;
    

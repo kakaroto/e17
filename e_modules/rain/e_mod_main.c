@@ -74,6 +74,19 @@ int e_modapi_about(E_Module *m)
    return 1;
 }
 
+int
+e_modapi_config(E_Module *m) 
+{
+   Rain *r;
+   E_Container *con;
+   
+   r = m->data;
+   if (!r) return 0;
+   con = e_container_current_get(e_manager_current_get());
+   e_int_config_rain(con, r);
+   return 1;
+}
+
 /* module private routines */
 static Rain *_rain_init(E_Module *m)
 {

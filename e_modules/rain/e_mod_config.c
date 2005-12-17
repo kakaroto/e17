@@ -11,7 +11,6 @@ typedef struct _Cfg_File_Data Cfg_File_Data;
 
 struct _cfdata
 {
-   /* Basic */
    int show_clouds;
    int density;
 };
@@ -29,15 +28,12 @@ static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-Rain *rn = NULL;
-
 void
-  e_int_config_rain(E_Container *con, Rain *r)
+e_int_config_rain(E_Container *con, Rain *r)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;
 
-   rn = r;
    v.create_cfdata = _create_data;
    v.free_cfdata = _free_data;
    v.basic.apply_cfdata = _basic_apply_data;
@@ -49,7 +45,7 @@ void
 }
 
 static void
-  _fill_data(CFData *cfdata)
+_fill_data(Rain *rn, CFData *cfdata)
 {
    cfdata->show_clouds = rn->conf->show_clouds;
    switch (rn->conf->cloud_count)
@@ -69,23 +65,25 @@ static void
 }
 
 static void
-  *_create_data(E_Config_Dialog *cfd)
+*_create_data(E_Config_Dialog *cfd)
 {
    CFData *cfdata;
-
+   Rain *r;
+   
+   r = cfd->data;
    cfdata = E_NEW(CFData, 1);
-   _fill_data(cfdata);
+   _fill_data(r, cfdata);
    return cfdata;
 }
 
 static void
-  _free_data(E_Config_Dialog *cfd, CFData *cfdata)
+_free_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
    free(cfdata);
 }
 
 static Evas_Object
-  *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 {
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
@@ -111,8 +109,11 @@ static Evas_Object
 }
 
 static int
-  _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
+   Rain *rn;
+   
+   rn = cfd->data;
    e_border_button_bindings_ungrab_all();
    switch (cfdata->density)
      {
