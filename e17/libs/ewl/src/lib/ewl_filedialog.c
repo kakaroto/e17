@@ -90,7 +90,6 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	/* Buttons */
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(fd), o);
-	ewl_widget_internal_set(o, TRUE);
 	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_OPEN);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					ewl_filedialog_click_cb, fd);
@@ -99,7 +98,6 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(fd), o);
-	ewl_widget_internal_set(o, TRUE);
 	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_CANCEL);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					ewl_filedialog_click_cb, fd);
