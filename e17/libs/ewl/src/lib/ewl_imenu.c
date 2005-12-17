@@ -64,6 +64,8 @@ ewl_imenu_init(Ewl_Imenu *menu)
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+	ewl_callback_prepend(menu->base.popup, EWL_CALLBACK_DESTROY,
+				ewl_imenu_popup_destroy_cb, menu);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -112,6 +114,21 @@ ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					   menu->base.popup); 
 	}
 	ewl_widget_show(menu->base.popup);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_imenu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+				void *data)
+{
+	Ewl_Imenu *menu;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	menu = data;
+	if (menu->base.popup) menu->base.popup = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
