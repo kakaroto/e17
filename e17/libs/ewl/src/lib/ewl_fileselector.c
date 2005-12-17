@@ -340,9 +340,6 @@ static char *ewl_fileselector_path_up_get(char *path)
 	if (path[l] == '/')
 		l--;
 
-	if (l < 0)
-		DRETURN_PTR(strdup("/"), DLEVEL_STABLE);
-
 	while ((l >= 0) && (path[l] != '/'))
 		l--;
 

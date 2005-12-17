@@ -28,6 +28,7 @@ struct _ewl_config
 		int             cache;
 		int             cclass_override;
 		int             print_keys;
+		int             print_signals;
 	} theme;
 };
 

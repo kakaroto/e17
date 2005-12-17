@@ -42,6 +42,7 @@ struct Ewl_Box
 	int             spacing; /**< Space between each widget in the box */
 
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
+	/* int shows; */
 };
 
 Ewl_Widget     *ewl_box_new(void);

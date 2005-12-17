@@ -774,6 +774,8 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height + ch);
 	}
 
+	/* printf("Box %p children visible %d after show\n", c, ++EWL_BOX(c)->shows); */
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -836,6 +838,8 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), height - space);
 		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	}
+
+	/* printf("Box %p children visible %d after hide\n", c, --EWL_BOX(c)->shows); */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

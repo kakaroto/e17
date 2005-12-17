@@ -18,6 +18,7 @@ static unsigned int debug_bt = 0;
 static unsigned int use_engine = EWL_ENGINE_ALL;
 static unsigned int phase_status = 0;
 static unsigned int print_theme_keys = 0;
+static unsigned int print_theme_signals = 0;
 static unsigned int print_gc_reap = 0;
 static unsigned int debug_level = 0;
 
@@ -212,6 +213,9 @@ ewl_init(int *argc, char **argv)
 
 	if (print_theme_keys)
 		ewl_config.theme.print_keys = print_theme_keys;
+
+	if (print_theme_signals)
+		ewl_config.theme.print_signals = print_theme_signals;
 
 	if (debug_level) {
 		ewl_config.debug.enable = 1;
@@ -509,6 +513,10 @@ ewl_init_parse_options(int *argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
 			print_theme_keys = 1;
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
+			print_theme_signals = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {

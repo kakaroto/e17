@@ -96,6 +96,8 @@ ewl_widget_init(Ewl_Widget * w)
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_focus_out_cb,
 				NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_mouse_in_cb,
+				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_mouse_out_cb,
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -346,6 +348,9 @@ ewl_widget_hide(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
+
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+		ewl_realize_cancel_request(w);
 
 	/*
 	 * Already hidden? Then no work to be done.
@@ -663,8 +668,11 @@ ewl_widget_state_set(Ewl_Widget *w, char *state)
 	 */
 	w->bit_state = ecore_string_instance(state);
 
-	if (w->theme_object)
+	if (w->theme_object) {
+		if (ewl_config.theme.print_signals)
+			printf("Emitting: %s\n", state);
 		edje_object_signal_emit(w->theme_object, state, "EWL");
+	}
 
 	ewl_callback_call(w, EWL_CALLBACK_STATE_CHANGED);
 
@@ -1737,9 +1745,6 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
-		ewl_realize_cancel_request(w);
-
 	ewl_widget_obscure(w);
 
 	/*
@@ -1750,7 +1755,8 @@ ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 		ewl_container_child_hide_call(pc, w);
 
 	emb = ewl_embed_widget_find(w);
-	ewl_embed_info_widgets_cleanup(emb, w);
+	if (emb)
+		ewl_embed_info_widgets_cleanup(emb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2082,15 +2088,20 @@ void
 ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
+	Ewl_Container *pc;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-        /*
-         * We can just use an obscure since it's a very similar operation.
-         * Keep this event for widgets that keep extra visual data around.
-         */
-        ewl_widget_obscure(w);
+	ewl_widget_obscure(w);
+
+	/*
+	 * Notify parent of hidden state.
+	 */
+	pc = EWL_CONTAINER(w->parent);
+	if (pc)
+		ewl_container_child_hide_call(pc, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -317,7 +317,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
 	ecore_list_remove(pc->children);
-	if (VISIBLE(child))
+	if (VISIBLE(child) && REALIZED(child))
 		ewl_container_child_hide_call(pc, child);
 	ewl_container_child_remove_call(pc, child);
 
@@ -866,8 +866,9 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-	if (c->child_remove && VISIBLE(w))
+	if (c->child_remove)
 		c->child_remove(c, w);
+	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -887,9 +888,8 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-	if (c->child_show && VISIBLE(w) && REALIZED(w)) {
+	if (c->child_show)
 		c->child_show(c, w);
-	}
 
 	/*
 	 * Only show it if there are visible children.
@@ -917,7 +917,7 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-	if (c->child_hide && !VISIBLE(w) && REALIZED(w))
+	if (c->child_hide)
 		c->child_hide(c, w);
 
 	if (c->clip_box) {
