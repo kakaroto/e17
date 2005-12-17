@@ -597,7 +597,11 @@ _engage_bar_new(Engage_Bar *eb, E_Container *con)
    evas_event_freeze(eb->evas);
    o = edje_object_add(eb->evas);
    eb->bar_object = o;
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "main");
+   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+       "module/engage/main"))
+     edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
+	 "module/engage/main");
+
    evas_object_show(o);
    edje_object_size_min_calc(o, &eb->bw, &eb->bh);
 
@@ -962,12 +966,14 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    edje_extern_object_max_size_set(o, size, size);
    evas_object_intercept_move_callback_add(o, _engage_icon_cb_intercept_move, ic);
    evas_object_intercept_resize_callback_add(o, _engage_icon_cb_intercept_resize, ic);
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "icon");
+   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+       "module/engage/icon"))
+     edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
+	 "module/engage/icon");
    evas_object_show(o);
 
-   o = edje_object_add(eb->evas);
+   o = e_app_icon_add(eb->evas, a);
    ic->icon_object = o;
-   edje_object_file_set(o, ic->app->path, "icon");
    edje_object_part_swallow(ic->bg_object, "item", o);
    evas_object_pass_events_set(o, 1);
    evas_object_show(o);
@@ -1062,11 +1068,13 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    evas_object_intercept_resize_callback_add(o, _engage_app_icon_cb_intercept_resize, ai);
    evas_object_intercept_show_callback_add(o, _engage_app_icon_cb_intercept_show, ai);
    evas_object_intercept_hide_callback_add(o, _engage_app_icon_cb_intercept_hide, ai);
-   edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj", "icon");
+   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+      "module/engage/icon"))
+     edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
+	 "engage/module/icon");
 
-   o = edje_object_add(ic->eb->evas);
+   o = e_app_icon_add(ic->eb->evas, ic->app);
    ai->icon_object = o;
-   edje_object_file_set(o, ic->app->path, "icon");
    edje_object_part_swallow(ai->bg_object, "item", o);
    evas_object_pass_events_set(o, 1);
 

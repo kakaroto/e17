@@ -15,7 +15,7 @@ fonts {
 
 collections {
 group {
-   name: "main";
+   name: "module/engage/main";
    script {
       public orient;
    }
@@ -334,7 +334,7 @@ group {
    }
 }
 group {
-   name: "icon";
+   name: "module/engage/icon";
    parts {
       part {
 	 name:          "clip";
