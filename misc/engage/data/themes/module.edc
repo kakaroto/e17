@@ -228,7 +228,7 @@ group {
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
-	       offset:   -1   -1;
+	       offset:   -1   0;
 	    }
 	    image {
 	       normal: "over_h.png";
@@ -242,7 +242,7 @@ group {
 	    state:    "top" 0.0;
 	    rel1 {
 	       relative: 0.0  0.0;
-	       offset:   0    0;
+	       offset:   0    -1;
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
@@ -260,7 +260,7 @@ group {
 	    state:    "left" 0.0;
 	    rel1 {
 	       relative: 0.0  0.0;
-	       offset:   0    0;
+	       offset:   -1   0;
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
@@ -282,7 +282,7 @@ group {
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
-	       offset:   -1   -1;
+	       offset:   0    -1;
 	    }
 	    image {
 	       normal: "over_v.png";
