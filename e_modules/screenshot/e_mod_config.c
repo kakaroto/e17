@@ -59,15 +59,12 @@ static int 	     _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object   *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int 	     _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-Screen *sc = NULL;
-
 /* Config Calls */
-void e_int_config_screenshot(E_Container *con, Screen *s)
+void 
+e_int_config_screenshot(E_Container *con, Screen *s)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;
-
-   sc = s;
 
    /* methods */
    v.create_cfdata           = _create_data;
@@ -82,7 +79,7 @@ void e_int_config_screenshot(E_Container *con, Screen *s)
 }
 
 static void
-  _fill_data(CFData *cfdata)
+_fill_data(Screen *sc, CFData *cfdata)
 {
    if (sc->conf->use_import == 1)
      {
@@ -92,6 +89,7 @@ static void
      {
 	cfdata->method = S_METHOD_SCROT;
      }
+
    cfdata->delay_time = sc->conf->delay_time;
 
    if (sc->conf->location != NULL)
@@ -130,31 +128,35 @@ static void
 }
 
 static void *
-  _create_data(E_Config_Dialog *cfd)
+_create_data(E_Config_Dialog *cfd)
 {
    CFData *cfdata;
-
+   Screen *s;
+   
+   s = cfd->data;
    cfdata = E_NEW(CFData, 1);
-   _fill_data(cfdata);
+   _fill_data(s, cfdata);
 
    return cfdata;
 }
 
 static void
-  _free_data(E_Config_Dialog *cfd, CFData *cfdata)
+_free_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
    /* Free the cfdata */
    free(cfdata);
 }
 
 static Evas_Object *
-  _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 {
    Evas_Object *o, *of, *ob, *ot;
    E_Radio_Group *rg;
-
-   //_fill_data(cfdata);
-
+   Screen *s;
+   
+   s = cfd->data;
+   _fill_data(s, cfdata);
+	
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
 
@@ -168,7 +170,7 @@ static Evas_Object *
    e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 # endif
 #else
-		/* Dont need to add an option as we only have one to use */
+   /* Dont need to add an option as we only have one to use */
 #endif
 
    ob = e_widget_label_add(evas, _("Delay Time:"));
@@ -205,11 +207,14 @@ static Evas_Object *
 }
 
 static int
-  _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
    char tmp[4096];
    int length;
-
+   Screen *sc;
+   
+   sc = cfd->data;
+	
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
 #ifdef HAVE_IMPORT
@@ -263,12 +268,14 @@ static int
 }
 
 static Evas_Object *
-  _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 {
    Evas_Object *o, *ob, *of, *ot;
    E_Radio_Group *rg;
-
-   o = NULL;
+   Screen *s;
+	
+   s = cfd->data;
+   _fill_data(s, cfdata);
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
@@ -284,7 +291,7 @@ static Evas_Object *
 
 # endif
 #else
-		/* Dont need to add an option as we only have one to use */
+   /* Dont need to add an option as we only have one to use */
 #endif
 
    ob = e_widget_label_add(evas, _("Delay Time:"));
@@ -318,7 +325,6 @@ static Evas_Object *
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 #ifdef HAVE_IMPORT
-   //o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Import Options"), 0);
    ob = e_widget_check_add(evas, _("Include Image Border"), &(cfdata->import.use_img_border));
    e_widget_framelist_object_append(of, ob);
@@ -337,7 +343,6 @@ static Evas_Object *
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 #endif
 #ifdef HAVE_SCROT
-   //if (!o) o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Scrot Options"), 0);
    ob = e_widget_check_add(evas, _("Include Image Border"), &(cfdata->scrot.use_img_border));
    e_widget_framelist_object_append(of, ob);
@@ -351,8 +356,11 @@ static Evas_Object *
 }
 
 static int
-  _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
+   Screen *sc;
+   
+   sc = cfd->data;	
    _basic_apply_data(cfd, cfdata);
 
    e_border_button_bindings_ungrab_all();
