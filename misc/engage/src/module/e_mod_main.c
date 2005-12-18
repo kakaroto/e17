@@ -1071,7 +1071,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    if (!e_theme_edje_object_set(o, "theme/modules/engage",
       "module/engage/icon"))
      edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
-	 "engage/module/icon");
+	 "module/engage/icon");
 
    o = e_app_icon_add(ic->eb->evas, ic->app);
    ai->icon_object = o;
