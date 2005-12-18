@@ -49,6 +49,7 @@ struct _Engage_Tray
    int          icons;
    Evas_List   *wins;
    Ecore_X_Window win;
+   Ecore_X_Time select_time;
 
    Ecore_Event_Handler *msg_handler;
    Ecore_Event_Handler *dst_handler;

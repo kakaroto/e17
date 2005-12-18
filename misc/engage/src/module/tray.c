@@ -71,17 +71,26 @@ _engage_tray_active_set(Engage_Bar *eb, int active)
    char buf[32];
    Atom selection_atom;
    Evas_Coord x, y, w, h;
+   Ecore_X_Time time;
 
    win = 0;
    if (active)
-     win = eb->con->bg_win;
+     {
+	win = eb->con->bg_win;
+	time = ecore_x_current_time_get();
+	eb->tray->select_time = time;
+     }
+   else
+     {
+	time = eb->tray->select_time;
+     }
 
    display = ecore_x_display_get();
    root = RootWindow (display, DefaultScreen(display));
 
    snprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", DefaultScreen(display));
    selection_atom = ecore_x_atom_get(buf);
-   XSetSelectionOwner (display, selection_atom, win, CurrentTime);
+   XSetSelectionOwner (display, selection_atom, win, time);
 
    if (active &&
        XGetSelectionOwner (display, selection_atom) == eb->con->bg_win)
@@ -145,6 +154,7 @@ _engage_tray_add(Engage_Bar *eb, Ecore_X_Window win)
   /* we want to insert at the end, so as not to move all icons on each add */
   eb->tray->wins = evas_list_append(eb->tray->wins, (void *)win);
   eb->tray->icons++;
+
   ecore_x_window_resize(win, 24, 24);
 
   ecore_x_window_reparent(win, eb->tray->win, 0, 0);
@@ -193,7 +203,7 @@ _engage_tray_cb_msg(void *data, int type, void *event)
       /* Should proto be set according to clients _XEMBED_INFO? */
       ecore_x_client_message32_send(ev->data.l[2], ecore_x_atom_get("_XEMBED"),
                                   ECORE_X_EVENT_MASK_NONE, CurrentTime,
-                                  XEMBED_EMBEDDED_NOTIFY, 0, eb->con->bg_win, /*proto*/1);                              
+                                  XEMBED_EMBEDDED_NOTIFY, 0, eb->con->bg_win, /*proto*/1);
 
     } else if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_MESSAGE_DATA")) {
       printf("got message\n");
