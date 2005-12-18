@@ -87,7 +87,7 @@ e_modapi_config(E_Module *m)
    s = m->data;
    if (!s) return 0;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_snow(con, s);
+   _config_snow_module(con, s);
    return 1;
 }
 
@@ -343,7 +343,7 @@ _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    s = (Snow *)data;
    if (!s) return;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_snow(con, s);
+   _config_snow_module(con, s);
 }
 
 void 

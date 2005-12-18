@@ -29,7 +29,7 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFDa
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
 void
-e_int_config_snow(E_Container *con, Snow *s) 
+_config_snow_module(E_Container *con, Snow *s) 
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;

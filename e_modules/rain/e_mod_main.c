@@ -83,7 +83,7 @@ e_modapi_config(E_Module *m)
    r = m->data;
    if (!r) return 0;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_rain(con, r);
+   _config_rain_module(con, r);
    return 1;
 }
 
@@ -331,7 +331,7 @@ static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    r = (Rain *)data;
    if (!r) return;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_rain(con, r);
+   _config_rain_module(con, r);
 }
 
 void _rain_cb_config_updated(void *data)
