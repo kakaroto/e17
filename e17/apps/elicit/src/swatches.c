@@ -279,8 +279,6 @@ _elicit_swatches_load_eet(Elicit *el)
   {
     Elicit_Swatch *sw;
   
-    sw = calloc(1, sizeof(Elicit_Swatch));
-  
     snprintf(buf, PATH_MAX, "swatches/%d/name", i);
     ret = eet_read(eet, buf, &size_ret);
     if (ret) {
