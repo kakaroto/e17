@@ -107,7 +107,7 @@ e_modapi_config(E_Module *m)
    f = m->data;
    if (!f) return 0;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_flame(con, f);
+   _config_flame_module(con, f);
    return 1;
 }
 
@@ -722,5 +722,5 @@ _flame_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    f = (Flame *)data;
    if (!f) return;
    /* Call The Config Dialog */
-   e_int_config_flame(f->face->con, f);
+   _config_flame_module(f->face->con, f);
 }
