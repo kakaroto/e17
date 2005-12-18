@@ -13,4 +13,6 @@ char *elicit_theme_find(const char *name);
 
 void elicit_util_shot_save(Elicit *el, const char *filename);
 
+char *elicit_color_rgb_to_hex(int r, int g, int b);
+void elicit_color_hex_to_rgb(char *hex, int *r, int *g, int *b);
 #endif

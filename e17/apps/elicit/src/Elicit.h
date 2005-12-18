@@ -6,9 +6,12 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Config.h>
+#include <Ecore_File.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Esmart/Esmart_Container.h>
+#include <Edb.h>
+#include <Eet.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdlib.h>

@@ -4,6 +4,12 @@
 
 
 void _elicit_swatches_update_scroll_bar(Elicit *el);
+void _elicit_swatches_save_eet(Elicit *el);
+void _elicit_swatches_load_eet(Elicit *el);
+void _elicit_swatches_load_edb(Elicit *el);
+void _elicit_swatches_load_gpl(Elicit *el);
+void _elicit_swatches_save_edb(Elicit *el);
+void _elicit_swatches_save_gpl(Elicit *el);
 
 int
 elicit_swatches_init(Elicit *el)
@@ -13,6 +19,8 @@ elicit_swatches_init(Elicit *el)
     char *dir;
     
     el->swatches.cont = esmart_container_new(el->evas); 
+    esmart_container_move_button_set(el->swatches.cont, 2);
+    esmart_container_callback_order_change_set(el->swatches.cont, (void (*)(void *data))elicit_swatches_save, el);
 
     dir = (char *)edje_object_data_get(el->gui, "swatches.direction");
     if (dir && (dir[0] == 'h' || dir[0] == 'H'))
@@ -58,6 +66,81 @@ elicit_swatches_shutdown(Elicit *el)
 
 void
 elicit_swatches_save(Elicit *el)
+{
+  _elicit_swatches_save_gpl(el);
+}
+
+void
+_elicit_swatches_save_gpl(Elicit *el)
+{
+  Evas_List *l;
+  FILE *f = NULL;
+  char buf[PATH_MAX];
+
+  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.gpl", getenv("HOME"), el->app_name);
+
+  f = fopen(buf, "w");
+ 
+  if (!f) return;
+
+  fprintf(f, "GIMP Palette\nName: Elicit\nColumns: 1\n#\n");
+  for (l = esmart_container_elements_get(el->swatches.cont); l; l = l->next)
+  {
+    Evas_Object *obj;
+    Elicit_Swatch *sw;
+
+    obj = (Evas_Object *)(l->data);
+    sw = evas_object_data_get(obj, "swatch");
+
+    fprintf(f, "%-3d %-3d %-3d %s\n", sw->r, sw->g, sw->b, sw->name);
+  }
+
+  fclose(f);
+}
+
+void
+_elicit_swatches_save_eet(Elicit *el)
+{
+  Evas_List *l;
+  Eet_File *eet;
+  int i = 0;
+  char buf[PATH_MAX];
+  char *hex;
+
+  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.eet", getenv("HOME"), el->app_name);
+
+  eet = eet_open(buf, EET_FILE_MODE_WRITE);
+ 
+  if (!eet) return;
+
+  for (l = esmart_container_elements_get(el->swatches.cont); l; l = l->next)
+  {
+    Evas_Object *obj;
+    Elicit_Swatch *sw;
+
+    obj = (Evas_Object *)(l->data);
+    sw = evas_object_data_get(obj, "swatch");
+
+    snprintf(buf, PATH_MAX, "swatches/%d/name", i);
+    eet_write(eet, buf, sw->name, strlen(sw->name), 1);
+    
+    snprintf(buf, PATH_MAX, "swatches/%d/hex", i);
+    hex = elicit_color_rgb_to_hex(sw->r, sw->g, sw->b);
+    eet_write(eet, buf, hex, strlen(hex), 1);
+    free(hex);
+
+    i++;
+  }
+  
+  snprintf(buf, PATH_MAX, "%d", i);
+  eet_write(eet, "swatches/num", buf, strlen(buf), 1);
+
+  eet_close(eet);
+}
+
+
+void
+_elicit_swatches_save_edb(Elicit *el)
 {
   Evas_List *l;
   E_DB_File *db;
@@ -122,64 +205,138 @@ elicit_swatches_save(Elicit *el)
 void
 elicit_swatches_load(Elicit *el)
 {
+  char buf[PATH_MAX];
+
+  /* upgrade path -- if no gpl file exists, try to load from an old edb file. */
+  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.gpl", getenv("HOME"), el->app_name);
+
+  if (!ecore_file_exists(buf))
+  {
+    _elicit_swatches_load_edb(el);
+    _elicit_swatches_save_gpl(el);
+  }
+  else
+  {
+    _elicit_swatches_load_gpl(el);
+  }
+}
+
+void
+_elicit_swatches_load_gpl(Elicit *el)
+{
+  FILE *f;
+  char buf[PATH_MAX];
+  char *name;
+  int r, g, b;
+
+  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.gpl", getenv("HOME"), el->app_name);
+
+  f = fopen(buf, "r");
+  if (!f) return;
+
+  name = calloc(PATH_MAX, sizeof(char));
+  if (!name) return;
+ 
+  while(fgets(buf, PATH_MAX, f))
+  {
+    if (sscanf(buf, "%3d %3d %3d\t%s\n", &r, &g, &b, name) == 4)
+    {
+      elicit_swatch_new(el, name, r, g, b);
+    }
+  }
+
+  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+  free(name);
+}
+
+
+void
+_elicit_swatches_load_eet(Elicit *el)
+{
+  Eet_File *eet;
+  int num = 0;
+  int i = 0;
+  char buf[PATH_MAX];
+  char *ret = NULL;
+  int size_ret;
+  char *name;
+  int r, g, b;
+
+  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.eet", getenv("HOME"), el->app_name);
+
+  eet = eet_open(buf, EET_FILE_MODE_READ);
+  if (!eet) return;
+  
+  ret = eet_read(eet, "swatches/num", &size_ret);
+  if (ret) {
+    memcpy(buf, ret, size_ret);
+    buf[size_ret] = '\0';
+    num = atoi(buf);
+    free(ret);
+  }
+
+  for (i = 0; i < num; i++)
+  {
+    Elicit_Swatch *sw;
+  
+    sw = calloc(1, sizeof(Elicit_Swatch));
+  
+    snprintf(buf, PATH_MAX, "swatches/%d/name", i);
+    ret = eet_read(eet, buf, &size_ret);
+    if (ret) {
+      memcpy(buf, ret, size_ret);
+      buf[size_ret] = '\0';
+      name = strdup(buf);
+    }
+     
+    snprintf(buf, PATH_MAX, "swatches/%d/hex", i);
+    ret = eet_read(eet, buf, &size_ret);
+    if (ret) {
+      memcpy(buf, ret, size_ret);
+      buf[size_ret] = '\0';
+      elicit_color_hex_to_rgb(buf, &(r), &(g), &(b));
+      free(ret);
+    }
+
+    sw = elicit_swatch_new(el, name, r, g, b);
+  }
+
+  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+  eet_close(eet);
+}
+
+void
+_elicit_swatches_load_edb(Elicit *el)
+{
   E_DB_File *db;
-  int num, ok;
+  int num;
   int i;
   char buf[PATH_MAX];
-  char *theme;
+  char *name;
+  int r, g, b;
 
   snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.db", getenv("HOME"), el->app_name);
 
   db = e_db_open_read(buf);
   if (db)
-    ok = e_db_int_get(db, "/swatches/num", &num);
+    e_db_int_get(db, "/swatches/num", &num);
   else return;
 
   for (i = 0; i < num; i++)
   {
     Elicit_Swatch *sw;
-    Evas_Coord mw, mh;
-  
-    sw = calloc(1, sizeof(Elicit_Swatch));
   
     snprintf(buf, PATH_MAX, "/swatches/%d/name", i);
-    sw->name = e_db_str_get(db, buf);
+    name = e_db_str_get(db, buf);
      
     snprintf(buf, PATH_MAX, "/swatches/%d/r", i);
-    e_db_int_get(db, buf, &(sw->r));
+    e_db_int_get(db, buf, &r);
     snprintf(buf, PATH_MAX, "/swatches/%d/g", i);
-    e_db_int_get(db, buf, &(sw->g));
+    e_db_int_get(db, buf, &g);
     snprintf(buf, PATH_MAX, "/swatches/%d/b", i);
-    e_db_int_get(db, buf, &(sw->b));
-  
-    sw->obj = edje_object_add(el->evas);
-    sw->rect = evas_object_rectangle_add(el->evas);
-  
-    theme = elicit_config_theme_get(el);
-    edje_object_file_set(sw->obj, 
-                         elicit_theme_find(theme),
-                         "swatch");
-    free(theme);
-
-    edje_object_size_min_get(sw->obj, &mw, &mh);
-    if (mw != 0 && mh != 0)
-      evas_object_resize(sw->obj, mw, mh);
-    else
-      evas_object_resize(sw->obj, 12, 12);
-
-    evas_object_show(sw->obj);
-    evas_object_data_set(sw->obj, "swatch", sw);
-    evas_object_data_set(sw->obj, "elicit", el);
-  
-    edje_object_signal_callback_add(sw->obj, "elicit,swatch,load", "", elicit_swatch_load_cb, sw);
-    edje_object_signal_callback_add(sw->obj, "elicit,swatch,del", "", elicit_swatch_del_cb, sw);
-    edje_object_signal_callback_add(sw->obj, "elicit,swatch,name,show", "", elicit_swatch_name_show_cb, sw);
-  
-    evas_object_color_set(sw->rect, sw->r, sw->g, sw->b, 255);
-    evas_object_pass_events_set(sw->rect, 1);
-    evas_object_show(sw->rect);
-    edje_object_part_swallow(sw->obj, "swatch", sw->rect);
-    esmart_container_element_append(el->swatches.cont, sw->obj);
+    e_db_int_get(db, buf, &b);
+ 
+    sw = elicit_swatch_new(el, name, r, g, b);
   }
   el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
   e_db_close(db);
@@ -202,19 +359,46 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
 {
   Elicit *el = data;
   Elicit_Swatch *sw;
-  Evas_Coord mw, mh;
   double length;
   Evas_Coord w, h;
+
+  sw = elicit_swatch_new(el, el->color.hex, el->color.r, el->color.g, el->color.b);
+
+  /* scroll to the end of the list */
+  length = esmart_container_elements_length_get(el->swatches.cont);
+  el->swatches.length = length;
+  evas_object_geometry_get(el->swatches.cont, NULL, NULL, &w, &h);
+  if (el->swatches.dir == CONTAINER_DIRECTION_HORIZONTAL && length > w)
+  {
+    esmart_container_scroll_offset_set(el->swatches.cont,
+                                       w - length - 10 );
+    _elicit_swatches_update_scroll_bar(el);
+  }
+  else if (el->swatches.dir == CONTAINER_DIRECTION_VERTICAL && length > h)
+  {
+    esmart_container_scroll_offset_set(el->swatches.cont,
+                                       h - length - 10 );
+    _elicit_swatches_update_scroll_bar(el);
+  }
+
+  elicit_swatches_save(el);
+}
+
+Elicit_Swatch *
+elicit_swatch_new(Elicit *el, char *name, int r, int g, int b)
+{
+  Elicit_Swatch *sw;
   char *theme;
+  Evas_Coord mw, mh;
 
   sw = calloc(1, sizeof(Elicit_Swatch));
 
   sw->obj = edje_object_add(el->evas);
   sw->rect = evas_object_rectangle_add(el->evas);
-  sw->r = el->color.r;
-  sw->g = el->color.g;
-  sw->b = el->color.b;
-  sw->name = strdup(el->color.hex);
+  sw->r = r;
+  sw->g = g;
+  sw->b = b;
+  sw->name = strdup(name);
 
   theme = elicit_config_theme_get(el);
   edje_object_file_set(sw->obj, 
@@ -241,25 +425,8 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   evas_object_show(sw->rect);
   edje_object_part_swallow(sw->obj, "swatch", sw->rect);
   esmart_container_element_append(el->swatches.cont, sw->obj);
-
-  /* scroll to the end of the list */
-  length = esmart_container_elements_length_get(el->swatches.cont);
-  el->swatches.length = length;
-  evas_object_geometry_get(el->swatches.cont, NULL, NULL, &w, &h);
-  if (el->swatches.dir == CONTAINER_DIRECTION_HORIZONTAL && length > w)
-  {
-    esmart_container_scroll_offset_set(el->swatches.cont,
-                                       w - length - 10 );
-    _elicit_swatches_update_scroll_bar(el);
-  }
-  else if (el->swatches.dir == CONTAINER_DIRECTION_VERTICAL && length > h)
-  {
-    esmart_container_scroll_offset_set(el->swatches.cont,
-                                       h - length - 10 );
-    _elicit_swatches_update_scroll_bar(el);
-  }
-
-  elicit_swatches_save(el);
+  
+  return sw;
 }
 
 void

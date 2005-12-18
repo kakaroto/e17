@@ -8,6 +8,7 @@
 void elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *vv);
 void elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *bb);
 char * elicit_color_rgb_to_hex(int rr, int gg, int bb);
+void elicit_color_hex_to_rgb(char *hex, int *rr, int *gg, int *bb);
 
 void
 elicit_util_color_at_pointer_get(int *r, int *g, int *b)
@@ -237,6 +238,28 @@ elicit_color_rgb_to_hex(int rr, int gg, int bb)
 
   snprintf(buf, 10, "#%.2x%.2x%.2x", rr, gg, bb);
   return (char *)strdup(buf);
+}
+
+void 
+elicit_color_hex_to_rgb(char *hex, int *rr, int *gg, int *bb)
+{
+  unsigned int r = 0, g = 0, b = 0;
+  int len;
+  int num;
+
+  if (!hex) return;
+
+  len = strlen(hex);
+  if (len == 7) hex++;
+  else if (len != 6) return;
+
+  num = sscanf(hex, "%02x%02x%02x", &r, &g, &b);
+  if (3 == num)
+  {
+    if (rr) *rr = r;
+    if (gg) *gg = g;
+    if (bb) *bb = b;
+  }
 }
 
 int
