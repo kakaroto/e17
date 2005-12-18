@@ -53,7 +53,8 @@ void
    return e;
 }
 
-int e_modapi_shutdown(E_Module *m)
+int 
+e_modapi_shutdown(E_Module *m)
 {
    Screen *s;
 
@@ -71,7 +72,8 @@ int e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-int e_modapi_save(E_Module *m)
+int 
+e_modapi_save(E_Module *m)
 {
    Screen *e;
 
@@ -82,13 +84,15 @@ int e_modapi_save(E_Module *m)
    return 1;
 }
 
-int e_modapi_info(E_Module *m)
+int 
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR"/module_icon.png");
    return 1;
 }
 
-int e_modapi_about(E_Module *m)
+int 
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Screenshot Module"),
 			("This module is used to take screenshots"));
@@ -104,11 +108,12 @@ e_modapi_config(E_Module *m)
    s = m->data;
    if (!s) return 0;
    con = e_container_current_get(e_manager_current_get());
-   e_int_config_screenshot(con, s);
+   _config_screenshot_module(con, s);
    return 1;
 }
 
-static Screen *_screen_init(E_Module *m)
+static Screen 
+*_screen_init(E_Module *m)
 {
    Screen *e;
    E_Menu_Item *mi;
@@ -247,7 +252,8 @@ static Screen *_screen_init(E_Module *m)
    return e;
 }
 
-static void _screen_shutdown(Screen *e)
+static void 
+_screen_shutdown(Screen *e)
 {
    _screen_face_free(e->face);
 
@@ -259,7 +265,8 @@ static void _screen_shutdown(Screen *e)
    free(e);
 }
 
-static void _screen_config_menu_new(Screen *e)
+static void 
+_screen_config_menu_new(Screen *e)
 {
    E_Menu *mn;
 
@@ -267,7 +274,8 @@ static void _screen_config_menu_new(Screen *e)
    e->config_menu = mn;
 }
 
-static int _screen_face_init(Screen_Face *sf)
+static int 
+_screen_face_init(Screen_Face *sf)
 {
    Evas_Object *o;
 
@@ -304,7 +312,8 @@ static int _screen_face_init(Screen_Face *sf)
    return 1;
 }
 
-static void _screen_face_free(Screen_Face *ef)
+static void 
+_screen_face_free(Screen_Face *ef)
 {
    if (ef->menu) e_object_del(E_OBJECT(ef->menu));
    if (ef->event_object) evas_object_del(ef->event_object);
@@ -317,7 +326,8 @@ static void _screen_face_free(Screen_Face *ef)
    screen_count--;
 }
 
-static void _screen_face_menu_new(Screen_Face *face)
+static void 
+_screen_face_menu_new(Screen_Face *face)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -335,7 +345,8 @@ static void _screen_face_menu_new(Screen_Face *face)
    e_menu_item_callback_set(mi, _screen_face_cb_menu_edit, face);
 }
 
-static void _screen_face_enable(Screen_Face *face)
+static void 
+_screen_face_enable(Screen_Face *face)
 {
    face->conf->enabled = 1;
    e_config_save_queue();
@@ -343,7 +354,8 @@ static void _screen_face_enable(Screen_Face *face)
    evas_object_show(face->event_object);
 }
 
-static void _screen_face_disable(Screen_Face *face)
+static void 
+_screen_face_disable(Screen_Face *face)
 {
    face->conf->enabled = 0;
    e_config_save_queue();
@@ -351,7 +363,8 @@ static void _screen_face_disable(Screen_Face *face)
    evas_object_hide(face->event_object);
 }
 
-static void _screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
+static void 
+_screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Screen_Face *ef;
    Evas_Coord x, y, w, h;
@@ -373,7 +386,8 @@ static void _screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadma
      }
 }
 
-static void _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_info)
+static void 
+_screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_info)
 {
    Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
@@ -449,7 +463,8 @@ static void _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,voi
      }
 }
 
-static void _screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
+static void 
+_screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Screen_Face *face;
 
@@ -457,7 +472,8 @@ static void _screen_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
 }
 
-char *get_options(char **opt)
+char 
+*get_options(char **opt)
 {
    int i, j;
    char buff[1024];
@@ -481,7 +497,8 @@ char *get_options(char **opt)
    return strdup(buff);
 }
 
-char *get_filename(Config *conf)
+char 
+*get_filename(Config *conf)
 {
    char buff[256];
    time_t t;
@@ -546,7 +563,8 @@ char *get_filename(Config *conf)
      }
 }
 
-static int _screen_exe_cb_exit(void *data, int type, void *event)
+static int 
+_screen_exe_cb_exit(void *data, int type, void *event)
 {
    Ecore_Event_Exe_Exit *ev;
    Ecore_Exe *x;
@@ -563,7 +581,7 @@ static int _screen_exe_cb_exit(void *data, int type, void *event)
 
    ecore_event_handler_del(_screen_exe_exit_handler);
 
-#ifdef OSIRIS
+#ifdef WANT_OSIRIS
    char buff[256], tmp[1024];
    time_t t;
    struct tm *loctime;
@@ -620,12 +638,13 @@ static int _screen_exe_cb_exit(void *data, int type, void *event)
    return 0;
 }
 
-static void _screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+static void 
+_screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Screen_Face *sf;
    E_Config_Dialog *cfg;
 
    sf = data;
    if (!sf) return;
-   e_int_config_screenshot(sf->con, sf->screen);
+   _config_screenshot_module(sf->con, sf->screen);
 }

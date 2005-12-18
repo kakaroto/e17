@@ -61,7 +61,7 @@ static int 	     _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
 /* Config Calls */
 void 
-e_int_config_screenshot(E_Container *con, Screen *s)
+_config_screenshot_module(E_Container *con, Screen *s)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;

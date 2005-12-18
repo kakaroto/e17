@@ -203,10 +203,10 @@ AC_ARG_ENABLE(osiris,
 )
 
 if test "x$want_osiris" = "xyes"; then
-	AC_DEFINE(OSIRIS, 1, [Define to 1 to enable osiris code])
-   AM_CONDITIONAL(OSIRIS, true)
+   AC_DEFINE(WANT_OSIRIS, 1, [Define to 1 to enable osiris code])
+   AM_CONDITIONAL(WANT_OSIRIS, true)
 else
-    AM_CONDITIONAL(OSIRIS, false)
+    AM_CONDITIONAL(WANT_OSIRIS, false)
 fi
 
 
