@@ -75,6 +75,7 @@ struct _Exhibit
    int            zoom;
    int            brightness;
    int            contrast;
+   Etk_Bool       fit_window;
    
    struct {
       int down;

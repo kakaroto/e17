@@ -27,14 +27,11 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
    
    if(ev->button == 1)
      {
-	Ecore_X_Cursor cursor;
-	
 	e->mouse.down = 1;
 	e->mouse.x = ev->canvas.x;
 	e->mouse.y = ev->canvas.y;
 	
-	if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_FLEUR)))
-	  ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_WINDOW(e->win)->ecore_evas), cursor);
+        etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(e->win), ETK_POINTER_MOVE);
      }
    else if(ev->button == 3)
      {
@@ -73,12 +70,9 @@ _ex_image_mouse_up(Etk_Object *object, void *event, void *data)
    ev = event;
       
    if(ev->button == 1)
-     {	
-	Ecore_X_Cursor cursor;	
-	
+     {
 	e->mouse.down = 0;
-	if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_LEFT_PTR)))
-	  ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_WINDOW(e->win)->ecore_evas), cursor);
+        etk_toplevel_widget_pointer_pop(ETK_TOPLEVEL_WIDGET(e->win), ETK_POINTER_MOVE);
      }
 }
 
@@ -450,8 +444,6 @@ _ex_image_zoom(Etk_Image *im, int zoom)
 	h /= abs(zoom);
      }
 
-   evas_object_resize(im->image_object, w, h);
-   evas_object_image_fill_set(im->image_object, 0, 0, w, h);
    etk_widget_size_request_set(ETK_WIDGET(im), w, h);
    etk_widget_redraw_queue(ETK_WIDGET(im));
 }

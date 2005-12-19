@@ -1,12 +1,6 @@
 #include "exhibit.h"
 #include <Ecore_File.h>
 
-#define EX_BUTTON_GET_RETURN(o) \
-      Etk_Button *item; \
-      if (!(item = ETK_BUTTON(o))) \
-          return;
-
-
 extern Evas_List *thumb_list;
 
 char *viewables[] =
@@ -21,7 +15,12 @@ Evas_List *event_handlers;
 void
 _ex_main_statusbar_zoom_update(Exhibit *e)
 {
-   if(e->zoom > 0)
+   if (e->fit_window)
+     {
+        etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+        etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), _("Fit to window"), 0);
+     }
+   else if(e->zoom > 0)
      {
 	char zoom[6];
 	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
@@ -47,12 +46,16 @@ void
 _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
-   Etk_Tree_Row *r;   
-   EX_BUTTON_GET_RETURN(obj);
    
    e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
+   
+   if (e->fit_window)
+     {
+        etk_paned_add2(ETK_PANED(e->hpaned), e->scrolled_view, TRUE);
+        etk_widget_size_request_set(e->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->scrolled_view), e->alignment);
+        e->fit_window = FALSE;
+     }
    
    if(e->zoom == ZOOM_MAX)
      e->zoom = ZOOM_MAX;
@@ -67,12 +70,16 @@ void
 _ex_main_button_zoom_out_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
-   Etk_Tree_Row *r;   
-   EX_BUTTON_GET_RETURN(obj);
    
    e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
+   
+   if (e->fit_window)
+     {
+        etk_paned_add2(ETK_PANED(e->hpaned), e->scrolled_view, TRUE);
+        etk_widget_size_request_set(e->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->scrolled_view), e->alignment);
+        e->fit_window = FALSE;
+     }
    
    if(e->zoom <= ZOOM_MIN)
      e->zoom = ZOOM_MIN;
@@ -87,12 +94,16 @@ void
 _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
-   Etk_Tree_Row *r;
-   EX_BUTTON_GET_RETURN(obj);
    
    e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
+   
+   if (e->fit_window)
+     {
+        etk_paned_add2(ETK_PANED(e->hpaned), e->scrolled_view, TRUE);
+        etk_widget_size_request_set(e->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->scrolled_view), e->alignment);
+        e->fit_window = FALSE;
+     }
    
    e->zoom = 0;
    e->brightness = 128;
@@ -105,8 +116,18 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 void
 _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
 {
-   EX_BUTTON_GET_RETURN(obj);
-   printf("fit to window\n");
+   Exhibit      *e;
+   
+   if (e->fit_window)
+      return;
+   
+   e = data;
+   etk_widget_size_request_set(e->alignment, 10, 10);
+   etk_paned_add2(ETK_PANED(e->hpaned), e->alignment, TRUE);
+   etk_widget_size_request_set(e->image, -1, -1);
+   
+   e->fit_window = TRUE;
+   _ex_main_statusbar_zoom_update(e);
 }
 
 void
@@ -123,8 +144,7 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
 
    e = data;
    e->zoom = 0;
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);   
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
+   _ex_main_statusbar_zoom_update(e);
    
    tree = ETK_TREE(object);
 
@@ -526,7 +546,7 @@ _ex_main_window_show(char *dir)
    etk_widget_size_request_set(e->fit[1], 33, 27);
    //etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(e->fit[1]));
    etk_container_add(ETK_CONTAINER(e->fit[0]), e->fit[1]);
-   etk_signal_connect("clicked", ETK_OBJECT(e->original[0]), ETK_CALLBACK(_ex_main_button_fit_to_window_cb), e);   
+   etk_signal_connect("clicked", ETK_OBJECT(e->fit[0]), ETK_CALLBACK(_ex_main_button_fit_to_window_cb), e);   
    etk_table_attach(ETK_TABLE(e->table), e->fit[0],
 		    2, 2, 1, 1,
 		    0, 0, ETK_FILL_POLICY_NONE);

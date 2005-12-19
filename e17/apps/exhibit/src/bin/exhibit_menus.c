@@ -1,4 +1,5 @@
 #include "exhibit.h"
+#include "exhibit_main.h"
 
 #define EX_MENU_ITEM_GET_RETURN(o) \
    Etk_Menu_Item *item; \
@@ -33,14 +34,14 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 	return NULL;
      }
    
-   if (stock_id != ETK_STOCK_NO_STOCK)
+   if (stock_id > ETK_STOCK_NO_STOCK)
      {
 	Etk_Widget *image;
 
 	image = etk_image_new_from_stock(stock_id);
 	etk_menu_item_image_set(ETK_MENU_ITEM(menu_item), ETK_IMAGE(image));
      }
-   else
+   else if (stock_id < ETK_STOCK_NO_STOCK)
      {	
 	stock_id = abs(stock_id) - 1;
 	if(stock_id >= 0 && stock_id < sizeof(ex_images) / sizeof(char*))
@@ -270,65 +271,25 @@ _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_zoom_in_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;   
-   EX_MENU_ITEM_GET_RETURN(obj);
-   
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
-   
-   if(e->zoom == ZOOM_MAX)
-     e->zoom = ZOOM_MAX;
-   else
-     e->zoom += 2;
-   
-   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
-   _ex_main_statusbar_zoom_update(e);   
+   _ex_main_button_zoom_in_cb(NULL, data);  
 }
 
 void
 _ex_menu_zoom_out_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;   
-   EX_MENU_ITEM_GET_RETURN(obj);
-   
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
-   
-   if(e->zoom <= ZOOM_MIN)
-     e->zoom = ZOOM_MIN;
-   else
-     e->zoom -= 2;
-   
-   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
-   _ex_main_statusbar_zoom_update(e);
+   _ex_main_button_zoom_out_cb(NULL, data);
 }
 
 void
 _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
-   EX_MENU_ITEM_GET_RETURN(obj);
-   
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->itree));
-   if(!r) return;
-   
-   e->zoom = 0;
-   
-   _ex_image_zoom(ETK_IMAGE(e->image), e->zoom);
-   _ex_main_statusbar_zoom_update(e);     
+   _ex_main_button_zoom_one_to_one_cb(NULL, data);    
 }
 
 void
 _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 {
-   EX_MENU_ITEM_GET_RETURN(obj);
-   printf("fit to window\n");
+   _ex_main_button_fit_to_window_cb(NULL, data);
 }
 
 void
