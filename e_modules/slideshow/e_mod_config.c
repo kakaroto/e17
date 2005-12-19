@@ -85,7 +85,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
    
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Cycle Time"), 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f seconds"), 5.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f seconds"), 0.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
