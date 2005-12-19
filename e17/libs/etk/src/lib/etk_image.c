@@ -29,6 +29,7 @@ static void _etk_image_destructor(Etk_Image *image);
 static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_realize_cb(Etk_Object *object, void *data);
+static void _etk_image_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_image_load(Etk_Image *image);
@@ -342,6 +343,7 @@ static void _etk_image_constructor(Etk_Image *image)
    widget->size_allocate = _etk_image_size_allocate;
 
    etk_signal_connect("realize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_unrealize_cb), NULL);
 }
 
 /* Destroys the image */
@@ -504,6 +506,16 @@ static void _etk_image_realize_cb(Etk_Object *object, void *data)
    if (!(image = ETK_IMAGE(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(image))))
       return;
    _etk_image_load(image);
+}
+
+/* Called when the image is unrealized */
+static void _etk_image_unrealize_cb(Etk_Object *object, void *data)
+{
+   Etk_Image *image;
+
+   if (!(image = ETK_IMAGE(object)))
+      return;
+   image->image_object = NULL;
 }
 
 /**************************
