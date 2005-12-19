@@ -25,7 +25,6 @@ struct _cfdata
 	int use_img_border;
 	int use_dither;
 	int use_frame;
-	int use_mono;
 	int use_window;
 	int use_silent;
 	int use_trim;
@@ -114,7 +113,6 @@ _fill_data(Screen *sc, CFData *cfdata)
    cfdata->import.use_img_border = sc->conf->import.use_img_border;
    cfdata->import.use_dither = sc->conf->import.use_dither;
    cfdata->import.use_frame = sc->conf->import.use_frame;
-   cfdata->import.use_mono = sc->conf->import.use_mono;
    cfdata->import.use_window = sc->conf->import.use_window;
    cfdata->import.use_silent = sc->conf->import.use_silent;
    cfdata->import.use_trim = sc->conf->import.use_trim;
@@ -332,8 +330,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, _("Include Window Manager Frame"), &(cfdata->import.use_frame));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Monochrome Image"), &(cfdata->import.use_mono));
-   e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, _("Choose Window To Grab"), &(cfdata->import.use_window));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, _("Silent"), &(cfdata->import.use_silent));
@@ -368,7 +364,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
    sc->conf->import.use_img_border = cfdata->import.use_img_border;
    sc->conf->import.use_dither = cfdata->import.use_dither;
    sc->conf->import.use_frame =  cfdata->import.use_frame;
-   sc->conf->import.use_mono = cfdata->import.use_mono;
    sc->conf->import.use_window = cfdata->import.use_window;
    sc->conf->import.use_silent = cfdata->import.use_silent;
    sc->conf->import.use_trim = cfdata->import.use_trim;
