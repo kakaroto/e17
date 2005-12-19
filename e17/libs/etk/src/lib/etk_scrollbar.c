@@ -20,6 +20,7 @@ static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data);
 static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
+static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static void _etk_scrollbar_mouse_wheel(Etk_Object *object, void *event, void *data);
 
 static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -133,8 +134,8 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
    etk_signal_connect("realize", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realize_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "page_size", _etk_scrollbar_page_size_changed_cb, NULL);
-   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "lower", _etk_scrollbar_page_size_changed_cb, NULL);
-   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "upper", _etk_scrollbar_page_size_changed_cb, NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "lower", _etk_scrollbar_range_changed_cb, NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "upper", _etk_scrollbar_range_changed_cb, NULL);
 }
 
 /**************************
@@ -222,6 +223,35 @@ static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *
    if (!(range = ETK_RANGE(object)) || !(theme_object = ETK_WIDGET(range)->theme_object))
       return;
 
+   new_drag_size = (double)range->page_size / (range->upper - range->lower);
+   if (ETK_IS_HSCROLLBAR(range))
+      edje_object_part_drag_size_set(theme_object, "drag", new_drag_size, 0.0);
+   else
+      edje_object_part_drag_size_set(theme_object, "drag", 0.0, new_drag_size);
+}
+
+/* Called when the range of the scrollbar is changed */
+static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *property_name, void *data)
+{
+   Etk_Range *range;
+   Evas_Object *theme_object;
+   double new_drag_size;
+   double percent;
+
+   if (!(range = ETK_RANGE(object)) || !(theme_object = ETK_WIDGET(range)->theme_object))
+      return;
+
+   /* Update the position of the drag button in the scrollbar */
+   if (range->upper - range->page_size > range->lower)
+      percent = ETK_CLAMP(range->value / (range->upper - range->lower - range->page_size), 0.0, 1.0);
+   else
+      percent = 0.0;
+   if (ETK_IS_HSCROLLBAR(range))
+      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+   else
+      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
+   
+   /* Update the size of the drag button */
    new_drag_size = (double)range->page_size / (range->upper - range->lower);
    if (ETK_IS_HSCROLLBAR(range))
       edje_object_part_drag_size_set(theme_object, "drag", new_drag_size, 0.0);

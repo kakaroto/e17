@@ -12,6 +12,11 @@
 * @{
  */
 
+enum _Etk_Paned_Property_Id
+{
+   ETK_PANED_POSITION_PROPERTY
+};
+
 static void _etk_paned_constructor(Etk_Paned *paned);
 static void _etk_hpaned_constructor(Etk_HPaned *hpaned);
 static void _etk_vpaned_constructor(Etk_VPaned *vpaned);
@@ -50,6 +55,8 @@ Etk_Type *etk_paned_type_get()
    if (!paned_type)
    {
       paned_type = etk_type_new("Etk_Paned", ETK_CONTAINER_TYPE, sizeof(Etk_Paned), ETK_CONSTRUCTOR(_etk_paned_constructor), NULL);
+      
+      etk_type_property_add(paned_type, "position", ETK_PANED_POSITION_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
    }
 
    return paned_type;
@@ -64,10 +71,7 @@ Etk_Type *etk_hpaned_type_get()
    static Etk_Type *hpaned_type = NULL;
 
    if (!hpaned_type)
-   {
       hpaned_type = etk_type_new("Etk_HPaned", ETK_PANED_TYPE, sizeof(Etk_HPaned), ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL);
-   }
-
    return hpaned_type;
 }
 
@@ -80,10 +84,7 @@ Etk_Type *etk_vpaned_type_get()
    static Etk_Type *vpaned_type = NULL;
 
    if (!vpaned_type)
-   {
       vpaned_type = etk_type_new("Etk_VPaned", ETK_PANED_TYPE, sizeof(Etk_VPaned), ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL);
-   }
-
    return vpaned_type;
 }
 
@@ -134,7 +135,7 @@ Etk_Widget *etk_paned_child2_get(Etk_Paned *paned)
  * @param paned a paned
  * @param child the child to set
  */
-void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child)
+void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 {
    if (!paned || paned->child1 == child)
       return;
@@ -143,6 +144,7 @@ void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child)
       _etk_paned_child_remove(ETK_CONTAINER(paned), paned->child1);
    
    paned->child1 = child;
+   paned->expand1 = expand;
    if (child)
    {
       if (child->parent)
@@ -158,7 +160,7 @@ void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child)
  * @param paned a paned
  * @param child the child to set
  */
-void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child)
+void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 {
    if (!paned || paned->child2 == child)
       return;
@@ -167,6 +169,7 @@ void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child)
       _etk_paned_child_remove(ETK_CONTAINER(paned), paned->child2);
    
    paned->child2 = child;
+   paned->expand2 = expand;
    if (paned->child2)
    {
       if (paned->child2->parent)
@@ -176,6 +179,41 @@ void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child)
       etk_widget_parent_set(paned->child2, ETK_CONTAINER(paned));
    }
 }
+
+/**
+ * @brief Sets the position of the separator of the paned
+ * @param paned a paned
+ * @param position the new position of the separator
+ */
+void etk_paned_position_set(Etk_Paned *paned, int position)
+{
+   int prev_position;
+   
+   if (!paned)
+      return;
+   
+   prev_position = paned->position;
+   paned->position = position;
+   if (ETK_IS_HPANED(paned))
+      _etk_hpaned_position_calc(paned);
+   else
+      _etk_vpaned_position_calc(paned);
+   
+   if (prev_position != paned->position)
+      etk_object_notify(ETK_OBJECT(paned), "position");
+}
+
+/**
+ * @brief Gets the position of the separator of the paned
+ * @param paned a paned
+ * @return Returns the position of the separator
+ */
+int etk_paned_position_get(Etk_Paned *paned)
+{
+   if (!paned)
+      return 0;
+   return paned->position;
+} 
 
 /**************************
  *
@@ -309,8 +347,6 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    if (!(paned = ETK_PANED(widget)))
       return;
 
-   _etk_hpaned_position_calc(paned);
-
    if (!paned->child1 || !paned->child2)
       etk_widget_hide(paned->separator);
    else
@@ -322,8 +358,17 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       etk_widget_size_allocate(paned->child2, geometry);
    else if (paned->child1 && paned->child2)
    {
+      int prev_size;
       Etk_Size separator_requisition;
       Etk_Geometry child_geometry;
+      
+      prev_size = paned->child1->geometry.w + paned->child2->geometry.w + paned->separator->geometry.w;
+      if (paned->expand1 == paned->expand2)
+         etk_paned_position_set(paned, paned->position + (geometry.w - prev_size) / 2);
+      else if (paned->expand1 && !paned->expand2)
+         etk_paned_position_set(paned, geometry.w - (prev_size - paned->position));
+      else
+         etk_paned_position_set(paned, paned->position);
 
       child_geometry.x = geometry.x;
       child_geometry.y = geometry.y;
@@ -363,8 +408,17 @@ static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       etk_widget_size_allocate(paned->child2, geometry);
    else if (paned->child1 && paned->child2)
    {
+      int prev_size;
       Etk_Size separator_requisition;
       Etk_Geometry child_geometry;
+      
+      prev_size = paned->child1->geometry.h + paned->child2->geometry.h + paned->separator->geometry.h;
+      if (paned->expand1 == paned->expand2)
+         etk_paned_position_set(paned, paned->position + (geometry.h - prev_size) / 2);
+      else if (paned->expand1 && !paned->expand2)
+         etk_paned_position_set(paned, geometry.h - (prev_size - paned->position));
+      else
+         etk_paned_position_set(paned, paned->position);
 
       child_geometry.x = geometry.x;
       child_geometry.y = geometry.y;
@@ -388,8 +442,7 @@ static void _etk_paned_child_add(Etk_Container *container, Etk_Widget *widget)
 {
    if (!container || !widget)
       return;
-
-   etk_paned_add1(ETK_PANED(container), widget);
+   etk_paned_add1(ETK_PANED(container), widget, FALSE);
 }
 
 /* Removes the child from the paned */
@@ -509,7 +562,6 @@ static void _etk_hpaned_position_calc(Etk_Paned *paned)
    Etk_Size child1_requisition, child2_requisition, separator_requisition;
    Etk_Geometry geometry;
    int total_size;
-   int new_position;
 
    if (!paned)
       return;
@@ -533,28 +585,11 @@ static void _etk_hpaned_position_calc(Etk_Paned *paned)
 
    total_size = child1_requisition.w + child2_requisition.w + separator_requisition.w;
    if (geometry.w < total_size)
-   {
-      new_position = ((float)child1_requisition.w / total_size) * geometry.w;
-      if (new_position != paned->position)
-      {
-         paned->position = new_position;
-      }
-   }
+      paned->position = ((float)child1_requisition.w / total_size) * geometry.w;
    else
    {
-      new_position = child1_requisition.w;
-      if (new_position > paned->position)
-      {
-         paned->position = new_position;
-      }
-      else
-      {
-         new_position = geometry.w - child2_requisition.w - separator_requisition.w;
-         if (new_position < paned->position)
-         {
-            paned->position = new_position;
-         }
-      }
+      paned->position = ETK_MAX(paned->position, child1_requisition.w);
+      paned->position = ETK_MIN(paned->position, geometry.w - child2_requisition.w - separator_requisition.w);
    }
 }
 
@@ -564,7 +599,6 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned)
    Etk_Size child1_requisition, child2_requisition, separator_requisition;
    Etk_Geometry geometry;
    int total_size;
-   int new_position;
 
    if (!paned)
       return;
@@ -588,28 +622,11 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned)
 
    total_size = child1_requisition.h + child2_requisition.h + separator_requisition.h;
    if (geometry.h < total_size)
-   {
-      new_position = ((float)child1_requisition.h / total_size) * geometry.h;
-      if (new_position != paned->position)
-      {
-         paned->position = new_position;
-      }
-   }
+      paned->position = ((float)child1_requisition.h / total_size) * geometry.h;
    else
    {
-      new_position = child1_requisition.h;
-      if (new_position > paned->position)
-      {
-         paned->position = new_position;
-      }
-      else
-      {
-         new_position = geometry.h - child2_requisition.h - separator_requisition.h;
-         if (new_position < paned->position)
-         {
-            paned->position = new_position;
-         }
-      }
+      paned->position = ETK_MAX(paned->position, child1_requisition.h);
+      paned->position = ETK_MIN(paned->position, geometry.h - child2_requisition.h - separator_requisition.h);
    }
 }
 

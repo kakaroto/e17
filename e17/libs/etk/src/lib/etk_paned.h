@@ -43,7 +43,9 @@ struct _Etk_Paned
 
    Etk_Widget *separator;
    Etk_Widget *child1;
+   Etk_Bool expand1;
    Etk_Widget *child2;
+   Etk_Bool expand2;
 
    Etk_Bool drag;
    int drag_delta;
@@ -80,10 +82,13 @@ Etk_Widget *etk_hpaned_new();
 Etk_Type *etk_vpaned_type_get();
 Etk_Widget *etk_vpaned_new();
 
-void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child);
-void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child);
+void etk_paned_add1(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand);
+void etk_paned_add2(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand);
 Etk_Widget *etk_paned_child1_get(Etk_Paned *paned);
 Etk_Widget *etk_paned_child2_get(Etk_Paned *paned);
+
+void etk_paned_position_set(Etk_Paned *paned, int position);
+int etk_paned_position_get(Etk_Paned *paned);
 
 /** @} */
 

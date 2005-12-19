@@ -53,6 +53,9 @@ void etk_tree_model_free(Etk_Tree_Model *model);
 void etk_tree_model_alignement_set(Etk_Tree_Model *model, float xalign, float yalign);
 void etk_tree_model_alignement_get(Etk_Tree_Model *model, float *xalign, float *yalign);
 
+void etk_tree_model_icon_text_icon_width_set(Etk_Tree_Model *model, int icon_width);
+int etk_tree_model_icon_text_icon_width_get(Etk_Tree_Model *model);
+
 /** @} */
 
 #endif

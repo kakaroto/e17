@@ -482,6 +482,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             int num_expandable_cells;
             int free_space;
             float delta;
+            Etk_Bool a_cell_already_expands;
 
             child_properties = child->child_properties;
             etk_widget_size_request(child, &child_requisition);
@@ -491,6 +492,22 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
+               a_cell_already_expands = FALSE;
+               
+               for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+               {
+                  if (table->cols[i].expand)
+                  {
+                     a_cell_already_expands = TRUE;
+                     break;
+                  }
+               }
+               if (!a_cell_already_expands)
+               {
+                  for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
+                     table->cols[i].expand = TRUE;
+               }
+                  
                for (i = child_properties->left_attach; i <= child_properties->right_attach; i++)
                {
                   cells_size += table->cols[i].requested_size;
@@ -527,6 +544,22 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                cells_size = 0;
                num_expandable_cells = 0;
+               a_cell_already_expands = FALSE;
+               
+               for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+               {
+                  if (table->rows[i].expand)
+                  {
+                     a_cell_already_expands = TRUE;
+                     break;
+                  }
+               }
+               if (!a_cell_already_expands)
+               {
+                  for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
+                     table->rows[i].expand = TRUE;
+               }
+               
                for (i = child_properties->top_attach; i <= child_properties->bottom_attach; i++)
                {
                   cells_size += table->rows[i].requested_size;

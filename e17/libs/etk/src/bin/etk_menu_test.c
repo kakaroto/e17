@@ -56,14 +56,14 @@ void etk_test_menu_window_create(void *data)
     * Menu Bar
     ****************/
    /* File Menu */
-   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("File"), -1, ETK_MENU_SHELL(menu_bar), NULL);
+   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu_bar), NULL);
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Edit Menu */
-   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Edit"), -1, ETK_MENU_SHELL(menu_bar), NULL);
+   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Edit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu_bar), NULL);
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), statusbar);
@@ -71,10 +71,10 @@ void etk_test_menu_window_create(void *data)
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Help Menu */
-   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Help"), -1, ETK_MENU_SHELL(menu_bar), NULL);
+   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu_bar), NULL);
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("About"), -1, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("About"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
 
    /****************
     * Popup Menu
@@ -84,24 +84,24 @@ void etk_test_menu_window_create(void *data)
    etk_signal_connect("mouse_down", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_menu_window_down_cb), menu);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Open"), ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Save"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, -1, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), statusbar);
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, -1, ETK_MENU_SHELL(menu), statusbar);
-   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Menu Item Test"), -1, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
+   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Menu Item Test"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
    
    /* Sub menu 1 */
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Child Menu Test"), -1, ETK_MENU_SHELL(menu), statusbar);
-   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with child"), -1, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Child Menu Test"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
+   menu_item = _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with child"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
    _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Item with image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), statusbar);
    
    /* Sub menu 2 */
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Child Menu Test"), -1, ETK_MENU_SHELL(menu), statusbar);
+   _etk_test_menu_item_new(ETK_TEST_MENU_ITEM_NORMAL, _("Child Menu Test"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), statusbar);
 
    etk_widget_show_all(win);
 }
@@ -129,7 +129,7 @@ static Etk_Widget *_etk_test_menu_item_new(Etk_Test_Menu_Item_Type item_type, co
       default:
          return NULL;
    }
-   if (stock_id >= 0)
+   if (stock_id != ETK_STOCK_NO_STOCK)
    {
       Etk_Widget *image;
       

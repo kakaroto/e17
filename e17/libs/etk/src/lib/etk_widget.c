@@ -1,7 +1,9 @@
 /** @file etk_widget.c */
 #include "etk_widget.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <Edje.h>
 #include "etk_main.h"
 #include "etk_toplevel_widget.h"
@@ -60,6 +62,7 @@ enum _Etk_Widget_Signal_Id
    ETK_WIDGET_LEAVE_SIGNAL,
    ETK_WIDGET_FOCUS_SIGNAL,
    ETK_WIDGET_UNFOCUS_SIGNAL,
+   ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
    ETK_WIDGET_NUM_SIGNALS
 };
 
@@ -166,6 +169,7 @@ Etk_Type *etk_widget_type_get()
       _etk_widget_signals[ETK_WIDGET_LEAVE_SIGNAL] =         etk_signal_new("leave",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, leave),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] =         etk_signal_new("focus",         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus),   etk_marshaller_VOID__VOID,    NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] =       etk_signal_new("unfocus",       widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID,    NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed", widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(widget_type, "name",              ETK_WIDGET_NAME_PROPERTY,              ETK_PROPERTY_STRING,  ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "parent",            ETK_WIDGET_PARENT_PROPERTY,            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
@@ -1190,6 +1194,32 @@ void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_
 
    edje_object_part_text_set(widget->theme_object, part_name, text);
    widget->need_theme_min_size_recalc = TRUE;
+}
+
+/**
+ * @brief Gets the value of data from the theme of the widget. The widget has to be realized
+ * @param widget a widget
+ * @param data_name the name of the data you want to get the value
+ * @param format the format of the data. Same format than the format argument of sscanf
+ * @param ... the location of the variables where to set the values
+ * @return Returns the number of the input items successfully matched and assigned, same as sscanf
+ */
+int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...)
+{
+   const char *data_string;
+   int result;
+   va_list args;
+   
+   if (!widget || !data_name || !format || !widget->theme_object)
+      return 0;
+   if (!(data_string = edje_object_data_get(widget->theme_object, data_name)))
+      return 0;
+   
+   va_start(args, format);
+   result = vsscanf(data_string, format, args);
+   va_end(args);
+   
+   return result;
 }
 
 /**

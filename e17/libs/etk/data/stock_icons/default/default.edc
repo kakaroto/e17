@@ -1,6 +1,6 @@
 #define STOCK_ICON(icon_name) \
 images { \
-   image: icon_name".png" COMP; \
+   image: icon_name".png" RAW; \
 } \
 group { \
    name: icon_name; \

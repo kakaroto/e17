@@ -241,6 +241,7 @@ Etk_Bool etk_widget_object_is_swallowed(Etk_Widget *widget, Evas_Object *object)
 void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h);
 void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);
 void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
+int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...);
 
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object);

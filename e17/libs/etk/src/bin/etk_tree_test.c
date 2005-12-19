@@ -50,9 +50,11 @@ void etk_test_tree_window_create(void *data)
    etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
-   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
-   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 90);
-   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
+   etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
+   col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 60);
+   etk_tree_col_expand_set(col1, TRUE);
+   col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_double_new(ETK_TREE(tree)), 60);
+   col3 = etk_tree_col_new(ETK_TREE(tree), _("Column 3"), etk_tree_model_image_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 60);
    etk_tree_build(ETK_TREE(tree));
 
    etk_tree_freeze(ETK_TREE(tree));
@@ -75,6 +77,7 @@ void etk_test_tree_window_create(void *data)
    etk_widget_size_request_set(tree, 320, 400);
    etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
+   etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), TRUE);
    col1 = etk_tree_col_new(ETK_TREE(tree), _("Column 1"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_FILE), 90);
    col2 = etk_tree_col_new(ETK_TREE(tree), _("Column 2"), etk_tree_model_int_new(ETK_TREE(tree)), 90);
@@ -133,7 +136,7 @@ static void _etk_test_tree_add_items(Etk_Tree *tree, int n)
    for (i = 0; i < n; i++)
    {
       snprintf(row_name, 256, "Row%d", i);
-      if (i % 3 == 0)
+      if (1/*i % 3 == 0*/)
          strncpy(star_path, PACKAGE_DATA_DIR "/images/1star.png", 256);
       else if (i % 3 == 1)
          strncpy(star_path, PACKAGE_DATA_DIR "/images/2stars.png", 256);

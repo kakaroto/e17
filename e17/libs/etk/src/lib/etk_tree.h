@@ -46,6 +46,7 @@ struct _Etk_Tree_Node
    Etk_Tree_Node *parent;
    Evas_List *child_rows;
    int num_visible_children;
+   int num_parent_children;
    Etk_Bool expanded;
    Etk_Bool selected;
 };
@@ -65,14 +66,17 @@ struct _Etk_Tree
 
    int num_cols;
    Etk_Tree_Col **columns;
-   Etk_Tree_Col *column_to_resize;
-   Etk_Bool resize_pointer_shown;
    Etk_Bool headers_visible;
+   
+   Etk_Tree_Col *column_to_resize;
+   int col_to_resize_initial_width;
+   int col_to_resize_initial_x;
+   Etk_Bool resize_pointer_shown;
    
    Etk_Tree_Node root;
    Etk_Tree_Node *last_selected;
 
-   Evas_Object *clip;
+   Evas_Object *headers_clip;
    Evas_List *rows_widgets;
 
    Etk_Tree_Mode mode;
@@ -82,7 +86,8 @@ struct _Etk_Tree
    int xoffset;
    int yoffset;
 
-   int item_height;
+   int row_height;
+   Etk_Bool use_default_row_height;
    /* Left, right, top, bottom margins */
    int cell_margins[4];
    int expander_size;
@@ -104,13 +109,14 @@ struct _Etk_Tree_Col
    Etk_Tree_Model *model;
 
    int xoffset;
+   int min_width;
    int requested_width;
    int width;
    int visible_width;
    int place;
    Etk_Bool resizable;
    Etk_Bool visible;
-   float xalign;
+   Etk_Bool expand;
    
    Evas_Object *clip;
    Evas_Object *separator;
@@ -154,17 +160,19 @@ void etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width);
 int etk_tree_col_min_width_get(Etk_Tree_Col *col);
 void etk_tree_col_resizable_set(Etk_Tree_Col *col, Etk_Bool resizable);
 Etk_Bool etk_tree_col_resizable_get(Etk_Tree_Col *col);
+void etk_tree_col_expand_set(Etk_Tree_Col *col, Etk_Bool resizable);
+Etk_Bool etk_tree_col_expand_get(Etk_Tree_Col *col);
 void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible);
 Etk_Bool etk_tree_col_visible_get(Etk_Tree_Col *col);
 void etk_tree_col_reorder(Etk_Tree_Col *col, int new_place);
 int etk_tree_col_place_get(Etk_Tree_Col *col);
-void etk_tree_col_xalign_set(Etk_Tree_Col *col, float xalign);
-float etk_tree_col_xalign_get(Etk_Tree_Col *col);
 
 void etk_tree_build(Etk_Tree *tree);
 void etk_tree_freeze(Etk_Tree *tree);
 void etk_tree_thaw(Etk_Tree *tree);
 
+void etk_tree_row_height_set(Etk_Tree *tree, int row_height);
+int etk_tree_row_height_get(Etk_Tree *tree);
 void etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_select);
 Etk_Bool etk_tree_multiple_select_get(Etk_Tree *tree);
 void etk_tree_select_all(Etk_Tree *tree);

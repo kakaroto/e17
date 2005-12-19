@@ -12,7 +12,6 @@
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
-static void _etk_canvas_intercept_move_cb(void *data, Evas_Object *object, Evas_Coord x, Evas_Coord y);
 
 /**************************
  *
@@ -56,14 +55,15 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 {
    Etk_Bool result;
    Evas_Coord x, y;
+   int cx, cy;
 
    if (!canvas || !object || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
       return FALSE;
 
+   etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
    evas_object_geometry_get(object, &x, &y, NULL, NULL);
-   evas_object_intercept_move_callback_add(object, _etk_canvas_intercept_move_cb, canvas);
    result = etk_widget_member_object_add(ETK_WIDGET(canvas), object);
-   evas_object_move(object, x, y);
+   evas_object_move(object, x + cx, y + cy);
 
    return result;
 }
@@ -115,17 +115,6 @@ static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
 
    canvas->clip = evas_object_rectangle_add(evas);
    etk_widget_clip_set(ETK_WIDGET(canvas), canvas->clip);
-}
-
-/* Called when an object requests to be moved  */
-static void _etk_canvas_intercept_move_cb(void *data, Evas_Object *object, Evas_Coord x, Evas_Coord y)
-{
-   Etk_Widget *canvas_widget;
-
-   if (!(canvas_widget = ETK_WIDGET(data)))
-      evas_object_move(object, x, y);
-   else
-      evas_object_move(object, x + canvas_widget->geometry.x, y + canvas_widget->geometry.y);
 }
 
 /** @} */

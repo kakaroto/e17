@@ -17,6 +17,7 @@ group {
             }
             image {
                normal: "status_bar.png";
+               border: 2 2 2 2;
             }
             fill {
                smooth: 0;

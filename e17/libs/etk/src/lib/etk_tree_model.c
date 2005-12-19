@@ -4,8 +4,6 @@
 #include <string.h>
 #include <Edje.h>
 #include <Evas.h>
-#include "etk_label.h"
-#include "etk_image.h"
 #include "etk_utils.h"
 
 typedef struct _Etk_Tree_Model_Image
@@ -24,6 +22,7 @@ typedef struct _Etk_Tree_Model_Icon_Text
 {
    Etk_Tree_Model model;
    Etk_Tree_Model_Image_Type icon_type;
+   int icon_width;
 } Etk_Tree_Model_Icon_Text;
 
 typedef struct _Etk_Tree_Model_Icon_Text_Data
@@ -186,6 +185,7 @@ Etk_Tree_Model *etk_tree_model_icon_text_new(Etk_Tree *tree, Etk_Tree_Model_Imag
    tree_model->objects_create = etk_tree_model_icon_text_objects_create;
    tree_model->render = etk_tree_model_icon_text_render;
    ((Etk_Tree_Model_Icon_Text *)tree_model)->icon_type = icon_type;
+   ((Etk_Tree_Model_Icon_Text *)tree_model)->icon_width = -1;
    
    return tree_model;
 }
@@ -238,6 +238,32 @@ void etk_tree_model_alignement_get(Etk_Tree_Model *model, float *xalign, float *
       *yalign = model->yalign;
 }
 
+/**
+ * @brief Sets the width of the icons of the icon/text model
+ * @param model a icon/text model
+ * @param icon_width the width to set for the icons of the model. -1 to let Etk compute the width for each icon (the text could not be aligned then)
+ */
+void etk_tree_model_icon_text_icon_width_set(Etk_Tree_Model *model, int icon_width)
+{
+   if (!model)
+      return;
+   
+   ((Etk_Tree_Model_Icon_Text *)model)->icon_width = icon_width;
+   if (model->tree)
+      etk_widget_redraw_queue(ETK_WIDGET(model->tree));
+}
+
+/**
+ * @brief Gets the width of the icons of an icon/text model
+ * @param model a icon/text model
+ * @return Returns the width of the icons of the model. -1 means that Etk computes the width for each icon
+ */
+int etk_tree_model_icon_text_icon_width_get(Etk_Tree_Model *model)
+{
+   if (!model)
+      return -1;
+   return ((Etk_Tree_Model_Icon_Text *)model)->icon_width;
+}
 
 /*---------------------
  * Text Model
@@ -669,11 +695,11 @@ static void etk_tree_model_icon_text_objects_create(Etk_Tree_Model *model, Evas_
 static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    Etk_Tree_Model_Icon_Text_Data *icon_text_data;
-   int image_width = 0, image_height = 0;
-   Etk_Geometry image_geometry;
-   Etk_Bool show_image = FALSE;
+   int model_icon_width, icon_width = 0, icon_height = 0;
+   Etk_Geometry icon_geometry;
+   Etk_Bool show_icon = FALSE;
    Evas_Coord tw, th;
-   int image_offset = 0;
+   int icon_offset = 0;
    
    if (!(icon_text_data = cell_data) || !model)
       return;
@@ -684,15 +710,15 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
          evas_object_image_file_set(cell_objects[0], icon_text_data->filename, NULL);
          if (!evas_object_image_load_error_get(cell_objects[0]))
          {
-            evas_object_image_size_get(cell_objects[0], &image_width, &image_height);
-            show_image = TRUE;
+            evas_object_image_size_get(cell_objects[0], &icon_width, &icon_height);
+            show_icon = TRUE;
          }
          break;
       case ETK_TREE_FROM_EDJE:
          if (edje_object_file_set(cell_objects[0], icon_text_data->filename, icon_text_data->edje_group))
          {
-            edje_object_size_min_get(cell_objects[0], &image_width, &image_height);
-            show_image = TRUE;
+            edje_object_size_min_get(cell_objects[0], &icon_width, &icon_height);
+            show_icon = TRUE;
          }
          break;
       default:
@@ -701,40 +727,49 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
    evas_object_text_text_set(cell_objects[1], icon_text_data->text);
    evas_object_geometry_get(cell_objects[1], NULL, NULL, &tw, &th);
    
-   if (show_image)
+   model_icon_width = ((Etk_Tree_Model_Icon_Text *)model)->icon_width;
+   if (model_icon_width > 0)
    {
-      if (image_width == 0 || image_height == 0)
+      icon_height = model_icon_width * (icon_height / icon_width);
+      icon_width = model_icon_width;
+   }
+   
+   if (show_icon)
+   {
+      if (icon_width == 0 || icon_height == 0)
       {
-         image_geometry.w = geometry.h;
-         image_geometry.h = geometry.h;
+         icon_geometry.w = geometry.h;
+         icon_geometry.h = geometry.h;
       }
       else
       {
-         if (image_height <= geometry.h)
+         if (icon_height <= geometry.h)
          {
-            image_geometry.w = image_width;
-            image_geometry.h = image_height;
+            icon_geometry.w = icon_width;
+            icon_geometry.h = icon_height;
          }
          else
          {
-            image_geometry.w = geometry.h * ((float)image_width / image_height);
-            image_geometry.h = geometry.h;
+            icon_geometry.w = geometry.h * ((float)icon_width / icon_height);
+            icon_geometry.h = geometry.h;
          }
       }
       
-      image_offset = image_geometry.w + 8;
-      image_geometry.x = geometry.x + (geometry.w - image_offset - tw) * model->xalign;
-      image_geometry.y = geometry.y + (geometry.h - image_geometry.h) * model->yalign;
+      icon_offset = ((model_icon_width <= 0) ? icon_geometry.w : model_icon_width) + 8;
+      icon_geometry.x = geometry.x + (geometry.w - icon_offset - tw) * model->xalign;
+      if (model_icon_width > 0)
+         icon_geometry.x += (model_icon_width - icon_geometry.w) / 2;
+      icon_geometry.y = geometry.y + (geometry.h - icon_geometry.h) * model->yalign;
       
       evas_object_show(cell_objects[0]);
       if ((((Etk_Tree_Model_Icon_Text *)model)->icon_type) == ETK_TREE_FROM_FILE)
-         evas_object_image_fill_set(cell_objects[0], 0, 0, image_geometry.w, image_geometry.h);
-      evas_object_move(cell_objects[0], image_geometry.x, image_geometry.y);
-      evas_object_resize(cell_objects[0], image_geometry.w, image_geometry.h);
+         evas_object_image_fill_set(cell_objects[0], 0, 0, icon_geometry.w, icon_geometry.h);
+      evas_object_move(cell_objects[0], icon_geometry.x, icon_geometry.y);
+      evas_object_resize(cell_objects[0], icon_geometry.w, icon_geometry.h);
    }
    else
       evas_object_hide(cell_objects[0]);
 
-   evas_object_move(cell_objects[1], geometry.x + image_offset + (geometry.w - image_offset - tw) * model->xalign, geometry.y + (geometry.h - th) * model->yalign);
+   evas_object_move(cell_objects[1], geometry.x + icon_offset + (geometry.w - icon_offset - tw) * model->xalign, geometry.y + (geometry.h - th) * model->yalign);
    evas_object_show(cell_objects[1]);
 }

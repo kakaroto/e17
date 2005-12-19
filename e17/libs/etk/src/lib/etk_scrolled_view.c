@@ -28,7 +28,6 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
 static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data);
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
-static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data);
 
 /**************************
  *
@@ -191,7 +190,6 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    etk_signal_connect("mouse_wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
-   etk_signal_connect("child_added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_add_cb), NULL);
 }
 
 /* Destroys the scrolled_view */
@@ -441,13 +439,6 @@ static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, d
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
       return;
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
-}
-
-/* Called when a new child is added */
-static void _etk_scrolled_view_add_cb(Etk_Object *object, void *child, void *data)
-{
-   if (!object || !child)
-      return;
 }
 
 /** @} */

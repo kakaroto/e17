@@ -18,6 +18,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
 static void _etk_slider_mouse_wheel(Etk_Object *object, void *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
+static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 /**************************
  *
@@ -110,6 +111,8 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel), NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(slider), "lower", _etk_slider_range_changed_cb, NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", _etk_slider_range_changed_cb, NULL);
 }
 
 /**************************
@@ -214,6 +217,27 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
       else
          edje_object_part_drag_value_set(theme_object, "drag", 0.0, value);
    }
+}
+
+/* Called when the range of the slider is changed */
+static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data)
+{
+   Etk_Range *range;
+   Evas_Object *theme_object;
+   double percent;
+
+   if (!(range = ETK_RANGE(object)) || !(theme_object = ETK_WIDGET(range)->theme_object))
+      return;
+
+   /* Update the position of the drag button in the slider */
+   if (range->upper - range->page_size > range->lower)
+      percent = ETK_CLAMP(range->value / (range->upper - range->lower - range->page_size), 0.0, 1.0);
+   else
+      percent = 0.0;
+   if (ETK_IS_HSLIDER(range))
+      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", percent, 0.0);
+   else
+      edje_object_part_drag_value_set(ETK_WIDGET(range)->theme_object, "drag", 0.0, percent);
 }
 
 /** @} */
