@@ -35,7 +35,7 @@ _config_flame_module(E_Container *con, Flame *fl)
    v.advanced.apply_cfdata = NULL;
    v.advanced.create_widgets = NULL;
    
-   cfd = e_config_dialog_new(con, _("Flame Configuration"), NULL, 0, &v, f);
+   cfd = e_config_dialog_new(con, _("Flame Configuration"), NULL, 0, &v, fl);
 }
 
 static void 
