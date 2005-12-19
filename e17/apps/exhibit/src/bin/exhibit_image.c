@@ -1,4 +1,5 @@
 #include "exhibit.h"
+#include <Ecore_File.h>
 
 #define R_CMOD(r) \
    red_mapping[(int)(r)]
@@ -39,26 +40,26 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
      {
 	if(e->menu)
 	  {
-	     etk_menu_popup(e->menu);
+	     etk_menu_popup(ETK_MENU(e->menu));
 	     return;
 	  }
 	e->menu = etk_menu_new();
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(e->menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate clockwise"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_clockwise_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate counterclockwise"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_counter_clockwise_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip horizontally"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_flip_horizontal_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip vertically"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_flip_vertical_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(e->menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_blur_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
 	//_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Darken"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_darken_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, -99, ETK_MENU_SHELL(e->menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
-	etk_menu_popup(e->menu);
+	etk_menu_popup(ETK_MENU(e->menu));
      }
 }
 
@@ -110,7 +111,7 @@ _ex_image_flip_horizontal(Etk_Image *im)
    unsigned int *data;
    int           w, h;
    int           x, y;
-   unsigned int *p1, *p2, *tmp;
+   unsigned int *p1, *p2, tmp;
    
    if(im->use_edje)
      return;
@@ -142,7 +143,7 @@ _ex_image_flip_vertical(Etk_Image *im)
    unsigned int *data;
    int           w, h;
    int           x, y;
-   unsigned int *p1, *p2, *tmp;
+   unsigned int *p1, *p2, tmp;
    
    if(im->use_edje)
      return;
@@ -451,8 +452,8 @@ _ex_image_zoom(Etk_Image *im, int zoom)
 
    evas_object_resize(im->image_object, w, h);
    evas_object_image_fill_set(im->image_object, 0, 0, w, h);
-   etk_widget_size_request_set(im, w, h);
-   etk_widget_redraw_queue(im);
+   etk_widget_size_request_set(ETK_WIDGET(im), w, h);
+   etk_widget_redraw_queue(ETK_WIDGET(im));
 }
 
 void
@@ -586,7 +587,11 @@ _ex_image_wallpaper_set(Etk_Image *im)
 {
    pid_t pid;
    int w, h;
-   char *file, *dir, *edj_file, *filenoext, *esetroot;
+   const char *file;
+   const char *dir;
+   char *edj_file;
+   const char *filenoext;
+   char *esetroot;
    char esetroot_opt[] = "-s";
 #if HAVE_ENGRAVE   
    Engrave_File *edj;

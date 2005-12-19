@@ -16,7 +16,7 @@ char *ex_images[] =
 Etk_Widget *
 _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 		  int stock_id, Etk_Menu_Shell *menu_shell,
-		  void *func(Etk_Object *obj, void *data),
+		  Etk_Signal_Callback_Function callback,
 		  void *data)
 {
    Etk_Widget *menu_item = NULL;
@@ -33,7 +33,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 	return NULL;
      }
    
-   if (stock_id >= 0)
+   if (stock_id != ETK_STOCK_NO_STOCK)
      {
 	Etk_Widget *image;
 
@@ -55,8 +55,8 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
      }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
    
-   if(func)
-     etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(func), data);
+   if(callback)
+     etk_signal_connect("activated", ETK_OBJECT(menu_item), callback, data);
    
    return menu_item;
 }
@@ -136,7 +136,7 @@ _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
    Exhibit      *e;
    Etk_Tree_Row *r;
    int           w, h;
-   char         *size[30];
+   char          size[30];
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;
@@ -155,7 +155,7 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
    Exhibit      *e;
    Etk_Tree_Row *r;   
    int           w, h;
-   char         *size[30];   
+   char          size[30];   
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;

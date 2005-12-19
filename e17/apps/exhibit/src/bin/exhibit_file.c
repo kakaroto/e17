@@ -1,4 +1,5 @@
 #include "exhibit.h"
+#include <Edje.h>
 
 int
 _ex_file_is_ebg(char *file)
