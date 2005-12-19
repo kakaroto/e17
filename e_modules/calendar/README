@@ -1,0 +1,104 @@
+Calendar - a desktop calendar module for E17.
+
+___________________________________________
+1. default (or themer) configuration
+
+Features:
+- desktop calendar
+	- calendar should display properly when started
+	- Today highlights (depending on color scheme)
+	- display previous and future years/months
+- 2 distinct themes (switchable via menu)
+Working:
+   - one with a top image & one without
+
+- Change the 1st Day of the week
+____________________________________________
+2. User configuation
+
+Features:
+- desktop calendar
+Working:
+	- calendar should display properly when started
+	- Today highlights (depending on color scheme)
+------------------------------------------------------
+- 2 distinct themes (switchable via menu)
+Working:
+   - one with a top image & one without
+   - top image can be changed by placing your 
+     own edj files. Hints on making your own 
+	topimage edj, top part (image) takes 35% of overall 
+	calendar next 15% is taken up for the Year,Month,
+ 	Days and each row of dates is 9%.
+
+   - Config without topimage has the backimage.edj
+     file.  It's only requirement is that the group
+     be named "back".  Note the edj shipped with 
+     the calendar has a png that is transparent.
+     -- Hints on making your own background, The 
+     	top part (Year, Month, Days) is in a box
+	which goes down 15% of the overall image.
+	Each row of dates is 15% high. 
+
+Not Working:
+	- switching from one theme to another more
+	  than once causes the date blocks to go white.
+---------------------------------------------------------
+
+- colors completely configurable (on the fly)
+Working:
+   - can have different colors for weekday, 
+      weekend and today
+   - can change color scheme by editing 
+     a simple config file
+   	-- an example config file is included in the calendar src directory.
+	   All that is needed is to modify the numbers, then use the "File Selection -> Config File"
+	   to set the path to your file.  The use the "read config file" option to read it in.
+		r Object Red value // r1 Outline Red value // r2 Shadow Red value 
+		g Object Green value // g1 Outline Green value // g2 Shadow Green value 
+		b Object Blue value // b1 Outline Blue value // b2 Shadow Blue value 
+		a Object Alpha(Transparency) value // a1 Outline Alpha value // a2 Shadow Alpha value
+	  colors in config file go: r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2.
+	  (To have config file read, you must select the "read config file" option from the calendar menu.
+    - Can now edit colors via dialogs!!!
+
+Not Working
+	-- changing colors/fonts causes today box to go totally white.
+----------------------------------------------------------------
+- fonts/size also configurable
+Working:
+   - change fonts via a simple configuration 
+     file
+	-- same location and file as for colors example will be included soon - if 
+	   one wants to try it now, a font line will look like:
+	   YM_text_class <font> <font size>
+	   Day_text_class <font> <font size>
+	   text_class <font> <font size>
+	   New font must be in "evas font path"
+	-- Can now be edited via dialogs!!!!
+-----------------------------------------------------------------
+
+- Change the 1st Day of the week
+
+_________________________________________________________________
+Themers:
+ -- There are 6 edj files that make up the calendar module.
+	-- The calendar edj only provides a structure & location for arrows 
+           for selecting next/prev years/months
+	-- topimage.edj provides the top part (given it's visible)
+	-- background.edj provides the calendar background (and is always used)
+	-- today.edj is as it seems, block for today
+	-- weekend.edj
+	-- weekday.ed	
+        -- arrow.edj used for the arrows for next/prev month/year
+
+Please look at the default edj's to see the basic structure.  Group names 
+need to be "default" and "user" -- and yes you need both.  The "default"
+group is everything to define it how you want it to look, the "user" part
+is so that a user can modify color scheme (if he/she so chooses).  To create 
+the "user" group just copy the "default" group add the colorclass and textclass
+lines from the edj's I provided and remove any lines with colors defined.  Otherwise,
+these are standard edj's.
+
+
+

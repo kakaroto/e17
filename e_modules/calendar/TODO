@@ -1,0 +1,17 @@
+Bugs:
+- ColorClass issues:
+  -- Switching between top & no image (white box problem)
+
+
+Features:
+
+- support ical standard
+- subscribe to online calendars
+- move mouse on calendar to read your records; 
+- Includes a todo-list 
+  -- mark dates with records; 
+  -- remind and repeat records; 
+  -- Different type events can have different appearence 
+  -- Shows an alarm when an event is due 
+
+ 
