@@ -47,18 +47,9 @@ struct _Monitor
 
 struct _Monitor_Face
 {
+  Monitor *mon;
   E_Container *con;
   E_Menu      *menu;
-  E_Menu      *menu_cpu;
-  E_Menu      *menu_cpu_interval;
-  E_Menu      *menu_memory;
-  E_Menu      *menu_memory_interval;
-  E_Menu      *menu_network;
-  E_Menu      *menu_network_interval;
-  E_Menu      *menu_network_interface;
-  E_Menu      *menu_wireless;
-  E_Menu      *menu_wireless_interval;
-  E_Menu      *menu_wireless_interface;
    Config_Face *conf;
 
   Evas_Object *cpu, *net, *mem, *wlan;
@@ -78,4 +69,5 @@ EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 
+EAPI void _monitor_cb_config_updated(void *data);
 #endif

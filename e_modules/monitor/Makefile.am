@@ -23,18 +23,20 @@ EXTRA_DIST = $(files_DATA)
 
 # the module .so file
 INCLUDES = -I. \
-			  -I$(top_srcdir) \
-			  -I$(includedir) \
-			   @e_cflags@
+	 -I$(top_srcdir) \
+	 -I$(includedir) \
+	 @e_cflags@
 
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
-								 e_mod_main.h \
-								 flow_chart.c \
-								 flow_chart.h \
-								 linux_2.6.c \
-								 linux_2.6.h 
+		       e_mod_main.h \
+		       e_mod_config.c \
+		       e_mod_config.h \
+		       flow_chart.c \
+		       flow_chart.h \
+		       linux_2.6.c \
+		       linux_2.6.h 
 
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version

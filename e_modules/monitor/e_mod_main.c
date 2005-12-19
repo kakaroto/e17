@@ -8,86 +8,16 @@ static void    _monitor_config_menu_new(Monitor *monitor);
 
 static Monitor_Face *_monitor_face_new(E_Container *con);
 static void    _monitor_face_free(Monitor_Face *face);
-/*
-static void    _monitor_face_enable(Monitor_Face *face);
-static void    _monitor_face_disable(Monitor_Face *face);
-*/
 static void    _monitor_face_menu_new(Monitor_Face *face);
 static void    _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, 
 					   E_Gadman_Change change);
 Config_Face *  _monitor_face_config_init(Config_Face *conf);
 static int     _monitor_face_config_cb_timer(void *data);
-static void _monitor_mem_real_ignore_buffers_set_cb(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_mem_real_ignore_cached_set_cb(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-
-static void _monitor_mem_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_mem_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_mem_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_mem_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_mem_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-
-static void _monitor_cpu_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_cpu_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_cpu_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_cpu_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_cpu_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-
-static void _monitor_net_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_net_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_net_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_net_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_net_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_net_interface_cb(void *data, E_Menu *m,
-		                          E_Menu_Item *mi);
-
-static void _monitor_wlan_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_wlan_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_wlan_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_wlan_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_wlan_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi);
-static void _monitor_wlan_interface_cb(void *data, E_Menu *m,
-				      E_Menu_Item *mi);
-
-
 
 static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 					void *event_info);
-/*
-static void _monitor_face_cb_menu_enabled(void *data, E_Menu *m, 
-					  E_Menu_Item *mi);
-*/
 static void _monitor_face_cb_menu_edit(void *data, E_Menu *m, 
 				       E_Menu_Item *mi);
-/*
-static void _monitor_face_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, 
-				      void *event_info);
-static void _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, 
-				       void *event_info);
-static void _monitor_face_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, 
-					void *event_info);
-*/
 
 static void _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data);
@@ -95,6 +25,8 @@ static void _monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data
 static void _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data);
+
+static void _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int _monitor_count;
 
@@ -164,6 +96,27 @@ e_modapi_about(E_Module *module)
    e_module_dialog_show(_("Enlightenment Monitor Module"),
 		       _("A simple module to give E17 a usage monitor "
 		       "for some resources."));
+   return 1;
+}
+
+int
+e_modapi_config(E_Module *module) 
+{
+   Monitor *mon;
+   Evas_List *l;
+   
+   mon = module->data;
+   for (l = mon->faces; l; l = l->next) 
+     {
+	Monitor_Face *f;
+	
+	f = l->data;
+	if (f->mon == mon) 
+	  {
+	     _config_monitor_module(f->con, f);
+	     break;
+	  }
+     }
    return 1;
 }
 
@@ -252,6 +205,7 @@ _monitor_new()
 	     face = _monitor_face_new(con);
 	     if (face)
 	       {
+	       face->mon = monitor;
 		  monitor->faces = evas_list_append(monitor->faces, face);
 		  /* Config */
 		  if (!cl)
@@ -282,15 +236,12 @@ _monitor_new()
 		  _monitor_face_menu_new(face);
 
 		  mi = e_menu_item_new(monitor->config_menu);
+		  e_menu_item_label_set(mi, _("Configuration"));
+		  e_menu_item_callback_set(mi, _monitor_menu_cb_configure, face);
+
+		  mi = e_menu_item_new(monitor->config_menu);
 		  e_menu_item_label_set(mi, con->name);
-
 		  e_menu_item_submenu_set(mi, face->menu);
-
-		  /* Setup */
-		  /*
-		  if (!face->conf->enabled)
-		    _monitor_face_disable(face);
-		    */
 
 		  /* 
 		   * Now that init is done, set up intervals,
@@ -661,16 +612,6 @@ _monitor_face_free(Monitor_Face *face)
    if (face->monitor_object) evas_object_del(face->monitor_object);
    if (face->table_object) evas_object_del(face->table_object);
 
-   e_object_del(E_OBJECT(face->menu_wireless_interface));
-   e_object_del(E_OBJECT(face->menu_wireless_interval));
-   e_object_del(E_OBJECT(face->menu_wireless));
-   e_object_del(E_OBJECT(face->menu_network_interface));
-   e_object_del(E_OBJECT(face->menu_network_interval));
-   e_object_del(E_OBJECT(face->menu_network));
-   e_object_del(E_OBJECT(face->menu_memory_interval));
-   e_object_del(E_OBJECT(face->menu_memory));
-   e_object_del(E_OBJECT(face->menu_cpu_interval));
-   e_object_del(E_OBJECT(face->menu_cpu));
    e_object_del(E_OBJECT(face->menu));
 
    if (face->conf->wlan_interface) evas_stringshare_del(face->conf->wlan_interface);
@@ -678,301 +619,6 @@ _monitor_face_free(Monitor_Face *face)
    free(face->conf);
    free(face);
    _monitor_count--;
-}
-/*
-static void
-_monitor_face_enable(Monitor_Face *face)
-{
-   face->conf->enabled = 1;
-   //evas_object_show(face->exit_event_object);
-   e_config_save_queue();
-}
-
-static void
-_monitor_face_disable(Monitor_Face *face)
-{
-   face->conf->enabled = 0;
-   //evas_object_hide(face->reset_object);
-   e_config_save_queue();
-}
-*/
-static void
-_monitor_face_menu_new(Monitor_Face *face)
-{
-   E_Menu_Item *mi;
-   Ecore_List* interfaces = NULL;
-   int interface_count = 0;
-   char* interface_name = NULL;
-
-   /* Setup Menus */
-   face->menu                    = e_menu_new();
-   face->menu_cpu                = e_menu_new();
-   face->menu_cpu_interval       = e_menu_new();
-   face->menu_memory             = e_menu_new();
-   face->menu_memory_interval    = e_menu_new();
-   face->menu_network            = e_menu_new();
-   face->menu_network_interval   = e_menu_new();
-   face->menu_network_interface  = e_menu_new();
-   face->menu_wireless           = e_menu_new();
-   face->menu_wireless_interval  = e_menu_new();
-   face->menu_wireless_interface = e_menu_new();
-   
-   /* Main Menu Items */
-   mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("Edit Mode"));
-   e_menu_item_callback_set(mi, _monitor_face_cb_menu_edit, face);
-
-   /* CPU Menu */
-   mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("CPU"));
-   e_menu_item_icon_edje_set(mi, PACKAGE_DATA_DIR"/monitor.edj","monitor/menu/cpu");
-   e_menu_item_submenu_set(mi, face->menu_cpu);
-
-   mi = e_menu_item_new(face->menu_cpu);
-   e_menu_item_label_set(mi, _("Set Interval"));
-   e_menu_item_submenu_set(mi, face->menu_cpu_interval);
-
-   /* CPU Menu Items */
-   mi = e_menu_item_new(face->menu_cpu_interval);
-   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->cpu_interval == 1.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_fast, face);
-
-   mi = e_menu_item_new(face->menu_cpu_interval);
-   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->cpu_interval == 5.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_medium, face);
-
-   mi = e_menu_item_new(face->menu_cpu_interval);
-   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->cpu_interval == 10.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_normal, face);
-
-   mi = e_menu_item_new(face->menu_cpu_interval);
-   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->cpu_interval == 30.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_slow, face);
-
-   mi = e_menu_item_new(face->menu_cpu_interval);
-   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->cpu_interval == 60.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_cpu_interval_cb_very_slow, face);
-
-   /* Memory Menu */
-   mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("Memory"));
-   e_menu_item_icon_edje_set(mi, PACKAGE_DATA_DIR"/monitor.edj","monitor/menu/mem");
-   e_menu_item_submenu_set(mi, face->menu_memory);
-
-   mi = e_menu_item_new(face->menu_memory);
-   e_menu_item_label_set(mi, _("Set Interval"));
-   e_menu_item_submenu_set(mi, face->menu_memory_interval);
-
-   /* Memory Interval Menu Items */
-   mi = e_menu_item_new(face->menu_memory_interval);
-   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->mem_interval == 1.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_fast, face);
-
-   mi = e_menu_item_new(face->menu_memory_interval);
-   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->mem_interval == 5.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_medium, face);
-
-   mi = e_menu_item_new(face->menu_memory_interval);
-   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->mem_interval == 10.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_normal, face);
-
-   mi = e_menu_item_new(face->menu_memory_interval);
-   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->mem_interval == 30.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_slow, face);
-
-   mi = e_menu_item_new(face->menu_memory_interval);
-   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->mem_interval == 60.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_interval_cb_very_slow, face);
-   
-   /* Memory Menu Items */
-   mi = e_menu_item_new(face->menu_memory);
-   e_menu_item_label_set(mi, _("Ignore Cached"));
-   e_menu_item_check_set(mi, 1);
-   if (face->conf->mem_real_ignore_cached) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_real_ignore_cached_set_cb, face);
-
-   mi = e_menu_item_new(face->menu_memory);
-   e_menu_item_label_set(mi, _("Ignore Buffers"));
-   e_menu_item_check_set(mi, 1);
-   if (face->conf->mem_real_ignore_buffers) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_mem_real_ignore_buffers_set_cb, face);
-
-   /* Wireless Menu */
-   mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("Wireless"));
-   e_menu_item_icon_edje_set(mi, PACKAGE_DATA_DIR"/monitor.edj","monitor/menu/wlan");
-   e_menu_item_submenu_set(mi, face->menu_wireless);
-   
-   mi = e_menu_item_new(face->menu_wireless);
-   e_menu_item_label_set(mi, _("Set Interval"));
-   e_menu_item_submenu_set(mi, face->menu_wireless_interval);
-
-   mi = e_menu_item_new(face->menu_wireless);
-   e_menu_item_label_set(mi, _("Select Interface"));
-   e_menu_item_submenu_set(mi, face->menu_wireless_interface);
-
-   interfaces = ecore_list_new ();
-   interface_count = wlan_interfaces_get (interfaces);
-      
-   ecore_list_goto_first(interfaces);
-
-   while ((interface_name = ecore_list_current(interfaces)))
-      {
-
-         mi = e_menu_item_new(face->menu_wireless_interface);
-         e_menu_item_label_set(mi, _(interface_name));
-         e_menu_item_radio_set(mi, 1);
-         e_menu_item_radio_group_set(mi, 1);
-	 if (face->conf->wlan_interface)
-            if (!strcmp(face->conf->wlan_interface, interface_name))
-               e_menu_item_toggle_set(mi, 1);
-         e_menu_item_callback_set(mi, _monitor_wlan_interface_cb, face);
-
-	 free(interface_name);
-	 ecore_list_remove(interfaces);
-      }
-
-   ecore_list_destroy(interfaces);
-   
-   /* Wireless Menu Items */
-   mi = e_menu_item_new(face->menu_wireless_interval);
-   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->wlan_interval == 1.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_fast, face);
-
-   mi = e_menu_item_new(face->menu_wireless_interval);
-   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->wlan_interval == 5.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_medium, face);
-
-   mi = e_menu_item_new(face->menu_wireless_interval);
-   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->wlan_interval == 10.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_normal, face);
-
-   mi = e_menu_item_new(face->menu_wireless_interval);
-   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->wlan_interval == 30.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_slow, face);
-
-   mi = e_menu_item_new(face->menu_wireless_interval);
-   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->wlan_interval == 60.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_wlan_interval_cb_very_slow, face);
-   
-   /* Network Menu */
-   mi = e_menu_item_new(face->menu);
-   e_menu_item_label_set(mi, _("Network"));
-   e_menu_item_icon_edje_set(mi, PACKAGE_DATA_DIR"/monitor.edj","monitor/menu/net");
-   e_menu_item_submenu_set(mi, face->menu_network);
-   
-   mi = e_menu_item_new(face->menu_network);
-   e_menu_item_label_set(mi, _("Set Interval"));
-   e_menu_item_submenu_set(mi, face->menu_network_interval);
-
-   mi = e_menu_item_new(face->menu_network);
-   e_menu_item_label_set(mi, _("Select Interface"));
-   e_menu_item_submenu_set(mi, face->menu_network_interface);
-
-   interfaces = ecore_list_new ();
-   interface_count = net_interfaces_get (interfaces);
-      
-   ecore_list_goto_first(interfaces);
-
-   while ((interface_name = ecore_list_current(interfaces)))
-      {
-
-         mi = e_menu_item_new(face->menu_network_interface);
-         e_menu_item_label_set(mi, _(interface_name));
-         e_menu_item_radio_set(mi, 1);
-         e_menu_item_radio_group_set(mi, 1);
-	 if (face->conf->net_interface)
-            if (!strcmp(face->conf->net_interface, interface_name))
-               e_menu_item_toggle_set(mi, 1);
-         e_menu_item_callback_set(mi, _monitor_net_interface_cb, face);
-
-	 free(interface_name);
-	 ecore_list_remove(interfaces);
-      }
-
-   ecore_list_destroy(interfaces);
-
-   /* Network Menu Items */
-   mi = e_menu_item_new(face->menu_network_interval);
-   e_menu_item_label_set(mi, _("Check Fast (1 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->net_interval == 1.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_net_interval_cb_fast, face);
-
-   mi = e_menu_item_new(face->menu_network_interval);
-   e_menu_item_label_set(mi, _("Check Medium (5 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->net_interval == 5.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_net_interval_cb_medium, face);
-
-   mi = e_menu_item_new(face->menu_network_interval);
-   e_menu_item_label_set(mi, _("Check Normal (10 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->net_interval == 10.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_net_interval_cb_normal, face);
-
-   mi = e_menu_item_new(face->menu_network_interval);
-   e_menu_item_label_set(mi, _("Check Slow (30 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->net_interval == 30.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_net_interval_cb_slow, face);
-
-   mi = e_menu_item_new(face->menu_network_interval);
-   e_menu_item_label_set(mi, _("Check Very Slow (60 sec)"));
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 1);
-   if (face->conf->net_interval == 60.0) e_menu_item_toggle_set(mi, 1);
-   e_menu_item_callback_set(mi, _monitor_net_interval_cb_very_slow, face);
-
 }
 
 static void
@@ -1030,25 +676,7 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 	 break;
      }
 }
-/*
-static void
-_monitor_face_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   unsigned char enabled;
 
-   face = data;
-   enabled = e_menu_item_toggle_get(mi);
-   if ((face->conf->enabled) && (!enabled))
-     {  
-	_monitor_face_disable(face);
-     }
-   else if ((!face->conf->enabled) && (enabled))
-     { 
-	_monitor_face_enable(face);
-     }
-}
-*/
 static void
 _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
@@ -1056,59 +684,6 @@ _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 
    face = data;
    e_gadman_mode_set(face->gmc->gadman, E_GADMAN_MODE_EDIT);
-}
-
-static void
-_monitor_mem_real_ignore_buffers_set_cb(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-
-   face = data;
-   unsigned char enabled;
-
-   enabled = e_menu_item_toggle_get(mi);
-   
-   if (!enabled) {
-      /* Uncheck */
-      face->conf->mem_real_ignore_buffers = 0;
-      mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
-      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_buffers);
-   }
-   else
-   {
-      /* Check */
-      face->conf->mem_real_ignore_buffers = 1;
-      mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
-      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_buffers);
-   }
-   e_config_save_queue();
-}
-static void
-_monitor_mem_real_ignore_cached_set_cb(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{ 
-   Monitor_Face *face;
-
-   face = data;
-   unsigned char enabled;
-
-   enabled = e_menu_item_toggle_get(mi);
-   
-   if (!enabled) {
-      /* Uncheck */
-      face->conf->mem_real_ignore_cached = 0;
-      mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
-      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_cached);
-   }
-   else
-   {
-      /* Check */
-      face->conf->mem_real_ignore_cached = 1;
-      mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
-      e_menu_item_toggle_set(mi, face->conf->mem_real_ignore_cached);
-   }
-   e_config_save_queue();
 }
 
 static void
@@ -1153,277 +728,51 @@ _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj,
 {
 }
 */
-static void
-_monitor_mem_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
 
-   face->conf->mem_interval = 1.0;
+static void
+_monitor_face_menu_new(Monitor_Face *face)
+{
+	E_Menu *mn;
+	E_Menu_Item *mi;
+	
+	mn = e_menu_new();
+	face->menu = mn;
+	
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Configuration"));
+   e_menu_item_callback_set(mi, _monitor_menu_cb_configure, face);
+   
+   mi = e_menu_item_new(face->menu);
+   e_menu_item_label_set(mi, _("Edit Mode"));
+   e_menu_item_callback_set(mi, _monitor_face_cb_menu_edit, face);	
+}
+
+void _monitor_cb_config_updated(void *data)
+{
+	Monitor_Face *face;
+	
+	face = data;
+   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+
+   mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
+   mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
    flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
    flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   e_config_save_queue();
-}
 
-static void
-_monitor_mem_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->mem_interval = 5.0;
-   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
-   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_mem_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->mem_interval = 10.0;
-   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
-   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_mem_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->mem_interval = 30.0;
-   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
-   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_mem_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->mem_interval = 60.0;
-   flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
-   flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_cpu_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->cpu_interval = 1.0;
-   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_cpu_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->cpu_interval = 5.0;
-   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_cpu_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->cpu_interval = 10.0;
-   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_cpu_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->cpu_interval = 30.0;
-   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_cpu_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->cpu_interval = 60.0;
-   flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interval = 1.0;
-   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
-   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interval = 5.0;
-   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
-   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interval = 10.0;
-   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
-   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interval = 30.0;
-   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
-   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interval = 60.0;
-   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
-   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_net_interface_cb(void *data, E_Menu *m,
-		                 E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->net_interface = (char *)evas_stringshare_add(mi->label);
-   net_interface_set(face->conf->net_interface);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interval_cb_fast(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interval = 1.0;
-   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interval_cb_medium(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interval = 5.0;
-   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interval_cb_normal(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interval = 10.0;
-   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interval_cb_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interval = 30.0;
-   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interval_cb_very_slow(void *data, E_Menu *m,
-					  E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interval = 60.0;
-   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
-   e_config_save_queue();
-}
-
-static void
-_monitor_wlan_interface_cb(void *data, E_Menu *m,
-		                 E_Menu_Item *mi)
-{
-   Monitor_Face *face;
-   face = data;
-
-   face->conf->wlan_interface = (char *)evas_stringshare_add(mi->label);
    wlan_interface_set(face->conf->wlan_interface);
-   e_config_save_queue();
+   flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
+
+   net_interface_set(face->conf->net_interface);
+   flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+   flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);   
 }
 
+static void 
+_monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+	Monitor_Face *f;
+	
+	f = data;
+	if (!f) return;
+   _config_monitor_module(f->con, f);	
+}
