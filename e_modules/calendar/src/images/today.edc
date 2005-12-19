@@ -1,0 +1,227 @@
+images {
+}
+collections {
+	group {
+	    	name, "default";
+		min, 10 8;
+		max, 90 120;
+		parts{
+			part {
+				name, "today-back";
+				type, RECT;
+			   	mouse_events, 0;
+	
+				description
+				{
+					state, "default" 0.0;
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 2 2; 
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -2 -2;
+						}
+					color, 0 0 250 50;
+				}
+			}
+			part {
+				name, "date-text";
+				type, TEXT;
+				mouse_events, 0;
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.4 0.05; 
+              		        	          offset, 2 2;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.95 0.6;  
+                              			  offset, -2 -2;
+						to, "today-back";
+                			        }
+                	  	   	 text {
+                      		        	text, "0";
+                             			font, "VeraMono";
+						size, 16;
+             		               		align, 1.0 0.0;
+						}
+				}
+			}
+			part {
+				name, "today-holiday";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.1 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.35 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+			part {
+				name, "today-event";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.36 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.70 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+			part {
+				name, "today-todo";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.71 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.99 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+		}
+	}
+	group {
+	    	name, "user";
+		min, 10 8;
+		max, 90 120;
+		parts{
+			part {
+				name, "today-back";
+				type, RECT;
+			   	mouse_events, 1;
+				description
+				{
+					state, "default" 0.0;
+					color_class: "day_colors";
+					rel1 {
+						relative, 0.0 0.0;
+						offset, 2 2; 
+					}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -2 -2;
+					}
+				}
+			}
+			part {
+				name, "date-text";
+				type, TEXT;
+				mouse_events, 1;
+				description
+				{
+					state, "default" 0.0;
+					color_class: "text_colors";
+				         rel1 {
+        	               	        	 relative, 0.4 0.1; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            		}
+                	       		 rel2 {
+                      			          relative, 0.95 0.5;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			 }
+                	  	   	 text {
+                      		        	text, "0";
+                             			font, "VeraMono";
+						size, 16;
+             		               		align, 1.0 0.0;
+						text_class: "text_class";
+					}
+				}
+			}
+			part {
+				name, "today-holiday";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.1 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.35 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+			part {
+				name, "today-event";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.36 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.70 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+			part {
+				name, "today-todo";
+				type, SWALLOW;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+				         rel1 {
+        	               	        	 relative, 0.71 0.7; 
+              		        	          offset, 0 0;
+						to, "today-back";
+        	            			    }
+                	       		 rel2 {
+                      			          relative, 0.99 0.95;  
+                              			  offset, 0 0;
+						to, "today-back";
+                			        }
+				}
+			} /*end today block*/
+		}
+	}
+}

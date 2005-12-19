@@ -1,0 +1,124 @@
+images {
+	image, "py.png" LOSSY 95;
+	image, "ny.png" LOSSY 95;
+	image, "pm.png" LOSSY 95;
+	image, "nm.png" LOSSY 95;
+}
+collections {
+	group {
+	    	name, "PY";
+		min, 400 320;
+		max, 1024 768;
+		
+		parts {
+			part {
+				name, "background";
+				type, IMAGE;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					rel1 {
+					 	relative, 0.0 0.0;
+						offset, 0 0;
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+						}
+                    			 image {
+                                		normal, "py.png";
+                        			}
+				}
+		            } /*End background part*/
+			}
+		}
+	group {
+	    	name, "NY";
+		min, 400 320;
+		max, 1024 768;
+		
+		parts {
+			part {
+				name, "background";
+				type, IMAGE;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					rel1 {
+					 	relative, 0.0 0.0;
+						offset, 0 0;
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+						}
+                    			 image {
+                                		normal, "ny.png";
+                        			}
+				}
+		            } /*End background part*/
+			}
+		}
+	group {
+	    	name, "PM";
+		min, 400 320;
+		max, 1024 768;
+		
+		parts {
+			part {
+				name, "background";
+				type, IMAGE;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					rel1 {
+					 	relative, 0.0 0.0;
+						offset, 0 0;
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+						}
+                    			 image {
+                                		normal, "pm.png";
+                        			}
+				}
+		            } /*End background part*/
+			}
+		}
+	group {
+	    	name, "NM";
+		min, 400 320;
+		max, 1024 768;
+		
+		parts {
+			part {
+				name, "background";
+				type, IMAGE;
+				mouse_events, 1;
+
+				description
+				{
+					state, "default" 0.0;
+					rel1 {
+					 	relative, 0.0 0.0;
+						offset, 0 0;
+						}
+					rel2 {
+						relative, 1.0 1.0;
+						offset, 0 0;
+						}
+                    			 image {
+                                		normal, "nm.png";
+                        			}
+				}
+		            } /*End background part*/
+			}
+		}
+}
