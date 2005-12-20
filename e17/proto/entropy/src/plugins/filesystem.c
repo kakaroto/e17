@@ -428,7 +428,7 @@ Ecore_List* structurelist_get(char* base) {
 				/*TODO don't use this - make an internal representation,
 				 * otherwise not generic */
 
-				ef->filetype = DT_DIR; 
+				ef->filetype = FILE_FOLDER; 
 				strcpy(ef->filename, de->d_name);
 				strcpy(ef->path, base);
 				ecore_list_append(el, ef);
