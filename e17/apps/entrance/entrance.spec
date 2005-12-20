@@ -28,7 +28,7 @@ dream about...and without the bloat.
 
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
-%{__rm} -rf ${HOME:/}/.ecore
+%{__rm} -rf ${HOME:/tmp}/.ecore || :
 
 %post
 /sbin/ldconfig || :
