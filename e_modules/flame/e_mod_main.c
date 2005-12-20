@@ -32,7 +32,7 @@ static void _flame_process             (Flame_Face *ff);
 static int  _flame_cb_draw             (void *data);
 static int  _flame_cb_event_container_resize(void *data, int type, void *event);
 
-static int powerof (unsigned int n);
+static int powerof(unsigned int n);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
@@ -42,17 +42,17 @@ E_Module_Api e_modapi =
 };
 
 void *
-e_modapi_init (E_Module *m)
+e_modapi_init(E_Module *m)
 {
    Flame *f;
    
-   f = _flame_init (m);
-   m->config_menu = _flame_config_menu_new (f);   
+   f = _flame_init(m);
+   m->config_menu = _flame_config_menu_new(f);   
    return f;
 }
 
 int
-e_modapi_shutdown (E_Module *m)
+e_modapi_shutdown(E_Module *m)
 {
    Flame *f;
    
@@ -65,35 +65,33 @@ e_modapi_shutdown (E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
-	_flame_shutdown (f);
+	_flame_shutdown(f);
      }
-   
    return 1;
 }
 
 int
-e_modapi_save (E_Module *m)
+e_modapi_save(E_Module *m)
 {
    Flame *f;
    
    f = m->data;
    if (f)
       e_config_domain_save("module.flame", f->conf_edd, f->conf);
-   
    return 1;
 }
 
 int
-e_modapi_info (E_Module *m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 int
-e_modapi_about (E_Module *m)
+e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show (_("Enlightenment Flame Module"),
+   e_module_dialog_show(_("Enlightenment Flame Module"),
 			_("A simple module to display flames."));
    return 1;
 }
@@ -113,7 +111,7 @@ e_modapi_config(E_Module *m)
 
 /* module private routines */
 static Flame *
-_flame_init (E_Module *m)
+_flame_init(E_Module *m)
 {
    Flame *f;
    Evas_List *managers, *l, *l2;
@@ -139,7 +137,7 @@ _flame_init (E_Module *m)
    f->conf = e_config_domain_load("module.flame", f->conf_edd);
    if (!f->conf)
      {
-	f->conf = E_NEW (Config, 1);
+	f->conf = E_NEW(Config, 1);
 	f->conf->height = 128;
 	f->conf->hspread = 26;
 	f->conf->vspread = 76;
@@ -156,7 +154,7 @@ _flame_init (E_Module *m)
    E_CONFIG_LIMIT(f->conf->residual, 1, 100);
    E_CONFIG_LIMIT(f->conf->palette_type, GOLD_PALETTE, PLASMA_PALETTE);
    
-   managers = e_manager_list ();
+   managers = e_manager_list();
    for (l = managers; l; l = l->next)
      {
 	E_Manager *man;
@@ -175,17 +173,15 @@ _flame_init (E_Module *m)
 		  ff->flame = f;
 		  ff->con   = con;
 		  ff->evas  = con->bg_evas;
-		  if (!_flame_face_init(ff))
-		    return NULL;
+		  if (!_flame_face_init(ff)) return NULL;
 	       }
 	  }
      }
-   
    return f;
 }
 
 static void
-_flame_shutdown (Flame *f)
+_flame_shutdown(Flame *f)
 {
    free(f->conf);
    E_CONFIG_DD_FREE(f->conf_edd);
@@ -194,7 +190,7 @@ _flame_shutdown (Flame *f)
 }
 
 static E_Menu *
-_flame_config_menu_new (Flame *f)
+_flame_config_menu_new(Flame *f)
 {
    E_Menu      *mn;
    E_Menu_Item *mi;
@@ -204,23 +200,22 @@ _flame_config_menu_new (Flame *f)
    e_menu_item_label_set(mi, _("Config Dialog"));
    e_menu_item_callback_set(mi, _flame_menu_cb_configure, f);
    f->config_menu = mn;
-   
    return mn;
 }
 
 static void
-_flame_config_palette_set (Flame *f, Flame_Palette_Type type)
+_flame_config_palette_set(Flame *f, Flame_Palette_Type type)
 {
    switch (type)
      {
       case GOLD_PALETTE:
-	_flame_palette_gold_set (f->face);
+	_flame_palette_gold_set(f->face);
 	break;
       case FIRE_PALETTE:
-	_flame_palette_fire_set (f->face);
+	_flame_palette_fire_set(f->face);
 	break;
       case PLASMA_PALETTE:
-	_flame_palette_plasma_set (f->face);
+	_flame_palette_plasma_set(f->face);
 	break;
       default:
 	break;
@@ -228,65 +223,61 @@ _flame_config_palette_set (Flame *f, Flame_Palette_Type type)
 }
 
 static int
-_flame_face_init (Flame_Face *ff)
+_flame_face_init(Flame_Face *ff)
 {
    Evas_Object *o;
    Evas_Coord   ww, hh;
-   int         size;
-   int         flame_width, flame_height;
+   int size;
+   int flame_width, flame_height;
    
    ff->ev_handler_container_resize =
-     ecore_event_handler_add(E_EVENT_CONTAINER_RESIZE,
-			     _flame_cb_event_container_resize,
-			     ff);
+     ecore_event_handler_add(E_EVENT_CONTAINER_RESIZE, _flame_cb_event_container_resize, ff);
    /* set up the flame object */
-   o = evas_object_image_add (ff->evas);
+   o = evas_object_image_add(ff->evas);
    evas_output_viewport_get(ff->evas, NULL, NULL, &ww, &hh);
    ff->ww = ww;
    printf ("Size : %d %d\n", ww, hh);
-   evas_object_move (o, 0, hh - ff->flame->conf->height + 3);
-   evas_object_resize (o, ff->ww, ff->flame->conf->height);
-   evas_object_image_fill_set (o, 0, 0, ff->ww, ff->flame->conf->height);
+   evas_object_move(o, 0, hh - ff->flame->conf->height + 3);
+   evas_object_resize(o, ff->ww, ff->flame->conf->height);
+   evas_object_image_fill_set(o, 0, 0, ff->ww, ff->flame->conf->height);
    evas_object_pass_events_set(o, 1);
-   evas_object_layer_set (o, 20);
+   evas_object_layer_set(o, 20);
    evas_object_image_alpha_set(o, 1);
-   evas_object_show (o);
+   evas_object_show(o);
    ff->flame_object = o;
    
    /* Allocation of the flame arrays */
    flame_width  = ff->ww >> 1;
    flame_height = ff->flame->conf->height >> 1;
-   ff->ws = powerof (flame_width);
-   size = (1 << ff->ws) * flame_height * sizeof (int);
+   ff->ws = powerof(flame_width);
+   size = (1 << ff->ws) * flame_height * sizeof(int);
    ff->f_array1 = (unsigned int *)malloc (size);
-   if (!ff->f_array1)
-     return 0;
+   if (!ff->f_array1) return 0;
    ff->f_array2 = (unsigned int *)malloc (size);
-   if (!ff->f_array2)
-     return 0;
+   if (!ff->f_array2) return 0;
    
    /* allocation of the image */
-   ff->ims = powerof (ff->ww);
-   evas_object_image_size_set (ff->flame_object,
+   ff->ims = powerof(ff->ww);
+   evas_object_image_size_set(ff->flame_object,
 			       1<< ff->ims, ff->flame->conf->height);
-   evas_object_image_fill_set (o, 0, 0, 1<< ff->ims, ff->flame->conf->height);
+   evas_object_image_fill_set(o, 0, 0, 1<< ff->ims, ff->flame->conf->height);
    printf ("Size : %d %d\n", 1<< ff->ims, ff->flame->conf->height);
-   ff->im = (unsigned int *)evas_object_image_data_get (ff->flame_object, 1);
+   ff->im = (unsigned int *)evas_object_image_data_get(ff->flame_object, 1);
    
    /* initialization of the palette */
    ff->palette = (unsigned int *)malloc (300 * sizeof (unsigned int));
    if (!ff->palette) return 0;
    
-   _flame_config_palette_set (ff->flame, ff->flame->conf->palette_type);
+   _flame_config_palette_set(ff->flame, ff->flame->conf->palette_type);
    
    /* set the flame array to ZERO */
-   _flame_zero_set (ff);
+   _flame_zero_set(ff);
    
    /* set the base of the flame to something random */
-   _flame_base_random_set (ff);
+   _flame_base_random_set(ff);
    
    /* set the animator for generating and displaying flames */
-   _flame_face_anim_handle (ff);
+   _flame_face_anim_handle(ff);
    
    return 1;
 }
@@ -295,23 +286,23 @@ static void
 _flame_face_free(Flame_Face *ff)
 {
    ecore_event_handler_del(ff->ev_handler_container_resize);
-   evas_object_del (ff->flame_object);
+   evas_object_del(ff->flame_object);
    if (ff->anim) ecore_animator_del(ff->anim);
-   if (ff->f_array1) free (ff->f_array1);
-   if (ff->f_array2) free (ff->f_array2);
-   if (ff->palette) free (ff->palette);
-   free (ff);
+   if (ff->f_array1) free(ff->f_array1);
+   if (ff->f_array2) free(ff->f_array2);
+   if (ff->palette) free(ff->palette);
+   free(ff);
 }
 
 static void
-_flame_face_anim_handle (Flame_Face *ff)
+_flame_face_anim_handle(Flame_Face *ff)
 {
    if (!ff->anim)
-     ff->anim = ecore_animator_add (_flame_cb_draw, ff);
+     ff->anim = ecore_animator_add(_flame_cb_draw, ff);
 }
 
 static void
-_flame_palette_gold_set (Flame_Face *ff)
+_flame_palette_gold_set(Flame_Face *ff)
 {
    const unsigned char gold_cmap[300 * 4] =
      "\256\256\0\1\254i\24\3\312\2165\5"
@@ -389,7 +380,7 @@ _flame_palette_gold_set (Flame_Face *ff)
 }
 
 static void
-_flame_palette_fire_set (Flame_Face *ff)
+_flame_palette_fire_set(Flame_Face *ff)
 {
    int i, r, g, b, a;
    
@@ -415,7 +406,7 @@ _flame_palette_fire_set (Flame_Face *ff)
 
 /* set the plasma flame palette */
 static void
-_flame_palette_plasma_set (Flame_Face *ff)
+_flame_palette_plasma_set(Flame_Face *ff)
 {
    int i, r, g, b, a;
    
@@ -437,12 +428,12 @@ _flame_palette_plasma_set (Flame_Face *ff)
 	b = 255;
 	
 	if ((r*r + g*g + b*b) <= 100)
-	  ff->palette[i] = ((r*r + g*g + b*b)                |
+	  ff->palette[i] = ((r*r + g*g + b*b) |
 			    (((unsigned char)r) << 16) |
 			    (((unsigned char)g) << 8)  |
 			    ((unsigned char)b));
 	else
-	  ff->palette[i] = ((255 << 24)        |
+	  ff->palette[i] = ((255 << 24) |
 			    (((unsigned char)r) << 16) |
 			    (((unsigned char)g) << 8)  |
 			    ((unsigned char)b));
@@ -454,12 +445,12 @@ _flame_palette_plasma_set (Flame_Face *ff)
 	b = 255;
 	
 	if ((r*r + g*g + b*b) <= 100)
-	  ff->palette[i] = ((r*r + g*g + b*b)                |
+	  ff->palette[i] = ((r*r + g*g + b*b) |
 			    (((unsigned char)r) << 16) |
 			    (((unsigned char)g) << 8)  |
 			    ((unsigned char)b));
 	else
-	  ff->palette[i] = ((255 << 24)        |
+	  ff->palette[i] = ((255 << 24) |
 			    (((unsigned char)r) << 16) |
 			    (((unsigned char)g) << 8)  |
 			    ((unsigned char)b));
@@ -468,7 +459,7 @@ _flame_palette_plasma_set (Flame_Face *ff)
 
 /* set the flame array to zero */
 static void
-_flame_zero_set (Flame_Face *ff)
+_flame_zero_set(Flame_Face *ff)
 {
    int x, y;
    unsigned int *ptr;
@@ -494,7 +485,7 @@ _flame_zero_set (Flame_Face *ff)
 
 /* set the base of the flame */
 static void
-_flame_base_random_set (Flame_Face *ff)
+_flame_base_random_set(Flame_Face *ff)
 {
    int x, y;
    unsigned int *ptr;
@@ -506,13 +497,13 @@ _flame_base_random_set (Flame_Face *ff)
    for (x = 0 ; x < (ff->ww >> 1) ; x++)
      {
 	ptr = ff->f_array1 + (y << ff->ws) + x;
-	*ptr = rand ()%300;
+	*ptr = rand()%300;
      }
 }
 
 /* modify the base of the flame with random values */
 static void
-_flame_base_random_modify (Flame_Face *ff)
+_flame_base_random_modify(Flame_Face *ff)
 {
    int x, y;
    unsigned int *ptr, val;
@@ -529,7 +520,7 @@ _flame_base_random_modify (Flame_Face *ff)
 
 /* process entire flame array */
 static void
-_flame_process (Flame_Face *ff)
+_flame_process(Flame_Face *ff)
 {
    int x, y;
    unsigned int *ptr, *p, tmp, val;
@@ -570,7 +561,7 @@ _flame_process (Flame_Face *ff)
 
 /* draw a flame on the evas */
 static int
-_flame_cb_draw (void *data)
+_flame_cb_draw(void *data)
 {
    Flame_Face    *ff;
    unsigned int  *ptr;
@@ -581,9 +572,9 @@ _flame_cb_draw (void *data)
    ff = (Flame_Face *)data;
    
    /* modify the base of the flame */
-   _flame_base_random_modify (ff);
+   _flame_base_random_modify(ff);
    /* process the flame array, propagating the flames up the array */
-   _flame_process (ff);
+   _flame_process(ff);
    
    
    for (y = 0 ; y < ((ff->flame->conf->height >> 1) - 1) ; y++)
@@ -611,9 +602,7 @@ _flame_cb_draw (void *data)
      }
    
    evas_object_image_data_set (ff->flame_object, ff->im);
-   evas_object_image_data_update_add (ff->flame_object,
-				      0, 0,
-				      ff->ww, ff->flame->conf->height);
+   evas_object_image_data_update_add (ff->flame_object, 0, 0, ff->ww, ff->flame->conf->height);
    
    /* we loop indefinitely */
    return 1;
@@ -624,40 +613,35 @@ _flame_cb_event_container_resize(void *data, int type, void *event)
 {
    Flame_Face *ff;
    Evas_Object *o;
-   Evas_Coord   ww, hh;
-   int         size;
-   int         flame_width, flame_height;
+   Evas_Coord ww, hh;
+   int size;
+   int flame_width, flame_height;
    
    ff = data;
    evas_output_viewport_get(ff->evas, NULL, NULL, &ww, &hh);
    ff->ww = ww;
    o = ff->flame_object;
-   printf ("Size : %d %d\n", ww, hh);
-   evas_object_move (o, 0, hh - ff->flame->conf->height + 3);
-   evas_object_resize (o, ff->ww, ff->flame->conf->height);
-   evas_object_image_fill_set (o, 0, 0, ff->ww, ff->flame->conf->height);
+   evas_object_move(o, 0, hh - ff->flame->conf->height + 3);
+   evas_object_resize(o, ff->ww, ff->flame->conf->height);
+   evas_object_image_fill_set(o, 0, 0, ff->ww, ff->flame->conf->height);
    
    /* Allocation of the flame arrays */
    flame_width  = ff->ww >> 1;
    flame_height = ff->flame->conf->height >> 1;
-   ff->ws = powerof (flame_width);
+   ff->ws = powerof(flame_width);
    size = (1 << ff->ws) * flame_height * sizeof (int);
    if (ff->f_array1) free(ff->f_array1);
    ff->f_array1 = (unsigned int *)malloc (size);
-   if (!ff->f_array1)
-     return 0;
+   if (!ff->f_array1) return 0;
    if (ff->f_array2) free(ff->f_array2);
    ff->f_array2 = (unsigned int *)malloc (size);
-   if (!ff->f_array2)
-     return 0;
+   if (!ff->f_array2) return 0;
    
    /* allocation of the image */
-   ff->ims = powerof (ff->ww);
-   evas_object_image_size_set (ff->flame_object,
-			       1<< ff->ims, ff->flame->conf->height);
-   evas_object_image_fill_set (o, 0, 0, 1<< ff->ims, ff->flame->conf->height);
-   printf ("Size : %d %d\n", 1<< ff->ims, ff->flame->conf->height);
-   ff->im = (unsigned int *)evas_object_image_data_get (ff->flame_object, 1);
+   ff->ims = powerof(ff->ww);
+   evas_object_image_size_set(ff->flame_object, 1<< ff->ims, ff->flame->conf->height);
+   evas_object_image_fill_set(o, 0, 0, 1<< ff->ims, ff->flame->conf->height);
+   ff->im = (unsigned int *)evas_object_image_data_get(ff->flame_object, 1);
    return 1;
 }
 
