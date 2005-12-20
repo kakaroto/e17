@@ -76,13 +76,13 @@ Entranced_Display_New(void)
 
    d = calloc(1, sizeof(Entranced_Display));
 
-   ecore_config_string_default("/entrance/daemon/xserver", DEFAULT_X_SERVER);
-   ecore_config_int_default("/entrance/daemon/attempts", 5);
+   ecore_config_string_default("/entranced/xserver", DEFAULT_X_SERVER);
+   ecore_config_int_default("/entranced/attempts", 5);
 
    ecore_config_file_load(PACKAGE_CFG_DIR "/entrance_config.cfg");
 
-   d->xprog = ecore_config_string_get("/entrance/daemon/xserver");
-   d->attempts = ecore_config_int_get("/entrance/daemon/attempts");
+   d->xprog = ecore_config_string_get("/entranced/xserver");
+   d->attempts = ecore_config_int_get("/entranced/attempts");
 
    d->status = NOT_RUNNING;
    d->auth_en = 1;
