@@ -1,7 +1,7 @@
 Summary: EFL-enabled iconbar
 Name: iconbar
 Version: 0.9.1
-Release: 1.20051219
+Release: 0.20050908
 License: BSD
 Group:System Environment/Libraries
 Source:ftp://ftp.enlightenment.org/enlightenment/e17/apps/%{name}-%{version}.tar.gz

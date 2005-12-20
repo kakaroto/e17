@@ -3,7 +3,7 @@
 Summary: A config interface
 Name: examine
 Version: 0.0.1
-Release: 1.20051219
+Release: 0.20050908
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/

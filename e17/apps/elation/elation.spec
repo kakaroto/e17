@@ -1,7 +1,7 @@
 Summary: An EFL-based media player/DVR
 Name: elation
 Version: 0.0.1.001
-Release: 1.20051219
+Release: 0.20050908
 License: BSD
 Group: Applications/Multimedia
 URL: http://www.enlightenment.org/

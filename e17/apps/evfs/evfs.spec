@@ -1,7 +1,7 @@
 Summary: E Virtual Filesystem
 Name: evfs
 Version: 0.0.1
-Release: 1.20051219
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
