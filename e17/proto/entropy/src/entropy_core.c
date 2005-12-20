@@ -10,6 +10,7 @@
 #include "plugin_base.h"
 #include <Ecore.h>
 #include <evfs.h>
+#include <limits.h>
 
 #include "entropy.h"
 #include <ctype.h>
