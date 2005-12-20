@@ -216,7 +216,8 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
    f->conf->net_interval = cfdata->net_interval;
    f->conf->mem_real_ignore_cached = cfdata->mem_real_ignore_cached;
    f->conf->mem_real_ignore_buffers = cfdata->mem_real_ignore_buffers;
-   
+
+   i = 0;
    ecore_list_goto_first(net_interfaces);
    while ((tmp = ecore_list_next(net_interfaces)) != NULL) 
      {
