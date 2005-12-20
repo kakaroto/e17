@@ -534,7 +534,7 @@ Ecore_List* filelist_get(entropy_file_request* request) {
 						strcpy(ef->uri_base, URI_POSIX); /*We're a fallback posix handler, so set to posix*/
 
 						/*TODO don't use this - make an internal representation, otherwise not generic */
-						ef->filetype = (filetype ? filetype : de->d_type); 
+						ef->filetype = (filetype); 
 						ef->md5 = md5;
 							
 						strcpy(ef->filename, de->d_name);
