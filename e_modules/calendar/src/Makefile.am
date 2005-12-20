@@ -21,12 +21,13 @@ INCLUDES               = -I. \
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 
 pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c e_mod_main.h  \
-			 main_editor.h main_editor.c \
+module_la_SOURCES      = e_mod_main.c e_mod_main.h weekend_editor.c weekend_editor.h \
+			 main_editor.h main_editor.c weekday_editor.c weekday_editor.h\
 			 calendar_color_func.h calendar_color_func.c calendar_text_fun.c \
 			 calendar_text_func.h dialog_func.c dialog_func.h add_event_dialog.h\
 			 add_event_dialog.c add_todo_dialog.h add_todo_dialog.c calendar_func.h\
-			 calendar_func.c cal_face_func.h cal_face_func.c
+			 calendar_func.c cal_face_func.h cal_face_func.c otherfonts_editor.c \
+			 otherfonts_editor.h today_editor.c today_editor.h
 
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version

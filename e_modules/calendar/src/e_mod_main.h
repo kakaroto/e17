@@ -3,9 +3,9 @@
 
 #include <e.h>
 #include <Ecore.h>
-#include "main_editor.h"
 #include "add_event_dialog.h"
 #include "add_todo_dialog.h"
+
 
 
 #define CALENDAR_CONFIG_VERSION 1000
@@ -127,5 +127,10 @@ EAPI int   increment_cal_count();
 #include "dialog_func.h"
 #include "calendar_func.h"
 #include "cal_face_func.h"
+#include "today_editor.h"
+#include "weekday_editor.h"
+#include "weekend_editor.h"
+#include "otherfonts_editor.h"
+#include "main_editor.h"
 
 #endif

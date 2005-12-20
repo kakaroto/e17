@@ -215,11 +215,11 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
 /
 /
 /*****************************************************/
-static Evas_Object *
+/*static Evas_Object *
 _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object *o, *of, *ob, *of2, *of3, *fs, *of1,*check, *today, *weekend, *weekday, *of_y, *o2;
+/*   Evas_Object *o, *of, *ob, *of2, *of3, *fs, *of1,*check, *today, *weekend, *weekday, *of_y, *o2;
    Evas_Object *t_color, *tf_color, *t_font;
    Evas_Object *wd_color, *wdf_color, *wd_font;
    Evas_Object *we_color, *wef_color, *we_font;
@@ -253,9 +253,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    c_array *YNC_Ptr = cfdata->calendar->conf->YearMon_numb_colors->data;  
    c_array *DTC_Ptr = cfdata->calendar->conf->DayWeek_text_colors->data;  
 
-   CalFonts *YTC_Ptr = cfdata->calendar->conf->YM_text_class->data;     
-   CalFonts *DTCs_Ptr = cfdata->calendar->conf->Day_text_class->data;      
-   CalFonts *TC_Ptr  = cfdata->calendar->conf->text_class->data;      
+
 
    o = e_widget_table_add(evas, 0);
 
@@ -291,19 +289,19 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
     today = e_widget_framelist_add(evas, _("Today Background Colors"),0);
     label = e_widget_label_add(evas, _("Red:"));
     e_widget_framelist_object_append(today, label);
-    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TBC_Ptr->red), 200);
+    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TBC_Ptr->red), 200);
     e_widget_framelist_object_append(today, slider_red);
     label = e_widget_label_add(evas, _("Blue:"));
     e_widget_framelist_object_append(today, label);
-    slider_blue = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TBC_Ptr->blue), 200);
+    slider_blue = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TBC_Ptr->blue), 200);
     e_widget_framelist_object_append(today, slider_blue);
     label = e_widget_label_add(evas, _("Green:"));
     e_widget_framelist_object_append(today, label);
-    slider_green = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(TBC_Ptr->green), 200);
+    slider_green = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(TBC_Ptr->green), 200);
     e_widget_framelist_object_append(today, slider_green);
     label = e_widget_label_add(evas, _("Alpha:"));
     e_widget_framelist_object_append(today, label);
-    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(TBC_Ptr->alpha), 200);
+    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(TBC_Ptr->alpha), 200);
     e_widget_framelist_object_append(today, slider_alpha);
     e_widget_table_object_append(o, today, 1,0,1,1,0,0,0,0);
 
@@ -311,51 +309,51 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
     today_f = e_widget_framelist_add(evas, _("Today Font Colors"),0);
     label = e_widget_label_add(evas, _("Red:"));
     e_widget_framelist_object_append(today_f, label);
-    s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
+    s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
     e_widget_framelist_object_append(today_f, s_r_tf);
     label = e_widget_label_add(evas, _("Blue:"));
     e_widget_framelist_object_append(today_f, label);
-    s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
+    s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
     e_widget_framelist_object_append(today_f, s_b_tf);
     label = e_widget_label_add(evas, _("Green:"));
     e_widget_framelist_object_append(today_f, label);
-    s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
+    s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
     e_widget_framelist_object_append(today_f, s_g_tf);
     label = e_widget_label_add(evas, _("Alpha:"));
     e_widget_framelist_object_append(today_f, label);
-    s_a_tf = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
+    s_a_tf = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(today_f, s_a_tf);
     label = e_widget_label_add(evas, _("Red Outline:"));
     e_widget_framelist_object_append(today_f, label);
-    s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
+    s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
     e_widget_framelist_object_append(today_f, s_r_tf_o);
     label = e_widget_label_add(evas, _("Blue Outline:"));
     e_widget_framelist_object_append(today_f, label);
-    s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
+    s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
     e_widget_framelist_object_append(today_f, s_b_tf_o);
     label = e_widget_label_add(evas, _("Green Outline:"));
     e_widget_framelist_object_append(today_f, label);
-    s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
+    s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
     e_widget_framelist_object_append(today_f, s_g_tf_o);
     label = e_widget_label_add(evas, _("Alpha Outline:"));
     e_widget_framelist_object_append(today_f, label);
-    s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
+    s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(today_f, s_a_tf_o);
     label = e_widget_label_add(evas, _("Red Shadow:"));
     e_widget_framelist_object_append(today_f, label);
-    s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
+    s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->red), 200);
     e_widget_framelist_object_append(today_f, s_r_tf_s);
     label = e_widget_label_add(evas, _("Blue Shadow:"));
     e_widget_framelist_object_append(today_f, label);
-    s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
+    s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(TTC_Ptr->blue), 200);
     e_widget_framelist_object_append(today_f, s_b_tf_s);
     label = e_widget_label_add(evas, _("Green Shadow:"));
     e_widget_framelist_object_append(today_f, label);
-    s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
+    s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->green), 200);
     e_widget_framelist_object_append(today_f, s_g_tf_s);
     label = e_widget_label_add(evas, _("Alpha Shadow:"));
     e_widget_framelist_object_append(today_f, label);
-    s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
+    s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(TTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(today_f, s_a_tf_s);
     e_widget_table_object_append(o, today_f, 1,1,1,1,0,0,0,0);
 ///////////////////////////////////////////////////////////////////////////////////
@@ -363,19 +361,19 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
     weekend = e_widget_framelist_add(evas, _("Weekend Background Colors"),0);
     label = e_widget_label_add(evas, _("Red:"));
     e_widget_framelist_object_append(weekend, label);
-    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeBC_Ptr->red), 200);
+    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeBC_Ptr->red), 200);
     e_widget_framelist_object_append(weekend, slider_red);
     label = e_widget_label_add(evas, _("Blue:"));
     e_widget_framelist_object_append(weekend, label);
-    slider_blue = e_widget_slider_add(evas,1,0, _("%1.2f"),0,254,1,0,NULL, &(WeBC_Ptr->blue), 200);
+    slider_blue = e_widget_slider_add(evas,1,0, _("%1.0f"),0,254,1,0,NULL, &(WeBC_Ptr->blue), 200);
     e_widget_framelist_object_append(weekend, slider_blue);
     label = e_widget_label_add(evas, _("Green:"));
     e_widget_framelist_object_append(weekend, label);
-    slider_green = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeBC_Ptr->green), 200);
+    slider_green = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeBC_Ptr->green), 200);
     e_widget_framelist_object_append(weekend, slider_green);
     label = e_widget_label_add(evas, _("Alpha:"));
     e_widget_framelist_object_append(weekend, label);
-    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeBC_Ptr->alpha), 200);
+    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeBC_Ptr->alpha), 200);
     e_widget_framelist_object_append(weekend, slider_alpha);
     e_widget_table_object_append(o, weekend, 2,0,1,1,0,0,0,0);
 
@@ -383,51 +381,51 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
     weekend_f = e_widget_framelist_add(evas, _("Weekend Font Colors"),0);
     label = e_widget_label_add(evas, _("Red:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+    s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
     e_widget_framelist_object_append(weekend_f, s_r_tf);
     label = e_widget_label_add(evas, _("Blue:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+    s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
     e_widget_framelist_object_append(weekend_f, s_b_tf);
     label = e_widget_label_add(evas, _("Green:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+    s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
     e_widget_framelist_object_append(weekend_f, s_g_tf);
     label = e_widget_label_add(evas, _("Alpha:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_a_tf = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+    s_a_tf = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(weekend_f, s_a_tf);
     label = e_widget_label_add(evas, _("Red Outline:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+    s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
     e_widget_framelist_object_append(weekend_f, s_r_tf_o);
     label = e_widget_label_add(evas, _("Blue Outline:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+    s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
     e_widget_framelist_object_append(weekend_f, s_b_tf_o);
     label = e_widget_label_add(evas, _("Green Outline:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+    s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
     e_widget_framelist_object_append(weekend_f, s_g_tf_o);
     label = e_widget_label_add(evas, _("Alpha Outline:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+    s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(weekend_f, s_a_tf_o);
     label = e_widget_label_add(evas, _("Red Shadow:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+    s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
     e_widget_framelist_object_append(weekend_f, s_r_tf_s);
     label = e_widget_label_add(evas, _("Blue Shadow:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+    s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
     e_widget_framelist_object_append(weekend_f, s_b_tf_s);
     label = e_widget_label_add(evas, _("Green Shadow:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+    s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
     e_widget_framelist_object_append(weekend_f, s_g_tf_s);
     label = e_widget_label_add(evas, _("Alpha Shadow:"));
     e_widget_framelist_object_append(weekend_f, label);
-    s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+    s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
     e_widget_framelist_object_append(weekend_f, s_a_tf_s);
     e_widget_table_object_append(o, weekend_f, 2,1,1,1,0,0,0,0);
 
@@ -436,19 +434,19 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
     weekday = e_widget_framelist_add(evas, _("Weekend Background Colors"),0);
     label = e_widget_label_add(evas, _("Red:"));
     e_widget_framelist_object_append(weekday, label);
-    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeBC_Ptr->red), 200);
+    slider_red = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeBC_Ptr->red), 200);
     e_widget_framelist_object_append(weekday, slider_red);
     label = e_widget_label_add(evas, _("Blue:"));
     e_widget_framelist_object_append(weekday, label);
-    slider_blue = e_widget_slider_add(evas,1,0, _("%1.2f"),0,254,1,0,NULL, &(WeBC_Ptr->blue), 200);
+    slider_blue = e_widget_slider_add(evas,1,0, _("%1.0f"),0,254,1,0,NULL, &(WeBC_Ptr->blue), 200);
     e_widget_framelist_object_append(weekday, slider_blue);
     label = e_widget_label_add(evas, _("Green:"));
     e_widget_framelist_object_append(weekday, label);
-    slider_green = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeBC_Ptr->green), 200);
+    slider_green = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeBC_Ptr->green), 200);
     e_widget_framelist_object_append(weekday, slider_green);
     label = e_widget_label_add(evas, _("Alpha:"));
     e_widget_framelist_object_append(weekday, label);
-    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeBC_Ptr->alpha), 200);
+    slider_alpha = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeBC_Ptr->alpha), 200);
     e_widget_framelist_object_append(weekday, slider_alpha);
     e_widget_table_object_append(o, weekday, 3,0,1,1,0,0,0,0);
 
@@ -457,107 +455,65 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
 
     label = e_widget_label_add(evas, _("Red:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+   s_r_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
    e_widget_framelist_object_append(weekday_f, s_r_tf);
 
     label = e_widget_label_add(evas, _("Blue:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+   s_b_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
    e_widget_framelist_object_append(weekday_f, s_b_tf);
 
     label = e_widget_label_add(evas, _("Green:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+   s_g_tf = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
    e_widget_framelist_object_append(weekday_f, s_g_tf);
 
     label = e_widget_label_add(evas, _("Alpha:"));
   e_widget_framelist_object_append(weekday_f, label);
-   s_a_tf = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+   s_a_tf = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
    e_widget_framelist_object_append(weekday_f, s_a_tf);
 
     label = e_widget_label_add(evas, _("Red Outline:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+   s_r_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
    e_widget_framelist_object_append(weekday_f, s_r_tf_o);
 
     label = e_widget_label_add(evas, _("Blue Outline:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+   s_b_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
    e_widget_framelist_object_append(weekday_f, s_b_tf_o);
 
     label = e_widget_label_add(evas, _("Green Outline:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+   s_g_tf_o = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
    e_widget_framelist_object_append(weekday_f, s_g_tf_o);
 
     label = e_widget_label_add(evas, _("Alpha Outline:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+   s_a_tf_o = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
    e_widget_framelist_object_append(weekday_f, s_a_tf_o);
 
     label = e_widget_label_add(evas, _("Red Shadow:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
+   s_r_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->red), 200);
    e_widget_framelist_object_append(weekday_f, s_r_tf_s);
 
     label = e_widget_label_add(evas, _("Blue Shadow:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
+   s_b_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL, &(WeTC_Ptr->blue), 200);
    e_widget_framelist_object_append(weekday_f, s_b_tf_s);
 
     label = e_widget_label_add(evas, _("Green Shadow:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
+   s_g_tf_s = e_widget_slider_add(evas, 1, 0, _("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->green), 200);
    e_widget_framelist_object_append(weekday_f, s_g_tf_s);
 
     label = e_widget_label_add(evas, _("Alpha Shadow:"));
    e_widget_framelist_object_append(weekday_f, label);
-   s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.2f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
+   s_a_tf_s = e_widget_slider_add(evas,1,0,_("%1.0f"),0,254,1,0,NULL,&(WeTC_Ptr->alpha), 200);
    e_widget_framelist_object_append(weekday_f, s_a_tf_s);
    e_widget_table_object_append(o, weekday_f, 3,1,1,1,0,0,0,0);
 
-     /*************  Other Fonts  *************/
-     font_title = e_widget_framelist_add(evas, _("Other Fonts"),0);
-      of_y = e_widget_table_add(evas, 1);
-      //label on top
-      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Font"),
-                                     1, 0, 1, 1, 1, 1, 1, 1);
-      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Size"),
-                                     2, 0, 1, 1,1, 1, 1, 1);
-     //Font row
-      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Year/Mon"),
-                                     0, 1, 1, 1, 1, 1, 1, 1);
-     {
-        Evas_Object *entry;
-        entry = e_widget_entry_add(evas, &YTC_Ptr->font);
-        e_widget_min_size_set(entry, 100, 1);
-        e_widget_table_object_append(of_y, entry, 1,1,1,1,1,1,1,1);
-     } 
-     {
-    	Evas_Object *entry2;
-        entry2 = e_widget_entry_add(evas, &cfdata->size);
-        e_widget_min_size_set(entry2, 30, 1);
-	e_widget_table_object_append(of_y, entry2, 2, 1, 1, 1, 1, 1, 1,1);
-      }
-      //label for 2nd set
-      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Day"),
-                                     0, 2, 1, 1, 1, 1, 1, 1);
-     //Font row
-     e_widget_table_object_append(of_y, e_widget_entry_add(evas, &YTC_Ptr->font),
-                                     1, 2, 1, 1, 1, 1, 1, 1);
-
-     e_widget_table_object_append(of_y, e_widget_entry_add(evas, &cfdata->size1),
-                                     2, 2, 1, 1, 1, 1, 1, 1);
-      //label for 3rd set
-      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Date"),
-                                     0, 3, 1, 1, 1, 1, 1, 1);
-      //Font row
-      e_widget_table_object_append(of_y, e_widget_entry_add(evas, &YTC_Ptr->font),
-                                     1, 3, 1, 1, 1, 1, 1, 1);
-      e_widget_table_object_append(of_y, e_widget_entry_add(evas, &cfdata->size2),
-                                     2, 3, 1, 1, 1, 1, 1, 1);
-      e_widget_framelist_object_append(font_title, of_y);
-      e_widget_table_object_append(o, font_title, 4,0,1,1,0,0,0,0);
 /////////////////////////////////////////////////////////////
 // weekdend Font colors
 /*   weekday_f = e_widget_framelist_add(evas, _("Weekend Font Colors"),0);
@@ -631,7 +587,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
       e_widget_framelist_object_append(other_c, Day_colors);
       e_widget_table_object_append(o, other_c, 2,1,1,1,0,0,0,0);
 */
-   }
+//   }
 
 /*   load_edje = e_widget_framelist_add(evas, _("Load EDJEs"),0);
    back = e_widget_button_add(evas,"Background",NULL,file_select_bk_dialog,con,conf);
@@ -656,9 +612,9 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    	e_menu_item_label_set(mi, _("Read Conf Files"));
    	e_menu_item_callback_set(mi, read_conf_files, calendar); 
 
-*/
+
    return o;
-}
+}*/
 /***************************************************
 / Function: 
 / Purpose:  Move data from dialog to config object 
@@ -713,4 +669,135 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
    e_border_button_bindings_grab_all();
 
    return 1; /* Apply was OK */
+}
+/***************************************************
+/ Function: 
+/ Purpose:  create widgets for advanced dialog
+/
+/
+/*****************************************************/
+static Evas_Object *
+_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+{
+   /* generate the core widget layout for a basic dialog */
+   Evas_Object *o, *of, *ob, *of2, *of3, *fs, *of1,*check, *today, *weekend, *weekday, *of_y, *o2;
+   Evas_Object *fonts, *Day_font, *Date_font;
+   Evas_Object *font_title;
+   Evas_Object *slider_red, *slider_green, *slider_alpha, *slider_blue;
+   Evas_Object *s_r_tf, *s_g_tf, *s_a_tf, *s_b_tf, *s_r_tf_o, *s_b_tf_o, *s_g_tf_o, *s_a_tf_o, *s_r_tf_s, *s_b_tf_s, *s_g_tf_s, *s_a_tf_s, *today_f, *weekend_f, *weekday_f ;
+   Evas_Object *ym, *day_text, *start_table;
+   Evas_Object *start_tableB, *ofB;
+   Evas_Object *entry;
+   Evas_Object *entry2;
+   E_Radio_Group *rg;
+   E_Manager *man;
+   E_Container *con;
+   Config *conf;
+   Calendar *calendar;
+
+   CFData *cfdata;
+   cfdata = data;
+   conf = cfdata->calendar->conf;
+   calendar = cfdata->calendar;
+
+   CalFonts *YTC_Ptr = cfdata->calendar->conf->YM_text_class->data;     
+   CalFonts *DTCs_Ptr = cfdata->calendar->conf->Day_text_class->data;      
+   CalFonts *TC_Ptr  = cfdata->calendar->conf->text_class->data;      
+
+
+   man = e_manager_current_get();
+   if (!man) return;
+   con = e_container_current_get(man);
+   if (!con) return;
+   if (con == NULL) return;
+
+   o = e_widget_table_add(evas, 0);
+
+   of2 = e_widget_framelist_add(evas, _("Top Image"), 1);
+   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
+   ob = e_widget_radio_add(evas, _("With"), 0, rg);
+   e_widget_framelist_object_append(of2, ob);
+   ob = e_widget_radio_add(evas, _("Without"), 1, rg);
+   e_widget_framelist_object_append(of2, ob);
+   e_widget_table_object_append(o, of2, 0, 0,1,1,1,1,1,1);
+
+   start_table = e_widget_table_add(evas, 0);
+   of = e_widget_framelist_add(evas, _("First Day of Week"), 0);
+   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
+   ob = e_widget_radio_add(evas, _("Sunday"), 0, rg);
+   e_widget_table_object_append(start_table, ob, 0, 0,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Monday"), 1, rg);
+   e_widget_table_object_append(start_table, ob, 0, 1,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Tuesday"), 2, rg);
+   e_widget_table_object_append(start_table, ob, 0, 2,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Wednesday"), 3, rg);
+   e_widget_table_object_append(start_table, ob, 0, 3,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Thursday"), 4, rg);
+   e_widget_table_object_append(start_table, ob, 1, 0,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Friday"), 5, rg);
+   e_widget_table_object_append(start_table, ob, 1, 1,1,1,0,0,0,0);
+   ob = e_widget_radio_add(evas, _("Saturday"), 6, rg);
+   e_widget_table_object_append(start_table, ob, 1,2,1,1,0,0,0,0);
+   e_widget_framelist_object_append(of, start_table);
+   e_widget_table_object_append(o, of, 0, 1,1,1,1,1,1,1);
+
+
+   if (cfdata->calendar->conf->UserCS)
+   {
+
+     /*************  Other Fonts  *************/
+    font_title = e_widget_framelist_add(evas, _("Fonts"),0);
+      of_y = e_widget_table_add(evas, 1);
+      //label on top
+      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Font"),
+                                     1, 0, 1, 1, 1, 1, 1, 1);
+      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Size"),
+                                     2, 0, 1, 1,1, 1, 1, 1);
+     //Font row
+      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Year/Mon"),
+                                     0, 1, 1, 1, 1, 1, 1, 1);
+     {
+        entry = e_widget_entry_add(evas, &YTC_Ptr->font);
+        e_widget_min_size_set(entry, 100, 1);
+        e_widget_table_object_append(of_y, entry, 1,1,1,1,1,1,1,1);
+     } 
+     e_widget_table_object_append(of_y, e_widget_slider_add(evas, 1, 0, _("%1.2f"),4,48,1,0,NULL, &(YTC_Ptr->size), 60), 2, 1, 1, 1, 1, 1, 1, 1);
+
+      //label for 2nd set
+      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Day"),
+                                     0, 2, 1, 1, 1, 1, 1, 1);
+     //Font row
+     e_widget_table_object_append(of_y, e_widget_entry_add(evas, &DTCs_Ptr->font),
+                                     1, 2, 1, 1, 1, 1, 1, 1);
+
+     e_widget_table_object_append(of_y, e_widget_slider_add(evas, 1, 0, _("%1.2f"),4,48,1,0,NULL, &(DTCs_Ptr->size), 60), 2, 2, 1, 1, 1, 1, 1, 1);
+      //label for 3rd set
+      e_widget_table_object_append(of_y, e_widget_label_add(evas, "Date"),
+                                     0, 3, 1, 1, 1, 1, 1, 1);
+      //Font row
+      e_widget_table_object_append(of_y, e_widget_entry_add(evas, &TC_Ptr->font),
+                                     1, 3, 1, 1, 1, 1, 1, 1);
+      e_widget_table_object_append(of_y, e_widget_slider_add(evas, 1, 0, _("%1.2f"),4,48,1,0,NULL, &(TC_Ptr->size), 60), 2, 3, 1, 1, 1, 1, 1, 1);
+
+      e_widget_framelist_object_append(font_title, of_y);
+      e_widget_table_object_append(o, font_title, 1,0,1,1,0,0,0,0);
+
+
+   	start_tableB = e_widget_table_add(evas, 0);
+   	ofB = e_widget_framelist_add(evas, _("Configure Colors"), 0);
+	e_widget_table_object_append(start_tableB,e_widget_button_add(evas,"Today",NULL,e_int_config_calendar_today,con,calendar),0,0,1,1,0,0,0,0);
+	e_widget_table_object_append(start_tableB,e_widget_button_add(evas,"Other",NULL,e_int_config_calendar_other,con,calendar),0,1,1,1,0,0,0,0);
+    	e_widget_table_object_append(start_tableB,e_widget_button_add(evas,"Weekend",NULL,e_int_config_calendar_weekend,con,calendar),1,0,1,1,0,0,0,0);
+    	e_widget_table_object_append(start_tableB,e_widget_button_add(evas,"Weekday",NULL,e_int_config_calendar_weekday,con,calendar),1,1,1,1,0,0,0,0);
+   	e_widget_framelist_object_append(ofB, start_tableB);
+   	e_widget_table_object_append(o, ofB, 1, 1,1,1,1,1,1,1);
+   }
+
+//Add option to read config file
+/*  	mi = e_menu_item_new(face->menu);
+   	e_menu_item_label_set(mi, _("Read Conf Files"));
+   	e_menu_item_callback_set(mi, read_conf_files, calendar); 
+
+*/
+   return o;
 }
