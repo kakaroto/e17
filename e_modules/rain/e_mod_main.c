@@ -15,7 +15,7 @@ static void        _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *m
 static void        _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *i);
 static void        _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
 static void        _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi);
-static void 		_rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+static void 	   _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 E_Module_Api e_modapi =
@@ -24,7 +24,8 @@ E_Module_Api e_modapi =
      "Rain"
 };
 
-void *e_modapi_init(E_Module *m)
+void 
+*e_modapi_init(E_Module *m)
 {
    Rain *rain;
 
@@ -33,7 +34,8 @@ void *e_modapi_init(E_Module *m)
    return rain;
 }
 
-int e_modapi_shutdown(E_Module *m)
+int 
+e_modapi_shutdown(E_Module *m)
 {
    Rain *rain;
 
@@ -51,7 +53,8 @@ int e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-int e_modapi_save(E_Module *m)
+int 
+e_modapi_save(E_Module *m)
 {
    Rain *rain;
 
@@ -61,13 +64,15 @@ int e_modapi_save(E_Module *m)
    return 1;
 }
 
-int e_modapi_info(E_Module *m)
+int 
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
-int e_modapi_about(E_Module *m)
+int 
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Rain Module"),
 			_("This is a simple module to display some rain on the desktop.<br>It can display clouds too, if you like clouds."));
@@ -88,7 +93,8 @@ e_modapi_config(E_Module *m)
 }
 
 /* module private routines */
-static Rain *_rain_init(E_Module *m)
+static Rain 
+*_rain_init(E_Module *m)
 {
    Rain *rain;
    Evas_List *managers, *l, *l2;
@@ -145,7 +151,8 @@ static Rain *_rain_init(E_Module *m)
    return rain;
 }
 
-static void _rain_clouds_free(Rain *rain)
+static void 
+_rain_clouds_free(Rain *rain)
 {
    while (rain->clouds)
      {
@@ -157,7 +164,8 @@ static void _rain_clouds_free(Rain *rain)
      }
 }
 
-static void _rain_drops_free(Rain *rain)
+static void 
+_rain_drops_free(Rain *rain)
 {
    while (rain->drops)
      {
@@ -170,7 +178,8 @@ static void _rain_drops_free(Rain *rain)
      }
 }
 
-static void _rain_shutdown(Rain *rain)
+static void 
+_rain_shutdown(Rain *rain)
 {
    free(rain->conf);
    E_CONFIG_DD_FREE(rain->conf_edd);
@@ -189,7 +198,8 @@ static void _rain_shutdown(Rain *rain)
    free(rain);
 }
 
-static E_Menu *_rain_config_menu_new(Rain *rain)
+static E_Menu 
+*_rain_config_menu_new(Rain *rain)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -203,7 +213,8 @@ static E_Menu *_rain_config_menu_new(Rain *rain)
    return mn;
 }
 
-static void _rain_canvas_reset(Rain *rain)
+static void 
+_rain_canvas_reset(Rain *rain)
 {
    _rain_clouds_free(rain);
    _rain_drops_free(rain);
@@ -214,7 +225,8 @@ static void _rain_canvas_reset(Rain *rain)
    _rain_drops_load('l', rain);
 }
 
-static void _rain_clouds_load(Rain *rain)
+static void 
+_rain_clouds_load(Rain *rain)
 {
    Evas_Object *o;
    int tw, th, i;
@@ -244,7 +256,8 @@ static void _rain_clouds_load(Rain *rain)
      }
 }
 
-static void _rain_drops_load(char type, Rain *rain)
+static void 
+_rain_drops_load(char type, Rain *rain)
 {
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
@@ -297,7 +310,8 @@ static void _rain_drops_load(char type, Rain *rain)
      }
 }
 
-static int _rain_cb_animator(void *data)
+static int 
+_rain_cb_animator(void *data)
 {
    Rain *rain;
    Evas_List *next;
@@ -323,7 +337,8 @@ static int _rain_cb_animator(void *data)
    return 1;
 }
 
-static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+static void 
+_rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Rain *r;
    E_Container *con;
@@ -334,7 +349,8 @@ static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    _config_rain_module(con, r);
 }
 
-void _rain_cb_config_updated(void *data)
+void 
+_rain_cb_config_updated(void *data)
 {
    Rain *r;
 

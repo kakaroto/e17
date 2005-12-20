@@ -52,7 +52,7 @@ E_Module_Api e_modapi =
 };
 
 void 
-*e_modapi_init (E_Module *m)
+*e_modapi_init(E_Module *m)
 {
    Mount *mnt;
 
@@ -62,7 +62,7 @@ void
 }
 
 int 
-e_modapi_shutdown (E_Module *m)
+e_modapi_shutdown(E_Module *m)
 {
    Mount *mnt;
 
@@ -81,7 +81,7 @@ e_modapi_shutdown (E_Module *m)
 }
 
 int 
-e_modapi_save (E_Module *m)
+e_modapi_save(E_Module *m)
 {
    Mount *mnt;
 
@@ -93,19 +93,20 @@ e_modapi_save (E_Module *m)
 }
 
 int 
-e_modapi_info (E_Module *m)
+e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
 int 
-e_modapi_about (E_Module *m)
+e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Mount Module"),
 			_("This is a mount module to mount/unmount devices."));
    return 1;
 }
+
 int
 e_modapi_config(E_Module *m)
 {
@@ -119,14 +120,14 @@ e_modapi_config(E_Module *m)
 
 /* Begin Private Module Routines */
 static void 
-_setup_mountpoints (Mount *mnt)
+_setup_mountpoints(Mount *mnt)
 {
    /* Parse fstab for user mountable devices*/
    _parse_fstab(mnt);
 }
 
 static void 
-_parse_fstab (Mount *mnt)
+_parse_fstab(Mount *mnt)
 {
    FILE *f;
    char s[1024];
@@ -152,14 +153,14 @@ _parse_fstab (Mount *mnt)
 	     info[i] = NULL;
 	  }
 
-	     /* parse tokens we need */
+	/* parse tokens we need */
 	i = 0;
 	token = strtok(s, " \t");
 	if (token) info[i++] = strdup(token);
 	while ((token = strtok(NULL, " \t")) && (i < 4))
 	  info[i++] = strdup(token);
 
-	     /* see if device is mountable by user */
+	/* see if device is mountable by user */
 	user_mnt = 0;
 	p = info[3];
 	while (p = strstr(p, "user"))
@@ -247,7 +248,6 @@ _parse_fstab (Mount *mnt)
 	     point->mounted = _is_mounted(point);
 	     mnt->mntpoints = evas_list_append(mnt->mntpoints, point);
 	  }
-
      }
 
    for (i = 0; i < 4; i++)
@@ -260,7 +260,7 @@ _parse_fstab (Mount *mnt)
 }
 
 static int 
-_parse_file (char *fl, Mount_Point *mntpoint)
+_parse_file(char *fl, Mount_Point *mntpoint)
 {
    FILE *f;
    char s[1024];
@@ -291,7 +291,7 @@ _parse_file (char *fl, Mount_Point *mntpoint)
 }
 
 static int 
-_is_mounted (Mount_Point *mntpoint)
+_is_mounted(Mount_Point *mntpoint)
 {
    int mounted;
 
@@ -307,7 +307,7 @@ _is_mounted (Mount_Point *mntpoint)
 }
 
 static void 
-_mount_free (Mount *mnt)
+_mount_free(Mount *mnt)
 {
    _mount_box_free(mnt->box);
 
@@ -324,7 +324,7 @@ _mount_free (Mount *mnt)
 }
 
 static void 
-_mount_box_free (Mount_Box *mntbox)
+_mount_box_free(Mount_Box *mntbox)
 {
    if (mntbox->con) e_object_unref(E_OBJECT(mntbox->con));
    if (mntbox->menu) e_object_del(E_OBJECT(mntbox->menu));
@@ -347,7 +347,7 @@ _mount_box_free (Mount_Box *mntbox)
 }
 
 static void 
-_mount_box_icon_free (Mount_Icon *mnticon)
+_mount_box_icon_free(Mount_Icon *mnticon)
 {
    mnticon->mntbox->icons = evas_list_remove(mnticon->mntbox->icons, mnticon);
 
@@ -360,7 +360,7 @@ _mount_box_icon_free (Mount_Icon *mnticon)
 }
 
 static Mount 
-*_mount_new (E_Module *m)
+*_mount_new(E_Module *m)
 {
    Mount *mnt;
    Evas_List *managers, *l, *l2, *box_list;
@@ -453,7 +453,7 @@ static Mount
 }
 
 static void 
-_mount_config_menu_new (Mount *mnt)
+_mount_config_menu_new(Mount *mnt)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -463,7 +463,7 @@ _mount_config_menu_new (Mount *mnt)
 }
 
 static int 
-_mount_box_init (Mount_Box *mntbox)
+_mount_box_init(Mount_Box *mntbox)
 {
    Evas_Object *o;
    Evas_List *l;
@@ -566,7 +566,7 @@ _mount_box_init (Mount_Box *mntbox)
 }
 
 static void 
-_mount_box_menu_new (Mount_Box *mntbox)
+_mount_box_menu_new(Mount_Box *mntbox)
 {
    E_Menu *mn;
    E_Menu_Item *mi;
@@ -596,7 +596,7 @@ _mount_box_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void 
-_mount_box_enable (Mount_Box *mntbox)
+_mount_box_enable(Mount_Box *mntbox)
 {
    mntbox->conf->enabled = 1;
    if (mntbox->bar_object) evas_object_show(mntbox->bar_object);
@@ -606,7 +606,7 @@ _mount_box_enable (Mount_Box *mntbox)
 }
 
 static void 
-_mount_box_disable (Mount_Box *mntbox)
+_mount_box_disable(Mount_Box *mntbox)
 {
    mntbox->conf->enabled = 0;
    if (mntbox->bar_object) evas_object_hide(mntbox->bar_object);
@@ -616,7 +616,7 @@ _mount_box_disable (Mount_Box *mntbox)
 }
 
 static void 
-_mount_box_cb_menu_edit (void *data, E_Menu *mn, E_Menu_Item *mi)
+_mount_box_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi)
 {
    Mount_Box *mntbox;
 
@@ -625,7 +625,7 @@ _mount_box_cb_menu_edit (void *data, E_Menu *mn, E_Menu_Item *mi)
 }
 
 static void 
-_mount_box_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
+_mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Mount_Box *mntbox;
    Evas_Coord x, y, w, h;
@@ -651,7 +651,7 @@ _mount_box_cb_gmc_change (void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
 }
 
 static Mount_Icon 
-*_mount_icon_new (Mount_Box *mntbox, Mount_Point *point)
+*_mount_icon_new(Mount_Box *mntbox, Mount_Point *point)
 {
    Mount_Icon *mnticon;
    Evas_Object *o;
@@ -725,7 +725,7 @@ static Mount_Icon
 }
 
 static void 
-_mount_box_cb_intercept_move (void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
+_mount_box_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
    Mount_Box *mntbox;
 
@@ -737,7 +737,7 @@ _mount_box_cb_intercept_move (void *data, Evas_Object *o, Evas_Coord x, Evas_Coo
 }
 
 static void 
-_mount_box_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
+_mount_box_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
    Mount_Box *mntbox;
 
@@ -749,7 +749,7 @@ _mount_box_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_C
 }
 
 static void 
-_mount_icon_cb_intercept_move (void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
+_mount_icon_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
    Mount_Icon *mnticon;
 
@@ -762,7 +762,7 @@ _mount_icon_cb_intercept_move (void *data, Evas_Object *o, Evas_Coord x, Evas_Co
 }
 
 static void 
-_mount_icon_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
+_mount_icon_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
    Mount_Icon *mnticon;
 
@@ -775,7 +775,7 @@ _mount_icon_cb_intercept_resize (void *data, Evas_Object *o, Evas_Coord w, Evas_
 }
 
 static void 
-_mount_box_iconsize_change (Mount_Box *mntbox)
+_mount_box_iconsize_change(Mount_Box *mntbox)
 {
    Evas_List *l;
    Evas_Coord w, h, x, y;
@@ -839,7 +839,7 @@ _mount_box_iconsize_change (Mount_Box *mntbox)
 }
 
 static void 
-_change_orient_horiz (Mount *mnt)
+_change_orient_horiz(Mount *mnt)
 {
    Evas_List *l2;
    Evas_Coord w, h, x, y;
@@ -890,7 +890,7 @@ _change_orient_horiz (Mount *mnt)
 }
 
 static void 
-_change_orient_vert (Mount *mnt)
+_change_orient_vert(Mount *mnt)
 {
    Evas_List *l2;
    Evas_Coord w, h, x, y;
@@ -941,7 +941,7 @@ _change_orient_vert (Mount *mnt)
 }
 
 static void 
-_mount_mountpoint (Mount_Icon *mnticon)
+_mount_mountpoint(Mount_Icon *mnticon)
 {
    char buf[1024];
    Ecore_Exe *x;
@@ -954,7 +954,7 @@ _mount_mountpoint (Mount_Icon *mnticon)
 }
 
 static void 
-_unmount_mountpoint (Mount_Icon *mnticon)
+_unmount_mountpoint(Mount_Icon *mnticon)
 {
    char buf[1024];
    Ecore_Exe *x;
@@ -967,7 +967,7 @@ _unmount_mountpoint (Mount_Icon *mnticon)
 }
 
 static void 
-_eject_mountpoint (Mount_Icon *mnticon)
+_eject_mountpoint(Mount_Icon *mnticon)
 {
    char buf[1024];
    Ecore_Exe *x;
@@ -980,7 +980,7 @@ _eject_mountpoint (Mount_Icon *mnticon)
 }
 
 static void 
-_mount_box_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_info)
+_mount_box_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
    Mount_Box *mntbox;
@@ -1003,7 +1003,7 @@ _mount_box_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_inf
 }
 
 static void 
-_set_state (Mount_Icon *ic)
+_set_state(Mount_Icon *ic)
 {
    if (ic->mntpoint->mounted)
      {
@@ -1016,7 +1016,7 @@ _set_state (Mount_Icon *ic)
 }
 
 static void 
-_mount_icon_cb_edje_mouse_down (void *data, Evas_Object *o, const char *emission, const char *source)
+_mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    Mount_Icon *ic;
    int ret;

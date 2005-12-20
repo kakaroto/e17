@@ -251,7 +251,6 @@ _snow_trees_load(Snow *snow)
 	evas_object_show(o);
 	snow->trees = evas_list_append(snow->trees, o);
      }
-
 }
 
 static void

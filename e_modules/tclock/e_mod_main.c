@@ -208,7 +208,7 @@ static TClock
 }
 
 static void
-_tclock_shutdown (TClock *tclock)
+_tclock_shutdown(TClock *tclock)
 {
    Evas_List *list;
 

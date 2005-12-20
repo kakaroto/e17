@@ -248,7 +248,6 @@ static Screen
 	       }
 	  }
      }
-
    return e;
 }
 
@@ -520,7 +519,6 @@ char
 	loctime = localtime(&t);
 	strftime(buff, sizeof(buff), "%Y-%m-%d-%H%M%S", loctime);
 	snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
-	//printf("Buff: %s\n", buff);
 	return strdup(buff);
      }
    else
