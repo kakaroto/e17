@@ -189,6 +189,8 @@ typedef enum evfs_progress_type {
 } evfs_progress_type;
 
 typedef struct evfs_event_progress {
+	char* file_from;
+	char* file_to;
 	double file_progress;
 	evfs_progress_type type;
 } evfs_event_progress;
@@ -207,7 +209,7 @@ typedef struct evfs_event {
 	evfs_event_id_notify id_notify;
 	evfs_event_file_monitor file_monitor;
 	evfs_event_stat stat;	
-	evfs_event_progress progress;
+	evfs_event_progress* progress;
 
 	evfs_event_data data;
 }

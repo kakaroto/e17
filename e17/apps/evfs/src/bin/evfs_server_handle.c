@@ -203,7 +203,7 @@ void evfs_handle_dir_list_command(evfs_client* client, evfs_command* command) {
 
 }
 
-void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
+void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_command* root_command) {
 	evfs_plugin* plugin;
 	evfs_plugin* dst_plugin;
 	
@@ -244,7 +244,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 				progress = (double)((double)count / (double)file_stat.st_size * 100);
 				if (progress % 1 == 0 && last_notify_progress < progress) {
 					/*printf ("Percent complete: %d\n", progress);*/
-					evfs_file_progress_event_create(client,command,progress, EVFS_PROGRESS_TYPE_CONTINUE);
+					evfs_file_progress_event_create(client,command, root_command,progress, EVFS_PROGRESS_TYPE_CONTINUE);
 					last_notify_progress = progress;
 				}
 			
@@ -299,7 +299,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 					
 					//printf("Copy file '%s' to %s\n", file->path, destination_file);
 
-					evfs_handle_file_copy(client, recursive_command);
+					evfs_handle_file_copy(client, recursive_command, root_command);
 					
 					evfs_cleanup_filereference(file);
 					evfs_cleanup_command(recursive_command, 1);
@@ -311,11 +311,10 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command) {
 			
 		}
 		
-		
+		/*Only send '100%' event when we're back at the top, or we aren't recursive*/
+		if (command == root_command) 
+			evfs_file_progress_event_create(client,command, root_command,100, EVFS_PROGRESS_TYPE_DONE);
 
-		
-
-		evfs_file_progress_event_create(client,command,100, EVFS_PROGRESS_TYPE_DONE);
 		
 	} else {
 		printf("Could not get plugins for both source and dest: (%s:%s)\n",command->file_command.files[0]->plugin_uri, command->file_command.files[1]->plugin_uri );

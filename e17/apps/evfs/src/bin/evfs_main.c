@@ -185,7 +185,7 @@ void evfs_handle_command(evfs_client* client, evfs_command* command) {
 			break;
 		case EVFS_CMD_FILE_COPY:
 			printf("File copy handler\n");
-			evfs_handle_file_copy(client,command);
+			evfs_handle_file_copy(client,command,command);
 			break;
 		default: printf("Warning - unhandled command %d\n", command->type);
 			 break;

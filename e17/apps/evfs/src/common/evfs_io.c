@@ -42,6 +42,8 @@ int evfs_io_initialise() {
 			      (void  (*) (void *))evas_hash_free);
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "progress", file_progress, EET_T_DOUBLE);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "file_from",file_from, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "file_to",file_to, EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_progress_event_edd, evfs_event_progress, "type", type, EET_T_INT);
 
 
@@ -143,9 +145,9 @@ void evfs_write_file_read_event(evfs_client* client, evfs_event* event) {
 }
 
 
-void evfs_write_progress_event(evfs_client* client, evfs_event* event) {
+void evfs_write_progress_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	int size_ret = 0;
-	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, &event->progress, &size_ret);
+	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress, &size_ret);
 
 	evfs_write_ecore_ipc_client_message(client->client, 
 		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,
@@ -174,7 +176,7 @@ void evfs_write_event(evfs_client* client, evfs_command* command, evfs_event* ev
 					   break;
 		case EVFS_EV_DIR_LIST:	   evfs_write_list_event(client,event);
 					   break;
-		case EVFS_EV_FILE_PROGRESS: evfs_write_progress_event(client,event);
+		case EVFS_EV_FILE_PROGRESS: evfs_write_progress_event(client,command, event);
 					    break;
 
 		case EVFS_EV_FILE_OPEN: printf ("Open event send\n"); break; /*File open has no additional info - fd is in filereference */
@@ -218,9 +220,9 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 
 		case EVFS_EV_PART_PROGRESS: {
 			evfs_event_progress* pg = eet_data_descriptor_decode(_evfs_progress_event_edd, msg->data, msg->len);
-			memcpy(&event->progress, pg, sizeof(evfs_event_progress));
-			free(pg);
+			event->progress = pg;
 
+			printf("%s:%s\n", pg->file_from, pg->file_to);
 		}
 		break;
 

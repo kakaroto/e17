@@ -62,6 +62,13 @@ void evfs_cleanup_file_read_event(evfs_event* event) {
 		free(event->data.bytes);
 }
 
+void evfs_cleanup_progress_event(evfs_event* event) {
+	free(event->progress->file_from);
+	free(event->progress->file_to);
+	free(event->progress);
+	
+}
+
 void evfs_cleanup_event(evfs_event* event) {
 	evfs_cleanup_command(&event->resp_command, EVFS_CLEANUP_PRESERVE_COMMAND);
 
@@ -74,6 +81,9 @@ void evfs_cleanup_event(evfs_event* event) {
 			break;
 		case EVFS_EV_FILE_READ:
 			evfs_cleanup_file_read_event(event);
+			break;
+		case EVFS_EV_FILE_PROGRESS:
+			evfs_cleanup_progress_event(event);
 			break;
 	}
 
