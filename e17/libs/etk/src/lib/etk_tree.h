@@ -37,14 +37,22 @@ enum _Etk_Tree_Mode
 };
 
 /**
- * @struct Etk_Tree_Node
- * @brief A node of a tree contains several rows
+ * @struct Etk_Tree_Row
+ * @brief A row of a tree
  */
-struct _Etk_Tree_Node
+struct _Etk_Tree_Row
 {
-   Etk_Tree_Row *row;
-   Etk_Tree_Node *parent;
-   Evas_List *child_rows;
+   Etk_Tree *tree;
+
+   Etk_Tree_Row *prev;
+   Etk_Tree_Row *next;
+   Etk_Tree_Row *parent;
+   Etk_Tree_Row *first_child;
+   Etk_Tree_Row *last_child;
+   
+   void **cells_data;
+   void *data;
+   
    int num_visible_children;
    int num_parent_children;
    Etk_Bool expanded;
@@ -73,8 +81,8 @@ struct _Etk_Tree
    int col_to_resize_initial_x;
    Etk_Bool resize_pointer_shown;
    
-   Etk_Tree_Node root;
-   Etk_Tree_Node *last_selected;
+   Etk_Tree_Row root;
+   Etk_Tree_Row *last_selected;
 
    Evas_Object *headers_clip;
    Evas_List *rows_widgets;
@@ -122,20 +130,6 @@ struct _Etk_Tree_Col
    Evas_Object *separator;
 
    Etk_Widget *header;
-};
-
-/**
- * @struct Etk_Tree_Row
- * @brief A row of a tree
- */
-struct _Etk_Tree_Row
-{
-   /* private: */
-   Etk_Tree *tree;
-   Etk_Tree_Node node;
-
-   void **cells_data;
-   void *data;
 };
 
 Etk_Type *etk_tree_type_get();
@@ -187,6 +181,8 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
 void etk_tree_row_del(Etk_Tree_Row *row);
 void etk_tree_clear(Etk_Tree *tree);
 
+Etk_Tree_Row *etk_tree_prev_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children);
+Etk_Tree_Row *etk_tree_next_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children);
 void etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
 void *etk_tree_row_data_get(Etk_Tree_Row *row);
 

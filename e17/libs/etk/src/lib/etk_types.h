@@ -85,7 +85,6 @@ typedef struct _Etk_Tree Etk_Tree;
 typedef enum _Etk_Tree_Mode Etk_Tree_Mode;
 typedef struct _Etk_Tree_Col Etk_Tree_Col;
 typedef struct _Etk_Tree_Row Etk_Tree_Row;
-typedef struct _Etk_Tree_Node Etk_Tree_Node;
 typedef struct _Etk_Tree_Model Etk_Tree_Model;
 typedef enum _Etk_Tree_Model_Image_Type Etk_Tree_Model_Image_Type;
 typedef struct _Etk_Range Etk_Range;

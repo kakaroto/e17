@@ -101,6 +101,7 @@ static void _etk_tree_expander_clicked_cb(Etk_Object *object, void *event_info, 
 static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data);
+static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_up_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_header_mouse_move_cb(Etk_Object *object, void *event, void *data);
@@ -108,19 +109,19 @@ static void _etk_tree_header_mouse_in_cb(Etk_Object *object, void *event, void *
 static void _etk_tree_header_mouse_out_cb(Etk_Object *object, void *event, void *data);
 
 static void _etk_tree_update(Etk_Tree *tree);
-static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **items_objects,
+static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *first_row, Evas_List **items_objects,
    int x, int w, int h, int xoffset, int yoffset, int first_row_id, int first_row_color);
-static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *node, va_list args);
+static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row, va_list args);
 static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree);
 static void _etk_tree_row_objects_free(Etk_Tree_Row_Objects *row_objects, Etk_Tree *tree);
 static void _etk_tree_row_free(Etk_Tree_Row *row);
 static void _etk_tree_col_realize(Etk_Tree *tree, int col_nth);
 static Etk_Tree_Col *etk_tree_col_to_resize_get(Etk_Tree_Col *col, int x);
 
-static void _etk_tree_node_selected_rows_get(Etk_Tree_Node *node, Evas_List **selected_rows);
-static void _etk_tree_node_select_all(Etk_Tree_Node *node);
-static void _etk_tree_node_unselect_all(Etk_Tree_Node *node);
-static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modifier *modifiers);
+static void _etk_tree_row_selected_rows_get(Etk_Tree_Row *row, Evas_List **selected_rows);
+static void _etk_tree_row_select_all(Etk_Tree_Row *row);
+static void _etk_tree_row_unselect_all(Etk_Tree_Row *row);
+static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifier *modifiers);
 
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 
@@ -639,7 +640,7 @@ Etk_Bool etk_tree_multiple_select_get(Etk_Tree *tree)
 }
 
 /**
- * @brief Selects all the node of the tree. Multiple selection has to be enabled with etk_tree_multiple_select_set()
+ * @brief Selects all the rows of the tree. Multiple selection has to be enabled with etk_tree_multiple_select_set()
  * @param tree a tree
  */
 void etk_tree_select_all(Etk_Tree *tree)
@@ -647,13 +648,13 @@ void etk_tree_select_all(Etk_Tree *tree)
    if (!tree || !tree->multiple_select)
       return;
 
-   _etk_tree_node_select_all(&tree->root);
+   _etk_tree_row_select_all(&tree->root);
    etk_signal_emit(_etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
 /**
- * @brief Unselects all the node of the tree
+ * @brief Unselects all the rows of the tree
  * @param tree a tree
  */
 void etk_tree_unselect_all(Etk_Tree *tree)
@@ -664,11 +665,11 @@ void etk_tree_unselect_all(Etk_Tree *tree)
    if (tree->last_selected && tree->last_selected->selected)
    {
       tree->last_selected->selected = FALSE;
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected->row);
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected);
    }
    if (tree->multiple_select)
    {
-      _etk_tree_node_unselect_all(&tree->root);
+      _etk_tree_row_unselect_all(&tree->root);
       etk_signal_emit(_etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
    }
    etk_widget_redraw_queue(ETK_WIDGET(tree));
@@ -710,7 +711,7 @@ Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...)
       return NULL;
 
    va_start(args, row);
-   new_row = _etk_tree_row_new_valist(row->tree, &row->node, args);
+   new_row = _etk_tree_row_new_valist(row->tree, row, args);
    va_end(args);
 
    return new_row;
@@ -722,26 +723,24 @@ Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...)
  */
 void etk_tree_row_del(Etk_Tree_Row *row)
 {
-   Evas_List *l;
-   Etk_Tree_Node *n;
+   Etk_Tree_Row *r;
 
-   if (!row || !(l = evas_list_find_list(row->node.parent->child_rows, row)))
+   if (!row)
       return;
 
-   for (n = row->tree->last_selected; n; n = n->parent)
+   for (r = row->tree->last_selected; r; r = r->parent)
    {
-      if (&row->node == n)
+      if (row == r)
       {
          row->tree->last_selected = NULL;
          break;
       }
    }
-   
-   _etk_tree_row_free(l->data);
-   row->node.parent->child_rows = evas_list_remove_list(row->node.parent->child_rows, l);
+   _etk_tree_row_free(row);
    
    if (!row->tree->frozen)
    {
+      /* TODO: scroll size ?? */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
@@ -756,15 +755,13 @@ void etk_tree_clear(Etk_Tree *tree)
    if (!tree)
       return;
 
-   while (tree->root.child_rows)
-   {
-      _etk_tree_row_free(tree->root.child_rows->data);
-      tree->root.child_rows = evas_list_remove_list(tree->root.child_rows, tree->root.child_rows);
-   }
+   while (tree->root.first_child)
+      _etk_tree_row_free(tree->root.first_child);
    tree->last_selected = NULL;
    
    if (!tree->frozen)
    {
+      /* TODO: scroll size ?? */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
@@ -846,6 +843,71 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
 }
 
 /**
+ * @brief Gets the previous row of the tree
+ * @param row the current row
+ * @param walking_through_hierarchy if TRUE, the previous row can be a row located on a different level in the hierarchy. @n
+ * This setting has no effect if the tree is in the list mode
+ * @param include_collapsed_children if TRUE, the previous row can be a child of a collapsed row
+ * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
+ * @return Returns the previous row of the tree
+ */
+Etk_Tree_Row *etk_tree_prev_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!row)
+      return NULL;
+   
+   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
+      return row->prev;
+   else
+   {
+      if (!row->prev)
+         return (row->parent != &row->tree->root) ? row->parent : NULL;
+      else
+      {
+         Etk_Tree_Row *prev;
+         
+         for (prev = row->prev; prev && (include_collapsed_children || prev->expanded) && prev->last_child; prev = prev->last_child);
+         return prev;
+      }
+   }
+}
+
+/**
+ * @brief Gets the next row of the tree
+ * @param row the current row
+ * @param walking_through_hierarchy if TRUE, the next row can be a row located on a different level in the hierarchy. @n
+ * This setting has no effect if the tree is in the list mode
+ * @param include_collapsed_children if TRUE, the next row can be a child of a collapsed row
+ * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
+ * @return Returns the next row of the tree
+ */
+Etk_Tree_Row *etk_tree_next_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!row)
+      return NULL;
+   
+   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
+      return row->next;
+   else
+   {
+      if ((include_collapsed_children || row->expanded) && row->first_child)
+         return row->first_child;
+      else
+      {
+         if (row->next)
+            return row->next;
+         else
+         {
+            Etk_Tree_Row *next;
+            
+            for (next = row->parent; next && !next->next; next = next->parent);
+            return next ? next->next : NULL;
+         }
+      }
+   }
+}
+
+/**
  * @brief Sets a value to the data member of a row. The date could be retrieved with @a etk_tree_row_data_get()
  * @param row a row
  * @param data the data to set
@@ -877,7 +939,7 @@ void etk_tree_row_select(Etk_Tree_Row *row)
 {
    if (!row)
       return;
-   _etk_tree_node_select(row->tree, &row->node, NULL);
+   _etk_tree_row_select(row->tree, row, NULL);
 }
 
 /**
@@ -886,10 +948,10 @@ void etk_tree_row_select(Etk_Tree_Row *row)
  */
 void etk_tree_row_unselect(Etk_Tree_Row *row)
 {
-   if (!row || !row->node.selected)
+   if (!row || !row->selected)
       return;
    
-   row->node.selected = FALSE;
+   row->selected = FALSE;
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
@@ -904,7 +966,7 @@ Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree)
 {
    if (!tree || !tree->last_selected || !tree->last_selected->selected)
       return NULL;
-   return tree->last_selected->row;
+   return tree->last_selected;
 }
 
 /**
@@ -927,7 +989,7 @@ Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
       selected_rows = evas_list_append(selected_rows, tree->last_selected);
    }
    else
-      _etk_tree_node_selected_rows_get(&tree->root, &selected_rows);
+      _etk_tree_row_selected_rows_get(&tree->root, &selected_rows);
 
    return selected_rows;
 }
@@ -938,18 +1000,19 @@ Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
  */
 void etk_tree_row_expand(Etk_Tree_Row *row)
 {
-   Etk_Tree_Node *n;
+   Etk_Tree_Row *r;
 
-   if (!row || row->node.expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
+   if (!row || row->expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
       return;
 
-   row->node.expanded = TRUE;
-   for (n = row->node.parent; n && n->expanded; n = n->parent)
-      n->num_visible_children += row->node.num_visible_children;
+   row->expanded = TRUE;
+   for (r = row->parent; r && r->expanded; r = r->parent)
+      r->num_visible_children += row->num_visible_children;
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
+      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
@@ -961,18 +1024,19 @@ void etk_tree_row_expand(Etk_Tree_Row *row)
  */
 void etk_tree_row_collapse(Etk_Tree_Row *row)
 {
-   Etk_Tree_Node *n;
+   Etk_Tree_Row *r;
 
-   if (!row || !row->node.expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
+   if (!row || !row->expanded || !row->tree || (row->tree->mode != ETK_TREE_MODE_TREE))
       return;
 
-   row->node.expanded = FALSE;
-   for (n = row->node.parent; n && n->expanded; n = n->parent)
-      n->num_visible_children -= row->node.num_visible_children;
+   row->expanded = FALSE;
+   for (r = row->parent; r && r->expanded; r = r->parent)
+      r->num_visible_children -= row->num_visible_children;
 
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
+      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
@@ -1238,11 +1302,17 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->resize_pointer_shown = FALSE;
    tree->headers_visible = TRUE;
 
+   tree->root.tree = tree;
    tree->root.parent = NULL;
-   tree->root.child_rows = NULL;
+   tree->root.prev = NULL;
+   tree->root.next = NULL;
+   tree->root.first_child = NULL;
+   tree->root.last_child = NULL;
    tree->root.num_visible_children = 0;
    tree->root.num_parent_children = 0;
    tree->root.expanded = TRUE;
+   tree->root.cells_data = NULL;
+   tree->root.data = NULL;
 
    tree->row_height = 0;
    tree->use_default_row_height = TRUE;
@@ -1266,6 +1336,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    etk_signal_connect("realize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_realize_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
+   etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);
 }
 
 /* Destroys the tree */
@@ -1577,7 +1648,7 @@ static void _etk_tree_expander_clicked_cb(Etk_Object *object, void *event_info, 
    if (!(row = etk_object_data_get(object, "_Etk_Tree::row")))
       return;
 
-   if (row->node.expanded)
+   if (row->expanded)
       etk_tree_row_collapse(row);
    else
       etk_tree_row_expand(row);
@@ -1593,7 +1664,7 @@ static void _etk_tree_row_pressed_cb(Etk_Object *object, void *event_info, void 
       return;
 
    event = event_info;
-   _etk_tree_node_select(row->tree, &row->node, event->modifiers);
+   _etk_tree_row_select(row->tree, row, event->modifiers);
 }
 
 /* Called when the tree is focused */
@@ -1614,6 +1685,54 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
    if (!(tree = ETK_TREE(object)))
       return;
    etk_widget_theme_object_signal_emit(tree->grid, "unfocus");
+}
+
+/* Called when the user presses a key */
+static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Up_Down *key_event = event;
+   Etk_Tree *tree;
+
+   if (!(tree = ETK_TREE(object)))
+      return;
+
+   /* Select the previous visible row */
+   if (strcmp(key_event->key, "Up") == 0)
+   {
+      if (!tree->last_selected)
+      {
+         Etk_Tree_Row *last_row;
+         
+         for (last_row = tree->root.last_child; last_row && last_row->expanded && last_row->last_child; last_row = last_row->last_child);
+         _etk_tree_row_select(tree, last_row, key_event->modifiers);
+      }
+      else
+         _etk_tree_row_select(tree, etk_tree_prev_row_get(tree->last_selected, TRUE, FALSE), key_event->modifiers);
+      
+      etk_widget_event_propagation_stop();
+   }
+   /* Select the next visible row */
+   else if (strcmp(key_event->key, "Down") == 0)
+   {
+      if (!tree->last_selected)
+         _etk_tree_row_select(tree, tree->root.first_child, key_event->modifiers);
+      else
+         _etk_tree_row_select(tree, etk_tree_next_row_get(tree->last_selected, TRUE, FALSE), key_event->modifiers);
+      
+      etk_widget_event_propagation_stop();
+   }
+   /* Expand the row */
+   else if (strcmp(key_event->key, "Right") == 0 && tree->last_selected && tree->last_selected->selected)
+   {
+      etk_tree_row_expand(tree->last_selected);
+      etk_widget_event_propagation_stop();
+   }
+   /* Collapse the row */
+   else if (strcmp(key_event->key, "Left") == 0 && tree->last_selected && tree->last_selected->selected)
+   {
+      etk_tree_row_collapse(tree->last_selected);
+      etk_widget_event_propagation_stop();
+   }
 }
 
 /* Called when the user presses a column header */
@@ -1839,7 +1958,7 @@ static void _etk_tree_update(Etk_Tree *tree)
 }
 
 /* Draws recursively a list of rows and their children */
-static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **items_objects,
+static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *parent_row, Evas_List **items_objects,
    int x, int w, int h, int xoffset, int yoffset, int first_row_id, int first_row_color)
 {
    Etk_Tree_Row *row;
@@ -1847,29 +1966,27 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **
    Etk_Tree_Col *first_visible_col;
    int i, j;
    int first_col_offset;
-   Evas_List *l;
    Etk_Geometry geometry;
 
-   if (!tree || !node || !items_objects)
+   if (!tree || !parent_row || !items_objects)
       return 0;
 
    first_visible_col = NULL;
    for (i = 0; i < tree->num_cols; i++)
    {
       if (tree->columns[i]->visible && (!first_visible_col || first_visible_col->place > tree->columns[i]->place))
-            first_visible_col = tree->columns[i];
+         first_visible_col = tree->columns[i];
    }
    if (!first_visible_col)
       return 0;
    
    first_col_offset = xoffset;
-   if (&tree->root != node || node->num_parent_children > 0)
+   if (&tree->root != parent_row || parent_row->num_parent_children > 0)
       first_col_offset += tree->expander_size;
    
    i = 0;
-   for (l = node->child_rows; l; l = l->next)
+   for (row = parent_row->first_child; row; row = row->next)
    {
-      row = l->data;
       if (first_row_id <= 0)
       {
          int item_y;
@@ -1892,12 +2009,12 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **
          else
             etk_widget_theme_object_signal_emit(row_objects->background, "even");
          
-         if (row->node.selected)
+         if (row->selected)
             etk_widget_theme_object_signal_emit(row_objects->background, "selected");
          else
             etk_widget_theme_object_signal_emit(row_objects->background, "unselected");
          
-         if (evas_list_count(row->node.child_rows) > 0)
+         if (row->first_child)
          {
             geometry.x = x + xoffset;
             geometry.y = item_y + (tree->row_height - tree->expander_size + 1) / 2;
@@ -1910,7 +2027,7 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **
                etk_widget_clip_set(row_objects->expander, first_visible_col->clip);
             }
             etk_widget_size_allocate(row_objects->expander, geometry);
-            etk_widget_theme_object_signal_emit(row_objects->expander, row->node.expanded ? "expand" : "collapse");
+            etk_widget_theme_object_signal_emit(row_objects->expander, row->expanded ? "expand" : "collapse");
             etk_object_data_set(ETK_OBJECT(row_objects->expander), "_Etk_Tree::row", row);
             etk_widget_show(row_objects->expander);
          }
@@ -1932,35 +2049,35 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Node *node, Evas_List **
       }
       first_row_id--;
 
-      if (row->node.child_rows && row->node.expanded)
+      if (row->first_child && row->expanded)
       {
-         i += _etk_tree_rows_draw(tree, &row->node, items_objects, x, w, h, first_col_offset, yoffset + i * tree->row_height, first_row_id, (first_row_color + i) % 2);
-         first_row_id -= row->node.num_visible_children;
+         i += _etk_tree_rows_draw(tree, row, items_objects, x, w, h, first_col_offset, yoffset + i * tree->row_height, first_row_id, (first_row_color + i) % 2);
+         first_row_id -= row->num_visible_children;
       }
    }
 
    return i;
 }
 
-/* Creates a new row and add it to the node */
-static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *node, va_list args)
+/* Creates a new row and append to the list of the children of the row */
+static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row, va_list args)
 {
    Etk_Tree_Row *new_row;
-   Etk_Tree_Node *n;
+   Etk_Tree_Row *r;
    int i;
 
-   if (!tree || !tree->built || !node)
+   if (!tree || !tree->built || !row)
       return NULL;
 
    new_row = malloc(sizeof(Etk_Tree_Row));
    new_row->tree = tree;
-   new_row->node.row = new_row;
-   new_row->node.parent = node;
-   new_row->node.child_rows = NULL;
-   new_row->node.num_visible_children = 0;
-   new_row->node.num_parent_children = 0;
-   new_row->node.expanded = FALSE;
-   new_row->node.selected = FALSE;
+   new_row->parent = row;
+   new_row->first_child = NULL;
+   new_row->last_child = NULL;
+   new_row->num_visible_children = 0;
+   new_row->num_parent_children = 0;
+   new_row->expanded = FALSE;
+   new_row->selected = FALSE;
    new_row->data = NULL;
 
    new_row->cells_data = malloc(sizeof(void *) * tree->num_cols);
@@ -1972,19 +2089,26 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Node *nod
    }
    etk_tree_row_fields_set_valist(new_row, args);
 
-   for (n = new_row->node.parent; n; n = n->parent)
+   for (r = new_row->parent; r; r = r->parent)
    {
-      n->num_visible_children++;
-      if (!n->expanded)
+      r->num_visible_children++;
+      if (!r->expanded)
          break;
    }
-   if ((n = new_row->node.parent) && (n = n->parent))
-      n->num_parent_children++;
+   if ((r = new_row->parent) && (r = r->parent))
+      r->num_parent_children++;
 
-   node->child_rows = evas_list_append(node->child_rows, new_row);
+   new_row->prev = row->last_child;
+   new_row->next = FALSE;
+   if (!row->first_child)
+      row->first_child = new_row;
+   if (row->last_child)
+      row->last_child->next = new_row;
+   row->last_child = new_row;
    
    if (!tree->frozen)
    {
+      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
@@ -2065,7 +2189,7 @@ static void _etk_tree_row_objects_free(Etk_Tree_Row_Objects *row_objects, Etk_Tr
 /* Frees a row */
 static void _etk_tree_row_free(Etk_Tree_Row *row)
 {
-   Etk_Tree_Node *n;
+   Etk_Tree_Row *r;
 
    if (!row)
       return;
@@ -2082,21 +2206,30 @@ static void _etk_tree_row_free(Etk_Tree_Row *row)
       }
       free(row->cells_data);
    }
-
-   while (row->node.child_rows)
+   
+   if (row->parent)
    {
-      _etk_tree_row_free(row->node.child_rows->data);
-      row->node.child_rows = evas_list_remove_list(row->node.child_rows, row->node.child_rows);
+      if (row->parent->first_child == row)
+         row->parent->first_child = row->next;
+      if (row->parent->last_child == row)
+         row->parent->last_child = row->prev;
+      if (row->prev)
+         row->prev->next = row->next;
+      if (row->next)
+         row->next->prev = row->prev;
    }
 
-   for (n = row->node.parent; n; n = n->parent)
+   while (row->first_child)
+      _etk_tree_row_free(row->first_child);
+
+   for (r = row->parent; r; r = r->parent)
    {
-      n->num_visible_children--;
-      if (!n->expanded)
+      r->num_visible_children--;
+      if (!r->expanded)
          break;
    }
-   if ((n = row->node.parent) && (n = n->parent))
-      n->num_parent_children--;
+   if ((r = row->parent) && (r = r->parent))
+      r->num_parent_children--;
    
    free(row);
 }
@@ -2145,72 +2278,65 @@ static Etk_Tree_Col *etk_tree_col_to_resize_get(Etk_Tree_Col *col, int x)
    return NULL;
 }
 
-/* Gets the selected rows of the node */
-static void _etk_tree_node_selected_rows_get(Etk_Tree_Node *node, Evas_List **selected_rows)
+/* Gets the selected child rows of the row */
+static void _etk_tree_row_selected_rows_get(Etk_Tree_Row *row, Evas_List **selected_rows)
 {
-   Evas_List *l;
-   Etk_Tree_Row *row;
+   Etk_Tree_Row *r;
    
-   if (!node || !selected_rows)
+   if (!row || !selected_rows)
       return;
    
-   for (l = node->child_rows; l; l = l->next)
+   for (r = row->first_child; r; r = r->next)
    {
-      row = l->data;
-      if (row->node.selected)
-         *selected_rows = evas_list_append(*selected_rows, row);
-      _etk_tree_node_selected_rows_get(&row->node, selected_rows);
+      if (r->selected)
+         *selected_rows = evas_list_append(*selected_rows, r);
+      _etk_tree_row_selected_rows_get(r, selected_rows);
    }
 }
 
-/* Selects all the child rows of the node */
-static void _etk_tree_node_select_all(Etk_Tree_Node *node)
+/* Selects all the child rows of the row */
+static void _etk_tree_row_select_all(Etk_Tree_Row *row)
 {
-   Evas_List *l;
-   Etk_Tree_Row *row;
+   Etk_Tree_Row *r;
    
-   if (!node)
+   if (!row)
       return;
    
-   for (l = node->child_rows; l; l = l->next)
+   for (r = row->first_child; r; r = r->next)
    {
-      row = l->data;
-      row->node.selected = TRUE;
-      if (row->node.expanded)
-         _etk_tree_node_select_all(&row->node);
+      r->selected = TRUE;
+      if (r->expanded)
+         _etk_tree_row_select_all(r);
    }
 }
 
-/* Unselects all the child rows of the node */
-static void _etk_tree_node_unselect_all(Etk_Tree_Node *node)
+/* Unselects all the child rows of the row */
+static void _etk_tree_row_unselect_all(Etk_Tree_Row *row)
 {
-   Evas_List *l;
-   Etk_Tree_Row *row;
+   Etk_Tree_Row *r;
    
-   if (!node)
+   if (!row)
       return;
 
-   for (l = node->child_rows; l; l = l->next)
+   for (r = row->first_child; r; r = r->next)
    {
-      row = l->data;
-      row->node.selected = FALSE;
-      _etk_tree_node_unselect_all(&row->node);
+      r->selected = FALSE;
+      _etk_tree_row_unselect_all(r);
    }
 }
 
-/* Selects rows in the tree according to the keyboard modifiers and the clicked node */
-static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modifier *modifiers)
+/* Selects rows in the tree according to the keyboard modifiers and the clicked row */
+static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifier *modifiers)
 {
-   if (!tree || !node)
+   if (!tree || !row)
       return;
 
-   /* TODO */
-   if (/*tree->mode == ETK_TREE_MODE_TREE || */!tree->multiple_select || !modifiers)
+   if (!tree->multiple_select || !modifiers)
    {
       etk_tree_unselect_all(tree);
-      node->selected = TRUE;
-      tree->last_selected = node;
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
+      row->selected = TRUE;
+      tree->last_selected = row;
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
    }
    else
    {
@@ -2220,54 +2346,52 @@ static void _etk_tree_node_select(Etk_Tree *tree, Etk_Tree_Node *node, Evas_Modi
             etk_tree_unselect_all(tree);
    
          if (!tree->last_selected)
-            node->selected = TRUE;
+            row->selected = TRUE;
          else
          {
             Etk_Bool selected = FALSE;
-            Evas_List *l;
-            Etk_Tree_Row *row;
+            Etk_Tree_Row *r;
 
-            for (l = tree->root.child_rows; l; l = l->next)
+            for (r = tree->root.first_child; r; r = etk_tree_next_row_get(r, TRUE, FALSE))
             {
-               row = l->data;
-               if (&row->node == tree->last_selected || &row->node == node)
+               if (r == tree->last_selected || r == row)
                {
-                  row->node.selected = TRUE;
+                  r->selected = TRUE;
                   selected = !selected;
                }
                else
-                  row->node.selected |= selected;
+                  r->selected |= selected;
             }
             if (selected)
             {
                etk_tree_unselect_all(tree);
-               node->selected = TRUE;
+               row->selected = TRUE;
             }
          }
-         tree->last_selected = node;
-         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
+         tree->last_selected = row;
+         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
       else if (evas_key_modifier_is_set(modifiers, "Control"))
       {
-         if (node->selected)
+         if (row->selected)
          {
-            node->selected = FALSE;
-            tree->last_selected = node;
-            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
+            row->selected = FALSE;
+            tree->last_selected = row;
+            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
          else
          {
-            node->selected = TRUE;
-            tree->last_selected = node;
-            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
+            row->selected = TRUE;
+            tree->last_selected = row;
+            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
       }
       else
       {
          etk_tree_unselect_all(tree);
-         node->selected = TRUE;
-         tree->last_selected = node;
-         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, node->row);
+         row->selected = TRUE;
+         tree->last_selected = row;
+         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
    }
 
