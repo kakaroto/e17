@@ -14,18 +14,14 @@ static void    _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 Config_Face *  _monitor_face_config_init(Config_Face *conf);
 static int     _monitor_face_config_cb_timer(void *data);
 
-static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
-					void *event_info);
-static void _monitor_face_cb_menu_edit(void *data, E_Menu *m, 
-				       E_Menu_Item *mi);
-
+static void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _monitor_cpu_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_mem_real_text_update_callback(Flow_Chart *chart, void *data);
 static void _monitor_mem_swap_text_update_callback(Flow_Chart *chart, void *data);
 static void _monitor_net_in_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data);
-
 static void _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int _monitor_count;
@@ -94,8 +90,7 @@ int
 e_modapi_about(E_Module *module)
 {
    e_module_dialog_show(_("Enlightenment Monitor Module"),
-		       _("A simple module to give E17 a usage monitor "
-		       "for some resources."));
+		       _("A simple module to give E17 a usage monitor for some resources."));
    return 1;
 }
 
@@ -123,8 +118,7 @@ e_modapi_config(E_Module *module)
 static int     
 _monitor_face_config_cb_timer(void *data)
 {
-   e_error_dialog_show(_("Configuration Upgraded"),
-		         data);
+   e_error_dialog_show(_("Configuration Upgraded"), data);
    return 0;
 }
 
@@ -212,9 +206,7 @@ _monitor_new()
 		    {
 		       face->conf = E_NEW(Config_Face, 1);
 		       face->conf = _monitor_face_config_init(face->conf);
-
-		       monitor->conf->faces = 
-			 evas_list_append(monitor->conf->faces, face->conf);
+		       monitor->conf->faces = evas_list_append(monitor->conf->faces, face->conf);
 		    }
 		  else
 		    {
@@ -248,30 +240,17 @@ _monitor_new()
 		   * interfaces, and memory monitor parameters
 		   * according to the configuration.
 		   */
-		  mem_real_ignore_buffers_set(
-				  face->conf->mem_real_ignore_buffers);
-		  mem_real_ignore_cached_set(
-				  face->conf->mem_real_ignore_cached);
-		  
-		  net_interface_set(
-				  face->conf->net_interface);
+		  mem_real_ignore_buffers_set(face->conf->mem_real_ignore_buffers);
+		  mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
+		  net_interface_set(face->conf->net_interface);
+		  wlan_interface_set(face->conf->wlan_interface);
 
-		  wlan_interface_set(
-				  face->conf->wlan_interface);
-
-		  flow_chart_update_rate_set(flow_chart_cpu,
-				  face->conf->cpu_interval);
-		  flow_chart_update_rate_set(flow_chart_mem_real,
-				  face->conf->mem_interval);
-		  flow_chart_update_rate_set(flow_chart_mem_swap,
-				  face->conf->mem_interval);
-		  flow_chart_update_rate_set(flow_chart_net_in,
-				  face->conf->net_interval);
-		  flow_chart_update_rate_set(flow_chart_net_out,
-				  face->conf->net_interval);
-		  flow_chart_update_rate_set(flow_chart_wlan_link,
-				  face->conf->wlan_interval);
-		  
+		  flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
+		  flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
+		  flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
+		  flow_chart_update_rate_set(flow_chart_net_in, face->conf->net_interval);
+		  flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
+		  flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
 	       }
 	  }
      }
@@ -341,7 +320,6 @@ _monitor_face_new(E_Container *con)
    edje_object_part_swallow(face->monitor_object, "items", face->table_object);
    evas_object_show(o);
 
-
    /* setup cpu */
    o = edje_object_add(con->bg_evas);
    face->cpu = o;
@@ -363,8 +341,7 @@ _monitor_face_new(E_Container *con)
    o = evas_object_rectangle_add(con->bg_evas);
    face->cpu_ev_obj = o;
    evas_object_color_set(o, 255,255,255,0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _monitor_face_cb_mouse_down, face);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
    /* setup mem */
@@ -383,8 +360,7 @@ _monitor_face_new(E_Container *con)
    flow_chart_update_rate_set(flow_chart_mem_real, tmp_mem_interval);
    chart_container_chart_add(chart_con, flow_chart_mem_real);
    face->chart_mem = chart_con;   
-   flow_chart_callback_set(flow_chart_mem_real, 
-		           _monitor_mem_real_text_update_callback, face);
+   flow_chart_callback_set(flow_chart_mem_real, _monitor_mem_real_text_update_callback, face);
 
    flow_chart_mem_swap = flow_chart_new();
    flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 255);
@@ -392,15 +368,12 @@ _monitor_face_new(E_Container *con)
    flow_chart_update_rate_set(flow_chart_mem_swap, tmp_mem_interval);
    flow_chart_alignment_set(flow_chart_mem_swap, 0);
    chart_container_chart_add(chart_con, flow_chart_mem_swap);
-   flow_chart_callback_set(flow_chart_mem_swap, 
-		           _monitor_mem_swap_text_update_callback, face);
-
+   flow_chart_callback_set(flow_chart_mem_swap, _monitor_mem_swap_text_update_callback, face);
 
    o = evas_object_rectangle_add(con->bg_evas);
    face->mem_ev_obj = o;
    evas_object_color_set(o, 255,255,255,0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _monitor_face_cb_mouse_down, face);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
    /* setup net */
@@ -419,8 +392,7 @@ _monitor_face_new(E_Container *con)
    flow_chart_update_rate_set(flow_chart_net_in, tmp_net_interval);
    chart_container_chart_add(chart_con, flow_chart_net_in);
    face->chart_net = chart_con;   
-   flow_chart_callback_set(flow_chart_net_in, 
-		           _monitor_net_in_text_update_callcack, face);
+   flow_chart_callback_set(flow_chart_net_in, _monitor_net_in_text_update_callcack, face);
    
    flow_chart_net_out = flow_chart_new();
    flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 255);
@@ -428,15 +400,12 @@ _monitor_face_new(E_Container *con)
    flow_chart_update_rate_set(flow_chart_net_out, tmp_net_interval);
    flow_chart_alignment_set(flow_chart_net_out, 0);
    chart_container_chart_add(chart_con, flow_chart_net_out);
-   flow_chart_callback_set(flow_chart_net_out, 
-		           _monitor_net_out_text_update_callcack, face);
-
+   flow_chart_callback_set(flow_chart_net_out, _monitor_net_out_text_update_callcack, face);
 
    o = evas_object_rectangle_add(con->bg_evas);
    face->net_ev_obj = o;
    evas_object_color_set(o, 255,255,255,0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _monitor_face_cb_mouse_down, face);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
    /* setup wlan */
@@ -455,14 +424,12 @@ _monitor_face_new(E_Container *con)
    flow_chart_update_rate_set(flow_chart_wlan_link, tmp_wlan_interval);
    chart_container_chart_add(chart_con, flow_chart_wlan_link);
    face->chart_wlan = chart_con;
-   flow_chart_callback_set(flow_chart_wlan_link, 
-		           _monitor_wlan_link_text_update_callcack, face);
+   flow_chart_callback_set(flow_chart_wlan_link, _monitor_wlan_link_text_update_callcack, face);
 
    o = evas_object_rectangle_add(con->bg_evas);
    face->wlan_ev_obj = o;
    evas_object_color_set(o, 255,255,255,0);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
-				  _monitor_face_cb_mouse_down, face);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _monitor_face_cb_mouse_down, face);
    evas_object_show(o);
 
    /* setup gadman */
@@ -477,12 +444,10 @@ _monitor_face_new(E_Container *con)
    e_gadman_client_min_size_set(face->gmc, 14, 7);
    e_gadman_client_align_set(face->gmc, 1.0, 1.0);
    e_gadman_client_resize(face->gmc, 160, 40);
-   e_gadman_client_change_func_set(face->gmc, _monitor_face_cb_gmc_change, 
-				   face);
+   e_gadman_client_change_func_set(face->gmc, _monitor_face_cb_gmc_change, face);
    e_gadman_client_load(face->gmc);
 
    evas_event_thaw(con->bg_evas);
-
    return face;
 }
 
@@ -581,12 +546,12 @@ _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
 static void 
 _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data)
 {
-  Monitor_Face *face;
-  char buf[64];
-  long link = wlan_link_get();
-  face = data;
-  snprintf(buf, 64, "LNK: %ld", link);
-  edje_object_part_text_set(face->wlan, "wlan-link-text", buf);
+   Monitor_Face *face;
+   char buf[64];
+   long link = wlan_link_get();
+   face = data;
+   snprintf(buf, 64, "LNK: %ld", link);
+   edje_object_part_text_set(face->wlan, "wlan-link-text", buf);
 }
 
 static void
@@ -622,19 +587,16 @@ _monitor_face_free(Monitor_Face *face)
 }
 
 static void
-_monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, 
-			    E_Gadman_Change change)
+_monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Monitor_Face *face;
    Evas_Coord x, y, w, h;
    
-
    face = data;
    switch (change)
      {
       case E_GADMAN_CHANGE_MOVE_RESIZE:
 	 e_gadman_client_geometry_get(face->gmc, &x, &y, &w, &h);
-
 
 	 evas_object_move(face->monitor_object, x, y);
 	 evas_object_resize(face->monitor_object, w, h);
@@ -665,7 +627,6 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 
 	 break;
       case E_GADMAN_CHANGE_RAISE:
-
 	//evas_object_raise(face->exit_event_object);
 	 break;
       case E_GADMAN_CHANGE_EDGE:
@@ -687,8 +648,7 @@ _monitor_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void
-_monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, 
-			    void *event_info)
+_monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Monitor_Face *face;
    Evas_Event_Mouse_Down *ev;
@@ -732,11 +692,11 @@ _monitor_face_cb_mouse_out(void *data, Evas *e, Evas_Object *obj,
 static void
 _monitor_face_menu_new(Monitor_Face *face)
 {
-	E_Menu *mn;
-	E_Menu_Item *mi;
-	
-	mn = e_menu_new();
-	face->menu = mn;
+   E_Menu *mn;
+   E_Menu_Item *mi;
+   
+   mn = e_menu_new();
+   face->menu = mn;
 	
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configuration"));
@@ -749,9 +709,9 @@ _monitor_face_menu_new(Monitor_Face *face)
 
 void _monitor_cb_config_updated(void *data)
 {
-	Monitor_Face *face;
-	
-	face = data;
+   Monitor_Face *face;
+   
+   face = data;
    flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
 
    mem_real_ignore_cached_set(face->conf->mem_real_ignore_cached);
@@ -770,9 +730,9 @@ void _monitor_cb_config_updated(void *data)
 static void 
 _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-	Monitor_Face *f;
-	
-	f = data;
-	if (!f) return;
+   Monitor_Face *f;
+   
+   f = data;
+   if (!f) return;
    _config_monitor_module(f->con, f);	
 }
