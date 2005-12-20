@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: entrance
 Version: 0.9.0.004
-Release: 0.%(date '+%Y%m%d')
+Release: 1.20051219
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/

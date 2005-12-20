@@ -1,7 +1,7 @@
 Summary: EFL-based IM Client
 Name: express
 Version: 0.0.0
-Release: 0.20050908
+Release: 1.20051219
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/

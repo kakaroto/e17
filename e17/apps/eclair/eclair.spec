@@ -1,7 +1,7 @@
 Summary: The Eclair window manager
 Name: eclair
 Version: 0.0.1
-Release: 0.20050908
+Release: 1.20051219
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
