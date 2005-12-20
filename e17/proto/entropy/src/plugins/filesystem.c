@@ -320,11 +320,11 @@ void callback(evfs_event* data) {
 			//printf("Progress for file '%s' is %f percent\n", 
 			//		(char*)data->resp_command.file_command.files[0]->path, data->progress.file_progress);
 
-			request->file_from = evfs_filereference_to_string(data->resp_command.file_command.files[0]);
-			request->file_to = evfs_filereference_to_string(data->resp_command.file_command.files[1]);
-			request->progress = data->progress.file_progress;
+			request->file_from = strdup(data->progress->file_from);
+			request->file_to = strdup(data->progress->file_to);
+			request->progress = data->progress->file_progress;
 
-			if (data->progress.type == EVFS_PROGRESS_TYPE_CONTINUE) 
+			if (data->progress->type == EVFS_PROGRESS_TYPE_CONTINUE) 
 				request->type =  TYPE_CONTINUE;
 			else
 				request->type = TYPE_END;
@@ -346,7 +346,7 @@ void callback(evfs_event* data) {
 				free(gui_event);
 			}
 
-			if (data->progress.type == EVFS_PROGRESS_TYPE_DONE) {
+			if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
 				/*TODO free the key */
 				
 			}
@@ -643,6 +643,8 @@ void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to, ent
 	evfs_file_uri_path* uri_path_to;
 	char* original;
 
+	char copy_buffer[PATH_MAX];
+
 	char uri_from[512];
 	char uri_to[512];
 	
@@ -662,11 +664,9 @@ void entropy_filesystem_file_copy(entropy_generic_file* file, char* path_to, ent
 	//printf("Original uri is: '%s'\n", original);
 	//
 	/*Track the copy action*/
+	snprintf(copy_buffer, PATH_MAX, "%s%s", uri_from, uri_to);
 	original = evfs_filereference_to_string(uri_path_from->files[0]);
 	ecore_hash_set(file_copy_hash, original, instance);
-
-
-	
 
 	evfs_client_file_copy(con, uri_path_from->files[0], uri_path_to->files[0]);
 
