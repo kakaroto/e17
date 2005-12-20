@@ -53,11 +53,14 @@ _container_smart_get()
   smart = evas_smart_new ("container",
                           _container_add,
                           _container_del,
+                          NULL, NULL, NULL, NULL, NULL,
+                          /*
                           _container_layer_set,
                           _container_raise,
                           _container_lower,
                           _container_stack_above,
                           _container_stack_below,
+                          */
                           _container_move,
                           _container_resize,
                           _container_show,
