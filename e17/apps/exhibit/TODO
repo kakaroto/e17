@@ -8,7 +8,12 @@ TODO:
 - fix .spec file
 - make argv work with /path/to/image.png and not only /path/to/dir
 - wallpaper setting - center, stretch, tile
+- andy's comments feature
 
 BUGS:
 
 - fix autocomplete
+- if we're scrolled to the end of the dir tree, clicking on a dir needs to
+  reset the scrollbar to the top.
+- if we're looking at a LOT of images and change dir before they have
+  finished loading, then the images will thumbnail and load in the current dir
