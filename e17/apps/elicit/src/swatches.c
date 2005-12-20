@@ -285,6 +285,7 @@ _elicit_swatches_load_eet(Elicit *el)
       memcpy(buf, ret, size_ret);
       buf[size_ret] = '\0';
       name = strdup(buf);
+      free(ret);
     }
      
     snprintf(buf, PATH_MAX, "swatches/%d/hex", i);
