@@ -1,4 +1,4 @@
-#include "e.h"
+#include <e.h>
 #include "e_mod_main.h"
 #include "config.h"
 #include <sys/types.h>

@@ -1,4 +1,4 @@
-#include "e.h"
+#include <e.h>
 #include "config.h"
 #include "e_mod_main.h"
 #include <time.h>

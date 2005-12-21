@@ -1,4 +1,4 @@
-#include "e.h"
+#include <e.h>
 #include <E_Lib.h>
 #include <Ecore.h>
 #ifdef WANT_OSIRIS
