@@ -725,19 +725,19 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    of = e_widget_framelist_add(evas, _("First Day of Week"), 0);
    rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
    ob = e_widget_radio_add(evas, _("Sunday"), 0, rg);
-   e_widget_table_object_append(start_table, ob, 0, 0,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 0, 0,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Monday"), 1, rg);
-   e_widget_table_object_append(start_table, ob, 0, 1,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 0, 1,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Tuesday"), 2, rg);
-   e_widget_table_object_append(start_table, ob, 0, 2,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 0, 2,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Wednesday"), 3, rg);
-   e_widget_table_object_append(start_table, ob, 0, 3,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 0, 3,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Thursday"), 4, rg);
-   e_widget_table_object_append(start_table, ob, 1, 0,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 1, 0,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Friday"), 5, rg);
-   e_widget_table_object_append(start_table, ob, 1, 1,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 1, 1,1,1,1,1,1,1);
    ob = e_widget_radio_add(evas, _("Saturday"), 6, rg);
-   e_widget_table_object_append(start_table, ob, 1,2,1,1,0,0,0,0);
+   e_widget_table_object_append(start_table, ob, 1,2,1,1,1,1,1,1);
    e_widget_framelist_object_append(of, start_table);
    e_widget_table_object_append(o, of, 0, 1,1,1,1,1,1,1);
 
