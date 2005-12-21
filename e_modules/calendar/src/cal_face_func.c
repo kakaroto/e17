@@ -29,8 +29,8 @@ void calendar_face_start(Calendar *calendar)
 	     face = calendar_face_new(con,calendar);
 	     if (face)
 	       {
+		  calendar->con = con;
 		  calendar->faces = evas_list_append(calendar->faces, face);
-    		 // calendar_face_menu_new(face,calendar);
    		  mi = e_menu_item_new(calendar->config_menu);
     		  e_menu_item_label_set(mi, con->name);
     		  e_menu_item_submenu_set(mi, face->menu);

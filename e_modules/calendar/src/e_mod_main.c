@@ -66,7 +66,11 @@ e_modapi_shutdown(E_Module *module)
    Calendar *calendar;
 
    if (module->config_menu)
-     module->config_menu = NULL;
+   {             
+	e_menu_deactivate(module->config_menu);
+        e_object_del(E_OBJECT(module->config_menu));
+     	module->config_menu = NULL;
+   }
 
    calendar = module->data;
    if (calendar)
@@ -114,6 +118,20 @@ e_modapi_about(E_Module *module)
 {
    e_error_dialog_show(_("Enlightenment calendar Module"),
 		       _("A simple module to give E17 a desktop calendar "));
+   return 1;
+}
+/***************************************************
+/ Function: 
+/ Purpose:  
+/
+/
+/*****************************************************/
+int e_modapi_config(E_Module *m)
+{
+   Calendar *calendar;
+     
+   calendar = m->data;
+   if (calendar) e_int_config_calendar(calendar->con, calendar);
    return 1;
 }
 
