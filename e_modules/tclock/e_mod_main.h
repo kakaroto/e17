@@ -9,6 +9,7 @@
 #define TCLOCK_DEBUG(X) (printf("tclock_debug: %s\n",X))
 #undef TCLOCK_DEBUG
 #define TCLOCK_DEBUG(X)
+
 typedef struct _Config      
 {
   Evas_List *faces;
@@ -51,7 +52,6 @@ typedef struct _TClock_Face
   E_Gadman_Client *gmc;
 }TClock_Face;
 
-
 extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *m);
@@ -59,6 +59,7 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
+EAPI int   e_modapi_config   (E_Module *m);
 
 EAPI void _tclock_cb_config_updated(void *data);
 
