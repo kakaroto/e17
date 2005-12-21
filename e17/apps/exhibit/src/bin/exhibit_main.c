@@ -214,7 +214,7 @@ _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2
    
    etk_tree_row_fields_get(row1, col, NULL, NULL, &dir1, NULL);
    etk_tree_row_fields_get(row2, col, NULL, NULL, &dir2, NULL);
-   return strcmp(dir1, dir2);
+   return strcasecmp(dir1, dir2);
 }
 
 int
@@ -626,6 +626,7 @@ _ex_main_window_show(char *dir)
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->scrolled_view), e->alignment);
 
    e->image = etk_image_new();
+   etk_widget_theme_set(e->image, PACKAGE_DATA_DIR"/images/images.edj", "image_bg");
    etk_signal_connect("mouse_down", ETK_OBJECT(e->image), ETK_CALLBACK(_ex_image_mouse_down), e);
    etk_signal_connect("mouse_up", ETK_OBJECT(e->image), ETK_CALLBACK(_ex_image_mouse_up), e);
    etk_signal_connect("mouse_move", ETK_OBJECT(e->image), ETK_CALLBACK(_ex_image_mouse_move), e);
