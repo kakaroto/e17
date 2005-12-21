@@ -193,7 +193,7 @@ _rss_face_init(Rss_Face *rf)
    o = e_box_add(rf->evas);
    rf->item_obj = o;
    e_box_freeze(o);
-   edje_object_part_swallow(rf->box_obj, "items", o);
+   edje_object_part_swallow(rf->box_obj, "feeds", o);
    evas_object_show(o);
    e_box_thaw(o);
    
