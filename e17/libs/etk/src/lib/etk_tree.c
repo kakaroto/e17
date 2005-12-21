@@ -768,6 +768,135 @@ void etk_tree_clear(Etk_Tree *tree)
 }
 
 /**
+ * @brief Gets the first row of the tree
+ * @param tree a tree
+ * @return Returns the first row of the tree
+ */
+Etk_Tree_Row *etk_tree_first_row_get(Etk_Tree *tree)
+{
+   if (!tree)
+      return NULL;
+   return etk_tree_row_first_child_get(&tree->root);
+}
+
+/**
+ * @brief Gets the last row of the tree
+ * @param tree a tree
+ * @param walking_through_hierarchy if TRUE, the last row is not necessary on the first level of hierarchy. @n
+ * This setting has no effect if the tree is in the list mode
+ * @param include_collapsed_children if TRUE, the last row can be a child of a collapsed row. @n
+ * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
+ * @return Returns the last row of the tree
+ */
+Etk_Tree_Row *etk_tree_last_row_get(Etk_Tree *tree, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!tree)
+      return NULL;
+   return etk_tree_row_last_child_get(&tree->root, walking_through_hierarchy, include_collapsed_children);
+}
+
+/**
+ * @brief Gets the first child of the row
+ * @param row a row
+ * @return Returns the first child of the row
+ */
+Etk_Tree_Row *etk_tree_row_first_child_get(Etk_Tree_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->first_child;
+}
+
+/**
+ * @brief Gets the last child of the row
+ * @param row a row
+ * @param walking_through_hierarchy if TRUE, the last child is not necessary directly a child of the row.
+ * @param include_collapsed_children if TRUE, the last child can be a child of a collapsed row. @n
+ * This setting has no effect if @a walking_through_hierarchy is FALSE
+ * @return Returns the last child of the row
+ */
+Etk_Tree_Row *etk_tree_row_last_child_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!row)
+      return NULL;
+   
+   if (!walking_through_hierarchy)
+      return row->last_child;
+   else
+   {
+      Etk_Tree_Row *last;
+      
+      for (last = row->last_child; last && (include_collapsed_children || last->expanded) && last->last_child; last = last->last_child);
+      return last;
+   }
+}
+
+/**
+ * @brief Gets the previous row of the tree
+ * @param row the current row
+ * @param walking_through_hierarchy if TRUE, the previous row can be a row located on a different level in the hierarchy. @n
+ * This setting has no effect if the tree is in the list mode
+ * @param include_collapsed_children if TRUE, the previous row can be a child of a collapsed row. @n
+ * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
+ * @return Returns the previous row of the tree
+ */
+Etk_Tree_Row *etk_tree_prev_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!row)
+      return NULL;
+   
+   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
+      return row->prev;
+   else
+   {
+      if (!row->prev)
+         return (row->parent != &row->tree->root) ? row->parent : NULL;
+      else
+      {
+         Etk_Tree_Row *prev;
+         
+         for (prev = row->prev; prev && (include_collapsed_children || prev->expanded) && prev->last_child; prev = prev->last_child);
+         return prev;
+      }
+   }
+}
+
+/**
+ * @brief Gets the next row of the tree
+ * @param row the current row
+ * @param walking_through_hierarchy if TRUE, the next row can be a row located on a different level in the hierarchy. @n
+ * This setting has no effect if the tree is in the list mode
+ * @param include_collapsed_children if TRUE, the next row can be a child of a collapsed row. @n
+ * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
+ * @return Returns the next row of the tree
+ */
+Etk_Tree_Row *etk_tree_next_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
+{
+   if (!row)
+      return NULL;
+   
+   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
+      return row->next;
+   else
+   {
+      if ((include_collapsed_children || row->expanded) && row->first_child)
+         return row->first_child;
+      else
+      {
+         if (row->next)
+            return row->next;
+         else
+         {
+            Etk_Tree_Row *next;
+            
+            for (next = row->parent; next && !next->next; next = next->parent);
+            return next ? next->next : NULL;
+         }
+      }
+   }
+}
+
+/**
  * @brief Sets the different values of the cells of the row
  * @param row a row
  * @param ... an Etk_Tree_Col * followed by the value(s) of the cell, then again, an Etk_Tree_Col * followed by its value(s)... terminated by NULL
@@ -843,71 +972,6 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
 }
 
 /**
- * @brief Gets the previous row of the tree
- * @param row the current row
- * @param walking_through_hierarchy if TRUE, the previous row can be a row located on a different level in the hierarchy. @n
- * This setting has no effect if the tree is in the list mode
- * @param include_collapsed_children if TRUE, the previous row can be a child of a collapsed row
- * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
- * @return Returns the previous row of the tree
- */
-Etk_Tree_Row *etk_tree_prev_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
-{
-   if (!row)
-      return NULL;
-   
-   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
-      return row->prev;
-   else
-   {
-      if (!row->prev)
-         return (row->parent != &row->tree->root) ? row->parent : NULL;
-      else
-      {
-         Etk_Tree_Row *prev;
-         
-         for (prev = row->prev; prev && (include_collapsed_children || prev->expanded) && prev->last_child; prev = prev->last_child);
-         return prev;
-      }
-   }
-}
-
-/**
- * @brief Gets the next row of the tree
- * @param row the current row
- * @param walking_through_hierarchy if TRUE, the next row can be a row located on a different level in the hierarchy. @n
- * This setting has no effect if the tree is in the list mode
- * @param include_collapsed_children if TRUE, the next row can be a child of a collapsed row
- * This setting has no effect if the tree is in the list mode, or if @a walking_through_hierarchy is FALSE
- * @return Returns the next row of the tree
- */
-Etk_Tree_Row *etk_tree_next_row_get(Etk_Tree_Row *row, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children)
-{
-   if (!row)
-      return NULL;
-   
-   if (row->tree->mode == ETK_TREE_MODE_LIST || !walking_through_hierarchy)
-      return row->next;
-   else
-   {
-      if ((include_collapsed_children || row->expanded) && row->first_child)
-         return row->first_child;
-      else
-      {
-         if (row->next)
-            return row->next;
-         else
-         {
-            Etk_Tree_Row *next;
-            
-            for (next = row->parent; next && !next->next; next = next->parent);
-            return next ? next->next : NULL;
-         }
-      }
-   }
-}
-
-/**
  * @brief Sets a value to the data member of a row. The date could be retrieved with @a etk_tree_row_data_get()
  * @param row a row
  * @param data the data to set
@@ -929,6 +993,47 @@ void *etk_tree_row_data_get(Etk_Tree_Row *row)
    if (!row)
       return NULL;
    return row->data;
+}
+
+/**
+ * @brief Makes the tree scroll to show the row
+ * @param row the row up to which you want to scroll
+ * @param center_the_row TRUE if you want the row to be centered
+ */
+void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row)
+{
+   Etk_Tree *tree;
+   Etk_Tree_Row *r;
+   int row_offset;
+   int tree_height;
+   int i;
+   int new_xoffset;
+   
+   if (!row || !(tree = row->tree))
+      return;
+   
+   for (r = tree->root.first_child, i = 0; r; r = etk_tree_next_row_get(r, TRUE, FALSE), i++)
+   {
+      if (r == row)
+      {
+         row_offset = i * tree->row_height;
+         tree_height = tree->grid->inner_geometry.h;
+         
+         /* If the row is already entirely visible, we do nothing */
+         if (!center_the_row && (row_offset >= tree->yoffset && (row_offset + tree->row_height) <= (tree->yoffset + tree_height)))
+            return;
+         
+         if (center_the_row)
+            new_xoffset = row_offset + (tree->row_height - tree_height) / 2;
+         else if (row_offset < tree->yoffset)
+            new_xoffset = row_offset;
+         else
+            new_xoffset = row_offset - tree_height + tree->row_height;
+         
+         etk_range_value_set(ETK_RANGE(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view))), new_xoffset);
+         return;
+      }
+   }
 }
 
 /**
@@ -1699,26 +1804,29 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
    /* Select the previous visible row */
    if (strcmp(key_event->key, "Up") == 0)
    {
-      if (!tree->last_selected)
-      {
-         Etk_Tree_Row *last_row;
-         
-         for (last_row = tree->root.last_child; last_row && last_row->expanded && last_row->last_child; last_row = last_row->last_child);
-         _etk_tree_row_select(tree, last_row, key_event->modifiers);
-      }
-      else
-         _etk_tree_row_select(tree, etk_tree_prev_row_get(tree->last_selected, TRUE, FALSE), key_event->modifiers);
+      Etk_Tree_Row *row_to_select;
       
+      if (!tree->last_selected)
+         row_to_select = etk_tree_last_row_get(tree, TRUE, FALSE);
+      else
+         row_to_select = etk_tree_prev_row_get(tree->last_selected, TRUE, FALSE);
+      
+      _etk_tree_row_select(tree, row_to_select, key_event->modifiers);
+      etk_tree_row_scroll_to(row_to_select, FALSE);
       etk_widget_event_propagation_stop();
    }
    /* Select the next visible row */
    else if (strcmp(key_event->key, "Down") == 0)
    {
-      if (!tree->last_selected)
-         _etk_tree_row_select(tree, tree->root.first_child, key_event->modifiers);
-      else
-         _etk_tree_row_select(tree, etk_tree_next_row_get(tree->last_selected, TRUE, FALSE), key_event->modifiers);
+      Etk_Tree_Row *row_to_select;
       
+      if (!tree->last_selected)
+         row_to_select = etk_tree_first_row_get(tree);
+      else
+         row_to_select = etk_tree_next_row_get(tree->last_selected, TRUE, FALSE);
+      
+      _etk_tree_row_select(tree, row_to_select, key_event->modifiers);
+      etk_tree_row_scroll_to(row_to_select, FALSE);
       etk_widget_event_propagation_stop();
    }
    /* Expand the row */
