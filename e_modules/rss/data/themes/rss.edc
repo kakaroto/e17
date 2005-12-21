@@ -1,0 +1,108 @@
+fonts {
+	font: "sinon.ttf" "Edje-Sinon";
+	font: "20thcent.ttf" "Edje-Century";
+	font: "Vera.ttf" "Edje-Vera";
+	font: "VeraBd.ttf" "Edje-Vera-Bold";
+}
+images {
+   image: "e17_ibar_bg_h.png" COMP;
+   image: "e17_ibar_bg_v.png" COMP;
+}
+collections {
+	group {
+		name: "modules/rss/main";
+		parts {
+			part {
+				name: "background";
+				mouse_events:  1;
+				description {
+					state: "default" 0.0;
+					image {
+						normal: "e17_ibar_bg_h.png";
+						border: 0 0 0 0;
+					}
+					fill {
+						smooth: 0;
+					}
+				}
+				description {
+					state: "vert" 0.0;
+					inherit: "default" 0.0;
+					image {
+						normal: "e17_ibar_bg_v.png";
+					}
+				}	 
+			}			
+			part {
+				name: "items_clip";
+				type: RECT;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					rel1 {
+						to: "background";
+						offset: 0 0;
+					}
+					rel2 {
+						to: "background";
+						offset: -1 -1;
+					}
+				}
+			}
+			part {
+				name: "items";
+				type: SWALLOW;
+				clip_to: "items_clip";
+				mouse_events:  0;
+				description {
+					state: "default" 0.0;
+					rel1 {
+						offset: 0 0;
+					}
+					rel2 {
+						offset: -1 -1;
+					}
+				}
+				description {
+					state: "horiz" 0.0;
+					inherit: "default" 0.0;
+				}
+				description {
+					state: "vert" 0.0;
+					inherit: "default" 0.0;
+				}
+			}
+		}
+	}
+	group {
+		name: "modules/rss/item";
+		parts {
+			part {
+				name: "article";
+				type: TEXT;
+				effect: OUTLINE_SOFT_SHADOW;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 192;
+					color2: 0 0 0 144;
+					color3: 0 0 0 36;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
+					text {
+						text: "";
+						font: "Vera";
+						size: 11;
+						fit: 0 0;
+						align: 0.0 1.0;
+					}
+				}							
+			}		
+		}
+	}
+}
