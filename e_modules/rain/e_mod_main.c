@@ -207,7 +207,7 @@ static E_Menu
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_label_set(mi, "Configuration");
    e_menu_item_callback_set(mi, _rain_menu_cb_configure, rain);
 
    return mn;

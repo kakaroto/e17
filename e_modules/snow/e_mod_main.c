@@ -205,7 +205,7 @@ _snow_config_menu_new(Snow *snow)
    mn = e_menu_new();
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Config Dialog");
+   e_menu_item_label_set(mi, "Configuration");
    e_menu_item_callback_set(mi, _snow_menu_cb_configure, snow);
    return mn;
 }
