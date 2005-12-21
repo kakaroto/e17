@@ -60,6 +60,8 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 
+	ewl_widget_focusable_set(s, TRUE);
+
 	s->overlay = ewl_overlay_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
 
