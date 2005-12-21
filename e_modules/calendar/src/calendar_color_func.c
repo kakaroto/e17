@@ -363,7 +363,7 @@ void update_colors(Calendar *calendar,Calendar_Face *face)
 	     YNC_Ptr->red_o,YNC_Ptr->green_o, YNC_Ptr->blue_o,YNC_Ptr->alpha_o,
 	     YNC_Ptr->red_s,YNC_Ptr->green_s, YNC_Ptr->blue_s,YNC_Ptr->alpha_s);
 
-        edje_object_color_class_set(face->label_object,"day_colors",DTC_Ptr->red,
+        edje_object_color_class_set(face->label_object,"Day_colors",DTC_Ptr->red,
              DTC_Ptr->green,   DTC_Ptr->blue,  DTC_Ptr->alpha,  DTC_Ptr->red_o,
              DTC_Ptr->green_o, DTC_Ptr->blue_o,DTC_Ptr->alpha_o,DTC_Ptr->red_s,
              DTC_Ptr->green_s, DTC_Ptr->blue_s,DTC_Ptr->alpha_s);

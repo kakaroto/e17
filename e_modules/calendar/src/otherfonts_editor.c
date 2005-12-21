@@ -167,27 +167,6 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS !=
-							                   cfdata->temp_UserCS))
-   {
-	SwitchImage = 1;
-	calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
-	if (calendar->conf->ImageYes != cfdata->temp_ImageYes)
-	{
-		if (cfdata->temp_ImageYes == 0)
-	   		cfdata->temp_ImageYes = 1;
-		else 
-	   		cfdata->temp_ImageYes = 0;
-	}
-	if (calendar->conf->UserCS != cfdata->temp_UserCS)
-	{
-		if (cfdata->temp_UserCS)
-			cfdata->temp_UserCS = FALSE;
-		else
-			cfdata->temp_UserCS = TRUE;
-	}
-   }
- 
    e_config_save_queue();
    redraw_calendar(calendar,SwitchImage);
    e_border_button_bindings_grab_all();
@@ -211,27 +190,6 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS !=
-							                   cfdata->temp_UserCS))
-   {
-	SwitchImage = 1;
-	calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
-	if (calendar->conf->ImageYes != cfdata->temp_ImageYes)
-	{
-		if (cfdata->temp_ImageYes == 0)
-	   		cfdata->temp_ImageYes = 1;
-		else 
-	   		cfdata->temp_ImageYes = 0;
-	}
-	if (calendar->conf->UserCS != cfdata->temp_UserCS)
-	{
-		if (cfdata->temp_UserCS)
-			cfdata->temp_UserCS = FALSE;
-		else
-			cfdata->temp_UserCS = TRUE;
-	}
-   }
- 
    e_config_save_queue();
    redraw_calendar(calendar,SwitchImage);
    e_border_button_bindings_grab_all();
