@@ -177,6 +177,8 @@ Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...);
 void etk_tree_row_del(Etk_Tree_Row *row);
 void etk_tree_clear(Etk_Tree *tree);
 
+void etk_tree_sort(Etk_Tree *tree, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), Etk_Bool ascendant, Etk_Tree_Col *col, void *data);
+
 Etk_Tree_Row *etk_tree_first_row_get(Etk_Tree *tree);
 Etk_Tree_Row *etk_tree_last_row_get(Etk_Tree *tree, Etk_Bool walking_through_hierarchy, Etk_Bool include_collapsed_children);
 Etk_Tree_Row *etk_tree_row_first_child_get(Etk_Tree_Row *row);

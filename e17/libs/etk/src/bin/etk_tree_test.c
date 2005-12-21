@@ -1,5 +1,6 @@
 #include "etk_test.h"
 #include <string.h>
+#include <stdlib.h>
 #include "config.h"
 
 /* TODO: Etk_Theme */
@@ -13,6 +14,10 @@ static void _etk_test_tree_add_5_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_50_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_500_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_5000_cb(Etk_Object *object, void *data);
+static void _etk_test_tree_sort_cb(Etk_Object *object, void *data);
+static int _etk_test_tree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+
+static Etk_Bool ascendant = TRUE;
 
 /* Creates the window for the tree test */
 void etk_test_tree_window_create(void *data)
@@ -113,6 +118,10 @@ void etk_test_tree_window_create(void *data)
    button = etk_button_new_with_label(_("Add 5000 rows"));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5000_cb), tree);
    etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
+   
+   button = etk_button_new_with_label(_("Sort"));
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_sort_cb), tree);
+   etk_box_pack_start(ETK_BOX(hbox), button, TRUE, TRUE, 0);
 
    etk_widget_show_all(win);
 }
@@ -124,6 +133,7 @@ static void _etk_test_tree_add_items(Etk_Tree *tree, int n)
    Etk_Tree_Col *col1, *col2, *col3;
    char row_name[256];
    char star_path[256];
+   int rand_value;
 
    if (!tree)
       return;
@@ -136,13 +146,14 @@ static void _etk_test_tree_add_items(Etk_Tree *tree, int n)
    for (i = 0; i < n; i++)
    {
       snprintf(row_name, 256, "Row%d", i);
-      if (1/*i % 3 == 0*/)
+      if (i % 3 == 0)
          strncpy(star_path, PACKAGE_DATA_DIR "/images/1star.png", 256);
       else if (i % 3 == 1)
          strncpy(star_path, PACKAGE_DATA_DIR "/images/2stars.png", 256);
       else
          strncpy(star_path, PACKAGE_DATA_DIR "/images/3stars.png", 256);
-      etk_tree_append(ETK_TREE(tree), col1, PACKAGE_DATA_DIR "/images/1star.png", row_name, col2, i, col3, star_path, NULL);
+      rand_value = rand() % 10000;
+      etk_tree_append(ETK_TREE(tree), col1, PACKAGE_DATA_DIR "/images/1star.png", row_name, col2, rand_value, col3, star_path, NULL);
    }
    etk_tree_thaw(tree);
 }
@@ -198,4 +209,33 @@ static void _etk_test_tree_add_500_cb(Etk_Object *object, void *data)
 static void _etk_test_tree_add_5000_cb(Etk_Object *object, void *data)
 {
    _etk_test_tree_add_items(ETK_TREE(data), 5000);
+}
+
+/* Called when the "Sort" button is clicked */
+static void _etk_test_tree_sort_cb(Etk_Object *object, void *data)
+{
+   Etk_Tree *tree;
+   
+   if (!(tree = ETK_TREE(data)))
+      return;
+   etk_tree_sort(tree, _etk_test_tree_compare_cb, ascendant, etk_tree_nth_col_get(tree, 1), NULL);
+   ascendant = !ascendant;
+}
+
+/* Compares two rows of the tree */
+static int _etk_test_tree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   int row1_value, row2_value;
+   
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, &row1_value, NULL);
+   etk_tree_row_fields_get(row2, col, &row2_value, NULL);
+   if (row1_value < row2_value)
+      return -1;
+   else if (row1_value > row2_value)
+      return 1;
+   else
+      return 0;
 }
