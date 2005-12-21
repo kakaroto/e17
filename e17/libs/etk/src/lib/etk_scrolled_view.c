@@ -28,6 +28,9 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
 static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data);
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
+static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data);
+static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data);
+static void _etk_scrolled_view_child_scroll_size_changed_cb(void *data);
 
 /**************************
  *
@@ -188,6 +191,8 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
 
    etk_signal_connect("key_down", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
+   etk_signal_connect("child_added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
+   etk_signal_connect("child_removed", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
 }
@@ -439,6 +444,32 @@ static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, d
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
       return;
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
+}
+
+/* Called when a new child is added */
+static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data)
+{
+   if (!object || !child)
+      return;
+   etk_signal_connect_swapped("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object); 
+}
+
+/* Called when a child is removed */
+static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data)
+{
+   if (!object || !child)
+      return;
+   etk_signal_disconnect("scroll_size_changed", ETK_OBJECT(child), ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
+}
+
+/* Called when the scroll size of the child of the scrolled view has changed */
+static void _etk_scrolled_view_child_scroll_size_changed_cb(void *data)
+{
+   Etk_Widget *scrolled_widget;
+   
+   if (!(scrolled_widget = ETK_WIDGET(data)))
+      return;
+   etk_widget_redraw_queue(scrolled_widget);
 }
 
 /** @} */

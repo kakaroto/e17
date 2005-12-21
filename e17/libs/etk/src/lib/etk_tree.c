@@ -123,6 +123,7 @@ static void _etk_tree_row_selected_rows_get(Etk_Tree_Row *row, Evas_List **selec
 static void _etk_tree_row_select_all(Etk_Tree_Row *row);
 static void _etk_tree_row_unselect_all(Etk_Tree_Row *row);
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifier *modifiers);
+static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), int asc, Etk_Tree_Col *col, void *data);
 
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 
@@ -741,7 +742,6 @@ void etk_tree_row_del(Etk_Tree_Row *row)
    
    if (!row->tree->frozen)
    {
-      /* TODO: scroll size ?? */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
    }
@@ -762,36 +762,8 @@ void etk_tree_clear(Etk_Tree *tree)
    
    if (!tree->frozen)
    {
-      /* TODO: scroll size ?? */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
-   }
-}
-
-/* TODO */
-static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), int asc, Etk_Tree_Col *col, void *data)
-{
-   Etk_Tree_Row *tmp;
-   int left, right, max;
-   
-   if (!heap)
-      return;
-   
-   left = (root * 2) + 1;
-   right = (root * 2) + 2;
-   
-   max = root;
-   if (left < size && (compare_cb(tree, heap[left], heap[max], col, data) * asc) > 0)
-      max = left;
-   if (right < size && (compare_cb(tree, heap[right], heap[max], col, data) * asc) > 0)
-      max = right;
-   
-   if (max != root)
-   {
-      tmp = heap[max];
-      heap[max] = heap[root];
-      heap[root] = tmp;
-      _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
    }
 }
 
@@ -800,7 +772,7 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
  * @param tree a tree
  * @param compare_cb the function to call to compare two rows. Must return a negative value if row1 is less than row2, @n
  * 0 is row1 is equal to row2, and a positive value is row1 is greater than row2.
- * @param ascendant TRUE if you want to sort the tree TODO
+ * @param ascendant TRUE if the lowest rows have to be the first ones in the sorted tree
  * @param col the column to pass to compare_cb when it's called
  * @param data the data to pass to compare_cb when it's called
  */
@@ -1210,7 +1182,6 @@ void etk_tree_row_expand(Etk_Tree_Row *row)
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_EXPANDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
-      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
    }
@@ -1234,7 +1205,6 @@ void etk_tree_row_collapse(Etk_Tree_Row *row)
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_COLLAPSED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
-      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
    }
@@ -2309,7 +2279,6 @@ static Etk_Tree_Row *_etk_tree_row_new_valist(Etk_Tree *tree, Etk_Tree_Row *row,
    
    if (!tree->frozen)
    {
-      /* TODO */
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
    }
@@ -2597,4 +2566,31 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
    }
 
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+}
+
+/* Restore the heap properties of the heap. Used to sort the tree */
+static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), int asc, Etk_Tree_Col *col, void *data)
+{
+   Etk_Tree_Row *tmp;
+   int left, right, max;
+   
+   if (!heap)
+      return;
+   
+   left = (root * 2) + 1;
+   right = (root * 2) + 2;
+   
+   max = root;
+   if (left < size && (compare_cb(tree, heap[left], heap[max], col, data) * asc) > 0)
+      max = left;
+   if (right < size && (compare_cb(tree, heap[right], heap[max], col, data) * asc) > 0)
+      max = right;
+   
+   if (max != root)
+   {
+      tmp = heap[max];
+      heap[max] = heap[root];
+      heap[root] = tmp;
+      _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
+   }
 }
