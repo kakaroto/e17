@@ -693,7 +693,17 @@ static Mount_Icon
    mnticon->txt_object = o;
    edje_object_file_set(o, strdup(buffer), "modules/mount/icon");
    evas_object_show(o);
-   edje_object_part_text_set (o, "label", point->device);
+   
+   char *strip = strrchr(point->device, '/');
+   if (!strip) 
+     {
+	strip = point->device;
+     }
+   else 
+     {
+	strip++;
+     }
+   edje_object_part_text_set (o, "label", strip);
    if (mntbox->mnt->conf->show_labels)
      {
 	edje_object_signal_emit(o, "show_label", "");
