@@ -2,6 +2,7 @@
 #include <Ecore_File.h>
 
 extern Evas_List *thumb_list;
+static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 
 char *viewables[] =
 {
@@ -202,6 +203,20 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    _ex_main_populate_files(e);
 }
 
+
+static int
+_ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *dir1, *dir2;
+   
+   if (!row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &dir1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &dir2, NULL);
+   return strcmp(dir1, dir2);
+}
+
 int
 _ex_file_is_viewable(char *file)
 {
@@ -259,7 +274,8 @@ _ex_main_populate_files(Exhibit *e)
 	pid_t pid;
 	Epsilon *ep;
 
-	if (!strcmp(dir_entry->d_name, ".")||!strcmp(dir_entry->d_name, ".."))
+        /* Do not include hidden files */
+	if (dir_entry->d_name[0] == '.')
 	  continue;
 
 	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
@@ -305,6 +321,7 @@ _ex_main_populate_files(Exhibit *e)
 
    etk_tree_thaw(ETK_TREE(e->itree));
    etk_tree_thaw(ETK_TREE(e->dtree));
+   etk_tree_sort(ETK_TREE(e->dtree), _ex_main_dtree_compare_cb, TRUE, e->dcol, NULL);
 }
 
 void
