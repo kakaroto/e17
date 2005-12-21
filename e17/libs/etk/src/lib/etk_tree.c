@@ -335,7 +335,10 @@ void etk_tree_col_width_set(Etk_Tree_Col *col, int width)
    col->requested_width = ETK_MAX(width, ETK_TREE_MIN_HEADER_WIDTH);
    etk_object_notify(ETK_OBJECT(col), "width");
    if (col->tree)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+   }
 }
 
 /**
@@ -357,12 +360,15 @@ int etk_tree_col_width_get(Etk_Tree_Col *col)
  */
 void etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width)
 {
-   if (!col)
+   if (!col || (col->min_width == min_width))
       return;
    col->min_width = min_width;
    etk_object_notify(ETK_OBJECT(col), "min_width");
    if (col->tree)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+   }
 }
 
 /**
@@ -384,12 +390,10 @@ int etk_tree_col_min_width_get(Etk_Tree_Col *col)
  */
 void etk_tree_col_resizable_set(Etk_Tree_Col *col, Etk_Bool resizable)
 {
-   if (!col)
+   if (!col || (col->resizable == resizable))
       return;
    col->resizable = resizable;
    etk_object_notify(ETK_OBJECT(col), "resizable");
-   if (col->tree)
-      etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
 }
 
 /**
@@ -411,7 +415,7 @@ Etk_Bool etk_tree_col_resizable_get(Etk_Tree_Col *col)
  */
 void etk_tree_col_expand_set(Etk_Tree_Col *col, Etk_Bool expand)
 {
-   if (!col)
+   if (!col || (col->expand == expand))
       return;
    col->expand = expand;
    etk_object_notify(ETK_OBJECT(col), "expand");
@@ -438,12 +442,15 @@ Etk_Bool etk_tree_col_expand_get(Etk_Tree_Col *col)
  */
 void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible)
 {
-   if (!col)
+   if (!col || (col->visible == visible))
       return;
    col->visible = visible;
    etk_object_notify(ETK_OBJECT(col), "visible");
    if (col->tree)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+   }
 }
 
 /**
@@ -1305,7 +1312,6 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       }
    }
    
-   grid_width += widget->left_inset + widget->right_inset;
    freespace = ETK_MAX(0, geometry.w - grid_width);
    if (num_expandable_cols > 0)
       extra_width = (float)freespace / num_expandable_cols;
@@ -1960,6 +1966,8 @@ static void _etk_tree_header_mouse_move_cb(Etk_Object *object, void *event, void
       {
          col->tree->column_to_resize->requested_width = new_size;
          etk_object_notify(ETK_OBJECT(col->tree->column_to_resize), "width");
+         /* TODO */
+         etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
          etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
       }
    }
