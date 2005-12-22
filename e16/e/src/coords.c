@@ -43,6 +43,7 @@ CoordsShow(EWin * ewin)
    int                 cx, cy, cw, ch;
    EObj               *eo = coord_eo;
    Imlib_Border       *pad;
+   int                 bl, br, bt, bb;
 
    if (!Conf.movres.mode_info)
       return;
@@ -85,13 +86,10 @@ CoordsShow(EWin * ewin)
 	       case 0:
 	       case 1:
 	       case 2:
-		  cx =
-		     x + (ewin->shape_w + ewin->border->border.left +
-			  ewin->border->border.right - cw) / 2 +
+		  EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+		  cx = x + (ewin->shape_w + bl + br - cw) / 2 +
 		     EoGetX(EoGetDesk(ewin));
-		  cy =
-		     y + (ewin->shape_h + ewin->border->border.top +
-			  ewin->border->border.bottom - ch) / 2 +
+		  cy = y + (ewin->shape_h + bt + bb - ch) / 2 +
 		     EoGetY(EoGetDesk(ewin));
 		  break;
 	       }

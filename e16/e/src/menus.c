@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "borders.h"
 #include "dialog.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -1439,6 +1440,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    MenuItem           *mi;
    EWin               *ewin2, *ewin;
    struct _mdata      *data;
+   int                 bl1, br1, bt1, bb1;
+   int                 bl2, br2, bt2, bb2;
 
    data = (struct _mdata *)dat;
    if (!data)
@@ -1476,8 +1479,10 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 		   NULL);
 
    /* Sub-menu offsets relative to parent menu origin */
-   xo = ewin->border->border.left + mx + mw;
-   yo = ewin->border->border.top + my - (ewin2->border->border.top + my2);
+   EwinBorderGetSize(ewin, &bl1, &br1, &bt1, &bb1);
+   EwinBorderGetSize(ewin2, &bl2, &br2, &bt2, &bb2);
+   xo = bl1 + mx + mw;
+   yo = bt1 + my - (bt2 + my2);
 
    if (Conf.menus.onscreen)
      {
@@ -1487,10 +1492,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	int                 xdist = 0, ydist = 0;
 
 	/* Size of new submenu (may be shaded atm.) */
-	ww = mi->child->w + ewin2->border->border.left +
-	   ewin2->border->border.right;
-	hh = mi->child->h + ewin2->border->border.top +
-	   ewin2->border->border.bottom;
+	ww = mi->child->w + bl2 + br2;
+	hh = mi->child->h + bt2 + bb2;
 
 	if (EoGetX(ewin) + xo + ww > VRoot.w)
 	   xdist = VRoot.w - (EoGetX(ewin) + xo + ww);
@@ -1739,7 +1742,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 		b = FindItem(ms->border_name, 0, LIST_FINDBY_NAME,
 			     LIST_TYPE_BORDER);
 		if (b)
-		   b->ref_count++;
+		   BorderIncRefcount(b);
 	     }
 	     break;
 	  default:

@@ -23,6 +23,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "borders.h"
 #include "desktops.h"
 #include "dialog.h"
 #include "ewins.h"
@@ -301,9 +302,9 @@ SnapEwinBorder(Snapshot * sn, const EWin * ewin)
       Efree(sn->border_name);
    sn->border_name = NULL;
    if (ewin->previous_border)
-      sn->border_name = Estrdup(ewin->previous_border->name);
+      sn->border_name = Estrdup(BorderGetName(ewin->previous_border));
    else if (ewin->normal_border)
-      sn->border_name = Estrdup(ewin->normal_border->name);
+      sn->border_name = Estrdup(BorderGetName(ewin->normal_border));
 }
 
 static void

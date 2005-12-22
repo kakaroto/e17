@@ -42,14 +42,16 @@ static struct
 void
 EwinShapeSet(EWin * ewin)
 {
+   int                 bl, br, bt, bb;
+
    ewin->shape_x = EoGetX(ewin);
    ewin->shape_y = EoGetY(ewin);
+
    if (ewin->state.shaded)
      {
-	ewin->shape_w = EoGetW(ewin) -
-	   (ewin->border->border.left + ewin->border->border.right);
-	ewin->shape_h = EoGetH(ewin) -
-	   (ewin->border->border.top + ewin->border->border.bottom);
+	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+	ewin->shape_w = EoGetW(ewin) - (bl + br);
+	ewin->shape_h = EoGetH(ewin) - (bt + bb);
      }
    else
      {

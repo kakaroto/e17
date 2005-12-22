@@ -36,7 +36,7 @@
 static void
 MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 {
-   int                 x, y, w, h, x1, x2, y1, y2, type;
+   int                 x, y, w, h, x1, x2, y1, y2, type, bl, br, bt, bb;
    EWin               *const *lst, *pe;
    int                 i, num;
 
@@ -77,6 +77,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    x = EoGetX(ewin);
    h = ewin->client.h;
    w = ewin->client.w;
+   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
    switch (type)
      {
@@ -84,14 +85,12 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	if (direction & MAX_HOR)
 	  {
 	     x = 0;
-	     w = VRoot.w - ewin->border->border.left -
-		ewin->border->border.right;
+	     w = VRoot.w - bl - br;
 	  }
 	if (direction & MAX_VER)
 	  {
 	     y = 0;
-	     h = VRoot.h - ewin->border->border.top -
-		ewin->border->border.bottom;
+	     h = VRoot.h - bt - bb;
 	  }
 	break;
 
@@ -134,8 +133,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 		     y2 = EoGetY(pe);
 	       }
 	     y = y1;
-	     h = y2 - y1 - (ewin->border->border.top +
-			    ewin->border->border.bottom);
+	     h = y2 - y1 - (bt + bb);
 
 	     ewin->state.maximized_vert = 1;
 	  }
@@ -161,8 +159,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 		     x2 = EoGetX(pe);
 	       }
 	     x = x1;
-	     w = x2 - x1 - (ewin->border->border.left +
-			    ewin->border->border.right);
+	     w = x2 - x1 - (bl + br);
 
 	     ewin->state.maximized_horz = 1;
 	  }

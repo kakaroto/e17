@@ -252,15 +252,18 @@ int                 Esnprintf(va_alist);
  * Types
  */
 
-struct _imageclass;
-struct _imagestate;
-struct _textclass;
-struct _textstate;
+struct _border;
 
 typedef struct _ewin EWin;
 typedef struct _ecursor ECursor;
 
 typedef struct _client Client;
+
+typedef struct _constraints
+{
+   int                 min, max;
+}
+Constraints;
 
 typedef struct
 {
@@ -293,74 +296,6 @@ typedef struct
    int                 w, h;
 }
 VirtRoot;
-
-typedef struct _constraints
-{
-   int                 min, max;
-}
-Constraints;
-
-typedef struct _winpoint
-{
-   int                 originbox;
-   struct
-   {
-      int                 percent;
-      int                 absolute;
-   }
-   x                  , y;
-}
-WinPoint;
-
-typedef struct _geometry
-{
-   Constraints         width, height;
-   WinPoint            topleft, bottomright;
-}
-Geometry;
-
-typedef struct _winpart
-{
-   Geometry            geom;
-   struct _imageclass *iclass;
-   struct _actionclass *aclass;
-   struct _textclass  *tclass;
-   ECursor            *ec;
-   signed char         ontop;
-   int                 flags;
-   char                keep_for_shade;
-}
-WinPart;
-
-typedef struct _border
-{
-   char               *name;
-   char               *group_border_name;
-   Imlib_Border        border;
-   int                 num_winparts;
-   WinPart            *part;
-   char                changes_shape;
-   char                shadedir;
-   char                throwaway;
-   unsigned int        ref_count;
-   struct _actionclass *aclass;
-}
-Border;
-
-typedef struct _ewinbit
-{
-   EWin               *ewin;	/* Belongs to */
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-   int                 state;
-   char                expose;
-   char                no_expose;
-   char                left;
-   struct _imagestate *is;
-   struct _textstate  *ts;
-}
-EWinBit;
 
 /* Configuration parameters */
 typedef struct
@@ -689,27 +624,6 @@ void                ArrangeEwinCentered(EWin * ewin);
 void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwins(const char *params);
-
-/* borders.c */
-void                BorderIncRefcount(const Border * b);
-void                BorderDecRefcount(const Border * b);
-const char         *BorderGetName(const Border * b);
-int                 BorderConfigLoad(FILE * fs);
-void                EwinBorderSelect(EWin * ewin);
-void                EwinBorderDetach(EWin * ewin);
-void                EwinBorderSetTo(EWin * ewin, const Border * b);
-void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint);
-void                EwinBorderCalcSizes(EWin * ewin, int propagate);
-void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
-void                EwinBorderUpdateInfo(EWin * ewin);
-void                EwinBorderUpdateState(EWin * ewin);
-void                EwinBorderEventsConfigure(EWin * ewin, int mode);
-void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
-void                EwinSetBorderByName(EWin * ewin, const char *name);
-int                 BorderWinpartIndex(EWin * ewin, Window win);
-Border             *BorderCreateFiller(int left, int right, int top,
-				       int bottom);
-void                BordersSetupFallback(void);
 
 /* comms.c */
 void                CommsInit(void);
@@ -1084,7 +998,7 @@ void                WarpFocus(int delta);
 
 /* windowmatch.c */
 int                 WindowMatchConfigLoad(FILE * fs);
-Border             *WindowMatchEwinBorder(const EWin * ewin);
+struct _border     *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);
 

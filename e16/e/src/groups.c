@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "borders.h"
 #include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"

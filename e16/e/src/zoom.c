@@ -229,7 +229,7 @@ Zoom(EWin * ewin)
    mode = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h);
    if (mode)
      {
-	int                 x1, y1, x2, y2;
+	int                 x1, y1, x2, y2, bl, br, bt, bb;
 
 	zoom_last_ewin = ewin;
 	zoom_last_x = EoGetX(ewin);
@@ -247,8 +247,8 @@ Zoom(EWin * ewin)
 	if (y2 < 0)
 	   y2 = 0;
 	RaiseEwin(ewin);
-	EwinMove(ewin, -ewin->border->border.left + x1,
-		 -ewin->border->border.top + y1);
+	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+	EwinMove(ewin, -bl + x1, -bt + y1);
 	FocusToEWin(ewin, FOCUS_SET);
 	EWarpPointer(_EwinGetClientWin(ewin), ewin->client.w / 2,
 		     ewin->client.h / 2);

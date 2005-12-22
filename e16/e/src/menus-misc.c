@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "backgrounds.h"
+#include "borders.h"
 #include "desktops.h"
 #include "ewins.h"
 #include "groups.h"
@@ -576,7 +577,7 @@ static int
 BorderNameCompare(void *b1, void *b2)
 {
    if (b1 && b2)
-      return strcmp(((Border *) b1)->name, ((Border *) b2)->name);
+      return strcmp(BorderGetName(b1), BorderGetName(b2));
 
    return 0;
 }

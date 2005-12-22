@@ -24,7 +24,8 @@
  * Feeble attempt to collect hint stuff in one place
  */
 #include "E.h"
-#include "desktops.h"		/* Should not be here */
+#include "borders.h"		/* FIXME - Should not be here */
+#include "desktops.h"		/* FIXME - Should not be here */
 #include "ecore-e16.h"
 #include "ewins.h"
 #include "hints.h"

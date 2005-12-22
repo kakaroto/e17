@@ -628,6 +628,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    static Font         font = 0;
    Window              root = VRoot.win;
    int                 x1, y1, w1, h1, i, j, dx, dy;
+   int                 bl, br, bt, bb;
    char                str[32];
 
    switch (md)
@@ -686,6 +687,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	w = ewin->shape_w;
 	h = ewin->shape_h;
 
+	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+
 	if (!gc)
 	  {
 	     XGCValues           gcv;
@@ -726,94 +729,50 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
           Esnprintf(str, sizeof(str), "%i", (y2) - (y1) + 1); \
           XDrawString(disp, root, gc, (x1) + 10, ((y1) + (y2)) / 2, str, strlen(str)); \
         }
-#define DO_DRAW_MODE_1(aa, bb, cc, dd) \
+#define DO_DRAW_MODE_1(_a, _b, _c, _d) \
       if (!font) \
         font = XLoadFont(disp, "-*-helvetica-medium-r-*-*-10-*-*-*-*-*-*-*"); \
       XSetFont(disp, gc, font); \
-      if (cc < 3) cc = 3; \
-      if (dd < 3) dd = 3; \
-      DRAW_H_ARROW(aa + ewin->border->border.left, \
-                   aa + ewin->border->border.left + cc - 1, \
-                   bb + ewin->border->border.top + dd - 16); \
-      DRAW_H_ARROW(0, \
-                   aa - 1, \
-                   bb + ewin->border->border.top + (dd / 2)); \
-      DRAW_H_ARROW(aa + cc + ewin->border->border.left + ewin->border->border.right, \
-                   VRoot.w - 1, \
-                   bb + ewin->border->border.top + (dd / 2)); \
-      DRAW_V_ARROW(bb + ewin->border->border.top, \
-                   bb + ewin->border->border.top + dd - 1, \
-                   aa + ewin->border->border.left + 16); \
-      DRAW_V_ARROW(0, \
-                   bb - 1, \
-                   aa + ewin->border->border.left + (cc / 2)); \
-      DRAW_V_ARROW(bb + dd + ewin->border->border.top + ewin->border->border.bottom, \
-                   VRoot.h - 1, \
-                   aa + ewin->border->border.left + (cc / 2)); \
-      XDrawLine(disp, root, gc, aa, 0, aa, VRoot.h); \
-      XDrawLine(disp, root, gc, \
-		aa + cc + ewin->border->border.left + \
-		ewin->border->border.right - 1, 0, \
-		aa + cc + ewin->border->border.left + \
-		ewin->border->border.right - 1, VRoot.h); \
-      XDrawLine(disp, root, gc, 0, bb, VRoot.w, bb); \
-      XDrawLine(disp, root, gc, 0, \
-		bb + dd + ewin->border->border.top + \
-		ewin->border->border.bottom - 1, VRoot.w, \
-		bb + dd + ewin->border->border.top + \
-		ewin->border->border.bottom - 1); \
-      XDrawRectangle(disp, root, gc, aa + ewin->border->border.left + 1, \
-		     bb + ewin->border->border.top + 1, cc - 3, dd - 3);
+      if (_c < 3) _c = 3; \
+      if (_d < 3) _d = 3; \
+      DRAW_H_ARROW(_a + bl, _a + bl + _c - 1, _b + bt + _d - 16); \
+      DRAW_H_ARROW(0, _a - 1, _b + bt + (_d / 2)); \
+      DRAW_H_ARROW(_a + _c + bl + br, VRoot.w - 1, _b + bt + (_d / 2)); \
+      DRAW_V_ARROW(_b + bt, _b + bt + _d - 1, _a + bl + 16); \
+      DRAW_V_ARROW(0, _b - 1, _a + bl + (_c / 2)); \
+      DRAW_V_ARROW(_b + _d + bt + bb, VRoot.h - 1, _a + bl + (_c / 2)); \
+      XDrawLine(disp, root, gc, _a, 0, _a, VRoot.h); \
+      XDrawLine(disp, root, gc, _a + _c + bl + br - 1, 0, _a + _c + bl + br - 1, VRoot.h); \
+      XDrawLine(disp, root, gc, 0, _b, VRoot.w, _b); \
+      XDrawLine(disp, root, gc, 0, _b + _d + bt + bb - 1, VRoot.w, _b + _d + bt + bb - 1); \
+      XDrawRectangle(disp, root, gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3);
 
-#define DO_DRAW_MODE_2(aa, bb, cc, dd) \
-      if (cc < 3) cc = 3; \
-      if (dd < 3) dd = 3; \
-      XDrawRectangle(disp, root, gc, aa, bb, \
-                     cc + ewin->border->border.left + \
-                     ewin->border->border.right - 1, \
-                     dd + ewin->border->border.top + \
-                     ewin->border->border.bottom - 1); \
-      XDrawRectangle(disp, root, gc, aa + ewin->border->border.left + 1, \
-		     bb + ewin->border->border.top + 1, cc - 3, dd - 3);
+#define DO_DRAW_MODE_2(_a, _b, _c, _d) \
+      if (_c < 3) _c = 3; \
+      if (_d < 3) _d = 3; \
+      XDrawRectangle(disp, root, gc, _a, _b, _c + bl + br - 1, _d + bt + bb - 1); \
+      XDrawRectangle(disp, root, gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3);
 
-#define DO_DRAW_MODE_3(aa, bb, cc, dd) \
+#define DO_DRAW_MODE_3(_a, _b, _c, _d) \
       XSetFillStyle(disp, gc, FillStippled); \
       XSetStipple(disp, gc, b2); \
-      if ((cc + ewin->border->border.left + ewin->border->border.right > 0) && \
-          (ewin->border->border.top > 0)) \
-      XFillRectangle(disp, root, gc, aa, bb, \
-                     cc + ewin->border->border.left + \
-                     ewin->border->border.right, \
-                     ewin->border->border.top); \
-      if ((cc + ewin->border->border.left + ewin->border->border.right > 0) && \
-          (ewin->border->border.bottom > 0)) \
-      XFillRectangle(disp, root, gc, aa, bb + dd + \
-                     ewin->border->border.top, \
-                     cc + ewin->border->border.left + \
-                     ewin->border->border.right, \
-                     ewin->border->border.bottom); \
-      if ((dd > 0) && (ewin->border->border.left > 0)) \
-      XFillRectangle(disp, root, gc, aa, bb + ewin->border->border.top, \
-                     ewin->border->border.left, \
-                     dd); \
-      if ((dd > 0) && (ewin->border->border.right > 0)) \
-      XFillRectangle(disp, root, gc, aa + cc + ewin->border->border.left, \
-                     bb + ewin->border->border.top, \
-                     ewin->border->border.right, \
-                     dd); \
+      if ((_c + bl + br > 0) && (bt > 0)) \
+        XFillRectangle(disp, root, gc, _a, _b, _c + bl + br, bt); \
+      if ((_c + bl + br > 0) && (bb > 0)) \
+        XFillRectangle(disp, root, gc, _a, _b + _d + bt, _c + bl + br, bb); \
+      if ((_d > 0) && (bl > 0)) \
+        XFillRectangle(disp, root, gc, _a, _b + bt, bl, _d); \
+      if ((_d > 0) && (br > 0)) \
+        XFillRectangle(disp, root, gc, _a + _c + bl, _b + bt, br, _d); \
       XSetStipple(disp, gc, b3); \
-      if ((cc > 0) && (dd > 0)) \
-        XFillRectangle(disp, root, gc, aa + ewin->border->border.left + 1, \
-  		       bb + ewin->border->border.top + 1, cc - 3, dd - 3);
+      if ((_c > 0) && (_d > 0)) \
+        XFillRectangle(disp, root, gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3);
 
-#define DO_DRAW_MODE_4(aa, bb, cc, dd) \
+#define DO_DRAW_MODE_4(_a, _b, _c, _d) \
       XSetFillStyle(disp, gc, FillStippled); \
       XSetStipple(disp, gc, b2); \
-      XFillRectangle(disp, root, gc, aa, bb, \
-                     cc + ewin->border->border.left + \
-                     ewin->border->border.right, \
-                     dd + ewin->border->border.top + \
-                     ewin->border->border.bottom);
+      XFillRectangle(disp, root, gc, _a, _b, _c + bl + br, _d + bt + bb);
+
 	if (md == 1)
 	  {
 	     if (firstlast > 0)

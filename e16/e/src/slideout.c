@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "aclass.h"
+#include "borders.h"
 #include "buttons.h"
 #include "desktops.h"
 #include "emodule.h"

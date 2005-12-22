@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "aclass.h"
+#include "borders.h"
 #include "ewins.h"
 #include "hints.h"
 #include "iclass.h"
@@ -40,12 +41,6 @@
 static void         BorderDestroy(Border * b);
 static void         BorderWinpartHandleEvents(XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(XEvent * ev, void *prm);
-
-void
-EwinBorderUpdateState(EWin * ewin)
-{
-   EwinBorderDraw(ewin, 0, 0);
-}
 
 static void
 BorderWinpartRealise(EWin * ewin, int i)

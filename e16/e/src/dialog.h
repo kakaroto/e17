@@ -48,6 +48,9 @@
 #define DLG_OAC 7
 #define DLG_OC  5
 
+struct _imageclass;
+struct _textclass;
+
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);

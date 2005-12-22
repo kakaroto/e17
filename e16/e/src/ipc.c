@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "aclass.h"
+#include "borders.h"		/* FIXME - Should not be here */
 #include "desktops.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -964,15 +965,9 @@ IPC_Show(const char *params, Client * c __UNUSED__)
 static void
 EwinShowInfo(const EWin * ewin)
 {
-   Border              NoBorder;
-   const Border       *border;
+   int                 bl, br, bt, bb;
 
-   border = ewin->border;
-   if (border == NULL)
-     {
-	border = &NoBorder;
-	memset(&NoBorder, 0, sizeof(Border));
-     }
+   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
    IpcPrintf("WM_NAME                 %s\n"
 	     "WM_ICON_NAME            %s\n"
@@ -1021,8 +1016,7 @@ EwinShowInfo(const EWin * ewin)
 #if USE_COMPOSITE
 	     EoGetPixmap(ewin),
 #endif
-	     border->name, border->border.left, border->border.right,
-	     border->border.top, border->border.bottom,
+	     EwinBorderGetName(ewin), bl, br, bt, bb,
 	     ewin->icccm.icon_win,
 	     ewin->icccm.icon_pmap, ewin->icccm.icon_mask,
 	     EwinIsWindowGroupLeader(ewin), EwinGetWindowGroup(ewin),

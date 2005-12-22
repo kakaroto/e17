@@ -27,6 +27,8 @@
 #include "eobj.h"
 #include "xwin.h"
 
+struct _border;
+struct _ewinbit;
 struct _desk;
 struct _group;
 struct _snapshot;
@@ -68,10 +70,10 @@ struct _ewin
    char                type;
    Window              win_container;
 
-   const Border       *border;
-   const Border       *normal_border;
-   const Border       *previous_border;
-   EWinBit            *bits;
+   const struct _border *border;
+   const struct _border *normal_border;
+   const struct _border *previous_border;
+   struct _ewinbit    *bits;
 
    struct
    {
@@ -300,6 +302,10 @@ void                EwinReparent(EWin * ewin, Window parent);
 Window              EwinGetClientWin(const EWin * ewin);
 const char         *EwinGetName(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
+const char         *EwinBorderGetName(const EWin * ewin);
+void                EwinBorderGetSize(const EWin * ewin, int *bl, int *br,
+				      int *bt, int *bb);
+void                EwinBorderUpdateState(EWin * ewin);
 int                 EwinIsOnScreen(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, struct _desk *dsk,

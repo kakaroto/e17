@@ -424,10 +424,13 @@ EWMH_SetWindowBorder(const EWin * ewin)
 
    if (ewin->border)
      {
-	val[0] = ewin->border->border.left;
-	val[1] = ewin->border->border.right;
-	val[2] = ewin->border->border.top;
-	val[3] = ewin->border->border.bottom;
+	int                 bl, br, bt, bb;
+
+	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+	val[0] = (unsigned int)bl;
+	val[1] = (unsigned int)br;
+	val[2] = (unsigned int)bt;
+	val[3] = (unsigned int)bb;
      }
    else
       val[0] = val[1] = val[2] = val[3] = 0;
@@ -579,7 +582,7 @@ EWMH_GetWindowType(EWin * ewin)
 	EwinInhSetUser(ewin, move, 1);
 	EwinInhSetUser(ewin, size, 1);
 	ewin->props.donthide = 1;
-	EwinSetBorderByName(ewin, "BORDERLESS");
+	ewin->props.no_border = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
      {

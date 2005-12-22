@@ -23,6 +23,7 @@ e16_SOURCES = \
 	backgrounds.c		\
 	backgrounds.h		\
 	borders.c		\
+	borders.h		\
 	buttons.c		\
 	buttons.h		\
 	cmclass.c		\

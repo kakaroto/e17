@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "backgrounds.h"
+#include "borders.h"
 #include "buttons.h"
 #include "conf.h"
 #include "iclass.h"

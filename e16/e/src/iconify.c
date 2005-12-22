@@ -1517,26 +1517,24 @@ IconboxLayout(Iconbox * ib, int *px, int *py, int *pw, int *ph)
    if (ib->auto_resize)
      {
 	int                 add = 0;
+	int                 bl, br, bt, bb;
+
+	EwinBorderGetSize(ib->ewin, &bl, &br, &bt, &bb);
 
 	if (ib->orientation)
 	  {
 	     add = ib->max;
 	     if (ib->ewin->border)
 	       {
-		  if ((ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > VRoot.h)
-		     add =
-			VRoot.h - (ib->ewin->border->border.top +
-				   ib->ewin->border->border.bottom);
+		  if ((bt + bb + add) > VRoot.h)
+		     add = VRoot.h - (bt + bb);
 	       }
 	     y += (((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
 	     h = add;
 	     if (ib->ewin->border)
 	       {
-		  if ((EoGetY(ib->ewin) + ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > VRoot.h)
-		     y = VRoot.h - (ib->ewin->border->border.top +
-				    ib->ewin->border->border.bottom + add);
+		  if ((EoGetY(ib->ewin) + bt + bb + add) > VRoot.h)
+		     y = VRoot.h - (bt + bb + add);
 	       }
 	  }
 	else
@@ -1544,20 +1542,15 @@ IconboxLayout(Iconbox * ib, int *px, int *py, int *pw, int *ph)
 	     add = ib->max;
 	     if (ib->ewin->border)
 	       {
-		  if ((ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > VRoot.w)
-		     add =
-			VRoot.w - (ib->ewin->border->border.left +
-				   ib->ewin->border->border.right);
+		  if ((bl + br + add) > VRoot.w)
+		     add = VRoot.w - (bl + br);
 	       }
 	     x += (((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
 	     w = add;
 	     if (ib->ewin->border)
 	       {
-		  if ((EoGetX(ib->ewin) + ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > VRoot.w)
-		     x = VRoot.w - (ib->ewin->border->border.left +
-				    ib->ewin->border->border.right + add);
+		  if ((EoGetX(ib->ewin) + bl + br + add) > VRoot.w)
+		     x = VRoot.w - (bl + br + add);
 	       }
 	  }
      }

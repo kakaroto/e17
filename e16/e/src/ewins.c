@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "aclass.h"
+#include "borders.h"
 #include "desktops.h"
 #include "ecompmgr.h"
 #include "emodule.h"
@@ -1469,6 +1470,35 @@ EwinGetIconName(const EWin * ewin)
 
  done:
    return (name && strlen(name)) ? name : NULL;
+}
+
+const char         *
+EwinBorderGetName(const EWin * ewin)
+{
+   return (ewin->border) ? BorderGetName(ewin->border) : "?";
+}
+
+void
+EwinBorderGetSize(const EWin * ewin, int *bl, int *br, int *bt, int *bb)
+{
+   const Border       *b = ewin->border;
+
+   if (!b)
+     {
+	*bl = *br = *bt = *bb = 0;
+	return;
+     }
+
+   *bl = b->border.left;
+   *br = b->border.right;
+   *bt = b->border.top;
+   *bb = b->border.bottom;
+}
+
+void
+EwinBorderUpdateState(EWin * ewin)
+{
+   EwinBorderDraw(ewin, 0, 0);
 }
 
 int
