@@ -317,8 +317,7 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 
 
 	/*Now attach an object to it*/
-	structure = entropy_plugins_type_get_first(instance->core->plugin_list, 
-		ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+	structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
 
 	if (structure) {
 		Ewl_Widget* children[2];
@@ -500,7 +499,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	/*---------------------------*/
 	/*HACK - get the iconbox - this should be configurable */
-	plugin = entropy_plugins_type_get_first(core->plugin_list,  ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
+	plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
 	if (plugin) {
 		//printf("Plugin: %s\n", plugin->filename);
 		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");

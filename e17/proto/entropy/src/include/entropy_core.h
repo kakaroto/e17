@@ -27,7 +27,7 @@ struct entropy_core {
 
 	Ecore_List* selected_files;
 	Ecore_Hash* descent_hash;
-
+	Ecore_Hash* object_associate_hash;
 	Ecore_Hash* mime_action_hint;
 
 	

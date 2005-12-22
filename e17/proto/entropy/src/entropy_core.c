@@ -151,7 +151,8 @@ entropy_core* entropy_core_init() {
 	/*Initialize the mime hint hash*/
 	core->mime_action_hint = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-
+	/*Initialize the object assoc. hash*/
+	core->object_associate_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 	//printf ("Initialising the file cache..\n");
 	core->file_interest_list = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -819,7 +820,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 		
 		/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-	        plugin = entropy_plugins_type_get_first(instance->core->plugin_list, ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
 	       
 
 		/*Make our new event for notification*/
@@ -942,7 +943,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		//printf ("Requested a stat on a file...md5 %s, pointer %p, path '%s', filename '%s'\n", ((entropy_generic_file*)event->data)->md5, ((entropy_generic_file*)event->data), ((entropy_generic_file*)event->data)->path, ((entropy_generic_file*)event->data)->filename );
 
 		/*FIXME We should get the caller's current file plugin from the caller - i.e. the gui instance*/
-	        plugin = entropy_plugins_type_get_first(instance->core->plugin_list, ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	        plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
 
 		/*Make our new event for notification*/
 		ev = entropy_notify_request_register(instance->core->notify, instance, ENTROPY_NOTIFY_FILE_STAT_EXECUTED, 
@@ -1265,6 +1266,20 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 	}
 
 	return uri;
+}
+
+/* Associate an object with an entropy_generic_file - e.g. an ewl_widget with a file - 
+ * Mostly used for transparent DND between objects */
+void entropy_core_object_file_associate(void* object, entropy_generic_file* file) {
+	if (object) ecore_hash_set(core_core->object_associate_hash, object, file);
+}
+
+void entropy_core_object_file_disassociate(void* object) {
+	if (object) ecore_hash_remove(core_core->object_associate_hash, object);
+}
+
+entropy_generic_file* entropy_core_object_file_association_get(void* object) {
+	return ecore_hash_get(core_core->object_associate_hash, object);
 }
 
 

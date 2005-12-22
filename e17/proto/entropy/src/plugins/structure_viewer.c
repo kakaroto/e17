@@ -2,6 +2,12 @@
 #include "entropy.h"
 #include "entropy_gui.h"
 #include <dlfcn.h>
+#include <limits.h>
+
+void dnd_leave_callback(Ewl_Widget *main_win, void *ev_data, void *user_data);
+void dnd_enter_callback(Ewl_Widget *main_win, void *ev_data, void *user_data);
+void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data);
+
 
 
 typedef struct entropy_file_structure_viewer entropy_file_structure_viewer;
@@ -130,7 +136,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 
 
 void dnd_enter_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
-event_file_core* event = (event_file_core*)user_data;
+	event_file_core* event = (event_file_core*)user_data;
 	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
 	
 
@@ -138,7 +144,7 @@ event_file_core* event = (event_file_core*)user_data;
 	ewl_text_color_apply(EWL_TEXT(event->data), 255, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
 
 	
-	printf("Entered text %p\n", main_win);
+	//printf("Entered text %p\n", main_win);
 }
 
 void dnd_leave_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
@@ -149,7 +155,43 @@ void dnd_leave_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_text_color_apply(EWL_TEXT(event->data), 0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
 
 	
-	printf("Left text %p\n", main_win);
+	//printf("Left text %p\n", main_win);
+}
+
+void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data) {
+	Ewl_Widget* widget = ewl_dnd_drag_widget_get();
+	event_file_core* event = (event_file_core*)user_data;
+
+
+	if (widget) {
+		printf("Drop widget: '%s'\n", widget->inheritance);
+		if (ewl_widget_type_is(widget, "icon")) {
+			char* folder;
+			Ewl_IconBox* iconbox = EWL_ICONBOX_ICON(widget)->icon_box_parent;
+			Ecore_List* sel_list = ewl_iconbox_get_selection(iconbox);
+			Ewl_IconBox_Icon* icon;
+			entropy_generic_file* file;
+			char dest_dir[PATH_MAX];
+
+			entropy_plugin* plugin = 
+				entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+			void (*copy_func)(entropy_generic_file* source, char* dest_uri, entropy_gui_component_instance* requester);
+			copy_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_copy");
+
+			snprintf(dest_dir, PATH_MAX, "%s://%s/%s", event->file->uri_base, event->file->path, event->file->filename);
+			
+
+			ecore_list_goto_first(sel_list);
+			while ( (icon = ecore_list_remove_first(sel_list))) {
+				if ( (file = entropy_core_object_file_association_get(icon))) {
+					printf("Filename: '%s' - '%s/%s'\n", file->uri_base, file->path, file->filename);
+					(*copy_func)(file, dest_dir, event->instance);	
+				}
+			}
+
+			//printf("Copy to folder '%s/%s'\n", event->file->path, event->file->filename);
+		}
+	}
 }
 
 
@@ -228,6 +270,7 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED, row_clicked_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_ENTER, dnd_enter_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
+		ewl_callback_append(row, EWL_CALLBACK_DND_DROP, dnd_drop_callback, event);
 
 		//ewl_widget_appearance_set(EWL_WIDGET(row), "entry");
 		

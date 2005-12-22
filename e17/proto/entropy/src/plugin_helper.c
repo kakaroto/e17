@@ -46,8 +46,10 @@ int entropy_core_plugin_sub_type_get(entropy_plugin* plugin) {
 	
 }
 
-entropy_plugin* entropy_plugins_type_get_first(Ecore_List* plugins, int type, int subtype) {
+entropy_plugin* entropy_plugins_type_get_first(int type, int subtype) {
         entropy_plugin* list_item;
+
+	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
 
         ecore_list_goto_first(plugins);
         while ( (list_item = ecore_list_next(plugins)) ) {
@@ -61,8 +63,10 @@ entropy_plugin* entropy_plugins_type_get_first(Ecore_List* plugins, int type, in
 
 }
 
-Ecore_List* entropy_plugins_type_get(Ecore_List* plugins, int type) {
+Ecore_List* entropy_plugins_type_get(int type) {
 	entropy_plugin* list_item;
+
+	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
 	
 	if (plugin_list) {
 		ecore_list_destroy(plugin_list);

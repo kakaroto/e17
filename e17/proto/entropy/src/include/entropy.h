@@ -40,7 +40,7 @@ void entropy_plugin_mime_register(Ecore_List*, entropy_plugin*);
 entropy_plugin* entropy_plugin_layout_register(entropy_plugin* plugin);
 int entropy_core_plugin_type_get(entropy_plugin* plugin);
 int entropy_core_plugin_sub_type_get(entropy_plugin* plugin);
-entropy_plugin* entropy_plugins_type_get_first(Ecore_List* plugins, int type, int subtype);
+entropy_plugin* entropy_plugins_type_get_first(int type, int subtype);
 void entropy_core_layout_register(entropy_core* core, entropy_gui_component_instance* comp);
 entropy_thumbnail* entropy_thumbnail_create(entropy_generic_file* e_file);
 
@@ -93,6 +93,11 @@ void entropy_free(void* ref);
 char* entropy_core_descent_for_mime_get(entropy_core*, char*);
 entropy_mime_action* entropy_core_mime_hint_get(char* mime_type);
 void entropy_core_mime_action_add(char* mime_type, char* action);
+
+/*Object Assocation*/
+void entropy_core_object_file_associate(void* object, entropy_generic_file* file);
+void entropy_core_object_file_disassociate(void* object);
+entropy_generic_file* entropy_core_object_file_association_get(void* object);
 
 
 /*Logging stuff*/

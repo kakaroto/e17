@@ -110,7 +110,7 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 	Ecore_List* selected;
 	entropy_generic_file* file;
 	entropy_gui_component_instance* instance = ((entropy_gui_component_instance*)user_data);
-	entropy_plugin* plugin = entropy_plugins_type_get_first(instance->core->plugin_list, ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+	entropy_plugin* plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
 
 	void (*copy_func)(entropy_generic_file* source, char* dest_uri, entropy_gui_component_instance* requester);
 
@@ -258,8 +258,12 @@ void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Has
 		
 		
 		freeobj = ecore_hash_get( gui_hash, obj);
-		
-		if (freeobj) gui_file_destroy(freeobj);
+		if (freeobj) {
+			/*Associate this icon with this file in the core, so DND works*/
+			entropy_core_object_file_disassociate(freeobj->icon);
+			
+			gui_file_destroy(freeobj);
+		}
 
 		/*Tell the core we no longer need this file - it might free it now*/
 		entropy_core_file_cache_remove_reference(obj->md5);
@@ -303,8 +307,7 @@ void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_
 		 * reference */
 		instance = ecore_list_next(file_list);
 
-		plugin = entropy_plugins_type_get_first(instance->core->plugin_list, 
-			ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+		plugin = entropy_plugins_type_get_first( ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
 
 		/*Get the func ref*/
 		del_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_remove");
@@ -607,6 +610,9 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 			ecore_hash_set(view->gui_hash, list_item, gui_object);
 			ecore_hash_set(view->icon_hash, icon, gui_object);
 
+			/*Associate this icon with this file in the core, so DND works*/
+			entropy_core_object_file_associate(icon, list_item);
+
 			if (do_mime == DO_MIME) {
 				char* mime;
 				entropy_plugin* thumb;
@@ -874,7 +880,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		entropy_file_progress* progress = ret;
 		
 						  
-		printf("Received a file progress event..\n");
 		if (!view->progress->progress_window) {
 			printf("Showing progressbar dialog..\n");
 
