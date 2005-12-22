@@ -240,6 +240,9 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 void
 ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 {
+	Ewl_Widget *cur;
+	int idx = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
@@ -257,7 +260,14 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	ecore_list_goto_index(pc->children, index);
+	ecore_list_goto_first(pc->children);
+	while ((cur = ecore_list_next(pc->children)))
+	{
+		if (ewl_widget_internal_is(cur)) continue;
+
+		idx++;
+		if (idx == index) break;
+	}
 	ecore_list_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
@@ -385,6 +395,37 @@ ewl_container_child_get(Ewl_Container *parent, int index)
 	}
 
 	DRETURN_PTR(((count == index) ? child : NULL), DLEVEL_STABLE);
+}
+
+/**
+ * @param parent: The container to search
+ * @param w: The child to search for
+ * @return Returns the index of the child in the parent
+ */
+unsigned int
+ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
+{
+	unsigned int idx = 0;
+	Ewl_Container *container;
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("parent", parent, idx);
+	DCHECK_PARAM_PTR_RET("w", w, idx);
+	DCHECK_TYPE_RET("parent", parent, "container", idx);
+	DCHECK_TYPE_RET("w", w, "widget", idx);
+
+	container = parent;
+	while (container->redirect) container = container->redirect;
+
+	ecore_list_goto_first(container->children);
+	while ((child = ecore_list_next(container->children))) {
+		if (ewl_widget_internal_is(child)) continue;
+		if (child == w) break;
+		idx ++;
+	}
+
+	DRETURN_INT(idx, DLEVEL_STABLE);
 }
 
 /**
