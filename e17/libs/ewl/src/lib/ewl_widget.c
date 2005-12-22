@@ -12,6 +12,22 @@ static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget * w,
 						  const char *part, char *text);
 
+static void
+ewl_widget_drag_move_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__);
+
+static void
+ewl_widget_drag_up_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__);
+
+static void
+ewl_widget_drag_down_cb (Ewl_Widget * w, void *ev_data ,
+				void *user_data __UNUSED__);
+
+static int drag_move_count = 0;
+static int ewl_drag_down = 0;
+static Ewl_Widget* ewl_drag_widget= NULL;
+
 /* static int edjes = 0; */
 
 /**
@@ -388,6 +404,9 @@ ewl_widget_destroy(Ewl_Widget * w)
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
+	if (w == ewl_widget_drag_candidate_get())
+		ewl_widget_dnd_reset();
+
 	ewl_widget_hide(w);
 	if (w->parent)
 		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
@@ -672,7 +691,7 @@ ewl_widget_state_set(Ewl_Widget *w, char *state)
 		if (ewl_config.theme.print_signals)
 			printf("Emitting: %s\n", state);
 		edje_object_signal_emit(w->theme_object, state, "EWL");
-	}
+	} 
 
 	ewl_callback_call(w, EWL_CALLBACK_STATE_CHANGED);
 
@@ -1626,6 +1645,10 @@ ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_widget_drag_down_cb);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_move_cb);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_up_cb);
+
 	/*
 	 * First remove the parents reference to this widget to avoid bad
 	 * references.
@@ -2417,3 +2440,113 @@ ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+
+void
+ewl_widget_drag_down_cb (Ewl_Widget * w, void *ev_data ,
+				void *user_data __UNUSED__) {
+	Ewl_Event_Mouse_Down* ev = ev_data;
+
+	if (!ewl_dnd_status_get()) return;
+
+	if (ev->button == 1 && !ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
+		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
+		//printf("Drag down starting down on %p..\n",w);
+		drag_move_count=0;		
+		ewl_drag_widget = w;
+	} else {
+		//printf("button wasn't 1, or had drag wait state\n");
+	}
+}
+
+void
+ewl_widget_drag_move_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__) {
+
+	if (!ewl_dnd_status_get()) return;
+	
+	if (ewl_drag_widget && ewl_object_flags_has(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
+		drag_move_count++;
+		
+		if (drag_move_count > 2) {
+			ewl_object_flags_remove(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
+			ewl_object_flags_add(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND, EWL_FLAGS_STATE_MASK);
+		
+			//printf("**** Start drag for %p..\n",ewl_drag_widget);
+			ewl_drag_start(ewl_drag_widget);	
+		} else {
+			//printf("Drag move count is %d\n", drag_move_count);
+		}
+	} else {
+		//printf("%p didn't have dnd wait\n");
+	}
+}
+
+void
+ewl_widget_drag_up_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__) {
+
+	if (ewl_object_flags_has(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
+		ewl_object_flags_remove(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
+		
+	}
+	drag_move_count=0;
+	ewl_drag_widget = NULL;
+}
+
+
+/**
+ * @param w: the widget to set draggable state
+ * @param val: the true/false state of draggable
+ * @return Returns no value.
+ * @brief Set the draggable state, and setup any callbacks
+ *
+ */
+void
+ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, void* (*cb) )
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	if (val) { 
+		if (!ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE, EWL_FLAGS_PROPERTY_MASK)) {
+			ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE, EWL_FLAGS_PROPERTY_MASK );
+
+			ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_widget_drag_down_cb, NULL);
+			ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_move_cb, NULL);
+			ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_drag_up_cb, NULL);
+
+			
+			/*if (ewl_widget_type_is(w, "container")) 
+				ewl_container_callback_notify(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);*/
+
+			if (cb) {
+				ewl_widget_data_set(w, "DROP_CB", cb);
+			}
+		}
+	} else {
+		if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,  EWL_FLAGS_PROPERTY_MASK)) {
+			ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_widget_drag_down_cb);
+			ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_move_cb);
+			ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_widget_drag_up_cb);
+
+			ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,  EWL_FLAGS_PROPERTY_MASK);
+
+			/*ewl_container_callback_nointercept(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);*/
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_Widget* ewl_widget_drag_candidate_get() {
+	return ewl_drag_widget;
+}
+
+void ewl_widget_dnd_reset() {
+	drag_move_count=0;
+	ewl_drag_widget = NULL;
+	printf("Drag reset..\n");
+	
+}

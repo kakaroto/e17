@@ -187,6 +187,9 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
+	ewl_dnd_init();
+
+
 #ifdef ENABLE_EWL_SOFTWARE_X11
 	if (use_engine == EWL_ENGINE_SOFTWARE_X11) {
 		IF_FREE(ewl_config.evas.render_method);

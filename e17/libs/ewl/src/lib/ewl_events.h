@@ -168,6 +168,20 @@ struct Ewl_Dnd_Types
 	
 };
 
+/**
+ * @struct Ewl_Event_Dnd_Drop
+ * Provides information about dnd drops movement
+ */
+struct Ewl_Event_Dnd_Drop
+{
+        int x; /**< X coordinate the mouse moved to */
+        int y; /**< Y coordinate the mouse moved to */
+	void* data; /**< Data from drop source 	    */
+};
+typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
+
+
+
 typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
 
 /**

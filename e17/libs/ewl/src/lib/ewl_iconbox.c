@@ -11,6 +11,10 @@
 #define ICONBOX_REPEAT 10000
 
 
+void* ewl_iconbox_drag_data_get() {
+	printf("Request for drag data!\n");
+	return NULL;
+}
 
 
 int
@@ -19,8 +23,10 @@ ewl_iconbox_icon_label_height_calculate(Ewl_IconBox_Icon* icon)
 	int height=0;
 	int ww,hh;
 
-	evas_object_textblock_size_native_get(EWL_TEXT(icon->w_label)->textblock, &ww, &hh);
-	height = CURRENT_H(icon->image) + hh;
+	if (EWL_TEXT(icon->w_label)->textblock) {
+		evas_object_textblock_size_native_get(EWL_TEXT(icon->w_label)->textblock, &ww, &hh);
+		height = CURRENT_H(icon->image) + hh;
+	}
 
 	
 
@@ -72,8 +78,8 @@ void
 ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data)
 {
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
-	int height = ewl_iconbox_icon_label_height_calculate(icon);
-	int width = CURRENT_W(icon->image);
+	int height = ewl_iconbox_icon_label_height_calculate(icon) + 10;
+	int width = CURRENT_W(icon->image) + 10;
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize);
 
@@ -390,11 +396,9 @@ int ewl_iconbox_init(Ewl_IconBox* ib)
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up, ib);
 	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
-	
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_DROP, ewl_iconbox_dnd_drop_cb, ib);
 	ewl_container_callback_notify(EWL_CONTAINER(ib), EWL_CALLBACK_KEY_DOWN);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_KEY_DOWN, ewl_iconbox_key_press_cb, ib);
-
-	
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
 
@@ -568,6 +572,12 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 	int wrap = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	
+	//if (REALIZED(EWL_WIDGET(icon))) { 
+	//	printf("Icon '%s' realized, setting up label..\n", text);
+		ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
+	//}
 	
 	if (text) {
 		
@@ -588,7 +598,7 @@ void ewl_iconbox_icon_label_set(Ewl_IconBox_Icon* icon, char* text)
 	/* Overestimate the label height to begin with, to give the text room to expand */
 	if (REALIZED(EWL_WIDGET(icon))) {
 		ewl_object_custom_h_set( EWL_OBJECT(icon), CURRENT_H(icon->image) + ICON_LABEL_INITIAL);	
-		ewl_callback_append(EWL_WIDGET(icon->w_label), EWL_CALLBACK_CONFIGURE, ewl_iconbox_icon_floater_resize, icon);
+		
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -915,13 +925,8 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 	/*FIXME - at the moment, it appears we can't calculate the height 
 		yet - hard set for now*/
-	ewl_object_custom_h_set(EWL_OBJECT(ib), 80);
-	ewl_object_custom_size_set(EWL_OBJECT(ib), 60, 90);
-
-
-
-
-	
+	//ewl_object_custom_h_set(EWL_OBJECT(ib), 80);
+	ewl_object_custom_size_set(EWL_OBJECT(ib), 60, 60);
 
 	/* Add the callbacks for mouse */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->image, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_icon_mouse_down, ib);
@@ -938,7 +943,7 @@ Ewl_IconBox_Icon* ewl_iconbox_icon_add(Ewl_IconBox* iconbox, char* name, char* i
 
 
 	ewl_widget_layer_set(EWL_WIDGET(ib), ICONBOX_ICON_LAYER);
-	//ewl_widget_draggable_set(EWL_WIDGET(ib), 1);
+	ewl_widget_draggable_set(EWL_WIDGET(ib), 1, ewl_iconbox_drag_data_get);
 
 	return EWL_ICONBOX_ICON(ib);
 }
@@ -980,6 +985,24 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 
 /*Callbacks*/
+void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+	int ibx,iby,px,py,fw,fh;
+	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
+	Ewl_IconBox_Icon* list_item = ib->select_icon;
+	Ewl_Event_Dnd_Drop *ev = ev_data;
+
+	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
+	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
+
+	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
+
+	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
+	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
+
+	ewl_object_position_request(EWL_OBJECT(list_item),  ev->x - (fw/2), ev->y - (fh/2));
+
+}
 
 void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 	int ibx,iby,px,py,fw,fh;
@@ -988,24 +1011,25 @@ void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_dat
 	Ewl_Event_Mouse_Move *ev = ev_data;
 	Ewl_Dnd_Types* types;
 
+
 	ibx = ewl_object_current_x_get(EWL_OBJECT(ib));
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
 
 	px = ewl_object_current_x_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
 	py = ewl_object_current_y_get(EWL_OBJECT(ib->ewl_iconbox_pane_inner));
 
-	
 	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
-	ewl_object_position_request(EWL_OBJECT(list_item), (ev->x - ibx) + abs(px-ibx) - (fw/2),
-				  (ev->y - iby) + abs(py-iby) - (fh/2));
+	
+	//ewl_object_position_request(EWL_OBJECT(list_item), (ev->x - ibx) + abs(px) - (fw/2),
+	//			  (ev->y - iby) + abs(py) - (fh/2));
 
 	/*Get types*/
 	if ( (types = ewl_dnd_types_for_widget_get(EWL_WIDGET(ib)))) {
-		printf("We have %d types!\n", types->num_types);
+		/*printf("We have %d types!\n", types->num_types);
 		if (types->num_types > 0) {
 			printf("First type is '%s'\n", types->types[0]);
-		}
+		}*/
 	}
 	
 
@@ -1069,7 +1093,6 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 
 	/*Handle selection box*/
 	if (ib->drag_box) {
-
 
 		if (ib->dx == -1) {
 			/*  Assume this is the drag start point */
@@ -1137,6 +1160,8 @@ void ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 	
 	
 	if (list_item != NULL) {			
+			return;
+		
 			/*Ewl_Widget* icon_box = (Ewl_Widget*)list_item->box;*/
 			int fw,fh;
 
@@ -1177,12 +1202,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 	iby = ewl_object_current_y_get(EWL_OBJECT(ib));
 	
 	if (ev->button == 3 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
-		/*printf ("Context menu: %d,%d\n", ev->x, ev->y);*/
-
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), ev->x-ibx + abs(px-ibx), ev->y-iby +abs(py-iby));
-		//ewl_widget_show(ib->ewl_iconbox_view_menu);
-		//ewl_widget_show(ib->ewl_iconbox_context_menu);
-		//ewl_menu_popup_move_cb(EWL_MENU(ib->ewl_iconbox_context_menu)->base.popup, NULL, ib->ewl_iconbox_context_menu);
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), EWL_CALLBACK_FOCUS_IN);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ && (ib->xdown != ev->x && ib->ydown != ev->y)) {
 		ewl_object_custom_size_set(EWL_OBJECT(ib->select), 1, 1);
@@ -1193,6 +1213,7 @@ void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, voi
 		
 		ewl_widget_show(EWL_WIDGET(ib->select_floater));
 		ib->drag_box = 1;
+		ewl_dnd_disable();
 	}
 	
 }
@@ -1208,12 +1229,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 	ib->icon_box_parent->xdown = ev->x;
 	ib->icon_box_parent->ydown = ev->y;
 
-	/* Set this to selected */
-	if (ev->modifiers == EWL_KEY_MODIFIER_CTRL) {
-		ewl_iconbox_icon_select(ib,0,0);
-	} else {
-		ewl_iconbox_icon_select(ib,0,1);	
-	}
+
 
 	ib->icon_box_parent->select_icon = ib; /*We rely on this being the first callback - so
 						 client*/
@@ -1229,19 +1245,10 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 
 	if (ev->button == 3) {
 		ewl_floater_position_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ev->x-ibx + abs(sx-ibx), ev->y-iby +abs(sy-iby));
-		//ewl_floater_follow_set(EWL_FLOATER(ib->icon_box_parent->icon_menu_floater), ib);
-		//ewl_widget_show(ib->icon_box_parent->icon_menu_floater);
-		//ewl_widget_show(ib->icon_box_parent->icon_menu);
 		ewl_callback_call(EWL_WIDGET(ib->icon_box_parent->icon_menu), EWL_CALLBACK_FOCUS_IN);	
 	} else {
+		return;
 		/*Select/drag start*/
-
-		/*ewl_widget_hide(ib->icon_box_parent->icon_menu);*/
-		//ewl_widget_hide(ib->icon_box_parent->icon_menu_floater);
-
-
-	
-		/*printf ("Button down on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)));*/
 		ib->drag = 1;
 		ib->icon_box_parent->drag_icon = ib;
 	}
@@ -1249,11 +1256,18 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
 }
 
-void ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
+void ewl_iconbox_icon_mouse_up(Ewl_Widget *w , void *ev_data , void *user_data)
 {
-	/*Ewl_Event_Mouse_Down *ev = ev_data;*/
-
+	Ewl_Event_Mouse_Down *ev = ev_data;
 	Ewl_IconBox_Icon* ib = user_data;
+
+	/* Set this to selected */
+	if (ev->modifiers == EWL_KEY_MODIFIER_CTRL) {
+		ewl_iconbox_icon_select(ib,0,0);
+	} else {
+		ewl_iconbox_icon_select(ib,0,1);	
+	}
+
 	ib->drag = 0;
 	ib->icon_box_parent->drag_icon = NULL;
 	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
@@ -1269,6 +1283,8 @@ void ewl_iconbox_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
 		ib->drag_box = 0;
 		ib->dx = -1;
 		ib->dy = -1;
+
+		ewl_dnd_enable();
 	}
 }
 

@@ -683,6 +683,66 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+
+/**
+ * @param embed: the embed where the DND drop event is to occur
+ * @param x: the x coordinate of the mouse drop
+ * @param y: the y coordinate of the mouse drop
+ * @return Returns no value.
+ * @brief Sends the event for a DND drop into an embed.
+ */
+void
+ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
+{
+	Ewl_Widget *widget = NULL;
+	Ewl_Event_Dnd_Drop ev;
+	void* drop_data = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, "embed");
+
+	ewl_embed_active_set(embed, TRUE);
+
+	ev.x = x;
+	ev.y = y;
+
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+	if (widget) {
+		Ewl_Widget *parent;
+		
+		
+		if (internal) {
+			void* (*cb)();
+			
+			/*Retrieve the callback for this widget's data*/
+			cb = ewl_widget_data_get(widget, "DROP_CB");
+			if (cb) { 
+				drop_data = (*cb)();
+				ev.data = drop_data;
+			}
+		} else {
+			/*Handle external drops*/
+			ev.data = NULL;
+		}
+		
+		parent = widget;
+		while (parent) {
+			ewl_callback_call_with_event_data(parent,
+				EWL_CALLBACK_DND_DROP, &ev);
+			parent = parent->parent;
+		}
+
+		ewl_dnd_drag_widget_clear();
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+
+
 /**
  * @param embed: the embed where the DND position event is to occur
  * @param x: the x coordinate of the mouse move
@@ -691,7 +751,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends the event for a DND position into an embed.
  */
 void
-ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
+ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, int* pw, int* ph)
 {
 	Ewl_Widget *widget = NULL;
 	Ewl_Event_Mouse_Move ev;
@@ -738,13 +798,20 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y)
 		 * Pass the position event up the chain
 		 */ 
 		parent = widget;
+		
 		while (parent) {
 			ewl_callback_call_with_event_data(parent,
 					EWL_CALLBACK_DND_POSITION, &ev);
 			parent = parent->parent;
 		}
 
+		ewl_dnd_position_windows_set(window);
 		window->dnd_last_position = widget;
+
+		*px = CURRENT_X(widget);
+		*py = CURRENT_Y(widget);
+		*pw = CURRENT_W(widget);
+		*ph = CURRENT_H(widget);
 	} else {
 		DWARNING("Could not find widget for dnd position event");
 	}

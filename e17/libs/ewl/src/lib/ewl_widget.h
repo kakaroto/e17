@@ -171,6 +171,10 @@ unsigned int	ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a);
 void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
 
+
+void		ewl_widget_draggable_set(Ewl_Widget* w, unsigned int val, void* (*cb) );
+Ewl_Widget* 	ewl_widget_drag_candidate_get();
+
 /**
  * @def LAYER(w)
  * Used to retrieve the layer of a widget.

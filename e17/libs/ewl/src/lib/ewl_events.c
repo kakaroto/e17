@@ -216,13 +216,16 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	 */
 	if ((ev->x != window->x)) {
 		window->x = ev->x;
-		ewl_widget_configure(EWL_WIDGET(window));
 	}
 
 	if ((ev->y != window->y)) {
 		window->y = ev->y;
-		ewl_widget_configure(EWL_WIDGET(window));
+		
+
+
 	}
+
+	ewl_widget_configure(EWL_WIDGET(window));
 
 	/*
 	 * Configure events really only need to occur on resize.
@@ -541,6 +544,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 	Ewl_Window *window;
 	Ecore_X_Event_Xdnd_Position *ev;
 	int x, y, wx, wy;
+	int px,py,pw,ph;
 	Ecore_X_Rectangle rect;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -562,13 +566,25 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) {
 			/* First see if we need to send an 'enter' to the widget */
-			ewl_embed_dnd_position_feed(embed, x, y);
+			ewl_embed_dnd_position_feed(embed, x, y, &px,&py,&pw,&ph);
+			
+			/*rect.x = px;
+			rect.y = py;
+			rect.width = pw;
+			rect.height = ph;*/
+
+			rect.x = 0;
+			rect.y = 0;
+			rect.width = 0;
+			rect.height = 0;				
+
+			//printf("No more position until %d:%d:%d:%d\n", px,py,pw,ph);
+		} else {
+			rect.x = 0;
+			rect.y = 0;
+			rect.width = 0;
+			rect.height = 0;	
 		}
-		
-		rect.x = 0;
-		rect.y = 0;
-		rect.width = 0;
-		rect.height = 0;	
 		ecore_x_dnd_send_status(1, 0, rect, ECORE_X_DND_ACTION_PRIVATE);
 	}
 
@@ -637,6 +653,8 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 			FREE(window->dnd_types.types);
 			window->dnd_types.types = NULL;
+			window->dnd_types.num_types = 0;
+			
 		}
 	}
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -657,6 +675,7 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Window *window;
 	Ecore_X_Event_Xdnd_Drop *ev;
+	int internal = 0;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -665,6 +684,12 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	window = ewl_window_window_find((void *)ev->win);
 	if (window) {
+		int x,y,wx,wy;
+		Ewl_Embed *embed= ewl_embed_evas_window_find((void *)ev->win);
+		ewl_window_position_get(EWL_WINDOW(window), &wx, &wy);
+
+		printf("Wx/y: %d:%d\n", wx,wy);
+		
 		/*printf("EWL got a DND drop event..\n");*/
 
 		/* Request a DND data request */
@@ -672,6 +697,24 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 		if (window->dnd_types.num_types > 0)
 			ecore_x_selection_xdnd_request(ev->win, 
 				window->dnd_types.types[0]);
+
+
+		printf("Drop!\n");
+
+
+		if (ev->win == (Ecore_X_Window)window->window) {
+			printf("Source is dest! - Retrieving local data\n");
+			internal = 1;
+		} else {
+			printf("Source is not dest\n");
+			//printf("%d:%d:%d\n", ev->source, ev->win,x_window);
+			//ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
+		}
+
+		x = ev->position.x - wx;
+		y = ev->position.y - wy;
+		
+		ewl_embed_dnd_drop_feed(embed, x, y, internal);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

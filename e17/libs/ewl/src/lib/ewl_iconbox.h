@@ -142,6 +142,7 @@ Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib);
 
 
 /* Internal callbacks */
+void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_iconbox_expansion_cb(Ewl_Widget *w, void *ev_data, void *user_data);

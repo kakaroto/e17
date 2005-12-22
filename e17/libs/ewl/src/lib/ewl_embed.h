@@ -94,8 +94,9 @@ void            ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
 void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 
-void		ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y);
+void		ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
 void		ewl_embed_dnd_enter_feed(Ewl_Embed *embed, int x, int y, void* dnd_event);
+void		ewl_embed_dnd_drop_feed(Ewl_Embed* , int x, int y, int internal);
 
 void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
