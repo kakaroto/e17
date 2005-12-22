@@ -174,6 +174,7 @@ void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int 
 
 void		ewl_widget_draggable_set(Ewl_Widget* w, unsigned int val, void* (*cb) );
 Ewl_Widget* 	ewl_widget_drag_candidate_get();
+void 		ewl_widget_dnd_reset();
 
 /**
  * @def LAYER(w)

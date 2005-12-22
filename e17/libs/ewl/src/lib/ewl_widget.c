@@ -24,9 +24,8 @@ static void
 ewl_widget_drag_down_cb (Ewl_Widget * w, void *ev_data ,
 				void *user_data __UNUSED__);
 
-static int drag_move_count = 0;
-static int ewl_drag_down = 0;
-static Ewl_Widget* ewl_drag_widget= NULL;
+static int _ewl_dnd_drag_move_count = 0;
+static Ewl_Widget* _ewl_drag_widget= NULL;
 
 /* static int edjes = 0; */
 
@@ -2452,8 +2451,8 @@ ewl_widget_drag_down_cb (Ewl_Widget * w, void *ev_data ,
 	if (ev->button == 1 && !ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
 		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
 		//printf("Drag down starting down on %p..\n",w);
-		drag_move_count=0;		
-		ewl_drag_widget = w;
+		_ewl_dnd_drag_move_count=0;		
+		_ewl_drag_widget = w;
 	} else {
 		//printf("button wasn't 1, or had drag wait state\n");
 	}
@@ -2465,17 +2464,17 @@ ewl_widget_drag_move_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
 
 	if (!ewl_dnd_status_get()) return;
 	
-	if (ewl_drag_widget && ewl_object_flags_has(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
-		drag_move_count++;
+	if (_ewl_drag_widget && ewl_object_flags_has(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
+		_ewl_dnd_drag_move_count++;
 		
-		if (drag_move_count > 2) {
-			ewl_object_flags_remove(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
-			ewl_object_flags_add(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND, EWL_FLAGS_STATE_MASK);
+		if (_ewl_dnd_drag_move_count > 2) {
+			ewl_object_flags_remove(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
+			ewl_object_flags_add(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND, EWL_FLAGS_STATE_MASK);
 		
-			//printf("**** Start drag for %p..\n",ewl_drag_widget);
-			ewl_drag_start(ewl_drag_widget);	
+			//printf("**** Start drag for %p..\n",_ewl_drag_widget);
+			ewl_drag_start(_ewl_drag_widget);	
 		} else {
-			//printf("Drag move count is %d\n", drag_move_count);
+			//printf("Drag move count is %d\n", _ewl_dnd_drag_move_count);
 		}
 	} else {
 		//printf("%p didn't have dnd wait\n");
@@ -2486,12 +2485,12 @@ void
 ewl_widget_drag_up_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__) {
 
-	if (ewl_object_flags_has(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
-		ewl_object_flags_remove(EWL_OBJECT(ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
+	if (ewl_object_flags_has(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
+		ewl_object_flags_remove(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK);
 		
 	}
-	drag_move_count=0;
-	ewl_drag_widget = NULL;
+	_ewl_dnd_drag_move_count=0;
+	_ewl_drag_widget = NULL;
 }
 
 
@@ -2540,13 +2539,23 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, void* (*cb) )
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns the current widget that has been clicked or moved (i.e. drag_wait)
+ * @brief Accessor function for the current drag candidate widget
+ *
+ */
 Ewl_Widget* ewl_widget_drag_candidate_get() {
-	return ewl_drag_widget;
+	return _ewl_drag_widget;
 }
 
+/**
+ * @return none
+ * @brief Cancel any active dnd_wait state widgets
+ *
+ */
 void ewl_widget_dnd_reset() {
-	drag_move_count=0;
-	ewl_drag_widget = NULL;
+	_ewl_dnd_drag_move_count=0;
+	_ewl_drag_widget = NULL;
 	printf("Drag reset..\n");
 	
 }
