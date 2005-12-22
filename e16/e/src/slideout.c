@@ -167,6 +167,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
      {
 	dsk = DeskGet(0);
 	EoSetLayer(s, 10);
+	EoSetFloating(s, 1);
      }
    EoReparent(s, EoObj(dsk), xx, yy);
 
