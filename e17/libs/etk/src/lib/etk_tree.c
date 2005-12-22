@@ -594,7 +594,7 @@ void etk_tree_row_height_set(Etk_Tree *tree, int row_height)
       tree->use_default_row_height = TRUE;
       if (etk_widget_theme_object_data_get(tree->grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
          tree->row_height = ETK_TREE_MIN_ROW_HEIGHT;
-      etk_range_increments_set(ETK_RANGE(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view))), tree->row_height, 5 * tree->row_height);
+      etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
    }
    else
    {
@@ -605,7 +605,7 @@ void etk_tree_row_height_set(Etk_Tree *tree, int row_height)
    etk_object_notify(ETK_OBJECT(tree), "row_height");
    etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
-   etk_range_increments_set(ETK_RANGE(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view))), tree->row_height, 5 * tree->row_height);
+   etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
 }
 
 /**
@@ -767,11 +767,8 @@ void etk_tree_clear(Etk_Tree *tree)
       _etk_tree_row_free(tree->root.first_child);
    tree->last_selected = NULL;
    
-   if (!tree->frozen)
-   {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
-      etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
-   }
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
+   etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
 }
 
 /**
@@ -1102,7 +1099,7 @@ void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row)
          else
             new_xoffset = row_offset - tree_height + tree->row_height;
          
-         etk_range_value_set(ETK_RANGE(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view))), new_xoffset);
+         etk_range_value_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), new_xoffset);
          return;
       }
    }
@@ -1766,7 +1763,7 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
    {
       if (etk_widget_theme_object_data_get(grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
          tree->row_height = ETK_TREE_MIN_ROW_HEIGHT;
-      etk_range_increments_set(ETK_RANGE(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view))), tree->row_height, 5 * tree->row_height);
+      etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
    }
    
    if (etk_widget_theme_object_data_get(grid, "cell_margins", "%d %d %d %d", &tree->cell_margins[0], &tree->cell_margins[1], &tree->cell_margins[2], &tree->cell_margins[3]) != 4)
@@ -1865,10 +1862,16 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
 static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *key_event = event;
+   Etk_Range *hscrollbar_range;
+   Etk_Range *vscrollbar_range;
+   Etk_Bool propagate = FALSE;
    Etk_Tree *tree;
 
    if (!(tree = ETK_TREE(object)))
       return;
+   
+   hscrollbar_range = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
+   vscrollbar_range = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
 
    /* Select the previous visible row */
    if (strcmp(key_event->key, "Up") == 0)
@@ -1882,7 +1885,6 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
       
       _etk_tree_row_select(tree, row_to_select, key_event->modifiers);
       etk_tree_row_scroll_to(row_to_select, FALSE);
-      etk_widget_event_propagation_stop();
    }
    /* Select the next visible row */
    else if (strcmp(key_event->key, "Down") == 0)
@@ -1896,20 +1898,24 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
       
       _etk_tree_row_select(tree, row_to_select, key_event->modifiers);
       etk_tree_row_scroll_to(row_to_select, FALSE);
-      etk_widget_event_propagation_stop();
    }
-   /* Expand the row */
    else if (strcmp(key_event->key, "Right") == 0 && tree->last_selected && tree->last_selected->selected)
-   {
       etk_tree_row_expand(tree->last_selected);
-      etk_widget_event_propagation_stop();
-   }
-   /* Collapse the row */
    else if (strcmp(key_event->key, "Left") == 0 && tree->last_selected && tree->last_selected->selected)
-   {
       etk_tree_row_collapse(tree->last_selected);
+   else if (strcmp(key_event->key, "Home") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower);
+   else if (strcmp(key_event->key, "End") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
+   else if (strcmp(key_event->key, "Next") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
+   else if (strcmp(key_event->key, "Prior") == 0)
+      etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
+   else
+      propagate = TRUE;
+   
+   if (!propagate)
       etk_widget_event_propagation_stop();
-   }
 }
 
 /* Called when the user presses a column header */

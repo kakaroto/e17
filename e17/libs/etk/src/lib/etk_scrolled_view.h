@@ -50,8 +50,8 @@ struct _Etk_Scrolled_View
 Etk_Type *etk_scrolled_view_type_get();
 Etk_Widget *etk_scrolled_view_new();
 
-Etk_Widget *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view);
-Etk_Widget *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view);
+Etk_Range *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view);
+Etk_Range *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view);
 
 void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child);
 
