@@ -39,6 +39,8 @@ static const WinOp  winops[] = {
    {"border", 2, 1, 0, EWIN_OP_BORDER},
    {"title", 2, 1, 1, EWIN_OP_TITLE},
 
+   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},	/* Place before "focus" */
+
    {"close", 2, 1, 0, EWIN_OP_CLOSE},
    {"kill", 0, 1, 0, EWIN_OP_KILL},
    {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
@@ -73,7 +75,6 @@ static const WinOp  winops[] = {
 
    {"snap", 0, 1, 0, EWIN_OP_SNAP},
 
-   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
    {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
    {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
    {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
