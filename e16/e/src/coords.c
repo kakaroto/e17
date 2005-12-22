@@ -59,7 +59,9 @@ CoordsShow(EWin * ewin)
 
    x = ewin->shape_x;
    y = ewin->shape_y;
-   ICCCM_GetIncrementalSize(ewin, ewin->shape_w, ewin->shape_h, &w, &h);
+   w = (ewin->state.shaded) ? ewin->client.w : ewin->shape_w;
+   h = (ewin->state.shaded) ? ewin->client.h : ewin->shape_h;
+   ICCCM_GetIncrementalSize(ewin, w, h, &w, &h);
 
    Esnprintf(s, sizeof(s), "%i x %i (%i, %i)", w, h, x, y);
    TextSize(tc, 0, 0, 0, s, &cw, &ch, 17);
