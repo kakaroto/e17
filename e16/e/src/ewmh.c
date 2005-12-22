@@ -575,9 +575,7 @@ EWMH_GetWindowType(EWin * ewin)
      {
 	EoSetLayer(ewin, 0);
 	EoSetSticky(ewin, 1);
-#if 0				/* Should be configurable */
-	ewin->focusclick = 1;
-#endif
+	ewin->props.focusclick = 1;
 	ewin->props.skip_focuslist = 1;
 	EwinInhSetUser(ewin, move, 1);
 	EwinInhSetUser(ewin, size, 1);
