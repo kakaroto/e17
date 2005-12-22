@@ -382,7 +382,7 @@ epsilon_exists (Epsilon * e)
 		dirs[i], e->hash);
       if (!stat (buf, &filestatus) && 
 	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
-	  (!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_NORMAL) ||
+	  (!strcmp(dirs[i], "normal") && e->tw == THUMB_SIZE_NORMAL) ||
 	  (!strcmp(dirs[i], "fail/epsilon"))))
 	{
 	  ok = 1;
@@ -393,7 +393,7 @@ epsilon_exists (Epsilon * e)
 		dirs[i], e->hash);
       if (!stat (buf, &filestatus) && 
 	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
-	  (!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_NORMAL) ||
+	  (!strcmp(dirs[i], "normal") && e->tw == THUMB_SIZE_NORMAL) ||
 	  (!strcmp(dirs[i], "fail/epsilon"))))
 	{
 	  ok = 2;
