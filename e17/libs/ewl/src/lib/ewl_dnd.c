@@ -5,7 +5,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_X.h>
 
-#define WINDOW_ROOT 0
+#define EWL_DND_WINDOW_ROOT 0
 static int ewl_dragging_current = 0;
 static int ewl_dnd_move_count = 0;
 static Ecore_Evas* _ewl_dnd_drag_canvas;
@@ -28,7 +28,7 @@ char *drop_types[] = { "text/uri-list" };
 char *data[] = { "file:///home/chaos/wlan-key2" };
 
 
-void ewl_dnd_init() {
+void ewl_dnd_init(void) {
 	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	ewl_dragging_current = 0;
 	_ewl_dnd_status = 1;
@@ -92,8 +92,6 @@ _ewl_dnd_event_dnd_move(void *data, int type, void *event)
 static int
 _ewl_dnd_event_mouse_up(void *data, int type, void *event)
 {
-	printf("mouse up..\n");
-
 	if (_ewl_dnd_drag_canvas && ewl_dragging_current) {
 		Ecore_List* pos;
 		void* val;
@@ -141,7 +139,6 @@ void ewl_drag_start(Ewl_Widget* w) {
 	if (!_ewl_dnd_status) return;
 
 	if (ewl_dragging_current) {
-		printf("ERR: ewl already dragging\n");
 		return;
 	}
 
@@ -153,7 +150,7 @@ void ewl_drag_start(Ewl_Widget* w) {
 	_ewl_dnd_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,_ewl_dnd_event_mouse_up, NULL);
 	_ewl_dnd_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _ewl_dnd_event_dnd_move, NULL);
 
-	_ewl_dnd_drag_canvas = ecore_evas_software_x11_new(NULL, WINDOW_ROOT, 64,64,64,64); 
+	_ewl_dnd_drag_canvas = ecore_evas_software_x11_new(NULL, EWL_DND_WINDOW_ROOT, 64,64,64,64); 
 	_ewl_dnd_drag_evas = ecore_evas_get(_ewl_dnd_drag_canvas);
 
 	ecore_evas_shaped_set(_ewl_dnd_drag_canvas, 1);
@@ -180,8 +177,8 @@ void ewl_drag_start(Ewl_Widget* w) {
 
 
 	/*Setup the dnd event capture window*/
-	ecore_x_window_geometry_get(WINDOW_ROOT, NULL, NULL, &width,  &height);
-	_ewl_dnd_drag_win = ecore_x_window_input_new(WINDOW_ROOT, 
+	ecore_x_window_geometry_get(EWL_DND_WINDOW_ROOT, NULL, NULL, &width,  &height);
+	_ewl_dnd_drag_win = ecore_x_window_input_new(EWL_DND_WINDOW_ROOT, 
 		0, 0,
 		width,height);
 
@@ -205,22 +202,22 @@ void ewl_drag_start(Ewl_Widget* w) {
 }
 
 
-void ewl_dnd_disable() {
+void ewl_dnd_disable(void) {
 	_ewl_dnd_status=0;
 }
 
-void ewl_dnd_enable() {
+void ewl_dnd_enable(void) {
 	_ewl_dnd_status=1;
 }
 
-int ewl_dnd_status_get() {
+int ewl_dnd_status_get(void) {
 	return _ewl_dnd_status;
 }
 
-Ewl_Widget* ewl_dnd_drag_widget_get() {
+Ewl_Widget* ewl_dnd_drag_widget_get(void) {
 	return _ewl_dnd_widget;
 }
 
-void ewl_dnd_drag_widget_clear() {
+void ewl_dnd_drag_widget_clear(void) {
 	_ewl_dnd_widget = NULL;
 }

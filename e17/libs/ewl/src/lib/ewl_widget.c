@@ -2544,7 +2544,7 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, void* (*cb) )
  * @brief Accessor function for the current drag candidate widget
  *
  */
-Ewl_Widget* ewl_widget_drag_candidate_get() {
+Ewl_Widget* ewl_widget_drag_candidate_get(void) {
 	return _ewl_drag_widget;
 }
 
@@ -2553,7 +2553,7 @@ Ewl_Widget* ewl_widget_drag_candidate_get() {
  * @brief Cancel any active dnd_wait state widgets
  *
  */
-void ewl_widget_dnd_reset() {
+void ewl_widget_dnd_reset(void) {
 	_ewl_dnd_drag_move_count=0;
 	_ewl_drag_widget = NULL;
 	printf("Drag reset..\n");
