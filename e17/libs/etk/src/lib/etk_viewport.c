@@ -101,10 +101,17 @@ static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
       Etk_Size child_requisition;
 
       etk_widget_size_request(child, &child_requisition);
-
-      etk_widget_size_request(child, &child_requisition);
-      geometry.x -= viewport->xscroll;
-      geometry.y -= viewport->yscroll;
+      
+      if (child_requisition.w <= geometry.w)
+         geometry.x += (geometry.w - child_requisition.w) / 2;
+      else
+         geometry.x -= viewport->xscroll;
+      
+      if (child_requisition.h <= geometry.h)
+         geometry.y += (geometry.h - child_requisition.h) / 2;
+      else
+         geometry.y -= viewport->yscroll;
+      
       geometry.w = child_requisition.w;
       geometry.h = child_requisition.h;
       etk_widget_size_allocate(child, geometry);
