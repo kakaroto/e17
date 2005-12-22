@@ -754,3 +754,7 @@ Thu Sep  1 02:20:29 2005                        Michael Jennings (mej)
 
 Additional quoting for libast.m4.
 ----------------------------------------------------------------------
+Thu Dec 22 18:29:54 2005                        Michael Jennings (mej)
+
+Fixed auto-detection of Imlib2.  :-(
+----------------------------------------------------------------------

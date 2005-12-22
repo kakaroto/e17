@@ -202,6 +202,8 @@ AC_DEFUN([AST_IMLIB2_SUPPORT], [
             if test "x$IMLIB2_CONFIG" != "x"; then
                 GRLIBS="`$IMLIB2_CONFIG --libs`"
                 CFLAGS="$CFLAGS `$IMLIB2_CONFIG --cflags`"
+                AC_DEFINE([LIBAST_IMLIB2_SUPPORT], [1], [Define for Imlib2 support.])
+                LIBAST_IMLIB2_SUPPORT="Imlib2"
             else
                 AC_CHECK_LIB(m, pow, LIBS="-lm $LIBS")
                 AC_CHECK_LIB(dl, dlopen, LIBS="-ldl $LIBS")

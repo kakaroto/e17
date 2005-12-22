@@ -1,6 +1,6 @@
 %define __os_install_post /usr/lib/rpm/brp-compress
 %if %{?optflags:1}0
-%define optflags ${RPM_OPT_FLAGS}
+%define optflags ${RPM_OPT_FLAGS:--O0 -g3}
 %endif
 
 Summary: Library of Assorted Spiffy Things
@@ -28,7 +28,6 @@ version number that begins with 0.
 %setup -q
 
 %build
-#CFLAGS="-O0 -g3"
 CFLAGS="%{optflags}"
 export CFLAGS
 

@@ -645,9 +645,8 @@ spifmem_x_create_pixmap(const spif_charptr_t filename, unsigned long line, Displ
 {
     Pixmap p;
 
-    D_MEM(("Creating %ux%u pixmap of depth %u for window 0x%08x at %s:%lu\n", w, h, depth, win, NONULL(filename), line));
-
     p = XCreatePixmap(d, win, w, h, depth);
+    D_MEM(("Created %ux%u pixmap 0x%08x of depth %u for window 0x%08x at %s:%lu\n", w, h, p, depth, win, NONULL(filename), line));
     ASSERT_RVAL(p != None, None);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
         memrec_add_var(&pixmap_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) p, w * h * (depth / 8));
