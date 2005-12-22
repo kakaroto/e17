@@ -461,11 +461,15 @@ void ewl_iconbox_icon_menu_item_add(Ewl_IconBox* ib, Ewl_Widget* item) {
 Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
 	Ewl_IconBox_Icon* list_item;
 	Ecore_List* selected = ecore_list_new();
+	int add_last = 1;
 	
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
 	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
+		if (ib->select_icon && list_item == ib->select_icon) add_last = 0;
 		if (list_item->selected) ecore_list_append(selected, list_item);
 	}
+
+	if (ib->select_icon && add_last) ecore_list_append(selected, ib->select_icon);
 
 	return selected;
 }
@@ -1008,7 +1012,6 @@ void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_dat
 	int ibx,iby,px,py,fw,fh;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	Ewl_IconBox_Icon* list_item = ib->select_icon;
-	Ewl_Event_Mouse_Move *ev = ev_data;
 	Ewl_Dnd_Types* types;
 
 

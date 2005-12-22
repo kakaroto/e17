@@ -8,6 +8,7 @@ void ewl_dnd_init();
 Ewl_Widget* ewl_dnd_drag_widget_get();
 int ewl_dnd_status_get();
 void ewl_dnd_drag_widget_clear();
+void ewl_dnd_disable();
 
 #endif
 
