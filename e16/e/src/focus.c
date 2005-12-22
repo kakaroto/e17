@@ -207,12 +207,9 @@ FocusEwinSetGrabs(EWin * ewin)
 {
    int                 set = 0;
 
-   if (Conf.focus.mode == MODE_FOCUS_CLICK)
-     {
-	set = !ewin->state.active;
-     }
-   if (ewin->state.active && Conf.focus.clickraises &&
-       !EwinListStackIsRaised(ewin))
+   if (((Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick) &&
+	!ewin->state.active) ||
+       (Conf.focus.clickraises && !EwinListStackIsRaised(ewin)))
       set = 1;
 
    if (set)
@@ -598,35 +595,20 @@ FocusHandleChange(EWin * ewin __UNUSED__, XEvent * ev __UNUSED__)
 void
 FocusHandleClick(EWin * ewin, Window win)
 {
-#if 0
-   EWin               *ewin;
+   if (Conf.focus.clickraises)
+      RaiseEwin(ewin);
 
-   ewin = EwinFindByChildren(win);
-   if (!ewin)
-      ewin = EwinFindByFrame(win);
-   if (!ewin)
-      return;
-#endif
+   if (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick)
+      FocusToEWin(ewin, FOCUS_CLICK);
 
-   if ((Conf.focus.clickraises) || (Conf.focus.mode == MODE_FOCUS_CLICK))
+   /* Allow click to pass thorugh */
+   if (EventDebug(EDBUG_TYPE_GRABS))
+      Eprintf("FocusHandleClick %#lx %#lx\n", win, _EwinGetContainerXwin(ewin));
+   if (win == _EwinGetContainerXwin(ewin))
      {
-	RaiseEwin(ewin);
-	FocusToEWin(ewin, FOCUS_CLICK);
-
-	/* allow click to pass thorugh */
-	if (EventDebug(EDBUG_TYPE_GRABS))
-	   Eprintf("FocusHandleClick %#lx %#lx\n", win,
-		   _EwinGetContainerXwin(ewin));
-	if (win == _EwinGetContainerXwin(ewin))
-	  {
-	     ESync();
-	     XAllowEvents(disp, ReplayPointer, CurrentTime);
-	     ESync();
-	  }
-     }
-   else if (ewin->props.focusclick)
-     {
-	FocusToEWin(ewin, FOCUS_CLICK);
+	ESync();
+	XAllowEvents(disp, ReplayPointer, CurrentTime);
+	ESync();
      }
 }
 
@@ -1007,7 +989,7 @@ static const IpcItem FocusIpcArray[] = {
 
 static const CfgItem FocusCfgItems[] = {
    CFG_ITEM_INT(Conf.focus, mode, MODE_FOCUS_SLOPPY),
-   CFG_ITEM_BOOL(Conf.focus, clickraises, 0),
+   CFG_ITEM_BOOL(Conf.focus, clickraises, 1),
    CFG_ITEM_BOOL(Conf.focus, transientsfollowleader, 1),
    CFG_ITEM_BOOL(Conf.focus, switchfortransientmap, 1),
    CFG_ITEM_BOOL(Conf.focus, all_new_windows_get_focus, 0),
