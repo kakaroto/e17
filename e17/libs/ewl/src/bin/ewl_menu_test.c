@@ -15,9 +15,9 @@ static void
 __menu_focus_in(Ewl_Widget * w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	char *text;
+	const char *text;
 
-	text = ewl_text_text_get(EWL_TEXT(EWL_MENU_ITEM(w)->text));
+	text = ewl_label_text_get(EWL_LABEL(EWL_MENU_ITEM(w)->text));
 	printf("%s item down\n", text);
 }
 
