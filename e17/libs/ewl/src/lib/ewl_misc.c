@@ -97,8 +97,6 @@ ewl_backtrace(void)
 		fprintf(stderr, "%s\n", strings[i]);
 
 	FREE(strings);
-#else
-	fprintf(stderr, "Your system dosen't have glibc. Backtraces disabled.\n");
 #endif
 }
 
