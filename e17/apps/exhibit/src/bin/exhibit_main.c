@@ -299,7 +299,7 @@ _ex_main_populate_files(Exhibit *e)
 	ep = epsilon_new(imagereal);
 	epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
 
-	if(epsilon_exists(ep))
+	if(epsilon_exists(ep) == EPSILON_OK)
 	  {
 	     char *thumb;
 
