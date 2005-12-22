@@ -1,6 +1,7 @@
 #include "exhibit.h"
 #include <Ecore_File.h>
 
+extern pid_t pid;
 extern Evas_List *thumb_list;
 static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 
@@ -271,7 +272,6 @@ _ex_main_populate_files(Exhibit *e)
 	char image[PATH_MAX];
 	char imagereal[PATH_MAX];
 	struct stat st;
-	pid_t pid;
 	Epsilon *ep;
 
         /* Do not include hidden files */
@@ -315,7 +315,7 @@ _ex_main_populate_files(Exhibit *e)
 	   thumb->e = e;
 	   thumb->name = strdup(dir_entry->d_name);
 	   thumb_list = evas_list_append(thumb_list, thumb);
-	   if(pid == -1); _ex_thumb_generate();
+	   if(pid == -1) _ex_thumb_generate();
 	}
      }
 
