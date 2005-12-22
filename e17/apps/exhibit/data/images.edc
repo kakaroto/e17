@@ -40,9 +40,6 @@ collections {
    
    group {
       name: "image_bg";
-      data {
-         item: "inset" "4 4 4 4";
-      }
       parts {
 	 part {
 	    name: "image_bg";
