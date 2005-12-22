@@ -9,6 +9,6 @@ Ewl_Widget* ewl_dnd_drag_widget_get();
 int ewl_dnd_status_get();
 void ewl_dnd_drag_widget_clear();
 void ewl_dnd_disable();
-
+void ewl_dnd_enable();
 #endif
 

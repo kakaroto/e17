@@ -465,7 +465,7 @@ Ecore_List* ewl_iconbox_get_selection(Ewl_IconBox* ib) {
 	
 	ecore_list_goto_first(ib->ewl_iconbox_icon_list);
 	while((list_item = (Ewl_IconBox_Icon*)ecore_list_next(ib->ewl_iconbox_icon_list)) != NULL) {
-		if (ib->select_icon && list_item == ib->select_icon) add_last = 0;
+		if (ib->select_icon && list_item == ib->select_icon && list_item->selected) add_last = 0;
 		if (list_item->selected) ecore_list_append(selected, list_item);
 	}
 
