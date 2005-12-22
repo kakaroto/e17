@@ -970,6 +970,8 @@ MenusDestroyLoaded(void)
    Menu              **menus;
    int                 i, num, found_one;
 
+   MenusHide();
+
    /* Free all menustyles first (gulp) */
    do
      {
