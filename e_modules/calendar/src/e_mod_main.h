@@ -72,7 +72,8 @@ struct _calendar
    Evas_List   *faces;
    E_Menu      *config_menu;
    Ecore_Timer *date_check_timer;
-   Config      *conf;
+   Config      *conf;   
+   E_Container *con;
 };
 
 struct _calendar_Face
