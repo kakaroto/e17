@@ -1,5 +1,6 @@
 #include "exhibit.h"
 #include "exhibit_main.h"
+#include "exhibit_image.h"
 
 #define EX_MENU_ITEM_GET_RETURN(o) \
    Etk_Menu_Item *item; \
@@ -276,7 +277,7 @@ _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
    e = data;
    r = etk_tree_selected_row_get(ETK_TREE(e->itree));
    if(!r) return;   
-   _ex_image_wallpaper_set(e->image);
+   _ex_image_wallpaper_set(ETK_IMAGE(e->image));
 }
 
 void

@@ -1,5 +1,6 @@
 #include "exhibit.h"
 #include <Ecore_File.h>
+#include "exhibit_file.h"
 
 extern pid_t pid;
 extern Evas_List *thumb_list;
@@ -122,10 +123,11 @@ _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
    
+   e = data;
+   
    if (e->fit_window)
       return;
    
-   e = data;
    etk_widget_size_request_set(e->alignment, 10, 10);
    etk_paned_add2(ETK_PANED(e->hpaned), e->alignment, TRUE);
    etk_widget_size_request_set(e->image, -1, -1);

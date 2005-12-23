@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
+-Wall -g \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
 @my_includes@

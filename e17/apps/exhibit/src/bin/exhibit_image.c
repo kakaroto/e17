@@ -184,7 +184,7 @@ void
 _ex_image_flip_diagonal(Etk_Image *im, int direction)
 {
    unsigned int   *data, *data2, *to, *from;
-   int             x, y, w, hw, tmp, iw, ih;
+   int             x, y, w, hw, iw, ih;
      
    if(im->use_edje)
      return;
@@ -247,7 +247,7 @@ _ex_image_blur(Etk_Image *im)
    int           a, r, g, b;
    int          *as, *rs, *gs, *bs;   
    int           rad = 2; /* maybe make this configurable later */
-   unsigned int *p1, *p2, *tmp;
+   unsigned int *p1, *p2;
    
    if(im->use_edje)
      return;
@@ -346,9 +346,8 @@ _ex_image_sharpen(Etk_Image *im)
    int           w, h;
    int           x, y;
    int           a, r, g, b;
-   int          *as, *rs, *gs, *bs;   
    int           rad = 2; /* maybe make this configurable later */
-   unsigned int *p1, *p2, *tmp;
+   unsigned int *p1, *p2;
    
    if(im->use_edje)
      return;
@@ -435,10 +434,7 @@ _ex_image_save(Etk_Image *im)
 void
 _ex_image_zoom(Etk_Image *im, int zoom)
 {
-   unsigned int *data;
    int           w, h;
-   int           x, y;
-   unsigned int *p1, *p2, *tmp;
    
    if(im->use_edje)
      return;
@@ -464,9 +460,8 @@ _ex_image_brightness(Etk_Image *im, int brightness)
 {
    DATA32 *data, *p;
    int     w, h;
-   int     i, j, x, y;
+   int     i, j;
    int     val2;
-   DATA8   a, r, g, b;
    DATA8   red_mapping[256];
    DATA8   green_mapping[256];   
    DATA8   blue_mapping[256];

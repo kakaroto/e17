@@ -12,5 +12,6 @@ void         _ex_image_sharpen(Etk_Image *im);
 void         _ex_image_save(Etk_Image *im);
 void         _ex_image_zoom(Etk_Image *im, int zoom); 
 void         _ex_image_brightness(Etk_Image *im, int brightness);
-    
+void         _ex_image_wallpaper_set(Etk_Image *im);
+
 #endif

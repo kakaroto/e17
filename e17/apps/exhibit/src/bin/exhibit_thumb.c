@@ -1,4 +1,5 @@
 #include "exhibit.h"
+#include "exhibit_file.h"
 
 pid_t pid = -1;
 Evas_List *thumb_list;
