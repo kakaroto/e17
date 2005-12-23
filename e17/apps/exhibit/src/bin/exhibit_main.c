@@ -138,7 +138,7 @@ void
 _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Tree *tree;
-   Etk_Widget *hs, *vs;
+   Etk_Range *hs, *vs;
    char *icol_string;
    char *title;
    int   w, h;
@@ -183,8 +183,8 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
    vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
       
-   etk_range_value_set(ETK_RANGE(hs), (double)w/2);
-   etk_range_value_set(ETK_RANGE(vs), (double)h/2);   
+   etk_range_value_set(hs, (double)w/2);
+   etk_range_value_set(vs, (double)h/2);   
 }
 
 void
