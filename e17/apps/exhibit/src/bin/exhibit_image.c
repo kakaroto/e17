@@ -35,8 +35,8 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
      }
    else if(ev->button == 3)
      {
-	Etk_Menu_Item *menu_item;
-	Etk_Menu *submenu;
+	Etk_Widget *menu_item;
+	Etk_Widget *submenu;
 	if(e->menu)
 	  {
 	     etk_menu_popup(ETK_MENU(e->menu));
@@ -92,7 +92,7 @@ _ex_image_mouse_move(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Mouse_Move *ev;
    Exhibit *e;
-   Etk_Range *hs, *vs;
+   Etk_Widget *hs, *vs;
    int dx, dy;   
    
    e = data;
@@ -106,8 +106,8 @@ _ex_image_mouse_move(Etk_Object *object, void *event, void *data)
    dx = ev->prev.canvas.x - ev->cur.canvas.x;
    dy = ev->prev.canvas.y - ev->cur.canvas.y;   
    
-   etk_range_value_set(hs, etk_range_value_get(hs) + dx);
-   etk_range_value_set(vs, etk_range_value_get(vs) + dy);
+   etk_range_value_set(ETK_RANGE(hs), etk_range_value_get(ETK_RANGE(hs)) + dx);
+   etk_range_value_set(ETK_RANGE(vs), etk_range_value_get(ETK_RANGE(vs)) + dy);
 }
 
 void

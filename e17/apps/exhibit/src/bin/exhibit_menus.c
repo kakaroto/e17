@@ -120,7 +120,18 @@ _ex_menu_close_window_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
+   Exhibit *e;
+
    EX_MENU_ITEM_GET_RETURN(obj);
+
+   e = (Exhibit *)data;
+   if (e)
+     {
+        if (e->dir)
+          free(e->dir);
+        free(e);
+     }
+
    etk_main_quit();   
 }
 
