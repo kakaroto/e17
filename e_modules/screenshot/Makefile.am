@@ -8,15 +8,10 @@ filesdir =  $(datadir)
 
 files_DATA = \
 module_icon.png \
-e17_titlebar.png \
-e17_titlebar_glint1.png \
-e17_titlebar_glint2.png \
-e17_titlebar_glint3.png \
-e17_titlebar_shadow1.png \
-e17_titlebar_shadow2.png \
 screenshot.edj \
 screenshot.edc \
-VeraMono.ttf
+VeraMono.ttf \
+VeraBd.ttf
 
 EXTRA_DIST = $(files_DATA)
 
