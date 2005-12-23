@@ -860,6 +860,14 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Queue the parent tree for configure, this handles the issue of
+	 * redrawing the alternating colors on expand and doing it early
+	 * avoids duplicate or long list walks for queueing child widgets.
+	 */
+	if (node->tree)
+		ewl_widget_configure(node->tree);
+
 	tmp = ecore_list_new();
 
 	ecore_list_goto_first(EWL_CONTAINER(node)->children);
@@ -903,6 +911,14 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	if (!EWL_CONTAINER(node)->children)
 		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Queue the parent tree for configure, this handles the issue of
+	 * redrawing the alternating colors on expand and doing it early
+	 * avoids duplicate or long list walks for queueing child widgets.
+	 */
+	if (node->tree)
+		ewl_widget_configure(node->tree);
 
 	tmp = ecore_list_new();
 
