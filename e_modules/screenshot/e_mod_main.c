@@ -390,6 +390,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 {
    Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
+   Edje_Message_Int_Set *msg;
    Screen_Face *ef;
    char buff[1024];
    char *opts[8] = {'\0','\0','\0','\0','\0','\0','\0','\0'};
@@ -405,7 +406,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
      }
    else if (ev->button == 1)
      {
-     	/* Take Shot */
+	/* Take Shot */
 	if (ef->screen->conf->use_import == 1)
 	  {
 	     if (ef->screen->conf->import.use_img_border == 1)
@@ -431,7 +432,12 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     f = get_filename(ef->screen->conf);
 
 	     snprintf(buff, sizeof(buff), "import %s %s", opt, f);
-	     edje_object_signal_emit(ef->screen_object, "active", "");
+	     msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+	     msg->count = 1;
+	     msg->val[0] = ef->screen->conf->delay_time - 1;
+	     edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
+	     free(msg);
+
 	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
 	  }
@@ -449,7 +455,12 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     opt = get_options(opts);
 	     f = get_filename(ef->screen->conf);
 	     snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
-	     edje_object_signal_emit(ef->screen_object, "active", "");
+	     msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+	     msg->count = 1;
+	     msg->val[0] = ef->screen->conf->delay_time - 1;	     
+	     edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
+	     free(msg);
+	     
 	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
 	  }
@@ -523,7 +534,6 @@ char
      }
    else
      {
-	printf("File: %s\n", strdup(conf->filename));
 	/* Parse File Name For %d */
 	if (strstr(conf->filename, "%d"))
 	  {
