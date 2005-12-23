@@ -89,7 +89,7 @@ void etk_toggle_button_toggled(Etk_Toggle_Button *toggle_button)
 }
 
 /**
- * @brief Sets the status of the toggle button
+ * @brief Sets the state of the toggle button
  * @param toggle_button a toggle button
  * @param active if @a active != 0, the toggle button will be active
  */
@@ -97,6 +97,18 @@ void etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool act
 {
    if (toggle_button && toggle_button->active != active)
       etk_button_clicked(ETK_BUTTON(toggle_button));
+}
+
+/**
+ * @brief Gets the state of the toggle button
+ * @param toggle_button a toggle button
+ * @return Returns TRUE if the button is activated, FALSE otherwise
+ */
+Etk_Bool etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button)
+{
+   if (!toggle_button)
+      return FALSE;
+   return toggle_button->active;
 }
 
 /**************************

@@ -18,6 +18,14 @@
 /** @brief Checks if the object is an Etk_Notebook */
 #define ETK_IS_NOTEBOOK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_NOTEBOOK_TYPE))
 
+/* A page of the notebook */
+typedef struct _Etk_Notebook_Page
+{
+   Etk_Widget *tab;
+   Etk_Widget *page_widget;
+   Etk_Widget *page_frame;
+} Etk_Notebook_Page;
+
 /**
  * @struct Etk_Notebook
  * @brief TODO
@@ -29,13 +37,15 @@ struct _Etk_Notebook
    Etk_Container container;
    
    Evas_List *pages;
-   Etk_Widget *frame;
+   Etk_Notebook_Page *current_page;
 };
 
 Etk_Type *etk_notebook_type_get();
 Etk_Widget *etk_notebook_new();
 
-int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label);
+int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
+
+void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num);
 
 /** @} */
 

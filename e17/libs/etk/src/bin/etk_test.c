@@ -88,14 +88,14 @@ static void _etk_test_main_window()
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
    
-   table = etk_table_new((num_tests + 3) / 4, 4, TRUE);
+   table = etk_table_new((num_tests + 4) / 5, 5, TRUE);
    etk_container_add(ETK_CONTAINER(win), table);
 
    for (i = 0; i < num_tests; i++)
    {
       button = etk_button_new_with_label(_(tests[i].name));
       etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(tests[i].func), NULL);
-      etk_table_attach_defaults(ETK_TABLE(table), button, i / 4, i / 4, i % 4, i % 4);
+      etk_table_attach_defaults(ETK_TABLE(table), button, i / 5, i / 5, i % 5, i % 5);
    }
    etk_widget_show_all(win);
 }
