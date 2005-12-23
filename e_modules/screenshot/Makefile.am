@@ -10,7 +10,6 @@ files_DATA = \
 module_icon.png \
 screenshot.edj \
 screenshot.edc \
-VeraMono.ttf \
 VeraBd.ttf
 
 EXTRA_DIST = $(files_DATA)
