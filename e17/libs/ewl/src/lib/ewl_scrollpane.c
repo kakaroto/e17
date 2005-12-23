@@ -56,11 +56,13 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 					ewl_scrollpane_child_resize_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(s),
 					ewl_scrollpane_child_resize_cb);
+	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
+	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 
-	ewl_widget_focusable_set(s, TRUE);
+	ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
 
 	s->overlay = ewl_overlay_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
