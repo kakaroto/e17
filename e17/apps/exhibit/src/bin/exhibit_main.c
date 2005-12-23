@@ -136,7 +136,7 @@ void
 _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Tree *tree;
-   Etk_Widget *hs, *vs;
+   Etk_Range *hs, *vs;
    char *icol_string;
    char *title;
    int   w, h;
@@ -181,8 +181,8 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
    vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
       
-   etk_range_value_set(ETK_RANGE(hs), (double)w/2);
-   etk_range_value_set(ETK_RANGE(vs), (double)h/2);   
+   etk_range_value_set(hs, (double)w/2);
+   etk_range_value_set(vs, (double)h/2);   
 }
 
 void
@@ -451,6 +451,7 @@ void
 _ex_main_window_show(char *dir)
 {
    Exhibit *e;
+   Etk_Tree_Model *imodel;
 
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
@@ -607,7 +608,9 @@ _ex_main_window_show(char *dir)
    etk_signal_connect("row_selected", ETK_OBJECT(e->itree), ETK_CALLBACK(_ex_main_itree_item_clicked_cb), e);
    // todo: we want to move selections between rows with the keyboard. how?
    etk_signal_connect("key_down", ETK_OBJECT(e->itree), ETK_CALLBACK(_ex_main_itree_key_down_cb), e);
-   e->icol = etk_tree_col_new(ETK_TREE(e->itree), "File", etk_tree_model_icon_text_new(ETK_TREE(e->itree), ETK_TREE_FROM_FILE), 10);
+   imodel = etk_tree_model_icon_text_new(ETK_TREE(e->itree), ETK_TREE_FROM_FILE);
+   etk_tree_model_icon_text_icon_width_set(imodel, 80);
+   e->icol = etk_tree_col_new(ETK_TREE(e->itree), "Files", imodel, 10);
    etk_tree_headers_visible_set(ETK_TREE(e->itree), 0);
    etk_tree_row_height_set(ETK_TREE(e->itree), 60);
    //ETK_TREE(e->itree)->image_height = 54;
