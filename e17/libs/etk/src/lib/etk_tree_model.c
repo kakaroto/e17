@@ -695,7 +695,9 @@ static void etk_tree_model_icon_text_objects_create(Etk_Tree_Model *model, Evas_
 static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects)
 {
    Etk_Tree_Model_Icon_Text_Data *icon_text_data;
-   int model_icon_width, icon_width = 0, icon_height = 0;
+   int model_icon_width;
+   int icon_max_width, icon_max_height;
+   int icon_width = 0, icon_height = 0;
    Etk_Geometry icon_geometry;
    Etk_Bool show_icon = FALSE;
    Evas_Coord tw, th;
@@ -728,36 +730,41 @@ static void etk_tree_model_icon_text_render(Etk_Tree_Model *model, Etk_Geometry 
    evas_object_geometry_get(cell_objects[1], NULL, NULL, &tw, &th);
    
    model_icon_width = ((Etk_Tree_Model_Icon_Text *)model)->icon_width;
-   if (model_icon_width > 0)
-   {
-      icon_height = model_icon_width * (icon_height / icon_width);
-      icon_width = model_icon_width;
-   }
+   if (model_icon_width >= 0)
+      icon_max_width = ((Etk_Tree_Model_Icon_Text *)model)->icon_width;
+   else
+      icon_max_width = 10000;
+   icon_max_height = geometry.h;
    
    if (show_icon)
    {
       if (icon_width == 0 || icon_height == 0)
       {
-         icon_geometry.w = geometry.h;
-         icon_geometry.h = geometry.h;
+         icon_geometry.w = icon_max_height;
+         icon_geometry.h = icon_max_height;
+      }
+      else if (icon_width <= icon_max_width && icon_height <= icon_max_height)
+      {
+         icon_geometry.w = icon_width;
+         icon_geometry.h = icon_height;
       }
       else
       {
-         if (icon_height <= geometry.h)
+         if (((float)icon_height / icon_width) * icon_max_width <= icon_max_height)
          {
-            icon_geometry.w = icon_width;
-            icon_geometry.h = icon_height;
+            icon_geometry.w = icon_max_width;
+            icon_geometry.h = ((float)icon_height / icon_width) * icon_max_width;
          }
          else
          {
-            icon_geometry.w = geometry.h * ((float)icon_width / icon_height);
-            icon_geometry.h = geometry.h;
+            icon_geometry.w = ((float)icon_width / icon_height) * icon_max_height;
+            icon_geometry.h = icon_max_height;
          }
       }
       
-      icon_offset = ((model_icon_width <= 0) ? icon_geometry.w : model_icon_width) + 8;
-      icon_geometry.x = geometry.x + (geometry.w - icon_offset - tw) * model->xalign;
-      if (model_icon_width > 0)
+      icon_offset = ((model_icon_width >= 0) ? model_icon_width : icon_geometry.w) + 8;
+      icon_geometry.x = geometry.x + ((geometry.w - icon_offset - tw) * model->xalign);
+      if (model_icon_width >= 0)
          icon_geometry.x += (model_icon_width - icon_geometry.w) / 2;
       icon_geometry.y = geometry.y + (geometry.h - icon_geometry.h) * model->yalign;
       
