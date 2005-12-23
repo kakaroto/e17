@@ -21,4 +21,5 @@ collections {
    #include "widgets/frame.edc"
    #include "widgets/menu.edc"
    #include "widgets/statusbar.edc"
+   #include "widgets/notebook.edc"
 }

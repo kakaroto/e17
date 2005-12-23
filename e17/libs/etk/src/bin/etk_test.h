@@ -22,5 +22,6 @@ void etk_test_paned_window_create(void *data);
 void etk_test_scrolled_view_window_create(void *data);
 void etk_test_menu_window_create(void *data);
 void etk_test_filechooser_window_create(void *data);
+void etk_test_notebook_window_create(void *data);
 
 #endif
