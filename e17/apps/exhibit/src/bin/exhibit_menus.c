@@ -114,14 +114,14 @@ void
 _ex_menu_close_window_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("close window\n");
+   etk_main_quit();   
 }
 
 void
 _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("quit\n");
+   etk_main_quit();   
 }
 
 void

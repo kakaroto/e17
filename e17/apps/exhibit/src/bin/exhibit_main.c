@@ -3,7 +3,9 @@
 
 extern pid_t pid;
 extern Evas_List *thumb_list;
-static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+
+Ecore_Evas *ee_buf;
+Evas       *evas_buf;
 
 char *viewables[] =
 {
@@ -205,7 +207,7 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
 }
 
 
-static int
+int
 _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
 {
    char *dir1, *dir2;
@@ -216,6 +218,113 @@ _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2
    etk_tree_row_fields_get(row1, col, NULL, NULL, &dir1, NULL);
    etk_tree_row_fields_get(row2, col, NULL, NULL, &dir2, NULL);
    return strcasecmp(dir1, dir2);
+}
+
+int
+_ex_main_itree_name_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *f1, *f2;
+   
+   if (!row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
+   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   
+   return strcasecmp(f1, f2);
+}
+
+int
+_ex_main_itree_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *f1, *f2;
+   struct stat s1, s2;
+   
+   if (!row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
+   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   
+   stat(f1, &s1);
+   stat(f2, &s2);
+   
+   if(s1.st_size > s2.st_size)
+     return 1;
+   else
+     return -1;
+}
+
+int
+_ex_main_itree_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *f1, *f2;
+   struct stat s1, s2;
+   
+   if (!row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
+   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   
+   stat(f1, &s1);
+   stat(f2, &s2);
+   
+   if(s1.st_mtime > s2.st_mtime)
+     return 1;
+   else
+     return -1;
+}
+
+int
+_ex_main_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+{
+   char *f1, *f2;
+   Evas_Object *i1, *i2;
+   int w1, h1, w2, h2;
+   
+   if (!row1 || !row2 || !col)
+      return 0;
+   
+   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
+   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+
+   if(!ee_buf)
+     {
+	ee_buf = ecore_evas_buffer_new(0, 0);
+	evas_buf = ecore_evas_get(ee_buf);
+     }   
+   
+   if(_ex_file_is_ebg(f1))
+     {
+	w1 = 800;
+	h1 = 600;
+     }
+   else
+     {
+	i1 = evas_object_image_add(evas_buf);
+	evas_object_image_file_set(i1, f1, NULL);
+	evas_object_image_size_get(i1, &w1, &h1);
+	evas_object_del(i1);
+     }
+   
+   if(_ex_file_is_ebg(f2))
+     {
+	w2 = 800;
+	h2 = 600;
+     }
+   else
+     {
+	i2 = evas_object_image_add(evas_buf);
+	evas_object_image_file_set(i2, f2, NULL);
+	evas_object_image_size_get(i2, &w2, &h2);
+	evas_object_del(i2);	
+     }      
+   
+   if(w1 * h1 > w2 * h2)
+     return 1;
+   else
+     return -1;   
 }
 
 int
@@ -482,8 +591,8 @@ _ex_main_window_show(char *dir)
    etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
    
      {
-	Etk_Widget *menu;
-	Etk_Widget *menu_item;
+	Etk_Widget *menu, *submenu;
+	Etk_Widget *menu_item, *menu_item2;
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
@@ -499,10 +608,10 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Close window"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_close_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Quit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_quit_cb), e);
-	
+			
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Edit"), -99, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
-	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
+	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));       	
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
@@ -521,6 +630,16 @@ _ex_main_window_show(char *dir)
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
+	
+	menu_item2 = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	submenu = etk_menu_new();
+	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item2), ETK_MENU(submenu));
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_date_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_resol_cb), e);
+	
+	
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom in"), EX_IMAGE_ZOOM_IN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
