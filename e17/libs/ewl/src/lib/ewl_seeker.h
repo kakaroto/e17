@@ -46,6 +46,8 @@ struct Ewl_Seeker
 	int             invert; /**< Invert the axis */
 	int             dragstart; /**< The coordinate where the drag starts */
 	int             autohide; /**< Indicator to hide when not scrollable */
+	Ecore_Timer    *timer; /**< Timer for scroll repeating */
+	double          start_time; /**< Time the timer was started */
 };
 
 Ewl_Widget     *ewl_seeker_new(void);
@@ -82,9 +84,9 @@ void ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 						void *user_data);
 void ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data,
 					      void *user_data);
-void ewl_seeker_button_mouse_move_cb(Ewl_Widget *w, void *ev_data,
-						void *user_data);
+void ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
 
 /**
