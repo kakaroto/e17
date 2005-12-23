@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static int ewl_tree_row_pos = 0;
+
 /**
  * @param columns: the number of columns to display
  * @return Returns NULL on failure, a new tree widget on success.
@@ -626,6 +628,61 @@ ewl_tree_row_column_get(Ewl_Row *row, int i)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+static void
+ewl_tree_row_signal(Ewl_Tree *tree, Ewl_Widget *row)
+{
+	if (ewl_tree_row_pos & 1) {
+		ewl_widget_state_set(row, "odd");
+	}
+	else {
+		ewl_widget_state_set(row, "even");
+	}
+	ewl_tree_row_pos++;
+}
+
+static void
+ewl_tree_node_row_walk_signal(Ewl_Tree *tree, Ewl_Tree_Node *node)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_container_child_iterate_begin(EWL_CONTAINER(node));
+	while ((child = ewl_container_child_next(EWL_CONTAINER(node)))) {
+		if (ewl_widget_type_is(child, "node")) {
+			if (VISIBLE(child)) {
+				ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
+			}
+		}
+		else if (ewl_widget_type_is(child, "row")) {
+			ewl_tree_row_signal(tree, child);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_row_walk_signal(Ewl_Tree *tree)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_tree_row_pos = 0;
+	ewl_container_child_iterate_begin(EWL_CONTAINER(tree));
+	while ((child = ewl_container_child_next(EWL_CONTAINER(tree)))) {
+		if (ewl_widget_type_is(child, "node")) {
+			ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
+		}
+		else if (ewl_widget_type_is(child, "row")) {
+			ewl_tree_row_signal(tree, child);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void
 ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
@@ -651,6 +708,8 @@ ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_object_geometry_request(EWL_OBJECT(tree->scrollarea),
 				    CURRENT_X(tree), CURRENT_Y(tree) + height,
 				    CURRENT_W(tree), CURRENT_H(tree) - height);
+
+	ewl_tree_row_walk_signal(tree);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
