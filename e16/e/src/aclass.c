@@ -873,7 +873,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 	mouse = 0;
 	break;
      case ButtonPress:
-	if (ev->xbutton.time == 0)
+	if (Mode.events.double_click)
 	   type = EVENT_DOUBLE_DOWN;
 	else
 	   type = EVENT_MOUSE_DOWN;

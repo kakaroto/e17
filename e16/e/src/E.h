@@ -488,6 +488,7 @@ typedef struct
       int                 px, py;
       Time                last_btime;
       Window              last_bpress;
+      Window              last_bpress2;
       unsigned int        last_button;
       unsigned int        last_keycode;
       char                double_click;
