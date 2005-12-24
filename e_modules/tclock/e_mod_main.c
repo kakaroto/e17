@@ -347,12 +347,13 @@ _tclock_cb_check(void *data)
 	edje_object_part_text_set(face->tclock_object, "tclock_text", buf);
 	e_config_save_queue();
      }
+   return 1;
 }
 
 static void
 _tclock_face_menu_new(TClock_Face *face)
 {
-   E_Menu *mn, *smn;
+   E_Menu *mn;
    E_Menu_Item *mi;
 
    mn = e_menu_new();
