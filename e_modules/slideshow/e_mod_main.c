@@ -21,7 +21,6 @@ static void _slide_face_free(Slide_Face *ef);
 static void _slide_face_menu_new(Slide_Face *face);
 static void _slide_face_enable(Slide_Face *face);
 static void _slide_face_disable(Slide_Face *face);
-static void _slide_face_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _slide_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
@@ -419,6 +418,10 @@ _slide_face_cb_gmc_change(void *data, E_Gadman_Client * gmc, E_Gadman_Change cha
 	evas_object_raise(ef->slide_object);
 	evas_object_raise(ef->event_object);
 	break;
+      case E_GADMAN_CHANGE_ZONE:
+	break;
+      case E_GADMAN_CHANGE_EDGE:
+	break;
      }
 }
 
@@ -460,8 +463,6 @@ static int
 _slide_cb_check(void *data)
 {
    char *bg;
-   E_Zone *zone;
-   Evas_List *l;
    Slide_Face *ef = data;
    
 #ifdef WANT_OSIRIS
@@ -496,26 +497,6 @@ _slide_cb_check(void *data)
    if (ef->conf->enabled == 0) return 0;
    return 1;
 }
-
-/*
-static void 
-_slide_face_cb_menu_enabled(void *data, E_Menu * m, E_Menu_Item * mi)
-{
-   Slide_Face *face;
-   unsigned char enabled;
-
-   face = data;
-   enabled = e_menu_item_toggle_get(mi);
-   if ((face->conf->enabled) && (!enabled))
-     {
-	_slide_face_disable(face);
-     }
-   else if ((!face->conf->enabled) && (enabled))
-     {
-	_slide_face_enable(face);
-     }
-}
-*/
 
 static void 
 _slide_face_cb_menu_edit(void *data, E_Menu * m, E_Menu_Item * mi)
@@ -576,7 +557,6 @@ _slide_cb_event_zone_desk_count_set(void *data, int type, void *event)
 {
    E_Event_Zone_Desk_Count_Set *ev;
    Slide *slide;
-   Evas_List *list;
    Slide_Face *face;
    int desks_x, desks_y;
 
@@ -599,7 +579,6 @@ _slide_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
    Slide *slide;
-   Evas_List *list;
    Slide_Face *face;
 
    slide = data;
@@ -655,7 +634,6 @@ static void
 _slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    Slide_Face *sf;
-   E_Config_Dialog *cfg;
    
    sf = data;
    if (!sf) return;
