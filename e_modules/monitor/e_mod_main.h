@@ -18,6 +18,11 @@ typedef struct _Monitor_Face  Monitor_Face;
 struct _Config
 {
    Evas_List *faces;
+   int cpu;
+   int mem;
+   int net;
+   int wlan;
+   int Horz;
 };
 
 struct _Config_Face
@@ -29,7 +34,7 @@ struct _Config_Face
    double mem_interval;
    double net_interval;
    double wlan_interval;
-   
+
    char *net_interface;
    char *wlan_interface;
 
@@ -53,8 +58,8 @@ struct _Monitor_Face
    Config_Face *conf;
 
   Evas_Object *cpu, *net, *mem, *wlan;
-  Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj, *wlan_ev_obj;
-  Evas_Object *table_object, *monitor_object;
+  //Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj, *wlan_ev_obj;
+  Evas_Object *table_object, *monitor_object, *monitor_cover_obj;
 
   Chart_Container *chart_cpu, *chart_net, *chart_mem, *chart_wlan;
 
@@ -71,4 +76,7 @@ EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
 EAPI void _monitor_cb_config_updated(void *data);
+void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void rebuild_monitor(Monitor_Face *face);
+
 #endif

@@ -1,3 +1,5 @@
+#ifndef FLOW_CHART_H
+#define FLOW_CHART_H
 
 #include <Ecore.h>
 #include <Evas.h>
@@ -5,6 +7,8 @@
 
 typedef struct _Chart_Container Chart_Container;
 typedef struct _Flow_Chart Flow_Chart;
+
+#include "e_mod_main.h"
 
 struct _Chart_Container
 {
@@ -68,3 +72,5 @@ void      chart_container_chart_add(Chart_Container *con, Flow_Chart *chart);
 void      chart_container_chart_remove(Chart_Container *con, Flow_Chart *chart);
 void      chart_container_stop_charts(Chart_Container *chart_con);
 void      chart_container_run_charts(Chart_Container *chart_con);
+
+#endif

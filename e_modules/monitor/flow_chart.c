@@ -1,5 +1,4 @@
 #include "flow_chart.h"
-
 #include <stdlib.h>
 
 static int 
@@ -297,6 +296,7 @@ chart_container_new(Evas *evas, int x, int y, int w, int h)
   evas_object_move(o, x, y);
   evas_object_resize(o, w, h);
   evas_object_pass_events_set(o, 1); 
+
   //evas_object_show(o);
 
   return chart_con;
