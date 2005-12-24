@@ -26,7 +26,7 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	etk_tree_append(ETK_TREE(thumb->e->itree), thumb->e->icol, thumb->image, thumb->name, NULL);
 	free(thumb->image);
 	free(thumb->name);
-	free(thumb->ep);
+	epsilon_free(thumb->ep);
 	free(thumb);
      }
 
