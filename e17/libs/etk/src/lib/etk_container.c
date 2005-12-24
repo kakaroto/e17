@@ -215,18 +215,15 @@ static void _etk_container_constructor(Etk_Container *container)
 static void _etk_container_destructor(Etk_Container *container)
 {
    Etk_Widget *child;
-   Evas_List *l;
 
    if (!container)
       return;
 
-   for (l = container->children; l; )
+   while (container->children)
    {
-      child = ETK_WIDGET(l->data);
-      l = l->next;
-      etk_widget_parent_set(child, NULL);
+      child = ETK_WIDGET(container->children->data);
+      etk_object_destroy(ETK_OBJECT(child));
    }
-   container->children = evas_list_free(container->children);
 }
 
 

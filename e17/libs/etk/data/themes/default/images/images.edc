@@ -72,5 +72,6 @@ images {
    image: "status_bar.png" COMP;
    image: "status_resize.png" COMP;
    image: "tab.png" COMP;
+   image: "tab_shadow.png" COMP;
    image: "notebook_frame.png" COMP;
 }

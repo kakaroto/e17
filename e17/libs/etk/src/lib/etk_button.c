@@ -64,7 +64,7 @@ Etk_Type *etk_button_type_get()
 
    if (!button_type)
    {
-      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), ETK_DESTRUCTOR(_etk_button_destructor));
+      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
 
       _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed", button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released", button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
@@ -301,35 +301,6 @@ static void _etk_button_constructor(Etk_Button *button)
    etk_signal_connect("mouse_up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_up_cb), NULL);
    etk_signal_connect("mouse_click", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_click_cb), NULL);
 }
-
-/* Destroys the button */
-static void _etk_button_destructor(Etk_Button *button)
-{
-   Etk_Widget *widget; 
-
-   if (!button)
-      return;
-
-   if (button->alignment)
-   {
-      widget = button->alignment;
-      button->alignment = NULL;
-      etk_object_destroy(ETK_OBJECT(widget));
-   }
-   if (button->hbox)
-   {
-      widget = button->hbox;
-      button->hbox = NULL;
-      etk_object_destroy(ETK_OBJECT(widget));
-   }
-   if (button->label)
-   {
-      widget = button->label;
-      button->label = NULL;
-      etk_object_destroy(ETK_OBJECT(widget));
-   }
-}
-
 
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)

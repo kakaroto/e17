@@ -214,6 +214,7 @@ static void _etk_menu_destructor(Etk_Menu *menu)
 {
    if (!menu)
       return;
+   etk_container_remove(ETK_CONTAINER(menu->window), ETK_WIDGET(menu));
    etk_object_destroy(ETK_OBJECT(menu->window));
 }
 

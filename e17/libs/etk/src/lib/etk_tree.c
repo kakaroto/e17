@@ -1524,14 +1524,7 @@ static void _etk_tree_destructor(Etk_Tree *tree)
    for (l = tree->rows_widgets; l; l = l->next)
       _etk_tree_row_objects_free(l->data, tree);
    tree->rows_widgets = evas_list_free(tree->rows_widgets);
-
-   for (i = 0; i < tree->num_cols; i++)
-   {
-      if (tree->columns[i])
-         etk_object_destroy(ETK_OBJECT(tree->columns[i]));
-   }
    free(tree->columns);
-   /* TODO: etk_object_destroy(ETK_OBJECT(tree->grid)); */
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -1649,9 +1642,7 @@ static void _etk_tree_col_destructor(Etk_Tree_Col *tree_col)
 {
    if (!tree_col)
       return;
-   
    etk_tree_model_free(tree_col->model);
-   /* TODO: etk_object_destroy("header"); */
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

@@ -48,7 +48,7 @@ Etk_Type *etk_scrolled_view_type_get()
 
    if (!scrolled_view_type)
    {
-      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), ETK_DESTRUCTOR(_etk_scrolled_view_destructor));
+      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View), ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), NULL);
 
       etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
       etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
@@ -195,18 +195,6 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    etk_signal_connect("child_removed", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
    etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
-}
-
-/* Destroys the scrolled_view */
-static void _etk_scrolled_view_destructor(Etk_Scrolled_View *scrolled_view)
-{
-   if (!scrolled_view)
-      return;
-
-   etk_widget_parent_set(scrolled_view->hscrollbar, NULL);
-   etk_object_destroy(ETK_OBJECT(scrolled_view->hscrollbar));
-   etk_widget_parent_set(scrolled_view->vscrollbar, NULL);
-   etk_object_destroy(ETK_OBJECT(scrolled_view->vscrollbar));
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

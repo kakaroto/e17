@@ -19,6 +19,7 @@ void etk_test_notebook_window_create(void *data)
    }
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), _("Etk Notebook Test"));
+   etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
    
    notebook = etk_notebook_new();

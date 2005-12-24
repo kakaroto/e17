@@ -27,7 +27,6 @@ enum _Etk_Dialog_Property_Id
 };
 
 static void _etk_dialog_constructor(Etk_Dialog *dialog);
-static void _etk_dialog_destructor(Etk_Dialog *dialog);
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
@@ -49,7 +48,7 @@ Etk_Type *etk_dialog_type_get()
 
    if (!dialog_type)
    {
-      dialog_type = etk_type_new("Etk_Dialog", ETK_WINDOW_TYPE, sizeof(Etk_Dialog), ETK_CONSTRUCTOR(_etk_dialog_constructor), ETK_DESTRUCTOR(_etk_dialog_destructor));
+      dialog_type = etk_type_new("Etk_Dialog", ETK_WINDOW_TYPE, sizeof(Etk_Dialog), ETK_CONSTRUCTOR(_etk_dialog_constructor), NULL);
 
       _etk_dialog_signals[ETK_DIALOG_CLOSE_SIGNAL] = etk_signal_new("close", dialog_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL] = etk_signal_new("response", dialog_type, -1, etk_marshaller_VOID__INT, NULL, NULL);
@@ -197,20 +196,6 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
 
    dialog->has_separator = TRUE;
 }
-
-/* Destroys the dialog */
-static void _etk_dialog_destructor(Etk_Dialog *dialog)
-{
-   if (!dialog)
-      return;
-
-   /* TODO: destroy ? */
-   etk_object_destroy(ETK_OBJECT(dialog->main_area_vbox));
-   etk_object_destroy(ETK_OBJECT(dialog->separator));
-   etk_object_destroy(ETK_OBJECT(dialog->action_area_hbox));
-   etk_object_destroy(ETK_OBJECT(dialog->dialog_vbox));
-}
-
 
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)

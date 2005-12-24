@@ -19,7 +19,7 @@ static void _etk_notebook_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_notebook_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
 static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
-static void _etk_notebook_page_activate(Etk_Notebook_Page *page);
+static void _etk_notebook_current_page_show(Etk_Notebook *notebook);
 
 /**************************
  *
@@ -109,9 +109,7 @@ static void _etk_notebook_destructor(Etk_Notebook *notebook)
    for (l = notebook->pages; l; l = l->next)
    {
       page = l->data;
-      /* TODO */
-      etk_object_destroy(ETK_OBJECT(page->tab));
-      etk_object_destroy(ETK_OBJECT(page->page_frame));
+      etk_signal_disconnect("toggled", ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb));
       free(page);
    }
 }
@@ -182,6 +180,7 @@ static void _etk_notebook_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
          max_tab_height = tab_requisition.h;
    }
    
+   /* TODO */
    //tab_offset = (geometry.w - tabs_width) * 0.5;
    tab_offset = 0;
    tab_geometry.y = geometry.y;
@@ -250,8 +249,7 @@ static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data)
          if (notebook->current_page)
             etk_widget_hide(notebook->current_page->page_frame);
          notebook->current_page = page;
-         etk_widget_show(notebook->current_page->page_frame);
-         etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
+         _etk_notebook_current_page_show(notebook);
       }
    }
 }
@@ -272,8 +270,8 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    
    new_page = malloc(sizeof(Etk_Notebook_Page));
    prev_page = notebook->pages ? notebook->pages->data : NULL;
-   new_page->tab = etk_radio_button_new_with_label_from_widget(tab_label, prev_page ? ETK_RADIO_BUTTON(prev_page->tab) : NULL);
-   etk_object_properties_set(ETK_OBJECT(new_page->tab), "theme_group", "notebook_tab", NULL);
+   new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "notebook_tab", "label", tab_label,
+      "group", prev_page ? etk_radio_button_group_get(ETK_RADIO_BUTTON(prev_page->tab)) : NULL, NULL);
    etk_object_data_set(ETK_OBJECT(new_page->tab), "_Etk_Notebook::Page", new_page);
    etk_widget_parent_set(new_page->tab, ETK_CONTAINER(notebook));
    etk_widget_visibility_locked_set(new_page->tab, TRUE);
@@ -290,18 +288,35 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
       etk_bin_child_set(ETK_BIN(new_page->page_frame), new_page->page_widget);
    
    if (!notebook->current_page)
-      _etk_notebook_page_activate(new_page);
+   {
+      notebook->current_page = new_page;
+      _etk_notebook_current_page_show(notebook);
+   }
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
    
    return new_page;
 }
 
-/* Activates a page of the notebook */
-static void _etk_notebook_page_activate(Etk_Notebook_Page *page)
+/* Shows the active page */
+static void _etk_notebook_current_page_show(Etk_Notebook *notebook)
 {
-   if (!page)
+   Evas_List *l;
+   Etk_Notebook_Page *p;
+   
+   if (!notebook || !notebook->current_page)
       return;
-   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(page->tab), TRUE);
+   
+   etk_widget_show(notebook->current_page->page_frame);
+   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->page_frame->smart_object);
+   
+   for (l = notebook->pages; l; l = l->next)
+   {
+      p = l->data;
+      etk_widget_member_object_raise(ETK_WIDGET(notebook), p->tab->smart_object);
+   }
+   evas_object_raise(notebook->current_page->tab->smart_object);
+   etk_widget_member_object_raise(ETK_WIDGET(notebook), notebook->current_page->tab->smart_object);         
+   etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
 
 /** @} */
