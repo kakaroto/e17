@@ -721,7 +721,7 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
       pmap = draw;
    imlib_context_set_drawable(pmap);
 
-   if (hasbg && x == 0 && y == 0 && w == rw && h == rh)
+   if (hasbg && !hasfg && x == 0 && y == 0 && w == rw && h == rh)
      {
 	im = bg->bg.im;
 	imlib_context_set_image(im);
@@ -770,7 +770,9 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 	ww = imlib_image_get_width();
 	hh = imlib_image_get_height();
 	imlib_context_set_image(im);
+	imlib_context_set_blend(1);
 	imlib_blend_image_onto_image(bg->top.im, 0, 0, 0, ww, hh, x, y, w, h);
+	imlib_context_set_blend(0);
      }
 
    imlib_render_image_on_drawable_at_size(0, 0, rw, rh);
