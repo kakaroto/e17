@@ -1,0 +1,11 @@
+#!/bin/sh
+
+for d in * ; do
+	[ ! -x "${d}"/configure ] && continue
+	echo "./$d/configure $*"
+	cd $d
+	./configure "$@" || exit 1
+	cd ..
+done
+
+cp Makefile.in Makefile
