@@ -91,6 +91,25 @@ int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk
 }
 
 /* TODO */
+void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget)
+{
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+      return;
+   etk_bin_child_set(ETK_BIN(page->tab), tab_widget);
+}
+
+void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child)
+{
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+      return;
+   etk_bin_child_set(ETK_BIN(page->page_frame), child);
+}
+
+/* TODO */
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num)
 {
    Etk_Notebook_Page *page;
@@ -325,9 +344,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_visibility_locked_set(new_page->page_frame, TRUE);
    etk_widget_hide(new_page->page_frame);
    
-   new_page->page_widget = page_widget;
-   if (new_page->page_widget)
-      etk_bin_child_set(ETK_BIN(new_page->page_frame), new_page->page_widget);
+   etk_bin_child_set(ETK_BIN(new_page->page_frame), page_widget);
    
    if (!notebook->current_page)
    {

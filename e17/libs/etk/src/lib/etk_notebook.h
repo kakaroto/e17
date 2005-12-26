@@ -22,7 +22,6 @@
 typedef struct _Etk_Notebook_Page
 {
    Etk_Widget *tab;
-   Etk_Widget *page_widget;
    Etk_Widget *page_frame;
 } Etk_Notebook_Page;
 
@@ -45,6 +44,9 @@ Etk_Widget *etk_notebook_new();
 
 int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
 int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
+
+void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget);
+void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num);
 int etk_notebook_current_page_get(Etk_Notebook *notebook);

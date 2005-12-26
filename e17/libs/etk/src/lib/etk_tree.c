@@ -85,7 +85,6 @@ static void _etk_tree_grid_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_tree_grid_scroll_size_get(Etk_Widget *widget, Etk_Size *scroll_size);
 static void _etk_tree_grid_scroll_margins_get(Etk_Widget *widget, Etk_Size *margins_size);
 static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree_grid_unrealize_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_constructor(Etk_Tree *tree);
 static void _etk_tree_destructor(Etk_Tree *tree);
@@ -1248,7 +1247,6 @@ static void _etk_tree_grid_constructor(Etk_Tree_Grid *grid)
    ETK_WIDGET(grid)->scroll_size_get = _etk_tree_grid_scroll_size_get;
    ETK_WIDGET(grid)->scroll_margins_get = _etk_tree_grid_scroll_margins_get;
    etk_signal_connect("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_tree_grid_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_tree_grid_unrealize_cb), NULL);
 }
 
 /* Creates or destroys the rows according to the new height of the tree grid, and then updates the tree */
@@ -1781,20 +1779,6 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
 
    for (i = 0; i < tree->num_cols; i++)
       _etk_tree_col_realize(tree, i);
-}
-
-/* Called when the tree grid is unrealized */
-static void _etk_tree_grid_unrealize_cb(Etk_Object *object, void *data)
-{
-   Etk_Tree *tree;
-   Etk_Widget *grid;
-
-   if (!(grid = ETK_WIDGET(object)))
-      return;
-   tree = ETK_TREE_GRID(grid)->tree;
-
-   /* TODO */
-   printf("Tree Grid unrealized\n");
 }
 
 /**************************
