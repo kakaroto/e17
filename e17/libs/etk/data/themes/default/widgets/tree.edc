@@ -29,44 +29,6 @@ group {
             }
          }
       }
-      part {
-         name: "tree_clip";
-         type: RECT;
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-         }
-      }
-      part {
-         name: "watermark";
-         mouse_events: 0;
-         clip_to: "tree_clip";
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               offset: -200 -138;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-            image {
-               normal: "e_watermark.png";
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
       FOCUS_GLOW(0.0, 0.0, -1, -1, "tree", 1.0, 1.0, 0, 0, "tree")
    }
    programs {
@@ -84,60 +46,6 @@ group {
       }
    }
 }
-/*group {
-   name: "tree_row";
-   parts {
-      part {
-         name: "row";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            color: 255 255 255 0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-         }
-         description {
-            state: "even" 0.0;
-            inherit: "default" 0.0;
-            color: 190 190 190 40;
-         }
-         description {
-            state: "selected" 0.0;
-            inherit: "default" 0.0;
-            color: 219 181 104 60;
-         }
-      }
-   }
-   programs {
-      program {
-         name: "even";
-         signal: "even";
-         source: "";
-         action: STATE_SET "even" 0.0;
-         target: "row";
-      }
-      program {
-         name: "odd";
-         signal: "odd";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "row";
-      }
-      program {
-         name: "selected";
-         signal: "selected";
-         source: "";
-         action: STATE_SET "selected" 0.0;
-         target: "row";
-      }
-   }
-}*/
 group {
    name: "tree_row";
    parts {
@@ -145,7 +53,7 @@ group {
          name: "row";
          description {
             state: "default" 0.0;
-            color: 255 255 255 120;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 0.0;
                offset: 0 0;
