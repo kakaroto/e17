@@ -476,6 +476,7 @@ void etk_widget_unrealize(Etk_Widget *widget)
       widget->member_objects = evas_list_remove_list(widget->member_objects, widget->member_objects);
    }
    evas_object_del(widget->smart_object);
+   widget->smart_object = NULL;
 
    if (widget->clip)
       evas_object_hide(widget->clip);
