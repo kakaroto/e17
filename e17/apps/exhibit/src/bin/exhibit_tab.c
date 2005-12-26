@@ -11,6 +11,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->dirs = NULL;
    tab->images = NULL;
    tab->e = e;
+   tab->fit_window = FALSE;
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
@@ -69,6 +70,9 @@ _ex_tab_select(Ex_Tab *tab)
 {   
    chdir(tab->cur_path);
 
+   if(tab->fit_window)
+     etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->alignment);
+   
    etk_table_attach(ETK_TABLE(tab->e->table), tab->dtree,
 		    0, 3, 3, 3,
 		    0, 0, ETK_FILL_POLICY_VEXPAND|ETK_FILL_POLICY_VFILL|ETK_FILL_POLICY_HFILL);
