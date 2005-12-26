@@ -221,6 +221,7 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    _ex_main_populate_files(e);
+   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
 }
 
 
