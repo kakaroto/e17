@@ -91,6 +91,16 @@ int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk
 }
 
 /* TODO */
+void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label)
+{
+   Etk_Notebook_Page *page;
+   
+   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+      return;
+   etk_button_label_set(ETK_BUTTON(page->tab), tab_label);
+}
+
+/* TODO */
 void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget)
 {
    Etk_Notebook_Page *page;

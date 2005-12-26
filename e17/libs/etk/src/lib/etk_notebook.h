@@ -45,6 +45,7 @@ Etk_Widget *etk_notebook_new();
 int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
 int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_widget);
 
+void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label);
 void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget);
 void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 
