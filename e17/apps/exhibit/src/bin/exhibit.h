@@ -44,6 +44,9 @@ struct _Ex_Tab
 {
    char          *dir;
    char           cur_path[PATH_MAX];
+   int            num;
+
+   Etk_Bool       fit_window;   
    
    Evas_List     *images;
    Evas_List     *dirs;
@@ -99,7 +102,6 @@ struct _Exhibit
    int            zoom;
    int            brightness;
    int            contrast;
-   Etk_Bool       fit_window;
 
    Evas_List     *tabs;
    Ex_Tab        *cur_tab;

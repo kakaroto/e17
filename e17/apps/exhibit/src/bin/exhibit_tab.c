@@ -7,6 +7,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    Etk_Tree_Model *imodel;   
    
    tab = calloc(1, sizeof(Ex_Tab));   
+   tab->num = evas_list_count(e->tabs);
    tab->dirs = NULL;
    tab->images = NULL;
    tab->e = e;
@@ -79,16 +80,6 @@ _ex_tab_select(Ex_Tab *tab)
    etk_widget_show(tab->image);
    etk_widget_show(tab->alignment);   
    etk_widget_show(tab->scrolled_view);
-   
-//   etk_widget_size_recalc_queue(tab->e->table);
-//   etk_widget_size_recalc_queue(tab->itree);
-//   etk_widget_size_recalc_queue(tab->dtree);
-//   etk_widget_size_recalc_queue(tab->alignment);
-   
-//   etk_widget_redraw_queue(tab->e->table);
-//   etk_widget_redraw_queue(tab->itree);
-//   etk_widget_redraw_queue(tab->dtree);
-//   etk_widget_redraw_queue(tab->alignment);
-   
-//   etk_widget_show_all(tab->e->win);   
+      
+   etk_widget_show_all(tab->e->win);
 }

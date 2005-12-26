@@ -19,7 +19,7 @@ Evas_List *event_handlers;
 void
 _ex_main_statusbar_zoom_update(Exhibit *e)
 {
-   if (e->fit_window)
+   if (e->cur_tab->fit_window)
      {
         etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
         etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), _("Fit to window"), 0);
@@ -53,12 +53,16 @@ _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
    
    e = data;
    
-   if (e->fit_window)
+   if (e->cur_tab->fit_window)
      {
-        etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	if(evas_list_count(e->tabs) == 1)
+	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	else
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
-        e->fit_window = FALSE;
+        e->cur_tab->fit_window = FALSE;
      }
    
    if(e->zoom == ZOOM_MAX)
@@ -77,12 +81,16 @@ _ex_main_button_zoom_out_cb(Etk_Object *obj, void *data)
    
    e = data;
    
-   if (e->fit_window)
+   if (e->cur_tab->fit_window)
      {
-        etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	if(evas_list_count(e->tabs) == 1)	  
+	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	else
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
-        e->fit_window = FALSE;
+        e->cur_tab->fit_window = FALSE;
      }
    
    if(e->zoom <= ZOOM_MIN)
@@ -101,12 +109,16 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    
    e = data;
    
-   if (e->fit_window)
+   if (e->cur_tab->fit_window)
      {
-        etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	if(evas_list_count(e->tabs) == 1)
+	  etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, TRUE);
+	else
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
-        e->fit_window = FALSE;
+        e->cur_tab->fit_window = FALSE;
      }
    
    e->zoom = 0;
@@ -124,14 +136,18 @@ _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
    
    e = data;
    
-   if (e->fit_window)
+   if (e->cur_tab->fit_window)
       return;
    
    etk_widget_size_request_set(e->cur_tab->alignment, 10, 10);
-   etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->alignment, TRUE);
+   if(evas_list_count(e->tabs) == 1)
+     etk_paned_add2(ETK_PANED(e->hpaned), e->cur_tab->alignment, TRUE);
+   else          
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
+     
    etk_widget_size_request_set(e->cur_tab->image, -1, -1);
    
-   e->fit_window = TRUE;
+   e->cur_tab->fit_window = TRUE;
    _ex_main_statusbar_zoom_update(e);
 }
 
@@ -767,7 +783,7 @@ _ex_main_window_show(char *dir)
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
    
    /* create first tab but dont place it in notebook */
-   tab = _ex_tab_new(e, dir);
+   tab = _ex_tab_new(e, dir);   
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
    _ex_tab_select(tab);
