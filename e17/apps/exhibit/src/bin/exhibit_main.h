@@ -18,6 +18,8 @@ void         _ex_main_populate_files(Exhibit *e);
 void         _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 void         _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 Etk_Bool     _ex_main_window_deleted_cb(void *data);
+void         _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
+void         _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab);
 void         _ex_main_window_show(char *dir);
 
 #endif

@@ -23,7 +23,7 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
    if (ext)
      {
 	thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);
-	etk_tree_append(ETK_TREE(thumb->e->itree), thumb->e->icol, thumb->image, thumb->name, NULL);
+	etk_tree_append(ETK_TREE(thumb->e->cur_tab->itree), thumb->e->cur_tab->icol, thumb->image, thumb->name, NULL);
 	free(thumb->image);
 	free(thumb->name);
 	epsilon_free(thumb->ep);

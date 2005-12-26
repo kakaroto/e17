@@ -29,6 +29,9 @@
 
 #define ETK_DEFAULT_ICON_SET_FILE ETK_PACKAGE_DATA_DIR "/stock_icons/default.edj"
 
+typedef struct _Exhibit Exhibit;
+typedef struct _Ex_Tab Ex_Tab;
+typedef struct _Ex_Thumb Ex_Thumb;
 typedef enum _Ex_Images
 {
    EX_IMAGE_FIT_TO_WINDOW = -1,
@@ -37,37 +40,58 @@ typedef enum _Ex_Images
    EX_IMAGE_ZOOM_OUT = -4
 } Ex_Images;
 
-typedef struct _Exhibit Exhibit;
+struct _Ex_Tab
+{
+   char          *dir;
+   char           cur_path[PATH_MAX];
+   
+   Evas_List     *images;
+   Evas_List     *dirs;
+  
+   Etk_Widget    *image;   
+   Etk_Widget    *dtree;
+   Etk_Widget    *itree;   
+   Etk_Widget    *scrolled_view;
+   Etk_Widget    *alignment;   
+   
+   Etk_Tree_Col  *dcol;
+   Etk_Tree_Col  *icol;
+   
+   Exhibit       *e;
+};
+
+
 struct _Exhibit
 {
    Etk_Widget    *vbox;
    Etk_Widget    *hbox;
    Etk_Widget    *menu_bar;
    Etk_Widget    *statusbar[4];
-   Etk_Widget    *scrolled_view;
-   Etk_Widget    *alignment;
+   Etk_Widget    *notebook;
+//   Etk_Widget    *scrolled_view;
+//   Etk_Widget    *alignment;
    Etk_Widget    *table;
    Etk_Widget    *hpaned;
    Etk_Widget    *vpaned;
-   Etk_Widget    *dtree;
-   Etk_Widget    *itree;
+//   Etk_Widget    *dtree;
+//   Etk_Widget    *itree;
    Etk_Widget    *entry[2];
    Etk_Widget    *zoom_in[2];
    Etk_Widget    *zoom_out[2];
    Etk_Widget    *fit[2];
    Etk_Widget    *original[2];
-   Etk_Widget    *image;
+//   Etk_Widget    *image;
    Etk_Widget    *sort;
    Etk_Widget    *sizebar;
    Etk_Widget    *resbar;
    Etk_Widget    *zoombar;
-   Etk_Tree_Col  *dcol;
-   Etk_Tree_Col  *icol;
+//   Etk_Tree_Col  *dcol;
+//   Etk_Tree_Col  *icol;
    Etk_Widget    *menu;
    Etk_Widget    *win;
 
-   Evas_List     *images;
-   Evas_List     *dirs;
+//   Evas_List     *images;
+//   Evas_List     *dirs;
 
    char          *dir;
    char           cur_path[PATH_MAX];   
@@ -76,6 +100,9 @@ struct _Exhibit
    int            brightness;
    int            contrast;
    Etk_Bool       fit_window;
+
+   Evas_List     *tabs;
+   Ex_Tab        *cur_tab;
    
    struct {
       int down;
@@ -84,7 +111,6 @@ struct _Exhibit
    } mouse;
 };
 
-typedef struct _Ex_Thumb Ex_Thumb;
 struct _Ex_Thumb
 {
    Exhibit  *e;
@@ -115,5 +141,6 @@ struct _Ex_Thumb
 #include "exhibit_menus.h"
 #include "exhibit_sort.h"
 #include "exhibit_thumb.h"
+#include "exhibit_tab.h"
   
 #endif

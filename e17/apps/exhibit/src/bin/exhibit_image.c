@@ -100,8 +100,8 @@ _ex_image_mouse_move(Etk_Object *object, void *event, void *data)
    
    if(!e->mouse.down) return;
    
-   hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
-   vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->scrolled_view));
+   hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
+   vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
    
    dx = ev->prev.canvas.x - ev->cur.canvas.x;
    dy = ev->prev.canvas.y - ev->cur.canvas.y;   

@@ -15,7 +15,8 @@ exhibit_image.h \
 exhibit_main.h \
 exhibit_menus.h \
 exhibit_sort.h \
-exhibit_thumb.h
+exhibit_thumb.h \
+exhibit_tab.h
 
 exhibit_SOURCES = \
 exhibit_file.c \
@@ -24,6 +25,7 @@ exhibit_main.c \
 exhibit_menus.c \
 exhibit_sort.c \
 exhibit_thumb.c \
+exhibit_tab.c \
 $(exhibit_includes)
 
 exhibit_LDADD = @my_libs@
