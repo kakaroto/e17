@@ -52,3 +52,24 @@ _ex_file_strip_extention(char *path) {
    file[i] = '\0';
    return file;
 }
+
+char *
+_ex_file_get(char *path)
+{
+   if(!path[0]) return NULL;
+      
+   if(path[strlen(path) - 1] == '/' && strlen(path) >= 2)
+     {
+	char *ret;
+	
+	ret = &path[strlen(path) - 2];
+	while(ret != path)
+	  {
+	     if(*ret == '/')
+	       return ++ret;
+	     --ret;
+	  }
+	return path;	
+     }
+   else return ecore_file_get_file(path);
+}

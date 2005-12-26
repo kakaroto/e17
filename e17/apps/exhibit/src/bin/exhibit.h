@@ -4,6 +4,7 @@
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_File.h>
 #include <Ecore_X_Cursor.h>
 #include <Epsilon.h>
 #include <etk/Etk.h>

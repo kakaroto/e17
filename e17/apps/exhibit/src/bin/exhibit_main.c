@@ -590,7 +590,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
      {
 	Ex_Tab *tab;
 	
-	tab = _ex_tab_new(e, "/tmp");
+	tab = _ex_tab_new(e, e->cur_tab->cur_path);
 	_ex_main_window_tab_append(e, tab);
 	_ex_main_populate_files(e);	
      }
@@ -606,7 +606,8 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_WIDGET(object)));
 
    e->cur_tab = tab;
-   _ex_tab_select(tab);   
+   _ex_tab_select(tab);
+   etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);   
 }
 
 void
@@ -617,15 +618,15 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
 	/* adding first "real" tab, copy existing tab, and create new one */
 	e->notebook = etk_notebook_new();        
 	etk_paned_add2(ETK_PANED(e->hpaned), e->notebook, TRUE);	
-	etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), e->cur_tab->dir, e->cur_tab->scrolled_view);
+	etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
 	etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
 	etk_widget_show(ETK_WIDGET(e->notebook));
      }
 
    e->tabs = evas_list_append(e->tabs, tab);
    e->cur_tab = tab;
-   etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), e->cur_tab->dir, e->cur_tab->scrolled_view);
-   etk_notebook_current_page_set(e->notebook, evas_list_count(e->tabs) - 1);   
+   etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
+   etk_notebook_current_page_set(e->notebook, evas_list_count(e->tabs) - 1);
 }
 
 void
