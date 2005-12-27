@@ -48,7 +48,6 @@ TransparencyChangeTimeout(int val, void *data __UNUSED__)
 static void
 TransparencyChange(int val)
 {
-   RemoveTimerEvent("PT-Change");
    DoIn("PT-Change", .01, TransparencyChangeTimeout, val, NULL);
 }
 
