@@ -8,11 +8,10 @@ static Ecore_DList    *images;
 static Ewl_Widget     *entry_path;
 static Ewl_Widget     *note_box;
 static Ewl_Widget     *note;
-static Ewl_Widget     *fdwin;
+static Ewl_Widget     *fd;
 
 void __create_image_fd_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
-static void __destroy_image_fd_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 static void __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data);
 
 static void
@@ -251,25 +250,16 @@ void
 __create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 				    void *user_data)
 {
-	Ewl_Widget *fd = NULL;
-
-	if (fdwin)
+	if (fd)
 		return;
 
-	fdwin = ewl_window_new();
-	ewl_window_title_set (EWL_WINDOW (fdwin), "Select an Image...");
-	ewl_window_name_set (EWL_WINDOW (fdwin), "EWL Image Test");
-	ewl_window_class_set (EWL_WINDOW (fdwin), "EWL Filedialog");
-
-	ewl_callback_append (fdwin, EWL_CALLBACK_DELETE_WINDOW,
-			     __destroy_image_fd_cb, NULL);
-	ewl_widget_show(fdwin);
-
 	fd = ewl_filedialog_new();
+	ewl_window_title_set (EWL_WINDOW (fd), "Select an Image...");
+	ewl_window_name_set (EWL_WINDOW (fd), "EWL Image Test");
+	ewl_window_class_set (EWL_WINDOW (fd), "EWL Filedialog");
 	ewl_filedialog_type_set(EWL_FILEDIALOG(fd), EWL_FILEDIALOG_TYPE_OPEN);
 	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
 			    __create_image_fd_window_response, user_data);
-	ewl_container_child_append(EWL_CONTAINER(fdwin), fd);
 	ewl_widget_show(fd);
 }
 
@@ -291,17 +281,11 @@ __create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 			__image_load();
 			// FREE(path); FIXME: Is text widget allocated correctly?
 		}
-		ewl_widget_destroy(fdwin);
-		fdwin = NULL;
 	}
 	else {
 		printf("Test program says bugger off.\n");
 	}
-}
 
-static void
-__destroy_image_fd_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
-				    void *user_data __UNUSED__)
-{
-	ewl_widget_destroy(w);
+	ewl_widget_destroy(fd);
+	fd = NULL;
 }
