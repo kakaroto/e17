@@ -443,6 +443,9 @@ doPagerUpdate(Pager * p)
 static void
 PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
 {
+   if (!Conf_pagers.enable)
+      return;
+
    if (p->x1 > x1)
       p->x1 = x1;
    if (p->y1 > y1)
@@ -458,7 +461,6 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
    if (!Conf_pagers.snap)
       return;
 
-   RemoveTimerEvent("pg-upd");
    DoIn("pg-upd", .2, PagerUpdateTimeout, 0, NULL);
 }
 
