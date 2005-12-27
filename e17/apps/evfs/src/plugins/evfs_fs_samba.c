@@ -311,7 +311,7 @@ Ecore_List** directory_list
 		smb_context->closedir(smb_context,dir);
 
 		/*Set the return pointer..*/
-		*directory_list = files;
+		*directory_list = evfs_file_list_sort(files);
 	} else {
 	            printf("Could not open [%s] (%d:%s)\n",dir_path, errno, strerror(errno));
 	}

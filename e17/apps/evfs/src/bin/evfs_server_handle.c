@@ -101,12 +101,52 @@ void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command
 }
 
 void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command) {
+	struct stat file_stat;
+	
 	printf("At remove handle\n");
 
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
+		(*plugin->functions->evfs_file_stat)(command, &file_stat);
+		
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
-		(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+
+		/*If we're not a dir, simple remove command*/
+		if (!S_ISDIR(file_stat.st_mode)) { 
+			
+			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+			//
+			printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
+
+		} else {
+			/*It's a directory, recurse into it*/
+			Ecore_List* directory_list = NULL;
+			evfs_filereference* file = NULL;
+			
+			/*First, we need a directory list...*/
+			(*plugin->functions->evfs_dir_list)(client,command,&directory_list);
+			if (directory_list) {
+				while ((file = ecore_list_remove_first(directory_list))) {
+					evfs_command* recursive_command = NEW(evfs_command);
+
+					recursive_command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+					recursive_command->type = EVFS_CMD_REMOVE_FILE;
+					recursive_command->file_command.files[0] = file;
+					recursive_command->file_command.num_files = 1;
+
+					evfs_handle_file_remove_command(client, recursive_command);
+
+
+					evfs_cleanup_command(recursive_command,1);
+					
+				}
+			}
+
+			printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
+			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+
+
+		}
 	}
 }
 
@@ -214,7 +254,6 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 	struct stat file_stat;
 	int progress = 0;
 	int last_notify_progress = 0;
-	evfs_filereference* ref = NEW(evfs_filereference);
 
  	plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	dst_plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[1]->plugin_uri);
@@ -265,6 +304,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 			(*plugin->functions->evfs_dir_list)(client,command,&directory_list);
 			if (directory_list) {
 				int ret =0;
+				evfs_filereference* file = NULL;
 						
 				/*OK, so the directory exists at the source, and contains files.
 				 * Let's make the destination directory first..*/
@@ -272,7 +312,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 				ret=  (*dst_plugin->functions->evfs_file_mkdir)(command->file_command.files[1]);
 				printf("....ret was %d\n", ret);
 				
-				evfs_filereference* file = NULL;
+				
 				//printf("Recursive directory list for '%s' received..\n", command->file_command.files[0]->path);
 				while ((file = ecore_list_remove_first(directory_list))) {
 					evfs_filereference* source = NEW(evfs_filereference);

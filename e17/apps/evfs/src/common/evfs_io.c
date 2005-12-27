@@ -222,7 +222,6 @@ int evfs_read_event(evfs_event* event, ecore_ipc_message* msg) {
 			evfs_event_progress* pg = eet_data_descriptor_decode(_evfs_progress_event_edd, msg->data, msg->len);
 			event->progress = pg;
 
-			printf("%s:%s\n", pg->file_from, pg->file_to);
 		}
 		break;
 

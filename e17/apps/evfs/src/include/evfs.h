@@ -245,6 +245,7 @@ char* evfs_filereference_to_string(evfs_filereference* ref);
 #include "evfs_event_helper.h"
 #include "evfs_server_handle.h"
 #include "evfs_common.h"
+#include "evfs_misc.h"
 
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))

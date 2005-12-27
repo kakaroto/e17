@@ -79,7 +79,6 @@ void evfs_file_progress_event_create(evfs_client* client, evfs_command* event_co
 	
 	evfs_write_event(client, root_command, event);
 
-	printf("%s : %s\n", event->progress->file_from, event->progress->file_to);
 
 	/*Now destroy*/
 	evfs_cleanup_event(event);
