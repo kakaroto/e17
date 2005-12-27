@@ -50,7 +50,6 @@ struct _Cfg_File_Data
 };
 
 /* Protos */
-static Evas_Object   *_create_widgets(E_Config_Dialog *cfd, Evas *evas, Config *cfdata);
 static void 	     *_create_data(E_Config_Dialog *cfd);
 static void 	     _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
@@ -74,7 +73,7 @@ _config_screenshot_module(E_Container *con, Screen *s)
    v.advanced.create_widgets = _advanced_create_widgets;
 
    /* create config diaolg */
-   cfd = e_config_dialog_new(con, _("Screenshot Module"), NULL, 0, &v, s);
+   cfd = e_config_dialog_new(con, _("Screenshot Configuration"), NULL, 0, &v, s);
 }
 
 static void
