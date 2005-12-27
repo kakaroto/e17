@@ -10,11 +10,11 @@ group {
                 min, 12 12;
 
                 rel1 {
-                    relative, 0.0 0.0;
+                    relative, 0.5 0.5;
                     offset, 0 0;
                 }
                 rel2 {
-                    relative, 0.0 0.0;
+                    relative, 0.5 0.5;
                     offset, 6 8;
                 }
                 image {
@@ -46,7 +46,7 @@ group {
                     offset, -1 -1;
                     to, "base";
                 }
-		color, 255 255 255 0;
+				color, 255 255 255 0;
             }
             description {
                 state, "show" 0.0;
@@ -91,5 +91,5 @@ group {
             transition, LINEAR 0.0;
             target, "visible";
         }
-    }
+    }   
 }

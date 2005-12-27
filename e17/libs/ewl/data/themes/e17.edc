@@ -25,13 +25,16 @@ collections {
 #include "e17/bits/window-groups.edc"
 #include "e17/bits/menu-item.edc"
 #include "e17/bits/border-groups.edc"
+#include "e17/bits/box-groups.edc"
+#include "e17/bits/treebg-groups.edc"
+#include "e17/bits/treeselect-groups.edc"
+#include "e17/bits/treehead-groups.edc"
 }
 
 data {
     item, "/label/group" "label";
     item, "/label/textpart" "text";
     item, "/button/group" "button";
-    item, "/button/body/image/group" "button-image";
     item, "/radio/group" "radio";
     item, "/check/group" "checkbox";
 
@@ -51,9 +54,13 @@ data {
     item, "/text/font" "Vera";
     item, "/text/font_size" "10";
     item, "/text/style" "none";
-
+    
+    item, "/tree/group" "tree_background";
+    item, "/row/group" "row_background";
+    item, "/cell/group" "tree-select";
+    item, "/tree/row/button/group" "tree_header";
     item, "/node/check/group" "treenode";
-
+    
     item, "/progressbar_bar/group" "progressbar_bar";
     item, "/progressbar/group" "progressbar";
 
@@ -104,17 +111,17 @@ data {
 
     item, "/menu/group" "window";
     item, "/menubar/group" "menubar";
-    item, "/menu_item/group" "menuitem";
+    item, "/menuitem/group" "menuitem";
 
     item, "/tooltip/offset" 15;
     item, "/tooltip/delay" "1.0";
     item, "/tooltip/group" "window";
 
     item, "/window/group" "window";
-
-    item, "/theme/author" "dj2 (www.everburning.com)";
+    item, "/scrollpane/group" "box";
+    item, "/theme/author" "dj2 (www.everburning.com) and titansoccer15 (www.assistix.org)";
     item, "/theme/font_path" "fonts";
     item, "/theme/license" 
-        "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
+    "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
     item, "/theme/name" "e17";
 }

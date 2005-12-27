@@ -1,0 +1,100 @@
+group{
+    name, "row_background";
+
+    data {
+        item, "inset/top" "1";
+        item, "inset/bottom" "1";
+        item, "inset/left" "2";
+        item, "inset/right" "2";
+    }
+
+    parts {
+        part {
+            name, "row_background";
+            mouse_events, 0;
+            description {
+                state, "even" 0.0;
+                rel1 {
+                    relative, 0.0 0.0;
+                    offset, 0 0;
+                }
+                rel2 {
+                     relative, 1.0 1.0;
+                     offset, -1 -1;
+                }
+                image {
+                     normal, "e17_ilist_bg0.png";
+                     border, 5 5 5 5;
+		}
+                color, 255 255 255 35;
+            }
+            description {
+                state, "odd" 0.0;
+                rel1 {
+                    relative, 0.0 0.0;
+                    offset, 0 0;
+                }
+                rel2 {
+                    relative, 1.0 1.0;
+                    offset, -1 -1;
+                }
+		image {
+                    normal, "e17_ilist_bg1.png";
+		    border, 5 5 5 5;
+                }
+		color, 255 255 255 200;
+            }
+		  }   
+    }
+    programs {
+        program {
+            	name:       "odd";
+            	signal:     odd;
+            	source:     "*";
+            	action:     STATE_SET "odd" 0.0;
+            	transition: LINEAR 0.0;
+		target:     row_background;
+    	}
+    	program {
+     		name:       "even";
+       		signal:     even;
+       		source:     "*";
+       		action:     STATE_SET "even" 0.0;
+       		transition: LINEAR 0.0;
+		target:     row_background;
+    	}	
+    }
+}
+group{
+    name, "tree_background";
+
+    data {
+        item, "inset/top" "2";
+        item, "inset/bottom" "2";
+        item, "inset/left" "2";
+        item, "inset/right" "2";
+    }
+
+    parts {
+        part {
+            name, "tree_background";
+	    mouse_events, 0;
+            description {
+                state, "default" 0.0;
+                rel1 {
+                    relative, 0.0 0.0;
+                    offset, 0 0;
+                }
+                rel2 {
+                     relative, 1.0 1.0;
+                     offset, -1 -1;
+                }
+		image {
+		    normal, "e17_tranny.png";
+		}
+                color, 220 224 220 255;
+            }
+	}
+    }
+}
+

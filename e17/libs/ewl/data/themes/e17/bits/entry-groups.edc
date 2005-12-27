@@ -32,6 +32,12 @@ group {
                normal: "entry_focus.png";
             }
          }
+         description {
+            state: "odd" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 250 185 87 128;
+         }
       }
       part {
          name: "entry_focus";
@@ -61,6 +67,7 @@ group {
       }
    }
    programs {
+
       program {
          name: "entry_focus";
          signal: "focus,in";
@@ -69,6 +76,7 @@ group {
          transition: LINEAR 0.2;
          target: "entry_focus";
       }
+
       program {
          name: "button_unfocus";
          signal: "focus,out";
@@ -77,6 +85,25 @@ group {
          transition: LINEAR 0.2;
          target: "entry_focus";
       }
+
+      program {
+         name: "entry_odd";
+         signal: "odd";
+         source: "*";
+         action: STATE_SET "odd" 0.0;
+         transition: LINEAR 0.0;
+         target: "entry";
+      }
+
+      program {
+         name: "entry_even";
+         signal: "even";
+         source: "*";
+         action: STATE_SET "even" 0.0;
+         transition: LINEAR 0.0;
+         target: "entry";
+      }
+
    }
 }
 
