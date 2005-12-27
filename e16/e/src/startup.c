@@ -179,7 +179,7 @@ doStartupWindowsOpen(int val, void *data __UNUSED__)
 void
 StartupWindowsOpen(void)
 {
-   if (init_win1 == None || init_win2 == None)
+   if (init_win1 == NULL || init_win2 == NULL)
       return;
 
    doStartupWindowsOpen(0, NULL);
