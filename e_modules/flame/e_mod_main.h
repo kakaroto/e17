@@ -14,7 +14,8 @@ enum _Flame_Palette_Type
      FIRE_PALETTE,
      PLASMA_PALETTE,
      MATRIX_PALETTE,
-     ICE_PALETTE
+     ICE_PALETTE,
+     CUSTOM_PALETTE
 };
 
 struct _Config
@@ -24,6 +25,7 @@ struct _Config
    int                variance;
    int                vartrend;
    int                residual;
+   int                r,g,b;
    Flame_Palette_Type palette_type;
 };
 
