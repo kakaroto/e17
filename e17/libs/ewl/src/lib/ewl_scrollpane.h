@@ -71,6 +71,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data,
 							void *user_data);
 void ewl_scrollpane_box_configure_cb(Ewl_Widget *w, void *ev_data,
 							void *user_data);
+void ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data,
+                                  void *user_data);
 void ewl_scrollpane_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *w, void *ev_data,
