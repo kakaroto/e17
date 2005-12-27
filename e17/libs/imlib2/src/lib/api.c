@@ -2208,15 +2208,18 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
                      source_height, ctx->depth);
    gcv.foreground = 0;
    gcv.subwindow_mode = IncludeInferiors;
+   gcv.graphics_exposures = False;
    if (domask)
      {
         m = XCreatePixmap(ctx->display, ctx->drawable, destination_width,
                           source_height, 1);
-        mgc = XCreateGC(ctx->display, m, GCForeground, &gcv);
+        mgc = XCreateGC(ctx->display, m,
+                        GCForeground | GCGraphicsExposures, &gcv);
      }
    else
       m = None;
-   gc = XCreateGC(ctx->display, ctx->drawable, GCSubwindowMode, &gcv);
+   gc = XCreateGC(ctx->display, ctx->drawable,
+                  GCSubwindowMode | GCGraphicsExposures, &gcv);
    if ((domask) && (!mask))
      {
         XRectangle         *rect;
