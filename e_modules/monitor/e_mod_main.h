@@ -66,7 +66,7 @@ struct _Monitor_Face
   E_Gadman_Client *gmc;
 };
 
-extern E_Module_Api e_modapi;
+EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
@@ -75,7 +75,7 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-EAPI void _monitor_cb_config_updated(void *data);
+void _monitor_cb_config_updated(void *data);
 void _monitor_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void rebuild_monitor(Monitor_Face *face);
 

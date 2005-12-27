@@ -52,7 +52,7 @@ typedef struct _TClock_Face
   E_Gadman_Client *gmc;
 }TClock_Face;
 
-extern E_Module_Api e_modapi;
+EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
@@ -61,6 +61,6 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-EAPI void _tclock_cb_config_updated(void *data);
+void _tclock_cb_config_updated(void *data);
 
 #endif
