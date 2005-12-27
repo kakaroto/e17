@@ -12,7 +12,9 @@ enum _Flame_Palette_Type
    DEFAULT_NONE,
      GOLD_PALETTE,
      FIRE_PALETTE,
-     PLASMA_PALETTE
+     PLASMA_PALETTE,
+     MATRIX_PALETTE,
+     ICE_PALETTE
 };
 
 struct _Config

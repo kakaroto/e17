@@ -77,6 +77,10 @@ static Evas_Object
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, _("Plasma"), PLASMA_PALETTE ,rg);
    e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Matrix"), MATRIX_PALETTE ,rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Ice"), ICE_PALETTE ,rg);
+   e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
 }
@@ -98,6 +102,12 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
 	break;
       case 3:
 	f->conf->palette_type = PLASMA_PALETTE;	//Plasma
+	break;
+      case 4:
+	f->conf->palette_type = MATRIX_PALETTE;	//Matrix
+	break;
+      case 5:
+	f->conf->palette_type = ICE_PALETTE;	//Ice
 	break;
       default:
 	break;
