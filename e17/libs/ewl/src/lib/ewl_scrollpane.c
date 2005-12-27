@@ -48,6 +48,8 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 
 	ewl_widget_appearance_set(w, "scrollpane");
 	ewl_widget_inherit(w, "scrollpane");
+	ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
+	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(s),
 					ewl_scrollpane_child_resize_cb);
@@ -56,13 +58,12 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 					ewl_scrollpane_child_resize_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(s),
 					ewl_scrollpane_child_resize_cb);
+
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
-	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
+
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
-
-	ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
 
 	s->overlay = ewl_overlay_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
@@ -105,6 +106,8 @@ ewl_scrollpane_init(Ewl_ScrollPane *s)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			ewl_scrollpane_configure_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
+			ewl_scrollpane_focus_jump_cb, NULL);
 
 	/*
 	 * We need to know whent he scrollbars have value changes in order to
@@ -452,6 +455,80 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	int endcoord = 0;
+	double value;
+	int fx, fy, fw, fh;
+	Ewl_Embed *emb;
+	Ewl_Widget *focus;
+	Ewl_Widget *bar = NULL;
+	Ewl_ScrollPane *s = EWL_SCROLLPANE(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "scrollpane");
+
+	emb = ewl_embed_widget_find(w);
+	if (!emb)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Get the focused widget and stop if its an internal one.
+	 */
+	focus = ewl_embed_focused_widget_get(emb);
+	if (!focus || !ewl_container_parent_of(EWL_CONTAINER(s->box), focus) ||
+			ewl_widget_onscreen_is(focus))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(focus), &fx, &fy, &fw, &fh);
+
+	/*
+	 * Adjust horizontally to show the focused widget
+	 */
+	if (fx < CURRENT_X(s->overlay)) {
+		bar = s->hscrollbar;
+		endcoord = fx;
+	}
+	else if (fx + fw > CURRENT_X(s->overlay) + CURRENT_W(s->overlay)) {
+		bar = s->hscrollbar;
+		endcoord = fx + fw;
+	}
+
+	if (bar) {
+		value = (double)endcoord /
+			(double)(ewl_object_current_x_get(EWL_OBJECT(s->box)) +
+				 ewl_object_preferred_w_get(EWL_OBJECT(s->box)));
+		ewl_scrollbar_value_set(EWL_SCROLLBAR(bar), value);
+	}
+
+	/*
+	 * Adjust vertically to show the focused widget
+	 */
+	if (fy < CURRENT_Y(s->overlay)) {
+		bar = s->vscrollbar;
+		endcoord = fy;
+	}
+	else if (fy + fh > CURRENT_Y(s->overlay) + CURRENT_H(s->overlay)) {
+		bar = s->vscrollbar;
+		endcoord = fy + fh;
+	}
+
+	/*
+	 * Adjust the value of the scrollbar to jump to the position
+	 */
+	if (bar) {
+		value = (double)endcoord /
+			(double)(ewl_object_current_y_get(EWL_OBJECT(s->box)) +
+				 ewl_object_preferred_h_get(EWL_OBJECT(s->box)));
+		ewl_scrollbar_value_set(EWL_SCROLLBAR(bar), value);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * When a horizontal scrollbar is clicked we need to move the contents of the
  * scrollpane horizontally.
@@ -536,4 +613,3 @@ ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
