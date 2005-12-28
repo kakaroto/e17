@@ -547,27 +547,6 @@ WaitEvent(void)
    int                 fdsize;
    int                 xfd, smfd;
 
-   smfd = GetSMfd();
-   xfd = ConnectionNumber(disp);
-   fdsize = MAX(xfd, smfd) + 1;
-
-   /* if we've never set the time we were last here before */
-   if ((tval_last.tv_sec == 0) && (tval_last.tv_usec == 0))
-      gettimeofday(&tval_last, NULL);
-
-   /* time1 = time we last entered this routine */
-   time1 = ((double)tval_last.tv_sec) + (((double)tval_last.tv_usec) / 1000000);
-   gettimeofday(&tval, NULL);
-   tval_last.tv_sec = tval.tv_sec;
-   tval_last.tv_usec = tval.tv_usec;
-
-   /* time2 = current time */
-   time2 = ((double)tval.tv_sec) + (((double)tval.tv_usec) / 1000000);
-   time2 -= time1;
-   if (time2 < 0.0)
-      time2 = 0.0;
-   /* time2 = time spent since we last were here */
-
    pcount = pfetch = 0;
    for (;;)
      {
@@ -604,9 +583,29 @@ WaitEvent(void)
      }
 
    FD_ZERO(&fdset);
+   xfd = ConnectionNumber(disp);
    FD_SET(xfd, &fdset);
+   smfd = GetSMfd();
    if (smfd >= 0)
       FD_SET(smfd, &fdset);
+   fdsize = MAX(xfd, smfd) + 1;
+
+   /* First time */
+   if ((tval_last.tv_sec == 0) && (tval_last.tv_usec == 0))
+      gettimeofday(&tval_last, NULL);
+   /* time1 = time we last were here */
+   time1 = ((double)tval_last.tv_sec) + (((double)tval_last.tv_usec) / 1000000);
+
+   /* time2 = current time */
+   gettimeofday(&tval, NULL);
+   time2 = ((double)tval.tv_sec) + (((double)tval.tv_usec) / 1000000);
+   time2 -= time1;
+   if (time2 < 0.0)
+      time2 = 0.0;
+   /* time2 = time spent since we last were here */
+
+   tval_last.tv_sec = tval.tv_sec;
+   tval_last.tv_usec = tval.tv_usec;
 
    qe = GetHeadTimerQueue();
    if (qe)
@@ -630,6 +629,12 @@ WaitEvent(void)
    else
       count = select(fdsize, &fdset, NULL, NULL, NULL);
 
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf
+	 ("WaitEvent - count=%d xfd=%d:%d smfd=%d:%d qe=%p time1=%lf time2=%lf\n",
+	  count, xfd, FD_ISSET(xfd, &fdset), smfd,
+	  (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, qe, time1, time2);
+
    if (count < 0)
       return;
 
@@ -640,8 +645,7 @@ WaitEvent(void)
 	ProcessICEMSGS();
      }
 
-   if ((!(FD_ISSET(xfd, &fdset))) && (qe) && (count == 0)
-       && (((smfd >= 0) && (!(FD_ISSET(smfd, &fdset)))) || (smfd < 0)))
+   if (qe && (count == 0 || time1 <= 0.0))
      {
 	if (EventDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf("WaitEvent - Timers (%s)\n", qe->name);
