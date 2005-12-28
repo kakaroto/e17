@@ -22,7 +22,10 @@ struct _Config
    int mem;
    int net;
    int wlan;
+   int hostname;
    int Horz;
+   int uptime;
+   int time;
 };
 
 struct _Config_Face
@@ -46,7 +49,7 @@ struct _Monitor
 {
    Evas_List   *faces;
    E_Menu      *config_menu;
-   
+
    Config      *conf;
 };
 
@@ -55,10 +58,10 @@ struct _Monitor_Face
   Monitor *mon;
   E_Container *con;
   E_Menu      *menu;
-   Config_Face *conf;
+  Config_Face *conf;
+  Ecore_Timer *date_check_timer;   
 
-  Evas_Object *cpu, *net, *mem, *wlan;
-  //Evas_Object *cpu_ev_obj, *net_ev_obj, *mem_ev_obj, *wlan_ev_obj;
+  Evas_Object *cpu, *net, *mem, *wlan, *hostname, *uptime, *time;
   Evas_Object *table_object, *monitor_object, *monitor_cover_obj;
 
   Chart_Container *chart_cpu, *chart_net, *chart_mem, *chart_wlan;

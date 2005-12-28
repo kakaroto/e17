@@ -465,7 +465,7 @@ _monitor_face_new(E_Container *con, Config *config)
       face->uptime = edje_object_add(con->bg_evas);
       edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");	
       _add_sensor(face, face->uptime,config->Horz);
-      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
            s_info.uptime / day, (s_info.uptime % day) / hour, 
            (s_info.uptime % hour) / minute, s_info.uptime % minute);
       edje_object_part_text_set(face->uptime,"uptime",u_date_time);
@@ -979,7 +979,7 @@ void rebuild_monitor(Monitor_Face *face)
       char u_date_time[256];
       face->uptime = edje_object_add(face->con->bg_evas);
       edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");
-      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
                s_info.uptime / day, (s_info.uptime % day) / hour, 
               (s_info.uptime % hour) / minute, s_info.uptime % minute);
       edje_object_part_text_set(face->uptime,"uptime",u_date_time);
@@ -1040,7 +1040,7 @@ static int _date_cb_check(void *data)
   long day = hour * 24;
   double megabyte = 1024 * 1024;
 
-  sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+  sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld", 
            s_info.uptime / day, (s_info.uptime % day) / hour, 
            (s_info.uptime % hour) / minute, s_info.uptime % minute);
   edje_object_part_text_set(face->uptime,"uptime",u_date_time);
