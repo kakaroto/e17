@@ -587,13 +587,24 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
    ev = event;
    evas = ecore_evas_get(ETK_WINDOW(e->win)->ecore_evas);
    
-   if(!strcmp(ev->key, "t") && evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
+   if(evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
      {
-	Ex_Tab *tab;
-	
-	tab = _ex_tab_new(e, e->cur_tab->cur_path);
-	_ex_main_window_tab_append(e, tab);
-	_ex_main_populate_files(e);	
+	if(!strcmp(ev->key, "t"))
+	  {
+	     Ex_Tab *tab;
+	     
+	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
+	     _ex_main_window_tab_append(e, tab);
+	     _ex_main_populate_files(e);
+	  }
+	else if(!strcmp(ev->key, "w"))
+	  {
+	     if(evas_list_count(e->tabs) > 1)
+	       {
+		  //_ex_main_window_tab_remove(e->cur_tab);
+		  //_ex_tab_del(e->cur_tab);
+	       }
+	  }
      }
 }
 
@@ -609,6 +620,12 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    e->cur_tab = tab;
    _ex_tab_select(tab);
    etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);   
+}
+
+void
+_ex_main_window_tab_remove(Ex_Tab *tab)
+{
+
 }
 
 void

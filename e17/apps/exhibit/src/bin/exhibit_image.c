@@ -15,6 +15,47 @@
 #define G_VAL(p) ((DATA8 *)(p))[1]
 #define B_VAL(p) ((DATA8 *)(p))[0]
 
+void
+_ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
+{
+   Exhibit *e;
+   Etk_Event_Mouse_Wheel *ev;
+   Evas *evas;
+   
+   ev = event;
+   e = data;
+   evas = ecore_evas_get(ETK_WINDOW(e->win)->ecore_evas);
+   
+   
+   if(evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
+     {
+	if (ev->z > 0)
+	  _ex_main_button_zoom_in_cb(NULL, data);
+	else
+	  _ex_main_button_zoom_out_cb(NULL, data);
+     }
+   else
+     {	
+	Etk_Tree_Row *row;
+	
+	if (ev->z > 0)
+	  {
+	     row = etk_tree_next_row_get(
+		       etk_tree_selected_row_get(e->cur_tab->itree), 
+		       FALSE, FALSE);
+	     etk_tree_row_select(row);
+	     etk_tree_row_scroll_to(row, FALSE);
+	  }
+	else
+	  {
+	     row = etk_tree_prev_row_get(
+		       etk_tree_selected_row_get(e->cur_tab->itree), 
+		       FALSE, FALSE);
+	     etk_tree_row_select(row);	     
+	     etk_tree_row_scroll_to(row, FALSE);	     
+	  }
+     }
+}
 
 void
 _ex_image_mouse_down(Etk_Object *object, void *event, void *data)

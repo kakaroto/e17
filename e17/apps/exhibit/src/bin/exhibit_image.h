@@ -1,6 +1,7 @@
 #ifndef _EX_IMAGE_H
 #define _EX_IMAGE_H
 
+void         _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data);
 void         _ex_image_mouse_down(Etk_Object *object, void *event, void *data);
 void         _ex_image_mouse_up(Etk_Object *object, void *event, void *data);
 void         _ex_image_mouse_move(Etk_Object *object, void *event, void *data);
