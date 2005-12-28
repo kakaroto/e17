@@ -856,31 +856,6 @@ IPC_Version(const char *params __UNUSED__, Client * c __UNUSED__)
 }
 
 static void
-IPC_Hints(const char *params, Client * c __UNUSED__)
-{
-   char                param1[FILEPATH_LEN_MAX];
-   char                param2[FILEPATH_LEN_MAX];
-
-   param1[0] = 0;
-   param2[0] = 0;
-
-   word(params, 1, param1);
-   word(params, 2, param2);
-
-   if (!strcmp(param1, "xroot"))
-     {
-	if (!strncmp(param2, "norm", 4))
-	   Conf.hints.set_xroot_info_on_root_window = 0;
-	else if (!strncmp(param2, "root", 4))
-	   Conf.hints.set_xroot_info_on_root_window = 1;
-	autosave();
-     }
-
-   IpcPrintf("Set _XROOT* hints: %s\n",
-	     (Conf.hints.set_xroot_info_on_root_window) ? "root" : "normal");
-}
-
-static void
 IPC_Debug(const char *params, Client * c __UNUSED__)
 {
    char                param[1024];
@@ -1320,11 +1295,6 @@ static const IpcItem IPCArray[] = {
     "list_remember", "rl",
     "Retrieve a list of remembered windows and their attributes",
     SnapIpcText},
-   {
-    IPC_Hints,
-    "hints", NULL,
-    "Set hint options",
-    "  hints xroot <normal/root>\n"},
    {
     IPC_Debug,
     "debug", NULL,
