@@ -103,23 +103,23 @@ void evfs_handle_monitor_stop_command(evfs_client* client, evfs_command* command
 void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command) {
 	struct stat file_stat;
 	
-	printf("At remove handle\n");
+	//printf("At remove handle for %s\n", command->file_command.files[0]->path );
 
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
-		(*plugin->functions->evfs_file_stat)(command, &file_stat);
-		printf("ST_MODE: %d\n", file_stat.st_mode);
+		(*plugin->functions->evfs_file_lstat)(command, &file_stat);
+		//printf("ST_MODE: %d\n", file_stat.st_mode);
 		
-		printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
+		//printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
 
 		/*If we're not a dir, simple remove command*/
 		if (!S_ISDIR(file_stat.st_mode)) { 
 			
-			//(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
-			printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
+			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+			//printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
 
 		} else {
-			printf("IS LINK RES: %d, for %s\n", S_ISLNK(file_stat.st_mode), command->file_command.files[0]->path);
+			//printf("IS LINK RES: %d, for %s\n", S_ISLNK(file_stat.st_mode), command->file_command.files[0]->path);
 		
 			if (!S_ISLNK(file_stat.st_mode)) {
 			
@@ -144,15 +144,15 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 					}
 				}
 
-				printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
-				//(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+				//printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
+				(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
 			} else {
-				printf("Not recursing - LINK directory!\n");
+				//printf("Not recursing - LINK directory!\n");
 			}
 
 
 		}
-	}
+	} else { printf ("No plugin!\n"); }
 }
 
 

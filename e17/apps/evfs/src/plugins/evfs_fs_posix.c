@@ -51,6 +51,7 @@
 	int evfs_file_open(evfs_client* client, evfs_filereference* file);
 	int evfs_file_close(evfs_filereference* file);
 	int evfs_file_stat(evfs_command* command, struct stat* file_stat);
+	int evfs_file_lstat(evfs_command* command, struct stat* file_stat);
 	int evfs_file_seek(evfs_filereference* file, long offset, int whence);
 	int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size);
 	int evfs_file_write(evfs_filereference* file, char* bytes, long size);
@@ -93,6 +94,8 @@
 		functions->evfs_monitor_start = &evfs_monitor_start;
 		functions->evfs_monitor_stop = &evfs_monitor_stop;
 		functions->evfs_file_stat = &evfs_file_stat;
+		functions->evfs_file_lstat = &evfs_file_lstat;
+		
 		functions->evfs_file_open = &evfs_file_open;
 		functions->evfs_file_close = &evfs_file_close;
 		functions->evfs_dir_list = &evfs_dir_list;
@@ -324,7 +327,6 @@ int evfs_file_remove(char* src) {
 	int i;
 
 	if (!stat(src, &stat_src)) {
-		printf("Removing file '%s'\n", src);
 		return remove(src);
 	} else {
 		printf("Could not stat..\n");
@@ -340,14 +342,16 @@ int evfs_file_rename(char* src, char* dst) {
 
 
 int evfs_file_stat(evfs_command* command, struct stat* file_stat) {
-
 	//printf("Getting file stat...\n");
-
 	stat(command->file_command.files[0]->path, file_stat);
-
 	//printf("File size: %d\n", file_stat->st_size);
+}
 
-	
+
+int evfs_file_lstat(evfs_command* command, struct stat* file_stat) {
+	//printf("Getting file stat...\n");
+	lstat(command->file_command.files[0]->path, file_stat);
+	//printf("File size: %d\n", file_stat->st_size);
 }
 
 
