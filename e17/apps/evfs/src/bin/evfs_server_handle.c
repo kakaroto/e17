@@ -108,42 +108,47 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 	evfs_plugin* plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	if (plugin) {
 		(*plugin->functions->evfs_file_stat)(command, &file_stat);
+		printf("ST_MODE: %d\n", file_stat.st_mode);
 		
 		printf("Pointer here: %p\n", plugin->functions->evfs_file_remove);
 
 		/*If we're not a dir, simple remove command*/
 		if (!S_ISDIR(file_stat.st_mode)) { 
 			
-			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
-			//
+			//(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
 			printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
 
 		} else {
-			/*It's a directory, recurse into it*/
-			Ecore_List* directory_list = NULL;
-			evfs_filereference* file = NULL;
+			printf("IS LINK RES: %d, for %s\n", S_ISLNK(file_stat.st_mode), command->file_command.files[0]->path);
+		
+			if (!S_ISLNK(file_stat.st_mode)) {
 			
-			/*First, we need a directory list...*/
-			(*plugin->functions->evfs_dir_list)(client,command,&directory_list);
-			if (directory_list) {
-				while ((file = ecore_list_remove_first(directory_list))) {
-					evfs_command* recursive_command = NEW(evfs_command);
+				/*It's a directory, recurse into it*/
+				Ecore_List* directory_list = NULL;
+				evfs_filereference* file = NULL;
+			
+				/*First, we need a directory list...*/
+				(*plugin->functions->evfs_dir_list)(client,command,&directory_list);
+				if (directory_list) {
+					while ((file = ecore_list_remove_first(directory_list))) {
+						evfs_command* recursive_command = NEW(evfs_command);
+	
+						recursive_command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
+						recursive_command->type = EVFS_CMD_REMOVE_FILE;
+						recursive_command->file_command.files[0] = file;
+						recursive_command->file_command.num_files = 1;
 
-					recursive_command->file_command.files = malloc(sizeof(evfs_filereference*)*1);
-					recursive_command->type = EVFS_CMD_REMOVE_FILE;
-					recursive_command->file_command.files[0] = file;
-					recursive_command->file_command.num_files = 1;
-
-					evfs_handle_file_remove_command(client, recursive_command);
-
-
-					evfs_cleanup_command(recursive_command,1);
-					
+						evfs_handle_file_remove_command(client, recursive_command);
+						evfs_cleanup_command(recursive_command,1);
+						
+					}
 				}
-			}
 
-			printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
-			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+				printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
+				//(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
+			} else {
+				printf("Not recursing - LINK directory!\n");
+			}
 
 
 		}
