@@ -805,7 +805,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 			parent = parent->parent;
 		}
 
-		ewl_dnd_position_windows_set(window);
+		ewl_dnd_position_windows_set(EWL_WIDGET(window));
 		window->dnd_last_position = widget;
 
 		*px = CURRENT_X(widget);
@@ -1331,6 +1331,9 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("embed", embed, "embed");
 	DCHECK_TYPE("w", w, "widget");
+
+	if (ecore_dlist_current(embed->tab_order) != w)
+		ecore_dlist_goto(embed->tab_order, w);
 
 	if (embed->last.focused)
 	{
