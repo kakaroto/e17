@@ -299,7 +299,6 @@ main(int argc, char **argv)
    if (!Mode.wm.restart)
       StartupWindowsOpen();
 
-   Conf.startup.firsttime = 0;
    Mode.wm.save_ok = Conf.autosave;
    Mode.wm.startup = 0;
    autosave();
@@ -498,7 +497,7 @@ RunInitPrograms(void)
 
    SessionHelper(ESESSION_START);
 
-   if (Conf.startup.firsttime && Mode.wm.master)
+   if (Mode.firsttime && Mode.wm.master)
      {
 	RunMenuGen();
 	RunDocBrowser();
@@ -659,6 +658,9 @@ EDirsSetup(void)
      }
    else
       E_md(s);
+
+   Esnprintf(s, sizeof(s), "%s/menus", EDirUser());
+   Mode.firsttime = !exists(s);
 
    EDirMake(EDirUser(), "themes");
    EDirMake(EDirUser(), "backgrounds");
