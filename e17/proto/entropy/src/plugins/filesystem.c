@@ -7,6 +7,8 @@
 #include <evfs.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <strings.h>
+#include <limits.h>
 
 #define NO_HIDDEN 1
 #define URI_POSIX "posix"
