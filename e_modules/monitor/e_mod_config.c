@@ -117,7 +117,7 @@ _free_data(E_Config_Dialog *cfd, void *data)
 static Evas_Object
 *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data) 
 {
-   Evas_Object *o, *of, *ob, *ob1, *ob2, *ob3, *ob4, *ot;
+   Evas_Object *o, *of, *ob, *ob1, *ob2, *ob3, *ob4, *ob5, *ob6, *ob7,*ot;
    E_Radio_Group *rg;
    CFData *cfdata;
    cfdata = data;
@@ -140,6 +140,12 @@ static Evas_Object
    e_widget_framelist_object_append(of, ob3);
    ob4 = e_widget_check_add(evas, _("WLAN"), &(mon->conf->wlan));
    e_widget_framelist_object_append(of, ob4);
+   ob5 = e_widget_check_add(evas, _("Hostname"), &(mon->conf->hostname));
+   e_widget_framelist_object_append(of, ob5);
+   ob6 = e_widget_check_add(evas, _("Uptime"), &(mon->conf->uptime));
+   e_widget_framelist_object_append(of, ob6);
+   ob7 = e_widget_check_add(evas, _("time"), &(mon->conf->time));
+   e_widget_framelist_object_append(of, ob7);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, _("Monitor"), 0);

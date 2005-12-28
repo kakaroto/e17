@@ -1,4 +1,10 @@
 #include "e_mod_main.h"
+#include <sys/utsname.h>
+#include <stdio.h>
+#include <linux/unistd.h>     /* for _syscallX macros/related stuff */
+#include <linux/kernel.h>     /* for struct sysinfo */
+
+
 
 /* module private routines */
 
@@ -23,6 +29,7 @@ static void _monitor_net_out_text_update_callcack(Flow_Chart *chart, void *data)
 static void _monitor_wlan_link_text_update_callcack(Flow_Chart *chart, void *data);
 static void _monitor_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor);
+static int _date_cb_check(void *data);
 
 static int _monitor_count;
 static int  num_sensors;
@@ -180,16 +187,22 @@ _monitor_new()
    E_CONFIG_VAL(D, T, net, INT);
    E_CONFIG_VAL(D, T, wlan, INT);
    E_CONFIG_VAL(D, T, Horz, INT);
+   E_CONFIG_VAL(D, T, hostname, INT);
+   E_CONFIG_VAL(D, T, uptime, INT);
+   E_CONFIG_VAL(D, T, time, INT);
 
    monitor->conf = e_config_domain_load("module.monitor", conf_edd);
    if (!monitor->conf)
      {
 	monitor->conf = E_NEW(Config, 1);
-   	monitor->conf->cpu = 1;
-   	monitor->conf->mem = 1;
-   	monitor->conf->net = 1;
-   	monitor->conf->wlan = 1;
+   	monitor->conf->cpu = 0;
+   	monitor->conf->mem = 0;
+   	monitor->conf->net = 0;
+   	monitor->conf->wlan = 0;
    	monitor->conf->Horz = 0;
+	monitor->conf->hostname = 1;
+	monitor->conf->uptime = 1;
+	monitor->conf->time = 0;
      }
 
    _monitor_config_menu_new(monitor);
@@ -223,7 +236,7 @@ _monitor_new()
 		  else
 		    {
 		       face->conf = cl->data;
-		       if (face->conf->config_version != MONITOR_CONFIG_VERSION)
+		     /*  if (face->conf->config_version != MONITOR_CONFIG_VERSION)
 		          {
 			     face->conf = E_NEW(Config_Face, 1);
 		             face->conf = _monitor_face_config_init(face->conf);
@@ -231,7 +244,7 @@ _monitor_new()
 					     _("Configuration data needed upgrading. Your old configuration\n"
 					       "has been removed. Please reset your setting for the monitor\n"
 					       "module. Sorry for the inconvenience.\n"));
-			  }
+			  } */
 		       cl = cl->next;
 		    }
 
@@ -305,7 +318,17 @@ _monitor_face_new(E_Container *con, Config *config)
 {
    Monitor_Face *face;
    Evas_Object *o;
+   struct utsname u_buf;
+   char u_date_time[256];
+   struct sysinfo s_info;
+   sysinfo (&s_info);
 
+   long minute = 60;
+   long hour = minute * 60;
+   long day = hour * 24;
+   double megabyte = 1024 * 1024;
+
+   uname (&u_buf);
    /* 
     * Configuration cannot be used yet as the face config 
     * is not initialized. Everything will be updated after 
@@ -337,6 +360,19 @@ _monitor_face_new(E_Container *con, Config *config)
    e_table_homogenous_set(o, 1);   
    edje_object_part_swallow(face->monitor_object, "items", face->table_object);
    evas_object_show(o);
+   
+   /*setup hostname sensor*/
+   if (config->hostname)
+   {
+  	face->hostname = edje_object_add(con->bg_evas);
+	edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "monitor/host");
+	_add_sensor(face,face->hostname,config->Horz);
+	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
+	edje_object_part_text_set(face->hostname,"release",u_buf.release);
+	edje_object_part_text_set(face->hostname,"version",u_buf.version);
+	edje_object_part_text_set(face->hostname,"machine",u_buf.machine);
+	//edje_object_part_text_set(face->hostname,"node",u_buf.node);
+   }
 
    /* setup cpu */
    if (config->cpu)
@@ -348,7 +384,7 @@ _monitor_face_new(E_Container *con, Config *config)
       /* add cpu chart */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_cpu = flow_chart_new();
-      flow_chart_color_set(flow_chart_cpu, 33, 100, 220, 255);
+      flow_chart_color_set(flow_chart_cpu, 33, 100, 220, 125);
       flow_chart_get_value_function_set(flow_chart_cpu, cpu_usage_get);
       flow_chart_update_rate_set(flow_chart_cpu, tmp_cpu_interval);
       chart_container_chart_add(chart_con, flow_chart_cpu);
@@ -366,7 +402,7 @@ _monitor_face_new(E_Container *con, Config *config)
       /* add mem charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_mem_real = flow_chart_new();
-      flow_chart_color_set(flow_chart_mem_real, 213, 91, 91, 255);
+      flow_chart_color_set(flow_chart_mem_real, 213, 91, 91, 125);
       flow_chart_get_value_function_set(flow_chart_mem_real, mem_real_usage_get);
       flow_chart_update_rate_set(flow_chart_mem_real, tmp_mem_interval);
       chart_container_chart_add(chart_con, flow_chart_mem_real);
@@ -374,7 +410,7 @@ _monitor_face_new(E_Container *con, Config *config)
       flow_chart_callback_set(flow_chart_mem_real, _monitor_mem_real_text_update_callback, face);
 
       flow_chart_mem_swap = flow_chart_new();
-      flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 255);
+      flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 125);
       flow_chart_get_value_function_set(flow_chart_mem_swap, mem_swap_usage_get);
       flow_chart_update_rate_set(flow_chart_mem_swap, tmp_mem_interval);
       flow_chart_alignment_set(flow_chart_mem_swap, 0);
@@ -391,7 +427,7 @@ _monitor_face_new(E_Container *con, Config *config)
       /* add net charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_net_in = flow_chart_new();
-      flow_chart_color_set(flow_chart_net_in, 213, 91, 91, 255);
+      flow_chart_color_set(flow_chart_net_in, 213, 91, 91, 125);
       flow_chart_get_value_function_set(flow_chart_net_in, net_in_usage_get);
       flow_chart_update_rate_set(flow_chart_net_in, tmp_net_interval);
       chart_container_chart_add(chart_con, flow_chart_net_in);
@@ -399,7 +435,7 @@ _monitor_face_new(E_Container *con, Config *config)
       flow_chart_callback_set(flow_chart_net_in, _monitor_net_in_text_update_callcack, face);
    
       flow_chart_net_out = flow_chart_new();
-      flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 255);
+      flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 125);
       flow_chart_get_value_function_set(flow_chart_net_out, net_out_usage_get);
       flow_chart_update_rate_set(flow_chart_net_out, tmp_net_interval);
       flow_chart_alignment_set(flow_chart_net_out, 0);
@@ -417,13 +453,39 @@ _monitor_face_new(E_Container *con, Config *config)
       /* add wlan charts */
       chart_con = chart_container_new(con->bg_evas,0,0,0,0);
       flow_chart_wlan_link = flow_chart_new();
-      flow_chart_color_set(flow_chart_wlan_link, 33, 100, 220, 255);
+      flow_chart_color_set(flow_chart_wlan_link, 33, 100, 220, 125);
       flow_chart_get_value_function_set(flow_chart_wlan_link, wlan_link_get);
       flow_chart_update_rate_set(flow_chart_wlan_link, tmp_wlan_interval);
       chart_container_chart_add(chart_con, flow_chart_wlan_link);
       face->chart_wlan = chart_con;
       flow_chart_callback_set(flow_chart_wlan_link, _monitor_wlan_link_text_update_callcack, face);
    }
+   if (config->uptime)
+   {
+      face->uptime = edje_object_add(con->bg_evas);
+      edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");	
+      _add_sensor(face, face->uptime,config->Horz);
+      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+           s_info.uptime / day, (s_info.uptime % day) / hour, 
+           (s_info.uptime % hour) / minute, s_info.uptime % minute);
+      edje_object_part_text_set(face->uptime,"uptime",u_date_time);
+      face->date_check_timer = ecore_timer_add(1, _date_cb_check,face);
+   }
+   if (config->time)
+   {
+      time_t now;
+      struct tm date;
+      time(&now);
+      char curr_time[12];
+
+      date = *localtime(&now);
+      face->time = edje_object_add(con->bg_evas);
+      edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "monitor/time");	
+      _add_sensor(face, face->time,config->Horz);
+      sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
+      edje_object_part_text_set(face->time,"time",curr_time);
+   }
+
 
    face->monitor_cover_obj = evas_object_rectangle_add(face->con->bg_evas);   
    evas_object_color_set(face->monitor_cover_obj, 255,255,255,0);
@@ -558,11 +620,15 @@ _monitor_face_free(Monitor_Face *face)
 {
    e_object_unref(E_OBJECT(face->con));
    e_object_del(E_OBJECT(face->gmc));
+   ecore_timer_del(face->date_check_timer);
 
    evas_object_del(face->cpu);
    evas_object_del(face->mem);
    evas_object_del(face->net);
    evas_object_del(face->wlan);
+   evas_object_del(face->hostname);
+   evas_object_del(face->uptime);
+   evas_object_del(face->time);
 
    chart_container_del(face->chart_cpu);
    chart_container_del(face->chart_mem);
@@ -597,28 +663,20 @@ _monitor_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change ch
 	 evas_object_resize(face->monitor_object, w, h);
 	 evas_object_move(face->monitor_cover_obj, x, y);
 	 evas_object_resize(face->monitor_cover_obj, w, h);
-
+	 
 	 if (face->cpu) evas_object_geometry_get(face->cpu,  &x, &y, &w, &h);
-	 //evas_object_move(face->cpu_ev_obj, x, y);
-	 //evas_object_resize(face->cpu_ev_obj, w, h);
 	 if (face->cpu) chart_container_move(face->chart_cpu, x+2,y+2);
 	 if (face->cpu) chart_container_resize(face->chart_cpu, w-4,h-4);
 
 	 if (face->mem) evas_object_geometry_get(face->mem,  &x, &y, &w, &h);
-	 //evas_object_move(face->mem_ev_obj, x, y);
-	 //evas_object_resize(face->mem_ev_obj, w, h);
 	 if (face->mem) chart_container_move(face->chart_mem, x+2,y+2);
 	 if (face->mem) chart_container_resize(face->chart_mem, w-4,h-4);
 	 
 	 if (face->net) evas_object_geometry_get(face->net,  &x, &y, &w, &h);
-	 //evas_object_move(face->net_ev_obj, x, y);
-	 //evas_object_resize(face->net_ev_obj, w, h);
 	 if (face->net) chart_container_move(face->chart_net, x+2,y+2);
 	 if (face->net) chart_container_resize(face->chart_net, w-4,h-4);
 
 	 if (face->wlan) evas_object_geometry_get(face->wlan,  &x, &y, &w, &h);
-	 //evas_object_move(face->wlan_ev_obj, x, y);
-	 //evas_object_resize(face->wlan_ev_obj, w, h);
 	 if (face->wlan) chart_container_move(face->chart_wlan, x+2,y+2);
 	 if (face->wlan) chart_container_resize(face->chart_wlan, w-4,h-4);
 
@@ -753,8 +811,17 @@ _add_sensor(Monitor_Face *face, Evas_Object *o, int VerHor)
 
 void rebuild_monitor(Monitor_Face *face)
 {
+   struct utsname u_buf;
+   uname (&u_buf);
 
-printf ("string values... %s\n", face->conf->net_interface);
+   struct sysinfo s_info;
+   sysinfo (&s_info);
+
+   long minute = 60;
+   long hour = minute * 60;
+   long day = hour * 24;
+   double megabyte = 1024 * 1024;
+
    Chart_Container *chart_con;
    Monitor *mon;
    Monitor_Face *f;
@@ -771,6 +838,12 @@ printf ("string values... %s\n", face->conf->net_interface);
    face->net = NULL;
    if (face->wlan) evas_object_del(face->wlan);
    face->wlan = NULL;
+   if (face->hostname) evas_object_del(face->hostname);
+   face->hostname = NULL;
+   if (face->uptime) evas_object_del(face->uptime);
+   face->uptime = NULL;
+   if (face->time) evas_object_del(face->uptime);
+   face->time = NULL;
 
    if (face->chart_cpu) chart_container_del(face->chart_cpu);
    face->chart_cpu = NULL;
@@ -801,6 +874,18 @@ printf ("string values... %s\n", face->conf->net_interface);
    e_table_homogenous_set(o, 1);   
    edje_object_part_swallow(face->monitor_object, "items", face->table_object);
    evas_object_show(o);
+   /*setup hostname */
+   if (face->mon->conf->hostname)
+   {
+  	face->hostname = edje_object_add(face->con->bg_evas);
+	edje_object_file_set(face->hostname, PACKAGE_DATA_DIR"/monitor.edj", "monitor/host");
+	_add_sensor(face,face->hostname,face->mon->conf->Horz);
+	edje_object_part_text_set(face->hostname,"sysname",u_buf.sysname);
+	edje_object_part_text_set(face->hostname,"release",u_buf.release);
+	edje_object_part_text_set(face->hostname,"version",u_buf.version);
+	edje_object_part_text_set(face->hostname,"machine",u_buf.machine);
+	//edje_object_part_text_set(face->hostname,"node",u_buf.node);
+   }
 
    /* setup cpu */
    if (face->mon->conf->cpu)
@@ -812,7 +897,7 @@ printf ("string values... %s\n", face->conf->net_interface);
       /* add cpu chart */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
       flow_chart_cpu = flow_chart_new();
-      flow_chart_color_set(flow_chart_cpu, 33, 100, 220, 255);
+      flow_chart_color_set(flow_chart_cpu, 33, 100, 220, 125);
       flow_chart_get_value_function_set(flow_chart_cpu, cpu_usage_get);
       flow_chart_update_rate_set(flow_chart_cpu, face->conf->cpu_interval);
       chart_container_chart_add(chart_con, flow_chart_cpu);
@@ -830,7 +915,7 @@ printf ("string values... %s\n", face->conf->net_interface);
       /* add mem charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
       flow_chart_mem_real = flow_chart_new();
-      flow_chart_color_set(flow_chart_mem_real, 213, 91, 91, 255);
+      flow_chart_color_set(flow_chart_mem_real, 213, 91, 91, 125);
       flow_chart_get_value_function_set(flow_chart_mem_real, mem_real_usage_get);
       flow_chart_update_rate_set(flow_chart_mem_real, face->conf->mem_interval);
       chart_container_chart_add(chart_con, flow_chart_mem_real);
@@ -838,7 +923,7 @@ printf ("string values... %s\n", face->conf->net_interface);
       flow_chart_callback_set(flow_chart_mem_real, _monitor_mem_real_text_update_callback, face);
 
       flow_chart_mem_swap = flow_chart_new();
-      flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 255);
+      flow_chart_color_set(flow_chart_mem_swap, 51, 181, 69, 125);
       flow_chart_get_value_function_set(flow_chart_mem_swap, mem_swap_usage_get);
       flow_chart_update_rate_set(flow_chart_mem_swap, face->conf->mem_interval);
       flow_chart_alignment_set(flow_chart_mem_swap, 0);
@@ -863,7 +948,7 @@ printf ("string values... %s\n", face->conf->net_interface);
       flow_chart_callback_set(flow_chart_net_in, _monitor_net_in_text_update_callcack, face);
    
       flow_chart_net_out = flow_chart_new();
-      flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 255);
+      flow_chart_color_set(flow_chart_net_out, 51, 181, 69, 125);
       flow_chart_get_value_function_set(flow_chart_net_out, net_out_usage_get);
       flow_chart_update_rate_set(flow_chart_net_out, face->conf->net_interval);
       flow_chart_alignment_set(flow_chart_net_out, 0);
@@ -881,12 +966,39 @@ printf ("string values... %s\n", face->conf->net_interface);
       /* add wlan charts */
       chart_con = chart_container_new(face->con->bg_evas,0,0,0,0);
       flow_chart_wlan_link = flow_chart_new();
-      flow_chart_color_set(flow_chart_wlan_link, 33, 100, 220, 255);
+      flow_chart_color_set(flow_chart_wlan_link, 33, 100, 220, 125);
       flow_chart_get_value_function_set(flow_chart_wlan_link, wlan_link_get);
       flow_chart_update_rate_set(flow_chart_wlan_link, face->conf->wlan_interval);
       chart_container_chart_add(chart_con, flow_chart_wlan_link);
       face->chart_wlan = chart_con;
       flow_chart_callback_set(flow_chart_wlan_link, _monitor_wlan_link_text_update_callcack, face);
+   }
+   if (face->mon->conf->uptime)
+   {
+      int num_days, num_hours, num_min;
+      char u_date_time[256];
+      face->uptime = edje_object_add(face->con->bg_evas);
+      edje_object_file_set(face->uptime, PACKAGE_DATA_DIR"/monitor.edj", "monitor/uptime");
+      sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+               s_info.uptime / day, (s_info.uptime % day) / hour, 
+              (s_info.uptime % hour) / minute, s_info.uptime % minute);
+      edje_object_part_text_set(face->uptime,"uptime",u_date_time);
+      face->date_check_timer = ecore_timer_add(1, _date_cb_check,face);
+      _add_sensor(face, face->uptime,face->mon->conf->Horz);
+   }
+   if (face->mon->conf->time)
+   {
+      time_t now;
+      struct tm date;
+      time(&now);
+      char curr_time[12];
+
+      date = *localtime(&now);
+      face->time = edje_object_add(face->con->bg_evas);
+      edje_object_file_set(face->time, PACKAGE_DATA_DIR"/monitor.edj", "monitor/time");	
+      _add_sensor(face, face->time,face->mon->conf->Horz);
+      sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
+      edje_object_part_text_set(face->time,"time",curr_time);
    }
 
    face->monitor_cover_obj = evas_object_rectangle_add(face->con->bg_evas);   
@@ -912,4 +1024,36 @@ printf ("string values... %s\n", face->conf->net_interface);
 
    evas_event_thaw(face->con->bg_evas);
 
+}
+static int _date_cb_check(void *data)
+{
+  Monitor_Face *face;
+  face = data;
+
+//Update uptime
+  char u_date_time[256];
+  struct sysinfo s_info;
+  sysinfo (&s_info);
+
+  long minute = 60;
+  long hour = minute * 60;
+  long day = hour * 24;
+  double megabyte = 1024 * 1024;
+
+  sprintf (u_date_time,"uptime: %ld days, %ld:%02ld:%02ld\n", 
+           s_info.uptime / day, (s_info.uptime % day) / hour, 
+           (s_info.uptime % hour) / minute, s_info.uptime % minute);
+  edje_object_part_text_set(face->uptime,"uptime",u_date_time);
+
+//Update time
+  time_t now;
+  struct tm date;
+  time(&now);
+  char curr_time[12];
+
+  date = *localtime(&now);
+  sprintf (curr_time,"%02d:%02d:%02d",date.tm_hour,date.tm_min,date.tm_sec);
+  edje_object_part_text_set(face->time,"time",curr_time);
+
+  return 1;
 }
