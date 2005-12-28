@@ -47,8 +47,8 @@ data {
     item, "/hseparator/group" "hline";
     item, "/vseparator/group" "vline";
 
-    item, "/grabber_vertical/group" "vgrabber";
-    item, "/grabber_horizontal/group" "hgrabber";
+    item, "/grabber/vertical/group" "vgrabber";
+    item, "/grabber/horizontal/group" "hgrabber";
 
     item, "/text/color/a" "255";
     item, "/text/font" "Vera";

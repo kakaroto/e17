@@ -291,14 +291,10 @@ widgets_build(void)
 	ewl_container_child_append (EWL_CONTAINER (vbox), misc);
 	ewl_widget_show (misc);
 
-	ewl_paned_active_area_set(EWL_PANED(misc), EWL_POSITION_LEFT);
-
 	item = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(item), "left");
 	ewl_container_child_append(EWL_CONTAINER(misc), item);
 	ewl_widget_show (item);
-
-	ewl_paned_active_area_set(EWL_PANED(misc), EWL_POSITION_RIGHT);
 
 	item = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(item), "right");
