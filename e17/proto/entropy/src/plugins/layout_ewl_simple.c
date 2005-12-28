@@ -287,9 +287,6 @@ void layout_ewl_simple_config_create(entropy_core* core) {
 void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri) {
 
 	Ewl_Widget* hbox;
-	Ewl_Widget* image;
-	Ewl_Widget* row;
-	Ewl_Widget* children[2];
 	entropy_plugin* structure;
 	void* (*structure_plugin_init)(entropy_core* core, entropy_gui_component_instance*, void* data);
 
@@ -582,33 +579,30 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_container_child_append(EWL_CONTAINER(hbox), expand_button);
 	ewl_container_child_append(EWL_CONTAINER(hbox), contract_button);
 
-	ewl_callback_append(EWL_WIDGET(contract_button), EWL_CALLBACK_CLICKED, contract_cb, EWL_PANED(paned)->first);
-	ewl_callback_append(EWL_WIDGET(expand_button), EWL_CALLBACK_CLICKED, expand_cb, EWL_PANED(paned)->first);
+	//ewl_callback_append(EWL_WIDGET(contract_button), EWL_CALLBACK_CLICKED, contract_cb, EWL_PANED(paned)->first);
+	//ewl_callback_append(EWL_WIDGET(expand_button), EWL_CALLBACK_CLICKED, expand_cb, EWL_PANED(paned)->first);
 
 
 	/*Set up the paned*/
 
 	/*Button to add locations*/
-	ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_LEFT);
-	add_button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(add_button), "Add Location");
-	ewl_container_child_append(EWL_CONTAINER(paned), add_button);
+	//ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_LEFT);
+	//add_button = ewl_button_new();
+	//ewl_button_label_set(EWL_BUTTON(add_button), "Add Location");
+	//ewl_container_child_append(EWL_CONTAINER(paned), add_button);
 
-	ewl_object_maximum_h_set(EWL_OBJECT(add_button), 20);
-	ewl_object_minimum_w_set(EWL_OBJECT(add_button), 250);
+	//ewl_object_maximum_h_set(EWL_OBJECT(add_button), 20);
+	//ewl_object_minimum_w_set(EWL_OBJECT(add_button), 250);
 
 
-	ewl_callback_append(EWL_WIDGET(add_button), EWL_CALLBACK_CLICKED, location_add_cb, layout);
+	//ewl_callback_append(EWL_WIDGET(add_button), EWL_CALLBACK_CLICKED, location_add_cb, layout);
 	/*--------------------------*/
 
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
 	ewl_container_child_append(EWL_CONTAINER(box),paned);
 	ewl_container_child_append(EWL_CONTAINER(paned), tree);
-	ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_RIGHT);
+	//ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(paned), iconbox);
-
-
-	/*This is cheating - break OO convention by accessing the internals of the struct.. but it doesn't work without this*/
 	
 	if (!(tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar"))) {
 		//printf ("Creating initial view for ewl_simple layout..\n");
@@ -635,7 +629,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
 	__destroy_main_window, core);
 
-	ewl_container_child_resize(EWL_WIDGET(EWL_PANED(paned)->first), 80, EWL_ORIENTATION_HORIZONTAL);
+	//ewl_container_child_resize(EWL_WIDGET(EWL_PANED(paned)->first), 80, EWL_ORIENTATION_HORIZONTAL);
 
 
 	/*Tooltip display function*/
