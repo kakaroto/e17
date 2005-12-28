@@ -294,35 +294,21 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 	void* (*structure_plugin_init)(entropy_core* core, entropy_gui_component_instance*, void* data);
 
 	entropy_layout_gui* gui = ((entropy_layout_gui*)instance->data);
-	Ewl_Widget* label = ewl_text_new();
 	Ewl_Widget* tree= gui->tree;
 
 
 	//printf("Add URI: %s\n", uri);
-	ewl_text_text_set(EWL_TEXT(label), name);
-	image = ewl_image_new();
-	ewl_image_file_set(EWL_IMAGE(image), "../icons/chardevice.png", NULL);
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), image);
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-
-	ewl_widget_show(label);
-	ewl_widget_show(image);
+	hbox = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(hbox), name);
+	ewl_container_child_append(EWL_CONTAINER(tree), hbox);
 	ewl_widget_show(hbox);
-	children[0] = hbox;
-	children[1] = NULL;
-	row = ewl_tree_row_add(EWL_TREE(tree), NULL, children);
-	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_VSHRINK );
-	ewl_widget_show(row);
-
-
+	
+	
 	/*Now attach an object to it*/
 	structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
 
 	if (structure) {
-		Ewl_Widget* children[2];
 		Ewl_Widget* visual;
-		Ewl_Widget* srow;
 
 		entropy_generic_file* file = entropy_core_parse_uri(uri);
 
@@ -341,12 +327,9 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 				printf("Alert! - Visual component not found\n");
 			else
 				;// printf("Visual component found\n");
-			children[0] = EWL_WIDGET(visual);
-			children[1] = NULL;
-			srow = ewl_tree_row_add(EWL_TREE(tree), EWL_ROW(row), children);
-			ewl_object_fill_policy_set(EWL_OBJECT(srow), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL );
-			ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL);
-			ewl_widget_show(srow);
+			ewl_container_child_append(EWL_CONTAINER(hbox), visual);
+			ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+			ewl_widget_show(visual);
 		}
 	}
 }
@@ -527,7 +510,8 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	expand_button = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(expand_button), ">");
 
-	tree = ewl_tree_new(1);
+	tree = ewl_scrollpane_new();
+	ewl_box_spacing_set(EWL_BOX(EWL_SCROLLPANE(tree)->box), 5);
 	gui->tree = tree;
 
 	paned = ewl_hpaned_new();
@@ -538,8 +522,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	ewl_object_maximum_size_set(EWL_OBJECT(contract_button), 20, 10);
 	ewl_object_maximum_size_set(EWL_OBJECT(expand_button), 20, 10);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_VSHRINK);
-
+	
 	/*Main menu setup*/
 	menubar = ewl_menubar_new();
 	ewl_widget_show(menubar);
@@ -626,11 +609,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 
 	/*This is cheating - break OO convention by accessing the internals of the struct.. but it doesn't work without this*/
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_PANED(paned)->second), EWL_FLAG_FILL_NORMAL);
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_PANED(paned)->first), EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL );
-	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_NORMAL);
-
-
+	
 	if (!(tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar"))) {
 		//printf ("Creating initial view for ewl_simple layout..\n");
 		layout_ewl_simple_config_create(core);
@@ -651,7 +630,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_widget_show(paned);
 	ewl_widget_show(tree);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(win), box);
 
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,

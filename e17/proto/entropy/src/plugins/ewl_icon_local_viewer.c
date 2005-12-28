@@ -803,7 +803,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), entropy_config_str_get("iconbox_viewer", view->current_dir));
 			view->default_bg = 0;
 		} else { /*if (!view->default_bg) {*/
-			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), DEFAULT_BG);
+			ewl_iconbox_background_set(EWL_ICONBOX(view->iconbox), NULL);
 			view->default_bg = 1;
 		}
 
