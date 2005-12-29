@@ -396,7 +396,8 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 /* this will size widgets as needed depending on where their grabber is. The
  * widget can not be smaller then it's minimum size */
 void
-ewl_paned_cb_configure(Ewl_Widget *w, void *ev, void *data)
+ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Paned *p;
 	Ewl_Widget *cur;
@@ -701,7 +702,7 @@ ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 
 static void
 ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__, 
-						void *data)
+						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

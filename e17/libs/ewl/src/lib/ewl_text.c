@@ -2832,7 +2832,8 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 }
 
 void
-ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Text_Trigger *t;
 

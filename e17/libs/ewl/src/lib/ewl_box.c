@@ -746,7 +746,7 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-	if (ecore_list_nodes(c->children) > 1);
+	if (ecore_list_nodes(c->children) > 1)
 		space = EWL_BOX(c)->spacing;
 
 	/*

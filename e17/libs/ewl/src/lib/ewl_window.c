@@ -336,7 +336,6 @@ ewl_window_position_get(Ewl_Window *win, int *x, int *y)
 
 	if (REALIZED(win)) {
 		int fx=0,fy=0,cx,cy;
-		Ecore_X_Window_Attributes att;
 		Ecore_X_Window window = (Ecore_X_Window)win->window;
 		
 		while (ecore_x_window_parent_get(window) > 0) {

@@ -11,7 +11,7 @@
 #define ICONBOX_REPEAT 10000
 
 
-void* ewl_iconbox_drag_data_get() {
+void* ewl_iconbox_drag_data_get(void) {
 	printf("Request for drag data!\n");
 	return NULL;
 }
@@ -75,7 +75,8 @@ ewl_iconbox_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *
 }
 
 void
-ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data, void* user_data)
+ewl_iconbox_icon_floater_resize(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+									void* user_data)
 {
 	Ewl_IconBox_Icon* icon = EWL_ICONBOX_ICON(user_data);
 	int height = ewl_iconbox_icon_label_height_calculate(icon) + 10;
@@ -989,7 +990,8 @@ void ewl_iconbox_clear(Ewl_IconBox* ib)
 
 
 /*Callbacks*/
-void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__, 
+				void *ev_data, void *user_data) {
 	int ibx,iby,px,py,fw,fh;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	Ewl_IconBox_Icon* list_item = ib->select_icon;
@@ -1008,7 +1010,8 @@ void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 
 }
 
-void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+void ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__, 
+			void *ev_data __UNUSED__, void *user_data) {
 	int ibx,iby,px,py,fw,fh;
 	Ewl_IconBox* ib = EWL_ICONBOX(user_data);
 	Ewl_IconBox_Icon* list_item = ib->select_icon;
@@ -1259,7 +1262,7 @@ void ewl_iconbox_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *
 	/*ewl_callback_call_with_event_data(EWL_WIDGET(ib), EWL_CALLBACK_MOUSE_DOWN, ev_data);*/
 }
 
-void ewl_iconbox_icon_mouse_up(Ewl_Widget *w , void *ev_data , void *user_data)
+void ewl_iconbox_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev = ev_data;
 	Ewl_IconBox_Icon* ib = user_data;
@@ -1345,7 +1348,7 @@ double ewl_iconbox_icon_distance(Ewl_IconBox_Icon* i1, Ewl_IconBox_Icon* i2) {
 }
 
 
-void ewl_iconbox_key_press_cb (Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data) {
+void ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data) {
 	Ewl_Event_Key_Down* event = ev_data;
 	Ewl_IconBox* ib = user_data;
 	struct timeval tim;

@@ -10,7 +10,6 @@ static int ewl_dragging_current = 0;
 static int ewl_dnd_move_count = 0;
 static Ecore_Evas* _ewl_dnd_drag_canvas;
 static Evas* _ewl_dnd_drag_evas;
-static Evas_Object* _ewl_dnd_evas_object;
 static Evas_Object* _ewl_dnd_drag_image;
 static Ecore_X_Window _ewl_dnd_evas_win;
 static Ecore_X_Window _ewl_dnd_drag_win = 0;
@@ -68,7 +67,8 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 
 
 static int
-_ewl_dnd_event_dnd_move(void *data, int type, void *event)
+_ewl_dnd_event_dnd_move(void *data __UNUSED__, int type __UNUSED__, 
+							void *event)
 {
 	Ecore_X_Event_Mouse_Move *ev;
 	ev = event;
@@ -90,7 +90,8 @@ _ewl_dnd_event_dnd_move(void *data, int type, void *event)
 
 
 static int
-_ewl_dnd_event_mouse_up(void *data, int type, void *event)
+_ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__, 
+						void *event __UNUSED__)
 {
 	if (_ewl_dnd_drag_canvas && ewl_dragging_current) {
 		Ecore_List* pos;

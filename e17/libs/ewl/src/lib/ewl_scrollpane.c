@@ -479,7 +479,7 @@ ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Get the focused widget and stop if its an internal one.
 	 */
 	focus = ewl_embed_focused_widget_get(emb);
-	if (!focus || !ewl_container_parent_of(EWL_CONTAINER(s->box), focus) ||
+	if (!focus || !ewl_container_parent_of(s->box, focus) ||
 			ewl_widget_onscreen_is(focus))
 		DRETURN(DLEVEL_STABLE);
 

@@ -603,7 +603,7 @@ ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__,
 
 static void
 ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__, 
-				void *ev __UNUSED__, void *data)
+				void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
 

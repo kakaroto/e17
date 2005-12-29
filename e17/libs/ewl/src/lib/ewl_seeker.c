@@ -654,7 +654,7 @@ ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
 }
 
 void
-ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data,
+ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s = EWL_SEEKER(w);

@@ -629,7 +629,7 @@ ewl_tree_row_column_get(Ewl_Row *row, int i)
 }
 
 static void
-ewl_tree_row_signal(Ewl_Tree *tree, Ewl_Widget *row)
+ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
 {
 	if (ewl_tree_row_pos & 1) {
 		ewl_widget_state_set(row, "odd");
@@ -866,7 +866,7 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	 * avoids duplicate or long list walks for queueing child widgets.
 	 */
 	if (node->tree)
-		ewl_widget_configure(node->tree);
+		ewl_widget_configure(EWL_WIDGET(node->tree));
 
 	tmp = ecore_list_new();
 
@@ -918,7 +918,7 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	 * avoids duplicate or long list walks for queueing child widgets.
 	 */
 	if (node->tree)
-		ewl_widget_configure(node->tree);
+		ewl_widget_configure(EWL_WIDGET(node->tree));
 
 	tmp = ecore_list_new();
 

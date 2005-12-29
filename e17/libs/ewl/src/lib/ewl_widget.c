@@ -2459,7 +2459,7 @@ ewl_widget_drag_down_cb (Ewl_Widget * w, void *ev_data ,
 }
 
 void
-ewl_widget_drag_move_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_drag_move_cb (Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__) {
 
 	if (!ewl_dnd_status_get()) return;
@@ -2482,7 +2482,7 @@ ewl_widget_drag_move_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_widget_drag_up_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
+ewl_widget_drag_up_cb (Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__) {
 
 	if (ewl_object_flags_has(EWL_OBJECT(_ewl_drag_widget), EWL_FLAG_STATE_DND_WAIT, EWL_FLAGS_STATE_MASK)) {
@@ -2499,10 +2499,9 @@ ewl_widget_drag_up_cb (Ewl_Widget * w, void *ev_data __UNUSED__,
  * @param val: the true/false state of draggable
  * @return Returns no value.
  * @brief Set the draggable state, and setup any callbacks
- *
  */
 void
-ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, void* (*cb) )
+ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
