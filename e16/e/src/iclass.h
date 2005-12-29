@@ -99,6 +99,10 @@ int                 ImageclassIsTransparent(ImageClass * ic);
 #define TransparencyUpdateNeeded() 0
 #define ImageclassIsTransparent(ic) 0
 #endif
+
+Imlib_Image        *EImageBlendPT(Imlib_Image * im, Window win, int w, int h,
+				  int image_type);
+
 void                ImageclassIncRefcount(ImageClass * ic);
 void                ImageclassDecRefcount(ImageClass * ic);
 const char         *ImageclassGetName(ImageClass * ic);

@@ -840,74 +840,168 @@ ImageclassApplySimple(ImageClass * ic, Window win, Drawable draw, int state,
    return pmap;
 }
 
+#ifdef ENABLE_TRANSPARENCY
+static int
+pt_type_to_flags(int image_type)
+{
+   int                 flags;
+
+   if (Conf.trans.alpha == 0)
+      return ICLASS_ATTR_OPAQUE;
+
+   switch (image_type)
+     {
+     default:
+     case ST_SOLID:
+     case ST_BUTTON:
+	flags = ICLASS_ATTR_OPAQUE;
+	break;
+     case ST_BORDER:
+	flags = Conf.trans.border;
+	break;
+     case ST_WIDGET:
+	flags = Conf.trans.widget;
+	break;
+     case ST_ICONBOX:
+	flags = Conf.trans.iconbox;
+	break;
+     case ST_MENU:
+	flags = Conf.trans.menu;
+	break;
+     case ST_MENU_ITEM:
+	flags = Conf.trans.menu_item;
+	break;
+     case ST_TOOLTIP:
+	flags = Conf.trans.tooltip;
+	break;
+     case ST_DIALOG:
+	flags = Conf.trans.dialog;
+	break;
+     case ST_HILIGHT:
+	flags = Conf.trans.hilight;
+	break;
+     case ST_PAGER:
+	flags = Conf.trans.pager;
+	break;
+     case ST_WARPLIST:
+	flags = Conf.trans.warplist;
+	break;
+     }
+   if (flags != ICLASS_ATTR_OPAQUE)
+      flags |= ICLASS_ATTR_USE_CM;
+
+   return flags;
+}
+
+static Imlib_Image *
+pt_get_bg_image(Window win, int w, int h, int use_root)
+{
+   Imlib_Image        *ii = NULL;
+   Window              cr, dummy;
+   Drawable            bg;
+   int                 xx, yy;
+
+   bg = BackgroundGetPixmap(DeskBackgroundGet(DesksGetCurrent()));
+   if (use_root || bg == None)
+     {
+	cr = VRoot.win;
+	bg = VRoot.win;
+     }
+   else
+     {
+	cr = EoGetWin(DesksGetCurrent());
+     }
+   XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
+#if 0
+   Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h);
+#endif
+   if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
+     {
+	/* Create the background base image */
+	imlib_context_set_drawable(bg);
+	ii = imlib_create_image_from_drawable(0, xx, yy, w, h,
+					      !EServerIsGrabbed());
+     }
+
+   return ii;
+}
+
+static void
+pt_blend(Imlib_Image * bg, Imlib_Image * im, int use_cm)
+{
+   int                 w, h, iw, ih;
+
+   imlib_context_set_image(im);
+   iw = imlib_image_get_width();
+   ih = imlib_image_get_height();
+   imlib_context_set_image(bg);
+   w = imlib_image_get_width();
+   h = imlib_image_get_height();
+
+   imlib_context_set_blend(1);
+#ifdef ENABLE_THEME_TRANSPARENCY
+   if (use_cm)
+     {
+	imlib_context_set_color_modifier(icm);
+     }
+#endif
+   imlib_context_set_operation(IMLIB_OP_COPY);
+   imlib_blend_image_onto_image(im, 0, 0, 0, iw, ih, 0, 0, w, h);
+   imlib_context_set_blend(0);
+#ifdef ENABLE_THEME_TRANSPARENCY
+   if (use_cm)
+     {
+	imlib_context_set_color_modifier(NULL);
+     }
+#endif
+}
+
+#endif
+
+Imlib_Image        *
+EImageBlendPT(Imlib_Image * im, Window win, int w, int h, int image_type)
+{
+   Imlib_Image        *bg;
+   int                 flags;
+
+   if (!im)
+      return NULL;
+
+#ifdef ENABLE_TRANSPARENCY
+   flags = pt_type_to_flags(image_type);
+   if (flags != ICLASS_ATTR_OPAQUE)
+     {
+	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
+	pt_blend(bg, im, flags & ICLASS_ATTR_USE_CM);
+     }
+   else
+#else
+   flags = image_type;
+   win = None;
+#endif
+   {
+      int                 ww, hh;
+
+      imlib_context_set_image(im);
+      ww = imlib_image_get_width();
+      hh = imlib_image_get_height();
+      bg = imlib_create_cropped_scaled_image(0, 0, ww, hh, w, h);
+   }
+
+   return bg;
+}
+
 static void
 ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)
 {
-   int                 trans;
-   int                 ww, hh;
-
 #ifdef ENABLE_TRANSPARENCY
    Imlib_Image        *ii = NULL;
    int                 flags;
    Pixmap              pmap, mask;
 
-   flags = ICLASS_ATTR_OPAQUE;
-   if (Conf.trans.alpha > 0)
-     {
-	switch (image_type)
-	  {
-	  default:
-	  case ST_SOLID:
-	  case ST_BUTTON:
-	     flags = ICLASS_ATTR_OPAQUE;
-	     break;
-	  case ST_BORDER:
-	     flags = Conf.trans.border;
-	     break;
-	  case ST_WIDGET:
-	     flags = Conf.trans.widget;
-	     break;
-	  case ST_ICONBOX:
-	     flags = Conf.trans.iconbox;
-	     break;
-	  case ST_MENU:
-	     flags = Conf.trans.menu;
-	     break;
-	  case ST_MENU_ITEM:
-	     flags = Conf.trans.menu_item;
-	     break;
-	  case ST_TOOLTIP:
-	     flags = Conf.trans.tooltip;
-	     break;
-	  case ST_DIALOG:
-	     flags = Conf.trans.dialog;
-	     break;
-	  case ST_HILIGHT:
-	     flags = Conf.trans.hilight;
-	     break;
-	  case ST_PAGER:
-	     flags = Conf.trans.pager;
-	     break;
-	  case ST_WARPLIST:
-	     flags = Conf.trans.warplist;
-	     break;
-	  }
-     }
-   if (flags != ICLASS_ATTR_OPAQUE)
-      flags |= ICLASS_ATTR_USE_CM;
-#endif
+   flags = pt_type_to_flags(image_type);
 
-   imlib_context_set_drawable(win);
-   imlib_context_set_image(is->im);
-
-   ww = imlib_image_get_width();
-   hh = imlib_image_get_height();
-
-   pmm->type = 1;
-   pmm->pmap = pmm->mask = 0;
-
-#ifdef ENABLE_TRANSPARENCY
    /*
     * is->transparent flags:
     *   0x01: Use desktop background pixmap as base
@@ -917,37 +1011,9 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    if (is->transparent && imlib_image_has_alpha())
       flags = is->transparent;
 
-   trans = (flags != ICLASS_ATTR_OPAQUE);
-
-   if (trans)
+   if (flags != ICLASS_ATTR_OPAQUE)
      {
-	Window              cr, dummy;
-	Drawable            bg;
-	int                 xx, yy;
-
-	bg = BackgroundGetPixmap(DeskBackgroundGet(DesksGetCurrent()));
-	if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
-	  {
-	     cr = VRoot.win;
-	     bg = VRoot.win;
-	  }
-	else
-	  {
-	     cr = EoGetWin(DesksGetCurrent());
-	  }
-	XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
-#if 0
-	Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h);
-#endif
-	if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
-	  {
-	     /* Create the background base image */
-	     imlib_context_set_drawable(bg);
-	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h,
-						   !EServerIsGrabbed());
-	     imlib_context_set_image(ii);
-	     imlib_context_set_drawable(win);
-	  }
+	ii = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
      }
    else
      {
@@ -955,54 +1021,23 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	Eprintf("ImagestateMakePmapMask %#lx %d %d\n", win, w, h);
 #endif
      }
-#else
-   trans = 0;
-#endif
 
-   if (is->pixmapfillstyle == FILL_STRETCH || trans)
+   if (ii)
      {
-#ifdef ENABLE_TRANSPARENCY
-	if (ii)
-	  {
-	     imlib_context_set_blend(1);
-#ifdef ENABLE_THEME_TRANSPARENCY
-	     if (flags & ICLASS_ATTR_USE_CM)
-	       {
-		  imlib_context_set_color_modifier(icm);
-	       }
-#endif
-	     imlib_context_set_operation(IMLIB_OP_COPY);
-	     imlib_blend_image_onto_image(is->im, 0, 0, 0, ww, hh, 0, 0, w, h);
-	     imlib_context_set_blend(0);
-#ifdef ENABLE_THEME_TRANSPARENCY
-	     if (flags & ICLASS_ATTR_USE_CM)
-	       {
-		  imlib_context_set_color_modifier(NULL);
-	       }
-#if 0				/* Do we ever need to free it? */
-	     imlib_free_color_modifier();
-#endif
-#endif
-	  }
+	imlib_context_set_drawable(win);
+	pt_blend(ii, is->im, flags & ICLASS_ATTR_USE_CM);
 
-	if (ii)
-	  {
-	     pmm->type = 0;
-	     pmap = ECreatePixmap(win, w, h, VRoot.depth);
-	     imlib_context_set_drawable(pmap);
-	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
-	     imlib_context_set_drawable(win);
-	     pmm->pmap = pmap;
-	     pmm->mask = None;
-	  }
-	else
-	  {
-	     pmm->type = 1;
-	     imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap,
-							  &pmm->mask, w, h);
-	  }
+	pmm->type = 0;
+	pmm->pmap = pmap = ECreatePixmap(win, w, h, VRoot.depth);
+	pmm->mask = None;
+	pmm->w = w;
+	pmm->h = h;
+	imlib_context_set_image(ii);
+	imlib_context_set_drawable(pmap);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	imlib_context_set_drawable(win);
 
-	if (ii && make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
+	if (make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
 	     imlib_context_set_image(is->im);
 	     if (imlib_image_has_alpha())
@@ -1017,17 +1052,33 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		  imlib_free_pixmap_and_mask(pmap);
 	       }
 	  }
+	imlib_context_set_image(ii);
+	imlib_free_image_and_decache();
+     }
+   else
 #else
-	pmm->type = 1;
-	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
-						     w, h);
+   make_mask = 0;
+   image_type = 0;
 #endif /* ENABLE_TRANSPARENCY */
+   if (is->pixmapfillstyle == FILL_STRETCH)
+     {
+	pmm->type = 1;
+	pmm->pmap = pmm->mask = None;
 	pmm->w = w;
 	pmm->h = h;
+	imlib_context_set_image(is->im);
+	imlib_context_set_drawable(win);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
+						     w, h);
      }
    else
      {
-	int                 cw, ch, pw, ph;
+	int                 ww, hh, cw, ch, pw, ph;
+
+	imlib_context_set_image(is->im);
+
+	ww = imlib_image_get_width();
+	hh = imlib_image_get_height();
 
 	pw = w;
 	ph = h;
@@ -1053,22 +1104,14 @@ ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		ch = 1;
 	     ph = h / ch;
 	  }
-	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
-						     pw, ph);
+	pmm->type = 1;
+	pmm->pmap = pmm->mask = None;
 	pmm->w = pw;
 	pmm->h = ph;
+	imlib_context_set_drawable(win);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
+						     pw, ph);
      }
-
-#ifdef ENABLE_TRANSPARENCY
-   if (ii)
-     {
-	imlib_context_set_image(ii);
-	imlib_free_image_and_decache();
-     }
-#else
-   make_mask = 0;
-   image_type = 0;
-#endif
 }
 
 static void

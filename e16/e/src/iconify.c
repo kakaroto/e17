@@ -1639,11 +1639,10 @@ IconboxDraw(Iconbox * ib)
      {
 	/* Start out with iconbox image class image */
 	im2 = ImageclassGetImage(ib->ic_box, 0, 0, STATE_NORMAL);
+	im = EImageBlendPT(im2, ib->icon_win, ib_w0, ib_h0, ST_ICONBOX);
 	imlib_context_set_image(im2);
-	ww = imlib_image_get_width();
-	hh = imlib_image_get_height();
-	im = imlib_create_cropped_scaled_image(0, 0, ww, hh, ib_w0, ib_h0);
 	imlib_free_image();
+	imlib_context_set_image(im);
      }
    else
      {
