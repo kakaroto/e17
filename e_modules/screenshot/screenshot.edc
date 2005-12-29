@@ -17,17 +17,15 @@ group {
 				new i;
 				
 				i = get_int(global_int);
-		   		snprintf(str, sizeof(str), "%i", i);
+   		   		snprintf(str, sizeof(str), "%s", i);
 				set_text(PART:"text", str);		        
 		        if (i == 0) {
-       		   		snprintf(str, sizeof(str), "%s", "");
-					set_text(PART:"text", str);		        
 		        	cancel_timer(it);
 					set_state(PART:"text", "default",0.0); 					
 		        } else {
 					set_int(global_int, (i - 1));
 			        it = timer(1.0, "timer_cb", global_int);				
-			    }
+			    }						
 			}
    		
 	       public message(Msg_Type:type, id, ...) {
