@@ -1528,6 +1528,34 @@ ewl_widget_clipped_is(Ewl_Widget *w)
 }
 
 /**
+ * @param c: the widget to compare against
+ * @param w: the widget to check parentage
+ * @return Returns TRUE if @a c is a parent of @a w, otherwise returns FALSE.
+ * @brief Determine if a widget is a parent of another widget
+ */
+int
+ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w)
+{
+	Ewl_Widget *parent;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, FALSE);
+	DCHECK_TYPE("c", c, "widget");
+
+	if (!w) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	parent = w;
+	while ((parent = parent->parent)) {
+		if (parent == c)
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to receive keyboard focus
  * @return Returns no value.
  * @brief Changes the keyboard focus to the widget @a w.

@@ -126,7 +126,7 @@ ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	menu = EWL_MENU_BASE(w);
 
 	focused = ewl_widget_focused_get();
-	if (!focused || !ewl_container_parent_of(menu->popbox, focused))
+	if (!focused || !ewl_widget_parent_of(menu->popbox, focused))
 		ewl_widget_hide(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

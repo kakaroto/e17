@@ -177,7 +177,7 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -212,7 +212,7 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -252,7 +252,7 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 	if (pc == EWL_CONTAINER(child->parent))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_container_parent_of(child, EWL_WIDGET(pc))) {
+	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
 		DWARNING("Attempting to make a child a parent of itself");
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -580,34 +580,6 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
 	}
 
 	DRETURN_PTR((child2 ? child2 : child), DLEVEL_STABLE);
-}
-
-/**
- * @param c: the container to compare against, safe to pass a non-container
- * @param w: the widget to check parentage
- * @return Returns TRUE if @a c is a parent of @a w, otherwise returns FALSE.
- * @brief Determine if a container is a parent of a widget
- */
-int
-ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
-{
-	Ewl_Widget *parent;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE("c", c, "widget");
-
-	if (!w) {
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
-
-	parent = w;
-	while ((parent = parent->parent)) {
-		if (parent == c)
-			DRETURN_INT(TRUE, DLEVEL_STABLE);
-	}
-
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**

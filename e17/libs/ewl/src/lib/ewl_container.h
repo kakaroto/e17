@@ -134,7 +134,6 @@ Ewl_Widget     *ewl_container_child_at_get(Ewl_Container *widget, int x,
 								int y);
 Ewl_Widget     *ewl_container_child_at_recursive_get(Ewl_Container *widget,
 						     int x, int y);
-int             ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 void            ewl_container_largest_prefer(Ewl_Container *c,
 					     Ewl_Orientation o);
 void            ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o);

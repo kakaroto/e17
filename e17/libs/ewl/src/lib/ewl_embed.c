@@ -630,7 +630,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 		 * old and newly focused widgets.
 		 */
 		while (embed->last.mouse_in && (widget != embed->last.mouse_in) 
-				&& !ewl_container_parent_of(embed->last.mouse_in, widget)) {
+				&& !ewl_widget_parent_of(embed->last.mouse_in, widget)) {
 			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_MOUSE_IN);
 			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
@@ -1092,7 +1092,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 	DCHECK_TYPE("e", e, "embed");
 	DCHECK_TYPE("w", w, "widget");
 
-	if (!ewl_container_parent_of(EWL_WIDGET(e), w))
+	if (!ewl_widget_parent_of(EWL_WIDGET(e), w))
 		DRETURN(DLEVEL_STABLE);
 
 	/* do nothing if this widget isn't focusable */
@@ -1379,18 +1379,18 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "embed");
 
-	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.focused))) {
+	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.focused))) {
 		e->last.focused = NULL;
 		/*ewl_embed_focused_widget_set(e, NULL);*/
 	}
 
-	if ((w == e->last.clicked) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.clicked)))
+	if ((w == e->last.clicked) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.clicked)))
 		e->last.clicked = NULL;
 
-	if ((w == e->last.mouse_in) || (RECURSIVE(w) && ewl_container_parent_of(w, e->last.mouse_in)))
+	if ((w == e->last.mouse_in) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.mouse_in)))
 		e->last.mouse_in = NULL;
 
-	if ((w == e->dnd_widget) || (RECURSIVE(w) && ewl_container_parent_of(w, e->dnd_widget)))
+	if ((w == e->dnd_widget) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->dnd_widget)))
 		e->dnd_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
