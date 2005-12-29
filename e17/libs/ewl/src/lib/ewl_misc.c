@@ -185,7 +185,11 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
 
-	ewl_dnd_init();
+	if (!ewl_dnd_init()) {
+		DERROR("Count not init dnd.\n");
+		ewl_shutdown();
+		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+	}
 
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
@@ -283,6 +287,7 @@ ewl_shutdown(void)
 	ewl_callbacks_shutdown();
 	ewl_theme_shutdown();
 	ewl_config_shutdown();
+	ewl_dnd_shutdown();
 
 	/*
 	 * Free internal accounting lists.
