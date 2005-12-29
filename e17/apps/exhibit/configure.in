@@ -97,7 +97,7 @@ AC_PATH_EFL(
      AC_DEFINE(HAVE_ECORE, 1, have ECORE)
      ecore="ECORE "
      AM_CONDITIONAL(HAVE_ECORE, true)
-     have_evas="yes"
+     have_ecore="yes"
      ecore_libs=`ecore-config --libs`
      ecore_cflags=`ecore-config --cflags`
    ],
