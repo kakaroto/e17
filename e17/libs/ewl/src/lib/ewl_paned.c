@@ -301,10 +301,16 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 
 	/* increase the containers perferred width by the preferred width of
 	 * the shown widget (including the grabbers */
-	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL)
+	if (EWL_PANED(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		cw += ww;
-	else
+		if (wh > ch)
+			ch = wh;
+	}
+	else {
+		if (ww > cw)
+			cw = ww;
 		ch += wh;
+	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
 
