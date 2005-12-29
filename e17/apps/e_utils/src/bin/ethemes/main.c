@@ -336,14 +336,14 @@ int main(int argc, char **argv) {
 	evas_list_free(themes);
 
 	/* free canvas objects */
-	evas_object_free(container);
-	evas_object_free(container_outer);
-	evas_object_free(b_apply);
-	evas_object_free(b_default);
-	evas_object_free(b_exit);
-	evas_object_free(background);
-	evas_object_free(preview);
-	evas_object_free(preview_clip);
+	evas_object_del(container);
+	evas_object_del(container_outer);
+	evas_object_del(b_apply);
+	evas_object_del(b_default);
+	evas_object_del(b_exit);
+	evas_object_del(background);
+	evas_object_del(preview);
+	evas_object_del(preview_clip);
 	
 	if (selected_theme) free(selected_theme);
 	if (default_theme) free(default_theme);
