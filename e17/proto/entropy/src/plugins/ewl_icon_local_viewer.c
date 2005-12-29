@@ -136,7 +136,7 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	Ecore_List* icon_list;
 	gui_file* file;
-	Ewl_IconBox_Icon* list_item;
+	Ewl_Iconbox_Icon* list_item;
 	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
 
 	/*Clear the existing contents*/
@@ -342,14 +342,14 @@ void ewl_icon_local_viewer_menu_delete_cb (Ewl_Widget *w , void *ev_data , void 
 }
 
 void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance) {
-		Ewl_IconBox* ib = EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->iconbox);
+		Ewl_Iconbox* ib = EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->iconbox);
 		entropy_icon_viewer* viewer= instance->data;
 
 		Ecore_List* new_file_list = ecore_list_new();
 		Ecore_List* icon_list;
 		entropy_generic_file* file;
 		gui_file* local_file;
-		Ewl_IconBox_Icon* list_item;
+		Ewl_Iconbox_Icon* list_item;
 		
 
 		
@@ -410,7 +410,7 @@ void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* insta
 }
 
 
-void ewl_icon_local_viewer_key_event_cb(Ewl_IconBox* ib, void* data, char* key)  {
+void ewl_icon_local_viewer_key_event_cb(Ewl_Iconbox* ib, void* data, char* key)  {
 	entropy_icon_viewer* viewer = ((entropy_gui_component_instance*)data)->data;
 	
 	printf("Received controlled key: '%s'\n", key);
@@ -589,7 +589,7 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 		entropy_icon_viewer* view = comp->data;
 	
 		
-		Ewl_IconBox_Icon* icon;
+		Ewl_Iconbox_Icon* icon;
 		gui_file* gui_object;
 
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	

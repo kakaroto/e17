@@ -167,9 +167,9 @@ void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data) {
 		printf("Drop widget: '%s'\n", widget->inheritance);
 		if (ewl_widget_type_is(widget, "icon")) {
 			char* folder;
-			Ewl_IconBox* iconbox = EWL_ICONBOX_ICON(widget)->icon_box_parent;
+			Ewl_Iconbox* iconbox = EWL_ICONBOX_ICON(widget)->icon_box_parent;
 			Ecore_List* sel_list = ewl_iconbox_get_selection(iconbox);
-			Ewl_IconBox_Icon* icon;
+			Ewl_Iconbox_Icon* icon;
 			entropy_generic_file* file;
 			char dest_dir[PATH_MAX];
 
