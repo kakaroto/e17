@@ -4,6 +4,7 @@ void evfs_cleanup_command(evfs_command* command, int free_command) {
 	
 	switch (command->type) {
 		case EVFS_CMD_STARTMON_FILE:
+		default:
 			evfs_cleanup_file_command(command);
 			break;
 	}
@@ -55,6 +56,14 @@ void evfs_cleanup_file_list_event(evfs_event* event) {
 		}
 		ecore_list_destroy(event->file_list.list);
 	}
+}
+
+void evfs_cleanup_file_uri_path(evfs_file_uri_path* path) {
+	if (path) {
+		if (path->files) free (path->files);
+		free(path);
+	}
+									
 }
 
 void evfs_cleanup_file_read_event(evfs_event* event) {

@@ -556,10 +556,6 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 				command->file_command.files[0] = path->files[0];
 
 
-				
-
-				free(path);
-
 			} else {
 				
 				//printf("we already have %d files\n", command->file_command.num_files);
@@ -572,7 +568,8 @@ int evfs_process_incoming_command(evfs_server* server, evfs_command* command, ec
 			}
 						  
 			
-			
+			evfs_cleanup_file_uri_path(path);
+				
 			
 		}
 		break;

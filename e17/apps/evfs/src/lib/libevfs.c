@@ -68,18 +68,14 @@ int evfs_server_data (void* data, int type, void* event) {
 				   if (conn->callback_func) {
 					   
 					   evfs_event* ev = conn->prog_event;
-
-					  
-					   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
 					   (*conn->callback_func)(ev);
-					   
-
-					   
-					   /*Now cleanup the event we send back*/
-					   evfs_cleanup_event(ev);
 				   } else {
 					   printf("EVFS: Alert - no callback registered for event\n");
 				   }
+
+				   /*Now cleanup the event we send back*/
+				   evfs_cleanup_event(conn->prog_event);
+  				   conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now*/
 				   
 			   }
 			   free(msg);
@@ -307,7 +303,9 @@ Ecore_DList* evfs_tokenize_uri(char* uri) {
 		ecore_dlist_append(tokens, token);
 	}		
 
-	
+
+	ecore_dlist_destroy(plugin);
+	ecore_dlist_destroy(reserved);
 	
 	free(dup_uri);
 	return tokens;	
