@@ -92,7 +92,7 @@ ewl_image_init(Ewl_Image *i)
  * @return Returns the currently set filename
  * @brief get the filename this image uses
  */
-char *
+const char *
 ewl_image_file_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -113,7 +113,7 @@ ewl_image_file_get(Ewl_Image *i)
  * edje is used, a minimum size should be specified in the edje or the code.
  */
 void
-ewl_image_file_set(Ewl_Image *i, char *im, char *key)
+ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 {
 	int old_type;
 	Ewl_Widget *w;

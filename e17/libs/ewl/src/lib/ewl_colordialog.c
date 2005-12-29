@@ -109,6 +109,7 @@ ewl_colordialog_has_alpha_get(Ewl_Colordialog *cd)
 	DCHECK_TYPE_RET("cd", cd, "colordialog", FALSE);
 
 	alpha = ewl_colorpicker_has_alpha_get(EWL_COLORPICKER(cd->picker));
+
 	DRETURN_INT(alpha, DLEVEL_STABLE);
 }
 

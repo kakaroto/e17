@@ -53,10 +53,14 @@ ewl_config_init(void)
 void
 ewl_config_shutdown(void)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);
 
 	ecore_config_system_shutdown();
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -118,7 +122,6 @@ ewl_config_float_set(const char *k, float v)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-
 /**
  * @param k: the key to search
  * @return Returns the found string value on success, NULL on failure.
@@ -136,7 +139,6 @@ ewl_config_str_get(const char *k)
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
-
 
 /**
  * @param k: the key to search

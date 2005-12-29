@@ -213,7 +213,7 @@ ewl_button_stock_type_get(Ewl_Button *b)
  * @return Returns no value.
  */
 void
-ewl_button_image_set(Ewl_Button *b, char *file, char *key)
+ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -236,10 +236,10 @@ ewl_button_image_set(Ewl_Button *b, char *file, char *key)
  * @param b: The button to the the image file from
  * @return Returns the image file used in the button or NULL on failure
  */
-char *
+const char *
 ewl_button_image_get(Ewl_Button *b)
 {
-	char *file;
+	const char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);

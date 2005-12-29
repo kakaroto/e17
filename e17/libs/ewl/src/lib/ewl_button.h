@@ -50,8 +50,8 @@ const char	*ewl_button_label_get(Ewl_Button *b);
 void		 ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock);
 Ewl_Stock_Type	 ewl_button_stock_type_get(Ewl_Button *b);
 
-void		 ewl_button_image_set(Ewl_Button *b, char *file, char *key);
-char		*ewl_button_image_get(Ewl_Button *b);
+void		 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key);
+const char	*ewl_button_image_get(Ewl_Button *b);
 
 /*
  * Internal

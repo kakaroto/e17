@@ -631,6 +631,10 @@ ewl_tree_row_column_get(Ewl_Row *row, int i)
 static void
 ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("row", row);
+	DCHECK_TYPE("row", row, "widget");
+
 	if (ewl_tree_row_pos & 1) {
 		ewl_widget_state_set(row, "odd");
 	}
@@ -638,6 +642,8 @@ ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
 		ewl_widget_state_set(row, "even");
 	}
 	ewl_tree_row_pos++;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void

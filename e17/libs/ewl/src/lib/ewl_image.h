@@ -51,8 +51,8 @@ struct Ewl_Image
 
 Ewl_Widget	*ewl_image_new(void);
 int		 ewl_image_init(Ewl_Image *i);
-void		 ewl_image_file_set(Ewl_Image *i, char *im, char *key);
-char		*ewl_image_file_get(Ewl_Image *i);
+void		 ewl_image_file_set(Ewl_Image *i, const char *im, const char *key);
+const char	*ewl_image_file_get(Ewl_Image *i);
 void		 ewl_image_proportional_set(Ewl_Image *i, char p);
 void		 ewl_image_scale(Ewl_Image *i, double wp, double hp);
 void		 ewl_image_scale_to(Ewl_Image *i, int w, int h);

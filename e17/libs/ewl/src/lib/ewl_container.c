@@ -486,6 +486,8 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
 		ewl_widget_configure(EWL_WIDGET(c)->parent);
 	else
 		ewl_widget_configure(EWL_WIDGET(c));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1242,3 +1244,4 @@ ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

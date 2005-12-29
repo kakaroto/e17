@@ -980,5 +980,7 @@ ewl_box_setup(void)
 
 		ewl_box_horizontal->align_set = ewl_object_h_request;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

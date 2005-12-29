@@ -544,7 +544,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 	Ewl_Window *window;
 	Ecore_X_Event_Xdnd_Position *ev;
 	int x, y, wx, wy;
-	int px,py,pw,ph;
+	int px, py, pw, ph;
 	Ecore_X_Rectangle rect;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -566,7 +566,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) {
 			/* First see if we need to send an 'enter' to the widget */
-			ewl_embed_dnd_position_feed(embed, x, y, &px,&py,&pw,&ph);
+			ewl_embed_dnd_position_feed(embed, x, y, &px, &py, &pw, &ph);
 			
 			/*rect.x = px;
 			rect.y = py;
@@ -648,7 +648,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 	window = ewl_window_window_find((void *)ev->win);
 	if (window) {
 		if (window->dnd_types.num_types > 0) {
-			for (i = 0; i < window->dnd_types.num_types; i++)		
+			for (i = 0; i < window->dnd_types.num_types; i++)
 				FREE(window->dnd_types.types[i]);
 
 			FREE(window->dnd_types.types);
@@ -720,7 +720,6 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-
 /**
  * @param data: user specified data passed to the function
  * @param type: the type of event triggering the function call
@@ -735,7 +734,6 @@ ewl_ev_dnd_selection_notify(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	Ewl_Window *window;
 	Ecore_X_Event_Selection_Notify *ev;
-//	int i;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);

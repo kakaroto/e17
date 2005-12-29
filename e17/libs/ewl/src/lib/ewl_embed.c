@@ -116,6 +116,9 @@ ewl_embed_init(Ewl_Embed *w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @brief Shutdown the embed 
+ */
 void
 ewl_embed_shutdown(void)
 {
@@ -669,21 +672,19 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	embed->last.mouse_in = widget;
 
 	if (embed->dnd_widget && ewl_object_state_has(EWL_OBJECT(embed->dnd_widget),
-				EWL_FLAG_STATE_DND))
+								EWL_FLAG_STATE_DND))
 		ewl_callback_call_with_event_data(embed->dnd_widget,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 	else
 		embed->dnd_widget = NULL;
 
 	if (embed->last.clicked && ewl_object_state_has(EWL_OBJECT(embed->last.clicked),
-				EWL_FLAG_STATE_PRESSED))
+								EWL_FLAG_STATE_PRESSED))
 		ewl_callback_call_with_event_data(embed->last.clicked,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
 
 /**
  * @param embed: the embed where the DND drop event is to occur
@@ -697,7 +698,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 {
 	Ewl_Widget *widget = NULL;
 	Ewl_Event_Dnd_Drop ev;
-	void* drop_data = NULL;
+	void *drop_data = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
@@ -716,14 +717,14 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 		if (internal) {
 			void* (*cb)();
 			
-			/*Retrieve the callback for this widget's data*/
+			/* Retrieve the callback for this widget's data */
 			cb = ewl_widget_data_get(widget, "DROP_CB");
 			if (cb) { 
 				drop_data = (*cb)();
 				ev.data = drop_data;
 			}
 		} else {
-			/*Handle external drops*/
+			/* Handle external drops */
 			ev.data = NULL;
 		}
 		
@@ -739,9 +740,6 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
-
 
 /**
  * @param embed: the embed where the DND position event is to occur
@@ -982,8 +980,8 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 	DCHECK_PARAM_PTR("obj", obj);
 	DCHECK_TYPE("e", e, "embed");
 
-	/*Sanitize the color of this evas pre-cache*/
-	evas_object_color_set(obj,255,255,255,255);
+	/* Sanitize the color of this evas pre-cache */
+	evas_object_color_set(obj, 255, 255, 255, 255);
 
 	evas_object_clip_unset(obj);
 	evas_object_hide(obj);

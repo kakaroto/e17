@@ -2157,6 +2157,8 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 		}
 	}
 	if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /* This will give you the format string to pass to textblock based on the
@@ -3534,17 +3536,23 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 void
 ewl_text_context_init(void)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (!context_hash) 
 	{
 		context_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 		ecore_hash_set_free_key(context_hash, free);
 		ecore_hash_set_free_value(context_hash, ewl_text_context_cb_free);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_text_context_shutdown(void)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (context_hash) {
 		ecore_hash_destroy(context_hash);
 		context_hash = NULL;
@@ -3552,6 +3560,8 @@ ewl_text_context_shutdown(void)
 
 	if (ewl_text_default_context)
 		ewl_text_context_release(ewl_text_default_context);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 Ewl_Text_Context *

@@ -352,10 +352,10 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 }
 
 /**
- * + * @param cp: The colour picker to set the has_alpha flag on.
- * + * @param alpha: Value to set the has_alpha param too. (TRUE or FALSE)
- * + * @return Returns no value.
- * + */
+ * @param cp: The colour picker to set the has_alpha flag on.
+ * @param alpha: Value to set the has_alpha param too. (TRUE or FALSE)
+ * @return Returns no value.
+ **/
 void
 ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 {

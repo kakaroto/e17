@@ -10,7 +10,7 @@ void icon_click_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data __UN
 }
 
 void add_icons_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data __UNUSED__) {
-		Ewl_IconBox_Icon* icon = ewl_iconbox_icon_add(EWL_ICONBOX(ib), "Draw", PACKAGE_DATA_DIR "/images/Draw.png");
+		Ewl_Iconbox_Icon* icon = ewl_iconbox_icon_add(EWL_ICONBOX(ib), "Draw", PACKAGE_DATA_DIR "/images/Draw.png");
 		printf("Loading %s\n", PACKAGE_DATA_DIR "/images/Draw.png");
 		ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_CLICKED, icon_click_cb, NULL);
 		
