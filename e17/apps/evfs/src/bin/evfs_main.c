@@ -143,6 +143,8 @@ ipc_client_data(void *data, int type, void *event)
 	  ecore_list_append(server->incoming_command_list, com_cli);
    }
 
+   free(msg);
+
 
 
    return 1;

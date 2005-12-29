@@ -152,6 +152,8 @@ void evfs_write_progress_event(evfs_client* client, evfs_command* command, evfs_
 	evfs_write_ecore_ipc_client_message(client->client, 
 		ecore_ipc_message_new(EVFS_EV_REPLY,EVFS_EV_PART_PROGRESS,
 		client->id,0,0,data, size_ret  ));
+
+	free(data);
 	
 	
 }

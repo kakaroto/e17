@@ -139,7 +139,7 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 						recursive_command->file_command.num_files = 1;
 
 						evfs_handle_file_remove_command(client, recursive_command);
-						evfs_cleanup_command(recursive_command,1);
+						evfs_cleanup_command(recursive_command,EVFS_CLEANUP_FREE_COMMAND);
 						
 					}
 				}
@@ -267,7 +267,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 
 
 		/*Get the source file size*/
-		(*plugin->functions->evfs_file_stat)(command, &file_stat);
+		(*plugin->functions->evfs_file_lstat)(command, &file_stat);
 		//printf("Source file size: %d bytes\n", (int)file_stat.st_size);
 		
 		
@@ -347,7 +347,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 					evfs_handle_file_copy(client, recursive_command, root_command);
 					
 					evfs_cleanup_filereference(file);
-					evfs_cleanup_command(recursive_command, 1);
+					evfs_cleanup_command(recursive_command, EVFS_CLEANUP_FREE_COMMAND);
 				}
 				ecore_list_destroy(directory_list);
 				
