@@ -109,11 +109,13 @@ e_modapi_config(E_Module *module)
    Evas_List *l;
    
    mon = module->data;
+   if (!mon) reutrn 0;
    for (l = mon->faces; l; l = l->next) 
      {
 	Monitor_Face *f;
 	
 	f = l->data;
+	if (!f) return 0;
 	if (f->con == e_container_current_get(e_manager_current_get())) 
 	  {
 	     _config_monitor_module(f->con, f);

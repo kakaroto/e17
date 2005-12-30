@@ -108,7 +108,7 @@ e_modapi_config(E_Module *m)
    f = m->data;
    if (!f) return 0;
    con = e_container_current_get(e_manager_current_get());
-   _config_flame_module(con, f);
+   if (f->face->con == con) _config_flame_module(con, f);
    return 1;
 }
 
