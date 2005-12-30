@@ -163,16 +163,28 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 void
 ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 {
+	unsigned short i;
+	Ewl_Widget *button;
+	Ewl_Widget *row;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, "tree");
-
+ 
 	tree->headers_visible = visible;
+ 
+	row = ecore_list_goto_first(EWL_CONTAINER(tree)->children);
+	ecore_list_goto_first(EWL_CONTAINER(row)->children);
 
-	if (!visible)
-		ewl_widget_hide(tree->header);
-	else
-		ewl_widget_show(tree->header);
+	button = ecore_list_next(EWL_CONTAINER(row)->children);
+	for (i = 0; i < tree->ncols && button; i++) {
+		if ((visible) && (HIDDEN(button)))
+			ewl_widget_show(button);
+		else if ((!visible) && (VISIBLE(button)))
+			ewl_widget_hide(button);
+
+		button = ecore_list_next(EWL_CONTAINER(row)->children);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1153,7 +1165,7 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
 
 	if (tree->mode != EWL_TREE_MODE_NONE) {
 		if (ecore_list_goto(tree->selected, w) == NULL)
-		        ecore_list_append(tree->selected, w);
+			ecore_list_append(tree->selected, w);
 		ewl_widget_state_set(w, "tree-selected");
 	}
 
