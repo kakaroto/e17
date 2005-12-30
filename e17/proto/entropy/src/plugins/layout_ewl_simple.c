@@ -23,6 +23,9 @@ struct entropy_layout_gui {
 	Ewl_Widget* paned;
 	Ewl_Widget* local_container;
 	
+	Ewl_Widget* context_menu;
+	Ewl_Widget* context_menu_floater;
+	
 	Ecore_List* current_folder;
 	Ecore_List* local_components;
 
@@ -38,6 +41,17 @@ struct entropy_layout_gui {
 	Ewl_Widget* location_add_username;
 	Ewl_Widget* location_add_password;
 };
+
+
+int entropy_plugin_type_get() {
+	return ENTROPY_PLUGIN_GUI_LAYOUT;
+}
+
+char* entropy_plugin_identify() {
+	        return (char*)"Simple EWL layout container";
+}
+
+
 
 
 /*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
@@ -104,6 +118,25 @@ void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 
 void entropy_ewl_layout_simple_tooltip_window() {
 	int status = entropy_core_tooltip_status_get();
+
+}
+
+void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
+	Ewl_Event_Mouse_Down *ev = ev_data;
+	entropy_layout_gui* gui = user_data;
+	
+	if (ev->button == 3) {
+		printf("Click at %d:%d\n", ev->x, ev->y);
+
+		ewl_widget_show(gui->context_menu_floater);
+		ewl_floater_position_set(EWL_FLOATER(gui->context_menu_floater), ev->x, ev->y);
+
+		ewl_callback_call(EWL_WIDGET(gui->context_menu), EWL_CALLBACK_FOCUS_IN);
+	}
+
+	
+
+
 
 }
 
@@ -302,6 +335,11 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 	//printf("Add URI: %s\n", uri);
 	hbox = ewl_border_new();
 	ewl_border_text_set(EWL_BORDER(hbox), name);
+
+
+
+
+	
 	ewl_container_child_append(EWL_CONTAINER(tree), hbox);
 	ewl_widget_show(hbox);
 	
@@ -313,6 +351,12 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 		Ewl_Widget* visual;
 
 		entropy_generic_file* file = entropy_core_parse_uri(uri);
+
+		/*Add the callback for the popup*/
+		ewl_callback_append(EWL_BORDER(hbox)->label, EWL_CALLBACK_MOUSE_DOWN, location_menu_popup_cb, gui);
+		
+
+		
 
 		/*Mark this file as a 'folder' - more of a bootstrap.  Should we really do this? FIXME*/
 		strcpy(file->mime_type, "file/folder");
@@ -446,20 +490,7 @@ layout_ewl_simple_local_view_cb
 }
 
 
-void
-expand_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
-	Ewl_Box* box = EWL_BOX(user_data);
 
-	ewl_object_minimum_w_set(EWL_OBJECT(box), 150);
-}
-
-int entropy_plugin_type_get() {
-	return ENTROPY_PLUGIN_GUI_LAYOUT;
-}
-
-char* entropy_plugin_identify() {
-	        return (char*)"Simple EWL layout container";
-}
 
 void entropy_plugin_layout_main() {
 	ewl_widget_show(win);
@@ -478,7 +509,6 @@ void entropy_plugin_init(entropy_core* core) {
 	/*Init ewl*/
 	components = ecore_list_new();
 	ewl_init(&i, c);
-	//ewl_theme_name_set("e17");
 }
 
 void entropy_delete_current_folder(Ecore_List* el) {
@@ -544,7 +574,13 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 			printf("Loaded '%s'...\n", name);
 			
 			//FIXME default to icon view for now
-			if (!strcmp(name, "Icon View")) iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
+			if (!strcmp(name, "Icon View")) {
+				iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
+				entropy_gui_component_instance_enable(instance);
+			} else {
+				entropy_gui_component_instance_disable(instance);
+			}
+
 
 			
 
@@ -658,6 +694,34 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
 	ewl_widget_show(item);
 	/*-------------------------------*/
+
+
+
+	/*Context menu*/
+	gui->context_menu_floater = ewl_floater_new();
+	ewl_container_child_append(EWL_CONTAINER(win), gui->context_menu_floater);
+	
+	gui->context_menu = ewl_menu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(gui->context_menu), " ");
+	ewl_container_child_append(EWL_CONTAINER(gui->context_menu_floater), gui->context_menu);
+
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Edit");
+	ewl_container_child_append(EWL_CONTAINER(gui->context_menu), item);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Delete");
+	ewl_container_child_append(EWL_CONTAINER(gui->context_menu), item);
+	ewl_widget_show(item);
+
+	ewl_widget_show(gui->context_menu);
+
+	/*--------------------------*/
+	
+	
+	
 
 
 
