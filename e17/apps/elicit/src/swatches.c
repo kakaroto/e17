@@ -4,8 +4,6 @@
 
 
 void _elicit_swatches_update_scroll_bar(Elicit *el);
-void _elicit_swatches_save_eet(Elicit *el);
-void _elicit_swatches_load_eet(Elicit *el);
 void _elicit_swatches_load_edb(Elicit *el);
 void _elicit_swatches_load_gpl(Elicit *el);
 void _elicit_swatches_save_edb(Elicit *el);
@@ -99,49 +97,9 @@ _elicit_swatches_save_gpl(Elicit *el)
 }
 
 void
-_elicit_swatches_save_eet(Elicit *el)
-{
-  Evas_List *l;
-  Eet_File *eet;
-  int i = 0;
-  char buf[PATH_MAX];
-  char *hex;
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.eet", getenv("HOME"), el->app_name);
-
-  eet = eet_open(buf, EET_FILE_MODE_WRITE);
- 
-  if (!eet) return;
-
-  for (l = esmart_container_elements_get(el->swatches.cont); l; l = l->next)
-  {
-    Evas_Object *obj;
-    Elicit_Swatch *sw;
-
-    obj = (Evas_Object *)(l->data);
-    sw = evas_object_data_get(obj, "swatch");
-
-    snprintf(buf, PATH_MAX, "swatches/%d/name", i);
-    eet_write(eet, buf, sw->name, strlen(sw->name), 1);
-    
-    snprintf(buf, PATH_MAX, "swatches/%d/hex", i);
-    hex = elicit_color_rgb_to_hex(sw->r, sw->g, sw->b);
-    eet_write(eet, buf, hex, strlen(hex), 1);
-    free(hex);
-
-    i++;
-  }
-  
-  snprintf(buf, PATH_MAX, "%d", i);
-  eet_write(eet, "swatches/num", buf, strlen(buf), 1);
-
-  eet_close(eet);
-}
-
-
-void
 _elicit_swatches_save_edb(Elicit *el)
 {
+#ifdef HAVE_EDB
   Evas_List *l;
   E_DB_File *db;
   int i = 0;
@@ -200,6 +158,7 @@ _elicit_swatches_save_edb(Elicit *el)
   }
   e_db_close(db);
   e_db_flush();
+#endif
 }
 
 void
@@ -249,64 +208,10 @@ _elicit_swatches_load_gpl(Elicit *el)
   free(name);
 }
 
-
-void
-_elicit_swatches_load_eet(Elicit *el)
-{
-  Eet_File *eet;
-  int num = 0;
-  int i = 0;
-  char buf[PATH_MAX];
-  char *ret = NULL;
-  int size_ret;
-  char *name;
-  int r, g, b;
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.eet", getenv("HOME"), el->app_name);
-
-  eet = eet_open(buf, EET_FILE_MODE_READ);
-  if (!eet) return;
-  
-  ret = eet_read(eet, "swatches/num", &size_ret);
-  if (ret) {
-    memcpy(buf, ret, size_ret);
-    buf[size_ret] = '\0';
-    num = atoi(buf);
-    free(ret);
-  }
-
-  for (i = 0; i < num; i++)
-  {
-    Elicit_Swatch *sw;
-  
-    snprintf(buf, PATH_MAX, "swatches/%d/name", i);
-    ret = eet_read(eet, buf, &size_ret);
-    if (ret) {
-      memcpy(buf, ret, size_ret);
-      buf[size_ret] = '\0';
-      name = strdup(buf);
-      free(ret);
-    }
-     
-    snprintf(buf, PATH_MAX, "swatches/%d/hex", i);
-    ret = eet_read(eet, buf, &size_ret);
-    if (ret) {
-      memcpy(buf, ret, size_ret);
-      buf[size_ret] = '\0';
-      elicit_color_hex_to_rgb(buf, &(r), &(g), &(b));
-      free(ret);
-    }
-
-    sw = elicit_swatch_new(el, name, r, g, b);
-  }
-
-  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
-  eet_close(eet);
-}
-
 void
 _elicit_swatches_load_edb(Elicit *el)
 {
+#ifdef HAVE_EDB
   E_DB_File *db;
   int num;
   int i;
@@ -339,6 +244,7 @@ _elicit_swatches_load_edb(Elicit *el)
   }
   el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
   e_db_close(db);
+#endif
 }
 
 void

@@ -54,6 +54,7 @@ elicit_config_theme_get()
 void
 elicit_config_theme_set(char *name)
 {
+  if (!name) return;
   ecore_config_theme_set("/settings/theme", name);
 }
 
@@ -128,6 +129,7 @@ elicit_config_editor_get(void)
 void
 elicit_config_editor_set(char *ed)
 {
+   if (!ed) return;
    ecore_config_string_set("/editor", ed);
 }
 

@@ -4,8 +4,8 @@
 
 void _elicit_shots_update_scroll_bar(Elicit *el);
 void _elicit_shots_load_eet(Elicit *el);
-void _elicit_shots_load_edb(Elicit *el);
 void _elicit_shots_save_eet(Elicit *el);
+void _elicit_shots_load_edb(Elicit *el);
 void _elicit_shots_save_edb(Elicit *el);
 
 int
@@ -115,6 +115,7 @@ _elicit_shots_save_eet(Elicit *el)
 void
 _elicit_shots_save_edb(Elicit *el)
 {
+#ifdef HAVE_EDB
   Evas_List *l;
   E_DB_File *db;
   int i = 0;
@@ -182,6 +183,7 @@ _elicit_shots_save_edb(Elicit *el)
   
   e_db_close(db);
   e_db_flush();
+#endif
 }
 
 void
@@ -211,6 +213,7 @@ _elicit_shots_load_eet(Elicit *el)
   int i;
   char file[PATH_MAX];
   char buf[PATH_MAX];
+  char *name = NULL;
   char *ret = 0;
   int size_ret = 0;
   char *theme = NULL;
@@ -222,11 +225,13 @@ _elicit_shots_load_eet(Elicit *el)
   if (!eet) return;
 
   ret = eet_read(eet, "shots/num", &size_ret);
-  if (size_ret >= PATH_MAX) return;
+  if (!ret || size_ret >= PATH_MAX) return;
 
   memcpy(buf, ret, size_ret);
   buf[size_ret] = '\0';
   num = atoi(buf);
+
+  free(ret);
  
   theme = elicit_config_theme_get(el);
   for (i = 0; i < num; i++)
@@ -238,9 +243,19 @@ _elicit_shots_load_eet(Elicit *el)
   
     snprintf(buf, PATH_MAX, "/shots/%d/name", i);
     ret = eet_read(eet, buf, &size_ret);
-    memcpy(buf, ret, size_ret);
-    buf[size_ret] = '\0';
-    sh->name = strdup(buf);
+
+    if (ret)
+    {
+      name = calloc(size_ret+1, sizeof(char));
+      memcpy(name, ret, size_ret);
+      name[size_ret] = '\0';
+      sh->name = strdup(buf);
+      free(ret);
+    }
+    else 
+    {
+      sh->name = strdup("Unknown");
+    }
 
     sh->obj = edje_object_add(el->evas);
     sh->shot = evas_object_image_add(el->evas);
@@ -281,6 +296,7 @@ _elicit_shots_load_eet(Elicit *el)
 void
 _elicit_shots_load_edb(Elicit *el)
 {
+#ifdef HAVE_EDB
   E_DB_File *db;
   int num, ok;
   int i;
@@ -350,6 +366,7 @@ _elicit_shots_load_edb(Elicit *el)
   el->shots.length = esmart_container_elements_length_get(el->shots.cont);
   
   e_db_close(db);
+#endif
 }
 
 
