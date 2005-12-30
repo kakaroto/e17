@@ -415,10 +415,6 @@ layout_ewl_simple_local_view_cb
 	entropy_layout_gui* layout = instance->layout_parent->data;
 	entropy_gui_component_instance* iter;
 
-	entropy_gui_component_instance_enable(instance);
-	ewl_widget_show(EWL_WIDGET(instance->gui_object));
-	if (!EWL_WIDGET(instance->gui_object)->parent) 
-		ewl_container_child_append(EWL_CONTAINER(layout->local_container), EWL_WIDGET(instance->gui_object));
 	
 	/*Hide all the other local viewers, and disable them*/
 	ecore_list_goto_first(layout->local_components);
@@ -436,6 +432,14 @@ layout_ewl_simple_local_view_cb
 
 		
 	}
+
+	entropy_gui_component_instance_enable(instance);
+	
+	if (!EWL_WIDGET(instance->gui_object)->parent) 
+		ewl_container_child_append(EWL_CONTAINER(layout->local_container), EWL_WIDGET(instance->gui_object));
+
+	ewl_widget_show(EWL_WIDGET(instance->gui_object));
+
 
 
 		
