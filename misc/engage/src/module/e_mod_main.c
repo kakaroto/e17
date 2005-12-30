@@ -159,7 +159,11 @@ e_modapi_shutdown(E_Module *m)
    Engage *e;
 
    if (m->config_menu)
-     m->config_menu = NULL;
+     {
+	e_menu_deactivate(m->config_menu);
+	e_object_del(E_OBJECT(m->config_menu));
+	m->config_menu = NULL;
+     }
 
    e = m->data;
    if (e)
@@ -192,6 +196,29 @@ e_modapi_about(E_Module *m)
 		     "It is the native E17 version of engage.<br>"
 		     "This version offers far greater features<br>"
 		     "and will be the main focus of development from now on."));
+   return 1;
+}
+
+int
+e_modapi_config(E_Module *m)
+{
+   Engage *e;
+   Evas_List *l;
+   E_Container *current;
+
+   e = m->data;
+   current = e_container_current_get(e_manager_current_get());
+   for (l = e->bars; l; l = l->next)
+     {
+	Engage_Bar *eb;
+	
+	eb = l->data;
+	if (eb->con == current)
+	  {
+	     _engage_module_config(current, eb);
+	     break;
+	  }	
+     }
    return 1;
 }
 
@@ -2699,3 +2726,13 @@ _engage_border_ignore(E_Border *bd)
    
    return 0;
 }
+
+void
+_engage_cb_config_updated(void *data)
+{
+   Engage_Bar *eb;
+
+   eb = data;
+   _engage_bar_frame_resize(eb);
+}
+
