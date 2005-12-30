@@ -315,7 +315,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	instance->core = core;
 	
 	viewer->tree = ewl_tree_new(1);	
-	ewl_tree_headers_visible_set(EWL_TREE(viewer->tree),0);
+	//ewl_tree_headers_visible_set(EWL_TREE(viewer->tree),0);
 	viewer->loaded_dirs = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	viewer->row_folder_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
