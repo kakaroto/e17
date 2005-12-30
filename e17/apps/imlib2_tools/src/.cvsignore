@@ -3,6 +3,7 @@ Makefile.in
 config.h
 stamp-h
 .deps
+stamp-h1
 stamp-h.in
 imlib2_convert
 imlib2_identify
