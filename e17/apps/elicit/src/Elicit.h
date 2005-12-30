@@ -10,7 +10,6 @@
 #include <Edje.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Esmart/Esmart_Container.h>
-#include <Edb.h>
 #include <Eet.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
@@ -21,6 +20,11 @@
 #include <fnmatch.h>
 
 #include "config.h"
+
+#ifdef HAVE_EDB
+#include <Edb.h>
+#endif
+
 #define DATADIR PACKAGE_DATA_DIR
 
 typedef struct _Elicit Elicit;

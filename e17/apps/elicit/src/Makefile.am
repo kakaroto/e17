@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ \
-@esmart_cflags@ @imlib2_cflags@
+@esmart_cflags@ @imlib2_cflags@ @eet_cflags@
 
 bin_PROGRAMS = elicit 
 
@@ -15,5 +15,5 @@ elicit_SOURCES = \
         themes.c themes.h 
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@ @imlib2_libs@ -lesmart_draggies -lesmart_container
+@esmart_libs@ @imlib2_libs@ @eet_libs@ -lesmart_draggies -lesmart_container
 

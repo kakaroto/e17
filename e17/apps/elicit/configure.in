@@ -103,14 +103,27 @@ AC_SUBST(evas_libs)
 PROG="edb-config";
 AC_PATH_PROG(EDB_CONFIG, $PROG, "", $PATH)
 if test -z "$EDB_CONFIG" ; then
+  edb_cflags=""
+  edb_libs=""
+else
+  AC_DEFINE(HAVE_EDB, 1, [Have edb])
+  edb_cflags=`$EDB_CONFIG --cflags`
+  edb_libs=`$EDB_CONFIG --libs`
+fi
+AC_SUBST(edb_cflags)
+AC_SUBST(edb_libs)
+
+PROG="eet-config";
+AC_PATH_PROG(EET_CONFIG, $PROG, "", $PATH)
+if test -z "$EET_CONFIG" ; then
   echo $PROG " is not in your \$PATH. Please ensure it is.";
   echo "Read the manual page for you shell as to how to extend your path.";
   AC_MSG_ERROR(Cannot find $PROG)
 fi
-edb_cflags=`$EDB_CONFIG --cflags`
-edb_libs=`$EDB_CONFIG --libs`
-AC_SUBST(edb_cflags)
-AC_SUBST(edb_libs)
+eet_cflags=`$EET_CONFIG --cflags`
+eet_libs=`$EET_CONFIG --libs`
+AC_SUBST(eet_cflags)
+AC_SUBST(eet_libs)
 
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
