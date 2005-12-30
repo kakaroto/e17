@@ -402,6 +402,13 @@ enum Ewl_Text_Context_Mask
 };
 typedef enum Ewl_Text_Context_Mask Ewl_Text_Context_Mask;
 
+enum Ewl_Icon_Type
+{
+	EWL_ICON_TYPE_SHORT,
+	EWL_ICON_TYPE_LONG
+};
+typedef enum Ewl_Icon_Type Ewl_Icon_Type;
+
 /**
  * @}
  */ 

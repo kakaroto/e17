@@ -148,6 +148,12 @@ main(int argc, char **argv)
 				"another widget."
 		},
                 {
+                        "Icon",
+                        __create_icon_test_window,
+                        "ewl_icon_test.c",
+                        "Provides a widget for displaying an icon"
+                },
+                {
                         "Iconbox",
                         __create_iconbox_test_window,
                         "ewl_iconbox_test.c",

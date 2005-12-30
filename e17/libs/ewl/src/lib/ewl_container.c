@@ -3,6 +3,11 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_container_child_insert_helper(Ewl_Container *pc, 
+						Ewl_Widget *child, 
+						int index, 
+						int skip_internal);
+
 /**
  * @param c: the container to initialize
  * @return Returns TRUE on success, otherwise FALSE.
@@ -227,18 +232,9 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param pc: the parent container that will hold the child
- * @param child: the child to add to the container
- * @param index: the position in the child list to add the cihld
- * @return Returns no value.
- * @brief Add a child at an index of the container
- *
- * Attaches the child to the @a index position of the parent containers child
- * list.
- */
-void
-ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
+static void
+ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child, 
+						int index, int skip_internal)
 {
 	Ewl_Widget *cur;
 	int idx = 0;
@@ -263,7 +259,7 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 	ecore_list_goto_first(pc->children);
 	while ((cur = ecore_list_next(pc->children)))
 	{
-		if (ewl_widget_internal_is(cur)) continue;
+		if (skip_internal && ewl_widget_internal_is(cur)) continue;
 
 		idx++;
 		if (idx == index) break;
@@ -271,6 +267,56 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
 	ecore_list_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_child_add_call(pc, child);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pc: the parent container that will hold the child
+ * @param child: the child to add to the container
+ * @param index: the position in the child list to add the child (not
+ * including internal widgets
+ * @return Returns no value.
+ * @brief Add a child at an index of the container
+ *
+ * Attaches the child to the @a index position of the parent containers child
+ * list.
+ */
+void
+ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pc", pc);
+	DCHECK_PARAM_PTR("child", child);
+	DCHECK_TYPE("pc", pc, "container");
+	DCHECK_TYPE("child", child, "widget");
+
+	ewl_container_child_insert_helper(pc, child, index, TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pc: the parent container that will hold the child
+ * @param child: the child to add to the container
+ * @param index: the position in the child list to add the cihld
+ * @return Returns no value.
+ * @brief Add a child at an index of the container
+ *
+ * Attaches the child to the @a index position of the parent containers child
+ * list.
+ */
+void
+ewl_container_child_insert_internal(Ewl_Container *pc,
+				   Ewl_Widget *child, int index)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("pc", pc);
+	DCHECK_PARAM_PTR("child", child);
+	DCHECK_TYPE("pc", pc, "container");
+	DCHECK_TYPE("child", child, "widget");
+
+	ewl_container_child_insert_helper(pc, child, index, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

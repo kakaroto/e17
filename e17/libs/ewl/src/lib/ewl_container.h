@@ -109,6 +109,8 @@ void            ewl_container_child_prepend(Ewl_Container *parent,
 					    Ewl_Widget *child);
 void            ewl_container_child_insert(Ewl_Container *parent,
 					   Ewl_Widget *child, int index);
+void		ewl_container_child_insert_internal(Ewl_Container *parent,
+					   Ewl_Widget *child, int index);
 void            ewl_container_child_remove(Ewl_Container *parent,
 					   Ewl_Widget *child);
 void            ewl_container_child_resize(Ewl_Widget *w, int size,

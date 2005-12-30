@@ -38,6 +38,7 @@ EWLHEADERS = \
 	ewl_floater.h \
 	ewl_filedialog.h \
 	ewl_grid.h \
+	ewl_icon.h \
 	ewl_iconbox.h \
 	ewl_image.h \
 	ewl_imenu.h \
@@ -102,6 +103,7 @@ EWLSOURCES= \
 	ewl_floater.c \
 	ewl_filedialog.c \
 	ewl_grid.c \
+	ewl_icon.c \
 	ewl_iconbox.c \
 	ewl_image.c \
 	ewl_imenu.c \
