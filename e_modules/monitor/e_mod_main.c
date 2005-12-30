@@ -109,7 +109,7 @@ e_modapi_config(E_Module *module)
    Evas_List *l;
    
    mon = module->data;
-   if (!mon) reutrn 0;
+   if (!mon) return 0;
    for (l = mon->faces; l; l = l->next) 
      {
 	Monitor_Face *f;
