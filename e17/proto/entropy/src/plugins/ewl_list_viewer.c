@@ -197,7 +197,7 @@ int entropy_plugin_sub_type_get() {
 }
 
 char* entropy_plugin_identify() {
-	        return (char*)"EWL local viewer";
+	        return (char*)"List View";
 }
 
 void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Hash* gui_hash) {
@@ -383,6 +383,7 @@ void ewl_icon_local_viewer_key_event_cb(Ewl_Iconbox* ib, void* data, char* key) 
 
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
 	Ewl_Widget* context;
+	char* headers[4];
 
 	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
@@ -394,6 +395,15 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	instance->layout_parent = layout;
 	
         viewer->list = ewl_tree_new(3);
+
+	headers[0] = "Filename";
+	headers[1] = "Size";
+	headers[2] = "Date Modified";
+	headers[3] = NULL;
+	ewl_tree_headers_set(EWL_TREE(viewer->list), headers);
+	
+	
+	
 	viewer->default_bg = 0;
 	instance->gui_object = viewer->list;
 	ewl_widget_show(EWL_WIDGET(viewer->list));
@@ -449,16 +459,20 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 
 gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item, int do_mime) {
 		entropy_icon_viewer* view = comp->data;
+		char* text[4];
 	
 		
-		Ewl_Iconbox_Icon* icon;
+		Ewl_Tree_Node* icon;
 		gui_file* gui_object;
 
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(list_item->md5);			
-			
-			//FIXME
-			//icon = ewl_list_icon_add(EWL_ICONBOX(view->list), list_item->filename, PACKAGE_DATA_DIR "/icons/default.png");
+		
+			 text[0] = list_item->filename;
+			 text[1] = NULL;
+			 text[2] = NULL;
+
+			icon = ewl_tree_text_row_add(EWL_TREE(view->list), NULL, text);
 			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);
 			
 
@@ -650,6 +664,8 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
 
+		ewl_container_reset(EWL_CONTAINER(view->list));
+
 	
 	}
 	break;
@@ -670,7 +686,9 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 	        	        /*printf("Received callback notify from notify event..\n");*/
 		                /*Make sure the icon still exists*/
 				/*if (obj->icon) {*/
-				ewl_list_icon_image_set(EWL_ICONBOX_ICON(obj->icon), obj->thumbnail->thumbnail_filename);
+
+				//FIXME
+				//ewl_list_icon_image_set(EWL_ICONBOX_ICON(obj->icon), obj->thumbnail->thumbnail_filename);
 
 				/*FIXME This is inefficient as all hell - find a better way to do this*/
 				//ewl_list_icon_arrange(EWL_ICONBOX(view->list)); 

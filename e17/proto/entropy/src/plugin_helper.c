@@ -63,7 +63,16 @@ entropy_plugin* entropy_plugins_type_get_first(int type, int subtype) {
 
 }
 
-Ecore_List* entropy_plugins_type_get(int type) {
+
+char* entropy_plugin_plugin_identify(entropy_plugin* plugin) {
+	char* (*entropy_plugin_identify)(void);
+	entropy_plugin_identify = dlsym(plugin->dl_ref, "entropy_plugin_identify");
+	
+	return (*entropy_plugin_identify)();
+}
+
+
+Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 	entropy_plugin* list_item;
 
 	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
@@ -77,7 +86,8 @@ Ecore_List* entropy_plugins_type_get(int type) {
 	ecore_list_goto_first(plugins);
 	while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning plugin: %s\n", list_item->filename);*/
-		if (list_item->type == type) {
+		if (list_item->type == type && 
+		   (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)) {
 			ecore_list_append(plugin_list, list_item);
 		}
 	}

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ewl_mime_dialog.h"
+#include "entropy_gui.h"
 
 static Ewl_Widget* win;
 static Ecore_List* components;
@@ -19,7 +20,11 @@ struct entropy_layout_gui {
 	entropy_gui_component_instance* iconbox_viewer;
 	entropy_gui_component_instance* structure_viewer;
 	Ewl_Widget* tree;
+	Ewl_Widget* paned;
+	Ewl_Widget* local_container;
+	
 	Ecore_List* current_folder;
+	Ecore_List* local_components;
 
 
 	/*Tmp*/
@@ -401,6 +406,42 @@ contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	ewl_object_maximum_w_set(EWL_OBJECT(box), 15);
 }
 
+
+void
+layout_ewl_simple_local_view_cb
+(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+	
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* layout = instance->layout_parent->data;
+	entropy_gui_component_instance* iter;
+
+	entropy_gui_component_instance_enable(instance);
+	ewl_widget_show(EWL_WIDGET(instance->gui_object));
+	if (!EWL_WIDGET(instance->gui_object)->parent) 
+		ewl_container_child_append(EWL_CONTAINER(layout->local_container), EWL_WIDGET(instance->gui_object));
+	
+	/*Hide all the other local viewers, and disable them*/
+	ecore_list_goto_first(layout->local_components);
+	while  ((iter = ecore_list_next(layout->local_components))) {
+		if (iter != instance) {
+			entropy_gui_component_instance_disable(iter);
+
+			if (EWL_WIDGET(iter->gui_object)->parent && EWL_WIDGET(iter->gui_object)->parent == layout->local_container) {
+				//ewl_container_child_remove(EWL_CONTAINER(layout->paned), EWL_WIDGET(iter->gui_object));
+				printf("Removed a local view..\n");
+
+				ewl_widget_hide(EWL_WIDGET(iter->gui_object));
+			}
+		}
+
+		
+	}
+
+
+		
+}
+
+
 void
 expand_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	Ewl_Box* box = EWL_BOX(user_data);
@@ -450,9 +491,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	/*EWL Stuff -----------------*/
 
 	void* (*entropy_plugin_init)(entropy_core* core, entropy_gui_component_instance*);
-	void* (*structure_plugin_init)(entropy_core* core, entropy_gui_component_instance*, void* data);
 
-	Ewl_Widget* paned;
 	Ewl_Widget* box;
 	Ewl_Widget* tree;
 	Ewl_Widget* vbox;
@@ -460,32 +499,49 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	Ewl_Widget* contract_button;
 	Ewl_Widget* expand_button;
 	Ewl_Widget* scrollpane;
-	Ewl_Widget* add_button;
 	Ewl_Widget* menubar;
 	Ewl_Widget* menu;
 	Ewl_Widget* item;
+	Ecore_List* local_plugins;
+	entropy_gui_component_instance* instance;
 
 	entropy_plugin* plugin;
-	Ewl_Widget* iconbox;
+	Ewl_Widget* iconbox = NULL;
 
 	layout = entropy_malloc(sizeof(entropy_gui_component_instance));
 	gui = entropy_malloc(sizeof(entropy_layout_gui));
 	gui->current_folder = NULL;
 	layout->data = gui;
 	layout->core = core;
+	gui->local_components = ecore_list_new();
 
 	/*Register this layout container with the core, so our children can get events*/
 	entropy_core_layout_register(core, layout);
 
 	/*---------------------------*/
 	/*HACK - get the iconbox - this should be configurable */
-	plugin = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
-	if (plugin) {
+	local_plugins = entropy_plugins_type_get(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
+	
+	if (local_plugins) {
 		//printf("Plugin: %s\n", plugin->filename);
-		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
-		gui->iconbox_viewer = (*entropy_plugin_init)(core,layout);
-		gui->iconbox_viewer->plugin = plugin;
-		iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
+		//
+		while ((plugin = ecore_list_remove_first(local_plugins))) {
+			entropy_gui_component_instance* instance;
+			
+			entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+			instance = (*entropy_plugin_init)(core,layout);
+			gui->iconbox_viewer = instance;
+			
+			gui->iconbox_viewer->plugin = plugin;
+			instance->plugin = plugin;
+			
+			iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
+
+			printf("Loaded '%s'...\n", entropy_plugin_plugin_identify(plugin));
+
+			/*Add this plugin to the local viewers list*/
+			ecore_list_append(gui->local_components, instance);
+		}
 	} else {
 		fprintf(stderr, "No visual component found! *****\n");
 		return NULL;
@@ -511,7 +567,9 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_box_spacing_set(EWL_BOX(EWL_SCROLLPANE(tree)->box), 5);
 	gui->tree = tree;
 
-	paned = ewl_hpaned_new();
+	gui->paned = ewl_hpaned_new();
+	gui->local_container = ewl_cell_new();
+	
 	ewl_window_title_set(EWL_WINDOW(win), "Entropy");
 	ewl_window_name_set(EWL_WINDOW(win), "Entropy");
 	ewl_window_class_set(EWL_WINDOW(win), "Entropy");
@@ -554,6 +612,24 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_container_child_append(EWL_CONTAINER(menu), item);
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, mime_cb, layout);
 	ewl_widget_show(item);
+
+	menu = ewl_menu_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(menu), "View");
+	ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+	ewl_widget_show(menu);
+
+	ecore_list_goto_first(gui->local_components);
+	while ( (instance = ecore_list_next(gui->local_components))) {
+		char* name = entropy_plugin_plugin_identify(instance->plugin);
+
+		item = ewl_menu_item_new();
+		ewl_menu_item_text_set(EWL_MENU_ITEM(item), name);
+		ewl_container_child_append(EWL_CONTAINER(menu), item);
+		ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, layout_ewl_simple_local_view_cb, instance);
+		ewl_widget_show(item);
+	}
+	
+	
 	
 
 	menu = ewl_menu_new();
@@ -579,35 +655,15 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_container_child_append(EWL_CONTAINER(hbox), expand_button);
 	ewl_container_child_append(EWL_CONTAINER(hbox), contract_button);
 
-	//ewl_callback_append(EWL_WIDGET(contract_button), EWL_CALLBACK_CLICKED, contract_cb, EWL_PANED(paned)->first);
-	//ewl_callback_append(EWL_WIDGET(expand_button), EWL_CALLBACK_CLICKED, expand_cb, EWL_PANED(paned)->first);
-
-
-	/*Set up the paned*/
-
-	/*Button to add locations*/
-	//ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_LEFT);
-	//add_button = ewl_button_new();
-	//ewl_button_label_set(EWL_BUTTON(add_button), "Add Location");
-	//ewl_container_child_append(EWL_CONTAINER(paned), add_button);
-
-	//ewl_object_maximum_h_set(EWL_OBJECT(add_button), 20);
-	//ewl_object_minimum_w_set(EWL_OBJECT(add_button), 250);
-
-
-	//ewl_callback_append(EWL_WIDGET(add_button), EWL_CALLBACK_CLICKED, location_add_cb, layout);
-	/*--------------------------*/
-
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
-	ewl_container_child_append(EWL_CONTAINER(box),paned);
-	ewl_container_child_append(EWL_CONTAINER(paned), tree);
-	//ewl_paned_active_area_set(EWL_PANED(paned), EWL_POSITION_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(paned), iconbox);
+	ewl_container_child_append(EWL_CONTAINER(box),gui->paned);
+	ewl_container_child_append(EWL_CONTAINER(gui->paned), tree);
+
+	ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->local_container);
+	ewl_container_child_append(EWL_CONTAINER(gui->local_container), iconbox);
 	
 	if (!(tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar"))) {
-		//printf ("Creating initial view for ewl_simple layout..\n");
 		layout_ewl_simple_config_create(core);
-
 		tmp = entropy_config_str_get("layout_ewl_simple", "structure_bar");
 	}
 
@@ -621,7 +677,8 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	ewl_widget_show(contract_button);
 	ewl_widget_show(expand_button);
 	ewl_widget_show(scrollpane);
-	ewl_widget_show(paned);
+	ewl_widget_show(gui->paned);
+	ewl_widget_show(gui->local_container);
 	ewl_widget_show(tree);
 
 	ewl_container_child_append(EWL_CONTAINER(win), box);

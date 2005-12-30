@@ -239,7 +239,7 @@ int entropy_plugin_sub_type_get() {
 }
 
 char* entropy_plugin_identify() {
-	        return (char*)"EWL local viewer";
+	        return (char*)"Icon View";
 }
 
 void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Hash* gui_hash) {

@@ -219,7 +219,8 @@ void callback(evfs_event* data) {
 
 					filename = strdup(pos+1);
 
-					/*If we are the root dir (i.e. we only have one "/", replace it (so we can use it below),
+					/*If we are the root dir (i.e. we only have 
+					 * one "/", replace it (so we can use it below),
 					 * and assume this filename has length (BAD).  */
 					if (!strlen(folder)) {
 						*pos = '/';

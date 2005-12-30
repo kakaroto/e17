@@ -15,5 +15,8 @@
 /*File copy/move etc progress event*/
 #define ENTROPY_GUI_EVENT_FILE_PROGRESS "entropy_gui_event_file_progress"
 
+void entropy_gui_component_instance_disable(entropy_gui_component_instance*);
+void entropy_gui_component_instance_enable(entropy_gui_component_instance*);
+
 #endif
 
