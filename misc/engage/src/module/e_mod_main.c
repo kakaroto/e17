@@ -1799,7 +1799,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	       if (md2 <= size - halfapp_size)
 		 eb->mouse_out = -1;
 
-	     radius = (4 * new_zoom - 3) / 3;
+	     radius = sqrt(2) * new_zoom / 2;
 	     if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
 	       radius *= w;
 	     else
@@ -2237,27 +2237,28 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    edge = e_gadman_client_edge_get(eb->gmc);
 
    if (eb->conf->zoom)
-     multiplier = eb->conf->zoom_factor;
+     multiplier = eb->conf->zoom_factor + ((eb->conf->zoom_factor)
+        * sqrt(2) / 2);
    else
      multiplier = 1;
 
    if (edge == E_GADMAN_EDGE_LEFT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h );
+	evas_object_resize(eb->event_object, w * multiplier, h );
      }
    else if (edge == E_GADMAN_EDGE_RIGHT)
      {
-	evas_object_resize(eb->event_object, w * (multiplier + 1), h );
-	evas_object_move(eb->event_object, x - w * multiplier, y);
+	evas_object_resize(eb->event_object, w * multiplier, h );
+	evas_object_move(eb->event_object, x - (w * (multiplier - 1)), y);
      }
    else if (edge == E_GADMAN_EDGE_TOP)
      {
-	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
+	evas_object_resize(eb->event_object, w , h * multiplier);
      }
    else
      {
-	evas_object_resize(eb->event_object, w , h * (multiplier + 1));
-	evas_object_move(eb->event_object, x, y - h * multiplier);
+	evas_object_resize(eb->event_object, w , h * multiplier);
+	evas_object_move(eb->event_object, x, y - (h * (multiplier - 1)));
      }
    _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
