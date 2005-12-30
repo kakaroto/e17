@@ -1,0 +1,74 @@
+group {
+    name, "debug-red";
+
+    data {
+        item, "inset/top"    "0";
+        item, "inset/bottom" "0";
+        item, "inset/left"   "0";
+        item, "inset/right"  "0";
+    }
+
+    parts {
+
+        part {
+            name, "background";
+	    type, RECT;
+            mouse_events, 0;
+            description {
+                state, "default" 0.0;
+		color, 255 0 0 128;
+            }
+	}
+
+    }
+}
+
+group {
+    name, "debug-green";
+
+    data {
+        item, "inset/top"    "0";
+        item, "inset/bottom" "0";
+        item, "inset/left"   "0";
+        item, "inset/right"  "0";
+    }
+
+    parts {
+
+        part {
+            name, "background";
+	    type, RECT;
+            mouse_events, 0;
+            description {
+                state, "default" 0.0;
+		color, 0 255 0 128;
+            }
+	}
+
+    }
+}
+
+group {
+    name, "debug-blue";
+
+    data {
+        item, "inset/top"    "0";
+        item, "inset/bottom" "0";
+        item, "inset/left"   "0";
+        item, "inset/right"  "0";
+    }
+
+    parts {
+
+        part {
+            name, "background";
+	    type, RECT;
+            mouse_events, 0;
+            description {
+                state, "default" 0.0;
+		color, 0 0 255 128;
+            }
+	}
+
+    }
+}

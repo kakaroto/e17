@@ -9,6 +9,7 @@ images {
 }
 
 collections {
+#include "e17/bits/debug-groups.edc"
 #include "e17/bits/label-groups.edc"
 #include "e17/bits/button-groups.edc"
 #include "e17/bits/entry-groups.edc"
@@ -58,7 +59,8 @@ data {
     item, "/tree/group" "tree_background";
     item, "/row/group" "row_background";
     item, "/cell/group" "tree-select";
-    item, "/tree/row/button/group" "tree_header";
+    item, "/tree/paned/button/group" "tree_header";
+    item, "/tree/paned/grabber/vertical/group" "vline";
     item, "/node/check/group" "treenode";
     
     item, "/progressbar_bar/group" "progressbar_bar";
