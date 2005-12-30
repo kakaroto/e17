@@ -531,6 +531,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 		//
 		while ((plugin = ecore_list_remove_first(local_plugins))) {
 			entropy_gui_component_instance* instance;
+			char* name = NULL;
 			
 			entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
 			instance = (*entropy_plugin_init)(core,layout);
@@ -538,10 +539,14 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 			
 			gui->iconbox_viewer->plugin = plugin;
 			instance->plugin = plugin;
-			
-			iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
 
-			printf("Loaded '%s'...\n", entropy_plugin_plugin_identify(plugin));
+			name = entropy_plugin_plugin_identify(plugin);
+			printf("Loaded '%s'...\n", name);
+			
+			//FIXME default to icon view for now
+			if (!strcmp(name, "Icon View")) iconbox = EWL_WIDGET(gui->iconbox_viewer->gui_object);
+
+			
 
 			/*Add this plugin to the local viewers list*/
 			ecore_list_append(gui->local_components, instance);
