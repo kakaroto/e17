@@ -82,12 +82,23 @@ int
 e_modapi_config(E_Module *m) 
 {
    Snow *s;
+   Evas_List *l;
    E_Container *con;
    
    s = m->data;
    if (!s) return 0;
+   if (!s->cons) return 0;
    con = e_container_current_get(e_manager_current_get());
-   _config_snow_module(con, s);
+   for (l = s->cons; l; l = l->next) 
+     {
+	E_Container *c;
+	c = l->data;
+	if (c == con) 
+	  {
+	     _config_snow_module(con, s);
+	     break;
+	  }
+     }
    return 1;
 }
 

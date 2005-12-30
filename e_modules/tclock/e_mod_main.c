@@ -84,12 +84,15 @@ e_modapi_config(E_Module *module)
 {
    Evas_List *l;
    TClock *t;
-   TClock_Face *tf;
 
    t = module->data;
+   if (!t) return 0;
+   if (!t->faces) return 0;
    for (l = t->faces; l; l = l->next)
      {
+	TClock_Face *tf;	
 	tf = l->data;
+	if (!tf) return 0;
 	if (tf->con == e_container_current_get(e_manager_current_get()))
 	  {
 	     /* Configure Clock */

@@ -84,11 +84,22 @@ e_modapi_config(E_Module *m)
 {
    Rain *r;
    E_Container *con;
+   Evas_List *l;
    
    r = m->data;
    if (!r) return 0;
+   if (!r->cons) return 0;
    con = e_container_current_get(e_manager_current_get());
-   _config_rain_module(con, r);
+   for (l = r->cons; l; l = l->next) 
+     {
+	E_Container *c;
+	c = l->data;
+	if (c == con) 
+	  {
+	     _config_rain_module(con, r);
+	     break;
+	  }
+     }
    return 1;
 }
 

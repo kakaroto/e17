@@ -107,8 +107,10 @@ e_modapi_config(E_Module *m)
    
    s = m->data;
    if (!s) return 0;
+   if (!s->face) return 0;
    con = e_container_current_get(e_manager_current_get());
-   _config_screenshot_module(con, s);
+   if (s->face->con == con)
+     _config_screenshot_module(con, s);
    return 1;
 }
 
