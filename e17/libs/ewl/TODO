@@ -60,6 +60,35 @@ EWL BUGS
   the active area, the tooltip dosen't seem to appear.
 
 
+  Ewl_Icon bugs/todo
+  ------------------
+ - Need to add the constrain stuff in like iconbox does at the moment.
+   Figure out the constrain size by first checking the max size of the widget
+   and falling back to check /icon/constrain/size from the theme, then
+   falling back to a default 64 if no theme value set
+ 
+ - Clicking on the label 'Draw (Editable)' then clicking again will case a
+   warning to print. I _think_ the move event is getting fired for the text
+   widget after I've deleted it in the ewl_icon code. Need to confirm/fix
+   this.
+ 
+ - Need to properly center the icon and the text in the icon widget
+ 
+ - Menus aren't hooked up. This should popup on right click and hide on a
+   click outside the menu. Needs to do all that grabby stuff menus do (which
+   should be in the menu's already.
+ 
+ - Should change label editing to double click on the icon instead of
+   clicking on the label itself.
+ 
+ - Need to hook up label compressing (adding ... after a certain size)
+   similar to what iconbox is currently doing.
+
+ - Should Ewl_Icon be doing thumbnailing or assume it is getting passed
+   thumbnails? Does it need a second api added? ewl_icon_image_thumb_add
+   which will create the thumb?
+
+
 EWL TODO
 ========
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
