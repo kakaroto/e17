@@ -114,7 +114,7 @@ e_modapi_config(E_Module *module)
 	Monitor_Face *f;
 	
 	f = l->data;
-	if (f->mon == mon) 
+	if (f->con == e_container_current_get(e_manager_current_get())) 
 	  {
 	     _config_monitor_module(f->con, f);
 	     break;

@@ -90,7 +90,7 @@ e_modapi_config(E_Module *module)
    for (l = t->faces; l; l = l->next)
      {
 	tf = l->data;
-	if (tf->tclock == t)
+	if (tf->con == e_container_current_get(e_manager_current_get()))
 	  {
 	     /* Configure Clock */
 	     _config_tclock_module(tf->con, tf);
