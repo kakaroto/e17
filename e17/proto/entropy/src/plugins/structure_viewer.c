@@ -272,10 +272,6 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_DROP, dnd_drop_callback, event);
 
-		//ewl_widget_appearance_set(EWL_WIDGET(row), "entry");
-		
-
-		
 		ecore_list_append(viewer->gui_events, event);
 
 		/*Add this row to our map of files -> rows */

@@ -460,6 +460,7 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item, int do_mime) {
 		entropy_icon_viewer* view = comp->data;
 		char* text[4];
+		char buf[50];
 	
 		
 		Ewl_Tree_Node* icon;
@@ -468,9 +469,22 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(list_item->md5);			
 		
-			 text[0] = list_item->filename;
-			 text[1] = NULL;
-			 text[2] = NULL;
+			 text[0] = list_item->filename;   /*Name*/
+			 
+			 if (list_item->retrieved_stat) {
+				 snprintf(buf, 50, "%d kb", ((int)list_item->properties.st_size/1024));
+				 text[1] = buf;
+			 } else
+				 text[1] = NULL;
+
+
+		 	if (list_item->retrieved_stat) {
+				time_t stime;
+				stime = list_item->properties.st_mtime;
+				text[2] = ctime(&stime);
+			} else {
+				 text[2] = NULL;                  /*Mod time*/
+			}
 
 			icon = ewl_tree_text_row_add(EWL_TREE(view->list), NULL, text);
 			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);
