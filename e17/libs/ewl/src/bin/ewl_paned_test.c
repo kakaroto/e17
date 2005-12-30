@@ -12,6 +12,15 @@ ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
+ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev __UNUSED__,
+							void *data)
+{
+	printf("Destroy Clicked %s\n", (char *)data);
+
+	ewl_widget_destroy(w);
+}
+
+static void
 __destroy_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
@@ -20,11 +29,29 @@ __destroy_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 			    __create_paned_test_window, NULL);
 }
 
+static void
+ewl_paned_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+								void *data)
+{
+	Ewl_Widget *o;
+	Ewl_Paned *p;
+
+	p = data;
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "New Button");
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(p), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+			ewl_paned_test_cb_clicked_destroy, "New Button");
+	ewl_widget_show(o);
+}
+
 void
 __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
-	Ewl_Widget *paned_win, *box, *pane1, *pane2, *o;
+	Ewl_Widget *paned_win, *box, *pane1, *pane2, *pane3, *o;
 
 	paned_button = w;
 
@@ -93,16 +120,16 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 			ewl_paned_test_cb_clicked, "Shrink");
 	ewl_widget_show(o);
 
-	pane2 = ewl_hpaned_new();
-	ewl_container_child_append(EWL_CONTAINER(pane1), pane2);
-	ewl_widget_show(pane2);
+	pane3 = ewl_hpaned_new();
+	ewl_container_child_append(EWL_CONTAINER(pane1), pane3);
+	ewl_widget_show(pane3);
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Left Top");
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(o), 
 				EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
-	ewl_container_child_append(EWL_CONTAINER(pane2), o);
+	ewl_container_child_append(EWL_CONTAINER(pane3), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			ewl_paned_test_cb_clicked, "Left Top");
 	ewl_widget_show(o);
@@ -111,7 +138,7 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_button_label_set(EWL_BUTTON(o), "Center");
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(pane2), o);
+	ewl_container_child_append(EWL_CONTAINER(pane3), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			ewl_paned_test_cb_clicked, "Center");
 	ewl_widget_show(o);
@@ -121,9 +148,29 @@ __create_paned_test_window(Ewl_Widget * w, void *ev_data __UNUSED__,
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(o), 
 			EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_BOTTOM);
-	ewl_container_child_append(EWL_CONTAINER(pane2), o);
+	ewl_container_child_append(EWL_CONTAINER(pane3), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			ewl_paned_test_cb_clicked, "Right Bottom");
+	ewl_widget_show(o);
+
+	box = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(pane1), box);
+	ewl_object_fill_policy_set(EWL_OBJECT(box), 
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_widget_show(box);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Add to top pane");
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_paned_test_cb_add, pane2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Add to bottom pane");
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_paned_test_cb_add, pane3);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 }
 
