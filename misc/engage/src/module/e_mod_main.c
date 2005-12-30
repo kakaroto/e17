@@ -624,7 +624,7 @@ _engage_bar_new(Engage_Bar *eb, E_Container *con)
    evas_event_freeze(eb->evas);
    o = edje_object_add(eb->evas);
    eb->bar_object = o;
-   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+   if (!e_theme_edje_object_set(o, "base/theme/modules/engage",
        "module/engage/main"))
      edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
 	 "module/engage/main");
@@ -993,7 +993,7 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    edje_extern_object_max_size_set(o, size, size);
    evas_object_intercept_move_callback_add(o, _engage_icon_cb_intercept_move, ic);
    evas_object_intercept_resize_callback_add(o, _engage_icon_cb_intercept_resize, ic);
-   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+   if (!e_theme_edje_object_set(o, "base/theme/modules/engage",
        "module/engage/icon"))
      edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
 	 "module/engage/icon");
@@ -1095,7 +1095,7 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    evas_object_intercept_resize_callback_add(o, _engage_app_icon_cb_intercept_resize, ai);
    evas_object_intercept_show_callback_add(o, _engage_app_icon_cb_intercept_show, ai);
    evas_object_intercept_hide_callback_add(o, _engage_app_icon_cb_intercept_hide, ai);
-   if (!e_theme_edje_object_set(o, "theme/modules/engage",
+   if (!e_theme_edje_object_set(o, "base/theme/modules/engage",
       "module/engage/icon"))
      edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/module.edj",
 	 "module/engage/icon");
