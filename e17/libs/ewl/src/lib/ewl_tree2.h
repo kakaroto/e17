@@ -13,6 +13,10 @@
  * data, indicate expansion points, notify views and controllers of changes,
  * trigger sorting on a row/column combination.
  *
+ * Data:
+ * Provides a wrapper to the data which allows for observer registration and a
+ * reference to a model for data access.
+ *
  * View:
  * Defines the callbacks for setting up the widgets based on the data returned
  * from the Model. Create widgets, set data on widgets, calculate sizing,

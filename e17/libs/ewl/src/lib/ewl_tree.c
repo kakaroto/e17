@@ -47,7 +47,7 @@ int
 ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 {
 	int i;
-	Ewl_Widget *row;
+	Ewl_Widget *header;
 	Ewl_Widget *button;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -78,7 +78,7 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	tree->ncols = columns;
 
-	row = ewl_row_new();
+	header = ewl_paned_new();
 	for (i = 0; i < tree->ncols; i++) {
 		button = ewl_button_new();
 		ewl_box_orientation_set(EWL_BOX(button),
@@ -86,14 +86,14 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 		ewl_object_fill_policy_set(EWL_OBJECT(button),
 				EWL_FLAG_FILL_HSHRINK |
 				EWL_FLAG_FILL_HFILL);
-		ewl_container_child_append(EWL_CONTAINER(row), button);
+		ewl_container_child_append(EWL_CONTAINER(header), button);
 
     		ewl_widget_show(button);
 	}
 
-	tree->header = row;
-	ewl_container_child_append(EWL_CONTAINER(tree), row);
-	ewl_widget_show(row);
+	ewl_container_child_append(EWL_CONTAINER(tree), header);
+	ewl_widget_show(header);
+	tree->header = header;
 
 	tree->scrollarea = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->scrollarea);
@@ -126,7 +126,7 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 {
 	unsigned short i;
 	Ewl_Widget *button;
-	Ewl_Widget *row;
+	Ewl_Widget *header;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -135,19 +135,20 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 	if (!EWL_CONTAINER(tree)->children)
 		DRETURN(DLEVEL_STABLE);
 
-	row = ecore_list_goto_first(EWL_CONTAINER(tree)->children);
-	ecore_list_goto_first(EWL_CONTAINER(row)->children);
+	header = tree->header;
 
-	button = ecore_list_next(EWL_CONTAINER(row)->children);
-	for (i = 0; i < tree->ncols && button; i++) {
+	ewl_container_child_iterate_begin(EWL_CONTAINER(header));
+	for (i = 0; i < tree->ncols; i++) {
+		button = ewl_container_child_next(EWL_CONTAINER(header));
+		if (!button)
+			break;
+
 		ewl_button_label_set(EWL_BUTTON(button), headers[i]);
 
 		if (!tree->headers_visible && VISIBLE(button))
 			ewl_widget_hide(button);
 		else if (tree->headers_visible && HIDDEN(button))
 			ewl_widget_show(button);
-
-		button = ecore_list_next(EWL_CONTAINER(row)->children);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -162,26 +163,16 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 void
 ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 {
-	unsigned short i;
-	Ewl_Widget *button;
-	Ewl_Widget *row;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, "tree");
 
 	tree->headers_visible = visible;
 
-	row = ecore_list_goto_first(EWL_CONTAINER(tree)->children);
-	ecore_list_goto_first(EWL_CONTAINER(row)->children);
-
-	button = ecore_list_next(EWL_CONTAINER(row)->children);
-	for (i = 0; i < tree->ncols && button; i++) {
-		if ((visible) && (HIDDEN(button))) ewl_widget_show(button);
-		else if ((!visible) && (VISIBLE(button))) ewl_widget_hide(button);
-
-		button = ecore_list_next(EWL_CONTAINER(row)->children);
-	}
+	if (!visible)
+		ewl_widget_hide(tree->header);
+	else
+		ewl_widget_show(tree->header);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -271,7 +262,6 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 			break;
 		}
 
-		ewl_widget_internal_set(cell, TRUE);
 		ewl_container_child_append(EWL_CONTAINER(row), cell);
 		ewl_widget_show(cell);
 

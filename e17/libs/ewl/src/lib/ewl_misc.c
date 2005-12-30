@@ -588,16 +588,17 @@ void
 ewl_print_help(void)
 {
 	printf("EWL Help\n"
-		"\t--ewl-backtrace        Print a stack trace warnings occur.\n"
-		"\t--ewl-debug <level>    Set the debugging printf level.\n"
-		"\t--ewl-fb               Use framebuffer display engine.\n"
-		"\t--ewl-gl-x11           Use GL X11 display engine.\n"
-		"\t--ewl-help             Print this help message.\n"
-		"\t--ewl-print-gc-reap    Print garbage collection stats.\n"
-		"\t--ewl-print-theme-keys Print theme keys matched widgets.\n"
-		"\t--ewl-segv             Trigger crash when warning printed.\n"
-		"\t--ewl-software-x11     Use software X11 display engine.\n"
-		"\t--ewl-theme <theme>    Set the theme to use for widgets.\n"
+		"\t--ewl-backtrace           Print a stack trace warnings occur.\n"
+		"\t--ewl-debug <level>       Set the debugging printf level.\n"
+		"\t--ewl-fb                  Use framebuffer display engine.\n"
+		"\t--ewl-gl-x11              Use GL X11 display engine.\n"
+		"\t--ewl-help                Print this help message.\n"
+		"\t--ewl-print-gc-reap       Print garbage collection stats.\n"
+		"\t--ewl-print-theme-keys    Print theme keys matched widgets.\n"
+		"\t--ewl-print-theme-signals Print theme keys matched widgets.\n"
+		"\t--ewl-segv                Trigger crash when warning printed.\n"
+		"\t--ewl-software-x11        Use software X11 display engine.\n"
+		"\t--ewl-theme <theme>       Set the theme to use for widgets.\n"
 		);
 }
 

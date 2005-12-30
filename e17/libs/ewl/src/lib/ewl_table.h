@@ -37,6 +37,12 @@ struct Ewl_Table
 
 	int             row_select;	/* boolean: select entire rows */
 
+        /*
+         * Flag indicating space assignment 
+         */
+        unsigned int    homogeneous_h;   /** Horizontal homogeneous flag */
+        unsigned int    homogeneous_v;   /** Vertical homogeneous flag */ 
+
 	struct {
 		int             start_r;
 		int             start_c;
@@ -70,6 +76,11 @@ Ecore_List       *ewl_table_find(Ewl_Table *table,
 			       int end_col, int start_row, int emd_row);
 
 char           *ewl_table_selected_get(Ewl_Table *table);
+void            ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h);
+void            ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h);
+void            ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h);
+unsigned int    ewl_table_hhomogeneous_get(Ewl_Table *table);
+unsigned int    ewl_table_vhomogeneous_get(Ewl_Table *table);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -78,8 +89,9 @@ void ewl_table_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_child_configure_cb(Ewl_Widget * w, void *ev_data,
 							void *user_data);
-void ewl_table_child_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data, void *user_data); 
+//void ewl_table_child_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c); 
 
 /**
  * @}

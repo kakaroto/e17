@@ -162,16 +162,24 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		Ewl_Container *hdr;
 
 		hdr = EWL_CONTAINER(row->header);
-		align = ecore_list_goto_first(EWL_CONTAINER(hdr)->children);
+		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
 
+		/*
+		 * Get the first child of the header.
+		 */
+		align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
 		if (align) {
 			x = MAX(ewl_object_current_x_get(align), CURRENT_X(w));
 		}
 		else
 			x = CURRENT_X(w);
 
+		/*
+		 * Iterate over the children and position the children.
+		 */
+		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
 		while ((child = ecore_list_next(c->children))) {
-			align = ecore_list_next(EWL_CONTAINER(hdr)->children);
+			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
 			if (align)
 				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
 			else if (nodes)

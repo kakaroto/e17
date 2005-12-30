@@ -128,7 +128,7 @@ ewl_seeker_init(Ewl_Seeker *s)
 			    ewl_seeker_mouse_down_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 			    ewl_seeker_mouse_up_cb, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 			    ewl_seeker_mouse_up_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_seeker_mouse_move_cb, NULL);
@@ -658,12 +658,19 @@ ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s = EWL_SEEKER(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "seeker");
+
 	if (s->timer)
 		ecore_timer_del(s->timer);
 
 	s->timer = NULL;
 	s->start_time = 0;
 	s->dragstart = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -751,6 +758,7 @@ ewl_seeker_timer(void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_TYPE("data", data, "seeker");
 
 	s = EWL_SEEKER(data);
 

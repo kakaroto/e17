@@ -5,6 +5,8 @@
 
 static int ewl_notebook_page_index_get(Ewl_Notebook *n,
 				Ewl_Notebook_Page *p);
+void ewl_notebook_child_show_cb(Ewl_Container *n, Ewl_Widget *c);
+void ewl_notebook_child_hide_cb(Ewl_Container *n, Ewl_Widget *c);
 
 /**
  * @brief Create a new notebook container
@@ -62,6 +64,10 @@ ewl_notebook_init(Ewl_Notebook * n)
 	if (!n->tab_box) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
+	ewl_container_show_notify_set(EWL_CONTAINER(n->tab_box), ewl_notebook_child_show_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(n->tab_box), ewl_notebook_child_hide_cb);
+
 	ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box), EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(n->tab_box, TRUE);
 	ewl_widget_appearance_set(n->tab_box, "tab_box");
@@ -513,6 +519,24 @@ ewl_notebook_visible_page_get(Ewl_Notebook *n)
 	index = ewl_notebook_page_index_get(n, n->visible_page);
 
 	DRETURN_INT(index, DLEVEL_STABLE);
+}
+
+void ewl_notebook_child_show_cb(Ewl_Container *n, Ewl_Widget *c)
+{
+	printf("Tab box %p\n\t", n);
+	ewl_widget_print(EWL_WIDGET(n));
+	printf("Tab shown %p\n\t", c);
+	ewl_widget_print(c);
+	ewl_box_child_show_cb(n, c);
+}
+
+void ewl_notebook_child_hide_cb(Ewl_Container *n, Ewl_Widget *c)
+{
+	printf("Tab box %p\n\t", n);
+	ewl_widget_print(EWL_WIDGET(n));
+	printf("Tab hidden %p\n\t", c);
+	ewl_widget_print(c);
+	ewl_box_child_hide_cb(n, c);
 }
 
 void

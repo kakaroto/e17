@@ -233,6 +233,8 @@ ewl_widget_realize(Ewl_Widget * w)
 void
 ewl_widget_unrealize(Ewl_Widget * w)
 {
+	Ewl_Container *pc;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
@@ -242,6 +244,13 @@ ewl_widget_unrealize(Ewl_Widget * w)
 
 	if (!REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Notify parent of hidden state.
+	 */
+	pc = EWL_CONTAINER(w->parent);
+	if (pc)
+		ewl_container_child_hide_call(pc, w);
 
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
@@ -1970,6 +1979,7 @@ void ewl_widget_obscure_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 	 * caching.
 	 */
 	if (w->theme_object) {
+		/* edje_object_file_set(w->theme_object, "", ""); */
 		ewl_embed_object_cache(emb, w->theme_object);
 		w->theme_object = NULL;
 	}
@@ -2129,20 +2139,52 @@ void
 ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
-	Ewl_Container *pc;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "widget");
 
-	ewl_widget_obscure(w);
+	if (w->theme_object) {
+		int i_l, i_r, i_t, i_b;
+		int p_l, p_r, p_t, p_b;
+		int l, r, t, b;
 
-	/*
-	 * Notify parent of hidden state.
-	 */
-	pc = EWL_CONTAINER(w->parent);
-	if (pc)
-		ewl_container_child_hide_call(pc, w);
+		ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
+
+		ewl_object_insets_get(EWL_OBJECT(w), &i_l, &i_r, &i_t, &i_b);
+		ewl_object_padding_get(EWL_OBJECT(w), &p_l, &p_r, &p_t, &p_b);
+
+		/*
+		 * Use previously set insets and padding if available.
+		 */
+		if (l == i_l)
+			i_l = 0;
+		if (r == i_r)
+			i_r = 0;
+		if (t == i_t)
+			i_t = 0;
+		if (b == i_b)
+			i_b = 0;
+
+		ewl_widget_theme_padding_get(w, &l, &r, &t, &b);
+
+		if (l == p_l)
+			p_l = 0;
+		if (r == p_r)
+			p_r = 0;
+		if (t == p_t)
+			p_t = 0;
+		if (b == p_b)
+			p_b = 0;
+
+
+		/*
+		 * Assign the relevant insets and padding.
+		 */
+		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
+		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+	}
+
+	ewl_widget_obscure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

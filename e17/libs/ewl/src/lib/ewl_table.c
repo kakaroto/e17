@@ -61,6 +61,8 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	ewl_widget_inherit(EWL_WIDGET(t), "table");
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
+	ewl_container_show_notify_set(EWL_CONTAINER(t), ewl_table_child_show_cb);
+	
 	/*
 	 * Create a new grid
 	 */
@@ -98,12 +100,14 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	t->selected.start_c = -1;
 	t->selected.end_r = -1;
 	t->selected.end_c = -1;
+	t->homogeneous_h = FALSE;
+	t->homogeneous_v = FALSE;
 
 	/*
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-			    ewl_table_configure_cb, NULL);
+			    ewl_table_configure_cb, NULL); 
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -352,7 +356,11 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, "table");
 
-	ewl_grid_reset(EWL_GRID(t->grid), cols, rows);
+	if (col_headers != NULL)
+		ewl_grid_reset(EWL_GRID(t->grid), cols, rows+1);
+	else
+		ewl_grid_reset(EWL_GRID(t->grid), cols, rows);
+
 	if (col_headers != NULL) {
 
 		for (i = 1; i <= cols; i++) {
@@ -362,6 +370,7 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 			ewl_widget_disable(button);
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
 			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);
+			ewl_widget_show(button);
 			ewl_widget_show(EWL_WIDGET(cell));
 		}
 
@@ -472,3 +481,119 @@ ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
+{
+	Ewl_Table *table; 
+	int width_g, height_g; 
+	
+	table = EWL_TABLE (p); 
+	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid), &width_g, &height_g); 
+	ewl_object_preferred_inner_size_set (EWL_OBJECT (table), width_g, height_g);
+}
+
+/**
+ * @param table: the table to change homogeneous layout 
+ * @param h: the boolean value to change the layout mode to
+ * @return Returns no value.
+ * @breif Change the homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that. 
+ */
+void
+ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
+
+ 	if (table->homogeneous_h != h)
+		ewl_table_hhomogeneous_set(table, h);
+	if (table->homogeneous_v != h)
+		ewl_table_vhomogeneous_set(table, h);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param table: the table to change horizontal homogeneous layout 
+ * @param h: the boolean value to change the horizontal layout mode to
+ * @return Returns no value.
+ * @breif Change the horizontal homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that for horizontal orientation, i.e. all columns can
+ * have the same width. 
+ */
+void
+ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
+
+ 	if (table->homogeneous_h != h)
+	{
+		table->homogeneous_h = h; 
+		ewl_grid_hhomogeneous_set (EWL_GRID (table->grid), h );
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param table: the table to change vertical homogeneous layout 
+ * @param h: the boolean value to change the vertical layout mode to
+ * @return Returns no value.
+ * @breif Change the vertical homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that for vertical orientation, i.e. all rows can have 
+ * the same height. 
+ */
+void
+ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("table", table);
+	DCHECK_TYPE("table", table, "table");
+
+ 	if (table->homogeneous_v != h)
+	{
+		table->homogeneous_v = h; 
+		ewl_grid_vhomogeneous_set (EWL_GRID (table->grid), h );
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param table: the table to get the homogeneous layout 
+ * @return The horizontal homogeneous flag 
+ * @brief Retrieves the horizontal homogeneous flag  
+ */
+unsigned int 
+ewl_table_hhomogeneous_get(Ewl_Table *table)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("table", table, 0);
+	DCHECK_TYPE_RET("table", table, "table", 0);
+
+	DRETURN_INT(table->homogeneous_h, DLEVEL_STABLE); 
+}
+
+/**
+ * @param g: the table to get the vertical layout 
+ * @return The vertical homogeneous flag 
+ * @brief Retrieves the vertical homogeneous flag  
+ */
+unsigned int
+ewl_table_vhomogeneous_get(Ewl_Table *table)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("table", table, 0);
+	DCHECK_TYPE_RET("table", table, "table", 0);
+
+	DRETURN_INT(table->homogeneous_v, DLEVEL_STABLE); 
+}

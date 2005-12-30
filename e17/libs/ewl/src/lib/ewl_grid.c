@@ -81,6 +81,8 @@ ewl_grid_init(Ewl_Grid *g, int cols, int rows)
 	g->rows = rows;
 
 	g->rchildren = NULL;
+	g->homogeneous_h = FALSE;
+	g->homogeneous_v = FALSE;
 
 	/*
 	 * Append callbacks
@@ -140,16 +142,124 @@ ewl_grid_reset(Ewl_Grid *g, int cols, int rows)
 	g->grid_h = CURRENT_H(EWL_OBJECT(w));
 
 	/* initialize the column width to default values */
-	for (i = 0; i < g->cols; i++)
-		g->col_size[i].size = CURRENT_W(g) / g->cols;
+	for (i = 0; i < g->cols; i++) {
+		if (g->homogeneous_h)
+			g->col_size[i].size = CURRENT_W(g) / g->cols;
+		else
+			g->col_size[i].size = 1;
+	}
 
 	/* initialize the row height to default values */
-	for (i = 0; i < g->rows; i++)
-		g->row_size[i].size = CURRENT_H(g) / g->rows;
+	for (i = 0; i < g->rows; i++) {
+		if (g->homogeneous_v)
+			g->row_size[i].size = CURRENT_H(g) / g->rows;
+		else
+			g->row_size[i].size = 1;
+	}
 
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid to change homogeneous layout 
+ * @param h: the boolean value to change the layout mode to
+ * @return Returns no value.
+ * @breif Change the homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that. 
+ */
+void
+ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, "grid");
+
+ 	if (g->homogeneous_h != h)
+		ewl_grid_hhomogeneous_set(g, h);
+	if (g->homogeneous_v != h)
+		ewl_grid_vhomogeneous_set(g, h);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid to change horizontal homogeneous layout 
+ * @param h: the boolean value to change the horizontal layout mode to
+ * @return Returns no value.
+ * @breif Change the horizontal homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that for horizontal orientation, i.e. all columns can
+ * have the same width. 
+ */
+void
+ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, "grid");
+
+ 	if (g->homogeneous_h != h)
+		g->homogeneous_h = h; 
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid to change vertical homogeneous layout 
+ * @param h: the boolean value to change the vertical layout mode to
+ * @return Returns no value.
+ * @breif Change the vertical homogeneous layout of the box
+ *
+ * Grids use non-homogeneous layout by default, this can be used
+ * to change that for vertical orientation, i.e. all rows can have 
+ * the same height. 
+ */
+void
+ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, "grid");
+
+ 	if (g->homogeneous_v != h)
+		g->homogeneous_v = h; 
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid to get the homogeneous layout 
+ * @return The horizontal homogeneous flag 
+ * @brief Retrieves the horizontal homogeneous flag  
+ */
+unsigned int 
+ewl_grid_hhomogeneous_get(Ewl_Grid *g)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, "grid", 0);
+
+	DRETURN_INT(g->homogeneous_h, DLEVEL_STABLE); 
+}
+
+/**
+ * @param g: the grid to get the vertical layout 
+ * @return The vertical homogeneous flag 
+ * @brief Retrieves the vertical homogeneous flag  
+ */
+unsigned int
+ewl_grid_vhomogeneous_get(Ewl_Grid *g)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, "grid", 0);
+
+	DRETURN_INT(g->homogeneous_v, DLEVEL_STABLE); 
 }
 
 /**
@@ -504,6 +614,8 @@ ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
 {
 	int i;
 	int temp;
+	int max_w = 0, max_h = 0; 
+	int g_w = 0, g_h = 0; 
 	Ewl_Grid *g;
 	Ewl_Grid_Child *cdata;
 
@@ -532,64 +644,88 @@ ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
 	/*
 	 * Add the widget to columns that it intersects.
 	 */
-	for (i = cdata->start_col; i < cdata->end_col; i++) {
-		if (!g->col_size[i].cross)
-			g->col_size[i].cross = ecore_list_new();
+	for (i = cdata->start_col; i <= cdata->end_col; i++) {
+		if (i < cdata->end_col) {
+			if (!g->col_size[i].cross)
+				g->col_size[i].cross = ecore_list_new();
 
-		ecore_list_append(g->col_size[i].cross, c);
+			ecore_list_append(g->col_size[i].cross, c);
+		}
 
 		/*
-		 * Calculate the amount of space the widget would need in this
-		 * column.
-		 */
+	 	* Calculate the amount of space the widget would
+	 	* need in this column.
+	 	*/
 		temp = ewl_object_preferred_w_get(EWL_OBJECT(c)) /
-		    (cdata->end_col - cdata->start_col + 1);
+	  	  	(cdata->end_col - cdata->start_col + 1);
 
 		/*
-		 * Give the column a new preferred size based on the added
-		 * widget.
+	 	 * Give the column a new preferred size based on 
+	 	 * the added widget.
 		 */
-		if (g->col_size[i].size < temp) {
-			if (!g->col_size[i].override)
-				g->col_size[i].size = 0;
+		if (g->col_size[i-1].size < temp) {
+			if (!g->col_size[i-1].override)
+				g->col_size[i-1].size = temp;
 
 			/*
 			 * Save a pointer to the largest child.
 			 */
-			g->col_size[i].max = c;
+			g->col_size[i-1].max = c;
 		}
+		max_w = MAX(max_w, temp) ; 
+		max_w = MAX(max_w, g->col_size[i-1].size);
 	}
 
 	/*
 	 * Add the widget to rows that it intersects.
 	 */
-	for (i = cdata->start_row; i < cdata->end_row; i++) {
-		if (!g->row_size[i].cross)
-			g->row_size[i].cross = ecore_list_new();
+	for (i = cdata->start_row; i <= cdata->end_row; i++) {
+		if (i < cdata->end_row) {
+			if (!g->row_size[i].cross)
+				g->row_size[i].cross = ecore_list_new();
 
-		ecore_list_append(g->row_size[i].cross, c);
+			ecore_list_append(g->row_size[i].cross, c);
+		}
 
 		/*
-		 * Calculate the amount of space the widget would need in this
-		 * row.
+		 * Calculate the amount of space the widget would
+		 * need in this row.
 		 */
 		temp = ewl_object_preferred_h_get(EWL_OBJECT(c)) /
-		    (cdata->end_row - cdata->start_row + 1);
+		    	(cdata->end_row - cdata->start_row + 1);
 
 		/*
-		 * Give the row a new preferred size based on the added
-		 * widget.
+		 * Give the row a new preferred size based on
+		 * the added  widget.
 		 */
-		if (g->row_size[i].size < temp) {
-			if (!g->row_size[i].override)
-				g->row_size[i].size = 0;
+		if (g->row_size[i-1].size < temp) {
+			if (!g->row_size[i-1].override)
+				g->row_size[i-1].size = temp;
 
 			/*
 			 * Save a pointer to the largest child.
 			 */
-			g->row_size[i].max = c;
+			g->row_size[i-1].max = c;
 		}
+		max_h = MAX(max_h, temp) ; 
+		max_h = MAX(max_h, g->row_size[i-1].size);
 	}
+	
+	for (i = 0; i < g->cols; i++) {
+		if (g->homogeneous_h) {
+			g->col_size[i].size = max_w; 
+		}
+		g_w += g->col_size[i].size;
+	}
+	for (i = 0; i < g->rows; i++) {
+		if (g->homogeneous_v) {
+			g->row_size[i].size = max_h; 
+		}
+		g_h += g->row_size[i].size; 
+	}
+	g->grid_w = g_w; 
+	g->grid_h = g_h;
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(g), g_w, g_h);
 }
 
 /*
@@ -699,5 +835,3 @@ ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, int size,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-

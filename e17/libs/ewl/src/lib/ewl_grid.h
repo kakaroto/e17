@@ -40,6 +40,11 @@ struct _ewl_grid {
 	int             rows, cols;
 
 	/*
+	 * Flag indicating space assignment 
+         */
+	unsigned int	homogeneous_h;   /** Horizontal homogeneous flag */
+	unsigned int	homogeneous_v;   /** Vertical homogeneous flag */ 
+	/*
 	 * total size of the grid widget
 	 */
 	int             grid_h;
@@ -76,6 +81,12 @@ void            ewl_grid_col_w_get(Ewl_Grid *g, int col, int *width);
 void            ewl_grid_row_h_get(Ewl_Grid *g, int row, int *height);
 
 void            ewl_grid_reset(Ewl_Grid *g, int rows, int cols);
+
+void		ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h);
+void		ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h);
+void		ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h);
+unsigned int    ewl_grid_hhomogeneous_get(Ewl_Grid *g);
+unsigned int 	ewl_grid_vhomogeneous_get(Ewl_Grid *g);
 
 /*
  * Internally used callbacks, override at your own risk.
