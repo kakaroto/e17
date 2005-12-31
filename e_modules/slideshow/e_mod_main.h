@@ -8,6 +8,7 @@ typedef struct _Slide_Face   Slide_Face;
 
 struct _Config
 {
+   int disable_timer;
    double cycle_time;
 #ifdef WANT_OSIRIS
    char *theme;
@@ -29,14 +30,10 @@ struct _Slide
 
    Config      *conf;
    E_Config_DD *conf_edd;
-
-   Ecore_Event_Handler *ev_handler_zone_desk_count_set;
-   Ecore_Event_Handler *ev_handler_desk_show;
 };
 
 struct _Slide_Face
 {
-   E_Zone *zone;
    Evas *evas;
    E_Container *con;
    Slide *slide;
@@ -49,8 +46,6 @@ struct _Slide_Face
    Evas_Object *event_object;
 
    E_Gadman_Client *gmc;
-   int numx,numy;
-   int desk_x_current, desk_y_current;
 };
 
 EAPI extern E_Module_Api e_modapi;

@@ -7,6 +7,7 @@ typedef struct _Cfg_File_Data Cfg_File_Data;
 
 struct _cfdata
 {
+   int disable_timer;
    double cycle_time;
    #ifdef WANT_OSIRIS
    char *theme;
@@ -84,7 +85,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
    
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, _("Cycle Time"), 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f seconds"), 0.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
+   ob = e_widget_check_add(evas, _("Disable Timer"), &(cfdata->disable_timer));
+   e_widget_framelist_object_append(of, ob);   
+   ob = e_widget_slider_add(evas, 1, 0, _("%3.0f seconds"), 5.0, 600.0, 1.0, 0, &(cfdata->cycle_time), NULL, 200);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
@@ -112,6 +115,7 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    s->conf->cycle_time = cfdata->cycle_time;
+   s->conf->disable_timer = cfdata->disable_timer;
    #ifdef WANT_OSIRIS
    if (cfdata->theme != NULL) 
      {

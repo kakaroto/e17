@@ -27,8 +27,6 @@ static void _slide_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi
 static void _slide_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_info);
 static void _slide_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 
-static int _slide_cb_event_zone_desk_count_set(void *data, int type, void *event);
-static int _slide_cb_event_desk_show(void *data, int type, void *event);
 static int _slide_cb_check(void *data);
 
 static void get_bg_count();
@@ -173,6 +171,7 @@ static Slide
 #ifdef WANT_OSIRIS
    E_CONFIG_VAL(D, T, theme, STR);
 #endif
+   E_CONFIG_VAL(D, T, disable_timer, INT);
    E_CONFIG_VAL(D, T, cycle_time, DOUBLE);
 
    e->conf = e_config_domain_load("module.slideshow", e->conf_edd);
@@ -182,16 +181,13 @@ static Slide
 	#ifdef WANT_OSIRIS
 	e->conf->theme = (char *)evas_stringshare_add("");
 	#endif
+	e->conf->disable_timer = 0;
 	e->conf->cycle_time = 600;
      }
 
    E_CONFIG_LIMIT(e->conf->cycle_time, 5.0, 600.0);
 
    _slide_config_menu_new(e);
-
-   /* Setup Event Handlers */
-   e->ev_handler_zone_desk_count_set = ecore_event_handler_add(E_EVENT_ZONE_DESK_COUNT_SET, _slide_cb_event_zone_desk_count_set, e);
-   e->ev_handler_desk_show = ecore_event_handler_add(E_EVENT_DESK_SHOW, _slide_cb_event_desk_show, e);
 
    /* Managers */
    managers = e_manager_list ();
@@ -203,13 +199,9 @@ static Slide
 	for (l2 = man->containers; l2; l2 = l2->next)
 	  {
 	     E_Container *con;
-	     E_Zone *zone;
 	     Slide_Face *ef;
 
 	     con = l2->data;
-	     zone = e_zone_current_get(con);
-	     if (!zone) return NULL;
-
 	     ef = E_NEW(Slide_Face, 1);
 	     if (ef)
 	       {
@@ -223,7 +215,6 @@ static Slide
 		  e->face = ef;
 		  ef->slide = e;
 		  ef->con = con;
-		  ef->zone = zone;
 		  ef->evas = con->bg_evas;
 
 		  ef->conf = E_NEW(Config_Face, 1);
@@ -256,7 +247,6 @@ static Slide
 	       }
 	  }
      }
-
    return e;
 }
 
@@ -267,17 +257,12 @@ _slide_shutdown(Slide *e)
 
    _slide_face_free(e->face);
 
-   if (e->cycle_timer)
-     e->cycle_timer = ecore_timer_del(e->cycle_timer);
+   if (e->cycle_timer) 
+     {
+	e->cycle_timer = ecore_timer_del(e->cycle_timer);
+	e->cycle_timer = NULL;
+     }
 
-   if (e->ev_handler_zone_desk_count_set)
-     ecore_event_handler_del(e->ev_handler_zone_desk_count_set);
-
-   if (e->ev_handler_desk_show)
-     ecore_event_handler_del(e->ev_handler_desk_show);
-   #ifdef WANT_OSIRIS
-   //evas_stringshare_del(e->conf->theme);
-   #endif
    free(e->conf);
    E_CONFIG_DD_FREE(e->conf_edd);
    free(e);
@@ -296,11 +281,6 @@ static int
 _slide_face_init(Slide_Face *sf)
 {
    Evas_Object *o;
-
-   sf->desk_x_current = sf->zone->desk_x_current;
-   sf->desk_y_current = sf->zone->desk_y_current;
-
-   e_object_ref(E_OBJECT(sf->zone));
 
    evas_event_freeze(sf->evas);
    o = edje_object_add(sf->evas);
@@ -341,7 +321,6 @@ _slide_face_free(Slide_Face * ef)
    if (ef->slide_object) evas_object_del(ef->slide_object);
    if (ef->gmc) e_gadman_client_save(ef->gmc);
    if (ef->gmc) e_object_del(E_OBJECT(ef->gmc));
-   if (ef->zone) e_object_unref(E_OBJECT(ef->zone));
 
    E_FREE(ef->conf);
    E_FREE(ef);
@@ -373,20 +352,32 @@ _slide_face_enable(Slide_Face * face)
    e_config_save_queue();
    evas_object_show(face->slide_object);
    evas_object_show(face->event_object);
-   if (face->slide->cycle_timer)
-     {
-	if (face->slide->conf->cycle_time != 0)
+   if (!face->slide->conf->disable_timer) 
+     {	
+	if (face->slide->cycle_timer)
 	  {
-	     ecore_timer_interval_set(face->slide->cycle_timer, face->slide->conf->cycle_time);
+	     if (face->slide->conf->cycle_time != 0)
+	       {
+		  ecore_timer_interval_set(face->slide->cycle_timer, face->slide->conf->cycle_time);
+	       }
+	     else
+	       {
+		  face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
+		  face->slide->cycle_timer = NULL;
+	       }
 	  }
 	else
 	  {
-	     face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
+	     face->slide->cycle_timer = ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check, face);
 	  }
      }
-   else
+   else 
      {
-	face->slide->cycle_timer = ecore_timer_add(face->slide->conf->cycle_time, _slide_cb_check, face);
+	if (face->slide->cycle_timer) 
+	  {
+	     face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
+	     face->slide->cycle_timer = NULL;
+	  }
      }
 }
 
@@ -397,8 +388,11 @@ _slide_face_disable(Slide_Face * face)
    e_config_save_queue();
    evas_object_hide(face->slide_object);
    evas_object_hide(face->event_object);
-   if (face->slide->cycle_timer)
-     face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
+   if (face->slide->cycle_timer) 
+     {
+	face->slide->cycle_timer = ecore_timer_del(face->slide->cycle_timer);
+	face->slide->cycle_timer = NULL;
+     }
 }
 
 static void
@@ -441,11 +435,15 @@ _slide_face_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,void *event_in
 
    if (ev->button == 3)
      {
-	e_menu_activate_mouse(ef->menu, ef->zone, ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-	e_util_container_fake_mouse_up_all_later(ef->zone->container);
+	E_Zone *zone;
+	
+	zone = e_zone_current_get(ef->con);
+	e_menu_activate_mouse(ef->menu, zone, ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+	e_util_container_fake_mouse_up_all_later(ef->con);
      }
    else if (ev->button == 2)
      {
+	if (es->conf->disable_timer) return;
 	if (es->cycle_timer)
 	  {
 	     es->cycle_timer = ecore_timer_del(es->cycle_timer);
@@ -479,10 +477,8 @@ _slide_cb_check(void *data)
    if (!ef) return 0;
    if (!ef->conf) return 0;
    if (!ef->con) return 0;
-   if (!ef->zone) return 0;
 
    if (idx > bg_count) idx = 0;
-
    if (idx <= bg_count)
      {
 	bg = ecore_list_goto_index(list, idx);
@@ -537,73 +533,12 @@ get_bg_count(char *name)
      bg_count++;
 }
 
-int 
-get_desk_x_count(E_Zone * zone)
-{
-   int desks_x, desks_y;
-
-   e_zone_desk_count_get(zone, &desks_x, &desks_y);
-   return desks_x;
-}
-
-int 
-get_desk_y_count(E_Zone * zone)
-{
-   int desks_x, desks_y;
-
-   e_zone_desk_count_get(zone, &desks_x, &desks_y);
-   return desks_y;
-}
-
-static int 
-_slide_cb_event_zone_desk_count_set(void *data, int type, void *event)
-{
-   E_Event_Zone_Desk_Count_Set *ev;
-   Slide *slide;
-   Slide_Face *face;
-   int desks_x, desks_y;
-
-   slide = data;
-   ev = event;
-
-   face = slide->face;
-   if (face->zone != ev->zone) return 1;
-   e_zone_desk_count_get(ev->zone, &desks_x, &desks_y);
-   if ((face->numx == desks_x) && (face->numy == desks_y)) return 1;
-   face->zone = ev->zone;
-   face->numx = desks_x;
-   face->numy = desks_y;
-
-   return 1;
-}
-
-static int 
-_slide_cb_event_desk_show(void *data, int type, void *event)
-{
-   E_Event_Desk_Show *ev;
-   Slide *slide;
-   Slide_Face *face;
-
-   slide = data;
-   ev = event;
-
-   face = slide->face;
-   if (face->zone != ev->desk->zone) return 1;
-   face->zone = ev->desk->zone;
-   face->desk_x_current = ev->desk->zone->desk_x_current;
-   face->desk_y_current = ev->desk->zone->desk_y_current;
-
-   return 1;
-}
-
 static void 
 _set_bg(char *bg, Slide_Face *sf)
 {
    char buffer[4096];
    char *home;
-   E_Zone *zone;
    
-   zone = sf->zone;
    home = e_user_homedir_get();
 
 #ifdef WANT_OSIRIS
@@ -621,16 +556,7 @@ _set_bg(char *bg, Slide_Face *sf)
    snprintf(buffer, sizeof(buffer), "%s/.e/e/backgrounds/%s", home, bg);
 #endif
 
-   if ((zone->container->num == 0) && (zone->num == 0) &&
-       (zone->desk_x_current == 0) && (zone->desk_y_current == 0))
-     {
-	if (buffer) e_lib_background_set(strdup(buffer));
-     }
-   else
-     {
-	e_lib_desktop_background_del(zone->container->num, zone->num, zone->desk_x_current, zone->desk_y_current);
-	e_lib_desktop_background_add(zone->container->num, zone->num, zone->desk_x_current, zone->desk_y_current, strdup(buffer));
-     }
+   if (buffer) e_lib_background_set(strdup(buffer));
 }
 
 static void 
@@ -649,14 +575,33 @@ _slide_cb_config_updated(void *data)
    Slide *s;
    
    s = data;
+   if (s->conf->disable_timer == 1) 
+     { 
+	if (s->cycle_timer) 
+	  {
+	     s->cycle_timer = ecore_timer_del(s->cycle_timer);
+	     s->cycle_timer = NULL;
+	  }
+	return;
+     }
+   
    if (s->conf->cycle_time == 0) 
      {
-	if (s->cycle_timer)
-	  s->cycle_timer = ecore_timer_del(s->cycle_timer);   	
+	if (s->cycle_timer) 
+	  {
+	     s->cycle_timer = ecore_timer_del(s->cycle_timer);
+	     s->cycle_timer = NULL;
+	  }
      }
    else 
      {
-	if (s->cycle_timer) ecore_timer_interval_set(s->cycle_timer, s->conf->cycle_time);	
+	if (s->cycle_timer) 
+	  {
+	     ecore_timer_interval_set(s->cycle_timer, s->conf->cycle_time);
+	  }
+	 else 
+	  {
+	     s->cycle_timer = ecore_timer_add(s->conf->cycle_time, _slide_cb_check, s->face);  
+	  }	
      }
 }
-
