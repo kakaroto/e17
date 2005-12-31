@@ -411,6 +411,8 @@ ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	ewl_widget_show(icon->label);
 	ewl_widget_destroy(w);
+
+	ewl_callback_call(EWL_WIDGET(icon), EWL_CALLBACK_VALUE_CHANGED);
 }
 
 

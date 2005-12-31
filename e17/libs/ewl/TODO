@@ -94,6 +94,18 @@ EWL BUGS
    which will create the thumb?
 
 
+ Ewl_Freebox bugs/todo
+ ---------------------
+ - On the comparator test if you add a set of icons, rename an icon and then
+   add another set of icons the second set of icons won't appear until the
+   window is moved. (Must be missing a configure event)
+
+ - The autolayout will align at the top, should probably be changed to align
+   at the bottom based on the largest widget being put in.
+
+ - Scrollpanes aren't kicking in correctly in the test case.
+
+
 EWL TODO
 ========
 - Ability to attach arbitrary cursors to each widget. Attachment portion done,
