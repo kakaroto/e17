@@ -241,11 +241,14 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
-	int max_pos, max_h = 0, cur_y = 0, cur_x, base_x;
+	int max_pos, max_h = 0, cur_y = 0, cur_x, base_x, pad = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
 	DCHECK_TYPE("fb", fb, "freebox");
+
+	pad = ewl_theme_data_int_get(EWL_WIDGET(fb),
+					"/freebox/auto/padding");
 
 	base_x = ewl_object_current_x_get(EWL_OBJECT(fb));
 	max_pos = base_x + ewl_object_current_w_get(EWL_OBJECT(fb));
@@ -267,7 +270,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 		if ((cur_x + child_w) > max_pos)
 		{
 			cur_x = base_x;
-			cur_y += max_h;
+			cur_y += max_h + pad;
 			max_h = 0;
 		}
 
@@ -276,7 +279,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 
 		ewl_object_place(EWL_OBJECT(child), cur_x, cur_y,
 						child_w, child_h);
-		cur_x += child_w;
+		cur_x += child_w + pad;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

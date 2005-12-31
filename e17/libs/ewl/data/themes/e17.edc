@@ -55,7 +55,9 @@ data {
     item, "/text/font" "Vera";
     item, "/text/font_size" "10";
     item, "/text/style" "none";
-    
+
+    item, "/freebox/auto/padding" "5";
+
     item, "/tree/group" "tree_background";
     item, "/row/group" "row_background";
     item, "/cell/group" "tree-select";
