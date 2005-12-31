@@ -239,9 +239,45 @@ ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 static void
 ewl_freebox_layout_auto(Ewl_Freebox *fb)
 {
+	Ewl_Container *c;
+	Ewl_Widget *child;
+	int max_pos, max_h = 0, cur_y = 0, cur_x, base_x;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
 	DCHECK_TYPE("fb", fb, "freebox");
+
+	base_x = ewl_object_current_x_get(EWL_OBJECT(fb));
+	max_pos = base_x + ewl_object_current_w_get(EWL_OBJECT(fb));
+
+	cur_y = ewl_object_current_y_get(EWL_OBJECT(fb));
+	cur_x = base_x;
+
+	c = EWL_CONTAINER(fb);
+	ecore_list_goto_first(c->children);
+	while ((child = ecore_list_next(c->children)))
+	{
+		int child_h, child_w;
+
+		if (!VISIBLE(child)) continue;
+		ewl_object_current_size_get(EWL_OBJECT(child), 
+						&child_w, &child_h);
+
+		/* past end of widget, wrap */
+		if ((cur_x + child_w) > max_pos)
+		{
+			cur_x = base_x;
+			cur_y += max_h;
+			max_h = 0;
+		}
+
+		if (child_h > max_h) 
+			max_h = child_h;
+
+		ewl_object_place(EWL_OBJECT(child), cur_x, cur_y,
+						child_w, child_h);
+		cur_x += child_w;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -299,7 +335,7 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 
 		/* pull it from the heap and stick back into the container */
 		while ((child = ecore_sheap_extract(sheap)))
-			ewl_container_child_append(c, child);
+			ecore_list_append(c->children, child);
 
 		ecore_sheap_destroy(sheap);
 
