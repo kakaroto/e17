@@ -38,6 +38,8 @@ data {
     item, "/button/group" "button";
     item, "/radio/group" "radio";
     item, "/check/group" "checkbox";
+    item, "/checkbutton/group" "checkbutton";
+    item, "/radiobutton/group" "checkbutton";
 
     item, "/entry/group" "entry";
     item, "/entry/color/a" "255";
