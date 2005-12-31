@@ -40,11 +40,7 @@ void			 ewl_freebox_resort(Ewl_Freebox *fb);
 void ewl_freebox_cb_configure(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
-void ewl_freebox_cb_child_remove(Ewl_Container *c, Ewl_Widget *w);
-void ewl_freebox_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, 
-					int size, Ewl_Orientation o);
 void ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
-void ewl_freebox_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 #endif
 

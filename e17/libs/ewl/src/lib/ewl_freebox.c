@@ -70,14 +70,8 @@ ewl_freebox_init(Ewl_Freebox *fb)
 				ewl_freebox_cb_configure, NULL);
 	ewl_container_add_notify_set(EWL_CONTAINER(fb),
 				ewl_freebox_cb_child_add);
-	ewl_container_remove_notify_set(EWL_CONTAINER(fb),
-				ewl_freebox_cb_child_remove);
-	ewl_container_resize_notify_set(EWL_CONTAINER(fb),
-				ewl_freebox_cb_child_resize);
 	ewl_container_show_notify_set(EWL_CONTAINER(fb),
 				ewl_freebox_cb_child_show);
-	ewl_container_hide_notify_set(EWL_CONTAINER(fb),
-				ewl_freebox_cb_child_hide);
 
 	fb->layout = EWL_FREEBOX_LAYOUT_AUTO;
 	ewl_widget_focusable_set(EWL_WIDGET(fb), FALSE);
@@ -188,8 +182,6 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, "freebox");
 
-printf("CONFIGURE\n");
-
 	fb = EWL_FREEBOX(w);
 	if (fb->layout == EWL_FREEBOX_LAYOUT_AUTO)
 		ewl_freebox_layout_auto(fb);
@@ -221,37 +213,6 @@ ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 
 	fb = EWL_FREEBOX(c);
 	fb->sorted = FALSE;
-printf("CHILD ADD\n");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_freebox_cb_child_remove(Ewl_Container *c, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
-
-printf("CHILD REMOVE\n");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_freebox_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, 
-				int size __UNUSED__, 
-				Ewl_Orientation o __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
-
-printf("CHILD RESIZE\n");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -259,30 +220,19 @@ printf("CHILD RESIZE\n");
 void
 ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
+	Ewl_Freebox *fb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, "container");
 	DCHECK_TYPE("w", w, "widget");
 
-printf("CHILD SHOW\n");
+	fb = EWL_FREEBOX(c);
+	fb->sorted = FALSE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }	
-
-void
-ewl_freebox_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, "container");
-	DCHECK_TYPE("w", w, "widget");
-
-printf("CHILD HIDE\n");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
 
 /* This will run through the list of child widgets and lay them out in rows
  * based on their size. */
