@@ -482,14 +482,20 @@ ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 void
-ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c)
+ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
 	Ewl_Table *table; 
 	int width_g, height_g; 
-	
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, "container");
+
 	table = EWL_TABLE (p); 
 	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid), &width_g, &height_g); 
 	ewl_object_preferred_inner_size_set (EWL_OBJECT (table), width_g, height_g);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
