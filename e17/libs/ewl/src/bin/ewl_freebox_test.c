@@ -59,7 +59,7 @@ void
 __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
-	Ewl_Widget *win, *box, *hbox, *fb, *o;
+	Ewl_Widget *win, *box, *hbox, *fb, *pane, *o;
 
 	fb_button = w;
 
@@ -98,9 +98,14 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_TOP);
 	ewl_widget_show(hbox);
 
+	pane = ewl_scrollpane_new();
+	ewl_widget_show(pane);
+
 	fb = ewl_freebox_new();
 	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
 					EWL_FREEBOX_LAYOUT_MANUAL);
+	ewl_container_child_append(EWL_CONTAINER(pane), fb);
+	ewl_widget_show(fb);
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
@@ -111,8 +116,7 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 				ewl_freebox_cb_add, fb);
 	ewl_widget_show(o);
 
-	ewl_container_child_append(EWL_CONTAINER(hbox), fb);
-	ewl_widget_show(fb);
+	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
 
 	/* the auto box */
 	o = ewl_label_new();
@@ -125,9 +129,14 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(box), hbox);
 	ewl_widget_show(hbox);
 
+	pane = ewl_scrollpane_new();
+	ewl_widget_show(pane);
+
 	fb = ewl_freebox_new();
 	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
 					EWL_FREEBOX_LAYOUT_AUTO);
+	ewl_container_child_append(EWL_CONTAINER(pane), fb);
+	ewl_widget_show(fb);
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
@@ -138,8 +147,7 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 				ewl_freebox_cb_add, fb);
 	ewl_widget_show(o);
 
-	ewl_container_child_append(EWL_CONTAINER(hbox), fb);
-	ewl_widget_show(fb);
+	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
 
 	/* the comparator box */
 	o = ewl_label_new();
@@ -152,11 +160,16 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(box), hbox);
 	ewl_widget_show(hbox);
 
+	pane = ewl_scrollpane_new();
+	ewl_widget_show(pane);
+
 	fb = ewl_freebox_new();
 	ewl_freebox_layout_type_set(EWL_FREEBOX(fb),
 					EWL_FREEBOX_LAYOUT_COMPARATOR);
 	ewl_freebox_comparator_set(EWL_FREEBOX(fb), 
 					ewl_freebox_cb_compare);
+	ewl_container_child_append(EWL_CONTAINER(pane), fb);
+	ewl_widget_show(fb);
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
@@ -167,7 +180,6 @@ __create_freebox_test_window(Ewl_Widget *w, void *ev __UNUSED__,
 				ewl_freebox_cb_add, fb);
 	ewl_widget_show(o);
 
-	ewl_container_child_append(EWL_CONTAINER(hbox), fb);
-	ewl_widget_show(fb);
+	ewl_container_child_append(EWL_CONTAINER(hbox), pane);
 }
 
