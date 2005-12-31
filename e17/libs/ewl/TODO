@@ -59,6 +59,11 @@ EWL BUGS
   correctly the tooltip will go to the current active area. If you set 
   the active area, the tooltip dosen't seem to appear.
 
+- We auto add things to the tab order as they are realized. We need to make
+  sure the things we are adding aren't already in the tab order as we will
+  then remove them. Should possibly add a flag to deactive this behaviour if
+  the user wants complete control over their tab order.
+
 
   Ewl_Icon bugs/todo
   ------------------
