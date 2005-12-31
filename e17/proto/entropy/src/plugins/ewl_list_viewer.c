@@ -300,12 +300,10 @@ void ewl_icon_local_viewer_menu_delete_cb (Ewl_Widget *w , void *ev_data , void 
 }
 
 void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* instance) {
-		Ewl_Iconbox* ib = EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->list);
 		entropy_icon_viewer* viewer= instance->data;
 
 		Ecore_List* new_file_list = ecore_list_new();
 		Ecore_List* icon_list;
-		entropy_generic_file* file;
 		gui_file* local_file;
 		Ewl_Iconbox_Icon* list_item;
 		
@@ -382,8 +380,7 @@ void ewl_icon_local_viewer_key_event_cb(Ewl_Iconbox* ib, void* data, char* key) 
 
 
 entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_gui_component_instance* layout) {
-	Ewl_Widget* context;
-	char* headers[4];
+	char* headers[6];
 
 	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
@@ -394,12 +391,14 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	instance->data = viewer;
 	instance->layout_parent = layout;
 	
-        viewer->list = ewl_tree_new(3);
+        viewer->list = ewl_tree_new(5);
 
-	headers[0] = "Filename";
-	headers[1] = "Size";
-	headers[2] = "Date Modified";
-	headers[3] = NULL;
+	headers[0] = "Icon";
+	headers[1] = "Filename";
+	headers[2] = "Size";
+	headers[3] = "Date Modified";
+	headers[4] = " ";
+	headers[5] = NULL;
 	ewl_tree_headers_set(EWL_TREE(viewer->list), headers);
 	
 	
@@ -459,34 +458,62 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 
 gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, entropy_generic_file* list_item, int do_mime) {
 		entropy_icon_viewer* view = comp->data;
-		char* text[4];
+		Ewl_Widget* text[6];
 		char buf[50];
+		Ewl_Widget *image;
+		Ewl_Widget *filename;
+		Ewl_Widget *size;
+		Ewl_Widget* *mod_time;
 	
 		
-		Ewl_Tree_Node* icon;
+		Ewl_Widget* icon;
 		gui_file* gui_object;
 
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(list_item->md5);			
+
+	
+			 text[0] = ewl_image_new();
+			 ewl_image_file_set(EWL_IMAGE(text[0]), PACKAGE_DATA_DIR "/icons/default.png", 0);
+			 ewl_image_constrain_set(EWL_IMAGE(text[0]), 15);
+			 ewl_widget_show(text[0]);
+			 
 		
-			 text[0] = list_item->filename;   /*Name*/
+			 text[1] = ewl_text_new();
+			 ewl_text_text_set(EWL_TEXT(text[1]), list_item->filename);   /*Name*/
+			 ewl_widget_show(text[1]);
 			 
 			 if (list_item->retrieved_stat) {
 				 snprintf(buf, 50, "%d kb", ((int)list_item->properties.st_size/1024));
-				 text[1] = buf;
-			 } else
-				 text[1] = NULL;
+				 text[2] = ewl_text_new();
+				 ewl_text_text_set(EWL_TEXT(text[2]), buf);
+				 ewl_widget_show(text[2]);
+			 } else {
+				 text[2] = ewl_text_new();
+			 	 ewl_widget_show(text[2]);               /* Size */
+			} 	
 
 
 		 	if (list_item->retrieved_stat) {
 				time_t stime;
 				stime = list_item->properties.st_mtime;
-				text[2] = ctime(&stime);
+				text[3] = ewl_text_new();
+				ewl_text_text_set(EWL_TEXT(text[3]), ctime(&stime));
+				ewl_widget_show(text[3]);
 			} else {
-				 text[2] = NULL;                  /*Mod time*/
+				 text[3] = ewl_text_new();
+				 ewl_widget_show(text[3]);                  /*Mod time*/
 			}
 
-			icon = ewl_tree_text_row_add(EWL_TREE(view->list), NULL, text);
+			text[4] = ewl_label_new();
+			ewl_label_text_set(EWL_LABEL(text[4]), "...");
+			ewl_widget_show(text[4]);
+			text[5] = NULL;
+
+			icon = ewl_tree_row_add(EWL_TREE(view->list), NULL, text);
+
+			ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HFILL);
+			
 			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);
 			
 
@@ -695,17 +722,16 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		        obj = ecore_hash_get(view->gui_hash, thumb->parent );
 
 		        if (obj) {
+				Ewl_Widget* cell;
+				Ewl_Widget* image;
 		                obj->thumbnail = thumb;
 
-	        	        /*printf("Received callback notify from notify event..\n");*/
-		                /*Make sure the icon still exists*/
-				/*if (obj->icon) {*/
+				cell = ewl_container_child_get(EWL_CONTAINER(obj->icon), 0);
+				image = ewl_container_child_get(EWL_CONTAINER(cell), 0);
+				
+				
+				ewl_image_file_set(EWL_IMAGE(image), obj->thumbnail->thumbnail_filename,0);
 
-				//FIXME
-				//ewl_list_icon_image_set(EWL_ICONBOX_ICON(obj->icon), obj->thumbnail->thumbnail_filename);
-
-				/*FIXME This is inefficient as all hell - find a better way to do this*/
-				//ewl_list_icon_arrange(EWL_ICONBOX(view->list)); 
 	        	} else {
 	                	printf("ERR: Couldn't find a hash reference for this file!\n");
 	        	}
