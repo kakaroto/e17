@@ -409,6 +409,14 @@ enum Ewl_Icon_Type
 };
 typedef enum Ewl_Icon_Type Ewl_Icon_Type;
 
+enum Ewl_Freebox_Layout_Type
+{
+	EWL_FREEBOX_LAYOUT_MANUAL,
+	EWL_FREEBOX_LAYOUT_COMPARATOR,
+	EWL_FREEBOX_LAYOUT_AUTO
+};
+typedef enum Ewl_Freebox_Layout_Type Ewl_Freebox_Layout_Type;
+
 /**
  * @}
  */ 

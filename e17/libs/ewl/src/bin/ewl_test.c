@@ -126,6 +126,13 @@ main(int argc, char **argv)
 				"for single line editable text.",
 		},
 		{
+			"Freebox",
+			__create_freebox_test_window,
+			"ewl_freebox_test.c",
+			"The freebox is used for a more free layout system\n"
+				"then the other containers",
+		},
+		{
 			"Filedialog",
 			__create_filedialog_test_window,
 			"ewl_filedialog_test.c",

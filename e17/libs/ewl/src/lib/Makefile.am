@@ -37,6 +37,7 @@ EWLHEADERS = \
 	ewl_fileselector.h \
 	ewl_floater.h \
 	ewl_filedialog.h \
+	ewl_freebox.h \
 	ewl_grid.h \
 	ewl_icon.h \
 	ewl_iconbox.h \
@@ -102,6 +103,7 @@ EWLSOURCES= \
 	ewl_fileselector.c \
 	ewl_floater.c \
 	ewl_filedialog.c \
+	ewl_freebox.c \
 	ewl_grid.c \
 	ewl_icon.c \
 	ewl_iconbox.c \
