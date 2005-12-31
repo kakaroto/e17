@@ -159,6 +159,7 @@ eapp_ui_init(char *file, char *lang, char *winclass)
 {
     Ewl_Widget *win, *vbox, *hbox, *tree, *o;
     char tmp[PATH_MAX];
+    const char *headers[] = { "Property Name", "Value" };
 
     snprintf(tmp, PATH_MAX, "%s/data/e_utils_eapp_edit/default.edj", 
                                                     PACKAGE_DATA_DIR);
@@ -166,6 +167,7 @@ eapp_ui_init(char *file, char *lang, char *winclass)
     ewl_window_title_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_class_set(EWL_WINDOW(win), "Eapp Editor");
     ewl_window_name_set(EWL_WINDOW(win), "Eapp_Editor");
+    ewl_object_size_request(EWL_OBJECT(win), 300, 450);
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, eapp_cb_quit, NULL);
     ewl_widget_show(win);
 
@@ -175,9 +177,10 @@ eapp_ui_init(char *file, char *lang, char *winclass)
 
     tree = ewl_tree_new(TREE_COLS);
     ewl_container_child_append(EWL_CONTAINER(vbox), tree);
-    ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
+    ewl_tree_headers_set(EWL_TREE(tree), (char **)headers);
+//    ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
     ewl_theme_data_str_set(tree, "/cell/file", tmp);
-    ewl_theme_data_str_set(tree, "/cell/group", "cell");
+    ewl_theme_data_str_set(tree, "/cell/group", "moocow");
     ewl_widget_show(tree);
 
     if (!eapp_populate(EWL_TREE(tree), file, lang, winclass))
@@ -232,18 +235,22 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
         }
     }
 
-    /* add the icon */
-    row[0] = ewl_image_new();
-    ewl_image_file_set(EWL_IMAGE(row[0]), file, "icon");
-    ewl_widget_name_set(row[0], "icon");
-    ewl_image_proportional_set(EWL_IMAGE(row[0]), TRUE);
-    ewl_image_scale_to(EWL_IMAGE(row[0]), 32, 32);
+    row[0] = ewl_label_new();
+    ewl_label_text_set(EWL_LABEL(row[0]), "Set Icon");
+    ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
+    ewl_object_fill_policy_set(EWL_OBJECT(row[0]), EWL_FLAG_FILL_NONE);
     ewl_widget_show(row[0]);
 
-    row[1] = ewl_button_new();
-    ewl_button_label_set(EWL_BUTTON(row[1]), "Set Icon");
+    /* add the icon */
+    row[1] = ewl_image_new();
+    ewl_image_file_set(EWL_IMAGE(row[1]), file, "icon");
+    ewl_image_proportional_set(EWL_IMAGE(row[1]), TRUE);
+    ewl_image_scale_to(EWL_IMAGE(row[1]), 32, 32);
     ewl_callback_append(row[1], EWL_CALLBACK_CLICKED, eapp_cb_fd_show, NULL);
-    ewl_object_fill_policy_set(EWL_OBJECT(row[1]), EWL_FLAG_FILL_SHRINK);
+    /* FIXME: This can give it a decent background, but introduces a sizing
+     * issue to track down
+     * ewl_widget_appearance_set(row[1], "entry"); */
+    ewl_widget_name_set(row[1], "icon");
     ewl_widget_show(row[1]);
 
     ewl_tree_row_add(tree, NULL, row);
@@ -251,11 +258,9 @@ eapp_populate(Ewl_Tree *tree, char *file, char *lang, char *winclass)
     /* add all the eet data */
     for (i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++)
     {
-        row[0] = ewl_text_new();
-        ewl_text_text_set(EWL_TEXT(row[0]), NULL);
-        ewl_text_styles_set(EWL_TEXT(row[0]), EWL_TEXT_STYLE_OUTLINE);
-        ewl_text_shadow_color_set(EWL_TEXT(row[0]), 128, 128, 128, 128);
-        ewl_text_text_set(EWL_TEXT(row[0]), keys[i].name);
+        row[0] = ewl_label_new();
+        ewl_label_text_set(EWL_LABEL(row[0]), keys[i].name);
+	ewl_object_fill_policy_set(EWL_OBJECT(row[0]), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(row[0]), EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(row[0]);
 
