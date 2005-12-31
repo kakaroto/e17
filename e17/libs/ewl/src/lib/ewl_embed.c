@@ -475,9 +475,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DCHECK_TYPE("embed", embed, "embed");
 
 	ewl_embed_active_set(embed, TRUE);
-
-	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
-			x, y);
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (!widget)
 		widget = EWL_WIDGET(embed);
 
@@ -487,8 +485,15 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * causes the widget to be destroyed.
 	 */
 	deselect = embed->last.clicked;
-	ewl_embed_focused_widget_set(embed, widget);
-	embed->last.clicked = widget;
+
+	/* we want the focused and last clicked to be the parent widget, not
+	 * the internal children */
+	temp = widget;
+	while (temp && ewl_widget_internal_is(temp))
+		temp = temp->parent;
+
+	ewl_embed_focused_widget_set(embed, temp);
+	embed->last.clicked = temp;
 
 	ev.modifiers = mods;
 	ev.x = x;
@@ -1329,9 +1334,6 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("embed", embed, "embed");
 	DCHECK_TYPE("w", w, "widget");
-
-	if (ecore_dlist_current(embed->tab_order) != w)
-		ecore_dlist_goto(embed->tab_order, w);
 
 	if (embed->last.focused)
 	{
