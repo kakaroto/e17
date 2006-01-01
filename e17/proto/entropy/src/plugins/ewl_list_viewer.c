@@ -392,6 +392,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	instance->layout_parent = layout;
 	
         viewer->list = ewl_tree_new(5);
+	ewl_tree_mode_set(EWL_TREE(viewer->list), EWL_TREE_MODE_MULTI);
 
 	headers[0] = "Icon";
 	headers[1] = "Filename";
@@ -451,8 +452,13 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 	
 	if ( (gui_object = ecore_hash_get(view->gui_hash, list_item)) ) {
 		//FIXME
-		//ewl_list_icon_remove(EWL_ICONBOX(view->list), EWL_ICONBOX_ICON(gui_object->icon));
+		ewl_tree_row_destroy(view->list, EWL_ROW(gui_object->icon));
 	}
+}
+
+
+Ecore_List* entropy_list_data_get(void) {
+	return NULL;	
 }
 
 
@@ -511,6 +517,7 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 			text[5] = NULL;
 
 			icon = ewl_tree_row_add(EWL_TREE(view->list), NULL, text);
+			ewl_widget_draggable_set(icon, 1,entropy_list_data_get);
 
 			ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HFILL);
 			

@@ -166,7 +166,6 @@ void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data) {
 	if (widget) {
 		printf("Drop widget: '%s'\n", widget->inheritance);
 		if (ewl_widget_type_is(widget, "icon")) {
-			char* folder;
 			Ewl_Iconbox* iconbox = EWL_ICONBOX_ICON(widget)->icon_box_parent;
 			Ecore_List* sel_list = ewl_iconbox_get_selection(iconbox);
 			Ewl_Iconbox_Icon* icon;
@@ -190,6 +189,24 @@ void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data) {
 			}
 
 			//printf("Copy to folder '%s/%s'\n", event->file->path, event->file->filename);
+		} else if (ewl_widget_type_is(widget, "row")) {
+			entropy_generic_file* file = entropy_core_object_file_association_get(widget);
+			entropy_plugin* plugin = 
+				entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
+			void (*copy_func)(entropy_generic_file* source, char* dest_uri, entropy_gui_component_instance* requester);
+			copy_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_copy");
+			char* folder;
+			
+			if (file) {
+				printf("Detected row drop.. (%s/%s)\n",file->path, file->filename);
+				folder = entropy_core_generic_file_uri_create(event->file, 0);
+
+				(*copy_func)(file, folder, event->instance);
+
+				free(folder);
+				
+			}
+
 		}
 	}
 }
