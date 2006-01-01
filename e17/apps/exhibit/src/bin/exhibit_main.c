@@ -605,6 +605,10 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 		  //_ex_tab_del(e->cur_tab);
 	       }
 	  }
+	else if(!strcmp(ev->key, "q"))
+	  {
+	     etk_main_quit();
+	  }
      }
 }
 
