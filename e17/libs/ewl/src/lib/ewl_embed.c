@@ -426,7 +426,8 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, char *keyname, unsigned int mods)
 
 	/* handle tab focus change (we just drop it on the floor as the
 	 * actual focus change was done in key down */
-	if ((embed->last.focused && (!ewl_widget_ignore_focus_change_get(embed->last.focused))) 
+	if ((embed->last.focused 
+			&& (!ewl_widget_ignore_focus_change_get(embed->last.focused))) 
 			&& (!strcmp(keyname, "Tab")))
 		DRETURN(DLEVEL_STABLE);
 
@@ -493,7 +494,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		temp = temp->parent;
 
 	ewl_embed_focused_widget_set(embed, temp);
-	embed->last.clicked = temp;
+	embed->last.clicked = widget;
 
 	ev.modifiers = mods;
 	ev.x = x;
