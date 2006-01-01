@@ -60,7 +60,7 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 int evfs_file_write(evfs_filereference* file, char* bytes, long size);
 int evfs_file_create(evfs_filereference* file);
 int smb_evfs_file_mkdir(evfs_filereference* file);
-
+int evfs_file_remove(char* file);
 
 
 
@@ -127,7 +127,7 @@ void auth_fn(const char *server, const char *share,
 	     char *password, int pwmaxlen)
 {
   char temp[128];
-  char path[512];
+  char path[PATH_MAX];
   evfs_auth_cache* obj;
 
   fprintf(stdout, "Need password for //%s/%s\n", server, share);
@@ -184,7 +184,12 @@ evfs_plugin_functions* evfs_plugin_init() {
 	functions->evfs_file_write = &evfs_file_write;
 	functions->evfs_file_create = &evfs_file_create;
 	functions->evfs_file_stat = &smb_evfs_file_stat;
+	functions->evfs_file_lstat = &smb_evfs_file_stat;   /*Windows file systems have no concept
+							      of 'lstat'*/
+
+	
 	functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
+	functions->evfs_file_remove = &evfs_file_remove;
 	printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
 
 	auth_cache = ecore_list_new();
@@ -217,7 +222,7 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 	
 	int err = 0;
 	int fd = 0;
-	char dir[128];
+	char dir[PATH_MAX];
 	static struct stat smb_stat;
 
 	//struct stat* file_stat = calloc(1,sizeof(struct stat));
@@ -228,7 +233,7 @@ int smb_evfs_file_stat(evfs_command* command, struct stat* file_stat) {
 
 	err = smb_context->stat(smb_context, (const char*)dir, &smb_stat);
 	printf("Returned error code: %d\n", err);
-	printf("File size: %d\n", file_stat->st_size);
+	printf("File size: %ld\n", file_stat->st_size);
 	
 	printf("Returning to caller..\n");
 
@@ -260,7 +265,7 @@ static void smb_evfs_dir_list(evfs_client* client, evfs_command* command,
 Ecore_List** directory_list
 ) {
 	
-	char dir_path[1024];
+	char dir_path[PATH_MAX];
 
 	int fd, dh1, dh2, dh3, dsize, dirc;
 	int size;
@@ -337,6 +342,30 @@ int evfs_file_open(evfs_client* client, evfs_filereference* file) {
 	file->fd = smb_fd_get_next(file->fd_p);
 
 	return file->fd;
+}
+
+int evfs_file_remove(char* file) {
+	char file_smb[PATH_MAX];
+	static struct stat file_stat;
+
+	snprintf (file_smb, PATH_MAX, "smb:/%s", file);
+	
+
+	int rr = smb_context->stat(smb_context, (const char*)file_smb, &file_stat);
+	if (!rr) {
+		/*File stat successful*/
+		if (S_ISDIR(file_stat.st_mode)) {
+			printf("Rmdiring '%s'\n", file_smb);
+			return smb_context->rmdir(smb_context, file_smb);		
+		} else {
+			printf("Unlinking '%s'\n", file_smb);
+			return smb_context->unlink(smb_context, file_smb);
+		}
+	} else {
+		printf ("Could not stat '%s'\n", file_smb);
+	}
+	
+	
 }
 
 int evfs_file_close(evfs_filereference* file) {

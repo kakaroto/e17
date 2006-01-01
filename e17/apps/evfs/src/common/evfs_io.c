@@ -147,6 +147,11 @@ void evfs_write_file_read_event(evfs_client* client, evfs_event* event) {
 
 void evfs_write_progress_event(evfs_client* client, evfs_command* command, evfs_event* event) {
 	int size_ret = 0;
+
+	if (event->progress->type == EVFS_PROGRESS_TYPE_DONE) {
+		printf( "Sendign Done!\n");
+	}
+	
 	char* data = eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress, &size_ret);
 
 	evfs_write_ecore_ipc_client_message(client->client, 

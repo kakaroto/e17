@@ -435,7 +435,7 @@ void evfs_dir_list(evfs_client* client, evfs_command* command, Ecore_List** dire
 	
 	dir = opendir(command->file_command.files[0]->path);
 	while ( (de = readdir(dir)) ) {
-		if (strcmp(de->d_name, ".") && strcmp(de->d_name, "..") && de->d_name[0] != '.') {
+		if (strcmp(de->d_name, ".") && strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
 			evfs_filereference* ref = NEW(evfs_filereference);
 			
                       	snprintf(full_name, 1024, "%s/%s", command->file_command.files[0]->path, de->d_name);

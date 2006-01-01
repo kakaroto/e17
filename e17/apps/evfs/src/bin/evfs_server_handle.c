@@ -147,7 +147,7 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 				//printf("REMOVE DIR: '%s'\n", command->file_command.files[0]->path);
 				(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
 			} else {
-				//printf("Not recursing - LINK directory!\n");
+				printf("Not recursing - LINK directory!\n");
 			}
 
 
