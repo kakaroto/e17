@@ -41,7 +41,7 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	if (ev->z > 0)
 	  {
 	     row = etk_tree_next_row_get(
-		       etk_tree_selected_row_get(e->cur_tab->itree), 
+		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
 		       FALSE, FALSE);
 	     etk_tree_row_select(row);
 	     etk_tree_row_scroll_to(row, FALSE);
@@ -49,7 +49,7 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	else
 	  {
 	     row = etk_tree_prev_row_get(
-		       etk_tree_selected_row_get(e->cur_tab->itree), 
+		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
 		       FALSE, FALSE);
 	     etk_tree_row_select(row);	     
 	     etk_tree_row_scroll_to(row, FALSE);	     

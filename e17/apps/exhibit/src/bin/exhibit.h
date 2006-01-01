@@ -117,9 +117,10 @@ struct _Exhibit
 struct _Ex_Thumb
 {
    Exhibit  *e;
-   char    *name;
-   char    *image;
-   Epsilon *ep;
+   char     *name;
+   char     *image;
+   Etk_Bool  selected;
+   Epsilon  *ep;
 };
 
 #define WINDOW_TITLE "Exhibit"

@@ -4,8 +4,10 @@ Ex_Tab *
 _ex_tab_new(Exhibit *e, char *dir)
 {
    Ex_Tab *tab;
-   Etk_Tree_Model *imodel;   
+   Etk_Tree_Model *imodel;
+   char *file;
    
+   file = NULL;
    tab = calloc(1, sizeof(Ex_Tab));   
    tab->num = evas_list_count(e->tabs);
    tab->dirs = NULL;

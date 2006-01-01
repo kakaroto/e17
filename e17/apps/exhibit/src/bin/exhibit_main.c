@@ -220,7 +220,7 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    e->cur_tab->dir = strdup(dcol_string);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e);
+   _ex_main_populate_files(e, NULL);
    etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
 }
 
@@ -364,15 +364,14 @@ _ex_file_is_viewable(char *file)
 }
 
 void
-_ex_main_populate_files(Exhibit *e)
+_ex_main_populate_files(Exhibit *e, char *selected_file)
 {
    char back[PATH_MAX];
    DIR *dir;
    struct dirent *dir_entry;
+   Etk_Tree_Row *row, *selected_row;
 
-//   etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
-//   etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));
-
+   selected_row = NULL;
    snprintf(back, PATH_MAX, "..");
    etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol, 
 		   ETK_DEFAULT_ICON_SET_FILE, "actions/go-up", back, NULL);
@@ -431,7 +430,10 @@ _ex_main_populate_files(Exhibit *e)
 	     char *thumb;
 
 	     thumb = (char*)epsilon_thumb_file_get(ep);
-	     etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, thumb, dir_entry->d_name, NULL);
+	     row = etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, thumb, dir_entry->d_name, NULL);
+	     if(selected_file)	       		  		  
+	       if(!strcmp(selected_file, dir_entry->d_name))
+		 selected_row = row;		    	     
 	     free(thumb);
 	  }
 	else {
@@ -442,6 +444,10 @@ _ex_main_populate_files(Exhibit *e)
 	   thumb->e = e;
 	   thumb->name = strdup(dir_entry->d_name);
 	   thumb_list = evas_list_append(thumb_list, thumb);
+	   if(!strcmp(selected_file, dir_entry->d_name))
+	     thumb->selected = TRUE;
+	   else
+	     thumb->selected = FALSE;
 	   if(pid == -1) _ex_thumb_generate();
 	}
      }
@@ -450,6 +456,12 @@ _ex_main_populate_files(Exhibit *e)
    etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
    etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, TRUE, e->cur_tab->dcol, NULL);
 
+   if(selected_row)
+     {
+	etk_tree_row_select(selected_row);
+	etk_tree_row_scroll_to(selected_row, TRUE);
+     }
+   
    closedir(dir);
 }
 
@@ -467,7 +479,7 @@ _ex_main_itree_key_down_cb(Etk_Object *object, void *event, void *data)
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-        _ex_main_populate_files(e);
+        _ex_main_populate_files(e, NULL);
      }
 }
 
@@ -488,7 +500,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	Evas_List *l;
 	
 	path = etk_entry_text_get(ETK_ENTRY(e->entry[0]));
-	dir = ecore_file_get_dir(path);
+	dir = (const char*)ecore_file_get_dir((char*)path);
 	file = ecore_file_get_file(path);
 	
 	if(!dir || !strcmp(dir, ""))
@@ -549,7 +561,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-        _ex_main_populate_files(e);
+        _ex_main_populate_files(e, NULL);
      }
 }
 
@@ -563,7 +575,7 @@ _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
    e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e);
+   _ex_main_populate_files(e, NULL);
 }
 
 Etk_Bool
@@ -595,7 +607,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     
 	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
 	     _ex_main_window_tab_append(e, tab);
-	     _ex_main_populate_files(e);
+	     _ex_main_populate_files(e, NULL);
 	  }
 	else if(!strcmp(ev->key, "w"))
 	  {
@@ -619,7 +631,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    Ex_Tab  *tab;
    
    e = data;
-   tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_WIDGET(object)));
+   tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
 
    e->cur_tab = tab;
    _ex_tab_select(tab);
@@ -648,7 +660,7 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
    e->tabs = evas_list_append(e->tabs, tab);
    e->cur_tab = tab;
    etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
-   etk_notebook_current_page_set(e->notebook, evas_list_count(e->tabs) - 1);
+   etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), evas_list_count(e->tabs) - 1);
 }
 
 void
@@ -656,11 +668,15 @@ _ex_main_window_show(char *dir)
 {
    Exhibit *e;
    Ex_Tab  *tab;
+   char    *file;
 
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
    e->menu = NULL;
    e->tabs = NULL;
+
+   file = NULL;
+   tab = NULL;
    
    e->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
@@ -806,12 +822,25 @@ _ex_main_window_show(char *dir)
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
    
    /* create first tab but dont place it in notebook */
-   tab = _ex_tab_new(e, dir);   
+   if(ecore_file_is_dir(dir))	  	     
+     tab = _ex_tab_new(e, dir);   
+   else if(ecore_file_exists(dir))
+     {	     
+	char *dir2;
+	
+	dir2 = ecore_file_get_dir(dir);
+	tab = _ex_tab_new(e, dir2);
+	free(dir2);
+	file = (const char*)ecore_file_get_file((const char*)dir);
+     }   
+   else     
+     tab = _ex_tab_new(e, ".");
+	
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
    _ex_tab_select(tab);
    etk_paned_add2(ETK_PANED(tab->e->hpaned), tab->scrolled_view, TRUE);   
-   _ex_main_populate_files(e);
+   _ex_main_populate_files(e, file);
       
    e->hbox = etk_hbox_new(TRUE, 0);   
    etk_box_pack_end(ETK_BOX(e->vbox), e->hbox, FALSE, FALSE, 0);
@@ -868,12 +897,7 @@ main(int argc, char *argv[])
    
    epsilon_init();
    if(argc > 1)
-     {
-	if(ecore_file_is_dir(argv[1]))
-	  _ex_main_window_show(argv[1]);
-	else
-	  _ex_main_window_show(NULL);
-     }
+     _ex_main_window_show(argv[1]);     
    else
      _ex_main_window_show(NULL);   
      
