@@ -2,8 +2,8 @@ group{
     name, "row_background";
 
     data {
-        item, "inset/top" "1";
-        item, "inset/bottom" "1";
+        item, "inset/top" "2";
+        item, "inset/bottom" "2";
         item, "inset/left" "2";
         item, "inset/right" "2";
     }
@@ -44,9 +44,55 @@ group{
                 }
 		color, 255 255 255 200;
             }
-	  }
+	}
+	part {
+            name, "tree-select";
+            mouse_events, 0;
+            description {
+                state, "default" 0.0;
+                image {
+                    normal, "e17_tranny.png";
+                }
+                fill {
+		    smooth : 0;
+		}
+            }
+	    description {
+                state, "selected" 0.0;
+                rel1 {
+                    relative, 0.0 0.0;
+                    offset, 0 0;
+                }
+                rel2 {
+                    relative, 1.0 1.0;
+                    offset, -1 -1;
+                }
+                image {
+                    normal, "e17_hhandle.png";
+                    border, 3 3 3 3;
+                }
+             color, 255 255 255 255;  
+    	    }
+	}
     }
-    programs {
+    programs{
+    	program {
+      		name:       "selected";
+      		signal:     "mouse,in";
+      		source:     "*";
+        	action:     STATE_SET "selected" 0.0;
+       		transition: LINEAR 0.0;
+		target:     "tree-select";
+    	}
+    	program {
+        	name:       "default";
+        	signal:     "mouse,out";
+        	source:     "*";
+        	action:     STATE_SET "default" 0.0;
+        	transition: LINEAR 0.0;
+		target:     "tree-select";
+        }
+
         program {
             	name:       "odd";
             	signal:     odd;

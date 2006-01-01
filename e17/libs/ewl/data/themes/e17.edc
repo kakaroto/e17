@@ -28,7 +28,6 @@ collections {
 #include "e17/bits/border-groups.edc"
 #include "e17/bits/box-groups.edc"
 #include "e17/bits/treebg-groups.edc"
-#include "e17/bits/treeselect-groups.edc"
 #include "e17/bits/treehead-groups.edc"
 }
 
@@ -62,7 +61,6 @@ data {
 
     item, "/tree/group" "tree_background";
     item, "/row/group" "row_background";
-    item, "/cell/group" "tree-select";
     item, "/tree/paned/button/group" "tree_header";
     item, "/tree/paned/grabber/vertical/group" "vline";
     item, "/node/check/group" "treenode";
