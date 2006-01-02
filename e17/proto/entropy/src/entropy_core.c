@@ -793,6 +793,11 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	entropy_gui_component_instance* iter;
 	Ecore_List* el;	
 	Ecore_Hash* lay_hash;
+
+	if (!instance) {
+		printf("entropy_core_layout_notify_event: instance was NULL\n");	
+		return;
+	}
 	
 
 	entropy_gui_component_instance* layout = NULL;

@@ -205,6 +205,7 @@ void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Has
 	Ecore_List* list;
 	entropy_generic_file* obj;	
 	gui_file* freeobj;
+	entropy_icon_viewer* view = comp->data;
 
 	/*Temporarily stop callbacks, we don't want to clobber an in-op process*/
 	entropy_notify_lock_loop(comp->core->notify);
@@ -217,7 +218,9 @@ void gui_object_destroy_and_free(entropy_gui_component_instance* comp, Ecore_Has
 		
 		freeobj = ecore_hash_get( gui_hash, obj);
 		if (freeobj) {
-			/*Associate this icon with this file in the core, so DND works*/
+			ewl_tree_row_destroy(EWL_TREE(view->list), EWL_ROW(freeobj->icon));
+			
+			/*De-Associate this icon with this file in the core, so DND works*/
 			entropy_core_object_file_disassociate(freeobj->icon);
 			
 			gui_file_destroy(freeobj);
@@ -723,7 +726,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
 
-		ewl_container_reset(EWL_CONTAINER(view->list));
 
 	
 	}
