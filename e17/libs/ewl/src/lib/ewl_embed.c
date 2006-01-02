@@ -490,7 +490,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	/* we want the focused and last clicked to be the parent widget, not
 	 * the internal children */
 	temp = widget;
-	while (temp && ewl_widget_internal_is(temp))
+	while (temp && temp->parent && ewl_widget_internal_is(temp))
 		temp = temp->parent;
 
 	ewl_embed_focused_widget_set(embed, temp);
