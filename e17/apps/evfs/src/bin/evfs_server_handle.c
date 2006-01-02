@@ -262,8 +262,20 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 
  	plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	dst_plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[1]->plugin_uri);
+
+
 	
 	if (plugin && dst_plugin) {
+
+	/*Check for supported options*/
+		if (! (
+			plugin->functions->evfs_file_lstat &&
+	  	        plugin->functions->evfs_file_open &&
+		        dst_plugin->functions->evfs_file_create 
+		      )) {
+			printf("AHH! Not supported!\n");
+			return;
+		}
 
 
 		/*Get the source file size*/

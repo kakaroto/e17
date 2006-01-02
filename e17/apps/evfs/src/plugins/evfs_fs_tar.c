@@ -303,6 +303,7 @@ evfs_plugin_functions* evfs_plugin_init() {
         functions->evfs_client_disconnect = &evfs_client_disconnect;
 	functions->evfs_dir_list = &evfs_dir_list;
 	functions->evfs_file_stat = &evfs_file_stat;
+	functions->evfs_file_lstat = &evfs_file_stat;
 
         /*functions->evfs_file_remove= &evfs_file_remove;
         functions->evfs_monitor_start = &evfs_monitor_start;
