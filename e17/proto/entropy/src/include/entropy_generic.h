@@ -6,11 +6,12 @@
 #include "thumbnail_generic.h"
 
 #define MIME_LENGTH 40
+#define FILENAME_LENGTH 255
 
 typedef struct entropy_generic_file entropy_generic_file;
 struct entropy_generic_file {
         char path[255];
-        char filename[255];
+        char filename[FILENAME_LENGTH];
         char mime_type[MIME_LENGTH];
 	char uri_base[15];
 	

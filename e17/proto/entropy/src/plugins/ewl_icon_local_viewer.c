@@ -562,6 +562,9 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*We want to know about file transfer progress events*/
 	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_PROGRESS));
 
+	/*We want to know about thumbnail available events*/
+	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
+
 
 	ewl_iconbox_controlled_key_callback_register(viewer->iconbox, ewl_icon_local_viewer_key_event_cb, instance);
 
@@ -621,17 +624,22 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 	
 			
 				 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-		                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+		                        thumb = entropy_thumbnailer_retrieve(mime);
 				 } else {
 					 thumb = NULL;
 				 }
 
 		                if (thumb) {
+					entropy_thumbnail_request* request = entropy_thumbnail_request_new();
+					request->file = list_item;
+					request->instance = comp;
+					
 					entropy_notify_event* ev = entropy_notify_request_register(
 					comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
-					"entropy_thumbnailer_thumbnail_get", list_item,NULL);
+					"entropy_thumbnailer_thumbnail_get", request,NULL);
 					
 					entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);			
+					entropy_notify_event_cleanup_add(ev, request);
 					entropy_notify_event_commit(comp->core->notify, ev);
 				}
 
@@ -684,18 +692,23 @@ int idle_add_icons(void* data) {
 
 			
 			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+	                        thumb = entropy_thumbnailer_retrieve(mime);
 			 } else {
 				 thumb = NULL;
 			}
 
 	                if (thumb) {
+				entropy_thumbnail_request* request = entropy_thumbnail_request_new();
+				request->file = file;
+				request->instance = comp;
+				
 				entropy_notify_event* ev = entropy_notify_request_register(
 				comp->core->notify, proc, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
-				"entropy_thumbnailer_thumbnail_get", file,NULL);
+				"entropy_thumbnailer_thumbnail_get", request,NULL);
 			
 				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, proc->requestor);
-				
+				entropy_notify_event_cleanup_add(ev, request);
+
 				ecore_list_append(events, ev);
 			}
 
@@ -835,7 +848,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 				/*FIXME This is inefficient as all hell - find a better way to do this*/
 				//ewl_iconbox_icon_arrange(EWL_ICONBOX(view->iconbox)); 
 	        	} else {
-	                	printf("ERR: Couldn't find a hash reference for this file!\n");
+	                	//printf("ERR: Couldn't find a hash reference for this file!\n");
 	        	}
 		}
 	} //End case

@@ -452,7 +452,7 @@ ewl_icon_local_viewer_remove_icon(entropy_gui_component_instance* comp, entropy_
 	
 	if ( (gui_object = ecore_hash_get(view->gui_hash, list_item)) ) {
 		//FIXME
-		ewl_tree_row_destroy(view->list, EWL_ROW(gui_object->icon));
+		ewl_tree_row_destroy(EWL_TREE(view->list), EWL_ROW(gui_object->icon));
 	}
 }
 
@@ -546,17 +546,23 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 	
 			
 				 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-		                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+		                        thumb = entropy_thumbnailer_retrieve(mime);
 				 } else {
 					 thumb = NULL;
 				 }
 
 		                if (thumb) {
+					entropy_thumbnail_request* request = entropy_thumbnail_request_new();
+					request->file = list_item;
+					request->instance = comp;
+
 					entropy_notify_event* ev = entropy_notify_request_register(
 					comp->core->notify, comp, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
-					"entropy_thumbnailer_thumbnail_get", list_item,NULL);
+					"entropy_thumbnailer_thumbnail_get", request,NULL);
 					
 					entropy_notify_event_callback_add(ev, (void*)gui_event_callback, comp);			
+					entropy_notify_event_cleanup_add(ev, request);
+					
 					entropy_notify_event_commit(comp->core->notify, ev);
 				}
 
@@ -609,17 +615,22 @@ int idle_add_icons(void* data) {
 
 			
 			 if (mime && strcmp(mime, ENTROPY_NULL_MIME)) {
-	                        thumb = entropy_thumbnailer_retrieve(comp->core->entropy_thumbnailers, mime);
+	                        thumb = entropy_thumbnailer_retrieve(mime);
 			 } else {
 				 thumb = NULL;
 			}
 
 	                if (thumb) {
+				entropy_thumbnail_request* request = entropy_thumbnail_request_new();
+				request->file = file;
+				request->instance = comp;
+				
 				entropy_notify_event* ev = entropy_notify_request_register(
 				comp->core->notify, proc, ENTROPY_NOTIFY_THUMBNAIL_REQUEST,thumb, 
-				"entropy_thumbnailer_thumbnail_get", file,NULL);
+				"entropy_thumbnailer_thumbnail_get", request,NULL);
 			
 				entropy_notify_event_callback_add(ev, (void*)gui_event_callback, proc->requestor);
+				entropy_notify_event_cleanup_add(ev, request);
 				
 				ecore_list_append(events, ev);
 			}

@@ -39,50 +39,50 @@ Ecore_List* entropy_thumbnailer_plugin_mime_types_get() {
 	return types;
 }
 
-entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_generic_file* file) {
-	if (file->thumbnail) {
-		return file->thumbnail;
+entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_thumbnail_request* request) {
+	if (request->file->thumbnail) {
+		return request->file->thumbnail;
 	}
 
 	entropy_thumbnail* thumb = entropy_thumbnail_new();
 
-	if (!strcmp(file->mime_type, "file/folder")) {
+	if (!strcmp(request->file->mime_type, "file/folder")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/folder.png");
-	} else if (!strcmp(file->mime_type, "text/x-perl")) {
+	} else if (!strcmp(request->file->mime_type, "text/x-perl")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/perl.png");
-	} else if (!strcmp(file->mime_type, "video/x-ms-wmv")) {
+	} else if (!strcmp(request->file->mime_type, "video/x-ms-wmv")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/wmv.png");
-	}  else if (!strcmp(file->mime_type, "application/msword")) {
+	}  else if (!strcmp(request->file->mime_type, "application/msword")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/document.png");
-	}  else if (!strcmp(file->mime_type, "application/pdf")) {
+	}  else if (!strcmp(request->file->mime_type, "application/pdf")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/pdf.png");
-	} else if (!strcmp(file->mime_type, "application/vnd.ms-excel")) {
+	} else if (!strcmp(request->file->mime_type, "application/vnd.ms-excel")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/spreadsheet.png");
-	} else if (!strcmp(file->mime_type, "application/x-gtar")) {
+	} else if (!strcmp(request->file->mime_type, "application/x-gtar")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/tgz.png");
-	} else if (!strcmp(file->mime_type, "audio/x-mp3")) {
+	} else if (!strcmp(request->file->mime_type, "audio/x-mp3")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/mp3.png");
-	} else if (!strcmp(file->mime_type, "text/x-java")) {
+	} else if (!strcmp(request->file->mime_type, "text/x-java")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/java.png");
-	} else if (!strcmp(file->mime_type, "text/xml")) {
+	} else if (!strcmp(request->file->mime_type, "text/xml")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/xml.png");
-	} else if (!strcmp(file->mime_type, "application/x-jar")) {
+	} else if (!strcmp(request->file->mime_type, "application/x-jar")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/jar.png");
-	} else if (!strcmp(file->mime_type, "text/html")) {
+	} else if (!strcmp(request->file->mime_type, "text/html")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/html.png");
-	} else if (!strcmp(file->mime_type, "text/csrc")) {
+	} else if (!strcmp(request->file->mime_type, "text/csrc")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/c.png");
-	} else if (!strcmp(file->mime_type, "video/mpeg")) {
+	} else if (!strcmp(request->file->mime_type, "video/mpeg")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/mpeg.png");
-	} else if (!strcmp(file->mime_type, "application/x-bzip2")) {
+	} else if (!strcmp(request->file->mime_type, "application/x-bzip2")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/bz2.png");
-	} else if (!strcmp(file->mime_type, "application/x-tar")) {
+	} else if (!strcmp(request->file->mime_type, "application/x-tar")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/tar.png");
-	} else if (!strcmp(file->mime_type, "text/plain")) {
+	} else if (!strcmp(request->file->mime_type, "text/plain")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/txt.png");
-	} else if (!strcmp(file->mime_type, "video/x-msvideo")) {
+	} else if (!strcmp(request->file->mime_type, "video/x-msvideo")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/video.png");
-	} else if (!strcmp(file->mime_type, "video/quicktime")) {
+	} else if (!strcmp(request->file->mime_type, "video/quicktime")) {
 		strcpy(thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/video.png");
 	}
 
@@ -91,10 +91,25 @@ entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_generic_file* file)
 
 
 
-	thumb->parent = file;
-	file->thumbnail = thumb;
+	thumb->parent = request->file;
+	request->file->thumbnail = thumb;
 	
 	return thumb;
+}
+
+
+entropy_gui_component_instance* entropy_plugin_init(entropy_core* core) {
+
+	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
+	entropy_gui_component_instance* layout = entropy_core_global_layout_get(core);
+	instance->layout_parent = layout;
+	instance->core = core;
+	
+	return instance;
+}
+
+
+void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj, entropy_gui_component_instance* comp) {
 }
 
 

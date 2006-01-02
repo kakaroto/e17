@@ -24,6 +24,7 @@ void ewl_progress_window_create(entropy_file_progress_window* progress) {
 	progress->progressbar = ewl_progressbar_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), progress->progressbar);
 	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress->progressbar), 100);
+	ewl_object_custom_h_set(EWL_OBJECT(progress->progressbar), 30);
 	ewl_widget_show(progress->progressbar);
 
 }

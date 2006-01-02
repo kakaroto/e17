@@ -1,6 +1,7 @@
 #ifndef __ENTROPY_GUI_H_
 #define __ENTROPY_GUI_H_
 
+#define ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE "entropy_gui_event_thumbnail_available"	      //A thumbnail is ready
 #define ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS "entropy_gui_event_folder_change_contents"   //A request for the contents of a dir
 #define ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL "entropy_gui_event_folder_change_contents_external"   //A request for the contents of a dir (external - SEE DOCS)
 #define ENTROPY_GUI_EVENT_FOLDER_CHANGE_INFO "entropy_gui_event_folder_change_info"	      //A request for the name of a dir

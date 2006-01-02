@@ -28,12 +28,14 @@ typedef struct entropy_config entropy_config;
 #include "entropy_config.h"
 
 #define IPC_TITLE "entropy"
+#define THUMBNAILER_DISTRIBUTION 0
+#define THUMBNAILER_CHILD 1
 
 
 /*Plugin related functions*/
 int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin);
 entropy_plugin* create_plugin_object(char* filename);
-void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plugin);
+void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plugin, int type);
 Ecore_List* entropy_mime_register_init();
 Ecore_Hash* entropy_thumbnailers_register_init();
 void entropy_plugin_mime_register(Ecore_List*, entropy_plugin*);

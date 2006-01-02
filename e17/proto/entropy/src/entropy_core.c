@@ -23,6 +23,7 @@
 
 static int requests = 0;
 static long file_cache_size = 0;
+static entropy_plugin* distrib_plugin = NULL; /* FIXME - handle distrib plugins better*/
 entropy_core* core_core;
 
 #define FILE_FREE_QUEUE_SIZE 500;
@@ -196,6 +197,7 @@ entropy_core* entropy_core_init() {
 	core->layout_gui_events = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 	//printf("Creating the global layout object..\n");
+	/*Create the global layout object*/
 	layout = entropy_malloc(sizeof(entropy_gui_component_instance));
 	layout->core = core;
 	core->layout_global = layout;
@@ -203,6 +205,9 @@ entropy_core* entropy_core_init() {
 
         /*Init the mime register */
         core->entropy_thumbnailers = entropy_thumbnailers_register_init();
+	core->entropy_thumbnailers_child = entropy_thumbnailers_register_init();
+
+	
         core->mime_plugins = entropy_mime_register_init();
 
         /*Load plugins*/
@@ -514,6 +519,9 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_file_stat_available";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_FILE_PROGRESS)) {
 		return "entropy_gui_event_file_progress";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
+		return "entropy_gui_event_thumbnail_available";
+
 	} else {
 		return "";
 	}
@@ -555,9 +563,29 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
 	}
 
 
-        if (type == ENTROPY_PLUGIN_THUMBNAILER) {
+        if (type == ENTROPY_PLUGIN_THUMBNAILER_DISTRIBUTION) {
+		entropy_gui_component_instance* instance;
                 //printf(" ----------------------- Thumbnailer Plugin, registering with engine..\n");
-                entropy_plugin_thumbnailer_register(core, plugin);
+		//
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		instance = (*entropy_plugin_init)(core);
+		instance->plugin = plugin;
+
+		gui_event_callback = dlsym(plugin->dl_ref, "gui_event_callback");
+		plugin->gui_event_callback_p = gui_event_callback;
+	
+                entropy_plugin_thumbnailer_register(core, plugin, THUMBNAILER_DISTRIBUTION);
+	} else if (type == ENTROPY_PLUGIN_THUMBNAILER) {
+		entropy_gui_component_instance* instance;
+		
+		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
+		instance = (*entropy_plugin_init)(core);
+		instance->plugin = plugin;
+
+		gui_event_callback = dlsym(plugin->dl_ref, "gui_event_callback");
+		plugin->gui_event_callback_p = gui_event_callback;
+	
+                entropy_plugin_thumbnailer_register(core, plugin, THUMBNAILER_CHILD);
         } else if (type == ENTROPY_PLUGIN_MIME) {
                 //printf("MIME Identifier Plugin, registering with engine..\n");
                 entropy_plugin_mime_register(core->mime_plugins, plugin);
@@ -636,7 +664,7 @@ void entropy_plugin_mime_register(Ecore_List* mime_plugins, entropy_plugin* plug
         ecore_list_append(mime_plugins, plugin);
 }
 
-void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plugin) {
+void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plugin, int type) {
         /*First off, query the plugin to see what MIME types it handles*/
         char* mime_type;
         Ecore_List* (*entropy_thumbnailer_plugin_mime_types_get)();
@@ -648,17 +676,29 @@ void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plu
         mime_types = (*entropy_thumbnailer_plugin_mime_types_get)();
         ecore_list_goto_first(mime_types);
         while ( (mime_type = ecore_list_next(mime_types)) ) {
-                //printf ("    Loading mime_type for this thumbnailer '%s'\n", mime_type);
-                ecore_hash_set(core->entropy_thumbnailers, mime_type, plugin);
+		if (type == THUMBNAILER_DISTRIBUTION) { 
+	                ecore_hash_set(core->entropy_thumbnailers, mime_type, plugin);
+			distrib_plugin = plugin;
+		} else if (type == THUMBNAILER_CHILD) {
+			Ecore_List* list = NULL;
+			
+			if (! (list = ecore_hash_get(core_core->entropy_thumbnailers_child, mime_type))) {
+				list = ecore_list_new();
+				ecore_hash_set(core->entropy_thumbnailers_child, mime_type,list); 
+			}
+			ecore_list_append(list, plugin);
+
+
+			/*Assume for now that all distribution plugins can handle proxying to all child thumbnailers
+			 * This is a pretty big jump - but *generally* you'll only have one distribution plugin
+			 * FIXME - maybe.
+			 */
+			ecore_hash_set(core->entropy_thumbnailers, mime_type, distrib_plugin);
+		}
         }
 
 	/*Clean up the list that we got from the plugin*/
 	ecore_list_destroy(mime_types);
-
-
-
-
-
 }
 
 entropy_generic_file* entropy_generic_file_clone(entropy_generic_file* file) {
@@ -775,7 +815,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 
 
 	if (!lay_hash) {
-		//printf("Error: Attempted to raise event for unregistered layout container\n");
+		printf("Error: Attempted to raise event for unregistered layout container\n");
 		entropy_free(event);
 		return;
 	}
@@ -977,6 +1017,27 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 				 iter);
 		}
 		entropy_notify_event_destroy(ev);
+
+	
+	/*A thumbnail has been made available*/
+	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE)) {
+		entropy_notify_event* ev = entropy_notify_event_new();
+		ev->event_type = ENTROPY_NOTIFY_THUMBNAIL_REQUEST; 
+
+		
+		/*Call the requestors*/
+		ecore_list_goto_first(el);
+		while ( (iter = ecore_list_next(el)) ) {
+			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
+			
+			if (iter->active) (*iter->plugin->gui_event_callback_p)
+				(ev, 
+				 iter, 
+				 event->data,   /*An entropy_thumb*/
+				 iter);
+		}
+		entropy_notify_event_destroy(ev);
+
 		
 	} else if (!strcmp(event->event_type,ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL)) {
 		Ecore_List* file_list;
@@ -1239,23 +1300,23 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 	}
 	
 			
-	printf("EVFS says that this file descends through '%s'\n", uri);
+	/*printf("EVFS says that this file descends through '%s'\n", uri);*/
 		
 	if (drill_down || file->parent) {
 		/*If we're a 'drill-down', we're at the root - so request the root*/
 		if (drill_down) {
 			uri_retrieve = entropy_core_descent_for_mime_get(core_core,file->mime_type);
 			snprintf(uri_build, 255, "#%s:///", uri_retrieve);
-			printf("URI build says: '%s'\n", uri_build);
+			/*printf("URI build says: '%s'\n", uri_build);*/
 			strcat(uri, uri_build); 
 		} else if (file->parent) {
-			printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", 
-			file->parent->mime_type, file->parent->filename);
+			/*printf("Retrieving mime-descend from parent...'%s' for file with name '%s'\n", 
+			file->parent->mime_type, file->parent->filename);*/
 
 			uri_retrieve = entropy_core_descent_for_mime_get(core_core,file->parent->mime_type);
 
 			/*Special case handler for the root dir - FIXME*/
-			printf("Path: '%s', filename '%s'\n", file->path, file->filename);
+			/*printf("Path: '%s', filename '%s'\n", file->path, file->filename);*/
 			if (!strcmp(file->path,"/")) {
 				snprintf(uri_build, 255, "#%s://%s%s", uri_retrieve, file->path, file->filename);
 			} else {

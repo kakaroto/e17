@@ -8,6 +8,8 @@ pkgdir =  $(datadir)/entropy/plugins
 
 MIME_L = mime.la
 THUMBNAILER_L = imlib_thumbnailer.la
+REMOTE_THUMBNAILER_L = remote_thumbnailer.la
+DISTRIB_THUMBNAILER_L = distrib_thumbnailer.la
 POSIX_L = posix.la
 LAYOUT_L = layout_ewl_simple.la
 EWL_LOCAL_ICON_L = ewl_local_icon.la
@@ -22,7 +24,7 @@ ACTION_SIMPLE_L = action_simple.la
 LAYOUT_ETK_L =
 #endif
 
-pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L)
+pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					ewl_progress_dialog.c \
@@ -73,6 +75,17 @@ imlib_thumbnailer_la_SOURCES   = thumbnailer.c thumbnail_generic.c md5.c $(top_s
 imlib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
 imlib_thumbnailer_la_LDFLAGS   = -module -avoid-version
 imlib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+
+remote_thumbnailer_la_SOURCES   = remote_thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
+remote_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+remote_thumbnailer_la_LDFLAGS   = -module -avoid-version
+remote_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+
+distrib_thumbnailer_la_SOURCES   = distribution_thumbnailer.c thumbnail_generic.c md5.c $(top_srcdir)/src/entropy_debug.c
+distrib_thumbnailer_la_CFLAGS    = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
+distrib_thumbnailer_la_LDFLAGS   = -module -avoid-version
+distrib_thumbnailer_la_LIBADD    = @IMLIB2_LIBS@ @ECORE_LIBS@ @PNG_LIBS@ @EPSILON_LIBS@
+
 
 system_thumbnailer_la_SOURCES  = thumbnail_system.c thumbnail_generic.c $(top_srcdir)/src/entropy_debug.c
 system_thumbnailer_la_CFLAGS   = @ECORE_CFLAGS@ @IMLIB2_CFLAGS@ @EPSILON_CFLAGS@
