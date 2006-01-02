@@ -1,0 +1,36 @@
+ group {
+      name, "row_text";
+      max, 99999 18;
+      data {
+      	item:	"inset/left" "6";
+      }
+      parts {
+          part {
+              name, "text";
+              type, TEXT;
+              effect, SOFT_SHADOW;
+
+              description {
+                  state, "default" 0.0;
+                  align, 0.5 0.5;
+		  rel1 {
+		      relative, 0.0 0.5;
+                      offset, 0 0;
+                  }
+                  rel2 {
+                      relative, 1.0 1.0;
+                      offset, -1 -1;
+                  }
+                  color, 0 0 0 255;
+                  color3, 255 255 255 32;
+                  text {
+                      text, "text";
+                      font, "Vera";
+                      size, 10;
+                      min, 1 1;
+                  }
+              }
+          }
+      }  
+   }
+

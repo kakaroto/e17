@@ -29,6 +29,7 @@ collections {
 #include "e17/bits/box-groups.edc"
 #include "e17/bits/treebg-groups.edc"
 #include "e17/bits/treehead-groups.edc"
+#include "e17/bits/rowtext-groups.edc"
 }
 
 data {
@@ -61,6 +62,8 @@ data {
 
     item, "/tree/group" "tree_background";
     item, "/row/group" "row_background";
+    item, "/row/cell/label/group" "row_text";
+    
     item, "/tree/paned/button/group" "tree_header";
     item, "/tree/paned/grabber/vertical/group" "vline";
     item, "/node/check/group" "treenode";

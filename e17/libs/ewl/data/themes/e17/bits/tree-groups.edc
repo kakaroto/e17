@@ -15,7 +15,7 @@ group {
                 }
                 rel2 {
                     relative, 0.5 0.5;
-                    offset, 6 8;
+                    offset, -1 -1;
                 }
                 image {
                     normal, "e17_button_detail_right.png";
