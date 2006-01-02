@@ -103,7 +103,7 @@ void evfs_client_file_copy(evfs_connection* conn, evfs_filereference* from, evfs
 	
 	evfs_command* command = NEW(evfs_command);
 
-	printf("Copying a file..\n");
+	/*printf("Copying a file..\n");*/
 
 	command->type = EVFS_CMD_FILE_COPY;
 	command->file_command.num_files = 2;
