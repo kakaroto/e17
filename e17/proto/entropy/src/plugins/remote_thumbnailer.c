@@ -112,7 +112,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* obj
 				//printf("Remote thumbnailer file copy finish! - %p\n", instance);	
 
 				/*Actually make the thumbnail*/
-				if ( (listener = entropy_core_file_cache_retrieve(md5))) {
+				if ( instance && (listener = entropy_core_file_cache_retrieve(md5))) {
 					snprintf(new_path, PATH_MAX, "/tmp/%s", pos);
 		
 					strncpy(tmp_file->filename, listener->file->filename, FILENAME_LENGTH);
