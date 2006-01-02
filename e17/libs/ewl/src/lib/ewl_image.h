@@ -58,7 +58,8 @@ void		 ewl_image_scale(Ewl_Image *i, double wp, double hp);
 void		 ewl_image_scale_to(Ewl_Image *i, int w, int h);
 void		 ewl_image_tile_set(Ewl_Image *i, int x, int y, 
 						int w, int h);
-void 		 ewl_image_constrain_set(Ewl_Image* i, int size);
+void 		 ewl_image_constrain_set(Ewl_Image *i, unsigned int size);
+unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
 
 /*
  * Internally used callbacks, override at your own risk.

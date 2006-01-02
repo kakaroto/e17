@@ -161,7 +161,8 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
  *
  * Sets a size to scale to proportionally if the image exceeds this size
  */
-void ewl_image_constrain_set(Ewl_Image* i, int size)
+void
+ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
@@ -172,6 +173,19 @@ void ewl_image_constrain_set(Ewl_Image* i, int size)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param i: The Ewl_Image to get the consrain size from
+ * @return Returns the current constrain size on the image
+ */
+unsigned int
+ewl_image_constrain_get(Ewl_Image *i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("i", i, 0);
+	DCHECK_TYPE_RET("i", i, "image", 0);
+
+	DRETURN_INT(i->cs, DLEVEL_STABLE);
+}
 
 /**
  * @param i: the image to change proportional setting

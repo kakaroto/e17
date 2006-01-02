@@ -336,6 +336,40 @@ ewl_icon_extended_data_get(Ewl_Icon *icon)
 	DRETURN_PTR(icon->extended, DLEVEL_STABLE);
 }
 
+/**
+ * @param icon: The Ewl_Icon to constrain
+ * @param val: The val to constrain too
+ */
+void
+ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("icon", icon);
+	DCHECK_TYPE("icon", icon, "icon");
+
+	ewl_image_constrain_set(EWL_IMAGE(icon->preview), val);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/** 
+ * @param icon: The icon to get the constrain from
+ * @return Returns the current constrain value of the icon 
+ */
+unsigned int
+ewl_icon_constrain_get(Ewl_Icon *icon)
+{
+	unsigned int constrain;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("icon", icon, 0);
+	DCHECK_TYPE_RET("icon", icon, "icon", 0);
+
+	constrain = ewl_image_constrain_get(EWL_IMAGE(icon->preview));
+
+	DRETURN_INT(constrain, DLEVEL_STABLE);
+}
+
 static void
 ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 						void *data)

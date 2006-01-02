@@ -44,6 +44,9 @@ Ewl_Widget	*ewl_icon_extended_data_get(Ewl_Icon *icon);
 void		 ewl_icon_menu_set(Ewl_Icon *icon, Ewl_Widget *menu);
 Ewl_Widget	*ewl_icon_menu_get(Ewl_Icon *icon);
 
+void		 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
+unsigned int	 ewl_icon_constrain_get(Ewl_Icon *icon);
+
 /**
  * @}
  */
