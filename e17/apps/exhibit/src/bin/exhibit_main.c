@@ -847,19 +847,25 @@ _ex_main_window_show(char *dir)
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
    
    /* create first tab but dont place it in notebook */
-   if(ecore_file_is_dir(dir))	  	     
-     tab = _ex_tab_new(e, dir);   
-   else if(ecore_file_exists(dir))
-     {	     
-	char *dir2;
-	
-	dir2 = ecore_file_get_dir(dir);
-	tab = _ex_tab_new(e, dir2);
-	free(dir2);
-	file = (const char*)ecore_file_get_file((const char*)dir);
-     }   
-   else     
+   if(dir)
+     {
+	if(ecore_file_is_dir(dir))	  	     
+	  tab = _ex_tab_new(e, dir);   
+	else if(ecore_file_exists(dir))
+	  {	     
+	     char *dir2;
+	     
+	     dir2 = ecore_file_get_dir(dir);
+	     tab = _ex_tab_new(e, dir2);
+	     free(dir2);
+	     file = (const char*)ecore_file_get_file((const char*)dir);
+	  }
+	else     
+	  tab = _ex_tab_new(e, ".");
+     }
+   else
      tab = _ex_tab_new(e, ".");
+   
 	
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
