@@ -50,10 +50,8 @@ entropy_thumbnail* entropy_thumbnailer_thumbnail_get(entropy_thumbnail_request* 
 
 		ecore_list_goto_first(thumbnailers);
 		while (!thumb && (plugin = ecore_list_next(thumbnailers))) {
-			
 			get = dlsym(plugin->dl_ref, "entropy_thumbnailer_thumbnail_get");
 			thumb = (*get)(request);
-
 		}
 
 		

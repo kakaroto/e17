@@ -216,6 +216,20 @@ entropy_core* entropy_core_init() {
                 entropy_plugin_load(core, plugin);
         }
 
+
+	/*Now register all thumbnailers with the distribution plugin*/
+	{
+		char* mime= NULL;
+		Ecore_List* keys = ecore_hash_keys(core->entropy_thumbnailers_child);
+
+		ecore_list_goto_first(keys);
+		while ( (mime = ecore_list_remove_first(keys))) {
+			ecore_hash_set(core->entropy_thumbnailers, mime, distrib_plugin);
+		}
+	}
+
+	
+
 	//printf("\n\nDetails of thumbnailers:\n");
 
         /*Show some details*/
@@ -677,7 +691,6 @@ void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plu
         ecore_list_goto_first(mime_types);
         while ( (mime_type = ecore_list_next(mime_types)) ) {
 		if (type == THUMBNAILER_DISTRIBUTION) { 
-	                ecore_hash_set(core->entropy_thumbnailers, mime_type, plugin);
 			distrib_plugin = plugin;
 		} else if (type == THUMBNAILER_CHILD) {
 			Ecore_List* list = NULL;
@@ -693,7 +706,6 @@ void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plu
 			 * This is a pretty big jump - but *generally* you'll only have one distribution plugin
 			 * FIXME - maybe.
 			 */
-			ecore_hash_set(core->entropy_thumbnailers, mime_type, distrib_plugin);
 		}
         }
 
