@@ -95,6 +95,7 @@ Container *_container_fetch(Evas_Object *obj);
 Container_Element *_container_element_new(Container *cont, Evas_Object *obj);
 void _container_elements_fix(Container *cont);
 void _container_elements_changed(Container *cont);
+void _container_element_del(Container_Element *el);
 double _container_elements_orig_length_get(Container *cont);
 void _cb_container(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void _cb_element_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
