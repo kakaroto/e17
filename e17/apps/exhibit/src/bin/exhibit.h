@@ -72,30 +72,20 @@ struct _Exhibit
    Etk_Widget    *menu_bar;
    Etk_Widget    *statusbar[4];
    Etk_Widget    *notebook;
-//   Etk_Widget    *scrolled_view;
-//   Etk_Widget    *alignment;
    Etk_Widget    *table;
    Etk_Widget    *hpaned;
    Etk_Widget    *vpaned;
-//   Etk_Widget    *dtree;
-//   Etk_Widget    *itree;
    Etk_Widget    *entry[2];
    Etk_Widget    *zoom_in[2];
    Etk_Widget    *zoom_out[2];
    Etk_Widget    *fit[2];
    Etk_Widget    *original[2];
-//   Etk_Widget    *image;
    Etk_Widget    *sort;
    Etk_Widget    *sizebar;
    Etk_Widget    *resbar;
    Etk_Widget    *zoombar;
-//   Etk_Tree_Col  *dcol;
-//   Etk_Tree_Col  *icol;
    Etk_Widget    *menu;
    Etk_Widget    *win;
-
-//   Evas_List     *images;
-//   Evas_List     *dirs;
 
    char          *dir;
    char           cur_path[PATH_MAX];   
@@ -112,6 +102,12 @@ struct _Exhibit
       int x;
       int y;
    } mouse;
+   
+   struct {
+      double       interval;
+      Ecore_Timer *timer;
+      Etk_Bool     active;
+   } slideshow;
 };
 
 struct _Ex_Thumb
@@ -146,5 +142,6 @@ struct _Ex_Thumb
 #include "exhibit_sort.h"
 #include "exhibit_thumb.h"
 #include "exhibit_tab.h"
-  
+#include "exhibit_slideshow.h"
+
 #endif

@@ -307,8 +307,11 @@ _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e;   
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("toggle slideshow\n");
+   
+   e = data;   
+   _ex_main_window_slideshow_toggle(e);
 }
 
 void

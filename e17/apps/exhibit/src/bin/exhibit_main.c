@@ -212,8 +212,9 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    Exhibit *e;
 
    e = data;
+   _ex_slideshow_stop(e);
+   
    tree = ETK_TREE(object);
-
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
 
    free(e->dir);
@@ -444,8 +445,11 @@ _ex_main_populate_files(Exhibit *e, char *selected_file)
 	   thumb->e = e;
 	   thumb->name = strdup(dir_entry->d_name);
 	   thumb_list = evas_list_append(thumb_list, thumb);
-	   if(!strcmp(selected_file, dir_entry->d_name))
-	     thumb->selected = TRUE;
+	   if(selected_file)
+	     {
+		if(!strcmp(selected_file, dir_entry->d_name))
+		  thumb->selected = TRUE;
+	     }
 	   else
 	     thumb->selected = FALSE;
 	   if(pid == -1) _ex_thumb_generate();
@@ -558,6 +562,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
    
    if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
+	_ex_slideshow_stop(e);
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
@@ -621,6 +626,23 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     etk_main_quit();
 	  }
+	else if(!strcmp(ev->key, "s"))
+	  {
+	     _ex_main_window_slideshow_toggle(e);
+	  }
+     }
+}
+
+void
+_ex_main_window_slideshow_toggle(Exhibit *e)
+{
+   if(e->slideshow.active)
+     {
+	_ex_slideshow_stop(e);
+     }
+   else
+     {
+	_ex_slideshow_start(e);
      }
 }
 
@@ -631,6 +653,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    Ex_Tab  *tab;
    
    e = data;
+   _ex_slideshow_stop(e);
    tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
 
    e->cur_tab = tab;
@@ -674,7 +697,9 @@ _ex_main_window_show(char *dir)
    e->mouse.down = 0;
    e->menu = NULL;
    e->tabs = NULL;
-
+   e->slideshow.active = FALSE;
+   e->slideshow.interval = 5.0;
+   
    file = NULL;
    tab = NULL;
    
@@ -873,7 +898,7 @@ _ex_main_window_show(char *dir)
    e->statusbar[2] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[2]), FALSE);   
    etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[2], TRUE, TRUE, 0);   
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0); // <=- temp.
+   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
    
    e->statusbar[3] = etk_statusbar_new();
    etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[3], FALSE, FALSE, 0);

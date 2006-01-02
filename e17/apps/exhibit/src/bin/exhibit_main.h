@@ -16,6 +16,8 @@ void         _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *ro
 int          _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 void         _ex_main_populate_files(Exhibit *e, char *selected_file);
 void         _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
+int          _ex_main_window_slideshow_next(void *data);
+void         _ex_main_window_slideshow_toggle(Exhibit *e);    
 void         _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 Etk_Bool     _ex_main_window_deleted_cb(void *data);
 void         _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
