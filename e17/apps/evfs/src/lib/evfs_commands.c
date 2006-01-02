@@ -37,7 +37,6 @@ void evfs_monitor_remove(evfs_connection* conn, evfs_filereference* ref) {
 void evfs_client_file_remove(evfs_connection* conn, evfs_filereference* ref) {
 	evfs_command* command = NEW(evfs_command);
 
-	printf("Removing a file..\n");
 
 	command->type = EVFS_CMD_REMOVE_FILE;
 	command->file_command.num_files = 1;
