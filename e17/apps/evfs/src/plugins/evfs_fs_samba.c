@@ -408,7 +408,7 @@ int evfs_file_seek(evfs_filereference* file, long pos, int whence) {
 
 int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, long size) {
 	int bytes_read = 0;
-	/*printf("Reading %ld bytes from file %s\n", size, file->path);*/
+	//printf("Reading %ld bytes from file %s\n", size, file->path);
 
 	evfs_smb_populate_fd(file);
 	//printf("FD Pointer: %p\n", file->fd_p);

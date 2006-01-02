@@ -413,7 +413,7 @@ int evfs_file_write(evfs_filereference* file, char* bytes, long size) {
 	i = write(file->fd, bytes, size);
 	/*printf("Wrote %d bytes\n", i);*/
 
-	return 0;
+	return i;
 }
 
 int evfs_file_create(evfs_filereference* file) {

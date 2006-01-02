@@ -259,6 +259,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 	struct stat file_stat;
 	int progress = 0;
 	int last_notify_progress = 0;
+	int b_read = 0, b_write= 0;
 
  	plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[0]->plugin_uri);
 	dst_plugin = evfs_get_plugin_for_uri(client->server, command->file_command.files[1]->plugin_uri);
@@ -280,7 +281,7 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 
 		/*Get the source file size*/
 		(*plugin->functions->evfs_file_lstat)(command, &file_stat);
-		//printf("Source file size: %d bytes\n", (int)file_stat.st_size);
+		printf("Source file size: %d bytes\n", (int)file_stat.st_size);
 		
 		
 		if (!S_ISDIR(file_stat.st_mode)) {
@@ -289,13 +290,18 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 			
 			count = 0;
 			while (count < file_stat.st_size) {
-				(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);
+				//(*plugin->functions->evfs_file_seek)(command->file_command.files[0], count, SEEK_SET);
 
 				read_write_bytes = (file_stat.st_size > count + COPY_BLOCKSIZE) ? COPY_BLOCKSIZE : (file_stat.st_size - count);
-				/*printf("Reading/writing %d bytes\n", read_write_bytes);*/
+				//printf("Reading/writing %d bytes\n", read_write_bytes);
 			
-				(*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
-				(*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, read_write_bytes );
+				b_read = (*plugin->functions->evfs_file_read)(client,command->file_command.files[0], bytes, read_write_bytes );
+				if (b_read > 0) {
+					b_write = (*dst_plugin->functions->evfs_file_write)(command->file_command.files[1], bytes, b_read );
+					//printf("%d  -> %d\n", b_read, b_write);
+				}
+
+
 		
 				progress = (double)((double)count / (double)file_stat.st_size * 100);
 				if (progress % 1 == 0 && last_notify_progress < progress) {
@@ -305,7 +311,9 @@ void evfs_handle_file_copy(evfs_client* client, evfs_command* command, evfs_comm
 				}
 			
 
-				count+= COPY_BLOCKSIZE;
+				count+= b_read;
+
+				//printf("Bytes to go: %d\n", file_stat.st_size - count);
 
 
 	
