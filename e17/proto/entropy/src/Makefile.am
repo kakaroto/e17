@@ -18,7 +18,8 @@ entropy_SOURCES = \
 	entropy_file.c \
 	entropy_debug.c \
 	entropy_config.c \
-	entropy_gui.c
+	entropy_gui.c \
+	entropy_alert.c
 
 
 entropy_CC	= @PTHREAD_CC@
