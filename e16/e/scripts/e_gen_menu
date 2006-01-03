@@ -268,6 +268,9 @@ sub ProcessFile {
 
 	$Namx = "$Name-$N";	# Make key unique
 	$Namx =~ tr/A-Z/a-z/;	# To lower case (for sorting)
+	$Exec =~ s/\s*%(f|F|i|k|m|n|N|u|U|v)//g;	# Strip unwanted args
+	$Exec =~ s/\s*-\w+\s*"%c"//g;			# Strip option with caption
+#	$Exec =~ s/"%c"/'$Name'/g;			# Alternatively - Substitute caption
 	$File{$Namx} = $File;
 	$Name{$Namx} = $Name;
 	$Exec{$Namx} = $Exec;
@@ -414,10 +417,8 @@ sub MakeAppsMenu {
 		foreach $k (sort(@{$menus{$m}})) {
 			print " - Item: $k\n" if $dbg ge 2;
 			$icon = FindIcon($Icon{$k});
-			@exec = split(' ', $Exec{$k});
-			$exec = @exec[0];
 			printf FSubM "\"%s\" \"%s\" exec \"%s\"\n",
-				$Name{$k}, $icon, $exec;
+				$Name{$k}, $icon, $Exec{$k};
 		}
 		close(FSubM);
 	}
