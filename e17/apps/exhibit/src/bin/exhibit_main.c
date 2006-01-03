@@ -6,15 +6,7 @@ extern Evas_List *thumb_list;
 
 Ecore_Evas *ee_buf;
 Evas       *evas_buf;
-
-char *viewables[] =
-{
-   ".jpg",
-   ".png",
-   ".edj"
-};
-
-Evas_List *event_handlers;
+Evas_List  *event_handlers;
 
 void
 _ex_main_statusbar_zoom_update(Exhibit *e)
@@ -217,7 +209,7 @@ _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
    tree = ETK_TREE(object);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
 
-   free(e->dir);
+   E_FREE(e->cur_tab->dir);
    e->cur_tab->dir = strdup(dcol_string);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
@@ -346,24 +338,6 @@ _ex_main_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row
      return -1;   
 }
 
-int
-_ex_file_is_viewable(char *file)
-{
-   char *ext;
-   int i;
-
-   ext = strrchr(file, '.');
-   if(!ext) return 0;
-
-   for(i = 0; i < VIEWABLES; i++)
-     {
-	if(!strcasecmp(ext, viewables[i]))
-	  return 1;
-     }
-
-   return 0;
-}
-
 void
 _ex_main_populate_files(Exhibit *e, char *selected_file)
 {
@@ -435,7 +409,7 @@ _ex_main_populate_files(Exhibit *e, char *selected_file)
 	     if(selected_file)	       		  		  
 	       if(!strcmp(selected_file, dir_entry->d_name))
 		 selected_row = row;		    	     
-	     free(thumb);
+	     E_FREE(thumb);
 	  }
 	else {
 	   Ex_Thumb *thumb;
@@ -557,7 +531,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	       }	
 	  }
 	
-	free(dir);
+	E_FREE(dir);
      }
    
    if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
@@ -630,6 +604,17 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     _ex_main_window_slideshow_toggle(e);
 	  }
+	else if(!strcmp(ev->key, "d"))
+	  {
+	     Etk_Tree_Row *r;
+	     char         *icol_string;
+	     
+	     r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+	     if(!r) return;
+	     
+	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+	     _ex_favorites_add(e, icol_string);
+	  }
      }
 }
 
@@ -692,6 +677,7 @@ _ex_main_window_show(char *dir)
    Exhibit *e;
    Ex_Tab  *tab;
    char    *file;
+   char    *homedir;
 
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
@@ -699,6 +685,23 @@ _ex_main_window_show(char *dir)
    e->tabs = NULL;
    e->slideshow.active = FALSE;
    e->slideshow.interval = 5.0;
+   
+   homedir = getenv("HOME");
+   if (!homedir) 
+     snprintf(e->fav_path, sizeof(e->fav_path), "%s", "/tmp/exhibit_favorites");
+   else
+     {
+	snprintf(e->fav_path, sizeof(e->fav_path), "%s/.e", homedir);
+	if(!ecore_file_is_dir(e->fav_path))
+	  ecore_file_mkdir(e->fav_path);
+	snprintf(e->fav_path, sizeof(e->fav_path), "%s/.e/exhibit", homedir);
+	if(!ecore_file_is_dir(e->fav_path))
+	  ecore_file_mkdir(e->fav_path);
+	snprintf(e->fav_path, sizeof(e->fav_path), "%s/.e/exhibit/favorites", homedir);	
+     }
+   
+   if(!ecore_file_is_dir(e->fav_path))
+     ecore_file_mkdir(e->fav_path);
    
    file = NULL;
    tab = NULL;
@@ -774,15 +777,17 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_resol_cb), e);
-	
-	
+		
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom in"), EX_IMAGE_ZOOM_IN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fit to window"), EX_IMAGE_FIT_TO_WINDOW, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_fit_to_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle slideshow"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_toggle_slideshow_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Refresh"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_refresh_cb), e);	
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Refresh"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_refresh_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);		
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_go_to_fav_cb), e);
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
@@ -857,7 +862,7 @@ _ex_main_window_show(char *dir)
 	     
 	     dir2 = ecore_file_get_dir(dir);
 	     tab = _ex_tab_new(e, dir2);
-	     free(dir2);
+	     E_FREE(dir2);
 	     file = (const char*)ecore_file_get_file((const char*)dir);
 	  }
 	else     

@@ -126,12 +126,8 @@ _ex_menu_quit_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
 
    e = (Exhibit *)data;
-   if (e)
-     {
-        if (e->dir)
-          free(e->dir);
-        free(e);
-     }
+   if (e)     
+     free(e);     
 
    etk_main_quit();   
 }
@@ -319,6 +315,56 @@ _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    printf("refresh\n");
+}
+
+void
+_ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
+{
+   Exhibit      *e;
+   Etk_Tree_Row *r;
+   char         *icol_string;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+      if(!r) return;
+   
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   _ex_favorites_add(e, icol_string);
+   //free(icol_string);
+}
+
+void
+_ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data)
+{
+   Exhibit      *e;
+   Etk_Tree_Row *r;
+   char         *icol_string;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+      if(!r) return;
+   
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   _ex_favorites_del(e, icol_string);
+   //free(icol_string);
+}
+
+void
+_ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
+{    
+   Exhibit      *e;
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;
+   
+   _ex_slideshow_stop(e);
+   E_FREE(e->cur_tab->dir);
+   e->cur_tab->dir = strdup(e->fav_path);
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   _ex_main_populate_files(e, NULL);   
 }
 
 void

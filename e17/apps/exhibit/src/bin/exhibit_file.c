@@ -1,6 +1,31 @@
 #include "exhibit.h"
 #include <Edje.h>
 
+char *viewables[] =
+{
+   ".jpg",
+   ".png",
+   ".edj"
+};
+
+int
+_ex_file_is_viewable(char *file)
+{
+   char *ext;
+   int i;
+
+   ext = strrchr(file, '.');
+   if(!ext) return 0;
+
+   for(i = 0; i < VIEWABLES; i++)
+     {
+	if(!strcasecmp(ext, viewables[i]))
+	  return 1;
+     }
+
+   return 0;
+}
+
 int
 _ex_file_is_ebg(char *file)
 {

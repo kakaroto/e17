@@ -32,6 +32,9 @@ void        _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data);
 void        _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data);
 void        _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data);
 void        _ex_menu_refresh_cb(Etk_Object *obj, void *data);
+void        _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data);
+void        _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data);    
+void        _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data);    
 void        _ex_menu_release_notes_cb(Etk_Object *obj, void *data);
 void        _ex_menu_about_cb(Etk_Object *obj, void *data);
 

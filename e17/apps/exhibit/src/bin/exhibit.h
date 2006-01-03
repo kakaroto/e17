@@ -87,8 +87,7 @@ struct _Exhibit
    Etk_Widget    *menu;
    Etk_Widget    *win;
 
-   char          *dir;
-   char           cur_path[PATH_MAX];   
+   char           fav_path[PATH_MAX];
 
    int            zoom;
    int            brightness;
@@ -133,6 +132,8 @@ struct _Ex_Thumb
 #define DATA8  unsigned char
 #endif
 
+#define E_FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; } } while(0);
+
 #include "exhibit_menus.h"
 #include "exhibit_file.h"
 #include "exhibit.h"
@@ -143,5 +144,6 @@ struct _Ex_Thumb
 #include "exhibit_thumb.h"
 #include "exhibit_tab.h"
 #include "exhibit_slideshow.h"
+#include "exhibit_favorites.h"
 
 #endif

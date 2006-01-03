@@ -78,11 +78,14 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
      {
 	Etk_Widget *menu_item;
 	Etk_Widget *submenu;
+#if 0
+	/* do this better */
 	if(e->menu)
 	  {
 	     etk_menu_popup(ETK_MENU(e->menu));
 	     return;
 	  }
+#endif	
 	e->menu = etk_menu_new();
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
@@ -107,6 +110,9 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
 	//_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Darken"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_darken_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
+	if(_ex_image_is_favorite(e))
+	  _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Remove from favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_remove_from_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	etk_menu_popup(ETK_MENU(e->menu));
      }
@@ -772,4 +778,21 @@ PSEUDO:
 	free(esetroot);
 	exit(0);
      }
+}
+
+Etk_Bool
+_ex_image_is_favorite(Exhibit *e)
+{
+   Etk_Tree_Row *r;
+   char         *icol_string;
+   char          path[PATH_MAX];
+      
+   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   if(!r) return FALSE;
+   
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   snprintf(path, sizeof(path), "%s/%s", e->fav_path, icol_string);
+   if(ecore_file_exists(path))     
+     return TRUE;
+   return FALSE;
 }
