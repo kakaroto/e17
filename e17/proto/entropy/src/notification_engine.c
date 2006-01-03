@@ -153,7 +153,7 @@ void* entropy_notify_loop(void* data) {
 		}
 		
 		
-		usleep(500); /*Allow the CPU to have a rest*/
+		usleep(5000); /*Allow the CPU to have a rest*/
 	}
 
 	pthread_mutex_unlock(&notify->loop_mutex);

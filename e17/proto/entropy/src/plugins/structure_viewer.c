@@ -284,7 +284,7 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		ecore_list_append(viewer->files, event->file); /*Save this file in this list of files we're responsible for */
 		
 
-		ewl_callback_append(row, EWL_CALLBACK_CLICKED, row_clicked_callback, event);
+		ewl_callback_append(label, EWL_CALLBACK_MOUSE_DOWN, row_clicked_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_ENTER, dnd_enter_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_DROP, dnd_drop_callback, event);
