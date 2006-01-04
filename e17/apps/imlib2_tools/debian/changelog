@@ -1,4 +1,4 @@
-imlib2-tools (0.0.0alpha2-0cvs2005010400) unstable; urgency=low
+imlib2-tools (0.0.0alpha2-0cvs2006010400) unstable; urgency=low
 
   * Added build dependancy on libimlib2-dev
 
