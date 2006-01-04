@@ -1970,26 +1970,14 @@ DeskHandleTooltip(Desk * dsk, XEvent * ev)
    switch (ev->type)
      {
      case ButtonPress:
+     case ButtonRelease:
      case LeaveNotify:
 	TooltipsSetPending(1, NULL, NULL);
 	break;
 
-     case ButtonRelease:
-	if (ev->xbutton.subwindow == None)
-	   goto do_set_pending;
-	break;
-
      case MotionNotify:
-	if (ev->xmotion.subwindow == None)
-	   goto do_set_pending;
-	break;
-     case EnterNotify:
-	if (ev->xcrossing.mode == NotifyNormal &&
-	    ev->xcrossing.detail == NotifyInferior)
-	   goto do_set_pending;
-	break;
-
-      do_set_pending:
+	if (ev->xmotion.subwindow != None)
+	   break;
 	TooltipsSetPending(1, DeskGetAclass, dsk);
 	break;
      }
