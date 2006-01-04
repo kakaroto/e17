@@ -1,3 +1,9 @@
+imlib2-tools (0.0.0alpha2-0cvs2005010400) unstable; urgency=low
+
+  * Added build dependancy on libimlib2-dev
+
+ -- Simon Horman <horms@verge.net.au>  Wed,  4 Jan 2006 14:51:25 +0900
+
 imlib2-tools (0.0.0alpha2-0cvs2001112001) unstable; urgency=low
 
   * a CVS release
