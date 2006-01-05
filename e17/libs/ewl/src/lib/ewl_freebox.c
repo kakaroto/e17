@@ -281,6 +281,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 						child_w, child_h);
 		cur_x += child_w + pad;
 	}
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(fb), cur_y + max_h + pad);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
