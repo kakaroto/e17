@@ -1,4 +1,5 @@
 Makefile
 Makefile.in
+autodetect.sh
 build_config.sh
 entrance_config.cfg
