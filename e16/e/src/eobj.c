@@ -148,11 +148,17 @@ EobjInit(EObj * eo, int type, Window win, int x, int y, int w, int h,
    eo->y = y;
    eo->w = w;
    eo->h = h;
-   if (name)
-     {
-	eo->name = Estrdup(name);
-	HintsSetWindowName(eo->win, name);
-     }
+
+   if (type == EOBJ_TYPE_EXT)
+      eo->name = ecore_x_icccm_title_get(win);
+   else if (name)
+      eo->name = Estrdup(name);
+   if (!eo->name)
+      eo->name = Estrdup("-?-");
+
+   if (type != EOBJ_TYPE_EWIN && type != EOBJ_TYPE_EXT)
+      HintsSetWindowName(eo->win, eo->name);
+
 #if USE_COMPOSITE
    eo->fade = 1;
    eo->shadow = 1;
@@ -263,10 +269,9 @@ EobjRegister(Window win, int type)
    if (attr.class == InputOnly)
       eo->inputonly = 1;
 
-   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
-
-   eo->name = ecore_x_icccm_title_get(win);
    eo->external = 1;
+
+   EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
 
 #if 1				/* FIXME - TBD */
    if (type == EOBJ_TYPE_EXT)

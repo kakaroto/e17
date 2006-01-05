@@ -209,8 +209,8 @@ EwinManage(EWin * ewin)
      }
 
    EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
-	  ewin->client.w, ewin->client.h, 1, NULL);
-   EoSetName(ewin, Estrdup(ewin->icccm.wm_name));
+	  ewin->client.w, ewin->client.h, 1, ewin->icccm.wm_name);
+
    EobjListFocusAdd(&ewin->o, 1);
    EobjListOrderAdd(&ewin->o);
 
