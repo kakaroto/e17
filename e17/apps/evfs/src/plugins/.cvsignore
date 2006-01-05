@@ -2,5 +2,5 @@
 .libs
 Makefile
 Makefile.in
-posix.la
 *.lo
+*.la
