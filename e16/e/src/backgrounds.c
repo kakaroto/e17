@@ -448,6 +448,9 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 {
    int                 w, h;
 
+   if (bgp->keep_aspect)
+      bgp->xperc = bgp->yperc;
+
    if (bgp->xperc > 0)
       w = (rw * bgp->xperc) >> 10;
    else
@@ -684,8 +687,8 @@ BackgroundRealize(Background * bg, Drawable draw, unsigned int rw,
 	imlib_context_set_image(bg->bg.im);
 
 	BgFindImageSize(&(bg->bg), rw, rh, &w, &h);
-	x = ((rw - w) * bg->bg.xjust) >> 10;
-	y = ((rh - h) * bg->bg.yjust) >> 10;
+	x = ((int)(rw - w) * bg->bg.xjust) >> 10;
+	y = ((int)(rh - h) * bg->bg.yjust) >> 10;
      }
 
    if (is_win && hasbg && !hasfg && x == 0 && y == 0 &&
