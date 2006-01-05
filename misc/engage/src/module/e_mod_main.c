@@ -50,6 +50,7 @@ static void    _engage_bar_menu_gen(Engage_Bar *eb);
 static void    _engage_bar_enable(Engage_Bar *eb);
 static void    _engage_bar_disable(Engage_Bar *eb);
 void           _engage_bar_frame_resize(Engage_Bar *eb);
+static void    _engage_bar_layout(Engage_Bar *eb);
 static void    _engage_bar_edge_change(Engage_Bar *eb, int edge);
 static void    _engage_bar_update_policy(Engage_Bar *eb);
 static void    _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my);
@@ -95,8 +96,6 @@ static void    _engage_app_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *
 static void    _engage_app_icon_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void    _engage_app_icon_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-
-static void    _engage_bar_iconsize_change(Engage_Bar *eb);
 
 static void    _engage_bar_cb_menu_enabled(void *data, E_Menu *m, E_Menu_Item *mi);
 static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -345,7 +344,6 @@ _engage_new()
 
 		  eb->engage = e;
 		  _engage_bar_new(eb, con);
-		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
 		  _engage_bar_menu_gen(eb);
 
@@ -417,7 +415,6 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	       {
 		  Engage_Icon *ic, *ic2;
 
-		  e_box_freeze(eb->box_object);
 		  ic = _engage_icon_find(eb, a);
 		  if (ic)
 		    {
@@ -440,7 +437,6 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 			 }
 		       _engage_bar_frame_resize(eb);
 		    }
-		  e_box_thaw(eb->box_object);
 	       }
 	     break;
 	   case E_APP_DEL:
@@ -464,7 +460,6 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  Engage_Icon *ic, *ic2;
 		  Evas_List *extras = NULL;
 
-		  e_box_freeze(eb->box_object);
 		  ic = _engage_icon_find(eb, a);
 		  if (ic)
 		    {
@@ -488,14 +483,12 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 			 }
 		       _engage_bar_frame_resize(eb);
 		    }
-		  e_box_thaw(eb->box_object);
 	       }
 	     break;
 	   case E_APP_ORDER:
 	     if (a == e->apps)
 	       {
 /* FIXME - this is moving all .order icons to after the others - BAD
-		  e_box_freeze(eb->box_object);
 		  for (ll = e->apps->subapps; ll; ll = ll->next)
 		    {
 		       Engage_Icon *ic;
@@ -505,7 +498,6 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		       ic = _engage_icon_find(eb, a2);
 		       if (ic) _engage_icon_reorder_after(ic, NULL);
 		    }
-		  e_box_thaw(eb->box_object);
 */
 	       }
 	     break;
@@ -644,11 +636,12 @@ _engage_bar_new(Engage_Bar *eb, E_Container *con)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _engage_bar_cb_mouse_move, eb);
    evas_object_show(o);
 
-   o = e_box_add(eb->evas); 
+   o = evas_object_rectangle_add(eb->evas); 
+   evas_object_repeat_events_set(o, 0);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_intercept_move_callback_add(o, _engage_bar_cb_intercept_move, eb);
    evas_object_intercept_resize_callback_add(o, _engage_bar_cb_intercept_resize,eb);
    eb->box_object = o;
-   e_box_freeze(o);
    edje_object_part_swallow(eb->bar_object, "items", o);
    evas_object_show(o);
 
@@ -668,8 +661,6 @@ _engage_bar_new(Engage_Bar *eb, E_Container *con)
 
    eb->align_req = 0.5;
    eb->align = 0.5;
-   e_box_align_set(eb->box_object, 0.5, 0.5);
-   e_box_thaw(eb->box_object);
 
    eb->gmc = e_gadman_client_new(eb->con->gadman);
    e_gadman_client_domain_set(eb->gmc, "module.engage", bar_count++);
@@ -1006,19 +997,13 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    evas_object_show(o);
 
    evas_object_raise(ic->event_object);
-   e_box_pack_end(eb->box_object, ic->bg_object);
-   e_box_pack_options_set(ic->bg_object,
-			  1, 1, /* fill */
-			  0, 0, /* expand */
-			  0.5, 0.5, /* align */
-			  size, size, /* min */
-			  size, size /* max */
-			  );
 
    edje_object_signal_emit(ic->bg_object, "passive", "");
    if (eb->gmc)
-     edje_object_signal_emit(ic->bg_object, "set_orientation", 
-       _engage_main_orientation[e_gadman_client_edge_get(eb->gmc)]);
+     {
+	edje_object_signal_emit(ic->bg_object, "set_orientation", 
+	   _engage_main_orientation[e_gadman_client_edge_get(eb->gmc)]);
+     }
    return ic;
 }
 
@@ -1282,7 +1267,6 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 	if (ic)
 	  {
 	     ic->dotorder = 0;
-	     _engage_bar_frame_resize(eb);
 	  }
      }
    if (ic)
@@ -1295,6 +1279,7 @@ _engage_cb_border_add(Engage_Bar *eb, E_Border *bd)
 	  }				       
 	edje_object_signal_emit(ic->bg_object, "running", "");
      }
+   _engage_bar_frame_resize(eb);
    return 1;
 }
 
@@ -1475,28 +1460,12 @@ _engage_icon_reorder_before(Engage_Icon *ic, Engage_Icon *before)
 {
    Evas_Coord bw, bh;
 
-   e_box_freeze(ic->eb->box_object);
-   e_box_unpack(ic->bg_object);
    ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
    if (before)
-     {
-	ic->eb->icons = evas_list_prepend_relative(ic->eb->icons, ic, before);
-	e_box_pack_before(ic->eb->box_object, ic->bg_object, before->bg_object);
-     }
+     ic->eb->icons = evas_list_prepend_relative(ic->eb->icons, ic, before);
    else
-     {
-	ic->eb->icons = evas_list_prepend(ic->eb->icons, ic);
-	e_box_pack_start(ic->eb->box_object, ic->bg_object);
-     }
+     ic->eb->icons = evas_list_prepend(ic->eb->icons, ic);
    edje_object_size_min_calc(ic->bg_object, &bw, &bh);
-   e_box_pack_options_set(ic->bg_object,
-			  1, 1, /* fill */
-			  0, 0, /* expand */
-			  0.5, 0.5, /* align */
-			  bw, bh, /* min */
-			  bw, bh /* max */
-			  );
-   e_box_thaw(ic->eb->box_object);
 }
 #endif
 
@@ -1505,29 +1474,37 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
 {
    Evas_Coord bw, bh;
 
-   e_box_freeze(ic->eb->box_object);
-   e_box_unpack(ic->bg_object);
    ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
    if (after)
-     {
-	ic->eb->icons = evas_list_append_relative(ic->eb->icons, ic, after);
-	e_box_pack_after(ic->eb->box_object, ic->bg_object, after->bg_object);
-     }
+     ic->eb->icons = evas_list_append_relative(ic->eb->icons, ic, after);
    else
-     {
-	ic->eb->icons = evas_list_append(ic->eb->icons, ic);
-
-	e_box_pack_end(ic->eb->box_object, ic->bg_object);
-     }
+     ic->eb->icons = evas_list_append(ic->eb->icons, ic);
    edje_object_size_min_calc(ic->bg_object, &bw, &bh);
-   e_box_pack_options_set(ic->bg_object,
-			  1, 1, /* fill */
-			  0, 0, /* expand */
-			  0.5, 0.5, /* align */
-			  bw, bh, /* min */
-			  bw, bh /* max */
-			  );
-   e_box_thaw(ic->eb->box_object);
+}
+
+static void
+_engage_bar_layout(Engage_Bar *eb)
+{
+   Evas_Coord x, y;
+   Evas_List *l;
+   int edge;
+
+   if (!eb->gmc)
+     return;
+   edge = e_gadman_client_edge_get(eb->gmc);
+   evas_object_geometry_get(eb->box_object, &x, &y, NULL, NULL);
+   for (l = eb->icons; l; l = l->next)
+     {
+	Engage_Icon *ic;
+	
+	ic = l->data;
+	evas_object_resize(ic->bg_object, eb->conf->iconsize, eb->conf->iconsize);
+	evas_object_move(ic->bg_object, x, y);
+	if ((edge == E_GADMAN_EDGE_LEFT) || (edge == E_GADMAN_EDGE_RIGHT))
+	  y += eb->conf->iconsize;
+	else
+	  x += eb->conf->iconsize;	
+     }
 }
 
 void
@@ -1541,7 +1518,6 @@ _engage_bar_frame_resize(Engage_Bar *eb)
      return;
 
    evas_event_freeze(eb->evas);
-   e_box_freeze(eb->box_object);
 
    edge = e_gadman_client_edge_get(eb->gmc);
    if ((edge == E_GADMAN_EDGE_LEFT) || (edge == E_GADMAN_EDGE_RIGHT))
@@ -1565,8 +1541,8 @@ _engage_bar_frame_resize(Engage_Bar *eb)
 
    edje_object_size_min_calc(eb->bar_object, &w, &h);
    e_gadman_client_resize(eb->gmc, w, h);
+   _engage_bar_layout(eb);
 
-   e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
 }
 
@@ -1577,7 +1553,6 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    Evas_Coord bw, bh, tmp;
    Evas_Object *o;
    E_Gadman_Policy policy;
-   int changed;
 
    evas_event_freeze(eb->evas);
    o = eb->bar_object;
@@ -1595,8 +1570,6 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    _engage_tray_thaw(eb);
    _engage_tray_layout(eb);
 
-   e_box_freeze(eb->box_object);
-   l = eb->icons;
    for (l = eb->icons; l; l = l->next)
      {
 	Engage_Icon *ic;
@@ -1606,51 +1579,35 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
 	edje_object_signal_emit(o, "set_orientation", _engage_main_orientation[edge]);
 	edje_object_message_signal_process(o);
 	edje_object_size_min_calc(ic->bg_object, &bw, &bh);
-
-	e_box_pack_options_set(ic->bg_object,
-			       1, 1, /* fill */
-			       0, 0, /* expand */
-			       0.5, 0.5, /* align */
-			       bw, bh, /* min */
-			       bw, bh /* max */
-			       );
      }
 
    eb->align_req = 0.5;
    eb->align = 0.5;
-   e_box_align_set(eb->box_object, 0.5, 0.5);
 
    policy = E_GADMAN_POLICY_EDGES | E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE;
    if ((edge == E_GADMAN_EDGE_BOTTOM) ||
        (edge == E_GADMAN_EDGE_TOP))
      {
-	changed = (e_box_orientation_get(eb->box_object) != 1);
-	if (changed)
-	  {
-	     e_box_orientation_set(eb->box_object, 1);
-	     policy |= E_GADMAN_POLICY_VSIZE;
-	     e_gadman_client_policy_set(eb->gmc, policy);
-	     tmp = eb->w;
-	     eb->w = eb->h;
-	     eb->h = tmp;
-	  }
+	policy |= E_GADMAN_POLICY_VSIZE;
+	e_gadman_client_policy_set(eb->gmc, policy);
+	tmp = eb->w;
+	eb->w = eb->h;
+	eb->h = tmp;
+
+	_engage_bar_frame_resize(eb);
      }
    else if ((edge == E_GADMAN_EDGE_LEFT) ||
 	    (edge == E_GADMAN_EDGE_RIGHT))
      {
-	changed = (e_box_orientation_get(eb->box_object) != 0);
-	if (changed)
-	  {
-	     e_box_orientation_set(eb->box_object, 0);
-	     policy |= E_GADMAN_POLICY_HSIZE;
-	     e_gadman_client_policy_set(eb->gmc, policy);
-	     tmp = eb->w;
-	     eb->w = eb->h;
-	     eb->h = tmp;
-	  }
+	policy |= E_GADMAN_POLICY_HSIZE;
+	e_gadman_client_policy_set(eb->gmc, policy);
+	tmp = eb->w;
+	eb->w = eb->h;
+	eb->h = tmp;
+
+	_engage_bar_frame_resize(eb);
      }
 
-   e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
 
    _engage_bar_frame_resize(eb);
@@ -1707,9 +1664,6 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    else
      eb->align_req = 1.0 - relx;
 
-   e_box_freeze(eb->box_object);
-   items = eb->icons;
-   
    if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
      {
 	md = my;
@@ -1731,6 +1685,7 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    app_size = eb->conf->iconsize / 1.5;
    halfapp_size = app_size / 2;
    counter += (eb->conf->iconsize / 2) + 1;
+   items = eb->icons;
    while (items)
      {
 	Engage_Icon *icon;
@@ -1936,7 +1891,6 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	counter += eb->conf->iconsize;
      }
 
-   e_box_thaw(eb->box_object);
 }
 
 static void
@@ -2021,6 +1975,7 @@ _engage_bar_cb_intercept_move(void *data, Evas_Object *o, Evas_Coord x, Evas_Coo
    eb = data;
    evas_object_move(o, x, y);
    evas_object_move(eb->event_object, x, y);
+   _engage_bar_layout(eb);
 }
 
 static void
@@ -2042,7 +1997,7 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
    else
      edge = E_GADMAN_EDGE_BOTTOM;
 
-   _engage_bar_iconsize_change(eb);
+   _engage_bar_frame_resize(eb);
 }
 
 static void
@@ -2437,32 +2392,6 @@ _engage_bar_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chan
 	   */
 	  break;
      }
-}
-
-static void
-_engage_bar_iconsize_change(Engage_Bar *eb)
-{
-   Evas_List *l;
-   Evas_Coord size;
-
-   e_box_freeze(eb->box_object);
-   size = eb->conf->iconsize;
-   for (l = eb->icons; l; l = l->next)
-     {
-	Engage_Icon *ic;
-
-	ic = l->data;
-	e_box_pack_options_set(ic->bg_object,
-	      1, 1, /* fill */
-	      0, 0, /* expand */
-	      0.5, 0.5, /* align */
-	      size, size, /* min */
-	      size, size /* max */
-	      );
-     }
-   
-   e_box_thaw(eb->box_object);
-   _engage_bar_frame_resize(eb);
 }
 
 static void
