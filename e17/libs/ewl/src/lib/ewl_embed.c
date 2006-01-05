@@ -270,6 +270,9 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	{
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_FOCUSED);
+		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
+						EWL_FLAG_STATE_PRESSED);
+		
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
 		e->last.clicked = NULL;
@@ -627,6 +630,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	if (!embed->last.mouse_in 
 			|| !ewl_object_state_has(EWL_OBJECT(embed->last.mouse_in), 
 						 EWL_FLAG_STATE_PRESSED)) {
+
 		widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
 				x, y);
 		if (!widget)
@@ -643,7 +647,12 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_MOUSE_IN);
 			ewl_callback_call(embed->last.mouse_in, EWL_CALLBACK_MOUSE_OUT);
-			embed->last.mouse_in = embed->last.mouse_in->parent;
+
+			/*It's possible that the call to MOUSE_IN caused the 'embed->last.mouse_in'
+			 * to have become null.  Make sure this pointer is still here
+			 * An example of this behaviour is FOCUS_OUT in ewl_menu */
+			if (embed->last.mouse_in)
+				embed->last.mouse_in = embed->last.mouse_in->parent;
 		}
 	}
 	else 
@@ -672,7 +681,11 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			ewl_callback_call_with_event_data(embed->last.mouse_in,
 					EWL_CALLBACK_MOUSE_MOVE, &ev);
 		}
-		embed->last.mouse_in = embed->last.mouse_in->parent;
+		
+		/*It's possible that the call to MOUSE_IN caused the 'embed->last.mouse_in'
+		 * to have become null.  Make sure this pointer is still here*/
+		if (embed->last.mouse_in)
+			embed->last.mouse_in = embed->last.mouse_in->parent;
 	}
 
 	embed->last.mouse_in = widget;
@@ -1379,6 +1392,8 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, "embed");
+
+	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED);
 
 	if ((w == e->last.focused) || (RECURSIVE(w) && ewl_widget_parent_of(w, e->last.focused))) {
 		e->last.focused = NULL;
