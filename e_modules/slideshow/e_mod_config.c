@@ -49,6 +49,7 @@ static void
 _fill_data(Slide *s, CFData *cfdata)
 {
    cfdata->cycle_time = s->conf->cycle_time;
+   cfdata->disable_timer = s->conf->disable_timer;
    #ifdef WANT_OSIRIS
    cfdata->theme = s->conf->theme;
    #endif
@@ -58,12 +59,8 @@ static void *
 _create_data(E_Config_Dialog *cfd)
 {
    CFData *cfdata;
-   Slide *s;
 	
-   s = cfd->data;
    cfdata = E_NEW(CFData, 1);
-   _fill_data(s, cfdata);
-
    return cfdata;
 }
 
