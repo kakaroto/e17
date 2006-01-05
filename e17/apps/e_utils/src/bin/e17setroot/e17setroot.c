@@ -5,12 +5,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <E_Lib.h>
 #include <Engrave.h>
-#include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_File.h>
 
@@ -25,6 +22,7 @@
 
 static int e_bg_type = 0;
 static int e_bg_no_load = 0;
+static int e_bg_fake = 0;
 static char *e_bg_img_file = NULL;
 static char *esetroot_opt = NULL;
 
@@ -36,9 +34,9 @@ enum E_Bg_Types
      E_BG_FIT = 4,
      E_BG_GET = 5,
      E_BG_NO_LOAD = 6,
+     E_BG_FAKE = 7,
 };
 typedef enum E_Bg_Types E_Bg_Types;
-
 
 void _e_bg_bg_help() {
    printf("e17setroot - Manipulate Enlightenment DR17's background\n");
@@ -48,6 +46,7 @@ void _e_bg_bg_help() {
    printf(" -s | --scale <imagename>   Scale the supplied image to the screen.\n");
    printf(" -n | --noload <imagename>  Create .edj without setting it.\n");
    printf(" -g | --get                 Get current E17 background.\n");
+   printf(" -k | --fake                Use Esetroot for fake transparency. (Not Supported)\n");
    printf(" -h                         Show this help screen.\n");
 }
 
@@ -63,7 +62,7 @@ static int _e_bg_bg_get(void *data, int type, void *event) {
 void _e_bg_bg_parseargs(int argc, char **argv) {
    int c;
 
-   static char *options = "tscfghn";
+   static char *options = "tscfghnk";
    static struct option long_options[] = {
 	{"tile",   0, 0, E_BG_TILE},
 	{"scale",  0, 0, E_BG_SCALE},
@@ -71,6 +70,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	{"fit",    0, 0, E_BG_FIT},
 	{"get",    0, 0, E_BG_GET},
 	{"noload", 0, 0, E_BG_NO_LOAD},
+	{"fake",   0, 0, E_BG_FAKE},      
 	{0,        0, 0, 0}
    };
 
@@ -118,7 +118,10 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
        case 'n':
 	 e_bg_no_load = 1;
 	 break;
-
+       case E_BG_FAKE:
+       case 'k':
+	 e_bg_fake = 1;
+	 break;
 	 /* show help screen */
        case 'h':
        default:
@@ -128,7 +131,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
    }
 
    if (optind < argc)
-        e_bg_img_file = argv[optind];
+     e_bg_img_file = argv[optind];
 }
 
 /* strip extention from a file */
@@ -172,11 +175,11 @@ void _e_bg_bg_edj_gen(char *filename) {
    /* make sure we got a file name */
    if (!filename || strlen(filename) <= 4) return;
 
-   file = ecore_file_get_file(filename);
+   file = (char *)ecore_file_get_file(filename);
    dir = ecore_file_get_dir(filename);
 
    filenoext = _e_bg_bg_file_stripext(filename);
-   filenoext = ecore_file_get_file(filenoext);
+   filenoext = (char *)ecore_file_get_file(filenoext);
 
    if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
       int w, h, num;
@@ -195,8 +198,11 @@ void _e_bg_bg_edj_gen(char *filename) {
       system(static_bg);
       _e_bg_bg_set(filename);
 
-      snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
-      system(esetroot_s);
+      if (e_bg_fake) 
+	{
+	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
+	   system(esetroot_s);
+	}
       ecore_main_loop_quit();
       return;
    }
@@ -274,16 +280,25 @@ void _e_bg_bg_edj_gen(char *filename) {
       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
-   esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 1);
-   strcpy(esetroot, "Esetroot ");
-   strcat(esetroot, esetroot_opt);
-   strcat(esetroot, filename);
-   system(esetroot);
-   free(esetroot);
+   if (e_bg_fake) 
+     {
+	esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 1);
+	strcpy(esetroot, "Esetroot ");
+	strcat(esetroot, esetroot_opt);
+	strcat(esetroot, filename);
+	system(esetroot);
+	free(esetroot);
+     }
 }
 
 int main(int argc, char **argv)
 {
+   if (argc == 1) 
+     {
+	_e_bg_bg_help();
+	return 0;
+     }
+   
    _e_bg_bg_parseargs(argc, argv);
 
    if (!e_bg_no_load) {
@@ -299,8 +314,6 @@ int main(int argc, char **argv)
       e_lib_background_get();
       ecore_main_loop_begin();
       ecore_shutdown();
-   } else if(!e_bg_type) {
-      _e_bg_bg_help();
    } else
      _e_bg_bg_edj_gen(e_bg_img_file);
 
