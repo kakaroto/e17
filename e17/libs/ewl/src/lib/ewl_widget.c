@@ -2606,9 +2606,6 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 			ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, 
 						ewl_widget_drag_up_cb, NULL);
 
-			/*if (ewl_widget_type_is(w, "container")) 
-				ewl_container_callback_notify(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);*/
-
 			if (cb) {
 				ewl_widget_data_set(w, "DROP_CB", cb);
 			}
@@ -2629,7 +2626,6 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 
 			ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,  EWL_FLAGS_PROPERTY_MASK);
 
-			/*ewl_container_callback_nointercept(EWL_CONTAINER(w), EWL_CALLBACK_MOUSE_DOWN);*/
 		}
 	}
 
@@ -2658,6 +2654,17 @@ void
 ewl_widget_dnd_reset(void) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_widget_drag_widget) {
+		Ewl_Widget* temp = ewl_widget_drag_widget;
+
+		while (temp) {
+			ewl_object_state_remove(EWL_OBJECT(temp), EWL_FLAG_STATE_PRESSED);
+			temp = temp->parent;
+		}
+
+		ewl_embed_active_set(ewl_embed_widget_find(ewl_widget_drag_widget), 0);
+	}
 
 	ewl_widget_dnd_drag_move_count = 0;
 	ewl_widget_drag_widget = NULL;
