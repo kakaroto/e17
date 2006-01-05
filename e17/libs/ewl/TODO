@@ -64,6 +64,9 @@ EWL BUGS
   then remove them. Should possibly add a flag to deactive this behaviour if
   the user wants complete control over their tab order.
 
+- ewl_container_child_count_get(EWL_CONTAINER(notebook)) is always returning
+  zero.
+
 
   Ewl_Icon bugs/todo
   ------------------
