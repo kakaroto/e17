@@ -22,7 +22,7 @@
 
 static int e_bg_type = 0;
 static int e_bg_no_load = 0;
-static int e_bg_fake = 0;
+static int e_bg_no_fake = 0;
 static char *e_bg_img_file = NULL;
 static char *esetroot_opt = NULL;
 
@@ -34,7 +34,7 @@ enum E_Bg_Types
      E_BG_FIT = 4,
      E_BG_GET = 5,
      E_BG_NO_LOAD = 6,
-     E_BG_FAKE = 7,
+     E_BG_NO_FAKE = 7,
 };
 typedef enum E_Bg_Types E_Bg_Types;
 
@@ -46,7 +46,7 @@ void _e_bg_bg_help() {
    printf(" -s | --scale <imagename>   Scale the supplied image to the screen.\n");
    printf(" -n | --noload <imagename>  Create .edj without setting it.\n");
    printf(" -g | --get                 Get current E17 background.\n");
-   printf(" -k | --fake                Use Esetroot for fake transparency. (Not Supported)\n");
+   printf(" -k | --nofake              Do not use Esetroot for fake transparency. (Not Supported)\n");
    printf(" -h                         Show this help screen.\n");
 }
 
@@ -70,7 +70,7 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	{"fit",    0, 0, E_BG_FIT},
 	{"get",    0, 0, E_BG_GET},
 	{"noload", 0, 0, E_BG_NO_LOAD},
-	{"fake",   0, 0, E_BG_FAKE},      
+	{"nofake", 0, 0, E_BG_NO_FAKE},      
 	{0,        0, 0, 0}
    };
 
@@ -118,9 +118,9 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
        case 'n':
 	 e_bg_no_load = 1;
 	 break;
-       case E_BG_FAKE:
+       case E_BG_NO_FAKE:
        case 'k':
-	 e_bg_fake = 1;
+	 e_bg_no_fake = 1;
 	 break;
 	 /* show help screen */
        case 'h':
@@ -198,7 +198,7 @@ void _e_bg_bg_edj_gen(char *filename) {
       system(static_bg);
       _e_bg_bg_set(filename);
 
-      if (e_bg_fake) 
+      if (!e_bg_no_fake) 
 	{
 	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
 	   system(esetroot_s);
@@ -280,7 +280,7 @@ void _e_bg_bg_edj_gen(char *filename) {
       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
-   if (e_bg_fake) 
+   if (!e_bg_no_fake) 
      {
 	esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 1);
 	strcpy(esetroot, "Esetroot ");
