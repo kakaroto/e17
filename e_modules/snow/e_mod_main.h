@@ -24,6 +24,7 @@ struct _Snow
    E_Config_DD    *conf_edd;
    Config         *conf;
    Evas_Coord      width, height;
+   E_Config_Dialog *config_dialog;
 };
 
 struct _Snow_Flake

@@ -30,6 +30,7 @@ struct _Slide
 
    Config      *conf;
    E_Config_DD *conf_edd;
+   E_Config_Dialog *config_dialog;
 };
 
 struct _Slide_Face

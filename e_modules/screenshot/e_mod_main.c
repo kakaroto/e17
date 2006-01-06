@@ -67,6 +67,11 @@ e_modapi_shutdown(E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
+	if (s->config_dialog) 
+	  {
+	     e_object_del(E_OBJECT(s->config_dialog));
+	     s->config_dialog = NULL;
+	  }
 	_screen_shutdown(s);
      }
    return 1;

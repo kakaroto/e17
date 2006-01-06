@@ -74,6 +74,7 @@ _config_screenshot_module(E_Container *con, Screen *s)
 
    /* create config diaolg */
    cfd = e_config_dialog_new(con, _("Screenshot Configuration"), NULL, 0, &v, s);
+   s->config_dialog = cfd;
 }
 
 static void

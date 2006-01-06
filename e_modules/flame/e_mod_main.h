@@ -36,6 +36,7 @@ struct _Flame
    
    E_Config_DD *conf_edd;
    Config      *conf;
+   E_Config_Dialog *config_dialog;
 };
 
 struct _Flame_Face

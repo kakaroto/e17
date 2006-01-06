@@ -68,6 +68,12 @@ e_modapi_shutdown(E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
+	if (f->config_dialog) 
+	  {
+	     e_object_del(E_OBJECT(f->config_dialog));
+	     f->config_dialog = NULL;
+	  }
+	
 	_flame_shutdown(f);
      }
    return 1;

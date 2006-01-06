@@ -39,6 +39,7 @@ _config_flame_module(E_Container *con, Flame *fl)
    v.advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(con, _("Flame Configuration"), NULL, 0, &v, fl);
+   fl->config_dialog = cfd;
 }
 
 static void 
@@ -160,7 +161,7 @@ static Evas_Object
    
    ob = e_widget_label_add(evas, _("Red Amount"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL, &(cfdata->r), 200);
+   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 300, 0, -10, 0, NULL, &(cfdata->r), 200);
    e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_label_add(evas, _("Blue Amount"));

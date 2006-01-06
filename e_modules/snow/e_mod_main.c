@@ -47,6 +47,11 @@ e_modapi_shutdown(E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
+	if (snow->config_dialog) 
+	  {
+	     e_object_del(E_OBJECT(snow->config_dialog));
+	     snow->config_dialog = NULL;
+	  }
 	_snow_shutdown(snow);
      }
    return 1;

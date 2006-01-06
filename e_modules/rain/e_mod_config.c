@@ -42,6 +42,7 @@ _config_rain_module(E_Container *con, Rain *r)
    v.advanced.create_widgets = NULL;
 
    cfd = e_config_dialog_new(con, _("Rain Module"), NULL, 0, &v, r);
+   r->config_dialog = cfd;
 }
 
 static void

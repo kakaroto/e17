@@ -48,6 +48,11 @@ e_modapi_shutdown(E_Module *m)
 	     e_object_del(E_OBJECT(m->config_menu));
 	     m->config_menu = NULL;
 	  }
+	if (rain->config_dialog) 
+	  {
+	     e_object_del(E_OBJECT(rain->config_dialog));
+	     rain->config_dialog = NULL;
+	  }
 	_rain_shutdown(rain);
      }
    return 1;

@@ -46,6 +46,7 @@ struct _Screen
    Config      *conf;
 
    E_Config_DD *conf_edd;
+   E_Config_Dialog *config_dialog;
 };
 
 struct _Screen_Face

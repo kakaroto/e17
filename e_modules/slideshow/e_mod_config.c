@@ -43,6 +43,7 @@ _config_slideshow_module(E_Container *con, Slide *s)
 
    /* create config diaolg */
    cfd = e_config_dialog_new(con, _("Slideshow Configuration"), NULL, 0, &v, s);
+   s->config_dialog = cfd;
 }
 
 static void
