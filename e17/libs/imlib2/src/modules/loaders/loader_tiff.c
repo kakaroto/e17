@@ -79,6 +79,7 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
    uint32             *pixel, pixel_value;
    int                 i, j, dy, rast_offset;
    DATA32             *buffer_pixel, *buffer = img->image->data;
+   int                 alpha_premult = (EXTRASAMPLE_UNASSALPHA==img->rgba.alpha);
 
    image_width = img->image->w;
    image_height = img->image->h;
@@ -104,7 +105,7 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 	     g = TIFFGetG(pixel_value);
 	     b = TIFFGetB(pixel_value);
              pixel_value = (*(pixel++));
-	     if ((a > 0) && (a < 255))
+	     if ((a > 0) && (a < 255) && (alpha_premult))
 	       {
 		  r = (r * 255) / a;
 		  g = (g * 255) / a;
