@@ -30,7 +30,15 @@
 
 #define ETK_DEFAULT_ICON_SET_FILE ETK_PACKAGE_DATA_DIR "/stock_icons/default.edj"
 
+#define EX_DEFAULT_BLUR_THRESH 2
+#define EX_DEFAULT_SHARPEN_THRESH 2
+#define EX_DEFAULT_BRIGHTEN_THRESH 100
+#define EX_DEFAULT_SLIDE_INTERVAL 5.0
+#define EX_DEFAULT_COMMENTS_VISIBLE 0
+	    
+
 typedef struct _Exhibit Exhibit;
+typedef struct _Ex_Options Ex_Options;
 typedef struct _Ex_Tab Ex_Tab;
 typedef struct _Ex_Thumb Ex_Thumb;
 typedef enum _Ex_Images
@@ -40,6 +48,24 @@ typedef enum _Ex_Images
    EX_IMAGE_ZOOM_IN = -3,
    EX_IMAGE_ZOOM_OUT = -4
 } Ex_Images;
+
+struct _Ex_Options
+{
+   char  *app1;
+   char  *app2;
+   char  *app3;
+   char  *app4;
+   
+   char  *fav_path;
+   
+   double blur_thresh;
+   double sharpen_thresh;
+   double brighten_thresh;
+   
+   double slide_interval;
+   
+   int    comments_visible;   
+};
 
 struct _Ex_Tab
 {
@@ -96,6 +122,8 @@ struct _Exhibit
    Evas_List     *tabs;
    Ex_Tab        *cur_tab;
    
+   Ex_Options     *options;   
+   
    struct {
       int down;
       int x;
@@ -106,7 +134,7 @@ struct _Exhibit
       double       interval;
       Ecore_Timer *timer;
       Etk_Bool     active;
-   } slideshow;
+   } slideshow;   
 };
 
 struct _Ex_Thumb
@@ -145,5 +173,6 @@ struct _Ex_Thumb
 #include "exhibit_tab.h"
 #include "exhibit_slideshow.h"
 #include "exhibit_favorites.h"
+#include "exhibit_options.h"
 
 #endif
