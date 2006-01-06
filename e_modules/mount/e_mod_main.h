@@ -46,6 +46,7 @@ struct _Mount
    Config *conf;
    E_Config_DD *conf_edd;   
    Evas_List *mntpoints;
+   E_Config_Dialog *config_dialog;
 };
 
 struct _Mount_Box

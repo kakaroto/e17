@@ -40,6 +40,7 @@ _config_mount_module(E_Container *con, Mount *m)
    v.advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(con, _("Mount Configuration"), NULL, 0, &v, m);
+   m->config_dialog = cfd;
 }
 
 static void 
