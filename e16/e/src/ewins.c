@@ -91,6 +91,7 @@ EwinCreate(Window win, int type)
    ewin->ly = -1;
    ewin->lw = -1;
    ewin->lh = -1;
+   ewin->ll = -1;
 
    ewin->client.win = win;
    ewin->client.x = -1;
@@ -133,10 +134,10 @@ EwinGetAttributes(EWin * ewin)
    if (!XGetWindowAttributes(disp, _EwinGetClientXwin(ewin), &xwa))
       return -1;
 
-   ewin->client.x = xwa.x;
-   ewin->client.y = xwa.y;
-   ewin->client.w = xwa.width;
-   ewin->client.h = xwa.height;
+   ewin->client.x = ewin->lx = xwa.x;
+   ewin->client.y = ewin->ly = xwa.y;
+   ewin->client.w = ewin->lw = xwa.width;
+   ewin->client.h = ewin->lh = xwa.height;
    ewin->client.bw = xwa.border_width;
    ewin->client.cmap = xwa.colormap;
    ewin->client.grav = NorthWestGravity;
@@ -293,6 +294,9 @@ EwinConfigure(EWin * ewin)
       EHintsGetInfo(ewin);	/* E restart hints */
    SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
    SnapshotEwinApply(ewin);	/* Apply saved settings */
+
+   if (ewin->ll < 0)
+      ewin->ll = EoGetLayer(ewin);
 
    EwinStateUpdate(ewin);	/* Update after snaps etc. */
 
