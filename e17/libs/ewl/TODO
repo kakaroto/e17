@@ -4,7 +4,10 @@ EWL BUGS
 - Scrollbar jumps when trying to drag the button from its lower part
 
 - Default theme when using the imenu/menu the submenu dosen't highlight on
-  mouse over.
+  mouse over. The submenu has an appearance of menu_base. We need to extend
+  menu_item to have a child add intercept and when a child is added verify
+  that it has an appearance of menu_item, otherwise make it's apperance
+  menu_item (I think).
 
 - The ewl_test seems to get a small gap between the right edje of the
   test and the trough for the scrollbar. Should be flush.
