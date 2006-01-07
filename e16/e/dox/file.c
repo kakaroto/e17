@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2005 Carsten Haitzler, Geoff Harrison and various contributors
+ *  Copyright (C) 2000-2006 Carsten Haitzler, Geoff Harrison and various contributors
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to
