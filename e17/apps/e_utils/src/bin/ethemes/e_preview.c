@@ -5,6 +5,7 @@
 #include <Edje.h>
 #include <Evas.h>
 #include <Ecore_Evas.h>
+#include <Ecore_File.h>
 #include <Eet.h>
 #include <E_Lib.h>
 #include <sys/stat.h>
@@ -394,13 +395,14 @@ int e_preview_thumb_check(const char * theme) {
 
 	char * thumb = e_preview_thumb_file_get(theme);
 
-	if (stat(themefile, &themestatus) == 0)
+	if (stat(themefile, &themestatus) == 0) {
 		if (stat(thumb, &thumbstatus) == 0) {
 			if (themestatus.st_mtime > thumbstatus.st_mtime) /* not uptodate */
 				return 1;
 		} else {
 			return 1;
 		}
+	}
 		
 
 	
