@@ -1,10 +1,11 @@
-#include <e.h>
-#include "e_mod_main.h"
-#include "config.h"
+#include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
-#include <stdio.h>
+#include <e.h>
 #include <Ecore.h>
+#include "e_mod_main.h"
+#include "e_mod_config.h"
+#include "config.h"
 
 static int bar_count;
 static Ecore_Event_Handler *_mount_exe_exit_handler = NULL;
@@ -26,7 +27,6 @@ static void _mount_box_free(Mount_Box *mntbox);
 static void _mount_box_icon_free(Mount_Icon *mnticon);
 static void _mount_config_menu_new(Mount *mnt);
 static void _mount_box_menu_new(Mount_Box *mntbox);
-static void _mount_box_enable(Mount_Box *mntbox);
 static void _mount_box_disable(Mount_Box *mntbox);
 static void _mount_box_cb_menu_edit(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _mount_box_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
@@ -45,13 +45,13 @@ static void _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const cha
 static int _mount_exe_cb_exit(void *data, int type, void *event);
 
 /* Begin Required Module Routines */
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
      "Mount"
 };
 
-void
+EAPI void
 *e_modapi_init(E_Module *m)
 {
    Mount *mnt;
@@ -61,7 +61,7 @@ void
    return mnt;
 }
 
-int
+EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    Mount *mnt;
@@ -85,7 +85,7 @@ e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_save(E_Module *m)
 {
    Mount *mnt;
@@ -97,14 +97,14 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
-int
+EAPI int
 e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Mount Module"),
@@ -112,7 +112,7 @@ e_modapi_about(E_Module *m)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_config(E_Module *m)
 {
    Mount *mnt;
@@ -168,7 +168,7 @@ _parse_fstab(Mount *mnt)
 	/* see if device is mountable by user */
 	user_mnt = 0;
 	p = info[3];
-	while (p = strstr(p, "user"))
+	while ((p = strstr(p, "user")))
 	  {
 	     if (p != strstr(info[3], "user_xattr"))
 	       {
@@ -269,7 +269,9 @@ _parse_file(char *fl, Mount_Point *mntpoint)
 {
    FILE *f;
    char s[1024];
-   char *token, *device, *path = NULL;
+   char *token = NULL;
+   char *device = NULL;
+   char *path = NULL;
    int mounted;
 
    mounted = 0;
@@ -368,7 +370,7 @@ static Mount
 *_mount_new(E_Module *m)
 {
    Mount *mnt;
-   Evas_List *managers, *l, *l2, *box_list;
+   Evas_List *managers, *l, *l2;
 
    bar_count = 0;
 
@@ -461,7 +463,6 @@ static void
 _mount_config_menu_new(Mount *mnt)
 {
    E_Menu *mn;
-   E_Menu_Item *mi;
 
    mn = e_menu_new();
    mnt->config_menu = mn;
@@ -601,16 +602,6 @@ _mount_box_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void
-_mount_box_enable(Mount_Box *mntbox)
-{
-   mntbox->conf->enabled = 1;
-   if (mntbox->bar_object) evas_object_show(mntbox->bar_object);
-   if (mntbox->box_object) evas_object_show(mntbox->box_object);
-   if (mntbox->event_object) evas_object_show(mntbox->event_object);
-   e_config_save_queue();
-}
-
-static void
 _mount_box_disable(Mount_Box *mntbox)
 {
    mntbox->conf->enabled = 0;
@@ -633,7 +624,6 @@ static void
 _mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change)
 {
    Mount_Box *mntbox;
-   Evas_Coord x, y, w, h;
 
    mntbox = data;
    switch (change)
@@ -650,7 +640,12 @@ _mount_box_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
 	evas_object_resize(mntbox->bar_object, mntbox->w, mntbox->h);
 	evas_object_resize(mntbox->event_object, mntbox->w, mntbox->h);
 	evas_object_resize(mntbox->box_object, mntbox->w, mntbox->h);
-
+	break;
+      case E_GADMAN_CHANGE_EDGE:
+	break;
+      case E_GADMAN_CHANGE_ZONE:
+	break;
+      case E_GADMAN_CHANGE_RAISE:
 	break;
      }
 }
@@ -857,9 +852,8 @@ static void
 _change_orient_horiz(Mount *mnt)
 {
    Evas_List *l2;
-   Evas_Coord w, h, x, y;
    Evas_Object *o;
-   char *val;
+   Evas_Coord w, h;
    Mount_Box *mntbox;
 
    mntbox = mnt->box;
@@ -870,6 +864,9 @@ _change_orient_horiz(Mount *mnt)
    edje_object_message_signal_process(o);
 
    e_box_freeze(mntbox->box_object);
+
+   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
    for (l2 = mntbox->icons; l2; l2 = l2->next)
      {
@@ -884,8 +881,6 @@ _change_orient_horiz(Mount *mnt)
 	edje_object_signal_emit(o, "set_orientation", "horiz");
 	edje_object_message_signal_process(o);
 
-	w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
-	h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 	e_box_pack_options_set(ic->bg_object,
 			       1, 1, /* fill */
 			       0, 0, /* expand */
@@ -908,9 +903,8 @@ static void
 _change_orient_vert(Mount *mnt)
 {
    Evas_List *l2;
-   Evas_Coord w, h, x, y;
    Evas_Object *o;
-   char *val;
+   Evas_Coord w, h;
    Mount_Box *mntbox;
 
    mntbox = mnt->box;
@@ -921,6 +915,9 @@ _change_orient_vert(Mount *mnt)
    edje_object_message_signal_process(o);
 
    e_box_freeze(mntbox->box_object);
+
+   w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
+   h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 
    for (l2 = mntbox->icons; l2; l2 = l2->next)
      {
@@ -935,8 +932,6 @@ _change_orient_vert(Mount *mnt)
 	edje_object_signal_emit(o, "set_orientation", "vert");
 	edje_object_message_signal_process(o);
 
-	w = mntbox->mnt->conf->icon_size + mntbox->icon_inset.l + mntbox->icon_inset.r;
-	h = mntbox->mnt->conf->icon_size + mntbox->icon_inset.t + mntbox->icon_inset.b;
 	e_box_pack_options_set(ic->bg_object,
 			       1, 1, /* fill */
 			       0, 0, /* expand */
@@ -1034,7 +1029,6 @@ static void
 _mount_icon_cb_edje_mouse_down(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    Mount_Icon *ic;
-   int ret;
 
    ic = data;
    if (!strcmp(emission, "mouse,down,1"))
@@ -1097,7 +1091,6 @@ _mount_exe_cb_exit(void *data, int type, void *event)
 	     e_module_dialog_show(_("Mount Module"),
 				  _("Unmount Failed !!<br>Perhaps this device is in use or is not mounted."));
 	  }
-	return 0;
      }
    else if (!strcmp(tag, "Mount"))
      {
@@ -1106,7 +1099,6 @@ _mount_exe_cb_exit(void *data, int type, void *event)
 	     e_module_dialog_show(_("Mount Module"),
 				  _("Mount Failed !!<br>Please check that media is inserted"));
 	  }
-	return 0;
      }
    else if (!strcmp(tag, "Eject"))
      {
@@ -1114,8 +1106,8 @@ _mount_exe_cb_exit(void *data, int type, void *event)
 	  {
 	     e_module_dialog_show(_("Mount Module"), _("Eject Failed !!"));
 	  }
-	return 0;
      }
+   return 0;   
 }
 
 void
