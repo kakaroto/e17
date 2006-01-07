@@ -8,7 +8,7 @@ typedef struct {
 	Evas_Object     *event_object;
 } EmbraceModule;
 
-extern E_Module_Api e_modapi;
+EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *module);
 EAPI int   e_modapi_shutdown (E_Module *module);

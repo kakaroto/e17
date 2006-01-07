@@ -1,5 +1,9 @@
 $Id$
 
+2006-01-07 Sebastian Dransfeld (sebastid at tango flipp net)
+      * src/e_mod_main.{h,c}: Fix prototypes and function
+        declarations.
+
 2005-10-25 Sebastian Dransfeld (sebastid at tango flipp net)
       * src/plugins/maildir/maildir.c: include <sys/stat.h> for FreeBSD
 

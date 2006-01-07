@@ -32,12 +32,12 @@ static int              embrace_count;
 
 /* public module routines. all modules must have these */
 
-E_Module_Api e_modapi = {
+EAPI E_Module_Api e_modapi = {
 	E_MODULE_API_VERSION,
 	"Embrace"
 };
 
-void *e_modapi_init (E_Module *module)
+EAPI void *e_modapi_init (E_Module *module)
 {
 	EmbraceModule *em = NULL;
 
@@ -48,7 +48,7 @@ void *e_modapi_init (E_Module *module)
 	return em;
 }
 
-int e_modapi_shutdown (E_Module *module)
+EAPI int e_modapi_shutdown (E_Module *module)
 {
 	EmbraceModule *em;
 
@@ -62,12 +62,12 @@ int e_modapi_shutdown (E_Module *module)
 	return 1;
 }
 
-int e_modapi_save (E_Module *module)
+EAPI int e_modapi_save (E_Module *module)
 {
 	return 1;
 }
 
-int e_modapi_info (E_Module *module)
+EAPI int e_modapi_info (E_Module *module)
 {
 #if 0
 	char buf[4096];
@@ -78,7 +78,7 @@ int e_modapi_info (E_Module *module)
 	return 1;
 }
 
-int e_modapi_about (E_Module *module)
+EAPI int e_modapi_about (E_Module *module)
 {
 	E_Dialog *dia;
 
