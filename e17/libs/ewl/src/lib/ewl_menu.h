@@ -36,6 +36,8 @@ struct Ewl_Menu
 	Ewl_Menu_Base  base;
         int            popup_x;
         int            popup_y;
+
+	Ewl_Widget* menubar_parent;
 };
 
 Ewl_Widget	*ewl_menu_new(void);
@@ -50,6 +52,9 @@ void ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_popup_destroy_cb(Ewl_Widget *w, void *ev, void *data);
+void ewl_menu_expand_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+
 
 /**
  * @}

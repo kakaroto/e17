@@ -43,6 +43,8 @@ int	    	 ewl_menubar_init(Ewl_Menubar *mb);
 void		 ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o);
 Ewl_Orientation	 ewl_menubar_orientation_get(Ewl_Menubar *mb);
 
+void		ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
+
 /**
   * @}
   */
