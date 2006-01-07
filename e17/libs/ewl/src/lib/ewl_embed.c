@@ -270,12 +270,27 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 
 	if (e && e->last.clicked)
 	{
+		Ewl_Widget* temp;
+	
+	
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_FOCUSED);
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_PRESSED);
 		
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
+
+		/*Clean the last.clicked up recursively..*/
+		temp = e->last.clicked;
+		while (temp) {
+			if (!(ewl_object_state_has(EWL_OBJECT(temp),
+				EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_state_remove(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
+
+			}
+			temp = temp->parent;
+		}
 
 		e->last.clicked = NULL;
 	}
@@ -519,6 +534,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 					EWL_FLAG_STATE_DISABLED))) {
 			ewl_object_state_add(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
+
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, &ev);
 
@@ -550,6 +566,8 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 		}
 	}
+
+	embed->last.clicked = widget;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
