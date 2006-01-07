@@ -270,7 +270,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 
 	if (e && e->last.clicked)
 	{
-		Ewl_Widget* temp;
+		Ewl_Widget *temp;
 	
 	
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
@@ -280,14 +280,13 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 		
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
-		/*Clean the last.clicked up recursively..*/
+		/* Clean the last.clicked up recursively.. */
 		temp = e->last.clicked;
 		while (temp) {
 			if (!(ewl_object_state_has(EWL_OBJECT(temp),
-				EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_state_remove(EWL_OBJECT(temp),
-					EWL_FLAG_STATE_PRESSED);
-
+						EWL_FLAG_STATE_DISABLED))) {
+				ewl_object_state_remove(EWL_OBJECT(temp),
+						EWL_FLAG_STATE_PRESSED);
 			}
 			temp = temp->parent;
 		}

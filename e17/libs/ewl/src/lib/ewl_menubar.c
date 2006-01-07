@@ -93,7 +93,7 @@ ewl_menubar_init(Ewl_Menubar *mb)
 					EWL_CONTAINER(mb->inner_box));
 
 	ewl_container_add_notify_set(EWL_CONTAINER(mb->inner_box),
-				ewl_menubar_cb_child_add);
+					ewl_menubar_cb_child_add);
 
 
 	ewl_menubar_orientation_set(mb, EWL_ORIENTATION_HORIZONTAL);
@@ -162,9 +162,10 @@ ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, "widget");
 
 	mb = EWL_MENUBAR(c);
-	if (ewl_widget_type_is(w,"menu")) 
+	if (ewl_widget_type_is(w, "menu")) 
 		EWL_MENU(w)->menubar_parent = EWL_WIDGET(mb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 }
+
