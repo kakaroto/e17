@@ -41,7 +41,8 @@ ewl_hmenubar_new(void)
 	if (!mb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menubar_orientation_set(EWL_MENUBAR(mb), EWL_ORIENTATION_HORIZONTAL);
+	ewl_menubar_orientation_set(EWL_MENUBAR(mb), 
+				EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_PTR(mb, DLEVEL_STABLE);
 }
@@ -61,7 +62,8 @@ ewl_vmenubar_new(void)
 	if (!mb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menubar_orientation_set(EWL_MENUBAR(mb), EWL_ORIENTATION_VERTICAL);
+	ewl_menubar_orientation_set(EWL_MENUBAR(mb), 
+				EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(mb, DLEVEL_STABLE);
 }
@@ -95,9 +97,7 @@ ewl_menubar_init(Ewl_Menubar *mb)
 	ewl_container_add_notify_set(EWL_CONTAINER(mb->inner_box),
 					ewl_menubar_cb_child_add);
 
-
 	ewl_menubar_orientation_set(mb, EWL_ORIENTATION_HORIZONTAL);
-
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

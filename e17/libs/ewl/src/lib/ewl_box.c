@@ -213,9 +213,17 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 
 	b->orientation = o;
 
-	if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
+	/* We check the previous appearance here to make sure we only change
+	 * the appearance if it is still set to box. Otherwise we might end
+	 * up wipeing out the appearance of an inheriting widget (like
+	 * menubar */
+	if ((b->orientation == EWL_ORIENTATION_HORIZONTAL)
+			&& (!strcmp(ewl_widget_appearance_get(EWL_WIDGET(b)),
+								"vbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
-	else if (b->orientation == EWL_ORIENTATION_VERTICAL)
+	else if ((b->orientation == EWL_ORIENTATION_VERTICAL)
+			&& (!strcmp(ewl_widget_appearance_get(EWL_WIDGET(b)),
+								"hbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
 
 	ewl_widget_configure(EWL_WIDGET(b));
