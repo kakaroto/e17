@@ -234,8 +234,10 @@ ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_Event_Mouse_Move* ev;
 	Ewl_Menu* menu;
 	Ewl_Embed* embed;
+	Ewl_Embed* menu_embed;
 	int wx, wy;
 	int x, y;
+	int width,height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -246,11 +248,17 @@ ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	menu = EWL_MENU(user_data);
 	
 	embed = ewl_embed_widget_find(EWL_WIDGET(menu)->parent);
+	menu_embed = ewl_embed_widget_find(EWL_WIDGET(menu->base.popup));
 	ewl_window_position_get(EWL_WINDOW(embed), &wx, &wy);
 	ewl_window_position_get(EWL_WINDOW(menu->base.popup), &x, &y);
-	
-	if (menu->menubar_parent) {
-		ewl_embed_mouse_move_feed(embed, ev->x+x - wx, ev->y+y - wy,0);
+	ewl_object_current_size_get(EWL_OBJECT(menu->base.popup), &width, &height);
+
+	if (ev->x+x > x && ev->y+y > y && ev->x+x < x+width && ev->y+y < y+height) {
+		if (ewl_embed_active_embed_get() != menu_embed)
+			ewl_embed_active_set(menu_embed,1);
+	} else {
+		if (menu->menubar_parent) 
+			ewl_embed_mouse_move_feed(embed, ev->x+x - wx, ev->y+y - wy,0);
 	}
 }
 
