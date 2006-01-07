@@ -8,6 +8,7 @@
 #include <Imlib2.h>
 #include <E_Lib.h>
 #include <Engrave.h>
+#include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_File.h>
 
