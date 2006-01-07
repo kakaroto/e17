@@ -140,7 +140,9 @@ int                 Esnprintf(va_alist);
 #include <locale.h>
 #endif
 
+#ifdef HAVE_LIBINTL_H
 #include <libintl.h>
+#endif
 #define _(String) gettext(String)
 #ifdef gettext_noop
 #define N_(String) gettext_noop(String)
