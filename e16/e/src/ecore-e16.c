@@ -41,9 +41,11 @@
 #define ECORE_X_PROP_LIST_ADD       1
 #define ECORE_X_PROP_LIST_TOGGLE    2
 
-#ifdef USE_ECORE_X
+extern Display     *disp;
 
-extern Display     *_ecore_x_disp;
+#define _ecore_x_disp disp
+
+#ifdef USE_ECORE_X
 
 /* WM identification */
 Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTED = 0;
@@ -379,7 +381,6 @@ _ecore_x_window_prop_string_utf8_get(Ecore_X_Window win, Ecore_X_Atom atom)
 
    return str;
 }
-#endif /* USE_ECORE_X */
 
 /*
  * Set X ID (array) property
@@ -642,6 +643,8 @@ ecore_x_window_prop_window_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 {
    return ecore_x_window_prop_xid_list_get(win, atom, XA_WINDOW, plst);
 }
+
+#endif /* USE_ECORE_X */
 
 #ifndef USE_ECORE_X
 /*

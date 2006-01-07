@@ -47,8 +47,6 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO;
 #define Ecore_X_Time     Time
 #define Ecore_X_GC       GC
 
-#define _ecore_x_disp disp
-
 int                 ecore_x_client_message32_send(Ecore_X_Window win,
 						  Ecore_X_Atom type,
 						  long mask,
@@ -66,6 +64,52 @@ int                 ecore_x_window_prop_card32_get(Ecore_X_Window win,
 int                 ecore_x_window_prop_card32_list_get(Ecore_X_Window win,
 							Ecore_X_Atom atom,
 							unsigned int **plst);
+
+void                ecore_x_window_prop_xid_set(Ecore_X_Window win,
+						Ecore_X_Atom atom,
+						Ecore_X_Atom type,
+						Ecore_X_ID * lst,
+						unsigned int num);
+int                 ecore_x_window_prop_xid_get(Ecore_X_Window win,
+						Ecore_X_Atom atom,
+						Ecore_X_Atom type,
+						Ecore_X_ID * lst,
+						unsigned int len);
+int                 ecore_x_window_prop_xid_list_get(Ecore_X_Window win,
+						     Ecore_X_Atom atom,
+						     Ecore_X_Atom type,
+						     Ecore_X_ID ** plst);
+void                ecore_x_window_prop_xid_list_change(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							Ecore_X_Atom type,
+							Ecore_X_ID item,
+							int op);
+void                ecore_x_window_prop_atom_set(Ecore_X_Window win,
+						 Ecore_X_Atom atom,
+						 Ecore_X_Atom * val,
+						 unsigned int num);
+int                 ecore_x_window_prop_atom_get(Ecore_X_Window win,
+						 Ecore_X_Atom atom,
+						 Ecore_X_Atom * val,
+						 unsigned int len);
+int                 ecore_x_window_prop_atom_list_get(Ecore_X_Window win,
+						      Ecore_X_Atom atom,
+						      Ecore_X_Atom ** plst);
+void                ecore_x_window_prop_atom_list_change(Ecore_X_Window win,
+							 Ecore_X_Atom atom,
+							 Ecore_X_Atom item,
+							 int op);
+void                ecore_x_window_prop_window_set(Ecore_X_Window win,
+						   Ecore_X_Atom atom,
+						   Ecore_X_Window * val,
+						   unsigned int num);
+int                 ecore_x_window_prop_window_get(Ecore_X_Window win,
+						   Ecore_X_Atom atom,
+						   Ecore_X_Window * val,
+						   unsigned int len);
+int                 ecore_x_window_prop_window_list_get(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							Ecore_X_Window ** plst);
 
 void                ecore_x_window_prop_string_set(Ecore_X_Window win,
 						   Ecore_X_Atom atom,
@@ -285,49 +329,3 @@ void                ecore_x_window_prop_string_list_set(Ecore_X_Window win,
 int                 ecore_x_window_prop_string_list_get(Ecore_X_Window win,
 							Ecore_X_Atom atom,
 							char ***plst);
-
-void                ecore_x_window_prop_xid_set(Ecore_X_Window win,
-						Ecore_X_Atom atom,
-						Ecore_X_Atom type,
-						Ecore_X_ID * lst,
-						unsigned int num);
-int                 ecore_x_window_prop_xid_get(Ecore_X_Window win,
-						Ecore_X_Atom atom,
-						Ecore_X_Atom type,
-						Ecore_X_ID * lst,
-						unsigned int len);
-int                 ecore_x_window_prop_xid_list_get(Ecore_X_Window win,
-						     Ecore_X_Atom atom,
-						     Ecore_X_Atom type,
-						     Ecore_X_ID ** plst);
-void                ecore_x_window_prop_xid_list_change(Ecore_X_Window win,
-							Ecore_X_Atom atom,
-							Ecore_X_Atom type,
-							Ecore_X_ID item,
-							int op);
-void                ecore_x_window_prop_atom_set(Ecore_X_Window win,
-						 Ecore_X_Atom atom,
-						 Ecore_X_Atom * val,
-						 unsigned int num);
-int                 ecore_x_window_prop_atom_get(Ecore_X_Window win,
-						 Ecore_X_Atom atom,
-						 Ecore_X_Atom * val,
-						 unsigned int len);
-int                 ecore_x_window_prop_atom_list_get(Ecore_X_Window win,
-						      Ecore_X_Atom atom,
-						      Ecore_X_Atom ** plst);
-void                ecore_x_window_prop_atom_list_change(Ecore_X_Window win,
-							 Ecore_X_Atom atom,
-							 Ecore_X_Atom item,
-							 int op);
-void                ecore_x_window_prop_window_set(Ecore_X_Window win,
-						   Ecore_X_Atom atom,
-						   Ecore_X_Window * val,
-						   unsigned int num);
-int                 ecore_x_window_prop_window_get(Ecore_X_Window win,
-						   Ecore_X_Atom atom,
-						   Ecore_X_Window * val,
-						   unsigned int len);
-int                 ecore_x_window_prop_window_list_get(Ecore_X_Window win,
-							Ecore_X_Atom atom,
-							Ecore_X_Window ** plst);
