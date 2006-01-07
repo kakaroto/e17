@@ -79,6 +79,13 @@ EWL BUGS
   specific tab order it will be whiped out by the realize code. (In
   ewl_embed I believe).
 
+- Run ewl_test menubar then click on a menu and click it again with out
+  moving the mouse. The display of the dropdown seems to become corrupted
+  when the menu is displayed again.
+
+- The menubar theme dosen't quite extend all the way to the right or bottom
+  of the screen.
+
 
   Ewl_Icon bugs/todo
   ------------------
