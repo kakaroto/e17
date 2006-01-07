@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT
 AC_CONFIG_SRCDIR([src/convert.c])
 AM_CONFIG_HEADER(src/config.h)
-AM_INIT_AUTOMAKE(imlib2_tools, 0.0.0alpha2)
+AM_INIT_AUTOMAKE(imlib2_tools, 0.0.0alpha3)
 
 dnl Checks for programs.
 AC_PROG_CC

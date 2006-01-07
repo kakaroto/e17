@@ -1,3 +1,9 @@
+imlib2-tools (0.0.0alpha3-0cvs2006010700) unstable; urgency=low
+
+  * Now with quality and compression options :)
+
+ -- Simon Horman <horms@verge.net.au>  Sat,  7 Jan 2006 21:28:12 +0900
+
 imlib2-tools (0.0.0alpha2-0cvs2006010400) unstable; urgency=low
 
   * Added build dependancy on libimlib2-dev
