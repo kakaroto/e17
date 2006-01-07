@@ -62,13 +62,13 @@ static int _weather_count;
 static E_Config_DD *conf_edd;
 static E_Config_DD *conf_face_edd;
 
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
    "Weather"
 };
 
-void *
+EAPI void *
 e_modapi_init(E_Module *module)
 {
    Weather *weather;
@@ -78,7 +78,7 @@ e_modapi_init(E_Module *module)
    return weather;
 }
 
-int
+EAPI int
 e_modapi_shutdown(E_Module *module)
 {
    Weather *weather;
@@ -93,7 +93,7 @@ e_modapi_shutdown(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_save(E_Module *module)
 {
    Weather *weather;
@@ -103,14 +103,14 @@ e_modapi_save(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_info(E_Module *module)
 {
    module->icon_file = strdup(PACKAGE_DATA_DIR"/module_icon.png");
    return 1;
 }
 
-int
+EAPI int
 e_modapi_about(E_Module *module)
 {
    e_module_dialog_show(_("Enlightenment Weather Module"),

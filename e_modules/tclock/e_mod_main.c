@@ -25,13 +25,13 @@ static E_Config_DD *conf_face_edd;
 static int _tclock_count;
 
 /*public code******************************/
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
      "TClock"
 };
 
-void
+EAPI void
 *e_modapi_init(E_Module *module)
 {
    TClock *tclock;
@@ -40,7 +40,7 @@ void
    return tclock;
 }
 
-int
+EAPI int
 e_modapi_shutdown(E_Module *module)
 {
    TClock *tclock;
@@ -55,14 +55,14 @@ e_modapi_shutdown(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_info(E_Module *module)
 {
    module->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
-int
+EAPI int
 e_modapi_save(E_Module *module)
 {
    TClock *tclock;
@@ -72,14 +72,14 @@ e_modapi_save(E_Module *module)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_about(E_Module *module)
 {
    e_module_dialog_show("Simple Digital Clock", "Displays a digital clock on the desktop");
    return 1;
 }
 
-int
+EAPI int
 e_modapi_config(E_Module *module)
 {
    Evas_List *l;

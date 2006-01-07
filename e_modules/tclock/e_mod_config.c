@@ -1,5 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 
 typedef struct _cfdata CFData;
 typedef struct _Cfg_File_Data Cfg_File_Data;
@@ -21,7 +22,7 @@ static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-void
+EAPI void
 _config_tclock_module(E_Container *con, TClock_Face *f) 
 {
    E_Config_Dialog *cfd;
