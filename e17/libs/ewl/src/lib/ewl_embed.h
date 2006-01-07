@@ -134,6 +134,7 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
