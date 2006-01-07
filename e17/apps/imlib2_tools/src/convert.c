@@ -50,6 +50,8 @@
 #include "dither.h"
 
 #define DEFAULT_CACHE_SIZE 80 /* In megabytes */
+#define DEFAULT_QUALITY 75
+#define DEFAULT_COMPRESSION 3
 
 #define imlib_context_set_colour(_r, _g, _b, _a) \
 	imlib_context_set_color(_r, _g, _b, _a)
@@ -97,6 +99,7 @@ typedef struct {
 	const char *border;
 	const char *bordercolour;
 	const char *colourise;
+	int compression;
 	const char *crop;
 	const char *channel;
 	const char *cache;
@@ -104,6 +107,7 @@ typedef struct {
 	const char *scale;
 	const char *gamma;
 	const char *rotate;
+	int quality;
 	int nfiles;
 	const char **files;
 	const char *src;
@@ -130,6 +134,8 @@ static void usage(int exit_status)
 		"                   Matte has the same meaning as Alpha\n"
 		"    -coalesce      (The same as average)\n"
 		"    -colourise     <percentage>|<red>/<greem>/><blue>\n"
+		"    -compressoion  <integer>\n"
+		"                   Must be between 1 and 9. (default is %d)\n"
 		"    -[no]dither    Use Floyd Steinberg Dithering instead\n"
 		"                   of ordered dithering (default)\n"
 		"    -flip\n"
@@ -138,10 +144,19 @@ static void usage(int exit_status)
 		"    -geometry      <width>[x<height>][%%][<|>][!]\n"
 		"    -help\n"
 		"    -monochrome\n"
+		"    -quality       <integer>\n"
+		"                   Must be between 1 and 99. (default is %d)\n"
 		"    -rotate        <angle>[<|>]\n"
 		"    -scale         <width>[x<height>][%%][<|>][!]\n"
+		"\n" 
+		" -compression and -quality only only affect saving to image\n"
+		" formats whose loader supoorts this option. Currently jpeg\n"
+		" and png. Internally they are much the same thing, and its\n"
+		" usual to use -compression for png and -quality for jpeg.\n"
+		" Accordinlgy, internally, -compression takes prefereance\n"
+		" over -quality for png, and vice-versa for jpeg.\n"
 		"\n",
-		DEFAULT_CACHE_SIZE);
+		DEFAULT_CACHE_SIZE, DEFAULT_COMPRESSION, DEFAULT_QUALITY);
 
 	exit(exit_status);
 }
@@ -183,6 +198,8 @@ static options_t *options(int argc, char **argv)
 		 NULL, 131},
 		{"colorize", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 131},
+		{"compression", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 132},
 		{"crop", 'c', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'c'},
 		{"channel", 'C', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
@@ -199,6 +216,8 @@ static options_t *options(int argc, char **argv)
 		{"monochrome", 'm', POPT_ARGFLAG_ONEDASH, NULL, 'm'},
 		{"dither", 'd', POPT_ARGFLAG_ONEDASH, NULL, 'd'},
 		{"nodither", 'N', POPT_ARGFLAG_ONEDASH, NULL, 'N'},
+		{"quality", 'q', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 'q'},
 		{"rotate", 'r', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'r'},
 		{NULL, 0, 0, NULL, 0}
@@ -214,11 +233,13 @@ static options_t *options(int argc, char **argv)
 	opt->border = NULL;
 	opt->bordercolour = NULL;
 	opt->colourise = NULL;
+	opt->compression = DEFAULT_COMPRESSION;
 	opt->crop = NULL;
 	opt->bin_ops = 0;
 	opt->fill = NULL;
 	opt->gamma = NULL;
 	opt->scale = NULL;
+	opt->quality = DEFAULT_QUALITY;
 	opt->rotate = NULL;
 	opt->src = NULL;
 	opt->dest = NULL;
@@ -256,6 +277,11 @@ static options_t *options(int argc, char **argv)
 		case 131:
 			opt->colourise = optarg;
 			break;
+		case 132:
+			opt->compression = atoi(optarg);
+			if (opt->compression < 1 || opt->compression > 9)
+				usage(-1);
+			break;
 		case 'c':
 			opt->crop = optarg;
 			break;
@@ -276,6 +302,11 @@ static options_t *options(int argc, char **argv)
 			break;
 		case 'h':
 			usage(0);
+			break;
+		case 'q':
+			opt->quality = atoi(optarg);
+			if (opt->quality < 1 || opt->quality > 99)
+				usage(-1);
 			break;
 		case 'r':
 			opt->rotate = optarg;
@@ -1723,6 +1754,10 @@ int main(int argc, char **argv)
 #if 0 /* this just makes the image red.. well now it doesnt.. */
 	image = image_colourise(image, NULL, NULL);
 #endif
+
+	imlib_image_attach_data_value("quality", NULL, opt->quality, NULL);
+	imlib_image_attach_data_value("compression", NULL, opt->compression, 
+				      NULL);
 	/* save the image */
 	imlib_save_image(opt->dest);
 
