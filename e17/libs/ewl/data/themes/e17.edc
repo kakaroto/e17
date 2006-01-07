@@ -114,9 +114,9 @@ data {
     item, "/border/group"  "border";
     item, "/border/text/group"  "border/label";
 
-    item, "/imenu/group" "window";
+    item, "/imenu/group" "menu";
+    item, "/menu/group" "menu";
 
-    item, "/menu/group" "window";
     item, "/menubar/group" "menubar";
     item, "/menuitem/group" "menuitem";
 

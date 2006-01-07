@@ -1,6 +1,3 @@
-images {
-image, "e17_menu_bg.png" COMP;
-};
 
 group {
     name, "window";
