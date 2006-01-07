@@ -72,7 +72,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
  * @return Returns the text of the item, or NULL otherwise
  * @brief Get the text of a menu item
  */
-char *
+const char *
 ewl_menu_item_text_get(Ewl_Menu_Item *item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -92,7 +92,7 @@ ewl_menu_item_text_get(Ewl_Menu_Item *item)
  * @brief Sets the text of a menu item
  */
 void
-ewl_menu_item_text_set(Ewl_Menu_Item *item, char *text)
+ewl_menu_item_text_set(Ewl_Menu_Item *item, const char *text)
 {
 	Ewl_Container *redirect;
 
@@ -141,7 +141,7 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, char *text)
  * @param item: the menu item
  * @brief Get the image of a menu item
  */
-char *
+const char *
 ewl_menu_item_image_get(Ewl_Menu_Item *item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -161,7 +161,7 @@ ewl_menu_item_image_get(Ewl_Menu_Item *item)
  * @brief Set the image of a menu item
  */
 void
-ewl_menu_item_image_set(Ewl_Menu_Item *item, char *image)
+ewl_menu_item_image_set(Ewl_Menu_Item *item, const char *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("item", item);
@@ -171,7 +171,9 @@ ewl_menu_item_image_set(Ewl_Menu_Item *item, char *image)
 	 * Destroy the icon if it's the wrong type.
 	 */
 	if (item->icon && ((image && !ewl_widget_type_is(item->icon, "image")) 
-				|| (!image && !ewl_widget_type_is(item->icon, "spacer"))))  {
+			|| (!image && 
+				!ewl_widget_type_is(item->icon, "spacer"))))  
+	{
 		ewl_widget_destroy(item->icon);
 		item->icon = NULL;
 	}
@@ -205,6 +207,8 @@ ewl_menu_item_image_set(Ewl_Menu_Item *item, char *image)
 			ewl_object_alignment_set(EWL_OBJECT(item->icon),
 					EWL_FLAG_ALIGN_CENTER);
 			ewl_object_maximum_size_set(EWL_OBJECT(item->icon),
+					20, 20);
+			ewl_object_minimum_size_set(EWL_OBJECT(item->icon),
 					20, 20);
 			ewl_container_child_prepend(EWL_CONTAINER(item),
 					item->icon);
