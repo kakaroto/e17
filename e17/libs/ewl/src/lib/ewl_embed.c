@@ -105,6 +105,8 @@ ewl_embed_init(Ewl_Embed *w)
 			     ewl_embed_destroy_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
 			     ewl_embed_configure_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_FOCUS_OUT,
+			     ewl_embed_focus_out_cb, NULL);
 
 	w->max_layer = LAYER(w) = -1000;
 
@@ -1537,6 +1539,28 @@ ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				 (Evas_Coord)(CURRENT_Y(w)));
 		evas_object_resize(emb->ev_clip, (Evas_Coord)(CURRENT_W(w)),
 				   (Evas_Coord)(CURRENT_H(w)));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data __UNUSED__)
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, "widget");
+
+	emb = EWL_EMBED(w);
+	if (!emb->last.focused)
+		DRETURN(DLEVEL_STABLE);
+
+	if (ewl_object_state_has(EWL_OBJECT(emb->last.focused),
+				EWL_FLAG_STATE_PRESSED)) {
+		ewl_embed_mouse_up_feed(emb, 1, 0, 0, ewl_ev_modifiers_get());
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

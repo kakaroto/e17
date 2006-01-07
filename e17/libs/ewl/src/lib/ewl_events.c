@@ -18,6 +18,8 @@ int ewl_ev_x_mouse_wheel(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_up(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_move(void *data, int type, void *_ev);
 int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
+int ewl_ev_x_focus_in(void *data, int type, void *_ev);
+int ewl_ev_x_focus_out(void *data, int type, void *_ev);
 int ewl_ev_x_paste(void *data, int type, void *_ev);
 
 int ewl_ev_dnd_position(void *data, int type, void *_ev);
@@ -95,6 +97,10 @@ ewl_ev_init(void)
 					ewl_ev_x_mouse_wheel, NULL);
 		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT,
 					ewl_ev_x_mouse_out, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_IN,
+					ewl_ev_x_focus_in, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_OUT,
+					ewl_ev_x_focus_out, NULL);
 
 		/*
 		 * Selection callbacks to allow for pasting.
@@ -499,6 +505,58 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	ewl_embed_mouse_wheel_feed(embed, ev->x, ev->y, ev->z, ev->direction, key_modifiers);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the focus in event information
+ * @return Returns no value.
+ * @brief Handles the focus in events in windows
+ *
+ * Dispatches the focus in event to the appropriate ewl window.
+ */
+int
+ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Embed *embed;
+	Ecore_X_Event_Window_Focus_In *ev = e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_OUT);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the focus out event information
+ * @return Returns no value.
+ * @brief Handles the focus out events in windows
+ *
+ * Dispatches the focus out event to the appropriate ewl window.
+ */
+int
+ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+	Ewl_Embed *embed;
+	Ecore_X_Event_Window_Focus_Out *ev = e;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_OUT);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
