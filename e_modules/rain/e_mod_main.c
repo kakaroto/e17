@@ -10,21 +10,16 @@ static E_Menu     *_rain_config_menu_new(Rain *rain);
 static int         _rain_cb_animator(void *data);
 static void        _rain_clouds_load(Rain *rain);
 static void        _rain_drops_load(char type, Rain *rain);
-
-static void        _rain_cb_density_sparse(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _rain_cb_density_medium(void *data, E_Menu *m, E_Menu_Item *i);
-static void        _rain_cb_density_dense(void *data, E_Menu *m, E_Menu_Item *mi);
-static void        _rain_cb_show_clouds(void *data, E_Menu *m, E_Menu_Item *mi);
 static void 	   _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
-E_Module_Api e_modapi =
+EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
      "Rain"
 };
 
-void 
+EAPI void 
 *e_modapi_init(E_Module *m)
 {
    Rain *rain;
@@ -34,7 +29,7 @@ void
    return rain;
 }
 
-int 
+EAPI int 
 e_modapi_shutdown(E_Module *m)
 {
    Rain *rain;
@@ -58,7 +53,7 @@ e_modapi_shutdown(E_Module *m)
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_save(E_Module *m)
 {
    Rain *rain;
@@ -69,14 +64,14 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_info(E_Module *m)
 {
    m->icon_file = strdup(PACKAGE_DATA_DIR "/module_icon.png");
    return 1;
 }
 
-int 
+EAPI int 
 e_modapi_about(E_Module *m)
 {
    e_module_dialog_show(_("Enlightenment Rain Module"),
@@ -84,7 +79,7 @@ e_modapi_about(E_Module *m)
    return 1;
 }
 
-int
+EAPI int
 e_modapi_config(E_Module *m) 
 {
    Rain *r;
