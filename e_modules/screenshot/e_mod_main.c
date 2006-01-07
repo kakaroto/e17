@@ -439,12 +439,15 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     f = get_filename(ef->screen->conf);
 
 	     snprintf(buff, sizeof(buff), "import %s %s", opt, f);
-	     msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
-	     msg->count = 1;
-	     msg->val[0] = ef->screen->conf->delay_time - 1;
-	     edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
-	     free(msg);
-
+	     if (ef->screen->conf->delay_time > 0) 
+	       {
+		  msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+		  msg->count = 1;
+		  msg->val[0] = ef->screen->conf->delay_time - 1;
+		  edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
+		  free(msg);
+	       }
+	     
 	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
 	  }
@@ -462,11 +465,14 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     opt = get_options(opts);
 	     f = get_filename(ef->screen->conf);
 	     snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
-	     msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
-	     msg->count = 1;
-	     msg->val[0] = ef->screen->conf->delay_time - 1;	     
-	     edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
-	     free(msg);
+	     if (ef->screen->conf->delay_time > 0) 
+	       {
+		  msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
+		  msg->count = 1;
+		  msg->val[0] = ef->screen->conf->delay_time - 1;	     
+		  edje_object_message_send(ef->screen_object, EDJE_MESSAGE_INT_SET, 1, msg);
+		  free(msg);
+	       }
 	     
 	     _screen_exe_exit_handler = ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, _screen_exe_cb_exit, NULL);
 	     x = ecore_exe_run(buff, ef);
