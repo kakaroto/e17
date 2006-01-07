@@ -275,8 +275,8 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    cinfo.input_components = 3;
    cinfo.in_color_space = JCS_RGB;
 
-   /* look for tags attached to image to get extra parameters liek quality */
-   /* settigns etc. - thsi si the "api" to hint for extra information for */
+   /* look for tags attached to image to get extra parameters like quality */
+   /* settigns etc. - this is the "api" to hint for extra information for */
    /* saver modules */
 
    /* compression */
