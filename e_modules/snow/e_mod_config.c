@@ -1,5 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 #include "config.h"
 
 typedef struct _cfdata CFData;
@@ -27,7 +28,7 @@ static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
-void
+EAPI void
 _config_snow_module(E_Container *con, Snow *s) 
 {
    E_Config_Dialog *cfd;

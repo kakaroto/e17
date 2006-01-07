@@ -389,6 +389,10 @@ _screen_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change cha
 	evas_object_raise(ef->screen_object);
 	evas_object_raise(ef->event_object);
 	break;
+      case E_GADMAN_CHANGE_EDGE:
+	break;
+      case E_GADMAN_CHANGE_ZONE:
+	break;
      }
 }
 
@@ -543,7 +547,6 @@ char
 	loctime = localtime(&t);
 	strftime(buff, sizeof(buff), "%Y-%m-%d-%H%M%S", loctime);
 	snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
-	return strdup(buff);
      }
    else
      {
@@ -572,15 +575,21 @@ char
 		  /* Add To Filename */
 		  snprintf(buff, sizeof(buff), strdup(conf->filename), c);
 		  snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
-		  return strdup(buff);
 	       }
 	  }
 	else
 	  {
 	     snprintf(buff, sizeof(buff), strdup(conf->filename));
 	     snprintf(buff, sizeof(buff), "%s/%s.png", strdup(conf->location), strdup(buff));
-	     return strdup(buff);
 	  }
+     }
+   if (buff) 
+     {
+	return strdup(buff);
+     }
+    else 
+     {
+	return NULL;
      }
 }
 
@@ -663,7 +672,6 @@ static void
 _screen_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Screen_Face *sf;
-   E_Config_Dialog *cfg;
 
    sf = data;
    if (!sf) return;
