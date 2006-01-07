@@ -32,11 +32,8 @@ struct event_file_core {
 	void* data;
 };
 
-void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_generic_file* file, Ewl_Row* prow);
-
-
-/*void entropy_gui_component_instance_destroy(entropy_gui_component* comp) {
-}*/
+void structure_viewer_add_row(entropy_gui_component_instance* instance, 
+	entropy_generic_file* file, Ewl_Row* prow);
 
 int entropy_plugin_type_get() {
         return ENTROPY_PLUGIN_GUI_COMPONENT;
@@ -54,16 +51,19 @@ char* entropy_plugin_identify() {
 	return itree;
 }*/
 
-void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el, entropy_gui_component_instance* comp) {
-   entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)comp->data;
+void gui_event_callback(entropy_notify_event* eevent, void* requestor, 
+	void* el, entropy_gui_component_instance* comp) {
+	
+   entropy_file_structure_viewer* viewer = 
+	(entropy_file_structure_viewer*)comp->data;
 
    switch (eevent->event_type) {
        case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY: {
 		entropy_generic_file* event_file = (entropy_generic_file*)el;
        
-		printf("Received a remove directory notify at structure viewer\n");
-		
-		Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
+		Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, 
+			event_file);
+
 		if (row) {
 			ewl_tree_row_destroy(EWL_TREE(viewer->tree), row);
 		}
@@ -74,41 +74,40 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
       case ENTROPY_NOTIFY_FILELIST_REQUEST: {
 							  
 	entropy_generic_file* file;
-	
-
-	/*We only want folder events from outselves, so leave otherwise..*/
-	//if (requestor != comp) {
-	//	return;
-	//}
-
-
-	entropy_generic_file* event_file = ((entropy_file_request*)eevent->data)->file;
-	//printf("Looking for row for file %p (%s)\n", event_file, event_file->filename);
+	entropy_generic_file* event_file = 
+		((entropy_file_request*)eevent->data)->file;
 	
 	Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
-	/*printf ("   Got %p\n", row);*/
-
-	/*If we don't own this row, forget about doing something - we don't know about this*/
 	
+	/*If we don't own this row, forget about doing something 
+	 * - we don't know about this*/
 	if (row && !ecore_hash_get(viewer->loaded_dirs, row)) {
 
 
 			ecore_list_goto_first(el);
 			while ( (file = ecore_list_next(el)) ) {
 
-				/*We need the file's mime type, so get it here if it's not here already...*/
+				/*We need the file's mime type, 
+				 * so get it here if it's not here already...*/
 				if (!strlen(file->mime_type)) {
-					entropy_mime_file_identify(comp->core->mime_plugins, file);
+					entropy_mime_file_identify(
+					comp->core->mime_plugins, file);
 				}
 				
-				if (file->filetype == FILE_FOLDER || entropy_core_descent_for_mime_get(comp->core, file->mime_type)  ) {
+				if (file->filetype == FILE_FOLDER || 
+				  entropy_core_descent_for_mime_get(comp->core, 
+				  file->mime_type)  ) {
 					char *c = entropy_malloc(sizeof(char));
 					*c = 1;
 
-					/*Tell the core we're watching this file*/
-					entropy_core_file_cache_add_reference(file->md5);
-					structure_viewer_add_row(comp, file, row);
-					ecore_hash_set(viewer->loaded_dirs, row, c);
+					/*Tell the core we're watching 
+					 * this file*/
+					entropy_core_file_cache_add_reference(
+						file->md5);
+					structure_viewer_add_row(comp, file, 
+						row);
+					ecore_hash_set(viewer->loaded_dirs, 
+						row, c);
 				}
 			}
 		/*ecore_list_destroy(el);*/
@@ -119,14 +118,10 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* el,
 
 
 		/*Highlight this row*/
-		/*TODO Find some way to cleanly find the text member of the row*/
-		/*ewl_text_cursor_position_set(EWL_TEXT(row->data), 0);
-		ewl_text_color_apply(EWL_TEXT(event->data), 0, 0, 255, 255, ewl_text_length_get(EWL_TEXT(event->data)));
-		viewer->last_selected_label = event->data;*/
-
-		
+		/*TODO Find some way to cleanly find the 
+		 * text member of the row*/
 	} else {
-		/*printf("---------------------------------------------> This row already has children!!\n");*/
+		/*printf("-> This row already has children!!\n");*/
 	}
       }
       break;
@@ -188,18 +183,30 @@ void dnd_drop_callback(Ewl_Widget* w, void* ev_data, void* user_data) {
 				}
 			}
 
-			//printf("Copy to folder '%s/%s'\n", event->file->path, event->file->filename);
 		} else if (ewl_widget_type_is(widget, "row")) {
-			entropy_generic_file* file = entropy_core_object_file_association_get(widget);
+			entropy_generic_file* file = 
+			 entropy_core_object_file_association_get(widget);
+
 			entropy_plugin* plugin = 
-				entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL);
-			void (*copy_func)(entropy_generic_file* source, char* dest_uri, entropy_gui_component_instance* requester);
-			copy_func = dlsym(plugin->dl_ref, "entropy_filesystem_file_copy");
+				entropy_plugins_type_get_first(
+				ENTROPY_PLUGIN_BACKEND_FILE ,
+				ENTROPY_PLUGIN_SUB_TYPE_ALL);
+			
+			void (*copy_func)(entropy_generic_file* source, 
+			char* dest_uri, 
+			entropy_gui_component_instance* requester);
+
+			copy_func = dlsym(plugin->dl_ref, 
+				"entropy_filesystem_file_copy");
+			
 			char* folder;
 			
 			if (file) {
-				printf("Detected row drop.. (%s/%s)\n",file->path, file->filename);
-				folder = entropy_core_generic_file_uri_create(event->file, 0);
+				printf("Detected row drop.. (%s/%s)\n",
+					file->path, file->filename);
+				
+				folder = entropy_core_generic_file_uri_create(
+					event->file, 0);
 
 				(*copy_func)(file, folder, event->instance);
 
@@ -274,14 +281,16 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		row = ewl_tree_row_add(EWL_TREE(viewer->tree), prow, children);
 
 		ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+		ewl_object_custom_h_set(EWL_OBJECT(row), 15);
 		ewl_widget_show(row);
 
 		event = entropy_malloc(sizeof(event_file_core)); 
 		event->file = file; /*Create a clone of this file, and add it to the event */
 		event->instance = instance;
 		event->data = label; /*So we can highlight the current directory*/
-		
-		ecore_list_append(viewer->files, event->file); /*Save this file in this list of files we're responsible for */
+	
+		 /*Save this file in this list of files we're responsible for */
+		ecore_list_append(viewer->files, event->file);
 		
 
 		ewl_callback_append(label, EWL_CALLBACK_MOUSE_DOWN, row_clicked_callback, event);
@@ -320,9 +329,12 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	instance->layout_parent = layout;
 
 	/*Register out interest in receiving folder notifications*/
-	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS));
-	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
-	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
+	entropy_core_component_event_register(instance, 
+		entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS));
+	entropy_core_component_event_register(instance, 
+		entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
+	entropy_core_component_event_register(instance, 
+		entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_REMOVE_DIRECTORY));
 
 
 
@@ -336,7 +348,8 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 	viewer->loaded_dirs = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	viewer->row_folder_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	
-	ewl_object_fill_policy_set(EWL_OBJECT(EWL_TREE(viewer->tree)->scrollarea), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(EWL_TREE(viewer->tree)->scrollarea),
+		EWL_FLAG_FILL_HFILL);
 	
 	instance->gui_object = viewer->tree;
 

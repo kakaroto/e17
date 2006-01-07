@@ -7,13 +7,21 @@
 #include "ewl_mime_dialog.h"
 #include "entropy_gui.h"
 
-static Ewl_Widget* win;
-static Ecore_List* components;
+#define HEADER_CONFIG_MAX 2048
 
+static Ewl_Widget* win;
 void layout_ewl_simple_config_create(entropy_core* core);
 void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
 void layout_ewl_simple_add_config_location(entropy_gui_component_instance* instance, char* name, char* uri);
 
+typedef struct entropy_ewl_layout_header_uri entropy_ewl_layout_header_uri;
+struct entropy_ewl_layout_header_uri {
+	Ewl_Widget* visual;
+	entropy_gui_component_instance* layout;
+	
+	char* uri;
+	char* header;
+};
 
 typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui {
@@ -22,18 +30,20 @@ struct entropy_layout_gui {
 	Ewl_Widget* tree;
 	Ewl_Widget* paned;
 	Ewl_Widget* local_container;
-	
 	Ewl_Widget* context_menu;
 	Ewl_Widget* context_menu_floater;
-	
 	Ecore_List* current_folder;
 	Ecore_List* local_components;
+	Ecore_Hash* headers;
+
+	entropy_ewl_layout_header_uri* active_header;
+
+	
 
 
 	/*Tmp*/
 	Ewl_Widget* samba_radio;
 	Ewl_Widget* posix_radio;
-
 	Ewl_Widget* location_add_window;
 	Ewl_Widget* location_add_name;
 	Ewl_Widget* location_add_path;
@@ -121,24 +131,34 @@ void entropy_ewl_layout_simple_tooltip_window() {
 
 }
 
+
+/*Header context menu*/
+void location_menu_popup_delete_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
+	entropy_gui_component_instance* instance = user_data;
+	entropy_layout_gui* layout = instance->data;
+
+	printf("Destroying '%s' -> %p\n", EWL_WIDGET(layout->active_header->visual)->inheritance, layout->active_header->visual);
+	
+	ewl_widget_destroy(layout->active_header->visual);
+	ecore_hash_remove(layout->headers, layout->active_header->visual);
+}
+
 void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
 	Ewl_Event_Mouse_Down *ev = ev_data;
-	entropy_layout_gui* gui = user_data;
+	entropy_ewl_layout_header_uri* header = user_data;
 	
 	if (ev->button == 3) {
-		printf("Click at %d:%d\n", ev->x, ev->y);
-
-		ewl_widget_show(gui->context_menu_floater);
-		ewl_floater_position_set(EWL_FLOATER(gui->context_menu_floater), ev->x, ev->y);
-
-		ewl_callback_call(EWL_WIDGET(gui->context_menu), EWL_CALLBACK_FOCUS_IN);
-	}
-
+		printf("Click at %d:%d for header %p and visual %p\n", ev->x, ev->y,header,header->visual);
 	
+		((entropy_layout_gui*)header->layout->data)->active_header = header;
 
-
-
+		ewl_widget_show( ((entropy_layout_gui*)header->layout->data)->context_menu_floater);
+		ewl_floater_position_set(EWL_FLOATER(((entropy_layout_gui*)header->layout->data)->context_menu_floater), ev->x, ev->y);
+		ewl_callback_call(EWL_WIDGET(((entropy_layout_gui*)header->layout->data)->context_menu), EWL_CALLBACK_FOCUS_IN);
+	}
 }
+/*----------------*/
+
 
 
 void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
@@ -298,9 +318,9 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 
 void layout_ewl_simple_add_config_location(entropy_gui_component_instance* instance, char* name, char* uri) {
 	char* current_uri = entropy_config_str_get("layout_ewl_simple", "structure_bar");
-	char new_uri[2048];
+	char new_uri[HEADER_CONFIG_MAX];
 
-	snprintf(new_uri, 2048, "%s|%s;%s", current_uri, name, uri);
+	snprintf(new_uri, HEADER_CONFIG_MAX, "%s|%s;%s", current_uri, name, uri);
 	entropy_config_str_set("layout_ewl_simple", "structure_bar", new_uri);
 
 	entropy_free(current_uri);
@@ -308,11 +328,9 @@ void layout_ewl_simple_add_config_location(entropy_gui_component_instance* insta
 
 
 void layout_ewl_simple_config_create(entropy_core* core) {
-	char* eg = calloc(2048, sizeof(char)) ;
+	char* eg = calloc(HEADER_CONFIG_MAX, sizeof(char)) ;
 
-	//printf("Setting config..\n");
-
-	sprintf(eg, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", 
+	snprintf(eg, HEADER_CONFIG_MAX, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", 
 		entropy_core_home_dir_get(core));
 
 	//printf("Setting default config string..\n");
@@ -326,22 +344,25 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 
 	Ewl_Widget* hbox;
 	entropy_plugin* structure;
+	entropy_ewl_layout_header_uri* header = calloc(1, sizeof(entropy_ewl_layout_header_uri));
 	void* (*structure_plugin_init)(entropy_core* core, entropy_gui_component_instance*, void* data);
-
 	entropy_layout_gui* gui = ((entropy_layout_gui*)instance->data);
 	Ewl_Widget* tree= gui->tree;
 
 
-	//printf("Add URI: %s\n", uri);
+
 	hbox = ewl_border_new();
 	ewl_border_text_set(EWL_BORDER(hbox), name);
-
-
-
-
-	
 	ewl_container_child_append(EWL_CONTAINER(tree), hbox);
 	ewl_widget_show(hbox);
+
+	header->header = strdup(name);
+	header->uri = strdup(uri);
+	header->visual = hbox;
+	header->layout = instance;
+	ecore_hash_set(gui->headers, hbox, header);
+	printf("Adding %p to header hash with visual %p\n", header, header->visual);
+
 	
 	
 	/*Now attach an object to it*/
@@ -349,19 +370,11 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 
 	if (structure) {
 		Ewl_Widget* visual;
-
 		entropy_generic_file* file = entropy_core_parse_uri(uri);
 
 		/*Add the callback for the popup*/
-		ewl_callback_append(EWL_BORDER(hbox)->label, EWL_CALLBACK_MOUSE_DOWN, location_menu_popup_cb, gui);
-		
-
-		
-
-		/*Mark this file as a 'folder' - more of a bootstrap.  Should we really do this? FIXME*/
+		ewl_callback_append(EWL_BORDER(hbox)->label, EWL_CALLBACK_MOUSE_DOWN, location_menu_popup_cb, header);
 		strcpy(file->mime_type, "file/folder");
-
-		//printf("***** Adding structure viewer\n");
 
 		/*Main drive viewer*/
 		{
@@ -467,9 +480,7 @@ layout_ewl_simple_local_view_cb
 			entropy_gui_component_instance_disable(iter);
 
 			if (EWL_WIDGET(iter->gui_object)->parent && EWL_WIDGET(iter->gui_object)->parent == layout->local_container) {
-				//ewl_container_child_remove(EWL_CONTAINER(layout->paned), EWL_WIDGET(iter->gui_object));
 				printf("Removed a local view..\n");
-
 				ewl_widget_hide(EWL_WIDGET(iter->gui_object));
 			}
 		}
@@ -483,10 +494,6 @@ layout_ewl_simple_local_view_cb
 		ewl_container_child_append(EWL_CONTAINER(layout->local_container), EWL_WIDGET(instance->gui_object));
 
 	ewl_widget_show(EWL_WIDGET(instance->gui_object));
-
-
-
-		
 }
 
 
@@ -499,7 +506,30 @@ void entropy_plugin_layout_main() {
 
 
 void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
-	//printf("Destroying layout...\n");
+	entropy_layout_gui* gui = comp->data;
+	Ecore_List* keys;
+	void* key;
+	char write_str[HEADER_CONFIG_MAX];
+
+	keys = ecore_hash_keys(gui->headers);
+	ecore_list_goto_first(keys);
+
+	bzero(write_str, HEADER_CONFIG_MAX);
+	while ( (key = ecore_list_remove_first(keys))) {
+		entropy_ewl_layout_header_uri* header = ecore_hash_get(gui->headers, key);
+		printf("Saving header '%s' with '%s'\n", header->header, header->uri);
+		strcat(write_str, header->header);
+		strcat(write_str, ";");
+		strcat(write_str, header->uri);
+		strcat(write_str, "|");
+	}
+
+	printf("Write string: '%s'\n", write_str);
+
+	entropy_config_str_set("layout_ewl_simple", "structure_bar", write_str);
+
+	
+	printf("Destroying layout...\n");
 }
 
 
@@ -507,7 +537,6 @@ void entropy_plugin_init(entropy_core* core) {
 	int i =0;
 	char **c = NULL;
 	/*Init ewl*/
-	components = ecore_list_new();
 	ewl_init(&i, c);
 }
 
@@ -548,6 +577,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	layout->data = gui;
 	layout->core = core;
 	gui->local_components = ecore_list_new();
+	gui->headers = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 	/*Register this layout container with the core, so our children can get events*/
 	entropy_core_layout_register(core, layout);
@@ -557,8 +587,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	local_plugins = entropy_plugins_type_get(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
 	
 	if (local_plugins) {
-		//printf("Plugin: %s\n", plugin->filename);
-		//
 		while ((plugin = ecore_list_remove_first(local_plugins))) {
 			entropy_gui_component_instance* instance;
 			char* name = NULL;
@@ -581,9 +609,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 				entropy_gui_component_instance_disable(instance);
 			}
 
-
-			
-
 			/*Add this plugin to the local viewers list*/
 			ecore_list_append(gui->local_components, instance);
 		}
@@ -591,8 +616,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 		fprintf(stderr, "No visual component found! *****\n");
 		return NULL;
 	}
-
-	//printf("Initialising simple EWL layout manager...\n");
 
 	/*EWL Setup*/
 	win= ewl_window_new();
@@ -714,16 +737,13 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Delete");
 	ewl_container_child_append(EWL_CONTAINER(gui->context_menu), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, location_menu_popup_delete_cb, layout);
 	ewl_widget_show(item);
 
 	ewl_widget_show(gui->context_menu);
 
 	/*--------------------------*/
 	
-	
-	
-
-
 
 	ewl_container_child_append(EWL_CONTAINER(hbox), expand_button);
 	ewl_container_child_append(EWL_CONTAINER(hbox), contract_button);

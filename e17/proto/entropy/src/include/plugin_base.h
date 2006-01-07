@@ -30,6 +30,8 @@ struct entropy_plugin {
 	char filename[255];
 	void* dl_ref;
 	void (*gui_event_callback_p)();
+
+	void* data; 
 };
 
 typedef struct entropy_mime_object entropy_mime_object;

@@ -265,6 +265,8 @@ entropy_core* entropy_core_init() {
 	entropy_plugin_layout_create = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_create");
 	layout = (*entropy_plugin_layout_create)(core);
 	layout->plugin = core->layout_plugin;
+	core->layout_plugin->data = layout;
+	
 	
 	entropy_plugin_layout_main = dlsym(core->layout_plugin->dl_ref, "entropy_plugin_layout_main");
 
@@ -458,6 +460,14 @@ void entropy_core_destroy(entropy_core* core) {
 
 	ecore_list_goto_first(core->plugin_list);
 	while ( (plugin = ecore_list_next(core->plugin_list) )) {
+		void (*entropy_plugin_destroy)(void* data);
+
+		if (plugin->type == ENTROPY_PLUGIN_GUI_LAYOUT) {
+			entropy_plugin_destroy = dlsym(plugin->dl_ref, "entropy_plugin_destroy");
+			(*entropy_plugin_destroy)(plugin->data);
+		}
+		
+		
 		entropy_free(plugin);
 	}
 
@@ -612,11 +622,12 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
         } else if (type == ENTROPY_PLUGIN_GUI_LAYOUT) {
                 //printf("Found a layout manager.\n");
                 core->layout_plugin = entropy_plugin_layout_register(plugin);
-		
 
 		/*Initializing..*/
 		entropy_plugin_init = dlsym(plugin->dl_ref, "entropy_plugin_init");
 		(*entropy_plugin_init)(core);
+
+		
 		
 		
         } else if (type == ENTROPY_PLUGIN_GUI_COMPONENT) {
