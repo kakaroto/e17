@@ -67,6 +67,18 @@ EWL BUGS
 - ewl_container_child_count_get(EWL_CONTAINER(notebook)) is always returning
   zero.
 
+- When we receive a mouse down on a widget we adjust the current position in
+  the tab order to be the clicked widget (or the first non internal widget
+  up the tree). This needs to be changed to check both !internal &&
+  !in_tab_order as internal widgets _can_ be added to the tab order it just
+  isn't done by default
+
+- The realize code will current add all non internal widgets into the tab
+  order automatically. This needs to be updated to check that the widget is
+  not current in the tab order already. Currently if the user sets up a
+  specific tab order it will be whiped out by the realize code. (In
+  ewl_embed I believe).
+
 
   Ewl_Icon bugs/todo
   ------------------
