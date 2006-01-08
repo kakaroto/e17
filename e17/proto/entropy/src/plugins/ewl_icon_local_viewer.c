@@ -45,15 +45,23 @@ struct entropy_icon_viewer {
 	Ecore_Hash* icon_hash; /*A hash for ewl callbacks*/
 	Ecore_Hash* file_wait_list; /*A hash of lists of files that we are waiting for a response to
 				     e.g. waiting for a yes/no on delete confirm*/
-
 	int default_bg;
-
 
 	entropy_file_progress_window* progress;
 	Ewl_Widget* file_dialog;
 	event_idle_processor* last_processor;
+
+	/*---- Icon Hover --*/
+	Ewl_Widget* last_mouse_over;
+	Ecore_Timer* mouse_over_timer;
+	Ewl_Widget* hover_window;
+	Ewl_Widget* hover_properties;
+	int hover_hide_count;
+	int hover_active;
+	/*------------------*/
 	
-	char current_dir[1024]; /* We should handle this at the core.  FUTURE API TODO */
+	char current_dir[1024]; /* We should handle this at the core
+				   (current dir per layout).  FUTURE API TODO */
 };
 
 
@@ -92,7 +100,6 @@ void ewl_iconbox_background_set_file_cb(Ewl_Widget *w , void *ev, void *user_dat
 
 }
 
-
 void ewl_iconbox_background_set_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
@@ -124,10 +131,7 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 	ecore_list_goto_first(selected);
 
 	while ( (file = ecore_list_next(selected))  ) {
-		//printf("File '%s'\n", file->filename);
 		(*copy_func)(file, ((entropy_icon_viewer*)instance->data)->current_dir, instance );
-
-		
 	}
 	
 
@@ -142,8 +146,6 @@ void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 	/*Clear the existing contents*/
 	entropy_core_selected_files_clear(instance->core);
 	
-	//printf("Copy files to clipboard..\n");
-
 	icon_list = ewl_iconbox_get_selection( EWL_ICONBOX(((entropy_icon_viewer*)instance->data)->iconbox) );
 
 	ecore_list_goto_first(icon_list);
@@ -154,13 +156,7 @@ void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 		
 		
 	}
-
-
 	ecore_list_destroy(icon_list);
-	
-
-
-	
 }
 
 
@@ -185,6 +181,101 @@ void icon_properties_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 }
 
 
+/* ------------------------------------------------------- Icon mouse overs*/
+void icon_mouse_out_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+	entropy_gui_component_instance* comp = user_data;
+	entropy_icon_viewer* view = comp->data;
+
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_OUT, icon_mouse_out_cb);
+
+	view->hover_hide_count++;
+	printf("Hover count: %d\n", view->hover_hide_count);
+	
+	if ( (!VISIBLE(view->hover_window)) || view->hover_hide_count > 1 ) {
+		printf("Removing timer..\n");
+		
+		
+
+		view->last_mouse_over = NULL;
+		if (view->mouse_over_timer) {
+			ecore_timer_del(view->mouse_over_timer);
+			view->mouse_over_timer = NULL;
+		}
+		ewl_widget_hide(view->hover_window);
+	}
+}
+
+void  icon_hover_window_configure_cb(Ewl_Widget *w , void *ev, void *user_data) {
+	entropy_gui_component_instance* comp = user_data;
+	entropy_icon_viewer* viewer = comp->data;
+	Ewl_Embed* embed;
+	int x,y;
+
+	if (!viewer->hover_active || !viewer->last_mouse_over) return;
+
+	embed = ewl_embed_widget_find(viewer->last_mouse_over);
+	ewl_window_position_get(EWL_WINDOW(embed), &x, &y);
+
+	ewl_window_move(EWL_WINDOW(viewer->hover_window), 
+		CURRENT_X(viewer->last_mouse_over)+x+20, CURRENT_Y(viewer->last_mouse_over)+y+20);
+
+	//if (viewer->hover_hide_count == 0) 
+	//	ewl_callback_append(EWL_WIDGET(viewer->last_mouse_over), EWL_CALLBACK_MOUSE_OUT, icon_mouse_out_cb, comp);
+}
+
+int icon_timer_enterer(void* data) {
+	entropy_gui_component_instance* comp = data;
+	entropy_icon_viewer* viewer = comp->data;
+	Ewl_Embed* embed;
+	int x,y;
+
+	if (!viewer->hover_active || !viewer->last_mouse_over) return 0;
+
+	entropy_gui_event* gui_event;
+	gui_file* local_file = ecore_hash_get( viewer->icon_hash, viewer->last_mouse_over);
+
+	printf("Would display properties! - %d:%d\n", CURRENT_X(viewer->last_mouse_over), CURRENT_Y(viewer->last_mouse_over));
+
+	embed = ewl_embed_widget_find(viewer->last_mouse_over);
+	ewl_window_position_get(EWL_WINDOW(embed), &x, &y);
+
+	ewl_widget_show(viewer->hover_window);
+	ewl_widget_configure(viewer->hover_window);
+
+	viewer->mouse_over_timer = NULL;
+	return 0;
+}
+
+void icon_mouse_move_cb(Ewl_Widget *w , void *ev, void *user_data ) {
+	entropy_gui_component_instance* comp = user_data;
+	entropy_icon_viewer* view = comp->data;
+
+	if (view->hover_active) {
+		if ((!view->last_mouse_over) || view->last_mouse_over != w) {
+			printf("Adding timer...\n");
+
+			ewl_widget_hide(view->hover_window);
+
+			view->hover_hide_count = 0;
+			if (view->mouse_over_timer) {
+				if (view->last_mouse_over) {
+					ewl_callback_del(EWL_WIDGET(view->last_mouse_over), 
+					EWL_CALLBACK_MOUSE_OUT, icon_mouse_out_cb);
+				}
+				ecore_timer_del(view->mouse_over_timer);
+				view->mouse_over_timer = NULL;
+			}
+
+			view->last_mouse_over = w;
+			view->mouse_over_timer = ecore_timer_add(1, icon_timer_enterer, comp);
+
+			ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, icon_mouse_out_cb, comp);		
+		}
+	}
+	
+
+}
+/*-----------------------------------------------------------------------*/
 
 
 void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
@@ -404,8 +495,6 @@ void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* insta
 		ewl_container_child_append(EWL_CONTAINER(dialog_win), button);
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED, ewl_icon_local_viewer_delete_cb, new_file_list);
 		
-		
-		
 		ewl_widget_show(dialog_win);
 }
 
@@ -531,9 +620,19 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_widget_show(context);
 	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 	ewl_callback_append(context, EWL_CALLBACK_CLICKED, icon_properties_cb, instance);
+
+	/*Properties hover*/
+	viewer->hover_window = ewl_window_new();
+	ewl_callback_append(viewer->hover_window, EWL_CALLBACK_CONFIGURE, icon_hover_window_configure_cb, instance);
+	ewl_window_borderless_set(EWL_WINDOW(viewer->hover_window));
+	viewer->hover_properties =ewl_text_new();
+	viewer->hover_active = 1;
 	
-
-
+	ewl_text_text_set(EWL_TEXT(viewer->hover_properties), "Filename: ewl_text.c\nSize: 50kb\nType: text/c-src");
+	ewl_container_child_append(EWL_CONTAINER(viewer->hover_window), viewer->hover_properties);
+	ewl_widget_show(viewer->hover_properties);
+	/*------------------------*/
+	
 	/*FIXME remove the hardocded var*/
 	ewl_iconbox_icon_size_custom_set(EWL_ICONBOX(viewer->iconbox), 60,60);
 	
@@ -547,7 +646,8 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 
 	/*Register out interest in receiving folder notifications*/
 	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS));
-	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
+	entropy_core_component_event_register(instance, 
+		entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS_EXTERNAL));
 	
 	/*Register our interest in receiving file mod/create/delete notifications*/
 	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_FILE_CHANGE));
@@ -598,7 +698,9 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 		if (!ecore_hash_get(view->gui_hash, list_item)) {	
 			 entropy_core_file_cache_add_reference(list_item->md5);			
 
-			icon = ewl_iconbox_icon_add(EWL_ICONBOX(view->iconbox), list_item->filename, PACKAGE_DATA_DIR "/icons/default.png");
+			icon = ewl_iconbox_icon_add(EWL_ICONBOX(view->iconbox), list_item->filename, 
+				PACKAGE_DATA_DIR "/icons/default.png");
+
 			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_DOWN, icon_click_cb, view);
 			
 
@@ -608,7 +710,8 @@ gui_file* ewl_icon_local_viewer_add_icon(entropy_gui_component_instance* comp, e
 			gui_object->instance = comp;
 	                gui_object->icon = EWL_WIDGET(icon);
 
-			 
+			
+			ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_MOUSE_MOVE, icon_mouse_move_cb, comp);
 		
 			ecore_hash_set(view->gui_hash, list_item, gui_object);
 			ecore_hash_set(view->icon_hash, icon, gui_object);
@@ -727,9 +830,9 @@ int idle_add_icons(void* data) {
 		} else { 
 			ewl_iconbox_scrollpane_recalculate(EWL_ICONBOX( ((entropy_icon_viewer*)comp->data)->iconbox));	
 			view->last_processor = NULL;
+			view->hover_active = 1;
 			//printf("Terminated process thread..\n");
 			goto FREE_AND_LEAVE;
-			
 			return 0;
 		}
 
@@ -749,16 +852,18 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
      switch (eevent->event_type) {	
 	case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	case ENTROPY_NOTIFY_FILELIST_REQUEST: {
-						    
-
 		event_idle_processor* proc = entropy_malloc(sizeof(event_idle_processor));
-
 		entropy_generic_file* event_file;
 		entropy_file_request* request = eevent->data; /*A file request's data is the dest dir*/
-		
 		entropy_icon_viewer* view = comp->data;
 		Ecore_Hash* tmp_gui_hash;
 		Ecore_Hash* tmp_icon_hash;
+
+		/*Reset hover*/
+		view->hover_active = 0;
+		ewl_widget_hide(view->hover_window);
+		view->last_mouse_over = NULL;
+		view->mouse_over_timer = NULL;
 
 
 		printf("Icon viewer got a directory change order!\n");

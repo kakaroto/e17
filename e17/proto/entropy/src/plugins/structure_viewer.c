@@ -78,6 +78,8 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor,
 		((entropy_file_request*)eevent->data)->file;
 	
 	Ewl_Row* row = ecore_hash_get(viewer->row_folder_hash, event_file);
+
+	if (row) viewer->current_row = row;
 	
 	/*If we don't own this row, forget about doing something 
 	 * - we don't know about this*/
@@ -113,10 +115,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor,
 		/*ecore_list_destroy(el);*/
 
 		ewl_tree_row_expand_set(row, EWL_TREE_NODE_EXPANDED);
-
-
-
-
 		/*Highlight this row*/
 		/*TODO Find some way to cleanly find the 
 		 * text member of the row*/
@@ -237,7 +235,8 @@ void row_clicked_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) 
 		ewl_text_cursor_position_set(EWL_TEXT(viewer->last_selected_label), 0);
 
 		/*TODO theme this color stuff*/
-		ewl_text_color_apply(EWL_TEXT(viewer->last_selected_label), 0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(viewer->last_selected_label)));		
+		ewl_text_color_apply(EWL_TEXT(viewer->last_selected_label), 0, 0, 0, 255, 
+			ewl_text_length_get(EWL_TEXT(viewer->last_selected_label)));		
 	}
 
 	/*Highlight this row*/
