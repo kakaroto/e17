@@ -354,7 +354,6 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 	hbox = ewl_border_new();
 	ewl_border_text_set(EWL_BORDER(hbox), name);
 	ewl_container_child_append(EWL_CONTAINER(tree), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_FILL);
 	ewl_widget_show(hbox);
 
 	header->header = strdup(name);
@@ -634,7 +633,6 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 
 	tree = ewl_scrollpane_new();
 	ewl_box_spacing_set(EWL_BOX(EWL_SCROLLPANE(tree)->box), 5);
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_FILL);
 	gui->tree = tree;
 
 	gui->paned = ewl_hpaned_new();
