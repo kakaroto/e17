@@ -59,7 +59,7 @@ static Evas_Object   *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 static int 	     _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
 /* Config Calls */
-EAPI void 
+void 
 _config_screenshot_module(E_Container *con, Screen *s)
 {
    E_Config_Dialog *cfd;

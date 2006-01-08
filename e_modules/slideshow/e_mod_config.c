@@ -28,7 +28,7 @@ static Evas_Object   *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CF
 static int 	     _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
 /* Config Calls */
-EAPI void 
+void 
 _config_slideshow_module(E_Container *con, Slide *s)
 {
    E_Config_Dialog *cfd;
