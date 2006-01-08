@@ -204,6 +204,8 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, "box");
 
+        char *appearance;
+
 	/*
 	 * Set the orientation and reconfigure the widget so that child
 	 * widgets now have the new orientation layout
@@ -217,14 +219,14 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	 * the appearance if it is still set to box. Otherwise we might end
 	 * up wipeing out the appearance of an inheriting widget (like
 	 * menubar */
+        appearance = ewl_widget_appearance_get(EWL_WIDGET(b));
 	if ((b->orientation == EWL_ORIENTATION_HORIZONTAL)
-			&& (!strcmp(ewl_widget_appearance_get(EWL_WIDGET(b)),
-								"vbox")))
+			&& (!strcmp(appearance,	"vbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
 	else if ((b->orientation == EWL_ORIENTATION_VERTICAL)
-			&& (!strcmp(ewl_widget_appearance_get(EWL_WIDGET(b)),
-								"hbox")))
+			&& (!strcmp(appearance, "hbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
+        IF_FREE(appearance);
 
 	ewl_widget_configure(EWL_WIDGET(b));
 
