@@ -3,12 +3,6 @@ EWL BUGS
 
 - Scrollbar jumps when trying to drag the button from its lower part
 
-- Default theme when using the imenu/menu the submenu dosen't highlight on
-  mouse over. The submenu has an appearance of menu_base. We need to extend
-  menu_item to have a child add intercept and when a child is added verify
-  that it has an appearance of menu_item, otherwise make it's apperance
-  menu_item (I think).
-
 - The ewl_test seems to get a small gap between the right edje of the
   test and the trough for the scrollbar. Should be flush.
     - The 'Password' test seems to make this gap grow.
@@ -54,10 +48,6 @@ EWL BUGS
 
 - The text widget dosen't handle the wrap flag correctly.
 
-- The Ewl_Menu dosen't work correclty anymore. Once the menu is opened, 
-  as soon as the mouse moves the menu is closed again. (Possibly due to
-  the embed changing the focused widget?)
-
 - Tooltips and dialogs aren't friends. If you don't set the active area
   correctly the tooltip will go to the current active area. If you set 
   the active area, the tooltip dosen't seem to appear.
@@ -89,6 +79,8 @@ EWL BUGS
 - The menubar theme dosen't quite extend all the way to the right or bottom
   of the screen.
 
+- The menu theme dosen't seem to get all of the mouse,out's that it should.
+  Sometimes the menu_items stay in a selected mode.
 
   Ewl_Icon bugs/todo
   ------------------

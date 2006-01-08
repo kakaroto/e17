@@ -14,6 +14,7 @@
         image, "e17_button_detail_down.png" COMP;
         image, "e17_button_detail_left.png" COMP;
         image, "e17_button_detail_right.png" COMP;
+	image, "e17_menu_arrow.png" COMP;
         image, "e17_menu_bg.png" COMP;
 	image, "e17_menu_bg_border.png" COMP;
         image, "e17_menu_check1.png" COMP;

@@ -116,6 +116,8 @@ data {
 
     item, "/imenu/group" "menu";
     item, "/menu/group" "menu";
+    item, "/menu_container/label/group" "menuitem";
+    item, "/menu/vbox/menu_container/label/group" "submenuitem";
 
     item, "/menubar/group" "menubar";
     item, "/menu_item/label/group" "menuitem";

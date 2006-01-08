@@ -48,6 +48,7 @@ ewl_menu_init(Ewl_Menu *menu)
 	if (!ewl_menu_base_init(EWL_MENU_BASE(menu)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_container");
 	ewl_widget_inherit(EWL_WIDGET(menu), "menu");
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_MOUSE_MOVE,
