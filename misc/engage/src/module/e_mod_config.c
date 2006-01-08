@@ -31,6 +31,9 @@ void _engage_module_config(E_Container *con, Engage_Bar *eb)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View v;
 
+   if (eb->cfd)
+     return;
+
    v.create_cfdata = _create_data;
    v.free_cfdata = _free_data;
    v.basic.apply_cfdata = _basic_apply_data;
@@ -39,6 +42,7 @@ void _engage_module_config(E_Container *con, Engage_Bar *eb)
    v.advanced.create_widgets = _advanced_create_widgets;
 
    cfd = e_config_dialog_new(con, "Engage Configuration", NULL, 0, &v, eb);
+   eb->cfd = cfd;
 }
 
 static void
@@ -73,9 +77,13 @@ static void
 _free_data(E_Config_Dialog *cfd, void *data)
 {
    CFData *cfdata;
+   Engage_Bar *eb;
 
    cfdata = data;
    free(cfdata);
+
+   eb = cfd->data;
+   eb->cfd = NULL;
 }
 
 static Evas_Object *

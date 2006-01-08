@@ -3,6 +3,7 @@
  */
 #include <e.h>
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 #include "math.h"
 #include <unistd.h>
 
@@ -765,6 +766,11 @@ _engage_bar_free(Engage_Bar *eb)
    ecore_event_handler_del(eb->iconify_handler);
    ecore_event_handler_del(eb->uniconify_handler);
 
+   if (eb->cfd)
+     {
+	e_object_del(E_OBJECT(eb->cfd));
+	eb->cfd = NULL;
+     }
    free(eb->conf);
    free(eb);
    bar_count--;

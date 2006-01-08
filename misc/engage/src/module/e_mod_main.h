@@ -85,6 +85,7 @@ struct _Engage_Bar
    enum {ENGAGE_NORMAL, ENGAGE_ZOOMING, ENGAGE_ZOOMED, ENGAGE_UNZOOMING} state;
 
    E_Gadman_Client *gmc;
+   E_Config_Dialog *cfd;
 
    Config_Bar  *conf;
    Ecore_Event_Handler *add_handler;
@@ -129,6 +130,5 @@ EAPI int   e_modapi_info     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 EAPI int   e_modapi_config   (E_Module *m);
 
-void _engage_cb_config_update(void *data);
-
+void _engage_cb_config_updated(void *data);
 #endif
