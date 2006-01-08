@@ -522,6 +522,7 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data __UNUSED__)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself2\n");
 
+#if 0				/* FIXME - Unused - Remove? */
    /* dont need anymore */
    /* autosave(); */
    if (!Mode.wm.master)
@@ -543,6 +544,8 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 	  }
      }
    stale_sm_file = 1;
+#endif
+
    set_save_props(smc_conn, Mode.wm.master);
    SmcSaveYourselfDone(smc_conn, True);
    if (restarting)
