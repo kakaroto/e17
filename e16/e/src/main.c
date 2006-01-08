@@ -304,8 +304,7 @@ main(int argc, char **argv)
    autosave();
 
    /* The primary event loop */
-   for (;;)
-      WaitEvent();
+   EventsMain();
 
    /* Of course, we should NEVER get to this point */
 

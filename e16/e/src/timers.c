@@ -39,72 +39,40 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
      int runtime_val, void *runtime_data)
 {
    Qentry             *qe, *ptr, *pptr;
-   double              tally;
 
    RemoveTimerEvent(name);
    qe = Emalloc(sizeof(Qentry));
    if (!qe)
       return;
 
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("DoIn %8.3f: %s\n", in_time, name);
+
    qe->name = Estrdup(name);
    qe->func = func;
-   qe->next = NULL;
-   qe->in_time = in_time;
+   qe->at_time = GetTime() + in_time;
    qe->runtime_val = runtime_val;
    qe->runtime_data = runtime_data;
-   qe->just_added = 1;
 
    /* if there is no queue it becomes the queue */
    if (!q_first)
-      q_first = qe;
+     {
+	q_first = qe;
+	qe->next = NULL;
+     }
    else
      {
 	pptr = NULL;
-	ptr = q_first;
-	tally = 0.0;
-	/* scan along the queue from start until sum of all timer intervals */
-	/* greater than time then insert before last entry found (since it */
-	/* managed to push the tally over past the end of out new timer) */
-	while (ptr)
+	for (ptr = q_first; ptr; pptr = ptr, ptr = ptr->next)
 	  {
-	     /* add to tally */
-	     tally += ptr->in_time;
-	     /* if this entry is after our new one add before this entry */
-	     if (tally > in_time)
-	       {
-		  /* number of seconds of stuff to do before the new entry */
-		  tally -= ptr->in_time;
-		  /* if the previous pointer exists then add like normal */
-		  qe->next = ptr;
-		  if (pptr)
-		    {
-		       pptr->next = qe;
-		    }
-		  /* no previous - must have to add as first in list */
-		  else
-		     q_first = qe;
-		  /* subtract "stuff to do before" as timers are relative */
-		  qe->in_time -= tally;
-		  /* if there is a timer after this one, subtract the time this
-		   * new timer has to wait from it since its inserted into the 
-		   * time span here
-		   */
-		  if (qe->next)
-		     qe->next->in_time -= qe->in_time;
-		  /* we're done */
-		  return;
-	       }
-	     pptr = ptr;
-	     ptr = ptr->next;
-	     /* keep going through the list till we reach the end */
+	     if (ptr->at_time > qe->at_time)
+		break;
 	  }
-	/* add to end of list */
 	if (pptr)
 	   pptr->next = qe;
 	else
 	   q_first = qe;
-
-	qe->in_time -= tally;
+	qe->next = ptr;
      }
 }
 
@@ -128,7 +96,7 @@ HandleTimerEvent(void)
    /* remove it */
    q_first = q_first->next;
    /* run this callback */
-   (*(qe->func)) (qe->runtime_val, qe->runtime_data);
+   qe->func(qe->runtime_val, qe->runtime_data);
    /* free the timer */
    if (qe->name)
       Efree(qe->name);
@@ -142,33 +110,24 @@ RemoveTimerEvent(const char *name)
    Qentry             *qe, *ptr, *pptr;
 
    pptr = NULL;
-   ptr = q_first;
-   /* hunt through the queue */
-   while (ptr)
+   for (ptr = q_first; ptr; pptr = ptr, ptr = ptr->next)
      {
-	/* if the name of a timer matches */
 	qe = ptr;
-	if (!strcmp(qe->name, name))
-	  {
-	     /* remove it form the queue */
-	     if (pptr)
-		pptr->next = qe->next;
-	     else
-		q_first = qe->next;
-	     /* increase the time of the next timer accordingly */
-	     if (qe->next)
-		qe->next->in_time += qe->in_time;
-	     /* free it */
-	     if (qe->name)
-		Efree(qe->name);
-	     if (qe)
-		Efree(qe);
-	     /* done */
-	     return 1;
-	  }
-	pptr = ptr;
-	ptr = ptr->next;
-	/* keep going through the queue */
+	if (strcmp(qe->name, name))
+	   continue;
+
+	/* Match - remove it from the queue */
+	if (pptr)
+	   pptr->next = qe->next;
+	else
+	   q_first = qe->next;
+	/* free it */
+	if (qe->name)
+	   Efree(qe->name);
+	if (qe)
+	   Efree(qe);
+	/* done */
+	return 1;
      }
 
    return 0;

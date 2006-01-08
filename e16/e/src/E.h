@@ -579,12 +579,11 @@ EMode;
 typedef struct _qentry
 {
    char               *name;
-   double              in_time;
+   double              at_time;
    void                (*func) (int val, void *data);
    struct _qentry     *next;
    int                 runtime_val;
    void               *runtime_data;
-   char                just_added;
 }
 Qentry;
 
@@ -742,7 +741,7 @@ void                EventDebugSet(unsigned int type, int value);
 #define             EventDebugSet(type, value)
 #endif
 void                EventsInit(void);
-void                WaitEvent(void);
+void                EventsMain(void);
 void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
 

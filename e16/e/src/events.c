@@ -533,123 +533,111 @@ EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
  * events from the X server are interpreted, timer events are inserted, etc
  */
 void
-WaitEvent(void)
+EventsMain(void)
 {
    static int          evq_alloc = 0;
    static int          evq_fetch = 0;
    static XEvent      *evq_ptr = NULL;
    fd_set              fdset;
    struct timeval      tval;
-   static struct timeval tval_last = { 0, 0 };
-   double              time1, time2;
+   double              time1, time2, dt;
    Qentry             *qe;
-   int                 count, pcount, pfetch;
+   int                 count, pfetch;
    int                 fdsize;
    int                 xfd, smfd;
 
-   pcount = pfetch = 0;
+   time1 = GetTime();
+
    for (;;)
      {
+	pfetch = 0;
 	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
 
-	if (count > pcount)
-	   pcount = count;
-
-	if (XPending(disp))
-	   continue;
-
 	if (EventDebug(EDBUG_TYPE_EVENTS))
-	   Eprintf("WaitEvent - Idlers\n");
+	   Eprintf("EventsMain - Idlers\n");
 	DialogsCheckUpdate();	/* FIXME - Shouldn't be here */
 	ModulesSignal(ESIGNAL_IDLE, NULL);
 
-	if (!XPending(disp))
-	   break;
-     }
-
-   if (pfetch)
-     {
-	evq_fetch =
-	   (pfetch > evq_fetch) ? pfetch : (3 * evq_fetch + pfetch) / 4;
-	if (EventDebug(EDBUG_TYPE_EVENTS))
-	   Eprintf("WaitEvent - Alloc/fetch/pfetch/peak=%d/%d/%d/%d)\n",
-		   evq_alloc, evq_fetch, pfetch, pcount);
-	if ((evq_ptr) && ((evq_alloc - evq_fetch) > 64))
+	if (pfetch)
 	  {
-	     evq_alloc = 0;
-	     Efree(evq_ptr);
-	     evq_ptr = NULL;
+	     evq_fetch =
+		(pfetch > evq_fetch) ? pfetch : (3 * evq_fetch + pfetch) / 4;
+	     if (EventDebug(EDBUG_TYPE_EVENTS))
+		Eprintf("EventsMain - Alloc/fetch/pfetch/peak=%d/%d/%d/%d)\n",
+			evq_alloc, evq_fetch, pfetch, count);
+	     if ((evq_ptr) && ((evq_alloc - evq_fetch) > 64))
+	       {
+		  evq_alloc = 0;
+		  Efree(evq_ptr);
+		  evq_ptr = NULL;
+	       }
 	  }
-     }
 
-   FD_ZERO(&fdset);
-   xfd = ConnectionNumber(disp);
-   FD_SET(xfd, &fdset);
-   smfd = GetSMfd();
-   if (smfd >= 0)
-      FD_SET(smfd, &fdset);
-   fdsize = MAX(xfd, smfd) + 1;
+	FD_ZERO(&fdset);
+	xfd = ConnectionNumber(disp);
+	FD_SET(xfd, &fdset);
+	smfd = GetSMfd();
+	if (smfd >= 0)
+	   FD_SET(smfd, &fdset);
+	fdsize = MAX(xfd, smfd) + 1;
 
-   /* First time */
-   if ((tval_last.tv_sec == 0) && (tval_last.tv_usec == 0))
-      gettimeofday(&tval_last, NULL);
-   /* time1 = time we last were here */
-   time1 = ((double)tval_last.tv_sec) + (((double)tval_last.tv_usec) / 1000000);
+	/* time2 = current time */
+	time2 = GetTime();
+	dt = time2 - time1;
+	time1 = time2;
+	if (dt < 0.0)
+	   dt = 0.0;
+	/* dt = time spent since we last were here */
 
-   /* time2 = current time */
-   gettimeofday(&tval, NULL);
-   time2 = ((double)tval.tv_sec) + (((double)tval.tv_usec) / 1000000);
-   time2 -= time1;
-   if (time2 < 0.0)
-      time2 = 0.0;
-   /* time2 = time spent since we last were here */
-
-   tval_last.tv_sec = tval.tv_sec;
-   tval_last.tv_usec = tval.tv_usec;
-
-   qe = GetHeadTimerQueue();
-   if (qe)
-     {
-	if (qe->just_added)
+	qe = GetHeadTimerQueue();
+	if (qe)
 	  {
-	     qe->just_added = 0;
-	     time1 = qe->in_time;
+	     count = 0;
+	     time2 = qe->at_time - time2;
+	     if (time2 < 0.0)
+		time2 = 0.0;
+	     if (time2 <= 0.0)
+		goto do_timer;
+	     if (XPending(disp))
+		continue;
+	     tval.tv_sec = (long)time2;
+	     tval.tv_usec = (long)((time2 - ((double)tval.tv_sec)) * 1000000);
+	     count = select(fdsize, &fdset, NULL, NULL, &tval);
 	  }
 	else
 	  {
-	     time1 = qe->in_time - time2;
-	     if (time1 < 0.0)
-		time1 = 0.0;
-	     qe->in_time = time1;
+	     if (XPending(disp))
+		continue;
+	     count = select(fdsize, &fdset, NULL, NULL, NULL);
 	  }
-	tval.tv_sec = (long)time1;
-	tval.tv_usec = (long)((time1 - ((double)tval.tv_sec)) * 1000000);
-	count = select(fdsize, &fdset, NULL, NULL, &tval);
-     }
-   else
-      count = select(fdsize, &fdset, NULL, NULL, NULL);
 
-   if (EventDebug(EDBUG_TYPE_EVENTS))
-      Eprintf
-	 ("WaitEvent - count=%d xfd=%d:%d smfd=%d:%d qe=%p time1=%lf time2=%lf\n",
-	  count, xfd, FD_ISSET(xfd, &fdset), smfd,
-	  (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, qe, time1, time2);
-
-   if (count < 0)
-      return;
-
-   if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
-     {
 	if (EventDebug(EDBUG_TYPE_EVENTS))
-	   Eprintf("WaitEvent - ICE\n");
-	ProcessICEMSGS();
-     }
+	   Eprintf
+	      ("EventsMain - count=%d xfd=%d:%d smfd=%d:%d qe=%p dt=%lf time2=%lf\n",
+	       count, xfd, FD_ISSET(xfd, &fdset), smfd,
+	       (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, qe, dt, time2);
 
-   if (qe && (count == 0 || time1 <= 0.0))
-     {
-	if (EventDebug(EDBUG_TYPE_EVENTS))
-	   Eprintf("WaitEvent - Timers (%s)\n", qe->name);
-	HandleTimerEvent();
+	if (count < 0)
+	   continue;
+
+	if (count > 0)
+	  {
+	     if ((smfd >= 0) && (FD_ISSET(smfd, &fdset)))
+	       {
+		  if (EventDebug(EDBUG_TYPE_EVENTS))
+		     Eprintf("EventsMain - ICE\n");
+		  ProcessICEMSGS();
+	       }
+	     continue;
+	  }
+
+      do_timer:
+	if (qe)
+	  {
+	     if (EventDebug(EDBUG_TYPE_EVENTS))
+		Eprintf("EventsMain - Timers (%s)\n", qe->name);
+	     HandleTimerEvent();
+	  }
      }
 }
 
@@ -906,7 +894,11 @@ EventShow(const XEvent * ev)
 	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
 	break;
      case EX_EVENT_SHAPE_NOTIFY:
-	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
+#define se ((XShapeEvent *)ev)
+	Eprintf("%#08lx EV-%s win=%#lx kind=%d shaped=%d %d,%d %dx%d\n",
+		ser, name, win, se->kind, se->shaped,
+		se->x, se->y, se->width, se->height);
+#undef se
 	break;
 #if USE_XRANDR
      case EX_EVENT_SCREEN_CHANGE_NOTIFY:
