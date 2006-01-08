@@ -41,6 +41,7 @@ __fill_main_text(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	    fread(str, buf.st_size, 1, file);
 	    str[buf.st_size] = '\0';
 	    ewl_text_text_set (EWL_TEXT (main_text), str);
+            free(str);
 	  }
 	free (filename);
 }
