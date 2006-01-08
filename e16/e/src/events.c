@@ -511,7 +511,7 @@ EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
 	   continue;
 
 	if (EventDebug(EDBUG_TYPE_EVENTS) > 1)
-	   Eprintf("EventsProcess %d type=%d\n", i, evq[i].type);
+	   EventShow(evq + i);
 
 	count++;
 	HandleEvent(evq + i);

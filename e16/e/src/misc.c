@@ -185,6 +185,9 @@ ETimedLoopNext(void)
 /*
  * Debug/error message printing.
  */
+
+#if 1				/* Set to 0 for differential time */
+
 void
 Eprintf(const char *fmt, ...)
 {
@@ -201,3 +204,31 @@ Eprintf(const char *fmt, ...)
    vfprintf(stdout, fmt, args);
    va_end(args);
 }
+
+#else
+
+void
+Eprintf(const char *fmt, ...)
+{
+   static struct timeval t0;
+   va_list             args;
+   struct timeval      tv;
+   long                ts, tus;
+
+   gettimeofday(&tv, NULL);
+   ts = tv.tv_sec - t0.tv_sec;
+   tus = tv.tv_usec - t0.tv_usec;
+   if (tus < 0)
+     {
+	tus += 1000000;
+	ts -= 1;
+     }
+   fprintf(stdout, "[%d] %#lx %4ld.%06ld: ", getpid(), NextRequest(disp), ts,
+	   tus);
+   va_start(args, fmt);
+   vfprintf(stdout, fmt, args);
+   va_end(args);
+   gettimeofday(&t0, NULL);
+}
+
+#endif

@@ -2588,6 +2588,8 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
 		IpcPrintf("%i %s\n", i, BackgroundGetName(bg));
+	     else
+		IpcPrintf("%i %s\n", i, "-NONE-");
 	  }
      }
    else if (!strncmp(cmd, "apply", 2))
