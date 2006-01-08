@@ -49,7 +49,6 @@ void		 ewl_menu_item_image_set(Ewl_Menu_Item *item,
 /*
  * internally used callbacks, override at your risk
  */
-void ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child);
 void ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,

@@ -49,8 +49,6 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
-	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
-			ewl_menu_item_configure_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED,
 			ewl_menu_item_clicked_cb, NULL);
 
@@ -114,6 +112,8 @@ ewl_menu_item_text_set(Ewl_Menu_Item *item, const char *text)
 			item->text = ewl_label_new();
 			ewl_container_child_append(EWL_CONTAINER(item),
 					item->text);
+			ewl_object_fill_policy_set(EWL_OBJECT(item->text),
+					EWL_FLAG_FILL_HFILL);
 			ewl_widget_show(item->text);
 		}
 
@@ -220,33 +220,6 @@ ewl_menu_item_image_set(Ewl_Menu_Item *item, const char *image)
 
 	if (image && item->icon)
 		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		void *user_data __UNUSED__)
-{
-	int x;
-	Ewl_Container *c;
-	Ewl_Widget *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
-
-	c = EWL_CONTAINER(w);
-	x = CURRENT_X(w);
-	ecore_list_goto_first(c->children);
-	while ((child = ecore_list_next(c->children))) {
-		int width;
-
-		width = ewl_object_preferred_w_get(EWL_OBJECT(child));
-		ewl_object_place(EWL_OBJECT(child), x, CURRENT_Y(w), width,
-				CURRENT_H(w));
-		x += width;
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
