@@ -29,10 +29,7 @@ static Evas_Object   *_add_todo_basic_create_widgets(E_Config_Dialog *cfd,Evas *
 / Purpose:  
 / Returns: nothing
 / Takes: 
-/
-/
-/
-/*****************************************************/
+*****************************************************/
 void 
 add_todo_show(void *con,void *DayToFix)
 {
@@ -57,9 +54,7 @@ add_todo_show(void *con,void *DayToFix)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static void 
 _add_todo_fill_data(CFData *cfdata)
 {
@@ -72,9 +67,7 @@ _add_todo_fill_data(CFData *cfdata)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static void *
 _add_todo_create_data(E_Config_Dialog *cfd)
 {
@@ -93,10 +86,7 @@ _add_todo_create_data(E_Config_Dialog *cfd)
 / Purpose:  
 / Returns: nothing
 / Takes: 
-/
-/
-/
-/*****************************************************/
+*****************************************************/
 static void
 _add_todo_free_data(E_Config_Dialog *cfd, void *data)
 {    
@@ -108,15 +98,11 @@ _add_todo_free_data(E_Config_Dialog *cfd, void *data)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static int
 _add_todo_basic_apply_data(E_Config_Dialog *cfd, void *data)
 {
    CFData *cfdata;
-   int AllGood;
-
    cfdata = data;
 
    e_config_save_queue();
@@ -130,16 +116,12 @@ _add_todo_basic_apply_data(E_Config_Dialog *cfd, void *data)
 / Purpose:  
 / Returns: nothing
 / Takes: 
-/
-/
-/
-/*****************************************************/
+*****************************************************/
 static Evas_Object *
 _add_todo_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object *o, *of, *ob, *of2, *of3, *fs, *of1,*check;
-   E_Radio_Group *rg;
+   Evas_Object *o,*of1;
    CFData *cfdata;
    cfdata = data;
 

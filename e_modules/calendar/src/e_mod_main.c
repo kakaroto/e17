@@ -32,7 +32,7 @@ int increment_cal_count()
 / Takes: 
 /
 /
-/*****************************************************/
+******************************************************/
 void *
 e_modapi_init(E_Module *module)
 {
@@ -58,7 +58,7 @@ e_modapi_init(E_Module *module)
 / Function: 
 / Purpose:  
 /
-/*****************************************************/
+******************************************************/
 /*    * int e_modapi_shutdown(E_Module*) - Cleanup */
 int
 e_modapi_shutdown(E_Module *module)
@@ -82,7 +82,7 @@ e_modapi_shutdown(E_Module *module)
 / Function: 
 / Purpose:  
 /
-/*****************************************************/
+******************************************************/
 /*    * int e_modapi_save(E_Module*) - Save persistent data */
 /*    ie: the calendar->conf stuff                          */
 int
@@ -98,7 +98,7 @@ e_modapi_save(E_Module *module)
 / Function: 
 / Purpose:  
 /
-/*****************************************************/
+******************************************************/
 /* * int e_modapi_info(E_Module*) - Setup module specific infomation */
 int
 e_modapi_info(E_Module *module)
@@ -111,7 +111,7 @@ e_modapi_info(E_Module *module)
 / Purpose:  
 /
 /
-/*****************************************************/
+******************************************************/
 /* * int e_modapi_about(E_Module*). - Called when Modules' About Menu is invoked. */
 int
 e_modapi_about(E_Module *module)
@@ -125,7 +125,7 @@ e_modapi_about(E_Module *module)
 / Purpose:  
 /
 /
-/*****************************************************/
+******************************************************/
 int e_modapi_config(E_Module *m)
 {
    Calendar *calendar;
@@ -143,7 +143,7 @@ int e_modapi_config(E_Module *m)
 / Purpose:  create new calendar
 /
 /
-/*****************************************************/
+******************************************************/
 static Calendar *
 _calendar_new()
 {
@@ -307,7 +307,7 @@ _calendar_new()
 / Purpose:  shutdown calendar module
 /
 /
-/*****************************************************/ 
+******************************************************/ 
 static void
 _calendar_shutdown(Calendar *calendar)
 {
@@ -356,7 +356,7 @@ _calendar_shutdown(Calendar *calendar)
 / Purpose:  create new calender menu
 /
 /
-/*****************************************************/
+******************************************************/
 void calendar_config_menu_new(Calendar *calendar)
 {
    calendar->config_menu = e_menu_new();
@@ -366,18 +366,13 @@ void calendar_config_menu_new(Calendar *calendar)
 / Purpose:  
 /
 /
-/*****************************************************/
+******************************************************/
 static int
 _date_cb_check(void *data)
 {
    time_t now;
    Calendar *calendar;
    struct tm date;
-   int x;
-   int c = 1;
-   int row = 1;
-   char GridAddress[24];
-   char buf[3];
 
    time(&now);
    date = *localtime(&now);
@@ -414,7 +409,7 @@ _date_cb_check(void *data)
 / Purpose:  
 /
 /
-/*****************************************************/
+******************************************************/
 static void
 _clear_dates(Calendar_Face *face)
 {
@@ -436,7 +431,7 @@ _clear_dates(Calendar_Face *face)
 /
 /
 /
-/*****************************************************/
+******************************************************/
 void read_conf_files(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Calendar *calendar;
@@ -450,7 +445,7 @@ void read_conf_files(void *data, E_Menu *m, E_Menu_Item *mi)
 / Purpose:  
 /
 /
-/*****************************************************/
+******************************************************/
 void 
 redraw_calendar(Calendar *calendar, int SwitchImage)
 {

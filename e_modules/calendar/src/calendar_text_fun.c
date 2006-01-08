@@ -6,7 +6,7 @@
 / Purpose:  Assign Calendar Config Fonts to appropriate
 /           Font classes in edje
 /
-/*****************************************************/
+*****************************************************/
 void
 calendar_update_text_fonts(Calendar *calendar, Calendar_Face *face)
 {
@@ -39,7 +39,7 @@ calendar_update_text_fonts(Calendar *calendar, Calendar_Face *face)
 / Purpose:  REad config file and assign values to 
 /           Calendar Config Variables -- working
 /
-/*****************************************************/
+*****************************************************/
 void
 calendar_face_set_text(Calendar *calendar)
 {
@@ -100,7 +100,7 @@ calendar_face_set_text(Calendar *calendar)
 / Purpose:  Set Day/Month/Year text in the label.edje
 /           Still needs to be tested.
 /
-/*****************************************************/
+*****************************************************/
 void
 set_day_label(Evas_Object *label, int FirstDay, int month, int year)
 {
@@ -224,7 +224,7 @@ set_day_label(Evas_Object *label, int FirstDay, int month, int year)
 / Function: 
 / Purpose:  free text classes
 /
-/*****************************************************/
+*****************************************************/
 void free_Calfonts(Calendar *calendar)
 {
    Evas_List *list;

@@ -30,9 +30,7 @@ static Evas_Object   *_add_event_basic_create_widgets(E_Config_Dialog *cfd,Evas 
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 void 
 add_event_show(void *con,void *DayToFix)
 {
@@ -57,9 +55,7 @@ add_event_show(void *con,void *DayToFix)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static void 
 _add_event_fill_data(CFData *cfdata)
 {
@@ -72,9 +68,7 @@ _add_event_fill_data(CFData *cfdata)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+****************************************************/
 static void *
 _add_event_create_data(E_Config_Dialog *cfd)
 {
@@ -94,9 +88,7 @@ _add_event_create_data(E_Config_Dialog *cfd)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static void
 _add_event_free_data(E_Config_Dialog *cfd, void *data)
 {    
@@ -108,15 +100,11 @@ _add_event_free_data(E_Config_Dialog *cfd, void *data)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+****************************************************/
 static int
 _add_event_basic_apply_data(E_Config_Dialog *cfd, void *data)
 {
    CFData *cfdata;
-   int AllGood;
-
    cfdata = data;
 
    e_config_save_queue();
@@ -131,14 +119,12 @@ _add_event_basic_apply_data(E_Config_Dialog *cfd, void *data)
 / Returns: nothing
 / Takes: 
 /
-/
-/
-/*****************************************************/
+*****************************************************/
 static Evas_Object *
 _add_event_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 {
    /* generate the core widget layout for a basic dialog */
-   Evas_Object *o, *of, *ob, *of2, *of3, *fs, *of1,*check;
+   Evas_Object *o, *of, *ob, *of1;
    E_Radio_Group *rg;
    CFData *cfdata;
    cfdata = data;

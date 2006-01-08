@@ -7,11 +7,10 @@
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/ 
+*****************************************************/ 
 void calendar_face_start(Calendar *calendar)
 {
-   Evas_List *cl, *managers, *l2, *l;  
+   Evas_List *managers, *l2, *l;  
    E_Menu_Item *mi;
    calendar_config_menu_new(calendar);
    managers = e_manager_list();
@@ -45,7 +44,7 @@ void calendar_face_start(Calendar *calendar)
 / Function: Start up the face
 / Purpose: 
 /
-/*****************************************************/
+*****************************************************/
 Calendar_Face *
 calendar_face_new(E_Container *con,Calendar *calendar)
 {
@@ -57,8 +56,6 @@ calendar_face_new(E_Container *con,Calendar *calendar)
    int check,i;
 
    Calendar_Face *face;
-   Evas_Object *o3, *o_table, *o_table2; 
-   Evas_Object *today;
 
    face = E_NEW(Calendar_Face, 1);
    if (!face) return NULL;
@@ -273,7 +270,7 @@ calendar_face_new(E_Container *con,Calendar *calendar)
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                             void *event_info)
 {
@@ -298,20 +295,14 @@ void calendar_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
                               E_MENU_POP_DIRECTION_DOWN,ev->timestamp);
         e_util_container_fake_mouse_up_all_later(con);
      }
-/*   else if(ev->button == 1)
-     {
-        e_menu_activate_mouse(face->menu1, e_zone_current_get(con),
-                              ev->output.x, ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN,ev->timestamp);
-        e_util_container_fake_mouse_up_all_later(con);
-} */
+
 }
 /***************************************************
 / Function: 
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_prev_month(void *data, Evas *e, Evas_Object *obj,
                                         void *event_info)
 {
@@ -330,7 +321,7 @@ void calendar_face_prev_month(void *data, Evas *e, Evas_Object *obj,
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_prev_year(void *data, Evas *e, Evas_Object *obj,
                                         void *event_info)
 {
@@ -344,7 +335,7 @@ void calendar_face_prev_year(void *data, Evas *e, Evas_Object *obj,
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_next_year(void *data, Evas *e, Evas_Object *obj,                                      void *event_info)
 {
    Calendar *calendar;
@@ -357,7 +348,7 @@ void calendar_face_next_year(void *data, Evas *e, Evas_Object *obj,             
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_next_month(void *data, Evas *e, Evas_Object *obj,
                                         void *event_info)
 {
@@ -379,7 +370,7 @@ void calendar_face_next_month(void *data, Evas *e, Evas_Object *obj,
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Calendar_Face *face;
@@ -392,7 +383,7 @@ void calendar_face_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi)
 / Purpose:  
 / Returns: nothing
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, 
 			    E_Gadman_Change change)
 {
@@ -427,15 +418,11 @@ void calendar_face_cb_gmc_change(void *data, E_Gadman_Client *gmc,
 / Purpose:  
 / Returns: nothing
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_menu_new(Calendar_Face *face, Calendar *calendar)
 {
    E_Menu_Item *mi;
-   E_Menu_Item *sub, *sub2, *sub3;
-   Ecore_List* interfaces = NULL;
 
-   int interface_count = 0;
-   char* interface_name = NULL;
    /* Setup Menus */
    face->menu = e_menu_new();
    /* Main Menu Items */
@@ -454,11 +441,10 @@ void calendar_face_menu_new(Calendar_Face *face, Calendar *calendar)
 / Purpose:  
 / Returns: nothing
 /
-/*****************************************************/
+*****************************************************/
 void calendar_face_menu_day(day_face *face, Calendar *calendar)
 {
    E_Menu_Item *mi;
-   E_Menu_Item *sub, *sub2, *sub3;
 
    face->menu1 = e_menu_new();
    /* Main Menu Items */
@@ -492,8 +478,7 @@ void calendar_face_menu_day(day_face *face, Calendar *calendar)
 / Function: calendar_face_free(Calendar_Face *face)
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void calendar_face_free(Calendar_Face *face)
 {
    int i = 0;

@@ -7,8 +7,7 @@
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void fill_in_caltable(int FirstDay, Calendar_Face *face, int StartUp)
 {
    int x = 0;
@@ -134,15 +133,13 @@ void fill_in_caltable(int FirstDay, Calendar_Face *face, int StartUp)
 / Purpose:  
 /
 /
-/*****************************************************/
+*****************************************************/
 int calculate_skew(Calendar *calendar)
 {
 //skew correction for month -  http://klausler.com/new-dayofweek.html
    int yearsfrom1900 = calendar->conf->view_year - 1900;
    int onefourthyear = yearsfrom1900 / 4;
    int onefourthyearmod = yearsfrom1900 % 4;
-   int DayofMonth = 1;
-   char Year[5];
    int skew; 
 
    switch (calendar->conf->view_month)
@@ -233,16 +230,13 @@ int calculate_skew(Calendar *calendar)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void calendar_add_dates(Calendar_Face *face, Calendar *calendar, int skew)
 {
    time_t now;
    struct tm date;
-   int day = 0;
    char buf[3];
    int NumDayMon[12] =  {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-   char TopBuf[256];
    time(&now);
    date = *localtime(&now);
    int DayOfMonth = 1;

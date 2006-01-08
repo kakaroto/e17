@@ -7,8 +7,7 @@
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void file_select_bk_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Config *config;
@@ -26,8 +25,7 @@ void file_select_bk_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void e_file_bk_select_cb(E_File_Dialog *dia, char *file, void *data)
 {
    char *ext;
@@ -63,8 +61,7 @@ void e_file_bk_select_cb(E_File_Dialog *dia, char *file, void *data)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void file_select_ti_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Config *config;
@@ -82,8 +79,7 @@ void file_select_ti_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void e_file_ti_select_cb(E_File_Dialog *dia, char *file, void *data)
 {
    char *ext;
@@ -118,8 +114,7 @@ void e_file_ti_select_cb(E_File_Dialog *dia, char *file, void *data)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void file_select_cf_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Config *config;
@@ -136,11 +131,9 @@ void file_select_cf_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void e_file_cf_select_cb(E_File_Dialog *dia, char *file, void *data)
 {
-   char *ext;
    Config *config;
 
    config->ConfigFile_path = (char *)evas_stringshare_add(file);
@@ -150,8 +143,7 @@ void e_file_cf_select_cb(E_File_Dialog *dia, char *file, void *data)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void config_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
     Calendar *calendar;
@@ -162,8 +154,7 @@ void config_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
+*****************************************************/
 void add_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    day_face *DayToFix;
@@ -174,33 +165,19 @@ void add_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
-void  add_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
+*****************************************************/
+void add_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    day_face *DayToFix;
    DayToFix = data;
-   add_todo_show(m->zone->container,DayToFix); 
+   //add_todo_show(m->zone->container,DayToFix); 
 }
 /***************************************************
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
-void  remove_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   day_face *DayToFix;
-   DayToFix = data;
-   //font_edit_show(m->zone->container,FontToFix); 
-}
-/***************************************************
-/ Function: 
-/ Purpose:  
-/
-/
-/*****************************************************/
-void  remove_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
+*****************************************************/
+void remove_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    day_face *DayToFix;
    DayToFix = data;
@@ -210,9 +187,8 @@ void  remove_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
-/
-/*****************************************************/
-void  view_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
+*****************************************************/
+void remove_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    day_face *DayToFix;
    DayToFix = data;
@@ -222,8 +198,18 @@ void  view_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 / Function: 
 / Purpose:  
 /
+*****************************************************/
+void view_event_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   day_face *DayToFix;
+   DayToFix = data;
+   //font_edit_show(m->zone->container,FontToFix); 
+}
+/***************************************************
+/ Function: 
+/ Purpose:  
 /
-/*****************************************************/
+*****************************************************/
 void view_todo_dialog(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    day_face *DayToFix;

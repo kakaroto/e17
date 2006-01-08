@@ -8,13 +8,12 @@
 / Purpose:  Read the config file and assign values to
 /           to Calendar Config variables.  Working...
 /
-/*****************************************************/
+*****************************************************/
 void
 calendar_face_set_colors(Calendar *calendar)
 {
-   char read_line[120];
+  char read_line[120];
   int r,g,b,a,r1,g1,b1,a1,r2,g2,b2,a2;
-  int counter;
   int UseDefault = 0;
   char ValidName1[]={"Today_s_back_colors"};
   char ValidName2[]={"Weekend_back_colors"};
@@ -303,10 +302,9 @@ calendar_face_set_colors(Calendar *calendar)
 / Purpose:  Assign Calendar Config color variable to 
 /           appropriate colorclass in edje.  
 /
-/*****************************************************/
+*****************************************************/
 void update_colors(Calendar *calendar,Calendar_Face *face)
 {
-	int row = 1;
 	int x;
 
    	c_array *TBC_Ptr = calendar->conf->Today_s_back_colors->data;
