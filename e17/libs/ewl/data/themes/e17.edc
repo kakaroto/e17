@@ -118,7 +118,7 @@ data {
     item, "/menu/group" "menu";
 
     item, "/menubar/group" "menubar";
-    item, "/menuitem/group" "menuitem";
+    item, "/menu_item/label/group" "menuitem";
 
     item, "/tooltip/offset" 15;
     item, "/tooltip/delay" "1.0";
