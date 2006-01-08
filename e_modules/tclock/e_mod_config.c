@@ -59,10 +59,6 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
-   TClock_Face *tf;
-   
-   tf = cfd->data;
-   tf->config_dialog = NULL;
    free(cfdata);
 }
 

@@ -48,7 +48,6 @@ typedef struct _TClock_Face
   
   Evas_Object *tclock_object;
   Evas_Object *event_object;
-  
   E_Gadman_Client *gmc;
 }TClock_Face;
 

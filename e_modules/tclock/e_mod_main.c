@@ -49,9 +49,10 @@ e_modapi_shutdown(E_Module *module)
      module->config_menu = NULL;
 
    tclock = module->data;
-   if (tclock)
-     _tclock_shutdown(tclock);
-
+   if (tclock) 
+     {
+	_tclock_shutdown(tclock);	
+     }
    return 1;
 }
 
