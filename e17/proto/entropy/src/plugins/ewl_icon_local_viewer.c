@@ -749,6 +749,7 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
      switch (eevent->event_type) {	
 	case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	case ENTROPY_NOTIFY_FILELIST_REQUEST: {
+						    
 
 		event_idle_processor* proc = entropy_malloc(sizeof(event_idle_processor));
 
@@ -758,6 +759,9 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		entropy_icon_viewer* view = comp->data;
 		Ecore_Hash* tmp_gui_hash;
 		Ecore_Hash* tmp_icon_hash;
+
+
+		printf("Icon viewer got a directory change order!\n");
 
 		/*Keep a reference to our existing hash*/
 		tmp_gui_hash = view->gui_hash;

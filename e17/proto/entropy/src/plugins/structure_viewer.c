@@ -281,6 +281,8 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		row = ewl_tree_row_add(EWL_TREE(viewer->tree), prow, children);
 
 		ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+		ewl_container_callback_intercept(EWL_CONTAINER(row), EWL_CALLBACK_MOUSE_DOWN);
+		
 		ewl_object_custom_h_set(EWL_OBJECT(row), 15);
 		ewl_widget_show(row);
 
@@ -293,7 +295,7 @@ void structure_viewer_add_row(entropy_gui_component_instance* instance, entropy_
 		ecore_list_append(viewer->files, event->file);
 		
 
-		ewl_callback_append(label, EWL_CALLBACK_MOUSE_DOWN, row_clicked_callback, event);
+		ewl_callback_append(row, EWL_CALLBACK_MOUSE_DOWN, row_clicked_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_ENTER, dnd_enter_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_LEAVE, dnd_leave_callback, event);
 		ewl_callback_append(row, EWL_CALLBACK_DND_DROP, dnd_drop_callback, event);
@@ -355,19 +357,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core, entropy_
 
 	structure_viewer_add_row(instance, (entropy_generic_file*)data, NULL);
 
-	/*Prevent expand/collpase of root node*/
-	child =ewl_container_child_get(EWL_CONTAINER(viewer->tree), 0);
-	ewl_callback_del_type(EWL_TREE_NODE(child)->handle, EWL_CALLBACK_VALUE_CHANGED);
-	
-	
-	//printf("..done\n");
-
 	ewl_widget_show(viewer->tree);
 
-	//printf("Returning instance..\n");
-
-	
-
-	//printf("Doing..\n");
 	return instance;
 }
