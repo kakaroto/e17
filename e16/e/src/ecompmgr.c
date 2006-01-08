@@ -478,7 +478,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
    XRenderFreePicture(disp, pict);
 }
 
-#if 0				/* FIXME - Remove? */
+#if !USE_BG_WIN_ON_ALL_DESKS
 /*
  * Desk background
  */
@@ -500,16 +500,6 @@ ECompMgrDeskConfigure(Desk * dsk)
    if (!eo)
       return 1;
    cw = eo->cmhook;
-
-#if 0
-   if (!cw)
-     {
-	ECompMgrWinNew(eo);
-	cw = eo->cmhook;
-	if (!cw)
-	   return 0;
-     }
-#endif
 
    if (!dsk->viewable)
      {
@@ -1590,22 +1580,19 @@ ECompMgrWinDel(EObj * eo)
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
-   if (!eo->noredir)
+   if (!eo->gone)
+      ECompMgrWinInvalidate(eo, INV_PICTURE);
+
+   if (!eo->noredir && !eo->gone)
      {
-	if (!eo->gone && Conf_compmgr.mode == ECM_MODE_WINDOW)
+	if (cw->damage != None)
+	   XDamageDestroy(disp, cw->damage);
+
+	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeUnredirectWindow(disp, eo->win, CompositeRedirectManual);
      }
 
    ECompMgrWinInvalidate(eo, INV_ALL);
-
-   if (!eo->gone)
-     {
-	if (cw->picture != None)
-	   XRenderFreePicture(disp, cw->picture);
-
-	if (cw->damage != None)
-	   XDamageDestroy(disp, cw->damage);
-     }
 
    _EFREE(eo->cmhook);
 
@@ -1776,7 +1763,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		  eo_prev = eo2;
 	       }
 
-#if 1				/* TBD - Only if using per desk bg overlay */
+#if USE_BG_WIN_ON_ALL_DESKS	/* Only if using per desk bg overlay */
 	     /* FIXME - We should break when the clip region becomes empty */
 	     if (eo->x == 0 && eo->y == 0)
 		stop = 1;
@@ -1823,7 +1810,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     break;
 	  }
 
-#if 0				/* TBD - Not if using per desk bg overlay */
+#if !USE_BG_WIN_ON_ALL_DESKS	/* Not if using per desk bg overlay */
 	/* FIXME - We should break when the clip region becomes empty */
 	if (eo->type == EOBJ_TYPE_DESK && eo->x == 0 && eo->y == 0)
 	   stop = 1;
@@ -1973,7 +1960,7 @@ ECompMgrRepaint(void)
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EventDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("allDamage", region);
 
    if (!rootBuffer)
@@ -2148,6 +2135,8 @@ ECompMgrStart(void)
       return;
    Conf_compmgr.enable = Mode_compmgr.active = 1;
 
+   EGrabServer();
+
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
    rootPicture =
@@ -2186,10 +2175,12 @@ ECompMgrStart(void)
 	   ECompMgrWinMap(lst[i]);
      }
 
-#if 0				/* FIXME - Remove? */
+#if !USE_BG_WIN_ON_ALL_DESKS
    DesksBackgroundRefresh(NULL);
-   _ECM_SET_CLIP_CHANGED();
 #endif
+   _ECM_SET_CLIP_CHANGED();
+   EUngrabServer();
+   ESync();
 }
 
 static void
@@ -2201,6 +2192,8 @@ ECompMgrStop(void)
    if (!Mode_compmgr.active)
       return;
    Conf_compmgr.enable = Mode_compmgr.active = 0;
+
+   EGrabServer();
 
    if (rootPicture)
       XRenderFreePicture(disp, rootPicture);
@@ -2243,9 +2236,11 @@ ECompMgrStop(void)
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
-#if 0				/* FIXME - Remove? */
+#if !USE_BG_WIN_ON_ALL_DESKS
    DesksBackgroundRefresh(NULL);
 #endif
+   EUngrabServer();
+   ESync();
 }
 
 void

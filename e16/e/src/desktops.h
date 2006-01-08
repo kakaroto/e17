@@ -24,6 +24,8 @@
 #ifndef _DESKTOPS_H_
 #define _DESKTOPS_H_
 
+#define USE_BG_WIN_ON_ALL_DESKS 0
+
 #include "eobj.h"
 
 typedef struct _desk Desk;

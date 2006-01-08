@@ -449,7 +449,7 @@ DeskCreate(int desk, int configure)
    if (desk == 0)
      {
 	desks.current = dsk;
-#if 0				/* TBD - Use per virtual root bg window? */
+#if !USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
 	/* Add background window */
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC_NR, 0, 0, VRoot.w, VRoot.h,
 			      0, "Root-bg");
@@ -474,6 +474,7 @@ DeskCreate(int desk, int configure)
 	HintsSetRootInfo(EoGetWin(dsk), None, 0);
      }
 
+#if USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
    /* Add background window */
    Esnprintf(buf, sizeof(buf), "Desk-bg-%d", desk);
    eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, buf);
@@ -481,9 +482,9 @@ DeskCreate(int desk, int configure)
    eo->fade = eo->shadow = 0;
    EobjReparent(eo, EoObj(dsk), 0, 0);
    EobjSetLayer(eo, 0);
-   EobjMap(eo, 1);
    dsk->bg.o = eo;
    EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
+#endif
 
    HintsSetRootHints(EoGetWin(dsk));
 
@@ -552,6 +553,11 @@ DeskBackgroundConfigure(Desk * dsk)
 {
    Window              win;
 
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskBackgroundConfigure %d %#lx v=%d - %#lx %#lx %#lx\n",
+	      dsk->num, EoGetWin(dsk), dsk->viewable,
+	      EobjGetWin(dsk->bg.o), dsk->bg.pmap, dsk->bg.pixel);
+
    if (dsk->bg.o != EoObj(dsk))
      {
 	if (dsk->bg.bg)
@@ -569,7 +575,7 @@ DeskBackgroundConfigure(Desk * dsk)
 
    if (dsk->viewable)
      {
-#if 0				/* FIXME - Remove? */
+#if !USE_BG_WIN_ON_ALL_DESKS
 	if (ECompMgrDeskConfigure(dsk))
 	  {
 	     ESetWindowBackgroundPixmap(win, None);
@@ -1325,6 +1331,9 @@ DeskGoto(Desk * dsk)
    ActionsResume();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
+
+   if (EventDebug(EDBUG_TYPE_DESKS))
+      Eprintf("DeskGoto %d done\n", dsk->num);
 }
 
 static void
