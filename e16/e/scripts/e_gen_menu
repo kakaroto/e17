@@ -31,9 +31,9 @@ $Prefixes = RemoveDuplcates($Prefixes);
 # Where to look for GNOME2/KDE2,3 stuff
 $AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde");
 
-$IconDirs = MkDirList($Prefixes, "/share/pixmaps");
-$IconDirsKDE = MkDirList($Prefixes, "/share/icons");
-$Themes = "default.kde:hicolor:locolor";
+$IconDirs = MkDirList($Prefixes, "/share/pixmaps:/share/icons");
+$IconDirs2 = MkDirList($Prefixes, "/share/icons");
+$Themes = "gnome:default.kde:hicolor";
 
 # Where to look for GNOME1 apps
 $OldGnomeDirs = MkDirList($Prefixes, "/share/gnome/apps");
@@ -71,28 +71,13 @@ $DoIconv = `which iconv`;
 @CatsRemove = (
 	"Qt",
 	"QT",
+	"GTK",
 	"GNOME",
 	"KDE",
 	"UtilityApplication",
 	"Applications",
 	"Application",
-	"X-Red-Hat-Base-Only",
-	"X-Red-Hat-BaseApplication",
-	"X-Red-Hat-Base",
-	"X-Red-Hat-ServerConfig",
-	"X-Red-Hat-Extra",
-	"X-KDE-information",
-	"X-KDE-settings-accessibility",
-	"X-KDE-settings-components",
-	"X-KDE-settings-desktop",
-	"X-KDE-settings-looknfeel",
-	"X-KDE-settings-network",
-	"X-KDE-settings-peripherals",
-	"X-KDE-settings-power",
-	"X-KDE-settings-security",
-	"X-KDE-settings-sound",
-	"X-KDE-settings-system",
-	"X-KDE-settings-webbrowsing"
+	"X-.*",
 );
 
 @MainMenu = (
@@ -225,8 +210,16 @@ sub ProcessFile {
 			$Type = $1;
 		} elsif (/^Categories=(.*)$/) {
 			next if "$Cats";	# Given
-			$Cats = $1;
-			foreach $c (@CatsRemove) { $Cats =~ s/(^|;)$c;*/\1/g; }
+			CF: foreach $cf (split(';', $1)) {
+				if ($cf eq "KDE") {
+					$Type = "KDE";
+					next;
+				}
+				foreach $cr (@CatsRemove) {
+					next CF if ($cf =~ /^$cr$/);
+				}
+				$Cats = "$Cats$cf;";
+			}
 		} elsif (/^Type=(.*)$/) {
 			if ($1 ne "Application") {
 				$Name = "";
@@ -327,7 +320,7 @@ sub ScaleIcon {
 	$g =~ s/^.*\///;
 	$g =~ s/\..*$//;
 	$g = "$EdirIcons/$g.png";
-	system("convert -geometry 18x18 $f $g");
+	system("convert -geometry 16x16 $f $g");
 
 	return $g;
 }
@@ -345,18 +338,36 @@ sub FindIcon {
 
 	foreach $d (split(':', $IconDirs)) {
 		$i = "$d/$f";
-		next unless -f $i;
+		unless (-f $i) {
+			next if ($f =~ /\.png$/);
+			$i = "$i.png";
+			next unless -f $i;
+		}
 		$i = ScaleIcon($i);
 		return $i;
 	}
 
-	foreach $d (split(':', $IconDirsKDE)) {
+	foreach $d (split(':', $IconDirs2)) {
 		foreach $t (split(':', $Themes)) {
-			foreach $u (split(':', "apps:filesystems:actions")) {
+			foreach $u (split(':', "apps:filesystems:actions:devices")) {
 				$i = "$d/$t/16x16/$u/$f";
 				$i = "$i.png" unless ($f =~ /\.png$/);
 				print "Testing $i\n" if $dbg >= 2;
-				return $i if -f $i;
+				next unless -f $i;
+				return $i;
+			}
+		}
+	}
+
+	foreach $d (split(':', $IconDirs2)) {
+		foreach $t (split(':', $Themes)) {
+			foreach $u (split(':', "apps:filesystems:actions:devices")) {
+				$i = "$d/$t/48x48/$u/$f";
+				$i = "$i.png" unless ($f =~ /\.png$/);
+				print "Testing $i\n" if $dbg >= 2;
+				next unless -f $i;
+				$i = ScaleIcon($i);
+				return $i;
 			}
 		}
 	}
