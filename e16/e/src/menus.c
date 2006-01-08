@@ -662,7 +662,7 @@ MenuRealize(Menu * m)
 	     m->items[i]->text_w = w;
 	     m->items[i]->text_h = h;
 	  }
-	if (m->items[i]->icon_iclass)
+	if (m->items[i]->icon_iclass && Conf.menus.show_icons)
 	  {
 	     im = ImageclassGetImage(m->items[i]->icon_iclass, 0, 0, 0);
 	     if (im)
@@ -766,7 +766,7 @@ MenuRealize(Menu * m)
 			    ((maxx2 - m->items[i]->icon_w) / 2),
 			    ((maxh - m->items[i]->icon_h) / 2));
 	  }
-	if (m->items[i]->icon_iclass)
+	if (m->items[i]->icon_iclass && Conf.menus.show_icons)
 	  {
 	     iw = 0;
 	     ih = 0;
@@ -2095,6 +2095,7 @@ static const CfgItem MenusCfgItems[] = {
    CFG_ITEM_BOOL(Conf.menus, animate, 0),
    CFG_ITEM_BOOL(Conf.menus, onscreen, 1),
    CFG_ITEM_BOOL(Conf.menus, warp, 1),
+   CFG_ITEM_BOOL(Conf.menus, show_icons, 1),
    CFG_ITEM_INT(Conf.menus, opacity, 220),
    CFG_ITEM_INT(Conf.menus, key.left, XK_Left),
    CFG_ITEM_INT(Conf.menus, key.right, XK_Right),

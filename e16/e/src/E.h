@@ -368,6 +368,7 @@ typedef struct
       char                animate;
       char                onscreen;
       char                warp;
+      char                show_icons;
       int                 opacity;
       struct
       {
