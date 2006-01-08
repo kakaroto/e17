@@ -1,6 +1,7 @@
 #include <e.h>
 #include "config.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 
 /* TODO List:
  *

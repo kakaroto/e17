@@ -1,7 +1,8 @@
 #include <e.h>
+#include <time.h>
 #include "config.h"
 #include "e_mod_main.h"
-#include <time.h>
+#include "e_mod_config.h"
 
 /* TODO List:
  * 
