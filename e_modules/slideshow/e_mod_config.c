@@ -1,5 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 #include "config.h"
 
 typedef struct _cfdata CFData;
@@ -68,6 +69,10 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
+   Slide *s;
+   
+   s = cfd->data;
+   s->config_dialog = NULL;
    /* Free the cfdata */
    free(cfdata);
 }

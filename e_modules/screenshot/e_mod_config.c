@@ -1,5 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 #include "config.h"
 
 #define S_METHOD_IMPORT 0
@@ -58,7 +59,7 @@ static Evas_Object   *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas,
 static int 	     _advanced_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
 
 /* Config Calls */
-void 
+EAPI void 
 _config_screenshot_module(E_Container *con, Screen *s)
 {
    E_Config_Dialog *cfd;
@@ -141,6 +142,10 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 {
+   Screen *s;
+   
+   s = cfd->data;
+   s->config_dialog = NULL;
    /* Free the cfdata */
    free(cfdata);
 }

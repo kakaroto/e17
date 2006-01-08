@@ -65,8 +65,8 @@ _fill_data(Snow *sn, CFData *cfdata)
      }
 }
 
-static void
-*_create_data(E_Config_Dialog *cfd) 
+static void *
+_create_data(E_Config_Dialog *cfd) 
 {
    CFData *cfdata;
    Snow *s;
@@ -80,11 +80,15 @@ static void
 static void
 _free_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
+   Snow *sn;
+   
+   sn = cfd->data;
+   sn->config_dialog = NULL;
    free(cfdata);
 }
 
-static Evas_Object
-*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
 {
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;

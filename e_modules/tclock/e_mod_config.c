@@ -44,8 +44,8 @@ _fill_data(TClock_Face *f, CFData *cfdata)
    cfdata->resolution = f->conf->resolution;
 }
 
-static void
-*_create_data(E_Config_Dialog *cfd) 
+static void *
+_create_data(E_Config_Dialog *cfd) 
 {
    CFData *cfdata;
    TClock_Face *f;
@@ -59,11 +59,15 @@ static void
 static void
 _free_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
+   TClock_Face *tf;
+   
+   tf = cfd->data;
+   tf->config_dialog = NULL;
    free(cfdata);
 }
 
-static Evas_Object
-*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
 {
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;

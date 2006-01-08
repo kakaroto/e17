@@ -1,5 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
+#include "e_mod_config.h"
 #include "config.h"
 
 typedef struct _cfdata CFData;
@@ -51,8 +52,8 @@ _fill_data(Mount *m, CFData *cfdata)
    cfdata->show_labels = m->conf->show_labels;
 }
 
-static void 
-*_create_data(E_Config_Dialog *cfd) 
+static void *
+_create_data(E_Config_Dialog *cfd) 
 {
    CFData *cfdata;
    Mount *m;
@@ -66,11 +67,15 @@ static void
 static void 
 _free_data(E_Config_Dialog *cfd, CFData *cfdata) 
 {
+   Mount *m;
+   
+   m = cfd->data;
+   m->config_dialog = NULL;
    free(cfdata);
 }
 
-static Evas_Object
-*_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
@@ -108,8 +113,8 @@ _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
    return 1;
 }
 
-static Evas_Object
-*_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
+static Evas_Object *
+_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata) 
 {
    Evas_Object *o, *ob, *of;
    E_Radio_Group *rg;
