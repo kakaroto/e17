@@ -132,8 +132,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor,
 
 void dnd_enter_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	event_file_core* event = (event_file_core*)user_data;
-	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
-	
 
 	ewl_text_cursor_position_set(EWL_TEXT(event->data), 0);
 	ewl_text_color_apply(EWL_TEXT(event->data), 255, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
@@ -144,7 +142,6 @@ void dnd_enter_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 
 void dnd_leave_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	event_file_core* event = (event_file_core*)user_data;
-	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
 
 	ewl_text_cursor_position_set(EWL_TEXT(event->data), 0);
 	ewl_text_color_apply(EWL_TEXT(event->data), 0, 0, 0, 255, ewl_text_length_get(EWL_TEXT(event->data)));
@@ -224,9 +221,9 @@ void row_clicked_callback(Ewl_Widget *main_win, void *ev_data, void *user_data) 
 	event_file_core* event = (event_file_core*)user_data;
 	entropy_file_structure_viewer* viewer = (entropy_file_structure_viewer*)event->instance->data;
 	entropy_gui_event* gui_event;
-	
 
-	//printf("Clicked on %s%s\n", event->file->path, event->file->filename);
+	if (!ewl_widget_type_is(main_win, "row") || EWL_WIDGET(viewer->current_row) == main_win) return;
+	viewer->current_row = EWL_ROW(main_win);
 
 	/*-----------*/
 	/*Send an event to the core*/
