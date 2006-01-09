@@ -530,7 +530,7 @@ ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_OUT);
+	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_FOCUS_IN);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
