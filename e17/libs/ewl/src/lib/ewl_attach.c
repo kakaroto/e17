@@ -411,9 +411,11 @@ ewl_attach_free(Ewl_Attach *attach)
 
 	/* XXX should we clean up _WIDGET in here? */
 
-	if ((attach->type == EWL_ATTACH_DATA_TYPE_TEXT)
-			|| (attach->type == EWL_ATTACH_DATA_TYPE_OTHER))
+	if ((attach->data_type == EWL_ATTACH_DATA_TYPE_TEXT)
+			|| (attach->type == EWL_ATTACH_DATA_TYPE_OTHER)) {
 		IF_FREE(attach->data);
+	}
+		
 
 	IF_FREE(attach);
 
@@ -663,12 +665,12 @@ ewl_attach_cb_tooltip_timer(void *data)
 	}
 	else
 	{
-		if (ewl_attach_tooltip->embed)
+		/*if (ewl_attach_tooltip->embed)
 			ewl_container_child_remove(EWL_CONTAINER(ewl_attach_tooltip->embed), 
 									ewl_attach_tooltip->win);
 
 		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
-		ewl_container_child_append(EWL_CONTAINER(emb), ewl_attach_tooltip->win);
+		ewl_container_child_append(EWL_CONTAINER(emb), ewl_attach_tooltip->win);*/
 	}
 
 	if (!(ewl_attach_tooltip->box))
@@ -676,6 +678,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_attach_tooltip->box = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(ewl_attach_tooltip->win), 
 							ewl_attach_tooltip->box);
+		ewl_object_fill_policy_set(EWL_OBJECT(ewl_attach_tooltip->box), EWL_FLAG_FILL_NONE);
 	}
 
 	if (ewl_attach_tooltip->attach->data_type == EWL_ATTACH_DATA_TYPE_WIDGET)
