@@ -120,7 +120,6 @@ void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 	if (local_file->file && local_file->file->retrieved_stat) {
 		snprintf(buffer,1024, "File type: %s\nSize: %d kb", local_file->file->mime_type, 
 			local_file->file->properties.st_size/1024);
-
 		ewl_text_text_set(EWL_TEXT(viewer->hover_properties), buffer);
 	}
 
