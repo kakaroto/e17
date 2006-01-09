@@ -381,8 +381,6 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	/* -------------------------------- */
 
 	ewl_widget_show(ib->select);
-	/*ewl_widget_show(ib->select_floater);*/
-
 
 	/*Init the icon list*/
 	ib->ewl_iconbox_icon_list = ecore_list_new();
@@ -405,7 +403,6 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->entry_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->entry_floater),
 				ib->ewl_iconbox_pane_inner);
-	/*ewl_widget_show(ib->entry_floater);*/
 	ib->entry_box = ewl_hbox_new();
 	ewl_widget_show(ib->entry_box);
 	ewl_container_child_append(EWL_CONTAINER(ib->entry_floater), ib->entry_box);
@@ -1032,7 +1029,7 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane),
 				    					&sw,&sh);
 
-	if ((iconbox->lx + iconbox->iw + (EWL_ICONBOX_ICON_PADDING)) >= (sw - iconbox->iw)) {
+	if (  (iconbox->lx + ((iconbox->iw + EWL_ICONBOX_ICON_PADDING)*2)) >= (sw - iconbox->iw)) {
 		//printf("%d + %d + %d >= %d, so next line (%s)\n", 
 		//iconbox->lx , iconbox->iw , (EWL_ICONBOX_ICON_PADDING*2) , sw, name);
 		
@@ -1419,11 +1416,14 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
 			&& (ib->xdown != ev->x 
 				&& ib->ydown != ev->y)) 
 	{
+		ewl_widget_show(ib->ewl_iconbox_menu_floater);
 		ewl_floater_position_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater), 
 							ev->x-ibx + abs(px-ibx), 
 							ev->y-iby +abs(py-iby));
 		ewl_callback_call(EWL_WIDGET(ib->ewl_iconbox_context_menu), 
 							EWL_CALLBACK_FOCUS_IN);
+
+		ewl_object_state_remove(EWL_OBJECT(ib->ewl_iconbox_menu_floater), EWL_FLAG_STATE_PRESSED);
 	} else if (ev->button == 1 /* Confirm that this is not an icon event */ 
 			&& (ib->xdown != ev->x 
 				&& ib->ydown != ev->y)) 
