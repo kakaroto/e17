@@ -469,6 +469,7 @@ _screen_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,void *event_inf
 	     opt = get_options(opts);
 	     f = get_filename(ef->screen->conf);
 	     snprintf(buff, sizeof(buff), "scrot %s %s", opt, f);
+	     printf("Delay Time: %d\n", ef->screen->conf->delay_time);
 	     if (ef->screen->conf->delay_time > 0) 
 	       {
 		  msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
