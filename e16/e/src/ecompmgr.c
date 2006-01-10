@@ -992,6 +992,16 @@ win_shape(EObj * eo)
 
    border = ERegionCreateFromWindow(eo->win);
 
+   if (1 /* eo->shaped */ )	/* FIXME - Track shaped state */
+     {
+	XserverRegion       rgn;
+
+	/* Intersect with window size to get effective bounding region */
+	rgn = ERegionCreateRect(0, 0, eo->w, eo->h);
+	ERegionIntersect(border, rgn);
+	ERegionDestroy(rgn);
+     }
+
    /* translate this */
    x = eo->x + cw->a.border_width;
    y = eo->y + cw->a.border_width;
