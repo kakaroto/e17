@@ -134,7 +134,7 @@ static void usage(int exit_status)
 		"                   Matte has the same meaning as Alpha\n"
 		"    -coalesce      (The same as average)\n"
 		"    -colourise     <percentage>|<red>/<greem>/><blue>\n"
-		"    -compressoion  <integer>\n"
+		"    -compression   <integer>\n"
 		"                   Must be between 1 and 9. (default is %d)\n"
 		"    -[no]dither    Use Floyd Steinberg Dithering instead\n"
 		"                   of ordered dithering (default)\n"
@@ -155,6 +155,9 @@ static void usage(int exit_status)
 		" usual to use -compression for png and -quality for jpeg.\n"
 		" Accordinlgy, internally, -compression takes prefereance\n"
 		" over -quality for png, and vice-versa for jpeg.\n"
+		"\n"
+		" -[no]dither currently affects images when used in\n"
+		" conjunction with the -monocrome option\n"
 		"\n",
 		DEFAULT_CACHE_SIZE, DEFAULT_COMPRESSION, DEFAULT_QUALITY);
 
