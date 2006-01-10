@@ -1251,6 +1251,8 @@ DeskSwitchStart(void)
     * temporarily */
    EwinsEventsConfigure(0);
    DesksEventsConfigure(0);
+
+   TooltipsSetPending(1, NULL, NULL);
 }
 
 static void
