@@ -1,7 +1,6 @@
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
-#include "ewl-config.h"
 #include "ewl_misc.h"
 #include <stdio.h>
 #include <stdlib.h>
