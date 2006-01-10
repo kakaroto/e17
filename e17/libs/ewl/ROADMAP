@@ -1,36 +1,20 @@
 EWL ROADMAP
 ===========
 
-0.0.1 Goals
------------
- + Object class (complete)
- + Widget class (complete)
- + Container class (complete)
- + Event loop (complete)
+0.0.5 
+-----
+- there are some sizing issues that have to be fixed mostly clipping 
+   related (eg, dialog test)
+- notebook API needs to be reworked
+- and either the table/grid gets finished or tree2 is done and is
+   flexible enough to do that work
+- paned grabber theme completed
+- fixup the theme changing code. (Unrealize/realize causing some sizing
+  changes that they shouldn't)
 
-0.0.2 Goals
------------
- + Flexible theme support (complete)
- + Box widget (complete)
- + Button widget (complete)
- + Text widget (complete)
- + Spinner widget (complete)
- + Seeker/scrollbar widgets (complete)
- + Scrollarea widget (complete)
 
-0.0.3 Goals
------------
- + Entry widget (revision in progrss)
- + Embed widgets in pre-existing evas (complete)
- + Notebook widget (complete)
-
-0.0.4 Goals:
------------
- + Tree widget (in progress)
- + Menu widgets (in progress)
- + Table widget (unknown)
-
-0.0.5 Goals:
-------------
- + Fully functional textarea
+0.0.6
+-----
+- tree2
+- filedialog rewrite
 
