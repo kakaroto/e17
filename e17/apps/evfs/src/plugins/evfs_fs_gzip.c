@@ -275,7 +275,7 @@ int evfs_gzip_populate_buffer(evfs_client* client, evfs_filereference* ref) {
 		gfile->stream.next_in = (unsigned char*)gfile->buffer;
 		gfile->stream.avail_in = res;
 	} else {
-		printf("Res returnde an error: %d\n", res);
+		return -1;
 		//exit(0);
 	}
 
@@ -297,6 +297,8 @@ int evfs_file_read(evfs_client* client, evfs_filereference* file, char* bytes, l
 
 	while (gfile->stream.avail_out != 0) {
 		int res = evfs_gzip_populate_buffer(client,file);
+		if (res < 0) return -1;
+		
 		//printf("Avail_out starts at %d\n", bfile->stream.avail_out);
 		z_result = inflate(&gfile->stream, Z_NO_FLUSH);
 
