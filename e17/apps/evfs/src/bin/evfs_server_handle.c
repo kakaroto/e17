@@ -117,6 +117,9 @@ void evfs_handle_file_remove_command(evfs_client* client, evfs_command* command)
 			
 			(*plugin->functions->evfs_file_remove)(command->file_command.files[0]->path);
 			//printf("REMOVE FIL: '%s'\n", command->file_command.files[0]->path);
+			//
+			/*Iterate*/
+			ecore_main_loop_iterate();
 
 		} else {
 			//printf("IS LINK RES: %d, for %s\n", S_ISLNK(file_stat.st_mode), command->file_command.files[0]->path);
