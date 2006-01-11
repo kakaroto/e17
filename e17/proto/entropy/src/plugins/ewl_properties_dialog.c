@@ -74,26 +74,25 @@ void ewl_icon_local_viewer_show_stat(entropy_file_stat* file_stat) {
 
 	/*----------------------------*/
 	/*The icon*/
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	image = ewl_image_new();
+	ewl_image_constrain_set(EWL_IMAGE(image), 64);
 	if (file_stat->file->thumbnail) {
-		hbox = ewl_hbox_new();
-		ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-		ewl_widget_show(hbox);
-
-		image = ewl_image_new();
-		ewl_image_constrain_set(EWL_IMAGE(image), 64);
 		ewl_image_file_set(EWL_IMAGE(image), file_stat->file->thumbnail->thumbnail_filename, NULL);
-		ewl_container_child_append(EWL_CONTAINER(hbox), image);
-		ewl_widget_show(image);
-
-		text = ewl_text_new();
-		ewl_text_text_set(EWL_TEXT(text), file_stat->file->filename);
-		ewl_container_child_append(EWL_CONTAINER(hbox), text);
-		ewl_widget_show(text);
-
-
+	} else {
+		ewl_image_file_set(EWL_IMAGE(image), PACKAGE_DATA_DIR "/icons/default.png", NULL);
 	}
+	ewl_container_child_append(EWL_CONTAINER(hbox), image);
+	ewl_widget_show(image);
 
-	
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), file_stat->file->filename);
+	ewl_container_child_append(EWL_CONTAINER(hbox), text);
+	ewl_widget_show(text);
+
 
 	/*---------------------------*/
 	hbox = ewl_hbox_new();

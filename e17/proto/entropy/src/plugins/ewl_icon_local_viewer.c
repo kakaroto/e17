@@ -129,8 +129,6 @@ void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 void icon_hover_properties_show_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 	entropy_gui_component_instance* instance = user_data;
 	entropy_icon_viewer* viewer = instance->data;
-
-	printf("Showing prperties!\n");
 }
 /*-----------------------------*/
 

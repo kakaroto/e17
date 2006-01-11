@@ -10,9 +10,28 @@
 #define HEADER_CONFIG_MAX 2048
 
 static Ewl_Widget* win;
+
+int entropy_plugin_type_get();
+char* entropy_plugin_identify();
+void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data);
+void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *user_data);
+void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data);
+void entropy_ewl_layout_simple_tooltip_window();
+void location_menu_popup_delete_cb(Ewl_Widget *label, void *ev_data, void *user_data);
+void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data);
+void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data);
 void layout_ewl_simple_config_create(entropy_core* core);
 void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri);
 void layout_ewl_simple_add_config_location(entropy_gui_component_instance* instance, char* name, char* uri);
+Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* instance, char* config);
+void __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data);
+void contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data);
+void layout_ewl_simple_local_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data);
+void entropy_plugin_layout_main();
+void entropy_plugin_destroy(entropy_gui_component_instance* comp);
+void entropy_plugin_init(entropy_core* core);
+void entropy_delete_current_folder(Ecore_List* el);
+entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core);
 
 typedef struct entropy_ewl_layout_header_uri entropy_ewl_layout_header_uri;
 struct entropy_ewl_layout_header_uri {
@@ -53,11 +72,13 @@ struct entropy_layout_gui {
 };
 
 
-int entropy_plugin_type_get() {
+int entropy_plugin_type_get() 
+{
 	return ENTROPY_PLUGIN_GUI_LAYOUT;
 }
 
-char* entropy_plugin_identify() {
+char* entropy_plugin_identify() 
+{
 	        return (char*)"Simple EWL layout container";
 }
 
@@ -65,7 +86,8 @@ char* entropy_plugin_identify() {
 
 
 /*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
-void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_layout_gui* viewer = instance->data;
 
@@ -117,23 +139,27 @@ void location_add_execute_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
 }
 
 
-void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+void location_add_cancel_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
+{
 	ewl_widget_destroy(EWL_WIDGET(user_data));
 }
 
-void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+void mime_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
 	entropy_ewl_mime_dialog_display();
 }
 
 
-void entropy_ewl_layout_simple_tooltip_window() {
+void entropy_ewl_layout_simple_tooltip_window() 
+{
 	int status = entropy_core_tooltip_status_get();
 
 }
 
 
 /*Header context menu*/
-void location_menu_popup_delete_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
+void location_menu_popup_delete_cb(Ewl_Widget *label, void *ev_data, void *user_data) 
+{
 	entropy_gui_component_instance* instance = user_data;
 	entropy_layout_gui* layout = instance->data;
 
@@ -143,7 +169,8 @@ void location_menu_popup_delete_cb(Ewl_Widget *label, void *ev_data, void *user_
 	ecore_hash_remove(layout->headers, layout->active_header->visual);
 }
 
-void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
+void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data) 
+{
 	Ewl_Event_Mouse_Down *ev = ev_data;
 	entropy_ewl_layout_header_uri* header = user_data;
 	
@@ -161,7 +188,8 @@ void location_menu_popup_cb(Ewl_Widget *label, void *ev_data, void *user_data) {
 
 
 
-void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
 	entropy_gui_component_instance* instance = (entropy_gui_component_instance*)user_data;
 
 	Ewl_Widget* window;
@@ -316,7 +344,8 @@ void location_add_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 }
 
 
-void layout_ewl_simple_add_config_location(entropy_gui_component_instance* instance, char* name, char* uri) {
+void layout_ewl_simple_add_config_location(entropy_gui_component_instance* instance, char* name, char* uri) 
+{
 	char* current_uri = entropy_config_str_get("layout_ewl_simple", "structure_bar");
 	char new_uri[HEADER_CONFIG_MAX];
 
@@ -327,7 +356,8 @@ void layout_ewl_simple_add_config_location(entropy_gui_component_instance* insta
 }
 
 
-void layout_ewl_simple_config_create(entropy_core* core) {
+void layout_ewl_simple_config_create(entropy_core* core) 
+{
 	char* eg = calloc(HEADER_CONFIG_MAX, sizeof(char)) ;
 
 	snprintf(eg, HEADER_CONFIG_MAX, "Computer;posix:///|Home;posix://%s|Samba Example (Don't use!);smb://username:password@/test/machine/folder", 
@@ -340,7 +370,8 @@ void layout_ewl_simple_config_create(entropy_core* core) {
 }
 
 
-void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri) {
+void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char* name, char* uri) 
+{
 
 	Ewl_Widget* hbox;
 	entropy_plugin* structure;
@@ -393,7 +424,8 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 	}
 }
 
-Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* instance, char* config) {
+Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* instance, char* config) 
+{
 	Ecore_Hash* ret = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	if (!strstr(config, "|")) {
@@ -445,8 +477,8 @@ Ecore_Hash* layout_ewl_simple_parse_config(entropy_gui_component_instance* insta
 }
 
 
-void
-__destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+void __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
 	entropy_core* core = (entropy_core*)user_data;
 	ewl_widget_destroy(main_win);
 
@@ -456,17 +488,16 @@ __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data) {
 	exit(0);
 }
 
-void
-contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+void contract_cb(Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
 	Ewl_Box* box = EWL_BOX(user_data);
 
 	ewl_object_maximum_w_set(EWL_OBJECT(box), 15);
 }
 
 
-void
-layout_ewl_simple_local_view_cb
-(Ewl_Widget *main_win, void *ev_data, void *user_data) {
+void layout_ewl_simple_local_view_cb (Ewl_Widget *main_win, void *ev_data, void *user_data) 
+{
 	
 	entropy_gui_component_instance* instance = user_data;
 	entropy_layout_gui* layout = instance->layout_parent->data;
@@ -499,13 +530,15 @@ layout_ewl_simple_local_view_cb
 
 
 
-void entropy_plugin_layout_main() {
+void entropy_plugin_layout_main() 
+{	
 	ewl_widget_show(win);
 	ewl_main();
 }
 
 
-void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
+void entropy_plugin_destroy(entropy_gui_component_instance* comp) 
+{
 	entropy_layout_gui* gui = comp->data;
 	Ecore_List* keys;
 	void* key;
@@ -533,19 +566,22 @@ void entropy_plugin_destroy(entropy_gui_component_instance* comp) {
 }
 
 
-void entropy_plugin_init(entropy_core* core) {
+void entropy_plugin_init(entropy_core* core) 
+{
 	int i =0;
 	char **c = NULL;
 	/*Init ewl*/
 	ewl_init(&i, c);
 }
 
-void entropy_delete_current_folder(Ecore_List* el) {
+void entropy_delete_current_folder(Ecore_List* el) 
+{
 	ecore_list_destroy(el);
 }
 
 
-entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core) {
+entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core) 
+{
 	entropy_gui_component_instance* layout;
 	entropy_layout_gui* gui;
 	char* tmp = NULL;
@@ -708,7 +744,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "Tip Of The Day..");
 	ewl_container_child_append(EWL_CONTAINER(menu), item);
-	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, , layout);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();

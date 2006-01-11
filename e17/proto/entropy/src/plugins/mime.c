@@ -32,6 +32,7 @@ void entropy_plugin_init(entropy_core* core) {
 	ecore_hash_set(mime_hash, ".htm", "text/html");
 	ecore_hash_set(mime_hash, ".html", "text/html");
 	ecore_hash_set(mime_hash, ".c", "text/csrc");
+	ecore_hash_set(mime_hash, ".cpp", "text/x-c++src");
 	ecore_hash_set(mime_hash, ".mpg", "video/mpeg");
 	ecore_hash_set(mime_hash, ".mpe", "video/mpeg");
 	ecore_hash_set(mime_hash, ".mpeg", "video/mpeg");
