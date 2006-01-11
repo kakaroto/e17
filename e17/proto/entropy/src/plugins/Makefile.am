@@ -56,7 +56,7 @@ action_simple_la_LIBADD        = @EWL_LIBS@
 
 layout_ewl_simple_la_SOURCES   = $(top_srcdir)/src/entropy_gui.c \
 				ewl_mime_dialog.c layout_ewl_simple.c $(top_srcdir)/src/entropy_debug.c \
-				 ewl_tip.c
+				 ewl_tip.c ewl_about_dialog.c
 layout_ewl_simple_la_CFLAGS    = @EWL_CFLAGS@
 layout_ewl_simple_la_LDFLAGS   = -module -avoid-version
 layout_ewl_simple_la_LIBADD    = @EWL_LIBS@

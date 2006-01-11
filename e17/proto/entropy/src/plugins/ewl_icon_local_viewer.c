@@ -119,7 +119,7 @@ void hover_icon_mouse_move_cb(Ewl_Widget *w , void *ev_data , void *user_data ) 
 
 	if (local_file->file && local_file->file->retrieved_stat) {
 		snprintf(buffer,1024, "File type: %s\nSize: %d kb", local_file->file->mime_type, 
-			local_file->file->properties.st_size/1024);
+			(int)local_file->file->properties.st_size/1024);
 		ewl_text_text_set(EWL_TEXT(viewer->hover_properties), buffer);
 	}
 
@@ -153,8 +153,6 @@ void ewl_iconbox_file_paste_cb(Ewl_Widget *w , void *ev_data , void *user_data )
 	while ( (file = ecore_list_next(selected))  ) {
 		(*copy_func)(file, ((entropy_icon_viewer*)instance->data)->current_dir, instance );
 	}
-	
-
 }
 
 void ewl_iconbox_file_copy_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
@@ -207,8 +205,6 @@ void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 
 	if (!local_file) { printf ("*Alert* Couldn't find a local file reference for icon\n"); }
 
-	
-	
         if (ev->clicks > 1) {
 
 		if (ev->button == 1) {
@@ -225,10 +221,6 @@ void icon_click_cb(Ewl_Widget *w , void *ev_data , void *user_data ) {
 		}
 
 	}
-
-	
-
-	
 }
 
 
@@ -328,8 +320,6 @@ void ewl_icon_local_viewer_delete_cb(Ewl_Widget *w , void *ev_data , void *user_
 			(*del_func)(file);	
 
 			entropy_core_file_cache_remove_reference(file->md5);	
-
-	
 		}
 		
 	} else {
@@ -359,8 +349,6 @@ void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* insta
 		entropy_generic_file* file;
 		gui_file* local_file;
 		Ewl_Iconbox_Icon* list_item;
-		
-
 		
 		Ewl_Widget* dialog_win;
 		Ewl_Widget* dialog_label;
@@ -397,10 +385,6 @@ void ewl_icon_local_viewer_delete_selected(entropy_gui_component_instance* insta
 		entropy_file_wait_list_add(viewer, new_file_list);
 		ecore_list_destroy(icon_list);
 
-
-		/////////////////////
-		//
-
 		button = ewl_button_new();
 		ewl_button_label_set(EWL_BUTTON(button), "Yes");
 		ewl_widget_show(button);
@@ -434,8 +418,6 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 
 	entropy_gui_component_instance* instance = entropy_gui_component_instance_new();
 	entropy_icon_viewer* viewer = entropy_malloc(sizeof(entropy_icon_viewer));
-
-
 
 	/*Save a reference to our local data*/
 	instance->data = viewer;
@@ -498,8 +480,6 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	ewl_callback_append(context, EWL_CALLBACK_CLICKED, ewl_iconbox_background_remove_cb, instance);
 	ewl_widget_show(context);
 
-
-
 	/*---------------Icon Menu---------------*/
 
 	/*Copy*/
@@ -519,9 +499,12 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	//ewl_callback_append(context, EWL_CALLBACK_MOUSE_DOWN, icon_properties_cb, instance);
 
 
-
-	
-
+	/*Icon menu*/
+	context = ewl_menu_item_new();
+	ewl_menu_item_text_set(EWL_MENU_ITEM(context), "Rename");
+	ewl_menu_item_image_set(EWL_MENU_ITEM(context), PACKAGE_DATA_DIR "/icons/e17_button_detail_delete.png");
+	ewl_widget_show(context);
+	ewl_iconbox_icon_menu_item_add(EWL_ICONBOX(viewer->iconbox), context);
 
 	/*Icon menu*/
 	context = ewl_menu_item_new();
@@ -577,14 +560,7 @@ entropy_gui_component_instance* entropy_plugin_init(entropy_core* core,entropy_g
 	/*We want to know about thumbnail available events*/
 	entropy_core_component_event_register(instance, entropy_core_gui_event_get(ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
 
-
 	ewl_iconbox_controlled_key_callback_register(viewer->iconbox, ewl_icon_local_viewer_key_event_cb, instance);
-
-
-
-
-	
-
 	return instance;
 }
 
@@ -791,9 +767,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		proc->user_data = ecore_list_new();
 		view->last_processor = proc;
 
-
-		
-
 		ecore_list_goto_first(ret);
 		while ( (event_file = ecore_list_next(ret))) {
 			//printf("Populating with '%s'\n", event_file->filename);
@@ -802,11 +775,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 
 		ecore_idle_enterer_add(idle_add_icons, proc);
 
-		
-
-		//printf("Starting..\n");
-
-		
 		/*Set the current path from the event source...*/
 		snprintf(view->current_dir, 1024, "%s://%s/%s", request->file->uri_base, request->file->path, request->file->filename);
 
@@ -815,11 +783,6 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
 		/*TODO*/
 		gui_object_destroy_and_free(comp, tmp_gui_hash);
 		ecore_hash_destroy(tmp_icon_hash);
-
-	
-		
-
-		
 
 		/*Clear the view, if there's anything to nuke*/
 		ewl_iconbox_clear(EWL_ICONBOX(view->iconbox));
@@ -933,6 +896,3 @@ void gui_event_callback(entropy_notify_event* eevent, void* requestor, void* ret
     } //End switch
 
 }					       
-
-	
-

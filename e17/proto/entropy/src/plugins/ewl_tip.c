@@ -34,6 +34,20 @@ void ewl_entropy_tip_window_create_tips()
 	ecore_list_append(tool_tips, "You can add a new 'location' by clicking on \"Add Location\"\nin the Tools menu");
 	ecore_list_append(tool_tips, "Entropy can browse .tar.gz and .tar.bz2 files.  Just click on the\n file, and it will be"
 				     "treated as a regular folder");
+	ecore_list_append(tool_tips, "To copy a file, drag the icon from the icon view to a folder in the left hand pane");
+	ecore_list_append(tool_tips, "The icon view supports keyboard navigation.  Arrow keys, and special keys\n like 'Delete'"
+				     "will execute appropriate actions");
+	ecore_list_append(tool_tips, "File properties can be viewed by selecting an icon, and clicking 'Properties'");
+	ecore_list_append(tool_tips, "You can change the action that is executed for a particular file type\n"
+				     "by opening the 'Properties' dialog for a file of that type, and clicking\n"
+				     "'Open With..'");
+	ecore_list_append(tool_tips, "The MIME-Type dialog allows fine grained control over the action executed\n"
+				     "for a file type.");
+	ecore_list_append(tool_tips, "Entropy is able to thumbnail images in any filesystem supported by EVFS.\n"
+				     "For instance, this means that Entropy can thumbnail files in a .tar.bz2\n"
+				     "file on a Samba share!\n");
+
+	
 }
 
 char* ewl_entropy_tip_window_tip_next() {
@@ -51,6 +65,7 @@ void ewl_entropy_tip_window_display()
 	Ewl_Widget* vbox = ewl_vbox_new();
 	Ewl_Widget* hbox = ewl_hbox_new();
 	Ewl_Widget* button;
+	Ewl_Widget* image = ewl_image_new();
 
 	ewl_entropy_tip_window_create_tips();
 	tip_number = 0;
@@ -61,13 +76,19 @@ void ewl_entropy_tip_window_display()
 	ewl_object_fill_policy_set(EWL_OBJECT(tip_window), EWL_FLAG_FILL_FILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL);
 	
-	ewl_object_minimum_size_set(EWL_OBJECT(tip_window), 400, 150);
 	ewl_container_child_append(EWL_CONTAINER(tip_window), vbox);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	
 	text_tip = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), text_tip);
-	
+	ewl_object_minimum_h_set(EWL_OBJECT(text_tip), 80);
+	ewl_container_child_append(EWL_CONTAINER(hbox), text_tip);
 
+	ewl_image_file_set(EWL_IMAGE(image), PACKAGE_DATA_DIR "/icons/tip.png", NULL);
+	ewl_container_child_append(EWL_CONTAINER(hbox), image);
+	ewl_widget_show(hbox);
+	
+	hbox = ewl_hbox_new();
+	ewl_widget_show(hbox);
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 
 	button = ewl_button_new();
@@ -95,8 +116,8 @@ void ewl_entropy_tip_window_display()
 	
 	ewl_widget_show(tip_window);
 	ewl_widget_show(vbox);
-	ewl_widget_show(hbox);
 	ewl_widget_show(text_tip);
+	ewl_widget_show(image);
 
 	ewl_entropy_tip_window_tip_next_cb(NULL,NULL,NULL);
 	

@@ -7,6 +7,7 @@
 #include "ewl_mime_dialog.h"
 #include "entropy_gui.h"
 #include "ewl_tip.h"
+#include "ewl_about_dialog.h"
 
 #define HEADER_CONFIG_MAX 2048
 
@@ -34,6 +35,7 @@ void entropy_plugin_init(entropy_core* core);
 void entropy_delete_current_folder(Ecore_List* el);
 entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core);
 void ewl_layout_simple_tooltip_show_cb(Ewl_Widget *item, void *ev_data, void *user_data);
+void ewl_layout_simple_about_dialog_cb(Ewl_Widget *item, void *ev_data, void *user_data);
 
 typedef struct entropy_ewl_layout_header_uri entropy_ewl_layout_header_uri;
 struct entropy_ewl_layout_header_uri {
@@ -85,8 +87,14 @@ char* entropy_plugin_identify()
 }
 
 
-void ewl_layout_simple_tooltip_show_cb(Ewl_Widget *item, void *ev_data, void *user_data) {
+void ewl_layout_simple_tooltip_show_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
+{
 	ewl_entropy_tip_window_display();
+}
+
+void ewl_layout_simple_about_dialog_cb(Ewl_Widget *item, void *ev_data, void *user_data) 
+{
+	entropy_ewl_about_dialog_display();
 }
 
 
@@ -756,7 +764,7 @@ entropy_gui_component_instance* entropy_plugin_layout_create(entropy_core* core)
 	item = ewl_menu_item_new();
 	ewl_menu_item_text_set(EWL_MENU_ITEM(item), "About..");
 	ewl_container_child_append(EWL_CONTAINER(menu), item);
-	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, location_add_cb, layout);
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED, ewl_layout_simple_about_dialog_cb, layout);
 	ewl_widget_show(item);
 	/*-------------------------------*/
 
