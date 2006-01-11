@@ -10,10 +10,13 @@ EWL ROADMAP
    flexible enough to do that work
 - fixup the theme changing code. (Unrealize/realize causing some sizing
   changes that they shouldn't)
+- fixup submenu/menu interaction
+- fixup imenu to work like menu
 
 
 0.0.6
 -----
 - tree2
 - filedialog rewrite
+- finish ewl_freebox and ewl_icon and port iconbox to use them
 
