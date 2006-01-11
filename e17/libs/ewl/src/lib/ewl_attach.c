@@ -665,9 +665,13 @@ ewl_attach_cb_tooltip_timer(void *data)
 	}
 	else
 	{
-		if ( (!ewl_attach_tooltip->embed) ||  ewl_attach_tooltip->embed != emb ) {
-			if (ewl_attach_tooltip->embed && ewl_attach_tooltip->embed != emb) {
-				ewl_container_child_remove(EWL_CONTAINER(ewl_attach_tooltip->embed), 
+		if ((!ewl_attach_tooltip->embed) 
+				|| (ewl_attach_tooltip->embed != EWL_WIDGET(emb))) 
+		{
+			if (ewl_attach_tooltip->embed 
+					&& (ewl_attach_tooltip->embed != EWL_WIDGET(emb))) 
+			{
+				ewl_container_child_remove(EWL_CONTAINER(ewl_attach_tooltip->embed),
 							ewl_attach_tooltip->win);
 
 			} 
