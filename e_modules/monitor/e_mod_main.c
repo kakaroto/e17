@@ -622,7 +622,7 @@ _monitor_face_free(Monitor_Face *face)
 {
    e_object_unref(E_OBJECT(face->con));
    e_object_del(E_OBJECT(face->gmc));
-   ecore_timer_del(face->date_check_timer);
+   if (face->date_check_timer) ecore_timer_del(face->date_check_timer);
 
    evas_object_del(face->cpu);
    evas_object_del(face->mem);
