@@ -424,7 +424,7 @@ void layout_ewl_simple_add_header(entropy_gui_component_instance* instance, char
 			else
 				;// printf("Visual component found\n");
 			ewl_container_child_append(EWL_CONTAINER(hbox), visual);
-			ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+			ewl_object_fill_policy_set(EWL_OBJECT(visual), EWL_FLAG_FILL_HFILL);
 			ewl_widget_show(visual);
 		}
 	}
