@@ -818,9 +818,17 @@ ewl_iconbox_icon_arrange(Ewl_Iconbox *ib)
 		y = ewl_object_current_y_get(EWL_OBJECT(list_item));
 
 		/* Only move if we have to */
-		if (abs(x - ib->lx) > 0 || abs(y - ib->ly) > 0) 
-			ewl_object_position_request(EWL_OBJECT(list_item), 
+		if (abs(x - ib->lx) > 0 || abs(y - ib->ly) > 0) {
+			if ( !(list_item->ox || list_item->oy)) {
+				ewl_object_position_request(EWL_OBJECT(list_item), 
 						ib->lx + nx, ib->ly + ny);
+			} else {
+				ewl_object_position_request(EWL_OBJECT(list_item), 
+					list_item->ox + ib->ox, list_item->oy + ib->oy);
+
+			}
+			//printf("Requested position: %d:%d\n", ib->lx + nx, ib->ly + ny);
+		}
 
 
 		ib->lx += iw + EWL_ICONBOX_ICON_PADDING;
@@ -1154,6 +1162,19 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
 
 	ewl_object_position_request(EWL_OBJECT(list_item),  ev->x - (fw/2), ev->y - (fh/2));
+
+	printf("Setting override position to %d:%d, layout: %d:%d, offset: %d:%d, pane %d:%d, box: %d:%d\n", 
+			ev->x - (fw/2), ev->y - (fh/2), 
+			ib->lx, ib->ly, 
+			ib->ox , ib->oy,
+			px, py,
+			ibx,iby
+	);
+
+	printf("Position: %d:%d\n", ev->x - (fw/2) - ibx + abs(px - ibx), ev->y - (fh/2) - iby  + abs(py - iby) );
+	list_item->ox = ev->x - (fw/2) - ibx + abs(px - ibx);
+	list_item->oy = ev->y - (fh/2) - iby  + abs(py - iby);
+
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

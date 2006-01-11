@@ -38,6 +38,9 @@ struct Ewl_Iconbox_Icon
 	Ewl_Iconbox *icon_box_parent; /* Our reference upwards, kinda breaks OO conventions */
 	char *label;		      /*Our icon's full (unabbreviated) label) */
 	char *label_compressed;
+
+	int ox,oy;		     /* Override configure arranges, 
+				       if the user has moved the icon */
 };
 
 /**
