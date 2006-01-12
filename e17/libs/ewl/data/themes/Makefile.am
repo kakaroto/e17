@@ -15,4 +15,4 @@ all: $(EDJS)
 
 SUFFIXES = .edc .edj
 .edc.edj:
-	(cd $(top_srcdir)/data/themes ; edje_cc -v -id $(top_srcdir)/data/themes/$(notdir $(<:%.edc=%))/bits/images $(notdir $<) $(top_builddir)/data/themes/$(notdir $@))
+	edje_cc -v -id $(top_srcdir)/data/themes/$(notdir $(<:%.edc=%))/bits/images  -fd $(top_srcdir)/data/themes $(top_srcdir)/data/themes/$< $(top_builddir)/data/themes/$(notdir $@)
