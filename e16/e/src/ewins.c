@@ -615,10 +615,10 @@ EwinUpdateShapeInfo(EWin * ewin)
       EShapeCopy(ewin->win_container, _EwinGetClientWin(ewin));
    EUngrabServer();
 
-#if 0				/* Debug */
-   Eprintf("EwinUpdateShapeInfo %#lx cont=%#lx shaped=%d\n",
-	   _EwinGetClientXwin(ewin), ewin->win_container, ewin->client.shaped);
-#endif
+   if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
+      Eprintf("EwinUpdateShapeInfo %#lx cont=%#lx shaped=%d\n",
+	      _EwinGetClientXwin(ewin), _EwinGetContainerXwin(ewin),
+	      ewin->state.shaped);
 }
 
 void
@@ -630,16 +630,16 @@ EwinPropagateShapes(EWin * ewin)
    if (ewin->state.docked)
       return;
 
-#if 0
-   Eprintf("EwinPropagateShapes %#lx %#lx %s\n", EoGetWin(ewin),
-	   _EwinGetClientXwin(ewin), EoGetName(ewin));
-#endif
-   if (ewin->update.shape)
-     {
-	EShapePropagate(EoGetWin(ewin));
-	EoChangeShape(ewin);
-	ewin->update.shape = 0;
-     }
+   if (!ewin->update.shape)
+      return;
+
+   if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
+      Eprintf("EwinPropagateShapes %#lx frame=%#lx shaped=%d\n",
+	      _EwinGetClientXwin(ewin), EoGetWin(ewin), ewin->state.shaped);
+
+   EShapePropagate(EoGetWin(ewin));
+   EoChangeShape(ewin);
+   ewin->update.shape = 0;
 }
 
 void
@@ -1298,11 +1298,19 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 }
 
 static void
-EwinEventShapeChange(EWin * ewin)
+EwinEventShapeChange(EWin * ewin, XEvent * ev)
 {
+#define se ((XShapeEvent *)ev)
+   if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
+      Eprintf("EwinEventShapeChange %#lx %s: state.shaped=%d ev->shaped=%d\n",
+	      _EwinGetClientXwin(ewin), EoGetName(ewin), ewin->state.shaped,
+	      se->shaped);
+   if (!se->shaped && !ewin->state.shaped)
+      return;
    EwinUpdateShapeInfo(ewin);
    ewin->update.shape = 1;
    EwinPropagateShapes(ewin);
+#undef se
 }
 
 static void
@@ -1933,7 +1941,7 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	break;
 
      case EX_EVENT_SHAPE_NOTIFY:
-	EwinEventShapeChange(ewin);
+	EwinEventShapeChange(ewin, ev);
 	break;
 
      default:
