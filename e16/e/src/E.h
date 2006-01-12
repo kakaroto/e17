@@ -461,7 +461,7 @@ typedef struct
    char                memory_paranoia;
    char                save_under;
    int                 edge_flip_resistance;
-   char                argb_client_mode;
+   int                 argb_client_mode;
 
    /* Not used */
 #ifdef HAS_XINERAMA
